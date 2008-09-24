@@ -101,8 +101,13 @@ typedef fxtyenv = symenv_t (fxty_t)
 
 val the_fxtyenv = $SymEnv.symenv_make {fxty_t} ()
 
-implement the_fxtyenv_add (opr, fxty) =
+implement the_fxtyenv_add (opr, fxty) = let
+  val () = case+
+    $SymEnv.symenv_remove (the_fxtyenv, opr) of
+    | ~Some_vt _ => () | ~None_vt () => ()
+in
   $SymEnv.symenv_insert (the_fxtyenv, opr, fxty)
+end // end of [the_fxtyenv_add]
 
 implement the_fxtyenv_find (opr) = let
   val ans = $SymEnv.symenv_search (the_fxtyenv, opr)
@@ -112,7 +117,7 @@ in
       $SymEnv.symenv_pervasive_search (the_fxtyenv, opr)
     end
   | Some_vt _ => (fold@ ans; ans)
-end
+end // end of [the_fxtyenv_find]
 
 implement the_fxtyenv_pervasive_add_top () = let
   val m = $SymEnv.symenv_top (the_fxtyenv)

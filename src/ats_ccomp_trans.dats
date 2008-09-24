@@ -1018,16 +1018,19 @@ implement ccomp_exp_lam_funlab
   val res = $Lst.list_vt_reverse_list (res)
 (*
   val () = begin
-    prerr "ccomp_exp_lam_funlab: fl = ";
-    prerr fl; prerr_newline ()
+    prerr "ccomp_exp_lam_funlab: fl = "; prerr fl; prerr_newline ()
   end
   val () = begin
-    prerr "ccomp_exp_lam_funlab: body = ";
-    prerr_instrlst res; prerr_newline ()
+    prerr "ccomp_exp_lam_funlab: fls = "; prerr_funlabset fls; prerr_newline ()
+  end
+*)
+(*
+  val () = begin
+    prerr "ccomp_exp_lam_funlab: body = "; prerr_instrlst res; prerr_newline ()
   end
 *)
   val entry = begin
-    funentry_make (loc_fun, fl, level, vtps, fls, tmp_ret, res)
+    funentry_make (loc_fun, fl, level, fls, vtps, tmp_ret, res)
   end
 in
   funentry_lablst_add (fl); funentry_associate (entry); entry

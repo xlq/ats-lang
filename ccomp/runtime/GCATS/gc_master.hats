@@ -230,7 +230,7 @@ __define GLOBALENTRYPAGESIZE 64 // largely chosen arbitrarily
 
 //
 
-__define ATS_GC_RUNTIME_CHECK 0
+__define ATS_GC_RUNTIME_CHECK 0 // 1
 
 /* ****** ****** */
 

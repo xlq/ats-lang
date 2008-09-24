@@ -61,7 +61,7 @@
 
 /* ****** ****** */
 
-extern ats_void_type ats_gc_initialize () ;
+extern ats_void_type ats_gc_init () ;
 extern ats_void_type
 ats_gc_markroot (ats_ptr_type p, ats_int_type bsz) ;
 

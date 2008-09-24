@@ -134,9 +134,6 @@ fun vartypset_union (vtps1: vartypset, vtps2: vartypset): vartypset
 fun vartypset_foreach_cloptr {f:eff}
   (vtps: vartypset, f: !vartyp_t -<cloptr,f> void):<f> void
 
-fun fprint_vartypset {m:file_mode}
-  (pf: file_mode_lte (m, w) | out: &FILE m, vtps: vartypset): void
-
 fun print_vartypset (vtps: vartypset): void
 fun prerr_vartypset (vtps: vartypset): void
 
@@ -156,6 +153,9 @@ fun funlabset_foreach_main {v:view} {vt:viewtype} {f:eff} (
 
 fun funlabset_foreach_cloptr {f:eff}
   (fls: funlabset, f: !funlab_t -<cloptr,f> void):<f> void
+
+fun print_funlabset (fls: funlabset): void
+fun prerr_funlabset (fls: funlabset): void
 
 (* ****** ****** *)
 
@@ -245,8 +245,8 @@ fun funentry_make (
     loc: loc_t
   , fl: funlab_t
   , level: int
-  , vtps: vartypset
   , fls: funlabset
+  , vtps: vartypset
   , _ret: tmpvar_t
   , inss: instrlst
   ) : funentry_t

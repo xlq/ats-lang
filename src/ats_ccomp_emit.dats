@@ -88,7 +88,7 @@ ats_ccomp_emit_identifier (ats_ptr_type out, ats_ptr_type name) {
   } /* end of [while] */
 
   return ;
-}
+} /* ats_ccomp_emit_identifier */
 
 %}
 
@@ -97,8 +97,46 @@ ats_ccomp_emit_identifier (ats_ptr_type out, ats_ptr_type name) {
 implement emit_label (pf | out, l) =
   $Lab.fprint_label (pf | out, l)
 
+(* ****** ****** *)
+
+(*
+
 implement emit_filename (pf | out, fil) =
   emit_identifier (pf | out, $Fil.filename_full fil)
+
+*)
+
+%{$
+
+extern char *ats_main_ATSHOME ;
+extern int ats_main_ATSHOME_length ;
+extern char *ats_main_ATSHOMERELOC ;
+extern ats_ptr_type ats_filename_full (ats_ptr_type) ;
+
+ats_void_type
+ats_ccomp_emit_filename (ats_ptr_type out, ats_ptr_type fil) {
+  int sgn ; char *name ;
+  name = ats_filename_full (fil) ;
+
+  if (!ats_main_ATSHOMERELOC) {
+    ats_ccomp_emit_identifier (out, name) ; return ;
+  }
+
+  sgn = strncmp
+    (ats_main_ATSHOME, name, ats_main_ATSHOME_length) ;
+  if (sgn) {
+    ats_ccomp_emit_identifier (out, name) ;
+  } else {
+    ats_ccomp_emit_identifier (out, ats_main_ATSHOMERELOC) ;
+    ats_ccomp_emit_identifier (out, (char*)name + ats_main_ATSHOME_length) ;
+  }
+
+  return ;
+} /* end of ats_ccomp_emit_filename */
+
+%}
+
+(* ****** ****** *)
 
 implement emit_d2con (pf | out, d2c) = let
   val fil = d2con_fil_get d2c
@@ -2130,12 +2168,14 @@ end // end of [emit_funentry_prototype]
 implement emit_mainfun (pf | out, fil) = let
   val () = fprint (pf | out, "int main (int argc, char *argv[]) {\n")
 
-  val () = fprint (pf | out, "ATS_GC_INIT () ;\n")
+  val () = fprint (pf | out, "ATS_GC_INIT() ;\n")
 
-  val () = fprint (pf | out, "mainats_prelude () ;\n")
+  val () = fprint (pf | out, "mainats_prelude() ;\n")
 
+  val () = fprint (pf | out, "\n#ifndef _ATS_DYNLOADFUN_NONE\n")
   val () = emit_filename (pf | out, fil)
   val () = fprint (pf | out, "__dynload () ;\n")
+  val () = fprint (pf | out, "#endif\n\n")
 
   val () = fprint (pf | out, "mainats ((ats_int_type)argc, (ats_ptr_type)argv) ;\n")
 
@@ -2149,4 +2189,3 @@ end // end of [emit_mainfun]
 (* ****** ****** *)
 
 (* end of [ats_ccomp_emit.dats] *)
-

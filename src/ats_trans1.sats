@@ -41,6 +41,7 @@
 
 (* ****** ****** *)
 
+staload Loc = "ats_location.sats"
 staload Syn = "ats_syntax.sats"
 staload SEXP = "ats_staexp1.sats"
 staload DEXP = "ats_dynexp1.sats"
@@ -60,7 +61,20 @@ fun s0expopt_tr (_: $Syn.s0expopt): $SEXP.s1expopt
 fun s0explstlst_tr (_: $Syn.s0explstlst): $SEXP.s1explstlst
 fun labs0explst_tr (_: $Syn.labs0explst): $SEXP.labs1explst
 
+fun s0arglst_tr (s0as: $Syn.s0arglst): $SEXP.s1arglst
+fun s0arglstlst_tr (s0ass: $Syn.s0arglstlst): $SEXP.s1arglstlst
+
+fun s0qualst_tr (s0qs: $Syn.s0qualst): $SEXP.s1qualst
+fun s0qualstlst_tr (s0qss: $Syn.s0qualstlst): $SEXP.s1qualstlst
+
 fun s0rtext_tr (_: $Syn.s0rtext): $SEXP.s1rtext
+
+fun tmps0explstlst_tr
+  (ts0ess: $Syn.tmps0explstlst): $SEXP.tmps1explstlst
+
+fun witht0ype_tr (w0t: $Syn.witht0ype): $SEXP.witht1ype
+
+(* ****** ****** *)
 
 fun p0at_tr (_: $Syn.p0at): $DEXP.p1at
 fun p0atlst_tr (_: $Syn.p0atlst): $DEXP.p1atlst
@@ -71,6 +85,49 @@ fun d0explst_tr (_: $Syn.d0explst): $DEXP.d1explst
 fun d0explstlst_tr (_: $Syn.d0explstlst): $DEXP.d1explstlst
 fun labd0explst_tr (_: $Syn.labd0explst): $DEXP.labd1explst
 fun d0expopt_tr (_: $Syn.d0expopt): $DEXP.d1expopt
+
+(* ****** ****** *)
+
+fun d0ec_fixity_tr
+  (f0xty: $Syn.f0xty, ids: $Syn.i0delst): void
+fun d0ec_nonfix_tr (ids: $Syn.i0delst): void
+
+fun do_e0xpact_assert
+  (loc: $Loc.location_t, v: $SEXP.v1al): void
+
+fun do_e0xpact_error
+  (loc: $Loc.location_t, v: $SEXP.v1al): void
+
+fun do_e0xpact_print (v: $SEXP.v1al): void
+
+(* ****** ****** *)
+
+fun s0rtdef_tr (d: $Syn.s0rtdef): $DEXP.s1rtdef
+fun s0rtdeflst_tr (ds: $Syn.s0rtdeflst): $DEXP.s1rtdeflst
+
+fun s0tacon_tr (d: $Syn.s0tacon): $DEXP.s1tacon
+fun s0taconlst_tr (ds: $Syn.s0taconlst): $DEXP.s1taconlst
+fun s0tacst_tr (d: $Syn.s0tacst): $DEXP.s1tacst
+fun s0tacstlst_tr (ds: $Syn.s0tacstlst): $DEXP.s1tacstlst
+
+fun s0tavar_tr (d: $Syn.s0tavar): $DEXP.s1tavar
+fun s0tavarlst_tr (ds: $Syn.s0tavarlst): $DEXP.s1tavarlst
+
+fun s0expdef_tr (d: $Syn.s0expdef): $DEXP.s1expdef
+fun s0expdeflst_tr (ds: $Syn.s0expdeflst): $DEXP.s1expdeflst
+
+fun s0aspdec_tr (d: $Syn.s0aspdec): $DEXP.s1aspdec
+
+fun d0atdec_tr (d0c: $Syn.d0atdec): $DEXP.d1atdec
+fun d0atdeclst_tr (ds: $Syn.d0atdeclst): $DEXP.d1atdeclst
+
+fun e0xndec_tr (d: $Syn.e0xndec): $DEXP.e1xndec
+fun e0xndeclst_tr (ds: $Syn.e0xndeclst): $DEXP.e1xndeclst
+
+(* ****** ****** *)
+
+fun d0atsrtdec_tr (d: $Syn.d0atsrtdec): $DEXP.d1atsrtdec
+fun d0atsrtdeclst_tr (ds: $Syn.d0atsrtdeclst): $DEXP.d1atsrtdeclst
 
 fun d0ec_tr (_: $Syn.d0ec): $DEXP.d1ec
 fun d0eclst_tr (_: $Syn.d0eclst): $DEXP.d1eclst

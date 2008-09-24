@@ -41,6 +41,7 @@ DIR=.
 CC=gcc
 YACC=yacc
 #YACC=byacc
+
 ATSCC="$(ATSHOME)"/bin/atscc
 #ATSCCFLAG=-g -D_ATS_MULTITHREAD
 #ATSCCFLAG=-O0
@@ -51,6 +52,8 @@ ATSCCFLAG=-O2 -g -D_ATS_MULTITHREAD
 #GCFLAG=-D_ATS_gcats
 #GCFLAG=-D_ATS_GC
 GCFLAG=-D_ATS_GCATS -pthread
+
+ATSLEX="$(ATSHOME)"/bin/atslex
 
 ######
 
@@ -86,7 +89,7 @@ SOURCES := \
   ats_dynexp1.sats ats_dynexp1.dats ats_dynexp1_print.dats \
   ats_trans1_env.sats ats_trans1_env.dats \
   ats_e1xp_eval.sats ats_e1xp_eval.dats \
-  ats_trans1.sats ats_trans1.dats \
+  ats_trans1.sats ats_trans1_sta.dats ats_trans1_dyn.dats \
   ats_staexp2.sats ats_staexp2.dats \
   ats_staexp2_scst.dats \
   ats_staexp2_svVar.dats \
@@ -163,7 +166,7 @@ atsopt: \
   ats_lexer_lats_dats.o ats_lexer_sats.o \
   ats_grammar_yats.o \
   libc_sats.o libats_lex.o \
-  $(OBJECTS) gc_mt_o
+  $(OBJECTS) # gc_mt_o
 	$(ATSCC) $(ATSCCFLAG) $(GCFLAG) -o atsopt \
   ats_main_dats.o \
   ats_lexer_lats_dats.o ats_lexer_sats.o \
@@ -181,7 +184,7 @@ ats_main_dats.o: ats_main.dats \
 ######
 
 ats_lexer_lats.dats: ats_lexer.lats
-	atslex < ats_lexer.lats > ats_lexer_lats.dats
+	$(ATSLEX) < ats_lexer.lats > ats_lexer_lats.dats
 
 ats_lexer_sats.o: ats_lexer.sats; $(ATSCC) $(ATSCCFLAG) -c ats_lexer.sats
 ats_lexer_lats_dats.o: ats_grammar_yats.h ats_lexer_lats.dats
@@ -338,8 +341,10 @@ ats_trans1_env_dats.o: ats_trans1_env.dats
 	$(ATSCC) $(ATSCCFLAG) -c ats_trans1_env.dats
 
 ats_trans1_sats.o: ats_trans1.sats; $(ATSCC) $(ATSCCFLAG) -c ats_trans1.sats
-ats_trans1_dats.o: ats_trans1.dats; $(ATSCC) $(ATSCCFLAG) -c ats_trans1.dats
-#ats_trans1_dats.c: ats_trans1.dats; $(ATSCC) $(ATSCCFLAG) -cc ats_trans1.dats
+ats_trans1_sta_dats.o: ats_trans1_sta.dats
+	$(ATSCC) $(ATSCCFLAG) -c ats_trans1_sta.dats
+ats_trans1_dyn_dats.o: ats_trans1_dyn.dats
+	$(ATSCC) $(ATSCCFLAG) -c ats_trans1_dyn.dats
 
 ats_staexp2_sats.o: ats_staexp2.sats; $(ATSCC) $(ATSCCFLAG) -c ats_staexp2.sats
 
@@ -409,7 +414,7 @@ ats_string_parse_dats.o: ats_string_parse.dats
 	$(ATSCC) $(ATSCCFLAG) -c ats_string_parse.dats
 
 ats_printf_c_lats.dats: ats_printf_c.lats
-	atslex < ats_printf_c.lats > ats_printf_c_lats.dats
+	$(ATSLEX) < ats_printf_c.lats > ats_printf_c_lats.dats
 ats_printf_c_lats_dats.o: ats_printf_c_lats.dats
 	$(ATSCC) $(ATSCCFLAG) -c ats_printf_c_lats.dats
 
@@ -548,6 +553,11 @@ lines:
   libats_lex_lexing.sats \
   libats_lex_lexing.dats \
   libats_lex_tables.dats \
+  ats_main.cats \
+  ats_counter.cats \
+  ats_gmp.cats \
+  ats_intinf.cats \
+  ats_solver_fm.cats \
   $(SOURCES)
 
 ######

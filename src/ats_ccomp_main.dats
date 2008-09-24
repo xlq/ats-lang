@@ -55,6 +55,8 @@ staload Glo = "ats_global.sats"
 staload Lst = "ats_list.sats"
 staload Syn = "ats_syntax.sats"
 
+(* ****** ****** *)
+
 staload "ats_staexp2.sats"
 staload "ats_dynexp2.sats"
 staload SDC = "ats_stadyncst2.sats"
@@ -116,6 +118,7 @@ end // end of [emit_include_header]
 fn emit_include_cats {m:file_mode}
   (pf: file_mode_lte (m, w) | out: &FILE m): void = let
   val () = fprint (pf | out, "/* include some .cats files */\n")
+  val () = fprint (pf | out, "#ifndef _ATS_PRELUDE_NONE\n")
   val () = fprint (pf | out, "#include \"prelude/CATS/array.cats\"\n")
   val () = fprint (pf | out, "#include \"prelude/CATS/basics.cats\"\n")
   val () = fprint (pf | out, "#include \"prelude/CATS/bool.cats\"\n")
@@ -127,11 +130,11 @@ fn emit_include_cats {m:file_mode}
   val () = fprint (pf | out, "#include \"prelude/CATS/printf.cats\"\n")
   val () = fprint (pf | out, "#include \"prelude/CATS/reference.cats\"\n")
   val () = fprint (pf | out, "#include \"prelude/CATS/string.cats\"\n")
-
+  // [array] and [list] are so common, so they are added here:
   val () = fprint (pf | out, "#include \"prelude/CATS/array.cats\"\n")
   val () = fprint (pf | out, "#include \"prelude/CATS/list.cats\"\n")
 
-  val () = fprint (pf | out, '\n')
+  val () = fprint (pf | out, "#endif /* _ATS_PRELUDE_NONE */\n")
 in
   // empty
 end // end of [emit_include_cats]
@@ -765,6 +768,10 @@ fn emit_staload {m:file_mode} (
   in
     aux (out, 0, d2cs)
   end // end of [aux_staload_exnconlst]
+  
+  val () = fprint (pf | out, "#ifndef _ATS_STALOADFUN_NONE\n\n")
+
+  val () = aux_staload_dec (out, stafils)
 
   val () = fprint (pf | out, "static int ")
   val () = emit_filename (pf | out, fil)
@@ -778,8 +785,8 @@ fn emit_staload {m:file_mode} (
   val () = emit_filename (pf | out, fil)
   val () = fprint (pf | out, "__staload_flag = 1 ;\n")
 
-  val () = aux_staload_dec (out, stafils)
   val () = aux_staload_app (out, stafils)
+
   val () = stafilelst_free (stafils)
 
   val _(*int*) = aux_staload_datcstlst (out, s2cs)
@@ -787,6 +794,7 @@ fn emit_staload {m:file_mode} (
 
   val () = fprint (pf | out, "return ;\n")
   val () = fprint (pf | out, "} /* staload function */\n\n")
+  val () = fprint (pf | out, "#endif // [_ATS_STALOADFUN_NONE]\n\n")
 in
   // empty
 end // end of [emit_staload]
@@ -824,9 +832,10 @@ fn emit_dynload {m:file_mode} (
   } // end of [where]
   val () = dynfilelst_free (dynfils)
 
+  val () = fprint (pf | out, "#ifndef _ATS_DYNLOADFUN_NONE\n\n")
+
   val () = let
-    val () =
-      if dynloadflag = 0 then fprint (pf | out, "// ")
+    val () = if dynloadflag = 0 then fprint (pf | out, "// ")
     val () = fprint (pf | out, "extern int ")
     val () = emit_filename (pf | out, fil)
     val () = fprint (pf | out, "__dynload_flag ;\n\n")
@@ -863,6 +872,7 @@ fn emit_dynload {m:file_mode} (
 
   val () = fprint (pf | out, "return ;\n")
   val () = fprint (pf | out, "} /* dynload function */\n\n")
+  val () = fprint (pf | out, "#endif // [_ATS_DYNLOADFUN_NONE]\n\n")
 
   val () = let
     val name = $Glo.ats_dynloadfuname_get ()
@@ -1131,7 +1141,8 @@ implement ccomp_main {m}
         if mainats_kind >= 0 then 0 else $Glo.ats_dynloadflag_get ()
       ) : int
       val () = fprint (pf | out, "/* dynamic load function */\n\n")
-      val () = emit_dynload (pf | out, dynloadflag, fil, res, tmps_static, extvals)
+      val () = emit_dynload
+        (pf | out, dynloadflag, fil, res, tmps_static, extvals)
     in
       res
     end else begin

@@ -193,6 +193,7 @@ in
         hityp_ptr // funtion/closure pointer
       end
     end // end of [S2Efun]
+  | S2Elam (_(*s2vs*), s2e_body) => s2exp_tr (deep, s2e_body)
   | S2Emetfn (_(*stamp*), _(*met*), s2e) => s2exp_tr (deep, s2e)
   | S2Erefarg (refval, s2e_arg) => begin
       hityp_refarg (refval, s2exp_tr (0, s2e_arg))
@@ -244,8 +245,7 @@ in
   | S2Evararg _ => hityp_vararg
   | S2Ewth (s2e, _(*wths2es*)) => s2exp_tr (deep, s2e)
   | _ => begin
-      prerr "Internal Error: s2exp_tr: s2e0 = ";
-      prerr s2e0; prerr_newline ();
+      prerr "Internal Error: s2exp_tr: s2e0 = "; prerr s2e0; prerr_newline ();
       $Err.abort {hityp} ()
     end
 end // end of [s2exp_tr]

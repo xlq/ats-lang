@@ -77,7 +77,7 @@ atspre_array_ptr_takeout_tsz (
  , ats_int_type offset
  , ats_int_type tsz
  ) {
-  return (ats_ptr_type)(((char *)base) + offset * tsz) ;
+  return ((char*)base) + offset * tsz ;
 }
 
 static inline

@@ -595,10 +595,35 @@ end // end of [the_funlabset_mem]
 implement funlabset_foreach_main
   (pf | fls, f, env) = $Set.set_foreach_main (pf | fls, f, env)
 
-implement funlabset_foreach_cloptr
-  (fls, f) = $Set.set_foreach_cloptr (fls, f)
+implement funlabset_foreach_cloptr (fls, f) = $Set.set_foreach_cloptr (fls, f)
 
 end // end of [local]
+
+implement print_funlabset (fls) = let
+  var i: int = 0
+  fn f (pf: !int @ i | fl: funlab_t, p: !ptr i): void =
+    let val i = !p; val () = !p := i + 1 in
+      if i > 0 then print (", "); print_funlab fl
+    end
+  val () = begin
+    funlabset_foreach_main {int @ i} {ptr i} (view@ i | fls, f, &i)
+  end
+in
+  // empty
+end // end of [print_funlabset]
+
+implement prerr_funlabset (fls) = let
+  var i: int = 0
+  fn f (pf: !int @ i | fl: funlab_t, p: !ptr i): void =
+    let val i = !p; val () = !p := i + 1 in
+      if i > 0 then prerr (", "); prerr_funlab fl
+    end
+  val () = begin
+    funlabset_foreach_main {int @ i} {ptr i} (view@ i | fls, f, &i)
+  end
+in
+  // empty
+end // end of [prerr_funlabset]
 
 (* ****** ****** *)
 
@@ -948,7 +973,7 @@ fn _funentry_make (
 } // end of [_funentry_make]
 
 implement funentry_make
-   (loc, fl, level, vtps, fls, tmp_ret, inss) = begin
+   (loc, fl, level, fls, vtps, tmp_ret, inss) = begin
   _funentry_make (loc, fl, level, fls, vtps, tmp_ret, inss)
 end // end of [funentry_make]
 
@@ -978,19 +1003,30 @@ fn funentry_labset_get_all
   fun aux (fl: funlab_t):<cloptr1> void = let
     val entry = funlab_entry_get_some fl
     val level = funentry_lev_get (entry)
+(*
+    val () = begin
+      prerr "funentry_labset_get_all: aux: fl = "; prerr fl; prerr_newline ();
+      prerr "funentry_labset_get_all: aux: level = "; prerr level; prerr_newline ();
+    end
+*)
   in
-    if level >= level0 then
-      if ~(the_funlabset_mem fl) then let
-        val () = the_funlabset_add (fl)
-      in
-        funlabset_foreach_cloptr (funentry_labset_get entry, aux)
-      end // end of [if]
-    else begin
-      the_funlabset_add (fl)
-    end // end of [if]
+    case+ 0 of
+    | _ when level >= level0 => begin
+        if the_funlabset_mem fl then () else begin
+          let val () = the_funlabset_add (fl) in
+            funlabset_foreach_cloptr (funentry_labset_get entry, aux)
+          end // end of [let]
+        end // end of [if]
+      end // end of [_ when ...]
+    | _ => the_funlabset_add (fl)
   end // end of [aux]
   val () = the_funlabset_push ()
   val fls0 = funentry_labset_get entry0
+(*
+  val () = begin
+    prerr "funentry_labset_get_all: fls0 = "; prerr_funlabset fls0; prerr_newline ()
+  end
+*)
   val () = funlabset_foreach_cloptr (fls0, aux)
 in
   the_funlabset_pop ()
@@ -1001,6 +1037,12 @@ dataviewtype ENV (l:addr) = ENVcon (l) of (ptr l, int)
 in
 
 implement funentry_vtps_get_all (entry0) = let
+(*
+  val fl0 = funentry_lab_get entry0
+  val () = begin
+    prerr "funentry_vtps_get_all: entry0 = "; prerr fl0; prerr_newline ()
+  end
+*)
   val vtps_flag = funentry_vtps_flag_get (entry0)
   var vtps_all: vartypset = funentry_vtps_get (entry0)
   viewdef V = vartypset @ vtps_all
@@ -1029,6 +1071,11 @@ implement funentry_vtps_get_all (entry0) = let
     if vtps_flag = 0 then let
       val level0 = funentry_lev_get (entry0)
       val fls = funentry_labset_get_all (entry0)
+(*
+      val () = begin
+        prerr "funentry_vtps_get_all: fls = "; prerr_funlabset fls; prerr_newline ()        
+      end
+*)
       val env = ENVcon (&vtps_all, level0)
       val () = begin
         funlabset_foreach_main {V} {VT} (view@ vtps_all | fls, aux, env)
@@ -1039,6 +1086,11 @@ implement funentry_vtps_get_all (entry0) = let
     in
       // empty
     end
+(*
+  val () = begin
+    prerr "funentry_vtps_get_all: vtps_all = "; prerr_vartypset vtps_all; prerr_newline ()
+  end
+*)
 in
   vtps_all
 end // end of [funentry_vtps_get_all]

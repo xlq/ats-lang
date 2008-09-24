@@ -484,7 +484,7 @@ fn s1exp_app_datcontyp_tr_up
       end // end of [list_cons]
     | list_nil () => list_nil ()
   ) : s1explst
-  val s2es = s1explst_tr_dn_t0ype s1es
+  val s2es = s1explst_tr_dn_viewt0ype s1es
 in
   s2exp_datcontyp (d2c, s2es)
 end // end of [s1exp_app_datcontyp_tr_up]
@@ -807,8 +807,12 @@ fn s1exp_arrow_tr_up // arrow is a special type constructor
   ) : $Syn.funclo
   val s2t_fun = s2rt_prf_lin_fc (loc0, isprf, islin, fc)
   val lin: int = if islin then 1 else 0
-  val sf2e = case+ oefc of
-    | Some efc => effcst_tr efc | None () => S2EFFall ()
+  val sf2e = (case+ oefc of
+    | None () => begin
+        if isprf then S2EFFnil () else S2EFFall ()
+      end
+    | Some efc => effcst_tr efc
+  ) : s2eff
 in
   s2exp_fun_srt (s2t_fun, fc, lin, sf2e, npf, s2es_arg, s2e_res)
 end // end of [s1exp_arrow_tr_up]

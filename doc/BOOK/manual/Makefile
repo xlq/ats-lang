@@ -10,6 +10,7 @@ manual_main.ps: \
   manual_batch_compilation.tex \
   manual_interaction_with_c.tex \
   manual_dependent_types.tex \
+  manual_theorem_proving.tex \
   manual_linear_types.tex \
   manual_main.tex
 	latex manual_main.tex; dvips -t letter -o manual_main.ps manual_main.dvi
@@ -30,6 +31,12 @@ copy: manual_main.ps manual_main.pdf
 
 update:
 	scp manual_main.ps manual_main.pdf \
-          ats-hwxi@shell.sourceforge.net:/home/groups/a/at/ats-lang/htdocs/DOCUMENTATION
+          ats-hwxi,ats-lang@web.sourceforge.net:/home/groups/a/at/ats-lang/htdocs/DOCUMENTATION
+
+clean::
+	rm -f *~
+
+cleanall: clean
+	rm -f manual_main.ps manual_main.pdf
 
 ###### end of [Makefile] ######

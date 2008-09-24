@@ -84,7 +84,7 @@ fn tailjoin_name_make (f0: funentry_t, fs: funentrylst): string = let
   var cs: T = $CS.CHARLSTnil ()
   val () = aux_entry (cs, f0); val () = aux_entrylst (cs, fs)
 in
-  $CS.string_make_charlst (cs)
+  $CS.string_make_rev_charlst (cs)
 end // end of [tailjoin_name_make]
 
 fn tailjoin_retyp_check // retyp: return type
@@ -167,7 +167,7 @@ fn tailjoin_funentry_update (
     } // end of [where]
     val body = '[ins_call]
   in
-    funentry_make (loc, fl, level, vtps, fls, tmp_ret_new, body)
+    funentry_make (loc, fl, level, fls, vtps, tmp_ret_new, body)
   end // end of [val]
 (*
   val () = funentry_lablst_add (fl) // already added
@@ -253,7 +253,7 @@ implement ccomp_tailjoin_funentrylst (loc_all, fs0) = let
     val () = the_funlabset_push (); val fls(*empty*) = the_funlabset_pop ()
   in
     funentry_make (
-      loc_all, fl_all, level, vtps_all, fls, tmp_ret_all, inss_fun
+      loc_all, fl_all, level, fls, vtps_all, tmp_ret_all, inss_fun
     ) // end of [funentry_make]
   end // end of [val]
   val () = funentry_vtps_flag_set (f_all)

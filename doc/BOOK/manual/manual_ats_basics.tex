@@ -339,7 +339,7 @@ If values $v_1,\ldots,v_n$ are assigned types $T_1,\ldots,T_n$,
 respectively, then the flat tuple $@(v_1,\ldots,v_n)$ can be assigned the
 type $@(T_1,\ldots,T_n)$. The size of a flat tuple is not specified but it
 should be greater than or equal to the sum of the sizes of
-its components. In other words, we have
+its components. In other words, we have:
 \[\begin{array}{l}
 {\it sizeof}(@(T_1,\ldots,T_n)) \geq {\it sizeof}(T_1) + \ldots + {\it sizeof}(T_n)
 \end{array}\]
@@ -364,7 +364,7 @@ datatype weekday = Monday | Tuesday | Wednesday | Thursday | Friday
 \end{verbatim}
 There are five data constructors {\it Monday}, {\it Tuesday} {\it
 Wednesday}, {\it Thursday} and {\it Friday} associated with the datatype
-{\it\blue weekday}. In this case, all the data constructors are unary, that
+{\it\blue weekday}. In this case, all the data constructors are nullary, that
 is, they take no arguments to form data. Note that there are no
 restrictions on the names of data constructors in ATS: any valid
 identifiers can be used.
@@ -380,14 +380,14 @@ fn int_of_weekday (x: weekday): int = case+ x of
   | Thursday () => 4
   | Friday () => 5
 \end{verbatim}
-Given a unary data constructor $C$, it is important to write $C()$ (instead
-of just $C$) in order to form a pattern. If $C$ is used as a pattern, then
-it is a variable pattern that matches any value. If ${\it Monday}$ (instead
-of ${\it Monday ()}$) is used in the implementation of ${\it
-int\_of\_weekday}$, then the ATS typechecker will issue an error message
-stating that all the pattern matching clauses following the first one are
-redundant as the variable pattern ${\it Monday}$ already matches all the
-possible values that $x$ may take.
+Given a nullary data constructor $C$, it is important to write $C()$
+(instead of just $C$) in order to form a pattern. If $C$ is used as a
+pattern, then it is a variable pattern that matches any value. If ${\it
+Monday}$ (instead of ${\it Monday ()}$) is used in the implementation of
+${\it int\_of\_weekday}$, then the ATS typechecker will issue an error
+message stating that all the pattern matching clauses following the first
+one are redundant as the variable pattern ${\it Monday}$ already matches
+all the possible values that $x$ may take.
 
 If a case-expression is formed with the keyword $\KWcaseplus$, then the ATS
 typechecker needs to verify that the pattern matching for this
@@ -399,7 +399,7 @@ $\KWcaseplus$, then the typechecker will only issue a warning message. If
 the keyword $\KWcaseminus$ is used instead, then the compiler will issue no
 message.
 
-As another example, a datatype involving non-unary data constructors is
+As another example, a datatype involving non-nullary data constructors is
 given as follows:
 \begin{verbatim}
 datatype exp =
@@ -442,13 +442,13 @@ end // end of [exp_derivate]
 %%%%%%
 In Figure~\ref{figure:symbolic_derivation}, a function named
 {\it exp\_derivate} is implemented to perform symbolic derivation
-on expression thus formed.
+on expressions thus formed.
 
 \section{Parametric Polymorphism and Templates}
 Parametric polymorphism (or polymorphism for short) offers a flexible and
 effective approach to supporting code reuse. For instance, given a pair $(v_1,
 v_2)$ where $v_1$ is a a boolean and $v_2$ a character, the function {\it
-swap\_bool\_char} defined below returns an pair $(v_2, v_1)$:
+swap\_bool\_char} defined below returns a pair $(v_2, v_1)$:
 \begin{verbatim}
 fun swap_bool_char (xy: @(bool, char)): @(char, bool) = (xy.1, xy.0)
 \end{verbatim}
@@ -482,7 +482,7 @@ fun swap_type_type {a,b:type} (xy: @(a, b)): @(b, a) = (xy.1, xy.0)
 \end{verbatim}
 This function can be compiled into executable binary code as the sizes of
 type variables $a$ and $b$ are known: The special sort {\it type} is for
-classifying types whose size equals exactly one word, that is, the size of
+classifying types whose sizes equal exactly one word, that is, the size of
 a pointer. For example, the size of a string is one word, and the size of
 any declared datatype is also one word.  Given strings $s_1$ and $s_2$, an
 application of ${\it swap\_type\_type}$ to $@(s_1, s_2)$ can be written as
@@ -495,7 +495,7 @@ argument. As in this case, most static arguments do not have to be provided
 explicitly since they can be automatically inferred.\footnote{However, such
 static arguments, if provided, can often enhance the quality and precision
 of the error messages reported in case of typechecking failure.} This is a
-topic to be explored elsewhere in much greater depth.
+topic to be explored elsewhere in great depth.
 
 \section{Lists}
 In ATS, $\tlistzero$ is a type constructor defined as follows:
@@ -523,7 +523,8 @@ val weekdays (* : list0 string *) =
   list0 @[string]["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"]
 \end{verbatim}
 List manipulation can be done by pattern matching. As an example, the
-following code implements a function that appends two given list arguments:
+following code implements a function template for appending two given list
+arguments:
 \input{list0_append_function.dats}
 Note that this is functional appending: the two given lists are not altered
 by {\it list0\_append}.
@@ -535,9 +536,9 @@ theory, it is to be presented elsewhere.
 \section{Exceptions}
 The exception mechanism in ATS is rather similar to the one supported in
 ML~\cite{SML97}, which provides a highly flexible means for the programmer
-to alter the control flow in program execution. For instance, we can
-declare an exception (or more precisely, an exception constructor) {\em
-Fatal} as follows and then make use of it in the implementation of a
+to alter the control flow in program execution. For instance,
+an exception (or more precisely, an exception constructor) {\em
+Fatal} is defined as follows and then used in the implementation of a
 function.
 \begin{verbatim}
 exception Fatal
@@ -552,12 +553,12 @@ Note that a raised exception may be assigned any type.
 \caption{An example of programming with exceptions}
 \label{figure:isPerfect}
 \end{figure}
-A raised exception can be trapped.  In Figure~\ref{figure:isPerfect}, we
-present an interesting example of programming with exceptions. First, we
-declare a datatype constructor {\it tree} for binary trees (storing
-integers). Then we implement a function {\it isPerfect} to test whether a
-given binary tree is perfectly balanced.  The inner function {\it aux}
-computes the height of a given binary tree $t$ if $t$ is perfectly
+A raised exception can be trapped.  In Figure~\ref{figure:isPerfect}, an
+interesting example of programming with exceptions is presented. First, a
+datatype constructor {\it tree} is delcared for representing binary trees
+(storing integers). Then a function {\it isPerfect} is implemented to test
+whether a given binary tree is perfectly balanced.  The inner function {\it
+aux} computes the height of a given binary tree $t$ if $t$ is perfectly
 balanced. Otherwise, {\it aux} raises the exception {\it NotPerfect}.
 
 Note that the exception {\it NotPerfect} is not declared at the top
@@ -586,6 +587,7 @@ stored in the memory location referred to by $r$ is increased by $1$. Note
 that the occurrence of $!r$ to the left of $:=$ is a left-value that can be
 assigned to.  In contrast, this expression would be written as $r~:=~!r +
 1$ in ML.
+
 \begin{figure}[thp]
 \input{fact_function_ref.dats}
 \caption{An implementation of the factorial function that makes use of a reference}
@@ -593,10 +595,10 @@ assigned to.  In contrast, this expression would be written as $r~:=~!r +
 \end{figure}
 As an example, the code in Figure~\ref{figure:ref_factorial} is an
 implementation of the factorial function in ATS that makes use of a
-reference. The special syntax $:\langle\clorefone\rangle$ in the code is
-needed to indicate that {\it loop} is a closure rather than a function.
-The difference between functions and closures will be explained elsewhere
-in details.
+reference. In it, the special syntax \verb`:<cloref1>` (where no space is
+allowed between \verb`:` and \verb`<`) is needed to indicate that {\it
+loop} is a closure rather than a function.  The difference between
+functions and closures will be explained elsewhere in details.
 
 \section{Arrays}
 In ATS, $\tarrayzero$ is a type constructor for forming array types.  Given
@@ -659,7 +661,7 @@ of elements $f(v_1),\ldots, f(v_n)$ that are of type $T_2$.
 \section{Tail-Call Optimization}
 
 It can probably be argued that the single most important optimization
-performed by the ATS/Anairiats compiler is the translation of tail-calls
+performed by the ATS compiler (Anairiats) is the translation of tail-calls
 into direct (local) jumps.
 
 As an example, the following defined function {\it sum1} sums up integers
@@ -669,8 +671,9 @@ from 1 to n when applied to a given integer n:
 fun sum1 (n: int): int = if n > 0 then n + sum1 (n-1) else 0
 \end{verbatim}
 This function is recursive but not tail-recursive. The stack space it
-consumes is proportional to the value of its argument. Essentially, the ATS
-compiler translates the definition of {\it sum1} into the following C code:
+consumes is proportional to the value of its argument. Essentially,
+Anairiats translates the definition of {\it sum1} into the following C
+code:
 \begin{verbatim}
 int sum1 (int n) {
   if (n > 1) return n + sum1 (n-1) ; else return 1 ;
@@ -680,7 +683,7 @@ On the other hand, the following defined function {\it sum2} also sums up
 integers from $1$ to $n$ when applied to a given integer $n$:
 \begin{verbatim}
 fn sum2 (n: int): int = let // sum2 is non-recursive
-  fun loop (n: int, res: int) = // [loop] is tail-recursive
+  fun loop (n: int, res: int): int = // [loop] is tail-recursive
     if n > 0 then loop (n-1, res+n) else res
 in
   loop (n, 0)
@@ -688,16 +691,11 @@ end // end of [sum2]
 \end{verbatim}
 The inner function {\it loop} in the definition of {\it sum2} is
 tail-recursive. The stack space consumed by {\it loop} is a constant
-independent of th value of the argument of {\it sum2}. Essentially, the ATS
-compiler translates the definition of sum2 into the following C code:
+independent of th value of the argument of {\it sum2}. Essentially,
+Anairiats translates the definition of sum2 into the following C code:
 \begin{verbatim}
 int sum2_loop (int n, int res) {
-  loop:
-  if (n > 1) {
-    res = res + n ; n = n - 1; goto loop; 
-  } else {
-    res = 1;
-  }
+  loop: if (n > 0) { res = res + n ; n = n - 1 ; goto loop ; }
   return res ;
 } /* end of sum2_loop */
 
@@ -706,10 +704,10 @@ int sum2 (int n) { return sum2_loop (n, 0) ; }
 
 Sometimes, function definitions need to be combined in order to identify
 tail-calls, and the keyword $\KWfnstar$ is reserved for this purpose. In
-the following example, the keyword $\KWfnstar$ indicates to the ATS
-compiler that the function definitions of {\it even} and {\it odd} need to
-be combined together so as to turn (mutually) recursive function calls
-into direct jumps.
+the following example, the keyword $\KWfnstar$ indicates to Anairiats that
+the function definitions of {\it even} and {\it odd} need to be combined
+together so as to turn (mutually) recursive function calls into direct
+jumps.
 \begin{verbatim}
 fn* even (n: int): bool = if n > 0 then odd (n-1) else true
 and odd (n: int): bool = if n > 0 then even (n-1) else false
@@ -741,7 +739,7 @@ bool odd (int n) {
 \label{figure:even_odd_combination_in_c}
 \end{figure}
 %%%%%%
-Essentially, the ATS compiler emits the C code in
+Essentially, Anairiats emits the C code in
 Figure~\ref{figure:even_odd_combination_in_c} after compiling this
 example. Note that mutually recursive functions can be combined in such a
 manner only if they all have the same return type. In the above case, both
@@ -782,9 +780,9 @@ extern val PI : double
 extern fun area_of_circle (radius: double): double
 \end{verbatim}
 
-As a convention, we often use the filename extension ".cats" to indicate
-that a file contains some C code that is supposed to be combined with ATS
-code in certain manner. However, the use of this filename extension is not
+As a convention, we often use the filename extension ".cats" for a file
+containing some C code that is supposed to be combined with ATS code in
+certain manner. However, the use of this filename extension is not
 mandatory.
 
 %%%%%% \section{Static and Dynamic Files} %%%%%%

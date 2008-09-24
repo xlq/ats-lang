@@ -87,6 +87,11 @@
 
 /* ****** ****** */
 
+/* [main_prelude] is called in the function [mainats] */
+extern void main_prelude () ;
+
+/* ****** ****** */
+
 #endif /* __ATS_BASICS_H */
 
 /* end of [ats_basics.h] */

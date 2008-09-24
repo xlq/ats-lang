@@ -172,11 +172,9 @@ implement symbol_TYPES = symbol_make_string "types"
 implement symbol_ATS_FUNCTION_NAME_PREFIX =
   symbol_make_string "ATS_FUNCTION_NAME_PREFIX"
 
-implement symbol_ATS_DYNLOADFLAG =
-  symbol_make_string "ATS_DYNLOADFLAG"
+implement symbol_ATS_DYNLOADFLAG = symbol_make_string "ATS_DYNLOADFLAG"
 
-implement symbol_ATS_DYNLOADFUNAME =
-  symbol_make_string "ATS_DYNLOADFUNAME"
+implement symbol_ATS_DYNLOADFUNAME = symbol_make_string "ATS_DYNLOADFUNAME"
 
 (* ****** ****** *)
 

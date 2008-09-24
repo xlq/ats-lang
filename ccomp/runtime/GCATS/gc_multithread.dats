@@ -54,16 +54,24 @@ void gc_sem_init () {
 threadinfolst the_threadinfolst_fst ;
 __thread threadinfolst the_threadinfolst_self ;
 
+void prerr_self_pid () {
+  fprintf (stderr, "%i", the_threadinfolst_self->pid) ; return ;
+}
+
 /* ****** ****** */
+
+void the_threadinfolst_self_stack_end_set () {
+  void *ptr ;
+  the_threadinfolst_self->stack_end = &ptr ;
+  return ;
+}
 
 void SIGUSR1_handle (int signum) {
   jmp_buf reg_save ; sigset_t sigset ;
-  void *ptr ; /* make sure it is word-aligned! */
-  the_threadinfolst_self->stack_end = &ptr ;
+  the_threadinfolst_self_stack_end_set () ;
   setjmp(reg_save) ;
 
   asm volatile ("": : :"memory") ;
-
   sem_post(&the_sleep_semaphore) ;
 
   sigfillset(&sigset) ; // blocking all signals
@@ -168,14 +176,13 @@ ats_void_type gc_threadinfo_init () {
   // explicit allocation done to avoid a bug involving thread-local arrays 
   the_freeitmlst_array = calloc (FREEITMLST_ARRAYSIZE, sizeof(freeitmlst)) ;
   if (!the_freeitmlst_array) {
-    fprintf (stderr, "GC Fatal Error: gc_threadinfo_init") ;
+    fprintf (stderr, "GC Fatal Error: [gc_threadinfo_init]") ;
     fprintf (stderr, ": [malloc] failed: no memory for [the_freeitmlst_array].\n") ;
     exit (1) ;
   }
 
   current = (threadinfolst)malloc (sizeof(threadinfo)) ;
-  if (!current) {
-    fprintf (
+  if (!current) { fprintf (
       stderr, "GC Fatal Error: [gc_threadinfo_init]: [malloc] failed.\n"
     ) ; // end of [fprintf]
     exit (1) ;
@@ -184,6 +191,8 @@ ats_void_type gc_threadinfo_init () {
   /* thread-local: */ the_threadinfolst_self = current ;
 
   current->pid = pthread_self() ;
+
+  fprintf (stdout, "gc_threadinfo_init: current->pid = %i\n", current->pid) ;
 
   gc_stack_beg_set (gc_stack_dir_get ()) ;
   current->stack_beg = gc_stack_beg_get () ;
@@ -199,6 +208,8 @@ ats_void_type gc_threadinfo_init () {
 
   // [the_freeitmlst_array] is thread-local
   current->freeitmlst_array = the_freeitmlst_array ;
+
+  fprintf (stdout, "gc_threadinfo_init: return\n") ;
 
   return ;
 } /* gc_threadinfo_init */
@@ -339,12 +350,9 @@ int gc_pthread_create_cloptr (
   if (detached) {
     pthread_attr_init (&attr);
     pthread_attr_setdetachstate (&attr, PTHREAD_CREATE_DETACHED) ;
-  }
-
-  if (!detached) {
-    ret = pthread_create (&pid, NULL, &gc_pthread_stubfun, data) ;
-  } else {
     ret = pthread_create (&pid, &attr, &gc_pthread_stubfun, data) ;
+  } else {
+    ret = pthread_create (&pid, NULL, &gc_pthread_stubfun, data) ;
   }
 
   if (ret != 0) gc_man_free (data) ;

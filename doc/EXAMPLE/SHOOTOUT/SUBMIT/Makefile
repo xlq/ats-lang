@@ -45,6 +45,8 @@ mandelbrot_simd_smp: mandelbrot_simd_smp.dats
 
 n-body: n-body.dats
 	$(ATSCC) -msse2 -mfpmath=sse -O3 n-body.dats -o n-body -lm
+n-body1: n-body1.dats
+	$(ATSCC) -msse2 -mfpmath=sse -O3 n-body1.dats -o n-body1 -lm
 n-body_smp: n-body_smp.dats
 	$(ATSCC) -D_ATS_MULTITHREAD -msse2 -mfpmath=sse -O3 n-body_smp.dats -o n-body_smp -lm -lpthread
 
@@ -87,6 +89,7 @@ cleanall: clean
 	rm -f mandelbrot_simd_smp
 	rm -f n-body
 	rm -f n-body_smp
+	rm -f n-body1
 	rm -f pidigits
 	rm -f regex-dna
 	rm -f regex-dna_smp

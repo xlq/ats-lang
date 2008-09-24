@@ -18,11 +18,11 @@
   <TR><TD CLASS="menu"><A HREF="TUTORIAL/tutorial.html">Tutorial</A></TD></TR>
   <TR><TD CLASS="menu"><A HREF="EXAMPLE/example.html">Examples</A></TD></TR>
   <TR><TD CLASS="menu"><A HREF="IMPLEMENTATION/implementation.html">Implementation</A></TD></TR>
-  <TR><TD CLASS="menu"><A HREF="DOCUMENTATION">Documentation</A></TD></TR>
+  <TR><TD CLASS="menu"><A HREF="RESOURCE/resource.html">Resources</A></TD></TR>
   <TR><TD CLASS="menu"><A HREF="LIBRARY/library.html">Libraries</A></TD></TR>
   <TR><TD CLASS="menu"><A HREF="PAPER/paper.html">Papers</A></TD></TR>
   <TR><TD CLASS="menu"><A HREF="FAQ.txt">FAQ</A></TD></TR>
-  <TR><TD CLASS="menu"><A HREF="CHANGE/log-of-changes.html">Changes</A></TD></TR>
+  <TR><TD CLASS="menu"><A HREF="CHANGELOG/changelog.html">ChangeLog</A></TD></TR>
   <TR><TD CLASS="menu"><A HREF="https://lists.sourceforge.net/lists/listinfo/ats-lang-users">Mailing List</A></TD></TR>
 </TABLE>
 </TD>
@@ -44,7 +44,7 @@
 <LI> <A href="#what_is_ats">What is ATS?</A>
 
 <LI> <A href="#download_and_installation">Download and Installation</A>:
-the current release is <a href="http://sourceforge.net/projects/ats-lang/download">ats-lang-anairiats-beta</a> (2.1MB)
+The current <B>stable</B> release is <a href="http://sourceforge.net/projects/ats-lang/download">ats-lang-anairiats-0.0.1</a> (2.2MB)
 
 <LI> <A href="#simple_ats_programs">Some Simple ATS Programs</A>
 </MENU>
@@ -52,14 +52,15 @@ the current release is <a href="http://sourceforge.net/projects/ats-lang/downloa
 <HR SIZE=6 ALIGN=LEFT><P>
 
 <MENU>
-<LI><H3><A id="what_is_ats" name="what_is_ats">What is <EM>ATS</EM>?</A></H3>
-ATS is a programming language with a highly expressive type system rooted
-in the framework <EM>Applied Type System</EM>.  In particular, both
-dependent types and linear types are available in ATS.  The current
-implementation of ATS (ATS/Anairiats) is written in ATS itself. It can be
-as efficient as C/C++ (see <A HREF="EXAMPLE/SHOOTOUT">SHOOTOUT</A> for
-concrete evidence) and supports a variety of programming paradigms that
-include:
+<LI><H3><A id="what_is_ats" name="what_is_ats">What is
+<EM>ATS</EM>?</A></H3> ATS is a programming language with a highly
+expressive type system rooted in the framework <EM>Applied Type
+System</EM>.  In particular, both dependent types and linear types are
+available in ATS.  The current implementation of ATS (ATS/Anairiats) is
+written in ATS itself. It can be as efficient as C/C++ (see <A
+HREF="http://shootout.alioth.debian.org/">The Computer Language Benchmarks
+Game</A> for concrete evidence) and supports a variety of programming
+paradigms that include:
 <P>
 <UL>
 
@@ -119,6 +120,12 @@ and conclusions or recommendations expressed here are those of the
 author(s) and do not necessarily reflect the views of the National Science
 Foundation.</em>
 <P>
+Many people worked on ATS in the past. The names of some of these people
+are included in the following list:
+<P>
+Chiyan Chen, Sa Cui, Kevin Donnelly, Rick Lavoie, Likai Liu, Michel
+Machado, Rui Shi, Hongwei Xi, Dengping Zhu
+<P>
 
 <!--
 <LI><H3>Mailing List</H3> Here is the current <A
@@ -170,18 +177,32 @@ Once these requirements are met, you can readily install Anairiats.
 <H4>Installation from a precompiled package</H4>
 
 <MENU>
-This installation method requires root access, and it currently only supports the following platforms:
+This installation method currently only supports the following platforms:
 <P>
 <UL>
-<LI>Linux on i386
+<LI>Linux on i386 (x86-32)
+<LI>Linux on AMD64 (x86-64)
+<LI>SunOS on UltraSparc
 </UL>
 <P>
-After downloading a compressed tarball containing a precompiled release of
-ATS from the following site:<P> <CENTER> <a
+Please first download a compressed tarball containing a precompiled release of
+ATS from the following site that suits your platform:<P> <CENTER> <a
 href="http://sourceforge.net/projects/ats-lang/download">http://sourceforge.net/projects/ats-lang/download</a>
 </CENTER>
 <P>
-Please untar it in the root directory "/" and then set the shell environment variable ATSHOME to "/usr/share/atshome".
+
+(<B>METHOD 1</B>) You can untar the tarball in the root directory "/" and
+then set the shell environment variable ATSHOME to "/usr/share/atshome".
+This method most likely requires root access.
+<P>
+(<B>METHOD 2</B>) You can untar the tarball in the directory "/tmp", and
+then move the directory "/tmp/usr/share/atshome" into a directory of your
+choice, say, "FOO", and then set the environment variables ATSHOME and
+ATSHOMERELOC to "FOO/atshome" and "/usr/share/atshome", repectively. In
+addition, you need to put "$ATSHOME/bin" on your execution path or create
+symbolic links to the executables $ATSHOME/bin/atscc and
+$ATSHOME/bin/atsopt in a directory that is already on your execution path.
+<P>
 </MENU>
 
 <H4>Installation from source code compilation</H4>
@@ -197,7 +218,7 @@ ATS from the following site:<P>
 please untar it in a directory, say "FOO", of your choice. This, for
 instance, can be done by executing the following command line:
 
-<pre>tar -zvxf ATS.tgz </pre>
+<pre>tar -zvxf ATS.tar.gz </pre>
 
 All the files and directories extracted from the tarball are now in the
 directory "FOO/ATS".
@@ -222,7 +243,7 @@ is executed each time when a shell is started.
 This generates executables "atscc" and "atsopt" in the directory
 "FOO/ATS/bin", which are the commands for compiling ATS programs.  Also,
 this generates a library file "libats.a" in the directory
-"FOO/ATS/ccomp/lib/".
+"FOO/ATS/ccomp/lib".
 
 <LI><H4>Step 4</H4> Lastly, you need to create symbolic links for "atscc"
 and "atsopt" in a directory (e.g., "/usr/bin" if you have root access) that
@@ -406,14 +427,12 @@ monthly if not weekly.
 
 <HR SIZE=6 ALIGN=LEFT><P>
 This page is maintained by
-<a href="http://www.cs.bu.edu/~hwxi/">Hongwei Xi</a>.
+<a href="http://www.cs.bu.edu/~hwxi">Hongwei Xi</a>.
 As always,
 <a href="mailto:hwxi@cs.bu.edu">your comments are welcome</a>.
 
-<!--
 <HR SIZE=6 ALIGN=LEFT>
-<a href="http://sourceforge.net"><img src="http://sflogo.sourceforge.net/sflogo.php?group_id=205722&amp;type=2" width="125" height="37" border="0" alt="SourceForge.net Logo"/></a>
--->
+<a href="http://sourceforge.net"><img src="http://sflogo.sourceforge.net/sflogo.php?group_id=205722&amp;type=2" align=right width="125" height="37" border="0" alt="SourceForge.net Logo"/></a>
 
 </TABLE>
 </TD>

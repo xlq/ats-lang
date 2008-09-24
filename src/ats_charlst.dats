@@ -62,9 +62,9 @@ end // end of [charlst_length]
 
 //
 
-implement string_make_charlst (cs) = begin
-   string_make_charlst_int (cs, charlst_length cs)
-end // end of [string_make_charlst]
+implement string_make_rev_charlst (cs) = begin
+   string_make_rev_charlst_int (cs, charlst_length cs)
+end // end of [string_make_rev_charlst]
 
 //
 
@@ -84,7 +84,7 @@ implement charlst_uncons (cs) =
 %{
 
 ats_ptr_type
-string_make_charlst_int (ats_ptr_type cs, const ats_int_type n) {
+string_make_rev_charlst_int (ats_ptr_type cs, const ats_int_type n) {
   char *s0, *s;
 
   s0 = ATS_MALLOC (n+1) ;

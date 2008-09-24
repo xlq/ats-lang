@@ -55,7 +55,9 @@ int gcats_memalign (
 ) {
   int err ;
 #if HAVE_POSIX_MEMALIGN // for [posix_memalign]
+  // fprintf (stderr, "posix_memalign: bef\n") ;
   err = posix_memalign (memptr, alignment, size) ;
+  // fprintf (stderr, "posix_memalign: aft\n") ;
 #elif HAVE_MEMALIGN // if [memalign] is avaiable
   void *ptr ;
   ptr = memalign(alignment, size) ; *memptr = ptr ;
@@ -298,7 +300,7 @@ ats_ptr_type botsegtbl_make_32 () {
 #if (__WORDSIZE == 64)
 
 ats_ptr_type botsegtbl_make_64
-  (ats_uintptr_type ofs, ats_ptr_type tbls0) {
+  (ats_uintptr1_type ofs, ats_ptr_type tbls0) {
   botsegtbllst tbls ;
 /*
   fprintf (
@@ -436,12 +438,14 @@ ats_ptr_type chunklst_create
     if (itemwsz > CHUNK_WORDSIZE)
       chunk_bsz = itemwsz << NBYTE_PER_WORD_LOG ;
     else chunk_bsz = CHUNK_BYTESIZE ;
-
-//  fprintf (stderr, "gcats_memalign: size = %i\n", chunk_bsz) ;
-
+/*
+    fprintf (stderr, "gcats_memalign: size = %i\n", chunk_bsz) ;
+*/
     err = gcats_memalign
       (&data, CHUNK_BYTESIZE/*alignment*/, chunk_bsz/*size*/) ;
-
+/*
+    fprintf (stderr, "gcats_memalign: err = %i\n", err) ;
+*/
     if (err) {
       fprintf (stderr, "GC: Fatal Error: [gcats_memalign] failed\n") ;
       exit (1) ;

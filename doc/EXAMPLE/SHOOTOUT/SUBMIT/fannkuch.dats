@@ -26,16 +26,8 @@ intarr_make (ats_int_type n) {
   return malloc((n+1) * sizeof(ats_int_type)) ;
 }
 
-#define ISBUGGY 1
-
 static inline
-ats_void_type intarr_free (ats_ptr_type A) {
-#if ISBUGGY
-  return ;
-#else
-  free (A) ; return ;
-#endif
-}
+ats_void_type intarr_free (ats_ptr_type A) { free (A) ; return ; }
 
 static inline
 ats_int_type // unsafe

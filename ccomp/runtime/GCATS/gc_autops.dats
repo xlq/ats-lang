@@ -103,6 +103,12 @@ in
       val itms1 = freeitmlst_tail_get itms
       val () = the_freeitmlst_array_set (itemwsz_log, itms1)
 (*
+      extern fun prerr_self_pid (): void = "prerr_self_pid"
+      val () = begin
+        prerr "gc_aut_malloc_wsz: pid = "; prerr_self_pid (); prerr_newline ()
+      end
+*)
+(*
       val () = begin
         prerr "gc_aut_malloc_wsz: return: ptr = "; prerr ptr; prerr_newline ()
       end
@@ -286,6 +292,8 @@ in
     end // end of [_ when ...]
   | _ => err_botsegtbl (ptr)
 end // end of [gc_aut_free]
+
+// implement gc_aut_free (ptr) = ()
 
 (* ****** ****** *)
 

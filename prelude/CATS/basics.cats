@@ -44,6 +44,11 @@
 
 /* ****** ****** */
 
+#define _ATS_RUNTIME_CHECK
+#undef _ATS_RUNTIME_CHECK // uncomment it for debugging
+
+/* ****** ****** */
+
 static inline
 ats_ptr_type
 atspre_fun_coerce (ats_ptr_type p) { return p ; }
@@ -100,9 +105,11 @@ extern int ats_stdin_view_lock ;
 static inline
 ats_ptr_type
 atspre_stdin_get(void) {
+#ifdef _ATS_RUNTIME_CHECK
   if (!ats_stdin_view_lock) {
     ats_exit_errmsg (1, "[Exit: stdin_get] failed\n") ;
   }
+#endif
   ats_stdin_view_lock = 0 ;
   return stdin;
 }
@@ -110,9 +117,11 @@ atspre_stdin_get(void) {
 static inline
 ats_void_type
 atspre_stdin_view_get(void) {
+#ifdef _ATS_RUNTIME_CHECK
   if (!ats_stdin_view_lock) {
     ats_exit_errmsg (1, "[Exit: stdin_view_get] failed\n") ;
   }
+#endif
   ats_stdin_view_lock = 0 ;
   return ;
 }
@@ -120,9 +129,11 @@ atspre_stdin_view_get(void) {
 static inline
 ats_void_type
 atspre_stdin_view_set(void) {
+#ifdef _ATS_RUNTIME_CHECK
   if (ats_stdin_view_lock) {
     ats_exit_errmsg (1, "[Exit: stdin_view_set] failed\n") ;
   }
+#endif
   ats_stdin_view_lock = 1 ;
   return ;
 }
@@ -153,9 +164,11 @@ extern int ats_stdout_view_lock ;
 static inline
 ats_ptr_type
 atspre_stdout_get(void) {
+#ifdef _ATS_RUNTIME_CHECK
   if (!ats_stdout_view_lock) {
     ats_exit_errmsg (1, "[Exit: stdout_get] failed\n") ;
   }
+#endif
   ats_stdout_view_lock = 0 ;
   return stdout ;
 }
@@ -163,9 +176,11 @@ atspre_stdout_get(void) {
 static inline
 ats_void_type
 atspre_stdout_view_get(void) {
+#ifdef _ATS_RUNTIME_CHECK
   if (!ats_stdout_view_lock) {
     ats_exit_errmsg (1, "[Exit: stdout_view_get] failed\n") ;
   }
+#endif
   ats_stdout_view_lock = 0 ;
   return ;
 }
@@ -173,9 +188,11 @@ atspre_stdout_view_get(void) {
 static inline
 ats_void_type
 atspre_stdout_view_set(void) {
+#ifdef _ATS_RUNTIME_CHECK
   if (ats_stdout_view_lock) {
     ats_exit_errmsg (1, "[Exit: stdout_view_set] failed\n") ;
   }
+#endif
   ats_stdout_view_lock = 1 ;
   return ;
 }
@@ -206,9 +223,11 @@ extern int ats_stderr_view_lock ;
 static inline
 ats_ptr_type
 atspre_stderr_get(void) {
+#ifdef _ATS_RUNTIME_CHECK
   if (!ats_stderr_view_lock) {
     ats_exit_errmsg (1, "[Exit: stderr_get] failed\n") ;
   }
+#endif
   ats_stderr_view_lock = 0 ;
   return stderr ;
 }
@@ -216,9 +235,11 @@ atspre_stderr_get(void) {
 static inline
 ats_void_type
 atspre_stderr_view_get(void) {
+#ifdef _ATS_RUNTIME_CHECK
   if (!ats_stderr_view_lock) {
     ats_exit_errmsg (1, "[Exit: stderr_view_get] failed\n") ;
   }
+#endif
   ats_stderr_view_lock = 0 ;
   return ;
 }
@@ -226,9 +247,11 @@ atspre_stderr_view_get(void) {
 static inline
 ats_void_type
 atspre_stderr_view_set(void) {
+#ifdef _ATS_RUNTIME_CHECK
   if (ats_stderr_view_lock) {
     ats_exit_errmsg (1, "[Exit: stderr_view_set] failed\n") ;
   }
+#endif
   ats_stderr_view_lock = 1 ;
   return ;
 }

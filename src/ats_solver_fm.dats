@@ -306,9 +306,25 @@ implement intvec_normalize_gte {n} (vec, n) = let
 in
   if gcd > 1 then let
     val v0 = vec.[0]
+(*
+    val () = begin
+      print "intvec_normalize_gte: gcd = "; print_i0nt gcd; print_newline ();
+      print "intvec_normalize_gte: v0_old = "; print_i0nt v0; print_newline ();
+    end
+*)
     val () = aux (vec, n-1, gcd)
+    val () = begin case+ 0 of
+      | _ when v0 >= 0 => vec.[0] := v0 / gcd
+      | _ => vec.[0] := succ (v0 - gcd) / gcd
+    end // end of [val]
+(*
+    val v0 = vec.[0]
+    val () = begin
+      print "intvec_normalize_gte: v0_new = "; print_i0nt v0; print_newline ()
+    end
+*)
   in
-    vec.[0] := succ (v0 - gcd) / gcd
+    // empty    
   end
 end // end of [intvec_normalize_gte]
 

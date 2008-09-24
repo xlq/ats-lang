@@ -42,15 +42,9 @@ staload SEXP = "ats_staexp1.sats"
 
 (* ****** ****** *)
 
-datatype v1al =
-  | V1ALchar of char
-  | V1ALfloat of double
-  | V1ALint of int
-  | V1ALstring of string
-
-fun v1al_is_true (v: v1al): bool
-fun e1xp_eval (e: $SEXP.e1xp): v1al
-fun e1xp_eval_if (knd: $Syn.srpifkind, e: $SEXP.e1xp): v1al
+fun v1al_is_true (v: $SEXP.v1al): bool
+fun e1xp_eval (e: $SEXP.e1xp): $SEXP.v1al
+fun e1xp_eval_if (knd: $Syn.srpifkind, e: $SEXP.e1xp): $SEXP.v1al
 
 (* ****** ****** *)
 

@@ -154,12 +154,14 @@ fun flagstr_verify {n,i:nat | i <= n}
 end // end of [flagstr_verify]
 
 fn precstr_verify (spec: char, precstr: string): bool =
-  if ~(precstr) then
-     string_contain_char (the_legal_prec_string, spec)
-  else true
+  if ~(precstr) then begin
+    string_contain_char (the_legal_prec_string, spec)
+  end else begin
+    true // [precstr] is empty
+  end // end of [if]
 
-fn lenstr_translate (len: string): int = begin
-  case+ len of
+fn lenstr_translate
+  (len: string): int = begin case+ len of
   | _ when len = "" => __LS_none
   | _ when len = "h" => __LS_h
   | _ when len = "hh" => __LS_hh
@@ -325,7 +327,7 @@ in
     printf_c_argtypes_free ans; None_vt ()
   end else begin
     Some_vt ($Lst.list_vt_reverse ans)
-  end
+  end // end of [if]
 end // end of [printf_c_string_parser]
 
 (* ****** ****** *)

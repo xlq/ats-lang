@@ -27,7 +27,6 @@
  * along  with  ATS;  see the  file COPYING.  If not, please write to the
  * Free Software Foundation,  51 Franklin Street, Fifth Floor, Boston, MA
  * 02110-1301, USA.
- *
  *)
 
 (* ****** ****** *)
@@ -41,6 +40,8 @@
 
 #include "libc/CATS/stdio.cats"
 #include "libc/CATS/stdlib.cats"
+
+#include "ats_main.cats"
 
 %}
 
@@ -104,7 +105,8 @@ dynload "ats_dynexp1.dats"
 dynload "ats_dynexp1_print.dats"
 dynload "ats_trans1_env.dats"
 dynload "ats_e1xp_eval.dats"
-dynload "ats_trans1.dats"
+dynload "ats_trans1_sta.dats"
+dynload "ats_trans1_dyn.dats"
 
 dynload "ats_staexp2.dats"
 dynload "ats_staexp2_print.dats"
@@ -369,6 +371,16 @@ end // end of [local]
 fn do_parse_filename
   (flag: int, param: param_t, basename: string)
   : $Syn.d0eclst = let
+  val debug_flag = $Deb.debug_flag_get ()
+  val () = if debug_flag > 0 then let
+    val cwd = getcwd () where {
+      // staload "libc/SATS/unistd.sats"
+      extern fun getcwd (): String = "atslib_getcwd"
+    }
+  in
+    prerr "cwd = "; prerr cwd; prerr_newline ()
+  end // end of [if]
+
   val filename = (
     case+ $Fil.filenameopt_make basename of
     | ~Some_vt filename => filename
@@ -444,22 +456,25 @@ end // end of [local]
 
 fn do_trans12
   (basename: string, d0cs: $Syn.d0eclst): $DEXP2.d2eclst = let
+  val debug_flag = $Deb.debug_flag_get ()
+
   val () = $Trans1.initialize ()
   val d1cs = $Trans1.d0eclst_tr d0cs
   val () = $Trans1.finalize ()
-  val () = begin
+  val () = if debug_flag > 0 then begin
     prerr "The 1st translation (fixity) of [";
     prerr basename;
     prerr "] is successfully completed!";
     prerr_newline ()
-  end
+  end // end of [if]
+
   val d2cs = $Trans2.d1eclst_tr d1cs
-  val () = begin
+  val () = if debug_flag > 0 then begin
     prerr "The 2nd translation (binding) of [";
     prerr basename;
     prerr "] is successfully completed!";
     prerr_newline ()
-  end
+  end // end of [if]
 in
   d2cs
 end // end of [do_trans12]
@@ -470,12 +485,13 @@ fn do_trans123
   val d3cs = $Trans3.d2eclst_tr d2cs
   val c3t = $Trans3.c3str_final_get ()
   val () = $CSTR.c3str_solve (c3t)
-  val () = begin
+  val debug_flag = $Deb.debug_flag_get ()
+  val () = if debug_flag > 0 then begin
     prerr "The 3rd translation (typechecking) of [";
     prerr basename;
     prerr "] is successfully completed!";
     prerr_newline ()
-  end
+  end // end of [if]
 in
   d3cs
 end // end of [do_trans123]
@@ -484,12 +500,13 @@ fn do_trans1234
   (flag: int, basename: string, d0cs: $Syn.d0eclst): void = let
   val d3cs = do_trans123 (basename, d0cs)
   val hids = $Trans4.d3eclst_tr (d3cs)
-  val () = begin
+  val debug_flag = $Deb.debug_flag_get ()
+  val () = if debug_flag > 0 then begin
     prerr "The 4th translation (proof erasure) of [";
     prerr basename;
     prerr "] is successfully completed!";
     prerr_newline ()
-  end
+  end // end of [if]
   val infil = input_filename_get ()
   val outname = output_filename_get ()
 in
@@ -505,12 +522,12 @@ in
       , "\n/* ****** ****** */\n\n/* end of [%s] */\n"
       , @(outname)
       ) // end of [fprintf]
-      val () = begin
+      val () = if debug_flag > 0 then begin
         prerr "The 5th translation (code emission) of [";
         prerr basename;
         prerr "] is successfully completed!";
         prerr_newline ()
-      end
+      end // end of [if]
     in
       fclose_exn (pf_out | p_out)
     end
@@ -528,7 +545,7 @@ end // end of [do_trans1234]
 
 %{^
 
-#if ATS_BOOTSTRAP
+#if _ATS_BOOTSTRAP
 
 ats_void_type mainats_prelude () { return ; }
 
@@ -545,6 +562,8 @@ extern fun IATS_wait_clear (): void = "ats_main_IATS_wait_clear"
 extern fun is_IATS_flag (s: string): bool = "ats_main_is_IATS_flag"
 extern fun IATS_extract (s: string): Stropt = "ats_main_IATS_extract"
 
+(* ****** ****** *)
+
 implement main {n} (argc, argv) = let
 val () = gc_chunk_count_limit_max_set (~1) // [~1]: infinite
 
@@ -552,9 +571,14 @@ val () = gc_chunk_count_limit_max_set (~1) // [~1]: infinite
 val () = gc_chunk_count_limit_max_set (0) // for testing GC heavily
 *)
 
+val () = ATSHOMERELOC_set () where {
+  extern fun ATSHOMERELOC_set (): void = "ats_main_ATSHOMERELOC_set"
+}
+
 val ATSHOME = ATSHOME_getenv_exn () where {
   extern fun ATSHOME_getenv_exn (): string = "ats_main_ATSHOME_getenv_exn"
 }
+
 val () = $Fil.the_prepathlst_push ATSHOME // for the run-time and lib
 val () = $TransEnv2.trans2_env_initialize ()
 
@@ -573,6 +597,14 @@ fun loop {i:nat | i <= n} .<i>. (
       in
         loop (argv, param, args)
       end // end of [_ when ...]
+(*
+    | _ when ATSHOME_RELOC_wait_is_set () => let
+        val COMARGkey (_(*n*), dir) = arg
+        val () = ATSHOME_RELOC_wait_clear (); val () = atshome_reloc_dir_set (dir)
+      in
+        loop (argv, param, args)
+      end // end of [_ when ...]
+*)
     | COMARGkey (1, str) => let
         val () = param.comkind := COMKINDnone (); val () =
           case+ str of
@@ -646,9 +678,12 @@ fun loop {i:nat | i <= n} .<i>. (
         val () = begin case+ 0 of
           | _ when param.posmark_only > 0 => ()
           | _ when $Glo.ats_depgenflag_get () > 0 => ()
-          | _ when param.typecheck_only > 0 => begin
-              let val _(*d3cs*) = do_trans123 (name, d0cs) in () end
-            end
+          | _ when param.typecheck_only > 0 => let
+              val _(*d3cs*) = do_trans123 (name, d0cs)
+            in
+              prerrf ("The file [%s] is successfully typechecked!", @(name));
+              prerr_newline ()
+            end // end of [_ when ...]
           | _ => do_trans1234 (flag, name, d0cs)
         end // end of [val]
       in
@@ -679,8 +714,11 @@ fun loop {i:nat | i <= n} .<i>. (
         val () = begin case+ 0 of
           | _ when param.posmark_only > 0 => ()
           | _ when $Glo.ats_depgenflag_get () > 0 => ()
-          | _ when param.typecheck_only > 0 => begin
-              let val _(*d3cs*) = do_trans123 ("stdin", d0cs) in () end
+          | _ when param.typecheck_only > 0 => let
+              val _(*d3cs*) = do_trans123 ("stdin", d0cs)
+            in
+              prerr ("The typechecking is successfully completed!");
+              prerr_newline ()
             end
           | _ => do_trans1234 (flag, "stdin", d0cs)
         end
@@ -703,69 +741,11 @@ var param: param_t = @{
 , typecheck_only= 0
 }
 
+val () = loop (argv, param, args)
+
 in
-   loop (argv, param, args)
+  // empty
 end // end of [main]
-
-(* ****** ****** *)
-
-%{$
-
-static int the_IATS_wait = 0 ;
-
-ats_void_type ats_main_IATS_wait_set () {
-  the_IATS_wait = 1 ; return ;
-}
-
-ats_bool_type ats_main_IATS_wait_is_set () {
-  return (the_IATS_wait ? ats_true_bool : ats_false_bool) ;
-}
-
-ats_void_type ats_main_IATS_wait_clear () {
-  the_IATS_wait = 0 ; return ;
-}
-
-/* ****** ****** */
-
-ats_bool_type
-ats_main_is_IATS_flag (ats_ptr_type s0) {
-  char *s = (char*)s0 ;
-  if (*s != '-') return ats_false_bool ;
-  ++s ; if (*s != 'I') return ats_false_bool ;
-  ++s ; if (*s != 'A') return ats_false_bool ;
-  ++s ; if (*s != 'T') return ats_false_bool ;
-  ++s ; if (*s != 'S') return ats_false_bool ;
-  return ats_true_bool ; 
-} /* end of [ats_main_is_IATS_flag] */
-
-ats_ptr_type
-ats_main_IATS_extract (ats_ptr_type s0) {
-  int n ; char* s ;
-  n = strlen ((char*)s0) ;
-  n -= 5 ; if (n <= 0) return (ats_ptr_type)0 ;
-  s = ATS_MALLOC (n + 1) ;
-  memcpy (s, (char*)s0 + 5, n) ; s[n] = '\0' ;
-  return s ;
-} /* end of [ats_main_IATS_extract] */
-
-%}
-
-(* ****** ****** *)
-
-%{$
-
-ats_ptr_type
-ats_main_ATSHOME_getenv_exn () {
- char *value0 ;
- value0 = getenv ("ATSHOME") ;
- if (!value0) {
-   fprintf (stderr, "The environment variable ATSHOME is undefined.\n") ;
-   exit (1) ;
- }
- return value0 ;
-} /* end of [ats_main_ATSHOME_getenv_exn] */
-
-%}
 
 (* ****** ****** *)
 

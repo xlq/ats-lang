@@ -145,7 +145,13 @@ gc_chunk_count_limit_get () {
 
 ats_void_type
 gc_chunk_count_limit_set (ats_int_type n) {
-  the_chunk_count_limit = n ; return ;
+  if (n >= 0) {
+    the_chunk_count_limit = n ;
+  } else {
+    fprintf (stderr, "GC Fatal Error: [gc_chunk_count_limit_set]: negative argument.\n") ;
+    exit (1) ;
+  }
+  return ;
 }
 
 ats_int_type

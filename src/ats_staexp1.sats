@@ -106,7 +106,11 @@ fun e1xp_true (): e1xp and e1xp_false (): e1xp
 
 (* ****** ****** *)
 
-datatype v1al = V1ALint of int | V1ALstring of string
+datatype v1al =
+  | V1ALchar of char
+  | V1ALfloat of double
+  | V1ALint of int
+  | V1ALstring of string
 
 val v1al_true : v1al and v1al_false : v1al
 

@@ -237,9 +237,17 @@ fn bin_dir_copy (knd: int): void = let
 
   macdef cp (name) = fcopy_exn
      (SRCROOTbin + ,(name), DSTROOTbin + ,(name))
+  macdef cpx (name) = let
+    val src_name = SRCROOT + ,(name)
+    val dst_name = DSTROOT + ,(name)
+    val () = fcopy_exn (src_name, dst_name)
+    val () = chmod_exn (dst_name, S_IRWXU)
+  in
+    // empty
+  end // end of [cpx]
 
   val () = mkdir_exn (DSTROOTbin, DIRmode)
-  val () = if (knd > 0) then (cp "atscc"; cp "atsopt")
+  val () = if (knd > 0) then (cpx "atscc"; cpx "atsopt")
 in
   prerr "The [bin] directory is successfully copied.";
   prerr_newline ()
@@ -345,7 +353,7 @@ fn ccomp_lib_dir_copy (knd: int): void = let
   val () = mkdir_exn (DSTROOTccomp_lib, DIRmode)
   val () = begin
     if knd > 0 then fcopy_exn
-      (SRCROOTccomp_lib + "libats.o", DSTROOTccomp_lib + "libats.o")
+      (SRCROOTccomp_lib + "libats.a", DSTROOTccomp_lib + "libats.a")
   end
   val () = mkdir_exn (DSTROOTccomp_lib_output, DIRmode)
 in
@@ -354,7 +362,7 @@ end // end of [ccomp_lib_dir_copy]
 
 (* ****** ****** *)
 
-fn ccomp_runtime_GCATS_dir_copy (): void = let
+fn ccomp_runtime_GCATS_dir_copy (knd: int): void = let
   fn test (name: string): bool = begin case+ name of
     | _ when name_is_xats (name) => true | _ => false
   end // end of [filename_test]
@@ -370,6 +378,7 @@ fn ccomp_runtime_GCATS_dir_copy (): void = let
   val () = begin
     cp "Makefile"; cp "README"; cp "gc.h"
   end
+  val () = if knd > 0 then (cp "gc.o"; cp "gc_mt.o")
 in
   prerr "The [ccomp/runtime/GCATS] directory is successfully copied.";
   prerr_newline ()
@@ -377,7 +386,7 @@ end // end of [ccomp_runtime_GCATS_dir_copy]
 
 //
 
-fn ccomp_runtime_dir_copy () = let
+fn ccomp_runtime_dir_copy (knd: int) = let
   macdef cp (name) = fcopy_exn (
     SRCROOTccomp_runtime + ,(name), DSTROOTccomp_runtime + ,(name)
   )
@@ -388,7 +397,7 @@ in
   cp "ats_memory.h";
   cp "ats_types.h";
   cp "ats_prelude.c";
-  ccomp_runtime_GCATS_dir_copy ();
+  ccomp_runtime_GCATS_dir_copy (knd);
   prerr "The [ccomp/runtime] directory is successfully copied.";
   prerr_newline ()
 end // end of [ccomp_runtime_dir_copy]
@@ -398,7 +407,7 @@ end // end of [ccomp_runtime_dir_copy]
 fn ccomp_dir_copy (knd: int): void = let
   val () = mkdir_exn (DSTROOTccomp, DIRmode)
   val () = ccomp_lib_dir_copy (knd)
-  val () = ccomp_runtime_dir_copy ()
+  val () = ccomp_runtime_dir_copy (knd)
 in
   // empty
 end // end of [ccomp_dir_copy]
@@ -625,31 +634,6 @@ end // end of [utils_dir_copy]
 
 (* ****** ****** *)
 
-extern fun atspackage_precompiled (): void
-
-implement atspackage_precompiled () = let
-  val () = // run-time checking
-    if test_file_exists (DSTROOT) then begin
-      prerr "The directory ["; prerr DSTROOT; prerr "] already exists.";
-      prerr_newline ();
-      exit (1)
-    end // end of [if]
-  val () = mkdir_exn (DSTROOT, DIRmode)
-
-  macdef cp (name) = fcopy_exn (SRCROOT + ,(name), DSTROOT + ,(name))
-  val () = cp "INSTALL"
-  val () = cp "config.h"
-  val () = bin_dir_copy (1)
-  val () = ccomp_dir_copy (1)
-  val () = prelude_dir_copy ()
-  val () = libc_dir_copy ()
-  val () = libats_dir_copy ()
-in
-  // empty
-end // end of [atspackage_precompiled]
-
-(* ****** ****** *)
-
 extern fun atspackage_source_code (): void
 
 implement atspackage_source_code () = let
@@ -661,10 +645,21 @@ implement atspackage_source_code () = let
     end // end of [if]
   val () = mkdir_exn (DSTROOT, DIRmode)
 
-  macdef cp (name) = fcopy_exn (SRCROOT + ,(name), DSTROOT + ,(name))
+  macdef cp (name) =
+    fcopy_exn (SRCROOT + ,(name), DSTROOT + ,(name))
+  macdef cpx (name) = let
+    val src_name = SRCROOT + ,(name)
+    val dst_name = DSTROOT + ,(name)
+    val () = fcopy_exn (src_name, dst_name)
+    val () = chmod_exn (dst_name, S_IRWXU)
+  in
+    // empty
+  end // end of [cpx]
   val () = cp "INSTALL"
+  val () = cp "VERSION.txt"
   val () = cp "Makefile"
-  val () = cp "configure"
+  val () = cp "atshomecheck.sh"
+  val () = cpx "configure"
   val () = cp "configure.ac"
   val () = cp "config.h.in"
   val () = cp ".libfiles"
@@ -693,13 +688,56 @@ end
 
 (* ****** ****** *)
 
-implement main () = let
-(*
-  val () = atspackage_precompiled ()
-*)
-  val () = atspackage_source_code ()
+extern fun atspackage_precompiled (): void
+
+implement atspackage_precompiled () = let
+  val () = // run-time checking
+    if test_file_exists (DSTROOT) then begin
+      prerr "The directory ["; prerr DSTROOT; prerr "] already exists.";
+      prerr_newline ();
+      exit (1)
+    end // end of [if]
+  val () = mkdir_exn (DSTROOT, DIRmode)
+
+  macdef cp (name) = fcopy_exn (SRCROOT + ,(name), DSTROOT + ,(name))
+  val () = cp "INSTALL"
+  val () = cp "config.h"
+  val () = bin_dir_copy (1)
+  val () = ccomp_dir_copy (1)
+  val () = prelude_dir_copy ()
+  val () = libc_dir_copy ()
+  val () = libats_dir_copy ()
 in
   // empty
+end // end of [atspackage_precompiled]
+
+(* ****** ****** *)
+
+implement main (argc, argv) = let
+  var knd: int = 0
+  val () = begin case+ argc of
+    | _ when argc >= 2 => let
+        val argv1 = argv.[1]
+      in
+        case+ 0 of
+        | _ when (argv1 = "--precompiled") => knd := 1
+        | _ when (argv1 = "--source") => ()
+        | _ => let
+            val cmd = argv.[0]
+          in
+            prerr "["; prerr argv.[0]; prerr "]";
+            prerr ": Unrecognized flag: "; prerr argv1;
+            prerr_newline ();
+            exit {void} (1)
+          end // end of [_]
+      end
+    | _ => ()
+  end // end of [val]
+in
+  case+ 0 of
+  | _ when (knd = 0) => atspackage_source_code ()
+  | _ when (knd > 0) => atspackage_precompiled ()
+  | _ => ()
 end // end of [main]
 
 (* ****** ****** *)

@@ -168,7 +168,8 @@ implement ISDYNAMIC = $extval (token_t, "ISDYNAMIC")
 
 %{$
 
-ats_bool_type eq_token_token (ats_int_type tok1, ats_int_type tok2) {
+ats_bool_type eq_token_token
+  (ats_int_type tok1, ats_int_type tok2) {
   return (tok1 == tok2 ? ats_true_bool : ats_false_bool) ;
 }
 
@@ -525,102 +526,94 @@ fn location_get (): $Loc.location_t = $Loc.location_make
 fn location_get_pos (fstpos: position_t): $Loc.location_t =
   $Loc.location_make ($Fil.the_filename_get (), fstpos, lexing_lstpos_get ())
 
-fn tokenize_identifier_alp (): token_t =
-  let
-    val str = lexeme_string ()
-    val tok = keyword_search str
+fn tokenize_identifier_alp (): token_t = let
+  val str = lexeme_string ()
+  val tok = keyword_search str
 (*
-    val () = begin
-      print "tokenize_identifier_alp: str = "; print str; print_newline ()
-    end
+  val () = begin
+    print "tokenize_identifier_alp: str = "; print str; print_newline ()
+  end
 *)
+in
+  if token_is_valid tok then (process_keyword (); tok)
+  else let
+    val loc = location_get ()
   in
-    if token_is_valid tok then (process_keyword (); tok)
-    else let
-      val loc = location_get ()
-    in
-      yylval_ide_set ($Syn.i0de_make (loc, str)); IDENTIFIER_alp
-    end
+    yylval_ide_set ($Syn.i0de_make (loc, str)); IDENTIFIER_alp
   end
+end // end of [tokenize_identifier_alp]
 
-fn tokenize_identifier_sym (): token_t =
-  let
-    val str = lexeme_string ()
-    val tok = keyword_search str
+fn tokenize_identifier_sym (): token_t = let
+  val str = lexeme_string ()
+  val tok = keyword_search str
+in
+  if token_is_valid tok then (process_keyword (); tok)
+  else let
+    val loc = location_get ()
   in
-    if token_is_valid tok then (process_keyword (); tok)
-    else let
-      val loc = location_get ()
-    in
-      yylval_ide_set ($Syn.i0de_make (loc, str)); IDENTIFIER_sym
-    end
+    yylval_ide_set ($Syn.i0de_make (loc, str)); IDENTIFIER_sym
   end
+end // end of [tokenize_identifier_sym]
 
 fn prefix_identifier_arr (s0: string): string = let
   val s0 = string1_of_string0 s0; val n0 = string1_length s0
 in
   if n0 > 0 then string_make_substring (s0, 0, n0-1) else s0
-end
+end // end of [prefix_identifier_arr]
    
-fn tokenize_identifier_arr (): token_t = (* array identifier *)
-  let
-    val str = prefix_identifier_arr (lexeme_string ())
-    val loc = location_get ()
-  in
-    yylval_ide_set ($Syn.i0de_make (loc, str)); IDENTIFIER_arr
-  end
+fn tokenize_identifier_arr (): token_t = let // array identifier
+  val str = prefix_identifier_arr (lexeme_string ())
+  val loc = location_get ()
+in
+  yylval_ide_set ($Syn.i0de_make (loc, str)); IDENTIFIER_arr
+end // end of [tokenize_identifier_arr]
 
 fn prefix_identifier_tmp (s0: string): string = let
   val s0 = string1_of_string0 s0; val n0 = string1_length s0
 in
   if n0 > 0 then string_make_substring (s0, 0, n0-1) else s0
-end
+end // end of [prefix_identifier_tmp]
 
-fn tokenize_identifier_tmp (): token_t = (* template identifier *)
-  let
-    val str = prefix_identifier_tmp (lexeme_string ())
+fn tokenize_identifier_tmp (): token_t = let // template identifier
+  val str = prefix_identifier_tmp (lexeme_string ())
+  val loc = location_get ()
+in
+  yylval_ide_set ($Syn.i0de_make (loc, str)); IDENTIFIER_tmp
+end // end of [tokenize_identifier_tmp]
+
+fn tokenize_identifier_dlr (): token_t = let // $-identifier
+  val str = lexeme_string ()
+  val tok = keyword_search str
+in
+  if token_is_valid tok then (process_keyword (); tok)
+  else let
     val loc = location_get ()
   in
-    yylval_ide_set ($Syn.i0de_make (loc, str)); IDENTIFIER_tmp
+    yylval_ide_set ($Syn.i0de_make (loc, str)); IDENTIFIER_dlr
   end
+end // end of [tokenize_identifier_dlr]
 
-fn tokenize_identifier_dlr (): token_t = (* $-identifier *)
-  let
-    val str = lexeme_string ()
-    val tok = keyword_search str
+fn tokenize_identifier_srp (): token_t = let // #-identifier
+  val str = lexeme_string ()
+  val tok = keyword_search str
+in
+  if token_is_valid tok then (process_keyword (); tok)
+  else let
+    val loc = location_get ()
   in
-    if token_is_valid tok then (process_keyword (); tok)
-    else let
-      val loc = location_get ()
-    in
-      yylval_ide_set ($Syn.i0de_make (loc, str)); IDENTIFIER_dlr
-    end
+    yylval_ide_set ($Syn.i0de_make (loc, str)); IDENTIFIER_srp
   end
-
-fn tokenize_identifier_srp (): token_t = (* #-identifier *)
-  let
-    val str = lexeme_string ()
-    val tok = keyword_search str
-  in
-    if token_is_valid tok then (process_keyword (); tok)
-    else let
-      val loc = location_get ()
-    in
-      yylval_ide_set ($Syn.i0de_make (loc, str)); IDENTIFIER_srp
-    end
-  end
+end // end of [tokenize_identifier_srp]
 
 (* ****** ****** *)
 
-fn process_char (fstpos: position_t): void =
-  let
-    val chr = lexeme_get 0
-    val loc = location_get_pos (fstpos)
-  in
-    yylval_char_set ($Syn.c0har_make (loc, chr))
-  end
+fn process_char (fstpos: position_t): void = let
+  val chr = lexeme_get 0; val loc = location_get_pos (fstpos)
+in
+  yylval_char_set ($Syn.c0har_make (loc, chr))
+end // end of [process_char]
 
-fn char_for_escaped (c: char): char =
+fn char_for_escaped (c: char): char = begin
   case+ c of
     | 'a' => '\007' (* alert *)
     | 'b' => '\010' (* backspace *)
@@ -630,62 +623,61 @@ fn char_for_escaped (c: char): char =
     | 'r' => '\015' (* carriage return *)
     | 'v' => '\013' (* vertical tab *)
     |  _  => c
+end // end of [char_for_escaped]
 
-fn process_char_escaped (fstpos: position_t): void =
-  let
-    val chr = char_for_escaped (lexeme_get 1)
-    val loc = location_get_pos (fstpos)
-  in
-    yylval_char_set ($Syn.c0har_make (loc, chr))
-  end
+fn process_char_escaped
+  (fstpos: position_t): void = let
+  val chr = char_for_escaped (lexeme_get 1)
+  val loc = location_get_pos (fstpos)
+in
+  yylval_char_set ($Syn.c0har_make (loc, chr))
+end // end of [process_char_escaped]
 
 fn char_for_oct_code_1 (i: int): char =
   char_of_int (lexeme_get i - '0')
 
-fn process_char_oct_1 (fstpos: position_t): void =
-  let
-    val chr = char_for_oct_code_1 (1)
-    val loc = location_get_pos (fstpos)
-  in
-    yylval_char_set ($Syn.c0har_make (loc, chr))
-  end
+fn process_char_oct_1
+  (fstpos: position_t): void = let
+  val chr = char_for_oct_code_1 (1)
+  val loc = location_get_pos (fstpos)
+in
+  yylval_char_set ($Syn.c0har_make (loc, chr))
+end // end of [process_char_oct_1]
 
-fn char_for_oct_code_2 (i: int): char =
- let
-   val (pf_lxbf | ptr_lxbf) = lexing_lexbuf_get ()
-   val d0 = lexeme_get_lexbuf (!ptr_lxbf, i) - '0'
-   val d1 = lexeme_get_lexbuf (!ptr_lxbf, i+1) - '0'
-   val () = lexing_lexbuf_set (pf_lxbf | ptr_lxbf)
- in
-   char_of_int ((d0 << 3) + d1)
- end
+fn char_for_oct_code_2 (i: int): char = let
+  val (pf_lxbf | ptr_lxbf) = lexing_lexbuf_get ()
+  val d0 = lexeme_get_lexbuf (!ptr_lxbf, i) - '0'
+  val d1 = lexeme_get_lexbuf (!ptr_lxbf, i+1) - '0'
+  val () = lexing_lexbuf_set (pf_lxbf | ptr_lxbf)
+in
+  char_of_int ((d0 << 3) + d1)
+end // end of [char_for_oct_code_2]
 
-fn process_char_oct_2 (fstpos: position_t): void =
-  let
-    val chr = char_for_oct_code_2 (1)
-    val loc = location_get_pos (fstpos)
-  in
-    yylval_char_set ($Syn.c0har_make (loc, chr))
-  end
+fn process_char_oct_2
+  (fstpos: position_t): void = let
+  val chr = char_for_oct_code_2 (1)
+  val loc = location_get_pos (fstpos)
+in
+  yylval_char_set ($Syn.c0har_make (loc, chr))
+end // end of [process_char_oct_2]
 
-fn char_for_oct_code_3 (i: int): char =
- let
-   val (pf_lxbf | ptr_lxbf) = lexing_lexbuf_get ()
-   val d0 = lexeme_get_lexbuf (!ptr_lxbf, i) - '0'
-   val d1 = lexeme_get_lexbuf (!ptr_lxbf, i+1) - '0'
-   val d2 = lexeme_get_lexbuf (!ptr_lxbf, i+2) - '0'
-   val () = lexing_lexbuf_set (pf_lxbf | ptr_lxbf)
- in
-   char_of_int ((d0 << 6) + (d1 << 3) + d2)
- end
+fn char_for_oct_code_3 (i: int): char = let
+  val (pf_lxbf | ptr_lxbf) = lexing_lexbuf_get ()
+  val d0 = lexeme_get_lexbuf (!ptr_lxbf, i) - '0'
+  val d1 = lexeme_get_lexbuf (!ptr_lxbf, i+1) - '0'
+  val d2 = lexeme_get_lexbuf (!ptr_lxbf, i+2) - '0'
+  val () = lexing_lexbuf_set (pf_lxbf | ptr_lxbf)
+in
+  char_of_int ((d0 << 6) + (d1 << 3) + d2)
+end // end of [char_for_oct_code_3]
 
-fn process_char_oct_3 (fstpos: position_t): void =
-  let
-    val chr = char_for_oct_code_3 (1)
-    val loc = location_get_pos (fstpos)
-  in
-    yylval_char_set ($Syn.c0har_make (loc, chr))
-  end
+fn process_char_oct_3
+  (fstpos: position_t): void = let
+  val chr = char_for_oct_code_3 (1)
+  val loc = location_get_pos (fstpos)
+in
+  yylval_char_set ($Syn.c0har_make (loc, chr))
+end // end of [char_for_oct_code_3]
 
 (* ****** ****** *)
 
@@ -693,63 +685,56 @@ fn int_of_xdigit (c: char): int =
   if char_isdigit c then c - '0' else
     (if char_isupper c then c - 'A' else c - 'a')
 
-fn char_for_hex_code_1 (i: int): char =
-  let
-     val d0 = int_of_xdigit (lexeme_get i)
-  in
-     char_of_int d0
-  end
+fn char_for_hex_code_1 (i: int): char = let
+  val d0 = int_of_xdigit (lexeme_get i) in char_of_int d0
+end // end of [char_for_hex_code_1]
 
-fn process_char_hex_1 (fstpos: position_t): void =
-  let
-    val chr = char_for_hex_code_1 (2)
-    val loc = location_get_pos (fstpos)
-  in
-    yylval_char_set ($Syn.c0har_make (loc, chr))
-  end
+fn process_char_hex_1
+  (fstpos: position_t): void = let
+  val chr = char_for_hex_code_1 (2)
+  val loc = location_get_pos (fstpos)
+in
+  yylval_char_set ($Syn.c0har_make (loc, chr))
+end // end of [process_char_hex_1]
 
-fn char_for_hex_code_2 (i: int): char =
-  let
-    val (pf_lxbf | ptr_lxbf) = lexing_lexbuf_get ()
-    val d0 = int_of_xdigit (lexeme_get_lexbuf (!ptr_lxbf, i))
-    val d1 = int_of_xdigit (lexeme_get_lexbuf (!ptr_lxbf, i+1))
-    val () = lexing_lexbuf_set (pf_lxbf | ptr_lxbf)
-  in
-     char_of_int ((d0 << 4) + d1)
-  end
+fn char_for_hex_code_2 (i: int): char = let
+  val (pf_lxbf | ptr_lxbf) = lexing_lexbuf_get ()
+  val d0 = int_of_xdigit (lexeme_get_lexbuf (!ptr_lxbf, i))
+  val d1 = int_of_xdigit (lexeme_get_lexbuf (!ptr_lxbf, i+1))
+  val () = lexing_lexbuf_set (pf_lxbf | ptr_lxbf)
+in
+  char_of_int ((d0 << 4) + d1)
+end // end of [char_for_hex_code_2]
 
-fn process_char_hex_2 (fstpos: position_t): void =
-  let
-    val chr = char_for_hex_code_2 (2)
-    val loc = location_get_pos (fstpos)
-  in
-    yylval_char_set ($Syn.c0har_make (loc, chr))
-  end
+fn process_char_hex_2
+  (fstpos: position_t): void = let
+  val chr = char_for_hex_code_2 (2)
+  val loc = location_get_pos (fstpos)
+in
+  yylval_char_set ($Syn.c0har_make (loc, chr))
+end // end of [process_char_hex_2]
 
 (* ****** ****** *)
 
-fn process_literal_float (): void =
-  let
-    val loc = location_get ()
-    val str = lexeme_string ()
-  in
-    yylval_float_set ($Syn.f0loat_make (loc, str))
-  end
+fn process_literal_float (): void = let
+  val loc = location_get (); val str = lexeme_string ()
+in
+  yylval_float_set ($Syn.f0loat_make (loc, str))
+end // end of [process_literal_float]
 
-fn process_literal_floatsp (): void =
-  let
-    val str = lexeme_string ()
-    val loc = location_get ()
-  in
-    yylval_floatsp_set ($Syn.f0loatsp_make (loc, str))
-  end
+fn process_literal_floatsp (): void = let
+  val str = lexeme_string (); val loc = location_get ()
+in
+  yylval_floatsp_set ($Syn.f0loatsp_make (loc, str))
+end // end of [process_literal_floatsp]
 
 (* ****** ****** *)
 
 %{$
 
 ats_bool_type
-ats_lexer_literal_int_check (ats_ptr_type s0, ats_ptr_type err) {
+ats_lexer_literal_int_check
+  (ats_ptr_type s0, ats_ptr_type err) {
   char c, *s = s0 ;
 
   c = *s ;
@@ -764,51 +749,45 @@ ats_lexer_literal_int_check (ats_ptr_type s0, ats_ptr_type err) {
     ++s ; c = *s ;
   }
   return ats_true_bool ;
-}
+} /* end of [ats_lexer_literal_int_check] */
 
 %}
 
 extern fun process_literal_int_check (_: string, err: &char): bool
   = "ats_lexer_literal_int_check"
 
-fn process_literal_int (): void =
-  let
-    val str = lexeme_string ()
-    val loc = location_get ()
-    var err: char = '\000'
-    val () =
-      if process_literal_int_check (str, err) then () else begin
-        prerr loc;
-        prerr ": the digit ["; prerr err;
-        prerr "] is illegal in the octal constant [";
-        prerr str; prerr "].";
-        prerr_newline ();
-        $Err.abort {void} ()
-      end
-  in
-    yylval_int_set ($Syn.i0nt_make (loc, str))
-  end
+fn process_literal_int (): void = let
+  val str = lexeme_string (); val loc = location_get ()
+  var err: char = '\000'; val () =
+    if process_literal_int_check (str, err) then () else begin
+      prerr loc;
+      prerr ": the digit ["; prerr err;
+      prerr "] is illegal in the octal constant [";
+      prerr str; prerr "].";
+      prerr_newline ();
+      $Err.abort {void} ()
+    end // end of [if]
+in
+  yylval_int_set ($Syn.i0nt_make (loc, str))
+end // end of [process_literal_int]
 
 extern fun process_literal_intsp_check (_: string, err: &char): bool
   = "ats_lexer_literal_int_check"
 
-fn process_literal_intsp (): void =
-  let
-    val str = lexeme_string ()
-    val loc = location_get ()
-    var err: char = '\000'
-    val () =
-      if process_literal_intsp_check (str, err) then () else begin
-        prerr loc;
-        prerr ": the digit ["; prerr err;
-        prerr "] is illegal in the octal constant [";
-        prerr str; prerr "].";
-        prerr_newline ();
-        $Err.abort {void} ()
-      end
-  in
-    yylval_intsp_set ($Syn.i0ntsp_make (loc, str))
-  end
+fn process_literal_intsp (): void = let
+  val str = lexeme_string (); val loc = location_get ()
+  var err: char = '\000'; val () =
+    if process_literal_intsp_check (str, err) then () else begin
+      prerr loc;
+      prerr ": the digit ["; prerr err;
+      prerr "] is illegal in the octal constant [";
+      prerr str; prerr "].";
+      prerr_newline ();
+      $Err.abort {void} ()
+    end // end of [if]
+in
+  yylval_intsp_set ($Syn.i0ntsp_make (loc, str))
+end // end of [process_literal_intsp]
 
 (* ****** ****** *)
 
@@ -855,13 +834,12 @@ fn STRING_char_hex_2 {n:nat}
   end
 
 fn process_literal_string {n:nat}
-  (fstpos: position_t, cs: $CS.charlst_vt n, n: int n): void =
-  let
-    val str = $CS.string_make_charlst_int (cs, n)
-    val loc = location_get_pos (fstpos)
-  in
-    yylval_string_set ($Syn.s0tring_make (loc, str, n))
-  end
+  (fstpos: position_t, cs: $CS.charlst_vt n, n: int n): void = let
+  val str = $CS.string_make_rev_charlst_int (cs, n)
+  val loc = location_get_pos (fstpos)
+in
+  yylval_string_set ($Syn.s0tring_make (loc, str, n))
+end // end of [process_literal_string]
 
 (* ****** ****** *)
 
@@ -874,7 +852,7 @@ fn EXTCODE_char {n:nat}
 fn process_literal_extcode {n:nat}
   (fstpos: position_t, i: int, cs: $CS.charlst_vt n, n: int n): void =
   let
-    val str = $CS.string_make_charlst_int (cs, n)
+    val str = $CS.string_make_rev_charlst_int (cs, n)
     val loc = location_get_pos (fstpos)
   in
     yylval_extcode_set ($Syn.e0xtcode_make (loc, i, str))
@@ -898,7 +876,7 @@ fn process_illegal_token {a:viewt@ype} (): a = begin
   prerr_string "].";
   prerr_newline ();
   $raise LexingErrorException
-end
+end // end of [process_illegal_token]
 
 fn process_illegal_char
   {a:viewt@ype} (fstpos: position_t): a = begin
@@ -906,18 +884,19 @@ fn process_illegal_char
   prerr_position fstpos;
   prerr_string "] is unclosed!\n";
   $raise LexingErrorException
-end
+end // end of [process_illegal_char]
 
 //
 
 fn process_unclosed_comment
-  {a:viewt@ype} (p: position_t, ps: poslst): a =
-  let val () = poslst_free ps in
-    prerr_string "The comment starting at [";
-    prerr_position p;
-    prerr_string "] is unclosed!\n";
-    $raise LexingErrorException
-  end
+  {a:viewt@ype} (p: position_t, ps: poslst): a = let
+  val () = poslst_free ps
+in
+  prerr_string "The comment starting at [";
+  prerr_position p;
+  prerr_string "] is unclosed!\n";
+  $raise LexingErrorException
+end // end of [process_unclosed_comment]
 
 fn process_unclosed_comment_clike
   {a:viewt@ype} (p: position_t): a = begin
@@ -931,12 +910,12 @@ end // end of [process_unclosed_comment_clike]
 
 fn process_unclosed_string {a:viewt@ype} {n:nat}
   (fstpos: position_t, cs: $CS.charlst_vt n, n: int n): a = begin
-    $CS.charlst_free (cs);
-    prerr_string "The string starting at [";
-    prerr_position fstpos;
-    prerr_string "] is unclosed!\n";
-    $raise LexingErrorException
-  end
+  $CS.charlst_free (cs);
+  prerr_string "The string starting at [";
+  prerr_position fstpos;
+  prerr_string "] is unclosed!\n";
+  $raise LexingErrorException
+end // end of [process_unclosed_string]
 
 fn process_unclosed_extcode {a:viewt@ype} {n:nat}
   (fstpos: position_t, i: int, cs: $CS.charlst_vt n, n: int n)
@@ -946,7 +925,7 @@ fn process_unclosed_extcode {a:viewt@ype} {n:nat}
   prerr_position fstpos;
   prerr_string "] is unclosed!\n";
   $raise LexingErrorException
-end
+end // end of [process_unclosed_extcode]
 
 (* ****** ****** *)
 

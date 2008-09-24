@@ -77,7 +77,7 @@ SOURCES := \
   ats_dynexp1.sats ats_dynexp1.dats ats_dynexp1_print.dats \
   ats_trans1_env.sats ats_trans1_env.dats \
   ats_e1xp_eval.sats ats_e1xp_eval.dats \
-  ats_trans1.sats ats_trans1.dats \
+  ats_trans1.sats ats_trans1_sta.dats ats_trans1_dyn.dats \
   ats_staexp2.sats ats_staexp2.dats \
   ats_staexp2_scst.dats \
   ats_staexp2_svVar.dats \
@@ -151,7 +151,7 @@ atsopt: \
   prelude_dats.o libc_sats.o libc_dats.o libats_lex.o \
   $(TARGETS)
 	$(CC) $(CCFLAG) -o atsopt \
-  -DATS_BOOTSTRAP ats_main_dats.c \
+  -D_ATS_BOOTSTRAP ats_main_dats.c \
   ats_lexer_lats_dats.o ats_lexer_sats.o ats_grammar_yats.o \
   prelude_dats.o libc_sats.o libc_dats.o libats_lex.o \
   $(TARGETS) \
@@ -162,7 +162,7 @@ atsopt: \
 
 atsopt1:
 	$(CC) $(CCFLAG) -o atsopt \
-  -DATS_BOOTSTRAP ats_main_dats.c \
+  -D_ATS_BOOTSTRAP ats_main_dats.c \
   ats_lexer_lats_dats.o ats_lexer_sats.o ats_grammar_yats.o \
   prelude_dats.o libc_sats.o libc_dats.o libats_lex.o \
   $(TARGETS) \
@@ -415,8 +415,10 @@ ats_e1xp_eval_dats.o: ats_e1xp_eval_dats.c
 
 ats_trans1_sats.o: ats_trans1_sats.c
 	$(CC) $(CCFLAG) -c ats_trans1_sats.c
-ats_trans1_dats.o: ats_trans1_dats.c
-	$(CC) $(CCFLAG) -c ats_trans1_dats.c
+ats_trans1_sta_dats.o: ats_trans1_sta_dats.c
+	$(CC) $(CCFLAG) -c ats_trans1_sta_dats.c
+ats_trans1_dyn_dats.o: ats_trans1_dyn_dats.c
+	$(CC) $(CCFLAG) -c ats_trans1_dyn_dats.c
 
 ats_staexp2_sats.o: ats_staexp2_sats.c
 	$(CC) $(CCFLAG) -c ats_staexp2_sats.c

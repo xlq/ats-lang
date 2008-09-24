@@ -38,11 +38,19 @@
 #include <stdlib.h>
 #include <stdio.h>
 
+#ifdef _ATS_MULTITHREAD
+#include <pthread.h>
+#endif
+
 /* ****** ****** */
 
 #include "ats_exception.h"
 #include "ats_memory.h"
 #include "ats_types.h"
+
+/* ****** ****** */
+
+extern ats_exit_errmsg (int err, char *msg) ;
 
 /* ****** ****** */
 
@@ -88,7 +96,9 @@ ats_exception_frame_type *the_ats_exception_stack = NULL ;
 
 ats_void_type
 ats_handle_exception (const ats_exn_ptr_type exn) {
-  fprintf(stderr, "Uncaught exception: %s(%d)\n", exn->name, exn->tag);
+  fprintf (
+    stderr, "Uncaught exception: %s(%d)\n", exn->name, exn->tag
+  ) ;
   exit(1);
 }
 
@@ -434,7 +444,7 @@ ats_realloc_gc (const ats_ptr_type p, const ats_int_type bsz) {
 static
 ats_ptr_type ats_pthread_app (ats_ptr_type f) {
   ((void (*)(ats_ptr_type))((ats_clo_ptr_type)f)->closure_fun)(f) ;
-  ats_free_gc (f) ; // this is a linear application
+  ATS_FREE (f) ; // this is a linear application
   return (ats_ptr_type)0 ;
 }
 

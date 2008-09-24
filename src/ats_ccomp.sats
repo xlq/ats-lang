@@ -622,6 +622,7 @@ fun emit_label {m:file_mode}
 
 fun emit_filename {m:file_mode}
   (pf: file_mode_lte (m, w) | out: &FILE m, fil: $Fil.filename_t): void
+  = "ats_ccomp_emit_filename"
 
 fun emit_d2con {m:file_mode}
   (pf: file_mode_lte (m, w) | out: &FILE m, d2c: d2con_t): void

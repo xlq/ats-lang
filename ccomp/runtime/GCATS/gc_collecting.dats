@@ -107,7 +107,7 @@ end // end of [gc_sweeplst_build_botsegtbl]
 
 extern fun fprint_the_sweeplst_array_all (): void
   = "fprint_the_sweeplst_array_all"
-
+  
 implement gc_freeitmlst_generate (itemwsz_log) = let
   #define _log itemwsz_log
   #define itemwsz (1 << itemwsz_log)
@@ -143,17 +143,20 @@ implement gc_freeitmlst_generate (itemwsz_log) = let
           end
           val () = gc_collect (
             pf_main, pf_globals, pf_manmemlst, pf_threads, pf_sweeplst_all | (*none*)
-          ) // end of [gc_collect]
-
+          ) // end of [gc_collect]          
           val (pf1_sweeplst_one | ()) = begin
             the_sweeplst_lock_release_rest (pf_sweeplst_all | _log)
           end
           prval () = pf_sweeplst_one := pf1_sweeplst_one
-    
           val () = the_threadinfolst_lock_release (pf_threads | (*none*))
           val () = the_manmemlst_lock_release (pf_manmemlst | (*none*))
           val () = the_globalentrylst_lock_release (pf_globals | (*none*))
           val chks = the_sweeplst_array_get (pf_sweeplst_one | _log)
+(*
+          val () = begin
+            prerr "gc_freeitmlst_generate: chks = "; prerr (chunklst2ptr chks); prerr_newline ()
+          end
+*)
         in
           if chunklst_is_cons chks then begin
             gc_main_lock_release (pf_main | (*none*)); chks
@@ -164,10 +167,20 @@ implement gc_freeitmlst_generate (itemwsz_log) = let
       end // end of [if chunklst_is_cons (chks) ...]
     end // end of [if chunklst_is_cons (chks) ...]
   ) : chunklst1
+(*
+  val () = begin
+    prerr "gc_freeitmlst_generate: chks = "; prerr (chunklst2ptr chks); prerr_newline ()
+  end
+*)
   val chks1 = chunklst_sweep_next_get chks
   val () = the_sweeplst_array_set (pf_sweeplst_one | _log, chks1)
   val () = the_sweeplst_lock_release_one (pf_sweeplst_one | _log)
   val itms = gc_chunk_threading (chks)
+(*
+  val () = begin
+    prerr "gc_freeitmlst_generate: itms = "; prerr (freeitmlst2ptr itms); prerr_newline ()
+  end
+*)
 in
   if freeitmlst_is_nil itms then begin
     prerr "GC: Fatal Error";
@@ -199,7 +212,7 @@ ats_void_type gc_sweeplst_build_chunk (ats_ptr_type chks) {
     return ;
   }
 #endif
-  if (markcnt == 0) { chunklst_destroy (chks); return ; }
+  if (markcnt == 0) { chunklst_destroy (chks) ; return ; }
 
   itemtot = chunklst_itemtot_get (chks) ;
   if (markcnt > itemtot * CHUNK_SWEEP_CUTOFF) return ;
@@ -211,6 +224,9 @@ ats_void_type gc_sweeplst_build_chunk (ats_ptr_type chks) {
     fprintf (stderr, ": itemwsz_log = %i\n", itemwsz_log) ;
     exit (1) ;
   }
+*/
+/*
+  fprintf (stderr, "gc_sweeplst_build_chunk: itemwsz_log = %i\n", itemwsz_log) ;
 */
   the_sweeplst_array_insert_at (chks, itemwsz_log) ;
   return ;
@@ -293,6 +309,24 @@ ats_void_type gc_collect () {
 */
   the_markstack_extend (nmarkstackpage) ;
 
+#ifdef _ATS_MULTITHREAD
+  // put all of the other threads into sleep
+  infolst = the_threadinfolst_fst ; nother = 0 ;
+  while (infolst) {
+    if (infolst != the_threadinfolst_self) {
+      fprintf (stderr, "gc_collect: SIGUSR1: infolst->pid = %i\n", infolst->pid) ;
+      pthread_kill (infolst->pid, SIGUSR1) ; nother += 1 ;
+    }
+    infolst = infolst->next ;
+  }
+  while (nother) { // ordering is irrelevant
+    fprintf (stderr, "gc_collect: sem_wait: bef: nother = %i\n", nother) ;
+    sem_wait (&the_sleep_semaphore) ; nother -= 1 ;
+    fprintf (stderr, "gc_collect: sem_wait: aft: nother = %i\n", nother) ;
+  }
+  fprintf (stderr, "gc_collect: nother = %i\n", nother) ;
+#endif // end of [_ATS_MULTITHREAD]
+
   gc_markbits_clear_the_topsegtbl () ; // clear all mark bits
 /*
   fprintf (
@@ -300,24 +334,23 @@ ats_void_type gc_collect () {
   ) ; // end of [fprintf]
 */
 
-#ifdef _ATS_MULTITHREAD
-  infolst = the_threadinfolst_fst ; nother = 0 ;
-  while (infolst) {
-    if (infolst != the_threadinfolst_self) {
-      pthread_kill (infolst->pid, SIGUSR1) ; nother += 1 ;
-    }
-    infolst = infolst->next ;
-  }
-  fprintf (stderr, "gc_collect: nother = %i\n", nother) ;
-  while (nother) { // ordering is irrelevant
-    sem_wait (&the_sleep_semaphore) ; nother -= 1 ;
-  }
-#endif
-
   overflow = gc_mark_all () ; // marking phase
 /*
   fprintf (stderr, "gc_collect: gc_mark_all: done\n") ;
 */
+
+#ifdef _ATS_MULTITHREAD
+  // wake up all of the sleeping threads
+  infolst = the_threadinfolst_fst ;
+  while (infolst) {
+    if (infolst != the_threadinfolst_self) {
+      fprintf (stderr, "gc_collect: SIGUSR2: infolst->pid = %i\n", infolst->pid) ;
+      pthread_kill (infolst->pid, SIGUSR2) ;
+    }
+    infolst = infolst->next ;
+  }
+#endif // end of [_ATS_MULTITHREAD]
+
   the_freeitmlst_array_mark_unset () ; /* is this really needed? */
   // [gc_mark_threadinfolst_one] is not called on [the_threadinfolst_self]
   // Therefore [the_freeitmlst_array_clear_all] must be called!

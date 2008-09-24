@@ -917,7 +917,10 @@ ats_void_type fprint_the_sweeplst_array_all () {
 
 static inline
 ats_ptr_type the_sweeplst_array_get (ats_int_type i) {
-  // fprintf (stderr, "the_sweeplst_array_get: i = %i\n", i) ;
+/*
+  fprintf (stderr, "the_sweeplst_array_get: i = %i\n", i) ;
+  fprintf (stderr, "the_sweeplst_array_get: chks = %p\n", the_sweeplst_array[i]) ;
+*/
   return the_sweeplst_array[i] ;
 }
 
