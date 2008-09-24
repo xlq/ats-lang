@@ -1,0 +1,114 @@
+/***********************************************************************/
+/*                                                                     */
+/*                        Applied Type System                          */
+/*                                                                     */
+/*                             Hongwei Xi                              */
+/*                                                                     */
+/***********************************************************************/
+
+//
+//
+// This file is to be preprocessed to generate .libfiles, which is needed
+// by [atslib -all] for building libats.a
+//
+
+/* ****** ****** */
+
+#include "config.h"
+
+/* ****** ****** */
+
+prelude/ats_main_prelude.dats
+
+/* prelude files */
+
+prelude/DATS/basics.dats
+prelude/DATS/float.dats
+prelude/DATS/integer.dats
+prelude/DATS/pointer.dats
+prelude/DATS/printf.dats
+
+prelude/SATS/array.sats
+prelude/DATS/array.dats
+prelude/SATS/array0.sats
+prelude/DATS/array0.dats
+
+prelude/SATS/file.sats
+prelude/DATS/file.dats
+
+prelude/SATS/lazy.sats
+prelude/DATS/lazy.dats
+
+prelude/SATS/list.sats
+prelude/DATS/list.dats
+prelude/DATS/list_vt.dats
+prelude/SATS/list0.sats
+prelude/DATS/list0.dats
+
+prelude/DATS/matrix.dats
+
+prelude/DATS/option.dats
+
+prelude/DATS/reference.dats
+
+prelude/DATS/string.dats
+
+/* libats files */
+
+#ifdef HAVE_GMP_H
+libats/SATS/intinf.sats
+libats/DATS/intinf.dats
+#endif
+
+libats/SATS/iterint.sats
+libats/DATS/iterint.dats
+
+#ifdef HAVE_PCRE_H
+libats/SATS/regexp.sats
+libats/DATS/regexp.dats
+#endif
+
+/* libc files */
+
+// libc/SATS/complex.sats
+// libc/DATS/complex.dats
+
+libc/SATS/dirent.sats
+
+#ifdef HAVE_GMP_H
+libc/SATS/gmp.sats
+libc/DATS/gmp.dats
+#endif
+
+libc/SATS/math.sats
+libc/DATS/math.dats
+libc/SATS/random.sats
+libc/SATS/stdio.sats
+libc/SATS/stdlib.sats
+libc/SATS/time.sats
+libc/SATS/unistd.sats
+libc/DATS/unistd.dats
+
+libc/sys/SATS/socket.sats
+libc/sys/DATS/socket.dats
+libc/sys/SATS/stat.sats
+libc/sys/SATS/types.sats
+
+libc/SATS/pthread_locks.sats
+libc/DATS/pthread_locks.dats
+libc/SATS/pthread.sats
+libc/DATS/pthread.dats
+
+/* ****** ****** */
+
+#ifdef HAVE_GL_GL_H
+libc/GL/SATS/gl.sats
+#endif
+
+#ifdef HAVE_GL_GLUT_H
+libc/GL/SATS/glut.sats
+#endif
+
+/* ****** ****** */
+
+/* end of [.libfiles] */
