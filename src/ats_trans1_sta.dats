@@ -1,0 +1,956 @@
+(***********************************************************************)
+(*                                                                     *)
+(*                         Applied Type System                         *)
+(*                                                                     *)
+(*                              Hongwei Xi                             *)
+(*                                                                     *)
+(***********************************************************************)
+
+(*
+ * ATS/Anairiats - Unleashing the Potential of Types!
+ *
+ * Copyright (C) 2002-2008 Hongwei Xi, Boston University
+ *
+ * All rights reserved
+ *
+ * ATS is free software;  you can  redistribute it and/or modify it under
+ * the terms of  the GNU GENERAL PUBLIC LICENSE (GPL) as published by the
+ * Free Software Foundation; either version 3, or (at  your  option)  any
+ * later version.
+ * 
+ * ATS is distributed in the hope that it will be useful, but WITHOUT ANY
+ * WARRANTY; without  even  the  implied  warranty  of MERCHANTABILITY or
+ * FITNESS FOR A PARTICULAR PURPOSE.  See the  GNU General Public License
+ * for more details.
+ * 
+ * You  should  have  received  a  copy of the GNU General Public License
+ * along  with  ATS;  see the  file COPYING.  If not, please write to the
+ * Free Software Foundation,  51 Franklin Street, Fifth Floor, Boston, MA
+ * 02110-1301, USA.
+ *
+ *)
+
+(* ****** ****** *)
+
+// Time: August 2007
+// Author: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
+
+(* ****** ****** *)
+
+(* The first translation mainly resolves the issue of operator fixity *)
+
+(* ****** ****** *)
+
+staload Eff = "ats_effect.sats"
+staload Err = "ats_error.sats"
+staload Fil = "ats_filename.sats"
+staload Fix = "ats_fixity.sats"
+staload Loc = "ats_location.sats"
+staload Lst = "ats_list.sats"
+staload Sym = "ats_symbol.sats"
+
+(* ****** ****** *)
+
+staload "ats_syntax.sats"
+staload "ats_staexp1.sats"
+staload "ats_dynexp1.sats"
+staload "ats_trans1_env.sats"
+staload "ats_e1xp_eval.sats"
+
+(* ****** ****** *)
+
+staload "ats_trans1.sats"
+
+(* ****** ****** *)
+
+#define nil list_nil
+#define cons list_cons
+#define :: list_cons
+
+(* ****** ****** *)
+
+typedef loc_t = $Loc.location_t
+typedef fil_t = $Fil.filename_t
+
+(* ****** ****** *)
+
+overload prerr with $Loc.prerr_location
+overload prerr with $Sym.prerr_symbol
+
+(* ****** ****** *)
+
+fn prec_tr_errmsg (opr: i0de): $Fix.prec_t = begin
+  prerr opr.i0de_loc;
+  prerr ": error(1)";
+  prerr ": the operator [";
+  prerr opr.i0de_sym;
+  prerr "] is given no fixity.";
+  prerr_newline ();
+  $Err.abort ()
+end
+
+fn p0rec_tr (p0: p0rec): $Fix.prec_t = begin
+  case+ p0 of
+  | P0RECide id => begin
+    case+ the_fxtyenv_find id.i0de_sym of
+    | ~Some_vt fxty => let
+(*
+        val () = begin
+          print "p0rec_tr: Some: id = ";
+          $Sym.print_symbol_code id.i0de_sym;
+          print_newline ()
+        end
+*)
+        val p_opt = $Fix.precedence_of_fixity fxty
+      in
+        case+ p_opt of Some p => p | None () => prec_tr_errmsg id
+      end
+    | ~None_vt () => prec_tr_errmsg id
+    end // end of [begin]
+  | P0RECint int => $Fix.prec_make_int int
+end // end of [p0rec_tr]
+
+fn f0xty_tr (f0xty: f0xty): $Fix.fxty_t = begin
+ case+ f0xty of
+  | F0XTYinf (p0, a) =>
+      let val p = p0rec_tr p0 in $Fix.fxty_inf (p, a) end
+  | F0XTYpre p0 =>
+      let val p = p0rec_tr p0 in $Fix.fxty_pre p end
+  | F0XTYpos p0 =>
+      let val p = p0rec_tr p0 in $Fix.fxty_pos p end
+end // end of [f0xty_tr]
+
+(* ****** ****** *)
+
+typedef e1xpitm = $Fix.item (e1xp)
+typedef e1xpitmlst = List e1xpitm
+
+val e1xpitm_app : e1xpitm = let
+
+fn f (e1: e1xp, e2: e1xp):<cloref1> e1xpitm = let
+  val loc = $Loc.location_combine (e1.e1xp_loc, e2.e1xp_loc)
+  val es2 = (
+    case+ e2.e1xp_node of E1XPlist es => es | _ => '[e2]
+  ) : e1xplst
+  val e_app = e1xp_app (loc, e1, e2.e1xp_loc, es2)
+(*
+  val () = begin
+    print "e1xpitm_app: f: e_app = "; print e_app; print_newline ()
+  end
+*)
+in
+  $Fix.ITEMatm (e_app)
+end // end of [f]
+    
+in // in of [let]
+  $Fix.item_app f
+end // end of [e1xpitm_app]
+
+fun e1xp_make_opr (e: e1xp, f: $Fix.fxty_t): e1xpitm = begin
+  $Fix.oper_make {e1xp} (
+    lam x => x.e1xp_loc,
+    lam (loc, x, loc_arg, xs) => e1xp_app (loc, x, loc_arg, xs), e, f
+  )
+end // end of [e1xpitm_opr]
+
+val e1xpitm_backslash : e1xpitm = begin
+  $Fix.oper_make_backslash {e1xp} (
+    lam x => x.e1xp_loc,
+    lam (loc, x, loc_arg, xs) => e1xp_app (loc, x, loc_arg, xs)
+  )
+end // end of [e1xpitm_backslash]
+
+(* ****** ****** *)
+
+fn e0xp_tr_errmsg_opr (loc: loc_t): e1xp = begin
+  prerr loc;
+  prerr ": error(1)";
+  prerr ": the operator needs to be applied.\n";
+  $Err.abort {e1xp} ()
+end
+  
+implement e0xp_tr e0 = let
+
+fun aux_item (e0: e0xp): e1xpitm =
+  let val loc = e0.e0xp_loc in case+ e0.e0xp_node of
+    | E0XPapp _ => let
+        val es_new = aux_itemlst e0
+        val e0_new = $Fix.fixity_resolve (loc, e1xpitm_app, es_new)
+      in
+        $Fix.ITEMatm (e0_new)
+      end
+    | E0XPchar (c: char) => $Fix.ITEMatm (e1xp_char (loc, c))
+    | E0XPfloat (f: string) => $Fix.ITEMatm (e1xp_float (loc, f))
+    | E0XPide id when id = $Sym.symbol_BACKSLASH => e1xpitm_backslash
+    | E0XPide id => begin case+ the_fxtyenv_find id of
+      | ~Some_vt f => begin
+          let val e = e1xp_ide (loc, id) in e1xp_make_opr (e, f) end
+        end
+      | ~None_vt () => $Fix.ITEMatm (e1xp_ide (loc, id))
+      end
+    | E0XPint (int: string) => $Fix.ITEMatm (e1xp_int (loc, int))
+    | E0XPlist (es) => $Fix.ITEMatm (e1xp_list (loc, e0xplst_tr es))
+    | E0XPstring (str, len) => $Fix.ITEMatm (e1xp_string (loc, str, len))
+  end
+
+and aux_itemlst (e0: e0xp): e1xpitmlst =
+  let
+    fun aux (res: e1xpitmlst, e0: e0xp): e1xpitmlst =
+      case+ e0.e0xp_node of
+        | E0XPapp (e1, e2) =>
+          let val res = aux_item e2 :: res in aux (res, e1) end
+        | _ => aux_item e0 :: res
+  in
+    aux (nil (), e0)
+  end
+
+in
+  case+ aux_item e0 of
+    | $Fix.ITEMatm e => e
+    | $Fix.ITEMopr _ => e0xp_tr_errmsg_opr e0.e0xp_loc
+end // end of [e0xp_tr]
+
+implement e0xplst_tr es = case+ es of
+  | cons (e, es) => cons (e0xp_tr e, e0xplst_tr es)
+  | nil () => nil ()
+
+(* ****** ****** *)
+
+// translation of sorts
+
+typedef s1rtitm = $Fix.item s1rt
+typedef s1rtitmlst = List s1rtitm
+
+val s1rtitm_app : s1rtitm = let
+  fn f (s1t1: s1rt, s1t2: s1rt):<cloref1> s1rtitm = let
+    val loc = $Loc.location_combine (s1t1.s1rt_loc, s1t2.s1rt_loc)
+    val s1ts2 = (
+      case+ s1t2.s1rt_node of
+      | S1RTlist s1ts => s1ts | _ => cons (s1t2, nil ())
+    ) : s1rtlst
+    val s1t_app = s1rt_app (loc, s1t1, s1ts2)
+  in
+    $Fix.ITEMatm s1t_app
+  end // end of [f]
+in
+  $Fix.item_app f
+end // end of [app_s1rt_item]
+
+fun s1rt_make_opr (s1t: s1rt, f: $Fix.fxty_t): s1rtitm = begin
+  $Fix.oper_make {s1rt} (
+    lam x => x.s1rt_loc,
+    lam (loc, x, _(*loc_arg*), xs) => s1rt_app (loc, x, xs), s1t, f
+  )
+end // end of [s1rt_make_opr]
+
+val s1rtitm_backslash : s1rtitm = begin
+  $Fix.oper_make_backslash {s1rt} (
+    lam x => x.s1rt_loc,
+    lam (loc, x, _(*loc_arg*), xs) => s1rt_app (loc, x, xs)
+  )
+end // end of [s1rtitm_backslash]
+
+(* ****** ****** *)
+
+fn s0rt_tr_errmsg_opr (loc: loc_t): s1rt = begin
+  prerr loc;
+  prerr ": error(1)";
+  prerr ": the operator needs to be applied.\n";
+  $Err.abort {s1rt} ()
+end // end of [s0rt_tr_errmsg_opr]
+  
+implement s0rt_tr s0t0 = let
+
+fun aux_item (s0t0: s0rt): s1rtitm = let
+  val loc0 = s0t0.s0rt_loc in case+ s0t0.s0rt_node of
+    | S0RTapp _ => let 
+        val s1t0 =
+          $Fix.fixity_resolve (loc0, s1rtitm_app, aux_itemlst s0t0)
+      in
+        $Fix.ITEMatm s1t0
+      end
+    | S0RTide id when id = $Sym.symbol_BACKSLASH => s1rtitm_backslash
+    | S0RTide id => begin case+ the_fxtyenv_find id of
+      | ~Some_vt f => s1rt_make_opr (s1rt_ide (loc0, id), f)
+      | ~None_vt () => $Fix.ITEMatm (s1rt_ide (loc0, id))
+      end
+    | S0RTlist (s0ts) => $Fix.ITEMatm (s1rt_list (loc0, s0rtlst_tr s0ts))
+    | S0RTqid (q, id) => $Fix.ITEMatm (s1rt_qid (loc0, q, id))
+    | S0RTtup (s0ts) => $Fix.ITEMatm (s1rt_tup (loc0, s0rtlst_tr s0ts))
+end // end of [aux_item]
+
+and aux_itemlst (s0t0: s0rt): s1rtitmlst = let
+  fun aux (res: s1rtitmlst, s0t0: s0rt): s1rtitmlst =
+    case+ s0t0.s0rt_node of
+    | S0RTapp (s0t1, s0t2) => let
+        val res = aux_item s0t2 :: res
+      in
+        aux (res, s0t1)
+      end
+    | _ => aux_item s0t0 :: res
+in
+  aux (nil (), s0t0)
+end // end of [aux_itemlst]
+
+in
+  case+ aux_item s0t0 of
+    | $Fix.ITEMatm s1t => s1t
+    | $Fix.ITEMopr _ => s0rt_tr_errmsg_opr s0t0.s0rt_loc
+end // end of [s0rt_tr]
+
+implement s0rtlst_tr (s0ts: s0rtlst) = $Lst.list_map_fun (s0ts, s0rt_tr)
+
+implement s0rtopt_tr (os0t: s0rtopt) =
+  case+ os0t of Some s0t => Some (s0rt_tr s0t) | None () => None ()
+
+(* ****** ****** *)
+
+fn s0rtpol_tr (s0tp: s0rtpol): s1rtpol =
+  s1rtpol_make (s0tp.s0rtpol_loc, s0rt_tr s0tp.s0rtpol_srt, s0tp.s0rtpol_pol)
+
+fn s0rtpol_srt_tr (s0tp: s0rtpol): s1rt =
+  if s0tp.s0rtpol_pol = 0 then s0rt_tr s0tp.s0rtpol_srt
+  else begin
+    prerr s0tp.s0rtpol_loc;
+    prerr ": error(1)";
+    prerr ": only a nonpolarized sort is allowed here.";
+    prerr_newline ();
+    $Err.abort ()
+  end
+
+(* ****** ****** *)
+
+fn d0atarg_tr (d0a: d0atarg): d1atarg = begin
+  case+ d0a.d0atarg_node of
+  | D0ATARGsrt s0tp => begin
+      d1atarg_srt (d0a.d0atarg_loc, s0rtpol_tr s0tp)
+    end
+  | D0ATARGidsrt (id, s0tp) => begin
+      d1atarg_idsrt (d0a.d0atarg_loc, id, s0rtpol_tr s0tp)
+    end
+end // end of [d0atarg_tr]
+
+fun d0atarglst_tr (d0as: d0atarglst): d1atarglst =
+  case+ d0as of
+  | cons (d0a, d0as) => cons (d0atarg_tr d0a, d0atarglst_tr d0as)
+  | nil () => nil ()
+
+fun d0atarglst_srtlst_tr (d0as: d0atarglst): s1rtlst = begin
+  case+ d0as of
+  | cons (d0a, d0as) => let
+      val s0tp: s0rtpol = case+ d0a.d0atarg_node of
+        | D0ATARGsrt s0tp => s0tp | D0ATARGidsrt (_(*id*), s0tp) => s0tp
+      val s1t = s0rtpol_srt_tr s0tp
+    in
+      cons (s1t, d0atarglst_srtlst_tr d0as)
+    end
+  | nil () => nil ()
+end // end of [d0atarglst_srtlst_tr]
+
+(* ****** ****** *)
+
+implement d0ec_fixity_tr (f0xty, ids) = let
+  fun loop (fxty: $Fix.fxty_t, ids: i0delst): void =
+    case+ ids of
+    | cons (id, ids) => let
+(*
+        val () = begin
+          print "d0ec_fixity_tr: loop: id = ";
+          $Sym.print_symbol_code id.i0de_sym;
+          print_newline ()
+        end
+        val () = begin
+          print "the_fxtyenv_add: before: \n"; fxty_env_print ()
+        end
+*)
+        val () = the_fxtyenv_add (id.i0de_sym, fxty)
+(*
+        val () = begin
+          print "the_fxtyenv_add: after: \n"; fxty_env_print ()
+        end
+*)
+      in
+        loop (fxty, ids)
+      end
+    | nil () => ()
+in
+  loop (f0xty_tr f0xty, ids)
+end // end of [d0ec_fixity_tr]
+
+implement d0ec_nonfix_tr (ids) = let
+  fun loop (ids: i0delst): void = case+ ids of
+    | cons (id, ids) => begin
+        the_fxtyenv_add (id.i0de_sym, $Fix.fxty_non); loop ids
+      end
+    | nil () => ()
+in
+  loop ids
+end // end of [d0ec_nonfix_tr]
+
+(* ****** ****** *)
+
+implement do_e0xpact_assert (loc, v) = let
+  val is_false =
+    case+ v of
+    | V1ALchar c => c = '\0'
+    | V1ALfloat f => f = 0.0
+    | V1ALint i => i = 0
+    | V1ALstring s => string0_is_empty s
+in
+  if is_false then begin
+    prerr loc;
+    prerr ": error(1)";
+    prerr ": [#assert] failed.";
+    prerr_newline ();
+    exit {void} (1)
+  end
+end // end of [do_e0xpact_assert]
+
+implement do_e0xpact_error (loc, v) = let
+  val () = begin
+    prerr loc; prerr ": error(1)"; prerr ": [#error]: "
+  end
+  val () = case+ v of
+    | V1ALchar c => prerr c
+    | V1ALfloat f => prerr f
+    | V1ALint i => prerr i
+    | V1ALstring s => prerr s
+in
+  exit {void} (1)
+end // end of [do_e0xpact_error]
+
+implement do_e0xpact_print (v) = case+ v of
+  | V1ALchar c => prerr c
+  | V1ALfloat f => prerr f
+  | V1ALint i => prerr i
+  | V1ALstring s => prerr s
+
+(* ****** ****** *)
+
+
+implement s0tacon_tr (d) = let
+  val arg = (
+    case+ d.s0tacon_arg of
+    | Some d0as => Some (d0atarglst_tr d0as) | None () => None ()
+  ) : Option d1atarglst 
+  val def = s0expopt_tr d.s0tacon_def
+in
+  s1tacon_make (d.s0tacon_loc, d.s0tacon_sym, arg, def)
+end // end of [s0tacon_tr]
+
+implement s0taconlst_tr (ds) = $Lst.list_map_fun (ds, s0tacon_tr)
+
+(* ****** ****** *)
+
+implement s0tacst_tr (d) = let
+  val os1ts_arg = (
+    case+ d.s0tacst_arg of
+    | Some arg => Some (d0atarglst_srtlst_tr arg) | None () => None ()
+  ) : s1rtlstopt
+  val s1t_res: s1rt = s0rt_tr d.s0tacst_res
+in
+  s1tacst_make (d.s0tacst_loc, d.s0tacst_sym, os1ts_arg, s1t_res)
+end
+
+implement s0tacstlst_tr (ds) = $Lst.list_map_fun (ds, s0tacst_tr)
+
+(* ****** ****** *)
+
+implement s0tavar_tr (d) = let
+  val s1t: s1rt = s0rt_tr d.s0tavar_srt
+in
+  s1tavar_make (d.s0tavar_loc, d.s0tavar_sym, s1t)
+end
+
+implement s0tavarlst_tr (ds) = $Lst.list_map_fun (ds, s0tavar_tr)
+
+(* ****** ****** *)
+
+fun d0atsrtcon_tr (x: d0atsrtcon): d1atsrtcon = let
+  val loc = x.d0atsrtcon_loc and nam = x.d0atsrtcon_sym
+  val s1ts = (
+    case+ x.d0atsrtcon_arg of
+    | Some s0t => let
+        val s1t = s0rt_tr s0t
+      in
+        case+ s1t.s1rt_node of
+          | S1RTlist s1ts => s1ts | _ => cons (s1t, nil ())
+      end
+    | None () => nil ()
+  ) : s1rtlst
+in
+  d1atsrtcon_make (loc, nam, s1ts)
+end // end of [d0atsrtcon_tr]
+
+fun d0atsrtconlst_tr (xs: d0atsrtconlst): d1atsrtconlst =
+  $Lst.list_map_fun (xs, d0atsrtcon_tr)
+
+implement d0atsrtdec_tr (d) = let
+  val loc = d.d0atsrtdec_loc and nam = d.d0atsrtdec_sym
+in
+  d1atsrtdec_make (loc, nam, d0atsrtconlst_tr d.d0atsrtdec_con)
+end // end of [d0atsrtdec_tr]
+
+implement d0atsrtdeclst_tr (ds) = $Lst.list_map_fun (ds, d0atsrtdec_tr)
+
+(* ****** ****** *)
+
+// translation of static expressions
+
+typedef s1expitm = $Fix.item s1exp
+typedef s1expitmlst = List s1expitm
+
+val s1expitm_app : s1expitm = let
+
+fn f (s1e1: s1exp, s1e2: s1exp):<cloref1> s1expitm = let
+  val loc = $Loc.location_combine (s1e1.s1exp_loc, s1e2.s1exp_loc)
+  val s1es2 = (
+    case+ s1e2.s1exp_node of
+    | S1Elist (npf, s1es) => s1es // should [npf = 0] be enforced?
+    | _ => cons (s1e2, nil ())
+  ) : s1explst
+  val s1e_app = s1exp_app (loc, s1e1, s1e2.s1exp_loc, s1es2)
+(*
+  val () = begin
+    print "s1expitm_app: f: s1e_app = "; print s1e_app; print_newline ()
+  end
+*)
+in
+  $Fix.ITEMatm s1e_app
+end // end of [f]
+
+in
+  $Fix.item_app f
+end // end of [app_s1exp_item]
+
+fun s1exp_make_opr (s1e: s1exp, f: $Fix.fxty_t): s1expitm = begin
+  $Fix.oper_make {s1exp} (
+    lam x => x.s1exp_loc,
+    lam (loc, x, loc_arg, xs) => s1exp_app (loc, x, loc_arg, xs), s1e, f
+  )
+end // end of [s1exp_make_opr]
+
+val s1expitm_backslash : s1expitm = begin
+  $Fix.oper_make_backslash {s1exp} (
+    lam x => x.s1exp_loc,
+    lam (loc, x1, loc_arg, x2) => s1exp_app (loc, x1, loc_arg, x2)
+  )
+end // end of [s1expitm_backslash]
+
+(* ****** ****** *)
+
+fn s0arg_tr (s0a: s0arg): s1arg = let
+  val res = s0rtopt_tr s0a.s0arg_srt
+in
+  s1arg_make (s0a.s0arg_loc, s0a.s0arg_sym, res)
+end // end of [s0arg_tr]
+
+implement s0arglst_tr (s0as) = $Lst.list_map_fun (s0as, s0arg_tr)
+implement s0arglstlst_tr (s0ass) = $Lst.list_map_fun (s0ass, s0arglst_tr)
+
+fn s0qua_tr (s0q: s0qua): s1qua = begin
+  case+ s0q.s0qua_node of
+  | S0QUAprop s0p => s1qua_prop (s0q.s0qua_loc, s0exp_tr s0p)
+  | S0QUAvars (id, ids, s0te) => begin
+      s1qua_vars (s0q.s0qua_loc, id :: ids, s0rtext_tr s0te)
+    end
+end // end of [s0qua_tr]
+
+implement s0qualst_tr (s0qs) = $Lst.list_map_fun (s0qs, s0qua_tr)
+implement s0qualstlst_tr (s0qss) = $Lst.list_map_fun (s0qss, s0qualst_tr)
+
+(* ****** ****** *)
+
+fn s0exp_tr_errmsg_opr (loc: loc_t): s1exp = begin
+  prerr loc;
+  prerr ": error(1)";
+  prerr ": the operator needs to be applied.\n";
+  $Err.abort {s1exp} ()
+end
+
+implement s0exp_tr s0e0 = let
+
+fun aux_item (s0e0: s0exp): s1expitm = let
+  val loc0 = s0e0.s0exp_loc in case+ s0e0.s0exp_node of
+    | S0Eann (s0e, s0t) => let
+        val s1e = s0exp_tr s0e and s1t = s0rt_tr s0t
+        val s1e_ann = s1exp_ann (loc0, s1e, s1t)
+      in
+        $Fix.ITEMatm s1e_ann
+      end
+    | S0Eapp _ => let 
+        val s1e = $Fix.fixity_resolve (loc0, s1expitm_app, aux_itemlst s0e0)
+      in
+        $Fix.ITEMatm s1e
+      end
+    | S0Echar c => $Fix.ITEMatm (s1exp_char (loc0, c))
+    | S0Eexi (knd(*funres*), s0qs) => let
+        val s1qs = s0qualst_tr s0qs
+        fn f (body: s1exp):<cloref1> s1expitm =
+          let val loc0 = $Loc.location_combine (loc0, body.s1exp_loc) in
+            $Fix.ITEMatm (s1exp_exi (loc0, knd, s1qs, body))
+          end
+      in
+        $Fix.ITEMopr ($Fix.OPERpre ($Fix.exi_prec_sta, f))
+      end
+    | S0Eextype name => $Fix.ITEMatm (s1exp_extype (loc0, name))
+    | S0Eint int (*string*) => $Fix.ITEMatm (s1exp_int (loc0, int))
+    | S0Eide id when id = $Sym.symbol_AMPERSAND => let
+        fn f (s1e: s1exp):<cloref1> s1expitm =
+          let val loc0 = $Loc.location_combine (loc0, s1e.s1exp_loc) in
+            $Fix.ITEMatm (s1exp_invar (loc0, 1(*ref*), s1e))
+          end
+      in
+        $Fix.ITEMopr ($Fix.OPERpre ($Fix.invar_prec_sta, f))
+      end
+    | S0Eide id when id = $Sym.symbol_BACKSLASH => s1expitm_backslash
+    | S0Eide id when id = $Sym.symbol_BANG => let
+        fn f (s1e: s1exp):<cloref1> s1expitm =
+          let val loc0 = $Loc.location_combine (loc0, s1e.s1exp_loc) in
+            $Fix.ITEMatm (s1exp_invar (loc0, 0(*val*), s1e))
+          end
+      in
+        $Fix.ITEMopr ($Fix.OPERpre ($Fix.invar_prec_sta, f))
+      end
+    | S0Eide id when id = $Sym.symbol_QMARK => let
+        fn f (s1e: s1exp):<cloref1> s1expitm =
+          let val loc0 = $Loc.location_combine (s1e.s1exp_loc, loc0) in
+            $Fix.ITEMatm (s1exp_top (loc0, 0(*knd*), s1e))
+          end
+      in
+        $Fix.ITEMopr ($Fix.OPERpos ($Fix.qmark_prec_sta, f))
+      end
+    | S0Eide id when id = $Sym.symbol_QMARKBANG => let
+        fn f (s1e: s1exp):<cloref1> s1expitm =
+          let val loc0 = $Loc.location_combine (s1e.s1exp_loc, loc0) in
+            $Fix.ITEMatm (s1exp_top (loc0, 1(*knd*), s1e))
+          end
+      in
+        $Fix.ITEMopr ($Fix.OPERpos ($Fix.qmarkbang_prec_sta, f))
+      end
+    | S0Eide id when id = $Sym.symbol_GTGT => let
+        fn f (s1e1: s1exp, s1e2: s1exp):<cloref1> s1expitm =
+          let val loc0 = $Loc.location_combine (s1e1.s1exp_loc, s1e2.s1exp_loc) in
+            $Fix.ITEMatm (s1exp_trans (loc0, s1e1, s1e2))
+          end
+      in
+        $Fix.ITEMopr ($Fix.OPERinf ($Fix.trans_prec_sta, $Fix.ASSOCnon, f))
+      end
+    | S0Eide id when id = $Sym.symbol_R0EAD => let
+        fn f (s1e: s1exp):<cloref1> s1expitm =
+          let val loc0 = $Loc.location_combine (loc0, s1e.s1exp_loc) in
+            $Fix.ITEMatm (s1exp_read (loc0, s1e))
+          end
+      in
+        $Fix.ITEMopr ($Fix.OPERpre ($Fix.r0ead_prec_sta, f))
+      end
+    | S0Eide id => let
+        // [e1xpdef] expansion is to be done in [ats_trans2.dats]
+        // if it is done here, then it is only one level expansion
+        val s1e = s1exp_ide (loc0, id)
+      in
+        case+ the_fxtyenv_find id of
+          | ~Some_vt f => s1exp_make_opr (s1e, f) | ~None_vt () => $Fix.ITEMatm s1e
+      end
+    | S0Eimp tags => let
+        val fc = $Syn.FUNCLOfun () // default is [function]
+        val (fc, lin, prf, efc) = $Eff.e0fftaglst_tr (fc, tags)
+(*
+        val () = begin
+          print "s0exp_tr: S0Eimp: efc = "; print efc; print_newline ()
+        end
+*)
+      in
+        case+ the_fxtyenv_find $Sym.symbol_MINUSGT of
+        | ~Some_vt f => let
+            val s1e_imp = s1exp_imp (loc0, fc, lin, prf, Some efc)
+          in
+            s1exp_make_opr (s1e_imp, f)
+          end
+        | ~None_vt () => begin
+            prerr "Internal Error: ";
+            prerr "s0exp_tr: the fixity of -> is unavailable.";
+            prerr_newline ();
+            $Err.abort ()
+          end
+      end
+    | S0Elam (arg, res, body) => let
+        val arg = s0arglst_tr arg
+        val res = s0rtopt_tr res
+        val body = s0exp_tr body
+        val s1e_lam = s1exp_lam (loc0, arg, res, body)
+(*
+        val () = begin
+          print "s0exp_tr: S0Elam: s1e_lam = ";
+          print s1e_lam;
+          print_newline ();
+        end
+*)
+      in
+        $Fix.ITEMatm s1e_lam
+      end
+    | S0Elist (s0es) => let
+        val s1es = s0explst_tr s0es
+      in
+        $Fix.ITEMatm (s1exp_list (loc0, s1es))
+      end
+    | S0Elist2 (s0es1, s0es2) => let
+        val s1es1 = s0explst_tr s0es1
+        val s1es2 = s0explst_tr s0es2
+      in
+        $Fix.ITEMatm (s1exp_list2 (loc0, s1es1, s1es2))
+      end
+    | S0Eopide id => $Fix.ITEMatm (s1exp_ide (loc0, id))
+    | S0Eqid (q, id) => $Fix.ITEMatm (s1exp_qid (loc0, q, id))
+    | S0Estruct (ls0es) => let
+        val ls1es = labs0explst_tr ls0es
+      in
+        $Fix.ITEMatm (s1exp_struct (loc0, ls1es))
+      end
+    | S0Etyarr (s0e_elt, s0ess_dim) => let
+        val s1e_elt = s0exp_tr s0e_elt
+        val s1ess_dim = s0explstlst_tr s0ess_dim
+      in
+        $Fix.ITEMatm (s1exp_tyarr (loc0, s1e_elt, s1ess_dim))
+      end
+    | S0Etyrec (flat, ls0es) => let
+        val ls1es = labs0explst_tr ls0es
+      in
+        $Fix.ITEMatm (s1exp_tyrec (loc0, flat, ls1es))
+      end
+    | S0Etytup (flat, s0es) => let
+        val s1es = s0explst_tr s0es
+      in
+        $Fix.ITEMatm (s1exp_tytup (loc0, flat, s1es))
+      end
+    | S0Etytup2 (flat, s0es1, s0es2) => let
+        val s1es1 = s0explst_tr s0es1
+        val s1es2 = s0explst_tr s0es2
+      in
+        $Fix.ITEMatm (s1exp_tytup2 (loc0, flat, s1es1, s1es2))
+      end
+    | S0Euni (s0qs) => let
+        val s1qs = s0qualst_tr s0qs
+        fn f (body: s1exp):<cloref1> s1expitm =
+          let val loc0 = $Loc.location_combine (loc0, body.s1exp_loc) in
+            $Fix.ITEMatm (s1exp_uni (loc0, s1qs, body))
+          end
+      in
+        $Fix.ITEMopr ($Fix.OPERpre ($Fix.uni_prec_sta, f))
+      end
+    | S0Eunion (s0e, ls0es) => let
+        val s1e = s0exp_tr s0e
+        val ls1es = labs0explst_tr ls0es
+      in
+        $Fix.ITEMatm (s1exp_union (loc0, s1e, ls1es))
+      end
+    | _ => begin
+        prerr loc0;
+        prerr ": error(1)";
+        prerr ": s0exp_tr: not available yet.\n";
+        $Err.abort {s1expitm} ()
+      end
+  end
+
+and aux_itemlst (s0e0: s0exp): s1expitmlst =
+  let
+    fun aux (res: s1expitmlst, s0e0: s0exp): s1expitmlst =
+      case+ s0e0.s0exp_node of
+      | S0Eapp (s0e1, s0e2) => 
+        let val res = aux_item s0e2 :: res in
+          aux (res, s0e1)
+        end
+      | _ => aux_item s0e0 :: res
+  in
+    aux (nil (), s0e0)
+  end
+
+in
+  case+ aux_item s0e0 of
+    | $Fix.ITEMatm s1e => s1e
+    | $Fix.ITEMopr _ => s0exp_tr_errmsg_opr s0e0.s0exp_loc
+end
+
+implement s0explst_tr s0es =
+  $Lst.list_map_fun (s0es, s0exp_tr)
+
+implement s0expopt_tr (os0e) = case+ os0e of
+  | Some s0e => Some (s0exp_tr s0e) | None () => None ()
+
+implement s0explstlst_tr s0ess =
+  $Lst.list_map_fun (s0ess, s0explst_tr)
+
+implement labs0explst_tr ls0es = case+ ls0es of
+  | LABS0EXPLSTcons (l, s0e, ls0es) =>
+    LABS1EXPLSTcons (l.l0ab_lab, s0exp_tr s0e, labs0explst_tr ls0es)
+  | LABS0EXPLSTnil () => LABS1EXPLSTnil ()
+
+implement s0rtext_tr s0te = let
+  val loc = s0te.s0rtext_loc
+in
+  case+ s0te.s0rtext_node of
+  | S0TEsrt s0t => s1rtext_srt (loc, s0rt_tr s0t)
+  | S0TEsub (id, s0te, s0p, s0ps) => let
+      val s1te = s0rtext_tr s0te
+      val s1p = s0exp_tr s0p and s1ps = s0explst_tr s0ps
+    in
+      s1rtext_sub (loc, id.i0de_sym, s1te, s1p :: s1ps)
+    end
+end // end of [s0rtext_tr]
+
+(* ****** ****** *)
+
+implement tmps0explstlst_tr (ts0ess) = begin
+  case+ ts0ess of
+  | TMPS0EXPLSTLSTnil () => TMPS1EXPLSTLSTnil ()
+  | TMPS0EXPLSTLSTcons (loc, s0es, ts0ess) => begin
+     TMPS1EXPLSTLSTcons (loc, s0explst_tr s0es, tmps0explstlst_tr ts0ess)
+    end
+end // end of [tmps0explstlst_tr]
+
+(* ****** ****** *)
+
+implement witht0ype_tr (w0t) = begin case+ w0t of
+  | WITHT0YPEnone () => WITHT1YPEnone ()
+  | WITHT0YPEprop s0e => WITHT1YPEprop (s0exp_tr s0e)
+  | WITHT0YPEtype s0e => WITHT1YPEtype (s0exp_tr s0e)
+  | WITHT0YPEview s0e => WITHT1YPEview (s0exp_tr s0e)
+  | WITHT0YPEviewtype s0e => WITHT1YPEviewtype (s0exp_tr s0e)
+end // end of [witht0ype_tr]
+
+(* ****** ****** *)
+
+implement s0rtdef_tr (d) = let
+  val s1te = s0rtext_tr d.s0rtdef_def
+(*
+  val () = print "s0rtdef_tr: s1te = "
+  val (pf_stdout | ptr_stdout) = stdout_get ()
+  val () = fprint (file_mode_lte_w_w | !ptr_stdout, s1te)
+  val () = stdout_view_set (pf_stdout | (*none*))
+  val () = print_newline ()
+*)
+in
+  s1rtdef_make (d.s0rtdef_loc, d.s0rtdef_sym, s1te)
+end // end of [s0rtdef_tr]
+
+implement s0rtdeflst_tr (ds) = $Lst.list_map_fun (ds, s0rtdef_tr)
+
+(* ****** ****** *)
+
+implement s0expdef_tr (d) = let
+  val arg = s0arglstlst_tr d.s0expdef_arg
+  val res = s0rtopt_tr d.s0expdef_res
+  val def = s0exp_tr d.s0expdef_def
+(*
+  val () = begin
+    print "s0expdef_tr: def = "; print def; print_newline ()
+  end
+*)
+in
+  s1expdef_make (d.s0expdef_loc, d.s0expdef_sym, arg, res, def)
+end // end of [s0expdef_tr]
+
+implement s0expdeflst_tr (ds) = $Lst.list_map_fun (ds, s0expdef_tr)
+
+(* ****** ****** *)
+
+implement s0aspdec_tr (d) = let
+  val arg = s0arglstlst_tr d.s0aspdec_arg
+  val res = s0rtopt_tr d.s0aspdec_res
+  val def = s0exp_tr d.s0aspdec_def
+in
+  s1aspdec_make (d.s0aspdec_loc, d.s0aspdec_qid, arg, res, def)
+end // end of [s0aspdec_tr]
+
+(* ****** ****** *)
+
+fn d0atcon_tr (d0c: d0atcon): d1atcon = let
+
+val qua = s0qualstlst_tr (d0c.d0atcon_qua)
+var npf_var: int = 0
+val arg = (
+  case+ d0c.d0atcon_arg of
+  | Some s0e => let
+      val s1e = s0exp_tr s0e
+    in
+      case+ s1e.s1exp_node of
+      | S1Elist (npf, s1es) => (npf_var := npf; s1es)
+      | _ => cons (s1e, nil ())
+    end
+  | None () => nil ()
+) : s1explst
+
+val ind = (
+  case+ d0c.d0atcon_ind of
+  | Some s0e => let
+      val s1es = case+ s0e.s0exp_node of
+        | S0Elist s0es => s0explst_tr s0es | _ => begin
+            prerr "Internal Error: ";
+            prerr "ats_trans1: d0atcon_tr: index is not a list.";
+            prerr_newline ();
+            $Err.abort ()
+          end
+    in
+      Some s1es
+    end
+  | None () => None ()
+) : s1explstopt
+
+in
+  d1atcon_make (d0c.d0atcon_loc, d0c.d0atcon_sym, qua, npf_var, arg, ind)
+end // end of [d0atcon_tr]
+
+fun d0atconlst_tr (ds: d0atconlst): d1atconlst = begin
+  case+ ds of
+  | cons (d, ds) => cons (d0atcon_tr d, d0atconlst_tr ds)
+  | nil () => nil ()
+end // end of [d0atconlst_tr]
+
+implement d0atdec_tr (d0c) = let
+  val arg = (
+    case+ d0c.d0atdec_arg of
+    | Some d0as => Some (d0atarglst_tr d0as) | None () => None ()
+  ) : d1atarglstopt
+
+  val con = d0atconlst_tr d0c.d0atdec_con
+in
+  d1atdec_make (
+    d0c.d0atdec_loc, d0c.d0atdec_fil, d0c.d0atdec_sym, arg, con
+  ) // end of [d1atdec_make]
+end // end of [d0atdec_tr]
+
+implement d0atdeclst_tr (ds) = begin
+  case+ ds of
+  | cons (d, ds) => cons (d0atdec_tr d, d0atdeclst_tr ds)
+  | nil () => nil ()
+end // end of [d0atdeclst_tr]
+
+(* ****** ****** *)
+
+implement e0xndec_tr (d) = let
+
+val qua = s0qualstlst_tr (d.e0xndec_qua)
+var npf_var: int = 0
+val arg = (
+  case+ d.e0xndec_arg of
+  | Some s0e => let
+      val s1e = s0exp_tr s0e
+    in
+      case+ s1e.s1exp_node of
+      | S1Elist (npf, s1es) => (npf_var := npf; s1es)
+      | _ => cons (s1e, nil ())
+    end
+  | None () => nil ()
+) : s1explst
+
+in
+  e1xndec_make (
+    d.e0xndec_loc, d.e0xndec_fil, d.e0xndec_sym, qua, npf_var, arg
+  ) // end of [e1xndec_make]
+end // end of [e0xndec_tr]
+
+implement e0xndeclst_tr (ds) = $Lst.list_map_fun (ds, e0xndec_tr)
+
+(* ****** ****** *)
+
+(* end of [ats_trans1_sta.dats] *)
