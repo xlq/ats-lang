@@ -1,0 +1,18 @@
+//
+//
+// The header for bootstrap/Makefile
+//
+//
+
+#include "config.h" // automatically genereated by [configure]
+
+// if [libgmp] is available
+
+LIBGMP=
+#ifdef HAVE_GMP_H
+LIBGMP=-lgmp
+#endif
+
+/* ****** ****** */
+
+/* end of [bootstrap_header] */
