@@ -1,0 +1,93 @@
+//
+//
+// Installation Guide for ATS/Anairiats
+//
+//
+
+------------------------------------------------------------------------
+
+######
+#
+# Installation from a precompiled package
+#
+######
+
+In order to use installation approach, which is the simplest, you are
+required to have root access. After downloading an approriate precompiled
+ATS package for your platform, please untar it in the root directory "/".
+Then set the environment variable ATSHOME to "/usr/share/atshome".
+
+------------------------------------------------------------------------
+
+######
+#
+# Installation from source code compilation
+#
+######
+
+The current implementation of ATS is given the name ATS/Anairiats, or
+simply Anairiats. It is nearly all written in ATS itself. In order to
+install Anairiats, the following requirements need to be met:
+
+  * Operating System requirement:
+
+    * Linux
+    * Windows with Cygwin
+    * MacOS X (currently no GC support for multithreading)
+    * SunOS (currently no GC support for multithreading)
+
+    We plan to port it to other platforms in the future.
+
+  * Programming Language requirement: GNU C Compiler (GCC).
+
+Also, the GMP library (libgmp.a), which is often included in a GNU/Linux
+distribution, is currently optional, and it may be required to install a
+future release of ATS.
+
+Once these requirements are met, you can readily install Anairiats in 3
+steps as describled below:
+
+Step 1: After downloading the tarball ATS.tgz, please untar it in a
+directory, say "FOO", of your choice. This, for instance, can be done
+by executing the following command:
+
+tar -zvxf ATS.tar.gz 
+
+All the files and directories extracted from the tarball are now in
+the directory "FOO/ATS".
+
+Step 2: Please set the shell environment variable ATSHOME to be
+"FOO/ATS". For instance, this can be done by executing the following
+command in BASH:
+
+ATSHOME=FOO/ATS; export ATSHOME
+
+or the following command in CSH/TCSH:
+
+setenv ATSHOME FOO/ATS
+
+You may want to put this command in a file (e.g., .cshrc or .bashrc)
+that is executed each time when a shell is started.
+
+Step 3: You can now go into the directory "FOO/ATS" and execute
+
+make all
+
+This generates executables "atscc" and "atsopt" in the directory
+"FOO/ATS/bin", which is the command you need for compiling ATS programs,
+and a library file "libats.a" in the directory "FOO/ATS/CCOMP/lib", which
+you need for linking.
+
+Step 4: Lastly, you need to create symbolic links to "atscc" and "atsopt"
+in a directory (e.g., "/usr/bin" if you have root access) that is on your
+execution path, or you may simply put the directory "FOO/ATS/bin" on your
+execution path, which can be done in BASH as follows:
+
+PATH=${PATH}:${ATSHOME}/bin; export PATH
+
+or in CSH/TCSH as follows:
+
+setenv PATH ${PATH}:${ATSHOME}/bin
+
+
+###### end of [INSTALL] ######
