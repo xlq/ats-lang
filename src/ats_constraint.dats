@@ -1,0 +1,1920 @@
+(***********************************************************************)
+(*                                                                     *)
+(*                         Applied Type System                         *)
+(*                                                                     *)
+(*                              Hongwei Xi                             *)
+(*                                                                     *)
+(***********************************************************************)
+
+(*
+ * ATS/Anairiats - Unleashing the Potential of Types!
+ *
+ * Copyright (C) 2002-2008 Hongwei Xi, Boston University
+ *
+ * All rights reserved
+ *
+ * ATS is free software;  you can  redistribute it and/or modify it under
+ * the terms of  the GNU GENERAL PUBLIC LICENSE (GPL) as published by the
+ * Free Software Foundation; either version 3, or (at  your  option)  any
+ * later version.
+ * 
+ * ATS is distributed in the hope that it will be useful, but WITHOUT ANY
+ * WARRANTY; without  even  the  implied  warranty  of MERCHANTABILITY or
+ * FITNESS FOR A PARTICULAR PURPOSE.  See the  GNU General Public License
+ * for more details.
+ * 
+ * You  should  have  received  a  copy of the GNU General Public License
+ * along  with  ATS;  see the  file COPYING.  If not, please write to the
+ * Free Software Foundation,  51 Franklin Street, Fifth Floor, Boston, MA
+ * 02110-1301, USA.
+ *
+ *)
+
+(* ****** ****** *)
+
+// Time: February 2008
+// Author: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
+
+(* ****** ****** *)
+
+(* for representing and handling constraints *)
+
+(* ****** ****** *)
+
+%{^
+
+#include "ats_solver_fm.cats"
+
+%}
+
+(* ****** ****** *)
+
+staload Deb = "ats_debug.sats"
+staload Err = "ats_error.sats"
+staload IntInf = "ats_intinf.sats"
+staload Lst = "ats_list.sats"
+
+(* ****** ****** *)
+
+staload "ats_staexp2.sats"
+staload "ats_stadyncst2.sats"
+staload "ats_patcst2.sats"
+staload "ats_trans3_env.sats"
+
+(* ****** ****** *)
+
+staload "ats_solver_fm.sats"
+staload "ats_constraint.sats"
+
+(* ****** ****** *)
+
+overload < with $IntInf.lt_intinf_int
+overload <= with $IntInf.lte_intinf_int
+overload > with $IntInf.gt_intinf_int
+overload >= with $IntInf.gte_intinf_int
+overload = with $IntInf.eq_intinf_int
+overload <> with $IntInf.neq_intinf_int
+
+(* ****** ****** *)
+
+implement s3aexp_null = S3AEnull ()
+
+implement s3aexp_cst (s2c) = S3AEcst (s2c)
+implement s3aexp_var (s2v) = S3AEvar (s2v)
+
+implement s3aexp_padd (s3ae1, s3ie2) = begin
+  case+ s3ae1 of
+  | S3AEpadd (s3ae11, s3ie12) => begin
+      s3aexp_padd (s3ae11, s3iexp_iadd (s3ie12, s3ie2))
+    end
+  | _ => S3AEpadd (s3ae1, s3ie2)
+end // end of [s3aexp_padd]
+
+implement s3aexp_psub (s3ae1, s3ie2) = begin
+  case+ s3ae1 of
+  | S3AEpadd (s3ae11, s3ie12) => begin
+      s3aexp_padd (s3ae11, s3iexp_isub (s3ie12, s3ie2))
+    end
+  | _ => S3AEpadd (s3ae1, s3iexp_ineg s3ie2)
+end // end of [s3aexp_psub]
+
+implement s3aexp_psucc (s3ae) = s3aexp_padd (s3ae, s3iexp_1)
+implement s3aexp_ppred (s3ae) = s3aexp_psub (s3ae, s3iexp_1)
+
+(* ****** ****** *)
+
+implement s3bexp_true = S3BEbool (true)
+implement s3bexp_false = S3BEbool (false)
+
+implement s3bexp_cst (s2c) = S3BEcst (s2c)
+implement s3bexp_var (s2v) = S3BEvar (s2v)
+
+implement s3bexp_bneg (s3be0) = case+ s3be0 of
+  | S3BEbool b => S3BEbool (not b)
+  | S3BEbadd (s3be1, s3be2) => S3BEbmul (S3BEbneg s3be1, S3BEbneg s3be2)
+  | S3BEbmul (s3be1, s3be2) => S3BEbadd (S3BEbneg s3be1, S3BEbneg s3be2)
+  | S3BEbneg s3be => s3be
+  | S3BEiexp (knd, s3ie) => S3BEiexp (~knd, s3ie)
+  | _ => S3BEbneg s3be0
+
+implement s3bexp_beq (s3be1, s3be2) = begin case+ s3be1 of
+  | S3BEbool b1 => if b1 then s3be2 else s3bexp_bneg s3be2
+  | _ => begin case+ s3be2 of
+    | S3BEbool b2 => if b2 then s3be1 else s3bexp_bneg s3be1
+    | _ => let
+        val _s3be1 = s3bexp_bneg s3be1 and _s3be2 = s3bexp_bneg s3be2
+      in
+        S3BEbadd (S3BEbmul (s3be1, s3be2), S3BEbmul (_s3be1, _s3be2))
+      end
+    end
+end // end of [s3bexp_beq]
+
+implement s3bexp_bneq (s3be1, s3be2) = begin case+ s3be1 of
+  | S3BEbool b1 => if b1 then s3bexp_bneg s3be2 else s3be2
+  | _ => begin case+ s3be2 of
+    | S3BEbool b2 => if b2 then s3bexp_bneg s3be1 else s3be1
+    | _ => let
+        val _s3be1 = s3bexp_bneg s3be1 and _s3be2 = s3bexp_bneg s3be2
+      in
+        S3BEbadd (S3BEbmul (s3be1, _s3be2), S3BEbmul (_s3be1, s3be2))
+      end
+    end
+end // end of [s3bexp_beq]
+
+//
+
+implement s3bexp_badd (s3be1, s3be2) = begin case+ s3be1 of
+  | S3BEbool b1 => if b1 then s3bexp_true else s3be2
+  | _ => begin case+ s3be2 of
+    | S3BEbool b2 => if b2 then s3bexp_true else s3be1
+    | _ => S3BEbadd (s3be1, s3be2)
+    end
+end // end of [s3bexp_badd]
+
+implement s3bexp_bmul (s3be1, s3be2) = begin case+ s3be1 of
+  | S3BEbool b1 => if b1 then s3be2 else s3bexp_false
+  | _ => begin case+ s3be2 of
+    | S3BEbool b2 => if b2 then s3be1 else s3bexp_false
+    | _ => S3BEbmul (s3be1, s3be2)
+    end
+end // end of [s3bexp_bmul]
+
+//
+
+implement s3bexp_iexp (knd, s3ie) = begin case+ s3ie of
+  | S3IEint i => begin case+ knd of
+    | 2(*gte*) => if i >= 0 then s3bexp_true else s3bexp_false
+    | 1(*eq*) => if i = 0 then s3bexp_true else s3bexp_false
+    | ~1(*neq*) => if i <> 0 then s3bexp_true else s3bexp_false
+    | ~2(*lt*) => if i < 0 then s3bexp_true else s3bexp_false
+    | _ => begin
+        prerr "Internal Error: s3bexp_iexp: knd = "; prerr knd; prerr_newline ();
+        $Err.abort {s3bexp} ()
+      end
+    end
+  | S3IEintinf i => begin case+ knd of
+    | 2(*gte*) => if i >= 0 then s3bexp_true else s3bexp_false
+    | 1(*eq*) => if i = 0 then s3bexp_true else s3bexp_false
+    | ~1(*neq*) => if i <> 0 then s3bexp_true else s3bexp_false
+    | ~2(*lt*) => if i < 0 then s3bexp_true else s3bexp_false
+    | _ => begin
+        prerr "Internal Error: s3bexp_iexp: knd = "; prerr knd; prerr_newline ();
+        $Err.abort {s3bexp} ()
+      end
+    end
+  | _ => S3BEiexp (knd, s3ie)
+end // end of [s3bexp_iexp]
+
+//
+
+implement s3bexp_igt (s3ie1, s3ie2) =
+  s3bexp_iexp (~2(*lt*), s3iexp_isub (s3ie2, s3ie1))
+
+implement s3bexp_igte (s3ie1, s3ie2) =
+  s3bexp_iexp (2(*gte*), s3iexp_isub (s3ie1, s3ie2))
+
+implement s3bexp_ilt (s3ie1, s3ie2) =
+  s3bexp_iexp (~2(*lt*), s3iexp_isub (s3ie1, s3ie2))
+
+implement s3bexp_ilte (s3ie1, s3ie2) =
+  s3bexp_iexp (2(*gte*), s3iexp_isub (s3ie2, s3ie1))
+
+//
+
+implement s3bexp_ieq (s3ie1, s3ie2) =
+  s3bexp_iexp (1(*eq*), s3iexp_isub (s3ie1, s3ie2))
+
+implement s3bexp_ineq (s3ie1, s3ie2) =
+  s3bexp_iexp (~1(*neq*), s3iexp_isub (s3ie1, s3ie2))
+
+//
+
+implement s3bexp_pgt (s3ae1, s3ae2) =
+  s3bexp_iexp (~2(*lt*), s3iexp_pdiff (s3ae2, s3ae1))
+
+implement s3bexp_pgte (s3ae1, s3ae2) =
+  s3bexp_iexp (2(*gte*), s3iexp_pdiff (s3ae1, s3ae2))
+
+implement s3bexp_plt (s3ae1, s3ae2) =
+  s3bexp_iexp (~2(*lt*), s3iexp_pdiff (s3ae1, s3ae2))
+
+implement s3bexp_plte (s3ae1, s3ae2) =
+  s3bexp_iexp (2(*gte*), s3iexp_pdiff (s3ae2, s3ae1))
+
+implement s3bexp_peq (s3ae1, s3ae2) =
+  s3bexp_iexp (1(*eq*), s3iexp_pdiff (s3ae1, s3ae2))
+
+implement s3bexp_pneq (s3ae1, s3ae2) =
+  s3bexp_iexp (~1(*neq*), s3iexp_pdiff (s3ae1, s3ae2))
+
+(* ****** ****** *)
+
+implement s3iexp_0 = S3IEint 0
+implement s3iexp_1 = S3IEint 1
+implement s3iexp_neg_1 = S3IEint (~1)
+
+implement s3iexp_cst (s2c) = S3IEcst s2c
+implement s3iexp_int (i) = S3IEint i
+implement s3iexp_intinf (i) = S3IEintinf i
+implement s3iexp_var (s2v) = S3IEvar s2v
+
+implement s3iexp_ineg (s3ie) = S3IEineg s3ie
+
+implement s3iexp_iadd (s3ie1, s3ie2) = begin
+  case+ (s3ie1, s3ie2) of
+  | (S3IEint i, _) when i = 0 => s3ie2
+  | (_, S3IEint i) when i = 0 => s3ie1
+  | (S3IEintinf i, _) when i = 0 => s3ie2
+  | (_, S3IEintinf i) when i = 0 => s3ie1
+(*
+  // avoid it: potential arithmetic overflow/underflow
+  | (S3IEint i1, S3IEint i2) => S3IEint (i1 + i2)
+*)
+  | (_, _) => S3IEiadd (s3ie1, s3ie2)
+end // end of [s3iexp_iadd]
+
+implement s3iexp_isub (s3ie1, s3ie2) = begin
+  case+ (s3ie1, s3ie2) of
+  | (S3IEint i, _) when i = 0 => s3iexp_ineg s3ie2
+  | (_, S3IEint i) when i = 0 => s3ie1
+  | (S3IEintinf i, _) when i = 0 => s3iexp_ineg s3ie2
+  | (_, S3IEintinf i) when i = 0 => s3ie1
+(* 
+  // avoid it: potential arithmetic overflow/underflow
+  | (S3IEint i1, S3IEint i2) => S3IEint (i1 - i2)
+*)
+  | (_, _) => S3IEisub (s3ie1, s3ie2)
+end // end of [s3iexp_isub]
+
+implement s3iexp_imul (s3ie1, s3ie2) = begin
+  case+ (s3ie1, s3ie2) of
+  | (S3IEint i, _) when i = 0 => s3ie1 // 0
+  | (S3IEint i, _) when i = 1 => s3ie2
+  | (_, S3IEint i) when i = 0 => s3ie2 // 0
+  | (_, S3IEint i) when i = 1 => s3ie1
+  | (S3IEintinf i, _) when i = 0 => s3ie1 // 0
+  | (S3IEintinf i, _) when i = 1 => s3ie2
+  | (_, S3IEintinf i) when i = 0 => s3ie2 // 0
+  | (_, S3IEintinf i) when i = 1 => s3ie1
+  | (_, _) => S3IEimul (s3ie1, s3ie2)
+end // end of [s3iexp_imul]
+
+implement s3iexp_pdiff (s3ae1, s3ae2) = S3IEpdiff (s3ae1, s3ae2)
+
+implement s3iexp_isucc (s3ie: s3iexp): s3iexp = s3iexp_iadd (s3ie, s3iexp_1)
+implement s3iexp_ipred (s3ie: s3iexp): s3iexp = s3iexp_isub (s3ie, s3iexp_1)
+
+(* ****** ****** *)
+
+fun s2cfdeflst_free (fds: s2cfdeflst_vt): void = begin
+  case+ fds of
+  | ~S2CFDEFLSTcons (_, _, _, os3be, fds) => let
+      val () = case+ os3be of ~Some_vt _ => () | ~None_vt () => ()
+    in
+      s2cfdeflst_free (fds)
+    end
+  | ~S2CFDEFLSTmark (fds) => s2cfdeflst_free (fds)
+  | ~S2CFDEFLSTnil () => ()
+end // end of [s2cfdeflst_free]
+
+//
+
+fn s2cfdeflst_pop (fds0: &s2cfdeflst_vt): void = let
+  fun aux (fds: s2cfdeflst_vt): s2cfdeflst_vt = case+ fds of
+    | ~S2CFDEFLSTcons (s2c, s2es, s2v, os3be, fds) => let
+        val () = case+ os3be of ~Some_vt _ => () | ~None_vt () => ()
+      in
+        aux (fds)
+      end
+    | ~S2CFDEFLSTmark (fds) => fds
+    | ~S2CFDEFLSTnil () => S2CFDEFLSTnil ()
+in
+  fds0 := aux (fds0)
+end
+
+fn s2cfdeflst_push (fds0: &s2cfdeflst_vt): void = begin
+  fds0 := S2CFDEFLSTmark (fds0)
+end
+
+fun s2cfdeflst_find
+  (fds0: &s2cfdeflst_vt, s2c0: s2cst_t, s2es0: s2explst)
+  : Option_vt s2var_t = begin case+ fds0 of
+  | S2CFDEFLSTcons (s2c, s2es, s2v, _, !fds) => let
+      val cond = (
+        if eq_s2cst_s2cst (s2c0, s2c) then s2explst_syneq (s2es, s2es0) else false
+      ) : bool
+    in
+      if cond then begin
+        fold@ fds0; Some_vt s2v
+      end else let
+        val ans = s2cfdeflst_find (!fds, s2c0, s2es0)
+      in
+        fold@ fds0; ans
+      end
+    end // end of [S2CFDEFLSTcons]
+  | S2CFDEFLSTmark (!fds) => let
+      val ans = s2cfdeflst_find (!fds, s2c0, s2es0)
+    in
+      fold@ fds0; ans
+    end // end of [S2CFDEFLSTmark]
+  | S2CFDEFLSTnil () => begin
+      fold@ fds0; None_vt ()
+    end // end of [S2CFDEFLSTnil]
+end // end of [s2cfdeflst_find]
+
+fn s2cfdeflst_add
+  (s2c: s2cst_t, s2es: s2explst, s2v: s2var_t,
+   s2cs: &s2cstlst, fds: &s2cfdeflst_vt): void = let
+(*
+  val () = begin
+    print "s2cfdeflst_add: s2c = "; print s2c; print_newline ();
+    print "s2cfdeflst_add: s2es = "; print s2es; print_newline ();
+    print "s2cfdeflst_add: s2v = "; print s2v; print_newline ();
+  end
+*)
+  val s2e_s2c = s2exp_cst s2c
+  val s2e_s2v = s2exp_var s2v
+  val s2es_arg = $Lst.list_extend (s2es, s2e_s2v)
+  val s2e_rel = s2exp_app_srt (s2rt_bool, s2e_s2c, s2es_arg)
+  val os3be = s3bexp_make_s2exp (s2e_rel, s2cs, fds)
+in
+  fds := S2CFDEFLSTcons (s2c, s2es, s2v, os3be, fds)
+end // end of [s2cfdeflst_add]
+
+fn s2cfdeflst_replace
+  (s2t: s2rt, s2c: s2cst_t, s2es: s2explst,
+   s2cs: &s2cstlst, fds: &s2cfdeflst_vt): s2var_t = begin
+  case+ s2cfdeflst_find (fds, s2c, s2es) of
+  | ~None_vt () => let
+      val s2v = s2var_make_srt (s2t)
+      val () = s2cfdeflst_add (s2c, s2es, s2v, s2cs, fds)
+    in
+      s2v
+    end
+  | ~Some_vt s2v => s2v
+end // end of [s2cfdeflst_replace]
+
+(* ****** ****** *)
+
+extern
+fun s3aexp_make_s2cst_s2explst
+  (s2c: s2cst_t, s2es: s2explst, s2cs: &s2cstlst, fds: &s2cfdeflst_vt)
+  : s3aexpopt_vt
+
+implement s3aexp_make_s2cst_s2explst (s2c, s2es, s2cs, fds) = begin
+  case+ 0 of // this looks prettier than [if-then-else] sequence
+  | _ when s2cstref_cst_equ (Add_addr_int_addr, s2c) => begin
+    case+ s2es of
+    | list_cons (s2e1, list_cons (s2e2, list_nil ())) => begin
+      case+ s3aexp_make_s2exp (s2e1, s2cs, fds) of
+      | ~Some_vt s3ae1 => begin
+        case+ s3iexp_make_s2exp (s2e2, s2cs, fds) of
+        | ~Some_vt s3ie2 => Some_vt (s3aexp_padd (s3ae1, s3ie2))
+        | ~None_vt () => None_vt ()
+        end // end of [Some_vt]
+      | ~None_vt () => None_vt ()
+      end // end of [list_cons]
+    | _ => begin
+        prerr "Internal Error: s3aexp_make_s2cst_s2explst: Add_addr_int_addr";
+        prerr_newline ();
+        $Err.abort {s3aexpopt_vt} ()
+      end
+    end // end of [Add_addr_int_addr]
+  | _ when s2cstref_cst_equ (Sub_addr_int_addr, s2c) => begin
+    case+ s2es of
+    | list_cons (s2e1, list_cons (s2e2, list_nil ())) => begin
+      case+ s3aexp_make_s2exp (s2e1, s2cs, fds) of
+      | ~Some_vt s3ae1 => begin
+        case+ s3iexp_make_s2exp (s2e2, s2cs, fds) of
+        | ~Some_vt s3ie2 => Some_vt (s3aexp_psub (s3ae1, s3ie2))
+        | ~None_vt () => None_vt ()
+        end // end of [Some_vt]
+      | ~None_vt () => None_vt ()
+      end // end of [list_cons]
+    | _ => begin
+        prerr "Internal Error: s3aexp_make_s2cst_s2explst: Sub_addr_int_addr";
+        prerr_newline ();
+        $Err.abort {s3aexpopt_vt} ()
+      end
+    end // end of [Sub_addr_int_addr]
+  | _ => let
+(*
+      val () = begin
+        print "s3aexp_make_s2cst_s2explst: s2c = "; print s2c; print_newline ();
+        print "s3aexp_make_s2cst_s2explst: s2es = "; print s2es; print_newline ();
+      end
+*)
+    in
+      None_vt ()
+    end
+end // end of [s3aexp_make_s2cst_s2explst]
+
+(* ****** ****** *)
+
+extern
+fun s3bexp_make_s2cst_s2explst
+  (s2c: s2cst_t, s2es: s2explst, s2cs: &s2cstlst, fds: &s2cfdeflst_vt)
+  : s3bexpopt_vt
+
+// a large but simple function
+implement s3bexp_make_s2cst_s2explst (s2c, s2es, s2cs, fds) = begin
+  case+ 0 of
+  // boolean negation
+  | _ when s2cstref_cst_equ (Neg_bool_bool, s2c) => begin
+    case+ s2es of
+    | list_cons (s2e, list_nil ()) => begin
+      case+ s3bexp_make_s2exp (s2e, s2cs, fds) of
+      | ~Some_vt s3be => Some_vt (s3bexp_bneg s3be) | ~None_vt () => None_vt ()
+      end // end of [list_cons]
+    | _ => begin
+        prerr "Internal Error: s3bexp_make_s2cst_s2explst: Neg_bool_bool";
+        prerr_newline ();
+        $Err.abort {s3bexpopt_vt} ()
+      end
+    end // end of [Neg_bool_bool]
+  // boolean addition/disjunction
+  | _ when s2cstref_cst_equ (Add_bool_bool_bool, s2c) => begin
+    case+ s2es of
+    | list_cons (s2e1, list_cons (s2e2, list_nil ())) => begin
+      case+ s3bexp_make_s2exp (s2e1, s2cs, fds) of
+      | ~Some_vt s3be1 => begin
+        case+ s3bexp_make_s2exp (s2e2, s2cs, fds) of
+        | ~Some_vt s3be2 => Some_vt (s3bexp_badd (s3be1, s3be2))
+        | ~None_vt () => None_vt ()
+        end // end of [Some_vt]
+      | ~None_vt () => None_vt ()
+      end // end of [list_cons]
+    | _ => begin
+        prerr "Internal Error: s3bexp_make_s2cst_s2explst: Add_bool_bool_bool";
+        prerr_newline ();
+        $Err.abort {s3bexpopt_vt} ()
+      end
+    end // end of [Add_bool_bool_bool]
+  // boolean multiplication/conjuction
+  | _ when s2cstref_cst_equ (Mul_bool_bool_bool, s2c) => begin
+    case+ s2es of
+    | list_cons (s2e1, list_cons (s2e2, list_nil ())) => begin
+      case+ s3bexp_make_s2exp (s2e1, s2cs, fds) of
+      | ~Some_vt s3be1 => begin
+        case+ s3bexp_make_s2exp (s2e2, s2cs, fds) of
+        | ~Some_vt s3be2 => Some_vt (s3bexp_bmul (s3be1, s3be2))
+        | ~None_vt () => None_vt ()
+        end // end of [Some_vt]
+      | ~None_vt () => None_vt ()
+      end // end of [list_cons]
+    | _ => begin
+        prerr "Internal Error: s3bexp_make_s2cst_s2explst: Mul_bool_bool_bool";
+        prerr_newline ();
+        $Err.abort {s3bexpopt_vt} ()
+      end
+    end // end of [Mul_bool_bool_bool]
+  // boolean equality
+  | _ when s2cstref_cst_equ (Eq_bool_bool_bool, s2c) => begin
+    case+ s2es of
+    | list_cons (s2e1, list_cons (s2e2, list_nil ())) => begin
+      case+ s3bexp_make_s2exp (s2e1, s2cs, fds) of
+      | ~Some_vt s3be1 => begin
+        case+ s3bexp_make_s2exp (s2e2, s2cs, fds) of
+        | ~Some_vt s3be2 => Some_vt (s3bexp_beq (s3be1, s3be2))
+        | ~None_vt () => None_vt ()
+        end // end of [Some_vt]
+      | ~None_vt () => None_vt ()
+      end // end of [list_cons]
+    | _ => begin
+        prerr "Internal Error: s3bexp_make_s2cst_s2explst: Eq_bool_bool_bool";
+        prerr_newline ();
+        $Err.abort {s3bexpopt_vt} ()
+      end
+    end // end of [Eq_bool_bool_bool]
+  // boolean inequality
+  | _ when s2cstref_cst_equ (Neq_bool_bool_bool, s2c) => begin
+    case+ s2es of
+    | list_cons (s2e1, list_cons (s2e2, list_nil ())) => begin
+      case+ s3bexp_make_s2exp (s2e1, s2cs, fds) of
+      | ~Some_vt s3be1 => begin
+        case+ s3bexp_make_s2exp (s2e2, s2cs, fds) of
+        | ~Some_vt s3be2 => Some_vt (s3bexp_bneq (s3be1, s3be2))
+        | ~None_vt () => None_vt ()
+        end // end of [Some_vt]
+      | ~None_vt () => None_vt ()
+      end // end of [list_cons]
+    | _ => begin
+        prerr "Internal Error: s3bexp_make_s2cst_s2explst: Neq_bool_bool_bool";
+        prerr_newline ();
+        $Err.abort {s3bexpopt_vt} ()
+      end
+    end // end of [Neq_bool_bool_bool]
+  // integer GT relation
+  | _ when s2cstref_cst_equ (Gt_int_int_bool, s2c) => begin
+    case+ s2es of
+    | list_cons (s2e1, list_cons (s2e2, list_nil ())) => begin
+      case+ s3iexp_make_s2exp (s2e1, s2cs, fds) of
+      | ~Some_vt s3ie1 => begin
+        case+ s3iexp_make_s2exp (s2e2, s2cs, fds) of
+        | ~Some_vt s3ie2 => Some_vt (s3bexp_igt (s3ie1, s3ie2))
+        | ~None_vt () => None_vt ()
+        end // end of [Some_vt]
+      | ~None_vt () => None_vt ()
+      end // end of [list_cons]
+    | _ => begin
+        prerr "Internal Error: s3bexp_make_s2cst_s2explst: Gt_int_int_bool";
+        prerr_newline ();
+        $Err.abort {s3bexpopt_vt} ()
+      end
+    end // end of [Gt_int_int_bool]
+  // integer GTE relation
+  | _ when s2cstref_cst_equ (Gte_int_int_bool, s2c) => begin
+    case+ s2es of
+    | list_cons (s2e1, list_cons (s2e2, list_nil ())) => begin
+      case+ s3iexp_make_s2exp (s2e1, s2cs, fds) of
+      | ~Some_vt s3ie1 => begin
+        case+ s3iexp_make_s2exp (s2e2, s2cs, fds) of
+        | ~Some_vt s3ie2 => Some_vt (s3bexp_igte (s3ie1, s3ie2))
+        | ~None_vt () => None_vt ()
+        end // end of [Some_vt]
+      | ~None_vt () => None_vt ()
+      end // end of [list_cons]
+    | _ => begin
+        prerr "Internal Error: s3bexp_make_s2cst_s2explst: Gte_int_int_bool";
+        prerr_newline ();
+        $Err.abort {s3bexpopt_vt} ()
+      end
+    end // end of [Gte_int_int_bool]
+  // integer LT relation
+  | _ when s2cstref_cst_equ (Lt_int_int_bool, s2c) => begin
+    case+ s2es of
+    | list_cons (s2e1, list_cons (s2e2, list_nil ())) => begin
+      case+ s3iexp_make_s2exp (s2e1, s2cs, fds) of
+      | ~Some_vt s3ie1 => begin
+        case+ s3iexp_make_s2exp (s2e2, s2cs, fds) of
+        | ~Some_vt s3ie2 => Some_vt (s3bexp_ilt (s3ie1, s3ie2))
+        | ~None_vt () => None_vt ()
+        end // end of [Some_vt]
+      | ~None_vt () => None_vt ()
+      end // end of [list_cons]
+    | _ => begin
+        prerr "Internal Error: s3bexp_make_s2cst_s2explst: lt_int_int_bool";
+        prerr_newline ();
+        $Err.abort {s3bexpopt_vt} ()
+      end
+    end // end of [Lt_int_int_bool]
+  // integer LTE relation
+  | _ when s2cstref_cst_equ (Lte_int_int_bool, s2c) => begin
+    case+ s2es of
+    | list_cons (s2e1, list_cons (s2e2, list_nil ())) => begin
+      case+ s3iexp_make_s2exp (s2e1, s2cs, fds) of
+      | ~Some_vt s3ie1 => begin
+        case+ s3iexp_make_s2exp (s2e2, s2cs, fds) of
+        | ~Some_vt s3ie2 => Some_vt (s3bexp_ilte (s3ie1, s3ie2))
+        | ~None_vt () => None_vt ()
+        end // end of [Some_vt]
+      | ~None_vt () => None_vt ()
+      end // end of [list_cons]
+    | _ => begin
+        prerr "Internal Error: s3bexp_make_s2cst_s2explst: Lte_int_int_bool";
+        prerr_newline ();
+        $Err.abort {s3bexpopt_vt} ()
+      end
+    end // end of [Lte_int_int_bool]
+  // integer equality
+  | _ when s2cstref_cst_equ (Eq_int_int_bool, s2c) => begin
+    case+ s2es of
+    | list_cons (s2e1, list_cons (s2e2, list_nil ())) => begin
+      case+ s3iexp_make_s2exp (s2e1, s2cs, fds) of
+      | ~Some_vt s3ie1 => begin
+        case+ s3iexp_make_s2exp (s2e2, s2cs, fds) of
+        | ~Some_vt s3ie2 => Some_vt (s3bexp_ieq (s3ie1, s3ie2))
+        | ~None_vt () => None_vt ()
+        end // end of [Some_vt]
+      | ~None_vt () => None_vt ()
+      end // end of [list_cons]
+    | _ => begin
+        prerr "Internal Error: s3bexp_make_s2cst_s2explst: Eq_int_int_bool";
+        prerr_newline ();
+        $Err.abort {s3bexpopt_vt} ()
+      end
+    end // end of [Eq_int_int_bool]
+  // integer inequality
+  | _ when s2cstref_cst_equ (Neq_int_int_bool, s2c) => begin
+    case+ s2es of
+    | list_cons (s2e1, list_cons (s2e2, list_nil ())) => begin
+      case+ s3iexp_make_s2exp (s2e1, s2cs, fds) of
+      | ~Some_vt s3ie1 => begin
+        case+ s3iexp_make_s2exp (s2e2, s2cs, fds) of
+        | ~Some_vt s3ie2 => Some_vt (s3bexp_ineq (s3ie1, s3ie2))
+        | ~None_vt () => None_vt ()
+        end // end of [Some_vt]
+      | ~None_vt () => None_vt ()
+      end // end of [list_cons]
+    | _ => begin
+        prerr "Internal Error: s3bexp_make_s2cst_s2explst: Neq_int_int_bool";
+        prerr_newline ();
+        $Err.abort {s3bexpopt_vt} ()
+      end
+    end // end of [Neq_int_int_bool]
+  // address GT relation
+  | _ when s2cstref_cst_equ (Gt_addr_addr_bool, s2c) => begin
+    case+ s2es of
+    | list_cons (s2e1, list_cons (s2e2, list_nil ())) => begin
+      case+ s3aexp_make_s2exp (s2e1, s2cs, fds) of
+      | ~Some_vt s3ae1 => begin
+        case+ s3aexp_make_s2exp (s2e2, s2cs, fds) of
+        | ~Some_vt s3ae2 => Some_vt (s3bexp_pgt (s3ae1, s3ae2))
+        | ~None_vt () => None_vt ()
+        end // end of [Some_vt]
+      | ~None_vt () => None_vt ()
+      end // end of [list_cons]
+    | _ => begin
+        prerr "Internal Error: s3bexp_make_s2cst_s2explst: Gt_addr_addr_bool";
+        prerr_newline ();
+        $Err.abort {s3bexpopt_vt} ()
+      end
+    end // end of [Gt_addr_addr_bool]
+  // address GTE relation
+  | _ when s2cstref_cst_equ (Gte_addr_addr_bool, s2c) => begin
+    case+ s2es of
+    | list_cons (s2e1, list_cons (s2e2, list_nil ())) => begin
+      case+ s3aexp_make_s2exp (s2e1, s2cs, fds) of
+      | ~Some_vt s3ae1 => begin
+        case+ s3aexp_make_s2exp (s2e2, s2cs, fds) of
+        | ~Some_vt s3ae2 => Some_vt (s3bexp_pgte (s3ae1, s3ae2))
+        | ~None_vt () => None_vt ()
+        end // end of [Some_vt]
+      | ~None_vt () => None_vt ()
+      end // end of [list_cons]
+    | _ => begin
+        prerr "Internal Error: s3bexp_make_s2cst_s2explst: Gte_addr_addr_bool";
+        prerr_newline ();
+        $Err.abort {s3bexpopt_vt} ()
+      end
+    end // end of [Gte_addr_addr_bool]
+  // address LT relation
+  | _ when s2cstref_cst_equ (Lt_addr_addr_bool, s2c) => begin
+    case+ s2es of
+    | list_cons (s2e1, list_cons (s2e2, list_nil ())) => begin
+      case+ s3aexp_make_s2exp (s2e1, s2cs, fds) of
+      | ~Some_vt s3ae1 => begin
+        case+ s3aexp_make_s2exp (s2e2, s2cs, fds) of
+        | ~Some_vt s3ae2 => Some_vt (s3bexp_plt (s3ae1, s3ae2))
+        | ~None_vt () => None_vt ()
+        end // end of [Some_vt]
+      | ~None_vt () => None_vt ()
+      end // end of [list_cons]
+    | _ => begin
+        prerr "Internal Error: s3bexp_make_s2cst_s2explst: Lt_addr_addr_bool";
+        prerr_newline ();
+        $Err.abort {s3bexpopt_vt} ()
+      end
+    end // end of [Lt_addr_addr_bool]
+  // address LTE relation
+  | _ when s2cstref_cst_equ (Lte_addr_addr_bool, s2c) => begin
+    case+ s2es of
+    | list_cons (s2e1, list_cons (s2e2, list_nil ())) => begin
+      case+ s3aexp_make_s2exp (s2e1, s2cs, fds) of
+      | ~Some_vt s3ae1 => begin
+        case+ s3aexp_make_s2exp (s2e2, s2cs, fds) of
+        | ~Some_vt s3ae2 => Some_vt (s3bexp_plte (s3ae1, s3ae2))
+        | ~None_vt () => None_vt ()
+        end // end of [Some_vt]
+      | ~None_vt () => None_vt ()
+      end // end of [list_cons]
+    | _ => begin
+        prerr "Internal Error: s3bexp_make_s2cst_s2explst: Lte_addr_addr_bool";
+        prerr_newline ();
+        $Err.abort {s3bexpopt_vt} ()
+      end
+    end // end of [Lte_addr_addr_bool]
+  // address equality
+  | _ when s2cstref_cst_equ (Eq_addr_addr_bool, s2c) => begin
+    case+ s2es of
+    | list_cons (s2e1, list_cons (s2e2, list_nil ())) => begin
+      case+ s3aexp_make_s2exp (s2e1, s2cs, fds) of
+      | ~Some_vt s3ae1 => begin
+        case+ s3aexp_make_s2exp (s2e2, s2cs, fds) of
+        | ~Some_vt s3ae2 => Some_vt (s3bexp_peq (s3ae1, s3ae2))
+        | ~None_vt () => None_vt ()
+        end // end of [Some_vt]
+      | ~None_vt () => None_vt ()
+      end // end of [list_cons]
+    | _ => begin
+        prerr "Internal Error: s3bexp_make_s2cst_s2explst: Eq_addr_addr_bool";
+        prerr_newline ();
+        $Err.abort {s3bexpopt_vt} ()
+      end
+    end // end of [Eq_addr_addr_bool]
+  // address inequality
+  | _ when s2cstref_cst_equ (Neq_addr_addr_bool, s2c) => begin
+    case+ s2es of
+    | list_cons (s2e1, list_cons (s2e2, list_nil ())) => begin
+      case+ s3aexp_make_s2exp (s2e1, s2cs, fds) of
+      | ~Some_vt s3ae1 => begin
+        case+ s3aexp_make_s2exp (s2e2, s2cs, fds) of
+        | ~Some_vt s3ae2 => Some_vt (s3bexp_pneq (s3ae1, s3ae2))
+        | ~None_vt () => None_vt ()
+        end // end of [Some_vt]
+      | ~None_vt () => None_vt ()
+      end // end of [list_cons]
+    | _ => begin
+        prerr "Internal Error: s3bexp_make_s2cst_s2explst: Neq_addr_addr_bool";
+        prerr_newline ();
+        $Err.abort {s3bexpopt_vt} ()
+      end
+    end // end of [Neq_addr_addr_bool]
+  // a function cannot be handled
+  | _ => let
+(*
+      val () = begin
+        print "s3bexp_make_s2cst_s2explst: s2c = "; print s2c; print_newline ();
+        print "s3bexp_make_s2cst_s2explst: s2es = "; print s2es; print_newline ();
+      end
+*)
+    in
+      None_vt ()
+    end
+end // end of [s3bexp_make_s2cst_s2explst]
+
+(* ****** ****** *)
+
+extern
+fun s3iexp_make_s2cst_s2explst
+  (s2c: s2cst_t, s2es: s2explst, s2cs: &s2cstlst, fds: &s2cfdeflst_vt)
+  : s3iexpopt_vt
+
+implement s3iexp_make_s2cst_s2explst (s2c, s2es, s2cs, fds) = begin
+  case+ 0 of
+  // integer negation
+  | _ when s2cstref_cst_equ (Neg_int_int, s2c) => begin
+    case+ s2es of
+    | list_cons (s2e, list_nil ()) => begin
+      case+ s3iexp_make_s2exp (s2e, s2cs, fds) of
+      | ~Some_vt s3ie => Some_vt (s3iexp_ineg s3ie) | ~None_vt () => None_vt ()
+      end // end of [list_cons]
+    | _ => begin
+        prerr "Internal Error: s3iexp_make_s2cst_s2explst: Neg_int_int";
+        prerr_newline ();
+        $Err.abort {s3iexpopt_vt} ()
+      end
+    end // end of [Neg_int_int]
+  // integer addition
+  | _ when s2cstref_cst_equ (Add_int_int_int, s2c) => begin
+    case+ s2es of
+    | list_cons (s2e1, list_cons (s2e2, list_nil ())) => begin
+      case+ s3iexp_make_s2exp (s2e1, s2cs, fds) of
+      | ~Some_vt s3ie1 => begin
+        case+ s3iexp_make_s2exp (s2e2, s2cs, fds) of
+        | ~Some_vt s3ie2 => Some_vt (s3iexp_iadd (s3ie1, s3ie2))
+        | ~None_vt () => None_vt ()
+        end // end of [Some_vt]
+      | ~None_vt () => None_vt ()
+      end // end of [list_cons]
+    | _ => begin
+        prerr "Internal Error: s3iexp_make_s2cst_s2explst: Add_int_int_int";
+        prerr_newline ();
+        $Err.abort {s3iexpopt_vt} ()
+      end
+    end // end of [Add_int_int_int]
+  // integer subtraction
+  | _ when s2cstref_cst_equ (Sub_int_int_int, s2c) => begin
+    case+ s2es of
+    | list_cons (s2e1, list_cons (s2e2, list_nil ())) => begin
+      case+ s3iexp_make_s2exp (s2e1, s2cs, fds) of
+      | ~Some_vt s3ie1 => begin
+        case+ s3iexp_make_s2exp (s2e2, s2cs, fds) of
+        | ~Some_vt s3ie2 => Some_vt (s3iexp_isub (s3ie1, s3ie2))
+        | ~None_vt () => None_vt ()
+        end // end of [Some_vt]
+      | ~None_vt () => None_vt ()
+      end // end of [list_cons]
+    | _ => begin
+        prerr "Internal Error: s3iexp_make_s2cst_s2explst: Sub_int_int_int";
+        prerr_newline ();
+        $Err.abort {s3iexpopt_vt} ()
+      end
+    end // end of [Sub_int_int_int]
+  // integer multiplication
+  | _ when s2cstref_cst_equ (Mul_int_int_int, s2c) => begin
+    case+ s2es of
+    | list_cons (s2e1, list_cons (s2e2, list_nil ())) => begin
+      case+ s3iexp_make_s2exp (s2e1, s2cs, fds) of
+      | ~Some_vt s3ie1 => begin
+        case+ s3iexp_make_s2exp (s2e2, s2cs, fds) of
+        | ~Some_vt s3ie2 => Some_vt (s3iexp_imul (s3ie1, s3ie2))
+        | ~None_vt () => None_vt ()
+        end // end of [Some_vt]
+      | ~None_vt () => None_vt ()
+      end // end of [list_cons]
+    | _ => begin
+        prerr "Internal Error: s3iexp_make_s2cst_s2explst: Mul_int_int_int";
+        prerr_newline ();
+        $Err.abort {s3iexpopt_vt} ()
+      end
+    end // end of [Mul_int_int_int]
+  // address difference
+  | _ when s2cstref_cst_equ (Sub_addr_addr_int, s2c) => begin
+    case+ s2es of
+    | list_cons (s2e1, list_cons (s2e2, list_nil ())) => begin
+      case+ s3aexp_make_s2exp (s2e1, s2cs, fds) of
+      | ~Some_vt s3ae1 => begin
+        case+ s3aexp_make_s2exp (s2e2, s2cs, fds) of
+        | ~Some_vt s3ae2 => Some_vt (s3iexp_pdiff (s3ae1, s3ae2))
+        | ~None_vt () => None_vt ()
+        end // end of [Some_vt]
+      | ~None_vt () => None_vt ()
+      end // end of [list_cons]
+    | _ => begin
+        prerr "Internal Error: s3iexp_make_s2cst_s2explst: Sub_addr_addr_int";
+        prerr_newline ();
+        $Err.abort {s3iexpopt_vt} ()
+      end
+    end // end of [Sub_addr_addr_int]
+  // integer division
+  | _ when s2cstref_cst_equ (Div_int_int_int, s2c) => let
+      val s2c_rel = s2cstref_cst_get (Div_int_int_int_bool)
+      val s2v = s2cfdeflst_replace (s2rt_int, s2c_rel, s2es, s2cs, fds)
+    in
+      Some_vt (s3iexp_var s2v)
+    end
+  // integer absolute value function
+  | _ when s2cstref_cst_equ (Abs_int_int, s2c) => let
+      val s2c_rel = s2cstref_cst_get (Abs_int_int_bool)
+      val s2v = s2cfdeflst_replace (s2rt_int, s2c_rel, s2es, s2cs, fds)
+    in
+      Some_vt (s3iexp_var s2v)
+    end
+  // integer maximum
+  | _ when s2cstref_cst_equ (Max_int_int_int, s2c) => let
+      val s2c_rel = s2cstref_cst_get (Max_int_int_int_bool)
+      val s2v = s2cfdeflst_replace (s2rt_int, s2c_rel, s2es, s2cs, fds)
+    in
+      Some_vt (s3iexp_var s2v)
+    end
+  // integer minimum
+  | _ when s2cstref_cst_equ (Min_int_int_int, s2c) => let
+      val s2c_rel = s2cstref_cst_get (Min_int_int_int_bool)
+      val s2v = s2cfdeflst_replace (s2rt_int, s2c_rel, s2es, s2cs, fds)
+    in
+      Some_vt (s3iexp_var s2v)
+    end
+  // Natural number subtraction
+  | _ when s2cstref_cst_equ (Nsub_int_int_int, s2c) => let
+      val s2c_rel = s2cstref_cst_get (Nsub_int_int_int_bool)
+      val s2v = s2cfdeflst_replace (s2rt_int, s2c_rel, s2es, s2cs, fds)
+    in
+      Some_vt (s3iexp_var s2v)
+    end
+  // a function cannot be handled
+  | _ => let
+(*
+      val () = begin
+        print "s3iexp_make_s2cst_s2explst: s2c = "; print s2c; print_newline ();
+        print "s3iexp_make_s2cst_s2explst: s2es = "; print s2es; print_newline ();
+      end
+*)
+    in
+      None_vt ()
+    end
+end // end of [s3iexp_make_s2cst_s2explst]
+
+(* ****** ****** *)
+
+overload = with eq_s2rt_s2rt
+
+local
+
+fn aux_equal
+  (s2e1: s2exp, s2e2: s2exp, s2cs: &s2cstlst, fds: &s2cfdeflst_vt)
+  : s3bexpopt_vt = let
+  val s2t1 = s2e1.s2exp_srt
+in
+  case+ 0 of // this seems prettier than [if-then-else] sequence
+  | _ when s2t1 = s2rt_int => begin
+      case+ s3iexp_make_s2exp (s2e1, s2cs, fds) of
+      | ~Some_vt s3ie1 => begin
+        case+ s3iexp_make_s2exp (s2e2, s2cs, fds) of
+        | ~Some_vt s3ie2 => Some_vt (s3bexp_ieq (s3ie1, s3ie2))
+        | ~None_vt () => None_vt ()
+        end
+      | ~None_vt () => None_vt ()
+    end
+  | _ when s2t1 = s2rt_addr => begin
+      case+ s3aexp_make_s2exp (s2e1, s2cs, fds) of
+      | ~Some_vt s3ae1 => begin
+        case+ s3aexp_make_s2exp (s2e2, s2cs, fds) of
+        | ~Some_vt s3ae2 => Some_vt (s3bexp_peq (s3ae1, s3ae2))
+        | ~None_vt () => None_vt ()
+        end
+      | ~None_vt () => None_vt ()
+    end
+  | _ when s2t1 = s2rt_bool => begin
+      case+ s3bexp_make_s2exp (s2e1, s2cs, fds) of
+      | ~Some_vt s3be1 => begin
+        case+ s3bexp_make_s2exp (s2e2, s2cs, fds) of
+        | ~Some_vt s3be2 => Some_vt (s3bexp_beq (s3be1, s3be2))
+        | ~None_vt () => None_vt ()
+        end
+      | ~None_vt () => None_vt ()
+    end
+  | _ => begin
+      if s2exp_syneq (s2e1, s2e2) then Some_vt (s3bexp_true) else None_vt ()
+    end
+end // end of [aux_equal]
+
+fn aux_bind
+  (loc: loc_t, s2v1: s2var_t, s2e2: s2exp, s2cs: &s2cstlst, fds: &s2cfdeflst_vt)
+  : s3bexpopt_vt = let
+(*
+  val () = begin
+    print "aux_bind: s2v1 = "; print s2v1; print_newline ();
+    print "aux_bind: s2e2 = "; print s2e2; print_newline ();
+  end
+*)
+  val os3be = aux_equal (s2exp_var s2v1, s2e2, s2cs, fds)
+  val () = trans3_env_hypo_add_bind (loc, s2v1, s2e2)
+in
+  os3be
+end // end of [aux_bind]
+
+in // in of [local]
+
+fun s2cstlst_add (s2cs: s2cstlst, s2c0: s2cst_t): s2cstlst = let
+  fun aux (s2cs: s2cstlst, s2c0: s2cst_t): bool = begin
+    case+ s2cs of
+    | S2CSTLSTcons (s2c, s2cs) =>
+        if eq_s2cst_s2cst (s2c0, s2c) then true else aux (s2cs, s2c0)
+    | S2CSTLSTnil () => false
+  end // end of [aux]
+in
+  if aux (s2cs, s2c0) then s2cs else S2CSTLSTcons (s2c0, s2cs)
+end // end of [s2cstlst_add]
+
+implement s3aexp_make_s2exp (s2e0, s2cs, fds) = let
+  val s2e0 = s2exp_whnf s2e0
+(*
+  val () = begin
+    print "s3aexp_make_s2exp: s2e0 = "; print s2e0; print_newline ()
+  end
+*)
+in
+  case+ s2e0.s2exp_node of
+  | S2Eapp (s2e1, s2es2) => begin case+ s2e1.s2exp_node of
+    | S2Ecst s2c1 => s3aexp_make_s2cst_s2explst (s2c1, s2es2, s2cs, fds)
+    | _ => None_vt ()
+    end
+  | S2Ecst s2c => begin case+ s2c of
+    | _ when s2cstref_cst_equ (Null_addr, s2c) => Some_vt (s3aexp_null)
+    | _ => (s2cs := s2cstlst_add (s2cs, s2c); Some_vt (s3aexp_cst s2c))
+    end
+  | S2Evar s2v => Some_vt (s3aexp_var s2v)
+  | _ => let // an expression that cannot be handled
+      val () = begin
+        print "s3aexp_make_s2exp: s2e0 = "; print s2e0; print_newline ();
+      end
+    in
+      None_vt ()
+    end
+end // end of [s3aexp_make_s2exp]
+
+(* ****** ****** *)
+
+fun s2exp_synlt (s2e1: s2exp, s2e2: s2exp): bool = let
+  val s2e2 = s2exp_whnf s2e2
+(*
+  val () = begin
+    print "s2exp_synlt: s2e1 = "; print s2e1; print_newline ();
+    print "s2exp_synlt: s2e2 = "; print s2e2; print_newline ();
+  end
+*)
+in
+  case+ s2e2.s2exp_node of
+  | S2Eapp (_, s2es2) => s2explst_synlte (s2e1, s2es2)
+  | _ => false
+end // end pf [s2exp_synlt]
+
+and s2exp_synlte (s2e1: s2exp, s2e2: s2exp): bool =
+  s2exp_syneq (s2e1, s2e2) orelse s2exp_synlt (s2e1, s2e2)
+
+and s2explst_synlte
+  (s2e1: s2exp, s2es2: s2explst): bool = begin
+  case+ s2es2 of
+  | list_cons (s2e2, s2es2) => begin
+      s2exp_synlte (s2e1, s2e2) orelse s2explst_synlte (s2e1, s2es2)
+    end
+  | list_nil () => false
+end // end of [s2explst_synlte]
+
+fn s2exp_metlt_reduce {n:nat}
+  (met: s2explst n, met_bound: s2explst n): s2exp = let
+  fn auxlt
+    (isint: bool, s2e1: s2exp, s2e2: s2exp, lt: &int >> int)
+    : s2exp = begin
+    if isint then
+      s2exp_lt_int_int_bool (s2e1, s2e2)
+    else begin
+      if s2exp_synlt (s2e1, s2e2) then (lt := 1; s2exp_bool true)
+      else (lt := ~1; s2exp_bool false)
+    end
+  end // end of [auxlt]
+
+  fn auxlte
+    (isint: bool, s2e1: s2exp, s2e2: s2exp, lte: &int >> int)
+    : s2exp = begin
+    if isint then
+      s2exp_lte_int_int_bool (s2e1, s2e2)
+    else begin
+      if s2exp_synlte (s2e1, s2e2) then (lte := 1; s2exp_bool true)
+      else (lte := ~1; s2exp_bool false)
+    end
+  end // end of [auxlte]
+
+  fun auxlst {n:nat}
+    (s2es1: s2explst n, s2es2: s2explst n): s2exp = begin
+    case+ s2es1 of
+    | list_cons (s2e1, s2es1) => let
+        var lt: int = 0 and lte: int = 0
+        val+ list_cons (s2e2, s2es2) = s2es2
+        val isint = s2rt_is_int (s2e1.s2exp_srt)
+        val s2p_lt = auxlt (isint, s2e1, s2e2, lt)
+        val s2p_lte = auxlte (isint, s2e1, s2e2, lte)
+      in
+        case+ lt of
+        | _ when lt = 0 => begin
+            s2exp_add_bool_bool_bool (
+              s2p_lt
+            , s2exp_mul_bool_bool_bool (s2p_lte, auxlst (s2es1, s2es2))
+            )
+          end
+        | _ when lt > 0 => s2p_lt (* true *)
+        | _ (* lt < 0 *) => begin
+            if lte > 0 then auxlst (s2es1, s2es2) else s2p_lte (* false *)
+          end
+      end
+    | list_nil () => s2exp_bool false
+  end // end of [auxlst]
+in
+  auxlst (met, met_bound)
+end // end of [s2exp_metlt_reduce]
+
+implement s3bexp_make_s2exp (s2e0, s2cs, fds) = let
+  val s2e0 = s2exp_whnf s2e0
+(*
+  val () = begin
+    print "s3bexp_make_s2exp: s2e0 = "; print s2e0; print_newline ()
+  end
+*)
+in
+  case+ s2e0.s2exp_node of
+  | S2Eapp (s2e1, s2es2) => begin case+ s2e1.s2exp_node of
+    | S2Ecst s2c1 => s3bexp_make_s2cst_s2explst (s2c1, s2es2, s2cs, fds)
+    | _ => None_vt ()
+    end
+  | S2Ecst s2c => begin case+ s2c of
+    | _ when s2cstref_cst_equ (True_bool, s2c) => Some_vt (s3bexp_true)
+    | _ when s2cstref_cst_equ (False_bool, s2c) => Some_vt (s3bexp_false)
+    | _ => (s2cs := s2cstlst_add (s2cs, s2c); Some_vt (s3bexp_cst s2c))
+    end
+  | S2Evar s2v => Some_vt (s3bexp_var s2v)
+  | S2Eeqeq (s2e1, s2e2) => aux_equal (s2e1, s2e2, s2cs, fds)
+  | S2Emetlt (met, met_bound) => let
+      val s2e_met = s2exp_metlt_reduce (met, met_bound)
+    in
+      s3bexp_make_s2exp (s2e_met, s2cs, fds)
+    end
+  | _ => let // an expression that cannot be handled
+      val () = begin
+        print "s3bexp_make_s2exp: s2e0 = "; print s2e0; print_newline ();
+      end
+    in
+      None_vt ()
+    end
+end // end of [s3bexp_make_s2exp]
+
+implement s3bexp_make_h3ypo (h3p, s2cs, fds) = begin
+  case+ h3p.h3ypo_node of
+  | H3YPOprop s2p => s3bexp_make_s2exp (s2p, s2cs, fds)
+  | H3YPObind (s2v1, s2e2) => aux_bind (h3p.h3ypo_loc, s2v1, s2e2, s2cs, fds)
+  | H3YPOeqeq (s2e1, s2e2) => aux_equal (s2e1, s2e2, s2cs, fds)
+end // end of [s3bexp_make_h3ypo]
+
+end // end of [local]
+
+(* ****** ****** *)
+
+implement s3iexp_make_s2exp (s2e0, s2cs, fds) = let
+  val s2e0 = s2exp_whnf s2e0
+(*
+  val () = begin
+    print "s3iexp_make_s2exp: s2e0 = "; print s2e0; print_newline ()
+  end
+*)
+in
+  case+ s2e0.s2exp_node of
+  | S2Eapp (s2e1, s2es2) => begin case+ s2e1.s2exp_node of
+    | S2Ecst s2c1 => s3iexp_make_s2cst_s2explst (s2c1, s2es2, s2cs, fds)
+    | _ => None_vt ()
+    end
+  | S2Ecst s2c => begin
+      s2cs := s2cstlst_add (s2cs, s2c); Some_vt (s3iexp_cst s2c)
+    end
+  | S2Eint i => Some_vt (s3iexp_int i)
+  | S2Eintinf i => Some_vt (s3iexp_intinf i)
+  | S2Esize s2ze => let
+      val s2c_rel = s2cstref_cst_get (Size_int_int_bool)
+      val s2v = s2cfdeflst_replace (s2rt_int, s2c_rel, '[s2e0], s2cs, fds)
+    in
+      Some_vt (s3iexp_var s2v)
+    end // end of [S2Esize]
+  | S2Evar s2v => Some_vt (s3iexp_var s2v)
+  | _ => let // an expression that cannot be handled
+      val () = begin
+        print "s3iexp_make_s2exp: s2e0 = "; print s2e0; print_newline ();
+      end
+    in
+      None_vt ()
+    end // end of [_]
+end // end of [s2iexp_make_s2exp]
+
+(* ****** ****** *)
+
+staload Map = "ats_map_lin.sats"
+staload _(*anonymous*) = "ats_map_lin.dats" // for template definition
+
+viewtypedef s2cst_index_map = $Map.map_vt (stamp_t, Pos)
+viewtypedef s2var_index_map = $Map.map_vt (stamp_t, Pos)
+
+//
+
+overload compare with $Stamp.compare_stamp_stamp
+
+fn s2cst_index_map_make (): s2cst_index_map =
+  $Map.map_make {stamp_t, Pos} (lam (s1, s2) => compare (s1, s2))
+
+fn s2var_index_map_make (): s2var_index_map =
+  $Map.map_make {stamp_t, Pos} (lam (s1, s2) => compare (s1, s2))
+
+//
+
+fn s2cst_index_find {n:pos}
+  (loc0: loc_t, m: !s2cst_index_map, s2c: s2cst_t, n: int n)
+  : intBtw (1, n) = let
+(*
+  val () = print "s2cst_index_find: s2c = "; print s2c; print_newline ()
+*)
+  val stamp = s2cst_stamp_get s2c
+in
+  case+ $Map.map_search (m, stamp) of
+  | ~Some_vt (i) => begin
+      if i < n then i else begin
+        $Loc.prerr_location loc0;
+        prerr ": Internal Error: s2cst_index_find: the static constant [";
+        prerr_s2cst s2c;
+        prerr "] is associated with an index that is out-of-range.";
+        prerr_newline ();
+        $Err.abort {intBtw (1, n)} ()
+      end
+    end // end of [Some_vt]
+  | ~None_vt () => begin
+      $Loc.prerr_location loc0;
+      prerr ": Internal Error: s2cst_index_find: the static constant [";
+      prerr_s2cst s2c;
+      prerr "] is not associated with any index.";
+      prerr_newline ();
+      $Err.abort {intBtw (1, n)} ()
+    end
+end // end of [s2cst_index_find]
+
+fn s2var_index_find {n:pos}
+  (loc0: loc_t, m: !s2var_index_map, s2v: s2var_t, n: int n)
+  : intBtw (1, n) = let
+(*
+  val () = print "s2var_index_find: s2v = "; print s2v; print_newline ()
+*)
+  val stamp = s2var_stamp_get s2v
+in
+  case+ $Map.map_search (m, stamp) of
+  | ~Some_vt (i) => begin
+      if i < n then i else begin
+        $Loc.prerr_location loc0;
+        prerr ": Internal Error: s2var_index_find: the static constant [";
+        prerr_s2var s2v;
+        prerr "] is associated with an index that is out-of-range.";
+        prerr_newline ();
+        $Err.abort {intBtw (1, n)} ()
+      end
+    end // end of [Some_vt]
+  | ~None_vt () => begin
+      $Loc.prerr_location loc0;
+      prerr ": Internal Error: s2var_index_find: the static constant [";
+      prerr_s2var s2v;
+      prerr "] is not associated with any index.";
+      prerr_newline ();
+      $Err.abort {intBtw (1, n)} ()
+    end
+end // end of [s2var_index_find]
+
+//
+
+fn s2cst_index_insert
+  (cim: !s2cst_index_map, s2c: s2cst_t, i: Pos): void =
+  $Map.map_insert (cim, s2cst_stamp_get s2c, i)
+
+fn s2var_index_insert
+  (vim: !s2var_index_map, s2v: s2var_t, i: Pos): void =
+  $Map.map_insert (vim, s2var_stamp_get s2v, i)
+
+(* ****** ****** *)
+
+staload FM = "ats_solver_fm.sats"
+
+stadef i0nt = $FM.i0nt
+stadef intvec = $FM.intvec
+
+(* ****** ****** *)
+
+extern fun s3aexp_intvec_update_err {n:pos} {l:addr} (
+    pf_arr: !intvec n @ l
+  | loc0: loc_t
+  , cim: !s2cst_index_map
+  , vim: !s2var_index_map
+  , ivp: ptr l, n: int n
+  , coef: i0nt, s3ae0: s3aexp
+  , errno: &int
+  ) : void
+
+extern fun s3bexp_intvec_update_err {n:pos} {l:addr} (
+    pf_arr: !intvec n @ l
+  | loc0: loc_t
+  , cim: !s2cst_index_map
+  , vim: !s2var_index_map
+  , ivp: ptr l, n: int n
+  , coef: i0nt, s3be0: s3bexp
+  , errno: &int
+  ) : void
+
+extern fun s3iexp_intvec_update_err {n:pos} {l:addr} (
+    pf_arr: !intvec n @ l
+  | loc0: loc_t
+  , cim: !s2cst_index_map
+  , vim: !s2var_index_map
+  , ivp: ptr l, n: int n
+  , coef: i0nt, s3ie0: s3iexp
+  , errno: &int
+  ) : void
+
+//
+
+implement s3aexp_intvec_update_err
+  (pf_arr | loc0, cim, vim, ivp, n, coef, s3ae0, errno) = let
+(*
+  val () = begin
+    print "s3aexp_intvec_update_err: coef = "; print coef; print_newline ();
+    print "s3aexp_intvec_update_err: s3ae0 = "; print s3ae0; print_newline ();
+  end
+*)
+in
+  case+ s3ae0 of
+  | S3AEcst s2c => let
+      val ind = s2cst_index_find (loc0, cim, s2c, n)
+    in
+      ivp->[ind] := ivp->[ind] + coef
+    end
+  | S3AEvar s2v => let
+      val ind = s2var_index_find (loc0, vim, s2v, n)
+    in
+      ivp->[ind] := ivp->[ind] + coef
+    end
+  | S3AEnull () => ()
+  | S3AEpadd (s3ae1, s3ie2) => begin
+      s3aexp_intvec_update_err (pf_arr | loc0, cim, vim, ivp, n, coef, s3ae1, errno);
+      s3iexp_intvec_update_err (pf_arr | loc0, cim, vim, ivp, n, coef, s3ie2, errno);
+    end
+  | S3AEexp _ => begin
+      prerr "Internal Error: s3aexp_intvec_update_err: unsupported term: s3ae0 = ";
+      print s3ae0;
+      print_newline ();
+      $Err.abort {void} ()
+    end // end of [S3IEexp]
+end // end of [s3aexp_intvec_update_err]
+
+//
+
+implement s3iexp_intvec_update_err
+  (pf_arr | loc0, cim, vim, ivp, n, coef, s3ie0, errno) = let
+(*
+  val () = begin
+    print "s3iexp_intvec_update_err: coef = "; print coef; print_newline ();
+    print "s3iexp_intvec_update_err: s3ie0 = "; print s3ie0; print_newline ();
+  end
+*)
+in
+  case+ s3ie0 of
+  | S3IEcst s2c => let
+      val ind = s2cst_index_find (loc0, cim, s2c, n)
+    in
+      ivp->[ind] := ivp->[ind] + coef
+    end
+  | S3IEvar s2v => let
+      val ind = s2var_index_find (loc0, vim, s2v, n)
+    in
+      ivp->[ind] := ivp->[ind] + coef
+    end
+  | S3IEint (i) => begin
+      let val i0 = $FM.i0nt_of_int i in ivp->[0] := ivp->[0] + coef * i0 end
+    end
+  | S3IEintinf (i) => begin
+      let val i0 = $FM.i0nt_of_intinf i in ivp->[0] := ivp->[0] + coef * i0 end
+    end
+  | S3IEineg (s3ie) => begin
+      s3iexp_intvec_update_err (pf_arr | loc0, cim, vim, ivp, n, ~coef, s3ie, errno);
+    end
+  | S3IEiadd (s3ie1, s3ie2) => begin
+      s3iexp_intvec_update_err (pf_arr | loc0, cim, vim, ivp, n, coef, s3ie1, errno);
+      s3iexp_intvec_update_err (pf_arr | loc0, cim, vim, ivp, n, coef, s3ie2, errno);
+    end
+  | S3IEisub (s3ie1, s3ie2) => begin
+      s3iexp_intvec_update_err (pf_arr | loc0, cim, vim, ivp, n, coef, s3ie1, errno);
+      s3iexp_intvec_update_err (pf_arr | loc0, cim, vim, ivp, n, ~coef, s3ie2, errno);
+    end
+  | S3IEimul (s3ie1, s3ie2) => begin case+ s3ie1 of
+    | S3IEint i1 => let
+        val coef = coef * $FM.i0nt_of_int (i1)
+      in
+        s3iexp_intvec_update_err (pf_arr | loc0, cim, vim, ivp, n, coef, s3ie2, errno)
+      end
+    | S3IEintinf i1 => let
+        val coef = coef * $FM.i0nt_of_intinf (i1)
+      in
+        s3iexp_intvec_update_err (pf_arr | loc0, cim, vim, ivp, n, coef, s3ie2, errno)
+      end
+    | _ => begin case+ s3ie2 of
+      | S3IEint i2 => let
+          val coef = coef * $FM.i0nt_of_int (i2)
+        in
+          s3iexp_intvec_update_err (pf_arr | loc0, cim, vim, ivp, n, coef, s3ie1, errno)
+        end
+      | S3IEintinf i2 => let
+          val coef = coef * $FM.i0nt_of_intinf (i2)
+        in
+          s3iexp_intvec_update_err (pf_arr | loc0, cim, vim, ivp, n, coef, s3ie1, errno)
+        end
+      | _ => begin
+          prerr "Internal Error: s3iexp_intvec_update_err: nonlinear term: s3ie0 = ";
+          print s3ie0;
+          print_newline ();
+          $Err.abort {void} ()
+        end
+      end
+    end // end of [S3IEimul]
+  | S3IEpdiff (s3ae1, s3ae2) => begin
+      s3aexp_intvec_update_err (pf_arr | loc0, cim, vim, ivp, n, coef, s3ae1, errno);
+      s3aexp_intvec_update_err (pf_arr | loc0, cim, vim, ivp, n, ~coef, s3ae2, errno);
+    end
+  | S3IEexp _ => begin
+      prerr "Internal Error: s3iexp_intvec_update_err: unsupported term: s3ie0 = ";
+      print s3ie0;
+      print_newline ();
+      $Err.abort {void} ()
+    end // end of [S3IEexp]
+end // end of [s3iexp_intvec_update_err]
+
+(* ****** ****** *)
+
+extern fun s3bexp_icstr_make_err {n:pos} (
+    loc0: loc_t
+  , cim: !s2cst_index_map
+  , vim: !s2var_index_map
+  , n: int n (* 1 + number of variables *)
+  , s3be0: s3bexp
+  , errno: &int
+  ) : $FM.icstr n
+
+implement s3bexp_icstr_make_err (loc0, cim, vim, n, s3be0, errno) = let
+(*
+  val () = begin
+    print "s3bexp_icstr_err: s3be0 = %a\n" fprint_s3bexp s3be in
+*)
+  macdef aux (s3be) = s3bexp_icstr_make_err (loc0, cim, vim, n, ,(s3be), errno)
+in
+  case+ s3be0 of
+  | S3BEbool b => begin
+      if b then begin
+        $FM.ICveclst (0(*conj*), list_vt_nil ())
+      end else begin
+        $FM.ICveclst (1(*disj*), list_vt_nil ())
+      end
+    end
+  | S3BEcst s2c => let
+      val ind = s2cst_index_find (loc0, cim, s2c, n)
+      val (pf_gc, pf_arr | ivp) = $FM.intvec_ptr_make (n)
+      val () = (ivp->[ind] := $FM.i0nt_1; ivp->[0] := $FM.i0nt_neg_1)
+    in
+      $FM.ICvec (2(*gte*), $FM.intvecptr_make_view_ptr (pf_gc, pf_arr | ivp))
+    end
+  | S3BEvar s2v => let
+      val ind = s2var_index_find (loc0, vim, s2v, n)
+      val (pf_gc, pf_arr | ivp) = $FM.intvec_ptr_make (n)
+      val () = (ivp->[ind] := $FM.i0nt_1; ivp->[0] := $FM.i0nt_neg_1)
+    in
+      $FM.ICvec (2(*gte*), $FM.intvecptr_make_view_ptr (pf_gc, pf_arr | ivp))
+    end
+  | S3BEbneg s3be => $FM.icstr_negate (aux s3be)
+  | S3BEbadd (s3be1, s3be2) => let
+      val ic1 = aux s3be1 and ic2 = aux s3be2
+      val ics = list_vt_cons (ic1, list_vt_cons (ic2, list_vt_nil ()))
+    in
+      $FM.ICveclst (1(*disj*), ics)
+    end
+  | S3BEbmul (s3be1, s3be2) => let
+      val ic1 = aux s3be1 and ic2 = aux s3be2
+      val ics = list_vt_cons (ic1, list_vt_cons (ic2, list_vt_nil ()))
+    in
+      $FM.ICveclst (0(*conj*), ics)
+    end
+  | S3BEiexp (knd, s3ie) => let (* gte/lt: 2/~2; eq/neq: 1/~1 *)
+      val (pf_gc, pf_arr | ivp) = $FM.intvec_ptr_make (n)
+      val () = s3iexp_intvec_update_err (
+        pf_arr | loc0, cim, vim, ivp, n, $FM.i0nt_1, s3ie, errno
+      ) // end of [s3iexp_intvec_update_err]
+    in
+      $FM.ICvec (knd, $FM.intvecptr_make_view_ptr (pf_gc, pf_arr | ivp))
+    end
+  | S3BEexp _ => begin
+      prerr "Internal Error: s3bexp_intvec_make_err: unsupported term: s3be0 = ";
+      print s3be0;
+      print_newline ();
+      $Err.abort ()
+    end // end of [S3BEexp]
+end // end of [s3bexp_icstr_make_err]
+
+(* ****** ****** *)
+
+extern fun s3bexplst_s2exp_solve_fm (
+    loc0: loc_t
+  , s2vs: s2varlst
+  , s3bes: s3bexplst
+  , s2p: s2exp
+  , s2cs: &s2cstlst
+  , fds: &s2cfdeflst_vt
+  , errno: &int
+  ) : intBtw (~1, 1)
+
+implement s3bexplst_s2exp_solve_fm (loc0, s2vs, s3bes, s2p, s2cs, fds, errno) = let
+(*
+  val () = begin
+    print "s3bexplst_s2exp_solve_fm: s2vs = "; print s2vs; print_newline ();
+    print "s3bexplst_s2exp_solve_fm: s3bes = "; print s3bes; print_newline ();
+    print "s3bexplst_s2exp_solve_fm: s2p = "; print s2p; print_newline ();
+  end
+*)
+  viewtypedef cim_vt = s2cst_index_map and vim_vt = s2var_index_map
+  val os3p = s3bexp_make_s2exp (s2p, s2cs, fds)
+  var s3bes_asmp: s3bexplst = s3bes
+  val () = aux (s3bes_asmp, fds) where {
+    fun aux (s3bes: &s3bexplst, fds: !s2cfdeflst_vt): void =
+      case+ fds of
+      | S2CFDEFLSTcons (_, _, _, !rel, !fds_nxt) => let
+          val () = case+ !rel of
+            | Some_vt s3be => begin
+                fold@ (!rel); s3bes := list_cons (s3be, s3bes)
+              end
+            | None_vt () => fold@ (!rel)
+        in
+          aux (s3bes, !fds_nxt); fold@ (fds)
+        end
+      | S2CFDEFLSTmark (!fds_nxt) => begin
+          aux (s3bes, !fds_nxt); fold@ (fds)
+        end
+      | S2CFDEFLSTnil () => fold@ (fds)
+  } // end of [where]
+
+  val s3p = begin case+ os3p of
+    | ~Some_vt s3p => s3p
+    | ~None_vt () => let
+        val () = begin
+          $Loc.prerr_location loc0;
+          prerr ": warning(3)"; prerr ": the constraint ["; prerr_s2exp s2p;
+          prerr "] cannot be translated into a form accepted by the constraint solver.";
+          prerr_newline ()
+        end
+      in
+        s3bexp_false (* make it the worst scenario *)
+      end // end of [None_vt]
+  end
+
+  var cnt: Pos = 1
+  var cim = s2cst_index_map_make ()
+  val () = aux (cim, cnt, s2cs) where {
+    fun aux (cim: !cim_vt, cnt: &Pos, s2cs: s2cstlst): void =
+      case+ s2cs of
+      | S2CSTLSTcons (s2c, s2cs) => let
+          val () = s2cst_index_insert (cim, s2c, cnt)
+        in
+          cnt := cnt + 1; aux (cim, cnt, s2cs)
+        end
+      | S2CSTLSTnil () => ()
+  } // end of [where]
+  var vim = s2var_index_map_make ()
+  val () = aux (vim, cnt, s2vs) where {
+    fun aux (vim: !vim_vt, cnt: &Pos, s2vs: s2varlst): void =
+      case+ s2vs of
+      | list_cons (s2v, s2vs) => let
+          val () = s2var_index_insert (vim, s2v, cnt)
+        in
+          cnt := cnt + 1; aux (vim, cnt, s2vs)
+        end
+      | list_nil () => ()
+  } // end of [where]
+
+  val () = aux (vim, cnt, fds) where {
+    fun aux (vim: !vim_vt, cnt: &Pos, fds: !s2cfdeflst_vt): void =
+      case+ fds of
+      | S2CFDEFLSTcons (_, _, s2v_res, _, !fds_nxt) => let
+          val () = s2var_index_insert (vim, s2v_res, cnt)
+        in
+          cnt := cnt + 1; aux (vim, cnt, !fds_nxt); fold@ fds
+        end
+      | S2CFDEFLSTmark (!fds_nxt) => begin
+          aux (vim, cnt, !fds_nxt); fold@ (fds)
+        end
+      | S2CFDEFLSTnil () => fold@ (fds)
+  } // end of [where]
+
+  val cnt = cnt // the [cnt] variable is shadowed intentionally!
+  val ics_asmp = ics where {
+    viewtypedef T = [n,s:int] $FM.icstrlst (n, s)
+    fun aux {n:pos} (
+        loc0: loc_t
+      , cim: !cim_vt
+      , vim: !vim_vt
+      , n: int n
+      , s3bes: s3bexplst
+      , ics: &T? >> $FM.icstrlst n
+      , errno: &int
+      ) : void = begin case+ s3bes of
+      | list_cons (s3be, s3bes) => let
+          val ic = s3bexp_icstr_make_err (loc0, cim, vim, n, s3be, errno)
+          val+ () = ics := list_vt_cons {$FM.icstr n} {0} (ic, ?)
+          val+ list_vt_cons (_, !ics_nxt) = ics
+        in
+          aux (loc0, cim, vim, n, s3bes, !ics_nxt, errno); fold@ ics
+        end
+      | list_nil () => (ics := list_vt_nil ())
+    end // end of [aux]
+    var ics: T // uninitialized
+    val () = aux (loc0, cim, vim, cnt, s3bes_asmp, ics, errno)
+  }
+
+  val ic_conc = s3bexp_icstr_make_err (loc0, cim, vim, cnt, s3p, errno)
+  val () = $Map.map_free cim and () = $Map.map_free vim
+(*
+  val () = begin
+    print "s3bexp_s2exp_solve_fm: ics_asmp = \n";
+    print_icstrlst (ics_asmp, cnt); print_newline ();
+    print "s3bexp_s2exp_solve_fm: ic_conc = "; 
+    print_icstr (ic_conc, cnt); print_newline ()
+  end
+*)
+  var ics_all = list_vt_cons ($FM.icstr_negate ic_conc, ics_asmp)
+(*
+  val () = begin
+    print "s3bexp_s2exp_solve_fm: ics_all = \n";
+    print_icstrlst (ics_all, cnt);
+    print_newline ()
+  end
+*)
+  val ans = $FM.icstrlst_solve (ics_all, cnt)
+  val () = $FM.icstrlst_free ics_all
+in
+  ans
+end // end of [s3bexplst_s2exp_solve_fm]
+
+(* ****** ****** *)
+
+extern fun c3str_solve_main (
+    s2vs: s2varlst
+  , s3bes: s3bexplst
+  , c3t: c3str
+  , s2cs: &s2cstlst
+  , fds: &s2cfdeflst_vt
+  , unsolved: &uint
+  , errno: &int
+  ) : intBtw (~1, 1)
+
+extern fun c3str_solve_prop (
+    loc0: loc_t
+  , s2vs: s2varlst
+  , s3bes: s3bexplst
+  , s2p: s2exp
+  , s2cs: &s2cstlst
+  , fds: &s2cfdeflst_vt
+  , errno: &int
+  ) : intBtw (~1, 1)
+
+extern fun c3str_solve_itmlst (
+    loc0: loc_t
+  , s2vs: s2varlst
+  , s3bes: s3bexplst
+  , s3is: s3itemlst
+  , s2cs: &s2cstlst
+  , fds: &s2cfdeflst_vt
+  , unsolved: &uint
+  , errno: &int
+  ) : intBtw (~1, 1)
+
+extern fun c3str_solve_itmlst_disj (
+    loc0: loc_t
+  , s2vs: s2varlst
+  , s3bes: s3bexplst
+  , s3is: s3itemlst
+  , s3iss: s3itemlstlst
+  , s2cs: &s2cstlst
+  , fds: &s2cfdeflst_vt
+  , unsolved: &uint
+  , errno: &int
+  ) : intBtw (~1, 1)
+
+(* ****** ****** *)
+
+macdef i2u (i) = uint_of_int ,(i)
+
+fn pattern_match_exhaustiveness_msg
+  (loc0: loc_t, knd: int, p2tcs: p2atcstlst) = let
+  fun aux (p2tcs: p2atcstlst): void = case+ p2tcs of
+    | list_cons (p2tc, p2tcs) => begin
+        prerr p2tc; prerr_newline (); aux p2tcs
+      end
+    | list_nil () => ()
+in
+  case+ knd of
+  | 0 => begin
+      $Loc.prerr_location loc0;
+      prerr ": warning(3)";
+      prerr ": pattern match is nonexhaustive:\n";
+      aux p2tcs;
+    end
+  | 1 => begin
+      $Loc.prerr_location loc0;
+      prerr ": error(3)";
+      prerr ": pattern match is nonexhaustive:\n";
+      aux p2tcs;
+    end
+  | _ => () // ignore
+end // end of [pattern_match_exhaustiveness_msg]
+
+implement c3str_solve_main
+  (s2vs, s3bes, c3t, s2cs, fds, unsolved, errno) = let
+(*
+  val () = begin
+    print "c3str_solve_main: s2vs = "; print s2vs; print_newline ();
+    print "c3str_solve_main: s3bes = "; print s3bes; print_newline ();
+    print "c3str_solve_main: c3t = "; print c3t; print_newline ();
+  end
+*)
+  val loc0 = c3t.c3str_loc
+  val s2cs0 = s2cs; val () = s2cfdeflst_push (fds)
+  val ans = (
+    case+ c3t.c3str_node of
+    | C3STRprop s2p => c3str_solve_prop
+        (loc0, s2vs, s3bes, s2p, s2cs, fds, errno)
+    | C3STRitmlst s3is => c3str_solve_itmlst
+        (loc0, s2vs, s3bes, s3is, s2cs, fds, unsolved, errno)
+  ) : intBtw (~1, 1)
+(*
+  val () = begin
+    print "c3str_solve_main: ans = "; print ans; print_newline ()
+  end
+*)
+  val () = s2cfdeflst_pop (fds); val () = s2cs := s2cs0
+
+  fn c3str_pr (unsolved: uint, c3t: c3str): void = begin
+    if (unsolved > i2u 0) then () else (prerr ": "; prerr_c3str c3t)
+  end
+
+  var ans: intBtw (~1, 1) = ans
+  val () = begin case+ ans of
+    | _ when ans >= 0 => begin case+ c3t.c3str_kind of
+      | C3STRKINDnone () => begin
+          if unsolved > i2u 0 then begin
+            // an error message has already been reported
+          end else begin
+            $Loc.prerr_location loc0; prerr ": error(3)";
+            prerr ": unsolved constraint"; c3str_pr (unsolved, c3t);
+            prerr_newline ()
+          end
+        end // end of [C3STRKINDnone]
+      | C3STRKINDmetric_nat () => begin
+          $Loc.prerr_location loc0; prerr ": error(3)";
+          prerr ": unsolved constraint for termination metric being welfounded";
+          c3str_pr (unsolved, c3t);
+          prerr_newline ()
+        end // end of [C3STRKINDmetric_nat]
+      | C3STRKINDmetric_dec () => begin
+          $Loc.prerr_location loc0; prerr ": error(3)";
+          prerr ": unsolved constraint for termination metric being decreasing";
+          c3str_pr (unsolved, c3t);
+          prerr_newline ()
+        end // end of [C3STRKINDmetric_dec]
+      | C3STRKINDpattern_match_exhaustiveness (knd, p2tcs) => let
+          val () = pattern_match_exhaustiveness_msg (loc0, knd, p2tcs)
+        in
+          if knd <= 0 then(*warning*) ans := (~1) else(*error*) ()
+        end // end of [C3STRKINDpattern...]
+      | C3STRKINDvarfin (d2v, s2e, s2e_fin) => begin
+          $Loc.prerr_location loc0; prerr ": error(3)";
+          prerr ": unsolved constraint for the dynamic variable [";
+          prerr d2v; prerr "]";
+          c3str_pr (unsolved, c3t);
+          prerr_newline ()
+(*
+          prerr ": it is expected to have the type [";
+          prerr s2e_fin; prerr "]";
+          prerr ", but it is given the type ["; prerr s2e_fin; prerr "]";
+          prerr_newline ()
+*)
+        end // end of [C2STRKINDvarfin]
+      | C3STRKINDloop (knd) => begin
+          $Loc.prerr_location loc0; prerr ": error(3)";
+          if knd = 0 then prerr ": unsolved constraint for loop break";
+          if knd = 1 then prerr ": unsolved constraint for loop continue";
+          if knd = 2 then prerr ": unsolved constraint for loop repeat";
+          c3str_pr (unsolved, c3t);
+          prerr_newline ()
+        end
+      end // end of [ans >= 0]
+    | _ => ()
+    end // end of [case]
+  val () = if ans >= 0 then (unsolved := unsolved + i2u 1)
+in
+  ans (* 0: unsolved; ~1: solved *)
+end
+
+(* ****** ****** *)
+
+implement c3str_solve_prop
+  (loc0, s2vs, s3bes, s2p, s2cs, fds, errno) = let
+(*
+  val () = begin
+    print "c3str_solve_prop: s2vs = "; print s2vs; print_newline ();
+    print "c3str_solve_prop: s3bes = "; print s3bes; print_newline ();
+    print "c3str_solve_prop: s2p = "; print s2p; print_newline ();
+  end
+*)
+in
+  s3bexplst_s2exp_solve_fm (loc0, s2vs, s3bes, s2p, s2cs, fds, errno)
+end // end of [c3str_solve_prop]
+
+(* ****** ****** *)
+
+implement c3str_solve_itmlst
+  (loc0, s2vs, s3bes, s3is, s2cs, fds, unsolved, errno) = let
+(*
+  val () = begin
+    print "c3str_solve_itmlst: s2vs = "; print s2vs; print_newline ();
+    print "c3str_solve_itmlst: s3bes = "; print s3bes; print_newline ();
+    print "c3str_solve_itmlst: s3is = "; print s3is; print_newline ();
+  end
+*)
+in
+  case+ s3is of
+  | list_cons (s3i, s3is) => begin case+ s3i of
+    | S3ITEMcstr c3t => let
+        val ans1 = c3str_solve_main
+          (s2vs, s3bes, c3t, s2cs, fds, unsolved, errno)
+        val ans2 = c3str_solve_itmlst
+          (loc0, s2vs, s3bes, s3is, s2cs, fds, unsolved, errno)
+      in
+        if ans1 >= 0 then 0 else ans2
+      end
+    | S3ITEMcstr_ref c3t_r => let
+        val ans1 = (
+          case+ !c3t_r of
+          | Some c3t => c3str_solve_main
+              (s2vs, s3bes, c3t, s2cs, fds, unsolved, errno)
+          | None () => ~1 (*solved*)
+        ) : intBtw (~1, 1)
+        val ans2 = c3str_solve_itmlst
+          (loc0, s2vs, s3bes, s3is, s2cs, fds, unsolved, errno)
+      in
+        if ans1 >= 0 then 0 else ans2
+      end
+    | S3ITEMdisj s3iss_disj => c3str_solve_itmlst_disj (
+        loc0, s2vs, s3bes, s3is, s3iss_disj, s2cs, fds, unsolved, errno
+      ) // end of [c3str_solve_itmlst_disj]
+    | S3ITEMhypo h3p => let
+        val () = the_s2varbindmap_push ()
+        val s3bes = (
+          case+ s3bexp_make_h3ypo (h3p, s2cs, fds) of
+          | ~Some_vt s3be => list_cons (s3be, s3bes)
+          | ~None_vt () => let
+(*
+              val () = begin
+                $Loc.prerr_location loc0;
+                prerr ": unused hypothesis: ["; prerr h3p; prerr "]";
+                prerr_newline ()
+              end
+*)
+            in
+              s3bes
+            end
+        ) : s3bexplst
+        val ans = begin
+          c3str_solve_itmlst (loc0, s2vs, s3bes, s3is, s2cs, fds, unsolved, errno)
+        end
+        val () = the_s2varbindmap_pop ()
+      in
+        ans
+      end
+    | S3ITEMsvar s2v => let
+        val s2vs = list_cons (s2v, s2vs)
+      in
+        c3str_solve_itmlst (loc0, s2vs, s3bes, s3is, s2cs, fds, unsolved, errno)
+      end
+    | S3ITEMsVar s2V => let
+(*
+        val () = begin
+          print loc0;
+          print ": c3str_solve_itmlst: s2V = "; print s2V;
+          print_newline ()
+        end
+*)
+      in
+        c3str_solve_itmlst (loc0, s2vs, s3bes, s3is, s2cs, fds, unsolved, errno)
+      end
+    end // end of [lost_cons]
+  | list_nil () => ~1(*solved*)
+end // end of [c3str_solve_itmlst]
+
+//
+
+implement c3str_solve_itmlst_disj
+  (loc0, s2vs, s3bes, s3is0, s3iss_disj, s2cs, fds, unsolved, errno) = begin
+  case+ s3iss_disj of
+  | list_cons (s3is_disj, s3iss_disj) => let
+      val s2cs0 = s2cs; val () = s2cfdeflst_push (fds)
+      val s3is = $Lst.list_append (s3is_disj, s3is0)
+      val ans = c3str_solve_itmlst (
+        loc0, s2vs, s3bes, s3is, s2cs, fds, unsolved, errno
+      ) // end of [c3str_solve_itmlst]
+      val () = s2cfdeflst_pop (fds); val () = s2cs := s2cs0
+    in
+      c3str_solve_itmlst_disj (
+        loc0, s2vs, s3bes, s3is0, s3iss_disj, s2cs, fds, unsolved, errno
+      )
+    end
+  | list_nil () => ~1(*solved*)
+end // end of [c3str_solve_itmlst_disj]
+
+(* ****** ****** *)
+
+implement c3str_solve (c3t) = let
+(*
+  val () = begin
+    print "c3str_solve: c3t = "; print c3t; print_newline ()
+  end
+*)
+(*
+  val () = the_s2varbindmap_initialize () // there is no need for initialization
+*)
+  val s2vs0 = list_nil () and s3bes0 = list_nil ()
+  var s2cs: s2cstlst = S2CSTLSTnil ()
+  var fds: s2cfdeflst_vt = S2CFDEFLSTnil ()
+  var unsolved: uint = i2u 0
+  var errno: int = 0
+  val _(*ans*) = c3str_solve_main
+    (s2vs0, s3bes0, c3t, s2cs, fds, unsolved, errno)
+  val () = s2cfdeflst_free (fds)
+in
+  if unsolved > i2u 0 then begin
+    prerr "type-checking has failed";
+    if unsolved <= i2u 1 then prerr ": there is one unsolved constraint";
+    if unsolved >= i2u 2 then prerr ": there are some unsolved constraints";
+    prerr ": please inspect the above reported error message(s) for information.";
+    prerr_newline ();
+    $Err.abort {void} ()
+  end else begin
+    // prerr "type-checking has been done successfully"; prerr_newline ()
+  end // end of [if]
+end // end of [c3str_solve]
+
+(* ****** ****** *)
+
+(* end of [ats_constraint.dats] *)

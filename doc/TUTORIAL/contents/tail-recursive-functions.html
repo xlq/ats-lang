@@ -1,0 +1,154 @@
+<HTML>
+<BODY text="#000000" bgcolor="#ffffff" link="#0000FF" vlink="#CC00CC" alink="#ff0000">
+
+<H2>Tail-Recursive Functions</H2>
+<HR SIZE=1 ALIGN=LEFT><P>
+
+Probably the single most important optimization performed by the
+ATS/Anairiats compiler is the translation of tail-recursive function calls
+into direct (local) jumps.
+
+<H4>Tail-Recursion</H4>
+
+When applied to an integer <i>n</i>, the following defined function
+<i>sum1</i> sums up integers from <i>1</i> to <i>n</i>.
+
+<PRE><FONT COLOR="#E80000"><FONT COLOR="#787878">// [sum1] is recursive but not tail-recursive
+</FONT><FONT COLOR="#000000">fun</FONT> sum1 <FONT COLOR="#000000">(</FONT>n<FONT COLOR="#000000">:</FONT> <FONT COLOR="#0000FF">int</FONT><FONT COLOR="#000000">)</FONT><FONT COLOR="#000000">:</FONT> <FONT COLOR="#0000FF">int</FONT> <FONT COLOR="#000000">=</FONT> <FONT COLOR="#000000">if</FONT> n <FONT COLOR="#000000">&gt;</FONT> 0 <FONT COLOR="#000000">then</FONT> n + sum1 <FONT COLOR="#000000">(</FONT>n-1<FONT COLOR="#000000">)</FONT> <FONT COLOR="#000000">else</FONT> 0
+</FONT></PRE>
+
+This function is recursive but not tail-recursive. The stack space it
+consumes is proportional to the value of its argument. Essentially,
+the ATS compiler translates the definition of
+<i>sum1</i> into the following C code:
+
+<pre>
+int sum1 (int n) {
+  if (n > 1) return n + sum1 (n-1) ; else return 1 ;
+}
+</pre>
+
+When applied to an integer <i>n</i>,
+the following defined function <i>sum2</i> also sums up
+integers from <i>1</i> to <i>n</i>.
+
+<PRE><FONT COLOR="#E80000"><FONT COLOR="#000000">fn</FONT> sum2 <FONT COLOR="#000000">(</FONT>n<FONT COLOR="#000000">:</FONT> <FONT COLOR="#0000FF">int</FONT><FONT COLOR="#000000">)</FONT><FONT COLOR="#000000">:</FONT> <FONT COLOR="#0000FF">int</FONT> <FONT COLOR="#000000">=</FONT> <FONT COLOR="#787878">// sum2 is non-recursive
+</FONT>  <FONT COLOR="#787878">// [loop] is tail-recursive
+</FONT>  <FONT COLOR="#000000">let</FONT> <FONT COLOR="#000000">fun</FONT> loop <FONT COLOR="#000000">(</FONT>n<FONT COLOR="#000000">:</FONT> <FONT COLOR="#0000FF">int</FONT><FONT COLOR="#000000">,</FONT> res<FONT COLOR="#000000">:</FONT> <FONT COLOR="#0000FF">int</FONT><FONT COLOR="#000000">)</FONT> <FONT COLOR="#000000">=</FONT> <FONT COLOR="#000000">if</FONT> n <FONT COLOR="#000000">&gt;</FONT> 0 <FONT COLOR="#000000">then</FONT> loop <FONT COLOR="#000000">(</FONT>n-1<FONT COLOR="#000000">,</FONT> res+n<FONT COLOR="#000000">)</FONT> <FONT COLOR="#000000">else</FONT> res <FONT COLOR="#000000">in</FONT>
+    loop <FONT COLOR="#000000">(</FONT>n<FONT COLOR="#000000">,</FONT> 0<FONT COLOR="#000000">)</FONT>
+  <FONT COLOR="#000000">end</FONT>
+</FONT></PRE>
+
+The inner function <i>loop</i> in the definition of <i>sum2</i> is
+tail-recursive.  The stack space consumed by <i>loop</i> is a constant
+independent of th value of the argument of <i>sum2</i>.  Essentially, the
+ATS compiler translates the definition of <i>sum2</i> into the following C
+code:
+
+<pre>
+int sum2_loop (int n, int res) {
+  loop:
+  if (n > 1) {
+    res = res + n ; n = n - 1; goto loop; 
+  } else {
+    res = 1;
+  }
+  return res ;
+}
+
+int sum2 (int n) { return sum2_loop (n, 0) ; }
+</pre>
+
+<H4>Mutual Tail-Recursion</H4>
+
+Sometimes, mutually tail-recursive functions are encountered.  For
+instance, in the following example, the functions <i>even</i> and
+<i>odd</i> are mutually tail-recursive.
+
+<PRE><FONT COLOR="#E80000"><FONT COLOR="#787878">// [fn*] indicates the need to combine two or more functions
+</FONT><FONT COLOR="#787878">// so as to translate tail-recursive calls into direct jumps
+</FONT><FONT COLOR="#000000">fn*</FONT> even <FONT COLOR="#000000">(</FONT>n<FONT COLOR="#000000">:</FONT> <FONT COLOR="#0000FF">int</FONT><FONT COLOR="#000000">)</FONT><FONT COLOR="#000000">:</FONT> <FONT COLOR="#0000FF">bool</FONT> <FONT COLOR="#000000">=</FONT> <FONT COLOR="#000000">if</FONT> n <FONT COLOR="#000000">&gt;</FONT> 0 <FONT COLOR="#000000">then</FONT> odd <FONT COLOR="#000000">(</FONT>n-1<FONT COLOR="#000000">)</FONT> <FONT COLOR="#000000">else</FONT> true
+<FONT COLOR="#000000">and</FONT> odd <FONT COLOR="#000000">(</FONT>n<FONT COLOR="#000000">:</FONT> <FONT COLOR="#0000FF">int</FONT><FONT COLOR="#000000">)</FONT><FONT COLOR="#000000">:</FONT> <FONT COLOR="#0000FF">bool</FONT> <FONT COLOR="#000000">=</FONT> <FONT COLOR="#000000">if</FONT> n <FONT COLOR="#000000">&gt;</FONT> 0 <FONT COLOR="#000000">then</FONT> even <FONT COLOR="#000000">(</FONT>n-1<FONT COLOR="#000000">)</FONT> <FONT COLOR="#000000">else</FONT> false
+</FONT></PRE>
+
+The keyword <i>fn*</i> is used to indicate to the ATS compiler
+that the functions <i>even</i> and
+<i>odd</i> need to be combined together so as to turn (mutually)
+tail-recursive function calls into direct jumps. Essentially, the ATS
+compiler emits the following C code after compiling this example:
+
+<pre>
+bool even_odd (int tag, int n) {
+
+bool res ;
+
+switch (tag) {
+  0: goto even ;
+  1: goto odd ;
+  default : exit (1) ;
+}
+
+even: if (n > 0) { n = n - 1; goto odd; } else { res = true; goto done; }
+
+odd: if (n > 0) { n = n - 1; goto even; } else { res = false; goto done; }
+
+done: return res ;
+
+}
+
+bool even (int n) { return even_odd (0, n) ; }
+bool odd (int n) { return even_odd (1, n) ; }
+</pre>
+
+Note that mutually recursive functions can be combined in such a manner
+only if <u>they all have the same return type</u>. In the above case, both
+<i>even</i> and <i>odd</i> have the same return type <i>bool</i>.
+<P>
+
+When translating C code involving embedded loops, we often encounter mutual
+tail-recursion. For instance, the following C code prints out ordered pairs
+of digits:
+
+<pre>
+int main (int argc, char *argv[]) {
+  int i, j ;
+
+  for (i = 0; i <= 9; i += 1) {
+    for (j = i; j <= 9; j += 1) {
+      if (i < j) printf (", ") ; printf ("(%i, %i)", i, j) ;
+    }
+    printf ("\n") ;
+  }
+
+  return 0 ;
+}
+</pre>
+
+A straightforward translation of the C code into ATS (in functional style)
+is given as follows:
+
+<PRE><FONT COLOR="#E80000"><FONT COLOR="#000000">implement</FONT> main <FONT COLOR="#000000">(</FONT>argc<FONT COLOR="#000000">,</FONT> argv<FONT COLOR="#000000">)</FONT> <FONT COLOR="#000000">=</FONT> <FONT COLOR="#000000">let</FONT>
+
+<FONT COLOR="#000000">fn*</FONT> loop1 <FONT COLOR="#0000FF"><FONT COLOR="#000000">{</FONT>i<FONT COLOR="#000000">:</FONT>nat<FONT COLOR="#000000">}</FONT></FONT> <FONT COLOR="#000000">(</FONT>i<FONT COLOR="#000000">:</FONT> <FONT COLOR="#0000FF">int i</FONT><FONT COLOR="#000000">)</FONT><FONT COLOR="#000000">:</FONT> <FONT COLOR="#0000FF">void</FONT> <FONT COLOR="#000000">=</FONT>
+  <FONT COLOR="#000000">if</FONT> i &lt;= 9 <FONT COLOR="#000000">then</FONT> loop2 <FONT COLOR="#000000">(</FONT>i<FONT COLOR="#000000">,</FONT> i<FONT COLOR="#000000">)</FONT> <FONT COLOR="#000000">else</FONT> <FONT COLOR="#000000">(</FONT><FONT COLOR="#000000">)</FONT>
+
+<FONT COLOR="#000000">and</FONT> loop2 <FONT COLOR="#0000FF"><FONT COLOR="#000000">{</FONT>i<FONT COLOR="#000000">,</FONT>j<FONT COLOR="#000000">:</FONT>nat<FONT COLOR="#000000">}</FONT></FONT> <FONT COLOR="#000000">(</FONT>i<FONT COLOR="#000000">:</FONT> <FONT COLOR="#0000FF">int i</FONT><FONT COLOR="#000000">,</FONT> j<FONT COLOR="#000000">:</FONT> <FONT COLOR="#0000FF">int j</FONT><FONT COLOR="#000000">)</FONT><FONT COLOR="#000000">:</FONT> <FONT COLOR="#0000FF">void</FONT> <FONT COLOR="#000000">=</FONT>
+  <FONT COLOR="#000000">if</FONT> j &lt;= 9 <FONT COLOR="#000000">then</FONT> <FONT COLOR="#000000">begin</FONT>
+    <FONT COLOR="#000000">if</FONT> i <FONT COLOR="#000000">&lt;</FONT> j <FONT COLOR="#000000">then</FONT> print ", "<FONT COLOR="#000000">;</FONT> printf <FONT COLOR="#000000">(</FONT>"(%i, %i)"<FONT COLOR="#000000">,</FONT> <FONT COLOR="#000000">@(</FONT>i<FONT COLOR="#000000">,</FONT> j<FONT COLOR="#000000">)</FONT><FONT COLOR="#000000">)</FONT><FONT COLOR="#000000">;</FONT> loop2 <FONT COLOR="#000000">(</FONT>i<FONT COLOR="#000000">,</FONT> j+1<FONT COLOR="#000000">)</FONT>
+  <FONT COLOR="#000000">end</FONT> <FONT COLOR="#000000">else</FONT> <FONT COLOR="#000000">begin</FONT>
+    print_newline <FONT COLOR="#000000">(</FONT><FONT COLOR="#000000">)</FONT><FONT COLOR="#000000">;</FONT> loop1 <FONT COLOR="#000000">(</FONT>i+1<FONT COLOR="#000000">)</FONT>
+  <FONT COLOR="#000000">end</FONT>
+<FONT COLOR="#000000">in</FONT>
+  loop1 0
+<FONT COLOR="#000000">end</FONT>
+</FONT></PRE>
+
+where the mutually tail-recursive funtions <i>loop1</i> and <i>loop2</i>
+correspond to the outer and inner loops in the C code, respectively.
+<P>
+
+<HR SIZE=1 ALIGN=LEFT><P>
+The code used for illustration is available <a href="tail-recursive-functions.dats">here</a>.
+
+</BODY>
+</HTML>

@@ -1,0 +1,116 @@
+<HTML>
+<BODY text="#000000" bgcolor="#ffffff" link="#0000FF" vlink="#CC00CC" alink="#ff0000">
+
+<H2>Termination Metrics</H2>
+<HR SIZE=1 ALIGN=LEFT><P>
+
+In ATS, the programmer is allowed to supply termination metrics for
+verifing the termination of recursively defined functions. This is really
+an indispensable feature for supporting programming with theorem proving as
+proof functions, namely, functions representing proofs, must be proven to
+be pure and terminating.
+<P>
+
+A termination metric is a tuple <i>(M1, ..., Mn)</i> of natural numbers,
+where <i>n >= 0 </i>. We use the standard well-founded lexicographical
+ordering on natural numbers to order such tuples.
+
+<H4>A Primitive Recursive Function</H4>
+
+The kind of recursion in the following implementation of the
+factorial function is primitive recursion:
+
+<PRE><FONT COLOR="#E80000"><FONT COLOR="#787878">// [fact] implements the factorial function
+</FONT><FONT COLOR="#000000">fun</FONT> fact <FONT COLOR="#0000FF"><FONT COLOR="#000000">{</FONT>n<FONT COLOR="#000000">:</FONT>nat<FONT COLOR="#000000">}</FONT></FONT> <FONT COLOR="#0000FF"><FONT COLOR="#000000">.&lt;</FONT> n <FONT COLOR="#000000">&gt;.</FONT></FONT> <FONT COLOR="#000000">(</FONT>n<FONT COLOR="#000000">:</FONT> <FONT COLOR="#0000FF">int n</FONT><FONT COLOR="#000000">)</FONT><FONT COLOR="#000000">:</FONT> <FONT COLOR="#0000FF">Int</FONT> <FONT COLOR="#000000">=</FONT> <FONT COLOR="#000000">if</FONT> n <FONT COLOR="#000000">&gt;</FONT> 0 <FONT COLOR="#000000">then</FONT> n * fact <FONT COLOR="#000000">(</FONT>n-1<FONT COLOR="#000000">)</FONT> <FONT COLOR="#000000">else</FONT> 1
+</FONT></PRE>
+
+The syntax <i>.< n >.</i> indicates that the metric supplied for verifying
+the termination of the defined function is a singleton tuple <i>(n)</i>. In
+the definition of <i>fact</i>, the metric for the recursive call to
+<i>fact</i> is <i>(n-1)</i>, which is strictly less than <i>(n)</i>. So the
+function <i>fact</i> is terminating.
+
+<H4>Some General Recursive Functions</H4>
+
+ We implement as follows a function <i>gcd</i> that computes the greatest
+common division of two given positive integers:
+
+<PRE><FONT COLOR="#E80000"><FONT COLOR="#787878">// [gcd] computes the greates common divisor of two positive integers
+</FONT><FONT COLOR="#000000">fun</FONT> gcd <FONT COLOR="#0000FF"><FONT COLOR="#000000">{</FONT>m<FONT COLOR="#000000">,</FONT>n<FONT COLOR="#000000">:</FONT>int <FONT COLOR="#000000">|</FONT> m <FONT COLOR="#000000">&gt;</FONT> 0<FONT COLOR="#000000">;</FONT> n <FONT COLOR="#000000">&gt;</FONT> 0<FONT COLOR="#000000">}</FONT></FONT> <FONT COLOR="#0000FF"><FONT COLOR="#000000">.&lt;</FONT> m+n <FONT COLOR="#000000">&gt;.</FONT></FONT>
+  <FONT COLOR="#000000">(</FONT>m<FONT COLOR="#000000">:</FONT> <FONT COLOR="#0000FF">int m</FONT><FONT COLOR="#000000">,</FONT> n<FONT COLOR="#000000">:</FONT> <FONT COLOR="#0000FF">int n</FONT><FONT COLOR="#000000">)</FONT><FONT COLOR="#000000">:</FONT> <FONT COLOR="#0000FF"><FONT COLOR="#000000">[</FONT>r<FONT COLOR="#000000">:</FONT>nat <FONT COLOR="#000000">|</FONT> 1 &lt;= r<FONT COLOR="#000000">;</FONT> r &lt;= min<FONT COLOR="#000000">(</FONT>m<FONT COLOR="#000000">,</FONT> n<FONT COLOR="#000000">)</FONT><FONT COLOR="#000000">]</FONT> int r</FONT> <FONT COLOR="#000000">=</FONT>
+  <FONT COLOR="#000000">if</FONT> m <FONT COLOR="#000000">&gt;</FONT> n <FONT COLOR="#000000">then</FONT> gcd <FONT COLOR="#000000">(</FONT>m - n<FONT COLOR="#000000">,</FONT> n<FONT COLOR="#000000">)</FONT>
+  <FONT COLOR="#000000">else</FONT> <FONT COLOR="#000000">if</FONT> m <FONT COLOR="#000000">&lt;</FONT> n <FONT COLOR="#000000">then</FONT> gcd <FONT COLOR="#000000">(</FONT>m<FONT COLOR="#000000">,</FONT> n - m<FONT COLOR="#000000">)</FONT>
+  <FONT COLOR="#000000">else</FONT> m
+</FONT></PRE>
+
+The syntax <i>.< m+n >.</i> indicates that the termination metric
+<i>(m+n)</i> should be used to verify that the defined function <i>gcd</i>
+is terminating. In the definition of <i>gcd</i>, the termination metric for
+the first recursive call to <i>gcd</i> is <i>(m-n)+n=m</i>, which is
+strictly less than the original termination metri <i>m+n</i> (as <i>n</i>
+is positive); the termination metric for the second recursive call to
+<i>gcd</i> is <i>m+(n-m)=n</i>, which is also strictly less than the
+original termination metric <i>m+n</i> (as <i>m</i> is positive).  Thus,
+<i>gcd</i> is a terminating function.
+<P>
+
+As another example, we implement as follows the Ackermann's function:
+
+<PRE><FONT COLOR="#E80000"><FONT COLOR="#787878">// [ack] implements the Ackermann's function
+</FONT><FONT COLOR="#000000">fun</FONT> ack <FONT COLOR="#0000FF"><FONT COLOR="#000000">{</FONT>m<FONT COLOR="#000000">,</FONT>n<FONT COLOR="#000000">:</FONT>nat<FONT COLOR="#000000">}</FONT></FONT> <FONT COLOR="#0000FF"><FONT COLOR="#000000">.&lt;</FONT> m<FONT COLOR="#000000">,</FONT> n <FONT COLOR="#000000">&gt;.</FONT></FONT>
+  <FONT COLOR="#000000">(</FONT>m<FONT COLOR="#000000">:</FONT> <FONT COLOR="#0000FF">int m</FONT><FONT COLOR="#000000">,</FONT> n<FONT COLOR="#000000">:</FONT> <FONT COLOR="#0000FF">int n</FONT><FONT COLOR="#000000">)</FONT><FONT COLOR="#000000">:</FONT> <FONT COLOR="#0000FF">Nat</FONT> <FONT COLOR="#000000">=</FONT>
+  <FONT COLOR="#000000">if</FONT> m <FONT COLOR="#000000">&gt;</FONT> 0 <FONT COLOR="#000000">then</FONT>
+    <FONT COLOR="#000000">if</FONT> n <FONT COLOR="#000000">&gt;</FONT> 0 <FONT COLOR="#000000">then</FONT> ack <FONT COLOR="#000000">(</FONT>m-1<FONT COLOR="#000000">,</FONT> ack <FONT COLOR="#000000">(</FONT>m<FONT COLOR="#000000">,</FONT> n-1<FONT COLOR="#000000">)</FONT><FONT COLOR="#000000">)</FONT> <FONT COLOR="#000000">else</FONT> ack <FONT COLOR="#000000">(</FONT>m-1<FONT COLOR="#000000">,</FONT> 1<FONT COLOR="#000000">)</FONT>
+  <FONT COLOR="#000000">else</FONT> n+1
+</FONT></PRE>
+
+The syntax <i>.< m, n >.</i> indicates that the termination metric is
+a pair of natural numbers: <i>(m, n)</i>. We use the lexicographical
+ordering on natural numbers to compare such metrics.
+To verify that <i>ack</i> is terminating, we need to solve the
+following constraints:
+<UL>
+
+<LI>
+<i>(m-1, k)</i> is less than <i>(m, n)</i> under the assumption
+<i>m > 0</i>, where <i>k</i> is an arbitrary natural number.
+
+<LI>
+<i>(m, n-1)</i> is less than <i>(m, n)</i> under the assumption
+<i>m > 0</i> and <i>n > 0</i>.
+
+<LI>
+<i>(m-1, 1)</i> is less than <i>(m, n)</i> under the assumption
+<i>m > 0</i>.
+
+</UL>
+As all of these constraints can be readily solved, we conclude that
+<i>ack</i> is a terminating funciton.
+<P>
+
+<H4>Mutually Recursive Functions</H4>
+
+When mutually recursive functions are to be verified, the termination
+metrics for these functions, which are tuples of natural numbers, must be
+of the same tuple length. We given a simple example as follows:
+
+<PRE><FONT COLOR="#E80000"><FONT COLOR="#787878">// mutually recursive functions
+</FONT><FONT COLOR="#000000">fun</FONT> isEven <FONT COLOR="#0000FF"><FONT COLOR="#000000">{</FONT>n<FONT COLOR="#000000">:</FONT>nat<FONT COLOR="#000000">}</FONT></FONT> <FONT COLOR="#0000FF"><FONT COLOR="#000000">.&lt;</FONT> 2*n+2 <FONT COLOR="#000000">&gt;.</FONT></FONT> <FONT COLOR="#000000">(</FONT>n<FONT COLOR="#000000">:</FONT> <FONT COLOR="#0000FF">int n</FONT><FONT COLOR="#000000">)</FONT><FONT COLOR="#000000">:</FONT> <FONT COLOR="#0000FF">bool</FONT> <FONT COLOR="#000000">=</FONT>
+  <FONT COLOR="#000000">if</FONT> n <FONT COLOR="#000000">&gt;</FONT> 0 <FONT COLOR="#000000">then</FONT> <FONT COLOR="#000000">~</FONT><FONT COLOR="#000000">(</FONT>isOdd n<FONT COLOR="#000000">)</FONT> <FONT COLOR="#000000">else</FONT> true
+<FONT COLOR="#000000">and</FONT> isOdd <FONT COLOR="#0000FF"><FONT COLOR="#000000">{</FONT>n<FONT COLOR="#000000">:</FONT>nat<FONT COLOR="#000000">}</FONT></FONT> <FONT COLOR="#0000FF"><FONT COLOR="#000000">.&lt;</FONT> 2*n+1 <FONT COLOR="#000000">&gt;.</FONT></FONT> <FONT COLOR="#000000">(</FONT>n<FONT COLOR="#000000">:</FONT> <FONT COLOR="#0000FF">int n</FONT><FONT COLOR="#000000">)</FONT><FONT COLOR="#000000">:</FONT> <FONT COLOR="#0000FF">bool</FONT> <FONT COLOR="#000000">=</FONT>
+  <FONT COLOR="#000000">if</FONT> n <FONT COLOR="#000000">&gt;</FONT> 0 <FONT COLOR="#000000">then</FONT> isEven <FONT COLOR="#000000">(</FONT>n-1<FONT COLOR="#000000">)</FONT> <FONT COLOR="#000000">else</FONT> false
+</FONT></PRE>
+
+Clearly, we may also verify the termination of these two functions by using
+the metrics
+<i> .< n, 1 >. </i>
+and
+<i> .< n, 0 >. </i>
+for <i>isEven</i> and <i>isOdd</i>, respectively.
+
+<HR SIZE=1 ALIGN=LEFT><P>
+The code used for illustration is available <a
+href="termination-metrics.dats">here</a>.
+
+</BODY>
+</HTML>

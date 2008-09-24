@@ -1,0 +1,661 @@
+%%%Language Basics
+\chapter{Some Basics about ATS}
+ATS consists of a static component (statics), where types are formed and
+reasoned about, and a dynamic component (dynamics), where programs are
+constructed and evaluated.
+
+\begin{figure}[thp]
+\[\begin{array}{rrcl}
++ & \mbox{(\texttt{+})} & : & (\sint,\sint)\Simp\sint \\
+- & \mbox{(\texttt{-})} & : & (\sint,\sint)\Simp\sint \\
+* & \mbox{(\texttt{*})} & : & (\sint,\sint)\Simp\sint \\
+/ & \mbox{(\texttt{/})} & : & (\sint,\sint)\Simp\sint \\
+< & \mbox{(\texttt{<})} & : & (\sint,\sint)\Simp\sbool \\
+\leq & \mbox{(\texttt{<=})} & : & (\sint,\sint)\Simp\sbool \\
+> & \mbox{(\texttt{>})} & : & (\sint,\sint)\Simp\sbool \\
+\geq & \mbox{(\texttt{>=})} & : & (\sint,\sint)\Simp\sbool \\
+= & \mbox{(\texttt{==})} & : & (\sint,\sint)\Simp\sbool \\
+\neq & \mbox{(\texttt{<>})} & : & (\sint,\sint)\Simp\sbool \\
+\neg & \mbox{(\texttt{\~})} & : & (\sbool)\Simp\sbool \\
+\land & \mbox{(\texttt{\&\&})} & : & (\sbool,\sbool)\Simp\sbool \\
+\lor & \mbox{(\texttt{||})} & : & (\sbool,\sbool)\Simp\sbool \\
+\tbool & \mbox{\texttt{bool}} & : & (\sbool)\Simp\stype \\
+\tint & \mbox{\texttt{int}} & : & (\sint)\Simp\stype \\
+\end{array}\]
+\caption{Some static constants and their c-sorts}
+\label{figure:some_static_constants}
+\end{figure}
+\section{Some Primitive Sorts and Constants}
+The statics of $\ATS$ is a simply typed language. The types for terms in
+the statics are called {\em sorts} (so as to avoid potential confusion with
+the types for terms in the dynamics) and the terms in it are called {\em
+static terms}. We are to use $\sigma$ for sorts and $s$ for static terms.
+For this moment, let us assume the existence of the primitive sorts
+$\sbool$, $\sint$ and $\stype$.
+
+There are also some primitive constants $c$ in the statics, each of which
+is assigned a constant sort (or c-sort, for short) of the form:
+$(\sigma_1,\ldots,\sigma_n)\Simp\sigma$.  Intuitively, given static terms
+$s_1,\ldots,s_n$ of sorts $\sigma_1,\ldots,\sigma_n$, respectively,
+$c(s_1,\ldots,s_n)$ is a static term of sort $\sigma$ if $c$ is assigned
+the c-sort $(\sigma_1,\ldots,\sigma_n)\Simp\sigma$. For instance, each
+boolean value is given the sort $()\Simp\sbool$ and each integer is given
+the c-sort $()\Simp\sint$. Also we have in
+Figure~\ref{figure:some_static_constants} some constants together with
+their c-sorts (the concrete syntax for these constants is given inside the
+parentheses).  In $\ATS$, a type refers to a static term $s$ of sort
+$\stype$. For instance, $\tbool(\ffalse)$ and $\tint(2+3)$ are types.
+
+\section{Subset Sorts}
+A subset sort is essentially a sort constrained by a predicate. For
+instance, we can define a subset sort $\snat$ as follows:
+\begin{verbatim}
+sortdef nat = {a:int | a >= 0}
+\end{verbatim}
+It is important to note that a subset sort is {\em not} regarded as a
+(regular) sort. The sole purpose of introducing subset sorts is to provide
+a form of syntactic sugar (to be used together with quantifiers), which is
+to be explained shortly.  Following are some commonly used subset sorts:
+\begin{verbatim}
+sortdef two = {a:nat | a < 2}
+sortdef sgn = {a:int | -1 <= a && a <= 1}
+sortdef sgn = {a:int | a == -1 || a == 0 || a == 1} // another definition
+sortdef pos = {a:int | a > 0}
+sortdef neg = {a:int | a < 0}
+\end{verbatim}
+where $\&\&$ and $||$ stand for conjunction and disjunction, respectively.
+Note that we may also use comma ($,$) for conjunction. For instance,
+the subset sort $\ssgn$ can be defined as follows:
+\begin{verbatim}
+sortdef sgn = {a:int | -1 <= a, a <= 1}
+\end{verbatim}
+
+\section{Some Primitive Types and Values}
+We use the name {\em dynamic term} for a term in the dynamics of $\ATS$ and
+a value is a dynamic term in a special form (which is to be made clear
+later). For instance, we have boolean values: $\ttrue,\ffalse$ and integer
+values: $0,1,-1,2,-2,\ldots$.  The use of dependent types in ATS is
+ubiquitous.  Given a boolean $b$, we can form a type $\tbool(b)$ and the
+only value that can be assigned this type is the boolean value $b$.  In
+other words, $\tbool(b)$ is a singleton type.  Similarly, we can form a
+type $\tint(i)$ for each integer $i$ and the only value that can be
+assigned this type is the integer value $i$.  The types $\tBool$ and
+$\tInt$, which are for boolean values and integer values, respectively, can
+be defined as follows in ATS:
+\begin{verbatim}
+typedef Bool = [a:bool] bool (a)
+typedef Int = [a:int] int (a)
+\end{verbatim}
+Or formally, $\tBool$ and $\tInt$ are defined as the existentially
+quantified types $\exists a:\sbool.\tbool (a)$ and $\exists a:\sint.\tint
+(a)$, respectively.  Given an integer $i$, we can form a type $\tchar(i)$
+for the character whose code equals $i$. The type for characters is defined
+as follows:
+\begin{verbatim}
+typedef Char = [a:int | a >= 0] char (a)
+\end{verbatim}
+Or formally, $\tChar=\exists a:\sint.(a\geq 0)\Band\tchar (a)$.  Given a
+proposition $B$ and a type $T$, we use the name {\em asserting type} for a
+type of the form $B\Band T$. The simple intuition behind such a type is
+this: if an expression of type $B\Band T$ evaluates to a value $v$, then we
+know that $B$ holds (at the point where $v$ is obtained) and $v$ is of type
+$T$.  Note that the definition of $\tChar$ can also written as follows:
+\begin{verbatim}
+typedef Char = [a:nat] char (a)
+\end{verbatim}
+which makes use of the subset sort $\snat$. Note that this definition is
+automatically translated into the previous one.  Also, we may formally
+write $\tChar=\exists a:\snat.\tchar (a)$.
+
+Given an integer $i$, we can form a type $\tstring(i)$ for strings of
+length $i$. The type $\tString$ for strings is defined as follows:
+\begin{verbatim}
+type String = [a:nat] string (a)
+\end{verbatim}
+Or formally, $\tString=\exists a:\snat.\tstring (a)$.
+
+\section{Guarded Types and Asserting Types}
+We have now already seen some asserting types. In ATS, guarded types of the
+form $B\Bimp T$ are also available, where $B$ and $T$ are for propositions
+and types, respectively.  Intuitively, in order to use a value of type
+$B\Bimp T$, which is most likely a function, the guard $B$ needs to be
+discharged first.  For instance, if the following type
+\[\begin{array}{c}
+\forall a:\sint.a\geq 0\Bimp (\tint (a) \timp \tint (a)) \\
+\end{array}\]
+is assigned to a function $f$, then the guard in the type requires that $f$
+be only applied to integers that are greater than or equal to 0, that is,
+natural numbers. In the concrete syntax of ATS, we use
+\verb`{...}` and \verb`[...]` for introducing guards and assertions,
+respectively.
+
+\section{Universally and Existentially Quantified Types}
+We have now already seen both universally and existentially quantified
+types in ATS. In the concrete syntax, we use
+\verb`{`$\ldots$\verb`}` and \verb`[`$\ldots$\verb`]` for introducing universal and
+existential quantifiers, respectively. Hence,
+\verb`{`$\ldots$\verb`}`
+is used for introducing guards as well as universal quantifiers, and
+\verb`[`$\ldots$\verb`]` is used for introducing assertions as well as
+existential quantifiers. The following is an example involving all these
+features:
+\begin{verbatim}
+{a1:int | a1 >= 0} int a1 -> [a2:int | a2 < 0] int a2
+\end{verbatim}
+This type can be assigned to a function from natural numbers to negative
+integers. The next type is more interesting:
+\begin{verbatim}
+{a:bool} bool a -> [a == true] unit
+\end{verbatim}
+A function of this type asserts that its argument, which is a boolean
+expression, holds the value $\ttrue$ at run-time. In the case where a
+boolean expression of the value $\ffalse$ is given, an exception is to be
+raised.
+
+\begin{figure}
+\begin{verbatim}
+// some arithmetic functions:
+dynval isucc: {a:int} int a -> int (a+1)
+dynval ipred: {a:int} int a -> int (a-1)
+dynval iadd : {a1:int,a2:int} (int a1, int a2) -> int (a1+a2)
+dynval isub : {a1:int,a2:int} (int a1, int a2) -> int (a1-a2)
+dynval imul : {a1:int,a2:int} (int a1, int a2) -> Int
+dynval imul1 : {a1:int,a2:int} (int a1, int a2) -> int (a1*a2)
+dynval idiv : {a1:int,a2:int} (int a1, int a2) -> Int
+dynval idiv1 : {a1:int,a2:int | a2 <> 0} (int a1, int a2) -> Int
+
+// some comparison functions on integers:
+dynval ilt : {a1:int,a2:int} (int a1, int a2) -> bool (a1<a2)
+dynval ilte : {a1:int,a2:int} (int a1, int a2) -> bool (a1<=a2)
+dynval igt : {a1:int,a2:int} (int a1, int a2) -> bool (a1>a2)
+dynval igte : {a1:int,a2:int} (int a1, int a2) -> bool (a1>=a2)
+dynval ieq : {a1:int,a2:int} (int a1, int a2) -> bool (a1==a2)
+dynval ineq : {a1:int,a2:int} (int a1, int a2) -> bool (a1<>a2)
+
+// some functions on booleans:
+dynval not : {b:bool} bool b -> bool (~b)
+dynval && : {b1:bool,b2:bool} (bool b1, bool b2) -> bool (b1 && b2)
+dynval || : {b1:bool,b2:bool} (bool b1, bool b2) -> bool (b1 || b2)
+\end{verbatim}
+\caption{Some primitive functions}
+\label{figure:some_primitive_functions}
+\end{figure}
+\section{Some Primitive Functions}
+In Figure~\ref{figure:some_primitive_functions}, we list some primitive
+functions. For instance, the following concrete syntax:
+\begin{verbatim}
+dynval idiv1 : {a1:int,a2:int | a2 <> 0} (int a1, int a2) -> Int
+\end{verbatim}
+indicates that ${\it idiv1}$ is a function of the following type:
+\[\begin{array}{c}
+\forall a_1:\sint.\forall a_2:\sint.a_2\neq 0 \Bimp((\tint(a_1), \tint(a_2))\timp\tInt) \\
+\end{array}\]
+Therefore, the expression ${\it idiv1}(1, 0)$ is ill-typed as $1$ and $0$
+are of types $\tint(1)$ and $\tint(0)$, respectively.
+
+\section{Elements of Programming}
+In ATS, there are many forms of expressions and means of combining
+simpler expressions into compound ones, and we are to introduce
+these forms and means gradually.
+
+\subsection{Primitive Expressions}
+We informally mention the syntax for some primitive expressions:
+\begin{itemize}
+\item integers: the syntax for integers (in decimal notation)
+is a sequence of digits that may be following the negative sign
+\texttt{\char126}
+(not the symbol \texttt{-}). For instance, \texttt{31415926} and
+\texttt{{\char126}27172828} are integers.
+
+\item reals:
+the syntax for reals is an integer in decimal notation possibly followed by
+a point (.) and one or more decimal digits, possibly followed by an
+exponent symbol (\texttt{e} or \texttt{E}) and an integer constant in
+decimal notation; at least of the optional parts must occur, hence no
+integer constant is a real constant.  Here are some examples of reals:
+\texttt{3.14}, \texttt{1.23E2},
+\texttt{1e-2}, and non-examples of reals: \texttt{23},
+\texttt{.1}, {3.E2}, \texttt{1.e2.3}.
+
+\item
+characters: the syntax for characters is $'c'$, where $c$ ranges over ascii
+characters. For instance, \texttt{'a'} and \verb`'\n'` are characters.
+
+\item
+strings: the syntax for strings is a sequence of characters inside a pair
+of quotes. For instance, \verb`"Hello, world!\n"` is a string.
+\end{itemize}
+
+\subsection{Fixity}
+In ATS, prefix, infix and postfix operators are supported. Given an
+operator, its {fixity status} is either prefix, infix, postfix or none.  We
+say that an operator possesses some fixity if its fixity status is not
+none.  We can use the keywords $\KWprefix$ and $\KWpostfix$ for introducing
+prefix and postfix operators, respectively, and the keywords $\KWinfix$,
+$\KWinfixl$ and $\KWinfixr$ for introducing non-associative, left
+associative, and right associated infix operators, respectively. The
+keywords can be followed by an optional integer to indicate the precedence
+of the introduced operators.
+
+In the following example, $ipred$ (integer predesessor), $nmul$ (natural
+number multiplication) and $!$ (factorial) are declared to be prefix, infix
+(with left associativity) and postfix operators respectively:
+\begin{verbatim}
+prefix 40 ipred
+infixl 60 nmul
+postfix 80 !
+
+fun ! (x: Nat): Nat = if x igt 0 then 1 else x nmul (ipred x)!
+\end{verbatim}
+In addition, we may write $e_1~\backslash oper~e_2$ for $oper(e_1, e_2)$,
+where $e_1$ and $e_2$ are two expressions and $oper$ an operator. More
+precisely, $\backslash oper$ is treated as a non-associative infix operator
+with precedence $0$.  On the other hand, the keyword $\KWop$ can be used to
+suppress the fixity status of an operator: $\KWop~oper$ is treated as an
+operator with no fixity regardless what the fixity status of $oper$ is.
+
+\subsection{Naming and the Environment}
+A critical aspect in programming is to be able to bind names to (complex)
+computational objects. For instance, we can bind names to values through
+the following syntax:
+\begin{verbatim}
+val radius = 1.0
+val pi = 3.1415926
+val area = pi * radius * radius
+\end{verbatim}
+For those who are familiar with lambda-notation, we can bind a name to a
+function value as well:
+\begin{verbatim}
+val square = lam (x: real): real => x * x
+val area = pi * square (radius)
+\end{verbatim}
+
+\subsection{Tuples}
+The syntax for forming a tuple expression is:
+\[\begin{array}{c}
+\texttt{'(}\synexp, \ldots, \synexp\texttt{)}
+\end{array}\]
+Given values $v_1,\ldots, v_n$, we can form a tuple $'(v_1,\ldots,v_n)$ of
+length $n$ such that the $i$th component of the tuple is $v_i$ for $1\leq
+i\leq n$. The use of quote $'$ is solely for the purpose of parsing. For
+instance, a pair $\mbox{\it ZeroAndOne}$ is formed through the following
+syntax:
+\begin{verbatim}
+val ZeroAndOne = '(0, 1)
+\end{verbatim}
+We can then extract the components of a tuple by pattern matching. For
+instance, the following syntax binds $x$ and $y$ to $0$ and $1$:
+\begin{verbatim}
+val '(x, y) = ZeroAndOne
+\end{verbatim}
+If values $v_1,\ldots,v_n$ are assigned types $T_1,\ldots,T_n$,
+respectively, then the tuple $'(v_1,\ldots,v_n)$ can be assigned the type
+$'(T_1,\ldots,T_n)$. Again, the quote $'$ in $'(T_1,\ldots,T_n)$ is solely
+for the purpose of parsing.
+
+\subsection{Conditionals}
+The syntax for forming a conditional is
+\[\begin{array}{c}
+\texttt{if}~\synexp~\texttt{then}~\synexp~\texttt{else}~\synexp
+\end{array}\]
+
+\subsection{Type Annotations}
+The syntax for supplying a type annotation is
+\[\begin{array}{c}
+\texttt{(}\synexp:\syntype\texttt{)}
+\end{array}\]
+For instance, we may write \texttt{(1+1: Int)} to indicate that the
+expression $1+1$ can be assigned the type $\tInt$. The need for type
+annotations is indispensable when we try to use (advanced) features in
+$\ATS$.
+
+\subsection{Local Bindings}
+
+\subsection{Functions}
+The core of $\ATS$ is a functional programming language and functions are
+first-class values.  In $\ATS$, we support functions of multiple arguments.
+We use $\synargs$ for a (possibly empty) sequence of variables with or
+without assigned types:
+\[\begin{array}{c}
+\synvar\synoption{\texttt{:}\syntype},\ldots,\synvar\synoption{\texttt{:}\syntype}
+\end{array}\]
+The following syntax can be used to form a lambda-abstraction:
+\[\begin{array}{c}
+\texttt{lam (}\synargs\texttt{) ... (}\synargs\texttt{)}\synoption{\texttt{:}\syntype}\texttt{ => }\synexp
+\end{array}\]
+For instance, the following syntax represents the function that doubles a
+given integer:
+\begin{verbatim}
+lam (x: Int): Int => x + x
+\end{verbatim}
+The types in the syntax means that the function takes an integer and then
+returns another integer. In other words, the function is assigned the type
+$\tInt\timp\tInt$ (or \texttt{Int -> Int} in the concrete syntax). In
+general, a type $(T_1,\ldots,T_n)\timp T$ is for a function that takes n
+arguments of types $T_1,\ldots,T_n$, respectively, and returns a value of
+type $T$. We may write $T_1\timp T$ for $(T_1)\timp T$.  We can also form
+fixed-point expressions to represent recursive functions, and the following
+form of syntax is designed for this purpose:
+\[\begin{array}{c}
+\texttt{fix}~\synvar~\texttt{(}\synargs\texttt{) ... (}\synargs\texttt{)}\synoption{\texttt{:}\syntype}\texttt{ => }\synexp
+\end{array}\]
+For instance, the usual factorial function can be defined as follows:
+\begin{verbatim}
+fix f (x: Int): Int => if x > 0 then x * f (x - 1) else 1
+\end{verbatim}
+
+\subsection{Function Declarations}
+The following is a form of syntax for introducing a function declaration:
+\[\begin{array}{c}
+\texttt{fun}~\synvar~\texttt{(}\synargs\texttt{) ... (}\synargs\texttt{)}\synoption{\texttt{:}\syntype}\texttt{ = }\synexp
+\end{array}\]
+For instance, the usual Fibonacci function can be defined as follows:
+\begin{verbatim}
+fun fib (n: Int): Int =
+  if n == 0 then 0
+  else if n == 1 then 1
+       else fib (n-1) + fib (n-2)
+\end{verbatim}
+This form of syntax is actually a sugared version of the following
+\[\begin{array}{c}
+\texttt{val rec}~\synvar~\texttt{ = lam (}\synargs\texttt{) ... (}\synargs\texttt{)}\synoption{\texttt{:}\syntype}\texttt{ => }\synexp
+\end{array}\]
+For instance, the above declaration for Fibonacci function translates into
+the following one:
+\begin{verbatim}
+val rec fib: Int -> Int =
+  lam (n) =>
+    if n == 0 then 0
+    else if n == 1 then 1
+         else fib (n-1) + fib (n-2)
+\end{verbatim}
+This syntax for declaring mutually recursive functions is rather similar,
+and the following is such an example:
+\begin{verbatim}
+
+fun isEven (n: Int): Bool = if n == 0 then true else isOdd (n-1)
+and isOdd (n: Int): Bool = if n == 0 then false else isEven (n-1)
+\end{verbatim}
+
+\subsection{Parentheses}
+The keywords \texttt{begin} and \texttt{end} may be used for \texttt{(} and
+\texttt{)}, respectively. For instance, we may construct the following
+program:
+\begin{verbatim}
+fun twice (f: () -> unit): unit = begin f (); f () end
+\end{verbatim}
+
+\subsection{Comments}
+There are three forms of comments in $\ATS$: line comment, block comment
+and rest-of-file comment.
+\begin{itemize}
+\item
+A line comment starts with the token \texttt{//} and extends until the end
+of the line.
+\item
+A block comment starts with the token \texttt{(*} and closes with the token
+\texttt{*)}. Note that nested block comments are allowed.
+\item
+A rest-of-file comment starts with the token \texttt{////} and extends
+until the end of the file.
+\end{itemize}
+The use of comments is often a good practice in programming. However,
+comments are most likely discarded after parsing.  In the following
+example, the three forms of comments are all present:
+\begin{verbatim}
+fun f91 (x: Int): Int = // we implement the famous McCarthy's 91-function
+  (* this function always return 91 when applied to an integer less than 101 *)
+  if x < 101 then f91 (f91 (x + 11)) else x - 10
+//// whatever written here or below is considered a comment
+
+\end{verbatim}
+
+\def\tnatLt{{\bf natLt}}
+\section{Static Constant Definitions}
+It is common to introduce static constant definitions in ATS.  For
+instance, we have the following type definitions:
+\begin{verbatim}
+typedef natLt (n:int) = [a:nat | a < n] int a
+typedef natLte (n:int) = [a:nat | a <= n] int a
+typedef natGt (n:int) = [a:nat | a > n] int a
+typedef natGte (n:int) = [a:nat | a >= n] int a
+\end{verbatim}
+Given an integer $I$, $\tnatLt(I)$ is clearly the type for all natural
+numbers that are less than $I$. The other type definitions can be
+understood similarly.  The keyword \texttt{typedef} is only used to
+introduce type definitions.  A more general form of static constant
+definitions can be declared through the use of the keyword
+\texttt{stadef}. For instance, both of the following definitions are
+equivalent to the previous type definition for $\tnatLt$:
+\begin{verbatim}
+stadef natLt (n:int): type = [a:nat | a < n] int a
+stadef natLt: int -> type = lam (n:int) => [a:nat | a < n] int a
+\end{verbatim}
+
+\def\tsequence{{\bf sequence}}
+\begin{figure}
+\begin{verbatim}
+typedef rec sequence (a: type) = '(a, () -> sequence a)
+
+fun getHead {a:type} (xs: sequence a): a =
+  let val '(x, _) = sequence$unfold xs in x end
+
+fun getTail {a:type} (xs: sequence a): sequence a =
+  let val '(_, fxs) = sequence$unfold xs in fxs () end
+
+fun integerFrom (n: Int): sequence Int =
+  sequence$fold '(n, lam () => integerFrom (isucc n))
+
+// [naturals] represents the sequence of natural numbers
+val naturals: sequence Int = integerFrom 0
+\end{verbatim}
+\caption{An example involving recursive type definition}
+\label{figure:rec_type_sequence}
+\end{figure}
+It is also allowed to introduce recursive type definitions in ATS.  Given a
+recursive type {\it recType}, there are two constants {\it recType\$fold}
+{\it recType\$unfold} that are automatically introduced to perform folding
+and unfolding on {\it recType}. We present such an example in
+Figure~\ref{figure:rec_type_sequence}, where a recursive type constructor
+$\tsequence$ is defined such that for each given type $T$, a value of the
+type $\tsequence(T)$ represents an infinite sequence of elements of type
+$T$.
+
+\section{Datatypes}
+The support for datatypes in ATS is similar to that in ML, though the
+concrete syntax is somewhat different.  For instance, the following syntax
+declares a datatype constructor $\tMyList$ that forms a type $\tMyList(T)$
+when applied to a given type $T$:
+\begin{verbatim}
+datatype MyList (type) =
+  {a:type} MyNil (a) | {a:type} MyCons (a) of (a, MyList a)
+\end{verbatim}
+In other words, $\tMyList$ is a static constant of c-sort
+$(\stype)\Timp\stype$.  There are two value constructors associated with
+$\tMyList$: $\cMyNil$ and $\cMyCons$, which are assigned the following
+constant types (c-types):
+\[\begin{array}{rcl}
+\cMyNil & : & \forall a:\stype. ()\Timp \tMyList(a) \\
+\cMyCons & : & \forall a:\stype. (a, \tMyList(a))\Timp \tMyList(a) \\
+\end{array}\]
+For those who are familiar with the syntax of SML, the above declaration in
+$\ATS$ is largely equivalent to the following one in SML:
+\begin{verbatim}
+datatype 'a MyList = MyNil | MyCons of 'a * 'a MyList
+\end{verbatim}
+As a matter of fact, an equivalent declaration of $\tMyList$ can
+also be given as follows:
+\begin{verbatim}
+datatype MyList (a:type) = MyNil (a) | MyCons (a) of (a, MyList a)
+\end{verbatim}
+which is just a sugared version of the previous one.  As an example, the
+following polymorphic function $\flength$ is given the type $\forall
+a:\stype.\tMyList(a)\timp\tInt$:
+\begin{verbatim}
+fun length {a:type} (xs: MyList a): Int =
+  case xs of
+    | MyNil () => 0 // the bar '|' in the front of the line is optional
+    | MyCons (x, xs) => 1 + length (xs)
+\end{verbatim}
+which computes the length of a list of type $\tMyList(T)$ for any type $T$.
+Note that for a constructor $c$ of arity $0$, we write $c()$ instead of $c$
+when forming patterns so as to distinguish $c$ from a variable. For
+instance, $\cMyNil()$ is such a pattern.
+
+\section{Lists}
+In ATS, $\tlist$ is a built-in type constructor of the c-sort $(\stype,
+\sint)\Simp\stype$. Given a type $T$ and an integer $I$, $\tlist(T, I)$ is
+the type for lists of length $I$ in which each element is of type $T$, and
+$\tList(T)$ is for $\exists a:\snat.\tlist(T, a)$.  The constructor $\cnil$
+represents the empty list, and the constructor $\ccons$ takes an element
+and a list to form another list. For instance, $\ccons (1, \ccons (2,
+\ccons (3,
+\cnil)))$ is a list of length $3$.  Alternatively, you may write $'[]$ for
+$\cnil$ and $'[1,2,3]$ for $\ccons (1, \ccons (2, \ccons (3, \cnil)))$.
+
+There are already various built-in functions on lists.  As an example, the
+following program implements a function that reverses a given list.
+\begin{verbatim}
+fun reverse {a:type, n:nat} (xs: list (a, n)): list (a, n) =
+  let
+     fun aux {n1:nat, n2:nat} (xs: list (a, n1), ys: list (a, n2))
+       : list (a, n1+n2) =
+       case xs of '[] => ys | cons (x, xs) => aux (xs, cons (x, ys))
+  in
+     aux (xs, '[])
+  end
+\end{verbatim}
+
+\section{Arrays}\label{section:array}
+There is a built-in type constructor $\tarray$ in ATS of the sort
+$(\stype,\sint)\Simp\stype$.  Given a type $T$ and an integer $I$, we can
+form the type $\tarray(T, I)$ for arrays of length $I$ in which each
+element is of type $T$. The functions $\fmakeArray$, $\farrayGet$ and
+$\farraySet$ are given the following types and their meaning should be
+obvious.
+\begin{verbatim}
+dynval makeArray : {a:type, n:nat} (int n, a) -> array (a, n)
+dynval arrayGet : {a:type, n:nat} (array (a, n), natLt n) -> a
+dynval arraySet : {a:type, n:nat} (array (a, n), natLt n, a) -> unit
+\end{verbatim}
+The following example implements the dot product function on
+two real vectors.
+\begin{verbatim}
+fun dotprod {n:nat} (v1: array (real, n), v2: array (real, n), n: int n)
+  : real = // the following function [aux] is tail-recursive
+  let
+     fun aux {i:nat | i <= n} (i: int i, s: real): real =
+       if i ilt n then
+         aux (isucc i, s + arrayGet (v1, i) * arrayGet (v2, i))
+       else s
+  in
+     aux (0, 0.0)
+  end
+\end{verbatim}
+Note that the type of {\it dotprod} mandates that the function be only
+applied to two vectors of the same length.
+
+\begin{figure}[thp]
+\begin{verbatim}
+datatype binaryTree (type) =
+  | {a:type} E (a)
+  | {a:type} B (a) of (binaryTree a, a, binaryTree a)
+
+fun isPerfect {a:type} (t: binaryTree a): Bool =
+  let
+     exception NotPerfect
+     fun aux (t: binaryTree a): Nat =
+       case t of
+         | E () => 0
+         | B (t1, _, t2) =>
+           let
+              val h1 = aux (t1)
+              val h2 = aux (t2)
+           in
+              if h1 ieq h2 then isucc h1 else raise NotPerfect
+           end
+  in
+     try let val _ = aux (t) in true end with NotPerfect () => false
+  end
+\end{verbatim}
+\caption{An example of programming with exceptions}
+\label{figure:isPerfect}
+\end{figure}
+\section{Exceptions}
+The exception mechanism in ATS is rather similar to the one supported in
+ML~\cite{SML97}, which provides a means for the programmer to alter the
+control flow in program execution. For instance, we can declare an
+exception {\em Fatal} as follows and then make use of it in the
+implementation of a function.
+\begin{verbatim}
+exception Fatal
+fun fatal {a:type} (msg: String): a = (printString msg; raise Fatal)
+\end{verbatim}
+Hence, a call to the defined function {\it fatal} with an argument {\it
+msg} prints out {\it msg} and then raises the exception {\it Fatal}.  Note
+that a raised exception may be assigned any type.
+
+In Figure~\ref{figure:isPerfect}, we present an interesting example of
+programming with exceptions. First, we declare a datatype constructor {\it
+binaryTree} for binary trees. Then we implement a function {\it isPerfect}
+to test whether a given binary tree is perfectly balanced.  Note that the
+exception {\it NotPerfect} is not declared at the top level. Instead, it is
+declared inside a let-expression in the body {\it isPerfect} and thus is
+only available in the scope of the let-expression. Given a binary tree $t$,
+the function {\it aux} computes the height of $t$ if $t$ is perfectly
+balanced or it raises the exception {\it NotPerfect}.
+
+\def\fref{{\it ref}}
+\section{References}\label{section:reference}
+In ATS, references are similar to pointers in C.
+There is a type constructor $\tref$ of the c-sort $(\stype)\Simp\stype$,
+that is, $\tref(T)$ is a type if $T$ is.
+For instance, the
+following declaration
+\begin{verbatim}
+val x: ref (Int) = ref 0
+\end{verbatim}
+allocates some memory to store the integer value $0$ and then binds the
+memory location to $x$. Note that the expression {\fref~0} itself is {\em
+not} a value. Instead, the reference returned from evaluating the
+expression is a value. Later, we are to see how references can be built on
+top of some other features in ATS.
+
+After the declaration, the type of $x$ is $\tref(\tInt)$ and the binding of
+$x$ can no longer be changed.  However, the value stored in the memory
+location to which $x$ is bound can be updated. For instance, the value is
+updated to $1$ after the expression $x := 1$ is evaluated. In general, an
+expression of the form $e_1 := e_2$ evaluates $e_1$ to a reference $r$ and
+$e_2$ to a value $v$, and then store the value $v$ in the memory location
+bound to the reference $r$.
+
+We use $!$ for the dereference operator. For instance, $!e$ evaluates $e$
+to a reference $r$ and then returns the value stored in the memory location
+bound to $r$.
+
+Equality on references is the usual pointer equality. Also, $\fref$ is
+allowed to form patterns. For instance, what does the following function
+${\it inc}$ do?
+\begin{verbatim}
+fun inc ((r as ref n): ref Int): unit = (r := n+1)
+\end{verbatim}
+
+\begin{figure}[thp]
+\begin{verbatim}
+// this version is most likely less efficient than a corresponding functional one!
+fun factorial (n: Nat): Nat =
+  let
+     val result: ref Nat = ref 1
+     fun loop (i: Nat): Nat = // [nmul]: multiplication on natural numbers
+       if i igt n then !result
+       else (result := i nmul !result; loop (isucc i))
+  in
+     loop (1)
+  end
+\end{verbatim}
+\caption{An implementation of the factorial function that makes use of references}
+\label{figure:ref_factorial}
+\end{figure}
+The program in Figure~\ref{figure:ref_factorial} is an implementation of
+the factorial function in ATS that makes use of references.
+

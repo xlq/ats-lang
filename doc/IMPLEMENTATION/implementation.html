@@ -1,0 +1,83 @@
+<HTML>
+<HEAD>
+<TITLE>Home Page for ATS-tutorial</TITLE>
+<META name="description" content= Home Page for ATS-tutorial">
+<META name="keywords" content="">
+<LINK REL="stylesheet" HREF="../ATS.css" TYPE="text/css">
+</HEAD>
+<BODY BGCOLOR="#E7CF9E" TEXT="#000000" LEFTMARGIN="0" TOPMARGIN="0" MARGINWIDTH="0" MARGINHEIGHT="0">
+<TABLE WIDTH="100%" BORDER=0 CELLSPACING=0 CELLPADDING=10>
+<TR>
+<TD CLASS="sidebar">&nbsp;</TD>
+<TD CLASS="main">&nbsp;</TD>
+</TR>
+
+<TD CLASS="sidebar" VALIGN="top">
+<TABLE BORDER=0 CELLSPACING=0 CELLPADDING=2>
+  <TR><TD CLASS="menu"><A HREF="../">Home</A></TD></TR>
+  <TR><TD CLASS="menu"><A HREF="../TUTORIAL/tutorial.html">Tutorial</TD></TR>
+  <TR><TD CLASS="menu"><A HREF="../EXAMPLE/example.html">Examples</A></TD></TR>
+  <TR><TD CLASS="menu"><B CLASS="here">Implementation</A></TD></TR>
+  <TR><TD CLASS="menu"><A HREF="../DOCUMENTATION">Documentation</A></TD></TR>
+  <TR><TD CLASS="menu"><A HREF="../LIBRARY/library.html">Libraries</A></TD></TR>
+  <TR><TD CLASS="menu"><A HREF="../PAPER/paper.html">Papers</A></TD></TR>
+  <TR><TD CLASS="menu"><A HREF="../CHANGE/log-of-changes.html">Changes</A></TD></TR>
+  <TR><TD CLASS="menu"><A HREF="../FAQ.txt">FAQ</A></TD></TR>
+  <TR><TD CLASS="menu"><A HREF="https://lists.sourceforge.net/lists/listinfo/ats-lang-users">Mailing List</A></TD></TR>
+</TABLE>
+</TD>
+
+<TD CLASS="main" VALIGN="top">
+<TABLE BORDER=0 CELLPADDING=16>
+<CENTER>
+<H1>Implementations of ATS</H1>
+</CENTER>
+
+<HR SIZE=6 ALIGN=LEFT><P>
+
+<MENU>
+
+<LI>
+<A HREF="Proto/">ATS/Proto</A> is the first implementation of ATS.  In this
+implementation, the standard boxed data representation is used to support
+parametric polymorphism. As of now, ATS/Proto is no longer actively
+maintained and its main purpose is to serve as an example for future
+reference.
+<P>
+
+<LI>
+<A HREF="Geizella/">ATS/Geizella</A> is a previously released
+implementation of ATS (written in <A HREF="http://www.ocaml.org">Objective
+Caml</A> and C). In this implementation, the native unboxed data
+representation (as is in C) is adopted, and this makes ATS/Geizella
+particularly well suited for direct interaction with C.  As for parametric
+polymorphism, it is supported in ATS/Geizella through the use of templates.
+ATS/Geizella is now largely out of active use as ATS/Anairiats, a compiler
+for ATS that is almost entirely written in ATS, has been bootstrapped
+successfully (with the help of ATS/Geizella).
+<P>
+
+<LI> <A
+HREF="http://sourceforge.net/projects/ats-lang/download">ATS/Anairiats</A>
+is the current released implementation of ATS. ATS/Anairiats is almost
+entirely written in ATS itself, consisting of more than 80,000 lines of
+source code that can be viewed <A
+HREF="http://ats-lang.svn.sourceforge.net/viewvc/ats-lang">here</A>.  When
+compared to ATS/Geizella, ATS/Anairiats is significantly more efficient,
+and in general it issues more informative messages for identifying program
+errors.
+<P>
+
+</MENU>
+
+<HR SIZE=6 ALIGN=LEFT><P>
+This page is maintained by
+<a href="http://www.cs.bu.edu/~hwxi/">Hongwei Xi</a>.
+As always,
+<a href="mailto:hwxi@cs.bu.edu">your comments are welcome</a>.
+
+</TABLE>
+</TD>
+
+</BODY>
+</HTML>

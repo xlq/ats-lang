@@ -1,0 +1,246 @@
+<HTML>
+<BODY text="#000000" bgcolor="#ffffff" link="#0000FF" vlink="#CC00CC" alink="#ff0000">
+
+<H2>Persistent Arrays and Matrices</H2>
+<HR SIZE=1 ALIGN=LEFT><P>
+
+Though arrays are widely used in practice, there are many thorny issues
+involving arrays that seem to have not been adequately addressed in the
+literature.  In particular, programming can become rather tricky when
+arrays are used to store resources (e.g., pointers to allocated memory).
+<P>
+
+In ATS, there are two forms of arrays: linear arrays and persistent
+arrays. On one hand, a linear array cannot be shared but a persistent array
+can. On the other hand, a linear array can be explicitly freed but a
+persistent one cannot. However, a persistent array may be freed by GC.
+
+Although persistent arrays are built in terms of linear arrays, it seems
+easier to explain persistent arrays as such arrays are available in
+probably any programming language that may be considered practical.
+
+<H3>Persistent Arrays</H3>
+
+The interfaces for various functions on arrays can be found in the file
+<a href="../../IMPLEMENTATION/Anairiats/ATS/prelude/SATS/array.sats">
+$ATSHOME/prelude/SATS/array.sats
+</a>.
+
+Given a viewtype <i>VT</i> and an integer <i>I</I>, the type
+<i>array(VT, I)</i> is for persistent arrays of size <i>I</i> in which each
+element is of viewtype <i>VT</i>.
+<P>
+
+<B>Array Creation</B>&nbsp;&nbsp;
+There are several approaches to creating of persistent arrays in ATS.
+For instance, the following code in ATS creates an array of integers:
+
+<pre>
+val digits = array @[int][ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 ]
+</pre>
+
+The type assigned to the variable <i>digits</i> is <i>array(int, 10)</i>.
+We can certainly be more precise by stating that <i>digits</i> is indeed an
+array of digits:
+
+<pre>
+typedef digit = [i:nat | i &lt; 10] int (i)
+
+// digits: array (digit, 10)
+val digits = array @[digit][ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 ]
+</pre>
+
+A more flexible approach to array creation makes use of the function
+<i>array_make_fun_tsz</i>, which takes three arguments: a natural number
+representing the size of the array to be created, a function for array
+initialization, and the size of array elements. For instance, the
+previous array of digits can also be created as follows:
+
+<pre>
+val digits =
+  array_make_fun_tsz {digit} (10, lam (x, i) =&lt;clo&gt; x := i, sizeof&lt;digit&gt;)
+</pre>
+
+As another example, the following function can be used to create a
+persisent array of doubles that is initialized with zeros:
+
+<pre>
+fn double_array_make (n: int n): array (double, n) =
+  array_make_fun_tsz {double} (n, lam (x, i) =&lt;clo&gt; x := 0.0, sizeof&lt;double&gt;)
+</pre>
+
+<B>Array Subscripting</B>&nbsp;&nbsp;
+
+The following two (template) functions
+<i>array_get_elt_at</i> and <i>array_set_elt_at</i>
+are for accessing and updating a persistent array, respectively:
+
+<pre>
+fun{a:t@ype} array_get_elt_at {n:nat} (A: array (a, n), i: natLt n):&lt;!ref&gt; a
+fun{a:t@ype} array_set_elt_at {n:nat} (A: array (a, n), i: natLt n, x: a):&lt;!ref&gt; void
+</pre>
+
+The symbol <i>[]</i> is overloaded with both <i>array_get_elt_at</i> and
+<i>array_set_elt_at</i>:
+
+<pre>
+overload [] with array_get_elt_at
+overload [] with array_set_elt_at
+</pre>
+
+As an example, we implement as follows a function that squares each element
+in a given array of doubles:
+
+<pre>
+fn array_square {n:nat} (A: array (double, n)): void = let
+  val sz = length A // sz: int n
+  fun loop {i:nat | i <= n} .< n-i >. (i: int i):<clo1> void =
+    if i < sz then
+      let val x = A[i] in A[i] := x * x; loop (i+1) end
+    else ()
+in
+  loop (0)
+end // end of [array_square]
+</pre>
+
+In this code, <i>A[i]</i> and <i>A[i] := x * x</i> 
+are shorthands for
+<i>array_get_elt_at(A, i)</i> and <i>array_set_elt_at(A, i, x * x)</i>,
+respectively.
+<P>
+
+There are also library (template) functions
+<i>foreach_array</i> and <i>iforeach_array</i> for iteration over
+persistent arrays, which are assigned the following interfaces:
+
+<pre>
+fun{a:t@ype} foreach_array {f:eff} {n:nat}
+  (f: a -&lt;f&gt; void, A: array (a, n)):&lt;f,!ref&gt; void
+
+fun{a:t@ype} iforeach_array {f:eff} {n:nat}
+  (f: (natLt n, a) -&lt;f&gt; void, A: array (a, n)):&lt;f,!ref&gt; void
+</pre>
+
+For instance, the previous function <i>array_square</i> can
+be implemented as follows by calling
+<i>iforeach_array</i>:
+
+<pre>
+fn array_square {n:nat} (A: array (double, n)): void =
+  iforeach_array<double> (lam (i, x) =&lt;!ref&gt; A[i] := x * x, A)
+</pre>
+
+<H3>Persistent Matrices</H3>
+
+A matrix is an array of 2 dimensions. Note that the 2 dimensions of a
+matrix are not necessarily the same. If they are the same, then the matrix
+is referred to as a square matrix.
+<P>
+
+The interfaces for various functions on arrays can be found in the file
+<a href="../../IMPLEMENTATION/Anairiats/ATS/prelude/SATS/matrix.sats">
+$ATSHOME/prelude/SATS/matrix.sats
+</a>.
+
+Given a viewtype <i>VT</i> and an integer <i>I</I>
+and another integer <i>J</i>, the type
+<i>matrix(VT, I, J)</i> is for persistent matrices of dimensions <i>I</i>
+(row) and <i>J</i> (column) in which each element is of type <i>VT</i>.
+<P>
+
+<EM>Matrix Creation</EM>&nbsp;&nbsp;
+The approaches to creating matrices resemble those to creating arrays.
+For instance, the following code creates a square matrix of dimensions
+10 by 10:
+
+<pre>
+val mat_10_10 = matrix(10, 10) @[int][
+   0,  1,  2,  3,  4,  5,  6,  7,  8,  9
+, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19
+, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29
+, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39
+, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49
+, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59
+, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69
+, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79
+, 80, 81, 82, 83, 84, 85, 86, 87, 88, 89
+, 90, 91, 92, 93, 94, 99, 96, 97, 98, 99
+]
+</pre>
+
+This matrix can also be created by calling the function
+<i>matrix_make_fun_tsz</i>, which is parallel to the
+function <i>array_make_fun_tsz</i>:
+
+<pre>
+val mat_10_10 =
+  matrix_make_fun_tsz {int} (10, 10, lam (x, i, j) =&lt;clo&gt; x := 10 * i + j, sizeof&lt;int&gt;)
+</pre>
+
+<EM>Matrix Subscripting</EM>&nbsp;&nbsp;
+
+The following two (template) functions
+<i>matrix_get_elt_at</i> and <i>matrix_set_elt_at</i>
+are for accessing and updating a persistent matrix, respectively:
+
+<pre>
+fun{a:t@ype} matrix_get_elt_at {m,n:nat} (A: matrix (a,m,n), i: natLt m, j:natLt n): &lt;!ref&gt; a
+fun{a:t@ype} matrix_set_elt_at {m,n:nat} (A: matrix (a,m,n), i: natLt m, j:natLt n, x: a): &lt;!ref&gt; void
+</pre>
+
+The symbol <i>[]</i> is overloaded with both <i>matrix_get_elt_at</i> and
+<i>matrix_set_elt_at</i>:
+
+<pre>
+overload [] with matrix_get_elt_at
+overload [] with matrix_set_elt_at
+</pre>
+
+As an example, the following code implements a (template) function that
+transposes a given square matrix in-situ.
+
+<pre>
+fn{a:t@ype} matrix_transpose {n:nat} (M: matrix (a, n, n)): void = let
+  val n = matrix_size_row M // n: int n
+
+  // [fn*] indicates a request for tail-call optimization
+  fn* loop1 {i:nat | i <= n} .< n-i+1, 0 >. (i: int i):<clo1> void =
+    if i < n then loop2 (i, 0) else ()
+  and loop2 {i,j:nat | i < n; j <= i} .< n-i, i-j+1 >. (i: int i, j: int j):<clo1> void =
+    if j < i then
+      let val x = M[i,j] in M[i,j] := M[j,i]; M[j,i] := x; loop2 (i, j+1) end
+    else begin
+      loop1 (i+1)
+    end
+in
+  loop1 0
+end // end of [matrix_transpose]
+</pre>
+
+There are also library (template) functions
+<i>foreach_matrix</i> and <i>iforeach_matrix</i> for iteration over
+persisten matrices, which are given the following interfaces:
+
+<pre>
+fun{a:t@ype} foreach_matrix {f:eff} {m,n:nat}
+  (f: a -&lt;f&gt; void, M: matrix (a, m, n)):&lt;f,!ref&gt; void
+
+fun{a:t@ype} iforeach_matrix {f:eff} {m,n:nat}
+  (f: (natLt m, natLt n, a) -&lt;f&gt; void, M: matrix (a, m, n)):&lt;f,!ref&gt; void
+</pre>
+
+For instance, the previous function <i>matrix_transpose</i> can
+be implemented as follows by calling
+<i>iforeach_matrix</i>:
+
+<pre>
+fn{a:t@ype} matrix_transpose {n:nat} (M: matrix (a, n, n)): void =
+  iforeach_matrix<a> (lam (i,j, x) =&lt;!ref&gt; if i > j then (M[i,j] := M[j,i]; M[j,i] := x), M)
+</pre>
+
+<HR SIZE=1 ALIGN=LEFT><P>
+The code used for illustration is available <a
+href="arrays-and-matrices.dats">here</a>.
+
+</BODY>
+</HTML>

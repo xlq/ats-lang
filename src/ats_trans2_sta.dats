@@ -1,0 +1,2047 @@
+(***********************************************************************)
+(*                                                                     *)
+(*                         Applied Type System                         *)
+(*                                                                     *)
+(*                              Hongwei Xi                             *)
+(*                                                                     *)
+(***********************************************************************)
+
+(*
+ * ATS/Anairiats - Unleashing the Potential of Types!
+ *
+ * Copyright (C) 2002-2008 Hongwei Xi, Boston University
+ *
+ * All rights reserved
+ *
+ * ATS is free software;  you can  redistribute it and/or modify it under
+ * the terms of  the GNU GENERAL PUBLIC LICENSE (GPL) as published by the
+ * Free Software Foundation; either version 3, or (at  your  option)  any
+ * later version.
+ * 
+ * ATS is distributed in the hope that it will be useful, but WITHOUT ANY
+ * WARRANTY; without  even  the  implied  warranty  of MERCHANTABILITY or
+ * FITNESS FOR A PARTICULAR PURPOSE.  See the  GNU General Public License
+ * for more details.
+ * 
+ * You  should  have  received  a  copy of the GNU General Public License
+ * along  with  ATS;  see the  file COPYING.  If not, please write to the
+ * Free Software Foundation,  51 Franklin Street, Fifth Floor, Boston, MA
+ * 02110-1301, USA.
+ *
+ *)
+
+(* ****** ****** *)
+
+// Time: November 2007
+// Author: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
+
+(* ****** ****** *)
+
+staload Deb = "ats_debug.sats"
+staload Err = "ats_error.sats"
+staload IntInf = "ats_intinf.sats"
+staload Lab = "ats_label.sats"
+staload Loc = "ats_location.sats"
+staload Lst = "ats_list.sats"
+staload Stamp = "ats_stamp.sats"
+staload Sym = "ats_symbol.sats"
+staload Syn = "ats_syntax.sats"
+
+(* ****** ****** *)
+
+staload "ats_staexp1.sats"
+staload "ats_dynexp1.sats"
+staload "ats_staexp2.sats"
+staload "ats_dynexp2.sats"
+staload "ats_trans2_env.sats"
+staload "ats_stadyncst2.sats"
+
+(* ****** ****** *)
+
+staload "ats_trans2.sats"
+
+(* ****** ****** *)
+
+#define THISFILENAME "ats_trans2_sta.dats"
+
+(* ****** ****** *)
+
+#define nil list_nil
+#define cons list_cons
+#define :: list_cons
+
+(* ****** ****** *)
+
+typedef loc_t = $Loc.location_t
+typedef funclo = $Syn.funclo
+typedef funcloopt = Option funclo
+typedef efc = $Eff.effcst
+typedef efcopt = Option efc
+typedef sym_t = $Sym.symbol_t
+typedef symopt_t = Option sym_t
+
+(* ****** ****** *)
+
+overload = with $Sym.eq_symbol_symbol
+overload prerr with $Loc.prerr_location
+
+(* ****** ****** *)
+
+fun s1rt_app_tr
+  (loc0: loc_t, s1t_fun: s1rt, s1ts_arg: s1rtlst): s2rt = begin
+  if s1rt_is_arrow s1t_fun then begin case+ s1ts_arg of
+    | cons (s1t1, cons (s1t2, nil ())) => let
+        val s1ts1 = (
+          case+ s1t1.s1rt_node of
+          | S1RTlist s1ts => s1ts | _ => cons (s1t1, nil ())
+        ) : s1rtlst
+        val s2ts1 = s1rtlst_tr s1ts1 and s2t2 = s1rt_tr s1t2
+      in
+        S2RTfun (s2ts1, s2t2)
+      end
+    | _ => begin
+        prerr "Internal Error: ";
+        prerr "[s1rt_app_tr]: [->] is not an infix operator!";
+        prerr_newline ();
+        exit (1)      
+      end
+  end else begin
+    prerr loc0;
+    prerr ": error(2)";
+    $Deb.debug_prerrf (": %s: s1rt_app_tr", @(THISFILENAME));
+    prerr ": sort application is not supported.";
+    prerr_newline ();
+    $Err.abort {s2rt} ()
+  end
+end // end of [s1rt_app_tr]
+
+implement s1rt_tr (s1t0) = begin
+  case+ s1t0.s1rt_node of
+  | S1RTapp (s1t, s1ts) => begin
+(*
+      print "s1rt_tr: S1RTapp: "; print s1t0.s1rt_loc; print_newline ();
+*)
+      s1rt_app_tr (s1t0.s1rt_loc, s1t, s1ts)
+    end
+  | S1RTlist s1ts => S2RTtup (s1rtlst_tr s1ts) 
+  | S1RTqid (q, id) => begin case+ the_s2rtenv_find_qua (q, id) of
+    | ~Some_vt s2te => begin case+ s2te of
+      | S2TEsrt s2t => s2t
+      | S2TEsub _ => begin
+          prerr s1t0.s1rt_loc;
+          prerr ": error(2)";
+          $Deb.debug_prerrf (": %s: s1rt_tr", @(THISFILENAME));
+          prerr ": the identifier ["; $Sym.prerr_symbol id;
+          prerr "] refers to an extended sort but not a sort.";
+          prerr_newline ();
+          $Err.abort ()
+        end
+      end // end of [Some_vt]
+    | ~None_vt () => begin
+        prerr s1t0.s1rt_loc;
+        prerr ": error(2)";
+        $Deb.debug_prerrf (": %s: s1rt_tr", @(THISFILENAME));
+        prerr ": the identifier ["; $Sym.prerr_symbol id;
+        prerr "] refers to an unrecognized sort.";
+        prerr_newline ();
+        $Err.abort ()
+      end // end of [None_vt]
+    end
+  | S1RTtup s1ts => S2RTtup (s1rtlst_tr s1ts)
+(*
+  | _ => begin
+      prerr s1t0.s1rt_loc;
+      prerr ": error(2)";
+      prerr ": not yet implemented: ["; prerr s1t0; prerr "]";
+      prerr_newline ();
+      $Err.abort ()
+    end
+*)
+end // end of [s1rt_tr]
+
+implement s1rtlst_tr (s1ts) = begin case+ s1ts of
+  | cons (s1t, s1ts) => cons (s1rt_tr s1t, s1rtlst_tr s1ts)
+  | nil () => nil ()
+end // end of [s1rtlst_tr]
+
+implement s1rtopt_tr (os1t) = begin case+ os1t of
+  | Some s1t => Some (s1rt_tr s1t) | None () => None () 
+end // end of [s1rtopt_tr]
+
+(* ****** ****** *)
+
+(* static special identifier *)
+datatype staspecid = SPSIDarrow | SPSIDnone
+
+fn staspecid_of_qid (q: s0taq, id: sym_t): staspecid = begin
+  case+ q.s0taq_node of
+  | $Syn.S0TAQnone () => begin
+      if id = $Sym.symbol_MINUSGT then SPSIDarrow () else SPSIDnone ()
+    end
+  | _ => SPSIDnone ()
+end // end of [staspecid_of_qid]
+
+(* ****** ****** *)
+
+fn effvar_tr
+  (efv: $Eff.effvar): s2exp = begin
+  case+ the_s2expenv_find efv.i0de_sym of
+  | ~Some_vt s2i => begin case+ s2i of
+    | S2ITEMvar s2v => s2exp_var (s2v)
+    | _ => begin
+        prerr efv.i0de_loc;
+        prerr ": error(2)";
+        $Deb.debug_prerrf (": %s: effvar_tr", @(THISFILENAME));
+        prerr ": the static identifer [";
+        $Sym.prerr_symbol efv.i0de_sym;
+        prerr "] should refer to a variable but it does not.";
+        prerr_newline ();
+        $Err.abort {s2exp} ()
+      end
+    end // end of [Some_vt]
+  | ~None_vt () => begin 
+      prerr efv.i0de_loc;
+      prerr ": error(2)";
+      $Deb.debug_prerrf (": %s: effvar_tr", @(THISFILENAME));
+      prerr ": unrecognized static identifer [";
+      $Sym.prerr_symbol efv.i0de_sym;
+      prerr "].";
+      prerr_newline ();
+      $Err.abort {s2exp} ()
+    end
+end // end of [effvar_tr]
+
+fun effvarlst_tr (efvs: $Eff.effvarlst): s2explst = begin
+  case+ efvs of
+  | cons (efv, efvs) => cons (effvar_tr efv, effvarlst_tr efvs)
+  | nil () => nil ()
+end // end of [effvarlst_tr]
+
+implement effcst_tr (efc): s2eff = begin
+  case+ efc of
+  | $Eff.EFFCSTall () => S2EFFall ()
+  | $Eff.EFFCSTnil () => S2EFFnil ()
+  | $Eff.EFFCSTset (efs, efvs) => S2EFFset (efs, effvarlst_tr efvs)
+end // end of [effcst_tr]
+
+(* ****** ****** *)
+
+implement s1arg_var_tr (s1a) = begin
+  case+ s1a.s1arg_srt of
+  | Some s1t => let
+      val s2v = s2var_make_id_srt (s1a.s1arg_sym, s1rt_tr s1t)
+    in
+      the_s2expenv_add_svar s2v; s2v
+    end
+  | None () => begin
+      prerr s1a.s1arg_loc;
+      prerr ": error(2)";
+      $Deb.debug_prerrf (": %s: s1arg_var_tr", @(THISFILENAME));
+      prerr ": the static variable [";
+      $Sym.prerr_symbol s1a.s1arg_sym;
+      prerr "] must be ascribed a sort.";
+      prerr_newline ();
+      $Err.abort ()
+    end
+end // end of [s1arg_var_tr]
+
+implement s1arglst_var_tr (s1as) = begin case+ s1as of
+  | cons (s1a, s1as) => cons (s1arg_var_tr s1a, s1arglst_var_tr s1as)
+  | nil () => nil ()
+end // end of [s1arglst_var_tr]
+
+implement s1arglstlst_var_tr (s1ass) = begin case+ s1ass of
+  | cons (s1as, s1ass) => begin
+      cons (s1arglst_var_tr s1as, s1arglstlst_var_tr s1ass)
+    end
+  | nil () => nil ()
+end // end of [s1arglstlst_var_tr]
+
+implement s1arg_var_tr_srt (s1a, s2t0) = let
+  val s2t = case+ s1a.s1arg_srt of
+    | Some s1t => let
+        val s2t = s1rt_tr s1t
+      in
+        if s2t0 <= s2t then s2t else begin
+          prerr s1a.s1arg_loc;
+          $Deb.debug_prerrf (": %s: s1arg_var_tr_srt", @(THISFILENAME));
+          prerr ": error(2)";
+          prerr ": the static variable [";
+          $Sym.prerr_symbol s1a.s1arg_sym;
+          prerr "] is expected to be of the sort [";
+          prerr s2t0;
+          prerr "].";
+          prerr_newline ();
+          $Err.abort {s2rt} ()
+        end
+      end
+    | None () => s2t0
+  val s2v = s2var_make_id_srt (s1a.s1arg_sym, s2t)
+in
+  the_s2expenv_add_svar s2v; s2v
+end // end of [s1arg_var_tr_srt]
+
+(* ****** ****** *)
+
+implement s1exp_tr_dn_bool (s1e) = s1exp_tr_dn (s1e, s2rt_bool)
+
+fun s1explst_tr_dn_bool (s1es: s1explst): s2explst = begin
+  case+ s1es of
+  | s1e :: s1es => s1exp_tr_dn (s1e, s2rt_bool) :: s1explst_tr_dn_bool s1es
+  | nil () => nil ()
+end // end of [s2explst_tr_dn_bool]
+
+implement s1exp_tr_dn_int (s1e) = s1exp_tr_dn (s1e, s2rt_int)
+
+implement s1explst_tr_dn_int (s1es) = begin case+ s1es of
+  | s1e :: s1es => s1exp_tr_dn (s1e, s2rt_int) :: s1explst_tr_dn_int s1es
+  | nil () => nil ()
+end // end of [s1explst_tr_dn_int]
+
+fun s1explstlst_tr_dn_int (s1ess: s1explstlst): s2explstlst = begin
+  case+ s1ess of
+  | s1es :: s1ess => s1explst_tr_dn_int s1es :: s1explstlst_tr_dn_int s1ess
+  | nil () => nil ()
+end // end of [s1explstlst_tr_dn_int]
+
+implement s1exp_tr_dn_prop (s1e) = s1exp_tr_dn (s1e, s2rt_prop)
+implement s1exp_tr_dn_type (s1e) = s1exp_tr_dn (s1e, s2rt_type)
+implement s1exp_tr_dn_t0ype (s1e) = s1exp_tr_dn (s1e, s2rt_t0ype)
+
+fun s1explst_tr_dn_t0ype (s1es: s1explst): s2explst = case+ s1es of
+  | s1e :: s1es => s1exp_tr_dn (s1e, s2rt_t0ype) :: s1explst_tr_dn_t0ype s1es
+  | nil () => nil ()
+
+implement s1exp_tr_dn_view (s1e): s2exp = s1exp_tr_dn (s1e, s2rt_view)
+implement s1exp_tr_dn_viewtype (s1e) = s1exp_tr_dn (s1e, s2rt_viewtype)
+implement s1exp_tr_dn_viewt0ype (s1e) = s1exp_tr_dn (s1e, s2rt_viewt0ype)
+
+fun s1explst_tr_dn_viewt0ype (s1es: s1explst): s2explst = begin
+  case+ s1es of
+  | s1e :: s1es => begin
+      s1exp_tr_dn (s1e, s2rt_viewt0ype) :: s1explst_tr_dn_viewt0ype s1es
+    end
+  | nil () => nil ()
+end // end of [s2explst_tr_dn_viewt0ype]
+
+implement s1exp_tr_dn_impredicative (s1e) = let
+  val s2e = s1exp_tr_up s1e; val s2t = s2e.s2exp_srt
+in
+  if s2rt_is_impredicative s2t then s2e else begin
+    prerr s1e.s1exp_loc;
+    prerr ": error(2)";
+    $Deb.debug_prerrf (": %s: s1exp_tr_dn_impredicative", @(THISFILENAME));
+    prerr ": the static expression needs to be impredicative";
+    prerr " but is assigned the sort [";
+    prerr s2t;
+    prerr "].";
+    prerr_newline ();
+    $Err.abort ()
+  end
+end // end of [s1exp_tr_dn_impredicative]
+
+implement s1expopt_tr_dn_impredicative (os1e) = begin case+ os1e of
+  | Some s1e => Some (s1exp_tr_dn_impredicative s1e) | None () => None ()
+end // end of [s1expopt_tr_dn_impredicative]
+
+(* ****** ****** *)
+
+fn s1exp_any_tr_up (loc0: loc_t): s2exp = begin
+  prerr loc0;
+  prerr ": error(2)";
+  $Deb.debug_prerrf (": %s: s1exp_any_tr_up", @(THISFILENAME));
+  prerr "the static expression needs to be ascribed a sort.";
+  prerr_newline ();
+  $Err.abort {s2exp} ()
+end // end of [s1exp_any_tr_up]
+
+(* ****** ****** *)
+
+fn s1exp_app_tr_up
+  (loc_fun: loc_t, loc_app: loc_t, s2e: s2exp, s1ess: s1explstlst)
+  : s2exp = loop (loc_fun, loc_app, s2e, s1ess) where {
+  fun loop
+    (loc_fun: loc_t, loc_app: loc_t, s2e: s2exp, s1ess: s1explstlst)
+    : s2exp = begin case+ s1ess of
+    | s1es :: s1ess => let
+        val @(s2ts, s2t) = (
+          case+ un_s2rt_fun (s2e.s2exp_srt) of
+          | ~Some_vt s2ts_s2t => s2ts_s2t
+          | ~None_vt () => begin
+              prerr loc_fun;
+              prerr ": error(2)";
+              $Deb.debug_prerrf (": %s: s1exp_app_tr_up", @(THISFILENAME));
+              prerr ": the static expresstion [";
+              prerr s2e;
+              prerr "] is expected to be of a functional sort";
+              prerr ", but is assigned the sort [";
+              prerr s2e.s2exp_srt;
+              prerr "].";
+              prerr_newline ();
+              $Err.abort ()
+            end
+        ) : @(s2rtlst, s2rt)
+        val ns2es = $Lst.list_length s1es and ns2ts = $Lst.list_length s2ts
+        val s2es = case+ compare (ns2es, ns2ts) of
+          |  0 => s1explst_tr_dn (s1es, s2ts)
+          |  1 => begin
+              prerr loc_app;
+              prerr ": error(2)";
+              $Deb.debug_prerrf (": %s: s1exp_app_tr_up", @(THISFILENAME));
+              prerr ": the static application needs less arguments.";
+              prerr_newline ();
+              $Err.abort ()
+            end
+          | ~1 => begin
+              prerr loc_app;
+              prerr ": error(2)";
+              $Deb.debug_prerrf (": %s: s1exp_app_tr_up", @(THISFILENAME));
+              prerr ": the static application needs more arguments.";
+              prerr_newline ();
+              $Err.abort ()
+            end
+      in
+        loop (loc_fun, loc_app, s2exp_app_srt (s2t, s2e, s2es), s1ess)
+      end
+    | nil () => s2e
+  end // end of [loop]
+} // end of [s1exp_app_tr_up]
+
+(* ****** ****** *)
+
+fn s1exp_app_datconptr_tr_up
+  (loc_app: loc_t, d2c: d2con_t, s1ess: s1explstlst)
+  : s2exp = let
+  val s1es = (
+    case+ s1ess of
+    | cons (s1es, s1ess) => begin case+ s1ess of
+      | nil _ => s1es | cons _ => begin
+          prerr loc_app;
+          prerr ": error(2)";
+          $Deb.debug_prerrf (": %s: s1exp_app_datconptr_tr_up", @(THISFILENAME));
+          prerr ": the type constructor [";
+          prerr d2c;
+          prerr "] is overly applied.";
+          prerr_newline ();
+          $Err.abort {s1explst} ()
+        end
+      end // end of [cons]
+    | nil () => nil ()
+  ) : s1explst
+  val s2es = aux s1es where {
+    fun aux (s1es: s1explst): s2explst = case+ s1es of
+      | cons (s1e, s1es) => begin
+          cons (s1exp_tr_dn (s1e, s2rt_addr), aux s1es)
+        end
+      | nil () => nil ()
+  } // end of [where]
+  val ns2es = $Lst.list_length s2es
+  val arity = d2con_arity_full_get d2c
+  val () =
+    if ns2es > arity then begin
+      prerr loc_app;
+      prerr ": error(2)";
+      $Deb.debug_prerrf (": %s: s1exp_app_datcon_tr_up", @(THISFILENAME));
+      prerr ": the type constructor [";
+      prerr d2c;
+      prerr "] expects less arguments.";
+      prerr_newline ();
+      $Err.abort {void} ()
+    end // end of [if]
+  val () =
+    if ns2es < arity then begin
+      prerr loc_app;
+      prerr ": error(2)";
+      $Deb.debug_prerrf (": %s: s1exp_app_datcon_tr_up", @(THISFILENAME));
+      prerr ": the type constructor [";
+      prerr d2c;
+      prerr "] expects more arguments.";
+      prerr_newline ();
+      $Err.abort {void} ()
+    end // end of [if]
+in
+  s2exp_datconptr (d2c, s2es)
+end // end [s1exp_app_datconptr_tr_up]
+
+(* ****** ****** *)
+
+fn s1exp_app_datcontyp_tr_up
+  (loc_app: loc_t, d2c: d2con_t, s1ess: s1explstlst)
+  : s2exp = let
+  fn err (loc_app: loc_t, d2c: d2con_t): s1explst = begin
+     prerr loc_app;
+     prerr ": error(2)";
+     $Deb.debug_prerrf (": %s: s1exp_app_datcon_tr_up", @(THISFILENAME));
+     prerr ": the type constructor [";
+     prerr d2c;
+     prerr "_t0ype] is overly applied.";
+     prerr_newline ();
+     $Err.abort {s1explst} ()
+  end // end of [err]
+  val s1es = (case+ s1ess of
+    | list_cons (s1es, s1ess) => begin
+        case+ s1ess of list_nil () => s1es | _ => err (loc_app, d2c)
+      end // end of [list_cons]
+    | list_nil () => list_nil ()
+  ) : s1explst
+  val s2es = s1explst_tr_dn_t0ype s1es
+in
+  s2exp_datcontyp (d2c, s2es)
+end // end of [s1exp_app_datcontyp_tr_up]
+
+(* ****** ****** *)
+
+fun s1exp_qid_app_tr_up
+  (loc_id: loc_t, loc_app: loc_t, q: s0taq, id: sym_t, s2i: s2item, s1ess: s1explstlst)
+  : s2exp = begin case+ s2i of
+  | S2ITEMcst s2cs => let
+      val s2ess = s1explstlst_tr_up s1ess
+    in
+      case+ s2cst_select_s2explstlst (s2cs, s2ess) of
+      | S2CSTLSTcons (s2c, _) => s2exp_app_wind (s2exp_cst s2c, s2ess)
+      | _ => begin
+          prerr loc_app;
+          prerr ": error(2)";
+          $Deb.debug_prerrf (": %s: s1exp_qid_app_tr_up", @(THISFILENAME));
+          prerr ": none of the static constants referred to by [";
+          $Syn.prerr_s0taq q; $Sym.prerr_symbol id;
+          prerr "] is applicable.";
+          prerr_newline ();
+          $Err.abort ()
+        end
+    end // end of [S2ITEMcst]
+  | S2ITEMvar s2v => begin
+      s1exp_app_tr_up (loc_id, loc_app, s2exp_var s2v, s1ess)
+    end // end of [S2ITEMvar]
+  | S2ITEMdatconptr d2c => s1exp_app_datconptr_tr_up (loc_app, d2c, s1ess)
+  | S2ITEMdatcontyp d2c => s1exp_app_datcontyp_tr_up (loc_app, d2c, s1ess)
+(*
+  | S2ITEMfil _ -> s1exp_qid_app_tr_up_errmsg_fil loc_id qid
+  | S2ITEMmod _ -> s1exp_qid_app_tr_up_errmsg_mod loc_id qid
+*)
+  | _ => begin
+      prerr loc_id;
+      prerr ": s1exp_qid_app_tr_up: not implemented yet: s2i = ";
+      prerr s2i;
+      prerr_newline ();
+      $Err.abort ()
+    end
+end // end of [s1exp_qid_app_tr_up]
+
+(* ****** ****** *)
+
+fn s1exp_id_tr_up
+  (loc0: loc_t, q: $Syn.s0taq, id: sym_t): s2exp = begin
+  case+ the_s2expenv_find_qua (q, id) of
+  | ~Some_vt s2i => begin case+ s2i of
+    | S2ITEMcst s2cs => begin case+ s2cs of
+      | S2CSTLSTcons (s2c, _) => let
+          val s2t = s2cst_srt_get s2c
+          val s2e_s2c = s2exp_cst s2c
+        in
+          case+ s2t of
+          | S2RTfun (nil (), _res) when s2rt_is_dat _res => begin
+              // a nullary constructor is automatically applied!
+              s2exp_app_srt (_res, s2e_s2c, nil ())
+            end
+          | _ => s2e_s2c
+        end // end of [S2CSTLSTcons]
+      | S2CSTLSTnil () => begin // this clause should be unreachable
+          prerr "Internal Error: ";
+          prerr "s1exp_id_tr_up: Some: S2ITEMcst: S2CSTLSTnil";
+          prerr_newline ();
+          $Err.abort ()
+        end // end of [S2CSTLSTnil]
+      end // end of [S2ITEMcst]
+    | S2ITEMe1xp e1xp => s1exp_tr_up (s1exp_make_e1xp (loc0, e1xp))
+    | S2ITEMvar s2v => s2exp_var s2v
+    | _ => begin
+        $Loc.prerr_location loc0;
+        prerr ": s1exp_id_tr_up: s2i = "; prerr s2i; prerr_newline ();
+        $Err.abort ()
+      end // end of [_]
+    end // end of [Some_vt]
+  | ~None_vt () => begin
+      prerr loc0;
+      prerr ": error(2)";
+      $Deb.debug_prerrf (": %s: s1exp_id_tr_up", @(THISFILENAME));
+      prerr ": the static identifier [";
+      $Syn.prerr_s0taq q; $Sym.prerr_symbol id; prerr "] is unrecognized.";
+      prerr_newline ();
+      $Err.abort ()
+    end // end of [None_vt]
+end // end of [s1exp_id_tr_up]
+
+(* ****** ****** *)
+
+fn s1exp_invar_tr_up
+  (refval: int, s1e: s1exp): s2exp = let
+  val s2t: s2rt =
+    if refval = 0 then s2rt_view (*call-by-val*)
+    else s2rt_viewt0ype (*call-by-ref*)
+  val s2e: s2exp = s1exp_tr_dn (s1e, s2t)
+in
+  s2exp_refarg (refval, s2e)
+end // end of [s1exp_invar_tr_up]
+
+(* ****** ****** *)
+
+fn s1exp_read_tr_up (_v: s1exp, s1e: s1exp): s2exp = let
+  val _v = s1exp_tr_dn_view (_v)
+  val s2e = s1exp_tr_up s1e; val s2t_s2e = s2e.s2exp_srt
+  val () =
+    if s2rt_is_impredicative s2t_s2e then () else begin
+      prerr s1e.s1exp_loc;
+      prerr ": error(2)";
+      $Deb.debug_prerrf (": %s: s1exp_read_tr_up", @(THISFILENAME));
+      prerr ": the static expression needs to be impredicative";
+      prerr " but is assigned the sort [";
+      prerr s2t_s2e;
+      prerr "].";
+      prerr_newline ();
+      $Err.abort ()
+    end // end of [if]
+in
+  s2exp_readize (_v, s2e)
+end // end of [s1exp_read_tr_up]
+
+(* ****** ****** *)
+
+fn s1exp_top_tr_up (knd: int, s1e: s1exp): s2exp = let
+  val s2e = s1exp_tr_up s1e
+  val s2t_fun = s2e.s2exp_srt
+  val s2t_res = s2rt_base_fun s2t_fun
+  val () =
+    if s2rt_is_impredicative s2t_res then () else begin
+      prerr s1e.s1exp_loc;
+      prerr ": error(2)";
+      $Deb.debug_prerrf (": %s: s1exp_top_tr_up", @(THISFILENAME));
+      prerr ": the static expression needs to be impredicative";
+      prerr " but is assigned the sort [";
+      prerr s2t_fun;
+      prerr "].";
+      prerr_newline ();
+      $Err.abort ()
+    end // end of [if]
+in
+  s2exp_topize (knd, s2e)
+end // end of [s1exp_top_tr_up]
+
+(* ****** ****** *)
+
+implement s1exp_arg_tr_up (s1e0, wths1es) = begin
+  case+ s1e0.s1exp_node of
+  | S1Einvar (refval, s1e) => let
+      val () = begin
+        wths1es := WTHS1EXPLSTcons_some (refval, s1e, wths1es)
+      end
+    in
+      s1exp_invar_tr_up (refval, s1e)
+    end // end of [S1Einvar]
+  | S1Etrans (s1e1, s1e2) => begin case+ s1e1.s1exp_node of
+    | S1Einvar (refval, s1e_arg) => let
+        val () = begin
+          wths1es := WTHS1EXPLSTcons_some (refval, s1e2, wths1es)
+        end
+      in
+        s1exp_invar_tr_up (refval, s1e_arg)
+      end // end of [S1Einvar]
+    | _ => begin
+        prerr s1e1.s1exp_loc;
+        prerr ": error(1)";
+        $Deb.debug_prerrf (": %s: s1exp_arg_tr_up", @(THISFILENAME));
+        prerr ": a refval type must begin with !(call-by-value) or &(call-by-reference)";
+        prerr_newline ();
+        $Err.abort {s2exp} ()
+      end // end of [_]
+    end // end of [S1Etrans]
+  | _ => let
+      val () = wths1es := WTHS1EXPLSTcons_none wths1es
+    in
+      s1exp_tr_up s1e0
+    end // end of [_]
+end // end of [s1exp_arg_tr_up]
+
+implement s1exp_arg_tr_dn_impredicative (s1e, wths1es) = let
+  val s2e = s1exp_arg_tr_up (s1e, wths1es)
+  val s2t = s2e.s2exp_srt
+in
+  if s2rt_is_impredicative s2t then s2e else begin
+    prerr s1e.s1exp_loc;
+    prerr ": error(2)";
+    $Deb.debug_prerrf (": %s: s1exp_arg_tr_dn_impredicative", @(THISFILENAME));
+    prerr ": the static expression needs to be impredicative";
+    prerr " but is assigned the sort [";
+    prerr s2t;
+    prerr "].";
+    prerr_newline ();
+    $Err.abort {s2exp} ()
+  end // end of [if]
+end // end of [s1exp_arg_tr_dn_impredicative]
+
+(* ****** ****** *)
+
+implement s1exp_res_tr_dn_impredicative (s1e0, wths1es) = let
+  fun auxwth (wths1es: wths1explst): wths2explst = begin
+    case+ wths1es of
+    | WTHS1EXPLSTcons_some (refval, s1e, wths1es) => let
+        val s2t: s2rt = 
+          if refval = 0 then s2rt_view (*call-by-val*)
+          else s2rt_viewt0ype (*call-by-ref*)
+        val s2e = s1exp_tr_dn (s1e, s2t)
+      in
+        WTHS2EXPLSTcons_some (refval, s2e, auxwth wths1es)
+      end
+    | WTHS1EXPLSTcons_none (wths1es) => begin
+        WTHS2EXPLSTcons_none (auxwth wths1es)
+      end
+    | WTHS1EXPLSTnil () => WTHS2EXPLSTnil ()
+  end // endof [auxwth]
+
+  fun auxres (s1e: s1exp, wths1es: wths1explst): s2exp = begin
+    case+ s1e.s1exp_node of
+    | S1Eexi (1(*funres*), s1qs, s1e_scope) => let
+        val (pf_s2expenv | ()) = the_s2expenv_push ()
+        val @(s2vs, s2ps) = s1qualst_tr (s1qs)
+        val s2e_scope = auxres (s1e_scope, wths1es)
+        val () = the_s2expenv_pop (pf_s2expenv | (*none*))
+      in
+        s2exp_exi (s2vs, s2ps, s2e_scope)
+      end
+    | _ => let
+        val s2e = s1exp_tr_dn_impredicative (s1e)
+        val wths2es = auxwth wths1es
+      in
+        s2exp_wth (s2e, wths2es)
+      end
+    end // end of [auxres]
+in
+  if wths1explst_is_none (wths1es) then s1exp_tr_dn_impredicative (s1e0)
+  else auxres (s1e0, wths1es)
+end // end of [s1exp_res_tr_dn_impredicative]
+
+(* ****** ****** *)
+
+fn s1exp_arrow_tr_up // arrow is a special type constructor
+  (loc0: loc_t, ofc: funcloopt,
+   islin: bool, isprf: bool, oefc: efcopt, s1ess: s1explstlst)
+  : s2exp = let
+  val s1es = (
+    case+ s1ess of
+    | cons (s1es, nil ()) => s1es
+    | _ => begin
+        prerr loc0;
+        prerr ": error(2)";
+        $Deb.debug_prerrf (": %s: s1exp_arrow_tr_up", @(THISFILENAME));
+        prerr ": illegal static application.";
+        prerr_newline ();
+        $Err.abort ()
+      end
+  ) : s1explst
+  val @(s1e_arg, s1e_res) = (
+    case+ s1es of
+    | cons (s1e1, cons (s1e2, nil ())) => @(s1e1, s1e2)
+    | _ => begin
+        prerr loc0;
+        prerr "Internal Error: s1exp_arrow_tr_up: s1es = ";
+        prerr_s1explst s1es;
+        prerr_newline ();
+        $Err.abort ()
+      end
+  ) : @(s1exp, s1exp)
+  var npf: int = 0 and s1es_arg: s1explst = nil ()
+  val () = case+ s1e_arg.s1exp_node of
+    | S1Elist (n, s1es) => (npf := n; s1es_arg := s1es)
+    | _ => s1es_arg := cons (s1e_arg, nil ())
+  var wths1es: wths1explst = WTHS1EXPLSTnil () // restoration
+  val s2es_arg: s2explst = aux (s1es_arg, wths1es) where {
+    fun aux (s1es: s1explst, wths1es: &wths1explst): s2explst =
+      case+ s1es of
+      | cons (s1e, s1es) => let
+          val s2e = s1exp_arg_tr_up (s1e, wths1es)
+          val s2t = s2e.s2exp_srt
+          var imp: int = 0 and types: int = 0
+          val () = case+ s2t of
+            | S2RTbas s2tb => begin case+ s2tb of
+              | S2RTBASimp (id, _, _) => begin
+                  imp := 1; if id = $Sym.symbol_TYPES then types := 1
+                end
+              | _ => ()
+              end
+            | _ => ()
+        in
+          case+ 0 of
+          | _ when types > 0 => begin case+ s1es of
+            | nil () => cons (s2exp_vararg s2e, nil ())
+            | _ => begin
+                prerr s1e.s1exp_loc;
+                prerr ": error(2)";
+                $Deb.debug_prerrf (": %s: s1exp_arrow_tr_up", @(THISFILENAME));
+                prerr ": this static expression must be the last argument.";
+                prerr_newline ();
+                $Err.abort ()
+              end
+            end
+          | _ when (imp > 0) => cons (s2e, aux (s1es, wths1es))
+          | _ => begin
+              prerr s1e.s1exp_loc;
+              prerr ": error(2)";
+              $Deb.debug_prerrf (": %s: s1exp_arrow_tr_up", @(THISFILENAME));
+              prerr ": the static expression needs to be impredicative";
+              prerr " but is assigned the sort [";
+              prerr s2t;
+              prerr "].";
+              prerr_newline ();
+              $Err.abort ()
+            end
+        end
+      | nil () => nil ()
+    } // end of [where]
+  val () = wths1es := wths1explst_reverse wths1es
+  val s2e_res = s1exp_res_tr_dn_impredicative (s1e_res, wths1es)
+  val s2t_res = s2e_res.s2exp_srt
+  val isprf: bool = if isprf then isprf else s2rt_is_proof s2t_res
+  val fc = (
+    case+ ofc of // default is [function]
+    | Some fc => fc | None () => $Syn.FUNCLOfun ()
+  ) : $Syn.funclo
+  val s2t_fun = s2rt_prf_lin_fc (loc0, isprf, islin, fc)
+  val lin: int = if islin then 1 else 0
+  val sf2e = case+ oefc of
+    | Some efc => effcst_tr efc | None () => S2EFFall ()
+in
+  s2exp_fun_srt (s2t_fun, fc, lin, sf2e, npf, s2es_arg, s2e_res)
+end // end of [s1exp_arrow_tr_up]
+
+(* ****** ****** *)
+
+fun s1rtext_tr (s1te0: s1rtext): s2rtext = begin
+  case+ s1te0.s1rtext_node of
+  | S1TEsrt s1t => begin case+ s1t.s1rt_node of
+    | S1RTqid (q, id) => begin case+ the_s2rtenv_find id of
+      | ~Some_vt s2te => s2te
+      | ~None_vt () => begin
+          prerr s1t.s1rt_loc;
+          prerr ": error(2)";
+          $Deb.debug_prerrf (": %s: s1rtext_tr", @(THISFILENAME));
+          prerr ": the identifier [";
+          $Sym.prerr_symbol id;
+          prerr "] refers to an unrecognized sort.";
+          prerr_newline ();
+          $Err.abort ()
+        end
+      end
+    | _ => S2TEsrt (s1rt_tr s1t)
+    end
+  | S1TEsub (id, s1te, s1ps) => let
+      val s2te = s1rtext_tr s1te
+      val s2t = case+ s2te of
+        | S2TEsrt s2t => s2t | S2TEsub (_, s2t, _) => s2t
+      val s2v = s2var_make_id_srt (id, s2t)
+      val (pf_s2expenv | ()) = the_s2expenv_push ()
+      val () = the_s2expenv_add_svar s2v
+      val s2ps = s1explst_tr_dn_bool s1ps
+      val () = the_s2expenv_pop (pf_s2expenv | (*none*))
+      val s2ps = (
+        case+ s2te of
+        | S2TEsrt _ => s2ps
+        | S2TEsub (s2v1, _, s2ps1) => begin
+            $Lst.list_append (s2ps, s2explst_alpha (s2v1, s2v, s2ps1))
+          end
+      ) : s2explst
+    in
+      S2TEsub (s2v, s2t, s2ps)
+    end
+end // end of [s1rtext_tr]
+
+(* ****** ****** *)
+
+implement s1qualst_tr (s1qs) = let
+
+fun loop
+  (s1qs: s1qualst, s2vs: &s2varlst, s2ps: &s2explst): void = begin
+  case+ s1qs of
+  | cons (s1q, s1qs) => begin case+ s1q.s1qua_node of
+    | S1Qprop s1e => let
+        val s2p = s1exp_tr_dn_bool s1e
+      in
+        s2ps := cons (s2p, s2ps); loop (s1qs, s2vs, s2ps)
+      end
+    | S1Qvars (ids, s1te) => begin case+ s1rtext_tr s1te of
+      | S2TEsrt s2t1 => let
+          fun aux (s2t1: s2rt, ids: i0delst, s2vs: &s2varlst): void =
+            case+ ids of
+            | cons (id, ids) => let
+                val s2v = s2var_make_id_srt (id.i0de_sym, s2t1)
+              in
+                the_s2expenv_add_svar s2v; s2vs := cons (s2v, s2vs);
+                aux (s2t1, ids, s2vs)
+              end
+            | nil () => ()          
+        in
+          aux (s2t1, ids, s2vs); loop (s1qs, s2vs, s2ps)
+        end
+      | S2TEsub (s2v1, s2t1, s2ps1) => let
+          fun aux1 (s2ps1: s2explst, s2v: s2var_t, s2ps: &s2explst)
+            :<cloptr1> void = case+ s2ps1 of
+            | cons (s2p1, s2ps1) => let
+                val s2p = s2exp_alpha (s2v1, s2v, s2p1)
+              in
+                s2ps := cons (s2p, s2ps); aux1 (s2ps1, s2v, s2ps)
+              end
+            | nil () => ()
+          fun aux2 (ids: i0delst, s2vs: &s2varlst, s2ps: &s2explst)
+            :<cloptr1> void = case+ ids of
+            | cons (id, ids) => let
+                val s2v = s2var_make_id_srt (id.i0de_sym, s2t1)
+              in
+                the_s2expenv_add_svar s2v;
+                s2vs := cons (s2v, s2vs); aux1 (s2ps1, s2v, s2ps);
+                aux2 (ids, s2vs, s2ps)
+              end
+            | nil () => ()
+        in
+          aux2 (ids, s2vs, s2ps); loop (s1qs, s2vs, s2ps)
+        end
+      end          
+    end
+  | nil () => ()
+end // end of [loop]
+
+var s2vs: s2varlst = list_nil () and s2ps: s2explst = list_nil ()
+val () = loop (s1qs, s2vs, s2ps)
+
+in // in of [let]
+
+($Lst.list_reverse s2vs, $Lst.list_reverse s2ps)
+
+end // end of [s1qualst_tr]
+
+implement s1qualstlst_tr (s1qss) = begin
+  case+ s1qss of
+  | list_cons (s1qs, s1qss) => begin
+      list_cons (s1qualst_tr s1qs, s1qualstlst_tr s1qss)
+    end
+  | list_nil () => list_nil ()
+end // end of [s1qualstlst_tr]
+
+(* ****** ****** *)
+
+fun s1exp_app_unwind
+  (s1e: s1exp, s1ess: &s1explstlst): s1exp = begin
+  case+ s1e.s1exp_node of
+  | S1Eapp (s1e, _(*loc_arg*), s1es) => begin
+      s1ess := s1es :: s1ess; s1exp_app_unwind (s1e, s1ess)
+    end // end of [S1Eapp]
+  | S1Eqid (q, id) => begin case+ q.s0taq_node of
+    | $Syn.S0TAQnone () => begin case+ the_s2expenv_find id of
+      | ~Some_vt s2i => begin case+ s2i of
+        | S2ITEMe1xp e1xp => let
+            val s1e_new = s1exp_make_e1xp (s1e.s1exp_loc, e1xp)
+          in
+            s1exp_app_unwind (s1e_new, s1ess)
+          end
+        | _ => s1e
+        end // end of [Some_vt]
+      | ~None_vt () => s1e
+      end // end of [$Syn.S0TAQnone]
+    | _ => s1e
+    end // end of [S1Eqid]
+  | _ => s1e
+end // end of [s1exp_app_unwind]
+
+(* ****** ****** *)
+
+fun s2rtlst_of_s2varlst (s2vs: s2varlst): s2rtlst = begin
+  case+ s2vs of
+  | cons (s2v, s2vs) => cons (s2var_srt_get s2v, s2rtlst_of_s2varlst s2vs)
+  | nil () => nil ()
+end // end of [s2rtlst_of_s2varlst]
+
+(* ****** ****** *)
+
+local
+
+fun aux01 (
+    i: int
+  , npf: int
+  , s1es: s1explst
+  , lin: &int
+  , prg: &int
+  , res: labs2explst
+  ) : labs2explst = begin case+ s1es of
+  | cons (s1e, s1es) => let
+      val lab = $Lab.label_make_int i
+      val s2e = s1exp_tr_dn_impredicative s1e
+      val s2t = s2e.s2exp_srt
+      val () = if s2rt_is_linear s2t then (lin := lin+1)
+      val () = begin
+        if i >= npf then (if ~(s2rt_is_proof s2t) then (prg := prg+1))
+      end
+    in
+      LABS2EXPLSTcons (lab, s2e, aux01 (i+1, npf, s1es, lin, prg, res))
+    end
+  | nil () => res
+end // end of [aux01]
+
+fun aux23 (
+    s2t: s2rt
+  , i: int
+  , s1es: s1explst
+  , res: labs2explst
+  ) : labs2explst = begin case+ s1es of
+  | cons (s1e, s1es) => let
+      val lab = $Lab.label_make_int i
+      val s2e = s1exp_tr_dn (s1e, s2t)
+    in
+      LABS2EXPLSTcons (lab, s2e, aux23 (s2t, i+1, s1es, res))
+    end
+  | nil () => res
+end // end of [aux23]
+
+in // in of [local]
+
+fn s1exp_list_tr_up
+  (loc0: loc_t, npf: int, s1es: s1explst): s2exp = let
+  var lin: int = 0 and prg: int = 0
+  val ls2es = aux01 (0, npf, s1es, lin, prg, LABS2EXPLSTnil ())
+  val s2t_rec = begin
+    s2rt_lin_prg_boxed_npf_labs2explst (lin, prg, 0, npf, ls2es)
+  end
+in
+  s2exp_tyrec_srt (s2t_rec, TYRECKINDflt0 (), npf, ls2es)
+end // end of [s1exp_list_tr_up]
+
+fn s1exp_tytup_tr_up
+  (loc0: loc_t, tupknd: int, s1es: s1explst): s2exp = begin
+  case+ tupknd of
+  | _ when 0 <= tupknd andalso tupknd <= 1 => let
+      var lin: int = 0 and prg: int = 0
+      val ls2es = aux01 (0, 0, s1es, lin, prg, LABS2EXPLSTnil ())
+      val boxed = (if tupknd > 0 then 1 else 0): int
+      val s2t_rec = begin
+        s2rt_lin_prg_boxed_npf_labs2explst (lin, prg, boxed, 0, ls2es)
+      end
+      val tyrecknd = (
+        if boxed > 0 then TYRECKINDbox () else TYRECKINDflt0 ()
+      ) : tyreckind
+    in
+      s2exp_tyrec_srt (s2t_rec, tyrecknd, 0(*npf*), ls2es)
+    end
+  | _ when 2 <= tupknd andalso tupknd <= 3 => let
+      val s2t_elt: s2rt =
+        if tupknd = 2 then s2rt_t0ype else s2rt_viewt0ype
+      val ls2es = aux23 (s2t_elt, 0, s1es, LABS2EXPLSTnil ())
+      val s2t_rec: s2rt =
+        if tupknd = 2 then s2rt_type else s2rt_viewtype
+    in
+      s2exp_tyrec_srt (s2t_rec, TYRECKINDbox (), 0(*npf*), ls2es)
+    end
+  | _ => begin
+      prerr loc0;
+      prerr ": Internal Error: s1exp_tr: S1Etytup";
+      prerr_newline ();
+      $Err.abort {s2exp} ()
+    end
+end // end of [s1exp_tytup_tr_up]
+
+fn s1exp_tytup2_tr_up
+  (loc0: loc_t, tupknd: int, s1es1: s1explst, s1es2: s1explst)
+  : s2exp = begin case+ tupknd of
+  | _ when 0 <= tupknd andalso tupknd <= 1 => let
+      var lin: int = 0 and prg: int = 0
+      val npf = $Lst.list_length s1es1        
+      val ls2es = LABS2EXPLSTnil ()
+      val ls2es2 = aux01 (npf, npf, s1es2, lin, prg, ls2es)
+      val ls2es12 = aux01 (0, npf, s1es1, lin, prg, ls2es2)
+      val boxed = (if tupknd > 0 then 1 else 0): int
+      val s2t_rec = begin
+        s2rt_lin_prg_boxed_npf_labs2explst (lin, prg, boxed, 0, ls2es2)
+      end
+      val tyrecknd = (
+        if boxed > 0 then TYRECKINDbox () else TYRECKINDflt0 ()
+      ) : tyreckind
+    in
+      s2exp_tyrec_srt (s2t_rec, tyrecknd, npf, ls2es12)
+    end
+  | _ when 2 <= tupknd andalso tupknd <= 3 => let
+      val npf = $Lst.list_length s1es1
+      val s2t_elt1: s2rt =
+        if tupknd = 2 then s2rt_prop else s2rt_view
+      val s2t_elt2: s2rt =
+        if tupknd = 2 then s2rt_t0ype else s2rt_viewt0ype
+      val ls2es = aux23 (s2t_elt2, npf, s1es2, LABS2EXPLSTnil ())
+      val ls2es = aux23 (s2t_elt1, 0, s1es1, ls2es)
+      val s2t_rec: s2rt =
+        if tupknd = 2 then s2rt_type else s2rt_viewtype
+    in
+      s2exp_tyrec_srt (s2t_rec, TYRECKINDbox (), npf, ls2es)
+    end
+  | _ => begin
+      prerr loc0;
+      prerr ": Internal Error: s1exp_tytup2_tr_up";
+      prerr_newline ();
+      $Err.abort {s2exp} ()
+    end
+end // end of [s1exp_tytup2_tr_up]
+
+end // end of [local]
+
+(* ****** ****** *)
+
+local
+
+fun aux01
+  (ls1es: labs1explst, lin: &int, prg: &int): labs2explst = begin
+  case+ ls1es of
+  | LABS1EXPLSTcons (lab, s1e, ls1es) => let
+      val s2e = s1exp_tr_up s1e
+      val s2t = s2e.s2exp_srt
+      val () = if s2rt_is_linear s2t then (lin := lin+1)
+      val () = if ~(s2rt_is_proof s2t) then (prg := prg+1)
+    in
+      LABS2EXPLSTcons (lab, s2e, aux01 (ls1es, lin, prg))
+    end
+  | LABS1EXPLSTnil () => LABS2EXPLSTnil ()
+end // end of [aux01]
+
+fun aux23 (s2t: s2rt, ls1es: labs1explst): labs2explst = begin
+  case+ ls1es of
+  | LABS1EXPLSTcons (lab, s1e, ls1es) => let
+      val s2e = s1exp_tr_dn (s1e, s2t)
+    in
+      LABS2EXPLSTcons (lab, s2e, aux23 (s2t, ls1es))
+    end
+  | LABS1EXPLSTnil () => LABS2EXPLSTnil ()
+end // end of [aux23]
+
+in // in of [local]
+
+fn s1exp_struct_tr_up (loc0: loc_t, ls1es: labs1explst): s2exp = let
+  var lin: int = 0 and prg: int = 0      
+  val ls2es = aux01 (ls1es, lin, prg)
+  val s2t_rec: s2rt = begin
+    s2rt_lin_prg_boxed_npf_labs2explst (lin, prg, 0(*boxed*), 0, ls2es)
+  end
+  val stamp = $Stamp.s2exp_struct_stamp_make ()
+in
+  s2exp_tyrec_srt (s2t_rec, TYRECKINDflt1 stamp, 0(*npf*), ls2es)
+end // end of [s1exp_struct_tr_up]
+
+fn s1exp_tyrec_tr_up
+  (loc0: loc_t, recknd: int, ls1es: labs1explst): s2exp = begin
+  case+ recknd of
+  | _ when 0 <= recknd andalso recknd <= 1 => let
+      var lin: int = 0 and prg: int = 0
+      val ls2es = aux01 (ls1es, lin, prg)
+      val boxed = (if recknd > 0 then 1 else 0): int
+      val s2t_rec: s2rt = begin
+        s2rt_lin_prg_boxed_npf_labs2explst (lin, prg, boxed, 0, ls2es)
+      end
+      val tyrecknd = (
+        if boxed > 0 then TYRECKINDbox () else TYRECKINDflt0 ()
+      ) : tyreckind
+    in
+      s2exp_tyrec_srt (s2t_rec, tyrecknd, 0(*npf*), ls2es)
+    end
+  | _ when 2 <= recknd andalso recknd <= 3 => let
+      val s2t_rec: s2rt =
+        if recknd = 2 then s2rt_type else s2rt_viewtype
+      val s2t_elt: s2rt =
+        if recknd = 2 then s2rt_t0ype else s2rt_viewt0ype
+      val ls2es = aux23 (s2t_elt, ls1es)
+    in
+      s2exp_tyrec_srt (s2t_rec, TYRECKINDbox (), 0(*npf*), ls2es)
+    end
+  | _ => begin
+      prerr loc0;
+      prerr ": Internal Error: s1exp_tyrec_tr_up";
+      prerr_newline ();
+      $Err.abort {s2exp} ()
+    end
+end // end of [s1exp_tyrec_tr_up]
+
+fn s1exp_union_tr_up (loc0: loc_t, s1e_ind: s1exp, ls1es: labs1explst)
+  : s2exp = let
+  val s2e_ind = s1exp_tr_dn_int s1e_ind
+  var lin: int = 0 and prg: int = 0
+  val ls2es = aux01 (ls1es, lin, prg)
+  val s2t_rec = s2rt_lin_prg_boxed (lin, prg, 0(*boxed*))
+  val stamp = $Stamp.s2exp_union_stamp_make ()
+in
+  s2exp_union_srt (s2t_rec, stamp, s2e_ind, ls2es)
+end // end of [s1exp_union_tr_up]
+
+end // end of [local]
+
+(* ****** ****** *)
+
+implement s1exp_tr_up (s1e0) = let
+(*
+  val () = begin
+    print "s1exp_tr_up: s1e0 = "; print s1e0; print_newline ()
+  end
+*)
+in
+  case+ s1e0.s1exp_node of
+  | S1Eann (s1e, s1t) => begin
+      let val s2t = s1rt_tr s1t in s1exp_tr_dn (s1e, s2t) end
+    end
+  | S1Eany () => s1exp_any_tr_up (s1e0.s1exp_loc)
+  | S1Eapp (s1e, _(*loc_arg*), s1es) => let
+      var s1ess_arg: s1explstlst = '[s1es]
+      val s1e_opr = s1exp_app_unwind (s1e, s1ess_arg)
+    in
+      case+ s1e_opr.s1exp_node of
+      | S1Eqid (q, id) => begin case+ staspecid_of_qid (q, id) of
+        | SPSIDarrow () => s1exp_arrow_tr_up
+            (s1e0.s1exp_loc, None (), false, false, None (), s1ess_arg)
+        | SPSIDnone () => begin case+ the_s2expenv_find_qua (q, id) of
+          | ~Some_vt s2i => s1exp_qid_app_tr_up
+              (s1e0.s1exp_loc, s1e_opr.s1exp_loc, q, id, s2i, s1ess_arg)
+          | ~None_vt () => begin
+              prerr s1e.s1exp_loc;
+              prerr ": error(2)";
+              $Deb.debug_prerrf (": %s: s1exp_tr_up", @(THISFILENAME));
+              prerr ": unrecognized static identifier [";
+              $Syn.prerr_s0taq q; $Sym.prerr_symbol id;
+              prerr "].";
+              prerr_newline ();
+              $Err.abort {s2exp} ()
+            end
+          end
+        end // end of [S1Eqid]
+      | S1Eimp (fc, lin, prf, oefc) => s1exp_arrow_tr_up 
+          (s1e0.s1exp_loc, Some fc, lin>0, prf>0, oefc, '[s1es])
+      | _ => let
+          val s2e_opr = s1exp_tr_up s1e_opr
+        in
+          s1exp_app_tr_up (s1e_opr.s1exp_loc, s1e0.s1exp_loc, s2e_opr, s1ess_arg)
+        end
+      // end of [case]
+    end // end of [S1Eapp]
+  | S1Echar c => s2exp_char c
+  | S1Eexi (knd, s1qs, s1e_scope) => let
+(*
+      val () = begin
+        print "s1exp_tr_up: S1Eexi: s1e0 = "; print s1e0; print_newline ()
+      end
+*)
+      val () =
+        if knd = 0 then () else begin
+          prerr s1e0.s1exp_loc;
+          prerr ": error(2)";
+          prerr ": The kind of existential quantifier #[...] is used incorrectly.";
+          prerr_newline ();
+          $Err.abort {void} ()
+        end
+      val (pf_s2expenv | ()) = the_s2expenv_push ()
+      val @(s2vs, s2ps) = s1qualst_tr (s1qs)
+      val s2e_scope = s1exp_tr_dn_impredicative s1e_scope
+      val () = the_s2expenv_pop (pf_s2expenv | (*none*))
+    in
+      s2exp_exi (s2vs, s2ps, s2e_scope)
+    end
+  | S1Eextype name => s2exp_extype_srt (s2rt_viewt0ype, name)
+  | S1Eimp _ => begin
+      prerr s1e0.s1exp_loc;
+      prerr "Internal Error: s1exp_tr_up: S1Eimp";
+      prerr_newline ();
+      $Err.abort {s2exp} ()
+    end
+  | S1Eint i(*string*) => s2exp_intinf ($IntInf.intinf_make_string i)
+  | S1Einvar (refval, s1e) => begin
+      prerr s1e0.s1exp_loc;
+      prerr ": error(1)";
+      prerr ": an invariant type can only be assigned to the argument of a function.";
+      prerr_newline ();
+      $Err.abort {s2exp} ()
+    end
+  | S1Elam (s1as, os1t, s1e_body) => let
+      val (pf_s2expenv | ()) = the_s2expenv_push ()
+      val s2vs = s1arglst_var_tr s1as; val s2e_body = (
+        case+ os1t of
+        | Some s1t => s1exp_tr_dn (s1e_body, s1rt_tr s1t)
+        | None () => s1exp_tr_up s1e_body
+      ) : s2exp
+      val () = the_s2expenv_pop (pf_s2expenv | (*none*))
+      val s2ts_arg = s2rtlst_of_s2varlst (s2vs)
+      val s2t_res = s2e_body.s2exp_srt
+    in
+      s2exp_lam_srt (s2rt_fun (s2ts_arg, s2t_res), s2vs, s2e_body)
+    end
+  | S1Elist (npf, s1es) => begin
+      s1exp_list_tr_up (s1e0.s1exp_loc, npf, s1es)
+    end
+  | S1Emod _ => begin
+      prerr s1e0.s1exp_loc;
+      prerr ": s1exp_tr_up: S1Emod: not implemented yet.";
+      prerr_newline ();
+      $Err.abort {s2exp} ()
+    end
+  | S1Eqid (q, id) => s1exp_id_tr_up (s1e0.s1exp_loc, q, id)
+  | S1Eread (_v, s1e) => s1exp_read_tr_up (_v, s1e)
+  | S1Estruct (ls1es) => begin
+      s1exp_struct_tr_up (s1e0.s1exp_loc, ls1es)
+    end
+  | S1Etop (knd, s1e) => s1exp_top_tr_up (knd, s1e)
+  | S1Etrans _ => begin
+      prerr s1e0.s1exp_loc;
+      prerr ": error(1)";
+      prerr ": a transitional type can only be assigned to the argument of a function.";
+      prerr_newline ();
+      $Err.abort {s2exp} ()
+    end
+  | S1Etyarr (s1e_elt, s1ess_dim) => let
+      val s2e_elt = s1exp_tr_dn_viewt0ype s1e_elt
+      val s2ess_dim = s1explstlst_tr_dn_int s1ess_dim
+    in
+      s2exp_tyarr (s2e_elt, s2ess_dim)
+    end
+  | S1Etyrec (recknd, ls1es) => begin
+      s1exp_tyrec_tr_up (s1e0.s1exp_loc, recknd, ls1es)
+    end
+  | S1Etytup (tupknd, s1es) => begin
+      s1exp_tytup_tr_up (s1e0.s1exp_loc, tupknd, s1es)
+    end
+  | S1Etytup2 (tupknd, s1es1, s1es2) => begin
+      s1exp_tytup2_tr_up (s1e0.s1exp_loc, tupknd, s1es1, s1es2)
+    end
+  | S1Euni (s1qs, s1e_scope) => let
+      var s2vs: s2varlst = nil () and s2ps: s2explst = nil ()
+      val (pf_s2expenv | ()) = the_s2expenv_push ()
+      val @(s2vs, s2ps) = s1qualst_tr (s1qs)
+      val s2e_scope = s1exp_tr_dn_impredicative s1e_scope
+      val () = the_s2expenv_pop (pf_s2expenv | (*none*))
+    in
+      s2exp_uni (s2vs, s2ps, s2e_scope)
+    end
+  | S1Eunion (s2e_ind, ls2es) => begin
+      s1exp_union_tr_up (s1e0.s1exp_loc, s2e_ind, ls2es)
+    end
+end // end of [s1exp_tr_up]
+
+implement s1explst_tr_up (s1es) = $Lst.list_map_fun (s1es, s1exp_tr_up)
+implement s1explstlst_tr_up (s1ess) = $Lst.list_map_fun (s1ess, s1explst_tr_up)
+
+implement tmps1explstlst_tr_up (ts1ess) = begin case+ ts1ess of
+  | TMPS1EXPLSTLSTnil () => TMPS2EXPLSTLSTnil ()
+  | TMPS1EXPLSTLSTcons (loc, s1es, ts1ess) => begin
+     TMPS2EXPLSTLSTcons (loc, s1explst_tr_up s1es, tmps1explstlst_tr_up ts1ess)
+    end
+end // end of [tmps1explstlst_tr]
+
+(* ****** ****** *)
+
+implement s1exp_tr_dn (s1e0, s2t0) = begin
+  case+ s1e0.s1exp_node of
+  | S1Eextype name => begin
+      if s2t0 <= s2rt_viewt0ype then
+        s2exp_extype_srt (s2t0, name)
+      else begin
+        prerr s1e0.s1exp_loc;
+        prerr ": error(2)";
+        $Deb.debug_prerrf (": %s: s1exp_tr_dn", @(THISFILENAME));
+        prerr ": the external type cannot be assigned the sort [";
+        prerr s2t0;
+        prerr "].";
+        prerr_newline ();
+        $Err.abort ()
+      end
+    end
+  | _ => let
+      val s2e0 = s1exp_tr_up (s1e0)
+      val s2t0_new = s2e0.s2exp_srt
+    in
+      if s2t0_new <= s2t0 then s2e0
+      else begin
+        prerr s1e0.s1exp_loc;
+        prerr ": error(2)";
+        $Deb.debug_prerrf (": %s: s1exp_tr_dn", @(THISFILENAME));
+        prerr ": the static expression is of sort [";
+        prerr s2t0_new;
+        prerr "] but it is expectecd to be of sort [";
+        prerr s2t0;
+        prerr "].";
+        prerr_newline ();
+        $Err.abort ()
+      end
+    end
+end // end of [s1exp_tr_dn]
+
+implement s1explst_tr_dn (s1es, s2ts) = begin
+  case+ s1es of
+  | s1e :: s1es => let
+      val+ s2t :: s2ts = s2ts
+    in
+      s1exp_tr_dn (s1e, s2t) :: s1explst_tr_dn (s1es, s2ts)
+    end
+  | nil () => nil ()
+end // end of [s1explst_tr_dn]
+
+(* ****** ****** *)
+
+implement s1exparg_tr (s1a) = begin
+  case+ s1a.s1exparg_node of
+  | S1EXPARGone () => s2exparg_one (s1a.s1exparg_loc)
+  | S1EXPARGall () => s2exparg_all (s1a.s1exparg_loc)
+  | S1EXPARGseq (s2es) => begin
+      s2exparg_seq (s1a.s1exparg_loc, s1explst_tr_up s2es)
+    end
+end // end of [s1exparg_tr]
+
+implement s1exparglst_tr (s1as) = $Lst.list_map_fun (s1as, s1exparg_tr)
+
+(* ****** ****** *)
+
+fn s1rtdef_tr (d: s1rtdef): void = let
+  val id = d.s1rtdef_sym and s2te = s1rtext_tr (d.s1rtdef_def)
+in
+  the_s2rtenv_add (id, s2te)
+end // end of [s1rtdef_tr]
+
+implement s1rtdeflst_tr (ds): void = begin
+  case+ ds of
+  | cons (d, ds) => (s1rtdef_tr d; s1rtdeflst_tr ds)
+  | nil () => ()
+end // end of [s1rtdeflst_tr]
+
+(* ****** ****** *)
+
+fn d1atarg_tr (d1a: d1atarg): @(symopt_t, s2rt, int) = begin
+  case+ d1a.d1atarg_node of
+  | D1ATARGsrt s1tp => let
+      val s2t = s1rt_tr (s1tp.s1rtpol_srt)
+    in
+      @(None (), s2t, s1tp.s1rtpol_pol)
+    end
+  | D1ATARGidsrt (id, s1tp) => let
+      val s2t = s1rt_tr (s1tp.s1rtpol_srt)
+    in
+      @(Some id, s2t, s1tp.s1rtpol_pol)
+    end
+end // end of [d1atarg_tr]
+
+implement d1atarglst_tr (d1as) = begin case+ d1as of
+  | cons (d1a, d1as) => cons (d1atarg_tr d1a, d1atarglst_tr d1as)
+  | nil () => nil ()
+end // end of [d1atarglst_tr]
+
+fn s1tacon_tr (s2t_res: s2rt, d: s1tacon): void = let
+  val id = d.s1tacon_sym
+  val argvar = (
+    case+ d.s1tacon_arg of
+    | Some d1as => Some (d1atarglst_tr d1as) | None () => None ()
+  ) : Option (List @(symopt_t, s2rt, int))
+  val s2t_fun = (
+    case+ argvar of
+    | Some xs => let
+        fun aux (xs: List @(symopt_t, s2rt, int)): s2rtlst =
+          case+ xs of
+            | cons (x, xs) => cons (x.1, aux xs) | nil () => nil ()
+        val s2ts_arg = aux xs
+      in
+        s2rt_fun (s2ts_arg, s2t_res)
+      end
+    | None => s2t_res
+  ) : s2rt
+  val (pf_s2expenv | ()) = the_s2expenv_push ()
+  val s2vs_opt = (let
+    fun aux (xs: List @(symopt_t, s2rt, int)): s2varlst =
+      case+ xs of
+      | cons (x, xs) => let
+          val s2v = case+ x.0 of
+            | Some id => s2var_make_id_srt (id, x.1)
+            | None () => s2var_make_srt (x.1)
+        in
+          the_s2expenv_add_svar s2v; cons (s2v, aux xs)
+        end
+      | nil () => nil ()
+    in
+      case+ argvar of Some xs => Some (aux xs) | None () => None ()
+    end
+  ) : Option (s2varlst)
+  val def = (
+    case+ d.s1tacon_def of
+    | Some s1e => let
+        val s2e = s1exp_tr_dn (s1e, s2t_res)
+        val s2e_def = case+ s2vs_opt of
+          | Some s2vs => s2exp_lam_srt (s2t_fun, s2vs, s2e) | None => s2e
+      in
+        Some s2e_def
+      end
+    | None () => None ()
+  ) : s2expopt
+  val () = the_s2expenv_pop (pf_s2expenv | (*none*))
+  val s2c = s2cst_make (
+        id // sym
+      , s2t_fun // srt
+      , Some def // isabs
+      , true // iscon
+      , false // isrec
+      , false // isasp
+      , None () // islst
+      , argvar // argvar
+      , None () // def
+      )
+in
+  the_s2expenv_add_scst s2c
+end // end of [s1tacon_tr]
+
+implement s1taconlst_tr (absknd, ds): void = let
+  fun aux (s2t: s2rt, ds: s1taconlst): void = case+ ds of
+    | cons (d, ds) => (s1tacon_tr (s2t, d); aux (s2t, ds)) | nil () => ()
+  val s2t = case+ absknd of
+    | $Syn.ABSKINDprop () => s2rt_prop
+    | $Syn.ABSKINDtype () => s2rt_type
+    | $Syn.ABSKINDt0ype () => s2rt_t0ype
+    | $Syn.ABSKINDview () => s2rt_view
+    | $Syn.ABSKINDviewtype () => s2rt_viewtype
+    | $Syn.ABSKINDviewt0ype () => s2rt_viewt0ype
+in
+  aux (s2t, ds)
+end // end of [s1taconlst_tr]
+
+(* ****** ****** *)
+
+fn s1tacst_tr (d: s1tacst): void = let
+  val id = d.s1tacst_sym
+  val s2t_res = s1rt_tr (d.s1tacst_res)
+  val s2t: s2rt = case+ d.s1tacst_arg of
+    | Some s1ts => s2rt_fun (s1rtlst_tr s1ts, s2t_res)
+    | None () => s2t_res
+  val s2c = s2cst_make (
+        id // sym
+      , s2t // srt
+      , None () // isabs
+      , false // iscon
+      , false // isrec
+      , false // isasp
+      , None () // islst
+      , None () // argvar
+      , None () // def
+      )
+in
+  the_s2expenv_add_scst s2c
+end // end of [s1tacst_tr]
+
+implement s1tacstlst_tr (ds) = begin case+ ds of
+  | cons (d, ds) => (s1tacst_tr d; s1tacstlst_tr ds) | nil () => ()
+end // end of [s1tacstlst_tr]
+
+(* ****** ****** *)
+
+fun s1tavar_tr (d: s1tavar): s2tavar = let
+  val s2t = s1rt_tr (d.s1tavar_srt)
+  val s2v = s2var_make_id_srt (d.s1tavar_sym, s2t)
+  val () = the_s2expenv_add_svar s2v
+in
+  s2tavar_make (d.s1tavar_loc, s2v)
+end // end of [s1tavar_tr]
+
+implement s1tavarlst_tr (ds) = $Lst.list_map_fun (ds, s1tavar_tr)
+
+(* ****** ****** *)
+
+fn d1atsrtdec_tr (res: s2rt, d1c: d1atsrtdec): s2cstlst = let
+  fn aux (res: s2rt, d1c: d1atsrtcon): s2cst_t = let
+    val id = d1c.d1atsrtcon_sym
+    val arg = s1rtlst_tr d1c.d1atsrtcon_arg
+    val s2t = s2rt_fun (arg, res)
+    val s2c = s2cst_make (
+      id // sym
+    , s2t // srt
+    , None () // isabs
+    , true // iscon
+    , false // isrec
+    , false // isasp
+    , None () // islst
+    , None () // argvar
+    , None () // def
+    )
+  in
+    the_s2expenv_add_scst s2c; s2c
+  end
+
+  fun auxlst (res: s2rt, d1cs: d1atsrtconlst): s2cstlst =
+    case+ d1cs of
+    | cons (d1c, d1cs) => S2CSTLSTcons (aux (res, d1c), auxlst (res, d1cs))
+    | nil () => S2CSTLSTnil ()
+in
+  auxlst (res, d1c.d1atsrtdec_con)
+end // end of [d1atsrtdec_tr]
+
+implement d1atsrtdeclst_tr (d1cs): void = let
+  viewtypedef VT = List_vt @(d1atsrtdec, s2rtdat_t, s2rt)
+  fun loop1 (xs0: VT): void = case+ xs0 of
+    | ~list_vt_cons (x, xs) => let
+        val s2cs = d1atsrtdec_tr (x.2, x.0)
+        val () = s2rtdat_conlst_set (x.1, s2cs)
+      in
+        loop1 xs
+      end
+    | ~list_vt_nil () => ()
+
+  fun loop2 (d1cs: d1atsrtdeclst, res: VT): void =
+    case+ d1cs of
+    | list_cons (d1c, d1cs) => let
+        val id = d1c.d1atsrtdec_sym
+        val s2td = s2rtdat_make id
+        val s2t = S2RTbas (S2RTBASdef s2td)
+        val s2t_eq = s2rt_fun ('[s2t, s2t], s2rt_bool)
+        val s2c_eq = s2cst_make (
+          $Sym.symbol_EQEQ // sym
+        , s2t_eq // srt
+        , None () // isabs
+        , false // iscon
+        , false // isrec
+        , false // isasp
+        , None () // islst
+        , None () // argvar 
+        , None () // def
+        )
+        val () = the_s2expenv_add_scst s2c_eq
+        val () = the_s2rtenv_add (id, S2TEsrt s2t)
+      in
+        loop2 (d1cs, list_vt_cons (@(d1c, s2td, s2t), res))
+      end
+    | list_nil () => loop1 res
+in
+  loop2 (d1cs, list_vt_nil ())
+end // end of [d1atsrtdeclst_tr]
+
+(* ****** ****** *)
+
+fn s1expdef_s1aspdec_tr_main
+  (loc0: loc_t, s1ass: s1arglstlst, res: s2rtopt, body: s1exp)
+  : s2exp = let 
+  val (pf_s2expenv | ()) = the_s2expenv_push ()
+  val s2vss: s2varlstlst = s1arglstlst_var_tr s1ass
+  val body = case+ res of
+    | Some s2t => s1exp_tr_dn (body, s2t) | _ => s1exp_tr_up body
+  val () = the_s2expenv_pop (pf_s2expenv | (*none*))
+  fun aux (body: s2exp, s2vss: s2varlstlst): s2exp = begin
+    case+ s2vss of
+    | s2vs :: s2vss => let
+        val body = aux (body, s2vss)
+        val s2ts_arg = s2rtlst_of_s2varlst s2vs
+        val s2t_fun = s2rt_fun (s2ts_arg, body.s2exp_srt)
+      in
+        s2exp_lam_srt (s2t_fun, s2vs, body)
+      end
+    | nil () => body
+  end // end of [aux]
+in
+  aux (body, s2vss)
+end // end of [s1expdef_s1aspdec_tr_main]
+
+fn s1expdef_tr (res: s2rtopt, d1c: s1expdef): s2cst_t = let
+  fn err (d1c: s1expdef): void = begin
+    prerr d1c.s1expdef_loc;
+    prerr ": error(2)";
+    $Deb.debug_prerrf (": %s: s1expdef_tr", @(THISFILENAME));
+    prerr ": the sort for the definition does not match";
+    prerr " the sort assigned to the static constant [";
+    $Sym.prerr_symbol d1c.s1expdef_sym;
+    prerr "].";
+    prerr_newline ();
+    $Err.abort {void} ()
+  end // end of [err]
+  val res = (
+    case+ d1c.s1expdef_res of
+    | Some s1t => let
+        val s2t1 = s1rt_tr s1t
+        val () = case+ res of
+          | Some s2t => if (s2t1 <= s2t) then () else err (d1c)
+          | None () => ()
+      in
+        Some s2t1
+      end
+    | None () => res
+  ) : s2rtopt
+  val s2e = s1expdef_s1aspdec_tr_main
+    (d1c.s1expdef_loc, d1c.s1expdef_arg, res, d1c.s1expdef_def)
+in
+  s2cst_make (
+    d1c.s1expdef_sym // sym
+  , s2e.s2exp_srt // srt
+  , None () // isabs
+  , false // iscon
+  , false // isrec
+  , false // isasp
+  , None () // islst
+  , None () // argvar
+  , Some s2e // def
+  ) // end of [s2cst_make]
+end // end of [s1expdef_tr]
+
+implement s1expdeflst_tr (res, d1cs) = begin
+  case+ d1cs of
+  | cons (d1c, d1cs) => let
+      val () = the_s2expenv_add_scst (s1expdef_tr (res, d1c))
+    in
+      s1expdeflst_tr (res, d1cs)
+    end // end of [cons]
+  | nil () => ()
+end // end of [s1expdeflst_tr]
+
+implement s1aspdec_tr (d1c) = let
+  fn err1
+    (loc: loc_t, q: $Syn.s0taq, id: sym_t,
+     s2t_s2c: s2rt, s2t_s2e: s2rt): s2aspdec = begin
+    prerr loc;
+    prerr ": error(2)";
+    $Deb.debug_prerrf (": %s: s1aspdec_tr: err1", @(THISFILENAME));
+    prerr ": sort mismatch";
+    prerr ": the sort of the static constant [";
+    $Syn.prerr_s0taq q; $Sym.prerr_symbol id;
+    prerr "] is [";
+    prerr s2t_s2c;
+    prerr "] while the sort of its definition is [";
+    prerr s2t_s2e;
+    prerr "].";
+    prerr_newline ();
+    $Err.abort {s2aspdec} ()
+  end // end of [err1]
+
+  fn err2 (loc: loc_t, q: $Syn.s0taq, id: sym_t): s2aspdec = begin
+    prerr loc;
+    prerr ": error(2)";
+    $Deb.debug_prerrf (": %s: s1aspdec_tr: err2", @(THISFILENAME));
+    prerr ": the static constant [";
+    $Syn.prerr_s0taq q; $Sym.prerr_symbol id;
+    prerr "] is not abstract.";
+    prerr_newline ();
+    $Err.abort {s2aspdec} ()
+  end // end of [err2]
+
+  fn err3 (loc: loc_t, q: $Syn.s0taq, id: sym_t): s2aspdec = begin
+    prerr loc;
+    prerr ": error(2)";
+    $Deb.debug_prerrf (": %s: s1aspdec_tr: err2", @(THISFILENAME));
+    prerr ": the static constant referred to by [";
+    $Syn.prerr_s0taq q; $Sym.prerr_symbol id;
+    prerr "] cannot be uniquely resolved.";
+    prerr_newline ();
+    $Err.abort {s2aspdec} ()
+  end // end of [err3]
+
+  fn err4 (loc: loc_t, q: $Syn.s0taq, id: sym_t): s2aspdec = begin
+    prerr loc;
+    prerr ": error(2)";
+    $Deb.debug_prerrf (": %s: s1aspdec_tr: err4", @(THISFILENAME));
+    prerr ": the identifier [";
+    $Syn.prerr_s0taq q; $Sym.prerr_symbol id;
+    prerr "] does not refer to a static constant.";
+    prerr_newline ();
+    $Err.abort {s2aspdec} ()
+  end // end of [err4]
+
+  fn err5 (loc: loc_t, q: $Syn.s0taq, id: sym_t): s2aspdec = begin
+    prerr loc;
+    prerr ": error(2)";
+    $Deb.debug_prerrf (": %s: s1aspdec_tr: err5", @(THISFILENAME));
+    prerr ": the identifier [";
+    $Syn.prerr_s0taq q; $Sym.prerr_symbol id;
+    prerr "] is unrecognized.";
+    prerr_newline ();
+    $Err.abort {s2aspdec} ()
+  end // end of [err5]
+
+  val loc = d1c.s1aspdec_loc
+  val qid = d1c.s1aspdec_qid
+  val q = qid.sqi0de_qua and id = qid.sqi0de_sym
+  val os2i = the_s2expenv_find_qua (q, id)
+in
+  case+ os2i of
+  | ~Some_vt s2i => begin case+ s2i of
+    | S2ITEMcst s2cs => begin case+ s2cs of
+      | S2CSTLSTcons (s2c, S2CSTLSTnil ()) => begin
+          if s2cst_is_abstract s2c then let
+            val res = s1rtopt_tr d1c.s1aspdec_res
+            val s2e = s1expdef_s1aspdec_tr_main
+              (loc, d1c.s1aspdec_arg, res, d1c.s1aspdec_def)
+(*
+            // definition binding is to be done in [ats_trans3_dec.dats]
+*)
+            val s2t_s2e = s2e.s2exp_srt
+            val s2t_s2c = s2cst_srt_get s2c
+          in
+            if s2t_s2e <= s2t_s2c then begin
+              s2aspdec_make (loc, s2c, s2e)
+            end else begin
+              err1 (loc, q, id, s2t_s2c, s2t_s2e)
+            end // end of [if]
+          end else begin
+            err2 (loc, q, id) // [s2c] is not abstract!
+          end 
+        end // end of [S2CSTLSTcons (_, S2CSTLSTnil _)]
+      | _ => err3 (loc, q, id)
+      end // end of [S2ITEMcst]
+    | _ => err4 (loc, q, id)
+    end // end of [Some_vt]
+  | ~None_vt () => err5 (loc, q, id)
+end // end of [s1aspdec_tr]
+
+(* ****** ****** *)
+
+fn d1atcon_tr (
+    s2c: s2cst_t
+  , islin: bool
+  , isprf: bool
+  , s2vs0: s2varlst
+  , fil: fil_t
+  , d1c: d1atcon
+  ) : d2con_t = let
+
+  fn err1 (loc: loc_t, id: sym_t): s2explstopt = begin
+    $Loc.prerr_location loc;
+    prerr ": less indexes are needed for the constructor [";
+    $Sym.prerr_symbol id; prerr "]"; prerr_newline ();
+    $Err.abort {s2explstopt} ()
+  end // end of [err1]
+
+  fn err2 (loc: loc_t, id: sym_t): s2explstopt = begin
+    $Loc.prerr_location loc;
+    prerr ": more indexes are needed for the constructor [";
+    $Sym.prerr_symbol id; prerr "]"; prerr_newline ();
+    $Err.abort {s2explstopt} ()
+  end // end of [err2]
+
+  fn err3 (loc: loc_t, id: sym_t): s2explstopt = begin
+    $Loc.prerr_location loc;
+    prerr ": no indexes are needed for the constructor [";
+    $Sym.prerr_symbol id; prerr "]"; prerr_newline ();
+    $Err.abort {s2explstopt} ()
+  end // end of [err3]
+
+  fn err4 (loc: loc_t, id: sym_t): s2explstopt = begin
+    $Loc.prerr_location loc;
+    prerr ": some indexes are needed for the constructor [";
+    $Sym.prerr_symbol id; prerr "]"; prerr_newline ();
+    $Err.abort {s2explstopt} ()
+  end // end of [err4]
+
+  val loc = d1c.d1atcon_loc and id = d1c.d1atcon_sym
+  val (pf_s2expenv | ()) = the_s2expenv_push ()
+  val () = the_s2expenv_add_svarlst s2vs0
+  var s2vpslst: s2qualst = s1qualstlst_tr (d1c.d1atcon_qua)
+  val () = case+ s2vs0 of
+    | cons _ => s2vpslst := cons (@(s2vs0, nil ()), s2vpslst)
+    | nil () => ()
+  var os2ts_s2c_ind: s2rtlstopt = None ()
+  val () = case+ s2cst_srt_get s2c of
+    | S2RTfun (s2ts, s2t) => (os2ts_s2c_ind := Some s2ts) | s2t => ()
+  val npf = d1c.d1atcon_npf and s1es_arg = d1c.d1atcon_arg
+  val s2es_arg = let
+    val s2t_pfarg = (if islin then s2rt_view else s2rt_prop): s2rt
+    val s2t_arg = (
+      if isprf then s2t_pfarg else begin
+        if islin then s2rt_viewt0ype else s2rt_t0ype
+      end // end of [if]
+    ) : s2rt
+    fun aux (i: int, s1es: s1explst):<cloptr1> s2explst = begin
+      case+ s1es of
+      | cons (s1e, s1es) => let
+          val s2t = (if i < npf then s2t_pfarg else s2t_arg): s2rt
+        in
+          cons (s1exp_tr_dn (s1e, s2t), aux (i+1, s1es))
+        end
+      | nil () => nil ()
+    end // end of [aux]
+  in
+    aux (0, s1es_arg)
+  end // end of [val]
+  val os2ts_s2c_ind = (os2ts_s2c_ind: s2rtlstopt)
+  val os2es_ind = (
+    case+ (d1c.d1atcon_ind, os2ts_s2c_ind) of
+    | (Some s1es, Some s2ts) => let
+        val n1 = $Lst.list_length (s1es)
+        and n2 = $Lst.list_length (s2ts)
+      in
+        case+ compare (n1, n2) of
+        | 0 => Some (s1explst_tr_dn (s1es, s2ts))
+        | 1 => err1 (loc, id)
+        | _ (*~1*) => err2 (loc, id)
+      end
+    | (None (), None ()) => None ()
+    | (Some _, None _) => err3 (loc, id)
+    | (None _, Some _) => err4 (loc, id)
+  ) : s2explstopt
+  val () = the_s2expenv_pop (pf_s2expenv | (*none*))
+  val vwtp = (if isprf then 0 else if islin then 1 else 0): int
+  val d2c = d2con_make
+    (loc, fil, id, s2c, vwtp, s2vpslst, npf, s2es_arg, os2es_ind)
+  val () = the_d2expenv_add_dcon d2c; val () =
+    if isprf then () else let
+      val () = the_s2expenv_add_datcontyp d2c // struct
+    in
+      if islin then the_s2expenv_add_datconptr d2c // unfold
+    end // end of [if]
+in
+  d2c
+end // end of [d1atcon_tr]
+
+fun d1atconlst_tr (
+    s2c: s2cst_t
+  , islin: bool
+  , isprf: bool
+  , s2vs0: s2varlst
+  , fil: fil_t
+  , d1cs: d1atconlst
+  ) : d2conlst = begin case+ d1cs of
+  | cons (d1c, d1cs) => let
+      val d2c = d1atcon_tr (s2c, islin, isprf, s2vs0, fil, d1c)
+    in
+      D2CONLSTcons (d2c, d1atconlst_tr (s2c, islin, isprf, s2vs0, fil, d1cs))
+    end
+  | nil () => D2CONLSTnil ()
+end // end of [d1atconlst_tr]
+
+(* ****** ****** *)
+
+fn d1atdec_tr
+  (s2c: s2cst_t, s2vs0: s2varlst, d1c: d1atdec): void = let
+  val s2t_s2c = case+ s2cst_srt_get s2c of S2RTfun (s2ts, s2t) => s2t | s2t => s2t
+  val islin = s2rt_is_linear s2t_s2c and isprf = s2rt_is_proof s2t_s2c
+  val d2cs = d1atconlst_tr (s2c, islin, isprf, s2vs0, d1c.d1atdec_fil, d1c.d1atdec_con)
+  val () = let // assigning tags to dynamic constructors
+    fun aux (i: int, d2cs: d2conlst): void = case+ d2cs of
+      | D2CONLSTcons (d2c, d2cs) => begin
+          d2con_tag_set (d2c, i); aux (i+1, d2cs)
+        end
+      | D2CONLSTnil () => ()
+  in
+    aux (0, d2cs)
+  end
+  val islst = (case+ d2cs of
+    | D2CONLSTcons (d2c1, D2CONLSTcons (d2c2, D2CONLSTnil ())) =>
+        if d2con_arity_real_get d2c1 = 0 then begin
+          if d2con_arity_real_get d2c2 > 0 then Some @(d2c1, d2c2)
+          else None ()
+        end else begin
+          if d2con_arity_real_get d2c2 = 0 then Some @(d2c2, d2c1)
+          else None ()
+        end
+    | _ => None ()
+  ) : Option @(d2con_t, d2con_t)
+in
+  s2cst_islst_set (s2c, islst); s2cst_conlst_set (s2c, Some d2cs)
+end // end of [d1atdec_tr]
+
+implement d1atdeclst_tr (datknd, d1cs_dat, d1cs_def) = let
+  val s2t_res = s2rt_datakind datknd
+
+  typedef T = List @(d1atdec, s2cst_t, s2varlst)
+  val d1cs2cs2vslst: T = let
+    var res: T = nil ()
+    fn aux (d1c: d1atdec, res: &T):<cloptr1> void = let
+      val argvar = (
+        case+ d1c.d1atdec_arg of
+        | Some d1as => Some (d1atarglst_tr d1as)
+        | None () => None () 
+      ) : Option (List @(symopt_t, s2rt, int))
+      val s2vs = (
+        let
+          fun aux (xs: List @(symopt_t, s2rt, int)): s2varlst =
+            case+ xs of
+            | cons (x, xs) => begin case+ x.0 of
+              | Some id => cons (s2var_make_id_srt (id, x.1), aux xs)
+              | None () =>> aux xs
+              end
+            | nil () => nil ()
+        in
+          case+ argvar of Some xs => aux xs | None () => nil ()
+        end
+      ) : s2varlst
+      val os2ts_arg = (
+        let
+          fun aux (xs: List @(symopt_t, s2rt, int)): s2rtlst =
+            case+ xs of cons (x, xs) => cons (x.1, aux xs) | nil () => nil ()
+        in
+          case+ argvar of Some xs => Some (aux xs) | None () => None ()
+        end
+      ) : s2rtlstopt
+      val s2c = s2cst_make_dat (d1c.d1atdec_sym, os2ts_arg, s2t_res, argvar)
+    in
+      the_s2expenv_add_scst s2c; res := cons (@(d1c, s2c, s2vs), res)
+    end // end of [val]
+
+    fun auxlst (d1cs: d1atdeclst, res: &T):<cloptr1> void =
+      case+ d1cs of
+      | cons (d1c, d1cs) => (aux (d1c, res); auxlst (d1cs, res))
+      | nil () => ()
+  in
+    auxlst (d1cs_dat, res); res
+  end
+  val () = let
+    fun aux (d1cs: s1expdeflst): void = begin case+ d1cs of
+      | cons (d1c, d1cs) => let
+          val () = the_s2expenv_add_scst (s1expdef_tr (None (), d1c))
+        in
+          aux d1cs
+        end // end of [cons]
+      | nil () => ()
+    end // end of [aux]
+  in
+    aux (d1cs_def)
+  end // end of [val]
+
+  fun aux (xs: T): s2cstlst = begin case+ xs of
+    | cons (x, xs) => begin
+        d1atdec_tr (x.1, x.2, x.0); S2CSTLSTcons (x.1, aux xs)
+      end
+    | nil () => S2CSTLSTnil ()
+  end // end of [aux]
+in
+  aux (d1cs2cs2vslst)
+end // end of [d1atdeclst_tr]
+
+(* ****** ****** *)
+
+(* [exn] is considered a viewtype constructor *)
+fn e1xndec_tr
+  (s2c: s2cst_t, d1c: e1xndec): d2con_t = let
+  val loc = d1c.e1xndec_loc
+  val fil = d1c.e1xndec_fil and id = d1c.e1xndec_sym
+  val (pf_s2expenv | ()) = the_s2expenv_push ()
+  val s2vpslst = s1qualstlst_tr (d1c.e1xndec_qua)
+  val npf = d1c.e1xndec_npf
+  val s1es_arg = d1c.e1xndec_arg
+  val s2es_arg = s1explst_tr_dn_viewt0ype s1es_arg
+  val () = the_s2expenv_pop (pf_s2expenv | (*none*))
+  val d2c = d2con_make
+    (loc, fil, id, s2c, 1(*vwtp*), s2vpslst, npf, s2es_arg, None(*ind*))
+  val () = d2con_tag_set (d2c, ~1)
+in
+  the_d2expenv_add_dcon d2c; d2c
+end // end of [e1xndec_tr]
+
+fun d2conlst_revapp (d2cs1: d2conlst, d2cs2: d2conlst)
+  : d2conlst = begin case+ d2cs1 of
+  | D2CONLSTcons (d2c1, d2cs1) => begin
+      d2conlst_revapp (d2cs1, D2CONLSTcons (d2c1, d2cs2))
+    end
+  | D2CONLSTnil () => d2cs2
+end // end of [d2conlst_revapp]
+
+implement e1xndeclst_tr (d1cs) = let
+  fun aux (s2c: s2cst_t, d1cs: e1xndeclst): d2conlst =
+    case+ d1cs of
+    | cons (d1c, d1cs) => let
+        val d2c = e1xndec_tr (s2c, d1c)
+      in
+        D2CONLSTcons (d2c, aux (s2c, d1cs))
+      end
+    | nil () => D2CONLSTnil ()
+  val s2c = s2cstref_cst_get (Exception_viewtype)
+  val d2cs = aux (s2c, d1cs)
+  val d2cs0 = case+ s2cst_conlst_get s2c of
+    | Some d2cs0 => d2conlst_revapp (d2cs, d2cs0) | None () => d2cs
+in
+  s2cst_conlst_set (s2c, Some d2cs0); d2cs
+end // end of [e1xndeclst_tr]
+
+(* ****** ****** *)
+
+(* end of [ats_trans2_sta.dats] *)

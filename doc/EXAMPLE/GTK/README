@@ -1,0 +1,2 @@
+This directory contains some examples in ATS involving GTK programing.
+Please use the provided Makefile to compile these examples.

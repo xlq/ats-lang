@@ -1,0 +1,76 @@
+<HTML>
+<BODY text="#000000" bgcolor="#ffffff" link="#0000FF" vlink="#CC00CC" alink="#ff0000">
+
+<H2>Persistent Lists</H2>
+<HR SIZE=1 ALIGN=LEFT><P>
+
+Lists are by far the most commonly used data structure in functional
+programming. We say that a data structure is <EM>persistent</EM> if it is
+heap-allocated and can only be freed by the GC. In contrast, a data
+structure is said to be linear if it is either stack-allocated or
+heap-allocated and can be freed by the user as well as by the GC.
+<P>
+
+The datatype for persistent lists in ATS is declared as follows:
+
+<PRE><FONT COLOR="#E80000"><FONT COLOR="#000000">datatype</FONT> <FONT COLOR="#0000FF">list <FONT COLOR="#000000">(</FONT>a<FONT COLOR="#000000">:</FONT>t@ype+<FONT COLOR="#000000">,</FONT> int<FONT COLOR="#000000">)</FONT></FONT> <FONT COLOR="#000000">=</FONT> <FONT COLOR="#787878">// t@ype+: covariant
+</FONT>  <FONT COLOR="#000000">|</FONT> list_nil <FONT COLOR="#0000FF"><FONT COLOR="#000000">(</FONT>a<FONT COLOR="#000000">,</FONT> 0<FONT COLOR="#000000">)</FONT></FONT>
+  <FONT COLOR="#000000">|</FONT> <FONT COLOR="#000000">{</FONT><FONT COLOR="#0000FF">n<FONT COLOR="#000000">:</FONT>int</FONT> <FONT COLOR="#000000">|</FONT> <FONT COLOR="#0000FF">n &gt;= 0</FONT><FONT COLOR="#000000">}</FONT> list_cons <FONT COLOR="#0000FF"><FONT COLOR="#000000">(</FONT>a<FONT COLOR="#000000">,</FONT> n+1<FONT COLOR="#000000">)</FONT></FONT> <FONT COLOR="#000000">of</FONT> <FONT COLOR="#0000FF"><FONT COLOR="#000000">(</FONT>a<FONT COLOR="#000000">,</FONT> list_t0ype_int_type <FONT COLOR="#000000">(</FONT>a<FONT COLOR="#000000">,</FONT> n<FONT COLOR="#000000">)</FONT><FONT COLOR="#000000">)</FONT></FONT>
+</FONT></PRE>
+
+Given a type <i>T</i> and an integer <i>I</i>, the type <i>list(T, I)</i>
+is for lists of length <i>I</i> in which each element is of type <i>T</i>.
+<P>
+
+Let us first introduce some abbreviations for the list constructors:
+<PRE><FONT COLOR="#000000">#define</FONT> <FONT COLOR="#800080">nil list_nil</FONT>
+<FONT COLOR="#000000">#define</FONT> <FONT COLOR="#800080">cons list_cons</FONT>
+<FONT COLOR="#000000">#define</FONT> <FONT COLOR="#800080">:: list_cons</FONT></PRE>
+
+The following syntax creates a list consisting of 1, 2 and 3:
+
+<pre>
+cons (1, cons (2, cons (3, nil ()))) // [nil ()] can be replaced with [nil]
+</pre>
+
+This kind of syntax is a bit unwieldy if longer lists need to be handled,
+and some alternatives are given as follows:
+
+<pre>
+'[1, 2, 3] // the first character is quote (')
+$lst (1, 2, 3) // this is equivalent to '[1, 2, 3]
+$lst {Nat} (1, 2, 3) // [Nat] is given as the type for the list elements
+</pre>
+
+The interfaces for various functions on lists can be found in the file
+<a href="../../IMPLEMENTATION/Anairiats/ATS/prelude/SATS/list.sats">
+$ATSHOME/prelude/SATS/list.sats</a>.
+<P>
+
+We now present some simple programs involving lists.  The following code
+implements a (template) function that computes the length of a given list:
+
+<PRE><FONT COLOR="#E80000"><FONT COLOR="#787878">// This implementation is not tail-recursive
+</FONT><FONT COLOR="#000000">fun</FONT><FONT COLOR="#000000">{</FONT><FONT COLOR="#0000FF">a<FONT COLOR="#000000">:</FONT>t@ype</FONT><FONT COLOR="#000000">}</FONT> length <FONT COLOR="#0000FF"><FONT COLOR="#000000">{</FONT>n<FONT COLOR="#000000">:</FONT>nat<FONT COLOR="#000000">}</FONT></FONT> <FONT COLOR="#000000">(</FONT>xs<FONT COLOR="#000000">:</FONT> <FONT COLOR="#0000FF">list <FONT COLOR="#000000">(</FONT>a<FONT COLOR="#000000">,</FONT> n<FONT COLOR="#000000">)</FONT></FONT><FONT COLOR="#000000">)</FONT><FONT COLOR="#000000">:</FONT> <FONT COLOR="#0000FF">int n</FONT> <FONT COLOR="#000000">=</FONT>
+  <FONT COLOR="#000000">case+</FONT> xs <FONT COLOR="#000000">of</FONT> _ :: xs <FONT COLOR="#000000">=&gt;</FONT> 1 + length xs <FONT COLOR="#000000">|</FONT> nil <FONT COLOR="#000000">(</FONT><FONT COLOR="#000000">)</FONT> <FONT COLOR="#000000">=&gt;</FONT> 0
+</FONT></PRE>
+
+This is a rather poor implementation as it is not tail-recursive.
+A better one, which is tail-recursive, is given as follows:
+
+<PRE><FONT COLOR="#E80000"><FONT COLOR="#787878">// This implementation is tail-recursive
+</FONT><FONT COLOR="#000000">fn</FONT><FONT COLOR="#000000">{</FONT><FONT COLOR="#0000FF">a<FONT COLOR="#000000">:</FONT>t@ype</FONT><FONT COLOR="#000000">}</FONT> length <FONT COLOR="#0000FF"><FONT COLOR="#000000">{</FONT>n<FONT COLOR="#000000">:</FONT>nat<FONT COLOR="#000000">}</FONT></FONT> <FONT COLOR="#000000">(</FONT>xs<FONT COLOR="#000000">:</FONT> <FONT COLOR="#0000FF">list <FONT COLOR="#000000">(</FONT>a<FONT COLOR="#000000">,</FONT> n<FONT COLOR="#000000">)</FONT></FONT><FONT COLOR="#000000">)</FONT><FONT COLOR="#000000">:</FONT> <FONT COLOR="#0000FF">int n</FONT> <FONT COLOR="#000000">=</FONT>
+  <FONT COLOR="#000000">let</FONT>
+    <FONT COLOR="#000000">fun</FONT> loop <FONT COLOR="#0000FF"><FONT COLOR="#000000">{</FONT>i<FONT COLOR="#000000">,</FONT>j<FONT COLOR="#000000">:</FONT>int<FONT COLOR="#000000">}</FONT></FONT> <FONT COLOR="#000000">(</FONT>xs<FONT COLOR="#000000">:</FONT> <FONT COLOR="#0000FF">list <FONT COLOR="#000000">(</FONT>a<FONT COLOR="#000000">,</FONT> i<FONT COLOR="#000000">)</FONT></FONT><FONT COLOR="#000000">,</FONT> j<FONT COLOR="#000000">:</FONT> <FONT COLOR="#0000FF">int j</FONT><FONT COLOR="#000000">)</FONT><FONT COLOR="#000000">:</FONT> <FONT COLOR="#0000FF">int <FONT COLOR="#000000">(</FONT>i+j<FONT COLOR="#000000">)</FONT></FONT> <FONT COLOR="#000000">=</FONT>
+      <FONT COLOR="#000000">case+</FONT> xs <FONT COLOR="#000000">of</FONT> _ :: xs <FONT COLOR="#000000">=&gt;</FONT> loop <FONT COLOR="#000000">(</FONT>xs<FONT COLOR="#000000">,</FONT> j+1<FONT COLOR="#000000">)</FONT> <FONT COLOR="#000000">|</FONT> nil <FONT COLOR="#000000">(</FONT><FONT COLOR="#000000">)</FONT> <FONT COLOR="#000000">=&gt;</FONT> j
+  <FONT COLOR="#000000">in</FONT>
+    loop <FONT COLOR="#000000">(</FONT>xs<FONT COLOR="#000000">,</FONT> 0<FONT COLOR="#000000">)</FONT>
+  <FONT COLOR="#000000">end</FONT>
+</FONT></PRE>
+
+<HR SIZE=1 ALIGN=LEFT><P>
+The code used for illustration is available <a
+href="lists.dats">here</a>.
+
+</BODY>
+</HTML>

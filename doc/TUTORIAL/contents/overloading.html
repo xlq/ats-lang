@@ -1,0 +1,36 @@
+<HTML>
+<BODY text="#000000" bgcolor="#ffffff" link="#0000FF" vlink="#CC00CC" alink="#ff0000">
+
+<H2>Overloading</H2>
+
+<HR SIZE=1 ALIGN=LEFT><P>
+
+A symbol in ATS can be overloaded with multiple functions. The following syntax
+introduces a symbol with the name <i>foo</i> for overloading.
+
+<pre>
+symintr foo // symbol introduction for overloading
+</pre>
+
+Suppose that <i>foo1</i>, <i>foo2</i> and <i>foo3</i> are names of three
+functions in ATS. Then we can overload <i>foo</i> with these three
+functions as follows:
+
+<pre>
+overload foo with foo1
+overload foo with foo2
+overload foo with foo3
+</pre>
+
+An overloaded function symbol is resolved according to the types of the
+arguments it takes.
+
+<pre>
+</pre>
+
+<HR SIZE=1 ALIGN=LEFT><P> The code used for illustration is available
+<a href="overloading.dats">here</a>.
+
+
+</BODY>
+</HTML>
