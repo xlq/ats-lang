@@ -49,12 +49,12 @@ all: \
   atscheck \
   config.h \
   atsopt0 \
+  bootstrapping \
+  atsopt1 \
   bin/atscc \
   bin/atslib \
   libfiles \
   bin/atslex \
-  bootstrapping \
-  atsopt1 \
   ccomp/runtime/GCATS/gc.o \
   atsopt1_gc
 	echo "ATS/Anairiats has been built up successfully!"
@@ -82,10 +82,10 @@ bootstrap1/Makefile:
 	$(GCC) -E -x c .bootstrap_header | cat - .bootstrap_makefile > bootstrap1/Makefile
 
 ###### w/o GC ######
-atsopt0: bootstrap0/Makefile; cd bootstrap0; make atsopt; mv atsopt "$(ATSHOME)"/bin
+atsopt0: bootstrap0/Makefile; cd bootstrap0; make atsopt
 
 ###### bootstrapping ######
-bootstrapping: ; cd src; make atsopt0; make -f Makefile_bootstrap all
+bootstrapping: ; cd src; make -f Makefile_bootstrap all
 
 ###### w/o GC ######
 atsopt1: bootstrap1/Makefile; cd bootstrap1; make atsopt; mv atsopt "$(ATSHOME)"/bin

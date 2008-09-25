@@ -36,6 +36,24 @@
 
 ## ###### ###### ##
 
+#
+# The bootstrapping procedure:
+#
+# 1. Use [gcc] to compile the C code in [bootstrap0] to build the ATS
+#    compiler [atsopt]
+#
+# 2. Use [atsopt] to compile the ATS code in [src] into C code and store
+#    it in [bootstrap1]
+#
+# 3. Use [gcc] to compile the C code in [bootstrap1] to build the ATS
+#    compiler [atsopt]
+#
+# 4. Use [atsopt] to compile the ATS code in [utils/scripts] to build the
+#    batch compilation command [atscc]
+#
+# 5. Use [atscc] to build libats, GC and atslex.
+#
+
 ATSRUNTIME="$(ATSHOME)"/ccomp/runtime
 
 CC=gcc
