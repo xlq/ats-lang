@@ -179,8 +179,14 @@ $(BOOTDIR)/ats_lexer_lats_dats.c: ats_grammar_yats.h ats_lexer_lats.dats
 $(BOOTDIR)/ats_grammar.yats: ats_grammar.yats
 	cp -f ats_grammar.yats $@
 
-$(BOOTDIR)/ats_grammar_yats.c $(BOOTDIR)/ats_grammar_yats.h: ats_grammar.yats
-	$(YACC) -v -d -o $(BOOTDIR)/ats_grammar_yats.c ats_grammar.yats
+ats_grammar_yats.c ats_grammar_yats.h: ats_grammar.yats
+	$(YACC) -v -d -o ats_grammar_yats.c ats_grammar.yats
+
+$(BOOTDIR)/ats_grammar_yats.c: ats_grammar_yats.c
+	cp -f ats_grammar_yats.c $@
+
+$(BOOTDIR)/ats_grammar_yats.h: ats_grammar_yats.h
+	cp -f ats_grammar_yats.h $@
 
 ######
 
