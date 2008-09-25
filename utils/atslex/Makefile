@@ -34,8 +34,9 @@
 ######
 
 ATSCC="$(ATSHOME)"/bin/atscc
-#ATSCCFLAGS=-D__ATS_gc
-#ATSCCFLAGS=-D__ATS_gcats
+#ATSCCFLAGS=-D_ATS_gc
+#ATSCCFLAGS=-D_ATS_gcats
+#ATSCCFLAGS=-D_ATS_GCATS
 ATSCCFLAGS=
 ATSRUNTIME="$(ATSHOME)"/ccomp/runtime
 
@@ -45,14 +46,14 @@ INCLUDES=-I"$(ATSHOME)" -I"$(ATSRUNTIME)" -I
 
 ######
 
-atslex: atslex.dats top_sats.o lexgen_dats.o \
-        charset_dats.o intset_dats.o states_dats.o \
-        parser_dats.o position_dats.o token_dats.o
-	$(ATSCC) $(ATSCCFLAGS) \
-          -o atslex atslex.dats \
-          lexgen_dats.o top_sats.o \
-          charset_dats.o intset_dats.o states_dats.o \
-          parser_dats.o position_dats.o token_dats.o
+atslex: \
+  atslex.dats top_sats.o lexgen_dats.o \
+  charset_dats.o intset_dats.o states_dats.o \
+  parser_dats.o position_dats.o token_dats.o
+	$(ATSCC) $(ATSCCFLAGS) -o atslex \
+  atslex.dats top_sats.o lexgen_dats.o \
+  charset_dats.o intset_dats.o states_dats.o \
+  parser_dats.o position_dats.o token_dats.o
 
 ######
 
@@ -77,3 +78,5 @@ top_sats.o: top.sats
 
 clean::
 	rm -f *_sats.c *_dats.c *.o *~
+
+###### end of [Makefile] ######

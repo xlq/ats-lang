@@ -22,6 +22,8 @@ binary-trees_smp_dats.c: binary-trees_smp.dats
 
 fannkuch: fannkuch.dats
 	$(ATSCC) -fomit-frame-pointer -O3 fannkuch.dats -o fannkuch
+fannkuch1: fannkuch1.dats
+	$(ATSCC) -fomit-frame-pointer -O3 fannkuch1.dats -o fannkuch1
 
 fannkuch_smp: fannkuch_smp.dats
 	$(ATSCC) -D_ATS_MULTITHREAD -O3 -fomit-frame-pointer fannkuch_smp.dats -o fannkuch_smp -lpthread

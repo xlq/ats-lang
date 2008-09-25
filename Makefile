@@ -53,8 +53,10 @@ all: \
   bin/atslib \
   libfiles \
   bin/atslex \
+  bootstrapping \
+  atsopt1 \
   ccomp/runtime/GCATS/gc.o \
-  atsopt1
+  atsopt1_gc
 	echo "ATS/Anairiats has been built up successfully!"
 	echo "The value of ATSHOME for this build is \"$(ATSHOME)\"."
 
@@ -73,14 +75,23 @@ config.h: configure ; ./configure
 
 ###### bootstrap/Makefile ######
 
-bootstrap/Makefile:
-	$(GCC) -E -x c .bootstrap_header | cat - .bootstrap_makefile > bootstrap/Makefile
+bootstrap0/Makefile:
+	$(GCC) -E -x c .bootstrap_header | cat - .bootstrap_makefile > bootstrap0/Makefile
+
+bootstrap1/Makefile:
+	$(GCC) -E -x c .bootstrap_header | cat - .bootstrap_makefile > bootstrap1/Makefile
 
 ###### w/o GC ######
-atsopt0: bootstrap/Makefile; cd bootstrap; make atsopt; mv atsopt "$(ATSHOME)"/bin
+atsopt0: bootstrap0/Makefile; cd bootstrap0; make atsopt; mv atsopt "$(ATSHOME)"/bin
 
-###### with GC ######
-atsopt1: bootstrap/Makefile; cd bootstrap; make atsopt1; mv atsopt "$(ATSHOME)"/bin
+###### bootstrapping ######
+bootstrapping: ; cd src; make atsopt0; make -f Makefile_bootstrap all
+
+###### w/o GC ######
+atsopt1: bootstrap1/Makefile; cd bootstrap1; make atsopt; mv atsopt "$(ATSHOME)"/bin
+
+###### w/o GC ######
+atsopt1_gc: bootstrap1/Makefile; cd bootstrap1; make atsopt_gc; mv atsopt "$(ATSHOME)"/bin
 
 ###### some toplevel commands ######
 bin/atscc bin/atslib:
@@ -107,7 +118,8 @@ ccomp/runtime/GCATS/gc.o:
 ######
 
 clean::
-	rm -f bootstrap/*.o
+	rm -f bootstrap0/*.o
+	rm -f bootstrap1/*.o
 	cd utils/scripts; make clean
 	cd utils/atslex; make clean
 	cd ccomp/runtime/GCATS; make clean

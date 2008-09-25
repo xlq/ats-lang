@@ -134,7 +134,7 @@ ats_bool_type perm_test
   }
 #else // perm test is not allowed
   if (((int*)P0)[1] == 1) return ats_false_bool ;
-  if (((int*)P0)[sz] == sz) return ats_true_bool ;
+  if (((int*)P0)[sz] == sz) return ats_false_bool ;
 #endif
   return ats_true_bool ;
 } /* end of [perm_test] */

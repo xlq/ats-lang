@@ -43,11 +43,11 @@ YACC=yacc
 #YACC=byacc
 
 ATSCC="$(ATSHOME)"/bin/atscc
-#ATSCCFLAG=-g -D_ATS_MULTITHREAD
+#ATSCCFLAG=-g
 #ATSCCFLAG=-O0
 #ATSCCFLAG=-O1
 #ATSCCFLAG=-O2
-ATSCCFLAG=-O2 -g -D_ATS_MULTITHREAD
+ATSCCFLAG=-O2 -g
 #GCFLAG=-D_ATS_gc
 #GCFLAG=-D_ATS_gcats
 #GCFLAG=-D_ATS_GC
@@ -161,13 +161,31 @@ LIBOBJS := -lgmp
 
 ######
 
-atsopt: \
+atsopt: gc_mt_o \
   ats_main_dats.o \
   ats_lexer_lats_dats.o ats_lexer_sats.o \
   ats_grammar_yats.o \
   libc_sats.o libats_lex.o \
-  $(OBJECTS) # gc_mt_o
-	$(ATSCC) $(ATSCCFLAG) $(GCFLAG) -o atsopt \
+  $(OBJECTS)
+	$(ATSCC) -D_ATS_GCATS $(ATSCCFLAG) \
+  -o atsopt \
+  ats_main_dats.o \
+  ats_lexer_lats_dats.o ats_lexer_sats.o \
+  ats_grammar_yats.o \
+  libc_sats.o libats_lex.o \
+  $(OBJECTS) \
+  $(LIBOBJS)
+
+######
+
+atsopt0: \
+  ats_main_dats.o \
+  ats_lexer_lats_dats.o ats_lexer_sats.o \
+  ats_grammar_yats.o \
+  libc_sats.o libats_lex.o \
+  $(OBJECTS)
+	$(ATSCC) $(ATSCCFLAG) \
+  -o atsopt \
   ats_main_dats.o \
   ats_lexer_lats_dats.o ats_lexer_sats.o \
   ats_grammar_yats.o \
@@ -539,6 +557,9 @@ ats_ccomp_main_dats.o: ats_ccomp_main.dats
 	$(ATSCC) $(ATSCCFLAG) -c ats_ccomp_main.dats
 
 ######
+
+gc_o:
+	cd "$(ATSHOME)"/ccomp/runtime/GCATS; make gc.o; make clean
 
 gc_mt_o:
 	cd "$(ATSHOME)"/ccomp/runtime/GCATS; make gc_mt.o; make clean

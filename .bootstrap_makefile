@@ -158,9 +158,7 @@ atsopt: \
   $(ATSRUNTIME)/ats_prelude.c \
   $(LIBOBJS)
 
-######
-
-atsopt1:
+atsopt_gc::
 	$(CC) $(CCFLAG) -o atsopt \
   -D_ATS_BOOTSTRAP ats_main_dats.c \
   ats_lexer_lats_dats.o ats_lexer_sats.o ats_grammar_yats.o \

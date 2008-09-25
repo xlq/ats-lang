@@ -13,14 +13,6 @@ absviewt@ype intarr = $extype "intarr" // integer arrays
 %{^
 
 static inline
-ats_ptr_type int_make () {
-  return malloc(sizeof(ats_int_type)) ;
-}
-
-static inline
-ats_void_type int_free (ats_ptr_type p) { free (p); return ; }
-
-static inline
 ats_ptr_type
 intarr_make (ats_int_type n) {
   return malloc((n+1) * sizeof(ats_int_type)) ;
@@ -42,11 +34,6 @@ intarr_set (ats_ptr_type A, ats_int_type i, ats_int_type x) {
 }
 
 %}
-
-extern fun int_make (): [l:addr] (int @ l | ptr l)
-  = "int_make"
-extern fun int_free {l:addr} (pf: int @ l | p: ptr l): void
-  = "int_free"
 
 extern fun intarr_make (sz: int): [l:addr] (intarr @ l | ptr l)
   = "intarr_make"
@@ -86,7 +73,7 @@ in
 end // end of [print_intarr]
 
 fun perm_rotate (P: &intarr, i: int): void = let
-  var k: int = 0; val P1 = P[1]
+  var k: int = 1; val P1 = P[1]
   val () = while (k < i) begin
     let val k1 = k+1 in P[k] := P[k1]; k := k1 end
   end // end of [while]
@@ -122,7 +109,7 @@ ats_bool_type perm_test
   }
 #else // perm test is not allowed
   if (((int*)P0)[1] == 1) return ats_false_bool ;
-  if (((int*)P0)[sz] == sz) return ats_true_bool ;
+  if (((int*)P0)[sz] == sz) return ats_false_bool ;
 #endif
   return ats_true_bool ;
 } /* end of [perm_test] */
@@ -133,7 +120,6 @@ extern fun perm_test (P: &intarr, sz: int): bool = "perm_test"
 
 (* ****** ****** *)
 
-#define NCORE 4
 #define NPRINT 30
 
 (* ****** ****** *)
