@@ -74,6 +74,4 @@ in
   mpz_clear q; mpz_clear r; mpz_clear t; mpz_clear n;
 end // end of [main]
 
-(* ****** ****** *)
-
 (* end of [pidigits.dats] *)

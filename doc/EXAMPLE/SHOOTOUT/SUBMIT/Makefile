@@ -73,7 +73,19 @@ spectral-norm_smp: spectral-norm_smp.dats
 thread-ring: thread-ring.dats
 	$(ATSCC) -O3 -fomit-frame-pointer thread-ring.dats -o thread-ring -lpthread
 
-# cleanup
+###### update ######
+
+update::
+	scp
+  fannkuch1.dats \
+  fannkuch1_dats.html \
+  n-body1.dats \
+  n-body1_dats.html \
+  pidigits.dats \
+  pidigits_dats.html \
+  ats-hwxi,ats-lang@web.sourceforge.net:htdocs/EXAMPLE/SHOOTOUT
+
+###### cleanup ######
 
 clean:: ; rm -f a.out *_dats.c *_sats.c *~
 
@@ -82,6 +94,7 @@ cleanall: clean
 	rm -f binary-trees_smp
 	rm -f fannkuch
 	rm -f fannkuch_smp
+	rm -f fannkuch1
 	rm -f fasta
 	rm -f fasta_smp
 	rm -f fasta_output.txt
