@@ -88,14 +88,21 @@ end
 
 (* end of [fannkuch1.dats] *)
 
-(*
+//// Some explanation about the code
+
+In this example, each and every array subscription used in the code is
+verified to be safe, that is, the subscript involved in within the bounds
+of the subscripted array. Following is some explanation about the use of
+dependent types in the code:
+
 Given an integer n, the type natLte(n) is defined as follows  in ATS:
 
 typedef natLte(n:int) = [i:nat | i <= n] int(i)
 
-In plain words, natLte(n) is for natural numbers (a.k.a., nonnegative
-integers) less than or equal to n. Note that the syntax [...] is used for
-existential quantification.
+where int(i) is the type for the only integer of value i. In plain words,
+natLte(n) is for natural numbers (a.k.a., nonnegative integers) less than
+or equal to n. Note that the syntax [...] is used for existential
+quantification.
 
 The type iarr(n) is defined as follows
 
@@ -133,5 +140,3 @@ within bounds. Probably the most interesting case here is the function
 perm_next; the type assigned to this function indicates that the return
 value of this function is a natural number less than or equal to n+1, where
 n is the value of the third argument of the function.
-
-*)

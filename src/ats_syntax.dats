@@ -721,9 +721,14 @@ implement d0atarglstopt_some (x) = Some (x)
 
 (* ****** ****** *)
 
-implement s0arg_make (id, osrt) = '{
-  s0arg_loc= id.i0de_loc, s0arg_sym= id.i0de_sym, s0arg_srt= osrt
-}
+implement s0arg_make (id, osrt) = let
+  val loc = (case+ osrt of
+    | Some srt => combine (id.i0de_loc, srt.s0rt_loc)
+    | None () => id.i0de_loc
+  ) : loc_t
+in '{
+  s0arg_loc= loc, s0arg_sym= id.i0de_sym, s0arg_srt= osrt
+} end // end of [s0arg_make]
 
 implement s0arg_make_none (id) = '{
   s0arg_loc= id.i0de_loc, s0arg_sym= id.i0de_sym, s0arg_srt= None ()
