@@ -16,6 +16,10 @@ typedef body = (
   double, double, double, double, double, double, double
 )
 
+#define PI 3.1415926535898
+#define SOLAR_MASS (4.0 * PI * PI)
+#define DAYS_PER_YEAR 365.24
+
 val sun = (0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0)
 
 val jupiter = (
@@ -58,10 +62,6 @@ val uranus = (
   5.15138902046611451e-5
 )
 
-#define PI 3.1415926535898
-#define SOLAR_MASS (4.0 * PI * PI)
-#define DAYS_PER_YEAR 365.24
-
 typedef bodylst (n: int) = list (body, n)
 
 #define N 5; #define N1 (N - 1)
@@ -92,10 +92,6 @@ macdef += (x, d) = (,(x) := ,(x) + ,(d))
 macdef -= (x, d) = (,(x) := ,(x) - ,(d))
 
 fn advance (dt: double): void = let
-  fun pl {i:nat | i <= N } (dt: double, i: int i): void =
-    if i < N then begin
-      x[i] += dt*vx[i]; y[i] += dt*vy[i]; z[i] += dt*vz[i]; pl (dt, i+1)
-    end
   fun vl {i,j:int | 0 <= i; i < j; j <= N}
     (dt: double, i: int i, j: int j): void = case+ 0 of
     | _ when i < N1 => if j < N then let
@@ -108,7 +104,13 @@ fn advance (dt: double): void = let
         vx[j] += dx * mi; vy[j] += dy * mi; vz[j] += dz * mi;
         vl (dt, i, j+1)
       end else vl (dt, i+1, i+2)
-    | _ => pl (dt, 0)
+    | _ => let
+        var i: natLte N = 0
+      in
+        while (i < N) (
+          x[i] += dt*vx[i]; y[i] += dt*vy[i]; z[i] += dt*vz[i]; i += 1
+        )
+      end
 in
   vl (dt, 0, 1)
 end
@@ -116,14 +118,13 @@ end
 (* calculate initial velocity for the sun *)
 fn offmoment (): void = let
   #define M SOLAR_MASS
-  fun loop (i: natLte N, px: double, py: double, pz: double): void =
-    if i < N then let
-      val mi = m[i] in loop (i+1, px+vx[i]*mi, py+vy[i]*mi, pz+vz[i]*mi)
-    end else begin
-      vx[0] := ~px / M; vy[0] := ~py / M; vz[0] := ~pz / M
-    end // end of [if]
+  var i: natLte N = 0
+  var px: double = 0.0 and py: double = 0.0 and pz: double = 0.0
+  val () = while (i < N) let
+    val mi = m[i] in px += vx[i]*mi; py += vy[i]*mi; pz += vz[i]*mi; i+=1
+  end
 in
-  loop (1, 0.0, 0.0, 0.0)
+  vx[0] := ~px / M; vy[0] := ~py / M; vz[0] := ~pz / M
 end
 
 fn energy (): double = let // mutual recursion

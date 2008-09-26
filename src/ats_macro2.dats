@@ -674,6 +674,9 @@ extern fun eval1_d2exp
 extern fun eval1_d2explst {n:nat}
   (loc0: loc_t, ctx: !eval0ctx, env: &alphaenv, d2es: d2explst n): d2explst n
 
+extern fun eval1_d2explstlst
+  (loc0: loc_t, ctx: !eval0ctx, env: &alphaenv, d2ess: d2explstlst): d2explstlst
+
 extern fun eval1_labd2explst
   (loc0: loc_t, ctx: !eval0ctx, env: &alphaenv, ld2es: labd2explst): labd2explst
 
@@ -800,7 +803,7 @@ implement eval0_exp (loc0, ctx, env, d2e0) = begin
       prerr ": unsupported form for macro expansion: ";
       prerr d2e0; prerr_newline ();
       $Err.abort {v2alue} ()
-    end
+    end // end of [_]
 end // end of [eval0_exp]
 
 implement eval0_labexplst
@@ -1177,6 +1180,14 @@ implement eval1_d2exp (loc0, ctx, env, d2e0) = begin
     in
       d2exp_arr (loc0, s2e, d2es)
     end
+// (*
+  | D2Earrsub (d2s, d2e_arr, _(*loc*), d2ess_ind) => let
+      val d2e_arr = eval1_d2exp (loc0, ctx, env, d2e_arr)
+      val d2ess_ind = eval1_d2explstlst (loc0, ctx, env, d2ess_ind)
+    in
+      d2exp_arrsub (loc0, d2s, d2e_arr, loc0, d2ess_ind)
+    end
+// *)
   | D2Eassgn (d2e1, d2e2) => let
       val d2e1 = eval1_d2exp (loc0, ctx, env, d2e1)
       val d2e2 = eval1_d2exp (loc0, ctx, env, d2e2)
@@ -1333,8 +1344,19 @@ implement eval1_d2exp (loc0, ctx, env, d2e0) = begin
     in
       d2exp_viewat (loc0, d2e)
     end
+(*
+  | _ => begin
+      prerr loc0;
+      prerr ": error(macro)";
+      prerr ": unsupported form for macro expansion: ";
+      prerr d2e0; prerr_newline ();
+      $Err.abort {d2exp} ()
+    end // end of [_]
+*)
   | _ => d2e0
 end // end of [eval1_d2exp]
+
+(* ****** ****** *)
 
 implement eval1_d2explst (loc0, ctx, env, d2es) = let
   fun aux {n:nat} (
@@ -1358,6 +1380,18 @@ implement eval1_d2explst (loc0, ctx, env, d2es) = let
 in
   aux (loc0, ctx, env, d2es, res); res
 end // end of [eval1_d2explst]
+
+implement eval1_d2explstlst (loc0, ctx, env, d2ess) = begin
+  case+ d2ess of
+  | list_cons (d2es, d2ess) => let
+      val d2es = eval1_d2explst (loc0, ctx, env, d2es)
+    in
+      list_cons (d2es, eval1_d2explstlst (loc0, ctx, env, d2ess))
+    end
+  | list_nil () => list_nil ()
+end // end of [eval1_d2explstlst]
+
+(* ****** ****** *)
 
 implement eval1_labd2explst (loc0, ctx, env, ld2es) = let
   fun aux (

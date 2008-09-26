@@ -70,20 +70,14 @@ spectral-norm: spectral-norm.dats
 spectral-norm_smp: spectral-norm_smp.dats
 	$(ATSCC) -D_ATS_MULTITHREAD -O3 -fomit-frame-pointer -msse2 spectral-norm_smp.dats -o spectral-norm_smp -lm -lpthread
 
+spectral-norm1: spectral-norm1.dats
+	$(ATSCC) -O3 -fomit-frame-pointer -msse2 spectral-norm1.dats -o spectral-norm1 -lm
+
 thread-ring: thread-ring.dats
 	$(ATSCC) -O3 -fomit-frame-pointer thread-ring.dats -o thread-ring -lpthread
 
 ###### update ######
 
-update::
-	scp
-  fannkuch1.dats \
-  fannkuch1_dats.html \
-  n-body1.dats \
-  n-body1_dats.html \
-  pidigits.dats \
-  pidigits_dats.html \
-  ats-hwxi,ats-lang@web.sourceforge.net:htdocs/EXAMPLE/SHOOTOUT
 
 ###### cleanup ######
 
@@ -112,4 +106,5 @@ cleanall: clean
 	rm -f spectral-norm
 	rm -f spectral-norm_smp
 	rm -f spectral-norm_smp2
+	rm -f spectral-norm1
 	rm -f thread-ring

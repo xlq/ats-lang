@@ -1,0 +1,40 @@
+
+//
+//
+// bug reports as well as suggestions for fixes (that are not yet done)
+//
+//
+
+------------------ begin of [BUGS.txt] ------------------
+
+Wednesday, June 25, 2008 (HX)
+
+STATUS: Not yet fixed.
+
+Note that the handling of [continue] in a for-loop was incorrectly
+conceived. After [continue], [post] section needs to be evaluated first
+before jumping to the beginning of the loop. This means that some functions
+in [ats_trans3_loop.dats] need to be modified appropriately.
+
+------
+
+Thursay, September 25, 2008 (HX)
+
+STATUS: Fixed on September 26, 2008
+
+\begin{code}
+val x = darray (); val y = darray (); val z = darray ()
+macdef xyz (i, _1, _2, _3) = (
+  x[,(i)] := ,(_1); y[,(i)] := ,(_2); z[,(i)] := ,(_3)
+)
+val () = xyz (0, 0.0, 0.0, 0.0)
+\end{code}
+
+\begin{errmsg}
+error(macro): the variable [i] is unbound.
+\end{errmsg}
+
+The error was caused by the function [eval1_dexp] in [ats_macro2.dats]
+not handling the case [D2Earrsub].
+
+ ------------------ end of [BUGS.txt] -------------------
