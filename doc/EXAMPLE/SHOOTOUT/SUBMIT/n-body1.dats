@@ -66,10 +66,10 @@ typedef bodylst (n: int) = list (body, n)
 
 #define N 5; #define N1 (N - 1)
 
-macdef darray () = array_make_elt<double> (N, 0.0)
-val (x, y, z) = (darray (), darray (), darray ())
-val (vx, vy, vz) = (darray (), darray (), darray ())
-val m = darray ()
+macdef darr () = array_make_elt<double> (N, 0.0)
+val (x, y, z) = (darr (), darr (), darr ())
+val (vx, vy, vz) = (darr (), darr (), darr ())
+val m = darr ()
 
 val () = loop (0, theBodies) where {
   #define DPY DAYS_PER_YEAR
@@ -91,7 +91,7 @@ infix 0 += -=  // for similar C notation
 macdef += (x, d) = (,(x) := ,(x) + ,(d))
 macdef -= (x, d) = (,(x) := ,(x) - ,(d))
 
-fn advance (dt: double): void = let
+fn advance (dt: double): void = vl (dt, 0, 1) where {
   fun vl {i,j:int | 0 <= i; i < j; j <= N}
     (dt: double, i: int i, j: int j): void = case+ 0 of
     | _ when i < N1 => if j < N then let
@@ -111,9 +111,7 @@ fn advance (dt: double): void = let
           x[i] += dt*vx[i]; y[i] += dt*vy[i]; z[i] += dt*vz[i]; i += 1
         )
       end
-in
-  vl (dt, 0, 1)
-end
+} // end of [where]
 
 (* calculate initial velocity for the sun *)
 fn offmoment (): void = let
@@ -127,7 +125,7 @@ in
   vx[0] := ~px / M; vy[0] := ~py / M; vz[0] := ~pz / M
 end
 
-fn energy (): double = let // mutual recursion
+fn energy (): double = l0 (0, 0.0) where {
   fn* l (i: natLt N, j: natLte N, e: double): double =
     if j < N then let
       val dx = x[i] - x[j] and dy = y[i] - y[j] and dz = z[i] - z[j]
@@ -142,9 +140,7 @@ fn energy (): double = let // mutual recursion
     in
       l (i, i+1, e + 0.5*m[i]*(vxi*vxi+vyi*vyi+vzi*vzi))
     end else e
-in
-  l0 (0, 0.0)
-end
+} // end of [where]
 
 fun advances (i: Nat): void = if i > 0 then (advance 0.01; advances (i-1))
 

@@ -141,34 +141,32 @@ datatype cards = cards_nil | cards_cons of (card, cards)
 #define nil cards_nil
 #define :: cards_cons
 
-fun combine (x: card, y: card): cards =
-  let
-     val c1 = ,(cardAdd_mac `(x) `(y))
-     and c2 = ,(cardSub_mac `(x) `(y))
-     and c3 = ,(cardSub_mac `(y) `(x))
-     and c4 = ,(cardMul_mac `(x) `(y))
+fn combine (x: card, y: card): cards = let
+  val c1 = ,(cardAdd_mac `(x) `(y))
+  val c2 = ,(cardSub_mac `(x) `(y)) and c3 = ,(cardSub_mac `(y) `(x))
+  val c4 = ,(cardMul_mac `(x) `(y))
+in
+  if is_zero (val_of_card_mac x) then
+    c1 :: c2 :: c3 :: c4 :: nil ()
+  else if is_zero (val_of_card_mac y) then
+    c1 :: c2 :: c3 :: c4 :: nil ()
+  else let
+    val c5 = ,(cardDiv_mac `(x) `(y)) and c6 = ,(cardDiv_mac `(y) `(x))
   in
-     if is_zero (val_of_card_mac x) then
-       c1 :: c2 :: c3 :: c4 :: nil ()
-     else if is_zero (val_of_card_mac y) then
-       c1 :: c2 :: c3 :: c4 :: nil ()
-     else
-       let
-	  val c5 = ,(cardDiv_mac `(x) `(y))
-          and c6 = ,(cardDiv_mac `(y) `(x))
-       in
-          c1 :: c2 :: c3 :: c4 :: c5 :: c6 :: nil ()
-       end
+    c1 :: c2 :: c3 :: c4 :: c5 :: c6 :: nil ()
   end
+end // end of [combine]
 
-fun cards_append_r (xs: cards, ys: cards): cards =
-  case+ xs of
-    | x :: xs => cards_append_r (xs, x :: ys) | nil () => ys
+fun cards_append_r
+  (xs: cards, ys: cards): cards = begin case+ xs of
+  | x :: xs => cards_append_r (xs, x :: ys) | nil () => ys
+end // end of [cards_append_r]
 
 (* ****** ****** *)
 
 // this code does not make use of templates
-datatype ratpairs = ratpairs_nil | ratpairs_cons of (rat_t, rat_t, ratpairs)
+datatype ratpairs =
+  | ratpairs_nil | ratpairs_cons of (rat_t, rat_t, ratpairs)
 
 #define rp_nil ratpairs_nil
 #define rp_cons ratpairs_cons
@@ -234,16 +232,14 @@ end // end of [playGame]
 
 val answer = i2r (int_make_int0 24)
 
-fun play (n1: int, n2: int, n3: int, n4: int): Bool =
-  let
-     val c1 = card_of_int0 n1
-     and c2 = card_of_int0 n2
-     and c3 = card_of_int0 n3
-     and c4 = card_of_int0 n4
-     val cs = c1 :: c2 :: c3 :: c4 :: nil ()
-  in
-     playGame (cs, answer)
-  end
+fun play
+  (n1: int, n2: int, n3: int, n4: int): Bool = let
+  val c1 = card_of_int0 n1 and c2 = card_of_int0 n2
+  and c3 = card_of_int0 n3 and c4 = card_of_int0 n4
+  val cs = c1 :: c2 :: c3 :: c4 :: nil ()
+in
+  playGame (cs, answer)
+end
 
 staload "libats/SATS/iterint.sats"
 
@@ -253,13 +249,15 @@ macdef BOUND_f = double_of BOUND
 staload "libc/SATS/math.sats"
 staload "libc/SATS/random.sats"
 
-fn int_gen (): int = 
-  int_of (floor (1.0 + drand48 () * BOUND_f))
+fn int_gen (): int = int_of (floor (1.0 + drand48 () * BOUND_f))
 
 implement main (argc, argv) = let
 
 (*
 
+// some interesting cases
+
+val _ = play (1, 7, 13, 13)
 val _ = play (2, 3, 5, 12)
 val _ = play (3, 3, 7, 7)
 val _ = play (3, 3, 8, 8)
@@ -310,20 +308,6 @@ in
 loop1 1
 
 end
-
-(*
-
-// some interesting cases
-
-val _ = play (1, 7, 13, 13)
-val _ = play (2, 3, 5, 12)
-val _ = play (3, 3, 7, 7)
-val _ = play (3, 3, 8, 8)
-val _ = play (4, 4, 10, 10)
-val _ = play (5, 5, 7, 11)
-val _ = play (5, 7, 7, 11)
-
-*)
 
 (* ****** ****** *)
 

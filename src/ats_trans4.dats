@@ -1085,6 +1085,10 @@ end // end of [i3mpdec_tr]
 
 (* ****** ****** *)
 
+fn i3mpdec_is_proof (d3c: i3mpdec): bool = begin
+  let val def = d3c.i3mpdec_def in d3exp_is_proof def end
+end // end of [i3mpdec_is_proof]
+
 implement d3eclst_tr (d3cs: d3eclst): hideclst = let
   // [aux0] and [aux1] are mutually tail-recursive
   fn* aux0 (d3cs: d3eclst, res: &hideclst? >> hideclst)
@@ -1123,21 +1127,24 @@ implement d3eclst_tr (d3cs: d3eclst): hideclst = let
         in
           aux1 (d3cs, hid, res)
         end
-      | D3Cexndec d2cs => let
-          val hid = hidec_exndec (d3c.d3ec_loc, d2cs)
+      | D3Cexndec d3cs1 => let
+          val hid = hidec_exndec (d3c.d3ec_loc, d3cs1)
         in
           aux1 (d3cs, hid, res)
         end
-      | D3Cdcstdec (knd, d2cs) => let
-          val hid = hidec_dcstdec (d3c.d3ec_loc, knd, d2cs)
+      | D3Cdcstdec (knd, d3cs1) => let
+          val hid = hidec_dcstdec (d3c.d3ec_loc, knd, d3cs1)
         in
           aux1 (d3cs, hid, res)
         end
-      | D3Cimpdec impdec => let
-          val hid = hidec_impdec (d3c.d3ec_loc, i3mpdec_tr impdec)
-        in
-          aux1 (d3cs, hid, res)
-        end
+      | D3Cimpdec impdec => begin case+ 0 of
+        | _ when i3mpdec_is_proof impdec => aux0 (d3cs, res)
+        | _ => let
+            val hid = hidec_impdec (d3c.d3ec_loc, i3mpdec_tr impdec)
+          in
+            aux1 (d3cs, hid, res)
+          end
+        end // end of [D3Cimpdec]
       | D3Cfundecs (decarg, knd, fundecs) => begin
           if $Syn.funkind_is_proof knd then aux0 (d3cs, res)
           else let
@@ -1200,8 +1207,11 @@ implement d3eclst_tr (d3cs: d3eclst): hideclst = let
     | nil () => (res := nil ())
   end // end of [aux0]
 
-  and aux1 (d3cs: d3eclst, hid: hidec, res: &hideclst? >> hideclst)
-    : void = let
+  and aux1 (
+      d3cs: d3eclst
+    , hid: hidec
+    , res: &hideclst? >> hideclst
+    ) : void = let
     val () = (res := cons {hidec} {0} (hid, ?))
     val+ cons (_, !res_nxt) = res
   in
