@@ -7,7 +7,7 @@
 
 (*
 
-This is a milestone example.
+This is a milestone example in the development of ATS.
 
 A list quicksort implementation given below is proven to be terminating
 and its return is guaranteed to be a sorted permutation of its input list.
@@ -289,4 +289,4 @@ end // end of [main]
 
 (* ****** ****** *)
 
-(* end of [quicksort] *)
+(* end of [listquicksort.dats] *)
