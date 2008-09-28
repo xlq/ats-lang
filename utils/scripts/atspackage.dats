@@ -473,6 +473,7 @@ fn doc_dir_copy () = let
   val () = cp "hanoi.dats"
   val () = cp "kmp.dats"
   val () = cp "pi_lazy.dats"
+  val () = cp "passwdgen.dats"
   val () = cp "queens.dats"
   val () = cp "sieve.dats"
   val () = cp "sieve_lazy.dats"
