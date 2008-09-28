@@ -48,8 +48,6 @@ endif
 all: \
   atscheck \
   config.h \
-  atsopt0 \
-  bootstrapping \
   atsopt1 \
   bin/atscc \
   bin/atslib \
@@ -75,17 +73,8 @@ config.h: configure ; ./configure
 
 ###### bootstrap/Makefile ######
 
-bootstrap0/Makefile:
-	$(GCC) -E -x c .bootstrap_header | cat - .bootstrap_makefile > bootstrap0/Makefile
-
 bootstrap1/Makefile:
 	$(GCC) -E -x c .bootstrap_header | cat - .bootstrap_makefile > bootstrap1/Makefile
-
-###### w/o GC ######
-atsopt0: bootstrap0/Makefile; cd bootstrap0; make atsopt
-
-###### bootstrapping ######
-bootstrapping: ; cd src; make -f Makefile_bootstrap all
 
 ###### w/o GC ######
 atsopt1: bootstrap1/Makefile; cd bootstrap1; make atsopt; mv atsopt "$(ATSHOME)"/bin
@@ -132,60 +121,10 @@ cleanall::
 	rm -f ccomp/lib/libatslex.a
 	rm -f ccomp/lib/output/*
 	rm -f .*~ *~ */*~ */*/*~ */*/*/*~ */*/*/*/*~
-	rm -f bootstrap/Makefile bootstrap/*.o
+	rm -f bootstrap1/Makefile bootstrap1/*.o
 	cd utils/scripts; make clean
 	cd utils/atslex; make clean
 	cd ccomp/runtime/GCATS; make cleanall
-
-######
-
-# The inclusion of [ats_grammar_yats.c] and [ats_grammar_yats.h]
-# obviates the need for [yacc] or [byacc]
-tar:: cleanall
-	rm -rf ATS/*
-	cp COPYING ATS
-	cp INSTALL ATS
-	cp Makefile ATS
-	cp Makefile_chmod ATS
-	cp .libfiles ATS
-	cp configure.ac configure config.h.in ATS
-	mkdir ATS/bin
-	mkdir ATS/bootstrap
-	cp bootstrap/Makefile ATS/bootstrap
-	cp bootstrap/*.h ATS/bootstrap
-	cp bootstrap/*.cats ATS/bootstrap
-	cp bootstrap/*_?ats.c ATS/bootstrap
-	mkdir ATS/ccomp
-	mkdir ATS/ccomp/runtime
-	cp -r ccomp/runtime/*.{c,h} ATS/ccomp/runtime
-	mkdir ATS/ccomp/runtime/GCATS
-	cp -r ccomp/runtime/GCATS/gc.h ATS/ccomp/runtime/GCATS
-	cp -r ccomp/runtime/GCATS/*.?ats ATS/ccomp/runtime/GCATS
-	cp -r ccomp/runtime/GCATS/Makefile ATS/ccomp/runtime/GCATS
-	cp -r ccomp/runtime/GCATS/README ATS/ccomp/runtime/GCATS
-	cp -r ccomp/runtime/GCATS/BUGS.txt ATS/ccomp/runtime/GCATS
-	mkdir ATS/ccomp/lib
-	mkdir ATS/ccomp/lib/output
-	cp -r prelude libc libats ATS
-	cp -r utils ATS
-	mkdir ATS/src
-	cp src/Makefile ATS/src
-	cp src/Makefile_bootstrap ATS/src
-	cp src/Makefile_typecheck ATS/src
-	cp src/*.?ats ATS/src
-	cp src/ats_grammar_yats.h ATS/src
-	cp src/ats_grammar_yats.c ATS/src
-	mkdir ATS/doc
-	cp doc/ATS.css doc/ATS.html ATS/doc
-	cp doc/FAQ.txt ATS/doc
-	cp -r doc/BOOK ATS/doc
-	cp -r doc/EXAMPLE ATS/doc
-	cp -r doc/IMPLEMENTATION ATS/doc
-	cp -r doc/LIBRARY ATS/doc
-	cp -r doc/TUTORIAL ATS/doc
-	tar -zvcf ATS.tgz ATS/
-	mv ATS.tgz ATS
-	cp ATS/ATS.tgz /home/fac2/hwxi/public_html/ATS/Anairiats.tgz
 
 ######
 #
