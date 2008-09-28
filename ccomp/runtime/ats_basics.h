@@ -76,9 +76,13 @@
 
 /* ****** ****** */
 
-/* while loop */
+/* while loop: deprecated!!! */
 #define ats_while_beg_mac(clab) while(ats_true_bool) { clab:
 #define ats_while_end_mac(blab, clab) goto clab ; blab: break ; }
+
+/* for/while loop */
+#define ats_loop_beg_mac(init) while(ats_true_bool) { init:
+#define ats_loop_end_mac(init, fini) goto init ; fini: break ; }
 
 /* ****** ****** */
 

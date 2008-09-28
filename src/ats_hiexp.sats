@@ -346,8 +346,6 @@ and hiexp_node =
       string
   | HIEfloatsp of (* specified floating point *)
       string
-  | HIEfor of (* for-loop *)
-      (hiexp(*init*), hiexp(*test*), hiexp(*post*), hiexp(*body*))
   | HIEfreeat of (* memory deallocation *)
       hiexp
   | HIEif of (* conditional *)
@@ -360,6 +358,8 @@ and hiexp_node =
       (hipatlst, hiexp)
   | HIElet of (* let-expression *)
       (hideclst, hiexp)
+  | HIEloop of (* for-loop *)
+      (hiexpopt(*init*), hiexp(*test*), hiexpopt(*post*), hiexp(*body*))
   | HIEloopexn of (* local jump *)
       int (* break: 0 and continue: 1 *)
   | HIElst of (* list expression *)
@@ -397,8 +397,6 @@ and hiexp_node =
       (hiexp, hiclaulst)
   | HIEvar of (* variable *)
       d2var_t
-  | HIEwhile of (* while-loop *)
-      (hiexp (*test*), hiexp (*body*))
 
 and labhiexplst =
   | LABHIEXPLSTcons of (lab_t, hiexp, labhiexplst)
@@ -584,15 +582,6 @@ fun hiexp_fix
 fun hiexp_float (_: loc_t, _: hityp, _: string): hiexp
 fun hiexp_floatsp (_: loc_t, _: hityp, _: string): hiexp
 
-fun hiexp_for (
-    _: loc_t
-  , _: hityp
-  , _init: hiexp
-  , _test: hiexp
-  , _post: hiexp
-  , _body: hiexp
-  ) : hiexp
-
 fun hiexp_freeat (_: loc_t, _: hityp, _: hiexp): hiexp
 
 fun hiexp_if
@@ -610,7 +599,20 @@ fun hiexp_lam
 
 fun hiexp_let (_: loc_t, _: hityp, _: hideclst, _: hiexp): hiexp
 
+(* ****** ****** *)
+
+fun hiexp_loop (
+    _: loc_t
+  , _: hityp
+  , _init: hiexpopt
+  , _test: hiexp
+  , _post: hiexpopt
+  , _body: hiexp
+  ) : hiexp
+
 fun hiexp_loopexn (_: loc_t, _: hityp, i: int): hiexp
+
+(* ****** ****** *)
 
 fun hiexp_lst
   (_: loc_t, _lst: hityp, lin: int, _elt: hityp, _: hiexplst)
@@ -660,9 +662,6 @@ fun hiexp_trywith
   (_: loc_t, _: hityp, _: hiexp, _: hiclaulst): hiexp
 
 fun hiexp_var (_: loc_t, _: hityp, _: d2var_t): hiexp
-
-fun hiexp_while
-  (_: loc_t, _: hityp, _test: hiexp, _body: hiexp): hiexp
 
 (* ****** ****** *)
 

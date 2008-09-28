@@ -795,14 +795,6 @@ in
     in
       hiexp_empty (loc0, hit0)
     end
-  | D3Efor (init, test, post, body) => let
-      val init = d3exp_tr init
-      val test = d3exp_tr test
-      val post = d3exp_tr post
-      val body = d3exp_tr body
-    in
-      hiexp_for (loc0, hityp_void, init, test, post, body)
-    end // end of [D3Efor]
   | D3Efreeat d3e => let
       val hit0 = s2exp_tr (0(*deep*), s2e0)
     in
@@ -858,6 +850,14 @@ in
     in
       hiexp_let_simplify (loc0, hit0, hids, hie)
     end // end of [D3Elet]
+  | D3Eloop (init, test, post, body) => let
+      val init = d3expopt_tr init
+      val test = d3exp_tr test
+      val post = d3expopt_tr post
+      val body = d3exp_tr body
+    in
+      hiexp_loop (loc0, hityp_void, init, test, post, body)
+    end // end of [D3Eloop]
   | D3Eloopexn i => let
       val hit0 = s2exp_tr (0(*deep*), s2e0)
     in
@@ -998,12 +998,6 @@ in
       prerr_newline ();
       $Err.abort {hiexp} ()
     end
-  | D3Ewhile (d3e_test, d3e_body) => let
-      val hie_test = d3exp_tr d3e_test
-      val hie_body = d3exp_tr d3e_body
-    in
-      hiexp_while (loc0, hityp_void, hie_test, hie_body)
-    end
   | D3Ewhere (d3e, d3cs) => let
       val hit0 = s2exp_tr (0(*deep*), s2e0)
       val hids = d3eclst_tr d3cs; val hie = d3exp_tr d3e
@@ -1014,6 +1008,10 @@ in
 end // end of [d3exp_tr]
 
 implement d3explst_tr (d3es) = $Lst.list_map_fun (d3es, d3exp_tr)
+
+implement d3expopt_tr (od3e) = begin case+ od3e of
+  | Some d3e => Some (d3exp_tr d3e) | None () => None ()
+end // end of [d3expopt_tr]
 
 (* ****** ****** *)
 

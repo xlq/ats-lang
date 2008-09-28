@@ -302,7 +302,8 @@ fun funentry_lablst_add (fl: funlab_t): void
 (* ****** ****** *)
 
 fun loopexnlablst_pop (): void
-fun loopexnlablst_push (tl_brk: tmplab_t, tl_cnt: tmplab_t): void
+fun loopexnlablst_push
+  (tl_init: tmplab_t, tl_fini: tmplab_t, tl_cont: tmplab_t): void
 fun loopexnlablst_get (i: int): tmplab_t
 
 (* ****** ****** *)

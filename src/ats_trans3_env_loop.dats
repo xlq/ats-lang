@@ -94,8 +94,8 @@ implement the_lamloop_env_push_loop0 () = begin
 end // end of [the_lamloop_env_push_loop0]
 
 implement the_lamloop_env_push_loop1
-  (sbis, sac_init, sac_exit) = begin
-  the_lamloop_env_push (LMLPloop1 (sbis, sac_init, sac_exit))
+  (sbis, sac_init, sac_exit, post) = begin
+  the_lamloop_env_push (LMLPloop1 (sbis, sac_init, sac_exit, post))
 end // end of [the_lamloop_env_push_loop1]
 
 (* ****** ****** *)

@@ -1407,19 +1407,59 @@ in
       emit_valprim_select_var (pf | out, vp_var, offs);
       fprint (pf | out, " ;")
     end // end of [INSTRload_var_offs]
+//
+  | INSTRloop (
+      tl_init, tl_fini, tl_cont
+    , inss_init
+    , vp_test, inss_test
+    , inss_post
+    , inss_body
+    ) => let
+      val () = fprint (pf | out, "/* loop initialization */\n")
+      val () = emit_instrlst (pf | out, inss_init)
+      val () = fprint (pf | out, "\n")
+      val ispost = $Lst.list_is_cons inss_post // this is a for loop
+      val () = fprint (pf | out, "ats_loop_beg_mac(")
+      val () = emit_tmplab (pf | out, tl_init)
+      val () = fprint (pf | out, ")\n")
+      val () = emit_instrlst (pf | out, inss_test)
+      val () = fprint (pf | out, '\n')
+      val () = fprint (pf | out, "if (!")
+      val () = emit_valprim (pf | out, vp_test)
+      val () = fprint (pf | out, ") break ;\n")
+      val () = emit_instrlst (pf | out, inss_body)
+      val () = fprint (pf | out, '\n')
+      val () = if ispost then let
+        val () = fprint (pf | out, "/* post update before continue */\n")
+        val () = emit_tmplab (pf | out, tl_cont)
+        val () = fprint (pf | out, ":\n")
+        val () = emit_instrlst (pf | out, inss_post)
+        val () = fprint (pf | out, "\n")
+      in
+        // empty
+      end // end of [if]
+      val () = fprint (pf | out, "ats_loop_end_mac(")
+      val () = emit_tmplab (pf | out, tl_init)
+      val () = fprint (pf | out, ", ")
+      val () = emit_tmplab (pf | out, tl_fini)
+      val () = fprint (pf | out, ")")
+    in
+      // empty
+    end // end of [INSTRloop]
   | INSTRloopexn (_(*knd*), tl) => begin
       fprint (pf | out, "goto ");
       emit_tmplab (pf | out, tl);
       fprint (pf | out, " ;")
-    end
+    end // end of [INSTRloopexn]
+//
   | INSTRmove_arg (arg, vp) => begin
       fprintf (pf | out, "arg%i = ", @(arg));
       emit_valprim (pf | out, vp);
       fprint (pf | out, " ;")
-    end
+    end // end of [INSTRmove_arg]
   | INSTRmove_con (tmp, hit_sum, d2c, vps) => begin
       emit_move_con (pf | out, tmp, hit_sum, d2c, vps)
-    end
+    end // end of [INSTRmove_con]
   | INSTRmove_rec_box (tmp, hit_rec, lvps) => let
       fun aux (
           out: &FILE m, tmp: tmpvar_t, lvps: labvalprimlst
@@ -1591,25 +1631,6 @@ in
       emit_tmpvar (pf | out, tmp);
       fprint (pf | out, " ; */")
     end // end of [INSTRvardec]
-  | INSTRwhile (tl_brk, tl_cnt, vp_test, inss_test, inss_body) => let
-      val () = fprint (pf | out, "ats_while_beg_mac(")
-      val () = emit_tmplab (pf | out, tl_cnt)
-      val () = fprint (pf | out, ")\n")
-      val () = emit_instrlst (pf | out, inss_test)
-      val () = fprint (pf | out, '\n')
-      val () = fprint (pf | out, "if (!")
-      val () = emit_valprim (pf | out, vp_test)
-      val () = fprint (pf | out, ") break ;\n")
-      val () = emit_instrlst (pf | out, inss_body)
-      val () = fprint (pf | out, '\n')
-      val () = fprint (pf | out, "ats_while_end_mac(")
-      val () = emit_tmplab (pf | out, tl_brk)
-      val () = fprint (pf | out, ", ")
-      val () = emit_tmplab (pf | out, tl_cnt)
-      val () = fprint (pf | out, ")")
-    in
-      // empty
-    end // end of [INSTRwhile]
   | _ => begin
       prerr "Internal Error: emit_instr: ins = "; prerr ins; prerr_newline ();
       $Err.abort {void} ()

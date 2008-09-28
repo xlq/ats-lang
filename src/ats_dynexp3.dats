@@ -436,18 +436,6 @@ implement d3exp_foldat (loc, d3e) =  '{
 , d3exp_node= D3Efoldat d3e
 }
 
-implement d3exp_for
-  (loc, d3e_init, d3e_test, d3e_post, d3e_body) = let
-  val s2fe = d3e_init.d3exp_eff
-  val s2fe = d3exp_eff_union (s2fe, d3e_test)
-  val s2fe = d3exp_eff_union (s2fe, d3e_post)
-  val s2fe = d3exp_eff_union (s2fe, d3e_body)
-in '{
-  d3exp_loc= loc
-, d3exp_eff= s2fe, d3exp_typ= s2exp_void_t0ype ()
-, d3exp_node= D3Efor (d3e_init, d3e_test, d3e_post, d3e_body)
-} end // end of [d3exp_for]
-
 implement d3exp_freeat (loc, d3e) = '{
   d3exp_loc= loc
 , d3exp_eff= S2EFFnil (), d3exp_typ= s2exp_void_t0ype ()
@@ -506,11 +494,29 @@ in '{
 , d3exp_node= D3Elet (d3cs, d3e)
 } end // end of [d3exp_let]
 
+(* ****** ****** *)
+
+implement d3exp_loop
+  (loc, od3e_init, d3e_test, od3e_post, d3e_body) = let
+  val s2fe = case+ od3e_init of
+    | None () => S2EFFnil () | Some d3e => d3e.d3exp_eff
+  val s2fe = d3exp_eff_union (s2fe, d3e_test)
+  val s2fe = case+ od3e_post of
+    | None () => s2fe | Some d3e => d3exp_eff_union (s2fe, d3e)
+  val s2fe = d3exp_eff_union (s2fe, d3e_body)
+in '{
+  d3exp_loc= loc
+, d3exp_eff= s2fe, d3exp_typ= s2exp_void_t0ype ()
+, d3exp_node= D3Eloop (od3e_init, d3e_test, od3e_post, d3e_body)
+} end // end of [d3exp_for]
+
 implement d3exp_loopexn (loc, knd) = '{
   d3exp_loc= loc
 , d3exp_eff= S2EFFnil (), d3exp_typ= s2exp_void_t0ype ()
 , d3exp_node= D3Eloopexn knd
 } // end of [d3exp_loopexn]
+
+(* ****** ****** *)
 
 implement d3exp_lst (loc, s2e_lst, lin, s2e_elt, d3es_elt) = let
   val s2fe = d3explst_eff_union (S2EFFnil (), d3es_elt)
@@ -705,15 +711,6 @@ in '{
 , d3exp_eff= s2fe, d3exp_typ= d3e.d3exp_typ
 , d3exp_node= D3Ewhere (d3e, d3cs)
 } end // end of [d3exp_where]
-
-implement d3exp_while (loc, d3e_test, d3e_body) = let
-  val s2fe = d3e_test.d3exp_eff
-  val s2fe = d3exp_eff_union (s2fe, d3e_body)
-in '{
-  d3exp_loc= loc
-, d3exp_eff= s2fe, d3exp_typ= s2exp_void_t0ype ()
-, d3exp_node= D3Ewhile (d3e_test, d3e_body)
-} end // end of [d3exp_while]
 
 (* ****** ****** *)
 

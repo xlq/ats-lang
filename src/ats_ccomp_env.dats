@@ -1204,7 +1204,9 @@ end // end of [local]
 local
 
 dataviewtype loopexnlablst =
-  | LOOPEXNLABLSTcons of (tmplab_t, tmplab_t, loopexnlablst)
+  | LOOPEXNLABLSTcons of (
+      tmplab_t(*init*), tmplab_t(*fini*), tmplab_t(*cont*), loopexnlablst
+    )
   | LOOPEXNLABLSTnil
 
 val the_loopexnlablst =
@@ -1212,11 +1214,11 @@ val the_loopexnlablst =
 
 in
 
-implement loopexnlablst_push (tl_brk, tl_cnt) = let
+implement loopexnlablst_push (tl_init, tl_fini, tl_cont) = let
   val (pfbox | p) = ref_get_view_ptr (the_loopexnlablst)
   prval vbox pf = pfbox
 in
-  !p := LOOPEXNLABLSTcons (tl_brk, tl_cnt, !p)
+  !p := LOOPEXNLABLSTcons (tl_init, tl_fini, tl_cont, !p)
 end // end of [loopexnlablst_push]
 
 implement loopexnlablst_pop () = let
@@ -1226,7 +1228,7 @@ implement loopexnlablst_pop () = let
     prval vbox pf = pfbox
   in
     case+ !p of
-    | ~LOOPEXNLABLSTcons (_, _, tls) => (!p := tls)
+    | ~LOOPEXNLABLSTcons (_, _, _, tls) => (!p := tls)
     | LOOPEXNLABLSTnil () => (fold@ (!p); err := 1)
   end
 in
@@ -1247,8 +1249,10 @@ implement loopexnlablst_get (i) = let
   prval vbox pf = pfbox
 in
   case+ !p of
-  | LOOPEXNLABLSTcons (tl_brk, tl_cnt, _) =>
-      (fold@ (!p); if i = 0 then tl_brk else tl_cnt)
+  | LOOPEXNLABLSTcons
+      (_(*init*), tl_fini, tl_cont, _) => begin
+      fold@ (!p); if i = 0 then tl_fini else tl_cont
+    end // end of [LOOPEXNLABLSTcons]
   | LOOPEXNLABLSTnil () =>
       (fold@ (!p); $effmask_all (tmplab_gen ()))
 end // end of [loopexnlablst_get]

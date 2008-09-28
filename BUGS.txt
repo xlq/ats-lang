@@ -9,14 +9,18 @@
 
 Wednesday, June 25, 2008 (HX)
 
-STATUS: Not yet fixed.
+STATUS: Fixed on September 28, 2008
 
 Note that the handling of [continue] in a for-loop was incorrectly
 conceived. After [continue], [post] section needs to be evaluated first
 before jumping to the beginning of the loop. This means that some functions
 in [ats_trans3_loop.dats] need to be modified appropriately.
 
-------
+Please find some typical uses of [for] loops inn the following file:
+
+EXAMPLE/SHOOTOUT/SUBMIT/spectral-norm2.dats
+
+######
 
 Thursay, September 25, 2008 (HX)
 

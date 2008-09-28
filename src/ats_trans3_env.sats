@@ -426,11 +426,17 @@ fun staftscstr_stbefitemlst_update {n:nat}
 
 absview lamloop_env_token
 
+//
+// [LMLPloop0]: for the first round typechecking
+// [LMLPloop1]: for the second round typechekcing
+//
+// The break/continue statements are skipped during the first round.
+//
 datatype lamloop =
   | LMLPlam of p3atlst (* function arguments *)
   | LMLPloop0 
   | {n:nat} LMLPloop1 of (* sbis, sac_init, sac_exit *)
-      (stbefitemlst n, staftscstr_t n, staftscstr_t n)
+      (stbefitemlst n, staftscstr_t n, staftscstr_t n, d2expopt)
   | LMLPnone
 
 fun the_lamloop_env_top (): lamloop
@@ -440,9 +446,12 @@ fun the_lamloop_env_pop (pf: lamloop_env_token | (*none*)): void
 fun the_lamloop_env_push_lam (arg: p3atlst): (lamloop_env_token | void)
 
 fun the_lamloop_env_push_loop0 () : (lamloop_env_token | void)
-fun the_lamloop_env_push_loop1 {n:nat}
-  (sbis: stbefitemlst n, sac_init: staftscstr_t n, sac_exit: staftscstr_t n)
-  : (lamloop_env_token | void)
+fun the_lamloop_env_push_loop1 {n:nat} (
+    sbis: stbefitemlst n
+  , sac_init: staftscstr_t n
+  , sac_exit: staftscstr_t n
+  , post: d2expopt
+  ) : (lamloop_env_token | void)
 
 fun the_lamloop_env_arg_get (loc0: loc_t): Option_vt (p3atlst)
 

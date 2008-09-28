@@ -222,8 +222,6 @@ and d3exp_node =
   | D3Efloat of string (* dynamic float *)
   | D3Efloatsp of string (* dynamic float *)
   | D3Efoldat of d3exp (* linear datatype folding *)
-  | D3Efor of (* for-loop *)
-      (d3exp(*init*), d3exp(*test*), d3exp(*post*), d3exp(*body*))
   | D3Efreeat of d3exp (* linear datatype freeing *)
   | D3Eif of (* conditional expression *)
       (d3exp(*cond*), d3exp(*then*), d3exp(*else*))
@@ -239,6 +237,8 @@ and d3exp_node =
       (s2varlst, s2explst, d3exp)
   | D3Elet of // dynamic let-expression
       (d3eclst, d3exp)
+  | D3Eloop of (* for-loop *)
+      (d3expopt(*init*), d3exp(*test*), d3expopt(*post*), d3exp(*body*))
   | D3Eloopexn of (* loop exception: 0/1: break/continue *)
       int
   | D3Elst of (* list expression *)
@@ -288,8 +288,6 @@ and d3exp_node =
   | D3Eviewat_var of (* viewat access through a variable *)
       (d2var_t, d3lab1lst, d2var_t(*viewroot*), s2lablst(*viewpath*))
   | D3Ewhere of (d3exp, d3eclst)
-  | D3Ewhile of (* while-loop *)
-      (d3exp(*test*), d3exp(*body*))
 
 and labd3explst =
   | LABD3EXPLSTnil
@@ -508,9 +506,6 @@ fun d3exp_floatsp (_: loc_t, _: s2exp, f: string): d3exp
 
 fun d3exp_foldat (_: loc_t, _: d3exp): d3exp
 
-fun d3exp_for
-  (_: loc_t, init: d3exp, test: d3exp, post: d3exp, body: d3exp): d3exp
-
 fun d3exp_freeat (_: loc_t, _: d3exp): d3exp
 
 fun d3exp_extval (_: loc_t, _: s2exp, code: string): d3exp
@@ -533,7 +528,14 @@ fun d3exp_lam_sta
 
 fun d3exp_let (_: loc_t, _: d3eclst, _: d3exp): d3exp
 
+(* ****** ****** *)
+
+fun d3exp_loop
+  (_: loc_t, init: d3expopt, test: d3exp, post: d3expopt, body: d3exp): d3exp
+
 fun d3exp_loopexn (_: loc_t, knd: int): d3exp
+
+(* ****** ****** *)
 
 fun d3exp_lst
   (_: loc_t, _lst: s2exp, lin: int, elt: s2exp, elts: d3explst): d3exp
@@ -599,8 +601,6 @@ fun d3exp_viewat_assgn_var
 //
 
 fun d3exp_where (_: loc_t, _: d3exp, _: d3eclst): d3exp
-
-fun d3exp_while (_: loc_t, test: d3exp, body: d3exp): d3exp
 
 (* ****** ****** *)
 

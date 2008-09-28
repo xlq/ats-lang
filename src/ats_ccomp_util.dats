@@ -195,6 +195,15 @@ in
   | INSTRload_ptr_offs (tmp, _, _) => tmpvarmap_add_root (m, tmp)
   | INSTRload_var (tmp, _) => tmpvarmap_add_root (m, tmp)
   | INSTRload_var_offs (tmp, _, _) => tmpvarmap_add_root (m, tmp)
+  | INSTRloop (
+      _(*lab*), _(*lab*), _(*lab*)
+    , inss_init, _, inss_test, inss_post, inss_body
+    ) => begin
+      instrlst_tmpvarmap_add (m, inss_init);
+      instrlst_tmpvarmap_add (m, inss_test);
+      instrlst_tmpvarmap_add (m, inss_post);
+      instrlst_tmpvarmap_add (m, inss_body);
+    end // end of [INSTRloop]
   | INSTRmove_con (tmp, _, _, _) => tmpvarmap_add_root (m, tmp)
   | INSTRmove_rec_box (tmp, _, _) => tmpvarmap_add_root (m, tmp)
   | INSTRmove_rec_flt (tmp, _, _) => tmpvarmap_add_root (m, tmp)
@@ -212,10 +221,6 @@ in
       tmpvarmap_add_root (m, tmp_exn); aux_branchlst (m, brs)
     end // end of [INSTRtrywith]
   | INSTRvardec (tmp) => tmpvarmap_add (m, tmp)
-  | INSTRwhile (_, _, _, inss_test, inss_body) => begin
-      instrlst_tmpvarmap_add (m, inss_test);
-      instrlst_tmpvarmap_add (m, inss_body);
-    end
   | _ => ()
 end // end of [instr_tmpvarmap_add]
 

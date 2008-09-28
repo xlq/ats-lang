@@ -59,6 +59,7 @@ fun p3atlst_tr (p3ts: p3atlst): hipatlst
 
 fun d3exp_tr (d3e: d3exp): hiexp
 fun d3explst_tr (d3es: d3explst): hiexplst
+fun d3expopt_tr (od3e: d3expopt): hiexpopt
 
 (* ****** ****** *)
 

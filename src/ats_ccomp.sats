@@ -399,6 +399,15 @@ datatype instr =
   | INSTRload_var of (tmpvar_t, valprim)
   | INSTRload_var_offs of (tmpvar_t, valprim, offsetlst)
 
+  | INSTRloop of ( // loop
+      tmplab_t(*init*)
+    , tmplab_t(*fini*)
+    , tmplab_t(*cont*)
+    , instrlst(*init*)
+    , valprim(*test*), instrlst(*test*)
+    , instrlst(*post*)
+    , instrlst(*body*)
+    ) // end of [INSTRloop]
   | INSTRloopexn of
       (int (*0/1: break/continue*), tmplab_t)
 
@@ -441,8 +450,6 @@ datatype instr =
   | INSTRtmplabint of (tmplab_t, int)
   | INSTRtrywith of (instrlst, tmpvar_t, branchlst)
   | INSTRvardec of tmpvar_t
-  | INSTRwhile of (* while loop *)
-      (tmplab_t(*brk*), tmplab_t(*cnt*), valprim, instrlst, instrlst)
 
 where instrlst = List instr
 
@@ -536,6 +543,18 @@ fun instr_add_load_var_offs
 
 //
 
+fun instr_add_loop (
+    res: &instrlst_vt
+  , lab_init: tmplab_t
+  , lab_fini: tmplab_t
+  , lab_cont: tmplab_t
+  , inss_init: instrlst
+  , vp_test: valprim
+  , inss_test: instrlst
+  , inss_post: instrlst
+  , inss_body: instrlst
+  ) : void
+
 fun instr_add_loopexn (res: &instrlst_vt, knd: int, tl: tmplab_t): void
 
 //
@@ -598,15 +617,6 @@ fun instr_add_trywith
   : void
 
 fun instr_add_vardec (res: &instrlst_vt, tmp: tmpvar_t): void
-
-fun instr_add_while (
-    res: &instrlst_vt
-  , lab_brk: tmplab_t
-  , lab_cnt: tmplab_t
-  , vp_test: valprim
-  , inss_test: instrlst
-  , inss_body: instrlst
-  ) : void
 
 (* ****** ****** *)
 

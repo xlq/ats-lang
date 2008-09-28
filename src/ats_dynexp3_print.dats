@@ -282,17 +282,6 @@ implement fprint_d3exp (pf | out, d3e) = begin
       fprint (pf | out, d3e);
       fprint (pf | out, ")")
     end
-  | D3Efor (d3e_init, d3e_test, d3e_post, d3e_body) => begin
-      fprint (pf | out, "D3Efor(");
-      fprint (pf | out, d3e_init);
-      fprint (pf | out, "; ");
-      fprint (pf | out, d3e_test);
-      fprint (pf | out, "; ");
-      fprint (pf | out, d3e_post);
-      fprint (pf | out, "; ");
-      fprint (pf | out, d3e_body);
-      fprint (pf | out, ")")
-    end
   | D3Efreeat d3e => begin
       fprint (pf | out, "D3Efreeat(");
       fprint (pf | out, d3e);
@@ -345,6 +334,17 @@ implement fprint_d3exp (pf | out, d3e) = begin
       fprint (pf | out, "...");
       fprint (pf | out, "; ");
       fprint (pf | out, d3e);
+      fprint (pf | out, ")")
+    end
+  | D3Eloop (od3e_init, d3e_test, od3e_post, d3e_body) => begin
+      fprint (pf | out, "D3Eloop(");
+      case+ od3e_init of None () => () | Some d3e => fprint (pf | out, d3e);
+      fprint (pf | out, "; ");
+      fprint (pf | out, d3e_test);
+      fprint (pf | out, "; ");
+      case+ od3e_post of None () => () | Some d3e => fprint (pf | out, d3e);
+      fprint (pf | out, "; ");
+      fprint (pf | out, d3e_body);
       fprint (pf | out, ")")
     end
   | D3Eloopexn i => begin
@@ -503,12 +503,6 @@ implement fprint_d3exp (pf | out, d3e) = begin
       fprint (pf | out, d3e);
       fprint (pf | out, "; ");
       fprint (pf | out, "...");
-      fprint (pf | out, ")")
-    end
-  | D3Ewhile (d3e_test, d3e_body) => begin
-      fprint (pf | out, "D3Ewhile(");
-      fprint (pf | out, d3e_test);
-      fprint (pf | out, d3e_body);
       fprint (pf | out, ")")
     end
 (*

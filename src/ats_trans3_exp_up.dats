@@ -1959,6 +1959,11 @@ val d3e0: d3exp = case+ d2e0.d2exp_node of
   | D2Eempty () => d3exp_empty (loc0, s2exp_void_t0ype ())
   | D2Eextval (s2e, code) => d3exp_extval (loc0, s2e, code)
   | D2Efoldat (s2as, d2e_at) => d2exp_foldat_tr_up (loc0, s2as, d2e_at)
+  | D2Efor (lpi2nv, d2e_init, d2e_test, d2e_post, d2e_body) => begin
+      d2exp_loop_tr_up (
+        loc0, lpi2nv, Some d2e_init, d2e_test, Some d2e_post, d2e_body
+      ) // end of [d2exp_loop_tr_up]
+    end // end of [D2Efor]
   | D2Efreeat (s2as, d2e_at) => d2exp_freeat_tr_up (loc0, s2as, d2e_at)
   | D2Eif (res, d2e_cond, d2e_then, od2e_else) => let
       val s2e_if: s2exp = case+ od2e_else of
@@ -2211,9 +2216,9 @@ val d3e0: d3exp = case+ d2e0.d2exp_node of
     in
       d3exp_where (loc0, d3e, d3cs)
     end
-  | D2Ewhile (lpi2nv, d2e_test, d2e_body) => begin
-      d2exp_while_tr_up (loc0, lpi2nv, d2e_test, d2e_body)
-    end
+  | D2Ewhile (lpi2nv, d2e_test, d2e_body) => d2exp_loop_tr_up
+      (loc0, lpi2nv, None(*init*), d2e_test, None(*post*), d2e_body)
+    // end of [D2Ewhile]
   | _ => begin
       $Loc.prerr_location loc0;
       prerr ": d2exp_tr_up: not implemented yet: d2e0 = ";

@@ -528,6 +528,21 @@ end // end of [instr_add_load_var_offs]
 
 //
 
+implement instr_add_loop (
+    res
+  , lab_init, lab_fini, lab_cont
+  , inss_init
+  , vp_test, inss_test
+  , inss_post
+  , inss_body
+  ) = let
+  val ins = INSTRloop (
+    lab_init, lab_fini, lab_cont, inss_init, vp_test, inss_test, inss_post, inss_body
+  ) // end of [INSTRloop]
+in
+  res := list_vt_cons (ins, res)
+end // end of [instr_add_loop]
+
 implement instr_add_loopexn (res, knd, tl) = 
   res := list_vt_cons (INSTRloopexn (knd, tl), res)
 
@@ -609,12 +624,6 @@ implement instr_add_trywith (res, res_try, tmp_exn, brs) =
 
 implement instr_add_vardec (res, tmp) =
   res := list_vt_cons (INSTRvardec tmp, res)
-
-implement instr_add_while
-  (res, lab_brk, lab_cnt, vp_test, inss_test, inss_body) = begin
-  res := list_vt_cons
-    (INSTRwhile (lab_brk, lab_cnt, vp_test, inss_test, inss_body), res)
-end // end of [instr_add_while]
 
 (* ****** ****** *)
 

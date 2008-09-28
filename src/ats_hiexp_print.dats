@@ -361,11 +361,6 @@ implement fprint_hiexp (pf | out, hie0) = begin
       fprint (pf | out, str);
       fprint (pf | out, ")")
     end
-  | HIEfor _ => begin
-      fprint (pf | out, "HIEfor(");
-      fprint (pf | out, "...");
-      fprint (pf | out, ")")
-    end
   | HIEfreeat hie => begin
       fprint (pf | out, "HIEfreeat(");
       fprint (pf | out, hie);
@@ -402,6 +397,17 @@ implement fprint_hiexp (pf | out, hie0) = begin
       fprint (pf | out, "...");
       fprint (pf | out, "; ");
       fprint (pf | out, hie);
+      fprint (pf | out, ")")
+    end
+  | HIEloop (ohie_init, hie_test, ohie_post, hie_body) => begin
+      fprint (pf | out, "HIEloop(");
+      case+ ohie_post of None () => () | Some hie => fprint (pf | out, hie);
+      fprint (pf | out, "; ");
+      fprint (pf | out, hie_test);
+      fprint (pf | out, "; ");
+      case+ ohie_post of None () => () | Some hie => fprint (pf | out, hie);
+      fprint (pf | out, "; ");
+      fprint (pf | out, hie_body);
       fprint (pf | out, ")")
     end
   | HIEloopexn i => begin
@@ -517,13 +523,6 @@ implement fprint_hiexp (pf | out, hie0) = begin
   | HIEvar d2v => begin
       fprint (pf | out, "HIEvar(");
       fprint (pf | out, d2v);
-      fprint (pf | out, ")")
-    end
-  | HIEwhile (hie_test, hie_body) => begin
-      fprint (pf | out, "HIEwhile(");
-      fprint (pf | out, hie_test);
-      fprint (pf | out, "; ");
-      fprint (pf | out, hie_body);
       fprint (pf | out, ")")
     end
 end // end of [fprint_hiexp]

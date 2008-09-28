@@ -27,19 +27,19 @@ implement main (argc, argv) = let
   val () = $Rand.srand48_with_time ()
   val passwd = array_make_elt<char> (n, '\000')
   val () = loop (n, 0) where {
-    fun loop {i:nat | i <= n}
+    fun loop {i:nat | i <= n} .<n-i>.
       (n: int n, i: int i):<cloref1> void =
       if (i < n) then let
         val c = char_of_int ($Rand.randint (94) + 33)
       in
         passwd[i] := c; loop (n, i+1)
       end
-  }
+  } // end of [where]
   val () = loop (n, 0) where {
-    fun loop {i:nat | i <= n}
+    fun loop {i:nat | i <= n} .<n-i>.
       (n: int n, i: int i):<cloref1> void =
       if (i < n) then (print passwd[i]; loop (n, i+1))
-  }
+  } // end of [where]
   val () = print_newline ()
 in
   // empty

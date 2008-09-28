@@ -151,10 +151,12 @@ fun d2exp_var_tr_up (_: $Loc.location_t, d2v: $DEXP2.d2var_t): d3exp
 // 0/1: break/continue
 fun d2exp_loopexn_tr_up (_: $Loc.location_t, i: int): d3exp
 
-fun d2exp_while_tr_up (
+fun d2exp_loop_tr_up (
     _: $Loc.location_t
   , _inv: $DEXP2.loopi2nv
+  , _init: $DEXP2.d2expopt
   , _test: $DEXP2.d2exp
+  , _post: $DEXP2.d2expopt
   , _body: $DEXP2.d2exp
   ) : d3exp
 

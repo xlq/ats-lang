@@ -1208,23 +1208,46 @@ end // end of [ccomp_exp_var]
 
 (* ****** ****** *)
 
-fn ccomp_exp_while (
+fn ccomp_exp_loop (
     res: &instrlst_vt
+  , ohie_init: hiexpopt
   , hie_test: hiexp
+  , ohie_post: hiexpopt
   , hie_body: hiexp
   ) : void = let
-  val lab_brk = tmplab_make () and lab_cnt = tmplab_make ()
-  val () = loopexnlablst_push (lab_brk, lab_cnt)
+  var res_init : instrlst_vt = list_vt_nil ()
+  val () = begin case+ ohie_init of
+    | Some hie => begin
+        let val _(*void*) = ccomp_exp (res_init, hie) in () end
+      end // end of [Some]
+    | None () => ()
+  end // end of [val]
+  val res_init = $Lst.list_vt_reverse_list res_init
+  val lab_init = tmplab_make () and lab_fini = tmplab_make ()
+  val lab_cont = (
+    case+ ohie_post of | Some _ => tmplab_make () | _ => lab_init
+  ) : tmplab_t
+  val () = loopexnlablst_push (lab_init, lab_fini, lab_cont)
   var res_test : instrlst_vt = list_vt_nil ()
   val vp_test = ccomp_exp (res_test, hie_test)
   val res_test = $Lst.list_vt_reverse_list res_test
+  var res_post : instrlst_vt = list_vt_nil ()
+  val () = begin case+ ohie_post of
+    | Some hie => begin
+        let val _(*void*) = ccomp_exp (res_post, hie) in () end
+      end // end of [Some]
+    | None () => ()
+  end // end of [val]
+  val res_post = $Lst.list_vt_reverse_list res_post
   var res_body : instrlst_vt = list_vt_nil ()
   val _(*void*) = ccomp_exp (res_body, hie_body)
   val res_body = $Lst.list_vt_reverse_list res_body
   val () = loopexnlablst_pop ()
 in
-  instr_add_while (res, lab_brk, lab_cnt, vp_test, res_test, res_body)
-end // end of [ccomp_exp_while]
+  instr_add_loop (
+    res, lab_init, lab_fini, lab_cont, res_init, vp_test, res_test, res_post, res_body
+  ) // end of [instr_add_loop]
+end // end of [ccomp_exp_loop]
 
 (* ****** ****** *)
 
@@ -1354,11 +1377,11 @@ in
       end // end of [_ when ...]
     | _ => ccomp_exp_var (d2v)
     end // end of [HIEvar]
-  | HIEwhile (hie_test, hie_body) => let
-      val () = ccomp_exp_while (res, hie_test, hie_body)
+  | HIEloop (ohie_init, hie_test, ohie_post, hie_body) => let
+      val () = ccomp_exp_loop (res, ohie_init, hie_test, ohie_post, hie_body)
     in
       valprim_void ()
-    end // end of [HIEwhile]
+    end // end of [HIEloop]
   | _ => let
       val hit0 = hityp_normalize (hie0.hiexp_typ)
 (*
@@ -1903,9 +1926,12 @@ in
     in
       // empty
     end
+  | HIEloop (ohie_init, hie_test, ohie_post, hie_body) => begin
+      ccomp_exp_loop (res, ohie_init, hie_test, ohie_post, hie_body)
+    end // end of [HIEloop]
   | HIEloopexn (knd) => begin
       instr_add_loopexn (res, knd, loopexnlablst_get knd)
-    end
+    end // end of [HIEloopexn]
   | HIElst (knd, hit_elt, hies) => let
       val hit_elt = hityp_normalize (hit_elt)
     in
@@ -1971,9 +1997,6 @@ in
     end // end of [HIEtrywith]
   | HIEvar d2v => begin
       instr_add_move_val (res, tmp_res, ccomp_exp_var (d2v))
-    end
-  | HIEwhile (hie_test, hie_body) => begin
-      ccomp_exp_while (res, hie_test, hie_body)
     end
   | _ => begin
       $Loc.prerr_location (hie0.hiexp_loc);

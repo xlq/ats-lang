@@ -495,6 +495,9 @@ implement fprint_instr (pf | out, ins) = begin
       fprint_offsetlst (pf | out, offs);
       fprint (pf | out, ")")
     end
+  | INSTRloop _ => begin
+      fprint (pf | out, "INSTRloop(...)")
+    end
   | INSTRloopexn (knd, tl) => begin
       fprint (pf | out, "INSTRloopexn(");
       fprint_int (pf | out, knd);
@@ -658,9 +661,6 @@ implement fprint_instr (pf | out, ins) = begin
       fprint (pf | out, "INSTRvardec(");
       fprint_tmpvar (pf | out, tmp);
       fprint (pf | out, ")")
-    end
-  | INSTRwhile _ => begin
-      fprint (pf | out, "INSTRwhile(...)")
     end
 (*
   | _ => begin

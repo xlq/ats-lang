@@ -357,12 +357,6 @@ implement hiexp_floatsp (loc, hit, str) = '{
   hiexp_loc= loc, hiexp_node= HIEfloatsp str, hiexp_typ= hit
 }
 
-implement hiexp_for (loc, hit, _init, _test, _post, _body) = '{
-  hiexp_loc= loc
-, hiexp_node= HIEfor (_init, _test, _post, _body)
-, hiexp_typ= hit
-} // end of [hiexp_for]
-
 implement hiexp_freeat (loc, hit, hie) = '{
   hiexp_loc= loc, hiexp_node= HIEfreeat hie, hiexp_typ= hit
 }
@@ -391,9 +385,19 @@ implement hiexp_let (loc, hit, hids, hie) = '{
   hiexp_loc= loc, hiexp_node= HIElet (hids, hie), hiexp_typ= hit
 }
 
+(* ****** ****** *)
+
+implement hiexp_loop (loc, hit, _init, _test, _post, _body) = '{
+  hiexp_loc= loc
+, hiexp_node= HIEloop (_init, _test, _post, _body)
+, hiexp_typ= hit
+} // end of [hiexp_loop]
+
 implement hiexp_loopexn (loc, hit, i) = '{
   hiexp_loc= loc, hiexp_node= HIEloopexn i, hiexp_typ= hit
-}
+} // end of [hiexp_loopexn]
+
+(* ****** ****** *)
 
 implement hiexp_lst (loc, hit, lin, hit_elt, hies_elt) = '{
   hiexp_loc= loc
@@ -496,12 +500,6 @@ implement hiexp_trywith (loc, hit, hie, hicls) = '{
 implement hiexp_var (loc, hit, d2v) = '{
   hiexp_loc= loc, hiexp_node= HIEvar d2v, hiexp_typ= hit
 } // end of [hiexp_var]
-
-implement hiexp_while (loc, hit, hie_test, hie_body) = '{
-  hiexp_loc= loc
-, hiexp_node= HIEwhile (hie_test, hie_body)
-, hiexp_typ= hit
-} // end of [hiexp_while]
 
 (* ****** ****** *)
 
