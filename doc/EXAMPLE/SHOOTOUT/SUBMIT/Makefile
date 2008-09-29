@@ -73,6 +73,9 @@ spectral-norm_smp: spectral-norm_smp.dats
 spectral-norm1: spectral-norm1.dats
 	$(ATSCC) -O3 -fomit-frame-pointer -msse2 spectral-norm1.dats -o spectral-norm1 -lm
 
+spectral-norm2: spectral-norm2.dats
+	$(ATSCC) -O3 -fomit-frame-pointer -msse2 spectral-norm2.dats -o spectral-norm2 -lm
+
 thread-ring: thread-ring.dats
 	$(ATSCC) -O3 -fomit-frame-pointer thread-ring.dats -o thread-ring -lpthread
 
