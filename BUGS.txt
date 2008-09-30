@@ -41,4 +41,12 @@ error(macro): the variable [i] is unbound.
 The error was caused by the function [eval1_dexp] in [ats_macro2.dats]
 not handling the case [D2Earrsub].
 
+######
+
+Monday, September 29, 2008 (HX)
+
+Status: Not yet tried to fix
+
+The interaction between vbox and the effect [ref] is incorrect.
+
  ------------------ end of [BUGS.txt] -------------------

@@ -1074,6 +1074,22 @@ fn i3mpdec_tr (d3c: i3mpdec): hiimpdec = let
   val decarg = d3c.i3mpdec_decarg
   val tmp = (case+ decarg of cons _ => 1 | nil _ => 0): int
   val def = d3exp_tr d3c.i3mpdec_def
+  val () = begin case+ 0 of
+    | _ when d2cst_is_fun d2c => begin
+      case+ def.hiexp_node of
+      | HIElam _ => () | _ => begin
+          $Loc.prerr_location loc;
+          prerr ": error(4)";
+          prerr ": the dynamic constant [";
+          prerr d2c;
+          prerr "] is required to be implemented as a function";
+          prerr ", but it is not.";
+          prerr_newline ();
+          $Err.abort {void} ()
+        end // end of [_]
+      end
+    | _ => ()
+  end // end of [val]
   val () = begin
     if tmp > 0 then tmpcstmap_add (d2c, decarg, def)
   end

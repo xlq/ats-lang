@@ -43,7 +43,8 @@
 
 %{^
 
-#include "ats_intinf.cats"
+#include "ats_counter.cats" /* only needed for [ATS/Geizella] */
+#include "ats_intinf.cats"  /* only needed for [ATS/Geizella] */
 
 %}
 
@@ -1571,6 +1572,7 @@ fun eval0ctx_extend_arglst {narg:nat} (
             prerr_newline ();
             $Err.abort {void} ()
           end
+      val d2es = (d2es: d2explst) // handle a complaint by [ATS/Geizella]
       val nd2vs = (case+ arg of
         | MACARGone d2v => @(1, '[d2v]) | MACARGlst (n, d2vs) => @(n, d2vs)
       ) : [n:nat] (int n, d2varlst n)

@@ -1222,7 +1222,9 @@ fn ccomp_exp_loop (
       end // end of [Some]
     | None () => ()
   end // end of [val]
-  val res_init = $Lst.list_vt_reverse_list res_init
+  val res_init = $Lst.list_vt_reverse_list res_init where {
+    val res_init = (res_init: instrlst_vt) // handling a complaint by [ATS/Geizella]
+  } // end of [where]
   val lab_init = tmplab_make () and lab_fini = tmplab_make ()
   val lab_cont = (
     case+ ohie_post of | Some _ => tmplab_make () | _ => lab_init
@@ -1238,7 +1240,9 @@ fn ccomp_exp_loop (
       end // end of [Some]
     | None () => ()
   end // end of [val]
-  val res_post = $Lst.list_vt_reverse_list res_post
+  val res_post = $Lst.list_vt_reverse_list res_post where {
+    val res_post = (res_post: instrlst_vt) // handling a complaint by [ATS/Geizella]
+  } // end of [where]
   var res_body : instrlst_vt = list_vt_nil ()
   val _(*void*) = ccomp_exp (res_body, hie_body)
   val res_body = $Lst.list_vt_reverse_list res_body

@@ -37,6 +37,14 @@
 
 (* ****** ****** *)
 
+%{^
+
+#include "ats_counter.cats" /* only needed for [ATS/Geizella] */
+
+%}
+
+(* ****** ****** *)
+
 staload Cnt = "ats_counter.sats"
 staload Stamp = "ats_stamp.sats"
 staload Sym = "ats_symbol.sats"

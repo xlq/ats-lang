@@ -833,9 +833,12 @@ in
 end // end of [the_stafilelst_add]
 
 implement the_stafilelst_get () = let
-  val (pfbox | p) = ref_get_view_ptr (the_stafilelst)
-  prval vbox pf = pfbox
-  val res = !p; val () = !p := STAFILELSTnil ()
+  val res = let
+    val (vbox pf | p) = ref_get_view_ptr (the_stafilelst)
+    val res = !p; val () = !p := STAFILELSTnil ()
+  in
+    res
+  end // end of [val]
 in
   stafilelst_reverse (res)
 end // end of [the_stafilelst_get]

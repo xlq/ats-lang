@@ -105,7 +105,7 @@ implement __accept_table_free (r_tblopt): void =
 
 //
 
-extern fun int_of_int16 (x: int16): int = "ats_int_of_int16"
+extern fun int_of_int16 (x: int16):<> int = "ats_int_of_int16"
 
 %{^
 

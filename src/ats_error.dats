@@ -79,7 +79,7 @@ end
 ats_int_type ats_error_segfault () {
   fprintf (stderr, "ats_error_segfault: this is for debugging.\n") ;
   return *(ats_int_type*)0 ;
-} /* end
+} /* end of [ats_error_segfault] */
 
 %}
 

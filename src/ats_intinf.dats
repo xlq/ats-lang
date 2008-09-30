@@ -37,6 +37,14 @@
 
 (* ****** ****** *)
 
+%{^
+
+#include "ats_intinf.cats"  /* only needed for [ATS/Geizella] */
+
+%}
+
+(* ****** ****** *)
+
 staload "libc_sats_gmp.sats"
 
 (* ****** ****** *)

@@ -37,6 +37,14 @@
 
 (* ****** ****** *)
 
+%{^
+
+#include "ats_counter.cats" /* only needed for [ATS/Geizella] */
+
+%}
+
+(* ****** ****** *)
+
 staload Deb = "ats_debug.sats"
 staload Err = "ats_error.sats"
 staload IntInf = "ats_intinf.sats"

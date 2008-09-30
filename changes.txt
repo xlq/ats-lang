@@ -5,13 +5,19 @@ ats-lang-anariats-0.0.2:
 2. [ats_trans1.dats] is splitted into the following two:
    [ats_trans1_sat.dats] and [ats_trans1_dyn.dats]
 
-3. Make/Install is significantly improved. There is no
-   need to set ATSHOME (and ATSHOMERELOC) before 'make all'
-   is executed.
+3. Make/Install is significantly improved. There is no need to set
+   ATSHOME (and ATSHOMERELOC) before 'make all' is executed.
 
 4. The confusion between array and array0 is resolved.
 
 5. [EXAMPLE/SHOOTOUT/SUMBIT] is created.
 
-6. The function [intvec_normalize_gte] did not handle the
-   case [gcd > 1] correctly. It is fixed now.
+6. The function [intvec_normalize_gte] did not handle the case [gcd > 1]
+   correctly. It is fixed now.
+
+7. The incorrect handling of [continue] in a for loop is fixed now.  See
+   [BUGS.txt]
+
+8. The command [atspackage] no longer puts the source code for Anairiats
+   into a distribution.
+
