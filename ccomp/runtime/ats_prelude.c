@@ -121,7 +121,7 @@ ats_funarg_match_failure (void) {
 /* function for memory allocation and deallocation */
 
 #ifdef _ATS_GC // generic GC for ATS
-#include "GC/include/gc.h"
+#include "gc/gc.h"
 #elif _ATS_GCATS // special GC for ATS
 #include "GCATS/gc.h"
 #elif _ATS_gc // special GC for ATS
@@ -414,7 +414,7 @@ ats_realloc_gc (const ats_ptr_type p, const ats_int_type bsz) {
   fprintf (stderr, "ats_realloc_gc: p = %p and bsz = %i\n", p, bsz) ;
 */
 #ifdef _ATS_GC
-  p_new = GC_realloc(p) ;
+  p_new = GC_realloc(p, bsz) ;
 #elif _ATS_GCATS
   p_new = gc_aut_realloc_bsz(p, bsz) ;
 #elif _ATS_gc
