@@ -192,7 +192,15 @@
     ("\\<withview\\>" (0 'font-lock-keyword-face))
     ("\\<withviewtype\\>" (0 'font-lock-keyword-face))
 
-    (":" (0 'font-lock-type-face))))
+    (":" (0 'font-lock-type-face))
+
+    ("{" (0 'font-lock-type-face))
+    ("}" (0 'font-lock-type-face))
+    ("\\[" (0 'font-lock-type-face))
+    ("\\]" (0 'font-lock-type-face))
+
+    ;; ("{[^|]*|[^}]*}" (0 'font-lock-type-face))
+    ))
 
 (defvar ats-font-lock-syntactic-keywords
   '(("(\\(/\\)" (1 ". 1b"))             ; (/ does not start a comment.
@@ -212,6 +220,9 @@
   (set (make-local-variable 'font-lock-defaults)
        '(ats-font-lock-keywords nil nil () nil
          (font-lock-syntactic-keywords . ats-font-lock-syntactic-keywords)))
+  (set (make-local-variable 'comment-start) "(*")
+  (set (make-local-variable 'comment-continue)  " *")
+  (set (make-local-variable 'comment-end) "*)")
   (setq indent-line-function 'tab-to-tab-stop)
   (setq tab-stop-list (loop for x from 2 upto 120 by 2 collect x))
   (setq indent-tabs-mode nil)
