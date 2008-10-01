@@ -218,7 +218,7 @@
 (define-derived-mode ats-mode fundamental-mode "ATS"
   "Major mode to edit ATS source code."
   (set (make-local-variable 'font-lock-defaults)
-       '(ats-font-lock-keywords nil nil () nil
+       '(ats-font-lock-keywords nil nil ((?_ . "w")) nil
          (font-lock-syntactic-keywords . ats-font-lock-syntactic-keywords)))
   (set (make-local-variable 'comment-start) "(*")
   (set (make-local-variable 'comment-continue)  " *")
