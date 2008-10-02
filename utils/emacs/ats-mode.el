@@ -110,55 +110,29 @@
     
 ;; Font-lock.
 
-;; (defface font-lock-variable-name-face
-;;   '((((class grayscale) (background light))
-;;      (:foreground "Gray90" :weight bold :slant italic))
-;;     (((class grayscale) (background dark))
-;;      (:foreground "DimGray" :weight bold :slant italic))
-;;     (((class color) (min-colors 88) (background light)) (:foreground "DarkGoldenrod"))
-;;     (((class color) (min-colors 88) (background dark)) (:foreground "LightGoldenrod"))
-;;     (((class color) (min-colors 16) (background light)) (:foreground "DarkGoldenrod"))
-;;     (((class color) (min-colors 16) (background dark)) (:foreground "LightGoldenrod"))
-;;     (((class color) (min-colors 8)) (:foreground "yellow" :weight light))
-;;     (t (:weight bold :slant italic)))
-;;   "Font Lock mode face used to highlight variable names."
-;;   :group 'font-lock-faces)
-
-;; (defface font-lock-type-face
-;;   '((((class grayscale) (background light)) (:foreground "Gray90" :weight bold))
-;;     (((class grayscale) (background dark)) (:foreground "DimGray" :weight bold))
-;;     (((class color) (min-colors 88) (background light)) (:foreground "ForestGreen"))
-;;     (((class color) (min-colors 88) (background dark)) (:foreground "PaleGreen"))
-;;     (((class color) (min-colors 16) (background light)) (:foreground "ForestGreen"))
-;;     (((class color) (min-colors 16) (background dark)) (:foreground "PaleGreen"))
-;;     (((class color) (min-colors 8)) (:foreground "green"))
-;;     (t (:weight bold :underline t)))
-;;   "Font Lock mode face used to highlight type and classes."
-;;   :group 'font-lock-faces)
-
 (defface ats-font-lock-static-face
-  '((default :inherit font-lock-type-face)
+  '(;; (default :inherit font-lock-type-face)
     (t (:foreground "SkyBlue" :weight normal)))
   "Face used for static-related parts of code."
   :group 'ats-font-lock-faces)
 (defvar ats-font-lock-static-face 'ats-font-lock-static-face)
 
 (defface ats-font-lock-metric-face
-  '((default :inherit font-lock-type-face)
+  '(;; (default :inherit font-lock-type-face)
     (t (:foreground "Wheat" :weight bold)))
   "Face used for termination metrics."
   :group 'ats-font-lock-faces)
 (defvar ats-font-lock-metric-face 'ats-font-lock-metric-face)
 
 (defface ats-font-lock-keyword-face
-  '((default :inherit font-lock-keyword-face)
+  '(;; (default :inherit font-lock-keyword-face)
     (t (:foreground "Cyan" :weight normal)))
   "Face used for keywords."
   :group 'ats-font-lock-faces)
 (defvar ats-font-lock-keyword-face 'ats-font-lock-keyword-face)
 
 (defface ats-font-lock-c-face
-  '((default :inherit font-lock-comment-face)
+  '(;; (default :inherit font-lock-comment-face)
     (t (:foreground "Gray" :weight normal)))
   "Face used for C code."
   :group 'ats-font-lock-faces)
@@ -232,8 +206,9 @@
          ((looking-at ":")
           (forward-char 1)
           (let ((nest-lvl 0) finishedp)
-            ;; (re-search-forward ")\\|\\(?:\\_<=\\_>\\)" limit t)
-            (ats-context-free-search ")\\|\\_<=\\_>\\|," limit)
+            ;; emacs22 only:
+            ;(ats-context-free-search ")\\|\\_<=\\_>\\|," limit)
+            (ats-context-free-search ")\\|[^=]=[^=]\\|," limit)
             (setq begin (1+ begin)
                   end (point)
                   key-begin (1- begin)
