@@ -1,7 +1,7 @@
 ;;; ats-mode.el --- Major mode to edit ATS source code
 
 ;; Copyright (C) 2007  Stefan Monnier
-;; updated and modified by Matthew Danish <md@bu.edu> 2008
+;; updated and modified by Matthew Danish <mrd@debian.org> 2008
 
 ;; Author: Stefan Monnier <monnier@iro.umontreal.ca>
 ;; Keywords: 
@@ -40,8 +40,8 @@
 (defvar ats-mode-syntax-table
   (let ((st (make-syntax-table)))
     ;; (*..*) for nested comments.
-    (modify-syntax-entry ?\( "()1n" st)
-    (modify-syntax-entry ?\) ")(4n" st)
+    (modify-syntax-entry ?\( "() 1n" st)
+    (modify-syntax-entry ?\) ")( 4n" st)
     (modify-syntax-entry ?*  ". 23" st)
     ;; Not sure how to do // for single-line comments.
     ;; The current setting means that (/ and /* start a comment as well :-(
@@ -56,10 +56,10 @@
     ;; Oh, and ' is also overloaded for '( '{ and '[  :-(
     (modify-syntax-entry ?\' "_ p" st)
     ;; 
-    (modify-syntax-entry ?\{ "()" st)
-    (modify-syntax-entry ?\} ")(" st)
-    (modify-syntax-entry ?\[ "()" st)
-    (modify-syntax-entry ?\] ")(" st)
+    (modify-syntax-entry ?\{ "(}" st)
+    (modify-syntax-entry ?\} "){" st)
+    (modify-syntax-entry ?\[ "(]" st)
+    (modify-syntax-entry ?\] ")[" st)
     ;; Skip over @/# when going backward-sexp over @[...], #[...],
     ;; #ident and $ident.
     (modify-syntax-entry ?\@ ". p" st)
@@ -102,11 +102,22 @@
     (modify-syntax-entry ?:  "." st)
     (modify-syntax-entry ?\; "." st)
     st))
+
+(defvar ats-mode-font-lock-syntax-table
+  (let ((st (copy-syntax-table ats-mode-syntax-table)))
+    (modify-syntax-entry ?_ "w" st)
+    st))
     
 ;; Font-lock.
 
 (defvar ats-font-lock-keywords
-  '(("\\<absprop\\>" (0 'font-lock-keyword-face))
+  '(("%{[[:print:][:cntrl:]]*%}" (0 'font-lock-comment-face))
+    ("[^%]\\({[^|}]*|?[^}]*}\\)" (1 'font-lock-type-face))
+    ("[^']\\(\\[[^]|]*|?[^]]*\\]\\)" (1 'font-lock-type-face))
+    (".<[^>]>." (0 'font-lock-constant-face))
+    (":" (0 'font-lock-type-face))
+
+    ("\\<absprop\\>" (0 'font-lock-keyword-face))
     ("\\<abstype\\>" (0 'font-lock-keyword-face))
     ("\\<abst@type\\>" (0 'font-lock-keyword-face)) 
     ("\\<absview\\>" (0 'font-lock-keyword-face))
@@ -190,17 +201,7 @@
     ("\\<withprop\\>" (0 'font-lock-keyword-face))
     ("\\<withtype\\>" (0 'font-lock-keyword-face))
     ("\\<withview\\>" (0 'font-lock-keyword-face))
-    ("\\<withviewtype\\>" (0 'font-lock-keyword-face))
-
-    (":" (0 'font-lock-type-face))
-
-    ("{" (0 'font-lock-type-face))
-    ("}" (0 'font-lock-type-face))
-    ("\\[" (0 'font-lock-type-face))
-    ("\\]" (0 'font-lock-type-face))
-
-    ;; ("{[^|]*|[^}]*}" (0 'font-lock-type-face))
-    ))
+    ("\\<withviewtype\\>" (0 'font-lock-keyword-face))))
 
 (defvar ats-font-lock-syntactic-keywords
   '(("(\\(/\\)" (1 ". 1b"))             ; (/ does not start a comment.
@@ -211,9 +212,14 @@
      (1 "\"'") (2 "\"'"))
     ))
 
-;;;###autoload
-(add-to-list 'auto-mode-alist '("\\.\\(d\\|c\\|s\\)ats\\'" . ats-mode))
-
+(define-derived-mode c/ats-mode c-mode "C/ATS"
+  "Major mode to edit C code embedded in ATS code."
+  (unless (local-variable-p 'compile-command)
+    (set (make-local-variable 'compile-command)
+         (let ((file buffer-file-name))
+           (format "atscc -tc %s" file)))
+    (put 'compile-command 'permanent-local t)))
+   
 ;;;###autoload
 (define-derived-mode ats-mode fundamental-mode "ATS"
   "Major mode to edit ATS source code."
@@ -230,7 +236,8 @@
   (unless (local-variable-p 'compile-command)
     (set (make-local-variable 'compile-command)
          (let ((file buffer-file-name))
-           (format "atscc -tc %s" file))))
+           (format "atscc -tc %s" file)))
+    (put 'compile-command 'permanent-local t))
   (local-set-key (kbd "C-c C-c") 'compile)
   (cond 
    ;; Emacs 21
@@ -284,3 +291,155 @@
 
 (provide 'ats-mode)
 ;;; ats-mode.el ends here
+
+
+  ;; Set up block and line oriented comments.  The new C
+  ;; standard mandates both comment styles even in C, so since
+  ;; all languages now require dual comments, we make this the
+  ;; default.
+;;   (cond
+;;    ;; XEmacs
+;;    ((memq '8-bit c-emacs-features)
+;;     (modify-syntax-entry ?/  ". 1456" table)
+;;     (modify-syntax-entry ?*  ". 23"   table))
+;;    ;; Emacs
+;;    ((memq '1-bit c-emacs-features)
+;;     (modify-syntax-entry ?/  ". 124b" table)
+;;     (modify-syntax-entry ?*  ". 23"   table))
+;;    ;; incompatible
+;;    (t (error "CC Mode is incompatible with this version of Emacs")))
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; two-mode-mode.el -- switches between tcl and sgml(html) modes
+;; $Id: two-mode-mode.el,v 1.4 2004/11/19 17:00:12 davidw Exp $
+
+;; Copyright 1999-2004 The Apache Software Foundation
+
+;; Licensed under the Apache License, Version 2.0 (the "License");
+;; you may not use this file except in compliance with the License.
+;; You may obtain a copy of the License at
+
+;;	http://www.apache.org/licenses/LICENSE-2.0
+
+;; Unless required by applicable law or agreed to in writing, software
+;; distributed under the License is distributed on an "AS IS" BASIS,
+;; WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+;; See the License for the specific language governing permissions and
+;; limitations under the License.
+
+;; These same concepts could be used to do a number of neat 2-mode
+;; modes, for things like PHP, or anything else where you have a
+;; couple of modes you'd like to use.
+
+;; Use of 'psgml-mode' is highly recommended.  It is, of course, a
+;; part of Debian GNU/Linux.
+
+;; Author: David N. Welton <davidw@dedasys.com>
+
+;; Modified by Marco Pantaleoni <panta@elasticworld.org>
+;; to allow execution of an hook on mode switching.
+;; Also added a standard mode hook and some documentation strings.
+
+;; Janko Heilgeist <janko@heilgeist.com> and Stefan Schimanski
+;; <1stein@gmx.de> submitted modifications that enable the use of
+;; multiple modes, so I suppose that 'two-mode-mode' isn't strictly
+;; accurate anymore.
+
+;; Matthew Danish <mrd@debian.org> adapted this file to ATS mode.
+
+(defvar ats-default-mode (list "ATS" 'ats-mode))
+(defvar ats-second-modes (list
+                      (list "C/ATS" "%{" "%}" 'c/ats-mode)))
+
+;; ----------------
+
+(defvar ats-two-mode-update 0)
+(defvar ats-two-mode-mode-idle-timer nil)
+(defvar ats-two-mode-bool nil)
+(defvar ats-two-mode-mode-delay (/ (float 1) (float 8)))
+
+;; Two mode hook
+(defvar ats-two-mode-hook nil
+  "*Hook called by `two-mode'.")
+(setq ats-two-mode-hook nil)
+
+;; Mode switching hook
+(defvar ats-two-mode-switch-hook nil
+  "*Hook called upon mode switching.")
+(setq ats-two-mode-switch-hook nil)
+
+(defun ats-two-mode-mode-setup ()
+  (make-local-hook 'post-command-hook)
+  (add-hook 'post-command-hook 'ats-two-mode-mode-need-update nil t)
+  (make-local-variable 'minor-mode-alist)
+  (make-local-variable 'ats-two-mode-bool)
+  (setq ats-two-mode-bool t)
+  (when ats-two-mode-mode-idle-timer
+    (cancel-timer ats-two-mode-mode-idle-timer))
+  (setq ats-two-mode-mode-idle-timer
+	(run-with-idle-timer ats-two-mode-mode-delay t
+			     'ats-two-mode-mode-update-mode))
+  (or (assq 'ats-two-mode-bool minor-mode-alist)
+      (setq minor-mode-alist
+	    (cons '(ats-two-mode-bool "/C") minor-mode-alist))))
+
+(defun ats-two-mode-mode-need-update ()
+  (setq ats-two-mode-update 1))
+
+(defun ats-two-mode-change-mode (to-mode func)
+  (if (string= to-mode mode-name)
+      t
+    (progn
+      (funcall func)
+      ;; After the mode was set, we reread the "Local Variables" section.
+      ;; We do need this for example in SGML-mode if "sgml-parent-document"
+      ;; was set, or otherwise it will be reset to nil when sgml-mode is left.
+      (hack-local-variables)
+
+      (ats-two-mode-mode-setup)
+      (if ats-two-mode-switch-hook
+	  (run-hooks 'ats-two-mode-switch-hook))
+      (if (eq font-lock-mode t)
+	  (font-lock-fontify-buffer))
+      (turn-on-font-lock-if-enabled))))
+
+(defun ats-two-mode-mode-update-mode ()
+  (when (and ats-two-mode-bool ats-two-mode-update)
+    (setq ats-two-mode-update 0)
+    (let ((mode-list ats-second-modes)
+	  (flag 0))
+      (while mode-list
+	(let ((mode (car mode-list))
+	      (lm -1)
+	      (rm -1))
+	  (save-excursion 
+	    (if (search-backward (cadr mode) nil t)
+		(setq lm (point))
+	      (setq lm -1)))
+	  (save-excursion
+	    (if (search-backward (car (cddr mode)) nil t)
+		(setq rm (point))
+	      (setq rm -1)))
+	  (if (and (not (and (= lm -1) (= rm -1))) (>= lm rm))
+	      (progn
+		(setq flag 1)
+		(setq mode-list '())
+		(ats-two-mode-change-mode (car mode) (car (cdr (cddr mode)))))))
+	(setq mode-list (cdr mode-list)))
+      (if (= flag 0)
+	  (ats-two-mode-change-mode (car ats-default-mode) (cadr ats-default-mode))))))
+
+(defun ats-two-mode-mode ()
+  "Turn on ats-two-mode-mode"
+  (interactive)
+  (funcall (cadr ats-default-mode))
+  (ats-two-mode-mode-setup)
+  (if ats-two-mode-hook
+     (run-hooks 'ats-two-mode-hook)))
+
+;;;###autoload
+(add-to-list 'auto-mode-alist '("\\.\\(d\\|s\\)ats\\'" . ats-two-mode-mode))
+
+(provide 'ats-two-mode-mode)
+
