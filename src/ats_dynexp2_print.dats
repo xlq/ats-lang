@@ -49,14 +49,14 @@ staload "ats_dynexp2.sats"
 
 (* ****** ****** *)
 
-overload fprint with $Lab.fprint_label
-overload fprint with $Sym.fprint_symbol
+macdef fprint_label = $Lab.fprint_label
+macdef fprint_symbol = $Sym.fprint_symbol
 
 (* ****** ****** *)
 
 implement fprint_d2sym (pf | out, d2s) = begin
   $Syn.fprint_d0ynq (pf | out, d2s.d2sym_qua);
-  fprint (pf | out, d2s.d2sym_sym)
+  fprint_symbol (pf | out, d2s.d2sym_sym)
 end
 
 implement print_d2sym (d2s) = print_mac (fprint_d2sym, d2s)
@@ -64,40 +64,30 @@ implement prerr_d2sym (d2s) = prerr_mac (fprint_d2sym, d2s)
 
 (* ****** ****** *)
 
-implement fprint_d2item (pf | out, d2i) = begin
+implement fprint_d2item (pf | out, d2i) = let
+  macdef strpr (s) = fprint1_string (pf | out, ,(s))
+in
   case+ d2i of
   | D2ITEMcon d2cs => begin
-      fprint (pf | out, "D2ITEMcon(");
-      fprint_d2conlst (pf | out, d2cs);
-      fprint (pf | out, ")")
+      strpr "D2ITEMcon("; fprint_d2conlst (pf | out, d2cs); strpr ")"
     end
   | D2ITEMcst d2c => begin
-      fprint (pf | out, "D2ITEMcst(");
-      fprint_d2cst (pf | out, d2c);
-      fprint (pf | out, ")")
+      strpr "D2ITEMcst("; fprint_d2cst (pf | out, d2c); strpr ")"
     end
   | D2ITEMe1xp e1xp => begin
-      fprint (pf | out, "D2ITEMe1xp(");
-      fprint_e1xp (pf | out, e1xp);
-      fprint (pf | out, ")")
+      strpr "D2ITEMe1xp("; fprint_e1xp (pf | out, e1xp); strpr ")"
     end
   | D2ITEMmacdef d2m => begin
-      fprint (pf | out, "D2ITEMmacdef(");
-      fprint_d2mac (pf | out, d2m);
-      fprint (pf | out, ")")
+      strpr "D2ITEMmacdef("; fprint_d2mac (pf | out, d2m); strpr ")"
     end
   | D2ITEMmacvar d2v => begin
-      fprint (pf | out, "D2ITEMmacvar(");
-      fprint_d2var (pf | out, d2v);
-      fprint (pf | out, ")")
+      strpr "D2ITEMmacvar("; fprint_d2var (pf | out, d2v); strpr ")"
     end
   | D2ITEMsym d2is => begin
-      fprint (pf | out, "D2ITEMsym(...)")
+      fprint1_string (pf | out, "D2ITEMsym(...)")
     end
   | D2ITEMvar d2v => begin
-      fprint (pf | out, "D2ITEMvar(");
-      fprint_d2var (pf | out, d2v);
-      fprint (pf | out, ")")
+      strpr "D2ITEMvar("; fprint_d2var (pf | out, d2v); strpr ")"
     end
 end // end of [fprint_d2item]
 
@@ -110,7 +100,7 @@ implement fprint_d2itemlst {m} (pf | out, d2is) = let
   fun aux (out: &FILE m, i: int, d2is: d2itemlst): void =
     case+ d2is of
     | cons (d2i, d2is) => begin
-        if i > 0 then fprint (pf | out, ", ");
+        if i > 0 then fprint1_string (pf | out, ", ");
         fprint_d2item (pf | out, d2i); aux (out, i+1, d2is)
       end
     | nil () => ()
@@ -123,98 +113,87 @@ implement prerr_d2itemlst (d2is) = prerr_mac (fprint_d2itemlst, d2is)
 
 (* ****** ****** *)
 
-implement fprint_p2at (pf | out, p2t) = case+ p2t.p2at_node of
+implement fprint_p2at (pf | out, p2t) = let
+  macdef strpr (s) = fprint1_string (pf | out, ,(s))
+in
+  case+ p2t.p2at_node of
   | P2Tann (p2t, s2e) => begin
-      fprint (pf | out, "P2Tann(");
-      fprint (pf | out, p2t);
-      fprint (pf | out, "; ");
-      fprint (pf | out, s2e);
-      fprint (pf | out, ")")
+      strpr "P2Tann(";
+      fprint_p2at (pf | out, p2t);
+      strpr "; ";
+      fprint_s2exp (pf | out, s2e);
+      strpr ")"
     end
-  | P2Tany () => fprint (pf | out, "P2Tany()")
+  | P2Tany () => fprint1_string (pf | out, "P2Tany()")
   | P2Tas (refknd, d2v, p2t) => begin
-      fprint (pf | out, "P2Tas(");
-      if (refknd > 0) then fprint (pf | out, "!");
-      fprint (pf | out, d2v);
-      fprint (pf | out, "; ");
-      fprint (pf | out, p2t);
-      fprint (pf | out, ")")
-    end
+      strpr "P2Tas(";
+      if (refknd > 0) then strpr "!";
+      fprint_d2var (pf | out, d2v);
+      strpr "; ";
+      fprint_p2at (pf | out, p2t);
+      strpr ")"
+    end // end of [P2Tas]
   | P2Tbool b => begin
-      fprint (pf | out, "P2Tbool(");
-      fprint (pf | out, b);
-      fprint (pf | out, ")")
+      strpr "P2Tbool("; fprint1_bool (pf | out, b); strpr ")"
     end
   | P2Tchar c => begin
-      fprint (pf | out, "P2Tchar(");
-      fprint (pf | out, c);
-      fprint (pf | out, ")")
+      strpr "P2Tchar("; fprint1_char (pf | out, c); strpr ")"
     end
   | P2Tcon (freeknd, d2c, s2qs, s2e, npf, p2ts) => begin
-      fprint (pf | out, "P2Tcon(");
-      if (freeknd < 0) then fprint (pf | out, "~");
-      fprint (pf | out, d2c);
-      fprint (pf | out, "; ");
-      fprint (pf | out, p2ts);
-      fprint (pf | out, ")")
+      strpr "P2Tcon(";
+      if (freeknd < 0) then strpr "~";
+      fprint_d2con (pf | out, d2c);
+      strpr "; ";
+      fprint_p2atlst (pf | out, p2ts);
+      strpr ")"
     end
   | P2Tempty () => begin
-      fprint (pf | out, "P2Tempty()")
+      fprint1_string (pf | out, "P2Tempty()")
     end
   | P2Texist (s2vs, p2t) => begin
-      fprint (pf | out, "P2Texist(");
-      fprint (pf | out, "...");
-      fprint (pf | out, "; ");
-      fprint (pf | out, p2t);
-      fprint (pf | out, ")")
+      strpr "P2Texist(";
+      fprint1_string (pf | out, "...");
+      strpr "; ";
+      fprint_p2at (pf | out, p2t);
+      strpr ")"
     end
-  | P2Tfloat (str) => begin
-      fprint (pf | out, "P2Tfloat(");
-      fprint (pf | out, str);
-      fprint (pf | out, ")")
+  | P2Tfloat f(*string*) => begin
+      strpr "P2Tfloat("; fprint1_string (pf | out, f); strpr ")"
     end
   | P2Tint (str, _(*intinf*)) => begin
-      fprint (pf | out, "P2Tint(");
-      fprint (pf | out, str);
-      fprint (pf | out, ")")
+      strpr "P2Tint("; fprint1_string (pf | out, str); strpr ")"
     end
   | P2Tlist (npf, p2ts) => begin
-      fprint (pf | out, "P2Tlist(");
-      fprint (pf | out, npf);
-      fprint (pf | out, "; ");
-      fprint (pf | out, p2ts);
-      fprint (pf | out, ")")
-    end
+      strpr "P2Tlist(";
+      fprint1_int (pf | out, npf);
+      strpr "; ";
+      fprint_p2atlst (pf | out, p2ts);
+      strpr ")"
+    end // end of [P2Tlist]
   | P2Tlst p2ts => begin
-      fprint (pf | out, "P2Tlst(");
-      fprint (pf | out, p2ts);
-      fprint (pf | out, ")")
+      strpr "P2Tlst("; fprint_p2atlst (pf | out, p2ts); strpr ")"
     end
   | P2Trec (recknd, npf, lp2ts) => begin
-      fprint (pf | out, "P2Trec(");
-      fprint (pf | out, recknd);
-      fprint (pf | out, "; ");
-      fprint (pf | out, npf);
-      fprint (pf | out, "; ");
-      fprint (pf | out, lp2ts);
-      fprint (pf | out, ")")
-    end
-  | P2Tstring s => begin
-      fprint (pf | out, "P2Tstring(\"");
-      fprint (pf | out, s);
-      fprint (pf | out, "\")")
-    end
+      strpr "P2Trec(";
+      fprint1_int (pf | out, recknd);
+      strpr "; ";
+      fprint1_int (pf | out, npf);
+      strpr "; ";
+      fprint_labp2atlst (pf | out, lp2ts);
+      strpr ")"
+    end // end of [P2Trec]
+  | P2Tstring str => begin
+      strpr "P2Tstring(\""; fprint1_string (pf | out, str); strpr "\")"
+    end // end of [P2Tstring]
   | P2Tvar (refknd, d2v) => begin
-      fprint (pf | out, "P2Tvar(");
-      if (refknd > 0) then fprint (pf | out, "!");
-      fprint (pf | out, d2v);
-      fprint (pf | out, ")")
-    end
+      strpr "P2Tvar(";
+      if (refknd > 0) then strpr "!";
+      fprint_d2var (pf | out, d2v);
+      strpr ")"
+    end // end of [P2Tvar]
   | P2Tvbox (d2v) => begin
-      fprint (pf | out, "P2Tvbox(");
-      fprint (pf | out, d2v);
-      fprint (pf | out, ")")
-    end
+      strpr "P2Tvbox("; fprint_d2var (pf | out, d2v); strpr ")"
+    end // end of [P2Tvbox]
 (*
   | _ => begin
       prerr "Internal Error: ";
@@ -225,13 +204,14 @@ implement fprint_p2at (pf | out, p2t) = case+ p2t.p2at_node of
       exit (1)
     end
 *)
+end // end of [fprint_p2at]
 
 implement fprint_p2atlst {m} (pf | out, p2ts) = let
   fun aux (out: &FILE m, i: int, p2ts: p2atlst): void =
     case+ p2ts of
     | cons (p2t, p2ts) => begin
-        if i > 0 then fprint (pf | out, ", ");
-        fprint (pf | out, p2t); aux (out, i+1, p2ts)
+        if i > 0 then fprint1_string (pf | out, ", ");
+        fprint_p2at (pf | out, p2t); aux (out, i+1, p2ts)
       end
     | nil () => ()
 in
@@ -239,16 +219,18 @@ in
 end // end of [fprint_p2atlst]
 
 implement fprint_labp2atlst {m} (pf | out, lp2ts) = let
-  fun aux (out: &FILE m, i: int, lp2ts: labp2atlst): void = begin
+  fun aux (out: &FILE m, i: int, lp2ts: labp2atlst): void = let
+    macdef strpr (s) = fprint1_string (pf | out, ,(s))
+  in
     case+ lp2ts of
     | LABP2ATLSTcons (l, p2t, lp2ts) => begin
-        if i > 0 then fprint (pf | out, ", ");
-        fprint (pf | out, l); fprint (pf | out, "= "); fprint (pf | out, p2t);
+        if i > 0 then strpr ", ";
+        fprint_label (pf | out, l); strpr "= "; fprint_p2at (pf | out, p2t);
         aux (out, i+1, lp2ts)
       end
     | LABP2ATLSTnil () => ()
     | LABP2ATLSTdot () => begin
-        if i > 0 then fprint (pf | out, ", "); fprint (pf | out, "...")
+        if i > 0 then strpr ", "; fprint1_string (pf | out, "...")
       end
   end // end of [aux]
 in
@@ -266,37 +248,37 @@ implement prerr_p2atlst (p2ts) = prerr_mac (fprint_p2atlst, p2ts)
 (* ****** ****** *)
 
 implement fprint_i2nvarg (pf | out, i2nv) = let
-  val () = fprint (pf | out, i2nv.i2nvarg_var)
-  val () = fprint (pf | out, ": ")
-  val () = fprint (pf | out, i2nv.i2nvarg_typ)
+  val () = fprint_d2var (pf | out, i2nv.i2nvarg_var)
+  val () = fprint1_string (pf | out, ": ")
+  val () = fprint_s2expopt (pf | out, i2nv.i2nvarg_typ)
 in
   // empty
 end
 
 implement fprint_i2nvarglst {m} (pf | out, args) = let
-  fun aux (out: &FILE m, i: int, args: i2nvarglst)
-    : void = begin case+ args of
+  fun aux (out: &FILE m, i: int, args: i2nvarglst): void =
+    case+ args of
     | cons (arg, args) => begin
-        if (i > 0) then fprint (pf | out, ", ");
-        fprint (pf | out, arg); aux (out, i + 1, args)
+        if (i > 0) then fprint1_string (pf | out, ", ");
+        fprint_i2nvarg (pf | out, arg); aux (out, i + 1, args)
       end
     | nil () => ()
-  end // end of [aux]
+  // end of [aux]
 in
   aux (out, 0, args)
 end // end of [fprint_i2nvarglst]
 
 implement fprint_i2nvresstate (pf | out, res) = let
-  val () = fprint (pf | out, "[");
-  val () = fprint (pf | out, res.i2nvresstate_svs);
-  val () = fprint (pf | out, "; ");
-  val () = fprint (pf | out, res.i2nvresstate_gua);
-  val () = fprint (pf | out, "] (");
-  val () = fprint (pf | out, res.i2nvresstate_arg);
-  val () = fprint (pf | out, ")")
+  val () = fprint1_string (pf | out, "[");
+  val () = fprint_s2varlst (pf | out, res.i2nvresstate_svs);
+  val () = fprint1_string (pf | out, "; ");
+  val () = fprint_s2explst (pf | out, res.i2nvresstate_gua);
+  val () = fprint1_string (pf | out, "] (");
+  val () = fprint_i2nvarglst (pf | out, res.i2nvresstate_arg);
+  val () = fprint_string (pf | out, ")")
 in
   // empty
-end
+end // end of [fprint_i2nvresstate]
 
 //
 
@@ -308,9 +290,14 @@ implement prerr_i2nvresstate (res) = prerr_mac (fprint_i2nvresstate, res)
 
 (* ****** ****** *)
 
-implement fprint_d2exparg (pf | out, d2a) = begin case+ d2a of
-  | D2EXPARGsta s2as => fprint (pf | out, s2as)
-  | D2EXPARGdyn (_(*loc_arg*), _(*npf*), d2es) => fprint (pf | out, d2es)
+implement fprint_d2exparg (pf | out, d2a) = begin
+  case+ d2a of
+  | D2EXPARGsta s2as => begin
+      fprint_s2exparglst (pf | out, s2as)
+    end
+  | D2EXPARGdyn (_(*loc_arg*), _(*npf*), d2es) => begin
+      fprint_d2explst (pf | out, d2es)
+    end
 end // end of [fprint_d2exparg]
 
 implement print_d2exparg (arg) = print_mac (fprint_d2exparg, arg)
@@ -320,7 +307,7 @@ implement fprint_d2exparglst {m} (pf | out, d2as) = let
   fun aux (out: &FILE m, i: int, d2as: d2exparglst): void =
     case+ d2as of
     | cons (d2a, d2as) => begin
-        if (i > 0) then fprint (pf | out, "; ");
+        if (i > 0) then fprint1_string (pf | out, "; ");
         fprint_d2exparg (pf | out, d2a); aux (out, i+1, d2as)
       end
     | nil () => ()
@@ -333,361 +320,324 @@ implement prerr_d2exparglst (args) = prerr_mac (fprint_d2exparglst, args)
 
 (* ****** ****** *)
 
-implement fprint_d2exp (pf | out, d2e0) = begin
+implement fprint_d2exp (pf | out, d2e0) = let
+  macdef strpr (s) = fprint1_string (pf | out, ,(s))
+in
   case+ d2e0.d2exp_node of
   | D2Eann_seff (d2e, s2fe) => begin
-      fprint (pf | out, "D2Eann_seff(");
-      fprint (pf | out, d2e);
-      fprint (pf | out, "; ");
-      fprint (pf | out, s2fe);
-      fprint (pf | out, ")")
-    end
+      strpr "D2Eann_seff(";
+      fprint_d2exp (pf | out, d2e);
+      strpr "; ";
+      fprint_s2eff (pf | out, s2fe);
+      strpr ")"
+    end // end of [D2Eann_seff]
   | D2Eann_funclo (d2e, fc) => begin
-      fprint (pf | out, "D2Eann_funclo(");
-      fprint (pf | out, d2e);
-      fprint (pf | out, "; ");
+      strpr "D2Eann_funclo(";
+      fprint_d2exp (pf | out, d2e);
+      strpr "; ";
       $Syn.fprint_funclo (pf | out, fc);
-      fprint (pf | out, ")")
-    end
+      strpr ")"
+    end // end of [D2Eann_funclo]
   | D2Eann_type (d2e, s2e) => begin
-      fprint (pf | out, "D2Eann_type(");
-      fprint (pf | out, d2e);
-      fprint (pf | out, "; ");
-      fprint (pf | out, s2e);
-      fprint (pf | out, ")")
-    end
+      strpr "D2Eann_type(";
+      fprint_d2exp (pf | out, d2e);
+      strpr "; ";
+      fprint_s2exp (pf | out, s2e);
+      strpr ")"
+    end // end of [D2Eann_type]
   | D2Eapps (d2e_fun, d2as_arg) => begin
-      fprint (pf | out, "D2Eapps(");
-      fprint (pf | out, d2e_fun);
-      fprint (pf | out, "; ");
+      strpr "D2Eapps(";
+      fprint_d2exp (pf | out, d2e_fun);
+      strpr "; ";
       fprint_d2exparglst (pf | out, d2as_arg);
-      fprint (pf | out, ")")
-    end
+      strpr ")"
+    end // end of [D2Eapps]
   | D2Earr (s2e_elt, d2es_elt) => begin
-      fprint (pf | out, "D2Earr(");
-      fprint (pf | out, s2e_elt);
-      fprint (pf | out, "; ");
-      fprint (pf | out, d2es_elt);
-      fprint (pf | out, ")")
+      strpr "D2Earr(";
+      fprint_s2exp (pf | out, s2e_elt);
+      strpr "; ";
+      fprint_d2explst (pf | out, d2es_elt);
+      strpr ")"
     end
   | D2Earrsub (d2s, d2e_arr, _(*loc_ind*), d2ess_ind) => begin
-      fprint (pf | out, "D2Earrsub(");
-      fprint (pf | out, d2s);
-      fprint (pf | out, "; ");
-      fprint (pf | out, d2e_arr);
-      fprint (pf | out, "; ");
-      fprint (pf | out, "...");
-      fprint (pf | out, ")")
+      strpr "D2Earrsub(";
+      fprint_d2sym (pf | out, d2s);
+      strpr "; ";
+      fprint_d2exp (pf | out, d2e_arr);
+      strpr "; ";
+      fprint1_string (pf | out, "...");
+      strpr ")"
     end
   | D2Eassgn (d2e_lval, d2e_val) => begin
-      fprint (pf | out, "D2Eassgn(");
-      fprint (pf | out, d2e_lval);
-      fprint (pf | out, "; ");
-      fprint (pf | out, d2e_val);
-      fprint (pf | out, ")")
+      strpr "D2Eassgn(";
+      fprint_d2exp (pf | out, d2e_lval);
+      strpr "; ";
+      fprint_d2exp (pf | out, d2e_val);
+      strpr ")"
     end
  | D2Ecaseof _ => begin
-      fprint (pf | out, "D2Ecaseof(");
-      fprint (pf | out, "...");
-      fprint (pf | out, ")")
-    end
+      strpr "D2Ecaseof("; fprint1_string (pf | out, "..."); strpr ")"
+    end // end of [D2Ecaseof]
   | D2Echar c => begin
-      fprint (pf | out, "D2Echar(");
-      fprint (pf | out, c);
-      fprint (pf | out, ")")
+      strpr "D2Echar("; fprint1_char (pf | out, c); strpr ")"
     end
   | D2Econ (d2c, s2as, npf, d2es) => begin
-      fprint (pf | out, "D2Econ(");
-      fprint (pf | out, d2c);
-      fprint (pf | out, "; ");
-      fprint (pf | out, d2es);
-      fprint (pf | out, ")")      
+      strpr "D2Econ(";
+      fprint_d2con (pf | out, d2c);
+      strpr "; ";
+      fprint_d2explst (pf | out, d2es);
+      strpr ")"
     end
   | D2Ecst d2c => begin
-      fprint (pf | out, "D2Ecst(");
-      fprint (pf | out, d2c);
-      fprint (pf | out, ")")
+      strpr "D2Ecst("; fprint_d2cst (pf | out, d2c); strpr ")"
     end
   | D2Ecrypt (knd, d2e) => begin
-      fprint (pf | out, "D2Ecrypt(");
-      fprint (pf | out, knd);
-      fprint (pf | out, "; ");
-      fprint (pf | out, d2e);
-      fprint (pf | out, ")")
+      strpr "D2Ecrypt(";
+      fprint1_int (pf | out, knd);
+      strpr "; ";
+      fprint_d2exp (pf | out, d2e);
+      strpr ")"
     end
   | D2Edelay (lin, d2e) => begin
-      fprint (pf | out, "D2Edelay(");
-      fprint (pf | out, lin);
-      fprint (pf | out, "; ");
-      fprint (pf | out, d2e);
-      fprint (pf | out, ")")
+      strpr "D2Edelay(";
+      fprint1_int (pf | out, lin);
+      strpr "; ";
+      fprint_d2exp (pf | out, d2e);
+      strpr ")"
     end
   | D2Ederef d2e => begin
-      fprint (pf | out, "D2Ederef(");
-      fprint (pf | out, d2e);
-      fprint (pf | out, ")")
+      strpr "D2Ederef("; fprint_d2exp (pf | out, d2e); strpr ")"
     end
   | D2Edynload (fil) => begin
-      fprint (pf | out, "D2Edynload(");
-      $Fil.fprint_filename (pf | out, fil);
-      fprint (pf | out, ")")
+      strpr "D2Edynload("; $Fil.fprint_filename (pf | out, fil); strpr ")"
     end
   | D2Eeffmask (effs, d2e) => begin
-      fprint (pf | out, "D2Eeffmask(");
+      strpr "D2Eeffmask(";
       $Eff.fprint_effectlst (pf | out, effs);
-      fprint (pf | out, "; ");
-      fprint (pf | out, d2e);
-      fprint (pf | out, ")")
+      strpr "; ";
+      fprint_d2exp (pf | out, d2e);
+      strpr ")"
     end
   | D2Eempty () => begin
-      fprint (pf | out, "D2Eempty()");
+      fprint1_string (pf | out, "D2Eempty()")
     end
   | D2Eexist (s2a, d2e) => begin
-      fprint (pf | out, "D2Eexist(");
-      fprint (pf | out, "...");
-      fprint (pf | out, "; ");
-      fprint (pf | out, d2e);
-      fprint (pf | out, ")")
-    end
+      strpr "D2Eexist(";
+      fprint1_string (pf | out, "...");
+      strpr "; ";
+      fprint_d2exp (pf | out, d2e);
+      strpr ")"
+    end // end of [D2Eexist]
   | D2Eextval (s2e, code) => begin
-      fprint (pf | out, s2e);
-      fprint (pf | out, "; ");
-      fprint (pf | out, "\"");
-      fprint (pf | out, code);
-      fprint (pf | out, "\"");
-      fprint (pf | out, ")")
+      strpr "D2Eextval(";
+      fprint_s2exp (pf | out, s2e);
+      strpr "; ";
+      strpr "\"";
+      fprint1_string (pf | out, code);
+      strpr "\"";
+      strpr ")"
     end
   | D2Efix (d2v_fun, d2e_body) => begin
-      fprint (pf | out, "D2Efix(");
-      fprint (pf | out, d2v_fun);
-      fprint (pf | out, "; ");
-      fprint (pf | out, d2e_body);
-      fprint (pf | out, ")")
+      strpr "D2Efix(";
+      fprint_d2var (pf | out, d2v_fun);
+      strpr "; ";
+      fprint_d2exp (pf | out, d2e_body);
+      strpr ")"
     end
-  | D2Efloat str => begin
-      fprint (pf | out, "D2Efloat(");
-      fprint (pf | out, str);
-      fprint (pf | out, ")")
+  | D2Efloat f(*string*) => begin
+      strpr "D2Efloat("; fprint1_string (pf | out, f); strpr ")"
     end
-  | D2Efloatsp str => begin
-      fprint (pf | out, "D2Efloatsp(");
-      fprint (pf | out, str);
-      fprint (pf | out, ")")
+  | D2Efloatsp f(*string*) => begin
+      strpr "D2Efloatsp("; fprint1_string (pf | out, f); strpr ")"
     end
   | D2Efoldat (sarg, d2e) => begin
-      fprint (pf | out, "D2Efoldat(");
-      fprint (pf | out, d2e);
-      fprint (pf | out, ")")
+      strpr "D2Efoldat("; fprint_d2exp (pf | out, d2e); strpr ")"
     end
   | D2Efor (inv, ini, test, post, body) => begin
-      fprint (pf | out, "D2Efor(");
-      fprint (pf | out, "...");
-      fprint (pf | out, "; ");
-      fprint (pf | out, ini);
-      fprint (pf | out, "; ");
-      fprint (pf | out, test);
-      fprint (pf | out, "; ");
-      fprint (pf | out, post);
-      fprint (pf | out, "; ");
-      fprint (pf | out, body);
-      fprint (pf | out, ")")
-    end
+      strpr "D2Efor(";
+      fprint1_string (pf | out, "...");
+      strpr "; ";
+      fprint_d2exp (pf | out, ini);
+      strpr "; ";
+      fprint_d2exp (pf | out, test);
+      strpr "; ";
+      fprint_d2exp (pf | out, post);
+      strpr "; ";
+      fprint_d2exp (pf | out, body);
+      strpr ")"
+    end // end of [D2Efor]
   | D2Efreeat (sarg, d2e) => begin
-      fprint (pf | out, "D2Efreeat(");
-      fprint (pf | out, d2e);
-      fprint (pf | out, ")")
-    end
+      strpr "D2Efreeat("; fprint_d2exp (pf | out, d2e); strpr ")"
+    end // end of [D2Efree]
   | D2Eif (_(*inv*), d2e_cond, d2e_then, od2e_else) => begin
-      fprint (pf | out, "D2Eif(");
-      fprint (pf | out, "...");
-      fprint (pf | out, "; ");
-      fprint (pf | out, d2e_cond);
-      fprint (pf | out, "; ");
-      fprint (pf | out, d2e_then);
+      strpr "D2Eif(";
+      fprint1_string (pf | out, "...");
+      strpr "; ";
+      fprint_d2exp (pf | out, d2e_cond);
+      strpr "; ";
+      fprint_d2exp (pf | out, d2e_then);
       begin case+ od2e_else of
         | Some d2e_else => begin
-           fprint (pf | out, "; "); fprint (pf | out, d2e_else)
-          end
+           strpr "; "; fprint_d2exp (pf | out, d2e_else)
+          end // end of [Some]
         | None () => ()
       end;
-      fprint (pf | out, ")")
+      strpr ")"
     end
   | D2Eint (str, int) => begin
-      fprint (pf | out, "D2Eint(");
-      fprint (pf | out, str);
-      fprint (pf | out, ")")
+      strpr "D2Eint("; fprint1_string (pf | out, str); strpr ")"
     end
   | D2Eintsp (str, int) => begin
-      fprint (pf | out, "D2Eintsp(");
-      fprint (pf | out, str);
-      fprint (pf | out, ")")
+      strpr "D2Eintsp("; fprint1_string (pf | out, str); strpr ")"
     end
   | D2Elam_dyn (lin, npf, p2ts, d2e) => begin
-      fprint (pf | out, "D2Elam_dyn(");
-      fprint (pf | out, lin);
-      fprint (pf | out, "; ");
-      fprint (pf | out, npf);
-      fprint (pf | out, "; ");
-      fprint (pf | out, p2ts);
-      fprint (pf | out, "; ");
-      fprint (pf | out, d2e);
-      fprint (pf | out, ")")
-    end
+      strpr "D2Elam_dyn(";
+      fprint1_int (pf | out, lin);
+      strpr "; ";
+      fprint1_int (pf | out, npf);
+      strpr "; ";
+      fprint_p2atlst (pf | out, p2ts);
+      strpr "; ";
+      fprint_d2exp (pf | out, d2e);
+      strpr ")"
+    end // end of [D2Elam_dyn]
   | D2Elam_met (_, s2es, d2e) => begin
-      fprint (pf | out, "D2Elam_met(");
-      fprint (pf | out, s2es);
-      fprint (pf | out, "; ");
-      fprint (pf | out, d2e);
-      fprint (pf | out, ")")
-    end
+      strpr "D2Elam_met(";
+      fprint_s2explst (pf | out, s2es);
+      strpr "; ";
+      fprint_d2exp (pf | out, d2e);
+      strpr ")"
+    end // end of [D2Elam_met]
   | D2Elam_sta (s2vs, s2ps, d2e) => begin
-      fprint (pf | out, "D2Elam_sta(");
-      fprint (pf | out, s2vs);
-      fprint (pf | out, "; ");
-      fprint (pf | out, s2ps);
-      fprint (pf | out, "; ");
-      fprint (pf | out, d2e);
-      fprint (pf | out, ")");
-    end
+      strpr "D2Elam_sta(";
+      fprint_s2varlst (pf | out, s2vs);
+      strpr "; ";
+      fprint_s2explst (pf | out, s2ps);
+      strpr "; ";
+      fprint_d2exp (pf | out, d2e);
+      strpr ")";
+    end // end of [D2Elam_sta]
   | D2Elet (d2cs, d2e) => begin
-      fprint (pf | out, "D2Elet(");
-      fprint (pf | out, "...");
-      fprint (pf | out, "; ");
-      fprint (pf | out, d2e);
-      fprint (pf | out, ")")
+      strpr "D2Elet(";
+      fprint1_string (pf | out, "...");
+      strpr "; ";
+      fprint_d2exp (pf | out, d2e);
+      strpr ")"
     end
   | D2Emac d2m => begin
-      fprint (pf | out, "D2Emac(");
-      fprint (pf | out, d2m);
-      fprint (pf | out, ")")
+      strpr "D2Emac("; fprint_d2mac (pf | out, d2m); strpr ")"
     end
   | D2Emacsyn (knd, d2e) => let
       val () = case+ knd of
-        | $Syn.MACSYNKINDcross () => fprint (pf | out, "%(")
-        | $Syn.MACSYNKINDdecode () => fprint (pf | out, ",(")
-        | $Syn.MACSYNKINDencode () => fprint (pf | out, "`(")
+        | $Syn.MACSYNKINDcross () => fprint1_string (pf | out, "%(")
+        | $Syn.MACSYNKINDdecode () => fprint1_string (pf | out, ",(")
+        | $Syn.MACSYNKINDencode () => fprint1_string (pf | out, "`(")
     in
-      fprint (pf | out, d2e); fprint (pf | out, ")")
+      fprint_d2exp (pf | out, d2e); strpr ")"
     end
   | D2Eptrof d2e => begin
-      fprint (pf | out, "D2Eptrof(");
-      fprint (pf | out, d2e);
-      fprint (pf | out, ")")
+      strpr "D2Eptrof("; fprint_d2exp (pf | out, d2e); strpr ")"
     end
   | D2Eloopexn i => begin
-      fprint (pf | out, "D2Eloopexn(");
-      fprint (pf | out, i);
-      fprint (pf | out, ")")
+      strpr "D2Eloopexn("; fprint1_int (pf | out, i); strpr ")"
     end
   | D2Elst (lin, os2e, d2es) => begin
-      fprint (pf | out, "D2Elst(");
-      fprint (pf | out, lin);
-      fprint (pf | out, "; ");
+      strpr "D2Elst(";
+      fprint1_int (pf | out, lin);
+      strpr "; ";
       begin case+ os2e of
         | Some s2e => begin
-            fprint (pf | out, s2e); fprint (pf | out, "; ")
+            fprint_s2exp (pf | out, s2e); strpr "; "
           end
         | None () => ()
-      end ;
-      fprint (pf | out, d2es);
-      fprint (pf | out, ")")
-    end
+      end;
+      fprint_d2explst (pf | out, d2es);
+      strpr ")"
+    end // end of [D2Elst]
   | D2Eraise (d2e) => begin
-      fprint (pf | out, "D2Eraise(");
-      fprint (pf | out, d2e);
-      fprint (pf | out, ")")
+      strpr "D2Eraise("; fprint_d2exp (pf | out, d2e); strpr ")"
     end
   | D2Erec (recknd, npf, ld2es) => begin
-      fprint (pf | out, "D2Erec(");
-      fprint (pf | out, recknd);
-      fprint (pf | out, "; ");
-      fprint (pf | out, npf);
-      fprint (pf | out, "; ");
-      fprint (pf | out, "...");
-      fprint (pf | out, ")")
+      strpr "D2Erec(";
+      fprint1_int (pf | out, recknd);
+      strpr "; ";
+      fprint1_int (pf | out, npf);
+      strpr "; ";
+      fprint_labd2explst (pf | out, ld2es);
+      strpr ")"
     end
   | D2Esel (d2e, d2ls) => begin
-      fprint (pf | out, "D2Esel(");
-      fprint (pf | out, d2e);
-      fprint (pf | out, "; ");
-      fprint (pf | out, d2ls);
-      fprint (pf | out, ")")
+      strpr "D2Esel(";
+      fprint_d2exp (pf | out, d2e);
+      strpr "; ";
+      fprint_d2lablst (pf | out, d2ls);
+      strpr ")"
     end
   | D2Eseq d2es => begin
-      fprint (pf | out, "D2Eseq(");
-      fprint (pf | out, d2es);
-      fprint (pf | out, ")")
+      strpr "D2Eseq("; fprint_d2explst (pf | out, d2es); strpr ")"
     end
   | D2Esif (_(*inv*), s2e_cond, d2e_then, d2e_else) => begin
-      fprint (pf | out, "D2Esif(");
-      fprint (pf | out, "...");
-      fprint (pf | out, "; ");
-      fprint (pf | out, s2e_cond);
-      fprint (pf | out, "; ");
-      fprint (pf | out, d2e_then);
-      fprint (pf | out, "; ");
-      fprint (pf | out, d2e_else);
-      fprint (pf | out, ")")
-    end
+      strpr "D2Esif(";
+      fprint1_string (pf | out, "...");
+      strpr "; ";
+      fprint_s2exp (pf | out, s2e_cond);
+      strpr "; ";
+      fprint_d2exp (pf | out, d2e_then);
+      strpr "; ";
+      fprint_d2exp (pf | out, d2e_else);
+      strpr ")"
+    end // end of [D2Esif]
   | D2Espawn d2e => begin
-      fprint (pf | out, "D2Espawn(");
-      fprint (pf | out, d2e);
-      fprint (pf | out, ")")
+      strpr "D2Espawn("; fprint_d2exp (pf | out, d2e); strpr ")"
     end
   | D2Estring (str, len) => begin
-      fprintf (pf | out, "D2Estring(\"%s\", %i)", @(str, len))
+      fprintf1_exn (pf | out, "D2Estring(\"%s\", %i)", @(str, len))
     end
   | D2Estruct (ld2es) => begin
-      fprint (pf | out, "D2Estruct(");
-      fprint (pf | out, ld2es);
-      fprint (pf | out, ")")
+      strpr "D2Estruct("; fprint_labd2explst (pf | out, ld2es); strpr ")"
     end
   | D2Esym d2s => begin
-      fprint (pf | out, "D2Esym(");
-      fprint (pf | out, d2s);
-      fprint (pf | out, ")")
+      strpr "D2Esym("; fprint_d2sym (pf | out, d2s); strpr ")"
     end
   | D2Etmpid (d2e, ts2ess) => begin
-      fprint (pf | out, "D2Etmpid(");
-      fprint (pf | out, d2e);
-      fprint (pf | out, "; ");
-      fprint (pf | out, ts2ess);
-      fprint (pf | out, ")")
+      strpr "D2Etmpid(";
+      fprint_d2exp (pf | out, d2e);
+      strpr "; ";
+      fprint_tmps2explstlst (pf | out, ts2ess);
+      strpr ")"
     end
   | D2Etop () => begin
-      fprint (pf | out, "D2Etop()")
+      fprint1_string (pf | out, "D2Etop()")
     end
   | D2Etrywith (d2e, c2ls) => begin
-      fprint (pf | out, "D2Etrywith(");
-      fprint (pf | out, d2e);
-      fprint (pf | out, "; ");
-      fprint (pf | out, "...");
-      fprint (pf | out, ")")
-    end
+      strpr "D2Etrywith(";
+      fprint_d2exp (pf | out, d2e);
+      strpr "; ";
+      fprint1_string (pf | out, "...");
+      strpr ")"
+    end // end of [D2Etrywith]
   | D2Evar (d2v) => begin
-      fprint (pf | out, "D2Evar(");
-      fprint (pf | out, d2v);
-      fprint (pf | out, ")")
+      strpr "D2Evar("; fprint_d2var (pf | out, d2v); strpr ")"
     end
   | D2Eviewat (d2e) => begin
-      fprint (pf | out, "D2Eviewat(");
-      fprint (pf | out, d2e);
-      fprint (pf | out, ")")
+      strpr "D2Eviewat("; fprint_d2exp (pf | out, d2e); strpr ")"
     end
   | D2Ewhere (d2e, d2cs) => begin
-      fprint (pf | out, "D2Ewhere(");
-      fprint (pf | out, d2e);
-      fprint (pf | out, "; ");
-      fprint (pf | out, "...");
-      fprint (pf | out, ")")
-    end
+      strpr "D2Ewhere(";
+      fprint_d2exp (pf | out, d2e);
+      strpr "; ";
+      fprint1_string (pf | out, "...");
+      strpr ")"
+    end // end of [D2Ewhere]
   | D2Ewhile (inv, test, body) => begin
-      fprint (pf | out, "...");
-      fprint (pf | out, "; ");
-      fprint (pf | out, test);
-      fprint (pf | out, "; ");
-      fprint (pf | out, body);
-    end
+        strpr "D2Ewhile(";
+      fprint1_string (pf | out, "...");
+      strpr "; ";
+      fprint_d2exp (pf | out, test);
+      strpr "; ";
+      fprint_d2exp (pf | out, body);
+      strpr ")"
+    end // end of [D2Ewhile]
 end // end of [fprint_d2exp]
 
 //
@@ -696,8 +646,8 @@ implement fprint_d2explst {m} (pf | out, d2es) = let
   fun aux (out: &FILE m, i: int, d2es: d2explst)
     : void = begin case+ d2es of
     | cons (d2e, d2es) => begin
-        if (i > 0) then fprint (pf | out, ", ");
-        fprint (pf | out, d2e); aux (out, i + 1, d2es)
+        if (i > 0) then fprint1_string (pf | out, ", ");
+        fprint_d2exp (pf | out, d2e); aux (out, i + 1, d2es)
       end
     | nil () => ()
   end // end of [aux]
@@ -711,8 +661,8 @@ implement fprint_d2explstlst {m} (pf | out, d2ess) = let
   fun aux (out: &FILE m, i: int, d2ess: d2explstlst)
     : void = begin case+ d2ess of
     | cons (d2es, d2ess) => begin
-        if (i > 0) then fprint (pf | out, "; ");
-        fprint (pf | out, d2es); aux (out, i + 1, d2ess)
+        if (i > 0) then fprint1_string (pf | out, "; ");
+        fprint_d2explst (pf | out, d2es); aux (out, i + 1, d2ess)
       end
     | nil () => ()
   end // end of [aux]
@@ -722,21 +672,21 @@ end // end of [fprint_d2explstlst]
 
 //
 
-implement fprint_labd2explst {m} (pf | out, ld2es0) = let
-
-fun aux (out: &FILE m, i: int, ld2es: labd2explst)
-  : void = begin case+ ld2es of
+implement fprint_labd2explst {m} (pf | out, ld2es) = let
+  fun aux
+    (out: &FILE m, i: int, ld2es: labd2explst): void = let
+    macdef strpr (s) = fprint1_string (pf | out, ,(s))
+  in
+    case+ ld2es of
     | LABD2EXPLSTcons (l, d2e, ld2es) => begin
-        if i > 0 then fprint (pf | out, ", ");
-        fprint (pf | out, l);
-        fprint (pf | out, "= ");
-        fprint (pf | out, d2e);
+        if i > 0 then strpr ", ";
+        fprint_label (pf | out, l); strpr "= "; fprint_d2exp (pf | out, d2e);
         aux (out, i+1, ld2es)
       end
     | LABD2EXPLSTnil () => ()
   end // end of [aux]
 in
-  aux (out, 0, ld2es0)
+  aux (out, 0, ld2es)
 end // end of [fprint_labd2explst]
 
 (* ****** ****** *)
@@ -755,22 +705,25 @@ implement prerr_labd2explst (ld2es) = prerr_mac (fprint_labd2explst, ld2es)
 
 (* ****** ****** *)
 
-implement fprint_d2lab (pf | out, d2l) =
+implement fprint_d2lab (pf | out, d2l) = let
+  macdef strpr (s) = fprint1_string (pf | out, ,(s))
+in
   case+ d2l.d2lab_node of
-  | D2LABlab lab => fprint (pf | out, lab)
+  | D2LABlab lab => fprint_label (pf | out, lab)
   | D2LABind ind =>  begin
-      fprint (pf | out, "["); fprint (pf | out, ind); fprint (pf | out, "]")
+      strpr "["; fprint_d2explstlst (pf | out, ind); strpr "]"
     end
+end // end of [fprint_d2lab]
 
 implement fprint_d2lablst {m} (pf | out, d2ls) = let
-  fun aux (out: &FILE m, i: int, d2ls: d2lablst)
-    : void = begin case+ d2ls of
+  fun aux (out: &FILE m, i: int, d2ls: d2lablst): void =
+    case+ d2ls of
     | cons (d2l, d2ls) => begin
-        if (i > 0) then fprint (pf | out, ", ");
-        fprint (pf | out, d2l); aux (out, i + 1, d2ls)
+        if (i > 0) then fprint1_string (pf | out, ", ");
+        fprint_d2lab (pf | out, d2l); aux (out, i + 1, d2ls)
       end
     | nil () => ()
-  end // end of [aux]
+  // end of [aux]
 in
   aux (out, 0, d2ls)
 end // end of [fprint_d2lablst]

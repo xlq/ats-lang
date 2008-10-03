@@ -102,8 +102,7 @@ ats_ccomp_emit_identifier (ats_ptr_type out, ats_ptr_type name) {
 
 (* ****** ****** *)
 
-implement emit_label (pf | out, l) =
-  $Lab.fprint_label (pf | out, l)
+implement emit_label (pf | out, l) = $Lab.fprint_label (pf | out, l)
 
 (* ****** ****** *)
 
@@ -148,9 +147,10 @@ ats_ccomp_emit_filename (ats_ptr_type out, ats_ptr_type fil) {
 
 implement emit_d2con (pf | out, d2c) = let
   val fil = d2con_fil_get d2c
-  val name = $Sym.symbol_name (d2con_sym_get d2c)
+  val sym = d2con_sym_get d2c
+  val name = $Sym.symbol_name sym
   val () = emit_filename (pf | out, fil)
-  val () = fprint (pf | out, "__")
+  val () = fprint1_string (pf | out, "__")
 in
   emit_identifier (pf | out, name)
 end // end of [emit_d2con]
@@ -162,7 +162,7 @@ in
     val fil = d2cst_fil_get (d2c)
     val name = $Sym.symbol_name (d2cst_sym_get d2c)
     val () = emit_filename (pf | out, fil)
-    val () = fprint (pf | out, "__")
+    val () = fprint1_string (pf | out, "__")
     val () = emit_identifier (pf | out, name)
   in
     // empty
@@ -177,7 +177,9 @@ fn emit_funlab_prefix {m:file_mode}
   val prfx = $Glo.ats_function_name_prefix_get ()
 in
   if stropt_is_some prfx then begin
-    let val prfx = stropt_unsome prfx in fprint (pf | out, prfx) end
+    let val prfx = stropt_unsome prfx in
+      fprint1_string (pf | out, prfx)
+    end
   end else begin
     // the default is the empty string
   end
@@ -189,7 +191,8 @@ implement emit_funlab (pf | out, fl) = begin
       val () = emit_d2cst (pf | out, d2c)
     in
       case+ d2cst_kind_get d2c of
-      | $Syn.DCSTKINDval () => fprint (pf | out, "$fun") | _ => ()
+      | $Syn.DCSTKINDval () => fprint1_string (pf | out, "$fun")
+      | _ => ()
     end // end of [D2CSTOPTsome]
   | D2CSTOPTnone () => let // local function
       val () = emit_funlab_prefix (pf | out)
@@ -200,16 +203,16 @@ implement emit_funlab (pf | out, fl) = begin
 end // end of [emit_funlab]
 
 implement emit_tmplab (pf | out, tl) = begin
-  fprint (pf | out, "__ats_lab_");
+  fprint1_string (pf | out, "__ats_lab_");
   $Stamp.fprint_stamp (pf | out, tmplab_stamp_get tl)
 end
 
 implement emit_tmplabint (pf | out, tl, i) = begin
-  emit_tmplab (pf | out, tl); fprintf (pf | out, "_%i", @(i))
+  emit_tmplab (pf | out, tl); fprintf1_exn (pf | out, "_%i", @(i))
 end
 
 implement emit_tmpvar (pf | out, tmp) = begin
-  fprint (pf | out, "tmp");
+  fprint1_string (pf | out, "tmp");
   $Stamp.fprint_stamp (pf | out, tmpvar_stamp_get tmp)
 end
 
@@ -222,7 +225,7 @@ fn _emit_hityp {m:file_mode}
   : void = let
   val HITNAM (knd, name) = hit.hityp_name
   val () = if knd = 0 then fprint_string (pf | out, name)
-  val () = if knd > 0 then fprint (pf | out, PTR_TYPE_NAME)
+  val () = if knd > 0 then fprint1_string (pf | out, PTR_TYPE_NAME)
 in
   // empty
 end // end of [_emit_hityp]
@@ -236,7 +239,7 @@ fn _emit_hityplst {m:file_mode}
   fun aux (out: &FILE m, i: int, hits: hityplst)
     : void = begin case+ hits of
     | list_cons (hit, hits) => begin
-        if i > 0 then fprint (pf | out, ", ");
+        if i > 0 then fprint1_string (pf | out, ", ");
         _emit_hityp (pf | out, hit); aux (out, i+1, hits)
       end
     | list_nil () => ()
@@ -255,7 +258,7 @@ fn _emit_hityp_ptr {m:file_mode}
   : void = let
   val HITNAM (knd, name) = hit.hityp_name
   val () = fprint_string (pf | out, name)
-  val () = if knd = 0 then fprint (pf | out, '&') // an error!
+  val () = if knd = 0 then fprint1_char (pf | out, '&') // an error!
 in
   // empty
 end // end of [emit_hityp_ptr]
@@ -275,20 +278,21 @@ extern fun emit_hityp_clofun {m:file_mode} (
 
 implement emit_hityp_fun (pf | out, hits_arg, hit_res) = begin
   emit_hityp (pf | out, hit_res);
-  fprint (pf | out, "(*)(");
+  fprint1_string (pf | out, "(*)(");
   emit_hityplst (pf | out, hits_arg);
-  fprint (pf | out, ")")
+  fprint1_string (pf | out, ")")
 end // end of [emit_hityp_fun]
 
 implement emit_hityp_clofun (pf | out, hits_arg, hit_res) = let
   val () = emit_hityp (pf | out, hit_res)
-  val () = fprint (pf | out, "(*)(ats_clo_ptr_type")
+  val () = fprint1_string (pf | out, "(*)(ats_clo_ptr_type")
   val () = case+ 0 of
     | _ when hityplst_is_cons hits_arg => begin
-        fprint (pf | out, ", "); emit_hityplst (pf | out, hits_arg)
-      end
+        fprint1_string (pf | out, ", ");
+        emit_hityplst (pf | out, hits_arg)
+      end // end of [_ when ...]
     | _ => ()
-  val () = fprint (pf | out, ")")
+  val () = fprint1_string (pf | out, ")")
 in
   // empty
 end // end of [emit_hityp_fun]
@@ -365,7 +369,7 @@ fn emit_valprim_arg {m:file_mode}
   : void = begin case+ funarglst_find ind of
   | ~Some_vt vp => emit_valprim (pf | out, vp)
   | ~None_vt () => begin
-      fprint (pf | out, "arg"); fprint_int (pf | out, ind)
+      fprint1_string (pf | out, "arg"); fprint1_int (pf | out, ind)
     end
 end // end of [emit_valprim_arg]
 
@@ -373,18 +377,18 @@ fn emit_valprim_arg_ref {m:file_mode}
   (pf: file_mode_lte (m, w) | out: &FILE m, ind: int, hit: hityp_t)
   : void = begin case+ funarglst_find ind of
   | ~Some_vt vp => begin
-      fprint (pf | out, "*((");
+      fprint1_string (pf | out, "*((");
       emit_hityp (pf | out, hit);
-      fprint (pf | out, "*)");
+      fprint1_string (pf | out, "*)");
       emit_valprim (pf | out, vp);
-      fprint (pf | out, ")")
+      fprint1_string (pf | out, ")")
     end
   | ~None_vt () => begin
-      fprint (pf | out, "*((");
+      fprint1_string (pf | out, "*((");
       emit_hityp (pf | out, hit);
-      fprint (pf | out, "*)arg");
-      fprint_int (pf | out, ind);
-      fprint (pf | out, ")")
+      fprint1_string (pf | out, "*)arg");
+      fprint1_int (pf | out, ind);
+      fprint1_string (pf | out, ")")
     end
 end // end of [emit_valprim_arg_ref]
 
@@ -394,21 +398,21 @@ fn emit_valprim_bool {m:file_mode}
   (pf: file_mode_lte (m, w) | out: &FILE m, b: bool)
   : void = begin
   if b then begin
-    fprint (pf | out, "ats_true_bool")
+    fprint1_string (pf | out, "ats_true_bool")
   end else begin
-    fprint (pf | out, "ats_false_bool")
+    fprint1_string (pf | out, "ats_false_bool")
   end
 end // end of [emit_valprim_bool]
 
 fn emit_valprim_char {m:file_mode}
   (pf: file_mode_lte (m, w) | out: &FILE m, c: char)
   : void = begin case+ c of
-  | '\'' => fprint (pf | out, "'\\''")
-  | '\n' => fprint (pf | out, "'\\n'")
-  | '\t' => fprint (pf | out, "'\\t'")
-  | '\\' => fprint (pf | out, "'\\\\'")
-  | _ when char_isprint c => fprintf (pf | out, "'%c'", @(c))
-  | _ => fprintf (pf | out, "'\\%.3o'", @(uint_of_char c))
+  | '\'' => fprint1_string (pf | out, "'\\''")
+  | '\n' => fprint1_string (pf | out, "'\\n'")
+  | '\t' => fprint1_string (pf | out, "'\\t'")
+  | '\\' => fprint1_string (pf | out, "'\\\\'")
+  | _ when char_isprint c => fprintf1_exn (pf | out, "'%c'", @(c))
+  | _ => fprintf1_exn (pf | out, "'\\%.3o'", @(uint_of_char c))
 end
 
 fn emit_valprim_clo {m:file_mode} (
@@ -418,9 +422,9 @@ fn emit_valprim_clo {m:file_mode} (
   val entry = funlab_entry_get_some (fl)
   val vtps = funentry_vtps_get_all (entry)
   val () = emit_funlab (pf | out, fl)
-  val () = fprint (pf | out, "_closure_make (")
+  val () = fprint1_string (pf | out, "_closure_make (")
   val _(*int*) = emit_cloenv (pf | out, map, vtps)
-  val () = fprint (pf | out, ")")
+  val () = fprint1_string (pf | out, ")")
 in
   // empty
 end // end of [emit_valprim_clo]
@@ -458,20 +462,20 @@ fn emit_valprim_ptrof {m:file_mode}
   (pf: file_mode_lte (m, w) | out: &FILE m, vp: valprim)
   : void = begin case+ vp.valprim_node of
   | VParg ind => begin
-      fprint (pf | out, "(&");
+      fprint1_string (pf | out, "(&");
       emit_valprim_arg (pf | out, ind);
-      fprint (pf | out, ")")
+      fprint1_string (pf | out, ")")
     end
   | VParg_ref ind => emit_valprim_arg (pf | out, ind)
   | VPenv vtp => let
       val ind = varindmap_find_some (vartyp_var_get vtp)
     in
-      fprint (pf | out, "env"); fprint_int (pf | out, ind)
+      fprint1_string (pf | out, "env"); fprint1_int (pf | out, ind)
     end
   | VPtmp_ref tmp => let
-      val () = fprint (pf | out, "(&")
+      val () = fprint1_string (pf | out, "(&")
       val () = emit_tmpvar (pf | out, tmp)
-      val () = fprint (pf | out, ")")
+      val () = fprint1_string (pf | out, ")")
     in
       // empty
     end // end of [VPtmp]
@@ -487,13 +491,13 @@ end // end of [emit_valprim_ptrof]
 fn emit_select_lab {m:file_mode} (
     pf: file_mode_lte (m, w)| out: &FILE m, lab: lab_t
   ) : void = begin
-  fprint (pf | out, ".atslab_"); emit_label (pf | out, lab)
+  fprint1_string (pf | out, ".atslab_"); emit_label (pf | out, lab)
 end // end of [emit_select_lab]
 
 fn emit_select_lab_ptr {m:file_mode} (
     pf: file_mode_lte (m, w)| out: &FILE m, lab: lab_t
   ) : void = begin
-  fprint (pf | out, "->atslab_"); emit_label (pf | out, lab)
+  fprint1_string (pf | out, "->atslab_"); emit_label (pf | out, lab)
 end // end of [emit_select_lab_ptr]
 
 fn emit_array_index  {m:file_mode} (
@@ -504,9 +508,9 @@ fn emit_array_index  {m:file_mode} (
       out: &FILE m, vpss: valprimlstlst
     ) : void = begin case+ vpss of
     | list_cons (vps, vpss) => begin
-        fprint (pf | out, "[");
+        fprint1_string (pf | out, "[");
         emit_valprimlst (pf | out, vps);
-        fprint (pf | out, "]");
+        fprint1_string (pf | out, "]");
         aux (out, vpss)
       end // end of [list_cons]
     | list_nil () => ()
@@ -526,20 +530,20 @@ fn emit_valprim_select_bef {m:file_mode} (
     | list_cons (off, offs) => begin
       case+ off of
       | OFFSETind (vpss, hit_elt) => begin
-          fprint (pf | out, "((");
+          fprint1_string (pf | out, "((");
           emit_hityp (pf | out, hit_elt);
-          fprint (pf | out, "*)");
+          fprint1_string (pf | out, "*)");
           aux (out, offs)
         end // end of [OFFSETind]
       | OFFSETlab (lab, hit_rec) => let
           val hit_rec = hityp_decode (hit_rec)
           val HITNAM (knd, name) = hit_rec.hityp_name
-          val () = fprint (pf | out, "(")
+          val () = fprint1_string (pf | out, "(")
           val () =
             if knd > 0 (*ptr*) then begin
-              fprint (pf | out, "(");
-              fprint (pf | out, name);
-              fprint (pf | out, "*)")
+              fprint1_string (pf | out, "(");
+              fprint1_string (pf | out, name);
+              fprint1_string (pf | out, "*)")
             end
         in
           aux (out, offs)
@@ -560,25 +564,25 @@ fn emit_valprim_select_aft {m:file_mode} (
     : void = begin case+ offs of
     | list_cons (off, offs) => begin case+ off of
       | OFFSETind (vpss, hit_elt) => begin
-          fprint (pf | out, ")");
+          fprint1_string (pf | out, ")");
           emit_array_index (pf | out, vpss);
           aux (out, offs)
         end // end of [OFFSETind]
       | OFFSETlab (lab, hit_rec) => begin
         case+ 0 of
         | _ when hityp_t_is_tyrecbox hit_rec => let
-            val () = fprint (pf | out, ")")
+            val () = fprint1_string (pf | out, ")")
             val () = emit_select_lab_ptr (pf | out, lab)
           in
             aux (out, offs)
           end
         | _ when hityp_t_is_tyrecsin hit_rec => let
-            val () = fprint (pf | out, ")")
+            val () = fprint1_string (pf | out, ")")
           in
             aux (out, offs)
           end
         | _ => let
-            val () = fprint (pf | out, ")")
+            val () = fprint1_string (pf | out, ")")
             val () = emit_select_lab (pf | out, lab)
           in
             aux (out, offs)
@@ -615,50 +619,50 @@ fn emit_valprim_select_varptr {m:file_mode} (
       out: &FILE m, knd: int, vp_root: valprim, off: offset
     ) : void = begin case+ off of
     | OFFSETind (vpss, hit_elt) => begin
-        fprint (pf | out, "((");
+        fprint1_string (pf | out, "((");
         emit_hityp (pf | out, hit_elt);
-        fprint (pf | out, "*)");
+        fprint1_string (pf | out, "*)");
         if knd > 0 then begin
           emit_valprim (pf | out, vp_root); // ptr
         end else begin
           emit_valprim_ptrof (pf | out, vp_root); // var
         end; // end of [if]
-        fprint (pf | out, ")");
+        fprint1_string (pf | out, ")");
         emit_array_index (pf | out, vpss);
       end // end of [OFFSETind]
     | OFFSETlab (lab, hit_rec) => begin
       case+ 0 of
       | _ when hityp_t_is_tyrecbox hit_rec => let
-          val () = fprint (pf | out, "((")
+          val () = fprint1_string (pf | out, "((")
           val () = emit_hityp_ptr (pf | out, hit_rec)
-          val () = fprint (pf | out, "*)")
+          val () = fprint1_string (pf | out, "*)")
           val () = emit_valprim (pf | out, vp_root)
-          val () = fprint (pf | out, ")")
+          val () = fprint1_string (pf | out, ")")
         in
           emit_select_lab_ptr (pf | out, lab)
         end
       | _ when hityp_t_is_tyrecsin hit_rec => let
-          val () = fprint (pf | out, "(")
+          val () = fprint1_string (pf | out, "(")
           val () = emit_hityp (pf | out, hit_rec)
-          val () = if knd > 0 then fprint (pf | out, '*')
-          val () = fprint (pf | out, ")")
+          val () = if knd > 0 then fprint1_char (pf | out, '*')
+          val () = fprint1_string (pf | out, ")")
         in
           emit_valprim (pf | out, vp_root)
         end
       | _ => let // [hit_rec] is flat!
-          val () = fprint (pf | out, "(")
+          val () = fprint1_string (pf | out, "(")
           val () = (case+ 0 of
             | _ when knd > 0 => let
-                val () = fprint (pf | out, "(")
+                val () = fprint1_string (pf | out, "(")
                 val () = emit_hityp (pf | out, hit_rec)
-                val () = fprint (pf | out, "*)")
+                val () = fprint1_string (pf | out, "*)")
               in
                 // empty
               end // end of [_ when ...]
             | _ => ()
           ) // end of [val]
           val () = emit_valprim (pf | out, vp_root)
-          val () = fprint (pf | out, ")")
+          val () = fprint1_string (pf | out, ")")
         in
           case+ 0 of
           | _ when knd > 0 => begin
@@ -762,7 +766,7 @@ implement emit_valprim (pf | out, vp) = begin
     end
   | VPcst d2c => begin case+ 0 of
     | _ when d2cst_is_fun d2c => begin
-        fprint (pf | out, '&'); emit_d2cst (pf | out, d2c)
+        fprint1_char (pf | out, '&'); emit_d2cst (pf | out, d2c)
       end
     | _ => emit_d2cst (pf | out, d2c)
     end
@@ -772,41 +776,43 @@ implement emit_valprim (pf | out, vp) = begin
     in
       case+ 0 of
       | _ when d2var_is_mutable d2v => begin
-          fprint (pf | out, "*(");
+          fprint1_string (pf | out, "*(");
           emit_hityp (pf | out, vartyp_typ_get vtp);
-          fprintf (pf | out, "*)env%i", @(ind))
+          fprintf1_exn (pf | out, "*)env%i", @(ind))
         end
       | _ => begin
-          fprintf (pf | out, "env%i", @(ind))
+          fprintf1_exn (pf | out, "env%i", @(ind))
         end
     end // end of [VPenv]
-  | VPext code => fprint (pf | out, code)
+  | VPext code => fprint1_string (pf | out, code)
   | VPfloat f => emit_valprim_float (pf | out, f)
   | VPfun fl => begin
-      fprint (pf | out, "&"); emit_funlab (pf | out, fl)
+      fprint1_string (pf | out, "&"); emit_funlab (pf | out, fl)
     end
   | VPint (int) =>
       $IntInf.fprint_intinf (pf | out, int)
-  | VPintsp (str, _(*int*)) => fprint (pf | out, str)
+  | VPintsp (str, _(*int*)) => fprint1_string (pf | out, str)
   | VPptrof vp => emit_valprim_ptrof (pf | out, vp)
   | VPptrof_ptr_offs (vp, offs) => begin
-      fprint (pf | out, '&'); emit_valprim_select_ptr (pf | out, vp, offs)
+      fprint1_char (pf | out, '&');
+      emit_valprim_select_ptr (pf | out, vp, offs)
     end
   | VPptrof_var_offs (vp, offs) => begin
-      fprint (pf | out, '&'); emit_valprim_select_var (pf | out, vp, offs)
+      fprint1_char (pf | out, '&');
+      emit_valprim_select_var (pf | out, vp, offs)
     end
   | VPsizeof hit => let
-      val () = fprint (pf | out, "sizeof(")
+      val () = fprint1_string (pf | out, "sizeof(")
       val () = emit_hityp (pf | out, hit)
-      val () = fprint (pf | out, ")")
+      val () = fprint1_string (pf | out, ")")
     in
       // empty
     end // end of [VPsizeof]
   | VPstring (str, len) => emit_valprim_string (pf | out, str, len)
   | VPtmp tmp => emit_valprim_tmpvar (pf | out, tmp)
   | VPtmp_ref tmp => emit_valprim_tmpvar (pf | out, tmp)
-  | VPtop () => fprint (pf | out, "?top") // for debugging
-  | VPvoid () => fprint (pf | out, "?void") // for debugging
+  | VPtop () => fprint1_string (pf | out, "?top") // for debugging
+  | VPvoid () => fprint1_string (pf | out, "?void") // for debugging
 (*
   | _ => begin
       prerr "Internal Error: emit_valprim: vp = "; prerr vp; prerr_newline ();
@@ -819,7 +825,7 @@ implement emit_valprimlst {m} (pf | out, vps) = let
   fun aux (out: &FILE m, i: int, vps: valprimlst)
     : void = begin case+ vps of
     | list_cons (vp, vps) => begin
-        if i > 0 then fprint (pf | out, ", ");
+        if i > 0 then fprint1_string (pf | out, ", ");
         emit_valprim (pf | out, vp); aux (out, i+1, vps)
       end
     | list_nil () => ()
@@ -833,27 +839,27 @@ end // end of [emit_valprimlst]
 implement emit_kont (pf | out, kont) = begin
   case+ kont of
   | KONTtmplab tl => begin
-      fprint (pf | out, "goto ");
+      fprint1_string (pf | out, "goto ");
       emit_tmplab (pf | out, tl)
     end
   | KONTtmplabint (tl, i) => begin
-      fprint (pf | out, "goto ");
+      fprint1_string (pf | out, "goto ");
       emit_tmplabint (pf | out, tl, i)
     end
   | KONTcaseof_fail () => begin
-      fprint (pf | out, "ats_caseof_failure ()")
+      fprint1_string (pf | out, "ats_caseof_failure ()")
     end
   | KONTfunarg_fail fl => begin
-      fprint (pf | out, "ats_funarg_failure ()")
+      fprint1_string (pf | out, "ats_funarg_failure ()")
     end
   | KONTraise vp_exn => begin
-      fprint (pf | out, "ats_raise_exn (");
+      fprint1_string (pf | out, "ats_raise_exn (");
       emit_valprim (pf | out, vp_exn);
-      fprint (pf | out, ")")
+      fprint1_string (pf | out, ")")
     end
   | KONTmatpnt mpt => emit_matpnt (pf | out, mpt)
   | KONTnone () => begin
-      fprint (pf | out, "ats_deadcode_failure ()")
+      fprint1_string (pf | out, "ats_deadcode_failure ()")
     end
 end // end of [emit_kont]
 
@@ -866,21 +872,21 @@ extern fun emit_patck {m:file_mode} (
 implement emit_patck
   (pf | out, vp, patck, fail) = begin case+ patck of
   | PATCKbool b => begin
-      fprint (pf | out, "if (");
-      if b then fprint (pf | out, '!');
+      fprint1_string (pf | out, "if (");
+      if b then fprint1_char (pf | out, '!');
       emit_valprim (pf | out, vp);
-      fprint (pf | out, ") { ");
+      fprint1_string (pf | out, ") { ");
       emit_kont (pf | out, fail);
-      fprint (pf | out, " ; }")
+      fprint1_string (pf | out, " ; }")
     end
   | PATCKchar c => begin
-      fprint (pf | out, "if (");
+      fprint1_string (pf | out, "if (");
       emit_valprim (pf | out, vp);
-      fprint (pf | out, " != ");
+      fprint1_string (pf | out, " != ");
       emit_valprim_char (pf | out, c);
-      fprint (pf | out, ") { ");
+      fprint1_string (pf | out, ") { ");
       emit_kont (pf | out, fail);
-      fprint (pf | out, " ; }")
+      fprint1_string (pf | out, " ; }")
     end
   | PATCKcon d2c => let
       val s2c = d2con_scst_get (d2c)
@@ -895,22 +901,22 @@ implement emit_patck
           ) : bool
           val iscons = not (isnil)
         in
-          fprint (pf | out, "if (");
+          fprint1_string (pf | out, "if (");
           emit_valprim (pf | out, vp);
-          if isnil then fprint (pf | out, " != ");
-          if iscons then fprint (pf | out, " == ");
-          fprint (pf | out, "(ats_sum_ptr_type)0) { ");
+          if isnil then fprint1_string (pf | out, " != ");
+          if iscons then fprint1_string (pf | out, " == ");
+          fprint1_string (pf | out, "(ats_sum_ptr_type)0) { ");
           emit_kont (pf | out, fail);
-          fprint (pf | out, " ; }")
+          fprint1_string (pf | out, " ; }")
         end // end of [s2cst_is_listlike]
       | _ => begin
-          fprint (pf | out, "if (((ats_sum_ptr_type)");
+          fprint1_string (pf | out, "if (((ats_sum_ptr_type)");
           emit_valprim (pf | out, vp);
-          fprint (pf | out, ")->tag != ");
-          fprint_int (pf | out, d2con_tag_get d2c);
-          fprint (pf | out, ") { ");
+          fprint1_string (pf | out, ")->tag != ");
+          fprint1_int (pf | out, d2con_tag_get d2c);
+          fprint1_string (pf | out, ") { ");
           emit_kont (pf | out, fail);
-          fprint (pf | out, " ; }")
+          fprint1_string (pf | out, " ; }")
         end
     end // end of [PATCKcon]
   | PATCKexn d2c => let
@@ -918,50 +924,50 @@ implement emit_patck
     in
       case+ arity of
       | _ when arity = 0 => begin
-          fprint (pf | out, "if (");
+          fprint1_string (pf | out, "if (");
           emit_valprim (pf | out, vp);
-          fprint (pf | out, " != &");
+          fprint1_string (pf | out, " != &");
           emit_d2con (pf | out, d2c);
-          fprint (pf | out, ") { ");
+          fprint1_string (pf | out, ") { ");
           emit_kont (pf | out, fail);
-          fprint (pf | out, " ; }")
+          fprint1_string (pf | out, " ; }")
         end
       | _ => begin
-          fprint (pf | out, "if (((ats_exn_ptr_type)");
+          fprint1_string (pf | out, "if (((ats_exn_ptr_type)");
           emit_valprim (pf | out, vp);
-          fprint (pf | out, ")->tag != ");
+          fprint1_string (pf | out, ")->tag != ");
           emit_d2con (pf | out, d2c);
-          fprint (pf | out, ".tag) { ");
+          fprint1_string (pf | out, ".tag) { ");
           emit_kont (pf | out, fail);
-          fprint (pf | out, " ; }")
+          fprint1_string (pf | out, " ; }")
         end
     end // end of [PATCKexn]
   | PATCKfloat (f) => begin
-      fprint (pf | out, "if (");
+      fprint1_string (pf | out, "if (");
       emit_valprim (pf | out, vp);
-      fprint (pf | out, " != ");
+      fprint1_string (pf | out, " != ");
       emit_valprim_float (pf | out, f);
-      fprint (pf | out, ") { ");
+      fprint1_string (pf | out, ") { ");
       emit_kont (pf | out, fail);
-      fprint (pf | out, " ; }")
+      fprint1_string (pf | out, " ; }")
     end
   | PATCKint int => begin
-      fprint (pf | out, "if (");
+      fprint1_string (pf | out, "if (");
       emit_valprim (pf | out, vp);
-      fprint (pf | out, " != ");
+      fprint1_string (pf | out, " != ");
       emit_valprim_int (pf | out, int);
-      fprint (pf | out, ") { ");
+      fprint1_string (pf | out, ") { ");
       emit_kont (pf | out, fail);
-      fprint (pf | out, " ; }")
+      fprint1_string (pf | out, " ; }")
     end
   | PATCKstring str => begin
-      fprint (pf | out, "if (strcmp(");
+      fprint1_string (pf | out, "if (strcmp(");
       emit_valprim (pf | out, vp);
-      fprint (pf | out, ", ");
+      fprint1_string (pf | out, ", ");
       emit_valprim_string (pf | out, str, length str);
-      fprint (pf | out, ")) { ");
+      fprint1_string (pf | out, ")) { ");
       emit_kont (pf | out, fail);
-      fprint (pf | out, " ; }")
+      fprint1_string (pf | out, " ; }")
     end
 (*
   | _ => begin
@@ -979,14 +985,14 @@ extern fun emit_branch {m:file_mode}
 
 implement emit_branch (pf | out, br) = let
   val inss = br.branch_inss
-  val () = fprint (pf | out, "/* branch: ")
+  val () = fprint1_string (pf | out, "/* branch: ")
   val () = emit_tmplab (pf | out, br.branch_lab)
-  val () = fprint (pf | out, " */")
+  val () = fprint1_string (pf | out, " */")
   val () = begin case+ inss of
-    | list_cons _ => fprint (pf | out, '\n') | list_nil () => ()
+    | list_cons _ => fprint1_char (pf | out, '\n') | list_nil () => ()
   end
 in
-  emit_instrlst (pf | out, inss); fprint (pf | out, "\nbreak ;\n")
+  emit_instrlst (pf | out, inss); fprint1_string (pf | out, "\nbreak ;\n")
 end // end of [emit_branch]
 
 extern fun emit_branchlst {m:file_mode}
@@ -996,7 +1002,7 @@ implement emit_branchlst {m} (pf | out, brs) = let
   fun aux (out: &FILE m, i: int, brs: branchlst): void =
     case+ brs of
     | list_cons (br, brs) => let
-        val () = if i > 0 then fprint (pf | out, '\n')
+        val () = if i > 0 then fprint1_char (pf | out, '\n')
       in
         emit_branch (pf | out, br); aux (out, i+1, brs)
       end
@@ -1015,7 +1021,7 @@ implement emit_cloenv {m}
     case+ envmap_find (map, d2v) of
     | ~Some_vt vp => let
         val () = begin
-          if d2var_is_mutable d2v then fprint (pf | out, '&')
+          if d2var_is_mutable d2v then fprint1_char (pf | out, '&')
         end
       in
         emit_valprim (pf | out, vp)
@@ -1039,9 +1045,9 @@ implement emit_cloenv {m}
     ) :<cloptr1> int = begin
     case+ d2vs of
     | ~list_vt_cons (d2v, d2vs) => let
-        val () = if i > 0 then fprint (pf | out, ", ")
+        val () = if i > 0 then fprint1_string (pf | out, ", ")
         val () = begin case+ varindmap_find (d2v) of
-          | ~Some_vt ind => fprintf (pf | out, "env%i", @(ind))
+          | ~Some_vt ind => fprintf1_exn (pf | out, "env%i", @(ind))
           | ~None_vt () => aux_envmap (out, map, d2v)
         end
       in
@@ -1070,23 +1076,23 @@ fn emit_move_con {m:file_mode} (
   ) : void = begin case+ vps of
   | list_cons _ => let
       val () = emit_valprim_tmpvar (pf | out, tmp)
-      val () = fprint (pf | out, " = ATS_MALLOC (sizeof(")
+      val () = fprint1_string (pf | out, " = ATS_MALLOC (sizeof(")
       val () = emit_hityp_ptr (pf | out, hit_sum)
-      val () = fprint (pf | out, ")) ;")
+      val () = fprint1_string (pf | out, ")) ;")
       val () = (
         case+ 0 of
         | _ when d2con_is_exn (d2c) => begin
-            fprint (pf | out, '\n');
-            fprint (pf | out, "((ats_exn_ptr_type)");
+            fprint1_char (pf | out, '\n');
+            fprint1_string (pf | out, "((ats_exn_ptr_type)");
             emit_valprim_tmpvar (pf | out, tmp);
-            fprint (pf | out, ")->tag = ");
+            fprint1_string (pf | out, ")->tag = ");
             emit_d2con (pf | out, d2c);
-            fprint (pf | out, ".tag ;\n");
-            fprint (pf | out, "((ats_exn_ptr_type)");
+            fprint1_string (pf | out, ".tag ;\n");
+            fprint1_string (pf | out, "((ats_exn_ptr_type)");
             emit_valprim_tmpvar (pf | out, tmp);
-            fprint (pf | out, ")->name = ");
+            fprint1_string (pf | out, ")->name = ");
             emit_d2con (pf | out, d2c);
-            fprint (pf | out, ".name ;")
+            fprint1_string (pf | out, ".name ;")
           end
         | _ => let
             val s2c = d2con_scst_get d2c
@@ -1095,12 +1101,12 @@ fn emit_move_con {m:file_mode} (
             | _ when s2cst_is_singular s2c => ()
             | _ when s2cst_is_listlike s2c => ()
             | _ => begin
-                fprint (pf | out, '\n');
-                fprint (pf | out, "((ats_sum_ptr_type)");
+                fprint1_char (pf | out, '\n');
+                fprint1_string (pf | out, "((ats_sum_ptr_type)");
                 emit_valprim_tmpvar (pf | out, tmp);
-                fprint (pf | out, ")->tag = ");
-                fprint_int (pf | out, d2con_tag_get d2c);
-                fprint (pf | out, " ;")
+                fprint1_string (pf | out, ")->tag = ");
+                fprint1_int (pf | out, d2con_tag_get d2c);
+                fprint1_string (pf | out, " ;")
               end
           end // end of [_]
       ) // end of [val]
@@ -1114,14 +1120,14 @@ fn emit_move_con {m:file_mode} (
               val () = begin case+ vp.valprim_node of
                 | VPtop () => ()
                 | _ => begin
-                    fprint (pf | out, '\n');
-                    fprint (pf | out, "((");
+                    fprint1_char (pf | out, '\n');
+                    fprint1_string (pf | out, "((");
                     emit_hityp_ptr (pf | out, hit_sum);
-                    fprint (pf | out, "*)");
+                    fprint1_string (pf | out, "*)");
                     emit_valprim_tmpvar (pf | out, tmp);
-                    fprintf (pf | out, ")->atslab_%i = ", @(i));
+                    fprintf1_exn (pf | out, ")->atslab_%i = ", @(i));
                     emit_valprim (pf | out, vp);
-                    fprint (pf | out, " ;")
+                    fprint1_string (pf | out, " ;")
                   end
               end // end of [val]
             in
@@ -1139,13 +1145,13 @@ fn emit_move_con {m:file_mode} (
       case+ 0 of
       | _ when s2cst_is_listlike s2c => begin
           emit_valprim_tmpvar (pf | out, tmp);
-          fprint (pf | out, " = (ats_sum_ptr_type)0 ;");
+          fprint1_string (pf | out, " = (ats_sum_ptr_type)0 ;");
         end
       | _ => begin
           emit_valprim_tmpvar (pf | out, tmp);
-          fprint (pf | out, " = (ats_sum_ptr_type)(&");
+          fprint1_string (pf | out, " = (ats_sum_ptr_type)(&");
           emit_d2con (pf | out, d2c);
-          fprint (pf | out, ") ;")
+          fprint1_string (pf | out, ") ;")
         end
     end // end of [list_nil]
 end // end of [emit_move_con]
@@ -1165,19 +1171,19 @@ fn emit_instr_arr {m:file_mode} (
     pf: file_mode_lte (m, w)
   | out: &FILE m, tmp: tmpvar_t, asz: int, hit_elt: hityp_t
   ) : void = let
-  val () = fprint
+  val () = fprint1_string
     (pf | out, "/* array allocation */\n")
   val () = emit_valprim_tmpvar (pf | out, tmp)
-  val () = fprint
+  val () = fprint1_string
     (pf | out, ".atslab_2 = atspre_array_ptr_alloc_tsz (")
-  val () = fprint_int (pf | out, asz)
-  val () = fprint (pf | out, ", sizeof(")
+  val () = fprint1_int (pf | out, asz)
+  val () = fprint1_string (pf | out, ", sizeof(")
   val () = emit_hityp (pf | out, hit_elt)
-  val () = fprint (pf | out, ")) ;\n")
+  val () = fprint1_string (pf | out, ")) ;\n")
   val () = emit_valprim_tmpvar (pf | out, tmp)
-  val () = fprint (pf | out, ".atslab_3 = ")
-  val () = fprint_int (pf | out, asz)
-  val () = fprint (pf | out, " ;\n")
+  val () = fprint1_string (pf | out, ".atslab_3 = ")
+  val () = fprint1_int (pf | out, asz)
+  val () = fprint1_string (pf | out, " ;\n")
 in
   // empty
 end // end of [emit_instr_arr]
@@ -1209,20 +1215,20 @@ fn emit_instr_call {m:file_mode} (
     | VPfun fl => funlab_fun_is_void (fl)
     | _ => hityp_t_fun_is_void hit_fun
   ) : bool
-  val () = if noret then fprint (pf | out, "/* ")
+  val () = if noret then fprint1_string (pf | out, "/* ")
   val () = emit_valprim_tmpvar (pf | out, tmp)
-  val () = fprint (pf | out, " = ");
-  val () = if noret then fprint (pf | out, "*/ ")
+  val () = fprint1_string (pf | out, " = ");
+  val () = if noret then fprint1_string (pf | out, "*/ ")
   val hit_fun = hityp_decode (hit_fun)
 in
   case+ vp_fun.valprim_node of
   | VPcst d2c => let
       val () = emit_d2cst (pf | out, d2c)
       val isfun = $Syn.dcstkind_is_fun (d2cst_kind_get d2c)
-      val () = if isfun then () else fprint (pf | out, "$fun")
-      val () = fprint (pf | out, " (")
+      val () = if isfun then () else fprint1_string (pf | out, "$fun")
+      val () = fprint1_string (pf | out, " (")
       val () = emit_valprimlst (pf | out, vps_arg)
-      val () = fprint (pf | out, ") ;")
+      val () = fprint1_string (pf | out, ") ;")
     in
       // empty
     end
@@ -1230,22 +1236,22 @@ in
       val entry = funlab_entry_get_some (fl)
       val vtps = funentry_vtps_get_all (entry)
       val () = emit_funlab (pf | out, fl)
-      val () = fprint (pf | out, " (")
+      val () = fprint1_string (pf | out, " (")
       val n = emit_cloenv (pf | out, envmap, vtps)
       val () =
         if n > 0 then begin case+ vps_arg of
-          | list_cons _ => fprint (pf | out, ", ") | _ => ()
+          | list_cons _ => fprint1_string (pf | out, ", ") | _ => ()
         end
       val () = emit_valprimlst (pf | out, vps_arg)
-      val () = fprint (pf | out, ") ;")
+      val () = fprint1_string (pf | out, ") ;")
     in
       // empty
     end
   | VPfun fl => let
       val () = emit_funlab (pf | out, fl)
-      val () = fprint (pf | out, " (")
+      val () = fprint1_string (pf | out, " (")
       val () = emit_valprimlst (pf | out, vps_arg)
-      val () = fprint (pf | out, ") ;")
+      val () = fprint1_string (pf | out, ") ;")
     in
       // empty
     end
@@ -1255,27 +1261,27 @@ in
           val hits_arg = hityplst_encode hits_arg
           val hit_res = hityp_encode hit_res
         in
-          fprint (pf | out, "((");
+          fprint1_string (pf | out, "((");
           emit_hityp_clofun (pf | out, hits_arg, hit_res);
-          fprint (pf | out, ")(ats_closure_fun(");
+          fprint1_string (pf | out, ")(ats_closure_fun(");
           emit_valprim (pf | out, vp_fun);
-          fprint (pf | out, "))) (");
+          fprint1_string (pf | out, "))) (");
           emit_valprim (pf | out, vp_fun);
-          if $Lst.list_is_cons (vps_arg) then fprint (pf | out, ", ");
+          if $Lst.list_is_cons (vps_arg) then fprint1_string (pf | out, ", ");
           emit_valprimlst (pf | out, vps_arg);
-          fprint (pf | out, ") ;")
+          fprint1_string (pf | out, ") ;")
         end // end of [$Syn.FUNCLOclo]
       | $Syn.FUNCLOfun _ => let
           val hits_arg = hityplst_encode hits_arg
           val hit_res = hityp_encode hit_res
         in
-          fprint (pf | out, "((");
+          fprint1_string (pf | out, "((");
           emit_hityp_fun (pf | out, hits_arg, hit_res);
-          fprint (pf | out, ")");
+          fprint1_string (pf | out, ")");
           emit_valprim (pf | out, vp_fun);
-          fprint (pf | out, ") (");
+          fprint1_string (pf | out, ") (");
           emit_valprimlst (pf | out, vps_arg);
-          fprint (pf | out, ") ;")
+          fprint1_string (pf | out, ") ;")
         end // end of [$Syn.FUNCLOfun]
       end // end of [HITfun]
     | _ => begin
@@ -1291,10 +1297,10 @@ end // end of [emit_instr_call]
 implement emit_instr {m} (pf | out, ins) = let
   val () = // generating informaion for debugging
     if $Deb.debug_flag_get () > 0 then let
-      val () = fprint (pf | out, "/* ")
+      val () = fprint1_string (pf | out, "/* ")
       val () = fprint_instr (pf | out, ins)
-      val () = fprint (pf | out, " */")
-      val () = fprint (pf | out, '\n')
+      val () = fprint1_string (pf | out, " */")
+      val () = fprint1_char (pf | out, '\n')
     in
       // empty
     end // end of [if]
@@ -1307,113 +1313,112 @@ in
       emit_instr_call (pf | out, tmp, hit_fun, vp_fun, vps_arg)
     end
   | INSTRcall_tail fl => begin
-      fprint (pf | out, "goto ");
-      fprint (pf | out, "__ats_lab_");
+      fprint1_string (pf | out, "goto ");
+      fprint1_string (pf | out, "__ats_lab_");
       emit_funlab (pf | out, fl);
-      fprint (pf | out, " ; // tail call")      
+      fprint1_string (pf | out, " ; // tail call")      
     end
   | INSTRcond (vp_cond, inss_then, inss_else) => begin
-      fprint (pf | out, "if (");
+      fprint1_string (pf | out, "if (");
       emit_valprim (pf | out, vp_cond);
-      fprint (pf | out, ") {\n");
+      fprint1_string (pf | out, ") {\n");
       emit_instrlst (pf | out, inss_then);
-      fprint (pf | out, "\n} else {\n");
+      fprint1_string (pf | out, "\n} else {\n");
       emit_instrlst (pf | out, inss_else);
-      fprint (pf | out, "\n} /* end of [if] */")
+      fprint1_string (pf | out, "\n} /* end of [if] */")
     end
   | INSTRdefine_clo (d2c, fl) => begin
-      fprint (pf | out, "ATS_GC_MARKROOT (&");
+      fprint1_string (pf | out, "ATS_GC_MARKROOT (&");
       emit_d2cst (pf | out, d2c);
-      fprint (pf | out, ", sizeof(ats_ptr_type)) ;\n");
+      fprint1_string (pf | out, ", sizeof(ats_ptr_type)) ;\n");
       emit_d2cst (pf | out, d2c);
-      fprint (pf | out, " = ");
+      fprint1_string (pf | out, " = ");
       emit_funlab (pf | out, fl);
-      fprint (pf | out, "_closure_make () ;")
+      fprint1_string (pf | out, "_closure_make () ;")
     end
   | INSTRdefine_fun (d2c, fl) => begin
       emit_d2cst (pf | out, d2c);
-      fprint (pf | out, " = &");
+      fprint1_string (pf | out, " = &");
       emit_funlab (pf | out, fl);
-      fprint (pf | out, " ;")
+      fprint1_string (pf | out, " ;")
     end
   | INSTRdefine_val (d2c, vp) => begin
-      fprint (pf | out, "ATS_GC_MARKROOT (&");
+      fprint1_string (pf | out, "ATS_GC_MARKROOT (&");
       emit_d2cst (pf | out, d2c);
-      fprint (pf | out, ", sizeof(");
+      fprint1_string (pf | out, ", sizeof(");
       emit_hityp (pf | out, vp.valprim_typ);
-      fprint (pf | out, ")) ;\n");
+      fprint1_string (pf | out, ")) ;\n");
       emit_d2cst (pf | out, d2c);
-      fprint (pf | out, " = ");
+      fprint1_string (pf | out, " = ");
       emit_valprim (pf | out, vp);
-      fprint (pf | out, " ;")
+      fprint1_string (pf | out, " ;")
     end // end of [INSTRdefine_val]
   | INSTRextval (name, vp) => begin
-      fprint (pf | out, "ATS_GC_MARKROOT (&");
-      fprint (pf | out, name);
-      fprint (pf | out, ", sizeof(");
+      fprint1_string (pf | out, "ATS_GC_MARKROOT (&");
+      fprint1_string (pf | out, name);
+      fprint1_string (pf | out, ", sizeof(");
       emit_hityp (pf | out, vp.valprim_typ);
-      fprint (pf | out, ")) ;\n");
-      fprint (pf | out, name);
-      fprint (pf | out, " = ");
+      fprint1_string (pf | out, ")) ;\n");
+      fprint1_string (pf | out, name);
+      fprint1_string (pf | out, " = ");
       emit_valprim (pf | out, vp);
-      fprint (pf | out, " ;")
+      fprint1_string (pf | out, " ;")
     end
   | INSTRfreeptr vp => begin
-      fprint (pf | out, "ATS_FREE (");
+      fprint1_string (pf | out, "ATS_FREE (");
       emit_valprim (pf | out, vp);
-      fprint (pf | out, ") ;")
+      fprint1_string (pf | out, ") ;")
     end
   | INSTRfunction
       (tmp_ret_all, vps_arg, inss_body, tmp_ret) => let
       val () = funarglst_push (vps_arg)
       val () = emit_instrlst (pf | out, inss_body)
       val () = funarglst_pop ()
-      val () = fprint (pf | out, '\n')
+      val () = fprint1_char (pf | out, '\n')
     in
       case+ 0 of
       | _ when tmpvar_is_void tmp_ret => begin
-          fprint (pf | out, "return /* ");
+          fprint1_string (pf | out, "return /* ");
           emit_valprim_tmpvar (pf | out, tmp_ret);
-          fprint (pf | out, " */ ;\n")
+          fprint1_string (pf | out, " */ ;\n")
         end // end of [_ when ...]
       | _ => begin
-          fprint (pf | out, "return ");
+          fprint1_string (pf | out, "return ");
           emit_valprim_tmpvar (pf | out, tmp_ret);
-          fprint (pf | out, " ;\n")
+          fprint1_string (pf | out, " ;\n")
         end // end of [_]
     end // end of [INSTRfunction]
   | INSTRfunlab fl => begin
-      fprint (pf | out, "__ats_lab_");
-      emit_funlab (pf | out, fl);
-      fprint (pf | out, ':')
+      fprint1_string (pf | out, "__ats_lab_");
+      emit_funlab (pf | out, fl); fprint1_char (pf | out, ':')
     end
   | INSTRdynload_file fil => let
       val () = emit_filename (pf | out, fil)
-      val () = fprint (pf | out, "__dynload () ;")
+      val () = fprint1_string (pf | out, "__dynload () ;")
     in
       // empty
     end // end of [INSTRdynload_file]
   | INSTRload_ptr (tmp, vp_ptr) => let
       val () = emit_valprim_tmpvar (pf | out, tmp)
-      val () = fprint (pf | out, " = *(")
+      val () = fprint1_string (pf | out, " = *(")
       val () = emit_hityp (pf | out, tmpvar_typ_get tmp)
-      val () = fprint (pf | out, "*)")
+      val () = fprint1_string (pf | out, "*)")
       val () = emit_valprim (pf | out, vp_ptr)
-      val () = fprint (pf | out, " ;")
+      val () = fprint1_string (pf | out, " ;")
     in
       // empty
     end // end of [INSTRload_ptr]
   | INSTRload_ptr_offs (tmp, vp_ptr, offs) => begin
       emit_valprim_tmpvar (pf | out, tmp);
-      fprint (pf | out, " = ");
+      fprint1_string (pf | out, " = ");
       emit_valprim_select_ptr (pf | out, vp_ptr, offs);
-      fprint (pf | out, " ;")
+      fprint1_string (pf | out, " ;")
     end // end of [INSTRload_ptr_offs]
   | INSTRload_var_offs (tmp, vp_var, offs) => begin
       emit_valprim_tmpvar (pf | out, tmp);
-      fprint (pf | out, " = ");
+      fprint1_string (pf | out, " = ");
       emit_valprim_select_var (pf | out, vp_var, offs);
-      fprint (pf | out, " ;")
+      fprint1_string (pf | out, " ;")
     end // end of [INSTRload_var_offs]
 //
   | INSTRloop (
@@ -1423,47 +1428,47 @@ in
     , inss_post
     , inss_body
     ) => let
-      val () = fprint (pf | out, "/* loop initialization */\n")
+      val () = fprint1_string (pf | out, "/* loop initialization */\n")
       val () = emit_instrlst (pf | out, inss_init)
-      val () = fprint (pf | out, "\n")
+      val () = fprint1_string (pf | out, "\n")
       val ispost = $Lst.list_is_cons inss_post // this is a for loop
-      val () = fprint (pf | out, "ats_loop_beg_mac(")
+      val () = fprint1_string (pf | out, "ats_loop_beg_mac(")
       val () = emit_tmplab (pf | out, tl_init)
-      val () = fprint (pf | out, ")\n")
+      val () = fprint1_string (pf | out, ")\n")
       val () = emit_instrlst (pf | out, inss_test)
-      val () = fprint (pf | out, '\n')
-      val () = fprint (pf | out, "if (!")
+      val () = fprint1_char (pf | out, '\n')
+      val () = fprint1_string (pf | out, "if (!")
       val () = emit_valprim (pf | out, vp_test)
-      val () = fprint (pf | out, ") break ;\n")
+      val () = fprint1_string (pf | out, ") break ;\n")
       val () = emit_instrlst (pf | out, inss_body)
-      val () = fprint (pf | out, '\n')
+      val () = fprint1_char (pf | out, '\n')
       val () = if ispost then let
-        val () = fprint (pf | out, "/* post update before continue */\n")
+        val () = fprint1_string (pf | out, "/* post update before continue */\n")
         val () = emit_tmplab (pf | out, tl_cont)
-        val () = fprint (pf | out, ":\n")
+        val () = fprint1_string (pf | out, ":\n")
         val () = emit_instrlst (pf | out, inss_post)
-        val () = fprint (pf | out, "\n")
+        val () = fprint1_string (pf | out, "\n")
       in
         // empty
       end // end of [if]
-      val () = fprint (pf | out, "ats_loop_end_mac(")
+      val () = fprint1_string (pf | out, "ats_loop_end_mac(")
       val () = emit_tmplab (pf | out, tl_init)
-      val () = fprint (pf | out, ", ")
+      val () = fprint1_string (pf | out, ", ")
       val () = emit_tmplab (pf | out, tl_fini)
-      val () = fprint (pf | out, ")")
+      val () = fprint1_string (pf | out, ")")
     in
       // empty
     end // end of [INSTRloop]
   | INSTRloopexn (_(*knd*), tl) => begin
-      fprint (pf | out, "goto ");
+      fprint1_string (pf | out, "goto ");
       emit_tmplab (pf | out, tl);
-      fprint (pf | out, " ;")
+      fprint1_string (pf | out, " ;")
     end // end of [INSTRloopexn]
 //
   | INSTRmove_arg (arg, vp) => begin
-      fprintf (pf | out, "arg%i = ", @(arg));
+      fprintf1_exn (pf | out, "arg%i = ", @(arg));
       emit_valprim (pf | out, vp);
-      fprint (pf | out, " ;")
+      fprint1_string (pf | out, " ;")
     end // end of [INSTRmove_arg]
   | INSTRmove_con (tmp, hit_sum, d2c, vps) => begin
       emit_move_con (pf | out, tmp, hit_sum, d2c, vps)
@@ -1473,15 +1478,15 @@ in
           out: &FILE m, tmp: tmpvar_t, lvps: labvalprimlst
         ) :<cloptr1> void = begin case+ lvps of
         | LABVALPRIMLSTcons (l, vp, lvps) => let
-            val () = fprint (pf | out, "((")
+            val () = fprint1_string (pf | out, "((")
             val () = emit_hityp_ptr (pf | out, hit_rec)
-            val () = fprint (pf | out, "*)")
+            val () = fprint1_string (pf | out, "*)")
             val () = emit_valprim_tmpvar (pf | out, tmp)
-            val () = fprint (pf | out, ")->atslab_")
+            val () = fprint1_string (pf | out, ")->atslab_")
             val () = emit_label (pf | out, l)
-            val () = fprint (pf | out, " = ")
+            val () = fprint1_string (pf | out, " = ")
             val () = emit_valprim (pf | out, vp)
-            val () = fprint (pf | out, " ;\n")
+            val () = fprint1_string (pf | out, " ;\n")
           in
             aux (out, tmp, lvps)
           end
@@ -1489,9 +1494,9 @@ in
       end // end of [aux]
     in
       emit_valprim_tmpvar (pf | out, tmp);
-      fprint (pf | out, " = ATS_MALLOC (sizeof(");
+      fprint1_string (pf | out, " = ATS_MALLOC (sizeof(");
       emit_hityp_ptr (pf | out, hit_rec);
-      fprint (pf | out, ")) ;\n");
+      fprint1_string (pf | out, ")) ;\n");
       aux (out, tmp, lvps)
     end // end of [INSTRmove_rec_box]
   | INSTRmove_rec_flt (tmp, hit_rec, lvps) => let
@@ -1500,11 +1505,11 @@ in
         ) : void = begin case+ lvps of
         | LABVALPRIMLSTcons (l, v, lvps) => let
             val () = emit_valprim_tmpvar (pf | out, tmp)
-            val () = fprint (pf | out, ".atslab_")
+            val () = fprint1_string (pf | out, ".atslab_")
             val () = emit_label (pf | out, l)
-            val () = fprint (pf | out, " = ")
+            val () = fprint1_string (pf | out, " = ")
             val () = emit_valprim (pf | out, v)
-            val () = fprint (pf | out, " ;\n")
+            val () = fprint1_string (pf | out, " ;\n")
           in
             aux (out, tmp, lvps)
           end
@@ -1514,27 +1519,27 @@ in
       aux (out, tmp, lvps)
     end // end of [INSTRmove_rec_flt]
   | INSTRmove_ref (tmp, vp) => begin
-      fprint (pf | out, "ats_instr_move_ref_mac (");
+      fprint1_string (pf | out, "ats_instr_move_ref_mac (");
       emit_valprim_tmpvar (pf | out, tmp);
-      fprint (pf | out, ", ");
+      fprint1_string (pf | out, ", ");
       emit_hityp (pf | out, vp.valprim_typ);
-      fprint (pf | out, ", ");
+      fprint1_string (pf | out, ", ");
       emit_valprim (pf | out, vp);
-      fprint (pf | out, ") ;")
+      fprint1_string (pf | out, ") ;")
     end
   | INSTRmove_val (tmp, vp) => begin case+ 0 of
     | _ when valprim_is_void vp => begin
-        fprint (pf | out, "/* ");
+        fprint1_string (pf | out, "/* ");
         emit_valprim_tmpvar (pf | out, tmp);
-        fprint (pf | out, " = ");
+        fprint1_string (pf | out, " = ");
         emit_valprim (pf | out, vp);
-        fprint (pf | out, " */ ;")
+        fprint1_string (pf | out, " */ ;")
       end
     | _ => begin
         emit_valprim_tmpvar (pf | out, tmp);
-        fprint (pf | out, " = ");
+        fprint1_string (pf | out, " = ");
         emit_valprim (pf | out, vp);
-        fprint (pf | out, " ;")
+        fprint1_string (pf | out, " ;")
       end
     end // end of [INSTRmove_val]
   | INSTRpatck (vp, patck, fail) => let
@@ -1542,102 +1547,102 @@ in
         | KONTmatpnt mpt => matpnt_kont_get mpt | _ => fail
       end
       val () = begin case+ fail1 of
-        | KONTnone () => fprint (pf | out, "// ") | _ => ()
+        | KONTnone () => fprint1_string (pf | out, "// ") | _ => ()
       end
     in
       emit_patck (pf | out, vp, patck, fail)
     end // end of [INSTRpatck]
   | INSTRraise vp_exn => begin
-      fprint (pf | out, "ats_raise_exn (");
+      fprint1_string (pf | out, "ats_raise_exn (");
       emit_valprim (pf | out, vp_exn);
-      fprint (pf | out, ") ;")
+      fprint1_string (pf | out, ") ;")
     end
   | INSTRselect (tmp, vp_root, offs) => let
       val is_void = tmpvar_is_void tmp
-      val () = if is_void then fprint (pf | out, "/* ")
+      val () = if is_void then fprint1_string (pf | out, "/* ")
       val () = emit_valprim_tmpvar (pf | out, tmp)
-      val () = fprint (pf | out, " = ")
+      val () = fprint1_string (pf | out, " = ")
       val () = emit_valprim_select (pf | out, vp_root, offs)
-      val () = if is_void then fprint (pf | out, " */")
-      val () = fprint (pf | out, " ;")
+      val () = if is_void then fprint1_string (pf | out, " */")
+      val () = fprint1_string (pf | out, " ;")
     in
       // empty
     end // end of [INSTRselect]
   | INSTRselcon (tmp, vp_sum, hit_sum, ind) => begin
       emit_tmpvar (pf | out, tmp);
-      fprint (pf | out, " = ((");
+      fprint1_string (pf | out, " = ((");
       emit_hityp_ptr (pf | out, hit_sum);
-      fprint (pf | out, "*)");
+      fprint1_string (pf | out, "*)");
       emit_valprim (pf | out, vp_sum);
-      fprintf (pf | out, ")->atslab_%i", @(ind));
-      fprint (pf | out, " ;")
+      fprintf1_exn (pf | out, ")->atslab_%i", @(ind));
+      fprint1_string (pf | out, " ;")
     end
   | INSTRselcon_ptr (tmp, vp_sum, hit_sum, ind) => begin
       emit_tmpvar (pf | out, tmp);
-      fprint (pf | out, " = &(((");
+      fprint1_string (pf | out, " = &(((");
       emit_hityp_ptr (pf | out, hit_sum);
-      fprint (pf | out, "*)");
+      fprint1_string (pf | out, "*)");
       emit_valprim (pf | out, vp_sum);
-      fprintf (pf | out, ")->atslab_%i)", @(ind));
-      fprint (pf | out, " ;")
+      fprintf1_exn (pf | out, ")->atslab_%i)", @(ind));
+      fprint1_string (pf | out, " ;")
     end
   | INSTRstore_ptr (vp_ptr, vp_val) => begin
-      fprint (pf | out, "*((");
+      fprint1_string (pf | out, "*((");
       emit_hityp (pf | out, vp_val.valprim_typ);
-      fprint (pf | out, "*)");
+      fprint1_string (pf | out, "*)");
       emit_valprim (pf | out, vp_ptr);
-      fprint (pf | out, ") = ");
+      fprint1_string (pf | out, ") = ");
       emit_valprim (pf | out, vp_val);
-      fprint (pf | out, " ;");
+      fprint1_string (pf | out, " ;");
     end // end of [INSTRstore_ptr]
   | INSTRstore_ptr_offs (vp_ptr, offs, vp_val) => begin
       emit_valprim_select_ptr (pf | out, vp_ptr, offs);
-      fprint (pf | out, " = ");
+      fprint1_string (pf | out, " = ");
       emit_valprim (pf | out, vp_val);
-      fprint (pf | out, " ;")
+      fprint1_string (pf | out, " ;")
     end // end of [INSTRstore_ptr_offs]
   | INSTRstore_var (vp_mut, vp_val) => begin
       emit_valprim (pf | out, vp_mut);
-      fprint (pf | out, " = ");
+      fprint1_string (pf | out, " = ");
       emit_valprim (pf | out, vp_val);
-      fprint (pf | out, " ;");
+      fprint1_string (pf | out, " ;");
     end // end of [INSTRstore_var]
   | INSTRstore_var_offs (vp_var, offs, vp_val) => begin
       emit_valprim_select_var (pf | out, vp_var, offs);
-      fprint (pf | out, " = ");
+      fprint1_string (pf | out, " = ");
       emit_valprim (pf | out, vp_val);
-      fprint (pf | out, " ;")
+      fprint1_string (pf | out, " ;")
     end // end of [INSTRstore_ptr]
   | INSTRswitch branchlst => begin
-      fprint (pf | out, "do {\n");
+      fprint1_string (pf | out, "do {\n");
       emit_branchlst (pf | out, branchlst);
-      fprint (pf | out, "} while (0) ;")
+      fprint1_string (pf | out, "} while (0) ;")
     end
   | INSTRtmplabint (tl, i) => begin
-      emit_tmplabint (pf | out, tl, i); fprint (pf | out, ':')
+      emit_tmplabint (pf | out, tl, i); fprint1_char (pf | out, ':')
     end
   | INSTRtrywith (res_try, tmp_exn, brs) => let
-      val () = fprint (pf | out, "ATS_TRYWITH_TRY(")
+      val () = fprint1_string (pf | out, "ATS_TRYWITH_TRY(")
       val () = emit_valprim_tmpvar (pf | out, tmp_exn)
-      val () = fprint (pf | out, ")\n")
+      val () = fprint1_string (pf | out, ")\n")
       val () = emit_instrlst (pf | out, res_try)
-      val () = fprint (pf | out, '\n')
-      val () = fprint (pf | out, "ATS_TRYWITH_WITH(")
+      val () = fprint1_char (pf | out, '\n')
+      val () = fprint1_string (pf | out, "ATS_TRYWITH_WITH(")
       val () = emit_valprim_tmpvar (pf | out, tmp_exn)
-      val () = fprint (pf | out, ")\n")
-      val () = fprint (pf | out, "do {\n")
+      val () = fprint1_string (pf | out, ")\n")
+      val () = fprint1_string (pf | out, "do {\n")
       val () = emit_branchlst (pf | out, brs)
-      val () = fprint (pf | out, "} while (0) ;\n")
-      val () = fprint (pf | out, "ATS_TRYWITH_END() ;\n")
+      val () = fprint1_string (pf | out, "} while (0) ;\n")
+      val () = fprint1_string (pf | out, "ATS_TRYWITH_END() ;\n")
     in
       // empty
     end // end of [INSTRtrywith]
   | INSTRvardec tmp => begin
-      fprint (pf | out, "/* ");
+      fprint1_string (pf | out, "/* ");
       emit_hityp (pf | out, tmpvar_typ_get tmp);
-      fprint (pf | out, ' ');
+      fprint1_char (pf | out, ' ');
       emit_tmpvar (pf | out, tmp);
-      fprint (pf | out, " ; */")
+      fprint1_string (pf | out, " ; */")
     end // end of [INSTRvardec]
   | _ => begin
       prerr "Internal Error: emit_instr: ins = "; prerr ins; prerr_newline ();
@@ -1649,11 +1654,11 @@ implement emit_instrlst {m} (pf | out, inss) = let
   fun aux (out: &FILE m, i: int, inss: instrlst)
     : void = begin case+ inss of
     | list_cons (ins, inss) => begin
-        if i > 0 then fprint (pf | out, '\n');
+        if i > 0 then fprint1_char (pf | out, '\n');
         emit_instr (pf | out, ins); aux (out, i+1, inss)
       end
     | list_nil () => begin
-        if i > 0 then () else fprint (pf | out, "/* empty */")
+        if i > 0 then () else fprint1_string (pf | out, "/* empty */")
       end
   end // end of [aux]
 in
@@ -1666,19 +1671,20 @@ extern fun emit_funarg {m:file_mode}
   (pf: file_mode_lte (m, w) | out: &FILE m, hits: hityplst_t): void
 
 implement emit_funarg {m} (pf | out, hits) = let
-  fun aux (out: &FILE m, i: int, hits: hityplst): void =
+  fun aux (out: &FILE m, i: int, hits: hityplst): void = begin
     case+ hits of
     | list_cons (hit, hits) => let
-        val () = if i > 0 then fprint (pf | out, ", ")
+        val () = if i > 0 then fprint1_string (pf | out, ", ")
         val () = _emit_hityp (pf | out, hit)
         val () = // variarity needs to be properly handled
           if hityp_is_vararg hit then () else begin
-            fprint (pf | out, " arg"); fprint_int (pf | out, i)
-          end
+            fprint1_string (pf | out, " arg"); fprint1_int (pf | out, i)
+          end // end of [if]
       in
         aux (out, i + 1, hits)
       end
     | list_nil () => ()
+  end // end of [aux]
 in
   aux (out, 0, hityplst_decode hits)
 end // end of [emit_funarg]
@@ -1709,9 +1715,9 @@ fn _emit_funenvarg {m:file_mode} {l:addr} (
       if d2var_is_mutable (d2v) then hityp_encode hityp_ptr
       else vartyp_typ_get (vtp)
     ) : hityp_t
-    val () = if i > 0 then fprint (pf_mod | !p_l, ", ")
+    val () = if i > 0 then fprint1_string (pf_mod | !p_l, ", ")
     val () = emit_hityp (pf_mod | !p_l, hit) // type specifier
-    val () = fprintf (pf_mod | !p_l, " env%i", @(i)) // arg
+    val () = fprintf1_exn (pf_mod | !p_l, " env%i", @(i)) // arg
   in
     pf := @(pf_fil, pf_int); fold@ env
   end
@@ -1808,13 +1814,13 @@ fn _emit_closure_type {m:file_mode} {l:addr} (
       else vartyp_typ_get (vtp)
     ) : hityp_t
     val () = emit_hityp (pf_mod | !p_l, hit)
-    val () = fprintf (pf_mod | !p_l, " closure_env_%i ;\n", @(i))
+    val () = fprintf1_exn (pf_mod | !p_l, " closure_env_%i ;\n", @(i))
   in
     pf := @(pf_fil, pf_int); fold@ env
   end
 
-  val () = fprint (pf_mod | !p_l, "typedef struct {\n")
-  val () = fprint (pf_mod | !p_l, "ats_fun_ptr_type closure_fun ;\n")
+  val () = fprint1_string (pf_mod | !p_l, "typedef struct {\n")
+  val () = fprint1_string (pf_mod | !p_l, "ats_fun_ptr_type closure_fun ;\n")
 
   val env = ENVcon2 (p_l, &i)
   prval pf = @(pf_fil, view@ i)
@@ -1822,9 +1828,9 @@ fn _emit_closure_type {m:file_mode} {l:addr} (
   prval () = (pf_fil := pf.0; view@ i := pf.1)
   val+ ~ENVcon2 (_, _) = env
 
-  val () = fprint (pf_mod | !p_l, "} ")
+  val () = fprint1_string (pf_mod | !p_l, "} ")
   val () = emit_funlab (pf_mod | !p_l, fl)
-  val () = fprint (pf_mod | !p_l, "_closure_type ;")
+  val () = fprint1_string (pf_mod | !p_l, "_closure_type ;")
 in
   // empty
 end // end of [_emit_closure_type]
@@ -1847,9 +1853,9 @@ fn _emit_closure_make {m:file_mode} {l:addr} (
       if d2var_is_mutable (d2v) then hityp_encode hityp_ptr
       else vartyp_typ_get (vtp)
     ) : hityp_t
-    val () = if i > 0 then fprint (pf_mod | !p_l, ", ")
+    val () = if i > 0 then fprint1_string (pf_mod | !p_l, ", ")
     val () = emit_hityp (pf_mod | !p_l, hit)
-    val () = fprintf (pf_mod | !p_l, " env%i", @(i))
+    val () = fprintf1_exn (pf_mod | !p_l, " env%i", @(i))
   in
     pf := @(pf_fil, pf_int); fold@ env
   end
@@ -1858,16 +1864,15 @@ fn _emit_closure_make {m:file_mode} {l:addr} (
     prval @(pf_fil, pf_int) = pf
     val+ ENVcon2 (p_l, p_i) = env
     val i = !p_i; val () = (!p_i := i + 1)
-    val () = begin
-      fprintf (pf_mod | !p_l, "p->closure_env_%i = env%i ;\n", @(i, i))
-    end
+    val () = fprintf1_exn
+      (pf_mod | !p_l, "p->closure_env_%i = env%i ;\n", @(i, i))
   in
     pf := @(pf_fil, pf_int); fold@ env
   end
 
-  val () = fprint (pf_mod | !p_l, "ats_clo_ptr_type\n")
+  val () = fprint1_string (pf_mod | !p_l, "ats_clo_ptr_type\n")
   val () = emit_funlab (pf_mod | !p_l, fl)
-  val () = fprint (pf_mod | !p_l, "_closure_make (")
+  val () = fprint1_string (pf_mod | !p_l, "_closure_make (")
 
   val env = ENVcon2 (p_l, &i)
 
@@ -1876,16 +1881,16 @@ fn _emit_closure_make {m:file_mode} {l:addr} (
   val () = vartypset_foreach_main {V} {VT} (pf | vtps, f_arg, env)
   prval () = (pf_fil := pf.0; view@ i := pf.1)
 
-  val () = fprint (pf_mod | !p_l, ") {\n")
+  val () = fprint1_string (pf_mod | !p_l, ") {\n")
   val () = emit_funlab (pf_mod | !p_l, fl)
   val () = begin
-    fprint (pf_mod | !p_l, "_closure_type *p = ATS_MALLOC (sizeof (")
+    fprint1_string (pf_mod | !p_l, "_closure_type *p = ATS_MALLOC (sizeof (")
   end
   val () = emit_funlab (pf_mod | !p_l, fl)
-  val () = fprint (pf_mod | !p_l, "_closure_type)) ;\n")
-  val () = fprint (pf_mod | !p_l, "p->closure_fun = (ats_fun_ptr_type)&")
+  val () = fprint1_string (pf_mod | !p_l, "_closure_type)) ;\n")
+  val () = fprint1_string (pf_mod | !p_l, "p->closure_fun = (ats_fun_ptr_type)&")
   val () = emit_funlab (pf_mod | !p_l, fl)
-  val () = fprint (pf_mod | !p_l, "_clofun ;\n")
+  val () = fprint1_string (pf_mod | !p_l, "_clofun ;\n")
 
   val () = i := 0
   prval pf = @(pf_fil, view@ i)
@@ -1894,8 +1899,8 @@ fn _emit_closure_make {m:file_mode} {l:addr} (
 
   val+ ~ENVcon2 (_, _) = env
 
-  val () = fprint (pf_mod | !p_l, "return (ats_clo_ptr_type)p ;\n")
-  val () = fprint (pf_mod | !p_l, "} /* end of function */")
+  val () = fprint1_string (pf_mod | !p_l, "return (ats_clo_ptr_type)p ;\n")
+  val () = fprint1_string (pf_mod | !p_l, "} /* end of function */")
 
 in
   // empty
@@ -1910,16 +1915,16 @@ fn _emit_closure_clofun {m:file_mode} {l:addr} (
   // function header
   val hit_res = funlab_typ_res_get (fl)
   val () = emit_hityp (pf_mod | !p_l, hit_res)
-  val () = fprint (pf_mod | !p_l, '\n')
+  val () = fprint1_char (pf_mod | !p_l, '\n')
   val () = emit_funlab (pf_mod | !p_l, fl)
-  val () = fprint (pf_mod | !p_l, "_clofun (ats_clo_ptr_type cloptr")
+  val () = fprint1_string (pf_mod | !p_l, "_clofun (ats_clo_ptr_type cloptr")
   val hits_arg = funlab_typ_arg_get (fl)
   val () = begin case+ 0 of
-    | _ when hityplst_is_cons hits_arg => fprint (pf_mod | !p_l, ", ")
+    | _ when hityplst_is_cons hits_arg => fprint1_string (pf_mod | !p_l, ", ")
     | _ => ()
   end
   val () = emit_funarg (pf_mod | !p_l, hits_arg)
-  val () = fprint (pf_mod | !p_l, ") {\n")
+  val () = fprint1_string (pf_mod | !p_l, ") {\n")
 
   var i: int = 0
   viewdef V = (FILE m @ l, int @ i)
@@ -1928,12 +1933,11 @@ fn _emit_closure_clofun {m:file_mode} {l:addr} (
     prval @(pf_fil, pf_int) = pf
     val+ ENVcon3 (fl, p_l, p_i) = env
     val i = !p_i; val () = (!p_i := i + 1)
-    val () = if i > 0 then fprint (pf_mod | !p_l, ", ")
-    val () = fprint (pf_mod | !p_l, "((")
+    val () = if i > 0 then fprint1_string (pf_mod | !p_l, ", ")
+    val () = fprint1_string (pf_mod | !p_l, "((")
     val () = emit_funlab (pf_mod | !p_l, fl)
-    val () = begin
-      fprintf (pf_mod | !p_l, "_closure_type*)cloptr)->closure_env_%i", @(i))
-    end
+    val () = fprintf1_exn
+      (pf_mod | !p_l, "_closure_type*)cloptr)->closure_env_%i", @(i))
   in
     pf := @(pf_fil, pf_int); fold@ env
   end
@@ -1942,11 +1946,11 @@ fn _emit_closure_clofun {m:file_mode} {l:addr} (
   val is_void = hityp_t_is_void (hit_res)
 
   val () = begin
-    if is_void then () else fprint (pf_mod | !p_l, "return ")
+    if is_void then () else fprint1_string (pf_mod | !p_l, "return ")
   end
 
   val () = emit_funlab (pf_mod | !p_l, fl)
-  val () = fprint (pf_mod | !p_l, " (")
+  val () = fprint1_string (pf_mod | !p_l, " (")
 
   val env = ENVcon3 (fl, p_l, &i)
   prval pf = @(pf_fil, view@ i)
@@ -1956,7 +1960,7 @@ fn _emit_closure_clofun {m:file_mode} {l:addr} (
 
   val () = // print a comma for separation if needed
     if i > 0 then begin case+ 0 of
-      | _ when hityplst_is_cons hits_arg => fprint (pf_mod | !p_l, ", ")
+      | _ when hityplst_is_cons hits_arg => fprint1_string (pf_mod | !p_l, ", ")
       | _ => ()
     end
 
@@ -1966,22 +1970,22 @@ fn _emit_closure_clofun {m:file_mode} {l:addr} (
       : void = begin case+ hits of
       | list_cons (hit, hits) => let
           val () = begin
-            if i > 0 then fprint (pf_mod | out, ", ")
+            if i > 0 then fprint1_string (pf_mod | out, ", ")
           end
-          val () = fprintf (pf_mod | out, "arg%i", @(i))
+          val () = fprintf1_exn (pf_mod | out, "arg%i", @(i))
         in
           emit_arglst (out, i+1, hits)
         end // end of [list_cons]
       | list_nil () => ()
     end // end of [emit_arglst]
   } // end of [where]
-  val () = fprint (pf_mod | !p_l, ") ;")
+  val () = fprint1_string (pf_mod | !p_l, ") ;")
 
   val () = begin
-    if is_void then fprint (pf_mod | !p_l, " return ;") else ()
+    if is_void then fprint1_string (pf_mod | !p_l, " return ;") else ()
   end
 
-  val () = fprint (pf_mod | !p_l, "\n} /* end of function */")
+  val () = fprint1_string (pf_mod | !p_l, "\n} /* end of function */")
 in
   // empty
 end // end of [_emit_clofun]
@@ -2034,27 +2038,27 @@ implement emit_funentry (pf | out, entry) = let
 
   // function head
   val () = begin
-     emit_hityp (pf | out, hit_res); fprint (pf | out, '\n')
+     emit_hityp (pf | out, hit_res); fprint1_char (pf | out, '\n')
   end
   val () = begin
-    emit_funlab (pf | out, fl); fprint (pf | out, " (")
+    emit_funlab (pf | out, fl); fprint1_string (pf | out, " (")
   end
   val n = emit_funenvarg (pf | out, vtps_all)
   val () = // comma separation if needed
     if n > 0 then begin case+ 0 of
-      | _ when hityplst_is_cons hits_arg => fprint (pf | out, ", ")
+      | _ when hityplst_is_cons hits_arg => fprint1_string (pf | out, ", ")
       | _ => ()
     end
   val () = begin
-    emit_funarg (pf | out, hits_arg); fprint (pf | out, ") {\n")
+    emit_funarg (pf | out, hits_arg); fprint1_string (pf | out, ") {\n")
   end
 
   // local variable declaration
   val () = let
-    val () = fprint (pf | out, "/* local vardec */\n")
+    val () = fprint1_string (pf | out, "/* local vardec */\n")
     val tmps_local = funentry_tmpvarmap_gen (entry)
     val n = emit_tmpvarmap_dec_local (pf | out, tmps_local)
-    val () = if n > 0 then fprint (pf | out, '\n')
+    val () = if n > 0 then fprint1_char (pf | out, '\n')
   in
     tmpvarmap_free (tmps_local)
   end
@@ -2075,20 +2079,20 @@ implement emit_funentry (pf | out, entry) = let
   val () = funentry_varindmap_reset ()
 
   // return
-  val () = fprint (pf | out, "\nreturn ")
+  val () = fprint1_string (pf | out, "\nreturn ")
   val () = let
     val is_void = tmpvar_is_void (tmp_ret)
-    val () = if is_void then fprint (pf | out, "/* ")
-    val () = fprint (pf | out, "(")
+    val () = if is_void then fprint1_string (pf | out, "/* ")
+    val () = fprint1_string (pf | out, "(")
     val () = emit_tmpvar (pf | out, tmp_ret)
-    val () = fprint (pf | out, ")")
-    val () = if is_void then fprint (pf | out, " */")
+    val () = fprint1_string (pf | out, ")")
+    val () = if is_void then fprint1_string (pf | out, " */")
   in
     // empty
   end
-  val () = fprint (pf | out, " ;\n} /* end of [")
+  val () = fprint1_string (pf | out, " ;\n} /* end of [")
   val () = begin
-    emit_funlab (pf | out, fl); fprint (pf | out, "] */")
+    emit_funlab (pf | out, fl); fprint1_string (pf | out, "] */")
   end
 
   // closure_type and closure_make and clofun
@@ -2096,11 +2100,11 @@ implement emit_funentry (pf | out, entry) = let
     | _ when istailjoin => ()
     | _ => begin case+ fc of
       | $Syn.FUNCLOclo _ => let
-          val () = fprint (pf | out, "\n\n")
+          val () = fprint1_string (pf | out, "\n\n")
           val () = emit_closure_type (pf | out, fl, vtps_all)
-          val () = fprint (pf | out, "\n\n")
+          val () = fprint1_string (pf | out, "\n\n")
           val () = emit_closure_make (pf | out, fl, vtps_all)
-          val () = fprint (pf | out, "\n\n")
+          val () = fprint1_string (pf | out, "\n\n")
           val () = emit_closure_clofun (pf | out, fl, vtps_all)
         in
           // empty
@@ -2122,45 +2126,45 @@ implement emit_funentry_prototype {m} (pf | out, entry) = let
 
   fn aux_function
     (out: &FILE m):<cloptr1> void = let
-    val () = fprint (pf | out, "static ")
+    val () = fprint1_string (pf | out, "static ")
     val () = emit_hityp (pf | out, hit_res)
-    val () = fprint (pf | out, ' ')
+    val () = fprint1_char (pf | out, ' ')
     val () = emit_funlab (pf | out, fl)
-    val () = fprint (pf | out, " (")
+    val () = fprint1_string (pf | out, " (")
     val n = emit_funenvarg (pf | out, vtps_all)
     val () = // comma separation if needed
       if n > 0 then begin case+ 0 of
-        | _ when hityplst_is_cons hits_arg => fprint (pf | out, ", ")
+        | _ when hityplst_is_cons hits_arg => fprint1_string (pf | out, ", ")
         | _ => ()
       end
     val () = emit_funarg (pf | out, hits_arg)
-    val () = fprint (pf | out, ") ;\n")
+    val () = fprint1_string (pf | out, ") ;\n")
   in
     // empty
   end // end of [aux_function]
 
   fn aux_closure_make (out: &FILE m):<cloptr1> void = let
-    val () = fprint (pf | out, "static ats_clo_ptr_type ")
+    val () = fprint1_string (pf | out, "static ats_clo_ptr_type ")
     val () = emit_funlab (pf | out, fl)
-    val () = fprint (pf | out, "_closure_make (")
+    val () = fprint1_string (pf | out, "_closure_make (")
     val _(*int*) = emit_funenvarg (pf | out, vtps_all)
-    val () = fprint (pf | out, ") ;\n")
+    val () = fprint1_string (pf | out, ") ;\n")
   in
     // empty
   end // end of [aux_closure_make]
 
   fn aux_closure_clofun (out: &FILE m):<cloptr1> void = let
-    val () = fprint (pf | out, "static ")
+    val () = fprint1_string (pf | out, "static ")
     val () = emit_hityp (pf | out, hit_res)
-    val () = fprint (pf | out, ' ')
+    val () = fprint1_char (pf | out, ' ')
     val () = emit_funlab (pf | out, fl)
-    val () = fprint (pf | out, "_clofun (ats_clo_ptr_type cloptr")
+    val () = fprint1_string (pf | out, "_clofun (ats_clo_ptr_type cloptr")
     val () = begin case+ 0 of
-      | _ when hityplst_is_cons hits_arg => fprint (pf | out, ", ")
+      | _ when hityplst_is_cons hits_arg => fprint1_string (pf | out, ", ")
       | _ => ()
     end
     val () = emit_funarg (pf | out, hits_arg)
-    val () = fprint (pf | out, ") ;\n")
+    val () = fprint1_string (pf | out, ") ;\n")
   in
     // empty
   end // end of [aux_closure_clofun]
@@ -2195,22 +2199,22 @@ end // end of [emit_funentry_prototype]
 (* ****** ****** *)
 
 implement emit_mainfun (pf | out, fil) = let
-  val () = fprint (pf | out, "int main (int argc, char *argv[]) {\n")
+  val () = fprint1_string (pf | out, "int main (int argc, char *argv[]) {\n")
 
-  val () = fprint (pf | out, "ATS_GC_INIT() ;\n")
+  val () = fprint1_string (pf | out, "ATS_GC_INIT() ;\n")
 
-  val () = fprint (pf | out, "mainats_prelude() ;\n")
+  val () = fprint1_string (pf | out, "mainats_prelude() ;\n")
 
-  val () = fprint (pf | out, "\n#ifndef _ATS_DYNLOADFUN_NONE\n")
+  val () = fprint1_string (pf | out, "\n#ifndef _ATS_DYNLOADFUN_NONE\n")
   val () = emit_filename (pf | out, fil)
-  val () = fprint (pf | out, "__dynload () ;\n")
-  val () = fprint (pf | out, "#endif\n\n")
+  val () = fprint1_string (pf | out, "__dynload () ;\n")
+  val () = fprint1_string (pf | out, "#endif\n\n")
 
-  val () = fprint (pf | out, "mainats ((ats_int_type)argc, (ats_ptr_type)argv) ;\n")
+  val () = fprint1_string (pf | out, "mainats ((ats_int_type)argc, (ats_ptr_type)argv) ;\n")
 
-  val () = fprint (pf | out, "return (0) ;\n")
+  val () = fprint1_string (pf | out, "return (0) ;\n")
 
-  val () = fprint (pf | out, "} /* end of main */\n")
+  val () = fprint1_string (pf | out, "} /* end of main */\n")
 in
   // empty
 end // end of [emit_mainfun]

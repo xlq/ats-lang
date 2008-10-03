@@ -331,42 +331,42 @@ fn emit_tailjoin_case {m:file_mode} (
   , fl: funlab_t
   , tmps: tmpvarlst
   ) : void = let
-  val () = fprintf (pf | out, "case %i:\n", @(tag))
+  val () = fprintf1_exn (pf | out, "case %i:\n", @(tag))
   val () = begin
-    fprint_string (pf | out, "va_start(funarg, ");
-    fprint_string (pf | out, FUNTAGNAME);
-    fprint_string (pf | out, ") ;\n")
+    fprint1_string (pf | out, "va_start(funarg, ");
+    fprint1_string (pf | out, FUNTAGNAME);
+    fprint1_string (pf | out, ") ;\n")
   end
   val () = aux (out, tmps) where {
     fun aux (out: &FILE m, tmps: tmpvarlst)
       : void = begin case+ tmps of
       | list_cons (tmp, tmps) => let
           val () = emit_valprim_tmpvar (pf | out, tmp)
-          val () = fprint (pf | out, " = va_arg(funarg, ")
+          val () = fprint1_string (pf | out, " = va_arg(funarg, ")
           val () = emit_hityp (pf | out, tmpvar_typ_get tmp)
-          val () = fprint (pf | out, ") ;\n")
+          val () = fprint1_string (pf | out, ") ;\n")
         in
           aux (out, tmps)
         end
       | list_nil () => ()
     end // end of [aux]
   }
-  val () = fprint (pf | out, "va_end(funarg) ;\n")
+  val () = fprint1_string (pf | out, "va_end(funarg) ;\n")
   val () = begin
-    fprint (pf | out, "goto __ats_lab_");
+    fprint1_string (pf | out, "goto __ats_lab_");
     emit_funlab (pf | out, fl);
-    fprint (pf | out, " ;\n\n")
+    fprint1_string (pf | out, " ;\n\n")
   end
 in
   // empty
 end // end of [emit_tailjoin_case]
 
 implement emit_tailjoinlst {m} (pf | out, tjs) = let
-  val () = fprint_string (pf | out, "va_list funarg ;\n\n")
+  val () = fprint1_string (pf | out, "va_list funarg ;\n\n")
   val () = begin
-    fprint_string (pf | out, "switch (");
-    fprint_string (pf | out, FUNTAGNAME);
-    fprint_string (pf | out, ") {\n")
+    fprint1_string (pf | out, "switch (");
+    fprint1_string (pf | out, FUNTAGNAME);
+    fprint1_string (pf | out, ") {\n")
   end
   val () = aux (out, tjs) where {
     fun aux (out: &FILE m, tjs: tailjoinlst): void = begin
@@ -377,9 +377,9 @@ implement emit_tailjoinlst {m} (pf | out, tjs) = let
       | TAILJOINLSTnil () => ()
     end // end of [aux]
   } // end of [aux]
-  val () = fprint_string (
+  val () = fprint1_string (
     pf | out, "default: exit(1) ; /* deadcode */\n} /* end of switch */\n\n"
-  ) // end of [fprint_string]
+  ) // end of [fprint1_string]
 in
   // empty
 end // end of [emit_tailjoinlst]

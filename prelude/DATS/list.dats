@@ -385,7 +385,7 @@ in
   aux (xs, 0)
 end // end of [list_get_elt_at]
 
-implement list_nth = list_get_elt_at
+implement list_nth (xs, n) = list_get_elt_at (xs, n)
 
 implement list_get_elt_at_exn<a> (xs, n) = let
   fun aux {n,i:nat} .<n>. 
@@ -398,7 +398,7 @@ in
   aux (xs, 0)
 end // end of [list_get_elt_at_exn]
 
-implement list_nth_exn = list_get_elt_at_exn
+implement list_nth_exn (xs, n) = list_get_elt_at_exn (xs, n)
 
 implement list_get_elt_at_opt<a> (xs, n) = let
   fun aux {n,i:nat} .<n>.
@@ -411,7 +411,7 @@ in
   aux (xs, 0)
 end // end of [list_get_elt_at_opt]
 
-implement list_nth_opt = list_get_elt_at_opt
+implement list_nth_opt (xs, n) = list_get_elt_at_opt (xs, n)
 
 (* ****** ****** *)
 

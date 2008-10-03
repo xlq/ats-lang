@@ -678,13 +678,13 @@ typedef xyzlst_t = List xyz_t
 fn fprint_xyz {m:file_mode}
   (pf: file_mode_lte (m, w) | out: &FILE m, xyz: xyz_t)
   : void = begin
-  fprint (pf | out, "(");
+  fprint1_string (pf | out, "(");
   fprint_d3exp (pf | out, xyz.0);
-  fprint (pf | out, ", ");
+  fprint1_string (pf | out, ", ");
   fprint_s2kexp (pf | out, xyz.1);
-  fprint (pf | out, ", ");
-  fprint (pf | out, xyz.2);
-  fprint (pf | out, ")")
+  fprint1_string (pf | out, ", ");
+  fprint1_int (pf | out, xyz.2);
+  fprint1_string (pf | out, ")")
 end
 
 fn print_xyz (xyz: xyz_t): void = print_mac (fprint_xyz, xyz)
@@ -709,8 +709,8 @@ in
       fprint_d2var (pf | out, d2v)
     end
   | _ => begin
-      fprint (pf | out, "Internal Error: fprint_xyz_root: d3e = ");
-      fprint (pf | out, d3e);
+      fprint1_string (pf | out, "Internal Error: fprint_xyz_root: d3e = ");
+      fprint_d3exp (pf | out, d3e);
       fprint_newline (pf | out);
       $Err.abort ()
     end

@@ -159,20 +159,20 @@ end // end of [lte_location_location]
 (* ****** ****** *)
 
 implement fprint_location (pf | out, loc) = begin
-  fprint (pf | out, loc.filename);
-  fprint (pf | out, ": ");
-  fprint (pf | out, loc.begpos_toff+1L);
-  fprint (pf | out, "(line=");
-  fprint (pf | out, loc.begpos_line+1);
-  fprint (pf | out, ", offs=");
-  fprint (pf | out, loc.begpos_loff+1);
-  fprint (pf | out, ") -- ");
-  fprint (pf | out, loc.endpos_toff+1L);
-  fprint (pf | out, "(line=");
-  fprint (pf | out, loc.endpos_line+1);
-  fprint (pf | out, ", offs=");
-  fprint (pf | out, loc.endpos_loff+1);
-  fprint (pf | out, ")");
+  fprint_filename (pf | out, loc.filename);
+  fprint1_string (pf | out, ": ");
+  fprint1_lint (pf | out, loc.begpos_toff+1L);
+  fprint1_string (pf | out, "(line=");
+  fprint1_int (pf | out, loc.begpos_line+1);
+  fprint1_string (pf | out, ", offs=");
+  fprint1_int (pf | out, loc.begpos_loff+1);
+  fprint1_string (pf | out, ") -- ");
+  fprint1_lint (pf | out, loc.endpos_toff+1L);
+  fprint1_string (pf | out, "(line=");
+  fprint1_int (pf | out, loc.endpos_line+1);
+  fprint1_string (pf | out, ", offs=");
+  fprint1_int (pf | out, loc.endpos_loff+1);
+  fprint1_string (pf | out, ")");
 end // end of [fprint_location]
 
 implement print_location (loc) = print_mac (fprint_location, loc)

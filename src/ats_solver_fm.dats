@@ -74,9 +74,8 @@ implement fprint_intvec {m} {n} (pf_mod | out, vec, n) = let
   fun aux {i:nat | i <= n} .<n-i>.
     (out: &FILE m, vec: &intvec n, n: int n, i: int i): void = begin
     if (i < n) then begin
-      if i > 0 then fprint (pf_mod | out, ", ");
-      fprint_i0nt (pf_mod | out, vec.[i]);
-      aux (out, vec, n, i+1)
+      if i > 0 then fprint1_string (pf_mod | out, ", ");
+      fprint_i0nt (pf_mod | out, vec.[i]); aux (out, vec, n, i+1)
     end
   end // end of [aux]
 in
@@ -143,32 +142,32 @@ end // end of [icstrlst_free]
 
 (* ****** ****** *)
 
-implement fprint_icstr {m} {n} (pf_mod | out, ic, n) = begin
+implement fprint_icstr {m} {n} (pf_mod | out, ic, n) = let
+  macdef strpr (s) = fprint1_string (pf_mod | out, ,(s))
+in
   case+ ic of
   | ICvec (knd, !ivp) => begin
-      fprint (pf_mod | out, "ICvec(");
-      fprint (pf_mod | out, "knd=");
-      fprint (pf_mod | out, knd);
-      fprint (pf_mod | out, "; ");
+      strpr "ICvec("; strpr "knd=";
+      fprint1_int (pf_mod | out, knd);
+      strpr "; ";
       fprint_intvecptr (pf_mod | out, !ivp, n);
-      fprint (pf_mod | out, ")");
+      strpr ")";
       fprint_newline (pf_mod | out);
       fold@ ic
-    end
+    end // end of [ICvec]
   | ICveclst (knd, !ics) => begin
-      fprint (pf_mod | out, "ICveclst(");
-      fprint (pf_mod | out, "knd=");
-      fprint (pf_mod | out, knd);
-      fprint (pf_mod | out, "; ");
+      strpr "ICveclst("; strpr "knd=";
+      fprint1_int (pf_mod | out, knd);
+      strpr "; ";
       fprint_icstrlst (pf_mod | out, !ics, n);
-      fprint (pf_mod | out, ")");
+      strpr ")";
       fprint_newline (pf_mod | out);
       fold@ ic
-    end
+    end // end of [ICveclst]
 end // end of [fprint_icstr]
 
-implement fprint_icstrlst {m} {n} (pf_mod | out, ics, n) = begin
-  case+ ics of
+implement fprint_icstrlst {m} {n}
+  (pf_mod | out, ics, n) = begin case+ ics of
   | list_vt_cons (!ic, !ics_nxt) => begin
       fprint_icstr (pf_mod | out, !ic, n);
       fprint_icstrlst (pf_mod | out, !ics_nxt, n);
@@ -789,7 +788,7 @@ fun fprint_intveclst1 {m:file_mode} {n:pos}
   : void = begin case+ v1ecs of
   | INTVECLST1cons (_, !pf_arr  | stamp, p, i, !v1ecs_nxt) => let
       prval pf = !pf_arr
-      val () = fprintf (pf_mod | out, "(%i;%i): ", @(stamp,i))
+      val () = fprintf1_exn (pf_mod | out, "(%i;%i): ", @(stamp,i))
       val () = fprint_intvec (pf_mod | out, !p, n)
       prval () = (!pf_arr := pf)
       val () = fprint_newline (pf_mod | out)

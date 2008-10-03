@@ -59,8 +59,8 @@ extern fun position_make_int_int_lint
 implement position_make_int_int_lint (line, loff, toff) =
   '{ line= line, loff= loff, toff= toff }
 
-implement fprint_position (pf | fil, pos) =
-  fprintf (pf | fil, "%li(line=%i, offs=%i)", @(pos.toff+1L, pos.line+1, pos.loff+1))
+implement fprint_position (pf | fil, pos) = fprintf1_exn
+  (pf | fil, "%li(line=%i, offs=%i)", @(pos.toff+1L, pos.line+1, pos.loff+1))
 
 implement print_position (pos) = let
   val (pf_stdout | ptr_stdout) = stdout_get ()

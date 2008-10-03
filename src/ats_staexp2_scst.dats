@@ -353,7 +353,7 @@ implement fprint_s2cstlst {m} (pf | out, s2cs) = let
 fun aux (out: &FILE m, i: int, s2cs: s2cstlst): void =
   case+ s2cs of
   | S2CSTLSTcons (s2c, s2cs) => begin
-      if i > 0 then fprint (pf | out, ", ");
+      if i > 0 then fprint1_string (pf | out, ", ");
       fprint_s2cst (pf | out, s2c); aux (out, i+1, s2cs)
     end
   | S2CSTLSTnil () => ()

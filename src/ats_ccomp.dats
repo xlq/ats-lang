@@ -82,7 +82,7 @@ implement tmplab_make () = _tmplab_make ()
 implement tmplab_stamp_get (tl) = tl.tmplab_stamp
 
 implement fprint_tmplab (pf | out, tl) = begin
-  fprint (pf | out, "__ats_lab_");
+  fprint1_string (pf | out, "__ats_lab_");
   $Stamp.fprint_stamp (pf | out, tl.tmplab_stamp)
 end
 
@@ -106,9 +106,9 @@ in // in of [local]
 extern typedef "tmpvar_t" = tmpvar
 
 implement fprint_tmpvar (pf | out, tmp) = begin
-  fprint (pf | out, "tmp(");
+  fprint1_string (pf | out, "tmp(");
   $Stamp.fprint_stamp (pf | out, tmp.tmpvar_stamp);
-  fprint (pf | out, ")")
+  fprint1_string (pf | out, ")")
 end // end of [fprint_tmpvar]
 
 //
@@ -198,7 +198,7 @@ in // in of [local]
 extern typedef "funlab_t" = funlab
 
 implement fprint_funlab (pf | out, fl) = begin
-  fprint (pf | out, fl.funlab_name)
+  fprint1_string (pf | out, fl.funlab_name)
 end
 
 implement eq_funlab_funlab (fl1, fl2) = begin

@@ -52,6 +52,10 @@ staload "ats_ccomp.sats"
 
 (* ****** ****** *)
 
+macdef fprint_label = $Lab.fprint_label
+
+(* ****** ****** *)
+
 implement print_tmplab (tl) = print_mac (fprint_tmplab, tl)
 implement prerr_tmplab (tl) = prerr_mac (fprint_tmplab, tl)
 
@@ -64,7 +68,7 @@ implement fprint_tmpvarlst {m} (pf | out, tmps) = let
   fun aux (out: &FILE m, i: int, tmps: tmpvarlst): void =
     case+ tmps of
     | list_cons (tmp, tmps) => begin
-        if i > 0 then fprint (pf | out, ", ");
+        if i > 0 then fprint1_string (pf | out, ", ");
         fprint_tmpvar (pf | out, tmp); aux (out, i+1, tmps)
       end
     | list_nil () => ()
@@ -86,7 +90,7 @@ implement fprint_funlablst {m} (pf | out, fls) = let
   fun aux (out: &FILE m, i: int, fls: funlablst): void =
     case+ fls of
     | list_cons (fl, fls) => begin
-        if i > 0 then fprint (pf | out, ", ");
+        if i > 0 then fprint1_string (pf | out, ", ");
         fprint_funlab (pf | out, fl); aux (out, i+1, fls)
       end
     | list_nil () => ()
@@ -99,112 +103,98 @@ implement prerr_funlablst (fls) = prerr_mac (fprint_funlablst, fls)
 
 (* ****** ****** *)
 
-implement fprint_valprim (pf | out, vp) = begin
+implement fprint_valprim (pf | out, vp) = let
+  macdef strpr (s) = fprint1_string (pf | out, ,(s))
+in
   case+ vp.valprim_node of
   | VParg i => begin
-      fprint (pf | out, "VParg(");
-      fprint_int (pf | out, i);
-      fprint (pf | out, ")")
+      strpr "VParg("; fprint1_int (pf | out, i); strpr ")"
     end // end of [VParg]
   | VParg_ref i => begin
-      fprint (pf | out, "VParg_ref(");
-      fprint_int (pf | out, i);
-      fprint (pf | out, ")")
+      strpr "VParg_ref("; fprint1_int (pf | out, i); strpr ")"
     end // end of [VParg_ref]
   | VPbool b => begin
-      fprint (pf | out, "VPbool(");
-      fprint (pf | out, b);
-      fprint (pf | out, ")")
+      strpr "VPbool("; fprint1_bool (pf | out, b); strpr ")"
     end // end of [VPbool]
   | VPchar c => begin
-      fprint (pf | out, "VPchar(");
-      fprint (pf | out, c);
-      fprint (pf | out, ")")
+      strpr "VPchar("; fprint1_char (pf | out, c); strpr ")"
     end // end of [VPchar]
   | VPclo (knd, fl, ctx) => begin
-      fprint (pf | out, "VPclo(");
-      fprint_int (pf | out, knd);
-      fprint (pf | out, "; ");
+      strpr "VPclo(";
+      fprint1_int (pf | out, knd);
+      strpr "; ";
       fprint_funlab (pf | out, fl);
-      fprint (pf | out, "; ");
-      fprint (pf | out, "...");
-      fprint (pf | out, ")")
+      strpr "; ";
+      fprint1_string (pf | out, "...");
+      strpr ")"
     end
   | VPcst (d2c) => begin
-      fprint (pf | out, "VPcst(");
-      fprint (pf | out, d2c);
-      fprint (pf | out, ")")
+      strpr "VPcst("; fprint_d2cst (pf | out, d2c); strpr ")"
     end // end of [VPcst]
   | VPenv vtp => begin
-      fprint (pf | out, "VPenv(");
-      fprint_vartyp (pf | out, vtp);
-      fprint (pf | out, ")")
+      strpr "VPenv("; fprint_vartyp (pf | out, vtp); strpr ")"
     end
   | VPext code => begin
-      fprintf (pf | out, "VPext(\"%s\")", @(code));
+      fprintf1_exn (pf | out, "VPext(\"%s\")", @(code));
     end 
   | VPfloat f(*string*) => begin
-      fprintf (pf | out, "VPfloat(%s)", @(f))
+      fprintf1_exn (pf | out, "VPfloat(%s)", @(f))
     end
   | VPfun fl => begin
-      fprint (pf | out, "VPfun(");
+      strpr "VPfun(";
       fprint_funlab (pf | out, fl);
-      fprint (pf | out, ")")
+      strpr ")"
     end
   | VPint (int) => begin
-      fprint (pf | out, "VPint(");
+      strpr "VPint(";
       $IntInf.fprint_intinf (pf | out, int);
-      fprint (pf | out, ")")
+      strpr ")"
     end
   | VPintsp (str, int) => begin
-      fprintf (pf | out, "VPintsp(%s)", @(str))
+      fprintf1_exn (pf | out, "VPintsp(%s)", @(str))
     end
   | VPptrof vp => begin
-      fprint (pf | out, "VPptrof(");
+      strpr "VPptrof(";
       fprint_valprim (pf | out, vp);
-      fprint (pf | out, ")")
+      strpr ")"
     end
   | VPptrof_ptr_offs (vp, offs) => begin
-      fprint (pf | out, "VPptrof_ptr_offs(");
+      strpr "VPptrof_ptr_offs(";
       fprint_valprim (pf | out, vp);
-      fprint (pf | out, "; ");
+      strpr "; ";
       fprint_offsetlst (pf | out, offs);
-      fprint (pf | out, ")")
+      strpr ")"
     end
   | VPptrof_var_offs (vp, offs) => begin
-      fprint (pf | out, "VPptrof_var_offs(");
+      strpr "VPptrof_var_offs(";
       fprint_valprim (pf | out, vp);
-      fprint (pf | out, "; ");
+      strpr "; ";
       fprint_offsetlst (pf | out, offs);
-      fprint (pf | out, ")")
+      strpr ")"
     end
   | VPsizeof hit => begin
-      fprint (pf | out, "VPsizeof(");
+      strpr "VPsizeof(";
       fprint_hityp (pf | out, hityp_decode hit);
-      fprint (pf | out, ")")
+      strpr ")"
     end
   | VPstring (str, len) => begin
-      fprint (pf | out, "VPstring(...)")
+      fprint1_string (pf | out, "VPstring(...)")
     end
   | VPtmp tmp => begin
-      fprint (pf | out, "VPtmp(");
-      fprint_tmpvar (pf | out, tmp);
-      fprint (pf | out, ")")
+      strpr "VPtmp("; fprint_tmpvar (pf | out, tmp); strpr ")"
     end
   | VPtmp_ref tmp => begin
-      fprint (pf | out, "VPtmp_ref(");
-      fprint_tmpvar (pf | out, tmp);
-      fprint (pf | out, ")")
+      strpr "VPtmp_ref("; fprint_tmpvar (pf | out, tmp); strpr ")"
     end
   | VPtop () => begin
-      fprint (pf | out, "VPtop()")
+      fprint1_string (pf | out, "VPtop()")
     end
   | VPvoid () => begin
-      fprint (pf | out, "VPvoid()")
+      fprint1_string (pf | out, "VPvoid()")
     end
 (*
   | _ => begin
-      fprint (pf | out, "fprint_valprim: not yet implemented.");
+      fprint1_string (pf | out, "fprint_valprim: not yet implemented.");
       fprint_newline (pf | out);
       $Err.abort {void} ()
     end
@@ -217,7 +207,7 @@ implement fprint_valprimlst {m} (pf | out, vps) = let
   fun aux (out: &FILE m, i: int, vps: valprimlst): void =
     case+ vps of
     | list_cons (vp, vps) => begin
-        if i > 0 then fprint (pf | out, ", ");
+        if i > 0 then fprint1_string (pf | out, ", ");
         fprint_valprim (pf | out, vp); aux (out, i+1, vps)
       end
     | list_nil () => ()
@@ -229,8 +219,8 @@ implement fprint_labvalprimlst {m} (pf | out, lvps) = let
   fun aux (out: &FILE m, i: int, lvps: labvalprimlst): void =
     case+ lvps of
     | LABVALPRIMLSTcons (l, vp, lvps) => begin
-        if i > 0 then fprint (pf | out, ", ");
-        $Lab.fprint_label (pf | out, l); fprint (pf | out, "= ");
+        if i > 0 then fprint1_string (pf | out, ", ");
+        fprint_label (pf | out, l); fprint1_string (pf | out, "= ");
         fprint_valprim (pf | out, vp); aux (out, i+1, lvps)
       end
     | LABVALPRIMLSTnil () => ()
@@ -243,15 +233,15 @@ end // end of [fprint_labvalprimlst]
 implement fprint_offset {m} (pf | out, off) = begin
   case+ off of
   | OFFSETlab (l, _(*hit_rec*)) => begin
-      fprint (pf | out, "."); $Lab.fprint_label (pf | out, l)
+      fprint1_string (pf | out, "."); fprint_label (pf | out, l)
     end
   | OFFSETind (vpss, _(*hit_elt*)) => aux (out, vpss) where {
       fun aux (out: &FILE m, vpss: valprimlstlst)
         : void = begin case+ vpss of
         | list_cons (vps, vpss) => begin
-            fprint (pf | out, "[");
+            fprint1_string (pf | out, "[");
             fprint_valprimlst (pf | out, vps);
-            fprint (pf | out, "]");
+            fprint1_string (pf | out, "]");
             aux (out, vpss)
           end
         | list_nil () => ()
@@ -263,7 +253,7 @@ implement fprint_offsetlst {m} (pf | out, offs) = let
   fun aux (out: &FILE m, i: int, offs: offsetlst): void =
     case+ offs of
     | list_cons (off, offs) => begin
-        if i > 0 then fprint (pf | out, ", ");
+        if i > 0 then fprint1_string (pf | out, ", ");
         fprint_offset (pf | out, off); aux (out, i+1, offs)
       end
     | list_nil () => ()
@@ -273,40 +263,32 @@ end // end of [fprint_offsetlst]
 
 (* ****** ****** *)
 
-implement fprint_patck (pf | out, patck) = begin
+implement fprint_patck (pf | out, patck) = let
+  macdef strpr (s) = fprint1_string (pf | out, ,(s))
+in
   case+ patck of
   | PATCKbool b => begin
-      fprint (pf | out, "PATCKbool(");
-      fprint (pf | out, b);
-      fprint (pf | out, ")")
+      strpr "PATCKbool("; fprint1_bool (pf | out, b); strpr ")"
     end
   | PATCKchar c => begin
-      fprint (pf | out, "PATCKchar(");
-      fprint (pf | out, c);
-      fprint (pf | out, ")")
+      strpr "PATCKchar("; fprint1_char (pf | out, c); strpr ")"
     end
   | PATCKcon d2c => begin
-      fprint (pf | out, "PATCKcon(");
-      fprint_d2con (pf | out, d2c);
-      fprint (pf | out, ")")
+      strpr "PATCKcon("; fprint_d2con (pf | out, d2c); strpr ")"
     end
   | PATCKexn d2c => begin
-      fprint (pf | out, "PATCKexn(");
-      fprint_d2con (pf | out, d2c);
-      fprint (pf | out, ")")
+      strpr "PATCKexn("; fprint_d2con (pf | out, d2c); strpr ")"
     end
   | PATCKfloat f(*string*) => begin
-      fprint (pf | out, "PATCKfloat(");
-      fprint (pf | out, f);
-      fprint (pf | out, ")")
+      strpr "PATCKfloat("; fprint1_string (pf | out, f); strpr ")"
     end
   | PATCKint i => begin
-      fprint (pf | out, "PATCKint(");
+      strpr "PATCKint(";
       $IntInf.fprint_intinf (pf | out, i);
-      fprint (pf | out, ")")
+      strpr ")"
     end
   | PATCKstring s => begin
-      fprintf (pf | out, "PATCKstring(\"%s\")", @(s))
+      fprintf1_exn (pf | out, "PATCKstring(\"%s\")", @(s))
     end
 end
 
@@ -314,7 +296,7 @@ implement fprint_patcklst {m} (pf | out, patcks) = let
   fun aux (out: &FILE m, i: int, patcks: patcklst): void =
     case+ patcks of
     | list_cons (patck, patcks) => begin
-        if i > 0 then fprint (pf | out, ", ");
+        if i > 0 then fprint1_string (pf | out, ", ");
         fprint_patck (pf | out, patck); aux (out, i+1, patcks)
       end
     | list_nil () => ()
@@ -324,38 +306,36 @@ end // end of [fprint_patcklst]
 
 (* ****** ****** *)
 
-implement fprint_kont {m} (pf | out, k) = begin
+implement fprint_kont {m} (pf | out, k) = let
+  macdef strpr (s) = fprint1_string (pf | out, ,(s))
+in
   case+ k of
   | KONTtmplab tl => begin
-      fprint (pf | out, "KONTtmplab(");
+      strpr "KONTtmplab(";
       fprint_tmplab (pf | out, tl);
-      fprint (pf | out, ")")
-    end
+      strpr ")"
+    end // end of [KONTtmplab]
   | KONTtmplabint (tl, i) => begin
-      fprint (pf | out, "KONTtmplabint(");
+      strpr "KONTtmplabint(";
       fprint_tmplab (pf | out, tl);
-      fprint (pf | out, ", ");
-      fprint_int (pf | out, i);
-      fprint (pf | out, ")")
-    end
+      strpr ", ";
+      fprint1_int (pf | out, i);
+      strpr ")"
+    end // end of [KONTtmplabint]
   | KONTcaseof_fail () => begin
-      fprint (pf | out, "KONTcaseof_fail()")
+      fprint1_string (pf | out, "KONTcaseof_fail()")
     end
   | KONTfunarg_fail fl => begin
-      fprint (pf | out, "KONTfunarg_fail(");
-      fprint_funlab (pf | out, fl);
-      fprint (pf | out, ")")
+      strpr "KONTfunarg_fail("; fprint_funlab (pf | out, fl); strpr ")"
     end
   | KONTmatpnt mpt => begin
-      fprint (pf | out, "KONTmatpnt(...)")
+      fprint1_string (pf | out, "KONTmatpnt(...)")
     end
   | KONTraise vp => begin
-      fprint (pf | out, "KONTraise(");
-      fprint_valprim (pf | out, vp);
-      fprint (pf | out, ")")
+      strpr "KONTraise("; fprint_valprim (pf | out, vp); strpr ")"
     end
   | KONTnone () => begin
-      fprint (pf | out, "KONTnone()")
+      fprint1_string (pf | out, "KONTnone()")
     end
 end // end of [fprint_kont]
 
@@ -363,7 +343,7 @@ implement fprint_kontlst {m} (pf | out, ks) = let
   fun aux (out: &FILE m, i: int, ks: kontlst): void =
     case+ ks of
     | list_cons (k, ks) => begin
-        if i > 0 then fprint (pf | out, ", ");
+        if i > 0 then fprint1_string (pf | out, ", ");
         fprint_kont (pf | out, k); aux (out, i+1, ks)
       end
     | list_nil () => ()
@@ -373,298 +353,290 @@ end // end of [fprint_kontlst]
 
 (* ****** ****** *)
 
-implement fprint_instr (pf | out, ins) = begin
+implement fprint_instr (pf | out, ins) = let
+  macdef strpr (s) = fprint1_string (pf | out, ,(s))
+in
   case+ ins of
   | INSTRarr (tmp, arrsz, hit_elt) => begin
-      fprint (pf | out, "INSTRarr(");
+      strpr "INSTRarr(";
       fprint_tmpvar (pf | out, tmp);
-      fprint (pf | out, "; ");
+      strpr "; ";
       fprint_int (pf | out, arrsz);
-      fprint (pf | out, "; ");
+      strpr "; ";
       fprint_hityp (pf | out, hityp_decode hit_elt);
-      fprint (pf | out, ")");
-    end
+      strpr ")";
+    end // end of [INSTRarr]
   | INSTRcall (tmp, hit_fun, vp_fun, vps_arg) => begin
-      fprint (pf | out, "INSTRcall(");
+      strpr "INSTRcall(";
       fprint_tmpvar (pf | out, tmp);
-      fprint (pf | out, "; ");
+      strpr "; ";
       fprint_hityp (pf | out, hityp_decode hit_fun);
-      fprint (pf | out, "; ");
+      strpr "; ";
       fprint_valprim (pf | out, vp_fun);
-      fprint (pf | out, "; ");
+      strpr "; ";
       fprint_valprimlst (pf | out, vps_arg);
-      fprint (pf | out, ")")
-    end
+      strpr ")"
+    end // end of [INSTRcall]
   | INSTRcall_tail (fl) => begin
-      fprint (pf | out, "INSTRcall_tail(");
-      fprint_funlab (pf | out, fl);
-      fprint (pf | out, ")")
+      strpr "INSTRcall_tail("; fprint_funlab (pf | out, fl); strpr ")"
     end
   | INSTRcond (vp, inss1, inss2) => begin
-      fprint (pf | out, "INSTRcond(");
+      strpr "INSTRcond(";
       fprint_valprim (pf | out, vp);
       fprint_newline (pf | out);
-      fprint (pf | out, "INSTRcond_then:");
+      strpr "INSTRcond_then:";
       fprint_newline (pf | out);
       fprint_instrlst (pf | out, inss1);
       fprint_newline (pf | out);
-      fprint (pf | out, "INSTRcond_else:");
+      strpr "INSTRcond_else:";
       fprint_newline (pf | out);
       fprint_instrlst (pf | out, inss2);
       fprint_newline (pf | out);
-      fprint (pf | out, ")")
-    end
+      strpr ")"
+    end // end of [INSTRcond]
   | INSTRdefine_clo (d2c, fl) => begin
-      fprint (pf | out, "INSTRdefine_clo(");
+      strpr "INSTRdefine_clo(";
       fprint_d2cst (pf | out, d2c);
-      fprint (pf | out, ", ");
+      strpr ", ";
       fprint_funlab (pf | out, fl);
-      fprint (pf | out, ")")
+      strpr ")"
     end
   | INSTRdefine_fun (d2c, fl) => begin
-      fprint (pf | out, "INSTRdefine_fun(");
+      strpr "INSTRdefine_fun(";
       fprint_d2cst (pf | out, d2c);
-      fprint (pf | out, ", ");
+      strpr ", ";
       fprint_funlab (pf | out, fl);
-      fprint (pf | out, ")")
+      strpr ")"
     end
   | INSTRdefine_val (d2c, vp) => begin
-      fprint (pf | out, "INSTRdefine_val(");
+      strpr "INSTRdefine_val(";
       fprint_d2cst (pf | out, d2c);
-      fprint (pf | out, ", ");
+      strpr ", ";
       fprint_valprim (pf | out, vp);
-      fprint (pf | out, ")")
+      strpr ")"
     end
   | INSTRextern cmd => begin
-      fprintf (pf | out, "INSTRextern(\"%s\")", @(cmd))
+      fprintf1_exn (pf | out, "INSTRextern(\"%s\")", @(cmd))
     end
   | INSTRextval (name, vp) => begin
-      fprint (pf | out, "INSTRextval(");
-      fprint_string (pf | out, name);
-      fprint (pf | out, ", ");
+      strpr "INSTRextval(";
+      fprint1_string (pf | out, name);
+      strpr ", ";
       fprint_valprim (pf | out, vp);
-      fprint (pf | out, ")")
+      strpr ")"
     end
   | INSTRfreeptr vp => begin
-      fprint (pf | out, "INSTRfreeptr(");
-      fprint_valprim (pf | out, vp);
-      fprint (pf | out, ")")
+      strpr "INSTRfreeptr("; fprint_valprim (pf | out, vp); strpr ")"
     end
   | INSTRfunction _ => begin
-      fprint (pf | out, "INSTRfunction(...)")
+      fprint1_string (pf | out, "INSTRfunction(...)")
     end
   | INSTRfunlab fl => begin
-      fprint (pf | out, "INSTRfunlab(");
-      fprint_funlab (pf | out, fl);
-      fprint (pf | out, ")")
+      strpr "INSTRfunlab("; fprint_funlab (pf | out, fl); strpr ")"
     end
   | INSTRdynload_file (fil) => begin
-      fprint (pf | out, "INSTRdynload_file(");
+      strpr "INSTRdynload_file(";
       $Fil.fprint_filename (pf | out, fil);
-      fprint (pf | out, ")")
+      strpr ")"
     end
   | INSTRload_ptr (tmp, vp_ptr) => begin
-      fprint (pf | out, "INSTRload_ptr(");
+      strpr "INSTRload_ptr(";
       fprint_tmpvar (pf | out, tmp);
-      fprint (pf | out, "; ");
+      strpr "; ";
       fprint_valprim (pf | out, vp_ptr);
-      fprint (pf | out, ")")
+      strpr ")"
     end
   | INSTRload_ptr_offs (tmp, vp_ptr, offs) => begin
-      fprint (pf | out, "INSTRload_ptr_offs(");
+      strpr "INSTRload_ptr_offs(";
       fprint_tmpvar (pf | out, tmp);
-      fprint (pf | out, "; ");
+      strpr "; ";
       fprint_valprim (pf | out, vp_ptr);
-      fprint (pf | out, "; ");
+      strpr "; ";
       fprint_offsetlst (pf | out, offs);
-      fprint (pf | out, ")")
+      strpr ")"
     end
   | INSTRload_var (tmp, vp_var) => begin
-      fprint (pf | out, "INSTRload_var(");
+      strpr "INSTRload_var(";
       fprint_tmpvar (pf | out, tmp);
-      fprint (pf | out, "; ");
+      strpr "; ";
       fprint_valprim (pf | out, vp_var);
-      fprint (pf | out, ")")
+      strpr ")"
     end
   | INSTRload_var_offs (tmp, vp_var, offs) => begin
-      fprint (pf | out, "INSTRload_var_offs(");
+      strpr "INSTRload_var_offs(";
       fprint_tmpvar (pf | out, tmp);
-      fprint (pf | out, "; ");
+      strpr "; ";
       fprint_valprim (pf | out, vp_var);
-      fprint (pf | out, "; ");
+      strpr "; ";
       fprint_offsetlst (pf | out, offs);
-      fprint (pf | out, ")")
+      strpr ")"
     end
   | INSTRloop _ => begin
-      fprint (pf | out, "INSTRloop(...)")
+      fprint1_string (pf | out, "INSTRloop(...)")
     end
   | INSTRloopexn (knd, tl) => begin
-      fprint (pf | out, "INSTRloopexn(");
-      fprint_int (pf | out, knd);
-      fprint (pf | out, "; ");
+      strpr "INSTRloopexn(";
+      fprint1_int (pf | out, knd);
+      strpr "; ";
       fprint_tmplab (pf | out, tl);
-      fprint (pf | out, ")")
+      strpr ")"
     end
   | INSTRmove_arg (arg, vp) => begin
-      fprint (pf | out, "INSTRmove_arg(");
-      fprint_int (pf | out, arg);
-      fprint (pf | out, ", ");
+      strpr "INSTRmove_arg(";
+      fprint1_int (pf | out, arg);
+      strpr ", ";
       fprint_valprim (pf | out, vp);
-      fprint (pf | out, ")")
+      strpr ")"
     end
   | INSTRmove_con (tmp, hit_sum, d2c, vps_arg) => begin
-      fprint (pf | out, "INSTRmove_con(");
+      strpr "INSTRmove_con(";
       fprint_tmpvar (pf | out, tmp);
-      fprint (pf | out, "; ");
+      strpr "; ";
       fprint_hityp (pf | out, hityp_decode hit_sum);      
-      fprint (pf | out, "; ");
+      strpr "; ";
       fprint_d2con (pf | out, d2c);
-      fprint (pf | out, "; ");
+      strpr "; ";
       fprint_valprimlst (pf | out, vps_arg);
-      fprint (pf | out, ")")
+      strpr ")"
     end
   | INSTRmove_rec_box (tmp, hit_rec, lvps) => begin
-      fprint (pf | out, "INSTRmove_rec_box(");
+      strpr "INSTRmove_rec_box(";
       fprint_tmpvar (pf | out, tmp);
-      fprint (pf | out, "; ");
+      strpr "; ";
       fprint_hityp (pf | out, hityp_decode hit_rec);
-      fprint (pf | out, "; ");
+      strpr "; ";
       fprint_labvalprimlst (pf | out, lvps);
-      fprint (pf | out, ")")
+      strpr ")"
     end
   | INSTRmove_rec_flt (tmp, hit_rec, lvps) => begin
-      fprint (pf | out, "INSTRmove_rec_flt(");
+      strpr "INSTRmove_rec_flt(";
       fprint_tmpvar (pf | out, tmp);
-      fprint (pf | out, "; ");
+      strpr "; ";
       fprint_hityp (pf | out, hityp_decode hit_rec);
-      fprint (pf | out, "; ");
+      strpr "; ";
       fprint_labvalprimlst (pf | out, lvps);
-      fprint (pf | out, ")")
+      strpr ")"
     end
   | INSTRmove_val (tmp, vp) => begin
-      fprint (pf | out, "INSTRmove_val(");
+      strpr "INSTRmove_val(";
       fprint_tmpvar (pf | out, tmp);
-      fprint (pf | out, "; ");
+      strpr "; ";
       fprint_valprim (pf | out, vp);
-      fprint (pf | out, ")")
+      strpr ")"
     end
   | INSTRmove_ref (tmp, vp) => begin
-      fprint (pf | out, "INSTRmove_ref(");
+      strpr "INSTRmove_ref(";
       fprint_tmpvar (pf | out, tmp);
-      fprint (pf | out, "; ");
+      strpr "; ";
       fprint_valprim (pf | out, vp);
-      fprint (pf | out, ")")
+      strpr ")"
     end
   | INSTRpar_spawn (tmp_ret, vp_fun) => begin
-      fprint (pf | out, "INSTRpar_spawn(");
+      strpr "INSTRpar_spawn(";
       fprint_tmpvar (pf | out, tmp_ret);
-      fprint (pf | out, "; ");
+      strpr "; ";
       fprint_valprim (pf | out, vp_fun);
-      fprint (pf | out, ")")
+      strpr ")"
     end
   | INSTRpar_synch (tmp_ret) => begin
-      fprint (pf | out, "INSTRpar_synch(");
+      strpr "INSTRpar_synch(";
       fprint_tmpvar (pf | out, tmp_ret);
-      fprint (pf | out, ")")
+      strpr ")"
     end
   | INSTRpatck (vp, patck, k_fail) => begin
-      fprint (pf | out, "INSTRpatck(");
+      strpr "INSTRpatck(";
       fprint_valprim (pf | out, vp);
-      fprint (pf | out, "; ");
+      strpr "; ";
       fprint_patck (pf | out, patck);
-      fprint (pf | out, "; ");
+      strpr "; ";
       fprint_kont (pf | out, k_fail);
-      fprint (pf | out, ")")
+      strpr ")"
     end
   | INSTRraise vp => begin
-      fprint (pf | out, "INSTRraise(");
-      fprint_valprim (pf | out, vp);
-      fprint (pf | out, ")")
+      strpr "INSTRraise("; fprint_valprim (pf | out, vp); strpr ")"
     end
   | INSTRselcon (tmp, vp_sum, hit_sum, i) => begin
-      fprint (pf | out, "INSTRselcon(");
+      strpr "INSTRselcon(";
       fprint_tmpvar (pf | out, tmp);
-      fprint (pf | out, "; ");
+      strpr "; ";
       fprint_valprim (pf | out, vp_sum);
-      fprint (pf | out, "; ");
+      strpr "; ";
       fprint_hityp (pf | out, hityp_decode hit_sum);
-      fprint (pf | out, "; ");
-      fprint_int (pf | out, i);
-      fprint (pf | out, ")")
+      strpr "; ";
+      fprint1_int (pf | out, i);
+      strpr ")"
     end
   | INSTRselcon_ptr (tmp, vp_sum, hit_sum, i) => begin
-      fprint (pf | out, "INSTRselcon_ptr(");
+      strpr "INSTRselcon_ptr(";
       fprint_tmpvar (pf | out, tmp);
-      fprint (pf | out, "; ");
+      strpr "; ";
       fprint_valprim (pf | out, vp_sum);
-      fprint (pf | out, "; ");
+      strpr "; ";
       fprint_hityp (pf | out, hityp_decode hit_sum);
-      fprint (pf | out, "; ");
+      strpr "; ";
       fprint_int (pf | out, i);
-      fprint (pf | out, ")")
+      strpr ")"
     end
   | INSTRselect (tmp, vp_root, offs) => begin
-      fprint (pf | out, "INSTRselect(");
+      strpr "INSTRselect(";
       fprint_tmpvar (pf | out, tmp);
-      fprint (pf | out, "; ");
+      strpr "; ";
       fprint_valprim (pf | out, vp_root);
-      fprint (pf | out, "; ");
+      strpr "; ";
       fprint_offsetlst (pf | out, offs);
-      fprint (pf | out, ")")
+      strpr ")"
     end
   | INSTRstore_ptr (vp_ptr, vp_val) => begin
-      fprint (pf | out, "INSTRstore_ptr(");
+      strpr "INSTRstore_ptr(";
       fprint_valprim (pf | out, vp_ptr);
-      fprint (pf | out, "; ");
+      strpr "; ";
       fprint_valprim (pf | out, vp_val);
-      fprint (pf | out, ")")
+      strpr ")"
     end
   | INSTRstore_ptr_offs (vp_ptr, offs, vp_val) => begin
-      fprint (pf | out, "INSTRstore_ptr_offs(");
+      strpr "INSTRstore_ptr_offs(";
       fprint_valprim (pf | out, vp_ptr);
-      fprint (pf | out, "; ");
+      strpr "; ";
       fprint_offsetlst (pf | out, offs);
-      fprint (pf | out, "; ");
+      strpr "; ";
       fprint_valprim (pf | out, vp_val);
-      fprint (pf | out, ")")
+      strpr ")"
     end
   | INSTRstore_var (vp_var, vp_val) => begin
-      fprint (pf | out, "INSTRstore_var(");
+      strpr "INSTRstore_var(";
       fprint_valprim (pf | out, vp_var);
-      fprint (pf | out, "; ");
+      strpr "; ";
       fprint_valprim (pf | out, vp_val);
-      fprint (pf | out, ")")
+      strpr ")"
     end
   | INSTRstore_var_offs (vp_var, offs, vp_val) => begin
-      fprint (pf | out, "INSTRstore_var_offs(");
+      strpr "INSTRstore_var_offs(";
       fprint_valprim (pf | out, vp_var);
-      fprint (pf | out, "; ");
+      strpr "; ";
       fprint_offsetlst (pf | out, offs);
-      fprint (pf | out, "; ");
+      strpr "; ";
       fprint_valprim (pf | out, vp_val);
-      fprint (pf | out, ")")
+      strpr ")"
     end
   | INSTRswitch _ => begin
-      fprint (pf | out, "INSTRswitch(...)")
+      fprint1_string (pf | out, "INSTRswitch(...)")
     end
   | INSTRtmplabint (tl, i) => begin
-      fprint (pf | out, "INSTRtmplabint(");
+      strpr "INSTRtmplabint(";
       fprint_tmplab (pf | out, tl);
-      fprint (pf | out, "_");
-      fprint_int (pf | out, i);
-      fprint (pf | out, ")")
-    end
+      strpr "_";
+      fprint1_int (pf | out, i);
+      strpr ")"
+    end // end of [INSTRtmplabint]
   | INSTRtrywith _ => begin
-      fprint (pf | out, "INSTRtrywith(...)")
+      fprint1_string (pf | out, "INSTRtrywith(...)")
     end
   | INSTRvardec tmp => begin
-      fprint (pf | out, "INSTRvardec(");
-      fprint_tmpvar (pf | out, tmp);
-      fprint (pf | out, ")")
+      strpr "INSTRvardec("; fprint_tmpvar (pf | out, tmp); strpr ")"
     end
 (*
   | _ => begin
-      fprint (pf | out, "fprint_instr: not yet implemented.");
+      strpr "fprint_instr: not yet implemented.");
       fprint_newline (pf | out);
       $Err.abort {void} ()
     end
@@ -688,7 +660,7 @@ end // end of [fprint_instrlst]
 
 implement fprint_branch {m} (pf | out, br) = begin
   fprint_tmplab (pf | out, br.branch_lab);
-  fprint (pf | out, ": "); fprint_newline (pf | out);
+  fprint1_string (pf | out, ": "); fprint_newline (pf | out);
   fprint_instrlst (pf | out, br.branch_inss);
 end // end of [fprint_branch]
 

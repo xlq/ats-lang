@@ -256,7 +256,7 @@ implement fprint_d2cstlst {m} (pf | out, d2cs) = let
   fun aux (out: &FILE m, i: int, d2cs: d2cstlst): void =
     case+ d2cs of
     | cons (d2c, d2cs) => begin
-        if i > 0 then fprint (pf | out, ", ");
+        if i > 0 then fprint1_string (pf | out, ", ");
         fprint_d2cst (pf | out, d2c); aux (out, i+1, d2cs)
     end
   | nil () => ()

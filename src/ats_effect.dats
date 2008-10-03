@@ -90,13 +90,16 @@ implement eq_effect_effect (eff1: effect, eff2: effect): bool =
 //
 
 implement fprint_effect (pf | out, eff) = begin
-  if eq_int_int (eff, EFFexn) then fprint (pf | out, "exn")
-  else if eq_int_int (eff, EFFntm) then fprint (pf | out, "ntm")
-  else if eq_int_int (eff, EFFref) then fprint (pf | out, "ref")
+  if eq_int_int (eff, EFFexn) then
+    fprint1_string (pf | out, "exn")
+  else if eq_int_int (eff, EFFntm) then
+    fprint1_string (pf | out, "ntm")
+  else if eq_int_int (eff, EFFref) then
+    fprint1_string (pf | out, "ref")
   else begin
-    fprint (pf | out, "eff(");
-    fprint_int (pf | out, eff);
-    fprint (pf | out, ")")
+    fprint1_string (pf | out, "eff(");
+    fprint1_int (pf | out, eff);
+    fprint1_string (pf | out, ")")
   end
 end // end of [fprint_effect]
 
@@ -104,7 +107,7 @@ implement fprint_effectlst {m} (pf | out, effs) = let
   fun aux (i: int, out: &FILE m, effs: effectlst): void =
     case+ effs of
     | list_cons (eff, effs) => begin
-        if i > 0 then fprint (pf | out, ", ");
+        if i > 0 then fprint1_string (pf | out, ", ");
         fprint_effect (pf | out, eff); aux (i+1, out, effs)
       end
     | list_nil () => ()
@@ -230,7 +233,7 @@ fun fprint_effvarlst {m:file_mode} (
   fun aux (out: &FILE m, i: int, evs: effvarlst): void =
     case+ evs of
     | cons (ev, evs) => begin
-        if i > 0 then fprint (pf | out, ", ");
+        if i > 0 then fprint1_string (pf | out, ", ");
         $Syn.fprint_i0de (pf | out, ev); aux (out, i+1, evs)
       end
     | nil () => ()
@@ -239,14 +242,14 @@ in
 end // end of [fprint_effvarlst]
 
 implement fprint_effcst (pf | out, efc) = begin case+ efc of
-  | EFFCSTall () => fprint (pf | out, "all")
-  | EFFCSTnil () => fprint (pf | out, "nil")
+  | EFFCSTall () => fprint1_string (pf | out, "all")
+  | EFFCSTnil () => fprint1_string (pf | out, "nil")
   | EFFCSTset (es, evs) => begin
-      fprint (pf | out, "set(");
+      fprint1_string (pf | out, "set(");
       fprint_effset (pf | out, es);
-      fprint (pf | out, "; ");
+      fprint1_string (pf | out, "; ");
       fprint_effvarlst (pf | out, evs);
-      fprint (pf | out, ")")
+      fprint1_string (pf | out, ")")
     end
 end // end of [fprint_effcst]
 

@@ -260,44 +260,44 @@ fn posmark_process_htm
   | PMnone () => ()
   | PMcomment i => begin
       if i = 0 then begin
-        fprint (file_mode_lte_w_w | fil_d, COMMENT_FONT_BEG)
+        fprint1_string (file_mode_lte_w_w | fil_d, COMMENT_FONT_BEG)
       end else begin
-        fprint (file_mode_lte_w_w | fil_d, COMMENT_FONT_END)
+        fprint1_string (file_mode_lte_w_w | fil_d, COMMENT_FONT_END)
       end
     end // end of [PMcomment]
   | PMextern i => begin
       if i = 0 then begin
-        fprint (file_mode_lte_w_w | fil_d, EXTERN_FONT_BEG)
+        fprint1_string (file_mode_lte_w_w | fil_d, EXTERN_FONT_BEG)
       end else begin
-        fprint (file_mode_lte_w_w | fil_d, EXTERN_FONT_END)
+        fprint1_string (file_mode_lte_w_w | fil_d, EXTERN_FONT_END)
       end
     end // end of [PMextern]
   | PMkeyword i => begin
       if i = 0 then begin
-        fprint (file_mode_lte_w_w | fil_d, KEYWORD_FONT_BEG)
+        fprint1_string (file_mode_lte_w_w | fil_d, KEYWORD_FONT_BEG)
       end else begin
-        fprint (file_mode_lte_w_w | fil_d, KEYWORD_FONT_END)
+        fprint1_string (file_mode_lte_w_w | fil_d, KEYWORD_FONT_END)
       end
     end // end of [PMkeyword]
   | PMneuexp i => begin
       if i = 0 then begin
-        fprint (file_mode_lte_w_w | fil_d, NEUEXP_FONT_BEG)
+        fprint1_string (file_mode_lte_w_w | fil_d, NEUEXP_FONT_BEG)
       end else begin
-        fprint (file_mode_lte_w_w | fil_d, NEUEXP_FONT_END)
+        fprint1_string (file_mode_lte_w_w | fil_d, NEUEXP_FONT_END)
       end
     end // end of [PMneuexp]
   | PMstaexp i =>  begin
       if i = 0 then begin
-        fprint (file_mode_lte_w_w | fil_d, STAEXP_FONT_BEG)
+        fprint1_string (file_mode_lte_w_w | fil_d, STAEXP_FONT_BEG)
       end else begin
-        fprint (file_mode_lte_w_w | fil_d, STAEXP_FONT_END)
+        fprint1_string (file_mode_lte_w_w | fil_d, STAEXP_FONT_END)
       end
     end // end of [PMstaexp]
   | PMprfexp i =>  begin
       if i = 0 then begin
-        fprint (file_mode_lte_w_w | fil_d, PRFEXP_FONT_BEG)
+        fprint1_string (file_mode_lte_w_w | fil_d, PRFEXP_FONT_BEG)
       end else begin
-        fprint (file_mode_lte_w_w | fil_d, PRFEXP_FONT_END)
+        fprint1_string (file_mode_lte_w_w | fil_d, PRFEXP_FONT_END)
       end
     end // end of [PMprfexp]
 end // end of [posmark_process_htm]
@@ -305,9 +305,9 @@ end // end of [posmark_process_htm]
 fn fputc_html {m:file_mode}
   (pf: file_mode_lte (m, w) | c: char, out: &FILE m)
   : void = begin case+ c of
-    | '<' => fprint_string (pf | out, "&lt;")
-    | '>' => fprint_string (pf | out, "&gt;")
-    | '&' => fprint_string (pf | out, "&amp;")
+    | '<' => fprint1_string (pf | out, "&lt;")
+    | '>' => fprint1_string (pf | out, "&gt;")
+    | '&' => fprint1_string (pf | out, "&amp;")
     | _ => fputc_exn (pf | c, out)
 end // end of [fputc_html]
 
@@ -372,10 +372,10 @@ fn posmark_file_file
   val lint0 = lint_of_int 0
   val ppms = posmarklst_sort !the_posmarklst
 in
-  fprint (file_mode_lte_w_w | fil_d, POSMARK_FILE_BEG);
+  fprint1_string (file_mode_lte_w_w | fil_d, POSMARK_FILE_BEG);
   loop1 (fil_s, fil_d, lint0, lint0, PMnone (), ppms);
-  fprint (file_mode_lte_w_w | fil_d, POSMARK_FILE_ENG);
-  fprint_newline (file_mode_lte_w_w | fil_d);
+  fprint1_string (file_mode_lte_w_w | fil_d, POSMARK_FILE_ENG);
+  fprint1_newline (file_mode_lte_w_w | fil_d);
 end // end of [posmark_file_file]
 
 (* ****** ****** *)

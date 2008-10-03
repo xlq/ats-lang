@@ -222,7 +222,7 @@ implement fprint_s2varlst {m} (pf | out, s2vs) = let
   fun aux (out: &FILE m, i: int, s2vs: s2varlst)
     : void = begin case+ s2vs of
     | list_cons (s2v, s2vs) => begin
-        if i > 0 then fprint (pf | out, ", ");
+        if i > 0 then fprint1_string (pf | out, ", ");
         fprint_s2var (pf | out, s2v); aux (out, i+1, s2vs)
       end
     | list_nil () => ()
@@ -268,7 +268,7 @@ fn pr (pf: !V | s2v: s2var_t, pi: !ptr pi): void = let
   prval pf_out = pf.0
   prval pf_at = pf.1; val p = pi->0; val i = pi->1
 in
-  if i > 0 then fprint (pf_mod | !p, ", ");
+  if i > 0 then fprint1_string (pf_mod | !p, ", ");
   pi->1 := i + 1;
   fprint_s2var (pf_mod | !p, s2v);
   pf.0 := pf_out;
@@ -523,7 +523,7 @@ implement fprint_s2Varlst {m} (pf | out, s2Vs) = let
   fun aux (out: &FILE m, i: int, s2Vs: s2Varlst)
     : void = begin case+ s2Vs of
     | list_cons (s2V, s2Vs) => begin
-        if i > 0 then fprint (pf | out, ", ");
+        if i > 0 then fprint1_string (pf | out, ", ");
         fprint_s2Var (pf | out, s2V); aux (out, i+1, s2Vs)
       end
     | list_nil () => ()
@@ -571,7 +571,7 @@ fn fprint_s2Varset_ptr {m:file_mode} {l:addr} (
     prval pf_out = pf.0
     prval pf_at = pf.1; val p = pi->0; val i = pi->1
   in
-    if i > 0 then fprint (pf_mod | !p, ", ");
+    if i > 0 then fprint1_string (pf_mod | !p, ", ");
     pi->1 := i + 1;
     fprint_s2Var (pf_mod | !p, s2V);
     pf.0 := pf_out;

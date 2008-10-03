@@ -112,9 +112,9 @@ implement emit_matpnt {m} (pf | out, mpt) = let
       (out: &FILE m, xs: tmpmovlst): void = begin case+ xs of
       | TMPMOVLSTcons (tmp1, tmp2, xs) => aux (out, xs)  where {
           val () = emit_tmpvar (pf | out, tmp2)
-          val () = fprint (pf | out, " = ")
+          val () = fprint1_string (pf | out, " = ")
           val () = emit_tmpvar (pf | out, tmp1)
-          val () = fprint (pf | out, " ; ")
+          val () = fprint1_string (pf | out, " ; ")
         } // end of [where]
       | TMPMOVLSTnil () => ()
     end // end of [aux]

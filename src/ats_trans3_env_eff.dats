@@ -81,22 +81,18 @@ fun fprint_effenvitemlstlst {m:file_mode}
 
 (* ****** ****** *)
 
-implement fprint_effenvitem (pf | out, efi) = begin
+implement fprint_effenvitem (pf | out, efi) = let
+  macdef strpr (s) = fprint1_string (pf | out, ,(s))
+in
   case+ efi of
   | EFFENVITEMeff eff => begin
-      fprint (pf | out, "EFFENVeff(");
-      $Eff.fprint_effect (pf | out, eff);
-      fprint (pf | out, ")")
+      strpr "EFFENVeff("; $Eff.fprint_effect (pf | out, eff); strpr ")"
     end
   | EFFENVITEMeffmask eff => begin
-      fprint (pf | out, "EFFENVeffmask(");
-      $Eff.fprint_effect (pf | out, eff);
-      fprint (pf | out, ")")
+      strpr "EFFENVeffmask("; $Eff.fprint_effect (pf | out, eff); strpr ")"
     end
   | EFFENVITEMlam s2fe => begin
-      fprint (pf | out, "EFFENVeff(");
-      fprint (pf | out, s2fe);
-      fprint (pf | out, ")")
+      strpr "EFFENVeff("; fprint_s2eff (pf | out, s2fe); strpr ")"
     end
 end // end of [fprint_effenvitem]
 
@@ -104,7 +100,7 @@ implement fprint_effenvitemlst {m} (pf | out, efis) = let
   fun aux (out: &FILE m, i: int, efis: effenvitemlst): void =
     case+ efis of
     | list_cons (efi, efis) => begin
-        if i > 0 then fprint (pf | out, ", ");
+        if i > 0 then fprint1_string (pf | out, ", ");
         fprint_effenvitem (pf | out, efi); aux (out, i + 1, efis)
       end
     | list_nil () => ()
@@ -116,7 +112,7 @@ implement fprint_effenvitemlstlst {m} (pf | out, efiss) = let
   fun aux (out: &FILE m, i: int, efiss: effenvitemlstlst): void =
     case+ efiss of
     | list_cons (efis, efiss) => begin
-        if i > 0 then fprint (pf | out, "; ");
+        if i > 0 then fprint1_string (pf | out, "; ");
         fprint_effenvitemlst (pf | out, efis); aux (out, i + 1, efiss)
       end
     | list_nil () => ()

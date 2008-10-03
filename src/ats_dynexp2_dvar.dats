@@ -344,7 +344,7 @@ implement fprint_d2varlst {m} (pf | out, d2vs) = let
   fun aux (out: &FILE m, i: int, d2vs: d2varlst): void =
     case+ d2vs of
     | cons (d2v, d2vs) => begin
-        if i > 0 then fprint (pf | out, ", ");
+        if i > 0 then fprint1_string (pf | out, ", ");
         fprint_d2var (pf | out, d2v); aux (out, i+1, d2vs)
       end
     | nil () => ()
@@ -429,7 +429,7 @@ fn fprint_d2varset_ptr {m:file_mode} {l:addr} (
     prval pf_out = pf.0
     prval pf_at = pf.1; val p = pi->0; val i = pi->1
   in
-    if i > 0 then fprint (pf_mod | !p, ", ");
+    if i > 0 then fprint1_string (pf_mod | !p, ", ");
     pi->1 := i + 1;
     fprint_d2var (pf_mod | !p, d2v);
     pf.0 := pf_out; pf.1 := pf_at;

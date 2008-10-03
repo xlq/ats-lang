@@ -183,13 +183,15 @@ implement s0tring_make (loc, str, len) =
 (* ****** ****** *)
 
 implement fprint_i0de (pf | out, id) =
-  fprint (pf | out, id.i0de_sym)
+  $Sym.fprint_symbol (pf | out, id.i0de_sym)
 
 implement fprint_i0delst {m} (pf | out, ids) = let
 fun aux (out: &FILE m, id0: i0de, ids: i0delst): void =
   case+ ids of
-    | cons (id, ids) => (fprint (pf | out, id); fprint (pf | out, ", "))
-    | nil () => fprint (pf | out, id0)
+    | cons (id, ids) => begin
+        fprint_i0de (pf | out, id); fprint1_string (pf | out, ", ")
+      end // end of [cons]
+    | nil () => fprint_i0de (pf | out, id0)
 in
   case+ ids of cons (id, ids) => aux (out, id, ids) | nil () => ()
 end // end of [fprint_i0delst]
@@ -312,13 +314,15 @@ implement e0xp_string s = '{
 implement fprint_s0rtq (pf | out, q) = case+ q.s0rtq_node of
   | S0RTQnone () => ()
   | S0RTQstr fname => begin
-      fprint (pf | out, '"');
-      fprint (pf | out, fname);
-      fprint (pf | out, '"');
-      fprint (pf | out, '.')
+      fprint1_char (pf | out, '"');
+      fprint1_string (pf | out, fname);
+      fprint1_char (pf | out, '"');
+      fprint1_char (pf | out, '.')
     end
   | S0RTQsym id => begin
-      fprint (pf | out, '$'); fprint (pf | out, id); fprint (pf | out, '.')
+      fprint1_char (pf | out, '$');
+      $Sym.fprint_symbol (pf | out, id);
+      fprint1_char (pf | out, '.')
     end
 
 //
@@ -339,28 +343,28 @@ implement s0rtq_sym (id) = '{
 
 implement fprint_s0rt (pf | out, s0t) = case+ s0t.s0rt_node of
   | S0RTapp (s0t_fun, s0t_arg) => begin
-      fprint (pf | out, "S0RTapp(");
+      fprint1_string (pf | out, "S0RTapp(");
       fprint_s0rt (pf | out, s0t_fun);
-      fprint (pf | out, ", ");
+      fprint1_string (pf | out, ", ");
       fprint_s0rt (pf | out, s0t_arg);
-      fprint (pf | out, ")");
+      fprint1_string (pf | out, ")");
     end
   | S0RTide id => begin
-      fprint (pf | out, "S0RTid(");
-      fprint (pf | out, id);
-      fprint (pf | out, ")");
+      fprint1_string (pf | out, "S0RTid(");
+      $Sym.fprint_symbol (pf | out, id);
+      fprint1_string (pf | out, ")");
     end
   | S0RTqid (q, id) => begin
-      fprint (pf | out, "S0RTqid(");
-      fprint (pf | out, q);
-      fprint (pf | out, id);
-      fprint (pf | out, ")");
+      fprint1_string (pf | out, "S0RTqid(");
+      fprint_s0rtq (pf | out, q);
+      $Sym.fprint_symbol (pf | out, id);
+      fprint1_string (pf | out, ")");
     end
   | S0RTlist s0ts => begin
-      fprint (pf | out, "S0RTlist(...)")
+      fprint1_string (pf | out, "S0RTlist(...)")
     end
   | S0RTtup  s0ts => begin
-      fprint (pf | out, "S0RTtup(...)")
+      fprint1_string (pf | out, "S0RTtup(...)")
     end
 
 (* ****** ****** *)
@@ -477,8 +481,8 @@ implement d0atsrtdeclst_cons (x, xs) = cons (x, xs)
 (* ****** ****** *)
 
 implement fprint_funclo (pf | out, fc) = case+ fc of
-  | FUNCLOclo (knd) => fprintf (pf | out, "clo(%i)", @(knd))
-  | FUNCLOfun () => fprint (pf | out, "fun")
+  | FUNCLOclo (knd) => fprintf1_exn (pf | out, "clo(%i)", @(knd))
+  | FUNCLOfun () => fprint1_string (pf | out, "fun")
 
 implement eq_funclo_funclo (fc1, fc2) = begin
   case+ (fc1, fc2) of
@@ -571,17 +575,17 @@ implement e0fftaglstopt_some (x) = Some (x)
 implement fprint_s0taq (pf | out, q) = case+ q.s0taq_node of
   | S0TAQnone () => ()
   | S0TAQfildot fil => begin
-      fprint (pf | out, '$');
-      fprint (pf | out, '"');
-      fprint (pf | out, fil);
-      fprint (pf | out, '"');
-      fprint (pf | out, '.')
+      fprint1_char (pf | out, '$');
+      fprint1_char (pf | out, '"');
+      fprint1_string (pf | out, fil);
+      fprint1_char (pf | out, '"');
+      fprint1_char (pf | out, '.')
     end
   | S0TAQsymcolon id => begin
-      fprint (pf | out, id); fprint (pf | out, ':')
+      $Sym.fprint_symbol (pf | out, id); fprint1_char (pf | out, ':')
     end
   | S0TAQsymdot id => begin
-      fprint (pf | out, id); fprint (pf | out, '.')
+      $Sym.fprint_symbol (pf | out, id); fprint1_char (pf | out, '.')
     end
 
 implement print_s0taq (q) = print_mac (fprint_s0taq, q)
@@ -606,24 +610,32 @@ implement s0taq_symdot (id) =
 
 implement fprint_d0ynq (pf | out, q) = case+ q.d0ynq_node of
   | D0YNQfildot fil => begin
-      fprint (pf | out, '$'); fprint (pf | out, '"');
-      fprint (pf | out, fil); fprint (pf | out, '"');
-      fprint (pf | out, '.')
+      fprint1_char (pf | out, '$');
+      fprint1_char (pf | out, '"');
+      fprint1_string (pf | out, fil);
+      fprint1_char (pf | out, '"');
+      fprint1_char (pf | out, '.')
     end
   | D0YNQfildot_symcolon (fil, id_colon) => begin
-      fprint (pf | out, '$'); fprint (pf | out, '"');
-      fprint (pf | out, fil); fprint (pf | out, '"');
-      fprint (pf | out, id_colon); fprint (pf | out, ':')
+      fprint1_char (pf | out, '$');
+      fprint1_char (pf | out, '"');
+      fprint1_string (pf | out, fil);
+      fprint1_char (pf | out, '"');
+      $Sym.fprint_symbol (pf | out, id_colon);
+      fprint1_char (pf | out, ':')
     end
   | D0YNQsymcolon id_colon => begin
-      fprint (pf | out, id_colon); fprint (pf | out, ':')
+      $Sym.fprint_symbol (pf | out, id_colon);
+      fprint1_char (pf | out, ':')
     end
   | D0YNQsymdot id_dot => begin
-      fprint (pf | out, id_dot); fprint (pf | out, '.')
+      $Sym.fprint_symbol (pf | out, id_dot);
+      fprint1_char (pf | out, '.')
     end
   | D0YNQsymdot_symcolon (id_dot, id_colon) => begin
-      fprint (pf | out, id_dot);
-      fprint (pf | out, id_colon); fprint (pf | out, ':')
+      $Sym.fprint_symbol (pf | out, id_dot);
+      $Sym.fprint_symbol (pf | out, id_colon);
+      fprint1_char (pf | out, ':')
     end
   | D0YNQnone () => ()
 

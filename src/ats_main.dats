@@ -516,7 +516,7 @@ in
       val outname = stropt_unsome (outname)
       val (pf_out | p_out) = fopen_exn (outname, file_mode_w)
       val () = $CC.ccomp_main (pf_mod | flag, !p_out, infil, hids)
-      val () = fprintf (
+      val () = fprintf1_exn (
         pf_mod
       | !p_out
       , "\n/* ****** ****** */\n\n/* end of [%s] */\n"
@@ -534,8 +534,10 @@ in
   | _ => let
     prval pf_mod = file_mode_lte_w_w
     val (pf_stdout | p_stdout) = stdout_get ()
-    val () = $CC.ccomp_main (pf_mod | flag, !p_stdout, infil, hids)
-    val () = fprint (pf_mod | !p_stdout, "\n/* ****** ****** */\n")
+    val () = $CC.ccomp_main
+      (pf_mod | flag, !p_stdout, infil, hids)
+    val () = fprint1_string
+      (pf_mod | !p_stdout, "\n/* ****** ****** */\n")
   in
     stdout_view_set (pf_stdout | (*none*))
   end

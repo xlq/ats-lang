@@ -81,22 +81,22 @@ implement fprint_fxty
   (pf | out, fxty) = begin
   case+ fxty of
   | FXTYnon () => begin
-      fprint (pf | out, "FXTYnon()")
+      fprint1_string (pf | out, "FXTYnon()")
     end
   | FXTYinf (p, a) => begin
-      fprint (pf | out, "FXTYinf(");
-      fprint_int (pf | out, p);
-      fprint (pf | out, ")")
+      fprint1_string (pf | out, "FXTYinf(");
+      fprint1_int (pf | out, p);
+      fprint1_string (pf | out, ")")
     end
   | FXTYpre (p) => begin
-      fprint (pf | out, "FXTYpre(");
-      fprint_int (pf | out, p);
-      fprint (pf | out, ")")
+      fprint1_string (pf | out, "FXTYpre(");
+      fprint1_int (pf | out, p);
+      fprint1_string (pf | out, ")")
     end
   | FXTYpos (p) => begin
-      fprint (pf | out, "FXTYpos(");
-      fprint_int (pf | out, p);
-      fprint (pf | out, ")")
+      fprint1_string (pf | out, "FXTYpos(");
+      fprint1_int (pf | out, p);
+      fprint1_string (pf | out, ")")
     end
 end // end of [fprint_fxty]
 

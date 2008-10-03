@@ -94,20 +94,24 @@ fn _emit_tmpvarmap_dec {m:file_mode} {l:addr} (
   in
     case+ 0 of
     | _ when tmpvar_is_void (tmp) => let
-        val () = if knd = 0 then fprint (pf_mod | !p_l, "ATSlocal_void (")
-        val () = if knd = 1 then fprint (pf_mod | !p_l, "ATSstatic_void (")
+        val () = if knd = 0 then
+          fprint1_string (pf_mod | !p_l, "ATSlocal_void (")
+        val () = if knd = 1 then
+          fprint1_string (pf_mod | !p_l, "ATSstatic_void (")
         val () = emit_tmpvar (pf_mod | !p_l, tmp)
-        val () = fprint (pf_mod | !p_l, ") ;\n")
+        val () = fprint1_string (pf_mod | !p_l, ") ;\n")
       in
         pf := @(pf_fil, pf_int); fold@ env
       end // end of [tmpvar_is_void]
     | _ => let
-        val () = if knd = 0 then fprint (pf_mod | !p_l, "ATSlocal (")
-        val () = if knd = 1 then fprint (pf_mod | !p_l, "ATSstatic (")
+        val () = if knd = 0 then
+          fprint1_string (pf_mod | !p_l, "ATSlocal (")
+        val () = if knd = 1 then
+          fprint1_string (pf_mod | !p_l, "ATSstatic (")
         val () = emit_hityp (pf_mod | !p_l, tmpvar_typ_get tmp)
-        val () = fprint (pf_mod | !p_l, ", ")
+        val () = fprint1_string (pf_mod | !p_l, ", ")
         val () = emit_tmpvar (pf_mod | !p_l, tmp)
-        val () = fprint (pf_mod | !p_l, ") ;\n")
+        val () = fprint1_string (pf_mod | !p_l, ") ;\n")
       in
         pf := @(pf_fil, pf_int); fold@ env
       end // end of [_]
@@ -138,11 +142,11 @@ fn _emit_tmpvarmap_markroot {m:file_mode} {l:addr} (
     val () = (!p_i := !p_i + 1)
     val () = case+ 0 of
       | _ when tmpvar_is_void (tmp) => () | _ => let
-          val () = fprint (pf_mod | !p_l, "ATS_GC_MARKROOT(&")
+          val () = fprint1_string (pf_mod | !p_l, "ATS_GC_MARKROOT(&")
           val () = emit_tmpvar (pf_mod | !p_l, tmp)
-          val () = fprint (pf_mod | !p_l, ", sizeof(")
+          val () = fprint1_string (pf_mod | !p_l, ", sizeof(")
           val () = emit_hityp (pf_mod | !p_l, tmpvar_typ_get tmp)
-          val () = fprint (pf_mod | !p_l, ")) ;\n")
+          val () = fprint1_string (pf_mod | !p_l, ")) ;\n")
         in
           // empty
         end // end of [_]

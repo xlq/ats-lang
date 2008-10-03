@@ -85,10 +85,13 @@ implement compare_label_label (lab1, lab2) =
     | (LABint _, LABsym _) => ~1
     | (LABsym _, LABint _) =>  1
 
-//
+(* ****** ****** *)
 
-implement fprint_label (pf | fil, lab) = case+ lab of
-  | LABint i => fprint (pf | fil, i) | LABsym s => fprint (pf | fil, s)
+implement fprint_label (pf | fil, lab) = begin
+  case+ lab of
+  | LABint i => fprint1_int (pf | fil, i)
+  | LABsym s => fprint_symbol (pf | fil, s)
+end // end of [fprint_label]
 
 implement print_label (lab) = print_mac (fprint_label, lab)
 implement prerr_label (lab) = prerr_mac (fprint_label, lab)

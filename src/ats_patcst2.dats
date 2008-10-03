@@ -78,6 +78,10 @@ overload = with $IntInf.eq_intinf_intinf
 
 (* ****** ****** *)
 
+macdef fprint_label = $Lab.fprint_label
+
+(* ****** ****** *)
+
 assume intinfset_t = List intinf_t // of increasing order
 
 implement intinflst_of_intinfset (xs) = xs
@@ -176,7 +180,7 @@ fun fprint_intinfset {m:file_mode}
   fun aux (out: &FILE m, i: int, xs: intinfset_t)
     : void = begin case+ xs of
     | x :: xs => begin
-        if i > 0 then fprint (pf | out, ", ");
+        if i > 0 then fprint1_string (pf | out, ", ");
         $IntInf.fprint_intinf (pf | out, x); aux (out, i+1, xs)
       end
     | nil () => ()
@@ -185,45 +189,50 @@ in
   aux (out, 0, xs)
 end // end of [fprint_intinfset]
 
-implement fprint_p2atcst (pf | out, p2tc) = case+ p2tc of
-  | P2TCany () => fprint (pf | out, '_')
-  | P2TCbool b => begin
-      if b then fprint (pf | out, "true") else fprint (pf | out, "false")
-    end
-  | P2TCchar c => begin
-      fprint (pf | out, '\''); fprint (pf | out, c); fprint (pf | out, '\'')
-    end
+implement fprint_p2atcst (pf | out, p2tc) = let
+  macdef strpr (s) = fprint1_string (pf | out, ,(s))  
+in
+  case+ p2tc of
+  | P2TCany () => fprint1_char (pf | out, '_')
+  | P2TCbool b => let
+      val name = (if b then "true" else "false"): string
+    in
+      fprint1_string (pf | out, name)
+    end // end of [P2TCbool]
+  | P2TCchar c => fprintf1_exn (pf | out, "'%c'", @(c))
   | P2TCcon (d2c, p2tcs) => begin
-      fprint (pf | out, d2c);
-      fprint (pf | out, "(");
-      fprint (pf | out, p2tcs);
-      fprint (pf | out, ")")
-    end
-  | P2TCempty () => fprint (pf | out, "()")
-  | P2TCfloat float => fprint (pf | out, float)
+      fprint_d2con (pf | out, d2c);
+      strpr "(";
+      fprint_p2atcstlst (pf | out, p2tcs);
+      strpr ")"
+    end // end of [P2TCcon]
+  | P2TCempty () => fprint1_string (pf | out, "()")
+  | P2TCfloat f(*string*) => fprint1_string (pf | out, f)
   | P2TCint int => $IntInf.fprint_intinf (pf | out, int)
   | P2TCintc ints => begin
-      fprint (pf | out, "[^");
+      strpr "[^";
       fprint_intinfset (pf | out, ints);
-      fprint (pf | out, "]")
+      strpr "]"
     end
   | P2TCrec (recknd, lp2tcs) => begin
-      if recknd > 0 then fprint (pf | out, '\'') else fprint (pf | out, '@');
-      fprint (pf | out, "{");
-      fprint (pf | out, lp2tcs);
-      fprint (pf | out, "}")
-    end
-  | P2TCstring s => begin
-      fprint (pf | out, '"'); fprint (pf | out, s); fprint (pf | out, '"')
-    end
+      if recknd > 0 then begin
+        fprint1_char (pf | out, '\'')
+      end else begin
+        fprint1_char (pf | out, '@')
+      end;
+      strpr "{";
+      fprint_labp2atcstlst (pf | out, lp2tcs);
+      strpr "}"
+    end // end of [P2TCrec]
+  | P2TCstring s => fprintf1_exn (pf | out, "\"%s\"", @(s))
+end // end of [fprint_p2atcst]
 
 implement fprint_p2atcstlst {m} (pf | out, p2tcs) = let
   fun aux (out: &FILE m, i: int, p2tcs: p2atcstlst)
     : void = begin case+ p2tcs of
     | cons (p2tc, p2tcs) => begin
-        if i > 0 then fprint (pf | out, ", ");
-        fprint_p2atcst (pf | out, p2tc);
-        aux (out, i+1, p2tcs)
+        if i > 0 then fprint1_string (pf | out, ", ");
+        fprint_p2atcst (pf | out, p2tc); aux (out, i+1, p2tcs)
       end
     | nil () => ()
   end // end of [aux]
@@ -235,8 +244,8 @@ implement fprint_labp2atcstlst {m} (pf | out, lp2tcs) = let
   fun aux (out: &FILE m, i: int, lp2tcs: labp2atcstlst): void =
     case+ lp2tcs of
     | LABP2ATCSTLSTcons (l, p2tc, lp2tcs) => begin
-        if i > 0 then fprint (pf | out, ", ");
-        $Lab.fprint_label (pf | out, l); fprint (pf | out, "= ");
+        if i > 0 then fprint1_string (pf | out, ", ");
+        fprint_label (pf | out, l); fprint1_string (pf | out, "= ");
         fprint_p2atcst (pf | out, p2tc);
         aux (out, i + 1, lp2tcs)
       end
@@ -249,8 +258,7 @@ implement fprint_p2atcstlstlst {m} (pf | out, p2tcss) = let
   fun aux (out: &FILE m, p2tcss: p2atcstlstlst): void =
     case+ p2tcss of
     | cons (p2tcs, p2tcss) => begin
-        fprint_p2atcstlst (pf | out, p2tcs);
-        fprint_newline (pf | out);
+        fprint_p2atcstlst (pf | out, p2tcs); fprint_newline (pf | out);
         aux (out, p2tcss)
       end
     | nil () => ()

@@ -91,40 +91,35 @@ val v2alue_bool_false = V2ALbool (false)
 
 fun fprint_v2alue {m:file_mode}
   (pf: file_mode_lte (m, w) | out: &FILE m, v2al: v2alue)
-  : void = begin case+ v2al of
+  : void = let
+  macdef strpr (s) = fprint1_string (pf | out, ,(s))
+in
+  case+ v2al of
   | V2ALbool b => begin
-      fprint (pf | out, "V2ALbool(");
-      fprint (pf | out, b);
-      fprint (pf | out, ")")
+      strpr "V2ALbool("; fprint1_bool (pf | out, b); strpr ")"
     end
   | V2ALchar (c) => begin
-      fprint (pf | out, "V2ALchar(");
-      fprint (pf | out, c);
-      fprint (pf | out, ")")
+      strpr "V2ALchar("; fprint1_char (pf | out, c); strpr ")"
     end
   | V2ALcode (d2e) => begin
-      fprint (pf | out, "V2ALcode(");
-      fprint (pf | out, d2e);
-      fprint (pf | out, ")")
+      strpr "V2ALcode("; fprint_d2exp (pf | out, d2e); strpr ")"
     end
-  | V2ALfloat (f) => begin
-      fprint (pf | out, "V2ALfloat(");
-      fprint (pf | out, f);
-      fprint (pf | out, ")")
+  | V2ALfloat f(*string*) => begin
+      strpr "V2ALfloat("; fprint1_string (pf | out, f); strpr ")"
     end
   | V2ALint (i) => begin
-      fprint (pf | out, "V2ALint(");
+      strpr "V2ALint(";
       $IntInf.fprint_intinf (pf | out, i);
-      fprint (pf | out, ")")
+      strpr ")"
     end
   | V2ALlst (vs) => begin
-      fprint (pf | out, "V2ALlst(...)")
+      fprint1_string (pf | out, "V2ALlst(...)")
     end
   | V2ALstring (str, len) => begin
-      fprintf (pf | out, "V2ALstring(\"%s\", %i)", @(str, len))
+      fprintf1_exn (pf | out, "V2ALstring(\"%s\", %i)", @(str, len))
     end
   | V2ALunit () => begin
-      fprint (pf | out, "V2ALunit()")
+      fprint1_string (pf | out, "V2ALunit()")
     end
 end // end of [fprint_v2alue]
 
@@ -345,12 +340,12 @@ fun fprint_eval0ctx {m:file_mode}
   : void = begin case+ ctx of
   | EVAL0CTXcons (stamp, v2al, !ctx_nxt) => begin
       $Stamp.fprint_stamp (pf | out, stamp);
-      fprint (pf | out, " -> ");
+      fprint1_string (pf | out, " -> ");
       fprint_v2alue (pf | out, v2al);
       fprint_newline (pf | out);
       fprint_eval0ctx (pf | out, !ctx_nxt);
       fold@ ctx
-    end
+    end // end of [EVAL0CTXcons]
   | EVAL0CTXnil () => (fold@ ctx)
 end // end of [fprint_eval0ctx]
 
