@@ -197,8 +197,15 @@ fun{a:t@ype} ptr_set_inv {l:addr} (pf: !a @ l | p: ptr l, x: a):<> void
 
 (* ****** ****** *)
 
+(*
+
+// This should be moved to another place as it is not supported by
+// ATS/Geizella
+
 fun{a:t@ype} ptr_get_read
   {v:view} {l:addr} (pf1: !v, pf2: r@ead (v, a @ l) | p: ptr l):<> a
+
+*)
 
 (* ****** ****** *)
 
