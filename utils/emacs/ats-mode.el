@@ -323,7 +323,7 @@
     ("/\\(*\\)" (1 ". 3"))              ; /* does not start a comment.
     ("\\(/\\)///" (0 "< nb"))           ; Start a comment with no end.
     ;; Recognize char-literals.
-    ("[^[:alnum:]]\\('\\)\\(?:.\\|\\\\.[[:xdigit:]]*\\)\\('\\)"
+    ("[^[:alnum:]]\\('\\)\\(?:[^\\]\\|\\\\.[[:xdigit:]]*\\)\\('\\)"
      (1 "\"'") (2 "\"'"))
     ))
 
