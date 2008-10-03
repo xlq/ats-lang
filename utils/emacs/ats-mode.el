@@ -42,7 +42,7 @@
     ;; (*..*) for nested comments.
     (modify-syntax-entry ?\( "() 1n" st)
     (modify-syntax-entry ?\) ")( 4n" st)
-    (modify-syntax-entry ?*  ". 23" st)
+    (modify-syntax-entry ?*  ". 23n" st)
     ;; Not sure how to do // for single-line comments.
     ;; The current setting means that (/ and /* start a comment as well :-(
     (modify-syntax-entry ?/  ". 12b" st)
@@ -133,7 +133,7 @@
 
 (defface ats-font-lock-c-face
   '(;; (default :inherit font-lock-comment-face)
-    (t (:foreground "Gray" :weight normal)))
+    (t (:foreground "Pink" :weight normal)))
   "Face used for C code."
   :group 'ats-font-lock-faces)
 (defvar ats-font-lock-c-face 'ats-font-lock-c-face)
@@ -153,8 +153,24 @@
       (forward-char 1))
     (not (minusp nest-lvl))))
 
+(defun ats-font-lock-mark-block ()
+  (let ((lines 64))                     ; bit of a hack
+    (set-mark (save-excursion (forward-line lines) (point)))
+    (forward-line (- lines))))
+
 (defun ats-font-lock-c-code-search (&optional limit)
   (interactive)
+  ;; Font-lock mode works on regions that may not be large enough to
+  ;; find both {% and %}.  Really, they should be treated like
+  ;; comments and put into the syntax table.  Then the syntactic pass
+  ;; would take care of C code.  However, there is only room for 2
+  ;; kinds of comments in the table, and those are taken.  So the
+  ;; keyword pass can try to get them.  But keyword pass doesn't
+  ;; handle multiline keywords very well (because of region cutoff).
+  ;; We can ignore the limit while searching, but coloration will not
+  ;; happen outside the region anyway.  So it's going to be a little
+  ;; screwy no matter what.  Not sure what to do about it.
+  (setq limit nil)
   (let (begin end)
     (when (re-search-forward "%{" limit t)
       (setq begin (match-beginning 0))
@@ -203,12 +219,12 @@
             ;; no | found so scan for other things inside ( )
             (goto-char (1+ begin)))))
          ;; handle ... : ...
-         ((looking-at ":")
+         ((looking-at ":[^=]")
           (forward-char 1)
           (let ((nest-lvl 0) finishedp)
             ;; emacs22 only:
             ;(ats-context-free-search ")\\|\\_<=\\_>\\|," limit)
-            (ats-context-free-search ")\\|[^=]=[^=]\\|," limit)
+            (ats-context-free-search ")\\|[^=]=[^=]\\|,\\|\n" limit)
             (setq begin (1+ begin)
                   end (point)
                   key-begin (1- begin)
@@ -222,101 +238,41 @@
 
     pt))
 
-(defvar ats-font-lock-keywords
-  '((ats-font-lock-c-code-search (0 'ats-font-lock-c-face))
-;; ("%{[[:print:][:cntrl:]]*%}" (0 'ats-font-lock-c-face))
-                                
-;;     ("[^%]\\({[^|}]*|?[^}]*}\\)" (1 'ats-font-lock-static-face))
-;;     ("[^']\\(\\[[^]|]*|?[^]]*\\]\\)" (1 'ats-font-lock-static-face))
-    (".<[^>]>." (0 'ats-font-lock-metric-face))
-    (ats-font-lock-static-search (0 'ats-font-lock-static-face) 
-                                 (1 'ats-font-lock-keyword-face))
+(defvar ats-keywords
+  '("\\<absprop\\>" "\\<abstype\\>" "\\<abst@type\\>" "\\<absview\\>"
+    "\\<absviewtype\\>" "\\<absviewt@ype\\>" "\\<and\\>" "\\<as\\>"
+    "\\<assume\\>" "\\<begin\\>" "\\<break\\>" "\\<case\\(+\\|*\\)?\\>"
+    "\\<class\\>" "\\<continue\\>" "\\<datasort\\>" "\\<dataprop\\>"
+    "\\<datatype\\>" "\\<dataview\\>" "\\<dataviewtype\\>" "\\<dyn\\>"
+    "\\<dynload\\>" "\\<else\\>" "\\<end\\>" "\\<exception\\>"
+    "\\<extern\\>" "\\<fix\\>" "\\<fn\\>" "\\<for\\>" "\\<fun\\>"
+    "\\<if\\>" "\\<implement\\>" "\\<in\\>" "\\<infix\\>" "\\<infixl\\>"
+    "\\<infixr\\>" "\\<lam\\>" "\\<let\\>" "\\<llam\\>" "\\<local\\>"
+    "\\<macdef\\>" "\\<macrodef\\>" "\\<method\\>" "\\<modprop\\>"
+    "\\<modtype\\>" "\\<module\\>" "\\<nonfix\\>" "\\<overload\\>"
+    "\\<par\\>" "\\<postfix\\>" "\\<praxi\\>" "\\<prefix\\>" "\\<prfn\\>"
+    "\\<prfun\\>" "\\<prval\\>" "\\<object\\>" "\\<of\\>" "\\<op\\>"
+    "\\<propdef\\>" "\\<rec\\>" "\\<sif\\>" "\\<sortdef\\>" "\\<sta\\>"
+    "\\<stadef\\>" "\\<staif\\>" "\\<staload\\>" "\\<stavar\\>"
+    "\\<struct\\>" "\\<symelim\\>" "\\<symintr\\>" "\\<then\\>"
+    "\\<try\\>" "\\<typedef\\>" "\\<union\\>" "\\<val\\>" "\\<var\\>"
+    "\\<viewdef\\>" "\\<viewtypedef\\>" "\\<when\\>" "\\<where\\>"
+    "\\<while\\>" "\\<with\\>" "\\<withprop\\>" "\\<withtype\\>"
+    "\\<withview\\>" "\\<withviewtype\\>"))
 
-    ("\\<absprop\\>" (0 'ats-font-lock-keyword-face))
-    ("\\<abstype\\>" (0 'ats-font-lock-keyword-face))
-    ("\\<abst@type\\>" (0 'ats-font-lock-keyword-face)) 
-    ("\\<absview\\>" (0 'ats-font-lock-keyword-face))
-    ("\\<absviewtype\\>" (0 'ats-font-lock-keyword-face))
-    ("\\<absviewt@ype\\>" (0 'ats-font-lock-keyword-face))
-    ("\\<and\\>" (0 'ats-font-lock-keyword-face))
-    ("\\<as\\>" (0 'ats-font-lock-keyword-face))
-    ("\\<assume\\>" (0 'ats-font-lock-keyword-face))
-    ("\\<begin\\>" (0 'ats-font-lock-keyword-face))
-    ("\\<break\\>" (0 'ats-font-lock-keyword-face))
-    ("\\<case\\(+\\|*\\)?\\>" (0 'ats-font-lock-keyword-face))
-    ("\\<class\\>" (0 'ats-font-lock-keyword-face))
-    ("\\<continue\\>" (0 'ats-font-lock-keyword-face))
-    ("\\<datasort\\>" (0 'ats-font-lock-keyword-face))
-    ("\\<dataprop\\>" (0 'ats-font-lock-keyword-face))
-    ("\\<datatype\\>" (0 'ats-font-lock-keyword-face))
-    ("\\<dataview\\>" (0 'ats-font-lock-keyword-face))
-    ("\\<dataviewtype\\>" (0 'ats-font-lock-keyword-face))
-    ("\\<dyn\\>" (0 'ats-font-lock-keyword-face))
-    ("\\<dynload\\>" (0 'ats-font-lock-keyword-face))
-    ("\\<else\\>" (0 'ats-font-lock-keyword-face))
-    ("\\<end\\>" (0 'ats-font-lock-keyword-face))
-    ("\\<exception\\>" (0 'ats-font-lock-keyword-face))
-    ("\\<extern\\>" (0 'ats-font-lock-keyword-face))
-    ("\\<fix\\>" (0 'ats-font-lock-keyword-face))
-    ("\\<fn\\>" (0 'ats-font-lock-keyword-face))
-    ("\\<for\\>" (0 'ats-font-lock-keyword-face))
-    ("\\<fun\\>" (0 'ats-font-lock-keyword-face))
-    ("\\<if\\>" (0 'ats-font-lock-keyword-face))
-    ("\\<implement\\>" (0 'ats-font-lock-keyword-face))
-    ("\\<in\\>" (0 'ats-font-lock-keyword-face))
-    ("\\<infix\\>" (0 'ats-font-lock-keyword-face))
-    ("\\<infixl\\>" (0 'ats-font-lock-keyword-face))
-    ("\\<infixr\\>" (0 'ats-font-lock-keyword-face))
-    ("\\<lam\\>" (0 'ats-font-lock-keyword-face))
-    ("\\<let\\>" (0 'ats-font-lock-keyword-face))
-    ("\\<llam\\>" (0 'ats-font-lock-keyword-face))
-    ("\\<local\\>" (0 'ats-font-lock-keyword-face))
-    ("\\<macdef\\>" (0 'ats-font-lock-keyword-face))
-    ("\\<macrodef\\>" (0 'ats-font-lock-keyword-face))
-    ("\\<method\\>" (0 'ats-font-lock-keyword-face))
-    ("\\<modprop\\>" (0 'ats-font-lock-keyword-face))
-    ("\\<modtype\\>" (0 'ats-font-lock-keyword-face))
-    ("\\<module\\>" (0 'ats-font-lock-keyword-face))
-    ("\\<nonfix\\>" (0 'ats-font-lock-keyword-face))
-    ("\\<overload\\>" (0 'ats-font-lock-keyword-face))
-    ("\\<par\\>" (0 'ats-font-lock-keyword-face))
-    ("\\<postfix\\>" (0 'ats-font-lock-keyword-face))
-    ("\\<praxi\\>" (0 'ats-font-lock-keyword-face))
-    ("\\<prefix\\>" (0 'ats-font-lock-keyword-face))
-    ("\\<prfn\\>" (0 'ats-font-lock-keyword-face))
-    ("\\<prfun\\>" (0 'ats-font-lock-keyword-face))
-    ("\\<prval\\>" (0 'ats-font-lock-keyword-face))
-    ("\\<object\\>" (0 'ats-font-lock-keyword-face))
-    ("\\<of\\>" (0 'ats-font-lock-keyword-face))
-    ("\\<op\\>" (0 'ats-font-lock-keyword-face))
-    ("\\<propdef\\>" (0 'ats-font-lock-keyword-face))
-    ("\\<rec\\>" (0 'ats-font-lock-keyword-face))
-    ("\\<sif\\>" (0 'ats-font-lock-keyword-face))
-    ("\\<sortdef\\>" (0 'ats-font-lock-keyword-face))
-    ("\\<sta\\>" (0 'ats-font-lock-keyword-face))
-    ("\\<stadef\\>" (0 'ats-font-lock-keyword-face))
-    ("\\<staif\\>" (0 'ats-font-lock-keyword-face))
-    ("\\<staload\\>" (0 'ats-font-lock-keyword-face))
-    ("\\<stavar\\>" (0 'ats-font-lock-keyword-face))
-    ("\\<struct\\>" (0 'ats-font-lock-keyword-face))
-    ("\\<symelim\\>" (0 'ats-font-lock-keyword-face))
-    ("\\<symintr\\>" (0 'ats-font-lock-keyword-face))
-    ("\\<then\\>" (0 'ats-font-lock-keyword-face))
-    ("\\<try\\>" (0 'ats-font-lock-keyword-face))
-    ("\\<typedef\\>" (0 'ats-font-lock-keyword-face))
-    ("\\<union\\>" (0 'ats-font-lock-keyword-face))
-    ("\\<val\\>" (0 'ats-font-lock-keyword-face))
-    ("\\<var\\>" (0 'ats-font-lock-keyword-face))
-    ("\\<viewdef\\>" (0 'ats-font-lock-keyword-face))
-    ("\\<viewtypedef\\>" (0 'ats-font-lock-keyword-face))
-    ("\\<when\\>" (0 'ats-font-lock-keyword-face))
-    ("\\<where\\>" (0 'ats-font-lock-keyword-face))
-    ("\\<while\\>" (0 'ats-font-lock-keyword-face))
-    ("\\<with\\>" (0 'ats-font-lock-keyword-face))
-    ("\\<withprop\\>" (0 'ats-font-lock-keyword-face))
-    ("\\<withtype\\>" (0 'ats-font-lock-keyword-face))
-    ("\\<withview\\>" (0 'ats-font-lock-keyword-face))
-    ("\\<withviewtype\\>" (0 'ats-font-lock-keyword-face))))
+(defvar ats-font-lock-keywords
+  (append
+   '((ats-font-lock-c-code-search (0 'ats-font-lock-c-face t))
+     ;; ("%{[[:print:][:cntrl:]]*%}" (0 'ats-font-lock-c-face))
+                                
+     ;;     ("[^%]\\({[^|}]*|?[^}]*}\\)" (1 'ats-font-lock-static-face))
+     ;;     ("[^']\\(\\[[^]|]*|?[^]]*\\]\\)" (1 'ats-font-lock-static-face))
+     (".<[^>]>." (0 'ats-font-lock-metric-face))
+     (ats-font-lock-static-search (0 'ats-font-lock-static-face) 
+                                  (1 'ats-font-lock-keyword-face)))
+   
+   (list (list (mapconcat 'identity ats-keywords "\\|")
+               '(0 'ats-font-lock-keyword-face)))))
 
 (defvar ats-font-lock-syntactic-keywords
   '(("(\\(/\\)" (1 ". 1b"))             ; (/ does not start a comment.
@@ -340,7 +296,8 @@
   "Major mode to edit ATS source code."
   (set (make-local-variable 'font-lock-defaults)
        '(ats-font-lock-keywords nil nil ((?_ . "w") (?= . "_")) nil
-         (font-lock-syntactic-keywords . ats-font-lock-syntactic-keywords)))
+         (font-lock-syntactic-keywords . ats-font-lock-syntactic-keywords)
+         (font-lock-mark-block-function . ats-font-lock-mark-block)))
   (set (make-local-variable 'comment-start) "(*")
   (set (make-local-variable 'comment-continue)  " *")
   (set (make-local-variable 'comment-end) "*)")
@@ -406,23 +363,6 @@
 
 (provide 'ats-mode)
 ;;; ats-mode.el ends here
-
-
-  ;; Set up block and line oriented comments.  The new C
-  ;; standard mandates both comment styles even in C, so since
-  ;; all languages now require dual comments, we make this the
-  ;; default.
-;;   (cond
-;;    ;; XEmacs
-;;    ((memq '8-bit c-emacs-features)
-;;     (modify-syntax-entry ?/  ". 1456" table)
-;;     (modify-syntax-entry ?*  ". 23"   table))
-;;    ;; Emacs
-;;    ((memq '1-bit c-emacs-features)
-;;     (modify-syntax-entry ?/  ". 124b" table)
-;;     (modify-syntax-entry ?*  ". 23"   table))
-;;    ;; incompatible
-;;    (t (error "CC Mode is incompatible with this version of Emacs")))
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
