@@ -54,6 +54,13 @@ ats_v2df_set2
 }
 
 static inline
+ats_void_type
+ats_print_v2df (ats_v2df_type dd) {
+  fprintf (stdout, "%f/%f", ((double*)&dd)[0], ((double*)&dd)[1]) ;
+  return ;
+}
+
+static inline
 ats_v2df_type
 ats_add_v2df_v2df (ats_v2df_type dd1, ats_v2df_type dd2) {
   return (dd1 + dd2) ;
@@ -80,6 +87,9 @@ extern fun v2df_snd_get (dd: v2df): double = "ats_v2df_snd_get"
 
 extern fun v2df_set2
   (dd: &v2df?>>v2df, d0: double, d1: double): void = "ats_v2df_set2"
+
+extern fun print_v2df (dd: v2df): void = "ats_print_v2df"
+overload print with print_v2df
 
 extern fun add_v2df_v2df (_: v2df, _: v2df): v2df = "ats_add_v2df_v2df"
 extern fun sub_v2df_v2df (_: v2df, _: v2df): v2df = "ats_sub_v2df_v2df"
@@ -128,9 +138,11 @@ ats_ptr_type ddarr_make (ats_int_type n) {
 static inline
 ats_ptr_type ddarr_make_elt (ats_int_type n, ats_double_type f) {
   int i;
-  v2df *p0; double *p ;
+  v2df *p0, *p ;
   p0 = ddarr_make (n) ;
-  for (i = 0, p = (double*)p0; i < n; ++i, ++p) *p = f ;
+  for (i = 0, p = p0; i < n; ++i, ++p) {
+    ((double*)p)[0] = f ; ((double*)p)[1] = f ;
+  }
   return p0 ;
 }
 
@@ -156,16 +168,13 @@ extern fun ddarr_free {n:nat} {l:addr}
   (pf: ddarr n @ l | p: ptr l): void = "ddarr_free"
   
 extern fun ddarr_get {n:nat}
- (A: &ddarr n, i: natLt n): v2df
-  = "ddarr_get"
+ (A: &ddarr n, i: natLt n): v2df = "ddarr_get"
 
 extern fun ddarr_set {n:nat}
-  (A: &ddarr n, i: natLt n, dd: v2df): void
-  = "ddarr_set"
+  (A: &ddarr n, i: natLt n, dd: v2df): void = "ddarr_set"
 
 extern fun ddarr_set2 {n:nat}
-  (A: &ddarr n, i: natLt n, d0: double, d1: double): void
-  = "ddarr_set2"
+  (A: &ddarr n, i: natLt n, d0: double, d1: double): void = "ddarr_set2"
   
 end // end of [local]
 
@@ -187,8 +196,7 @@ in
     dd := zero_v2df; j := 0; j2 := 0;
     while* (dd: v2df, i: natLt N) => (j < N) begin
       v2df_set2 (AA, A(i2,j2), A(i2,j2+1));
-      dd += AA * u[j];
-      j += 1; j2 += 2;
+      dd += AA * u[j]; j += 1; j2 += 2;
     end;
     d0 := v2df_fst_get (dd) + v2df_snd_get (dd) ;
 
@@ -218,16 +226,14 @@ in
     dd := zero_v2df; j := 0; j2 := 0;
     while* (dd: v2df, i: natLt N) => (j < N) begin
       v2df_set2 (AA, A(j2,i2), A(j2+1,i2));
-      dd += AA * u[j];
-      j += 1; j2 += 2;
+      dd += AA * u[j]; j += 1; j2 += 2;
     end;
     d0 := v2df_fst_get (dd) + v2df_snd_get (dd) ;
 
     dd := zero_v2df; j := 0; j2 := 0;
     while* (dd: v2df, i: natLt N) => (j < N) begin
       v2df_set2 (AA, A(j2,i2+1), A(j2+1,i2+1));
-      dd += AA * u[j];
-      j += 1; j2 += 2;
+      dd += AA * u[j]; j += 1; j2 += 2;
     end;
     d1 := v2df_fst_get (dd) + v2df_snd_get (dd) ;
 
@@ -277,9 +283,9 @@ implement main (argc, argv) = let
   end
   val vBv1 = v2df_fst_get (vBv) + v2df_snd_get (vBv)
   val vv1 = v2df_fst_get (vv) + v2df_snd_get (vv)
-(*
+// (*
   val () = printf ("vBv1 = %f and vv1 = %f\n", @(vBv1, vv1))
-*)
+// *)
   val () = (ddarr_free (pf_u | p_u); ddarr_free (pf_v | p_v))
 in
   printf("%0.9f\n", @($M.sqrt (vBv1/vv1)))
