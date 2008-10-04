@@ -73,6 +73,9 @@ spectral-norm_smp: spectral-norm_smp.dats
 spectral-norm1: spectral-norm1.dats
 	$(ATSCC) -O3 -fomit-frame-pointer -msse2 spectral-norm1.dats -o spectral-norm1 -lm
 
+spectral-norm1_simd: spectral-norm1_simd.dats
+	$(ATSCC) -O3 -fomit-frame-pointer -D_ISOC9X_SOURCE -mfpmath=sse -msse2 -o spectral-norm1_simd spectral-norm1_simd.dats -lm
+
 spectral-norm2: spectral-norm2.dats
 	$(ATSCC) -O3 -fomit-frame-pointer -msse2 spectral-norm2.dats -o spectral-norm2 -lm
 
@@ -110,4 +113,5 @@ cleanall: clean
 	rm -f spectral-norm_smp
 	rm -f spectral-norm_smp2
 	rm -f spectral-norm1
+	rm -f spectral-norm1_simd
 	rm -f thread-ring
