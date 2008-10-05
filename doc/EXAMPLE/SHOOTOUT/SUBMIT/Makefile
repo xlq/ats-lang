@@ -71,7 +71,7 @@ spectral-norm_smp: spectral-norm_smp.dats
 	$(ATSCC) -D_ATS_MULTITHREAD -O3 -fomit-frame-pointer -msse2 spectral-norm_smp.dats -o spectral-norm_smp -lm -lpthread
 
 spectral-norm1: spectral-norm1.dats
-	$(ATSCC) -O2 -fomit-frame-pointer -msse2 spectral-norm1.dats -o spectral-norm1 -lm
+	$(ATSCC) -O3 -fomit-frame-pointer -msse2 spectral-norm1.dats -o spectral-norm1 -lm
 
 spectral-norm1_simd: spectral-norm1_simd.dats
 	$(ATSCC) -O3 -fomit-frame-pointer -D_ISOC9X_SOURCE -mfpmath=sse -msse2 -o spectral-norm1_simd spectral-norm1_simd.dats -lm

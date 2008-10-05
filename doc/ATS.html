@@ -43,6 +43,8 @@
 <MENU>
 <LI> <A href="#what_is_ats">What is ATS?</A>
 
+<LI> <A href="#acknowledgments">Acknowledgments</A>
+
 <LI> <A href="#download_and_installation">Download and Installation</A>:
 The current <B>stable</B> release is <a href="http://sourceforge.net/projects/ats-lang/download">ats-lang-anairiats-0.0.1</a> (2.2MB)
 
@@ -112,13 +114,14 @@ be used as a logical framework to encode various deduction systems and
 their (meta-)properties.
 <P>
 
-<LI><H3>Acknowledgments</H3> The development of ATS has been funded in part
-by <a href="http://www.nsf.gov">National Science Foundation</a> under the
-grants no. CCR-0081316/CCR-0224244, no. CCR-0092703/0229480,
-no. CNS-0202067 and no. CCF-0702665. As always, <em>any opinions, findings,
-and conclusions or recommendations expressed here are those of the
-author(s) and do not necessarily reflect the views of the National Science
-Foundation.</em>
+<LI><H3><A id="acknowledgments"
+name="acknowledgments">Acknowledgments</A></H3> The development of ATS has
+been funded in part by <a href="http://www.nsf.gov">National Science
+Foundation</a> under the grants no. CCR-0081316/CCR-0224244,
+no. CCR-0092703/0229480, no. CNS-0202067 and no. CCF-0702665. As always,
+<em>any opinions, findings, and conclusions or recommendations expressed
+here are those of the author(s) and do not necessarily reflect the views of
+the National Science Foundation.</em>
 <P>
 Many people worked on ATS in the past. The names of some of these people
 are included in the following list:
@@ -131,12 +134,13 @@ Machado, Rui Shi, Hongwei Xi, Dengping Zhu
 <LI><H3>Mailing List</H3> Here is the current <A
 href="http://types.bu.edu/mailman/listinfo/ats">mailing-list</A> for ATS
 users.
--->
+
 <LI><H3>Mailing List</H3>
 The mailing-list for ATS users is available <A
 HREF="https://lists.sourceforge.net/lists/listinfo/ats-lang-users">
 here</A>.
 <P>
+-->
 
 <LI><H3><A id="download_and_installation">Download and Installation</A></H3>
 ATS is <A href="http://www.opensource.org">Open Source</A> and <A
@@ -262,6 +266,8 @@ If you do so, please consider putting this command in a file (e.g., .bashrc or
 
 </MENU>
 
+<!-- end of [#download_and_installation] -->
+
 <LI><H3><A id="simple_ats_programs" name="simple_ats_programs">Some Simple ATS Programs</A></H3>
 Let us now construct and compile some simple ATS programs.
 
@@ -280,7 +286,7 @@ we write the following lines of code
 By executing the following command line, we produce an excutable file named
 "HelloWorld":
 
-<pre>atscc -o HelloWorld HelloWorld.dats</pre>
+<PRE>atscc -o HelloWorld HelloWorld.dats</PRE>
 
 What happens here is that <i>atscc</i> first compiles
 
@@ -293,7 +299,7 @@ into
 which is then compiled by gcc to produce "HelloWorld".  By running
 "HelloWorld", we can see the following line on the standard output:
 
-<pre>Hello, world!</pre> 
+<PRE>Hello, world!</PRE> 
 
 <H4>Factorial (version 1)</H4> A simple recursive function <i>fact1</i>
 is defined as follows to compute factorials.
@@ -340,7 +346,7 @@ The entire code for this example is available <a href="EXAMPLE/INTRO/fact1.dats"
 Let us now see an example involving dependent types.  In ATS, <i>int</i> is
 a static constant of the following sort:
 
-<pre>int -&gt; type</pre>
+<PRE>int -&gt; type</PRE>
 
 Note that the symbol <i>int</i> is overloaded: it is both a static constant
 and a sort. Given an integer
@@ -375,7 +381,7 @@ natural number when applied to a natural number. It causes a type error
 if <i>fact2</i> is applied to a negative integer. The function
 <i>nmul</i> (infix) is assumed to be of the following type:
 
-<pre>(Nat, Nat) -&gt; Nat</pre>
+<PRE>(Nat, Nat) -&gt; Nat</PRE>
 
 That is, <i>nmul</i> returns a natural number when applied to
 two natural numbers.

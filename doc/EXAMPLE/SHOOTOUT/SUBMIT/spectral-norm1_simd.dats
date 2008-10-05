@@ -54,22 +54,9 @@ ats_v2df_set2
 }
 
 static inline
-ats_void_type
-ats_print_v2df (ats_v2df_type dd) {
-  fprintf (stdout, "%f/%f", ((double*)&dd)[0], ((double*)&dd)[1]) ;
-  return ;
-}
-
-static inline
 ats_v2df_type
 ats_add_v2df_v2df (ats_v2df_type dd1, ats_v2df_type dd2) {
   return (dd1 + dd2) ;
-}
-
-static inline
-ats_v2df_type
-ats_sub_v2df_v2df (ats_v2df_type dd1, ats_v2df_type dd2) {
-  return (dd1 - dd2) ;
 }
 
 static inline
@@ -88,14 +75,9 @@ extern fun v2df_snd_get (dd: v2df): double = "ats_v2df_snd_get"
 extern fun v2df_set2
   (dd: &v2df?>>v2df, d0: double, d1: double): void = "ats_v2df_set2"
 
-extern fun print_v2df (dd: v2df): void = "ats_print_v2df"
-overload print with print_v2df
-
 extern fun add_v2df_v2df (_: v2df, _: v2df): v2df = "ats_add_v2df_v2df"
-extern fun sub_v2df_v2df (_: v2df, _: v2df): v2df = "ats_sub_v2df_v2df"
 extern fun mul_v2df_v2df (_: v2df, _: v2df): v2df = "ats_mul_v2df_v2df"
 overload + with add_v2df_v2df
-overload - with sub_v2df_v2df
 overload * with mul_v2df_v2df
 
 (* ****** ****** *)
@@ -105,13 +87,6 @@ overload * with mul_v2df_v2df
 static inline
 ats_v2df_type ddarr_get (ats_ptr_type A, ats_int_type i) {
   return ((ats_v2df_type*)A)[i] ;
-}
-
-static inline
-ats_void_type ddarr_set (
-  ats_ptr_type A, ats_int_type i, ats_v2df_type dd
-) {
-  ((ats_v2df_type*)A)[i] = dd ; return ;
 }
 
 static inline
@@ -169,16 +144,12 @@ extern fun ddarr_free {n:nat} {l:addr}
   
 extern fun ddarr_get {n:nat}
  (A: &ddarr n, i: natLt n): v2df = "ddarr_get"
-
-extern fun ddarr_set {n:nat}
-  (A: &ddarr n, i: natLt n, dd: v2df): void = "ddarr_set"
-
 extern fun ddarr_set2 {n:nat}
   (A: &ddarr n, i: natLt n, d0: double, d1: double): void = "ddarr_set2"
   
 end // end of [local]
 
-overload [] with ddarr_get; overload [] with ddarr_set
+overload [] with ddarr_get
 
 (* ****** ****** *)
 

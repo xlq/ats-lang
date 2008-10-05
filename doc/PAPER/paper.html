@@ -1,7 +1,7 @@
 <HTML>
 <HEAD>
-<TITLE>Home Page for ATS-tutorial</TITLE>
-<META name="description" content= Home Page for ATS-tutorial">
+<TITLE>Home Page for ATS-paper</TITLE>
+<META name="description" content= Home Page for ATS-paper">
 <META name="keywords" content="">
 <LINK REL="stylesheet" HREF="../ATS.css" TYPE="text/css">
 </HEAD>
@@ -18,10 +18,10 @@
   <TR><TD CLASS="menu"><A HREF="../TUTORIAL/tutorial.html">Tutorial</TD></TR>
   <TR><TD CLASS="menu"><A HREF="../EXAMPLE/example.html">Examples</A></TD></TR>
   <TR><TD CLASS="menu"><A HREF="../IMPLEMENTATION/implementation.html">Implementation</A></TD></TR>
-  <TR><TD CLASS="menu"><A HREF="../DOCUMENTATION">Documentation</A></TD></TR>
+  <TR><TD CLASS="menu"><A HREF="../RESOURCE/resource.html">Resources</A></TD></TR>
   <TR><TD CLASS="menu"><A HREF="../LIBRARY/library.html">Libraries</A></TD></TR>
   <TR><TD CLASS="menu"><B CLASS="here">Papers</A></TD></TR>
-  <TR><TD CLASS="menu"><A HREF="../CHANGE/log-of-changes.html">Changes</A></TD></TR>
+  <TR><TD CLASS="menu"><A HREF="../CHANGELOG/changelog.html">ChangeLog</A></TD></TR>
   <TR><TD CLASS="menu"><A HREF="../FAQ.txt">FAQ</A></TD></TR>
   <TR><TD CLASS="menu"><A HREF="https://lists.sourceforge.net/lists/listinfo/ats-lang-users">Mailing List</A></TD></TR>
 </TABLE>
@@ -39,11 +39,32 @@ This website contains a list of papers about or closely related to ATS.
 
 <MENU>
 <LI>
+<B>Dependent ML: an approach to practical programming with dependent types</B>
+(<A HREF="DML-jfp07.pdf">pdf</A>)
+(<A HREF="DML-jfp07.ps">ps</A>)
+<P>
+We present an approach to enriching the type system of ML with a restricted
+form of dependent types, where type index terms are required to be
+drawn from a given type index language <i>L</i> that is completely separate
+from run-time programs, leading to the <i>DML(L)</i> language schema.  This
+enrichment allows for specification and inference of significantly more
+precise type information, facilitating program error detection and compiler
+optimization.  The primary contribution of the paper lies in our language
+design, which can effectively support the use of dependent types in
+practical programming. In particular, this design makes it both natural and
+straightforward to accommodate dependent types in the presence of effects
+such as references and exceptions.
+<P>
+
+<LI>
 <B>Dependent Types in Practical Programming</B>
-(<A HREF="DML-popl99.pdf">pdf</A>)
-(<A HREF="DML-popl99.ps">ps</A>)
+(<A HREF="DML-popl99.pdf">paper.pdf</A>)
+(<A HREF="DML-popl99.ps">paper.ps</A>)
 (<A HREF="DML-thesis.pdf">thesis.pdf</A>)
 (<A HREF="DML-thesis.ps">thesis.ps</A>)
+<P>
+The original version of DML is presented here.  The paper is an extended
+abstract of the thesis.
 <P>
 
 <LI>
@@ -208,6 +229,9 @@ This page is maintained by
 <a href="http://www.cs.bu.edu/~hwxi/">Hongwei Xi</a>.
 As always,
 <a href="mailto:hwxi@cs.bu.edu">your comments are welcome</a>.
+
+<HR SIZE=6 ALIGN=LEFT>
+<a href="http://sourceforge.net"><img src="http://sflogo.sourceforge.net/sflogo.php?group_id=205722&amp;type=2" align=right width="125" height="37" border="0" alt="SourceForge.net Logo"/></a>
 
 </TABLE>
 </TD>

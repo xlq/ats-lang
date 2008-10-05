@@ -46,26 +46,53 @@ reference.
 <P>
 
 <LI>
-<A HREF="Geizella/">ATS/Geizella</A> is a previously released
-implementation of ATS (written in <A HREF="http://www.ocaml.org">Objective
-Caml</A> and C). In this implementation, the native unboxed data
-representation (as is in C) is adopted, and this makes ATS/Geizella
-particularly well suited for direct interaction with C.  As for parametric
-polymorphism, it is supported in ATS/Geizella through the use of templates.
-ATS/Geizella is now largely out of active use as ATS/Anairiats, a compiler
-for ATS that is almost entirely written in ATS, has been bootstrapped
-successfully (with the help of ATS/Geizella).
+<A
+HREF="http://ats-lang.svn.sourceforge.net/viewvc/ats-lang/bootstrap/geizella">ATS/Geizella</A>
+is a previously released implementation of ATS (written in <A
+HREF="http://www.ocaml.org">Objective Caml</A> and C). In this
+implementation, the native unboxed data representation (as is in C) is
+adopted, and this makes ATS/Geizella particularly well suited for direct
+interaction with C.  As for parametric polymorphism, it is supported in
+ATS/Geizella through the use of templates.  ATS/Geizella is now largely out
+of active use as ATS/Anairiats, a compiler for ATS that is almost entirely
+written in ATS, has been bootstrapped successfully (with the help of
+ATS/Geizella).
 <P>
 
-<LI> <A
-HREF="http://sourceforge.net/projects/ats-lang/download">ATS/Anairiats</A>
-is the currently released implementation of ATS. ATS/Anairiats is almost
-entirely written in ATS itself, consisting of more than 80,000 lines of
-source code that can be viewed <A
-HREF="http://ats-lang.svn.sourceforge.net/viewvc/ats-lang">here</A>.  When
+<LI>
+<A HREF="http://ats-lang.svn.sourceforge.net/viewvc/ats-lang/trunk">ATS/Anairiats</A>
+is the currently released implementation of ATS. ATS/Anairiats is written
+in ATS itself, consisting of more than 80,000 lines of source code.  When
 compared to ATS/Geizella, ATS/Anairiats is significantly more efficient,
 and in general it issues more informative messages for identifying program
 errors.
+<P>
+
+<B>Bootstrapping</B>&nbsp;
+In order to bootstrap ATS/Anairiats, one needs to first check out the
+following svn directory and name it as some local directory, say, "FOO":
+<PRE>svn co https://ats-lang.svn.sourceforge.net/svnroot/ats-lang/trunk FOO</PRE>
+
+Then one needs to check out another svn directory and name it as
+the local directory "FOO/bootstrap0":
+<PRE>svn co https://ats-lang.svn.sourceforge.net/svnroot/ats-lang/bootstrap/version-x.x.x \
+  FOO/bootstrap0</PRE>
+
+Note that "x.x.x" should be replaced with some version number.  Currently,
+version-0.0.1 is available for bootstrapping. After this is done, please go
+into the directory "FOO" and execute the command 'autoconf' and then do
+'make all'.
+<P>
+
+It is also possible to use the ATS/Geizella compiler (written in Objective
+Caml) for bootstrapping ATS/Anairiats. This can be done by checking out the
+following svn directory and name it as the local directory "FOO/bootstrap0":
+
+<PRE>svn co https://ats-lang.svn.sourceforge.net/svnroot/ats-lang/bootstrap/geizella \
+  FOO/bootstrap0</PRE>
+
+After this is done, please go into the directory "FOO" and execute the
+command 'autoconf' and then do 'make all'.
 <P>
 
 </MENU>
@@ -75,6 +102,9 @@ This page is maintained by
 <a href="http://www.cs.bu.edu/~hwxi/">Hongwei Xi</a>.
 As always,
 <a href="mailto:hwxi@cs.bu.edu">your comments are welcome</a>.
+
+<HR SIZE=6 ALIGN=LEFT>
+<a href="http://sourceforge.net"><img src="http://sflogo.sourceforge.net/sflogo.php?group_id=205722&amp;type=2" align=right width="125" height="37" border="0" alt="SourceForge.net Logo"/></a>
 
 </TABLE>
 </TD>
