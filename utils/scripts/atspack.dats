@@ -769,4 +769,4 @@ end // end of [main]
 
 (* ****** ****** *)
 
-(* end of [atspackage.dats] *)
+(* end of [atspack.dats] *)

@@ -60,8 +60,8 @@ atslib: atslib_main_dats.c \
           top_sats.o basics_dats.o atscc_dats.o atslib_dats.o \
           stdio_sats.o stdlib_sats.o unistd_sats.o
 
-atspackage: atspackage.dats
-	atscc -o atspackage $(CCFLAG) atspackage.dats
+atspack: atspack.dats
+	atscc -o atspack $(CCFLAG) atspack.dats
 
 deltabs: deltabs.dats
 	atscc -o deltabs $(CCFLAG) deltabs.dats -D__ATS_gcats
@@ -121,6 +121,6 @@ clean::
 	rm -f *_sats.c *_dats.c *.o *~
 
 cleanall:: clean
-	rm -f atscc atslib atspackage
+	rm -f atscc atslib atspack
 
 ######
