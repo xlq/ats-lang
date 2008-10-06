@@ -73,7 +73,7 @@ fn i2nvarglst_subst
   )
 end // end of [i2nvarglst_subst]
 
-fn d2exp_while_loopinv_tr
+fn d2exp_loopinv_tr
   (i2nv: loopi2nv): @(s2explstopt, i2nvresstate) = let
   val loc0 = i2nv.loopi2nv_loc
   val sub = s2qua_hypo_instantiate_and_add
@@ -134,7 +134,7 @@ implement d2exp_loop_tr_up
   val i2nv = loopi2nv_update (i2nv)
   val i2nv_met = i2nv.loopi2nv_met
   val () = begin case+ i2nv_met of // ntm effect or not
-    | Some _ => the_effect_env_check_ntm (loc0) | None _ => ()
+    | None _ => the_effect_env_check_ntm (loc0) | Some _ => ()
   end
   val res_init = i2nvresstate_make_met
     (i2nv.loopi2nv_svs, i2nv.loopi2nv_gua, i2nv.loopi2nv_arg, i2nv_met)
@@ -161,7 +161,7 @@ implement d2exp_loop_tr_up
   val () = staftscstr_stbefitemlst_update (loc0, sac0_init, sbis)
 //
   val sac_init = staftscstr_initialize (res_init, sbis)
-  val (i2nv_met, res_exit) = d2exp_while_loopinv_tr (i2nv)
+  val (i2nv_met, res_exit) = d2exp_loopinv_tr (i2nv)
   val () = staftscstr_met_set (sac_init, i2nv_met)
   val sac_exit = staftscstr_initialize (res_exit, sbis)
 
@@ -208,7 +208,7 @@ implement d2exp_loop_tr_up
   val () = staftscstr_stbefitemlst_update (loc0, sac_exit, sbis)
 in
   d3exp_loop (loc0, od3e_init, d3e_test, od3e_post, d3e_body)
-end // end of [d2exp_while_tr_up]
+end // end of [d2exp_tr_up]
 
 (* ****** ****** *)
 
