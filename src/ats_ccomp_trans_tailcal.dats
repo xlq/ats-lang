@@ -275,6 +275,11 @@ val the_tailcallst = ref_make_elt<tailcallst> (TAILCALLSTnil ())
 in // in of [local]
 
 implement the_tailcallst_add (fl, tmps) = let
+(*
+  val () = begin
+    prerr "the_tailcallst_add: fl = "; prerr fl; prerr_newline ()
+  end
+*)
   val (vbox pf | p) = ref_get_view_ptr (the_tailcallst)
 in
   !p := TAILCALLSTcons (fl, tmps, !p)

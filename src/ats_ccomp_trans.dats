@@ -1591,12 +1591,22 @@ fn ccomp_exp_app_tmpvar (
   val () = begin
     case+ ofl of // handling tail-call
     | ~Some_vt (fl) => let
+(*
+        val () = begin
+          prerr "ccomp_exp_app_tmpvar: fl = "; prerr fl; prerr_newline ()
+        end
+*)
         val () = case+ vps_free of
           | list_vt_nil _ => begin
               if tmpvar_ret_get tmp_res > 0 then istail := 1;
               fold@ vps_free
             end
           | list_vt_cons _ => (fold@ vps_free)
+(*
+        val () = begin
+          prerr "ccomp_exp_app_tmpvar: istail = "; prerr istail; prerr_newline ()
+        end
+*)
         val () =
           if istail > 0 then let
             val otmps = the_tailcallst_find (fl)
@@ -1605,6 +1615,11 @@ fn ccomp_exp_app_tmpvar (
             | ~Some_vt (tmps) => (tmps_arg := tmps)
             | ~None_vt () => (istail := 0)
           end
+(*
+        val () = begin
+          prerr "ccomp_exp_app_tmpvar: istail = "; prerr istail; prerr_newline ()
+        end
+*)
       in
         if istail > 0 then let
           val fl0 = funlab_top (); val knd =

@@ -9,7 +9,7 @@
 
 Wednesday, June 25, 2008 (HX)
 
-STATUS: Fixed on September 28, 2008
+STATUS: Fixed on September 28, 2008 (HX)
 
 Note that the handling of [continue] in a for-loop was incorrectly
 conceived. After [continue], [post] section needs to be evaluated first
@@ -24,7 +24,7 @@ EXAMPLE/SHOOTOUT/SUBMIT/spectral-norm2.dats
 
 Thursay, September 25, 2008 (HX)
 
-STATUS: Fixed on September 26, 2008
+STATUS: Fixed on September 26, 2008 (HX)
 
 \begin{code}
 val x = darray (); val y = darray (); val z = darray ()
@@ -48,5 +48,30 @@ Monday, September 29, 2008 (HX)
 Status: Not yet tried to fix
 
 The interaction between vbox and the effect [ref] is incorrect.
+
+######
+
+Tuesday, October 7, 2008 (HX)
+
+Status: Fixed on October 7, 2008 (HX)
+
+A template tail call does not translate into a jump. This is a serious
+bug!
+
+\begin{code}
+val A = loop<String> (argc, 0, A) where {
+  fun{a:t@ype} loop {n,i:nat | i <= n}
+    (n: int n, i: int i, A: farr (a, n-i)): farr (a, 0) = begin
+    if i < n then begin
+      loop (n, i+1, funarray_lorem A)
+    end else A
+  end // end of [loop]
+} // end of [val]
+\end{code}
+
+The function [ccomp_tmpdef] in [ats_ccomp_trans_temp] did not push the
+function lable into [the_tailcallst]. It is fixed now.
+
+######
 
  ------------------ end of [BUGS.txt] -------------------

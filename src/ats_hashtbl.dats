@@ -166,43 +166,40 @@ hashtbl_struct (key:t@ype, item:viewt@ype, sz:int) = @{
 stadef HT = hashtbl_struct
 
 fn{key:t@ype;item:t@ype} ht_search {sz:pos}
-  (ht: &HT (key, item, sz), k0: key):<> Option_vt item =
-  let
-    val off = op uimod (ht.hash k0, ht.size)
-  in
-    table_search (ht.table, off, k0, ht.eq)
-  end
+  (ht: &HT (key, item, sz), k0: key):<> Option_vt item = let
+  val off = op uimod (ht.hash k0, ht.size)
+in
+  table_search (ht.table, off, k0, ht.eq)
+end // end of [ht_search]
 
 fn{key:t@ype;item:viewt@ype} ht_insert {sz:pos}
-  (ht: &HT (key, item, sz), k: key, i: item):<> void =
-  let
-    val off = op uimod (ht.hash k, ht.size)
-  in
-    table_insert (ht.table, off, k, i);
-    ht.nitm := ht.nitm + 1
-  end
+  (ht: &HT (key, item, sz), k: key, i: item):<> void = let
+  val off = op uimod (ht.hash k, ht.size)
+in
+  table_insert (ht.table, off, k, i); ht.nitm := ht.nitm + 1
+end // end of [ht_insert]
 
 fun{key:t@ype;item:viewt@ype}
   ht_insert_chain {sz:pos} {n:nat} .<n>.
   (ht: &HT (key, item, sz), kis: chain (key, item, n))
-  :<> void = case+ kis of
+  :<> void = begin case+ kis of
   | ~cons (k, i, kis) => begin
       ht_insert<key,item> {sz} (ht, k, i); 
       ht_insert_chain (ht, kis)
     end
   | ~nil () => ()
+end // end of [ht_insert_chain]
 
 fn{key:t@ype;item:viewt@ype} ht_remove {sz:pos}
-  (ht: &HT (key, item, sz), k: key):<> Option_vt item =
-  let
-    val off = op uimod (ht.hash k, ht.size)
-    val ans = table_remove<key,item> (ht.table, off, k, ht.eq)
-    val () = case+ ans of
-      | Some_vt !i => (fold@ ans; ht.nitm := ht.nitm - 1)
-      | None_vt () => fold@ ans
-  in
-    ans
-  end
+  (ht: &HT (key, item, sz), k: key):<> Option_vt item = let
+  val off = op uimod (ht.hash k, ht.size)
+  val ans = table_remove<key,item> (ht.table, off, k, ht.eq)
+  val () = case+ ans of
+    | Some_vt !i => (fold@ ans; ht.nitm := ht.nitm - 1)
+    | None_vt () => fold@ ans
+in
+  ans
+end // end of [ht_remove]
 
 (* ****** ****** *)
 

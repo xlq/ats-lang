@@ -345,8 +345,11 @@ implement ccomp_tmpdef
   val tmparg = tmpdef_arg_get tmpdef
   val () = template_arg_match (loc0, tcv, tmparg, hitss)
   val () = tmpnamtbl_add (fullname, vp_funclo)
-  val prolog = '[INSTRfunlab fl]
+  (* ****** ****** *)
+  val (pf_tailcallst_mark | ()) = the_tailcallst_mark ()
+  val () = the_tailcallst_add (fl, list_nil ())
   val _(*funentry_t*) = let
+    val prolog = '[INSTRfunlab fl]
     val hie = tmpdef_exp_get (tmpdef); val loc_fun = hie.hiexp_loc
   in
     case+ hie.hiexp_node of
@@ -361,6 +364,8 @@ implement ccomp_tmpdef
         $Err.abort {funentry_t} ()
       end
    end // end of [val]
+  val () = the_tailcallst_unmark (pf_tailcallst_mark | (*none*))
+  (* ****** ****** *)
   val () = the_stactx_pop (pf_stactx_token | (*none*))
   val () = the_dynctx_pop (pf_dynctx_token | (*none*))
 in

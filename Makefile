@@ -99,6 +99,9 @@ bin/atscc bin/atslib:
 	cd utils/scripts; make atslib; mv atslib "$(ATSHOME)"/bin
 	cd utils/scripts; make clean
 
+bin/atspack:
+	cd utils/scripts; make atspack; mv atspack "$(ATSHOME)"/bin
+
 ###### library ######
 
 # [gcc -E] for preprocessing
@@ -117,7 +120,13 @@ ccomp/runtime/GCATS/gc.o:
 
 ######
 
+package::
+	bin/atspack --source
+
+######
+
 clean::
+	rm -f *~
 	rm -f bootstrap0/*.o
 	rm -f bootstrap1/*.o
 	cd utils/scripts; make clean

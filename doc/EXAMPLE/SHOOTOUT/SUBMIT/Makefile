@@ -27,6 +27,9 @@ fannkuch1: fannkuch1.dats
 
 fannkuch_smp: fannkuch_smp.dats
 	$(ATSCC) -D_ATS_MULTITHREAD -O3 -fomit-frame-pointer fannkuch_smp.dats -o fannkuch_smp -lpthread
+fannkuch_smp1: fannkuch_smp1.dats
+	$(ATSCC) -D_ATS_MULTITHREAD -O3 -fomit-frame-pointer fannkuch_smp1.dats -o fannkuch_smp1 -lpthread
+
 
 fasta: fasta.dats; $(ATSCC) -msse2 -mfpmath=sse -O3 fasta.dats -o fasta
 
@@ -94,6 +97,7 @@ cleanall: clean
 	rm -f binary-trees_smp
 	rm -f fannkuch
 	rm -f fannkuch_smp
+	rm -f fannkuch_smp1
 	rm -f fannkuch1
 	rm -f fasta
 	rm -f fasta_smp
