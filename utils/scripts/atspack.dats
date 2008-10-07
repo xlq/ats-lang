@@ -709,7 +709,7 @@ in
   prerr ATSPACKAGE_NAME;
   prerr "-";
   prerr ATSPACKAGE_VERSION;
-  prerr "] is successfully generated";
+  prerr "] is successfully generated.";
   prerr_newline ()  
 end
 

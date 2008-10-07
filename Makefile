@@ -136,7 +136,7 @@ clean::
 cleanall::
 	rm -f config.h
 	rm -f .libfiles_local
-	rm -f bin/atsopt bin/atscc bin/atslib bin/atslex
+	rm -f bin/atsopt bin/atscc bin/atslib bin/atslex bin/atspack
 	rm -f ccomp/lib/libats.a
 	rm -f ccomp/lib/libatslex.a
 	rm -f ccomp/lib/output/*
