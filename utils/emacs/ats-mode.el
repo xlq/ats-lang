@@ -140,18 +140,19 @@
 
 (defun ats-context-free-search (regexp &optional limit)
   "Use inside a parenthesized expression to find a regexp at the same level."
-  (let ((nest-lvl 0))
+  (let ((nest-lvl 0) foundp)
     (while (and (not (eobp))
                 (or (null limit) (not (> (point) limit)))
                 (not (minusp nest-lvl))
-                (not (and (zerop nest-lvl)
-                          (looking-at regexp))))
+                (not (setq foundp
+                           (and (zerop nest-lvl)
+                                (looking-at regexp)))))
       (cond ((looking-at "(")
              (incf nest-lvl))
             ((looking-at ")")
              (decf nest-lvl)))
       (forward-char 1))
-    (not (minusp nest-lvl))))
+    foundp))
 
 (defun ats-font-lock-mark-block ()
   (let ((lines 64))                     ; bit of a hack
@@ -185,7 +186,7 @@
   (let (foundp begin end (key-begin 0) (key-end 0) pt)
     (flet ((store ()
              (store-match-data (list begin end key-begin key-end))))
-      (while (not foundp)
+      (while (and (not foundp) (< (point) limit))
         (setq key-begin 0 key-end 0)
         (setq pt (re-search-forward "(\\|:\\|{" limit t))
         (forward-char -1)
