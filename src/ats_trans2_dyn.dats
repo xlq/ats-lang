@@ -2000,10 +2000,11 @@ in
     end // end of [list_vt_nil]
 end // end of [i1mpdec_tr_d2cst_select]
 
-fn i1mpdec_tr (d1c: i1mpdec): i2mpdec = let
+fn i1mpdec_tr
+  (i1mparg: s1arglstlst, d1c: i1mpdec): i2mpdec = let
   val qid = d1c.i1mpdec_qid
   val q = qid.impqi0de_qua and id = qid.impqi0de_sym
-  val d2c =
+  val d2c = begin
     case+ the_d2expenv_find_qua (q, id) of
     | ~Some_vt d2i => begin case+ d2i of
       | D2ITEMcst d2c => d2c
@@ -2029,7 +2030,12 @@ fn i1mpdec_tr (d1c: i1mpdec): i2mpdec = let
         prerr_newline ();
         $Err.abort {d2cst_t} ()
       end // end of [None_vt]
-  fun aux1 (s2vpss: s2qualst, s2e: s2exp, out: &s2qualst): s2exp =
+  end // end of [val]
+(*
+  // automatic instantiation is not supported as it can readily lead
+  // to confusion as for whether an implementation is actually compiled.
+  fun aux1
+    (s2vpss: s2qualst, s2e: s2exp, out: &s2qualst): s2exp = begin
     case+ s2vpss of
     | cons (s2vps, s2vpss) => let
         val (sub, s2vs) = stasub_extend_svarlst (stasub_nil, s2vps.0)
@@ -2039,10 +2045,15 @@ fn i1mpdec_tr (d1c: i1mpdec): i2mpdec = let
         out := @(s2vs, s2ps) :: out; aux1 (s2vpss, s2e, out)
       end
     | nil () => (out := s2qualst_reverse out; s2e)
-
-  fun aux2
-    (loc0: loc_t, args: s1arglstlst, s2vpss: s2qualst,
-     s2e: s2exp, out: &s2qualst):<cloptr1> s2exp = case+ args of
+  end // end of [aux1]
+*)
+  fun aux2 (
+      loc0: loc_t
+    , args: s1arglstlst
+    , s2vpss: s2qualst
+    , s2e: s2exp
+    , out: &s2qualst
+    ) :<cloptr1> s2exp = begin case+ args of
     | cons (arg, args) => begin case+ s2vpss of
       | cons (s2vps, s2vpss) => let
           var sub: stasub_t = stasub_nil
@@ -2053,24 +2064,40 @@ fn i1mpdec_tr (d1c: i1mpdec): i2mpdec = let
           val () = out := @(s2vs, s2ps) :: out
         in
           aux2 (loc0, args, s2vpss, s2e, out)
-        end
+        end // end of [cons]
       | nil () => begin
           prerr loc0;
           prerr ": error(2)";
           $Deb.debug_prerrf (": %s: i1mpdec_tr: aux2", @(THISFILENAME));
-          prerr ": the dynamic constant [";
+          prerr ": the implementatiom for [";
           prerr q; prerr id;
-          prerr "] is applied to too many static arguments.";
+          prerr "] should be applied to less template arguments.";
           prerr_newline ();
           $Err.abort {s2exp} ()
-        end
-      end
-    | nil () => aux1 (s2vpss, s2e, out)
+        end // end of [nil]
+      end // end of [cons]
+    | nil () => let
+       val () = case s2vpss of
+         | cons _ => begin
+             prerr loc0;
+             prerr ": error(2)";
+             $Deb.debug_prerrf (": %s: i1mpdec_tr: aux2", @(THISFILENAME));
+             prerr ": the implementatiom for [";
+             prerr q; prerr id;
+             prerr "] should be applied to more template arguments.";
+             prerr_newline ();
+             $Err.abort {void} ()
+           end // end of [cons]
+         | nil () => ()
+      in
+        s2e // aux1 (s2vpss, s2e, out) // no automatic instantiation
+      end // end of [nil]
+  end // end of [aux2]
   val (pf_s2expenv | ()) = the_s2expenv_push ()
   val loc_id = qid.impqi0de_loc
   val decarg = d2cst_decarg_get d2c and s2e_d2c = d2cst_typ_get d2c
   var out: s2qualst = nil ()
-  val s2e = aux2 (loc_id, d1c.i1mpdec_decarg, decarg, s2e_d2c, out)
+  val s2e = aux2 (loc_id, i1mparg, decarg, s2e_d2c, out)
   val d2e = d1exp_tr_ann (d1c.i1mpdec_def, s2e)
   val () = d2cst_def_set (d2c, Some d2e)
   val () = the_s2expenv_pop (pf_s2expenv | (*none*))
@@ -2229,9 +2256,11 @@ implement d1ec_tr (d1c0) = begin
        // knd: 0/1/2 => short/long/long rec
        m1acdeflst_tr (knd, d1cs); d2ec_none (d1c0.d1ec_loc)
     end
-  | D1Cimpdec (d1c) => begin
-      d2ec_impdec (d1c0.d1ec_loc, i1mpdec_tr d1c)
-    end
+  | D1Cimpdec (i1mparg, d1c) => let
+      val d2c = i1mpdec_tr (i1mparg, d1c)
+    in
+      d2ec_impdec (d1c0.d1ec_loc, d2c)
+    end // end of [D1Cimpdec]
   | D1Clocal (d1cs_head, d1cs_body) => let
       val (pf1_env | ()) = trans2_env_push ()
       val d2cs_head = d1eclst_tr d1cs_head

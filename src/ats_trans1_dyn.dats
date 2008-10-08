@@ -567,8 +567,9 @@ fn d0exp_lams_dyn_tr
    oefc: efcopt,
    d0e_body: d0exp): d1exp = let
 
-fun aux (args: f0arglst, d1e_body: d1exp, flag: int)
-  :<cloptr1> d1exp = begin case+ args of
+fun aux
+  (args: f0arglst, d1e_body: d1exp, flag: int):<cloptr1> d1exp = begin
+  case+ args of
   | arg :: args => let
       val loc_arg = arg.f0arg_loc
       val d1e_body = aux (args, d1e_body, flag1) where {
@@ -596,7 +597,7 @@ fun aux (args: f0arglst, d1e_body: d1exp, flag: int)
             if flag = 0 then d1e_body else begin
               // linear closure
               d1exp_ann_funclo_opt (loc_body, d1e_body, FUNCLOcloptr)
-            end
+            end // end of [if]
           ) : d1exp
         in
           d1exp_lam_dyn (loc, lin, p1t, d1e_body)
@@ -604,7 +605,7 @@ fun aux (args: f0arglst, d1e_body: d1exp, flag: int)
       | F0ARGmet s0es => begin
           d1exp_lam_met (loc, loc_arg, s0explst_tr s0es, d1e_body)
         end
-    end
+    end // end of [::]
   | nil () => d1e_body
 end // end of [aux]
 
@@ -1254,14 +1255,14 @@ fun m0acdeflst_tr (ds: m0acdeflst): m1acdeflst =
 
 fn i0mpdec_tr (d: i0mpdec): i1mpdec = let
   val qid = d.i0mpdec_qid
-  val decarg = s0arglstlst_tr qid.impqi0de_arg
+  val tmparg = s0explstlst_tr qid.impqi0de_arg
   val def = d0exp_lams_dyn_tr (
     None () (*oloc*), None () (*ofc*), 0 (*lin*),
     d.i0mpdec_arg, d.i0mpdec_res, None () (*oefc*),
     d.i0mpdec_def
   ) // end of [val]
 in
-  i1mpdec_make (d.i0mpdec_loc, qid, decarg, def)
+  i1mpdec_make (d.i0mpdec_loc, qid, tmparg, def)
 end // end of [i0mpdec_tr]
 
 (* ****** ****** *)
@@ -1401,17 +1402,17 @@ implement d0ec_tr d0c0 = begin
   case+ d0c0.d0ec_node of
   | D0Cfixity (f0xty, ids) => begin
       d0ec_fixity_tr (f0xty, ids); d1ec_none (d0c0.d0ec_loc)
-    end
+    end // end of [D0Cfixity]
   | D0Cnonfix ids => begin
       d0ec_nonfix_tr ids; d1ec_none (d0c0.d0ec_loc)
-    end
+    end // end of [D0Cnonfix]
   | D0Csymintr ids => d1ec_symintr (d0c0.d0ec_loc, ids)
   | D0Ce0xpdef (id, def) => let
       val def: e1xp = case+ def of
         | Some e0xp => e0xp_tr e0xp | None () => e1xp_none ()
     in
       the_e1xpenv_add (id, def); d1ec_e1xpdef (d0c0.d0ec_loc, id, def)
-    end
+    end // end of [D0Ce0xpdef]
   | D0Ce0xpact (actkind, e0xp) => let
       val e1xp = e0xp_tr e0xp
 (*
@@ -1430,52 +1431,52 @@ implement d0ec_tr d0c0 = begin
         | E0XPACTprint () => do_e0xpact_print v1al
     in
       d1ec_none (d0c0.d0ec_loc)
-    end
+    end // end of [D0Ce0xpact]
   | D0Cdatsrts (d0c, d0cs) => let
       val d1c = d0atsrtdec_tr d0c and d1cs = d0atsrtdeclst_tr d0cs
     in
       d1ec_datsrts (d0c0.d0ec_loc, d1c :: d1cs)
-    end
+    end // end of [D0Cdatsrts]
   | D0Csrtdefs (d0c, d0cs) => let
       val d1c = s0rtdef_tr d0c and d1cs = s0rtdeflst_tr d0cs
     in
       d1ec_srtdefs (d0c0.d0ec_loc, d1c :: d1cs)
-    end
+    end // end of [D0Csrtdefs]
   | D0Cstacons (impsrt, d0c, d0cs) => let
       val d1c = s0tacon_tr d0c and d1cs = s0taconlst_tr d0cs
     in
       d1ec_stacons (d0c0.d0ec_loc, impsrt, d1c :: d1cs)
-    end
+    end // end of [D0Cstacons]
   | D0Cstacsts (d0c, d0cs) => let
       val d1c = s0tacst_tr d0c and d1cs = s0tacstlst_tr d0cs
     in
       d1ec_stacsts (d0c0.d0ec_loc, d1c :: d1cs)
-    end
+    end // end of [D0Cstacsts]
   | D0Cstavars (d0c, d0cs) => let
       val d1c = s0tavar_tr d0c and d1cs = s0tavarlst_tr d0cs
     in
       d1ec_stavars (d0c0.d0ec_loc, d1c :: d1cs)
-    end
+    end // end of [D0Cstavars]
   | D0Csexpdefs (os0t, d0c, d0cs) => let
       val os1t = s0rtopt_tr os0t
       val d1c = s0expdef_tr d0c and d1cs = s0expdeflst_tr d0cs
     in
       d1ec_sexpdefs (d0c0.d0ec_loc, os1t, d1c :: d1cs)
-    end
+    end // end of [D0Csexpdefs]
   | D0Csaspdec (d0c) => begin
       d1ec_saspdec (d0c0.d0ec_loc, s0aspdec_tr d0c)
-    end
+    end // end of [D0Csaspdec]
   | D0Cdatdecs (dk, d0c1, d0cs1, d0cs2) => let
       val d1c1 = d0atdec_tr d0c1 and d1cs1 = d0atdeclst_tr d0cs1
       val d1cs2 = s0expdeflst_tr d0cs2
     in
       d1ec_datdecs (d0c0.d0ec_loc, dk, d1c1 :: d1cs1, d1cs2)
-    end
+    end // end of [D0Cdatdecs]
   | D0Cexndecs (d0c, d0cs) => let
       val d1c = e0xndec_tr d0c and d1cs = e0xndeclst_tr d0cs
     in
       d1ec_exndecs (d0c0.d0ec_loc, d1c :: d1cs)
-    end
+    end // end of [D0Cexndecs]
   | D0Cdcstdecs (dck, s0qss, d0c, d0cs) => let
       val isfun = dcstkind_is_fun dck
       and isprf = dcstkind_is_proof dck
@@ -1484,54 +1485,56 @@ implement d0ec_tr d0c0 = begin
       and d1cs = d0cstdeclst_tr (isfun, isprf, d0cs)
     in
       d1ec_dcstdecs (d0c0.d0ec_loc, dck, s1qss, d1c :: d1cs)
-    end
+    end // end of [D0Cdcstdecs]
   | D0Coverload (id, qid) => begin
       d1ec_overload (d0c0.d0ec_loc, id, qid)
-    end
+    end // end of [D0Coverload]
   | D0Cextype (name, s0e_def) => begin
       d1ec_extype (d0c0.d0ec_loc, name, s0exp_tr s0e_def)
-    end
+    end // end of [D0Cextype]
   | D0Cextval (name, d0e_def) => begin
       d1ec_extval (d0c0.d0ec_loc, name, d0exp_tr d0e_def)
-    end
+    end // end of [D0Cextval]
   | D0Cextcode (position, code) => begin
       d1ec_extcode (d0c0.d0ec_loc, position, code)
-    end
+    end // end of [D0Cextcode]
   | D0Cvaldecs (valknd, d0c, d0cs) => let
       val d1c = v0aldec_tr d0c and d1cs = v0aldeclst_tr d0cs
     in
       d1ec_valdecs (d0c0.d0ec_loc, valknd, d1c :: d1cs)
-    end
+    end // end of [D0Cvaldecs]
   | D0Cvaldecs_par (d0c, d0cs) => let
       val d1c = v0aldec_tr d0c and d1cs = v0aldeclst_tr d0cs
     in
       d1ec_valdecs_par (d0c0.d0ec_loc, d1c :: d1cs)
-    end
+    end // end of [D0Cvaldecs_par]
   | D0Cvaldecs_rec (d0c, d0cs) => let
       val d1c = v0aldec_tr d0c and d1cs = v0aldeclst_tr d0cs
     in
       d1ec_valdecs_rec (d0c0.d0ec_loc, d1c :: d1cs)
-    end
+    end // end of [D0Cvaldecs_rec]
   | D0Cfundecs (funkind, s0qss, d0c, d0cs) => let
       val s1qss = s0qualstlst_tr s0qss
       val d1cs = f0undeclst_tr (funkind, d0c :: d0cs)
     in
       d1ec_fundecs (d0c0.d0ec_loc, funkind, s1qss, d1cs)
-    end
+    end // end of [D0Cfundecs]
   | D0Cvardecs (d0c, d0cs) => let
       val d1c = v0ardec_tr d0c and d1cs = v0ardeclst_tr d0cs
     in
       d1ec_vardecs (d0c0.d0ec_loc, d1c :: d1cs)
-    end
+    end // end of [D0Cvardecs]
   | D0Cmacdefs (knd, d0c, d0cs) => let
       // knd: 0/1/2 => short/long/long rec
       val d1c = m0acdef_tr d0c and d1cs = m0acdeflst_tr d0cs
     in
       d1ec_macdefs (d0c0.d0ec_loc, knd, d1c :: d1cs)
-    end
-  | D0Cimpdec (d0c) => begin
-      d1ec_impdec (d0c0.d0ec_loc, i0mpdec_tr d0c)
-    end
+    end // end of [D0Cmacdefs]
+  | D0Cimpdec (i0mparg, d0c) => let
+      val i1mparg = s0arglstlst_tr i0mparg
+    in
+      d1ec_impdec (d0c0.d0ec_loc, i1mparg, i0mpdec_tr d0c)
+    end // end of [D0Cimpdec]
   | D0Cdynload (name) => let
       val filename: fil_t = case+ $Fil.filenameopt_make name of
         | ~Some_vt filename => filename
@@ -1546,7 +1549,7 @@ implement d0ec_tr d0c0 = begin
           end
     in
       d1ec_dynload (d0c0.d0ec_loc, filename)
-    end
+    end // end of [D0Cdynload]
   | D0Cstaload (idopt, name) => let
       val filename: fil_t = case+ $Fil.filenameopt_make name of
         | ~Some_vt filename => filename
@@ -1561,7 +1564,7 @@ implement d0ec_tr d0c0 = begin
           end
     in
       s0taload_tr (d0c0.d0ec_loc, idopt, filename)
-    end
+    end // end of [D0Cstaload]
   | D0Clocal (d0cs_head, d0cs_body) => let
       val (pf | ()) = trans1_level_inc ()
       val () = trans1_env_push ()
@@ -1572,10 +1575,10 @@ implement d0ec_tr d0c0 = begin
       val () = trans1_env_localjoin ()
     in
       d1ec_local (d0c0.d0ec_loc, d1cs_head, d1cs_body)
-    end
+    end // end of [D0Clocal]
   | D0Cguadec (knd, gd0c) => begin
       d1ec_list (d0c0.d0ec_loc, guad0ec_tr (knd, gd0c))
-    end
+    end // end of [D0Cguadec]
   | D0Cinclude (stadyn, name) => let
       val filename: fil_t = case+ $Fil.filenameopt_make name of
         | ~Some_vt filename => filename
@@ -1590,7 +1593,7 @@ implement d0ec_tr d0c0 = begin
           end
     in
       i0nclude_tr (d0c0.d0ec_loc, stadyn, filename)
-    end
+    end // end of [D0Cinclude]
 (*
   | _ => begin
       prerr d0c0.d0ec_loc;

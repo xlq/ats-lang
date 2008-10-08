@@ -412,11 +412,9 @@ implement ccomp_exp_template_cst
   val ovp = tmpnamtbl_find (fullname)
 in
   case+ ovp of
-  | ~Some_vt vp => vp | ~None_vt () => begin
-      ccomp_tmpdef (
-        loc0, res, hit0, TMPcst d2c, hitss, fullname, tmpdef
-      )
-    end
+  | ~Some_vt vp => vp | ~None_vt () => ccomp_tmpdef (
+      loc0, res, hit0, TMPcst d2c, hitss, fullname, tmpdef
+    ) // end of [ccomp_tmpdef]
 end // end of [ccomp_exp_tmpcst]
 
 (* ****** ****** *)

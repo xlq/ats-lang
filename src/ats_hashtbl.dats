@@ -310,7 +310,7 @@ end // end of [hashtbl_str_make_hint]
 
 (* ****** ****** *)
 
-implement hashtbl_clear<key,item> (hashtbl) = let
+implement{key,item} hashtbl_clear (hashtbl) = let
   val (vbox pf | htpp) = ref_get_view_ptr (hashtbl)
   val (pf_htp_opt | htp) = !htpp
 in
@@ -328,7 +328,7 @@ end // end of [hashtbl_clear]
 
 (* ****** ****** *)
 
-implement hashtbl_search (hashtbl, k) = let
+implement{key,item} hashtbl_search (hashtbl, k) = let
   val (vbox pf | htpp) = ref_get_view_ptr (hashtbl)
   val (pf_htp_opt | htp) = !htpp
 in
@@ -350,7 +350,7 @@ end // end of [hashtbl_search]
 
 #define THRESHOLD 5
 
-implement hashtbl_insert (hashtbl, k, i) = let
+implement{key,item} hashtbl_insert (hashtbl, k, i) = let
   val (vbox pf | htpp) = ref_get_view_ptr (hashtbl)
   val (pf_htp_opt | htp) = !htpp
 in
@@ -377,7 +377,7 @@ in
   end
 end // end of [hashtbl_insert]
 
-implement hashtbl_remove (hashtbl, k) = let
+implement{key,item} hashtbl_remove (hashtbl, k) = let
   val (vbox pf | htpp) = ref_get_view_ptr (hashtbl)
   val (pf_htp_opt | htp) = !htpp
 in

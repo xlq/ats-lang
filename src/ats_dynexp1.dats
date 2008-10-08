@@ -628,8 +628,9 @@ implement d1ec_macdefs (loc, knd, d1cs_macdef) = '{
   d1ec_loc= loc, d1ec_node= D1Cmacdefs (knd, d1cs_macdef)
 }
 
-implement d1ec_impdec (loc, d1c) = '{
-  d1ec_loc= loc, d1ec_node= D1Cimpdec d1c
+implement d1ec_impdec (loc, i1mparg, d1c) = '{
+  // i1mparg: s1arglstlst
+  d1ec_loc= loc, d1ec_node= D1Cimpdec (i1mparg, d1c)
 }
 
 implement d1ec_local (loc, d1cs_head, d1cs_body) = '{
@@ -756,10 +757,10 @@ implement m1acdef_make (loc, id, arg, def) = '{
 , m1acdef_def= def
 }
 
-implement i1mpdec_make (loc, qid, decarg, def) = '{
+implement i1mpdec_make (loc, qid, tmparg, def) = '{
   i1mpdec_loc= loc
 , i1mpdec_qid= qid
-, i1mpdec_decarg= decarg
+, i1mpdec_tmparg= tmparg
 , i1mpdec_def= def
 }
 

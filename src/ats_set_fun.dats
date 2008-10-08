@@ -54,14 +54,14 @@ typedef avl = [a:t@ype] [h,s:int] avl (a, h, s)
 
 extern fun{a:t@ype} avl_size {h,s:nat} (t: avl (a, h, s)): int s
 
-implement avl_size (t) = case+ t of
+implement{a} avl_size (t) = case+ t of
   | Bl (_, _, l, r) => 1 + (avl_size l + avl_size r)
   | Br (_, _, l, r) => 1 + (avl_size l + avl_size r)
   | E () => 0
 
 extern fun{a:t@ype} avl_height {h,s:nat} (t: avl (a, h, s)): int h
 
-implement avl_height (t) = case+ t of
+implement{a} avl_height (t) = case+ t of
   | E () => 0 | Bl (_, h, _, _) => h | Br (_, h, _, _) => h
 
 (* ****** ****** *)
@@ -69,7 +69,7 @@ implement avl_height (t) = case+ t of
 extern fun{a:t@ype} avl_member
   {h,s:nat} (t: avl (a, h, s), e0: a, cmp: cmp_t a): bool
 
-implement avl_member (t, e0, cmp) = begin
+implement{a} avl_member (t, e0, cmp) = begin
   case+ t of
   | Bl (e, _, l, r) => begin case+ cmp (e0, e) of
     | ~1 => avl_member (l, e0, cmp)
@@ -87,7 +87,7 @@ end // end of [avl_member]
 extern fun{a:t@ype} avl_search
   {h,s:nat} (t: avl (a, h, s), pred: !a -<cloptr1> Sgn): Option a
 
-implement avl_search (t, pred) = begin
+implement{a} avl_search (t, pred) = begin
   case+ t of
   | Bl (e, _, l, r) => begin case+ pred e of
     | ~1 => avl_search (l, pred)
@@ -105,7 +105,7 @@ end // end of [avl_search]
 extern fun{a:t@ype} avl_foreach {v:view} {vt:viewtype} {h,s:nat} {f:eff}
   (pf: !v | t: avl (a, h, s), f: (!v | a, !vt) -<f> void, env: !vt):<f> void
 
-implement avl_foreach (pf | t, f, env) = begin case+ t of
+implement{a} avl_foreach (pf | t, f, env) = begin case+ t of
   | Bl (e, _, l, r) => begin
       avl_foreach (pf | l, f, env); f (pf | e, env); avl_foreach (pf | r, f, env)
     end
@@ -121,13 +121,13 @@ extern fun{a:t@ype} avl_rotate_l {ls,rh,rs:nat}
   (e: a, l: avl (a, rh+2, ls), r: avl (a, rh, rs))
   : [h:nat | rh+2 <= h; h <= rh+3] avl (a, h, 1+ls+rs)
 
-implement avl_rotate_l (e, l, r) = begin
+implement{a} avl_rotate_l (e, l, r) = begin
   case+ l of
   | Bl (le, lh, ll, lr) => let
       val lrh = avl_height (lr)
     in
       Br (le, lrh+2, ll, Bl (e, lrh+1, lr, r))
-    end
+    end // end of [Bl]
   | Br (le, lh, ll, lr) => let
       val llh = avl_height ll and lrh = avl_height lr
     in
@@ -139,14 +139,14 @@ implement avl_rotate_l (e, l, r) = begin
       end else begin
         Br (le, lrh+2, ll, Bl (e, lrh+1, lr, r))
       end
-    end
+    end // end of [Br]
 end // end of [avl_rotate_l]
 
 extern fun{a:t@ype} avl_rotate_r {lh,ls,rs:nat}
   (e: a, l: avl (a, lh, ls), r: avl (a, lh+2, rs))
   : [h:nat | lh+2 <= h; h <= lh+3] avl (a, h, 1+ls+rs)
 
-implement avl_rotate_r (e, l, r) = begin
+implement{a} avl_rotate_r (e, l, r) = begin
   case+ r of
   | Bl (re, rh, rl, rr) => let
       val rlh = avl_height rl and rrh = avl_height rr
@@ -159,12 +159,12 @@ implement avl_rotate_r (e, l, r) = begin
       end else begin
         Bl (re, rlh+2, Br (e, rlh+1, l, rl), rr)
       end
-    end
+    end // end of [Bl]
   | Br (re, rh, rl, rr) => let
       val rlh = avl_height (rl)
     in
       Bl (re, rlh+2, Br (e, rlh+1, l, rl), rr)
-    end
+    end // end of [Br]
 end // end of [avl_rotate_r]
 
 (* ****** ****** *)
@@ -178,14 +178,14 @@ extern fun{a:t@ype} avl_insert_br
   (e: a, h: int h, l: avl (a,lh,ls), r: avl (a,rh,rs), ne: a, cmp: cmp_t a)
   : [h':nat | h <= h'; h' <= h+1] avl (a, h', ls+rs+2)
 
-implement avl_insert (t, ne, cmp) = begin
+implement{a} avl_insert (t, ne, cmp) = begin
   case+ t of
   | E () => Bl (ne, 1, E (), E ())
   | Bl (e, h, l, r) => avl_insert_br (e, h, l, r, ne, cmp)
   | Br (e, h, l, r) => avl_insert_br (e, h, l, r, ne, cmp)
 end // end of [avl_insert]
 
-implement avl_insert_br<a>
+implement{a} avl_insert_br
   (e, h, l, r, ne, cmp) = let
   val sgn = cmp (ne, e)
 in
@@ -212,7 +212,7 @@ extern fun{a:t@ype} avl_takeout_min
   {h,s:nat | s > 0} (t: avl (a, h, s), x: &(a?) >> a)
   : [h':nat | h - 1 <= h'; h' <= h] avl (a, h', s-1)
 
-implement avl_takeout_min<a> (t, x) = begin
+implement{a} avl_takeout_min (t, x) = begin
   case+ : (x: a) => t of
   | Bl (e, _, l, r) => begin case+ : (x: a) => l of
     | E () => (x := e; r)
@@ -243,7 +243,7 @@ extern fun{a:t@ype} avl_join_l
   (e: a, l: avl (a, lh, ls), r: avl (a, rh, rs))
   : [h:nat | lh <= h; h <= lh + 1] avl (a, h, 1+ls+rs)
 
-implement avl_join_l<a> (e, l, r) = let
+implement{a} avl_join_l (e, l, r) = let
   val lh = avl_height l and rh = avl_height r
 in
   if lh > rh+1 then begin case+ l of
@@ -271,7 +271,7 @@ extern fun{a:t@ype} avl_join_r
   (e: a, l: avl (a, lh, ls), r: avl (a, rh, rs))
   : [h:nat | rh <= h; h <= rh + 1] avl (a, h, 1+ls+rs)
 
-implement avl_join_r<a> (e, l, r) = let
+implement{a} avl_join_r (e, l, r) = let
   val lh = avl_height l and rh = avl_height r
 in
   if lh+1 < rh then begin case+ r of
@@ -299,7 +299,7 @@ end // end of [avl_join_r]
 extern fun{a:t@ype} avl_concat {h1,s1,h2,s2:nat}
   (t1: avl (a, h1, s1), t2: avl (a, h2, s2)): [h:nat] avl (a, h, s1+s2)
 
-implement avl_concat<a> (t1, t2) = begin
+implement{a} avl_concat (t1, t2) = begin
   case+ (t1, t2) of
   | (E (), _) => t2
   | (_, E ()) => t1
@@ -332,14 +332,14 @@ extern fun{a:t@ype} avl_split_br
    lp: ptr lp, rp: ptr rp)
   : avl_split_vt (a, h, ls+rs+1, lp, rp)
 
-implement avl_split (lpf, rpf | t, pred, lp, rp) = case+ t of
+implement{a} avl_split (lpf, rpf | t, pred, lp, rp) = case+ t of
   | Bl (e, h, l, r) => avl_split_br (lpf, rpf | e, h, l, r, pred, lp, rp)
   | Br (e, h, l, r) => avl_split_br (lpf, rpf | e, h, l, r, pred, lp, rp)
   | E () => begin
       !lp := E (); !rp := E (); (lpf, rpf | 0)
     end
 
-implement avl_split_br<a>
+implement{a} avl_split_br
   (lpf, rpf | e, h, l, r, pred, lp, rp) = begin
   case+ pred e of
   | ~1 => let
@@ -382,7 +382,7 @@ extern fun{a:t@ype} avl_diff_br
    t2: avl (a, h2, s2), cmp: cmp_t a)
   : [h,s:nat | s <= 1+ls1+rs1] avl (a, h, s)
 
-implement avl_diff (t1, t2, cmp) = begin
+implement{a} avl_diff (t1, t2, cmp) = begin
   case+ (t1, t2) of
   | (E (), _) => E ()
   | (_, E ()) => t1
@@ -390,7 +390,7 @@ implement avl_diff (t1, t2, cmp) = begin
   | (Br (e1, h1, l1, r1), _) => avl_diff_br (e1, h1, l1, r1, t2, cmp)
 end // end of [avl_diff]
 
-implement avl_diff_br<a> (e1, h1, l1, r1, t2, cmp) = let
+implement{a} avl_diff_br (e1, h1, l1, r1, t2, cmp) = let
   var l2: avl? and r2: avl?
   val pred = lam (e2: a): Sgn =<cloptr1> cmp (e1, e2)
   val (lpf, rpf | tag) =
@@ -420,7 +420,7 @@ extern fun{a:t@ype} avl_inter_br
    t2: avl (a, h2, s2), cmp: cmp_t a)
   : [h,s:nat | s <= ls1+rs1+1; s <= s2] avl (a, h, s)
 
-implement avl_inter (t1, t2, cmp) = begin
+implement{a} avl_inter (t1, t2, cmp) = begin
   case+ (t1, t2) of
   | (E (), _) => E ()
   | (_, E ()) => E ()
@@ -428,7 +428,7 @@ implement avl_inter (t1, t2, cmp) = begin
   | (Br (e1, h1, l1, r1), _) => avl_inter_br (e1, h1, l1, r1, t2, cmp)
 end // end of [avl_inter]
 
-implement avl_inter_br<a> (e1, h1, l1, r1, t2, cmp) = let
+implement{a} avl_inter_br (e1, h1, l1, r1, t2, cmp) = let
   var l2: avl? and r2: avl?
   val pred = lam (e2: a): Sgn =<cloptr1> cmp (e1, e2)
   val (lpf, rpf | tag) =
@@ -456,13 +456,13 @@ extern fun{a:t@ype} avl_union_br
    t2: avl (a, h2, s2), cmp: cmp_t a)
   : [h,s:nat | 1+ls1+rs1 <= s; s2 <= s; s <= 1+ls1+rs1+s2] avl (a, h, s)
 
-implement avl_union (t1, t2, cmp) = case+ (t1, t2) of
+implement{a} avl_union (t1, t2, cmp) = case+ (t1, t2) of
   | (E (), _) => t2
   | (_, E ()) => t1
   | (Bl (e1, h1, l1, r1), _) => avl_union_br (e1, h1, l1, r1, t2, cmp)
   | (Br (e1, h1, l1, r1), _) => avl_union_br (e1, h1, l1, r1, t2, cmp)
 
-implement avl_union_br<a> (e1, h1, l1, r1, t2, cmp) = let
+implement{a} avl_union_br (e1, h1, l1, r1, t2, cmp) = let
   var l2: avl? and r2: avl?
   val pred = lam (e2: a): Sgn =<cloptr1> cmp (e1, e2)
   val (lpf, rpf | _) =
@@ -483,7 +483,7 @@ extern fun{a:t@ype} avl_remove
   {h,s:nat} (t: avl (a, h, s), e0: a, cmp: cmp_t a)
   : [h',s':nat | h - 1 <= h'; h' <= h; s' <= s] avl (a, h', s')
 
-implement avl_remove<a> (t, e0, cmp) = begin case+ t of
+implement{a} avl_remove (t, e0, cmp) = begin case+ t of
   | E () => E ()
   | Bl (e, _, l, r) => begin case+ cmp (e0, e) of
     | ~1 => let
@@ -491,13 +491,13 @@ implement avl_remove<a> (t, e0, cmp) = begin case+ t of
         val lh' = avl_height l' and rh = avl_height r
       in
         if rh <= lh' then Bl (e, lh'+1, l', r) else Br (e, rh+1, l', r)
-      end
+      end // end of [~1]
     | 1 => let
         val r' = avl_remove<a> (r, e0, cmp)
         val lh = avl_height l and rh' = avl_height r'
       in
         if lh <= rh'+1 then Bl (e, lh+1, l, r') else avl_rotate_l (e, l, r')
-      end
+      end // end of [1]
     | 0 => begin case+ r of
       | E () => l
       | _ =>> let
@@ -506,21 +506,21 @@ implement avl_remove<a> (t, e0, cmp) = begin case+ t of
         in
           if lh <= rh'+1 then Bl (x, lh+1, l, r') else avl_rotate_l (x, l, r')
         end
-      end
-    end
+      end // end of [0]
+    end // end of [Bl]
   | Br (e, _, l, r) => begin case+ cmp (e0, e) of
     | ~1 => let
         val l' = avl_remove<a> (l, e0, cmp)
         val lh' = avl_height l' and rh = avl_height r
       in
         if rh <= lh'+1 then Br (e, rh+1, l', r) else avl_rotate_r (e, l', r)
-      end
+      end // end of [~1]
     | 1 => let
         val r' = avl_remove<a> (r, e0, cmp)
         val lh = avl_height l and rh' = avl_height r'
       in
         if rh' <= lh then Bl (e, lh+1, l, r') else Br (e, rh'+1, l, r')
-      end
+      end // end of [1]
     | 0 => begin case+ r of
       | E () => l
       | _ =>> let
@@ -529,8 +529,8 @@ implement avl_remove<a> (t, e0, cmp) = begin case+ t of
         in
           if rh' <= lh then Bl (x, lh+1, l, r') else Br (x, rh'+1, l, r')
         end
-      end
-    end
+      end  // end of [0]
+    end // end of [Br]
 end // end of [avl_remove]
 
 (* ****** ****** *)
@@ -540,20 +540,20 @@ staload "ats_set_fun.sats"
 assume set_t (a: t@ype) = [h,s:nat] avl (a, h, s)
 
 implement set_nil = E ()
-implement set_member (xs, x, cmp) = avl_member (xs, x, cmp)
-implement set_insert (xs, x, cmp) = begin
+implement{a} set_member (xs, x, cmp) = avl_member (xs, x, cmp)
+implement{a} set_insert (xs, x, cmp) = begin
   if avl_member (xs, x, cmp) then xs else avl_insert (xs, x, cmp)
 end
-implement set_remove (xs, x, cmp) = avl_remove (xs, x, cmp)
-implement set_inter (xs1, xs2, cmp) = avl_inter (xs1, xs2, cmp)
-implement set_union (xs1, xs2, cmp) = avl_union (xs1, xs2, cmp)
+implement{a} set_remove (xs, x, cmp) = avl_remove (xs, x, cmp)
+implement{a} set_inter (xs1, xs2, cmp) = avl_inter (xs1, xs2, cmp)
+implement{a} set_union (xs1, xs2, cmp) = avl_union (xs1, xs2, cmp)
 
 (* ****** ****** *)
 
-implement set_foreach_main<a> (pf | xs, f, env) =
+implement{a} set_foreach_main (pf | xs, f, env) =
   avl_foreach<a> (pf | xs, f, env)
 
-implement set_foreach_cloptr<a> {f:eff} (xs, f) = let
+implement{a} set_foreach_cloptr {f:eff} (xs, f) = let
   viewtypedef cloptr_t = a -<cloptr,f> void
   fn app (pf: !unit_v | x: a, f: !cloptr_t):<f> void = f (x)
   prval pf = unit_v ()

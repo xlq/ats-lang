@@ -41,7 +41,7 @@ staload "ats_array.sats"
 
 (* ****** ****** *)
 
-implement array_ptr_initialize_lst<a> (A0, n0, xs0) = let
+implement{a} array_ptr_initialize_lst (A0, n0, xs0) = let
 
 fun aux {n:nat} {l:addr} .<n>.
   (pf: array_v (a?, n, l) | p: ptr l, n: int n, xs: list (a, n))
@@ -67,7 +67,7 @@ end // end of [array_ptr_initialize_lst]
 
 (* ****** ****** *)
 
-implement array_ptr_make_lst<a> (n, xs) = let
+implement{a} array_ptr_make_lst (n, xs) = let
   val (pf_gc, pf | p) = array_ptr_alloc_tsz {a} (n, sizeof<a>)
   val () = array_ptr_initialize_lst<a> (!p, n, xs)
 in

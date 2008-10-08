@@ -76,7 +76,7 @@ in '{
 
 //
 
-implement matrix_make_elt<a> (m, n, x) = let
+implement{a} matrix_make_elt (m, n, x) = let
   val (pf_mul | mn) = m imul2 n
   prval () = mul_nat_nat_nat pf_mul
   val (pf_gc, pf_arr | ptr) = array_ptr_make_elt<a> (mn, x)
@@ -151,7 +151,7 @@ in
   // empty
 end // end of [lemma_for_matrix_get_and_set]
 
-implement matrix_get_elt_at<a> (M, i, j) = let
+implement{a} matrix_get_elt_at (M, i, j) = let
   prval pf_mul_mn = M.mul
   val n = M.col
   val (pf_mul_i_n | i_n) = i imul2 n
@@ -163,7 +163,7 @@ in
   !M_data.[i_n+j]
 end // end of [matrix_get_elt_at]
 
-implement matrix_set_elt_at<a> (M, i, j, x) = let
+implement{a} matrix_set_elt_at (M, i, j, x) = let
   prval pf_mul_mn = M.mul
   val n = M.col
   val (pf_mul_i_n | i_n) = i imul2 n
@@ -177,7 +177,7 @@ end // end of [matrix_set_elt_at]
 
 (* ****** ****** *)
 
-implement foreach_matrix_main<a>
+implement{a} foreach_matrix_main
   {v} {vt} {m,n} {f:eff} (pf | f, M, env) = let
   typedef fun_t = (!v | a, !vt) -<fun,f> void
   typedef mat_t = matrix (a, m, n)
@@ -200,7 +200,7 @@ in
   loop1 (pf | f, M, matrix_size_row M, matrix_size_col M, 0, env)
 end // end of [foreach_matrix_main]
 
-implement foreach_matrix_cloptr<a> {m,n} {f:eff} (f, M) = let
+implement{a} foreach_matrix_cloptr {m,n} {f:eff} (f, M) = let
   viewtypedef cloptr_t = a -<cloptr,f> void
   fn app (pf: !unit_v | x: a, f: !cloptr_t):<f> void = f (x)
   prval pf = unit_v ()
@@ -212,7 +212,7 @@ end // end of [foreach_matrix_cloptr]
 
 (* ****** ****** *)
 
-implement iforeach_matrix_main<a>
+implement{a} iforeach_matrix_main
   {v} {vt} {m,n} {f:eff} (pf | f, M, env) = let
   typedef fun_t = (!v | natLt m, natLt n, a, !vt) -<fun,f> void
   typedef mat_t = matrix (a, m, n)
@@ -235,7 +235,7 @@ in
   loop1 (pf | f, M, matrix_size_row M, matrix_size_col M, 0, env)
 end // end of [iforeach_matrix_main]
 
-implement iforeach_matrix_cloptr<a> {m,n} {f:eff} (f, M) = let
+implement{a} iforeach_matrix_cloptr {m,n} {f:eff} (f, M) = let
   viewtypedef cloptr_t = (natLt m, natLt n, a) -<cloptr,f> void
   fn app (pf: !unit_v | i: natLt m, j: natLt n, x: a, f: !cloptr_t):<f> void =
     f (i, j, x)

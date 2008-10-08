@@ -250,6 +250,10 @@ fun{a:t@ype} array_ptr_get_elt_at
 fun{a:t@ype} array_ptr_set_elt_at
   {n:nat} (A: &(@[a][n]), i: natLt n, x: a):<> void
 
+fun{a:viewt@ype} array_ptr_xch_elt_at
+  {n,i:nat | i < n} {l:addr}
+  (A: &(@[a][n]), i: int i, x: &a):<> void
+
 //
 
 fun array_ptr_copy_tsz {a:t@ype} {n:nat} (
@@ -273,10 +277,6 @@ fun array_ptr_move_tsz {a:viewt@ype} {n:nat} (
 fun{a:viewt@ype} array_ptr_exch
   {n,i1,i2:nat | i1 < n; i2 < n; i1 <> i2}
   (A: &(@[a][n]), i1: int i1, i2: int i2):<> void
-
-fun{a:viewt@ype} array_ptr_swap
-  {n,i:nat | i < n} {l:addr}
-  (A: &(@[a][n]), i: int i, x: &a):<> void
 
 (* ****** ****** *)
 
@@ -364,6 +364,9 @@ fun{a:t@ype} array_get_elt_at {n:nat}
 fun{a:t@ype} array_set_elt_at {n:nat}
   (A: array (a, n), i: natLt n, x: a):<!ref> void
 
+fun{a:viewt@ype} array_xch_elt_at
+  {n:nat} (A: array (a, n), i: natLt n, x: &a):<!ref> void
+
 overload [] with array_get_elt_at
 overload [] with array_set_elt_at
 
@@ -371,9 +374,6 @@ overload [] with array_set_elt_at
 
 fun{a:viewt@ype} array_exch
   {n:nat} (A: array (a, n), i: natLt n, j: natLt n):<!ref> void
-
-fun{a:viewt@ype} array_swap
-  {n:nat} (A: array (a, n), i: natLt n, x: &a):<!ref> void
 
 (* ****** ****** *)
 

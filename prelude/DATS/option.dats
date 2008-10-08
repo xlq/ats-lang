@@ -46,13 +46,13 @@ implement option_is_none (ov) = case+ ov of
 implement option_is_some (ov) = case+ ov of
   | Some _ => true | None () => false
 
-implement option_some v = Some v
-implement option_unsome ov = let val Some v = ov in v end
+implement{a} option_some v = Some v
+implement{a} option_unsome ov = let val Some v = ov in v end
 
-implement option_app (ov, f) =
+implement{a} option_app (ov, f) =
   case+ ov of Some v => f v | None () => ()
 
-implement option_map (ov, f) =
+implement{a,b} option_map (ov, f) =
   case+ ov of Some v => Some (f v) | None () => None
 
 (* ****** ****** *)

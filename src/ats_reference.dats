@@ -57,18 +57,18 @@ assume ref_viewt0ype_type (a:viewt@ype) =
 
 (* ****** ****** *)
 
-implement ref_make_elt<a> (x) = begin
+implement{a} ref_make_elt (x) = begin
   let var x = x in ref_make_elt_tsz {a} (x, sizeof<a>) end
 end // end of [ref_make_elt]
 
 (* ****** ****** *)
 
-implement ref_get_elt<a> (r) = !r
-implement ref_set_elt<a> (r, x) = (!r := x)
+implement{a} ref_get_elt (r) = !r
+implement{a} ref_set_elt (r, x) = (!r := x)
 
 (* ****** ****** *)
 
-implement ref_swap<a> (r, x) = let
+implement{a} ref_swap (r, x) = let
   val (vbox pf | p) = ref_get_view_ptr r
   val tmp = !p
 in

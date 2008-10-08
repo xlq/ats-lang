@@ -48,12 +48,12 @@
 
 (* ****** ****** *)
 
-implement list0<a> (arrsz) =
+implement{a} list0 (arrsz) =
   list0_of_list1 (list_of_arraysize<a> arrsz)
 
 (* ****** ****** *)
 
-implement list0_append (xs, ys) = let
+implement{a} list0_append (xs, ys) = let
   val xs = list1_of_list0 xs and ys = list1_of_list0 ys
 in
   list0_of_list1 (list_append (xs, ys))
@@ -61,52 +61,52 @@ end
 
 (* ****** ****** *)
 
-implement list0_exists_fun (xs, f) =
+implement{a} list0_exists_fun (xs, f) =
   list_exists_fun (list1_of_list0 xs, f)
 
-implement list0_exists_cloref (xs, f) =
+implement{a} list0_exists_cloref (xs, f) =
   list_exists_cloref (list1_of_list0 xs, f)
 
 (* ****** ****** *)
 
-implement list0_forall_fun (xs, f) =
+implement{a} list0_forall_fun (xs, f) =
   list_forall_fun (list1_of_list0 xs, f)
 
-implement list0_forall_cloref (xs, f) =
+implement{a} list0_forall_cloref (xs, f) =
   list_forall_cloref (list1_of_list0 xs, f)
 
 (* ****** ****** *)
 
-implement list0_foreach_fun (xs, f) =
+implement{a} list0_foreach_fun (xs, f) =
   list_foreach_fun (list1_of_list0 xs, f)
 
-implement list0_foreach_cloref (xs, f) =
+implement{a} list0_foreach_cloref (xs, f) =
   list_foreach_cloref (list1_of_list0 xs, f)
 
 (* ****** ****** *)
 
-implement list0_head_exn (xs) = begin case+ xs of
+implement{a} list0_head_exn (xs) = begin case+ xs of
   | list0_cons (x, xs) => x | list0_nil () => $raise ListSubscriptException
 end // end of [list0_head_exn]
 
 (* ****** ****** *)
 
-implement list0_length (xs) =
+implement{a} list0_length (xs) =
   list_length (list1_of_list0 xs)
 
 (* ****** ****** *)
 
-implement list0_map_fun (xs, f) = begin
+implement{a,b} list0_map_fun (xs, f) = begin
   list0_of_list1 (list_map_fun (list1_of_list0 xs, f))
 end
 
-implement list0_map_cloref (xs, f) = begin
+implement{a,b} list0_map_cloref (xs, f) = begin
   list0_of_list1 (list_map_cloref (list1_of_list0 xs, f))
 end
 
 (* ****** ****** *)
 
-implement list0_nth_exn<a> (xs, i) = let
+implement{a} list0_nth_exn (xs, i) = let
   fun aux (xs: list0 a, i: Nat): a = begin case+ xs of
     | cons (x, xs) => if i > 0 then aux (xs, i-1) else x
     | nil () => $raise ListSubscriptException
@@ -116,7 +116,7 @@ in
   if i >= 0 then aux (xs, i) else $raise ListSubscriptException
 end // end of [list0_nth_exn]
 
-implement list0_nth_opt<a> (xs, i) =
+implement{a} list0_nth_opt (xs, i) =
   $effmask_all begin try
     let val x = list0_nth_exn<a> (xs, i) in Some x end
   with
@@ -125,10 +125,10 @@ implement list0_nth_opt<a> (xs, i) =
 
 (* ****** ****** *)
 
-implement list0_reverse<a> (xs) =
+implement{a} list0_reverse (xs) =
   list0_reverse_append (xs, list0_nil ())
 
-implement list0_reverse_append<a> (xs, ys) = let
+implement{a} list0_reverse_append (xs, ys) = let
   val xs = list1_of_list0 xs and ys = list1_of_list0 ys
 in
   list0_of_list1 (list_reverse_append (xs, ys))
@@ -136,7 +136,7 @@ end // end of [list0_reverse_append]
 
 (* ****** ****** *)
 
-implement list0_tail_exn (xs) = begin case+ xs of
+implement{a} list0_tail_exn (xs) = begin case+ xs of
   | list0_cons (x, xs) => xs | list0_nil () => $raise ListSubscriptException
 end // end of [list0_tail_exn]
 

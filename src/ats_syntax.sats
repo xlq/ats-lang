@@ -596,20 +596,6 @@ fun s0arglstlst_cons_ide (id: i0de, xs: s0arglstlst): s0arglstlst
 
 (* ****** ****** *)
 
-typedef impqi0de = '{
-  impqi0de_loc= loc_t
-, impqi0de_qua= d0ynq
-, impqi0de_sym= sym_t
-, impqi0de_arg= s0arglstlst
-}
-
-fun impqi0de_make_none (qid: dqi0de): impqi0de = "impqi0de_make_none"
-fun impqi0de_make_some
-  (qid: tmpqi0de, arg: s0arglstlst, t_gt: t0kn): impqi0de
-  = "impqi0de_make_some"
-
-(* ****** ****** *)
-
 datatype s0exp_node = 
   | S0Eann of (* ascribed static expression *)
       (s0exp, s0rt)
@@ -1472,7 +1458,7 @@ and d0ec_node =
   | D0Cmacdefs of (* macro declaration *)
       (int (*1+/0: long/short*), m0acdef, m0acdeflst)
   | D0Cimpdec of (* implementation *)
-      i0mpdec
+      (s0arglstlst, i0mpdec)
   | D0Cdynload of string
   | D0Cstaload of (Option sym_t, string)
   | D0Clocal of (d0eclst, d0eclst)
@@ -1588,6 +1574,13 @@ and m0acdef = '{
 and m0acdeflst = List m0acdef
 
 (* ****** ****** *)
+
+and impqi0de = '{
+  impqi0de_loc= loc_t
+, impqi0de_qua= d0ynq
+, impqi0de_sym= sym_t
+, impqi0de_arg= s0explstlst
+}
 
 and i0mpdec = '{
   i0mpdec_loc= loc_t
@@ -1891,6 +1884,11 @@ fun m0acdeflst_cons (x: m0acdef, xs: m0acdeflst): m0acdeflst
 
 (* ****** ****** *)
 
+fun impqi0de_make_none (qid: dqi0de): impqi0de = "impqi0de_make_none"
+fun impqi0de_make_some
+  (qid: tmpqi0de, arg: s0explst, args: s0explstlst, t_gt: t0kn): impqi0de
+  = "impqi0de_make_some"
+
 fun i0mpdec_make
   (qid: impqi0de, arg: f0arglst, res: s0expopt, def: d0exp): i0mpdec
   = "i0mpdec_make"
@@ -1971,7 +1969,8 @@ fun d0ec_vardecs (d: v0ardec, ds: v0ardeclst): d0ec = "d0ec_vardecs"
 fun d0ec_macdefs
   (i: int (*0/1/2: short/long/long rec*), d: m0acdef, ds: m0acdeflst): d0ec
   = "d0ec_macdefs"
-fun d0ec_impdec (d: i0mpdec): d0ec = "d0ec_impdec"
+fun d0ec_impdec (t_implement: t0kn, arg: s0arglstlst, d: i0mpdec): d0ec
+  = "d0ec_impdec"
 
 (* ****** ****** *)
 

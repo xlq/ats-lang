@@ -52,24 +52,24 @@
 
 (* ****** ****** *)
 
-implement ptr_alloc<a> () = ptr_alloc_tsz {a} (sizeof<a>)
+implement{a} ptr_alloc () = ptr_alloc_tsz {a} (sizeof<a>)
 
 (* ****** ****** *)
 
-implement ptr_get_t<a> (pf | p) = !p
-implement ptr_set_t<a> (pf | p, x) = (!p := x)
-implement ptr_move_t<a> (pf1, pf2 | p1, p2) = (!p2 := !p1)
+implement{a} ptr_get_t (pf | p) = !p
+implement{a} ptr_set_t (pf | p, x) = (!p := x)
+implement{a} ptr_move_t (pf1, pf2 | p1, p2) = (!p2 := !p1)
 
 (* ****** ****** *)
 
-implement ptr_get_vt<a> (pf | p) = !p
-implement ptr_set_vt<a> (pf | p, x) = (!p := x)
-implement ptr_move_vt<a> (pf1, pf2 | p1, p2) = (!p2 := !p1)
+implement{a} ptr_get_vt (pf | p) = !p
+implement{a} ptr_set_vt (pf | p, x) = (!p := x)
+implement{a} ptr_move_vt (pf1, pf2 | p1, p2) = (!p2 := !p1)
 
 (* ****** ****** *)
 
-implement ptr_get_inv<a> (pf | p) = !p
-implement ptr_set_inv<a> (pf | p, x) = (!p := x)
+implement{a} ptr_get_inv (pf | p) = !p
+implement{a} ptr_set_inv (pf | p, x) = (!p := x)
 
 (* ****** ****** *)
 

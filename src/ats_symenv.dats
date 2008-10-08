@@ -76,17 +76,17 @@ assume symenv_t = symenv
 
 (* ****** ****** *)
 
-implement symmap_search (m, k) = $Map.map_search (m, k)
+implement{itm} symmap_search (m, k) = $Map.map_search (m, k)
 
-implement symmap_ref_search (r_m, k) = let
+implement{itm} symmap_ref_search (r_m, k) = let
   val (vbox pf_m | p_m) = ref_get_view_ptr r_m
 in
   $Map.map_search (!p_m, k)
 end
 
-implement symmap_list (m) = $Map.map_list_pre m
+implement{itm} symmap_list (m) = $Map.map_list_pre m
 
-implement symmap_ref_list (r_m) = let
+implement{itm} symmap_ref_list (r_m) = let
   val (vbox pf_m | p_m) = ref_get_view_ptr r_m
 in
   $Map.map_list_pre (!p_m)
@@ -114,13 +114,13 @@ implement symenv_make {itm} () = '{
 
 (* ****** ****** *)
 
-implement symenv_insert<itm> (env, k, i) = let
+implement{itm} symenv_insert (env, k, i) = let
   val (vbox pf_m | p_m) = ref_get_view_ptr env.map
 in
   $Map.map_insert (!p_m, k, i)
 end // end of [symenv_insert]
 
-implement symenv_remove<itm> (env, k) = let
+implement{itm} symenv_remove (env, k) = let
   val (vbox pf_m | p_m) = ref_get_view_ptr env.map
 in
   $Map.map_remove (!p_m, k)
@@ -144,7 +144,7 @@ fun{itm:t@ype} symmaplst_search {n:nat} .<n>.
     end
   | list_vt_nil () => (fold@ ms0; None_vt ())
 
-implement symenv_search<itm> (env, k) = let
+implement{itm} symenv_search (env, k) = let
   val ans =
     let val (vbox pf_m | p_m) = ref_get_view_ptr env.map in
       $Map.map_search (!p_m, k)
@@ -160,7 +160,7 @@ in
   
 end // end of [symenv_search]
 
-implement symenv_pervasive_search<itm> (env, k) = let
+implement{itm} symenv_pervasive_search (env, k) = let
   val (vbox pf_ms | p_ms) = ref_get_view_ptr env.pervasive
 in
   symmaplst_search<itm> (!p_ms, k)
@@ -168,7 +168,7 @@ end
 
 (* ****** ****** *)
 
-implement symenv_pop<itm> (env) = let
+implement{itm} symenv_pop (env) = let
 
 fn symenv_pop_err (): symmap itm = begin
   prerr "Internal Error: ";
@@ -241,7 +241,7 @@ end // end of [symenv_save]
 
 //
 
-implement symenv_restore<itm> (env) = let
+implement{itm} symenv_restore (env) = let
 
 viewtypedef mms = @(symmap itm, symmaplst itm)
 
@@ -295,7 +295,7 @@ end
 
 implement symenv_ref_top (env) = env.map
 
-implement symenv_localjoin<itm> (env) = let
+implement{itm} symenv_localjoin (env) = let
 
 fn symenv_localjoin_err (): symmap itm = begin
   prerr "Internal Error: ";

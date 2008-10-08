@@ -705,11 +705,11 @@ implement atspackage_source_code () = let
   val () = utils_dir_copy ()
 
 in
-  prerr "Then package [";
+  prerr "The package [";
   prerr ATSPACKAGE_NAME;
   prerr "-";
   prerr ATSPACKAGE_VERSION;
-  prerr "] is successfully generated.";
+  prerr "] is successfully built.";
   prerr_newline ()  
 end
 

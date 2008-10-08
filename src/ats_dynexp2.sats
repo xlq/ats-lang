@@ -783,6 +783,9 @@ and i2mpdec = '{
   i2mpdec_loc= loc_t
 , i2mpdec_cst= d2cst_t
 , i2mpdec_decarg= s2qualst
+(*
+, i2mpdec_tmparg= s2explst
+*)
 , i2mpdec_def= d2exp
 }
 

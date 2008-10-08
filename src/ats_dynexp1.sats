@@ -242,7 +242,7 @@ datatype d1ec_node =
   | D1Cmacdefs of (* macro declaration *)
       (int (*long/short*), m1acdeflst)
   | D1Cimpdec of (* implementation *)
-      i1mpdec
+      (s1arglstlst, i1mpdec)
   | D1Clocal of (* local declaration *)
       (d1eclst, d1eclst)
   | D1Cdynload of (* dynamic load *)
@@ -616,7 +616,7 @@ and m1acdeflst = List m1acdef
 and i1mpdec = '{
   i1mpdec_loc= loc_t
 , i1mpdec_qid= $Syn.impqi0de
-, i1mpdec_decarg= s1arglstlst
+, i1mpdec_tmparg= s1explstlst
 , i1mpdec_def= d1exp
 }
 
@@ -862,7 +862,7 @@ fun d1ec_vardecs (_: loc_t, ds: v1ardeclst): d1ec
 
 fun d1ec_macdefs (_: loc_t, kind: int, ds: m1acdeflst): d1ec
 
-fun d1ec_impdec (_: loc_t, d: i1mpdec): d1ec
+fun d1ec_impdec (_: loc_t, decarg: s1arglstlst, d: i1mpdec): d1ec
 
 fun d1ec_local (_: loc_t, head: d1eclst, body: d1eclst): d1ec
 
@@ -929,7 +929,7 @@ fun m1acdef_make
   (_: loc_t, id: sym_t, arg: $Syn.m0acarglst, def: d1exp): m1acdef
 
 fun i1mpdec_make
-  (_: loc_t, qid: $Syn.impqi0de, _: s1arglstlst, _: d1exp): i1mpdec
+  (_: loc_t, qid: $Syn.impqi0de, _: s1explstlst, _: d1exp): i1mpdec
 
 (* ****** ****** *)
 

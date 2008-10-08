@@ -760,10 +760,10 @@ implement impqi0de_make_none (qid) = '{
   impqi0de_loc= qid.dqi0de_loc
 , impqi0de_qua= qid.dqi0de_qua
 , impqi0de_sym= qid.dqi0de_sym
-, impqi0de_arg= s0arglstlst_nil ()
+, impqi0de_arg= s0explstlst_nil ()
 }
 
-implement impqi0de_make_some (qid, arg, t_gt) = let
+implement impqi0de_make_some (qid, arg, args, t_gt) = let
 
 val loc = combine (qid.tmpqi0de_loc, t_gt.t0kn_loc)
 
@@ -771,7 +771,7 @@ in '{
   impqi0de_loc= qid.tmpqi0de_loc
 , impqi0de_qua= qid.tmpqi0de_qua
 , impqi0de_sym= qid.tmpqi0de_sym
-, impqi0de_arg= arg
+, impqi0de_arg= s0explstlst_cons (arg, args)
 } end // end of [impqid0de_make_some]
 
 (* ****** ****** *)
@@ -2494,9 +2494,12 @@ end // end of [d0ec_macdefs]
 
 (* ****** ****** *)
 
-implement d0ec_impdec (x) = '{
-  d0ec_loc= x.i0mpdec_loc, d0ec_node= D0Cimpdec (x)
- }
+// [d0ecarg: s0arglstlst]
+implement d0ec_impdec (t_implement, i0mparg, i0mpdec) = let
+  val loc = combine (t_implement.t0kn_loc, i0mpdec.i0mpdec_loc)
+in '{
+  d0ec_loc= loc, d0ec_node= D0Cimpdec (i0mparg, i0mpdec)
+} end // end of [d0ec_impdec]
 
 (* ****** ****** *)
 

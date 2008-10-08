@@ -316,12 +316,12 @@ assume map_vt = map
 (* ****** ****** *)
 
 implement map_make (cmp) = MAP (cmp, BSTnil ())
-implement map_free (m) =
+implement{key,item} map_free (m) =
   let val+ ~MAP (cmp, bst) = m in bst_free bst end
 
 (* ****** ****** *)
 
-implement map_search<key,itm> (m, k) =
+implement{key,itm} map_search (m, k) =
   let
     val+ MAP (cmp, !bst) = m
     val ans = bst_search<key,itm> (!bst, k, cmp)
@@ -329,12 +329,12 @@ implement map_search<key,itm> (m, k) =
     fold@ m; ans
   end
 
-implement map_insert<key,itm> (m, k, i) =
+implement{key,itm} map_insert (m, k, i) =
   let val+ MAP (cmp, !bst) = m in
     !bst := bst_insert_random<key,itm> (!bst, k, i, cmp); fold@ m
   end
 
-implement map_remove<key,itm> (m, k) = let
+implement{key,itm} map_remove (m, k) = let
   var i: Int and itmopt: Option_vt itm; val+ MAP (cmp, !bst) = m
   val (pf1, pf2 | bst_new) =
     bst_remove<key,itm> (view@ i, view@ itmopt | !bst, k, &i, &itmopt, cmp)
@@ -344,7 +344,7 @@ end
 
 (* ****** ****** *)
 
-implement map_join<key,itm> (m1, m2) = let
+implement{key,itm} map_join (m1, m2) = let
   val+ MAP (cmp, !t1) = m1 and ~MAP (_(*cmp*), t2) = m2
 in
   !t1 := bst_join_with<key,itm> (!t1, t2, cmp); fold@ m1; m1
@@ -352,7 +352,7 @@ end // end of [map_join]
 
 (* ****** ****** *)
 
-implement map_list_pre<key,itm> (m) = let
+implement{key,itm} map_list_pre (m) = let
   val+ MAP (_(*cmp*), !bst) = m; val ans = bst_list_pre<key,itm> !bst
 in
   fold@ (m); ans
@@ -360,7 +360,7 @@ end // end of [map_list_pre]
 
 (* ****** ****** *)
 
-implement map_foreach_pre<key,itm> (pf | m, f, env) = let
+implement{key,itm} map_foreach_pre (pf | m, f, env) = let
   val+ MAP (_(*cmp*), !bst) = m
   val ans = bst_foreach_pre<key,itm> (pf | !bst, f, env)
 in

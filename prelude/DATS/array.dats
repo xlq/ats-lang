@@ -52,12 +52,12 @@
 
 (* ****** ****** *)
 
-implement atarray_get_elt_at<a> (A, i) = A.[i]
-implement atarray_set_elt_at<a> (A, i, x) = (A.[i] := x)
+implement{a} atarray_get_elt_at (A, i) = A.[i]
+implement{a} atarray_set_elt_at (A, i, x) = (A.[i] := x)
 
 (* ****** ****** *)
 
-implement array_ptr_initialize_elt<a> (A0, n0, x0) = let
+implement{a} array_ptr_initialize_elt (A0, n0, x0) = let
 
 fun aux {n:nat} {l:addr} .<n>.
   (pf: array_v (a?, n, l) | p: ptr l, n: int n, x0: a)
@@ -82,7 +82,7 @@ end // end of [array_ptr_initialize_elt]
 
 (* ****** ****** *)
 
-implement array_ptr_initialize_lst<a> (A0, n0, xs0) = let
+implement{a} array_ptr_initialize_lst (A0, n0, xs0) = let
 
 fun aux {n:nat} {l:addr} .<n>.
   (pf: array_v (a?, n, l) | p: ptr l, n: int n, xs: list (a, n))
@@ -130,14 +130,14 @@ end // end of [array_ptr_initialize_fun_tsz_cloptr]
 
 (* ****** ****** *)
 
-implement array_ptr_make_elt<a> (n, x) = let
+implement{a} array_ptr_make_elt (n, x) = let
   val (pf_gc, pf | p) = array_ptr_alloc_tsz {a} (n, sizeof<a>)
   val () = array_ptr_initialize_elt<a> (!p, n, x)
 in
   (pf_gc, pf | p)
 end // end of [array_ptr_make_elt]
 
-implement array_ptr_make_lst<a> (n, xs) = let
+implement{a} array_ptr_make_lst (n, xs) = let
   val (pf_gc, pf | p) = array_ptr_alloc_tsz {a} (n, sizeof<a>)
   val () = array_ptr_initialize_lst<a> (!p, n, xs)
 in
@@ -166,8 +166,8 @@ end // end of [array_ptr_takeout2_tsz]
 
 (* ****** ****** *)
 
-implement array_ptr_get_elt_at<a> (A, i) = A.[i]
-implement array_ptr_set_elt_at<a> (A, i, x) = (A.[i] := x)
+implement{a} array_ptr_get_elt_at (A, i) = A.[i]
+implement{a} array_ptr_set_elt_at (A, i, x) = (A.[i] := x)
 
 (* ****** ****** *)
 
@@ -196,7 +196,7 @@ end // end of [array]
 
 //
 
-implement array_make_elt<a> (asz, x) = let
+implement{a} array_make_elt (asz, x) = let
   val (pf_gc, pf | ptr) = array_ptr_make_elt<a> (asz, x)
   val (pfbox | ()) = vbox_make_view_ptr_gc (pf_gc, pf | ptr)
 in
@@ -215,31 +215,29 @@ implement array_get_view_ptr (A) = @(A.view | A.data)
 
 (* ****** ****** *)
 
-implement array_get_elt_at<a> (A, i) =
-  let val A_data = A.data; prval vbox pf = A.view in
-    !A_data.[i]
-  end
+implement{a} array_get_elt_at (A, i) = let
+  val A_data = A.data; prval vbox pf = A.view in !A_data.[i]
+end // end of [array_get_elt]
 
-implement array_set_elt_at<a> (A, i, x) =
-  let val A_data = A.data; prval vbox pf = A.view in
-    !A_data.[i] := x
-  end
+implement{a} array_set_elt_at (A, i, x) = let
+  val A_data = A.data; prval vbox pf = A.view in !A_data.[i] := x
+end // end of [array_set_elt_at]
+
+implement{a} array_xch_elt_at (A, i, x) = let
+  val A_data = A.data; prval vbox pf = A.view
+in
+  array_ptr_xch_elt_at<a> (!A_data, i, x)
+end // end of [array_xch_elt_at]
 
 (* ****** ****** *)
 
-implement array_exch<a> (A, i1, i2) = begin
+implement{a} array_exch (A, i1, i2) = begin
   if i1 <> i2 then let
     val A_data = A.data; prval vbox pf = A.view
   in
     array_ptr_exch<a> (!A_data, i1, i2)
   end
 end // end of [array_exch]
-
-implement array_swap<a> (A, i, x) = let
-  val A_data = A.data; prval vbox pf = A.view
-in
-  array_ptr_swap<a> (!A_data, i, x)
-end // end of [array_swap]
 
 (* ****** ****** *)
 
@@ -269,7 +267,7 @@ end // end of [iforeach_array_ptr_tsz_cloptr]
 
 (* ****** ****** *)
 
-implement foreach_array_main<a>
+implement{a} foreach_array_main
   {v} {vt} {n} {f} (pf | f, A, asz, env) = let
   typedef fun_t = (!v | a, !vt) -<f> void
   fun loop {i:nat | i <= n} .<n-i>. (
@@ -281,7 +279,7 @@ in
   loop (pf | f, A, asz, 0, env)
 end // end of [foreach_array_main]
 
-implement foreach_array_cloptr<a> {n} {f} (f, A, asz) = let
+implement{a} foreach_array_cloptr {n} {f} (f, A, asz) = let
   viewtypedef cloptr_t = a -<cloptr,f> void
   fn app (pf: !unit_v | x: a, f: !cloptr_t):<f> void = f (x)
   prval pf = unit_v ()
@@ -293,7 +291,7 @@ end // end of [foreach_array_cloptr]
 
 (* ****** ****** *)
 
-implement iforeach_array_main<a>
+implement{a} iforeach_array_main
   {v} {vt} {n} {f} (pf | f, A, asz, env) = let
   viewtypedef fun_t = (!v | natLt n, a, !vt) -<fun,f> void
   fun loop {i:nat | i <= n} .<n-i>.
@@ -308,7 +306,7 @@ in
   // empty
 end // end of [iforeach_array_main]
 
-implement iforeach_array_cloptr<a> {n} {f} (f, A, asz) = let
+implement{a} iforeach_array_cloptr {n} {f} (f, A, asz) = let
   viewtypedef cloptr_t = (natLt n, a) -<cloptr,f> void
   fn app (pf: !unit_v | i: natLt n, x: a, f: !cloptr_t):<f> void =
     f (i, x)

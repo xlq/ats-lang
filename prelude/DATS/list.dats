@@ -48,14 +48,14 @@
 
 (* ****** ****** *)
 
-implement list_of_arraysize<a> (arrsz) =
+implement{a} list_of_arraysize (arrsz) =
   list_of_list_vt (list_vt_of_arraysize arrsz)
 
 (* ****** ****** *)
 
 // a tail-recursive implementation of list-append
 
-implement list_append<a> {i,j} (xs, ys) = let
+implement{a} list_append {i,j} (xs, ys) = let
   var res: List a // uninitialized
   fun aux {n1,n2:nat} .<n1>.
     (xs: list (a, n1), ys: list (a, n2), res: &(List a)? >> list (a, n1+n2))
@@ -75,7 +75,7 @@ end // end of [list_append]
 
 // standard non-tail-recursive implementation of list-append
 
-implement list_append<a> {i,j} (xs, ys) = let
+implement{a} list_append {i,j} (xs, ys) = let
   fun aux {n1,n2:nat} .<n1>.
     (xs: list (a, n1), ys: list (a, n2)):<> list (a, n1+n2) =
     case+ xs of x :: xs => x :: aux (xs, ys) | nil () => ys
@@ -87,18 +87,18 @@ end
 
 //
 
-implement list_assoc_fun<a1,a2> {eq:eff} (xys, eq, x0) = let
+implement{a1,a2} list_assoc_fun {eq:eff} (xys, eq, x0) = let
   fun aux {n:nat} .<n>. (xys: list ('(a1, a2), n)):<eq> Option a2 =
     case+ xys of
     | '(x, y) :: xys => if eq (x0, x) then Some (y) else aux xys
     | nil () => None ()
 in
   aux xys
-end
+end // end of [list_assoc]
 
 //
 
-implement list_concat<a> (xss) = let
+implement{a} list_concat (xss) = let
   fun aux {n:nat} .<n>.
     (xs0: List a, xss: list (List a, n)):<> List a =
     case+ xss of
@@ -106,22 +106,22 @@ implement list_concat<a> (xss) = let
     | nil () => xs0
 in
   case+ xss of xs :: xss => aux (xs, xss) | nil () => nil ()
-end
+end // end of [list_concat]
 
 //
 
-implement list_drop<a> (xs, i) = let
+implement{a} list_drop (xs, i) = let
   fun aux {n,i:nat | i <= n} .<i>.
     (xs: list (a, n), i: int i):<> list (a, n-i) =
     if i > 0 then let val _ :: xs = xs in aux (xs, i-1) end
     else xs
 in
   aux (xs, i)
-end
+end // end of [list_drop]
 
 (* ****** ****** *)
 
-implement list_exists_main<a> (pf | xs, p, env) = begin
+implement{a} list_exists_main (pf | xs, p, env) = begin
   case+ xs of
   | x :: xs => begin
       if p (pf | x, env) then true
@@ -132,7 +132,7 @@ implement list_exists_main<a> (pf | xs, p, env) = begin
   | nil () => false
 end // end of [list_exists_main]
 
-implement list_exists_cloptr<a> {p:eff} (xs, p) = let
+implement{a} list_exists_cloptr {p:eff} (xs, p) = let
   viewtypedef cloptr_t = a -<cloptr,p> bool
   fn app (pf: !unit_v | x: a, p: !cloptr_t):<p> bool = p (x)
   prval pf = unit_v ()
@@ -144,7 +144,7 @@ end // end of [list_exists_cloptr]
 
 //
 
-implement list_exists2_main<a1,a2>
+implement{a1,a2} list_exists2_main
   (pf | xs1, xs2, p, env) = begin case+ xs1 of
   | x1 :: xs1 => let
       val+ x2 :: xs2 = xs2
@@ -157,7 +157,7 @@ implement list_exists2_main<a1,a2>
   | nil () => false
 end // end of [list_exists2_main]
 
-implement list_exists2_cloptr<a1,a2> {n} {p:eff} (xs1, xs2, p) = let
+implement{a1,a2} list_exists2_cloptr {n} {p:eff} (xs1, xs2, p) = let
   viewtypedef clo_t = (a1, a2) -<cloptr,p> bool
   fn app (pf: !unit_v | x1: a1, x2: a2, p: !clo_t):<p> bool = p (x1, x2)
   prval pf = unit_v ()
@@ -169,7 +169,7 @@ end // end of [list_exists2_cloptr]
 
 (* ****** ****** *)
 
-implement list_filter_cloptr<a> (xs, p) = begin
+implement{a} list_filter_cloptr (xs, p) = begin
   case+ xs of
   | x :: xs => begin
       if p (x) then x :: list_filter_cloptr (xs, p)
@@ -180,7 +180,7 @@ end // end of [list_filter_cloptr]
 
 (* ****** ****** *)
 
-implement list_find_cloptr<a> (xs, p) = begin case+ xs of
+implement{a} list_find_cloptr (xs, p) = begin case+ xs of
   | x :: xs => if p (x) then Some (x) else list_find_cloptr (xs, p)
   | nil () => None ()
 end // end of [list_find_cloptr]
@@ -197,13 +197,13 @@ macrodef list_fold_left_mac (list_fold_left, f, res, xs) = `(
 
 *)
 
-implement list_fold_left_cloptr<sink,a> (f, res, xs) = begin
+implement{sink,a} list_fold_left_cloptr (f, res, xs) = begin
   case+ xs of
   | x :: xs => list_fold_left_cloptr (f, f (res, x), xs)
   | nil () => res
 end // end of [list_fold_left_cloptr]
 
-implement list_fold2_left_cloptr<sink,a1,a2> (f, res, xs1, xs2) = begin
+implement{sink,a1,a2} list_fold2_left_cloptr (f, res, xs1, xs2) = begin
   case+ xs1 of
   | x1 :: xs1 => let
       val+ x2 :: xs2 = xs2; val res = f (res, x1, x2)
@@ -215,7 +215,7 @@ end // end of [list_fold2_left_cloptr]
 
 (* ****** ****** *)
 
-implement list_fold_right_cloptr<a,sink> (f, xs, res) = begin
+implement{a,sink} list_fold_right_cloptr (f, xs, res) = begin
   case+ xs of
   | x :: xs => begin
       let val res = list_fold_right_cloptr (f, xs, res) in f (x, res) end
@@ -223,7 +223,7 @@ implement list_fold_right_cloptr<a,sink> (f, xs, res) = begin
   | nil () => res
 end // end of [list_fold_right_cloptr]
 
-implement list_fold2_right_cloptr<a1,a2,sink> (f, xs1, xs2, res) = begin
+implement{a1,a2,sink} list_fold2_right_cloptr (f, xs1, xs2, res) = begin
   case+ xs1 of
   | x1 :: xs1 => let
       val+ x2 :: xs2 = xs2
@@ -236,7 +236,7 @@ end // end of [list_fold2_right_cloptr]
 
 (* ****** ****** *)
 
-implement list_forall_main<a> (pf | xs, p, env) = begin
+implement{a} list_forall_main (pf | xs, p, env) = begin
   case+ xs of
   | x :: xs => begin
       if p (pf | x, env) then list_forall_main (pf | xs, p, env)
@@ -245,7 +245,7 @@ implement list_forall_main<a> (pf | xs, p, env) = begin
   | nil () => false
 end // end of [list_forall_main]
 
-implement list_forall_cloptr<a> {p:eff} (xs, p) = let
+implement{a} list_forall_cloptr {p:eff} (xs, p) = let
   viewtypedef cloptr_t = a -<cloptr,p> bool
   fn app (pf: !unit_v | x: a, p: !cloptr_t):<p> bool = p (x)
   prval pf = unit_v ()
@@ -257,7 +257,7 @@ end // end of [list_forall_cloptr]
 
 //
 
-implement list_forall2_main<a1,a2>
+implement{a1,a2} list_forall2_main
   (pf | xs1, xs2, p, env) = begin case+ xs1 of
   | x1 :: xs1 => let
       val+ x2 :: xs2 = xs2
@@ -269,7 +269,7 @@ implement list_forall2_main<a1,a2>
   | nil () => false
 end // end of [list_forall2_main]
 
-implement list_forall2_cloptr<a1,a2> {n} {p:eff} (xs1, xs2, p) = let
+implement{a1,a2} list_forall2_cloptr {n} {p:eff} (xs1, xs2, p) = let
   viewtypedef clo_t = (a1, a2) -<cloptr,p> bool
   fn app (pf: !unit_v | x1: a1, x2: a2, p: !clo_t):<p> bool = p (x1, x2)
   prval pf = unit_v ()
@@ -281,7 +281,7 @@ end // end of [list_forall2_cloptr]
 
 (* ****** ****** *)
 
-implement list_foreach_main<a> (pf | xs, f, env) = begin
+implement{a} list_foreach_main (pf | xs, f, env) = begin
   case+ xs of
   | x :: xs => begin
       f (pf | x, env); list_foreach_main<a> (pf | xs, f, env)
@@ -289,7 +289,7 @@ implement list_foreach_main<a> (pf | xs, f, env) = begin
   | nil () => ()
 end // end of [list_foreach]
 
-implement list_foreach_fun<a> {f:eff} (xs, f) = let
+implement{a} list_foreach_fun {f:eff} (xs, f) = let
   val f = coerce (f) where {
     extern fun coerce (f: a -<f> void):<> (!unit_v | a, !Ptr) -<f> void
       = "atspre_fun_coerce"
@@ -301,7 +301,7 @@ in
   // empty
 end // end of [list_foreach_fun]
 
-implement list_foreach_cloptr<a> {f:eff} (xs, f) = let
+implement{a} list_foreach_cloptr {f:eff} (xs, f) = let
   viewtypedef cloptr_t = a -<cloptr,f> void
   fn app (pf: !unit_v | x: a, f: !cloptr_t):<f> void = f (x)
   prval pf = unit_v ()
@@ -313,7 +313,7 @@ end // end of [list_foreach_cloptr]
 
 (* ****** ****** *)
 
-implement list_foreach2_main<a1,a2> (pf | xs1, xs2, f, env) = begin
+implement{a1,a2} list_foreach2_main (pf | xs1, xs2, f, env) = begin
   case+ xs1 of
   | x1 :: xs1 => let
       val x2 :: xs2 = xs2
@@ -323,7 +323,7 @@ implement list_foreach2_main<a1,a2> (pf | xs1, xs2, f, env) = begin
   | nil () => ()
 end // end of [list_foreach2_main]
 
-implement list_foreach2_fun<a1,a2> {n} {f} (xs, ys, f) = let
+implement{a1,a2} list_foreach2_fun {n} {f} (xs, ys, f) = let
   val f = coerce (f) where {
     extern fun coerce (f: (a1, a2) -<f> void)
       :<> (!unit_v | a1, a2, !Ptr) -<f> void = "atspre_fun_coerce"
@@ -335,7 +335,7 @@ in
   // empty
 end // end of [list_foreach2_fun]
 
-implement list_foreach2_cloptr<a1,a2> {n} {f:eff} (xs1, xs2, f) = let
+implement{a1,a2} list_foreach2_cloptr {n} {f:eff} (xs1, xs2, f) = let
   viewtypedef cloptr_t = (a1, a2) -<cloptr,f> void
   fn app (pf: !unit_v | x1: a1, x2: a2, f: !cloptr_t):<f> void =
     f (x1, x2)
@@ -350,7 +350,7 @@ end // end of [list_foreach2_cloptr]
 
 (* ****** ****** *)
 
-implement list_iforeach_cloptr<a> {n} {f:eff} (xs, f) = let
+implement{a} list_iforeach_cloptr {n} {f:eff} (xs, f) = let
   viewtypedef cloptr_t = (natLt n, a) -<cloptr,f> void
   fun aux {i,j:nat | i+j==n} .<j>.
     (i: int i, xs: list (a, j), f: !cloptr_t) :<f> void = begin
@@ -360,7 +360,7 @@ in
   aux (0, xs, f)
 end // end of [list_iforeach]
 
-implement list_iforeach2_cloptr<a1,a2> {n} {f:eff} (xs1, xs2, f) = let
+implement{a1,a2} list_iforeach2_cloptr {n} {f:eff} (xs1, xs2, f) = let
   viewtypedef cloptr_t = (natLt n, a1, a2) -<cloptr,f> void
   fun aux {i,j:nat | i+j==n} .<j>.
     (i: int i, xs1: list (a1, j), xs2: list (a2, j), f: !cloptr_t)
@@ -374,7 +374,7 @@ end // end of [list_iforeach2_cloptr]
 
 (* ****** ****** *)
 
-implement list_get_elt_at<a> (xs, n) = let
+implement{a} list_get_elt_at (xs, n) = let
   fun aux {n,i:nat | i < n} .<n>.
     (xs: list (a, n), i: int i):<> a = let
     val x :: xs = xs
@@ -385,9 +385,9 @@ in
   aux (xs, 0)
 end // end of [list_get_elt_at]
 
-implement list_nth (xs, n) = list_get_elt_at (xs, n)
+implement{a} list_nth (xs, n) = list_get_elt_at<a> (xs, n)
 
-implement list_get_elt_at_exn<a> (xs, n) = let
+implement{a} list_get_elt_at_exn (xs, n) = let
   fun aux {n,i:nat} .<n>. 
     (xs: list (a, n), i: int i):<!exn> [n>0] a = begin
     case+ xs of
@@ -398,9 +398,9 @@ in
   aux (xs, 0)
 end // end of [list_get_elt_at_exn]
 
-implement list_nth_exn (xs, n) = list_get_elt_at_exn (xs, n)
+implement{a} list_nth_exn (xs, n) = list_get_elt_at_exn<a> (xs, n)
 
-implement list_get_elt_at_opt<a> (xs, n) = let
+implement{a} list_get_elt_at_opt (xs, n) = let
   fun aux {n,i:nat} .<n>.
     (xs: list (a, n), i: int i):<> Option_vt a = begin
     case+ xs of
@@ -411,28 +411,28 @@ in
   aux (xs, 0)
 end // end of [list_get_elt_at_opt]
 
-implement list_nth_opt (xs, n) = list_get_elt_at_opt (xs, n)
+implement{a} list_nth_opt (xs, n) = list_get_elt_at_opt<a> (xs, n)
 
 (* ****** ****** *)
 
-implement list_head (xs) = let val x :: _ = xs in x end
-implement list_head_exn (xs) = case xs of
+implement{a} list_head (xs) = let val x :: _ = xs in x end
+implement{a} list_head_exn (xs) = case xs of
   | x :: _ => x
   | nil () => $raise ListSubscriptException
 
 (* ****** ****** *)
 
-implement list_is_empty (xs) = begin
+implement list_is_empty {a} (xs) = begin
   case+ xs of cons _ => false | nil _ => true
 end // end of [list_is_empty]
 
-implement list_is_not_empty (xs) = begin
+implement list_is_not_empty {a} (xs) = begin
   case+ xs of _ :: _ => true | nil () => false
 end // end of [list_is_not_empty]
 
 (* ****** ****** *)
 
-implement list_length<a> (xs) = let
+implement{a} list_length (xs) = let
   fun aux {i,j:nat} .<i>.
     (xs: list (a, i), j: int j):<> int (i+j) = begin
     case+ xs of  _ :: xs => aux (xs, isucc j) | nil () => j
@@ -443,7 +443,7 @@ end // end of [list_length]
 
 (* ****** ****** *)
 
-implement list_make_elt<a> (x, n) = let
+implement{a} list_make_elt (x, n) = let
   fun aux {i,j:nat} .<i>.
     (i: int i, res: list (a, j)):<> list (a, i+j) =
     if i > 0 then aux (i-1, x :: res) else res
@@ -453,7 +453,7 @@ end // end of [list_make_elt]
 
 (* ****** ****** *)
 
-implement list_map_main<a,b>
+implement{a,b} list_map_main
   {v} {vt} {n} {f:eff} (pf | xs, f, env) = let
   typedef fun_t = (!v | a, !vt) -<fun,f> b
   fun aux {n:nat} .<n>. (
@@ -476,7 +476,7 @@ in
   aux (pf | xs, f, res, env); res
 end // end of [list_map_main]
 
-implement list_map_fun<a,b> {n:int} {f:eff} (xs, f) = let
+implement{a,b} list_map_fun {n:int} {f:eff} (xs, f) = let
   val f = coerce (f) where {
     extern fun coerce (f: a -<f> b):<> (!unit_v | a, !Ptr) -<f> b
       = "atspre_fun_coerce"
@@ -488,7 +488,7 @@ in
   ys
 end // end of [list_map_fun]
 
-implement list_map_cloptr<a,b> {n:int} {f:eff} (xs, f) = let
+implement{a,b} list_map_cloptr {n:int} {f:eff} (xs, f) = let
   viewtypedef cloptr_t = a -<cloptr,f> b
   fn app (pf: !unit_v | x: a, f: !cloptr_t):<f> b = f (x)
   prval pf = unit_v ()
@@ -498,7 +498,7 @@ in
   ys
 end // end of [list_map_cloptr]
 
-implement list_map_cloref<a,b> {n:int} {f:eff} (xs, f) = let
+implement{a,b} list_map_cloref {n:int} {f:eff} (xs, f) = let
   viewtypedef cloref_t = a -<cloref,f> b
   fn app (pf: !unit_v | x: a, f: !cloref_t):<f> b = f (x)
   prval pf = unit_v ()
@@ -510,7 +510,7 @@ end // end of [list_map_cloref]
 
 (* ****** ****** *)
 
-implement list_map2_main<a1,a2,b>
+implement{a1,a2,b} list_map2_main
   {v:view} {vt:viewtype} {n} {f:eff} (pf | xs, ys, f, env) = let
   var res: List b // uninitialized
   fun aux {n:nat} .<n>. (
@@ -534,7 +534,7 @@ in
   aux (pf | xs, ys, f, res, env); res
 end // end of [list_map2_main]
 
-implement list_map2_fun<a1,a2,b> {n} {f:eff} (xs, ys, f) = let
+implement{a1,a2,b} list_map2_fun {n} {f:eff} (xs, ys, f) = let
   val f = coerce (f) where {
     extern fun coerce
       (f: (a1, a2) -<f> b):<> (!unit_v | a1, a2, !Ptr) -<f> b
@@ -547,7 +547,7 @@ in
   zs
 end // end of [list_map2_fun]
 
-implement list_map2_cloptr<a1,a2,b> {n} {f:eff} (xs, ys, f) = let
+implement{a1,a2,b} list_map2_cloptr {n} {f:eff} (xs, ys, f) = let
   viewtypedef cloptr_t = (a1, a2) -<cloptr,f> b
   fn app (pf: !unit_v | x: a1, y: a2, f: !cloptr_t):<f> b = f (x, y)
   prval pf = unit_v ()
@@ -561,7 +561,7 @@ end  // end of [list_map2_cloptr]
 
 (* ****** ****** *)
 
-implement list_reverse_append<a> (xs, ys) = let
+implement{a} list_reverse_append (xs, ys) = let
   fun aux {n1,n2:nat} .<n1>.
     (xs: list (a, n1), ys: list (a, n2)):<> list (a, n1+n2) =
     case+ xs of x :: xs => aux (xs, x :: ys) | nil () => ys
@@ -569,11 +569,11 @@ in
   aux (xs, ys)
 end // end of [list_reverse_append]
 
-implement list_reverse xs = list_reverse_append (xs, nil ())
+implement{a} list_reverse xs = list_reverse_append (xs, nil ())
 
 (* ****** ****** *)
 
-implement list_set_elt_at<a> (xs, i, x0) = let
+implement{a} list_set_elt_at (xs, i, x0) = let
   var res: List a // uninitialized
   fun aux {n,i:nat | i < n} .<n>.
     (xs: list (a, n), i: int i, x0: a, res: &(List a)? >> list (a, n))
@@ -591,7 +591,7 @@ implement list_set_elt_at<a> (xs, i, x0) = let
   end
 in
   aux (xs, i, x0, res); res
-end
+end // end of [list_set_elt_at]
 
 local
 
@@ -604,11 +604,11 @@ end // end of [aux_test]
 
 in
 
-implement list_set_elt_at_exn<a> (xs, i, x0) =
+implement{a} list_set_elt_at_exn (xs, i, x0) =
   if aux_test<a> (xs, i) then list_set_elt_at (xs, i, x0)
   else $raise ListSubscriptException
 
-implement list_set_elt_at_opt<a> (xs, i, x0) =
+implement{a} list_set_elt_at_opt (xs, i, x0) =
   if aux_test<a> (xs, i) then Some_vt (list_set_elt_at (xs, i, x0))
   else None_vt ()
 
@@ -616,7 +616,7 @@ end // end of [local]
 
 (* ****** ****** *)
 
-implement list_split_at<a> {n,i} (xs, i) = let
+implement{a} list_split_at {n,i} (xs, i) = let
   var fsts: List a // uninitialized
   fun aux {j:nat | j <= i} .<i-j>.
     (xs: list (a, n-j), ij: int (i-j), fsts: &(List a)? >> list (a, i-j))
@@ -637,13 +637,13 @@ end // end of [list_split_at]
 
 (* ****** ****** *)
 
-implement list_tail (xs) = let val _ :: xs = xs in xs end
-implement list_tail_exn (xs) = case+ xs of
+implement{a} list_tail (xs) = let val _ :: xs = xs in xs end
+implement{a} list_tail_exn (xs) = case+ xs of
   | _ :: xs => xs | nil () => $raise ListSubscriptException
 
 (* ****** ****** *)
 
-implement list_take<a> (xs, i) = let
+implement{a} list_take (xs, i) = let
   var res: List a // uninitialized
   fun aux {n,i:nat | i <= n} .<i>.
     (xs: list (a, n), i: int i, res: &(List a)? >> list (a, i)):<> void =
@@ -658,11 +658,11 @@ implement list_take<a> (xs, i) = let
    end
 in
   aux (xs, i, res); res
-end
+end // end of [list_take]
 
 (* ****** ****** *)
 
-implement list_tabulate<a> {n} {f} (f, n) = let
+implement{a} list_tabulate {n} {f} (f, n) = let
   var res: List a // uninitialized
   fun aux {i:nat | i <= n} .<n-i>.
     (i: int i, f: !natLt n -<f> a, res: &(List a)? >> list (a, n-i)):<f> void =
@@ -679,7 +679,7 @@ end // end of [list_tabulate]
 
 (* ****** ****** *)
 
-implement list_zip<a,b> (xs, ys) = let
+implement{a,b} list_zip (xs, ys) = let
   typedef ab = '(a, b)
   var res: List ab // uninitialized
   fun aux {i:nat} .<i>.
@@ -695,12 +695,12 @@ in
   aux (xs, ys, res); res
 end
 
-implement list_zip_with<a,b,c> {n} {f:eff} (xs, ys, f) =
+implement{a,b,c} list_zip_with {n} {f:eff} (xs, ys, f) =
   list_map2_cloptr<a,b,c> (xs, ys, f)
 
 (* ****** ****** *)
 
-implement list_unzip<a1,a2> xys = let
+implement{a1,a2} list_unzip xys = let
   var res1: List a1 and res2: List a2 // uninitialized
   fun aux {n:nat} .<n>. (
       xys: list ('(a1, a2), n)
@@ -717,7 +717,7 @@ implement list_unzip<a1,a2> xys = let
   end // end of [aux]
 in
   aux (xys, res1, res2); (res1, res2)
-end
+end // end of [list_unzip]
 
 (* ****** ****** *)
 
@@ -797,7 +797,7 @@ local
 
 in
 
-implement list_mergesort (xs, lte, env) = aux4 (lte, aux1 (lte, xs, env), env)
+implement{a} list_mergesort (xs, lte, env) = aux4 (lte, aux1 (lte, xs, env), env)
 
 end // end of [local]
 
@@ -843,7 +843,7 @@ local
   end // end of [part]
 in
 
-implement list_quicksort (xs, lte, env) = qs (lte, xs, env)
+implement{a} list_quicksort (xs, lte, env) = qs (lte, xs, env)
 
 end // end of [local]
 

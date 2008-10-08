@@ -444,7 +444,7 @@ fn v0ardeclst_posmark (d0cs: v0ardeclst): void =
 
 fn i0mpdec_posmark (d0c: i0mpdec): void =
   let val qid = d0c.i0mpdec_qid in
-    s0arglstlst_posmark (qid.impqi0de_arg);
+    s0explstlst_posmark (qid.impqi0de_arg);
     f0arglst_posmark (d0c.i0mpdec_arg);
     s0expopt_posmark (d0c.i0mpdec_res);
     d0exp_posmark (d0c.i0mpdec_def);
@@ -516,25 +516,29 @@ implement d0ec_posmark (d0c0) =
   | D0Cvaldecs_rec (d0c, d0cs) =>  begin
       v0aldec_posmark d0c; v0aldeclst_posmark d0cs
     end
-  | D0Cfundecs (fk, s0qss, d0c, d0cs) => begin
-      if funkind_is_proof fk then
-        prfexploc_posmark (d0c0.d0ec_loc);
-      s0qualstlst_posmark s0qss;
+  | D0Cfundecs (fk, decarg, d0c, d0cs) => let
+      val () = begin
+        if funkind_is_proof fk then prfexploc_posmark (d0c0.d0ec_loc)
+      end
+      val () = s0qualstlst_posmark decarg
+    in
       f0undec_posmark d0c; f0undeclst_posmark d0cs
-    end
+    end // end of [D0Cfundecs]
   | D0Cvardecs (d0c, d0cs) => begin
       v0ardec_posmark d0c; v0ardeclst_posmark d0cs;
-    end
+    end // end of [D0Cvardecs]
   | D0Cmacdefs _ => neuexploc_posmark (d0c0.d0ec_loc)
-  | D0Cimpdec d0c => i0mpdec_posmark d0c
+  | D0Cimpdec (decarg, d0c) => begin
+      s0arglstlst_posmark decarg; i0mpdec_posmark d0c
+    end // end of [D0Cimpdec]
   | D0Cdynload _ => ()
   | D0Cstaload _ => staexploc_posmark (d0c0.d0ec_loc)
   | D0Clocal (d0cs1, d0cs2) => begin
       d0eclst_posmark d0cs1; d0eclst_posmark d0cs2;
-    end
+    end // end of [D0Clocal]
   | D0Cguadec (_(*knd*), gd0c) => begin
       guad0ec_node_posmark (gd0c.guad0ec_node)
-    end
+    end // end of [D0Cguadec]
 
 implement d0eclst_posmark (d0cs) =
   $Lst.list_foreach_fun (d0cs, d0ec_posmark)

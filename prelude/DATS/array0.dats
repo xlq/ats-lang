@@ -59,7 +59,7 @@ end // end of [array0_make_arraysize]
 
 (* ****** ****** *)
 
-implement array0_make_elt<a> (asz, x) = let
+implement{a} array0_make_elt (asz, x) = let
   val asz = int1_of_int asz
 in
   if asz >= 0 then let
@@ -78,7 +78,7 @@ implement array0_size (A) = A.size
 
 (* ****** ****** *)
 
-implement array0_get_elt_at_exn<a> (A, i) = let
+implement{a} array0_get_elt_at_exn (A, i) = let
   val i = int1_of_int i
 in
   if i >= 0 then let
@@ -94,7 +94,7 @@ in
   end // end of [if]
 end // end of [array0_get_elt_at_exn]
 
-implement array0_set_elt_at_exn<a> (A, i, x) = let
+implement{a} array0_set_elt_at_exn (A, i, x) = let
   val i = int1_of_int i
 in
   if i >= 0 then let

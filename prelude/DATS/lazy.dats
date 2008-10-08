@@ -47,7 +47,7 @@ assume lazy_viewt0ype_viewtype (a:viewt@ype) = thunkvalue_vt a
 
 in
 
-implement lazy_force_crypt<a> (r) = let
+implement{a} lazy_force_crypt (r) = let
   val (vbox pf | p) = ref_get_view_ptr ($decrypt r)
 in
   case+ !p of
@@ -61,7 +61,7 @@ in
     end // end of [thunkvalue_value]
 end // end of [lazy_force_crypt]
 
-implement lazy_vt_force_crypt<a> (v_lazy) = begin
+implement{a} lazy_vt_force_crypt (v_lazy) = begin
   case+ $decrypt (v_lazy) of
   | ~thunkvalue_vt_thunk (xf) => let
       val x = $effmask_ref((xf: () -<lin,cloptr1> a) ())
@@ -95,7 +95,7 @@ fun{a:t@ype} stream_filter_con
     end
 end // end of [stream_filter_con]
 
-implement stream_filter<a> (xs, p) =
+implement{a} stream_filter (xs, p) =
   $delay (stream_filter_con<a> (xs, p))
 
 fun{a:t@ype} stream_vt_filter_con
@@ -121,7 +121,7 @@ in
     end
 end // end of [stream_vt_filter_con]
 
-implement stream_vt_filter<a> (xs, p) =
+implement{a} stream_vt_filter (xs, p) =
   $delay (stream_vt_filter_con<a> (xs, p))
 
 (* ****** ****** *)
@@ -134,7 +134,7 @@ fun{a,b:t@ype} stream_map_con
   | nil () => (cloptr_free f; nil ())
 end // end of [stream_map_con]
 
-implement stream_map<a,b> (xs, f) =
+implement{a,b} stream_map (xs, f) =
   $delay (stream_map_con<a,b> (xs, f))
 
 //
@@ -154,7 +154,7 @@ fun{a1,a2,b:t@ype} stream_map2_con (
   | nil () => let val () = cloptr_free f in nil () end
 end // end of [stream_map2_con]
 
-implement stream_map2<a1,a2,b> (xs1, xs2, f) =
+implement{a1,a2,b} stream_map2 (xs1, xs2, f) =
   $delay (stream_map2_con<a1,a2,b> (xs1, xs2, f))
 
 (* ****** ****** *)
@@ -182,12 +182,12 @@ fun{a:t@ype} stream_merge_ord_con (
     end // end of [nil]
 end // end of [stream_merge_ord_con]
 
-implement stream_merge_ord<a> (xs10, xs20, lte) =
+implement{a} stream_merge_ord (xs10, xs20, lte) =
   $delay (stream_merge_ord_con (xs10, xs20, lte))
 
 (* ****** ****** *)
 
-implement stream_nth<a> (xs, n) = begin
+implement{a} stream_nth (xs, n) = begin
   case+ lazy_force xs of
     | x :: xs => if n = 0 then x else stream_nth<a> (xs, n-1)
     | nil () => $raise StreamSubscriptException

@@ -75,24 +75,26 @@ following svn directory and name it as some local directory, say, "FOO":
 
 Then one needs to check out another svn directory and name it as
 the local directory "FOO/bootstrap0":
-<PRE>svn co https://ats-lang.svn.sourceforge.net/svnroot/ats-lang/bootstrap/version-x.x.x \
+<PRE>svn co https://ats-lang.svn.sourceforge.net/svnroot/ats-lang/bootstrap/anairiats-x.x.x \
   FOO/bootstrap0</PRE>
 
-Note that "x.x.x" should be replaced with some version number.  Currently,
-version-0.0.1 is available for bootstrapping. After this is done, please go
-into the directory "FOO" and execute the command 'autoconf' and then do
-'make all'.
+Note that "x.x.x" should be replaced with the latest version number
+available for bootstrapping.  Currently, "0.0.1" is the one. After this is
+done, please go into the directory "FOO" and execute the command 'autoconf'
+and then do 'make all'.
 <P>
 
 It is also possible to use the ATS/Geizella compiler (written in Objective
 Caml) for bootstrapping ATS/Anairiats. This can be done by checking out the
 following svn directory and name it as the local directory "FOO/bootstrap0":
 
-<PRE>svn co https://ats-lang.svn.sourceforge.net/svnroot/ats-lang/bootstrap/geizella \
+<PRE>svn co https://ats-lang.svn.sourceforge.net/svnroot/ats-lang/bootstrap/geizella-x.x.x \
   FOO/bootstrap0</PRE>
 
-After this is done, please go into the directory "FOO" and execute the
-command 'autoconf' and then do 'make all'.
+Note that "x.x.x" should be replaced with the latest version number
+available for bootstrapping.  Currently, "0.0.1" is the one.  After this is
+done, please go into the directory "FOO" and execute the command 'autoconf'
+and then do 'make all'.
 <P>
 
 </MENU>

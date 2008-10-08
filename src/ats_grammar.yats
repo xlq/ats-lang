@@ -285,7 +285,8 @@ extern s0arglstlst_t s0arglstlst_cons_ide (i0de_t, s0arglstlst_t) ;
 
 typedef ats_ptr_type impqi0de_t ;
 extern impqi0de_t impqi0de_make_none (dqi0de_t) ;
-extern impqi0de_t impqi0de_make_some (tmpqi0de_t, s0arglstlst_t, t0kn_t) ;
+extern impqi0de_t impqi0de_make_some
+  (tmpqi0de_t, s0arglst_t, s0arglstlst_t, t0kn_t) ;
 
 typedef ats_ptr_type s0exp_t ;
 typedef ats_ptr_type s0explst_t ;
@@ -820,7 +821,7 @@ extern d0ec_t d0ec_valdecs_rec (v0aldec_t, v0aldeclst_t) ;
 extern d0ec_t d0ec_fundecs (funkind_t, s0qualstlst_t, f0undec_t, f0undeclst_t) ;
 extern d0ec_t d0ec_vardecs (v0ardec_t, v0ardeclst_t) ;
 extern d0ec_t d0ec_macdefs (int, m0acdef_t, m0acdeflst_t) ;
-extern d0ec_t d0ec_impdec (i0mpdec_t) ;
+extern d0ec_t d0ec_impdec (t0kn_t, s0arglstlst_t, i0mpdec_t) ;
 extern d0ec_t d0ec_local (t0kn_t, d0eclst_t, d0eclst_t, t0kn_t) ;
 extern d0ec_t d0ec_guadec (srpifkindtok_t, guad0ec_t) ;
 
@@ -1362,12 +1363,11 @@ guad0ec_t guad0ec ;
 %type <s0arglst> commas0argseq
 %type <s0arglstlst> s0argseqseq
 
-%type <s0arglst> tmps0argseq
-%type <s0arglst> commatmps0argseq
-%type <s0arglstlst> tmps0argseqseq
-%type <s0arglstlst> gtlttmps0argseqseq
-
 %type <impqi0de> impqi0de
+
+%type <s0arglst> decs0argseq
+%type <s0arglst> commadecs0argseq
+%type <s0arglstlst> decs0argseqseq
 
 %type <s0exp> s0exp
 %type <s0exp> atms0exp
@@ -1916,23 +1916,20 @@ s0argseqseq /* static argument sequence sequence */
 
 /* template argument variables */
 
-commatmps0argseq
+commadecs0argseq
   : /* empty */  %prec TMPSARG          { $$ = s0arglst_nil() ; }
-  | COMMA s0arg commatmps0argseq        { $$ = s0arglst_cons($2, $3) ; }
+  | COMMA s0arg commadecs0argseq        { $$ = s0arglst_cons($2, $3) ; }
 ;
 
-tmps0argseq
+decs0argseq
   : /* empty */ %prec TMPSARG           { $$ = s0arglst_nil() ; }
-  | s0arg commatmps0argseq              { $$ = s0arglst_cons($1, $2) ; }
+  | s0arg commadecs0argseq              { $$ = s0arglst_cons($1, $2) ; }
 ;
 
-gtlttmps0argseqseq
+decs0argseqseq
   : /* empty */                         { $$ = s0arglstlst_nil() ; }
-  | GTLT tmps0argseq gtlttmps0argseqseq { $$ = s0arglstlst_cons($2, $3) ; }
-;
-
-tmps0argseqseq
-  : tmps0argseq gtlttmps0argseqseq      { $$ = s0arglstlst_cons($1, $2) ; }
+  | LBRACE decs0argseq RBRACE decs0argseqseq
+                                        { $$ = s0arglstlst_cons($2, $4) ; }
 ;
 
 /* ****** ****** */
@@ -2772,7 +2769,8 @@ andv0ardecseq
 
 impqi0de
   : dqi0de                              { $$ = impqi0de_make_none($1) ; }
-  | tmpqi0de tmps0argseqseq GT          { $$ = impqi0de_make_some($1, $2, $3) ; }
+  | tmpqi0de tmps0expseq gtlttmps0expseqseq GT
+                                        { $$ = impqi0de_make_some($1, $2, $3, $4) ; }
 ;
 
 i0mpdec
@@ -2879,7 +2877,7 @@ d0ec_dyn
   | funkind d0ecargseq f0undec andf0undecseq       
                                         { $$ = d0ec_fundecs($1, $2, $3, $4) ; }
   | VAR v0ardec andv0ardecseq           { $$ = d0ec_vardecs($2, $3) ; }
-  | IMPLEMENT i0mpdec                   { $$ = d0ec_impdec($2) ; }
+  | IMPLEMENT decs0argseqseq i0mpdec    { $$ = d0ec_impdec($1, $2, $3) ; }
   | LOCAL d0ecseq_dyn IN d0ecseq_dyn END
                                         { $$ = d0ec_local($1, $2, $4, $5) ; }
   | LITERAL_extcode                     { $$ = d0ec_extcode_dyn($1) ; }
