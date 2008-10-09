@@ -147,9 +147,9 @@
                 (not (setq foundp
                            (and (zerop nest-lvl)
                                 (looking-at regexp)))))
-      (cond ((looking-at "(")
+      (cond ((looking-at "(\\|\\[\\|{")
              (incf nest-lvl))
-            ((looking-at ")")
+            ((looking-at ")\\|\\]\\|}")
              (decf nest-lvl)))
       (forward-char 1))
     foundp))
@@ -225,7 +225,7 @@
           (let ((nest-lvl 0) finishedp)
             ;; emacs22 only:
             ;(ats-context-free-search ")\\|\\_<=\\_>\\|," limit)
-            (ats-context-free-search ")\\|[^=]=[^=]\\|,\\|\n" limit)
+            (ats-context-free-search ")\\|[^=]=[^=]\\|,\\|\n\\|\\]" limit)
             (setq begin (1+ begin)
                   end (point)
                   key-begin (1- begin)
@@ -268,7 +268,7 @@
                                 
      ;;     ("[^%]\\({[^|}]*|?[^}]*}\\)" (1 'ats-font-lock-static-face))
      ;;     ("[^']\\(\\[[^]|]*|?[^]]*\\]\\)" (1 'ats-font-lock-static-face))
-     (".<[^>]>." (0 'ats-font-lock-metric-face))
+     (".<[^>]*>." (0 'ats-font-lock-metric-face))
      (ats-font-lock-static-search (0 'ats-font-lock-static-face) 
                                   (1 'ats-font-lock-keyword-face)))
    
