@@ -209,7 +209,7 @@ implement compare_funlab_funlab (fl1, fl2) = begin
   $Stamp.compare_stamp_stamp (fl1.funlab_stamp, fl2.funlab_stamp)
 end
 
-//
+(* ****** ****** *)
 
 fn _funlab_make (
     name: string, level: int, hit: hityp_t, stamp: stamp_t
@@ -238,26 +238,48 @@ in
   _funlab_make (name, level, hit, stamp)
 end // end of [funlab_make_nam_typ]
 
-implement funlab_make_cst_typ (d2c, hit) = let
+(* ****** ****** *)
+
+fn global_cst_name_make (d2c: d2cst_t): string = let
   val ext = d2cst_ext_get d2c
-  val is_ext_none = stropt_is_none (ext)
-  val name = (
-    if is_ext_none then let
-      val d2c_name = $Sym.symbol_name (d2cst_sym_get d2c)
+in
+  if stropt_is_none (ext) then let
+    val d2c_name = $Sym.symbol_name (d2cst_sym_get d2c)
+  in
+    case+ d2cst_kind_get d2c of
+    | $Syn.DCSTKINDval () => d2c_name + "$fun" | _ => d2c_name
+  end else begin
+    stropt_unsome (ext)
+  end // end of [if]
+end // end of [global_cst_name_make]
+
+implement funlab_make_cst_typ (d2c, tmparg, hit) = let
+  val is_global =
+    (case+ tmparg of list_cons _ => false | _ => true): bool
+  val name: string = (
+    if is_global then begin
+      global_cst_name_make (d2c)
+    end else let
+      val tmparg = hityplstlst_normalize (tmparg)
     in
-      case+ d2cst_kind_get d2c of
-      | $Syn.DCSTKINDval () => d2c_name + "$fun" | _ => d2c_name
-    end else begin
-      stropt_unsome (ext)
+      template_cst_name_make (d2c, tmparg)
     end
   ) : string
+(*
+  val () = begin
+    prerr "funlab_make_cst_type: name = "; prerr name; prerr_newline ()
+  end
+*)
   val level = d2var_current_level_get ()
   val stamp = $Stamp.funlab_stamp_make ()
   val fl = _funlab_make (name, level, hit, stamp)
-  val () = funlab_qua_set (fl, D2CSTOPTsome d2c)
+  // note that template instantiation is always *local* !!!
+  val () = if is_global then funlab_qua_set (fl, D2CSTOPTsome d2c)
 in
   fl
 end // end of [funlab_make_cst_typ]
+
+(* ****** ****** *)
 
 implement funlab_make_var_typ (d2v, hit) = let
   val d2v_name = $Sym.symbol_name (d2var_sym_get d2v)
@@ -269,7 +291,7 @@ in
   _funlab_make (name, level, hit, stamp)
 end // end of [funlab_make_var_typ]
 
-//
+(* ****** ****** *)
 
 implement funlab_name_get (fl) = fl.funlab_name
 
@@ -302,7 +324,7 @@ in
       prerr hit_fun;
       prerr_newline ();
       $Err.abort {hityp_t} ()
-    end
+    end // end of [_]
 end // end of [funlab_typ_res_get]
 
 implement funlab_funclo_get (fl) = let
@@ -315,7 +337,7 @@ in
       prerr hit_fun;
       prerr_newline ();
       $Err.abort {$Syn.funclo} ()
-    end
+    end // end of [_]
 end // end of [funlab_funclo_get]
 
 implement funlab_qua_get (fl) = fl.funlab_qua
@@ -330,7 +352,7 @@ implement funlab_entry_get_some (fl) = begin
       prerr "Internal Error: funlab_entry_get_some: no function entry";
       prerr_newline ();
       $Err.abort {funentry_t} ()
-    end
+    end // end of [None]
 end // end of [funlab_entry_get_some]
 
 end // end of [local]
@@ -401,7 +423,7 @@ in '{
 
 implement valprim_fun (funlab) = '{
   valprim_node= VPfun funlab, valprim_typ= funlab_typ_get funlab
-}
+} // end of [valprim_fun]
 
 (* ****** ****** *)
 
@@ -476,8 +498,9 @@ end // end of [valprim_is_void]
 
 (* ****** ****** *)
 
-implement instr_add_arr (res, tmp_res, arrsz, hit_elt) =
+implement instr_add_arr (res, tmp_res, arrsz, hit_elt) = begin
   res := list_vt_cons (INSTRarr (tmp_res, arrsz, hit_elt), res)
+end // end of [instr_add_arr]
 
 //
 
@@ -571,7 +594,7 @@ implement instr_add_move_rec
         prerr "Internal Error: instr_add_move_rec: recknd = ";
         prerr recknd; prerr_newline ();
         $Err.abort {instr} ()
-      end
+      end // end of [_]
     ) : instr
 in
   res := list_vt_cons (ins, res)

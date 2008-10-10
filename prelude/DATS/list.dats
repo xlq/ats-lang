@@ -422,11 +422,11 @@ implement{a} list_head_exn (xs) = case xs of
 
 (* ****** ****** *)
 
-implement list_is_empty {a} (xs) = begin
+implement{} list_is_empty {a} (xs) = begin
   case+ xs of cons _ => false | nil _ => true
 end // end of [list_is_empty]
 
-implement list_is_not_empty {a} (xs) = begin
+implement{} list_is_not_empty {a} (xs) = begin
   case+ xs of _ :: _ => true | nil () => false
 end // end of [list_is_not_empty]
 

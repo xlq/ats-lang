@@ -166,51 +166,51 @@ fun array_ptr_make_fun_tsz_cloptr {a:viewt@ype} {n:nat} {f:eff} (
 
 (* ****** ****** *)
 
-prval array_v_split :
+prfun array_v_split :
   {a:viewt@ype} {n,i:nat | i <= n} {l:addr} {ofs:int}
     (MUL (i, sizeof a, ofs), array_v (a, n, l)) -<prf>
     (array_v (a, i, l), array_v (a, n-i, l+ofs))
 
 (* ***** ***** *)
 
-prval array_v_unsplit :
+prfun array_v_unsplit :
   {a:viewt@ype} {n1,n2:nat} {l:addr} {ofs:int}
     (MUL (n1, sizeof a, ofs), array_v (a, n1, l), array_v (a, n2, l+ofs)) -<prf>
     array_v (a, n1+n2, l)
 
 (* ***** ***** *)
 
-prval array_v_extend :
+prfun array_v_extend :
   {a:viewt@ype} {n:nat} {l:addr} {ofs:int}
     (MUL (n, sizeof a, ofs), array_v (a, n, l), a @ l+ofs) -<prf>
     array_v (a, n+1, l)
 
-prval array_v_unextend :
+prfun array_v_unextend :
   {a:viewt@ype} {n:int | n > 0} {l:addr} {ofs:int}
     (MUL (n, sizeof a, ofs), array_v (a, n, l)) -<prf>
     (array_v (a, n-1, l), a @ l+ofs-sizeof a)
 
-prval array_v_takeout :
+prfun array_v_takeout :
   {a:viewt@ype} {n,i:nat | i < n} {l:addr} {ofs:int}
     (MUL (i, sizeof a, ofs), array_v (a, n, l)) -<prf>
     (a @ l+ofs, a @ l+ofs -<lin> array_v (a, n, l))
 
-prval array_v_takeout2 :
+prfun array_v_takeout2 :
   {a:viewt@ype} {n,i1,i2:nat | i1 < n; i2 < n; i1 <> i2} {l:addr} {ofs1,ofs2:int}
     (MUL (i1, sizeof a, ofs1), MUL (i2, sizeof a, ofs2), array_v (a, n, l)) -<prf>
     (a @ l+ofs1, a @ l+ofs2, (a @ l+ofs1, a @ l+ofs2) -<lin> array_v (a, n, l))
 
 (* ***** ***** *)
 
-prval array_v_clear :
+prfun array_v_clear :
   {a:t@ype} {n:nat} {l:addr} array_v (a, n, l) -<prf> array_v (a?, n, l)
 
 (* ***** ***** *)
 
-prval array_v_group : {a:viewt@ype} {m,n:nat} {l:addr} {mn:int}
+prfun array_v_group : {a:viewt@ype} {m,n:nat} {l:addr} {mn:int}
   (MUL (m, n, mn) | array_v (a, mn, l)) -<prf> array_v (@[a][n], m, l)
 
-prval array_v_ungroup : {a:viewt@ype} {m,n:nat} {l:addr} {mn:int}
+prfun array_v_ungroup : {a:viewt@ype} {m,n:nat} {l:addr} {mn:int}
   (MUL (m, n, mn) | array_v (@[a][n], m, l)) -<prf> array_v (a, mn, l)
 
 (* ****** ****** *)

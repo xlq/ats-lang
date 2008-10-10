@@ -104,7 +104,8 @@ overload compare with compare_funlab_funlab
 
 fun funlab_make_typ (hit: hityp_t): funlab_t
 fun funlab_make_nam_typ (name: string, hit: hityp_t): funlab_t
-fun funlab_make_cst_typ (d2c: d2cst_t, hit: hityp_t): funlab_t
+fun funlab_make_cst_typ
+  (d2c: d2cst_t, tmparg: hityplstlst, hit: hityp_t): funlab_t
 fun funlab_make_var_typ (d2v: d2var_t, hit: hityp_t): funlab_t
 
 //
@@ -748,7 +749,16 @@ fun ccomp_explst (res: &instrlst_vt, hies: hiexplst): valprimlst
 fun ccomp_exp_tmpvar
   (res: &instrlst_vt, hie0: hiexp, tmp: tmpvar_t): void
 
-//
+(* ****** ****** *)
+
+fun tmpnamtbl_add (fullname: string, vp_funclo: valprim): void
+fun tmpnamtbl_find (fullname: string): Option_vt (valprim)
+
+(* ****** ****** *)
+
+fun template_name_make (basename: string, hitss: hityplstlst_t): string
+fun template_cst_name_make (d2c: d2cst_t, hitss: hityplstlst_t): string
+fun template_var_name_make (d2v: d2var_t, hitss: hityplstlst_t): string
 
 fun ccomp_exp_template_cst (
   loc: loc_t, res: &instrlst_vt, hit0: hityp_t, d2c: d2cst_t, hitss: hityplstlst
@@ -757,7 +767,6 @@ fun ccomp_exp_template_cst (
 fun ccomp_exp_template_var (
   loc: loc_t, res: &instrlst_vt, hit0: hityp_t, d2v: d2var_t, hitss: hityplstlst
 ) : valprim
-
 
 (* ****** ****** *)
 

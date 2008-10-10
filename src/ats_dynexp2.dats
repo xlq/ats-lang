@@ -972,8 +972,14 @@ implement v2ardec_make (loc, d2v, s2v, typ, ini) = '{
 , v2ardec_ini= ini
 }
 
-implement i2mpdec_make (loc, d2c, s2vpss, def) = '{
-  i2mpdec_loc= loc, i2mpdec_cst= d2c, i2mpdec_decarg= s2vpss, i2mpdec_def= def
+implement i2mpdec_make
+  (loc, loc_id, d2c, s2vpss, s2es, s2ps, def) = '{
+  i2mpdec_loc= loc
+, i2mpdec_loc_id= loc_id
+, i2mpdec_cst= d2c
+, i2mpdec_decarg= s2vpss
+, i2mpdec_tmparg= s2es, i2mpdec_tmpgua= s2ps
+, i2mpdec_def= def
 } // end of [i2mpdec_make]
 
 (* ****** ****** *)

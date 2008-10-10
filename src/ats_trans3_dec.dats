@@ -527,12 +527,17 @@ implement d2ec_tr (d2c0) = begin
     end
   | D2Cimpdec d2c => let
       val loc = d2c.i2mpdec_loc
+      val loc_id = d2c.i2mpdec_loc_id
       val decarg = d2c.i2mpdec_decarg
+      val tmparg = d2c.i2mpdec_tmparg
+      val tmpgua = d2c.i2mpdec_tmpgua
       val () = trans3_env_push_sta ()
+      val () = trans3_env_add_proplstlst (loc_id, tmpgua)
       val () = trans3_env_hypo_add_s2qualst (loc, decarg)
       val d3e_def = d2exp_tr_up (d2c.i2mpdec_def)
       val () = trans3_env_pop_sta_and_add_none (loc)
-      val d3c = i3mpdec_make (loc, d2c.i2mpdec_cst, decarg, d3e_def)
+      val d3c = i3mpdec_make
+        (loc, d2c.i2mpdec_cst, decarg, tmparg, d3e_def)
     in
       d3ec_impdec (d2c0.d2ec_loc, d3c)
     end

@@ -172,9 +172,6 @@ implement hityp_s2var_normalize (s2v) = the_stactx_find (s2v)
 
 #define PTR_TYPE_NAME "ats_ptr_type"
 
-extern fun template_name_make
-  (basename: string, hitss: hityplstlst_t): string
-
 implement template_name_make (basename, hitss) = let
   viewtypedef T = $CS.Charlst_vt
   fun aux_char (cs: &T, c: char): void = (cs := $CS.CHARLSTcons (c, cs))
@@ -300,11 +297,6 @@ end // end of [template_arg_match]
 
 (* ****** ****** *)
 
-extern fun tmpnamtbl_add (fullname: string, vp_funclo: valprim): void
-extern fun tmpnamtbl_find (fullname: string): Option_vt (valprim)
-
-(* ****** ****** *)
-
 local
 
 #define TMPNAMETBL_SIZE_HINT 1024
@@ -374,6 +366,32 @@ end // end of [ccomp_tmpdef]
 
 (* ****** ****** *)
 
+implement template_cst_name_make (d2c, hitss) = let
+  val ext = d2cst_ext_get d2c
+  val basename = (
+    if stropt_is_some ext then stropt_unsome ext else let
+      val sym = d2cst_sym_get d2c; val stamp = d2cst_stamp_get d2c
+    in
+      tostringf (
+        "%s$%s", @($Sym.symbol_name sym, $Stamp.tostring_stamp stamp)
+      )
+    end // end of [if]
+  ) : string
+in
+  template_name_make (basename, hitss)
+end // end of [template_cst_name_make]
+
+implement template_var_name_make (d2v, hitss) = let
+  val sym = d2var_sym_get d2v and stamp = d2var_stamp_get d2v
+  val basename = tostringf (
+    "%s$%s", @($Sym.symbol_name sym, $Stamp.tostring_stamp stamp)
+  )
+in
+  template_name_make (basename, hitss)
+end // end of [template_var_name_make]
+
+(* ****** ****** *)
+
 implement ccomp_exp_template_cst
   (loc0, res, hit0, d2c, hitss) = let
   val tmpdef = (
@@ -388,21 +406,7 @@ implement ccomp_exp_template_cst
       end
   ) : tmpdef_t
   val hitss = hityplstlst_normalize (hitss)
-  val fullname = let
-    val ext = d2cst_ext_get d2c
-    val basename = (
-      if stropt_is_some ext then stropt_unsome ext else let
-        val sym = d2cst_sym_get d2c
-        val stamp = d2cst_stamp_get d2c
-      in
-        tostringf (
-          "%s$%s", @($Sym.symbol_name sym, $Stamp.tostring_stamp stamp)
-        )
-      end // end of [if]
-    ) : string
-  in
-    template_name_make (basename, hitss)
-  end // end of [val]
+  val fullname = template_cst_name_make (d2c, hitss)
 (*
   val () = begin
     prerr "ccomp_exp_tmpcst: hit0 = "; prerr hit0; prerr_newline ();
@@ -433,14 +437,7 @@ implement ccomp_exp_template_var
       end
   ) : tmpdef_t
   val hitss = hityplstlst_normalize (hitss)
-  val fullname = let
-    val sym = d2var_sym_get d2v and stamp = d2var_stamp_get d2v
-    val basename = tostringf (
-      "%s$%s", @($Sym.symbol_name sym, $Stamp.tostring_stamp stamp)
-    )
-  in
-    template_name_make (basename, hitss)
-  end // end of [val]
+  val fullname = template_var_name_make (d2v, hitss)
 (*
   val () = begin
     prerr "ccomp_exp_tmpvar: hit0 = "; prerr hit0; prerr_newline ();

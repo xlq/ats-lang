@@ -254,8 +254,9 @@ fun{a:t@ype} list_head_exn {n:nat} (xs: list (a, n)):<!exn> [n>0] a
 
 (* ****** ****** *)
 
-fun list_is_empty {a:t@ype} {n:nat} (xs: list (a, n)):<> bool (n == 0)
-fun list_is_not_empty {a:t@ype} {n:nat} (xs: list (a, n)):<> bool (n > 0)
+// always inline
+fun{} list_is_empty {a:t@ype} {n:nat} (xs: list (a, n)):<> bool (n == 0)
+fun{} list_is_not_empty {a:t@ype} {n:nat} (xs: list (a, n)):<> bool (n > 0)
 overload ~ with list_is_not_empty
 
 (* ****** ****** *)

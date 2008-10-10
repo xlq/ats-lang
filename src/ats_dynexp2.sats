@@ -781,11 +781,10 @@ and v2ardeclst = List v2ardec
 
 and i2mpdec = '{
   i2mpdec_loc= loc_t
+, i2mpdec_loc_id= loc_t
 , i2mpdec_cst= d2cst_t
 , i2mpdec_decarg= s2qualst
-(*
-, i2mpdec_tmparg= s2explst
-*)
+, i2mpdec_tmparg= s2explstlst, i2mpdec_tmpgua= s2explstlst
 , i2mpdec_def= d2exp
 }
 
@@ -1105,7 +1104,15 @@ fun v2aldec_make (_: loc_t, _: p2at, def: d2exp, ann: s2expopt): v2aldec
 fun f2undec_make (_: loc_t, _: d2var_t, def: d2exp, ann: s2expopt): f2undec
 fun v2ardec_make
   (_: loc_t, _: d2var_t, _: s2var_t, typ: s2expopt, ini: d2expopt): v2ardec
-fun i2mpdec_make (_: loc_t, _: d2cst_t, _: s2qualst, def: d2exp): i2mpdec
+
+fun i2mpdec_make (
+    loc: loc_t
+  , loc_id: loc_t
+  , _: d2cst_t
+  , decarg: s2qualst
+  , tmparg: s2explstlst, tmpgua: s2explstlst
+  , def: d2exp
+  ) : i2mpdec
 
 (* ****** ****** *)
 

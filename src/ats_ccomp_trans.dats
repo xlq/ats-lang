@@ -2250,11 +2250,15 @@ end // end of [ccomp_vardeclst]
 
 fn ccomp_impdec
   (res: &instrlst_vt, impdec: hiimpdec): void = let
-  fun aux (res: &instrlst_vt, d2c: d2cst_t, hie: hiexp)
-    : void = begin case+ hie.hiexp_node of
+  fun aux (
+      res: &instrlst_vt
+    , d2c: d2cst_t
+    , tmparg: hityplstlst (* not yet normalized *)
+    , hie: hiexp
+    ) : void = begin case+ hie.hiexp_node of
     | HIElam (hips_arg, hie_body) => let
         val hit = hityp_normalize (hie.hiexp_typ)
-        val fl = funlab_make_cst_typ (d2c, hit)
+        val fl = funlab_make_cst_typ (d2c, tmparg, hit)
         val fc = funlab_funclo_get (fl)
 (*
         val () = begin
@@ -2272,25 +2276,31 @@ fn ccomp_impdec
           } // end of [where]
         val () = the_tailcallst_unmark (pf_tailcallst_mark | (*none*))
 
-        val () = case+ d2cst_kind_get d2c of
-          | $Syn.DCSTKINDval () => begin case+ fc of
-            | $Syn.FUNCLOclo _ => begin
-                the_glocstlst_add_clo d2c; instr_add_define_clo (res, d2c, fl)
-              end
-            | $Syn.FUNCLOfun _ => begin
-                the_glocstlst_add_fun d2c; instr_add_define_fun (res, d2c, fl)
-               end
-            end
-          | _ => ()
+        val () = case+ 0 of
+          | _ when $Lst.list_is_cons tmparg => let
+              val name = funlab_name_get fl in tmpnamtbl_add (name, vp_lam)
+            end // end of [_ when ...]
+          | _ => begin case+ d2cst_kind_get d2c of
+            | $Syn.DCSTKINDval () => begin case+ fc of
+              | $Syn.FUNCLOclo _ => begin
+                  the_glocstlst_add_clo d2c; instr_add_define_clo (res, d2c, fl)
+                end // end of [FUNCLOclo]
+              | $Syn.FUNCLOfun _ => begin
+                  the_glocstlst_add_fun d2c; instr_add_define_fun (res, d2c, fl)
+                 end
+              end // end of [FUNCLOfun]
+            | _ => ()
+          end // end of [_]
       in
         // empty
       end // end of [HIElam]
     | HIEfix (d2v_fix, hie_def) => let
+        // should it require that [tmparg] be empty?
         val hit = hityp_normalize (hie.hiexp_typ)
         val vp_cst = valprim_cst (d2c, hit)
         val () = the_dynctx_add (d2v_fix, vp_cst)
       in
-        aux (res, d2c, hie_def)
+        aux (res, d2c, tmparg, hie_def)
       end // end of [HIEfix]
     | _ => let
         val vp = ccomp_exp (res, hie)
@@ -2315,9 +2325,9 @@ in
     end
   | _ => begin case+ impdec.hiimpdec_decarg of
     | list_cons _ => () // template is not compiled
-    | list_nil () => begin 
-        aux (res, impdec.hiimpdec_cst, impdec.hiimpdec_def)
-      end
+    | list_nil () => begin
+        aux (res, d2c, impdec.hiimpdec_tmparg, impdec.hiimpdec_def)
+      end // end of [list_nil]
   end // end of [if]
 end // end of [ccomp_impdec]
 

@@ -604,11 +604,11 @@ implement hidec_vardecs (loc, hids) = '{
 
 (* ****** ****** *)
 
-implement hiimpdec_make (loc, d2c, tmp, decarg, hie_def) = '{
+implement hiimpdec_make (loc, d2c, tmp, decarg, tmparg, hie_def) = '{
   hiimpdec_loc= loc
 , hiimpdec_cst= d2c
 , hiimpdec_tmp= tmp
-, hiimpdec_decarg= decarg
+, hiimpdec_decarg= decarg(*s2qualst*), hiimpdec_tmparg= tmparg(*hityplstlst*)
 , hiimpdec_def= hie_def
 } // end of [hiimpdec_make]
 

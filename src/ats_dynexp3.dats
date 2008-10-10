@@ -765,10 +765,10 @@ implement f3undec_make (loc, d2v, d3e) = '{
 
 (* ****** ****** *)
 
-implement i3mpdec_make (loc, d2c, s2vpss, d3e) = '{
+implement i3mpdec_make (loc, d2c, s2vpss, s2es, d3e) = '{
   i3mpdec_loc= loc
 , i3mpdec_cst= d2c
-, i3mpdec_decarg= s2vpss
+, i3mpdec_decarg= s2vpss, i3mpdec_tmparg= s2es (* one must be nil *)
 , i3mpdec_def= d3e
 } // end of [i3mpdec_make]
 

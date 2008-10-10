@@ -475,7 +475,7 @@ and hiimpdec = '{ (* implementation *)
   hiimpdec_loc= loc_t
 , hiimpdec_cst= d2cst_t
 , hiimpdec_tmp= int
-, hiimpdec_decarg= s2qualst
+, hiimpdec_decarg= s2qualst, hiimpdec_tmparg= hityplstlst
 , hiimpdec_def= hiexp
 }
 
@@ -704,10 +704,17 @@ fun hidec_valdecs_rec (_: loc_t, hids: hivaldeclst): hidec
 fun hivardec_make (_: loc_t, d2v: d2var_t, ini: hiexpopt): hivardec
 fun hidec_vardecs (_: loc_t, hids: hivardeclst): hidec
 
-fun hiimpdec_make
-  (_: loc_t, d2c: d2cst_t, tmp: int, decarg: s2qualst, _def: hiexp)
-  : hiimpdec
+//
+
+fun hiimpdec_make (
+    _: loc_t
+  , d2c: d2cst_t, tmp: int
+  , decarg: s2qualst, tmparg: hityplstlst,
+  _def: hiexp
+  ) : hiimpdec
 fun hidec_impdec (_: loc_t, hid: hiimpdec): hidec
+
+//
 
 fun hidec_local (_: loc_t, _head: hideclst, _body: hideclst): hidec
 
@@ -739,6 +746,9 @@ fun hityplst_is_cons (hits: hityplst_t): bool
 
 fun hityplstlst_encode (hits: hityplstlst): hityplstlst_t
 fun hityplstlst_decode (hits: hityplstlst_t): hityplstlst
+
+fun hityplstlst_is_nil (hitss: hityplstlst_t): bool
+fun hityplstlst_is_cons (hitss: hityplstlst_t): bool
 
 //
 

@@ -832,11 +832,23 @@ end // end of [trans3_env_add_prop]
 
 implement trans3_env_add_proplst (loc, s2ps) = begin
   case+ s2ps of
-  | list_cons (s2p, s2ps) => begin
-      trans3_env_add_prop (loc, s2p); trans3_env_add_proplst (loc, s2ps)
-    end
+  | list_cons (s2p, s2ps) => let
+      val () = trans3_env_add_prop (loc, s2p)
+    in
+      trans3_env_add_proplst (loc, s2ps)
+    end // end of [list_cons]
   | list_nil () => ()
 end // end of [trans3_env_add_proplst]
+
+implement trans3_env_add_proplstlst (loc, s2pss) = begin
+  case+ s2pss of
+  | list_cons (s2ps, s2pss) => let
+      val () = trans3_env_add_proplst (loc, s2ps)
+    in
+      trans3_env_add_proplstlst (loc, s2pss)
+    end // end of [list_cons]
+  | list_nil () => ()
+end // end of [trans3_env_add_proplstlst]
 
 //
 

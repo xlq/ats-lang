@@ -1073,6 +1073,7 @@ fn i3mpdec_tr (d3c: i3mpdec): hiimpdec = let
   val d2c = d3c.i3mpdec_cst
   val decarg = d3c.i3mpdec_decarg
   val tmp = (case+ decarg of cons _ => 1 | nil _ => 0): int
+  val tmparg = $Lst.list_map_fun (d3c.i3mpdec_tmparg, s2explst_tr)
   val def = d3exp_tr d3c.i3mpdec_def
   val () = begin case+ 0 of
     | _ when d2cst_is_fun d2c => begin
@@ -1090,11 +1091,9 @@ fn i3mpdec_tr (d3c: i3mpdec): hiimpdec = let
       end
     | _ => ()
   end // end of [val]
-  val () = begin
-    if tmp > 0 then tmpcstmap_add (d2c, decarg, def)
-  end
+  val () = if tmp > 0 then tmpcstmap_add (d2c, decarg, def)
 in
-  hiimpdec_make (loc, d2c, tmp, decarg, def)
+  hiimpdec_make (loc, d2c, tmp, decarg, tmparg, def)
 end // end of [i3mpdec_tr]
 
 (* ****** ****** *)

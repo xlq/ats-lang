@@ -253,6 +253,7 @@ fun trans3_env_add_cstr (c3t: c3str): void
 fun trans3_env_add_cstr_ref (r: ref c3stropt): void
 fun trans3_env_add_prop (loc: loc_t, s2p: s2exp): void
 fun trans3_env_add_proplst (loc: loc_t, s2ps: s2explst): void
+fun trans3_env_add_proplstlst (loc: loc_t, s2pss: s2explstlst): void
 fun trans3_env_add_eqeq
   (loc: loc_t, s2e1: s2exp, s2e2: s2exp): void
 fun trans3_env_add_tyleq

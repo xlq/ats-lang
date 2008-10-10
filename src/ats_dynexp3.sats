@@ -390,7 +390,7 @@ and v3ardeclst = List v3ardec
 and i3mpdec = '{
   i3mpdec_loc= loc_t
 , i3mpdec_cst= d2cst_t
-, i3mpdec_decarg= s2qualst
+, i3mpdec_decarg= s2qualst, i3mpdec_tmparg= s2explstlst // one must be nil
 , i3mpdec_def= d3exp
 }
 
@@ -634,8 +634,12 @@ fun v3ardec_make
 
 (* ****** ****** *)
 
-fun i3mpdec_make
-  (_: loc_t, d2c: d2cst_t, decarg: s2qualst, def: d3exp): i3mpdec
+fun i3mpdec_make (
+    _: loc_t
+  , d2c: d2cst_t
+  , decarg: s2qualst, tmparg: s2explstlst (* one of decarg/tmparg must be nil *)
+  , def: d3exp
+  ) : i3mpdec
 
 (* ****** ****** *)
 

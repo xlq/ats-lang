@@ -1710,7 +1710,7 @@ fn s1arglst_bind_svarlst
           if ~(s2var_srt_get s2v <= s2var_srt_get s2v_new) then begin
             prerr s1a.s1arg_loc;
             prerr ": error(2)";
-            $Deb.debug_prerrf (": %s: s1arglst_bind_svarlst_tr", @(THISFILENAME));
+            $Deb.debug_prerrf (": %s: s1arglst_bind_svarlst", @(THISFILENAME));
             prerr ": the ascribed sort for the static variable [";
             prerr s1a.s1arg_sym;
             prerr "] is incorrect.";
@@ -1721,7 +1721,7 @@ fn s1arglst_bind_svarlst
         val () = sub := stasub_add (sub, s2v, s2e_new)
       in
         cons (s2v_new, aux (s1as, s2vs, sub))
-      end
+      end // end of [cons]
     | nil () => nil ()
   val ns1as = $Lst.list_length s1as and ns2vs = $Lst.list_length s2vs
 in
@@ -1737,6 +1737,50 @@ in
   end
 end // end of [s1arglst_bind_svarlst]
       
+(* ****** ****** *)
+
+fn s1explst_bind_svarlst
+  (loc0: loc_t, s1es: s1explst, s2vs: s2varlst, sub: &stasub_t)
+  : s2explst = let
+  fun aux {n:nat} (
+      s1es: list (s1exp, n)
+    , s2vs: list (s2var_t, n)
+    , sub: &stasub_t
+    ) : s2explst = begin case+ s1es of
+    | cons (s1e, s1es) => let
+        val+ cons (s2v, s2vs) = s2vs; val s2e = s1exp_tr_up (s1e)
+        val s2t_s2v = s2var_srt_get s2v and s2t_s2e = s2e.s2exp_srt
+        val () =
+          if ~(s2t_s2e <= s2t_s2v) then begin
+            prerr s1e.s1exp_loc;
+            prerr ": error(2)";
+            $Deb.debug_prerrf (": %s: s1explst_bind_svarlst", @(THISFILENAME));
+            prerr ": the sort of the static expression ["; prerr s1e;
+            prerr "] is expected to be ["; prerr s2t_s2v;
+            prerr "], but it is ["; prerr s2t_s2e; prerr "] instead.";
+            prerr_newline ();
+            $Err.abort {void} ()
+          end
+        val () = sub := stasub_add (sub, s2v, s2e)
+      in
+        list_cons (s2e, aux (s1es, s2vs, sub))
+      end // end of [cons]
+    | nil () => nil ()
+  end // end of [aux]
+  val ns1es = $Lst.list_length s1es and ns2vs = $Lst.list_length s2vs
+in
+  if ns1es <> ns2vs then begin
+    prerr loc0;
+    prerr ": error(2)";
+    if ns1es < ns2vs then prerr ": more template arguments should be given.";
+    if ns1es > ns2vs then prerr ": less template arguments should be given.";
+    prerr_newline ();
+    $Err.abort {s2explst} ()
+  end else begin
+    aux (s1es, s2vs, sub)
+  end // end of [if]
+end // end of [s1explst_bind_svarlst]
+
 (* ****** ****** *)
 
 fun d1exp_tr_ann (d1e0: d1exp, s2e0: s2exp): d2exp = begin
@@ -2001,7 +2045,16 @@ in
 end // end of [i1mpdec_tr_d2cst_select]
 
 fn i1mpdec_tr
-  (i1mparg: s1arglstlst, d1c: i1mpdec): i2mpdec = let
+  (loc0: loc_t, i1mparg: s1arglstlst, d1c: i1mpdec): i2mpdec = let
+  val t1mparg = d1c.i1mpdec_tmparg
+  val () = case+ (i1mparg, t1mparg) of
+    | (cons _, cons _) => begin
+        prerr loc0; prerr ": error(2)";
+        prerr ": template implementation and instantiation may not be combined.";
+        prerr_newline ();
+        $Err.abort {void} ()
+      end // end of [cons, cons]
+    | (_, _) => ()
   val qid = d1c.i1mpdec_qid
   val q = qid.impqi0de_qua and id = qid.impqi0de_sym
   val d2c = begin
@@ -2010,8 +2063,7 @@ fn i1mpdec_tr
       | D2ITEMcst d2c => d2c
       | D2ITEMsym (d2is) => i1mpdec_tr_d2cst_select (d1c, d2is)
       | _ => begin
-          prerr d1c.i1mpdec_loc;
-          prerr ": error(2)";
+          prerr d1c.i1mpdec_loc; prerr ": error(2)";
           $Deb.debug_prerrf (": %s: i1mpdec_tr", @(THISFILENAME));
           prerr ": the identifier [";
           prerr q; prerr id;
@@ -2047,12 +2099,12 @@ fn i1mpdec_tr
     | nil () => (out := s2qualst_reverse out; s2e)
   end // end of [aux1]
 *)
-  fun aux2 (
+  fun aux2_imp (
       loc0: loc_t
     , args: s1arglstlst
     , s2vpss: s2qualst
     , s2e: s2exp
-    , out: &s2qualst
+    , out_imp: &s2qualst
     ) :<cloptr1> s2exp = begin case+ args of
     | cons (arg, args) => begin case+ s2vpss of
       | cons (s2vps, s2vpss) => let
@@ -2061,15 +2113,15 @@ fn i1mpdec_tr
           val () = the_s2expenv_add_svarlst s2vs
           val s2ps = s2explst_subst (sub, s2vps.1)
           val s2e = s2exp_subst (sub, s2e)
-          val () = out := @(s2vs, s2ps) :: out
+          val () = out_imp := @(s2vs, s2ps) :: out_imp
         in
-          aux2 (loc0, args, s2vpss, s2e, out)
+          aux2_imp (loc0, args, s2vpss, s2e, out_imp)
         end // end of [cons]
       | nil () => begin
           prerr loc0;
           prerr ": error(2)";
-          $Deb.debug_prerrf (": %s: i1mpdec_tr: aux2", @(THISFILENAME));
-          prerr ": the implementatiom for [";
+          $Deb.debug_prerrf (": %s: i1mpdec_tr: aux2_imp", @(THISFILENAME));
+          prerr ": the implementation for [";
           prerr q; prerr id;
           prerr "] should be applied to less template arguments.";
           prerr_newline ();
@@ -2077,32 +2129,108 @@ fn i1mpdec_tr
         end // end of [nil]
       end // end of [cons]
     | nil () => let
-       val () = case s2vpss of
-         | cons _ => begin
-             prerr loc0;
-             prerr ": error(2)";
-             $Deb.debug_prerrf (": %s: i1mpdec_tr: aux2", @(THISFILENAME));
-             prerr ": the implementatiom for [";
-             prerr q; prerr id;
-             prerr "] should be applied to more template arguments.";
-             prerr_newline ();
-             $Err.abort {void} ()
-           end // end of [cons]
-         | nil () => ()
+        val () = case+ s2vpss of
+          | cons _ => begin
+              prerr loc0;
+              prerr ": error(2)";
+              $Deb.debug_prerrf (": %s: i1mpdec_tr: aux2_imp", @(THISFILENAME));
+              prerr ": the implementation for [";
+              prerr q; prerr id;
+              prerr "] should be applied to more template arguments.";
+              prerr_newline ();
+              $Err.abort {void} ()
+            end // end of [cons]
+          | nil () => ()
       in
-        s2e // aux1 (s2vpss, s2e, out) // no automatic instantiation
+        s2e // no automatic instantiation
       end // end of [nil]
-  end // end of [aux2]
+  end // end of [aux2_imp]
+  fun aux2_tmp (
+      loc0: loc_t
+    , args: s1explstlst
+    , s2vpss: s2qualst
+    , s2e: s2exp
+    , out_tmparg: &s2explstlst
+    , out_tmpgua: &s2explstlst
+    ) :<cloptr1> s2exp = begin case+ args of
+    | cons (arg, args) => begin case+ s2vpss of
+      | cons (s2vps, s2vpss) => let
+          var sub: stasub_t = stasub_nil
+          val s2es = s1explst_bind_svarlst (loc0, arg, s2vps.0, sub)
+          val s2ps = s2explst_subst (sub, s2vps.1)
+          val s2e = s2exp_subst (sub, s2e)
+          val () = out_tmparg := s2es :: out_tmparg
+          val () = out_tmpgua := s2ps :: out_tmpgua
+        in
+          aux2_tmp (loc0, args, s2vpss, s2e, out_tmparg, out_tmpgua)
+        end // end of [cons]
+      | nil () => begin
+          prerr loc0;
+          prerr ": error(2)";
+          $Deb.debug_prerrf (": %s: i1mpdec_tr: aux2_tmp", @(THISFILENAME));
+          prerr ": the implementation for [";
+          prerr q; prerr id;
+          prerr "] should be applied to less template arguments.";
+          prerr_newline ();
+          $Err.abort {s2exp} ()
+        end // end of [nil]
+      end // end of [cons]
+    | nil () => let
+        val () = case+ s2vpss of
+          | cons _ => begin
+              prerr loc0;
+              prerr ": error(2)";
+              $Deb.debug_prerrf (": %s: i1mpdec_tr: aux2_tmp", @(THISFILENAME));
+              prerr ": the implementation for [";
+              prerr q; prerr id;
+              prerr "] should be applied to more template arguments.";
+              prerr_newline ();
+              $Err.abort {void} ()
+            end // end of [cons]
+          | nil () => ()
+      in
+        s2e // no automatic instantiation
+      end // end of [nil]
+  end // end of [aux2_tmp]
   val (pf_s2expenv | ()) = the_s2expenv_push ()
   val loc_id = qid.impqi0de_loc
   val decarg = d2cst_decarg_get d2c and s2e_d2c = d2cst_typ_get d2c
-  var out: s2qualst = nil ()
-  val s2e = aux2 (loc_id, i1mparg, decarg, s2e_d2c, out)
+  val () = begin case+ decarg of
+    | cons _ => begin case+ (i1mparg, t1mparg) of
+      | (nil (), nil ()) => begin
+          prerr loc0; prerr ": error(2)";
+          prerr ": the dynamic constant [";
+          prerr d2c; prerr "] requires a template implemenation";
+          prerr_newline ();
+          $Err.abort {void} ()
+        end // end of [nil, nil]
+      | (_, _) => ()
+      end // end of [cons]
+    | _ => ()
+  end // end of [val]
+  var out_imp: s2qualst = nil ()
+  var out_tmparg: s2explstlst = nil ()
+  var out_tmpgua: s2explstlst = nil ()
+  val s2e = s2e_d2c
+  val s2e = (case+ i1mparg of
+    | cons _ => aux2_imp (loc_id, i1mparg, decarg, s2e, out_imp)
+    | nil () => s2e
+  ) : s2exp
+  val s2e = (case+ t1mparg of
+    | cons _ => aux2_tmp
+        (loc_id, t1mparg, decarg, s2e, out_tmparg, out_tmpgua)
+    | nil () => s2e
+  ) : s2exp        
   val d2e = d1exp_tr_ann (d1c.i1mpdec_def, s2e)
   val () = d2cst_def_set (d2c, Some d2e)
   val () = the_s2expenv_pop (pf_s2expenv | (*none*))
+  val out_imp = $Lst.list_reverse (out_imp)
+  val out_tmparg = $Lst.list_reverse (out_tmparg)
+  val out_tmpgua = $Lst.list_reverse (out_tmpgua)
 in
-  i2mpdec_make (d1c.i1mpdec_loc, d2c, out, d2e)
+  i2mpdec_make (
+    d1c.i1mpdec_loc, loc_id, d2c, out_imp, out_tmparg, out_tmpgua, d2e
+  ) // end of [i2mpdec_make]
 end // end of [i1mpdec_tr]
 
 (* ****** ****** *)
@@ -2257,9 +2385,10 @@ implement d1ec_tr (d1c0) = begin
        m1acdeflst_tr (knd, d1cs); d2ec_none (d1c0.d1ec_loc)
     end
   | D1Cimpdec (i1mparg, d1c) => let
-      val d2c = i1mpdec_tr (i1mparg, d1c)
+      val loc0 = d1c0.d1ec_loc
+      val d2c = i1mpdec_tr (loc0, i1mparg, d1c)
     in
-      d2ec_impdec (d1c0.d1ec_loc, d2c)
+      d2ec_impdec (loc0, d2c)
     end // end of [D1Cimpdec]
   | D1Clocal (d1cs_head, d1cs_body) => let
       val (pf1_env | ()) = trans2_env_push ()

@@ -431,11 +431,19 @@ implement prerr_hityp_t (hit)=  prerr_hityp (hit)
 (* ****** ****** *)
 
 implement hityplst_is_nil (hits) = begin
-  case+ hits of list_cons _ => false | list_nil => true
+  case+ hits of list_cons _ => false | list_nil () => true
 end
 
 implement hityplst_is_cons (hits) = begin
-  case+ hits of list_cons _ => true | list_nil => false
+  case+ hits of list_cons _ => true | list_nil () => false
+end
+
+implement hityplstlst_is_nil (hitss) = begin
+  case+ hitss of list_cons _ => false | list_nil () => true
+end
+
+implement hityplstlst_is_cons (hitss) = begin
+  case+ hitss of list_cons _ => true | list_nil () => false
 end
 
 (* ****** ****** *)
