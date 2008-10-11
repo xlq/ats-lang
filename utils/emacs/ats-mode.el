@@ -268,7 +268,7 @@
                                 
      ;;     ("[^%]\\({[^|}]*|?[^}]*}\\)" (1 'ats-font-lock-static-face))
      ;;     ("[^']\\(\\[[^]|]*|?[^]]*\\]\\)" (1 'ats-font-lock-static-face))
-     (".<[^>]*>." (0 'ats-font-lock-metric-face))
+     ("\\.<[^>]*>\\." (0 'ats-font-lock-metric-face))
      (ats-font-lock-static-search (0 'ats-font-lock-static-face) 
                                   (1 'ats-font-lock-keyword-face)))
    
