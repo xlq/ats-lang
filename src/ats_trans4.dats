@@ -160,6 +160,8 @@ in
         | Some s2e => s2exp_tr (deep, s2e) | None () => hityp_abs
         end
       | None () => begin
+          prerr "Internal Error: [ats_trans4]: ";
+          prerr_newline ();
           prerr "Internal Error: s2exp_tr: s2t0 = "; prerr s2t0;
           prerr_newline ();
           prerr "Internal Error: s2exp_tr: s2e0 = "; prerr s2e0;

@@ -50,6 +50,7 @@ staload "ats_reference.sats"
 (* ****** ****** *)
 
 staload CS = "ats_charlst.sats"
+staload Deb = "ats_debug.sats"
 staload Err = "ats_error.sats"
 staload HT = "ats_hashtbl.sats"
 staload Lst = "ats_list.sats"
@@ -73,6 +74,10 @@ staload "ats_ccomp_env.sats"
 staload _(*anonymous*) = "ats_reference.dats"
 staload _(*anonymois*) = "ats_hashtbl.dats"
 staload _(*anonymois*) = "ats_map_lin.dats"
+
+(* ****** ****** *)
+
+#define THISFILENAME "ats_ccomp_trans_temp.dats"
 
 (* ****** ****** *)
 
@@ -394,17 +399,6 @@ end // end of [template_var_name_make]
 
 implement ccomp_exp_template_cst
   (loc0, res, hit0, d2c, hitss) = let
-  val tmpdef = (
-    case+ tmpcstmap_find d2c of
-    | ~Some_vt tmpdef => tmpdef | ~None_vt () => begin
-        $Loc.prerr_location loc0;
-        prerr ": the templation definition for [";
-        prerr d2c;
-        prerr "] is unavailable.";
-        prerr_newline ();
-        $Err.abort {tmpdef_t} ()
-      end
-  ) : tmpdef_t
   val hitss = hityplstlst_normalize (hitss)
   val fullname = template_cst_name_make (d2c, hitss)
 (*
@@ -416,26 +410,28 @@ implement ccomp_exp_template_cst
   val ovp = tmpnamtbl_find (fullname)
 in
   case+ ovp of
-  | ~Some_vt vp => vp | ~None_vt () => ccomp_tmpdef (
-      loc0, res, hit0, TMPcst d2c, hitss, fullname, tmpdef
-    ) // end of [ccomp_tmpdef]
-end // end of [ccomp_exp_tmpcst]
+  | ~None_vt () => let
+      val tmpdef = (case+ tmpcstmap_find d2c of
+      | ~Some_vt tmpdef => tmpdef | ~None_vt () => begin
+          $Loc.prerr_location loc0;
+          $Deb.debug_prerrf (": %s: ccomp_exp_template_cst", @(THISFILENAME));
+          prerr ": the template definition for [";
+          prerr d2c;
+          prerr "] is unavailable.";
+          prerr_newline ();
+          $Err.abort {tmpdef_t} ()
+        end
+      ) : tmpdef_t
+    in
+      ccomp_tmpdef (loc0, res, hit0, TMPcst d2c, hitss, fullname, tmpdef)
+    end // end of [None_vt]
+  | ~Some_vt vp => vp
+end // end of [ccomp_exp_template_cst]
 
 (* ****** ****** *)
 
 implement ccomp_exp_template_var
   (loc0, res, hit0, d2v, hitss) = let
-  val tmpdef = (
-    case+ tmpvarmap_find d2v of
-    | ~Some_vt tmpdef => tmpdef | ~None_vt () => begin
-        $Loc.prerr_location loc0;
-        prerr ": the templation definition for [";
-        prerr d2v;
-        prerr "] is unavailable.";
-        prerr_newline ();
-        $Err.abort {tmpdef_t} ()
-      end
-  ) : tmpdef_t
   val hitss = hityplstlst_normalize (hitss)
   val fullname = template_var_name_make (d2v, hitss)
 (*
@@ -447,12 +443,23 @@ implement ccomp_exp_template_var
   val ovp = tmpnamtbl_find (fullname)
 in
   case+ ovp of
-  | ~Some_vt vp => vp | ~None_vt () => begin
-      ccomp_tmpdef (
-        loc0, res, hit0, TMPvar d2v, hitss, fullname, tmpdef
-      )
-    end
-end // end of [ccomp_exp_tmpvar]
+  | ~None_vt () => let
+      val tmpdef = (case+ tmpvarmap_find d2v of
+      | ~Some_vt tmpdef => tmpdef | ~None_vt () => begin
+          $Loc.prerr_location loc0;
+          $Deb.debug_prerrf (": %s: ccomp_exp_template_var", @(THISFILENAME));
+          prerr ": the template definition for [";
+          prerr d2v;
+          prerr "] is unavailable.";
+          prerr_newline ();
+          $Err.abort {tmpdef_t} ()
+        end
+      ) : tmpdef_t
+    in
+      ccomp_tmpdef (loc0, res, hit0, TMPvar d2v, hitss, fullname, tmpdef)
+    end // end of [None_vt]
+  | ~Some_vt vp => vp
+end // end of [ccomp_exp_template_var]
 
 (* ****** ****** *)
 
