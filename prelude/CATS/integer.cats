@@ -49,6 +49,11 @@
 
 /* ****** ****** */
 
+extern ats_ptr_type atspre_tostring_llint (ats_llint_type i) ;
+extern ats_ptr_type atspre_tostring_ullint (ats_ullint_type i) ;
+
+/* ****** ****** */
+
 /* signed integers */
 
 /* ****** ****** */
@@ -282,6 +287,14 @@ atspre_prerr_int (ats_int_type i) {
   return ;
 }
 
+//
+
+static inline
+ats_ptr_type
+atspre_tostring_int (ats_int_type i) {
+  return atspre_tostring_llint (i) ;
+}
+
 /* ****** ****** */
 
 /* unsigned integers */
@@ -466,6 +479,14 @@ atspre_prerr_uint (ats_uint_type i) {
   atspre_fprint_uint(stderr, i) ;
   atspre_stderr_view_set () ;
   return ;
+}
+
+//
+
+static inline
+ats_ptr_type
+atspre_tostring_uint (ats_uint_type i) {
+  return atspre_tostring_ullint (i) ;
 }
 
 /* ****** ****** */
@@ -683,6 +704,14 @@ atspre_prerr_lint (ats_lint_type i) {
   return ;
 }
 
+//
+
+static inline
+ats_ptr_type
+atspre_tostring_lint (ats_lint_type i) {
+  return atspre_tostring_llint (i) ;
+}
+
 /* ****** ****** */
 
 /* unsigned long integers */
@@ -797,6 +826,14 @@ atspre_prerr_ulint (ats_ulint_type i) {
   atspre_fprint_ulint (stderr, i) ;
   atspre_stderr_view_set () ;
   return ;
+}
+
+//
+
+static inline
+ats_ptr_type
+atspre_tostring_ulint (ats_ulint_type i) {
+  return atspre_tostring_ullint (i) ;
 }
 
 /* ****** ****** */

@@ -196,7 +196,7 @@ overload prerr with prerr_int
 // stringization
 
 fun tostring_int (i: int):<> string
-  = "atspre_tostring_llint"
+  = "atspre_tostring_int"
 
 overload tostring with tostring_int
 
@@ -360,7 +360,7 @@ overload prerr with prerr_uint
 // stringization
 
 fun tostring_uint (u: uint):<> string
-  = "atspre_tostring_ullint"
+  = "atspre_tostring_uint"
 
 overload tostring with tostring_uint
 
@@ -719,7 +719,7 @@ overload prerr with prerr_lint
 // stringization
 
 fun tostring_lint (i: lint):<> string
-  = "atspre_tostring_llint"
+  = "atspre_tostring_lint"
 
 overload tostring with tostring_lint
 
@@ -831,7 +831,7 @@ overload prerr with prerr_ulint
 // stringization
 
 fun tostring_ulint (i: ulint):<> string
-  = "atspre_tostring_ullint"
+  = "atspre_tostring_ulint"
 
 overload tostring with tostring_ulint
 

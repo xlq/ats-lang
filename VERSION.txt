@@ -1,6 +1,16 @@
-0.0.2
+0.1.0-unstable
 ###### this line as well as the following ones are ignored ######
+0.0.2
 0.0.2-unstable
 0.0.1
 beta
 alpha
+###### version number usage #####
+x.y.z -> x.y.z' : (z' = z + 1)
+  mostly bug fixes; full backward compatibilies are expected.
+
+x.y.z -> x.y'.0 : (y' = y + 1)
+  mostly minor changes; backward compatibilies are expected in general.
+
+x.y.z -> x'.0.0 : (x' = x + 1)
+  a major change; some backward incompatibilities are likely to appear.

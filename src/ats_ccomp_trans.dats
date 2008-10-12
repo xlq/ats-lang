@@ -1343,17 +1343,17 @@ in
     end // end of [HIEloopexn]
   | HIEptrof_ptr (hie_ptr, hils) => begin
       ccomp_exp_ptrof_ptr (res, hie_ptr, hils)
-    end
+    end // end of [HIEptrof_ptr]
   | HIEptrof_var (d2v_mut, hils) => begin
       ccomp_exp_ptrof_var (res, d2v_mut, hils)
-    end
+    end // end of [HIEptrof_var]
   | HIErefarg (refval, _(*freeknd*), hie) => begin
       ccomp_exp_refarg (res, refval, hie)
-    end
+    end // end of [HIErefarg]
   | HIEseq hies => ccomp_exp_seq (res, hies)
   | HIEsizeof hit => begin
       valprim_sizeof (hityp_normalize hit)
-    end
+    end // end of [HIEsizeof]
   | HIEstring (str, len)=> valprim_string (str, len)
   | HIEtmpcst (d2c, hitss) => let
       val hit0 = hityp_normalize (hie0.hiexp_typ)
@@ -2389,23 +2389,23 @@ in
       val level = d2var_current_level_get ()
     in
       ccomp_vardeclst (res, level, vardecs)
-    end
+    end // end of [HIDvardecs]
   | HIDimpdec impdec => ccomp_impdec (res, impdec)
   | HIDlocal (hids_head, hids_body) => let
       val () = ccomp_declst (res, hids_head)
     in
       ccomp_declst (res, hids_body)
-    end
+    end // end of [HIDlocal]
   | HIDdynload fil => begin
       the_dynfilelst_add (fil); instr_add_dynload_file (res, fil)
-    end
+    end // end of [HIDdynload]
   | HIDstaload (fil) => begin the_stafilelst_add (fil) end
   | HIDlist hids => ccomp_declst (res, hids)
   | _ => begin
       $Loc.prerr_location (hid0.hidec_loc);
       prerr ": ccomp_dec: not implemented yet."; prerr_newline ();
       $Err.abort {void} ()
-    end
+    end // end of [_]
 end // end of [ccomp_dec]
 
 implement ccomp_declst (res, hids) = begin
