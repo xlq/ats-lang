@@ -228,7 +228,8 @@ ats_intinf_mul_intinf_intinf
 
 /* ****** ****** */
 
-extern ats_ptr_type atspre_tostring_llint (ats_mpz_ptr_type x) ;
+// declared in [prelude/CATS/integer.cats]
+extern ats_ptr_type atspre_tostring_llint (ats_llint_type x) ;
 
 static inline
 ats_ptr_type
@@ -236,7 +237,7 @@ ats_intinf_tostring_intinf (ats_mpz_ptr_type x) {
 #ifdef HAVE_GMP_H
   return mpz_get_str((char*)0, 10/*base*/, (mpz_ptr)x) ;
 #else
-  return atspre_tostring_llint (x) ;
+  return atspre_tostring_llint (*x) ;
 #endif
 }
 

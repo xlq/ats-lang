@@ -882,7 +882,13 @@ implement s3iexp_make_s2cst_s2explst (s2c, s2es, s2cs, fds) = begin
       val s2v = s2cfdeflst_replace (s2rt_int, s2c_rel, s2es, s2cs, fds)
     in
       Some_vt (s3iexp_var s2v)
-    end
+    end // end of [Nsub_int_int_int]
+  | _ when s2cstref_cst_equ (IntOfBool_bool_int, s2c) => let
+      val s2c_rel = s2cstref_cst_get (IntOfBool_bool_int_bool)
+      val s2v = s2cfdeflst_replace (s2rt_int, s2c_rel, s2es, s2cs, fds)
+    in
+      Some_vt (s3iexp_var s2v)
+    end // end of [IntOfBool_bool_int]
   // a function cannot be handled
   | _ => let
 (*

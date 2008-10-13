@@ -311,13 +311,18 @@ implement Max_int_int_int_bool = s2cstref_make "max_int_int_int_bool"
 implement Min_int_int_int = s2cstref_make "min_int_int_int"
 implement Min_int_int_int_bool = s2cstref_make "min_int_int_int_bool"
 
+(* ****** ****** *)
+
 implement Abs_int_int = s2cstref_make "abs_int_int"
 implement Abs_int_int_bool = s2cstref_make "abs_int_int_bool"
 
+implement Btw_int_int_int_bool = s2cstref_make "btw_int_int_int_bool"
+
+implement IntOfBool_bool_int = s2cstref_make "int_of_bool"
+implement IntOfBool_bool_int_bool = s2cstref_make "int_of_bool_bool"
+
 implement Nsub_int_int_int = s2cstref_make "nsub_int_int_int"
 implement Nsub_int_int_int_bool = s2cstref_make "nsub_int_int_int_bool"
-
-implement Btw_int_int_int_bool = s2cstref_make "btw_int_int_int_bool"
 
 implement Size_int_int_bool = s2cstref_make "size_int_int_bool"
 implement Sizeof_viewt0ype_int = s2cstref_make "sizeof_viewt0ype_int"

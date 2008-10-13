@@ -50,7 +50,7 @@
 /* ****** ****** */
 
 extern ats_ptr_type atspre_tostring_llint (ats_llint_type i) ;
-extern ats_ptr_type atspre_tostring_ullint (ats_ullint_type i) ;
+extern ats_ptr_type atspre_tostring_ullint (ats_ullint_type u) ;
 
 /* ****** ****** */
 

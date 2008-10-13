@@ -886,8 +886,8 @@ in
     prerr "The needed type is: "; prerr (s2exp_whnf s2e20); prerr_newline ();
     prerr "The actual type is: "; prerr (s2exp_whnf s2e10); prerr_newline ();
     $Err.abort {void} ()
-  end
-end
+  end // end of [if]
+end // end of [s2exp_tyleq_solve]
 
 implement s2explst_arg_tyleq_solve (loc0, s2es10, s2es20) = let
   fun aux {n:nat}

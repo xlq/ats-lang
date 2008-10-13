@@ -174,10 +174,13 @@ val Min_int_int_int_bool : s2cstref_t
 val Abs_int_int : s2cstref_t
 val Abs_int_int_bool : s2cstref_t
 
+val Btw_int_int_int_bool : s2cstref_t
+
+val IntOfBool_bool_int : s2cstref_t
+val IntOfBool_bool_int_bool : s2cstref_t
+
 val Nsub_int_int_int : s2cstref_t
 val Nsub_int_int_int_bool : s2cstref_t
-
-val Btw_int_int_int_bool : s2cstref_t
 
 val Size_int_int_bool : s2cstref_t
 val Sizeof_viewt0ype_int : s2cstref_t

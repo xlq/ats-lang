@@ -413,10 +413,15 @@ stadef abs_int_int_bool (x: int, v: int): bool =
 
 stadef abs_r = abs_int_int_bool
 
-//
+// in-between relation
 
 stadef btw_int_int_int_bool (x: int, y: int, z:int): bool =
   (x <= y && y < z)
+
+// int_of_bool conversion
+
+stadef int_of_bool_bool (b: bool, v: int): bool =
+  (b && v == 1) || (~b && v == 0)
 
 // subtraction relation on natural numbers
 
