@@ -611,7 +611,7 @@ val () = gc_chunk_count_limit_max_set (~1) // no max
   
 val (dna_three, n) = dna_three_get ()
 val dna_three = dna_of_string dna_three
-val dna_table = symtbl_make (dna_three, 0x1000)
+val dna_table = symtbl_make (dna_three, 0x40000)
 val () = assert (n >= 2)
 
 in

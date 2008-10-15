@@ -71,7 +71,6 @@ atspre_tostring_llint (ats_llint_type i0) {
 
 /* ****** ****** */
 
-static /* inline */
 ats_ptr_type
 atspre_tostring_ullint (ats_ullint_type i0) {
   ats_ullint_type i; int n ;

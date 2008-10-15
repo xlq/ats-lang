@@ -2224,7 +2224,8 @@ fn i1mpdec_tr
   val d2e = d1exp_tr_ann (d1c.i1mpdec_def, s2e)
   val () = d2cst_def_set (d2c, Some d2e)
   val () = the_s2expenv_pop (pf_s2expenv | (*none*))
-  val out_imp = $Lst.list_reverse (out_imp)
+  // val out_imp = $Lst.list_reverse (out_imp)
+  val out_imp = s2qualst_reverse (out_imp)
   val out_tmparg = $Lst.list_reverse (out_tmparg)
   val out_tmpgua = $Lst.list_reverse (out_tmpgua)
 in

@@ -522,6 +522,10 @@ overload uint1_of with uint1_of_int
 fun uint1_of_int1 {i:nat} (i: int i):<> uint i
   = "atspre_uint1_of_int1"
 
+fun uint1_of_uint (i: uint):<> [i:nat] uint i
+  = "atspre_uint1_of_uint"
+overload uint1_of with uint1_of_uint
+
 // arithmetic functions and comparison functions
 
 fun usucc {i:nat} (i: uint i):<> uint (i + 1)

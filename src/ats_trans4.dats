@@ -109,17 +109,18 @@ in
                       stasub_add (aux (s2vs, s2es), s2v, s2e)
                   | (nil _, nil _) => stasub_nil
                   | (_, _) => begin
-                      prerr "Internal Error: s2exp_app_tr: S2Eapp: arity error";
+                      prerr "Internal Error: [ats_trans4]";
+                      prerr ": s2exp_app_tr: S2Eapp: arity error";
                       prerr_newline ();
                       $Err.abort {stasub_t} ()
-                    end
+                    end // end [_,_]
               } // end of [where]
               val s2e_app = s2exp_subst (sub, s2e_body)
             in
               s2exp_tr (deep, s2e_app)
             end // end of [S2Elam]
           | _ => hityp_abs
-          end
+          end // end of [Some]
         | None () => hityp_abs
         end // end of [case]
       | None () => hityp_abs
@@ -247,7 +248,8 @@ in
   | S2Evararg _ => hityp_vararg
   | S2Ewth (s2e, _(*wths2es*)) => s2exp_tr (deep, s2e)
   | _ => begin
-      prerr "Internal Error: s2exp_tr: s2e0 = "; prerr s2e0; prerr_newline ();
+      prerr "Internal Error: [ats_trans4]";
+      prerr ": s2exp_tr: s2e0 = "; prerr s2e0; prerr_newline ();
       $Err.abort {hityp} ()
     end
 end // end of [s2exp_tr]
@@ -408,8 +410,8 @@ in
       hipat_var (loc0, hit0, refknd, d2v)
     end
   | _ => begin
-      prerr "Internal Error: p3at_tr: p3t0 = ";
-      prerr_p3at p3t0; prerr_newline ();
+      prerr "Internal Error: [ats_trans4]";
+      prerr ": p3at_tr: p3t0 = "; prerr_p3at p3t0; prerr_newline ();
       $Err.abort {hipat} ()
     end
 end // end of [p3at_tr]
@@ -451,9 +453,8 @@ implement d3explst_funarg_tr (isvararg, npf, d3es) = let
           | D3Erec (_, _, ld3es) => aux0 (hies, ld3es)
           | _ => begin
             $Lst.list_vt_free (hies);
-            prerr "Internal Error";
-            prerr ": d3explst_funarg_tr: aux1: d3e = ";
-            prerr_d3exp d3e;
+            prerr "Internal Error: [ats_trans4]";
+            prerr ": d3explst_funarg_tr: aux1: d3e = "; prerr_d3exp d3e;
             prerr_newline ();
             $Err.abort {hiexplst} ()
           end
@@ -547,8 +548,8 @@ in
         hiexp_sizeof (loc0, hit0, s2exp_tr (0(*deep*), s2e))
       end
     | _ => begin
-        prerr "Internal Error: d3exp_tmpcst_tr: sizeof";
-        prerr_newline ();
+        prerr "Internal Error: [ats_trans4]";
+        prerr ": d3exp_tmpcst_tr: sizeof"; prerr_newline ();
         $Err.abort {hiexp} ()
       end
     end

@@ -544,6 +544,10 @@ static inline
 ats_uint_type
 atspre_uint1_of_int (ats_int_type i) { return i ; }
 
+static inline
+ats_uint_type
+atspre_uint1_of_uint (ats_uint_type u) { return u ; }
+
 #define atspre_uadd atspre_add_uint_uint
 #define atspre_usub atspre_sub_uint_uint
 #define atspre_umul atspre_mul_uint_uint
@@ -552,8 +556,8 @@ atspre_uint1_of_int (ats_int_type i) { return i ; }
 
 static inline
 ats_int_type
-atspre_uimod(ats_uint_type i1, ats_int_type i2) {
-  return (i1 % ((ats_uint_type)i2)) ;
+atspre_uimod(ats_uint_type u1, ats_int_type i2) {
+  return (u1 % ((ats_uint_type)i2)) ;
 }
 
 #define atspre_ult atspre_lt_uint_uint

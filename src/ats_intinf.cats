@@ -229,7 +229,7 @@ ats_intinf_mul_intinf_intinf
 /* ****** ****** */
 
 // declared in [prelude/CATS/integer.cats]
-extern ats_ptr_type atspre_tostring_llint (ats_llint_type x) ;
+extern ats_ptr_type atspre_tostring_llint (ats_llint_type i) ;
 
 static inline
 ats_ptr_type

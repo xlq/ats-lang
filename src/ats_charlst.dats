@@ -47,7 +47,7 @@ end // end of [charlst_free]
 
 //
 
-implement charlst_length (cs) = let
+implement charlst_length (cs) = aux (cs, 0) where {
   fun aux {i,j:nat}
     (cs: !charlst_vt i, j: int j)
     : int (i+j) = begin case+ cs of
@@ -56,14 +56,12 @@ implement charlst_length (cs) = let
       end
     | CHARLSTnil () => (fold@ (cs); j)
   end // end of [aux]
-in
-  aux (cs, 0)
-end // end of [charlst_length]
+} // end of [charlst_length]
 
 //
 
 implement string_make_rev_charlst (cs) = begin
-   string_make_rev_charlst_int (cs, charlst_length cs)
+  string_make_rev_charlst_int (cs, charlst_length cs)
 end // end of [string_make_rev_charlst]
 
 //
@@ -85,15 +83,11 @@ implement charlst_uncons (cs) =
 
 ats_ptr_type
 string_make_rev_charlst_int (ats_ptr_type cs, const ats_int_type n) {
-  char *s0, *s;
+  char *s;
 
-  s0 = ATS_MALLOC (n+1) ;
-  s = s0 + n ;
-  *s = '\0' ; --s ;
-
-  while (!ats_charlst_is_nil(cs)) { *s = ats_charlst_uncons(&cs) ; --s ; }
-
-  return s0 ;
+  s = ATS_MALLOC (n+1) ; s += n ; *s = '\000' ;
+  while (!ats_charlst_is_nil(cs)) { *--s = ats_charlst_uncons(&cs) ; }
+  return s ;
 }
 
 %}

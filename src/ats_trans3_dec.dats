@@ -443,7 +443,13 @@ end // end of [v2ardeclst_tr]
 
 (* ****** ****** *)
 
-implement d2ec_tr (d2c0) = begin
+implement d2ec_tr (d2c0) = let
+(*
+  val () = begin
+    prerr "d2ec_tr: d2c0 = ..."; prerr_newline ()
+  end // end of [val]
+*)
+in
   case+ d2c0.d2ec_node of
   | D2Cnone () => d3ec_none (d2c0.d2ec_loc)
   | D2Clist d2cs => begin
@@ -490,7 +496,7 @@ implement d2ec_tr (d2c0) = begin
     end
   | D2Cextype (name, s2e_def) => begin
 (*
-      print "d3ec_tr: D2Cextype: s2e_def = "; print s2e_def; print_newline ();
+      prerr "d2ec_tr: D2Cextype: s2e_def = "; prerr s2e_def; prerr_newline ();
 *)
       d3ec_extype (d2c0.d2ec_loc, name, s2e_def)
     end
@@ -509,38 +515,43 @@ implement d2ec_tr (d2c0) = begin
       val d3cs = v2aldeclst_tr ($Syn.VALKINDval (), d2cs)
     in
       d3ec_valdecs_par (d2c0.d2ec_loc, d3cs)
-    end
+    end // end of [D2Cvaldecs_par]
   | D2Cvaldecs_rec (d2cs) => let
       val d3cs = v2aldeclst_tr ($Syn.VALKINDval (), d2cs)
     in
       d3ec_valdecs_rec (d2c0.d2ec_loc, d3cs)
-    end
+    end // end of [D2Cvaldecs_rec]
   | D2Cfundecs (decarg, knd, d2cs) => let
       val d3cs = f2undeclst_tr (knd, d2cs)
     in
       d3ec_fundecs (d2c0.d2ec_loc, decarg, knd, d3cs)
-    end
+    end // end of [D2Cfundecs]
   | D2Cvardecs (d2cs) => let
       val d3cs = v2ardeclst_tr (true(*stack*), d2cs)
     in
       d3ec_vardecs (d2c0.d2ec_loc, d3cs)
-    end
-  | D2Cimpdec d2c => let
-      val loc = d2c.i2mpdec_loc
-      val loc_id = d2c.i2mpdec_loc_id
-      val decarg = d2c.i2mpdec_decarg
-      val tmparg = d2c.i2mpdec_tmparg
-      val tmpgua = d2c.i2mpdec_tmpgua
+    end // end of [D2Cvardecs]
+  | D2Cimpdec i2mpdec => let
+      val loc = i2mpdec.i2mpdec_loc
+      val loc_id = i2mpdec.i2mpdec_loc_id
+      val d2c = i2mpdec.i2mpdec_cst
+      val decarg = i2mpdec.i2mpdec_decarg
+      val tmparg = i2mpdec.i2mpdec_tmparg
+      val tmpgua = i2mpdec.i2mpdec_tmpgua
+(*
+      val () = begin
+        prerr "d2ec_tr: D2Cimpdec: d2c = "; prerr d2c; prerr_newline ()
+      end
+*)
       val () = trans3_env_push_sta ()
       val () = trans3_env_add_proplstlst (loc_id, tmpgua)
       val () = trans3_env_hypo_add_s2qualst (loc, decarg)
-      val d3e_def = d2exp_tr_up (d2c.i2mpdec_def)
+      val d3e_def = d2exp_tr_up (i2mpdec.i2mpdec_def)
       val () = trans3_env_pop_sta_and_add_none (loc)
-      val d3c = i3mpdec_make
-        (loc, d2c.i2mpdec_cst, decarg, tmparg, d3e_def)
+      val d3c = i3mpdec_make (loc, d2c, decarg, tmparg, d3e_def)
     in
       d3ec_impdec (d2c0.d2ec_loc, d3c)
-    end
+    end // end of [D2Cimpdec]
   | D2Clocal (d2cs_head, d2cs_body) => let
       val (pf1 | ()) = the_s2cstlst_env_push ()
       val d3cs_head = d2eclst_tr d2cs_head
@@ -590,12 +601,12 @@ implement c3str_final_get () = let
  val s3is_rev = $Lst.list_vt_reverse_list s3is
 (*
  val () = begin
-   print "c3str_final_get: s3is_rev = "; print s3is_rev; print_newline ()
+   prerr "c3str_final_get: s3is_rev = "; prerr s3is_rev; prerr_newline ()
  end
 *)
 in
  c3str_itmlst ($Loc.location_none, C3STRKINDnone (), s3is_rev)
-end
+end // end of [c3str_final_get]
 
 (* ****** ****** *)
 

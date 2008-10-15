@@ -929,7 +929,7 @@ fn trans3_env_hypo_add_disj (s3iss: s3itemlstlst): void = let
   val (vbox pf | p) = ref_get_view_ptr the_s3itemlst
 in
   !p := list_vt_cons (S3ITEMdisj s3iss, !p)
-end
+end // end of [trans3_env_hypo_add_p2atcstlstlst]
 
 (* ****** ****** *)
 

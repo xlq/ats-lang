@@ -74,4 +74,11 @@ function lable into [the_tailcallst]. It is fixed now.
 
 ######
 
+Tuesday, October 14, 2008 (HX)
+
+A type variable of sort [type] may be instantiated with a type of sort
+[t@ype]. This is a serious bug!!!
+
+######
+
  ------------------ end of [BUGS.txt] -------------------

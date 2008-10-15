@@ -50,48 +50,46 @@
 
 ats_ptr_type
 atspre_tostring_llint (ats_llint_type i0) {
-  int i, n ;
-  char *res ;
+  ats_llint_type i, i1 ; int n ; char *res ;
 
-  i = (i0 >= 0 ? i0 : -i0) ;
-  for (n = 0; i > 0; i = i / 10) ++n ;
-  if (i0 < 0) { ++n ; }
+  i1 = (i0 >= 0 ? i0 : -i0) ;
 
-  res = ATS_MALLOC(n+1) ; res = res + n;
+  for (i = i1, n = 0; i > 0; i = i / 10) n += 1 ;
 
-  *res = '\000' ; --res ;
+  if (i0 < 0) n += 1 ; if (i0 == 0) n = 1;
 
-  i = (i0 >= 0 ? i0 : -i0) ;
-  for (n = 0; i > 0; i = i / 10) {
-    *res = ('0' + i % 10) ; --res ;
+  res = ATS_MALLOC(n+1) ; res = res + n ; *res = '\000' ;
+
+  for (i = i1, n = 0; i > 0; i = i / 10) {
+    *--res = ('0' + i % 10) ;
   }
 
-  if (i0 < 0) *res = '-' ;
+  if (i0 < 0) *--res = '-' ; if (i0 == 0) *--res = '0' ;
 
   return res ;
-} /* end of atspre_tostring_llint */
+}
 
 /* ****** ****** */
 
-static /* inline */
 ats_ptr_type
 atspre_tostring_ullint (ats_ullint_type i0) {
-  int i, n ;
+  ats_ullint_type i; int n ;
   char *res ;
 
-  i = i0 ;
-  for (n = 0; i > 0; i = i / 10) ++n ;
+  for (i = i0, n = 0; i > 0; i = i / 10) n += 1 ;
 
-  res = ATS_MALLOC(n+1) ; res = res + n;
-  *res = '\000' ; --res ;
+  if (i0 == 0) n = 1 ;
 
-  i = i0 ;
-  for (n = 0; i > 0; i = i / 10) {
-    *res = ('0' + i % 10) ; --res ;
+  res = ATS_MALLOC(n+1) ; res = res + n; *res = '\000' ;
+  
+  for (i = i0, n = 0; i > 0; i = i / 10) {
+    *--res = ('0' + i % 10) ;
   }
 
+  if (i0 == 0) *--res = '0' ;
+
   return res ;
-} /* end of atspre_tostring_ullint */
+}
 
 %}
 
