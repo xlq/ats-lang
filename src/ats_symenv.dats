@@ -303,30 +303,31 @@ fn symenv_localjoin_err (): symmap itm = begin
   prerr ": [symenv_localjoin]: [env.maplst] is empty";
   prerr_newline ();
   exit (1)
-end
+end // end of [symenv_localjoint]
 
-val m1: symmap itm = let
+val m1 = m where {
   val (vbox pf_ms | p_ms) = ref_get_view_ptr env.maplst
-in
-  case+ !p_ms of
-  | ~list_vt_cons (m, ms) => (!p_ms := (ms: symmaplst itm); m)
-  | list_vt_nil () => begin
-      fold@ (!p_ms); $effmask_ref (symenv_localjoin_err ())
-    end
-
-end // end of [let]
+  val m = (case+ !p_ms of
+    | ~list_vt_cons (m, ms) => begin
+        !p_ms := (ms: symmaplst itm); m
+      end // list of [list_vt_cons]
+    | list_vt_nil () => begin
+        fold@ (!p_ms); $effmask_ref (symenv_localjoin_err ())
+      end // end of [list_vt_nil]
+  ) : symmap itm
+} // end of [where]
 
 val () = symmap_free<itm> m1
 
-val m2: symmap itm = let
+val m2 = m where {
   val (vbox pf_ms | p_ms) = ref_get_view_ptr env.maplst
-in
-  case+ !p_ms of
-  | ~list_vt_cons (m, ms) => (!p_ms := (ms: symmaplst itm); m)
-  | list_vt_nil () => begin
-      fold@ (!p_ms); $effmask_ref (symenv_localjoin_err ())
-    end
-end // end of [let]
+  val m = (case+ !p_ms of
+    | ~list_vt_cons (m, ms) => (!p_ms := (ms: symmaplst itm); m)
+    | list_vt_nil () => begin
+        fold@ (!p_ms); $effmask_ref (symenv_localjoin_err ())
+      end
+  ) : symmap itm 
+} // end of [let]
 
 val (vbox pf_m | p_m) = ref_get_view_ptr env.map
 

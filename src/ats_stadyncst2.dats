@@ -211,6 +211,12 @@ implement Uint_short_short_t0ype =
 
 (* ****** ****** *)
 
+implement Bottom_t0ype_exi =
+  s2cstref_make "bottom_t0ype_exi"
+
+implement Bottom_t0ype_uni =
+  s2cstref_make "bottom_t0ype_uni"
+
 implement Bottom_viewt0ype_exi =
   s2cstref_make "bottom_viewt0ype_exi"
 
@@ -700,6 +706,12 @@ in
 end // end of [s2exp_ussint_t0ype]
 
 (* ****** ****** *)
+
+implement s2exp_bottom_t0ype_exi () =
+  s2exp_cst (s2cstref_cst_get (Bottom_t0ype_exi))
+
+implement s2exp_bottom_t0ype_uni () =
+  s2exp_cst (s2cstref_cst_get (Bottom_t0ype_uni))
 
 implement s2exp_bottom_viewt0ype_exi () =
   s2exp_cst (s2cstref_cst_get (Bottom_viewt0ype_exi))

@@ -602,12 +602,13 @@ implement the_d2varset_env_find_view (s2e0) = let
   fun loop (pf: !unit_v | ld2vsitems: ld2vsitemlst, env: !env_t)
     : void = begin case+ ld2vsitems of
     | list_cons (ld2vsitem, ld2vsitems) => let
-        val () = case+ ld2vsitem of
+        val () = (case+ ld2vsitem of
           | LD2VSITEMlam () => $raise NotFound ()
           | LD2VSITEMllam _(*r_d2vs*) => () // continue search
           | LD2VSITEMset dvs => begin
               d2varset_foreach_main {unit_v} {env_t} (pf | dvs, f, env)
             end
+        ) : void
       in
         loop (pf | ld2vsitems, env)
       end // end of [list_vt_cons]
@@ -640,7 +641,7 @@ implement the_d2varset_env_find_viewat (s2r0, s2ls0) = let
         | ~Some_vt (s2ts2a (*type/addr*)) => let
             val (s2r, s2ls_ft) = s2exp_addr_normalize s2ts2a.1
             val+ ENVcon (s2r0, s2ls0) = env
-            val () = case+ 0 of
+            val () = (case+ 0 of
               | _ when s2exp_syneq (s2r0, s2r) => begin
                 case+ s2lablst_is_prefix (s2ls_ft, s2ls0) of
                 | ~Some_vt (s2ls_bk) => begin
@@ -649,6 +650,7 @@ implement the_d2varset_env_find_viewat (s2r0, s2ls0) = let
                 | ~None_vt () => ()
                 end // end of [_ when ...]
               | _ => ()
+            ) : void
           in
             fold@ env
           end // end of [Some_vt]
@@ -660,12 +662,13 @@ implement the_d2varset_env_find_viewat (s2r0, s2ls0) = let
   fun loop (pf: !unit_v | ld2vsitems: ld2vsitemlst, env: !env_vt)
     : void = begin case+ ld2vsitems of
     | list_cons (ld2vsitem, ld2vsitems) => let
-        val () = case+ ld2vsitem of
+        val () = (case+ ld2vsitem of
           | LD2VSITEMlam () => $raise NotFound ()
           | LD2VSITEMllam _(*r_d2vs*) => () // continue search
           | LD2VSITEMset dvs => begin
               d2varset_foreach_main {unit_v} {env_vt} (pf | dvs, f, env)
             end
+        ) : void
       in
         loop (pf | ld2vsitems, env)
       end

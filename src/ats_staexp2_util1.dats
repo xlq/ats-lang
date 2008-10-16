@@ -1159,7 +1159,7 @@ fun s2exp_subst_flag
       val s2e_fun = s2exp_subst_flag (sub, s2e_fun, flag)
     in
       if flag > flag0 then
-        s2exp_clo_srt (s2e0.s2exp_srt, knd, s2e_fun)
+        s2exp_clo_srt (s2e_fun.s2exp_srt, knd, s2e_fun)
       else s2e0
     end
   | S2Ecrypt s2e => let

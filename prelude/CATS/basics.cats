@@ -49,6 +49,10 @@
 
 /* ****** ****** */
 
+/*
+** HX: cutting the corners? yes. worth it? probably.
+*/
+
 static inline
 ats_ptr_type
 atspre_fun_coerce (ats_ptr_type p) { return p ; }
@@ -56,6 +60,20 @@ atspre_fun_coerce (ats_ptr_type p) { return p ; }
 static inline
 ats_ptr_type
 atspre_clo_coerce (ats_ptr_type p) { return p ; }
+
+/* ****** ****** */
+
+/*
+** HX: cutting the corners? yes. worth it? probably.
+*/
+
+static inline
+ats_ptr_type
+atspre_cloref_cloptr_make (ats_ptr_type p) { return p ; }
+
+static inline
+ats_void_type
+atspre_cloref_cloptr_free (ats_ptr_type p) { return ; }
 
 /* ****** ****** */
 

@@ -61,11 +61,14 @@ in
     end // end of [thunkvalue_value]
 end // end of [lazy_force_crypt]
 
+//
+
 implement{a} lazy_vt_force_crypt (v_lazy) = begin
   case+ $decrypt (v_lazy) of
   | ~thunkvalue_vt_thunk (xf) => let
+      stavar T: t@ype
       val x = $effmask_ref((xf: () -<lin,cloptr1> a) ())
-      val (pf_gc, pf_at | p) = cloptr_get_view_ptr (xf)
+      val (pf_gc, pf_at | p) = cloptr_get_view_ptr {T} (xf)
     in
       ptr_free (pf_gc, pf_at | p); x
     end // end of [thunkvalue_vt_thunk]

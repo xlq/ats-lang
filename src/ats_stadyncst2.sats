@@ -93,8 +93,12 @@ val Uint_short_short_t0ype : s2cstref_t
 
 (* ****** ****** *)
 
+val Bottom_t0ype_exi : s2cstref_t
+val Bottom_t0ype_uni : s2cstref_t
+
 val Bottom_viewt0ype_exi : s2cstref_t
 val Bottom_viewt0ype_uni : s2cstref_t
+
 val Exception_viewtype : s2cstref_t
 val None_viewt0ype : s2cstref_t
 
@@ -267,6 +271,9 @@ fun s2exp_usint_t0ype (): s2exp
 fun s2exp_ussint_t0ype (): s2exp
 
 (* ****** ****** *)
+
+fun s2exp_bottom_t0ype_exi (): s2exp
+fun s2exp_bottom_t0ype_uni (): s2exp
 
 fun s2exp_bottom_viewt0ype_exi (): s2exp
 fun s2exp_bottom_viewt0ype_uni (): s2exp

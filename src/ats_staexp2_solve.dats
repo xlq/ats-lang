@@ -479,6 +479,14 @@ in
       end
     | _ => (err := err + 1)
     end
+  | (S2Eclo (knd1, s2e1), s2en20) => begin case+ s2en20 of
+    | S2Eclo (knd2, s2e2) => let
+        val () = clokind_equal_solve_err (loc0, knd1, knd2, err)
+      in
+        s2exp_tyleq_solve_err (loc0, s2e1, s2e2, err)
+      end // end of [S2Eclo]
+    | _ => (err := err + 1)
+    end
   | (S2Ecrypt s2e1, s2en20) => begin case+ s2en20 of
     | S2Ecrypt s2e2 => s2exp_equal_solve_err (loc0, s2e1, s2e2, err)
     | _ => (err := err + 1)
@@ -812,8 +820,8 @@ in
         prerr "].";
         prerr_newline ();
         err := err + 1
-      end
-    end
+      end // end of [if]
+    end // end of [0, S2CSTLSTnil, list_nil]
   | (_, _, _) => let
 (*
       val () = begin
@@ -823,8 +831,8 @@ in
 *)
     in
       trans3_env_add_eqeq (loc0, s2e1, s2e2)
-    end
-end
+    end // end of (_, _, _)
+end // end of [s2exp_equal_solve_Var_err]
 
 implement s2exp_tyleq_solve_Var_l_err
   (loc0, s2V1, s2e1, s2e2, err) = let
@@ -835,18 +843,36 @@ in
   case+ (ans, s2cs, s2vs) of
   | (0, S2CSTLSTnil (), list_nil ()) => let
       val () = s2exp_tyleq_solve_lbs_err (loc0, lbs, s2e2, err)
+(*
+      val s2t1 = s2Var_srt_get (s2V1)
+      val s2t2 = s2e2.s2exp_srt
+      val () = if s2t2 <= s2t1 then () else begin
+        prerr loc0;
+        prerr ": error(3)";
+        $Deb.debug_prerrf (": %s: s2exp_equal_solve_Var_err", @(THISFILENAME));
+        prerr ": sort mismatch: the sort of [s2V(";
+        prerr s2V1;
+        prerr ")] is [";
+        prerr s2t1;
+        prerr "], but the sort of its upper bound is [";
+        prerr s2t2;
+        prerr "].";
+        prerr_newline ();
+        err := err + 1
+      end // end of [val]
+*)
       val ub = s2Varbound_make (loc0, s2e2)
     in
       s2Var_ubs_set (s2V1, list_cons (ub, ubs))
-    end
+    end // end of [0, S2CSTLSTnil, list_nil]
   | (_, _, _) => let
       val () = begin
         prerr "s2exp_tyleq_solve_Var_l_err: s2e1 = "; prerr s2e1; prerr_newline ();
         prerr "s2exp_tyleq_solve_Var_l_err: s2e2 = "; prerr s2e2; prerr_newline ();
-      end
+      end // end of [val]
     in
       trans3_env_add_tyleq (loc0, s2e1, s2e2)
-    end
+    end // end of [_, _, _]
 end // end of [s2exp_tyleq_solve_Var_l_err]
 
 implement s2exp_tyleq_solve_Var_r_err
@@ -858,7 +884,23 @@ in
   case+ (ans, s2cs, s2vs) of
   | (0, S2CSTLSTnil (), list_nil ()) => let
       val () = s2exp_tyleq_solve_ubs_err (loc0, s2e1, ubs, err)
-      val lb = s2Varbound_make (loc0, s2e1)
+      val s2t1 = s2e1.s2exp_srt
+      val s2t2 = s2Var_srt_get (s2V2)
+      val () = if s2t1 <= s2t2 then () else begin
+        prerr loc0;
+        prerr ": error(3)";
+        $Deb.debug_prerrf (": %s: s2exp_equal_solve_Var_err", @(THISFILENAME));
+        prerr ": sort mismatch: the sort of [s2V(";
+        prerr s2V2;
+        prerr ")] is [";
+        prerr s2t2;
+        prerr "], but the sort of its lower bound is [";
+        prerr s2t1;
+        prerr "].";
+        prerr_newline ();
+        err := err + 1
+      end // end of [val]
+    val lb = s2Varbound_make (loc0, s2e1)
     in
       s2Var_lbs_set (s2V2, list_cons (lb, lbs))
     end

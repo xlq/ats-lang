@@ -309,9 +309,13 @@ and == : (rat, rat) -> bool
 
 (* ****** ****** *)
 
-// an empty viewtype
+viewtypedef bottom_t0ype_uni = {a:t@ype} a
+viewtypedef bottom_t0ype_exi = [a:t@ype | false] a
+
 viewtypedef bottom_viewt0ype_uni = {a:viewt@ype} a
 viewtypedef bottom_viewt0ype_exi = [a:viewt@ype | false] a
+
+(* ****** ****** *)
 
 // some built-in type/viewtype/prop/view constructors
 

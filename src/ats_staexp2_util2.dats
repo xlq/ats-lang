@@ -248,7 +248,7 @@ in
           s2exp_fun_srt (s2t1, fc1, lin, s2fe, npf, s2es_arg, s2e_res)
         end
       | _ => begin
-          if flag > flag0 then s2exp_clo_srt (s2e0.s2exp_srt, knd, s2e) else s2e0
+          if flag > flag0 then s2exp_clo_srt (s2e.s2exp_srt, knd, s2e) else s2e0
         end
     end // end of [S2Eclo]
   | S2Ecrypt (s2e) => let
