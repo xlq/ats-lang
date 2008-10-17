@@ -85,8 +85,7 @@ fun symenv_push {itm:t@ype} (_: symenv_t itm): void
 (* ****** ****** *)
 
 fun symenv_top {itm:t@ype} (_: symenv_t itm): symmap_t itm
-fun symenv_ref_top
- {itm:t@ype} (_: symenv_t itm): ref (symmap_t itm)
+fun symenv_ref_top {itm:t@ype} (_: symenv_t itm): ref (symmap_t itm)
 
 (* ****** ****** *)
 

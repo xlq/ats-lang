@@ -649,11 +649,17 @@ in
   s2exp_cst (s2c)
 end // end of [s2exp_uint_t0ype]
 
-implement s2exp_uint_int_t0ype (i) = begin
-  let val s2c = s2cstref_cst_get (Uint_int_t0ype) in
-    s2exp_cstapp (s2c, '[s2exp_int i])
-  end
+implement s2exp_uint_int_t0ype (i) = let
+  val s2c = s2cstref_cst_get (Uint_int_t0ype)
+in
+  s2exp_cstapp (s2c, '[s2exp_int i])
 end // end of [s2exp_uint_int_t0ype]
+
+implement s2exp_uint_intinf_t0ype (i) = let
+  val s2c = s2cstref_cst_get (Uint_int_t0ype)
+in
+  s2exp_cstapp (s2c, '[s2exp_intinf i])
+end // end of [s2exp_uint_intinf_t0ype]
 
 (* ****** ****** *)
 

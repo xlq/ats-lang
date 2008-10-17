@@ -1999,7 +1999,7 @@ val d3e0: d3exp = case+ d2e0.d2exp_node of
   | D2Eintsp (str, int) => let
       val s2e = case+ intkind_eval (str) of
         | $Syn.INTKINDlint () => s2exp_lint_t0ype ()
-        | $Syn.INTKINDuint () => s2exp_uint_t0ype ()
+        | $Syn.INTKINDuint () => s2exp_uint_intinf_t0ype (int)
         | $Syn.INTKINDulint () => s2exp_ulint_t0ype ()
         | _ => begin
             prerr loc0;

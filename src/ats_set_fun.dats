@@ -48,6 +48,9 @@ datatype avl (a:t@ype+, int (*height*), int (*size*)) =
   | {lh,ls,rh,rs:nat | lh <= rh; rh <= lh+1}
       Br(a, 1+rh, 1+ls+rs) of (a, int(1+rh), avl (a, lh, ls),  avl (a, rh, rs))
 
+typedef avl_dec (a:t@ype, h:int, s:int) = [h1:nat | h1 <= h; h <= h1+1] avl (a, h1, s)
+typedef avl_inc (a:t@ype, h:int, s:int) = [h1:nat | h <= h1; h1 <= h+1] avl (a, h1, s)
+
 typedef avl = [a:t@ype] [h,s:int] avl (a, h, s)
 
 (* ****** ****** *)
@@ -118,8 +121,7 @@ end // end of [avl_foreach]
 (* ****** ****** *)
 
 extern fun{a:t@ype} avl_rotate_l {ls,rh,rs:nat}
-  (e: a, l: avl (a, rh+2, ls), r: avl (a, rh, rs))
-  : [h:nat | rh+2 <= h; h <= rh+3] avl (a, h, 1+ls+rs)
+  (e: a, l: avl (a, rh+2, ls), r: avl (a, rh, rs)): avl_inc (a, rh+2, 1+ls+rs)
 
 implement{a} avl_rotate_l (e, l, r) = begin
   case+ l of
@@ -143,8 +145,7 @@ implement{a} avl_rotate_l (e, l, r) = begin
 end // end of [avl_rotate_l]
 
 extern fun{a:t@ype} avl_rotate_r {lh,ls,rs:nat}
-  (e: a, l: avl (a, lh, ls), r: avl (a, lh+2, rs))
-  : [h:nat | lh+2 <= h; h <= lh+3] avl (a, h, 1+ls+rs)
+  (e: a, l: avl (a, lh, ls), r: avl (a, lh+2, rs)): avl_inc (a, lh+2, 1+ls+rs)
 
 implement{a} avl_rotate_r (e, l, r) = begin
   case+ r of
@@ -176,10 +177,9 @@ extern fun{a:t@ype} avl_insert {h,s:nat}
 extern fun{a:t@ype} avl_insert_br
   {h,lh,ls,rh,rs:nat | lh-1 <= rh; rh <= lh+1; max_r(lh, rh, h-1)}
   (e: a, h: int h, l: avl (a,lh,ls), r: avl (a,rh,rs), ne: a, cmp: cmp_t a)
-  : [h':nat | h <= h'; h' <= h+1] avl (a, h', ls+rs+2)
+  : avl_inc (a, h, ls+rs+2)
 
-implement{a} avl_insert (t, ne, cmp) = begin
-  case+ t of
+implement{a} avl_insert (t, ne, cmp) = begin case+ t of
   | E () => Bl (ne, 1, E (), E ())
   | Bl (e, h, l, r) => avl_insert_br (e, h, l, r, ne, cmp)
   | Br (e, h, l, r) => avl_insert_br (e, h, l, r, ne, cmp)
@@ -208,9 +208,8 @@ end // end of [avl_insert_br]
 
 (* ****** ****** *)
 
-extern fun{a:t@ype} avl_takeout_min
-  {h,s:nat | s > 0} (t: avl (a, h, s), x: &(a?) >> a)
-  : [h':nat | h - 1 <= h'; h' <= h] avl (a, h', s-1)
+extern fun{a:t@ype} avl_takeout_min {h,s:nat | s > 0}
+  (t: avl (a, h, s), x: &(a?) >> a): avl_dec (a, h, s-1)
 
 implement{a} avl_takeout_min (t, x) = begin
   case+ : (x: a) => t of
@@ -238,10 +237,8 @@ end // end of [avl_takeout_min]
 
 (* ****** ****** *)
 
-extern fun{a:t@ype} avl_join_l
-  {lh,ls,rh,rs:nat | lh >= rh}
-  (e: a, l: avl (a, lh, ls), r: avl (a, rh, rs))
-  : [h:nat | lh <= h; h <= lh + 1] avl (a, h, 1+ls+rs)
+extern fun{a:t@ype} avl_join_l {lh,ls,rh,rs:nat | lh >= rh}
+  (e: a, l: avl (a, lh, ls), r: avl (a, rh, rs)): avl_inc (a, lh, 1+ls+rs)
 
 implement{a} avl_join_l (e, l, r) = let
   val lh = avl_height l and rh = avl_height r
@@ -266,10 +263,8 @@ in
   end
 end // end of [avl_join_l]
 
-extern fun{a:t@ype} avl_join_r
-  {lh,ls,rh,rs:nat | lh <= rh}
-  (e: a, l: avl (a, lh, ls), r: avl (a, rh, rs))
-  : [h:nat | rh <= h; h <= rh + 1] avl (a, h, 1+ls+rs)
+extern fun{a:t@ype} avl_join_r {lh,ls,rh,rs:nat | lh <= rh}
+  (e: a, l: avl (a, lh, ls), r: avl (a, rh, rs)): avl_inc (a, rh, 1+ls+rs)
 
 implement{a} avl_join_r (e, l, r) = let
   val lh = avl_height l and rh = avl_height r
@@ -479,9 +474,8 @@ end // end of [avl_union_br]
 
 // removal operation
 
-extern fun{a:t@ype} avl_remove
-  {h,s:nat} (t: avl (a, h, s), e0: a, cmp: cmp_t a)
-  : [h',s':nat | h - 1 <= h'; h' <= h; s' <= s] avl (a, h', s')
+extern fun{a:t@ype} avl_remove {h,s:nat}
+  (t: avl (a, h, s), e0: a, cmp: cmp_t a): [s1:nat | s1 <= s] avl_dec (a, h, s1)
 
 implement{a} avl_remove (t, e0, cmp) = begin case+ t of
   | E () => E ()

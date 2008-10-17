@@ -45,6 +45,8 @@ staload Deb = "ats_debug.sats"
 staload Err = "ats_error.sats"
 staload Lst = "ats_list.sats"
 
+staload Eff = "ats_effect.sats"
+
 (* ****** ****** *)
 
 staload "ats_staexp2.sats"
@@ -130,20 +132,20 @@ implement p2at_typ_syn (p2t0) = let
     | P2Tann (_, s2e) => s2e
     | P2Tany () => begin
         s2exp_Var_make_srt (p2t0.p2at_loc, s2rt_t0ype)
-      end
+      end // end of [P2Tany]
     | P2Tas (_, _, p2t) => p2at_typ_syn (p2t)
     | P2Tbool _ => s2exp_bool_t0ype ()
     | P2Tchar _ => s2exp_char_t0ype ()
     | P2Tcon _ => begin
         s2exp_Var_make_srt (p2t0.p2at_loc, s2rt_t0ype)
-      end
+      end // end of [P2Tcon]
     | P2Tempty () => s2exp_void_t0ype ()
     | P2Texist _ => begin
         prerr p2t0.p2at_loc; prerr ": error(3)";
         prerr ": type synthesis is not supported for an existentially quantified pattern.";
         prerr_newline ();
         $Err.abort {s2exp} ()
-      end
+      end // end of [P2Texist]
     | P2Tfloat _ => s2exp_double_t0ype ()
     | P2Tint _ => s2exp_int_t0ype ()
     | P2Tlist _ => begin
@@ -151,24 +153,24 @@ implement p2at_typ_syn (p2t0) = let
         prerr ": Internal Error: p2at_typ_syn: P2Tlist";
         prerr_newline ();
         $Err.abort {s2exp} ()
-      end
+      end // end of [P2Tlist]
     | P2Tlst _ => begin
         s2exp_Var_make_srt (p2t0.p2at_loc, s2rt_t0ype)
-      end
+      end // end of [P2Tlst]
     | P2Trec (recknd, npf, lp2ts) => let
         val ls2es = labp2atlst_typ_syn (p2t0.p2at_loc, lp2ts)
       in
         s2exp_tyrec (recknd, npf, ls2es)
-      end
+      end // end of [P2Trec]
     | P2Tstring s => s2exp_string_type ()
     | P2Tvar (refknd, d2v) => begin
         s2exp_Var_make_srt (p2t0.p2at_loc, s2rt_t0ype)
-      end
+      end // end of [P2Tvar]
     | P2Tvbox d2v => let
         val s2e = s2exp_Var_make_srt (p2t0.p2at_loc, s2rt_view)
       in
         s2exp_vbox_view_prop (s2e)
-      end
+      end // end of [P2Tvbox]
 in
   p2at_typ_set (p2t0, Some s2e0); s2e0
 end // end of [p2at_typ_syn]
@@ -193,6 +195,7 @@ fn pfarity_check (loc0: loc_t, npf1: int, npf2: int): void =
     prerr_newline ();
     $Err.abort {void} ()
   end
+// end of [pfarity_check]
 
 (* ****** ****** *)
 
@@ -1002,7 +1005,12 @@ in
         end
     end // end of [P2Tstring]
   | P2Tvar (refknd, d2v) => p2at_var_tr_dn (p2t0, refknd, d2v, s2e0)
-  | P2Tvbox d2v => p2at_vbox_tr_dn (loc0, d2v, s2e0)
+  | P2Tvbox d2v => let
+      val () = the_effect_env_check_ref (loc0)
+      val () = the_effect_env_add_eff ($Eff.effect_ref)
+    in
+      p2at_vbox_tr_dn (loc0, d2v, s2e0)
+    end // end of [P2Tvbox]
   | _ => begin
       prerr loc0;
       prerr ": p2at_tr_dn: not implemented yet: p2t0 = ";
@@ -1140,7 +1148,8 @@ in
 end // end of [p2at_proofize]
 
 implement p2atlst_arg_tr_up (npf, p2ts) = let
-  fun aux {n:nat} (i: int, p2ts: p2atlst n): p3atlst n =
+  fun aux {n:nat} .<n>.
+    (i: int, p2ts: p2atlst n): p3atlst n =
     case+ p2ts of
     | cons (p2t, p2ts) => let
         val () = if i > 0 then p2at_proofize p2t
@@ -1166,7 +1175,7 @@ implement p2atlst_arg_tr_dn (npf, p2ts, s2es) = let
     | nil () => nil ()
 in
   aux (npf, p2ts, s2es)
-end
+end // end of [p2atlst_arg_tr_dn]
 
 (* ****** ****** *)
 

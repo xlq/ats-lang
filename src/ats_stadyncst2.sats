@@ -248,6 +248,7 @@ fun s2exp_string_int_type (n: int): s2exp
 fun s2exp_void_t0ype (): s2exp
 fun s2exp_uint_t0ype (): s2exp
 fun s2exp_uint_int_t0ype (i: int): s2exp
+fun s2exp_uint_intinf_t0ype (i: intinf_t): s2exp
 
 (* ****** ****** *)
 
