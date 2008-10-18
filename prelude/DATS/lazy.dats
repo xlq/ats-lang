@@ -47,18 +47,19 @@ assume lazy_viewt0ype_viewtype (a:viewt@ype) = thunkvalue_vt a
 
 in
 
-implement{a} lazy_force_crypt (r) = let
-  val (vbox pf | p) = ref_get_view_ptr ($decrypt r)
+implement{a} lazy_force_crypt (r) = $effmask_ref let
+  val (vbox pf | p) = begin
+    ref_get_view_ptr ($decrypt r) // this effect is ignored!
+  end // end of [val]
 in
   case+ !p of
   | ~thunkvalue_thunk (xf) => let
-      val x = $effmask_ref((xf: () -<cloref1> a) ())
+      val x = $effmask_ref ((xf: () -<cloref1> a) ())
     in
       !p := thunkvalue_value x; x
     end // end of [thunkvalue_thunk]
-  | thunkvalue_value (x) => begin
-      let val () = fold@ (!p) in x end
-    end // end of [thunkvalue_value]
+  | thunkvalue_value (x) => let val () = fold@ (!p) in x end
+    // end of [thunkvalue_value]
 end // end of [lazy_force_crypt]
 
 //

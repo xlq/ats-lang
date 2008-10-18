@@ -41,7 +41,12 @@ k-nucleotide: k-nucleotide.dats
 #	$(ATSCC) -O3 k-nucleotide.dats -o k-nucleotide
 
 k-nucleotide1: k-nucleotide1.dats
-	$(ATSCC) -D_ATS_GCATS -O3 k-nucleotide1.dats hashtable.dats -o k-nucleotide1
+	$(ATSCC) -D_ATS_GCATS -O3 k-nucleotide1.dats -o k-nucleotide1
+#	$(ATSCC) -O3 k-nucleotide1.dats -o k-nucleotide1
+
+k-nucleotide2: k-nucleotide2.dats
+	$(ATSCC) -D_ATS_GCATS -O3 k-nucleotide2.dats hashtable.dats -o k-nucleotide2
+#	$(ATSCC) -O3 k-nucleotide2.dats -o k-nucleotide2
 
 mandelbrot: mandelbrot.dats
 	$(ATSCC) -msse2 -O3 mandelbrot.dats -o mandelbrot

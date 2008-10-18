@@ -2226,8 +2226,8 @@ fn i1mpdec_tr
   val () = the_s2expenv_pop (pf_s2expenv | (*none*))
   // val out_imp = $Lst.list_reverse (out_imp) // a serious bug!!!
   val out_imp = s2qualst_reverse (out_imp)
-  val out_tmparg = $Lst.list_reverse (out_tmparg)
-  val out_tmpgua = $Lst.list_reverse (out_tmpgua)
+  val out_tmparg = $Lst.list_reverse (out_tmparg: s2explstlst)
+  val out_tmpgua = $Lst.list_reverse (out_tmpgua: s2explstlst)
 in
   i2mpdec_make (
     d1c.i1mpdec_loc, loc_id, d2c, out_imp, out_tmparg, out_tmpgua, d2e

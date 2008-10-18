@@ -45,15 +45,18 @@ not handling the case [D2Earrsub].
 
 Monday, September 29, 2008 (HX)
 
-Status: Not yet tried to fix
+STATUS: Fixed on October 16, 2008 (HX)
 
 The interaction between vbox and the effect [ref] is incorrect.
+
+The case [P2Tvbox] in the function [p2at_tr_dn] is modified to take
+into account the ref effect.
 
 ######
 
 Tuesday, October 7, 2008 (HX)
 
-Status: Fixed on October 7, 2008 (HX)
+STATUS: Fixed on October 7, 2008 (HX)
 
 A template tail call does not translate into a jump. This is a serious
 bug!
@@ -76,12 +79,12 @@ function lable into [the_tailcallst]. It is fixed now.
 
 Tuesday, October 14, 2008 (HX)
 
-Status: Fixed on October 15, 2008 (HX)
+STATUS: Fixed on October 15, 2008 (HX)
 
 A type variable of sort [type] may be instantiated with a type of sort
 [t@ype]. This is a serious bug!!!
 
-The function [ s2exp_tyleq_solve_Var_r_err] in [ats_staexp2_solve.dats]
+The function [s2exp_tyleq_solve_Var_r_err] in [ats_staexp2_solve.dats]
 now does the needed subsort checking that should have been there.
 
 ######
