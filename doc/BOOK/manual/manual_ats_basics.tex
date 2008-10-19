@@ -497,6 +497,31 @@ static arguments, if provided, can often enhance the quality and precision
 of the error messages reported in case of typechecking failure.} This is a
 topic to be explored elsewhere in great depth.
 
+\subsection{Template Declaration and Implementation}
+Often, the interface for a template may need to be declared alone.  For
+instance, the interface for the above {\it swap} function template can be
+declared as follows:
+\begin{verbatim}
+extern fun{a,b:t@ype} swap (xy: @(a, b)): @(b, a)
+\end{verbatim}
+Just like a declared function interface, a declared template interface can
+be implemented.  For instance, the following code implements the interface
+declared for the {\it swap} function template:
+\begin{verbatim}
+implement{a,b} swap (xy) = (xy.1, xy.0)
+\end{verbatim}
+This form of template implementation is often referred to as generic
+template implementation in contrast to specialized template implementation
+presented as follows.
+
+It is also allowed to implement specialized templates in ATS. For instance,
+the following code implements the above {\it swap} function template that
+is specialized with the type variables $a$ and $b$ being set to {\it int}
+and {\it int}, respectively:
+\begin{verbatim}
+implement swap<int,int> (xy) = let val s = x + y in (s - x, s - y) end
+\end{verbatim}
+
 \section{Lists}
 In ATS, $\tlistzero$ is a type constructor defined as follows:
 \begin{verbatim}

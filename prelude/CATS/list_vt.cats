@@ -34,8 +34,8 @@
 
 /* ****** ****** */
 
-#ifndef _PRELUDE_LIST_CATS
-#define _PRELUDE_LIST_CATS
+#ifndef _PRELUDE_LIST_VT_CATS
+#define _PRELUDE_LIST_VT_CATS
 
 /* ****** ****** */
 
@@ -43,20 +43,10 @@
 
 /* ****** ****** */
 
-static inline
-ats_ptr_type
-atspre_list0_of_list1 (ats_ptr_type xs) { return xs ; }
-
-static inline
-ats_ptr_type
-atspre_list1_of_list0 (ats_ptr_type xs) { return xs ; }
-
-static inline
-ats_ptr_type
-atspre_list_of_list_vt (ats_ptr_type xs) { return xs ; }
+// it is still empty now!
 
 /* ****** ****** */
 
-#endif /* _PRELUDE_LIST_CATS */
+#endif /* _PRELUDE_LIST_VT_CATS */
 
-/* end of [list.cats] */
+/* end of [list_vt.cats] */

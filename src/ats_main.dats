@@ -317,6 +317,8 @@ fn prelude_load (ATSHOME: string): void = let
   val () = pervasive_load (ATSHOME, "prelude/SATS/matrix.sats")
   val () = pervasive_load (ATSHOME, "prelude/SATS/option.sats")
 
+  val () = pervasive_load (ATSHOME, "prelude/SATS/slseg.sats")
+
   val () = $TransEnv2.trans2_env_pervasive_add_top ()
   val () = $TransEnv3.trans3_env_initialize ()
 in

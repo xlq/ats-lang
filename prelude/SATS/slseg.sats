@@ -36,9 +36,13 @@
 
 (* ****** ****** *)
 
+#include "prelude/params.hats"
+
+(* ****** ****** *)
+
 #if VERBOSE_PRELUDE #then
 
-#print "Loading [list_vt.sats] starts!\n"
+#print "Loading [slseg.sats] starts!\n"
 
 #endif
 
@@ -46,42 +50,57 @@
 
 %{#
 
-include "prelude/CATS/list_vt.cats"
+include "prelude/CATS/slseg.cats"
 
 %}
 
 (* ****** ****** *)
 
-fun{a:viewt@ype} list_vt_of_arraysize
-  {n:nat} (arrsz: arraysize (a, n)):<> list_vt (a, n)
+dataview slseg_v (a:viewt@ype+, addr, addr, int) =
+  | {n:nat} {l1,l2,l3:addr}
+    slseg_v_cons (a, l1, l3, n+1) of (
+      free_gc_v l1, (a, ptr l2) @ l1, slseg_v (a, l2, l3, n)
+    ) // end of [slseg_v_cons]
+  | {l:addr} slseg_v_nil (a, l, l, 0)
 
-fun{a:t@ype} list_vt_free (xs: List_vt a):<> void
+viewdef sllst_v (a: viewt@ype, l:addr, n:int) = slseg_v (a, l, null, n)
+  
+(* ****** ****** *)
+
+prfun slseg_v_extend {a:viewt@ype} {l1,l2,l3:addr} {n:nat}
+  (pf_seg: slseg_v (a, l1, l2, n), pf_gc: free_gc_v l2, pf_at: (a, ptr l3) @ l2)
+  :<prf> slseg_v (a, l1, l3, n+1)
 
 (* ****** ****** *)
 
-fun{a:viewt@ype} list_vt_length {n:nat} (xs: !list_vt (a, n)):<> int n
+prfun slseg_v_append {a:viewt@ype} {l1,l2,l3:addr} {n1,n2:nat}
+  (pf1_seg: slseg_v (a, l1, l2, n1), pf2_seg: slseg_v (a, l2, l3, n2))
+  :<prf> slseg_v (a, l1, l3, n1+n2)
 
 (* ****** ****** *)
 
-fun{a:viewt@ype} list_vt_append
-  {m,n:nat} (xs: list_vt (a, m), ys: list_vt (a, n)):<> list_vt (a, m+n)
-
-fun{a:viewt@ype} list_vt_reverse
-  {n:nat} (xs: list_vt (a, n)):<> list_vt (a, n)
+fun{a:viewt@ype} slseg_foreach_cloptr
+   {v:view} {l1,l2:addr} {n:nat} {f:eff} (
+    pf: !v, pf_seg: !slseg_v (a, l1, l2, n)
+  | p: ptr l1, n: int n, f: !(!v | &a) -<cloptr,f> void
+  ) :<f> void
 
 (* ****** ****** *)
 
-fun{a:viewt@ype} list_vt_foreach_main
-  {v:view} {vt:viewtype} {n:nat} {f:eff}
-  (pf: !v | xs: !list_vt (a, n), f: !(!v | &a, !vt) -<f> void, env: !vt)
-  :<f> void
+fun list_vt_of_sllst {a:viewt@ype} {n:nat} {l:addr}
+  (pf_seg: sllst_v (a, l, n) | p: ptr l): list_vt (a, n)
+  = "atspre_list_vt_of_sllst"
+
+fun sllst_of_list_vt {a:viewt@ype} {n:nat} {l:addr}
+  (xs: list_vt (a, n)): [l:addr] (sllst_v (a, l, n) | ptr l)
+  = "atspre_sllst_list_vt_of"
 
 (* ****** ****** *)
 
 #if VERBOSE_PRELUDE #then
 
-#print "Loading [list_vt.sats] finishes!\n"
+#print "Loading [slseg_v.sats] finishes!\n"
 
 #endif
 
-(* end of [list_vt.sats] *)
+(* end of [slseg_v.sats] *)

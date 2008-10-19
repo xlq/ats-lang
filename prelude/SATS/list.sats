@@ -48,6 +48,14 @@
 
 (* ****** ****** *)
 
+%{#
+
+include "prelude/CATS/list.cats"
+
+%}
+
+(* ****** ****** *)
+
 exception ListSubscriptException
 
 (* ****** ****** *)

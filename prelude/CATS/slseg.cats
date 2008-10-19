@@ -34,8 +34,8 @@
 
 /* ****** ****** */
 
-#ifndef _PRELUDE_LIST_CATS
-#define _PRELUDE_LIST_CATS
+#ifndef _PRELUDE_SLSEG_CATS
+#define _PRELUDE_SLSEG_CATS
 
 /* ****** ****** */
 
@@ -44,19 +44,14 @@
 /* ****** ****** */
 
 static inline
-ats_ptr_type
-atspre_list0_of_list1 (ats_ptr_type xs) { return xs ; }
+ats_ptr_type atspre_list_vt_of_sllst (ats_ptr_type p) { return p ; }
 
 static inline
-ats_ptr_type
-atspre_list1_of_list0 (ats_ptr_type xs) { return xs ; }
-
-static inline
-ats_ptr_type
-atspre_list_of_list_vt (ats_ptr_type xs) { return xs ; }
+ats_ptr_type atspre_sllst_of_list_vt (ats_ptr_type p) { return p ; }
 
 /* ****** ****** */
 
-#endif /* _PRELUDE_LIST_CATS */
+#endif /* _PRELUDE_SLSEG_CATS */
 
-/* end of [list.cats] */
+/* end of [slseg.cats] */
+

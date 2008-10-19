@@ -7,6 +7,8 @@ ats-lang-anariats-0.1.0:
 2. It is now allowed to implement a special template instantiation:
    implement foo<double,string><int> (...) = ...
 
+3. various bug fixes can be found in BUGS.txt.
+
 ########################################################################
 
 ats-lang-anariats-0.0.2:
