@@ -289,24 +289,20 @@ implement{a} list_foreach_main (pf | xs, f, env) = begin
   | nil () => ()
 end // end of [list_foreach]
 
-implement{a} list_foreach_fun {f:eff} (xs, f) = let
+implement{a} list_foreach_fun {v} {f:eff} (pf | xs, f) = let
   val f = coerce (f) where {
-    extern fun coerce (f: a -<f> void):<> (!unit_v | a, !Ptr) -<f> void
+    extern fun coerce (f: (!v | a) -<f> void):<> (!v | a, !Ptr) -<f> void
       = "atspre_fun_coerce"
   } // end of [where]
-  prval pf = unit_v ()
   val () = list_foreach_main (pf | xs, f, null)
-  prval unit_v () = pf
 in
   // empty
 end // end of [list_foreach_fun]
 
-implement{a} list_foreach_cloptr {f:eff} (xs, f) = let
+implement{a} list_foreach_cloptr {v} {f:eff} (pf | xs, f) = let
   viewtypedef cloptr_t = a -<cloptr,f> void
-  fn app (pf: !unit_v | x: a, f: !cloptr_t):<f> void = f (x)
-  prval pf = unit_v ()
-  val () = list_foreach_main<a> {unit_v} {cloptr_t} (pf | xs, app, f)
-  prval unit_v () = pf
+  fn app (pf: !v | x: a, f: !cloptr_t):<f> void = f (x)
+  val () = list_foreach_main<a> {v} {cloptr_t} (pf | xs, app, f)
 in
   // empty
 end // end of [list_foreach_cloptr]
@@ -323,54 +319,88 @@ implement{a1,a2} list_foreach2_main (pf | xs1, xs2, f, env) = begin
   | nil () => ()
 end // end of [list_foreach2_main]
 
-implement{a1,a2} list_foreach2_fun {n} {f} (xs, ys, f) = let
+implement{a1,a2}
+  list_foreach2_fun {v} {n} {f} (pf | xs, ys, f) = let
   val f = coerce (f) where {
-    extern fun coerce (f: (a1, a2) -<f> void)
-      :<> (!unit_v | a1, a2, !Ptr) -<f> void = "atspre_fun_coerce"
+    extern fun coerce (f: (!v | a1, a2) -<f> void)
+      :<> (!v | a1, a2, !Ptr) -<f> void = "atspre_fun_coerce"
   } // end of [where]
-  prval pf = unit_v ()
   val () = list_foreach2_main (pf | xs, ys, f, null)
-  prval unit_v () = pf
 in
   // empty
 end // end of [list_foreach2_fun]
 
-implement{a1,a2} list_foreach2_cloptr {n} {f:eff} (xs1, xs2, f) = let
-  viewtypedef cloptr_t = (a1, a2) -<cloptr,f> void
-  fn app (pf: !unit_v | x1: a1, x2: a2, f: !cloptr_t):<f> void =
-    f (x1, x2)
-  prval pf = unit_v ()
+implement{a1,a2}
+  list_foreach2_cloptr {v} {n} {f:eff} (pf | xs1, xs2, f) = let
+  viewtypedef cloptr_t = (!v | a1, a2) -<cloptr,f> void
+  fn app (pf: !v | x1: a1, x2: a2, f: !cloptr_t):<f> void =
+    f (pf | x1, x2)
   val () = begin
-    list_foreach2_main<a1,a2> {unit_v} {cloptr_t} (pf | xs1, xs2, app, f)
+    list_foreach2_main<a1,a2> {v} {cloptr_t} (pf | xs1, xs2, app, f)
   end
-  prval unit_v () = pf
 in
   // empty
 end // end of [list_foreach2_cloptr]
 
 (* ****** ****** *)
 
-implement{a} list_iforeach_cloptr {n} {f:eff} (xs, f) = let
-  viewtypedef cloptr_t = (natLt n, a) -<cloptr,f> void
+implement{a} list_iforeach_cloptr {v} {n} {f:eff} (pf | xs, f) = let
+  viewtypedef cloptr_t = (!v | natLt n, a) -<cloptr,f> void
   fun aux {i,j:nat | i+j==n} .<j>.
-    (i: int i, xs: list (a, j), f: !cloptr_t) :<f> void = begin
-    case+ xs of x :: xs => (f (i, x); aux (i+1, xs, f)) | nil () => ()
+    (pf: !v | i: int i, xs: list (a, j), f: !cloptr_t) :<f> void = begin
+    case+ xs of x :: xs => (f (pf | i, x); aux (pf | i+1, xs, f)) | nil () => ()
   end // end of [aux]
 in
-  aux (0, xs, f)
+  aux (pf | 0, xs, f)
 end // end of [list_iforeach]
 
-implement{a1,a2} list_iforeach2_cloptr {n} {f:eff} (xs1, xs2, f) = let
-  viewtypedef cloptr_t = (natLt n, a1, a2) -<cloptr,f> void
+implement{a} list_iforeach_cloref {v} {n} {f:eff} (pf | xs, f) = let
+  typedef cloref_type = (!v | natLt n, a) -<cloref,f> void
+  viewtypedef cloptr_type = (!v | natLt n, a) -<cloptr,f> void
+  val f = cloref_cloptr_make (f) where {
+    extern fun cloref_cloptr_make (f: cloref_type):<> cloptr_type
+      = "atspre_cloref_cloptr_make"
+  } // end of [where]
+  val () = list_iforeach_cloptr<a> {v} {n} {f} (pf | xs, f)
+  val () = cloref_cloptr_free (f) where {
+    extern fun cloref_cloptr_free (f: cloptr_type):<> void
+      = "atspre_cloref_cloptr_free"
+  } // end of [where]
+in
+  // empty
+end // end of [list_iforeach_cloref]
+
+(* ****** ****** *)
+
+implement{a1,a2} list_iforeach2_cloptr
+  {v} {n} {f:eff} (pf | xs1, xs2, f) = let
+  viewtypedef cloptr_t = (!v | natLt n, a1, a2) -<cloptr,f> void
   fun aux {i,j:nat | i+j==n} .<j>.
-    (i: int i, xs1: list (a1, j), xs2: list (a2, j), f: !cloptr_t)
+    (pf: !v | i: int i, xs1: list (a1, j), xs2: list (a2, j), f: !cloptr_t)
     :<f> void = begin case+ (xs1, xs2) of
-    | (x1 :: xs1, x2 :: xs2) => (f (i, x1, x2); aux (i+1, xs1, xs2, f))
+    | (x1 :: xs1, x2 :: xs2) => (f (pf | i, x1, x2); aux (pf | i+1, xs1, xs2, f))
     | (nil (), nil ()) => ()
   end // end of [aux]
 in
-  aux (0, xs1, xs2, f)
+  aux (pf | 0, xs1, xs2, f)
 end // end of [list_iforeach2_cloptr]
+
+implement{a1,a2}
+  list_iforeach2_cloref {v} {n} {f:eff} (pf | xs1, xs2, f) = let
+  typedef cloref_type = (!v | natLt n, a1, a2) -<cloref,f> void
+  viewtypedef cloptr_type = (!v | natLt n, a1, a2) -<cloptr,f> void
+  val f = cloref_cloptr_make (f) where {
+    extern fun cloref_cloptr_make (f: cloref_type):<> cloptr_type
+      = "atspre_cloref_cloptr_make"
+  } // end of [where]
+  val () = list_iforeach2_cloptr<a1,a2> {v} {n} {f} (pf | xs1, xs2, f)
+  val () = cloref_cloptr_free (f) where {
+    extern fun cloref_cloptr_free (f: cloptr_type):<> void
+      = "atspre_cloref_cloptr_free"
+  } // end of [where]
+in
+  // empty
+end // end of [list_iforeach2_cloref]
 
 (* ****** ****** *)
 

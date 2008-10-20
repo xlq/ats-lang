@@ -50,7 +50,7 @@
 
 %{#
 
-include "prelude/CATS/list.cats"
+#include "prelude/CATS/list.cats"
 
 %}
 
@@ -210,14 +210,14 @@ overload list_forall2 with list_forall2_cloref
 fun{a:t@ype} list_foreach_main {v:view} {vt:viewtype} {f:eff}
   (pf: !v | xs: List a, f: (!v | a, !vt) -<fun,f> void, env: !vt):<f> void
 
-fun{a:t@ype} list_foreach_fun {f:eff}
-  (xs: List a, f: a -<fun,f> void):<f> void
+fun{a:t@ype} list_foreach_fun {v:view} {f:eff}
+  (pf: !v | xs: List a, f: (!v | a) -<fun,f> void):<f> void
 
-fun{a:t@ype} list_foreach_cloptr {f:eff}
-  (xs: List a, f: !a -<cloptr,f> void):<f> void
+fun{a:t@ype} list_foreach_cloptr {v:view} {f:eff}
+  (pf: !v | xs: List a, f: !a -<cloptr,f> void):<f> void
 
-fun{a:t@ype} list_foreach_cloref {f:eff}
-  (xs: List a, f: !a -<cloref,f> void):<f> void
+fun{a:t@ype} list_foreach_cloref {v:view} {f:eff}
+  (pf: !v | xs: List a, f: !a -<cloref,f> void):<f> void
 
 (* ****** ****** *)
 
@@ -230,20 +230,43 @@ fun{a1,a2:t@ype} list_foreach2_main
   , env: !vt
   ) :<f> void
 
-fun{a1,a2:t@ype} list_foreach2_fun {n:nat} {f:eff}
-  (xs: list (a1, n), ys: list (a2, n), f: !(a1, a2) -<fun,f> void):<f> void
+fun{a1,a2:t@ype} list_foreach2_fun {v:view} {n:nat} {f:eff} (
+    pf: !v
+  | xs: list (a1, n)
+  , ys: list (a2, n)
+  , f: !(!v | a1, a2) -<fun,f> void
+  ) :<f> void
 
-fun{a1,a2:t@ype} list_foreach2_cloptr {n:nat} {f:eff}
-  (xs: list (a1, n), ys: list (a2, n), f: !(a1, a2) -<cloptr,f> void):<f> void
+fun{a1,a2:t@ype} list_foreach2_cloptr {v:view} {n:nat} {f:eff} (
+    pf: !v
+  | xs: list (a1, n)
+  , ys: list (a2, n)
+  , f: !(!v | a1, a2) -<cloptr,f> void
+  ) :<f> void
 
 (* ****** ****** *)
 
-fun{a:t@ype} list_iforeach_cloptr {n:nat} {f:eff}
-  (xs: list (a, n), f: !(natLt n, a) -<cloptr,f> void):<f> void
+fun{a:t@ype} list_iforeach_cloptr {v:view} {n:nat} {f:eff}
+  (pf: !v | xs: list (a, n), f: !(!v | natLt n, a) -<cloptr,f> void):<f> void
 
-fun{a1,a2:t@ype} list_iforeach2_cloptr {n:nat} {f:eff}
-  (xs: list (a1, n), ys: list (a2, n), f: !(natLt n, a1, a2) -<cloptr,f> void)
-  :<f> void
+fun{a:t@ype} list_iforeach_cloref {v:view} {n:nat} {f:eff}
+  (pf: !v | xs: list (a, n), f: !(!v | natLt n, a) -<cloref,f> void):<f> void
+
+(* ****** ****** *)
+
+fun{a1,a2:t@ype} list_iforeach2_cloptr {v:view} {n:nat} {f:eff} (
+    pf: !v
+  | xs: list (a1, n)
+  , ys: list (a2, n)
+  , f: !(!v | natLt n, a1, a2) -<cloptr,f> void
+  ) :<f> void
+
+fun{a1,a2:t@ype} list_iforeach2_cloref {v:view} {n:nat} {f:eff} (
+    pf: !v
+  | xs: list (a1, n)
+  , ys: list (a2, n)
+  , f: !(!v | natLt n, a1, a2) -<cloref,f> void
+  ) :<f> void
 
 (* ****** ****** *)
 

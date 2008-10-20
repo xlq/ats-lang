@@ -241,26 +241,24 @@ end // end of [array_exch]
 
 (* ****** ****** *)
 
-implement foreach_array_ptr_tsz_cloptr {a} {n} {f} (f, A, asz, tsz) = let
-  viewtypedef cloptr_t = (&a) -<cloptr,f> void
-  fn app (pf: !unit_v | x: &a, f: !cloptr_t):<f> void = f (x)
-  prval pf = unit_v ()
-  val () = foreach_array_ptr_tsz_main {a}
-    {unit_v} {cloptr_t} (pf | app, A, asz, tsz, f)
-  prval unit_v () = pf
+implement foreach_array_ptr_tsz_cloptr
+  {a} {v} {n} {f} (pf | f, A, asz, tsz) = let
+  viewtypedef cloptr_t = (!v | &a) -<cloptr,f> void
+  fn app (pf: !v | x: &a, f: !cloptr_t):<f> void = f (pf | x)
+  val () = foreach_array_ptr_tsz_main
+    {a} {v} {cloptr_t} (pf | app, A, asz, tsz, f)
 in
   // empty
 end // end of [foreach_array_ptr_tsz_cloptr]
 
 (* ****** ****** *)
 
-implement iforeach_array_ptr_tsz_cloptr {a} {n} {f} (f, A, asz, tsz) = let
-  viewtypedef cloptr_t = (natLt n, &a) -<cloptr,f> void
-  fn app (pf: !unit_v | i: natLt n, x: &a, f: !cloptr_t):<f> void = f (i, x)
-  prval pf = unit_v ()
-  val () = iforeach_array_ptr_tsz_main {a}
-    {unit_v} {cloptr_t} (pf | app, A, asz, tsz, f)
-  prval unit_v () = pf
+implement
+  iforeach_array_ptr_tsz_cloptr {a} {v} {n} {f} (pf | f, A, asz, tsz) = let
+  viewtypedef cloptr_t = (!v | natLt n, &a) -<cloptr,f> void
+  fn app (pf: !v | i: natLt n, x: &a, f: !cloptr_t):<f> void = f (pf | i, x)
+  val () = iforeach_array_ptr_tsz_main
+    {a} {v} {cloptr_t} (pf | app, A, asz, tsz, f)
 in
   // empty
 end // end of [iforeach_array_ptr_tsz_cloptr]
@@ -279,12 +277,11 @@ in
   loop (pf | f, A, asz, 0, env)
 end // end of [foreach_array_main]
 
-implement{a} foreach_array_cloptr {n} {f} (f, A, asz) = let
-  viewtypedef cloptr_t = a -<cloptr,f> void
-  fn app (pf: !unit_v | x: a, f: !cloptr_t):<f> void = f (x)
-  prval pf = unit_v ()
-  val () = foreach_array_main<a> {unit_v} {cloptr_t} (pf | app, A, asz, f)
-  prval unit_v () = pf
+implement{a}
+  foreach_array_cloptr {v} {n} {f} (pf | f, A, asz) = let
+  viewtypedef cloptr_t = (!v | a) -<cloptr,f> void
+  fn app (pf: !v | x: a, f: !cloptr_t):<f> void = f (pf | x)
+  val () = foreach_array_main<a> {v} {cloptr_t} (pf | app, A, asz, f)
 in
   // empty
 end // end of [foreach_array_cloptr]
@@ -306,13 +303,11 @@ in
   // empty
 end // end of [iforeach_array_main]
 
-implement{a} iforeach_array_cloptr {n} {f} (f, A, asz) = let
-  viewtypedef cloptr_t = (natLt n, a) -<cloptr,f> void
-  fn app (pf: !unit_v | i: natLt n, x: a, f: !cloptr_t):<f> void =
-    f (i, x)
-  prval pf = unit_v ()
-  val () = iforeach_array_main<a> {unit_v} {cloptr_t} (pf | app, A, asz, f)
-  prval unit_v () = pf
+implement{a}
+  iforeach_array_cloptr {v} {n} {f} (pf | f, A, asz) = let
+  viewtypedef cloptr_t = (!v | natLt n, a) -<cloptr,f> void
+  fn app (pf: !v | i: natLt n, x: a, f: !cloptr_t):<f> void = f (pf | i, x)
+  val () = iforeach_array_main<a> {v} {cloptr_t} (pf | app, A, asz, f)
 in
   // empty
 end // end of [iforeach_array_cloptr]

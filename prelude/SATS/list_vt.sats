@@ -46,7 +46,7 @@
 
 %{#
 
-include "prelude/CATS/list_vt.cats"
+#include "prelude/CATS/list_vt.cats"
 
 %}
 

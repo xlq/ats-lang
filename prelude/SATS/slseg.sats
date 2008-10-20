@@ -50,7 +50,7 @@
 
 %{#
 
-include "prelude/CATS/slseg.cats"
+#include "prelude/CATS/slseg.cats"
 
 %}
 

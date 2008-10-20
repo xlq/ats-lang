@@ -292,8 +292,10 @@ fun foreach_array_ptr_tsz_main
   ) :<f> void
   = "atspre_foreach_array_ptr_tsz_main"
 
-fun foreach_array_ptr_tsz_cloptr {a:viewt@ype} {n:nat} {f:eff} (
-    f: !((&a) -<cloptr,f> void)
+fun foreach_array_ptr_tsz_cloptr
+  {a:viewt@ype} {v:view} {n:nat} {f:eff} (
+    pf: !v
+  | f: !(!v | &a) -<cloptr,f> void
   , base: &(@[a][n])
   , asz: int n
   , tsz: sizeof_t a
@@ -313,8 +315,10 @@ fun iforeach_array_ptr_tsz_main
   ) :<f> void
   = "atspre_iforeach_array_ptr_tsz_main"
 
-fun iforeach_array_ptr_tsz_cloptr {a:viewt@ype} {n:nat} {f:eff} (
-    f: !((natLt n, &a) -<cloptr,f> void)
+fun iforeach_array_ptr_tsz_cloptr
+  {a:viewt@ype} {v:view} {n:nat} {f:eff} (
+    pf: !v
+  | f: !(!v | natLt n, &a) -<cloptr,f> void
   , base: &(@[a][n])
   , asz: int n
   , tsz: sizeof_t a
@@ -385,9 +389,8 @@ fun{a:t@ype} foreach_array_main {v:view} {vt:viewtype} {n:nat} {f:eff} (
   ) :<f,!ref> void
 overload foreach with foreach_array_main
 
-fun{a:t@ype} foreach_array_cloptr {n:nat} {f:eff} (
-    f: !(a -<cloptr,f> void)
-  , A: array (a, n), asz: int n
+fun{a:t@ype} foreach_array_cloptr {v:view} {n:nat} {f:eff} (
+    pf: !v | f: !(!v | a) -<cloptr,f> void, A: array (a, n), asz: int n
   ) :<f,!ref> void
 overload foreach with foreach_array_cloptr
 
@@ -401,9 +404,8 @@ fun{a:t@ype} iforeach_array_main {v:view} {vt:viewtype} {n:nat} {f:eff} (
   ) :<f,!ref> void
 overload iforeach with iforeach_array_main
 
-fun{a:t@ype} iforeach_array_cloptr {n:nat} {f:eff} (
-    f: !((natLt n, a) -<cloptr,f> void)
-  , A: array (a, n), asz: int n
+fun{a:t@ype} iforeach_array_cloptr {v:view} {n:nat} {f:eff} (
+    pf: !v | f: !(!v | natLt n, a) -<cloptr,f> void, A: array (a, n), asz: int n
   ) :<f,!ref> void
 overload iforeach with iforeach_array_cloptr
 
