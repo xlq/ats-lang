@@ -202,6 +202,8 @@ in
   @{ data= ptr, view= pfbox }
 end // end of [array_make_elt]
 
+//
+
 implement array_make_fun_tsz_cloptr {a} (asz, f, tsz) = let
   val (pf_gc, pf_arr | p_arr) = array_ptr_alloc_tsz {a} (asz, tsz)
   val () = array_ptr_initialize_fun_tsz_cloptr {a} (!p_arr, asz, f, tsz)
@@ -224,84 +226,17 @@ end // end of [array_set_elt_at]
 
 //
 
-implement{a} array_exch (A, i1, i2) = begin
+implement{a} array_exch (A, i1, i2) =
   if i1 <> i2 then let
     val A_data = A.data; prval vbox pf = A.view
   in
     array_ptr_exch<a> (!A_data, i1, i2)
   end
-end // end of [array_exch]
-
-(* ****** ****** *)
-
-implement foreach_array_ptr_tsz_cloptr {a} {n} {f} (f, A, asz, tsz) = let
-  viewtypedef cloptr_t = (&a) -<cloptr,f> void
-  fn app (pf: !unit_v | x: &a, f: !cloptr_t):<f> void = f (x)
-  prval pf = unit_v ()
-  val () = foreach_array_ptr_tsz_main {a}
-    {unit_v} {cloptr_t} (pf | app, A, asz, tsz, f)
-  prval unit_v () = pf
-in
-  // empty
-end // end of [foreach_array_ptr_tsz_cloptr]
-
-(* ****** ****** *)
-
-implement iforeach_array_ptr_tsz_cloptr {a} {n} {f} (f, A, asz, tsz) = let
-  viewtypedef cloptr_t = (natLt n, &a) -<cloptr,f> void
-  fn app (pf: !unit_v | i: natLt n, x: &a, f: !cloptr_t):<f> void = f (i, x)
-  prval pf = unit_v ()
-  val () = iforeach_array_ptr_tsz_main {a}
-    {unit_v} {cloptr_t} (pf | app, A, asz, tsz, f)
-  prval unit_v () = pf
-in
-  // empty
-end // end of [iforeach_array_ptr_tsz_cloptr]
-
-(* ****** ****** *)
-
-implement{a} foreach_array_main {v} {vt} {n} {f} (pf | f, A, asz, env) = let
-  typedef fun_t = (!v | a, !vt) -<f> void
-  fun loop {i:nat | i <= n} .<n-i>. (
-      pf: !v | f: fun_t, A: array (a, n), n: int n, i: int i, env: !vt
-    ) :<f,!ref> void = begin
-    if i < n then (f (pf | A[i], env); loop (pf | f, A, n, i+1, env)) else ()
-  end // end of [loop]
-in
-  loop (pf | f, A, asz, 0, env)
-end // end of [foreach_array_main]
-
-implement{a} foreach_array_cloptr {n} {f} (f, A, asz) = let
-  viewtypedef cloptr_t = a -<cloptr,f> void
-  fn app (pf: !unit_v | x: a, f: !cloptr_t):<f> void = f (x)
-  prval pf = unit_v ()
-  val () = foreach_array_main<a> {unit_v} {cloptr_t} (pf | app, A, asz, f)
-  prval unit_v () = pf
-in
-  // empty
-end // end of [foreach_array_cloptr]
+// end of [array_exch]
 
 (* ****** ****** *)
 
 %{$
-
-ats_void_type
-atspre_array_ptr_initialize_fun_tsz_main (
-   ats_ptr_type A
- , ats_int_type asz
- , ats_ptr_type f
- , ats_int_type tsz
- , ats_ptr_type env
- ) {
-  int i = 0;
-  ats_ptr_type p = A ;
-  while (i < asz) {
-    ((ats_void_type (*)(ats_ptr_type, ats_int_type, ats_ptr_type))f)(p, i, env) ;
-    p = (ats_ptr_type)(((char *)p) + tsz) ;
-    ++i ;
-  }
-  return ;
-}
 
 ats_void_type
 atspre_array_ptr_initialize_fun_tsz_mainclo (
@@ -316,45 +251,7 @@ atspre_array_ptr_initialize_fun_tsz_mainclo (
   while (i < asz) {
     ((ats_void_type (*)(ats_clo_ptr_type, ats_ptr_type, ats_int_type, ats_ptr_type))ats_closure_fun(f))(f, p, i, env) ;
     p = (ats_ptr_type)(((char *)p) + tsz) ;
-    ++i ;
-  }
-  return ;
-}
-
-/* ****** ****** */
-
-ats_void_type
-atspre_foreach_array_ptr_tsz_main (
-   ats_ptr_type f
- , ats_ptr_type A
- , ats_int_type asz
- , ats_int_type tsz
- , ats_ptr_type env
- ) {
-  int i = 0;
-  ats_ptr_type p = A ;
-  while (i < asz) {
-    ((ats_void_type (*)(ats_ptr_type, ats_ptr_type))f)(p, env) ;
-    p = (ats_ptr_type)(((char *)p) + tsz) ;
-    ++i ;
-  }
-  return ;
-}
-
-ats_void_type
-atspre_iforeach_array_ptr_tsz_main (
-   ats_ptr_type f
- , ats_ptr_type A
- , ats_int_type asz
- , ats_int_type tsz
- , ats_ptr_type env
- ) {
-  int i = 0;
-  ats_ptr_type p = A ;
-  while (i < asz) {
-    ((ats_void_type (*)(ats_int_type, ats_ptr_type, ats_ptr_type))f)(i, p, env) ;
-    p = (ats_ptr_type)(((char *)p) + tsz) ;
-    ++i ;
+    i += 1 ;
   }
   return ;
 }
