@@ -299,13 +299,23 @@ in
   // empty
 end // end of [list_foreach_fun]
 
+(* ****** ****** *)
+
 implement{a} list_foreach_cloptr {v} {f:eff} (pf | xs, f) = let
-  viewtypedef cloptr_t = a -<cloptr,f> void
-  fn app (pf: !v | x: a, f: !cloptr_t):<f> void = f (x)
+  viewtypedef cloptr_t = (!v | a) -<cloptr,f> void
+  fn app (pf: !v | x: a, f: !cloptr_t):<f> void = f (pf | x)
   val () = list_foreach_main<a> {v} {cloptr_t} (pf | xs, app, f)
 in
   // empty
 end // end of [list_foreach_cloptr]
+
+implement{a} list_foreach_cloref {v} {f:eff} (pf | xs, f) = let
+  typedef cloref_t = (!v | a) -<cloref,f> void
+  fn app (pf: !v | x: a, f: !cloref_t):<f> void = f (pf | x)
+  val () = list_foreach_main<a> {v} {cloref_t} (pf | xs, app, f)
+in
+  // empty
+end // end of [list_foreach_cloref]
 
 (* ****** ****** *)
 

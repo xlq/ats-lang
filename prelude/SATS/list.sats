@@ -214,10 +214,10 @@ fun{a:t@ype} list_foreach_fun {v:view} {f:eff}
   (pf: !v | xs: List a, f: (!v | a) -<fun,f> void):<f> void
 
 fun{a:t@ype} list_foreach_cloptr {v:view} {f:eff}
-  (pf: !v | xs: List a, f: !a -<cloptr,f> void):<f> void
+  (pf: !v | xs: List a, f: !(!v | a) -<cloptr,f> void):<f> void
 
 fun{a:t@ype} list_foreach_cloref {v:view} {f:eff}
-  (pf: !v | xs: List a, f: !a -<cloref,f> void):<f> void
+  (pf: !v | xs: List a, f: !(!v | a) -<cloref,f> void):<f> void
 
 (* ****** ****** *)
 
