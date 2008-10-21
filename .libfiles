@@ -53,6 +53,10 @@ prelude/DATS/reference.dats
 
 prelude/DATS/string.dats
 
+/* linked lists */
+
+prelude/SATS/slseg.sats
+
 /* libats files */
 
 #ifdef HAVE_GMP_H

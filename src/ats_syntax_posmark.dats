@@ -239,6 +239,37 @@ fn f0arglst_posmark (f0as: f0arglst): void =
 
 (* ****** ****** *)
 
+fun i0nvarglst_posmark (args: i0nvarglst): void = case+ args of
+  | arg :: args => begin
+      s0expopt_posmark arg.i0nvarg_typ; i0nvarglst_posmark args
+    end
+  | nil () => ()
+// end of [i0nvarglst_posmark]
+
+fn i0nvresstate_posmark (res: i0nvresstate): void = let
+  val () = case+ res.i0nvresstate_qua of
+    | Some s0qs => s0qualst_posmark s0qs | None () => ()
+in
+  i0nvarglst_posmark (res.i0nvresstate_arg)
+end // end of [i0nvresstate_posmark]
+
+fn loopi0nv_posmark (inv: loopi0nv): void = let
+  val () = case+ inv.loopi0nv_qua of
+    | Some s0qs => s0qualst_posmark s0qs | None () => ()
+  val () = case+ inv.loopi0nv_met of
+    | Some s0es => s0explst_posmark s0es | None () => ()
+  val () = i0nvarglst_posmark inv.loopi0nv_arg
+  val () = i0nvresstate_posmark inv.loopi0nv_res
+in
+  // empty
+end // end of [loopi0nv_posmark]
+
+fn loopi0nvopt_posmark (oinv: loopi0nvopt): void =
+  case+ oinv of Some inv => loopi0nv_posmark inv | None () => ()
+// end of [loopi0nvopt_posmark]
+
+(* ****** ****** *)
+
 fn d0exp_prf_posmark (d0e: d0exp): void = begin
   prfexploc_posmark d0e.d0exp_loc; d0exp_posmark d0e;
 end
@@ -301,9 +332,10 @@ implement d0exp_posmark (d0e0) = case+ d0e0.d0exp_node of
       d0exp_posmark d0e_body;
     end
   | D0Efor (inv, loc_inv, d0e_ini, d0e_test, d0e_post, d0e_body) => begin
+      loopi0nvopt_posmark inv;
       d0exp_posmark d0e_ini; d0exp_posmark d0e_test;
       d0exp_posmark d0e_post; d0exp_posmark d0e_body;
-    end
+    end // end of [D0Efor]
   | D0Eif (hd, d0e_cond, d0e_then, od0e_else) => begin
       d0exp_posmark d0e_cond;
       d0exp_posmark d0e_then;
@@ -355,8 +387,8 @@ implement d0exp_posmark (d0e0) = case+ d0e0.d0exp_node of
       d0eclst_posmark d0cs; d0exp_posmark d0e;
     end
   | D0Ewhile (inv, loc_inv, d0e_test, d0e_body) => begin
-      d0exp_posmark d0e_test; d0exp_posmark d0e_body;
-    end
+      loopi0nvopt_posmark inv; d0exp_posmark d0e_test; d0exp_posmark d0e_body;
+    end // end of [D0Ewhile]
   | _ => ()
 
 implement d0explst_posmark (d0es) =
