@@ -43,7 +43,7 @@
 
 %}
 
-//
+(* ****** ****** *)
 
 staload "top.sats"
 
@@ -63,11 +63,11 @@ where regex1: type = '{
   node= regex1_node, null= bool, fstpos= intset_t, lstpos= intset_t
 }
 
-//
+(* ****** ****** *)
 
 exception Fatal
 
-//
+(* ****** ****** *)
 
 datatype CSI = CSI_cs of charset_t | CSI_i of int
 dataviewtype CSIlst (int) =
@@ -81,7 +81,7 @@ implement CSI_uncons (lst) =
 
 viewtypedef T = [n:nat] @{ lst= CSIlst n, len= int n }
 
-//
+(* ****** ****** *)
 
 fn regex1_alt (r1: regex1, r2: regex1): regex1 = let
   val null: bool = if r1.null then true else r2.null
@@ -184,7 +184,7 @@ in '{
 , lstpos= lstpos
 } end // end of [regex1_star]
 
-//
+(* ****** ****** *)
 
 fn redef_find
   (env: redef, id0: string): Option regex = let
@@ -198,7 +198,7 @@ in
   loop (env, id0)
 end // end of [redef_find]
 
-//
+(* ****** ****** *)
 
 extern fun array_of_CSIlst {n:nat}
   (lst: CSIlst n, n: int n): [l:addr] (free_gc_v l, array_v (CSI, n, l) | ptr l) =
@@ -220,7 +220,7 @@ array_of_CSIlst (ats_ptr_type lst, ats_int_type n) {
 
 %}
 
-//
+(* ****** ****** *)
 
 fun regex_mark_str {i,l:nat | i <= l} .<l-i>.
   (env: redef, x0: &T, i: int i, l: int l, s: string l, r1e: regex1)
@@ -234,7 +234,8 @@ fun regex_mark_str {i,l:nat | i <= l} .<l-i>.
     end
   else r1e
 end // end of [regex_mark_str]
-//
+
+(* ****** ****** *)
 
 fun regex_mark (env: redef, x0: &T, r0e: regex)
   : regex1 = begin case+ r0e of
@@ -291,6 +292,8 @@ and regex_mark_rep
     end
   else r1e
 end // end of [regex_mark_rep]
+
+(* ****** ****** *)
 
 fun followpos {n:nat} (n0: int n, r: regex1)
   : [l:addr] (free_gc_v l, array_v (intset_t, n, l) | ptr l) = let
@@ -368,7 +371,7 @@ in
    aux (pf_arr | A, n0, r); (pf_gc, pf_arr | A)
 end // end of [followpos]
 
-//
+(* ****** ****** *)
 
 fn rules_mark (env: redef, x0: &T, rls: rules): regex1 = let
   fun aux (env: redef, x0: &T, irule: int, rls: rules): regex1 =
@@ -385,10 +388,11 @@ in
    aux (env, x0, 1, rls) // irule starts from 1!
 end
 
-//
+(* ****** ****** *)
 
 dataviewtype acclst =
-  | acclst_nil | acclst_cons of (int (* state *), int (* rule *), acclst)
+  | acclst_nil
+  | acclst_cons of (int (*state*), int (*rule*), acclst)
 
 dataviewtype intlst =
   | intlst_nil | intlst_cons of (int, intlst)
@@ -402,46 +406,45 @@ dataviewtype translst (int) =
 
 viewtypedef Translst = [n:nat] translst n
 
-//
+(* ****** ****** *)
 
-fn transition_char {n:nat} {l_csi,l_pos:addr}
-  (pf1: !array_v (CSI, n, l_csi), pf2: !array_v (intset_t, n, l_pos) |
-   A_csi: ptr l_csi, A_pos: ptr l_pos, n: int n, st: intset_t, c: char)
-  : intset_t =
-  let
+fn transition_char {n:nat} {l_csi,l_pos:addr} (
+    pf1: !array_v (CSI, n, l_csi), pf2: !array_v (intset_t, n, l_pos)
+  | A_csi: ptr l_csi, A_pos: ptr l_pos, n: int n, st: intset_t, c: char
+  ) : intset_t = let
 (*
-    val () = prerrf ("transition_char: c = %i\n", @(int_of c))
+  val () = prerrf ("transition_char: c = %i\n", @(int_of c))
 *)
-    var st_res: intset_t = intset_nil
-    viewdef V = (
-      array_v (CSI, n, l_csi), array_v (intset_t, n, l_pos), intset_t @ st_res
-    )
-    fn f (pf: !V | i: int):<cloptr1> void =
-      let
-         prval (pf1, pf2, pf3) = pf
-         val i = int1_of_int i
+  var st_res: intset_t = intset_nil
+  viewdef V = (
+    array_v (CSI, n, l_csi), array_v (intset_t, n, l_pos), intset_t @ st_res
+  ) // end of [viewdef]
+  fn f (pf: !V | i: int):<cloptr1> void = let
+    prval (pf1, pf2, pf3) = pf
+    val i = int1_of_int i
 (*
-         val () = prerrf ("transition_char: i = %i and n = %i\n", @(i, n))
-         val () = (prerr "transition_char: st_res = "; prerr_intset st_res; prerr_newline ())
+    val () = prerrf ("transition_char: i = %i and n = %i\n", @(i, n))
+    val () = (prerr "transition_char: st_res = "; prerr_intset st_res; prerr_newline ())
 *)
-         val () = assert (0 <= i)
-         val () = assert (i < n)
-         val () = case+ A_csi[i] of
-           | CSI_cs cs =>
-             if charset_is_member (cs, c) then st_res := st_res + A_pos[i]
-           | _ => ()
+    val () = assert (0 <= i); val () = assert (i < n)
+    val () = case+ A_csi[i] of
+      | CSI_cs cs => begin
+          if charset_is_member (cs, c) then st_res := st_res + A_pos[i]
+        end // end of [CSI_cs]
+      | _ => ()
+    // end of [val]
 (*
-         val () = (prerr "transition_char: st_res = "; prerr_intset st_res; prerr_newline ())
+    val () = (prerr "transition_char: st_res = "; prerr_intset st_res; prerr_newline ())
 *)
-      in
-         pf := (pf1, pf2, pf3)
-      end
-    prval pf = (pf1, pf2, view@ st_res)
-    val () = foreach_intset {V} (pf | f, st)
-    prval () = (pf1 := pf.0; pf2 := pf.1; view@ st_res := pf.2)
   in
-    st_res
-  end
+     pf := (pf1, pf2, pf3)
+  end // end of [f]
+  prval pf = (pf1, pf2, view@ st_res)
+  val () = foreach_intset {V} (pf | f, st)
+  prval () = (pf1 := pf.0; pf2 := pf.1; view@ st_res := pf.2)
+in
+  st_res
+end // end of [transition_char]
 
 fun transition_one {n:nat} {l_csi,l_pos:addr}
   (pf1: !array_v (CSI, n, l_csi),
@@ -498,6 +501,8 @@ fun transition_all {n:nat} {l_csi,l_pos:addr}
   | ~statelst_nil () => ans
 end // end of [transition_all]
 
+(* ****** ****** *)
+
 fun accept_one {n:nat} {l_csi:addr}
   (pf1: !array_v (CSI, n, l_csi) |
    A_csi: ptr l_csi, n: int n, st: intset_t): int = let
@@ -512,39 +517,39 @@ fun accept_one {n:nat} {l_csi:addr}
     val () = assert (0 <= nst)
     val () = assert (nst < n)
     val () = case+ A_csi[nst] of
-      | CSI_i i =>
-          if irule > 0 then
-            (if i < irule then irule := i)
-          else (irule := i)
+      | CSI_i i => begin
+          if irule > 0 then (if i < irule then irule := i) else (irule := i)
+        end // end of [CSI_i]
       | _ => ()
+    // end of [val]
   in
     pf := (pf1, pf2)
-  end
+  end // end of [f]
   prval pf = (pf1, view@ irule)
   val () = foreach_intset {V} (pf | f, st)
 in
   pf1 := pf.0; view@ irule := pf.1; irule
-end
+end // end of [accept_one]
 
-fun accept_all {n:nat} {l_csi:addr}
-  (pf1: !array_v (CSI, n, l_csi) |
-   A_csi: ptr l_csi, n: int n, sts: states_t): acclst = let
-   var ans: acclst = acclst_nil ()
-   viewdef V = (array_v (CSI, n, l_csi), acclst @ ans)
-   fn f (pf: !V | tag: int, st: intset_t):<cloptr1> void = let
-     prval (pf1, pf2) = pf
-     val irule = accept_one (pf1 | A_csi, n, st)
-     val () = if irule > 0 then ans := acclst_cons (tag, irule, ans)
-   in
-     pf := (pf1, pf2)
-   end
-   prval pf = (pf1, view@ ans)
-   val () = states_foreach_and_free {V} (pf | f, sts)
+fun accept_all {n:nat} {l_csi:addr} (
+    pf1: !array_v (CSI, n, l_csi) | A_csi: ptr l_csi, n: int n, sts: states_t
+  ) : acclst = let
+  var ans: acclst = acclst_nil ()
+  viewdef V = (array_v (CSI, n, l_csi), acclst @ ans)
+  fn f (pf: !V | tag: int, st: intset_t):<cloptr1> void = let
+    prval (pf1, pf2) = pf
+    val irule = accept_one (pf1 | A_csi, n, st)
+    val () = if irule > 0 then ans := acclst_cons (tag, irule, ans)
+  in
+    pf := (pf1, pf2)
+  end // end of [f]
+  prval pf = (pf1, view@ ans)
+  val () = states_foreach_and_free {V} (pf | f, sts)
 in
-   pf1 := pf.0; view@ ans := pf.1; ans
-end
+  pf1 := pf.0; view@ ans := pf.1; ans
+end // end of [accept_all]
 
-//
+(* ****** ****** *)
 
 extern fun acclst_length (lst: !acclst): int = "acclst_length"
 
@@ -556,7 +561,9 @@ implement acclst_length (lst) = let
     | acclst_nil () => (fold@ lst; j)
 in
   loop (lst, 0)
-end
+end // end of [acclst_length]
+
+(* ****** ****** *)
 
 extern fun translst_length {n:nat} (lst: !translst n): int n
   = "translst_length"
@@ -569,11 +576,13 @@ implement translst_length (lst) = let
     | translst_nil () => (fold@ lst; j)
 in
   loop (lst, 0)
-end
+end // end of [translst_length]
 
-extern fun translst_uncons {n:pos}
-  (lst: &translst n >> translst (n-1), tag: &(int?) >> int, ns: &(intlst?) >> intlst)
-  : void
+(* ****** ****** *)
+
+extern fun translst_uncons {n:pos} (
+    lst: &translst n >> translst (n-1), tag: &(int?) >> int, ns: &intlst? >> intlst
+  ) : void
   = "translst_uncons"
 
 implement translst_uncons (lst, tag, ns) = let
@@ -582,7 +591,7 @@ in
   tag := tag_v; ns := ns_v; lst := lst_v
 end // end of [translst_uncons]
 
-//
+(* ****** ****** *)
 
 extern fun fprint_irule {m:file_mode}
   (pf_mod: file_mode_lte (m, w) | fil: &FILE m, i: int): void
@@ -619,7 +628,7 @@ fprint_irule(ats_ptr_type fil, ats_int_type i) {
 }
 
 ats_void_type
-fprint_state(ats_ptr_type fil, ats_int_type n) {
+fprint_state (ats_ptr_type fil, ats_int_type n) {
   int x, x0, x1, x2 ;
 
   x = n >> 8 ;
@@ -659,7 +668,7 @@ in
   loop (fil, ns); fprint_char (pf_mod | fil, '\\')
 end // end of [fprint_intlst]
 
-//
+(* ****** ****** *)
 
 extern typedef "intlst" = intlst
 
@@ -714,9 +723,9 @@ fun fprint_acclst {m:file_mode}
     | ~acclst_nil () => ()
 in
   loop (fil, lst)
-end
+end // end of [fprint_acclst]
 
-//
+(* ****** ****** *)
 
 fun fprint_header {m:file_mode}
   (pf_mod: file_mode_lte (m, w) | fil: &FILE m, id: string, arg: string)
@@ -728,24 +737,28 @@ fun fprint_header {m:file_mode}
   fprint_string (pf_mod | fil, id);
   fprint_string (pf_mod | fil, "_accept_table) of");
   fprint_newline (pf_mod | fil)
-end
+end // end of [fprint_header]
 
-fun fprint_rules {m:file_mode}
-  (pf_mod: file_mode_lte (m, w) |
-   fil: &FILE m, id: string, arg: string, rls: rules): void = let
+(* ****** ****** *)
+
+fun fprint_rules {m:file_mode} (
+    pf_mod: file_mode_lte (m, w)
+  | fil: &FILE m, id: string, arg: string, rls: rules
+  ) : void = let
   fun loop (fil: &FILE m, rls: rules, irule: int): void =
     case+ rls of
     | rules_cons (r, code, rls) => begin
         fprintf (pf_mod | fil, "  | %i => ( %s )\n", @(irule, code));
         loop (fil, rls, irule + 1)
-      end
+      end // end of [rules_cons]
     | rules_nil () => ()
+  // end of [loop]
 in
   loop (fil, rls, 1);
   fprintf (pf_mod | fil, "  | _ => %s_lexing_error (%s)\n", @(id, arg))
-end
+end // end of [fprint_rules]
 
-//
+(* ****** ****** *)
 
 extern fun fprint_DFA {m:file_mode} (
     pf_mod: file_mode_lte (m, w)
@@ -825,9 +838,9 @@ in
   fprint_rules (pf_mod | fil, id, arg, rls);
   fprint_newline (pf_mod | fil);
 
-end
+end // end of [fprint_DFA]
 
-//
+(* ****** ****** *)
 
 implement fprint_lexfns {m} (pf_mod | fil, env, lfs) = let
   fun loop (fil: &FILE m, env: redef, lfs: lexfns): void =
@@ -835,11 +848,12 @@ implement fprint_lexfns {m} (pf_mod | fil, env, lfs) = let
     | lexfns_cons (id, arg, rls, lfs) => begin
         fprint_DFA (pf_mod | fil, env, id, arg, rls);
         loop (fil, env, lfs)
-      end
+      end // end of [lexfns_cons]
     | lexfns_nil () => ()
+  // end of [loop]
 in
   loop (fil, env, lfs)
-end
+end // end of [fprint_lexfns]
 
 (* ****** ****** *)
 

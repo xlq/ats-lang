@@ -66,6 +66,20 @@ atspre_int_of_char (ats_char_type c) {
 
 static inline
 ats_int_type
+atspre_int_of_schar (ats_schar_type c) {
+  return c ;
+}
+
+static inline
+ats_int_type
+atspre_int_of_uchar (ats_uchar_type c) {
+  return c ;
+}
+
+//
+
+static inline
+ats_int_type
 atspre_int_of_double (ats_double_type f) {
   return (ats_int_type)f ;
 }
@@ -73,7 +87,7 @@ atspre_int_of_double (ats_double_type f) {
 static inline
 ats_int_type
 atspre_int_of_string (ats_ptr_type s) {
-  return atoi((char *)s) ;
+  return atoi((char*)s) ;
 }
 
 static inline
@@ -262,7 +276,7 @@ static inline
 ats_void_type
 atspre_fprint_int (ats_ptr_type out, ats_int_type i) {
   int n ;
-  n = fprintf ((FILE *)out, "%d", i) ;
+  n = fprintf ((FILE*)out, "%d", i) ;
   if (n < 0) {
     ats_exit_errmsg (n, "Exit: [fprint_int] failed.\n") ;
   }
@@ -456,7 +470,7 @@ atspre_lsr_uint_int1 (ats_uint_type i, ats_int_type n) {
 static inline
 ats_void_type
 atspre_fprint_uint (ats_ptr_type out, ats_uint_type i) {
-  int n = fprintf ((FILE *)out, "%u", i) ;
+  int n = fprintf ((FILE*)out, "%u", i) ;
   if (n < 0) {
     ats_exit_errmsg (n, "Exit: [fprint_uint] failed.\n") ;
   }
@@ -586,7 +600,7 @@ atspre_lint_of_int (ats_int_type i) {
 static inline
 ats_lint_type
 atspre_lint_of_string (ats_ptr_type s) {
-  return atol ((char *)s) ;
+  return atol ((char*)s) ;
 }
 
 // arithmetic functions and comparison functions
@@ -683,7 +697,7 @@ static inline
 ats_void_type
 atspre_fprint_lint (ats_ptr_type out, ats_lint_type i) {
   int n ;
-  n = fprintf ((FILE *)out, "%li", i) ;
+  n = fprintf ((FILE*)out, "%li", i) ;
   if (n < 0) {
     ats_exit_errmsg (n, "Exit: [fprint_lint] failed.\n") ;
   }
@@ -807,7 +821,7 @@ atspre_neq_ulint_ulint (ats_ulint_type i1, ats_ulint_type i2) {
 static inline
 ats_void_type
 atspre_fprint_ulint (ats_ptr_type out, ats_ulint_type i) {
-  int n = fprintf ((FILE *)out, "%lu", i) ;
+  int n = fprintf ((FILE*)out, "%lu", i) ;
   if (n < 0) {
     ats_exit_errmsg (n, "Exit: [fprint_ulint] failed.\n") ;
   }
@@ -855,7 +869,7 @@ atspre_llint_of_int (ats_int_type i) {
 static inline
 ats_llint_type
 atspre_llint_of_string (ats_ptr_type s) {
-  return atoll ((char *)s) ;
+  return atoll ((char*)s) ;
 }
 
 // arithmetic functions and comparison functions
@@ -951,7 +965,7 @@ atspre_neq_llint_llint (ats_llint_type i1, ats_llint_type i2) {
 static inline
 ats_void_type
 atspre_fprint_llint (ats_ptr_type out, ats_llint_type i) {
-  int n = fprintf ((FILE *)out, "%lli", i) ;
+  int n = fprintf ((FILE*)out, "%lli", i) ;
   if (n < 0) {
     ats_exit_errmsg (n, "Exit: [fprint_llint] failed.\n") ;
   }
@@ -1067,7 +1081,7 @@ atspre_neq_ullint_ullint (ats_ullint_type i1, ats_ullint_type i2) {
 static inline
 ats_void_type
 atspre_fprint_ullint (ats_ptr_type out, ats_ullint_type i) {
-  int n = fprintf ((FILE *)out, "%llu", i) ;
+  int n = fprintf ((FILE*)out, "%llu", i) ;
   if (n < 0) {
     ats_exit_errmsg (n, "Exit: [fprint_ullint] failed.\n") ;
   }
@@ -1201,7 +1215,7 @@ atspre_neq_int8_int8 (ats_int8_type i1, ats_int8_type i2) {
 static inline
 ats_void_type
 atspre_fprint_int8 (ats_ptr_type out, ats_int8_type i) {
-  int n = fprintf ((FILE *)out, "%hhd", i) ;
+  int n = fprintf ((FILE*)out, "%hhd", i) ;
   if (n < 0) {
     ats_exit_errmsg (n, "Exit: [fprint_int8] failed.\n") ;
   }
@@ -1331,7 +1345,7 @@ atspre_neq_int16_int16 (ats_int16_type i1, ats_int16_type i2) {
 static inline
 ats_void_type
 atspre_fprint_int16 (ats_ptr_type out, ats_int16_type i) {
-  int n = fprintf ((FILE *)out, "%d", i) ;
+  int n = fprintf ((FILE*)out, "%d", i) ;
   if (n < 0) {
     ats_exit_errmsg (n, "Exit: [fprint_int16] failed.\n") ;
   }
@@ -1462,7 +1476,7 @@ static inline
 ats_void_type
 atspre_fprint_int32 (ats_ptr_type out, ats_int32_type i) {
   int n ;
-  n = fprintf ((FILE *)out, "%li", (ats_lint_type)i) ;
+  n = fprintf ((FILE*)out, "%li", (ats_lint_type)i) ;
   if (n < 0) {
     ats_exit_errmsg (n, "Exit: [fprint_int32] failed.\n") ;
   }
@@ -1589,7 +1603,7 @@ static inline
 ats_void_type
 atspre_fprint_int64 (ats_ptr_type out, ats_int64_type i) {
   int n ;
-  n = fprintf ((FILE *)out, "%lli", (ats_llint_type)i) ;
+  n = fprintf ((FILE*)out, "%lli", (ats_llint_type)i) ;
   if (n < 0) {
     ats_exit_errmsg (n, "Exit: [fprint_int64] failed.\n") ;
   }
@@ -1729,7 +1743,7 @@ static inline
 ats_void_type
 atspre_fprint_intptr (ats_ptr_type out, ats_intptr_type i) {
   int n ;
-  n = fprintf ((FILE *)out, "%lli", (ats_llint_type)(intptr_t)i) ;
+  n = fprintf ((FILE*)out, "%lli", (ats_llint_type)(intptr_t)i) ;
   if (n < 0) {
     ats_exit_errmsg (n, "Exit: [fprint_intptr] failed.\n") ;
   }
@@ -1850,7 +1864,7 @@ static inline
 ats_void_type
 atspre_fprint_uintptr (ats_ptr_type out, ats_uintptr_type u) {
   int n ;
-  n = fprintf ((FILE *)out, "%llu", (ats_ullint_type)(uintptr_t)u) ;
+  n = fprintf ((FILE*)out, "%llu", (ats_ullint_type)(uintptr_t)u) ;
   if (n < 0) {
     ats_exit_errmsg (n, "Exit: [fprint_uintptr] failed.\n") ;
   }

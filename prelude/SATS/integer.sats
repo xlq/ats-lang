@@ -48,9 +48,21 @@
 
 (* ****** ****** *)
 
+//
+
 fun int_of_char (c: char):<> int
   = "atspre_int_of_char"
 overload int_of with int_of_char
+
+fun int_of_schar (c: schar):<> int
+  = "atspre_int_of_schar"
+overload int_of with int_of_schar
+
+fun int_of_uchar (c: uchar):<> int
+  = "atspre_int_of_uchar"
+overload int_of with int_of_uchar
+
+//
 
 fun int_of_double (d: double):<> int
   = "atspre_int_of_double"

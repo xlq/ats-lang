@@ -60,6 +60,7 @@ typedef int ats_bool_type ;
 typedef unsigned char ats_byte_type ;
 
 typedef char ats_char_type ;
+typedef signed char ats_schar_type ;
 typedef unsigned char ats_uchar_type ;
 
 typedef double ats_double_type ;

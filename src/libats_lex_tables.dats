@@ -167,57 +167,54 @@ implement __transition_table_free (r_tblopt): void =
 implement transition_table_get (r_tblopt, nstate, c) = let
 (*
   val () = printf (
-    "transition_table_get: nstate = %i and c = %i\n", @(nstate, int_of c)
-  )
+    "transition_table_get: nstate = %i and c = %i\n", @(nstate, int_of_char c)
+  ) // end of [val]
 *)
-  var ans: int = (0: int)
-  var err: int = (0: int)
+  var ans: int = (0: int) and err: int = (0: int)
   val () = let
     val (vbox pf_tblopt | p_tblopt) = ref_get_view_ptr r_tblopt
   in
     case+ !p_tblopt of
-      | tblopt_none () => begin
-          err := (1: int); fold@ (!p_tblopt)
-        end
-      | tblopt_some (!pf | p, n) => let
-          val i = int1_of_int
-            ((nstate - 1) * NUMBER_OF_CHARS + (int_of c) + 1)
+    | tblopt_none () => begin
+        err := (1: int); fold@ (!p_tblopt)
+      end // end of [tblopt_none]
+    | tblopt_some (!pf | p, n) => let
+        val i = int1_of_int
+          ((nstate - 1) * NUMBER_OF_CHARS + (int_of_schar c) + 1)
 (*
-          val () = $effmask_all begin
-            printf ("transition_table_get: nstate = %i\n", @(nstate))
-          end
-
-          val () = $effmask_all begin
-            printf ("transition_table_get: n = %i and i = %i\n", @(n,i))
-          end
-*)
-        in
-          if i < 0 then begin
-            err := (2: int); fold@ (!p_tblopt)
-          end else if i >= n then begin
-            err := (3: int); fold@ (!p_tblopt)
-          end else let
-            prval pf_v = !pf
-          in
-            ans := int_of_int16 (!p.[i]);
-            !pf := pf_v;
-            fold@ (!p_tblopt)
-          end
+        val () = $effmask_all begin
+          printf ("transition_table_get: nstate = %i\n", @(nstate))
         end
-  end
+        val () = $effmask_all begin
+          printf ("transition_table_get: n = %i and i = %i\n", @(n,i))
+        end
+*)
+      in
+        if i < 0 then begin
+          err := (2: int); fold@ (!p_tblopt)
+        end else if i >= n then begin
+          err := (3: int); fold@ (!p_tblopt)
+        end else let
+          prval pf_v = !pf
+        in
+          ans := int_of_int16 (!p.[i]); !pf := pf_v; fold@ (!p_tblopt)
+        end // end of [if]
+      end // end of [tblopt_some]
+  end // end of [val]
+
 (*
   val () = begin
     prerr "transition_table_get: ans = "; prerr ans; prerr_newline ()
-  end
+  end // end of [val]
 *)
 
 in
   case+ err of
-    | 1 => exit_errmsg (1, "lexing: transition_table_get: table is not available\n")
-    | 2 => exit_errmsg (1, "lexing: transition_table_get: state number is illegal\n")
-    | 3 => exit_errmsg (1, "lexing: transition_table_get: state number is illegal\n")
-    | _ => ans
-end
+  | 1 => exit_errmsg (1, "lexing: transition_table_get: table is not available\n")
+  | 2 => exit_errmsg (1, "lexing: transition_table_get: state number is illegal\n")
+  | 3 => exit_errmsg (1, "lexing: transition_table_get: state number is illegal\n")
+  | _ => ans
+end // end of [transition_table_get]
 
 (* ****** ****** *)
 
@@ -247,7 +244,7 @@ __accept_table_make_fun
 /*
     fprintf (stdout, "%i -> %i\n", nstate, p0[nstate]) ;
 */
-  }
+  } /* end of [for] */
 
   res = new_tbloptref_some (p0, sz) ;
 /*
@@ -256,7 +253,7 @@ __accept_table_make_fun
   fprintf (stdout, "__accept_table_make_fun: res = %p\n", res);
 */
   return res ;
-}
+} /* end of [__accept_table_make_fun] */
 
 ats_ptr_type
 __transition_table_make_fun (ats_int_type n, ats_ptr_type s0) {
@@ -278,8 +275,8 @@ __transition_table_make_fun (ats_int_type n, ats_ptr_type s0) {
       fprintf (stdout, "__transition_table_make_fun: %i: *p = %i\n", j, *p);
 */
       s += 2 ; ++p ;
-    }
-  }
+    } /* end of [for] */
+  } /* end of [for] */
 
   res = new_tbloptref_some (p0, sz) ;
 /*
@@ -288,7 +285,7 @@ __transition_table_make_fun (ats_int_type n, ats_ptr_type s0) {
   fprintf (stdout, "__transition_table_make_fun: res = %p\n", res);
 */
   return res ;
-}
+} /* end of [__transition_table_make_fun] */
 
 %}
 

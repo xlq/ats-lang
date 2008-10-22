@@ -55,7 +55,7 @@ fun __transition_table_make (n: int) (s: string): transition_table_t
 fun __transition_table_free (transtbl: transition_table_t): void
 
 fun transition_table_get
-  (transtbl: transition_table_t, nstate: int, c: char): int (* nstate *)
+  (transtbl: transition_table_t, nstate: int, c: schar): int (* nstate *)
 
 (* ****** ****** *)
 
@@ -127,7 +127,7 @@ fun lexbuf_curpos_get (lb: &lexbuf_t): position_t = "lexbuf_curpos_get"
 fun lexbuf_curpos_set (lb: &lexbuf_t): void = "lexbuf_curpos_set"
 
 fun lexbuf_size_get (lb: &lexbuf_t): Nat = "lexbuf_size_get"
-fun lexbuf_char_next (lb: &lexbuf_t): char = "lexbuf_char_next"
+fun lexbuf_char_next (lb: &lexbuf_t): schar = "lexbuf_char_next"
 fun lexbuf_is_eof (lb: &lexbuf_t): bool = "lexbuf_is_eof"
 
 fun lexing_engine_lexbuf

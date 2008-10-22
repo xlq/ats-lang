@@ -40,7 +40,10 @@
 # The bootstrapping procedure:
 #
 # 1. Use [gcc] to compile the C code in [bootstrap0] to build the ATS
-#    compiler [atsopt]
+#    compile [atsopt]
+#
+#    Alternatively, use [ocamlopt] to compile the Objective Caml code
+#    in [bootstrap0] to build the ATS compiler [atsopt]
 #
 # 2. Use [atsopt] to compile the ATS code in [src] into C code and store
 #    it in [bootstrap1]
@@ -57,6 +60,8 @@
 ATSRUNTIME="$(ATSHOME)"/ccomp/runtime
 
 CC=gcc
+#CC=gcc -fsigned-char // should be OK as well
+#CC=gcc -funsigned-char // should be OK as well
 CCFLAG=-I"$(ATSHOME)" -I$(ATSRUNTIME) -O2
 GCFLAG=-D_ATS_GCATS "$(ATSHOME)"/ccomp/runtime/GCATS/gc.o
 LD=ld

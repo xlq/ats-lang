@@ -171,10 +171,10 @@ fun aux (lxbf: &lexbuf_t, irule: &int, nstate: int):<cloptr1> int =
       if irule_new > 0 then begin
         lexbuf_lstpos_set (lxbf); irule := irule_new
       end
-    val c = lexbuf_char_next (lxbf)
+    val c: schar = lexbuf_char_next (lxbf)
 (*
     val () = begin
-      printf ("lexing_engine_lexbuf: c = %c and c = %i\n", @(c, int_of c))
+      printf ("lexing_engine_lexbuf: c = %c and c = %i\n", @(c, int_of_char c))
     end
 *)
     val nstate = transition_table_get (transtbl, nstate, c)
@@ -468,7 +468,7 @@ lexbuf_resize_if (lexbuf *lxbf) {
   return ;
 }
 
-ats_char_type
+ats_void_type
 lexbuf_refill (ats_ptr_type lxbf0) {
   lexbuf *lxbf ;
   int c ; char *buf_ptr ;
@@ -497,18 +497,19 @@ lexbuf_refill (ats_ptr_type lxbf0) {
     c = lexing_infile_getc (lxbf->infile) ;
     if (c < 0) { lxbf->endpos = endpos ; return ; }
     buf_ptr[endpos] = c; endpos = 0;
-
-  }
+  } /* end of [if] */
 
   while (endpos+1 < fstpos) {
     c = lexing_infile_getc (lxbf->infile) ;
     if (c < 0) { lxbf->endpos = endpos ; return ; }
     buf_ptr[endpos] = c; ++endpos ;
-  }
+  } /* end of [while] */
 
   lxbf->endpos = endpos ;
   return ;
-}
+} /* end of [lexbuf_refill] */
+
+/* ****** ****** */
 
 ats_void_type
 lexbuf_curpos_next (lexbuf *lxbf, char c) {
@@ -526,9 +527,11 @@ lexbuf_curpos_next (lexbuf *lxbf, char c) {
     lxbf->curpos_loff += 1 ; lxbf->curpos_toff += 1 ;
   }
   return ;
-}
+} /* end of [lexbuf_curpos_next] */
 
-ats_char_type
+/* ****** ****** */
+
+ats_schar_type
 lexbuf_char_next (ats_ptr_type lxbf0) {
   lexbuf *lxbf ;
   char c, *buf_ptr ;
@@ -556,9 +559,10 @@ lexbuf_char_next (ats_ptr_type lxbf0) {
   if (curpos != endpos) {
     c = buf_ptr[curpos] ; lexbuf_curpos_next (lxbf, c); return c ;
   }
-
   return -1 ;
-}
+} /* end of [lexbuf_char_next] */
+
+/* ****** ****** */
 
 ats_bool_type
 lexbuf_is_eof (ats_ptr_type lxbf0) {
@@ -572,8 +576,8 @@ lexbuf_is_eof (ats_ptr_type lxbf0) {
     return ats_false_bool ;
   } else {
     return ats_true_bool ;
-  }
-}
+  } /* end of [if] */
+} /* end of [lexbuf_is_eof] */
 
 /* ****** ****** */
 
@@ -657,7 +661,7 @@ lexbuf_make_infile (const ats_ptr_type infile) {
   return lxbf ;
 }
 
-ats_char_type
+ats_void_type
 lexbuf_free (ats_ptr_type lxbf0) {
   lexbuf *lxbf ;
   lxbf = (lexbuf*)lxbf0 ;
@@ -692,7 +696,7 @@ lexeme_get_lexbuf (ats_ptr_type lxbf0, ats_int_type i) {
     ats_exit_errmsg (
       1, "lexeme_get_lexbuf: index is out_of_bounds.\n"
     ) ;
-  }
+  } /* end of [if] */
 
   i = fstpos + i ;
   if (i >= bufsz) { i -= bufsz ; }
@@ -709,7 +713,7 @@ ats_void_type lexeme_set_lexbuf
     ats_exit_errmsg (
       1, "lexeme_set_lexbuf: index is out_of_bounds.\n"
     ) ;
-  }
+  } /* end of [if] */
 
   lxbf = (lexbuf*)lxbf0 ;
 
