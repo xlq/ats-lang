@@ -36,8 +36,10 @@
 
 ## ###### ###### ##
 
-
 DIR=.
+
+MAKE=gmake
+
 CC=gcc
 YACC=yacc
 #YACC=byacc
@@ -547,10 +549,10 @@ ats_ccomp_main_dats.o: ats_ccomp_main.dats
 ######
 
 gc_o:
-	cd "$(ATSHOME)"/ccomp/runtime/GCATS; make gc.o; make clean
+	cd "$(ATSHOME)"/ccomp/runtime/GCATS; $(MAKE) gc.o; $(MAKE) clean
 
 gc_mt_o:
-	cd "$(ATSHOME)"/ccomp/runtime/GCATS; make gc_mt.o; make clean
+	cd "$(ATSHOME)"/ccomp/runtime/GCATS; $(MAKE) gc_mt.o; $(MAKE) clean
 
 ######
 

@@ -43,8 +43,8 @@
 //
 
 //
-// This is done in ATS (instead of in a scripting language like PERL) primarily
-// because I need to test the functions in declared in [libc/SATS/stdio.sats].
+// This is done in ATS (instead of in a scripting language like PERL) largely
+// because I want to test some functions declared in [libc/SATS/stdio.sats].
 // Also, this exercise should help myself become a bit more familiar with the
 // Linux file system in general.
 //
@@ -77,7 +77,7 @@ extern fun dirent_name_get (dir: &DIR): Stropt = "dirent_name_get"
 static inline
 ats_ptr_type dirent_name_get(ats_ptr_type dir) {
   struct dirent *ent ;
-  ent = readdir((DIR *)dir) ;
+  ent = readdir((DIR*)dir) ;
   if (ent) {
     return atspre_strbuf_make_bufptr (ent->d_name, 0, strlen(ent->d_name)) ;
   } else {
@@ -148,6 +148,8 @@ end // end of [DSTROOT]
 
 #define BUFSZ 8192
 
+// there are certainly faster ways to copy files, but this code offers
+// an opportunity to test ATS :)
 fn fcopy_exn (src: string, dst: string): void = let
 (*
   val () = begin
@@ -177,7 +179,7 @@ end // end of [fcopy_exn]
 
 val DIRmode: mode_t = begin
   S_IRWXU // lor S_IRGRP lor S_IXGRP lor S_IROTH lor S_IXOTH)
-end
+end // end of [DIRmode]
 
 (* ****** ****** *)
 

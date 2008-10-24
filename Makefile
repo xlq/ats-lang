@@ -33,6 +33,10 @@
 
 ######
 
+MAKE=gmake
+
+######
+
 GCC=gcc
 
 PWD=$(shell pwd)
@@ -82,25 +86,25 @@ bootstrap1/Makefile:
 	$(GCC) -E -x c .bootstrap_header | cat - .bootstrap_makefile > bootstrap1/Makefile
 
 ###### w/o GC ######
-atsopt0: bootstrap0/Makefile; cd bootstrap0; make atsopt
+atsopt0: bootstrap0/Makefile; cd bootstrap0; $(MAKE) atsopt
 
 ###### bootstrapping ######
-bootstrapping: ; cd src; make -f Makefile_bootstrap all
+bootstrapping: ; cd src; $(MAKE) -f Makefile_bootstrap all
 
 ###### w/o GC ######
-atsopt1: bootstrap1/Makefile; cd bootstrap1; make atsopt; mv atsopt "$(ATSHOME)"/bin
+atsopt1: bootstrap1/Makefile; cd bootstrap1; $(MAKE) atsopt; mv atsopt "$(ATSHOME)"/bin
 
 ###### with GC ######
-atsopt1_gc: bootstrap1/Makefile; cd bootstrap1; make atsopt_gc; mv atsopt "$(ATSHOME)"/bin
+atsopt1_gc: bootstrap1/Makefile; cd bootstrap1; $(MAKE) atsopt_gc; mv atsopt "$(ATSHOME)"/bin
 
 ###### some toplevel commands ######
 bin/atscc bin/atslib:
-	cd utils/scripts; make atscc; mv atscc "$(ATSHOME)"/bin
-	cd utils/scripts; make atslib; mv atslib "$(ATSHOME)"/bin
-	cd utils/scripts; make clean
+	cd utils/scripts; $(MAKE) atscc; mv atscc "$(ATSHOME)"/bin
+	cd utils/scripts; $(MAKE) atslib; mv atslib "$(ATSHOME)"/bin
+	cd utils/scripts; $(MAKE) clean
 
 bin/atspack:
-	cd utils/scripts; make atspack; mv atspack "$(ATSHOME)"/bin
+	cd utils/scripts; $(MAKE) atspack; mv atspack "$(ATSHOME)"/bin
 
 ###### library ######
 
@@ -110,13 +114,13 @@ libfiles: .libfiles_local; "$(ATSHOME)"/bin/atslib -all
 
 ###### a lexer for ATS ######
 bin/atslex:
-	cd utils/atslex; make atslex; mv atslex "$(ATSHOME)"/bin
-	cd utils/atslex; make clean
+	cd utils/atslex; $(MAKE) atslex; mv atslex "$(ATSHOME)"/bin
+	cd utils/atslex; $(MAKE) clean
 
 ###### GC runtime ######
 
 ccomp/runtime/GCATS/gc.o:
-	cd ccomp/runtime/GCATS; make gc.o; make clean
+	cd ccomp/runtime/GCATS; $(MAKE) gc.o; $(MAKE) clean
 
 ######
 
@@ -129,9 +133,9 @@ clean::
 	rm -f *~
 	rm -f bootstrap0/*.o
 	rm -f bootstrap1/*.o
-	cd utils/scripts; make clean
-	cd utils/atslex; make clean
-	cd ccomp/runtime/GCATS; make clean
+	cd utils/scripts; $(MAKE) clean
+	cd utils/atslex; $(MAKE) clean
+	cd ccomp/runtime/GCATS; $(MAKE) clean
 
 cleanall::
 	rm -f config.h
@@ -142,9 +146,9 @@ cleanall::
 	rm -f ccomp/lib/output/*
 	rm -f .*~ *~ */*~ */*/*~ */*/*/*~ */*/*/*/*~
 	rm -f bootstrap/Makefile bootstrap/*.o
-	cd utils/scripts; make clean
-	cd utils/atslex; make clean
-	cd ccomp/runtime/GCATS; make cleanall
+	cd utils/scripts; $(MAKE) clean
+	cd utils/atslex; $(MAKE) clean
+	cd ccomp/runtime/GCATS; $(MAKE) cleanall
 
 ######
 

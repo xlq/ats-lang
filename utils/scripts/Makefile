@@ -39,7 +39,7 @@ ATSLIBC="$(ATSHOME)"/libc
 
 CC=gcc
 INCLUDES=-I"$(ATSHOME)" -I$(ATSRUNTIME)
-CCFLAG=-O2
+CCFLAGS=-O2
 
 ######
 
@@ -49,41 +49,41 @@ all: atscc atslib
 atscc:  atscc_main_dats.c \
           top_sats.o basics_dats.o atscc_dats.o \
           stdio_sats.o stdlib_sats.o unistd_sats.o
-	$(CC) $(INCLUDES) $(CCFLAG) -o atscc atscc_main_dats.c $(ATSRUNTIME)/ats_prelude.c \
+	$(CC) $(INCLUDES) $(CCFLAGS) -o atscc atscc_main_dats.c $(ATSRUNTIME)/ats_prelude.c \
           top_sats.o basics_dats.o atscc_dats.o \
           stdio_sats.o stdlib_sats.o unistd_sats.o
 
 atslib: atslib_main_dats.c \
           top_sats.o basics_dats.o atscc_dats.o atslib_dats.o \
           stdio_sats.o stdlib_sats.o unistd_sats.o
-	$(CC) $(INCLUDES) $(CCFLAG) -o atslib atslib_main_dats.c $(ATSRUNTIME)/ats_prelude.c \
+	$(CC) $(INCLUDES) $(CCFLAGS) -o atslib atslib_main_dats.c $(ATSRUNTIME)/ats_prelude.c \
           top_sats.o basics_dats.o atscc_dats.o atslib_dats.o \
           stdio_sats.o stdlib_sats.o unistd_sats.o
 
 atspack: atspack.dats
-	atscc -o atspack $(CCFLAG) atspack.dats
+	atscc -o atspack $(CCFLAGS) atspack.dats
 
 deltabs: deltabs.dats
-	atscc -o deltabs $(CCFLAG) deltabs.dats -D__ATS_gcats
+	atscc -o deltabs $(CCFLAGS) deltabs.dats -D_ATS_gcats
 
 ######
 
 top_sats.c: top.sats
 	$(ATSOPT) --output $@ --static top.sats
 top_sats.o: top_sats.c
-	$(CC) $(INCLUDES) $(CCFLAG) -o $@ -c top_sats.c
+	$(CC) $(INCLUDES) $(CCFLAGS) -o $@ -c top_sats.c
 
 basics_dats.c: top.sats basics.dats
 	$(ATSOPT) --output $@ --dynamic basics.dats
 basics_dats.o: basics_dats.c
-	$(CC) $(INCLUDES) $(CCFLAG) -o $@ -c basics_dats.c
+	$(CC) $(INCLUDES) $(CCFLAGS) -o $@ -c basics_dats.c
 
 ######
 
 atscc_dats.c: top.sats atscc.dats
 	$(ATSOPT) --output $@ --dynamic atscc.dats
 atscc_dats.o: atscc_dats.c
-	$(CC) $(INCLUDES) $(CCFLAG) -o $@ -c atscc_dats.c
+	$(CC) $(INCLUDES) $(CCFLAGS) -o $@ -c atscc_dats.c
 
 atscc_main_dats.c: atscc_main.dats
 	$(ATSOPT) --output $@ --dynamic atscc_main.dats
@@ -93,7 +93,7 @@ atscc_main_dats.c: atscc_main.dats
 atslib_dats.c: top.sats atslib.dats
 	$(ATSOPT) --output $@ --dynamic atslib.dats
 atslib_dats.o: atslib_dats.c
-	$(CC) $(INCLUDES) $(CCFLAG) -o $@ -c atslib_dats.c
+	$(CC) $(INCLUDES) $(CCFLAGS) -o $@ -c atslib_dats.c
 
 atslib_main_dats.c: atslib_main.dats
 	$(ATSOPT) --output $@ --dynamic atslib_main.dats
@@ -103,17 +103,17 @@ atslib_main_dats.c: atslib_main.dats
 stdio_sats.c:
 	$(ATSOPT) --output $@ --static $(ATSLIBC)/SATS/stdio.sats
 stdio_sats.o: stdio_sats.c
-	$(CC) $(INCLUDES) $(CCFLAG) -o $@ -c stdio_sats.c
+	$(CC) $(INCLUDES) $(CCFLAGS) -o $@ -c stdio_sats.c
 
 stdlib_sats.c:
 	$(ATSOPT) --output $@ --static $(ATSLIBC)/SATS/stdlib.sats
 stdlib_sats.o: stdlib_sats.c
-	$(CC) $(INCLUDES) $(CCFLAG) -o $@ -c stdlib_sats.c
+	$(CC) $(INCLUDES) $(CCFLAGS) -o $@ -c stdlib_sats.c
 
 unistd_sats.c:
 	$(ATSOPT) --output $@ --static $(ATSLIBC)/SATS/unistd.sats
 unistd_sats.o: unistd_sats.c
-	$(CC) $(INCLUDES) $(CCFLAG) -o $@ -c unistd_sats.c
+	$(CC) $(INCLUDES) $(CCFLAGS) -o $@ -c unistd_sats.c
 
 ######
 

@@ -57,7 +57,11 @@
 # 5. Use [atscc] to build libats, GC and atslex.
 #
 
+######
+
 ATSRUNTIME="$(ATSHOME)"/ccomp/runtime
+
+######
 
 CC=gcc
 #CC=gcc -fsigned-char // should be OK as well
