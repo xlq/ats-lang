@@ -181,7 +181,23 @@ implement fprint_s2rtext (pf | out, s2te) = begin
       fprint1_string (pf  | out, " | ");
       fprint_s2explst (pf | out, s2es);
       fprint1_string (pf | out, "}")
-    end
+    end // end of [S2TEsub]
+(*
+  | S2TElam (s2vs, s2te) => begin
+      fprint1_string (pf | out, "S2TElam(");
+      fprint_s2varlst (pf | out, s2vs);
+      fprint1_string (pf | out, "; ");
+      fprint_s2rtext (pf | out, s2te);
+      fprint1_string (pf | out, ")")
+    end // end of [S2TElam]
+  | S2TEapp (s2te, s2es) => begin
+      fprint1_string (pf | out, "S2TEapp(");
+      fprint_s2rtext (pf | out, s2te);
+      fprint1_string (pf | out, "; ");
+      fprint_s2explst (pf | out, s2es);
+      fprint1_string (pf | out, ")")
+    end // end of [S2TEapp]
+*)
 end // end of [fprint_s2rtext]
 
 (* ****** ****** *)

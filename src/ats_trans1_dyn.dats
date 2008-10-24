@@ -1113,81 +1113,76 @@ fun aux_item (d0e0: d0exp): d1expitm = let
 *)
   end
 
-and aux_itemlst (d0e0: d0exp): d1expitmlst =
-  let
-    fun aux (res: List d1expitm, d0e0: d0exp): d1expitmlst =
-      case+ d0e0.d0exp_node of
-      | D0Eapp (d0e1, d0e2) => let
-          val res = aux_item d0e2 :: res
-        in
-          aux (res, d0e1)
-        end
-      | _ => aux_item d0e0 :: res
-  in
-    aux (nil (), d0e0)
-  end
+and aux_itemlst (d0e0: d0exp): d1expitmlst = let
+  fun aux (res: List d1expitm, d0e0: d0exp): d1expitmlst =
+    case+ d0e0.d0exp_node of
+    | D0Eapp (d0e1, d0e2) => let
+        val res = aux_item d0e2 :: res
+      in
+        aux (res, d0e1)
+      end
+    | _ => aux_item d0e0 :: res
+in
+  aux (nil (), d0e0)
+end // end of [aux_itemlst]
 
 in
   case+ aux_item d0e0 of
-    | $Fix.ITEMatm d1e => d1e
-    | $Fix.ITEMopr _ => d0exp_tr_errmsg_opr d0e0.d0exp_loc
-end
+  | $Fix.ITEMatm d1e => d1e
+  | $Fix.ITEMopr _ => d0exp_tr_errmsg_opr d0e0.d0exp_loc
+end // end of [d0exp_tr]
 
-implement d0explst_tr d0es = case+ d0es of
-  | d0e :: d0es => d0exp_tr d0e :: d0explst_tr d0es
-  | nil () => nil ()
+implement d0explst_tr d0es = 
+  $Lst.list_map_fun (d0es, d0exp_tr)
 
-implement d0explstlst_tr d0ess = case+ d0ess of
-  | d0es :: d0ess => d0explst_tr d0es :: d0explstlst_tr d0ess
-  | nil () => nil ()
+implement d0explstlst_tr d0ess =
+  $Lst.list_map_fun (d0ess, d0explst_tr)
 
 implement labd0explst_tr ld0es = case+ ld0es of
   | LABD0EXPLSTcons (l, d0e, ld0es) =>
     LABD1EXPLSTcons (l, d0exp_tr d0e, labd0explst_tr ld0es)
   | LABD0EXPLSTnil () => LABD1EXPLSTnil ()
+// end of [labd0explst_tr]
 
 implement d0expopt_tr (od0e) = case+ od0e of
   | Some d0e => Some (d0exp_tr d0e) | None () => None ()
+// end of [d0expopt_tr]
 
 (* ****** ****** *)
 
 // translation of declarations
 
-fn v0ardec_tr (d: v0ardec): v1ardec =
-  let
-    val os1e = s0expopt_tr d.v0ardec_typ
-    val od1e = d0expopt_tr d.v0ardec_ini
-  in
-    v1ardec_make (
-      d.v0ardec_loc, d.v0ardec_sym, d.v0ardec_sym_loc, os1e, od1e
-    )
-  end
+fn v0ardec_tr
+  (d: v0ardec): v1ardec = let
+  val os1e = s0expopt_tr d.v0ardec_typ
+  val od1e = d0expopt_tr d.v0ardec_ini
+in
+  v1ardec_make (
+    d.v0ardec_loc, d.v0ardec_sym, d.v0ardec_sym_loc, os1e, od1e
+  )
+end // end of [v0ardec_tr]
 
 fun v0ardeclst_tr (ds: v0ardeclst): v1ardeclst =
-  case+ ds of
-  | cons (d, ds) => cons (v0ardec_tr d, v0ardeclst_tr ds)
-  | nil () => nil ()
+  $Lst.list_map_fun (ds, v0ardec_tr)
 
 (* ****** ****** *)
 
-fn v0aldec_tr (d: v0aldec): v1aldec =
-  let
-    val p1t = p0at_tr d.v0aldec_pat
-    val d1e = d0exp_tr d.v0aldec_def
+fn v0aldec_tr
+  (d: v0aldec): v1aldec = let
+  val p1t = p0at_tr d.v0aldec_pat
+  val d1e = d0exp_tr d.v0aldec_def
 (*
-    val () = begin
-      print "v0aldec_tr: d1e = "; print d1e; print_newline ()
-    end
-*)
-    val ann = witht0ype_tr d.v0aldec_ann
-  in
-    v1aldec_make (d.v0aldec_loc, p1t, d1e, ann)
+  val () = begin
+    print "v0aldec_tr: d1e = "; print d1e; print_newline ()
   end
+*)
+  val ann = witht0ype_tr d.v0aldec_ann
+in
+  v1aldec_make (d.v0aldec_loc, p1t, d1e, ann)
+end // end of [v0aldec_tr]
 
 fun v0aldeclst_tr (ds: v0aldeclst): v1aldeclst =
-  case+ ds of
-  | cons (d, ds) => cons (v0aldec_tr d, v0aldeclst_tr ds)
-  | nil () => nil ()
+  $Lst.list_map_fun (ds, v0aldec_tr)
 
 (* ****** ****** *)
 
@@ -1227,29 +1222,28 @@ in
   f1undec_make (loc, d.f0undec_sym, d.f0undec_sym_loc, d1e_def, ann)
 end // end of [f0undec_tr]
 
-fun f0undeclst_tr (fk: funkind, ds: f0undeclst): f1undeclst =
-  let
-    val is_prf = funkind_is_proof fk
-    and is_rec = funkind_is_recursive fk
-  in
-    case+ ds of
-    | d :: ds => begin
-        f0undec_tr (is_prf, is_rec, d) :: f0undeclst_tr (fk, ds)
-      end
-    | nil () => nil ()
-  end
+fun f0undeclst_tr
+  (fk: funkind, ds: f0undeclst): f1undeclst = let
+  val is_prf = funkind_is_proof fk
+  and is_rec = funkind_is_recursive fk
+in
+  case+ ds of
+  | d :: ds => begin
+      f0undec_tr (is_prf, is_rec, d) :: f0undeclst_tr (fk, ds)
+    end
+  | nil () => nil ()
+end // end of [f0undeclst_tr]
 
 (* ****** ****** *)
 
-fn m0acdef_tr (d: m0acdef): m1acdef =
-  let val def = d0exp_tr d.m0acdef_def in
-    m1acdef_make (d.m0acdef_loc, d.m0acdef_sym, d.m0acdef_arg, def)
-  end
+fn m0acdef_tr (d: m0acdef): m1acdef = let
+  val def = d0exp_tr d.m0acdef_def
+in
+  m1acdef_make (d.m0acdef_loc, d.m0acdef_sym, d.m0acdef_arg, def)
+end // end of [m0acdef_tr]
 
 fun m0acdeflst_tr (ds: m0acdeflst): m1acdeflst =
-  case+ ds of
-  | cons (d, ds) => cons (m0acdef_tr d, m0acdeflst_tr ds)
-  | nil () => nil ()
+  $Lst.list_map_fun (ds, m0acdef_tr)
 
 (* ****** ****** *)
 
@@ -1394,7 +1388,7 @@ fn s0taload_tr
   ) : d1eclst
 in
   d1ec_staload (loc, idopt, fil, 0(*loaded*), d1cs)
-end
+end // end of [s0taload_tr]
 
 (* ****** ****** *)
 

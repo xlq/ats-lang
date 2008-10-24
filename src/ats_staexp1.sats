@@ -258,7 +258,12 @@ and wths1explst = // needed in [ats_trans2_sta.dats]
   | WTHS1EXPLSTcons_none of wths1explst
 
 and s1rtext_node =
-  | S1TEsrt of s1rt | S1TEsub of (sym_t, s1rtext, s1explst)
+  | S1TEsrt of s1rt
+  | S1TEsub of (sym_t, s1rtext, s1explst)
+(*
+  | S1TElam of (s1arglst, s1rtext)
+  | S1TEapp of (s1rtext, s1explst)
+*)
 
 and s1qua_node =
   | S1Qprop of s1exp | S1Qvars of (i0delst, s1rtext)
@@ -398,14 +403,14 @@ fun s1exparg_one (_: loc_t): s1exparg
 fun s1exparg_all (_: loc_t): s1exparg
 fun s1exparg_seq (_: loc_t, seq: s1explst): s1exparg
 
-//
+(* ****** ****** *)
 
 fun s1rtext_srt (_: loc_t, _: s1rt): s1rtext
 fun s1rtext_sub
   (_: loc_t, _: sym_t, _: s1rtext, s1ps: s1explst)
   : s1rtext
 
-//
+(* ****** ****** *)
 
 fun s1qua_prop (_: loc_t, _: s1exp): s1qua
 fun s1qua_vars (_: loc_t, _: i0delst, _: s1rtext): s1qua

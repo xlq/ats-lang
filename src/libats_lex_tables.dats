@@ -179,6 +179,11 @@ implement transition_table_get (r_tblopt, nstate, c) = let
         err := (1: int); fold@ (!p_tblopt)
       end // end of [tblopt_none]
     | tblopt_some (!pf | p, n) => let
+(*
+        Note that [int_of_schar] rather than [int_of_char] is used.
+        This change was made after Eckehard Berns (ecki@ecki.to) reported a bug
+        due to [char] being treated as [unsigned char].
+*)
         val i = int1_of_int
           ((nstate - 1) * NUMBER_OF_CHARS + (int_of_schar c) + 1)
 (*

@@ -649,29 +649,31 @@ implement d1ec_staload (loc, idopt, fil, loaded, d1cs) = '{
 
 implement d1atsrtcon_make (loc, id, s1ts) = '{
   d1atsrtcon_loc= loc, d1atsrtcon_sym= id, d1atsrtcon_arg= s1ts
-}
+} // end of [d2atsrtcon_make]
 
 implement d1atsrtdec_make (loc, id, xs) = '{
   d1atsrtdec_loc= loc, d1atsrtdec_sym= id, d1atsrtdec_con= xs
-}
+} // end of [d1atsrtdec_make]
 
 implement s1rtdef_make (loc, id, s1te) = '{
-  s1rtdef_loc= loc, s1rtdef_sym= id, s1rtdef_def= s1te
-}
+  s1rtdef_loc= loc
+, s1rtdef_sym= id
+, s1rtdef_def= s1te
+} // end of [s1rtdef_make]
 
 implement s1tacon_make (loc, id, arg, def) = '{
   s1tacon_loc= loc
 , s1tacon_sym= id
 , s1tacon_arg= arg
 , s1tacon_def= def
-}
+} // end of [s1tacon_make]
 
 implement s1tacst_make (loc, id, arg, res) = '{
   s1tacst_loc= loc
 , s1tacst_sym= id
 , s1tacst_arg= arg
 , s1tacst_res= res
-}
+} // end of [s1tacst_make]
 
 implement s1tavar_make (loc, id, s1t) = '{
   s1tavar_loc= loc, s1tavar_sym= id, s1tavar_srt= s1t
@@ -683,7 +685,7 @@ implement s1expdef_make (loc, id, arg, res, def) = '{
 , s1expdef_arg= arg
 , s1expdef_res= res
 , s1expdef_def= def
-}
+} // end of [s1expdef_make]
 
 implement s1aspdec_make (loc, qid, arg, res, def) = '{
   s1aspdec_loc= loc
@@ -691,7 +693,7 @@ implement s1aspdec_make (loc, qid, arg, res, def) = '{
 , s1aspdec_arg= arg
 , s1aspdec_res= res
 , s1aspdec_def= def
-}
+} // end of [s1aspdec_make]
 
 implement d1atcon_make (loc, id, qua, npf, arg, ind) = '{
   d1atcon_loc= loc
@@ -700,7 +702,7 @@ implement d1atcon_make (loc, id, qua, npf, arg, ind) = '{
 , d1atcon_npf= npf
 , d1atcon_arg= arg
 , d1atcon_ind= ind
-}
+} // end of [d1atcon_make]
 
 implement d1atdec_make (loc, fil, id, arg, con) = '{
   d1atdec_loc= loc
@@ -708,7 +710,7 @@ implement d1atdec_make (loc, fil, id, arg, con) = '{
 , d1atdec_sym= id
 , d1atdec_arg= arg
 , d1atdec_con= con
-}
+} // end of [d1atdec_make]
 
 implement e1xndec_make (loc,fil, id, qua, npf, arg) = '{
   e1xndec_loc= loc
@@ -717,7 +719,7 @@ implement e1xndec_make (loc,fil, id, qua, npf, arg) = '{
 , e1xndec_qua= qua
 , e1xndec_npf= npf
 , e1xndec_arg= arg
-}
+} // end of [e1xndec_make]
 
 implement d1cstdec_make (loc, fil, id, s1e, ext) = '{
   d1cstdec_loc= loc
@@ -725,14 +727,14 @@ implement d1cstdec_make (loc, fil, id, s1e, ext) = '{
 , d1cstdec_sym= id
 , d1cstdec_typ= s1e
 , d1cstdec_ext= ext
-}
+} // end of [d1cstdec_make]
 
 implement v1aldec_make (loc, p1t, d1e, ann) = '{
   v1aldec_loc= loc
 , v1aldec_pat= p1t
 , v1aldec_def= d1e
 , v1aldec_ann= ann
-}
+} // end of [v1aldec_make]
 
 implement f1undec_make (loc, id, loc_id, d1e, ann) = '{
   f1undec_loc= loc
@@ -740,7 +742,7 @@ implement f1undec_make (loc, id, loc_id, d1e, ann) = '{
 , f1undec_sym_loc= loc_id
 , f1undec_def= d1e
 , f1undec_ann= ann
-}
+} // end of [f1undec_make]
 
 implement v1ardec_make (loc, id, loc_id, os1e, od1e) = '{
   v1ardec_loc= loc
@@ -748,21 +750,21 @@ implement v1ardec_make (loc, id, loc_id, os1e, od1e) = '{
 , v1ardec_sym_loc= loc_id
 , v1ardec_typ= os1e
 , v1ardec_ini= od1e
-}
+} // end of [v1ardec_make]
 
 implement m1acdef_make (loc, id, arg, def) = '{
   m1acdef_loc= loc
 , m1acdef_sym= id
 , m1acdef_arg= arg
 , m1acdef_def= def
-}
+} // end of [m1acdef_make]
 
 implement i1mpdec_make (loc, qid, tmparg, def) = '{
   i1mpdec_loc= loc
 , i1mpdec_qid= qid
 , i1mpdec_tmparg= tmparg
 , i1mpdec_def= def
-}
+} // end of [i1mpdec_make]
 
 (* ****** ****** *)
 

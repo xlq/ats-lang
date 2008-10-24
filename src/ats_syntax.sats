@@ -841,7 +841,9 @@ datatype e0xpact_kind =
 (* ****** ****** *)
 
 typedef s0rtdef = '{
-  s0rtdef_loc= loc_t, s0rtdef_sym= sym_t, s0rtdef_def= s0rtext
+  s0rtdef_loc= loc_t
+, s0rtdef_sym= sym_t
+, s0rtdef_def= s0rtext
 }
 
 fun s0rtdef_make (id: i0de, s0te: s0rtext): s0rtdef

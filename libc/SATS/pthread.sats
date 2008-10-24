@@ -51,7 +51,7 @@
 (* ****** ****** *)
 
 fun pthread_create_detached_cloptr
-  (f: () -<lin,cloptr1> void): void // this a linear closure!
+  (f: () -<lin,cloptr1> void): void // a linear closure!
   = "ats_pthread_create_detached_cloptr"
 
 fun pthread_exit (): void // this function does not return
@@ -59,66 +59,94 @@ fun pthread_exit (): void // this function does not return
 
 (* ****** ****** *)
 
-absviewt@ype pthread_mutex_view_viewt0ype (i:int, v:view)
-  = $extype "pthread_mutex_t"
+absviewt@ype pthread_mutex_view_viewt0ype (v:view) =
+  $extype "pthread_mutex_t"
 
 stadef mutex_vt = pthread_mutex_view_viewt0ype
-stadef mutex0_vt (v:view) = mutex_vt (0, v)
-stadef mutex1_vt (v:view) = mutex_vt (1, v)
+
+absviewtype pthread_mutexref_view_type (v:view) // a boxed type
 
 (* ****** ****** *)
 
-fun pthread_mutex_init_locked {v:view}
-  (mut: &mutex_vt? >> mutex0_vt v): void
+fun pthread_mutex_init_locked
+  {v:view} (mut: &mutex_vt? >> mutex_vt v): void
   = "atslib_pthread_mutex_init_locked"
 
-fun pthread_mutex_init_unlocked {v:view}
-  (pf: v | mut: &mutex_vt? >> mutex1_vt v): void
+fun pthread_mutex_init_unlocked
+  {v:view} (resource: v | mut: &mutex_vt? >> mutex_vt v): void
   = "atslib_pthread_mutex_init_unlocked"
 
 (* ****** ****** *)
 
 fun pthread_mutex_create_locked {v:view} {l:addr}
-  (): [l:addr] @(free_gc_v l, mutex0_vt v @ l | ptr l)
+  (): [l:addr] @(free_gc_v l, mutex_vt v @ l | ptr l)
   = "atslib_pthread_mutex_create_locked"
 
 fun pthread_mutex_create_unlocked {v:view} {l:addr}
-  (pf: v | (*none*)): [l:addr] @(free_gc_v l, mutex1_vt v @ l | ptr l)
+  (resource: v | (*none*)): [l:addr] @(free_gc_v l, mutex_vt v @ l | ptr l)
   = "atslib_pthread_mutex_create_unlocked"
 
 (* ****** ****** *)
 
+fun pthread_mutexref_create_locked
+  {v:view} (): mutex_ref_t (v)
+  = "atslib_pthread_mutex_create_locked"
+
+fun pthread_mutexref_create_unlocked
+  {v:view} (resource: v | (*none*)): mutex_ref_t (v)
+  = "atslib_pthread_mutex_create_unlocked"
+
+fun pthread_mutexref_create_mutex
+  {v:view} (pf: mutex_vt v @ l | p: ptr l): mutex_ref_t (v)
+  = "atslib_pthread_mutexref_create_mutex"
+
+(* ****** ****** *)
+
 fun pthread_mutex_destroy {v:view} {l:addr}
-  (pf: !mutex0_vt v @ l >> mutex_vt? @ l | p: ptr l): void
+  (pf: !mutex_vt v @ l >> mutex_vt? @ l | p: ptr l): (v | void)
   = "atslib_pthread_mutex_destroy"
 
-fun pthread_mutex_lock {v:view}
-  (mutex: &mutex1_vt v >> mutex0_vt v): (v | void)
+(* ****** ****** *)
+
+fun pthread_mutex_lock
+  {v:view} (mutex: &mutex_vt v): (v | void)
   = "atslib_pthread_mutex_lock"
 
 fun pthread_mutex_unlock {v:view}
-  (resource: v | mutex: &mutex0_vt v >> mutex1_vt v): void
+  (resource: v | mutex: &mutex_vt v): void
   = "atslib_pthread_mutex_unlock"
 
 (* ****** ****** *)
 
-absviewt@ype pthread_cond_viewt0ype = $extype "pthread_cond_t"
+fun pthread_mutexref_lock
+  {v:view} (mutex: mutex_ref_t v): (v | void)
+  = "atslib_pthread_mutex_lock"
+
+fun pthread_mutexref_unlock
+  {v:view} (resource: v | mutex: mutex_ref_t v): void
+  = "atslib_pthread_mutex_unlock"
+
+(* ****** ****** *)
+
+absviewt@ype pthread_cond_viewt0ype =
+  $extype "pthread_cond_t"
+
 stadef cond_vt = pthread_cond_viewt0ype
 
-//
+(* ****** ****** *)
 
 fun pthread_cond_create ()
   : [l:addr] @(free_gc_v l, cond_vt @ l | ptr l)
   = "atslib_pthread_cond_create"
 
 fun pthread_cond_wait_mutex {v:view}
-  (resource: !v | cond: &cond_vt, p: &mutex0_vt v >> mutex0_vt v) :<> void
+  (resource: !v | cond: &cond_vt, p: &mutex_vt v) :<> void
   = "atslib_pthread_cond_wait_mutex"
 
-fun pthread_cond_signal (cond: &cond_vt): void
+fun pthread_cond_signal (cond: &cond_vt):<> void
   = "atslib_pthread_cond_signal"
 
-fun pthread_cond_broadcast (cond: &cond_vt): void
+fun pthread_cond_broadcast (cond: &cond_vt):<> void
   = "atslib_pthread_cond_broadcast"
 
 (* ****** ****** *)

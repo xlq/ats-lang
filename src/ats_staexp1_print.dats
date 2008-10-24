@@ -175,6 +175,34 @@ implement prerr_s1rtlst (s1ts) = prerr_mac (fprint_s1rtlst, s1ts)
 
 (* ****** ****** *)
 
+fun fprint_s1arg {m:file_mode}
+  (pf: file_mode_lte (m, w) | out: &FILE m, s1a: s1arg)
+  : void = let
+  val () = $Sym.fprint_symbol (pf | out, s1a.s1arg_sym)
+in
+  case+ s1a.s1arg_srt of
+  | Some s1t => begin
+      fprint1_string (pf | out, ": "); fprint_s1rt (pf | out, s1t)
+    end
+  | None () => ()
+end // end of [fprint_s1arg]
+
+fun fprint_s1arglst {m:file_mode}
+  (pf: file_mode_lte (m, w) | out: &FILE m, s1as: s1arglst)
+  : void = let
+  fun aux (out: &FILE m, i: int, s1as: s1arglst): void =
+    case+ s1as of
+    | cons (s1a, s1as) => begin
+        if i > 0 then fprint1_string (pf | out, ", "); 
+        fprint_s1arg (pf | out, s1a); aux (out, i+1, s1as)
+      end
+    | nil () => ()
+in
+  aux (out, 0, s1as)
+end // end of [fprint_s1qualst]
+
+(* ****** ****** *)
+
 fun fprint_s1qua {m:file_mode}
   (pf: file_mode_lte (m, w) | out: &FILE m, s1q: s1qua)
   : void = let

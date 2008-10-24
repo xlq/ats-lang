@@ -312,6 +312,20 @@ implement s1rtext_sub (loc, id, s1te, s1ps) = '{
   s1rtext_loc= loc, s1rtext_node= S1TEsub (id, s1te, s1ps)
 }
 
+(*
+
+// should [S1TElam] and [S1TEapp] be added?
+
+implement s1rtext_lam (loc, s1as, s1te) = '{
+  s1rtext_loc= loc, s1rtext_node= S1TElam (s1as, s1te)
+}
+
+implement s1rtext_app (loc, s1te, s1es) = '{
+  s1rtext_loc= loc, s1rtext_node= S1TEapp (s1te, s1es)
+}
+
+*)
+
 //
 
 implement s1qua_prop (loc, s1e) =

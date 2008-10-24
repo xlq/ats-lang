@@ -10,7 +10,7 @@
 
 datatype list (a:t@ype+, int) = // t@ype+: covariant
   | list_nil (a, 0)
-  | {n:int | n >= 0} list_cons (a, n+1) of (a, list_t0ype_int_type (a, n))
+  | {n:int | n >= 0} list_cons (a, n+1) of (a, list (a, n))
 
 *)
 

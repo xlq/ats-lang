@@ -463,14 +463,6 @@ and d1atsrtdeclst = List d1atsrtdec
 
 (* ****** ****** *)
 
-and s1rtdef = '{ (* (extended) sort definition *)
-  s1rtdef_loc= loc_t
-, s1rtdef_sym= sym_t
-, s1rtdef_def= s1rtext
-}
-
-(* ****** ****** *)
-
 and s1tacon = '{ // static constructor declaration
   s1tacon_loc= loc_t
 , s1tacon_sym= sym_t

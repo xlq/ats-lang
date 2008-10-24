@@ -77,6 +77,11 @@ sortdef agz = {a:addr | a > null}
 
 (* ****** ****** *)
 
+// should parameterized subset sorts be suported?
+// sortdef intbtw (l: int, u: int) = {a: int | l <= a; a < u}
+
+(* ****** ****** *)
+
 #if VERBOSE_PRELUDE #then
 
 #print "Loading [sortdef.sats] finishes!\n"

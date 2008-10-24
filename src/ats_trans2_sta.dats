@@ -97,7 +97,9 @@ overload prerr with $Loc.prerr_location
 
 fun s1rt_app_tr
   (loc0: loc_t, s1t_fun: s1rt, s1ts_arg: s1rtlst): s2rt = begin
-  if s1rt_is_arrow s1t_fun then begin case+ s1ts_arg of
+  case+ 0 of
+  | _ when s1rt_is_arrow s1t_fun => begin
+    case+ s1ts_arg of
     | cons (s1t1, cons (s1t2, nil ())) => let
         val s1ts1 = (
           case+ s1t1.s1rt_node of
@@ -113,14 +115,15 @@ fun s1rt_app_tr
         prerr_newline ();
         exit (1)      
       end
-  end else begin
-    prerr loc0;
-    prerr ": error(2)";
-    $Deb.debug_prerrf (": %s: s1rt_app_tr", @(THISFILENAME));
-    prerr ": sort application is not supported.";
-    prerr_newline ();
-    $Err.abort {s2rt} ()
-  end
+    end // end of [s1rt_is_arrow]
+  | _ => begin
+      prerr loc0;
+      prerr ": error(2)";
+      $Deb.debug_prerrf (": %s: s1rt_app_tr", @(THISFILENAME));
+      prerr ": sort application is not supported.";
+      prerr_newline ();
+      $Err.abort {s2rt} ()
+    end // end of [_]
 end // end of [s1rt_app_tr]
 
 implement s1rt_tr (s1t0) = begin
@@ -134,8 +137,7 @@ implement s1rt_tr (s1t0) = begin
   | S1RTlist s1ts => S2RTtup (s1rtlst_tr s1ts) 
   | S1RTqid (q, id) => begin case+ the_s2rtenv_find_qua (q, id) of
     | ~Some_vt s2te => begin case+ s2te of
-      | S2TEsrt s2t => s2t
-      | S2TEsub _ => begin
+      | S2TEsrt s2t => s2t | _ => begin
           prerr s1t0.s1rt_loc;
           prerr ": error(2)";
           $Deb.debug_prerrf (": %s: s1rt_tr", @(THISFILENAME));
@@ -143,7 +145,7 @@ implement s1rt_tr (s1t0) = begin
           prerr "] refers to an extended sort but not a sort.";
           prerr_newline ();
           $Err.abort ()
-        end
+        end // end of [_]
       end // end of [Some_vt]
     | ~None_vt () => begin
         prerr s1t0.s1rt_loc;
@@ -253,17 +255,11 @@ implement s1arg_var_tr (s1a) = begin
     end
 end // end of [s1arg_var_tr]
 
-implement s1arglst_var_tr (s1as) = begin case+ s1as of
-  | cons (s1a, s1as) => cons (s1arg_var_tr s1a, s1arglst_var_tr s1as)
-  | nil () => nil ()
-end // end of [s1arglst_var_tr]
+implement s1arglst_var_tr (s1as) =
+  $Lst.list_map_fun (s1as, s1arg_var_tr)
 
-implement s1arglstlst_var_tr (s1ass) = begin case+ s1ass of
-  | cons (s1as, s1ass) => begin
-      cons (s1arglst_var_tr s1as, s1arglstlst_var_tr s1ass)
-    end
-  | nil () => nil ()
-end // end of [s1arglstlst_var_tr]
+implement s1arglstlst_var_tr (s1ass) =
+  $Lst.list_map_fun (s1ass, s1arglst_var_tr)
 
 implement s1arg_var_tr_srt (s1a, s2t0) = let
   val s2t = case+ s1a.s1arg_srt of
@@ -831,8 +827,7 @@ fun s1rtext_tr (s1te0: s1rtext): s2rtext = begin
   case+ s1te0.s1rtext_node of
   | S1TEsrt s1t => begin case+ s1t.s1rt_node of
     | S1RTqid (q, id) => begin case+ the_s2rtenv_find id of
-      | ~Some_vt s2te => s2te
-      | ~None_vt () => begin
+      | ~Some_vt s2te => s2te | ~None_vt () => begin
           prerr s1t.s1rt_loc;
           prerr ": error(2)";
           $Deb.debug_prerrf (": %s: s1rtext_tr", @(THISFILENAME));
@@ -841,14 +836,15 @@ fun s1rtext_tr (s1te0: s1rtext): s2rtext = begin
           prerr "] refers to an unrecognized sort.";
           prerr_newline ();
           $Err.abort ()
-        end
-      end
+        end // end of [None_vt]
+      end // end of [S1RTqid]
     | _ => S2TEsrt (s1rt_tr s1t)
-    end
+    end // end of [S1TEsrt]
   | S1TEsub (id, s1te, s1ps) => let
       val s2te = s1rtext_tr s1te
-      val s2t = case+ s2te of
+      val s2t = begin case+ s2te of
         | S2TEsrt s2t => s2t | S2TEsub (_, s2t, _) => s2t
+      end // end of [val]
       val s2v = s2var_make_id_srt (id, s2t)
       val (pf_s2expenv | ()) = the_s2expenv_push ()
       val () = the_s2expenv_add_svar s2v
@@ -863,7 +859,7 @@ fun s1rtext_tr (s1te0: s1rtext): s2rtext = begin
       ) : s2explst
     in
       S2TEsub (s2v, s2t, s2ps)
-    end
+    end // end of [S1TEsub]
 end // end of [s1rtext_tr]
 
 (* ****** ****** *)

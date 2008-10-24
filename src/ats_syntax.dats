@@ -1013,15 +1013,19 @@ implement witht0ype_viewtype (s0e) = WITHT0YPEviewtype (s0e)
 
 (* ****** ****** *)
 
-implement s0rtdef_make (id, def) = begin
+implement s0rtdef_make (id, def) = let
 (*
-  prerr "s0rtdef_make:\n";
-  prerr "def.loc = "; prerr def.s0rtext_loc; prerr_newline ();
+  val () = prerr "s0rtdef_make:\n"
+  val () = begin
+    prerr "def.loc = "; prerr def.s0rtext_loc; prerr_newline ()
+  end // end of [val]
 *)
-  let val loc = combine (id.i0de_loc, def.s0rtext_loc) in
-    '{ s0rtdef_loc= loc, s0rtdef_sym= id.i0de_sym, s0rtdef_def= def }
-  end
-end // end of [s0rtdef_make]
+  val loc = combine (id.i0de_loc, def.s0rtext_loc)
+in '{
+  s0rtdef_loc= loc
+, s0rtdef_sym= id.i0de_sym
+, s0rtdef_def= def
+} end // end of [s0rtdef_make]
 
 implement s0rtdeflst_nil () = nil ()
 implement s0rtdeflst_cons (x, xs) = cons (x, xs)
