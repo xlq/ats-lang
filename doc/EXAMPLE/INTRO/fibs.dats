@@ -21,14 +21,10 @@ fun fib2 (x: Nat): Nat =
 
 //
 
-fun fib3 (x: Nat): Nat =
-  let
-    fun loop (x: Nat, a0: Nat, a1: Nat): Nat =
-      if x > 0 then loop (x-1, a1, a0 + a1)
-      else a0
-  in
-    loop (x, 0, 1)
-  end
+fun fib3 (x: Nat): Nat = loop (x, 0, 1) where {
+  fun loop (x: Nat, a0: Nat, a1: Nat): Nat =
+    if x > 0 then loop (x-1, a1, a0 + a1) else a0
+} // end of [where]
 
 //
 
@@ -38,16 +34,15 @@ dataprop FIB (int, int) =
   | {i:nat} {r0,r1:int}
     FIB_ind (i+2, r0+r1) of (FIB (i, r0), FIB (i+1, r1))
 
-fun fib4 {n:nat} (x: int n): [r:int] (FIB (n, r) | int r) =
-  let
-    fun loop {i,j:nat | i+j == n} {r0,r1:int}
-      (pf0: FIB (j, r0), pf1: FIB (j+1, r1) | x: int i, a0: int r0, a1: int r1)
-      : [r:int] (FIB (n, r) | int r) =
-      if x > 0 then loop (pf1, FIB_ind (pf0, pf1) | x-1, a1, a0 + a1)
-      else (pf0 | a0)
-  in
-    loop (FIB_bas_0 (), FIB_bas_1 () | x, 0, 1)
-  end
+fun fib4 {n:nat} (x: int n): [r:int] (FIB (n, r) | int r) = let
+  fun loop {i,j:nat | i+j == n} {r0,r1:int}
+    (pf0: FIB (j, r0), pf1: FIB (j+1, r1) | x: int i, a0: int r0, a1: int r1)
+    : [r:int] (FIB (n, r) | int r) =
+    if x > 0 then loop (pf1, FIB_ind (pf0, pf1) | x-1, a1, a0 + a1)
+    else (pf0 | a0)
+in
+  loop (FIB_bas_0 (), FIB_bas_1 () | x, 0, 1)
+end // end of [fib4]
 
 //
 
@@ -80,36 +75,26 @@ val () =
     exit 1
   end
 val () = assert (argc >= 2)
-val n = int1_of (argv.[1])
-val () =
+val n = int1_of (argv.[1]); val () =
   if n < 0 then begin
-    prerrf ("The argument = %i is illegal.\n", @(n));
-    exit 1
-  end
+    prerrf ("The argument = %i is illegal.\n", @(n)); exit 1
+  end // end of [val]
 val () = assert (n >= 0)
 
-(*
 val fib1_n = fib1 n
 val fib2_n = fib2 n
 val fib3_n = fib3 n
 val (_ | fib4_n) = fib4 n
-*)
 val (_ | fib5_n) = fib5 n
 
 in
-(*
 printf ("fib1(%i) = ", @(n)); print fib1_n; print_newline ();
-
 printf ("fib2(%i) = ", @(n)); print fib2_n; print_newline ();
-
 printf ("fib3(%i) = ", @(n)); print fib3_n; print_newline ();
-
 printf ("fib4(%i) = ", @(n)); print fib4_n; print_newline ();
-*)
 printf ("fib5(%i) = ", @(n)); print fib5_n; print_newline ();
 intinf_free fib5_n;
-
-end
+end // end of [main]
 
 (* ****** ****** *)
 

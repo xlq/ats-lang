@@ -1,3 +1,13 @@
+########################################################################
+
+ats-lang-anariats-0.1.1:
+
+1. A type [schar] for signed chars is added. Now, the type [char] depends
+   on the interpretation of the C compiler used to compile the C code that
+   is generated from ATS programs by [atsopt].
+
+########################################################################
+
 ats-lang-anariats-0.1.0:
 
 1. The syntax for template implementation is changed:
@@ -7,7 +17,7 @@ ats-lang-anariats-0.1.0:
 2. It is now allowed to implement a special template instantiation:
    implement foo<double,string><int> (...) = ...
 
-3. various bug fixes can be found in BUGS.txt.
+3. Various bug fixes can be found in BUGS.txt.
 
 ########################################################################
 
@@ -34,3 +44,4 @@ ats-lang-anariats-0.0.2:
 8. The command [atspackage] no longer puts the source code for Anairiats
    into a distribution.
 
+########################################################################

@@ -83,27 +83,27 @@ wc: wc.dats; $(ATSCC) -O3 -o wc wc.dats
 DIR=/home/fac2/hwxi/public_html/ATS/EXAMPLE/MISC
 
 update::
-	cp Makefile $(DIR)
-	cp AutoDiff.dats $(DIR)
-	cp fft.dats $(DIR)
-	cp GaussElim.dats $(DIR)
-	cp GarsiaWachs.dats $(DIR)
-	cp hamming_lazy.dats $(DIR)
-	cp hanoi.dats $(DIR)
-	cp kmp.dats $(DIR)
-	cp passwdgen.dats $(DIR)
-	cp pi_lazy.dats $(DIR)
-	cp queens.dats $(DIR)
-	cp sieve.dats $(DIR)
-	cp sieve_lazy.dats $(DIR)
-	cp strmat.dats $(DIR)
-	cp sumup.dats $(DIR)
-	cp tetrix.dats $(DIR)
-	cp wc.dats $(DIR)
+	atsopt --posmark_html_only -d AutoDiff.dats
+	atsopt --posmark_html_only -d fft.dats
+	atsopt --posmark_html_only -d GaussElim.dats
+	atsopt --posmark_html_only -d GarsiaWachs.dats
+	atsopt --posmark_html_only -d hanoi.dats
+	atsopt --posmark_html_only -d kmp.dats
+	atsopt --posmark_html_only -d passwdgen.dats
+	atsopt --posmark_html_only -d pi_lazy.dats
+	atsopt --posmark_html_only -d queens.dats
+	atsopt --posmark_html_only -d sieve.dats
+	atsopt --posmark_html_only -d sieve_lazy.dats
+	atsopt --posmark_html_only -d strmat.dats
+	atsopt --posmark_html_only -d sumup.dats
+	atsopt --posmark_html_only -d tetrix.dats
+	atsopt --posmark_html_only -d wc.dats
 
 ######
 
-clean:: ; rm -f *_dats.c *_sats.c *~
+clean::
+	rm -f MISC/*
+	rm -f *_dats.c *_sats.c *_dats.html *_sats.html *~
 
 cleanall:: clean
 	rm -f a.out

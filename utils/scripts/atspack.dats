@@ -39,7 +39,7 @@
 (* ****** ****** *)
 
 //
-// The command [atspackage] is called to make an ATS package for release
+// The command [atspack] is called to make an ATS package for release
 //
 
 //
@@ -234,15 +234,30 @@ val SRCROOTsrc = SRCROOT + "src/"; val DSTROOTsrc = DSTROOT + "src/"
 
 (* ****** ****** *)
 
-fn bin_dir_copy (knd: int): void = let
+datatype packnd =
+  | PACKNDsource | PACKNDprecompiled
+
+fn packnd_is_source (knd: packnd): bool = begin
+  case+ knd of
+  | PACKNDsource () => true | PACKNDprecompiled () => false
+end // end of [packnd_is_precompile]
+
+fn packnd_is_precompiled (knd: packnd): bool = begin
+  case+ knd of
+  | PACKNDsource () => false | PACKNDprecompiled () => true
+end // end of [packnd_is_precompile]
+
+(* ****** ****** *)
+
+fn bin_dir_copy (knd: packnd): void = let
   val SRCROOTbin = SRCROOT + "bin/"
   val DSTROOTbin = DSTROOT + "bin/"
 
   macdef cp (name) = fcopy_exn
      (SRCROOTbin + ,(name), DSTROOTbin + ,(name))
   macdef cpx (name) = let
-    val src_name = SRCROOT + ,(name)
-    val dst_name = DSTROOT + ,(name)
+    val src_name = SRCROOTbin + ,(name)
+    val dst_name = DSTROOTbin + ,(name)
     val () = fcopy_exn (src_name, dst_name)
     val () = chmod_exn (dst_name, S_IRWXU)
   in
@@ -250,7 +265,9 @@ fn bin_dir_copy (knd: int): void = let
   end // end of [cpx]
 
   val () = mkdir_exn (DSTROOTbin, DIRmode)
-  val () = if (knd > 0) then (cpx "atscc"; cpx "atsopt")
+  val () = begin
+    if (packnd_is_precompiled knd) then (cpx "atscc"; cpx "atsopt")
+  end // end of [begin]
 in
   prerr "The [bin] directory is successfully copied.";
   prerr_newline ()
@@ -351,13 +368,12 @@ end // end of [bootscrap_dir_copy]
 
 (* ****** ****** *)
 
-// [knd: 0(source)/1(precompiled)]
-fn ccomp_lib_dir_copy (knd: int): void = let
+fn ccomp_lib_dir_copy (knd: packnd): void = let
   val () = mkdir_exn (DSTROOTccomp_lib, DIRmode)
   val () = begin
-    if knd > 0 then fcopy_exn
+    if (packnd_is_precompiled knd) then fcopy_exn
       (SRCROOTccomp_lib + "libats.a", DSTROOTccomp_lib + "libats.a")
-  end
+  end // end of [val]
   val () = mkdir_exn (DSTROOTccomp_lib_output, DIRmode)
 in
   // empty
@@ -365,7 +381,7 @@ end // end of [ccomp_lib_dir_copy]
 
 (* ****** ****** *)
 
-fn ccomp_runtime_GCATS_dir_copy (knd: int): void = let
+fn ccomp_runtime_GCATS_dir_copy (knd: packnd): void = let
   fn test (name: string): bool = begin case+ name of
     | _ when name_is_xats (name) => true | _ => false
   end // end of [filename_test]
@@ -381,7 +397,9 @@ fn ccomp_runtime_GCATS_dir_copy (knd: int): void = let
   val () = begin
     cp "Makefile"; cp "README"; cp "gc.h"
   end
-  val () = if knd > 0 then (cp "gc.o"; cp "gc_mt.o")
+  val () = begin
+    if (packnd_is_precompiled knd) then (cp "gc.o"; cp "gc_mt.o")
+  end // end of [val]
 in
   prerr "The [ccomp/runtime/GCATS] directory is successfully copied.";
   prerr_newline ()
@@ -389,7 +407,7 @@ end // end of [ccomp_runtime_GCATS_dir_copy]
 
 //
 
-fn ccomp_runtime_dir_copy (knd: int) = let
+fn ccomp_runtime_dir_copy (knd: packnd): void = let
   macdef cp (name) = fcopy_exn (
     SRCROOTccomp_runtime + ,(name), DSTROOTccomp_runtime + ,(name)
   )
@@ -407,7 +425,7 @@ end // end of [ccomp_runtime_dir_copy]
 
 //
 
-fn ccomp_dir_copy (knd: int): void = let
+fn ccomp_dir_copy (knd: packnd): void = let
   val () = mkdir_exn (DSTROOTccomp, DIRmode)
   val () = ccomp_lib_dir_copy (knd)
   val () = ccomp_runtime_dir_copy (knd)
@@ -660,9 +678,9 @@ end // end of [utils_dir_copy]
 
 (* ****** ****** *)
 
-extern fun atspackage_source_code (): void
+extern fun atspack_source_code (): void
 
-implement atspackage_source_code () = let
+implement atspack_source_code () = let
   val () = // run-time checking
     if test_file_exists (DSTROOT) then begin
       prerr "The directory ["; prerr DSTROOT; prerr "] already exists.";
@@ -694,9 +712,9 @@ implement atspackage_source_code () = let
   val () = cp ".bootstrap_header"
   val () = cp ".bootstrap_makefile"
 
-  val () = bin_dir_copy (0)
+  val () = bin_dir_copy (PACKNDsource)
   val () = bootstrap_dir_copy ()
-  val () = ccomp_dir_copy (0)
+  val () = ccomp_dir_copy (PACKNDsource)
   val () = doc_dir_copy ()
   val () = prelude_dir_copy ()
   val () = libc_dir_copy ()
@@ -717,9 +735,9 @@ end
 
 (* ****** ****** *)
 
-extern fun atspackage_precompiled (): void
+extern fun atspack_precompiled (): void
 
-implement atspackage_precompiled () = let
+implement atspack_precompiled () = let
   val () = // run-time checking
     if test_file_exists (DSTROOT) then begin
       prerr "The directory ["; prerr DSTROOT; prerr "] already exists.";
@@ -731,41 +749,38 @@ implement atspackage_precompiled () = let
   macdef cp (name) = fcopy_exn (SRCROOT + ,(name), DSTROOT + ,(name))
   val () = cp "INSTALL"
   val () = cp "config.h"
-  val () = bin_dir_copy (1)
-  val () = ccomp_dir_copy (1)
+  val () = bin_dir_copy (PACKNDprecompiled)
+  val () = ccomp_dir_copy (PACKNDprecompiled)
   val () = prelude_dir_copy ()
   val () = libc_dir_copy ()
   val () = libats_dir_copy ()
 in
   // empty
-end // end of [atspackage_precompiled]
+end // end of [atspack_precompiled]
 
 (* ****** ****** *)
 
 implement main (argc, argv) = let
-  var knd: int = 0
-  val () = begin case+ argc of
-    | _ when argc >= 2 => let
-        val argv1 = argv.[1]
-      in
-        case+ 0 of
-        | _ when (argv1 = "--precompiled") => knd := 1
-        | _ when (argv1 = "--source") => ()
-        | _ => let
-            val cmd = argv.[0]
-          in
-            prerr "["; prerr argv.[0]; prerr "]";
-            prerr ": Unrecognized flag: "; prerr argv1;
-            prerr_newline ();
-            exit {void} (1)
-          end // end of [_]
-      end
-    | _ => ()
+  var knd: packnd = PACKNDsource; val () = begin case+ argc of
+  | _ when argc >= 2 => let
+      val argv1 = argv.[1] in case+ argv1 of
+      | _ when (argv1 = "--precompiled") => knd := PACKNDprecompiled ()
+      | _ when (argv1 = "--source") => ()
+      | _ => let
+          val cmd = argv.[0]
+        in
+          prerr "["; prerr argv.[0]; prerr "]";
+          prerr ": Unrecognized flag: "; prerr argv1;
+          prerr_newline ();
+          exit {void} (1)
+        end // end of [_]
+    end // end of [argc >= 2]
+  | _ => ()
   end // end of [val]
 in
   case+ 0 of
-  | _ when (knd = 0) => atspackage_source_code ()
-  | _ when (knd > 0) => atspackage_precompiled ()
+  | _ when (packnd_is_source knd) => atspack_source_code ()
+  | _ when (packnd_is_precompiled knd) => atspack_precompiled ()
   | _ => ()
 end // end of [main]
 

@@ -1,3 +1,12 @@
+(*
+**
+** Automatic Differentiation
+**
+** Author: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
+** Time: January, 2008
+**
+*)
+
 staload "libc/SATS/math.sats"
 staload LIST = "prelude/DATS/list.dats"
 staload REF = "prelude/DATS/reference.dats"
@@ -17,16 +26,19 @@ val one_dualnum: dualnum = Base 1.0
 val negone_dualnum: dualnum = Base (~1.0)
 val two_dualnum: dualnum = Base 2.0
 
-fn epsilon (p: dualnum): int =
+fn epsilon (p: dualnum): int = begin
   case+ p of Base _ => 0 | Bundle (e, _, _) => e
+end // end of [epsilon]
 
 fn primal (e: int, p: dualnum): dualnum = case+ p of
-  | Base _ => p
-  | Bundle (e1, x, _) => if e1 < e then p else x
+  | Base _ => p | Bundle (e1, x, _) => if e1 < e then p else x
+// end of [primal]
 
-fn perturbation (e: int, p: dualnum): dualnum = case+ p of
+fn perturbation (e: int, p: dualnum): dualnum = begin
+  case+ p of
   | Base _ => zero_dualnum
   | Bundle (e1, _, x') => if e1 < e then zero_dualnum else x'
+end // end of [perturbation]
 
 val EPSILON = ref_make_elt<int> (0)
 fn derivative (f: dualnum -<cloref1> dualnum, x: dualnum)
@@ -37,10 +49,11 @@ fn derivative (f: dualnum -<cloref1> dualnum, x: dualnum)
   val () = !EPSILON := e - 1
 in
   result
-end
+end // end of [derivative]
 
-fun print_dualnum (p: dualnum): void = case+ p of
+fun print_dualnum (p: dualnum): void = begin case+ p of
   | Bundle (_, x, _) => print_dualnum x | Base x => printf ("%.18g", @(x))
+end // end of [print_dualnum]
 
 fn print_dualnumlst (ps: dualnumLst): void = let
   fun aux (i: int, ps: dualnumLst): void = case+ ps of
@@ -50,7 +63,7 @@ fn print_dualnumlst (ps: dualnumLst): void = let
     | _ => ()
 in
   aux (0, ps)
-end
+end // end of [print_dualnumlst]
 
 (* ****** ****** *)
 
@@ -75,6 +88,7 @@ overload / with div_dualnum_dualnum
 
 implement neg_dualnum (p) = case+ p of
   | Bundle (e, x, x') => Bundle (e, ~x, ~x') | Base x => Base (~x)
+// end of [neg_dualnum]
 
 //
 
@@ -94,6 +108,7 @@ implement add_dualnum_dualnum (p1, p2) =
     | Bundle (e2, x2, x2') => Bundle (e2, p1 + x2, x2')
     | Base x2 => Base (x1 + x2)
     end
+// end of [add_dualnum_dualnum]
 
 //
 
@@ -113,6 +128,7 @@ implement sub_dualnum_dualnum (p1, p2) =
     | Bundle (e2, x2, x2') => Bundle (e2, p1 - x2, ~x2')
     | Base x2 => Base (x1 - x2)
     end
+// end of [sub_dualnum_dualnum]
 
 //
 
@@ -133,12 +149,14 @@ implement mul_dualnum_dualnum (p1, p2) =
     | Bundle (e2, x2, x2') => Bundle (e2, p1 * x2, p1 * x2')
     | Base x2 => Base (x1 * x2)
     end
+// end of [mul_dualnum_dualnum]
 
 //
 
 implement recip_dualnum (p) = case+ p of
   | Bundle (e, x, x') => Bundle (e, recip_dualnum x, (~x') / (x * x))
   | Base x => Base (1.0 / x)
+// end of [recip_dualnum_dualnum]
 
 implement div_dualnum_dualnum (p1, p2) = p1 * (recip_dualnum p2)
 
@@ -146,21 +164,21 @@ implement div_dualnum_dualnum (p1, p2) = p1 * (recip_dualnum p2)
 
 extern fun sqrt_dualnum (p: dualnum): dualnum
 
-implement sqrt_dualnum (p) = case+ p of
+implement sqrt_dualnum (p) = begin case+ p of
   | Bundle (e, x, x') => let
-      val x_sqrt = sqrt_dualnum x
-      val x'_sqrt = x' / (x_sqrt + x_sqrt)
+      val x_sqrt = sqrt_dualnum x; val x'_sqrt = x' / (x_sqrt + x_sqrt)
     in
       Bundle (e, x_sqrt, x'_sqrt)
     end
   | Base x => Base (sqrt x)
+end // end of [sqrt_dualnum]
 
 //
 
 extern fun lt_dualnum_dualnum (p1: dualnum, p2: dualnum): bool
 overload < with lt_dualnum_dualnum
 
-implement lt_dualnum_dualnum (p1, p2) =
+implement lt_dualnum_dualnum (p1, p2) = begin
   case+ p1 of
   | Bundle (_, x1, _) => begin case+ p2 of
     | Bundle (_, x2, _) => x1 < x2 | Base x2 => x1 < p2
@@ -168,11 +186,12 @@ implement lt_dualnum_dualnum (p1, p2) =
   | Base x1 => begin case+ p2 of
     | Bundle (_, x2, _) => p1 < x2 | Base x2 => x1 < x2
     end
+end // end of [lt_dualnum_dualnum]
 
 extern fun lte_dualnum_dualnum (p1: dualnum, p2: dualnum): bool
 overload <= with lte_dualnum_dualnum
 
-implement lte_dualnum_dualnum (p1, p2) =
+implement lte_dualnum_dualnum (p1, p2) = begin
   case+ p1 of
   | Bundle (_, x1, _) => begin case+ p2 of
     | Bundle (_, x2, _) => x1 <= x2 | Base x2 => x1 <= p2
@@ -180,6 +199,7 @@ implement lte_dualnum_dualnum (p1, p2) =
   | Base x1 => begin case+ p2 of
     | Bundle (_, x2, _) => p1 <= x2 | Base x2 => x1 <= x2
     end
+end // end of [lte_dualnum_dualnum]
 
 (* ****** ****** *)
 
@@ -193,7 +213,7 @@ fn list_tabulate {n:nat}
     if i >= 0 then aux (f, i-1, list_cons (f i, res)) else res
 in
   aux (f, n-1, list_nil ())
-end
+end // end of [list_tabulate]
 
 fun vplus {n:nat} .<n>.
   (us: dualnumlst n, vs: dualnumlst n): dualnumlst n =
@@ -204,6 +224,7 @@ fun vplus {n:nat} .<n>.
       list_cons (u + v, vplus (us, vs))
     end
   | _ =>> list_nil ()
+// end of [vplus]
 
 fun vminus {n:nat} .<n>.
   (us: dualnumlst n, vs: dualnumlst n): dualnumlst n =
@@ -214,23 +235,26 @@ fun vminus {n:nat} .<n>.
       list_cons (u - v, vminus (us, vs))
     end
   | _ =>> list_nil ()
+// end of [vminus]
 
 fun vscale {n:nat}
   (k: dualnum, xs: dualnumlst n): dualnumlst n =
   case+ xs of
   | list_cons (x, xs) => list_cons (k * x, vscale (k, xs))
   | list_nil () => list_nil ()
+// end of [vscale]
 
-fn magnitude_squared (xs: dualnumLst): dualnum =
-  let
-    fun aux {n:nat} .<n>.
-      (xs: dualnumlst n, res: dualnum): dualnum =
-      case+ xs of list_cons (x, xs) => aux (xs, res + x * x) | _ => res
-  in
-    aux (xs, zero_dualnum)
-  end
+fn magnitude_squared (xs: dualnumLst): dualnum = let
+  fun aux {n:nat} .<n>.
+    (xs: dualnumlst n, res: dualnum): dualnum =
+    case+ xs of list_cons (x, xs) => aux (xs, res + x * x) | _ => res
+in
+  aux (xs, zero_dualnum)
+end // end of [magnitude_squared]
 
-fn magnitude (xs: dualnumLst): dualnum = sqrt_dualnum (magnitude_squared xs)
+fn magnitude (xs: dualnumLst): dualnum =
+  sqrt_dualnum (magnitude_squared xs)
+
 fn distance {n:nat} (us: dualnumlst n, vs: dualnumlst n): dualnum =
   magnitude (vminus (us, vs))
 
@@ -241,6 +265,7 @@ fun list_nth_get {n:nat} .<n>.
   end else begin
     let val+ list_cons (x, _) = xs in x end
   end
+// end of [list_nth_get]
 
 fun list_nth_set {n:nat} .<n>.
   (xs: dualnumlst n, i: natLt n, x0: dualnum): dualnumlst n =
@@ -251,6 +276,7 @@ fun list_nth_set {n:nat} .<n>.
   end else begin
     let val+ list_cons (_, xs) = xs in list_cons (x0, xs) end
   end
+// end of [list_nth_set]
 
 fn gradient {n:nat}
   (f: dualnumlst n -<cloref1> dualnum, xs: dualnumlst n)
@@ -292,15 +318,17 @@ fn multivariate_argmin {n:nat}
     end
 in
   loop (xs, f xs, g xs, PRECISION, 0)
-end
+end // end of [multivariate_argmin]
 
 fn multivariate_argmax {n:nat}
   (f: dualnumlst n -<cloref1> dualnum, xs: dualnumlst n): dualnumlst n =
   multivariate_argmin (lam xs => ~(f xs), xs)
+// end of [multivariate_argmax]
 
 fn multivariate_max {n:nat}
   (f: dualnumlst n -<cloref1> dualnum, xs: dualnumlst n): dualnum =
   f (multivariate_argmax (f, xs))
+// end of [multivariate_max]
 
 (* ****** ****** *)
 
@@ -323,7 +351,7 @@ val xy1_star: dualnumlst2 = let
   end
 in
   multivariate_argmin (f1, start)
-end
+end // end of [xy1_star]
 
 val+ list_cons (x1_star, list_cons (y1_star, list_nil ())) = xy1_star
 
@@ -336,7 +364,7 @@ val xy2_star: dualnumlst2 = let
   end
 in
   multivariate_argmax (f3, start)
-end
+end // end of [xy2_star]
 
 val+ list_cons (x2_star, list_cons (y2_star, list_nil ())) = xy2_star
 
@@ -386,7 +414,7 @@ fn naive_euler (w: dualnum): dualnum = let
   val xs_dot_initial: dualnumlst2 = '[Base 0.75, zero_dualnum]
 in
   loop (xs_initial, xs_dot_initial)
-end
+end // end [naive_euler]
 
 val w0 = zero_dualnum
 val ws_star: dualnumlst1 = multivariate_argmin (f, '[w0]) where {
@@ -425,7 +453,7 @@ end // end of [particle]
 implement main (argc, argv) = begin
   saddle (); // test
   particle (); // test
-end
+end // end of [main]
 
 (* ****** ****** *)
 

@@ -1,33 +1,30 @@
 
 (*
- *
- * This is a primitive irrational-base discrete weighted transform taken
- * from pseudocode found in: "Prime Numbers: A Computational Perspective"
- *
- * The code was originally written by Rick Lavoie and translated to ATS
- * by Hongwei Xi (November, 2005)
- *
- * Absolutely no optimization has gone into this code; written for clarity,
- * not speed.
- *
- *)
+**
+** This is a primitive irrational-base discrete weighted transform taken
+** from pseudocode found in: "Prime Numbers: A Computational Perspective"
+**
+** The code was originally written by Rick Lavoie and translated to ATS
+** by Hongwei Xi (November, 2005)
+**
+** Absolutely no optimization has gone into this code; written for clarity,
+** not speed.
+**
+*)
 
 (*
- *
- * The code is ported to ATS/Geizella by Hongwei Xi (July 2007)
- *
- * test: 2 ^ 44497 - 1 is a prime! (BITSIZE = 16)
- * time: 357.479u 0.234s 5:59.57 99.4%	0+0k 0+0io 0pf+0w
- *
- * test: 2 ^ 110503 - 1 is a prime! (BITSIZE = 16) 
- * time: 2171.782u 2.094s 36:18.67 99.7% 0+0k 0+0io 0pf+0w
- *
- *)
+**
+** The code is ported to ATS/Geizella by Hongwei Xi (July 2007)
+**
+** test: 2 ^ 44497 - 1 is a prime! (BITSIZE = 16)
+** time: 357.479u 0.234s 5:59.57 99.4%	0+0k 0+0io 0pf+0w
+**
+** test: 2 ^ 110503 - 1 is a prime! (BITSIZE = 16) 
+** time: 2171.782u 2.094s 36:18.67 99.7% 0+0k 0+0io 0pf+0w
+**
+*)
 
-//
-
-staload "libc/SATS/math.sats"
-staload "libc/SATS/stdio.sats"
+(* ****** ****** *)
 
 %{^
 
@@ -37,13 +34,16 @@ double_of_double (ats_double_type x) { return x ; }
 
 %}
 
-//
+(* ****** ****** *)
 
-macdef PI = 3.1415926535897932384626
+staload "libc/SATS/math.sats"
+staload "libc/SATS/stdio.sats"
 
-//
+(* ****** ****** *)
 
 typedef real = double
+
+macdef PI = 3.1415926535897932384626
 
 extern fun real_of_double (d: double):<> real = "double_of_double"
 #define d2r real_of_double

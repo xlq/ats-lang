@@ -1,9 +1,11 @@
-//
-//
-// A poor man's game of tetrix
-//
-// Author: Hongwei Xi (September 2007)
-//
+(*
+**
+** A poor man's game of tetrix
+**
+** Author: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
+** Time: September 2007
+**
+*)
 
 (*
 

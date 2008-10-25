@@ -32,24 +32,18 @@ fun loop3 (n: int, i: int, sum: double): double =
   else sum
 
 fun loop4 (n: int, i: int, sum: double): double =
-  if i < n then
-    let
-      val f = double_of i
-      val sf = $M.sin f
-    in
-      loop4 (n, i+1, sum + 1.0 / ((f * f * f) * (sf * sf)))
-    end
-  else sum
+  if i < n then let
+    val f = double_of i; val sf = $M.sin f
+  in
+    loop4 (n, i+1, sum + 1.0 / ((f * f * f) * (sf * sf)))
+  end else sum
 
 fun loop5 (n:int, i: int, sum: double): double =
-  if i < n then
-    let
-      val f = double_of i
-      val cf = $M.cos f
-    in
-      loop5 (n, i+1, sum + 1.0 / ((f * f * f) * (cf * cf)))
-    end
-  else sum
+  if i < n then let
+    val f = double_of i; val cf = $M.cos f
+  in
+    loop5 (n, i+1, sum + 1.0 / ((f * f * f) * (cf * cf)))
+  end else sum
 
 fun loop6 (n: int, i: int, sum: double): double =
   if i < n then loop6 (n, i+1, sum + 1.0 / double_of i)

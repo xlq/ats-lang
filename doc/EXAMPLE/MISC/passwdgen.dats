@@ -1,9 +1,10 @@
 (*
-
-// random password generation
-
-// author: Hongwei Xi (August, 2008)
-
+**
+** random password generation
+**
+** Author: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
+** Time: August, 2008
+**
 *)
 
 (* ****** ****** *)

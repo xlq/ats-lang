@@ -9,7 +9,7 @@
 //
 // How to compile:
 //
-// atscc -o fact -O3 fact_in_c.dats
+// atscc -o fact_in_c -O3 fact_in_c.dats
 //
 
 %{
@@ -17,7 +17,7 @@
 ats_int_type
 fact_in_c (ats_int_type n) {
   int res = 1;
-  while (n > 0) { res *= n ; --n ; }
+  while (n > 0) res *= n-- ;
   return res ;
 }
 
