@@ -39,28 +39,24 @@ fun acc {i0,n,i:nat} {b:two | i+b <= i0} .<n,i>. // metric for termination verif
     | Empty () => k (i, b)
 
     | Char c =>
-        if i > 0 then (if c = cs0[i0-i] then k (i-1, 1) else false)
-        else false
+      if i > 0 then (if c = cs0[i0-i] then k (i-1, 1) else false) else false
 
     | Char_not c =>
-        if i > 0 then (if c <> cs0[i0-i] then k (i-1, 1) else false)
-        else false
+      if i > 0 then (if c <> cs0[i0-i] then k (i-1, 1) else false) else false
 
     | Chars (c1, c2) =>
-        if i > 0 then
-          let val c = cs0[i0-i] in 
-            if c1 <= c then (if c <= c2 then k (i-1, 1) else false)
-            else false
-          end
-        else false
+      if i > 0 then let
+        val c = cs0[i0-i]
+      in
+        if c1 <= c then (if c <= c2 then k (i-1, 1) else false) else false
+      end else false
 
     | Chars_not (c1, c2) =>
-        if i > 0 then
-          let val c = cs0[i0-i] in 
-            if c < c1 then k (i-1, 1) else
-              if c > c2 then k (i-1, 1) else false
-          end
-        else false
+      if i > 0 then let
+        val c = cs0[i0-i]
+      in 
+        if c < c1 then k (i-1, 1) else if c > c2 then k (i-1, 1) else false
+      end else false
 
     | Alt (p1, p2) =>
       if acc (cs0, i0, p1, i, b, k) then true else acc (cs0, i0, p2, i, b, k)
@@ -69,11 +65,11 @@ fun acc {i0,n,i:nat} {b:two | i+b <= i0} .<n,i>. // metric for termination verif
       acc (cs0, i0, p1, i, b, lam (i', b') => acc (cs0, i0, p2, i', b', k))
 
     | Star p0 =>
-      if k (i, b) then true else
+      if k (i, b) then true else begin
         acc (cs0, i0, p0, i, 0,
-          lam (i', b') =>
-            if b' = 0 then false else acc (cs0, i0, p, i', 1, k)
-        )
+          lam (i', b') => if b' = 0 then false else acc (cs0, i0, p, i', 1, k)
+        ) // end of [acc]
+      end // end of [if]
 
 extern fun accept (cs0: String, p: Regexp): Bool
 
@@ -100,26 +96,25 @@ val regexp_dot_sats =
 val regexp_dot_dats =
   Seq (Star Any_char, Seq (Char '.', Seq (Char 'd', Seq (Char 'a', Seq (Char 't', Char 's')))))
 
-implement main (argc, argv) =
-  let
-     val ans10 = accept ("123456789", regexp_int)
-     val ans11 = accept ("+123456789", regexp_int)
-     val ans12 = accept ("-123456789", regexp_int)
-     val ans20 = accept ("abcde", regexp_int)
-     val ans31 = accept ("abcde.sats", regexp_dot_sats)
-     val ans32 = accept ("abcde.sats", regexp_dot_dats)
-     val ans41 = accept ("abcde.dats", regexp_dot_sats)
-     val ans42 = accept ("abcde.dats", regexp_dot_dats)
-  in
-     print ("ans10(true) = "); print ans10; print_newline ();
-     print ("ans11(true) = "); print ans11; print_newline ();
-     print ("ans12(true) = "); print ans12; print_newline ();
-     print ("ans20(false) = "); print ans20; print_newline ();
-     print ("ans31(true) = "); print ans31; print_newline ();
-     print ("ans32(false) = "); print ans32; print_newline ();
-     print ("ans41(false) = "); print ans41; print_newline ();
-     print ("ans42(true) = "); print ans42; print_newline ();
-  end
+implement main (argc, argv) = let
+  val ans10 = accept ("123456789", regexp_int)
+  val ans11 = accept ("+123456789", regexp_int)
+  val ans12 = accept ("-123456789", regexp_int)
+  val ans20 = accept ("abcde", regexp_int)
+  val ans31 = accept ("abcde.sats", regexp_dot_sats)
+  val ans32 = accept ("abcde.sats", regexp_dot_dats)
+  val ans41 = accept ("abcde.dats", regexp_dot_sats)
+  val ans42 = accept ("abcde.dats", regexp_dot_dats)
+in
+  print ("ans10(true) = "); print ans10; print_newline ();
+  print ("ans11(true) = "); print ans11; print_newline ();
+  print ("ans12(true) = "); print ans12; print_newline ();
+  print ("ans20(false) = "); print ans20; print_newline ();
+  print ("ans31(true) = "); print ans31; print_newline ();
+  print ("ans32(false) = "); print ans32; print_newline ();
+  print ("ans41(false) = "); print ans41; print_newline ();
+  print ("ans42(true) = "); print ans42; print_newline ();
+end // end of [main]
 
 (* ****** ****** *)
 

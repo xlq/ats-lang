@@ -53,14 +53,10 @@ end // end of [pi_compute]
 (* ****** ****** *)
 
 implement main (argc, argv) = let
-
-val pi = pi_compute (8) // pi_compute (10) gives nan
-
+  val pi = pi_compute (8) // pi_compute (10) gives nan
 in
-
-printf ("pi = %.13f\n", @(pi)) ;
-
-end
+  printf ("pi = %.13f\n", @(pi)) ;
+end // end of [main]
 
 (* ****** ****** *)
 
