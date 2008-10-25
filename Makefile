@@ -127,6 +127,9 @@ ccomp/runtime/GCATS/gc.o:
 package::
 	bin/atspack --source
 
+precompiled::
+	bin/atspack --precompiled
+
 ######
 
 clean::
