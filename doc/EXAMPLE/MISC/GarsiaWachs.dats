@@ -267,7 +267,7 @@ end // end of [print_tree]
 // [GW] implements the Garsia-Wachs algorithm
 extern fun {a:t@ype} GW {n:pos} (xws: list (@(a, weight), n)): tree a
 
-implement GW<a> (xws) = let
+implement{a} GW (xws) = let
   var len: int?; val xwrs = trans0 (xws, len)
   val ts = trans1 (xwrs); val t1 = trans2_all (ts, len)
   val () = mark_depth_and_free (t1)
