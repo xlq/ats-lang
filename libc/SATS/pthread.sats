@@ -66,6 +66,8 @@ stadef mutex_vt = pthread_mutex_view_viewt0ype
 
 absviewtype pthread_mutexref_view_type (v:view) // a boxed type
 
+stadef mutex_ref_t = pthread_mutexref_view_type
+
 (* ****** ****** *)
 
 fun pthread_mutex_init_locked
@@ -96,8 +98,8 @@ fun pthread_mutexref_create_unlocked
   {v:view} (resource: v | (*none*)): mutex_ref_t (v)
   = "atslib_pthread_mutex_create_unlocked"
 
-fun pthread_mutexref_create_mutex
-  {v:view} (pf: mutex_vt v @ l | p: ptr l): mutex_ref_t (v)
+fun pthread_mutexref_create_mutex {v:view}
+  {l:addr} (pf: mutex_vt v @ l | p: ptr l): mutex_ref_t (v)
   = "atslib_pthread_mutexref_create_mutex"
 
 (* ****** ****** *)
