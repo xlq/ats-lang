@@ -129,6 +129,9 @@ package::
 
 precompiled::
 	bin/atspack --precompiled
+	rm -fr usr/share/atshome
+	mv ats-lang-anairiats-* usr/share/atshome
+	tar -zvcf ats-lang-anairiats.tar.gz --exclude=usr/.svn --exclude=usr/bin/.svn --exclude=usr/share/.svn usr/
 
 ######
 
