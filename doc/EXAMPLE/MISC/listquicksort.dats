@@ -5,6 +5,11 @@
 // Time: Saturday, September 27, 2008
 //
 
+//
+// How to compile:
+//   atscc -o listquicksort listquicksort.dats
+//
+
 (*
 
 This is a milestone example in the development of ATS.
@@ -251,7 +256,7 @@ in
 
 implement lte_elt_elt (x, y) = let
   prval () = trustme () where {
-    extern prfun trustme ():<> [false] void
+    extern prfun trustme ():<> [false] void // yes, trustme :)
   }
 in
   bool1_of_bool (lte_double_double (x, y))
@@ -259,9 +264,11 @@ end
 
 fn print_list (xs: list): void = let
   fun aux (xs: list, i: int): void = begin case+ xs of
-    | cons (x, xs) => (if i > 0 then print ", "; print x; aux (xs, i+1))
+    | cons (x, xs) => begin
+        if i > 0 then print ", "; printf ("%.1f", @(x)); aux (xs, i+1)
+      end // end of [cons]
     | nil () => ()
-  end
+  end // end of [aux]
 in
   aux (xs, 0)
 end // end of [print_list]

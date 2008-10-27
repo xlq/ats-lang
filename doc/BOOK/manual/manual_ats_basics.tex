@@ -18,7 +18,7 @@ The following program is written in the syntax of ATS, where the function
 function essentially corresponds to the function in C that is given the
 same name.
 
-\input{hello_world.dats}
+\input{DATS/hello_world.dats}
 
 The keyword $\KWimplement$ indicates an implementation of a function that
 is declared elsewhere. For instance, the function {\it main} is already
@@ -92,7 +92,7 @@ occurrences of \texttt{/}) and extends until the end of the file.
 \end{itemize}
 In the following code (whose meaning is to become clear later),
 three forms of comments are present:
-\input{comment_example_1.dats}
+\input{DATS/comment_example_1.dats}
 
 \subsection{Primitive Expressions}
 We informally mention the syntax for some primitive expressions:
@@ -191,12 +191,12 @@ A critical aspect in programming is to bind names to (complex)
 computational objects. For instance, we can bind names to values through
 the following syntax:
 %%%%%%
-\input{naming_and_environment_1.dats}
+\input{DATS/naming_and_environment_1.dats}
 %%%%%%
 where $\KWval$ is a keyword in ATS.  For those who are familiar with
 lambda-notation, we can bind a name to a function value as well:
 %%%%%%
-\input{naming_and_environment_2.dats}
+\input{DATS/naming_and_environment_2.dats}
 %%%%%%
 It is also allowed to use the keyword $\KWand$ to combine several bindings
 together. For instance, three bindings are introduced in the following
@@ -242,17 +242,17 @@ where the (local) bindings placed between the keywords $\KWlet$ and $\KWin$
 can only be accessed in the scope of the let-expression. For instance,
 there are three local bindings in the following let-expression, which are for
 $x$, $y$ and $z$, respectively:
-\input{local_binding_example_1.dats}
+\input{DATS/local_binding_example_1.dats}
 Another way to introduce local bindings is through the use of a {\it
 where}-clause. For instance, the above let-expression can be rewritten as
 follows:
-\input{local_binding_example_2.dats}
+\input{DATS/local_binding_example_2.dats}
 
 \subsection{Function Definitions}
 
 A (recursive) function is defined following the keyword $\KWfun$.
 For instance, the following code implements the Fibonacci function:
-\input{fibonacci_function_1.dats}
+\input{DATS/fibonacci_function_1.dats}
 Like in C, the types for the arguments of a function and its return value
 need to be given when the function is defined. In the case of {\it fib},
 the type for its only argument is {\it\blue int}, and the type for its
@@ -262,12 +262,15 @@ Mutually recursive functions can be defined by using the keyword $\KWand$
 to combine function definitions. The following code implements two mutually
 recursive functions {\it isEven} and {\it isOdd}, which test whether a given
 (nonnegative) integer is even or odd:
-\input{isEvenOdd_functions.dats}
+\input{DATS/isEvenOdd_functions.dats}
 
 If a function is non-recursive, then the keyword $\KWfn$ can also be used
 in place of the keyword $\KWfun$. For instance, the following code
 implements a non-recursive function that computes the area of a circle when
-the radius of the circle is given: \input{area_of_circle_function.dats}
+the radius of the circle is given:
+%%%%%%
+\input{DATS/area_of_circle_function.dats}
+%%%%%%
 Note that a non-recursive function is just a special kind of recursive
 function.
 
@@ -348,11 +351,11 @@ There are also two kinds of records in ATS: boxed records and flat records.
 For instance, the previous boxed tuple example can be done with a record as
 follows:
 %%%%%%
-\input{boxed_record_example_1.dats}
+\input{DATS/boxed_record_example_1.dats}
 %%%%%%
 The following is an example involving flat records.
 %%%%%%
-\input{flat_record_example_1.dats}
+\input{DATS/flat_record_example_1.dats}
 %%%%%%
 
 \section{Disjoint Variants}
@@ -550,7 +553,7 @@ val weekdays (* : list0 string *) =
 List manipulation can be done by pattern matching. As an example, the
 following code implements a function template for appending two given list
 arguments:
-\input{list0_append_function.dats}
+\input{DATS/list0_append_function.dats}
 Note that this is functional appending: the two given lists are not altered
 by {\it list0\_append}.
 
@@ -574,7 +577,7 @@ prints {\it msg} onto stderr and then raises the exception {\it Fatal ()}.
 Note that a raised exception may be assigned any type.
 
 \begin{figure}[thp]
-\input{binary_tree_is_perfect_function.dats}
+\input{DATS/binary_tree_is_perfect_function.dats}
 \caption{An example of programming with exceptions}
 \label{figure:isPerfect}
 \end{figure}
@@ -614,7 +617,7 @@ assigned to.  In contrast, this expression would be written as $r~:=~!r +
 1$ in ML.
 
 \begin{figure}[thp]
-\input{fact_function_ref.dats}
+\input{DATS/fact_function_ref.dats}
 \caption{An implementation of the factorial function that makes use of a reference}
 \label{figure:ref_factorial}
 \end{figure}
@@ -634,7 +637,7 @@ initialized with the values $v_1,\ldots,v_n$.  The valid subscripts for an
 array of size $n$ range from $0$ until $n-1$. For instance, a string array
 of size $5$ is created as follows:
 %%%%%%
-\input{array0_example_1.dats}
+\input{DATS/array0_example_1.dats}
 %%%%%%
 Array subscripting in ATS is conventional. For instance, ${\it
 weekdays}[3]$ returns the string "Thursday", and the following assignment
@@ -647,7 +650,7 @@ checking is performed at run-time to guarantee safe subscripting.
 
 %%%%%%
 \begin{figure}[thp]
-\input{array0_example_2.dats}
+\input{DATS/array0_example_2.dats}
 \caption{An implementation of the factorial function that makes use of an array}
 \label{figure:array0_example_2}
 \end{figure}
@@ -667,14 +670,14 @@ the following code, the function {\it derivate} is a higher-order function
 that takes as its argument a closure representing a function from {\it
 double} to {\it double} and returns a closure representing the derivative
 of the function.
-\input{derivative_function.dats}
+\input{DATS/derivative_function.dats}
 Some code that makes use of the higher-order function {\it derivate}
 is given as follows:
-\input{derivative_function_use.dats}
+\input{DATS/derivative_function_use.dats}
 Many list-processing functions are higher-order. As an example,
 the following code implements a function template {\it list0\_map}:
 %%%%%%
-\input{list0_map_function.dats}
+\input{DATS/list0_map_function.dats}
 %%%%%%
 Given a list $vs$ consisting of elements $v_1,\ldots,v_n$ of type $T_1$ and
 a function $f$ from $T_1$ to $T_2$, the following call: $${\it
@@ -884,7 +887,7 @@ ones that print onto stderr: {\it prerr\_char}, {\it prerr\_double}, {\it
 prerr\_int}, {\it prerr\_string}, {\it prerr\_newline} and {\it prerrf}.
 
 \begin{figure}[thp]
-\input{multiplication_table_function.dats}
+\input{DATS/multiplication_table_function.dats}
 \caption{A program for printing a single digit multiplication table}
 \label{figure:multiplication_table_program}
 \end{figure}
@@ -934,9 +937,9 @@ characters read.
 %%%%%% \section{Input and Output} %%%%%%
 
 %%%%%%
-\input{rational.sats}
+\input{SATS/rational.sats}
 %%%%%%
-\input{rational.dats}
+\input{DATS/rational.dats}
 %%%%%%
 \section{A Simple Package for Rational Numbers}
 We implement a simple package for rational numbers in this section.  This

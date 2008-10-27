@@ -322,7 +322,7 @@ only in the presence of dependent datatypes~\cite{DTPM-jucs03}.
 
 \subsection{Exhaustiveness}
 A funcion template is implemented as follows:
-\input{list_zip_with_function_1.dats}
+\input{DATS/list_zip_with_function_1.dats}
 Given two lists $v_{1,1},\ldots, v_{1,n}$ and $v_{2,1},\ldots, v_{2,n}$
 where $v_{1,i}$ and $v_{2,i}$ are of types $T_1$ and $T_2$ for $1\leq i\leq
 n$, the function call ${\it list\_zip\_with}\langle T_1,T_2\rangle$ is
@@ -342,7 +342,7 @@ matching is verified.
 
 A slightly different implementation of ${\it list\_zip\_with}$ can be
 done as follows:
-\input{list_zip_with_function_2.dats}
+\input{DATS/list_zip_with_function_2.dats}
 In this implementation, the keyword $\KWvalplus$ indicates that the
 pattern matching following it is exhaustive. Hence, the head and tail of
 ${\it xs2}$ can be extracted out without testing whether ${\it xs2}$ is
@@ -354,7 +354,7 @@ words, a clause is selected only if the given value matches the pattern
 associated with this clause but they do not match the patterns associated
 with the clauses ahead of it. Naturally, one might expect that the
 following implementation of ${\it list\_zip\_with}$ also typechecks:
-\input{list_zip_with_function_3.dats}
+\input{DATS/list_zip_with_function_3.dats}
 This, however, is not the case. In ATS, typechecking clauses is done
 nondeterministically (rather than sequentially). In this example, the
 second clause fails to typecheck as it is done without assuming that the
@@ -397,7 +397,7 @@ which is obviously less than $\langle n\rangle$.
 
 A more difficult and also more interesting example is given as follows,
 where the MacCarthy's 91-function is implemented:
-\input{f91_function.dats}
+\input{DATS/f91_function.dats}
 It is clear from the dependent type assigned to ${\it f91}$ that
 the function always returns 91 when applied to an integer less than or
 equal 100. The metric supplied to verify the termination of
@@ -406,14 +406,14 @@ value of the argument of ${\it f91}$.
 
 The following code implements the Ackermann function, which is well-known
 for being recursive but not primitive recursive:
-\input{ackermann_function.dats}
+\input{DATS/ackermann_function.dats}
 The metric supplied for verifying the termination of ${\it ack}$ is
 a pair $\langle m,n\rangle$, where $m$ and $n$ are the values of the
 arguments of ${\it ack}$.
 
 In the following example, {\it isEven} and {\it isOdd} are defined mutually
 recursively:
-\input{isEvenOdd_functions_termination.dats}
+\input{DATS/isEvenOdd_functions_termination.dats}
 The metrics supplied for verifying the termination of ${\it isEven}$ and
 ${\it isOdd}$ are $\langle 2*n\rangle$ and $\langle 2*n+1\rangle$,
 respectively, when $n$ is the value of the argument of ${\it isEven}$ and

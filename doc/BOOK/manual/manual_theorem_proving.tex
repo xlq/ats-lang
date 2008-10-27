@@ -9,7 +9,7 @@ explaining some motivations behind this programming paradigm as well as
 demonstrating a means to achieve it in ATS.
 
 \begin{figure}[thp]
-\input{list_concat_function.dats}
+\input{DATS/list_concat_function.dats}
 \caption{An implementation of list concatenation that does not typecheck}
 \label{figure:list_concat_function}
 \end{figure}
@@ -57,7 +57,7 @@ Given integers $m,n,p$, if ${\it MUL}(m,n,p)$ is inhabited, that is,
 if it can be assigned to some proof value, then $m*n$ equals $p$.
 
 \begin{figure}[thp]
-\input{list_concat_function_proof.dats}
+\input{DATS/list_concat_function_proof.dats}
 \caption{An implementation of list concatenation that does typecheck}
 \label{figure:list_concat_function_proof}
 \end{figure}
@@ -78,7 +78,7 @@ Figure~\ref{figure:list_concat_function_proof} is essentially translated
 into the one in Figure~\ref{figure:list_concat_function}.
 
 \begin{figure}
-\input{factorial_function_proof.dats}
+\input{DATS/factorial_function_proof.dats}
 \caption{A fully verified implemenation of the factorial function}
 \label{figure:factorial_function_proof}
 \end{figure}
@@ -118,7 +118,7 @@ The type assigned to ${\it lemma\_i\_mul\_i\_gte\_0}$ indicates that ${\it
 lemma\_i\_mul\_i\_gte\_0}$ proves $i*i\geq 0$ for every integer $i$.
 
 \begin{figure}[thp]
-\input{lemma_i_mul_i_gte_0_function.dats}
+\input{DATS/lemma_i_mul_i_gte_0_function.dats}
 \caption{An implementation of a proof function showing $i*i\geq 0$ for every integer $i$}
 \label{figure:lemma_i_mul_i_gte_0_function}
 \end{figure}
