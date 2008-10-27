@@ -94,7 +94,7 @@ atslib_pthread_mutex_create_unlocked (void) {
 /* ****** ****** */
 
 static inline
-ats_ptr_type
+ats_void_type
 atslib_pthread_mutex_lock (ats_ptr_type mutex) {
   pthread_mutex_lock ((pthread_mutex_t*)mutex) ; return ;
 }

@@ -663,13 +663,15 @@ in
   !the_dyncstset := _new
 end // end of [the_dyncstset_add]
 
-implement the_dyncstset_add_if (d2c) = let
-  val ismem = begin
-    $Set.set_member<d2cst_t> (!the_dyncstset, d2c, compare_d2cst_d2cst)
-  end
-in
-  if ismem then () (*already added*) else the_dyncstset_add (d2c)
-end // end of [the_dyncstset_add_if]
+implement the_dyncstset_add_if (d2c) =
+  if d2cst_is_temp d2c then () else let
+    val ismem = begin
+      $Set.set_member<d2cst_t> (!the_dyncstset, d2c, compare_d2cst_d2cst)
+    end
+  in
+    if ismem then () (*already added*) else the_dyncstset_add (d2c)
+  end // end of [if]
+// end of [the_dyncstset_add_if]
 
 implement the_dyncstset_get () = !the_dyncstset
 

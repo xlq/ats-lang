@@ -244,6 +244,14 @@ in
   $Syn.dcstkind_is_proof (knd)
 end // end of [d2cst_is_proof]
 
+implement d2cst_is_temp (d2c) = let
+  val decarg = begin
+    let val (vbox pf | p) = d2c in p->d2cst_decarg end
+  end
+in
+  case+ decarg of list_cons _ => true | list_nil _ => false
+end // end of [d2cst_is_temp]
+
 end // end of [local] (for assuming d2cst_t)
 
 (* ****** ****** *)
