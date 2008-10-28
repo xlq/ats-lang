@@ -2212,6 +2212,9 @@ fn i1mpdec_tr
   var out_tmpgua: s2explstlst = nil ()
   val s2e = s2e_d2c
   val (pf_s2expenv | ()) = the_s2expenv_push ()
+  val () = begin
+    case+ decarg of cons _ => template_level_inc () | nil _ => ()
+  end // end of [val]
   val s2e = (case+ i1mparg of
     | cons _ => aux2_imp (loc_id, i1mparg, decarg, s2e, out_imp)
     | nil () => s2e
@@ -2227,8 +2230,11 @@ fn i1mpdec_tr
   val out_tmparg = $Lst.list_reverse (out_tmparg: s2explstlst)
   val out_tmpgua = $Lst.list_reverse (out_tmpgua: s2explstlst)
   val d2e = d1exp_tr_ann (d1c.i1mpdec_def, s2e)
-  val () = d2cst_def_set (d2c, Some d2e)
+  val () = begin
+    case+ decarg of cons _ => template_level_dec () | nil _ => ()
+  end // end of [val]
   val () = the_s2expenv_pop (pf_s2expenv | (*none*))
+  val () = d2cst_def_set (d2c, Some d2e)
 in
   i2mpdec_make (
     d1c.i1mpdec_loc, loc_id, d2c, out_imp, out_tmparg, out_tmpgua, d2e
