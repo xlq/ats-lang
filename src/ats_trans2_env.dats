@@ -505,6 +505,60 @@ end // end of [local]
 
 (* ****** ****** *)
 
+local
+
+val the_template_level = ref_make_elt<int> (0)
+
+in
+
+implement template_level_get () =
+  !the_template_level
+
+implement template_level_inc () =
+  !the_template_level := !the_template_level + 1
+
+implement template_level_dec () =
+  !the_template_level := !the_template_level - 1
+
+end // end of [local]
+
+implement
+  s2var_tmplev_check (loc, s2v) = let
+  val s2v_tmplev = s2var_tmplev_get (s2v)
+in
+  case+ 0 of
+  | _ when s2v_tmplev > 0 => let
+      val tmplev = template_level_get ()
+    in
+      if s2v_tmplev < tmplev then begin
+        $Loc.prerr_location loc; prerr ": error(2)";
+        prerr ": the static variable ["; prerr s2v; prerr "] is out of scope.";
+        prerr_newline ();
+        $Err.abort {void} ()
+      end // end of [if]
+    end // end of [_ when s2v_tmplev > 0]
+  | _ => () // not a template variable
+end // end of [s2var_tmplev_check]
+
+implement s2qualst_tmplev_set (s2vpss, tmplev) = let
+  fun aux_s2vs
+    (s2vs: s2varlst, tmplev: int): void = case+ s2vs of
+    | cons (s2v, s2vs) => begin
+        s2var_tmplev_set (s2v, tmplev); aux_s2vs (s2vs, tmplev)
+      end // end of [cons]
+    | nil () => ()
+  fun aux_s2qualst (s2vpss: s2qualst, tmplev: int): void =
+    case+ s2vpss of
+    | cons (s2vps, s2vpss) => begin
+        aux_s2vs (s2vps.0, tmplev); aux_s2qualst (s2vpss, tmplev)
+      end // end of [cons]
+    | nil () => ()
+in
+  aux_s2qualst (s2vpss, tmplev)
+end // end of s2qualst_tmplev_set]
+
+(* ****** ****** *)
+
 assume d2expenv_token = unit_v
 typedef d2expenv = $SymEnv.symenv_t (d2item)
 

@@ -1398,7 +1398,7 @@ implement s2exp_template_instantiate (loc0, s2vpss, ts2ess, s2e) = let
     case+ s2vpss of
     | list_cons (s2vps, s2vpss) => begin
         list_cons (@(s2vps.0, s2explst_subst (sub, s2vps.1)), aux0 (sub, s2vpss))
-      end
+      end // end of [list_cons]
     | list_nil () => list_nil ()
   end // end of [aux0]
   fun aux1 (loc0: loc_t, subs: List stasub_t, s2vpss: s2qualst, s2e: s2exp)
@@ -1409,7 +1409,7 @@ implement s2exp_template_instantiate (loc0, s2vpss, ts2ess, s2e) = let
         val s2e = s2exp_subst (sub, s2e)
       in
         aux1 (loc0, list_cons (sub, subs), s2vpss, s2e)
-      end
+      end // end of [list_cons]
     | list_nil () => ($Lst.list_reverse subs, s2e)
   end // end of [aux1]
   fun aux2
@@ -1425,7 +1425,7 @@ implement s2exp_template_instantiate (loc0, s2vpss, ts2ess, s2e) = let
           val s2e = s2exp_subst (sub, s2e)
         in
           aux2 (loc0, list_cons (sub, subs), s2vpss, ts2ess, s2e)
-        end
+        end // end of [list_cons]
       | list_nil () => begin
           prerr loc0;
           prerr ": error(3)";
@@ -1433,13 +1433,13 @@ implement s2exp_template_instantiate (loc0, s2vpss, ts2ess, s2e) = let
           prerr ": too many template arguments are given.";
           prerr_newline ();
           $Err.abort ()
-        end
-      end
+        end // end of [list_nil]
+      end // end of [TMPS2EMPLSTLSTcons]
     | TMPS2EXPLSTLSTnil () => aux1 (loc0, subs, s2vpss, s2e)
   end // end of [aux2]
 in
   aux2 (loc0, list_nil (), s2vpss, ts2ess, s2e)
-end
+end // end of [s2exp_template_instantiate]
 
 (* ****** ****** *)
 

@@ -137,8 +137,7 @@ end // end of [the_stactx_push]
 
 implement the_stactx_pop (pf | (*none*)) = let
   prval unit_v () = pf
-  var err: int = 0
-  val stactx = let
+  var err: int = 0; val stactx = let
     val (vbox pf | p) = ref_get_view_ptr (the_stactxlst)
     val stactx = (
       case+ !p of

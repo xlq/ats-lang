@@ -547,6 +547,8 @@ fun s2var_copy (s2v: s2var_t): s2var_t
 
 fun s2var_sym_get (s2v: s2var_t): sym_t
 fun s2var_srt_get (s2v: s2var_t): s2rt
+fun s2var_tmplev_get (s2v: s2var_t): int
+fun s2var_tmplev_set (s2v: s2var_t, lev: int): void
 fun s2var_sVarset_get (_: s2var_t): s2Varset_t
 fun s2var_sVarset_set (_: s2var_t, _: s2Varset_t): void
 fun s2var_stamp_get (s2v: s2var_t): stamp_t
@@ -1071,7 +1073,7 @@ val stasub_nil : stasub_t
 fun stasub_add (_: stasub_t, _: s2var_t, _: s2exp): stasub_t
 
 fun stasub_domain_get (_: stasub_t): s2varlst
-fun stasub_codomain_get (_: stasub_t): s2explst
+fun stasub_codomain_get_whnf (_: stasub_t): s2explst
 
 fun stasub_extend_svarlst
   (sub: stasub_t, s2vs: s2varlst): @(stasub_t, s2varlst)

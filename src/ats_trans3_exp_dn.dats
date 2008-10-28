@@ -757,7 +757,7 @@ fn m2atch_tr_up (m2at: m2atch): m3atch = let
   ) : p3atopt
 in
   m3atch_make (loc0, d3e, op3t)
-end
+end // end of [m2atch_tr_up]
 
 fn m2atchlst_tr_up (m2ats: m2atchlst): m3atchlst =
   $Lst.list_map_fun (m2ats, m2atch_tr_up)
@@ -815,7 +815,7 @@ implement c2lau_tr_dn
   val () = trans3_env_pop_sta_and_add_none (loc0)
 in
   c3lau_make (loc0, p3ts, gua, seq, neg, d3e_exp)
-end
+end // end of [c2lau_tr_dn]
 
 (* ****** ****** *)
 
@@ -825,7 +825,7 @@ fn pattern_match_is_redundant_errmsg (loc: loc_t): void = begin
   prerr ": this pattern match clause is redundant.";
   prerr_newline ();
   $Err.abort {void} ()
-end
+end // end of [pattern_match_is_redundant_errmsg]
 
 fn c2laulst0_tr_dn {n:nat}
   (loc0: loc_t, casknd: int, res: i2nvresstate,
@@ -834,7 +834,7 @@ fn c2laulst0_tr_dn {n:nat}
   prerr ": c2laulst0_tr_dn: not implemeted yet.";
   prerr_newline ();
   $Err.abort {void} ()
-end
+end // end of [c2laulst0_tr_dn]
 
 fn c2laulst1_tr_dn {n:nat}
   (loc0: loc_t,

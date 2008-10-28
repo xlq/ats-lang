@@ -84,6 +84,15 @@ fun macro_level_dec (loc: loc_t): void
 
 (* ****** ****** *)
 
+fun template_level_get (): int
+fun template_level_inc (): void
+fun template_level_dec (): void
+
+fun s2var_tmplev_check (loc: loc_t, s2v: s2var_t): void
+fun s2qualst_tmplev_set (s2vpss: s2qualst, tmplev: int): void
+
+(* ****** ****** *)
+
 absview d2expenv_token
 fun the_d2expenv_add (id: sym_t, d2i: d2item) : void
 fun the_d2expenv_add_dcon (d2c: d2con_t): void

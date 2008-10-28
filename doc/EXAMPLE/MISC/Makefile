@@ -89,6 +89,7 @@ update::
 	atsopt --posmark_html_only -d GarsiaWachs.dats
 	atsopt --posmark_html_only -d hanoi.dats
 	atsopt --posmark_html_only -d kmp.dats
+	atsopt --posmark_html_only -d listquicksort.dats
 	atsopt --posmark_html_only -d passwdgen.dats
 	atsopt --posmark_html_only -d pi_lazy.dats
 	atsopt --posmark_html_only -d queens.dats
@@ -114,6 +115,7 @@ cleanall:: clean
 	rm -f hamming_lazy
 	rm -f hanoi
 	rm -f kmp
+	rm -f listquicksort
 	rm -f passwdgen
 	rm -f pi_lazy
 	rm -f queens

@@ -348,8 +348,10 @@ implement p3at_tr (p3t0): hipat = let
   val hit0 = s2exp_tr (0(*deep*), p3t0.p3at_typ)
 (*
   val () = begin
-    prerr "p3at_tr: p3t0 = "; prerr p3t0; prerr_newline ();
-    prerr "p3at_tr: hit0 = "; prerr hit0; prerr_newline ();
+    prerr "p3at_tr: p3t0 = "; prerr_p3at p3t0; prerr_newline ()
+    prerr "p3at_tr: p3t0.p3at_typ = "; prerr_s2exp p3t0.p3at_typ; prerr_newline ();
+    prerr "p3at_tr: hit0 = "; prerr_hityp hit0; prerr_newline ();
+  end // end of [val]
 *)
 in
   case+ p3t0.p3at_node of
@@ -1224,9 +1226,7 @@ implement d3eclst_tr (d3cs: d3eclst): hideclst = let
   end // end of [aux0]
 
   and aux1 (
-      d3cs: d3eclst
-    , hid: hidec
-    , res: &hideclst? >> hideclst
+      d3cs: d3eclst, hid: hidec, res: &hideclst? >> hideclst
     ) : void = let
     val () = (res := cons {hidec} {0} (hid, ?))
     val+ cons (_, !res_nxt) = res

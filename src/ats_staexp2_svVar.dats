@@ -60,6 +60,7 @@ staload "ats_staexp2.sats"
 typedef s2var_struct = struct {
   s2var_sym= sym_t // the name
 , s2var_srt= s2rt  // the sort
+, s2var_tmplev= int // the template level
 , s2var_sVarset= s2Varset_t // existential variable occurrences
 , s2var_stamp= stamp_t // uniqueness
 }
@@ -94,6 +95,7 @@ val (pf_gc, pf | p) = ptr_alloc_tsz {s2var_struct} (sizeof<s2var_struct>)
 val () = begin
 p->s2var_sym := id;
 p->s2var_srt := s2t;
+p->s2var_tmplev := 0;
 p->s2var_sVarset := s2Varset_nil;
 p->s2var_stamp := stamp
 end
@@ -127,6 +129,12 @@ implement s2var_sym_get (s2v) =
 
 implement s2var_srt_get (s2v) =
   let val (vbox pf | p) = s2v in p->s2var_srt end
+
+implement s2var_tmplev_get (s2v) =
+  let val (vbox pf | p) = s2v in p->s2var_tmplev end
+
+implement s2var_tmplev_set (s2v, lev) =
+  let val (vbox pf | p) = s2v in p->s2var_tmplev := lev end
 
 implement s2var_sVarset_get (s2v) =
   let val (vbox pf | p) = s2v in p->s2var_sVarset end

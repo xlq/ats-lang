@@ -969,7 +969,7 @@ fn s2exp_hypo_equal_solve_con
   val () = begin
     prerr "s2exp_hypo_equal_solve_con: s2e1 = \n"; prerr s2e1; prerr_newline ();
     prerr "s2exp_hypo_equal_solve_con: s2e2 = \n"; prerr s2e2; prerr_newline ();
-  end
+  end // end of [val]
 *)
   fun aux_solve (loc0: loc_t, s2e1: s2exp, s2e2: s2exp): void =
     case+ (s2e1.s2exp_node, s2e2.s2exp_node) of
@@ -996,8 +996,8 @@ implement s2exp_hypo_equal_solve (loc0, s2e1, s2e2) = let
 (*
   val () = begin
     prerr "s2exp_hypo_equal_solve: s2e1 = "; prerr s2e1; prerr_newline ();
-    prerr "s2exp_hypo_equal_solve: s2e1 = "; prerr s2e2; prerr_newline ();
-  end
+    prerr "s2exp_hypo_equal_solve: s2e2 = "; prerr s2e2; prerr_newline ();
+  end // end of [val]
 *)
 in
   case+ (s2e1.s2exp_node, s2e2.s2exp_node) of
@@ -1022,36 +1022,36 @@ in
            trans3_env_hypo_add_bind (loc0, s2v2, s2e1)
          end
        | _ (*sgn = 0*) => ()
-    end
+    end // end of [S2Evar _, S2Evar _]
   | (S2Evar s2v1, _) => let
 (*
       val s2t_var = s2var_srt_get s2v1
       val s2t_exp = s2e2.s2exp_srt
       val () = begin
         if not (s2t_var <= s2t_exp) then s2var_srt_set (s2v1, s2t_exp)
-      end
+      end // end of [val]
 *)
       val () = the_s2varbindmap_add (s2v1, s2e2)
     in
       trans3_env_hypo_add_bind (loc0, s2v1, s2e2)
-    end
+    end // end of [S2Evar _, _]
   | (_, S2Evar s2v2) => let
 (*
       val s2t_var = s2var_srt_get s2v2
       val s2t_exp = s2e1.s2exp_srt
       val () = begin
         if not (s2t_var <= s2t_exp) then s2var_srt_set (s2v2, s2t_exp)
-      end
+      end // end of [val]
 *)
       val () = the_s2varbindmap_add (s2v2, s2e1)
     in
       trans3_env_hypo_add_bind (loc0, s2v2, s2e1)
-    end
+    end // end of [_, S2Evar _]
   | (S2Efun (_(*fc*), _(*lin*), _(*sf2e*), _(*npf*), s2es11, s2e12),
      S2Efun (_(*fc*), _(*lin*), _(*sf2e*), _(*npf*), s2es21, s2e22)) => begin
        s2explst_hypo_equal_solve (loc0, s2es21, s2es11);
        s2exp_hypo_equal_solve (loc0, s2e12, s2e22)
-     end
+     end // end of [S2Efun _, S2Efun _]
   | (_, _) => trans3_env_hypo_add_eqeq (loc0, s2e1, s2e2)
 end // end of [s2exp_hypo_equal_solve]
 

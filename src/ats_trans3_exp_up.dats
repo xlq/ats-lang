@@ -602,12 +602,13 @@ fun d2exp_apps_tr_up (d3e_fun: d3exp, d2as: d2exparglst): d3exp =
   | cons (d2a, d2as) => begin case+ d2a of
     | D2EXPARGsta (s2as) => begin
         d2exp_apps_sta_tr_up (d3e_fun, s2as, d2as)
-      end
+      end // end of [D2EXPARGsta]
     | D2EXPARGdyn (loc_arg, npf, d2es_arg) => begin
         d2exp_apps_dyn_tr_up (d3e_fun, loc_arg, npf, d2es_arg, d2as)
-      end
+      end // end of [D2EXPARGdyn]
     end // end of [cons]
   | nil () => d3e_fun
+// end of [d2exp_apps_tr_up]
 
 and d2exp_apps_sta_tr_up
   (d3e_fun: d3exp, s2as: s2exparglst, d2as: d2exparglst): d3exp = let
@@ -625,7 +626,7 @@ and d2exp_apps_sta_tr_up
   val d3e_fun = d3exp_app_sta (loc_app, s2e_fun, d3e_fun)
 in
   d2exp_apps_tr_up (d3e_fun, d2as)
-end
+end // end of [d2exp_apps_sta_tr_up]
 
 and d2exp_apps_dyn_tr_up
   (d3e_fun: d3exp,
@@ -658,7 +659,7 @@ in
     in
       d2exp_apps_tr_up (d3e_fun, d2as)
     end
-end
+end // end of [d2exp_apps_dyn_tr_up]
 
 (* ****** ****** *)
 
@@ -1643,7 +1644,7 @@ end // end of [d2exp_seq_tr_up]
 fn d2exp_tmpid_tr_up
   (loc0: loc_t, d2e: d2exp, ts2ess: tmps2explstlst): d3exp = let
   fun aux (subs: List stasub_t): s2explstlst = case+ subs of
-    | cons (sub, subs) => cons (stasub_codomain_get sub, aux subs)
+    | cons (sub, subs) => cons (stasub_codomain_get_whnf sub, aux subs)
     | nil () => nil ()
 in
   case+ d2e.d2exp_node of
@@ -1855,12 +1856,12 @@ extern fun intkind_eval
   (_: string): $Syn.intkind = "ats_trans3_intkind_eval"
 
 val loc0 = d2e0.d2exp_loc
-val d3e0: d3exp = case+ d2e0.d2exp_node of
+val d3e0 = (case+ d2e0.d2exp_node of
   | D2Eann_type (d2e, s2e) => let
       val d3e = d2exp_tr_dn (d2e, s2exp_whnf s2e)
     in
       d3exp_ann_type (loc0, d3e, s2e)
-    end
+    end // end of [D2Eann_type]
   | D2Eapps (d2e_fun, d2as_arg) => begin
     case+ d2e_fun.d2exp_node of
     | D2Emac d2m => let
@@ -1874,14 +1875,14 @@ val d3e0: d3exp = case+ d2e0.d2exp_node of
         val () = d3exp_open_and_add d3e_fun
       in
         d2exp_apps_tr_up (d3e_fun, d2as_arg)
-      end
-    end
+      end // end of [_]
+    end // end of [D2Eapps]
   | D2Earr (s2e_elt, d2es_elt) => let
       val sz = $Lst.list_length d2es_elt
       val d3es_elt = d2explst_elt_tr_dn (d2es_elt, s2e_elt)
       val s2e_arrsz = begin
         s2exp_arraysize_viewt0ype_int_viewt0ype (s2e_elt, sz)
-      end
+      end // end of [val]
     in
       d3exp_arr (loc0, s2e_arrsz, s2e_elt, d3es_elt)
     end // end of [D2Earr]
@@ -1895,14 +1896,14 @@ val d3e0: d3exp = case+ d2e0.d2exp_node of
             val d2a = D2EXPARGdyn (loc0, 0, cons (d2e_arr, d2es_ind))
           in
             d2exp_apps_sym_tr_up (loc0, d2s_brackets, '[d2a])
-          end
+          end // end of [cons]
         | _ => begin
             prerr loc_ind;
             prerr ": error(3)";
             prerr ": the format for array subscripts ["; prerr d2ess_ind;
             prerr "] is not supported."; prerr_newline ();
             $Err.abort {d3exp} ()
-          end
+          end // end of [_]
       end // end of [if]
     end // end of [D2Earrsub]
   | D2Eassgn (d2e_l, d2e_r) => d2exp_assgn_tr_up (loc0, d2e_l, d2e_r)
@@ -1915,10 +1916,10 @@ val d3e0: d3exp = case+ d2e0.d2exp_node of
       val s2e = s2exp_char_char_t0ype c
     in
       d3exp_char (loc0, s2e, c)
-    end
+    end // end of [D2Echar]
   | D2Econ (d2c, s2as, npf, d2es) => begin
       d2exp_con_tr_up (loc0, d2c, s2as, npf, d2es)
-    end
+    end // end of [D2Econ]
   | D2Ecrypt (knd, d2e) => d2exp_crypt_tr_up (loc0, knd, d2e)
   | D2Ecst d2c => d2exp_cst_tr_up (loc0, d2c)
   | D2Edelay (lin, d2e) => let // as if checking [llam () =<~ref> d2e]
@@ -1946,7 +1947,7 @@ val d3e0: d3exp = case+ d2e0.d2exp_node of
       ) : s2exp
     in
       d3exp_delay (loc0, s2e_lazy, lin, d3e)
-    end
+    end // end of [D2Edelay]
   | D2Ederef d2e => d2exp_deref_tr_up (loc0, d2e, nil ())
   | D2Edynload fil => d3exp_dynload (loc0, fil)
   | D2Eeffmask (effs, d2e) => let
@@ -1955,7 +1956,7 @@ val d3e0: d3exp = case+ d2e0.d2exp_node of
       val () = the_effect_env_pop (pf_effect | (*none*))
     in
       d3exp_effmask (loc0, effs, d3e)
-    end
+    end // end of [D2Eeffmask]
   | D2Eempty () => d3exp_empty (loc0, s2exp_void_t0ype ())
   | D2Eextval (s2e, code) => d3exp_extval (loc0, s2e, code)
   | D2Efoldat (s2as, d2e_at) => d2exp_foldat_tr_up (loc0, s2as, d2e_at)
@@ -1976,7 +1977,7 @@ val d3e0: d3exp = case+ d2e0.d2exp_node of
       val s2e = s2exp_double_t0ype ()
     in
       d3exp_float (loc0, s2e, str)
-    end
+    end // end of [D2Efloat]
   | D2Efloatsp (str) => let
       val s2e = case+ floatkind_eval (str) of
         | $Syn.FLOATKINDfloat () => s2exp_float_t0ype ()
@@ -1995,7 +1996,7 @@ val d3e0: d3exp = case+ d2e0.d2exp_node of
       val s2e = s2exp_int_intinf_t0ype int
     in
       d3exp_int (loc0, s2e, str, int)
-    end
+    end // end of [D2Eint]
   | D2Eintsp (str, int) => let
       val s2e = case+ intkind_eval (str) of
         | $Syn.INTKINDlint () => s2exp_lint_t0ype ()
@@ -2009,7 +2010,7 @@ val d3e0: d3exp = case+ d2e0.d2exp_node of
           end
     in
       d3exp_intsp (loc0, s2e, str, int)
-    end
+    end // end of [D2Eintsp]
   | D2Elam_dyn (lin, npf, p2ts_arg, d2e_body) => let
 (*
       val () = begin
@@ -2076,7 +2077,7 @@ val d3e0: d3exp = case+ d2e0.d2exp_node of
 *)
     in
       d3exp_lam_dyn (loc0, s2e_fun, lin, npf, p3ts_arg, d3e_body)
-    end
+    end // end of [D2Elam_dyn]
   | D2Elam_met (r_d2vs, s2es_met, d2e_body) => let
       val () = metric_nat_check (loc0, s2es_met)
       val (pf_metric | ()) = metric_env_push (!r_d2vs, s2es_met)
@@ -2084,7 +2085,7 @@ val d3e0: d3exp = case+ d2e0.d2exp_node of
       val () = metric_env_pop (pf_metric | (*none*))
     in
       d3exp_lam_met (loc0, s2es_met, d3e_body)
-    end
+    end // end of [D2Elam_met]
   | D2Elam_sta (s2vs, s2ps, d2e_body) => let
       val () = trans3_env_push_sta ()
       val () = trans3_env_add_svarlst s2vs
@@ -2094,7 +2095,7 @@ val d3e0: d3exp = case+ d2e0.d2exp_node of
       val s2e0 = s2exp_uni (s2vs, s2ps, d3e_body.d3exp_typ)
     in
       d3exp_lam_sta (loc0, s2e0, s2vs, s2ps, d3e_body)
-    end
+    end // end of [D2Elam_sta]
   | D2Elet (d2cs, d2e) => let
       val (pf_effect | ()) = the_effect_env_push ()
       val (pf_s2cstlst | ()) = the_s2cstlst_env_push ()
@@ -2109,7 +2110,7 @@ val d3e0: d3exp = case+ d2e0.d2exp_node of
     end // end of [D2Elet]
   | D2Eloopexn i => begin
       d2exp_loopexn_tr_up (loc0, i) // 0/1: break/continue
-    end
+    end // end of [D2Eloopexn]
   | D2Elst (lin, os2e_elt, d2es_elt) => let
       val s2e_elt = case+ os2e_elt of
         | None () => let
@@ -2128,13 +2129,13 @@ val d3e0: d3exp = case+ d2e0.d2exp_node of
         end
     in
       d3exp_lst (loc0, s2e_lst, lin, s2e_elt, d3es_elt)
-    end
+    end // end of [D2Elst]
   | D2Emac d2m => let
       val d2as = list_nil () // no arguments for [d2m]
       val d2e0 = $Mac.macro_eval_app_short (loc0, d2m, d2as)
     in
       d2exp_tr_up (d2e0)
-    end
+    end // end of [D2Emac]
   | D2Emacsyn (knd, d2e) => let
       val d2e = case+ knd of
         | $Syn.MACSYNKINDcross () => $Mac.macro_eval_cross (d2e)
@@ -2152,7 +2153,7 @@ val d3e0: d3exp = case+ d2e0.d2exp_node of
 *)
     in
       d2exp_tr_up d2e
-    end
+    end // end of [D2Emacsyn]
   | D2Eptrof d2e =>  d2exp_ptrof_tr_up (loc0, d2e)
   | D2Eraise d2e_exn => let
       val s2e_exn = s2exp_exception_viewtype ()
@@ -2160,10 +2161,10 @@ val d3e0: d3exp = case+ d2e0.d2exp_node of
       val s2e_raise = s2exp_bottom_viewt0ype_uni ()
     in
       d3exp_raise (loc0, s2e_raise, d3e_exn)
-    end
+    end // end of [D2Eraise]
   | D2Erec (recknd, npf, ld2es) => begin
       d2exp_rec_tr_up (loc0, recknd, npf, ld2es)
-    end
+    end // end of [D2Erec]
   | D2Esel (d2e, d2ls) => d2exp_sel_tr_up (loc0, d2e, d2ls)
   | D2Eseq d2es => d2exp_seq_tr_up (loc0, d2es)
   | D2Esif (res, s2p_cond, d2e_then, d2e_else) => let
@@ -2175,17 +2176,17 @@ val d3e0: d3exp = case+ d2e0.d2exp_node of
       val s2e = s2exp_string_int_type (length str)
     in
       d3exp_string (loc0, s2e, str, len)
-    end
+    end // end of [D2Estring]
   | D2Etmpid (d2e, ts2ess) => begin
       d2exp_tmpid_tr_up (loc0, d2e, ts2ess)
-    end
+    end // end of [D2Etmpid]
   | D2Etop () => begin
       prerr loc0;
       prerr ": error(3)";
       prerr ": the type of [?] cannot be synthesized.";
       prerr_newline ();
       $Err.abort {d3exp} ()
-    end
+    end // end of [D2Etop]
   | D2Etrywith (d2e, c2ls) => let
       val (pf_d2varset | ()) = the_d2varset_env_push_try ()
       val d3e = d2exp_tr_up d2e
@@ -2201,7 +2202,7 @@ val d3e0: d3exp = case+ d2e0.d2exp_node of
       val () = the_d2varset_env_pop_try (pf_d2varset | (*none*))
     in
       d3exp_trywith (loc0, d3e, c3ls)
-    end
+    end // end of [D2Etrywith]
   | D2Evar d2v => d2exp_var_tr_up (loc0, d2v)
   | D2Eviewat (d2e) => d2exp_viewat_tr_up (loc0, d2e)
   | D2Ewhere (d2e, d2cs) => let
@@ -2215,7 +2216,7 @@ val d3e0: d3exp = case+ d2e0.d2exp_node of
       val () = the_effect_env_pop (pf_effect | (*none*))
     in
       d3exp_where (loc0, d3e, d3cs)
-    end
+    end // end of [D2Ewhere]
   | D2Ewhile (lpi2nv, d2e_test, d2e_body) => d2exp_loop_tr_up
       (loc0, lpi2nv, None(*init*), d2e_test, None(*post*), d2e_body)
     // end of [D2Ewhile]
@@ -2225,7 +2226,8 @@ val d3e0: d3exp = case+ d2e0.d2exp_node of
       prerr_d2exp d2e0;
       prerr_newline ();
       $Err.abort {d3exp} ()
-    end
+    end // end of [_]
+) : d3exp // end of [val]
 (*
 val () = begin
   prerr "d2exp_tr_up: d3e0 = "; prerr d3e0; prerr_newline ()
@@ -2265,7 +2267,7 @@ in
       end
       val s2ess = aux subs where {
         fun aux (subs: List stasub_t): s2explstlst = case+ subs of
-          | cons (sub, subs) => cons (stasub_codomain_get sub, aux subs)
+          | cons (sub, subs) => cons (stasub_codomain_get_whnf sub, aux subs)
           | nil () => nil ()
       } // end of [where]
     in
@@ -2329,10 +2331,10 @@ in
   | s2vpss (* as cons _ *) => let
       val (subs, s2e_tmp) = begin
         s2exp_template_instantiate (loc0, s2vpss, TMPS2EXPLSTLSTnil (), s2e_d2v)
-      end
+      end // end of [val]
       val s2ess = aux subs where {
         fun aux (subs: List stasub_t): s2explstlst = case+ subs of
-          | cons (sub, subs) => cons (stasub_codomain_get sub, aux subs)
+          | cons (sub, subs) => cons (stasub_codomain_get_whnf sub, aux subs)
           | nil () => nil ()
       } // end of [where]
     in

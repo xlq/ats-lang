@@ -664,6 +664,7 @@ in
 end // end of [the_dyncstset_add]
 
 implement the_dyncstset_add_if (d2c) =
+  // a template constant should not be added!
   if d2cst_is_temp d2c then () else let
     val ismem = begin
       $Set.set_member<d2cst_t> (!the_dyncstset, d2c, compare_d2cst_d2cst)

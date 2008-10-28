@@ -197,7 +197,11 @@ fn effvar_tr
   (efv: $Eff.effvar): s2exp = begin
   case+ the_s2expenv_find efv.i0de_sym of
   | ~Some_vt s2i => begin case+ s2i of
-    | S2ITEMvar s2v => s2exp_var (s2v)
+    | S2ITEMvar s2v => let
+        val () = s2var_tmplev_check (efv.i0de_loc, s2v)
+      in
+        s2exp_var (s2v)
+      end // end of [S2ITEMvar]
     | _ => begin
         prerr efv.i0de_loc;
         prerr ": error(2)";
@@ -514,7 +518,9 @@ fun s1exp_qid_app_tr_up
           $Err.abort ()
         end
     end // end of [S2ITEMcst]
-  | S2ITEMvar s2v => begin
+  | S2ITEMvar s2v => let
+      val () = s2var_tmplev_check (loc_id, s2v)
+    in
       s1exp_app_tr_up (loc_id, loc_app, s2exp_var s2v, s1ess)
     end // end of [S2ITEMvar]
   | S2ITEMdatconptr d2c => s1exp_app_datconptr_tr_up (loc_app, d2c, s1ess)
@@ -558,7 +564,9 @@ fn s1exp_id_tr_up
         end // end of [S2CSTLSTnil]
       end // end of [S2ITEMcst]
     | S2ITEMe1xp e1xp => s1exp_tr_up (s1exp_make_e1xp (loc0, e1xp))
-    | S2ITEMvar s2v => s2exp_var s2v
+    | S2ITEMvar s2v => let
+        val () = s2var_tmplev_check (loc0, s2v) in s2exp_var s2v
+      end // end of [S2ITEMvar]
     | _ => begin
         $Loc.prerr_location loc0;
         prerr ": s1exp_id_tr_up: s2i = "; prerr s2i; prerr_newline ();

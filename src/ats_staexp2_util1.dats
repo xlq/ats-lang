@@ -1038,10 +1038,12 @@ implement stasub_domain_get (sub) = begin case+ sub of
   | nil () => nil ()
 end // end of stasub_domain_get
 
-implement stasub_codomain_get (sub) = begin case+ sub of
-  | cons (s2vs2e, sub) => cons (s2vs2e.1, stasub_codomain_get sub)
+implement stasub_codomain_get_whnf (sub) = begin case+ sub of
+  | cons (s2vs2e, sub) => let
+      val s2e = s2exp_whnf s2vs2e.1 in cons (s2e, stasub_codomain_get_whnf sub)
+    end // end of [cons]
   | nil () => nil ()
-end // end of stasub_codomain_get
+end // end of [stasub_codomain_get_whnf]
 
 implement stasub_extend_svarlst (sub, s2vs) = let
   typedef T = s2varlst

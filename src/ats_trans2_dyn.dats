@@ -2192,7 +2192,6 @@ fn i1mpdec_tr
         s2e // no automatic instantiation
       end // end of [nil]
   end // end of [aux2_tmp]
-  val (pf_s2expenv | ()) = the_s2expenv_push ()
   val loc_id = qid.impqi0de_loc
   val decarg = d2cst_decarg_get d2c and s2e_d2c = d2cst_typ_get d2c
   val () = begin case+ decarg of
@@ -2212,6 +2211,7 @@ fn i1mpdec_tr
   var out_tmparg: s2explstlst = nil ()
   var out_tmpgua: s2explstlst = nil ()
   val s2e = s2e_d2c
+  val (pf_s2expenv | ()) = the_s2expenv_push ()
   val s2e = (case+ i1mparg of
     | cons _ => aux2_imp (loc_id, i1mparg, decarg, s2e, out_imp)
     | nil () => s2e
@@ -2221,13 +2221,14 @@ fn i1mpdec_tr
         (loc_id, t1mparg, decarg, s2e, out_tmparg, out_tmpgua)
     | nil () => s2e
   ) : s2exp        
+  // val out_imp = $Lst.list_reverse (out_imp) // a serious bug!!!
+  val out_imp = s2qualst_reverse (out_imp)
+  val () = s2qualst_tmplev_set (out_imp, template_level_get ())
+  val out_tmparg = $Lst.list_reverse (out_tmparg: s2explstlst)
+  val out_tmpgua = $Lst.list_reverse (out_tmpgua: s2explstlst)
   val d2e = d1exp_tr_ann (d1c.i1mpdec_def, s2e)
   val () = d2cst_def_set (d2c, Some d2e)
   val () = the_s2expenv_pop (pf_s2expenv | (*none*))
-  // val out_imp = $Lst.list_reverse (out_imp) // a serious bug!!!
-  val out_imp = s2qualst_reverse (out_imp)
-  val out_tmparg = $Lst.list_reverse (out_tmparg: s2explstlst)
-  val out_tmpgua = $Lst.list_reverse (out_tmpgua: s2explstlst)
 in
   i2mpdec_make (
     d1c.i1mpdec_loc, loc_id, d2c, out_imp, out_tmparg, out_tmpgua, d2e
@@ -2370,9 +2371,16 @@ implement d1ec_tr (d1c0) = begin
     end
   | D1Cfundecs (funknd, decarg, d1cs) => let
       val (pf_s2expenv | ()) = the_s2expenv_push ()
+      val () = begin
+        case+ decarg of cons _ => template_level_inc () | nil _ => ()
+      end // end of [val]
       val s2vpss = s1qualstlst_tr (decarg)
+      val () = s2qualst_tmplev_set (s2vpss, template_level_get ())
       val d2cs = f1undeclst_tr (funknd, s2vpss, d1cs)
       val () = the_s2expenv_pop (pf_s2expenv | (*none*))
+      val () = begin
+        case+ decarg of cons _ => template_level_dec () | nil _ => ()
+      end // end of [val]
     in
       d2ec_fundecs (d1c0.d1ec_loc, s2vpss, funknd, d2cs)
     end

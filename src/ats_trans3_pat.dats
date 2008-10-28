@@ -479,13 +479,14 @@ fn p2at_con_tr_dn (
   ) : p3at = let
   val s2e0 = s2exp_whnf s2e0
   val s2c = d2con_scst_get d2c
-  val s2e0 = case+ s2e0.s2exp_node of
+  val s2e0 = (case+ s2e0.s2exp_node of
     | S2EVar s2V => let
         val s2e_s2c: s2exp = s2cst_closure_make_predicative (loc0, s2c)
       in
         s2Var_link_set (s2V, Some s2e_s2c); s2e_s2c
-      end
+      end // end of [S2EVar]
     | _ => s2e0
+  ) : s2exp // end of [val]
   var s2e0: s2exp = s2exp_opnexi_and_add (loc0, s2e0)
   val os2es2e = un_s2exp_read s2e0
   var isread: bool = false
@@ -551,7 +552,7 @@ fn p2at_con_tr_dn (
         $Err.abort {void} ()
       end // end of [if]
     end // end of [if]
-  val p3t0: p3at = 
+  val p3t0 = (
     if flag = 0 then let // s2e0 = S2Ecst (...)
       val+ P2ATCONTRUPcon (p2ts, s2es_arg, s2e_res) =
         p2at_con_tr_up (loc0, d2c, s2vpss, s2e_con, npf, p2ts)
@@ -561,7 +562,7 @@ fn p2at_con_tr_dn (
       val p3t0 = p3at_con (loc0, s2e0, freeknd, d2c, npf, p3ts)
       val () = begin
         if freeknd <> 0 then p3at_con_free_update (p3t0, freeknd, d2c, p3ts)
-      end
+      end // end of [val]
     in
       p3t0
     end else let // s2e0 = S2Edatuni (...)
@@ -583,7 +584,8 @@ fn p2at_con_tr_dn (
       val () = p3at_con_free_update (p3t0, freeknd, d2c, p3ts)
     in
       p3t0
-    end
+    end // end of [if]
+  ) : p3at // end of [val]
   val () = begin case+ os2e_v of
     | ~Some_vt s2e_v => p3at_readize (s2e_v, p3t0) | ~None_vt () => ()
   end // readizing all the dynamic variables in [p3t0]
@@ -933,22 +935,22 @@ in
   | P2Tchar c => p2at_char_tr_dn (loc0, c, s2e0)
   | P2Tcon (freeknd, d2c, s2vpss, s2e_con, npf, p2ts) => begin
       p2at_con_tr_dn (loc0, freeknd, d2c, s2vpss, s2e_con, npf, p2ts, s2e0)
-    end
+    end // end of [P2Tcon]
   | P2Tempty () => let
       val s2e0 = s2exp_opnexi_and_add (loc0, s2e0)
       val () = $SOL.s2exp_tyleq_solve (loc0, s2e0, s2exp_void_t0ype ())
     in
       p3at_empty (loc0, s2e0)
-    end
+    end // end of [P2Tempty]
   | P2Texist (s2vs, p2t) => begin
       p2at_exist_tr_dn (p2t0, s2vs, p2t, s2e0)
-    end
+    end // end of [P2Texist]
   | P2Tfloat f(*string*) => let
       val s2e_float = s2exp_double_t0ype ()
       val () = $SOL.s2exp_tyleq_solve (loc0, s2e0, s2e_float)
     in
       p3at_float (loc0, s2e_float, f)
-    end
+    end // end of [P2Tfloat]
   | P2Tint (s, i) => let
       val s2e0 = s2exp_opnexi_and_add (loc0, s2e0)
     in
@@ -977,7 +979,7 @@ in
   | P2Tlst (p2ts) => p2at_lst_tr_dn (loc0, p2ts, s2e0)
   | P2Trec (recknd, npf, lp2ts) => begin
       p2at_rec_tr_dn (p2t0, recknd, npf, lp2ts, s2e0)
-    end
+    end // end of [P2Trec]
   | P2Tstring str => let
       val s2e0 = s2exp_opnexi_and_add (loc0, s2e0)
     in
