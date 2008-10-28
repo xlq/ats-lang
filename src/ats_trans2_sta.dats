@@ -211,7 +211,7 @@ fn effvar_tr
         prerr "] should refer to a variable but it does not.";
         prerr_newline ();
         $Err.abort {s2exp} ()
-      end
+      end // end of [_]
     end // end of [Some_vt]
   | ~None_vt () => begin 
       prerr efv.i0de_loc;
@@ -222,14 +222,11 @@ fn effvar_tr
       prerr "].";
       prerr_newline ();
       $Err.abort {s2exp} ()
-    end
+    end // end of [None_vt]
 end // end of [effvar_tr]
 
-fun effvarlst_tr (efvs: $Eff.effvarlst): s2explst = begin
-  case+ efvs of
-  | cons (efv, efvs) => cons (effvar_tr efv, effvarlst_tr efvs)
-  | nil () => nil ()
-end // end of [effvarlst_tr]
+fn effvarlst_tr (efvs: $Eff.effvarlst): s2explst =
+  $Lst.list_map_fun (efvs, effvar_tr)
 
 implement effcst_tr (efc): s2eff = begin
   case+ efc of
@@ -243,10 +240,11 @@ end // end of [effcst_tr]
 implement s1arg_var_tr (s1a) = begin
   case+ s1a.s1arg_srt of
   | Some s1t => let
-      val s2v = s2var_make_id_srt (s1a.s1arg_sym, s1rt_tr s1t)
+      val s2t = s1rt_tr s1t
+      val s2v = s2var_make_id_srt (s1a.s1arg_sym, s2t)
     in
       the_s2expenv_add_svar s2v; s2v
-    end
+    end // end of [Some]
   | None () => begin
       prerr s1a.s1arg_loc;
       prerr ": error(2)";
@@ -256,7 +254,7 @@ implement s1arg_var_tr (s1a) = begin
       prerr "] must be ascribed a sort.";
       prerr_newline ();
       $Err.abort ()
-    end
+    end // end of [None]
 end // end of [s1arg_var_tr]
 
 implement s1arglst_var_tr (s1as) =
@@ -306,31 +304,22 @@ implement s1explst_tr_dn_int (s1es) = begin case+ s1es of
   | nil () => nil ()
 end // end of [s1explst_tr_dn_int]
 
-fun s1explstlst_tr_dn_int (s1ess: s1explstlst): s2explstlst = begin
-  case+ s1ess of
-  | s1es :: s1ess => s1explst_tr_dn_int s1es :: s1explstlst_tr_dn_int s1ess
-  | nil () => nil ()
-end // end of [s1explstlst_tr_dn_int]
+fun s1explstlst_tr_dn_int (s1ess: s1explstlst): s2explstlst =
+  $Lst.list_map_fun (s1ess, s1explst_tr_dn_int)
 
 implement s1exp_tr_dn_prop (s1e) = s1exp_tr_dn (s1e, s2rt_prop)
 implement s1exp_tr_dn_type (s1e) = s1exp_tr_dn (s1e, s2rt_type)
 implement s1exp_tr_dn_t0ype (s1e) = s1exp_tr_dn (s1e, s2rt_t0ype)
 
-fun s1explst_tr_dn_t0ype (s1es: s1explst): s2explst = case+ s1es of
-  | s1e :: s1es => s1exp_tr_dn (s1e, s2rt_t0ype) :: s1explst_tr_dn_t0ype s1es
-  | nil () => nil ()
+fun s1explst_tr_dn_t0ype (s1es: s1explst): s2explst =
+  $Lst.list_map_fun (s1es, s1exp_tr_dn_t0ype)
 
 implement s1exp_tr_dn_view (s1e): s2exp = s1exp_tr_dn (s1e, s2rt_view)
 implement s1exp_tr_dn_viewtype (s1e) = s1exp_tr_dn (s1e, s2rt_viewtype)
 implement s1exp_tr_dn_viewt0ype (s1e) = s1exp_tr_dn (s1e, s2rt_viewt0ype)
 
-fun s1explst_tr_dn_viewt0ype (s1es: s1explst): s2explst = begin
-  case+ s1es of
-  | s1e :: s1es => begin
-      s1exp_tr_dn (s1e, s2rt_viewt0ype) :: s1explst_tr_dn_viewt0ype s1es
-    end
-  | nil () => nil ()
-end // end of [s2explst_tr_dn_viewt0ype]
+fun s1explst_tr_dn_viewt0ype (s1es: s1explst): s2explst =
+  $Lst.list_map_fun (s1es, s1exp_tr_dn_viewt0ype)
 
 implement s1exp_tr_dn_impredicative (s1e) = let
   val s2e = s1exp_tr_up s1e; val s2t = s2e.s2exp_srt
@@ -345,12 +334,12 @@ in
     prerr "].";
     prerr_newline ();
     $Err.abort ()
-  end
+  end // end of [if]
 end // end of [s1exp_tr_dn_impredicative]
 
-implement s1expopt_tr_dn_impredicative (os1e) = begin case+ os1e of
+implement s1expopt_tr_dn_impredicative (os1e) = case+ os1e of
   | Some s1e => Some (s1exp_tr_dn_impredicative s1e) | None () => None ()
-end // end of [s1expopt_tr_dn_impredicative]
+// end of [s1expopt_tr_dn_impredicative]
 
 (* ****** ****** *)
 
@@ -410,7 +399,7 @@ fn s1exp_app_tr_up
             end
       in
         loop (loc_fun, loc_app, s2exp_app_srt (s2t, s2e, s2es), s1ess)
-      end
+      end // end of [::]
     | nil () => s2e
   end // end of [loop]
 } // end of [s1exp_app_tr_up]
@@ -422,7 +411,8 @@ fn s1exp_app_datconptr_tr_up
   : s2exp = let
   val s1es = (
     case+ s1ess of
-    | cons (s1es, s1ess) => begin case+ s1ess of
+    | cons (s1es, s1ess) => begin
+      case+ s1ess of
       | nil _ => s1es | cons _ => begin
           prerr loc_app;
           prerr ": error(2)";
@@ -432,7 +422,7 @@ fn s1exp_app_datconptr_tr_up
           prerr "] is overly applied.";
           prerr_newline ();
           $Err.abort {s1explst} ()
-        end
+        end // end of [cons]
       end // end of [cons]
     | nil () => nil ()
   ) : s1explst
@@ -589,8 +579,7 @@ end // end of [s1exp_id_tr_up]
 fn s1exp_invar_tr_up
   (refval: int, s1e: s1exp): s2exp = let
   val s2t: s2rt =
-    if refval = 0 then s2rt_view (*call-by-val*)
-    else s2rt_viewt0ype (*call-by-ref*)
+    if refval = 0 then s2rt_view (*val*) else s2rt_viewt0ype (*ref*)
   val s2e: s2exp = s1exp_tr_dn (s1e, s2t)
 in
   s2exp_refarg (refval, s2e)
@@ -675,8 +664,7 @@ implement s1exp_arg_tr_up (s1e0, wths1es) = begin
 end // end of [s1exp_arg_tr_up]
 
 implement s1exp_arg_tr_dn_impredicative (s1e, wths1es) = let
-  val s2e = s1exp_arg_tr_up (s1e, wths1es)
-  val s2t = s2e.s2exp_srt
+  val s2e = s1exp_arg_tr_up (s1e, wths1es); val s2t = s2e.s2exp_srt
 in
   if s2rt_is_impredicative s2t then s2e else begin
     prerr s1e.s1exp_loc;
@@ -784,16 +772,15 @@ fn s1exp_arrow_tr_up // arrow is a special type constructor
         in
           case+ 0 of
           | _ when types > 0 => begin case+ s1es of
-            | nil () => cons (s2exp_vararg s2e, nil ())
-            | _ => begin
+            | nil () => cons (s2exp_vararg s2e, nil ()) | _ => begin
                 prerr s1e.s1exp_loc;
                 prerr ": error(2)";
                 $Deb.debug_prerrf (": %s: s1exp_arrow_tr_up", @(THISFILENAME));
                 prerr ": this static expression must be the last argument.";
                 prerr_newline ();
                 $Err.abort ()
-              end
-            end
+              end // end of [cons]
+            end // end of [_ when types > 0]
           | _ when (imp > 0) => cons (s2e, aux (s1es, wths1es))
           | _ => begin
               prerr s1e.s1exp_loc;
@@ -805,8 +792,8 @@ fn s1exp_arrow_tr_up // arrow is a special type constructor
               prerr "].";
               prerr_newline ();
               $Err.abort ()
-            end
-        end
+            end // end of [_]
+        end // end of [cons]
       | nil () => nil ()
     } // end of [where]
   val () = wths1es := wths1explst_reverse wths1es
@@ -918,9 +905,9 @@ fun loop
             | nil () => ()
         in
           aux2 (ids, s2vs, s2ps); loop (s1qs, s2vs, s2ps)
-        end
-      end          
-    end
+        end // end of [S2TEsub]
+      end // end of [S1Qvars]
+    end // end of [cons]
   | nil () => ()
 end // end of [loop]
 
@@ -933,11 +920,10 @@ in // in of [let]
 
 end // end of [s1qualst_tr]
 
-implement s1qualstlst_tr (s1qss) = begin
-  case+ s1qss of
+implement s1qualstlst_tr (s1qss) = begin case+ s1qss of
   | list_cons (s1qs, s1qss) => begin
       list_cons (s1qualst_tr s1qs, s1qualstlst_tr s1qss)
-    end
+    end // end of [list_cons]
   | list_nil () => list_nil ()
 end // end of [s1qualstlst_tr]
 
@@ -1224,8 +1210,8 @@ in
               prerr "].";
               prerr_newline ();
               $Err.abort {s2exp} ()
-            end
-          end
+            end // end of [None_vt]
+          end // end of [SPSIDnone]
         end // end of [S1Eqid]
       | S1Eimp (fc, lin, prf, oefc) => s1exp_arrow_tr_up 
           (s1e0.s1exp_loc, Some fc, lin>0, prf>0, oefc, '[s1es])
@@ -1233,7 +1219,7 @@ in
           val s2e_opr = s1exp_tr_up s1e_opr
         in
           s1exp_app_tr_up (s1e_opr.s1exp_loc, s1e0.s1exp_loc, s2e_opr, s1ess_arg)
-        end
+        end // end of [_]
       // end of [case]
     end // end of [S1Eapp]
   | S1Echar c => s2exp_char c
@@ -1257,14 +1243,14 @@ in
       val () = the_s2expenv_pop (pf_s2expenv | (*none*))
     in
       s2exp_exi (s2vs, s2ps, s2e_scope)
-    end
+    end // end of [S1Eexi]
   | S1Eextype name => s2exp_extype_srt (s2rt_viewt0ype, name)
   | S1Eimp _ => begin
       prerr s1e0.s1exp_loc;
       prerr "Internal Error: s1exp_tr_up: S1Eimp";
       prerr_newline ();
       $Err.abort {s2exp} ()
-    end
+    end // end of [S1Eimp]
   | S1Eint i(*string*) => s2exp_intinf ($IntInf.intinf_make_string i)
   | S1Einvar (refval, s1e) => begin
       prerr s1e0.s1exp_loc;
@@ -1272,7 +1258,7 @@ in
       prerr ": an invariant type can only be assigned to the argument of a function.";
       prerr_newline ();
       $Err.abort {s2exp} ()
-    end
+    end // end of [S1Einvar]
   | S1Elam (s1as, os1t, s1e_body) => let
       val (pf_s2expenv | ()) = the_s2expenv_push ()
       val s2vs = s1arglst_var_tr s1as; val s2e_body = (
@@ -1285,21 +1271,21 @@ in
       val s2t_res = s2e_body.s2exp_srt
     in
       s2exp_lam_srt (s2rt_fun (s2ts_arg, s2t_res), s2vs, s2e_body)
-    end
+    end // end of [S1Elam]
   | S1Elist (npf, s1es) => begin
       s1exp_list_tr_up (s1e0.s1exp_loc, npf, s1es)
-    end
+    end // end of [S1Elist]
   | S1Emod _ => begin
       prerr s1e0.s1exp_loc;
       prerr ": s1exp_tr_up: S1Emod: not implemented yet.";
       prerr_newline ();
       $Err.abort {s2exp} ()
-    end
+    end // end of [S1Emod]
   | S1Eqid (q, id) => s1exp_id_tr_up (s1e0.s1exp_loc, q, id)
   | S1Eread (_v, s1e) => s1exp_read_tr_up (_v, s1e)
   | S1Estruct (ls1es) => begin
       s1exp_struct_tr_up (s1e0.s1exp_loc, ls1es)
-    end
+    end // end of [S1Estruct]
   | S1Etop (knd, s1e) => s1exp_top_tr_up (knd, s1e)
   | S1Etrans _ => begin
       prerr s1e0.s1exp_loc;
@@ -1307,22 +1293,22 @@ in
       prerr ": a transitional type can only be assigned to the argument of a function.";
       prerr_newline ();
       $Err.abort {s2exp} ()
-    end
+    end // end of [S1Etrans]
   | S1Etyarr (s1e_elt, s1ess_dim) => let
       val s2e_elt = s1exp_tr_dn_viewt0ype s1e_elt
       val s2ess_dim = s1explstlst_tr_dn_int s1ess_dim
     in
       s2exp_tyarr (s2e_elt, s2ess_dim)
-    end
+    end // end of [S1Etyarr]
   | S1Etyrec (recknd, ls1es) => begin
       s1exp_tyrec_tr_up (s1e0.s1exp_loc, recknd, ls1es)
-    end
+    end // end of [S1Etyrec]
   | S1Etytup (tupknd, s1es) => begin
       s1exp_tytup_tr_up (s1e0.s1exp_loc, tupknd, s1es)
-    end
+    end // end of [S1Etytup]
   | S1Etytup2 (tupknd, s1es1, s1es2) => begin
       s1exp_tytup2_tr_up (s1e0.s1exp_loc, tupknd, s1es1, s1es2)
-    end
+    end // end of [S1Etytup2]
   | S1Euni (s1qs, s1e_scope) => let
       var s2vs: s2varlst = nil () and s2ps: s2explst = nil ()
       val (pf_s2expenv | ()) = the_s2expenv_push ()
@@ -1331,10 +1317,10 @@ in
       val () = the_s2expenv_pop (pf_s2expenv | (*none*))
     in
       s2exp_uni (s2vs, s2ps, s2e_scope)
-    end
+    end // end of [S1Euni]
   | S1Eunion (s2e_ind, ls2es) => begin
       s1exp_union_tr_up (s1e0.s1exp_loc, s2e_ind, ls2es)
-    end
+    end // end of [S1Eunion]
 end // end of [s1exp_tr_up]
 
 implement s1explst_tr_up (s1es) = $Lst.list_map_fun (s1es, s1exp_tr_up)
@@ -1344,7 +1330,7 @@ implement tmps1explstlst_tr_up (ts1ess) = begin case+ ts1ess of
   | TMPS1EXPLSTLSTnil () => TMPS2EXPLSTLSTnil ()
   | TMPS1EXPLSTLSTcons (loc, s1es, ts1ess) => begin
      TMPS2EXPLSTLSTcons (loc, s1explst_tr_up s1es, tmps1explstlst_tr_up ts1ess)
-    end
+    end // end of [TMPS1EXPLSTLSTcons]
 end // end of [tmps1explstlst_tr]
 
 (* ****** ****** *)
@@ -1363,14 +1349,13 @@ implement s1exp_tr_dn (s1e0, s2t0) = begin
         prerr "].";
         prerr_newline ();
         $Err.abort ()
-      end
-    end
+      end // end of [if]
+    end // end of [S1Eextype]
   | _ => let
       val s2e0 = s1exp_tr_up (s1e0)
       val s2t0_new = s2e0.s2exp_srt
     in
-      if s2t0_new <= s2t0 then s2e0
-      else begin
+      if s2t0_new <= s2t0 then s2e0 else begin
         prerr s1e0.s1exp_loc;
         prerr ": error(2)";
         $Deb.debug_prerrf (": %s: s1exp_tr_dn", @(THISFILENAME));
@@ -1381,8 +1366,8 @@ implement s1exp_tr_dn (s1e0, s2t0) = begin
         prerr "].";
         prerr_newline ();
         $Err.abort ()
-      end
-    end
+      end // end of [if]
+    end // end of [_]
 end // end of [s1exp_tr_dn]
 
 implement s1explst_tr_dn (s1es, s2ts) = begin
@@ -1391,7 +1376,7 @@ implement s1explst_tr_dn (s1es, s2ts) = begin
       val+ s2t :: s2ts = s2ts
     in
       s1exp_tr_dn (s1e, s2t) :: s1explst_tr_dn (s1es, s2ts)
-    end
+    end // end of [::]
   | nil () => nil ()
 end // end of [s1explst_tr_dn]
 
@@ -1403,7 +1388,7 @@ implement s1exparg_tr (s1a) = begin
   | S1EXPARGall () => s2exparg_all (s1a.s1exparg_loc)
   | S1EXPARGseq (s2es) => begin
       s2exparg_seq (s1a.s1exparg_loc, s1explst_tr_up s2es)
-    end
+    end // end of [S1EXPARGseq]
 end // end of [s1exparg_tr]
 
 implement s1exparglst_tr (s1as) = $Lst.list_map_fun (s1as, s1exparg_tr)
@@ -1416,10 +1401,8 @@ in
   the_s2rtenv_add (id, s2te)
 end // end of [s1rtdef_tr]
 
-implement s1rtdeflst_tr (ds): void = begin
-  case+ ds of
-  | cons (d, ds) => (s1rtdef_tr d; s1rtdeflst_tr ds)
-  | nil () => ()
+implement s1rtdeflst_tr (ds): void = begin case+ ds of
+  | cons (d, ds) => (s1rtdef_tr d; s1rtdeflst_tr ds) | nil () => ()
 end // end of [s1rtdeflst_tr]
 
 (* ****** ****** *)
@@ -1499,7 +1482,7 @@ fn s1tacon_tr (s2t_res: s2rt, d: s1tacon): void = let
       , None () // islst
       , argvar // argvar
       , None () // def
-      )
+      ) // end of [s2cst_make]
 in
   the_s2expenv_add_scst s2c
 end // end of [s1tacon_tr]
@@ -1536,7 +1519,7 @@ fn s1tacst_tr (d: s1tacst): void = let
       , None () // islst
       , None () // argvar
       , None () // def
-      )
+      ) // end of [s2cst_make]
 in
   the_s2expenv_add_scst s2c
 end // end of [s1tacst_tr]
@@ -1574,10 +1557,10 @@ fn d1atsrtdec_tr (res: s2rt, d1c: d1atsrtdec): s2cstlst = let
     , None () // islst
     , None () // argvar
     , None () // def
-    )
+    ) // end of [s2cst_make]
   in
     the_s2expenv_add_scst s2c; s2c
-  end
+  end // end of [aux]
 
   fun auxlst (res: s2rt, d1cs: d1atsrtconlst): s2cstlst =
     case+ d1cs of
@@ -1595,8 +1578,9 @@ implement d1atsrtdeclst_tr (d1cs): void = let
         val () = s2rtdat_conlst_set (x.1, s2cs)
       in
         loop1 xs
-      end
+      end // end of [list_vt_cons]
     | ~list_vt_nil () => ()
+  // end of [loop1]
 
   fun loop2 (d1cs: d1atsrtdeclst, res: VT): void =
     case+ d1cs of
@@ -1620,7 +1604,7 @@ implement d1atsrtdeclst_tr (d1cs): void = let
         val () = the_s2rtenv_add (id, S2TEsrt s2t)
       in
         loop2 (d1cs, list_vt_cons (@(d1c, s2td, s2t), res))
-      end
+      end // end of [list_cons]
     | list_nil () => loop1 res
 in
   loop2 (d1cs, list_vt_nil ())
@@ -1666,13 +1650,12 @@ fn s1expdef_tr (res: s2rtopt, d1c: s1expdef): s2cst_t = let
   val res = (
     case+ d1c.s1expdef_res of
     | Some s1t => let
-        val s2t1 = s1rt_tr s1t
-        val () = case+ res of
+        val s2t1 = s1rt_tr s1t; val () = case+ res of
           | Some s2t => if (s2t1 <= s2t) then () else err (d1c)
           | None () => ()
       in
         Some s2t1
-      end
+      end // end of [Some]
     | None () => res
   ) : s2rtopt
   val s2e = s1expdef_s1aspdec_tr_main
