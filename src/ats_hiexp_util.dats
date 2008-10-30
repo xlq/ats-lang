@@ -541,8 +541,7 @@ fun hityp_normalize_flag
   | HITs2var s2v => let
       val hit0_new = (
         case+ hityp_s2var_normalize (s2v) of
-        | ~Some_vt hit => hit
-        | ~None_vt () => begin
+        | ~Some_vt hit => hit | ~None_vt () => begin
             if s2var_is_boxed s2v then hityp_ptr else hityp_var
           end // end of [None_vt]
       ) : hityp

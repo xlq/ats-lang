@@ -211,23 +211,22 @@ in
 (*
       val () = begin
         prerr "s2exp_tr: S2Etyrec: s2e0 = "; prerr s2e0; prerr_newline ()
-      end
+      end // end of [val]
 *)
       val lhits = labs2explst_arg_tr (npf, ls2es)
       val hit0 = (case+ knd of
         | TYRECKINDbox () => begin
             if deep > 0 then hityp_tyrectemp (1(*box*), lhits) else hityp_ptr
-          end
+          end // end of [TYRECKINDbox]
         | _ (*TYRECKINDflt0 or TYRECKINDflt1*) => begin case+ lhits of
-          | LABHITYPLSTcons (_(*lab*), hit, LABHITYPLSTnil ()) =>
-              hityp_tyrecsin hit
+          | LABHITYPLSTcons (_(*lab*), hit, LABHITYPLSTnil ()) => hityp_tyrecsin hit
           | _ => hityp_tyrectemp (0(*flt*), lhits)
-        end
+          end // end of [_]
       ) : hityp
 (*
       val () = begin
         prerr "s2exp_tr: S2Etyrec: hit0 = "; prerr hit0; prerr_newline ()
-      end
+      end // end of [val]
 *)
     in
       hit0 
@@ -241,7 +240,7 @@ in
       val name = typedef_map_find tk
     in
       hityp_union (name, lhits)
-    end
+    end // end of [S2Eunion]
 *)
   | S2EVar s2V => s2Var_tr (deep, s2V)
   | S2Evar s2v => hityp_s2var s2v
@@ -251,7 +250,7 @@ in
       prerr "Internal Error: [ats_trans4]";
       prerr ": s2exp_tr: s2e0 = "; prerr s2e0; prerr_newline ();
       $Err.abort {hityp} ()
-    end
+    end // end of [_]
 end // end of [s2exp_tr]
 
 fn s2explst_tr (s2es: s2explst): hityplst = begin

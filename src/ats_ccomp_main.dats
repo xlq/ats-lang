@@ -1035,6 +1035,14 @@ implement ccomp_main {m}
     if n > 0 then fprint1_char (pf | out, '\n')
   end // end of [val]
 
+  val () = fprint1_string (pf | out, "/* external typedefs */\n")
+  val () = let
+    val ets = the_extypelst_get ()
+    val n = emit_extypelst_free (pf | out, ets)
+  in
+    if n > 0 then fprint1_char (pf | out, '\n')
+  end  
+
   val () = // declaration for dynamic constructors
     if (flag > 0) then let
       val () = fprint1_string (pf | out, "/* external dynamic constructor declarations */\n")
@@ -1162,14 +1170,6 @@ implement ccomp_main {m}
   end // end of [val]
 
   val () = $Lst.list_vt_free (fls)
-
-  val () = fprint1_string (pf | out, "/* external typedefs */\n")
-  val () = let
-    val ets = the_extypelst_get ()
-    val n = emit_extypelst_free (pf | out, ets)
-  in
-    if n > 0 then fprint1_char (pf | out, '\n')
-  end  
 
   val () = fprint1_string (pf | out, "/* external codes at mid */\n")
   val n = emit_extcodelst (pf | out, 1(*mid*), extcodes)

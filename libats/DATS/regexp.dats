@@ -80,7 +80,7 @@ implement test_regexp_match_str (re, str) = let
   val str = string1_of_string0 (str); val len = string1_length (str)
 in
   test_regexp_match_str_len_ofs (re, str, len, 0(*ofs*))
-end
+end // end of [test_regexp_match_str]
 
 (* ****** ****** *)
 
@@ -161,11 +161,11 @@ implement string_split_regexp (str, re) = let
             stream_cons (s, $delay loop (pf_gc, pf_arr | re, s0, n, n, p))
           end // end of [_]
       end // end of [_ when (i < n)]
-    | _ => let
+    | _ (* i = n *) => let
         val () = array_ptr_free {int} (pf_gc, pf_arr | p)
       in
         stream_nil ()
-      end
+      end // end of [_]
 
   val s0 = string1_of_string0 str; val n = string1_length s0
   val (pf_gc, pf_arr | p) = array_ptr_alloc_tsz {int} (3, sizeof<int>)
@@ -189,7 +189,7 @@ ats_void_type ats_regexp_initialize () {
   pcre_stack_malloc = (void *(*)(size_t))ats_malloc_gc ;
   pcre_stack_free = (void (*)(void*))ats_free_gc ;
   return ;  
-}
+} /* end of [ats_regexp_initialize] */
 
 %}
 
