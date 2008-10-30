@@ -48,7 +48,7 @@
 
 (* ****** ****** *)
 
-datatype list0_t0ype_type (a: t@ype) =
+datatype list0_t0ype_type (a: t@ype+) =
   | list0_cons (a) of (a, list0_t0ype_type a) | list0_nil (a)
 
 stadef list0 = list0_t0ype_type
