@@ -59,7 +59,7 @@ assume matrix_viewt0ype_int_int_type
   col= int n,
   mul= MUL (m, n, mn),
   view= vbox (array_v (a, mn, l))
-}
+} // end of [matrix_viewt0ype_int_int_type]
 
 (* ****** ****** *)
 
@@ -67,14 +67,14 @@ implement matrix_main
   {a} {m,n,mn} (m, n) = lam (pf_mul | asz) => let
 
   val (pf_mul_m_n_mn | mn) = m imul2 n
-  prval () = mul_is_fun (pf_mul, pf_mul_m_n_mn)
+  prval () = mul_isfun (pf_mul, pf_mul_m_n_mn)
   val (pf_box | ()) = vbox_make_view_ptr_gc (asz.0, asz.1 | asz.2)
 
 in '{
   data= asz.2, row= m, col= n, mul= pf_mul, view= pf_box
 } end // end of [matrix_main]
 
-//
+(* ****** ****** *)
 
 implement{a} matrix_make_elt (m, n, x) = let
   val (pf_mul | mn) = m imul2 n

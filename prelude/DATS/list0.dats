@@ -128,12 +128,11 @@ in
   if i >= 0 then aux (xs, i) else $raise ListSubscriptException
 end // end of [list0_nth_exn]
 
-implement{a} list0_nth_opt (xs, i) =
-  $effmask_all begin try
-    let val x = list0_nth_exn<a> (xs, i) in Some x end
-  with
-    | ~ListSubscriptException () => None ()
-  end // end of [try]
+implement{a} list0_nth_opt (xs, i) = begin try
+  let val x = list0_nth_exn<a> (xs, i) in Some x end
+with
+  | ~ListSubscriptException () => None ()
+end // end of [try]
 
 (* ****** ****** *)
 
