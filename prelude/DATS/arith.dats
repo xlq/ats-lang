@@ -63,21 +63,13 @@ end // end of [mul_istot]
 (* ****** ****** *)
 
 implement mul_nat_nat_nat (pf) = let
-  prfun aux {m,n:nat} {p:int} .<m>. (pf: MUL (m, n,p)): [p>=0] void =
+  prfun aux {m,n:nat} {p:int} .<m>.
+    (pf: MUL (m, n, p)): [p>=0] void = begin
     case+ pf of MULbas () => () | MULind pf => aux pf
+  end // end of [aux]
 in
   aux pf
 end // end of [mul_nat_nat_nat]
-
-implement mul_m_0_0 () = let
-  prfun aux {m:int}
-    .<max(2 * m, 2 * (~m) + 1)>. (): MUL (m, 0, 0) =
-    sif m > 0 then MULind (aux {m-1} ())
-    else sif m < 0 then MULneg (aux {~m} ())
-    else MULbas ()
-in
-  aux ()
-end // end of [mul_m_0_0]
 
 implement mul_negate (pf) = let
   prfn aux {m,n,p:int} (pf: MUL (m, n, p)): MUL (~m, n, ~p) =
@@ -111,15 +103,20 @@ end // end of [mul_m_neg_n_neg_mn]
 
 (* ****** ****** *)
 
-implement mul_commute (pf) = let
-  prfun aux {m,n:int} {p:int} .<max(2*m, 2*(~m)+1)>.
-    (pf: MUL (m, n, p)): MUL (n, m, p) =
-    case+ pf of
-    | MULbas () => mul_m_0_0 {n} ()
+implement mul_commute {m,n} (pf) = let
+  prfun aux {m:nat;n:int} {p:int} .<m>.
+    (pf: MUL (m, n, p)): MUL (n, m, p) = case+ pf of
+    | MULbas () => let
+        prval pf = mul_istot {n,0} (); prval () = mul_elim pf
+      in
+        pf
+      end // end of [MULbas]
     | MULind pf => mul_m_n1_mnm (aux pf)
-    | MULneg pf => mul_m_neg_n_neg_mn (aux pf)
+  // end of [aux]
 in
-  aux pf     
+  sif m >= 0 then aux pf else begin
+    let prval MULneg pf = pf in mul_m_neg_n_neg_mn (aux pf) end
+  end // end of [sif]
 end // end of [mul_commute]
 
 (* ****** ****** *)
