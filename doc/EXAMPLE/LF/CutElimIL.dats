@@ -247,9 +247,11 @@ prfun cut {G:seq} {A1,A2:form} {m,n1,n2:nat} .<m,n2,n1>.
             cut (ff {...}, d10, cut (f, weakDer d1, exchDer (df20 {...})))
           end
         end
+(*
       | INshi i => begin
           DERleft (DERLexi (i, lampara {a:iota} => cut (f, weakDer d1, exchDer (df20 {a}))))
-        end
+        end // end of [INshi]
+*)
       end
 
     | DERright (DERRand (d20, d21)) =>
@@ -257,8 +259,11 @@ prfun cut {G:seq} {A1,A2:form} {m,n1,n2:nat} .<m,n2,n1>.
     | DERright (DERRimp d20) => DERright (DERRimp (cut (f, weakDer d1, exchDer d20)))
     | DERright (DERRor1 d20) => DERright (DERRor1 (cut (f, d1, d20)))
     | DERright (DERRor2 d20) => DERright (DERRor2 (cut (f, d1, d20)))
-    | DERright (DERRuni {..} {Af} df20) =>
+(*
+    | DERright (DERRuni {..} {Af} df20) => begin
         DERright (DERRuni {..} {Af} (lampara {a:iota} => cut (f, d1, df20 {a})))
+      end // end of [DERright]
+*)
     | DERright (DERRexi {..} {Af} {a} df20) =>
         DERright (DERRexi {..} {Af} {a} (cut (f, d1, df20)))
 end // end of [cut]
@@ -272,9 +277,11 @@ and cutAux {G:seq} {A1,A2:form} {m,n1,n2:nat} .<m,n2,n1>.
   | DERLor (i, d11, d12) => 
       DERleft (DERLor (i, cut (f, d11, weakExchDer d2), cut (f, d12, weakExchDer d2)))
   | DERLuni (i, d1) => DERleft (DERLuni (i, cut (f, d1, weakExchDer d2)))
+(*
   | DERLexi (i, df1) => begin
       DERleft (DERLexi (i, lampara {a:iota} => cut (f, df1 {a}, weakExchDer d2)))
-    end
+    end // end of [DERLexi]
+*)
 end // end of [cutAux]
 
 (* ****** ****** *)

@@ -17,10 +17,10 @@ all: ATS \
      CutElimIL \
      CutElimILL \
      HilbertCalculus \
-     irrationality_of_sqrt2 \
+     irrationality-of-sqrt2 \
      ITPT \
      KolmogorovTrans \
-     miniML \
+     mini-ML \
      STLC-foas \
      STLC-hoas \
      STLC-SN-foas \
@@ -34,16 +34,17 @@ ATSCCFLAG=--typecheck
 ######
 
 ATS: ; $(ATSCC) $(ATSCCFLAG) ATS.dats
+BinaryTree: ; $(ATSCC) $(ATSCCFLAG) BinaryTree.dats
 CallByValue: ; $(ATSCC) $(ATSCCFLAG) CallByValue.dats
 ClosureConv: ; $(ATSCC) $(ATSCCFLAG) ClosureConv.dats
 CPS: ; $(ATSCC) $(ATSCCFLAG) CPS.dats
 CutElimIL: ; $(ATSCC) $(ATSCCFLAG) CutElimIL.dats
 CutElimILL: ; $(ATSCC) $(ATSCCFLAG) CutElimILL.dats
 HilbertCalculus: ; $(ATSCC) $(ATSCCFLAG) HilbertCalculus.dats
-irrationality_of_sqrt2: ; $(ATSCC) $(ATSCCFLAG) irrationality_of_sqrt2.dats
+irrationality-of-sqrt2: ; $(ATSCC) $(ATSCCFLAG) irrationality-of-sqrt2.dats
 ITPT: ; $(ATSCC) $(ATSCCFLAG) ITPT.dats
 KolmogorovTrans: ; $(ATSCC) $(ATSCCFLAG) KolmogorovTrans.dats
-miniML: ; $(ATSCC) $(ATSCCFLAG) miniML.dats
+mini-ML: ; $(ATSCC) $(ATSCCFLAG) mini-ML.dats
 STLC-foas: ; $(ATSCC) $(ATSCCFLAG) STLC-foas.dats
 STLC-hoas: ; $(ATSCC) $(ATSCCFLAG) STLC-hoas.dats
 STLC-SN-foas: ; $(ATSCC) $(ATSCCFLAG) STLC-SN-foas.dats
@@ -53,16 +54,17 @@ STLC-SN-hoas: ; $(ATSCC) $(ATSCCFLAG) STLC-SN-hoas.dats
 
 typecheck::
 #	$(ATSCC) $(ATSCCFLAG) ATS.dats
+	$(ATSCC) $(ATSCCFLAG) BinaryTree.dats
 #	$(ATSCC) $(ATSCCFLAG) CallByValue.dats
 	$(ATSCC) $(ATSCCFLAG) ClosureConv.dats
 	$(ATSCC) $(ATSCCFLAG) CPS.dats
 #	$(ATSCC) $(ATSCCFLAG) CutElimIL.dats
 	$(ATSCC) $(ATSCCFLAG) CutElimILL.dats
 	$(ATSCC) $(ATSCCFLAG) HilbertCalculus.dats
-	$(ATSCC) $(ATSCCFLAG) irrationality_of_sqrt2.dats
+	$(ATSCC) $(ATSCCFLAG) irrationality-of-sqrt2.dats
 	$(ATSCC) $(ATSCCFLAG) ITPT.dats
 	$(ATSCC) $(ATSCCFLAG) KolmogorovTrans.dats
-	$(ATSCC) $(ATSCCFLAG) miniML.dats
+	$(ATSCC) $(ATSCCFLAG) mini-ML.dats
 	$(ATSCC) $(ATSCCFLAG) STLC-foas.dats
 #	$(ATSCC) $(ATSCCFLAG) STLC-hoas.dats
 	$(ATSCC) $(ATSCCFLAG) STLC-SN-foas.dats
@@ -75,16 +77,17 @@ POSMARK=--posmark_html_only
 
 posmark::
 #	$(ATSOPT) $(POSMARK) -d ATS.dats
+	$(ATSOPT) $(POSMARK) -d BinaryTree.dats
 #	$(ATSOPT) $(POSMARK) -d CallByValue.dats
 	$(ATSOPT) $(POSMARK) -d ClosureConv.dats
 	$(ATSOPT) $(POSMARK) -d CPS.dats
 #	$(ATSOPT) $(POSMARK) -d CutElimIL.dats
 	$(ATSOPT) $(POSMARK) -d CutElimILL.dats
 	$(ATSOPT) $(POSMARK) -d HilbertCalculus.dats
-	$(ATSOPT) $(POSMARK) -d irrationality_of_sqrt2.dats
+	$(ATSOPT) $(POSMARK) -d irrationality-of-sqrt2.dats
 	$(ATSOPT) $(POSMARK) -d ITPT.dats
 	$(ATSOPT) $(POSMARK) -d KolmogorovTrans.dats
-	$(ATSOPT) $(POSMARK) -d miniML.dats
+	$(ATSOPT) $(POSMARK) -d mini-ML.dats
 	$(ATSOPT) $(POSMARK) -d STLC-foas.dats
 #	$(ATSOPT) $(POSMARK) -d STLC-hoas.dats
 	$(ATSOPT) $(POSMARK) -d STLC-SN-foas.dats
@@ -95,15 +98,16 @@ posmark::
 update::
 	cp Makefile $(DIR)
 	cp ATS.dats $(DIR)
+	cp BinaryTree.dats $(DIR)
 	cp ClosureConv.dats $(DIR)
 	cp CPS.dats $(DIR)
 	cp CutElimIL.dats $(DIR)
 	cp CutElimILL.dats $(DIR)
 	cp HilbertCalculus.dats $(DIR)
-	cp irrationality_of_sqrt2.dats $(DIR)
+	cp irrationality-of-sqrt2.dats $(DIR)
 	cp ITPT.dats $(DIR)
 	cp KolmogorovTrans.dats $(DIR)
-	cp miniML.dats $(DIR)
+	cp mini-ML.dats $(DIR)
 	cp STLC-foas.dats $(DIR)
 	cp STLC-hoas.dats $(DIR)
 	cp STLC-SN-foas.dats $(DIR)
@@ -113,3 +117,8 @@ update::
 
 clean::
 	rm -f *_dats.c *_sats.c *~
+
+cleanall: clean; rm *_?ats.html
+
+######
+
