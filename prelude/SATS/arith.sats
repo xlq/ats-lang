@@ -42,40 +42,48 @@
 
 #endif
 
+(* ****** ****** *)
+
 dataprop MUL (int, int, int) =
   | {n:int} MULbas (0, n, 0)
   | {m,n,p:int | m >= 0} MULind (m+1, n, p+n) of MUL (m, n, p)
   | {m,n,p:int | m > 0} MULneg (~m, n, ~p) of MUL (m, n, p)
 
-//
+(* ****** ****** *)
 
 praxi mul_make_const : {m,n:int} () -<prf> MUL (m, n, m*n)
 
 praxi mul_make : {m,n:int} () -<prf> [p:int] MUL (m, n, p)
 praxi mul_elim : {m,n:int} {p:int} MUL (m, n, p) -<prf> [p == m*n] void
 
-//
+(* ****** ****** *)
 
-prval mul_is_fun : {m,n:int} {p1,p2:int}
-  (MUL (m, n, p1), MUL (m, n, p2)) -<prf> [p1==p2] void
+prfun mul_isfun {m,n:int} {p1,p2:int}
+  (pf1: MUL (m, n, p1), pf2: MUL (m, n, p2)):<prf> [p1==p2] void
 
-prval mul_nat_nat_nat :
+prfun mul_istot {m,n:int} ():<prf> [p:int] MUL (m, n, p)
+
+(* ****** ****** *)
+
+prfun mul_nat_nat_nat :
   {m,n:nat} {p:int} MUL (m, n, p) -<prf> [p>= 0] void
 
-//
+prfun mul_negate {m,n:int} {p:int} (pf: MUL (m, n, p)):<prf> MUL (~m, n, ~p)
 
-prval mul_m_0_0 : {m:int} () -<prf> MUL (m, 0, 0)
+prfun mul_commute {m,n:int} {p:int} (pf: MUL (m, n, p)):<prf> MUL (n, m, p)
 
-prval mul_negate : {m,n,p:int} MUL (m, n, p) -<prf> MUL (~m, n, ~p)
+prfun mul_distribute {m,n1,n2:int} {p1,p2:int}
+  (pf1: MUL (m, n1, p1), pf2: MUL (m, n2, p2)):<prf> MUL (m, n1+n2, p1+p2)
 
-prval mul_commute :
-  {m,n:int} {p:int} MUL (m, n, p) -<prf> MUL (n, m, p)
+prfun mul_associate {x,y,z:int} {xy,yz,xy_z,x_yz:int} (
+    pf1: MUL (x, y, xy)
+  , pf2: MUL (y, z, yz)
+  , pf3: MUL (xy, z, xy_z)
+  , pf4: MUL (x, yz, x_yz)
+  ) :<prf> [xy_z==x_yz] void
 
-prval mul_distribute : {m,n1,n2:int} {p1,p2:int}
-  (MUL (m, n1, p1), MUL (m, n2, p2)) -<prf> MUL (m, n1+n2, p1+p2)
-
-prval mul_add_const :
-  {i:int} {m,n:int} {p:int} MUL (m, n, p) -<prf> MUL (m+i, n, p+i*n)
+prfun mul_add_const {i:int}
+  {m,n:int} {p:int} (pf: MUL (m, n, p)):<prf> MUL (m+i, n, p+i*n)
 
 (* ****** ****** *)
 
@@ -87,15 +95,15 @@ dataprop GCD (int, int, int) =
   | {m:nat;n:int | n < 0} {r:int} GCDneg1 (m, n, r) of GCD (m, ~n, r)
   | {m:int;n:int | m < 0} {r:int} GCDneg2 (m, n, r) of GCD (~m, n, r)
 
-prval gcd_is_fun : {m,n:int} {r1,r2:int}
-  (GCD (m, n, r1), GCD (m, n, r2)) -<prf> [r1 == r2] void
+prfun gcd_is_fun {m,n:int} {r1,r2:int}
+  (pf1: GCD (m, n, r1), pf2: GCD (m, n, r2)):<prf> [r1==r2] void
 
-prval gcd_modulo : {m,n:int} {r:int}
-  GCD (m, n, r) -<prf> [s1,s2:int] (MUL (s1, r, m), MUL (s2, r, n))
+prfun gcd_modulo {m,n:int} {r:int}
+  (pf: GCD (m, n, r)):<prf> [s1,s2:int] (MUL (s1, r, m), MUL (s2, r, n))
 
-prval gcd_commute : {m,n:int} {r:int} GCD (m, n, r) -<prf> GCD (n, m, r)
+prfun gcd_commute {m,n:int} {r:int} (pf: GCD (m, n, r)):<prf> GCD (n, m, r)
 
-//
+(* ****** ****** *)
 
 #if VERBOSE_PRELUDE #then
 

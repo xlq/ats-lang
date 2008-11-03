@@ -48,6 +48,7 @@
 
 (* ****** ****** *)
 
+// [list0_t0ype_type] is co-variant
 datatype list0_t0ype_type (a: t@ype+) =
   | list0_cons (a) of (a, list0_t0ype_type a) | list0_nil (a)
 
@@ -102,7 +103,7 @@ fun{a,b:t@ype} list0_map_cloref (xs: list0 a, f: a -<cloref1> b): list0 b
 (* ****** ****** *)
 
 fun{a:t@ype} list0_nth_exn (xs: list0 a, i: int): a
-fun{a:t@ype} list0_nth_opt (xs: list0 a, i: int):<> Option a
+fun{a:t@ype} list0_nth_opt (xs: list0 a, i: int): Option a
 
 (* ****** ****** *)
 

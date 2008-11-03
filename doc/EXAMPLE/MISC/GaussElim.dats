@@ -1,12 +1,12 @@
 (*
- *
- * An implementation of the Gaussian elimination algorithm in ATS
- * The code is a direct translation from an earlier version written
- * in DML, the predessor of ATS.
- *
- * Hongwei Xi (January 2008)
- *
- *)
+**
+** An implementation of the Gaussian elimination algorithm in ATS
+** The code is a direct translation from an earlier version written
+** in DML, the predessor of ATS.
+**
+** Hongwei Xi (January 2008)
+**
+*)
 
 //
 
@@ -29,20 +29,11 @@ fn{a:t@ype} update2 {m,n:nat}
 
 (* ****** ****** *)
 
-(*
-// A buggy version
+// an example of [withtype] annotation:
 fn{a:t@ype} rowSwap (M, i, j) =
   let val tmp = M[i] in M[i] := M[j]; M[j] := tmp end
 withtype {m,n:nat} {i,j:nat | i < m; j < m}
   (matrix (a, m, n), int i, int j) -<fun1> void
-*)
-
-fn{a:t@ype} rowSwap
-  {m,n:nat} {i,j:nat | i < m; j < m}
-  (M: matrix (a, m, n), i: int i, j: int j)
-  : void = begin
-  let val tmp = M[i] in M[i] := M[j]; M[j] := tmp end
-end // end of [rowSwap]
 
 fn norm {n,i:nat | i < n}
   (r: array(double, n), n: int n, i: int i): void = let

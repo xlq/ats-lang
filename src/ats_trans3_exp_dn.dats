@@ -527,12 +527,13 @@ val d3e0 = case+ d2e0.d2exp_node of
         in
           d3exp_lam_dyn (loc0, s2e0, lin, npf, p3ts_arg, d3e_body)
         end // end of [S2Efun]
-      | S2Euni (s2vs, s2ps, s2e0) => let
+      | S2Euni (s2vs, s2ps, s2e) => let
           val () = trans3_env_push_sta ()
           val () = trans3_env_add_svarlst s2vs
           val () = trans3_env_hypo_add_proplst (loc0, s2ps)
-          val d3e0 = d2exp_tr_dn (d2e0, s2e0)
+          val d3e0 = d2exp_tr_dn (d2e0, s2e)
           val () = trans3_env_pop_sta_and_add_none (loc0)
+          val () = d3exp_typ_set (d3e0, s2e0)
         in
           d3e0
         end // end of [S2Euni]

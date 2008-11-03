@@ -89,4 +89,19 @@ now does the needed subsort checking that should have been there.
 
 ######
 
+Monday, November 3, 2008 (HX)
+
+STATUS: Fixed on November 3, 2008 (HX)
+
+[withtype] annotations are not handled correctly. This was caused by
+a glitch in the implementation of [d2exp_tr_dn]: the handling of the
+case [D2Elam_dyn] was buggy.
+
+fn f (i) = i + 1
+withtype {i:nat} int i -> int (i+1)
+
+val x = f (1)
+
+######
+
  ------------------ end of [BUGS.txt] -------------------
