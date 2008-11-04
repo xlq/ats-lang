@@ -1,7 +1,11 @@
-//
-// The code was originally written by Hongwei Xi in the Summer of 2004
-// It is one of the first programs implemented in ATS.
-//
+(*
+**
+** This is one of the first programs implemented in ATS.
+**
+** Author: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
+** Time: Summer, 2004
+**
+*)
 
 staload "libc/SATS/stdlib.sats"
 staload "libc/SATS/time.sats"
@@ -20,8 +24,7 @@ fun repeat {n:nat} .<n>. (n: int n, f: !() -<cloptr1> void): void =
   if n > 0 then (f (); repeat (n-1, f)) else ()
 
 fun pause (npause: Nat): void = let
-  fun loop (n: int): void =
-    if n > 0 then (usleep (PAUSE); loop (n-1))
+  fun loop (n: int): void = if n > 0 then (usleep (PAUSE); loop (n-1))
 in
   loop (1 << npause)
 end // end of [pause]
@@ -33,8 +36,7 @@ fun print_dots (n: Int): void = // print n dots
   if n igt 0 then repeat (n, lam () => print " .")
 
 fun print_board {s:nat} {l:addr}
-  (pf: !array_v (Nat, s, l) | board: ptr l, len: int s)
-  : void = let
+  (pf: !array_v (Nat, s, l) | board: ptr l, len: int s): void = let
   fun aux {i:nat | i <= s} .<s-i>.
     (pf: !array_v (Nat, s, l) | i: int i):<cloptr1> void =
     if i < len then let
@@ -46,11 +48,10 @@ fun print_board {s:nat} {l:addr}
         aux (pf | i + 1)
       end else begin
         print_dots len; print_newline (); aux (pf | i + 1)
-      end
-    end
-  else begin
-    print_newline ()
-  end
+      end // end of [if]
+    end else begin
+      print_newline ()
+    end // end of [if]
 in
   aux (pf | 0)
 end // end of [print_board]
@@ -60,7 +61,7 @@ end // end of [print_board]
 fun board_make {sz:nat} (sz: int sz)
   : [l:addr] (free_gc_v l, array_v (Nat, sz, l) | ptr l) = let
 
-val (pf_ngc, pf | p) = array_ptr_alloc_tsz {Nat} (sz, sizeof<Nat>)
+val (pf_gc, pf | p) = array_ptr_alloc_tsz {Nat} (sz, sizeof<Nat>)
 fn f (x: &Nat? >> Nat, i: natLt sz):<cloptr> void = x := 0
 val () = begin
   array_ptr_initialize_fun_tsz_cloptr {Nat} (| !p, sz, f, sizeof<Nat>)
@@ -68,16 +69,16 @@ end
 
 in
 
-(pf_ngc, pf | p)
+(pf_gc, pf | p)
 
-end
+end // end of [board_make]
 
 (* ****** ****** *)
 
 fun play {sz:int | sz > 0}
   (npause: Nat, len: int sz): void = let
   var nsol: Nat = 0
-  val [l:addr] (pf_ngc, pf_board | board) = board_make (len)
+  val [l:addr] (pf_gc, pf_board | board) = board_make (len)
 
   fun test {i,j:nat | j <= i && i < sz}
     (pf1: !array_v (Nat, sz, l) | j: int j, i: int i, qi: Nat)
@@ -137,7 +138,7 @@ fun play {sz:int | sz > 0}
 in
   print (clear);
   loop (pf_board, view@ nsol | 0);
-  array_ptr_free {Nat} (pf_ngc, pf_board | board);
+  array_ptr_free {Nat} (pf_gc, pf_board | board);
   repeat (len, lam () => print cuu)
 end // end of [play]
 

@@ -409,6 +409,11 @@ fun{a:t@ype} iforeach_array_cloptr {v:view} {n:nat} {f:eff} (
   ) :<f,!ref> void
 overload iforeach with iforeach_array_cloptr
 
+fun{a:t@ype} iforeach_array_cloref {v:view} {n:nat} {f:eff} (
+    pf: !v | f: !(!v | natLt n, a) -<cloref,f> void, A: array (a, n), asz: int n
+  ) :<f,!ref> void
+overload iforeach with iforeach_array_cloref
+
 (* ****** ****** *)
 
 #if VERBOSE_PRELUDE #then

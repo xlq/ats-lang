@@ -100,7 +100,19 @@ case [D2Elam_dyn] was buggy.
 fn f (i) = i + 1
 withtype {i:nat} int i -> int (i+1)
 
-val x = f (1)
+val x = f {1} (1)
+
+------
+
+f2undec_tr: var = f
+f2undec_tr: def = D2Elam_dyn(0; 0; P2Tvar(i); D2Eann_seff(D2Eapps(D2Esym(+); D2Evar(i), D2Eint(1)); <all>))
+f2undec_tr: s2e_ann = S2Euni(i; S2Eapp(S2Ecst(>=); S2Evar(i), S2Eint(0)); S2Efun(fun; 0; 0; S2Eapp(S2Ecst(int); S2Evar(i)); S2Eapp(S2Ecst(int); S2Eapp(S2Ecst(+); S2Evar(i), S2Eint(1)))))
+f2undec_tr: d2e_def = D2Elam_dyn(0; 0; P2Tvar(i); D2Eann_seff(D2Eapps(D2Esym(+); D2Evar(i), D2Eint(1)); <all>))
+f2undec_tr: s2e_fun = S2Efun(fun; 0; 0; S2Eapp(S2Ecst(int); S2Evar(i)); S2Eapp(S2Ecst(int); S2Eapp(S2Ecst(+); S2Evar(i), S2Eint(1))))
+/home/fac2/hwxi/research/ATS/IMPLEMENT/Geizella/Anairiats/svn/ats-lang/src/bug.dats: 63(line=4, offs=9) -- 68(line=4, offs=14): error(3): the type [S2Efun(fun; 0; 0; S2Eapp(S2Ecst(int); S2Evar(i)); S2Eapp(S2Ecst(int); S2Eapp(S2Ecst(+); S2Evar(i), S2Eint(1))))] is expected to be universally quantified.
+Uncaught exception: _2fusr_2fshare_2fatshome_2fsrc_2fats_error_2esats__FatalErrorException(1003)
+
+------
 
 ######
 

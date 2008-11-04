@@ -85,15 +85,9 @@ fun matrix_make_fun_tsz_cloptr {a:viewt@ype} {m,n:pos} {f:eff} (
 (* ****** ****** *)
 
 fun{a:t@ype} matrix_get_elt_at {m,n:nat}
-  (A: matrix (a, m, n), i: natLt m, j: natLt n):<!ref> a
+  (A: matrix (a, m, n), n: int n, i: natLt m, j: natLt n):<!ref> a
 fun{a:t@ype} matrix_set_elt_at {m,n:nat}
-  (A: matrix (a, m, n), i: natLt m, j: natLt n, x: a):<!ref> void
-
-overload [] with matrix_get_elt_at
-overload [] with matrix_set_elt_at
-
-fun matrix_size_row {a:viewt@ype} {m,n:int} (A: matrix (a, m, n)):<> int m
-fun matrix_size_col {a:viewt@ype} {m,n:int} (A: matrix (a, m, n)):<> int n
+  (A: matrix (a, m, n), n: int n, i: natLt m, j: natLt n, x: a):<!ref> void
 
 (* ****** ****** *)
 
@@ -101,14 +95,20 @@ fun{a:t@ype} foreach_matrix_main
   {v:view} {vt:viewtype} {m,n:nat} {f:eff} (
     pf: !v
   | f: (!v | a, !vt) -<fun,f> void
-  , M: matrix (a, m, n)
+  , M: matrix (a, m, n), m: int m, n: int n
   , env: !vt
   ) :<f,!ref> void
 overload foreach with foreach_matrix_main
 
 fun{a:t@ype} foreach_matrix_cloptr {m,n:nat} {f:eff}
-  (f: !(a -<cloptr,f> void), M: matrix (a, m, n)) :<f,!ref> void
+  (f: !(a -<cloptr,f> void), M: matrix (a, m, n), m: int m, n: int n)
+  :<f,!ref> void
 overload foreach with foreach_matrix_cloptr
+
+fun{a:t@ype} foreach_matrix_cloref {m,n:nat} {f:eff}
+  (f: !(a -<cloref,f> void), M: matrix (a, m, n), m: int m, n: int n)
+  :<f,!ref> void
+overload foreach with foreach_matrix_cloref
 
 (* ****** ****** *)
 
@@ -116,28 +116,22 @@ fun{a:t@ype} iforeach_matrix_main
   {v:view} {vt:viewtype} {m,n:nat} {f:eff} (
     pf: !v
   | f: (!v | natLt m, natLt n, a, !vt) -<fun,f> void
-  , M: matrix (a, m, n)
+  , M: matrix (a, m, n), m: int m, n: int n
   , env: !vt
   ) :<f,!ref> void
 overload iforeach with iforeach_matrix_main
 
 fun{a:t@ype} iforeach_matrix_cloptr {m,n:nat} {f:eff} (
     f: !(natLt m, natLt n, a) -<cloptr,f> void
-  , M: matrix (a, m, n)
+  , M: matrix (a, m, n), m: int m, n: int n
   ) :<f,!ref> void
 overload iforeach with iforeach_matrix_cloptr
 
-(* ****** ****** *)
-
-typedef Matrix (a:viewt@ype) = [m,n:pos] matrix (a, m, n)
-
-(* ****** ****** *)
-
-fun{a:t@ype} matrix_get_elt_at_exn
-  (M: Matrix a, i: Nat, j: Nat):<!exn,!ref> a
-
-fun{a:t@ype} matrix_set_elt_at_exn
-  (M: Matrix a, i: Nat, j: Nat, x: a):<!exn,!ref> void
+fun{a:t@ype} iforeach_matrix_cloref {m,n:nat} {f:eff} (
+    f: !(natLt m, natLt n, a) -<cloref,f> void
+  , M: matrix (a, m, n), m: int m, n: int n
+  ) :<f,!ref> void
+overload iforeach with iforeach_matrix_cloptr
 
 (* ****** ****** *)
 
