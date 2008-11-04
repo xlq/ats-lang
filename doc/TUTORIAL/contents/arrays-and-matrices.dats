@@ -34,8 +34,8 @@ val digits = begin
     (10, lam (x, i) =<cloptr> x := i, sizeof<digit>)
 end // end of [val]
 
-fn array_square {n:nat} (A: array (double, n)): void = let
-  val sz = length A // sz: int n
+fn array_square {n:nat}
+  (A: array (double, n), sz: int n): void = let
   fun loop {i:nat | i <= n} .<n-i>. (i: int i):<cloptr1> void =
     if i < sz then
       let val x = A[i] in A[i] := x * x; loop (i+1) end
@@ -44,21 +44,24 @@ in
   loop (0)
 end // end of [array_square]
 
-fn array_square {n:nat} (A: array (double, n)): void = begin
-  iforeach_array_cloptr<double> (lam (i, x) =<cloptr,!ref> A[i] := x * x, A)
-end
-
-//
-
+fn array_square {n:nat}
+  (A: array (double, n), sz: int n): void = let
+  prval pf = unit_v ()
+  val () =  iforeach_array_cloptr<double>
+    (pf | lam (pf | i, x) =<cloptr,!ref> A[i] := x * x, A, sz)
+  prval unit_v () = pf
+in
+  // empty
+end // end of [array_square]
 
 // printing an array
 
-fun{a:t@ype}
-  prarr {n:nat} (pr: a -> void, A: array (a, n)): void = let
+fun{a:t@ype} prarr {n:nat}
+  (pr: a -> void, A: array (a, n), sz: int n): void = let
   fun loop {i:nat | i <= n} (n: int n, i: int i):<cloptr1> void =
     if i < n then (if i > 0 then print ", "; pr A[i]; loop (n, i+1))
 in
-  loop (length A, 0); print_newline ()
+  loop (sz, 0); print_newline ()
 end // end of [prarr]
 
 (* ****** ****** *)
@@ -83,8 +86,17 @@ val mat_10_10 = matrix_make_fun_tsz_cloptr {Int}
 
 // template function for transposing a square matrix
 
-fn{a:t@ype} matrix_transpose {n:nat} (A: matrix (a, n, n)): void = let
-  val n = matrix_size_row A // n: int n
+fn{a:t@ype} matrix_transpose {n:nat}
+  (A: matrix (a, n, n), n: int n): void = let
+  fn get {i,j:nat | i < n; j < n}
+   (A: matrix (a, n, n), i: int i, j: int j):<cloref1> a =
+   matrix_get_elt_at (A, n, i, j)
+
+  fn set {i,j:nat | i < n; j < n}
+   (A: matrix (a, n, n), i: int i, j: int j, x: a):<cloref1> void =
+   matrix_set_elt_at (A, n, i, j, x)
+
+  overload [] with get; overload [] with set
 
   // [fn*] indicates a request for tail-call optimization
   fn* loop1 {i:nat | i <= n} .< n-i+1, 0 >.
@@ -104,17 +116,33 @@ in
   loop1 0
 end // end of [matrix_transpose]
 
+fn{a:t@ype} matrix_transpose {n:nat}
+  (M: matrix (a, n, n), n: int n): void = begin
+  iforeach_matrix<a> (
+    lam (i,j, x) =<!ref>
+      if i > j then let
+        val x = matrix_get_elt_at (M, n, i, j)
+      in
+        matrix_set_elt_at (M, n, i, j, matrix_get_elt_at (M, n, j, i));
+        matrix_set_elt_at (M, n, j, i, x)
+      end
+  , M, n, n
+  ) // end of [iforeach_matrix]
+end // end of [matrix_transpose]
+
 // printing a matrix
 
 fn{a:t@ype} prmat {m,n:nat}
-  (pr: a -> void, M: matrix (a, m, n)): void = let
-  val m = matrix_size_row M and n = matrix_size_col M
+  (pr: a -> void, M: matrix (a, m, n), m: int m, n: int n)
+  : void = let
   fn* loop1 {i:nat | i <= m} (i: int i):<cloptr1> void =
     if i < m then loop2 (i, 0) else print_newline ()
   and loop2 {i,j:nat | i < m; j <= n}
     (i: int i, j: int j):<cloptr1> void = begin
-    if j < n then begin
-      if (j > 0) then print ", "; pr M[i,j]; loop2 (i, j+1)
+    if j < n then let
+      val x = matrix_get_elt_at (M, n, i, j)
+    in
+      if (j > 0) then print ", "; pr x; loop2 (i, j+1)
     end else begin
       print_newline (); loop1 (i+1)
     end
@@ -127,8 +155,8 @@ end // end of [prmat]
 
 // a variant implementation of [prarr] based in array iteration
 
-fn{a:t@ype}
-  prarr_ {n:nat} (pr: a -> void, A: array (a, n)): void = let
+fn{a:t@ype} prarr_ {n:nat}
+  (pr: a -> void, A: array (a, n), n: int n): void = let
   var i: int = (0: int)
   typedef env_t = @(a -> void, ptr i)
   var env: env_t; val () = env.0 := pr; val () = env.1 := &i
@@ -141,16 +169,16 @@ fn{a:t@ype}
   end
   prval pf = (view@ i, view@ env)
 in
-  foreach_array_main<a> {V} (pf | f, A, &env);
+  foreach_array_main<a> {V} (pf | f, A, n, &env);
   view@ i := pf.0; view@ env := pf.1;
   print_newline ();
 end // end of [prarr_]
 
 // a variant implementation of [prmat] based in matrix iteration
 
-fn{a:t@ype}
-  prmat_ {m,n:nat} (pr: a -> void, M: matrix (a, m, n)): void = let
-  val n = matrix_size_col M
+fn{a:t@ype} prmat_ {m,n:nat}
+  (pr: a -> void, M: matrix (a, m, n), m: int m, n: int n)
+  : void = let
   var j: int = (0: int)
   typedef env_t = @(int (n-1), a -> void, ptr j)
   var env: env_t; val () = (env.0 := n-1; env.1 := pr; env.2 := &j)
@@ -165,7 +193,7 @@ fn{a:t@ype}
   end
   prval pf = (view@ j, view@ env)
 in
-  foreach_matrix_main<a> {V} (pf | f, M, &env);
+  foreach_matrix_main<a> {V} (pf | f, M, m, n, &env);
   view@ j := pf.0; view@ env := pf.1;
   print_newline ()
 end // end of [prmat_]
@@ -181,24 +209,24 @@ in
 
 // testing prarr
 print "printed by [prarr]:\n";
-prarr (pr1, digits);
+prarr (pr1, digits, 10);
 print_newline ();
 
 // testing prarr and prarr_:
 print "printed by [prarr_]:\n";
-prarr_ (pr1, digits);
+prarr_ (pr1, digits, 10);
 print_newline ();
 
 // testing prmat
 print "before matrix transposition (printed by [prmat]):\n";
-prmat (pr2, mat_10_10);
+prmat (pr2, mat_10_10, 10, 10);
 
 // testing matrix_transpose
-matrix_transpose mat_10_10;
+matrix_transpose (mat_10_10, 10);
 
 // testing prmat_
 print "after matrix transposition (printed by [prmat_]):\n";
-prmat_ (pr2, mat_10_10);
+prmat_ (pr2, mat_10_10, 10, 10);
 
 end // end of [main]
 

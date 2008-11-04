@@ -20,3 +20,7 @@ typecheck::
 
 clean::
 	rm -f *_dats.c *_sats.c *~
+
+cleanall: clean; rm -f *_?ats.html
+
+######
