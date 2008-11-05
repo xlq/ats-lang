@@ -33,7 +33,7 @@
 
 ######
 
-MAKE=gmake
+MAKE=make
 
 ######
 
