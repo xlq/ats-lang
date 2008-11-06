@@ -115,7 +115,8 @@ typecheck: \
 	$(ATSOPT) $(OPTFLAG) -d ats_symtbl.dats
 	$(ATSOPT) $(OPTFLAG) -d ats_syntax.dats
 	$(ATSOPT) $(OPTFLAG) -d ats_syntax_posmark.dats
-	$(ATSOPT) $(OPTFLAG) -d ats_trans1.dats
+	$(ATSOPT) $(OPTFLAG) -d ats_trans1_sta.dats
+	$(ATSOPT) $(OPTFLAG) -d ats_trans1_dyn.dats
 	$(ATSOPT) $(OPTFLAG) -d ats_trans1_env.dats
 	$(ATSOPT) $(OPTFLAG) -d ats_trans2_dyn.dats
 	$(ATSOPT) $(OPTFLAG) -d ats_trans2_env.dats
