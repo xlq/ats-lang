@@ -141,7 +141,12 @@ defined as a macro in ATS:
 macdef stdin_ref = $extval (FILEref, "stdin")
 \end{verbatim}
 where ${\it FILEref}$ is a type in ATS that approximately corresponds to
-the type ${\it FILE*}$ in C. On the other hand, one can introduce external
+the type ${\it FILE*}$ in C. Given that ATS does not support {\it enum}
+types directly, this approach to accessing within ATS values defined in C
+also makes it straightforward to define {\it enum} types in C and then use
+them in ATS.
+
+On the other hand, one can introduce external
 names for values in ATS and then use such names outside ATS. For instance,
 an external name {\it one\_one\_pair} is introduced in the following code
 to refer to the value {\it @(1, 1)}:

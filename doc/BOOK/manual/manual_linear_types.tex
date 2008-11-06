@@ -1,1 +1,30 @@
 \chapter{Programming with Linear Types}
+
+ATS is currently one of the few languages that have successfully made
+linear types available for effective use in practice, and the paradigm of
+programming with theorem proving plays an indispensable role in achieving
+this.  In the rest of this chapter, we present some examples of resource
+manipulation involving linear types. In particular, we demonstrate that ATS
+not only supports flexible uses of pointers but also guarantees based on
+its type system that such uses are safe.
+
+\section{Flexible and Safe Uses of Pointers}
+In ATS, a linear prop is referred to as a {\it view} and a linear type,
+which is often a type combined with a view, is referred to as a {\it
+viewtype}. A commonly used view constructor is $@$ (infix), which
+forms a view $T@L$ when applied to a type $T$ and a memory location $L$. If
+a proof of the view $T@L$ is available, then a value of the type $T$ must
+be stored at the location $L$.
+
+\begin{verbatim}
+fn{a1,a2:t@ype | sizeof a1 == sizeof a2} swap {l1,l2:addr}
+  (pf1: a1 @ l1 >> a2 @ l1, pf2: a2 @ l2 >> a1 @ l2 | p1: ptr l1, p2: ptr l2)
+  : void = let
+  val tmp = !p1
+in
+  !p1 := !p2; !p2 := tmp
+end // end of [swap]
+\end{verbatim}
+
+
+%%% end of \chapter{Programming with Linear Types}

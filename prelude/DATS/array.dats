@@ -286,6 +286,15 @@ in
   // empty
 end // end of [foreach_array_cloptr]
 
+implement{a}
+  foreach_array_cloref {v} {n} {f} (pf | f, A, asz) = let
+  viewtypedef cloref_t = (!v | a) -<cloref,f> void
+  fn app (pf: !v | x: a, f: !cloref_t):<f> void = f (pf | x)
+  val () = foreach_array_main<a> {v} {cloref_t} (pf | app, A, asz, f)
+in
+  // empty
+end // end of [foreach_array_cloref]
+
 (* ****** ****** *)
 
 implement{a} iforeach_array_main
@@ -311,6 +320,15 @@ implement{a}
 in
   // empty
 end // end of [iforeach_array_cloptr]
+
+implement{a}
+  iforeach_array_cloref {v} {n} {f} (pf | f, A, asz) = let
+  viewtypedef cloref_t = (!v | natLt n, a) -<cloref,f> void
+  fn app (pf: !v | i: natLt n, x: a, f: !cloref_t):<f> void = f (pf | i, x)
+  val () = iforeach_array_main<a> {v} {cloref_t} (pf | app, A, asz, f)
+in
+  // empty
+end // end of [iforeach_array_cloref]
 
 (* ****** ****** *)
 

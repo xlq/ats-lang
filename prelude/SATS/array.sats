@@ -394,6 +394,11 @@ fun{a:t@ype} foreach_array_cloptr {v:view} {n:nat} {f:eff} (
   ) :<f,!ref> void
 overload foreach with foreach_array_cloptr
 
+fun{a:t@ype} foreach_array_cloref {v:view} {n:nat} {f:eff} (
+    pf: !v | f: !(!v | a) -<cloref,f> void, A: array (a, n), asz: int n
+  ) :<f,!ref> void
+overload foreach with foreach_array_cloref
+
 (* ****** ****** *)
 
 fun{a:t@ype} iforeach_array_main {v:view} {vt:viewtype} {n:nat} {f:eff} (

@@ -98,7 +98,7 @@ in
           prerr s2e_old;
           prerr_newline ();
           $Err.abort ()
-        end
+        end // end of [if]
       val () = d2var_typ_reset_at (d2v_view, s2e_vt, s2e_addr)
       val () = // linearity checking
         if s2exp_is_linear s2e_old then begin
@@ -109,10 +109,10 @@ in
           prerr "] is abandoned.";
           prerr_newline ();
           $Err.abort {void} ()
-        end
+        end // end of [if]
     in
       s2ls0_bk
-    end
+    end // end of [Some_vt]
   | ~None_vt () => let
       fun aux (s2ls: s2lablst): void = begin case+ s2ls of
         | list_cons (s2l, s2ls) => (prerr "."; prerr s2l; aux s2ls)
@@ -125,7 +125,7 @@ in
       prerr s2r0; aux s2ls0; prerr "]";
       prerr_newline ();
       $Err.abort {s2lablst} ()
-    end
+    end // end of [None_vt]
 end // end of [s2exp_addr_slablst_assgn]
 
 (* ****** ****** *)
@@ -165,7 +165,7 @@ implement d2var_lin_slablst_assgn (loc0, d2v, s2ls, s2e_new) = let
     end
 in
   d2var_lin_inc (d2v); d2var_typ_set (d2v, Some s2e0); s2ls
-end
+end // d2var_lin_slablst_assgn
 
 (* ****** ****** *)
 
@@ -182,7 +182,7 @@ implement d2var_mut_slablst_assgn (loc0, d2v, s2ls, s2e_new) = let
       end
 in
   s2exp_addr_slablst_assgn (loc0, s2e_addr, s2ls, s2e_new)
-end
+end // end of [d2var_mut_slablst_assgn]
 
 (* ****** ****** *)
 

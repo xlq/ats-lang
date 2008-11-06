@@ -138,23 +138,25 @@ end // end of [matrix_make_fun_tsz_cloptr]
 
 (* ****** ****** *)
 
-prfn lemma_for_matrix_get_and_set
-  {m,n,i:nat; mn,p:int | i < m}
+prfun lemma_for_matrix_subscripting
+  {m,n:nat} {i:nat | i < m} {mn,p:int} .<m>.
   (pf1: MUL (m, n, mn), pf2: MUL (i, n, p)): [p+n <= mn] void = let
-  prval pf1 = mul_commute pf1
-  prval pf2 = mul_negate (MULind pf2)
-  prval pf2 = mul_commute pf2
-  prval pf3 = mul_distribute (pf1, pf2)
-  prval () = mul_nat_nat_nat pf3
+  prval MULind pf11 = pf1
 in
-  // empty
-end // end of [lemma_for_matrix_get_and_set]
+  sif i < m-1 then begin
+    lemma_for_matrix_subscripting (pf11, pf2)
+  end else let // i = m-1
+    prval () = mul_isfun (pf11, pf2)
+  in
+    // empty
+  end // end of [sif]
+end // end of [lemma_for_matrix_subscripting]
 
 implement{a} matrix_get_elt_at (M, n, i, j) = let
   prval pf_mul_mn = M.mul
   val (pf_mul_i_n | i_n) = i imul2 n
   prval () = mul_nat_nat_nat pf_mul_i_n
-  prval () = lemma_for_matrix_get_and_set (pf_mul_mn, pf_mul_i_n)
+  prval () = lemma_for_matrix_subscripting (pf_mul_mn, pf_mul_i_n)
   val M_data = M.data
   prval vbox pf_arr = M.view
 in
@@ -165,7 +167,7 @@ implement{a} matrix_set_elt_at (M, n, i, j, x) = let
   prval pf_mul_mn = M.mul
   val (pf_mul_i_n | i_n) = i imul2 n
   prval () = mul_nat_nat_nat pf_mul_i_n
-  prval () = lemma_for_matrix_get_and_set (pf_mul_mn, pf_mul_i_n)
+  prval () = lemma_for_matrix_subscripting (pf_mul_mn, pf_mul_i_n)
   val M_data = M.data
   prval vbox pf_arr = M.view
 in

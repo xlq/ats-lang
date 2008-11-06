@@ -141,4 +141,36 @@ In other words, the following is established by these proof functions:
 {\it aux3} & {\rm proves} & \forall{n:\snat}.n*n\geq 0 \\
 \end{array}\]
 
+\begin{figure}
+%%%\begin{verbatim}
+\input{DATS/lemma_for_matrix_subscripting.dats}
+%%%\end{verbatim}
+\caption{A proof function needed in the implementation of matrix subscripting}
+\label{figure:lemma_for_matrix_subscripting}
+\end{figure}
+\noindent{\bf Matrix Implementation}\kern6pt
+A realistic example involving proof construction can be found in
+the following file:
+\begin{center}
+{\it \$ATSHOME/prelude/DATS/matrix.dats}
+\end{center}
+where matrices are implemented in ATS. A 2-dimension matrix of dimension
+$m\times n$ in ATS is represented a 1-dimension array of size $m\cdot n$ in
+the row-major format. Given natural numbers $i$ and $j$ satisfying $i<m$
+and $j<n$, the element in the matrix indexed by $(i,j)$ is the element in
+the array indexed by $i\cdot n+j$. This means that the following theorem is
+needed in order to implement matrix subscripting (without resorting to
+run-time array bounds checking):
+\[\begin{array}{l}
+\forall m:\snat.\forall n:\snat.\forall i:\snat.\forall j:\snat.~
+(i<m\land j<n)\limplies (i\cdot n + j < m\cdot n)
+\end{array}\]
+As linear constraints are handled automatically in ATS,
+this theorem is equivalent to the following one,
+\[\begin{array}{l}
+\forall m:\snat.\forall n:\snat.\forall i:\snat.~
+(i<m\land j<n)\limplies (i\cdot n + n <= m\cdot n)
+\end{array}\]
+which is encoded and proven in Figure~\ref{figure:lemma_for_matrix_subscripting}.
+
 %%% end of \chapter{Programming with Theorem Proving} %%%

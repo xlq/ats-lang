@@ -158,15 +158,17 @@ fun{a:t@ype} ptr_move_t {l1,l2:addr}
   (pf1: !a @ l1, pf2: !(a?) @ l2 >> a @ l2 | p1: ptr l1, p2: ptr l2):<> void
 
 // implemented in [prelude/CATS/pointer.cats]
-fun ptr_move_t_tsz {a:t@ype} {l1,l2:addr}
-  (pf1: !a @ l1, pf2: !(a?) @ l2 >> a @ l2 | p1: ptr l1, p2: ptr l2, tsz: sizeof_t a)
-  :<> void
+fun ptr_move_t_tsz {a:t@ype} {l1,l2:addr} (
+    pf1: !a @ l1, pf2: !(a?) @ l2 >> a @ l2
+  | p1: ptr l1, p2: ptr l2, tsz: sizeof_t a
+  ) :<> void
   = "atspre_ptr_move_tsz"
 
 (* ****** ****** *)
 
 // implemented in [prelude/DATS/pointer.dats]
-fun{a:viewt@ype} ptr_get_vt {l:addr} (pf: !a @ l >> (a?) @ l | p: ptr l):<> a
+fun{a:viewt@ype} ptr_get_vt {l:addr}
+  (pf: !a @ l >> (a?) @ l | p: ptr l):<> a
 
 // implemented in [prelude/DATS/pointer.dats]
 fun{a:viewt@ype} ptr_set_vt {l:addr}
@@ -175,16 +177,16 @@ fun{a:viewt@ype} ptr_set_vt {l:addr}
 (* ****** ****** *)
 
 // implemented in [prelude/DATS/pointer.dats]
-fun{a:viewt@ype} ptr_move_vt {l1,l2:addr}
-  (pf1: !a @ l1 >> (a?) @ l1, pf2: !(a?) @ l2 >> a @ l2 |
-   p1: ptr l1, p2: ptr l2)
-  :<> void
+fun{a:viewt@ype} ptr_move_vt {l1,l2:addr} (
+    pf1: !a @ l1 >> (a?) @ l1, pf2: !(a?) @ l2 >> a @ l2
+  | p1: ptr l1, p2: ptr l2
+  ) :<> void
 
 // implemented in [prelude/CATS/pointer.cats]
-fun ptr_move_vt_tsz {a:viewt@ype} {l1,l2:addr}
-  (pf1: !a @ l1 >> (a?) @ l1, pf2: !(a?) @ l2 >> a @ l2 |
-   p: ptr l1, p2: ptr l2, tsz: sizeof_t a)
-  :<> void
+fun ptr_move_vt_tsz {a:viewt@ype} {l1,l2:addr} (
+    pf1: !a @ l1 >> (a?) @ l1, pf2: !(a?) @ l2 >> a @ l2
+  | p: ptr l1, p2: ptr l2, tsz: sizeof_t a
+  ) :<> void
   = "atspre_ptr_move_tsz"
 
 (* ****** ****** *)
@@ -194,6 +196,12 @@ fun{a:t@ype} ptr_get_inv {l:addr} (pf: !a @ l | p: ptr l):<> a
 
 // implemented in [prelude/DATS/pointer.dats]
 fun{a:t@ype} ptr_set_inv {l:addr} (pf: !a @ l | p: ptr l, x: a):<> void
+
+(* ****** ****** *)
+
+praxi ptr_view_conversion
+  {a1,a2:viewt@ype | sizeof a1 == sizeof a2} {l:addr}
+  (pf: !a1? @ l >> a2? @ l):<prf> void
 
 (* ****** ****** *)
 
