@@ -100,11 +100,26 @@ written as $!V_1$.
 \end{figure}
 As an example, a function {\it swap1} for swapping the contents on two
 given memory locations is implemented in
-Figure~\ref{figure:swap1_example.dats},
-where the functions ${\it ptr\_get1}$ and ${\it ptr\_set1}$ are employed.
+Figure~\ref{figure:swap1_example.dats}, where the functions ${\it
+ptr\_get1}$ and ${\it ptr\_set1}$ are employed.  Clearly, this
+implementation is considerably cleaner when compared to the one in
+Figure~\ref{figure:swap0_example.dats}.
 
 \begin{figure}
-\input{DATS/swap2_example.dats}
+\input{DATS/swap1_alt_example.dats}
 \caption{A function for swapping memory contents (III)}
+\label{figure:swap1_alt_example.dats}
 \end{figure}
+A further simplied implementation of {\it swap1} is given in
+Figure~\ref{figure:swap1_alt_example.dats}. Given a pointer $p$ of the type
+$\tptr(L)$ for some $L$), $!p$ yields the value stored at the memory
+location $L$.  The typechecker first searches for a proof of the view $T@L$
+for some $T$ among all available proofs when typechecking $!p$; if such a
+proof ${\it pf}$ is found, then $!p$ is essentially elaborated into ${\it
+ptr\_get1}(pf \mid p)$ and then typechecked. As $!p$ is a left-value, it can
+also be used to form an assignment like $!p := v$. The typechecker
+elaborates $!p := v$ into ${\it ptr\_set1}(pf \mid p, v)$ for the sake of
+typechecking if a proof of the view $T@L$ can be found among all available
+proofs.
+
 %%% end of \chapter{Programming with Linear Types}

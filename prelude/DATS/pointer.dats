@@ -73,6 +73,12 @@ implement{a} ptr_set_inv (pf | p, x) = (!p := x)
 
 (* ****** ****** *)
 
+implement ptr_view_conversion {a1,a2} (pf) = begin
+  pf := ptr_of_bytearr_v {a2} (ptr_to_bytearr_v {a1} (pf))
+end // end of [ptr_view_conversion]
+
+(* ****** ****** *)
+
 #if VERBOSE #then
 
 #print "Loading pointer.dats finishes!\n"

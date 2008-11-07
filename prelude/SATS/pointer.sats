@@ -199,7 +199,15 @@ fun{a:t@ype} ptr_set_inv {l:addr} (pf: !a @ l | p: ptr l, x: a):<> void
 
 (* ****** ****** *)
 
-praxi ptr_view_conversion
+(*
+
+// two axioms declared in [prelude/SATS/memory.sats]
+praxi ptr_to_bytearr : {a:viewtype} {l:addr} a? @ l -<prf> bytearr_v (sizeof a, l)
+praxi ptr_of_bytearr : {a:viewtype} {l:addr} bytearr_v (sizeof a, l) -<prf> a? @ l
+
+*)
+
+prfun ptr_view_conversion
   {a1,a2:viewt@ype | sizeof a1 == sizeof a2} {l:addr}
   (pf: !a1? @ l >> a2? @ l):<prf> void
 
