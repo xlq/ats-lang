@@ -237,7 +237,11 @@ ats_intinf_tostring_intinf (ats_mpz_ptr_type x) {
 #ifdef HAVE_GMP_H
   return mpz_get_str((char*)0, 10/*base*/, (mpz_ptr)x) ;
 #else
-  return atspre_tostring_llint (*x) ;
+/*
+  in [ats_gmp.cats]:
+  typedef ats_llint_type mpz ; typedef mpz *mpz_ptr ;
+*/
+  return atspre_tostring_llint (*(mpz_ptr)x) ;
 #endif
 }
 

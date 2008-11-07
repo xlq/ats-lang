@@ -1,30 +1,110 @@
 \chapter{Programming with Linear Types}
 
-ATS is currently one of the few languages that have successfully made
-linear types available for effective use in practice, and the paradigm of
-programming with theorem proving plays an indispensable role in achieving
-this.  In the rest of this chapter, we present some examples of resource
-manipulation involving linear types. In particular, we demonstrate that ATS
-not only supports flexible uses of pointers but also guarantees based on
-its type system that such uses are safe.
+The paradigm of programming with theorem proving plays an indispensable
+role in making linear types available for practical use in ATS.  In this
+chapter, we present some examples of resource manipulation involving linear
+types. In particular, we demonstrate that ATS not only supports flexible
+uses of pointers but can also guarantee based on its type system that such
+uses are safe.
 
-\section{Flexible and Safe Uses of Pointers}
+\section{Safe Memory Access through Pointers}
 In ATS, a linear prop is referred to as a {\it view} and a linear type,
 which is often a type combined with a view, is referred to as a {\it
-viewtype}. A commonly used view constructor is $@$ (infix), which
-forms a view $T@L$ when applied to a type $T$ and a memory location $L$. If
-a proof of the view $T@L$ is available, then a value of the type $T$ must
-be stored at the location $L$.
-
+viewtype}. A commonly used view constructor is $@$ (infix), which forms a
+view $T@L$ when applied to a type $T$ and a memory location $L$. If a proof
+of the view $T@L$ is available, then it is guaranteed that a value of the
+type $T$ is stored at the location $L$. In the following presentation,
+views of the form $T@L$ is often referred to as @-views.  As an example,
+the following function templates {\it ptr\_get0} and {\it ptr\_set0}, which reads
+and writes through a given pointer, are assigned types containing @-views:
 \begin{verbatim}
-fn{a1,a2:t@ype | sizeof a1 == sizeof a2} swap {l1,l2:addr}
-  (pf1: a1 @ l1 >> a2 @ l1, pf2: a2 @ l2 >> a1 @ l2 | p1: ptr l1, p2: ptr l2)
-  : void = let
-  val tmp = !p1
-in
-  !p1 := !p2; !p2 := tmp
-end // end of [swap]
+fun{a:t@ype} ptr_get0 {l:addr} (pf: a @ l | p: ptr l): @(a @ l | a)
+fun{a:t@ype} ptr_set0 {l:addr} (pf: a? @ l | p: ptr l, x: a): @(a @ l | void)
 \end{verbatim}
+Note that $\tptr$ is a type constructor that forms a type $\tptr(L)$ when
+applied to a static term $L$ of the sort {\it addr}, and the only value of
+the type $\tptr(L)$ is the pointer that points to the location represented
+by $L$.
 
+Given a type $T$, the function ${\it ptr\_get0}\langle
+T\rangle$ is assigned the following type:
+\[\forall l:\saddr.~(T @ l \mid \tptr (l))\timp(T@l \mid T)\]
+This type indicates that the function ${\it ptr\_get0}\langle T\rangle$
+returns a proof of the view $T@L$ and a value of the type $T$ when applied
+to a proof of the view $T@L$ and a pointer of the type $\tptr(L)$ for some
+$L$. Intuitively, a proof of the view $T@L$, which is a form of resource as
+$T@L$ is linear, is {\it consumed} when it is passed to ${\it
+ptr\_get0}\langle T\rangle$, and another proof of the view $T@L$ is
+generated as ${\it ptr\_get0}\langle T\rangle$ returns. Notice that a proof
+of the view $T@L$ must be returned for otherwise subsequent accesses to the
+memory location $L$ become impossible.
 
+Similarly, the function ${\it ptr\_set0}\langle T\rangle$ is
+assigned the following type:
+\[\forall l:\saddr.~(T? @ l \mid \tptr (l))\timp(T@l \mid void)\]
+Note that $T?$ is a type for values of size ${\it sizeof}(T)$.  The
+function ${\it ptr\_set0}\langle T\rangle$ returns a proof of the view
+$T@L$ when applied to a proof of the view $T?@L$, a pointer of the type
+$\tptr(L)$ and a value of the type $T$. The use of the view $T?@L$
+indicates that the memory location at $L$ is assumed to be uninitialized
+when ${\it ptr\_set0}\langle T\rangle$ is called.
+
+\begin{figure}
+\input{DATS/swap0_example.dats}
+\caption{A function for swapping memory contents (I)}
+\label{figure:swap0_example.dats}
+\end{figure}
+In Figure~\ref{figure:swap0_example.dats}, a function template {\it swap0}
+is implemented for swapping memory contents at two given
+locations. Compared to a corresponding implementation in C, the verbosity
+of this one in ATS is evident. In particular, the need for {\it threading}
+linear proofs through calls to functions that make use of resources often
+results in a significant amount of code to be written. We now introduce
+some special syntax to significantly alleviate the need for such code.
+
+The function templates ${\it ptr\_get1}$ and ${\it ptr\_set1}$ are given
+the following types:
+\begin{verbatim}
+fun{a:t@ype} ptr_get1 {l:addr} (pf: !a @ l >> a @ l | p: ptr l): a
+fun{a:t@ype} ptr_set1 {l:addr} (pf: !a? @ l >> a @ l | p: ptr l, x: a): void
+\end{verbatim}
+Given a type $T$, the function
+${\it ptr\_get1}\langle T\rangle$ is assigned the following type:
+\[
+\forall l:\saddr.~(!T@l \gg T@l \mid \tptr(l))\timp T
+\]
+Given a linear proof ${\it pf}$ of the view $T@L$ for some $L$ and a
+pointer $p$ of the type $\tptr(L)$, the function call ${\it
+ptr\_get1}\langle T\rangle({\it pf}, p)$ is expected to return a
+value of the type $T$. However, the proof ${\it pf}$ is not
+consumed. Instead, it becomes a proof of the view $T@L$ after the function
+call. Similarly, the function
+${\it ptr\_set1}\langle T\rangle$ is assigned the following type:
+\[
+\forall l:\saddr.~(!T?@l \gg T@l \mid \tptr(l), T)\timp\tvoid
+\]
+Given a linear proof ${\it pf}$ of the view $T?@L$ for some $L$, a pointer
+$p$ of the type $\tptr(L)$ and a value $x$ of the type $T$, the function
+call ${\it ptr\_set1}\langle T\rangle({\it pf}, p, x)$ is expected to
+return the void value while changing the view of ${\it pf}$ from $T?@L$ to
+$T@L$.  In general, if $f$ is given a type of the following form for some
+views $V_1$ and $V_2$: $$(\ldots,!V_1\gg V_2,\ldots)\timp\ldots$$ then a
+function call $f(\ldots,{\it pf},\ldots)$ on some proof ${\it pf}$ of the
+view $V_1$ is to change the view of ${\it pf}$ into $V_2$ upon its return.
+In the case where $V_1$ and $V_2$ are the same, $!V_1\gg V_2$ can simply be
+written as $!V_1$.
+\begin{figure}
+\input{DATS/swap1_example.dats}
+\caption{A function for swapping memory contents (II)}
+\label{figure:swap1_example.dats}
+\end{figure}
+As an example, a function {\it swap1} for swapping the contents on two
+given memory locations is implemented in
+Figure~\ref{figure:swap1_example.dats},
+where the functions ${\it ptr\_get1}$ and ${\it ptr\_set1}$ are employed.
+
+\begin{figure}
+\input{DATS/swap2_example.dats}
+\caption{A function for swapping memory contents (III)}
+\end{figure}
 %%% end of \chapter{Programming with Linear Types}
