@@ -62,6 +62,7 @@ staload Sym = "ats_symbol.sats"
 
 staload "ats_staexp2.sats"
 staload "ats_dynexp2.sats"
+staload "ats_trans2_env.sats"
 
 (* ****** ****** *)
 
@@ -421,8 +422,12 @@ in
           $Err.abort {tmpdef_t} ()
         end
       ) : tmpdef_t
+      val level0 = d2var_current_level_get ()
+      val () = d2var_current_level_set (0)
+      val vp = ccomp_tmpdef (loc0, res, hit0, TMPcst d2c, hitss, fullname, tmpdef)
+      val level0 = d2var_current_level_set (level0)
     in
-      ccomp_tmpdef (loc0, res, hit0, TMPcst d2c, hitss, fullname, tmpdef)
+      vp // return value
     end // end of [None_vt]
   | ~Some_vt vp => vp
 end // end of [ccomp_exp_template_cst]
@@ -454,8 +459,19 @@ in
           $Err.abort {tmpdef_t} ()
         end
       ) : tmpdef_t
+      val d2v_lev = d2var_lev_get (d2v)
+      val level0 = d2var_current_level_get ()
+(*
+      val () = begin
+        prerr "ccomp_exp_tmpvar: d2v_lev = "; prerr d2v_lev; prerr_newline ();
+        prerr "ccomp_exp_tmpvar: level0 = "; prerr level0; prerr_newline ();
+      end
+*)
+      val () = d2var_current_level_set (d2v_lev)
+      val vp = ccomp_tmpdef (loc0, res, hit0, TMPvar d2v, hitss, fullname, tmpdef)
+      val () = d2var_current_level_set (level0)
     in
-      ccomp_tmpdef (loc0, res, hit0, TMPvar d2v, hitss, fullname, tmpdef)
+      vp // return value
     end // end of [None_vt]
   | ~Some_vt vp => vp
 end // end of [ccomp_exp_template_var]

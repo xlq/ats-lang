@@ -47,6 +47,7 @@ staload Map = "ats_map_lin.sats"
 staload "ats_staexp2.sats"
 staload "ats_dynexp2.sats"
 staload "ats_stadyncst2.sats"
+staload "ats_trans2_env.sats"
 
 (* ****** ****** *)
 
@@ -236,8 +237,7 @@ end // end of [the_dynctx_find]
 
 implement the_dynctx_pop (pf_push | (*none*)) = let
   prval unit_v () = pf_push
-  var err: int =  0
-  val x = let
+  var err: int = 0; val x = let
     val (vbox pf | p) = ref_get_view_ptr (the_dynctxlst)
   in
     case+ !p of
@@ -971,6 +971,11 @@ end // end of [ccomp_funarg]
 
 implement ccomp_exp_lam_funlab
   (loc_fun, prolog, hips_arg, hie_body, fl: funlab_t) = let
+(*
+  val () = begin
+    prerr "ccomp_exp_lam_funlab: fl = "; prerr_funlab fl; prerr_newline ()
+  end
+*)
   var res: instrlst_vt = list_vt_nil ()
 
   val () = aux (res, prolog) where {
@@ -983,7 +988,7 @@ implement ccomp_exp_lam_funlab
     end // end of [aux]
   } // end of [where]
 
-  val level = d2var_current_level_inc_and_get ()
+  val (pf_level | level) = d2var_current_level_inc_and_get ()
   val () = the_funlabset_push () and () = the_vartypset_push ()
 
   val (pf_dynctx_mark | ()) = the_dynctx_mark ()
@@ -999,7 +1004,7 @@ implement ccomp_exp_lam_funlab
   val () = the_dynctx_unmark (pf_dynctx_mark | (*none*))
 
   val fls = the_funlabset_pop () and vtps = the_vartypset_pop ()
-  val level = d2var_current_level_dec_and_get ()
+  val level = d2var_current_level_dec_and_get (pf_level | (*none*))
   // function label propogation
   val () = funlabset_foreach_cloptr (fls, aux) where {
     fun aux (fl: funlab_t):<cloptr1> void = begin
@@ -1017,9 +1022,6 @@ implement ccomp_exp_lam_funlab
 
   val res = $Lst.list_vt_reverse_list (res)
 (*
-  val () = begin
-    prerr "ccomp_exp_lam_funlab: fl = "; prerr fl; prerr_newline ()
-  end
   val () = begin
     prerr "ccomp_exp_lam_funlab: fls = "; prerr_funlabset fls; prerr_newline ()
   end
@@ -2362,20 +2364,19 @@ in
       // empty
     end // end of [extval]
   | HIDextern (pos, code) => the_extcodelst_add (pos, code)
-  | HIDfundecs (decarg, knd, fundecs) => begin
-    case+ decarg of
-    | list_cons _ => () // template function
-    | _ => let
-        val level = d2var_current_level_get ()
-        val fls = ccomp_fundeclst_init (level, fundecs)
-      in
-        case+ fundecs of
-        | list_cons (_, list_cons (_, _)) // mutual recursion
-            when $Syn.funkind_is_tailrecur knd => begin
-            ccomp_fntdeclst_main (hid0.hidec_loc, fundecs, fls)
-          end
-        | _ => ccomp_fundeclst_main (fundecs, fls)
-      end
+  | HIDfundecs (decarg, knd, fundecs) => let
+      val level = d2var_current_level_get () in case+ decarg of
+      | list_nil () => let
+          val fls = ccomp_fundeclst_init (level, fundecs)
+        in
+          case+ fundecs of
+          | list_cons (_, list_cons (_, _)) // mutual recursion
+              when $Syn.funkind_is_tailrecur knd => begin
+              ccomp_fntdeclst_main (hid0.hidec_loc, fundecs, fls)
+            end
+          | _ => ccomp_fundeclst_main (fundecs, fls)
+        end // end of [list_nil]
+      | list_cons _ => () // template
     end // end of [HIDfundecs]
   | HIDvaldecs (valknd, valdecs) => let
       val level = d2var_current_level_get ()

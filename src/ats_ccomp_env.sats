@@ -52,14 +52,6 @@ staload "ats_ccomp.sats"
 
 (* ****** ****** *)
 
-fun d2var_current_level_get (): int
-fun d2var_current_level_inc (): void
-fun d2var_current_level_inc_and_get (): int
-fun d2var_current_level_dec (): void
-fun d2var_current_level_dec_and_get (): int
-
-(* ****** ****** *)
-
 // for accumulating type defintiions (rec/sum/uni)
 dataviewtype typdeflst =
   | TYPDEFLSTcons of (typkey, string(*name*), typdeflst)

@@ -66,38 +66,6 @@ staload _(*anonymous*) = "ats_set_fun.dats"
 
 (* ****** ****** *)
 
-local
-
-val the_d2var_current_level = ref_make_elt<int> (0)
-
-in // in of [local]
-
-implement d2var_current_level_get () = begin
-  !the_d2var_current_level
-end
-
-implement d2var_current_level_inc () = begin
-  !the_d2var_current_level := !the_d2var_current_level + 1
-end
-
-implement d2var_current_level_inc_and_get () =
-  let val n = !the_d2var_current_level; val n1 = n + 1 in
-    !the_d2var_current_level := n1; n1
-  end // end of [d2var_current_level_inc_and_get]
-
-implement d2var_current_level_dec () = begin
-  !the_d2var_current_level := !the_d2var_current_level - 1
-end
-
-implement d2var_current_level_dec_and_get () =
-  let val n = !the_d2var_current_level; val n1 = n - 1 in
-    !the_d2var_current_level := n1; n1
-  end // end of [d2var_current_level_dec_and_get]
-
-end // end of [local]
-
-(* ****** ****** *)
-
 extern fun compare_strlst_strlst (ss1: strlst, ss2: strlst):<> Sgn
 overload compare with compare_strlst_strlst
 

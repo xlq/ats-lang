@@ -75,6 +75,10 @@ static inline
 ats_void_type
 atspre_cloref_cloptr_free (ats_ptr_type p) { return ; }
 
+static inline
+ats_ptr_type
+atspre_cloptr_cloref_make (ats_ptr_type p) { return p ; }
+
 /* ****** ****** */
 
 static inline

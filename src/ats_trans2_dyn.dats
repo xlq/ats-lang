@@ -1292,10 +1292,15 @@ in
       in
         the_d2expenv_add_dvarlst d2vs
       end
+      val (pf_level | ()) = d2var_current_level_inc ()
       val d2e_body: d2exp = begin
-        if wths1explst_is_none wths1es then d1exp_tr d1e_body
-        else d1exp_wths1explst_tr (d1e_body, wths1es)
+        if wths1explst_is_none wths1es then begin
+          d1exp_tr d1e_body // regular translation
+        end else begin
+          d1exp_wths1explst_tr (d1e_body, wths1es)
+        end // end of [if]
       end
+      val () = d2var_current_level_dec (pf_level | (*none*))
       val () = trans2_env_pop (pf_env | (*none*))
     in
       d2exp_lam_dyn (loc0, lin, npf, p2ts_arg, d2e_body)
@@ -1602,8 +1607,13 @@ end // end of [v1aldeclst_tr]
 
 (* ****** ****** *)
 
-fn f1undec_tr
-  (decarg: s2qualst, d2v: d2var_t, d1c: f1undec): f2undec = let
+fn f1undec_tr (
+    level: int
+  , decarg: s2qualst
+  , d2v: d2var_t
+  , d1c: f1undec
+  ) : f2undec = let
+  val () = d2var_lev_set (d2v, level)
   val () = d2var_decarg_set (d2v, decarg)
   val def = d1exp_tr (d1c.f1undec_def)
 (*
@@ -1619,9 +1629,12 @@ in
   f2undec_make (d1c.f1undec_loc, d2v, def, ann)
 end // end of [f1undec_tr]
 
-fn f1undeclst_tr {n:nat}
-  (fk: $Syn.funkind, decarg: s2qualst, d1cs: list (f1undec, n))
-  : f2undeclst = let
+fn f1undeclst_tr {n:nat} (
+    fk: $Syn.funkind
+  , level: int
+  , decarg: s2qualst
+  , d1cs: list (f1undec, n)
+  ) : f2undeclst = let
   val isprf = $Syn.funkind_is_proof fk
   val isrec = $Syn.funkind_is_recursive fk
   val d2vs: list (d2var_t, n) = aux1 (isprf, d1cs) where {
@@ -1638,22 +1651,27 @@ fn f1undeclst_tr {n:nat}
       | nil () => nil ()
     end // end of [aux1]
   } // end of [where]
-  fun aux2 {n:nat}
-    (decarg: s2qualst, d2vs: list (d2var_t, n), d1cs: list (f1undec, n))
-    : list (f2undec, n) =
+  fun aux2 {n:nat} (
+      level: int
+    , decarg: s2qualst
+    , d2vs: list (d2var_t, n)
+    , d1cs: list (f1undec, n)
+    ) : list (f2undec, n) =
     case+ d2vs of
     | cons (d2v, d2vs) => let
         val+ cons (d1c, d1cs) = d1cs
+        val d2c = f1undec_tr (level, decarg, d2v, d1c)
+        val d2cs = aux2 (level, decarg, d2vs, d1cs)
       in
-        cons (f1undec_tr (decarg, d2v, d1c), aux2 (decarg, d2vs, d1cs))
+        cons (d2c, d2cs)
       end
     | nil () => nil ()
   val () = if isrec then the_d2expenv_add_dvarlst (d2vs) else ()
-  val d2cs = aux2 (decarg, d2vs, d1cs)
+  val d2cs = aux2 (level, decarg, d2vs, d1cs)
   val () = if isrec then () else the_d2expenv_add_dvarlst (d2vs)
 in
   d2cs
-end // end of [f2undeclst_tr]
+end // end of [f1undeclst_tr]
 
 (* ****** ****** *)
 
@@ -2382,7 +2400,8 @@ implement d1ec_tr (d1c0) = begin
       end // end of [val]
       val s2vpss = s1qualstlst_tr (decarg)
       val () = s2qualst_tmplev_set (s2vpss, template_level_get ())
-      val d2cs = f1undeclst_tr (funknd, s2vpss, d1cs)
+      val level = d2var_current_level_get ()
+      val d2cs = f1undeclst_tr (funknd, level, s2vpss, d1cs)
       val () = the_s2expenv_pop (pf_s2expenv | (*none*))
       val () = begin
         case+ decarg of cons _ => template_level_dec () | nil _ => ()

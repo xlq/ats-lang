@@ -93,6 +93,17 @@ fun s2qualst_tmplev_set (s2vpss: s2qualst, tmplev: int): void
 
 (* ****** ****** *)
 
+absview d2var_current_level_v
+
+fun d2var_current_level_get (): int
+fun d2var_current_level_set (n: int): void
+fun d2var_current_level_inc (): (d2var_current_level_v | void)
+fun d2var_current_level_inc_and_get (): (d2var_current_level_v | int)
+fun d2var_current_level_dec (pf: d2var_current_level_v | (*none*)): void
+fun d2var_current_level_dec_and_get (pf: d2var_current_level_v | (*none*)): int
+
+(* ****** ****** *)
+
 absview d2expenv_token
 fun the_d2expenv_add (id: sym_t, d2i: d2item) : void
 fun the_d2expenv_add_dcon (d2c: d2con_t): void

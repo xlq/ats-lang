@@ -53,6 +53,7 @@ staload Syn = "ats_syntax.sats"
 (* ****** ****** *)
 
 staload "ats_dynexp2.sats"
+staload "ats_trans2_env.sats"
 
 (* ****** ****** *)
 
