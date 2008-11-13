@@ -793,6 +793,14 @@ fn p2at_rec_tr_dn
               end
         } // end of [where]
         val s2e_rec = s2exp_tyrec (recknd, npf1, ls2es)
+        val s2t_s2V = s2Var_srt_get (s2V) and s2t_s2c_rec = s2e_rec.s2exp_srt
+        val () = // sort checking
+          if lte_s2rt_s2rt (s2t_s2c_rec, s2t_s2V) then () else begin
+             prerr loc0; prerr ": error(3)";
+             prerr ": the pattern cannot be assigned a type of the sort ["; prerr s2t_s2V; prerr "].";
+             prerr_newline ();
+             $Err.abort {void} ()                        
+          end // end of [if/
       in
         s2Var_link_set (s2V, Some s2e_rec); s2e_rec
       end
@@ -820,7 +828,7 @@ in
       val lp3ts = labp2atlst_tr_dn (loc0, lp2ts, ls2es)
     in
       p3at_rec (loc0, s2e0, recknd, npf1, lp3ts)
-    end
+    end // end of [S2Etyrec]
   | _ => begin
       prerr loc0; prerr ": error(3)";
       prerr ": the record pattern is given a type that is not for records.";
