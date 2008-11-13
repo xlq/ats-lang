@@ -136,14 +136,15 @@ precompiled::
 ######
 
 clean::
-	rm -f *~
 	rm -f bootstrap0/*.o
+	rm -f bootstrap0/Makefile
 	rm -f bootstrap1/*.o
+	rm -f bootstrap1/Makefile
 	cd utils/scripts; $(MAKE) clean
 	cd utils/atslex; $(MAKE) clean
 	cd ccomp/runtime/GCATS; $(MAKE) clean
 
-cleanall::
+cleanall:: clean
 	rm -f config.h
 	rm -f .libfiles_local
 	rm -f bin/atsopt bin/atscc bin/atslib bin/atslex bin/atspack
@@ -151,10 +152,6 @@ cleanall::
 	rm -f ccomp/lib/libatslex.a
 	rm -f ccomp/lib/output/*
 	rm -f .*~ *~ */*~ */*/*~ */*/*/*~ */*/*/*/*~
-	rm -f bootstrap/Makefile bootstrap/*.o
-	cd utils/scripts; $(MAKE) clean
-	cd utils/atslex; $(MAKE) clean
-	cd ccomp/runtime/GCATS; $(MAKE) cleanall
 
 ######
 
