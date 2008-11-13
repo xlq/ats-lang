@@ -706,6 +706,15 @@ typedef s2qualst = List s2qua
 
 fun s2qualst_reverse (xs: s2qualst): s2qualst
 
+fun fprint_s2qua {m:file_mode}
+  (pf: file_mode_lte (m, w) | out: &FILE m, s2q: s2qua): void
+
+fun fprint_s2qualst {m:file_mode}
+  (pf: file_mode_lte (m, w) | out: &FILE m, s2qs: s2qualst): void
+
+fun print_s2qualst (s2qs: s2qualst): void
+fun prerr_s2qualst (s2qs: s2qualst): void
+
 (* ****** ****** *)
 
 // [d2con_t] is assumed in [ats_staexp2_dcon.dats]

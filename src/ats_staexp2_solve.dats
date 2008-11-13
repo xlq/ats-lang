@@ -967,8 +967,8 @@ fn s2exp_hypo_equal_solve_con
   (loc0: loc_t, s2e1: s2exp, s2e2: s2exp): void = let
 (*
   val () = begin
-    prerr "s2exp_hypo_equal_solve_con: s2e1 = \n"; prerr s2e1; prerr_newline ();
-    prerr "s2exp_hypo_equal_solve_con: s2e2 = \n"; prerr s2e2; prerr_newline ();
+    prerr "s2exp_hypo_equal_solve_con: s2e1 = "; prerr s2e1; prerr_newline ();
+    prerr "s2exp_hypo_equal_solve_con: s2e2 = "; prerr s2e2; prerr_newline ();
   end // end of [val]
 *)
   fun aux_solve (loc0: loc_t, s2e1: s2exp, s2e2: s2exp): void =

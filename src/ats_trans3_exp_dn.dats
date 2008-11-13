@@ -81,7 +81,8 @@ overload prerr with $Lab.prerr_label
 
 (* ****** ****** *)
 
-fn pfarity_check_rec (loc_rec: loc_t, npf1: int, npf2: int): void =
+fn pfarity_check_rec
+  (loc_rec: loc_t, npf1: int, npf2: int): void =
   if npf1 = npf2 then () else begin
     prerr loc_rec;
     prerr ": error(3)";
@@ -92,7 +93,8 @@ fn pfarity_check_rec (loc_rec: loc_t, npf1: int, npf2: int): void =
     prerr "].";
     prerr_newline ();
     $Err.abort {void} ()
-end
+  end // end of [if]
+// end of [pfarity_check_rec]
 
 (* ****** ****** *)
 
@@ -105,7 +107,7 @@ fn reckind_check
         prerr ": the record is boxed but it is expected to be flat.";
         prerr_newline ();
         $Err.abort {void} ()
-      end
+      end // end of [_]
   end else begin case+ k2 of // k1 = 0
    | TYRECKINDflt0 _ => () | TYRECKINDflt1 _ => () | _ => begin
        prerr loc_rec;
@@ -113,8 +115,8 @@ fn reckind_check
        prerr ": the record is flat but it is expected to be boxed.";
        prerr_newline ();
        $Err.abort {void} ()
-     end
-  end
+     end // end of [_]
+  end // end of [if]
 end // end of [reckind_check]
 
 (* ****** ****** *)
@@ -780,7 +782,7 @@ implement c2lau_tr_dn
   val () = case+ op2tcss of
     | ~Some_vt p2tcss => begin // adding nonsequentiality assumptions
         trans3_env_hypo_add_p2atcstlstlst (loc0, p2tcss, s2es_pat)
-      end
+      end // end of [Some_vt]
     | ~None_vt () => ()
   val p3ts = p2atlst_tr_dn (p2ts, s2es_pat)
 
@@ -796,20 +798,18 @@ implement c2lau_tr_dn
   } // end of [where]
 
   val gua = m2atchlst_tr_up (c2l.c2lau_gua)
-  val seq = c2l.c2lau_seq
-  val neg = c2l.c2lau_neg
-  val d3e_exp = let
+  val seq = c2l.c2lau_seq and neg = c2l.c2lau_neg
+  val d3e_exp = d2exp_tr_dn (c2l.c2lau_exp, s2e_exp) where {
     val s2e_exp = begin
       if neg > 0 then s2exp_bottom_viewt0ype_exi () else s2e0
-    end
-  in
-    d2exp_tr_dn (c2l.c2lau_exp, s2e_exp)
-  end
+    end // end of [val]
+  } // end of [val]
+
   val () = case+ osacsbis of
     | ~SACSBISsome (sac, sbis) =>
         if c2lau_is_raised c2l then () else begin
           staftscstr_stbefitemlst_merge (loc0, sac, sbis)
-        end
+        end // end of [if]
     | ~SACSBISnone () => ()
   val () = the_d2varset_env_check loc0
   val () = the_d2varset_env_pop_let (pf_d2varset | (*none*))
@@ -955,6 +955,7 @@ and c2laulst2_rest_tr_dn {n,ni:nat}
                 | nil () => res
             } // end of [where]
           | list_cons _ => ()
+        // end of [val]
 (*
         val () = begin
           print "c2laulst_rest_tr_dn: p2tcss2 = "; print p2tcss2; print_newline ();

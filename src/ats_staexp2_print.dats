@@ -797,4 +797,29 @@ implement prerr_s2exparglst (s2as) = prerr_mac (fprint_s2exparglst, s2as)
 
 (* ****** ****** *)
 
+implement fprint_s2qua (pf | out, s2q) = begin
+  fprint_string (pf | out, "(");
+  fprint_s2varlst (pf | out, s2q.0);
+  fprint_string (pf | out, " | ");
+  fprint_s2explst (pf | out, s2q.1);
+  fprint_string (pf | out, ")");
+end // end of [fprint_s2qua]
+
+implement fprint_s2qualst {m} (pf | out, s2qs) = let
+  fun aux (out: &FILE m, i: int, s2qs: s2qualst): void =
+    case+ s2qs of
+    | cons (s2q, s2qs) => begin
+        if i > 0 then fprint1_string (pf | out, ", ");
+        fprint_s2qua (pf | out, s2q); aux (out, i+1, s2qs)
+      end // end of [cons]
+    | nil () => ()
+in
+  aux (out, 0, s2qs)
+end // end of [fprint_s2qualst]
+
+implement print_s2qualst (s2qs) = print_mac (fprint_s2qualst, s2qs)
+implement prerr_s2qualst (s2qs) = prerr_mac (fprint_s2qualst, s2qs)
+
+(* ****** ****** *)
+
 (* end of [ats_staexp2_print.dats] *)

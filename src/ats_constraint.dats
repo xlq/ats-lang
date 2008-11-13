@@ -1235,7 +1235,7 @@ in
       prerr "] is not associated with any index.";
       prerr_newline ();
       $Err.abort {intBtw (1, n)} ()
-    end
+    end // end of [None_vt]
 end // end of [s2var_index_find]
 
 //
