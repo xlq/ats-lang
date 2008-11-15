@@ -1176,14 +1176,12 @@ implement eval1_d2exp (loc0, ctx, env, d2e0) = begin
     in
       d2exp_arr (loc0, s2e, d2es)
     end
-// (*
   | D2Earrsub (d2s, d2e_arr, _(*loc*), d2ess_ind) => let
       val d2e_arr = eval1_d2exp (loc0, ctx, env, d2e_arr)
       val d2ess_ind = eval1_d2explstlst (loc0, ctx, env, d2ess_ind)
     in
       d2exp_arrsub (loc0, d2s, d2e_arr, loc0, d2ess_ind)
     end
-// *)
   | D2Eassgn (d2e1, d2e2) => let
       val d2e1 = eval1_d2exp (loc0, ctx, env, d2e1)
       val d2e2 = eval1_d2exp (loc0, ctx, env, d2e2)

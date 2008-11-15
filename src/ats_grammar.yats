@@ -1143,6 +1143,7 @@ guad0ec_t guad0ec ;
 %token <t0kn> PRVAL
 %token <t0kn> REC
 %token <t0kn> R0EAD
+%token <t0kn> SCASE
 %token <t0kn> SIF
 %token <t0kn> SORTDEF
 %token <t0kn> STA

@@ -194,6 +194,7 @@ keyval_insert("of", OF) ;
 keyval_insert("op", OP) ;
 keyval_insert("propdef", PROPDEF) ;
 keyval_insert("rec", REC) ;
+keyval_insert("scase", SCASE) ;
 keyval_insert("sif", SIF) ;
 keyval_insert("sortdef", SORTDEF) ;
 keyval_insert("sta", STA) ;

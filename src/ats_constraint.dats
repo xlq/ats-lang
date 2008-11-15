@@ -1226,7 +1226,7 @@ in
         prerr "] is associated with an index that is out-of-range.";
         prerr_newline ();
         $Err.abort {intBtw (1, n)} ()
-      end
+      end // end of [if]
     end // end of [Some_vt]
   | ~None_vt () => begin
       $Loc.prerr_location loc0;
@@ -1849,12 +1849,12 @@ in
         val () = the_s2varbindmap_pop ()
       in
         ans
-      end
+      end // end of [S3ITEMhypo]
     | S3ITEMsvar s2v => let
         val s2vs = list_cons (s2v, s2vs)
       in
         c3str_solve_itmlst (loc0, s2vs, s3bes, s3is, s2cs, fds, unsolved, errno)
-      end
+      end // end of [S3ITEMsvar]
     | S3ITEMsVar s2V => let
 (*
         val () = begin
@@ -1865,7 +1865,7 @@ in
 *)
       in
         c3str_solve_itmlst (loc0, s2vs, s3bes, s3is, s2cs, fds, unsolved, errno)
-      end
+      end // end of [S3ITEMsVar]
     end // end of [lost_cons]
   | list_nil () => ~1(*solved*)
 end // end of [c3str_solve_itmlst]

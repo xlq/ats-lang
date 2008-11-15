@@ -1008,20 +1008,20 @@ in
   | (S2Evar s2v1, S2Evar s2v2) when s2v1 = s2v2 => ()
 *)
   | (S2Evar s2v1, S2Evar s2v2) => let
-       val sgn = compare_s2var_s2var (s2v1, s2v2)
+      val () = begin
+        prerr "s2exp_hypo_equal_solve: s2v1 = "; prerr s2v1; prerr_newline ();
+        prerr "s2exp_hypo_equal_solve: s2v2 = "; prerr s2v2; prerr_newline ();
+      end // end of [val]
+      val sgn = compare_s2var_s2var (s2v1, s2v2)
     in
-       case+ sgn of 
-       | _ when sgn > 0 => let
-           val () = the_s2varbindmap_add (s2v1, s2e2)
-         in
-           trans3_env_hypo_add_bind (loc0, s2v1, s2e2)
-         end
-       | _ when sgn < 0 => let
-           val () = the_s2varbindmap_add (s2v2, s2e1)
-         in
-           trans3_env_hypo_add_bind (loc0, s2v2, s2e1)
-         end
-       | _ (*sgn = 0*) => ()
+      case+ sgn of 
+      | _ when sgn > 0 => begin
+          trans3_env_hypo_add_bind (loc0, s2v1, s2e2)
+        end
+      | _ when sgn < 0 => begin
+          trans3_env_hypo_add_bind (loc0, s2v2, s2e1)
+        end
+      | _ (*sgn = 0*) => ()
     end // end of [S2Evar _, S2Evar _]
   | (S2Evar s2v1, _) => let
 (*
@@ -1031,7 +1031,6 @@ in
         if not (s2t_var <= s2t_exp) then s2var_srt_set (s2v1, s2t_exp)
       end // end of [val]
 *)
-      val () = the_s2varbindmap_add (s2v1, s2e2)
     in
       trans3_env_hypo_add_bind (loc0, s2v1, s2e2)
     end // end of [S2Evar _, _]
@@ -1043,7 +1042,6 @@ in
         if not (s2t_var <= s2t_exp) then s2var_srt_set (s2v2, s2t_exp)
       end // end of [val]
 *)
-      val () = the_s2varbindmap_add (s2v2, s2e1)
     in
       trans3_env_hypo_add_bind (loc0, s2v2, s2e1)
     end // end of [_, S2Evar _]

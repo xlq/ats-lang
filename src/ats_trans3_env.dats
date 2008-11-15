@@ -158,9 +158,24 @@ end // end of [the_s2varbindmap]
 in // in of [local]
 
 implement the_s2varbindmap_add (s2v, s2e) = let
+  val () = begin
+    prerr "the_s2varbindmap_add: s2v = "; prerr s2v; prerr_newline ();
+    prerr "the_s2varbindmap_add: s2e = "; prerr s2e; prerr_newline ();
+  end
   val stamp = s2var_stamp_get (s2v)
   val () = let
     val (vbox pf | p) = ref_get_view_ptr (the_s2varbindmap)
+(*
+    val () = $effmask_ref (case+ $Map.map_search (!p, stamp) of
+      | ~None_vt () => () | ~Some_vt s2e0 => begin
+          prerr "the_s2varbindmap_add: a binding for the static variable [";
+          prerr s2v; prerr "] already exists: "; prerr_newline ();
+          prerr "the_s2varbindmap_add: s2e = "; prerr s2e; prerr_newline ();
+          prerr "the_s2varbindmap_add: s2e0 = "; prerr s2e0; prerr_newline ();
+          $Err.abort {void} ()
+        end // end of [Some_vt]
+    ) // end of [val]
+*)
   in
     $Map.map_insert (!p, stamp, s2e)
   end
@@ -169,11 +184,14 @@ in
 end
 
 implement the_s2varbindmap_find (s2v) = let
+  val () = begin
+    prerr "the_s2varbindmap_find: s2v = "; prerr s2v; prerr_newline ()
+  end
   val stamp = s2var_stamp_get (s2v)
   val (vbox pf | p) = ref_get_view_ptr (the_s2varbindmap)
 in
   $Map.map_search (!p, stamp)
-end
+end // end of [the_s2varbindmap_find]
 
 implement the_s2varbindmap_pop () = let
   fun aux {n:nat} {l:addr} .<n>.
@@ -185,8 +203,9 @@ implement the_s2varbindmap_pop () = let
         val () = case+ ans of ~None_vt () => () | ~Some_vt _ => ()
       in
         aux (pf | p, s2vs)
-      end
+      end // end of [list_cons]
     | list_nil () => ()
+  // end of [aux]
 in
   case+ !s2varbind_svs_lst of
   | list_cons (s2vs, s2vss) => let
@@ -900,12 +919,18 @@ implement trans3_env_hypo_add_bind (loc, s2v1, s2e2) = let
     prerr "trans3_env_hypo_add_bind: s2e2 = "; prerr s2e2; prerr_newline ();
   end
 *)
-  val () = the_s2varbindmap_add (s2v1, s2e2)
-  val h3p = h3ypo_bind (loc, s2v1, s2e2)
-  val (vbox pf | p) = ref_get_view_ptr the_s3itemlst
+  val os2e1 = the_s2varbindmap_find (s2v1)
 in
-  !p := list_vt_cons (S3ITEMhypo h3p, !p)
-end
+  case+ os2e1 of
+  | ~Some_vt (s2e1) => trans3_env_hypo_add_eqeq (loc, s2e1, s2e2)
+  | ~None_vt () => let
+      val () = the_s2varbindmap_add (s2v1, s2e2)
+      val h3p = h3ypo_bind (loc, s2v1, s2e2)
+      val (vbox pf | p) = ref_get_view_ptr the_s3itemlst
+    in
+      !p := list_vt_cons (S3ITEMhypo h3p, !p)
+    end
+end // end of [trans3_env_hypo_add_bind]
 
 implement trans3_env_hypo_add_eqeq (loc, s2e1, s2e2) = let
 (*

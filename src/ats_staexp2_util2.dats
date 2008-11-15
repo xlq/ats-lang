@@ -70,10 +70,13 @@ overload prerr with $Loc.prerr_location
 
 (* ****** ****** *)
 
-fun s2exp_link_remove_flag (s2e0: s2exp, flag: &int): s2exp = begin
+fun s2exp_link_remove_flag (s2e0: s2exp, flag: &int): s2exp = let
 (*
-  print "s2exp_link_remove_flag: s2e0 = "; print s2e0; print_newline ();
+  val () = begin
+    print "s2exp_link_remove_flag: s2e0 = "; print s2e0; print_newline ()
+  end // end of [val]
 *)
+in
   case+ s2e0.s2exp_node of
   | S2Ecst s2c => begin
       if s2cst_isrec_get s2c then s2e0
