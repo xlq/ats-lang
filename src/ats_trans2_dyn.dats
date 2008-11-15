@@ -1090,7 +1090,7 @@ fn c1lau_tr {n:nat} (n: int n, c1l: c1lau): c2lau n = let
       assert (np2ts = n) // deadcode
     end else begin
       () // [np2ts = n] holds!
-    end
+    end // end of [if]
   ) : [np2ts==n] void
   val (pf_env2 | ()) = trans2_env_push ()
   val () = let

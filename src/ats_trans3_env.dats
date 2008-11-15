@@ -158,10 +158,12 @@ end // end of [the_s2varbindmap]
 in // in of [local]
 
 implement the_s2varbindmap_add (s2v, s2e) = let
+(*
   val () = begin
     prerr "the_s2varbindmap_add: s2v = "; prerr s2v; prerr_newline ();
     prerr "the_s2varbindmap_add: s2e = "; prerr s2e; prerr_newline ();
   end
+*)
   val stamp = s2var_stamp_get (s2v)
   val () = let
     val (vbox pf | p) = ref_get_view_ptr (the_s2varbindmap)
@@ -184,9 +186,11 @@ in
 end
 
 implement the_s2varbindmap_find (s2v) = let
+(*
   val () = begin
     prerr "the_s2varbindmap_find: s2v = "; prerr s2v; prerr_newline ()
   end
+*)
   val stamp = s2var_stamp_get (s2v)
   val (vbox pf | p) = ref_get_view_ptr (the_s2varbindmap)
 in

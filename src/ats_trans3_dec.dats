@@ -460,7 +460,6 @@ in
         val loc = d2c.s2tavar_loc; val s2v = d2c.s2tavar_var
         val () = trans3_env_add_svar s2v
         val s2e = s2exp_Var_make_var (loc, s2v)
-        val () = the_s2varbindmap_add (s2v, s2e)
         val () = trans3_env_hypo_add_bind (loc, s2v, s2e)
       in
         // empty
