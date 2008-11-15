@@ -80,7 +80,7 @@ praxi array_v_cons : {a:viewt@ype} {n:nat} {l:addr}
   (a @ l, array_v (a, n, l+sizeof a)) -<prf> array_v (a, n+1, l)
 
 praxi array_v_uncons : {a:viewt@ype} {n:int | n > 0} {l:addr}
-  array_v (a, n, l) -<prf> (a @ l, array_v (a, n - 1, l+sizeof a))
+  array_v (a, n, l) -<prf> (a @ l, array_v (a, n-1, l+sizeof a))
 
 (* ****** ****** *)
 
@@ -166,17 +166,18 @@ fun array_ptr_make_fun_tsz_cloptr {a:viewt@ype} {n:nat} {f:eff} (
 
 (* ****** ****** *)
 
-prfun array_v_split :
-  {a:viewt@ype} {n,i:nat | i <= n} {l:addr} {ofs:int}
-    (MUL (i, sizeof a, ofs), array_v (a, n, l)) -<prf>
-    (array_v (a, i, l), array_v (a, n-i, l+ofs))
+prfun array_v_split {a:viewt@ype}
+  {n,i:nat | i <= n} {l:addr} {ofs:int}
+  (pf_mul: MUL (i, sizeof a, ofs), pf_arr: array_v (a, n, l))
+  :<prf> @(array_v (a, i, l), array_v (a, n-i, l+ofs))
 
 (* ***** ***** *)
 
-prfun array_v_unsplit :
-  {a:viewt@ype} {n1,n2:nat} {l:addr} {ofs:int}
-    (MUL (n1, sizeof a, ofs), array_v (a, n1, l), array_v (a, n2, l+ofs)) -<prf>
-    array_v (a, n1+n2, l)
+prfun array_v_unsplit
+  {a:viewt@ype} {n1,n2:nat} {l:addr} {ofs:int} (
+    pf_mul: MUL (n1, sizeof a, ofs)
+  , pf1_arr: array_v (a, n1, l), pf2_arr: array_v (a, n2, l+ofs)
+  ) :<prf> array_v (a, n1+n2, l)
 
 (* ***** ***** *)
 

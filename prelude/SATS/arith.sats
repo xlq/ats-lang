@@ -82,7 +82,7 @@ prfun mul_associate {x,y,z:int} {xy,yz,xy_z,x_yz:int} (
   , pf4: MUL (x, yz, x_yz)
   ) :<prf> [xy_z==x_yz] void
 
-prfun mul_add_const {i:int}
+praxi mul_add_const {i:int}
   {m,n:int} {p:int} (pf: MUL (m, n, p)):<prf> MUL (m+i, n, p+i*n)
 
 (* ****** ****** *)
