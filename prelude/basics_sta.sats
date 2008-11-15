@@ -631,10 +631,13 @@ abstype FILEref_type; stadef FILEref = FILEref_type
 
 // some common datatypes
 
-dataviewtype
-box_viewt0ype_viewtype (a:viewt@ype+) = box (a) of a
+datatype
+box_t0ype_type (a:t@ype+) = box (a) of a
+stadef box = box_t0ype_type
 
-stadef box = box_viewt0ype_viewtype
+dataviewtype
+box_viewt0ype_viewtype (a:viewt@ype+) = box_vt (a) of a
+stadef box_vt = box_viewt0ype_viewtype
 
 // [list_t0ype_int_type] is covariant
 datatype // t@ype+: covariant

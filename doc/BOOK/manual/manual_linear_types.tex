@@ -32,22 +32,23 @@ T\rangle$ is assigned the following type:
 This type indicates that the function ${\it ptr\_get0}\langle T\rangle$
 returns a proof of the view $T@L$ and a value of the type $T$ when applied
 to a proof of the view $T@L$ and a pointer of the type $\tptr(L)$ for some
-$L$. Intuitively, a proof of the view $T@L$, which is a form of resource as
-$T@L$ is linear, is {\it consumed} when it is passed to ${\it
+$L$. Intuitively speaking, a proof of the view $T@L$, which is a form of
+resource as $T@L$ is linear, is {\it consumed} when it is passed to ${\it
 ptr\_get0}\langle T\rangle$, and another proof of the view $T@L$ is
-generated as ${\it ptr\_get0}\langle T\rangle$ returns. Notice that a proof
-of the view $T@L$ must be returned for otherwise subsequent accesses to the
-memory location $L$ become impossible.
+generated when ${\it ptr\_get0}\langle T\rangle$ returns. Notice that a
+proof of the view $T@L$ must be returned for otherwise subsequent accesses
+to the memory location $L$ become impossible.
 
 Similarly, the function ${\it ptr\_set0}\langle T\rangle$ is
 assigned the following type:
 \[\forall l:\saddr.~(T? @ l \mid \tptr (l))\timp(T@l \mid void)\]
-Note that $T?$ is a type for values of size ${\it sizeof}(T)$.  The
-function ${\it ptr\_set0}\langle T\rangle$ returns a proof of the view
-$T@L$ when applied to a proof of the view $T?@L$, a pointer of the type
-$\tptr(L)$ and a value of the type $T$. The use of the view $T?@L$
-indicates that the memory location at $L$ is assumed to be uninitialized
-when ${\it ptr\_set0}\langle T\rangle$ is called.
+Note that $T?$ is a type for values of size ${\it sizeof}(T)$ (that are
+assumed to be uninitialized).  The function ${\it ptr\_set0}\langle
+T\rangle$ returns a proof of the view $T@L$ when applied to a proof of the
+view $T?@L$, a pointer of the type $\tptr(L)$ and a value of the type
+$T$. The use of the view $T?@L$ indicates that the memory location at $L$
+is assumed to be uninitialized when ${\it ptr\_set0}\langle T\rangle$ is
+called.
 
 \begin{figure}
 \input{DATS/swap0_example.dats}
@@ -68,7 +69,7 @@ the following types:
 fun{a:t@ype} ptr_get1 {l:addr} (pf: !a @ l >> a @ l | p: ptr l): a
 fun{a:t@ype} ptr_set1 {l:addr} (pf: !a? @ l >> a @ l | p: ptr l, x: a): void
 \end{verbatim}
-Given a type $T$, the function
+Clearly, for each type $T$, the function
 ${\it ptr\_get1}\langle T\rangle$ is assigned the following type:
 \[
 \forall l:\saddr.~(!T@l \gg T@l \mid \tptr(l))\timp T
@@ -77,7 +78,7 @@ Given a linear proof ${\it pf}$ of the view $T@L$ for some $L$ and a
 pointer $p$ of the type $\tptr(L)$, the function call ${\it
 ptr\_get1}\langle T\rangle({\it pf}, p)$ is expected to return a
 value of the type $T$. However, the proof ${\it pf}$ is not
-consumed. Instead, it becomes a proof of the view $T@L$ after the function
+consumed. Instead, it is still a proof of the view $T@L$ after the function
 call. Similarly, the function
 ${\it ptr\_set1}\langle T\rangle$ is assigned the following type:
 \[
@@ -98,9 +99,9 @@ written as $!V_1$.
 \caption{A function for swapping memory contents (II)}
 \label{figure:swap1_example.dats}
 \end{figure}
-As an example, a function {\it swap1} for swapping the contents on two
+As an example, a function {\it swap1} for swapping the contents at two
 given memory locations is implemented in
-Figure~\ref{figure:swap1_example.dats}, where the functions ${\it
+Figure~\ref{figure:swap1_example.dats}, where the function templates ${\it
 ptr\_get1}$ and ${\it ptr\_set1}$ are employed.  Clearly, this
 implementation is considerably cleaner when compared to the one in
 Figure~\ref{figure:swap0_example.dats}.
@@ -116,13 +117,43 @@ $\tptr(L)$ for some $L$), $!p$ yields the value stored at the memory
 location $L$.  The typechecker first searches for a proof of the view $T@L$
 for some $T$ among all available proofs when typechecking $!p$; if such a
 proof ${\it pf}$ is found, then $!p$ is essentially elaborated into ${\it
-ptr\_get1}(pf \mid p)$ and then typechecked. As $!p$ is a left-value, it can
+ptr\_get1}({\it pf} \mid p)$ and then typechecked. As $!p$ is a left-value, it can
 also be used to form an assignment like $!p := v$. The typechecker
-elaborates $!p := v$ into ${\it ptr\_set1}(pf \mid p, v)$ for the sake of
+elaborates $!p := v$ into ${\it ptr\_set1}({\it pf} \mid p, v)$ for the sake of
 typechecking if a proof of the view $T@L$ can be found among all available
 proofs.
 
-\section{Linear Datatypes}
-A linear datatype is referred to as a {\it dataviewtype} in ATS.
+\begin{figure}
+\begin{verbatim}
+dataview array_v (a:t@ype+, int(*size*), addr(*beg*)) =
+  | {n:nat} {l:addr}
+    array_v_cons (a, n+1, l) of (a @ l, array_v (a, n, l+sizeof a))
+  | {l:addr} array_v_nil (a, 0, l)
+\end{verbatim}
+\caption{}
+\label{figure:array_v}
+\end{figure}
+\section{Dataviews}
+A linear dataprop (for classifying linear proofs) is referred to as a {\it
+dataview} in ATS. In Figure~\ref{figure:array_v}, the dataview declaration
+introduces a view constructor {\it array\_v} and two proof constructors
+${\it array\_v\_nil}$ and ${\it array\_v\_cons}$ that are associated with
+${\it array\_v}$. The types (or more precisely, props) assigned to these
+two proof constructors are given as follows:
+\[\begin{array}{rcl}
+{\it array\_v\_nil} & : &
+\forall a:\staype.\forall l:\saddr. () \timp {\it array\_v} (a, 0, l) \\
+{\it array\_v\_cons} & : &
+\forall a:\staype.\forall n:\snat.\forall l:\saddr. \\
+&&\kern12pt
+(a @ l, {\it array_v} (a, n, l+{\it sizeof}(a))) \timp {\it array\_v} (a, n+1, l) \\
+\end{array}\]
+Given a type $T$, an integer $I$ and an address $L$, ${\it array\_v}(T, I,
+L)$ is a view stating that there are $I$ values of the type $T$ stored (in
+a row) at the memory location $L$.
+
+\section{Dataviewtypes}
+A linear datatype (for classifying linear values) is referred to as a {\it
+dataviewtype} in ATS.
 
 %%% end of \chapter{Programming with Linear Types}

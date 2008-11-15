@@ -1008,10 +1008,6 @@ in
   | (S2Evar s2v1, S2Evar s2v2) when s2v1 = s2v2 => ()
 *)
   | (S2Evar s2v1, S2Evar s2v2) => let
-      val () = begin
-        prerr "s2exp_hypo_equal_solve: s2v1 = "; prerr s2v1; prerr_newline ();
-        prerr "s2exp_hypo_equal_solve: s2v2 = "; prerr s2v2; prerr_newline ();
-      end // end of [val]
       val sgn = compare_s2var_s2var (s2v1, s2v2)
     in
       case+ sgn of 

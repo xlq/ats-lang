@@ -62,24 +62,24 @@ overload [] with atarray_set_elt_at
 (*
 
 dataview array_v (a:viewt@ype+, int, addr) =
-  | {l:addr} array_v_none (a, 0, l)
+  | {l:addr} array_v_nil (a, 0, l)
   | {n:int | n >= 0} {l:addr}
-      array_v_some (a, n+1, l) of (a @ l, array_v (a, n, l+sizeof a))
+      array_v_cons (a, n+1, l) of (a @ l, array_v (a, n, l+sizeof a))
 
 *)
 
 viewdef array_v (a:viewt@ype, n:int, l: addr) = @[a][n] @ l
 
-praxi array_v_none :
+praxi array_v_nil :
   {a:viewt@ype} {l:addr} () -<prf> array_v (a, 0, l)
 
-praxi array_v_unnone :
+praxi array_v_unnil :
   {a:viewt@ype} {l:addr} array_v (a, 0, l) -<prf> void
 
-praxi array_v_some : {a:viewt@ype} {n:nat} {l:addr}
+praxi array_v_cons : {a:viewt@ype} {n:nat} {l:addr}
   (a @ l, array_v (a, n, l+sizeof a)) -<prf> array_v (a, n+1, l)
 
-praxi array_v_unsome : {a:viewt@ype} {n:int | n > 0} {l:addr}
+praxi array_v_uncons : {a:viewt@ype} {n:int | n > 0} {l:addr}
   array_v (a, n, l) -<prf> (a @ l, array_v (a, n - 1, l+sizeof a))
 
 (* ****** ****** *)

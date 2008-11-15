@@ -47,16 +47,16 @@ fun aux {n:nat} {l:addr} .<n>.
   (pf: array_v (a?, n, l) | p: ptr l, n: int n, xs: list (a, n))
   :<> (array_v (a, n, l) | void) =
   if n > 0 then let
-    prval (pf1, pf2) = array_v_unsome {a?} (pf)
+    prval (pf1, pf2) = array_v_uncons {a?} (pf)
     val+ list_cons (x, xs) = xs
     val () = !p := x
     val (pf2 | ans) = aux (pf2 | p+sizeof<a>, n-1, xs)
   in
-    (array_v_some {a} (pf1, pf2) | ans)
+    (array_v_cons {a} (pf1, pf2) | ans)
   end else let
-    prval () = array_v_unnone {a?} pf
+    prval () = array_v_unnil {a?} pf
   in
-    (array_v_none {a} () | ())
+    (array_v_nil {a} () | ())
   end
 
 val (pf | ()) = aux (view@ A0 | &A0, n0, xs0)
