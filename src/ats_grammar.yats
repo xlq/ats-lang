@@ -788,7 +788,7 @@ extern d0ec_t d0ec_e0xpact_assert (e0xp_t) ;
 extern d0ec_t d0ec_e0xpact_error (e0xp_t) ;
 extern d0ec_t d0ec_e0xpact_print (e0xp_t) ;
 extern d0ec_t d0ec_srtdefs (s0rtdef_t, s0rtdeflst_t) ;
-extern d0ec_t d0ec_datsrts (d0atsrtdec_t, d0atsrtdeclst_t) ;
+extern d0ec_t d0ec_datsrts (int/*para*/, d0atsrtdec_t, d0atsrtdeclst_t) ;
 extern d0ec_t d0ec_stacons (abskind_t, s0tacon_t, s0taconlst_t) ;
 extern d0ec_t d0ec_stacsts (s0tacst_t, s0tacstlst_t) ;
 extern d0ec_t d0ec_stavars (s0tavar_t, s0tavarlst_t) ;
@@ -1099,9 +1099,9 @@ guad0ec_t guad0ec ;
 %token <t0kn> CASE CASEMINUS CASEPLUS
 %token <t0kn> CLASS
 %token <t0kn> CONTINUE
-%token <t0kn> DATAPROP
 %token <t0kn> DATASORT
-%token <t0kn> DATASORTSTAR
+%token <t0kn> DATAPARASORT
+%token <t0kn> DATAPROP
 %token <t0kn> DATATYPE
 %token <t0kn> DATAVIEW
 %token <t0kn> DATAVIEWTYPE
@@ -2808,7 +2808,9 @@ d0ec
   | SRPPRINT e0xp                       { $$ = d0ec_e0xpact_print($2) ; }
   | SORTDEF s0rtdef ands0rtdefseq       { $$ = d0ec_srtdefs($2, $3) ; }
   | DATASORT d0atsrtdec andd0atsrtdecseq
-                                        { $$ = d0ec_datsrts($2, $3) ; }
+                                        { $$ = d0ec_datsrts(0, $2, $3) ; }
+  | DATAPARASORT d0atsrtdec andd0atsrtdecseq
+                                        { $$ = d0ec_datsrts(1, $2, $3) ; }
   | abskind s0tacon ands0taconseq       { $$ = d0ec_stacons($1, $2, $3) ; }
   | STA s0tacst ands0tacstseq           { $$ = d0ec_stacsts($2, $3) ; }
   | STAVAR s0tavar ands0tavarseq        { $$ = d0ec_stavars($2, $3) ; }

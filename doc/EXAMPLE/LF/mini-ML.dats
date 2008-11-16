@@ -18,7 +18,7 @@ datasort tp =
   | TPfun of (tp, tp)
   | TPtup of (tp, tp)
 
-datasort tm = 
+dataparasort tm = 
   | TMzero
   | TMsucc of tm
   | TMlam of (tm -> tm)

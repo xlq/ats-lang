@@ -18,8 +18,7 @@
 
 datasort tm = tmvar of int | tmlam of tm | tmapp of (tm, tm)
 
-dataprop ISE (tm) =
-  | {t1:tm} {t2:tm} ISE (tmapp (t1, t2))
+dataprop ISE (tm) = {t1:tm} {t2:tm} ISE (tmapp (t1, t2))
 
 dataprop tmshi (tm, tm, int) =
   | {i,l:nat | i >= l} TMSHIvargte (tmvar i, tmvar (i+1), l)

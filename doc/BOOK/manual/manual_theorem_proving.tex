@@ -173,4 +173,13 @@ this theorem is equivalent to the following one,
 \end{array}\]
 which is encoded and proven in Figure~\ref{figure:lemma_for_matrix_subscripting}.
 
+\section{Datasorts}
+So far, the type indexes appearing in the presented examples are all of
+some built-in sorts (e.g., $\sbool$, $\sint$). In ATS, it is also possible
+for the programmer to introduce sorts by datasort declaration.
+
+\begin{verbatim}
+dataparasort tm = lm of (tm -> tm) | app (tm, tm) // higher-order abstract syntax
+\end{verbatim}
+
 %%% end of \chapter{Programming with Theorem Proving} %%%

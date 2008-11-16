@@ -2146,7 +2146,7 @@ in '{
 
 (* ****** ****** *)
 
-implement d0ec_datsrts (x0, xs) = let
+implement d0ec_datsrts (para, x0, xs) = let
   fun aux_loc
     (x0: d0atsrtdec, x: d0atsrtdec, xs: d0atsrtdeclst): loc_t =
     case+ xs of
@@ -2157,7 +2157,7 @@ implement d0ec_datsrts (x0, xs) = let
     | cons (x, xs) => aux_loc (x0, x, xs) | nil () => x0.d0atsrtdec_loc
   ) : loc_t
 in '{
-  d0ec_loc= loc, d0ec_node= D0Cdatsrts(x0, xs)
+  d0ec_loc= loc, d0ec_node= D0Cdatsrts(para, x0, xs)
 } end // end of [d0ec_datsrts]
 
 (* ****** ****** *)

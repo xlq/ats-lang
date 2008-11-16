@@ -20,12 +20,11 @@
 
 (* Syntax *)
 // definition of sort 'tm' of HOAS terms
-datasort tm = TMcst
-            | TMlam of (tm -> tm)
-            | TMapp of (tm, tm)
+dataparasort tm =
+  TMcst of () | TMlam of (tm -> tm) | TMapp of (tm, tm)
 
 // definition of sort 'tp' for simple types with a base type
-datasort tp = TPbas | TPfun of (tp,tp) 
+datasort tp = TPbas | TPfun of (tp, tp) 
 
 // sort for typing contexts (really, typed substitutions)
 datasort ctx = CTXnil | CTXcons of (tm, tp, ctx)
@@ -104,9 +103,8 @@ dataprop R(tm, tp) =
 
 // sequence of redubility predicates for a substitution
 dataprop RS (ctx) =
+  | {G:ctx} {t:tm} {T:tp} RScons(CTXcons(t, T, G)) of (R(t, T), RS G)
   | RSnil (CTXnil)
-  | {G:ctx} {t:tm} {T:tp}
-      RScons(CTXcons(t, T, G)) of (R(t, T), RS G)
 
 // definition of neutral terms
 dataprop NEU (tm) =

@@ -10,8 +10,7 @@
 
 datasort typ = typ_0 | typ_arr of (typ, typ)
 
-datasort exp =
-  exp_lam of (exp -> exp) | exp_app of (exp, exp)
+dataparasort exp = exp_lam of (exp -> exp) | exp_app of (exp, exp)
 
 stadef typ_id = typ_arr (typ_0, typ_0)
 stadef fexp_id = lam (x: exp) => x
@@ -80,7 +79,7 @@ implement main () = begin
   print "cntvar_all (EXP_xy) = "; print (cntvar_all (EXP_xy)); print_newline ();
   print "cntvar_one (EXP_xy, ~1) = "; print (cntvar_one (EXP_xy, ~1)); print_newline ();
   print "cntvar_one (EXP_xy, ~2) = "; print (cntvar_one (EXP_xy, ~2)); print_newline ();
-end
+end // end of [main]
 
 (* ****** ****** *)
 

@@ -202,7 +202,7 @@ datatype d1ec_node =
       i0delst
   | D1Ce1xpdef of (sym_t, e1xp)
   | D1Cdatsrts of (* datasort declaration *)
-      d1atsrtdeclst
+      (int(*para: 0/1*), d1atsrtdeclst)
   | D1Csrtdefs of (* sort definition *)
       s1rtdeflst
   | D1Cstacons of (* static constructor *)
@@ -811,7 +811,7 @@ fun d1ec_symintr (_: loc_t, ids: i0delst): d1ec
 
 fun d1ec_e1xpdef (_: loc_t, id: sym_t, def: e1xp): d1ec
 
-fun d1ec_datsrts (_: loc_t, ds: d1atsrtdeclst): d1ec
+fun d1ec_datsrts (_: loc_t, para: int, ds: d1atsrtdeclst): d1ec
 
 fun d1ec_srtdefs (_: loc_t, ds: s1rtdeflst): d1ec
 

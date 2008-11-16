@@ -30,8 +30,7 @@ datasort form  = (* sort for formulas *)
   | limp of (form, form) // linear implicative
 
 datasort seq = (* sort for sequents *)
-  | none
-  | more of (seq, form, int)
+  | none | more of (seq, form, int)
 
 dataprop FM (form, int) =
 

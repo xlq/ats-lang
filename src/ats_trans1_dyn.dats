@@ -1426,10 +1426,10 @@ implement d0ec_tr d0c0 = begin
     in
       d1ec_none (d0c0.d0ec_loc)
     end // end of [D0Ce0xpact]
-  | D0Cdatsrts (d0c, d0cs) => let
+  | D0Cdatsrts (para, d0c, d0cs) => let
       val d1c = d0atsrtdec_tr d0c and d1cs = d0atsrtdeclst_tr d0cs
     in
-      d1ec_datsrts (d0c0.d0ec_loc, d1c :: d1cs)
+      d1ec_datsrts (d0c0.d0ec_loc, para, d1c :: d1cs)
     end // end of [D0Cdatsrts]
   | D0Csrtdefs (d0c, d0cs) => let
       val d1c = s0rtdef_tr d0c and d1cs = s0rtdeflst_tr d0cs

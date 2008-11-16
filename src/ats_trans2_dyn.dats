@@ -2322,7 +2322,7 @@ implement d1ec_tr (d1c0) = begin
       the_d2expenv_add (id, D2ITEMe1xp def);
       d2ec_none (d1c0.d1ec_loc)
     end
-  | D1Cdatsrts d1cs => begin
+  | D1Cdatsrts (para, d1cs) => begin
       d1atsrtdeclst_tr d1cs; d2ec_none (d1c0.d1ec_loc)
     end
   | D1Csrtdefs d1cs => begin

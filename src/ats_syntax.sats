@@ -1430,7 +1430,7 @@ and d0ec_node =
   | D0Ce0xpdef of (sym_t, e0xpopt)
   | D0Ce0xpact of (e0xpact_kind, e0xp)
   | D0Cdatsrts of (* datasort declaration *)
-      (d0atsrtdec, d0atsrtdeclst)
+      (int(*para: 0/1*), d0atsrtdec, d0atsrtdeclst)
   | D0Csrtdefs of (* (extended) sort definition *)
       (s0rtdef, s0rtdeflst)
   | D0Cstacons of (abskind, s0tacon, s0taconlst)
@@ -1921,8 +1921,9 @@ fun d0ec_e0xpact_assert (e: e0xp): d0ec = "d0ec_e0xpact_assert"
 fun d0ec_e0xpact_error (e: e0xp): d0ec = "d0ec_e0xpact_error"
 fun d0ec_e0xpact_print (e: e0xp): d0ec = "d0ec_e0xpact_print"
 
-fun d0ec_datsrts (d: d0atsrtdec, ds: d0atsrtdeclst): d0ec
+fun d0ec_datsrts (para: int, d: d0atsrtdec, ds: d0atsrtdeclst): d0ec
   = "d0ec_datsrts"
+  
 fun d0ec_srtdefs (d: s0rtdef, ds: s0rtdeflst): d0ec = "d0ec_srtdefs"
 
 fun d0ec_stacons (k: abskind, d: s0tacon, ds: s0taconlst): d0ec

@@ -216,9 +216,9 @@ macdef CASEMINUS = $extval (token_t, "CASEMINUS")
 macdef CASEPLUS = $extval (token_t, "CASEPLUS")
 macdef CLASS = $extval (token_t, "CLASS")
 macdef CONTINUE = $extval (token_t, "CONTINUE")
-macdef DATAPROP = $extval (token_t, "DATAPROP")
 macdef DATASORT = $extval (token_t, "DATASORT")
-macdef DATASORTSTAR = $extval (token_t, "DATASORTSTAR")
+macdef DATAPARASORT = $extval (token_t, "DATAPARASORT")
+macdef DATAPROP = $extval (token_t, "DATAPROP")
 macdef DATATYPE = $extval (token_t, "DATATYPE")
 macdef DATAVIEW = $extval (token_t, "DATAVIEW")
 macdef DATAVIEWTYPE = $extval (token_t, "DATAVIEWTYPE")
@@ -991,7 +991,6 @@ MAIN () =
   | $blanks { MAIN () }
   | "case-" { process_keyword (); CASEMINUS }
   | "case+" { process_keyword (); CASEPLUS }
-  | "datasort*" { process_keyword (); DATASORTSTAR }
   | "fn*" { process_keyword (); FNSTAR }
   | "for*" { process_keyword (); FORSTAR }
   | "method*" { process_keyword (); METHODSTAR }

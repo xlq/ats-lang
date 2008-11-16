@@ -150,6 +150,7 @@ keyval_insert("case", CASE) ;
 keyval_insert("class", CLASS) ;
 keyval_insert("continue", CONTINUE) ;
 keyval_insert("datasort", DATASORT) ;
+keyval_insert("dataparasort", DATAPARASORT) ;
 keyval_insert("dataprop", DATAPROP) ;
 keyval_insert("datatype", DATATYPE) ;
 keyval_insert("dataview", DATAVIEW) ;

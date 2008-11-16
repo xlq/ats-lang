@@ -547,8 +547,8 @@ implement d1ec_e1xpdef (loc, id, def) = '{
   d1ec_loc= loc, d1ec_node= D1Ce1xpdef (id, def)
 }
 
-implement d1ec_datsrts (loc, d1cs_datsrt) = '{
-  d1ec_loc= loc, d1ec_node= D1Cdatsrts d1cs_datsrt
+implement d1ec_datsrts (loc, para, d1cs_datsrt) = '{
+  d1ec_loc= loc, d1ec_node= D1Cdatsrts (para, d1cs_datsrt)
 }
 
 implement d1ec_srtdefs (loc, d1cs_srtdef) = '{

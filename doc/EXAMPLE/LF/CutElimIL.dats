@@ -17,10 +17,9 @@
 
 (* cut elimination for intuitionistic propositional logic *)
 
-datasort iota = (* sort for individuals *)
+dataparasort iota = (* sort for individuals *)
 
-nonfix land
-nonfix lor
+nonfix land lor
 
 datasort form  = (* sort for formulas *)
   | land of (form, form) // conjunction
@@ -31,8 +30,7 @@ datasort form  = (* sort for formulas *)
   | lexi of (iota -> form) // existential quantification
 
 datasort seq = (* sort for formula sequences *)
-  | nil 
-  | :: of (form, seq)
+  | nil | :: of (form, seq)
 
 dataprop FM (form, int) =
   | {A1,A2:form} {n1,n2:nat}
@@ -113,7 +111,7 @@ prfn ctrSup {G1,G2:seq} {A:form}
     (i0: IN (A, G1), f: SUP (G1, G2)): SUP (G1, A :: G2) =
   lam i => (case+ i of INone () => i0 | INshi i => f i)
 
-prval idSup: {G:seq} SUP (G, G) = lam i => i
+prval idSup = lam {G:seq} => (lam i => i): SUP (G, G)
 
 //
 
@@ -165,7 +163,7 @@ prfn ctrDer {G:seq} {A,A1,A2:form} { n:nat}
 
 prfun cut {G:seq} {A1,A2:form} {m,n1,n2:nat} .<m,n2,n1>. 
      (f: FM (A1, m), d1: DER (G, A1, n1), d2: DER (A1 :: G, A2, n2))
-    : DER0 (G, A2) = begin case d2 of
+    : DER0 (G, A2) = begin case+ d2 of
     | DERaxi i => (case+ i of INone () => d1 | INshi i => DERaxi i)
     | DERleft (DERLand1 (i, d20)) => begin case+ i of
       | INone () => begin case+ d1 of 
@@ -270,7 +268,7 @@ end // end of [cut]
 
 and cutAux {G:seq} {A1,A2:form} {m,n1,n2:nat} .<m,n2,n1>. 
   (f: FM (A1, m), d1: DERL (G, A1, n1), d2: DER (A1 :: G, A2, n2))
-  : DER0 (G, A2) = begin case d1 of
+  : DER0 (G, A2) = begin case+ d1 of
   | DERLand1 (i, d1) => DERleft (DERLand1 (i, cut (f, d1, weakExchDer d2)))
   | DERLand2 (i, d1) => DERleft (DERLand2 (i, cut (f, d1, weakExchDer d2)))
   | DERLimp (i, d11, d12) => DERleft (DERLimp (i, d11, cut (f, d12, weakExchDer d2)))
