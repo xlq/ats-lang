@@ -312,6 +312,22 @@ fun sp1at_arg_tr_dn
     end // end of [list_cons, list_nil]
 end // end of [sp2at_arg_tr_dn]
 
+fun sp1at_argcheck (s2vs: s2varlst): Option_vt s2var_t = let
+  fun check (name: sym_t, s2vs: s2varlst): Option_vt s2var_t =
+    case+ s2vs of
+    | list_cons (s2v, s2vs) => begin
+        if (name = s2var_sym_get s2v) then Some_vt s2v else check (name, s2vs)
+      end // end of [list_cons]
+    | list_nil () => None_vt ()
+in
+  case+ s2vs of
+  | list_cons (s2v, s2vs) => let
+      val ans = check (s2var_sym_get s2v, s2vs) in case+ ans of
+      | Some_vt _ => (fold@ ans; ans) | ~None_vt () => sp1at_argcheck s2vs
+    end // end of [list_cons]
+  | list_nil () => None_vt ()
+end // end of [sp1at_argcheck]
+
 implement sp1at_tr_dn (sp1t, s2t_pat) = let
   val loc0 = sp1t.sp1at_loc
   fn errmsg1
@@ -343,6 +359,11 @@ implement sp1at_tr_dn (sp1t, s2t_pat) = let
     prerr_newline ();
     $Err.abort {sp2at} ()
   end // end of [errmsg3]
+  fn argcheck_errmsg (s2v: s2var_t):<cloref1> void = begin
+    $Loc.prerr_location loc0; prerr ": warning(2)";    
+    prerr ": the static variable ["; prerr s2v; prerr "] occurs repeatedly.";
+    prerr_newline ()
+  end // end of [argcheck_errmsg]
 in
   case+ sp1t.sp1at_node of
   | SP1Tcon (q, id, s1as) => begin case+ the_s2expenv_find_qua (q, id) of
@@ -367,6 +388,9 @@ in
           case+ s2cs of
           | S2CSTLSTcons (s2c, _) => let
               val s2vs = sp1at_arg_tr_dn (loc0, q, id, s1as, s2ts_arg)
+              val () = (case+ sp1at_argcheck (s2vs) of
+                | ~Some_vt s2v => argcheck_errmsg (s2v) | ~None_vt () => ()
+              ) : void // end of [val]
             in
               sp2at_con (loc0, s2c, s2vs)
             end // end of [S2CSTLSTcons]

@@ -205,6 +205,8 @@ implement s2arg_make (loc, id, os2t) = '{
   s2arg_loc= loc, s2arg_sym= id, s2arg_srt= os2t
 }
 
+(* ****** ****** *)
+
 implement sp2at_con (loc, s2c, s2vs_arg) = let
   val s2e_pat = s2exp_cstapp (s2c, s2es_arg) where {
     val s2es_arg = $Lst.list_map_fun (s2vs_arg, s2exp_var)
