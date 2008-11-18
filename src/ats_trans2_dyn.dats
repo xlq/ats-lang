@@ -1125,10 +1125,10 @@ end // end of [c1laulst_tr]
 
 fn sc1lau_tr_dn
   (sc1l: sc1lau, s2t_pat: s2rt): sc2lau = let
+  val (pf_s2expenv | ()) = the_s2expenv_push ()
   val sp2t = sp1at_tr_dn (sc1l.sc1lau_pat, s2t_pat)
-  val (pf_env2 | ()) = trans2_env_push ()
   val d2e = d1exp_tr (sc1l.sc1lau_exp)
-  val () = trans2_env_pop (pf_env2 | (*none*))
+  val () = the_s2expenv_pop (pf_s2expenv | (*none*))  
 in
   sc2lau_make (sc1l.sc1lau_loc, sp2t, d2e)
 end // end of [sc1lau_tr]

@@ -1033,6 +1033,9 @@ implement d2exp_scaseof_tr_dn
     val sp2t = sc2l.sc2lau_pat
     val d2e_body = sc2l.sc2lau_exp
     val () = trans3_env_push_sta ()
+    val () = let
+      val+ SP2Tcon (_, s2vs) = sp2t.sp2at_node in trans3_env_add_svarlst s2vs
+    end // end of [val]
     val () = $SOL.s2exp_hypo_equal_solve (sp2t.sp2at_loc, s2e_val, sp2t.sp2at_exp)
     val d3e_body = d2exp_tr_dn (d2e_body, s2e0)
     val () = staftscstr_stbefitemlst_merge (loc0, sac, sbis)
