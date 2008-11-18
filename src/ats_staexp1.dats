@@ -169,6 +169,12 @@ implement d1atarg_idsrt (loc, id, s1tp) = '{
 implement s1arg_make (loc, id, os1t) = '{
   s1arg_loc= loc, s1arg_sym=id, s1arg_srt= os1t
 }
+
+implement sp1at_con (loc, q, id, args) = '{
+  sp1at_loc= loc, sp1at_node= SP1Tcon (q, id, args)
+}
+
+(* ****** ****** *)
  
 implement s1exp_ann (loc, s1e, s1t) = '{
   s1exp_loc= loc, s1exp_node= S1Eann (s1e, s1t)

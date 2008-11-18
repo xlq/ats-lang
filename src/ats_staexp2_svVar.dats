@@ -222,9 +222,16 @@ end // end of [local] (for assuming s2var_t)
 
 (* ****** ****** *)
 
-implement fprint_s2var (pf_out | out, s2v) = begin
-  $Sym.fprint_symbol (pf_out | out, s2var_sym_get s2v)
-end
+implement fprint_s2var (pf_out | out, s2v) = let
+  val () = $Sym.fprint_symbol (pf_out | out, s2var_sym_get s2v)
+(*
+  val () = fprint_string (pf_out | out, "(")
+  val () = $Stamp.fprint_stamp (pf_out | out, s2var_stamp_get s2v)
+  val () = fprint_string (pf_out | out, ")")
+*)
+in
+  // empty
+end // end of [fprint_s2var]
 
 implement fprint_s2varlst {m} (pf | out, s2vs) = let
   fun aux (out: &FILE m, i: int, s2vs: s2varlst)

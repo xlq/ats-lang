@@ -596,6 +596,18 @@ fun s0arglstlst_cons_ide (id: i0de, xs: s0arglstlst): s0arglstlst
 
 (* ****** ****** *)
 
+datatype sp0at_node =
+  | SP0Tcon of (sqi0de, s0arglst)
+
+where sp0at: type = '{
+  sp0at_loc= loc_t, sp0at_node= sp0at_node
+}
+
+fun sp0at_con
+  (qid: sqi0de, xs: s0arglst, t_end: t0kn): sp0at = "sp0at_con"
+
+(* ****** ****** *)
+
 datatype s0exp_node = 
   | S0Eann of (* ascribed static expression *)
       (s0exp, s0rt)
@@ -1381,6 +1393,8 @@ datatype d0exp_node =
       d0exp
   | D0Erec of (* dynamic record *)
       (int (*recknd*), labd0explst)
+  | D0Escaseof of (* static caseof *)
+      (casehead, s0exp, sc0laulst)
   | D0Esel_lab of (* dot label selection *)
       (int (*ptr*), label_t)
   | D0Esel_ind of (* dot index selection *)
@@ -1517,14 +1531,22 @@ and loophead: type = '{
 }
 
 and c0lau: type = '{
-  c0lau_loc= loc_t,
-  c0lau_pat= guap0at,
-  c0lau_seq= int,
-  c0lau_neg= int,
-  c0lau_body= d0exp
+  c0lau_loc= loc_t
+, c0lau_pat= guap0at
+, c0lau_seq= int
+, c0lau_neg= int
+, c0lau_body= d0exp
 }
 
 and c0laulst: type = List c0lau
+
+and sc0lau: type = '{
+  sc0lau_loc= loc_t
+, sc0lau_pat= sp0at
+, sc0lau_body= d0exp
+}
+
+and sc0laulst: type = List sc0lau
 
 (* ****** ****** *)
 
@@ -1722,6 +1744,10 @@ fun d0exp_rec
   (flat: int, t_beg: t0kn, ld0es: labd0explst, t_end: t0kn): d0exp
   = "d0exp_rec"
 
+fun d0exp_scaseof
+  (hd: casehead, s0e: s0exp, t_of: t0kn, sc0ls: sc0laulst): d0exp
+  = "d0exp_scaseof"
+
 fun d0exp_sel_lab (s: s0elop, l: l0ab): d0exp = "d0exp_sel_lab"
 fun d0exp_sel_ind (s: s0elop, ind: d0arrind): d0exp = "d0exp_sel_ind"
 
@@ -1833,6 +1859,13 @@ fun c0lau_make (gp0t: guap0at, seq: int, neg: int, body: d0exp): c0lau
 
 fun c0laulst_nil (): c0laulst = "c0laulst_nil"
 fun c0laulst_cons (x: c0lau, xs: c0laulst): c0laulst = "c0laulst_cons"
+
+//
+
+fun sc0lau_make (sp0t: sp0at, body: d0exp): sc0lau = "sc0lau_make"
+
+fun sc0laulst_nil (): sc0laulst = "sc0laulst_nil"
+fun sc0laulst_cons (x: sc0lau, xs: sc0laulst): sc0laulst = "sc0laulst_cons"
 
 (* ****** ****** *)
 

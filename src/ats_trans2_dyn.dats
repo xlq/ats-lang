@@ -37,6 +37,7 @@
 
 (* ****** ****** *)
 
+staload Arr = "ats_array.sats"
 staload Deb = "ats_debug.sats"
 staload Err = "ats_error.sats"
 staload Fil = "ats_filename.sats"
@@ -62,6 +63,10 @@ staload "ats_trans2_env.sats"
 (* ****** ****** *)
 
 staload "ats_trans2.sats"
+
+(* ****** ****** *)
+
+staload _(*anonymous*) = "ats_array.dats"
 
 (* ****** ****** *)
 
@@ -1059,7 +1064,7 @@ in
   m2atch_make (m1at.m1atch_loc, d2e, op2t)
 end // end of [m1atch_tr]
 
-fun m1atchlst_tr (m1ats: m1atchlst): m2atchlst =
+fn m1atchlst_tr (m1ats: m1atchlst): m2atchlst =
   $Lst.list_map_fun (m1ats, m1atch_tr)
 
 (* ****** ****** *)
@@ -1115,6 +1120,102 @@ fun c1laulst_tr {n:nat}
   | cons (c1l, c1ls) => cons (c1lau_tr (n, c1l), c1laulst_tr (n, c1ls))
   | nil () => nil ()
 end // end of [c1laulst_tr]
+
+(* ****** ****** *)
+
+fn sc1lau_tr_dn
+  (sc1l: sc1lau, s2t_pat: s2rt): sc2lau = let
+  val sp2t = sp1at_tr_dn (sc1l.sc1lau_pat, s2t_pat)
+  val (pf_env2 | ()) = trans2_env_push ()
+  val d2e = d1exp_tr (sc1l.sc1lau_exp)
+  val () = trans2_env_pop (pf_env2 | (*none*))
+in
+  sc2lau_make (sc1l.sc1lau_loc, sp2t, d2e)
+end // end of [sc1lau_tr]
+
+fun sc1laulst_tr_dn
+  (sc1ls: sc1laulst, s2t_pat: s2rt): sc2laulst =
+  case+ sc1ls of
+  | list_cons (sc1l, sc1ls) => let
+      val sc2l = sc1lau_tr_dn (sc1l, s2t_pat)
+      val sc2ls = sc1laulst_tr_dn (sc1ls, s2t_pat)
+    in
+      list_cons (sc2l, sc2ls)
+    end // end of [list_cons]
+  | list_nil () => list_nil ()
+// end of [sc1laulst_tr_dn]
+
+fn sc2laulst_covercheck
+  (loc0: loc_t, sc2ls: sc2laulst, s2t_pat: s2rt): void = let
+  val s2tb_pat = case+ s2t_pat of
+    | S2RTbas s2tb => s2tb | _ => begin
+        $Loc.prerr_location loc0; prerr ": error(2)";
+        prerr ": the static expression being analyzed is of the sort [";
+        prerr s2t_pat; prerr "], which is not a base sort as is required.";
+        prerr_newline ();
+        $Err.abort {s2rtbas} ()
+      end // end of [_]
+  val s2tdat_pat = case+ s2tb_pat of
+    | S2RTBASdef s2td => s2td | _ => begin
+        $Loc.prerr_location loc0; prerr ": error(2)";
+        prerr ": the static expression being analyzed is of the sort [";
+        prerr s2t_pat; prerr "], which is not a datasort as is required.";
+        prerr_newline ();
+        $Err.abort {s2rtdat_t} ()
+      end // end of [_]
+  val s2cs = s2rtdat_conlst_get (s2tdat_pat)
+  val ns2cs = s2cstlst_length (s2cs)
+  val (pf_gc, pf_arr | A) = $Arr.array_ptr_make_elt<int> (ns2cs, 0)
+  val () = check (pf_arr | A, ns2cs, sc2ls) where {
+    fun check {n:nat} {l:addr} (
+        pf: !array_v (int, n, l) | p: ptr l, n: int n, sc2ls: sc2laulst
+      ) : void = case+ sc2ls of
+      | list_cons (sc2l, sc2ls) => let
+          val sp2t = sc2l.sc2lau_pat
+          val+ SP2Tcon (s2c, _) = sp2t.sp2at_node
+          val tag = s2cst_tag_get (s2c); val tag = int1_of_int tag
+          val () = assert (tag >= 0); val () = assert (tag < n)
+          val () = p->[tag] := p->[tag] + 1
+        in
+          check (pf | p, n, sc2ls)
+        end // end of [list_cons]
+      | list_nil () => ()
+  } // end of [val]
+  val err = errmsg
+    (pf_arr | loc0, A, ns2cs, s2cs, 0, 0) where {
+    fun errmsg {n,i:nat | i <= n} {l:addr} .<n-i>. (
+        pf: !array_v (int, n, l)
+      | loc0: loc_t, p: ptr l, n: int n, s2cs: s2cstlst, i: int i, err: int
+      ) : int =
+      if i < n then let
+        val times = p->[i] in case+ s2cs of
+        | S2CSTLSTcons (s2c, s2cs) => begin case+ 0 of
+          | _ when times = 1 => errmsg (pf | loc0, p, n, s2cs, i+1, err)
+          | _ when times = 0 => begin
+              $Loc.prerr_location loc0; prerr ": error(2)";
+              prerr ": ill-formed static case-expression";
+              prerr ": the constructor ["; prerr s2c; prerr "] is missing.";
+              prerr_newline ();
+              errmsg (pf | loc0, p, n, s2cs, i+1, err+1)
+            end // end of [_ when times = 0]
+          | _ (* times > 1 *) => begin
+              $Loc.prerr_location loc0; prerr ": error(2)";
+              prerr ": ill-formed static case-expression";
+              prerr ": the constructor ["; prerr s2c; prerr "] occurs repeatedly.";
+              prerr_newline ();
+              errmsg (pf | loc0, p, n, s2cs, i+1, err+1)
+            end // end of [_ when times > 0]
+          end // end of [S2CSTLSTcons]
+        | S2CSTLSTnil () => err // deadcode!
+      end else begin
+        err // return value
+      end // end of [if]
+  } // end of [errmsg]
+  val () = $Arr.array_ptr_free {int} (pf_gc, pf_arr | A)
+  val () = if err > 0 then $Err.abort {void} ()
+in
+  // empty
+end // end of [sc2laulst_covercheck]
 
 (* ****** ****** *)
 
@@ -1395,6 +1496,14 @@ in
   | D1Erec (recknd, ld1es) => begin
       d2exp_rec (loc0, recknd, 0(*npf*), labd1explst_tr ld1es)
     end
+  | D1Escaseof (r1es, s1e, sc1ls) => let
+      val r2es = i1nvresstate_tr r1es
+      val s2e = s1exp_tr_up s1e; val s2t_pat = s2e.s2exp_srt
+      val sc2ls = sc1laulst_tr_dn (sc1ls, s2t_pat)
+      val () = sc2laulst_covercheck (loc0, sc2ls, s2t_pat)
+    in
+      d2exp_scaseof (loc0, r2es, s2e, sc2ls)
+    end // end of [D1Escaseof]
   | D1Esel (ptr, d1e, d1l) => let
       val d2e = d1exp_tr d1e; val d2l = d1lab_tr d1l
     in
@@ -1405,8 +1514,8 @@ in
         end
        | _ => begin
           d2exp_sel (loc0, d2e, cons (d2l, nil ()))
-         end
-      end
+         end // end of [_]
+      end // end of [if]
     end // end of [D1Esel]
   | D1Eseq d1es => d2exp_seq (d1e0.d1exp_loc, d1explst_tr d1es)
   | D1Esif (r1es, s1e_cond, d1e_then, d1e_else) => let

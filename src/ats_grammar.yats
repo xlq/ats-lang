@@ -287,6 +287,9 @@ typedef ats_ptr_type impqi0de_t ;
 extern impqi0de_t impqi0de_make_none (dqi0de_t) ;
 extern impqi0de_t impqi0de_make_some
   (tmpqi0de_t, s0arglst_t, s0arglstlst_t, t0kn_t) ;
+  
+typedef ats_ptr_type sp0at_t ;
+extern sp0at_t sp0at_con (sqi0de_t, s0arglst_t, t0kn_t) ;
 
 typedef ats_ptr_type s0exp_t ;
 typedef ats_ptr_type s0explst_t ;
@@ -585,6 +588,8 @@ typedef ats_ptr_type m0atchlst_t ;
 typedef ats_ptr_type guap0at_t ;
 typedef ats_ptr_type c0lau_t ;
 typedef ats_ptr_type c0laulst_t ;
+typedef ats_ptr_type sc0lau_t ;
+typedef ats_ptr_type sc0laulst_t ;
 typedef ats_ptr_type i0nvarg_t ;
 typedef ats_ptr_type i0nvarglst_t ;
 typedef ats_ptr_type i0nvresstate_t ;
@@ -670,6 +675,7 @@ extern d0exp_t d0exp_ptrof (t0kn_t) ;
 extern d0exp_t d0exp_qid (d0ynq_t, i0de_t) ;
 extern d0exp_t d0exp_raise (t0kn_t, d0exp_t) ;
 extern d0exp_t d0exp_rec (int, t0kn_t, labd0explst_t, t0kn_t) ;
+extern d0exp_t d0exp_scaseof (casehead_t, s0exp_t, t0kn_t, sc0laulst_t) ;
 extern d0exp_t d0exp_sel_lab (t0kn_t, l0ab_t) ;
 extern d0exp_t d0exp_sel_ind (t0kn_t, d0arrind_t) ;
 extern d0exp_t d0exp_seq (t0kn_t, d0explst_t, t0kn_t) ;
@@ -704,11 +710,17 @@ extern m0atch_t m0atch_make_none (d0exp_t) ;
 extern m0atch_t m0atch_make_some (d0exp_t, p0at_t) ;
 extern m0atchlst_t m0atchlst_nil (void) ;
 extern m0atchlst_t m0atchlst_cons (m0atch_t, m0atchlst_t) ;
+
 extern guap0at_t guap0at_make_none (p0at_t) ;
 extern guap0at_t guap0at_make_some (p0at_t, d0exp_t) ;
+
 extern c0lau_t c0lau_make (guap0at_t, int, int, d0exp_t) ;
 extern c0laulst_t c0laulst_nil (void) ;
 extern c0laulst_t c0laulst_cons (c0lau_t, c0laulst_t) ;
+
+extern sc0lau_t sc0lau_make (sp0at_t, d0exp_t) ;
+extern sc0laulst_t sc0laulst_nil (void) ;
+extern sc0laulst_t sc0laulst_cons (sc0lau_t, sc0laulst_t) ;
 
 extern i0nvarg_t i0nvarg_make_none (i0de_t) ;
 extern i0nvarg_t i0nvarg_make_some (i0de_t, s0exp_t) ;
@@ -927,6 +939,10 @@ impqi0de_t impqi0de ;
 
 /* ****** ****** */
 
+sp0at_t sp0at ;
+
+/* ****** ****** */
+
 s0exp_t s0exp ;
 s0explst_t s0explst ;
 s0expopt_t s0expopt ;
@@ -1023,6 +1039,7 @@ d0arrind_t d0arrind ;
 ifhead_t ifhead ;
 ifhead_t sifhead ;
 casehead_t casehead ;
+casehead_t scasehead ;
 loophead_t loophead ;
 
 m0atch_t m0atch ;
@@ -1030,6 +1047,8 @@ m0atchlst_t m0atchlst ;
 guap0at_t guap0at ;
 c0lau_t c0lau ;
 c0laulst_t c0laulst ;
+sc0lau_t sc0lau ;
+sc0laulst_t sc0laulst ;
 i0nvarg_t i0nvarg ;
 i0nvarglst_t i0nvarglst ;
 i0nvresstate_t i0nvresstate ;
@@ -1370,6 +1389,8 @@ guad0ec_t guad0ec ;
 %type <s0arglst> commadecs0argseq
 %type <s0arglstlst> decs0argseqseq
 
+%type <sp0at> sp0at
+
 %type <s0exp> s0exp
 %type <s0exp> atms0exp
 %type <s0exp> apps0exp
@@ -1484,6 +1505,7 @@ guad0ec_t guad0ec ;
 %type <ifhead> ifhead
 %type <ifhead> sifhead
 %type <casehead> casehead
+%type <casehead> scasehead
 %type <loophead> forhead
 %type <loophead> whilehead
 %type <m0atch> m0atch
@@ -1493,6 +1515,9 @@ guad0ec_t guad0ec ;
 %type <c0lau> c0lau
 %type <c0laulst> c0lauseq
 %type <c0laulst> barc0lauseq
+%type <sc0lau> sc0lau
+%type <sc0laulst> sc0lauseq
+%type <sc0laulst> barsc0lauseq
 %type <s0qualstopt> i0nvqua
 %type <s0explstopt> i0nvmet
 %type <i0nvarg> i0nvarg
@@ -1934,6 +1959,10 @@ decs0argseqseq
 ;
 
 /* ****** ****** */
+
+sp0at /* static pattern */
+  : sqi0de LPAREN s0argseq RPAREN       { $$ = sp0at_con($1, $3, $4) ; }
+;
 
 atms0exp /* atomic static expression */
   : LITERAL_char                        { $$ = s0exp_char($1) ; }
@@ -2505,6 +2534,11 @@ funarrow
   | EQLT e0fftagseq GT                  { $$ = e0fftaglstopt_some($2) ; }
 ;
 
+caseinv
+  : /* empty */                         { $$ = i0nvresstate_none() ; }
+  | i0nvresstate EQGT                   { $$ = $1 ; }
+;
+
 ifhead
   : IF caseinv                          { $$ = ifhead_make($1, $2) ; }
 ;
@@ -2513,15 +2547,14 @@ sifhead
   : SIF caseinv                         { $$ = ifhead_make($1, $2) ; }
 ;
 
-caseinv
-  : /* empty */                         { $$ = i0nvresstate_none() ; }
-  | i0nvresstate EQGT                   { $$ = $1 ; }
-;
-
 casehead
   : CASE caseinv                        { $$ = casehead_make(0, $1, $2) ; }
   | CASEMINUS caseinv                   { $$ = casehead_make(-1, $1, $2) ; }
   | CASEPLUS caseinv                    { $$ = casehead_make(1, $1, $2) ; }
+;
+
+scasehead
+  : SCASE caseinv                       { $$ = casehead_make(0, $1, $2) ; }
 ;
 
 forhead
@@ -2545,6 +2578,8 @@ d0exp
                                         { $$ = d0exp_sif($1, $2, $4, $6) ; }
   | casehead d0exp OF c0lauseq %prec DEXPCASE
                                         { $$ = d0exp_caseof($1, $2, $3, $4) ; }
+  | scasehead s0exp OF sc0lauseq %prec DEXPCASE
+                                        { $$ = d0exp_scaseof($1, $2, $3, $4) ; }
   | DLRRAISE d0exp %prec DEXPRAISE      { $$ = d0exp_raise($1, $2) ; }
   | LAM f0arg1seq colons0expopt funarrow d0exp %prec DEXPLAM
                                         { $$ = d0exp_lam(0, $1, $2, $3, $4, $5 ) ; }
@@ -2629,7 +2664,20 @@ barc0lauseq
 c0lauseq
   : barc0lauseq                         { $$ = $1 ; }
   | c0lau barc0lauseq                   { $$ = c0laulst_cons($1, $2) ; }
-; 
+;
+
+sc0lau
+  : sp0at EQGT d0exp %prec CLAS         { $$ = sc0lau_make($1, $3) ; }
+;
+
+barsc0lauseq
+  : /* empty */ %prec BARCLASSEQNONE    { $$ = sc0laulst_nil() ; } 
+  | BAR sc0lau barsc0lauseq             { $$ = sc0laulst_cons($2, $3) ; }
+;
+
+sc0lauseq
+  : barsc0lauseq                        { $$ = $1 ; }
+  | sc0lau barsc0lauseq                 { $$ = sc0laulst_cons($1, $2) ; }
 
 /* invariants */
 

@@ -289,6 +289,97 @@ end // end of [s1arg_var_tr_srt]
 
 (* ****** ****** *)
 
+fun sp1at_arg_tr_dn
+  (loc0: loc_t, q: s0taq, id: sym_t, s1as: s1arglst, s2ts: s2rtlst)
+  : s2varlst = begin
+  case+ (s1as, s2ts) of
+  | (list_cons (s1a, s1as), list_cons (s2t, s2ts)) => let
+      val s2v = s1arg_var_tr_srt (s1a, s2t)
+      val s2vs = sp1at_arg_tr_dn (loc0, q, id, s1as, s2ts)
+    in
+      list_cons (s2v, s2vs)
+    end // end of [list_cons, list_cons]
+  | (list_nil (), list_nil ()) => list_nil ()
+  | (_, _) => begin
+      prerr loc0;
+      prerr ": error(2)";
+      prerr ": the static constructor [";
+      $Syn.prerr_s0taq q; $Sym.prerr_symbol id; prerr "] requires ";
+      case+ s1as of list_cons _ => prerr "less" | _ => prerr "more";
+      prerr " arguments.";
+      prerr_newline ();
+      $Err.abort {s2varlst} ()
+    end // end of [list_cons, list_nil]
+end // end of [sp2at_arg_tr_dn]
+
+implement sp1at_tr_dn (sp1t, s2t_pat) = let
+  val loc0 = sp1t.sp1at_loc
+  fn errmsg1
+    (q: s0taq, id: sym_t):<cloref1> sp2at = begin
+    $Loc.prerr_location loc0; prerr ": error(2)";
+    $Deb.debug_prerrf (": %s: sp1at_tr_dn", @(THISFILENAME));
+    prerr ": the static identifier [";
+    $Syn.prerr_s0taq q; $Sym.prerr_symbol id;
+    prerr "] does not refer to a constructor associated with the sort [";
+    prerr s2t_pat; prerr_newline ();
+    $Err.abort {sp2at} ()
+  end // end of [errmsg1]
+  fn errmsg2 
+    (q: s0taq, id: sym_t):<cloref1> sp2at = begin
+    $Loc.prerr_location loc0; prerr ": error(2)";
+    $Deb.debug_prerrf (": %s: sp1at_tr_dn", @(THISFILENAME));
+    prerr ": the static identifier [";
+    $Syn.prerr_s0taq q; $Sym.prerr_symbol id;
+    prerr "] does not refer to a static constructor.";
+    prerr_newline ();
+    $Err.abort {sp2at} ()
+  end // end of [errmsg2]
+  fn errmsg3
+    (q: s0taq, id: sym_t):<cloref1> sp2at = begin
+    $Loc.prerr_location loc0; prerr ": error(2)";
+    $Deb.debug_prerrf (": %s: sp1at_tr_dn", @(THISFILENAME));
+    prerr ": the static identifier [";
+    $Syn.prerr_s0taq q; $Sym.prerr_symbol id; prerr "] is unrecognized.";
+    prerr_newline ();
+    $Err.abort {sp2at} ()
+  end // end of [errmsg3]
+in
+  case+ sp1t.sp1at_node of
+  | SP1Tcon (q, id, s1as) => begin case+ the_s2expenv_find_qua (q, id) of
+    | ~Some_vt s2i => begin case+ s2i of
+      | S2ITEMcst s2cs => let
+          var s2ts_arg: s2rtlst = list_nil ()
+          val s2cs = sel (s2cs, s2t_pat, s2ts_arg) where {
+            fun sel (
+                s2cs: s2cstlst, s2t_pat: s2rt, s2ts_arg: &s2rtlst
+              ) : s2cstlst = case+ s2cs of
+              | S2CSTLSTcons (s2c, s2cs1) => let
+                  val s2t_s2c = s2cst_srt_get s2c in case+ s2t_s2c of
+                  | S2RTfun (s2ts, s2t) => begin case+ 0 of
+                    | _ when s2t_pat <= s2t => (s2ts_arg := s2ts; s2cs)
+                    | _ => sel (s2cs1, s2t_pat, s2ts_arg)
+                    end // end of [S2RTfun]
+                  | _ => sel (s2cs1, s2t_pat, s2ts_arg)
+                end // end of [S2CSTLSTcons]
+              | S2CSTLSTnil () => S2CSTLSTnil ()
+          } // end of [val]
+        in
+          case+ s2cs of
+          | S2CSTLSTcons (s2c, _) => let
+              val s2vs = sp1at_arg_tr_dn (loc0, q, id, s1as, s2ts_arg)
+            in
+              sp2at_con (loc0, s2c, s2vs)
+            end // end of [S2CSTLSTcons]
+          | S2CSTLSTnil () => errmsg1 (q, id)
+        end // end of [S2ITEMcst]
+      | _ => errmsg2 (q, id)
+      end // end of [Some_vt]
+    | ~None_vt () => errmsg3 (q, id)
+  end // end of [SP1Tcon]
+end // end of [sp1at_tr_dn]
+
+(* ****** ****** *)
+
 implement s1exp_tr_dn_bool (s1e) = s1exp_tr_dn (s1e, s2rt_bool)
 
 fun s1explst_tr_dn_bool (s1es: s1explst): s2explst = begin
@@ -530,7 +621,7 @@ end // end of [s1exp_qid_app_tr_up]
 
 (* ****** ****** *)
 
-fn s1exp_id_tr_up
+fn s1exp_qid_tr_up
   (loc0: loc_t, q: $Syn.s0taq, id: sym_t): s2exp = begin
   case+ the_s2expenv_find_qua (q, id) of
   | ~Some_vt s2i => begin case+ s2i of
@@ -548,7 +639,7 @@ fn s1exp_id_tr_up
         end // end of [S2CSTLSTcons]
       | S2CSTLSTnil () => begin // this clause should be unreachable
           prerr "Internal Error: ";
-          prerr "s1exp_id_tr_up: Some: S2ITEMcst: S2CSTLSTnil";
+          prerr "s1exp_qid_tr_up: Some: S2ITEMcst: S2CSTLSTnil";
           prerr_newline ();
           $Err.abort ()
         end // end of [S2CSTLSTnil]
@@ -559,20 +650,20 @@ fn s1exp_id_tr_up
       end // end of [S2ITEMvar]
     | _ => begin
         $Loc.prerr_location loc0;
-        prerr ": s1exp_id_tr_up: s2i = "; prerr s2i; prerr_newline ();
+        prerr ": s1exp_qid_tr_up: s2i = "; prerr s2i; prerr_newline ();
         $Err.abort ()
       end // end of [_]
     end // end of [Some_vt]
   | ~None_vt () => begin
       prerr loc0;
       prerr ": error(2)";
-      $Deb.debug_prerrf (": %s: s1exp_id_tr_up", @(THISFILENAME));
+      $Deb.debug_prerrf (": %s: s1exp_qid_tr_up", @(THISFILENAME));
       prerr ": the static identifier [";
       $Syn.prerr_s0taq q; $Sym.prerr_symbol id; prerr "] is unrecognized.";
       prerr_newline ();
       $Err.abort ()
     end // end of [None_vt]
-end // end of [s1exp_id_tr_up]
+end // end of [s1exp_qid_tr_up]
 
 (* ****** ****** *)
 
@@ -1281,7 +1372,7 @@ in
       prerr_newline ();
       $Err.abort {s2exp} ()
     end // end of [S1Emod]
-  | S1Eqid (q, id) => s1exp_id_tr_up (s1e0.s1exp_loc, q, id)
+  | S1Eqid (q, id) => s1exp_qid_tr_up (s1e0.s1exp_loc, q, id)
   | S1Eread (_v, s1e) => s1exp_read_tr_up (_v, s1e)
   | S1Estruct (ls1es) => begin
       s1exp_struct_tr_up (s1e0.s1exp_loc, ls1es)
@@ -1543,7 +1634,7 @@ implement s1tavarlst_tr (ds) = $Lst.list_map_fun (ds, s1tavar_tr)
 (* ****** ****** *)
 
 fn d1atsrtdec_tr (res: s2rt, d1c: d1atsrtdec): s2cstlst = let
-  fn aux (res: s2rt, d1c: d1atsrtcon): s2cst_t = let
+  fn aux (i: int, res: s2rt, d1c: d1atsrtcon): s2cst_t = let
     val id = d1c.d1atsrtcon_sym
     val arg = s1rtlst_tr d1c.d1atsrtcon_arg
     val s2t = s2rt_fun (arg, res)
@@ -1558,16 +1649,19 @@ fn d1atsrtdec_tr (res: s2rt, d1c: d1atsrtdec): s2cstlst = let
     , None () // argvar
     , None () // def
     ) // end of [s2cst_make]
+    val () = s2cst_tag_set (s2c, i)
   in
     the_s2expenv_add_scst s2c; s2c
   end // end of [aux]
 
-  fun auxlst (res: s2rt, d1cs: d1atsrtconlst): s2cstlst =
+  fun auxlst (i: int, res: s2rt, d1cs: d1atsrtconlst): s2cstlst =
     case+ d1cs of
-    | cons (d1c, d1cs) => S2CSTLSTcons (aux (res, d1c), auxlst (res, d1cs))
+    | cons (d1c, d1cs) => begin
+        S2CSTLSTcons (aux (i, res, d1c), auxlst (i+1, res, d1cs))
+      end
     | nil () => S2CSTLSTnil ()
 in
-  auxlst (res, d1c.d1atsrtdec_con)
+  auxlst (0, res, d1c.d1atsrtdec_con)
 end // end of [d1atsrtdec_tr]
 
 implement d1atsrtdeclst_tr (d1cs): void = let

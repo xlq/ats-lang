@@ -904,6 +904,12 @@ in
     in
       hiexp_refarg (loc0, hit0, refval, freeknd, hie)
     end // end of [D3Erefarg]
+  | D3Escaseof _ => begin
+      $Loc.prerr_location loc0; prerr ": Internal Error";
+      prerr ": the static caseof-expression should have already been erased.";
+      prerr_newline ();
+      $Err.abort {hiexp} ()
+    end // end of [D3Escaseof]
   | D3Esel (d3e, d3ls) => let
       val hit0 = s2exp_tr (0(*deep*), s2e0)
       val hie = d3exp_tr d3e
@@ -935,7 +941,7 @@ in
       prerr ": the static conditional should have already been erased.";
       prerr_newline ();
       $Err.abort {hiexp} ()
-    end
+    end // end of [D3Esif]
   | D3Espawn (d3e) => let
       val hit0 = s2exp_tr (0(*deep*), s2e0)
       val hie = d3exp_tr d3e

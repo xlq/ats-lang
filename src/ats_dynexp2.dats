@@ -734,6 +734,12 @@ implement d2exp_rec (loc, recknd, npf, ld2es) = '{
 , d2exp_typ= None ()
 }
 
+implement d2exp_scaseof (loc, inv, s2e, sc2ls) = '{
+  d2exp_loc= loc
+, d2exp_node= D2Escaseof (inv, s2e, sc2ls)
+, d2exp_typ= None ()
+} // end of [d2exp_scaseof]
+
 implement d2exp_sel (loc, d2e_root, d2ls_path) = '{
   d2exp_loc= loc
 , d2exp_node = D2Esel (d2e_root, d2ls_path)
@@ -946,6 +952,10 @@ implement c2lau_make (loc, p2t, gua, seq, neg, d2e) = '{
 , c2lau_neg= neg
 , c2lau_exp= d2e
 } // end of [c2lau_make]
+
+implement sc2lau_make (loc, sp2t, d2e) = '{
+  sc2lau_loc= loc, sc2lau_pat= sp2t, sc2lau_exp= d2e
+}
 
 (* ****** ****** *)
 

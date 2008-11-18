@@ -157,14 +157,49 @@ end // end of [the_s2varbindmap]
 
 in // in of [local]
 
+implement fprint_the_s2varbindmap {m} (pfout | out) = let
+  val kis = $Map.map_list_pre (!p) where {
+    val (vbox pf | p) = ref_get_view_ptr (the_s2varbindmap)
+  }
+  fun loop (out: &FILE m, kis: List_vt @(stamp_t, s2exp)): void =
+    case+ kis of
+    | ~list_vt_cons (ki, kis) => begin
+         $Stamp.fprint_stamp (pfout | out, ki.0);
+         fprint_string (pfout | out,  " -> ");
+         fprint_s2exp (pfout | out, ki.1);
+         fprint_string (pfout | out,  "\n");
+         loop (out, kis)
+       end // end of [list_vt_cons]
+    | ~list_vt_nil () => ()
+in
+  loop (out, kis)
+end // end of [fprint_the_s2varbindmap]
+
+implement print_the_s2varbindmap () = let
+  val (pf_stdout | ptr_stdout) = stdout_get ()
+  val () = fprint_the_s2varbindmap (file_mode_lte_w_w | !ptr_stdout)
+in
+  stdout_view_set (pf_stdout | (*none*))
+end // end of [print_the_s2varbindmap]
+
+implement prerr_the_s2varbindmap () = let
+  val (pf_stderr | ptr_stderr) = stderr_get ()
+  val () = fprint_the_s2varbindmap (file_mode_lte_w_w | !ptr_stderr)
+in
+  stderr_view_set (pf_stderr | (*none*))
+end // end of [prerr_the_s2varbindmap]
+
+//
+
 implement the_s2varbindmap_add (s2v, s2e) = let
+  val stamp = s2var_stamp_get (s2v)
 (*
   val () = begin
     prerr "the_s2varbindmap_add: s2v = "; prerr s2v; prerr_newline ();
     prerr "the_s2varbindmap_add: s2e = "; prerr s2e; prerr_newline ();
+    prerr "the_s2varbindmap_add: stamp = "; $Stamp.prerr_stamp stamp; prerr_newline ();
   end
 *)
-  val stamp = s2var_stamp_get (s2v)
   val () = let
     val (vbox pf | p) = ref_get_view_ptr (the_s2varbindmap)
 (*
@@ -180,10 +215,10 @@ implement the_s2varbindmap_add (s2v, s2e) = let
 *)
   in
     $Map.map_insert (!p, stamp, s2e)
-  end
+  end // end of [val]
 in
   !s2varbind_svs := list_cons (s2v, !s2varbind_svs)
-end
+end // end of [the_s2varbindmap_add]
 
 implement the_s2varbindmap_find (s2v) = let
 (*
@@ -198,6 +233,11 @@ in
 end // end of [the_s2varbindmap_find]
 
 implement the_s2varbindmap_pop () = let
+(*
+  val () = begin
+    prerr "the_s2varbindmap_pop: the_s2varbindmap =\n"; prerr_the_s2varbindmap ()
+  end
+*)
   fun aux {n:nat} {l:addr} .<n>.
     (pf: !s2varbindmap @ l | p: ptr l, s2vs: list (s2var_t, n)):<> void =
     case+ s2vs of
@@ -905,7 +945,7 @@ implement trans3_env_hypo_add_prop (loc, s2p) = let
   val (vbox pf | p) = ref_get_view_ptr the_s3itemlst
 in
   !p := list_vt_cons (S3ITEMhypo h3p, !p)
-end
+end // end of [trans3_env_hypo_add_prop]
 
 implement trans3_env_hypo_add_proplst (loc, s2ps) = begin
   case+ s2ps of
@@ -947,7 +987,7 @@ implement trans3_env_hypo_add_eqeq (loc, s2e1, s2e2) = let
   val (vbox pf | p) = ref_get_view_ptr the_s3itemlst
 in
   !p := list_vt_cons (S3ITEMhypo h3p, !p)
-end
+end // end of [trans3_env_hypo_add_eqeq]
 
 implement trans3_env_hypo_add_s2qualst (loc, s2vpss) = begin
   case+ s2vpss of
@@ -955,7 +995,7 @@ implement trans3_env_hypo_add_s2qualst (loc, s2vpss) = begin
       trans3_env_add_svarlst s2vps.0;
       trans3_env_hypo_add_proplst (loc, s2vps.1);
       trans3_env_hypo_add_s2qualst (loc, s2vpss)
-    end
+    end // end of [list_cons]
   | list_nil () => ()
 end // end of [trans3_env_hypo_add_s2qualst]
 

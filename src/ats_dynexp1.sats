@@ -265,7 +265,7 @@ and d1exp_node =
       (s1exp, d1explst)
   | D1Earrsub of (* array subscription *)
       (d1exp, loc_t(*ind*), d1explstlst)
-  | D1Ecaseof of (* dynamic case-expression *)
+  | D1Ecaseof of (* dynamic caseof-expression *)
       (int(*kind*), i1nvresstate, d1explst, c1laulst)
   | D1Echar of (* dynamic character *)
       char
@@ -326,6 +326,8 @@ and d1exp_node =
       d1exp
   | D1Erec of (* dynamic record expression *)
       (int (*recknd*), labd1explst)
+  | D1Escaseof of (* static caseof-expression *)
+      (i1nvresstate, s1exp, sc1laulst)
   | D1Esel of (* dynamic selection *)
       (int (*ptr*), d1exp, d1lab)
   | D1Eseq of (* dynamic sequencing *)
@@ -410,6 +412,16 @@ and c1lau = '{
 }
 
 and c1laulst = List c1lau
+
+(* ****** ****** *)
+
+and sc1lau = '{
+  sc1lau_loc= loc_t
+, sc1lau_pat= sp1at
+, sc1lau_exp= d1exp
+}
+
+and sc1laulst = List sc1lau
 
 (* ****** ****** *)
 
@@ -734,6 +746,9 @@ fun d1exp_raise (_: loc_t, _: d1exp): d1exp
 
 fun d1exp_rec (_: loc_t, kind: int, _: labd1explst): d1exp
 
+fun d1exp_scaseof
+  (_: loc_t, res: i1nvresstate, s1e: s1exp, sc1ls: sc1laulst): d1exp
+
 fun d1exp_sel (_: loc_t, kind: int, root: d1exp, lab: d1lab): d1exp
 
 fun d1exp_seq (_: loc_t, seq: d1explst): d1exp
@@ -787,6 +802,8 @@ fun m1atch_make (_: loc_t, d1e: d1exp, op1t: p1atopt): m1atch
 fun c1lau_make
   (_: loc_t, _: p1at, gua: m1atchlst, seq: int, neg: int, body: d1exp)
   : c1lau
+
+fun sc1lau_make (_: loc_t, _: sp1at, body: d1exp): sc1lau
 
 (* ****** ****** *)
 

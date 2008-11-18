@@ -72,6 +72,9 @@ implement compare_stamp_stamp (s1, s2) =
 
 implement fprint_stamp (pf | out, s) = $Cnt.fprint_count (pf | out, s)
 
+implement print_stamp (s) = print_mac (fprint_stamp, s)
+implement prerr_stamp (s) = prerr_mac (fprint_stamp, s)
+
 (* ****** ****** *)
 
 implement tostring_stamp (s) = $Cnt.tostring_count (s)

@@ -198,6 +198,30 @@ fun d1atarg_idsrt (_: loc_t, _: sym_t, _: s1rtpol): d1atarg
 
 (* ****** ****** *)
 
+typedef s1arg = '{
+  s1arg_loc= loc_t, s1arg_sym= sym_t, s1arg_srt= s1rtopt
+}
+
+and s1arglst = List s1arg
+and s1arglstlst = List s1arglst
+
+typedef s1var = '{
+  s1var_loc= loc_t, s1var_sym= sym_t, s1var_srt= s1rt
+}
+
+and s1varlst = List s1var
+
+(* ****** ****** *)
+
+datatype sp1at_node =
+  | SP1Tcon of (s0taq, sym_t, s1arglst)
+
+where sp1at = '{
+  sp1at_loc= loc_t, sp1at_node= sp1at_node
+}
+
+(* ****** ****** *)
+
 datatype s1exp_node =
   | S1Eann of (* ascribed static expression *)
       (s1exp, s1rt)
@@ -288,19 +312,6 @@ and s1qua = '{
 and s1qualst = List s1qua
 and s1qualstlst = List s1qualst
 
-and s1arg = '{
-  s1arg_loc= loc_t, s1arg_sym= sym_t, s1arg_srt= s1rtopt
-}
-
-and s1arglst = List s1arg
-and s1arglstlst = List s1arglst
-
-and s1var = '{
-  s1var_loc= loc_t, s1var_sym= sym_t, s1var_srt= s1rt
-}
-
-and s1varlst = List s1var
-
 (* ****** ****** *)
 
 fun fprint_s1exp {m:file_mode}
@@ -367,6 +378,11 @@ typedef s1exparglst = List s1exparg
 (* ****** ****** *)
 
 fun s1arg_make (_: loc_t, _: sym_t, _: s1rtopt): s1arg
+
+fun sp1at_arg (_: loc_t, arg: s1arg): sp1at
+fun sp1at_con (_: loc_t, q: s0taq, id: sym_t, args: s1arglst): sp1at
+
+(* ****** ****** *)
 
 fun s1exp_ann (_: loc_t, _: s1exp, _: s1rt): s1exp
 fun s1exp_any (_: loc_t): s1exp

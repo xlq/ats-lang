@@ -1058,7 +1058,7 @@ implement s2explst_hypo_equal_solve (loc0, s2es1, s2es2) = begin
   | (nil (), nil ()) => ()
   | (_, _) => begin
       trans3_env_hypo_add_prop (loc0, s2exp_bool false)
-    end
+    end // end of [_, _]
 end // end of [s2explst_hypo_equal_solve]
 
 (* ****** ****** *)

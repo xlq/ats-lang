@@ -70,6 +70,9 @@ fun fprint_stamp {m:file_mode}
   (pf_mod: file_mode_lte (m, w) | fil: &FILE m, s: stamp_t): void
 overload fprint with fprint_stamp
 
+fun print_stamp (s: stamp_t): void
+fun prerr_stamp (s: stamp_t): void
+
 fun tostring_stamp (s: stamp_t): string
 
 (* ****** ****** *)

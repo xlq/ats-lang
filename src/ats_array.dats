@@ -41,26 +41,54 @@ staload "ats_array.sats"
 
 (* ****** ****** *)
 
+implement{a} array_ptr_initialize_elt (A0, n0, x0) = let
+  fun aux {n:nat} {l:addr} .<n>.
+    (pf: array_v (a?, n, l) | p: ptr l, n: int n, x: a)
+    :<> (array_v (a, n, l) | void) =
+    if n > 0 then let
+      prval (pf1, pf2) = array_v_uncons {a?} (pf)
+      val () = !p := x
+      val (pf2 | ()) = aux (pf2 | p + sizeof<a>, n - 1, x)
+    in
+      (array_v_cons {a} (pf1, pf2) | ())
+    end else let
+      prval () = array_v_unnil (pf) in (array_v_nil {a} () | ())
+    end // end of [if]
+  prval pf = view@ A0
+  val (pf | ()) = aux (pf | &A0, n0, x0)
+  prval () = view@ A0 := pf
+in
+  // empty
+end // end of [array_ptr_initialize_elt]
+    
+(* ****** ****** *)
+
+implement{a} array_ptr_make_elt (n, x) = let
+  val (pf_gc, pf | p) = array_ptr_alloc_tsz {a} (n, sizeof<a>)
+  val () = array_ptr_initialize_elt<a> (!p, n, x)
+in
+  (pf_gc, pf | p)
+end // end of [array_ptr_make_elt]
+
+(* ****** ****** *)
+
 implement{a} array_ptr_initialize_lst (A0, n0, xs0) = let
-
-fun aux {n:nat} {l:addr} .<n>.
-  (pf: array_v (a?, n, l) | p: ptr l, n: int n, xs: list (a, n))
-  :<> (array_v (a, n, l) | void) =
-  if n > 0 then let
-    prval (pf1, pf2) = array_v_uncons {a?} (pf)
-    val+ list_cons (x, xs) = xs
-    val () = !p := x
-    val (pf2 | ans) = aux (pf2 | p+sizeof<a>, n-1, xs)
-  in
-    (array_v_cons {a} (pf1, pf2) | ans)
-  end else let
-    prval () = array_v_unnil {a?} pf
-  in
-    (array_v_nil {a} () | ())
-  end
-
-val (pf | ()) = aux (view@ A0 | &A0, n0, xs0)
-
+  fun aux {n:nat} {l:addr} .<n>.
+    (pf: array_v (a?, n, l) | p: ptr l, n: int n, xs: list (a, n))
+    :<> (array_v (a, n, l) | void) =
+    if n > 0 then let
+      prval (pf1, pf2) = array_v_uncons {a?} (pf)
+      val+ list_cons (x, xs) = xs
+      val () = !p := x
+      val (pf2 | ans) = aux (pf2 | p+sizeof<a>, n-1, xs)
+    in
+      (array_v_cons {a} (pf1, pf2) | ans)
+    end else let
+      prval () = array_v_unnil {a?} pf
+    in
+      (array_v_nil {a} () | ())
+    end
+  val (pf | ()) = aux (view@ A0 | &A0, n0, xs0)
 in
   view@ A0 := pf
 end // end of [array_ptr_initialize_lst]

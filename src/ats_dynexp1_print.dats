@@ -468,6 +468,9 @@ in
       fprint1_string (pf | out, "...");
       strpr ")"
     end // end of [D1Erec]
+  | D1Escaseof _ => begin
+      strpr "D1Escaseof("; fprint1_string (pf | out, "..."); strpr ")"
+    end // end of [D1Escaseof]
   | D1Esel (knd, d1e, d1l) => begin
       strpr "D1Esel(";
       fprint1_int (pf | out, knd);

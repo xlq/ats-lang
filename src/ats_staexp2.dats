@@ -47,6 +47,7 @@
 
 staload Err = "ats_error.sats"
 staload IntInf = "ats_intinf.sats"
+staload Lst = "ats_list.sats"
 staload Stamp = "ats_stamp.sats"
 staload Sym = "ats_symbol.sats"
 
@@ -203,6 +204,15 @@ implement un_s2rt_tup (s2t) = case+ s2t of
 implement s2arg_make (loc, id, os2t) = '{
   s2arg_loc= loc, s2arg_sym= id, s2arg_srt= os2t
 }
+
+implement sp2at_con (loc, s2c, s2vs_arg) = let
+  val s2e_pat = s2exp_cstapp (s2c, s2es_arg) where {
+    val s2es_arg = $Lst.list_map_fun (s2vs_arg, s2exp_var)
+  } // end of [val]
+  val sp2t = SP2Tcon (s2c, s2vs_arg)
+in '{
+  sp2at_loc= loc, sp2at_exp= s2e_pat, sp2at_node = sp2t
+} end // end of [sp2at_con]
 
 (* ****** ****** *)
 

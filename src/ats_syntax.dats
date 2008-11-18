@@ -776,17 +776,29 @@ in '{
 
 (* ****** ****** *)
 
+(* static patterns *)
+
+implement sp0at_con (qid, xs, t_end) = let
+  val loc = combine (qid.sqi0de_loc, t_end.t0kn_loc)
+in '{
+  sp0at_loc= loc, sp0at_node= SP0Tcon (qid, xs)
+} end // end of [s0pat_con]
+
+(* ****** ****** *)
+
 (* static expressions *)
 
-implement s0exp_ann (s0e, s0t) =
-  let val loc = combine (s0e.s0exp_loc, s0t.s0rt_loc) in
-    '{ s0exp_loc= loc, s0exp_node= S0Eann (s0e, s0t) }
-  end
+implement s0exp_ann (s0e, s0t) = let
+  val loc = combine (s0e.s0exp_loc, s0t.s0rt_loc)
+in '{
+  s0exp_loc= loc, s0exp_node= S0Eann (s0e, s0t)
+} end // end of [s0exp_ann]
 
-implement s0exp_app (s0e_fun, s0e_arg) =
-  let val loc = combine (s0e_fun.s0exp_loc, s0e_arg.s0exp_loc) in
-    '{ s0exp_loc= loc, s0exp_node= S0Eapp (s0e_fun, s0e_arg) }
-  end
+implement s0exp_app (s0e_fun, s0e_arg) = let
+  val loc = combine (s0e_fun.s0exp_loc, s0e_arg.s0exp_loc)
+in '{
+  s0exp_loc= loc, s0exp_node= S0Eapp (s0e_fun, s0e_arg)
+} end // end of [s0exp_app]
 
 implement s0exp_char (c) = '{
   s0exp_loc= c.c0har_loc, s0exp_node= S0Echar (c.c0har_val)
@@ -1492,19 +1504,17 @@ implement d0exp_char (c) = '{
 }
 
 implement d0exp_caseof (hd, d0e, t_of, c0ls) = let
-
-fun aux_loc (c0l: c0lau, c0ls: c0laulst):<cloptr1> loc_t =
-  case+ c0ls of
+  fun aux_loc (c0l: c0lau, c0ls: c0laulst):<cloptr1> loc_t =
+    case+ c0ls of
     | cons (c0l, c0ls) => aux_loc (c0l, c0ls)
     | nil () => combine (hd.casehead_loc, c0l.c0lau_loc)
 
-val loc = case+ c0ls of
-  | cons (c0l, c0ls) => aux_loc (c0l, c0ls)
-  | nil () => combine (hd.casehead_loc, t_of.t0kn_loc)
-
+  val loc = case+ c0ls of
+    | cons (c0l, c0ls) => aux_loc (c0l, c0ls)
+    | nil () => combine (hd.casehead_loc, t_of.t0kn_loc)
 in
   '{ d0exp_loc= loc, d0exp_node= D0Ecaseof (hd, d0e, c0ls) }
-end // end of [d0exp_case]
+end // end of [d0exp_caseof]
 
 implement d0exp_crypt (knd(*de/en*), t_crypt) = '{
   d0exp_loc= t_crypt.t0kn_loc, d0exp_node= D0Ecrypt knd
@@ -1720,6 +1730,19 @@ implement d0exp_rec (flat, t_beg, ld0es, t_end) =
     '{ d0exp_loc= loc, d0exp_node= D0Erec (flat, ld0es) }
   end
 
+implement d0exp_scaseof (hd, s0e, t_of, sc0ls) = let
+  fun aux_loc (sc0l: sc0lau, sc0ls: sc0laulst):<cloptr1> loc_t =
+    case+ sc0ls of
+    | cons (sc0l, sc0ls) => aux_loc (sc0l, sc0ls)
+    | nil () => combine (hd.casehead_loc, sc0l.sc0lau_loc)
+
+  val loc = case+ sc0ls of
+    | cons (sc0l, sc0ls) => aux_loc (sc0l, sc0ls)
+    | nil () => combine (hd.casehead_loc, t_of.t0kn_loc)
+in
+  '{ d0exp_loc= loc, d0exp_node= D0Escaseof (hd, s0e, sc0ls) }
+end // end of [d0exp_case]
+
 implement d0exp_sel_lab (sel, lab) =
   let val loc = combine (sel.s0elop_loc, lab.l0ab_loc) in
     '{ d0exp_loc= loc, d0exp_node= D0Esel_lab (sel.s0elop_knd, lab.l0ab_lab) }
@@ -1917,6 +1940,17 @@ in '{
 
 implement c0laulst_nil () = nil ()
 implement c0laulst_cons (x, xs) = cons (x, xs)
+
+//
+
+implement sc0lau_make (sp0t, d0e) = let
+  val loc = combine (sp0t.sp0at_loc, d0e.d0exp_loc)
+in '{
+  sc0lau_loc= loc, sc0lau_pat= sp0t, sc0lau_body= d0e
+} end // end of [sc0lau_make]
+
+implement sc0laulst_nil () = nil ()
+implement sc0laulst_cons (x, xs) = cons (x, xs)
 
 (* ****** ****** *)
 

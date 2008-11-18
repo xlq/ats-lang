@@ -392,6 +392,9 @@ in
       fprint_d3exp (pf | out, d3e);
       strpr ")"
     end // end of [D3Erefarg]
+  | D3Escaseof (s2e, sc3ls) => begin
+      fprint1_string (pf | out, "D3Escaseof(...)")
+    end // end of [D3Escaseof]
   | D3Esel (d3e, d3ls) => begin
       strpr "D3Esel(";
       fprint_d3exp (pf | out, d3e);

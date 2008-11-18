@@ -2165,10 +2165,15 @@ val d3e0 = (case+ d2e0.d2exp_node of
   | D2Erec (recknd, npf, ld2es) => begin
       d2exp_rec_tr_up (loc0, recknd, npf, ld2es)
     end // end of [D2Erec]
+  | D2Escaseof (res, s2e_val, sc2ls) => let
+      val s2e_scase = s2exp_Var_make_srt (loc0, s2rt_prop)
+    in
+      d2exp_scaseof_tr_dn (loc0, res, s2e_val, sc2ls, s2e_scase)
+    end // end of [D2Escaseof]
   | D2Esel (d2e, d2ls) => d2exp_sel_tr_up (loc0, d2e, d2ls)
   | D2Eseq d2es => d2exp_seq_tr_up (loc0, d2es)
   | D2Esif (res, s2p_cond, d2e_then, d2e_else) => let
-      val s2e_sif: s2exp = s2exp_Var_make_srt (loc0, s2rt_prop)
+      val s2e_sif = s2exp_Var_make_srt (loc0, s2rt_prop)
     in
       d2exp_sif_tr_dn (loc0, res, s2p_cond, d2e_then, d2e_else, s2e_sif)
     end // end of [D2Esif]

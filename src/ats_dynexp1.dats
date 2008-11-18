@@ -380,6 +380,10 @@ implement d1exp_rec (loc, recknd, ld1es) = '{
   d1exp_loc= loc, d1exp_node= D1Erec (recknd, ld1es)
 }
 
+implement d1exp_scaseof (loc, inv, s1e, sc1ls) = '{
+  d1exp_loc= loc, d1exp_node = D1Escaseof (inv, s1e, sc1ls)
+} // end of [d1exp_scaseof]
+
 implement d1exp_sel (loc, knd, d1e, d1l) = '{
   d1exp_loc= loc, d1exp_node= D1Esel (knd, d1e, d1l)
 }
@@ -504,6 +508,10 @@ implement c1lau_make (loc, p1ts, gua, seq, neg, body) = '{
 , c1lau_neg= neg
 , c1lau_exp= body
 } // end of [c1lau_make]
+
+implement sc1lau_make (loc, sp1t, body) = '{
+  sc1lau_loc= loc, sc1lau_pat= sp1t, sc1lau_exp= body
+}
 
 (* ****** ****** *)
 

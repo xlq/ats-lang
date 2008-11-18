@@ -58,7 +58,9 @@ fun s1arglstlst_var_tr (s1ass: s1arglstlst): s2varlstlst
 
 fun s1arg_var_tr_srt (s1a: s1arg, s2t: s2rt): s2var_t
 
-//
+fun sp1at_tr_dn (sp1t: sp1at, s2t_pat: s2rt): sp2at
+
+(* ****** ****** *)
 
 fun s1exp_tr_up (s1e: s1exp): s2exp
 fun s1explst_tr_up (s1es: s1explst): s2explst

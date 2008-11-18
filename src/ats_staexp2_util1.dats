@@ -1005,6 +1005,11 @@ end // end of [s2zexp_make_s2exp]
 
 (* ****** ****** *)
 
+implement s2cstlst_length (xs) = loop (xs, 0) where {
+  fun loop (xs: s2cstlst, j: Nat): Nat = case+ xs of
+    | S2CSTLSTcons (_, xs) => loop (xs, j+1) | S2CSTLSTnil () => j
+} // end of [s2cstlst_length]
+
 implement s2cstlst_append (xs, ys) = case+ xs of
   | S2CSTLSTcons (x, xs) => S2CSTLSTcons (x, s2cstlst_append (xs, ys))
   | S2CSTLSTnil () => ys

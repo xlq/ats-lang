@@ -73,6 +73,7 @@ typedef s2cst_struct = struct { (* builtin or abstract *)
 , s2cst_sup= s2cstopt // parent if any
 , s2cst_sVarset= s2Varset_t // for occurrence checks
 , s2cst_stamp= stamp_t // unique stamp
+, s2cst_tag= int // tag >= 0 if associated with a datasort
 }
 
 fun s2rt_arity_list (s2t: s2rt): List int = case+ s2t of
@@ -112,7 +113,8 @@ p->s2cst_conlst := None ();
 p->s2cst_def := def;
 p->s2cst_sup := S2CSTOPTnone ();
 p->s2cst_sVarset := s2Varset_nil;
-p->s2cst_stamp := stamp
+p->s2cst_stamp := stamp;
+p->s2cst_tag := (~1);
 end
 
 val (pfbox | ()) = vbox_make_view_ptr_gc (pf_gc, pf | p)
@@ -193,6 +195,12 @@ implement s2cst_stamp_get (s2c) =
 
 implement s2cst_stamp_set (s2c, stamp) =
   let val (vbox pf | p) = s2c in p->s2cst_stamp := stamp end
+
+implement s2cst_tag_get (s2c) =
+  let val (vbox pf | p) = s2c in p->s2cst_tag end
+
+implement s2cst_tag_set (s2c, tag) =
+  let val (vbox pf | p) = s2c in p->s2cst_tag := tag end
 
 (* ****** ****** *)
 

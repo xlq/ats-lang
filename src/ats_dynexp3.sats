@@ -199,7 +199,7 @@ and d3exp_node =
       (d3exp, d3lab1lst, d3exp)
   | D3Eassgn_var of (* assignment to a variable *)
       (d2var_t, d3lab1lst, d3exp)
-  | {n:nat} D3Ecaseof of (* linear case-expressions *)
+  | {n:nat} D3Ecaseof of (* dynamic caseof-expression *)
       (int(*kind*), d3explst n, c3laulst n)
   | D3Echar of char (* dynamic character *)
   | D3Econ of (* dynamic constructor *)
@@ -257,6 +257,8 @@ and d3exp_node =
       // refval=1/0: call-by-ref/val argument
       // freeknd=1/0: to be freed or not after call
       (int(*refval*), int(*freeknd*), d3exp) 
+  | D3Escaseof of (* static caseof-expression *)
+      (s2exp, sc3laulst)
   | D3Esel of (* dynamic record selection *)
       (d3exp, d3lab1lst)
   | D3Esel_ptr of (* dynamic linear record ptr selection *)
@@ -352,6 +354,14 @@ and c3lau = [n:nat] c3lau n
 
 and c3laulst (n:int) = List (c3lau n)
 and c3laulst = [n:nat] c3laulst n
+
+and sc3lau = '{ (* type for static clauses *)
+  sc3lau_loc= loc_t
+, sc3lau_pat= sp2at // static pattern
+, sc3lau_exp= d3exp
+}
+
+and sc3laulst = List sc3lau
 
 (* ****** ****** *)
 
@@ -554,6 +564,9 @@ fun d3exp_rec
 fun d3exp_refarg
   (_: loc_t, _: s2exp, refval: int, freeknd: int, _: d3exp): d3exp
 
+fun d3exp_scaseof
+  (_: loc_t, _: s2exp, _val: s2exp, _: sc3laulst): d3exp
+
 fun d3exp_sel (_: loc_t, _: s2exp, root: d3exp, path: d3lab1lst): d3exp
 
 fun d3exp_sel_ptr
@@ -621,6 +634,8 @@ fun c3lau_make {n:nat}
    seq: int,
    neg: int,
    exp: d3exp): c3lau n
+
+fun sc3lau_make (_: loc_t, sp2t: sp2at, exp: d3exp): sc3lau
 
 (* ****** ****** *)
 

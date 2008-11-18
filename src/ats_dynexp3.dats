@@ -233,6 +233,15 @@ fun c3laulst_eff_union (s2fe: s2eff, c3ls: c3laulst): s2eff =
       c3laulst_eff_union (d3exp_eff_union (s2fe, c3l.c3lau_exp), c3ls)
     end
   | nil () => s2fe
+// end of [c3laulst_eff_union]
+
+fun sc3laulst_eff_union (s2fe: s2eff, sc3ls: sc3laulst): s2eff =
+  case+ sc3ls of
+  | cons (sc3l, sc3ls) => begin
+      sc3laulst_eff_union (d3exp_eff_union (s2fe, sc3l.sc3lau_exp), sc3ls)
+    end
+  | nil () => s2fe
+// end of [sc3laulst_eff_union]
 
 fun v3aldeclst_eff_union (s2fe: s2eff, d3cs: v3aldeclst): s2eff =
   case+ d3cs of
@@ -240,6 +249,7 @@ fun v3aldeclst_eff_union (s2fe: s2eff, d3cs: v3aldeclst): s2eff =
       v3aldeclst_eff_union (d3exp_eff_union (s2fe, d3c.v3aldec_def), d3cs)
     end
   | nil () => s2fe
+// end of [v3aldeclst_eff_union]
 
 fun v3ardeclst_eff_union (s2fe: s2eff, d3cs: v3ardeclst): s2eff =
   case+ d3cs of
@@ -250,6 +260,7 @@ fun v3ardeclst_eff_union (s2fe: s2eff, d3cs: v3ardeclst): s2eff =
       | None () => v3ardeclst_eff_union (s2fe, d3cs)
     end
   | nil () => s2fe
+// end of [v3ardeclst_eff_union]
 
 fun d3ec_eff_union (s2fe: s2eff, d3c: d3ec): s2eff = begin
   case+ d3c.d3ec_node of
@@ -569,6 +580,15 @@ implement d3exp_refarg (loc, s2e, refval, freeknd, d3e) = '{
 , d3exp_node= D3Erefarg (refval, freeknd, d3e)
 } // end of [d3exp_refarg]
 
+implement d3exp_scaseof (loc, s2e, s2e_val, sc3ls) = let
+  val s2fe = S2EFFnil ()
+  val s2fe = sc3laulst_eff_union (s2fe, sc3ls)
+in '{
+  d3exp_loc= loc
+, d3exp_eff= s2fe, d3exp_typ= s2e
+, d3exp_node= D3Escaseof (s2e_val, sc3ls)
+} end // end of [d3exp_scaseof]
+
 implement d3exp_sel (loc, s2e, root, path) = let
   val s2fe = d3lab1lst_eff_union (root.d3exp_eff, path)
 in '{
@@ -742,6 +762,10 @@ implement c3lau_make (loc, p3ts, gua, seq, neg, d3e) = '{
 , c3lau_gua= gua, c3lau_seq= seq, c3lau_neg= neg
 , c3lau_exp= d3e
 } // end of [c3lau_make]
+
+implement sc3lau_make (loc, sp2t, d3e) = '{
+  sc3lau_loc= loc, sc3lau_pat= sp2t, sc3lau_exp= d3e
+} // end of [sc3lau_make]
 
 (* ****** ****** *)
 

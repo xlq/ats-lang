@@ -495,6 +495,25 @@ implement d0atsrtdeclst_tr (ds) = $Lst.list_map_fun (ds, d0atsrtdec_tr)
 
 (* ****** ****** *)
 
+fn s0arg_tr (s0a: s0arg): s1arg = let
+  val res = s0rtopt_tr s0a.s0arg_srt
+in
+  s1arg_make (s0a.s0arg_loc, s0a.s0arg_sym, res)
+end // end of [s0arg_tr]
+
+implement s0arglst_tr (s0as) = $Lst.list_map_fun (s0as, s0arg_tr)
+implement s0arglstlst_tr (s0ass) = $Lst.list_map_fun (s0ass, s0arglst_tr)
+
+implement sp0at_tr (sp0t) = begin case+ sp0t.sp0at_node of
+  | SP0Tcon (qid, s0as) => let
+      val s1as = s0arglst_tr s0as
+    in
+      sp1at_con (sp0t.sp0at_loc, qid.sqi0de_qua, qid.sqi0de_sym, s1as)
+    end // end of [SP0Tcon]
+end // end of [sp0at_tr]
+
+(* ****** ****** *)
+
 // translation of static expressions
 
 typedef s1expitm = $Fix.item s1exp
@@ -538,15 +557,6 @@ val s1expitm_backslash : s1expitm = begin
 end // end of [s1expitm_backslash]
 
 (* ****** ****** *)
-
-fn s0arg_tr (s0a: s0arg): s1arg = let
-  val res = s0rtopt_tr s0a.s0arg_srt
-in
-  s1arg_make (s0a.s0arg_loc, s0a.s0arg_sym, res)
-end // end of [s0arg_tr]
-
-implement s0arglst_tr (s0as) = $Lst.list_map_fun (s0as, s0arg_tr)
-implement s0arglstlst_tr (s0ass) = $Lst.list_map_fun (s0ass, s0arglst_tr)
 
 fn s0qua_tr (s0q: s0qua): s1qua = begin
   case+ s0q.s0qua_node of

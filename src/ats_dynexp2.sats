@@ -549,7 +549,7 @@ and d2exp_node =
       (d2sym (*[] overloading*), d2exp, loc_t(*ind*), d2explstlst)
   | D2Eassgn of (* assignment *)
       (d2exp(*left*), d2exp(*right*))
-  | {n:nat} D2Ecaseof of ( // dynamic case-expression
+  | {n:nat} D2Ecaseof of ( // dynamic caseof-expression
       int(*kind*), i2nvresstate, int n, d2explst n, c2laulst n
     ) // end of [D2Ecaseof]
   | D2Echar of (* dynamic character *)
@@ -614,6 +614,9 @@ and d2exp_node =
       d2exp
   | D2Erec of (* dynamic record expression *)
       (int (*recknd*), int(*npf*), labd2explst)
+  | D2Escaseof of ( // static caseof-expression
+      i2nvresstate, s2exp, sc2laulst
+    ) // end of [D2Escaseof]
   | D2Esel of (* record selection *)
       (d2exp, d2lablst)
   | D2Eseq of (* dynamic expression sequence *)
@@ -724,13 +727,21 @@ and c2lau (n:int) = '{
 , c2lau_seq= int
 , c2lau_neg= int
 , c2lau_exp= d2exp
-}
+} // end of [c2lau]
 
 and c2lau = [n:nat] c2lau n
 
 and c2laulst (n:int) = List (c2lau n)
 
 and c2laulst = [n:nat] c2laulst n
+
+and sc2lau = '{
+  sc2lau_loc= loc_t
+, sc2lau_pat= sp2at
+, sc2lau_exp= d2exp
+} // end of [sc2lau]
+
+and sc2laulst = List (sc2lau)
 
 (* ****** ****** *)
 
@@ -1032,6 +1043,9 @@ fun d2exp_raise (_: loc_t, _: d2exp): d2exp
 
 fun d2exp_rec (_: loc_t, kind: int, npf: int, _: labd2explst): d2exp
 
+fun d2exp_scaseof
+  (_: loc_t, res: i2nvresstate, s2e: s2exp, sc2ls: sc2laulst): d2exp
+
 fun d2exp_sel (_: loc_t, root: d2exp, path: d2lablst): d2exp
 fun d2exp_sel_ptr (_: loc_t, root: d2exp, lab: d2lab): d2exp
 
@@ -1095,6 +1109,8 @@ fun m2atch_make (_: loc_t, _: d2exp, _: p2atopt): m2atch
 fun c2lau_make {n:nat}
   (_: loc_t, _: p2atlst n, gua: m2atchlst, seq: int, neg: int, exp: d2exp)
   : c2lau n
+
+fun sc2lau_make (_: loc_t, sp2t: sp2at, exp: d2exp): sc2lau
 
 (* ****** ****** *)
 

@@ -55,14 +55,16 @@ fun s0rt_tr (_: $Syn.s0rt): $SEXP.s1rt
 fun s0rtlst_tr (_: $Syn.s0rtlst): $SEXP.s1rtlst
 fun s0rtopt_tr (_: $Syn.s0rtopt): $SEXP.s1rtopt
 
+fun s0arglst_tr (s0as: $Syn.s0arglst): $SEXP.s1arglst
+fun s0arglstlst_tr (s0ass: $Syn.s0arglstlst): $SEXP.s1arglstlst
+
+fun sp0at_tr (sp0t: $Syn.sp0at): $SEXP.sp1at
+
 fun s0exp_tr (_: $Syn.s0exp): $SEXP.s1exp
 fun s0explst_tr (_: $Syn.s0explst): $SEXP.s1explst
 fun s0expopt_tr (_: $Syn.s0expopt): $SEXP.s1expopt
 fun s0explstlst_tr (_: $Syn.s0explstlst): $SEXP.s1explstlst
 fun labs0explst_tr (_: $Syn.labs0explst): $SEXP.labs1explst
-
-fun s0arglst_tr (s0as: $Syn.s0arglst): $SEXP.s1arglst
-fun s0arglstlst_tr (s0ass: $Syn.s0arglstlst): $SEXP.s1arglstlst
 
 fun s0qualst_tr (s0qs: $Syn.s0qualst): $SEXP.s1qualst
 fun s0qualstlst_tr (s0qss: $Syn.s0qualstlst): $SEXP.s1qualstlst

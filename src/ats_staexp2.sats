@@ -105,6 +105,7 @@ and s2itemopt_vt = Option_vt s2item
 
 (* ****** ****** *)
 
+fun s2cstlst_length (_: s2cstlst): Nat
 fun s2cstlst_append (_: s2cstlst, _: s2cstlst): s2cstlst
 fun s2cstlst_reverse (_: s2cstlst): s2cstlst
 
@@ -136,6 +137,9 @@ and s2rt =
 and s2rtext = (* extended sort *)
   | S2TEsrt of s2rt
   | S2TEsub of (s2var_t, s2rt, s2explst)
+
+and sp2at_node =
+  | SP2Tcon of (s2cst_t, s2varlst)
 
 and s2kexp =
   | S2KEany
@@ -291,6 +295,8 @@ and s2kexplst = List s2kexp
 and s2lablst = List s2lab
 and s2lablst_vt = List_vt s2lab
 
+(* ****** ****** *)
+
 and s2exp = '{
   s2exp_srt= s2rt, s2exp_node= s2exp_node
 }
@@ -301,6 +307,12 @@ and s2expopt = Option s2exp
 and s2expopt_vt = Option_vt s2exp
 and s2explstlst = List s2explst
 and s2explstopt = Option s2explst
+
+(* ****** ****** *)
+
+and sp2at = '{
+  sp2at_loc= loc_t, sp2at_exp= s2exp, sp2at_node= sp2at_node
+} // end of [sp2at]
 
 (* ****** ****** *)
 
@@ -486,6 +498,8 @@ fun s2cst_sVarset_get (_: s2cst_t): s2Varset_t
 fun s2cst_sVarset_set (_: s2cst_t, _: s2Varset_t): void
 fun s2cst_stamp_get (_: s2cst_t): stamp_t
 fun s2cst_stamp_set (_: s2cst_t, _: stamp_t): void
+fun s2cst_tag_get (s2c: s2cst_t): int
+fun s2cst_tag_set (s2c: s2cst_t, tag: int): void
 
 //
 
@@ -979,6 +993,10 @@ fun prerr_s2exparglst (s2as: s2exparglst): void
 
 overload print with print_s2exparglst
 overload prerr with prerr_s2exparglst
+
+(* ****** ****** *)
+
+fun sp2at_con (loc: loc_t, s2c: s2cst_t, s2vs: s2varlst): sp2at
 
 (* ****** ****** *)
 

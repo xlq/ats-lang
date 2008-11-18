@@ -375,7 +375,7 @@ in
       fprint_d2exp (pf | out, d2e_val);
       strpr ")"
     end
- | D2Ecaseof _ => begin
+  | D2Ecaseof _ => begin
       strpr "D2Ecaseof("; fprint1_string (pf | out, "..."); strpr ")"
     end // end of [D2Ecaseof]
   | D2Echar c => begin
@@ -566,16 +566,19 @@ in
       fprint_labd2explst (pf | out, ld2es);
       strpr ")"
     end
+  | D2Escaseof _ => begin
+      strpr "D2Escaseof("; fprint1_string (pf | out, "..."); strpr ")"
+    end // end of [D2Escaseof]
   | D2Esel (d2e, d2ls) => begin
       strpr "D2Esel(";
       fprint_d2exp (pf | out, d2e);
       strpr "; ";
       fprint_d2lablst (pf | out, d2ls);
       strpr ")"
-    end
+    end // end of [D2Esel]
   | D2Eseq d2es => begin
       strpr "D2Eseq("; fprint_d2explst (pf | out, d2es); strpr ")"
-    end
+    end // end of [D2Eseq]
   | D2Esif (_(*inv*), s2e_cond, d2e_then, d2e_else) => begin
       strpr "D2Esif(";
       fprint1_string (pf | out, "...");
@@ -589,26 +592,26 @@ in
     end // end of [D2Esif]
   | D2Espawn d2e => begin
       strpr "D2Espawn("; fprint_d2exp (pf | out, d2e); strpr ")"
-    end
+    end // end of [D2Espawn]
   | D2Estring (str, len) => begin
       fprintf1_exn (pf | out, "D2Estring(\"%s\", %i)", @(str, len))
-    end
+    end // end of [D2Estring]
   | D2Estruct (ld2es) => begin
       strpr "D2Estruct("; fprint_labd2explst (pf | out, ld2es); strpr ")"
-    end
+    end // end of [D2Estruct]
   | D2Esym d2s => begin
       strpr "D2Esym("; fprint_d2sym (pf | out, d2s); strpr ")"
-    end
+    end // end of [D2Esym]
   | D2Etmpid (d2e, ts2ess) => begin
       strpr "D2Etmpid(";
       fprint_d2exp (pf | out, d2e);
       strpr "; ";
       fprint_tmps2explstlst (pf | out, ts2ess);
       strpr ")"
-    end
+    end // end of [D2Etmpid]
   | D2Etop () => begin
       fprint1_string (pf | out, "D2Etop()")
-    end
+    end // end of [D2Etop]
   | D2Etrywith (d2e, c2ls) => begin
       strpr "D2Etrywith(";
       fprint_d2exp (pf | out, d2e);
@@ -618,10 +621,10 @@ in
     end // end of [D2Etrywith]
   | D2Evar (d2v) => begin
       strpr "D2Evar("; fprint_d2var (pf | out, d2v); strpr ")"
-    end
+    end // end of [D2Evar]
   | D2Eviewat (d2e) => begin
       strpr "D2Eviewat("; fprint_d2exp (pf | out, d2e); strpr ")"
-    end
+    end // end of [D2Eviewat]
   | D2Ewhere (d2e, d2cs) => begin
       strpr "D2Ewhere(";
       fprint_d2exp (pf | out, d2e);

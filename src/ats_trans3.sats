@@ -195,6 +195,14 @@ fun d2exp_sif_tr_dn (
   , s2e0: $SEXP2.s2exp
   ) : d3exp
 
+fun d2exp_scaseof_tr_dn (
+    loc0: $Loc.location_t
+  , res: $DEXP2.i2nvresstate
+  , s2e_val: $SEXP2.s2exp
+  , sc2ls: $DEXP2.sc2laulst
+  , s2e0: $SEXP2.s2exp
+  ) : d3exp
+
 (* ****** ****** *)
 
 dataviewtype sacsbisopt =

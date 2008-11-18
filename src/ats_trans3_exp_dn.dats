@@ -232,7 +232,7 @@ implement d2exp_sif_tr_dn
     val () = trans3_env_pop_sta_and_add_none (d2e_then.d2exp_loc)
   in
     d3e_then
-  end
+  end // end of [val]
 
   val () = stbefitemlst_restore (sbis)
 
@@ -244,7 +244,7 @@ implement d2exp_sif_tr_dn
     val () = trans3_env_pop_sta_and_add_none (d2e_else.d2exp_loc)
   in
     d3e_else
-  end
+  end // end of [val]
 
   val () = staftscstr_stbefitemlst_check (loc0, sac, sbis)
   val () = staftscstr_stbefitemlst_update (loc0, sac, sbis)
@@ -547,7 +547,7 @@ val d3e0 = case+ d2e0.d2exp_node of
           prerr "].";
           prerr_newline ();
           $Err.abort {d3exp} ()
-        end
+        end // end of [_]
       | _ => let
           val d3e0 = d2exp_tr_up d2e0 in d3exp_tr_dn (d3e0, s2e0); d3e0
         end // end of [let]
@@ -605,6 +605,9 @@ val d3e0 = case+ d2e0.d2exp_node of
           d3e0
         end
     end // end of [let]
+  | D2Escaseof (res, s2e_val, sc2ls) => begin
+      d2exp_scaseof_tr_dn (loc0, res, s2e_val, sc2ls, s2e0)
+    end
   | D2Eseq d2es => d2exp_seq_tr_dn (loc0, d2es, s2e0)
   | D2Esif (res, s2p_cond, d2e_then, d2e_else) => begin
       d2exp_sif_tr_dn (loc0, res, s2p_cond, d2e_then, d2e_else, s2e0)
@@ -1017,6 +1020,51 @@ implement d2exp_caseof_tr_dn
 in
   d3exp_caseof (loc0, s2e0, casknd, d3es, c3ls)
 end // end of [d2exp_caseof_tr_dn]
+
+(* ****** ****** *)
+
+implement d2exp_scaseof_tr_dn
+  (loc0, res, s2e_val, sc2ls, s2e0) = let
+  val res = i2nvresstate_update (res)
+  val sbis = the_d2varset_env_stbefitemlst_save ()
+  val sac = staftscstr_initialize (res, sbis)
+
+  fn aux_one (sc2l: sc2lau):<cloref1> sc3lau = let
+    val sp2t = sc2l.sc2lau_pat
+    val d2e_body = sc2l.sc2lau_exp
+    val () = trans3_env_push_sta ()
+    val () = $SOL.s2exp_hypo_equal_solve (sp2t.sp2at_loc, s2e_val, sp2t.sp2at_exp)
+    val d3e_body = d2exp_tr_dn (d2e_body, s2e0)
+    val () = staftscstr_stbefitemlst_merge (loc0, sac, sbis)
+    val () = trans3_env_pop_sta_and_add_none (d2e_body.d2exp_loc)
+  in
+    sc3lau_make (sc2l.sc2lau_loc, sp2t, d3e_body)
+  end // end of [aux_one]
+
+  fun aux_rest (sc2ls: sc2laulst):<cloref1> sc3laulst =
+    case+ sc2ls of
+    | list_cons (sc2l, sc2ls) => let
+        val () = stbefitemlst_restore (sbis)
+      in
+        list_cons (aux_one sc2l, aux_rest sc2ls)
+      end
+    | list_nil () => list_nil ()
+  // end of [aux_rest]
+
+  val sc3ls = (case+ sc2ls of
+    | list_cons (sc2l, sc2ls) => let
+        val sc3l = aux_one (sc2l); val sc3ls = aux_rest (sc2ls)
+      in
+        list_cons (sc3l, sc3ls)
+      end // end of [list_cons]
+    | list_nil () => list_nil ()
+  ) : sc3laulst // end of [val]
+
+  val () = staftscstr_stbefitemlst_check (loc0, sac, sbis)
+  val () = staftscstr_stbefitemlst_update (loc0, sac, sbis)
+in
+  d3exp_scaseof (loc0, s2e0, s2e_val, sc3ls)
+end // end of [d2exp_scaseof_tr_dn]
 
 (* ****** ****** *)
 
