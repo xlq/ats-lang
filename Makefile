@@ -151,6 +151,7 @@ cleanall:: clean
 	rm -f ccomp/lib/libats.a
 	rm -f ccomp/lib/libatslex.a
 	rm -f ccomp/lib/output/*
+	cd ccomp/runtime/GCATS; $(MAKE) cleanall
 	rm -f .*~ *~ */*~ */*/*~ */*/*/*~ */*/*/*/*~
 
 ######

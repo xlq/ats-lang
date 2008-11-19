@@ -76,12 +76,13 @@ assume symenv_t = symenv
 
 (* ****** ****** *)
 
-implement{itm} symmap_search (m, k) = $Map.map_search (m, k)
+implement{itm} symmap_search (m, k) =
+  $Map.map_search<sym_t,itm> (m, k)
 
 implement{itm} symmap_ref_search (r_m, k) = let
   val (vbox pf_m | p_m) = ref_get_view_ptr r_m
 in
-  $Map.map_search (!p_m, k)
+  $Map.map_search<sym_t,itm> (!p_m, k)
 end
 
 implement{itm} symmap_list (m) = $Map.map_list_pre m
@@ -169,29 +170,26 @@ end
 (* ****** ****** *)
 
 implement{itm} symenv_pop (env) = let
+  fn abort (): symmap itm = begin
+    prerr "Internal Error: "; prerr THIS_FILE;
+    prerr ": [symenv_pop]: [env.maplst] is empty";
+    prerr_newline ();
+    exit (1)
+  end // [abort]
 
-fn symenv_pop_err (): symmap itm = begin
-  prerr "Internal Error: ";
-  prerr THIS_FILE;
-  prerr ": [symenv_pop]: [env.maplst] is empty";
-  prerr_newline ();
-  exit (1)
-end
+  val m = (let
+    val (vbox pf_ms | p_ms) = ref_get_view_ptr env.maplst
+  in
+    case+ !p_ms of
+    | ~list_vt_cons (m, ms) => begin
+        !p_ms := (ms: symmaplst itm); m
+      end // end of [list_vt_cons]
+    | list_vt_nil () => begin
+        fold@ (!p_ms); $effmask_ref (abort ())
+      end // end of [list_vt_nil]
+  end) : symmap itm
 
-val m = (let
-  val (vbox pf_ms | p_ms) = ref_get_view_ptr env.maplst
-in
-  case+ !p_ms of
-  | ~list_vt_cons (m, ms) => begin
-      !p_ms := (ms: symmaplst itm); m
-    end
-  | list_vt_nil () => begin
-      fold@ (!p_ms); $effmask_ref (symenv_pop_err ())
-    end
-end) : symmap itm
-
-val (vbox pf_m | p_m) = ref_get_view_ptr env.map
-
+  val (vbox pf_m | p_m) = ref_get_view_ptr env.map
 in
   symmap_free<itm> (!p_m); !p_m := m
 end // end of [symenv_pop]
@@ -199,16 +197,14 @@ end // end of [symenv_pop]
 //
 
 implement symenv_push {itm} (env) = let
+  val m = let
+    val (vbox pf_m | p_m) = ref_get_view_ptr env.map
+    val m = !p_m
+  in
+    !p_m := symmap_make (); m
+  end : symmap itm
 
-val m: symmap itm = let
-  val (vbox pf_m | p_m) = ref_get_view_ptr env.map
-  val m = !p_m
-in
-  !p_m := symmap_make (); m
-end
-
-val (vbox pf_ms | p_ms) = ref_get_view_ptr env.maplst
-
+  val (vbox pf_ms | p_ms) = ref_get_view_ptr env.maplst
 in
   !p_ms := list_vt_cons (m, !p_ms)
 end // end of [symenv_push]
@@ -216,71 +212,62 @@ end // end of [symenv_push]
 (* ****** ****** *)
 
 implement symenv_save {itm} (env) = let
+  val m = let
+    val (vbox pf_m | p_m) = ref_get_view_ptr env.map
+    val m = !p_m
+  in
+    !p_m := symmap_make (); m
+  end : symmap itm
 
-val m: symmap itm = let
-  val (vbox pf_m | p_m) = ref_get_view_ptr env.map
-  val m = !p_m
+  val ms = let
+    val (vbox pf_ms | p_ms) = ref_get_view_ptr env.maplst
+    val ms = !p_ms
+  in
+    !p_ms := list_vt_nil (); ms
+  end : symmaplst itm
+
+  val (vbox pf_saved | p_saved) = ref_get_view_ptr env.savedlst
 in
-  !p_m := symmap_make (); m
-end
-
-val ms: symmaplst itm = let
-  val (vbox pf_ms | p_ms) = ref_get_view_ptr env.maplst
-  val ms = !p_ms
-in
-  !p_ms := list_vt_nil (); ms
-end
-
-val (vbox pf_saved | p_saved) = ref_get_view_ptr env.savedlst
-
-in
-
-!p_saved := list_vt_cons ( @(m, ms), !p_saved )
-
+  !p_saved := list_vt_cons ( @(m, ms), !p_saved )
 end // end of [symenv_save]
 
 //
 
 implement{itm} symenv_restore (env) = let
+  viewtypedef mms = @(symmap itm, symmaplst itm)
 
-viewtypedef mms = @(symmap itm, symmaplst itm)
+  fn abort (): mms = begin
+    prerr "Internal Error: "; prerr THIS_FILE;
+    prerr ": [symenv_restore]: [env.savedlst] is empty";
+    prerr_newline ();
+    exit (1)
+  end // end of [abort]
 
-fn symenv_restore_err (): mms = begin
-  prerr "Internal Error: ";
-  prerr THIS_FILE;
-  prerr ": [symenv_restore]: [env.savedlst] is empty";
-  prerr_newline ();
-  exit (1)
-end
+  val (m, ms) = let
+    val (vbox pf_saved | p_saved) = ref_get_view_ptr env.savedlst
+  in
+    case+ !p_saved of
+    | ~list_vt_cons (mms, rest) => begin
+        !p_saved := (rest: List_vt mms); mms
+      end
+    | list_vt_nil () => begin
+        fold@ (!p_saved); $effmask_ref (abort ())
+      end
+  end : mms
 
-val (m, ms) = (let
-  val (vbox pf_saved | p_saved) = ref_get_view_ptr env.savedlst
+  val () = let
+    val (vbox pf_m | p_m) = ref_get_view_ptr env.map
+  in
+    symmap_free<itm> (!p_m); !p_m := m
+  end
+
+  val () = let
+    val (vbox pf_ms | p_ms) = ref_get_view_ptr env.maplst
+  in
+    symmaplst_free<itm> (!p_ms); !p_ms := ms
+  end
 in
-  case+ !p_saved of
-  | ~list_vt_cons (mms, rest) => begin
-      !p_saved := (rest: List_vt mms); mms
-    end
-  | list_vt_nil () => begin
-      fold@ (!p_saved); $effmask_ref (symenv_restore_err ())
-    end
-end) : mms
-
-val () = let
-  val (vbox pf_m | p_m) = ref_get_view_ptr env.map
-in
-  symmap_free<itm> (!p_m); !p_m := m
-end
-
-val () = let
-  val (vbox pf_ms | p_ms) = ref_get_view_ptr env.maplst
-in
-  symmaplst_free<itm> (!p_ms); !p_ms := ms
-end
-
-in
-
-(* empty *)
-
+  // no return value
 end // end of [symenv_restore]
 
 (* ****** ****** *)
@@ -291,46 +278,43 @@ implement symenv_top (env) = let
   val m = !p_m
 in
   !p_m := symmap_make (); m
-end
+end // end of [symenv_top]
 
 implement symenv_ref_top (env) = env.map
 
 implement{itm} symenv_localjoin (env) = let
+  fn abort (): symmap itm = begin
+    prerr "Internal Error: "; prerr THIS_FILE;
+    prerr ": [symenv_localjoin]: [env.maplst] is empty";
+    prerr_newline ();
+    exit (1)
+  end // end of [symenv_localjoint]
 
-fn symenv_localjoin_err (): symmap itm = begin
-  prerr "Internal Error: ";
-  prerr THIS_FILE;
-  prerr ": [symenv_localjoin]: [env.maplst] is empty";
-  prerr_newline ();
-  exit (1)
-end // end of [symenv_localjoint]
+  val m1 = m where {
+    val (vbox pf_ms | p_ms) = ref_get_view_ptr env.maplst
+    val m = (case+ !p_ms of
+      | ~list_vt_cons (m, ms) => begin
+          !p_ms := (ms: symmaplst itm); m
+        end // list of [list_vt_cons]
+      | list_vt_nil () => begin
+          fold@ (!p_ms); $effmask_ref (abort ())
+        end // end of [list_vt_nil]
+    ) : symmap itm
+  } // end of [where]
 
-val m1 = m where {
-  val (vbox pf_ms | p_ms) = ref_get_view_ptr env.maplst
-  val m = (case+ !p_ms of
-    | ~list_vt_cons (m, ms) => begin
-        !p_ms := (ms: symmaplst itm); m
-      end // list of [list_vt_cons]
-    | list_vt_nil () => begin
-        fold@ (!p_ms); $effmask_ref (symenv_localjoin_err ())
-      end // end of [list_vt_nil]
-  ) : symmap itm
-} // end of [where]
+  val () = symmap_free<itm> m1
 
-val () = symmap_free<itm> m1
+  val m2 = m where {
+    val (vbox pf_ms | p_ms) = ref_get_view_ptr env.maplst
+    val m = (case+ !p_ms of
+      | ~list_vt_cons (m, ms) => (!p_ms := (ms: symmaplst itm); m)
+      | list_vt_nil () => begin
+          fold@ (!p_ms); $effmask_ref (abort ())
+        end
+    ) : symmap itm 
+  } // end of [where]
 
-val m2 = m where {
-  val (vbox pf_ms | p_ms) = ref_get_view_ptr env.maplst
-  val m = (case+ !p_ms of
-    | ~list_vt_cons (m, ms) => (!p_ms := (ms: symmaplst itm); m)
-    | list_vt_nil () => begin
-        fold@ (!p_ms); $effmask_ref (symenv_localjoin_err ())
-      end
-  ) : symmap itm 
-} // end of [let]
-
-val (vbox pf_m | p_m) = ref_get_view_ptr env.map
-
+  val (vbox pf_m | p_m) = ref_get_view_ptr env.map
 in
   !p_m := $Map.map_join (m2, !p_m)
 end // end of [symenv_localjoin]
@@ -341,7 +325,7 @@ implement symenv_pervasive_add (env, m) = let
   val (vbox pf_ms | p_ms) = ref_get_view_ptr env.pervasive
 in
   !p_ms := list_vt_cons (m, !p_ms)
-end
+end // end of [symenv_pervasive_add]
 
 (* ****** ****** *)
 

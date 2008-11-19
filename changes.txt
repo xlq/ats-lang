@@ -6,6 +6,8 @@ ats-lang-anariats-0.1.1:
    on the interpretation of the C compiler used to compile the C code that
    is generated from ATS programs by [atsopt].
 
+2. [scase] is now supported.
+
 ########################################################################
 
 ats-lang-anariats-0.1.0:
