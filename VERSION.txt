@@ -16,3 +16,4 @@ x.y.z -> x.y'.0 : (y' = y + 1)
 
 x.y.z -> x'.0.0 : (x' = x + 1)
   a major change; some backward incompatibilities are likely to appear.
+###### end of [VERSION.txt] ######
