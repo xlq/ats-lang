@@ -265,6 +265,8 @@ fn bin_dir_copy (knd: packnd): void = let
   end // end of [cpx]
 
   val () = mkdir_exn (DSTROOTbin, DIRmode)
+  // for keeping the directory from being removed
+  val () = cp (".keeper")
   val () = begin
     if (packnd_is_precompiled knd) then (cpx "atscc"; cpx "atsopt")
   end // end of [begin]
@@ -375,6 +377,8 @@ fn ccomp_lib_dir_copy (knd: packnd): void = let
       (SRCROOTccomp_lib + "libats.a", DSTROOTccomp_lib + "libats.a")
   end // end of [val]
   val () = mkdir_exn (DSTROOTccomp_lib_output, DIRmode)
+  val () = fcopy_exn // keeping the directory from being removed
+     (SRCROOTccomp_lib_output + ".keeper", DSTROOTccomp_lib_output + ".keeper")
 in
   // empty
 end // end of [ccomp_lib_dir_copy]
