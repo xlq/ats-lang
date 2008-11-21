@@ -1872,9 +1872,21 @@ implement s1aspdec_tr (d1c) = let
 in
   case+ os2i of
   | ~Some_vt s2i => begin case+ s2i of
-    | S2ITEMcst s2cs => begin case+ s2cs of
-      | S2CSTLSTcons (s2c, S2CSTLSTnil ()) => begin
-          if s2cst_is_abstract s2c then let
+    | S2ITEMcst s2cs => let
+        val s2cs = filter s2cs where {
+          fun filter (s2cs: s2cstlst): s2cstlst =
+            case+ s2cs of
+            | S2CSTLSTcons (s2c, s2cs) => begin
+              case+ 0 of
+              | _ when s2cst_is_abstract s2c =>
+                  S2CSTLSTcons (s2c, filter s2cs)
+              | _ => filter s2cs
+              end // end of [S2CSTLSTcons]
+            | S2CSTLSTnil () => S2CSTLSTnil ()
+        } // end of [val]
+      in
+        case+ s2cs of
+        | S2CSTLSTcons (s2c, S2CSTLSTnil ()) => let
             val res = s1rtopt_tr d1c.s1aspdec_res
             val s2e = s1expdef_s1aspdec_tr_main
               (loc, d1c.s1aspdec_arg, res, d1c.s1aspdec_def)
@@ -1889,11 +1901,11 @@ in
             end else begin
               err1 (loc, q, id, s2t_s2c, s2t_s2e)
             end // end of [if]
-          end else begin
+          end
+        | S2CSTLSTnil () => begin
             err2 (loc, q, id) // [s2c] is not abstract!
-          end 
-        end // end of [S2CSTLSTcons (_, S2CSTLSTnil _)]
-      | _ => err3 (loc, q, id)
+          end // end of [if]
+        | _ => err3 (loc, q, id)
       end // end of [S2ITEMcst]
     | _ => err4 (loc, q, id)
     end // end of [Some_vt]
