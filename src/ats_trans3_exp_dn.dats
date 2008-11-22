@@ -195,10 +195,13 @@ in
   c2lau_make (d2e.d2exp_loc, '[p2t], gua, 0, 0, d2e)
 end // end of [c2lau_make_of_d2exp]
 
+// [loc0] is the location for the whole if-expression
 fn c2lau_make_if_d2expopt
-  (loc_cond: loc_t, b: bool, od2e: d2expopt): c2lau 1 = let
-  val d2e: d2exp = case+ od2e of
-    | Some d2e => d2e | None () => d2exp_empty ($Loc.location_none)
+  (loc0: loc_t, loc_cond: loc_t, b: bool, od2e: d2expopt)
+  : c2lau 1 = let
+  val d2e = (case+ od2e of
+    | Some d2e => d2e | None () => d2exp_empty (loc0)
+  ) : d2exp
 in
   c2lau_make_if_d2exp (loc_cond, b, d2e)
 end // end of [c2lau_make_if_d2expopt]
@@ -209,7 +212,7 @@ implement d2exp_if_tr_dn
   (loc0, res, d2e_cond, d2e_then, od2e_else, s2e0) = let
   val loc_cond = d2e_cond.d2exp_loc
   val c2l_then = c2lau_make_if_d2exp (loc_cond, true, d2e_then)
-  val c2l_else = c2lau_make_if_d2expopt (loc_cond, false, od2e_else)
+  val c2l_else = c2lau_make_if_d2expopt (loc0, loc_cond, false, od2e_else)
 in
   d2exp_caseof_tr_dn (
     loc0, 1(*knd*), res, 1, '[d2e_cond], '[c2l_then, c2l_else], s2e0

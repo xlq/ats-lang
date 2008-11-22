@@ -38,10 +38,10 @@
 /* ****** ****** */
 
 /*
- *
- * Grammar for ATS/Anairiats
- *
- */
+**
+** Grammar for ATS/Anairiats
+**
+*/
 
 %{
 
