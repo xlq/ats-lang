@@ -272,7 +272,7 @@ fn SPECHR_lexing_error
 
 (* ****** ****** *)
 
-// definition of constants of regular expressions
+// definition of constant regular expressions
 
 flagchr = ('\'' | '-' | '+' | ' ' | '#' | '0')
 

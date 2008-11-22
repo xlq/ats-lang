@@ -494,8 +494,9 @@ fn tokenize_identifier_alp (): token_t = let
   end
 *)
 in
-  if token_is_valid tok then (process_keyword (); tok)
-  else let
+  if token_is_valid tok then let
+    val () = process_keyword () in tok
+  end else let // not a keyword
     val loc = location_get ()
   in
     yylval_ide_set ($Syn.i0de_make (loc, str)); IDENTIFIER_alp
@@ -506,8 +507,9 @@ fn tokenize_identifier_sym (): token_t = let
   val str = lexeme_string ()
   val tok = keyword_search str
 in
-  if token_is_valid tok then (process_keyword (); tok)
-  else let
+  if token_is_valid tok then let
+    val () = process_keyword () in tok
+  end else let // not a keyword
     val loc = location_get ()
   in
     yylval_ide_set ($Syn.i0de_make (loc, str)); IDENTIFIER_sym

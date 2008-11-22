@@ -59,7 +59,10 @@ overload = with eq_token_token
 
 (* ****** ****** *)
 
+// implemented in [ats_lexer.lats]
 fun MAIN (): token_t = "ats_lexer_token_get"
+
+// implemented in [ats_lexer.lats]
 fun token_is_valid (t: token_t): bool = "token_is_valid"
 
 (* ****** ****** *)
