@@ -60,7 +60,7 @@ macdef SOCK_STREAM = $extval (socket_type, "SOCK_STREAM")
 
 abst@ype socket_protocol = $extype "ats_int_type"
 
-//
+(* ****** ****** *)
 
 datasort status = init | bind | list | conn
 
@@ -78,7 +78,7 @@ fun socket_domain_type_exn
   (d: socket_domain, t: socket_type): [fd:int] (socket_v (fd, init) | int fd)
   = "atslib_socket_domain_type_exn"
 
-//
+(* ****** ****** *)
 
 dataview bind_v (fd:int, int) = 
   | bind_fail (fd, ~1) of socket_v (fd, init)
@@ -93,7 +93,7 @@ fun bind_inet_any_port_exn {fd:int}
   (pf: !socket_v (fd, init) >> socket_v (fd, bind) | socket_id: int fd, port: Nat): void
   = "atslib_bind_inet_any_port_exn"
 
-//
+(* ****** ****** *)
 
 dataview listen_v (fd: int, int) = 
   | listen_fail (fd, ~1) of socket_v (fd, bind) 
@@ -109,7 +109,7 @@ fun listen_exn {fd:int}
    socket_id: int fd, backlog: Nat): void
   = "atslib_listen_exn"
 
-//
+(* ****** ****** *)
 
 dataview accept_v (int) = 
   | accept_fail (~1)
@@ -125,7 +125,7 @@ fun accept_inet_exn {fd_s:int}
   : [fd_c:int] (socket_v (fd_c, conn) | int fd_c)
   = "atslib_accept_inet_exn"
 
-//
+(* ****** ****** *)
 
 dataview socket_close_v (fd: int, s: status, int) =
   | socket_close_fail (fd, s, ~1) of socket_v (fd, s)
@@ -140,7 +140,7 @@ fun socket_close_exn {fd:int} {s:status}
   (pf: socket_v (fd, s) | socket_id: int fd): void
   = "atslib_socket_close_exn"
 
-//
+(* ****** ****** *)
 
 fun socket_read_err {fd:int} {n,sz:nat | n <= sz} {l:addr}
   (pf_socket: !socket_v (fd, conn), pf_buf: !bytes_v (sz, l) |
@@ -152,7 +152,7 @@ fun socket_read_exn {fd:int} {n,sz:nat | n <= sz} {l:addr}
    socket_id: int fd, buf: ptr l, n: int n): natLte n
   = "atslib_socket_read_exn"
 
-//
+(* ****** ****** *)
 
 fun socket_write_err {fd:int} {n,sz:nat | n <= sz} {l:addr}
   (pf_socket: !socket_v (fd, conn), pf_buf: !bytes_v (sz, l) |
@@ -164,7 +164,7 @@ fun socket_write_exn {fd:int} {n,sz:nat | n <= sz} {l:addr}
    socket_id: int fd, buf: ptr l, n: int n): natLte n
   = "atslib_socket_write_exn"
 
-//
+(* ****** ****** *)
 
 fun socket_write_substring_err {fd:int} {i,n,sz:nat | i+n <= sz}
   (pf_socket: !socket_v (fd, conn) |
