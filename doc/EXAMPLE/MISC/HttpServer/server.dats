@@ -326,7 +326,7 @@ val dt = doctype_of_filename filename
 
 in
 
-tostringf (
+sprintf (
 "HTTP/1.0 200 OK\r\nServer: ATS/Vanilla\r\nContent-length: %li\r\nContent-type: %s\r\n\r\n",
 @(sz, dt)
 )
@@ -352,7 +352,7 @@ in
     socket_write_all (pf_conn, pf_buf | fd, buf, n);
     aux (pf_conn, pf_buf | fd, file)
   end
-end
+end // end of [aux]
 
 in
 
@@ -447,50 +447,51 @@ ats_ptr_type dirent_name_get(ats_ptr_type dir) {
 
 %}
 
-dataviewtype entlst = nil | cons of (String, entlst)
+dataviewtype entlst = entlst_nil | entlst_cons of (String, entlst)
 
 fun entlst_append (xs0: &entlst >> entlst, ys: entlst): void =
   case+ xs0 of
-    | cons (x, !xs) => (entlst_append (!xs, ys); fold@ xs0)
-    | ~nil () => (xs0 := ys)
+  | entlst_cons (x, !xs) => (entlst_append (!xs, ys); fold@ xs0)
+  | ~entlst_nil () => (xs0 := ys)
 
 fun qsort (xs: entlst): entlst =
   case+ xs of
-    | cons (!x1_r, !xs1_r) => let
-        val x1 = !x1_r and xs1 = !xs1_r
-      in
-        part (view@ (!x1_r), view@ (!xs1_r) | xs, xs1_r, x1, xs1, nil (), nil ())
-      end
-    | nil () => (fold@ xs; xs)
+  | entlst_cons (!x1_r, !xs1_r) => let
+      val x1 = !x1_r and xs1 = !xs1_r
+    in
+      part (view@ (!x1_r), view@ (!xs1_r) | xs, xs1_r, x1, xs1, entlst_nil (), entlst_nil ())
+    end
+  | entlst_nil () => (fold@ xs; xs)
 
 and part {l0,l1:addr} (
     pf0: String @ l0, pf1: entlst? @ l1
-  | node: cons_unfold (l0, l1)
+  | node: entlst_cons_unfold (l0, l1)
   , node1: ptr l1, x0: String, xs: entlst, l: entlst, r: entlst
   ) : entlst = case+ xs of
-  | cons (x1, !xs1_ptr) =>
-    let val xs1 = !xs1_ptr in
+  | entlst_cons (x1, !xs1_ptr) => let
+      val xs1 = !xs1_ptr
+    in
       if compare (x1, x0) <= 0 then
         (!xs1_ptr := l; fold@ xs; part (pf0, pf1 | node, node1, x0, xs1, xs, r))
       else
         (!xs1_ptr := r; fold@ xs; part (pf0, pf1 | node, node1, x0, xs1, l, xs))
-    end
-  | ~nil () =>
-    let var l = qsort l and r = qsort r in
+    end // end of [entlst_cons]
+  | ~entlst_nil () => let
+      var l = qsort l and r = qsort r
+    in
       !node1 := r; fold@ node; r := node; entlst_append (l, r); l
-    end
+    end // end of [entlst_nil]
 
-fun dirent_name_get_all (dir: &DIR): entlst =
-  let
-     fun aux (dir: &DIR, res: entlst): entlst =
-       let val ent = dirent_name_get (dir) in
-         if stropt_is_none ent then res else
-           aux (dir, cons (stropt_unsome ent, res))
-       end
-     val ents = aux (dir, nil)
-  in
-     qsort ents
-  end
+fun dirent_name_get_all (dir: &DIR): entlst = let
+  fun aux (dir: &DIR, res: entlst): entlst =
+    let val ent = dirent_name_get (dir) in
+      if stropt_is_none ent then res else
+        aux (dir, entlst_cons (stropt_unsome ent, res))
+    end
+  val ents = aux (dir, entlst_nil ())
+in
+  qsort ents
+end // end of [dirent_name_get_all]
 
 extern fun filename_type (filename: string): int = "filename_type"
 
@@ -518,7 +519,7 @@ extern fun directory_send_loop {fd:int}
 
 implement directory_send_loop (pf_conn | fd, parent, ents): void =
   case+ ents of
-    | ~cons (ent, ents) => let
+    | ~entlst_cons (ent, ents) => let
 (*
         val () = printf ("directory_send_loop: parent = %s\n", @(parent))
         val () = printf ("directory_send_loop: ent = %s\n", @(ent))
@@ -526,30 +527,32 @@ implement directory_send_loop (pf_conn | fd, parent, ents): void =
         val ft = case ent of
           | "." => 1 | ".." => 1 | _ => filename_type (parent + ent)
       in
-        case ft of
-          | 0 => let
-              val msg = tostringf ("<A HREF=\"%s\">%s</A><BR>", @(ent, ent))
-              val len = length msg
-            in
-              socket_write_substring_all (pf_conn | fd, msg, 0, len);
-              directory_send_loop (pf_conn | fd, parent, ents)
-            end
-          | 1 => let
-              val msg = tostringf ("<A HREF=\"%s/\">%s/</A><BR>", @(ent, ent))
-            in
-              socket_write_substring_all (pf_conn | fd, msg, 0, length msg);
-              directory_send_loop (pf_conn | fd, parent, ents)
-            end
-          | _ => directory_send_loop (pf_conn | fd, parent, ents)
-      end
-    | ~nil () => ()
+        case+ ft of
+        | 0 => let
+            val msg = sprintf ("<A HREF=\"%s\">%s</A><BR>", @(ent, ent))
+            val len = length msg
+          in
+            socket_write_substring_all (pf_conn | fd, msg, 0, len);
+            directory_send_loop (pf_conn | fd, parent, ents)
+          end
+        | 1 => let
+            val msg = tostringf ("<A HREF=\"%s/\">%s/</A><BR>", @(ent, ent))
+          in
+            socket_write_substring_all (pf_conn | fd, msg, 0, length msg);
+            directory_send_loop (pf_conn | fd, parent, ents)
+          end
+        | _ => directory_send_loop (pf_conn | fd, parent, ents)
+      end // end of [cons]
+    | ~entlst_nil () => ()
+// end of [directory_send_loop]
 
-//
+(* ****** ****** *)
 
 extern fun directory_send {fd: int}
   (pf_conn: !socket_v (fd, conn) | fd: int fd, dirname: string): void
 
-implement directory_send {fd} (pf_conn | fd, dirname): void = let
+implement directory_send {fd}
+  (pf_conn | fd, dirname): void = let
   val (pf_dir_opt | p_dir) = opendir_err(dirname)
 in
   if (p_dir = null) then
@@ -569,7 +572,7 @@ in
   end
 end // end of [directory_send]
 
-//
+(* ****** ****** *)
 
 fun request_is_get {n:nat} (s: string n, n: int n): Bool =
   if n <= 3 then false
@@ -579,7 +582,7 @@ fun request_is_get {n:nat} (s: string n, n: int n): Bool =
   else if s[3] <> ' ' then false
   else true
 
-//
+(* ****** ****** *)
 
 extern fun main_loop_get {fd:int} {n:nat} {l_buf:addr}
   (pf_conn: socket_v (fd, conn), pf_buf: !bytes_v (BUFSZ, l_buf) |
@@ -598,15 +601,15 @@ implement main_loop_get (pf_conn, pf_buf | fd, buf, msg, n) = let
       val ft = filename_type name
     in
       case+ ft of
-        | 0 => file_send (pf_conn | fd, name)
-        | 1 => directory_send (pf_conn | fd, name)
-        | _ => msg404_send (pf_conn | fd)
-    end
+      | 0 => file_send (pf_conn | fd, name)
+      | 1 => directory_send (pf_conn | fd, name)
+      | _ => msg404_send (pf_conn | fd)
+    end // end of [if]
 in
   socket_close_exn (pf_conn | fd)
 end // end of [main_loop_get]
 
-//
+(* ****** ****** *)
 
 extern fun main_loop {fd:int} {l_buf:addr}
   (pf_list: !socket_v (fd, list), pf_buf: !bytes_v (BUFSZ, l_buf) |
@@ -639,8 +642,7 @@ val (pf_accept | fd_res) = accept_inet_err(pf_list | fd) in
   end
 end // end of [main_loop]
 
-//
-
+(* ****** ****** *)
 
 extern fun sigpipe_ignore (): void = "sigpipe_ignore"
 
