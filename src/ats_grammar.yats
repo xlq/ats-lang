@@ -2975,29 +2975,40 @@ int yylex () {
 } /* end of [yylex_tok0] */
 
 // needed in [ats_lexer.lats]
-void yylval_char_set (c0har_t val)
+ats_void_type
+yylval_char_set (c0har_t val)
   { yylval.c0har = val ; return ; }
 
-void yylval_extcode_set (e0xtcode_t val)
+ats_void_type
+yylval_extcode_set (e0xtcode_t val)
   { yylval.e0xtcode = val ; return ; }
 
-void yylval_float_set (f0loat_t val)
+ats_void_type
+yylval_float_set (f0loat_t val)
   { yylval.f0loat = val ; return ; }
-void yylval_floatsp_set (f0loatsp_t val)
+
+ats_void_type
+yylval_floatsp_set (f0loatsp_t val)
   { yylval.f0loatsp = val ; return ; }
 
-void yylval_ide_set (i0de_t val)
+ats_void_type
+yylval_ide_set (i0de_t val)
   { yylval.i0de = val ; return ; }
 
-void yylval_int_set (i0nt_t val)
+ats_void_type
+yylval_int_set (i0nt_t val)
   { yylval.i0nt = val ; return ; }
-void yylval_intsp_set (i0ntsp_t val)
+
+ats_void_type
+yylval_intsp_set (i0ntsp_t val)
   { yylval.i0ntsp = val ; return ; }
 
-void yylval_string_set (s0tring_t val)
+ats_void_type
+yylval_string_set (s0tring_t val)
   { yylval.s0tring = val ; return ; }
 
-void yylval_token_set (t0kn_t val)
+ats_void_type
+yylval_token_set (t0kn_t val)
   { yylval.t0kn = val ; return ; }
 
 // implemented in [ats_filename.dats]

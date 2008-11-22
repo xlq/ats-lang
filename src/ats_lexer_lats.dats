@@ -377,7 +377,7 @@ fn process_token (): void = let
   val lstoff = position_toff lstpos
   val loc = begin
     $Loc.location_make ($Fil.the_filename_get (), fstpos, lstpos)
-  end
+  end // end of [val]
 in
   yylval_token_set ($Syn.t0kn_make loc);
 end // end of [process_token]
@@ -389,7 +389,7 @@ fn process_keyword (): void = let
   val lstoff = position_toff lstpos
   val loc = begin
     $Loc.location_make ($Fil.the_filename_get (), fstpos, lstpos)
-  end
+  end // end of [val]
 in
 (*
   print "process_keyword:\n";
@@ -417,7 +417,7 @@ fn process_comment_close
       val lstoff = position_toff lstpos
     in
       $POSMARK.posmark_insert_comment_end lstoff
-    end
+    end // end of [POSLSTnil]
 end // end of [process_comment_close]
 
 (* ****** ****** *)
@@ -491,7 +491,7 @@ fn tokenize_identifier_alp (): token_t = let
 (*
   val () = begin
     print "tokenize_identifier_alp: str = "; print str; print_newline ()
-  end
+  end // end of [val]
 *)
 in
   if token_is_valid tok then let
@@ -500,7 +500,7 @@ in
     val loc = location_get ()
   in
     yylval_ide_set ($Syn.i0de_make (loc, str)); IDENTIFIER_alp
-  end
+  end // end of [if]
 end // end of [tokenize_identifier_alp]
 
 fn tokenize_identifier_sym (): token_t = let
@@ -513,7 +513,7 @@ in
     val loc = location_get ()
   in
     yylval_ide_set ($Syn.i0de_make (loc, str)); IDENTIFIER_sym
-  end
+  end // end of [if]
 end // end of [tokenize_identifier_sym]
 
 fn prefix_identifier_arr (s0: string): string = let
