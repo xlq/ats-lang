@@ -237,28 +237,37 @@ end // end of [effcst_tr]
 
 (* ****** ****** *)
 
-implement s1arg_var_tr (s1a) = begin
-  case+ s1a.s1arg_srt of
-  | Some s1t => let
+implement s1arglst_var_tr (s1as) = let
+  fun s1rtopt_search (s1as: s1arglst): s1rtopt = case+ s1as of
+    | list_cons (s1a, s1as) => let
+        val os1t = s1a.s1arg_srt in
+        case+ os1t of Some _ => os1t | None () => s1rtopt_search s1as
+      end // end of [list_cons]
+    | list_nil () => None ()
+  // end of [s1rtopt_search]
+in
+  case+ s1as of
+  | list_cons (s1a_fst, s1as_rst) => let
+      val os1t = s1rtopt_search s1as; val s1t = case+ os1t of
+        | Some s1t => s1t | None () => begin
+            prerr s1a_fst.s1arg_loc;
+            prerr ": error(2)";
+            $Deb.debug_prerrf (": %s: s1arglst_var_tr", @(THISFILENAME));
+            prerr ": the static variable [";
+            $Sym.prerr_symbol s1a_fst.s1arg_sym;
+            prerr "] must be ascribed a sort.";
+            prerr_newline ();
+            $Err.abort ()
+          end // end of [None]
       val s2t = s1rt_tr s1t
-      val s2v = s2var_make_id_srt (s1a.s1arg_sym, s2t)
+      val s2v_fst = s2var_make_id_srt (s1a_fst.s1arg_sym, s2t)
+      val s2vs_rst = s1arglst_var_tr s1as_rst
+      val s2vs = list_cons (s2v_fst, s2vs_rst)
     in
-      the_s2expenv_add_svar s2v; s2v
-    end // end of [Some]
-  | None () => begin
-      prerr s1a.s1arg_loc;
-      prerr ": error(2)";
-      $Deb.debug_prerrf (": %s: s1arg_var_tr", @(THISFILENAME));
-      prerr ": the static variable [";
-      $Sym.prerr_symbol s1a.s1arg_sym;
-      prerr "] must be ascribed a sort.";
-      prerr_newline ();
-      $Err.abort ()
-    end // end of [None]
-end // end of [s1arg_var_tr]
-
-implement s1arglst_var_tr (s1as) =
-  $Lst.list_map_fun (s1as, s1arg_var_tr)
+      the_s2expenv_add_svarlst s2vs; s2vs
+    end // end of [list_cons]
+  | list_nil () => list_nil ()
+end // end of [s1arglst_var_tr]
 
 implement s1arglstlst_var_tr (s1ass) =
   $Lst.list_map_fun (s1ass, s1arglst_var_tr)
@@ -279,8 +288,8 @@ implement s1arg_var_tr_srt (s1a, s2t0) = let
           prerr "].";
           prerr_newline ();
           $Err.abort {s2rt} ()
-        end
-      end
+        end // end of [if]
+      end // end of [Some]
     | None () => s2t0
   val s2v = s2var_make_id_srt (s1a.s1arg_sym, s2t)
 in

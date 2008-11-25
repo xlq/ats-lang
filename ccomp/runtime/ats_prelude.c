@@ -124,10 +124,10 @@ ats_funarg_match_failure (void) {
 #include "gc/gc.h"
 #elif _ATS_GCATS // special GC for ATS
 #include "GCATS/gc.h"
-#elif _ATS_gc // special GC for ATS
+#elif _ATS_GCATS0 // special GC for ATS
+#include "GCATS0/gc.h"
+#elif _ATS_gc // special GC for ATS by Rick Lavoie
 #include "gc/gc.h"
-#elif _ATS_gcats // special GC for ATS
-#include "gcats/gc.h"
 #else // no GC for ATS
 #include <stdlib.h>
 #endif
@@ -147,6 +147,14 @@ ats_malloc_ngc (const ats_int_type n) {
   /*
   fprintf (stderr, "ats_malloc_ngc: _ATS_GCATS: p = %p(%li)\n", p, p) ;
   */
+#elif _ATS_GCATS0
+  /*
+  fprintf (stderr, "ats_malloc_ngc: _ATS_GCATS0: n = %i\n", n) ;
+  */
+  p = gcats0_malloc(n) ;
+  /*
+  fprintf (stderr, "ats_malloc_ngc: _ATS_GCATS0: p = %p(%i)\n", p, p) ;
+  */
 #elif _ATS_gc
   /*
   fprintf (stderr, "ats_malloc_ngc: _ATS_gc: n = %i\n", n) ;
@@ -154,14 +162,6 @@ ats_malloc_ngc (const ats_int_type n) {
   p = gc_allocate_persistant_byte(n) ;
   /*
   fprintf (stderr, "ats_malloc_ngc: _ATS_gc: p = %p(%li)\n", p, p) ;
-  */
-#elif _ATS_gcats
-  /*
-  fprintf (stderr, "ats_malloc_ngc: _ATS_gcats: n = %i\n", n) ;
-  */
-  p = gcats0_malloc(n) ;
-  /*
-  fprintf (stderr, "ats_malloc_ngc: _ATS_gcats: p = %p(%i)\n", p, p) ;
   */
 #else
   p = malloc(n) ;
@@ -178,16 +178,16 @@ ats_calloc_ngc (const ats_int_type n, const ats_int_type sz)
   p = GC_malloc(n * sz) ;
 #elif _ATS_GCATS
   p = gc_man_calloc_bsz(n, sz) ;
+#elif _ATS_GCATS0
+  /*
+  fprintf (stderr, "ats_calloc: _ATS_GCATS0: n = %i and sz = %i\n", n, sz) ;
+  */
+  p = gcats0_calloc(n, sz) ;
 #elif _ATS_gc
   /*
   fprintf (stderr, "ats_calloc: _ATS_gc: n = %i and sz = %i\n", n, sz) ;
   */
   p = gc_allocate_persistant_byte(n * sz) ;
-#elif _ATS_gcats
-  /*
-  fprintf (stderr, "ats_calloc: _ATS_gcats: n = %i and sz = %i\n", n, sz) ;
-  */
-  p = gcats0_calloc(n, sz) ;
 #else
   p = calloc(n, sz) ;
 #endif
@@ -204,16 +204,16 @@ ats_free_ngc (const ats_ptr_type p) {
   fprintf (stderr, "ats_free_ngc: _ATS_GCATS: p = %p\n", p) ;
   */
   gc_man_free(p) ;
+#elif _ATS_GCATS0
+  /*
+  fprintf (stderr, "ats_free_ngc: _ATS_GCATS0: p = %p\n", p) ;
+  */
+  gcats0_free(p) ;
 #elif _ATS_gc
   /*
   fprintf (stderr, "ats_free_ngc: _ATS_gc: p = %p\n", p) ;
   */
   gc_free_persistant(p) ; return ;
-#elif _ATS_gcats
-  /*
-  fprintf (stderr, "ats_free_ngc: _ATS_gcats: p = %p\n", p) ;
-  */
-  gcats0_free(p) ;
 #else
   free(p) ; return ;
 #endif
@@ -236,10 +236,10 @@ ats_realloc_ngc (const ats_ptr_type p, const ats_int_type bsz) {
   /*
   fprintf (stderr, "ats_realloc_ngc: _ATS_GCATS: p_new = %p\n", p_new) ;
   */
+#elif _ATS_GCATS0
+  p_new = gcats0_realloc(p, bsz) ;
 #elif _ATS_gc
   p_new = gc_reallocate_persistant_byte(p, bsz) ;
-#elif _ATS_gcats
-  p_new = gcats0_realloc(p, bsz) ;
 #else
   p_new = realloc(p, bsz) ;
 #endif
@@ -256,7 +256,7 @@ ats_gc_init () {
   GC_init () ;
 #elif _ATS_GCATS
   gc_init () ;
-#elif _ATS_gcats
+#elif _ATS_GCATS0
   gc_init () ;
 #elif _ATS_gc
   gc_init () ;
@@ -274,10 +274,10 @@ ats_gc_markroot (const ats_ptr_type p, const ats_int_type bsz) {
   /* do nothing */
 #elif _ATS_GCATS
   gc_markroot_bsz (p, bsz) ;
+#elif _ATS_GCATS0
+  gcats_markroot_bsz (p, bsz) ;
 #elif _ATS_gc
   gc_markroot_bsz (p, bsz) ;
-#elif _ATS_gcats
-  gcats_markroot_bsz (p, bsz) ;
 #else
   /* do nothing */
 #endif
@@ -344,7 +344,7 @@ ats_malloc_gc (const ats_int_type n) {
   p = GC_malloc(n) ;
 #elif _ATS_GCATS
   p = gc_aut_malloc_bsz(n) ;
-#elif _ATS_gcats
+#elif _ATS_GCATS0
   p = gcats1_malloc(n) ;
 #elif _ATS_gc
   p = gc_alloc_byte(n) ;
@@ -370,7 +370,7 @@ ats_calloc_gc (const ats_int_type n, const ats_int_type sz) {
   p = GC_malloc(n*sz) ;
 #elif _ATS_GCATS
   p = gc_aut_calloc_bsz(n, sz) ;
-#elif _ATS_gcats
+#elif _ATS_GCATS0
   p = gcats1_calloc(n, sz) ;
 #elif _ATS_gc
   p = gc_alloc_byte_zero(n*sz) ;
@@ -395,7 +395,7 @@ ats_free_gc (const ats_ptr_type p) {
   GC_free(p) ;
 #elif _ATS_GCATS
   gc_aut_free(p) ;
-#elif _ATS_gcats
+#elif _ATS_GCATS0
   gcats1_free(p) ;
 #elif _ATS_gc
   gc_free(p) ;
@@ -417,14 +417,14 @@ ats_realloc_gc (const ats_ptr_type p, const ats_int_type bsz) {
   p_new = GC_realloc(p, bsz) ;
 #elif _ATS_GCATS
   p_new = gc_aut_realloc_bsz(p, bsz) ;
+#elif _ATS_GCATS0
+  fprintf (
+    stderr, "There is no support for [ats_realloc_gc] under this GC (gcats).\n"
+  ) ;
+  exit (1) ;
 #elif _ATS_gc
   fprintf (
     stderr, "There is no support for [ats_realloc_gc] under this GC (gc).\n"
-  ) ;
-  exit (1) ;
-#elif _ATS_gcats
-  fprintf (
-    stderr, "There is no support for [ats_realloc_gc] under this GC (gcats).\n"
   ) ;
   exit (1) ;
 #else
@@ -476,9 +476,9 @@ ats_pthread_create_detached_cloptr (ats_ptr_type thunk) {
   */
   ret = gc_pthread_create_cloptr
     (thunk, NULL/*pid_r*/, 1/*detached*/, 1/*lin*/) ;
-#elif _ATS_gcats
+#elif _ATS_GCATS0
   fprintf (
-    stderr, "There is no support for pthreads under this GC (gcats).\n"
+    stderr, "There is no support for pthreads under this GC (GCATS0).\n"
   ) ;
   exit (1) ;
 #elif _ATS_gc
@@ -504,8 +504,8 @@ ats_void_type ats_pthread_exit () {
   exit (1) ;
 #elif _ATS_GCATS
   pthread_exit (NULL) ;
-#elif _ATS_gcats
-  fprintf (stderr, "There is no support for pthreads under this GC.\n");
+#elif _ATS_GCATS0
+  fprintf (stderr, "There is no support for pthreads under this GC (GCATS0).\n");
   exit (1) ;
 #elif _ATS_gc
   pthread_exit (NULL) ;

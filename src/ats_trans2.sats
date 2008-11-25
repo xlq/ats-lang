@@ -52,7 +52,6 @@ fun effcst_tr (efc: $Eff.effcst): s2eff
 
 fun d1atarglst_tr (d1as: d1atarglst): List @(symopt_t, s2rt, int)
 
-fun s1arg_var_tr (s1a: s1arg): s2var_t
 fun s1arglst_var_tr (s1as: s1arglst): s2varlst
 fun s1arglstlst_var_tr (s1ass: s1arglstlst): s2varlstlst
 

@@ -46,23 +46,22 @@
 
 /* ****** ****** */
 
-typedef int socket_domain ;
-typedef int socket_type ;
+typedef int socket_domain_t ;
+typedef int socket_type_t ;
 
 static inline
 ats_int_type
-atslib_socket_domain_type_err (socket_domain d, socket_type t) {
-  return socket(d, t, 0) ;
+atslib_socket_domain_type_err (socket_domain_t sd, socket_type_t st) {
+  return socket(sd, st, 0) ;
 }
 
 static inline
 ats_int_type
-atslib_socket_domain_type_exn (socket_domain d, socket_type t) {
+atslib_socket_domain_type_exn (socket_domain_t sd, socket_type_t st) {
   int res ;
-  res = socket(d, t, 0) ;
+  res = socket(sd, st, 0) ;
   if (res < 0) {
-    perror("socket");
-    ats_exit_errmsg(1, "Exit: [socket] failed.\n");
+    perror("socket"); ats_exit_errmsg(1, "Exit: [socket] failed.\n");
   }
   return res ;
 }

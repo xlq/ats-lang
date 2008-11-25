@@ -121,15 +121,15 @@ fn flag_is_ATS_GCATS (flag: string): Bool = begin
 end // end of [flag_is_ATS_GCATS]
 val is_ATS_GCATS: intref = intref_make 0
 
+fn flag_is_ATS_GCATS0 (flag: string): Bool = begin
+  case+ flag of "-D_ATS_GCATS0" => true | _ => false
+end // end of [flag_is_ATS_GCATS0]
+val is_ATS_GCATS0: intref = intref_make 0
+
 fn flag_is_ATS_gc (flag: string): Bool = begin
   case+ flag of "-D_ATS_gc" => true | _ => false
 end // end of [flag_is_ATS_gc]
 val is_ATS_gc: intref = intref_make 0
-
-fn flag_is_ATS_gcats (flag: string): Bool = begin
-  case+ flag of "-D_ATS_gcats" => true | _ => false
-end // end of [flag_is_ATS_gcats]
-val is_ATS_gcats: intref = intref_make 0
 
 (* ****** ****** *)
 
@@ -198,7 +198,10 @@ fn* aux {i:nat | i <= n} ( // .<n-i,0>.
           val gcobj_global: string = runtime_global + gcobj_local
         in
           gcobj_global :: param_c
-        end
+        end // end of [ATS_GCATS]
+      | _ when intref_get is_ATS_GCATS0 > 0 => let
+          val gc_o = runtime_global + "GCATS0/gc.o" in gc_o :: param_c
+        end // end of [ATS_GCATS0]
       | _ when intref_get is_ATS_gc > 0 => let
           val is_mt = intref_get is_ATS_MULTITHREAD > 0
           val gcobj_local =
@@ -206,10 +209,7 @@ fn* aux {i:nat | i <= n} ( // .<n-i,0>.
           val gcobj_global: string = runtime_global + gcobj_local
         in
           gcobj_global :: param_c
-        end
-      | _ when intref_get is_ATS_gcats > 0 => let
-          val gc_o = runtime_global + "gcats/gc.o" in gc_o :: param_c
-        end
+        end // end of [ATS_gc]
       | _ => param_c
     ) : Strlst // end of [val]
     val param_c = (
@@ -263,13 +263,13 @@ and aux_flag {i:nat | i < n} // .<n-i-1,1>.
     in
       aux (pf | param_ats, flag :: param_c, i+1)
     end
-  | _ when flag_is_ATS_gc flag => let
-      val () = intref_set (is_ATS_gc, 1)
+  | _ when flag_is_ATS_GCATS0 flag => let
+      val () = intref_set (is_ATS_GCATS0, 1)
     in
       aux (pf | param_ats, flag :: param_c, i+1)
     end
-  | _ when flag_is_ATS_gcats flag => let
-      val () = intref_set (is_ATS_gcats, 1)
+  | _ when flag_is_ATS_gc flag => let
+      val () = intref_set (is_ATS_gc, 1)
     in
       aux (pf | param_ats, flag :: param_c, i+1)
     end

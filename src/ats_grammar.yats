@@ -1641,8 +1641,8 @@ srpthenopt
 /* ****** ****** */
 
 i0de /* identifier */
-  : IDENTIFIER_alp               { $$ = $1 ; }
-  | IDENTIFIER_sym               { $$ = $1 ; }
+  : IDENTIFIER_alp                      { $$ = $1 ; }
+  | IDENTIFIER_sym                      { $$ = $1 ; }
   | AMPERSAND                           { $$ = i0de_make_ampersand($1) ; }
   | BACKSLASH                           { $$ = i0de_make_backslash($1) ; }
   | BANG                                { $$ = i0de_make_bang($1) ; }

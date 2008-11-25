@@ -44,25 +44,27 @@
 
 (* ****** ****** *)
 
-abst@ype socket_domain = $extype "ats_int_type"
+abst@ype socket_domain_t = $extype "ats_int_type"
 
-macdef AF_INET = $extval (socket_domain, "AF_INET")
-macdef AF_INET6 = $extval (socket_domain, "AF_INET6")
-macdef AF_UNIX = $extval (socket_domain, "AF_UNIX")
-macdef AF_UNSPEC = $extval (socket_domain, "AF_UNSPEC")
+macdef AF_INET = $extval (socket_domain_t, "AF_INET")
+macdef AF_INET6 = $extval (socket_domain_t, "AF_INET6")
+macdef AF_UNIX = $extval (socket_domain_t, "AF_UNIX")
+macdef AF_UNSPEC = $extval (socket_domain_t, "AF_UNSPEC")
 
-abst@ype socket_type = $extype "ats_int_type"
+abst@ype socket_type_t = $extype "ats_int_type"
 
-macdef SOCK_DGRAM = $extval (socket_type, "SOCK_DGRAM")
-macdef SOCK_RAW = $extval (socket_type, "SOCK_RAW")
-macdef SOCK_SEQPACKET = $extval (socket_type, "SOCK_SEQPACKET")
-macdef SOCK_STREAM = $extval (socket_type, "SOCK_STREAM")
+macdef SOCK_DGRAM = $extval (socket_type_t, "SOCK_DGRAM")
+macdef SOCK_RAW = $extval (socket_type_t, "SOCK_RAW")
+macdef SOCK_SEQPACKET = $extval (socket_type_t, "SOCK_SEQPACKET")
+macdef SOCK_STREAM = $extval (socket_type_t, "SOCK_STREAM")
 
-abst@ype socket_protocol = $extype "ats_int_type"
+abst@ype socket_protocol_t = $extype "ats_int_type"
 
 (* ****** ****** *)
 
-datasort status = init | bind | list | conn
+// client: init -> connect
+// server: init -> bind -> listen -> accept
+datasort status = init | bind | listen | conn
 
 absview socket_v (int, status)
 
@@ -71,11 +73,11 @@ dataview socket_opt_v (int) =
   | {fd:nat} socket_some (fd) of socket_v (fd, init)
 
 fun socket_domain_type_err
-  (d: socket_domain, t: socket_type): [fd:int] (socket_opt_v fd | int fd)
+  (d: socket_domain_t, t: socket_type_t): [fd:int] (socket_opt_v fd | int fd)
   = "atslib_socket_domain_type_err"
 
 fun socket_domain_type_exn
-  (d: socket_domain, t: socket_type): [fd:int] (socket_v (fd, init) | int fd)
+  (d: socket_domain_t, t: socket_type_t): [fd:int] (socket_v (fd, init) | int fd)
   = "atslib_socket_domain_type_exn"
 
 (* ****** ****** *)
@@ -97,7 +99,7 @@ fun bind_inet_any_port_exn {fd:int}
 
 dataview listen_v (fd: int, int) = 
   | listen_fail (fd, ~1) of socket_v (fd, bind) 
-  | listen_succ (fd,  0) of socket_v (fd, list)
+  | listen_succ (fd,  0) of socket_v (fd, listen)
 
 fun listen_err {fd:int}
   (pf: socket_v (fd, bind) | socket_id: int fd, backlog: Nat)
@@ -105,7 +107,7 @@ fun listen_err {fd:int}
   = "atslib_listen_err"
 
 fun listen_exn {fd:int}
-  (pf: !socket_v (fd, bind) >> socket_v (fd, list) |
+  (pf: !socket_v (fd, bind) >> socket_v (fd, listen) |
    socket_id: int fd, backlog: Nat): void
   = "atslib_listen_exn"
 
@@ -116,12 +118,12 @@ dataview accept_v (int) =
   | {fd:nat} accept_succ (fd) of socket_v (fd, conn)
 
 fun accept_inet_err {fd_s:int}
-  (pf: !socket_v (fd_s, list) | socket_id: int fd_s)
+  (pf: !socket_v (fd_s, listen) | socket_id: int fd_s)
   : [fd_c:int] (accept_v fd_c | int fd_c)
   = "atslib_accept_inet_err"
 
 fun accept_inet_exn {fd_s:int}
-  (pf: !socket_v (fd_s, list) | socket_id: int fd_s)
+  (pf: !socket_v (fd_s, listen) | socket_id: int fd_s)
   : [fd_c:int] (socket_v (fd_c, conn) | int fd_c)
   = "atslib_accept_inet_exn"
 
