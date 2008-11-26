@@ -243,6 +243,12 @@ implement d2con_is_exn (d2c) =
 implement d2con_is_msg (d2c) =
   let val (vbox pf | p) = d2c in p->d2con_tag = D2CON_TAG_MSG end
 
+implement d2con_is_proof (d2c) = let
+  val s2c = let val (vbox pf | p) = d2c in p->d2con_scst end
+in
+  s2rt_is_proof_fun (s2cst_srt_get s2c)
+end // end of [d2con_is_proof]
+
 end // end of [local] (for assuming d2con_t)
 
 (* ****** ****** *)

@@ -1719,13 +1719,13 @@ fun ccomp_exp_lst_tmpvar_rest (
       , hies, vp_top, offs
       , tmp_fst, vp_fst, tmp_nxt, vp_nxt
       )
-    end
+    end // end of [list_cons]
   | list_nil () => let
       val () = instr_add_move_con (res, tmp_nxt, hit_nil, d2c_nil, '[])
       val () = instr_add_store_ptr_offs (res, vp_fst, '[], vp_nxt)
     in
       // empty
-    end
+    end // end of [list_nil]
 end // end of [ccomp_exp_lst_tmpvar_rest]
 
 fn ccomp_exp_lst_tmpvar (
@@ -1777,10 +1777,10 @@ in
       , hies, vp_top, offs
       , tmp_fst, vp_fst, tmp_nxt, vp_nxt
       )
-    end
+    end // end of [list_cons]
   | list_nil () => begin
       instr_add_move_con (res, tmp_res, hit_nil, d2c_nil, '[])
-    end // end of [HIEcon]
+    end // end of [list_nil]
 end // end of [ccomp_exp_lst_with_tmpvar]
 
 (* ****** ****** *)
@@ -1868,6 +1868,15 @@ in
         prerr_newline ()
       end
 *)
+      val () = if (d2con_is_proof d2c) then begin
+        $Loc.prerr_location (hie0.hiexp_loc);
+        prerr ": error(ccomp)";
+        prerr ": ["; prerr d2c; prerr "] is a proof constructor";
+        prerr ", which must not occur at run-time.";
+        prerr_newline ();
+        $Err.abort {void} ()
+      end // end of [val]
+        
       val () = the_dynconset_add d2c
       val hit_sum = hityp_normalize (hit_sum)
       val vps = ccomp_explst (res, hies_arg)
@@ -1876,7 +1885,7 @@ in
     end // end of [HIEcon]
   | HIEcst _ => begin
       instr_add_move_val (res, tmp_res, ccomp_exp (res, hie0))
-    end
+    end // end of [HIEcst]
   | HIEdelay (lin, hie) => let
       val d2c = d2conref_con_get (d2cref) where {
         val d2cref = (
@@ -1909,7 +1918,7 @@ in
       val hit0 = hityp_normalize (hie0.hiexp_typ)
     in
       instr_add_move_val (res, tmp_res, valprim_ext (code, hit0))
-    end
+    end // end of [HIEextval]
   | HIEfloat f(*string*) => begin
       instr_add_move_val (res, tmp_res, valprim_float f)
     end
@@ -1926,7 +1935,7 @@ in
       val ins = INSTRcond (vp_cond, res_then, res_else)
     in
       res := list_vt_cons (ins, res)
-    end
+    end // end of [HIEif]
   | HIEint (_(*str*), int) => begin
       instr_add_move_val (res, tmp_res, valprim_int int)
     end
@@ -1938,7 +1947,7 @@ in
         (hie0.hiexp_loc, hie0.hiexp_typ, hips_arg, hie_body)
     in
       instr_add_move_val (res, tmp_res, vp_lam)
-    end
+    end // end of [HIElam]
   | HIElet (hids, hie) => let
       val (pf_mark | ()) = the_dynctx_mark ()
       val () = ccomp_declst (res, hids)
@@ -1946,7 +1955,7 @@ in
       val () = the_dynctx_unmark (pf_mark | (*none*))
     in
       // empty
-    end
+    end // end of [HIElet]
   | HIEloop (ohie_init, hie_test, ohie_post, hie_body) => begin
       ccomp_exp_loop (res, ohie_init, hie_test, ohie_post, hie_body)
     end // end of [HIEloop]
@@ -2018,13 +2027,13 @@ in
     end // end of [HIEtrywith]
   | HIEvar d2v => begin
       instr_add_move_val (res, tmp_res, ccomp_exp_var (d2v))
-    end
+    end // end of [HIEvar]
   | _ => begin
       $Loc.prerr_location (hie0.hiexp_loc);
       prerr ": ccomp_exp_tmpvar: not implemented: hie0 = ";
       prerr hie0; prerr_newline ();
       $Err.abort {void} ()
-    end
+    end // end of [_]
 end // end of [ccomp_exp_tmpvar]
 
 (* ****** ****** *)

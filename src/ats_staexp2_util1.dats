@@ -232,54 +232,61 @@ implement s2rt_is_proof (s2t) = case+ s2t of
   | _ => false
 
 implement s2rt_is_proof_fun (s2t) = case+ s2t of
-  | S2RTfun (_, s2t) => s2rt_is_proof_fun s2t
-  | _ => s2rt_is_proof s2t
+  | S2RTfun (_, s2t) => s2rt_is_proof_fun s2t | _ => s2rt_is_proof s2t
+// end of [s2rt_is_proof_fun]
 
 implement s2rt_is_program (s2t) = case+ s2t of
   | S2RTbas s2tb => begin case+ s2tb of
     | S2RTBASimp (id, prf, _) => prf < PROOF_LEVEL | _ => false
     end
   | _ => false
+// end of [s2rt_is_program]
 
 implement s2rt_is_program_fun (s2t) = case+ s2t of
-  | S2RTfun (_, s2t) => s2rt_is_program_fun s2t
-  | _ => s2rt_is_program s2t
+  | S2RTfun (_, s2t) => s2rt_is_program_fun s2t | _ => s2rt_is_program s2t
+// end of [s2rt_is_program_fun]
 
 implement s2rt_is_impredicative (s2t) = case+ s2t of
   | S2RTbas s2tb => begin
       case+ s2tb of S2RTBASimp _ => true | _ => false
     end
   | _ => false
+// end of [s2rt_is_impredicative]
 
 implement s2rt_is_impredicative_fun (s2t) = case+ s2t of
   | S2RTfun (_, s2t) => s2rt_is_impredicative_fun s2t
   | _ => s2rt_is_impredicative s2t
+// end of [s2rt_is_impredicative_fun]
 
 implement s2rt_is_boxed (s2t) = case+ s2t of
   | S2RTbas s2tb => begin case+ s2tb of
     | S2RTBASimp (id, prf, _) => (prf = 0) | _ => false
     end
   | _ => false
+// end of [s2rt_is_boxed]
 
 implement s2rt_is_boxed_fun (s2t) = case+ s2t of
-  | S2RTfun (_, s2t) => s2rt_is_boxed_fun s2t
-  | _ => s2rt_is_boxed s2t
+  | S2RTfun (_, s2t) => s2rt_is_boxed_fun s2t | _ => s2rt_is_boxed s2t
+// end of [s2rt_is_boxed_fun]
 
 (* ****** ****** *)
 
 implement s2rt_base_fun (s2t) = case+ s2t of
   | S2RTfun (_, s2t) => s2rt_base_fun s2t | _ => s2t
+// end of [s2rt_base_fun]
 
 implement s2rt_datakind (datknd) = case+ datknd of
   | $Syn.DATAKINDprop () => s2rt_prop
   | $Syn.DATAKINDtype () => s2rt_type
   | $Syn.DATAKINDview () => s2rt_view
   | $Syn.DATAKINDviewtype () => s2rt_viewtype
+// end of [s2rt_datakind]
 
 implement s2rt_readize (s2t) =
   if s2rt_is_proof s2t then s2rt_prop else begin
     if s2rt_is_boxed s2t then s2rt_type else s2rt_t0ype
   end
+// end of [s2rt_readize]
 
 (* ****** ****** *)
 
@@ -325,6 +332,7 @@ implement s2eff_union_eff (s2fe, eff) = case+ s2fe of
   | S2EFFset (efs, s2es) => begin
       S2EFFset ($Eff.effset_add (efs, eff), s2es)
     end
+// end of [s2eff_union_eff]
 
 implement s2eff_union_s2eff (s2fe1, s2fe2) =
   case+ (s2fe1, s2fe2) of
@@ -338,6 +346,7 @@ implement s2eff_union_s2eff (s2fe1, s2fe2) =
     in
       S2EFFset (efs, s2es)
     end
+// end of [s2eff_union_s2eff]
 
 // ------------------------------------------------
 

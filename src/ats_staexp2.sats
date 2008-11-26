@@ -786,8 +786,9 @@ overload compare with compare_d2con_d2con
 
 //
 
-fun d2con_is_exn (_: d2con_t): bool // exn constructor
-fun d2con_is_msg (_: d2con_t): bool // msg constructor
+fun d2con_is_exn (d2c: d2con_t): bool // exn constructor
+fun d2con_is_msg (d2c: d2con_t): bool // msg constructor
+fun d2con_is_proof (d2c: d2con_t): bool // proof constructor
 
 //
 
