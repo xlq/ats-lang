@@ -34,8 +34,8 @@
 
 /* ****** ****** */
 
-#ifndef __POINTER_CATS
-#define __POINTER_CATS
+#ifndef ATS_PRELUDE_POINTER_CATS
+#define ATS_PRELUDE_POINTER_CATS
 
 /* ****** ****** */
 
@@ -180,6 +180,6 @@ atspre_ptr_move_tsz
 
 /* ****** ****** */
 
-#endif /* __POINTER_CATS */
+#endif /* ATS_PRELUDE_POINTER_CATS */
 
 /* end of [pointer.cats] */

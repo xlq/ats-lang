@@ -34,8 +34,8 @@
 
 /* ****** ****** */
 
-#ifndef __BYTE_CATS
-#define __BYTE_CATS
+#ifndef ATS_PRELUDE_BYTE_CATS
+#define ATS_PRELUDE_BYTE_CATS
 
 /* ****** ****** */
 
@@ -216,6 +216,6 @@ atspre_prerr_byte(const ats_byte_type c) {
 
 /* ****** ****** */
 
-#endif /* __BYTE_CATS */
+#endif /* ATS_PRELUDE_BYTE_CATS */
 
 /* end of [byte.cats] */

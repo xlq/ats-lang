@@ -46,12 +46,10 @@
 
 (* ****** ****** *)
 
-viewdef bytes_v (sz:int, l:addr) = @[byte][sz] @ l
-
-(* ****** ****** *)
+typedef bytes (sz:int) = @[byte][sz]
 
 prval bytes_v_of_strbuf_v
-  : {sz,n:nat} {l:addr} strbuf (sz, n) @ l -<prf> @[byte][sz] @ l
+  : {sz,n:nat} {l:addr} strbuf (sz, n) @ l -<prf> bytes (sz) @ l
 
 (* ****** ****** *)
 
@@ -59,12 +57,11 @@ val string_empty : string 0
 
 (* ****** ****** *)
 
-fun string1_of_string0
-  (s: string):<> [n:nat] string n
+fun string1_of_string0 (s: string):<> [n:nat] string n
   = "atspre_string1_of_string0"
 
-fun string1_of_strbuf {m,n:nat} {l:addr}
-  (pf: strbuf (m, n) @ l | p: ptr l):<> string n
+fun string1_of_strbuf
+  {m,n:nat} {l:addr} (pf: strbuf (m, n) @ l | p: ptr l):<> string n
   = "atspre_string1_of_strbuf"
 
 fun strbuf_of_string1 {n:nat} (s: string n)
@@ -75,72 +72,91 @@ fun strbuf_of_string1 {n:nat} (s: string n)
 
 fun lt_strbuf_strbuf {m1,n1,m2,n2:nat}
    (sb1: &strbuf (m1,n1), sb2: &strbuf (m2,n2)):<> bool
-  = "atspre_lt_strbuf_strbuf"
+  = "atspre_lt_string_string"
 
 fun lt_string_string (s1: string, s2: string):<> bool
-  = "atspre_lt_strbuf_strbuf"
+  = "atspre_lt_string_string"
 
 overload < with lt_strbuf_strbuf
 overload < with lt_string_string
 
+//
+
 fun lte_strbuf_strbuf {m1,n1,m2,n2:nat}
   (sb1: &strbuf (m1,n1), sb2: &strbuf (m2,n2)):<> bool
-  = "atspre_lte_strbuf_strbuf"
+  = "atspre_lte_string_string"
 
 fun lte_string_string (s1: string, s2: string):<> bool
-  = "atspre_lte_strbuf_strbuf"
+  = "atspre_lte_string_string"
 
 overload <= with lte_strbuf_strbuf
 overload <= with lte_string_string
 
+//
+
 fun gt_strbuf_strbuf {m1,n1,m2,n2:nat}
    (sb1: &strbuf (m1,n1), sb2: &strbuf (m2,n2)):<> bool
-  = "atspre_gt_strbuf_strbuf"
+  = "atspre_gt_string_string"
+
 fun gt_string_string (s1: string, s2: string):<> bool
-  = "atspre_gt_strbuf_strbuf"
+  = "atspre_gt_string_string"
 
 overload > with gt_strbuf_strbuf
 overload > with gt_string_string
 
+//
+
 fun gte_strbuf_strbuf {m1,n1,m2,n2:nat}
   (sb1: &strbuf (m1,n1), sb2: &strbuf (m2,n2)):<> bool
-  = "atspre_gte_strbuf_strbuf"
+  = "atspre_gte_string_string"
+
 fun gte_string_string (s1: string, s2: string):<> bool
-  = "atspre_gte_strbuf_strbuf"
+  = "atspre_gte_string_string"
 
 overload >= with gte_strbuf_strbuf
 overload >= with gte_string_string
 
+//
+
 fun eq_strbuf_strbuf {m1,n1,m2,n2:nat}
   (sb1: &strbuf (m1,n1), sb2: &strbuf (m2,n2)):<> bool
-  = "atspre_eq_strbuf_strbuf"
+  = "atspre_eq_string_string"
+
 fun eq_string_string (s1: string, s2: string):<> bool
-  = "atspre_eq_strbuf_strbuf"
+  = "atspre_eq_string_string"
 
 overload = with eq_strbuf_strbuf
 overload = with eq_string_string
 
+//
+
 fun neq_strbuf_strbuf {m1,n1,m2,n2:nat}
   (sb1: &strbuf (m1,n1), sb2: &strbuf (m2,n2)):<> bool
-  = "atspre_neq_strbuf_strbuf"
+  = "atspre_neq_string_string"
+
 fun neq_string_string (s1: string, s2: string):<> bool
-  = "atspre_neq_strbuf_strbuf"
+  = "atspre_neq_string_string"
 
 overload <> with neq_strbuf_strbuf
 overload <> with neq_string_string
 
-(* ****** ****** *)
+//
 
 fun compare_strbuf_strbuf {m1,n1,m2,n2:nat}
   (sb1: &strbuf (m1,n1), sb2: &strbuf (m2,n2)):<> Sgn
-  = "atspre_compare_strbuf_strbuf"
+  = "atspre_compare_string_string"
+
 fun compare_string_string (s1: string, s2: string):<> Sgn
-  = "atspre_compare_strbuf_strbuf"
+  = "atspre_compare_string_string"
 
 overload compare with compare_strbuf_strbuf
 overload compare with compare_string_string
 
 (* ****** ****** *)
+
+fun fprint_strbuf {m,n:nat}
+  (out: FILEref, x: &strbuf (m, n)):<!exnref> void
+  = "atspre_fprint_string"
 
 symintr fprint_string
 
@@ -209,7 +225,7 @@ overload string_make with string_make_list_len
 
 fun strbuf_make_bufptr
   {n,st,ln:nat | st + ln <= n} {l_buf:addr}
-  (pf: !bytes_v (n, l_buf) | p: ptr l_buf, st: int st, ln: int ln)
+  (pf: !bytes n @ l_buf | p: ptr l_buf, st: int st, ln: int ln)
   :<> [l:addr] (strbuf (ln+1, ln) @ l | ptr l)
   = "atspre_strbuf_make_bufptr"
 
@@ -247,7 +263,7 @@ overload + with string1_append
 (* ****** ****** *)
 
 fun string_compare (s1: string, s2: string):<> Sgn
-  = "atspre_compare_strbuf_strbuf"
+  = "atspre_compare_string_string"
 
 (* ****** ****** *)
 
@@ -264,12 +280,14 @@ fun string_contains (s: string, c: char):<> bool
 (* ****** ****** *)
 
 fun string_equal (s1: string, s2: string):<> bool
-  = "atspre_eq_strbuf_strbuf"
+  = "atspre_eq_string_string"
 
 (* ****** ****** *)
 
 fun strbuf_length {m,n:nat} (sb: &strbuf (m, n)):<> int n
   = "atspre_strbuf_length"
+
+overload length with strbuf_length
 
 fun string0_length (s: string):<> Nat
   = "atspre_strbuf_length"
@@ -277,9 +295,11 @@ fun string0_length (s: string):<> Nat
 fun string1_length {n:nat} (s: string n):<> int n
   = "atspre_strbuf_length"
 
-overload length with strbuf_length
-overload length with string0_length
-overload length with string1_length
+symintr string_length
+overload string_length with string0_length
+overload string_length with string1_length
+
+overload length with string_length
 
 (* ****** ****** *)
 
@@ -292,12 +312,14 @@ fun string1_is_empty {n:nat} (s: string n):<> bool (n==0)
 
 fun strbuf_is_not_empty {m,n:nat} (sb: &strbuf (m, n)):<> bool (n > 0)
   = "atspre_strbuf_is_not_empty"
+
+overload ~ with strbuf_is_not_empty
+
 fun string0_is_not_empty (s: string):<> bool
   = "atspre_strbuf_is_not_empty"
 fun string1_is_not_empty {n:nat} (s: string n):<> bool (n > 0)
   = "atspre_strbuf_is_not_empty"
 
-overload ~ with strbuf_is_not_empty
 overload ~ with string0_is_not_empty
 overload ~ with string1_is_not_empty
 

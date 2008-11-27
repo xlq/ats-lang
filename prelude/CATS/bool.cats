@@ -34,8 +34,8 @@
 
 /* ****** ****** */
 
-#ifndef __BOOL_CATS
-#define __BOOL_CATS
+#ifndef ATS_PRELUDE_BOOL_CATS
+#define ATS_PRELUDE_BOOL_CATS
 
 /* ****** ****** */
 
@@ -177,6 +177,6 @@ atspre_tostring_bool(const ats_bool_type b) {
 
 /* ****** ****** */
 
-#endif /* __BOOL_CATS */
+#endif /* ATS_PRELUDE_BOOL_CATS */
 
 /* end of [bool.cats] */

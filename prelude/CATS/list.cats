@@ -34,8 +34,8 @@
 
 /* ****** ****** */
 
-#ifndef _PRELUDE_LIST_CATS
-#define _PRELUDE_LIST_CATS
+#ifndef ATS_PRELUDE_LIST_CATS
+#define ATS_PRELUDE_LIST_CATS
 
 /* ****** ****** */
 
@@ -57,6 +57,6 @@ atspre_list_of_list_vt (ats_ptr_type xs) { return xs ; }
 
 /* ****** ****** */
 
-#endif /* _PRELUDE_LIST_CATS */
+#endif /* ATS_PRELUDE_LIST_CATS */
 
 /* end of [list.cats] */

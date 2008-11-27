@@ -34,8 +34,8 @@
 
 /* ****** ****** */
 
-#ifndef __PRINTF_CATS
-#define __PRINTF_CATS
+#ifndef ATS_PRELUDEPRINTF_CATS
+#define ATS_PRELUDEPRINTF_CATS
 
 /* ****** ****** */
 
@@ -109,6 +109,6 @@ atspre_prerrf_exn(ats_ptr_type fmt, ...) {
 
 /* ****** ****** */
 
-#endif /* __PRINTF_CATS */
+#endif /* ATS_PRELUDEPRINTF_CATS */
 
 /* end of [printf.cats] */

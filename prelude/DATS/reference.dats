@@ -67,7 +67,7 @@ implement{a} ref_set_elt (r, x) = (!r := x)
 
 (* ****** ****** *)
 
-// implement refconst_get_elt<a> (r) = !r
+// implement{a} refconst_get_elt (r) = !r
 
 (* ****** ****** *)
 

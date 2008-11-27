@@ -34,8 +34,8 @@
 
 /* ****** ****** */
 
-#ifndef __ARRAY_CATS
-#define __ARRAY_CATS
+#ifndef ATS_PRELUDE_ARRAY_CATS
+#define ATS_PRELUDE_ARRAY_CATS
 
 /* ****** ****** */
 
@@ -104,6 +104,6 @@ atspre_array_ptr_move_tsz (
 
 /* ****** ****** */
 
-#endif /* __ARRAY_CATS */
+#endif /* ATS_PRELUDE_ARRAY_CATS */
 
 /* end of [array.cats] */

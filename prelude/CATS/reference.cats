@@ -34,8 +34,8 @@
 
 /* ****** ****** */
 
-#ifndef __REFERENCE_CATS
-#define __REFERENCE_CATS
+#ifndef ATS_PRELUDE_REFERENCE_CATS
+#define ATS_PRELUDE_REFERENCE_CATS
 
 /* ****** ****** */
 
@@ -71,6 +71,6 @@ atspre_ref_get_view_ptr (ats_ptr_type r) { return r ; }
 
 /* ****** ****** */
 
-#endif /* __REFERENCE_CATS */
+#endif /* ATS_PRELUDE_REFERENCE_CATS */
 
 /* end of [reference.cats] */

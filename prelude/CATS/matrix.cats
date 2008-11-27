@@ -34,8 +34,8 @@
 
 /* ****** ****** */
 
-#ifndef __MATRIX_CATS
-#define __MATRIX_CATS
+#ifndef ATS_PRELUDE_MATRIX_CATS
+#define ATS_PRELUDE_MATRIX_CATS
 
 /* ****** ****** */
 
@@ -48,6 +48,6 @@
 
 /* ****** ****** */
 
-#endif /* __MATRIX_CATS */
+#endif /* ATS_PRELUDE_MATRIX_CATS */
 
 /* end of [matrix.cats] */

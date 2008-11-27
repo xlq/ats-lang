@@ -34,8 +34,8 @@
 
 /* ****** ****** */
 
-#ifndef _PRELUDE_LIST_VT_CATS
-#define _PRELUDE_LIST_VT_CATS
+#ifndef ATS_PRELUDE_LIST_VT_CATS
+#define ATS_PRELUDE_LIST_VT_CATS
 
 /* ****** ****** */
 
@@ -47,6 +47,6 @@
 
 /* ****** ****** */
 
-#endif /* _PRELUDE_LIST_VT_CATS */
+#endif /* ATS_PRELUDE_LIST_VT_CATS */
 
 /* end of [list_vt.cats] */

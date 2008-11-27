@@ -34,8 +34,8 @@
 
 /* ****** ****** */
 
-#ifndef __RANDOM_CATS
-#define __RANDOM_CATS
+#ifndef ATS_PRELUDE_RANDOM_CATS
+#define ATS_PRELUDE_RANDOM_CATS
 
 /* ****** ****** */
 
@@ -79,6 +79,6 @@ ats_lint_type ats_mrand48() {
 
 /* ****** ****** */
 
-#endif /* __RANDOM_CATS */
+#endif /* ATS_PRELUDE_RANDOM_CATS */
 
 /* end of [random.cats] */

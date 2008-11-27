@@ -34,8 +34,8 @@
 
 /* ****** ****** */
 
-#ifndef _PRELUDE_SLSEG_CATS
-#define _PRELUDE_SLSEG_CATS
+#ifndef ATS_PRELUDE_SLSEG_CATS
+#define ATS_PRELUDE_SLSEG_CATS
 
 /* ****** ****** */
 
@@ -51,7 +51,7 @@ ats_ptr_type atspre_sllst_of_list_vt (ats_ptr_type p) { return p ; }
 
 /* ****** ****** */
 
-#endif /* _PRELUDE_SLSEG_CATS */
+#endif /* ATS_PRELUDE_SLSEG_CATS */
 
 /* end of [slseg.cats] */
 

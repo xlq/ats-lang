@@ -34,8 +34,8 @@
 
 /* ****** ****** */
 
-#ifndef __STRING_CATS
-#define __STRING_CATS
+#ifndef ATS_PRELUDE_STRING_CATS
+#define ATS_PRELUDE_STRING_CATS
 
 /* ****** ****** */
 
@@ -65,62 +65,62 @@ atspre_string1_of_strbuf (const ats_ptr_type s) { return s ; }
 
 static inline
 ats_bool_type
-atspre_lt_strbuf_strbuf
+atspre_lt_string_string
   (const ats_ptr_type s1, const ats_ptr_type s2) {
-  int i = strcmp ((char *)s1, (char *)s2) ;
+  int i = strcmp((char *)s1, (char *)s2) ;
   return (i < 0 ? ats_true_bool : ats_false_bool) ;
 }
 
 static inline
 ats_bool_type
-atspre_lte_strbuf_strbuf
+atspre_lte_string_string
   (const ats_ptr_type s1, const ats_ptr_type s2) {
-  int i = strcmp ((char *)s1, (char *)s2) ;
+  int i = strcmp((char *)s1, (char *)s2) ;
   return (i <= 0 ? ats_true_bool : ats_false_bool) ;
 }
 
 static inline
 ats_bool_type
-atspre_gt_strbuf_strbuf
+atspre_gt_string_string
   (const ats_ptr_type s1, const ats_ptr_type s2) {
-  int i = strcmp ((char *)s1, (char *)s2) ;
+  int i = strcmp((char *)s1, (char *)s2) ;
   return (i > 0 ? ats_true_bool : ats_false_bool) ;
 }
 
 static inline
 ats_bool_type
-atspre_gte_strbuf_strbuf
+atspre_gte_string_string
   (const ats_ptr_type s1, const ats_ptr_type s2) {
-  int i = strcmp ((char *)s1, (char *)s2) ;
+  int i = strcmp((char *)s1, (char *)s2) ;
   return (i >= 0 ? ats_true_bool : ats_false_bool) ;
 }
 
 static inline
 ats_bool_type
-atspre_eq_strbuf_strbuf
+atspre_eq_string_string
   (const ats_ptr_type s1, const ats_ptr_type s2) {
-  int i = strcmp ((char *)s1, (char *)s2) ;
+  int i = strcmp((char *)s1, (char *)s2) ;
 /*
-  fprintf (stdout, "ats_eq_strbuf_strbuf: s1 = %s and s2 = %s\n", s1, s2) ;
-  fprintf (stdout, "ats_eq_strbuf_strbuf: i = %i\n", i) ;
+  fprintf (stdout, "ats_eq_string_string: s1 = %s and s2 = %s\n", s1, s2) ;
+  fprintf (stdout, "ats_eq_string_string: i = %i\n", i) ;
 */
   return (i == 0 ? ats_true_bool : ats_false_bool) ;
 }
 
 static inline
 ats_bool_type
-atspre_neq_strbuf_strbuf
+atspre_neq_string_string
   (const ats_ptr_type s1, const ats_ptr_type s2) {
-  int i = strcmp ((char *)s1, (char *)s2) ;
+  int i = strcmp((char *)s1, (char *)s2) ;
   return (i != 0 ? ats_true_bool : ats_false_bool) ;
 }
 
 static inline
 ats_int_type
-atspre_compare_strbuf_strbuf
+atspre_compare_string_string
   (const ats_ptr_type s1, const ats_ptr_type s2)
 {
-  int i = strcmp ((char *)s1, (char *)s2) ;
+  int i = strcmp((char *)s1, (char *)s2) ;
   if (i < 0) return -1 ;
   if (i > 0) return  1 ;
   return 0 ;
@@ -173,10 +173,8 @@ atspre_strbuf_make_bufptr
   (const ats_ptr_type src0, const ats_int_type start, const ats_int_type len)
 {
   char *des, *src ;
-
   des = ATS_MALLOC(len+1) ;
   src = ((char*)src0) + start ;
-
   memcpy(des, src, len) ; des[len] = '\000' ;
   return des ;
 }
@@ -195,8 +193,8 @@ atspre_string_append (const ats_ptr_type s1, const ats_ptr_type s2) {
   int n1, n2 ;
   char *des ;
 
-  n1 = strlen ((char *)s1) ;
-  n2 = strlen ((char *)s2) ;
+  n1 = strlen((char *)s1) ;
+  n2 = strlen((char *)s2) ;
   des = ATS_MALLOC(n1+n2+1) ;
   des[n1+n2] = '\000' ;
   memcpy(des, s1, n1) ; memcpy (des+n1, s2, n2) ;
@@ -309,7 +307,7 @@ atspre_string_tolower (const ats_ptr_type s) {
   int n ;
   char *src, *des0, *des ;
 
-  src = (char *)s ; n = strlen (src) ;
+  src = (char *)s ; n = strlen(src) ;
   des0 = ATS_MALLOC(n+1) ; des = des0 ;
   while (n > 0) { *des = tolower (*src) ; ++des ; ++src ; --n ; }
   *des = '\000' ;
@@ -322,7 +320,7 @@ atspre_string_toupper (const ats_ptr_type s) {
   int n ;
   char *src, *des0, *des ;
 
-  src = (char *)s ; n = strlen (src) ;
+  src = (char *)s ; n = strlen(src) ;
   des0 = ATS_MALLOC(n+1) ; des = des0 ;
   while (n > 0) { *des = toupper (*src) ; ++des ; ++src ; --n ; }
   *des = '\000' ;
@@ -358,4 +356,6 @@ atspre_stropt_is_some (const ats_ptr_type s) {
 
 /* ****** ****** */
 
-#endif /* __STRING_CATS */
+#endif /* ATS_PRELUDE_STRING_CATS */
+
+/* end of [string.cats] */

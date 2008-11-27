@@ -34,8 +34,8 @@
 
 /* ****** ****** */
 
-#ifndef __INTEGER_CATS
-#define __INTEGER_CATS
+#ifndef ATS_PRELUDE_INTEGER_CATS
+#define ATS_PRELUDE_INTEGER_CATS
 
 /* ****** ****** */
 
@@ -1891,6 +1891,6 @@ atspre_prerr_uintptr (ats_uintptr_type u) {
 
 /* ****** ****** */
 
-#endif /* __INTEGER_CATS */
+#endif /* ATS_PRELUDE_INTEGER_CATS */
 
 /* end of [integer.cats] */

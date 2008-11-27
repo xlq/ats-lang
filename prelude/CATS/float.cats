@@ -34,8 +34,8 @@
 
 /* ****** ****** */
 
-#ifndef __FLOAT_CATS
-#define __FLOAT_CATS
+#ifndef ATS_PRELUDE_FLOAT_CATS
+#define ATS_PRELUDE_FLOAT_CATS
 
 /* ****** ****** */
 
@@ -681,6 +681,6 @@ atspre_tostring_ldouble (const ats_ldouble_type f) {
 
 /* ****** ****** */
 
-#endif /* __FLOAT_CATS */
+#endif /* ATS_PRELUDE_FLOAT_CATS */
 
 /* end of [float.cats] */
