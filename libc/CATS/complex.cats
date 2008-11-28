@@ -34,8 +34,8 @@
 
 /* ****** ****** */
 
-#ifndef _LIBC_COMPLEX_CATS
-#define _LIBC_COMPLEX_CATS
+#ifndef ATS_LIBC_COMPLEX_CATS
+#define ATS_LIBC_COMPLEX_CATS
 
 /* ****** ****** */
 
@@ -119,6 +119,6 @@ atslib_prerr_complex (ats_complex_type f) {
 
 /* ****** ****** */
 
-#endif /* _LIBC_COMPLEX_CATS */
+#endif /* ATS_LIBC_COMPLEX_CATS */
 
 /* end of [complex.cats] */

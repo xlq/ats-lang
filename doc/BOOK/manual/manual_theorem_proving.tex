@@ -173,13 +173,41 @@ this theorem is equivalent to the following one,
 \end{array}\]
 which is encoded and proven in Figure~\ref{figure:lemma_for_matrix_subscripting}.
 
+\begin{figure}[thp]
+\input{DATS/intlst_datasort_example.dats}
+\caption{A simple example involving datasort declaration}
+\label{figure:intlst_datasort_example}
+\end{figure}
 \section{Datasorts}
 So far, the type indexes appearing in the presented examples are all of
 some built-in sorts (e.g., $\sbool$, $\sint$). In ATS, it is also possible
-for the programmer to introduce sorts by datasort declaration.
+for the programmer to introduce sorts by datasort declaration. As an
+example, a datasort {\it intlst} is first declared in
+Figure~\ref{figure:intlst_datasort_example}, and each index of this sort
+represents a sequence of integers. Subsequently, a dataprop {\it
+int\_intlst\_lte} is declared, which captures the relation stating that a
+given integer is less than or equal to each integer in a given integer
+sequence.
 
-\begin{verbatim}
-dataparasort tm = lm of (tm -> tm) | app (tm, tm) // higher-order abstract syntax
-\end{verbatim}
+The first proof function {\it int\_intlst\_lte\_lemma} in
+Figure~\ref{figure:intlst_datasort_example} proves that an integer $i$ is
+less than or equal to $x$ for each integer $x$ in a given integer sequence
+if $i\leq j$ and $j\leq x$ for each integer $x$ in the sequence.
+
+The next proof function {\it intlst\_lower\_bound\_lemma} in
+Figure~\ref{figure:intlst_datasort_example} proves that for each integer
+sequence, there is a lower bound $x_{lb}$ for the sequence, that is, $x\leq
+x_{lb}$ holds for each $x$ in the sequence. Please notice the use of {\it
+sif} and {\it scase} in this example. In constrast to {\it if}, {\it sif}
+is used to construct a static conditional expression where the condition is
+a static expression of the sort $\sbool$. In an analogous manner, ${\it
+scase}$ is used to construct a static case-expression where the expression
+being matched against is static. Each pattern used for matching in a static
+case-expression must be simple, that is, it must be of the form of a
+constructor being applied to variables.
+
+%% \begin{verbatim}
+%% dataparasort tm = lm of (tm -> tm) | app (tm, tm) // higher-order abstract syntax
+%% \end{verbatim}
 
 %%% end of \chapter{Programming with Theorem Proving} %%%

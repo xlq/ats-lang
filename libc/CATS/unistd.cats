@@ -34,8 +34,8 @@
 
 /* ****** ****** */
 
-#ifndef _LIBC_UNISTD_CATS
-#define _LIBC_UNISTD_CATS
+#ifndef ATS_LIBC_UNISTD_CATS
+#define ATS_LIBC_UNISTD_CATS
 
 /* ****** ****** */
 
@@ -70,4 +70,4 @@ atslib_usleep (ats_int_type n) {
 
 /* ****** ****** */
 
-#endif /* _LIBC_UNISTD_CATS */
+#endif /* ATS_LIBC_UNISTD_CATS */

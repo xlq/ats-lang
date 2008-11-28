@@ -34,8 +34,8 @@
 
 /* ****** ****** */
 
-#ifndef _LIBC_TIME_CATS
-#define _LIBC_TIME_CATS
+#ifndef ATS_LIBC_TIME_CATS
+#define ATS_LIBC_TIME_CATS
 
 /* ****** ****** */
 
@@ -125,6 +125,20 @@ atslib_time_get_and_set (ats_ptr_type p) {
 /* ****** ****** */
 
 static inline
+ats_double_type
+atslib_difftime (time_t finish, time_t start) {
+  return difftime(finish, start) ;
+}
+
+/* ****** ****** */
+
+static inline
+ats_ptr_type // this function is not reentrant
+atslib_ctime (time_t ntick) { return ctime(&ntick) ; }
+
+/* ****** ****** */
+
+static inline
 ats_ref_type
 atslib_localtime (ats_ptr_type time) {
   return localtime ((time_t *)time) ;
@@ -134,14 +148,6 @@ static inline
 ats_void_type
 atslib_localtime_r (ats_ptr_type time, ats_ptr_type tm) {
   localtime_r ((time_t *)time, (struct tm *)tm) ; return ;
-}
-
-/* ****** ****** */
-
-static inline
-ats_double_type
-atslib_difftime (time_t finish, time_t start) {
-  return difftime(finish, start) ;
 }
 
 /* ****** ****** */
@@ -162,6 +168,6 @@ atslib_clock (void) { return clock (); }
 
 /* ****** ****** */
 
-#endif /* _LIBC_TIME_CATS */
+#endif /* ATS_LIBC_TIME_CATS */
 
 /* end of [time.cats] */

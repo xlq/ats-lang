@@ -37,8 +37,8 @@
 
 /* ****** ****** */
 
-#ifndef _LIBC_PTHREAD_CATS
-#define _LIBC_PTHREAD_CATS
+#ifndef ATS_LIBC_PTHREAD_CATS
+#define ATS_LIBC_PTHREAD_CATS
 
 #ifdef _ATS_MULTITHREAD
 
@@ -142,6 +142,6 @@ atslib_pthread_cond_broadcast (ats_ptr_type cond) {
 
 /* ****** ****** */
 
-#endif /* _LIBC_PTHREAD_CATS */
+#endif /* ATS_LIBC_PTHREAD_CATS */
 
 /* end of [pthread.cats] */

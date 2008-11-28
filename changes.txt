@@ -8,6 +8,9 @@ ats-lang-anariats-0.1.1:
 
 2. [scase] is now supported.
 
+3. [x1,x2:int] <pat> is now a legal pattern; it is equivalent to the following
+   pattern [x1:int,x2:int] <pat>
+
 ########################################################################
 
 ats-lang-anariats-0.1.0:

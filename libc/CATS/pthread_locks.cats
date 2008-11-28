@@ -45,8 +45,8 @@
 
 /* ****** ****** */
 
-#ifndef _LIBC_PTHREAD_LOCKS_CATS
-#define _LIBC_PTHREAD_LOCKS_CATS
+#ifndef ATS_LIBC_PTHREAD_LOCKS_CATS
+#define ATS_LIBC_PTHREAD_LOCKS_CATS
 
 #ifdef _ATS_MULTITHREAD
 
@@ -130,7 +130,7 @@ atslib_pthread_uplock_download (ats_ptr_type p) {
 /* ****** ****** */
 
 #endif // end of [#ifdef _ATS_MULTITHREAD]
-#endif // end of [#ifndef _LIBC_PTHREAD_LOCKS_CATS]
+#endif // end of [#ifndef ATS_LIBC_PTHREAD_LOCKS_CATS]
 
 /* ****** ****** */
 

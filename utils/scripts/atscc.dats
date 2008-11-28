@@ -62,8 +62,9 @@ extern fun typecheck_file_exec
   = "typecheck_file_exec"
 
 implement typecheck_file (flag_stadyn, param, infile) = let
-  fn cmd ():<cloptr1> void = typecheck_file_exec (flag_stadyn, param, infile)
-  val status = fork_and_exec_and_wait (cmd)
+  val cmd = llam (): void =<cloptr>
+    $effmask_all (typecheck_file_exec (flag_stadyn, param, infile))
+  val status = fork_and_exec_and_wait_cloptr (cmd)
 in
   if (status <> 0) then exit_prerrf {void}
     (status, "Exit: [typecheck_file(%s)] failed.\n", @(infile))
@@ -75,11 +76,10 @@ extern fun ccomp_file_to_file_exec
 
 implement ccomp_file_to_file_err
   (flag_stadyn, param, infile, outfile) = let
-  fn cmd ():<cloptr1> void = begin
-    ccomp_file_to_file_exec (flag_stadyn, param, infile, outfile)
-  end
+  val cmd = llam(): void =<cloptr>
+    $effmask_all (ccomp_file_to_file_exec (flag_stadyn, param, infile, outfile))
 in
-  fork_and_exec_and_wait (cmd)
+  fork_and_exec_and_wait_cloptr (cmd)
 end // end of [ccomp_file_to_file_err]
 
 implement ccomp_file_to_file
@@ -97,8 +97,8 @@ end // end of [ccomp_file_to_file]
 extern fun atscc_version_exec (): void = "atscc_version_exec"
 
 implement atscc_version () = let
-  fn cmd ():<cloptr1> void = atscc_version_exec ()
-  val status = fork_and_exec_and_wait (cmd)
+  val cmd = llam (): void =<cloptr> $effmask_all (atscc_version_exec ())
+  val status = fork_and_exec_and_wait_cloptr (cmd)
 in
   if (status <> 0) then exit_prerrf {void}
     (status, "Exit: [atscc_version] failed.\n", @())

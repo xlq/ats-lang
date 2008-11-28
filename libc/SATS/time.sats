@@ -105,6 +105,10 @@ overload time with time_get_and_set
 
 (* ****** ****** *)
 
+fun ctime (t: time_t):<!ref> string = "atslib_ctime"
+
+(* ****** ****** *)
+
 fun difftime (finish: time_t, start: time_t):<> double
   = "atslib_difftime"
 

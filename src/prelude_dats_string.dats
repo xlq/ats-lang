@@ -75,8 +75,7 @@ implement string_concat (ss) = let
     :<> void = begin case+ ss of
     | list_cons (s, ss) => let
         val s = string1_of_string0 s
-        val n = string1_length s
-        val i0 = loop1 (s0, n0, i0, s, n, 0)
+        val i0 = loop1 (s0, n0, i0, s, string1_length s, 0)
       in
         loop2 (s0, n0, i0, ss)
       end

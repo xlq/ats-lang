@@ -98,6 +98,7 @@ libc/sys/DATS/socket.dats
 libc/sys/SATS/stat.sats
 libc/sys/SATS/types.sats
 
+libc/arpa/SATS/inet.sats
 libc/netinet/SATS/in.sats
 
 libc/SATS/pthread_locks.sats

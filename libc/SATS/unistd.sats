@@ -49,8 +49,9 @@ abst@ype pid_t = $extype "ats_pid_t_type"
 (* ****** ****** *)
 
 // implemented in [libc/DATS/unistd.dats]
-fun fork_and_exec_and_wait (proc: !() -<cloptr1> void): int
-  = "atslib_fork_and_exec_and_wait"
+  
+fun fork_and_exec_and_wait_cloptr (proc: () -<lin,cloptr> void): int
+  = "atslib_fork_and_exec_and_wait_cloptr"
 
 (* ****** ****** *)
 

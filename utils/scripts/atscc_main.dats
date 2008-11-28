@@ -60,8 +60,7 @@ fn do_usage (cmd: string): void = begin
 end
 
 
-#define nil STRLSTnil
-#define :: STRLSTcons
+#define nil STRLSTnil; #define :: STRLSTcons
 
 fn string_is_flag (s: string):<fun0> bool = let
   val s = string1_of_string0 s

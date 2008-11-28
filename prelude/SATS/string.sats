@@ -272,10 +272,10 @@ fun string_concat (xs: List string):<> string
 (* ****** ****** *)
 
 fun strbuf_contains {m,n:nat} (sb: &strbuf (m, n), c: char):<> bool
-  = "atspre_strbuf_contains"
+  = "atspre_string_contains"
 
 fun string_contains (s: string, c: char):<> bool
-  = "atspre_strbuf_contains"
+  = "atspre_string_contains"
 
 (* ****** ****** *)
 
@@ -285,15 +285,15 @@ fun string_equal (s1: string, s2: string):<> bool
 (* ****** ****** *)
 
 fun strbuf_length {m,n:nat} (sb: &strbuf (m, n)):<> int n
-  = "atspre_strbuf_length"
+  = "atspre_string_length"
 
 overload length with strbuf_length
 
 fun string0_length (s: string):<> Nat
-  = "atspre_strbuf_length"
+  = "atspre_string_length"
 
 fun string1_length {n:nat} (s: string n):<> int n
-  = "atspre_strbuf_length"
+  = "atspre_string_length"
 
 symintr string_length
 overload string_length with string0_length
@@ -304,21 +304,21 @@ overload length with string_length
 (* ****** ****** *)
 
 fun strbuf_is_empty {m,n:nat} (sb: &strbuf (m, n)):<> bool (n==0)
-  = "atspre_strbuf_is_empty"
+  = "atspre_string_is_empty"
 fun string0_is_empty (s: string):<> bool
-  = "atspre_strbuf_is_empty"
+  = "atspre_string_is_empty"
 fun string1_is_empty {n:nat} (s: string n):<> bool (n==0)
-  = "atspre_strbuf_is_empty"
+  = "atspre_string_is_empty"
 
 fun strbuf_is_not_empty {m,n:nat} (sb: &strbuf (m, n)):<> bool (n > 0)
-  = "atspre_strbuf_is_not_empty"
+  = "atspre_string_is_not_empty"
 
 overload ~ with strbuf_is_not_empty
 
 fun string0_is_not_empty (s: string):<> bool
-  = "atspre_strbuf_is_not_empty"
+  = "atspre_string_is_not_empty"
 fun string1_is_not_empty {n:nat} (s: string n):<> bool (n > 0)
-  = "atspre_strbuf_is_not_empty"
+  = "atspre_string_is_not_empty"
 
 overload ~ with string0_is_not_empty
 overload ~ with string1_is_not_empty
@@ -327,11 +327,11 @@ overload ~ with string1_is_not_empty
 
 fun strbuf_is_at_end
   {m,n,i:nat | i <= n} (sb: &strbuf (m, n), i: int i):<> bool (i == n)
-  = "atspre_strbuf_is_at_end"
+  = "atspre_string_is_at_end"
 
 fun string1_is_at_end
   {n,i:nat | i <= n} (s: string n, i: int i):<> bool (i == n)
-  = "atspre_strbuf_is_at_end"
+  = "atspre_string_is_at_end"
 
 (* ****** ****** *)
 
@@ -348,10 +348,10 @@ fun string1_explode {n:nat} (s: string n):<> list (char, n)
 
 fun strbuf_get_char_at {m,n:nat}
   (sb: &strbuf (m, n), i: natLt n):<> char
-  = "atspre_strbuf_get_char_at"
+  = "atspre_string_get_char_at"
 
 fun string_get_char_at {n:nat} (s: string n, i: natLt n):<> char
-  = "atspre_strbuf_get_char_at"
+  = "atspre_string_get_char_at"
 
 overload [] with strbuf_get_char_at
 overload [] with string_get_char_at
@@ -386,22 +386,22 @@ fun string_implode {n:nat} (cs: list (char, n)):<> string n
 
 fun strbuf_index_of_char_from_left // locate a character from left
   {m,n:nat} (sb: &strbuf (m,n), c: char):<> [i:int | ~1 <= i; i <= n] int i
-  = "atspre_strbuf_index_of_char_from_left"
+  = "atspre_string_index_of_char_from_left"
 
 fun string_index_of_char_from_left // locate a character from left
   {n:nat} (s: string n, c: char):<> [i:int | ~1 <= i; i <= n] int i
-  = "atspre_strbuf_index_of_char_from_left"
+  = "atspre_string_index_of_char_from_left"
 
 // This function is based on [strrchr] in [string.h]
 // the NULL character at the end of a string is considered in the string
 
 fun strbuf_index_of_char_from_right // locate a character from left
   {m,n:nat} (sb: &strbuf (m, n), c: char):<> [i:int | ~1 <= i; i <= n] int i
-  = "atspre_strbuf_index_of_char_from_right"
+  = "atspre_string_index_of_char_from_right"
 
 fun string_index_of_char_from_right // locate a character from left
   {n:nat} (s: string n, c: char):<> [i:int | ~1 <= i; i <= n] int i
-  = "atspre_strbuf_index_of_char_from_right"
+  = "atspre_string_index_of_char_from_right"
 
 (* ****** ****** *)
 

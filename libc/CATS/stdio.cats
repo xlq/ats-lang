@@ -34,8 +34,8 @@
 
 /* ****** ****** */
 
-#ifndef _LIBC_STDIO_CATS
-#define _LIBC_STDIO_CATS
+#ifndef ATS_LIBC_STDIO_CATS
+#define ATS_LIBC_STDIO_CATS
 
 /* ****** ****** */
 
@@ -68,8 +68,8 @@ atslib_fclose_err(ats_ptr_type fil) {
 static inline
 ats_void_type
 atslib_fclose_exn(ats_ptr_type fil) {
-  int ret = fclose((FILE*)fil) ;
-  if (ret < 0) {
+  int err = fclose((FILE*)fil) ;
+  if (err < 0) {
     ats_exit_errmsg (1, "Exit: [fclose] failed\n") ;
   }
   return ;
@@ -124,8 +124,8 @@ atslib_fflush_err(ats_ptr_type fil) {
 static inline
 ats_void_type
 atslib_fflush_exn (ats_ptr_type fil) {
-  int ret = fflush((FILE*)fil) ;
-  if (ret < 0) ats_exit_errmsg (1, "Exit: [fflush] failed\n") ;
+  int err = fflush((FILE*)fil) ;
+  if (err < 0) ats_exit_errmsg (1, "Exit: [fflush] failed\n") ;
   return ;
 }
 
@@ -258,6 +258,18 @@ atslib_fread_byte
   return fread ((void*)buf, 1, (size_t)n, (FILE*)fil) ;
 }
 
+static inline
+ats_int_type
+atslib_fread_byte_exn
+  (ats_ptr_type buf, ats_int_type ntotal, ats_ptr_type fil) {
+  int nread ;
+  nread = fread ((void*)buf, 1, (size_t)ntotal, (FILE*)fil) ;
+  if (nread < ntotal) {
+    ats_exit_errmsg (1, "Exit: [fread] failed\n") ;
+  }
+  return ;
+}
+
 /* ****** ****** */
 
 static inline
@@ -373,25 +385,26 @@ static inline
 ats_int_type
 atslib_fwrite
   (ats_ptr_type buf, ats_int_type sz,
-   ats_int_type n, ats_ptr_type fil) {
-  return fwrite ((void*)buf, (size_t)sz, (size_t)n, (FILE*)fil) ;
-}
+  ats_int_type n, ats_ptr_type fil) {
+  return fwrite((void*)buf, (size_t)sz, (size_t)n, (FILE*)fil) ;
+} /* atslib_fwrite */
 
 static inline
 ats_int_type
 atslib_fwrite_byte
   (ats_ptr_type buf, ats_int_type n, ats_ptr_type fil) {
-  return fwrite ((void*)buf, 1, (size_t)n, (FILE*)fil) ;
-}
+  return fwrite((void*)buf, 1, (size_t)n, (FILE*)fil) ;
+} /* atslib_fwrite_byte */
 
 static inline
 ats_void_type
-atslib_fwrite_all_byte
-  (ats_ptr_type buf0, ats_int_type n0, ats_ptr_type fil) {
-  char *buf = (char*) buf0 ; size_t n = n0 ; size_t i ;
-  while (n > 0) {
-    i = fwrite (buf, 1, (size_t)n, (FILE*)fil) ; n -= i ; buf += i ;
-  } // end of [while]
+atslib_fwrite_byte_exn
+  (ats_ptr_type buf0, ats_int_type ntotal, ats_ptr_type fil) {
+  char *buf = (char*) buf0 ; size_t nwritten ; size_t i ;
+  nwritten = fwrite((void*)buf, 1, (size_t)ntotal, (FILE*)fil) ;
+  if (nwritten < ntotal) {
+    ats_exit_errmsg (1, "Exit: [fwrite] failed\n") ; 
+  }
   return ;
 } /* end of [atslib_fwrite_all_byte] */
 
@@ -437,8 +450,8 @@ atslib_remove_err (ats_ptr_type path) {
 static inline
 ats_int_type
 atslib_remove_exn (ats_ptr_type path) {
-  int ret = remove((char*)path) ;
-  if (ret < 0) {
+  int err = remove((char*)path) ;
+  if (err < 0) {
     ats_exit_errmsg (1, "Exit: [remove] failed\n") ;
   }
   return ;
@@ -455,8 +468,8 @@ static inline
 ats_void_type
 atslib_rename_exn
   (ats_ptr_type oldpath, ats_ptr_type newpath) {
-  int ret = rename((char*)oldpath, (char*)newpath) ;
-  if (ret < 0) {
+  int err = rename((char*)oldpath, (char*)newpath) ;
+  if (err < 0) {
     ats_exit_errmsg (1, "Exit: [rename] failed\n") ;   
   }
   return ;
@@ -497,8 +510,8 @@ static inline
 ats_void_type
 atslib_ungetc_exn
   (ats_char_type c, ats_ptr_type fil) {
-  int ret = ungetc((unsigned char)c, (FILE*)fil) ;
-  if (ret < 0) {
+  int err = ungetc((unsigned char)c, (FILE*)fil) ;
+  if (err < 0) {
     ats_exit_errmsg (1, "Exit: [ungetc] failed\n") ;
   }
   return ;
@@ -506,6 +519,6 @@ atslib_ungetc_exn
 
 /* ****** ****** */
 
-#endif /* _LIBC_STDIO_CATS */
+#endif /* ATS_LIBC_STDIO_CATS */
 
 /* end of [stdio.cats] */

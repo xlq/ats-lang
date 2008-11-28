@@ -47,23 +47,26 @@ staload "top.sats"
 
 (* ****** ****** *)
 
-extern
-fun gcc_libfile_exec (infile: string, outfile: string): void
+extern fun gcc_libfile_exec (infile: string, outfile: string): void
   = "gcc_libfile_exec"
 
 implement gcc_libfile_err (infile, outfile) = let
-  fn cmd ():<cloptr1> void = gcc_libfile_exec (infile, outfile)
+  val cmd = llam (): void =<cloptr> $effmask_all (gcc_libfile_exec (infile, outfile))
 in
-  fork_and_exec_and_wait (cmd)
-end
+  fork_and_exec_and_wait_cloptr (cmd)
+end // end of [gcc_libfile_err]
 
-extern
-fun ar_r_exec (libfile: string, objfile: string): void
+(* ****** ****** *)
+
+extern fun ar_r_exec (libfile: string, objfile: string): void
   = "ar_r_exec"
 
 // archive with replacement
-implement ar_r_err (libfile, objfile) =
-  fork_and_exec_and_wait (lam () => ar_r_exec (libfile, objfile))
+implement ar_r_err (libfile, objfile) = let
+  val cmd = llam (): void =<cloptr> $effmask_all (ar_r_exec (libfile, objfile))
+in
+  fork_and_exec_and_wait_cloptr (cmd)
+end // end of [ar_r_err]
 
 (* ****** ****** *)
 

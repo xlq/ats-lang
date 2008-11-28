@@ -468,6 +468,14 @@ fun fread_byte
   :<!ref> natLte n
   = "atslib_fread_byte"
 
+fun fread_byte_exn
+  {n_buf,n:nat | n <= n_buf} {m:fm} {l_buf:addr}
+  (pf1: file_mode_lte (m, r),
+   pf2: !bytes (n_buf) @ l_buf |
+   p: ptr l_buf, n: int n, f: &FILE m)
+  :<!exnref> void
+  = "atslib_fread_byte_exn"
+
 // ------------------------------------------------
 
 (*
@@ -638,14 +646,14 @@ fun fwrite_byte // [fwrite_byte] only writes once
   ) :<!ref> natLte n
   = "atslib_fwrite_byte"
 
-fun fwrite_all_byte // [fwrite_all_byte] may try repeatedly until all
-// bytes are written or some error occurs
+// an uncatchable exception is thrown if not all bytes are written
+fun fwrite_byte_exn
   {n_buf,n:nat | n <= n_buf} {m:fm} {l_buf:addr} (
     pf1: file_mode_lte (m, w)
   , pf2: !bytes (n_buf) @ l_buf
   | p: ptr l_buf, n: int n, f: &FILE m
-  ) :<!ref> void
-  = "atslib_fwrite_all_byte"
+  ) :<!exnref> void
+  = "atslib_fwrite_byte_exn"
 
 (*
 

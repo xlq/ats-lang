@@ -7,7 +7,7 @@
 /************************************************************************/
 
 /*
- * ATS - Unleashing the Potential of Types!
+ * ATS - Unleashing the Power of Types!
  *
  * Copyright (C) 2002-2008 Hongwei Xi.
  *
@@ -22,65 +22,53 @@
  * for more details.
  * 
  * You  should  have  received  a  copy of the GNU General Public License
- * along  with  ATS;  see  the  file  COPYING.  If not, write to the Free
- * Software Foundation, 51  Franklin  Street,  Fifth  Floor,  Boston,  MA
+ * along  with  ATS;  see the  file COPYING.  If not, please write to the
+ * Free Software Foundation,  51 Franklin Street, Fifth Floor, Boston, MA
  * 02110-1301, USA.
  *
  */
 
-/*
- *
- * Author: Hongwei Xi (hwxi AT cs DOT bu DOT edu) 
- *
- */
+/* ****** ****** */
 
-#ifndef ATS_LIBATS_INTINF_CATS
-#define ATS_LIBATS_INTINF_CATS
+/* author: Hongwei Xi (hwxi AT cs DOT bu DOT edu) */
+
+/* ****** ****** */
+
+#ifndef ATS_LIBC_NETINET_IN_CATS
+#define ATS_LIBC_NETINET_IN_CATS
+
+/* ****** ****** */
+
+#include <netinet/in.h>
 
 /* ****** ****** */
 
 static inline
-ats_bool_type
-atslib_lt_intinf_int (ats_ptr_type i, ats_int_type j) {
-  return (atslib_mpz_cmp_int (i, j) < 0) ;
-}
-
-static inline
-ats_bool_type
-atslib_lte_intinf_int (ats_ptr_type i, ats_int_type j) {
-  return (atslib_mpz_cmp_int (i, j) <= 0) ;
-}
+in_port_t // in_port_nbo_t
+atslib_in_port_nbo_of_int (ats_int_type n) {
+  in_port_t nport = n ; return htons (nport) ;
+} /* end of [atslib_in_port_nbo_of_int] */
 
 /* ****** ****** */
 
 static inline
-ats_bool_type
-atslib_gt_intinf_int (ats_ptr_type i, ats_int_type j) {
-  return (atslib_mpz_cmp_int (i, j) > 0) ;
-}
-
-static inline
-ats_bool_type
-atslib_gte_intinf_int (ats_ptr_type i, ats_int_type j) {
-  return (atslib_mpz_cmp_int (i, j) >= 0) ;
-}
+in_addr_t // in_addr_nbo_t
+atslib_in_addr_nbo_of_hbo (in_addr_t addr_hbo) {
+  return htonl (addr_hbo) ;
+} /* end of [atslib_in_addr_nbo_of_hbo] */
 
 /* ****** ****** */
 
-static inline
-ats_bool_type
-atslib_eq_intinf_int (ats_ptr_type i, ats_int_type j) {
-  return (atslib_mpz_cmp_int (i, j) == 0) ;
-}
+typedef struct in_addr in_addr_struct_t ;
 
 static inline
-ats_bool_type
-atslib_neq_intinf_int (ats_ptr_type i, ats_int_type j) {
-  return (atslib_mpz_cmp_int (i, j) != 0) ;
-}
+in_addr_t // in_addr_nbo_t
+atslib_in_addr_struct_s_addr_get (in_addr_struct_t inp) {
+  return (inp.s_addr) ;
+} /* end of [atslib_in_addr_struct_s_addr_get] */
 
 /* ****** ****** */
 
-#endif /* ATS_LIBATS_INTINF_CATS */
+#endif /* end of [ATS_LIBC_NETINET_IN_CATS] */
 
-/* end of [intinf.cats] */ 
+/* end of [in.cats] */

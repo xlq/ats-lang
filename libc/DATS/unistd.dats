@@ -46,7 +46,7 @@
 #include <unistd.h>
 
 ats_int_type
-atslib_fork_and_exec_and_wait (ats_clo_ptr_type f_child) {
+atslib_fork_and_exec_and_wait_cloptr (ats_clo_ptr_type f_child) {
   pid_t pid ;
   int status ;
 
@@ -57,8 +57,10 @@ atslib_fork_and_exec_and_wait (ats_clo_ptr_type f_child) {
   if (pid > 0) { wait (&status) ; return status ; }
   /* this is the child */
   ((ats_void_type (*)(ats_clo_ptr_type))f_child->closure_fun)(f_child) ;
-  exit (0) ;
-}
+  ATS_FREE (f_child) ; exit (0) ; return 0 ;
+} /* atslib_fork_and_exec_and_wait_cloptr */
+
+/* ****** ****** */
 
 #define __GETCWD_BUFSZ 64
 

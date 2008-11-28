@@ -20,6 +20,7 @@
 
 staload "libc/SATS/dirent.sats"
 staload "libc/SATS/stdio.sats"
+staload "libc/netinet/SATS/in.sats"
 staload "libc/sys/SATS/socket.sats"
 
 //
@@ -240,7 +241,7 @@ end
 
 extern fun socket_write_all
   {fd:int} {n,sz:nat | n <= sz} {l:addr}
-    (pf_socket: !socket_v (fd, conn), pf_buf: !bytes_v  (sz, l) |
+    (pf_socket: !socket_v (fd, conn), pf_buf: !bytes sz @ l |
      socket_id: int fd, buf: ptr l, n: int n): void
   = "socket_write_all"
 
@@ -261,11 +262,9 @@ socket_write_all(ats_int_type fd, ats_ptr_type buf, ats_int_type cnt)
   while (cnt) {
     res = write(fd, buf, cnt) ;
     if (res < 0) {
-#ifdef __SERVER_DEBUG
-      perror("write") ;
-#endif
-      return ;
+      if (errno == EINTR) continue ; else return ;
     }
+    if (res == 0) return ;
     buf = ((char *)buf) + res ;
     cnt = cnt - res ;
   }
@@ -344,7 +343,7 @@ val msg200_len = length msg200_str
 
 fun aux
   (pf_conn: !socket_v (fd, conn),
-   pf_buf: !bytes_v (BUFSZ, l_buf) | fd: int fd, file: &FILE r)
+   pf_buf: !bytes BUFSZ @ l_buf | fd: int fd, file: &FILE r)
   :<cloptr1> void = let
   val n = fread_byte (file_mode_lte_r_r, pf_buf | buf, BUFSZ, file)
 in
@@ -585,7 +584,7 @@ fun request_is_get {n:nat} (s: string n, n: int n): Bool =
 (* ****** ****** *)
 
 extern fun main_loop_get {fd:int} {n:nat} {l_buf:addr}
-  (pf_conn: socket_v (fd, conn), pf_buf: !bytes_v (BUFSZ, l_buf) |
+  (pf_conn: socket_v (fd, conn), pf_buf: !bytes BUFSZ @ l_buf |
    fd: int fd, buf: ptr l_buf, msg: string n, n: int n): void
 
 implement main_loop_get (pf_conn, pf_buf | fd, buf, msg, n) = let
@@ -612,33 +611,34 @@ end // end of [main_loop_get]
 (* ****** ****** *)
 
 extern fun main_loop {fd:int} {l_buf:addr}
-  (pf_list: !socket_v (fd, list), pf_buf: !bytes_v (BUFSZ, l_buf) |
+  (pf_list: !socket_v (fd, listen), pf_buf: !bytes BUFSZ @ l_buf |
    fd: int fd, buf: ptr l_buf): void
 
-implement main_loop (pf_list, pf_buf | fd, buf): void = let
-
-val (pf_accept | fd_res) = accept_inet_err(pf_list | fd) in
-  if fd_res >= 0 then let
+implement main_loop
+  (pf_list, pf_buf | fd_s, buf): void = let
+  val (pf_accept | fd_c) = accept_null_err(pf_list | fd_s)
+in
+  if fd_c >= 0 then let
     prval accept_succ pf_conn = pf_accept
-    val n = socket_read_exn (pf_conn, pf_buf | fd_res, buf, BUFSZ)
+    val n = socket_read_exn (pf_conn, pf_buf | fd_c, buf, BUFSZ)
     val (pf | p) = strbuf_make_bufptr (pf_buf | buf, 0, n)
     val msg = string1_of_strbuf (pf | p)
   in
     case+ msg of
       | _ when request_is_get (msg, n) => begin
-          main_loop_get (pf_conn, pf_buf | fd_res, buf, msg, n);
-          main_loop (pf_list, pf_buf | fd, buf)
+          main_loop_get (pf_conn, pf_buf | fd_c, buf, msg, n);
+          main_loop (pf_list, pf_buf | fd_s, buf)
         end
       | _ => begin
-          socket_close_exn (pf_conn | fd_res);
+          socket_close_exn (pf_conn | fd_c);
           prerrf ("main_loop: unsupported request: %s\n", @(msg));
-          main_loop (pf_list, pf_buf | fd, buf)
+          main_loop (pf_list, pf_buf | fd_s, buf)
         end
   end else let
     prval accept_fail () = pf_accept
     val () = prerr "Error: [accept] failed!\n"
   in
-    main_loop (pf_list, pf_buf | fd, buf)
+    main_loop (pf_list, pf_buf | fd_s, buf)
   end
 end // end of [main_loop]
 
@@ -650,8 +650,8 @@ extern fun sigpipe_ignore (): void = "sigpipe_ignore"
 
 static inline
 ats_void_type sigpipe_ignore () {
-  int res = sigignore(SIGPIPE) ;
-  if (res < 0) {
+  int err = sigignore(SIGPIPE) ;
+  if (err < 0) {
     perror("sigignore") ;
     ats_exit_errmsg (1, "Exit: [sigpipe_ignore] failed.\n") ;
   }
@@ -663,19 +663,25 @@ ats_void_type sigpipe_ignore () {
 dynload "libc/sys/DATS/socket.dats"
 
 implement main (argc, argv) = let
-
-val port = (if argc > 1 then int1_of (argv.[1]) else 8080): Int
-val () = assert_prerrf
-  (port >= 1000, "The given port <%i> is not supported.\n", @(port))
-val (pf_sock | fd) = socket_domain_type_exn (AF_INET, SOCK_STREAM)
-val () = bind_inet_any_port_exn (pf_sock | fd, port)
-val () = listen_exn (pf_sock | fd, BACKLOG)
-val (pf_ngc, pf_buf | buf) = malloc_ngc (BUFSZ)
-val () = sigpipe_ignore () // prevent server crash due to broken pipe
-val () = main_loop(pf_sock, pf_buf | fd, buf)
-
+  val port = (if argc > 1 then int1_of (argv.[1]) else 8080): Int
+  val () = assert_prerrf
+    (port >= 1024, "The given port <%i> is not supported.\n", @(port))
+  val (pf_sock | fd) = socket_family_type_exn (AF_INET, SOCK_STREAM)
+  var servaddr: sockaddr_in_struct_t // uninitialized
+  val servport = in_port_nbo_of_int (port)
+  val in4add_any = in_addr_nbo_of_hbo (INADDR_ANY)
+  val () = sockaddr_ipv4_init (servaddr, AF_INET, in4add_any, servport)
+  val () = bind_ipv4_exn (pf_sock | fd, servaddr)
+  val () = listen_exn (pf_sock | fd, BACKLOG)
+  val (pf_ngc, pf_buf | buf) = malloc_ngc (BUFSZ)
+  val () = sigpipe_ignore () // prevent server crash due to broken pipe
+  val () = main_loop(pf_sock, pf_buf | fd, buf)
+  val () = socket_close_exn (pf_sock | fd)
+  val () = free_ngc (pf_ngc, pf_buf | buf)
 in
-
-free_ngc (pf_ngc, pf_buf | buf); socket_close_exn (pf_sock | fd)
-
+  // empty
 end // end of [main]
+
+(* ****** ****** *)
+
+(* end of [server.dats] *)

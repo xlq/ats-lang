@@ -34,8 +34,8 @@
 
 /* ****** ****** */
 
-#ifndef _LIBC_MATH_CATS
-#define _LIBC_MATH_CATS
+#ifndef ATS_LIBC_MATH_CATS
+#define ATS_LIBC_MATH_CATS
 
 /* ****** ****** */
 
@@ -387,6 +387,6 @@ atslib_tanl(ats_ldouble_type x) { return tanl(x); }
 
 /* ****** ****** */
 
-#endif /* _LIBC_MATH_CATS */
+#endif /* ATS_LIBC_MATH_CATS */
 
 /* end of [math.cats] */

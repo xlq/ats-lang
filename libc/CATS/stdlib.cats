@@ -34,8 +34,8 @@
 
 /* ****** ****** */
 
-#ifndef _LIBC_STDLIB_CATS
-#define _LIBC_STDLIB_CATS
+#ifndef ATS_LIBC_STDLIB_CATS
+#define ATS_LIBC_STDLIB_CATS
 
 /* ****** ****** */
 
@@ -133,6 +133,6 @@ atslib_qsort
 
 /* ****** ****** */
 
-#endif /* _LIBC_STDLIB_CATS */
+#endif /* ATS_LIBC_STDLIB_CATS */
 
 /* end of [stdlib.cats] */

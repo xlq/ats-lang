@@ -327,20 +327,22 @@ ats_void_type intref_set (ats_intref_type r, ats_int_type i) {
 /* ****** ****** */
 
 ats_int_type
-atslib_fork_and_exec_and_wait (ats_clo_ptr_type f_child) {
+atslib_fork_and_exec_and_wait_cloptr (ats_clo_ptr_type f_child) {
   pid_t pid ;
   int status ;
 
-  pid = fork () ; if (pid < 0) {
+  pid = fork () ;
+  if (pid < 0) {
     ats_exit_errmsg (errno, "Exit: [fork] failed.\n") ;
   }
   if (pid > 0) { wait (&status) ; return status ; }
   /* this is the child */
   ((ats_void_type (*)(ats_clo_ptr_type))f_child->closure_fun)(f_child) ;
-  exit (0) ;
-}
+  ATS_FREE (f_child) ; exit (0) ;
+  return 0 ;
+} /* atslib_fork_and_exec_and_wait_cloptr */
 
-//
+/* ****** ****** */
 
 extern ats_bool_type strlst_is_nil(ats_ptr_type) ;
 

@@ -34,8 +34,8 @@
 
 /* ****** ****** */
 
-#ifndef _LIBC_RANDOM_CATS
-#define _LIBC_RANDOM_CATS
+#ifndef ATS_LIBC_RANDOM_CATS
+#define ATS_LIBC_RANDOM_CATS
 
 /* ****** ****** */
 
@@ -82,6 +82,6 @@ atslib_randint (ats_int_type n) { return (lrand48 () % n) ; }
 
 /* ****** ****** */
 
-#endif /* _LIBC_RANDOM_CATS */
+#endif /* ATS_LIBC_RANDOM_CATS */
 
 /* end of [random.cats] */
