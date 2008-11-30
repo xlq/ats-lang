@@ -1,12 +1,14 @@
-//
-// An introductory example to UNIX socket programming in ATS
-//
-// The following code implements a client socket for requesting
-// a time server to send the current time.
-//
-
-// Author: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
-// Time: November, 2008
+(*
+**
+** An introductory example to UNIX socket programming in ATS
+**
+** The following code implements a client socket for requesting a server
+** to send the current time.
+**
+** Author: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
+** Time: November, 2008
+**
+*)
 
 (* ****** ****** *)
 
@@ -34,7 +36,7 @@ implement main (argc, argv) = let
   // turning a name into an ipv4 address in the network-byte-order
   val () = inet_aton_exn (servname, inp)
   var servaddr: sockaddr_in_struct_t // uninitialized
-  // [sockaddr_ipv4_init] is implemented in [libc/sys/CATS/socket.cats], and
+  // [sockaddr_ipv4_init] is implemented in [libc/sys/CATS/socket.cats];
   // it initializes an ipv4 socket address with an ipv4 address and a port
   // (represented in the network-byte-order)
   val () = sockaddr_ipv4_init

@@ -1,18 +1,23 @@
-//
-// An introductory example to BSD Unix socket programming in ATS
-//
-// The following code implements a server socket that responds each request by
-// sending out a string representation of the current time. This is a concurrent
-// version (in contrast to an iterativet version). The use of [fork] here should
-// serve as an interesting example for future reference.
+(*
+**
+** An introductory example to BSD Unix socket programming in ATS
+**
+** The following code implements a server socket that responds to a request by
+** sending out a string representation of the current time. This is a concurrent
+** version (in contrast to an iterativet version). The use of the function [fork]
+** and the type assigned to it should serve as an interesting example for future
+** reference.
 
-// Author: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
-// Time: November, 2008
+** Author: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
+** Time: November, 2008
+**
+*)
 
 (* ****** ****** *)
 
 staload "libc/SATS/stdio.sats"
 staload "libc/SATS/time.sats"
+staload "libc/SATS/unistd.sats"
 staload "libc/sys/SATS/socket.sats"
 staload "libc/netinet/SATS/in.sats"
 staload "libc/arpa/SATS/inet.sats"
@@ -34,10 +39,6 @@ extern praxi forkdup_pair {v1,v2:view}
 
 *)
 
-extern fun fork_cloptr_exn {v:view}
- (pf: !v | f: (v | (*none*)) -<cloptr1> void): void
- = "atslib_fork_cloptr_exn"
- 
 implement main (argc, argv) = let
   val nport = (if argc > 1 then int_of argv.[1] else TIME_SERVER_PORT): int
   val [fd_s:int] (pf_sock_s | fd_s) = socket_family_type_exn (AF_INET, SOCK_STREAM)
@@ -64,7 +65,7 @@ implement main (argc, argv) = let
       in
         // empty
       end // f_child
-      val () = fork_cloptr_exn {V} (pf | f_child)
+      val () = fork_exec_cloptr_exn {V} (pf | f_child)
       prval () = pf_sock_s := pf.0
       prval () = pf_sock_c := pf.1
       val () = socket_close_exn (pf_sock_c | fd_c)
@@ -76,31 +77,6 @@ implement main (argc, argv) = let
 in
   // empty
 end // end of [main]
-
-(* ****** ****** *)
-
-%{
-
-void _exit (int status) ; // declared in [unistd.h]
-
-ats_void_type atslib_fork_cloptr_exn (ats_ptr_type f_child) {
-  pid_t pid ;
-  pid = fork () ;
-
-  if (pid < 0) {
-    ats_exit_errmsg (errno, "Exit: [fork] failed.\n") ;
-  }
-
-  /* this is the parent */
-  if (pid > 0) { ATS_FREE (f_child) ; return ; }
-  
-  /* this is the child */
-  ((ats_void_type (*)(ats_clo_ptr_type))((ats_clo_ptr_type)f_child)->closure_fun)(f_child) ;
-  _exit (0) ; /* no need to flush STDIN, STDOUT and STDERR */
-  return ; /* deadcode */
-} /* end of [atslib_fork_cloptr] */
-
-%}
 
 (* ****** ****** *)
 
