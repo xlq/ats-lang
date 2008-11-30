@@ -287,15 +287,15 @@ dataview fgets_v (sz:int, addr, addr) =
 
 fun fgets_err
   {n,sz:int | 0 < n; n <= sz} {m:fm} {l_buf:addr} (
-    pf: file_mode_lte (m, r)
+    pf_mod: file_mode_lte (m, r)
   , pf_buf: bytes (sz) @ l_buf
   | p: ptr l_buf, n: int n, f: &FILE m
   ) :<> [l:addr] (fgets_v (sz, l_buf, l) | ptr l)
   = "atslib_fgets_err"
 
 fun fgets_exn {n0,sz:int | 0 < n0; n0 <= sz} {m:fm} {l_buf:addr}
-  (pf1: file_mode_lte (m, r),
-   pf2: !bytes (sz) @ l_buf >>
+  (pf_mod: file_mode_lte (m, r),
+   pf_buf: !bytes (sz) @ l_buf >>
      [n:nat | n < n0] strbuf (sz, n) @ l_buf |
    p: ptr l_buf, n0: int n0, f: &FILE m)
   :<!exn> void

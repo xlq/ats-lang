@@ -24,63 +24,55 @@
  * for more details.
  * 
  * You  should  have  received  a  copy of the GNU General Public License
- * along  with  ATS;  see the  file COPYING.  If not, please write to the
- * Free Software Foundation,  51 Franklin Street, Fifth Floor, Boston, MA
+ * along  with  ATS;  see  the  file  COPYING.  If not, write to the Free
+ * Software Foundation, 51  Franklin  Street,  Fifth  Floor,  Boston,  MA
  * 02110-1301, USA.
  *
  *)
 
 (* ****** ****** *)
 
-(* author: Hongwei Xi (hwxi AT cs DOT bu DOT edu) *)
+(* author: Hongwei Xi (hwxi AT cs DOT bu DOT edu)  *)
 
 (* ****** ****** *)
 
 %{#
 
-#include "libc/CATS/unistd.cats"
+#include "libc/arpa/CATS/inet.cats"
 
 %}
 
 (* ****** ****** *)
 
-abst@ype pid_t = $extype "ats_pid_t_type"
+staload "libc/netinet/SATS/in.sats"
 
 (* ****** ****** *)
 
-// implemented in [libc/DATS/unistd.dats]
-  
-fun fork_exec_cloptr_exn {v:view}
- (pf: !v | f: (v | (*none*)) -<cloptr1> void): void
- = "atslib_fork_exec_cloptr_exn"
+symintr inet_aton_exn
 
-fun fork_exec_and_wait_cloptr_exn (proc: () -<cloptr1> void): int
-  = "atslib_fork_exec_and_wait_cloptr_exn"
+fun inet_aton_string_exn
+  (cp: string, inp: &in_addr_struct_t? >> in_addr_struct_t)
+  :<!exn> void
+  = "atslib_inet_aton_string_exn"
 
-(* ****** ****** *)
-
-// implemented in [libc/DATS/unistd.dats]
-fun getcwd (): String = "atslib_getcwd"
+overload inet_aton_exn with inet_aton_string_exn
 
 (* ****** ****** *)
 
-symintr wait
-fun wait_with_status {l:addr}
-  (pf: !int? @ l >> int @ l | p: ptr l): pid_t
-  = "atslib_wait_with_status"
-
-and wait_without_status (): pid_t
-  = "atslib_wait_without_status"
-
-overload wait with wait_with_status
-overload wait with wait_without_status
+// this function is not reentrant
+fun inet_ntoa (inp: in_addr_struct_t):<!ref> string = "atslib_inet_ntoa"
 
 (* ****** ****** *)
 
-// some systems require that the argument of usleep <= 1000000
-fun usleep (n: natLte 1000000 (* microseconds *)): void
-  = "atslib_usleep"
+symintr inet_pton_exn
+
+fun inet_pton_string_exn (
+    af: address_family_t, cp: string, inp: &in_addr_struct_t? >> in_addr_struct_t
+  ) :<!exn> void
+  = "atslib_inet_pton_exn"
+
+overload inet_pton_exn with inet_pton_string_exn
 
 (* ****** ****** *)
 
-(* end of [unistd.sats] *)
+(* end of [inet.sats] *)
