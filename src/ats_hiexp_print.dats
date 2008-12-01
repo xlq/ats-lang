@@ -64,6 +64,11 @@ implement fprint_hityp (pf | out, hit) = let
   macdef strpr (s) = fprint1_string (pf | out, ,(s))
 in
   case+ hit.hityp_node of
+  | HITextype name => begin
+      strpr "HITextype(";
+      fprint_string (pf | out, name);
+      strpr ")"
+    end // end of [HITextype]
   | HITfun (fc, hits_arg, hit_res) => begin
       strpr "HITfun(";
       $Syn.fprint_funclo (pf | out, fc);
@@ -80,6 +85,11 @@ in
       fprint_hityp (pf | out, hit);
       strpr ")"
     end // end of [HITrefarg]
+  | HITtyrecsin hit => begin
+      strpr "HITtyrecsin(";
+      fprint_hityp (pf | out, hit);
+      strpr ")"
+    end // end of [HITtyrecsin]
   | HITtyrectemp (knd, lhits) => begin
       fprint1_string (pf | out, "HITtyrectemp(...)")
     end

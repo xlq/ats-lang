@@ -194,7 +194,7 @@ in
         hityp_fun (fc, hits_arg, hit_res)
       end else begin
         hityp_ptr // funtion/closure pointer
-      end
+      end // end of [if]
     end // end of [S2Efun]
   | S2Elam (_(*s2vs*), s2e_body) => s2exp_tr (deep, s2e_body)
   | S2Emetfn (_(*stamp*), _(*met*), s2e) => s2exp_tr (deep, s2e)

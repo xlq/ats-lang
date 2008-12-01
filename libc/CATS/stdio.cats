@@ -168,7 +168,7 @@ atslib_fgets_exn
   ats_ptr_type p ;
   p = fgets((char*)buf, (int)n, (FILE*)fil) ;
   if (!p) {
-    ats_exit_errmsg(errno, "Exit: [fgets] failed\n") ;
+    ats_exit_errmsg(1, "Exit: [fgets] failed\n") ;
   }
   return ;  
 }
@@ -195,7 +195,7 @@ atslib_fopen_exn
   FILE *fil = fopen((char*)name, (char*)mode) ;
   if (!fil) {
     perror ("fopen") ; atspre_exit_prerrf (
-      errno, "Exit: [fopen(\"%s\", \"%s\")] failed\n", name, mode
+      1, "Exit: [fopen(\"%s\", \"%s\")] failed\n", name, mode
     ) ;
   }
   return fil ;
@@ -217,7 +217,7 @@ atslib_fputc_exn
   int n = fputc((unsigned char)c, (FILE*)fil) ;
   if (n < 0) {
     perror ("fputc") ;
-    atspre_exit_prerrf (errno, "Exit: [fputc(%c)] failed\n", c) ;
+    atspre_exit_prerrf (1, "Exit: [fputc(%c)] failed\n", c) ;
   }
   return ;
 }
@@ -236,7 +236,7 @@ atslib_fputs_exn(ats_ptr_type s, ats_ptr_type fil) {
   int n = fputs ((char*)s, (FILE*)fil) ;
   if (n < 0) {
     perror ("fputs") ;
-    atspre_exit_prerrf (errno, "[Exit: fputs(%s)] failed\n", s) ;
+    atspre_exit_prerrf (1, "[Exit: fputs(%s)] failed\n", s) ;
   }
   return ;
 }
@@ -286,7 +286,7 @@ atslib_freopen_exn
   FILE *fil_new = freopen(name, mode, (FILE*)fil) ;
   if (!fil_new) {
     perror ("freopen") ; atspre_exit_prerrf (
-      errno, "Exit: [freopen(\"%s\", \"%s\")] failed\n", name, mode
+      1, "Exit: [freopen(\"%s\", \"%s\")] failed\n", name, mode
     ) ;
   }
   return ;
@@ -303,7 +303,7 @@ atslib_freopen_stdin
   fil_new = freopen(name, "r", stdin) ;
   if (!fil_new) {
     perror ("freopen") ; atspre_exit_prerrf (
-      errno, "Exit: [freopen_stdin(\"%s\")] failed\n", name
+      1, "Exit: [freopen_stdin(\"%s\")] failed\n", name
     ) ;
   }
   atspre_stdin_view_set() ;
@@ -319,7 +319,7 @@ atslib_freopen_stdout
   fil_new = freopen(name, "w", stdout) ;
   if (!fil_new) {
     perror ("freopen") ; atspre_exit_prerrf (
-      errno, "Exit: [freopen_stdout(\"%s\")] failed\n", name
+      1, "Exit: [freopen_stdout(\"%s\")] failed\n", name
     ) ;
   }
   atspre_stdout_view_set () ;
@@ -335,7 +335,7 @@ atslib_freopen_stderr
   fil_new = freopen(name, "w", stderr) ;
   if (!fil_new) {
     perror ("freopen") ; atspre_exit_prerrf (
-      errno, "Exit: [freopen_stderr(\"%s\")] failed\n", name
+      1, "Exit: [freopen_stderr(\"%s\")] failed\n", name
     ) ;
   }
   atspre_stderr_view_set() ;
@@ -411,7 +411,7 @@ atslib_fwrite_byte_exn
 //
 
 static inline
-ats_int_type
+ats_void_type
 atslib_perror(ats_ptr_type msg) {
   atspre_stderr_view_get () ;
   perror ((char*)msg) ;

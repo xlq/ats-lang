@@ -51,9 +51,9 @@ extern fun gcc_libfile_exec (infile: string, outfile: string): void
   = "gcc_libfile_exec"
 
 implement gcc_libfile_err (infile, outfile) = let
-  val cmd = llam (): void =<cloptr> $effmask_all (gcc_libfile_exec (infile, outfile))
+  val cmd = lam (): void =<cloptr1> gcc_libfile_exec (infile, outfile)
 in
-  fork_and_exec_and_wait_cloptr (cmd)
+  fork_exec_and_wait_cloptr_exn (cmd)
 end // end of [gcc_libfile_err]
 
 (* ****** ****** *)
@@ -62,10 +62,8 @@ extern fun ar_r_exec (libfile: string, objfile: string): void
   = "ar_r_exec"
 
 // archive with replacement
-implement ar_r_err (libfile, objfile) = let
-  val cmd = llam (): void =<cloptr> $effmask_all (ar_r_exec (libfile, objfile))
-in
-  fork_and_exec_and_wait_cloptr (cmd)
+implement ar_r_err (libfile, objfile) = begin
+  fork_exec_and_wait_cloptr_exn (lam () => ar_r_exec (libfile, objfile))
 end // end of [ar_r_err]
 
 (* ****** ****** *)

@@ -165,7 +165,7 @@ fn fcopy_exn (src: string, dst: string): void = let
     ) : void =
     if feof (src) <> 0 then () else let
       val nread = fread_byte (file_mode_lte_r_r, pf_buf | p_buf, BUFSZ, src)
-      val () = fwrite_all_byte (file_mode_lte_w_w, pf_buf | p_buf, nread, dst)
+      val () = fwrite_byte_exn (file_mode_lte_w_w, pf_buf | p_buf, nread, dst)
     in
       loop (pf_buf | p_buf, src, dst)
     end // end of [loop]

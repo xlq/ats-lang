@@ -61,7 +61,7 @@ implement main_prelude () = let
 (*
   val () = begin
     print ("The prelude library is loaded."); print_newline ()
-  end
+  end // end of [val]
 *)
 in
   // empty

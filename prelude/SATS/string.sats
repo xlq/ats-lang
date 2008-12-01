@@ -181,20 +181,12 @@ overload prerr with prerr_string
 
 (* ****** ****** *)
 
-symintr strbuf_make
-symintr string_make
-
-(* ****** ****** *)
-
 fun strbuf_make_char {n:nat}
   (n: int n, c: char):<> [l:addr] (strbuf (n+1, n) @ l | ptr l)
   = "atspre_strbuf_make_char"
 
 fun string_make_char {n:nat} (n: int n, c: char):<> string n
   = "atspre_strbuf_make_char"
-
-overload strbuf_make with strbuf_make_char
-overload string_make with string_make_char
 
 //
 
@@ -205,9 +197,6 @@ fun strbuf_make_list {n:nat}
 fun string_make_list {n:nat} (cs: list (char, n)):<> string n
   = "atspre_strbuf_make_list"
 
-overload strbuf_make with strbuf_make_list
-overload string_make with string_make_list
-
 //
 
 fun strbuf_make_list_len {n:nat}
@@ -217,9 +206,6 @@ fun strbuf_make_list_len {n:nat}
 fun string_make_list_len {n:nat}
   (cs: list (char, n), n: int n):<> string n
   = "atspre_strbuf_make_list_len"
-
-overload strbuf_make with strbuf_make_list_len
-overload string_make with string_make_list_len
 
 //
 
@@ -239,11 +225,6 @@ fun string_make_substring
   {n,st,ln:nat | st + ln <= n}
   (s: string n, st: int st, ln: int ln):<> string ln
   = "atspre_strbuf_make_bufptr"
-
-
-overload strbuf_make with strbuf_make_bufptr
-overload strbuf_make with strbuf_make_substrbuf
-overload string_make with string_make_substring
 
 (* ****** ****** *)
 
@@ -271,7 +252,8 @@ fun string_concat (xs: List string):<> string
 
 (* ****** ****** *)
 
-fun strbuf_contains {m,n:nat} (sb: &strbuf (m, n), c: char):<> bool
+fun strbuf_contains {m,n:nat}
+  (sb: &strbuf (m, n), c: char):<> bool
   = "atspre_string_contains"
 
 fun string_contains (s: string, c: char):<> bool

@@ -151,4 +151,13 @@ Uncaught exception: _2fusr_2fshare_2fatshome_2fsrc_2fats_error_2esats__FatalErro
 
 ######
 
+Sunday, November 30, 2008 (HX)
+
+STATUS: not yet implemented.
+
+It become apparent that support for stack-allocated arrays is urgently for
+systems programming!
+
+######
+
  ------------------ end of [BUGS.txt] -------------------

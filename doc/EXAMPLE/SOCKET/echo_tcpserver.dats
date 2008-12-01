@@ -14,6 +14,7 @@
 
 staload "libc/SATS/stdio.sats"
 staload "libc/SATS/unistd.sats"
+staload "libc/sys/SATS/types.sats"
 staload "libc/sys/SATS/socket.sats"
 staload "libc/netinet/SATS/in.sats"
 staload "libc/arpa/SATS/inet.sats"
@@ -39,13 +40,16 @@ implement server_action {fd_c} (pf_sock_c | fd_c) = let
       | (*none*)
       ) :<cloref1> void = let
      val nread = socket_read_exn (pf_sock_c, pf_buf | fd_c, p_buf, MAXLINE)
+(*
+     val nread = socket_read_loop_exn (pf_sock_c, pf_buf | fd_c, p_buf, MAXLINE)
+*)
    in
      if nread > 0 then let
-       val nwritten = socket_write_exn (pf_sock_c, pf_buf | fd_c, p_buf, nread)
+       val () = socket_write_loop_exn (pf_sock_c, pf_buf | fd_c, p_buf, nread)
      in
        loop (pf_sock_c, pf_buf | (*none*))
      end else begin
-       // loop exits
+       // no more bytes // loop exits
      end // end of [if]
    end // end of [loop]
  } // end of [where]
@@ -59,24 +63,28 @@ extern fun server_loop {fd_s:int}
   (pf_sock_s: !socket_v (fd_s, listen) | fd_s: int fd_s): void
 
 implement server_loop {fd_s} (pf_sock_s | fd_s) = let
-  fun loop (pf_sock_s: !socket_v (fd_s, listen) | fd_s: int fd_s): void = let
+  fun loop
+    (pf_sock_s: !socket_v (fd_s, listen) | fd_s: int fd_s)
+    : void = let
     val [fd_c:int] (pf_sock_c | fd_c) = accept_null_exn (pf_sock_s | fd_s)
-    viewdef V = @(socket_v (fd_s, listen), socket_v (fd_c, conn))
-    prval pf = @(pf_sock_s, pf_sock_c)
-    val f_child = lam (pf: V | (*none*)): void =<cloptr1> let
-      prval @(pf_sock_s, pf_sock_c) = pf
-      val () = socket_close_exn (pf_sock_s | fd_s)
-      val () = server_action (pf_sock_c | fd_c)
-      val () = socket_close_exn (pf_sock_c | fd_c)
-    in
-      // empty
-    end // f_child
-    val () = fork_exec_cloptr_exn {V} (pf | f_child)
-    prval () = pf_sock_s := pf.0
-    prval () = pf_sock_c := pf.1
-    val () = socket_close_exn (pf_sock_c | fd_c)
+    val pid = fork_exn (); val ipid = int_of_pid (pid)
   in
-    loop (pf_sock_s | fd_s)
+    case+ 0 of
+    | _ when ipid > 0 (* parent *) => let
+        val () = socket_close_exn (pf_sock_c | fd_c)
+      in
+        loop (pf_sock_s | fd_s)
+      end // end of [parent]
+    | _ (* child: ipid = 0 *) => let
+        val () = socket_close_exn (pf_sock_s | fd_s)
+        val () = server_action (pf_sock_c | fd_c)
+        val () = socket_close_exn (pf_sock_c | fd_c)
+        val (pf_out | ()) = exit_main {void}
+          {unit_v} {socket_v (fd_s, listen)} (unit_v () | 0)
+        prval () = pf_sock_s := pf_out
+      in
+        // empty
+      end // end of [child]
   end // end of [loop]
 in
   loop (pf_sock_s | fd_s)

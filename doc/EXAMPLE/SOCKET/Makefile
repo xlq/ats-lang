@@ -20,6 +20,14 @@ echo_tcpserver: echo_tcpserver.dats
 
 ######
 
+update:
+	atsopt --posmark_html_only -d daytime_tcpclient.dats
+	atsopt --posmark_html_only -d daytime_tcpserver.dats
+	atsopt --posmark_html_only -d echo_tcpclient.dats
+	atsopt --posmark_html_only -d echo_tcpserver.dats
+
+######
+
 clean::
 	rm -f a.out *_dats.c *_dats.o *~
 

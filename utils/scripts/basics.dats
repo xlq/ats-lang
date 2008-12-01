@@ -327,7 +327,7 @@ ats_void_type intref_set (ats_intref_type r, ats_int_type i) {
 /* ****** ****** */
 
 ats_int_type
-atslib_fork_and_exec_and_wait_cloptr (ats_clo_ptr_type f_child) {
+atslib_fork_exec_and_wait_cloptr_exn (ats_ptr_type f_child) {
   pid_t pid ;
   int status ;
 
@@ -335,12 +335,14 @@ atslib_fork_and_exec_and_wait_cloptr (ats_clo_ptr_type f_child) {
   if (pid < 0) {
     ats_exit_errmsg (errno, "Exit: [fork] failed.\n") ;
   }
-  if (pid > 0) { wait (&status) ; return status ; }
+  if (pid > 0) {
+    wait (&status) ; ATS_FREE (f_child) ; return status ;
+  }
   /* this is the child */
-  ((ats_void_type (*)(ats_clo_ptr_type))f_child->closure_fun)(f_child) ;
-  ATS_FREE (f_child) ; exit (0) ;
-  return 0 ;
-} /* atslib_fork_and_exec_and_wait_cloptr */
+  ((ats_void_type (*)(ats_clo_ptr_type))((ats_clo_ptr_type)f_child)->closure_fun)(f_child) ;
+  _exit (0) ; /* no need to flush STDIN, STDOUT and STDERR */
+  return 0 ; /* deadcode */
+} /* atslib_fork_exec_and_wait_cloptr_exn */
 
 /* ****** ****** */
 

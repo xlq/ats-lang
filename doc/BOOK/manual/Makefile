@@ -5,6 +5,7 @@
 #
 
 manual_main.ps: \
+  manual_def.tex \
   manual_preface.tex \
   manual_ats_basics.tex \
   manual_batch_compilation.tex \

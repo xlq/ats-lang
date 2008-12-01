@@ -97,13 +97,13 @@ dataview connect_v (fd: int, int) =
   | connect_succ (fd,  0) of socket_v (fd, conn)
 
 fun connect_ipv4_err {fd:int} (
-    pf: socket_v (fd, init) | sockfd: int fd, servaddr: &sockaddr_in_struct_t
-  ) : [i:int] (connect_v (fd, i) | int i)
+  pf_sock: socket_v (fd, init) | fd: int fd, servaddr: &sockaddr_in_struct_t
+) : [i:int] (connect_v (fd, i) | int i)
   = "atslib_connect_ipv4_err"
 
 fun connect_ipv4_exn {fd:int} (
     pf: !socket_v (fd, init) >> socket_v (fd, conn)
-  | sockfd: int fd, servaddr: &sockaddr_in_struct_t
+  | fd: int fd, servaddr: &sockaddr_in_struct_t
   ) : void
   = "atslib_connect_ipv4_exn"
 
@@ -114,13 +114,13 @@ dataview bind_v (fd:int, int) =
   | bind_succ (fd,  0) of socket_v (fd, bind)
 
 fun bind_ipv4_err {fd:int}
-  (pf: socket_v (fd, init) | sockfd: int fd, servaddr: &sockaddr_in_struct_t)
+  (pf_sock: socket_v (fd, init) | fd: int fd, servaddr: &sockaddr_in_struct_t)
   : [i:int] (bind_v (fd, i) | int i)
   = "atslib_bind_ipv4_err"
 
 fun bind_ipv4_exn {fd:int} (
-    pf: !socket_v (fd, init) >> socket_v (fd, bind)
-  | sockfd: int fd, servaddr: &sockaddr_in_struct_t
+    pf_sock: !socket_v (fd, init) >> socket_v (fd, bind)
+  | fd: int fd, servaddr: &sockaddr_in_struct_t
   ) : void
   = "atslib_bind_ipv4_exn"
 
@@ -131,13 +131,14 @@ dataview listen_v (fd: int, int) =
   | listen_succ (fd,  0) of socket_v (fd, listen)
 
 fun listen_err {fd:int}
-  (pf: socket_v (fd, bind) | sockfd: int fd, backlog: Pos)
+  (pf_sock: socket_v (fd, bind) | fd: int fd, backlog: Pos)
   : [i:int] (listen_v (fd, i) | int i)
   = "atslib_listen_err"
 
-fun listen_exn {fd:int}
-  (pf: !socket_v (fd, bind) >> socket_v (fd, listen) |
-   sockfd: int fd, backlog: Pos): void
+fun listen_exn {fd:int} (
+    pf_sock: !socket_v (fd, bind) >> socket_v (fd, listen)
+  | fd: int fd, backlog: Pos // [backlog = 0] is not supported on all systems
+  ) : void
   = "atslib_listen_exn"
 
 (* ****** ****** *)
@@ -147,18 +148,18 @@ dataview accept_v (int) =
   | {fd:nat} accept_succ (fd) of socket_v (fd, conn)
 
 fun accept_null_err {fd_s:int}
-  (pf: !socket_v (fd_s, listen) | sockfd: int fd_s)
+  (pf_sock: !socket_v (fd_s, listen) | fd_s: int fd_s)
   : [fd_c:int] (accept_v fd_c | int fd_c)
   = "atslib_accept_null_err"
 
 fun accept_null_exn {fd_s:int}
-  (pf: !socket_v (fd_s, listen) | sockfd: int fd_s)
+  (pf_sock: !socket_v (fd_s, listen) | fd_s: int fd_s)
   : [fd_c:int] (socket_v (fd_c, conn) | int fd_c)
   = "atslib_accept_null_exn"
 
 fun accept_ipv4_exn {fd_s:int} (
-    pf: !socket_v (fd_s, listen)
-  | sockfd: int fd_s
+    pf_sock: !socket_v (fd_s, listen)
+  | fd_s: int fd_s
   , cliaddr: &sockaddr_in_struct_t? >> sockaddr_in_struct_t
   , addrlen: &socklen_t? >> socklen_t
   ) : [fd_c:int] (socket_v (fd_c, conn) | int fd_c)
@@ -171,39 +172,81 @@ dataview socket_close_v (fd: int, s: status, int) =
   | socket_close_succ (fd, s, 0)
 
 fun socket_close_err {fd:int} {s:status}
-  (pf: socket_v (fd, s) | sockfd: int fd)
+  (pf_sock: socket_v (fd, s) | fd: int fd)
   : [i:int] (socket_close_v (fd, s, i) | int i)
   = "atslib_socket_close_err"
 
 fun socket_close_exn {fd:int} {s:status}
-  (pf: socket_v (fd, s) | sockfd: int fd): void
+  (pf_sock: socket_v (fd, s) | fd: int fd): void
   = "atslib_socket_close_exn"
 
 (* ****** ****** *)
 
-fun socket_read_err {fd:int} {n,sz:nat | n <= sz} {l:addr}
-  (pf_socket: !socket_v (fd, conn), pf_buf: !bytes sz @ l |
-   sockfd: int fd, buf: ptr l, n: int n): intBtw(~1, n+1)
+// implemented in [libc/sys/CATS/socket.cats]
+
+fun socket_read_err {fd:int} {n,sz:nat | n <= sz} {l:addr} (
+    pf_sock: !socket_v (fd, conn), pf_buf: !bytes sz @ l
+  | fd: int fd, p_buf: ptr l, ntotal: int n
+  ) : intBtw(~1, n+1)
   = "atslib_socket_read_err"
 
-fun socket_read_exn {fd:int} {n,sz:nat | n <= sz} {l:addr}
-  (pf_socket: !socket_v (fd, conn), pf_buf: !bytes sz @ l |
-   sockfd: int fd, buf: ptr l, n: int n): natLte n
+fun socket_read_exn {fd:int} {n,sz:nat | n <= sz} {l:addr} (
+    pf_sock: !socket_v (fd, conn), pf_buf: !bytes sz @ l
+  | fd: int fd, p_buf: ptr l, ntotal: int n
+  ) : natLte n
   = "atslib_socket_read_exn"
 
 (* ****** ****** *)
 
-fun socket_write_err {fd:int} {n,sz:nat | n <= sz} {l:addr}
-  (pf_socket: !socket_v (fd, conn), pf_buf: !bytes sz @ l |
-   sockfd: int fd, buf: ptr l, n: int n): intBtw(~1, n+1)
+// implemented in [libc/sys/DATS/socket.dats]
+
+fun socket_read_loop_err {fd:int} {n,sz:nat | n <= sz} {l:addr} (
+    pf_sock: !socket_v (fd, conn), pf_buf: !bytes sz @ l
+  | fd: int fd, p_buf: ptr l, ntotal: int n
+  ) : intBtw (~1, n+1)
+  = "atslib_socket_read_loop_err"
+
+fun socket_read_loop_exn {fd:int} {n,sz:nat | n <= sz} {l:addr} (
+    pf_sock: !socket_v (fd, conn), pf_buf: !bytes sz @ l
+  | fd: int fd, p_buf: ptr l, ntotal: int n
+  ) : natLte n
+  = "atslib_socket_read_loop_exn"
+
+(* ****** ****** *)
+
+// implemented in [libc/sys/CATS/socket.cats]
+
+fun socket_write_err {fd:int} {n,sz:nat | n <= sz} {l:addr} (
+    pf_sock: !socket_v (fd, conn), pf_buf: !bytes sz @ l
+  | fd: int fd, p_buf: ptr l, ntotal: int n
+  ) : intBtw(~1, n+1)
   = "atslib_socket_write_err"
 
-fun socket_write_exn {fd:int} {n,sz:nat | n <= sz} {l:addr}
-  (pf_socket: !socket_v (fd, conn), pf_buf: !bytes sz @ l |
-   sockfd: int fd, buf: ptr l, n: int n): natLte n
+fun socket_write_exn {fd:int} {n,sz:nat | n <= sz} {l:addr} (
+    pf_sock: !socket_v (fd, conn), pf_buf: !bytes sz @ l
+  | fd: int fd, p_buf: ptr l, ntotal: int n
+  ) : natLte n
   = "atslib_socket_write_exn"
 
 (* ****** ****** *)
+
+// implemented in [libc/sys/DATS/socket.dats]
+
+fun socket_write_loop_err {fd:int} {n,sz:nat | n <= sz} {l:addr} (
+    pf_sock: !socket_v (fd, conn), pf_buf: !bytes sz @ l
+  | fd: int fd, p_buf: ptr l, ntotal: int n
+  ) : intBtw(~1, n+1)
+  = "atslib_socket_write_loop_err"
+
+fun socket_write_loop_exn {fd:int} {n,sz:nat | n <= sz} {l:addr} (
+    pf_sock: !socket_v (fd, conn), pf_buf: !bytes sz @ l
+  | fd: int fd, p_buf: ptr l, ntotal: int n
+  ) : void // all bytes must be written if this function returns
+  = "atslib_socket_write_loop_exn"
+
+(* ****** ****** *)
+
+// implemented in [libc/sys/CATS/socket.cats]
 
 fun socket_write_substring_err {fd:int} {i,n,sz:nat | i+n <= sz}
   (pf_socket: !socket_v (fd, conn) |

@@ -70,7 +70,16 @@ typedef nlink_t ats_nlink_type ; // number of hard links to a file
 
 typedef off_t ats_off_type ; // file size in bytes
 
-typedef pid_t ats_pid_type ; // for process IDs
+/* ****** ****** */
+
+typedef pid_t ats_pid_type ; // for process IDs // signed integer type
+
+static inline
+ats_int_type atslib_int_of_pid (ats_pid_type pid) {
+  return pid ;
+}
+
+/* ****** ****** */
 
 // already defined in [ats_types.h]
 // typedef size_t ats_size_type ; // for sizes of objects

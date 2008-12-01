@@ -85,14 +85,20 @@ implement hityp_is_void (hit0) = begin
   | _ => false
 end // end of [hityp_is_void]
 
-implement hityp_fun_is_void (hit_fun) = begin
+implement hityp_fun_is_void (hit_fun) = let
+(*
+  val () = begin
+    prerr "hityp_fun_is_void: hit_fun = "; prerr hit_fun; prerr_newline ()
+  end // end of [val]
+*)
+in
   case+ hit_fun.hityp_node of
   | HITfun (_(*fc*), _(*arg*), hit_res) => hityp_is_void (hit_res)
   | _ => begin
       prerr "Internal Error: hityp_fun_is_void: hit_fun = ";
       prerr hit_fun; prerr_newline ();
       $Err.abort {bool} ()
-    end
+    end // end of [_]
 end // end of [hityp_fun_is_void]
 
 implement hityp_is_vararg (hit) = begin
@@ -538,6 +544,12 @@ fun hityp_normalize_flag
     in
       flag := flag + 1; hityp_tysum_make (d2c, hits_arg)
     end // end of [HITtysumtemp]
+  | HITtyrecsin hit => let
+      val flag0 = flag
+      val hit = hityp_normalize_flag (hit, flag)
+    in
+      if flag > flag0 then hityp_tyrecsin hit else hit0
+    end // end of [HITtyrecsin]
   | HITs2var s2v => let
       val hit0_new = (
         case+ hityp_s2var_normalize (s2v) of
@@ -552,7 +564,7 @@ fun hityp_normalize_flag
 (*
   val () = begin
     prerr "hityp_normalize: hit0_new = "; prerr hit0_new; prerr_newline ()
-  end
+  end // end of [val]
 *)
 in
   hit0_new

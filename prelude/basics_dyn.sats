@@ -92,14 +92,18 @@ val{elt:viewt@ype} junkof : elt?
 
 val true : bool (true) and false : bool (false)
 
-fun exit {a:viewt@ype} (code: int):<!exn> a
+fun exit {a:viewt@ype} (status: int):<!exn> a
   = "ats_exit"
 
-fun exit_errmsg {a:viewt@ype} (code: int, msg: string):<!exnref> a
+fun exit_main {a:viewt@ype}
+  {v_in:view} {v_out:view} (pf: v_in | status: int):<!exn> (v_out | a)
+  = "ats_exit"
+
+fun exit_errmsg {a:viewt@ype} (status: int, msg: string):<!exnref> a
   = "ats_exit_errmsg"
 
 fun exit_prerrf {a:viewt@ype} {ts:types}
-  (code: int, fmt: printf_c ts, args: ts):<!exnref> a
+  (status: int, fmt: printf_c ts, args: ts):<!exnref> a
   = "atspre_exit_prerrf"
 
 (* ****** ****** *)

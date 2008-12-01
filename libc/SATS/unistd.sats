@@ -38,17 +38,20 @@
 
 %{#
 
+// #include "libc/sys/CATS/types.cats" // for [pid_t]
 #include "libc/CATS/unistd.cats"
 
 %}
 
 (* ****** ****** *)
 
-abst@ype pid_t = $extype "ats_pid_t_type"
+staload "libc/sys/SATS/types.sats" // for [pid_t]
 
 (* ****** ****** *)
 
 // implemented in [libc/DATS/unistd.dats]
+
+fun fork_exn (): pid_t = "atslib_fork_exn"
   
 fun fork_exec_cloptr_exn {v:view}
  (pf: !v | f: (v | (*none*)) -<cloptr1> void): void

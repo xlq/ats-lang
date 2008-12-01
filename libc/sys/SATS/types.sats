@@ -67,7 +67,11 @@ abst@ype nlink_t = $extype "ats_nlink_type" // number of hard links to a file
 
 abst@ype off_t = $extype "ats_off_type" // file size in bytes
 
-abst@ype pid_t = $extype "ats_pid_type" // for process IDs
+(* ****** ****** *)
+abst@ype pid_t = $extype "ats_pid_type" // for process IDs // a signed integer type
+fun int_of_pid (pid: pid_t): int = "atslib_int_of_pid"
+
+(* ****** ****** *)
 
 abst@ype size_t = $extype "ats_size_type" // for sizes of objects
 abst@ype ssize_t = $extype "ats_ssize_type" // for sizes or error indication

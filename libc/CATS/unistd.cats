@@ -45,19 +45,18 @@
 
 /* ****** ****** */
 
-#include "ats_types.h"
-typedef pid_t ats_pid_t_type ;
+#include "ats_types.h" // typedef pid_t ats_pid_type ;
 
 /* ****** ****** */
 
 static inline
-ats_pid_t_type
+ats_pid_type
 atslib_wait_with_status (ats_ptr_type p) {
   return wait ((int *)p) ;
 }
 
 static inline
-ats_pid_t_type
+ats_pid_type
 atslib_wait_without_status () {
   return wait ((int *)0) ;
 }

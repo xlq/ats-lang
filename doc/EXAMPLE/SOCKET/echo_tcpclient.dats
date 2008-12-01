@@ -20,7 +20,7 @@ staload "libc/arpa/SATS/inet.sats"
 (* ****** ****** *)
 
 #define MAXLINE 128
-#define SERVPORT 9877
+#define SERVPORT_DEFAULT 9877
 
 fn prerr_usage (cmd: string): void = begin
   prerrf ("usage: %s <IPaddress>", @(cmd)); prerr_newline ()
@@ -51,8 +51,8 @@ implement client_loop {fd:int} (pf_sock | sockfd) = let
       prval fgets_v_succ (pf_buf_send1) = pf_fgets
       val nsend = strbuf_length (!p_buf_send)
       prval () = pf_buf_send := bytes_v_of_strbuf_v (pf_buf_send1)
-      val nwritten = socket_write_exn (pf_sock, pf_buf_send | sockfd, p_buf_send, nsend)
-      val nread = socket_read_exn (pf_sock, pf_buf_recv | sockfd, p_buf_recv, nsend)
+      val () = socket_write_loop_exn (pf_sock, pf_buf_send | sockfd, p_buf_send, nsend)
+      val nread = socket_read_loop_exn (pf_sock, pf_buf_recv | sockfd, p_buf_recv, nsend)
       val (pf_stdout | p_stdout) = stdout_get ()
       val () = fwrite_byte_exn (file_mode_lte_w_w, pf_buf_recv | p_buf_recv, nread, !p_stdout)
       val () = stdout_view_set (pf_stdout | (*none*))
@@ -77,14 +77,17 @@ end // end of [client_loop]
 (* ****** ****** *)
 
 implement main (argc, argv) = let
-  val () = if (argc <> 2) then prerr_usage (argv.[0])
-  val () = assert (argc = 2) // redundant at run-time
+  val () = if (argc < 2) then prerr_usage (argv.[0])
+  val () = assert (argc >= 2) // redundant at run-time
   val servname = argv.[1]
+  val servport = (
+    if argc >= 3 then int_of argv.[2] else SERVPORT_DEFAULT
+  ) : int
   var inp: in_addr_struct_t // uninitialized
   val () = inet_aton_exn (servname, inp)
   var servaddr: sockaddr_in_struct_t // uninitialized
   val () = sockaddr_ipv4_init
-    (servaddr, AF_INET, in_addr_struct_s_addr_get inp, in_port_nbo_of_int SERVPORT)
+    (servaddr, AF_INET, in_addr_struct_s_addr_get inp, in_port_nbo_of_int servport)
   val [fd:int] (pf_sock | sockfd) = socket_family_type_exn (AF_INET, SOCK_STREAM)
   val () = connect_ipv4_exn (pf_sock | sockfd, servaddr)
   val () = client_loop (pf_sock | sockfd)

@@ -125,92 +125,137 @@ proofs.
 
 \begin{figure}
 \begin{verbatim}
-dataview array_v (a:t@ype+, int(*size*), addr(*beg*)) =
+dataview array_v (a:viewt@ype+, int(*size*), addr(*beg*)) =
   | {n:nat} {l:addr}
     array_v_cons (a, n+1, l) of (a @ l, array_v (a, n, l+sizeof a))
   | {l:addr} array_v_nil (a, 0, l)
 \end{verbatim}
 \caption{}
-\label{figure:array_v}
+\label{figure:array_get_set_elt_at.dats}
 \end{figure}
 \section{Dataviews}
 A linear dataprop (for classifying linear proofs) is referred to as a {\it
 dataview} in ATS. In Figure~\ref{figure:array_v}, the dataview declaration
 introduces a view constructor {\it array\_v} and two proof constructors
 ${\it array\_v\_nil}$ and ${\it array\_v\_cons}$ that are associated with
-${\it array\_v}$. The types (or more precisely, props) assigned to these
-two proof constructors are given as follows:
+${\it array\_v}$.  Note that the sort $sviewtaype$ is for classifying
+viewtypes, that is, linear types of unknown size, and we use $\VT$ to range
+over viewtypes (which include all types).  The types (or more precisely, props)
+assigned to these two proof constructors are given as follows:
 \[\begin{array}{rcl}
 {\it array\_v\_nil} & : &
-\forall a:\staype.\forall l:\saddr. () \timp {\it array\_v} (a, 0, l) \\
+\forall a:\sviewtaype.\forall l:\saddr. () \timp {\it array\_v} (a, 0, l) \\
 {\it array\_v\_cons} & : &
-\forall a:\staype.\forall n:\snat.\forall l:\saddr. \\
+\forall a:\sviewtaype.\forall n:\snat.\forall l:\saddr. \\
 &&\kern12pt
 (a @ l, {\it array\_v} (a, n, l+{\it sizeof}(a))) \timp {\it array\_v} (a, n+1, l) \\
 \end{array}\]
-Given a type $T$, an integer $I$ and an address $L$, ${\it array\_v}(T, I,
-L)$ is a view stating that there are $I$ values of the type $T$ stored (in
-a row) at the memory location $L$. A view as such is referred to as an
-array view.
+Given a viewtype $\VT$ (of unknown size), an integer $I$ and an address
+$L$, ${\it array\_v}(\VT, I, L)$ is a view stating that there are $I$
+values of the type $\VT$ stored (in a row) at the memory location $L$. A view
+as such is referred to as an array view.
 
 \begin{figure}
-\begin{verbatim}
-prfun array_v_split
-  {a:t@ype} {n,i:nat | i <= n} {l:addr} {ofs:int} .<i>.
-  (pf_mul: MUL (i, sizeof a, ofs), pf_arr: array_v (a, n, l))
-  : @(array_v (a, i, l), array_v (a, n-i, l+ofs)) =
-  sif i > 0 then let
-    prval array_v_cons (pf1_elt, pf2_arr) = pf_arr
-    // pf1_mul : MUL (i-1, sizeof a, ofs - sizeof a)
-    prval pf1_mul = mul_add_const {~1} {i, sizeof a} (pf_mul)
-    prval (pf1_arr_res, pf2_arr_res) =
-      array_v_split {a} {n-1,i-1} (pf1_mul, pf2_arr)
-  in
-    @(array_v_cons (pf1_elt, pf1_arr_res), pf2_arr_res)
-  end else let
-    prval MULbas () = pf_mul
-  in
-    (array_v_nil {a} {l} (), pf_arr)
-  end // end of [sif]
-// end of [array_v_split]
-
-prfun array_v_unsplit
-  {a:t@ype} {n1,n2:nat} {l:addr} {ofs:int} .<n1>. (
-    pf_mul: MUL (n1, sizeof a, ofs)
-  , pf1_arr: array_v (a, n1, l)
-  , pf2_arr: array_v (a, n2, l+ofs)
-  ) : array_v (a, n1+n2, l) =
-  sif n1 > 0 then let
-    prval array_v_cons (pf11_elt, pf12_arr) = pf1_arr
-    // pf1_mul : MUL (n1-1, sizeof a, ofs - sizeof a)
-    prval pf1_mul = mul_add_const {~1} {n1, sizeof a} (pf_mul)
-    prval pf_arr_res = array_v_unsplit {a} (pf1_mul, pf12_arr, pf2_arr)
-  in
-    array_v_cons (pf11_elt, pf_arr_res)
-  end else let
-    prval array_v_nil () = pf1_arr; prval MULbas () = pf_mul
-  in
-    pf2_arr
-  end // end of [sif]
-// end of [array_v_unsplit]
-\end{verbatim}
-\caption{Some proof functions for manipulating array views}
+\input{DATS/array_v_split_unsplit.dats}
+\caption{Two proof functions for manipulating array views}
 \label{figure:array_v_split_unsplit.dats}
 \end{figure}
 In Figure~\ref{figure:array_v_split_unsplit.dats}, two functions {\it
 array\_v\_split} and {\it array\_v\_unsplit} are implmented for
 manipulating array views. In essence, given a proof {\it pf} of the view
-${\it array\_v} (T, N, L)$ for some type $T$, integer $N$ and address $L$,
-${\it array\_v\_split}$ can be called to split {\it pf} (by consuming it)
-into a pair of proofs ${\it pf}_1$ and ${\it pf}_2$ of the views ${\it
-array\_v} (T, I, L)$ and ${\it array\_v} (T, N-I, L+{\it OFS})$, respectively, for
-any natural number $I\leq N$, where $OFS$ equals ${\it sizeof}(T)$
-multiplied by $I$. On the other hand, ${\it array\_v\_unsplit}$ can be
-called to combine the views of two adjacently allocated arrays into the
-view of a single array.
+${\it array\_v} (\VT, N, L)$ for some viewtype $\VT$, integer $N$ and
+address $L$, ${\it array\_v\_split}$ can be called to split {\it pf} (by
+consuming it) into a pair of proofs ${\it pf}_1$ and ${\it pf}_2$ of the
+views ${\it array\_v} (\VT, I, L)$ and ${\it array\_v} (\VT, N-I, L+{\it
+OFS})$, respectively, for any natural number $I\leq N$, where ${\it OFS}$ equals
+${\it sizeof}(\VT)$ multiplied by $I$. On the other hand, ${\it
+array\_v\_unsplit}$ can be called to combine the views of two adjacently
+allocated arrays into the view of a single array.  Note that the static
+expression ${\it sizeof}(\VT)$ refers to the size of a viewtype $\VT$.
 
+\begin{figure}
+\input{DATS/array_get_set_elt_at.dats}
+\caption{Two function templates for reading from and writing to a given array cell}
+\label{figure:array_get_set_elt_at.dats}
+\end{figure}
+In Figure~\ref{figure:array_get_set_elt_at.dats}, the proof functions {\it
+array\_v\_split} and {\it array\_v\_unsplit} are used in the implementation
+of two function templates for reading from and writing to a given array
+cell. Note that the dynamic expression ${\it sizeof}\langle\VT\rangle$
+represents the size of a viewtype $\VT$, and the symbol ${\it imul2}$,
+which is already given the infix status, refers to a function assigned the
+following type:
+\[\begin{array}{c}
+\forall m:\sint.\forall n:\sint.
+(\tint(m), \tint(n))\timp \exists p:\sint.({\it MUL}(m, n, p) \mid \tint (p)) \\
+\end{array}\]
+Clearly, when applied to two integers $m$ and $n$, ${\it imul2}$ returns
+some integer $p$ and a proof stating that $p$ is the product of $m$ and
+$n$.
+
+\begin{figure}
+\input{DATS/array_v_takeout.dats}
+\caption{Another proof function for manipulating array views}
+\label{figure:array_v_takeout.dats}
+\end{figure}
+In Figure~\ref{figure:array_v_takeout.dats}, a proof function {\it
+array\_v\_takeout} is implemented.
+Given a viewtype $\VT$, an address $L$, an integer $I$ and another integer
+${\it OFS}$, a proof of the following view:
+\[\begin{array}{c}
+\VT @ (L+{\it OFS}) \timp {\it array\_v} (\VT, I, L)
+\end{array}\]
+is a linear function that returns a proof of the view ${\it array\_v} (\VT,
+I, L)$ when applied to a proof of the view $\VT@(L+{\it OFS})$. In other
+words, this linear function represents an array in which one array cell is
+missing.  Therefore, the proof function ${\it array\_v\_takeout}$ turns the
+view for an array into two views: one for a cell in the array and the other
+for the rest of array, that is, the array minus the cell.
+The proof functions ${\it
+mul\_add\_cons}$ and ${\it mul\_elim}$ in the implementation are assigned
+the following types:
+\[\begin{array}{rcl}
+{\it mul\_add\_cons} & : &
+\forall i:\sint.\forall m:\sint.\forall n:\sint.~{\it MUL}(m,n,p)\timp {\it MUL}(m+i,n,p+i*n) \\
+{\it mul\_elim} & : &
+\forall m:\sint.\forall n:\sint.\forall p:\sint.~{\it MUL} (m, n, p)\timp (p = m*n)\Band\tvoid \\
+\end{array}\]
+When ${\it mul\_add\_cons}$ is called, the static variable $i$ should be
+instantiated with an integer constant. Similarly, when ${\it mul\_elim}$ is
+called, either the static variable $m$ or the static variable $n$ should be
+instantiated with a constant. These two functions are declared as axioms in
+the following file:
+\begin{center}
+${\it \$ATSHOME/prelude/SATS/arith.sats}$
+\end{center}
+The function templates ${\it array\_get\_elt\_at}$ and ${\it
+array\_set\_elt\_at}$ are given another implementation in
+Figure~\ref{figure:array_v_takeout.dats}, which makes use of ${\it
+array\_v\_takeout}$.
+
+\begin{figure}
+\input{DATS/list_vt_dataviewtype_example.dats}
+\caption{A function template for computing the length of a given linear list}
+\label{figure:list_vt_length.dats}
+\end{figure}
 \section{Dataviewtypes}
 A linear datatype (for classifying linear values) is referred to as a {\it
-dataviewtype} in ATS.
+dataviewtype} in ATS. As an example, ${\it list\_vt}$ is declared as a
+dataviewtype in the following declaration:
+\begin{verbatim}
+dataviewtype list_vt (a:viewt@ype+, int) =
+  | list_vt_nil (a, 0) | {n:nat} list_vt_cons (a, n+1) of (a, list_vt (a, n))
+\end{verbatim}
+The two data constructors associated with ${\it list\_vt}$ are assgined the
+following types:
+\[\begin{array}{rcl}
+{\it list\_vt\_nil} & : &
+\forall a:\sviewtaype.~()\timp{\it list\_vt}(a, 0) \\
+{\it list\_vt\_cons} & : &
+\forall a:\sviewtaype.\forall n:\snat.~(a, {\it list\_vt}(a, n))\timp{\it list\_vt}(a, n+1) \\
+\end{array}\]
+
+\section{Local Variables and Arrays}
+\section{Call-By-Reference}
 
 %%% end of \chapter{Programming with Linear Types}
