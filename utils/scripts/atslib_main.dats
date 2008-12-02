@@ -42,6 +42,7 @@
 
 #include "libc/CATS/stdio.cats"
 #include "libc/CATS/stdlib.cats"
+#include "libc/sys/CATS/types.cats"
 #include "libc/CATS/unistd.cats"
 
 %}

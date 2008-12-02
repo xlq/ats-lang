@@ -42,6 +42,7 @@
 
 #include "libc/CATS/stdio.cats"
 #include "libc/CATS/stdlib.cats"
+#include "libc/sys/CATS/types.cats" // for [pid_t]
 #include "libc/CATS/unistd.cats"
 
 typedef ats_ptr_type ats_intref_type ;

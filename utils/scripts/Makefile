@@ -48,17 +48,17 @@ all: atscc atslib
 
 atscc:  atscc_main_dats.c \
           top_sats.o basics_dats.o atscc_dats.o \
-          stdio_sats.o stdlib_sats.o unistd_sats.o
+          stdio_sats.o stdlib_sats.o unistd_sats.o sys_types_sats.o
 	$(CC) $(INCLUDES) $(CCFLAGS) -o atscc atscc_main_dats.c $(ATSRUNTIME)/ats_prelude.c \
           top_sats.o basics_dats.o atscc_dats.o \
-          stdio_sats.o stdlib_sats.o unistd_sats.o
+          stdio_sats.o stdlib_sats.o unistd_sats.o sys_types_sats.o
 
 atslib: atslib_main_dats.c \
           top_sats.o basics_dats.o atscc_dats.o atslib_dats.o \
-          stdio_sats.o stdlib_sats.o unistd_sats.o
+          stdio_sats.o stdlib_sats.o unistd_sats.o sys_types_sats.o
 	$(CC) $(INCLUDES) $(CCFLAGS) -o atslib atslib_main_dats.c $(ATSRUNTIME)/ats_prelude.c \
           top_sats.o basics_dats.o atscc_dats.o atslib_dats.o \
-          stdio_sats.o stdlib_sats.o unistd_sats.o
+          stdio_sats.o stdlib_sats.o unistd_sats.o sys_types_sats.o
 
 atspack: atspack.dats
 	atscc -o atspack $(CCFLAGS) atspack.dats
@@ -114,6 +114,11 @@ unistd_sats.c:
 	$(ATSOPT) --output $@ --static $(ATSLIBC)/SATS/unistd.sats
 unistd_sats.o: unistd_sats.c
 	$(CC) $(INCLUDES) $(CCFLAGS) -o $@ -c unistd_sats.c
+
+sys_types_sats.c:
+	$(ATSOPT) --output $@ --static $(ATSLIBC)/sys/SATS/types.sats
+sys_types_sats.o: sys_types_sats.c
+	$(CC) $(INCLUDES) $(CCFLAGS) -o $@ -c sys_types_sats.c
 
 ######
 

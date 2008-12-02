@@ -45,7 +45,8 @@
 
 /* ****** ****** */
 
-#include "ats_types.h" // typedef pid_t ats_pid_type ;
+#include "ats_types.h"
+// typedef pid_t ats_pid_type ;
 
 /* ****** ****** */
 

@@ -38,7 +38,7 @@
 
 %{#
 
-// #include "libc/sys/CATS/types.cats" // for [pid_t]
+#include "libc/sys/CATS/types.cats" // for [pid_t]
 #include "libc/CATS/unistd.cats"
 
 %}
