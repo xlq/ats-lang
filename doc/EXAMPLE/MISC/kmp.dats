@@ -79,7 +79,7 @@ prfun kmp_v_takeout
   prval kmp_v_more (pf_mul, pf_kmp, pf_elt) = pf0_kmp
 in
   sif i == n then let
-    val () = mul_is_fun (pf0_mul, pf_mul)
+    val () = mul_isfun (pf0_mul, pf_mul)
   in
     #[.. | (pf_elt, llam pf_elt => kmp_v_more (pf_mul, pf_kmp, pf_elt))]
   end else let
@@ -114,7 +114,7 @@ fun kmp_table_make_aux
   if i < n then
     if w[i-1] = w[j] then
       let
-         prval (pf_elt, pf_arr) = array_v_unsome {Int?} pf_arr
+         prval (pf_elt, pf_arr) = array_v_uncons {Int?} pf_arr
          val () = ptr_set_t (pf_elt | tbl_ofs, j+1)
          prval pf_kmp = kmp_v_more (pf_mul, pf_kmp, pf_elt)
          prval pf_mul = mul_add_const {1} (pf_mul)
@@ -127,7 +127,7 @@ fun kmp_table_make_aux
         (pf_mul, pf_kmp, pf_arr | w, tbl, n, i, kmp_sub (pf_kmp | tbl, j), tbl_ofs)
     else
       let
-         prval (pf_elt, pf_arr) = array_v_unsome {Int?} pf_arr
+         prval (pf_elt, pf_arr) = array_v_uncons {Int?} pf_arr
          val () = ptr_set_t (pf_elt | tbl_ofs, 0)
          prval pf_kmp = kmp_v_more (pf_mul, pf_kmp, pf_elt)
          prval pf_mul = mul_add_const {1} (pf_mul)
@@ -135,7 +135,7 @@ fun kmp_table_make_aux
          kmp_table_make_aux
            (pf_mul, pf_kmp, pf_arr | w, tbl, n, i+1, 0, tbl_ofs+intsz)
       end
-   else let prval () = array_v_unnone pf_arr in (pf_kmp | ()) end
+   else let prval () = array_v_unnil pf_arr in (pf_kmp | ()) end
 end // end of [kmp_table_make_aux]
 
 //
@@ -148,7 +148,7 @@ fn kmp_table_make {n:int | n >= 1} (w: string n, n: int n)
   prval pf_kmp = kmp_v_none {l-intsz}
 in
   if n > 1 then let
-    prval (pf_elt, pf_arr) = array_v_unsome {Int?} (pf_arr)
+    prval (pf_elt, pf_arr) = array_v_uncons {Int?} (pf_arr)
     val () = ptr_set_t (pf_elt | p_arr, 0)
     prval pf1_mul = mul_make_const {1,intsz} ()
     prval pf2_mul = mul_make_const {2,intsz} ()
@@ -158,7 +158,7 @@ in
   in
     (pf_ngc, pf_kmp | tbl)
   end else let
-    prval () = array_v_unnone{Int?} (pf_arr)
+    prval () = array_v_unnil{Int?} (pf_arr)
   in
     (pf_ngc, pf_kmp | tbl)
   end
@@ -169,7 +169,7 @@ end // end of [kmp_table_make]
 prfun array_v_of_kmp_v {n:nat} {l:addr} .<n>.
   (pf_kmp: kmp_v (l, n)): array_v (Int?, n, l+intsz) = begin
   sif n == 0 then
-    let prval kmp_v_none () = pf_kmp in array_v_none{Int?} () end
+    let prval kmp_v_none () = pf_kmp in array_v_nil {Int?} () end
   else let
     prval kmp_v_more (pf_mul, pf_kmp, pf_elt) = pf_kmp
     prval pf1_mul = mul_add_const {~1} (pf_mul)

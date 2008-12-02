@@ -87,6 +87,7 @@ DIR=/home/fac2/hwxi/public_html/ATS/EXAMPLE/MISC
 
 update::
 	atsopt --posmark_html_only -d AutoDiff.dats
+	atsopt --posmark_html_only -d coin_flip.dats
 	atsopt --posmark_html_only -d fft.dats
 	atsopt --posmark_html_only -d GaussElim.dats
 	atsopt --posmark_html_only -d GarsiaWachs.dats

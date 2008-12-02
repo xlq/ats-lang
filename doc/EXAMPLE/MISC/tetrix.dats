@@ -74,14 +74,16 @@ fn frame_get_at (i: Int, j: Int): char =
   if i > FD then '\0' else
   if j < 0 then '\0' else
   if j >= FW then '\0' else
-    frame[i,j]
+    matrix_get_elt_at (frame, FW, i, j)
+// end of [frame_get_at]
 
 fn frame_set_at (i: Int, j: Int, c: char): void =
   if i < 0 then () else
   if i > FD then () else
   if j < 0 then () else
   if j >= FW then () else
-    frame[i,j] := c
+    matrix_set_elt_at (frame, FW, i, j, c)
+// end of [frame_set_at]
 
 //
 
@@ -148,67 +150,75 @@ fn print_block (c: char, b: bool): void =
 //
 
 typedef rotate_t = natLt 4
-typedef shape (m:int, n:int) = matrix (char, m, n)
+
+typedef shape (m:int, n:int) = '{
+  row= int m
+, col= int n
+, mat= matrix (char, m, n)
+}
+
 typedef shape = [m,n:pos] shape (m, n)
 
 //
 
 fn move_test {m,n:pos}
-   (M: shape (m, n), r: rotate_t, xcen: Int, ycen: Int): bool =
-  let
-     val m = matrix_size_row M and n = matrix_size_col M
-     val m2 = nhalf m and n2 = nhalf n
-     fun aux (i: natLte m, j: natLte n):<cloptr1> bool =
-       if i < m then
-         if j < n then let
-           val (x, y): (Int, Int) = case+ r of
-             | 0 => (xcen - m2 + i, ycen - n2 + j)
-             | 1 => (xcen - n2 + j, ycen + m2 - i - 1)
-             | 2 => (xcen + m2 - i - 1, ycen + n2 - j - 1)
-             | 3 => (xcen + n2 - j - 1, ycen - m2 + i)
-           val c = frame_get_at (x, y)
-         in
-           if c = '\0' then false
-           else begin
-             if c <> ' ' then
-               (if M[i,j] = ' ' then aux (i, j+1) else false)
-             else aux (i, j+1)
-           end
-         end else begin
-           aux (i+1, 0)
-         end
-       else true
-  in
-     aux (0, 0)
-  end
+  (S: shape (m, n), r: rotate_t, xcen: Int, ycen: Int): bool = let
+  val m = S.row and n = S.col and M = S.mat
+  val m2 = nhalf m and n2 = nhalf n
+  fun aux (i: natLte m, j: natLte n):<cloptr1> bool =
+    if i < m then
+      if j < n then let
+        val (x, y): (Int, Int) = case+ r of
+          | 0 => (xcen - m2 + i, ycen - n2 + j)
+          | 1 => (xcen - n2 + j, ycen + m2 - i - 1)
+          | 2 => (xcen + m2 - i - 1, ycen + n2 - j - 1)
+          | 3 => (xcen + n2 - j - 1, ycen - m2 + i)
+        val c = frame_get_at (x, y)
+      in
+        if c = '\0' then false else begin
+          if c <> ' ' then let
+            val Mij = matrix_get_elt_at (M, n, i, j)
+          in
+            if Mij = ' ' then aux (i, j+1) else false
+          end else begin
+            aux (i, j+1)
+          end // end of [if]
+        end
+      end else begin
+        aux (i+1, 0)
+      end // end of [if]
+    else true
+  // end of [aux]
+in
+  aux (0, 0)
+end // end of [move_test]
 
 //
 
 fn absorb {m,n:pos}
-   (M: shape (m, n), r: rotate_t, xcen: Int, ycen: Int): void =
-  let
-     val m = matrix_size_row M and n = matrix_size_col M
-     val m2 = nhalf m and n2 = nhalf n
-     fun aux (i: natLte m, j: natLte n):<cloptr1> void =
-       if i < m then begin
-         if j < n then let
-           val (x, y): (Int, Int) =
-             case+ r of
-               | 0 => (xcen - m2 + i, ycen - n2 + j)
-               | 1 => (xcen - n2 + j, ycen + m2 - i - 1)
-               | 2 => (xcen + m2 - i - 1, ycen + n2 - j - 1)
-               | 3 => (xcen + n2 - j - 1, ycen - m2 + i)
-           val c = M[i,j]
-           val () = if c <> ' ' then frame_set_at (x, y, c)
-         in
-           aux (i, j+1)
-         end else begin
-           aux (i+1, 0)
-         end
-       end
-  in
-     aux (0, 0)
-  end
+  (S: shape (m, n), r: rotate_t, xcen: Int, ycen: Int): void = let
+  val m = S.row and n = S.col and M = S.mat
+  val m2 = nhalf m and n2 = nhalf n
+  fun aux (i: natLte m, j: natLte n):<cloptr1> void =
+    if i < m then begin
+      if j < n then let
+        val (x, y): (Int, Int) = case+ r of
+          | 0 => (xcen - m2 + i, ycen - n2 + j)
+          | 1 => (xcen - n2 + j, ycen + m2 - i - 1)
+          | 2 => (xcen + m2 - i - 1, ycen + n2 - j - 1)
+          | 3 => (xcen + n2 - j - 1, ycen - m2 + i)
+        val c = matrix_get_elt_at (M, n, i, j)
+        val () = if c <> ' ' then frame_set_at (x, y, c)
+      in
+        aux (i, j+1)
+      end else begin
+        aux (i+1, 0)
+      end // end of [if]
+    end // end of [if]
+  // end of [aux]
+in
+  aux (0, 0)
+end // end of [absorb]
 
 //
 
@@ -223,8 +233,12 @@ end // end of [iter]
 
 fn frame_line_flash (i: natLte FD): void = let
   fun aux (n: Nat):<cloptr1> void =
-    if n > 0 then begin
-      iter (FW, lam j => print frame[i,j]);
+    if n > 0 then let
+      val f = lam (j: natLt FW): void =<cloptr1>
+        print (matrix_get_elt_at (frame, FW, i, j))
+      val () = iter (FW, f)
+      val () = cloptr_free (f)
+    in
       fflush_stdout ();
       curs_backward (FW);
       ignore (usleep (62500));
@@ -233,33 +247,32 @@ fn frame_line_flash (i: natLte FD): void = let
       curs_backward (FW);
       ignore (usleep (62500));
       aux (n-1)
-    end
+    end // end of [if]
 in
   print_string bold;
   curs_goto (i, 0); aux (3);
   print_string normal
 end // end of [frame_line_flash]
 
-//
-
 fn frame_display (): void = let
   fun aux1 (j: natLte FW):<cloptr1> void =
-    if j < FW then
-      let val c = frame[FD,j] in
-        if c = ' ' then print '_' else print c;
-        aux1 (j + 1)
-      end
-    else begin
+    if j < FW then let
+      val c = matrix_get_elt_at (frame, FW, FD, j)
+    in
+      if c = ' ' then print '_' else print c; aux1 (j + 1)
+    end else begin
       curs_backward FW; curs_upward 1
-    end
+    end // end of [if]
 
   fun aux2 (i: intLte FD, j: natLte FW):<cloptr1> void =
     if i >= 0 then
-      if j < FW then begin
-        print frame[i,j]; aux2 (i, j + 1)
+      if j < FW then let
+        val frame_ij = matrix_get_elt_at (frame, FW, i,j)
+      in
+        print frame_ij; aux2 (i, j + 1)
       end else begin
         curs_backward FW; curs_upward 1; aux2 (i - 1, 0)
-      end
+      end // end of [if]
     else ()
 in
   curs_goto (FD, 0); aux1 (0); aux2 (FD - 1, 0)
@@ -271,9 +284,13 @@ fn frame_find (): intBtw (~1, FD+1) = let // find a filled-up line
 
   and aux2 {i,j:nat | i <= FD; j <= FW}
     (i: int i, j: int j):<cloptr1> intBtw (~1, FD+1) =
-    if j < FW then
-      if frame[i,j] <> ' ' then aux2 (i, j+1) else aux1 (i+1)
-    else i
+    if j < FW then let
+      val frame_ij = matrix_get_elt_at (frame, FW, i, j)
+    in
+      if frame_ij <> ' ' then aux2 (i, j+1) else aux1 (i+1)
+    end else begin
+      i
+    end // end of [if]
 in
   aux1 (0)
 end // end of [frame_find]
@@ -293,13 +310,14 @@ fn print_usage (): void = begin
   print_string ("space: fall straight");
   curs_goto (XSCORE + 8, YSCORE);
   print_string "Please press the RETURN key to start the game.";
-end
+end // end of [print_usage]
 
 //
 
 val total_number_of_filled_lines: ref Nat = ref_make_elt 0
-fn total_number_of_filled_lines_inc ():<fun1> void =
+fn total_number_of_filled_lines_inc ():<fun1> void = begin
   !total_number_of_filled_lines := !total_number_of_filled_lines + 1
+end // end of [total_number_of_filled_lines]
 
 //
 
@@ -307,23 +325,37 @@ fn print_score (): void = begin
  curs_goto (XSCORE, YSCORE + 7);
  print (!total_number_of_filled_lines);
  fflush_stdout ()
-end
+end // end of [print_score]
 
 //
 
 fun frame_delete (): void = let
-  fn aux1 (i: natLte FD, j: natLte FD):<cloptr1> void =
-    iter (FW, lam k => frame[i,k] := frame[j,k])
-  fn aux2 (i: natLte FD):<cloptr1> void =
-    iter (FW, lam k => frame[i,k] := ' ')
+  fn aux1 (i: natLte FD, j: natLte FD):<cloptr1> void = let
+    val f = lam (k: natLt FW): void =<cloptr1>
+      matrix_set_elt_at (
+        frame, FW, i, k, matrix_get_elt_at (frame, FW, j, k)
+      ) // end of [lam]
+    val () = iter (FW, f)
+    val () = cloptr_free (f)
+  in
+    // empty
+  end // end of [aux1]
+
+  fn aux2 (i: natLte FD):<cloptr1> void = let
+    val f = lam (k: natLt FW): void =<cloptr1>
+      matrix_set_elt_at (frame, FW, i, k, ' ')
+    val () = iter (FW, f)
+    val () = cloptr_free (f)
+  in
+    // empty
+  end // end of [aux2]
 
   fun aux3 (i: intLte FD):<cloptr1> void =
-    if i >= 0 then
-      let val j = i - 1in
-        if j < 0 then aux2 i else aux1 (i, j);
-        aux3 (i - 1)
-      end
-    else ()
+    if i >= 0 then let
+      val j = i-1
+    in
+      if j < 0 then aux2 i else aux1 (i, j); aux3 (i - 1)
+    end // end of [if]
 
   val i = frame_find ()
 in 
@@ -338,15 +370,17 @@ end // end of [frame_delete]
 //
 
 fn display_shape_0 {m,n:pos}
-  (M: shape (m, n), b: bool): void = let
-  val m = matrix_size_row M and n = matrix_size_col M
+  (S: shape (m, n), b: bool): void = let
+  val m = S.row and n = S.col and M = S.mat
   fun aux (i: natLte m, j: natLte n):<cloptr1> void =
     if i < m then
-      if j < n then begin
-        print_block (M[i,j], b); aux (i, j + 1)
+      if j < n then let
+        val Mij = matrix_get_elt_at (M, n, i, j)
+      in
+        print_block (Mij, b); aux (i, j + 1)
       end else begin
         curs_backward n; curs_downward 1; aux (i+1, 0)
-      end
+      end // end of [if]
     else begin
       fflush_stdout ()
     end
@@ -357,74 +391,79 @@ end // end of [display_shape_0]
 //
 
 fn display_shape_1 {m,n:pos}
-  (M: shape (m, n), b: bool): void = let
-  val m = matrix_size_row M and n = matrix_size_col M
+  (S: shape (m, n), b: bool): void = let
+  val m = S.row and n = S.col and M = S.mat
   fun aux (i: intLt m, j: natLte n):<cloptr1> void =
     if j < n then
-      if i >= 0 then begin
-        print_block (M[i,j], b); aux (i-1, j)
+      if i >= 0 then let
+        val Mij = matrix_get_elt_at (M, n, i, j)
+      in
+        print_block (Mij, b); aux (i-1, j)
       end else begin
         curs_backward m; curs_downward 1; aux (m-1, j+1)
-      end
+      end // end of [if]
     else begin
       fflush_stdout ()
-    end
+    end // end of [if]
 in
   aux (m-1, 0)
 end // end of [display_shape_1]
 
 fn display_shape_2 {m,n:pos}
-  (M: shape (m, n), b: bool): void = let
-  val m = matrix_size_row M and n = matrix_size_col M
+  (S: shape (m, n), b: bool): void = let
+  val m = S.row and n = S.col and M = S.mat
   fun aux (i: intLt m, j: intLt n):<cloptr1> void =
     if i >= 0 then
-      if j >= 0 then begin
-        print_block (M[i,j], b); aux (i, j - 1)
+      if j >= 0 then let
+        val Mij = matrix_get_elt_at (M, n, i, j)
+      in
+        print_block (Mij, b); aux (i, j - 1)
       end else begin
         curs_backward n; curs_downward 1; aux (i-1, n-1)
       end
     else begin
       fflush_stdout ()
-    end
+    end // end of [if]
 in
   aux (m-1, n-1)
 end // end of [display_shape_2]
 
 fn display_shape_3 {m,n:pos}
-  (M: shape (m, n), b: bool): void = let
-  val m = matrix_size_row M and n = matrix_size_col M
+  (S: shape (m, n), b: bool): void = let
+  val m = S.row and n = S.col and M = S.mat
   fun aux (i: natLte m, j: intLt n):<cloptr1> void =
     if j >= 0 then
-      if i < m then begin
-        print_block (M[i,j], b); aux (i + 1, j)
+      if i < m then let
+        val Mij = matrix_get_elt_at (M, n, i, j)
+      in
+        print_block (Mij, b); aux (i + 1, j)
       end else begin
         curs_backward m; curs_downward 1; aux (0, j-1)
-      end
+      end // end of [if]
     else begin
       fflush_stdout ()
-    end
+    end // end of [if]
 in
   aux (0, n-1)
 end // end of [display_shape_3]
 
 fn display_shape_at {m,n:pos}
-  (M: shape (m, n), b: bool, r: rotate_t, xcen: Int, ycen: Int)
-  : void = let
-  val m = matrix_size_row M and n = matrix_size_col M
+  (S: shape (m, n), b: bool, r: rotate_t, xcen: Int, ycen: Int): void = let
+  val m = S.row and n = S.col
   val m2 = nhalf m and n2 = nhalf n
 in
   case+ r of
   | 0 => begin
-      curs_goto (xcen - m2, ycen - n2); display_shape_0 (M, b)
+      curs_goto (xcen - m2, ycen - n2); display_shape_0 (S, b)
     end
   | 1 => begin
-      curs_goto (xcen - n2, ycen + m2 - m); display_shape_1 (M, b)
+      curs_goto (xcen - n2, ycen + m2 - m); display_shape_1 (S, b)
     end
   | 2 => begin
-      curs_goto (xcen + m2 - m, ycen + n2 - n); display_shape_2 (M, b)
+      curs_goto (xcen + m2 - m, ycen + n2 - n); display_shape_2 (S, b)
     end
   | 3 => begin
-      curs_goto (xcen + n2 - n, ycen - m2); display_shape_3 (M, b)
+      curs_goto (xcen + n2 - n, ycen - m2); display_shape_3 (S, b)
     end
 end // end of [display_shape_at]
 
@@ -510,32 +549,42 @@ end // end of [shapeObj_falling]
 
 (* ****** ****** *)
 
-fun shape_make {m,n:pos} (M: shape (m, n))
+fn shape_make {m,n:pos}
+  (M: matrix (char, m, n), m: int m, n: int n): shape (m, n) = '{
+  row= m, col= n, mat= M
+}
+
+fn shapeObj_make {m,n:pos} (S: shape (m, n))
   : [l:addr] (free_gc_v l, shapeObj (m, n) @ l | ptr l) = let
   val (pf_gc, pf | p) = ptr_alloc_tsz {shapeObj0} (sizeof<shapeObj>)
 in
   p->rot := 0;
-  p->xlen := matrix_size_row M;
-  p->ylen := matrix_size_col M;
+  p->xlen := S.row;
+  p->ylen := S.col;
   p->xpos := nhalf (p->xlen);
   p->ypos := nhalf (FW);
   p->speed_lim := SPEED_LIM;
   p->speed_acc := SPEED_LIM;
-  p->shape := M;
+  p->shape := S;
   (pf_gc, pf | p)
 end // end of [shape_make]
 
 (* ****** ****** *)
 
 fn set_block_at {m,n:pos}
-  (M: shape (m*BSZ, n*BSZ), i: natLt m, j: natLt n, c: Char)
+  (S: shape (m*BSZ, n*BSZ), i: natLt m, j: natLt n, c: Char)
   : void = let
+  val nBSZ = S.col and M = S.mat
   fun aux (p: natLte BSZ, q: natLte BSZ):<cloptr1> void =
-    if p < BSZ then
-      if q < BSZ then begin
-        M[i imul BSZ + p, j imul BSZ + q] := c; aux (p, q+1)
-      end else aux (p+1, 0)
-    else ()
+    if p < BSZ then begin
+      if q < BSZ then let
+        val () = matrix_set_elt_at (M, nBSZ, i imul BSZ + p, j imul BSZ + q, c)
+      in
+        aux (p, q+1)
+      end else begin
+        aux (p+1, 0)
+      end // end of [if]
+    end // end of [if]
 in
   aux (0, 0)
 end // end of [set_block_at]
@@ -551,8 +600,12 @@ XXXX
 
 *)
 
-val shape_0: shape =
-  matrix_make_elt (2 imul BSZ, 2 imul BSZ, '@')
+val shape_0: shape = let
+  val m = 2 imul BSZ and n = 2 imul BSZ
+  val M = matrix_make_elt (m, n, '@')
+in
+  shape_make (M, m, n)
+end
 
 (*
 
@@ -567,8 +620,12 @@ XX
 
 *)
 
-val shape_1: shape =
-  matrix_make_elt (4 imul BSZ, BSZ, '%')
+val shape_1: shape = let
+  val m = 4 imul BSZ and n = BSZ
+  val M = matrix_make_elt (m, n, '%')
+in
+  shape_make (M, m, n)
+end
 
 (*
 
@@ -580,11 +637,13 @@ XXXXXX
 *)
 
 val shape_2: shape = let
-  val M = matrix_make_elt (2 imul BSZ, 3 imul BSZ, 'N')
+  val m = 2 imul BSZ and n = 3 imul BSZ
+  val M = matrix_make_elt (m, n, 'N')
+  val S = shape_make (M, m, n)
 in
-  set_block_at {2,3} (M, 0, 0, ' ');
-  set_block_at {2,3} (M, 0, 2, ' ');
-  M
+  set_block_at {2,3} (S, 0, 0, ' ');
+  set_block_at {2,3} (S, 0, 2, ' ');
+  S
 end // end of [shape_2]
 
 (*
@@ -599,11 +658,13 @@ XXXX
 *)
 
 val shape_3: shape = let
-  val M = matrix_make_elt (3 imul BSZ, 2 imul BSZ, 'Z')
+  val m = 3 imul BSZ and n = 2 imul BSZ
+  val M = matrix_make_elt (m, n, 'Z')
+  val S = shape_make (M, m, n)
 in
-  set_block_at {3,2} (M, 1, 0, ' ');
-  set_block_at {3,2} (M, 2, 0, ' ');
-  M
+  set_block_at {3,2} (S, 1, 0, ' ');
+  set_block_at {3,2} (S, 2, 0, ' ');
+  S
 end // end of [shape_3]
 
 (*
@@ -618,11 +679,13 @@ XX
 *)
 
 val shape_4: shape = let
-  val M = matrix_make_elt (3 imul BSZ, 2 imul BSZ, 'Z')
+  val m = 3 imul BSZ and n = 2 imul BSZ
+  val M = matrix_make_elt (m, n, 'Z')
+  val S = shape_make (M, m, n)
 in
-  set_block_at {3,2} (M, 1, 1, ' ');
-  set_block_at {3,2} (M, 2, 1, ' ');
-  M
+  set_block_at {3,2} (S, 1, 1, ' ');
+  set_block_at {3,2} (S, 2, 1, ' ');
+  S
 end // end of [shape_4]
 
 (*
@@ -637,11 +700,13 @@ XXXX
 *)
 
 val shape_5: shape = let
-  val M = matrix_make_elt (3 imul BSZ, 2 imul BSZ, 'X')
+  val m = 3 imul BSZ and n = 2 imul BSZ
+  val M = matrix_make_elt (m, n, 'X')
+  val S = shape_make (M, m, n)
 in
-  set_block_at {3,2} (M, 0, 1, ' ');
-  set_block_at {3,2} (M, 2, 0, ' ');
-  M
+  set_block_at {3,2} (S, 0, 1, ' ');
+  set_block_at {3,2} (S, 2, 0, ' ');
+  S
 end // end of [shape_5]
 
 (*
@@ -656,11 +721,13 @@ XX
 *)
 
 val shape_6: shape = let
-  val M = matrix_make_elt (3 imul BSZ, 2 imul BSZ, 'X')
+  val m = 3 imul BSZ and n = 2 imul BSZ
+  val M = matrix_make_elt (m, n, 'X')
+  val S = shape_make (M, m, n)
 in
-  set_block_at {3,2} (M, 0, 0, ' ');
-  set_block_at {3,2} (M, 2, 1, ' ');
-  M
+  set_block_at {3,2} (S, 0, 0, ' ');
+  set_block_at {3,2} (S, 2, 1, ' ');
+  S
 end // end of [shape_6]
 
 val shape_arr: array (shape, 7) = array @[shape][
@@ -687,8 +754,11 @@ ats_int_type natrand48 (ats_int_type range) {
 %}
 
 fn gen_shape_obj ()
-  : [l:addr] (free_gc_v l, shapeObj @ l | ptr l) =
-  let val i = natrand48 (7) in shape_make (shape_arr[i]) end 
+  : [l:addr] (free_gc_v l, shapeObj @ l | ptr l) = let
+  val i = natrand48 (7)
+in
+  shapeObj_make (shape_arr[i])
+end // end of [gen_shape_obj]
 
 //
 
@@ -730,8 +800,9 @@ in
   stdin_view_set (pf_stdin | (*none*)); // deadcode
 end
 
-implement main (argc, argv) =
+implement main (argc, argv) = begin
   try tetrix () with exn => (restore_keyboard (); $raise exn)
+end // end of [main]
 
 (* ****** ****** *)
 

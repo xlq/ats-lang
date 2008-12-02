@@ -9,6 +9,7 @@
 staload "libc/SATS/stdio.sats"
 
 typedef two = [b:two] int b
+viewdef bytes_v (n:int, l:addr) = bytes n @ l
 
 extern
 fun array_byte_ptr_alloc {n:nat}
@@ -22,13 +23,12 @@ and array_byte_ptr_free {n:nat} {l:addr}
 (* ****** ****** *)
 
 fn* wc_aux_1 {n:nat} {l_buf,l1,l2,l3:addr}
-   (pf_buf: !bytes_v (n, l_buf), 
-    pf1: !Nat @ l1, pf2: !Nat @ l2, pf3: !Nat @ l3 |
-    fil: &FILE r, buf: ptr l_buf,
+   (pf1: !Nat @ l1, pf2: !Nat @ l2, pf3: !Nat @ l3 |
+    fil: &FILE r, buf: &bytes n,
     n: int n, inword: two, lc: ptr l1, wc: ptr l2, cc: ptr l3)
   : void = let
   val [m:int] m =
-    fread_byte (file_mode_lte_r_r, pf_buf | buf, n, fil)
+    fread_byte (file_mode_lte_r_r | buf, n, fil)
 (*
   val () = printf ("wc_aux_1: m = %i\n", @(m))
 *)
@@ -36,34 +36,33 @@ in
   if m > 0 then begin
     !cc := !cc + m;
     wc_aux_2 {n,m,m}
-      (pf_buf, pf1, pf2, pf3 | fil, buf, n, m, m, inword, lc, wc, cc)
+      (pf1, pf2, pf3 | fil, buf, n, m, m, inword, lc, wc, cc)
   end
 end // end of [wc_aux_1]
 
 and wc_aux_2
   {n,m,i:nat | i <= m; m <= n} {l_buf,l1,l2,l3:addr}
-  (pf_buf: !bytes_v (n, l_buf),
-   pf1: !Nat @ l1, pf2: !Nat @ l2, pf3: !Nat @ l3 |
-   fil: &FILE r, buf: ptr l_buf,
+  (pf1: !Nat @ l1, pf2: !Nat @ l2, pf3: !Nat @ l3 |
+   fil: &FILE r, buf: &bytes n,
    n: int n, m: int m, i: int i, inword: two,
    lc: ptr l1, wc: ptr l2, cc: ptr l3): void = begin
   if i > 0 then let
-    val c = char_of_byte buf[m-i]
+    val c = char_of_byte buf.[m-i]
   in
     if c = '\n' then begin
       !lc := !lc + 1; !wc := !wc + inword;
       wc_aux_2 {n,m,i-1}
-        (pf_buf, pf1, pf2, pf3 | fil, buf, n, m, i-1, 0, lc, wc, cc)
+        (pf1, pf2, pf3 | fil, buf, n, m, i-1, 0, lc, wc, cc)
     end else if char_isalnum (c) then
       wc_aux_2 {n,m,i-1}
-        (pf_buf, pf1, pf2, pf3 | fil, buf, n, m, i-1, 1, lc, wc, cc)
+        (pf1, pf2, pf3 | fil, buf, n, m, i-1, 1, lc, wc, cc)
     else begin
       !wc := !wc + inword;
       wc_aux_2 {n,m,i-1}
-        (pf_buf, pf1, pf2, pf3 | fil, buf, n, m, i-1, 0, lc, wc, cc)
+        (pf1, pf2, pf3 | fil, buf, n, m, i-1, 0, lc, wc, cc)
     end
   end else begin wc_aux_1 {n}
-    (pf_buf, pf1, pf2, pf3 | fil, buf, n, inword, lc, wc, cc)
+    (pf1, pf2, pf3 | fil, buf, n, inword, lc, wc, cc)
   end
 end // end of [wc_aux_2]
 
@@ -73,16 +72,16 @@ end // end of [wc_aux_2]
 
 fun wc (filename: string): (Nat, Nat, Nat) = let
   val (pf_fil | ptr_fil) = fopen_exn (filename, file_mode_r)
-  val (pf_ngc, pf_buf | buf) = malloc_ngc (BUFSZ)
+  val (pf_ngc, pf_buf | p_buf) = malloc_ngc (BUFSZ)
   var lc: Nat = 0
   and wc: Nat = 0
   and cc: Nat = 0
 in
   wc_aux_1 (
-    pf_buf, view@ lc, view@ wc, view@ cc |
-    !ptr_fil, buf, BUFSZ, 0, &lc, &wc, &cc
+    view@ lc, view@ wc, view@ cc |
+    !ptr_fil, !p_buf, BUFSZ, 0, &lc, &wc, &cc
   );
-  free_ngc (pf_ngc, pf_buf | buf);
+  free_ngc (pf_ngc, pf_buf | p_buf);
   fclose_exn (pf_fil | ptr_fil);
   @(lc, wc, cc)
 end // end of [wc]
