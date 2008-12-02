@@ -170,14 +170,14 @@ fn random_fasta {sz:nat} {l_tbl:addr}
    file: &FILE w, tbl: ptr l_tbl, sz: int sz, n: Nat): void = let
   fun loop {n:nat} {l_buf:addr} .<n>.
     (pf_tbl: !(@[amino][sz] @ l_tbl), pf_buf: !(@[byte][WIDTH+1] @ l_buf) |
-     file: &FILE w, buf: ptr l_buf, n: int n):<cloptr1> void =
+     file: &FILE w, p_buf: ptr l_buf, n: int n):<cloptr1> void =
     if (n > WIDTH) then begin
-      random_buf (pf_tbl, pf_buf | tbl, buf, sz, WIDTH, 0);
-      ignore (fwrite_byte (file_mode_lte_w_w, pf_buf | buf, WIDTH+1, file));
-      loop (pf_tbl, pf_buf | file, buf, n-WIDTH)
+      random_buf (pf_tbl, pf_buf | tbl, p_buf, sz, WIDTH, 0);
+      ignore (fwrite_byte (file_mode_lte_w_w | !p_buf, WIDTH+1, file));
+      loop (pf_tbl, pf_buf | file, p_buf, n-WIDTH)
     end else begin
-      random_buf (pf_tbl, pf_buf | tbl, buf, sz, n, 0);
-      ignore (fwrite_byte (file_mode_lte_w_w, pf_buf | buf, n, file));
+      random_buf (pf_tbl, pf_buf | tbl, p_buf, sz, n, 0);
+      ignore (fwrite_byte (file_mode_lte_w_w | !p_buf, n, file));
       fputc (file_mode_lte_w_w | '\n', file)
     end
   val () = make_cumulative (pf_tbl | tbl, sz)

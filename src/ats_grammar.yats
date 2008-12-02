@@ -1865,7 +1865,6 @@ si0de /* static identifiers */
   | GT                                  { $$ = i0de_make_gt($1) ; }
   | LT                                  { $$ = i0de_make_lt($1) ; }
   | MINUSGT                             { $$ = i0de_make_minusgt($1) ; }
-  | MINUSLTGT                           { $$ = i0de_make_minusgt($1) ; }
   | R0EAD                               { $$ = i0de_make_r0ead($1) ; }
   | TILDA                               { $$ = i0de_make_tilda($1) ; }
 ;
@@ -2006,6 +2005,7 @@ atms0exp /* atomic static expression */
   | UNION atms0exp LBRACE labs0expseq RBRACE
                                         { $$ = s0exp_union($1, $2, $4, $5) ; }
   | MINUSLT e0fftagseq GT               { $$ = s0exp_imp($1, $2, $3) ; }
+  | MINUSLTGT                           { $$ = s0exp_imp_emp($1) ; }
   | LBRACE s0quaseq RBRACE              { $$ = s0exp_uni($1, $2, $3) ; }
   | LBRACKET s0quaseq RBRACKET          { $$ = s0exp_exi($1, 0/*funres*/, $2, $3) ; }
   | HASHLBRACKET s0quaseq RBRACKET      { $$ = s0exp_exi($1, 1/*funres*/, $2, $3) ; }

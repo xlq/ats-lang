@@ -316,77 +316,75 @@ fun loop (
   , evs: &effvarlst
   , tags: $Syn.e0fftaglst
   ) : void = begin case+ tags of
-  | cons (tag, tags) => let
-      val () = begin
-        case+ tag.e0fftag_node of
-        | $Syn.E0FFTAGvar ev => evs := cons (ev, evs)
-        | $Syn.E0FFTAGcst (isneg, name) when name_is_all name => begin
-            if isneg > 0 then efs := effset_nil else efs := effset_all;
-            evs := effvars_nil
-          end
-        | $Syn.E0FFTAGcst (isneg, name) when name_is_emp name => begin
-            if isneg > 0 then efs := effset_all else efs := effset_nil;
-            evs := effvars_nil
-          end
-        | $Syn.E0FFTAGcst (isneg, name) => begin case+ name of
-          | _ when name_is_exn name => begin
-              if isneg > 0 then
-                efs := effset_del (efs, EFFexn)
-              else
-                efs := effset_add (efs, EFFexn)
-            end
-          | _ when name_is_exnref name => begin
-              if isneg > 0 then
-                efs := effset_del (effset_del (efs, EFFexn), EFFref)
-              else
-                efs := effset_add (effset_add (efs, EFFexn), EFFref)
-            end
-          | _ when name_is_ntm name => begin
-              if isneg > 0 then
-                efs := effset_del (efs, EFFntm)
-              else
-                efs := effset_add (efs, EFFntm)
-            end
-          | _ when name_is_term name => begin
-              if isneg > 0 then
-                efs := effset_add (efs, EFFntm)
-              else
-                efs := effset_del (efs, EFFntm)
-            end
-          | _ when name_is_ref name => begin
-              if isneg > 0 then
-                efs := effset_del (efs, EFFref)
-              else
-                efs := effset_add (efs, EFFref)
-            end
-          | _ => loop_err (tag.e0fftag_loc, name)
-          end
-        | $Syn.E0FFTAGprf () => prf := 1
-        | $Syn.E0FFTAGlin i => begin
-            if i > 0 then begin
-              lin := 1; efs := effset_all; evs := effvars_nil
-            end else begin
-              lin := 1
-            end
-          end
-        | $Syn.E0FFTAGfun i(*nil/all*) => begin
-            if i > 0 then begin
-              fc := $Syn.FUNCLOfun (); efs := effset_all; evs := effvars_nil
-            end else begin
-              fc := $Syn.FUNCLOfun ()
-            end
-          end
-        | $Syn.E0FFTAGclo (knd(*1/~1:ptr/ref*), i(*nil/all*)) => begin
-            if i > 0 then begin
-              fc := $Syn.FUNCLOclo (knd); efs := effset_all; evs := effvars_nil
-            end else begin
-              fc := $Syn.FUNCLOclo (knd)
-            end
-          end
-        end // end of [case]
-    in
-      loop (fc, lin, prf, efs, evs, tags)
-    end
+  | cons (tag, tags) =>
+      loop (fc, lin, prf, efs, evs, tags) where {
+      val () = case+ tag.e0fftag_node of
+      | $Syn.E0FFTAGvar ev => evs := cons (ev, evs)
+      | $Syn.E0FFTAGcst (isneg, name) when name_is_all name => begin
+          if isneg > 0 then efs := effset_nil else efs := effset_all;
+          evs := effvars_nil
+        end // end of [E0FFTAGcst when ...]
+      | $Syn.E0FFTAGcst (isneg, name) when name_is_emp name => begin
+          if isneg > 0 then efs := effset_all else efs := effset_nil;
+          evs := effvars_nil
+        end // end of [E0FFTAGcst when ...]
+      | $Syn.E0FFTAGcst (isneg, name) => begin case+ name of
+        | _ when name_is_exn name => begin
+            if isneg > 0 then
+              efs := effset_del (efs, EFFexn)
+            else
+              efs := effset_add (efs, EFFexn)
+          end // end of [_ when ...]
+        | _ when name_is_exnref name => begin
+            if isneg > 0 then
+              efs := effset_del (effset_del (efs, EFFexn), EFFref)
+            else
+              efs := effset_add (effset_add (efs, EFFexn), EFFref)
+          end // end of [_ when ...]
+        | _ when name_is_ntm name => begin
+            if isneg > 0 then
+              efs := effset_del (efs, EFFntm)
+            else
+              efs := effset_add (efs, EFFntm)
+          end // end of [_ when ...]
+        | _ when name_is_term name => begin
+            if isneg > 0 then
+              efs := effset_add (efs, EFFntm)
+            else
+              efs := effset_del (efs, EFFntm)
+          end // end of [_ when ...]
+        | _ when name_is_ref name => begin
+            if isneg > 0 then
+              efs := effset_del (efs, EFFref)
+            else
+              efs := effset_add (efs, EFFref)
+          end // end of [_ when ...]
+        | _ => loop_err (tag.e0fftag_loc, name)
+        end // end of [E0FFTAGcst]
+      | $Syn.E0FFTAGprf () => prf := 1
+      | $Syn.E0FFTAGlin i => begin
+          if i > 0 then begin
+            lin := 1; efs := effset_all; evs := effvars_nil
+          end else begin
+            lin := 1
+          end // end of [if]
+        end // end of [E0FFTAGlin]
+      | $Syn.E0FFTAGfun i(*nil/all*) => begin
+          if i > 0 then begin
+            fc := $Syn.FUNCLOfun (); efs := effset_all; evs := effvars_nil
+          end else begin
+            fc := $Syn.FUNCLOfun ()
+          end // end of [if]
+        end // end of [E0FFTAGfun]
+      | $Syn.E0FFTAGclo (knd(*1/~1:ptr/ref*), i(*nil/all*)) => begin
+          if i > 0 then begin
+            fc := $Syn.FUNCLOclo (knd); efs := effset_all; evs := effvars_nil
+          end else begin
+            fc := $Syn.FUNCLOclo (knd)
+          end // end of [if]
+        end // end of [E0FFTAGclo]
+      // end of [case]
+    } // end of [where] // end of [cons]
   | nil () => ()
 end // end of [loop]
 
@@ -397,11 +395,13 @@ implement e0fftaglst_tr (fc0, tags) = let
   var lin: int = 0 and prf: int = 0
   var efs: effset = effset_nil and evs: effvarlst = effvars_nil
   val () = loop (fc, lin, prf, efs, evs, tags)
-  val efc =
-    if eq_effset_effset (efs, effset_all) then EFFCSTall ()
-    else if eq_effset_effset (efs, effset_nil) then begin
-      case+ evs of nil () => EFFCSTnil () | _ => EFFCSTset (efs, evs)
-    end else EFFCSTset (efs, evs)
+  val efc = (case+ 0 of
+    | _ when eq_effset_effset (efs, effset_all) => EFFCSTall ()
+    | _ when eq_effset_effset (efs, effset_nil) => begin
+        case+ evs of nil () => EFFCSTnil () | _ => EFFCSTset (efs, evs)
+      end // end of [_ when ...]
+    | _ => EFFCSTset (efs, evs)
+  ) : effcst
 in
   @(fc, lin, prf, efc)
 end // end of [e0fftaglst_tr]

@@ -133,7 +133,7 @@ implement s1rt_tr (s1t0) = begin
       print "s1rt_tr: S1RTapp: "; print s1t0.s1rt_loc; print_newline ();
 *)
       s1rt_app_tr (s1t0.s1rt_loc, s1t, s1ts)
-    end
+    end // end of [S1RTapp]
   | S1RTlist s1ts => S2RTtup (s1rtlst_tr s1ts) 
   | S1RTqid (q, id) => begin case+ the_s2rtenv_find_qua (q, id) of
     | ~Some_vt s2te => begin case+ s2te of
@@ -156,7 +156,7 @@ implement s1rt_tr (s1t0) = begin
         prerr_newline ();
         $Err.abort ()
       end // end of [None_vt]
-    end
+    end // end of [S1RTqid]
   | S1RTtup s1ts => S2RTtup (s1rtlst_tr s1ts)
 (*
   | _ => begin
@@ -165,7 +165,7 @@ implement s1rt_tr (s1t0) = begin
       prerr ": not yet implemented: ["; prerr s1t0; prerr "]";
       prerr_newline ();
       $Err.abort ()
-    end
+    end // end of [_]
 *)
 end // end of [s1rt_tr]
 
@@ -933,7 +933,7 @@ fn s1exp_arrow_tr_up // arrow is a special type constructor
   val sf2e = (case+ oefc of
     | None () => begin
         if isprf then S2EFFnil () else S2EFFall ()
-      end
+      end // end of [None]
     | Some efc => effcst_tr efc
   ) : s2eff
 in
@@ -1353,14 +1353,13 @@ in
         print "s1exp_tr_up: S1Eexi: s1e0 = "; print s1e0; print_newline ()
       end
 *)
-      val () =
-        if knd = 0 then () else begin
-          prerr s1e0.s1exp_loc;
-          prerr ": error(2)";
-          prerr ": The kind of existential quantifier #[...] is used incorrectly.";
-          prerr_newline ();
-          $Err.abort {void} ()
-        end
+      val () = if knd = 0 then () else begin
+        prerr s1e0.s1exp_loc;
+        prerr ": error(2)";
+        prerr ": The kind of existential quantifier #[...] is used incorrectly.";
+        prerr_newline ();
+        $Err.abort {void} ()
+      end // end of [val]
       val (pf_s2expenv | ()) = the_s2expenv_push ()
       val @(s2vs, s2ps) = s1qualst_tr (s1qs)
       val s2e_scope = s1exp_tr_dn_impredicative s1e_scope

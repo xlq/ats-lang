@@ -53,6 +53,8 @@ ats_void_type free_atm (ats_ptr_type p) { free (p) ; return ; }
 
 %}
 
+viewdef bytes_v (n:int, l:addr) = bytes n @ l
+
 extern fun malloc_atm {n:nat}
   (n: int n): [l:addr] @(bytes_v (n, l) | ptr l) = "malloc_atm"
 

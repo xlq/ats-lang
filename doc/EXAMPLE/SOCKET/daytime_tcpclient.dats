@@ -51,11 +51,11 @@ implement main (argc, argv) = let
     fun loop
       (pf_sock: !socket_v (fd, conn), pf_buf: !buf_t @ l_buf | (*none*))
       :<cloref1> void = let
-      val n = socket_read_exn (pf_sock, pf_buf | sockfd, p_buf, MAXLINE)
+      val n = socket_read_exn (pf_sock | sockfd, !p_buf, MAXLINE)
     in
       if n > 0 then let
         val (pf_stdout | p_stdout) = stdout_get ()
-        val () = fwrite_byte_exn (file_mode_lte_w_w, pf_buf | p_buf, n, !p_stdout)
+        val () = fwrite_byte_exn (file_mode_lte_w_w | !p_buf, n, !p_stdout)
         val () = stdout_view_set (pf_stdout | (*none*))
       in
         loop (pf_sock, pf_buf | (*none*))

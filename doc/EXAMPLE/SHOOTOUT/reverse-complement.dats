@@ -40,59 +40,55 @@ extern fun buildIubComplement (): void = "buildIubComplement"
 extern fun complement (b: byte): byte = "complement"
 
 (* [reverse buf] reverse-complement the string [buf] in place. *)
-fn reverse_buf {pos,bsz:nat | pos <= bsz} {l_buf:addr} 
-  (pf: !bytes_v (bsz, l_buf) | buf: ptr l_buf, pos: int pos): void =
-  let
-    fun rev {i:nat | i <= pos} .<pos-i>. (
-      pf: !bytes_v (bsz, l_buf) | i: int i, j: int (pos-i-1)
+fn reverse_buf {pos,bsz:nat | pos <= bsz} 
+  (buf: &bytes bsz, pos: int pos): void = let
+  fun rev {i:nat | i <= pos} .<pos-i>. (
+      buf: &bytes bsz, i: int i, j: int (pos-i-1)
     ) :<cloptr1> void = begin
-      if i < j then
-        let val bufi = buf[i] in
-           buf[i] := complement buf[j];
-           buf[j] := complement bufi;
-           rev (pf | i+1, j-1)
-        end
-    end // end of [rev]
-  in
-     rev (pf | 0, pos-1)
-  end
+    if i < j then let
+      val bufi = buf.[i]
+    in
+      buf.[i] := complement buf.[j]; buf.[j] := complement bufi;
+      rev (buf, i+1, j-1)
+    end // end of [if]
+  end // end of [rev]
+in
+  rev (buf, 0, pos-1)
+end // end of [reverse_buf]
 
 #define BUFSZ 1024
 #define WIDTH 60
 #define LINE 128
 
 extern
-fun fwrite_buf {pos,len,bsz:nat | pos + len <= bsz} {l_buf:addr}
-  (pf_buf: !bytes_v (bsz, l_buf) |
-   buf: ptr l_buf, pos: int pos, len: int len, file: &FILE w)
-  : void = "fwrite_buf"
+fun fwrite_buf {pos,len,bsz:nat | pos + len <= bsz} (
+    buf: &bytes bsz, pos: int pos, len: int len, file: &FILE w
+  ) : void = "fwrite_buf"
 
-fn print_fasta {n,sz:nat | n <= sz} {l_buf:addr}
-  (pf_buf: !bytes_v (sz, l_buf) | buf: ptr l_buf, n: int n): void =
-  let
+fn print_fasta {n,sz:nat | n <= sz}
+  (buf: &bytes sz, n: int n): void = let
     fun pr {pos:nat | pos <= n}
-      (pf_buf: !bytes_v (sz, l_buf) |
-       file: &FILE w, pos: int pos, left: int (n-pos)):<cloptr1> void =
+      (file: &FILE w, buf: &bytes sz, pos: int pos, left: int (n-pos))
+      :<cloptr1> void =
       if left > WIDTH then begin
-        fwrite_buf (pf_buf | buf, pos, WIDTH, file);
+        fwrite_buf (buf, pos, WIDTH, file);
         fputc (file_mode_lte_w_w | '\n', file);
-        pr (pf_buf | file, pos+WIDTH, left-WIDTH)
+        pr (file, buf, pos+WIDTH, left-WIDTH)
       end else begin
-        fwrite_buf (pf_buf | buf, pos, left, file);
+        fwrite_buf (buf, pos, left, file);
         fputc (file_mode_lte_w_w | '\n', file)
       end
     val (pf_stdout | stdout) = stdout_get ()
-  in
-    pr (pf_buf | !stdout, 0, n);
-    stdout_view_set (pf_stdout | (*none*))
-  end
+in
+  pr (!stdout, buf, 0, n);
+  stdout_view_set (pf_stdout | (*none*))
+end // end of [print_fasta]
 
 //
 
 extern fun fread_buf_line
-  {pos,len,bsz:nat | pos + len <= bsz} {l_buf:addr}
-  (pf_buf: !bytes_v (bsz, l_buf) |
-   buf: ptr l_buf, pos: int pos, len: int len, file: &FILE r)
+  {pos,len,bsz:nat | pos + len <= bsz}
+  (buf: &bytes bsz, pos: int pos, len: int len, file: &FILE r)
   : [pos_new:int | pos <= pos_new; pos_new < pos+len] int pos_new
   = "fread_buf_line"
 
@@ -104,46 +100,46 @@ implement main (argc, argv) = let
 
 fun loop {pos,bsz:nat | bsz > 0} {l_buf:addr} (
     pf_ngc: free_ngc_v l_buf
-  , pf_buf: bytes_v (bsz, l_buf)
+  , pf_buf: bytes bsz @ l_buf
   | inp: &FILE r
-  , buf: ptr l_buf
+  , p_buf: ptr l_buf
   , bsz: int bsz
   , pos: int pos
   ) : void = begin
   if pos + LINE <= bsz then let
-    val pos_new = fread_buf_line (pf_buf | buf, pos, LINE, inp)
+    val pos_new = fread_buf_line (!p_buf, pos, LINE, inp)
   in
     if pos_new > pos then
-      if buf[pos] = c2b '>' then begin
+      if p_buf->[pos] = c2b '>' then begin
         if pos > 0 then begin
-          reverse_buf (pf_buf | buf, pos); print_fasta (pf_buf | buf, pos)
+          reverse_buf (!p_buf, pos); print_fasta (!p_buf, pos)
         end;
 
         let val (pf_stdout | stdout) = stdout_get () in
-          fwrite_buf (pf_buf | buf, pos, pos_new-pos, !stdout);
+          fwrite_buf (!p_buf, pos, pos_new-pos, !stdout);
           fputc (file_mode_lte_w_w | '\n', !stdout);
           stdout_view_set (pf_stdout | (*none*))
         end;
 
-        loop (pf_ngc, pf_buf | inp, buf, bsz, 0)
+        loop (pf_ngc, pf_buf | inp, p_buf, bsz, 0)
       end else begin
-        loop (pf_ngc, pf_buf | inp, buf, bsz, pos_new)
+        loop (pf_ngc, pf_buf | inp, p_buf, bsz, pos_new)
       end
     else begin
       if pos > 0 then begin
-        reverse_buf (pf_buf | buf, pos);
-        print_fasta (pf_buf | buf, pos);
-        free_ngc (pf_ngc, pf_buf | buf)
+        reverse_buf (!p_buf, pos);
+        print_fasta (!p_buf, pos);
+        free_ngc (pf_ngc, pf_buf | p_buf)
       end else begin
-        free_ngc (pf_ngc, pf_buf | buf)
+        free_ngc (pf_ngc, pf_buf | p_buf)
       end
     end
   end else let
     val bsz = bsz + bsz
-    val (pf_ngc, pf_buf | buf) = realloc_ngc (pf_ngc, pf_buf | buf, bsz)
+    val (pf_ngc, pf_buf | p_buf) = realloc_ngc (pf_ngc, pf_buf | p_buf, bsz)
   in
-    loop (pf_ngc, pf_buf | inp, buf, bsz, pos)
-  end
+    loop (pf_ngc, pf_buf | inp, p_buf, bsz, pos)
+  end // end of [if]
 end // end of [loop]
 
 val () = buildIubComplement ()

@@ -55,11 +55,11 @@ typedef struct tm ats_tm_struct_type ;
 
 static inline
 ats_lint_type
-atslib_lint_of_time_t (time_t t) { return t ; }
+atslib_lint_of_time (time_t t) { return t ; }
 
 static inline
 ats_double_type
-atslib_double_of_time_t (time_t t) { return t ; }
+atslib_double_of_time (time_t t) { return t ; }
 
 /* ****** ****** */
 
@@ -154,11 +154,11 @@ atslib_localtime_r (ats_ptr_type time, ats_ptr_type tm) {
 
 static inline
 ats_lint_type
-atslib_lint_of_clock_t (clock_t t) { return t ; }
+atslib_lint_of_clock (clock_t t) { return t ; }
 
 static inline
 ats_double_type
-atslib_double_of_clock_t (clock_t t) { return t ; }
+atslib_double_of_clock (clock_t t) { return t ; }
 
 /* ****** ****** */
 

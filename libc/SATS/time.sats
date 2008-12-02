@@ -124,15 +124,15 @@ fun localtime_r (time: &time_t, tm: &tm_struct? >> tm_struct): void
 
 (* ****** ****** *)
 
-fun lint_of_clock_t (c: clock_t):<> int_long_t0ype
-  = "atslib_lint_of_clock_t"
+fun lint_of_clock (c: clock_t):<> int_long_t0ype
+  = "atslib_lint_of_clock"
 
-overload lint_of with lint_of_clock_t
+overload lint_of with lint_of_clock
 
-fun double_of_clock_t (c: clock_t):<> double_t0ype
-  = "atslib_double_of_clock_t"
+fun double_of_clock (c: clock_t):<> double_t0ype
+  = "atslib_double_of_clock"
 
-overload double_of with double_of_clock_t
+overload double_of with double_of_clock
 
 //
 

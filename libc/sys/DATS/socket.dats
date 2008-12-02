@@ -55,14 +55,14 @@ extern praxi bytes_v_unsplit {n1,n2:nat}
   {l:addr} (pf1: bytes n1 @ l, pf2: bytes n2 @ l + n1): bytes (n1+n2) @ l
 
 implement socket_read_loop_err
-  {fd} {n,sz} (pf_sock, pf_buf | fd, p_buf, ntotal) = let
+  {fd} {n,sz} (pf_sock | fd, buf, ntotal) = let
   fun loop {nleft:nat | nleft <= n} {l:addr} .<nleft>. (
       pf_sock: !socket_v (fd, conn)
     , pf_buf: !bytes (sz-n+nleft) @ l
     | fd: int fd, p_buf: ptr l, nleft: int nleft, err: &int
     ) : natLte n =
     if nleft > 0 then let
-      val [nread:int] nread = socket_read_err (pf_sock, pf_buf | fd, p_buf, nleft)
+      val [nread:int] nread = socket_read_err (pf_sock | fd, !p_buf, nleft)
     in
       if nread > 0 then let
         prval @(pf1_buf, pf2_buf) = bytes_v_split {sz-n+nleft,nread} (pf_buf)
@@ -80,16 +80,14 @@ implement socket_read_loop_err
       0 // all bytes are read
     end // end of [if]
   // end of [loop]
-  var err: int = 0; val nleft = loop (pf_sock, pf_buf | fd, p_buf, ntotal, err)
+  var err: int = 0; val nleft = loop (pf_sock, view@ buf | fd, &buf, ntotal, err)
 in
   if err = 0 then ntotal - nleft else ~1
 end // end of [socket_read_loop_exn]
 
-//
-
 implement socket_read_loop_exn
-  (pf_sock, pf_buf | fd, p_buf, ntotal) = let
-  val nread = socket_read_loop_err (pf_sock, pf_buf | fd, p_buf, ntotal)
+  (pf_sock | fd, buf, ntotal) = let
+  val nread = socket_read_loop_err (pf_sock | fd, buf, ntotal)
 in
   if nread >= 0 then nread else (perror "socket_read: "; exit 1)
 end // end of [socket_read_loop]
@@ -97,14 +95,14 @@ end // end of [socket_read_loop]
 (* ****** ****** *)
 
 implement socket_write_loop_err
-  {fd} {n,sz} (pf_sock, pf_buf | fd, p_buf, ntotal) = let
+  {fd} {n,sz} (pf_sock | fd, buf, ntotal) = let
   fun loop {nleft:nat | nleft <= n} {l:addr} .<nleft>. (
       pf_sock: !socket_v (fd, conn)
     , pf_buf: !bytes (sz-n+nleft) @ l
     | fd: int fd, p_buf: ptr l, nleft: int nleft, err: &int
     ) : natLte n =
     if nleft > 0 then let
-      val [nwrit:int] nwrit = socket_write_err (pf_sock, pf_buf | fd, p_buf, nleft)
+      val [nwrit:int] nwrit = socket_write_err (pf_sock | fd, !p_buf, nleft)
     in
       if nwrit > 0 then let
         prval @(pf1_buf, pf2_buf) = bytes_v_split {sz-n+nleft,nwrit} (pf_buf)
@@ -122,7 +120,7 @@ implement socket_write_loop_err
       0 // all bytes are written
     end // end of [if]
   // end of [loop]
-  var err: int = 0; val nleft = loop (pf_sock, pf_buf | fd, p_buf, ntotal, err)
+  var err: int = 0; val nleft = loop (pf_sock, view@ buf | fd, &buf, ntotal, err)
 in
   if err = 0 then ntotal - nleft else ~1
 end // end of [socket_read_loop_exn]
@@ -130,8 +128,8 @@ end // end of [socket_read_loop_exn]
 //
 
 implement socket_write_loop_exn
-  (pf_sock, pf_buf | fd, p_buf, ntotal) = let
-  val nwrit = socket_write_loop_err (pf_sock, pf_buf | fd, p_buf, ntotal)
+  (pf_sock | fd, buf, ntotal) = let
+  val nwrit = socket_write_loop_err (pf_sock | fd, buf, ntotal)
 in
   if nwrit < ntotal then (perror "socket_write: "; exit 1) else ()
 end // end of [socket_write_loop]

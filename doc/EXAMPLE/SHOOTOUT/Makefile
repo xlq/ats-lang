@@ -2,9 +2,10 @@ GCC=gcc
 ATSCC="$(ATSHOME)"/bin/atscc
 
 all: binary-trees binary-trees-ref \
-     fannkuch fannkuch_smp fasta k-nucleotide mandelbrot \
-     n-body nsieve nsieve-bits partial-sums pidigits \
-     recursive reverse-complement spectral-norm sum-file \
+     fannkuch fannkuch_smp fasta k-nucleotide \
+     mandelbrot n-body nsieve nsieve-bits partial-sums \
+     pidigits recursive reverse-complement spectral-norm \
+     sum-file thread-ring \
 
 binary-trees: binary-trees.dats
 #	$(ATSCC) -O3 binary-trees.dats -o binary-trees -D_ATS_gc
