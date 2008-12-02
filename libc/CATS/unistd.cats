@@ -50,6 +50,19 @@
 /* ****** ****** */
 
 static inline
+ats_pid_type atslib_fork_exn () {
+  pid_t pid ;
+  pid = fork () ;
+
+  if (pid < 0) {
+    ats_exit_errmsg (errno, "Exit: [fork] failed.\n") ;
+  }
+  return pid ;
+}
+
+/* ****** ****** */
+
+static inline
 ats_pid_type
 atslib_wait_with_status (ats_ptr_type p) {
   return wait ((int *)p) ;

@@ -394,6 +394,10 @@ implement d0exp_posmark (d0e0) = case+ d0e0.d0exp_node of
 implement d0explst_posmark (d0es) =
   $Lst.list_foreach_fun (d0es, d0exp_posmark)
 
+implement d0explstopt_posmark (od0es) = begin
+  case+ od0es of Some d0es => d0explst_posmark d0es | None () => ()
+end // end of [d0explstopt_posmark]
+
 (* ****** ****** *)
 
 fn s0expdef_posmark (d0c: s0expdef): void =
@@ -467,7 +471,7 @@ fn f0undeclst_posmark (d0cs: f0undeclst): void =
 
 fn v0ardec_posmark (d0c: v0ardec): void = begin
   s0expopt_posmark d0c.v0ardec_typ; d0expopt_posmark d0c.v0ardec_ini;
-end
+end // end of [v0ardec_posmark]
 
 fn v0ardeclst_posmark (d0cs: v0ardeclst): void =
   $Lst.list_foreach_fun (d0cs, v0ardec_posmark)
@@ -571,6 +575,7 @@ implement d0ec_posmark (d0c0) =
   | D0Cguadec (_(*knd*), gd0c) => begin
       guad0ec_node_posmark (gd0c.guad0ec_node)
     end // end of [D0Cguadec]
+// end of [d0ec_posmark]
 
 implement d0eclst_posmark (d0cs) =
   $Lst.list_foreach_fun (d0cs, d0ec_posmark)

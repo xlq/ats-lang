@@ -33,21 +33,19 @@ extern fun server_action {fd_c:int}
 implement server_action {fd_c} (pf_sock_c | fd_c) = let
   #define M MAXLINE
   val [l_buf:addr] (pf_gc, pf_buf | p_buf) = malloc_gc (M)
-  val () = loop (pf_sock_c, pf_buf | (*none*)) where {
-    fun loop (
-        pf_sock_c: !socket_v (fd_c, conn)
-      , pf_buf: !bytes M @ l_buf
-      | (*none*)
-      ) :<cloref1> void = let
-     val nread = socket_read_exn (pf_sock_c, pf_buf | fd_c, p_buf, MAXLINE)
+  val () = loop (pf_sock_c | !p_buf) where {
+    fun loop
+      (pf_sock_c: !socket_v (fd_c, conn) | buf: &bytes M)
+      :<cloref1> void = let
+     val nread = socket_read_exn (pf_sock_c | fd_c, buf, MAXLINE)
 (*
      val nread = socket_read_loop_exn (pf_sock_c, pf_buf | fd_c, p_buf, MAXLINE)
 *)
    in
      if nread > 0 then let
-       val () = socket_write_loop_exn (pf_sock_c, pf_buf | fd_c, p_buf, nread)
+       val () = socket_write_loop_exn (pf_sock_c | fd_c, buf, nread)
      in
-       loop (pf_sock_c, pf_buf | (*none*))
+       loop (pf_sock_c | buf)
      end else begin
        // no more bytes // loop exits
      end // end of [if]

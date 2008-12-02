@@ -1840,11 +1840,14 @@ implement d0explst_nil () = nil ()
 implement d0explst_cons (x, xs) = cons (x, xs)
 implement d0explst_sing (x) = cons (x, nil ())
 
-implement d0expopt_none () = None
-implement d0expopt_some (x) = Some (x)
-
 implement labd0explst_nil () = LABD0EXPLSTnil ()
 implement labd0explst_cons (l, x, lxs) = LABD0EXPLSTcons (l, x, lxs)
+
+implement d0expopt_none () = None ()
+implement d0expopt_some (x) = Some (x)
+
+implement d0explstopt_none () = None ()
+implement d0explstopt_some (xs) = Some (xs)
 
 //
 
@@ -2491,16 +2494,13 @@ end // end of [d0ec_fundecs]
 (* ****** ****** *)
 
 implement d0ec_vardecs (x0, xs) = let
-
-fun aux_loc
-  (x0: v0ardec, x: v0ardec, xs: v0ardeclst): loc_t =
-  case+ xs of
-  | cons (x, xs) => aux_loc (x0, x, xs)
-  | nil () => combine (x0.v0ardec_loc, x.v0ardec_loc)
-
-val loc = case+ xs of
-  | cons (x, xs) => aux_loc (x0, x, xs) | nil () => x0.v0ardec_loc
-
+  fun aux_loc
+    (x0: v0ardec, x: v0ardec, xs: v0ardeclst): loc_t =
+    case+ xs of
+    | cons (x, xs) => aux_loc (x0, x, xs)
+    | nil () => combine (x0.v0ardec_loc, x.v0ardec_loc)
+  val loc = case+ xs of
+    | cons (x, xs) => aux_loc (x0, x, xs) | nil () => x0.v0ardec_loc
 in
   '{ d0ec_loc= loc, d0ec_node= D0Cvardecs (x0, xs) } 
 end // end of [d0ec_vardecs]

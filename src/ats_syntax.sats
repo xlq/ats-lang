@@ -1469,7 +1469,7 @@ and d0ec_node =
       (v0aldec, v0aldeclst)
   | D0Cfundecs of  (* function declaration *)
       (funkind, s0qualstlst, f0undec, f0undeclst)
-  | D0Cvardecs of (* variable declaration *)
+  | D0Cvardecs of (* local variable declaration *)
       (v0ardec, v0ardeclst)
   | D0Cmacdefs of (* macro declaration *)
       (int (*1+/0: long/short*), m0acdef, m0acdeflst)
@@ -1491,6 +1491,7 @@ where d0exp: type = (* type for declaration *)
 and d0explst: type = List d0exp
 and d0expopt: type = Option d0exp
 and d0explstlst: type = List d0explst
+and d0explstopt: type = Option d0explst
 
 and d0arrind = '{
   d0arrind_loc= loc_t, d0arrind_ind= d0explstlst
@@ -1797,12 +1798,15 @@ fun d0explst_nil (): d0explst = "d0explst_nil"
 fun d0explst_cons (x: d0exp, xs: d0explst): d0explst = "d0explst_cons"
 fun d0explst_sing (x: d0exp): d0explst = "d0explst_sing"
 
-fun d0expopt_none (): d0expopt = "d0expopt_none"
-fun d0expopt_some (x: d0exp): d0expopt = "d0expopt_some"
-
 fun labd0explst_nil (): labd0explst = "labd0explst_nil"
 fun labd0explst_cons (l: l0ab, x: d0exp, xs: labd0explst): labd0explst
   = "labd0explst_cons"
+
+fun d0expopt_none (): d0expopt = "d0expopt_none"
+fun d0expopt_some (x: d0exp): d0expopt = "d0expopt_some"
+
+fun d0explstopt_none (): d0explstopt = "d0explstopt_none"
+fun d0explstopt_some (xs: d0explst): d0explstopt = "d0explstopt_some"
 
 //
 
@@ -1939,7 +1943,8 @@ dataviewtype d0ecllst =
 
 (* ****** ****** *)
 
-fun d0ec_infix (t: t0kn, p: p0rec, i: int, ids: i0delst): d0ec = "d0ec_infix"
+fun d0ec_infix
+ (t: t0kn, p: p0rec, i: int, ids: i0delst): d0ec = "d0ec_infix"
 fun d0ec_prefix (t: t0kn, p: p0rec, ids: i0delst): d0ec = "d0ec_prefix"
 fun d0ec_postfix (t: t0kn, p: p0rec, ids: i0delst): d0ec = "d0ec_postfix"
 fun d0ec_nonfix (t: t0kn, ids: i0delst): d0ec = "d0ec_nonfix"
@@ -1989,22 +1994,32 @@ fun d0ec_overload_lrbrackets (t_l: t0kn, t_r: t0kn, qid: dqi0de): d0ec
 (* ****** ****** *)
 
 fun d0ec_extype (name: s0tring, s0e: s0exp): d0ec = "d0ec_extype"
+
 fun d0ec_extval (name: s0tring, d0e: d0exp): d0ec = "d0ec_extval"
+
 fun d0ec_extcode_dyn (code: e0xtcode): d0ec = "d0ec_extcode_dyn"
 fun d0ec_extcode_sta (code: e0xtcode): d0ec = "d0ec_extcode_sta"
+
 fun d0ec_valdecs (k: valkind, d: v0aldec, ds: v0aldeclst): d0ec
   = "d0ec_valdecs"
+
 fun d0ec_valdecs_par (d: v0aldec, ds: v0aldeclst): d0ec
   = "d0ec_valdecs_par"
+
 fun d0ec_valdecs_rec (d: v0aldec, ds: v0aldeclst): d0ec
   = "d0ec_valdecs_rec"
+
 fun d0ec_fundecs
   (k: funkind, arg: s0qualstlst, d: f0undec, ds: f0undeclst): d0ec
   = "d0ec_fundecs"
-fun d0ec_vardecs (d: v0ardec, ds: v0ardeclst): d0ec = "d0ec_vardecs"
+
+fun d0ec_vardecs
+  (d: v0ardec, ds: v0ardeclst): d0ec = "d0ec_vardecs"
+
 fun d0ec_macdefs
   (i: int (*0/1/2: short/long/long rec*), d: m0acdef, ds: m0acdeflst): d0ec
   = "d0ec_macdefs"
+
 fun d0ec_impdec (t_implement: t0kn, arg: s0arglstlst, d: i0mpdec): d0ec
   = "d0ec_impdec"
 
@@ -2051,6 +2066,7 @@ fun p0atlst_posmark (p0ts: p0atlst): void
 
 fun d0exp_posmark (d0e: d0exp): void
 fun d0explst_posmark (d0es: d0explst): void
+fun d0explstopt_posmark (d0es: d0explstopt): void
 
 fun d0ec_posmark (d0c: d0ec): void
 fun d0eclst_posmark (d0cs: d0eclst): void

@@ -416,7 +416,7 @@ number on success, or EOF on error.
 fun fputs0_err (str: string, fil: FILEref):<!ref> int
   = "atslib_fputs_err"
 
-fun fputs1_err {m:fm} {l_buf:addr}
+fun fputs1_err {m:fm}
   (pf: file_mode_lte (m, w) | str: string, f: &FILE m):<!ref> int
   = "atslib_fputs_err"
 
@@ -427,7 +427,7 @@ overload fputs_err with fputs1_err
 fun fputs0_exn (str: string, fil: FILEref):<!exnref> void
   = "atslib_fputs_exn"
 
-fun fputs1_exn {m:fm} {l_buf:addr}
+fun fputs1_exn {m:fm}
   (pf: file_mode_lte (m, w) | str: string, f: &FILE m):<!exnref> void
   = "atslib_fputs_exn"
 
@@ -452,27 +452,21 @@ must use [feof] and [ferror] to determine which occurred.
 *)
 
 fun fread
-  {sz:pos} {n_buf,n,nsz:nat | nsz <= n_buf} {m:fm} {l_buf:addr}
-  (pf1: file_mode_lte (m, r),
-   pf2: !bytes (n_buf) @ l_buf,
-   pf3: MUL (n, sz, nsz) |
-   p: ptr l_buf, sz: int sz, n: int n, f: &FILE m)
+  {sz:pos} {n_buf,n,nsz:nat | nsz <= n_buf} {m:fm}
+  (pf_mod: file_mode_lte (m, r), pf_mul: MUL (n, sz, nsz) |
+   buf: &bytes (n_buf), sz: int sz, n: int n, f: &FILE m)
   :<!ref> natLte n
   = "atslib_fread"
 
 fun fread_byte
-  {n_buf,n:nat | n <= n_buf} {m:fm} {l_buf:addr}
-  (pf1: file_mode_lte (m, r),
-   pf2: !bytes (n_buf) @ l_buf |
-   p: ptr l_buf, n: int n, f: &FILE m)
+  {n_buf,n:nat | n <= n_buf} {m:fm}
+  (pf_mod: file_mode_lte (m, r) | buf: &bytes (n_buf), n: int n, f: &FILE m)
   :<!ref> natLte n
   = "atslib_fread_byte"
 
 fun fread_byte_exn
-  {n_buf,n:nat | n <= n_buf} {m:fm} {l_buf:addr}
-  (pf1: file_mode_lte (m, r),
-   pf2: !bytes (n_buf) @ l_buf |
-   p: ptr l_buf, n: int n, f: &FILE m)
+  {n_buf,n:nat | n <= n_buf} {m:fm}
+  (pf_mod: file_mode_lte (m, r) | buf: &bytes (n_buf), n: int n, f: &FILE m)
   :<!exnref> void
   = "atslib_fread_byte_exn"
 
@@ -629,29 +623,23 @@ written.
 *)
 
 fun fwrite
-  {sz:pos} {n_buf,n,nsz:nat | nsz <= n_buf} {m:fm} {l_buf:addr} (
-    pf1: file_mode_lte (m, w)
-  , pf2: !bytes (n_buf) @ l_buf
-  , pf3: MUL (n, sz, nsz)
-  | p: ptr l_buf, sz: int sz, n: int n, f: &FILE m
+  {sz:pos} {n_buf,n,nsz:nat | nsz <= n_buf} {m:fm} (
+    pf_mod: file_mode_lte (m, w), pf_mul: MUL (n, sz, nsz)
+  | buf: &bytes (n_buf), sz: int sz, n: int n, f: &FILE m
   ) :<!ref> natLte n
   = "atslib_fwrite"
 
 // [fwrite_byte] is a special case of [fwrite] where [sz] equals 1.
 fun fwrite_byte // [fwrite_byte] only writes once
-  {n_buf,n:nat | n <= n_buf} {m:fm} {l_buf:addr} (
-    pf1: file_mode_lte (m, w)
-  , pf2: !bytes (n_buf) @ l_buf
-  | p: ptr l_buf, n: int n, f: &FILE m
+  {n_buf,n:nat | n <= n_buf} {m:fm} (
+    pf_mod: file_mode_lte (m, w) | buf: &bytes (n_buf), n: int n, f: &FILE m
   ) :<!ref> natLte n
   = "atslib_fwrite_byte"
 
 // an uncatchable exception is thrown if not all bytes are written
 fun fwrite_byte_exn
-  {n_buf,n:nat | n <= n_buf} {m:fm} {l_buf:addr} (
-    pf1: file_mode_lte (m, w)
-  , pf2: !bytes (n_buf) @ l_buf
-  | p: ptr l_buf, n: int n, f: &FILE m
+  {n_buf,n:nat | n <= n_buf} {m:fm} (
+    pf_mod: file_mode_lte (m, w) | buf: &bytes (n_buf), n: int n, f: &FILE m
   ) :<!exnref> void
   = "atslib_fwrite_byte_exn"
 

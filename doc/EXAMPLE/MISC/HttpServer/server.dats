@@ -239,10 +239,9 @@ end
 
 //
 
-extern fun socket_write_all
-  {fd:int} {n,sz:nat | n <= sz} {l:addr}
-    (pf_socket: !socket_v (fd, conn), pf_buf: !bytes sz @ l |
-     socket_id: int fd, buf: ptr l, n: int n): void
+extern fun socket_write_all {fd:int} {n,sz:nat | n <= sz}
+  (pf_socket: !socket_v (fd, conn) | fd: int fd, buf: &bytes sz, n: int n)
+  : void
   = "socket_write_all"
 
 extern fun socket_write_substring_all
@@ -255,7 +254,7 @@ extern fun socket_write_substring_all
 
 static inline
 ats_void_type
-socket_write_all(ats_int_type fd, ats_ptr_type buf, ats_int_type cnt)
+socket_write_all(ats_int_type fd, ats_ref_type buf, ats_int_type cnt)
 {
   int res ;
 
@@ -336,7 +335,7 @@ fun file_send_main {fd: int}
   (pf_conn: !socket_v (fd, conn) |
    fd: int fd, file: &FILE r, filename: string): void = let
 
-val [l_buf:addr] (pf_ngc, pf_buf | buf) = malloc_ngc (BUFSZ)
+val [l_buf:addr] (pf_ngc, pf_buf | p_buf) = malloc_ngc (BUFSZ)
 val msg200_str = msg200_of_filename filename
 val msg200_str = s2S msg200_str
 val msg200_len = length msg200_str
@@ -345,10 +344,10 @@ fun aux
   (pf_conn: !socket_v (fd, conn),
    pf_buf: !bytes BUFSZ @ l_buf | fd: int fd, file: &FILE r)
   :<cloptr1> void = let
-  val n = fread_byte (file_mode_lte_r_r, pf_buf | buf, BUFSZ, file)
+  val n = fread_byte (file_mode_lte_r_r | !p_buf, BUFSZ, file)
 in
   if n > 0 then begin
-    socket_write_all (pf_conn, pf_buf | fd, buf, n);
+    socket_write_all (pf_conn | fd, !p_buf, n);
     aux (pf_conn, pf_buf | fd, file)
   end
 end // end of [aux]
@@ -357,7 +356,7 @@ in
 
 socket_write_substring_all (pf_conn | fd, msg200_str, 0, msg200_len);
 aux (pf_conn, pf_buf | fd, file);
-free_ngc (pf_ngc, pf_buf | buf);
+free_ngc (pf_ngc, pf_buf | p_buf);
 
 end // end of [file_send_main]
 
@@ -612,33 +611,33 @@ end // end of [main_loop_get]
 
 extern fun main_loop {fd:int} {l_buf:addr}
   (pf_list: !socket_v (fd, listen), pf_buf: !bytes BUFSZ @ l_buf |
-   fd: int fd, buf: ptr l_buf): void
+   fd: int fd, p_buf: ptr l_buf): void
 
 implement main_loop
-  (pf_list, pf_buf | fd_s, buf): void = let
+  (pf_list, pf_buf | fd_s, p_buf): void = let
   val (pf_accept | fd_c) = accept_null_err(pf_list | fd_s)
 in
   if fd_c >= 0 then let
     prval accept_succ pf_conn = pf_accept
-    val n = socket_read_exn (pf_conn, pf_buf | fd_c, buf, BUFSZ)
-    val (pf | p) = strbuf_make_bufptr (pf_buf | buf, 0, n)
+    val n = socket_read_exn (pf_conn | fd_c, !p_buf, BUFSZ)
+    val (pf | p) = strbuf_make_bufptr (pf_buf | p_buf, 0, n)
     val msg = string1_of_strbuf (pf | p)
   in
     case+ msg of
       | _ when request_is_get (msg, n) => begin
-          main_loop_get (pf_conn, pf_buf | fd_c, buf, msg, n);
-          main_loop (pf_list, pf_buf | fd_s, buf)
+          main_loop_get (pf_conn, pf_buf | fd_c, p_buf, msg, n);
+          main_loop (pf_list, pf_buf | fd_s, p_buf)
         end
       | _ => begin
           socket_close_exn (pf_conn | fd_c);
           prerrf ("main_loop: unsupported request: %s\n", @(msg));
-          main_loop (pf_list, pf_buf | fd_s, buf)
+          main_loop (pf_list, pf_buf | fd_s, p_buf)
         end
   end else let
     prval accept_fail () = pf_accept
     val () = prerr "Error: [accept] failed!\n"
   in
-    main_loop (pf_list, pf_buf | fd_s, buf)
+    main_loop (pf_list, pf_buf | fd_s, p_buf)
   end
 end // end of [main_loop]
 

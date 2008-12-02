@@ -51,10 +51,10 @@ implement client_loop {fd:int} (pf_sock | sockfd) = let
       prval fgets_v_succ (pf_buf_send1) = pf_fgets
       val nsend = strbuf_length (!p_buf_send)
       prval () = pf_buf_send := bytes_v_of_strbuf_v (pf_buf_send1)
-      val () = socket_write_loop_exn (pf_sock, pf_buf_send | sockfd, p_buf_send, nsend)
-      val nread = socket_read_loop_exn (pf_sock, pf_buf_recv | sockfd, p_buf_recv, nsend)
+      val () = socket_write_loop_exn (pf_sock | sockfd, !p_buf_send, nsend)
+      val nread = socket_read_loop_exn (pf_sock | sockfd, !p_buf_recv, nsend)
       val (pf_stdout | p_stdout) = stdout_get ()
-      val () = fwrite_byte_exn (file_mode_lte_w_w, pf_buf_recv | p_buf_recv, nread, !p_stdout)
+      val () = fwrite_byte_exn (file_mode_lte_w_w | !p_buf_recv, nread, !p_stdout)
       val () = stdout_view_set (pf_stdout | (*none*))
     in
       loop (pf_sock, pf_buf_send, pf_buf_recv, pf_mod | fil)

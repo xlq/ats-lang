@@ -84,7 +84,7 @@ fun socket_family_type_exn
 
 (* ****** ****** *)
 
-fun sockaddr_ipv4_init {l:addr} (
+fun sockaddr_ipv4_init (
     sa: &sockaddr_in_struct_t? >> sockaddr_in_struct_t
   , af: address_family_t, inp: in_addr_nbo_t, port: in_port_nbo_t
   ) :<> void
@@ -184,15 +184,13 @@ fun socket_close_exn {fd:int} {s:status}
 
 // implemented in [libc/sys/CATS/socket.cats]
 
-fun socket_read_err {fd:int} {n,sz:nat | n <= sz} {l:addr} (
-    pf_sock: !socket_v (fd, conn), pf_buf: !bytes sz @ l
-  | fd: int fd, p_buf: ptr l, ntotal: int n
+fun socket_read_err {fd:int} {n,sz:nat | n <= sz} (
+    pf_sock: !socket_v (fd, conn) | fd: int fd, buf: &bytes sz, ntotal: int n
   ) : intBtw(~1, n+1)
   = "atslib_socket_read_err"
 
-fun socket_read_exn {fd:int} {n,sz:nat | n <= sz} {l:addr} (
-    pf_sock: !socket_v (fd, conn), pf_buf: !bytes sz @ l
-  | fd: int fd, p_buf: ptr l, ntotal: int n
+fun socket_read_exn {fd:int} {n,sz:nat | n <= sz} (
+    pf_sock: !socket_v (fd, conn) | fd: int fd, buf: &bytes sz, ntotal: int n
   ) : natLte n
   = "atslib_socket_read_exn"
 
@@ -200,15 +198,13 @@ fun socket_read_exn {fd:int} {n,sz:nat | n <= sz} {l:addr} (
 
 // implemented in [libc/sys/DATS/socket.dats]
 
-fun socket_read_loop_err {fd:int} {n,sz:nat | n <= sz} {l:addr} (
-    pf_sock: !socket_v (fd, conn), pf_buf: !bytes sz @ l
-  | fd: int fd, p_buf: ptr l, ntotal: int n
+fun socket_read_loop_err {fd:int} {n,sz:nat | n <= sz} (
+    pf_sock: !socket_v (fd, conn) | fd: int fd, buf: &bytes sz, ntotal: int n
   ) : intBtw (~1, n+1)
   = "atslib_socket_read_loop_err"
 
-fun socket_read_loop_exn {fd:int} {n,sz:nat | n <= sz} {l:addr} (
-    pf_sock: !socket_v (fd, conn), pf_buf: !bytes sz @ l
-  | fd: int fd, p_buf: ptr l, ntotal: int n
+fun socket_read_loop_exn {fd:int} {n,sz:nat | n <= sz} (
+    pf_sock: !socket_v (fd, conn) | fd: int fd, buf: &bytes sz, ntotal: int n
   ) : natLte n
   = "atslib_socket_read_loop_exn"
 
@@ -216,15 +212,13 @@ fun socket_read_loop_exn {fd:int} {n,sz:nat | n <= sz} {l:addr} (
 
 // implemented in [libc/sys/CATS/socket.cats]
 
-fun socket_write_err {fd:int} {n,sz:nat | n <= sz} {l:addr} (
-    pf_sock: !socket_v (fd, conn), pf_buf: !bytes sz @ l
-  | fd: int fd, p_buf: ptr l, ntotal: int n
+fun socket_write_err {fd:int} {n,sz:nat | n <= sz} (
+    pf_sock: !socket_v (fd, conn) | fd: int fd, buf: &bytes sz, ntotal: int n
   ) : intBtw(~1, n+1)
   = "atslib_socket_write_err"
 
-fun socket_write_exn {fd:int} {n,sz:nat | n <= sz} {l:addr} (
-    pf_sock: !socket_v (fd, conn), pf_buf: !bytes sz @ l
-  | fd: int fd, p_buf: ptr l, ntotal: int n
+fun socket_write_exn {fd:int} {n,sz:nat | n <= sz} (
+    pf_sock: !socket_v (fd, conn) | fd: int fd, buf: &bytes sz, ntotal: int n
   ) : natLte n
   = "atslib_socket_write_exn"
 
@@ -232,15 +226,13 @@ fun socket_write_exn {fd:int} {n,sz:nat | n <= sz} {l:addr} (
 
 // implemented in [libc/sys/DATS/socket.dats]
 
-fun socket_write_loop_err {fd:int} {n,sz:nat | n <= sz} {l:addr} (
-    pf_sock: !socket_v (fd, conn), pf_buf: !bytes sz @ l
-  | fd: int fd, p_buf: ptr l, ntotal: int n
+fun socket_write_loop_err {fd:int} {n,sz:nat | n <= sz} (
+    pf_sock: !socket_v (fd, conn) | fd: int fd, buf: &bytes sz, ntotal: int n
   ) : intBtw(~1, n+1)
   = "atslib_socket_write_loop_err"
 
-fun socket_write_loop_exn {fd:int} {n,sz:nat | n <= sz} {l:addr} (
-    pf_sock: !socket_v (fd, conn), pf_buf: !bytes sz @ l
-  | fd: int fd, p_buf: ptr l, ntotal: int n
+fun socket_write_loop_exn {fd:int} {n,sz:nat | n <= sz} (
+    pf_sock: !socket_v (fd, conn) | fd: int fd, buf: &bytes sz, ntotal: int n
   ) : void // all bytes must be written if this function returns
   = "atslib_socket_write_loop_exn"
 

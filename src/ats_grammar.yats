@@ -1110,6 +1110,7 @@ guad0ec_t guad0ec ;
 %token <t0kn> ABSVIEW
 %token <t0kn> ABSVIEWTYPE ABSVIEWT0YPE
 %token <t0kn> AND
+%token <t0kn> ARRVAR
 %token <t0kn> AS
 %token <t0kn> ASSUME
 %token <t0kn> AT
@@ -2803,7 +2804,9 @@ andf0undecseq
   | AND f0undec andf0undecseq           { $$ = f0undeclst_cons($2, $3) ; }
 ;
 
-v0ardec
+/* ****** ****** */
+
+v0ardec /* stack-allocated variable */
   : di0de COLON s0exp                   { $$ = v0ardec_make_some_none($1, $3) ; }
   | di0de EQ d0exp                      { $$ = v0ardec_make_none_some($1, $3) ; }
   | di0de COLON s0exp EQ d0exp          { $$ = v0ardec_make_some_some($1, $3, $5) ; }
