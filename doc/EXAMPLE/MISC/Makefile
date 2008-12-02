@@ -8,8 +8,8 @@ ATSCC="$(ATSHOME)/bin/atscc"
 
 ######
 
-all: AutoDiff fft \
-     hamming_lazy \
+all: AutoDiff coin_flip \
+     fft hamming_lazy \
      GaussElim GarsiaWachs \
      kmp queens pi_lazy \
      sieve sieve_lazy \
@@ -24,6 +24,9 @@ AutoDiff: AutoDiff.dats
 
 # BlackScholes formula
 BlackScholes: BlackScholes.dats; $(ATSCC) -tc BlackScholes.dats
+
+# random number generation
+coin_flip: coin_flip.dats; $(ATSCC) -O3 -o coin_flip coin_flip.dats
 
 # test for Mersenne primes
 fft: fft.dats; $(ATSCC) -O3 -o fft fft.dats -lm
@@ -109,6 +112,7 @@ clean::
 cleanall:: clean
 	rm -f a.out
 	rm -f AutoDiff
+	rm -f coin_flip
 	rm -f fft
 	rm -f GaussElim
 	rm -f GarsiaWachs
