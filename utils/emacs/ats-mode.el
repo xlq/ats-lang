@@ -242,7 +242,7 @@
 (defvar ats-keywords
   '("\\<absprop\\>" "\\<abstype\\>" "\\<abst@type\\>" "\\<absview\\>"
     "\\<absviewtype\\>" "\\<absviewt@ype\\>" "\\<and\\>" "\\<as\\>"
-    "\\<assume\\>" "\\<begin\\>" "\\<break\\>" "\\<case\\(+\\|*\\)?\\>"
+    "\\<assume\\>" "\\<begin\\>" "\\<break\\>" "\\<\\(s\\)?case\\(+\\|*\\)?\\>"
     "\\<class\\>" "\\<continue\\>" "\\<datasort\\>" "\\<dataprop\\>"
     "\\<datatype\\>" "\\<dataview\\>" "\\<dataviewtype\\>" "\\<dyn\\>"
     "\\<dynload\\>" "\\<else\\>" "\\<end\\>" "\\<exception\\>"
