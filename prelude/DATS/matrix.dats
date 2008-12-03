@@ -152,7 +152,7 @@ in
   end // end of [sif]
 end // end of [lemma_for_matrix_subscripting]
 
-implement{a} matrix_get_elt_at (M, n, i, j) = let
+implement{a} matrix_get_elt_at (M, i, n, j) = let
   prval pf_mul_mn = M.mul
   val (pf_mul_i_n | i_n) = i imul2 n
   prval () = mul_nat_nat_nat pf_mul_i_n
@@ -163,7 +163,7 @@ in
   !M_data.[i_n+j]
 end // end of [matrix_get_elt_at]
 
-implement{a} matrix_set_elt_at (M, n, i, j, x) = let
+implement{a} matrix_set_elt_at (M, i, n, j, x) = let
   prval pf_mul_mn = M.mul
   val (pf_mul_i_n | i_n) = i imul2 n
   prval () = mul_nat_nat_nat pf_mul_i_n
@@ -190,7 +190,7 @@ implement{a} foreach_matrix_main
     (pf: !v | f: fun_t, M: mat_t, m: int m, n: int n, i: int i, j: int j, env: !vt)
     :<f,!ref> void = begin
     if j < n then let
-      val () = f (pf | matrix_get_elt_at (M, n, i, j), env)
+      val () = f (pf | matrix_get_elt_at (M, i, n, j), env)
     in
       loop2 (pf | f, M, m, n, i, j+1, env)
     end else begin
@@ -237,7 +237,7 @@ implement{a} iforeach_matrix_main
     (pf: !v | f: fun_t, M: mat_t, m: int m, n: int n, i: int i, j: int j, env: !vt)
     :<f,!ref> void = begin
     if j < n then let
-      val () = f (pf | i, j, matrix_get_elt_at (M, n, i, j), env)
+      val () = f (pf | i, j, matrix_get_elt_at (M, i, n, j), env)
     in
       loop2 (pf | f, M, m, n, i, j+1, env)
     end else begin

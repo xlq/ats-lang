@@ -85,9 +85,12 @@ fun matrix_make_fun_tsz_cloptr {a:viewt@ype} {m,n:pos} {f:eff} (
 (* ****** ****** *)
 
 fun{a:t@ype} matrix_get_elt_at {m,n:nat}
-  (A: matrix (a, m, n), n: int n, i: natLt m, j: natLt n):<!ref> a
+  (A: matrix (a, m, n), i: natLt m, n: int n, j: natLt n):<!ref> a
 fun{a:t@ype} matrix_set_elt_at {m,n:nat}
-  (A: matrix (a, m, n), n: int n, i: natLt m, j: natLt n, x: a):<!ref> void
+  (A: matrix (a, m, n), i: natLt m, n: int n, j: natLt n, x: a):<!ref> void
+
+overload [] with matrix_get_elt_at
+overload [] with matrix_set_elt_at
 
 (* ****** ****** *)
 

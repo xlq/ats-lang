@@ -922,7 +922,7 @@ in
       val p3t = p2at_tr_dn (p2t, s2e0)
     in
       p3at_ann (loc0, s2e0, p3t, s2e_ann)
-    end
+    end // end of [P2Tann]
   | P2Tany () => p2at_any_tr_dn (loc0, s2e0)
   | P2Tas (refknd, d2v, p2t) => let
       val s2e0 = s2exp_whnf s2e0
@@ -938,7 +938,7 @@ in
       val () = d2var_typ_set (d2v, Some s2e_d2v)
     in
       p3at_as (loc0, s2e0, refknd, d2v, p3t)
-    end
+    end // end of [P2Tas]
   | P2Tbool b => p2at_bool_tr_dn (loc0, b, s2e0)
   | P2Tchar c => p2at_char_tr_dn (loc0, c, s2e0)
   | P2Tcon (freeknd, d2c, s2vpss, s2e_con, npf, p2ts) => begin
@@ -1002,17 +1002,17 @@ in
                 prerr_newline ();
                 $Err.abort {s2exp} ()
               end
-          val n = length str
+          val n = string0_length str
           val () = trans3_env_hypo_add_eqeq (loc0, s2e_arg, s2exp_int n)
         in
           p3at_string (loc0, s2exp_string_int_type n, str)
-        end
+        end // end of [S2Eapp]
       | _ => let
           val s2e_string = s2exp_string_type ()
           val () = $SOL.s2exp_tyleq_solve (loc0, s2e0, s2e_string)
         in
           p3at_string (loc0, s2e_string, str)
-        end
+        end // end of [_]
     end // end of [P2Tstring]
   | P2Tvar (refknd, d2v) => p2at_var_tr_dn (p2t0, refknd, d2v, s2e0)
   | P2Tvbox d2v => let
@@ -1047,7 +1047,7 @@ implement p2at_arg_tr_up (p2t0) = begin
   case+ p2t0.p2at_node of
   | P2Tann (p2t, s2e) => begin
       p2at_arg_tr_dn (p2t, s2e)
-    end
+    end // end of [P2Tann]
   | _ => begin case+ p2t0.p2at_typ of
     | Some s2e => p2at_tr_dn (p2t0, s2e)
     | None () => begin
@@ -1057,7 +1057,7 @@ implement p2at_arg_tr_up (p2t0) = begin
         prerr_newline ();
         $Err.abort {p3at} ()
       end
-    end
+    end // end of [_]
 end // end of [p2at_arg_tr_up]
 
 implement p2at_arg_tr_dn (p2t0, s2e0) = let

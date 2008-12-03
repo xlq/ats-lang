@@ -964,7 +964,7 @@ implement emit_patck
       fprint1_string (pf | out, "if (strcmp(");
       emit_valprim (pf | out, vp);
       fprint1_string (pf | out, ", ");
-      emit_valprim_string (pf | out, str, length str);
+      emit_valprim_string (pf | out, str, string0_length str);
       fprint1_string (pf | out, ")) { ");
       emit_kont (pf | out, fail);
       fprint1_string (pf | out, " ; }")

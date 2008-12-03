@@ -73,6 +73,7 @@ abst@ype byte_t0ype = $extype "ats_byte_type" // sizeof (byte) = 1
 (* ****** ****** *)
 
 abst@ype char_t0ype = $extype "ats_char_type"
+abst@ype schar_t0ype = $extype "ats_schar_type"
 abst@ype uchar_t0ype = $extype "ats_uchar_type"
 
 (* ****** ****** *)
@@ -495,6 +496,7 @@ stadef byte = byte_t0ype
 stadef char = char_char_t0ype
 stadef char = char_t0ype
 
+stadef schar = schar_t0ype
 stadef uchar = uchar_t0ype
 
 (* ****** ****** *)

@@ -351,7 +351,7 @@ in
                 $Err.abort {s2exp} ()
               end
           ) : s2exp
-          val nstr = length str
+          val nstr = string0_length (str)
           val () = $SOL.s2exp_equal_solve (loc0, s2exp_int nstr, s2i)
         in
           d3exp_string (loc0, s2e0, str, len)
@@ -398,7 +398,7 @@ in
     | _ => err (loc0, s2e0)
     end // end of [S2Ecst]
   | _ => let
-      val n = length (str)
+      val n = string0_length (str)
       val s2e_str = s2exp_string_int_type (n)
       val () = $SOL.s2exp_tyleq_solve (loc0, s2e_str, s2e0)
     in

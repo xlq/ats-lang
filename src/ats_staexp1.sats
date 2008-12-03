@@ -202,14 +202,14 @@ typedef s1arg = '{
   s1arg_loc= loc_t, s1arg_sym= sym_t, s1arg_srt= s1rtopt
 }
 
-and s1arglst = List s1arg
-and s1arglstlst = List s1arglst
+typedef s1arglst = List s1arg
+typedef s1arglstlst = List s1arglst
 
 typedef s1var = '{
   s1var_loc= loc_t, s1var_sym= sym_t, s1var_srt= s1rt
 }
 
-and s1varlst = List s1var
+typedef s1varlst = List s1var
 
 (* ****** ****** *)
 

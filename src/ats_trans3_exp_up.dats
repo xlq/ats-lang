@@ -1597,7 +1597,7 @@ in
       val d3ls = d3lab1lst_of_d3lab0lst_s2lablst (d3ls_nt, s2ls)
     in
       d3exp_sel_var (loc0, s2e_elt, d2v, d3ls)
-    end
+    end // end of [D2Evar when d2var_is_mutable]
   | D2Evar d2v when d2var_is_linear d2v => let
       val d3ls_nt = d2lablst_tr_up d2ls
       val s2ls_nt = s2lab0lst_of_d3lab0lst d3ls_nt
@@ -1610,14 +1610,14 @@ in
       val d3ls = d3lab1lst_of_d3lab0lst_s2lablst (d3ls_nt, s2ls)
     in
       d3exp_sel_var (loc0, s2e_prj, d2v, d3ls)
-    end
+    end // end of [D2Evar when d2var_is_linear]
   | D2Ederef d2e => d2exp_deref_tr_up (loc0, d2e, d2ls)
   | _ => let
      val d3e0 = d2exp_tr_up d2e0
      val d3ls_nt = d2lablst_tr_up d2ls
    in
      d3exp_sel_tr_up (loc0, d3e0, d3ls_nt)
-   end
+   end // end of [D2Ederef]
 end // end of [d2exp_sel_tr_up]
 
 (* ****** ****** *)
@@ -2178,7 +2178,7 @@ val d3e0 = (case+ d2e0.d2exp_node of
       d2exp_sif_tr_dn (loc0, res, s2p_cond, d2e_then, d2e_else, s2e_sif)
     end // end of [D2Esif]
   | D2Estring (str, len) => let
-      val s2e = s2exp_string_int_type (length str)
+      val s2e = s2exp_string_int_type (string0_length str)
     in
       d3exp_string (loc0, s2e, str, len)
     end // end of [D2Estring]

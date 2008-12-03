@@ -109,7 +109,7 @@ fn puzzle_row_verify_one (i: natLt NMAX1): int =
   let
     fun loop (j: natLte NMAX1):<cloptr1> int =
       if j < NMAX1 then let
-        val ij = matrix_get_elt_at (the_puzzle_cur, NMAX1, i, j)
+        val ij = the_puzzle_cur[i, NMAX1, j]
 (*
         val () = printf
           ("puzzle_row_verify_one: loop: i = %i and j = %i and ij = %i\n", @(i, j, ij))
@@ -150,7 +150,7 @@ fn puzzle_col_verify_one (j: natLt NMAX1): int =
   let
     fun loop (i: natLte NMAX1):<cloptr1> int =
       if i < NMAX1 then let
-        val ij = matrix_get_elt_at (the_puzzle_cur, NMAX1, i, j)
+        val ij = the_puzzle_cur[i, NMAX1, j]
 (*
         val () = printf
           ("puzzle_col_verify_one: loop: i = %i and j = %i and ij = %i\n", @(i, j, ij))
@@ -189,7 +189,7 @@ fn puzzle_squ_verify_one (i0: natLte (NMAX1-3), j0: natLte (NMAX1-3)): int =
       if (i < i0 + 3) then loop2 (i, j0) else 0
     and loop2 (i: natLt NMAX1, j: natLte NMAX1):<cloptr1> int =
       if (j < j0 + 3) then let
-        val ij = matrix_get_elt_at (the_puzzle_cur, NMAX1, i, j)
+        val ij = the_puzzle_cur[i, NMAX1, j]
       in
         if ij > 0 then
           if the_digits[ij] > 0 then ij (* repeated entry *)
@@ -227,7 +227,7 @@ fn puzzle_ent_verify_all (): int =
       if i < NMAX1 then loop2 (i, 0) else 0
     and loop2 (i: natLt NMAX1, j: natLte NMAX1): int =
       if j < NMAX1 then let
-        val ij = matrix_get_elt_at (the_puzzle_cur, NMAX1, i, j)
+        val ij = the_puzzle_cur[i, NMAX1, j]
       in
         if ij > 0 then loop2 (i, j+1) else
           (error_value_write 0; i * NMAX1 + j + 1)
@@ -490,8 +490,7 @@ fn menu_button_press_event_ref
   : gboolean = let
   val (i, j, r_menu) = data
   val (pf_menu | p_menu) = g_objref_get r_menu
-  val is_fixed: bool =
-    matrix_get_elt_at (the_puzzle_ori, NMAX1, i, j) > 0
+  val is_fixed: bool = the_puzzle_ori[i, NMAX1, j] > 0
   val ans = menu_button_press_event (button, evt, is_fixed, !p_menu)
   val () = g_objref_set (pf_menu | r_menu, p_menu)
 in
@@ -503,7 +502,7 @@ fn menu_item_response
    data: &(digit, natLt NMAX1, natLt NMAX1, gobjref GtkButton))
   : void = let
   val (digit, i, j, r_button) = data
-  val () = matrix_set_elt_at (the_puzzle_cur, NMAX1, i, j, digit)
+  val () = the_puzzle_cur[i, NMAX1, j] := digit
   val lab: string = if digit > 0 then the_labels[digit] else "X"
   val (pf_button | p_button) = g_objref_get r_button
   val () = gtk_button_set_label (GtkButtonIsGtkButton | !p_button, lab)
@@ -603,8 +602,8 @@ fn puzzle_update (): void = let
     if j < NMAX1 then let
       val digit = digit_of_char (s[i * NMAX1 + j])
     in
-      matrix_set_elt_at (the_puzzle_ori, NMAX1, i, j, digit);
-      matrix_set_elt_at (the_puzzle_cur, NMAX1, i, j, digit);
+      matrix_set_elt_at (the_puzzle_ori, i, NMAX1, j, digit);
+      matrix_set_elt_at (the_puzzle_cur, i, NMAX1, j, digit);
       loop2 (i,j+1)
     end else begin
       loop1 (i+1)
@@ -619,12 +618,10 @@ fn button_matrix_update (): void = let
 
   and loop2 (i: natLt NMAX1, j: natLte NMAX1): void =
     if j < NMAX1 then let
-      val is_fixed: bool =
-        matrix_get_elt_at (the_puzzle_ori, NMAX1, i, j) > 0
-      val r_button =
-        matrix_get_elt_at (the_button_matrix, NMAX, i, j)
+      val is_fixed: bool = the_puzzle_ori[i, NMAX1, j] > 0
+      val r_button = matrix_get_elt_at (the_button_matrix, i, NMAX, j)
       val lab = let
-        val ij = matrix_get_elt_at (the_puzzle_cur, NMAX1, i,j)
+        val ij = the_puzzle_cur[i, NMAX1, j]
       in
         if is_fixed then the_ulabels[ij] else the_labels[ij]
       end // end of [val]
@@ -663,7 +660,7 @@ fn pause_update (): void = let
 
   and loop2 (i: natLt NMAX1, j: natLte NMAX1): void =
     if j < NMAX1 then let
-      val r_button = matrix_get_elt_at (the_button_matrix, NMAX, i, j)
+      val r_button = the_button_matrix[i, NMAX, j]
       val (pf_button | p_button) = g_objref_get r_button
       val () = gtk_button_set_label (GtkButtonIsGtkButton | !p_button, "X")
       val () = g_objref_set (pf_button | r_button, p_button)
@@ -733,7 +730,7 @@ fn button_matrix_make_with_menu ()
       val (pf_button | p_button) = gtk_button_new_with_mnemonic ("")
       val () = gtk_widget_show (GtkButtonIsGtkWidget | !p_button)
       val r_button = g_objref_make_some (pf_button | p_button)
-      val () = matrix_set_elt_at (the_button_matrix, NMAX, i, j, r_button)
+      val () = the_button_matrix[i, NMAX, j] := r_button
 
       val (pf_menu | p_menu) = gtk_menu_new ()
       val () = menu_items_append (!p_menu, 0, i, j, r_button)

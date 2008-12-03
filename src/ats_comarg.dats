@@ -58,7 +58,7 @@ fun loop {n,i:nat | i <= n} .<n-i>.
 val s = string1_of_string0 s
 
 in
-  loop (s, length s, 0)
+  loop (s, string1_length s, 0)
 end
 
 implement comarglst_parse {n} (argc, argv) = let
@@ -79,7 +79,7 @@ implement comarglst_parse {n} (argc, argv) = let
   val (pf | ()) = loop (view@ lst0 | argv, 0, &lst0)
 in
   view@ lst0 := pf; lst0
-end
+end // end of [comarglst_parse]
 
 (* ****** ****** *)
 
