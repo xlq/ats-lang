@@ -137,7 +137,6 @@ precompiled::
 
 clean::
 	rm -f bootstrap0/*.o
-	rm -f bootstrap0/Makefile
 	rm -f bootstrap1/*.o
 	rm -f bootstrap1/Makefile
 	cd utils/scripts; $(MAKE) clean
