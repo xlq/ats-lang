@@ -239,6 +239,7 @@ keyval_insert("#include", SRPINCLUDE) ;
 keyval_insert("#then", SRPTHEN) ;
 keyval_insert("#print", SRPPRINT) ;
 
+keyval_insert("$arrsz", DLRARRSZ) ;
 keyval_insert("$effmask_all", DLREFFMASK_ALL) ;
 keyval_insert("$effmask_exn", DLREFFMASK_EXN) ;
 keyval_insert("$effmask_ntm", DLREFFMASK_NTM) ;

@@ -186,13 +186,24 @@ in
   | D3Eapp_sta d3e => begin
       strpr "D3Eapp_sta("; fprint_d3exp (pf | out, d3e); strpr ")"
     end
-  | D3Earr (s2e, d3es) => begin
-      strpr "D3Earr(";
+  | D3Earrinit (s2e_elt, od3e_asz, d3es_elt) => begin
+      strpr "D3Earrinit(";
+      fprint_s2exp (pf | out, s2e_elt);
+      strpr "; ";
+      begin case+ od3e_asz of
+      | Some d3e => fprint_d3exp (pf | out, d3e) | None () => ()
+      end;
+      strpr "; ";
+      fprint_d3explst (pf | out, d3es_elt);
+      strpr ")"
+    end // end of [D3Earrinit]
+  | D3Earrsize (s2e, d3es) => begin
+      strpr "D3Earrsize(";
       fprint_s2exp (pf | out, s2e);
       strpr "; ";
       fprint_d3explst (pf | out, d3es);
       strpr ")"
-    end
+    end // end of [D3Earrsize]
   | D3Eassgn_ptr (d3e_ptr, d3ls, d3e_val) => begin
       strpr "D3Eassgn_ptr(";
       fprint_d3exp (pf | out, d3e_ptr);

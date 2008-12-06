@@ -1298,15 +1298,24 @@ in
           d2exp_app_sta (loc0, d2e_fun, sarg)
         end
     end // end of [D1Eapp_sta]
-  | D1Earr (s1e_elt, d1es_elt) => let
+  | D1Earrinit (s1e_elt, od1e_asz, d1es_elt) => let
       val s2e_elt = s1exp_tr_dn (s1e_elt, s2rt_viewt0ype)
+      val od2e_asz = d1expopt_tr od1e_asz; val d2es_elt = d1explst_tr d1es_elt
+    in
+      d2exp_arrinit (loc0, s2e_elt, od2e_asz, d2es_elt)
+    end // end of [D1Earrinit]
+  | D1Earrsize (os1e_elt, d1es_elt) => let
+      val os2e_elt = (case+ os1e_elt of
+        | Some s1e => Some (s1exp_tr_dn (s1e, s2rt_viewt0ype))
+        | None () => None ()
+      ) : s2expopt // end of [val]
       val d2es_elt = d1explst_tr d1es_elt
     in
-      d2exp_arr (loc0, s2e_elt, d2es_elt)
-    end // end of [D1Earr]
+      d2exp_arrsize (loc0, os2e_elt, d2es_elt)
+    end // end of [D1Earrsize]
   | D1Earrsub (d1e_arr, loc_ind, d1ess_ind) => begin
       d1exp_arrsub_tr (loc0, d1e_arr, loc_ind, d1ess_ind)
-    end
+    end // end of [D1Earrsub]
   | D1Echar chr => d2exp_char (loc0, chr)
   | D1Ecaseof (knd, r1es, d1es, c1ls) => let
       val r2es = i1nvresstate_tr r1es
@@ -1785,6 +1794,7 @@ end // end of [f1undeclst_tr]
 (* ****** ****** *)
 
 fn v1ardec_tr (d1c: v1ardec): v2ardec = let
+  val knd = d1c.v1ardec_knd
   val id = d1c.v1ardec_sym
   val loc_id = d1c.v1ardec_sym_loc
   val d2v_ptr = d2var_make (loc_id, id)
@@ -1798,7 +1808,7 @@ fn v1ardec_tr (d1c: v1ardec): v2ardec = let
   ) : s2expopt
   val ini = d1expopt_tr d1c.v1ardec_ini
 in
-  v2ardec_make (d1c.v1ardec_loc, d2v_ptr, s2v_ptr, typ, ini)
+  v2ardec_make (d1c.v1ardec_loc, knd, d2v_ptr, s2v_ptr, typ, ini)
 end // end of [v1ardec_tr]
 
 fn v1ardeclst_tr (d1cs: v1ardeclst): v2ardeclst = let

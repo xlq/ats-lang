@@ -193,8 +193,10 @@ and d3exp_node =
       (d3exp, int(*npf*), d3explst)
   | D3Eapp_sta of (* static application *)
       d3exp
-  | D3Earr of (* array expression *)
-      (s2exp(*element type*), d3explst(*elements*))
+  | D3Earrinit of (* arraysize expression *)
+      (s2exp(*eltyp*), d3expopt(*asz*), d3explst(*elt*))
+  | D3Earrsize of (* arraysize expression *)
+      (s2exp(*eltyp*), d3explst(*elements*))
   | D3Eassgn_ptr of (* assignment to a pointer *)
       (d3exp, d3lab1lst, d3exp)
   | D3Eassgn_var of (* assignment to a variable *)
@@ -387,6 +389,7 @@ and f3undeclst = List f3undec
 
 and v3ardec = '{
   v3ardec_loc= loc_t
+, v3ardec_knd= int
 , v3ardec_dvar_ptr= d2var_t
 , v3ardec_dvar_viw= d2var_t
 , v3ardec_typ= s2exp
@@ -482,7 +485,10 @@ fun d3exp_app_dyn
   (_: loc_t, _: s2exp, _: s2eff, _fun: d3exp, npf: int, _arg: d3explst)
   : d3exp
 
-fun d3exp_arr
+fun d3exp_arrinit
+  (_: loc_t, arr: s2exp, elt: s2exp, asz: d3expopt, elts: d3explst): d3exp
+
+fun d3exp_arrsize
   (_: loc_t, arr: s2exp, elt: s2exp, elts: d3explst): d3exp
 
 fun d3exp_assgn_ptr
@@ -644,7 +650,7 @@ fun v3aldec_make (_: loc_t, pat: p3at, def: d3exp): v3aldec
 fun f3undec_make (_: loc_t, d2v: d2var_t, def: d3exp): f3undec
 
 fun v3ardec_make
-  (_: loc_t, ptr: d2var_t, viw: d2var_t, typ: s2exp, ini: d3expopt)
+  (_: loc_t, knd: int, ptr: d2var_t, viw: d2var_t, typ: s2exp, ini: d3expopt)
   : v3ardec
 
 (* ****** ****** *)

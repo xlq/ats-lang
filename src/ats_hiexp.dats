@@ -287,11 +287,17 @@ implement hiexp_app (loc, hit_app, hit_fun, hie_fun, hies_arg) = '{
 , hiexp_typ= hit_app
 } // end of [hiexp_app]
 
-implement hiexp_arr (loc, hit_arr, hit_elt, hies_elt) = '{
+implement hiexp_arrinit (loc, hit_arr, hit_elt, ohie_asz, hies_elt) = '{
   hiexp_loc= loc
-, hiexp_node= HIEarr (hit_elt, hies_elt)
+, hiexp_node= HIEarrinit (hit_elt, ohie_asz, hies_elt)
 , hiexp_typ= hit_arr
-} // end of [hiexp_arr]
+} // end of [hiexp_arrinit]
+
+implement hiexp_arrsize (loc, hit_arr, hit_elt, hies_elt) = '{
+  hiexp_loc= loc
+, hiexp_node= HIEarrsize (hit_elt, hies_elt)
+, hiexp_typ= hit_arr
+} // end of [hiexp_arrsize]
 
 implement hiexp_assgn_ptr (loc, hit, hie_ptr, hils, hie_val) = '{
   hiexp_loc= loc
@@ -594,8 +600,8 @@ implement hidec_valdecs_rec (loc, hids) = '{
 
 (* ****** ****** *)
 
-implement hivardec_make (loc, d2v, ini) = '{
-  hivardec_loc= loc, hivardec_ptr= d2v, hivardec_ini= ini
+implement hivardec_make (loc, knd, d2v, ini) = '{
+  hivardec_loc= loc, hivardec_knd= knd, hivardec_ptr= d2v, hivardec_ini= ini
 }
 
 implement hidec_vardecs (loc, hids) = '{

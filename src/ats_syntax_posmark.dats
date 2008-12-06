@@ -315,16 +315,16 @@ implement d0exp_posmark (d0e0) = case+ d0e0.d0exp_node of
   | D0Eapp (d0e_fun, d0e_arg) => begin
       d0exp_posmark d0e_fun; d0exp_posmark d0e_arg;
     end
-  | D0Earr (s0e, d0es) => begin
-      s0exp_posmark s0e; d0explst_posmark d0es;
-    end
+  | D0Earrinit (s0e_elt, od0e_asz, d0es_elt) => begin
+      s0exp_posmark s0e_elt; d0expopt_posmark od0e_asz; d0explst_posmark d0es_elt;
+    end // end of [D0Earrinit]
   | D0Earrsub (_(*id*), _(*loc_ind*), d0ess) => d0explstlst_posmark d0ess
   | D0Ecaseof (hd, d0e, c0ls) => begin
       d0exp_posmark d0e; c0laulst_posmark c0ls
-    end
+    end // end of [D0Ecaseof]
   | D0Eexist (qualoc, _(*s0exparg*), d0e) => begin
       staexploc_posmark qualoc; d0exp_posmark d0e
-    end
+    end // end of [D0Eexist]
   | D0Eextval (s0e, _(*code*)) => s0exp_posmark s0e
   | D0Efix (_(*id*), f0as, os0e, otags, d0e_body) => begin
       f0arglst_posmark f0as;

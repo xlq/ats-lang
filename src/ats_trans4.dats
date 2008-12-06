@@ -676,15 +676,23 @@ in
       val hies_arg = d3explst_funarg_tr (isvararg, npf, d3es_arg)
     in
       hiexp_app (loc0, hit0, hit_fun, hie_fun, hies_arg)
-    end
+    end // end of [D3Eapp_dyn]
   | D3Eapp_sta d3e => d3exp_tr d3e
-  | D3Earr (s2e_elt, d3es_elt) => let
+  | D3Earrinit (s2e_elt, od3e_asz, d3es_elt) => let
+      val hit0 = s2exp_tr (0(*deep*), s2e0)
+      val hit_elt = s2exp_tr (0(*deep*), s2e_elt)
+      val ohie_asz = d3expopt_tr od3e_asz
+      val hies_elt = d3explst_tr d3es_elt
+    in
+      hiexp_arrinit (loc0, hit0, hit_elt, ohie_asz, hies_elt)
+    end // end of [D3Earrinit]
+  | D3Earrsize (s2e_elt, d3es_elt) => let
       val hit0 = s2exp_tr (0(*deep*), s2e0)
       val hit_elt = s2exp_tr (0(*deep*), s2e_elt)
       val hies_elt = d3explst_tr d3es_elt
     in
-      hiexp_arr (loc0, hit0, hit_elt, hies_elt)
-    end
+      hiexp_arrsize (loc0, hit0, hit_elt, hies_elt)
+    end // end of [D3Earrsize]
   | D3Eassgn_ptr (d3e_ptr, d3ls, d3e_val) => begin
       if d3exp_is_proof d3e_val then begin
         hiexp_empty (loc0, hityp_void)
@@ -723,7 +731,7 @@ in
       val hit0 = s2exp_tr (0(*deep*), s2e0)
     in
       hiexp_char (loc0, hit0, c)
-    end
+    end // end of [D3Echar]
   | D3Econ (d2c, npf, d3es_arg) => let
 (*
       val () = begin
@@ -748,29 +756,29 @@ in
       val hit0 = s2exp_tr (0(*deep*), s2e0)
     in
       d3exp_cst_tr (loc0, hit0, d2c)
-    end
+    end // end of [D3Ecst]
   | D3Ecrypt (_(*knd*), d3e) => d3exp_tr d3e
   | D3Edelay (lin, d3e) => let
       val hit0 = s2exp_tr (0(*deep*), s2e0)
     in
       hiexp_delay (loc0, hit0, lin, d3exp_tr d3e)
-    end
+    end // end of [D3Edelay]
   | D3Edynload fil => let
       val hit0 = s2exp_tr (0(*deep*), s2e0)
     in
       hiexp_dynload (loc0, hit0, fil)
-    end
+    end // end of [D3Edynload]
   | D3Eeffmask (_, d3e) => d3exp_tr d3e
   | D3Eempty () => let
       val hit0 = s2exp_tr (0(*deep*), s2e0)
     in
       hiexp_empty (loc0, hit0)
-    end
+    end // end of [D3Eempty]
   | D3Eextval code => let
       val hit0 = s2exp_tr (0(*deep*), s2e0)
     in
       hiexp_extval (loc0, hit0, code)
-    end
+    end // end of [D3Eextval]
   | D3Efix (d2v_fun, d3e_body) => let
       val hit0 = s2exp_tr (0(*deep*), s2e0)
       val hie_body = d3exp_tr d3e_body
@@ -783,27 +791,27 @@ in
         end
     in
       hiexp_fix (loc0, hit0, d2v_fun, hie_body)
-    end
+    end // end of [D3Efix]
   | D3Efloat str => let
       val hit0 = s2exp_tr (0(*deep*), s2e0)
     in
       hiexp_float (loc0, hit0, str)
-    end
+    end // end of [D3Efloat]
   | D3Efloatsp str => let
       val hit0 = s2exp_tr (0(*deep*), s2e0)
     in
       hiexp_floatsp (loc0, hit0, str)
-    end
+    end // end of [D3Efloatsp]
   | D3Efoldat _ => let
       val hit0 = s2exp_tr (0(*deep*), s2e0)
     in
       hiexp_empty (loc0, hit0)
-    end
+    end // end of [D3Efoldat]
   | D3Efreeat d3e => let
       val hit0 = s2exp_tr (0(*deep*), s2e0)
     in
       hiexp_freeat (loc0, hit0, d3exp_tr d3e)
-    end
+    end // end of [D3Efreeat]
   | D3Eif (d3e_cond, d3e_then, d3e_else) => let
       val hit0 = s2exp_tr (0(*deep*), s2e0)
       val hie_cond = d3exp_tr d3e_cond
@@ -811,17 +819,17 @@ in
       val hie_else = d3exp_tr d3e_else
     in
       hiexp_if (loc0, hit0, hie_cond, hie_then, hie_else)
-    end
+    end // end of [D3Eif]
   | D3Eint (str, int) => let
       val hit0 = s2exp_tr (0(*deep*), s2e0)
     in
       hiexp_int (loc0, hit0, str, int)
-    end
+    end // end of [D3Eint]
   | D3Eintsp (str, int) => let
       val hit0 = s2exp_tr (0(*deep*), s2e0)
     in
       hiexp_intsp (loc0, hit0, str, int)
-    end
+    end // end of [D3Eintsp]
   | D3Elam_dyn (lin, npf, p3ts_arg, d3e_body) => let
       val hit_fun = s2exp_tr (1(*deep*), s2e0)
       val hips_arg = p3atlst_arg_tr (npf, p3ts_arg)
@@ -847,7 +855,7 @@ in
       prerr ": d3exp_tr: D2Emod: not implemented yet.";
       prerr_newline ();
       $Err.abort {hiexp} ()
-    end
+    end // end of [D3Emod]
   | D3Elet (d3cs, d3e) => let
       val hit0 = s2exp_tr (0(*deep*), s2e0)
       val hids = d3eclst_tr d3cs; val hie = d3exp_tr d3e
@@ -873,24 +881,24 @@ in
       val hies_elt = d3explst_tr d3es_elt
     in
       hiexp_lst (loc0, hit0, lin, hit_elt, hies_elt)
-    end
+    end // end of [D3Elst]
   | D3Eptrof_ptr (d3e, d3ls) => let
       val hit0 = s2exp_tr (0(*deep*), s2e0)
       val hie = d3exp_tr d3e; val hils = d3lab1lst_tr d3ls
     in
       hiexp_ptrof_ptr (loc0, hit0, hie, hils)
-    end
+    end // end of [D3Eptrof_ptr]
   | D3Eptrof_var (d2v, d3ls) => let
       val hit0 = s2exp_tr (0(*deep*), s2e0)
       val () = d2var_count_inc d2v; val hils = d3lab1lst_tr d3ls
     in
       hiexp_ptrof_var (loc0, hit0, d2v, hils)
-    end
+    end // end of [D3Eptrof_var]
   | D3Eraise d3e_exn => let
       val hit0 = s2exp_tr (0(*deep*), s2e0)
     in
       hiexp_raise (loc0, hit0, d3exp_tr d3e_exn)
-    end
+    end // end of [D3Eraise]
   | D3Erec (knd, npf, ld3es) => let
       val hit0 = s2exp_tr (0(*deep*), s2e0)
       val hit_rec = s2exp_tr (1(*deep*), s2e0)
@@ -916,26 +924,26 @@ in
       val hils = d3lab1lst_tr d3ls
     in
       hiexp_sel (loc0, hit0, hie, hils)
-    end
+    end // end of [D3Esel]
   | D3Esel_ptr (d3e_ptr, d3ls) => let
       val hit0 = s2exp_tr (0(*deep*), s2e0)
       val hie_ptr = d3exp_tr d3e_ptr
       val hils = d3lab1lst_tr d3ls
     in
       hiexp_sel_ptr (loc0, hit0, hie_ptr, hils)
-    end
+    end // end of [D3Esel_ptr]
   | D3Esel_var (d2v_ptr, d3ls) => let
       val hit0 = s2exp_tr (0(*deep*), s2e0)
       val () = d2var_count_inc d2v_ptr
       val hils = d3lab1lst_tr d3ls
     in
       hiexp_sel_var (loc0, hit0, d2v_ptr, hils)
-    end
+    end // end of [D3Esel_var]
   | D3Eseq d3es => let
       val hit0 = s2exp_tr (0(*deep*), s2e0)
     in
       d3exp_seq_tr (loc0, hit0, d3es)
-    end
+    end // end of [D3Eseq]
   | D3Esif _ => begin
       $Loc.prerr_location loc0; prerr ": Internal Error";
       prerr ": the static conditional should have already been erased.";
@@ -947,12 +955,12 @@ in
       val hie = d3exp_tr d3e
     in
       hiexp_spawn (loc0, hit0, hie)
-    end
+    end // end of [D3Espawn]
   | D3Estring (str, len) => let
       val hit0 = s2exp_tr (0(*deep*), s2e0)
     in
       hiexp_string (loc0, hit0, str, len)
-    end
+    end // end of [D3Estring]
   | D3Estruct ld3es => let
       val hit0 = s2exp_tr (0(*deep*), s2e0)
       val hit_rec = s2exp_tr (1(*deep*), s2e0)
@@ -964,17 +972,17 @@ in
       val hit_fun = s2exp_tr (1(*deep*), s2e0)
     in
       d3exp_tmpcst_tr (loc0, hit_fun, d2c, s2ess)
-    end
+    end // end of [D3Etmpcst]
   | D3Etmpvar (d2v, s2ess) => let
       val hit_fun = s2exp_tr (1(*deep*), s2e0)
     in
       d3exp_tmpvar_tr (loc0, hit_fun, d2v, s2ess)
-    end
+    end // end of [D3Etmpvar]
   | D3Etop () => let
       val hit0 = s2exp_tr (0(*deep*), s2e0)
     in
       hiexp_top (loc0, hit0)
-    end
+    end // end of [D3Etop]
   | D3Etrywith (d3e, c3ls) => let
       val hit0 = s2exp_tr (0(*deep*), s2e0)
       val hie = d3exp_tr d3e; val hicls = c3laulst_tr c3ls
@@ -982,14 +990,13 @@ in
       hiexp_trywith (loc0, hit0, hie, hicls)
     end // end of [D3Etrywith]
   | D3Evar d2v => let
-      val () = 
-        if d2var_isprf_get d2v then begin
-          $Loc.prerr_location loc0; prerr ": error(4)";
-          prerr ": the dynamic variable ["; prerr_d2var d2v;
-          prerr "] refers to a proof and thus should have been erased.";
-          prerr_newline ();
-          $Err.abort {void} ()
-        end
+      val () =  if d2var_isprf_get d2v then begin
+        $Loc.prerr_location loc0; prerr ": error(4)";
+        prerr ": the dynamic variable ["; prerr_d2var d2v;
+        prerr "] refers to a proof and thus should have been erased.";
+        prerr_newline ();
+        $Err.abort {void} ()
+      end // end of [val]
       val hit0 = s2exp_tr (0(*deep*), s2e0)
     in
       d2var_count_inc d2v; hiexp_var (loc0, hit0, d2v)
@@ -1001,20 +1008,19 @@ in
       prerr ": this proof expression should have already been erased.";
       prerr_newline ();
       $Err.abort {hiexp} ()
-    end
+    end // end of [D3Eviewat_ptr]
   | D3Eviewat_var _ => begin
       $Loc.prerr_location loc0; prerr ": Internal Error";
       prerr ": this proof expression should have already been erased.";
       prerr_newline ();
       $Err.abort {hiexp} ()
-    end
+    end // end of [D3Eviewat_var]
   | D3Ewhere (d3e, d3cs) => let
       val hit0 = s2exp_tr (0(*deep*), s2e0)
       val hids = d3eclst_tr d3cs; val hie = d3exp_tr d3e
     in
       hiexp_let_simplify (loc0, hit0, hids, hie)
-    end
-
+    end // end of [D3Ewhere]
 end // end of [d3exp_tr]
 
 implement d3explst_tr (d3es) = $Lst.list_map_fun (d3es, d3exp_tr)
@@ -1064,13 +1070,14 @@ fn v3aldeclst_tr (d3cs: v3aldeclst): hivaldeclst =
 
 fn v3ardec_tr (d3c: v3ardec): hivardec = let
   val loc = d3c.v3ardec_loc
+  val knd = d3c.v3ardec_knd
   val d2v_ptr = d3c.v3ardec_dvar_ptr
   val ini = (
     case+ d3c.v3ardec_ini of
     | Some d3e => Some (d3exp_tr d3e) | None () => None ()
   ) : hiexpopt
 in
-  hivardec_make (loc, d2v_ptr, ini)
+  hivardec_make (loc, knd, d2v_ptr, ini)
 end // end of [v3ardec_tr]
 
 fn v3ardeclst_tr (d3cs: v3ardeclst): hivardeclst =

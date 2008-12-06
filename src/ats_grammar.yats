@@ -616,7 +616,11 @@ typedef ats_ptr_type guad0ec_t ;
 
 extern d0exp_t d0exp_ann (d0exp_t, s0exp_t) ;
 extern d0exp_t d0exp_apps (d0exp_t, d0explst_t) ;
-extern d0exp_t d0exp_arr (t0kn_t, s0exp_t, d0explst_t, t0kn_t) ;
+extern d0exp_t d0exp_arrinit_none
+  (t0kn_t, s0exp_t, d0explst_t /*elt*/, t0kn_t) ;
+extern d0exp_t d0exp_arrinit_some
+  (t0kn_t, s0exp_t, d0exp_t /*asz*/, d0explst_t /*elt*/, t0kn_t) ;
+extern d0exp_t d0exp_arrsize (t0kn_t, s0exp_t, d0explst_t, t0kn_t) ;
 extern d0exp_t d0exp_arrsub (arrqi0de_t, d0arrind_t) ;
 extern d0exp_t d0exp_char (t0kn_t) ;
 extern d0exp_t d0exp_caseof (casehead_t, d0exp_t, t0kn_t, c0laulst_t) ;
@@ -760,9 +764,9 @@ extern f0undeclst_t f0undeclst_cons (f0undec_t, f0undeclst_t) ;
 
 /* ****** ****** */
 
-extern v0ardec_t v0ardec_make_some_none (i0de_t, s0exp_t) ;
-extern v0ardec_t v0ardec_make_none_some (i0de_t, d0exp_t) ;
-extern v0ardec_t v0ardec_make_some_some (i0de_t, s0exp_t, d0exp_t) ;
+extern v0ardec_t v0ardec_make_some_none (int /*stadyn*/, i0de_t, s0exp_t) ;
+extern v0ardec_t v0ardec_make_none_some (int /*stadyn*/, i0de_t, d0exp_t) ;
+extern v0ardec_t v0ardec_make_some_some (int /*stadyn*/, i0de_t, s0exp_t, d0exp_t) ;
 
 extern v0ardeclst_t v0ardeclst_nil (void) ;
 extern v0ardeclst_t v0ardeclst_cons (v0ardec_t, v0ardeclst_t) ;
@@ -1196,6 +1200,7 @@ guad0ec_t guad0ec ;
 
 /* ****** ****** */
 
+%token <t0kn> DLRARRSZ
 %token <t0kn> DLRLSTT DLRLSTVT
 %token <t0kn> DLRRECT DLRRECVT
 %token <t0kn> DLRTUPT DLRTUPVT
@@ -2440,8 +2445,12 @@ atmd0exp
   | DLREFFMASK_NTM                      { $$ = d0exp_effmask_ntm($1) ; }
   | DLREFFMASK_REF                      { $$ = d0exp_effmask_ref($1) ; }
   | DLRSPAWN                            { $$ = d0exp_spawn($1) ; }
-  | ATLBRACKET s0exp RBRACKET LBRACKET d0expcommaseq RBRACKET
-                                        { $$ = d0exp_arr ($1, $2, $5, $6) ; }
+  | ATLBRACKET s0exp RBRACKET LPAREN d0expcommaseq RPAREN
+                                        { $$ = d0exp_arrinit_none ($1, $2, $5, $6) ; }
+  | ATLBRACKET s0exp RBRACKET LBRACKET d0exp RBRACKET LPAREN d0expcommaseq RPAREN
+                                        { $$ = d0exp_arrinit_some ($1, $2, $5, $8, $9) ; }
+  | DLRARRSZ s0expelt LPAREN d0expcommaseq RPAREN
+                                        { $$ = d0exp_arrsize ($1, $2, $4, $5) ; }
   | arrqi0de d0arrind                   { $$ = d0exp_arrsub($1, $2) ; }
   | s0elop l0ab                         { $$ = d0exp_sel_lab($1, $2) ; }
   | s0elop LBRACKET d0arrind            { $$ = d0exp_sel_ind($1, $3) ; }
@@ -2807,9 +2816,10 @@ andf0undecseq
 /* ****** ****** */
 
 v0ardec /* stack-allocated variable */
-  : di0de COLON s0exp                   { $$ = v0ardec_make_some_none($1, $3) ; }
-  | di0de EQ d0exp                      { $$ = v0ardec_make_none_some($1, $3) ; }
-  | di0de COLON s0exp EQ d0exp          { $$ = v0ardec_make_some_some($1, $3, $5) ; }
+  : pi0de EQ d0exp                      { $$ = v0ardec_make_none_some(0, $1, $3) ; }
+  | BANG pi0de EQ d0exp                 { $$ = v0ardec_make_none_some(1, $2, $4) ; }
+  | pi0de COLON s0exp                   { $$ = v0ardec_make_some_none(0, $1, $3) ; }
+  | pi0de COLON s0exp EQ d0exp          { $$ = v0ardec_make_some_some(0, $1, $3, $5) ; }
 ;
 
 andv0ardecseq

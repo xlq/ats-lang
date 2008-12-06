@@ -1486,10 +1486,31 @@ implement d0exp_apps (d0e_fun, d0es_arg) =
       end
     | nil () => d0e_fun
 
-implement d0exp_arr (t_beg, s0e, d0es, t_end) =
-  let val loc = combine (t_beg.t0kn_loc, t_end.t0kn_loc) in
-    '{ d0exp_loc= loc, d0exp_node= D0Earr (s0e, d0es) }
-  end
+(* ****** ****** *)
+
+implement d0exp_arrinit
+  (t_beg, s0e_elt, d0e_asz, d0es_elt, t_end) = let
+  val loc = combine (t_beg.t0kn_loc, t_end.t0kn_loc)
+in '{
+  d0exp_loc= loc, d0exp_node= D0Earrinit (s0e_elt, d0e_asz, d0es_elt)
+} end // end of [d0exp_arrinit]
+
+implement d0exp_arrinit_none
+  (t_beg, s0e_elt, d0es_elt, t_end) =
+  d0exp_arrinit (t_beg, s0e_elt, None (), d0es_elt, t_end)
+
+implement d0exp_arrinit_some
+  (t_beg, s0e_elt, d0e_asz, d0es_elt, t_end) =
+  d0exp_arrinit (t_beg, s0e_elt, Some d0e_asz, d0es_elt, t_end)
+
+(* ****** ****** *)
+
+implement d0exp_arrsize
+  (t_beg, os0e, d0es, t_end) = let
+  val loc = combine (t_beg.t0kn_loc, t_end.t0kn_loc)
+in '{
+  d0exp_loc= loc, d0exp_node= D0Earrsize (os0e, d0es)
+} end // end of [d0exp_arrsize]
 
 implement d0exp_arrsub (qid, ind) = let
   val loc_ind = ind.d0arrind_loc
@@ -1498,6 +1519,8 @@ in '{
   d0exp_loc= loc
 , d0exp_node= D0Earrsub (qid, loc_ind, ind.d0arrind_ind)
 } end // end of [d0exp_arrsub]
+
+(* ****** ****** *)
 
 implement d0exp_char (c) = '{
   d0exp_loc= c.c0har_loc, d0exp_node= D0Echar c.c0har_val
@@ -2024,28 +2047,33 @@ implement f0undeclst_cons (x, xs) = cons (x, xs)
 (* ****** ****** *)
 
 fn v0ardec_make
-  (loc: loc_t, id: i0de, typ: s0expopt, ini: d0expopt): v0ardec = '{
+  (loc: loc_t, knd: int, id: i0de, typ: s0expopt, ini: d0expopt)
+  : v0ardec = '{
   v0ardec_loc= loc
+, v0ardec_knd= knd
 , v0ardec_sym= id.i0de_sym
 , v0ardec_sym_loc= id.i0de_loc
 , v0ardec_typ= typ
 , v0ardec_ini= ini
 } // end of [v0ardec_make]
  
-implement v0ardec_make_some_none (id, s0e) =
-  let val loc = combine (id.i0de_loc, s0e.s0exp_loc) in
-    v0ardec_make (loc, id, s0expopt_some s0e, d0expopt_none ())
-  end
+implement v0ardec_make_some_none (stadyn, id, s0e) = let
+  val loc = combine (id.i0de_loc, s0e.s0exp_loc)
+in
+  v0ardec_make (loc, stadyn, id, s0expopt_some s0e, d0expopt_none ())
+end // end of [v0ardec_make_some_none]
 
-implement v0ardec_make_none_some (id, d0e) =
-  let val loc = combine (id.i0de_loc, d0e.d0exp_loc) in
-    v0ardec_make (loc, id, s0expopt_none (), d0expopt_some d0e)
-  end
+implement v0ardec_make_none_some (stadyn, id, d0e) = let
+  val loc = combine (id.i0de_loc, d0e.d0exp_loc)
+in
+  v0ardec_make (loc, stadyn, id, s0expopt_none (), d0expopt_some d0e)
+end // end of [v0ardec_make_none_some]
 
-implement v0ardec_make_some_some (id, s0e, d0e) =
-  let val loc = combine (id.i0de_loc, d0e.d0exp_loc) in
-    v0ardec_make (loc, id, s0expopt_some s0e, d0expopt_some d0e)
-  end
+implement v0ardec_make_some_some (stadyn, id, s0e, d0e) = let
+  val loc = combine (id.i0de_loc, d0e.d0exp_loc)
+in
+  v0ardec_make (loc, stadyn, id, s0expopt_some s0e, d0expopt_some d0e)
+end // end of [v0ardec_make_some_some]
 
 implement v0ardeclst_nil () = nil ()
 implement v0ardeclst_cons (x, xs) = cons (x, xs)

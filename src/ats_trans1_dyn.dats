@@ -767,27 +767,34 @@ fun aux_item (d0e0: d0exp): d1expitm = let
         val d1e_ann = d1exp_ann_type (loc0, d1e, s1e)
       in
         $Fix.ITEMatm d1e_ann
-      end
+      end // end of [D0Eann]
     | D0Eapp _ => let 
         val d1e =
           $Fix.fixity_resolve (loc0, d1expitm_app, aux_itemlst d0e0)
       in
         $Fix.ITEMatm d1e
-      end
-    | D0Earr (s0e_elt, d0es_elt) => let
+      end // end of [D0Eapp]
+    | D0Earrinit (s0e_elt, od0e_asz, d0es_elt) => let
         val s1e_elt = s0exp_tr s0e_elt
+        val od1e_asz = d0expopt_tr od0e_asz
         val d1es_elt = d0explst_tr d0es_elt
-        val d1e_arr = d1exp_arr (loc0, s1e_elt, d1es_elt)
       in
-        $Fix.ITEMatm (d1e_arr)
-      end
+        $Fix.ITEMatm (d1exp_arrinit (loc0, s1e_elt, od1e_asz, d1es_elt))
+      end // end of [D0Earrinit]
+    | D0Earrsize (os0e_elt, d0es_elt) => let
+        val os1e_elt = s0expopt_tr os0e_elt
+        val d1es_elt = d0explst_tr d0es_elt
+        val d1e_arrsize = d1exp_arrsize (loc0, os1e_elt, d1es_elt)
+      in
+        $Fix.ITEMatm (d1e_arrsize)
+      end // end of [D0Earrsize]
     | D0Earrsub (qid, loc_ind, d0ess) => let
         val d1e_arr =
           d1exp_qid (qid.arrqi0de_loc, qid.arrqi0de_qua, qid.arrqi0de_sym)
         val d1ess_ind = d0explstlst_tr d0ess
       in
         $Fix.ITEMatm (d1exp_arrsub (loc0, d1e_arr, loc_ind, d1ess_ind))
-      end
+      end // end of [D0Earrsub]
     | D0Ecaseof (hd, d0e, c0ls) => let
         val casknd = hd.casehead_knd
         val inv = i0nvresstate_tr (hd.casehead_inv)
@@ -802,7 +809,7 @@ fun aux_item (d0e0: d0exp): d1expitm = let
       end // end of [D0Ecaseof]
     | D0Echar chr => begin
         $Fix.ITEMatm (d1exp_char (loc0, chr))
-      end
+      end // end of [D0Echar]
     | D0Ecrypt (knd) => let
         fn f (d1e: d1exp):<cloref1> d1expitm =
           let val loc0 = $Loc.location_combine (loc0, d1e.d1exp_loc) in
@@ -810,7 +817,7 @@ fun aux_item (d0e0: d0exp): d1expitm = let
           end
       in
         $Fix.ITEMopr ($Fix.OPERpre ($Fix.crypt_prec_dyn, f))
-      end
+      end // end of [D0Ecrypt]
     | D0Edelay (lin) => let
         fn f (d1e: d1exp):<cloref1> d1expitm =
           let val loc0 = $Loc.location_combine (loc0, d1e.d1exp_loc) in
@@ -818,7 +825,7 @@ fun aux_item (d0e0: d0exp): d1expitm = let
           end
       in
         $Fix.ITEMopr ($Fix.OPERpre ($Fix.delay_prec_dyn, f))
-      end
+      end // end of [D0Edelay]
     | D0Edynload () => let
         fn f (d1e: d1exp):<cloref1> d1expitm = case+ d1e.d1exp_node of
           | D1Estring (name, _) => let
@@ -1167,11 +1174,13 @@ implement d0expopt_tr (od0e) = case+ od0e of
 
 fn v0ardec_tr
   (d: v0ardec): v1ardec = let
+  val loc = d.v0ardec_loc
+  val knd = d.v0ardec_knd
   val os1e = s0expopt_tr d.v0ardec_typ
   val od1e = d0expopt_tr d.v0ardec_ini
 in
   v1ardec_make (
-    d.v0ardec_loc, d.v0ardec_sym, d.v0ardec_sym_loc, os1e, od1e
+    loc, knd, d.v0ardec_sym, d.v0ardec_sym_loc, os1e, od1e
   )
 end // end of [v0ardec_tr]
 

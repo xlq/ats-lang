@@ -1646,7 +1646,7 @@ end // end of [ccomp_exp_app_tmpvar]
 
 (* ****** ****** *)
 
-fn ccomp_exp_arr_tmpvar (
+fn ccomp_exp_arrsize_tmpvar (
     res: &instrlst_vt
   , hit_elt: hityp_t
   , hies_elt: hiexplst
@@ -1687,7 +1687,7 @@ arraysize_viewt0ype_int_viewt0ype (a: viewt@ype, n:int) =
   } // end of [where]
 in
   // empty
-end // end of [ccomp_exp_arr_tmpvar]
+end // end of [ccomp_exp_arrsize_tmpvar]
 
 (* ****** ****** *)
 
@@ -1835,10 +1835,10 @@ in
         res, level, hit_fun, hie_fun, hies_arg, tmp_res
       )
     end
-  | HIEarr (hit_elt, hies) => let
+  | HIEarrsize (hit_elt, hies) => let
       val hit_elt = hityp_normalize (hit_elt)
     in
-      ccomp_exp_arr_tmpvar (res, hit_elt, hies, tmp_res)
+      ccomp_exp_arrsize_tmpvar (res, hit_elt, hies, tmp_res)
     end // end of [HIElst]
   | HIEassgn_ptr (hie_ptr, hils, hie_val) =>
       ccomp_exp_assgn_ptr (res, hie_ptr, hils, hie_val)
@@ -2239,18 +2239,32 @@ fn ccomp_vardeclst (
     (res: &instrlst_vt, vardecs: hivardeclst)
     :<cloptr1> void = begin case+ vardecs of
     | list_cons (vardec, vardecs) => let
+        val knd = vardec.hivardec_knd
         val d2v = vardec.hivardec_ptr
         val () = d2var_lev_set (d2v, level)
-        val hit = s2exp_tr (0(*deep*), d2var_typ_ptr_get d2v)
+        val s2e = (
+          if knd = 0 then begin
+            d2var_typ_ptr_get d2v // static alloc
+          end else let
+            val loc = d2var_loc_get d2v
+          in
+            d2var_typ_get_some (loc, d2v) // alloca
+          end // end of [if]
+        ) : s2exp // end of [val]
+        val hit = s2exp_tr (0(*deep*), s2e)
         val tmp = tmpvar_make (hityp_normalize hit)
         val () = instr_add_vardec (res, tmp)
-        val () = the_dynctx_add (d2v, valprim_tmp_ref tmp)
+        val () = the_dynctx_add (d2v, vp) where {
+          val vp = (
+            if knd = 0 then valprim_tmp_ref tmp else valprim_tmp tmp
+          ) : valprim
+        } // end of [val]
         val () = case+ vardec.hivardec_ini of
-          | Some hie => ccomp_exp_tmpvar (res, hie, tmp)
-          | None () => ()
+          | Some hie => ccomp_exp_tmpvar (res, hie, tmp) | None () => ()
+        // end of [val]
       in
         aux (res, vardecs)
-      end
+      end // end of [list_cons]
     | list_nil () => ()
   end // end of [aux]
 in

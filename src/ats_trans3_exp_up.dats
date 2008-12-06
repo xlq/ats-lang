@@ -1877,15 +1877,20 @@ val d3e0 = (case+ d2e0.d2exp_node of
         d2exp_apps_tr_up (d3e_fun, d2as_arg)
       end // end of [_]
     end // end of [D2Eapps]
-  | D2Earr (s2e_elt, d2es_elt) => let
+  | D2Earrsize (os2e_elt, d2es_elt) => let
       val sz = $Lst.list_length d2es_elt
+      val s2e_elt = (case+ os2e_elt of
+        | Some s2e => s2e | None () => let
+            val s2t = s2rt_t0ype in s2exp_Var_make_srt (loc0, s2t)
+          end // end of [None]
+      ) : s2exp // end of [val]
       val d3es_elt = d2explst_elt_tr_dn (d2es_elt, s2e_elt)
       val s2e_arrsz = begin
         s2exp_arraysize_viewt0ype_int_viewt0ype (s2e_elt, sz)
       end // end of [val]
     in
-      d3exp_arr (loc0, s2e_arrsz, s2e_elt, d3es_elt)
-    end // end of [D2Earr]
+      d3exp_arrsize (loc0, s2e_arrsz, s2e_elt, d3es_elt)
+    end // end of [D2Earrsize]
   | D2Earrsub (d2s_brackets, d2e_arr, loc_ind, d2ess_ind) => begin
       if d2exp_var_is_ptr d2e_arr then let
         val d2l = d2lab_ind (loc_ind, d2ess_ind)
@@ -2113,12 +2118,13 @@ val d3e0 = (case+ d2e0.d2exp_node of
     end // end of [D2Eloopexn]
   | D2Elst (lin, os2e_elt, d2es_elt) => let
       val s2e_elt = case+ os2e_elt of
+        | Some s2e_elt => s2e_elt
         | None () => let
             val s2t = if lin > 0 then s2rt_viewt0ype else s2rt_t0ype
           in
             s2exp_Var_make_srt (loc0, s2t)
           end
-        | Some s2e_elt => s2e_elt
+      // end of [val]
       val n = $Lst.list_length d2es_elt
       val d3es_elt = d2explst_elt_tr_dn (d2es_elt, s2e_elt)
       val s2e_lst: s2exp =

@@ -194,12 +194,18 @@ ats_dynexp3_p3at_typ_lft_set (ats_ptr_type p3t, ats_ptr_type os2e)
 fun d3exp_eff_union (s2fe: s2eff, d3e: d3exp): s2eff =
   s2eff_union_s2eff (s2fe, d3e.d3exp_eff)
 
+fun d3expopt_eff_union
+  (s2fe: s2eff, od3e: d3expopt): s2eff = case+ od3e of
+  | Some d3e => d3exp_eff_union (s2fe, d3e) | None () => s2fe
+// end of [d3expopt_eff_union]
+
 fun d3explst_eff_union (s2fe: s2eff, d3es: d3explst): s2eff =
   case+ d3es of
   | cons (d3e, d3es) => begin
       d3explst_eff_union (d3exp_eff_union (s2fe, d3e), d3es)
     end
   | nil () => s2fe
+// end of [d3explst_eff_union]
 
 fun d3explstlst_eff_union (s2fe: s2eff, d3ess: d3explstlst): s2eff =
   case+ d3ess of
@@ -207,6 +213,7 @@ fun d3explstlst_eff_union (s2fe: s2eff, d3ess: d3explstlst): s2eff =
       d3explstlst_eff_union (d3explst_eff_union (s2fe, d3es), d3ess)
     end
   | nil () => s2fe
+// end of [d3explstlst_eff_union]
 
 fun labd3explst_eff_union (s2fe: s2eff, ld3es: labd3explst): s2eff =
   case+ ld3es of
@@ -214,6 +221,7 @@ fun labd3explst_eff_union (s2fe: s2eff, ld3es: labd3explst): s2eff =
       labd3explst_eff_union (d3exp_eff_union (s2fe, d3e), ld3es)
     end
   | LABD3EXPLSTnil () => s2fe
+// end of [labd3explst_eff_union]
 
 fn d3lab1_eff_union (s2fe: s2eff, d3l: d3lab1): s2eff =
   case+ d3l.d3lab1_node of
@@ -314,15 +322,28 @@ implement d3exp_app_sta (loc, s2e_app, d3e_fun) = '{
 , d3exp_node= D3Eapp_sta d3e_fun
 }
 
-implement d3exp_arr (loc, s2e_arr, s2e_elt, d3es_elt) = let
+(* ****** ****** *)
+
+implement d3exp_arrinit
+  (loc, s2e_arr, s2e_elt, od3e_asz, d3es_elt) = let
+  val s2fe = S2EFFnil ()
+  val s2fe = d3expopt_eff_union (s2fe, od3e_asz)
+  val s2fe = d3explst_eff_union (s2fe, d3es_elt)
+in '{
+  d3exp_loc= loc
+, d3exp_eff= s2fe, d3exp_typ= s2e_arr
+, d3exp_node= D3Earrinit (s2e_elt, od3e_asz, d3es_elt)
+} end // end of [d3exp_arrinit]
+
+implement d3exp_arrsize (loc, s2e_arr, s2e_elt, d3es_elt) = let
   val s2fe = d3explst_eff_union (S2EFFnil (), d3es_elt)
 in '{
   d3exp_loc= loc
 , d3exp_eff= s2fe, d3exp_typ= s2e_arr
-, d3exp_node= D3Earr (s2e_elt, d3es_elt)
-} end // end of [d3exp_arr]
+, d3exp_node= D3Earrsize (s2e_elt, d3es_elt)
+} end // end of [d3exp_arrsize]
 
-//
+(* ****** ****** *)
 
 implement d3exp_assgn_ptr (loc, d3e_ptr, d3ls, d3e_val) = let
   val s2fe = d3e_ptr.d3exp_eff
@@ -773,8 +794,10 @@ implement v3aldec_make (loc, p3t, d3e) = '{
   v3aldec_loc= loc, v3aldec_pat= p3t, v3aldec_def= d3e
 } // end of [v3aldec_make]
 
-implement v3ardec_make (loc, d2v_ptr, d2v_viw, s2e_typ, d3e_ini) = '{
+implement v3ardec_make
+  (loc, knd, d2v_ptr, d2v_viw, s2e_typ, d3e_ini) = '{
   v3ardec_loc= loc
+, v3ardec_knd= knd
 , v3ardec_dvar_ptr= d2v_ptr
 , v3ardec_dvar_viw= d2v_viw
 , v3ardec_typ= s2e_typ

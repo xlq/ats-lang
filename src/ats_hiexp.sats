@@ -317,8 +317,10 @@ datatype hidec_node =
 and hiexp_node =
   | HIEapp of (* dynamic application *)
       (hityp, hiexp, hiexplst)
-  | HIEarr of (* array construction *)
-      (hityp, hiexplst)
+  | HIEarrinit of (* array construction *)
+      (hityp(*eltyp*), hiexpopt(*asz*), hiexplst(*elt*))
+  | HIEarrsize of (* arraysize construction *)
+      (hityp(*eltyp*), hiexplst(*elt*))
   | HIEassgn_ptr of (* assignment to a pointer with offsets *)
       (hiexp, hilablst, hiexp)
   | HIEassgn_var of (* assignment to a variable with ofsets *)
@@ -465,6 +467,7 @@ and hivaldeclst = List hivaldec
 
 and hivardec = '{
   hivardec_loc= loc_t
+, hivardec_knd= int
 , hivardec_ptr= d2var_t
 , hivardec_ini= hiexpopt
 }
@@ -539,7 +542,11 @@ fun hiexp_app
   (_: loc_t, _app: hityp, _fun: hityp, hie: hiexp, hies: hiexplst)
   : hiexp
 
-fun hiexp_arr
+fun hiexp_arrinit
+  (_: loc_t, _: hityp, hit_elt: hityp, ohie_asz: hiexpopt, hies_elt: hiexplst)
+  : hiexp
+
+fun hiexp_arrsize
   (_: loc_t, _: hityp, hit_elt: hityp, hies: hiexplst): hiexp
 
 fun hiexp_assgn_ptr
@@ -701,10 +708,11 @@ fun hidec_valdecs
 fun hidec_valdecs_par (_: loc_t, hids: hivaldeclst): hidec
 fun hidec_valdecs_rec (_: loc_t, hids: hivaldeclst): hidec
 
-fun hivardec_make (_: loc_t, d2v: d2var_t, ini: hiexpopt): hivardec
+fun hivardec_make
+  (_: loc_t, knd: int, d2v: d2var_t, ini: hiexpopt): hivardec
 fun hidec_vardecs (_: loc_t, hids: hivardeclst): hidec
 
-//
+(* ****** ****** *)
 
 fun hiimpdec_make (
     _: loc_t
@@ -714,7 +722,7 @@ fun hiimpdec_make (
   ) : hiimpdec
 fun hidec_impdec (_: loc_t, hid: hiimpdec): hidec
 
-//
+(* ****** ****** *)
 
 fun hidec_local (_: loc_t, _head: hideclst, _body: hideclst): hidec
 

@@ -1318,8 +1318,10 @@ datatype d0exp_node =
       (d0exp, s0exp)
   | D0Eapp of (* functional application *)
       (d0exp, d0exp)
-  | D0Earr of (* array expression *)
-      (s0exp, d0explst)
+  | D0Earrinit of (* array initilization *)
+      (s0exp (*elt*), d0expopt (*asz*), d0explst (*elt*))
+  | D0Earrsize of (* arraysize expression *)
+      (s0expopt (*elt*), d0explst (*elt*))
   | D0Earrsub of (* array subscription *)
       (arrqi0de, loc_t(*ind*), d0explstlst)
   | D0Ecaseof of (* case expression *)
@@ -1579,6 +1581,7 @@ and f0undeclst = List f0undec
 
 and v0ardec = '{
   v0ardec_loc= loc_t
+, v0ardec_knd= int
 , v0ardec_sym= sym_t
 , v0ardec_sym_loc= loc_t
 , v0ardec_typ= s0expopt
@@ -1632,12 +1635,39 @@ fun d0exp_ann (_: d0exp, _: s0exp): d0exp = "d0exp_ann"
 
 fun d0exp_apps (_fun: d0exp, _arg: d0explst): d0exp = "d0exp_apps"
 
-fun d0exp_arr
-  (t_beg: t0kn, elt: s0exp, elts: d0explst, t_end: t0kn): d0exp
-  = "d0exp_arr"
+(* ****** ****** *)
+
+fun d0exp_arrinit (
+    t_beg: t0kn
+  , elt: s0exp, asz: d0expopt, elts: d0explst
+  , t_end: t0kn
+  ) : d0exp
+  = "d0exp_arrinit"
+  
+fun d0exp_arrinit_none (
+    t_beg: t0kn
+  , elt: s0exp, elts: d0explst
+  , t_end: t0kn
+  ) : d0exp
+  = "d0exp_arrinit_none"
+
+fun d0exp_arrinit_some (
+    t_beg: t0kn
+  , elt: s0exp, asz: d0exp, elts: d0explst
+  , t_end: t0kn
+  ) : d0exp
+  = "d0exp_arrinit_some"
+
+(* ****** ****** *)
+
+fun d0exp_arrsize
+  (t_beg: t0kn, elt: s0expopt, elts: d0explst, t_end: t0kn): d0exp
+  = "d0exp_arrsize"
 
 fun d0exp_arrsub (qid: arrqi0de, ind: d0arrind): d0exp
   = "d0exp_arrsub"
+
+(* ****** ****** *)
 
 fun d0exp_char (_: c0har): d0exp = "d0exp_char"
 
@@ -1899,13 +1929,14 @@ fun f0undeclst_cons (x: f0undec, xs: f0undeclst): f0undeclst
 
 (* ****** ****** *)
 
-fun v0ardec_make_some_none (id: i0de, s0e: s0exp): v0ardec
+fun v0ardec_make_some_none (knd: int, id: i0de, s0e: s0exp): v0ardec
   = "v0ardec_make_some_none"
 
-fun v0ardec_make_none_some (id: i0de, d0e: d0exp): v0ardec
+fun v0ardec_make_none_some (knd: int, id: i0de, d0e: d0exp): v0ardec
   = "v0ardec_make_none_some"
 
-fun v0ardec_make_some_some (id: i0de, s0e: s0exp, d0e: d0exp): v0ardec
+fun v0ardec_make_some_some
+  (knd: int, id: i0de, s0e: s0exp, d0e: d0exp): v0ardec
   = "v0ardec_make_some_some"
 
 fun v0ardeclst_nil (): v0ardeclst = "v0ardeclst_nil"

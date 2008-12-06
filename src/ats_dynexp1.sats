@@ -261,8 +261,10 @@ and d1exp_node =
       (d1exp, loc_t(*arg*), int (* pfarity *), d1explst)
   | D1Eapp_sta of (* static application *)
       (d1exp, s1exparglst)
-  | D1Earr of (* array expression *)
-      (s1exp, d1explst)
+  | D1Earrinit of (* array initialization *)
+      (s1exp (*eltyp*), d1expopt (*asz*), d1explst (*elt*))
+  | D1Earrsize of (* arraysize expression *)
+      (s1expopt (*element type*), d1explst (*elements*))
   | D1Earrsub of (* array subscription *)
       (d1exp, loc_t(*ind*), d1explstlst)
   | D1Ecaseof of (* dynamic caseof-expression *)
@@ -596,6 +598,7 @@ and f1undeclst = List f1undec
 
 and v1ardec = '{
   v1ardec_loc= loc_t
+, v1ardec_knd= int
 , v1ardec_sym= sym_t
 , v1ardec_sym_loc= loc_t
 , v1ardec_typ= s1expopt
@@ -670,15 +673,18 @@ fun d1exp_app_dyn
 
 fun d1exp_app_sta (_: loc_t, d1e: d1exp, s1as: s1exparglst): d1exp
 
-//
+(* ****** ****** *)
 
-fun d1exp_arr
-  (_: loc_t, s1e_elt: s1exp, d1es_elt: d1explst): d1exp
+fun d1exp_arrinit
+  (_: loc_t, s1e_elt: s1exp, od1e_asz: d1expopt, d1es_elt: d1explst): d1exp
+
+fun d1exp_arrsize
+  (_: loc_t, os1e_elt: s1expopt, d1es_elt: d1explst): d1exp
 
 fun d1exp_arrsub
   (_: loc_t, arr: d1exp, ind: loc_t, ind: d1explstlst): d1exp
 
-//
+(* ****** ****** *)
 
 fun d1exp_caseof
   (_: loc_t, k: int, res: i1nvresstate, d1es: d1explst, c1ls: c1laulst)
@@ -931,7 +937,7 @@ fun f1undec_make
   : f1undec
 
 fun v1ardec_make
-  (_: loc_t, id: sym_t, loc_id: loc_t, typ: s1expopt, def: d1expopt)
+  (_: loc_t, knd: int, id: sym_t, loc_id: loc_t, typ: s1expopt, def: d1expopt)
   : v1ardec
 
 fun m1acdef_make

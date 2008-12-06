@@ -537,12 +537,19 @@ in
   d2exp_app_dyn (loc0, d2e_fun, loc_arg, npf, darg)
 end // end of [d2exp_app_sta_dyn]
 
-//
+(* ****** ****** *)
 
-implement d2exp_arr
-  (loc, s2e_elt, d2es_elt) = '{
+implement d2exp_arrinit
+  (loc, s2e_elt, od2e_asz, d2es_elt) = '{
   d2exp_loc= loc
-, d2exp_node= D2Earr (s2e_elt, d2es_elt)
+, d2exp_node= D2Earrinit (s2e_elt, od2e_asz, d2es_elt)
+, d2exp_typ= None ()
+}
+
+implement d2exp_arrsize
+  (loc, os2e_elt, d2es_elt) = '{
+  d2exp_loc= loc
+, d2exp_node= D2Earrsize (os2e_elt, d2es_elt)
 , d2exp_typ= None ()
 }
 
@@ -552,6 +559,8 @@ implement d2exp_arrsub
 , d2exp_node= D2Earrsub (d2s, d2e_arr, loc_ind, d2ess_ind)
 , d2exp_typ= None ()
 }
+
+(* ****** ****** *)
 
 implement d2exp_assgn (loc, d2e_lval, d2e_val) = '{
   d2exp_loc= loc
@@ -974,8 +983,9 @@ implement f2undec_make (loc, d2v, def, ann) = '{
   f2undec_loc= loc, f2undec_var= d2v, f2undec_def= def, f2undec_ann= ann
 }
 
-implement v2ardec_make (loc, d2v, s2v, typ, ini) = '{
+implement v2ardec_make (loc, knd, d2v, s2v, typ, ini) = '{
   v2ardec_loc= loc
+, v2ardec_knd= knd
 , v2ardec_dvar= d2v
 , v2ardec_svar= s2v
 , v2ardec_typ= typ

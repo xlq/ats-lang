@@ -543,8 +543,10 @@ and d2exp_node =
   | D2Eann_type of (* ascribed dynamic expressions *)
       (d2exp, s2exp)
   | D2Eapps of (d2exp, d2exparglst)
-  | D2Earr of (* array expression *)
-      (s2exp (*element type*), d2explst (*elements*))
+  | D2Earrinit of (* array initialization *)
+      (s2exp (*eltyp*), d2expopt (*asz*), d2explst (*elt*))
+  | D2Earrsize of (* array expression *)
+      (s2expopt (*element type*), d2explst (*elements*))
   | D2Earrsub of (* array subscription *)
       (d2sym (*[] overloading*), d2exp, loc_t(*ind*), d2explstlst)
   | D2Eassgn of (* assignment *)
@@ -781,6 +783,7 @@ and f2undeclst = List f2undec
 
 and v2ardec = '{
   v2ardec_loc= loc_t
+, v2ardec_knd= int
 , v2ardec_dvar= d2var_t // dynamic address
 , v2ardec_svar= s2var_t // static address
 , v2ardec_typ= s2expopt
@@ -964,12 +967,17 @@ fun d2exp_app_sta_dyn
 
 fun d2exp_apps (_: loc_t, _fun: d2exp, _arg: d2exparglst): d2exp
 
-//
+(* ****** ****** *)
 
-fun d2exp_arr (_: loc_t, elt: s2exp, elts: d2explst): d2exp
+fun d2exp_arrinit
+  (_: loc_t, eltyp: s2exp, asz: d2expopt, elts: d2explst): d2exp
+
+fun d2exp_arrsize (_: loc_t, eltyp: s2expopt, elts: d2explst): d2exp
 
 fun d2exp_arrsub
   (_: loc_t, d2s: d2sym, arr: d2exp, ind: loc_t, ind: d2explstlst): d2exp
+
+(* ****** ****** *)
 
 fun d2exp_assgn (_: loc_t, _lval: d2exp, _val: d2exp): d2exp
 fun d2exp_char (_: loc_t, _: char): d2exp
@@ -1120,7 +1128,8 @@ fun s2aspdec_make (_: loc_t, s2c: s2cst_t, def: s2exp): s2aspdec
 fun v2aldec_make (_: loc_t, _: p2at, def: d2exp, ann: s2expopt): v2aldec
 fun f2undec_make (_: loc_t, _: d2var_t, def: d2exp, ann: s2expopt): f2undec
 fun v2ardec_make
-  (_: loc_t, _: d2var_t, _: s2var_t, typ: s2expopt, ini: d2expopt): v2ardec
+  (_: loc_t, knd: int, _: d2var_t, _: s2var_t, typ: s2expopt, ini: d2expopt)
+  : v2ardec
 
 fun i2mpdec_make (
     loc: loc_t

@@ -261,20 +261,33 @@ in
       fprint1_string (pf | out, "...");
       strpr ")"
     end
-  | D1Earr (s1e, d1es) => begin
-      strpr "D1Earr(";
+  | D1Earrinit (s1e, od1e_asz, d1es_elt) => begin
+      strpr "D1Earrinit(";
       fprint_s1exp (pf | out, s1e);
       strpr "; ";
-      fprint_d1explst (pf | out, d1es);
+      begin case+ od1e_asz of
+      | Some d1e => fprint_d1exp (pf | out, d1e) | None () => ()
+      end;
+      strpr "; ";      
+      fprint_d1explst (pf | out, d1es_elt);
       strpr ")"
-    end
+    end // end of [D1Earrinit]
+  | D1Earrsize (os1e_elt, d1es_elt) => begin
+      strpr "D1Earrsize(";
+      begin case+ os1e_elt of
+      | Some s1e => fprint_s1exp (pf | out, s1e) | None () => ()
+      end;
+      strpr "; ";
+      fprint_d1explst (pf | out, d1es_elt);
+      strpr ")"
+    end // end of [D1Earrsize]
   | D1Earrsub (d1e_arr, _(*loc_ind*), d1ess_ind) => begin
       strpr "D1Earrsub(";
       fprint_d1exp (pf | out, d1e_arr);
       strpr "; ";
       fprint_d1explstlst (pf | out, d1ess_ind);
       strpr ")"
-    end
+    end // end of [D1Earrsub]
   | D1Ecaseof _ => begin
       strpr "D1Ecaseof("; fprint1_string (pf | out, "..."); strpr ")"
     end
@@ -294,7 +307,7 @@ in
       strpr "; ";
       fprint_d1exp (pf | out, d1e);
       strpr ")"
-    end
+    end // end of [D1Edelay]
   | D1Edynload (fil) => begin
       strpr "D1Edynload(";
       $Fil.fprint_filename (pf | out, fil);
@@ -316,7 +329,7 @@ in
       strpr "; ";
       fprint_d1exp (pf | out, d1e);
       strpr ")"
-    end
+    end // end of [D1Eexist]
   | D1Eextval (s1e, code) => begin
       fprint_s1exp (pf | out, s1e);
       strpr "; ";
@@ -324,14 +337,14 @@ in
       fprint1_string (pf | out, code);
       strpr "\"";
       strpr ")"
-    end
+    end // end of [D1Eextval]
   | D1Efix (id_fun, d1e_body) => begin
       strpr "D1Efix(";
       $Syn.fprint_i0de (pf | out, id_fun);
       strpr "; ";
       fprint_d1exp (pf | out, d1e_body);
       strpr ")"
-    end
+    end // end of [D1Efix]
   | D1Efloat f(*string*) => begin
       strpr "D1Efloat("; fprint1_string (pf | out, f); strpr ")"
     end
@@ -344,7 +357,7 @@ in
       strpr "; ";
       fprint_d1exp (pf | out, d1e);
       strpr ")"
-    end
+    end // end of [D1Efoldat]
   | D1Efor (inv, ini, test, post, body) => begin
       fprint1_string (pf | out, "...");
       strpr "; ";
@@ -355,14 +368,14 @@ in
       fprint_d1exp (pf | out, post);
       strpr "; ";
       fprint_d1exp (pf | out, body);
-    end
+    end // end of [D1Efor]
   | D1Efreeat (_(*s1as*), d1e) => begin
       strpr "D1Efreeat(";
       fprint1_string (pf | out, "...");
       strpr "; ";
       fprint_d1exp (pf | out, d1e);
       strpr ")"
-    end
+    end // end of [D1Efreeat]
   | D1Eif (_(*inv*), d1e_cond, d1e_then, od1e_else) => begin
       strpr "D1Eif(";
       fprint1_string (pf | out, "...");
@@ -399,7 +412,7 @@ in
       strpr "; ";
       fprint_d1exp (pf | out, d1e);
       strpr ")"
-    end
+    end // end of [D1Elam_met]
   | D1Elam_sta_ana (_, s1as, d1e) => begin
       strpr "D1Elam_sta_ana(";
       fprint1_string (pf | out, "...");

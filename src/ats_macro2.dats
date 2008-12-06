@@ -1171,60 +1171,66 @@ implement eval1_d2exp (loc0, ctx, env, d2e0) = begin
           | _ => d2exp_apps (loc0, d2e, d2as)
         end // end of [_]
     end // end of [D2Eapps]
-  | D2Earr (s2e, d2es) => let
+  | D2Earrinit (s2e_elt, od2e_asz, d2es_elt) => let
+      val od2e_asz = eval1_d2expopt (loc0, ctx, env, od2e_asz)
+      val d2es_elt = eval1_d2explst (loc0, ctx, env, d2es_elt)
+    in
+      d2exp_arrinit (loc0, s2e_elt, od2e_asz, d2es_elt)
+    end // end of [D2Earrinit]
+  | D2Earrsize (os2e, d2es) => let
       val d2es = eval1_d2explst (loc0, ctx, env, d2es)
     in
-      d2exp_arr (loc0, s2e, d2es)
-    end
+      d2exp_arrsize (loc0, os2e, d2es)
+    end // end of [D2Earrsize]
   | D2Earrsub (d2s, d2e_arr, _(*loc*), d2ess_ind) => let
       val d2e_arr = eval1_d2exp (loc0, ctx, env, d2e_arr)
       val d2ess_ind = eval1_d2explstlst (loc0, ctx, env, d2ess_ind)
     in
       d2exp_arrsub (loc0, d2s, d2e_arr, loc0, d2ess_ind)
-    end
+    end // end of [D2Earrsub]
   | D2Eassgn (d2e1, d2e2) => let
       val d2e1 = eval1_d2exp (loc0, ctx, env, d2e1)
       val d2e2 = eval1_d2exp (loc0, ctx, env, d2e2)
     in
       d2exp_assgn (loc0, d2e1, d2e2)
-    end
+    end // end of [D2Eassgn]
   | D2Ecaseof (knd, res, n, d2es, c2ls) => let
       val res = eval1_i2nvresstate (loc0, env, res)
       val d2es = eval1_d2explst (loc0, ctx, env, d2es)
       val c2ls = eval1_c2laulst (loc0, ctx, env, c2ls)
     in
       d2exp_caseof (loc0, knd, res, n, d2es, c2ls)
-    end
+    end // end of [D2Ecaseof]
   | D2Econ (d2c, s2es, npf, d2es) => let
       val d2es = eval1_d2explst (loc0, ctx, env, d2es)
     in
       d2exp_con (loc0, d2c, s2es, npf, d2es)
-    end
+    end // end of [D2Econ]
   | D2Ecrypt (knd, d2e) => let
       val d2e = eval1_d2exp (loc0, ctx, env, d2e)
     in
       d2exp_crypt (loc0, knd, d2e)
-    end
+    end // end of [D2Ecrypt]
   | D2Edelay (lin, d2e) => let
       val d2e = eval1_d2exp (loc0, ctx, env, d2e)
     in
       d2exp_delay (loc0, lin, d2e)
-    end
+    end // end of [D2Edelay]
   | D2Ederef d2e => let
       val d2e = eval1_d2exp (loc0, ctx, env, d2e)
     in
       d2exp_deref (loc0, d2e)
-    end
+    end // end of [D2Ederef]
   | D2Eeffmask (eff, d2e) => let
       val d2e = eval1_d2exp (loc0, ctx, env, d2e)
     in
       d2exp_effmask (loc0, eff, d2e)
-    end
+    end // end of [D2Eeffmask]
   | D2Eexist (s2as, d2e) => let
       val d2e = eval1_d2exp (loc0, ctx, env, d2e)
     in
       d2exp_exist (loc0, s2as, d2e)
-    end
+    end // end of [D2Eexist]
   | D2Efix (d2v, d2e) => let
       val () = alphaenv_push (env)
       val d2v_new = eval1_d2var (loc0, env, d2v)
@@ -1232,17 +1238,17 @@ implement eval1_d2exp (loc0, ctx, env, d2e0) = begin
       val () = alphaenv_pop (env)
     in
       d2exp_fix (loc0, d2v_new, d2e)
-    end
+    end // end of [D2Efix]
   | D2Efoldat (s2as, d2e) => let
       val d2e = eval1_d2exp (loc0, ctx, env, d2e)
     in
       d2exp_foldat (loc0, s2as, d2e)
-    end
+    end // end of [D2Efoldat]
   | D2Efreeat (s2as, d2e) => let
       val d2e = eval1_d2exp (loc0, ctx, env, d2e)
     in
       d2exp_freeat (loc0, s2as, d2e)
-    end
+    end // end of [D2Efreeat]
   | D2Eif (res, d2e_cond, d2e_then, od2e_else) => let
       val res = eval1_i2nvresstate (loc0, env, res)
       val d2e_cond = eval1_d2exp (loc0, ctx, env, d2e_cond)
@@ -1250,7 +1256,7 @@ implement eval1_d2exp (loc0, ctx, env, d2e0) = begin
       val od2e_else = eval1_d2expopt (loc0, ctx, env, od2e_else)
     in
       d2exp_if (loc0, res, d2e_cond, d2e_then, od2e_else)
-    end
+    end // end of [D2Eif]
   | D2Elet (d2cs, d2e) => let
       val () = alphaenv_push (env)
       val d2cs = eval1_d2eclst (loc0, ctx, env, d2cs)
@@ -1258,12 +1264,12 @@ implement eval1_d2exp (loc0, ctx, env, d2e0) = begin
       val () = alphaenv_pop (env)
     in
       d2exp_let (loc0, d2cs, d2e)
-    end
+    end // end of [D2Elet]
   | D2Elst (lin, os2e, d2es) => let
       val d2es = eval1_d2explst (loc0, ctx, env, d2es)
     in
       d2exp_lst (loc0, lin, os2e, d2es)
-    end
+    end // end of [D2Elst]
   | D2Emacsyn (knd, d2e) => let
       val v2al = (
         case+ knd of
@@ -1295,39 +1301,39 @@ implement eval1_d2exp (loc0, ctx, env, d2e0) = begin
       val d2e = eval1_d2exp (loc0, ctx, env, d2e)
     in
       d2exp_ptrof (loc0, d2e)
-    end
+    end // end of [D2Eptrof]
   | D2Eraise (d2e) => let
       val d2e = eval1_d2exp (loc0, ctx, env, d2e)
     in
       d2exp_raise (loc0, d2e)
-    end
+    end // end of [D2Eraise]
   | D2Erec (recknd, npf, ld2es) => let
       val ld2es = eval1_labd2explst (loc0, ctx, env, ld2es)
     in
       d2exp_rec (loc0, recknd, npf, ld2es)
-    end
+    end // end of [D2Erec]
   | D2Eseq d2es => let
       val d2es = eval1_d2explst (loc0, ctx, env, d2es)
     in
       d2exp_seq (loc0, d2es)
-    end
+    end // end of [D2Eseq]
   | D2Esif (res, s2e_cond, d2e_then, d2e_else) => let
       val res = eval1_i2nvresstate (loc0, env, res)
       val d2e_then = eval1_d2exp (loc0, ctx, env, d2e_then)
       val d2e_else = eval1_d2exp (loc0, ctx, env, d2e_else)
     in
       d2exp_sif (loc0, res, s2e_cond, d2e_then, d2e_else)
-    end
+    end // end of [D2Esif]
   | D2Estruct ld2es => let
       val ld2es = eval1_labd2explst (loc0, ctx, env, ld2es)
     in
       d2exp_struct (loc0, ld2es)
-    end
+    end // end of [D2Estruct]
   | D2Etmpid (d2e, ts2ess) => let
       val d2e = eval1_d2exp (loc0, ctx, env, d2e)
     in
       d2exp_tmpid (loc0, d2e, ts2ess)
-    end
+    end // end of [D2Etmpid]
   | D2Evar (d2v) => let
       val d2v_new = eval1_d2var (loc0, env, d2v)
     in
@@ -1337,7 +1343,7 @@ implement eval1_d2exp (loc0, ctx, env, d2e0) = begin
       val d2e = eval1_d2exp (loc0, ctx, env, d2e)
     in
       d2exp_viewat (loc0, d2e)
-    end
+    end // end of [D2Eviewat]
 (*
   | _ => begin
       prerr loc0;

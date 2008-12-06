@@ -280,14 +280,25 @@ in
       strpr "; ";
       fprint_hiexplst (pf | out, hies_arg);
       strpr ")"
-    end
-  | HIEarr (hit_elt, hies_elt) => begin
-      strpr "HIEarr(";
+    end // end of [HIEapp]
+  | HIEarrinit (hit_elt, ohie_asz, hies_elt) => begin
+      strpr "HIEarrinit(";
+      fprint_hityp (pf | out, hit_elt);
+      strpr "; ";
+      begin case+ ohie_asz of
+      | Some hie => fprint_hiexp (pf | out, hie) | None () => ()
+      end;
+      strpr "; ";
+      fprint_hiexplst (pf | out, hies_elt);
+      strpr ")"
+    end // end of [HIEarrinit]
+  | HIEarrsize (hit_elt, hies_elt) => begin
+      strpr "HIEarrsize(";
       fprint_hityp (pf | out, hit_elt);
       strpr "; ";
       fprint_hiexplst (pf | out, hies_elt);
       strpr ")"
-    end
+    end // end of [HIEarrsize]
   | HIEassgn_ptr (hie, hils, hie_val) => begin
       strpr "HIEassgn_ptr(";
       fprint_hiexp (pf | out, hie);

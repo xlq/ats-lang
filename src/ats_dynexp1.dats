@@ -222,13 +222,21 @@ implement d1exp_app_sta (loc, d1e, s1as) = '{
   d1exp_loc= loc, d1exp_node= D1Eapp_sta (d1e, s1as)
 }
 
-implement d1exp_arr (loc, s1e, d1es) = '{
-  d1exp_loc= loc, d1exp_node= D1Earr (s1e, d1es)
+(* ****** ****** *)
+
+implement d1exp_arrinit (loc, s1e, od1e_asz, d1es_elt) = '{
+  d1exp_loc= loc, d1exp_node= D1Earrinit (s1e, od1e_asz, d1es_elt)
+}
+
+implement d1exp_arrsize (loc, os1e_elt, d1es_elt) = '{
+  d1exp_loc= loc, d1exp_node= D1Earrsize (os1e_elt, d1es_elt)
 }
 
 implement d1exp_arrsub (loc, d1e_arr, loc_ind, d1ess_ind) = '{
   d1exp_loc= loc, d1exp_node= D1Earrsub (d1e_arr, loc_ind, d1ess_ind)
 }
+
+(* ****** ****** *)
 
 implement d1exp_caseof
   (loc, casknd, inv, d1es, c1ls) = let
@@ -752,8 +760,9 @@ implement f1undec_make (loc, id, loc_id, d1e, ann) = '{
 , f1undec_ann= ann
 } // end of [f1undec_make]
 
-implement v1ardec_make (loc, id, loc_id, os1e, od1e) = '{
+implement v1ardec_make (loc, knd, id, loc_id, os1e, od1e) = '{
   v1ardec_loc= loc
+, v1ardec_knd= knd
 , v1ardec_sym= id
 , v1ardec_sym_loc= loc_id
 , v1ardec_typ= os1e

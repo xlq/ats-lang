@@ -352,13 +352,26 @@ in
       fprint_d2exparglst (pf | out, d2as_arg);
       strpr ")"
     end // end of [D2Eapps]
-  | D2Earr (s2e_elt, d2es_elt) => begin
-      strpr "D2Earr(";
+  | D2Earrinit (s2e_elt, od2e_asz, d2es_elt) => begin
+      strpr "D2Earrinit(";
       fprint_s2exp (pf | out, s2e_elt);
+      strpr "; ";
+      begin case+ od2e_asz of
+      | Some d2e => fprint_d2exp (pf | out, d2e) | None () => ()
+      end;
       strpr "; ";
       fprint_d2explst (pf | out, d2es_elt);
       strpr ")"
-    end
+    end // end of [D2Earrsize]
+  | D2Earrsize (os2e_elt, d2es_elt) => begin
+      strpr "D2Earrsize(";
+      begin case+ os2e_elt of
+      | Some s2e => fprint_s2exp (pf | out, s2e) | None () => ()
+      end;
+      strpr "; ";
+      fprint_d2explst (pf | out, d2es_elt);
+      strpr ")"
+    end // end of [D2Earrsize]
   | D2Earrsub (d2s, d2e_arr, _(*loc_ind*), d2ess_ind) => begin
       strpr "D2Earrsub(";
       fprint_d2sym (pf | out, d2s);
@@ -367,60 +380,60 @@ in
       strpr "; ";
       fprint1_string (pf | out, "...");
       strpr ")"
-    end
+    end // end of [D2Earrsub]
   | D2Eassgn (d2e_lval, d2e_val) => begin
       strpr "D2Eassgn(";
       fprint_d2exp (pf | out, d2e_lval);
       strpr "; ";
       fprint_d2exp (pf | out, d2e_val);
       strpr ")"
-    end
+    end // end of [D2Eassgn]
   | D2Ecaseof _ => begin
       strpr "D2Ecaseof("; fprint1_string (pf | out, "..."); strpr ")"
     end // end of [D2Ecaseof]
   | D2Echar c => begin
       strpr "D2Echar("; fprint1_char (pf | out, c); strpr ")"
-    end
+    end // end of [D2Echar]
   | D2Econ (d2c, s2as, npf, d2es) => begin
       strpr "D2Econ(";
       fprint_d2con (pf | out, d2c);
       strpr "; ";
       fprint_d2explst (pf | out, d2es);
       strpr ")"
-    end
+    end // end of [D2Econ]
   | D2Ecst d2c => begin
       strpr "D2Ecst("; fprint_d2cst (pf | out, d2c); strpr ")"
-    end
+    end // en dof [D2Ecst]
   | D2Ecrypt (knd, d2e) => begin
       strpr "D2Ecrypt(";
       fprint1_int (pf | out, knd);
       strpr "; ";
       fprint_d2exp (pf | out, d2e);
       strpr ")"
-    end
+    end // end of [D2Ecrypt]
   | D2Edelay (lin, d2e) => begin
       strpr "D2Edelay(";
       fprint1_int (pf | out, lin);
       strpr "; ";
       fprint_d2exp (pf | out, d2e);
       strpr ")"
-    end
+    end // end of [D2Edelay]
   | D2Ederef d2e => begin
       strpr "D2Ederef("; fprint_d2exp (pf | out, d2e); strpr ")"
     end
   | D2Edynload (fil) => begin
       strpr "D2Edynload("; $Fil.fprint_filename (pf | out, fil); strpr ")"
-    end
+    end // end of [D2Edynload]
   | D2Eeffmask (effs, d2e) => begin
       strpr "D2Eeffmask(";
       $Eff.fprint_effectlst (pf | out, effs);
       strpr "; ";
       fprint_d2exp (pf | out, d2e);
       strpr ")"
-    end
+    end // end of [D2Eeffmask]
   | D2Eempty () => begin
       fprint1_string (pf | out, "D2Eempty()")
-    end
+    end // end of [D2Eempty]
   | D2Eexist (s2a, d2e) => begin
       strpr "D2Eexist(";
       fprint1_string (pf | out, "...");
@@ -436,23 +449,23 @@ in
       fprint1_string (pf | out, code);
       strpr "\"";
       strpr ")"
-    end
+    end // end of [D2Eextval]
   | D2Efix (d2v_fun, d2e_body) => begin
       strpr "D2Efix(";
       fprint_d2var (pf | out, d2v_fun);
       strpr "; ";
       fprint_d2exp (pf | out, d2e_body);
       strpr ")"
-    end
+    end // end of [D2Efix]
   | D2Efloat f(*string*) => begin
       strpr "D2Efloat("; fprint1_string (pf | out, f); strpr ")"
-    end
+    end // end of [D2Efloat]
   | D2Efloatsp f(*string*) => begin
       strpr "D2Efloatsp("; fprint1_string (pf | out, f); strpr ")"
-    end
+    end // end of [D2Efloatsp]
   | D2Efoldat (sarg, d2e) => begin
       strpr "D2Efoldat("; fprint_d2exp (pf | out, d2e); strpr ")"
-    end
+    end // end of [D2Efoldat]
   | D2Efor (inv, ini, test, post, body) => begin
       strpr "D2Efor(";
       fprint1_string (pf | out, "...");
@@ -534,13 +547,13 @@ in
         | $Syn.MACSYNKINDencode () => fprint1_string (pf | out, "`(")
     in
       fprint_d2exp (pf | out, d2e); strpr ")"
-    end
+    end // end of [D2Emacsyn]
   | D2Eptrof d2e => begin
       strpr "D2Eptrof("; fprint_d2exp (pf | out, d2e); strpr ")"
-    end
+    end // end of [D2Eptrof]
   | D2Eloopexn i => begin
       strpr "D2Eloopexn("; fprint1_int (pf | out, i); strpr ")"
-    end
+    end // end of [D2Eloopexn]
   | D2Elst (lin, os2e, d2es) => begin
       strpr "D2Elst(";
       fprint1_int (pf | out, lin);
@@ -556,7 +569,7 @@ in
     end // end of [D2Elst]
   | D2Eraise (d2e) => begin
       strpr "D2Eraise("; fprint_d2exp (pf | out, d2e); strpr ")"
-    end
+    end // end of [D2Eraise]
   | D2Erec (recknd, npf, ld2es) => begin
       strpr "D2Erec(";
       fprint1_int (pf | out, recknd);
@@ -565,7 +578,7 @@ in
       strpr "; ";
       fprint_labd2explst (pf | out, ld2es);
       strpr ")"
-    end
+    end // end of [D2Erec]
   | D2Escaseof _ => begin
       strpr "D2Escaseof("; fprint1_string (pf | out, "..."); strpr ")"
     end // end of [D2Escaseof]
