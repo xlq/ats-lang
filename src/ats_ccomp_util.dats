@@ -181,7 +181,8 @@ implement instr_tmpvarmap_add (m, ins) = let
   end // end of [aux_branchlst]
 in
   case+ ins of
-  | INSTRarr (tmp, _, _) => tmpvarmap_add_root (m, tmp)
+  | INSTRarr_heap (tmp, _, _) => tmpvarmap_add_root (m, tmp)
+  | INSTRarr_stack (tmp, _, _) => tmpvarmap_add_root (m, tmp)
   | INSTRcall (tmp, _, _, _) => tmpvarmap_add_root (m, tmp)
 (*
   | INSTRcall_tail fl => ()

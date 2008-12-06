@@ -374,8 +374,12 @@ fun emit_matpnt {m:file_mode}
 (* ****** ****** *)
 
 datatype instr =
-  | INSTRarr of (* array allocation *)
+  | INSTRarr1asgn of
+      (valprim(*arr*), valprim(*asz*), tmpvar_t(*elt*), valprim(*tsz*))
+  | INSTRarr_heap of (* heap array allocation *)
       (tmpvar_t, int(*size*), hityp_t(*element type*))
+  | INSTRarr_stack of (* stack array allcation *)
+      (tmpvar_t, valprim(*size*), hityp_t(*element type*))
   | INSTRcall of (* function call *)
       (tmpvar_t, hityp_t, valprim, valprimlst)
   | INSTRcall_tail of (* function tail-call *)
@@ -492,14 +496,26 @@ overload prerr with prerr_instrlst
 
 (* ****** ****** *)
 
-fun instr_add_arr (
+fun instr_add_arr1asgn (
     res: &instrlst_vt
-  , tmp: tmpvar_t
-  , arrsz: int
+  , vp_arr: valprim, vp_asz: valprim
+  , tmp_elt: tmpvar_t, vp_tsz: valprim
+  ) : void
+
+fun instr_add_arr_heap (
+    res: &instrlst_vt
+  , tmp: tmpvar_t, asz: int
   , hit_elt: hityp_t
   ) : void
 
-//
+fun instr_add_arr_stack (
+    res: &instrlst_vt
+  , tmp: tmpvar_t
+  , vp_asz: valprim
+  , hit_elt: hityp_t
+  ) : void
+
+(* ****** ****** *)
 
 fun instr_add_call (
     res: &instrlst_vt

@@ -499,9 +499,21 @@ end // end of [valprim_is_void]
 
 (* ****** ****** *)
 
-implement instr_add_arr (res, tmp_res, arrsz, hit_elt) = begin
-  res := list_vt_cons (INSTRarr (tmp_res, arrsz, hit_elt), res)
-end // end of [instr_add_arr]
+implement instr_add_arr1asgn
+  (res, vp_arr, vp_asz, tmp_elt, vp_tsz) = begin
+  res := list_vt_cons
+    (INSTRarr1asgn (vp_arr, vp_asz, tmp_elt, vp_tsz), res)
+end // end of [instr_add_arr1asgn]
+
+//
+
+implement instr_add_arr_heap (res, tmp_res, asz, hit_elt) = begin
+  res := list_vt_cons (INSTRarr_heap (tmp_res, asz, hit_elt), res)
+end // end of [instr_add_arr_heap]
+
+implement instr_add_arr_stack (res, tmp_res, vp_asz, hit_elt) = begin
+  res := list_vt_cons (INSTRarr_stack (tmp_res, vp_asz, hit_elt), res)
+end // end of [instr_add_arr_stack]
 
 //
 

@@ -222,7 +222,7 @@ implement the_dynctx_find (d2v) = let
     prval vbox pf = pfbox
   in
     $Map.map_search<d2var_t,valprim> (!p, d2v)
-  end
+  end // end of [val]
 in
   case+ ans of
   | ~Some_vt vp => vp | ~None_vt () => begin
@@ -230,7 +230,7 @@ in
       prerr ": Internal Error: ats_ccomp_trans: the_dynctx_find: d2v = ";
       prerr d2v; prerr_newline ();
       $Err.abort {valprim} ()
-    end
+    end // end of [None_vt]
 end // end of [the_dynctx_find]
 
 //
@@ -1646,14 +1646,76 @@ end // end of [ccomp_exp_app_tmpvar]
 
 (* ****** ****** *)
 
+fn ccomp_exp_arr1asgn (
+    res: &instrlst_vt
+  , vp_arr: valprim, hit_elt: hityp_t
+  , hies_elt: hiexplst
+  ) : void = let
+  fun aux (res: &instrlst_vt, i: int, hies: hiexplst):<cloref1> void =
+    case+ hies of
+    | list_cons (hie, hies) => let
+        val vp = ccomp_exp (res, hie)
+        macdef list_sing (x) = list_cons (,(x), list_nil ())
+        val int = $IntInf.intinf_make_int (i)
+        val ind = list_sing (list_sing (valprim_int int))
+        val off = OFFSETind (ind, hit_elt)
+        val () = instr_add_store_ptr_offs (res, vp_arr, '[off], vp)
+      in
+        aux (res, i+1, hies)
+      end // end of [aux]
+    | list_nil () => ()
+  // end of [aux]
+in
+  aux (res, 0, hies_elt)
+end // end of [ccomp_exp_arr1asgn]
+
+(* ****** ****** *)
+
+fn ccomp_exp_arrinit_tmpvar (
+    res: &instrlst_vt
+  , hit_elt: hityp_t
+  , ohie_asz: hiexpopt
+  , hies_elt: hiexplst
+  , tmp_arr: tmpvar_t
+  ) : void = let
+  val vp_arr = valprim_tmp (tmp_arr)
+  val vp_asz = (case+ ohie_asz of
+    | Some hie_asz => ccomp_exp (res, hie_asz)
+    | None () => let
+        val n = $Lst.list_length (hies_elt)
+      in
+        valprim_int ($IntInf.intinf_make_int n)
+      end // end of [None]
+  ) : valprim
+  val () = instr_add_arr_stack (res, tmp_arr, vp_asz, hit_elt)
+in
+  case+ ohie_asz of
+  | Some _ => begin
+    case+ hies_elt of
+    | list_cons (hie_elt, _) => let
+        val tmp_elt = tmpvar_make (hit_elt)
+        val () = ccomp_exp_tmpvar (res, hie_elt, tmp_elt)
+        val vp_tsz = valprim_sizeof (hit_elt)
+      in
+        instr_add_arr1asgn (res, vp_arr, vp_asz, tmp_elt, vp_tsz)
+      end // end of [list_cons]
+    | list_nil () => ()
+    end // end of [Some]
+  | None () => begin
+      ccomp_exp_arr1asgn (res, vp_arr, hit_elt, hies_elt)
+    end // end of [None]
+end // end of [ccomp_exp_arrinit]
+
+(* ****** ****** *)
+
 fn ccomp_exp_arrsize_tmpvar (
     res: &instrlst_vt
   , hit_elt: hityp_t
   , hies_elt: hiexplst
   , tmp_res: tmpvar_t
   ) : void = let
-  val sz = $Lst.list_length hies_elt
-  val () = instr_add_arr (res, tmp_res, sz, hit_elt)
+  val asz = $Lst.list_length hies_elt
+  val () = instr_add_arr_heap (res, tmp_res, asz, hit_elt)
   val tmp_arr = tmpvar_make (hityp_encode hityp_ptr)
   val vp_arr = valprim_tmp (tmp_arr)
   val () = let
@@ -1668,25 +1730,9 @@ arraysize_viewt0ype_int_viewt0ype (a: viewt@ype, n:int) =
     val off = OFFSETlab ($Lab.label_make_int 2(*arr*), hit_arrsz)
   in
     instr_add_load_var_offs (res, tmp_arr, vp_res, '[off])
-  end
-  val () = aux (res, 0, hies_elt) where {
-    fun aux (res: &instrlst_vt, i: int, hies: hiexplst)
-      :<cloptr1> void = begin case+ hies of
-      | list_cons (hie, hies) => let
-          val vp = ccomp_exp (res, hie)
-          macdef list_sing (x) = list_cons (,(x), list_nil ())
-          val int = $IntInf.intinf_make_int (i)
-          val ind = list_sing (list_sing (valprim_int int))
-          val off = OFFSETind (ind, hit_elt)
-          val () = instr_add_store_ptr_offs (res, vp_arr, '[off], vp)
-        in
-          aux (res, i+1, hies)
-        end
-      | list_nil () => ()
-    end // end of [aux]
-  } // end of [where]
+  end // end of [var]
 in
-  // empty
+  ccomp_exp_arr1asgn (res, vp_arr, hit_elt, hies_elt)
 end // end of [ccomp_exp_arrsize_tmpvar]
 
 (* ****** ****** *)
@@ -2230,43 +2276,70 @@ end // end of [ccomp_valdeclst]
 
 (* ****** ****** *)
 
+fn ccomp_vardec_sta
+  (res: &instrlst_vt, level: int, vardec: hivardec)
+  : void = let
+  val d2v = vardec.hivardec_ptr
+  val () = d2var_lev_set (d2v, level)
+  val s2e = d2var_typ_ptr_get d2v
+  val hit = s2exp_tr (0(*deep*), s2e)
+  val tmp = tmpvar_make (hityp_normalize hit)
+  val () = instr_add_vardec (res, tmp)
+  val () = the_dynctx_add (d2v, valprim_tmp_ref tmp)
+in
+  case+ vardec.hivardec_ini of
+  | Some hie => ccomp_exp_tmpvar (res, hie, tmp) | None () => ()
+end // end of [ccomp_vardec_sta]
+
+fn ccomp_vardec_dyn
+  (res: &instrlst_vt, level: int, vardec: hivardec)
+  : void = let
+  val d2v = vardec.hivardec_ptr
+  val () = d2var_lev_set (d2v, level)
+  val hit_ptr = s2exp_tr (0(*deep*), s2e) where {
+    // [s2e] must a pointer type
+    val s2e = d2var_typ_get_some (d2var_loc_get d2v, d2v)
+  } // end of [val]
+  val tmp_ptr = tmpvar_make (hityp_normalize hit_ptr)
+  val () = instr_add_vardec (res, tmp_ptr)
+  val () = the_dynctx_add (d2v, valprim_tmp tmp_ptr)
+  val hie_ini = (case+ vardec.hivardec_ini of
+    | Some hie => hie | None => begin
+        $Loc.prerr_location (vardec.hivardec_loc);
+        prerr ": Internal Error: ccomp_vardec_dyn: no initialization.";
+        prerr_newline (); $Err.abort {hiexp} ()
+      end // end of [None]
+  ) : hiexp
+  val- HIEarrinit (hit_elt, ohie_asz, hies_elt) = hie_ini.hiexp_node
+  val hit_elt = hityp_normalize hit_elt
+in
+  ccomp_exp_arrinit_tmpvar (res, hit_elt, ohie_asz, hies_elt, tmp_ptr)
+end // end of [ccomp_vardec_dyn]
+
+fn ccomp_vardec
+  (res: &instrlst_vt, level: int, vardec: hivardec): void = let
+  val knd = vardec.hivardec_knd
+in
+  case+ 0 of
+  | _ when (knd = 0) => ccomp_vardec_sta (res, level, vardec)
+  | _ (* dynamic allocation *) => ccomp_vardec_dyn (res, level, vardec)
+end // end of [ccomp_vardec]
+
+(* ****** ****** *)
+
 fn ccomp_vardeclst (
     res: &instrlst_vt
   , level: int
   , vardecs: hivardeclst
   ) : void = let
   fun aux
-    (res: &instrlst_vt, vardecs: hivardeclst)
-    :<cloptr1> void = begin case+ vardecs of
+    (res: &instrlst_vt, vardecs: hivardeclst):<cloptr1> void =
+    case+ vardecs of
     | list_cons (vardec, vardecs) => let
-        val knd = vardec.hivardec_knd
-        val d2v = vardec.hivardec_ptr
-        val () = d2var_lev_set (d2v, level)
-        val s2e = (
-          if knd = 0 then begin
-            d2var_typ_ptr_get d2v // static alloc
-          end else let
-            val loc = d2var_loc_get d2v
-          in
-            d2var_typ_get_some (loc, d2v) // alloca
-          end // end of [if]
-        ) : s2exp // end of [val]
-        val hit = s2exp_tr (0(*deep*), s2e)
-        val tmp = tmpvar_make (hityp_normalize hit)
-        val () = instr_add_vardec (res, tmp)
-        val () = the_dynctx_add (d2v, vp) where {
-          val vp = (
-            if knd = 0 then valprim_tmp_ref tmp else valprim_tmp tmp
-          ) : valprim
-        } // end of [val]
-        val () = case+ vardec.hivardec_ini of
-          | Some hie => ccomp_exp_tmpvar (res, hie, tmp) | None () => ()
-        // end of [val]
-      in
-        aux (res, vardecs)
+        val () = ccomp_vardec (res, level, vardec) in aux (res, vardecs)
       end // end of [list_cons]
     | list_nil () => ()
-  end // end of [aux]
+  // end of [aux]
 in
   aux (res, vardecs)
 end // end of [ccomp_vardeclst]

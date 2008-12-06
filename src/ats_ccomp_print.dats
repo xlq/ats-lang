@@ -357,15 +357,35 @@ implement fprint_instr (pf | out, ins) = let
   macdef strpr (s) = fprint1_string (pf | out, ,(s))
 in
   case+ ins of
-  | INSTRarr (tmp, arrsz, hit_elt) => begin
-      strpr "INSTRarr(";
+  | INSTRarr1asgn (vp_arr, vp_asz, tmp_elt, vp_tsz) => begin
+      strpr "INSTRarr1asgn(";
+      fprint_valprim (pf | out, vp_arr);
+      strpr "; ";
+      fprint_valprim (pf | out, vp_asz);
+      strpr "; ";
+      fprint_tmpvar (pf | out, tmp_elt);
+      strpr "; ";
+      fprint_valprim (pf | out, vp_tsz);
+      strpr ")";
+    end // end of [INSTRarr1asgn]
+  | INSTRarr_heap (tmp, asz, hit_elt) => begin
+      strpr "INSTRarr_heap(";
       fprint_tmpvar (pf | out, tmp);
       strpr "; ";
-      fprint_int (pf | out, arrsz);
+      fprint_int (pf | out, asz);
       strpr "; ";
       fprint_hityp (pf | out, hityp_decode hit_elt);
       strpr ")";
-    end // end of [INSTRarr]
+    end // end of [INSTRarr_heap]
+  | INSTRarr_stack (tmp, vp_asz, hit_elt) => begin
+      strpr "INSTRarr_stack(";
+      fprint_tmpvar (pf | out, tmp);
+      strpr "; ";
+      fprint_valprim (pf | out, vp_asz);
+      strpr "; ";
+      fprint_hityp (pf | out, hityp_decode hit_elt);
+      strpr ")";
+    end // end of [INSTRarr_stack]
   | INSTRcall (tmp, hit_fun, vp_fun, vps_arg) => begin
       strpr "INSTRcall(";
       fprint_tmpvar (pf | out, tmp);
@@ -379,7 +399,7 @@ in
     end // end of [INSTRcall]
   | INSTRcall_tail (fl) => begin
       strpr "INSTRcall_tail("; fprint_funlab (pf | out, fl); strpr ")"
-    end
+    end // end of [INSTRcall_tail]
   | INSTRcond (vp, inss1, inss2) => begin
       strpr "INSTRcond(";
       fprint_valprim (pf | out, vp);

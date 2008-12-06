@@ -45,7 +45,7 @@ There are several approaches to creating persistent arrays in ATS.
 For instance, the following code in ATS creates an array of integers:
 
 <pre>
-val digits = array @[int][ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 ]
+val digits = array @[int](0, 1, 2, 3, 4, 5, 6, 7, 8, 9)
 </pre>
 
 The type assigned to the variable <i>digits</i> is <i>array(int, 10)</i>.
@@ -56,26 +56,7 @@ array of digits:
 typedef digit = [i:nat | i &lt; 10] int (i)
 
 // digits: array (digit, 10)
-val digits = array @[digit][ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 ]
-</pre>
-
-A more flexible approach to array creation makes use of the function
-<i>array_make_fun_tsz</i>, which takes three arguments: a natural number
-representing the size of the array to be created, a function for array
-initialization, and the size of array elements. For instance, the
-previous array of digits can also be created as follows:
-
-<pre>
-val digits =
-  array_make_fun_tsz {digit} (10, lam (x, i) =&lt;clo&gt; x := i, sizeof&lt;digit&gt;)
-</pre>
-
-As another example, the following function can be used to create a
-persisent array of doubles that is initialized with zeros:
-
-<pre>
-fn double_array_make (n: int n): array (double, n) =
-  array_make_fun_tsz {double} (n, lam (x, i) =&lt;clo&gt; x := 0.0, sizeof&lt;double&gt;)
+val digits = array @[digit](0, 1, 2, 3, 4, 5, 6, 7, 8, 9)
 </pre>
 
 <B>Array Subscripting</B>&nbsp;&nbsp;
@@ -117,27 +98,6 @@ are shorthands for
 respectively.
 <P>
 
-There are also library (template) functions
-<i>foreach_array</i> and <i>iforeach_array</i> for iteration over
-persistent arrays, which are assigned the following interfaces:
-
-<pre>
-fun{a:t@ype} foreach_array {f:eff} {n:nat}
-  (f: a -&lt;f&gt; void, A: array (a, n)):&lt;f,!ref&gt; void
-
-fun{a:t@ype} iforeach_array {f:eff} {n:nat}
-  (f: (natLt n, a) -&lt;f&gt; void, A: array (a, n)):&lt;f,!ref&gt; void
-</pre>
-
-For instance, the previous function <i>array_square</i> can
-be implemented as follows by calling
-<i>iforeach_array</i>:
-
-<pre>
-fn array_square {n:nat} (A: array (double, n)): void =
-  iforeach_array<double> (lam (i, x) =&lt;!ref&gt; A[i] := x * x, A)
-</pre>
-
 <H3>Persistent Matrices</H3>
 
 A matrix is an array of 2 dimensions. Note that the 2 dimensions of a
@@ -164,7 +124,7 @@ The approaches to creating matrices resemble those to creating arrays.
 For instance, the following code creates a square matrix of dimension
 10 by 10:
 
-<PRE><FONT COLOR="#E80000"><FONT COLOR="#000000">val</FONT> mat_10_10 <FONT COLOR="#000000">=</FONT> matrix<FONT COLOR="#000000">(</FONT>10<FONT COLOR="#000000">,</FONT> 10<FONT COLOR="#000000">)</FONT> <FONT COLOR="#000000">@[</FONT><FONT COLOR="#0000FF">Int</FONT><FONT COLOR="#000000">]</FONT><FONT COLOR="#000000">[</FONT>
+<PRE><FONT COLOR="#E80000"><FONT COLOR="#000000">val</FONT> mat_10_10 <FONT COLOR="#000000">=</FONT> matrix<FONT COLOR="#000000">(</FONT>10<FONT COLOR="#000000">,</FONT> 10<FONT COLOR="#000000">)</FONT> <FONT COLOR="#000000">@[</FONT><FONT COLOR="#0000FF">Int</FONT><FONT COLOR="#000000">]</FONT><FONT COLOR="#000000">(</FONT>
    0<FONT COLOR="#000000">,</FONT>  1<FONT COLOR="#000000">,</FONT>  2<FONT COLOR="#000000">,</FONT>  3<FONT COLOR="#000000">,</FONT>  4<FONT COLOR="#000000">,</FONT>  5<FONT COLOR="#000000">,</FONT>  6<FONT COLOR="#000000">,</FONT>  7<FONT COLOR="#000000">,</FONT>  8<FONT COLOR="#000000">,</FONT>  9
 <FONT COLOR="#000000">,</FONT> 10<FONT COLOR="#000000">,</FONT> 11<FONT COLOR="#000000">,</FONT> 12<FONT COLOR="#000000">,</FONT> 13<FONT COLOR="#000000">,</FONT> 14<FONT COLOR="#000000">,</FONT> 15<FONT COLOR="#000000">,</FONT> 16<FONT COLOR="#000000">,</FONT> 17<FONT COLOR="#000000">,</FONT> 18<FONT COLOR="#000000">,</FONT> 19
 <FONT COLOR="#000000">,</FONT> 20<FONT COLOR="#000000">,</FONT> 21<FONT COLOR="#000000">,</FONT> 22<FONT COLOR="#000000">,</FONT> 23<FONT COLOR="#000000">,</FONT> 24<FONT COLOR="#000000">,</FONT> 25<FONT COLOR="#000000">,</FONT> 26<FONT COLOR="#000000">,</FONT> 27<FONT COLOR="#000000">,</FONT> 28<FONT COLOR="#000000">,</FONT> 29
@@ -175,16 +135,7 @@ For instance, the following code creates a square matrix of dimension
 <FONT COLOR="#000000">,</FONT> 70<FONT COLOR="#000000">,</FONT> 71<FONT COLOR="#000000">,</FONT> 72<FONT COLOR="#000000">,</FONT> 73<FONT COLOR="#000000">,</FONT> 74<FONT COLOR="#000000">,</FONT> 75<FONT COLOR="#000000">,</FONT> 76<FONT COLOR="#000000">,</FONT> 77<FONT COLOR="#000000">,</FONT> 78<FONT COLOR="#000000">,</FONT> 79
 <FONT COLOR="#000000">,</FONT> 80<FONT COLOR="#000000">,</FONT> 81<FONT COLOR="#000000">,</FONT> 82<FONT COLOR="#000000">,</FONT> 83<FONT COLOR="#000000">,</FONT> 84<FONT COLOR="#000000">,</FONT> 85<FONT COLOR="#000000">,</FONT> 86<FONT COLOR="#000000">,</FONT> 87<FONT COLOR="#000000">,</FONT> 88<FONT COLOR="#000000">,</FONT> 89
 <FONT COLOR="#000000">,</FONT> 90<FONT COLOR="#000000">,</FONT> 91<FONT COLOR="#000000">,</FONT> 92<FONT COLOR="#000000">,</FONT> 93<FONT COLOR="#000000">,</FONT> 94<FONT COLOR="#000000">,</FONT> 99<FONT COLOR="#000000">,</FONT> 96<FONT COLOR="#000000">,</FONT> 97<FONT COLOR="#000000">,</FONT> 98<FONT COLOR="#000000">,</FONT> 99
-<FONT COLOR="#000000">]</FONT></FONT></PRE>
-
-This matrix can also be created by calling the function
-<i>matrix_make_fun_tsz</i>, which is analogous to the function
-<i>array_make_fun_tsz</i>:
-
-<pre>
-val mat_10_10 =
-  matrix_make_fun_tsz {int} (10, 10, lam (x, i, j) =&lt;clo&gt; x := 10 * i + j, sizeof&lt;int&gt;)
-</pre>
+<FONT COLOR="#000000">)</FONT></FONT></PRE>
 
 <EM>Matrix Subscripting</EM>&nbsp;&nbsp;
 
@@ -193,8 +144,8 @@ The following two (template) functions
 are for accessing and updating a persistent matrix, respectively:
 
 <pre>
-fun{a:t@ype} matrix_get_elt_at {m,n:nat} (A: matrix (a,m,n), n: int n, i: natLt m, j:natLt n): &lt;!ref&gt; a
-fun{a:t@ype} matrix_set_elt_at {m,n:nat} (A: matrix (a,m,n), n: int n, i: natLt m, j:natLt n, x: a): &lt;!ref&gt; void
+fun{a:t@ype} matrix_get_elt_at {m,n:nat} (A: matrix (a,m,n), i: natLt m, n: int n, j:natLt n): &lt;!ref&gt; a
+fun{a:t@ype} matrix_set_elt_at {m,n:nat} (A: matrix (a,m,n), i: natLt m, n: int n, j:natLt n, x: a): &lt;!ref&gt; void
 </pre>
 
 Note that the number of columns in a matrix as well as the row and column
@@ -206,11 +157,11 @@ square matrix in-situ:
   <FONT COLOR="#000000">(</FONT>A<FONT COLOR="#000000">:</FONT> <FONT COLOR="#0000FF">matrix <FONT COLOR="#000000">(</FONT>a<FONT COLOR="#000000">,</FONT> n<FONT COLOR="#000000">,</FONT> n<FONT COLOR="#000000">)</FONT></FONT><FONT COLOR="#000000">,</FONT> n<FONT COLOR="#000000">:</FONT> <FONT COLOR="#0000FF">int n</FONT><FONT COLOR="#000000">)</FONT><FONT COLOR="#000000">:</FONT> <FONT COLOR="#0000FF">void</FONT> <FONT COLOR="#000000">=</FONT> <FONT COLOR="#000000">let</FONT>
   <FONT COLOR="#000000">fn</FONT> get <FONT COLOR="#0000FF"><FONT COLOR="#000000">{</FONT>i<FONT COLOR="#000000">,</FONT>j<FONT COLOR="#000000">:</FONT>nat <FONT COLOR="#000000">|</FONT> i <FONT COLOR="#000000">&lt;</FONT> n<FONT COLOR="#000000">;</FONT> j <FONT COLOR="#000000">&lt;</FONT> n<FONT COLOR="#000000">}</FONT></FONT>
    <FONT COLOR="#000000">(</FONT>A<FONT COLOR="#000000">:</FONT> <FONT COLOR="#0000FF">matrix <FONT COLOR="#000000">(</FONT>a<FONT COLOR="#000000">,</FONT> n<FONT COLOR="#000000">,</FONT> n<FONT COLOR="#000000">)</FONT></FONT><FONT COLOR="#000000">,</FONT> i<FONT COLOR="#000000">:</FONT> <FONT COLOR="#0000FF">int i</FONT><FONT COLOR="#000000">,</FONT> j<FONT COLOR="#000000">:</FONT> <FONT COLOR="#0000FF">int j</FONT><FONT COLOR="#000000">)</FONT><FONT COLOR="#000000">:&lt;</FONT><FONT COLOR="#0000FF">cloref1</FONT><FONT COLOR="#000000">&gt;</FONT> <FONT COLOR="#0000FF">a</FONT> <FONT COLOR="#000000">=</FONT>
-   matrix_get_elt_at <FONT COLOR="#000000">(</FONT>A<FONT COLOR="#000000">,</FONT> n<FONT COLOR="#000000">,</FONT> i<FONT COLOR="#000000">,</FONT> j<FONT COLOR="#000000">)</FONT>
+   matrix_get_elt_at <FONT COLOR="#000000">(</FONT>A<FONT COLOR="#000000">,</FONT> i<FONT COLOR="#000000">,</FONT> n<FONT COLOR="#000000">,</FONT> j<FONT COLOR="#000000">)</FONT>
 
   <FONT COLOR="#000000">fn</FONT> set <FONT COLOR="#0000FF"><FONT COLOR="#000000">{</FONT>i<FONT COLOR="#000000">,</FONT>j<FONT COLOR="#000000">:</FONT>nat <FONT COLOR="#000000">|</FONT> i <FONT COLOR="#000000">&lt;</FONT> n<FONT COLOR="#000000">;</FONT> j <FONT COLOR="#000000">&lt;</FONT> n<FONT COLOR="#000000">}</FONT></FONT>
    <FONT COLOR="#000000">(</FONT>A<FONT COLOR="#000000">:</FONT> <FONT COLOR="#0000FF">matrix <FONT COLOR="#000000">(</FONT>a<FONT COLOR="#000000">,</FONT> n<FONT COLOR="#000000">,</FONT> n<FONT COLOR="#000000">)</FONT></FONT><FONT COLOR="#000000">,</FONT> i<FONT COLOR="#000000">:</FONT> <FONT COLOR="#0000FF">int i</FONT><FONT COLOR="#000000">,</FONT> j<FONT COLOR="#000000">:</FONT> <FONT COLOR="#0000FF">int j</FONT><FONT COLOR="#000000">,</FONT> x<FONT COLOR="#000000">:</FONT> <FONT COLOR="#0000FF">a</FONT><FONT COLOR="#000000">)</FONT><FONT COLOR="#000000">:&lt;</FONT><FONT COLOR="#0000FF">cloref1</FONT><FONT COLOR="#000000">&gt;</FONT> <FONT COLOR="#0000FF">void</FONT> <FONT COLOR="#000000">=</FONT>
-   matrix_set_elt_at <FONT COLOR="#000000">(</FONT>A<FONT COLOR="#000000">,</FONT> n<FONT COLOR="#000000">,</FONT> i<FONT COLOR="#000000">,</FONT> j<FONT COLOR="#000000">,</FONT> x<FONT COLOR="#000000">)</FONT>
+   matrix_set_elt_at <FONT COLOR="#000000">(</FONT>A<FONT COLOR="#000000">,</FONT> i<FONT COLOR="#000000">,</FONT> n<FONT COLOR="#000000">,</FONT> j<FONT COLOR="#000000">,</FONT> x<FONT COLOR="#000000">)</FONT>
 
   <FONT COLOR="#000000">overload</FONT> <FONT COLOR="#800080"><FONT COLOR="#000000">[</FONT><FONT COLOR="#000000">]</FONT> <FONT COLOR="#000000">with</FONT> get</FONT><FONT COLOR="#000000">;</FONT> <FONT COLOR="#000000">overload</FONT> <FONT COLOR="#800080"><FONT COLOR="#000000">[</FONT><FONT COLOR="#000000">]</FONT> <FONT COLOR="#000000">with</FONT> set</FONT>
 
@@ -232,39 +183,6 @@ square matrix in-situ:
   loop1 0
 <FONT COLOR="#000000">end</FONT> <FONT COLOR="#787878">// end of [matrix_transpose]
 </FONT></FONT></PRE>
-
-There are also library function templates
-<i>foreach_matrix</i> and <i>iforeach_matrix</i> for iteration over
-persisten matrices, which are given the following interfaces:
-
-<pre>
-fun{a:t@ype} foreach_matrix {f:eff} {m,n:nat}
-  (f: a -&lt;f&gt; void, M: matrix (a, m, n), m: int m, n: int n)
-  :&lt;f,!ref&gt; void
-
-fun{a:t@ype} iforeach_matrix {f:eff} {m,n:nat}
-  (f: (natLt m, natLt n, a) -&lt;f&gt; void, M: matrix (a, m, n), m: int m, n: int n)
-  :&lt;f,!ref&gt; void
-</pre>
-
-For instance, the previous function <i>matrix_transpose</i> can
-be implemented as follows by calling
-<i>iforeach_matrix</i>:
-
-<PRE><FONT COLOR="#E80000"><FONT COLOR="#000000">fn</FONT><FONT COLOR="#000000">{</FONT><FONT COLOR="#0000FF">a<FONT COLOR="#000000">:</FONT>t@ype</FONT><FONT COLOR="#000000">}</FONT> matrix_transpose <FONT COLOR="#0000FF"><FONT COLOR="#000000">{</FONT>n<FONT COLOR="#000000">:</FONT>nat<FONT COLOR="#000000">}</FONT></FONT>
-  <FONT COLOR="#000000">(</FONT>M<FONT COLOR="#000000">:</FONT> <FONT COLOR="#0000FF">matrix <FONT COLOR="#000000">(</FONT>a<FONT COLOR="#000000">,</FONT> n<FONT COLOR="#000000">,</FONT> n<FONT COLOR="#000000">)</FONT></FONT><FONT COLOR="#000000">,</FONT> n<FONT COLOR="#000000">:</FONT> <FONT COLOR="#0000FF">int n</FONT><FONT COLOR="#000000">)</FONT><FONT COLOR="#000000">:</FONT> <FONT COLOR="#0000FF">void</FONT> <FONT COLOR="#000000">=</FONT> <FONT COLOR="#000000">begin</FONT>
-  iforeach_matrix&lt;<FONT COLOR="#0000FF">a</FONT><FONT COLOR="#000000">&gt;</FONT> <FONT COLOR="#000000">(</FONT>
-    <FONT COLOR="#000000">lam</FONT> <FONT COLOR="#000000">(</FONT>i<FONT COLOR="#000000">,</FONT>j<FONT COLOR="#000000">,</FONT> x<FONT COLOR="#000000">)</FONT> <FONT COLOR="#000000">=&lt;</FONT><FONT COLOR="#000000">!</FONT><FONT COLOR="#0000FF">ref</FONT><FONT COLOR="#000000">&gt;</FONT>
-      <FONT COLOR="#000000">if</FONT> i <FONT COLOR="#000000">&gt;</FONT> j <FONT COLOR="#000000">then</FONT> <FONT COLOR="#000000">let</FONT>
-        <FONT COLOR="#000000">val</FONT> x <FONT COLOR="#000000">=</FONT> matrix_get_elt_at <FONT COLOR="#000000">(</FONT>M<FONT COLOR="#000000">,</FONT> n<FONT COLOR="#000000">,</FONT> i<FONT COLOR="#000000">,</FONT> j<FONT COLOR="#000000">)</FONT>
-      <FONT COLOR="#000000">in</FONT>
-        matrix_set_elt_at <FONT COLOR="#000000">(</FONT>M<FONT COLOR="#000000">,</FONT> n<FONT COLOR="#000000">,</FONT> i<FONT COLOR="#000000">,</FONT> j<FONT COLOR="#000000">,</FONT> matrix_get_elt_at <FONT COLOR="#000000">(</FONT>M<FONT COLOR="#000000">,</FONT> n<FONT COLOR="#000000">,</FONT> j<FONT COLOR="#000000">,</FONT> i<FONT COLOR="#000000">)</FONT><FONT COLOR="#000000">)</FONT><FONT COLOR="#000000">;</FONT>
-        matrix_set_elt_at <FONT COLOR="#000000">(</FONT>M<FONT COLOR="#000000">,</FONT> n<FONT COLOR="#000000">,</FONT> j<FONT COLOR="#000000">,</FONT> i<FONT COLOR="#000000">,</FONT> x<FONT COLOR="#000000">)</FONT>
-      <FONT COLOR="#000000">end</FONT>
-  <FONT COLOR="#000000">,</FONT> M<FONT COLOR="#000000">,</FONT> n<FONT COLOR="#000000">,</FONT> n
-  <FONT COLOR="#000000">)</FONT> <FONT COLOR="#787878">// end of [iforeach_matrix]
-</FONT><FONT COLOR="#000000">end</FONT> <FONT COLOR="#787878">// end of [matrix_transpose]
-</FONT></FONT></pre>
 
 <HR SIZE=1 ALIGN=LEFT><P>
 The code used for illustration is available <a

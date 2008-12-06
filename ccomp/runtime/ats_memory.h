@@ -49,6 +49,11 @@
 
 /* ****** ****** */
 
+extern void *alloca (size_t nsz) ; // declared in [alloca.h]
+#define ATS_ALLOCA(n, sz) alloca(n * sz)
+
+/* ****** ****** */
+
 #define ATS_GC_INIT ats_gc_init
 #define ATS_GC_MARKROOT ats_gc_markroot
 

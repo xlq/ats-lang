@@ -1158,21 +1158,46 @@ end // end of [emit_move_con]
 
 (* ****** ****** *)
 
+fn emit_instr_arr1asgn {m:file_mode} (
+    pf: file_mode_lte (m, w)
+  | out: &FILE m
+  , vp_arr: valprim, vp_asz: valprim
+  , tmp_elt: tmpvar_t, vp_tsz: valprim
+  ) : void = let
+  val () = fprint1_string
+    (pf | out, "/* array initialization */\n")
+  val () = fprint1_string
+    (pf | out, "atspre_array_ptr_initialize_elt_tsz (")
+  val () = emit_valprim (pf | out, vp_arr)
+  val () = fprint1_string (pf | out, ", ")
+  val () = emit_valprim (pf | out, vp_asz)
+  val () = fprint1_string (pf | out, ", ")
+  val () = fprint1_string (pf | out, "&")
+  val () = emit_tmpvar (pf | out, tmp_elt)
+  val () = fprint1_string (pf | out, ", ")
+  val () = emit_valprim (pf | out, vp_tsz)
+  val () = fprint1_string (pf | out, ") ;")
+in
+  // empty
+end // end of [emit_instr_arr1asgn]
+
+(* ****** ****** *)
+
 (*
 
-// This definition should not be changed!
+// This definition should not be changed!!!
 viewtypedef
 arraysize_viewt0ype_int_viewt0ype (a: viewt@ype, n:int) =
   [l:addr | l <> null] (free_gc_v l, @[a][n] @ l | ptr l, int n)
 
 *)
 
-fn emit_instr_arr {m:file_mode} (
+fn emit_instr_arr_heap {m:file_mode} (
     pf: file_mode_lte (m, w)
   | out: &FILE m, tmp: tmpvar_t, asz: int, hit_elt: hityp_t
   ) : void = let
   val () = fprint1_string
-    (pf | out, "/* array allocation */\n")
+    (pf | out, "/* array allocation on heap */\n")
   val () = emit_valprim_tmpvar (pf | out, tmp)
   val () = fprint1_string
     (pf | out, ".atslab_2 = atspre_array_ptr_alloc_tsz (")
@@ -1186,7 +1211,25 @@ fn emit_instr_arr {m:file_mode} (
   val () = fprint1_string (pf | out, " ;\n")
 in
   // empty
-end // end of [emit_instr_arr]
+end // end of [emit_instr_arr_heap]
+
+(* ****** ****** *)
+
+fn emit_instr_arr_stack {m:file_mode} (
+    pf: file_mode_lte (m, w)
+  | out: &FILE m, tmp: tmpvar_t, vp_asz: valprim, hit_elt: hityp_t
+  ) : void = let
+  val () = fprint1_string
+    (pf | out, "/* array allocation on stack */\n")
+  val () = emit_valprim_tmpvar (pf | out, tmp)
+  val () = fprint1_string (pf | out, " = ATS_ALLOCA (")
+  val () = emit_valprim (pf | out, vp_asz)
+  val () = fprint1_string (pf | out, ", sizeof(")
+  val () = emit_hityp (pf | out, hit_elt)
+  val () = fprint1_string (pf | out, ")) ;")
+in
+  // empty
+end // end of [emit_instr_arr_stack]
 
 (* ****** ****** *)
 
@@ -1306,18 +1349,24 @@ implement emit_instr {m} (pf | out, ins) = let
     end // end of [if]
 in
   case+ ins of
-  | INSTRarr (tmp, asz, hit_elt) => begin
-      emit_instr_arr (pf | out, tmp, asz, hit_elt)
-    end
+  | INSTRarr1asgn (vp_arr, vp_asz, tmp_elt, vp_tsz) => begin
+      emit_instr_arr1asgn (pf | out, vp_arr, vp_asz, tmp_elt, vp_tsz)
+    end // end of [INSTRarr1asgn]
+  | INSTRarr_heap (tmp, asz, hit_elt) => begin
+      emit_instr_arr_heap (pf | out, tmp, asz, hit_elt)
+    end // end of [INSTRarr_heap]
+  | INSTRarr_stack (tmp, vp_asz, hit_elt) => begin
+      emit_instr_arr_stack (pf | out, tmp, vp_asz, hit_elt)
+    end // end of [INSTRarr_heap]
   | INSTRcall (tmp, hit_fun, vp_fun, vps_arg) => begin
       emit_instr_call (pf | out, tmp, hit_fun, vp_fun, vps_arg)
-    end
+    end // end of [INSTRcall]
   | INSTRcall_tail fl => begin
       fprint1_string (pf | out, "goto ");
       fprint1_string (pf | out, "__ats_lab_");
       emit_funlab (pf | out, fl);
       fprint1_string (pf | out, " ; // tail call")      
-    end
+    end // end of [INSTRcall_tail]
   | INSTRcond (vp_cond, inss_then, inss_else) => begin
       fprint1_string (pf | out, "if (");
       emit_valprim (pf | out, vp_cond);
@@ -1326,7 +1375,7 @@ in
       fprint1_string (pf | out, "\n} else {\n");
       emit_instrlst (pf | out, inss_else);
       fprint1_string (pf | out, "\n} /* end of [if] */")
-    end
+    end // end of [INSTRcond]
   | INSTRdefine_clo (d2c, fl) => begin
       fprint1_string (pf | out, "ATS_GC_MARKROOT (&");
       emit_d2cst (pf | out, d2c);
@@ -1335,13 +1384,13 @@ in
       fprint1_string (pf | out, " = ");
       emit_funlab (pf | out, fl);
       fprint1_string (pf | out, "_closure_make () ;")
-    end
+    end // end of [INSTRdefine_clo]
   | INSTRdefine_fun (d2c, fl) => begin
       emit_d2cst (pf | out, d2c);
       fprint1_string (pf | out, " = &");
       emit_funlab (pf | out, fl);
       fprint1_string (pf | out, " ;")
-    end
+    end // end of [INSTRdefine_fun]
   | INSTRdefine_val (d2c, vp) => begin
       fprint1_string (pf | out, "ATS_GC_MARKROOT (&");
       emit_d2cst (pf | out, d2c);
@@ -1363,12 +1412,12 @@ in
       fprint1_string (pf | out, " = ");
       emit_valprim (pf | out, vp);
       fprint1_string (pf | out, " ;")
-    end
+    end // end of [INSTRextval]
   | INSTRfreeptr vp => begin
       fprint1_string (pf | out, "ATS_FREE (");
       emit_valprim (pf | out, vp);
       fprint1_string (pf | out, ") ;")
-    end
+    end // end of [INSTRfreeptr]
   | INSTRfunction
       (tmp_ret_all, vps_arg, inss_body, tmp_ret) => let
       val () = funarglst_push (vps_arg)
@@ -1391,7 +1440,7 @@ in
   | INSTRfunlab fl => begin
       fprint1_string (pf | out, "__ats_lab_");
       emit_funlab (pf | out, fl); fprint1_char (pf | out, ':')
-    end
+    end // end of [INSTRfunlab]
   | INSTRdynload_file fil => let
       val () = emit_filename (pf | out, fil)
       val () = fprint1_string (pf | out, "__dynload () ;")
@@ -1526,7 +1575,7 @@ in
       fprint1_string (pf | out, ", ");
       emit_valprim (pf | out, vp);
       fprint1_string (pf | out, ") ;")
-    end
+    end // end of [INSTRmove_ref]
   | INSTRmove_val (tmp, vp) => begin case+ 0 of
     | _ when valprim_is_void vp => begin
         fprint1_string (pf | out, "/* ");
@@ -1556,7 +1605,7 @@ in
       fprint1_string (pf | out, "ats_raise_exn (");
       emit_valprim (pf | out, vp_exn);
       fprint1_string (pf | out, ") ;")
-    end
+    end // end of [INSTRraise]
   | INSTRselect (tmp, vp_root, offs) => let
       val is_void = tmpvar_is_void tmp
       val () = if is_void then fprint1_string (pf | out, "/* ")
@@ -1576,7 +1625,7 @@ in
       emit_valprim (pf | out, vp_sum);
       fprintf1_exn (pf | out, ")->atslab_%i", @(ind));
       fprint1_string (pf | out, " ;")
-    end
+    end // end of [INSTRselcon]
   | INSTRselcon_ptr (tmp, vp_sum, hit_sum, ind) => begin
       emit_tmpvar (pf | out, tmp);
       fprint1_string (pf | out, " = &(((");
@@ -1585,7 +1634,7 @@ in
       emit_valprim (pf | out, vp_sum);
       fprintf1_exn (pf | out, ")->atslab_%i)", @(ind));
       fprint1_string (pf | out, " ;")
-    end
+    end // end of [INSTRselcon_ptr]
   | INSTRstore_ptr (vp_ptr, vp_val) => begin
       fprint1_string (pf | out, "*((");
       emit_hityp (pf | out, vp_val.valprim_typ);
@@ -1617,10 +1666,10 @@ in
       fprint1_string (pf | out, "do {\n");
       emit_branchlst (pf | out, branchlst);
       fprint1_string (pf | out, "} while (0) ;")
-    end
+    end // end of [INSTRswitch]
   | INSTRtmplabint (tl, i) => begin
       emit_tmplabint (pf | out, tl, i); fprint1_char (pf | out, ':')
-    end
+    end // end of [INSTRtmplabint]
   | INSTRtrywith (res_try, tmp_exn, brs) => let
       val () = fprint1_string (pf | out, "ATS_TRYWITH_TRY(")
       val () = emit_valprim_tmpvar (pf | out, tmp_exn)
@@ -1647,7 +1696,7 @@ in
   | _ => begin
       prerr "Internal Error: emit_instr: ins = "; prerr ins; prerr_newline ();
       $Err.abort {void} ()
-    end
+    end // end of [_]
 end // end of [emit_instr]
 
 implement emit_instrlst {m} (pf | out, inss) = let

@@ -712,7 +712,7 @@ in
   S
 end // end of [shape_6]
 
-val shape_arr: array (shape, 7) = array @[shape][
+val shape_arr: array (shape, 7) = array_make_arraysize $arrsz(
   shape_0
 , shape_1
 , shape_2
@@ -720,7 +720,7 @@ val shape_arr: array (shape, 7) = array @[shape][
 , shape_4
 , shape_5
 , shape_6
-]
+)
 
 //
 

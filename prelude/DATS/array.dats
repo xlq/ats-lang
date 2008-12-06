@@ -340,6 +340,34 @@ staload "prelude/SATS/array.sats" // this forces that the static
 
 %{$
 
+typedef unsigned char byte ;
+
+extern void *memcpy (void *dst, const void* src, size_t n) ;
+
+ats_void_type
+atspre_array_ptr_initialize_elt_tsz (
+   ats_ptr_type A
+ , ats_int_type asz 
+ , ats_ptr_type ini
+ , ats_int_type tsz
+ )  {
+  int i, itsz ; int left ; ats_ptr_type p ;
+  if (asz == 0) return ;
+  memcpy (A, ini, tsz) ;
+  i = 1 ; itsz = tsz ; left = asz - i ;
+  while (left > 0) {
+    p = (ats_ptr_type)(((byte*)A) + itsz) ;
+    if (left <= i) {
+      memcpy (p, A, left * tsz) ; return ;
+    } /* end of [if] */
+    memcpy (p, A, itsz);
+    i = i + i ; itsz = itsz + itsz ; left = asz - i ;
+  } /* end of [while] */
+  return ;
+} /* end of [atspre_array_ptr_initialize_elt_tsz] */
+
+/* ****** ****** */
+
 ats_void_type
 atspre_array_ptr_initialize_fun_tsz_main (
    ats_ptr_type A
@@ -352,11 +380,11 @@ atspre_array_ptr_initialize_fun_tsz_main (
   ats_ptr_type p = A ;
   while (i < asz) {
     ((ats_void_type (*)(ats_ptr_type, ats_int_type, ats_ptr_type))f)(p, i, env) ;
-    p = (ats_ptr_type)(((char *)p) + tsz) ;
+    p = (ats_ptr_type)(((byte*)p) + tsz) ;
     ++i ;
   }
   return ;
-}
+} /* end of [atspre_array_ptr_initialize_fun_tsz_main] */
 
 ats_void_type
 atspre_array_ptr_initialize_fun_tsz_mainclo (
@@ -370,11 +398,11 @@ atspre_array_ptr_initialize_fun_tsz_mainclo (
   ats_ptr_type p = A ;
   while (i < asz) {
     ((ats_void_type (*)(ats_clo_ptr_type, ats_ptr_type, ats_int_type, ats_ptr_type))ats_closure_fun(f))(f, p, i, env) ;
-    p = (ats_ptr_type)(((char *)p) + tsz) ;
+    p = (ats_ptr_type)(((byte*)p) + tsz) ;
     ++i ;
   }
   return ;
-}
+} /* atspre_array_ptr_initialize_fun_tsz_mainclo */
 
 /* ****** ****** */
 
@@ -390,11 +418,11 @@ atspre_foreach_array_ptr_tsz_main (
   ats_ptr_type p = A ;
   while (i < asz) {
     ((ats_void_type (*)(ats_ptr_type, ats_ptr_type))f)(p, env) ;
-    p = (ats_ptr_type)(((char *)p) + tsz) ;
+    p = (ats_ptr_type)(((byte*)p) + tsz) ;
     ++i ;
   }
   return ;
-}
+} /* atspre_foreach_array_ptr_tsz_main */
 
 ats_void_type
 atspre_iforeach_array_ptr_tsz_main (
@@ -408,11 +436,11 @@ atspre_iforeach_array_ptr_tsz_main (
   ats_ptr_type p = A ;
   while (i < asz) {
     ((ats_void_type (*)(ats_int_type, ats_ptr_type, ats_ptr_type))f)(i, p, env) ;
-    p = (ats_ptr_type)(((char *)p) + tsz) ;
+    p = (ats_ptr_type)(((byte*)p) + tsz) ;
     ++i ;
   }
   return ;
-}
+} /* atspre_iforeach_array_ptr_tsz_main */
 
 %}
 

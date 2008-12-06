@@ -79,10 +79,10 @@ config.h: configure ; ./configure
 
 ###### bootstrap/Makefile ######
 
-bootstrap0/Makefile: bootstrap0/Makefile
+bootstrap0/Makefile::
 	$(GCC) -E -x c .bootstrap_header | cat - .bootstrap_makefile > bootstrap0/Makefile
 
-bootstrap1/Makefile:
+bootstrap1/Makefile::
 	$(GCC) -E -x c .bootstrap_header | cat - .bootstrap_makefile > bootstrap1/Makefile
 
 ###### w/o GC ######

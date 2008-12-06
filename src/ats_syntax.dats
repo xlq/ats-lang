@@ -1489,10 +1489,28 @@ implement d0exp_apps (d0e_fun, d0es_arg) =
 (* ****** ****** *)
 
 implement d0exp_arrinit
-  (t_beg, s0e_elt, d0e_asz, d0es_elt, t_end) = let
+  (t_beg, s0e_elt, od0e_asz, d0es_elt, t_end) = let
   val loc = combine (t_beg.t0kn_loc, t_end.t0kn_loc)
+  val () = // checking the syntax for array assignmnet
+    case+ od0e_asz of
+    | Some _ => begin case+ d0es_elt of
+      // if the array size if given, the rules for usin [d0es_elt] is
+      // given as follows:
+      // 1. if [d0es_elt] is empty, then the array is uninitialized;
+      // 2. if [d0es_elt] contains only one element, then the array is
+      //    initialized with this element.
+      // 3. if [d0es_elt] contains two or more elements, it is illegal
+      | list_cons (_, list_cons (_, _)) => begin
+          $Loc.prerr_location loc; prerr ": error(0)";
+          prerr ": the syntax for array initialization is incorrect.";
+          prerr_newline (); $Err.abort {void} ()
+        end // end of [list_cons (_, list_cons)]
+      | _ => () // [d0es_elt] contains at most one element
+      end // end of [Some]
+    | None () => ()
+  // end of [val]
 in '{
-  d0exp_loc= loc, d0exp_node= D0Earrinit (s0e_elt, d0e_asz, d0es_elt)
+  d0exp_loc= loc, d0exp_node= D0Earrinit (s0e_elt, od0e_asz, d0es_elt)
 } end // end of [d0exp_arrinit]
 
 implement d0exp_arrinit_none

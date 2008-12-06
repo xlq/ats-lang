@@ -20,14 +20,13 @@ staload "prelude/DATS/matrix.dats"
 
 // persistent arrays
 
-val digits = array @[int][ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 ]
-// val digits = $arr {int} (0, 1, 2, 3, 4, 5, 6, 7, 8, 9)
+// digits: array (int, 10)
+val digits = array $arrsz[int](0, 1, 2, 3, 4, 5, 6, 7, 8, 9)
 
 typedef digit = [i:nat | i < 10] int (i)
 
 // digits: array (digit, 10)
-val digits = array @[digit][ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 ]
-// val digits = $arr {int} (0, 1, 2, 3, 4, 5, 6, 7, 8, 9)
+val digits = array $arrsz[digit](0, 1, 2, 3, 4, 5, 6, 7, 8, 9)
 
 val digits = begin
   array_make_fun_tsz_cloptr {digit}
@@ -35,14 +34,12 @@ val digits = begin
 end // end of [val]
 
 fn array_square {n:nat}
-  (A: array (double, n), sz: int n): void = let
+  (A: array (double, n), sz: int n): void = loop (0) where {
   fun loop {i:nat | i <= n} .<n-i>. (i: int i):<cloptr1> void =
     if i < sz then
       let val x = A[i] in A[i] := x * x; loop (i+1) end
     else ()
-in
-  loop (0)
-end // end of [array_square]
+} // end of [array_square]
 
 fn array_square {n:nat}
   (A: array (double, n), sz: int n): void = let
@@ -68,7 +65,8 @@ end // end of [prarr]
 
 // persistent matrices
 
-val mat_10_10 = matrix(10, 10) @[Int][
+val mat_10_10 =
+  matrix (10, 10) $arrsz[Int](
    0,  1,  2,  3,  4,  5,  6,  7,  8,  9
 , 10, 11, 12, 13, 14, 15, 16, 17, 18, 19
 , 20, 21, 22, 23, 24, 25, 26, 27, 28, 29
@@ -79,7 +77,7 @@ val mat_10_10 = matrix(10, 10) @[Int][
 , 70, 71, 72, 73, 74, 75, 76, 77, 78, 79
 , 80, 81, 82, 83, 84, 85, 86, 87, 88, 89
 , 90, 91, 92, 93, 94, 99, 96, 97, 98, 99
-]
+) // end of [val]
 
 val mat_10_10 = matrix_make_fun_tsz_cloptr {Int}
   (10, 10, lam (x, i, j) =<cloptr> x := 10 * i + j, sizeof<Int>)
@@ -90,11 +88,11 @@ fn{a:t@ype} matrix_transpose {n:nat}
   (A: matrix (a, n, n), n: int n): void = let
   fn get {i,j:nat | i < n; j < n}
    (A: matrix (a, n, n), i: int i, j: int j):<cloref1> a =
-   matrix_get_elt_at (A, n, i, j)
+   matrix_get_elt_at (A, i, n, j)
 
   fn set {i,j:nat | i < n; j < n}
    (A: matrix (a, n, n), i: int i, j: int j, x: a):<cloref1> void =
-   matrix_set_elt_at (A, n, i, j, x)
+   matrix_set_elt_at (A, i, n, j, x)
 
   overload [] with get; overload [] with set
 
@@ -118,13 +116,13 @@ end // end of [matrix_transpose]
 
 fn{a:t@ype} matrix_transpose {n:nat}
   (M: matrix (a, n, n), n: int n): void = begin
-  iforeach_matrix<a> (
-    lam (i,j, x) =<!ref>
+  iforeach_matrix_cloptr<a> (
+    lam (i,j, x) =<cloptr,!ref>
       if i > j then let
-        val x = matrix_get_elt_at (M, n, i, j)
+        val x = matrix_get_elt_at (M, i, n, j)
       in
-        matrix_set_elt_at (M, n, i, j, matrix_get_elt_at (M, n, j, i));
-        matrix_set_elt_at (M, n, j, i, x)
+        matrix_set_elt_at (M, i, n, j, matrix_get_elt_at (M, j, n, i));
+        matrix_set_elt_at (M, j, n, i, x)
       end
   , M, n, n
   ) // end of [iforeach_matrix]
@@ -140,7 +138,7 @@ fn{a:t@ype} prmat {m,n:nat}
   and loop2 {i,j:nat | i < m; j <= n}
     (i: int i, j: int j):<cloptr1> void = begin
     if j < n then let
-      val x = matrix_get_elt_at (M, n, i, j)
+      val x = matrix_get_elt_at (M, i, n, j)
     in
       if (j > 0) then print ", "; pr x; loop2 (i, j+1)
     end else begin
