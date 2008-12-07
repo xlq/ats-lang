@@ -66,7 +66,8 @@ staload "libc/sys/SATS/socket.sats"
 
 local
 
-val (pf_gc, pf_arr | ptr, len) = @[(string, string)][
+typedef string2 = @(string, string)
+val (pf_gc, pf_arr | ptr, len) = $arrsz {string2} (
   ("ats",  "text/plain")
 , ("au",   "audio/basic")
 , ("c",    "text/plain")
@@ -96,7 +97,7 @@ val (pf_gc, pf_arr | ptr, len) = @[(string, string)][
 , ("uu",   "application/octet-stream")
 , ("wav",  "audio/x-wav")
 , ("zip",  "application/zip")
-]
+)
 
 in
 

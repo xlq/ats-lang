@@ -91,13 +91,9 @@ in
   move (sz, leftPost, 0, rightPost, sz, middlePost, sz)
 end // end of [play]
 
-//
+(* ****** ****** *)
 
-implement main (argc, argv) = begin
-
-play 4
-
-end // end of [main]
+implement main (argc, argv) = play 4
 
 (* ****** ****** *)
 

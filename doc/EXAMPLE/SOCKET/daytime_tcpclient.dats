@@ -46,25 +46,24 @@ implement main (argc, argv) = let
   // [connect_ipv4_exn] connects to a server assigned an ipv4 socket address
   val () = connect_ipv4_exn (pf_sock | sockfd, servaddr)
   typedef buf_t = @[byte][MAXLINE]
-  val [l_buf:addr] (pf_gc, pf_buf | p_buf) = malloc_gc (MAXLINE)
-  val () = loop (pf_sock, pf_buf | (*none*)) where {
-    fun loop
-      (pf_sock: !socket_v (fd, conn), pf_buf: !buf_t @ l_buf | (*none*))
+  val b0 = byte_of_int (0)
+  var !p_buf = @[byte][MAXLINE](b0) // allocation on stack
+  val () = loop (pf_sock | !p_buf) where {
+    fun loop (pf_sock: !socket_v (fd, conn) | buf: &buf_t)
       :<cloref1> void = let
-      val n = socket_read_exn (pf_sock | sockfd, !p_buf, MAXLINE)
+      val n = socket_read_exn (pf_sock | sockfd, buf, MAXLINE)
     in
       if n > 0 then let
         val (pf_stdout | p_stdout) = stdout_get ()
-        val () = fwrite_byte_exn (file_mode_lte_w_w | !p_buf, n, !p_stdout)
+        val () = fwrite_byte_exn (file_mode_lte_w_w | buf, n, !p_stdout)
         val () = stdout_view_set (pf_stdout | (*none*))
       in
-        loop (pf_sock, pf_buf | (*none*))
+        loop (pf_sock | buf)
       end else begin
         // connection is closed by the server
       end // end of [if]
     end // end of [loop]
   } // end of [val]
-  val () = free_gc (pf_gc, pf_buf | p_buf) // freeing the buffer
   val () = socket_close_exn (pf_sock | sockfd) // closing the socket
 in
   // empty

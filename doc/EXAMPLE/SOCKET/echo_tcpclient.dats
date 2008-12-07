@@ -35,14 +35,15 @@ extern fun client_loop {fd:int}
 
 implement client_loop {fd:int} (pf_sock | sockfd) = let
   #define M MAXLINE
-  val [l_buf_send:addr] (pf_gc_send, pf_buf_send | p_buf_send) = malloc_gc (M)
-  val [l_buf_recv:addr] (pf_gc_recv, pf_buf_recv | p_buf_recv) = malloc_gc (M)
-  fun loop {m:file_mode} (
+  val b0 = byte_of_int (0)
+  var !p_buf_send = @[byte][M](b0) // allocation on stack
+  and !p_buf_recv = @[byte][M](b0) // allocation on stack
+  fun loop {m:file_mode} {l_buf_send,l_buf_recv:addr} (
       pf_sock: !socket_v (fd, conn)
     , pf_buf_send: !bytes M @ l_buf_send
     , pf_buf_recv: !bytes M @ l_buf_recv
     , pf_mod: file_mode_lte (m, r)
-    | fil: &FILE m
+    | fil: &FILE m, p_buf_send: ptr l_buf_send, p_buf_recv: ptr l_buf_recv
     ) :<cloref1> void = let
     prval pf_buf_send0 = pf_buf_send
     val (pf_fgets | p) = fgets_err (pf_mod, pf_buf_send0 | p_buf_send, M, fil)
@@ -57,7 +58,7 @@ implement client_loop {fd:int} (pf_sock | sockfd) = let
       val () = fwrite_byte_exn (file_mode_lte_w_w | !p_buf_recv, nread, !p_stdout)
       val () = stdout_view_set (pf_stdout | (*none*))
     in
-      loop (pf_sock, pf_buf_send, pf_buf_recv, pf_mod | fil)
+      loop (pf_sock, pf_buf_send, pf_buf_recv, pf_mod | fil, p_buf_send, p_buf_recv)
     end else let
       prval fgets_v_fail (pf_buf_send1) = pf_fgets
       prval () = pf_buf_send := pf_buf_send1
@@ -66,10 +67,11 @@ implement client_loop {fd:int} (pf_sock | sockfd) = let
     end // end of [if]
   end // end of [loop]
   val (pf_stdin | p_stdin) = stdin_get ()
-  val () = loop (pf_sock, pf_buf_send, pf_buf_recv, file_mode_lte_r_r | !p_stdin)
+  val () = loop (
+    pf_sock, view@ !p_buf_send, view@ !p_buf_recv, file_mode_lte_r_r
+  | !p_stdin, p_buf_send, p_buf_recv
+  )
   val () = stdin_view_set (pf_stdin | (*none*))
-  val () = free_gc (pf_gc_send, pf_buf_send | p_buf_send)
-  val () = free_gc (pf_gc_recv, pf_buf_recv | p_buf_recv)
 in
   // empty
 end // end of [client_loop]

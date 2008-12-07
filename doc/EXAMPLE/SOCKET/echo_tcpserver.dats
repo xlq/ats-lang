@@ -32,7 +32,8 @@ extern fun server_action {fd_c:int}
 
 implement server_action {fd_c} (pf_sock_c | fd_c) = let
   #define M MAXLINE
-  val [l_buf:addr] (pf_gc, pf_buf | p_buf) = malloc_gc (M)
+  val b0 = byte_of_int (0)
+  var !p_buf = @[byte][M](b0) // allocation on stack
   val () = loop (pf_sock_c | !p_buf) where {
     fun loop
       (pf_sock_c: !socket_v (fd_c, conn) | buf: &bytes M)
@@ -52,7 +53,7 @@ implement server_action {fd_c} (pf_sock_c | fd_c) = let
    end // end of [loop]
  } // end of [where]
 in
-  free_gc (pf_gc, pf_buf | p_buf)
+  // empty
 end // end of [server_action]
 
 (* ****** ****** *)
@@ -90,6 +91,47 @@ end // end of [server_loop]
 
 (* ****** ****** *)
 
+%{^
+
+#include <signal.h>
+#include <sys/wait.h>
+
+typedef void (*sighandler_t)(int) ;
+
+static inline
+ats_ptr_type
+atslib_signal
+  (ats_int_type signum, ats_ptr_type f) {
+  return signal (signum, (sighandler_t)f) ;
+}
+
+static
+ats_void_type
+sig_chld (ats_int_type signum) {
+  pid_t pid ; int stat ;
+  while (1) {
+    pid = waitpid (-1, &stat, WNOHANG) ;
+    if (pid <= 0) break ;
+    fprintf (stdout, "The child process %i terminated.\n", pid) ;
+  }
+  return ;
+} /* sig_chld */
+
+%}
+
+(* ****** ****** *)
+
+abst@ype signum_t = $extype "ats_int_type"
+macdef SIGCHLD = $extval (signum_t, "SIGCHLD")
+
+typedef sighandler_t = (signum_t) -<fun> void
+extern fun signal (signum: signum_t, f: sighandler_t): sighandler_t
+  = "atslib_signal"
+
+extern fun sig_chld (signum: signum_t):<fun> void = "sig_chld"
+
+(* ****** ****** *)
+
 implement main (argc, argv) = let
   val nport = (if argc > 1 then int_of argv.[1] else SERVPORT_DEFAULT): int
   val [fd_s:int] (pf_sock_s | fd_s) = socket_family_type_exn (AF_INET, SOCK_STREAM)
@@ -99,6 +141,7 @@ implement main (argc, argv) = let
   val () = sockaddr_ipv4_init (servaddr, AF_INET, in4addr_any, servport)
   val () = bind_ipv4_exn (pf_sock_s | fd_s, servaddr)
   val () = listen_exn (pf_sock_s | fd_s, LISTENQ) 
+  val _(*old*) = signal (SIGCHLD, sig_chld)
   val () = server_loop (pf_sock_s | fd_s)
   val () = socket_close_exn (pf_sock_s | fd_s)
 in
