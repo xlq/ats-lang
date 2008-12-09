@@ -187,59 +187,69 @@
   (let (foundp begin end (key-begin 0) (key-end 0) pt)
     (flet ((store ()
              (store-match-data (list begin end key-begin key-end))))
+      ;; attempt to find some statics to highlight and store the
+      ;; points beginning and ending the region to highlight.  needs
+      ;; to be a loop in order to handle cases like ( foo : type )
+      ;; where initially it considers ( .. | .. ) but finds no '|'
+      ;; char so it must then go inside and look for sub-regions like
+      ;; ": type". 
+      ;;
+      ;; Each branch of the cond must be sure to make progress, the
+      ;; point must advance, or else infinite-loop bugs may arise.
       (while (and (not foundp) (< (point) limit))
         (setq key-begin 0 key-end 0)
-        (re-search-forward "(\\|:[^=]\\|{\\|<" limit t)
-        (setq pt (setq begin (match-beginning 0)))
-        (when pt (goto-char pt))
         (cond 
-         ;; handle { ... }
-         ((looking-at "{")
-          (forward-char 1)
+         ((re-search-forward "(\\|:[^=]\\|{\\|[^[:space:].:-]<" limit t)
+          (setq pt (setq begin (match-beginning 0)))
+          (when pt (goto-char pt))
           (cond 
-           ((re-search-forward "}" limit t)
-            (setq end (match-end 0))
-            (store)
-            (setq pt end)
-            (setq foundp t))
-           (t
-            (setq foundp t)             ; <- not sure why this works
-            (setq pt nil))))
-         ;; handle ( ... | ... )
-         ((looking-at "(")
-          (forward-char 1)
-          (setq begin (1+ begin))
-          (cond
-           ((null (ats-context-free-search "|\\|)" limit))
-            (setq pt nil))
-           ((looking-at "|")
-            (setq end (match-end 0))
-            (store)
-            (setq foundp t))
-           ((looking-at ")")
-            (setq pt nil)
-            ;; no | found so scan for other things inside ( )
-            (goto-char (1+ begin)))))
-         ;; handle ... : ...
-         ((looking-at ":[^=]")
-          (forward-char 1)
-          (let ((nest-lvl 0) finishedp)
-            ;; emacs22 only:
-            ;(ats-context-free-search ")\\|\\_<=\\_>\\|," limit)
-            (ats-context-free-search ")\\|[^=]=[^=]\\|,\\|\n\\|\\]" limit)
-            (setq begin (1+ begin)
-                  end (point)
-                  key-begin (1- begin)
-                  key-end begin)
-            (store)
-            (setq foundp t)))
-         ((looking-at "<")
-          (forward-char -1)
-          (cond
-           ((looking-at "[:space:]")
+           ;; handle { ... }
+           ((looking-at "{")
+            (forward-char 1)
+            (cond 
+             ((save-excursion
+                (forward-word -1)
+                (looking-at "where"))
+              ;; except when preceeded by "where" keyword
+              (setq pt nil))
+             ((re-search-forward "}" limit t)
+              (setq end (match-end 0))
+              (store)
+              (setq pt end)
+              (setq foundp t))
+             (t
+              (setq pt nil))))
+           ;; handle ( ... | ... )
+           ((looking-at "(")
+            (forward-char 1)
+            (incf begin)
+            (cond
+             ((null (ats-context-free-search "|\\|)" limit))
+              (setq pt nil))
+             ((looking-at "|")
+              (setq end (match-end 0))
+              (store)
+              (setq foundp t))
+             ((looking-at ")")
+              (setq pt nil)
+              ;; no | found so scan for other things inside ( )
+              (goto-char (1+ begin)))))
+           ;; handle ... : ...
+           ((looking-at ":[^=]")
+            (forward-char 1)
+            (let ((nest-lvl 0) finishedp)
+              ;; emacs22 only:
+              ;;(ats-context-free-search ")\\|\\_<=\\_>\\|," limit)
+              (ats-context-free-search ")\\|[^=]=[^=]\\|,\\|\n\\|\\]" limit)
+              (setq begin (1+ begin)
+                    end (point)
+                    key-begin (1- begin)
+                    key-end begin)
+              (store)
+              (setq foundp t)))
+           ((looking-at "[^[:space:].:-]<")
             (forward-char 2)
-            (setq pt nil))
-           (t
+            (incf begin)
             (cond 
              ((re-search-forward ">" limit t)
               (setq end (match-end 0))
@@ -247,13 +257,14 @@
               (setq pt end)
               (setq foundp t))
              (t
-              (setq foundp t)
-              (setq pt nil))))))
+              (setq pt nil))))
+           (t
+            (setq pt nil)
+            (forward-char 1)
+            (setq foundp t))))
          (t
-          (setq pt nil)
-          (forward-char 1)
-          (setq foundp t)))))
-
+          (setq foundp t)
+          (setq pt nil)))))
     pt))
 
 (defvar ats-keywords
