@@ -183,14 +183,15 @@
 
 (defun ats-font-lock-static-search (&optional limit)
   (interactive)
+  (when (null limit) (setq limit (point-max)))
   (let (foundp begin end (key-begin 0) (key-end 0) pt)
     (flet ((store ()
              (store-match-data (list begin end key-begin key-end))))
       (while (and (not foundp) (< (point) limit))
         (setq key-begin 0 key-end 0)
-        (setq pt (re-search-forward "(\\|:\\|{" limit t))
-        (forward-char -1)
-        (setq begin (match-beginning 0))
+        (re-search-forward "(\\|:[^=]\\|{\\|<" limit t)
+        (setq pt (setq begin (match-beginning 0)))
+        (when pt (goto-char pt))
         (cond 
          ;; handle { ... }
          ((looking-at "{")
@@ -232,6 +233,22 @@
                   key-end begin)
             (store)
             (setq foundp t)))
+         ((looking-at "<")
+          (forward-char -1)
+          (cond
+           ((looking-at "[:space:]")
+            (forward-char 2)
+            (setq pt nil))
+           (t
+            (cond 
+             ((re-search-forward ">" limit t)
+              (setq end (match-end 0))
+              (store)
+              (setq pt end)
+              (setq foundp t))
+             (t
+              (setq foundp t)
+              (setq pt nil))))))
          (t
           (setq pt nil)
           (forward-char 1)
