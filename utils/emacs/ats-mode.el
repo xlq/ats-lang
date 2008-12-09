@@ -240,7 +240,7 @@
     pt))
 
 (defvar ats-keywords
-  '("\\<absprop\\>" "\\<abstype\\>" "\\<abst@type\\>" "\\<absview\\>"
+  '("\\<absprop\\>" "\\<abstype\\>" "\\<abst@ype\\>" "\\<absview\\>"
     "\\<absviewtype\\>" "\\<absviewt@ype\\>" "\\<and\\>" "\\<as\\>"
     "\\<assume\\>" "\\<begin\\>" "\\<break\\>" "\\<\\(s\\)?case\\(+\\|*\\)?\\>"
     "\\<class\\>" "\\<continue\\>" "\\<datasort\\>" "\\<dataprop\\>"
@@ -259,7 +259,7 @@
     "\\<try\\>" "\\<typedef\\>" "\\<union\\>" "\\<val\\>" "\\<var\\>"
     "\\<viewdef\\>" "\\<viewtypedef\\>" "\\<when\\>" "\\<where\\>"
     "\\<while\\>" "\\<with\\>" "\\<withprop\\>" "\\<withtype\\>"
-    "\\<withview\\>" "\\<withviewtype\\>"))
+    "\\<withview\\>" "\\<withviewtype\\>" "\\$\\<extype\\>"))
 
 (defvar ats-font-lock-keywords
   (append
