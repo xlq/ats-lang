@@ -1177,11 +1177,12 @@ fn v0ardec_tr
   val loc = d.v0ardec_loc
   val knd = d.v0ardec_knd
   val os1e = s0expopt_tr d.v0ardec_typ
+  val wth = d.v0ardec_wth // i0deopt
   val od1e = d0expopt_tr d.v0ardec_ini
 in
   v1ardec_make (
-    loc, knd, d.v0ardec_sym, d.v0ardec_sym_loc, os1e, od1e
-  )
+    loc, knd, d.v0ardec_sym, d.v0ardec_sym_loc, os1e, wth, od1e
+  ) // end of [v1ardec_make]
 end // end of [v0ardec_tr]
 
 fn v0ardeclst_tr (ds: v0ardeclst): v1ardeclst =

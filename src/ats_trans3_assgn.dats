@@ -74,7 +74,7 @@ in
       var cstr: s2explst = list_nil ()
       val (s2e_old, s2e_vt, s2ls_bk) = begin
         s2exp_slablst_linset_cstr (loc0, s2e_vt, s2ls_bk, s2e_new, cstr)
-      end
+      end // end of [val]
       val () = trans3_env_add_proplst (loc0, cstr)
 (*
       val () = begin
@@ -86,38 +86,36 @@ in
       val s2ls0_bk = s2lablst_trim_s2lablst_s2lablst (s2ls0_ft, s2ls_ft, s2ls_bk)
       var err: int = 0
       val () = $SOL.s2exp_size_equal_solve_err (loc0, s2e_new, s2e_old, err)
-      val () = // error checking
-        if err > 0 then begin
-          prerr loc0;
-          prerr ": error(3)";
-          prerr ": size mismatch for assignment";
-          prerr ": the following two types are expected to be size-equal but they may not be:";
-          prerr_newline ();
-          prerr s2e_new;
-          prerr_newline ();
-          prerr s2e_old;
-          prerr_newline ();
-          $Err.abort ()
-        end // end of [if]
+      val () = if err > 0 then begin // error checking
+        prerr loc0;
+        prerr ": error(3)";
+        prerr ": size mismatch for assignment";
+        prerr ": the following two types are expected to be size-equal but they may not be:";
+        prerr_newline ();
+        prerr s2e_new;
+        prerr_newline ();
+        prerr s2e_old;
+        prerr_newline ();
+        $Err.abort ()
+      end // end of [if]
       val () = d2var_typ_reset_at (d2v_view, s2e_vt, s2e_addr)
-      val () = // linearity checking
-        if s2exp_is_linear s2e_old then begin
-          prerr loc0;
-          prerr ": error(3)";
-          prerr ": a linear value of the type [";
-          prerr s2e_old;
-          prerr "] is abandoned.";
-          prerr_newline ();
-          $Err.abort {void} ()
-        end // end of [if]
+      val () = if s2exp_is_linear s2e_old then begin // linearity checking
+        prerr loc0;
+        prerr ": error(3)";
+        prerr ": a linear value of the type [";
+        prerr s2e_old;
+        prerr "] is abandoned.";
+        prerr_newline ();
+        $Err.abort {void} ()
+      end // end of [if]
     in
       s2ls0_bk
     end // end of [Some_vt]
   | ~None_vt () => let
-      fun aux (s2ls: s2lablst): void = begin case+ s2ls of
+      fun aux (s2ls: s2lablst): void = case+ s2ls of
         | list_cons (s2l, s2ls) => (prerr "."; prerr s2l; aux s2ls)
         | list_nil () => ()
-      end // end of [aux]
+      // end of [aux]
     in
       prerr loc0;
       prerr ": error(3)";
@@ -134,7 +132,7 @@ implement d2var_lin_slablst_assgn (loc0, d2v, s2ls, s2e_new) = let
 (*
   val () = begin
     print "d2var_lin_slablst_assgn: d2v = "; print d2v; print_newline ()
-  end
+  end // end of [val]
 *)
   val s2e0: s2exp = case+ d2var_typ_get d2v of
     | Some s2e => s2e | None () => s2exp_void_t0ype ()
@@ -153,16 +151,15 @@ implement d2var_lin_slablst_assgn (loc0, d2v, s2ls, s2e_new) = let
   end
 *)
   val () = trans3_env_add_proplst (loc0, cstr)
-  val () = // linearity checking
-    if s2exp_is_linear s2e_old then begin
-      prerr loc0;
-      prerr ": error(3)";
-      prerr ": a linear value of the type [";
-      prerr s2e_old;
-      prerr "] is abandoned.";
-      prerr_newline ();
-      $Err.abort {void} ()
-    end
+  val () = if s2exp_is_linear s2e_old then begin // linearity checking
+    prerr loc0;
+    prerr ": error(3)";
+    prerr ": a linear value of the type [";
+    prerr s2e_old;
+    prerr "] is abandoned.";
+    prerr_newline ();
+    $Err.abort {void} ()
+  end // end of [val]
 in
   d2var_lin_inc (d2v); d2var_typ_set (d2v, Some s2e0); s2ls
 end // d2var_lin_slablst_assgn
@@ -179,7 +176,8 @@ implement d2var_mut_slablst_assgn (loc0, d2v, s2ls, s2e_new) = let
         prerr "] is expected to be mutable but it is not.";
         prerr_newline ();
         $Err.abort {s2exp} ()
-      end
+      end // end of [None]
+  // end of [val]
 in
   s2exp_addr_slablst_assgn (loc0, s2e_addr, s2ls, s2e_new)
 end // end of [d2var_mut_slablst_assgn]

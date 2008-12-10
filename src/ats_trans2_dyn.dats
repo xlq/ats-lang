@@ -1299,7 +1299,14 @@ in
         end
     end // end of [D1Eapp_sta]
   | D1Earrinit (s1e_elt, od1e_asz, d1es_elt) => let
-      val s2e_elt = s1exp_tr_dn (s1e_elt, s2rt_viewt0ype)
+      val s2t_elt = (case+ od1e_asz of
+        | Some _ => begin case+ d1es_elt of
+          | list_cons _ (*initialized*) => s2rt_t0ype // cannot be linear
+          | list_nil () (*uninitialized*) => s2rt_viewt0ype // can be linear
+          end // end of [Some]
+        | None () => s2rt_viewt0ype // can be linear
+      ) : s2rt // end of [val]
+      val s2e_elt = s1exp_tr_dn (s1e_elt, s2t_elt)
       val od2e_asz = d1expopt_tr od1e_asz; val d2es_elt = d1explst_tr d1es_elt
     in
       d2exp_arrinit (loc0, s2e_elt, od2e_asz, d2es_elt)
@@ -1806,9 +1813,17 @@ fn v1ardec_tr (d1c: v1ardec): v2ardec = let
     | Some s1e => Some (s1exp_tr_dn_impredicative s1e)
     | None () => None ()
   ) : s2expopt
+  val wth = (case+ d1c.v1ardec_wth of
+    | Some (i0de) => let
+        val d2v = d2var_make (i0de.i0de_loc, i0de.i0de_sym)
+      in
+        D2VAROPTsome d2v
+      end // end of [Some]
+    | None () => D2VAROPTnone ()
+  ) : d2varopt // end of [val]
   val ini = d1expopt_tr d1c.v1ardec_ini
 in
-  v2ardec_make (d1c.v1ardec_loc, knd, d2v_ptr, s2v_ptr, typ, ini)
+  v2ardec_make (d1c.v1ardec_loc, knd, d2v_ptr, s2v_ptr, typ, wth, ini)
 end // end of [v1ardec_tr]
 
 fn v1ardeclst_tr (d1cs: v1ardeclst): v2ardeclst = let
@@ -1821,11 +1836,16 @@ fn v1ardeclst_tr (d1cs: v1ardeclst): v2ardeclst = let
   val () = aux d2cs where {
     fun aux (d2cs: v2ardeclst): void =
       case+ d2cs of
-      | cons (d2c, d2cs) => begin
-          the_s2expenv_add_svar (d2c.v2ardec_svar);
-          the_d2expenv_add_dvar (d2c.v2ardec_dvar);
+      | cons (d2c, d2cs) => let
+          val () = the_s2expenv_add_svar (d2c.v2ardec_svar)
+          val () = the_d2expenv_add_dvar (d2c.v2ardec_dvar)
+          val () = case+ d2c.v2ardec_wth of
+            | D2VAROPTsome d2v => the_d2expenv_add_dvar d2v
+            | D2VAROPTnone () => ()
+          // end of [val]
+        in
           aux d2cs
-        end
+        end // end of [cons]
       | nil () => ()
   } // end of [where]
 in

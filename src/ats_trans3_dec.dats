@@ -336,7 +336,8 @@ fn v2ardec_tr_sta (d2c: v2ardec): v3ardec = let
   val () = d2var_addr_set (d2v_ptr, Some s2e_addr)
   val () = d2var_mastyp_set (d2v_ptr, os2e_ptr)
   val () = d2var_typ_set (d2v_ptr, os2e_ptr)
-  val d2v_view = d2var_ptr_viewat_make (d2v_ptr)
+  val od2v_view = d2c.v2ardec_wth
+  val d2v_view = d2var_ptr_viewat_make (d2v_ptr, od2v_view)
   // make [d2v_ptr] a mutable variable
   val () = d2var_view_set (d2v_ptr, D2VAROPTsome d2v_view)
   val () = the_d2varset_env_add (d2v_view)
@@ -420,7 +421,8 @@ fn v2ardec_tr_dyn (d2c: v2ardec): v3ardec = let
   val () = d2var_addr_set (d2v_ptr, Some s2e_addr)
   val () = d2var_mastyp_set (d2v_ptr, os2e_ptr)
   val () = d2var_typ_set (d2v_ptr, os2e_ptr)
-  val d2v_view = d2var_ptr_viewat_make (d2v_ptr)
+  val od2v_view = d2c.v2ardec_wth
+  val d2v_view = d2var_ptr_viewat_make (d2v_ptr, od2v_view)
 (*
   // d2v_ptr is not mutable!!!
   // val () = d2var_view_set (d2v_ptr, D2VAROPTsome d2v_view)

@@ -307,7 +307,7 @@ atspre_strbuf_make_substring
   return des ;
 } /* atspre_strbuf_make_substring */
 
-/* ****** ****** /*
+/* ****** ****** */
 
 extern ats_ptr_type atsopt_global ;
 

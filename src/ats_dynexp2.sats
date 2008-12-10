@@ -319,9 +319,12 @@ fun d2var_typ_reset
 fun d2var_typ_reset_at
   (d2v: d2var_t, s2e: s2exp, s2l: s2exp): void
 
-fun d2var_ptr_viewat_make (d2v: d2var_t): d2var_t
+fun d2var_ptr_viewat_make
+  (d2v_ptr: d2var_t, od2v_view: d2varopt): d2var_t
 
-//
+fun d2var_ptr_viewat_make_none (d2v_ptr: d2var_t): d2var_t
+
+(* ****** ****** *)
 
 fun d2var_readize (s2e_v: s2exp, d2v: d2var_t): void
 fun d2varlst_readize (s2e_v: s2exp, d2v: d2varlst): void
@@ -787,8 +790,9 @@ and v2ardec = '{
 , v2ardec_dvar= d2var_t // dynamic address
 , v2ardec_svar= s2var_t // static address
 , v2ardec_typ= s2expopt
+, v2ardec_wth= d2varopt // proof of @-view
 , v2ardec_ini= d2expopt
-}
+} // end of [v2ardec]
 
 and v2ardeclst = List v2ardec
 
@@ -1127,9 +1131,15 @@ fun s2tavar_make (_: loc_t, s2v: s2var_t): s2tavar
 fun s2aspdec_make (_: loc_t, s2c: s2cst_t, def: s2exp): s2aspdec
 fun v2aldec_make (_: loc_t, _: p2at, def: d2exp, ann: s2expopt): v2aldec
 fun f2undec_make (_: loc_t, _: d2var_t, def: d2exp, ann: s2expopt): f2undec
-fun v2ardec_make
-  (_: loc_t, knd: int, _: d2var_t, _: s2var_t, typ: s2expopt, ini: d2expopt)
-  : v2ardec
+fun v2ardec_make (
+    _: loc_t
+  , knd: int
+  , _: d2var_t
+  , _: s2var_t
+  , typ: s2expopt
+  , wth: d2varopt
+  , ini: d2expopt
+  ) : v2ardec
 
 fun i2mpdec_make (
     loc: loc_t

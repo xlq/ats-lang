@@ -109,12 +109,12 @@ end // end of [string1_explode]
 
 (* ****** ****** *)
 
-%{
+%{$
 
 // a commonly used simple hash function
 
-ats_uint_type atspre_string_hash_33 (ats_ptr_type s0)
-{
+ats_uint_type
+atspre_string_hash_33 (ats_ptr_type s0) {
   unsigned int hash_val ; unsigned char *s; int c;
   hash_val = 314159 ;
 
@@ -126,6 +126,23 @@ ats_uint_type atspre_string_hash_33 (ats_ptr_type s0)
     s += 1 ;
   }
 }
+
+%}
+
+(* ****** ****** *)
+
+%{$
+
+ats_ptr_type
+atspre_strbuf_make_substring
+  (const ats_ptr_type src0, const ats_int_type start, const ats_int_type len)
+{
+  char *des, *src ;
+  des = ATS_MALLOC(len+1) ;
+  src = ((char*)src0) + start ;
+  memcpy(des, src, len) ; des[len] = '\000' ;
+  return des ;
+} /* atspre_strbuf_make_substring */
 
 %}
 

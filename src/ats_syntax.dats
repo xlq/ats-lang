@@ -2064,33 +2064,51 @@ implement f0undeclst_cons (x, xs) = cons (x, xs)
 
 (* ****** ****** *)
 
-fn v0ardec_make
-  (loc: loc_t, knd: int, id: i0de, typ: s0expopt, ini: d0expopt)
-  : v0ardec = '{
+implement v0arwth_none () = None ()
+implement v0arwth_some (id) = Some (id)
+
+fn v0ardec_make (
+    loc: loc_t
+  , knd: int
+  , id: i0de
+  , typ: s0expopt
+  , wth: i0deopt
+  , ini: d0expopt
+  ) : v0ardec = '{
   v0ardec_loc= loc
 , v0ardec_knd= knd
 , v0ardec_sym= id.i0de_sym
 , v0ardec_sym_loc= id.i0de_loc
 , v0ardec_typ= typ
+, v0ardec_wth= wth
 , v0ardec_ini= ini
 } // end of [v0ardec_make]
  
-implement v0ardec_make_some_none (stadyn, id, s0e) = let
+implement
+  v0ardec_make_some_none (stadyn, id, s0e, wth) = let
   val loc = combine (id.i0de_loc, s0e.s0exp_loc)
 in
-  v0ardec_make (loc, stadyn, id, s0expopt_some s0e, d0expopt_none ())
+  v0ardec_make (
+    loc, stadyn, id, s0expopt_some s0e, wth, d0expopt_none ()
+  ) // end of [v0ardec_make]
 end // end of [v0ardec_make_some_none]
 
-implement v0ardec_make_none_some (stadyn, id, d0e) = let
+implement
+  v0ardec_make_none_some (stadyn, id, wth, d0e) = let
   val loc = combine (id.i0de_loc, d0e.d0exp_loc)
 in
-  v0ardec_make (loc, stadyn, id, s0expopt_none (), d0expopt_some d0e)
+  v0ardec_make (
+    loc, stadyn, id, s0expopt_none (), wth, d0expopt_some d0e
+  ) // end of [v0ardec_make]
 end // end of [v0ardec_make_none_some]
 
-implement v0ardec_make_some_some (stadyn, id, s0e, d0e) = let
+implement
+  v0ardec_make_some_some (stadyn, id, s0e, wth, d0e) = let
   val loc = combine (id.i0de_loc, d0e.d0exp_loc)
 in
-  v0ardec_make (loc, stadyn, id, s0expopt_some s0e, d0expopt_some d0e)
+  v0ardec_make (
+    loc, stadyn, id, s0expopt_some s0e, wth, d0expopt_some d0e
+  ) // end of [v0ardec_make]
 end // end of [v0ardec_make_some_some]
 
 implement v0ardeclst_nil () = nil ()

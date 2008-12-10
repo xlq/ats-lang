@@ -132,8 +132,8 @@ ats_void_type
 atspre_fprint_string
   (const ats_ptr_type out, const ats_ptr_type s) {
   int n = fprintf ((FILE *)out, "%s", (char *)s) ;
-  if (n < 0) {
-    ats_exit_errmsg (n, (ats_ptr_type)"Exit: [fprint_string] failed.\n") ;
+  if (n < 0) { ats_exit_errmsg
+    (n, "exit(ATS): [fprint_string] failed.\n") ;
   }
   return ;
 } /* atspre_fprint_string */
@@ -163,21 +163,12 @@ ats_ptr_type
 atspre_strbuf_make_char
   (const ats_int_type n, const ats_char_type c) {
   char *p ; 
+  if (!c) { ats_exit_errmsg
+    (1, "exit(ATS): [strbuf_make_char] failed: null char.\n") ;
+  } ;
   p = ATS_MALLOC(n+1) ; memset (p, c, n) ; p[n] = '\000' ;
   return p ;
 } /* atspre_strbuf_make_char */
-
-static inline
-ats_ptr_type
-atspre_strbuf_make_bufptr
-  (const ats_ptr_type src0, const ats_int_type start, const ats_int_type len)
-{
-  char *des, *src ;
-  des = ATS_MALLOC(len+1) ;
-  src = ((char*)src0) + start ;
-  memcpy(des, src, len) ; des[len] = '\000' ;
-  return des ;
-} /* atspre_strbuf_make_bufptr */
 
 /* ****** ****** */
 
@@ -295,8 +286,9 @@ atspre_string_index_of_string
 
 static inline
 ats_ptr_type
-atspre_string_singleton (const ats_char_type c) {
-  return atspre_tostring_char (c) ;
+atspre_string_singleton
+  (const ats_char_type c) {
+  return atspre_strbuf_make_char (1, c) ;
 } /* atspre_string_singleton */
 
 /* ****** ****** */
@@ -306,10 +298,11 @@ ats_ptr_type
 atspre_string_tolower (const ats_ptr_type s) {
   int n ;
   char *src, *des0, *des ;
-
   src = (char *)s ; n = strlen(src) ;
   des0 = ATS_MALLOC(n+1) ; des = des0 ;
-  while (n > 0) { *des = tolower (*src) ; ++des ; ++src ; --n ; }
+  while (n > 0) {
+    *des = tolower (*src) ; ++des ; ++src ; --n ;
+  }
   *des = '\000' ;
   return des0 ;
 } /* atspre_string_tolower */
@@ -319,10 +312,11 @@ ats_ptr_type
 atspre_string_toupper (const ats_ptr_type s) {
   int n ;
   char *src, *des0, *des ;
-
   src = (char *)s ; n = strlen(src) ;
   des0 = ATS_MALLOC(n+1) ; des = des0 ;
-  while (n > 0) { *des = toupper (*src) ; ++des ; ++src ; --n ; }
+  while (n > 0) {
+    *des = toupper (*src) ; ++des ; ++src ; --n ;
+  }
   *des = '\000' ;
   return des0 ;
 } /* atspre_string_toupper */

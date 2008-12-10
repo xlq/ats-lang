@@ -86,23 +86,34 @@ libc/DATS/gmp.dats
 
 libc/SATS/math.sats
 libc/DATS/math.dats
+
 libc/SATS/random.sats
+
+libc/SATS/signal.sats
+
 libc/SATS/stdio.sats
+
 libc/SATS/stdlib.sats
+
 libc/SATS/time.sats
+
 libc/SATS/unistd.sats
 libc/DATS/unistd.dats
 
 libc/sys/SATS/socket.sats
 libc/sys/DATS/socket.dats
+
 libc/sys/SATS/stat.sats
+
 libc/sys/SATS/types.sats
 
 libc/arpa/SATS/inet.sats
+
 libc/netinet/SATS/in.sats
 
 libc/SATS/pthread_locks.sats
 libc/DATS/pthread_locks.dats
+
 libc/SATS/pthread.sats
 libc/DATS/pthread.dats
 

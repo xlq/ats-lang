@@ -218,6 +218,8 @@ fun vbox_make_view_ptr_gc {a:viewt@ype} {l:addr} // for dynamically allocated
 
 (* ****** ****** *)
 
+(*
+
 val{a:t@ype} value_none : value (a, 0)
   = "atspre_value_none"
 
@@ -229,11 +231,13 @@ fun{a:t@ype} value_unsome (x: value (a, 1)):<> a
 
 // the following functions are only available for special types
 
-fun{a:t@ype} value_is_none {i:two} (x: value (a, i)):<> bool (i < 1)
+fun{a:t@ype} value_is_none {i:two} (x: value (a, i)):<> bool (i == 0)
   = "atspre_value_is_none"
 
-fun{a:t@ype} value_is_some {i:two} (x: value (a, i)):<> bool (i > 0)
+fun{a:t@ype} value_is_some {i:two} (x: value (a, i)):<> bool (i == 1)
   = "atspre_value_is_some"
+
+*)
 
 (* ****** ****** *)
 

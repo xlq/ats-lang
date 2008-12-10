@@ -114,12 +114,12 @@ ats_int_type atslib_tm_isdst_get (ats_ptr_type tm) {
 
 static inline
 ats_time_type
-atslib_time_get () { return time((time_t *)0) ; }
+atslib_time_get () { return time((time_t*)0) ; }
 
 static inline
 ats_time_type
-atslib_time_get_and_set (ats_ptr_type p) {
-  return time((time_t *)p) ;
+atslib_time_get_and_set (ats_ref_type p) {
+  return time((time_t*)p) ;
 }
 
 /* ****** ****** */
@@ -134,7 +134,13 @@ atslib_difftime (time_t finish, time_t start) {
 
 static inline
 ats_ptr_type // this function is not reentrant
-atslib_ctime (time_t ntick) { return ctime(&ntick) ; }
+atslib_ctime (ats_ref_type ntick) { return ctime((time_t*)ntick) ; }
+
+static inline
+ats_ptr_type // this function is reentrant
+atslib_ctime_r (ats_ref_type ntick, ats_ptr_type p_buf) {
+  return ctime_r ((time_t*)ntick, (char*)p_buf) ;
+}
 
 /* ****** ****** */
 

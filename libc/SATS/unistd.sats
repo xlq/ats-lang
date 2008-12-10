@@ -45,7 +45,9 @@
 
 (* ****** ****** *)
 
-staload "libc/sys/SATS/types.sats" // for [pid_t]
+staload TYPES = "libc/sys/SATS/types.sats"
+
+typedef pid_t = $TYPES.pid_t
 
 (* ****** ****** *)
 
@@ -80,8 +82,9 @@ overload wait with wait_without_status
 
 (* ****** ****** *)
 
-// some systems require that the argument of usleep <= 1000000
-fun usleep (n: natLte 1000000 (* microseconds *)): void
+#define ONE_MILLION 1000000
+// some systems require that the argument of usleep <= 1 million
+fun usleep (n: natLte ONE_MILLION (* microseconds *)): void
   = "atslib_usleep"
 
 (* ****** ****** *)

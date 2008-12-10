@@ -602,6 +602,7 @@ typedef ats_ptr_type v0aldeclst_t ;
 typedef ats_ptr_type f0undec_t ;
 typedef ats_ptr_type f0undeclst_t ;
 
+typedef ats_ptr_type v0arwth_t ;
 typedef ats_ptr_type v0ardec_t ;
 typedef ats_ptr_type v0ardeclst_t ;
 
@@ -764,9 +765,15 @@ extern f0undeclst_t f0undeclst_cons (f0undec_t, f0undeclst_t) ;
 
 /* ****** ****** */
 
-extern v0ardec_t v0ardec_make_some_none (int /*stadyn*/, i0de_t, s0exp_t) ;
-extern v0ardec_t v0ardec_make_none_some (int /*stadyn*/, i0de_t, d0exp_t) ;
-extern v0ardec_t v0ardec_make_some_some (int /*stadyn*/, i0de_t, s0exp_t, d0exp_t) ;
+extern v0arwth_t v0arwth_none () ;
+extern v0arwth_t v0arwth_some (i0de_t) ;
+
+extern v0ardec_t v0ardec_make_some_none
+  (int /*stadyn*/, i0de_t, v0arwth_t, s0exp_t) ;
+extern v0ardec_t v0ardec_make_none_some
+  (int /*stadyn*/, i0de_t, v0arwth_t, d0exp_t) ;
+extern v0ardec_t v0ardec_make_some_some
+  (int /*stadyn*/, i0de_t, s0exp_t, v0arwth_t, d0exp_t) ;
 
 extern v0ardeclst_t v0ardeclst_nil (void) ;
 extern v0ardeclst_t v0ardeclst_cons (v0ardec_t, v0ardeclst_t) ;
@@ -1066,6 +1073,7 @@ v0aldec_t v0aldec ;
 v0aldeclst_t v0aldeclst ;
 f0undec_t f0undec ;
 f0undeclst_t f0undeclst ;
+v0arwth_t v0arwth ;
 v0ardec_t v0ardec ;
 v0ardeclst_t v0ardeclst ;
 m0acdef_t m0acdef ;
@@ -1542,6 +1550,7 @@ guad0ec_t guad0ec ;
 %type <f0undec> f0undec
 %type <f0undeclst> andf0undecseq
 
+%type <v0arwth> v0arwth
 %type <v0ardec> v0ardec
 %type <v0ardeclst> andv0ardecseq
 
@@ -2815,11 +2824,15 @@ andf0undecseq
 
 /* ****** ****** */
 
+v0arwth
+  : /* empty */                         { $$ = v0arwth_none () ; }
+  | WITH pi0de                          { $$ = v0arwth_some ($2) ; }
+
 v0ardec /* stack-allocated variable */
-  : pi0de EQ d0exp                      { $$ = v0ardec_make_none_some(0, $1, $3) ; }
-  | BANG pi0de EQ d0exp                 { $$ = v0ardec_make_none_some(1, $2, $4) ; }
-  | pi0de COLON s0exp                   { $$ = v0ardec_make_some_none(0, $1, $3) ; }
-  | pi0de COLON s0exp EQ d0exp          { $$ = v0ardec_make_some_some(0, $1, $3, $5) ; }
+  : pi0de v0arwth EQ d0exp              { $$ = v0ardec_make_none_some(0, $1, $2, $4) ; }
+  | BANG pi0de v0arwth EQ d0exp         { $$ = v0ardec_make_none_some(1, $2, $3, $5) ; }
+  | pi0de COLON s0exp v0arwth           { $$ = v0ardec_make_some_none(0, $1, $3, $4) ; }
+  | pi0de COLON s0exp v0arwth EQ d0exp  { $$ = v0ardec_make_some_some(0, $1, $3, $4, $6) ; }
 ;
 
 andv0ardecseq

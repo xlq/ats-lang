@@ -64,6 +64,8 @@ typedef l0ab = $Syn.l0ab
 typedef d0ynq = $Syn.d0ynq
 typedef dqi0de = $Syn.dqi0de
 typedef sqi0de = $Syn.sqi0de
+
+typedef i0deopt = $Syn.i0deopt
 typedef i0delstlst = $Syn.i0delstlst
 
 typedef abskind = $Syn.abskind
@@ -602,6 +604,7 @@ and v1ardec = '{
 , v1ardec_sym= sym_t
 , v1ardec_sym_loc= loc_t
 , v1ardec_typ= s1expopt
+, v1ardec_wth= i0deopt
 , v1ardec_ini= d1expopt
 }
 
@@ -936,9 +939,15 @@ fun f1undec_make
   (_: loc_t, id: sym_t, loc_id: loc_t, def: d1exp, typ: witht1ype)
   : f1undec
 
-fun v1ardec_make
-  (_: loc_t, knd: int, id: sym_t, loc_id: loc_t, typ: s1expopt, def: d1expopt)
-  : v1ardec
+fun v1ardec_make (
+    _: loc_t
+  , knd: int
+  , id: sym_t
+  , loc_id: loc_t
+  , typ: s1expopt
+  , wth: i0deopt
+  , def: d1expopt
+  ) : v1ardec
 
 fun m1acdef_make
   (_: loc_t, id: sym_t, arg: $Syn.m0acarglst, def: d1exp): m1acdef

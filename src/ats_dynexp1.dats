@@ -760,12 +760,14 @@ implement f1undec_make (loc, id, loc_id, d1e, ann) = '{
 , f1undec_ann= ann
 } // end of [f1undec_make]
 
-implement v1ardec_make (loc, knd, id, loc_id, os1e, od1e) = '{
+implement v1ardec_make
+  (loc, knd, id, loc_id, os1e, wth, od1e) = '{
   v1ardec_loc= loc
 , v1ardec_knd= knd
 , v1ardec_sym= id
 , v1ardec_sym_loc= loc_id
 , v1ardec_typ= os1e
+, v1ardec_wth= wth // i0deopt
 , v1ardec_ini= od1e
 } // end of [v1ardec_make]
 

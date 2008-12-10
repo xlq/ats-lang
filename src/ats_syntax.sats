@@ -164,6 +164,8 @@ typedef i0de = '{
 typedef i0delst = List i0de
 typedef i0delstlst = List i0delst
 
+typedef i0deopt = Option i0de
+
 fun fprint_i0de {m:file_mode}
   (pf: file_mode_lte (m, w) | out: &FILE m, _: i0de): void
 overload fprint with fprint_i0de
@@ -1585,6 +1587,7 @@ and v0ardec = '{
 , v0ardec_sym= sym_t
 , v0ardec_sym_loc= loc_t
 , v0ardec_typ= s0expopt
+, v0ardec_wth= i0deopt
 , v0ardec_ini= d0expopt
 }
 
@@ -1929,14 +1932,19 @@ fun f0undeclst_cons (x: f0undec, xs: f0undeclst): f0undeclst
 
 (* ****** ****** *)
 
-fun v0ardec_make_some_none (knd: int, id: i0de, s0e: s0exp): v0ardec
-  = "v0ardec_make_some_none"
+fun v0arwth_none (): i0deopt = "v0arwth_none"
+fun v0arwth_some (id: i0de): i0deopt = "v0arwth_some"
 
-fun v0ardec_make_none_some (knd: int, id: i0de, d0e: d0exp): v0ardec
+fun v0ardec_make_none_some
+  (knd: int, id: i0de, wth: i0deopt, d0e: d0exp): v0ardec
   = "v0ardec_make_none_some"
 
+fun v0ardec_make_some_none
+  (knd: int, id: i0de, s0e: s0exp, wth: i0deopt): v0ardec
+  = "v0ardec_make_some_none"
+
 fun v0ardec_make_some_some
-  (knd: int, id: i0de, s0e: s0exp, d0e: d0exp): v0ardec
+  (knd: int, id: i0de, s0e: s0exp, wth: i0deopt, d0e: d0exp): v0ardec
   = "v0ardec_make_some_some"
 
 fun v0ardeclst_nil (): v0ardeclst = "v0ardeclst_nil"

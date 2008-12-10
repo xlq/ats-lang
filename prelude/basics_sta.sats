@@ -343,18 +343,23 @@ stadef vbox = vbox_view_prop
 
 (* ****** ****** *)
 
-abst@ype value_t0ype_int_t0ype (a:t@ype+, i:int) =
-  union (i) { value= a }
+(*
+
+abst@ype value_t0ype_int_t0ype
+  (a:t@ype+, i:int) = union (i) { value= a }
 stadef value = value_t0ype_int_t0ype
 typedef Value (a:t@ype) =
   [i:int | 0 <= i; i <= 1] value (a, i)
 
-absviewt@ype
-value_viewt0ype_int_viewt0ype (a:viewt@ype+, i:int) =
-  union (i) { value= a }
+//
+
+absviewt@ype value_viewt0ype_int_viewt0ype
+  (a:viewt@ype+, i:int) = union (i) { value= a }
 stadef value_vt = value_viewt0ype_int_viewt0ype
-viewtypedef Value_t (a:viewt@ype) =
+viewtypedef Value_vt (a:viewt@ype) =
   [i:int | 0 <= i; i <= 1] value_vt (a, i)
+
+*)
 
 (* ****** ****** *)
 
@@ -529,8 +534,11 @@ stadef ptr = ptr_type
 (* ****** ****** *)
 
 stadef strbuf = strbuf_int_int_t0ype
+stadef strbuf (m:int) = [n:int | 0 <= n; n < m] strbuf (m, n)
+
 stadef string = string_int_type
 stadef string = string_type
+
 stadef stropt = stropt_int_type
 
 (* ****** ****** *)

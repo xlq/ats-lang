@@ -309,7 +309,7 @@ in
       end
     in
       // empty
-    end
+    end // end of [D3Esel_var when d2var_is_linear]
   | D3Esel_var (d2v, d3ls) when d2var_is_mutable d2v => let
       val s2ls_nt = s2lab0lst_of_d3lab1lst d3ls
       val _(* s2lablst *) = begin
@@ -317,7 +317,7 @@ in
       end
     in
       // empty
-    end
+    end // end of [D3Esel_var when d2var_is_mutable]
   | D3Evar d2v when d2var_is_linear d2v => let
       val () = refval_check (loc0, d2v, refval)
       val _(* nil *) = begin
@@ -325,28 +325,28 @@ in
       end
     in
       // empty
-    end
+    end // end of [D2Evar when d2var_is_linear]
   | D3Evar d2v when d2var_is_mutable d2v => let
       val _ (* nil *) = begin
         d2var_mut_slablst_assgn (loc0, d2v, list_nil (), s2e_new)
       end
     in
       // empty
-    end
+    end // end of [D2Evar when d2var_is_mutable]
   | D3Eviewat_ptr (d3e, d3ls, d2v_view, s2ls_nt) => let
       val (s2e_old, s2ls) = begin
         d2var_view_viewat_slablst_set (loc0, d2v_view, s2ls_nt, s2e_new)
       end
     in
       $SOL.s2exp_out_void_solve (loc0, s2e_old)
-    end
+    end // end of [D3Eviewat_ptr]
   | D3Eviewat_var (d2v, d3ls, d2v_view, s2ls_nt) => let
       val (s2e_old, s2ls) = begin
         d2var_view_viewat_slablst_set (loc0, d2v_view, s2ls_nt, s2e_new)
       end
     in
       $SOL.s2exp_out_void_solve (loc0, s2e_old)
-    end
+    end // end of [D3Eviewat_var]
   | _ => (err := err + 1)
   // end of [case]
 end // end of [d3exp_lval_typ_set]
@@ -381,7 +381,7 @@ in
       end
   end else begin
     0 (*freeknd*)
-  end
+  end // end of [if]
 end // end of [d3exp_lval_typ_set_arg]
 
 implement d3exp_lval_typ_set_pat (d3e0, p3t) = begin
@@ -396,8 +396,8 @@ implement d3exp_lval_typ_set_pat (d3e0, p3t) = begin
         prerr ": the dynamic expression needs to be a left-value but it is not.";
         prerr_newline ();
         $Err.abort {void} ()
-      end
-    end
+      end // end of [if]
+    end // end of [Some]
   | None () => ()
 end // end of [d3exp_lval_typ_set_pat]
 

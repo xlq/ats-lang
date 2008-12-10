@@ -12,6 +12,7 @@
 
 (* ****** ****** *)
 
+staload "libc/SATS/signal.sats"
 staload "libc/SATS/stdio.sats"
 staload "libc/SATS/unistd.sats"
 staload "libc/sys/SATS/types.sats"
@@ -93,40 +94,28 @@ end // end of [server_loop]
 
 %{^
 
-#include <signal.h>
 #include <sys/wait.h>
-
-typedef void (*sighandler_t)(int) ;
-
-static inline
-ats_ptr_type
-atslib_signal
-  (ats_int_type signum, ats_ptr_type f) {
-  return signal (signum, (sighandler_t)f) ;
-}
 
 static
 ats_void_type
-sig_chld (ats_int_type signum) {
+sig_chld (signum_t signum) {
   pid_t pid ; int stat ;
+
   while (1) {
     pid = waitpid (-1, &stat, WNOHANG) ;
-    if (pid <= 0) break ;
-    fprintf (stdout, "The child process %i terminated.\n", pid) ;
-  }
+    if (pid > 0) {
+      fprintf (stdout, "The child process %i terminated.\n", pid) ;
+      continue ;
+    } /* end of [if] */
+    break ;
+  } /* end of [while] */
+
   return ;
 } /* sig_chld */
 
 %}
 
 (* ****** ****** *)
-
-abst@ype signum_t = $extype "ats_int_type"
-macdef SIGCHLD = $extval (signum_t, "SIGCHLD")
-
-typedef sighandler_t = (signum_t) -<fun> void
-extern fun signal (signum: signum_t, f: sighandler_t): sighandler_t
-  = "atslib_signal"
 
 extern fun sig_chld (signum: signum_t):<fun> void = "sig_chld"
 
@@ -141,7 +130,8 @@ implement main (argc, argv) = let
   val () = sockaddr_ipv4_init (servaddr, AF_INET, in4addr_any, servport)
   val () = bind_ipv4_exn (pf_sock_s | fd_s, servaddr)
   val () = listen_exn (pf_sock_s | fd_s, LISTENQ) 
-  val _(*old*) = signal (SIGCHLD, sig_chld)
+  val sighandler = sighandler_of_fun (sig_chld)
+  val _(*previous sighandler*) = signal (SIGCHLD, sighandler)
   val () = server_loop (pf_sock_s | fd_s)
   val () = socket_close_exn (pf_sock_s | fd_s)
 in

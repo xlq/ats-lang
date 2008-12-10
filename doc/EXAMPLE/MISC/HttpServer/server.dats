@@ -195,9 +195,8 @@ end // end of [suffix_of_filename]
 extern fun filename_extract {n:nat}
   (msg: string n, n: int n): Stropt = "filename_extract"
 
-%{^
+%{$
 
-static inline
 ats_ptr_type
 filename_extract(ats_ptr_type msg, ats_int_type n) {
   int i = 5 ;
@@ -213,7 +212,7 @@ filename_extract(ats_ptr_type msg, ats_int_type n) {
   fprintf (stdout, "filename_extract: s = %s\n", s);
 */
   if (i > 5) { 
-    return atspre_strbuf_make_bufptr (msg, 5, i-5) ;
+    return atspre_strbuf_make_substring (msg, 5, i-5) ;
   } else {
     return (char *)0 ;
   }
@@ -431,14 +430,13 @@ val dir_msg32_len = length dir_msg32_str
 
 extern fun dirent_name_get (dir: &DIR): Stropt = "dirent_name_get"
 
-%{^
+%{$
 
-static inline
 ats_ptr_type dirent_name_get(ats_ptr_type dir) {
   struct dirent *ent ;
   ent = readdir((DIR *)dir) ;
   if (ent) {
-    return atspre_strbuf_make_bufptr (ent->d_name, 0, strlen(ent->d_name)) ;
+    return atspre_strbuf_make_substring (ent->d_name, 0, strlen(ent->d_name)) ;
   } else {
     return (char *)0 ;
   }
@@ -573,11 +571,14 @@ end // end of [directory_send]
 
 (* ****** ****** *)
 
-fun request_is_get {n:nat} (s: string n, n: int n): Bool =
-  if n <= 3 then false
+fun request_is_get {n:nat} (s: string n): bool =
+  if string1_is_at_end (s, 0) then false
   else if s[0] <> 'G' then false
+  else if string1_is_at_end (s, 1) then false
   else if s[1] <> 'E' then false
+  else if string1_is_at_end (s, 2) then false
   else if s[2] <> 'T' then false
+  else if string1_is_at_end (s, 3) then false  
   else if s[3] <> ' ' then false
   else true
 
@@ -613,6 +614,13 @@ end // end of [main_loop_get]
 extern fun main_loop {fd:int} {l_buf:addr}
   (pf_list: !socket_v (fd, listen), pf_buf: !bytes BUFSZ @ l_buf |
    fd: int fd, p_buf: ptr l_buf): void
+   
+extern fun strbuf_make_bytes
+  {n:nat} {st,ln:nat | st + ln <= n}
+  (buf: &bytes n, st: int st, ln: int ln)
+  :<> [l:addr] (strbuf (ln+1,ln) @ l | ptr l)
+  = "atspre_strbuf_make_substring"
+
 
 implement main_loop
   (pf_list, pf_buf | fd_s, p_buf): void = let
@@ -621,19 +629,19 @@ in
   if fd_c >= 0 then let
     prval accept_succ pf_conn = pf_accept
     val n = socket_read_exn (pf_conn | fd_c, !p_buf, BUFSZ)
-    val (pf | p) = strbuf_make_bufptr (pf_buf | p_buf, 0, n)
+    val (pf | p) = strbuf_make_bytes (!p_buf, 0, n)
     val msg = string1_of_strbuf (pf | p)
   in
     case+ msg of
-      | _ when request_is_get (msg, n) => begin
-          main_loop_get (pf_conn, pf_buf | fd_c, p_buf, msg, n);
-          main_loop (pf_list, pf_buf | fd_s, p_buf)
-        end
-      | _ => begin
-          socket_close_exn (pf_conn | fd_c);
-          prerrf ("main_loop: unsupported request: %s\n", @(msg));
-          main_loop (pf_list, pf_buf | fd_s, p_buf)
-        end
+    | _ when request_is_get (msg) => begin
+        main_loop_get (pf_conn, pf_buf | fd_c, p_buf, msg, n);
+        main_loop (pf_list, pf_buf | fd_s, p_buf)
+      end
+    | _ => begin
+        socket_close_exn (pf_conn | fd_c);
+        prerrf ("main_loop: unsupported request: %s\n", @(msg));
+        main_loop (pf_list, pf_buf | fd_s, p_buf)
+      end
   end else let
     prval accept_fail () = pf_accept
     val () = prerr "Error: [accept] failed!\n"

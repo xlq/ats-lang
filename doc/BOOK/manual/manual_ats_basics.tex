@@ -475,8 +475,8 @@ for classifying types whose sizes are unspecified. If ${\it swap\langle
 T_1,T_2\rangle}$ is used for some types $T_1$ and $T_2$ of known sizes,
 then an instantiation of {\it swap} is created where type variables $a,b$
 are replaced with $T_1$ and $T_2$, respectively, and then compiled into
-executable binary code. For those who know the feature of templates in C++,
-this should sound rather familiar.
+executable binary code. For those who know the feature of templates in
+\cplusplus, this should sound rather familiar.
 
 In contrast to {\it swap}, {\it swap\_type\_type} is defined below as a
 polymorphic function (rather than a function template):
@@ -619,9 +619,9 @@ assigned to.  In contrast, this expression would be written as $r~:=~!r +
 \begin{figure}[thp]
 \input{DATS/fact_function_ref.dats}
 \caption{An implementation of the factorial function that makes use of a reference}
-\label{figure:ref_factorial}
+\label{figure:fact_function_ref.dats}
 \end{figure}
-As an example, the code in Figure~\ref{figure:ref_factorial} is an
+As an example, the code in Figure~\ref{figure:fact_function_ref.dats} is an
 implementation of the factorial function in ATS that makes use of a
 reference. In it, the special syntax \verb`:<cloref1>` (where no space is
 allowed between \verb`:` and \verb`<`) is needed to indicate that {\it

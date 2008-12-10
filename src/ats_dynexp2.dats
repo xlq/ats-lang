@@ -983,14 +983,15 @@ implement f2undec_make (loc, d2v, def, ann) = '{
   f2undec_loc= loc, f2undec_var= d2v, f2undec_def= def, f2undec_ann= ann
 }
 
-implement v2ardec_make (loc, knd, d2v, s2v, typ, ini) = '{
+implement v2ardec_make (loc, knd, d2v, s2v, typ, wth, ini) = '{
   v2ardec_loc= loc
 , v2ardec_knd= knd
 , v2ardec_dvar= d2v
 , v2ardec_svar= s2v
 , v2ardec_typ= typ
+, v2ardec_wth= wth
 , v2ardec_ini= ini
-}
+} // end of [v2ardec_make]
 
 implement i2mpdec_make
   (loc, loc_id, d2c, s2vpss, s2es, s2ps, def) = '{

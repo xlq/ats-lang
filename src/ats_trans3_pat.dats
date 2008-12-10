@@ -348,7 +348,7 @@ fn p3at_con_free_update
     val () = d2var_addr_set (d2v_ptr, Some s2e_addr)
     val () = d2var_mastyp_set (d2v_ptr, os2e_ptr)
     val () = d2var_typ_set (d2v_ptr, os2e_ptr)
-    val d2v_view = d2var_ptr_viewat_make (d2v_ptr)
+    val d2v_view = d2var_ptr_viewat_make_none (d2v_ptr)
     val () = the_d2varset_env_add (d2v_view)
     val s2e_at = s2exp_at_viewt0ype_addr_view (s2e, s2e_addr)
     val os2e_at = Some s2e_at
@@ -1088,7 +1088,7 @@ implement p2at_arg_tr_dn (p2t0, s2e0) = let
               val () = trans3_env_hypo_add_prop (loc0, s2p) where {
                 val s2p = s2exp_gt_addr_addr_bool (s2e_addr, s2exp_null_addr ())
               } // end of [where]
-              val d2v_view = d2var_ptr_viewat_make (d2v)
+              val d2v_view = d2var_ptr_viewat_make_none (d2v)
               val () = d2var_view_set (d2v, D2VAROPTsome d2v_view) // [d2v] is mutable
               val () = the_d2varset_env_add (d2v_view)
               val s2e_arg_at = s2exp_at_viewt0ype_addr_view (s2e_arg, s2e_addr)
@@ -1125,7 +1125,7 @@ implement p2at_arg_tr_dn (p2t0, s2e0) = let
               val () = trans3_env_hypo_add_prop (loc0, s2p) where {
                 val s2p = s2exp_gt_addr_addr_bool (s2e_addr, s2exp_null_addr ())
               } // end of [where]
-              val d2v_view = d2var_ptr_viewat_make (d2v)
+              val d2v_view = d2var_ptr_viewat_make_none (d2v)
               val () = d2var_view_set (d2v, D2VAROPTsome d2v_view) // [d2v] is mutable
               val () = the_d2varset_env_add (d2v_view)
               val s2e_arg_at = s2exp_at_viewt0ype_addr_view (s2e_arg, s2e_addr)

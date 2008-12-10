@@ -36,7 +36,7 @@
 
 (* ****** ****** *)
 
-staload "libc/sys/SATS/types.sats"
+staload TYPES = "libc/sys/SATS/types.sats"
 
 (* ****** ****** *)
 
@@ -49,6 +49,9 @@ staload "libc/sys/SATS/types.sats"
 (* ****** ****** *)
 
 abst@ype tm_struct = $extype "ats_tm_struct_type"
+
+typedef time_t = $TYPES.time_t
+typedef clock_t = $TYPES.clock_t
 
 (* ****** ****** *)
 
@@ -96,8 +99,7 @@ fun tm_isdst_get (tm: &tm_struct): int
 //
 
 fun time_get (): time_t = "atslib_time_get"
-fun time_get_and_set {l:addr}
-  (pf: !time_t? @ l >> time_t @ l | p: ptr l): time_t
+fun time_get_and_set (p: &time_t? >> time_t): time_t
   = "atslib_time_get_and_set"
 
 overload time with time_get
@@ -105,7 +107,15 @@ overload time with time_get_and_set
 
 (* ****** ****** *)
 
-fun ctime (t: time_t):<!ref> string = "atslib_ctime"
+// non-reentrant
+fun ctime (t: &time_t):<!ref> string = "atslib_ctime"
+
+#define CTIME_BUFLEN 26
+fun ctime_r {n:nat | n >= CTIME_BUFLEN} {l:addr} ( // reentrant
+    pf: ! @[byte?][n] @ l >> strbuf (n, CTIME_BUFLEN - 1) @ l
+  | t: &time_t, p_buf: ptr l
+  ) :<> ptr l
+  = "atslib_ctime_r"
 
 (* ****** ****** *)
 

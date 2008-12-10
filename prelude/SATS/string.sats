@@ -48,8 +48,17 @@
 
 typedef bytes (sz:int) = @[byte][sz]
 
-prval bytes_v_of_strbuf_v
-  : {sz,n:nat} {l:addr} strbuf (sz, n) @ l -<prf> bytes (sz) @ l
+praxi bytes_v_of_strbuf_v
+  : {bsz,n:nat} {l:addr} strbuf (bsz, n) @ l -<prf> bytes (bsz) @ l
+
+(* ****** ****** *)
+
+fun bytes_of_strbuf {m:int}
+  (buf: &strbuf m >> bytes m): void
+  
+fun strbuf_of_bytes {m:int}
+  (buf: &bytes m >> strbuf m, m: int m):<> void
+
 
 (* ****** ****** *)
 
@@ -65,7 +74,7 @@ fun string1_of_strbuf
   = "atspre_string1_of_strbuf"
 
 fun strbuf_of_string1 {n:nat} (s: string n)
-  :<> [m:nat | n < m] [l:addr] (vbox (strbuf (m, n) @ l) | ptr l)
+  :<> [m:int | n < m] [l:addr] (vbox (strbuf (m, n) @ l) | ptr l)
   = "atspre_strbuf_of_string1"
 
 (* ****** ****** *)
@@ -158,6 +167,16 @@ fun fprint_strbuf {m,n:nat}
   (out: FILEref, x: &strbuf (m, n)):<!exnref> void
   = "atspre_fprint_string"
 
+fun print_strbuf {m,n:nat} (x: &strbuf (m, n)):<!ref> void
+  = "atspre_print_string"
+and prerr_strbuf {m,n:nat} (x: &strbuf (m, n)):<!ref> void
+  = "atspre_prerr_string"
+
+overload print with print_strbuf
+overload prerr with prerr_strbuf
+
+(* ****** ****** *)
+
 symintr fprint_string
 
 fun fprint0_string (out: FILEref, x: string):<!exnref> void
@@ -209,22 +228,16 @@ fun string_make_list_len {n:nat}
 
 //
 
-fun strbuf_make_bufptr
-  {n,st,ln:nat | st + ln <= n} {l_buf:addr}
-  (pf: !bytes n @ l_buf | p: ptr l_buf, st: int st, ln: int ln)
-  :<> [l:addr] (strbuf (ln+1, ln) @ l | ptr l)
-  = "atspre_strbuf_make_bufptr"
-
-fun strbuf_make_substrbuf
-  {m,n,st,ln:nat | st + ln <= n}
-  (sb: &strbuf (m, n), st: int st, ln: int ln)
-  :<> [l:addr] (strbuf (ln+1, ln) @ l | ptr l)
-  = "atspre_strbuf_make_bufptr"
+fun strbuf_make_substring
+  {n:nat} {st,ln:nat | st + ln <= n}
+  (s: string n, st: int st, ln: int ln)
+  :<> [l:addr] (strbuf (ln+1,ln) @ l | ptr l)
+  = "atspre_strbuf_make_substring"
 
 fun string_make_substring
-  {n,st,ln:nat | st + ln <= n}
+  {n:nat} {st,ln:nat | st + ln <= n}
   (s: string n, st: int st, ln: int ln):<> string ln
-  = "atspre_strbuf_make_bufptr"
+  = "atspre_strbuf_make_substring"
 
 (* ****** ****** *)
 

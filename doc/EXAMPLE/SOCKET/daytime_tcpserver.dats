@@ -56,7 +56,7 @@ implement main (argc, argv) = let
       val f_child = lam (pf: V | (*none*)): void =<cloptr1> let
         prval @(pf_sock_s, pf_sock_c) = pf
         val () = socket_close_exn (pf_sock_s | fd_s)
-        val ntick = time_get ()
+        var ntick = time_get ()
         val time_str = ctime ntick // ctime is non-reentrant
         val time_str = string1_of_string0 (time_str)
         val time_str_len = string1_length (time_str)

@@ -384,19 +384,24 @@ in
   d2var_lin_inc (d2v); d2var_typ_set (d2v, os2e_at)
 end
 
-implement d2var_ptr_viewat_make (d2v_ptr) = let
+implement d2var_ptr_viewat_make (d2v_ptr, od2v_view) = let
   val loc = d2var_loc_get d2v_ptr
   val sym = d2var_sym_get d2v_ptr
-  val d2v_view = let
-    val sym_view = $Sym.symbol_make_string ($Sym.symbol_name sym + ".view")
-  in
-    d2var_make (loc, sym_view)
-  end
+  val d2v_view = (case+ od2v_view of
+    | D2VAROPTsome d2v_view => d2v_view | D2VAROPTnone () => let
+       val sym_view = $Sym.symbol_make_string ($Sym.symbol_name sym + ".view")
+     in
+       d2var_make (loc, sym_view)
+     end
+  ) : d2var_t
   val () = d2var_lin_set (d2v_view, 0)
   val () = d2var_addr_set (d2v_view, d2var_addr_get d2v_ptr)
 in
   d2v_view
 end // end of [d2var_ptr_viewat_make]
+
+implement d2var_ptr_viewat_make_none (d2v_ptr) =
+  d2var_ptr_viewat_make (d2v_ptr, D2VAROPTnone ())
 
 (* ****** ****** *)
 
