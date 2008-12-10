@@ -130,31 +130,6 @@ end // end of [array_ptr_initialize_fun_tsz_cloptr]
 
 (* ****** ****** *)
 
-implement{a} array_ptr_make_elt (n, x) = let
-  val (pf_gc, pf | p) = array_ptr_alloc_tsz {a} (n, sizeof<a>)
-  val () = array_ptr_initialize_elt<a> (!p, n, x)
-in
-  (pf_gc, pf | p)
-end // end of [array_ptr_make_elt]
-
-implement{a} array_ptr_make_lst (n, xs) = let
-  val (pf_gc, pf | p) = array_ptr_alloc_tsz {a} (n, sizeof<a>)
-  val () = array_ptr_initialize_lst<a> (!p, n, xs)
-in
-  (pf_gc, pf | p)
-end // end of [array_ptr_make_lst]
-
-(* ****** ****** *)
-
-implement array_ptr_make_fun_tsz_cloptr {a} (asz, f, tsz) = let
-  val (pf_gc, pf | p) = array_ptr_alloc_tsz {a} (asz, tsz)
-  val () = array_ptr_initialize_fun_tsz_cloptr {a} (!p, asz, f, tsz)
-in
-  (pf_gc, pf | p)
-end // end of [aray_ptr_make_fun_tsz_cloptr]
-
-(* ****** ****** *)
-
 implement array_ptr_takeout2_tsz
   {a} {n, i1, i2} {l0} (pf | A, i1, i2, tsz) = let
   val [off1: int] (pf1_mul | off1) = i1 imul2 tsz
@@ -197,10 +172,11 @@ end // end of [array]
 //
 
 implement{a} array_make_elt (asz, x) = let
-  val (pf_gc, pf | ptr) = array_ptr_make_elt<a> (asz, x)
-  val (pfbox | ()) = vbox_make_view_ptr_gc (pf_gc, pf | ptr)
+  val (pf_gc, pf_arr | p_arr) = array_ptr_alloc<a> (asz)
+  val () = array_ptr_initialize_elt<a> (!p_arr, asz, x)
+  val (pfbox | ()) = vbox_make_view_ptr_gc (pf_gc, pf_arr | p_arr)
 in
-  @{ data= ptr, view= pfbox }
+  @{ data= p_arr, view= pfbox }
 end // end of [array_make_elt]
 
 implement array_make_fun_tsz_cloptr {a} (asz, f, tsz) = let

@@ -73,15 +73,6 @@ end
 
 (* ****** ****** *)
 
-implement array_ptr_make_fun_tsz_cloptr {a} (asz, f, tsz) = let
-  val (pf_gc, pf | p) = array_ptr_alloc_tsz {a} (asz, tsz)
-  val () = array_ptr_initialize_fun_tsz_cloptr {a} (!p, asz, f, tsz)
-in
-  (pf_gc, pf | p)
-end // end of [aray_ptr_make_fun_tsz_cloptr]
-
-(* ****** ****** *)
-
 implement array_ptr_takeout2_tsz
   {a} {n, i1, i2} {l0} (pf | A, i1, i2, tsz) = let
   val [off1: int] (pf1_mul | off1) = i1 imul2 tsz

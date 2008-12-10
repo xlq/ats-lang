@@ -362,13 +362,15 @@ fun followpos {n:nat} (n0: int n, r: regex1)
       in
         foreach_intset (pf | f, r0.lstpos); aux (pf | A, n0, r0)
       end
-
-val [l:addr] (pf_gc, pf_arr | A) =
-  array_ptr_make_fun_tsz_cloptr {intset_t}
-    (n0, lam (x, i) =<cloptr> x := intset_nil, sizeof<intset_t>)
-
+  // end of [aux] and [aux_node]
+  val tsz = sizeof<intset_t>
+  val (pf_arr_gc, pf_arr | p_arr) =
+    array_ptr_alloc_tsz {intset_t} (n0, tsz)
+  val () = array_ptr_initialize_fun_tsz_cloptr {intset_t}
+    (!p_arr, n0, lam (x, i) =<cloptr> x := intset_nil, tsz)
+  val () = aux (pf_arr | p_arr, n0, r)
 in
-   aux (pf_arr | A, n0, r); (pf_gc, pf_arr | A)
+  (pf_arr_gc, pf_arr | p_arr)
 end // end of [followpos]
 
 (* ****** ****** *)

@@ -81,10 +81,11 @@ in @{
 implement{a} matrix_make_elt (m, n, x) = let
   val (pf_mul | mn) = m imul2 n
   prval () = mul_nat_nat_nat pf_mul
-  val (pf_gc, pf_arr | ptr) = array_ptr_make_elt<a> (mn, x)
-  val (pf_box | ()) = vbox_make_view_ptr_gc (pf_gc, pf_arr | ptr)
+  val (pf_gc, pf_arr | p_arr) = array_ptr_alloc<a> (mn)
+  val () = array_ptr_initialize_elt<a> (!p_arr, mn, x)
+  val (pf_box | ()) = vbox_make_view_ptr_gc (pf_gc, pf_arr | p_arr)
 in @{
-  data= ptr, mul= pf_mul, view= pf_box
+  data= p_arr, mul= pf_mul, view= pf_box
 } end // end of [matrix_make_elt]
 
 (* ****** ****** *)

@@ -147,29 +147,6 @@ fun array_ptr_initialize_fun_tsz_cloptr {a:viewt@ype} {n:nat} {f:eff} (
 
 (* ****** ****** *)
 
-fun{a:t@ype} array_ptr_make_elt {n:nat} (
-    asz: int n, ini: a
-  ) :<> [l:addr | l <> null] (
-    free_gc_v l, array_v (a, n, l) | ptr l
-  ) // end of [array_ptr_make_elt]
-
-fun{a:t@ype} array_ptr_make_lst {n:nat} (
-    asz: int n, xs: list (a, n)
-  ) :<> [l:addr | l <> null] (
-    free_gc_v l, array_v (a, n, l) | ptr l
-  ) // end of [array_ptr_make_lst]
-
-fun array_ptr_make_fun_tsz_cloptr {a:viewt@ype} {n:nat} {f:eff} (
-    asz: int n
-  , f: !(&(a?) >> a, natLt n) -<cloptr,f> void
-  , tsz: sizeof_t a
-  ) :<f> [l:addr | l <> null] (
-    free_gc_v l, array_v (a, n, l) | ptr l
-  ) // end of [array_ptr_make_fun_tsz_cloptr]
-  = "atspre_array_ptr_make_fun_tsz_cloptr"
-
-(* ****** ****** *)
-
 prfun array_v_split {a:viewt@ype}
   {n,i:nat | i <= n} {l:addr} {ofs:int}
   (pf_mul: MUL (i, sizeof a, ofs), pf_arr: array_v (a, n, l))

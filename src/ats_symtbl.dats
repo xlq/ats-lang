@@ -71,23 +71,23 @@ assume symtbl_t = [l_tbl: addr] (vbox (symtbl @ l_tbl) | ptr l_tbl)
 (* ****** ****** *)
 
 implement symtbl_make (sz) = let
-val sz = max (sz, 1)
-val (pf_tbl_gc, pf_tbl | p_tbl) =
-  ptr_alloc_tsz {symtbl0} (sizeof<symtbl>)
-val (pf_arr_gc, pf_arr | p_arr) =
-  array_ptr_make_fun_tsz_cloptr {tblent}
-    (sz, lam (x, i) =<cloptr> x := None (), sizeof<tblent>)
-val () = begin
-  p_tbl->ptr := p_arr;
-  p_tbl->view := @(pf_arr_gc, pf_arr);
-  p_tbl->size := sz; p_tbl->nitm := 0
-end
-
-val (pfbox | ()) = vbox_make_view_ptr_gc (pf_tbl_gc, pf_tbl | p_tbl)
-
+  val (pf_tbl_gc, pf_tbl | p_tbl) =
+    ptr_alloc_tsz {symtbl0} (sizeof<symtbl>)
+  val asz = max (sz, 1)
+  val tsz = sizeof<tblent>
+  val (pf_arr_gc, pf_arr | p_arr) =
+    array_ptr_alloc_tsz {tblent} (asz, tsz)
+  val () = array_ptr_initialize_fun_tsz_cloptr {tblent} 
+    (!p_arr, asz, lam (x, i) =<cloptr> x := None (), tsz)
+  val () = begin
+    p_tbl->ptr := p_arr;
+    p_tbl->view := @(pf_arr_gc, pf_arr);
+    p_tbl->size := asz; p_tbl->nitm := 0
+  end // end of [val]
+  val (pfbox | ()) = vbox_make_view_ptr_gc (pf_tbl_gc, pf_tbl | p_tbl)
 in
   (pfbox | p_tbl)
-end // symtbl_make
+end // end of [symtbl_make]
 
 // linear probing
 fun symtbl_search_probe {sz,i:nat | i < sz} {l:addr}
@@ -158,23 +158,24 @@ fun symtbl_resize_move {sz,i:nat | i <= sz} {l,l_new:addr}
   end
 end // end of [symtbl_resize_move]
 
-fun symtbl_resize (tbl: symtbl_t):<!ntm,!ref> void = let
-
-val (vbox pf_tbl | p_tbl) = tbl
-val p_arr = p_tbl->ptr
-prval (pf_arr_gc, pf_arr) = p_tbl->view
-val sz = p_tbl->size
-val (pf_arr_new_gc, pf_arr_new | p_arr_new) =
-  array_ptr_make_fun_tsz_cloptr {tblent}
-    (sz + sz, lam (x, i) =<cloptr> x := None (), sizeof<tblent>)
+fun symtbl_resize
+  (tbl: symtbl_t):<!ntm,!ref> void = let
+  val (vbox pf_tbl | p_tbl) = tbl
+  val p_arr = p_tbl->ptr
+  prval (pf_arr_gc, pf_arr) = p_tbl->view
+  val sz = p_tbl->size
+  val sz2 = sz + sz; val tsz = sizeof<tblent>
+  val (pf1_arr_gc, pf1_arr | p1_arr) =
+    array_ptr_alloc_tsz {tblent} (sz2, tsz)
+  val () = array_ptr_initialize_fun_tsz_cloptr {tblent} 
+    (!p1_arr, sz2, lam (x, i) =<cloptr> x := None (), tsz)
+  val () = symtbl_resize_move
+    (pf_arr, pf1_arr | p_arr, p1_arr, sz, 0)
+  val () = array_ptr_free {tblent} (pf_arr_gc, pf_arr | p_arr)
 in
-
-symtbl_resize_move (pf_arr, pf_arr_new | p_arr, p_arr_new, sz, 0);
-array_ptr_free {tblent} (pf_arr_gc, pf_arr | p_arr);
-p_tbl->ptr := p_arr_new;
-p_tbl->view := @(pf_arr_new_gc, pf_arr_new);
-p_tbl->size := sz + sz;
-
+  p_tbl->ptr := p1_arr;
+  p_tbl->view := @(pf1_arr_gc, pf1_arr);
+  p_tbl->size := sz + sz;
 end // end of [symtbl_resize]
 
 fun symtbl_resize_if
