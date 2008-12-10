@@ -115,17 +115,17 @@ implement matrix_make_fun_tsz_main
     val d = natdiv (pf_mul | i, n) and r = i nmod1 n
   in
     f (pf | x, d, r, env)
-  end
+  end // end of [f1]
   val () = begin
-    array_ptr_initialize_fun_tsz_mainclo {a} {v} {vt} (pf | !p_arr, mn, f1, tsz, env)
-  end
+    array_ptr_initialize_cloptr_tsz_main {a} {v} {vt} (pf | !p_arr, mn, f1, tsz, env)
+  end // end of [val]
   val () = cloptr_free (f1)
   val (pf_box | ()) = vbox_make_view_ptr_gc (pf_gc, pf_arr | p_arr)
 in @{
   data= p_arr, mul= pf_mul, view= pf_box
 } end // end of [matrix_make_fun_tsz_main]
 
-implement matrix_make_fun_tsz_cloptr
+implement matrix_make_cloptr_tsz
   {a} {m,n} {f:eff} (m, n, f, tsz) = let
   viewtypedef cloptr_t = (&(a?) >> a, natLt m, natLt n) -<cloptr,f> void
   fn app (pf: !unit_v | x: &(a?) >> a, i: natLt m, j: natLt n, f: !cloptr_t)

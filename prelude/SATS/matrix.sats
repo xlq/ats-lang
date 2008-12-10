@@ -76,7 +76,7 @@ fun matrix_make_fun_tsz_main
   , env: !vt
   ) :<f> matrix (a, m, n)
 
-fun matrix_make_fun_tsz_cloptr {a:viewt@ype} {m,n:pos} {f:eff} (
+fun matrix_make_cloptr_tsz {a:viewt@ype} {m,n:pos} {f:eff} (
     row: int m, col: int n
   , f: !(&(a?) >> a, natLt m, natLt n) -<cloptr,f> void
   , tsz: sizeof_t a

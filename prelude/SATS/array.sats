@@ -125,7 +125,7 @@ fun array_ptr_initialize_fun_tsz_main
   = "atspre_array_ptr_initialize_fun_tsz_main"
 
 // implemented in [prelude/DATS/array.dats]
-fun array_ptr_initialize_fun_tsz_mainclo
+fun array_ptr_initialize_cloptr_tsz_main
   {a:viewt@ype} {v:view} {vt:viewtype} {n:nat} {f:eff} (
     pf: !v
   | base: &(@[a?][n]) >> @[a][n]
@@ -134,16 +134,16 @@ fun array_ptr_initialize_fun_tsz_mainclo
   , tsz: sizeof_t a
   , env: !vt
   ) :<f> void
-  = "atspre_array_ptr_initialize_fun_tsz_mainclo"
+  = "atspre_array_ptr_initialize_cloptr_tsz_main"
 
 // implemented in [prelude/DATS/array.dats]
-fun array_ptr_initialize_fun_tsz_cloptr {a:viewt@ype} {n:nat} {f:eff} (
+fun array_ptr_initialize_cloptr_tsz {a:viewt@ype} {n:nat} {f:eff} (
     base: &(@[a?][n]) >> @[a][n]
   , asz: int n
   , f: !(&(a?) >> a, natLt n) -<cloptr,f> void
   , tsz: sizeof_t a
   ) :<f> void
-  = "atspre_array_ptr_initialize_fun_tsz_cloptr"
+  = "atspre_array_ptr_initialize_cloptr_tsz"
 
 (* ****** ****** *)
 
@@ -331,7 +331,7 @@ fun{a:t@ype} array_make_elt {n:nat} (asz: int n, elt: a):<> array (a, n)
 fun{a:t@ype} array_make_lst {n:nat}
   (asz: int n, xs: list (a, n)):<> array (a, n)
 
-fun array_make_fun_tsz_cloptr {a:viewt@ype} {n:nat} {f:eff} (
+fun array_make_cloptr_tsz {a:viewt@ype} {n:nat} {f:eff} (
     asz: int n
   , f: !(&(a?) >> a, natLt n) -<cloptr,f> void
   , tsz: sizeof_t a

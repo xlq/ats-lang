@@ -52,7 +52,7 @@
 
 (* ****** ****** *)
 
-implement array_ptr_initialize_fun_tsz_cloptr {a} {n} {f}
+implement array_ptr_initialize_cloptr_tsz {a} {n} {f}
   (base, asz, f, tsz) = let
 
   viewtypedef cloptr_t = (&(a?) >> a, natLt n) -<cloptr,f> void
@@ -61,7 +61,7 @@ implement array_ptr_initialize_fun_tsz_cloptr {a} {n} {f}
     extern fun coerce (f: !cloptr_t >> cloptr1_t):<> void
   }
   prval pf = unit_v ()
-  val () = array_ptr_initialize_fun_tsz_mainclo
+  val () = array_ptr_initialize_cloptr_tsz_main
     {a} {unit_v} {Ptr} (pf | base, asz, f, tsz, null)
   prval unit_v () = pf
   prval () = coerce (f) where {
@@ -109,13 +109,13 @@ end // end of [array]
 
 //
 
-implement array_make_fun_tsz_cloptr {a} (asz, f, tsz) = let
+implement array_make_cloptr_tsz {a} (asz, f, tsz) = let
   val (pf_gc, pf_arr | p_arr) = array_ptr_alloc_tsz {a} (asz, tsz)
-  val () = array_ptr_initialize_fun_tsz_cloptr {a} (!p_arr, asz, f, tsz)
+  val () = array_ptr_initialize_cloptr_tsz {a} (!p_arr, asz, f, tsz)
   val (pfbox | ()) = vbox_make_view_ptr_gc (pf_gc, pf_arr | p_arr)
 in
   @{ data= p_arr, view= pfbox }
-end // end of [array_make_fun_tsz]
+end // end of [array_make_cloptr_tsz]
 
 implement array_get_view_ptr (A) = @(A.view | A.data)
 
@@ -124,7 +124,7 @@ implement array_get_view_ptr (A) = @(A.view | A.data)
 %{$
 
 ats_void_type
-atspre_array_ptr_initialize_fun_tsz_mainclo (
+atspre_array_ptr_initialize_cloptr_tsz_main (
    ats_ptr_type A
  , ats_int_type asz
  , ats_ptr_type f
