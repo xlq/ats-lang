@@ -410,7 +410,7 @@ abstype ptr_addr_type (addr)
 abstype string_int_type (int)
 abstype stropt_int_type (int)
 
-abst@ype strbuf_int_int_t0ype (max: int, len: int) (* variable size *)
+abst@ype strbuf_int_int_t0ype (bsz: int, len: int) (* variable size *)
 
 (* ****** ****** *)
 
@@ -534,7 +534,7 @@ stadef ptr = ptr_type
 (* ****** ****** *)
 
 stadef strbuf = strbuf_int_int_t0ype
-stadef strbuf (m:int) = [n:int | 0 <= n; n < m] strbuf (m, n)
+stadef strbuf (bsz:int) = [len:int] strbuf (bsz, len)
 
 stadef string = string_int_type
 stadef string = string_type
@@ -677,7 +677,7 @@ list_viewt0ype_int_viewtype (a:viewt@ype+, int) =
   | list_vt_nil (a, 0)
 
 stadef list_vt = list_viewt0ype_int_viewtype
-viewtypedef List_vt (a:viewt@ype) = [n:int | n >= 0] list_vt (a, n)
+viewtypedef List_vt (a:viewt@ype) = [n:int | n >=0] list_vt (a, n)
 
 // [option_viewt0ype_bool_viewtype] is covariant
 dataviewtype option_viewt0ype_bool_viewtype (a:viewt@ype+, bool) =

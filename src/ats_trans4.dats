@@ -1115,9 +1115,9 @@ end // end of [i3mpdec_tr]
 
 (* ****** ****** *)
 
-fn i3mpdec_is_proof (d3c: i3mpdec): bool = begin
-  let val def = d3c.i3mpdec_def in d3exp_is_proof def end
-end // end of [i3mpdec_is_proof]
+fn i3mpdec_is_proof
+  (d3c: i3mpdec): bool = d2cst_is_proof (d3c.i3mpdec_cst)
+// end of [i3mpdec_is_proof]
 
 implement d3eclst_tr (d3cs: d3eclst): hideclst = let
   // [aux0] and [aux1] are mutually tail-recursive
@@ -1173,7 +1173,7 @@ implement d3eclst_tr (d3cs: d3eclst): hideclst = let
             val hid = hidec_impdec (d3c.d3ec_loc, i3mpdec_tr impdec)
           in
             aux1 (d3cs, hid, res)
-          end
+          end // end of [_]
         end // end of [D3Cimpdec]
       | D3Cfundecs (decarg, knd, fundecs) => begin
           if $Syn.funkind_is_proof knd then aux0 (d3cs, res)

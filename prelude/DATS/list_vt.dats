@@ -50,6 +50,12 @@
 
 (* ****** ****** *)
 
+implement list_vt_length_is_nonnegative (xs) = begin
+  case+ xs of list_vt_cons _ => fold@ xs | list_vt_nil () => fold@ xs
+end // end of [list_vt_length_is_nonnegative]
+
+(* ****** ****** *)
+
 fn list_vt_is_cons {a:viewt@ype} {n:nat} (xs: !list_vt (a, n)): bool (n>0) =
   case+ xs of cons _ => (fold@ xs; true) | nil () => (fold@ xs; false)
 

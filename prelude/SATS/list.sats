@@ -56,6 +56,11 @@
 
 (* ****** ****** *)
 
+prfun list_length_is_nonnegative
+  {a:t@ype} {n:int} (xs: list (a, n)): [n>=0] void
+
+(* ****** ****** *)
+
 exception ListSubscriptException
 
 (* ****** ****** *)

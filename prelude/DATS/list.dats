@@ -48,6 +48,11 @@
 
 (* ****** ****** *)
 
+implement list_length_is_nonnegative (xs) =
+  case+ xs of list_cons _ => () | list_nil () => ()
+
+(* ****** ****** *)
+
 implement{a} list_of_arraysize (arrsz) =
   list_of_list_vt (list_vt_of_arraysize arrsz)
 

@@ -50,6 +50,21 @@
 /* ****** ****** */
 
 static inline
+ats_void_type
+atspre_strbuf_bytes_trans (ats_ptr_type p) {
+  return ;
+} /* end of [atspre_strbuf_bytes_trans] */
+
+static inline
+ats_void_type
+atspre_bytes_strbuf_trans
+  (ats_ptr_type p, ats_int_type n) {
+  ((char*)p)[n] = '\000' ; return ;
+} /* end of [atspre_bytes_strbuf_trans] */
+
+/* ****** ****** */
+
+static inline
 ats_ptr_type
 atspre_string1_of_string0 (const ats_ptr_type s) { return s ; }
 

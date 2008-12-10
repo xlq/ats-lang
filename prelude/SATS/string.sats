@@ -46,19 +46,18 @@
 
 (* ****** ****** *)
 
-typedef bytes (sz:int) = @[byte][sz]
+typedef bytes (n:int) = @[byte][n]
+typedef b0ytes (n:int) = @[byte?][n]
 
-praxi bytes_v_of_strbuf_v
-  : {bsz,n:nat} {l:addr} strbuf (bsz, n) @ l -<prf> bytes (bsz) @ l
+praxi bytes_v_of_strbuf_v {bsz:int}
+  {l:addr} (pf: strbuf (bsz) @ l):<prf> bytes (bsz) @ l
 
 (* ****** ****** *)
 
-fun bytes_of_strbuf {m:int}
-  (buf: &strbuf m >> bytes m): void
-  
-fun strbuf_of_bytes {m:int}
-  (buf: &bytes m >> strbuf m, m: int m):<> void
-
+fun bytes_strbuf_trans {m,n:nat | n < m} {l:addr}
+  (pf: !b0ytes m @ l >> strbuf (m, n1) @ l | p: ptr l, n: int n)
+  : #[n1: nat | n1 <= n] void
+  = "atspre_bytes_strbuf_trans"
 
 (* ****** ****** *)
 
@@ -200,39 +199,15 @@ overload prerr with prerr_string
 
 (* ****** ****** *)
 
-fun strbuf_make_char {n:nat}
-  (n: int n, c: char):<> [l:addr] (strbuf (n+1, n) @ l | ptr l)
-  = "atspre_strbuf_make_char"
-
 fun string_make_char {n:nat} (n: int n, c: char):<> string n
   = "atspre_strbuf_make_char"
-
-//
-
-fun strbuf_make_list {n:nat}
-  (cs: list (char, n)):<> [l:addr] (strbuf (n+1, n) @ l | ptr l)
-  = "atspre_strbuf_make_list"
 
 fun string_make_list {n:nat} (cs: list (char, n)):<> string n
   = "atspre_strbuf_make_list"
 
-//
-
-fun strbuf_make_list_len {n:nat}
-  (cs: list (char, n), n: int n):<> [l:addr] (strbuf (n+1, n) @ l | ptr l)
-  = "atspre_strbuf_make_list_len"
-
 fun string_make_list_len {n:nat}
   (cs: list (char, n), n: int n):<> string n
   = "atspre_strbuf_make_list_len"
-
-//
-
-fun strbuf_make_substring
-  {n:nat} {st,ln:nat | st + ln <= n}
-  (s: string n, st: int st, ln: int ln)
-  :<> [l:addr] (strbuf (ln+1,ln) @ l | ptr l)
-  = "atspre_strbuf_make_substring"
 
 fun string_make_substring
   {n:nat} {st,ln:nat | st + ln <= n}

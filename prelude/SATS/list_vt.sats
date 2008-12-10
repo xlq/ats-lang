@@ -52,6 +52,11 @@
 
 (* ****** ****** *)
 
+prfun list_vt_length_is_nonnegative
+  {a:viewt@ype} {n:int} (xs: !list_vt (a, n)): [n>=0] void
+
+(* ****** ****** *)
+
 fun{a:viewt@ype} list_vt_of_arraysize
   {n:nat} (arrsz: arraysize (a, n)):<> list_vt (a, n)
 
