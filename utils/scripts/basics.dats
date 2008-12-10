@@ -219,18 +219,21 @@ ats_exit_errmsg
 
 /* ****** ****** */
 
-// also defined in [prelude/DATS/printf.dats]
-ats_void_type atspre_exit_prerrf
+ats_void_type // also defined in [prelude/DATS/printf.dats]
+atspre_exit_prerrf
   (const ats_int_type n, const ats_ptr_type fmt, ...)
 {
   va_list ap ;
   va_start(ap, fmt) ; vfprintf(stderr, (char *)fmt, ap) ; va_end(ap) ;
-  exit(n) ;
+  exit (n) ;
 }
 
-// also defined in [prelude/DATS/printf.dats]
-ats_void_type atspre_assert_prerrf
-  (ats_bool_type assertion, ats_ptr_type fmt, ...) {
+//
+
+ats_void_type // also defined in [prelude/DATS/printf.dats]
+atspre_assert_prerrf
+  (ats_bool_type assertion, ats_ptr_type fmt, ...)
+{
   int n ;
   va_list ap ;
 
@@ -238,17 +241,17 @@ ats_void_type atspre_assert_prerrf
     va_start(ap, fmt) ;
     n = vfprintf(stderr, (char *)fmt, ap) ;
     va_end(ap) ;
-    if (n < 0) {
-      ats_exit_errmsg ( n, "[atspre_assert_prerrf: prerrf] failed\n"
-      ) ;
-    } else {
-      ats_exit_errmsg ( 1, "[atspre_assert_prerrf: assert] failed\n"
-      ) ;
-    }
-  }
+    if (n < 0) { ats_exit_errmsg
+      (n, "exit(ATS): [atspre_assert_prerrf: prerrf] failed\n") ;
+    } else { ats_exit_errmsg
+      (1, "exit(ATS): [atspre_assert_prerrf: assert] failed\n") ;
+    } /* end of [if] */
+  } /* end of [if] */
 
   return ;
-}
+} /* atspre_assert_prerrf */
+
+//
 
 static // also defined in [prelude/DATS/printf.dats]
 ats_ptr_type __tostringf_size
@@ -271,8 +274,10 @@ ats_ptr_type __tostringf_size
   }
 } // end of [__tostringf_size]
 
-// also defined in [prelude/DATS/printf.dats]
-ats_ptr_type atspre_tostringf_size
+//
+
+ats_ptr_type // also defined in [prelude/DATS/printf.dats]
+atspre_tostringf_size
   (const ats_int_type guess, const ats_ptr_type fmt, ...)
 {
   char *res ;
@@ -281,13 +286,28 @@ ats_ptr_type atspre_tostringf_size
   va_start(ap, fmt);
   res = (char *)__tostringf_size (guess, fmt, ap);
   va_end(ap);
-  if (!res) {
-    ats_exit_errmsg (1, "Exit: [ats_tostringf_size] failed.\n") ;
+  if (!res) { ats_exit_errmsg
+    (1, "exit(ATS): [ats_tostringf_size] failed.\n") ;
   }
   return res ;
 } // end of [atspre_tostringf_size]
 
 /* ****** ****** */
+
+// also defined in [prelude/DATS/string.dats]
+
+ats_ptr_type
+atspre_strbuf_make_substring
+  (const ats_ptr_type src0, const ats_int_type start, const ats_int_type len)
+{
+  char *des, *src ;
+  des = ATS_MALLOC(len+1) ;
+  src = ((char*)src0) + start ;
+  memcpy(des, src, len) ; des[len] = '\000' ;
+  return des ;
+} /* atspre_strbuf_make_substring */
+
+/* ****** ****** /*
 
 extern ats_ptr_type atsopt_global ;
 
@@ -295,10 +315,8 @@ ats_bool_type file_is_exec (ats_ptr_type name) {
   struct stat buf ;
   int ret = stat (name, &buf) ;
 
-  if (ret < 0) {
-    atspre_exit_prerrf (
-      errno, "File [%s] does not exist.\n", atsopt_global
-    ) ;
+  if (ret < 0) { atspre_exit_prerrf
+    (errno, "exit(ATS): File [%s] does not exist.\n", atsopt_global) ;
   }
   
   return (S_IXUSR & buf.st_mode) ;
@@ -310,24 +328,28 @@ ats_bool_type file_is_exec (ats_ptr_type name) {
 
 typedef ats_ptr_type ats_intref_type ;
 
-ats_intref_type intref_make (ats_int_type i) {
+ats_intref_type intref_make (ats_int_type i)
+{
   int *r ;
   r = ats_malloc_gc(sizeof(ats_int_type)) ;
   *r = i ; return r ;
 }
 
-ats_int_type intref_get (ats_intref_type r) {
+ats_int_type intref_get (ats_intref_type r)
+{
   return *((ats_int_type *)r) ;
 }
 
-ats_void_type intref_set (ats_intref_type r, ats_int_type i) {
+ats_void_type intref_set (ats_intref_type r, ats_int_type i)
+{
   *((ats_int_type *)r) = i ; return ;
 }
 
 /* ****** ****** */
 
 ats_int_type
-atslib_fork_exec_and_wait_cloptr_exn (ats_ptr_type f_child) {
+atslib_fork_exec_and_wait_cloptr_exn (ats_ptr_type f_child)
+{
   pid_t pid ;
   int status ;
 
@@ -352,11 +374,12 @@ extern ats_ptr_type strlst_head_get(ats_ptr_type) ;
 extern ats_ptr_type strlst_tail_get(ats_ptr_type) ;
 
 ats_void_type
-strlst_to_strarr (ats_sum_ptr_type ss, ats_ptr_type p) {
+strlst_to_strarr (ats_sum_ptr_type ss, ats_ptr_type p)
+{
   while (1) {
     if (strlst_is_nil(ss)) break ;
-    *((ats_ptr_type *)p) = strlst_head_get(ss); p = ((ats_ptr_type *)p) + 1 ;
-    ss = strlst_tail_get(ss) ;
+    *((ats_ptr_type *)p) = strlst_head_get(ss) ;
+    p = ((ats_ptr_type *)p) + 1 ; ss = strlst_tail_get(ss) ;
   } /* end of [while] */
   return ;
 } /* end of [strlst_to_strarr] */
@@ -364,7 +387,8 @@ strlst_to_strarr (ats_sum_ptr_type ss, ats_ptr_type p) {
 #define BUFSZ 64
 
 ats_ptr_type
-string_trans (ats_ptr_type s0, ats_clo_ptr_type f) {
+string_trans (ats_ptr_type s0, ats_clo_ptr_type f)
+{
   int i, sz;
   char *buf0, *buf1, *p, c, *s ;
 
@@ -382,16 +406,16 @@ string_trans (ats_ptr_type s0, ats_clo_ptr_type f) {
         ats_free_gc (buf0); buf0 = buf1 ;
         p = buf0 + sz ;
         sz = sz + sz ;
-      }
+      } /* end of [if] */
       *p = c ; ++i ; ++p ;
-    }
-  }
+    } /* end of [while] */
+  } /* end of [while] */
 
   if (i == sz) {
     buf1 = ats_malloc_gc(sz+1) ;
     memcpy (buf1, buf0, sz) ;
     ats_free_gc (buf0) ; buf0 = buf1 ;
-  }
+  } /* end of [if] */
 
   buf0[i] = '\000' ;
 
@@ -401,7 +425,8 @@ string_trans (ats_ptr_type s0, ats_clo_ptr_type f) {
 //
 
 // for the purpose of bootstrapping
-ats_ptr_type __ats_getcwd () { // already defined in unistd.dats
+ats_ptr_type // already defined in unistd.dats
+__ats_getcwd () {
   char *buf, *res ;
   int sz = 64 ;
 
@@ -413,11 +438,11 @@ ats_ptr_type __ats_getcwd () { // already defined in unistd.dats
       ats_free_gc (buf) ;
       sz = sz + sz ; buf = ats_malloc_gc (sz) ;
       continue ;
-    }
+    } /* end of [if] */
     break ;
-  }
+  } /* end of [while] */
   return buf ;
-} // end of [__ats_getcwd]
+} /* end of [__ats_getcwd] */
 
 %}
 
