@@ -110,7 +110,7 @@ fun array_ptr_initialize_elt_tsz {a:t@ype} {n:nat}
 fun{a:t@ype} array_ptr_initialize_lst {n:nat}
   (base: &(@[a?][n]) >> @[a][n], asz: int n, xs: list (a, n)):<> void
 
-// ------ ------
+(* ****** ****** *)
 
 // implemented in [prelude/DATS/array.dats]
 fun array_ptr_initialize_fun_tsz_main
@@ -123,6 +123,8 @@ fun array_ptr_initialize_fun_tsz_main
   , env: !vt
   ) :<f> void
   = "atspre_array_ptr_initialize_fun_tsz_main"
+
+(* ****** ****** *)
 
 // implemented in [prelude/DATS/array.dats]
 fun array_ptr_initialize_cloptr_tsz_main

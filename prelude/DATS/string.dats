@@ -48,10 +48,10 @@ implement string_empty = "" // this requires dynamic loading
 
 static inline
 ats_ptr_type
-strbuf_make_uninitialized (const ats_int_type n) {
+string_concat_alloc (const ats_int_type n) {
   char *p ;
   p = ATS_MALLOC(n+1); p[n] = '\000'; return p ;
-} // end of [strbuf_make_uninitialized]
+} // end of [string_concat_alloc]
 
 %}
 
@@ -83,10 +83,10 @@ implement string_concat (ss) = let
     | list_nil () => ()
   end // end of [loop2]
   val (pf_sb | p_sb) =
-    strbuf_make_uninitialized n0 where {
-    extern fun strbuf_make_uninitialized {n:nat}
+    string_concat_alloc n0 where {
+    extern fun string_concat_alloc {n:nat}
       (n: int n):<> [l:addr] (strbuf (n+1, n) @ l | ptr l)
-      = "strbuf_make_uninitialized"
+      = "string_concat_alloc"
   } // end of [where]
   val () = loop2 (!p_sb, n0, 0, ss)
 in
@@ -134,7 +134,7 @@ atspre_string_hash_33 (ats_ptr_type s0) {
 %{$
 
 ats_ptr_type
-atspre_strbuf_make_substring
+atspre_string_make_substring
   (const ats_ptr_type src0, const ats_int_type start, const ats_int_type len)
 {
   char *des, *src ;
@@ -142,7 +142,7 @@ atspre_strbuf_make_substring
   src = ((char*)src0) + start ;
   memcpy(des, src, len) ; des[len] = '\000' ;
   return des ;
-} /* atspre_strbuf_make_substring */
+} /* atspre_string_make_substring */
 
 %}
 

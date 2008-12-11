@@ -175,15 +175,15 @@ atspre_prerr_string (const ats_ptr_type s) {
 
 static inline
 ats_ptr_type
-atspre_strbuf_make_char
+atspre_string_make_char
   (const ats_int_type n, const ats_char_type c) {
   char *p ; 
   if (!c) { ats_exit_errmsg
-    (1, "exit(ATS): [strbuf_make_char] failed: null char.\n") ;
+    (1, "exit(ATS): [string_make_char] failed: null char.\n") ;
   } ;
   p = ATS_MALLOC(n+1) ; memset (p, c, n) ; p[n] = '\000' ;
   return p ;
-} /* atspre_strbuf_make_char */
+} /* atspre_string_make_char */
 
 /* ****** ****** */
 
@@ -303,7 +303,7 @@ static inline
 ats_ptr_type
 atspre_string_singleton
   (const ats_char_type c) {
-  return atspre_strbuf_make_char (1, c) ;
+  return atspre_string_make_char (1, c) ;
 } /* atspre_string_singleton */
 
 /* ****** ****** */

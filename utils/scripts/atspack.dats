@@ -79,7 +79,7 @@ ats_ptr_type dirent_name_get(ats_ptr_type dir) {
   struct dirent *ent ;
   ent = readdir((DIR*)dir) ;
   if (ent) {
-    return atspre_strbuf_make_substring (ent->d_name, 0, strlen(ent->d_name)) ;
+    return atspre_string_make_substring (ent->d_name, 0, strlen(ent->d_name)) ;
   } else {
     return (char*)0 ;
   }

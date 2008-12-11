@@ -297,7 +297,7 @@ atspre_tostringf_size
 // also defined in [prelude/DATS/string.dats]
 
 ats_ptr_type
-atspre_strbuf_make_substring
+atspre_string_make_substring
   (const ats_ptr_type src0, const ats_int_type start, const ats_int_type len)
 {
   char *des, *src ;
@@ -305,7 +305,7 @@ atspre_strbuf_make_substring
   src = ((char*)src0) + start ;
   memcpy(des, src, len) ; des[len] = '\000' ;
   return des ;
-} /* atspre_strbuf_make_substring */
+} /* atspre_string_make_substring */
 
 /* ****** ****** */
 

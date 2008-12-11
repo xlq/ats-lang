@@ -49,6 +49,11 @@
 typedef bytes (n:int) = @[byte][n]
 typedef b0ytes (n:int) = @[byte?][n]
 
+(* ****** ****** *)
+
+praxi bytes_v_of_b0ytes_v {bsz:int}
+  {l:addr} (pf: b0ytes (bsz) @ l):<prf> bytes (bsz) @ l
+
 praxi bytes_v_of_strbuf_v {bsz:int}
   {l:addr} (pf: strbuf (bsz) @ l):<prf> bytes (bsz) @ l
 
@@ -200,19 +205,19 @@ overload prerr with prerr_string
 (* ****** ****** *)
 
 fun string_make_char {n:nat} (n: int n, c: char):<> string n
-  = "atspre_strbuf_make_char"
+  = "atspre_string_make_char"
 
 fun string_make_list {n:nat} (cs: list (char, n)):<> string n
-  = "atspre_strbuf_make_list"
+  = "atspre_string_make_list"
 
 fun string_make_list_len {n:nat}
   (cs: list (char, n), n: int n):<> string n
-  = "atspre_strbuf_make_list_len"
+  = "atspre_string_make_list_len"
 
 fun string_make_substring
   {n:nat} {st,ln:nat | st + ln <= n}
   (s: string n, st: int st, ln: int ln):<> string ln
-  = "atspre_strbuf_make_substring"
+  = "atspre_string_make_substring"
 
 (* ****** ****** *)
 
