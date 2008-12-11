@@ -134,6 +134,19 @@ atspre_string_hash_33 (ats_ptr_type s0) {
 %{$
 
 ats_ptr_type
+atspre_string_make_char
+  (const ats_int_type n, const ats_char_type c) {
+  char *p ; 
+  if (!c) { ats_exit_errmsg
+    (1, "exit(ATS): [string_make_char] failed: null char.\n") ;
+  } ;
+  p = ATS_MALLOC(n+1) ; memset (p, c, n) ; p[n] = '\000' ;
+  return p ;
+} /* atspre_string_make_char */
+
+/* ****** ****** */
+
+ats_ptr_type
 atspre_string_make_substring
   (const ats_ptr_type src0, const ats_int_type start, const ats_int_type len)
 {

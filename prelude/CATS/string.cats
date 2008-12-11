@@ -174,20 +174,6 @@ atspre_prerr_string (const ats_ptr_type s) {
 /* ****** ****** */
 
 static inline
-ats_ptr_type
-atspre_string_make_char
-  (const ats_int_type n, const ats_char_type c) {
-  char *p ; 
-  if (!c) { ats_exit_errmsg
-    (1, "exit(ATS): [string_make_char] failed: null char.\n") ;
-  } ;
-  p = ATS_MALLOC(n+1) ; memset (p, c, n) ; p[n] = '\000' ;
-  return p ;
-} /* atspre_string_make_char */
-
-/* ****** ****** */
-
-static inline
 ats_void_type
 atspre_strbuf_append
   (const ats_ptr_type s1, const ats_ptr_type s2) {
@@ -298,6 +284,11 @@ atspre_string_index_of_string
 }
 
 /* ****** ****** */
+
+extern ats_ptr_type
+atspre_string_make_char (
+  const ats_int_type n, const ats_char_type c
+) ; // implemented in [prelude/DATS/string.dats]
 
 static inline
 ats_ptr_type

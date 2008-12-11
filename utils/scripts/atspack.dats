@@ -74,12 +74,17 @@ extern fun dirent_name_get (dir: &DIR): Stropt = "dirent_name_get"
 
 %{^
 
+extern ats_ptr_type
+atspre_string_make_substring (
+  const ats_ptr_type src0, const ats_int_type start, const ats_int_type len
+) ; /* atspre_string_make_substring */
+
 static inline
 ats_ptr_type dirent_name_get(ats_ptr_type dir) {
   struct dirent *ent ;
   ent = readdir((DIR*)dir) ;
-  if (ent) {
-    return atspre_string_make_substring (ent->d_name, 0, strlen(ent->d_name)) ;
+  if (ent) { return
+    atspre_string_make_substring (ent->d_name, 0, strlen(ent->d_name)) ;
   } else {
     return (char*)0 ;
   }
