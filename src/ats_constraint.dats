@@ -382,7 +382,13 @@ fun s3aexp_make_s2cst_s2explst
   (s2c: s2cst_t, s2es: s2explst, s2cs: &s2cstlst, fds: &s2cfdeflst_vt)
   : s3aexpopt_vt
 
-implement s3aexp_make_s2cst_s2explst (s2c, s2es, s2cs, fds) = begin
+implement s3aexp_make_s2cst_s2explst (s2c, s2es, s2cs, fds) = let
+  fn errmsg (s2c: s2cst_t): s3aexpopt_vt = begin
+    prerr "Internal Error: s3aexp_make_s2cst_s2explst: Add_addr_int_addr";
+    prerr_newline ();
+    $Err.abort {s3aexpopt_vt} ()
+  end // end of [errmsg]
+in
   case+ 0 of // this looks prettier than [if-then-else] sequence
   | _ when s2cstref_cst_equ (Add_addr_int_addr, s2c) => begin
     case+ s2es of
@@ -395,11 +401,7 @@ implement s3aexp_make_s2cst_s2explst (s2c, s2es, s2cs, fds) = begin
         end // end of [Some_vt]
       | ~None_vt () => None_vt ()
       end // end of [list_cons]
-    | _ => begin
-        prerr "Internal Error: s3aexp_make_s2cst_s2explst: Add_addr_int_addr";
-        prerr_newline ();
-        $Err.abort {s3aexpopt_vt} ()
-      end
+    | _ => errmsg s2c
     end // end of [Add_addr_int_addr]
   | _ when s2cstref_cst_equ (Sub_addr_int_addr, s2c) => begin
     case+ s2es of
@@ -412,11 +414,7 @@ implement s3aexp_make_s2cst_s2explst (s2c, s2es, s2cs, fds) = begin
         end // end of [Some_vt]
       | ~None_vt () => None_vt ()
       end // end of [list_cons]
-    | _ => begin
-        prerr "Internal Error: s3aexp_make_s2cst_s2explst: Sub_addr_int_addr";
-        prerr_newline ();
-        $Err.abort {s3aexpopt_vt} ()
-      end
+    | _ => errmsg s2c
     end // end of [Sub_addr_int_addr]
   | _ => let
 (*
@@ -427,7 +425,7 @@ implement s3aexp_make_s2cst_s2explst (s2c, s2es, s2cs, fds) = begin
 *)
     in
       None_vt ()
-    end
+    end // end of [_]
 end // end of [s3aexp_make_s2cst_s2explst]
 
 (* ****** ****** *)
@@ -438,7 +436,13 @@ fun s3bexp_make_s2cst_s2explst
   : s3bexpopt_vt
 
 // a large but simple function
-implement s3bexp_make_s2cst_s2explst (s2c, s2es, s2cs, fds) = begin
+implement s3bexp_make_s2cst_s2explst (s2c, s2es, s2cs, fds) = let
+  fn errmsg (s2c: s2cst_t): s3bexpopt_vt = begin
+    prerr "Internal Error: s3bexp_make_s2cst_s2explst: "; prerr s2c;
+    prerr_newline ();
+    $Err.abort {s3bexpopt_vt} ()
+  end // end of [_]
+in
   case+ 0 of
   // boolean negation
   | _ when s2cstref_cst_equ (Neg_bool_bool, s2c) => begin
@@ -447,11 +451,7 @@ implement s3bexp_make_s2cst_s2explst (s2c, s2es, s2cs, fds) = begin
       case+ s3bexp_make_s2exp (s2e, s2cs, fds) of
       | ~Some_vt s3be => Some_vt (s3bexp_bneg s3be) | ~None_vt () => None_vt ()
       end // end of [list_cons]
-    | _ => begin
-        prerr "Internal Error: s3bexp_make_s2cst_s2explst: Neg_bool_bool";
-        prerr_newline ();
-        $Err.abort {s3bexpopt_vt} ()
-      end
+    | _ => errmsg s2c
     end // end of [Neg_bool_bool]
   // boolean addition/disjunction
   | _ when s2cstref_cst_equ (Add_bool_bool_bool, s2c) => begin
@@ -465,11 +465,7 @@ implement s3bexp_make_s2cst_s2explst (s2c, s2es, s2cs, fds) = begin
         end // end of [Some_vt]
       | ~None_vt () => None_vt ()
       end // end of [list_cons]
-    | _ => begin
-        prerr "Internal Error: s3bexp_make_s2cst_s2explst: Add_bool_bool_bool";
-        prerr_newline ();
-        $Err.abort {s3bexpopt_vt} ()
-      end
+    | _ => errmsg s2c
     end // end of [Add_bool_bool_bool]
   // boolean multiplication/conjuction
   | _ when s2cstref_cst_equ (Mul_bool_bool_bool, s2c) => begin
@@ -483,11 +479,7 @@ implement s3bexp_make_s2cst_s2explst (s2c, s2es, s2cs, fds) = begin
         end // end of [Some_vt]
       | ~None_vt () => None_vt ()
       end // end of [list_cons]
-    | _ => begin
-        prerr "Internal Error: s3bexp_make_s2cst_s2explst: Mul_bool_bool_bool";
-        prerr_newline ();
-        $Err.abort {s3bexpopt_vt} ()
-      end
+    | _ => errmsg s2c
     end // end of [Mul_bool_bool_bool]
   // boolean equality
   | _ when s2cstref_cst_equ (Eq_bool_bool_bool, s2c) => begin
@@ -501,11 +493,7 @@ implement s3bexp_make_s2cst_s2explst (s2c, s2es, s2cs, fds) = begin
         end // end of [Some_vt]
       | ~None_vt () => None_vt ()
       end // end of [list_cons]
-    | _ => begin
-        prerr "Internal Error: s3bexp_make_s2cst_s2explst: Eq_bool_bool_bool";
-        prerr_newline ();
-        $Err.abort {s3bexpopt_vt} ()
-      end
+    | _ => errmsg s2c
     end // end of [Eq_bool_bool_bool]
   // boolean inequality
   | _ when s2cstref_cst_equ (Neq_bool_bool_bool, s2c) => begin
@@ -519,12 +507,92 @@ implement s3bexp_make_s2cst_s2explst (s2c, s2es, s2cs, fds) = begin
         end // end of [Some_vt]
       | ~None_vt () => None_vt ()
       end // end of [list_cons]
-    | _ => begin
-        prerr "Internal Error: s3bexp_make_s2cst_s2explst: Neq_bool_bool_bool";
-        prerr_newline ();
-        $Err.abort {s3bexpopt_vt} ()
-      end
+    | _ => errmsg s2c
     end // end of [Neq_bool_bool_bool]
+  // charater GT relation
+  | _ when s2cstref_cst_equ (Gt_char_char_bool, s2c) => begin
+    case+ s2es of
+    | list_cons (s2e1, list_cons (s2e2, list_nil ())) => begin
+      case+ s3iexp_make_s2exp (s2e1, s2cs, fds) of
+      | ~Some_vt s3ie1 => begin
+        case+ s3iexp_make_s2exp (s2e2, s2cs, fds) of
+        | ~Some_vt s3ie2 => Some_vt (s3bexp_igt (s3ie1, s3ie2))
+        | ~None_vt () => None_vt ()
+        end // end of [Some_vt]
+      | ~None_vt () => None_vt ()
+      end // end of [list_cons]
+    | _ => errmsg s2c
+    end // end of [Gt_char_char_bool]
+  // character GTE relation
+  | _ when s2cstref_cst_equ (Gte_char_char_bool, s2c) => begin
+    case+ s2es of
+    | list_cons (s2e1, list_cons (s2e2, list_nil ())) => begin
+      case+ s3iexp_make_s2exp (s2e1, s2cs, fds) of
+      | ~Some_vt s3ie1 => begin
+        case+ s3iexp_make_s2exp (s2e2, s2cs, fds) of
+        | ~Some_vt s3ie2 => Some_vt (s3bexp_igte (s3ie1, s3ie2))
+        | ~None_vt () => None_vt ()
+        end // end of [Some_vt]
+      | ~None_vt () => None_vt ()
+      end // end of [list_cons]
+    | _ => errmsg s2c
+    end // end of [Gte_char_char_bool]
+  // character LT relation
+  | _ when s2cstref_cst_equ (Lt_char_char_bool, s2c) => begin
+    case+ s2es of
+    | list_cons (s2e1, list_cons (s2e2, list_nil ())) => begin
+      case+ s3iexp_make_s2exp (s2e1, s2cs, fds) of
+      | ~Some_vt s3ie1 => begin
+        case+ s3iexp_make_s2exp (s2e2, s2cs, fds) of
+        | ~Some_vt s3ie2 => Some_vt (s3bexp_ilt (s3ie1, s3ie2))
+        | ~None_vt () => None_vt ()
+        end // end of [Some_vt]
+      | ~None_vt () => None_vt ()
+      end // end of [list_cons]
+    | _ => errmsg s2c
+    end // end of [Lt_char_char_bool]
+  // charater LTE relation
+  | _ when s2cstref_cst_equ (Lte_char_char_bool, s2c) => begin
+    case+ s2es of
+    | list_cons (s2e1, list_cons (s2e2, list_nil ())) => begin
+      case+ s3iexp_make_s2exp (s2e1, s2cs, fds) of
+      | ~Some_vt s3ie1 => begin
+        case+ s3iexp_make_s2exp (s2e2, s2cs, fds) of
+        | ~Some_vt s3ie2 => Some_vt (s3bexp_ilte (s3ie1, s3ie2))
+        | ~None_vt () => None_vt ()
+        end // end of [Some_vt]
+      | ~None_vt () => None_vt ()
+      end // end of [list_cons]
+    | _ => errmsg s2c
+    end // end of [Lte_char_char_bool]
+  // character equality
+  | _ when s2cstref_cst_equ (Eq_char_char_bool, s2c) => begin
+    case+ s2es of
+    | list_cons (s2e1, list_cons (s2e2, list_nil ())) => begin
+      case+ s3iexp_make_s2exp (s2e1, s2cs, fds) of
+      | ~Some_vt s3ie1 => begin
+        case+ s3iexp_make_s2exp (s2e2, s2cs, fds) of
+        | ~Some_vt s3ie2 => Some_vt (s3bexp_ieq (s3ie1, s3ie2))
+        | ~None_vt () => None_vt ()
+        end // end of [Some_vt]
+      | ~None_vt () => None_vt ()
+      end // end of [list_cons]
+    | _ => errmsg s2c
+    end // end of [Eq_char_char_bool]
+  // character inequality
+  | _ when s2cstref_cst_equ (Neq_char_char_bool, s2c) => begin
+    case+ s2es of
+    | list_cons (s2e1, list_cons (s2e2, list_nil ())) => begin
+      case+ s3iexp_make_s2exp (s2e1, s2cs, fds) of
+      | ~Some_vt s3ie1 => begin
+        case+ s3iexp_make_s2exp (s2e2, s2cs, fds) of
+        | ~Some_vt s3ie2 => Some_vt (s3bexp_ineq (s3ie1, s3ie2))
+        | ~None_vt () => None_vt ()
+        end // end of [Some_vt]
+      | ~None_vt () => None_vt ()
+      end // end of [list_cons]
+    | _ => errmsg s2c
+    end // end of [Neq_char_char_bool]
   // integer GT relation
   | _ when s2cstref_cst_equ (Gt_int_int_bool, s2c) => begin
     case+ s2es of
@@ -537,11 +605,7 @@ implement s3bexp_make_s2cst_s2explst (s2c, s2es, s2cs, fds) = begin
         end // end of [Some_vt]
       | ~None_vt () => None_vt ()
       end // end of [list_cons]
-    | _ => begin
-        prerr "Internal Error: s3bexp_make_s2cst_s2explst: Gt_int_int_bool";
-        prerr_newline ();
-        $Err.abort {s3bexpopt_vt} ()
-      end
+    | _ => errmsg s2c
     end // end of [Gt_int_int_bool]
   // integer GTE relation
   | _ when s2cstref_cst_equ (Gte_int_int_bool, s2c) => begin
@@ -555,11 +619,7 @@ implement s3bexp_make_s2cst_s2explst (s2c, s2es, s2cs, fds) = begin
         end // end of [Some_vt]
       | ~None_vt () => None_vt ()
       end // end of [list_cons]
-    | _ => begin
-        prerr "Internal Error: s3bexp_make_s2cst_s2explst: Gte_int_int_bool";
-        prerr_newline ();
-        $Err.abort {s3bexpopt_vt} ()
-      end
+    | _ => errmsg s2c
     end // end of [Gte_int_int_bool]
   // integer LT relation
   | _ when s2cstref_cst_equ (Lt_int_int_bool, s2c) => begin
@@ -573,11 +633,7 @@ implement s3bexp_make_s2cst_s2explst (s2c, s2es, s2cs, fds) = begin
         end // end of [Some_vt]
       | ~None_vt () => None_vt ()
       end // end of [list_cons]
-    | _ => begin
-        prerr "Internal Error: s3bexp_make_s2cst_s2explst: lt_int_int_bool";
-        prerr_newline ();
-        $Err.abort {s3bexpopt_vt} ()
-      end
+    | _ => errmsg s2c
     end // end of [Lt_int_int_bool]
   // integer LTE relation
   | _ when s2cstref_cst_equ (Lte_int_int_bool, s2c) => begin
@@ -591,11 +647,7 @@ implement s3bexp_make_s2cst_s2explst (s2c, s2es, s2cs, fds) = begin
         end // end of [Some_vt]
       | ~None_vt () => None_vt ()
       end // end of [list_cons]
-    | _ => begin
-        prerr "Internal Error: s3bexp_make_s2cst_s2explst: Lte_int_int_bool";
-        prerr_newline ();
-        $Err.abort {s3bexpopt_vt} ()
-      end
+    | _ => errmsg s2c
     end // end of [Lte_int_int_bool]
   // integer equality
   | _ when s2cstref_cst_equ (Eq_int_int_bool, s2c) => begin
@@ -609,11 +661,7 @@ implement s3bexp_make_s2cst_s2explst (s2c, s2es, s2cs, fds) = begin
         end // end of [Some_vt]
       | ~None_vt () => None_vt ()
       end // end of [list_cons]
-    | _ => begin
-        prerr "Internal Error: s3bexp_make_s2cst_s2explst: Eq_int_int_bool";
-        prerr_newline ();
-        $Err.abort {s3bexpopt_vt} ()
-      end
+    | _ => errmsg s2c
     end // end of [Eq_int_int_bool]
   // integer inequality
   | _ when s2cstref_cst_equ (Neq_int_int_bool, s2c) => begin
@@ -627,11 +675,7 @@ implement s3bexp_make_s2cst_s2explst (s2c, s2es, s2cs, fds) = begin
         end // end of [Some_vt]
       | ~None_vt () => None_vt ()
       end // end of [list_cons]
-    | _ => begin
-        prerr "Internal Error: s3bexp_make_s2cst_s2explst: Neq_int_int_bool";
-        prerr_newline ();
-        $Err.abort {s3bexpopt_vt} ()
-      end
+    | _ => errmsg s2c
     end // end of [Neq_int_int_bool]
   // address GT relation
   | _ when s2cstref_cst_equ (Gt_addr_addr_bool, s2c) => begin
@@ -645,11 +689,7 @@ implement s3bexp_make_s2cst_s2explst (s2c, s2es, s2cs, fds) = begin
         end // end of [Some_vt]
       | ~None_vt () => None_vt ()
       end // end of [list_cons]
-    | _ => begin
-        prerr "Internal Error: s3bexp_make_s2cst_s2explst: Gt_addr_addr_bool";
-        prerr_newline ();
-        $Err.abort {s3bexpopt_vt} ()
-      end
+    | _ => errmsg s2c
     end // end of [Gt_addr_addr_bool]
   // address GTE relation
   | _ when s2cstref_cst_equ (Gte_addr_addr_bool, s2c) => begin
@@ -663,11 +703,7 @@ implement s3bexp_make_s2cst_s2explst (s2c, s2es, s2cs, fds) = begin
         end // end of [Some_vt]
       | ~None_vt () => None_vt ()
       end // end of [list_cons]
-    | _ => begin
-        prerr "Internal Error: s3bexp_make_s2cst_s2explst: Gte_addr_addr_bool";
-        prerr_newline ();
-        $Err.abort {s3bexpopt_vt} ()
-      end
+    | _ => errmsg s2c
     end // end of [Gte_addr_addr_bool]
   // address LT relation
   | _ when s2cstref_cst_equ (Lt_addr_addr_bool, s2c) => begin
@@ -681,11 +717,7 @@ implement s3bexp_make_s2cst_s2explst (s2c, s2es, s2cs, fds) = begin
         end // end of [Some_vt]
       | ~None_vt () => None_vt ()
       end // end of [list_cons]
-    | _ => begin
-        prerr "Internal Error: s3bexp_make_s2cst_s2explst: Lt_addr_addr_bool";
-        prerr_newline ();
-        $Err.abort {s3bexpopt_vt} ()
-      end
+    | _ => errmsg s2c
     end // end of [Lt_addr_addr_bool]
   // address LTE relation
   | _ when s2cstref_cst_equ (Lte_addr_addr_bool, s2c) => begin
@@ -699,11 +731,7 @@ implement s3bexp_make_s2cst_s2explst (s2c, s2es, s2cs, fds) = begin
         end // end of [Some_vt]
       | ~None_vt () => None_vt ()
       end // end of [list_cons]
-    | _ => begin
-        prerr "Internal Error: s3bexp_make_s2cst_s2explst: Lte_addr_addr_bool";
-        prerr_newline ();
-        $Err.abort {s3bexpopt_vt} ()
-      end
+    | _ => errmsg s2c
     end // end of [Lte_addr_addr_bool]
   // address equality
   | _ when s2cstref_cst_equ (Eq_addr_addr_bool, s2c) => begin
@@ -717,11 +745,7 @@ implement s3bexp_make_s2cst_s2explst (s2c, s2es, s2cs, fds) = begin
         end // end of [Some_vt]
       | ~None_vt () => None_vt ()
       end // end of [list_cons]
-    | _ => begin
-        prerr "Internal Error: s3bexp_make_s2cst_s2explst: Eq_addr_addr_bool";
-        prerr_newline ();
-        $Err.abort {s3bexpopt_vt} ()
-      end
+    | _ => errmsg s2c
     end // end of [Eq_addr_addr_bool]
   // address inequality
   | _ when s2cstref_cst_equ (Neq_addr_addr_bool, s2c) => begin
@@ -735,11 +759,7 @@ implement s3bexp_make_s2cst_s2explst (s2c, s2es, s2cs, fds) = begin
         end // end of [Some_vt]
       | ~None_vt () => None_vt ()
       end // end of [list_cons]
-    | _ => begin
-        prerr "Internal Error: s3bexp_make_s2cst_s2explst: Neq_addr_addr_bool";
-        prerr_newline ();
-        $Err.abort {s3bexpopt_vt} ()
-      end
+    | _ => errmsg s2c
     end // end of [Neq_addr_addr_bool]
   // a function cannot be handled
   | _ => let
@@ -751,7 +771,7 @@ implement s3bexp_make_s2cst_s2explst (s2c, s2es, s2cs, fds) = begin
 *)
     in
       None_vt ()
-    end
+    end // end of [_]
 end // end of [s3bexp_make_s2cst_s2explst]
 
 (* ****** ****** *)
@@ -761,7 +781,13 @@ fun s3iexp_make_s2cst_s2explst
   (s2c: s2cst_t, s2es: s2explst, s2cs: &s2cstlst, fds: &s2cfdeflst_vt)
   : s3iexpopt_vt
 
-implement s3iexp_make_s2cst_s2explst (s2c, s2es, s2cs, fds) = begin
+implement s3iexp_make_s2cst_s2explst (s2c, s2es, s2cs, fds) = let
+  fn errmsg (s2c: s2cst_t): s3iexpopt_vt = begin
+    prerr "Internal Error: s3iexp_make_s2cst_s2explst: Neg_int_int";
+    prerr_newline ();
+    $Err.abort {s3iexpopt_vt} ()
+  end // end of [errmsg]
+in
   case+ 0 of
   // integer negation
   | _ when s2cstref_cst_equ (Neg_int_int, s2c) => begin
@@ -770,11 +796,7 @@ implement s3iexp_make_s2cst_s2explst (s2c, s2es, s2cs, fds) = begin
       case+ s3iexp_make_s2exp (s2e, s2cs, fds) of
       | ~Some_vt s3ie => Some_vt (s3iexp_ineg s3ie) | ~None_vt () => None_vt ()
       end // end of [list_cons]
-    | _ => begin
-        prerr "Internal Error: s3iexp_make_s2cst_s2explst: Neg_int_int";
-        prerr_newline ();
-        $Err.abort {s3iexpopt_vt} ()
-      end
+    | _ => errmsg s2c
     end // end of [Neg_int_int]
   // integer addition
   | _ when s2cstref_cst_equ (Add_int_int_int, s2c) => begin
@@ -788,11 +810,7 @@ implement s3iexp_make_s2cst_s2explst (s2c, s2es, s2cs, fds) = begin
         end // end of [Some_vt]
       | ~None_vt () => None_vt ()
       end // end of [list_cons]
-    | _ => begin
-        prerr "Internal Error: s3iexp_make_s2cst_s2explst: Add_int_int_int";
-        prerr_newline ();
-        $Err.abort {s3iexpopt_vt} ()
-      end
+    | _ => errmsg s2c
     end // end of [Add_int_int_int]
   // integer subtraction
   | _ when s2cstref_cst_equ (Sub_int_int_int, s2c) => begin
@@ -806,11 +824,7 @@ implement s3iexp_make_s2cst_s2explst (s2c, s2es, s2cs, fds) = begin
         end // end of [Some_vt]
       | ~None_vt () => None_vt ()
       end // end of [list_cons]
-    | _ => begin
-        prerr "Internal Error: s3iexp_make_s2cst_s2explst: Sub_int_int_int";
-        prerr_newline ();
-        $Err.abort {s3iexpopt_vt} ()
-      end
+    | _ => errmsg s2c
     end // end of [Sub_int_int_int]
   // integer multiplication
   | _ when s2cstref_cst_equ (Mul_int_int_int, s2c) => begin
@@ -824,13 +838,9 @@ implement s3iexp_make_s2cst_s2explst (s2c, s2es, s2cs, fds) = begin
         end // end of [Some_vt]
       | ~None_vt () => None_vt ()
       end // end of [list_cons]
-    | _ => begin
-        prerr "Internal Error: s3iexp_make_s2cst_s2explst: Mul_int_int_int";
-        prerr_newline ();
-        $Err.abort {s3iexpopt_vt} ()
-      end
+    | _ => errmsg s2c
     end // end of [Mul_int_int_int]
-  // address difference
+  // addr difference
   | _ when s2cstref_cst_equ (Sub_addr_addr_int, s2c) => begin
     case+ s2es of
     | list_cons (s2e1, list_cons (s2e2, list_nil ())) => begin
@@ -842,11 +852,21 @@ implement s3iexp_make_s2cst_s2explst (s2c, s2es, s2cs, fds) = begin
         end // end of [Some_vt]
       | ~None_vt () => None_vt ()
       end // end of [list_cons]
-    | _ => begin
-        prerr "Internal Error: s3iexp_make_s2cst_s2explst: Sub_addr_addr_int";
-        prerr_newline ();
-        $Err.abort {s3iexpopt_vt} ()
-      end
+    | _ => errmsg s2c
+    end // end of [Sub_addr_addr_int]
+  // char difference
+  | _ when s2cstref_cst_equ (Sub_char_char_int, s2c) => begin
+    case+ s2es of
+    | list_cons (s2e1, list_cons (s2e2, list_nil ())) => begin
+      case+ s3iexp_make_s2exp (s2e1, s2cs, fds) of
+      | ~Some_vt s3ie1 => begin
+        case+ s3iexp_make_s2exp (s2e2, s2cs, fds) of
+        | ~Some_vt s3ie2 => Some_vt (s3iexp_isub (s3ie1, s3ie2))
+        | ~None_vt () => None_vt ()
+        end // end of [Some_vt]
+      | ~None_vt () => None_vt ()
+      end // end of [list_cons]
+    | _ => errmsg s2c
     end // end of [Sub_addr_addr_int]
   // integer division
   | _ when s2cstref_cst_equ (Div_int_int_int, s2c) => let
@@ -986,11 +1006,11 @@ in
   | S2Eapp (s2e1, s2es2) => begin case+ s2e1.s2exp_node of
     | S2Ecst s2c1 => s3aexp_make_s2cst_s2explst (s2c1, s2es2, s2cs, fds)
     | _ => None_vt ()
-    end
+    end // end of [S2Eapp]
   | S2Ecst s2c => begin case+ s2c of
     | _ when s2cstref_cst_equ (Null_addr, s2c) => Some_vt (s3aexp_null)
     | _ => (s2cs := s2cstlst_add (s2cs, s2c); Some_vt (s3aexp_cst s2c))
-    end
+    end // end of [S2Ecst]
   | S2Evar s2v => Some_vt (s3aexp_var s2v)
   | _ => let // an expression that cannot be handled
       val () = begin
@@ -998,7 +1018,7 @@ in
       end
     in
       None_vt ()
-    end
+    end // end of [S2Evar]
 end // end of [s3aexp_make_s2exp]
 
 (* ****** ****** *)
@@ -1139,9 +1159,12 @@ in
     | S2Ecst s2c1 => s3iexp_make_s2cst_s2explst (s2c1, s2es2, s2cs, fds)
     | _ => None_vt ()
     end
+  | S2Echar c => let
+      val i = int_of_char c in Some_vt (s3iexp_int i)
+    end // end of [S2Echar]
   | S2Ecst s2c => begin
       s2cs := s2cstlst_add (s2cs, s2c); Some_vt (s3iexp_cst s2c)
-    end
+    end // end of [S2Ecst]
   | S2Eint i => Some_vt (s3iexp_int i)
   | S2Eintinf i => Some_vt (s3iexp_intinf i)
   | S2Esize s2ze => let

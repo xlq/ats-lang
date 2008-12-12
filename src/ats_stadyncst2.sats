@@ -151,6 +151,18 @@ val Neq_bool_bool_bool : s2cstref_t
 
 (* ****** ****** *)
 
+val Sub_char_char_int : s2cstref_t
+
+val Gt_char_char_bool : s2cstref_t
+val Gte_char_char_bool : s2cstref_t
+val Lt_char_char_bool : s2cstref_t
+val Lte_char_char_bool : s2cstref_t
+
+val Eq_char_char_bool : s2cstref_t
+val Neq_char_char_bool : s2cstref_t
+
+(* ****** ****** *)
+
 val Neg_int_int : s2cstref_t
 val Add_int_int_int : s2cstref_t
 val Sub_int_int_int : s2cstref_t

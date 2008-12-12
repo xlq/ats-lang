@@ -62,9 +62,9 @@ overload [] with atarray_set_elt_at
 (*
 
 dataview array_v (a:viewt@ype+, int, addr) =
-  | {l:addr} array_v_nil (a, 0, l)
   | {n:int | n >= 0} {l:addr}
       array_v_cons (a, n+1, l) of (a @ l, array_v (a, n, l+sizeof a))
+  | {l:addr} array_v_nil (a, 0, l)
 
 *)
 

@@ -51,6 +51,12 @@
 
 static inline
 ats_char_type
+atspre_char_of_char (const ats_char_type c) { return c ; }
+
+/* ****** ****** */
+
+static inline
+ats_char_type
 atspre_char_of_uchar (const ats_uchar_type c) { return c ; }
 
 static inline
@@ -65,11 +71,17 @@ atspre_char_of_int (const ats_int_type i) { return i ; }
 
 /* ****** ****** */
 
+#define atspre_char1_of_char atspre_char_of_char
+#define atspre_char1_of_int atspre_char_of_int
+
+/* ****** ****** */
+
 static inline
 ats_int_type
-atspre_sub_char_char (const ats_char_type c1, const ats_char_type c2) {
+atspre_sub_char_char
+  (const ats_char_type c1, const ats_char_type c2) {
   return (c1 - c2) ;
-}
+} /* end of [atspre_sub_char_char] */
 
 /* ****** ****** */
 
@@ -149,15 +161,6 @@ atspre_tostring_char (const ats_char_type c) {
   *p = (char)c ; *(p+1) = '\000' ;
   return p ;
 }
-
-/* ****** ****** */
-
-#define atspre_lt_char1_char1 atspre_lt_char_char
-#define atspre_lte_char1_char1 atspre_lte_char_char
-#define atspre_gt_char1_char1 atspre_gt_char_char
-#define atspre_gte_char1_char1 atspre_gte_char_char
-#define atspre_eq_char1_char1 atspre_eq_char_char
-#define atspre_neq_char1_char1 atspre_neq_char_char
 
 /* ****** ****** */
 

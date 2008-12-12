@@ -175,6 +175,15 @@ atspre_prerr_string (const ats_ptr_type s) {
 
 static inline
 ats_void_type
+atspre_strbuf_initialize_substring
+  (ats_ptr_type p_buf, ats_ptr_type s, ats_int_type st, ats_int_type ln) {
+  memcpy (p_buf, ((char*)s)+st, ln) ; ((char*)p_buf)[ln] = '\000'; return ;
+} /* atspre_strbuf_initialize_substring */
+
+/* ****** ****** */
+
+static inline
+ats_void_type
 atspre_strbuf_append
   (const ats_ptr_type s1, const ats_ptr_type s2) {
   strcat(s1, s2) ; return ;

@@ -214,6 +214,9 @@ stadef <> = neq_bool_bool_bool
 
 // some built-in static constants for char comparisons
 
+sta sub_char_char_int : (char, char) -> int
+stadef - = sub_char_char_int
+
 sta gt_char_char_bool : (char, char) -> bool
 stadef > = gt_char_char_bool
 
@@ -550,6 +553,7 @@ stadef void = void_t0ype
 datatype unit = unit
 
 typedef Bool = [b:bool] bool b
+
 typedef Char = [c:char] char c
 
 typedef Int = [i:int] int i

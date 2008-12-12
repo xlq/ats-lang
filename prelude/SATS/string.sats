@@ -204,6 +204,15 @@ overload prerr with prerr_string
 
 (* ****** ****** *)
 
+fun strbuf_initialize_substring {bsz:int} {n:int}
+  {st,ln:nat | st+ln <= n; ln < bsz} {l:addr} (
+    pf: !b0ytes bsz @ l >> strbuf (bsz, ln) @ l
+  | p: ptr l, s: string n, st: int st, ln: int ln
+  ) : void
+  = "atspre_strbuf_initialize_substring"
+
+(* ****** ****** *)
+
 fun string_make_char {n:nat} (n: int n, c: char):<> string n
   = "atspre_string_make_char"
 
@@ -215,7 +224,7 @@ fun string_make_list_len {n:nat}
   = "atspre_string_make_list_len"
 
 fun string_make_substring
-  {n:nat} {st,ln:nat | st + ln <= n}
+  {n:int} {st,ln:nat | st + ln <= n}
   (s: string n, st: int st, ln: int ln):<> string ln
   = "atspre_string_make_substring"
 

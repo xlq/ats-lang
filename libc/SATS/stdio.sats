@@ -56,6 +56,10 @@ sortdef fm = file_mode
 //
 
 typedef bytes (n:int) = @[byte][n]
+typedef b0ytes (n:int) = @[byte?][n]
+
+//
+
 viewdef FILE_v (m:fm, l:addr) = FILE m @ l
 viewdef FILE_opt_v (m:fm, l:addr) = option_v (FILE m @ l, l <> null)
 
@@ -253,8 +257,6 @@ non-zero value upon failure.
 
 *)
 
-//
-
 abst@ype fpos_t = $extype "ats_fpos_type"
 
 dataview fgetpos_v (addr, int) =
@@ -280,30 +282,28 @@ stored after the last character in the buffer.
 *)
 
 dataview fgets_v (sz:int, addr, addr) =
-  | {n:nat | n < sz} {l_buf:addr | l_buf <> null}
-      fgets_v_succ (sz, l_buf, l_buf) of strbuf (sz, n) @ l_buf
   | {l_buf:addr}
-      fgets_v_fail (sz, l_buf, null) of bytes (sz) @ l_buf
+    fgets_v_fail (sz, l_buf, null) of b0ytes (sz) @ l_buf
+  | {n:nat | n < sz} {l_buf:addr | l_buf <> null}
+    fgets_v_succ (sz, l_buf, l_buf) of strbuf (sz, n) @ l_buf
 
 fun fgets_err
   {n,sz:int | 0 < n; n <= sz} {m:fm} {l_buf:addr} (
     pf_mod: file_mode_lte (m, r)
-  , pf_buf: bytes (sz) @ l_buf
+  , pf_buf: b0ytes (sz) @ l_buf
   | p: ptr l_buf, n: int n, f: &FILE m
   ) :<> [l:addr] (fgets_v (sz, l_buf, l) | ptr l)
   = "atslib_fgets_err"
 
 fun fgets_exn {n0,sz:int | 0 < n0; n0 <= sz} {m:fm} {l_buf:addr}
   (pf_mod: file_mode_lte (m, r),
-   pf_buf: !bytes (sz) @ l_buf >>
+   pf_buf: !b0ytes (sz) @ l_buf >>
      [n:nat | n < n0] strbuf (sz, n) @ l_buf |
    p: ptr l_buf, n0: int n0, f: &FILE m)
   :<!exn> void
   = "atslib_fgets_exn"
 
 // ------------------------------------------------
-
-//
 
 (*
  
@@ -738,47 +738,3 @@ overload ungetc_exn with ungetc1_exn
 // ------------------------------------------------
 
 (* end of [stdio.sats] *)
-
-////
-
-(*
-
-// void setlinebuf (FILE *stream);
-
-The function setlinebuf changes the buffering mode of the given stream to line-buffering.
-
-It returns void and does not modify errno.
-
-
-
-fun setfullbuf : {m:fm} {l:addr} (&FILE m @ l | ptr l) -> unit
-
-fun setlinebuf : {m:fm} {l:addr} (&FILE m @ l | ptr l) -> unit
-
-fun setnobuf : {m:fm} {l:addr} (&FILE m @ l | ptr l) -> unit
-
-//
-
-(* Do not call these functions directly! Use fprintf or printf instead! *)
-(* If the parameters do not form a valid combination, errno is set to EINVAL and -1 is returned. *)
-
-dynval fprintf_nat :
-  {l: addr} (&FILE_v l | ptr l, spec_t, length_t, flags_t, width_t, prec_t, Nat) -> Int
-
-dynval fprintf_literal :
-  {n:nat, l1: addr, l2: addr}
-    (&FILE_v l1, !read_v (cstr_v (n, l2)) | ptr l1, ptr l2) -> Int
-
-////
-
-// ------------------------------------------------
-
-fscanf	read formatted input from a file
-gets	read a string from STDIN (DEPRICATED!)
-scanf	read formatted input from STDIN
-setbuf	set the buffer for a specific stream
-setvbuf	set the buffer and size for a specific stream
-sprintf	write formatted output to a buffer
-sscanf	read formatted input from a buffer
-tmpnam generate a unique file name (DEPRICATED!)
-vprintf, vfprintf, and vsprintf	write formatted output with variable argument lists

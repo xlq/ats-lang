@@ -295,6 +295,18 @@ implement Neq_bool_bool_bool = s2cstref_make "neq_bool_bool_bool"
 
 (* ****** ****** *)
 
+implement Sub_char_char_int = s2cstref_make "sub_char_char_int"
+
+implement Gt_char_char_bool = s2cstref_make "gt_char_char_bool"
+implement Gte_char_char_bool = s2cstref_make "gte_char_char_bool"
+implement Lt_char_char_bool = s2cstref_make "lt_char_char_bool"
+implement Lte_char_char_bool = s2cstref_make "lte_char_char_bool"
+
+implement Eq_char_char_bool = s2cstref_make "eq_char_char_bool"
+implement Neq_char_char_bool = s2cstref_make "neq_char_char_bool"
+
+(* ****** ****** *)
+
 implement Neg_int_int = s2cstref_make "neg_int_int"
 implement Add_int_int_int = s2cstref_make "add_int_int_int"
 implement Sub_int_int_int = s2cstref_make "sub_int_int_int"
@@ -734,7 +746,7 @@ implement s2exp_at_viewt0ype_addr_view (s2e_elt, s2e_addr) = let
   val s2c = s2cstref_cst_get (At_viewt0ype_addr_view)
 in
   s2exp_app_srt (s2rt_view, s2exp_cst s2c, '[s2e_elt, s2e_addr])
-end
+end // end of [s2exp_at_viewt0ype_addr_view]
 
 implement un_s2exp_at_viewt0ype_addr_view (s2e) = begin
   case+ s2e.s2exp_node of
@@ -764,7 +776,7 @@ implement s2exp_array_viewt0ype_int_type (s2e_elt, sz) = let
   val s2e_sz = s2exp_int sz
 in
   s2exp_app_srt (s2rt_type, s2exp_cst s2c, '[s2e_elt, s2e_sz])
-end
+end // end of [s2exp_array_viewt0ype_int_type]
 
 // the length of an array is assumed to be less than [INTMAX]
 implement s2exp_array_viewt0ype_int_viewtype (s2e_elt, sz) = let
@@ -772,7 +784,7 @@ implement s2exp_array_viewt0ype_int_viewtype (s2e_elt, sz) = let
   val s2e_sz = s2exp_int sz
 in
   s2exp_app_srt (s2rt_viewtype, s2exp_cst s2c, '[s2e_elt, s2e_sz])
-end
+end // end of [s2exp_array_viewt0ype_int_viewtype]
 
 // the length of an array is assumed to be less than [INTMAX]
 implement s2exp_arraysize_viewt0ype_int_viewt0ype (s2e_elt, sz) = let
@@ -780,20 +792,21 @@ implement s2exp_arraysize_viewt0ype_int_viewt0ype (s2e_elt, sz) = let
   val s2e_sz = s2exp_int sz
 in
   s2exp_app_srt (s2rt_viewt0ype, s2exp_cst s2c, '[s2e_elt, s2e_sz])
-end
+end // end of [s2exp_arraysize_viewt0ype_int_viewt0ype]
 
 (* ****** ****** *)
 
-implement s2exp_ptr_type () =
-  let val s2c = s2cstref_cst_get (Ptr_type) in
-    s2exp_cst (s2c)
-  end // end of [s2exp_ptr_type]
+implement s2exp_ptr_type () = let
+  val s2c = s2cstref_cst_get (Ptr_type)
+in
+  s2exp_cst (s2c)
+end // end of [s2exp_ptr_type]
 
 implement s2exp_ptr_addr_type (s2e_addr) = let
   val s2c = s2cstref_cst_get (Ptr_addr_type)
 in
   s2exp_app_srt (s2rt_type, s2exp_cst s2c, '[s2e_addr])
-end
+end // end of [s2exp_ptr_addr_type]
 
 implement un_s2exp_ptr_addr_type (s2e) = begin
   case+ s2e.s2exp_node of
@@ -844,7 +857,7 @@ implement s2exp_list_t0ype_int_type (s2e_elt, ln) = let
   val s2e_ln = s2exp_int ln
 in
   s2exp_app_srt (s2rt_type, s2exp_cst s2c, '[s2e_elt, s2e_ln])
-end
+end // end of [s2exp_list_t0ype_int_type]
 
 implement un_s2exp_list_t0ype_int_type (s2e) = begin
   case+ s2e.s2exp_node of
@@ -872,7 +885,7 @@ implement s2exp_list_viewt0ype_int_viewtype (s2e_elt, ln) = let
   val s2e_ln = s2exp_int ln
 in
   s2exp_app_srt (s2rt_viewtype, s2exp_cst s2c, '[s2e_elt, s2e_ln])
-end
+end // end of [s2exp_list_viewt0ype_int_viewtype]
 
 (* ****** ****** *)
 
@@ -880,13 +893,13 @@ implement s2exp_lazy_t0ype_type (s2e) = let
   val s2c = s2cstref_cst_get (Lazy_t0ype_type)
 in
   s2exp_app_srt (s2rt_type, s2exp_cst s2c, '[s2e])
-end
+end // end of [s2exp_lazy_t0ype_type]
 
 implement s2exp_lazy_viewt0ype_viewtype (s2e) = let
   val s2c = s2cstref_cst_get (Lazy_viewt0ype_viewtype)
 in
   s2exp_app_srt (s2rt_viewtype, s2exp_cst s2c, '[s2e])
-end
+end // end of [s2exp_lazy_viewt0ype_viewtype]
 
 (* ****** ****** *)
 
@@ -894,7 +907,7 @@ implement s2exp_printf_c_types_type (s2e) = let
   val s2c = s2cstref_cst_get (Printf_c_types_type)
 in
   s2exp_app_srt (s2rt_type, s2exp_cst s2c, '[s2e])
-end
+end // end of [s2exp_printf_c_types_type]
 
 (* ****** ****** *)
 
@@ -902,7 +915,7 @@ implement s2exp_vbox_view_prop (s2e) = let
   val s2c = s2cstref_cst_get (Vbox_view_prop)
 in
   s2exp_app_srt (s2rt_prop, s2exp_cst s2c, '[s2e])
-end
+end // end of [s2exp_vbox_view_prop]
 
 implement un_s2exp_vbox_view_prop (s2e) = begin
   case+ s2e.s2exp_node of
@@ -929,19 +942,19 @@ implement s2exp_neg_bool_bool (s2p) = let
   val s2c = s2cstref_cst_get (Neg_bool_bool)
 in
   s2exp_app_srt (s2rt_bool, s2exp_cst s2c, '[s2p])
-end
+end // end of [s2exp_neg_bool_bool]
 
 implement s2exp_add_bool_bool_bool (s2p1, s2p2) = let
   val s2c = s2cstref_cst_get (Add_bool_bool_bool)
 in
   s2exp_app_srt (s2rt_bool, s2exp_cst s2c, '[s2p1, s2p2])
-end
+end // end of [s2exp_add_bool_bool_bool]
 
 implement s2exp_mul_bool_bool_bool (s2p1, s2p2) = let
   val s2c = s2cstref_cst_get (Mul_bool_bool_bool)
 in
   s2exp_app_srt (s2rt_bool, s2exp_cst s2c, '[s2p1, s2p2])
-end
+end // end of [s2exp_mul_bool_bool_bool]
 
 (* ****** ****** *)
 
@@ -949,13 +962,13 @@ implement s2exp_gt_int_int_bool (s2e1, s2e2) = let
   val s2c = s2cstref_cst_get (Gt_int_int_bool)
 in
   s2exp_app_srt (s2rt_bool, s2exp_cst s2c, '[s2e1, s2e2])
-end
+end // end of [s2exp_gt_int_int_bool]
 
 implement s2exp_gte_int_int_bool (s2e1, s2e2) = let
   val s2c = s2cstref_cst_get (Gte_int_int_bool)
 in
   s2exp_app_srt (s2rt_bool, s2exp_cst s2c, '[s2e1, s2e2])
-end
+end // end of [s2exp_gte_int_int_bool]
 
 //
 
@@ -963,13 +976,13 @@ implement s2exp_lt_int_int_bool (s2e1, s2e2) = let
   val s2c = s2cstref_cst_get (Lt_int_int_bool)
 in
   s2exp_app_srt (s2rt_bool, s2exp_cst s2c, '[s2e1, s2e2])
-end
+end // end of [s2exp_lt_int_int_bool]
 
 implement s2exp_lte_int_int_bool (s2e1, s2e2) = let
   val s2c = s2cstref_cst_get (Lte_int_int_bool)
 in
   s2exp_app_srt (s2rt_bool, s2exp_cst s2c, '[s2e1, s2e2])
-end
+end // end of [s2exp_lte_int_int_bool]
 
 //
 
@@ -977,13 +990,13 @@ implement s2exp_neq_int_int_bool (s2e1, s2e2) = let
   val s2c = s2cstref_cst_get (Neq_int_int_bool)
 in
   s2exp_app_srt (s2rt_bool, s2exp_cst s2c, '[s2e1, s2e2])
-end
+end // end of [s2exp_neq_int_int_bool]
 
 implement s2exp_btw_int_int_int_bool (s2e_l, s2e_m, s2e_r) = let
   val s2c = s2cstref_cst_get (Btw_int_int_int_bool)
 in
   s2exp_app_srt (s2rt_bool, s2exp_cst s2c, '[s2e_l, s2e_m, s2e_r])
-end
+end // end of [s2exp_btw_int_int_int_bool]
 
 (* ****** ****** *)
 
@@ -996,13 +1009,13 @@ implement s2exp_gt_addr_addr_bool (s2e1, s2e2) = let
   val s2c = s2cstref_cst_get (Gt_addr_addr_bool)
 in
   s2exp_app_srt (s2rt_bool, s2exp_cst s2c, '[s2e1, s2e2])
-end
+end // end of [s2exp_gt_addr_addr_bool]
 
 implement s2exp_gte_addr_addr_bool (s2e1, s2e2) = let
   val s2c = s2cstref_cst_get (Gte_addr_addr_bool)
 in
   s2exp_app_srt (s2rt_bool, s2exp_cst s2c, '[s2e1, s2e2])
-end
+end // end of [s2exp_gte_addr_addr_bool]
 
 //
 
@@ -1010,13 +1023,13 @@ implement s2exp_lt_addr_addr_bool (s2e1, s2e2) = let
   val s2c = s2cstref_cst_get (Lt_addr_addr_bool)
 in
   s2exp_app_srt (s2rt_bool, s2exp_cst s2c, '[s2e1, s2e2])
-end
+end // end of [s2exp_lt_addr_addr_bool]
 
 implement s2exp_lte_addr_addr_bool (s2e1, s2e2) = let
   val s2c = s2cstref_cst_get (Lte_addr_addr_bool)
 in
   s2exp_app_srt (s2rt_bool, s2exp_cst s2c, '[s2e1, s2e2])
-end
+end // end of [s2exp_lte_addr_addr_bool]
 
 (* ****** ****** *)
 

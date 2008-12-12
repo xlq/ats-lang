@@ -44,6 +44,11 @@
 
 (* ****** ****** *)
 
+#define CHAR_MAX  127
+#define CHAR_MIN ~128
+
+(* ****** ****** *)
+
 // some common functions on characters
 
 (* ****** ****** *)
@@ -155,12 +160,53 @@ and char_toupper (c: char):<> char = "atspre_char_toupper"
 
 (* ****** ****** *)
 
+// indexed char type
+
+(* ****** ****** *)
+
+fun char1_of_char (c: char):<> [c:char] char c
+  = "atspre_char1_of_char"
+
+fun char1_of_int (i: int):<> [c:char] char c
+  = "atspre_char1_of_int"
+
+(* ****** ****** *)
+
+fun sub_char1_char1 {c1,c2:char}
+  (c1: char c1, c2: char c2):<> int (c1-c2)
+  = "atspre_sub_char_char"
+overload -  with sub_char1_char1
+
+(* ****** ****** *)
+
+fun lt_char1_char1 {c1,c2:char}
+  (c1: char c1, c2: char c2):<> bool (c1 < c2)
+  = "atspre_lt_char_char"
+
+fun lte_char1_char1 {c1,c2:char}
+  (c1: char c1, c2: char c2):<> bool (c1 <= c2)
+  = "atspre_lte_char_char"
+
+fun gt_char1_char1 {c1,c2:char}
+  (c1: char c1, c2: char c2):<> bool (c1 > c2)
+  = "atspre_gt_char_char"
+
+fun gte_char1_char1 {c1,c2:char}
+  (c1: char c1, c2: char c2):<> bool (c1 >= c2)
+  = "atspre_gte_char_char"
+
+overload < with lt_char1_char1
+overload <= with lte_char1_char1
+overload > with gt_char1_char1
+overload >= with gte_char1_char1
+
 fun eq_char1_char1 {c1,c2:char}
   (c1: char c1, c2: char c2):<> bool (c1 == c2)
-  = "atspre_eq_char1_char1"
+  = "atspre_eq_char_char"
+
 and neq_char1_char1 {c1,c2:char}
   (c1: char c1, c2: char c2):<> bool (c1 <> c2)
-  = "atspre_neq_char1_char1"
+  = "atspre_neq_char_char"
 
 overload = with eq_char1_char1
 overload <> with neq_char1_char1
