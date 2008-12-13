@@ -107,6 +107,8 @@ fun array_ptr_initialize_elt_tsz {a:t@ype} {n:nat}
   (base: &(@[a?][n]) >> @[a][n], asz: int n, ini: &a, tsz: sizeof_t a):<> void
   = "atspre_array_ptr_initialize_elt_tsz"
 
+(* ****** ****** *)
+
 fun{a:t@ype} array_ptr_initialize_lst {n:nat}
   (base: &(@[a?][n]) >> @[a][n], asz: int n, xs: list (a, n)):<> void
 

@@ -366,8 +366,11 @@ fun followpos {n:nat} (n0: int n, r: regex1)
   val tsz = sizeof<intset_t>
   val (pf_arr_gc, pf_arr | p_arr) =
     array_ptr_alloc_tsz {intset_t} (n0, tsz)
-  val () = array_ptr_initialize_cloptr_tsz {intset_t}
-    (!p_arr, n0, lam (x, i) =<cloptr> x := intset_nil, tsz)
+  val () = begin
+    array_ptr_initialize_elt_tsz {intset_t} (!p_arr, n0, ini, tsz)
+  end where {
+    var ini: intset_t = intset_nil
+  } // end of [val]
   val () = aux (pf_arr | p_arr, n0, r)
 in
   (pf_arr_gc, pf_arr | p_arr)

@@ -77,8 +77,11 @@ implement symtbl_make (sz) = let
   val tsz = sizeof<tblent>
   val (pf_arr_gc, pf_arr | p_arr) =
     array_ptr_alloc_tsz {tblent} (asz, tsz)
-  val () = array_ptr_initialize_cloptr_tsz {tblent} 
-    (!p_arr, asz, lam (x, i) =<cloptr> x := None (), tsz)
+  val () = begin
+    array_ptr_initialize_elt_tsz {tblent} (!p_arr, asz, ini, tsz)
+  end where {
+    var ini: tblent = None ()
+  } // end of [val]
   val () = begin
     p_tbl->ptr := p_arr;
     p_tbl->view := @(pf_arr_gc, pf_arr);
@@ -167,10 +170,12 @@ fun symtbl_resize
   val sz2 = sz + sz; val tsz = sizeof<tblent>
   val (pf1_arr_gc, pf1_arr | p1_arr) =
     array_ptr_alloc_tsz {tblent} (sz2, tsz)
-  val () = array_ptr_initialize_cloptr_tsz {tblent} 
-    (!p1_arr, sz2, lam (x, i) =<cloptr> x := None (), tsz)
-  val () = symtbl_resize_move
-    (pf_arr, pf1_arr | p_arr, p1_arr, sz, 0)
+  val () = begin
+    array_ptr_initialize_elt_tsz {tblent} (!p1_arr, sz2, ini, tsz)
+  end where {
+    var ini: tblent = None ()
+  } // end of [val]
+  val () = symtbl_resize_move (pf_arr, pf1_arr | p_arr, p1_arr, sz, 0)
   val () = array_ptr_free {tblent} (pf_arr_gc, pf_arr | p_arr)
 in
   p_tbl->ptr := p1_arr;

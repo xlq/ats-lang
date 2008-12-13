@@ -9,6 +9,7 @@ manual_main.ps: \
   manual_preface.tex \
   manual_ats_basics.tex \
   manual_batch_compilation.tex \
+  manual_macros.tex \
   manual_interaction_with_c.tex \
   manual_dependent_types.tex \
   manual_theorem_proving.tex \
