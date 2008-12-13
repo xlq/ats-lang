@@ -694,10 +694,10 @@ viewtypedef Option_vt (a:viewt@ype) = [b:bool] option_vt (a, b)
 
 // some useful props and views
 
-dataview option_view_int_view (a:view+, bool) =
+dataview option_view_bool_view (a:view+, bool) =
   | None_v (a, false) | Some_v (a, true) of a
 
-stadef option_v = option_view_int_view
+stadef option_v = option_view_bool_view
 
 //
 

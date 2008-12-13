@@ -146,12 +146,12 @@ implement the_effect_env_pop (pf | (*none*)) = let
   prval unit_v () = pf in case+ !the_efiss of
   | list_cons (efis, efiss) => begin
       !the_efis := efis; !the_efiss := efiss
-    end
+    end // end of [list_cons]
   | list_nil () => begin
       prerr "Internal Error: the_effect_env_pop";
       prerr_newline ();
       $Err.abort {void} ()
-    end
+    end // end of [list_nil]
 end // end of [the_effect_env_pop]
 
 implement the_effect_env_push () = begin
@@ -173,6 +173,8 @@ in
   !the_efis := efis; (unit_v () | ())
 end // end of [the_effect_env_push_delay]
 
+(* ****** ****** *)
+
 implement the_effect_env_push_eff (effs) = let
   val efis = !the_efis
   val () = !the_efiss := list_cons (efis, !the_efiss)
@@ -181,7 +183,7 @@ implement the_effect_env_push_eff (effs) = let
       : effenvitemlst = case+ effs of
       | list_cons (eff, effs) => begin
           aux (effs, list_cons (EFFENVITEMeff eff, efis))
-        end
+        end // end of [list_cons]
       | list_nil () => efis
   } // end of [where]
 in
@@ -196,7 +198,7 @@ implement the_effect_env_push_effmask (effs) = let
       : effenvitemlst = case+ effs of
       | list_cons (eff, effs) => begin
           aux (effs, list_cons (EFFENVITEMeffmask eff, efis))
-        end
+        end // end of [list_cons]
       | list_nil () => efis
   } // end of [where]
 in
@@ -218,14 +220,14 @@ fn the_effect_env_check_eff_err (eff0: eff_t): int = let
     | list_cons (efi, efis) => begin case+ efi of
       | EFFENVITEMeff eff => begin
           if eff0 = eff then 1 else aux (eff0, efis)
-        end
+        end // end of [EFFENVITEMeff]
       | EFFENVITEMeffmask eff => begin
           if eff0 = eff then 0 else aux (eff0, efis)
-        end
+        end // end of [EFFENVITEMeffmask]
       | EFFENVITEMlam s2fe => begin
           if s2eff_contain_eff (s2fe, eff0) then 0 else 1
-        end
-      end
+        end // end of [EFFENVITEMlam]
+      end // end of [list_cons]
     | list_nil () => 0
 in
   aux (eff0, !the_efis)
@@ -241,7 +243,7 @@ fn the_effect_env_check_eff
     prerr "] is disallowed.";
     prerr_newline ();
     $Err.abort {void} ()
-  end
+  end // end of [if]
 end // end of [the_effect_env_check_eff]
 
 implement the_effect_env_check_exn (loc0) =
@@ -259,12 +261,14 @@ fn the_effect_env_check_effset (loc0: loc_t, efs0: efs_t): void = let
   fun auxCK (effs: List eff_t):<cloptr1> List eff_t = begin
     case+ effs of
     | list_cons (eff, effs) => begin
-        if $Eff.effset_contain (efs0, eff) then
-          let val err = the_effect_env_check_eff_err (eff) in
-            if err > 0 then list_cons (eff, auxCK effs) else auxCK effs
-          end
-        else auxCK effs
-      end
+        if $Eff.effset_contain (efs0, eff) then let
+          val err = the_effect_env_check_eff_err (eff)
+        in
+          if err > 0 then list_cons (eff, auxCK effs) else auxCK effs
+        end else begin
+          auxCK effs
+        end // end of [if]
+      end // end of [list_cons]
     | list_nil () => list_nil ()
   end // end of [auxCK]
   val err = auxCK ($Eff.effectlst_all)
@@ -278,12 +282,11 @@ fn the_effect_env_check_effset (loc0: loc_t, efs0: efs_t): void = let
         if i > 0 then prerr ", "; $Eff.prerr_effect eff; auxPR (i+1, effs)
       end
     | list_nil () => ()
-  val () =
-    if nerr > 0 then begin
-      $Loc.prerr_location loc0;
-      prerr ": error(3)";
-      if nerr <= 1 then prerr ": the effect [" else prerr ": the effects [";
-    end
+  val () = if nerr > 0 then begin
+    $Loc.prerr_location loc0;
+    prerr ": error(3)";
+    if nerr <= 1 then prerr ": the effect [" else prerr ": the effects [";
+  end // end of [val]
   val () = if nerr > 0 then auxPR (0, err)
 in
   if nerr > 0 then begin
@@ -310,7 +313,7 @@ implement the_effect_env_check_effvar (loc0, s2v0) = let
       | EFFENVITEMeff eff => false
       | EFFENVITEMeffmask eff => aux (s2v0, efis)
       | EFFENVITEMlam s2fe => s2eff_contain_effvar (s2fe, s2v0)
-      end
+      end // end of [list_cons]
     | list_nil () => true
 in
   if aux (s2v0, !the_efis) then () else begin
@@ -342,7 +345,7 @@ and the_effect_env_check_sexplst
   | list_cons (s2e, s2es) => begin
       the_effect_env_check_sexp (loc0, s2e);
       the_effect_env_check_sexplst (loc0, s2es)
-    end
+    end // end of [list_cons]
   | list_nil () => ()
 end // end of [the_effect_env_check_sexplst]
 
@@ -359,7 +362,7 @@ in
   | S2EFFset (efs, s2es) => begin
       the_effect_env_check_effset (loc0, efs);
       the_effect_env_check_sexplst (loc0, s2es)
-    end
+    end // end of [S2EEFset]
 end // end of [the_effect_env_check_seff]
 
 end // end of [local]

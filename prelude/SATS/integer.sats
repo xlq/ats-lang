@@ -747,8 +747,18 @@ overload tostring with tostring_lint
 
 typedef ulint = uint_long_t0ype
 
-fun ulint_of_int (i: int):<> ulint
+fun ulint_of_int (i: int):<> ulint = "atspre_ulint_of_int"
 overload ulint_of with ulint_of_int
+
+fun ulint_of_uint (u: uint):<> ulint = "atspre_ulint_of_uint"
+overload ulint_of with ulint_of_uint
+
+fun ulint_of_lint (li: lint):<> ulint = "atspre_ulint_of_lint"
+overload ulint_of with ulint_of_lint
+
+//
+
+fun uint_of_ulint (ul: ulint):<> uint = "atspre_uint_of_ulint"
 
 // arithmetic functions and comparison functions
 

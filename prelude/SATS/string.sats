@@ -49,10 +49,21 @@
 typedef bytes (n:int) = @[byte][n]
 typedef b0ytes (n:int) = @[byte?][n]
 
+typedef chars (n:int) = @[char][n]
+typedef ch0ars (n:int) = @[char?][n]
+
 (* ****** ****** *)
 
 praxi bytes_v_of_b0ytes_v {bsz:int}
   {l:addr} (pf: b0ytes (bsz) @ l):<prf> bytes (bsz) @ l
+
+praxi chars_v_of_b0ytes_v {bsz:int}
+  {l:addr} (pf: b0ytes (bsz) @ l):<prf> chars (bsz) @ l
+
+(* ****** ****** *)
+
+praxi bytes_v_of_chars_v {bsz:int}
+  {l:addr} (pf: chars (bsz) @ l):<prf> bytes (bsz) @ l
 
 praxi bytes_v_of_strbuf_v {bsz:int}
   {l:addr} (pf: strbuf (bsz) @ l):<prf> bytes (bsz) @ l
@@ -61,7 +72,7 @@ praxi bytes_v_of_strbuf_v {bsz:int}
 
 fun bytes_strbuf_trans {m,n:nat | n < m} {l:addr}
   (pf: !b0ytes m @ l >> strbuf (m, n1) @ l | p: ptr l, n: int n)
-  : #[n1: nat | n1 <= n] void
+  :<> #[n1: nat | n1 <= n] void
   = "atspre_bytes_strbuf_trans"
 
 (* ****** ****** *)
@@ -167,13 +178,13 @@ overload compare with compare_string_string
 
 (* ****** ****** *)
 
-fun fprint_strbuf {m,n:nat}
+fun fprint_strbuf {m,n:int}
   (out: FILEref, x: &strbuf (m, n)):<!exnref> void
   = "atspre_fprint_string"
 
-fun print_strbuf {m,n:nat} (x: &strbuf (m, n)):<!ref> void
+fun print_strbuf {m,n:int} (x: &strbuf (m, n)):<!ref> void
   = "atspre_print_string"
-and prerr_strbuf {m,n:nat} (x: &strbuf (m, n)):<!ref> void
+and prerr_strbuf {m,n:int} (x: &strbuf (m, n)):<!ref> void
   = "atspre_prerr_string"
 
 overload print with print_strbuf

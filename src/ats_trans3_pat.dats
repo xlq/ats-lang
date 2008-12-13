@@ -1027,7 +1027,7 @@ in
       prerr p2t0;
       prerr_newline ();
       $Err.abort {p3at} ()
-    end
+    end // end of [_]
 end // end of [p2at_tr_dn]
 
 (* ****** ****** *)

@@ -41,6 +41,7 @@
 
 (* ****** ****** *)
 
+staload Eff = "ats_effect.sats"
 staload Err = "ats_error.sats"
 staload Loc = "ats_location.sats"
 staload Lst = "ats_list.sats"
@@ -84,11 +85,31 @@ fn v2aldec_tr
     print "v2aldec_tr: p2t = "; print p2t; print_newline ()
   end
 *)
+  val [b:bool] isprf = (
+    case+ valknd of $Syn.VALKINDprval () => true | _ => false
+  ) : Bool
+  val (pfopt | ()) = (
+    if isprf then let
+      val (pf | ()) = the_effect_env_push_eff ($Eff.effectlst_all)
+    in
+      (Some_v pf | ())
+    end else begin
+      (None_v () | ())
+    end // end of [if]
+  ) : (option_v (effect_env_token, b) | void)
   val d2e_def = d2c.v2aldec_def
   val d3e_def = (case+ d2c.v2aldec_ann of
     | Some s2e_ann => d2exp_tr_dn (d2e_def, s2e_ann)
     | None () => d2exp_tr_up d2e_def
   ) : d3exp
+  val () =
+    if isprf then let
+      prval Some_v pf = pfopt
+    in
+      the_effect_env_pop (pf | (*none*))
+    end else let
+      prval None_v () = pfopt in ()
+    end // end of [if]
   val s2e_def = d3e_def.d3exp_typ
 
   // checking for pattern match exhaustiveness

@@ -68,7 +68,8 @@ fun mrand48 ():<!ref> lint // signed [-2^31, 2^31)
 
 (* ****** ****** *)
 
-fun randint {n:pos} (n: int n): [i: nat | i < n] int (i)
+// non-reentrant
+fun randint {n:pos} (n: int n):<!ref> [i: nat | i < n] int (i)
   = "atslib_randint"
 
 (* ****** ****** *)

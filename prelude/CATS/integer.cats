@@ -744,6 +744,28 @@ atspre_ulint_of_int (ats_int_type i) {
 
 static inline
 ats_ulint_type
+atspre_ulint_of_uint (ats_uint_type u) {
+  return ((ats_ulint_type)u) ;
+}
+
+static inline
+ats_ulint_type
+atspre_ulint_of_lint (ats_lint_type li) {
+  return ((ats_ulint_type)li) ;
+}
+
+//
+
+static inline
+ats_uint_type
+atspre_uint_of_ulint (ats_ulint_type ul) {
+  return ((ats_uint_type)ul) ;
+}
+
+//
+
+static inline
+ats_ulint_type
 atspre_succ_ulint (ats_ulint_type i) { return (i + 1) ; }
 
 static inline
