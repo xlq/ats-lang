@@ -46,6 +46,10 @@
 
 (* ****** ****** *)
 
+#define NUL '\000'
+
+(* ****** ****** *)
+
 typedef bytes (n:int) = @[byte][n]
 typedef b0ytes (n:int) = @[byte?][n]
 
@@ -57,6 +61,8 @@ typedef ch0ars (n:int) = @[char?][n]
 praxi bytes_v_of_b0ytes_v {bsz:int}
   {l:addr} (pf: b0ytes (bsz) @ l):<prf> bytes (bsz) @ l
 
+praxi char_v_of_b0yte_v {l:addr} (pf: byte? @ l): char @ l
+
 praxi chars_v_of_b0ytes_v {bsz:int}
   {l:addr} (pf: b0ytes (bsz) @ l):<prf> chars (bsz) @ l
 
@@ -67,6 +73,31 @@ praxi bytes_v_of_chars_v {bsz:int}
 
 praxi bytes_v_of_strbuf_v {bsz:int}
   {l:addr} (pf: strbuf (bsz) @ l):<prf> bytes (bsz) @ l
+
+(* ****** ****** *)
+
+viewdef strbuf_v (m: int, n: int, l:addr) = strbuf (m, n) @ l
+
+praxi strbuf_v_null {n:nat} {l:addr}
+  (pf1: char NUL @ l, pf2: b0ytes (n) @ l + sizeof(byte))
+  : strbuf_v (n+1, 0, l)
+
+praxi strbuf_v_cons
+  {c: char | c <> NUL} {m,n:nat} {l:addr}
+  (pf1: char c @ l, pf2: strbuf_v (m, n, l + sizeof(byte)))
+  :<prf> strbuf_v (m+1, n+1, l)
+
+dataview strbufopt_v (int, int, addr, char) =
+  | {m:nat} {l:addr}
+    strbufopt_v_none (m, ~1, l, NUL) of b0ytes m @ l
+  | {m,n:nat} {l:addr} {c:char | c <> NUL}
+    strbufopt_v_some (m, n, l, c) of strbuf_v (m, n, l)
+
+praxi strbuf_v_uncons
+  {m,n:nat} {l:addr} (pf: strbuf_v (m, n, l))
+  :<prf> [c:char] @(
+     char c @ l, strbufopt_v (m-1, n-1, l + sizeof(byte), c)
+   )
 
 (* ****** ****** *)
 

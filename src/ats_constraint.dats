@@ -961,6 +961,15 @@ in
         end
       | ~None_vt () => None_vt ()
     end
+  | _ when s2t1 = s2rt_char => begin
+      case+ s3iexp_make_s2exp (s2e1, s2cs, fds) of
+      | ~Some_vt s3ie1 => begin
+        case+ s3iexp_make_s2exp (s2e2, s2cs, fds) of
+        | ~Some_vt s3ie2 => Some_vt (s3bexp_ieq (s3ie1, s3ie2))
+        | ~None_vt () => None_vt ()
+        end
+      | ~None_vt () => None_vt ()
+    end
   | _ => begin
       if s2exp_syneq (s2e1, s2e2) then Some_vt (s3bexp_true) else None_vt ()
     end

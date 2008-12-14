@@ -164,9 +164,13 @@ fn fcopy_exn (src: string, dst: string): void = let
 *)
   val (pf_src | p_src) = fopen_exn (src, file_mode_r)
   val (pf_dst | p_dst) = fopen_exn (dst, file_mode_w)
+(*
   val [l_buf:addr] (pf_gc, pf_buf | p_buf) = malloc_gc (BUFSZ)
+*)
+  var !p_buf with pf_buf = @[byte][BUFSZ]()
+  prval () = pf_buf := bytes_v_of_b0ytes_v (pf_buf)
   fun loop (
-      pf_buf: !bytes (BUFSZ) @ l_buf | p_buf: ptr l_buf, src: &FILE r, dst: &FILE w
+      pf_buf: !bytes (BUFSZ) @ p_buf | p_buf: ptr p_buf, src: &FILE r, dst: &FILE w
     ) : void =
     if feof (src) <> 0 then () else let
       val nread = fread_byte (file_mode_lte_r_r | !p_buf, BUFSZ, src)
@@ -175,7 +179,9 @@ fn fcopy_exn (src: string, dst: string): void = let
       loop (pf_buf | p_buf, src, dst)
     end // end of [loop]
   val () = loop (pf_buf | p_buf, !p_src, !p_dst)
+(*
   val () = free_gc (pf_gc, pf_buf | p_buf)
+*)
 in
   fclose_exn (pf_src | p_src); fclose_exn (pf_dst | p_dst)
 end // end of [fcopy_exn]

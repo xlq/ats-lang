@@ -349,6 +349,7 @@ fun aux (e0: e1xp):<cloptr1> s1exp = case+ e0.e1xp_node of
       s1exp_app (loc0, aux e1, loc_arg, aux_list es2)
     end
   | E1XPide ide => s1exp_ide (loc0, ide)
+  | E1XPchar chr => s1exp_char (loc0, chr)
   | E1XPint int => s1exp_int (loc0, int)
   | E1XPlist es => s1exp_list (loc0, aux_list es)
   | _ => begin

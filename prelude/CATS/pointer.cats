@@ -68,23 +68,37 @@ atspre_ptr_is_not_null (ats_ptr_type p) {
 
 static inline
 ats_ptr_type
-atspre_psucc (const ats_ptr_type p) { return ((char *)p) + 1 ; }
+atspre_psucc (const ats_ptr_type p) {
+  return ((ats_byte_type*)p) + 1 ;
+}
 
 static inline
 ats_ptr_type
-atspre_ppred (const ats_ptr_type p) { return ((char *)p) - 1 ; }
+atspre_ppred (const ats_ptr_type p) {
+  return ((ats_byte_type*)p) - 1 ;
+}
+
+/* ****** ****** */
 
 static inline
 ats_ptr_type
 atspre_padd (const ats_ptr_type p, const ats_int_type n) {
-  return ((char *)p) + n ;
+  return ((ats_byte_type*)p) + n ;
 }
 
 static inline
 ats_ptr_type
 atspre_psub (const ats_ptr_type p, const ats_int_type n) {
-  return ((char *)p) - n ;
+  return ((ats_byte_type*)p) - n ;
 }
+
+static inline
+ats_int_type
+atspre_pdiff (const ats_ptr_type p1, const ats_ptr_type p2) {
+  return ((ats_byte_type*)p1 - (ats_byte_type*)p2) ;
+}
+
+/* ****** ****** */
 
 static inline
 ats_bool_type

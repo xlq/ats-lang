@@ -72,8 +72,12 @@ fun padd {l:addr} {i:int} (p: ptr l, i: int i):<> ptr (l + i)
 and psub {l:addr} {i:int} (p: ptr l, i: int i):<> ptr (l - i)
   = "atspre_psub"
 
+fun pdiff {l1,l2:addr} (p1: ptr l1, p2: ptr l2):<> int (l1 - l2)
+  = "atspre_pdiff"
+
 overload + with padd
 overload - with psub
+overload - with pdiff
 
 fun plt {l1,l2:addr} (p1: ptr l1, p2: ptr l2):<> bool (l1 < l2)
   = "atspre_plt"

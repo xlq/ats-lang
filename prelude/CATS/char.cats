@@ -87,39 +87,55 @@ atspre_sub_char_char
 
 static inline
 ats_bool_type
-atspre_lt_char_char(const ats_char_type c1, const ats_char_type c2) {
+atspre_lt_char_char
+  (const ats_char_type c1, const ats_char_type c2) {
   return (c1 < c2) ;
 }
 
 static inline
 ats_bool_type
-atspre_lte_char_char(const ats_char_type c1, const ats_char_type c2) {
+atspre_lte_char_char
+  (const ats_char_type c1, const ats_char_type c2) {
   return (c1 <= c2) ;
 }
 
 static inline
 ats_bool_type
-atspre_gt_char_char(const ats_char_type c1, const ats_char_type c2) {
+atspre_gt_char_char
+  (const ats_char_type c1, const ats_char_type c2) {
   return (c1 > c2) ;
 }
 
 static inline
 ats_bool_type
-atspre_gte_char_char(const ats_char_type c1, const ats_char_type c2) {
+atspre_gte_char_char
+  (const ats_char_type c1, const ats_char_type c2) {
   return (c1 >= c2) ;
 }
 
 static inline
 ats_bool_type
-atspre_eq_char_char(const ats_char_type c1, const ats_char_type c2) {
+atspre_eq_char_char
+  (const ats_char_type c1, const ats_char_type c2) {
   return (c1 == c2) ;
 }
 
 static inline
 ats_bool_type
-atspre_neq_char_char(const ats_char_type c1, const ats_char_type c2) {
+atspre_neq_char_char
+  (const ats_char_type c1, const ats_char_type c2) {
   return (c1 != c2) ;
 }
+
+static inline
+ats_int_type
+atspre_compare_char_char
+  (const ats_char_type c1, const ats_char_type c2) {
+  int i = c1 - c2 ;
+  if (i > 0) return  1 ;
+  if (i < 0) return -1 ;
+  return 0 ;
+} /* end of [atspre_compare_char_char] */
 
 // print functions
 
