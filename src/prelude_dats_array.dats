@@ -50,46 +50,6 @@
 
 (* array pointers *)
 
-(* ****** ****** *)
-
-implement array_ptr_takeout2_tsz
-  {a} {n, i1, i2} {l0} (pf | A, i1, i2, tsz) = let
-  val [off1: int] (pf1_mul | off1) = i1 imul2 tsz
-  val [off2: int] (pf2_mul | off2) = i2 imul2 tsz
-  prval (pf1, pf2, fpf) = array_v_takeout2 {a} (pf1_mul, pf2_mul, pf)
-in
-  #[ l0+off1, l0+off2 | (pf1, pf2, fpf | A+off1, A+off2) ]
-end // end of [array_ptr_takeout2_tsz]
-
-(* ****** ****** *)
-
-(* persistent arrays *)
-
-(* ****** ****** *)
-
-assume array_viewt0ype_int_type
-  (a:viewt@ype, n:int) = [l:addr] @{
-  data= ptr l, view= vbox (array_v (a, n, l))
-} // end of [array_viewt0ype_int_type]
-
-(*
-
-viewtypedef
-arraysize_viewt0ype_int_viewt0ype (a: viewt@ype, n:int) =
-  [l:addr | l <> null] (free_gc_v l, @[a][n] @ l | ptr l, int n)
-
-*)
-
-implement array_make_arraysize (x) = let
-  val (pfbox | ()) = vbox_make_view_ptr_gc (x.0, x.1 | x.2)
-in
-  @{ data= x.2, view= pfbox }
-end // end of [array]
-
-implement array_get_view_ptr (A) = @(A.view | A.data)
-
-(* ****** ****** *)
-
 %{$
 
 typedef unsigned char byte ;
@@ -117,6 +77,33 @@ atspre_array_ptr_initialize_elt_tsz (
 } /* end of [atspre_array_ptr_initialize_elt_tsz] */
 
 %}
+
+(* ****** ****** *)
+
+(* persistent arrays *)
+
+(* ****** ****** *)
+
+assume array_viewt0ype_int_type
+  (a:viewt@ype, n:int) = [l:addr] @{
+  data= ptr l, view= vbox (array_v (a, n, l))
+} // end of [array_viewt0ype_int_type]
+
+(*
+
+viewtypedef
+arraysize_viewt0ype_int_viewt0ype (a: viewt@ype, n:int) =
+  [l:addr | l <> null] (free_gc_v l, @[a][n] @ l | ptr l, int n)
+
+*)
+
+implement array_make_arraysize (x) = let
+  val (pfbox | ()) = vbox_make_view_ptr_gc (x.0, x.1 | x.2)
+in
+  @{ data= x.2, view= pfbox }
+end // end of [array]
+
+implement array_get_view_ptr (A) = @(A.view | A.data)
 
 (* ****** ****** *)
 
