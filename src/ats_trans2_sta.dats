@@ -1761,6 +1761,8 @@ in
   aux (body, s2vss)
 end // end of [s1expdef_s1aspdec_tr_main]
 
+(* ****** ****** *)
+
 fn s1expdef_tr (res: s2rtopt, d1c: s1expdef): s2cst_t = let
   fn err (d1c: s1expdef): void = begin
     prerr d1c.s1expdef_loc;
@@ -1800,15 +1802,33 @@ in
   ) // end of [s2cst_make]
 end // end of [s1expdef_tr]
 
-implement s1expdeflst_tr (res, d1cs) = begin
-  case+ d1cs of
-  | cons (d1c, d1cs) => let
-      val () = the_s2expenv_add_scst (s1expdef_tr (res, d1c))
-    in
-      s1expdeflst_tr (res, d1cs)
-    end // end of [cons]
-  | nil () => ()
+implement s1expdeflst_tr (res, d1cs) = let
+  val s2cs = aux (res, d1cs) where {
+    fun aux
+      (res: s2rtopt, d1cs: s1expdeflst)
+      : List_vt (s2cst_t) = case+ d1cs of
+      | list_cons (d1c, d1cs) => let
+          val s2c = s1expdef_tr (res, d1c)
+        in
+          list_vt_cons (s2c, aux (res, d1cs))
+        end // end of [list_cons]
+      | list_nil () => list_vt_nil ()
+    // end of [aux]
+  } // end of [val]
+  val () = aux s2cs where {
+    fun aux (s2cs: List_vt s2cst_t): void =
+      case+ s2cs of
+      | ~list_vt_cons (s2c, s2cs) => let
+          val () = the_s2expenv_add_scst s2c in aux s2cs
+        end // end of [list_vt_cons]
+      | ~list_vt_nil () => ()
+    // end of [aux]
+  }
+in
+  // empty
 end // end of [s1expdeflst_tr]
+
+(* ****** ****** *)
 
 implement s1aspdec_tr (d1c) = let
   fn err1
