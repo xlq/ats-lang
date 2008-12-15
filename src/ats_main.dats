@@ -594,7 +594,7 @@ fn warning (str: string) = begin
 end // end of [warning]
 
 fun loop {i:nat | i <= n} .<i>. (
-    argv: &(@[String][n]), param: &param_t, args: arglst i
+    argv: &(@[string][n]), param: &param_t, args: arglst i
   ) :<cloptr1> void = begin case+ args of
   | ~list_vt_cons (arg, args) => begin case+ arg of
     | _ when IATS_wait_is_set () => let

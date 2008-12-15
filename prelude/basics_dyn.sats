@@ -164,7 +164,7 @@ fun main_prelude (): void = "mainats_prelude"
 
 (*
 
-fun main {n:int | n >= 1} (argc: int n, argv: &(@[String][n])): void
+fun main {n:int | n >= 1} (argc: int n, argv: &(@[string][n])): void
   = "mainats"
 
 *)
@@ -173,7 +173,7 @@ symintr main
 
 fun main_void (): void = "mainats"
 fun main_argc_argv
-  {n:int | n >= 1} (argc: int n, argv: &(@[String][n])): void
+  {n:int | n >= 1} (argc: int n, argv: &(@[string][n])): void
   = "mainats"
 
 overload main with main_void

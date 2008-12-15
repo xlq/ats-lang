@@ -347,12 +347,13 @@ implement main_prelude () = ()
 //
 
 extern
-fun __ats_main {n:pos} (argc: int n, argv: &(@[String][n])): void
+fun __ats_main {n:pos} (argc: int n, argv: &(@[string][n])): void
   = "__ats_main"
 
 implement main (argc, argv) = case+ argc of
   | 1 => let val cmd = argv.[0] in do_usage (basename_of_filename cmd) end
   | _ => __ats_main (argc, argv)
+// end of [main]
 
 (* ****** ****** *)
 
@@ -421,17 +422,17 @@ extern ats_int_type inref_get(ats_intref_type) ;
 ats_string_type
 atscc_outfile_name_make (ats_string_type basename) {
   int n ; char c, *s ;
-  n = strlen((char *)basename) ;
-  s = (char *)ats_malloc_gc(n+3) ;
+  n = strlen((char*)basename) ;
+  s = (char*)ats_malloc_gc(n+3) ;
   s[n+2] = '\000' ; s[n+1] = 'c' ; s[n] = '.' ; --n ;
   while (n >= 0) {
-    c = ((char *)basename)[n] ;
+    c = ((char*)basename)[n] ;
     if (c == '.') { s[n] = '_' ; --n ; break ; }
     s[n] = c ; --n ;
   }
-  while (n >= 0) { s[n] = ((char *)basename)[n] ; --n ; }
+  while (n >= 0) { s[n] = ((char*)basename)[n] ; --n ; }
   return s ;
-}
+} /* end of [atscc_outfile_name_make] */
 
 ats_void_type
 __ats_main (ats_int_type argc, ats_ptr_type argv) {

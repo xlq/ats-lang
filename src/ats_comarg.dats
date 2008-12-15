@@ -46,25 +46,22 @@ staload "ats_comarg.sats"
 (* ****** ****** *)
 
 implement comarg_parse (s) = let
-
-fun loop {n,i:nat | i <= n} .<n-i>.
-  (s: string n, n: int n, i: int i): comarg = 
-  if i < n then begin
-    if (s[i] <> '-') then COMARGkey (i, s) else loop (s, n, i+1)
-  end else begin
-    COMARGkey (n, s)
-  end // end of [if]
-
-val s = string1_of_string0 s
-
+  fun loop {n,i:nat | i <= n} .<n-i>.
+    (s: string n, n: int n, i: int i): comarg = 
+    if i < n then begin
+      if (s[i] <> '-') then COMARGkey (i, s) else loop (s, n, i+1)
+    end else begin
+      COMARGkey (n, s)
+    end // end of [if]
+  val s = string1_of_string0 s
 in
   loop (s, string1_length s, 0)
-end
+end // end of [comarg_parse]
 
 implement comarglst_parse {n} (argc, argv) = let
   viewtypedef arglst (n: int) = list_vt (comarg, n)
   fun loop {i:nat | i <= n} {l:addr} .<n-i>.
-    (pf0: arglst 0 @ l | argv: &(@[String][n]), i: int i, p: ptr l)
+    (pf0: arglst 0 @ l | argv: &(@[string][n]), i: int i, p: ptr l)
     :<cloptr1> (arglst (n-i) @ l | void) =
     if i < argc then let
       val+ ~list_vt_nil () = !p

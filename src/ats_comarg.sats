@@ -42,7 +42,7 @@
 datatype comarg = COMARGkey of (int, string)
 
 fun comarg_parse (s: string): comarg
-fun comarglst_parse {n:nat} (argc: int n, argv: &(@[String][n]))
+fun comarglst_parse {n:nat} (argc: int n, argv: &(@[string][n]))
   : list_vt (comarg, n)
 
 (* ****** ****** *)
