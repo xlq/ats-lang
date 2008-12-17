@@ -283,7 +283,7 @@ in
   case+ d3e0.d3exp_node of
   | D3Eann_type (d3e, _(*s2e_ann*)) => begin
       d3exp_lval_typ_set (loc0, refval, d3e, s2e_new, err)
-    end
+    end // end of [D3Eann_type]
   | D3Esel_ptr (d3e, d3ls) => begin
     case+ un_s2exp_ptr_addr_type d3e.d3exp_typ of
     | ~Some_vt s2e_addr => let
@@ -293,7 +293,7 @@ in
         end
       in
         // empty
-      end
+      end // end of [D3Esel_ptr]
     | ~None_vt () => begin
         prerr loc0;
         prerr ": Internal Error: d3exp_lval_typ_set: D3Esel_ptr";

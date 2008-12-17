@@ -461,11 +461,13 @@ implement d2varset_add (dvs, d2v) = $Set.set_insert (dvs, d2v, cmp)
 implement d2varset_adds (dvs, d2vs) = case+ d2vs of
   | list_cons (d2v, d2vs) => d2varset_adds (d2varset_add (dvs, d2v), d2vs)
   | list_nil () => dvs
+// end of [d2varset_adds]
 
 implement d2varset_del (dvs, d2v) = $Set.set_remove (dvs, d2v, cmp)
 implement d2varset_dels (dvs, d2vs) = case+ d2vs of
   | list_cons (d2v, d2vs) => d2varset_dels (d2varset_del (dvs, d2v), d2vs)
   | list_nil () => dvs
+// end of [d2varset_dels]
 
 implement d2varset_union (dvs1, dvs2) = $Set.set_union (dvs1, dvs2, cmp)
 
@@ -473,11 +475,11 @@ implement d2varset_ismem (dvs, d2v) = $Set.set_member (dvs, d2v, cmp)
 
 implement d2varset_foreach_main (pf | dvs, f, env) = begin
   $Set.set_foreach_main (pf | dvs, f, env)
-end
+end // end of [d2varset_foreach_main]
 
 implement d2varset_foreach_cloptr (dvs, f) = begin
   $Set.set_foreach_cloptr (dvs, f)
-end
+end // end of [d2varset_foreach_cloptr]
 
 end // end of [local]
 

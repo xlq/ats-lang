@@ -230,6 +230,7 @@ fun i0de_make_minusltgt (t: t0kn): i0de = "i0de_make_minusltgt"
 fun i0de_make_r0ead (t: t0kn): i0de = "i0de_make_r0ead"
 fun i0de_make_tilda (t: t0kn): i0de = "i0de_make_tilda"
 fun i0de_make_t0ype (t: t0kn): i0de = "i0de_make_t0ype"
+fun i0de_make_union (t: t0kn): i0de = "i0de_make_union"
 fun i0de_make_viewt0ype (t: t0kn): i0de = "i0de_make_viewt0ype"
 
 fun i0de_make_lrbrackets
@@ -256,11 +257,16 @@ fun stai0de_make (ide: i0de): i0de = "stai0de_make"
 
 (* ****** ****** *)
 
-datatype p0rec = P0RECint of int | P0RECide of i0de
+datatype p0rec =
+  | P0RECint of int
+  | P0RECide of i0de
+  | P0RECinc of (i0de, int)
+  | P0RECdec of (i0de, int)
 
 fun p0rec_emp (): p0rec = "p0rec_emp"
 fun p0rec_ide (ide: i0de): p0rec = "p0rec_ide"
 fun p0rec_int (int: i0nt): p0rec = "p0rec_int"
+fun p0rec_opr (ide: i0de, opr: i0de, int: i0nt): p0rec = "p0rec_opr"
 
 (* ****** ****** *)
 

@@ -84,6 +84,7 @@ val symbol_SUB : symbol_t
 val symbol_TILDA : symbol_t
 val symbol_TRUE : symbol_t
 val symbol_UNDERSCORE : symbol_t
+val symbol_UNION : symbol_t
 val symbol_VBOX : symbol_t
 
 (* macro expansion *)

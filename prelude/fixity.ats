@@ -69,29 +69,29 @@ infix 60 mod
 infix (mod) nmod nmod1 umod uimod
 
 infixl 50 + -
-infixl (+) iadd fadd padd uadd
-infixl (-) isub nsub fsub psub usub
+infixl ( + ) iadd fadd padd uadd
+infixl ( - ) isub nsub fsub psub usub
 
 infixl 41 asl asr lsl lsr
 
 infix 40 < <= > >= << >>
-infixl (<) ilt flt plt ult
-infixl (<=) ilte flte plte ulte
-infixl (>) igt fgt pgt ugt
-infixl (>=) igte fgte pgte ugte
+infixl ( < ) ilt flt plt ult
+infixl ( <= ) ilte flte plte ulte
+infixl ( > ) igt fgt pgt ugt
+infixl ( >= ) igte fgte pgte ugte
 
 infixr 40 :: @ <:
 
 infix 30 = := == <> !=
-infix (=) ieq feq peq ueq
-infix (<>) ineq fneq pneq uneq
+infix ( = ) ieq feq peq ueq
+infix ( <> ) ineq fneq pneq uneq
 infixr 20 ->
 
 infixl 20 &&
-infixl (&&) andalso land
+infixl ( && ) andalso land
 
 infixl 10 ||
-infixl (||) orelse lor lxor
+infixl ( || ) orelse lor lxor
 
 (*
 

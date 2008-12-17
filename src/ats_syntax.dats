@@ -230,6 +230,8 @@ implement i0de_make_tilda (tok) =
   '{ i0de_loc= tok.t0kn_loc, i0de_sym= $Sym.symbol_TILDA }
 implement i0de_make_t0ype (tok) =
   '{ i0de_loc= tok.t0kn_loc, i0de_sym= $Sym.symbol_T0YPE }
+implement i0de_make_union (tok) =
+  '{ i0de_loc= tok.t0kn_loc, i0de_sym= $Sym.symbol_UNION }
 implement i0de_make_viewt0ype (tok) =
   '{ i0de_loc= tok.t0kn_loc, i0de_sym= $Sym.symbol_VIEWT0YPE }
 
@@ -247,15 +249,17 @@ implement i0delstlst_cons (x, xs) = cons (x, xs)
 
 (* ****** ****** *)
 
-implement l0ab_ide (ide) =
-  let val lab = $Lab.label_make_sym (ide.i0de_sym) in
-    '{ l0ab_loc= ide.i0de_loc, l0ab_lab= lab }
-  end
+implement l0ab_ide (ide) = let
+  val lab = $Lab.label_make_sym (ide.i0de_sym)
+in '{
+  l0ab_loc= ide.i0de_loc, l0ab_lab= lab
+} end // end of [l0ab_ide]
 
-implement l0ab_int (int) =
-  let val lab = $Lab.label_make_int (int_of_string int.i0nt_val) in
-    '{ l0ab_loc= int.i0nt_loc, l0ab_lab= lab }
-  end
+implement l0ab_int (int) = let
+  val lab = $Lab.label_make_int (int_of_string int.i0nt_val)
+in '{
+  l0ab_loc= int.i0nt_loc, l0ab_lab= lab
+} end // end of [l0ab_int]
 
 (* ****** ****** *)
 
@@ -263,14 +267,26 @@ implement stai0de_make (ide) = let
   val name = "$" + $Sym.symbol_name (ide.i0de_sym)
 in
   i0de_make (ide.i0de_loc, name)
-end  
+end // end of [stai0de_make]
 
 (* ****** ****** *)
 
 // omitted precedence is assumed to equal 0
 implement p0rec_emp () = P0RECint 0
-implement p0rec_int (i: i0nt) = P0RECint (int_of_string i.i0nt_val)
-implement p0rec_ide (id: i0de) = P0RECide (id)
+implement p0rec_int (i) = P0RECint (int_of_string i.i0nt_val)
+implement p0rec_ide (id) = P0RECide (id)
+implement p0rec_opr (id, opr, i) = case+ opr.i0de_sym of
+  | s when s = $Sym.symbol_ADD => P0RECinc (id, int_of_string i.i0nt_val)
+  | s when s = $Sym.symbol_SUB => P0RECdec (id, int_of_string i.i0nt_val)
+  | s => begin
+      $Loc.prerr_location (opr.i0de_loc);
+      prerr ": error(0)";
+      prerr ": the symbol ["; $Sym.prerr_symbol s;
+      prerr "] must be either '+' or '-'.";
+      prerr_newline ();
+      $Err.abort {p0rec} ()
+    end // end of [_]
+// end of [p0rec_opr]
 
 (* ****** ****** *)
 
@@ -828,7 +844,7 @@ implement s0exp_intsp_err (i) = begin
   prerr "] is not allowed in statics.";
   prerr_newline ();
   $Err.abort {s0exp} ()
-end
+end // end of [s0exp_intsp_err]
 
 implement s0exp_imp (t_beg, efs, t_end) =
   let val loc = combine (t_beg.t0kn_loc, t_end.t0kn_loc) in

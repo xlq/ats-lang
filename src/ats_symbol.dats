@@ -142,6 +142,7 @@ implement symbol_SUB = symbol_make_string "-"
 implement symbol_TILDA = symbol_make_string "~"
 implement symbol_TRUE = symbol_make_string "true"
 implement symbol_UNDERSCORE = symbol_make_string "_"
+implement symbol_UNION = symbol_make_string "union"
 implement symbol_VBOX = symbol_make_string "vbox"
 
 (* macro expansion *)

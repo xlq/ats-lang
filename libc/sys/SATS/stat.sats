@@ -46,6 +46,18 @@ staload "libc/sys/SATS/types.sats"
 
 (* ****** ****** *)
 
+abst@ype stat = $extype "ats_stat_type"
+
+(* ****** ****** *)
+
+fun stat_st_mode_get (stbuf: &stat):<> mode_t
+  = "atslib_stat_st_mode_get"
+
+fun stat_st_size_get (stbuf: &stat):<> off_t
+  = "atslib_stat_st_size_get"
+
+(* ****** ****** *)
+
 fun lor_mode_mode (m1: mode_t, m2: mode_t): mode_t
   = "atslib_lor_mode_mode"
 
@@ -84,13 +96,59 @@ fun S_ISSOCK (m: mode_t): bool = "atslib_S_ISSOCK"
 
 (* ****** ****** *)
 
-fun chmod_err (path: string, mode: mode_t): int = "atslib_chmod_err"
-fun chmod_exn (path: string, mode: mode_t): void = "atslib_chmod_exn"
+symintr chmod_err
+symintr chmod_exn
+
+fun chmod_string_err (path: string, mode: mode_t): int
+  = "atslib_chmod_err"
+fun chmod_string_exn (path: string, mode: mode_t): void
+  = "atslib_chmod_exn"
+
+overload chmod_err with chmod_string_err
+overload chmod_exn with chmod_string_exn
 
 (* ****** ****** *)
 
-fun mkdir_err (path: string, mode: mode_t): int = "atslib_mkdir_err"
-fun mkdir_exn (path: string, mode: mode_t): void = "atslib_mkdir_exn"
+symintr mkdir_err
+symintr mkdir_exn
+
+fun mkdir_string_err (path: string, mode: mode_t): int
+  = "atslib_mkdir_err"
+fun mkdir_string_exn (path: string, mode: mode_t): void
+  = "atslib_mkdir_exn"
+
+overload mkdir_err with mkdir_string_err
+overload mkdir_exn with mkdir_string_exn
+
+(* ****** ****** *)
+
+dataview stat_v (l:addr, int) =
+  | stat_v_fail (l, ~1) of stat? @ l
+  | stat_v_succ (l,  0) of stat  @ l
+ 
+symintr stat_err
+symintr stat_exn
+
+fun stat_strbuf_err {m,n:nat} {l:addr} (
+    pf_buf: stat? @ l | name: &strbuf (m, n), p_buf: ptr l
+  ) : [i:int] (stat_v (l, i) | int i)
+  = "atslib_stat_err"
+
+fun stat_string_err {l:addr} (
+    pf_buf: stat? @ l | name: string, p_buf: ptr l
+  ) : [i:int] (stat_v (l, i) | int i)
+  = "atslib_stat_err"
+
+fun stat_strbuf_exn {m,n:nat}
+  (name: &strbuf (m, n), buf: &stat? >> stat): void
+  = "atslib_stat_exn"
+
+fun stat_string_exn (name: string, buf: &stat? >> stat): void
+  = "atslib_stat_exn"
+
+overload stat_err with stat_strbuf_err
+overload stat_err with stat_string_err
+overload stat_exn with stat_string_exn
 
 (* ****** ****** *)
 

@@ -63,7 +63,7 @@ fun location_make
 
 fun location_end_make (loc: location_t): location_t
 
-fun location_combine (p1: location_t, p2: location_t): location_t
+fun location_combine (_1: location_t, _2: location_t): location_t
 
 //
 
@@ -73,7 +73,7 @@ fun location_endpos_toff (p: location_t): lint
 
 //
 
-fun lte_location_location (loc1: location_t, loc2: location_t): bool
+fun lte_location_location (_1: location_t, _2: location_t): bool
 overload <= with lte_location_location
 
 //

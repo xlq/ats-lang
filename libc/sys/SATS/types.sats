@@ -65,11 +65,15 @@ abst@ype mode_t = $extype "ats_mode_type" // file mode
 
 abst@ype nlink_t = $extype "ats_nlink_type" // number of hard links to a file
 
+(* ****** ****** *)
+
 abst@ype off_t = $extype "ats_off_type" // file size in bytes
+fun lint_of_off (off: off_t):<> lint = "atslib_lint_of_off"
 
 (* ****** ****** *)
+
 abst@ype pid_t = $extype "ats_pid_type" // for process IDs // a signed integer type
-fun int_of_pid (pid: pid_t): int = "atslib_int_of_pid"
+fun int_of_pid (pid: pid_t):<> int = "atslib_int_of_pid"
 
 (* ****** ****** *)
 

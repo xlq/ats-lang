@@ -195,10 +195,18 @@ fun neq_string_string (s1: string, s2: string):<> bool
 overload <> with neq_strbuf_strbuf
 overload <> with neq_string_string
 
-//
+(* ****** ****** *)
 
 fun compare_strbuf_strbuf {m1,n1,m2,n2:nat}
   (sb1: &strbuf (m1,n1), sb2: &strbuf (m2,n2)):<> Sgn
+  = "atspre_compare_string_string"
+
+fun compare_strbuf_string {m1,n1:nat}
+  (sb1: &strbuf (m1,n1), sb2: string):<> Sgn
+  = "atspre_compare_string_string"
+
+fun compare_strbuf_string {m2,n2:nat}
+  (sb1: string, sb2: &strbuf (m2,n2)):<> Sgn
   = "atspre_compare_string_string"
 
 fun compare_string_string (s1: string, s2: string):<> Sgn
@@ -329,23 +337,25 @@ overload length with string_length
 
 (* ****** ****** *)
 
-fun strbuf_is_empty {m,n:nat} (sb: &strbuf (m, n)):<> bool (n==0)
+fun strbuf_is_empty {m,n:nat}
+  (sb: &strbuf (m, n)):<> bool (n==0)
   = "atspre_string_is_empty"
 fun string0_is_empty (s: string):<> bool
   = "atspre_string_is_empty"
 fun string1_is_empty {n:nat} (s: string n):<> bool (n==0)
   = "atspre_string_is_empty"
 
-fun strbuf_is_not_empty {m,n:nat} (sb: &strbuf (m, n)):<> bool (n > 0)
+(* ****** ****** *)
+
+fun strbuf_is_not_empty {m,n:nat}
+  (sb: &strbuf (m, n)):<> bool (n > 0)
   = "atspre_string_is_not_empty"
-
-overload ~ with strbuf_is_not_empty
-
 fun string0_is_not_empty (s: string):<> bool
   = "atspre_string_is_not_empty"
 fun string1_is_not_empty {n:nat} (s: string n):<> bool (n > 0)
   = "atspre_string_is_not_empty"
 
+overload ~ with strbuf_is_not_empty
 overload ~ with string0_is_not_empty
 overload ~ with string1_is_not_empty
 

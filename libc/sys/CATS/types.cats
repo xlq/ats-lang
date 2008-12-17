@@ -68,7 +68,14 @@ typedef mode_t ats_mode_type ; // file mode
 
 typedef nlink_t ats_nlink_type ; // number of hard links to a file
 
+/* ****** ****** */
+
 typedef off_t ats_off_type ; // file size in bytes
+
+static inline
+ats_lint_type atslib_lint_of_off (ats_off_type off) {
+  return off ;
+}
 
 /* ****** ****** */
 

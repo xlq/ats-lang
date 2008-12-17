@@ -45,20 +45,16 @@ fn nprime {n: pos} (n: int n): N2 = stream_nth (primes, n-1)
 
 (* ****** ****** *)
 
-// (*
-
 val one = int64_of 1
 
 val // the following values are defined mutually recursively
-rec fibs_1 = $delay (one :: fibs_2): stream int64 // fib1, fib2, ...
-and fibs_2 = $delay (one :: fibs_3): stream int64 // fib2, fib3, ...
-and fibs_3 = ( // fib3, fib4, ...
+rec fibs_1: stream int64 = $delay (one :: fibs_2) // fib1, fib2, ...
+and fibs_2: stream int64 = $delay (one :: fibs_3) // fib2, fib3, ...
+and fibs_3: stream int64 = ( // fib3, fib4, ...
   stream_map2<int64,int64,int64> (fibs_1, fibs_2, lam (x, y) => x + y)
-) : stream int64
+)
 // find the nth Fibonacci number
 fn nfib {n:pos} (n: int n): int64 = stream_nth (fibs_1, n-1)
-
-// *)
 
 (* ****** ****** *)
 
@@ -68,15 +64,13 @@ printf ("prime 1    = %i\n", @(nprime 1)) ;
 printf ("prime 10   = %i\n", @(nprime 10)) ;
 printf ("prime 100  = %i\n", @(nprime 100)) ;
 printf ("prime 1000 = %i\n", @(nprime 1000)) ;
-printf ("prime 10000 = %i\n", @(nprime 10000)) ;
+// printf ("prime 10000 = %i\n", @(nprime 10000)) ;
 
-(*
 print ("nfib 10 = "); print (nfib 10); print_newline ();
 print ("nfib 20 = "); print (nfib 20); print_newline ();
 print ("nfib 30 = "); print (nfib 30); print_newline ();
 print ("nfib 40 = "); print (nfib 40); print_newline ();
-print ("nfib 50 = "); print (nfib 50); print_newline ();
-*)
+// print ("nfib 50 = "); print (nfib 50); print_newline ();
 
 end
 

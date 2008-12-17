@@ -98,14 +98,14 @@ fun aux1 (xs: p0arglst): s1explst = begin case+ xs of
   | cons (x, xs) => begin case+ x.p0arg_ann of
     | Some s0e => begin
         let val s1e = s0exp_tr s0e in s1e :: aux1 xs end
-      end
+      end // end of [Some]
     | None () => begin
         prerr x.p0arg_loc;
         prerr ": error(1)";
         prerr ": unascribed variable: ["; prerr x.p0arg_sym; prerr "]";
         prerr_newline ();
         $Err.abort ()
-      end
+      end // end of [None]
   end
   | nil () => nil ()
 end // end of [aux1]
@@ -130,7 +130,7 @@ fun aux2
           end
       in
         lst := lst + 1; s1exp_app (loc, imp, loc, '[s1es_arg, s1e_res])
-      end
+      end // end of [D0ARGdyn]
     | D0ARGdyn2 (ys1, ys2) => let
         val loc_x = x.d0arg_loc
         val s1es_arg = s1exp_list2 (loc_x, aux1 ys1, aux1 ys2)
@@ -146,7 +146,7 @@ fun aux2
           end
       in
         lst := lst + 1; s1exp_app (loc, imp, loc, '[s1es_arg, s1e_res])
-      end
+      end // end of [D0ARGdyn2]
     | D0ARGsta s0qs => let
         val loc_x = x.d0arg_loc
         val s1qs = s0qualst_tr s0qs
@@ -163,8 +163,8 @@ fun aux2
           end
       in
         s1exp_uni (loc, s1qs, s1e_res)
-      end
-    end
+      end // end of [D0ARGsta]
+    end // end of [::]
   | nil () => s1e_res
 end // end of [aux2]
 
@@ -186,6 +186,7 @@ fn aux3 (
         fc := fc1; lin := lin1; prf := prf + prf1; oefc := Some efc1
       end
     | None () => ()
+  // end of [val]
   val () = case+ fc of
     | $Syn.FUNCLOclo knd => begin
         if knd <> CLOREF then begin
@@ -202,6 +203,7 @@ fn aux3 (
         end
       end // end of [FUNCLOclo]
     | $Syn.FUNCLOfun () => ()
+  // end of [val]
   var lst: int = 0
 in
   aux2 (fc, lin, prf, oefc, 0, lst, xs, s1e_res)
@@ -209,22 +211,21 @@ end // end of [aux2]
 
 in // in of [local]
 
-fn d0cstdec_tr (isfun: bool, isprf: bool, d: d0cstdec): d1cstdec =
-  let
-    val loc0 = d.d0cstdec_loc
-    val s1e_res = s0exp_tr d.d0cstdec_res
-    val s1e = aux3 (loc0, isfun, isprf, d.d0cstdec_arg, d.d0cstdec_eff, s1e_res)
-  in
-    d1cstdec_make (loc0, d.d0cstdec_fil, d.d0cstdec_sym, s1e, d.d0cstdec_ext)
-  end
+fn d0cstdec_tr (isfun: bool, isprf: bool, d: d0cstdec): d1cstdec = let
+  val loc0 = d.d0cstdec_loc
+  val s1e_res = s0exp_tr d.d0cstdec_res
+  val s1e = aux3 (loc0, isfun, isprf, d.d0cstdec_arg, d.d0cstdec_eff, s1e_res)
+in
+  d1cstdec_make (loc0, d.d0cstdec_fil, d.d0cstdec_sym, s1e, d.d0cstdec_ext)
+end // end of [d0cstdec_tr]
 
 fun d0cstdeclst_tr
-  (isfun: bool, isprf: bool, ds: d0cstdeclst): d1cstdeclst = 
-  case+ ds of
+  (isfun: bool, isprf: bool, ds: d0cstdeclst): d1cstdeclst = case+ ds of
   | cons (d, ds) => begin
       cons (d0cstdec_tr (isfun, isprf, d), d0cstdeclst_tr (isfun, isprf, ds))
-    end
+    end // end of [cons]
   | nil () => nil ()
+// end of [d0cstdeclst_tr]
 
 end // end of [local]
 
@@ -237,24 +238,23 @@ typedef p1atitmlst = List p1atitm
 
 val p1atitm_app : p1atitm = let
 
-fn f (p1t1: p1at, p1t2: p1at):<cloref1> p1atitm =
-  let
-    val loc = $Loc.location_combine (p1t1.p1at_loc, p1t2.p1at_loc)
-    val p1t_app = case+ p1t2.p1at_node of
-      | P1Tlist (npf, p1ts) => begin
-          p1at_app_dyn (loc, p1t1, p1t2.p1at_loc, npf, p1ts)
-        end
-      | P1Tsvararg s1a => begin case+ p1t1.p1at_node of
-          | P1Tapp_sta (p1t1, s1as) => begin
-              p1at_app_sta (loc, p1t1, $Lst.list_extend (s1as, s1a))
-            end
-          | _ => begin
-              p1at_app_sta (loc, p1t1, cons (s1a, nil ()))
-            end
-        end
-      | _ => begin
-          p1at_app_dyn (loc, p1t1, p1t2.p1at_loc, 0, cons (p1t2, nil ()))
-        end
+fn f (p1t1: p1at, p1t2: p1at):<cloref1> p1atitm = let
+  val loc = $Loc.location_combine (p1t1.p1at_loc, p1t2.p1at_loc)
+  val p1t_app = case+ p1t2.p1at_node of
+    | P1Tlist (npf, p1ts) => begin
+        p1at_app_dyn (loc, p1t1, p1t2.p1at_loc, npf, p1ts)
+      end // end of [P1Tlist]
+    | P1Tsvararg s1a => begin case+ p1t1.p1at_node of
+        | P1Tapp_sta (p1t1, s1as) => begin
+            p1at_app_sta (loc, p1t1, $Lst.list_extend (s1as, s1a))
+          end // end of [P1Tapp_sta]
+        | _ => begin
+            p1at_app_sta (loc, p1t1, cons (s1a, nil ()))
+          end // end of [_]
+      end // end of [P1Tsvararg]
+    | _ => begin
+        p1at_app_dyn (loc, p1t1, p1t2.p1at_loc, 0, cons (p1t2, nil ()))
+      end // end of [_]
 (*
     val () = begin
       print "p1atitm_app: f: p1t_app = "; print p1t_app; print_newline ()
@@ -262,7 +262,7 @@ fn f (p1t1: p1at, p1t2: p1at):<cloref1> p1atitm =
 *)
   in
     $Fix.ITEMatm p1t_app
-  end
+  end // end of [f]
 
 in
   $Fix.item_app f
@@ -274,14 +274,14 @@ fun p1at_make_opr (p1t: p1at, f: $Fix.fxty_t): p1atitm = begin
   , lam (loc, x, loc_arg, xs) => p1at_app_dyn (loc, x, loc_arg, 0, xs)
   , p1t
   , f
-  )
+  ) // end of [oper_make]
 end // end of [p1at_make_opr]
 
 val p1atitm_backslash : p1atitm = begin
   $Fix.oper_make_backslash {p1at} (
     lam x => x.p1at_loc,
     lam (loc, x, loc_arg, xs) => p1at_app_dyn (loc, x, loc_arg, 0, xs)
-  )
+  ) // end of [oper_make_backslash]
 end // end of [p1atitm_backslash]
 
 (* ****** ****** *)
@@ -1626,13 +1626,11 @@ implement d0eclst_tr (d0cs) = $Lst.list_map_fun (d0cs, d0ec_tr)
 
 (* ****** ****** *)
 
-implement initialize () = let
+implement initialize () = () where {
   val () = $Glo.ats_dynloadflag_set (1) // [1] is the default value
-in
-  // empty
-end // end of [initialize]
+} // end of [initialize]
 
-implement finalize () = let
+implement finalize () = () where {
   val () = aux_function_name_prefix () where {
     fun aux_function_name_prefix (): void = begin
     case+ the_e1xpenv_find ($Sym.symbol_ATS_FUNCTION_NAME_PREFIX) of
@@ -1664,7 +1662,7 @@ implement finalize () = let
         val flag = if v1al_is_true v1al then 1 else 0
       in
         $Glo.ats_dynloadflag_set (flag)
-      end
+      end // end of [Some_vt]
     | ~None_vt () => () // use the default value
     end // end of [aux_dynloadflag]
   } // end of [where]
@@ -1673,27 +1671,23 @@ implement finalize () = let
     fun aux_dynloadfuname (): void = begin
     case+ the_e1xpenv_find ($Sym.symbol_ATS_DYNLOADFUNAME) of
     | ~Some_vt e1xp => let
-        val v1al = e1xp_eval (e1xp)
-      in
-        case+ v1al of
+        val v1al = e1xp_eval (e1xp) in case+ v1al of
         | V1ALstring s => let
             val s = string1_of_string0 s
           in
             $Glo.ats_dynloadfuname_set (stropt_some s)
-          end
+          end // end of [V1ALstring]
         | _ => begin
             prerr e1xp.e1xp_loc; prerr ": error(1)";
             prerr ": a string definition is required for ATS_DYNLOADFUNAME.";
             prerr_newline ();
             $Err.abort {void} ()
-          end
+          end // end of [_]
       end // end of [Some_vt]
     | ~None_vt () => () // use the default value
     end // end of [aux_dynloadfuname]
   } // end of [where]
-in
-  // empty
-end // end of [finalize]
+} // end of [finalize]
 
 (* ****** ****** *)
 

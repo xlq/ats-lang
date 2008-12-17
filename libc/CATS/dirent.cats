@@ -68,23 +68,23 @@ atslib_closedir_exn (ats_ptr_type dir) {
     ats_exit_errmsg (errno, "Exit: [closedir] failed.\n") ;
   }
   return ;
-} /* atslib_closedir_exn */
+} /* end of [atslib_closedir_exn] */
 
 /* ****** ****** */
 
 static inline
 ats_ptr_type
-atslib_opendir_err (ats_ptr_type path) { return opendir (path) ; }
+atslib_opendir_err (ats_ref_type path) { return opendir (path) ; }
 
 static inline
 ats_ptr_type
-atslib_opendir_exn (ats_ptr_type path) {
+atslib_opendir_exn (ats_ref_type path) {
   DIR* ret = opendir (path) ; if (!ret) {
     perror ("opendir") ;
     atspre_exit_prerrf (errno, "Exit: [opendir(%s)] failed.\n", path) ;
   }
   return ret ;
-} /* atslib_opendir_exn */
+} /* end of [atslib_opendir_exn] */
 
 /* ****** ****** */
 
@@ -101,7 +101,7 @@ atslib_readdir_exn (ats_ptr_type dir) {
     atspre_exit_prerrf (errno, "Exit: [readdir] failed.\n") ;
   }
   return ret ;
-} /* atslib_readdir_exn */
+} /* end of [atslib_readdir_exn] */
 
 /* ****** ****** */
 

@@ -87,27 +87,34 @@ fn prec_tr_errmsg (opr: i0de): $Fix.prec_t = begin
   prerr "] is given no fixity.";
   prerr_newline ();
   $Err.abort ()
-end
+end // end of [prec_tr_errmsg]
 
-fn p0rec_tr (p0: p0rec): $Fix.prec_t = begin
-  case+ p0 of
-  | P0RECide id => begin
-    case+ the_fxtyenv_find id.i0de_sym of
+fn p0rec_tr (p0: p0rec): $Fix.prec_t = let
+  fun precfnd (id: i0de): $Fix.prec_t = let
+    val fxtyopt = the_fxtyenv_find id.i0de_sym
+  in
+    case+ fxtyopt of
     | ~Some_vt fxty => let
 (*
         val () = begin
           print "p0rec_tr: Some: id = ";
           $Sym.print_symbol_code id.i0de_sym;
           print_newline ()
-        end
+        end // end of [val]
 *)
-        val p_opt = $Fix.precedence_of_fixity fxty
+        val precopt = $Fix.precedence_of_fixity fxty
       in
-        case+ p_opt of Some p => p | None () => prec_tr_errmsg id
-      end
+        case+ precopt of
+        | Some prec => prec | None () => prec_tr_errmsg id
+      end // end of [Some_vt]
     | ~None_vt () => prec_tr_errmsg id
-    end // end of [begin]
+  end // end of [precfnd]
+in
+  case+ p0 of
+  | P0RECide id => precfnd id
   | P0RECint int => $Fix.prec_make_int int
+  | P0RECinc (id, int) => $Fix.precedence_inc (precfnd id, int)
+  | P0RECdec (id, int) => $Fix.precedence_dec (precfnd id, int)
 end // end of [p0rec_tr]
 
 fn f0xty_tr (f0xty: f0xty): $Fix.fxty_t = begin

@@ -57,6 +57,9 @@ fun print_fxty (fxty: fxty_t): void
 
 (* ****** ****** *)
 
+fun precedence_inc (p: prec_t, i: int): prec_t
+fun precedence_dec (p: prec_t, i: int): prec_t
+
 fun precedence_of_fixity (fxty: fxty_t): Option prec_t
 
 (* ****** ****** *)

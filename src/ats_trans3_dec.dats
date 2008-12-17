@@ -122,7 +122,7 @@ fn v2aldec_tr
     val casknd = caskind_of_valkind valknd
   in
     trans3_env_add_p2atcstlstlst_false (loc0, casknd, p2tcss, '[s2e_def])
-  end
+  end // end of [val]
 
   val p3t = p2at_tr_dn (p2t, s2e_def)
 (*
@@ -159,17 +159,67 @@ in
   v3aldec_make (loc0, p3t, d3e_def)
 end // end of [v2aldec_tr]
 
+(* ****** ****** *)
+
 fun v2aldeclst_tr
-  (valknd: $Syn.valkind, d2cs: v2aldeclst)
-  : v3aldeclst = let
-  fun aux (d2cs: v2aldeclst):<cloptr1> v3aldeclst = begin
-    case+ d2cs of
+  (valknd: $Syn.valkind, d2cs: v2aldeclst): v3aldeclst = let
+  fun aux (d2cs: v2aldeclst):<cloptr1> v3aldeclst = case+ d2cs of
     | cons (d2c, d2cs) => cons (v2aldec_tr (valknd, d2c), aux d2cs)
     | nil () => nil ()
-  end // end of [aux]
+  // end of [aux]
 in
   aux (d2cs)
 end // end of [v2aldeclst_tr]
+
+fun v2aldeclst_rec_tr
+  (d2cs: v2aldeclst): v3aldeclst = d3cs where {
+  val p3ts = aux1 (d2cs) where {
+    fun aux1 {n:nat} .<n>.
+      (d2cs: list (v2aldec, n))
+      : list (p3at, n) = case+ d2cs of
+      | list_cons (d2c, d2cs) => let
+          val p2t = d2c.v2aldec_pat
+          val s2e_pat = case+ d2c.v2aldec_ann of
+            | Some s2e => s2e | None () => p2at_typ_syn (p2t)
+          val () = // checking for nonlinearity
+            if s2exp_is_linear s2e_pat then begin
+              $Loc.prerr_location p2t.p2at_loc;
+              prerr ": error(3)";
+              prerr ": this pattern can only be assigned a nonlinear type.";
+              prerr_newline ();
+              $Err.abort {void} () 
+            end // end of [if]
+          val p3t = p2at_tr_dn (p2t, s2e_pat)
+        in
+          list_cons (p3t, aux1 d2cs)
+        end // end of [list_cons]
+      | list_nil () => list_nil ()
+    // end of [loop]
+  } // end of [val]
+  val d3cs = aux2 (d2cs, p3ts) where {
+    fun aux2 {n:nat} .<n>. (
+        d2cs: list (v2aldec, n)
+      , p3ts: list (p3at, n)
+      ) : list (v3aldec, n) = case+ d2cs of
+      | list_cons (d2c, d2cs) => let
+          val+ list_cons (p3t, p3ts) = p3ts
+          val d2e_def = d2c.v2aldec_def
+          val s2e_pat = p3t.p3at_typ
+          val d3e_def = d2exp_tr_dn (d2e_def, s2e_pat)
+(*
+          // this is not needed as [s2e_pat] cannot be linear!
+          val () = d3exp_lval_typ_set_pat (d3e_def, p3t)
+          val () = the_d2varset_env_add_p2at (d2c.v2aldec_pat)
+*)
+
+          val d3c = v3aldec_make (d2c.v2aldec_loc, p3t, d3e_def)
+        in
+          list_cons (d3c, aux2 (d2cs, p3ts))
+        end // end of [list_cons]
+      | list_nil () => list_nil ()
+    // end of [aux2]
+  } // end of [val]
+} // end of [v2aldeclst_rec_tr]
 
 (* ****** ****** *)
 
@@ -556,7 +606,7 @@ in
   | D2Cnone () => d3ec_none (d2c0.d2ec_loc)
   | D2Clist d2cs => begin
       d3ec_list (d2c0.d2ec_loc, d2eclst_tr d2cs)
-    end
+    end // end of [D2Clist]
   | D2Cstavars (d2cs) => let
       fn f (d2c: s2tavar): void = let
         val loc = d2c.s2tavar_loc; val s2v = d2c.s2tavar_var
@@ -569,7 +619,7 @@ in
       val () = $Lst.list_foreach_fun (d2cs, f)
     in
       d3ec_none (d2c0.d2ec_loc)
-    end
+    end // end of [D2Cstavars]
   | D2Csaspdec (d2c) => let
       val loc = d2c.s2aspdec_loc
       val s2c = d2c.s2aspdec_cst
@@ -577,7 +627,7 @@ in
       val () = the_s2cstlst_env_bind_and_add (loc, s2c, s2e)
     in
       d3ec_saspdec (d2c0.d2ec_loc, d2c)
-    end
+    end // end of [D2Csaspec]
   | D2Cdatdec (knd, s2cs) => let
       fun aux (sVs: s2Varset_t, s2cs: s2cstlst): void =
         case+ s2cs of
@@ -588,37 +638,37 @@ in
       val () = aux (the_s2Varset_env_get (), s2cs)
     in
       d3ec_datdec (d2c0.d2ec_loc, knd, s2cs)
-    end
+    end // end of [D2Cdatdec]
   | D2Cexndec (d2cs) => begin
       d3ec_exndec (d2c0.d2ec_loc, d2cs)
-    end
+    end // end of [D2Cexndec]
   | D2Cdcstdec (dck, d2cs) => begin
       d3ec_dcstdec (d2c0.d2ec_loc, dck, d2cs)
-    end
+    end // end of [D2Cdcstdec]
   | D2Cextype (name, s2e_def) => begin
 (*
       prerr "d2ec_tr: D2Cextype: s2e_def = "; prerr s2e_def; prerr_newline ();
 *)
       d3ec_extype (d2c0.d2ec_loc, name, s2e_def)
-    end
+    end // end of [D2Cextype]
   | D2Cextval (name, d2e_def) => begin
       d3ec_extval (d2c0.d2ec_loc, name, d2exp_tr_up d2e_def)
-    end
+    end // end of [D2Cextval]
   | D2Cextcode (position, code) => begin
       d3ec_extcode (d2c0.d2ec_loc, position, code)
-    end
+    end // end of [D2Cextcode]
   | D2Cvaldecs (knd, d2cs) => let
       val d3cs = v2aldeclst_tr (knd, d2cs)
     in
       d3ec_valdecs (d2c0.d2ec_loc, knd, d3cs)
-    end
+    end // end of [D2Cvaldecs]
   | D2Cvaldecs_par (d2cs) => let
       val d3cs = v2aldeclst_tr ($Syn.VALKINDval (), d2cs)
     in
       d3ec_valdecs_par (d2c0.d2ec_loc, d3cs)
     end // end of [D2Cvaldecs_par]
   | D2Cvaldecs_rec (d2cs) => let
-      val d3cs = v2aldeclst_tr ($Syn.VALKINDval (), d2cs)
+      val d3cs = v2aldeclst_rec_tr (d2cs)
     in
       d3ec_valdecs_rec (d2c0.d2ec_loc, d3cs)
     end // end of [D2Cvaldecs_rec]
@@ -663,7 +713,7 @@ in
       val () = the_s2cstlst_env_adds (s2cs_body)
     in
       d3ec_local (d2c0.d2ec_loc, d3cs_head, d3cs_body)
-    end
+    end // end of [D2Clocal]
   | D2Cstaload (fil, od2cs) => let
       val od3cs = (
         case+ od2cs of
@@ -703,7 +753,7 @@ implement c3str_final_get () = let
 (*
  val () = begin
    prerr "c3str_final_get: s3is_rev = "; prerr s3is_rev; prerr_newline ()
- end
+ end // end of [val]
 *)
 in
  c3str_itmlst ($Loc.location_none, C3STRKINDnone (), s3is_rev)

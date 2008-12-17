@@ -176,20 +176,20 @@ end // end of [string_split_regexp]
 (* ****** ****** *)
 
 val () = initialize () where {
-  extern fun initialize (): void = "ats_regexp_initialize"
+  extern fun initialize (): void = "atslib_libats_regexp_initialize"
 }
 
 (* ****** ****** *)
 
 %{$
 
-ats_void_type ats_regexp_initialize () {
+ats_void_type atslib_libats_regexp_initialize () {
   pcre_malloc = (void *(*)(size_t))ats_malloc_gc ;
   pcre_free = (void (*)(void*))ats_free_gc ;
   pcre_stack_malloc = (void *(*)(size_t))ats_malloc_gc ;
   pcre_stack_free = (void (*)(void*))ats_free_gc ;
   return ;  
-} /* end of [ats_regexp_initialize] */
+} /* end of [atslib_libats_regexp_initialize] */
 
 %}
 

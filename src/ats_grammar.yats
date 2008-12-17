@@ -133,6 +133,7 @@ extern i0de_t i0de_make_minusltgt (t0kn_t) ;
 extern i0de_t i0de_make_r0ead (t0kn_t) ;
 extern i0de_t i0de_make_tilda (t0kn_t) ;
 extern i0de_t i0de_make_t0ype (t0kn_t) ;
+extern i0de_t i0de_make_union (t0kn_t) ;
 extern i0de_t i0de_make_viewt0ype (t0kn_t) ;
 
 extern i0delst_t i0delst_nil (void) ;
@@ -159,6 +160,7 @@ typedef ats_ptr_type p0rec_t ;
 extern p0rec_t p0rec_emp (void) ;
 extern p0rec_t p0rec_ide (i0de_t) ;
 extern p0rec_t p0rec_int (i0nt_t) ;
+extern p0rec_t p0rec_opr (i0de_t, i0de_t/*opr*/, i0nt_t) ;
 
 /* ****** ****** */
 
@@ -1696,8 +1698,10 @@ stai0de /* idenitifer for packages */
 
 p0rec /* precedence */
   : /* empty */                         { $$ = p0rec_emp() ; }
-  | LPAREN i0de RPAREN                  { $$ = p0rec_ide($2) ; }
   | LITERAL_int                         { $$ = p0rec_int($1) ; }
+  | LPAREN i0de RPAREN                  { $$ = p0rec_ide($2) ; }
+  | LPAREN i0de IDENTIFIER_sym LITERAL_int RPAREN
+                                        { $$ = p0rec_opr($2, $3, $4) ; }
 ;
 
 /* ****** ****** */
@@ -1904,6 +1908,7 @@ di0de /* dynamic identifier */
   | GT                                  { $$ = i0de_make_gt($1) ; }
   | LT                                  { $$ = i0de_make_lt($1) ; }
   | TILDA                               { $$ = i0de_make_tilda($1) ; }
+  | UNION                               { $$ = i0de_make_union($1) ; }
 ;
 
 dqi0de /* qualified dynamic identifier */

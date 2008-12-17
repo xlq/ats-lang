@@ -102,33 +102,32 @@ in '{
 
 fun location_combine_main
   (loc1: location, loc2: location): location = let
+  var begpos_line: int and begpos_loff: int
+  var begpos_toff: lint
+  var endpos_line: int and endpos_loff: int
+  var endpos_toff: lint
 
-var begpos_line: int and begpos_loff: int
-var begpos_toff: lint
-var endpos_line: int and endpos_loff: int
-var endpos_toff: lint
+  val () =
+    if loc1.begpos_toff <= loc2.begpos_toff then begin
+      begpos_line := loc1.begpos_line;
+      begpos_loff := loc1.begpos_loff;
+      begpos_toff := loc1.begpos_toff;
+    end else begin
+      begpos_line := loc2.begpos_line;
+      begpos_loff := loc2.begpos_loff;
+      begpos_toff := loc2.begpos_toff;
+    end // end of [if]
 
-val () =
-  if loc1.begpos_toff <= loc2.begpos_toff then begin
-    begpos_line := loc1.begpos_line;
-    begpos_loff := loc1.begpos_loff;
-    begpos_toff := loc1.begpos_toff;
-  end else begin
-    begpos_line := loc2.begpos_line;
-    begpos_loff := loc2.begpos_loff;
-    begpos_toff := loc2.begpos_toff;
-  end // end of [if]
-
-val () =
-  if loc1.endpos_toff >= loc2.endpos_toff then begin
-    endpos_line := loc1.endpos_line;
-    endpos_loff := loc1.endpos_loff;
-    endpos_toff := loc1.endpos_toff; 
-  end else begin
-    endpos_line := loc2.endpos_line;
-    endpos_loff := loc2.endpos_loff;
-    endpos_toff := loc2.endpos_toff; 
-  end // end of [if]
+  val () =
+    if loc1.endpos_toff >= loc2.endpos_toff then begin
+      endpos_line := loc1.endpos_line;
+      endpos_loff := loc1.endpos_loff;
+      endpos_toff := loc1.endpos_toff; 
+    end else begin
+      endpos_line := loc2.endpos_line;
+      endpos_loff := loc2.endpos_loff;
+      endpos_toff := loc2.endpos_toff; 
+    end // end of [if]
 
 in '{
   filename = loc1.filename

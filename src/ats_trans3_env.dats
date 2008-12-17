@@ -450,13 +450,12 @@ in
   !the_ld2vs := d2varset_adds (!the_ld2vs, d2vs)
 end // end of [the_d2varset_env_add_p2at]
 
-implement the_d2varset_env_add_p2atlst (p2ts) = begin
-  case+ p2ts of
+implement the_d2varset_env_add_p2atlst (p2ts) = case+ p2ts of
   | list_cons (p2t, p2ts) => begin
       the_d2varset_env_add_p2at p2t; the_d2varset_env_add_p2atlst p2ts
-    end
+    end // end of [list_cons]
   | list_nil () => ()
-end // end of [the_d2varset_env_add_p2atlst]  
+// end of [the_d2varset_env_add_p2atlst]  
 
 //
 

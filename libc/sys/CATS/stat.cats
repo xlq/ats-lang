@@ -46,6 +46,25 @@
 
 /* ****** ****** */
 
+// [struct stat] is declared in <bits/stat.h>
+typedef struct stat ats_stat_type ;
+
+/* ****** ****** */
+
+static inline
+ats_mode_type
+atslib_stat_st_mode_get (ats_ptr_type buf) {
+  return ((ats_stat_type*)buf)->st_mode ;
+}
+
+static inline
+ats_off_type
+atslib_stat_st_size_get (ats_ptr_type buf) {
+  return ((ats_stat_type*)buf)->st_size ;
+}
+
+/* ****** ****** */
+
 static inline
 ats_mode_type atslib_lor_mode_mode
   (ats_mode_type m1, ats_mode_type m2) {
@@ -101,7 +120,7 @@ static inline
 ats_void_type
 atslib_chmod_exn (ats_ptr_type path, ats_mode_type mode) {
   int err = chmod ((char*)path, mode) ; if (err < 0) {
-    perror ("chmod"); ats_exit_errmsg (1, "Exit: [chmod] failed.\n") ;
+    perror ("chmod"); ats_exit_errmsg (1, "exit(ATS): [chmod] failed.\n") ;
   }
   return ;
 } /* end of [atslib_chmod_exn] */
@@ -118,10 +137,28 @@ static inline
 ats_void_type
 atslib_mkdir_exn (ats_ptr_type path, ats_mode_type mode) {
   int err = mkdir ((char*)path, mode) ; if (err < 0) {
-    perror ("mkdir"); ats_exit_errmsg (1, "Exit: [mkdir] failed.\n") ;
+    perror ("mkdir"); ats_exit_errmsg (1, "exit(ATS): [mkdir] failed.\n") ;
   }
   return ;
 } /* end of [atslib_mkdir_exn] */
+
+/* ****** ****** */
+
+static inline
+ats_int_type
+atslib_stat_err (ats_ptr_type name, ats_ptr_type buf) {
+  return stat ((char*)name, (ats_stat_type*)buf) ;
+} /* end of [atslib_stat_err] */
+
+static inline
+ats_void_type
+atslib_stat_exn (ats_ptr_type name, ats_ptr_type buf) {
+  int err ;
+  err = stat ((char*)name, (ats_stat_type*)buf) ; if (err < 0) {
+    prerr ("stat"); ats_exit_errmsg (1, "exit(ATS): [stat] failed.\n") ;
+  }
+  return ;
+} /* end of [atslib_stat_exn] */
 
 /* ****** ****** */
 

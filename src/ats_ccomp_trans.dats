@@ -2267,12 +2267,50 @@ fn ccomp_valdeclst (
         val () = instr_add_valprimlst_free (res)
       in
         aux (res, valdecs)
-      end
+      end // end of [list_cons]
     | list_nil () => ()
   end // end of [aux]
 in
   aux (res, valdecs)
 end // end of [ccomp_valdeclst]
+
+(* ****** ****** *)
+
+fn ccomp_valdeclst_rec (
+    res: &instrlst_vt, level: int, valdecs: hivaldeclst
+  ) : void = () where {
+  val tmps = aux1 (res, valdecs) where {
+    fun aux1 {n:nat} .<n>.
+      (res: &instrlst_vt, valdecs: list (hivaldec, n))
+      :<cloref1> list (tmpvar_t, n) = case+ valdecs of
+      | list_cons (valdec, valdecs) => let
+          val hip = valdec.hivaldec_pat
+          val hit = hityp_normalize (hip.hipat_typ)
+          val tmp = tmpvar_make (hit)
+          val vp = valprim_tmp (tmp)
+          val () = ccomp_match (res, level, vp, hip)
+        in
+          list_cons (tmp, aux1 (res, valdecs))
+        end // end of [list_cons]
+      | list_nil () => list_nil ()
+    // end of [aux1]
+  } // end of [val]
+  val () = aux2 (res, valdecs, tmps) where {
+    fun aux2 {n:nat} (
+        res: &instrlst_vt
+      , valdecs: list (hivaldec, n)
+      , tmps: list (tmpvar_t, n)
+      ) : void = case+ valdecs of
+      | list_cons (valdec, valdecs) => let
+          val+ list_cons (tmp, tmps) = tmps
+          val () = ccomp_exp_tmpvar (res, valdec.hivaldec_def, tmp)
+        in
+          aux2 (res, valdecs, tmps)
+        end // end of [list_cons]
+      | list_nil () => ()
+    // end of [aux]
+  } // end of [va;]
+} // end of [ccomp_valdeclst_rec]
 
 (* ****** ****** *)
 
@@ -2482,6 +2520,11 @@ in
     in
       ccomp_valdeclst (res, level, valdecs, fail)
     end // end of [HIDvaldecs]
+  | HIDvaldecs_rec (valdecs) => let
+      val level = d2var_current_level_get ()
+    in
+      ccomp_valdeclst_rec (res, level, valdecs)
+    end // end of [HIDvaldecs_rec]
   | HIDvardecs (vardecs) => let
       val level = d2var_current_level_get ()
     in

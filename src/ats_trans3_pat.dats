@@ -126,6 +126,7 @@ fun labp2atlst_typ_syn (loc0: loc_t, lp2ts: labp2atlst): labs2explst =
       prerr_newline ();
       $Err.abort {labs2explst} ()
     end
+// end of [labp2atlst_typ_syn]
 
 implement p2at_typ_syn (p2t0) = let
   val s2e0 = case+ p2t0.p2at_node of
@@ -175,13 +176,12 @@ in
   p2at_typ_set (p2t0, Some s2e0); s2e0
 end // end of [p2at_typ_syn]
 
-implement p2atlst_typ_syn (p2ts) = begin
-  case+ p2ts of
-  | cons (p2t, p2ts) => begin
-      cons (p2at_typ_syn p2t, p2atlst_typ_syn p2ts)
-    end
-  | nil () => nil ()
-end // end of [p2atlst_typ_syn]
+implement p2atlst_typ_syn (p2ts) = case+ p2ts of
+  | list_cons (p2t, p2ts) => begin
+      list_cons (p2at_typ_syn p2t, p2atlst_typ_syn p2ts)
+    end // end of [list_cons]
+  | list_nil () => list_nil ()
+// end of [p2atlst_typ_syn]
 
 (* ****** ****** *)
 

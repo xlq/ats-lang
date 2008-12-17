@@ -105,6 +105,9 @@ implement prerr_fxty (fxty) = prerr_mac (fprint_fxty, fxty)
 
 (* ****** ****** *)
 
+implement precedence_inc (p, i) = p + i
+implement precedence_dec (p, i) = p - i
+
 implement precedence_of_fixity (fxty) = case+ fxty of
   | FXTYnon () => None ()
   | FXTYinf (p, _) => Some p
