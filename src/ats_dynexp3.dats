@@ -497,6 +497,8 @@ implement d3exp_intsp (loc, s2e_int, str, int) = '{
 , d3exp_node= D3Eintsp (str, int)
 } // end of [d3exp_int]
 
+(* ****** ****** *)
+
 implement d3exp_lam_dyn
   (loc, s2e_fun, lin, npf, p3ts_arg, d3e_body) = '{
   d3exp_loc= loc
@@ -517,6 +519,22 @@ implement d3exp_lam_sta
 , d3exp_eff= S2EFFnil (), d3exp_typ= s2e0
 , d3exp_node= D3Elam_sta (s2vs, s2ps, d3e_body)
 } // end of [d3exp_lam_dyn]
+
+(* ****** ****** *)
+
+(*
+implement d3exp_lazy_force
+  (loc, s2e_elt, lin, d3e_delay) = '{
+  d3exp_loc= loc
+, d3exp_eff= S2EFFnil (), d3exp_typ= s2e_elt
+, d3exp_node= D3Elazy_force (lin, d3e_delay)
+} // end of [d3exp_lazy_force]
+*)
+
+implement d3exp_lazy_force
+  (loc, s2e_elt, lin, d3e_delay) = $Err.abort ()
+
+(* ****** ****** *)
 
 implement d3exp_let (loc, d3cs, d3e) = let
   val s2fe = d3eclst_eff_union (d3e.d3exp_eff, d3cs)

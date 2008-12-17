@@ -1147,6 +1147,22 @@ end // end of [d2exp_assgn_tr_up]
 
 (* ****** ****** *)
 
+fn d3exp_s2exp_lazy_force_tr_up
+  (loc0: loc_t, d3e0: d3exp, s2e0: s2exp): d3exp =
+  case+ un_s2exp_lazy_t0ype_type s2e0 of
+  | ~Some_vt (s2e_elt) => d3exp_lazy_force (loc0, s2e_elt, 0(*lin*), d3e0)
+  | ~None_vt () => begin case+ un_s2exp_lazy_viewt0ype_viewtype s2e0 of
+    | ~Some_vt (s2e_elt) => d3exp_lazy_force (loc0, s2e_elt, 1(*lin*), d3e0)
+    | ~None_vt () => begin
+        prerr d3e0.d3exp_loc; prerr ": error(3)";
+        prerr ": the dynamic expression is assigned the type ["; prerr s2e0;
+        prerr "], but a pointer, reference, or delayed computation is expected.";
+        prerr_newline ();
+        $Err.abort {d3exp} ()
+      end // end of [None_vt]
+    end // end of [None_vt]
+// end of [d3exp_s2exp_lazy_force_tr_up]
+
 fn d2exp_deref_tr_up
   (loc0: loc_t, d2e0: d2exp, d2ls: d2lablst): d3exp = let
 (*
@@ -1160,7 +1176,7 @@ fn d2exp_deref_tr_up
 (*
   val () = begin
     prerr "d2exp_deref_tr_up: s2e0 = "; prerr s2e0; prerr_newline ();
-  end
+  end // end of [val]
 *)
 in
   case+ un_s2exp_ptr_addr_type s2e0 of
@@ -1198,18 +1214,11 @@ in
               prerr ": a reference to a linear value cannot be accessed directly.";
               prerr_newline ();
               $Err.abort {void} ()
-            end
+            end // end of [if]
         in
           d3exp_sel_ptr (loc0, s2e_elt, d3e0, nil ())
         end // end of [Some_vt]
-      | ~None_vt () => begin
-          prerr d2e0.d2exp_loc;
-          prerr ": error(3)";
-          prerr ": the dynamic expression is expected to be a pointer or a reference";
-          prerr ", but it is assigned the type ["; prerr s2e0; prerr "]";
-          prerr_newline ();
-          $Err.abort {d3exp} ()
-        end
+      | ~None_vt () => d3exp_s2exp_lazy_force_tr_up (loc0, d3e0, s2e0)
       end // end of [nil]
     | cons _ => begin
         prerr d2e0.d2exp_loc;

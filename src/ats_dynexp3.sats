@@ -542,6 +542,12 @@ fun d3exp_lam_sta
   (_: loc_t, _: s2exp, s2vs: s2varlst, s2ps: s2explst, _body: d3exp)
   : d3exp
 
+(* ****** ****** *)
+
+fun d3exp_lazy_force (_: loc_t, _: s2exp, lin: int, _: d3exp): d3exp
+
+(* ****** ****** *)
+
 fun d3exp_let (_: loc_t, _: d3eclst, _: d3exp): d3exp
 
 (* ****** ****** *)

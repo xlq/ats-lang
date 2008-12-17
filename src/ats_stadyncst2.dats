@@ -575,84 +575,61 @@ implement s2exp_void_t0ype () =
 
 (* ****** ****** *)
 
-implement un_s2exp_bool_bool_t0ype (s2e) = begin
+fn un_s2exp_s2cstref_1
+  (s2e: s2exp, s2cref: s2cstref): Option_vt (s2exp) = begin
   case+ s2e.s2exp_node of
   | S2Eapp (s2e_fun, s2es_arg) => begin case+ s2e_fun.s2exp_node of
     | S2Ecst (s2c) => begin
-        if s2cstref_cst_get (Bool_bool_t0ype) = s2c then
+        if s2cstref_cst_get (s2cref) = s2c then
           case+ s2es_arg of
-          | list_cons (s2e_arg, list_nil ()) => Some_vt (s2e_arg)
+          | list_cons (s2e, list_nil ()) => Some_vt (s2e)
           | _ => begin
-              prerr "Internal Error: un_s2exp_bool_bool_t0ype.";
-              prerr_newline ();
+              prerr "Internal Error: un_s2exp_s2cref: s2c = ";
+              prerr s2c; prerr_newline ();
               $Err.abort {Option_vt s2exp} ()
-            end
+            end // end of [_]
         else None_vt ()
-      end
+      end // end of [S2Ecst]
     | _ => None_vt ()
-    end
+    end // end of [S2Eapp]
   | _ => None_vt ()
-end // end of [un_s2exp_bool_bool_t0ype]
+end // end of [un_s2exp_s2cstref_1]
 
-implement un_s2exp_char_char_t0ype (s2e) = begin
+fn un_s2exp_s2cstref_2
+  (s2e: s2exp, s2cref: s2cstref): Option_vt @(s2exp, s2exp) = begin
   case+ s2e.s2exp_node of
   | S2Eapp (s2e_fun, s2es_arg) => begin case+ s2e_fun.s2exp_node of
     | S2Ecst (s2c) => begin
-        if s2cstref_cst_get (Char_char_t0ype) = s2c then
+        if s2cstref_cst_get (s2cref) = s2c then
           case+ s2es_arg of
-          | list_cons (s2e_arg, list_nil ()) => Some_vt (s2e_arg)
+          | list_cons (s2e1, list_cons (s2e2, list_nil ())) =>
+              Some_vt @(s2e1, s2e2)
           | _ => begin
-              prerr "Internal Error: un_s2exp_char_char_t0ype.";
-              prerr_newline ();
-              $Err.abort {Option_vt s2exp} ()
-            end
+              prerr "Internal Error: un_s2exp_s2cref: s2c = ";
+              prerr s2c; prerr_newline ();
+              $Err.abort {Option_vt @(s2exp, s2exp)} ()
+            end // end of [_]
         else None_vt ()
-      end
+      end // end of [S2Ecst]
     | _ => None_vt ()
-    end
+    end // end of [S2Eapp]
   | _ => None_vt ()
-end // end of [un_s2exp_char_char_t0ype]
+end // end of [un_s2exp_s2cstref_2]
 
-implement un_s2exp_int_int_t0ype (s2e) = begin
-  case+ s2e.s2exp_node of
-  | S2Eapp (s2e_fun, s2es_arg) => begin case+ s2e_fun.s2exp_node of
-    | S2Ecst (s2c) => begin
-        if s2cstref_cst_get (Int_int_t0ype) = s2c then
-          case+ s2es_arg of
-          | list_cons (s2e_arg, list_nil ()) => Some_vt (s2e_arg)
-          | _ => begin
-              prerr "Internal Error: un_s2exp_int_int_t0ype.";
-              prerr_newline ();
-              $Err.abort {Option_vt s2exp} ()
-            end
-        else None_vt ()
-      end
-    | _ => None_vt ()
-    end
-  | _ => None_vt ()
-end // end of [un_s2exp_int_int_t0ype]
+(* ****** ****** *)
 
-implement un_s2exp_string_int_type (s2e) = begin
-  case+ s2e.s2exp_node of
-  | S2Eapp (s2e_fun, s2es_arg) => begin case+ s2e_fun.s2exp_node of
-    | S2Ecst (s2c) => begin
-        if s2cstref_cst_get (String_int_type) = s2c then begin
-          case+ s2es_arg of
-          | list_cons (s2e_arg, list_nil ()) => Some_vt (s2e_arg)
-          | _ => begin
-              prerr "Internal Error: un_s2exp_string_int_type.";
-              prerr_newline ();
-              $Err.abort {Option_vt s2exp} ()
-            end
-        end else begin
-          None_vt () // not a string type
-        end
-      end
-    | _ => None_vt ()
-    end
-  | _ => None_vt ()
-end // end of [un_s2exp_string_int_type]
+implement un_s2exp_bool_bool_t0ype (s2e) =
+  un_s2exp_s2cstref_1 (s2e, Bool_bool_t0ype)
 
+implement un_s2exp_char_char_t0ype (s2e) =
+  un_s2exp_s2cstref_1 (s2e, Char_char_t0ype)
+
+implement un_s2exp_int_int_t0ype (s2e) =
+  un_s2exp_s2cstref_1 (s2e, Int_int_t0ype)
+
+implement un_s2exp_string_int_type (s2e) =
+  un_s2exp_s2cstref_1 (s2e, String_int_type)
+  
 (* ****** ****** *)
 
 implement s2exp_uint_t0ype () = let
@@ -748,25 +725,8 @@ in
   s2exp_app_srt (s2rt_view, s2exp_cst s2c, '[s2e_elt, s2e_addr])
 end // end of [s2exp_at_viewt0ype_addr_view]
 
-implement un_s2exp_at_viewt0ype_addr_view (s2e) = begin
-  case+ s2e.s2exp_node of
-  | S2Eapp (s2e_fun, s2es_arg) => begin case+ s2e_fun.s2exp_node of
-    | S2Ecst (s2c) => begin
-        if s2cstref_cst_get (At_viewt0ype_addr_view) = s2c then
-          case+ s2es_arg of
-          | list_cons (s2e_elt, list_cons (s2e_addr, list_nil ())) =>
-              Some_vt @(s2e_elt, s2e_addr)
-          | _ => begin
-              prerr "Internal Error: un_s2exp_at_viewt0ype_addr_view";
-              prerr_newline ();
-              $Err.abort {Option_vt @(s2exp, s2exp)} ()
-            end
-        else None_vt ()
-      end
-    | _ => None_vt ()
-    end
-  | _ => None_vt ()
-end // end of [un_s2exp_at_viewt0ype_addr_view]
+implement un_s2exp_at_viewt0ype_addr_view (s2e) =
+  un_s2exp_s2cstref_2 (s2e, At_viewt0ype_addr_view)
 
 (* ****** ****** *)
 
@@ -808,46 +768,13 @@ in
   s2exp_app_srt (s2rt_type, s2exp_cst s2c, '[s2e_addr])
 end // end of [s2exp_ptr_addr_type]
 
-implement un_s2exp_ptr_addr_type (s2e) = begin
-  case+ s2e.s2exp_node of
-  | S2Eapp (s2e_fun, s2es_arg) => begin
-    case+ s2e_fun.s2exp_node of
-    | S2Ecst (s2c) => begin
-        if s2cstref_cst_get (Ptr_addr_type) = s2c then
-          case+ s2es_arg of
-          | list_cons (s2e_addr, list_nil ()) => Some_vt (s2e_addr)
-          | _ => begin
-              prerr "Internal Error: un_s2exp_ptr_addr_type";
-              prerr_newline ();
-              $Err.abort {Option_vt s2exp} ()
-            end
-        else None_vt ()
-      end
-    | _ => None_vt ()
-    end
-  | _ => None_vt ()
-end // end of [un_s2exp_ptr_addr_type]
+implement un_s2exp_ptr_addr_type (s2e) =
+  un_s2exp_s2cstref_1 (s2e, Ptr_addr_type)
 
 (* ****** ****** *)
 
-implement un_s2exp_ref_viewt0ype_type (s2e) = begin
-  case+ s2e.s2exp_node of
-  | S2Eapp (s2e_fun, s2es_arg) => begin case+ s2e_fun.s2exp_node of
-    | S2Ecst (s2c) => begin
-        if s2cstref_cst_get (Ref_viewt0ype_type) = s2c then
-          case+ s2es_arg of
-          | list_cons (s2e_elt, list_nil ()) => Some_vt (s2e_elt)
-          | _ => begin
-              prerr "Internal Error: un_s2exp_ref_viewt0ype_type";
-              prerr_newline ();
-              $Err.abort {Option_vt s2exp} ()
-            end
-        else None_vt ()
-      end
-    | _ => None_vt ()
-    end
-  | _ => None_vt ()
-end // end of [un_s2exp_ref_viewt0ype_type]
+implement un_s2exp_ref_viewt0ype_type (s2e) =
+  un_s2exp_s2cstref_1 (s2e, Ref_viewt0ype_type)
 
 (* ****** ****** *)
 
@@ -859,25 +786,8 @@ in
   s2exp_app_srt (s2rt_type, s2exp_cst s2c, '[s2e_elt, s2e_ln])
 end // end of [s2exp_list_t0ype_int_type]
 
-implement un_s2exp_list_t0ype_int_type (s2e) = begin
-  case+ s2e.s2exp_node of
-  | S2Eapp (s2e_fun, s2es_arg) => begin case+ s2e_fun.s2exp_node of
-    | S2Ecst (s2c) => begin
-        if s2cstref_cst_get (List_t0ype_int_type) = s2c then
-          case+ s2es_arg of
-          | list_cons (s2e_elt, list_cons (s2i, list_nil ())) =>
-              Some_vt @(s2e_elt, s2i(*size*))
-          | _ => begin
-              prerr "Internal Error: un_s2exp_list_t0ype_type";
-              prerr_newline ();
-              $Err.abort {Option_vt @(s2exp, s2exp)} ()
-            end
-        else None_vt ()
-      end
-    | _ => None_vt ()
-    end
-  | _ => None_vt ()
-end // end of [un_s2exp_list_t0ype_type]
+implement un_s2exp_list_t0ype_int_type (s2e) =
+  un_s2exp_s2cstref_2 (s2e, List_t0ype_int_type)
 
 // the length of a list is assumed to be less than [INTMAX]
 implement s2exp_list_viewt0ype_int_viewtype (s2e_elt, ln) = let
@@ -901,6 +811,12 @@ in
   s2exp_app_srt (s2rt_viewtype, s2exp_cst s2c, '[s2e])
 end // end of [s2exp_lazy_viewt0ype_viewtype]
 
+implement un_s2exp_lazy_t0ype_type (s2e) =
+  un_s2exp_s2cstref_1 (s2e, Lazy_t0ype_type)
+
+implement un_s2exp_lazy_viewt0ype_viewtype (s2e) =
+  un_s2exp_s2cstref_1 (s2e, Lazy_viewt0ype_viewtype)
+
 (* ****** ****** *)
 
 implement s2exp_printf_c_types_type (s2e) = let
@@ -917,24 +833,8 @@ in
   s2exp_app_srt (s2rt_prop, s2exp_cst s2c, '[s2e])
 end // end of [s2exp_vbox_view_prop]
 
-implement un_s2exp_vbox_view_prop (s2e) = begin
-  case+ s2e.s2exp_node of
-  | S2Eapp (s2e_fun, s2es_arg) => begin case+ s2e_fun.s2exp_node of
-    | S2Ecst (s2c) => begin
-        if s2cstref_cst_get (Vbox_view_prop) = s2c then
-          case+ s2es_arg of
-          | list_cons (s2e, list_nil ()) => Some_vt s2e
-          | _ => begin
-              prerr "Internal Error: un_s2exp_vbox_view_prop";
-              prerr_newline ();
-              $Err.abort {Option_vt s2exp} ()
-            end
-        else None_vt ()
-      end
-    | _ => None_vt ()
-    end
-  | _ => None_vt ()
-end // end of [un_s2exp_vbox_view_prop]
+implement un_s2exp_vbox_view_prop (s2e) =
+  un_s2exp_s2cstref_1 (s2e, Vbox_view_prop)
 
 (* ****** ****** *)
 

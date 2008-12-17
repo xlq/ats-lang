@@ -337,6 +337,9 @@ fun crypt_viewt0ype_viewt0ype_assume (): void
 fun s2exp_lazy_t0ype_type (_: s2exp): s2exp
 fun s2exp_lazy_viewt0ype_viewtype (_: s2exp): s2exp
 
+fun un_s2exp_lazy_t0ype_type (_: s2exp): Option_vt (s2exp(*elt*))
+fun un_s2exp_lazy_viewt0ype_viewtype (_: s2exp): Option_vt (s2exp(*elt*))
+
 (* ****** ****** *)
 
 fun s2exp_printf_c_types_type (_: s2exp): s2exp
