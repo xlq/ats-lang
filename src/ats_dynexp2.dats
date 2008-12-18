@@ -593,10 +593,6 @@ implement d2exp_crypt (loc, knd, d2e) = '{
   d2exp_loc= loc, d2exp_node= D2Ecrypt (knd, d2e), d2exp_typ= None ()
 }
 
-implement d2exp_delay (loc, lin, d2e) = '{
-  d2exp_loc= loc, d2exp_node= D2Edelay (lin, d2e), d2exp_typ= None ()
-}
-
 implement d2exp_deref (loc, d2e) = '{
   d2exp_loc= loc, d2exp_node= D2Ederef (d2e), d2exp_typ= None ()
 }
@@ -678,6 +674,8 @@ implement d2exp_intsp (loc, str, int) = '{
 , d2exp_typ= None ()
 }
 
+(* ****** ****** *)
+
 implement d2exp_lam_dyn (loc, lin, npf, arg, body) = '{
   d2exp_loc= loc
 , d2exp_node= D2Elam_dyn (lin, npf, arg, body)
@@ -699,6 +697,12 @@ implement d2exp_lam_sta (loc, s2vs, s2ps, body) = '{
   d2exp_loc= loc
 , d2exp_node= D2Elam_sta (s2vs, s2ps, body)
 , d2exp_typ= None ()
+}
+
+(* ****** ****** *)
+
+implement d2exp_lazy_delay (loc, lin, d2e) = '{
+  d2exp_loc= loc, d2exp_node= D2Elazy_delay (lin, d2e), d2exp_typ= None ()
 }
 
 implement d2exp_let (loc, d2cs, d2e) = '{

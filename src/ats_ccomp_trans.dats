@@ -1932,32 +1932,6 @@ in
   | HIEcst _ => begin
       instr_add_move_val (res, tmp_res, ccomp_exp (res, hie0))
     end // end of [HIEcst]
-  | HIEdelay (lin, hie) => let
-      val d2c = d2conref_con_get (d2cref) where {
-        val d2cref = (
-          if lin > 0 then ThunkValue_vt_thunk else ThunkValue_thunk
-        ) : d2conref_t
-      } // end of [where]
-      val () = the_dynconset_add d2c
-      val vp_clo = ccomp_exp_thunk (lin, hie)
-      val hit = hie.hiexp_typ
-      val tmp_con = tmpvar_make (hityp_encode hityp_tysum_ptr)
-      val hit_sum = hityp_normalize (hityp_tysumtemp (d2c, '[hit]))
-(*
-      val () = begin
-        prerr ""ccomp_exp_with_tmpvar: HIEdelay: hit_sum = "; prerr hit_sum;
-        prerr_newline ()
-      end
-*)
-      val () = instr_add_move_con (res, tmp_con, hit_sum, d2c, '[vp_clo])
-      val vp_con = valprim_tmp (tmp_con)
-    in
-      if lin > 0 then begin
-        instr_add_move_val (res, tmp_res, vp_con) // no sharing allowed
-      end else begin
-        instr_add_move_ref (res, tmp_res, vp_con) // sharing is allowed
-      end // end of [if]
-    end // end of [HIEdelay]
   | HIEdynload fil => instr_add_dynload_file (res, fil)
   | HIEempty () => ()
   | HIEextval code => let
@@ -1994,6 +1968,18 @@ in
     in
       instr_add_move_val (res, tmp_res, vp_lam)
     end // end of [HIElam]
+  | HIElazy_delay (lin, hie_body) => let
+      val vp_clo = ccomp_exp_thunk (lin, hie_body)
+      val hit_body = hityp_normalize (hie_body.hiexp_typ)
+    in
+      instr_add_move_lazy_delay (res, tmp_res, lin, hit_body, vp_clo)
+    end // end of [HIElazy_delay]
+  | HIElazy_force (lin, hie) => let
+      val vp_lazy = ccomp_exp (res, hie)
+      val hit_val = hityp_normalize (hie0.hiexp_typ)
+    in
+      instr_add_move_lazy_force (res, tmp_res, lin, hit_val, vp_lazy)
+    end // end of [HIElazy_force]
   | HIElet (hids, hie) => let
       val (pf_mark | ()) = the_dynctx_mark ()
       val () = ccomp_declst (res, hids)

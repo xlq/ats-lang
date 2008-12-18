@@ -275,8 +275,6 @@ and d1exp_node =
       char
   | D1Ecrypt of (* cryption *)
       (int, d1exp) (* 1/-1: encrypt/decrypt *)
-  | D1Edelay of (* lazy evaluation *)
-      (int(*lin*), d1exp)
   | D1Edynload of (* dynamic loading *)
       fil_t
   | D1Eeffmask of (* effect masking *)
@@ -312,6 +310,8 @@ and d1exp_node =
       (loc_t (*loc_arg*), s1arglst, d1exp)
   | D1Elam_sta_syn of (* static abstraction: synthesis *)
       (loc_t (*loc_arg*), s1qualst, d1exp)
+  | D1Elazy_delay of (* delayed computation *)
+      (int(*lin*), d1exp)
   | D1Elet of (* dynamic let-expression *)
       (d1eclst, d1exp)
   | D1Elist of (* dynamic expression list: temporary *)
@@ -697,8 +697,6 @@ fun d1exp_char (_: loc_t, c: char): d1exp
 
 fun d1exp_crypt (_: loc_t, knd: int, _: d1exp): d1exp
 
-fun d1exp_delay (_: loc_t, lin: int, _: d1exp): d1exp
-
 fun d1exp_dynload (_: loc_t, _: fil_t): d1exp
 
 fun d1exp_effmask (_: loc_t, effs: $Syn.effectlst, d1e: d1exp): d1exp
@@ -735,6 +733,8 @@ fun d1exp_lam_dyn (_: loc_t, lin: int, arg: p1at, _: d1exp): d1exp
 fun d1exp_lam_met (_: loc_t, _arg: loc_t, _: s1explst, _: d1exp): d1exp
 fun d1exp_lam_sta_ana (_: loc_t, _arg: loc_t, _: s1arglst, _: d1exp): d1exp
 fun d1exp_lam_sta_syn (_: loc_t, _arg: loc_t, _: s1qualst, _: d1exp): d1exp
+
+fun d1exp_lazy_delay (_: loc_t, lin: int, _: d1exp): d1exp
 
 fun d1exp_let (_: loc_t, _: d1eclst, _: d1exp): d1exp
 

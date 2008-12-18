@@ -598,6 +598,16 @@ implement instr_add_move_arg (res, arg, vp) =
 implement instr_add_move_con (res, tmp_res, hit_sum, d2c, vps_arg) =
   res := list_vt_cons (INSTRmove_con (tmp_res, hit_sum, d2c, vps_arg), res)
 
+//
+
+implement instr_add_move_lazy_delay (res, tmp_res, lin, hit_body, vp_clo) =
+  res := list_vt_cons (INSTRmove_lazy_delay (tmp_res, lin, hit_body, vp_clo), res)
+
+implement instr_add_move_lazy_force (res, tmp_res, lin, hit_val, vp_lazy) =
+  res := list_vt_cons (INSTRmove_lazy_force (tmp_res, lin, hit_val, vp_lazy), res)
+
+//
+
 implement instr_add_move_rec
   (res, tmp_res, recknd, hit_rec, lvps) = let
   val ins = (case+ 0 of

@@ -1522,6 +1522,36 @@ in
   | INSTRmove_con (tmp, hit_sum, d2c, vps) => begin
       emit_move_con (pf | out, tmp, hit_sum, d2c, vps)
     end // end of [INSTRmove_con]
+  | INSTRmove_lazy_delay (tmp, lin, hit_body, vp_clo) => let
+      val () = if lin = 0 then begin
+        fprint1_string (pf | out, "ats_instr_move_lazy_delay_mac (")
+      end else begin
+        fprint1_string (pf | out, "ats_instr_move_lazy_vt_delay_mac (")
+      end // end of [val]
+      val () = emit_valprim_tmpvar (pf | out, tmp)
+      val () = fprint1_string (pf | out, ", ")
+      val () = emit_hityp (pf | out, hit_body)
+      val () = fprint1_string (pf | out, ", ")
+      val () = emit_valprim (pf | out, vp_clo)
+      val () = fprint1_string (pf | out, ") ;")
+    in
+      // empty
+    end // end of [INSTRmove_lazy_delay]
+  | INSTRmove_lazy_force (tmp, lin, hit_val, vp_lazy) => let
+      val () = if lin = 0 then begin
+        fprint1_string (pf | out, "ats_instr_move_lazy_force_mac (")
+      end else begin
+        fprint1_string (pf | out, "ats_instr_move_lazy_vt_force_mac (")        
+      end // end of [val]
+      val () = emit_valprim_tmpvar (pf | out, tmp)
+      val () = fprint1_string (pf | out, ", ")
+      val () = emit_hityp (pf | out, hit_val)
+      val () = fprint1_string (pf | out, ", ")
+      val () = emit_valprim (pf | out, vp_lazy)
+      val () = fprint1_string (pf | out, ") ;")
+    in
+      // empty
+    end // end of [INSTRmove_lazy_delay]
   | INSTRmove_rec_box (tmp, hit_rec, lvps) => let
       fun aux (
           out: &FILE m, tmp: tmpvar_t, lvps: labvalprimlst
@@ -1592,12 +1622,12 @@ in
       end
     end // end of [INSTRmove_val]
   | INSTRpatck (vp, patck, fail) => let
-      val fail1 = begin case+ fail of
+      val fail1 = case+ fail of
         | KONTmatpnt mpt => matpnt_kont_get mpt | _ => fail
-      end
-      val () = begin case+ fail1 of
+      // end of [val]
+      val () = case+ fail1 of
         | KONTnone () => fprint1_string (pf | out, "// ") | _ => ()
-      end
+      // end of [val]
     in
       emit_patck (pf | out, vp, patck, fail)
     end // end of [INSTRpatck]

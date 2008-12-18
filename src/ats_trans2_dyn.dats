@@ -1335,7 +1335,6 @@ in
   | D1Ecrypt (knd, d1e) => begin
       d2exp_crypt (loc0, knd, d1exp_tr d1e)
     end
-  | D1Edelay (lin, d1e) => d2exp_delay (loc0, lin, d1exp_tr d1e)
   | D1Edynload fil => d2exp_dynload (loc0, fil)
   | D1Eeffmask (effs, d1e) => begin
       d2exp_effmask (loc0, effs, d1exp_tr d1e)
@@ -1443,6 +1442,7 @@ in
     in
       d2exp_lam_sta (loc0, s2vs, s2ps, d2e)
     end // end of [D1Elam_sta_syn]
+  | D1Elazy_delay (lin, d1e) => d2exp_lazy_delay (loc0, lin, d1exp_tr d1e)
   | D1Elet (d1cs, d1e) => let
       val (pf_env | ()) = trans2_env_push ()
       val d2cs = d1eclst_tr d1cs; val d2e = d1exp_tr d1e

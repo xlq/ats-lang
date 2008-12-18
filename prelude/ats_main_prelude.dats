@@ -52,7 +52,7 @@ implement main_prelude () = let
   val () = $dynload "prelude/DATS/string.dats"
   (* secondary *)
   val () = $dynload "prelude/DATS/array.dats"
-  val () = $dynload "prelude/DATS/file.dats"
+  // val () = $dynload "prelude/DATS/file.dats"
   val () = $dynload "prelude/DATS/lazy.dats"
   val () = $dynload "prelude/DATS/list.dats"
   val () = $dynload "prelude/DATS/list_vt.dats"

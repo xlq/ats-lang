@@ -403,25 +403,33 @@ prval unit_v_elim : unit_v -<prf> void
 
 (* ****** ****** *)
 
+(*
+
+// it is supported internally; see [lazy.cats]
+
 // for lazy call-by-need evaluation
 
 // nonlinear version
 dataviewtype thunkvalue (a:t@ype+) =
   | thunkvalue_thunk (a) of (() -<cloref1,~ref> a)
   | thunkvalue_value (a) of a
+// end of [thunkvalue]
+
+// linear version
+dataviewtype thunkvalue_vt (a:viewt@ype+) =
+  | thunkvalue_vt_thunk (a) of (() -<lin,cloptr1,~ref> a)
+  | thunkvalue_vt_value (a) of a
+// end of [thunkvalue_vt]
 
 // implemented in [prelude/DATS/lazy.dats]
 fun{a:t@ype} lazy_force_crypt (x: crypt (lazy a)):<1,~ref> a
 macdef lazy_force (x) = lazy_force_crypt ($encrypt ,(x))
 
-// linear version
-dataviewtype thunkvalue_vt (a:viewt@ype+) =
-  | {l:addr} thunkvalue_vt_thunk (a) of (() -<lin,cloptr1,~ref> a)
-  | thunkvalue_vt_value (a) of a
-
 // implemented in [prelude/DATS/lazy.dats]
 fun{a:viewt@ype} lazy_vt_force_crypt (x: crypt (lazy_vt a)):<1,~ref> a
 macdef lazy_vt_force (x) = lazy_vt_force_crypt ($encrypt ,(x))
+
+*)
 
 (* ****** ****** *)
 

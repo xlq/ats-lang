@@ -420,52 +420,52 @@ in
       strpr ", ";
       fprint_funlab (pf | out, fl);
       strpr ")"
-    end
+    end // end of [INSTRdefine_clo]
   | INSTRdefine_fun (d2c, fl) => begin
       strpr "INSTRdefine_fun(";
       fprint_d2cst (pf | out, d2c);
       strpr ", ";
       fprint_funlab (pf | out, fl);
       strpr ")"
-    end
+    end // end of [INSTRdefine_fun]
   | INSTRdefine_val (d2c, vp) => begin
       strpr "INSTRdefine_val(";
       fprint_d2cst (pf | out, d2c);
       strpr ", ";
       fprint_valprim (pf | out, vp);
       strpr ")"
-    end
+    end // end of [INSTRdefine_val]
   | INSTRextern cmd => begin
       fprintf1_exn (pf | out, "INSTRextern(\"%s\")", @(cmd))
-    end
+    end // end of [INSTRextern]
   | INSTRextval (name, vp) => begin
       strpr "INSTRextval(";
       fprint1_string (pf | out, name);
       strpr ", ";
       fprint_valprim (pf | out, vp);
       strpr ")"
-    end
+    end // end of [INSTRextval]
   | INSTRfreeptr vp => begin
       strpr "INSTRfreeptr("; fprint_valprim (pf | out, vp); strpr ")"
-    end
+    end // end of [INSTRfreeptr]
   | INSTRfunction _ => begin
       fprint1_string (pf | out, "INSTRfunction(...)")
-    end
+    end // end of [INSTRfunction]
   | INSTRfunlab fl => begin
       strpr "INSTRfunlab("; fprint_funlab (pf | out, fl); strpr ")"
-    end
+    end // end of [INSTRfunlab]
   | INSTRdynload_file (fil) => begin
       strpr "INSTRdynload_file(";
       $Fil.fprint_filename (pf | out, fil);
       strpr ")"
-    end
+    end // end of [INSTRdynload]
   | INSTRload_ptr (tmp, vp_ptr) => begin
       strpr "INSTRload_ptr(";
       fprint_tmpvar (pf | out, tmp);
       strpr "; ";
       fprint_valprim (pf | out, vp_ptr);
       strpr ")"
-    end
+    end // end of [INSTRload_ptr]
   | INSTRload_ptr_offs (tmp, vp_ptr, offs) => begin
       strpr "INSTRload_ptr_offs(";
       fprint_tmpvar (pf | out, tmp);
@@ -474,14 +474,14 @@ in
       strpr "; ";
       fprint_offsetlst (pf | out, offs);
       strpr ")"
-    end
+    end // end of [INSTRload_ptr_offs]
   | INSTRload_var (tmp, vp_var) => begin
       strpr "INSTRload_var(";
       fprint_tmpvar (pf | out, tmp);
       strpr "; ";
       fprint_valprim (pf | out, vp_var);
       strpr ")"
-    end
+    end // end of [INSTRload_var]
   | INSTRload_var_offs (tmp, vp_var, offs) => begin
       strpr "INSTRload_var_offs(";
       fprint_tmpvar (pf | out, tmp);
@@ -490,35 +490,57 @@ in
       strpr "; ";
       fprint_offsetlst (pf | out, offs);
       strpr ")"
-    end
+    end // end of [INSTRload_var_offs]
   | INSTRloop _ => begin
       fprint1_string (pf | out, "INSTRloop(...)")
-    end
+    end // end of [INSTRloop]
   | INSTRloopexn (knd, tl) => begin
       strpr "INSTRloopexn(";
       fprint1_int (pf | out, knd);
       strpr "; ";
       fprint_tmplab (pf | out, tl);
       strpr ")"
-    end
+    end // end of [INSTRloopexn]
   | INSTRmove_arg (arg, vp) => begin
       strpr "INSTRmove_arg(";
       fprint1_int (pf | out, arg);
       strpr ", ";
       fprint_valprim (pf | out, vp);
       strpr ")"
-    end
+    end // end of [INSTRmove_arg]
   | INSTRmove_con (tmp, hit_sum, d2c, vps_arg) => begin
       strpr "INSTRmove_con(";
       fprint_tmpvar (pf | out, tmp);
       strpr "; ";
-      fprint_hityp (pf | out, hityp_decode hit_sum);      
+      fprint_hityp (pf | out, hityp_decode hit_sum);
       strpr "; ";
       fprint_d2con (pf | out, d2c);
       strpr "; ";
       fprint_valprimlst (pf | out, vps_arg);
       strpr ")"
-    end
+    end // end of [INSTRmove_con]
+  | INSTRmove_lazy_delay (tmp, lin, hit, vp) => begin
+      strpr "INSTRmove_lazy_delay(";
+      fprint_tmpvar (pf | out, tmp);
+      strpr "; ";
+      fprint_int (pf | out, lin);
+      strpr ";";
+      fprint_hityp (pf | out, hityp_decode hit);
+      strpr ";";
+      fprint_valprim (pf | out, vp);
+      strpr ")"
+    end // end of [INSTRlazy_force]
+  | INSTRmove_lazy_force (tmp, lin, hit, vp) => begin
+      strpr "INSTRmove_lazy_force(";
+      fprint_tmpvar (pf | out, tmp);
+      strpr "; ";
+      fprint_int (pf | out, lin);
+      strpr ";";
+      fprint_hityp (pf | out, hityp_decode hit);
+      strpr ";";
+      fprint_valprim (pf | out, vp);
+      strpr ")"
+    end // end of [INSTRlazy_force]
   | INSTRmove_rec_box (tmp, hit_rec, lvps) => begin
       strpr "INSTRmove_rec_box(";
       fprint_tmpvar (pf | out, tmp);
@@ -527,7 +549,7 @@ in
       strpr "; ";
       fprint_labvalprimlst (pf | out, lvps);
       strpr ")"
-    end
+    end // end of [INSTRmove_rec_box]
   | INSTRmove_rec_flt (tmp, hit_rec, lvps) => begin
       strpr "INSTRmove_rec_flt(";
       fprint_tmpvar (pf | out, tmp);
@@ -536,33 +558,33 @@ in
       strpr "; ";
       fprint_labvalprimlst (pf | out, lvps);
       strpr ")"
-    end
+    end // end of [INSTRmove_rec_flt]
   | INSTRmove_val (tmp, vp) => begin
       strpr "INSTRmove_val(";
       fprint_tmpvar (pf | out, tmp);
       strpr "; ";
       fprint_valprim (pf | out, vp);
       strpr ")"
-    end
+    end // end of [INSTRmove_val]
   | INSTRmove_ref (tmp, vp) => begin
       strpr "INSTRmove_ref(";
       fprint_tmpvar (pf | out, tmp);
       strpr "; ";
       fprint_valprim (pf | out, vp);
       strpr ")"
-    end
+    end // end of [INSTRmove_ref]
   | INSTRpar_spawn (tmp_ret, vp_fun) => begin
       strpr "INSTRpar_spawn(";
       fprint_tmpvar (pf | out, tmp_ret);
       strpr "; ";
       fprint_valprim (pf | out, vp_fun);
       strpr ")"
-    end
+    end // end of [INSTRpar_spawn]
   | INSTRpar_synch (tmp_ret) => begin
       strpr "INSTRpar_synch(";
       fprint_tmpvar (pf | out, tmp_ret);
       strpr ")"
-    end
+    end // end of [INSTRpar_synch]
   | INSTRpatck (vp, patck, k_fail) => begin
       strpr "INSTRpatck(";
       fprint_valprim (pf | out, vp);
@@ -571,10 +593,10 @@ in
       strpr "; ";
       fprint_kont (pf | out, k_fail);
       strpr ")"
-    end
+    end // end of [INSTRpatck]
   | INSTRraise vp => begin
       strpr "INSTRraise("; fprint_valprim (pf | out, vp); strpr ")"
-    end
+    end // end of [INSTRraise]
   | INSTRselcon (tmp, vp_sum, hit_sum, i) => begin
       strpr "INSTRselcon(";
       fprint_tmpvar (pf | out, tmp);
@@ -585,7 +607,7 @@ in
       strpr "; ";
       fprint1_int (pf | out, i);
       strpr ")"
-    end
+    end // end of [INSTRselcon]
   | INSTRselcon_ptr (tmp, vp_sum, hit_sum, i) => begin
       strpr "INSTRselcon_ptr(";
       fprint_tmpvar (pf | out, tmp);
@@ -596,7 +618,7 @@ in
       strpr "; ";
       fprint_int (pf | out, i);
       strpr ")"
-    end
+    end // end of [INSTRselcon_ptr]
   | INSTRselect (tmp, vp_root, offs) => begin
       strpr "INSTRselect(";
       fprint_tmpvar (pf | out, tmp);
@@ -605,14 +627,14 @@ in
       strpr "; ";
       fprint_offsetlst (pf | out, offs);
       strpr ")"
-    end
+    end // end of [INSTRselect]
   | INSTRstore_ptr (vp_ptr, vp_val) => begin
       strpr "INSTRstore_ptr(";
       fprint_valprim (pf | out, vp_ptr);
       strpr "; ";
       fprint_valprim (pf | out, vp_val);
       strpr ")"
-    end
+    end // end of [INSTRstore_ptr]
   | INSTRstore_ptr_offs (vp_ptr, offs, vp_val) => begin
       strpr "INSTRstore_ptr_offs(";
       fprint_valprim (pf | out, vp_ptr);
@@ -621,14 +643,14 @@ in
       strpr "; ";
       fprint_valprim (pf | out, vp_val);
       strpr ")"
-    end
+    end // end of [INSTRstore_ptr_offs]
   | INSTRstore_var (vp_var, vp_val) => begin
       strpr "INSTRstore_var(";
       fprint_valprim (pf | out, vp_var);
       strpr "; ";
       fprint_valprim (pf | out, vp_val);
       strpr ")"
-    end
+    end // end of [INSTRstore_var]
   | INSTRstore_var_offs (vp_var, offs, vp_val) => begin
       strpr "INSTRstore_var_offs(";
       fprint_valprim (pf | out, vp_var);
@@ -637,10 +659,10 @@ in
       strpr "; ";
       fprint_valprim (pf | out, vp_val);
       strpr ")"
-    end
+    end // end of [INSTRstore_var_offs]
   | INSTRswitch _ => begin
       fprint1_string (pf | out, "INSTRswitch(...)")
-    end
+    end // end of [INSTRswitch]
   | INSTRtmplabint (tl, i) => begin
       strpr "INSTRtmplabint(";
       fprint_tmplab (pf | out, tl);
@@ -650,16 +672,16 @@ in
     end // end of [INSTRtmplabint]
   | INSTRtrywith _ => begin
       fprint1_string (pf | out, "INSTRtrywith(...)")
-    end
+    end // end of [INSTRtrywith]
   | INSTRvardec tmp => begin
       strpr "INSTRvardec("; fprint_tmpvar (pf | out, tmp); strpr ")"
-    end
+    end // end of [INSTRvardec]
 (*
   | _ => begin
       strpr "fprint_instr: not yet implemented.");
       fprint_newline (pf | out);
       $Err.abort {void} ()
-    end
+    end // end of [_]
 *)
 end // end of [fprint_instr]
 

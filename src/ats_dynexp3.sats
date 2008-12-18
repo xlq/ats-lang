@@ -210,8 +210,6 @@ and d3exp_node =
       d2cst_t
   | D3Ecrypt of (* cryption *)
       (int, d3exp) (* 1/-1: encrypt/decrypt *)
-  | D3Edelay of (* delayed evaluation *)
-      (int(*lin*), d3exp)
   | D3Edynload of (* dynamic loading *)
       $Fil.filename_t
   | D3Eeffmask of (* masking effects *)
@@ -237,6 +235,10 @@ and d3exp_node =
       (s2explst(*metric*), d3exp)
   | D3Elam_sta of (* static abstraction *)
       (s2varlst, s2explst, d3exp)
+  | D3Elazy_delay of (* delayed computation *)
+      (int(*lin*), d3exp)
+  | D3Elazy_force of (* lazy value evaluation *)
+      (int(*linearity*), d3exp)
   | D3Elet of // dynamic let-expression
       (d3eclst, d3exp)
   | D3Eloop of (* for-loop *)
@@ -509,8 +511,6 @@ fun d3exp_con
 
 fun d3exp_crypt (_: loc_t, _: s2exp, knd: int, _: d3exp): d3exp
 
-fun d3exp_delay (_: loc_t, _: s2exp, lin: int, _: d3exp): d3exp
-
 fun d3exp_dynload (_: loc_t, _: $Fil.filename_t): d3exp
 
 fun d3exp_effmask (_: loc_t, effs: $Syn.effectlst, d3e: d3exp): d3exp
@@ -543,6 +543,8 @@ fun d3exp_lam_sta
   : d3exp
 
 (* ****** ****** *)
+
+fun d3exp_lazy_delay (_: loc_t, _: s2exp, lin: int, _: d3exp): d3exp
 
 fun d3exp_lazy_force (_: loc_t, _: s2exp, lin: int, _: d3exp): d3exp
 

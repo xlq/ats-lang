@@ -34,7 +34,7 @@ fun{a:t@ype}
     print "stream_vt_nth: before: i = "; print i; print_newline ()
   end
 *)
-  val xs0_con = lazy_vt_force xs0
+  val xs0_con = !xs0
 in
   case+ xs0_con of
   | ~(x :: xs) => begin
@@ -60,15 +60,15 @@ fun sieve_con (ns: stream_vt Nat2):<1,~ref> stream_vt_con (Nat2) = let
        print "sieve_con: enter"; print_newline ()
      end
 *)
-     val ns_con = lazy_vt_force ns
-     val- n :: !ns = ns_con
+     val ns_con = !ns
+     val- n :: !p_ns = ns_con
 (*
      val () = begin
        print "sieve_con: n = "; print n; print_newline ()
      end
 *)
-     val ns_val = !ns
-     val () = (!ns := sieve (stream_vt_filter<Nat2> (ns_val, lam x => x nmod n > 0)))
+     val ns = !p_ns
+     val () = (!p_ns := sieve (stream_vt_filter<Nat2> (ns, lam x => x nmod n > 0)))
   in
      fold@ ns_con; ns_con
   end
@@ -85,10 +85,10 @@ fn prime (n: Nat): Nat = stream_vt_nth (primes (), n)
 implement main (argc, argv) = begin
 
 //printf ("prime 1000 = %i\n", @(prime 1000)) ; // 7927
-printf ("prime 10000 = %i\n", @(prime 10000)) ; // 104743
+//printf ("prime 10000 = %i\n", @(prime 10000)) ; // 104743
 //printf ("prime 20000 = %i\n", @(prime 20000)) ; // 224743
 //printf ("prime 30000 = %i\n", @(prime 30000)) ; // = 350381 (2 min.)
-//printf ("prime 50000 = %i\n", @(prime 50000)) ; // = 611957 (6 min.)
+printf ("prime 50000 = %i\n", @(prime 50000)) ; // = 611957 (6 min.)
 
 end
 

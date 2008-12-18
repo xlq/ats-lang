@@ -254,10 +254,6 @@ implement d1exp_crypt (loc, knd, d1e) = '{
   d1exp_loc= loc, d1exp_node= D1Ecrypt (knd, d1e)
 }
 
-implement d1exp_delay (loc, lin, d1e) = '{
-  d1exp_loc= loc, d1exp_node= D1Edelay (lin, d1e)
-}
-
 implement d1exp_dynload (loc, fil) = '{
   d1exp_loc= loc, d1exp_node= D1Edynload (fil)
 }
@@ -322,6 +318,8 @@ implement d1exp_intsp (loc, str) = '{
   d1exp_loc= loc, d1exp_node= D1Eintsp (str)
 }
 
+(* ****** ****** *)
+
 implement d1exp_lam_dyn (loc, lin, p1t, d1e) = '{
   d1exp_loc= loc, d1exp_node= D1Elam_dyn (lin, p1t, d1e)
 }
@@ -336,6 +334,12 @@ implement d1exp_lam_sta_ana (loc, loc_arg, s1as, d1e) = '{
 
 implement d1exp_lam_sta_syn (loc, loc_arg, s1qs, d1e) = '{
   d1exp_loc= loc, d1exp_node= D1Elam_sta_syn (loc_arg, s1qs, d1e)
+}
+
+(* ****** ****** *)
+
+implement d1exp_lazy_delay (loc, lin, d1e) = '{
+  d1exp_loc= loc, d1exp_node= D1Elazy_delay (lin, d1e)
 }
 
 implement d1exp_let (loc, d1cs, d1e) = '{

@@ -338,13 +338,6 @@ in
   | HIEcst d2c => begin
       strpr "HIEcst("; fprint_d2cst (pf | out, d2c); strpr ")"
     end
-  | HIEdelay (lin, hie) => begin
-      strpr "HIEdelay(";
-      fprint1_int (pf | out, lin);
-      strpr "; ";
-      fprint_hiexp (pf | out, hie);
-      strpr ")"
-    end // end of [HIEdelay]
   | HIEdynload fil => begin
       strpr "HIEdynload(";
       $Fil.fprint_filename (pf | out, fil);
@@ -396,13 +389,27 @@ in
       fprint_hiexp (pf | out, hie_body);
       strpr ")"
     end // end of [HIElam]
+  | HIElazy_delay (lin, hie_body) => begin
+      strpr "HIElazy_delay(";
+      fprint1_int (pf | out, lin);
+      strpr "; ";
+      fprint_hiexp (pf | out, hie_body);
+      strpr ")"
+    end // end of [HIElazy_delay]
+  | HIElazy_force (lin, hie_lazy) => begin
+      strpr "HIElazy_force(";
+      fprint_int (pf | out, lin);
+      strpr "; ";
+      fprint_hiexp (pf | out, hie_lazy);
+      strpr ")"
+    end // end of [HIElazy_force]
   | HIElet (hids, hie) => begin
       strpr "HIElet(";
       fprint1_string (pf | out, "...");
       strpr "; ";
       fprint_hiexp (pf | out, hie);
       strpr ")"
-    end
+    end // end of [HIElet]
   | HIEloop (ohie_init, hie_test, ohie_post, hie_body) => begin
       strpr "HIEloop(";
       begin case+ ohie_post of
@@ -420,7 +427,7 @@ in
     end // end of [HIEloop]
   | HIEloopexn i => begin
       strpr "HIEloopexn("; fprint1_int (pf | out, i); strpr ")"
-    end
+    end // end of [HIEloopexn]
   | HIElst (lin, hit, hies) => begin
       strpr "HIElst(";
       fprint1_int (pf | out, lin);
@@ -446,7 +453,7 @@ in
     end // end of [HIEptrof_var]
   | HIEraise (hie) => begin
       strpr "HIEraise("; fprint_hiexp (pf | out, hie); strpr ")"
-    end
+    end // end of [HIEraise]
   | HIErec (knd, hit_rec, lhies) => begin
       strpr "HIErec(";
       fprint1_int (pf | out, knd);
@@ -488,16 +495,16 @@ in
     end // end of [HIEsel_var]
   | HIEseq (hies) => begin
       strpr "HIEseq("; fprint_hiexplst (pf | out, hies); strpr ")"
-    end
+    end // end of [HIEseq]
   | HIEsizeof (hit) => begin
       strpr "HIEsizeof("; fprint_hityp (pf | out, hit); strpr ")"
-    end
+    end // end of [HIEsizeof]
   | HIEspawn (hie) => begin
       strpr "HIEspawn("; fprint_hiexp (pf | out,  hie); strpr ")"
-    end
+    end // end of [HIEspawn]
   | HIEstring (str, len) => begin
       fprintf1_exn (pf | out, "HIEstring(\"%s\", %i)", @(str, len))
-    end
+    end // end of [HIEstring]
   | HIEtmpcst (d2c, hitss) => begin
       strpr "HIEtmpcst(";
       fprint_d2cst (pf | out, d2c);
@@ -543,6 +550,7 @@ implement fprint_hiexplstlst {m} (pf | out, hiess0) = let
         fprint_hiexplst (pf | out, hies); aux (out, i+1, hiess)
       end
     | list_nil () => ()
+  // end of [aux]
 in
   aux (out, 0, hiess0)
 end // end of [fprint_hiexplstlst]
@@ -558,6 +566,7 @@ implement fprint_labhiexplst {m} (pf | out, lhies0) = let
         aux (out, i+1, lhies)
       end
     | LABHIEXPLSTnil () => ()
+  // end of [aux]
 in
   aux (out, 0, lhies0)
 end // end of [fprint_labhiexplst]
@@ -568,10 +577,10 @@ in
   case+ hil.hilab_node of
   | HILlab (l, s2e_rec) => begin
       strpr "HILlab("; fprint_label (pf | out, l); strpr ")"
-    end
+    end // end of [HILlab]
   | HILind (hiess, s2e_elt) => begin
       strpr "HILind("; fprint_hiexplstlst (pf | out, hiess); strpr ")"
-    end
+    end // end of [HILind]
 end // end of [fprint_hilab]
 
 implement fprint_hilablst {m} (pf | out, hils0) = let
@@ -580,8 +589,9 @@ implement fprint_hilablst {m} (pf | out, hils0) = let
     | list_cons (hil, hils) => begin
         if i > 0 then fprint1_string (pf | out, ", ");
         fprint_hilab (pf | out, hil); aux (out, i+1, hils)
-      end
+      end // end of [list_cons]
     | list_nil () => ()
+  // end of [aux]
 in
   aux (out, 0, hils0)
 end // end of [fprint_hilablst]

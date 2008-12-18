@@ -335,8 +335,6 @@ and hiexp_node =
       (hityp, d2con_t, hiexplst)
   | HIEcst of (* dynamic constant *)
       d2cst_t
-  | HIEdelay of (* delayed computation *)
-      (int(*lin*), hiexp)
   | HIEdynload of (* dynamic loading *)
       fil_t (* filename *)
   | HIEempty (* no operation *)
@@ -358,6 +356,10 @@ and hiexp_node =
       (string, intinf_t)
   | HIElam of (* lambda-abstraction *)
       (hipatlst, hiexp)
+  | HIElazy_delay of (* delayed computation *)
+      (int(*lin*), hiexp)
+  | HIElazy_force of (* lazy value evaluation *)
+      (int(*linearity*), hiexp)
   | HIElet of (* let-expression *)
       (hideclst, hiexp)
   | HIEloop of (* for-loop *)
@@ -575,8 +577,6 @@ fun hiexp_con
 
 fun hiexp_cst (_: loc_t, _: hityp, d2c: d2cst_t): hiexp
 
-fun hiexp_delay (_: loc_t, _: hityp, lin: int, _: hiexp): hiexp
-
 fun hiexp_dynload (_: loc_t, _: hityp, _: fil_t): hiexp
 
 fun hiexp_empty (_: loc_t, _: hityp): hiexp
@@ -603,6 +603,16 @@ fun hiexp_intsp
 
 fun hiexp_lam
   (_: loc_t, _: hityp, _arg: hipatlst, _body: hiexp): hiexp
+
+(* ****** ****** *)
+
+fun hiexp_lazy_delay
+  (_: loc_t, _body: hityp, lin: int, _body: hiexp): hiexp
+
+fun hiexp_lazy_force
+  (_: loc_t, _val: hityp, lin: int, _lazyval: hiexp): hiexp
+
+(* ****** ****** *)
 
 fun hiexp_let (_: loc_t, _: hityp, _: hideclst, _: hiexp): hiexp
 

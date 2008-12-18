@@ -418,14 +418,6 @@ implement d3exp_crypt (loc, s2e, knd, d3e) =  '{
 
 (* ****** ****** *)
 
-implement d3exp_delay (loc, s2e, lin, d3e) =  '{
-  d3exp_loc= loc
-, d3exp_eff= S2EFFnil (), d3exp_typ= s2e
-, d3exp_node= D3Edelay (lin, d3e)
-}
-
-(* ****** ****** *)
-
 implement d3exp_dynload (loc, fil) =  '{
   d3exp_loc= loc
 , d3exp_eff= S2EFFall (), d3exp_typ= s2exp_void_t0ype ()
@@ -522,17 +514,17 @@ implement d3exp_lam_sta
 
 (* ****** ****** *)
 
-(*
-implement d3exp_lazy_force
-  (loc, s2e_elt, lin, d3e_delay) = '{
+implement d3exp_lazy_delay (loc, s2e, lin, d3e) =  '{
   d3exp_loc= loc
-, d3exp_eff= S2EFFnil (), d3exp_typ= s2e_elt
-, d3exp_node= D3Elazy_force (lin, d3e_delay)
-} // end of [d3exp_lazy_force]
-*)
+, d3exp_eff= S2EFFnil (), d3exp_typ= s2e
+, d3exp_node= D3Elazy_delay (lin, d3e)
+}
 
-implement d3exp_lazy_force
-  (loc, s2e_elt, lin, d3e_delay) = $Err.abort ()
+implement d3exp_lazy_force (loc, s2e, lin, d3e) =  '{
+  d3exp_loc= loc
+, d3exp_eff= S2EFFnil (), d3exp_typ= s2e
+, d3exp_node= D3Elazy_force (lin, d3e)
+}
 
 (* ****** ****** *)
 

@@ -758,11 +758,6 @@ in
       d3exp_cst_tr (loc0, hit0, d2c)
     end // end of [D3Ecst]
   | D3Ecrypt (_(*knd*), d3e) => d3exp_tr d3e
-  | D3Edelay (lin, d3e) => let
-      val hit0 = s2exp_tr (0(*deep*), s2e0)
-    in
-      hiexp_delay (loc0, hit0, lin, d3exp_tr d3e)
-    end // end of [D3Edelay]
   | D3Edynload fil => let
       val hit0 = s2exp_tr (0(*deep*), s2e0)
     in
@@ -850,12 +845,16 @@ in
       hie_body
     end // end of [D3Elam_sta]
   | D3Elam_met (_(*s2es_met*), d3e) => d3exp_tr d3e
-  | D3Emod _ => begin
-      $Loc.prerr_location loc0;
-      prerr ": d3exp_tr: D2Emod: not implemented yet.";
-      prerr_newline ();
-      $Err.abort {hiexp} ()
-    end // end of [D3Emod]
+  | D3Elazy_delay (lin, d3e_body) => let
+      val hit0 = s2exp_tr (0(*deep*), s2e0)
+    in
+      hiexp_lazy_delay (loc0, hit0, lin, d3exp_tr d3e_body)
+    end // end of [D3Elazy_delay]
+  | D3Elazy_force (lin, d3e_lazy) => let
+      val hit0 = s2exp_tr (0(*deep*), s2e0)
+    in
+      hiexp_lazy_force (loc0, hit0, lin, d3exp_tr d3e_lazy)
+    end // end of [D3Elazy_force]
   | D3Elet (d3cs, d3e) => let
       val hit0 = s2exp_tr (0(*deep*), s2e0)
       val hids = d3eclst_tr d3cs; val hie = d3exp_tr d3e
@@ -882,6 +881,12 @@ in
     in
       hiexp_lst (loc0, hit0, lin, hit_elt, hies_elt)
     end // end of [D3Elst]
+  | D3Emod _ => begin
+      $Loc.prerr_location loc0;
+      prerr ": d3exp_tr: D2Emod: not implemented yet.";
+      prerr_newline ();
+      $Err.abort {hiexp} ()
+    end // end of [D3Emod]
   | D3Eptrof_ptr (d3e, d3ls) => let
       val hit0 = s2exp_tr (0(*deep*), s2e0)
       val hie = d3exp_tr d3e; val hils = d3lab1lst_tr d3ls

@@ -247,13 +247,6 @@ in
       fprint_d3exp (pf | out, d3e);
       strpr ")"
     end // end of [D3Ecrypt]
-  | D3Edelay (lin, d3e) => begin
-      strpr "D3Edelay(";
-      fprint1_int (pf | out, lin);
-      strpr "; ";
-      fprint_d3exp (pf | out, d3e);
-      strpr ")"
-    end // end of [D3Edelay]
   | D3Edynload fil => begin
       strpr "D3Edynload(";
       $Fil.fprint_filename (pf | out, fil);
@@ -333,6 +326,20 @@ in
       fprint_d3exp (pf | out, d3e);
       strpr ")"
     end // end of [D3Elam_sta]
+  | D3Elazy_delay (lin, d3e) => begin
+      strpr "D3Elazy_delay(";
+      fprint1_int (pf | out, lin);
+      strpr "; ";
+      fprint_d3exp (pf | out, d3e);
+      strpr ")"
+    end // end of [D3Elazy_delay]
+  | D3Elazy_force (lin, d3e) => begin
+      strpr "D3Elazy_force(";
+      fprint_int (pf | out, lin);
+      strpr "; ";
+      fprint_d3exp (pf | out, d3e);
+      strpr ")"
+    end // end of [D3Elazy_force]
   | D3Elet (d3cs, d3e) => begin
       strpr "D3Elet(";
       fprint1_string (pf | out, "...");

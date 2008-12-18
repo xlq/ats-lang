@@ -227,8 +227,14 @@ fun d2conref_con_get (_: d2conref_t): d2con_t
 val List_nil : d2conref_t and List_cons : d2conref_t
 val List_vt_nil : d2conref_t and List_vt_cons : d2conref_t
 
+(*
+
+// it is now supported internally; see [prelude/CATS/lazy.cats]
+
 val ThunkValue_thunk : d2conref_t and ThunkValue_value : d2conref_t
 val ThunkValue_vt_thunk : d2conref_t and ThunkValue_vt_value : d2conref_t
+
+*)
 
 (* ****** ****** *)
 

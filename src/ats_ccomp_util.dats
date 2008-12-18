@@ -210,6 +210,8 @@ in
       instrlst_tmpvarmap_add (m, inss_body);
     end // end of [INSTRloop]
   | INSTRmove_con (tmp, _, _, _) => tmpvarmap_add_root (m, tmp)
+  | INSTRmove_lazy_delay (tmp, _, _, _) => tmpvarmap_add_root (m, tmp)
+  | INSTRmove_lazy_force (tmp, _, _, _) => tmpvarmap_add_root (m, tmp)
   | INSTRmove_rec_box (tmp, _, _) => tmpvarmap_add_root (m, tmp)
   | INSTRmove_rec_flt (tmp, _, _) => tmpvarmap_add_root (m, tmp)
   | INSTRmove_ref (tmp, _) => tmpvarmap_add_root (m, tmp)

@@ -397,7 +397,7 @@ datatype instr =
   | INSTRfunlab of funlab_t
 
   | INSTRdynload_file of fil_t
-
+  
   // load instructions
   | INSTRload_ptr of (tmpvar_t, valprim)
   | INSTRload_ptr_offs of (tmpvar_t, valprim, offsetlst)
@@ -419,6 +419,10 @@ datatype instr =
   | INSTRmove_arg of (int, valprim)
   | INSTRmove_con of
       (tmpvar_t, hityp_t, d2con_t, valprimlst(*arg*))
+  | INSTRmove_lazy_delay of
+      (tmpvar_t, int (*lin*), hityp_t, valprim(*clo*))
+  | INSTRmove_lazy_force of
+      (tmpvar_t, int (*lin*), hityp_t, valprim(*lazy*))
   | INSTRmove_rec_box of
       (tmpvar_t, hityp_t, labvalprimlst(*arg*))
   | INSTRmove_rec_flt of
@@ -584,6 +588,22 @@ fun instr_add_move_con (
   , hit_sum: hityp_t
   , d2c: d2con_t
   , vps_arg: valprimlst
+  ) : void
+
+fun instr_add_move_lazy_delay (
+    res: &instrlst_vt
+  , tmp_res: tmpvar_t
+  , lin: int
+  , hit_body: hityp_t
+  , vp_clo: valprim
+  ) : void
+
+fun instr_add_move_lazy_force (
+    res: &instrlst_vt
+  , tmp_res: tmpvar_t
+  , lin: int
+  , hit_elt: hityp_t
+  , vp_lazy: valprim
   ) : void
 
 fun instr_add_move_rec (

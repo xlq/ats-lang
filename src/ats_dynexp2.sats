@@ -565,8 +565,6 @@ and d2exp_node =
       d2cst_t
   | D2Ecrypt of (* cryption *)
       (int, d2exp) (* 1/-1: encrypt/decrypt *)
-  | D2Edelay of (* delayed evaluation *)
-      (int(*lin*), d2exp)
   | D2Ederef of (* left-value derefence *)
       d2exp
   | D2Edynload of (* dynamic loading *)
@@ -603,6 +601,8 @@ and d2exp_node =
       (ref d2varlst, s2explst, d2exp)
   | D2Elam_sta of (* static abstraction *)
       (s2varlst, s2explst, d2exp)
+  | D2Elazy_delay of (* delayed computation *)
+      (int(*lin*), d2exp)
   | D2Elet of (* dynamic let-expression *)
       (d2eclst, d2exp)
   | D2Eloopexn of (* break: 0 and continue: 1 *)
@@ -999,7 +999,6 @@ fun d2exp_con
 
 fun d2exp_cst (_: loc_t, d2c: d2cst_t): d2exp
 fun d2exp_crypt (_: loc_t, knd: int, _: d2exp): d2exp
-fun d2exp_delay (_: loc_t, lin: int, _: d2exp): d2exp
 fun d2exp_deref (_: loc_t, _: d2exp): d2exp
 fun d2exp_dynload (_: loc_t, _: fil_t): d2exp
 fun d2exp_effmask (_: loc_t, effs: $Syn.effectlst, d2e: d2exp): d2exp
@@ -1038,6 +1037,8 @@ fun d2exp_lam_sta
 
 fun d2exp_lam_sta_para
   (_: loc_t, _: s2varlst, _: s2explst, body: d2exp): d2exp
+
+fun d2exp_lazy_delay (_: loc_t, lin: int, _: d2exp): d2exp
 
 fun d2exp_let (_: loc_t, _: d2eclst, _: d2exp): d2exp
 

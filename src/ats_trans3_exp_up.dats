@@ -1936,32 +1936,6 @@ val d3e0 = (case+ d2e0.d2exp_node of
     end // end of [D2Econ]
   | D2Ecrypt (knd, d2e) => d2exp_crypt_tr_up (loc0, knd, d2e)
   | D2Ecst d2c => d2exp_cst_tr_up (loc0, d2c)
-  | D2Edelay (lin, d2e) => let // as if checking [llam () =<~ref> d2e]
-      val () = trans3_env_push_sta ()
-      val (pf_effect1 | ()) = the_effect_env_push_effmask ($Eff.effectlst_all)
-      val (pf_effect2 | ()) = the_effect_env_push_delay ()
-      val (pf_d2varset | ()) = the_d2varset_env_push_lam (1(*linear*))
-      val (pf_lamloop | ()) = the_lamloop_env_push_lam (nil ())
-      val d3e = d2exp_tr_up d2e
-      val () = the_lamloop_env_pop (pf_lamloop | (*none*))
-      val () = the_d2varset_env_pop_lam (pf_d2varset | (*none*))
-      val () = the_effect_env_pop (pf_effect2 | (*none*))
-      val () = the_effect_env_pop (pf_effect1 | (*none*))
-      val () = trans3_env_pop_sta_and_add_none (loc0)
-      val s2e = d3e.d3exp_typ
-      val lin = (
-        if lin > 0 then 1 else (if s2exp_is_linear s2e then 1 else 0)
-      ) : int
-      val s2e_lazy = (
-        if lin > 0then begin
-          s2exp_lazy_viewt0ype_viewtype s2e
-        end else begin
-          s2exp_lazy_t0ype_type s2e
-        end
-      ) : s2exp
-    in
-      d3exp_delay (loc0, s2e_lazy, lin, d3e)
-    end // end of [D2Edelay]
   | D2Ederef d2e => d2exp_deref_tr_up (loc0, d2e, nil ())
   | D2Edynload fil => d3exp_dynload (loc0, fil)
   | D2Eeffmask (effs, d2e) => let
@@ -2110,6 +2084,32 @@ val d3e0 = (case+ d2e0.d2exp_node of
     in
       d3exp_lam_sta (loc0, s2e0, s2vs, s2ps, d3e_body)
     end // end of [D2Elam_sta]
+  | D2Elazy_delay (lin, d2e) => let // as if checking [llam () =<~ref> d2e]
+      val () = trans3_env_push_sta ()
+      val (pf_effect1 | ()) = the_effect_env_push_effmask ($Eff.effectlst_all)
+      val (pf_effect2 | ()) = the_effect_env_push_delay ()
+      val (pf_d2varset | ()) = the_d2varset_env_push_lam (1(*linear*))
+      val (pf_lamloop | ()) = the_lamloop_env_push_lam (nil ())
+      val d3e = d2exp_tr_up d2e
+      val () = the_lamloop_env_pop (pf_lamloop | (*none*))
+      val () = the_d2varset_env_pop_lam (pf_d2varset | (*none*))
+      val () = the_effect_env_pop (pf_effect2 | (*none*))
+      val () = the_effect_env_pop (pf_effect1 | (*none*))
+      val () = trans3_env_pop_sta_and_add_none (loc0)
+      val s2e = d3e.d3exp_typ
+      val lin = (
+        if lin > 0 then 1 else (if s2exp_is_linear s2e then 1 else 0)
+      ) : int
+      val s2e_lazy = (
+        if lin > 0then begin
+          s2exp_lazy_viewt0ype_viewtype s2e
+        end else begin
+          s2exp_lazy_t0ype_type s2e
+        end
+      ) : s2exp
+    in
+      d3exp_lazy_delay (loc0, s2e_lazy, lin, d3e)
+    end // end of [D2Elazy_delay]
   | D2Elet (d2cs, d2e) => let
       val (pf_effect | ()) = the_effect_env_push ()
       val (pf_s2cstlst | ()) = the_s2cstlst_env_push ()

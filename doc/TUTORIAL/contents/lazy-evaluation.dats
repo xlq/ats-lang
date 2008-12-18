@@ -34,7 +34,7 @@ val N2s: stream N2 = from 2 where {
 
 fun sieve (ns: stream N2):<1,~ref> stream N2 =
   // [val-] means no warning message from the compiler
-  let val- n :: ns = lazy_force ns in
+  let val- n :: ns = !ns in
      $delay (n :: sieve (stream_filter<N2> (ns, lam x => x nmod n > 0)))
   end
 

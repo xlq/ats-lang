@@ -1211,11 +1211,6 @@ implement eval1_d2exp (loc0, ctx, env, d2e0) = begin
     in
       d2exp_crypt (loc0, knd, d2e)
     end // end of [D2Ecrypt]
-  | D2Edelay (lin, d2e) => let
-      val d2e = eval1_d2exp (loc0, ctx, env, d2e)
-    in
-      d2exp_delay (loc0, lin, d2e)
-    end // end of [D2Edelay]
   | D2Ederef d2e => let
       val d2e = eval1_d2exp (loc0, ctx, env, d2e)
     in
@@ -1257,6 +1252,11 @@ implement eval1_d2exp (loc0, ctx, env, d2e0) = begin
     in
       d2exp_if (loc0, res, d2e_cond, d2e_then, od2e_else)
     end // end of [D2Eif]
+  | D2Elazy_delay (lin, d2e) => let
+      val d2e = eval1_d2exp (loc0, ctx, env, d2e)
+    in
+      d2exp_lazy_delay (loc0, lin, d2e)
+    end // end of [D2Elazy_delay]
   | D2Elet (d2cs, d2e) => let
       val () = alphaenv_push (env)
       val d2cs = eval1_d2eclst (loc0, ctx, env, d2cs)

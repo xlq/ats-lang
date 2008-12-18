@@ -430,11 +430,17 @@ implement List_cons = d2conref_make "list_cons"
 implement List_vt_nil = d2conref_make "list_vt_nil"
 implement List_vt_cons = d2conref_make "list_vt_cons"
 
+(*
+
+// it is now supported internally; see [prelude/CATS/lazy.cats]
+
 implement ThunkValue_thunk = d2conref_make "thunkvalue_thunk"
 implement ThunkValue_value = d2conref_make "thunkvalue_value"
 
 implement ThunkValue_vt_thunk = d2conref_make "thunkvalue_vt_thunk"
 implement ThunkValue_vt_value = d2conref_make "thunkvalue_vt_value"
+
+*)
 
 (* ****** ****** *)
 
@@ -461,7 +467,7 @@ in
 end  // end of [d2cstref_make]
 
 implement d2cstref_cst_get (r) = let
-  val od2c = let val (vbox pf | p) = r in p->cst end
+  val od2c = p->cst where { val (vbox pf | p) = r }
 in
   case+ od2c of
   | None () => let
@@ -480,7 +486,7 @@ in
           end // end of [Some_vt]
         | ~None_vt () => None ()
         end : Option d2cst_t
-      end
+      end // end of [val]
     in
       case+ od2c of
       | Some d2c => d2c | None () => begin
@@ -489,7 +495,7 @@ in
           prerr id; prerr "] is not available.";
           prerr_newline ();
           $Err.abort {d2cst_t} ()
-        end
+        end // end of [None]
     end // end of [None]
   | Some d2c => d2c
 end // end of [d2cstref_cst_get]

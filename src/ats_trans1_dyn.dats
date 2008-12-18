@@ -819,10 +819,11 @@ fun aux_item (d0e0: d0exp): d1expitm = let
         $Fix.ITEMopr ($Fix.OPERpre ($Fix.crypt_prec_dyn, f))
       end // end of [D0Ecrypt]
     | D0Edelay (lin) => let
-        fn f (d1e: d1exp):<cloref1> d1expitm =
-          let val loc0 = $Loc.location_combine (loc0, d1e.d1exp_loc) in
-            $Fix.ITEMatm (d1exp_delay (loc0, lin, d1e))
-          end
+        fn f (d1e: d1exp):<cloref1> d1expitm = let
+          val loc0 = $Loc.location_combine (loc0, d1e.d1exp_loc)
+        in
+          $Fix.ITEMatm (d1exp_lazy_delay (loc0, lin, d1e))
+        end // end of [f]
       in
         $Fix.ITEMopr ($Fix.OPERpre ($Fix.delay_prec_dyn, f))
       end // end of [D0Edelay]

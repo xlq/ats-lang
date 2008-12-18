@@ -335,10 +335,6 @@ implement hiexp_cst (loc, hit, d2c) = '{
   hiexp_loc= loc, hiexp_node= HIEcst d2c, hiexp_typ= hit
 }
 
-implement hiexp_delay (loc, hit, lin: int, hie) = '{
-  hiexp_loc= loc, hiexp_node= HIEdelay (lin, hie), hiexp_typ= hit
-}
-
 implement hiexp_dynload (loc, hit, fil) = '{
   hiexp_loc= loc, hiexp_node= HIEdynload fil, hiexp_typ= hit
 }
@@ -386,6 +382,22 @@ implement hiexp_lam (loc, hit, hips_arg, hie_body) = '{
 , hiexp_node= HIElam (hips_arg, hie_body)
 , hiexp_typ= hit
 } // end of [hiexp_lam]
+
+(* ****** ****** *)
+
+implement hiexp_lazy_delay (loc, hit, lin: int, hie) = '{
+  hiexp_loc= loc
+, hiexp_node= HIElazy_delay (lin, hie)
+, hiexp_typ= hit (* type of function body *)
+}
+
+implement hiexp_lazy_force (loc, hit, lin: int, hie) = '{
+  hiexp_loc= loc
+, hiexp_node= HIElazy_force (lin, hie)
+, hiexp_typ= hit (* type of lazy value *)
+}
+
+(* ****** ****** *)
 
 implement hiexp_let (loc, hit, hids, hie) = '{
   hiexp_loc= loc, hiexp_node= HIElet (hids, hie), hiexp_typ= hit

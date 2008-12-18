@@ -301,13 +301,6 @@ in
       fprint_d1exp (pf | out, d1e);
       strpr ")"
     end
-  | D1Edelay (lin, d1e) => begin
-      strpr "D1Edelay(";
-      fprint1_int (pf | out, lin);
-      strpr "; ";
-      fprint_d1exp (pf | out, d1e);
-      strpr ")"
-    end // end of [D1Edelay]
   | D1Edynload (fil) => begin
       strpr "D1Edynload(";
       $Fil.fprint_filename (pf | out, fil);
@@ -427,6 +420,13 @@ in
       fprint_d1exp (pf | out, d1e);
       strpr ")";
     end // end of [D1Elam_sta_syn]
+  | D1Elazy_delay (lin, d1e) => begin
+      strpr "D1Elazy_delay(";
+      fprint1_int (pf | out, lin);
+      strpr "; ";
+      fprint_d1exp (pf | out, d1e);
+      strpr ")"
+    end // end of [D1Elazy_delay]
   | D1Elet (d1cs, d1e) => begin
       strpr "D1Elet(";
       fprint1_string (pf | out, "...");
