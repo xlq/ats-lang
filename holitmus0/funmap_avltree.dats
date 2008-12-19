@@ -196,7 +196,7 @@ implement{key,itm} funmap_insert_status
           end else begin // hl+1 = hr
             avltree_lrotate (k, xs, tl, tr)
           end // end of [if]
-        end else begin (* sgn = 0 *)
+        end else begin (* sgn = 0: item already exists *)
           status := 1; B (h, k, list_cons (x0, xs), tl, tr)
         end // end of [if]
       end // end of [B]

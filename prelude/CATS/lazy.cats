@@ -41,9 +41,13 @@
 
 /* ****** ****** */
 
+/*
 typedef struct {
   ats_ptr_type tag ; ats_clo_ptr_type data ;
 } thunkvalue_struct ;
+*/
+
+typedef ats_ptr_type *thunkvalue ;
 
 /* ****** ****** */
 
@@ -51,19 +55,19 @@ typedef struct {
   tmp = ATS_MALLOC ( \
     sizeof(ats_ptr_type) + (sizeof(hit) <= sizeof(ats_ptr_type) ? sizeof(ats_ptr_type) : sizeof(hit)) \
   ) ; /* end of [ATS_MALLOC] */ \
-  ((thunkvalue_struct*)tmp)->tag = (ats_ptr_type)0 ; ((thunkvalue_struct*)tmp)->data = (vp_clo) ; \
+  ((thunkvalue)tmp)[0] = (ats_ptr_type)0 ; ((thunkvalue)tmp)[1] = (vp_clo) ; \
 } while (0) /* end of [do ... while ...] */
 
 #define ats_instr_move_lazy_vt_delay_mac(tmp, hit, vp_clo) \
   do { tmp = (vp_clo) ; } while (0) /* end of [do ... while ...] */
 
 #define ats_instr_move_lazy_force_mac(tmp, hit, vp_lazy) do { \
-  if (((thunkvalue_struct*)vp_lazy)->tag == 0) { \
-    tmp = ((hit (*)(ats_clo_ptr_type))ats_closure_fun(((thunkvalue_struct*)vp_lazy)->data))(((thunkvalue_struct*)vp_lazy)->data) ; \
-    ((thunkvalue_struct*)vp_lazy)->tag += 1 ; \
-    *(hit*)(&((thunkvalue_struct*)vp_lazy)->data) = tmp ; \
+  if (((thunkvalue)vp_lazy)[0] == 0) { \
+    tmp = ((hit (*)(ats_clo_ptr_type))ats_closure_fun(((thunkvalue)vp_lazy)[1]))(((thunkvalue)vp_lazy)[1]) ; \
+    ((thunkvalue)vp_lazy)[0] += 1 ; \
+    *(hit*)(((thunkvalue)vp_lazy)+1) = tmp ; \
   } else { \
-    tmp = *(hit*)(&((thunkvalue_struct*)vp_lazy)->data) ; \
+    tmp = *(hit*)(((thunkvalue)vp_lazy)+1) ; \
   } /* end of [if] */ \
 } while (0) /* end of [do ... while ...] */
 

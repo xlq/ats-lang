@@ -25,7 +25,7 @@ fun from {n:int} (n: int n):<1,~ref> stream (intGte n) =
 typedef Nat2 = intGte 2
 
 fun sieve (ns: stream Nat2):<1,~ref> stream (Nat2) = let
-  val- n :: ns = lazy_force ns
+  val- n :: ns = !ns
 in
   $delay (n :: sieve (stream_filter<Nat2> (ns, lam x => x nmod n > 0)))
 end // end of [sieve]
@@ -46,9 +46,10 @@ printf ("prime 100 = %i\n", @(prime_get 100)) ;
 printf ("prime 1000 = %i\n", @(prime_get 1000)) ;
 printf ("prime 999 = %i\n", @(prime_get 999)) ;
 printf ("prime 5000 = %i\n", @(prime_get 5000)) ; // = 48619
+printf ("prime 10000 = %i\n", @(prime_get 10000)) ; // = 104743
 *)
 
-printf ("prime 10000 = %i\n", @(prime_get 10000)) ; // = 104743
+printf ("prime 20000 = %i\n", @(prime_get 20000)) ; // = 104743
 
 end
 

@@ -64,15 +64,15 @@ printf ("prime 1    = %i\n", @(nprime 1)) ;
 printf ("prime 10   = %i\n", @(nprime 10)) ;
 printf ("prime 100  = %i\n", @(nprime 100)) ;
 printf ("prime 1000 = %i\n", @(nprime 1000)) ;
-// printf ("prime 10000 = %i\n", @(nprime 10000)) ;
+printf ("prime 10000 = %i\n", @(nprime 10000)) ;
 
 print ("nfib 10 = "); print (nfib 10); print_newline ();
 print ("nfib 20 = "); print (nfib 20); print_newline ();
 print ("nfib 30 = "); print (nfib 30); print_newline ();
 print ("nfib 40 = "); print (nfib 40); print_newline ();
-// print ("nfib 50 = "); print (nfib 50); print_newline ();
+print ("nfib 50 = "); print (nfib 50); print_newline ();
 
-end
+end // end of [main]
 
 (* ****** ****** *)
 

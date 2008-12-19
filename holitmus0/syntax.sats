@@ -1,10 +1,10 @@
 (*
 **
-** HOLITMUS: a proof checker
+** HOLITMUS: a proof checker for higher-order logic
 **
 ** Originally implemented in OCaml
 **    by Chad Brown (cebrown AT mathgate DOT info)
-** Time March/September, 2008
+** Time: March/September, 2008
 **
 ** Translated to ATS
 **    by Hongwei Xi (hwxi AT cs DOT bu DOT edu)

@@ -66,8 +66,8 @@ sieve_lazy: sieve_lazy.dats
 	$(ATSCC) -D_ATS_GCATS -O3 -o sieve_lazy sieve_lazy.dats
 sieve_lazy_vt: sieve_lazy_vt.dats
 #	$(ATSCC) -O3 -o sieve_lazy_vt sieve_lazy_vt.dats
-	$(ATSCC) -D_ATS_gcats -O3 -o sieve_lazy_vt sieve_lazy_vt.dats
-#	$(ATSCC) -D_ATS_GCATS -O3 -o sieve_lazy_vt sieve_lazy_vt.dats
+#	$(ATSCC) -D_ATS_gcats -O3 -o sieve_lazy_vt sieve_lazy_vt.dats
+	$(ATSCC) -D_ATS_GCATS -O3 -o sieve_lazy_vt sieve_lazy_vt.dats
 
 # a simple implementation of string match in CPS-style
 strmat: strmat.dats; $(ATSCC) -o strmat strmat.dats
