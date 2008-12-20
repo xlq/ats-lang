@@ -1223,8 +1223,8 @@ implement d1exp_tr (d1e0): d2exp = let
   val loc0 = d1e0.d1exp_loc
 (*
   val () = begin
-    print "d1exp_tr: d1e0 = "; print d1e0; print_newline ()
-  end
+    prerr "d1exp_tr: d1e0 = "; prerr_d1exp d1e0; print_newline ()
+  end // end of [val]
 *)
 in
   case+ d1e0.d1exp_node of
@@ -1553,10 +1553,11 @@ in
       d2exp_tmpid (loc0, d2e_qid, ts2ess)
     end // end of [D1Etmpid]
   | D1Etop () => d2exp_top (loc0)
-  | D1Etrywith (d1e, c1ls) => let
+  | D1Etrywith (r1es, d1e, c1ls) => let
+      val r2es = i1nvresstate_tr r1es
       val d2e = d1exp_tr d1e; val c2ls = c1laulst_tr (1, c1ls)
     in
-      d2exp_trywith (loc0, d2e, c2ls)
+      d2exp_trywith (loc0, r2es, d2e, c2ls)
     end // end of [D1Etrywith]
   | D1Etup (tupknd, npf, d1es) => begin
       d2exp_tup (loc0, tupknd, npf, d1explst_tr d1es)

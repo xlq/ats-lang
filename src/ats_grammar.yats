@@ -585,6 +585,7 @@ typedef ats_ptr_type d0arrind_t ;
 typedef ats_ptr_type ifhead_t ;
 typedef ats_ptr_type casehead_t ;
 typedef ats_ptr_type loophead_t ;
+typedef ats_ptr_type tryhead_t ;
 typedef ats_ptr_type m0atch_t ;
 typedef ats_ptr_type m0atchlst_t ;
 typedef ats_ptr_type guap0at_t ;
@@ -691,7 +692,7 @@ extern d0exp_t d0exp_sif (ifhead_t, s0exp_t, d0exp_t, d0exp_t) ;
 extern d0exp_t d0exp_spawn (t0kn_t) ;
 extern d0exp_t d0exp_string (s0tring_t) ;
 extern d0exp_t d0exp_tmpid (tmpqi0de_t, s0explst_t, tmps0explstlst_t, t0kn_t) ;
-extern d0exp_t d0exp_trywith_seq (t0kn_t, d0explst_t, t0kn_t, c0laulst_t) ;
+extern d0exp_t d0exp_trywith_seq (tryhead_t, d0explst_t, t0kn_t, c0laulst_t) ;
 extern d0exp_t d0exp_tup (int, t0kn_t, d0explst_t, t0kn_t) ;
 extern d0exp_t d0exp_tup2 (int, t0kn_t, d0explst_t, d0explst_t, t0kn_t) ;
 extern d0exp_t d0exp_viewat (t0kn_t) ;
@@ -712,6 +713,7 @@ extern ifhead_t ifhead_make (t0kn_t, i0nvresstate_t) ;
 extern casehead_t casehead_make (int, t0kn_t, i0nvresstate_t) ;
 extern loophead_t loophead_make_none (t0kn_t) ;
 extern loophead_t loophead_make_some (t0kn_t, loopi0nv_t, t0kn_t) ;
+extern tryhead_t tryhead_make (t0kn_t) ;
 
 extern m0atch_t m0atch_make_none (d0exp_t) ;
 extern m0atch_t m0atch_make_some (d0exp_t, p0at_t) ;
@@ -1054,6 +1056,7 @@ ifhead_t sifhead ;
 casehead_t casehead ;
 casehead_t scasehead ;
 loophead_t loophead ;
+tryhead_t tryhead ;
 
 m0atch_t m0atch ;
 m0atchlst_t m0atchlst ;
@@ -1524,6 +1527,7 @@ guad0ec_t guad0ec ;
 %type <casehead> scasehead
 %type <loophead> forhead
 %type <loophead> whilehead
+%type <tryhead> tryhead
 %type <m0atch> m0atch
 %type <m0atchlst> m0atchseq
 %type <m0atchlst> andm0atchseq
@@ -2591,6 +2595,10 @@ whilehead
   | WHILESTAR loopi0nv EQGT             { $$ = loophead_make_some($1, $2, $3) ; }
 ;
 
+tryhead
+  : TRY /* no invariant */              { $$ = tryhead_make($1) ; }
+;
+
 d0exp
   : atmd0exp argd0expseq                { $$ = d0exp_apps($1, $2) ; }
   | d0exp COLON s0exp                   { $$ = d0exp_ann($1, $3) ; }
@@ -2611,12 +2619,12 @@ d0exp
                                         { $$ = d0exp_lam(1, $1, $2, $3, $4, $5 ) ; }
   | FIX di0de f0arg1seq colons0expopt funarrow d0exp %prec DEXPLAM
                                         { $$ = d0exp_fix($1, $2, $3, $4, $5, $6) ; }
-  | TRY d0expsemiseq0 WITH c0lauseq %prec DEXPTRY
-                                        { $$ = d0exp_trywith_seq($1, $2, $3, $4) ; }
   | forhead initestpost d0exp %prec DEXPFOR
                                         { $$ = d0exp_for_itp ($1, $2, $3) ; }
   | whilehead atmd0exp d0exp %prec DEXPWHILE
                                         { $$ = d0exp_while ($1, $2, $3) ; }
+  | tryhead d0expsemiseq0 WITH c0lauseq %prec DEXPTRY
+                                        { $$ = d0exp_trywith_seq($1, $2, $3, $4) ; }
   | d0exp WHERE LBRACE d0ecseq_dyn RBRACE
                                         { $$ = d0exp_where ($1, $4, $5) ; }
 ;

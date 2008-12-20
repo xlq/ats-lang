@@ -350,7 +350,7 @@ and d1exp_node =
       ($Syn.tmpqi0de, tmps1explstlst)
   | D1Etop (* uninitialized value *)
   | D1Etrywith of (* dynamic trywith expression *)
-      (d1exp, c1laulst)
+      (i1nvresstate, d1exp, c1laulst)
   | D1Etup of (* dynamic tuple expression *)
       (int (*tupknd*), int (*pfarity*), d1explst)
   | D1Eviewat of (* taking view at a given address *)
@@ -779,7 +779,7 @@ fun d1exp_tmpid
 
 fun d1exp_top (_: loc_t): d1exp
 
-fun d1exp_trywith (_: loc_t, _: d1exp, _: c1laulst): d1exp
+fun d1exp_trywith (_: loc_t, _: i1nvresstate, _: d1exp, _: c1laulst): d1exp
 
 fun d1exp_tup (_: loc_t, kind: int, _: d1explst): d1exp
 

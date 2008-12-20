@@ -688,16 +688,17 @@ val d3e0 = case+ d2e0.d2exp_node of
       // for datatype constructors taking uninitialized arguments
       d3exp_top (loc0, s2exp_topize_0 s2e0)
     end
-  | D2Etrywith (d2e, c2ls) => let
+  | D2Etrywith (r2es, d2e, c2ls) => let
       val (pf_d2varset | ()) = the_d2varset_env_push_try ()
+(*
+      // [r2es] is not in use; it is always [in2vresstate_nil]
+      val r2es = i2nvresstate_update (r2es) // each var is replaced with its view
+*)
       val d3e = d2exp_tr_dn (d2e, s2e0)
       val s2e_pat = s2exp_exception_viewtype ()
       var cmplt: int = 0
       val c3ls = c2laulst_tr_dn (
-        loc0
-      , cmplt, ~1(*knd*)
-      , i2nvresstate_nil
-      , c2ls, '[d3e], 1, '[s2e_pat], s2e0
+        loc0, cmplt, ~1(*knd*), r2es, c2ls, '[d3e], 1, '[s2e_pat], s2e0
       ) // end of [c2laulst_tr_dn]
       val () = the_d2varset_env_pop_try (pf_d2varset | (*none*))
     in
@@ -1009,14 +1010,14 @@ end // end of [c2laulst_tr_dn]
 (* ****** ****** *)
 
 implement d2exp_caseof_tr_dn
-  (loc0, casknd, res, n, d2es, c2ls, s2e0) = let
+  (loc0, casknd, r2es, n, d2es, c2ls, s2e0) = let
   val d3es = d2explst_tr_up d2es
   val () = d3explst_open_and_add d3es
   val s2es_pat = d3explst_typ_get d3es
-  val res = i2nvresstate_update (res) // each var is replaced with its view
+  val r2es = i2nvresstate_update (r2es) // each var is replaced with its view
   var cmplt: int = 0
   val c3ls = c2laulst_tr_dn
-    (loc0, cmplt, casknd, res, c2ls, d3es, n, s2es_pat, s2e0)
+    (loc0, cmplt, casknd, r2es, c2ls, d3es, n, s2es_pat, s2e0)
   val () = begin
     if cmplt = 0 then (if casknd < 1 then the_effect_env_check_exn (loc0))
   end
@@ -1027,10 +1028,10 @@ end // end of [d2exp_caseof_tr_dn]
 (* ****** ****** *)
 
 implement d2exp_scaseof_tr_dn
-  (loc0, res, s2e_val, sc2ls, s2e0) = let
-  val res = i2nvresstate_update (res)
+  (loc0, r2es, s2e_val, sc2ls, s2e0) = let
+  val r2es = i2nvresstate_update (r2es)
   val sbis = the_d2varset_env_stbefitemlst_save ()
-  val sac = staftscstr_initialize (res, sbis)
+  val sac = staftscstr_initialize (r2es, sbis)
 
   fn aux_one (sc2l: sc2lau):<cloref1> sc3lau = let
     val sp2t = sc2l.sc2lau_pat

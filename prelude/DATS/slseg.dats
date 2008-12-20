@@ -116,4 +116,3 @@ linqueuelst_list_vt_of_sllst (ats_ptr_type p) { return p ; }
 #endif
 
 (* end of [slseg_v.dats] *)
-    

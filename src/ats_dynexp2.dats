@@ -806,9 +806,9 @@ implement d2exp_top (loc) = '{
  d2exp_loc= loc, d2exp_node= D2Etop (), d2exp_typ= None ()
 }
 
-implement d2exp_trywith (loc, d2e, c2ls) = '{
+implement d2exp_trywith (loc, res, d2e, c2ls) = '{
   d2exp_loc= loc
-, d2exp_node= D2Etrywith (d2e, c2ls)
+, d2exp_node= D2Etrywith (res, d2e, c2ls)
 , d2exp_typ= None ()
 }
 

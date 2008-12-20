@@ -2187,10 +2187,10 @@ val d3e0 = (case+ d2e0.d2exp_node of
     end // end of [D2Escaseof]
   | D2Esel (d2e, d2ls) => d2exp_sel_tr_up (loc0, d2e, d2ls)
   | D2Eseq d2es => d2exp_seq_tr_up (loc0, d2es)
-  | D2Esif (res, s2p_cond, d2e_then, d2e_else) => let
+  | D2Esif (r2es, s2p_cond, d2e_then, d2e_else) => let
       val s2e_sif = s2exp_Var_make_srt (loc0, s2rt_prop)
     in
-      d2exp_sif_tr_dn (loc0, res, s2p_cond, d2e_then, d2e_else, s2e_sif)
+      d2exp_sif_tr_dn (loc0, r2es, s2p_cond, d2e_then, d2e_else, s2e_sif)
     end // end of [D2Esif]
   | D2Estring (str, len) => let
       val s2e = s2exp_string_int_type (string0_length str)
@@ -2207,18 +2207,19 @@ val d3e0 = (case+ d2e0.d2exp_node of
       prerr_newline ();
       $Err.abort {d3exp} ()
     end // end of [D2Etop]
-  | D2Etrywith (d2e, c2ls) => let
+  | D2Etrywith (r2es, d2e, c2ls) => let
+(*
+      // [r2es] is not in use; it is always [in2vresstate_nil]
+      val r2es = i2nvresstate_update (r2es) // each var is replaced with its view
+*)
       val (pf_d2varset | ()) = the_d2varset_env_push_try ()
       val d3e = d2exp_tr_up d2e
       val s2e = d3e.d3exp_typ
       val s2e_pat = s2exp_exception_viewtype ()
       var cmplt: int = 0
       val c3ls = c2laulst_tr_dn (
-        loc0
-      , cmplt, ~1(*knd*)
-      , i2nvresstate_nil
-      , c2ls, '[d3e], 1, '[s2e_pat], s2e
-      ) // end of [C2laulst_tr_dn]
+        loc0, cmplt, ~1(*knd*), r2es, c2ls, '[d3e], 1, '[s2e_pat], s2e
+      ) // end of [c2laulst_tr_dn]
       val () = the_d2varset_env_pop_try (pf_d2varset | (*none*))
     in
       d3exp_trywith (loc0, d3e, c3ls)

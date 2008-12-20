@@ -1082,8 +1082,12 @@ fun aux_item (d0e0: d0exp): d1expitm = let
         $Fix.ITEMatm (d1exp_tmpid (loc0, qid, ts1ess))
       end // end of [D0Etmpid]
     | D0Etop () => $Fix.ITEMatm (d1exp_top loc0)
-    | D0Etrywith (d0e, c0ls) => begin
-        $Fix.ITEMatm (d1exp_trywith (loc0, d0exp_tr d0e, c0laulst_tr c0ls))
+    | D0Etrywith (hd, d0e, c0ls) => let
+        val inv = i0nvresstate_tr (hd.tryhead_inv)
+        val d1e = d0exp_tr d0e
+        val c1ls = c0laulst_tr c0ls
+      in
+        $Fix.ITEMatm (d1exp_trywith (loc0, inv, d1e, c1ls))
       end // end of [D0Etrywith]
     | D0Etup (tupknd, d0es) => let
         val d1es = d0explst_tr d0es
@@ -1555,8 +1559,7 @@ implement d0ec_tr d0c0 = begin
     end // end of [D0Cimpdec]
   | D0Cdynload (name) => let
       val filename: fil_t = case+ $Fil.filenameopt_make name of
-        | ~Some_vt filename => filename
-        | ~None_vt () => begin
+        | ~Some_vt filename => filename | ~None_vt () => begin
             prerr d0c0.d0ec_loc;
             prerr ": error(1)";
             prerr ": the file [";
@@ -1564,7 +1567,8 @@ implement d0ec_tr d0c0 = begin
             prerr "] is not available for dynamic loading.";
             prerr_newline ();
             $Err.abort {fil_t} ()
-          end
+          end // end of [None_vt]
+      // end of [val]
     in
       d1ec_dynload (d0c0.d0ec_loc, filename)
     end // end of [D0Cdynload]

@@ -1424,7 +1424,7 @@ datatype d0exp_node =
       (tmpqi0de, tmps0explstlst)
   | D0Etop (* uninitialized value *)
   | D0Etrywith of (* try-expression *)
-      (d0exp, c0laulst)
+      (tryhead, d0exp, c0laulst)
   | D0Etup of (* dynamic tuple expression *)
       (int (*tupknd*), d0explst)
   | D0Etup2 of (* dynamic tuple expression *)
@@ -1528,17 +1528,21 @@ and guap0at: type = '{
 (* ****** ****** *)
 
 and ifhead: type = '{
-  ifhead_loc= loc_t, ifhead_inv= i0nvresstate
+  ifhead_tok= t0kn, ifhead_inv= i0nvresstate
 }
 
 and casehead: type = '{
-  casehead_loc= loc_t
+  casehead_tok= t0kn
 , casehead_knd= int
 , casehead_inv= i0nvresstate
 }
 
 and loophead: type = '{
-  loophead_loc= loc_t, loophead_inv= loopi0nvopt
+  loophead_tok= t0kn, loophead_inv= loopi0nvopt
+}
+
+and tryhead: type = '{
+  tryhead_tok= t0kn, tryhead_inv= i0nvresstate
 }
 
 and c0lau: type = '{
@@ -1813,7 +1817,7 @@ fun d0exp_tmpid
   = "d0exp_tmpid"
 
 fun d0exp_trywith_seq
-  (t_try: t0kn, d0es: d0explst, t_with: t0kn, c0ls: c0laulst): d0exp
+  (hd: tryhead, d0es: d0explst, t_with: t0kn, c0ls: c0laulst): d0exp
   = "d0exp_trywith_seq"
 
 fun d0exp_tup (flat: int, t_beg: t0kn, d0es: d0explst, t_end: t0kn): d0exp
@@ -1894,6 +1898,8 @@ fun loophead_make_none (t_head: t0kn): loophead
   = "loophead_make_none"
 fun loophead_make_some (t_head: t0kn, inv: loopi0nv, t_eqgt: t0kn): loophead
   = "loophead_make_some"
+
+fun tryhead_make (t_try: t0kn): tryhead = "tryhead_make"
 
 //
 

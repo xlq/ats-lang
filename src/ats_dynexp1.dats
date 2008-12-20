@@ -436,8 +436,8 @@ implement d1exp_top (loc) = '{
   d1exp_loc= loc, d1exp_node= D1Etop ()
 }
 
-implement d1exp_trywith (loc, d1e, c1ls) = '{
-  d1exp_loc= loc, d1exp_node= D1Etrywith (d1e, c1ls)
+implement d1exp_trywith (loc, res, d1e, c1ls) = '{
+  d1exp_loc= loc, d1exp_node= D1Etrywith (res, d1e, c1ls)
 }
 
 implement d1exp_tup (loc, tupknd, d1es) = '{

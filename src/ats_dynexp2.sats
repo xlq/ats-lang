@@ -640,7 +640,7 @@ and d2exp_node =
       (d2exp, tmps2explstlst)
   | D2Etop (* uninitiated value *)
   | D2Etrywith of (* dynamic trywith expression *)
-      (d2exp, c2laulst 1)
+      (i2nvresstate, d2exp, c2laulst 1)
   | D2Evar of (* dynamic variable *)
       d2var_t
   | D2Eviewat of (* taking view at a given address *)
@@ -1075,7 +1075,7 @@ fun d2exp_struct (_: loc_t, _: labd2explst): d2exp
 fun d2exp_sym (_: loc_t, d2s: d2sym): d2exp
 fun d2exp_tmpid (_: loc_t, _: d2exp, _: tmps2explstlst): d2exp
 fun d2exp_top (_: loc_t): d2exp
-fun d2exp_trywith (_: loc_t, _: d2exp, _: c2laulst 1): d2exp
+fun d2exp_trywith (_: loc_t, _: i2nvresstate, _: d2exp, _: c2laulst 1): d2exp
 fun d2exp_tup (_: loc_t, kind: int, npf: int, _: d2explst): d2exp
 fun d2exp_var (_: loc_t, d2v: d2var_t): d2exp
 fun d2exp_viewat (_: loc_t, d2e: d2exp): d2exp

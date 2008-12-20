@@ -340,7 +340,7 @@ implement d0exp_posmark (d0e0) = case+ d0e0.d0exp_node of
       d0exp_posmark d0e_cond;
       d0exp_posmark d0e_then;
       d0expopt_posmark od0e_else;
-    end
+    end // end of [D0Eif]
   | D0Elam (_(*lin*), f0as, os0e, otags, d0e_body) => begin
       f0arglst_posmark f0as;
       s0expopt_posmark os0e; e0fftaglstopt_posmark otags;
@@ -368,17 +368,18 @@ implement d0exp_posmark (d0e0) = case+ d0e0.d0exp_node of
   | D0Esexparg _(*s0exparg*) => begin
       staexploc_posmark (d0e0.d0exp_loc);
     end
-  | D0Esif (hd, s0e_cond, d0e_then, d0e_else) => begin
-      prfexploc_posmark (d0e0.d0exp_loc);
+  | D0Esif (hd, s0e_cond, d0e_then, d0e_else) => let
+      // val () =  prfexploc_posmark (d0e0.d0exp_loc)
+    in
       s0exp_posmark s0e_cond;
       d0exp_posmark d0e_then;
       d0exp_posmark d0e_else;
-    end
+    end // end of [D0Esif]
   | D0Estruct ld0es => labd0explst_posmark ld0es
   | D0Etmpid (_(*id*), ts0ess) => tmps0explstlst_posmark ts0ess
-  | D0Etrywith (d0e, c0ls) => begin
+  | D0Etrywith (hd, d0e, c0ls) => begin
       d0exp_posmark d0e; c0laulst_posmark c0ls;
-    end
+    end // end of [D0Etrywith]
   | D0Etup (_(*tupknd*), d0es) => d0explst_posmark d0es
   | D0Etup2 (_(*tupknd*), d0es1, d0es2) => begin
       d0explst_prf_posmark d0es1; d0explst_posmark d0es2;

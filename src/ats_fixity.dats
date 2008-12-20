@@ -274,12 +274,15 @@ fun resolve (xs: IS, m: I, ys: IS)
         case+ compare (p, p1) of
         |  1 => next (xs, m :: ys)
         | ~1 => reduce (m :: xs, ys)
-        |  _ (* 0 *) => begin
-          case+ (oper_associativity opr, oper_associativity opr1) of
-          | (ASSOClft (), ASSOClft ()) => reduce (m :: xs, ys)
-          | (ASSOCrgt (), ASSOCrgt ()) => next (xs, m :: ys)
-          | (_, _) => err (loc0)
-          end // end of [begin]
+        |  _ (* 0 *) => let
+             val assoc = oper_associativity opr
+             and assoc1 = oper_associativity opr1
+           in
+             case+ (assoc, assoc1) of
+             | (ASSOClft (), ASSOClft ()) => reduce (m :: xs, ys)
+             | (ASSOCrgt (), ASSOCrgt ()) => next (xs, m :: ys)
+             | (_, _) => err (loc0)
+           end // end of [_ (* 0 *)]
       end // end of [let]
     | (OPERinf _, _ :: nil ()) => next (xs, m :: ys)
     | (OPERpos _, _ :: ITEMopr opr1 :: _) => let
@@ -301,11 +304,9 @@ and resolve_app (xs: IS, m: I, ys: IS):<cloptr1> a = begin
     case+ compare (app_prec, oper_precedence opr1) of
     |  1 => next (xs, m :: app :: ys)
     | ~1 => reduce (m :: xs, ys)
-    |  _ => begin
-      case+ oper_associativity opr1 of
-      | ASSOClft () => reduce (m :: xs, ys)
-      | _ => err (loc0)                
-      end // end of [begin]
+    |  _ => begin case+ oper_associativity opr1 of
+         | ASSOClft () => reduce (m :: xs, ys) | _ => err (loc0)
+       end // end of [begin]
     end // end of [begin]
   | _ :: nil () => next (xs, m :: app :: ys)
   | _ => err (loc0)
