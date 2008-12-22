@@ -625,10 +625,8 @@ in
   | D2Etop () => begin
       fprint1_string (pf | out, "D2Etop()")
     end // end of [D2Etop]
-  | D2Etrywith (r2es, d2e, c2ls) => begin
+  | D2Etrywith (_(*r2es*), d2e, c2ls) => begin
       strpr "D2Etrywith(";
-      fprint1_string (pf | out, "...");
-      strpr "; ";
       fprint_d2exp (pf | out, d2e);
       strpr "; ";
       fprint1_string (pf | out, "...");

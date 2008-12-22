@@ -128,7 +128,7 @@ fun ccomp_gcc_ar_libfile (infile: string, libfile: string): void
 
 fun libats_make (): void
 fun libats_mt_make (): void
-// fun libatslex_make (): void // it is no longer in use
+fun libatslex_make (): void
 
 (* ****** ****** *)
 

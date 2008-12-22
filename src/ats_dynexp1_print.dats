@@ -532,10 +532,8 @@ in
   | D1Etop () => begin
       fprint1_string (pf | out, "D1Etop()")
     end
-  | D1Etrywith (r1es, d1e, c1ls) => begin
+  | D1Etrywith (_(*r1es*), d1e, c1ls) => begin
       strpr "D1Etrywith(";
-      fprint1_string (pf | out, "...");
-      strpr "; ";
       fprint_d1exp (pf | out, d1e);
       strpr "; ";
       fprint1_string (pf | out, "...");

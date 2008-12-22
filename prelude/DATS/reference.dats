@@ -72,8 +72,7 @@ implement{a} ref_set_elt (r, x) = (!r := x)
 (* ****** ****** *)
 
 implement{a} ref_swap (r, x) = let
-  val (vbox pf | p) = ref_get_view_ptr r
-  val tmp = !p
+  val (vbox pf | p) = ref_get_view_ptr r; val tmp = !p
 in
   !p := x; x := tmp
 end // end of [ref_swap]

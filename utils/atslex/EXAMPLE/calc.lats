@@ -456,14 +456,17 @@ fun eval_string (env: &env, input: string): int = let
   val () =
     (print "eval_string: err = "; print err; print_newline ())
 *)
-  val cmd: cmd = if err > 0 then (free_cmd cmd; CMDerror ()) else cmd
+  val cmd = (
+    if err > 0 then (free_cmd cmd; CMDerror ()) else cmd
+  ) : cmd
 (*
   val () =
     (print "eval_string: tok = "; print_token tok; print_newline ())
 *)
-  val cmd: cmd = case+ tok of
+  val cmd = (case+ tok of
     | ~TOKeof () => cmd
     | tok_v => (free_token tok_v; free_cmd cmd; CMDerror ())
+  ) : cmd
 in
   eval_cmd (env, cmd)
 end // end of [eval_string]

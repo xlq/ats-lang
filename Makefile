@@ -110,7 +110,9 @@ bin/atspack:
 
 # [gcc -E] for preprocessing
 .libfiles_local: ; $(GCC) -E -P -x c .libfiles -o .libfiles_local
-libfiles: .libfiles_local; "$(ATSHOME)"/bin/atslib -all
+libfiles: .libfiles_local
+	"$(ATSHOME)"/bin/atslib -all # for libats
+	"$(ATSHOME)"/bin/atslib -lex # for libatslex
 
 ###### a lexer for ATS ######
 bin/atslex:

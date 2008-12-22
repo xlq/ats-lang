@@ -162,8 +162,6 @@ end // end of [libats_make]
 
 (* ****** ****** *)
 
-(*
-
 val libatslex_local = "ccomp/lib/libatslex.a"
 val libatslex_global = ATSHOME_dir_append libatslex_local
 
@@ -175,7 +173,6 @@ in
   ccomp_gcc_ar_libfile (dir + "lexing.dats", libatslex_global) ;
   ccomp_gcc_ar_libfile (dir + "tables.dats", libatslex_global) ;
 end // end of [libatslex_make]
-*)
 
 (* ****** ****** *)
 

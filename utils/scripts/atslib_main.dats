@@ -75,13 +75,11 @@ implement main (argc, argv) = begin
   if argc > 1 then begin
     case+ argv.[1] of
       | "-all" => libats_make ()
-(*
       | "-lex" => libatslex_make ()
-*)
       | infile => ccomp_gcc_ar_libfile (infile, libats_global)
   end else begin
     do_usage argv.[0]
-  end
+  end // end of [if]
 end // end of [main]
 
 (* ****** ****** *)

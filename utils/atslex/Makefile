@@ -79,4 +79,6 @@ top_sats.o: top.sats
 clean::
 	rm -f *_sats.c *_dats.c *.o *~
 
+cleanall: clean; rm -f atslex
+
 ###### end of [Makefile] ######
