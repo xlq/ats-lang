@@ -7,7 +7,7 @@
 (***********************************************************************)
 
 (*
- * ATS - Unleashing the Power of Types!
+ * ATS/Anairiats - Unleashing the Potential of Types!
  *
  * Copyright (C) 2002-2008 Hongwei Xi, Boston University
  *
@@ -38,7 +38,10 @@
 (* ****** ****** *)
 
 staload "libats/lex/lexing.sats"
-staload "prelude/DATS/reference.dats"
+
+(* ****** ****** *)
+
+staload _(*anonymous*) = "prelude/DATS/reference.dats"
 
 (* ****** ****** *)
 
@@ -55,8 +58,9 @@ extern fun new_tbloptref_some {n:nat} {l:addr}
   (pf: array_v (int16, n, l) | p: ptr l, n: int n): ref tblopt =
   "new_tbloptref_some"
 
-implement new_tbloptref_some (pf | p, n) =
-  ref_make_elt<tblopt> (tblopt_some (pf | p, n))
+implement new_tbloptref_some (pf | p, n) = let
+  val tblopt = tblopt_some (pf | p, n) in ref<tblopt> (tblopt)
+end // end of [new_tbloptref_some]
 
 (* ****** ****** *)
 
@@ -101,6 +105,8 @@ implement __accept_table_free (r_tblopt): void =
 
 //
 
+extern fun int_of_int16 (x: int16):<> int = "ats_int_of_int16"
+
 %{^
 
 static inline
@@ -109,7 +115,7 @@ ats_int_of_int16 (ats_int16_type i) { return i ; }
 
 %}
 
-extern fun int_of_int16 (x: int16): int = "ats_int_of_int16"
+//
 
 implement accept_table_get (r_tblopt, nstate) = let
   var ans: int = (0: int)
@@ -131,12 +137,10 @@ implement accept_table_get (r_tblopt, nstate) = let
         end else let
           prval pf_v = !pf
         in
-          ans := int_of_int16 (!p.[nstate]);
-          !pf := pf_v;
-          fold@ (!p_tblopt)
+          ans := int_of_int16 (!p.[nstate]); !pf := pf_v; fold@ (!p_tblopt)
         end
       end // end of [tblopt_some]
-  end
+  end // end of [val]
 in
   case+ err of
   | 1 => exit_errmsg (1, "lexing: accept_table_get: table is not available\n")
@@ -163,51 +167,59 @@ implement __transition_table_free (r_tblopt): void =
 implement transition_table_get (r_tblopt, nstate, c) = let
 (*
   val () = printf (
-    "transition_table_get: nstate = %i and c = %i\n", @(nstate, int_of c)
-  )
+    "transition_table_get: nstate = %i and c = %i\n", @(nstate, int_of_char c)
+  ) // end of [val]
 *)
-  var ans: int = (0: int)
-  var err: int = (0: int)
+  var ans: int = (0: int) and err: int = (0: int)
   val () = let
     val (vbox pf_tblopt | p_tblopt) = ref_get_view_ptr r_tblopt
   in
     case+ !p_tblopt of
-      | tblopt_none () => begin
-          err := (1: int); fold@ (!p_tblopt)
-        end
-      | tblopt_some (!pf | p, n) => let
-          val i = int1_of_int
-            ((nstate - 1) * NUMBER_OF_CHARS + (int_of c) + 1)
+    | tblopt_none () => begin
+        err := (1: int); fold@ (!p_tblopt)
+      end // end of [tblopt_none]
+    | tblopt_some (!pf | p, n) => let
 (*
-          val () = $effmask_all begin
-            printf ("transition_table_get: nstate = %i\n", @(nstate))
-          end
-
-          val () = $effmask_all begin
-            printf ("transition_table_get: n = %i and i = %i\n", @(n,i))
-          end
+        Note that [int_of_schar] rather than [int_of_char] is used.
+        This change was made after Eckehard Berns (ecki@ecki.to) reported a bug
+        due to [char] being treated as [unsigned char].
 *)
-        in
-          if i < 0 then begin
-            err := (2: int); fold@ (!p_tblopt)
-          end else if i >= n then begin
-            err := (3: int); fold@ (!p_tblopt)
-          end else let
-            prval pf_v = !pf
-          in
-            ans := int_of_int16 (!p.[i]);
-            !pf := pf_v;
-            fold@ (!p_tblopt)
-          end
+        val i = int1_of_int
+          ((nstate - 1) * NUMBER_OF_CHARS + (int_of_schar c) + 1)
+(*
+        val () = $effmask_all begin
+          printf ("transition_table_get: nstate = %i\n", @(nstate))
         end
-  end
+        val () = $effmask_all begin
+          printf ("transition_table_get: n = %i and i = %i\n", @(n,i))
+        end
+*)
+      in
+        if i < 0 then begin
+          err := (2: int); fold@ (!p_tblopt)
+        end else if i >= n then begin
+          err := (3: int); fold@ (!p_tblopt)
+        end else let
+          prval pf_v = !pf
+        in
+          ans := int_of_int16 (!p.[i]); !pf := pf_v; fold@ (!p_tblopt)
+        end // end of [if]
+      end // end of [tblopt_some]
+  end // end of [val]
+
+(*
+  val () = begin
+    prerr "transition_table_get: ans = "; prerr ans; prerr_newline ()
+  end // end of [val]
+*)
+
 in
   case+ err of
-    | 1 => exit_errmsg (1, "lexing: transition_table_get: table is not available\n")
-    | 2 => exit_errmsg (1, "lexing: transition_table_get: state number is illegal\n")
-    | 3 => exit_errmsg (1, "lexing: transition_table_get: state number is illegal\n")
-    | _ => ans
-end
+  | 1 => exit_errmsg (1, "lexing: transition_table_get: table is not available\n")
+  | 2 => exit_errmsg (1, "lexing: transition_table_get: state number is illegal\n")
+  | 3 => exit_errmsg (1, "lexing: transition_table_get: state number is illegal\n")
+  | _ => ans
+end // end of [transition_table_get]
 
 (* ****** ****** *)
 
@@ -219,14 +231,16 @@ end
 ats_ptr_type
 __accept_table_make_fun
   (ats_int_type ntot, ats_int_type nfin, ats_ptr_type s0) {
-  int i, nstate, irule, sz ; ats_int16_type* p0 ;
-  ats_uchar_type* s ; ats_ptr_type res ;
+  int i, nstate, irule, sz ;
+  ats_int16_type *p0 ; ats_uchar_type *s ; ats_ptr_type res ;
+
+  s = (ats_uchar_type*)s0;
 
   // [calloc] is used as only integers are to be stored; thus,
   // there is no need to scan the allocated memory during GC;
   // the allocated memory is freed by a call to [free]
-  sz = ntot+1 ; p0 = calloc (sz, sizeof(ats_int16_type)) ;  
-  s = (ats_uchar_type*)s0;
+  sz = ntot + 1 ; p0 = calloc (sz, sizeof(ats_int16_type)) ;  
+
   for (i = 0 ; i < nfin ; ++i) {
     nstate = (s[0] << NBITS_PER_BYTE) + s[1] ;
     s += 2 ;
@@ -235,7 +249,7 @@ __accept_table_make_fun
 /*
     fprintf (stdout, "%i -> %i\n", nstate, p0[nstate]) ;
 */
-  }
+  } /* end of [for] */
 
   res = new_tbloptref_some (p0, sz) ;
 /*
@@ -244,7 +258,7 @@ __accept_table_make_fun
   fprintf (stdout, "__accept_table_make_fun: res = %p\n", res);
 */
   return res ;
-}
+} /* end of [__accept_table_make_fun] */
 
 ats_ptr_type
 __transition_table_make_fun (ats_int_type n, ats_ptr_type s0) {
@@ -266,8 +280,8 @@ __transition_table_make_fun (ats_int_type n, ats_ptr_type s0) {
       fprintf (stdout, "__transition_table_make_fun: %i: *p = %i\n", j, *p);
 */
       s += 2 ; ++p ;
-    }
-  }
+    } /* end of [for] */
+  } /* end of [for] */
 
   res = new_tbloptref_some (p0, sz) ;
 /*
@@ -276,7 +290,7 @@ __transition_table_make_fun (ats_int_type n, ats_ptr_type s0) {
   fprintf (stdout, "__transition_table_make_fun: res = %p\n", res);
 */
   return res ;
-}
+} /* end of [__transition_table_make_fun] */
 
 %}
 

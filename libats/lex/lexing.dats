@@ -7,7 +7,7 @@
 (***********************************************************************)
 
 (*
- * ATS - Unleashing the Power of Types!
+ * ATS/Anairiats - Unleashing the Potential of Types!
  *
  * Copyright (C) 2002-2008 Hongwei Xi, Boston University
  *
@@ -59,8 +59,8 @@ extern fun position_make_int_int_lint
 implement position_make_int_int_lint (line, loff, toff) =
   '{ line= line, loff= loff, toff= toff }
 
-implement fprint_position (pf | fil, pos) =
-  fprintf (pf | fil, "%li(line=%i, offs=%i)", @(pos.toff+1L, pos.line+1, pos.loff+1))
+implement fprint_position (pf | fil, pos) = fprintf1_exn
+  (pf | fil, "%li(line=%i, offs=%i)", @(pos.toff+1L, pos.line+1, pos.loff+1))
 
 implement print_position (pos) = let
   val (pf_stdout | ptr_stdout) = stdout_get ()
@@ -108,8 +108,9 @@ implement infile_make_string (s) = let
   end // end of [_free]
   fn _getc (pf: !V | (*none*)):<cloref1> int = let
     prval pf_at = (pf.1: T @ l)
-    val i = !p
-    val ans: int = if i < n then (!p := i+1; int_of_char s[i]) else ~1
+    val i = !p; val ans: int = begin
+      if i < n then (!p := i+1; int_of_char s[i]) else ~1
+    end
   in
     pf.1 := pf_at; ans
   end // end of [_getc]
@@ -121,7 +122,17 @@ end // end of [infile_make_string]
 
 local
 
-staload "libc/SATS/stdio.sats"
+// staload "libc/SATS/stdio.sats"
+
+extern fun fclose_exn {m:file_mode} {l:addr}
+  (pf: FILE m @ l | p: ptr l):<!exnref> void
+  = "atslib_fclose_exn"
+
+extern fun fgetc_err {m:file_mode}
+  (pf: file_mode_lte (m, r) | f: &FILE m): int
+  = "atslib_fgetc_err"
+
+extern fun getchar (): int = "atslib_getchar"
 
 in
 
@@ -160,10 +171,10 @@ fun aux (lxbf: &lexbuf_t, irule: &int, nstate: int):<cloptr1> int =
       if irule_new > 0 then begin
         lexbuf_lstpos_set (lxbf); irule := irule_new
       end
-    val c = lexbuf_char_next (lxbf)
+    val c: schar = lexbuf_char_next (lxbf)
 (*
     val () = begin
-      printf ("lexing_engine_lexbuf: c = %c and c = %i\n", @(c, int_of c))
+      printf ("lexing_engine_lexbuf: c = %c and c = %i\n", @(c, int_of_char c))
     end
 *)
     val nstate = transition_table_get (transtbl, nstate, c)
@@ -427,7 +438,7 @@ lexbuf_resize (lexbuf *lxbf) {
   fprintf (stdout, "lexbuf_resize: after: endpos = %i\n", lxbf->endpos) ;
 */
 
-  ats_free_gc(buf_ptr) ;
+  ATS_FREE (buf_ptr) ;
 }
 
 ats_void_type
@@ -457,10 +468,10 @@ lexbuf_resize_if (lexbuf *lxbf) {
   return ;
 }
 
-ats_char_type
+ats_void_type
 lexbuf_refill (ats_ptr_type lxbf0) {
   lexbuf *lxbf ;
-  char c, *buf_ptr ;
+  int c ; char *buf_ptr ;
   int fstpos, curpos, endpos ;
 
   lxbf = (lexbuf*)lxbf0 ;
@@ -476,28 +487,29 @@ lexbuf_refill (ats_ptr_type lxbf0) {
 */
   if (fstpos <= endpos) {
     while (endpos+1 < lxbf->buf_size) {
-      c = lexing_infile_getc(lxbf->infile) ;
+      c = lexing_infile_getc (lxbf->infile) ;
       if (c < 0) { lxbf->endpos = endpos ; return ; }
       buf_ptr[endpos] = c; ++endpos ;
     }
 
     if (fstpos == 0) { lxbf->endpos = endpos ; return ; }
 
-    c = lexing_infile_getc(lxbf->infile) ;
+    c = lexing_infile_getc (lxbf->infile) ;
     if (c < 0) { lxbf->endpos = endpos ; return ; }
     buf_ptr[endpos] = c; endpos = 0;
-
-  }
+  } /* end of [if] */
 
   while (endpos+1 < fstpos) {
-    c = lexing_infile_getc(lxbf->infile) ;
+    c = lexing_infile_getc (lxbf->infile) ;
     if (c < 0) { lxbf->endpos = endpos ; return ; }
     buf_ptr[endpos] = c; ++endpos ;
-  }
+  } /* end of [while] */
 
   lxbf->endpos = endpos ;
   return ;
-}
+} /* end of [lexbuf_refill] */
+
+/* ****** ****** */
 
 ats_void_type
 lexbuf_curpos_next (lexbuf *lxbf, char c) {
@@ -515,9 +527,11 @@ lexbuf_curpos_next (lexbuf *lxbf, char c) {
     lxbf->curpos_loff += 1 ; lxbf->curpos_toff += 1 ;
   }
   return ;
-}
+} /* end of [lexbuf_curpos_next] */
 
-ats_char_type
+/* ****** ****** */
+
+ats_schar_type
 lexbuf_char_next (ats_ptr_type lxbf0) {
   lexbuf *lxbf ;
   char c, *buf_ptr ;
@@ -545,9 +559,10 @@ lexbuf_char_next (ats_ptr_type lxbf0) {
   if (curpos != endpos) {
     c = buf_ptr[curpos] ; lexbuf_curpos_next (lxbf, c); return c ;
   }
-
   return -1 ;
-}
+} /* end of [lexbuf_char_next] */
+
+/* ****** ****** */
 
 ats_bool_type
 lexbuf_is_eof (ats_ptr_type lxbf0) {
@@ -561,8 +576,8 @@ lexbuf_is_eof (ats_ptr_type lxbf0) {
     return ats_false_bool ;
   } else {
     return ats_true_bool ;
-  }
-}
+  } /* end of [if] */
+} /* end of [lexbuf_is_eof] */
 
 /* ****** ****** */
 
@@ -615,7 +630,7 @@ lexing_curpos_prerr () {
 /* ****** ****** */
 
 ats_ptr_type
-lexbuf_make_infile(const ats_ptr_type infile) {
+lexbuf_make_infile (const ats_ptr_type infile) {
   char *buf_ptr ; lexbuf *lxbf ;
 
   buf_ptr = ATS_MALLOC (BUF_SIZE) ;
@@ -646,13 +661,13 @@ lexbuf_make_infile(const ats_ptr_type infile) {
   return lxbf ;
 }
 
-ats_char_type
+ats_void_type
 lexbuf_free (ats_ptr_type lxbf0) {
   lexbuf *lxbf ;
   lxbf = (lexbuf*)lxbf0 ;
 
   lexing_infile_free (lxbf->infile) ;
-  ats_free_gc (lxbf->buf_ptr) ;
+  ATS_FREE (lxbf->buf_ptr) ;
   return ;
 }
 
@@ -681,7 +696,7 @@ lexeme_get_lexbuf (ats_ptr_type lxbf0, ats_int_type i) {
     ats_exit_errmsg (
       1, "lexeme_get_lexbuf: index is out_of_bounds.\n"
     ) ;
-  }
+  } /* end of [if] */
 
   i = fstpos + i ;
   if (i >= bufsz) { i -= bufsz ; }
@@ -698,7 +713,7 @@ ats_void_type lexeme_set_lexbuf
     ats_exit_errmsg (
       1, "lexeme_set_lexbuf: index is out_of_bounds.\n"
     ) ;
-  }
+  } /* end of [if] */
 
   lxbf = (lexbuf*)lxbf0 ;
 
@@ -776,7 +791,7 @@ lexeme_lint_lexbuf (ats_ptr_type lxbf0, ats_int_type base) {
 static ats_ptr_type the_lexbuf = (lexbuf*)0 ;
 
 ats_void_type lexing_lexbuf_markroot () {
-  ats_gc_markroot (&the_lexbuf, sizeof(ats_ptr_type)) ;
+  ATS_GC_MARKROOT (&the_lexbuf, sizeof(ats_ptr_type)) ;
   return ;
 }
 
@@ -807,9 +822,8 @@ lexing_lexbuf_set(ats_ptr_type lxbf) {
   return ;
 }
 
-ats_void_type lexing_lexbuf_free() {
-  lexbuf_free (lexing_lexbuf_get()) ;
-  return ;
+ats_void_type lexing_lexbuf_free () {
+  lexbuf_free (lexing_lexbuf_get ()) ; return ;
 }
 
 %}
