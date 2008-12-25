@@ -41,6 +41,10 @@ staload "libc/SATS/stdio.sats"
 
 (* ****** ****** *)
 
+staload _(*anonymous*) = "prelude/DATS/array.dats"
+
+(* ****** ****** *)
+
 typedef real = double
 
 macdef PI = 3.1415926535897932384626
@@ -428,22 +432,32 @@ fun main_loop {n:nat} {l_r,l_i,l_b,l_w:addr}
 // 756839, 859433, 1257787, 1398269, 2976221, 3021377, 6972593,
 // 13466917, ...
 
+(* ****** ****** *)
+
+(*
+
+implement{a} array_ptr_alloc (n) =
+  array_ptr_alloc_tsz {a} (n, sizeof<a>)
+
+*)
+
+(* ****** ****** *)
+
 // The following function tests whether 2^exponent-1 is a prime:
 fun is_mersenne_prime (exponent: intGte 2): bool = let
   val n = compute_optimal_signal_size (exponent)
 
-  val (pf_gc_r, pf_r | R) =
-    array_ptr_make_fun_tsz_cloptr {real}
-      (n, lam (x, _) =<cloptr> x := d2r 0.0, sizeof<real>)
-  val (pf_gc_i, pf_i | I) =
-    array_ptr_make_fun_tsz_cloptr {imag}
-      (n, lam (x, _) =<cloptr> x := d2i 0.0, sizeof<imag>)
-  val (pf_gc_b, pf_b | B) =
-    array_ptr_make_fun_tsz_cloptr {real}
-      (n, lam (x, _) =<cloptr> x := d2r 0.0, sizeof<real>)
-  val (pf_gc_w, pf_w | W) =
-    array_ptr_make_fun_tsz_cloptr {real}
-      (n, lam (x, _) =<cloptr> x := d2r 0.0, sizeof<real>)
+  val (pf_gc_r, pf_r | R) = array_ptr_alloc<real> (n)
+  val () = array_ptr_initialize_elt<real> (!R, n, d2r 0.0)
+
+  val (pf_gc_i, pf_i | I) = array_ptr_alloc<imag> (n)
+  val () = array_ptr_initialize_elt<imag> (!I, n, d2i 0.0)
+
+  val (pf_gc_b, pf_b | B) = array_ptr_alloc<real> (n)
+  val () = array_ptr_initialize_elt<real> (!B, n, d2r 0.0)
+
+  val (pf_gc_w, pf_w | W) = array_ptr_alloc<real> (n)
+  val () = array_ptr_initialize_elt<real> (!W, n, d2r 0.0)
 
   val () = compute_base_signal (pf_b | B, exponent, n)
   val () = compute_weight_signal (pf_w | W, exponent, n)

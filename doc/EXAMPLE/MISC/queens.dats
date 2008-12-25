@@ -61,11 +61,11 @@ end // end of [print_board]
 fun board_make {sz:nat} (sz: int sz)
   : [l:addr] (free_gc_v l, array_v (Nat, sz, l) | ptr l) = let
 
-val (pf_gc, pf | p) = array_ptr_alloc_tsz {Nat} (sz, sizeof<Nat>)
-fn f (x: &Nat? >> Nat, i: natLt sz):<cloptr> void = x := 0
-val () = begin
-  array_ptr_initialize_fun_tsz_cloptr {Nat} (| !p, sz, f, sizeof<Nat>)
-end
+
+val (pf_gc, pf | p) =
+  array_ptr_alloc_tsz {Nat} (sz, sizeof<Nat>)
+var x: Nat = 0; val () =
+  array_ptr_initialize_elt_tsz {Nat} (!p, sz, x, sizeof<Nat>)
 
 in
 

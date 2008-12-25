@@ -14,25 +14,30 @@ fn play {sz: pos} (sz: int (sz)): void = let
   macdef tsz = sizeof<T>
   typedef post_t = array (T, sz)
 
-  fn init (x: &T? >> T, i: natLt sz):<cloptr1> void = x := 0
-
+  var x: T = 0
   val leftPost = let
-    val (pf_gc, pf | p) = array_ptr_make_fun_tsz_cloptr {T} (sz, init, tsz)
+    val (pf_gc, pf | p) =
+      array_ptr_alloc_tsz {T} (sz, sizeof<T>)
+    val () = array_ptr_initialize_elt_tsz {T} (!p, sz, x, tsz)
   in
     array_make_arraysize {T} @(pf_gc, pf | p, sz)
-  end
+  end // end of [val]
 
   val middlePost = let
-    val (pf_gc, pf | p) = array_ptr_make_fun_tsz_cloptr {T} (sz, init, tsz)
-  in 
-    array_make_arraysize {T} @(pf_gc, pf | p, sz)
-  end
-
-  val rightPost = let
-    val (pf_gc, pf | p) = array_ptr_make_fun_tsz_cloptr {T} (sz, init, tsz)
+    val (pf_gc, pf | p) =
+      array_ptr_alloc_tsz {T} (sz, sizeof<T>)
+    val () = array_ptr_initialize_elt_tsz {T} (!p, sz, x, tsz)
   in
     array_make_arraysize {T} @(pf_gc, pf | p, sz)
-  end
+  end // end of [val]
+
+  val rightPost = let
+    val (pf_gc, pf | p) =
+      array_ptr_alloc_tsz {T} (sz, sizeof<T>)
+    val () = array_ptr_initialize_elt_tsz {T} (!p, sz, x, tsz)
+  in
+    array_make_arraysize {T} @(pf_gc, pf | p, sz)
+  end // end of [val]
 
   fn initialize (post: post_t):<cloptr1> void = let
     fun aux (i: natLte sz):<cloptr1> void =

@@ -31,9 +31,9 @@ and pi_stream (c: double, sum: double, n: Pos):<1,~ref> stream double =
 
 fun euler_trans_con
   (xs0: stream double):<1,~ref> strcon double = let
-  val- x0 :: xs1 = lazy_force xs0
-  val- x1 :: xs2 = lazy_force xs1
-  val- x2 :: xs3 = lazy_force xs2
+  val- x0 :: xs1 = !xs0
+  val- x1 :: xs2 = !xs1
+  val- x2 :: xs3 = !xs2
   val x01 = x0 - x1 and x21 = x2 - x1
 in
   (x2 - x21 * x21 / (x21 + x01)) :: euler_trans xs1

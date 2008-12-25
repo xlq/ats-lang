@@ -5,6 +5,9 @@
 // socket programming. The code is largely based on an earlier
 // version by Rui Shi (shearer AT cs DOT bu DOT edu)
 //
+// Note that this is not really a robust implmentation as there
+// are clearly memory leaks!
+//
 
 // June 2007:
 // Author: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
@@ -212,7 +215,7 @@ filename_extract(ats_ptr_type msg, ats_int_type n) {
   fprintf (stdout, "filename_extract: s = %s\n", s);
 */
   if (i > 5) { 
-    return atspre_strbuf_make_substring (msg, 5, i-5) ;
+    return atspre_string_make_substring (msg, 5, i-5) ;
   } else {
     return (char *)0 ;
   }
@@ -336,6 +339,7 @@ fun file_send_main {fd: int}
    fd: int fd, file: &FILE r, filename: string): void = let
 
 val [l_buf:addr] (pf_ngc, pf_buf | p_buf) = malloc_ngc (BUFSZ)
+prval () = pf_buf := bytes_v_of_b0ytes_v (pf_buf)
 val msg200_str = msg200_of_filename filename
 val msg200_str = s2S msg200_str
 val msg200_len = length msg200_str
@@ -436,7 +440,7 @@ ats_ptr_type dirent_name_get(ats_ptr_type dir) {
   struct dirent *ent ;
   ent = readdir((DIR *)dir) ;
   if (ent) {
-    return atspre_strbuf_make_substring (ent->d_name, 0, strlen(ent->d_name)) ;
+    return atspre_string_make_substring (ent->d_name, 0, strlen(ent->d_name)) ;
   } else {
     return (char *)0 ;
   }
@@ -584,9 +588,11 @@ fun request_is_get {n:nat} (s: string n): bool =
 
 (* ****** ****** *)
 
-extern fun main_loop_get {fd:int} {n:nat} {l_buf:addr}
-  (pf_conn: socket_v (fd, conn), pf_buf: !bytes BUFSZ @ l_buf |
-   fd: int fd, buf: ptr l_buf, msg: string n, n: int n): void
+extern fun main_loop_get {fd:int} {n:nat} {l_buf:addr} (
+    pf_conn: socket_v (fd, conn)
+  , pf_buf: !bytes BUFSZ @ l_buf
+  | fd: int fd, buf: ptr l_buf, msg: string n, n: int n
+  ) : void
 
 implement main_loop_get (pf_conn, pf_buf | fd, buf, msg, n) = let
 (*
@@ -618,9 +624,8 @@ extern fun main_loop {fd:int} {l_buf:addr}
 extern fun strbuf_make_bytes
   {n:nat} {st,ln:nat | st + ln <= n}
   (buf: &bytes n, st: int st, ln: int ln)
-  :<> [l:addr] (strbuf (ln+1,ln) @ l | ptr l)
-  = "atspre_strbuf_make_substring"
-
+  :<> [l:addr] (free_gc_v l, strbuf (ln+1,ln) @ l | ptr l)
+  = "atspre_string_make_substring"
 
 implement main_loop
   (pf_list, pf_buf | fd_s, p_buf): void = let
@@ -629,19 +634,19 @@ in
   if fd_c >= 0 then let
     prval accept_succ pf_conn = pf_accept
     val n = socket_read_exn (pf_conn | fd_c, !p_buf, BUFSZ)
-    val (pf | p) = strbuf_make_bytes (!p_buf, 0, n)
-    val msg = string1_of_strbuf (pf | p)
+    val (pf_gc, pf | p) = strbuf_make_bytes (!p_buf, 0, n)
+    val msg = string1_of_strbuf (pf_gc, pf | p)
   in
-    case+ msg of
+    case+ msg of // [msg] is leaked out!!!
     | _ when request_is_get (msg) => begin
         main_loop_get (pf_conn, pf_buf | fd_c, p_buf, msg, n);
         main_loop (pf_list, pf_buf | fd_s, p_buf)
-      end
+      end // end of [_ when ...]
     | _ => begin
         socket_close_exn (pf_conn | fd_c);
         prerrf ("main_loop: unsupported request: %s\n", @(msg));
         main_loop (pf_list, pf_buf | fd_s, p_buf)
-      end
+      end // end of [_]
   end else let
     prval accept_fail () = pf_accept
     val () = prerr "Error: [accept] failed!\n"
@@ -683,6 +688,7 @@ implement main (argc, argv) = let
   val () = listen_exn (pf_sock | fd, BACKLOG)
   val (pf_ngc, pf_buf | buf) = malloc_ngc (BUFSZ)
   val () = sigpipe_ignore () // prevent server crash due to broken pipe
+  prval () = pf_buf := bytes_v_of_b0ytes_v (pf_buf)
   val () = main_loop(pf_sock, pf_buf | fd, buf)
   val () = socket_close_exn (pf_sock | fd)
   val () = free_ngc (pf_ngc, pf_buf | buf)

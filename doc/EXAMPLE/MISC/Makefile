@@ -11,7 +11,8 @@ ATSCC="$(ATSHOME)/bin/atscc"
 all: AutoDiff coin_flip \
      fft hamming_lazy \
      GaussElim GarsiaWachs \
-     kmp queens pi_lazy \
+     hanoi kmp queens \
+     passwdgen pi_lazy \
      sieve sieve_lazy \
      strmat sumup \
      tetrix wc
@@ -83,9 +84,7 @@ wc: wc.dats; $(ATSCC) -O3 -o wc wc.dats
 
 ######
 
-DIR=/home/fac2/hwxi/public_html/ATS/EXAMPLE/MISC
-
-update::
+html::
 	atsopt --posmark_html_only -d AutoDiff.dats
 	atsopt --posmark_html_only -d coin_flip.dats
 	atsopt --posmark_html_only -d fft.dats

@@ -31,7 +31,7 @@ HelloWorld: HelloWorld.dats
 
 ######
 
-update::
+html::
 	atsopt --posmark_html_only -d f91.dats
 	atsopt --posmark_html_only -d fact1.dats
 	atsopt --posmark_html_only -d fact2.dats
