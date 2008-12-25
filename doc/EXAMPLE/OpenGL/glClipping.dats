@@ -19,8 +19,8 @@ end // end of [initialize]
 
 extern fun display (): void = "display"
 implement display () = let
-  val (pf_eqn0_gc, pf_eqn0 | p_eqn0, _(*4*)) = @[double][1.0, 0.0, 0.0, 0.0]
-  val (pf_eqn1_gc, pf_eqn1 | p_eqn1, _(*4*)) = @[double][0.0, 1.0, 0.0, 0.0]
+  var !p_eqn0 with pf_eqn0 = @[double](1.0, 0.0, 0.0, 0.0)
+  var !p_eqn1 with pf_eqn1 = @[double](0.0, 1.0, 0.0, 0.0)
   val () = glClear (GL_COLOR_BUFFER_BIT)
   val () = glColor3f (1.0, 1.0, 1.0)
   val (pf_mat | ()) = glPushMatrix ()
@@ -33,10 +33,8 @@ implement display () = let
   val () = glRotatef (315.0, 1.0, 0.0, 0.0)
   val () = glRotatef (45.0, 0.0, 1.0, 0.0)
   val () = glClipPlane (pf_eqn0 | GL_CLIP_PLANE0, p_eqn0)
-  val () = array_ptr_free {double} (pf_eqn0_gc, pf_eqn0 | p_eqn0)
   val () = glEnable (GL_CLIP_PLANE0)
   val () = glClipPlane (pf_eqn1 | GL_CLIP_PLANE1, p_eqn1)
-  val () = array_ptr_free {double} (pf_eqn1_gc, pf_eqn1 | p_eqn1)
   val () = glEnable (GL_CLIP_PLANE1)
 
   val () = glRotatef (90.0, 1.0, 0.0, 0.0)

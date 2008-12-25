@@ -40,7 +40,7 @@ implement client_loop {fd:int} (pf_sock | sockfd) = let
   and !p_buf_recv = @[byte][M](b0) // allocation on stack
   fun loop {m:file_mode} {l_buf_send,l_buf_recv:addr} (
       pf_sock: !socket_v (fd, conn)
-    , pf_buf_send: !bytes M @ l_buf_send
+    , pf_buf_send: !b0ytes M @ l_buf_send
     , pf_buf_recv: !bytes M @ l_buf_recv
     , pf_mod: file_mode_lte (m, r)
     | fil: &FILE m, p_buf_send: ptr l_buf_send, p_buf_recv: ptr l_buf_recv

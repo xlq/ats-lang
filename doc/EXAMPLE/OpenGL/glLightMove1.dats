@@ -32,7 +32,7 @@ implement display () = let
   #define y_pos 0.0
   #define z_pos 1.5
   #define w_pos 1.0
-  val (pf_pos_gc, pf_pos | p_pos, _(*4*)) = @[float][x_pos, y_pos, z_pos, w_pos]
+  var !p_pos with pf_pos = @[float](x_pos, y_pos, z_pos, w_pos)
   val () = glClear
     (GL_COLOR_BUFFER_BIT lor GL_DEPTH_BUFFER_BIT)
   val (pf1_push | ()) = glPushMatrix ()
@@ -68,7 +68,6 @@ implement display () = let
   val () = glutSolidTeapot (1.0)
 
   val () = glPopMatrix (pf1_push | (*none*))
-  val () = array_ptr_free {float} (pf_pos_gc, pf_pos | p_pos)
   val () = glFlush ()
 in
   // empty

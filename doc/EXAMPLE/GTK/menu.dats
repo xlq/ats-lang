@@ -50,9 +50,9 @@ fn menu_item_response
 
 #define NMAX 10
 
-val digits: array (string, 10) = array @[string][
+val digits: array (string, 10) = array $arrsz (
   "0", "1", "2", "3", "4", "5", "6", "7", "8", "9"
-]
+)
 
 fun menu_items_append {i:nat | i <= NMAX}
   (menu: &gobj GtkMenu, i: int i, button: gobjref GtkButton): void =

@@ -52,9 +52,8 @@ staload "prelude/DATS/reference.dats"
 #define NMAX1 9
 #define NMAX12 81 // NMAX1 * NMAX1
 
-val the_digits: array (int, NMAX) = array @[int] [
-  0, 0, 0, 0, 0, 0, 0, 0, 0, 0
-]
+val the_digits: array (int, NMAX) =
+  array_make_arraysize $arrsz (0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
 
 fn digits_initialize () =
   let
@@ -65,24 +64,19 @@ fn digits_initialize () =
   end
 
 val the_labels: array (string, 10) =
-array @[string][
-  "", "1", "2", "3", "4", "5", "6", "7", "8", "9"
-]
+  array $arrsz ("", "1", "2", "3", "4", "5", "6", "7", "8", "9")
 
-val the_ulabels: array (string, 10) =
-array @[string][
+val the_ulabels: array (string, 10) = array $arrsz (
   "", "_1", "_2", "_3", "_4", "_5", "_6", "_7", "_8", "_9"
-]
+)
 
 typedef digit = [i:nat | i < NMAX] int i
 
 val the_puzzle_ori: matrix (digit, NMAX1, NMAX1) =
-  matrix_make_fun_tsz_cloptr {digit}
-    (NMAX1, NMAX1, lam (x, i, j) =<cloptr> (x := 0), sizeof<digit>)
+  matrix_make_elt<digit> (NMAX1, NMAX1, 0)
 
 val the_puzzle_cur: matrix (digit, NMAX1, NMAX1) =
-  matrix_make_fun_tsz_cloptr {digit}
-    (NMAX1, NMAX1, lam (x, i, j) =<cloptr> (x := 0), sizeof<digit>)
+  matrix_make_elt<digit> (NMAX1, NMAX1, 0)
 
 //
 
@@ -530,7 +524,7 @@ fun menu_items_append {n:nat | n <= NMAX}
 
 #define npuzzle 15
 
-val the_puzzles: array (string(NMAX12), npuzzle) = array @[string(NMAX12)][
+val the_puzzles: array (string(NMAX12), npuzzle) = array $arrsz (
 // easy
 "....12.7.....6.95.87.4.....4.7......1.......5.6....1.2.....1.36.18.5.....4.68....",
 // easy
@@ -552,7 +546,7 @@ val the_puzzles: array (string(NMAX12), npuzzle) = array @[string(NMAX12)][
 "7.5.....2...4.1...3.........1.6..4..2...5...........9....37.....8....6...9.....8.",
 ".8..1......5....3.......4.....6.5.7.89....2.....3.....2.....1.9..67........4.....",
 "......41.9..3.....3...5.....48..7..........62.1.......6..2....5.7....8......9...."
-]
+)
 
 (* ****** ****** *)
 
@@ -586,8 +580,7 @@ ats_int_type digit_of_char (ats_char_type c) {
 
 val the_button_matrix: matrix (gobjref GtkButton, NMAX, NMAX) =
   let val r_button = g_objref_make_none () in
-    matrix_make_fun_tsz_cloptr {gobjref GtkButton}
-      (NMAX, NMAX, lam (x, i, j) =<cloptr> (x := r_button), sizeof<gobjref GtkButton>)
+    matrix_make_elt<gobjref GtkButton> (NMAX, NMAX, r_button)
   end
 
 fn puzzle_update (): void = let

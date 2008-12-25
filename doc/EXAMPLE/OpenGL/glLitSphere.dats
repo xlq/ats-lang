@@ -32,26 +32,21 @@ end
 
 extern fun initialize (): void = "initialize"
 implement initialize () = let
-  val (pf1_gc, pf1 | p_mat_specular, _(*4*))= @[float][1.0, 1.0, 1.0, 1.0]
-  val (pf2_gc, pf2 | p_mat_shininess, _(*1*)) = @[float][50.0]
-  val (pf3_gc, pf3 | p_light_position, _(*4*)) = @[float][1.0, 1.0, 1.0, 0.0]
-  val (pf4_gc, pf4 | p_white_light, _(*4*)) = @[float][1.0, 1.0, 1.0, 1.0]
-  val (pf5_gc, pf5 | p_lmodel_ambient, _(*4*)) = @[float][0.1, 0.1, 0.1, 1.0]
+  var !p_mat_specular with pf1 = @[float](1.0, 1.0, 1.0, 1.0)
+  var !p_mat_shininess with pf2 = @[float](50.0)
+  var !p_light_position with pf3 = @[float](1.0, 1.0, 1.0, 0.0)
+  var !p_white_light with pf4 = @[float](1.0, 1.0, 1.0, 1.0)
+  var !p_lmodel_ambient with pf5 = @[float](0.1, 0.1, 0.1, 1.0)
 
   val () = glClearColor (0.0, 0.0, 0.0, 0.0) ;
   val () = glShadeModel (GL_SMOOTH)
 
   val () = glMaterialfv (pf1 | GL_FRONT, GL_SPECULAR, p_mat_specular)
-  val () = array_ptr_free {float} (pf1_gc, pf1 | p_mat_specular)
   val () = glMaterialfv (pf2 | GL_FRONT, GL_SHININESS, p_mat_shininess)
-  val () = array_ptr_free {float} (pf2_gc, pf2 | p_mat_shininess)
   val () = glLightfv (pf3 | GL_LIGHT0, GL_POSITION, p_light_position)
-  val () = array_ptr_free {float} (pf3_gc, pf3 | p_light_position)
   val () = glLightfv (pf4 | GL_LIGHT0, GL_DIFFUSE, p_white_light)
   val () = glLightfv (pf4 | GL_LIGHT0, GL_SPECULAR, p_white_light)
-  val () = array_ptr_free {float} (pf4_gc, pf4 | p_white_light)
   val () = glLightModelfv (pf5 | GL_LIGHT_MODEL_AMBIENT, p_lmodel_ambient)
-  val () = array_ptr_free {float} (pf5_gc, pf5 | p_lmodel_ambient)
 
   val () = glEnable (GL_LIGHTING)
   val () = glEnable (GL_LIGHT0)

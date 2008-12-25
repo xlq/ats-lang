@@ -29,9 +29,9 @@ val sphereLst_ref = glListRef_make ()
 
 extern fun initialize (): void = "initialize"
 implement initialize () = let
-  val (pf1_gc, pf1 | p_mat_specular, _(*4*)) = @[float][1.0, 1.0, 1.0, 0.15]
-  val (pf2_gc, pf2 | p_mat_shininess, _(*1*)) = @[float][100.0]
-  val (pf3_gc, pf3 | p_position, _(*4*)) = @[float][0.5, 0.5, 1.0, 0.0]
+  var !p_mat_specular with pf1 = @[float](1.0, 1.0, 1.0, 0.15)
+  var !p_mat_shininess with pf2 = @[float](100.0)
+  var !p_position with pf3 = @[float](0.5, 0.5, 1.0, 0.0)
 (*
   val () = glMaterialfv (pf1 | GL_FRONT, GL_SPECULAR, p_mat_specular)
   val () = glMaterialfv (pf2 | GL_FRONT, GL_SHININESS, p_mat_shininess)
@@ -53,9 +53,6 @@ implement initialize () = let
   val () = glEndList (pf_list | (*none*))
   val () = glListRef_set (pf_cubeLst | cubeLst_ref, cubeLst)
 
-  val () = array_ptr_free {float} (pf1_gc, pf1 | p_mat_specular)
-  val () = array_ptr_free {float} (pf2_gc, pf2 | p_mat_shininess)
-  val () = array_ptr_free {float} (pf3_gc, pf3 | p_position)
 in
   // empty
 end // end of [initialize]
@@ -84,10 +81,10 @@ end
 
 extern fun display (): void = "display"
 implement display () = let
-  val (pf1_gc, pf1 | p_mat_solid, _(*4*)) = @[float][0.75, 0.75, 0.0, 1.0]
-  val (pf2_gc, pf2 | p_mat_zero, _(*4*)) = @[float][0.0, 0.0, 0.0, 1.0]
-  val (pf3_gc, pf3 | p_transparent, _(*4*)) = @[float][0.0, 0.8, 0.8, 0.6]
-  val (pf4_gc, pf4 | p_emission, _(*4*)) = @[float][0.0, 0.3, 0.3, 0.6]
+  var !p_mat_solid with pf1 = @[float](0.75, 0.75, 0.0, 1.0)
+  var !p_mat_zero with pf2 = @[float](0.0, 0.0, 0.0, 1.0)
+  var !p_transparent with pf3 = @[float](0.0, 0.8, 0.8, 0.6)
+  var !p_emission with pf4 = @[float](0.0, 0.3, 0.3, 0.6)
 
   val () = glClear (GL_COLOR_BUFFER_BIT lor GL_DEPTH_BUFFER_BIT)
 
@@ -97,8 +94,6 @@ implement display () = let
   val () = glMaterialfv (pf1 | GL_FRONT, GL_DIFFUSE, p_mat_solid)
   val () = glCallListRef (sphereLst_ref)
   val () = glPopMatrix (pf_push | (*none*))
-  val () = array_ptr_free {float} (pf1_gc, pf1 | p_mat_solid)
-  val () = array_ptr_free {float} (pf2_gc, pf2 | p_mat_zero)
 
   val (pf_push | ()) = glPushMatrix ()
   val () = glTranslatef (0.15, 0.15, !transparentZ)
@@ -113,8 +108,6 @@ implement display () = let
   val () = glDepthMask (GL_TRUE)
   val () = glDisable (GL_BLEND)
   val () = glPopMatrix (pf_push | (*none*))
-  val () = array_ptr_free {float} (pf3_gc, pf3 | p_transparent)
-  val () = array_ptr_free {float} (pf4_gc, pf4 | p_emission)
 
 in
   glutSwapBuffers ()

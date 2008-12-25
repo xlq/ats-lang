@@ -4,6 +4,14 @@
 #
 ######
 
+all: \
+  daytime_tcpclient \
+  daytime_tcpserver \
+  echo_tcpclient \
+  echo_tcpserver \
+
+######
+
 daytime_tcpclient: daytime_tcpclient.dats
 	atscc -o daytime_tcpclient daytime_tcpclient.dats
 

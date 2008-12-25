@@ -130,61 +130,61 @@ macdef Z = $extval (float, "0.850650808352039932")
 
 typedef float_12_3 = array (float_3, 12)
 
-val vdata00 = array @[float][~X,  0.0,  Z]
-val vdata01 = array @[float][ X,  0.0,  Z]
-val vdata02 = array @[float][~X,  0.0, ~Z]
-val vdata03 = array @[float][ X,  0.0, ~Z]
-val vdata10 = array @[float][ 0.0,  Z,  X]
-val vdata11 = array @[float][ 0.0,  Z, ~X]
-val vdata12 = array @[float][ 0.0, ~Z,  X]
-val vdata13 = array @[float][ 0.0, ~Z, ~X]
-val vdata20 = array @[float][ Z,  X,  0.0]
-val vdata21 = array @[float][~Z,  X,  0.0]
-val vdata22 = array @[float][ Z, ~X,  0.0]
-val vdata23 = array @[float][~Z, ~X,  0.0]
+val vdata00 = array $arrsz {float} (~X,  0.0,  Z)
+val vdata01 = array $arrsz {float} ( X,  0.0,  Z)
+val vdata02 = array $arrsz {float} (~X,  0.0, ~Z)
+val vdata03 = array $arrsz {float} ( X,  0.0, ~Z)
+val vdata10 = array $arrsz {float} ( 0.0,  Z,  X)
+val vdata11 = array $arrsz {float} ( 0.0,  Z, ~X)
+val vdata12 = array $arrsz {float} ( 0.0, ~Z,  X)
+val vdata13 = array $arrsz {float} ( 0.0, ~Z, ~X)
+val vdata20 = array $arrsz {float} ( Z,  X,  0.0)
+val vdata21 = array $arrsz {float} (~Z,  X,  0.0)
+val vdata22 = array $arrsz {float} ( Z, ~X,  0.0)
+val vdata23 = array $arrsz {float} (~Z, ~X,  0.0)
 
 val vdata
-  : float_12_3 = array @[float_3][
+  : float_12_3 = array $arrsz {float_3} (
   vdata00, vdata01, vdata02, vdata03
 , vdata10, vdata11, vdata12, vdata13
 , vdata20, vdata21, vdata22, vdata23
-]
+)
 
 typedef nat12 = natLt (12)
 typedef int_3 = array (nat12, 3)
 typedef int_20_3 = array (int_3, 20)
 
-val tind00 = array @[nat12][1, 4, 0]
-val tind01 = array @[nat12][4, 9, 0]
-val tind02 = array @[nat12][4, 5, 9]
-val tind03 = array @[nat12][8, 5, 4]
-val tind04 = array @[nat12][1, 8, 4]
+val tind00 = array $arrsz {nat12} (1, 4, 0)
+val tind01 = array $arrsz {nat12} (4, 9, 0)
+val tind02 = array $arrsz {nat12} (4, 5, 9)
+val tind03 = array $arrsz {nat12} (8, 5, 4)
+val tind04 = array $arrsz {nat12} (1, 8, 4)
 
-val tind10 = array @[nat12][1, 10, 8]
-val tind11 = array @[nat12][10, 3, 8]
-val tind12 = array @[nat12][8, 3, 5]
-val tind13 = array @[nat12][3, 2, 5]
-val tind14 = array @[nat12][3, 7, 2]
+val tind10 = array $arrsz {nat12} (1, 10, 8)
+val tind11 = array $arrsz {nat12} (10, 3, 8)
+val tind12 = array $arrsz {nat12} (8, 3, 5)
+val tind13 = array $arrsz {nat12} (3, 2, 5)
+val tind14 = array $arrsz {nat12} (3, 7, 2)
 
-val tind20 = array @[nat12][3, 10, 7]
-val tind21 = array @[nat12][10, 6, 7]
-val tind22 = array @[nat12][6, 11, 7]
-val tind23 = array @[nat12][6, 0, 11]
-val tind24 = array @[nat12][6, 1, 0]
+val tind20 = array $arrsz {nat12} (3, 10, 7)
+val tind21 = array $arrsz {nat12} (10, 6, 7)
+val tind22 = array $arrsz {nat12} (6, 11, 7)
+val tind23 = array $arrsz {nat12} (6, 0, 11)
+val tind24 = array $arrsz {nat12} (6, 1, 0)
 
-val tind30 = array @[nat12][10, 1, 6]
-val tind31 = array @[nat12][11, 0, 9]
-val tind32 = array @[nat12][2, 11, 9]
-val tind33 = array @[nat12][5, 2, 9]
-val tind34 = array @[nat12][11, 2, 7]
+val tind30 = array $arrsz {nat12} (10, 1, 6)
+val tind31 = array $arrsz {nat12} (11, 0, 9)
+val tind32 = array $arrsz {nat12} (2, 11, 9)
+val tind33 = array $arrsz {nat12} (5, 2, 9)
+val tind34 = array $arrsz {nat12} (11, 2, 7)
 
 val tindices
-  : int_20_3 = array @[int_3][
+  : int_20_3 = array $arrsz {int_3} (
   tind00, tind01, tind02, tind03, tind04
 , tind10, tind11, tind12, tind13, tind14
 , tind20, tind21, tind22, tind23, tind24
 , tind30, tind31, tind32, tind33, tind34
-]
+)
 
 extern fun display (): void = "display"
 implement display () = let
