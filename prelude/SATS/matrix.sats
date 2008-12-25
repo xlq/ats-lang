@@ -54,13 +54,16 @@
 
 (* ****** ****** *)
 
-fun matrix {a:viewt@ype} {m,n:int}
+fun matrix_make_arraysize {a:viewt@ype} {m,n:int}
   (m: int m, n: int n):<> arraysize (a, m * n) -<cloptr> matrix (a, m, n)
-  = "atspre_matrix_main"
+  = "atspre_matrix_make_arraysize_main"
 
-fun matrix_main {a:viewt@ype} {m,n,mn:int} (m: int m, n: int n)
+// implemented in [prelude/DATS/matrix.das]
+fun matrix_make_arraysize_main {a:viewt@ype} {m,n,mn:int} (m: int m, n: int n)
   :<> (MUL (m, n, mn) | arraysize (a, mn)) -<cloptr> matrix (a, m, n)
-  = "atspre_matrix_main"
+  = "atspre_matrix_make_arraysize_main"
+
+macdef matrix (m, n) A = matrix_make_arraysize (,(m), ,(n)) ,(A)
 
 (* ****** ****** *)
 

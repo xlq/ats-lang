@@ -131,10 +131,10 @@ fn emit_include_cats {m:file_mode}
   val () = fprint1_string (pf | out, "#include \"prelude/CATS/printf.cats\"\n")
   val () = fprint1_string (pf | out, "#include \"prelude/CATS/reference.cats\"\n")
   val () = fprint1_string (pf | out, "#include \"prelude/CATS/string.cats\"\n")
-  // [array] and [list] are so common, so they are added here:
+  // array, list and option are so common, so they are added here:
   val () = fprint1_string (pf | out, "#include \"prelude/CATS/array.cats\"\n")
   val () = fprint1_string (pf | out, "#include \"prelude/CATS/list.cats\"\n")
-
+  val () = fprint1_string (pf | out, "#include \"prelude/CATS/option.cats\"\n")
   val () = fprint1_string (pf | out, "#endif /* _ATS_PRELUDE_NONE */\n")
 in
   // empty

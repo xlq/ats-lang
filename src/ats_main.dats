@@ -300,6 +300,7 @@ fn prelude_load (ATSHOME: string): void = let
   val () = pervasive_load (ATSHOME, "prelude/SATS/bool.sats")
   val () = pervasive_load (ATSHOME, "prelude/SATS/byte.sats")
   val () = pervasive_load (ATSHOME, "prelude/SATS/char.sats")
+  val () = pervasive_load (ATSHOME, "prelude/SATS/file.sats")
   val () = pervasive_load (ATSHOME, "prelude/SATS/float.sats")
   val () = pervasive_load (ATSHOME, "prelude/SATS/integer.sats")
   val () = pervasive_load (ATSHOME, "prelude/SATS/lazy.sats")
@@ -309,6 +310,7 @@ fn prelude_load (ATSHOME: string): void = let
   val () = pervasive_load (ATSHOME, "prelude/SATS/reference.sats")
   val () = pervasive_load (ATSHOME, "prelude/SATS/string.sats")
 
+  // these data structures are so common!
   val () = pervasive_load (ATSHOME, "prelude/SATS/array.sats")
   val () = pervasive_load (ATSHOME, "prelude/SATS/array0.sats")
   val () = pervasive_load (ATSHOME, "prelude/SATS/list.sats")

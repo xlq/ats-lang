@@ -77,7 +77,7 @@ implement location_none = '{
 , endpos_toff= ~1L
 } // end of [location_none]
 
-fun location_is_none (loc: location): bool =
+fn location_is_none (loc: location):<> bool =
   (loc.begpos_toff < 0L)
 
 implement location_make (fname, begpos, endpos) = '{
@@ -100,8 +100,8 @@ in '{
 , endpos_line= line, endpos_loff= loff, endpos_toff= toff
 } end // end of [location_end_make]
 
-fun location_combine_main
-  (loc1: location, loc2: location): location = let
+fn location_combine_main
+  (loc1: location, loc2: location):<> location = let
   var begpos_line: int and begpos_loff: int
   var begpos_toff: lint
   var endpos_line: int and endpos_loff: int

@@ -63,6 +63,8 @@ typedef file_mode = [m:file_mode] file_mode (m)
 
 (* ****** ****** *)
 
+macdef EOF = $extval (int, "EOF")
+
 macdef stdin_ref = $extval (FILEref, "stdin")
 macdef stdout_ref = $extval (FILEref, "stdout")
 macdef stderr_ref = $extval (FILEref, "stderr")

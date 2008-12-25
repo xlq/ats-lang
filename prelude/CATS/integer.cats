@@ -277,8 +277,8 @@ atspre_fprint_int (ats_ptr_type out, ats_int_type i) {
   int n ;
   n = fprintf ((FILE*)out, "%d", i) ;
   if (n < 0) {
-    ats_exit_errmsg (n, "Exit: [fprint_int] failed.\n") ;
-  }
+    ats_exit_errmsg (n, "exit(ATS): [fprint_int] failed.\n") ;
+  } /* end of [if] */
   return ;
 }
 
@@ -299,6 +299,19 @@ atspre_prerr_int (ats_int_type i) {
   atspre_stderr_view_set () ;
   return ;
 }
+
+//
+
+static inline
+ats_void_type
+atspre_fscan_int_exn (ats_ptr_type inp, ats_ref_type r) {
+  int n ;
+  n = fscanf ((FILE*)inp, "%d", r) ;
+  if (n < 1) {
+    ats_exit_errmsg (n, "exit(ATS): [fscan_int_exn] failed.\n") ;
+  }
+  return ;
+} /* end of [atspre_fscan_int_exn] */
 
 //
 

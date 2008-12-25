@@ -578,7 +578,7 @@ fn lib_dir_copy
     (srclibname_SATS, dstlibname_SATS, name_is_sats)
 in
   // empty
-end // empty
+end // end of [lib_dir_copy]
 
 (* ****** ****** *)
 
@@ -600,7 +600,7 @@ fn prelude_dir_copy () = let
 in
   prerr "The [prelude] directory is successfully copied.";
   prerr_newline ()
-end
+end // end of [prelude_dir_copy]
 
 fn libc_dir_copy () = let
   val SRCROOTlibc = SRCROOT + "libc/"
@@ -615,16 +615,21 @@ fn libc_dir_copy () = let
 in
   prerr "The [libc] directory is successfully copied.";
   prerr_newline ()
-end
+end // end of [libc_dir_copy]
 
 fn libats_dir_copy () = let
   val SRCROOTlibats = SRCROOT + "libats/"
   val DSTROOTlibats = DSTROOT + "libats/"
   val () = lib_dir_copy (SRCROOTlibats, DSTROOTlibats)
+  // the code for ATS lexer is in [libats/lex]
+  val SRCROOTlibatslex = SRCROOTlibats + "lex/"
+  val DSTROOTlibatslex = DSTROOTlibats + "lex/"
+  val () = mkdir_exn (DSTROOTlibatslex, DIRmode)
+  val () = dir_copy (SRCROOTlibatslex, DSTROOTlibatslex, name_is_xats)
 in
   prerr "The [libats] directory is successfully copied.";
   prerr_newline ()
-end
+end // end of [libats_dir_copy]
 
 (* ****** ****** *)
 
@@ -746,7 +751,7 @@ in
   prerr ATSPACKAGE_VERSION;
   prerr "] is successfully built.";
   prerr_newline ()  
-end
+end // end of [atspack_source_code]
 
 (* ****** ****** *)
 

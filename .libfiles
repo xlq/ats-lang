@@ -18,6 +18,8 @@
 
 /* ****** ****** */
 
+prelude/basics_sta.sats
+prelude/basics_dyn.sats
 prelude/ats_main_prelude.dats
 
 /* prelude files */

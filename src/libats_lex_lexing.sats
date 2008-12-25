@@ -62,22 +62,22 @@ fun transition_table_get
 abstype position_t // boxed type
 
 typedef lint = int_long_t0ype
-fun position_line (p: position_t): int
-fun position_loff (p: position_t): int
-fun position_toff (p: position_t): lint
+fun position_line (p: position_t):<> int
+fun position_loff (p: position_t):<> int
+fun position_toff (p: position_t):<> lint
 
 (* ****** ****** *)
 
-fun lt_position_position (p1: position_t, p2: position_t): bool
+fun lt_position_position (p1: position_t, p2: position_t):<> bool
 overload < with lt_position_position
 
-fun lte_position_position (p1: position_t, p2: position_t): bool
+fun lte_position_position (p1: position_t, p2: position_t):<> bool
 overload <= with lte_position_position
 
-fun eq_position_position (p1: position_t, p2: position_t): bool
+fun eq_position_position (p1: position_t, p2: position_t):<> bool
 overload = with eq_position_position
 
-fun neq_position_position (p1: position_t, p2: position_t): bool
+fun neq_position_position (p1: position_t, p2: position_t):<> bool
 overload <> with neq_position_position
 
 (* ****** ****** *)

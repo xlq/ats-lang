@@ -184,93 +184,93 @@ static inline
 ats_bool_type
 atspre_char_isalnum (const ats_char_type c) {
  return isalnum ((unsigned char)c) ;
-}
+} /* end of [atspre_char_isalnum] */
 
 static inline
 ats_bool_type
 atspre_char_isalpha (const ats_char_type c) {
  return isalpha ((unsigned char)c) ;
-}
+} /* end of [atspre_char_isalpha] */
 
 static inline
 ats_bool_type
 atspre_char_isascii (const ats_char_type c) {
  return isascii ((unsigned char)c) ;
-}
+} /* end of [atspre_char_isascii] */
 
 static inline
 ats_bool_type
 atspre_char_isblank (const ats_char_type c) {
  return isblank ((unsigned char)c) ;
-}
+} /* end of [atspre_char_isblank] */
 
 static inline
 ats_bool_type
 atspre_char_iscntrl (const ats_char_type c) {
  return iscntrl ((unsigned char)c) ;
-}
+} /* end of [atspre_char_iscntrl] */
 
 static inline
 ats_bool_type
 atspre_char_isdigit (const ats_char_type c) {
  return isdigit ((unsigned char)c) ;
-}
+} /* end of [atspre_char_isdigit] */
 
 static inline
 ats_bool_type
 atspre_char_isgraph (const ats_char_type c) {
  return isgraph ((unsigned char)c) ;
-}
+} /* end of [atspre_char_isgraph] */
 
 static inline
 ats_bool_type
 atspre_char_islower (const ats_char_type c) {
  return islower ((unsigned char)c) ;
-}
+} /* end of [atspre_char_islower] */
 
 static inline
 ats_bool_type
 atspre_char_isprint (const ats_char_type c) {
  return isprint ((unsigned char)c) ;
-}
+} /* end of [atspre_char_isprint] */
 
 static inline
 ats_bool_type
 atspre_char_ispunct (const ats_char_type c) {
  return ispunct ((unsigned char)c) ;
-}
+} /* end of [atspre_char_ispunct] */
 
 static inline
 ats_bool_type
 atspre_char_isspace (const ats_char_type c) {
  return isspace ((unsigned char)c) ;
-}
+} /* end of [atspre_char_isspace] */
 
 static inline
 ats_bool_type
 atspre_char_isupper (const ats_char_type c) {
  return isupper ((unsigned char)c) ;
-}
+} /* end of [atspre_char_isupper] */
 
 static inline
 ats_bool_type
 atspre_char_ixdigit (const ats_char_type c) {
  return isxdigit ((unsigned char)c) ;
-}
+} /* end of [atspre_char_isxdigit] */
 
 /* ****** ****** */
 
 static inline
 ats_char_type
-atspre_char_toupper (const ats_char_type c) {
-  return toupper ((unsigned char)c) ;
-}
+atspre_char_tolower (const ats_char_type c) {
+  return tolower ((unsigned char)c) ;
+} /* end of [atspre_char_tolower] */
 
 static inline
 ats_char_type
-atspre_char_tolower (const ats_char_type c) {
-  return tolower ((unsigned char)c) ;
-}
+atspre_char_toupper (const ats_char_type c) {
+  return toupper ((unsigned char)c) ;
+} /* end of [atspre_char_toupper] */
 
 /* ****** ****** */
 

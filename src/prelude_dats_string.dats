@@ -81,15 +81,15 @@ implement string_concat (ss) = let
       end
     | list_nil () => ()
   end // end of [loop2]
-  val (pf_sb | p_sb) =
+  val (pf_gc, pf_sb | p_sb) =
     string_concat_alloc n0 where {
-    extern fun string_concat_alloc {n:nat}
-      (n: int n):<> [l:addr] (strbuf (n+1, n) @ l | ptr l)
+    extern fun string_concat_alloc {n:nat} (n: int n)
+      :<> [l:addr] (free_gc_v l, strbuf (n+1, n) @ l | ptr l)
       = "string_concat_alloc"
   } // end of [where]
   val () = loop2 (!p_sb, n0, 0, ss)
 in
-  string1_of_strbuf (pf_sb | p_sb)
+  string1_of_strbuf (pf_gc, pf_sb | p_sb)
 end // end of [string_concat]
 
 (* ****** ****** *)

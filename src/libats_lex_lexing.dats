@@ -62,19 +62,8 @@ implement position_make_int_int_lint (line, loff, toff) =
 implement fprint_position (pf | fil, pos) = fprintf1_exn
   (pf | fil, "%li(line=%i, offs=%i)", @(pos.toff+1L, pos.line+1, pos.loff+1))
 
-implement print_position (pos) = let
-  val (pf_stdout | ptr_stdout) = stdout_get ()
-in
-  fprint_position (file_mode_lte_w_w | !ptr_stdout, pos);
-  stdout_view_set (pf_stdout | (*none*))
-end // end of [print_position]
-
-implement prerr_position (pos) = let
-  val (pf_stderr | ptr_stderr) = stderr_get ()
-in
-  fprint_position (file_mode_lte_w_w | !ptr_stderr, pos);
-  stderr_view_set (pf_stderr | (*none*))
-end // end of [prerr_position]
+implement print_position (pos) = print_mac (fprint_position, pos)
+implement prerr_position (pos) = prerr_mac (fprint_position, pos)
 
 (* ****** ****** *)
 

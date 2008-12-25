@@ -40,10 +40,6 @@
 
 (* ****** ****** *)
 
-implement string_empty = "" // this requires dynamic loading
-
-(* ****** ****** *)
-
 %{^
 
 static inline
@@ -54,6 +50,52 @@ string_concat_alloc (const ats_int_type n) {
 } // end of [string_concat_alloc]
 
 %}
+
+(* ****** ****** *)
+
+implement string_empty = "" // this requires dynamic loading
+
+(* ****** ****** *)
+
+implement string_make_list (cs) = let
+  val n = loop (cs, 0) where {
+    fun loop {i,j:nat} .<i>.
+      (cs: list (char, i), j: int j):<> int (i+j) = case+ cs of
+      | list_cons (_, cs) => loop (cs, j+1) | list_nil () => j
+  } // end of [val]
+in
+  string_make_list_len (cs, n)
+end // end of [string_make_list]
+
+#define NUL '\000'
+
+implement string_make_list_len (cs, n) = let
+  val (pf_gc, pf_sb | p_sb) = string_concat_alloc n where {
+    extern fun string_concat_alloc {n:nat} (n: int n)
+      :<> [l:addr] (free_gc_v l, strbuf (n+1, n) @ l | ptr l)
+      = "string_concat_alloc"
+  } // end of [val]
+  val () = loop (!p_sb, n, 0, cs) where {
+    fun loop {m,n:nat} {i,j:nat | i + j == n} .<n-i>.
+      (buf: &strbuf (m, n), n: int n, i: int i, cs: list (char, j)):<> void =
+      if i < n then let
+        val+ list_cons (c, cs) = cs
+        val [c:char] c = char1_of_char c
+        val () = $effmask_all (if (c <> NUL) then () else begin
+          prerr ("exit(ATS): a string cannot contain null characters in the middle.");
+          prerr_newline (); exit (1)
+        end) : [c <> NUL] void // end of [val]
+      in
+        strbuf_set_char_at (buf, i, c); loop (buf, n, i+1, cs)
+      end else begin
+        // loop exists
+      end // end of [if]
+  } // end of [val]
+in
+  string1_of_strbuf (pf_gc, pf_sb | p_sb)
+end // end of [string_make_list_len]
+
+(* ****** ****** *)
 
 implement string_concat (ss) = let
   val n0 = aux (ss, 0) where {
@@ -68,7 +110,7 @@ implement string_concat (ss) = let
     if i < n then begin
       if i0 < n0 then (s0[i0] := s[i]; loop1 (s0, n0, i0+1, s, n, i+1)) else i0
     end else begin
-      i0
+      i0 // loop exists
     end // end of [loop1]
   fun loop2 {m0,n0,i0,k:nat | i0 <= n0} .<k>.
     (s0: &strbuf (m0, n0), n0: int n0, i0: int i0, ss: list (string, k))
@@ -79,27 +121,24 @@ implement string_concat (ss) = let
         val i0 = loop1 (s0, n0, i0, s, n, 0)
       in
         loop2 (s0, n0, i0, ss)
-      end
-    | list_nil () => ()
+      end // end of [list_cons]
+    | list_nil () => () // loop exists
   end // end of [loop2]
-  val (pf_sb | p_sb) =
-    string_concat_alloc n0 where {
-    extern fun string_concat_alloc {n:nat}
-      (n: int n):<> [l:addr] (strbuf (n+1, n) @ l | ptr l)
+  val (pf_gc, pf_sb | p_sb) = string_concat_alloc n0 where {
+    extern fun string_concat_alloc {n:nat} (n: int n)
+      :<> [l:addr] (free_gc_v l, strbuf (n+1, n) @ l | ptr l)
       = "string_concat_alloc"
-  } // end of [where]
+  } // end of [val]
   val () = loop2 (!p_sb, n0, 0, ss)
 in
-  string1_of_strbuf (pf_sb | p_sb)
+  string1_of_strbuf (pf_gc, pf_sb | p_sb)
 end // end of [string_concat]
 
 (* ****** ****** *)
 
 implement string1_explode (s) = let
   fun loop {n,i:int | ~1 <= i; i < n} .<i+1>. (
-      s: string n
-    , i: int i
-    , cs: list (char, n-i-1)
+      s: string n, i: int i, cs: list (char, n-i-1)
     ) :<> list (char, n) = begin
     if i >= 0 then loop (s, i-1, list_cons (s[i], cs)) else cs
   end // end of [loop]
@@ -125,7 +164,7 @@ atspre_string_hash_33 (ats_ptr_type s0) {
     hash_val = ((hash_val << 5) + hash_val) + c ;
     s += 1 ;
   }
-}
+} /* atspre_string_hash_33 */
 
 %}
 

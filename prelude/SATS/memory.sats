@@ -44,15 +44,15 @@
 
 (* ****** ****** *)
 
-viewdef bytearr_v (n:int, l:addr) = @[byte][n] @ l
+typedef b0ytes (n:int) = @[byte?][n]
 
 // two axioms
-praxi ptr_to_bytearr_v : {a:viewt@ype} {l:addr} a? @ l -<prf> bytearr_v (sizeof a, l)
-praxi ptr_of_bytearr_v : {a:viewt@ype} {l:addr} bytearr_v (sizeof a, l) -<prf> a? @ l
+praxi ptr_to_b0ytes_v : {a:viewt@ype} {l:addr} a? @ l -<prf> b0ytes (sizeof a) @ l
+praxi ptr_of_b0ytes_v : {a:viewt@ype} {l:addr} b0ytes (sizeof a) @ l -<prf> a? @ l
 
-prfun array_v_of_bytearr_v
+prfun array_v_of_byte_v
   {a:viewt@ype} {n:nat} {l:addr} {nsz:int}
-  (pf_mul: MUL (n, sizeof a, nsz), pf_arr: bytearr_v (nsz, l)):<prf> @[a][n] @ l
+  (pf_mul: MUL (n, sizeof a, nsz), pf_arr: b0ytes (nsz) @ l):<prf> @[a?][n] @ l
 
 (* ****** ****** *)
 
@@ -63,7 +63,7 @@ fun gc_init (): void = "ats_gc_init"
 // the following functions are implemented in ats_memory.h"
 
 fun malloc_ngc {n:nat} (n: int n)
-  :<> [l:addr] (free_ngc_v l, bytearr_v (n, l) | ptr l)
+  :<> [l:addr] (free_ngc_v l, b0ytes n @ l | ptr l)
   = "ats_malloc_ngc"
 
 fun calloc_ngc {a:viewt@ype} {n:nat}
@@ -71,12 +71,13 @@ fun calloc_ngc {a:viewt@ype} {n:nat}
   = "ats_calloc_ngc"
 
 fun free_ngc {n:nat} {l:addr}
-  (_: free_ngc_v l, _: bytearr_v (n, l) | p: ptr l):<> void
+  (_: free_ngc_v l, _: b0ytes n @ l | p: ptr l):<> void
   = "ats_free_ngc"
 
-fun realloc_ngc {n0,n:nat} {l0:addr}
-  (_: free_ngc_v l0, _: bytearr_v (n0, l0) | _: ptr l0, _: int n)
-  :<> [l:addr] (free_ngc_v l, bytearr_v (n, l) | ptr l)
+fun realloc_ngc {n0,n:nat} {l0:addr} (
+    _: free_ngc_v l0, _: b0ytes n0 @ l0
+  | _: ptr l0, _: int n
+  ) :<> [l:addr] (free_ngc_v l, b0ytes n @ l | ptr l)
   = "ats_realloc_ngc"
 
 (* ****** ****** *)
@@ -96,7 +97,7 @@ fun gc_chunk_count_limit_max_set (n: int): void
 (* ****** ****** *)
 
 fun malloc_gc {n:nat}
-  (n: int n):<> [l:addr] (free_gc_v l, bytearr_v (n, l) | ptr l)
+  (n: int n):<> [l:addr] (free_gc_v l, b0ytes n @ l | ptr l)
   = "ats_malloc_gc"
 
 fun calloc_gc {a:viewt@ype} {n:nat}
@@ -104,14 +105,14 @@ fun calloc_gc {a:viewt@ype} {n:nat}
   = "ats_calloc_gc"
 
 fun free_gc {n:nat} {l:addr}
-  (_: free_gc_v l, _: bytearr_v (n, l) | p: ptr l):<> void
+  (_: free_gc_v l, _: b0ytes n @ l | p: ptr l):<> void
   = "ats_free_gc"
 
-fun realloc_gc {n0,n:nat} {l0:addr}
-  (_: free_gc_v l0, _: bytearr_v (n0, l0) | _: ptr l0, _: int n)
-  :<> [l:addr] (free_gc_v l, bytearr_v (n, l) | ptr l)
+fun realloc_gc {n0,n:nat} {l0:addr} (
+    _: free_gc_v l0, _: b0ytes n0 @ l0
+  | _: ptr l0, _: int n
+  ) :<> [l:addr] (free_gc_v l, b0ytes n @ l | ptr l)
   = "ats_realloc_gc"
-
 
 (* ****** ****** *)
 

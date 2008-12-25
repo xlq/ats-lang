@@ -70,11 +70,13 @@ assume matrix_viewt0ype_int_int_type
 
 (* ****** ****** *)
 
-implement matrix_main {a} (m, n) = lam (pf_mul | asz) => let
-  val (pf_box | ()) = vbox_make_view_ptr_gc (asz.0, asz.1 | asz.2)
-in @{
-  data= asz.2, mul= pf_mul, view= pf_box
-} end // end of [matrix_main]
+implement matrix_make_arraysize_main {a} (m, n) =
+  lam (pf_mul | asz) => let
+    val (pf_box | ()) = vbox_make_view_ptr_gc (asz.0, asz.1 | asz.2)
+  in @{
+    data= asz.2, mul= pf_mul, view= pf_box
+  } end
+// end of [matrix_make_arrsize_main]
 
 (* ****** ****** *)
 

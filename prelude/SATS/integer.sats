@@ -205,6 +205,20 @@ overload prerr with prerr_int
 
 (* ****** ****** *)
 
+symintr fscan_int_exn
+
+fun fscan0_int_exn (inp: FILEref, x: &int? >> int):<!exnref> void
+  = "atspre_fscan_int_exn"
+
+fun fscan1_int_exn {m:file_mode}
+  (pf: file_mode_lte (m, r) | inp: &FILE m, x: &int? >> int):<!exnref> void
+  = "atspre_fscan_int_exn"
+
+overload fscan_int_exn with fscan0_int_exn
+overload fscan_int_exn with fscan1_int_exn
+
+(* ****** ****** *)
+
 // stringization
 
 fun tostring_int (i: int):<> string

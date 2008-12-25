@@ -36,11 +36,19 @@
 
 (* ****** ****** *)
 
+%{#
+
+#include "prelude/CATS/option.cats"
+
+%}
+
+(* ****** ****** *)
+
 fun option_is_none
-  {a:type} {b:bool} (opt: option (a, b)):<> bool (~b)
+  {a:t@ype} {b:bool} (opt: option (a, b)):<> bool (~b)
 
 fun option_is_some
-  {a:type} {b:bool} (opt: option (a, b)):<> bool (b)
+  {a:t@ype} {b:bool} (opt: option (a, b)):<> bool ( b)
 
 //
 
@@ -50,11 +58,17 @@ fun{a:type} option_unsome (opt: option (a, true)):<> a
 
 //
 
-fun{a:type} option_app {f:eff}
+fun{a:t@ype} option_app {f:eff}
   (opt: Option a, f: a -<f> void):<f> void
 
-fun{a1,a2:type} option_map {b:bool} {f:eff}
+fun{a1,a2:t@ype} option_map {b:bool} {f:eff}
   (opt: option (a1, b), f: a1 -<f> a2):<f> option (a2, b)
+
+//
+
+fun option_of_option_vt
+  {a:t@ype} {b:bool} (x: option_vt (a, b)):<> option (a, b)
+  = "atspre_option_of_option_vt"
 
 (* ****** ****** *)
 

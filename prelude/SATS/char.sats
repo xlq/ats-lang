@@ -155,6 +155,7 @@ and char_isspace (c: char):<> bool = "atspre_char_isspace"
 and char_isupper (c: char):<> bool = "atspre_char_isupper"
 and char_isxdigit (c: char):<> bool // whether the char is a hex digit
   = "atspre_char_isxdigit"
+
 and char_tolower (c: char):<> char = "atspre_char_tolower"
 and char_toupper (c: char):<> char = "atspre_char_toupper"
 

@@ -115,8 +115,9 @@ val string_empty : string 0
 fun string1_of_string0 (s: string):<> [n:nat] string n
   = "atspre_string1_of_string0"
 
-fun string1_of_strbuf
-  {m,n:nat} {l:addr} (pf: strbuf (m, n) @ l | p: ptr l):<> string n
+fun string1_of_strbuf {m,n:nat} {l:addr} (
+    pf_gc: free_gc_v l, pf: strbuf (m, n) @ l | p: ptr l
+  ) :<> string n
   = "atspre_string1_of_strbuf"
 
 fun strbuf_of_string1 {n:nat} (s: string n)
@@ -267,7 +268,6 @@ fun string_make_char {n:nat} (n: int n, c: char):<> string n
   = "atspre_string_make_char"
 
 fun string_make_list {n:nat} (cs: list (char, n)):<> string n
-  = "atspre_string_make_list"
 
 fun string_make_list_len {n:nat}
   (cs: list (char, n), n: int n):<> string n
@@ -383,25 +383,27 @@ fun string1_explode {n:nat} (s: string n):<> list (char, n)
 (* ****** ****** *)
 
 fun strbuf_get_char_at {m,n:nat}
-  (sb: &strbuf (m, n), i: natLt n):<> char
+  (sb: &strbuf (m, n), i: natLt n):<> [c:char | c <> NUL] char c
   = "atspre_string_get_char_at"
 
-fun string_get_char_at {n:nat} (s: string n, i: natLt n):<> char
+fun string_get_char_at {n:nat}
+  (s: string n, i: natLt n):<> [c:char | c <> NUL] char c
   = "atspre_string_get_char_at"
 
 overload [] with strbuf_get_char_at
 overload [] with string_get_char_at
 
-fun string_get_char_at_exn (s: string, i: Nat):<!exn> char
+fun string_get_char_at_exn
+  (s: string, i: Nat):<!exn> [c:char | c <> NUL] char (c)
 
 (* ****** ****** *)
 
-fun strbuf_set_char_at {m,n:nat}
-  (sb: &strbuf (m, n), i: natLt n, c: char):<> void
+fun strbuf_set_char_at {m,n:nat} {c: char | c <> NUL}
+  (sb: &strbuf (m, n), i: natLt n, c: char c):<> void
   = "atspre_strbuf_set_char_at"
 
-fun string_set_char_at {n:nat}
-  (s: string n, i: natLt n, c: char):<!ref> void
+fun string_set_char_at {n:nat} {c:char | c <> NUL}
+  (s: string n, i: natLt n, c: char c):<!ref> void
   = "atspre_strbuf_set_char_at"
 
 overload [] with strbuf_set_char_at

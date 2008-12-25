@@ -1336,7 +1336,7 @@ fn d2exp_foldat_freeat_tr_up
         prerr s2e; prerr "].";
         prerr_newline ();
         $Err.abort {d2con_t} ()
-      end
+      end // end of [_]
   val s2es_arg = auxlst (loc0, s2es_addr)
   val s2e_d2c = d2con_typ_get (d2c)
   val s2e_d2c = s2exp_uni_instantiate_sexparglst (loc0, s2e_d2c, s2as)

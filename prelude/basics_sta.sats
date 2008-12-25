@@ -550,7 +550,7 @@ stadef void = void_t0ype
 
 (* ****** ****** *)
 
-datatype unit = unit
+datatype unit = unit of ()
 
 typedef Bool = [b:bool] bool b
 
@@ -701,8 +701,8 @@ stadef option_v = option_view_bool_view
 
 //
 
-dataprop unit_p = unit_p
-dataview unit_v = unit_v
+dataprop unit_p = unit_p of ()
+dataview unit_v = unit_v of ()
 
 //
 
