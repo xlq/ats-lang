@@ -582,6 +582,10 @@ implement hidec_impdec (loc, impdec) = '{
   hidec_loc= loc, hidec_node= HIDimpdec impdec
 }
 
+implement hidec_impdec_prf (loc, d2c) = '{
+  hidec_loc= loc, hidec_node= HIDimpdec_prf d2c
+}
+
 (* ****** ****** *)
 
 implement hifundec_make (loc, _fun, _def) = '{

@@ -200,4 +200,11 @@ end
 
 (* ****** ****** *)
 
+// [list_vt.sats] is already loaded by a call to [pervasive_load]
+staload _(*anonymous*) = "prelude/SATS/list_vt.sats" // this forces that the static
+// loading function for [list_vt.sats] is to be called at run-time
+// this is really needed only if some datatypes are declared in [list_vt.sats]
+
+(* ****** ****** *)
+
 (* end of [list_vt.dats] *)

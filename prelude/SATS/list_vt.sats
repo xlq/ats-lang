@@ -36,6 +36,10 @@
 
 (* ****** ****** *)
 
+#include "prelude/params.hats"
+
+(* ****** ****** *)
+
 #if VERBOSE_PRELUDE #then
 
 #print "Loading [list_vt.sats] starts!\n"

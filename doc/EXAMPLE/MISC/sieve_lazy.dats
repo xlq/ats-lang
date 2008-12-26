@@ -49,7 +49,7 @@ printf ("prime 5000 = %i\n", @(prime_get 5000)) ; // = 48619
 printf ("prime 10000 = %i\n", @(prime_get 10000)) ; // = 104743
 *)
 
-printf ("prime 20000 = %i\n", @(prime_get 20000)) ; // = 104743
+printf ("prime 10000 = %i\n", @(prime_get 10000)) ; // = 104743
 
 end
 

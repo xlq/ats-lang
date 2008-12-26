@@ -72,11 +72,8 @@ val the_ulabels: array (string, 10) = array $arrsz (
 
 typedef digit = [i:nat | i < NMAX] int i
 
-val the_puzzle_ori: matrix (digit, NMAX1, NMAX1) =
-  matrix_make_elt<digit> (NMAX1, NMAX1, 0)
-
-val the_puzzle_cur: matrix (digit, NMAX1, NMAX1) =
-  matrix_make_elt<digit> (NMAX1, NMAX1, 0)
+val the_puzzle_ori = matrix_make_elt<digit> (NMAX1, NMAX1, 0)
+val the_puzzle_cur = matrix_make_elt<digit> (NMAX1, NMAX1, 0)
 
 //
 
@@ -578,7 +575,7 @@ ats_int_type digit_of_char (ats_char_type c) {
 
 %}
 
-val the_button_matrix: matrix (gobjref GtkButton, NMAX, NMAX) =
+val the_button_matrix =
   let val r_button = g_objref_make_none () in
     matrix_make_elt<gobjref GtkButton> (NMAX, NMAX, r_button)
   end

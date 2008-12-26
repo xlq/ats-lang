@@ -113,8 +113,9 @@ end // end of [array0_set_elt_at_exn]
 (* ****** ****** *)
 
 // [array0.sats] is already loaded by a call to [pervasive_load]
-// staload "prelude/SATS/array0.sats" // this forces that the static
+staload _(*anonymous*) = "prelude/SATS/array0.sats" // this forces that the static
 // loading function for [array0.sats] is to be called at run-time
+// this is really needed only if some datatypes are declared in [array0.sats]
 
 (* ****** ****** *)
 

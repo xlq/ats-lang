@@ -441,6 +441,8 @@ implement{a} array_ptr_alloc (n) =
 
 *)
 
+staload _(*anonymous*) = "prelude/DATS/array.dats"
+
 (* ****** ****** *)
 
 // The following function tests whether 2^exponent-1 is a prime:

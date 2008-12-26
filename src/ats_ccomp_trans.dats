@@ -2517,6 +2517,9 @@ in
       ccomp_vardeclst (res, level, vardecs)
     end // end of [HIDvardecs]
   | HIDimpdec impdec => ccomp_impdec (res, impdec)
+  | HIDimpdec_prf d2c => let
+      val vp = valprim_void () in the_topcstctx_add (d2c, vp)
+    end // end of [HIDimpdec_prf]
   | HIDlocal (hids_head, hids_body) => let
       val () = ccomp_declst (res, hids_head)
     in

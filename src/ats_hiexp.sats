@@ -307,6 +307,8 @@ datatype hidec_node =
       hivardeclst
   | HIDimpdec of (* implementation *)
       hiimpdec
+  | HIDimpdec_prf of (* proof implementation *)
+      d2cst_t
   | HIDlocal of (* local declaration *)
       (hideclst (*head*), hideclst (*body*))
   | HIDstaload of (* static loading *)
@@ -730,7 +732,10 @@ fun hiimpdec_make (
   , decarg: s2qualst, tmparg: hityplstlst,
   _def: hiexp
   ) : hiimpdec
+
 fun hidec_impdec (_: loc_t, hid: hiimpdec): hidec
+
+fun hidec_impdec_prf (_: loc_t, d2c: d2cst_t): hidec
 
 (* ****** ****** *)
 

@@ -171,7 +171,8 @@ end // end of [array]
 //
 
 implement{a} array_make_elt (asz, x) = let
-  val (pf_gc, pf_arr | p_arr) = array_ptr_alloc<a> (asz)
+  val (pf_gc, pf_arr | p_arr) =
+    array_ptr_alloc_tsz {a} (asz, sizeof<a>)
   val () = array_ptr_initialize_elt<a> (!p_arr, asz, x)
   val (pfbox | ()) = vbox_make_view_ptr_gc (pf_gc, pf_arr | p_arr)
 in
@@ -307,9 +308,15 @@ end // end of [iforeach_array_cloref]
 
 (* ****** ****** *)
 
+implement{a} array_ptr_alloc (n) =
+  array_ptr_alloc_tsz {a} (n, sizeof<a>)
+
+(* ****** ****** *)
+
 // [array.sats] is already loaded by a call to [pervasive_load]
-staload "prelude/SATS/array.sats" // this forces that the static
+staload _(*anonymous*) = "prelude/SATS/array.sats" // this forces that the static
 // loading function for [array.sats] is to be called at run-time
+// this is really needed only if some datatypes are declared in [array.sats]
 
 (* ****** ****** *)
 

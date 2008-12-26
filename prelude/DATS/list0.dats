@@ -154,8 +154,9 @@ end // end of [list0_tail_exn]
 (* ****** ****** *)
 
 // [list0.sats] is already loaded by a call to [pervasive_load]
-// staload "prelude/SATS/list0.sats" // this forces that the static
+staload _(*anonymous*) = "prelude/SATS/list0.sats" // this forces that the static
 // loading function for [list0.sats] is to be called at run-time
+// this is really needed only if some datatypes are declared in [list0.sats]
 
 (* ****** ****** *)
 

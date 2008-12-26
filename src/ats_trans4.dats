@@ -1110,9 +1110,9 @@ fn i3mpdec_tr (d3c: i3mpdec): hiimpdec = let
           prerr_newline ();
           $Err.abort {void} ()
         end // end of [_]
-      end
+      end // end of [_ when ...]
     | _ => ()
-  end // end of [val]
+  end : void // end of [val]
   val () = if tmp > 0 then tmpcstmap_add (d2c, decarg, def)
 in
   hiimpdec_make (loc, d2c, tmp, decarg, tmparg, def)
@@ -1172,13 +1172,18 @@ implement d3eclst_tr (d3cs: d3eclst): hideclst = let
         in
           aux1 (d3cs, hid, res)
         end
-      | D3Cimpdec impdec => begin case+ 0 of
-        | _ when i3mpdec_is_proof impdec => aux0 (d3cs, res)
-        | _ => let
-            val hid = hidec_impdec (d3c.d3ec_loc, i3mpdec_tr impdec)
-          in
-            aux1 (d3cs, hid, res)
-          end // end of [_]
+      | D3Cimpdec impdec => let
+          val loc = d3c.d3ec_loc
+          val hid = (case+ 0 of
+            | _ when i3mpdec_is_proof impdec => begin
+                hidec_impdec_prf (loc, impdec.i3mpdec_cst)
+              end // end of [_]
+            | _ => begin
+                hidec_impdec (d3c.d3ec_loc, i3mpdec_tr impdec)
+              end // end of [_]
+          ) : hidec
+        in
+          aux1 (d3cs, hid, res)
         end // end of [D3Cimpdec]
       | D3Cfundecs (decarg, knd, fundecs) => begin
           if $Syn.funkind_is_proof knd then aux0 (d3cs, res)

@@ -25,35 +25,38 @@ prelude/ats_main_prelude.dats
 /* prelude files */
 
 prelude/DATS/basics.dats
+
+prelude/SATS/file.sats
+prelude/DATS/file.dats
+
 prelude/DATS/float.dats
 prelude/DATS/integer.dats
+
+prelude/SATS/lazy.sats
+prelude/DATS/lazy.dats
+
 prelude/DATS/pointer.dats
 prelude/DATS/printf.dats
+prelude/DATS/reference.dats
+prelude/DATS/string.dats
 
 prelude/SATS/array.sats
 prelude/DATS/array.dats
 prelude/SATS/array0.sats
 prelude/DATS/array0.dats
 
-prelude/SATS/file.sats
-prelude/DATS/file.dats
-
-prelude/SATS/lazy.sats
-prelude/DATS/lazy.dats
-
 prelude/SATS/list.sats
 prelude/DATS/list.dats
+prelude/SATS/list_vt.sats
 prelude/DATS/list_vt.dats
 prelude/SATS/list0.sats
 prelude/DATS/list0.dats
 
+prelude/SATS/matrix.sats
 prelude/DATS/matrix.dats
 
+prelude/SATS/option.sats
 prelude/DATS/option.dats
-
-prelude/DATS/reference.dats
-
-prelude/DATS/string.dats
 
 /* linked lists */
 

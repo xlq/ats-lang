@@ -36,6 +36,18 @@
 
 (* ****** ****** *)
 
+#include "prelude/params.hats"
+
+(* ****** ****** *)
+
+#if VERBOSE_PRELUDE #then
+
+#print "Loading [option.sats] starts!\n"
+
+#endif
+
+(* ****** ****** *)
+
 %{#
 
 #include "prelude/CATS/option.cats"
@@ -50,13 +62,13 @@ fun option_is_none
 fun option_is_some
   {a:t@ype} {b:bool} (opt: option (a, b)):<> bool ( b)
 
-//
+(* ****** ****** *)
 
 val{a:type} option_none : option (a, false)
 fun{a:type} option_some (x: a):<> option (a, true)
 fun{a:type} option_unsome (opt: option (a, true)):<> a
 
-//
+(* ****** ****** *)
 
 fun{a:t@ype} option_app {f:eff}
   (opt: Option a, f: a -<f> void):<f> void
@@ -64,12 +76,18 @@ fun{a:t@ype} option_app {f:eff}
 fun{a1,a2:t@ype} option_map {b:bool} {f:eff}
   (opt: option (a1, b), f: a1 -<f> a2):<f> option (a2, b)
 
-//
+(* ****** ****** *)
 
 fun option_of_option_vt
   {a:t@ype} {b:bool} (x: option_vt (a, b)):<> option (a, b)
   = "atspre_option_of_option_vt"
 
 (* ****** ****** *)
+
+#if VERBOSE_PRELUDE #then
+
+#print "Loading [option.sats] finishes!\n"
+
+#endif
 
 (* end of [option.sats] *)

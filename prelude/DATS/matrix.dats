@@ -83,7 +83,8 @@ implement matrix_make_arraysize_main {a} (m, n) =
 implement{a} matrix_make_elt (m, n, x) = let
   val (pf_mul | mn) = m imul2 n
   prval () = mul_nat_nat_nat pf_mul
-  val (pf_gc, pf_arr | p_arr) = array_ptr_alloc<a> (mn)
+  val (pf_gc, pf_arr | p_arr) =
+    array_ptr_alloc_tsz {a} (mn, sizeof<a>)
   val () = array_ptr_initialize_elt<a> (!p_arr, mn, x)
   val (pf_box | ()) = vbox_make_view_ptr_gc (pf_gc, pf_arr | p_arr)
 in @{
@@ -272,6 +273,13 @@ implement{a} iforeach_matrix_cloref {m,n} {f:eff} (f, M, m, n) = let
 in
   // empty
 end // end of [iforeach_matrix_cloref]
+
+(* ****** ****** *)
+
+// [matrix.sats] is already loaded by a call to [pervasive_load]
+staload _(*anonymous*) = "prelude/SATS/matrix.sats" // this forces that the static
+// loading function for [matrix.sats] is to be called at run-time
+// this is really needed only if some datatypes are declared in [matrix.sats]
 
 (* ****** ****** *)
 

@@ -1143,7 +1143,11 @@ implement ccomp_main {m}
   end // end of [val]
 
   val mainats_kind = mainats_kind_get ()
-
+(*
+  val () = begin
+    print "mainats_kind = "; print mainats_kind; print_newline ()
+  end // end of [val]
+*)
   val res = ( // defining the dynload function
     if flag > 0 then let
       val dynloadflag = (
