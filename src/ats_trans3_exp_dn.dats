@@ -303,26 +303,31 @@ end // end of [labd2explst_tr_dn]
 
 fn d2exp_seq_tr_dn
   (loc0: loc_t, d2es: d2explst, s2e0: s2exp): d3exp = let
-  fun aux (d2e: d2exp, d2es: d2explst, s2e0: s2exp): d3explst =
-    case+ d2es of
-    | cons (d2e1, d2es1) => begin
-        cons (d2exp_tr_up d2e, aux (d2e1, d2es1, s2e0))
-      end
+  fun aux (
+      d2e: d2exp
+    , d2es: d2explst
+    , s2e0: s2exp, s2e_void: s2exp
+    ) : d3explst = case+ d2es of
+    | cons (d2e1, d2es1) => let
+        val d3e = d2exp_tr_dn (d2e, s2e_void)
+      in
+        cons (d3e, aux (d2e1, d2es1, s2e0, s2e_void))
+      end // end of [cons]
     | nil () => begin
         cons (d2exp_tr_dn (d2e, s2e0), nil ())
-      end
+      end // end of [nil]
+  // end of [aux]
+  val s2e_void = s2exp_void_t0ype ()
 in
   case+ d2es of
   | cons (d2e, d2es) => begin
-      d3exp_seq (loc0, s2e0, aux (d2e, d2es, s2e0))
-    end
+      d3exp_seq (loc0, s2e0, aux (d2e, d2es, s2e0, s2e_void))
+    end // end of [cons]
   | nil () => let
-      val () = begin
-        $SOL.s2exp_tyleq_solve (loc0, s2exp_void_t0ype (), s2e0)
-      end
+      val () = $SOL.s2exp_tyleq_solve (loc0, s2e_void, s2e0)
     in
       d3exp_empty (loc0, s2e0)
-    end
+    end // end of [nil]
 end // end of [d2exp_seq_tr_dn]
 
 (* ****** ****** *)

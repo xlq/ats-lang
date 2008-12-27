@@ -1631,21 +1631,36 @@ end // end of [d2exp_sel_tr_up]
 
 (* ****** ****** *)
 
-fn d2exp_seq_tr_up (loc0: loc_t, d2es: d2explst): d3exp = let
-  fun aux (d2e: d2exp, d2es: d2explst, s2e: &(s2exp?) >> s2exp): d3explst =
-    let val d3e = d2exp_tr_up d2e in
-      case+ :(s2e: s2exp) => d2es of
-      | cons (d2e1, d2es1) => cons (d3e, aux (d2e1, d2es1, s2e))
-      | nil () => (s2e := d3e.d3exp_typ; cons (d3e, nil ()))
-    end
+fn d2exp_seq_tr_up
+   (loc0: loc_t, d2es: d2explst): d3exp = let
+   fun aux (
+      d2e: d2exp
+    , d2es: d2explst
+    , s2e: &(s2exp?) >> s2exp
+    , s2e_void: s2exp
+    ) : d3explst = begin
+    case+ :(s2e: s2exp) => d2es of
+    | cons (d2e1, d2es1) => let
+        val d3e = d2exp_tr_dn (d2e, s2e_void)
+      in
+        cons (d3e, aux (d2e1, d2es1, s2e, s2e_void))
+      end // end of [cons]
+    | nil () => let
+        val d3e = d2exp_tr_up (d2e)
+      in
+        s2e := d3e.d3exp_typ; cons (d3e, nil ())
+      end // end of [nil]
+  end // end of [aux]
+  val s2e_void = s2exp_void_t0ype ()
 in
   case+ d2es of
   | cons (d2e, d2es) => let
-      var s2e: s2exp; val d3es = aux (d2e, d2es, s2e)
+      var s2e: s2exp // uninitialized
+      val d3es = aux (d2e, d2es, s2e, s2e_void)
     in
       d3exp_seq (loc0, s2e, d3es)
-    end
-  | nil () => d3exp_empty (loc0, s2exp_void_t0ype ())
+    end // end of [cons]
+  | nil () => d3exp_empty (loc0, s2e_void)
 end // end of [d2exp_seq_tr_up]
 
 (* ****** ****** *)

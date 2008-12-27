@@ -36,6 +36,10 @@
 
 (* ****** ****** *)
 
+#define BYTE_MAX 255 // 2^8 - 1
+
+(* ****** ****** *)
+
 // some common functions on bytes (i.e., unsigned chars)
 
 fun byte_of_char (c: char):<> byte = "atspre_byte_of_char"
@@ -44,8 +48,18 @@ and char_of_byte (b: byte):<> char = "atspre_char_of_byte"
 fun byte_of_int (i: int):<> byte = "atspre_byte_of_int"
 and int_of_byte (b: byte):<> int = "atspre_int_of_byte"
 
+fun byte_of_int1 {i:nat | i <= BYTE_MAX} (i: int i):<> byte
+  = "atspre_byte_of_int"
+and int1_of_byte (b: byte):<> [i:nat | i <= BYTE_MAX] int i
+  = "atspre_int_of_byte"
+
 fun byte_of_uint (u: uint):<> byte = "atspre_byte_of_uint"
 and uint_of_byte (b: byte):<> uint = "atspre_uint_of_byte"
+
+fun byte_of_uint1 {i:nat | i <= BYTE_MAX} (i: uint i):<> byte
+  = "atspre_byte_of_int"
+and uint1_of_byte (b: byte):<> [i:nat | i <= BYTE_MAX] uint i
+  = "atspre_int_of_byte"
 
 // arithmetic functions and comparison functions
 

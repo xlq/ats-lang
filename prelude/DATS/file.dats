@@ -76,15 +76,17 @@ ats_ptr_type string_make_charlst_rev
 
 macdef EOF = $extval (int, "EOF")
 
-extern fun feof0 (f: FILEref):<!ref> int = "atslib_feof"
-extern fun fgetc0_err (f: FILEref):<!ref> int = "atslib_fgetc_err"
-extern fun fclose0_exn (f: FILEref):<!ref> void = "atslib_fclose_exn"
+extern fun feof0 (f: FILEref):<> int = "atslib_feof"
+extern fun fgetc0_err (f: FILEref):<> int = "atslib_fgetc_err"
+extern fun fclose0_exn (f: FILEref):<> void = "atslib_fclose_exn"
 
-extern fun string_make_charlst_rev
-  {n:nat} (sz: int n, cs: list_vt (char, n)):<> string = "string_make_charlst_rev"
+extern fun string_make_charlst_rev {n:nat}
+  (sz: int n, cs: list_vt (char, n)):<> string
+  = "string_make_charlst_rev"
 
 (* ****** ****** *)
 
+// if the last character is '\n', it is dropped
 implement input_line (fil) = let
   fun loop {n:nat}
     (fil: FILEref, n: int n, cs: list_vt (char, n))
@@ -115,6 +117,7 @@ extern fun fputs0_exn (str: string, fil: FILEref): void
 extern fun fflush0_exn (fil: FILEref): void
   = "atslib_fflush_exn"
 
+// the character '\n' is added at the end
 implement output_line (fil, line) = begin
   fputs0_exn (line, fil); fputc0_exn ('\n', fil); fflush0_exn (fil)
 end // end of [output_line]

@@ -537,6 +537,33 @@ fn doc_dir_copy () = let
   val () = cp "Makefile"
   val () = cp "server.dats"
 //
+  val SRCROOTdoc_EXAMPLE_KernighanRitchie =
+    SRCROOTdoc_EXAMPLE + "KernighanRitchie/"
+  val DSTROOTdoc_EXAMPLE_KernighanRitchie =
+    DSTROOTdoc_EXAMPLE + "KernighanRitchie/"
+  val () = mkdir_exn (DSTROOTdoc_EXAMPLE_KernighanRitchie, DIRmode)
+  #define NCHAPTER 8
+  val () = cp "Makefile"
+  var !p_arr with pf_arr = @[string](
+    "Chapter01/", "Chapter02/", "Chapter03/", "Chapter04/"
+  , "Chapter05/", "Chapter06/", "Chapter07/", "Chapter08/"
+  ) // end of [var]
+  val () = loop (!p_arr, 0) where {
+    fun loop (
+        names: &(@[string][NCHAPTER]), i: natLte NCHAPTER
+      ) :<cloref1> void =
+      if i < NCHAPTER then let
+        val name = names.[i]
+        val src = SRCROOTdoc_EXAMPLE_KernighanRitchie + name
+        val dst = DSTROOTdoc_EXAMPLE_KernighanRitchie + name
+        val () = mkdir_exn (dst, DIRmode)
+        val () = fcopy_exn (src + "Makefile", dst + "Makefile")
+        val () = dir_copy (src, dst, name_is_xats)
+      in
+        loop (names, i+1)
+      end // end of [if]
+  } // end of [val]
+//
   val SRCROOTdoc_EXAMPLE_OpenGL = SRCROOTdoc_EXAMPLE + "OpenGL/"
   val DSTROOTdoc_EXAMPLE_OpenGL = DSTROOTdoc_EXAMPLE + "OpenGL/"
   val () = mkdir_exn (DSTROOTdoc_EXAMPLE_OpenGL, DIRmode)

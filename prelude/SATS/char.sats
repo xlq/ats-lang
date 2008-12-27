@@ -44,8 +44,9 @@
 
 (* ****** ****** *)
 
-#define CHAR_MAX  127
-#define CHAR_MIN ~128
+#define CHAR_MAX  127 // 2^7 - 1
+#define CHAR_MIN ~128 // -2^7
+#define UCHAR_MAX 255 // 2^8 - 1
 
 (* ****** ****** *)
 
@@ -64,10 +65,26 @@ fun uchar_of_char (c: char):<> char
 fun char_of_int (i: int):<> char
   = "atspre_char_of_int"
 
+fun char_of_int1
+  {i: nat | i <= UCHAR_MAX} (i: int i):<> char
+  = "atspre_char_of_int"
+
+//
+
 fun int_of_char (c: char):<> int
   = "atspre_int_of_char"
 
+fun int1_of_char (c: char)
+  :<> [i:int | CHAR_MIN <= i; i <= CHAR_MAX] int i
+  = "atspre_int_of_char"
+
+//
+
 fun uint_of_char (c: char):<> uint
+  = "atspre_uint_of_char"
+
+fun uint1_of_char (c: char)
+  :<> [i:nat | i <= UCHAR_MAX] uint i
   = "atspre_uint_of_char"
 
 (* ****** ****** *)
