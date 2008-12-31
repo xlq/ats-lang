@@ -81,9 +81,20 @@ fun printf {ts:types} (fmt: printf_c ts, arg: ts):<!exnref> void
 fun prerrf {ts:types} (fmt: printf_c ts, arg: ts):<!exnref> void
   = "atspre_prerrf_exn"
 
-fun assert_prerrf {b:bool} {ts:types}
-  (assertion: bool b, fmt: printf_c ts, arg: ts):<!exnref> [b] void
+(* ****** ****** *)
+
+symintr assert_prerrf
+ 
+fun assert_prerrf_bool {ts:types}
+  (assertion: bool, fmt: printf_c ts, arg: ts):<!exn> void
   = "atspre_assert_prerrf"
+
+fun assert_prerrf_bool1 {b:bool} {ts:types}
+  (assertion: bool b, fmt: printf_c ts, arg: ts):<!exn> [b] void
+  = "atspre_assert_prerrf"
+
+overload assert_prerrf with assert_prerrf_bool
+overload assert_prerrf with assert_prerrf_bool1
 
 (* ****** ****** *)
 

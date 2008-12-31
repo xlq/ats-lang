@@ -34,67 +34,36 @@
 
 /* ****** ****** */
 
-#ifndef ATS_LIBC_UNISTD_CATS
-#define ATS_LIBC_UNISTD_CATS
+#ifndef ATS_LIBbC_ERRNO_CATS
+#define ATS_LIBC_ERRNO_CATS
 
 /* ****** ****** */
 
 #include <errno.h>
-#include <sys/types.h>
-#include <unistd.h>
-
-/* ****** ****** */
-
-#include "ats_types.h"
-// typedef pid_t ats_pid_type ;
 
 /* ****** ****** */
 
 static inline
-ats_pid_type atslib_fork_exn () {
-  pid_t pid ;
-  pid = fork () ;
+ats_int_type
+atslib_errno_get () { return errno ; }
 
-  if (pid < 0) {
-    ats_exit_errmsg (errno, "Exit: [fork] failed.\n") ;
-  }
-  return pid ;
+
+static inline
+ats_bool_type
+atslib_eq_errno_errno
+  (ats_int_type n1, ats_int_type n2) {
+  return (n1 == n2 ? ats_true_bool : ats_false_bool) ;
+}
+
+static inline
+ats_bool_type
+atslib_neq_errno_errno
+  (ats_int_type n1, ats_int_type n2) {
+  return (n1 != n2 ? ats_true_bool : ats_false_bool) ;
 }
 
 /* ****** ****** */
 
-static inline
-ats_pid_type
-atslib_wait_with_status (ats_ptr_type p) {
-  return wait ((int *)p) ;
-}
+#endif /* ATS_LIBC_ERRNO_CATS */
 
-static inline
-ats_pid_type
-atslib_wait_without_status () {
-  return wait ((int *)0) ;
-}
-
-/* ****** ****** */
-
-static inline
-ats_int_type // n >= 0
-atslib_sleep (ats_int_type n) { return sleep (n) ; }
-
-static inline
-ats_void_type // n >= 0
-atslib_usleep (ats_int_type n) { usleep (n) ; return ; }
-
-/* ****** ****** */
-
-static inline
-ats_uid_type
-atslib_getuid () { return getuid () ; }
-
-static inline
-ats_uid_type
-atslib_geteuid () { return geteuid () ; }
-
-/* ****** ****** */
-
-#endif /* ATS_LIBC_UNISTD_CATS */
+/* end of [time.cats] */

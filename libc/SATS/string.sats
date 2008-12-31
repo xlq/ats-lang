@@ -36,8 +36,28 @@
 
 (* ****** ****** *)
 
-// It is still empty
+%{#
+
+#include "libc/CATS/string.cats"
+
+%}
 
 (* ****** ****** *)
 
-(* end of [math.dats] *)
+symintr strcmp strncmp
+
+fun strcmp_string_string
+  (str1: string, str2: string): int
+  = "atslib_strcmp"
+
+overload strcmp with strcmp_string_string
+  
+fun strncmp_string_string {n:nat}
+  (str1: string, str2: string, n: int n): int
+  = "atslib_strncmp"
+
+overload strncmp with strncmp_string_string
+
+(* ****** ****** *)
+
+(* end of [string.sats] *)

@@ -9,7 +9,7 @@ ATSCC="$(ATSHOME)/bin/atscc"
 ######
 
 all: AutoDiff coin_flip \
-     fft hamming_lazy \
+     curve fft hamming_lazy \
      GaussElim GarsiaWachs \
      hanoi kmp queens \
      passwdgen pi_lazy \
@@ -28,6 +28,9 @@ BlackScholes: BlackScholes.dats; $(ATSCC) -tc BlackScholes.dats
 
 # random number generation
 coin_flip: coin_flip.dats; $(ATSCC) -O3 -o coin_flip coin_flip.dats
+
+# an interesting curve
+curve: curve.dats; $(ATSCC) -o curve curve.dats -lm
 
 # test for Mersenne primes
 fft: fft.dats; $(ATSCC) -O3 -o fft fft.dats -lm
@@ -87,6 +90,7 @@ wc: wc.dats; $(ATSCC) -O3 -o wc wc.dats
 html::
 	atsopt --posmark_html_only -d AutoDiff.dats
 	atsopt --posmark_html_only -d coin_flip.dats
+	atsopt --posmark_html_only -d curve.dats
 	atsopt --posmark_html_only -d fft.dats
 	atsopt --posmark_html_only -d GaussElim.dats
 	atsopt --posmark_html_only -d GarsiaWachs.dats
@@ -113,6 +117,7 @@ cleanall:: clean
 	rm -f a.out
 	rm -f AutoDiff
 	rm -f coin_flip
+	rm -f curve
 	rm -f fft
 	rm -f GaussElim
 	rm -f GarsiaWachs

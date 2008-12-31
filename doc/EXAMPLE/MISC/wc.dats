@@ -1,8 +1,10 @@
-
+//
 // November, 2005:
 // A naive implementation of the wc program
+// This is one of the first examples written in ATS
+//
 // author: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
-
+//
 // February, 2007:
 // ported to ATS/Geizella by Hongwei Xi
 
@@ -95,22 +97,21 @@ implement main (argc, argv) = let
    var wc_total: Nat = 0
    var cc_total: Nat = 0
 in
-   while (i < argc)
-     let
-        val filename = argv.[i]
-        val (lc, wc, cc) = wc (filename)
-     in
-        lc_total := lc_total + lc;
-        wc_total := wc_total + wc;
-        cc_total := cc_total + cc;
-        printf ("%i\t%i\t%i\t%s\n", @(lc, wc, cc, filename));
-        i := i + 1;
-     end ;
+   while (i < argc) let
+     val filename = argv.[i]
+     val (lc, wc, cc) = wc (filename)
+   in
+     lc_total := lc_total + lc;
+     wc_total := wc_total + wc;
+     cc_total := cc_total + cc;
+     printf ("%i\t%i\t%i\t%s\n", @(lc, wc, cc, filename));
+     i := i + 1;
+  end ;
 
-   if argc > 2 then begin
-     printf ("%i\t%i\t%i\ttotal\n", @(lc_total, wc_total, cc_total))
-   end ;
-end
+  if argc > 2 then begin
+    printf ("%i\t%i\t%i\ttotal\n", @(lc_total, wc_total, cc_total))
+  end ;
+end // end of [main]
 
 (* ****** ****** *)
 

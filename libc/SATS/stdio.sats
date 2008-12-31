@@ -685,7 +685,8 @@ fun putchar1 (c: char):<> [i:int | i <= UCHAR_MAX] int i
 // ------------------------------------------------
 
 // [puts] puts a newline at the end
-fun puts (s: string):<> int = "atslib_puts"
+fun puts_err (s: string):<> int = "atslib_puts_err"
+fun puts_exn (s: string):<!exn> void = "atslib_puts_exn"
 
 // ------------------------------------------------
 

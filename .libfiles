@@ -84,6 +84,11 @@ libats/DATS/regexp.dats
 
 libc/SATS/dirent.sats
 
+libc/SATS/errno.sats
+
+libc/SATS/fcntl.sats
+libc/DATS/fcntl.dats
+
 #ifdef HAVE_GMP_H
 libc/SATS/gmp.sats
 libc/DATS/gmp.dats
@@ -99,6 +104,8 @@ libc/SATS/signal.sats
 libc/SATS/stdio.sats
 
 libc/SATS/stdlib.sats
+
+libc/SATS/string.sats
 
 libc/SATS/time.sats
 

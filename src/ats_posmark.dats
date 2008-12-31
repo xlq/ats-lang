@@ -385,6 +385,8 @@ extern fun posmark_htmlfilename_make (basename: string): string
 
 implement posmark_file_make_htm (basename): void = let
   val htmlfilename = posmark_htmlfilename_make (basename)
+  val file_mode_r = $extval (file_mode r, "\"r\"")
+  val file_mode_w = $extval (file_mode w, "\"w\"")
   val (pf_in | p_in) = fopen_exn (basename, file_mode_r)
   val (pf_out | p_out) = fopen_exn (htmlfilename, file_mode_w)
   val () = posmark_file_file (posmark_process_htm, !p_in, !p_out)

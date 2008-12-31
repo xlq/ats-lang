@@ -314,9 +314,9 @@ fn p2atcst_con_complement
   end // end of [aux]
 in
   aux (d2cs, list_vt_nil ())
-end
+end // end of [p2atcst_con_complement]
 
-implement p2atcst_complement (p2tc0) = case+ p2tc0 of
+implement p2atcst_complement (p2tc0) = begin case+ p2tc0 of
   | P2TCany () => nil ()
   | P2TCbool b => cons (P2TCbool ~b, nil ())
   | P2TCchar _ => singleton (P2TCany ()) // conservative estimation
@@ -341,6 +341,7 @@ implement p2atcst_complement (p2tc0) = case+ p2tc0 of
       end
     end // end of [P2TCcon]
   | P2TCempty () => nil ()
+  | P2TCfloat _ => singleton (P2TCany ()) // conservative estimation
   | P2TCint x => singleton (P2TCintc (intinfset_sing x))
   | P2TCintc xs => aux xs where {
       fun aux (xs: List intinf_t): p2atcstlst = case+ xs of
@@ -352,12 +353,15 @@ implement p2atcst_complement (p2tc0) = case+ p2tc0 of
       $Lst.list_map_cloptr (lp2tcss, lam lp2tcs =<cloptr> P2TCrec (knd, lp2tcs))
     end
   | P2TCstring _ => singleton (P2TCany ())  // conservative estimation
+(*
   | _ => begin
       prerr "Internal Error: p2atcst_complement: p2tc0 = ";
       prerr p2tc0;
       prerr_newline ();
       $Err.abort {p2atcstlst} ()
     end
+*)
+end // end of [p2atcst_complement]
 
 implement p2atcstlst_complement {n} (p2tcs0) = begin
   case+ p2tcs0 of

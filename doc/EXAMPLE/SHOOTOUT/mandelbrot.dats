@@ -36,7 +36,7 @@ fn mandelbrot (h: int, w: int): void = let
       end
   in
     lp (0.0, 0.0, TIMES)
-  end
+  end // end of [p]
 
   fun xl (x: int, y: int, b: byte, n: natLte 8):<cloptr1> void =
     if x < w then let

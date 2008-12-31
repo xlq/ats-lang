@@ -148,6 +148,7 @@ fun stat_string_exn (name: string, buf: &stat? >> stat): void
 
 overload stat_err with stat_strbuf_err
 overload stat_err with stat_string_err
+overload stat_exn with stat_strbuf_exn
 overload stat_exn with stat_string_exn
 
 (* ****** ****** *)

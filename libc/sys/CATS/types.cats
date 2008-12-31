@@ -82,9 +82,8 @@ ats_lint_type atslib_lint_of_off (ats_off_type off) {
 typedef pid_t ats_pid_type ; // for process IDs // signed integer type
 
 static inline
-ats_int_type atslib_int_of_pid (ats_pid_type pid) {
-  return pid ;
-}
+ats_int_type atslib_int_of_pid (ats_pid_type p) { return p ; }
+/* end of [atslib_int_of_pid] */
 
 /* ****** ****** */
 
@@ -96,10 +95,19 @@ typedef time_t ats_time_type ; // for time in seconds
 
 // not supported on Mac OSX ?
 // typedef timer_t ats_timer_type ; // for timers returned by timer_create ()
-
-typedef uid_t ats_uid_type ; // for user IDs
-
 // typedef useconds_t ats_useconds_type ; // for time in microseconds
+
+/* ****** ****** */
+
+typedef uid_t ats_uid_type ;
+
+static inline
+ats_int_type atslib_int_of_uid (ats_uid_type u) { return u ; }
+/* end of [atslist_int_of_uid] */
+
+static inline
+ats_uid_type atslib_uid_of_int (ats_int_type i) { return i ; }
+/* end of [atslist_uid_of_int] */
 
 /* ****** ****** */
 

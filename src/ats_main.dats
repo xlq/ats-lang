@@ -520,6 +520,7 @@ in
   | _ when stropt_is_some (outname) => let
       prval pf_mod = file_mode_lte_w_w
       val outname = stropt_unsome (outname)
+      val file_mode_w = $extval (file_mode w, "\"w\"")
       val (pf_out | p_out) = fopen_exn (outname, file_mode_w)
       val () = $CC.ccomp_main (pf_mod | flag, !p_out, infil, hids)
       val () = fprintf1_exn (
@@ -536,7 +537,7 @@ in
       end // end of [if]
     in
       fclose_exn (pf_out | p_out)
-    end
+    end // end of [_ when ...]
   | _ => let
     prval pf_mod = file_mode_lte_w_w
     val (pf_stdout | p_stdout) = stdout_get ()
@@ -546,7 +547,7 @@ in
       (pf_mod | !p_stdout, "\n/* ****** ****** */\n")
   in
     stdout_view_set (pf_stdout | (*none*))
-  end
+  end // end of [_]
 end // end of [do_trans1234]
 
 (* ****** ****** *)

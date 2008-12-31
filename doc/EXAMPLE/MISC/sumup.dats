@@ -25,9 +25,6 @@ fn sumup {n:nat}
         aux (pf | i-1, res + i)
       end
   prval pf = prsumup {n} () where {
-(*
-    extern prfun prsumup {n:nat} ():<prf> [r:int] SUMUP (n, r)
-*)
     prfun prsumup {n:nat} .<n>. ():<> [r:int] SUMUP (n, r) =
       sif (n > 0) then SUMUPind (prsumup {n-1} ()) else SUMUPbas ()
   } // end of [where]
@@ -40,3 +37,7 @@ implement main (argc, argv) = let
 in
   printf ("sumup (10) = %i", @(res)); print_newline ()
 end // end of [main]
+
+(* ****** ****** *)
+
+(* end of [sumup.dats] *)

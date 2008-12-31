@@ -278,6 +278,11 @@ fun string_make_substring
   (s: string n, st: int st, ln: int ln):<> string ln
   = "atspre_string_make_substring"
 
+fun string_make_substrbuf
+  {m,n:int} {st,ln:nat | st + ln <= n}
+  (s: &strbuf (m, n), st: int st, ln: int ln):<> string ln
+  = "atspre_string_make_substring"
+
 (* ****** ****** *)
 
 fun strbuf_append {m1,n1,m2,n2:nat | n1+n2 < m1}

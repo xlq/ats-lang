@@ -79,6 +79,7 @@ implement parse_from_filename (flag, filename) = let
   end
 *)
   val fullname = $Fil.filename_full filename
+  val file_mode_r = $extval (file_mode r, "\"r\"")
   val (pf_fil | fil) = fopen_exn (fullname, file_mode_r)
   val (pf_infil | infil) =
     infile_make_file (pf_fil, file_mode_lte_r_r | fil)

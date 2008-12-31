@@ -265,13 +265,6 @@ and vtfrac_unsplit {vt:viewtype} {r1,r2:rat} {s:stamp}
 
 abstype file_mode (file_mode) // string type
 
-macdef file_mode_r = $extval (file_mode r, "\"r\"")
-macdef file_mode_rr = $extval (file_mode rw, "\"rr\"")
-macdef file_mode_w = $extval (file_mode w, "\"w\"")
-macdef file_mode_ww = $extval (file_mode rw, "\"ww\"")
-macdef file_mode_a = $extval (file_mode w, "\"a\"")
-macdef file_mode_aa = $extval (file_mode rw, "\"aa\"")
-
 dataprop file_mode_lte (file_mode, file_mode) =
   | {m:file_mode} file_mode_lte_refl (m, m)
   | {m1,m2,m3:file_mode}
@@ -280,10 +273,10 @@ dataprop file_mode_lte (file_mode, file_mode) =
   | {m:file_mode} file_mode_lte_rw_r (rw, r)
   | {m:file_mode} file_mode_lte_rw_w (rw, w)
 
-stadef <= = file_mode_lte
+prval file_mode_lte_r_r: file_mode_lte (r, r) // implemented in [file.dats]
+prval file_mode_lte_w_w: file_mode_lte (w, w) // implemented in [file.dats]
 
-prval file_mode_lte_r_r: file_mode_lte (r, r) // implemented in stdio.dats
-prval file_mode_lte_w_w: file_mode_lte (w, w) // implemented in stdio.dats
+stadef <= = file_mode_lte
 
 (* ****** ****** *)
 

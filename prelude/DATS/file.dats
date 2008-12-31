@@ -48,6 +48,11 @@ staload "prelude/SATS/file.sats"
 
 (* ****** ****** *)
 
+implement file_mode_lte_r_r = file_mode_lte_refl {r} ()
+implement file_mode_lte_w_w = file_mode_lte_refl {w} ()
+
+(* ****** ****** *)
+
 %{^
 
 typedef struct {

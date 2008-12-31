@@ -48,6 +48,7 @@
 staload TYPES = "libc/sys/SATS/types.sats"
 
 typedef pid_t = $TYPES.pid_t
+typedef uid_t = $TYPES.uid_t
 
 (* ****** ****** *)
 
@@ -82,10 +83,21 @@ overload wait with wait_without_status
 
 (* ****** ****** *)
 
-#define ONE_MILLION 1000000
+// [sleep] may be implemented using SIGARM
+fun sleep {i:nat} (t: int i): [j:nat | j <= i] int j
+  = "atslib_sleep"
+
+(* ****** ****** *)
+
+#define MILLION 1000000
 // some systems require that the argument of usleep <= 1 million
-fun usleep (n: natLte ONE_MILLION (* microseconds *)): void
+fun usleep (n: natLte MILLION (* microseconds *)): void
   = "atslib_usleep"
+
+(* ****** ****** *)
+
+fun getuid ():<> uid_t = "atslib_getuid"
+fun geteuid ():<> uid_t = "atslib_geteuid"
 
 (* ****** ****** *)
 

@@ -72,7 +72,8 @@ fun lint_of_off (off: off_t):<> lint = "atslib_lint_of_off"
 
 (* ****** ****** *)
 
-abst@ype pid_t = $extype "ats_pid_type" // for process IDs // a signed integer type
+// for process IDs // a signed integer type
+abst@ype pid_t = $extype "ats_pid_type"
 fun int_of_pid (pid: pid_t):<> int = "atslib_int_of_pid"
 
 (* ****** ****** *)
@@ -84,7 +85,13 @@ abst@ype time_t = $extype "ats_time_type" // for time in seconds
 
 abst@ype timer_t = $extype "ats_timer_type" // for timers returned by timer_create ()
 
+(******* ****** *)
+
 abst@ype uid_t = $extype "ats_uid_type" // for user IDs
+fun int_of_uid (uid: uid_t):<> int = "atslib_int_of_uid"
+fun uid_of_int (int: int):<> uid_t = "atslib_uid_of_int"
+
+(******* ****** *)
 
 abst@ype useconds_t = $extype "ats_useconds_type" // for time in microseconds
 
