@@ -1,3 +1,9 @@
+//
+// some code for illustrating how I/O is done in ATS
+//
+
+(* ****** ****** *)
+
 %{^
 
 #include "libc/CATS/stdio.cats"
@@ -6,48 +12,96 @@
 
 staload "libc/SATS/stdio.sats"
 
-#define i2c char_of_int
+#define i2c char_of_int1
 
-fn fcopy (fil_s: &FILE r, fil_d: &FILE w): void = let
-  fun loop (fil_s: &FILE r, fil_d: &FILE w): void =
-    let val c = fgetc (file_mode_lte_r_r | fil_s) in
-      if c >= 0 then begin
-        fputc (file_mode_lte_w_w | i2c c, fil_d); loop (fil_s, fil_d)
-      end
-    end
+fn filecopy_exn {m1,m2:file_mode} (
+    pf1: file_mode_lte (m1, r)
+  , pf2: file_mode_lte (m2, w)
+  | fil_s: &FILE m1, fil_d: &FILE m2
+  ) : void = let
+  fun loop
+    (fil_s: &FILE m1, fil_d: &FILE m2): void = let
+    val c = fgetc_err (pf1 | fil_s)
+  in
+    if c >= 0 then begin
+      fputc_exn (pf2 | i2c c, fil_d); loop (fil_s, fil_d)
+    end // end of [if]
+  end // end of [loop]
 in
   loop (fil_s, fil_d)
-end // end of [fcopy]
+end // end of [filecopy_exn]
 
 (* ****** ****** *)
 
-// a simple test
-
-implement main (argc, argv) = let
-
-val cmd = argv.[0]
-val () = if (argc < 2) then
-  exit_prerrf {void} (1, "Usage: %s [src] or %s [src] [dst]\n", @(cmd, cmd))
-val () = assert (argc >= 2)
-
+fn filecopy_err {m1,m2:file_mode} (
+    pf1: file_mode_lte (m1, r)
+  , pf2: file_mode_lte (m2, w)
+  | fil_s: &FILE m1, fil_d: &FILE m2
+  ) : int = let
+  fun loop
+    (fil_s: &FILE m1, fil_d: &FILE m2): void = let
+    val c = fgetc_err (pf1 | fil_s)
+  in
+    if c >= 0 then let
+      val err = fputc_err (pf2 | i2c c, fil_d)
+    in
+      loop (fil_s, fil_d)
+    end // end of [if]
+  end // end of [loop]
+  val () = loop (fil_s, fil_d)
 in
+  if ferror (fil_d) = 0 then ~1 else 0
+end // end of [filecopy_err]
 
-if argc > 2 then let
-  val (pf_s | ptr_s) = fopen (argv.[1], #mode="r")
-  val (pf_d | ptr_d) = fopen (argv.[2], #mode="w")
-in
-  fcopy (!ptr_s, !ptr_d);
-  fclose (pf_s | ptr_s);
-  fclose (pf_d | ptr_d)
-end else let
-  val (pf_s | ptr_s) = fopen (argv.[1], #mode="r")
-  val (pf_d | ptr_d) = stdout_get ()
-in
-  fcopy (!ptr_s, !ptr_d);
-  fclose (pf_s | ptr_s);
-  stdout_view_set (pf_d | (*none*))
-end // end of [if]
+(* ****** ****** *)
 
+// concatenation of a list of files
+implement main {n} (argc, argv) = let
+  val () = case+ argc of
+  | 1 => let
+      val (pf_stdin | p_stdin) = stdin_get ()
+      val (pf_stdout | p_stdout) = stdout_get ()
+      val _(*err*) = filecopy_err
+        (file_mode_lte_r_r, file_mode_lte_w_w | !p_stdin, !p_stdout)
+      val () = stdout_view_set (pf_stdout | (*none*))
+      val () = stdin_view_set (pf_stdin | (*none*))
+    in
+      // empty
+    end // end of [1]
+  | _ (*argc >= 2*) => loop (argc, argv, 1) where {
+      fun loop {i:nat | i <= n}
+        (argc: int n, argv: &(@[string][n]), i: int i): void =
+        if i < argc then let
+          val name = argv.[i]
+          val (pfopt | p_ifp) = fopen_err (name, file_mode_r)
+        in
+          if p_ifp <> null then let
+            prval Some_v (pf) = pfopt
+            val (pf_stdout | p_stdout) = stdout_get ()
+            val _(*err*) = filecopy_err
+              (file_mode_lte_r_r, file_mode_lte_w_w | !p_ifp, !p_stdout)
+            val () = stdout_view_set (pf_stdout | (*none*))
+            val () = fclose_exn (pf | p_ifp)
+          in
+            loop (argc, argv, i+1)
+          end else let
+            prval None_v () = pfopt
+            val () = prerrf ("%s: can't open [%s]\n", @(argv.[0], name))
+          in
+            exit {void} (1)
+          end // end of [if]
+        end // end of [if]
+    } // end of [_]
+  // end of [val]
+  val (pf_stdout | p_stdout) = stdout_get ()
+  val err = ferror (!p_stdout)
+  val () = stdout_view_set (pf_stdout | (*none*))
+in
+  if (err <> 0) then begin
+    prerrf ("%s: error writing stdout\n", @(argv.[0])); exit {void} (2)
+  end else begin
+    exit {void} (0) // exit normally
+  end // end of [if]
 end // end of [main]
 
 (* ****** ****** *)

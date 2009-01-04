@@ -81,23 +81,25 @@ fun{a:viewt@ype}
 and // [list_vt_par] for partition
   list_vt_par {l0,l1:addr} {p,q,r:nat} .< p+q+r, p+1 >.
   (pf0: a @ l0, pf1: List_vt a? @ l1 |
-   lte: (!a, !a) -> bool, node: list_vt_cons (l0, l1), node1: ptr l1,
+   lte: (!a, !a) -> bool, node: list_vt_cons_unfold (l0, l1), node1: ptr l1,
    x0: ptr l0, xs: list_vt (a, p), l: list_vt (a, q), r: list_vt (a, r))
   : list_vt (a, p+q+r+1) = case+ xs of
-  | cons (!x1, !xs1) =>
-    let val xs1_v = !xs1 in
+  | cons (!x1, !xs1) => let
+      val xs1_v = !xs1
+    in
       if lte (!x1, !x0) then begin
         !xs1 := l; fold@ xs;
         list_vt_par<a> (pf0, pf1 | lte, node, node1, x0, xs1_v, xs, r)
       end else begin
         !xs1 := r; fold@ xs;
         list_vt_par<a> (pf0, pf1 | lte, node, node1, x0, xs1_v, l, xs)
-      end
-    end
-  | ~nil () =>
-    let var l = list_vt_qsort<a> (lte, l) and r = list_vt_qsort<a> (lte, r) in
+      end // end of [if]
+    end // end of [cons]
+  | ~nil () => let
+      var l = list_vt_qsort<a> (lte, l) and r = list_vt_qsort<a> (lte, r)
+    in
       !node1 := r; fold@ node; r := node; list_vt_append<a> (l, r); l
-    end
+    end // end of [nil]
 
 (* ****** ****** *)
 

@@ -1690,8 +1690,9 @@ fn d1atsrtdec_tr (res: s2rt, d1c: d1atsrtdec): s2cstlst = let
     case+ d1cs of
     | cons (d1c, d1cs) => begin
         S2CSTLSTcons (aux (i, res, d1c), auxlst (i+1, res, d1cs))
-      end
+      end // end of [cons]
     | nil () => S2CSTLSTnil ()
+  // end of [auxlst]
 in
   auxlst (0, res, d1c.d1atsrtdec_con)
 end // end of [d1atsrtdec_tr]
@@ -1725,7 +1726,7 @@ implement d1atsrtdeclst_tr (d1cs): void = let
         , None () // islst
         , None () // argvar 
         , None () // def
-        )
+        ) // end of [val]
         val () = the_s2expenv_add_scst s2c_eq
         val () = the_s2rtenv_add (id, S2TEsrt s2t)
       in
@@ -1754,7 +1755,7 @@ fn s1expdef_s1aspdec_tr_main
         val s2t_fun = s2rt_fun (s2ts_arg, body.s2exp_srt)
       in
         s2exp_lam_srt (s2t_fun, s2vs, body)
-      end
+      end // end of [::]
     | nil () => body
   end // end of [aux]
 in
@@ -1823,7 +1824,7 @@ implement s1expdeflst_tr (res, d1cs) = let
         end // end of [list_vt_cons]
       | ~list_vt_nil () => ()
     // end of [aux]
-  }
+  } // end of [val]
 in
   // empty
 end // end of [s1expdeflst_tr]
@@ -2059,18 +2060,21 @@ end // end of [d1atconlst_tr]
 
 fn d1atdec_tr
   (s2c: s2cst_t, s2vs0: s2varlst, d1c: d1atdec): void = let
-  val s2t_s2c = case+ s2cst_srt_get s2c of S2RTfun (s2ts, s2t) => s2t | s2t => s2t
+  val s2t_s2c = begin
+    case+ s2cst_srt_get s2c of S2RTfun (s2ts, s2t) => s2t | s2t => s2t
+  end // end of [val]
   val islin = s2rt_is_linear s2t_s2c and isprf = s2rt_is_proof s2t_s2c
-  val d2cs = d1atconlst_tr (s2c, islin, isprf, s2vs0, d1c.d1atdec_fil, d1c.d1atdec_con)
+  val d2cs = d1atconlst_tr
+    (s2c, islin, isprf, s2vs0, d1c.d1atdec_fil, d1c.d1atdec_con)
   val () = let // assigning tags to dynamic constructors
     fun aux (i: int, d2cs: d2conlst): void = case+ d2cs of
-      | D2CONLSTcons (d2c, d2cs) => begin
-          d2con_tag_set (d2c, i); aux (i+1, d2cs)
-        end
+      | D2CONLSTcons (d2c, d2cs) => (d2con_tag_set (d2c, i); aux (i+1, d2cs))
+        // end of [D2CONLSTcons]
       | D2CONLSTnil () => ()
+    // end of [aux]
   in
     aux (0, d2cs)
-  end
+  end // end of [val]
   val islst = (case+ d2cs of
     | D2CONLSTcons (d2c1, D2CONLSTcons (d2c2, D2CONLSTnil ())) =>
         if d2con_arity_real_get d2c1 = 0 then begin
@@ -2080,17 +2084,18 @@ fn d1atdec_tr
           if d2con_arity_real_get d2c2 = 0 then Some @(d2c2, d2c1)
           else None ()
         end
+      // end of [D2CONLSTcons (_, D2CONSLSTcons (_, D2CONLSTnil))
     | _ => None ()
   ) : Option @(d2con_t, d2con_t)
 in
   s2cst_islst_set (s2c, islst); s2cst_conlst_set (s2c, Some d2cs)
 end // end of [d1atdec_tr]
 
-implement d1atdeclst_tr (datknd, d1cs_dat, d1cs_def) = let
+implement d1atdeclst_tr
+  (datknd, d1cs_dat, d1cs_def) = let
   val s2t_res = s2rt_datakind datknd
-
   typedef T = List @(d1atdec, s2cst_t, s2varlst)
-  val d1cs2cs2vslst: T = let
+  val d1cs2cs2vslst (* : T *) = let
     var res: T = nil ()
     fn aux (d1c: d1atdec, res: &T):<cloptr1> void = let
       val argvar = (
@@ -2098,27 +2103,23 @@ implement d1atdeclst_tr (datknd, d1cs_dat, d1cs_def) = let
         | Some d1as => Some (d1atarglst_tr d1as)
         | None () => None () 
       ) : Option (List @(symopt_t, s2rt, int))
-      val s2vs = (
-        let
-          fun aux (xs: List @(symopt_t, s2rt, int)): s2varlst =
-            case+ xs of
-            | cons (x, xs) => begin case+ x.0 of
-              | Some id => cons (s2var_make_id_srt (id, x.1), aux xs)
-              | None () =>> aux xs
-              end
-            | nil () => nil ()
-        in
-          case+ argvar of Some xs => aux xs | None () => nil ()
-        end
-      ) : s2varlst
-      val os2ts_arg = (
-        let
-          fun aux (xs: List @(symopt_t, s2rt, int)): s2rtlst =
-            case+ xs of cons (x, xs) => cons (x.1, aux xs) | nil () => nil ()
-        in
-          case+ argvar of Some xs => Some (aux xs) | None () => None ()
-        end
-      ) : s2rtlstopt
+      val s2vs = let
+        fun aux (xs: List @(symopt_t, s2rt, int)): s2varlst =
+          case+ xs of
+          | cons (x, xs) => begin case+ x.0 of
+            | Some id => cons (s2var_make_id_srt (id, x.1), aux xs)
+            | None () =>> aux xs
+            end
+          | nil () => nil ()
+      in
+        case+ argvar of Some xs => aux xs | None () => nil ()
+      end : s2varlst
+      val os2ts_arg = let
+        fun aux (xs: List @(symopt_t, s2rt, int)): s2rtlst =
+          case+ xs of cons (x, xs) => cons (x.1, aux xs) | nil () => nil ()
+      in
+        case+ argvar of Some xs => Some (aux xs) | None () => None ()
+      end : s2rtlstopt
       val s2c = s2cst_make_dat (d1c.d1atdec_sym, os2ts_arg, s2t_res, argvar)
     in
       the_s2expenv_add_scst s2c; res := cons (@(d1c, s2c, s2vs), res)
@@ -2128,9 +2129,11 @@ implement d1atdeclst_tr (datknd, d1cs_dat, d1cs_def) = let
       case+ d1cs of
       | cons (d1c, d1cs) => (aux (d1c, res); auxlst (d1cs, res))
       | nil () => ()
+    // end of [auxlst]
   in
     auxlst (d1cs_dat, res); res
-  end
+  end : T // end of [d1cs2cs2vslst]
+
   val () = let
     fun aux (d1cs: s1expdeflst): void = begin case+ d1cs of
       | cons (d1c, d1cs) => let
@@ -2147,7 +2150,7 @@ implement d1atdeclst_tr (datknd, d1cs_dat, d1cs_def) = let
   fun aux (xs: T): s2cstlst = begin case+ xs of
     | cons (x, xs) => begin
         d1atdec_tr (x.1, x.2, x.0); S2CSTLSTcons (x.1, aux xs)
-      end
+      end // end of [cons]
     | nil () => S2CSTLSTnil ()
   end // end of [aux]
 in

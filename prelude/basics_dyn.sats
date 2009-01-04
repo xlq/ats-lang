@@ -275,6 +275,7 @@ dataprop file_mode_lte (file_mode, file_mode) =
 
 prval file_mode_lte_r_r: file_mode_lte (r, r) // implemented in [file.dats]
 prval file_mode_lte_w_w: file_mode_lte (w, w) // implemented in [file.dats]
+prval file_mode_lte_rw_rw: file_mode_lte (rw, rw) // implemented in [file.dats]
 
 stadef <= = file_mode_lte
 

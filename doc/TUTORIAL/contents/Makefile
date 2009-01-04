@@ -16,6 +16,9 @@ overloading::
 datatypes::
 	scp datatypes.html ats-hwxi,ats-lang@web.sourceforge.net:htdocs/TUTORIAL/contents/
 
+dataviewtypes::
+	scp dataviewtypes.html ats-hwxi,ats-lang@web.sourceforge.net:htdocs/TUTORIAL/contents/
+
 pattern-matching::
 	scp pattern-matching.html ats-hwxi,ats-lang@web.sourceforge.net:htdocs/TUTORIAL/contents/
 
@@ -27,6 +30,12 @@ tail-recursive-functions::
 
 lazy-evaluation::
 	scp lazy-evaluation.html ats-hwxi,ats-lang@web.sourceforge.net:htdocs/TUTORIAL/contents/
+
+variadicity::
+	scp variadicity.html ats-hwxi,ats-lang@web.sourceforge.net:htdocs/TUTORIAL/contents/
+
+input-and-output::
+	scp input-and-output.html ats-hwxi,ats-lang@web.sourceforge.net:htdocs/TUTORIAL/contents/
 
 ######
 
