@@ -51,7 +51,7 @@ int sum2_loop (int n, int res) {
   if (n > 1) {
     res = res + n ; n = n - 1; goto loop; 
   } else {
-    res = 1;
+    // do nothing
   }
   return res ;
 }
@@ -94,7 +94,7 @@ odd: if (n > 0) { n = n - 1; goto even; } else { res = false; goto done; }
 
 done: return res ;
 
-}
+} /* end of [even_odd] */
 
 bool even (int n) { return even_odd (0, n) ; }
 bool odd (int n) { return even_odd (1, n) ; }

@@ -67,7 +67,7 @@ implement intinf_free (intinf) = let
   val @(pf_gc, pf_at | p) = intinf
 in
   mpz_clear (!p); ptr_free (pf_gc, pf_at | p)
-end
+end // end of [intinf_free]
 
 (* ****** ****** *)
 
@@ -76,7 +76,7 @@ implement fprint_intinf (pf | fil, intinf) = let
 in
   mpz_out_str (pf | fil, 10, !(intinf.2));
   intinf.1 := pf_at
-end
+end // end of [fprint_intinf]
 
 implement print_intinf (intinf) = print_mac (fprint_intinf, intinf)
 
@@ -85,13 +85,14 @@ implement fprint_intinf_base (pf | fil, base, intinf) = let
 in
   mpz_out_str (pf | fil, base, !(intinf.2));
   intinf.1 := pf_at
-end
+end // end of [fprint_intinf_base]
 
-implement print_intinf_base (base, intinf) =
-  let val (pf_out | p_out) = stdout_get () in
-    fprint_intinf_base (file_mode_lte_w_w | !p_out, base, intinf);
-    stdout_view_set (pf_out | (*none*))
-  end
+implement print_intinf_base (base, intinf) = let
+  val (pf_stdout | p_stdout) = stdout_get ()
+  val () = fprint_intinf_base (file_mode_lte_w_w | !p_stdout, base, intinf)
+  val () = stdout_view_set (pf_stdout | (*none*))
+in
+end // end of [print_intinf_base]
 
 (* ****** ****** *)
 
@@ -115,7 +116,7 @@ in
   @(pf_gc, pf_at | p)
 end // end of [succ_intinf]
 
-//
+(* ****** ****** *)
 
 implement add_intinf_int (intinf, i) = let
   val @(pf_gc, pf_at | p) = ptr_alloc_tsz {mpz_vt} (sizeof<mpz_vt>)
@@ -139,7 +140,7 @@ in
   @(pf_gc, pf_at | p)
 end // end of [add_intinf_intinf]
 
-//
+(* ****** ****** *)
 
 implement sub_intinf_int (intinf, i) = let
   val @(pf_gc, pf_at | p) = ptr_alloc_tsz {mpz_vt} (sizeof<mpz_vt>)
@@ -163,7 +164,7 @@ in
   @(pf_gc, pf_at | p)
 end // end of [sub_intinf_intinf]
 
-//
+(* ****** ****** *)
 
 implement mul_intinf_int {m,n} (intinf, i) = let
   prval pf_mul = mul_make {m,n} ()
@@ -188,6 +189,23 @@ implement mul_intinf_intinf {m,n} (intinf1, intinf2) = let
 in
   @(pf_mul | @(pf_gc, pf_at | p))
 end // end of [mul_intinf_intinf]
+
+(* ****** ****** *)
+
+implement div_intinf_int {m,n} (intinf, i) = let
+  prval [q,r:int] pf_mul =
+    div_lemma {m,n} () where {
+    extern praxi div_lemma {m,n:int | n > 0} ()
+      : [q,r:int | 0 <= r; r < n] MUL (q, n, m-r)
+  } // end of [prval]
+  val @(pf_gc, pf_at | p) = ptr_alloc_tsz {mpz_vt} (sizeof<mpz_vt>)
+  val () = mpz_init (!p)
+  prval pf1_at = intinf.1
+  val () = mpz_tdiv_q (!p, !(intinf.2), ulint_of_int i)
+  prval () = intinf.1 := pf1_at
+in
+  #[q,r | @(pf_mul | @(pf_gc, pf_at | p))]
+end // end of [div_intinf_int]
 
 (* ****** ****** *)
 

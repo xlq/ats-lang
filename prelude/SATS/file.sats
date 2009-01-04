@@ -111,8 +111,12 @@ fun output_line (fil: FILEref, line: string): void
 
 (* ****** ****** *)
 
+// [fil] should be a regular file!
 // making a lazy char stream out of a file handler
 fun char_stream_make_file (fil: FILEref): stream (char)
+
+// [fil] should be a regular file!
+// making a lazy line stream out of a file handler
 fun line_stream_make_file (fil: FILEref): stream (string)
 
 (* ****** ****** *)

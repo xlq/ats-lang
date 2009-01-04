@@ -426,19 +426,27 @@ val loc0 = d2e0.d2exp_loc
 val d3e0 = case+ d2e0.d2exp_node of
   | D2Ecaseof (casknd, res, n, d2es, c2ls) => begin
       d2exp_caseof_tr_dn (loc0, casknd, res, n, d2es, c2ls, s2e0)
-    end
+    end // end of [D2Ecaseof]
   | D2Eeffmask (effs, d2e) => let
       val (pf_effect | ()) = the_effect_env_push_effmask (effs)
       val d3e = d2exp_tr_dn (d2e, s2e0)
       val () = the_effect_env_pop (pf_effect | (*none*))
     in
       d3exp_effmask (loc0, effs, d3e)
-    end
+    end // end of [D2Eeffmask]
   | D2Eexist (s2a, d2e) => let
-      val s2e = s2exp_exi_instantiate_sexparg (loc0, s2e0, s2a)
+      val s2e0 = s2exp_whnf s2e0
+      val s2e = (case+ s2e0.s2exp_node of
+        | S2Ewth (s2e1, wths2e2) => let
+            val s2e1 = s2exp_exi_instantiate_sexparg (loc0, s2e1, s2a)
+          in
+            s2exp_wth (s2e1, wths2e2)
+          end // end of [S2Ewth]
+        | _ => s2exp_exi_instantiate_sexparg (loc0, s2e0, s2a)
+      ) : s2exp
     in
       d2exp_tr_dn (d2e, s2e)
-    end
+    end // end of [D2Eexist]
   | D2Efloat fcst => d2exp_float_tr_dn (loc0, fcst, s2e0)
   | D2Eif (res, d2e_cond, d2e_then, od2e_else) => begin
       d2exp_if_tr_dn (loc0, res, d2e_cond, d2e_then, od2e_else, s2e0)

@@ -1,3 +1,7 @@
+//
+// some code for illustrating tail-recursion
+//
+
 // [sum1] is recursive but not tail-recursive
 fun sum1 (n: int): int = if n > 0 then n + sum1 (n-1) else 0
 
@@ -86,17 +90,20 @@ int main (int argc, char *argv[]) {
 *)
 
 implement main (argc, argv) = let
-
-fn* loop1 {i:nat} (i: int i): void =
-  if i <= 9 then loop2 (i, i) else ()
-
-and loop2 {i,j:nat} (i: int i, j: int j): void =
-  if j <= 9 then begin
-    if i < j then print ", "; printf ("(%i, %i)", @(i, j)); loop2 (i, j+1)
-  end else begin
-    print_newline (); loop1 (i+1)
-  end
+  fn* loop1 {i:nat} (i: int i): void =
+    if i <= 9 then loop2 (i, i) else ()
+  and loop2 {i,j:nat} (i: int i, j: int j): void =
+    if j <= 9 then begin
+      if i < j then begin
+        print ", "; printf ("(%i, %i)", @(i, j)); loop2 (i, j+1)
+      end // end of [if]
+    end else begin
+      print_newline (); loop1 (i+1)
+    end // end of [if]
 in
   loop1 0
-end
+end // end of [main]
 
+(* ****** ****** *)
+
+(* end of [tail-recursive-functions.dats] *)

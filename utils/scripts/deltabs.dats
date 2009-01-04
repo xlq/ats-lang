@@ -166,11 +166,11 @@ fn fdeltabs (fil_s: &FILE r, fil_d: &FILE w): void =
 
 fn deltabs_file_file (src: string, dst: string): void = let
   val (pf_s_opt | ptr_s) = fopen_err (src, file_mode_r)
-  val () = assert_prerrf
+  val () = assert_prerrf_bool1
     (ptr_s <> null, "Exit: [fopen_err(\"%s\", \"r\")] failed\n", @(src))
   prval Some_v pf_s = pf_s_opt
   val (pf_d_opt | ptr_d) = fopen_err (dst, file_mode_w)
-  val () = assert_prerrf
+  val () = assert_prerrf_bool1
     (ptr_d <> null, "Exit: [fopen_err(\"%s\", \"w\")] failed\n", @(dst))
   prval Some_v pf_d = pf_d_opt
 in

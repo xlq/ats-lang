@@ -43,13 +43,13 @@ static inline
 ats_bool_type
 atslib_lt_intinf_int (ats_ptr_type i, ats_int_type j) {
   return (atslib_mpz_cmp_int (i, j) < 0) ;
-}
+} /* end of [atslib_lt_intinf_int] */
 
 static inline
 ats_bool_type
 atslib_lte_intinf_int (ats_ptr_type i, ats_int_type j) {
   return (atslib_mpz_cmp_int (i, j) <= 0) ;
-}
+} /* end of [atslib_lte_intinf_int] */
 
 /* ****** ****** */
 
@@ -57,13 +57,13 @@ static inline
 ats_bool_type
 atslib_gt_intinf_int (ats_ptr_type i, ats_int_type j) {
   return (atslib_mpz_cmp_int (i, j) > 0) ;
-}
+} /* end of [atslib_gt_intinf_int] */
 
 static inline
 ats_bool_type
 atslib_gte_intinf_int (ats_ptr_type i, ats_int_type j) {
   return (atslib_mpz_cmp_int (i, j) >= 0) ;
-}
+} /* end of [atslib_gte_intinf_int] */
 
 /* ****** ****** */
 
@@ -71,13 +71,43 @@ static inline
 ats_bool_type
 atslib_eq_intinf_int (ats_ptr_type i, ats_int_type j) {
   return (atslib_mpz_cmp_int (i, j) == 0) ;
-}
+} /* end of [atslib_eq_intinf_int] */
+
+static inline
+ats_bool_type
+atslib_eq_intinf_intinf (ats_ptr_type i, ats_ptr_type j) {
+  return (atslib_mpz_cmp_mpz (i, j) == 0) ;
+} /* end of [atslib_eq_intinf_intinf] */
+
+/* ****** ****** */
 
 static inline
 ats_bool_type
 atslib_neq_intinf_int (ats_ptr_type i, ats_int_type j) {
   return (atslib_mpz_cmp_int (i, j) != 0) ;
-}
+} /* end of [atslib_neq_intinf_int] */
+
+static inline
+ats_bool_type
+atslib_neq_intinf_intinf (ats_ptr_type i, ats_ptr_type j) {
+  return (atslib_mpz_cmp_mpz (i, j) != 0) ;
+} /* end of [atslib_neq_intinf_intintf] */
+
+/* ****** ****** */
+
+static inline
+ats_int_type
+atslib_compare_intinf_int
+  (ats_ptr_type i, ats_int_type j) {
+  return (atslib_mpz_cmp_int (i, j)) ;
+} /* end of [atslib_compare_intinf_int] */
+
+static inline
+ats_int_type
+atslib_compare_intinf_intinf
+  (ats_ptr_type i, ats_ptr_type j) {
+  return (atslib_mpz_cmp_mpz (i, j)) ;
+} /* end of [atslib_compare_intinf_intintf] */
 
 /* ****** ****** */
 

@@ -51,9 +51,29 @@ atslib_strcmp (ats_ptr_type str1, ats_ptr_type str2) {
 
 static inline
 ats_int_type
+atslib_substrcmp (
+  ats_ptr_type str1, ats_int_type i1
+, ats_ptr_type str2, ats_int_type i2
+) {
+  return strcmp((char*)str1+i1, (char*)str2+i2) ;
+} /* end of [atslib_substrcmp] */
+
+/* ****** ****** */
+
+static inline
+ats_int_type
 atslib_strncmp (ats_ptr_type str1, ats_ptr_type str2, ats_int_type n) {
   return strncmp(str1, str2, n) ;
 } /* end of [atslib_strncmp] */
+
+static inline
+ats_int_type
+atslib_substrncmp (
+  ats_ptr_type str1, ats_int_type i1
+, ats_ptr_type str2, ats_int_type i2
+, ats_int_type n) {
+  return strncmp((char*)str1+i1, (char*)str2+i2, n) ;
+} /* end of [atslib_substrncmp] */
 
 /* ****** ****** */
 

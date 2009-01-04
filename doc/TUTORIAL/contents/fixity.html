@@ -49,13 +49,24 @@ infixl (+) iadd fadd padd uadd
 </pre>
 
 This is useful as it is difficult in practice to remember the precedence
-values of (a large collection of) declared operators.
+values of (a large collection of) declared operators. Sometimes, we may
+need to specify that the precedence value of one operator in relation to
+that of another one. For instance, the following syntax declares that
+<i>opr2</i> is a left-associative infix operator and its precedence value
+is that of <i>opr1</i> plus 10:
+
+<pre>
+infixl (opr1 + 10) opr2
+</pre>
+
+If the plus sign (+) is changed to the minus sign (-), then the precedence
+value of <i>opr2</i> is that of <i>opr1</i> minus 10.
 <P>
 
-We can also turn an identifier <i>id</i> into a non-associative infix
+We can also turn an identifier <i>opr</i> into a non-associative infix
 operator (of precedence value 0) by putting the backslash symbol <i>\</i>
 in front of it. For instance, the expression
-<i>$exp_1 \id $exp_2</i> stands for <i>id ($exp_1, $exp_2)</i>, where
+<i>$exp_1 \opr $exp_2</i> stands for <i>opr ($exp_1, $exp_2)</i>, where
 <i>$exp_1</i> and <i>$exp_2</i>
 refer to some expressions, either static or dynamic.
 <P>
@@ -70,6 +81,10 @@ prefix 61 ~
 postfix 69 ?
 </pre>
 
+Please find an example involving a postfix operator <A
+HREF="fixity.dats">here</A>.
+<P>
+
 For a given occurrence of an operator, we can deprive it of its assigned
 fixity by simply putting the keyword <i><u>op</u></i> in front of it. For
 instance <i>1 + 2 - 3</i> can be writen as <i><u>op</u>- (<u>op</u>+ (1,
@@ -82,7 +97,9 @@ operators
 nonfix iadd fadd padd uadd
 </pre>
 
-Lastly, please note that all the fixity declarations are lexically scoped.
+Lastly, please note that fixity declarations are lexically scoped, and each
+fixity declaration is only effective within its legal scope.
+
 <P>
 
 <HR SIZE=1 ALIGN=LEFT><P>

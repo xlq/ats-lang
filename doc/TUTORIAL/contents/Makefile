@@ -1,3 +1,35 @@
+ats-main::
+	scp ats-main.html ats-hwxi,ats-lang@web.sourceforge.net:htdocs/TUTORIAL/contents/
+
+file-inclusion::
+	scp file-inclusion.html ats-hwxi,ats-lang@web.sourceforge.net:htdocs/TUTORIAL/contents/
+
+compilation::
+	scp compilation.html ats-hwxi,ats-lang@web.sourceforge.net:htdocs/TUTORIAL/contents/
+
+fixity::
+	scp fixity.html ats-hwxi,ats-lang@web.sourceforge.net:htdocs/TUTORIAL/contents/
+
+overloading::
+	scp overloading.html ats-hwxi,ats-lang@web.sourceforge.net:htdocs/TUTORIAL/contents/
+
+datatypes::
+	scp datatypes.html ats-hwxi,ats-lang@web.sourceforge.net:htdocs/TUTORIAL/contents/
+
+pattern-matching::
+	scp pattern-matching.html ats-hwxi,ats-lang@web.sourceforge.net:htdocs/TUTORIAL/contents/
+
+references::
+	scp references.html ats-hwxi,ats-lang@web.sourceforge.net:htdocs/TUTORIAL/contents/
+
+tail-recursive-functions::
+	scp tail-recursive-functions.html ats-hwxi,ats-lang@web.sourceforge.net:htdocs/TUTORIAL/contents/
+
+lazy-evaluation::
+	scp lazy-evaluation.html ats-hwxi,ats-lang@web.sourceforge.net:htdocs/TUTORIAL/contents/
+
+######
+
 typecheck::
 	atscc  arrays-and-matrices.dats
 	atscc  ATS-and-C.dats

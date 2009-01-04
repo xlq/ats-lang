@@ -44,7 +44,7 @@
 
 (* ****** ****** *)
 
-symintr strcmp strncmp
+symintr strcmp substrcmp
 
 fun strcmp_string_string
   (str1: string, str2: string): int
@@ -52,11 +52,30 @@ fun strcmp_string_string
 
 overload strcmp with strcmp_string_string
   
+fun substrcmp_string_string
+  {n1,i1:nat | i1 <= n1} {n2,i2:nat | i2 <= n2}
+  (str1: string n1, i: int i1, str2: string n2, i2: int i2): int
+  = "atslib_substrcmp"
+
+overload substrcmp with substrcmp_string_string
+
+//
+
 fun strncmp_string_string {n:nat}
   (str1: string, str2: string, n: int n): int
   = "atslib_strncmp"
 
+symintr strncmp substrncmp
+
 overload strncmp with strncmp_string_string
+
+fun substrncmp_string_string
+  {n1,i1:nat | i1 <= n1} {n2,i2:nat | i2 <= n2} {n: nat} (
+    str1: string n1, i1: int i1, str2: string n2, i2: int i2, n: int n
+  ) : int
+  = "atslib_substrncmp"
+
+overload substrncmp with substrncmp_string_string
 
 (* ****** ****** *)
 

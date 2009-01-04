@@ -129,6 +129,7 @@ end // end of [output_line]
 
 (* ****** ****** *)
 
+// [fil] should be a regular file!
 implement char_stream_make_file (fil) = let
   val c = fgetc0_err (fil)
 in
@@ -143,6 +144,7 @@ end // end of [char_stream_make_file]
 
 (* ****** ****** *)
 
+// [fil] should be a regular file!
 implement line_stream_make_file (fil) = begin
   if feof0 (fil) <> 0 then let
     val () = fclose0_exn fil in $delay (stream_nil ())

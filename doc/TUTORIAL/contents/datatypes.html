@@ -21,14 +21,15 @@ list is implemented:
 
 <FONT COLOR="#000000">fun</FONT> length_intlst0 <FONT COLOR="#000000">(</FONT>xs<FONT COLOR="#000000">:</FONT> <FONT COLOR="#0000FF">intlst0</FONT><FONT COLOR="#000000">)</FONT><FONT COLOR="#000000">:</FONT> <FONT COLOR="#0000FF">int</FONT> <FONT COLOR="#000000">=</FONT>
   <FONT COLOR="#000000">case+</FONT> xs <FONT COLOR="#000000">of</FONT> <FONT COLOR="#787878">// [case+] demands exhaustive pattern matching
-</FONT>    <FONT COLOR="#787878">// the bar (|) in the first clause is optional
-</FONT>    <FONT COLOR="#000000">|</FONT> INTLST0cons <FONT COLOR="#000000">(</FONT>_<FONT COLOR="#000000">,</FONT> xs<FONT COLOR="#000000">)</FONT> <FONT COLOR="#000000">=&gt;</FONT> 1 + length_intlst0 <FONT COLOR="#000000">(</FONT>xs<FONT COLOR="#000000">)</FONT>
-    <FONT COLOR="#000000">|</FONT> INTLST0nil <FONT COLOR="#000000">(</FONT><FONT COLOR="#000000">)</FONT> <FONT COLOR="#000000">=&gt;</FONT> 0
+</FONT>  <FONT COLOR="#787878">// the bar (|) in the first clause is optional
+</FONT>  <FONT COLOR="#000000">|</FONT> INTLST0cons <FONT COLOR="#000000">(</FONT>_<FONT COLOR="#000000">,</FONT> xs<FONT COLOR="#000000">)</FONT> <FONT COLOR="#000000">=&gt;</FONT> 1 + length_intlst0 <FONT COLOR="#000000">(</FONT>xs<FONT COLOR="#000000">)</FONT>
+  <FONT COLOR="#000000">|</FONT> INTLST0nil <FONT COLOR="#000000">(</FONT><FONT COLOR="#000000">)</FONT> <FONT COLOR="#000000">=&gt;</FONT> 0
 </FONT></PRE>
 
-Note that the pattern for a constructor <i>C</i> with no arguments is
-<i>C( )</i>. If we write <i>C</i> instead of <i>C( )</i>, then <i>C</i> is
-assumed to be a variable pattern, which matches any value.
+Please note that any valid identifiers for variables can also be used as
+identifiers for constructors. The pattern for a constructor <i>C</i> with
+no arguments is <i>C( )</i>. If we write <i>C</i> instead of <i>C( )</i>,
+then <i>C</i> is assumed to be a variable pattern, which matches any value.
 <P>
 
 <H4>A Dependent Datatype</H4>
@@ -60,9 +61,9 @@ be implemented as follows:
 
 <PRE><FONT COLOR="#E80000"><FONT COLOR="#000000">fun</FONT> length_intlst1 <FONT COLOR="#0000FF"><FONT COLOR="#000000">{</FONT>n<FONT COLOR="#000000">:</FONT>nat<FONT COLOR="#000000">}</FONT></FONT> <FONT COLOR="#000000">(</FONT>xs<FONT COLOR="#000000">:</FONT> <FONT COLOR="#0000FF">intlst1 n</FONT><FONT COLOR="#000000">)</FONT><FONT COLOR="#000000">:</FONT> <FONT COLOR="#0000FF">int n</FONT> <FONT COLOR="#000000">=</FONT>
   <FONT COLOR="#000000">case+</FONT> xs <FONT COLOR="#000000">of</FONT> <FONT COLOR="#787878">// the bar (|) in the first clause is optional
-</FONT>    <FONT COLOR="#787878">// the bar (|) in the first clause is optional
-</FONT>    <FONT COLOR="#000000">|</FONT> INTLST1cons <FONT COLOR="#000000">(</FONT>_<FONT COLOR="#000000">,</FONT> xs<FONT COLOR="#000000">)</FONT> <FONT COLOR="#000000">=&gt;</FONT> 1 + length_intlst1 <FONT COLOR="#000000">(</FONT>xs<FONT COLOR="#000000">)</FONT>
-    <FONT COLOR="#000000">|</FONT> INTLST1nil <FONT COLOR="#000000">(</FONT><FONT COLOR="#000000">)</FONT> <FONT COLOR="#000000">=&gt;</FONT> 0
+</FONT>  <FONT COLOR="#787878">// the bar (|) in the first clause is optional
+</FONT>  <FONT COLOR="#000000">|</FONT> INTLST1cons <FONT COLOR="#000000">(</FONT>_<FONT COLOR="#000000">,</FONT> xs<FONT COLOR="#000000">)</FONT> <FONT COLOR="#000000">=&gt;</FONT> 1 + length_intlst1 <FONT COLOR="#000000">(</FONT>xs<FONT COLOR="#000000">)</FONT>
+  <FONT COLOR="#000000">|</FONT> INTLST1nil <FONT COLOR="#000000">(</FONT><FONT COLOR="#000000">)</FONT> <FONT COLOR="#000000">=&gt;</FONT> 0
 </FONT></PRE>
 
 Note that <i>length_intlst1</i> is assigned the following type:
@@ -90,8 +91,8 @@ Note that the pattern matching involved in the value declaration
 <i>val+ INTLST1cons (x, xs) = xs</i> is
 guaranteed to be exhaustive as <i>n</i> is positive. As a consequence, there
 is no tag checking in the C code generated from the compilation of
-<i>nth_intlst</i>. This simple example demonstrates that safety can enhance
-efficiency.
+<i>nth_intlst</i>. This simple example demonstrates that safety can
+actually enhance efficiency.
 
 <H4>A Polymorphic Datatype</H4> We can declare a datatype <i>list</i> as follows for
 representing polymorphic lists:
@@ -122,8 +123,8 @@ follows:
 <PRE><FONT COLOR="#E80000"><FONT COLOR="#000000">fun</FONT><FONT COLOR="#000000">{</FONT><FONT COLOR="#0000FF">a<FONT COLOR="#000000">:</FONT>t@ype</FONT><FONT COLOR="#000000">}</FONT> append_list <FONT COLOR="#0000FF"><FONT COLOR="#000000">{</FONT>m<FONT COLOR="#000000">,</FONT>n<FONT COLOR="#000000">:</FONT>nat<FONT COLOR="#000000">}</FONT></FONT>
   <FONT COLOR="#000000">(</FONT>xs<FONT COLOR="#000000">:</FONT> <FONT COLOR="#0000FF">list <FONT COLOR="#000000">(</FONT>a<FONT COLOR="#000000">,</FONT> m<FONT COLOR="#000000">)</FONT></FONT><FONT COLOR="#000000">,</FONT> ys<FONT COLOR="#000000">:</FONT> <FONT COLOR="#0000FF">list <FONT COLOR="#000000">(</FONT>a<FONT COLOR="#000000">,</FONT> n<FONT COLOR="#000000">)</FONT></FONT><FONT COLOR="#000000">)</FONT><FONT COLOR="#000000">:</FONT> <FONT COLOR="#0000FF">list <FONT COLOR="#000000">(</FONT>a<FONT COLOR="#000000">,</FONT> m+n<FONT COLOR="#000000">)</FONT></FONT> <FONT COLOR="#000000">=</FONT>
   <FONT COLOR="#000000">case+</FONT> xs <FONT COLOR="#000000">of</FONT>
-    <FONT COLOR="#000000">|</FONT> cons <FONT COLOR="#000000">(</FONT>x<FONT COLOR="#000000">,</FONT> xs<FONT COLOR="#000000">)</FONT> <FONT COLOR="#000000">=&gt;</FONT> cons <FONT COLOR="#000000">(</FONT>x<FONT COLOR="#000000">,</FONT> append_list <FONT COLOR="#000000">(</FONT>xs<FONT COLOR="#000000">,</FONT> ys<FONT COLOR="#000000">)</FONT><FONT COLOR="#000000">)</FONT>
-    <FONT COLOR="#000000">|</FONT> nil <FONT COLOR="#000000">(</FONT><FONT COLOR="#000000">)</FONT> <FONT COLOR="#000000">=&gt;</FONT> ys
+  <FONT COLOR="#000000">|</FONT> cons <FONT COLOR="#000000">(</FONT>x<FONT COLOR="#000000">,</FONT> xs<FONT COLOR="#000000">)</FONT> <FONT COLOR="#000000">=&gt;</FONT> cons <FONT COLOR="#000000">(</FONT>x<FONT COLOR="#000000">,</FONT> append_list <FONT COLOR="#000000">(</FONT>xs<FONT COLOR="#000000">,</FONT> ys<FONT COLOR="#000000">)</FONT><FONT COLOR="#000000">)</FONT>
+  <FONT COLOR="#000000">|</FONT> nil <FONT COLOR="#000000">(</FONT><FONT COLOR="#000000">)</FONT> <FONT COLOR="#000000">=&gt;</FONT> ys
 </FONT></PRE>
 
 This function definition is a template. It can be typechecked but cannot be
@@ -137,10 +138,13 @@ that zips together two given lists of the same length:
 <PRE><FONT COLOR="#E80000"><FONT COLOR="#000000">fun</FONT><FONT COLOR="#000000">{</FONT><FONT COLOR="#0000FF">a1<FONT COLOR="#000000">,</FONT>a2<FONT COLOR="#000000">:</FONT>t@ype</FONT><FONT COLOR="#000000">}</FONT> zip_list <FONT COLOR="#0000FF"><FONT COLOR="#000000">{</FONT>n<FONT COLOR="#000000">:</FONT>nat<FONT COLOR="#000000">}</FONT></FONT>
   <FONT COLOR="#000000">(</FONT>xs1<FONT COLOR="#000000">:</FONT> <FONT COLOR="#0000FF">list <FONT COLOR="#000000">(</FONT>a1<FONT COLOR="#000000">,</FONT> n<FONT COLOR="#000000">)</FONT></FONT><FONT COLOR="#000000">,</FONT> xs2<FONT COLOR="#000000">:</FONT> <FONT COLOR="#0000FF">list <FONT COLOR="#000000">(</FONT>a2<FONT COLOR="#000000">,</FONT> n<FONT COLOR="#000000">)</FONT></FONT><FONT COLOR="#000000">)</FONT><FONT COLOR="#000000">:</FONT> <FONT COLOR="#0000FF">list <FONT COLOR="#000000">(</FONT><FONT COLOR="#000000">'(</FONT>a1<FONT COLOR="#000000">,</FONT> a2<FONT COLOR="#000000">)</FONT><FONT COLOR="#000000">,</FONT> n<FONT COLOR="#000000">)</FONT></FONT> <FONT COLOR="#000000">=</FONT>
   <FONT COLOR="#000000">case+</FONT> <FONT COLOR="#000000">(</FONT>xs1<FONT COLOR="#000000">,</FONT> xs2<FONT COLOR="#000000">)</FONT> <FONT COLOR="#000000">of</FONT>
-    <FONT COLOR="#000000">|</FONT> <FONT COLOR="#000000">(</FONT>cons <FONT COLOR="#000000">(</FONT>x1<FONT COLOR="#000000">,</FONT> xs1<FONT COLOR="#000000">)</FONT><FONT COLOR="#000000">,</FONT> cons <FONT COLOR="#000000">(</FONT>x2<FONT COLOR="#000000">,</FONT> xs2<FONT COLOR="#000000">)</FONT><FONT COLOR="#000000">)</FONT> <FONT COLOR="#000000">=&gt;</FONT> cons <FONT COLOR="#000000">(</FONT><FONT COLOR="#000000">'(</FONT>x1<FONT COLOR="#000000">,</FONT> x2<FONT COLOR="#000000">)</FONT><FONT COLOR="#000000">,</FONT> zip_list <FONT COLOR="#000000">(</FONT>xs1<FONT COLOR="#000000">,</FONT> xs2<FONT COLOR="#000000">)</FONT><FONT COLOR="#000000">)</FONT>
-    <FONT COLOR="#000000">|</FONT> <FONT COLOR="#000000">(</FONT>nil <FONT COLOR="#000000">(</FONT><FONT COLOR="#000000">)</FONT><FONT COLOR="#000000">,</FONT> nil <FONT COLOR="#000000">(</FONT><FONT COLOR="#000000">)</FONT><FONT COLOR="#000000">)</FONT> <FONT COLOR="#000000">=&gt;</FONT> nil <FONT COLOR="#000000">(</FONT><FONT COLOR="#000000">)</FONT>
-    <FONT COLOR="#000000">|</FONT> <FONT COLOR="#000000">(</FONT>_<FONT COLOR="#000000">,</FONT> _<FONT COLOR="#000000">)</FONT> <FONT COLOR="#000000">=/=&gt;&gt;</FONT> <FONT COLOR="#000000">(</FONT><FONT COLOR="#000000">)</FONT> <FONT COLOR="#787878">// other cases cannot occur; this clause may be omitted here
+  <FONT COLOR="#000000">|</FONT> <FONT COLOR="#000000">(</FONT>cons <FONT COLOR="#000000">(</FONT>x1<FONT COLOR="#000000">,</FONT> xs1<FONT COLOR="#000000">)</FONT><FONT COLOR="#000000">,</FONT> cons <FONT COLOR="#000000">(</FONT>x2<FONT COLOR="#000000">,</FONT> xs2<FONT COLOR="#000000">)</FONT><FONT COLOR="#000000">)</FONT> <FONT COLOR="#000000">=&gt;</FONT> cons <FONT COLOR="#000000">(</FONT><FONT COLOR="#000000">'(</FONT>x1<FONT COLOR="#000000">,</FONT> x2<FONT COLOR="#000000">)</FONT><FONT COLOR="#000000">,</FONT> zip_list <FONT COLOR="#000000">(</FONT>xs1<FONT COLOR="#000000">,</FONT> xs2<FONT COLOR="#000000">)</FONT><FONT COLOR="#000000">)</FONT>
+  <FONT COLOR="#000000">|</FONT> <FONT COLOR="#000000">(</FONT>nil <FONT COLOR="#000000">(</FONT><FONT COLOR="#000000">)</FONT><FONT COLOR="#000000">,</FONT> nil <FONT COLOR="#000000">(</FONT><FONT COLOR="#000000">)</FONT><FONT COLOR="#000000">)</FONT> <FONT COLOR="#000000">=&gt;</FONT> nil <FONT COLOR="#000000">(</FONT><FONT COLOR="#000000">)</FONT>
+  <FONT COLOR="#000000">|</FONT> <FONT COLOR="#000000">(</FONT>_<FONT COLOR="#000000">,</FONT> _<FONT COLOR="#000000">)</FONT> <FONT COLOR="#000000">=/=&gt;&gt;</FONT> <FONT COLOR="#000000">(</FONT><FONT COLOR="#000000">)</FONT> <FONT COLOR="#787878">// other cases cannot occur
 </FONT></FONT></PRE>
+
+Note that the last clause in the definition of <i>zip_list</i>, is presented only for the purpose of
+illustration, and it can simply be omitted.
 
 <HR SIZE=1 ALIGN=LEFT><P>
 The code used for illustration is available <a href="datatypes.dats">here</a>.

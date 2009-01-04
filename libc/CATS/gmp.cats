@@ -188,10 +188,10 @@ atslib_mpz_set_str
   int n ;
   n = mpz_set_str((mpz_ptr)x, (char*)s, base) ;
   if (n < 0) {
-    atspre_exit_prerrf(1, "Exit: atslib_mpz_set_str(%s)\n", s) ;
+    atspre_exit_prerrf(1, "exit(ATS): [atslib_mpz_set_str(%s)]: failed\n", s) ;
   }
   return ;
-}
+} /* end of [atslib_mpz_set_str] */
 
 // init and set functions
 
@@ -250,15 +250,16 @@ ats_int_type atslib_mpz_init_set_str_err
 }
 
 static inline
-ats_void_type atslib_mpz_init_set_str
+ats_void_type
+atslib_mpz_init_set_str
   (ats_mpz_ptr_type x, ats_ptr_type s, ats_int_type base) {
   int err ;
   err = mpz_init_set_str((mpz_ptr)x, (char*)s, base) ;
   if (err < 0) {
-    atspre_exit_prerrf(1, "Exit: atslib_mpz_init_set_str(%s)\n", s) ;
+    atspre_exit_prerrf(1, "exit(ATS): [atslib_mpz_init_set_str(%s)] failed\n", s) ;
   }
   return ;
-}
+} /* end of [atslib_mpz_init_set_str] */
 
 /* ****** ****** */
 
@@ -546,8 +547,21 @@ atslib_mpz_tdiv_q_mpz_3
 
 static inline
 ats_void_type
+atslib_mpz_tdiv_q_ulint_3
+  (ats_mpz_ptr_type q, ats_mpz_ptr_type n, ats_ulint_type d) {
+  mpz_tdiv_q_ui ((mpz_ptr)q, (mpz_ptr)n, d) ; return ;
+}
+
+static inline
+ats_void_type
 atslib_mpz_tdiv_q_mpz_2 (ats_mpz_ptr_type x, ats_mpz_ptr_type d) {
   mpz_tdiv_q ((mpz_ptr)x, (mpz_ptr)x, (mpz_ptr)d) ; return ;
+}
+
+static inline
+ats_void_type
+atslib_mpz_tdiv_q_ulint_2 (ats_mpz_ptr_type x, ats_ulint_type d) {
+  mpz_tdiv_q_ui ((mpz_ptr)x, (mpz_ptr)x, d) ; return ;
 }
 
 /* ****** ****** */
@@ -601,10 +615,10 @@ atslib_mpz_out_str
   (ats_ptr_type file, ats_int_type base, const ats_mpz_ptr_type x) {
   int n = mpz_out_str((FILE*)file, base, (mpz_ptr)x) ;
   if (!n) {
-    ats_exit_errmsg (1, "Exit: [ats_mpz_out_str] failed.\n") ;
+    ats_exit_errmsg (1, "exit(ATS): [atslib_mpz_out_str] failed.\n") ;
   }
   return ;
-}
+} /* end of [atslib_mpz_out_str] */
 
 static inline
 ats_void_type

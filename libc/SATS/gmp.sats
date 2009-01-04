@@ -430,11 +430,22 @@ fun mpz_tdiv_q_mpz_3
   (q: &mpz_vt, n: &mpz_vt, d: &mpz_vt):<> void
   = "atslib_mpz_tdiv_q_mpz_3"
 
-fun mpz_tdiv_q_mpz_2 (x: &mpz_vt, d: &mpz_vt):<> void
-  = "atslib_mpz_tdiv_q_mpz_2"
+fun mpz_tdiv_q_ulint_3
+  (q: &mpz_vt, n: &mpz_vt, d: ulint):<> void
+  = "atslib_mpz_tdiv_q_ulint_3"
 
 overload mpz_tdiv_q with mpz_tdiv_q_mpz_3
+overload mpz_tdiv_q with mpz_tdiv_q_ulint_3
+
+// [q] := [q] / [d]
+fun mpz_tdiv_q_mpz_2 (q: &mpz_vt, d: &mpz_vt):<> void
+  = "atslib_mpz_tdiv_q_mpz_2"
+
+fun mpz_tdiv_q_ulint_2 (q: &mpz_vt, d: ulint):<> void
+  = "atslib_mpz_tdiv_q_ulint_2"
+
 overload mpz_tdiv_q with mpz_tdiv_q_mpz_2
+overload mpz_tdiv_q with mpz_tdiv_q_ulint_2
 
 (* ****** ****** *)
 

@@ -13,18 +13,25 @@ constructed and evaluated.
 The statics of ATS is a simply typed language. The types for terms in the
 statics are called <em>sorts</em> (so as to avoid potential confusion with
 the types for terms in the dynamics) and the terms in it are called
-<em>static terms</em>.  We use <i>sigma</i> for sorts and <i>s</i> for
-static term.  The primitive sorts in ATS include
-<i>bool</i>, <i>int</i>, <i>prop</i>, <i>type</i>, <i>view</i> and
+<em>static terms</em>.  We use <i>sigma</i> (or <i>$srt</i>) for sorts and
+<i>s</i> (or <i>$strm</i>) for static term.  The primitive sorts in ATS
+include
+<i>bool</i>,
+<i>char</i>,
+<i>int</i>,
+<i>prop</i>,
+<i>type</i>,
+<i>view</i> and
 <i>viewtype</i>.
 <P>
 There are also some primitive constants <i>c</i> in the statics, each of which
 is assigned a constant sort (or c-sort, for short) of the following form:
 
-<center>
+<CENTER>
 <i>(sigma_1,...,sigma_n) => sigma</i>
-</center>
+</CENTER>
 <P>
+
 Intuitively, given static terms <i>s_1,...,s_n</i> of sorts
 <i>sigma_1,...,sigma_n</i>, respectively, <i>c(s_1,...,s_n)</i> is a static
 term of sort <i>sigma</i> if <i>c</i> is assigned the c-sort
@@ -502,17 +509,15 @@ of the equation:
 
 <pre>
 // computing roots for [Axx + Bx + C]
-fn foo (A: double, B: double, C: double): @(double, double) =
-  let
-    val Delta = B * B - 4.0 * A * C
-    val () = if Delta < 0.0 then (prerr "no real roots!\n"; exit {void} 1)
-    val Delta_sqrt = sqrt (Delta)
-    val root1 = (~B + Delta_sqrt) / (2.0 * A)
-    val root2 = (~B - Delta_sqrt) / (2.0 * A)
-  in
-    @(root1, root2) // this a flat tuple
-  end
-
+fn foo (A: double, B: double, C: double): @(double, double) = let
+  val Delta = B * B - 4.0 * A * C
+  val () = if Delta < 0.0 then (prerr "no real roots!\n"; exit {void} 1)
+  val Delta_sqrt = sqrt (Delta)
+  val root1 = (~B + Delta_sqrt) / (2.0 * A)
+  val root2 = (~B - Delta_sqrt) / (2.0 * A)
+in
+  @(root1, root2) // this a flat tuple
+end // end of [foo]
 </pre>
 
 Note that the variables <i>Delta</i>, <i>Delta_sqrt</i>, <i>root1</i> and
@@ -523,16 +528,17 @@ Another form of local binding is introduced through the keyword
 <pre>
 val fact10 = fact 10 where {
   fun fact (x: int): int = if x > 0 then x * fact (x-1) else 1
-}
+} // end of [fact10]
 </pre>
 
 This code is just an equivalent form of the following code:
 
 <pre>
-val fact10 =
-  let fun fact (x: int): int = if x > 0 then x * fact (x-1) else 1 in
-    fact 10
-  end
+val fact10 = let
+  fun fact (x: int): int = if x > 0 then x * fact (x-1) else 1
+in
+  fact 10
+end // end of [fact10]
 </pre>
 
 </MENU>
@@ -541,15 +547,19 @@ val fact10 =
 There are currently three forms of comments in ATS/Anairiats.
 <UL>
 
-<LI>A line comment starts with a double slash "//" and ends with a newline
+<LI>
+
+A line comment starts with a double slash "//" and ends with a newline
 character.
 
-<LI>A rest-of-file comment starts with a quadruple slash "////" and ends at
-the end of the file in which this comment occurs. This style is often
-useful for debugging or testing.
+<LI>
+A rest-of-file comment starts with a quadruple slash "////" and ends at the
+end of the file in which this comment occurs. This style is often useful
+for debugging or testing.
 
-<LI>An enclosed comment starts with the symbol "(*" and ends with
-"*)". Such comments can be embedded in one another.
+<LI>
+An enclosed comment starts with the symbol "(*" and ends with "*)". Such
+comments can be embedded in one another.
 
 </UL>
 

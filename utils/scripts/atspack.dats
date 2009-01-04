@@ -633,9 +633,19 @@ fn libc_dir_copy () = let
   val SRCROOTlibc = SRCROOT + "libc/"
   val DSTROOTlibc = DSTROOT + "libc/"
   val () = lib_dir_copy (SRCROOTlibc, DSTROOTlibc)
+
   val SRCROOTlibc_sys = SRCROOTlibc + "sys/"
   val DSTROOTlibc_sys = DSTROOTlibc + "sys/"
   val () = lib_dir_copy (SRCROOTlibc_sys, DSTROOTlibc_sys)
+
+  val SRCROOTlibc_arpa = SRCROOTlibc + "arpa/"
+  val DSTROOTlibc_arpa = DSTROOTlibc + "arpa/"
+  val () = lib_dir_copy (SRCROOTlibc_arpa, DSTROOTlibc_arpa)
+
+  val SRCROOTlibc_netinet = SRCROOTlibc + "netinet/"
+  val DSTROOTlibc_netinet = DSTROOTlibc + "netinet/"
+  val () = lib_dir_copy (SRCROOTlibc_netinet, DSTROOTlibc_netinet)
+
   val SRCROOTlibc_GL = SRCROOTlibc + "GL/"
   val DSTROOTlibc_GL = DSTROOTlibc + "GL/"
   val () = lib_dir_copy (SRCROOTlibc_GL, DSTROOTlibc_GL)

@@ -11,7 +11,7 @@ named <i>foobar</i> is included, that is, this line is to be replaced with
 the content of the file <i>foobar</i>:
 
 <pre>
-#include "foobar"
+#include "foobar.hats"
 </pre>
 
 Note that the included file is parsed according to the syntax for statics
@@ -20,11 +20,11 @@ file.  As a convention, the name of an included file often ends with the
 extension ".hats".
 <P>
 
-A common use of file inclusion is to keep some
-constants, flags or parameters being defined consistently across a set of
-files. For instance, the file <a
-href="../../IMPLEMENTATION/Anairiats/ATS/prelude/params.hats">
-$ATSHOME/prelude/params.hats</a> serves such a purpose.
+A common use of file inclusion is to keep some constants, flags or
+parameters being defined consistently across a set of files. For instance,
+the file <A
+HREF="http://www.ats-lang.org/IMPLEMENTATION/Anairiats/ATS/prelude/params.hats">$ATSHOME/prelude/params.hats</A>
+serves such a purpose.
 <P>
 
 File inclusion can also be used to emulate (in a limited but rather useful

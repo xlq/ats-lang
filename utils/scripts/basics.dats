@@ -125,7 +125,7 @@ implement basename_of_filename name = let
   val i = string_index_of_char_from_right (name, dirsep)
 in
   if (i >= 0) then
-    let val () = assert_prerrf
+    let val () = assert_prerrf_bool1
       (i < n, "[basename_of(%s)] failed.\n", @(name))
     in
       string_make_substring (name, i+1, n-i-1)

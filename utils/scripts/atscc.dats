@@ -46,7 +46,7 @@ staload "top.sats"
 
 (* ****** ****** *)
 
-val () = assert_prerrf (
+val () = assert_prerrf_bool (
   file_is_exec atsopt_global,
   "The file [%s] is not executable.\n",
   @(atsopt_global)
@@ -67,7 +67,7 @@ implement typecheck_file (flag_stadyn, param, infile) = let
   val status = fork_exec_and_wait_cloptr_exn (cmd)
 in
   if (status <> 0) then exit_prerrf {void}
-    (status, "Exit: [typecheck_file(%s)] failed.\n", @(infile))
+    (status, "exit(ATS): [typecheck_file(%s)] failed.\n", @(infile))
 end // end of [typecheck_file]
 
 extern fun ccomp_file_to_file_exec
@@ -89,7 +89,7 @@ implement ccomp_file_to_file
   end
 in
   if (status <> 0) then exit_prerrf {void}
-    (status, "Exit: [ccomp_file_to_file(%s, %s)] failed.\n", @(infile, outfile))
+    (status, "exit(ATS): [ccomp_file_to_file(%s, %s)] failed.\n", @(infile, outfile))
 end // end of [ccomp_file_to_file]
 
 (* ****** ****** *)
@@ -100,7 +100,7 @@ implement atscc_version () = let
   val status = fork_exec_and_wait_cloptr_exn (lam () => atscc_version_exec ())
 in
   if (status <> 0) then exit_prerrf {void}
-    (status, "Exit: [atscc_version] failed.\n", @())
+    (status, "exit(ATS): [atscc_version] failed.\n", @())
 end // end of [atscc_version]
 
 (* ****** ****** *)

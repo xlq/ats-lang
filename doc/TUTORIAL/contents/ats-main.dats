@@ -5,16 +5,14 @@
 //
 
 implement main (argc, argv) = let
-
-fun loop {n,i:nat | i <= n}
-  (i: int i, argc: int n, argv: &(@[String][n])): void =
-  if i < argc then begin
-    if i > 0 then print (' '); print argv.[i]; loop (i+1, argc, argv)
-  end
+  fun loop {n,i:nat | i <= n} // [loop] is tail-recursive
+    (i: int i, argc: int n, argv: &(@[string][n])): void =
+    if i < argc then begin
+      print argv.[i]; if i > 0 then print (' '); loop (i+1, argc, argv)
+    end // end of [if]
+  // end of [loop]
 in
-
-loop (0, argc, argv); print_newline ()
-
+  loop (0, argc, argv); print_newline ()
 end // end of [main]
 
 (* ****** ****** *)

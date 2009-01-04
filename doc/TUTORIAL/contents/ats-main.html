@@ -7,15 +7,15 @@
 The main function in ATS is declared as follows:
 
 <pre>
-fun main {n:int | n > 0} (argc: int n, argv: &(@[String][n])): void
+fun main {n:int | n > 0} (argc: int n, argv: &(@[string][n])): void
   = "mainats"
 </pre>
 
 So this function takes an integer <i>argc</i> greater than 0 and a string
 array <i>argv</i> of size <i>argc</i> and returns no value.  The syntax
-<i>argv: &(@[String][n])</i> indicates that <i>argv</i> is a
+<i>argv: &(@[string][n])</i> indicates that <i>argv</i> is a
 call-by-reference argument. If we followed C++ kind of syntax, then
-this would be written as something like <i>&argv: @[String][n]</i>.
+this would be written as something like <i>&argv: @[string][n]</i>.
 <P>
 
 The name "mainats", which is global, can be used in C code to refer to this
@@ -40,16 +40,14 @@ on the standard output:
 
 <pre>
 implement main (argc, argv) = let
-
-fun loop {n,i:nat | i <= n}
-  (i: int i, argc: int n, argv: &(@[String][n])): void =
-  if i < argc then begin
-    print argv.[i]; if i > 0 then print (' '); loop (i+1, argc, argv)
-  end
+  fun loop {n,i:nat | i <= n} // [loop] is tail-recursive
+    (i: int i, argc: int n, argv: &(@[string][n])): void =
+    if i < argc then begin
+      print argv.[i]; if i > 0 then print (' '); loop (i+1, argc, argv)
+    end // end of [if]
+  // end of [loop]
 in
-
-loop (0, argc, argv); print_newline ()
-
+  loop (0, argc, argv); print_newline ()
 end // end of [main]
 </pre>
 
@@ -70,22 +68,21 @@ modify the arguments passed from a command line:
 
 <pre>
 // some function implemented in ATS
-extern fun main_work {n:pos} (argc: int n, argv: &(@[String][n])): void
+extern fun main_work {n:pos} (argc: int n, argv: &(@[string][n])): void
   = "main_work"
 
 implement main_work (argc, argv) = ( (* some ATS code that does the main work *) )
 
 implement main_dummy () = () // indicating [mainats] being implemented in C
 
-%{
+%{$
 
-ats_void_type mainats (ats_int_type argc, ats_ptr_type argv) {
-
-gtk_init ((int*)&argc, (char ***)&argv) ;
-main_work (argc, argv) ;
-return ;
-
-}
+ats_void_type
+mainats (ats_int_type argc, ats_ptr_type argv) {
+  gtk_init ((int*)&argc, (char ***)&argv) ;
+  main_work (argc, argv) ;
+  return ;
+} /* end of [mainats] */
 
 %}
 </pre>

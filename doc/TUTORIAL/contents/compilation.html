@@ -5,10 +5,10 @@
 <HR SIZE=1 ALIGN=LEFT><P>
 
 The command for compiling ATS programs is
-<i>atscc</i>, which is stored in the directory "bin/" after ATS/Anairiats is
-installed. The ATS compiler translates ATS programs into C code, which is
-then compiled by the GNU C compiler <i>gcc</i>. It is possible to use other C
-compilers in place of <i>gcc</i>.
+<i>atscc</i>, which is stored in the directory "$ATSHOME/bin/" after
+ATS/Anairiats is installed. The ATS compiler translates ATS programs into C
+code, which is then compiled by the GNU C compiler <i>gcc</i>. It is
+possible to use other C compilers in place of <i>gcc</i>.
 <P>
 <i>atscc</i> accepts all the flags <i>gcc</i> recognizes and passes them to
 <i>gcc</i> directly. The following is a list of flags that are special
@@ -64,7 +64,9 @@ atscc -o foobar -O3 foo.dats bar.sats -D_ATS_GCATS
 <P>
 For your information, the command <i>atscc</i> is not implemented in a
 scripting language. It is one of the very first programs implemented in
-ATS/Geizella (and then ported to ATS/Anairiats).
+ATS/Geizella (and then ported to ATS/Anairiats). The code for <i>atscc</i>
+(and several other commands) can be found at <A
+HREF="https://ats-lang.svn.sourceforge.net/svnroot/ats-lang/trunk/utils/scripts/">$ATSHOME/utils/scripts/</A>.
 
 <HR SIZE=1 ALIGN=LEFT><P>
 

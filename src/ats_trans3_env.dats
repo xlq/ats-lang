@@ -1268,7 +1268,8 @@ implement s2exp_exi_instantiate_sexparg (loc0, s2e0, s2a) =
   | S2EXPARGone () => s2exp_exi_instantiate_one (loc0, s2e0)
   | S2EXPARGseq s2es => begin
       s2exp_exi_instantiate_seq (loc0, s2e0, s2a.s2exparg_loc, s2es)
-    end
+    end // end of [S2EXPARGseq]
+// end of [s2exp_exi_instantiate_sexparg]
 
 (* ****** ****** *)
 
@@ -1346,7 +1347,7 @@ implement s2exp_wth_instantiate (loc0, s2e0) = let
         val s2e_at = s2exp_at_viewt0ype_addr_view (s2e, s2e_addr)
       in
         d2var_fin_set (d2v_view, D2VARFINsome s2e_at)
-      end
+      end // end of [_]
   end // end of [aux]
   fun auxlst (loc0: loc_t, p3ts: p3atlst, wths2es: wths2explst): void =
     case+ wths2es of
@@ -1358,7 +1359,7 @@ implement s2exp_wth_instantiate (loc0, s2e0) = let
         val () = aux (loc0, refval, p3t, s2e)
       in
         auxlst (loc0, p3ts, wths2es)     
-      end
+      end // end of [WTHS2EXPLSTcons_some]
     | WTHS2EXPLSTcons_none (wths2es) => let
         val () = assert_errmsg_bool1 (
           $Lst.list_is_cons p3ts, "Internal Error: s2exp_wth_instantiate"
@@ -1366,7 +1367,7 @@ implement s2exp_wth_instantiate (loc0, s2e0) = let
         val+ list_cons (p3t, p3ts) = p3ts
       in
         auxlst (loc0, p3ts, wths2es)
-      end
+      end // end of [WTHS2EXPLSTcons_none]
     | WTHS2EXPLSTnil () => ()
   val s2e0 = s2exp_exi_instantiate_all (loc0, s2e0)
 in
@@ -1379,11 +1380,11 @@ in
             prerr ": Internal Error: s2exp_wth_instantiate";
             prerr_newline ();
             $Err.abort {p3atlst} ()
-          end
+          end // end of [None_vt]
       ) : p3atlst
     in
       auxlst (loc0, p3ts, wths2es); s2e
-    end
+    end // end of [S2Ewth]
   | _ => s2e0
 end // end of [s2exp_wth_instantiate]
 
@@ -1396,12 +1397,12 @@ implement s2exp_uni_instantiate_all (loc0, s2e0) = let
         val s2e = s2exp_subst (sub, s2e)
       in
         s2exp_uni_instantiate_all (loc0, s2e)
-      end
+      end // end of [S2Euni]
     | S2Emetfn (d2vopt, s2es_met, s2e) => let
         val () = s2exp_metric_instantiate (loc0, d2vopt, s2es_met)
       in
         s2exp_uni_instantiate_all (loc0, s2e)
-      end
+      end // end of [S2Emetfn]
     | _ => s2e0
 end // end [s2exp_uni_instantiate_all]
 
@@ -1411,7 +1412,7 @@ implement s2exp_uni_instantiate_one (loc0, s2e0) = let
         val sub = s2qua_instantiate_and_add (loc0, s2vs, s2ps)
       in
         s2exp_subst (sub, s2e)
-      end
+      end // end of [S2Euni]
     | _ => begin
         prerr loc0;
         prerr ": error(3)";
@@ -1420,7 +1421,7 @@ implement s2exp_uni_instantiate_one (loc0, s2e0) = let
         prerr "] is expected to be universally quantified.";
         prerr_newline ();
         $Err.abort {s2exp} ()
-      end
+      end // end of [_]
 end // end of [s2exp_uni_instantiate_one]
 
 implement s2exp_uni_instantiate_seq (loc0, s2e0, loc_arg, s2es0) = let
@@ -1431,7 +1432,7 @@ implement s2exp_uni_instantiate_seq (loc0, s2e0, loc_arg, s2es0) = let
         end
       in
         s2exp_subst (sub, s2e)
-      end
+      end // end of [S2Euni]
     | _ => begin
         prerr loc0;
         prerr ": error(3)";
@@ -1440,17 +1441,17 @@ implement s2exp_uni_instantiate_seq (loc0, s2e0, loc_arg, s2es0) = let
         prerr "] is expected to be universally quantified.";
         prerr_newline ();
         $Err.abort {s2exp} ()
-      end
+      end // end of [_]
 end // end of [s2exp_uni_instantiate_seq]
 
-implement s2exp_uni_instantiate_sexparg (loc0, s2e0, s2a) = begin
+implement s2exp_uni_instantiate_sexparg (loc0, s2e0, s2a) =
   case+ s2a.s2exparg_node of
   | S2EXPARGone () => s2exp_uni_instantiate_one (loc0, s2e0)
   | S2EXPARGall () => s2exp_uni_instantiate_all (loc0, s2e0)
   | S2EXPARGseq s2es => begin
       s2exp_uni_instantiate_seq (loc0, s2e0, s2a.s2exparg_loc, s2es)
-    end
-end // end of [s2exp_uni_instantiate_sexparg]
+    end // end of [S2EXPARGseq]
+// end of [s2exp_uni_instantiate_sexparg]
 
 implement s2exp_uni_instantiate_sexparglst (loc0, s2e0, s2as) =
   case+ s2as of
@@ -1460,6 +1461,7 @@ implement s2exp_uni_instantiate_sexparglst (loc0, s2e0, s2as) =
       s2exp_uni_instantiate_sexparglst (loc0, s2e0, s2as)
     end
   | list_nil () => s2e0
+// end of [s2exp_uni_instantiate_sexparglst]
 
 (* ****** ****** *)
 
