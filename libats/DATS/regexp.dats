@@ -40,14 +40,6 @@
 
 (* ****** ****** *)
 
-%{^
-
-#include <pcre.h>
-
-%}
-
-(* ****** ****** *)
-
 staload "libats/SATS/regexp.sats"
 
 (* ****** ****** *)
@@ -91,14 +83,22 @@ ats_bool_type atslib_test_regexp_match_str_len_ofs
   int result ;
   result = pcre_exec (
     (pcre*)re
-  , (pcre_extra*)0 /* [re] is not study */
+  , (pcre_extra*)0 /* [re] is not studied */
   , (char*)str, len, ofs
   , 0 /* option bits */
   , (int*)0 /* ovector */
   , 0 /* ovecsize */
   ) ; // end of [pcre_exec]
 
-  return (result ? ats_false_bool : ats_true_bool) ;
+  if (result >= 0) return ats_true_bool ;
+
+  switch (result) {
+  case PCRE_ERROR_NOMATCH: return ats_false_bool ;
+  default: fprintf
+    (stderr, "exit(ATS): [test_regexp_match_str_len_ofs] failed\n"); exit (1);
+  } /* end of [switch] */
+
+  return ats_false_bool ; /* deadcode */
 } /* end of [atslib_test_regexp_match_str_len_ofs] */
 
 %}
@@ -109,7 +109,7 @@ ats_bool_type atslib_test_regexp_match_str_len_ofs
 
 static inline
 ats_int_type
-ats_regexp_string_split_regexp_search (
+atslib_string_split_regexp_search (
   ats_ptr_type re
 , ats_ptr_type str
 , ats_int_type len
@@ -127,7 +127,7 @@ ats_regexp_string_split_regexp_search (
   ) ; // end of [pcre_exec]
 
   return result ;
-} /* end of [atslib_test_regexp_match_str_len_ofs] */
+} /* end of [atslib_string_split_regexp_search] */
 
 %}
 
@@ -136,7 +136,7 @@ implement string_split_regexp (str, re) = let
       pf_arr: ! @[int?][3] @ l >> @[int][3] @ l
     | re: REGEXPref, s0: string n, n: int n, i: int i, p: ptr l
     ) :<1,~ref> int
-    = "ats_regexp_string_split_regexp_search"
+    = "atslib_string_split_regexp_search"
 
   fun loop {n,i:nat | i <= n} {l:addr} (
       pf_gc: free_gc_v l, pf_arr: @[int?][3] @ l

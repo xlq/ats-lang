@@ -34,8 +34,8 @@
 
 /* ****** ****** */
 
-#ifndef ATS_PRELUDE_REGEXP_CATS
-#define ATS_PRELUDE_REGEXP_CATS
+#ifndef ATS_LIBATS_REGEXP_CATS
+#define ATS_LIBATS_REGEXP_CATS
 
 /* ****** ****** */
 
@@ -43,10 +43,20 @@
 
 /* ****** ****** */
 
-// it is currently empty
+static inline
+ats_void_type
+atslib_regexp_free (ats_ptr_type re) { pcre_free (re) ; return ; }
+// end of [atslib_regexp_free]
 
 /* ****** ****** */
 
-#endif /* ATS_PRELUDE_REGEXP_CATS */
+static inline
+ats_ptr_type
+atslib_regexp_ref_make (ats_ptr_type re) { return re ; }
+// end of [atslib_regexp_ref_make]
+
+/* ****** ****** */
+
+#endif /* ATS_LIBATS_REGEXP_CATS */
 
 /* end of [regexp.cats] */

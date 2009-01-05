@@ -52,47 +52,56 @@ staload "libc/SATS/gmp.sats"
 
 (* ****** ****** *)
 
-absviewtype intinf (int)
+absviewt@ype intinf (int)
 viewtypedef Intinf = [n:int] intinf n
 
-symintr intinf_of
+viewtypedef intinfptr_gc (i: int) =
+  [l:addr] (free_gc_v l, intinf i @ l | ptr l)
+viewtypedef Intinfptr_gc = [i:int] intinfptr_gc (i)
+  
+(* ****** ****** *)
 
-fun intinf_of_int1 {i:int} (i: int i): intinf i
-overload intinf_of with intinf_of_int1
+fun intinf_make {i:int} (i: int i)
+  : [l:addr] (free_gc_v l, intinf i @ l | ptr l)
 
-fun intinf_free {i:int} (i: intinf i): void
+fun intinf_free {l:addr}
+  (pf_gc: free_gc_v l, pf_at: Intinf @ l | p: ptr l): void
 
 (* ****** ****** *)
 
 fun fprint_intinf {m:file_mode} {i:int}
-  (pf: file_mode_lte (m, w) | fil: &FILE m, i: !intinf i): void
+  (pf: file_mode_lte (m, w) | fil: &FILE m, intinf: &intinf i): void
 
-fun print_intinf {i:int} (i: !intinf i): void
+fun print_intinf {i:int} (intinf: &intinf i): void
 overload print with print_intinf
 
 #define sixtythree 63
 
-fun fprint_intinf_base {m:file_mode} {i:int}
-  (pf: file_mode_lte (m, w) | fil: &FILE m, b: intBtw (2, sixtythree), i: !intinf i): void
+fun fprint_intinf_base {m:file_mode} {i:int} (
+    pf: file_mode_lte (m, w)
+  | fil: &FILE m, b: intBtw (2, sixtythree), intinf: &intinf i
+  ) : void
 
-fun print_intinf_base {i:int} (b: intBtw (2, sixtythree), i: !intinf i): void
+fun print_intinf_base {i:int}
+  (b: intBtw (2, sixtythree), intinf: &intinf i): void
 overload print with print_intinf_base
 
 (* ****** ****** *)
 
-fun pred_intinf {i:int} (i: !intinf i): intinf (i-1)
+fun pred_intinf {i:int} (intinf: &intinf i): intinfptr_gc (i-1)
+  
 overload pred with pred_intinf
 
-fun succ_intinf {i:int} (i: !intinf i): intinf (i+1)
+fun succ_intinf {i:int} (intinf: &intinf i): intinfptr_gc (i+1)
 overload succ with succ_intinf
 
 //
 
 fun add_intinf_int {i,j:int}
-  (i: !intinf i, j: int j): intinf (i+j)
+  (i: &intinf i, j: int j): intinfptr_gc (i+j)
 
 fun add_intinf_intinf {i,j:int}
-  (i: !intinf i, j: !intinf j): intinf (i+j)
+  (i: &intinf i, j: &intinf j): intinfptr_gc (i+j)
 
 overload + with add_intinf_int
 overload + with add_intinf_intinf
@@ -100,10 +109,10 @@ overload + with add_intinf_intinf
 //
 
 fun sub_intinf_int {i,j:int}
-  (i: !intinf i, j: int j): intinf (i-j)
+  (i: &intinf i, j: int j): intinfptr_gc (i-j)
 
 fun sub_intinf_intinf {i,j:int}
-  (i: !intinf i, j: !intinf j): intinf (i-j)
+  (i: &intinf i, j: &intinf j): intinfptr_gc (i-j)
 
 overload - with sub_intinf_int
 overload - with sub_intinf_intinf
@@ -111,29 +120,29 @@ overload - with sub_intinf_intinf
 //
 
 fun mul_intinf_int {m,n:int}
-  (m: !intinf m, n: int n): [p:int] (MUL (m, n, p) | intinf p)
+  (m: &intinf m, n: int n): [p:int] (MUL (m, n, p) | intinfptr_gc p)
 
 fun mul_intinf_intinf {m,n:int}
-  (m: !intinf m, n: !intinf n): [p:int] (MUL (m, n, p) | intinf p)
+  (m: &intinf m, n: &intinf n): [p:int] (MUL (m, n, p) | intinfptr_gc p)
 
 overload * with mul_intinf_int
 overload * with mul_intinf_intinf
 
 //
 
-fun div_intinf_int {m,n:int | n > 0}
-  (m: !intinf m, n: int n): [q,r:int | 0 <= r; r < n] (MUL (q, n, m-r) | intinf q)
+fun div_intinf_int {m,n:int | n > 0} (m: &intinf m, n: int n)
+  : [q,r:int | 0 <= r; r < n] (MUL (q, n, m-r) | intinfptr_gc q)
 
 overload / with div_intinf_int
 
 (* ****** ****** *)
 
 fun lt_intinf_int {i,j:int}
-  (i: !intinf i, j: int j): bool (i < j)
+  (i: &intinf i, j: int j): bool (i < j)
   = "atslib_lt_intinf_int"
 
 fun lt_intinf_intinf {i,j:int}
-  (i: !intinf i, j: !intinf j): bool (i < j)
+  (i: &intinf i, j: &intinf j): bool (i < j)
   = "atslib_lt_intinf_intinf"
 
 overload < with lt_intinf_int
@@ -142,11 +151,11 @@ overload < with lt_intinf_intinf
 //
 
 fun lte_intinf_int {i,j:int}
-  (i: !intinf i, j: int j): bool (i <= j)
+  (i: &intinf i, j: int j): bool (i <= j)
   = "atslib_lte_intinf_int"
 
 fun lte_intinf_intinf {i,j:int}
-  (i: !intinf i, j: !intinf j): bool (i <= j)
+  (i: &intinf i, j: &intinf j): bool (i <= j)
   = "atslib_lte_intinf_intinf"
 
 overload <= with lte_intinf_int
@@ -155,11 +164,11 @@ overload <= with lte_intinf_intinf
 //
 
 fun gt_intinf_int {i,j:int}
-  (i: !intinf i, j: int j): bool (i > j)
+  (i: &intinf i, j: int j): bool (i > j)
   = "atslib_gt_intinf_int"
 
 fun gt_intinf_intinf {i,j:int}
-  (i: !intinf i, j: !intinf j): bool (i > j)
+  (i: &intinf i, j: &intinf j): bool (i > j)
   = "atslib_gt_intinf_intinf"
 
 overload > with gt_intinf_int
@@ -168,11 +177,11 @@ overload > with gt_intinf_intinf
 //
 
 fun gte_intinf_int {i,j:int}
-  (i: !intinf i, j: int j): bool (i >= j)
+  (i: &intinf i, j: int j): bool (i >= j)
   = "atslib_gte_intinf_int"
 
 fun gte_intinf_intinf {i,j:int}
-  (i: !intinf i, j: !intinf j): bool (i >= j)
+  (i: &intinf i, j: &intinf j): bool (i >= j)
   = "atslib_gte_intinf_intinf"
 
 overload >= with gte_intinf_int
@@ -181,11 +190,11 @@ overload >= with gte_intinf_intinf
 //
 
 fun eq_intinf_int {i,j:int}
-  (i: !intinf i, j: int j): bool (i == j)
+  (i: &intinf i, j: int j): bool (i == j)
   = "atslib_eq_intinf_int"
 
 fun eq_intinf_intinf {i,j:int}
-  (i: !intinf i, j: !intinf j): bool (i == j)
+  (i: &intinf i, j: &intinf j): bool (i == j)
   = "atslib_eq_intinf_intinf"
 
 overload = with eq_intinf_int
@@ -194,11 +203,11 @@ overload = with eq_intinf_intinf
 //
 
 fun neq_intinf_int {i,j:int}
-  (i: !intinf i, j: int j): bool (i <> j)
+  (i: &intinf i, j: int j): bool (i <> j)
   = "atslib_neq_intinf_int"
 
 fun neq_intinf_intinf {i,j:int}
-  (i: !intinf i, j: !intinf j): bool (i <> j)
+  (i: &intinf i, j: &intinf j): bool (i <> j)
   = "atslib_neq_intinf_intinf"
 
 overload <> with neq_intinf_int
@@ -207,11 +216,11 @@ overload <> with neq_intinf_intinf
 //
 
 fun compare_intinf_int {i,j:int}
-  (i: !intinf i, j: int j): [k:int | sgn_r (i-j, k)] int k
+  (i: &intinf i, j: int j): [k:int | sgn_r (i-j, k)] int k
   = "atslib_compare_intinf_int"
 
 fun compare_intinf_intinf {i,j:int}
-  (i: !intinf i, j: !intinf j): [k:int | sgn_r (i-j, k)] int k
+  (i: &intinf i, j: &intinf j): [k:int | sgn_r (i-j, k)] int k
   = "atslib_compare_intinf_intinf"
 
 overload compare with compare_intinf_int

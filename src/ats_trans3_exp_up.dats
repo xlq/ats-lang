@@ -2062,21 +2062,22 @@ val d3e0 = (case+ d2e0.d2exp_node of
       val p3ts_arg = p2atlst_arg_tr_up (npf, p2ts_arg)
       val (pf_lamloop | ()) = the_lamloop_env_push_lam (p3ts_arg)
       val d3e_body = d2exp_tr_up d2e_body
-      val s2e_res = d3e_body.d3exp_typ
-      val isprf = s2exp_is_proof s2e_res
-      val s2t_fun = s2rt_prf_lin_fc (loc0, isprf, lin > 0, fc)
-      val s2e_fun =
-        s2exp_fun_srt (s2t_fun, fc, lin, s2fe, npf, s2es_arg, s2e_res)
       val () = the_d2varset_env_check loc0
       val () = if lin > 0 then the_d2varset_env_check_llam loc0
       val () = the_lamloop_env_pop (pf_lamloop | (*none*))
       val () = the_d2varset_env_pop_lam (pf_d2varset | (*none*))
       val () = the_effect_env_pop (pf_effect | (*none*))
       val () = trans3_env_pop_sta_and_add_none (loc0)
+
+      val s2e_res = d3e_body.d3exp_typ
+      val isprf = s2exp_is_proof s2e_res
+      val s2t_fun = s2rt_prf_lin_fc (loc0, isprf, lin > 0, fc)
+      val s2e_fun =
+        s2exp_fun_srt (s2t_fun, fc, lin, s2fe, npf, s2es_arg, s2e_res)
 (*
       val () = begin
         prerr "d2exp_tr_up: D2Elam: s2e_fun = "; prerr s2e_fun; prerr_newline ()
-      end
+      end // end of [val]
 *)
     in
       d3exp_lam_dyn (loc0, s2e_fun, lin, npf, p3ts_arg, d3e_body)
@@ -2106,6 +2107,8 @@ val d3e0 = (case+ d2e0.d2exp_node of
       val (pf_d2varset | ()) = the_d2varset_env_push_lam (1(*linear*))
       val (pf_lamloop | ()) = the_lamloop_env_push_lam (nil ())
       val d3e = d2exp_tr_up d2e
+      val () = the_d2varset_env_check loc0
+      val () = the_d2varset_env_check_llam loc0
       val () = the_lamloop_env_pop (pf_lamloop | (*none*))
       val () = the_d2varset_env_pop_lam (pf_d2varset | (*none*))
       val () = the_effect_env_pop (pf_effect2 | (*none*))

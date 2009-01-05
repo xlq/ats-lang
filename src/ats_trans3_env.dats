@@ -366,9 +366,9 @@ fn d2var_fin_check (loc0: loc_t, d2v: d2var_t): void = begin
     | D2VARFINsome s2e0 => let
 (*
         val () = begin
-          prerr "the_d2varset_env_check: aucCK: d2v = "; prerr d2v; prerr_newline ();
-          prerr "the_d2varset_env_check: auxCK: s2e = "; prerr s2e; prerr_newline ();
-          prerr "the_d2varset_env_check: auxCK: s2e0 = "; prerr s2e0; prerr_newline ();
+          prerr "d2var_fin_check: aucCK: d2v = "; prerr d2v; prerr_newline ();
+          prerr "d2var_fin_check: auxCK: s2e = "; prerr s2e; prerr_newline ();
+          prerr "d2var_fin_check: auxCK: s2e0 = "; prerr s2e0; prerr_newline ();
         end // end of [val]
 *)
         val () = trans3_env_push_sta ()
@@ -618,12 +618,12 @@ implement the_d2varset_env_check (loc0) = let
 (*
   val () = begin
     prerr "the_d2varset_env_check: enter"; prerr_newline ()
-  end
+  end // end of [val]
 *)
 in
   d2varset_foreach_cloptr
     (!the_ld2vs, lam (d2v) => d2var_fin_check (loc0, d2v))
-end
+end // end of [the_d2varset_env_check]
 
 implement the_d2varset_env_check_llam (loc0) = let
   fn auxCK (d2v: d2var_t):<cloptr1> void = begin

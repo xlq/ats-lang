@@ -580,7 +580,7 @@ val d3e0 = case+ d2e0.d2exp_node of
       val () = the_effect_env_pop (pf_effect | (*none*))
     in
       d3exp_let (loc0, d3cs, d3e)
-    end
+    end // end of [D2Elet]
   | D2Erec (recknd, npf1, ld2es) => let
       var iswth: int = 0
       val s2e0 = s2exp_whnf s2e0
@@ -602,7 +602,7 @@ val d3e0 = case+ d2e0.d2exp_node of
           val () = if iswth > 0 then funarg_varfin_check (loc0)
         in
           d3e0
-        end
+        end // end of [S2Etyrec]
       | _ when s2exp_is_non_tyrec s2e0 => begin
           prerr loc0;
           prerr ": error(3)";
@@ -611,7 +611,7 @@ val d3e0 = case+ d2e0.d2exp_node of
           prerr "].";
           prerr_newline ();
           $Err.abort {d3exp} ()
-        end
+        end // end of [_ when ...]
       | _ => let
           val d3e0 = d2exp_tr_up d2e0
           val () = $SOL.s2exp_tyleq_solve (loc0, d3e0.d3exp_typ, s2e0)
@@ -619,7 +619,7 @@ val d3e0 = case+ d2e0.d2exp_node of
           val () = d3exp_typ_set (d3e0, s2e0)
         in
           d3e0
-        end
+        end // end of [_]
     end // end of [let]
   | D2Escaseof (res, s2e_val, sc2ls) => begin
       d2exp_scaseof_tr_dn (loc0, res, s2e_val, sc2ls, s2e0)
@@ -676,7 +676,7 @@ val d3e0 = case+ d2e0.d2exp_node of
           val () = if iswth > 0 then funarg_varfin_check (loc0)
         in
           d3e0
-        end
+        end // end of [S2Etyrec]
       | _ when s2exp_is_non_fun s2e0 => begin
           prerr loc0;
           prerr ": error(3)";
@@ -685,7 +685,7 @@ val d3e0 = case+ d2e0.d2exp_node of
           prerr "].";
           prerr_newline ();
           $Err.abort {d3exp} ()
-        end
+        end // end of [_ when ...]
       | _ => begin
           prerr loc0;
           prerr ": error(3)";
@@ -695,12 +695,12 @@ val d3e0 = case+ d2e0.d2exp_node of
           prerr "].";
           prerr_newline ();
           $Err.abort {d3exp} ()
-        end
+        end // end of [_]
     end // end of [D2Estruct]
   | D2Etop () => begin
       // for datatype constructors taking uninitialized arguments
       d3exp_top (loc0, s2exp_topize_0 s2e0)
-    end
+    end // end of [D2Etop]
   | D2Etrywith (r2es, d2e, c2ls) => let
       val (pf_d2varset | ()) = the_d2varset_env_push_try ()
 (*

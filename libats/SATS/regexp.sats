@@ -45,23 +45,31 @@
 (* ****** ****** *)
 
 abst@ype REGEXP
-abstype REGEXPref // a boxed type
+abstype REGEXPref
 
 (* ****** ****** *)
 
-fun regexp_compile_exn
-  (pattern: string): [l:addr] (REGEXP @ l | ptr l)
+fun regexp_compile_exn (pattern: string)
+  : [l:addr] (free_gc_v l, REGEXP @ l | ptr l)
   = "atslib_regexp_compile_exn"
 
-fun regexp_ref_compile_exn (pattern: string): REGEXPref
-  = "atslib_regexp_compile_exn"
+fun regexp_free {l:addr}
+  (pf_gc: free_gc_v l, pf_at: REGEXP @ l | p: ptr l): void
+  = "atslib_regexp_free"
 
 (* ****** ****** *)
 
-fun test_regexp_match_str (re: REGEXPref, str: string): bool
+fun regexp_ref_make {l:addr}
+  (pf_gc: free_gc_v l, pf_at: REGEXP @ l | p: ptr l): REGEXPref
+  = "atslib_regexp_ref_make"
 
-fun test_regexp_match_str_len_ofs {n,i:int | 0 <= i; i <= n}
-  (re: REGEXPref, str: string n, len: int n, ofs: int i): bool
+(* ****** ****** *)
+
+fun test_regexp_match_str (re: &REGEXP, str: string): bool
+
+fun test_regexp_match_str_len_ofs
+  {n,i:int | 0 <= i; i <= n }
+  (re: &REGEXP, str: string n, len: int n, ofs: int i): bool
   = "atslib_test_regexp_match_str_len_ofs"
 
 symintr test_regexp_match
