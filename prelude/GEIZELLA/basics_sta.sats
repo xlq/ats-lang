@@ -214,6 +214,9 @@ stadef <> = neq_bool_bool_bool
 
 // some built-in static constants for char comparisons
 
+sta sub_char_char_int : (char, char) -> int
+stadef - = sub_char_char_int
+
 sta gt_char_char_bool : (char, char) -> bool
 stadef > = gt_char_char_bool
 
@@ -526,6 +529,8 @@ stadef ptr = ptr_type
 (* ****** ****** *)
 
 stadef strbuf = strbuf_int_int_t0ype
+stadef strbuf (bsz:int) = [len:int] strbuf (bsz, len)
+
 stadef string = string_int_type
 stadef string = string_type
 stadef stropt = stropt_int_type

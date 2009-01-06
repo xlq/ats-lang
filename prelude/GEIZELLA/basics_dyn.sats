@@ -158,7 +158,7 @@ fun main_prelude (): void = "mainats_prelude"
 
 (* ****** ****** *)
 
-fun main {n:int | n >= 1} (argc: int n, argv: &(@[String][n])): void
+fun main {n:int | n >= 1} (argc: int n, argv: &(@[string][n])): void
   = "mainats"
 
 (* ****** ****** *)

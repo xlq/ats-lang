@@ -43,6 +43,9 @@ lazy-evaluation::
 variadicity::
 	scp variadicity.html ats-hwxi,ats-lang@web.sourceforge.net:htdocs/TUTORIAL/contents/
 
+function-or-closure::
+	scp function-or-closure.html ats-hwxi,ats-lang@web.sourceforge.net:htdocs/TUTORIAL/contents/
+
 input-and-output::
 	scp input-and-output.html ats-hwxi,ats-lang@web.sourceforge.net:htdocs/TUTORIAL/contents/
 
