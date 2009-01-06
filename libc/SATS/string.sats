@@ -79,4 +79,30 @@ overload substrncmp with substrncmp_string_string
 
 (* ****** ****** *)
 
+fun strlen_string {n:nat} (str: string n): int n = "atslib_strlen"
+
+(* ****** ****** *)
+
+symintr strspn strcspn
+
+fun strspn_string_string {n:nat} (str: string n, cs: string): natLte n
+  = "atslob_strspn"
+overload strspn with strspn_string_string
+
+fun strcspn_string_string {n:nat} (str: string n, cs: string): natLte n
+  = "atslob_strcspn"
+overload strcspn with strcspn_string_string
+
+(* ****** ****** *)
+
+fun strcpy_strbuf_string
+  {m,n1:nat,n2:nat | n1 + n2 < m} {l:addr} {ofs:int} (
+    pf_mul: MUL (n1, sizeof char, ofs)
+  , pf_buf: strbuf (m, n1) @ l
+  | sbf: ptr l, str: string n2
+  ) : (strbuf_v (m, n1+n2) @ l | ptr (l + ofs))
+  = "atslib_strcpy"
+
+(* ****** ****** *)
+
 (* end of [string.sats] *)

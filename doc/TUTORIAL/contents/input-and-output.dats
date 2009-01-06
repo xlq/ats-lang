@@ -2,13 +2,11 @@
 // some code for illustrating how I/O is done in ATS
 //
 
+//
+// How to compile:
+//   atscc -o input-and-output -O3 input-and-output.dats
+
 (* ****** ****** *)
-
-%{^
-
-#include "libc/CATS/stdio.cats"
-
-%}
 
 staload "libc/SATS/stdio.sats"
 

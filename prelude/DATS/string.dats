@@ -40,6 +40,50 @@
 
 (* ****** ****** *)
 
+implement strbuf_v_split
+  (pf_mul, pf_str) = split (pf_mul, pf_str) where {
+  prfun split {m,n:nat} {i:nat | i <= n} {l:addr} {ofs:int} .<n>.
+    (pf_mul: MUL (i, sizeof char, ofs), pf_str: strbuf_v (m, n, l))
+    : (c1hars i @ l, strbuf_v (m-i, n-i, l+ofs)) =
+    sif i == 0 then let
+      prval () = mul_elim {0, sizeof char} (pf_mul)
+    in
+      @(array_v_nil {c1har} (), pf_str)
+    end else let
+      prval (pf1_at, pf2_stropt) = strbuf_v_uncons (pf_str)
+      prval strbufopt_v_some pf2_str = pf2_stropt
+      prval pf2_mul = mul_add_const {~1} (pf_mul)
+      prval (pf1_res, pf2_res) = split {m-1,n-1} (pf2_mul, pf2_str)
+    in
+      (array_v_cons {c1har} (pf1_at, pf1_res), pf2_res)
+    end // end of [sif]
+  // end of [split]
+} // end of [strbuf_v_split]
+
+implement strbuf_v_unsplit
+  (pf_mul, pf_buf, pf_str) = unsplit (pf_mul, pf_buf, pf_str) where {
+  prfun unsplit {n1:nat} {m2,n2:nat} {l:addr} {ofs:int} .<n1>. (
+      pf_mul: MUL (n1, sizeof char, ofs)
+    , pf_buf: c1hars n1 @ l
+    , pf_str: strbuf_v (m2, n2, l+ofs)
+    ) : strbuf_v (n1+m2, n1+n2, l) =
+    sif n1 == 0 then let
+      prval () = mul_elim {0, sizeof char} (pf_mul)
+      prval () = array_v_unnil {c1har} (pf_buf)
+    in
+      pf_str
+    end else let
+      prval pf2_mul = mul_add_const {~1} (pf_mul)
+      prval (pf1_at, pf2_buf) = array_v_uncons {c1har} (pf_buf)
+      prval pf2_res = unsplit {n1-1} (pf2_mul, pf2_buf, pf_str)
+    in
+      strbuf_v_cons (pf1_at, pf2_res)
+    end // end of [sif]
+  // end of [unsplit]
+} // end of [strbuf_v_unsplit]
+
+(* ****** ****** *)
+
 %{^
 
 static inline

@@ -6,6 +6,18 @@
 
 #include "config.h" // automatically genereated by [configure]
 
+/* ****** ****** */
+
+#ifdef _BOOTSTRAP1
+CCFLAG=-I"$(ATSHOME)" -I$(ATSRUNTIME) -O2
+#endif
+
+#ifdef _BOOTSTRAP0
+CCFLAG=-I"$(ATSHOME)"/bootstrap0 -I$(ATSRUNTIME) -O2
+#endif
+
+/* ****** ****** */
+
 // if [libgmp] is available
 
 LIBGMP=

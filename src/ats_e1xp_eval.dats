@@ -68,7 +68,7 @@ fn is_debug (): bool = $Deb.debug_flag_get () > 0
 implement v1al_is_true (v) = begin
   case+ v of
   | V1ALchar c => c <> '\0' | V1ALfloat f => f <> 0.0
-  | V1ALint i => i <> 0 | V1ALstring s => string0_is_not_empty s
+  | V1ALint i => i <> 0 | V1ALstring s => string0_isnot_empty s
 end // end of [v1al_is_true]
 
 (* ****** ****** *)
@@ -406,8 +406,8 @@ in
       else V1ALint 0
     end
   | (V1ALstring s1, V1ALstring s2) => begin
-      if string0_is_not_empty s1 then V1ALint 1
-      else if string0_is_not_empty s2 then V1ALint 1
+      if string0_isnot_empty s1 then V1ALint 1
+      else if string0_isnot_empty s2 then V1ALint 1
       else V1ALint 0
     end
   | (_, _) => begin

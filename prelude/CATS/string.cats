@@ -183,13 +183,6 @@ atspre_strbuf_initialize_substring
 /* ****** ****** */
 
 static inline
-ats_void_type
-atspre_strbuf_append
-  (const ats_ptr_type s1, const ats_ptr_type s2) {
-  strcat(s1, s2) ; return ;
-} /* atspre_strbuf_append */
-
-static inline
 ats_ptr_type
 atspre_string_append
   (const ats_ptr_type s1, const ats_ptr_type s2) {
@@ -230,9 +223,9 @@ atspre_string_is_empty (const ats_ptr_type s) {
 
 static inline
 ats_bool_type
-atspre_string_is_not_empty (const ats_ptr_type s) {
+atspre_string_isnot_empty (const ats_ptr_type s) {
   return (*((char *)s) != '\000') ;
-} /* atspre_string_is_not_empty */
+} /* atspre_string_isnot_empty */
 
 /* ****** ****** */
 

@@ -77,6 +77,36 @@ atslib_substrncmp (
 
 /* ****** ****** */
 
+static inline
+ats_int_type
+atslib_strlen (ats_ptr_type str) { return strlen ((char*)str) ; }
+/* end of [atslib_strspn] */
+
+/* ****** ****** */
+
+static inline
+ats_int_type
+atslib_strspn (ats_ptr_type str, ats_ptr_type cs) {
+  return strspn ((char*)str, (char*)cs) ;
+} /* end of [atslib_strspn] */
+
+static inline
+ats_int_type
+atslib_strcspn (ats_ptr_type str, ats_ptr_type cs) {
+  return strcspn ((char*)str, (char*)cs) ;
+} /* end of [atslib_strcspn] */
+
+/* ****** ****** */
+
+static inline
+ats_ptr_type
+atslib_strcpy (ats_ptr_type dst, ats_ptr_type src) {
+  return strcpy ((char*)dst, (char*)src) ;
+} /* end of [atslib_strcpy] */
+
+
+/* ****** ****** */
+
 #endif /* ATS_LIBC_STRING_CATS */
 
 /* end of [string.cats] */

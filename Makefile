@@ -80,10 +80,13 @@ config.h: configure ; ./configure
 ###### bootstrap/Makefile ######
 
 bootstrap0/Makefile::
-	$(GCC) -E -x c .bootstrap_header | cat - .bootstrap_makefile > bootstrap0/Makefile
+	cp config.h bootstrap0/config.h
+	$(GCC) -E -D_BOOTSTRAP0 -x c .bootstrap_header \
+      | cat - .bootstrap_makefile > bootstrap0/Makefile
 
 bootstrap1/Makefile::
-	$(GCC) -E -x c .bootstrap_header | cat - .bootstrap_makefile > bootstrap1/Makefile
+	$(GCC) -E -D_BOOTSTRAP1 -x c .bootstrap_header \
+      | cat - .bootstrap_makefile > bootstrap1/Makefile
 
 ###### w/o GC ######
 atsopt0: bootstrap0/Makefile; cd bootstrap0; $(MAKE) atsopt

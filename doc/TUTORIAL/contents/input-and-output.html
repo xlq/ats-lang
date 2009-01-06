@@ -72,7 +72,7 @@ fun fopen_err {m:file_mode}
 where <i>FILE_opt_v (m, l)</i> is defined as follows:
 
 <pre>
-viewdef FILE_opt_v (m:fm, l:addr) = option_v (FILE m @ l, l <> null)
+viewdef FILE_opt_v (m:file_mode, l:addr) = option_v (FILE m @ l, l <> null)
 </pre>
 
 The function <i>fopen_err</i> exactly corresponds to <i>fopen</i> in C: It
@@ -95,7 +95,7 @@ in an error. There is another function
 fun fclose_exn {m:file_mode} {l:addr} (pf: FILE m @ l | p: ptr l): int
 </pre>
 
-The function <i>fclose_err</i> exactly corresponds to <i>fopen</i> in C: It
+The function <i>fclose_err</i> exactly corresponds to <i>fclose</i> in C: It
 returns 0 in case of success and EOF in case of error.
 
 <H4>Reading from a File</H4>
@@ -111,7 +111,7 @@ where <i>UCHAR_MAX</i> is defined to be 255.
 This function exactly corresponds to
 <i>fgetc</i> in C: It returns the obtained character (cast into <i>unsigned
 char</i>) if successful, or it returns EOF in case of failure.  The file
-argument of function <i>fgets_err</i>, i.e., its first non-proof argument,
+argument of the function <i>fgets_err</i>, i.e., its first non-proof argument,
 is passed as a reference (call-by-reference).
 <P>
 
@@ -142,8 +142,8 @@ fun fgetc_exn {m:file_mode}
 
 The problem with <i>fgetc_exn</i> is that it is not a function of much
 use. If implemented, this function should probably be called on a file
-after it is certain (e.g., by calling <i>feof</i>) that the file has not
-reached its end.
+after it is made certain (e.g., by calling <i>feof</i>) that the file has
+not reached its end.
 
 <H4>Writing to a File</H4>
 
@@ -155,7 +155,7 @@ fun fputc_err {m:file_mode}
   (pf: file_mode_lte (m, w) | c: char, f: &FILE m): [i:int | i <= UCHAR_MAX] int i
 </pre>
 
-This function exactly corresponds to <i>fputc</i> in C: it returns the
+This function exactly corresponds to <i>fputc</i> in C: It returns the
 charater being written in case of success, or EOF in case of failure. There
 is another function <i>fputc_exn</i> that is assigned the following type:
 
@@ -165,7 +165,7 @@ fun fputc_exn {m:file_mode} (pf: file_mode_lte (m, w) | c: char, f: &FILE m): vo
 
 In case of failure, <i>fputs_exn</i> raises an exception.
 
-<H4>An Example</H4>
+<H4>An Example: Concatenating Files</H4>
 
 The following function <i>filecopy_exn</i> copies a file into another one:
 
@@ -193,7 +193,7 @@ In case of error, <i>filecopy_exn</i> raises an exception.
 
 The following function <i>filecopy_err</i> is a variant of
 <i>filecopy_exn</i>. Instead of raising an exception in case of error,
-<i>filecopy_err</i> return EOF.
+<i>filecopy_err</i> returns EOF.
 
 <PRE><FONT COLOR="#E80000">
 <FONT COLOR="#000000">fn</FONT> filecopy_err <FONT COLOR="#0000FF"><FONT COLOR="#000000">{</FONT>m1<FONT COLOR="#000000">,</FONT>m2<FONT COLOR="#000000">:</FONT>file_mode<FONT COLOR="#000000">}</FONT></FONT> <FONT COLOR="#000000">(</FONT>
@@ -219,7 +219,7 @@ The following function <i>filecopy_err</i> is a variant of
 </FONT></PRE>
 
 We now use <i>filecopy_err</i> to implement as follows the functionality of
-concatenating a list of files into one:
+concatenating a list of files into a single one:
 
 <PRE><FONT COLOR="#E80000">
 <FONT COLOR="#000000">implement</FONT> main <FONT COLOR="#0000FF"><FONT COLOR="#000000">{</FONT>n<FONT COLOR="#000000">}</FONT></FONT> <FONT COLOR="#000000">(</FONT>argc<FONT COLOR="#000000">,</FONT> argv<FONT COLOR="#000000">)</FONT> <FONT COLOR="#000000">=</FONT> <FONT COLOR="#000000">let</FONT>

@@ -4,12 +4,6 @@
 //
 //
 
-%{^
-
-#include "prelude/CATS/array.cats"
-
-%}
-
 (* ****** ****** *)
 
 extern fun{a:t@ype} search {n:nat} {l:addr} {cmp:eff}
@@ -20,17 +14,14 @@ extern fun{a:t@ype} search {n:nat} {l:addr} {cmp:eff}
 // as 100% C-style
 implement{a} search {n} {l} (cmp, A, key, n) = let
    var l = 0 and u = n-1 and res = ~1
-   var m: Int and x: a
-   val () =  while* // loop with annotated invariants
+   var m: Int; val () =  while*
      {l,u:int | 0<=l; l <= u+1; u+1 <= n} .<u-l+1>.
-     (l: int l, u: int u, res: int ~1): (res: intBtw (~1, n)) =>
-     (l <= u) begin
-       m := l + (u-l) / 2; x := A.[m];
-       case+ cmp (x, key) of
-         | ~1 => (l := m + 1; continue)
-         |  1 => (u := m - 1; continue)
-         |  0 => (res := m; break)
-     end // end of [while*]
+     (l: int l, u: int u, res: int ~1)
+     : (res: intBtw (~1, n)) => (l <= u) begin
+       m := l + (u-l) / 2; case+ cmp (A.[m], key) of
+       | ~1 => (l := m + 1; continue) |  1 => (u := m - 1; continue)
+       |  0 => (res := m; break)
+   end // end of [while*]
 in
   res
 end // end of [search]

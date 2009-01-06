@@ -77,6 +77,18 @@ symintr float_of double_of ldouble_of
 
 (* ****** ****** *)
 
+//
+// should this be assumed?
+// praxi eqsize_byte_one (): [sizeof byte == 1] void
+//
+
+praxi eqsize_byte_char (): [sizeof byte == sizeof char] void
+praxi eqsize_int_uint (): [sizeof int == sizeof uint] void
+praxi eqsize_char_schar (): [sizeof char == sizeof schar] void
+praxi eqsize_char_uchar (): [sizeof char == sizeof uchar] void
+
+(* ****** ****** *)
+
 val AssertionException : exn = "AssertionException"
 val DivisionByZeroException : exn = "DivisionByZeroException"
 val NotFoundException : exn = "NotFoundException"

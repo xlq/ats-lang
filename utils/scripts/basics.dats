@@ -149,7 +149,7 @@ end // end of [suffix_of_filename]
 implement filename_is_local name = let
    val name = string1_of_string0 name
 in
-   if string1_is_not_empty name then
+   if string1_isnot_empty name then
      bool1_of_bool (name[0] <> dirsep)
    else true
 end // end of [filename_is_local]

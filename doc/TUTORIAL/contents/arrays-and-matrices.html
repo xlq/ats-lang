@@ -31,7 +31,7 @@ I)</i> is for persistent arrays of size <i>I</i> in which each element is
 of viewtype <i>VT</i>. Internally, a value of the type <i>array(VT, I)</i>
 is just a pointer to a piece of consecutive memory holding <i>I</i> elements of
 the type <i>VT</i>. Note that there is no size information directly attached to
-such an array, that is, no function of the following type is available:
+such an array, that is, <u>no function of the following type is available</u>:
 
 <pre>
 fun{a:viewt@ype} array_size {n:nat} (A: array (a, n)): int n
@@ -39,6 +39,7 @@ fun{a:viewt@ype} array_size {n:nat} (A: array (a, n)): int n
 
 If the size of such an array is needed, it may be stored somewhere
 explicitly by the programmer.
+<P>
 
 <B>Array Creation</B>&nbsp;&nbsp;
 There are several approaches to creating persistent arrays in ATS.
@@ -58,10 +59,11 @@ typedef digit = [i:nat | i &lt; 10] int (i)
 // digits: array (digit, 10)
 val digits = array @[digit](0, 1, 2, 3, 4, 5, 6, 7, 8, 9)
 </pre>
+<P>
 
 <B>Array Subscripting</B>&nbsp;&nbsp;
 
-The following two (template) functions
+The following two function templates
 <i>array_get_elt_at</i> and <i>array_set_elt_at</i>
 are for accessing and updating a persistent array, respectively:
 
@@ -119,7 +121,7 @@ of the type <i>VT</i>, where the elements are placed in the row-major
 format.
 <P>
 
-<EM>Matrix Creation</EM>&nbsp;&nbsp;
+<B>Matrix Creation</B>&nbsp;&nbsp;
 The approaches to creating matrices resemble those to creating arrays.
 For instance, the following code creates a square matrix of dimension
 10 by 10:
@@ -137,9 +139,9 @@ For instance, the following code creates a square matrix of dimension
 <FONT COLOR="#000000">,</FONT> 90<FONT COLOR="#000000">,</FONT> 91<FONT COLOR="#000000">,</FONT> 92<FONT COLOR="#000000">,</FONT> 93<FONT COLOR="#000000">,</FONT> 94<FONT COLOR="#000000">,</FONT> 99<FONT COLOR="#000000">,</FONT> 96<FONT COLOR="#000000">,</FONT> 97<FONT COLOR="#000000">,</FONT> 98<FONT COLOR="#000000">,</FONT> 99
 <FONT COLOR="#000000">)</FONT></FONT></PRE>
 
-<EM>Matrix Subscripting</EM>&nbsp;&nbsp;
+<B>Matrix Subscripting</B>&nbsp;&nbsp;
 
-The following two (template) functions
+The following two function templates
 <i>matrix_get_elt_at</i> and <i>matrix_set_elt_at</i>
 are for accessing and updating a persistent matrix, respectively:
 

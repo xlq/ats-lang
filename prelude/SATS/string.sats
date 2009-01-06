@@ -54,7 +54,9 @@ typedef bytes (n:int) = @[byte][n]
 typedef b0ytes (n:int) = @[byte?][n]
 
 typedef chars (n:int) = @[char][n]
-typedef ch0ars (n:int) = @[char?][n]
+typedef c0hars (n:int) = @[char?][n]
+typedef c1har = [c:char | c <> NUL] char c
+typedef c1hars (n:int) = @[c1har][n]
 
 (* ****** ****** *)
 
@@ -79,13 +81,17 @@ praxi bytes_v_of_strbuf_v {bsz:int}
 viewdef strbuf_v (m: int, n: int, l:addr) = strbuf (m, n) @ l
 
 praxi strbuf_v_null {n:nat} {l:addr}
-  (pf1: char NUL @ l, pf2: b0ytes (n) @ l + sizeof(byte))
+  (pf1: char NUL @ l, pf2: b0ytes (n) @ l + sizeof(char))
   : strbuf_v (n+1, 0, l)
 
+//
+
 praxi strbuf_v_cons
-  {c: char | c <> NUL} {m,n:nat} {l:addr}
-  (pf1: char c @ l, pf2: strbuf_v (m, n, l + sizeof(byte)))
+  {m,n:nat} {l:addr}
+  (pf1: c1har @ l, pf2: strbuf_v (m, n, l + sizeof(char)))
   :<prf> strbuf_v (m+1, n+1, l)
+
+//
 
 dataview strbufopt_v (int, int, addr, char) =
   | {m:nat} {l:addr}
@@ -96,8 +102,22 @@ dataview strbufopt_v (int, int, addr, char) =
 praxi strbuf_v_uncons
   {m,n:nat} {l:addr} (pf: strbuf_v (m, n, l))
   :<prf> [c:char] @(
-     char c @ l, strbufopt_v (m-1, n-1, l + sizeof(byte), c)
+     char c @ l, strbufopt_v (m-1, n-1, l + sizeof(char), c)
    )
+
+//
+
+prfun strbuf_v_split
+  {m,n:nat} {i:nat | i <= n} {l:addr} {ofs:int}
+  (pf_mul: MUL (i, sizeof char, ofs), pf_str: strbuf_v (m, n, l))
+  : (c1hars i @ l, strbuf_v (m-i, n-i, l+ofs))
+
+prfun strbuf_v_unsplit
+  {n1:nat} {m2,n2:nat} {l:addr} {ofs:int} (
+    pf_mul: MUL (n1, sizeof char, ofs)
+  , pf_buf: c1hars n1 @ l
+  , pf_str: strbuf_v (m2, n2, l+ofs)
+  ) : strbuf_v (n1+m2, n1+n2, l)
 
 (* ****** ****** *)
 
@@ -285,10 +305,6 @@ fun string_make_substrbuf
 
 (* ****** ****** *)
 
-fun strbuf_append {m1,n1,m2,n2:nat | n1+n2 < m1}
-  (sb1: &strbuf (m1,n1) >> strbuf (m1, n1+n2), sb2: &strbuf (m2,n2)):<> void
-  = "atspre_strbuf_append"
-
 fun string0_append (s1: string, s2: string):<> string
   = "atspre_string_append" 
 
@@ -352,17 +368,17 @@ fun string1_is_empty {n:nat} (s: string n):<> bool (n==0)
 
 (* ****** ****** *)
 
-fun strbuf_is_not_empty {m,n:nat}
+fun strbuf_isnot_empty {m,n:nat}
   (sb: &strbuf (m, n)):<> bool (n > 0)
-  = "atspre_string_is_not_empty"
-fun string0_is_not_empty (s: string):<> bool
-  = "atspre_string_is_not_empty"
-fun string1_is_not_empty {n:nat} (s: string n):<> bool (n > 0)
-  = "atspre_string_is_not_empty"
+  = "atspre_string_isnot_empty"
+fun string0_isnot_empty (s: string):<> bool
+  = "atspre_string_isnot_empty"
+fun string1_isnot_empty {n:nat} (s: string n):<> bool (n > 0)
+  = "atspre_string_isnot_empty"
 
-overload ~ with strbuf_is_not_empty
-overload ~ with string0_is_not_empty
-overload ~ with string1_is_not_empty
+overload ~ with strbuf_isnot_empty
+overload ~ with string0_isnot_empty
+overload ~ with string1_isnot_empty
 
 (* ****** ****** *)
 

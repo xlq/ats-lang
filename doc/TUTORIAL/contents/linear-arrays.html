@@ -4,6 +4,23 @@
 <H2>Linear Arrays</H2>
 <HR SIZE=1 ALIGN=LEFT><P>
 
+Given a viewtype <i>VT</i> and integer <i>I</i>, the special static term
+<i>@[VT][I]</i> is a viewtype for an array of elements of the type <i>VT</i>
+(and thus the size of <i>@[VT][I]</i> is <i>I</i> times the size of
+<i>VT</i>). If <i>VT</i> happens to be a type (instead of viewtype), then
+<i>@[VT][I]</i> is also a type. If a linear proof of the view <i>(@[VT][I])
+@ L</i> is available, then we say that a linear array of size <i>I</i> is
+stored at the location <i>L</i> in which each element is of the type
+<i>VT</i>.
+
+<H4>Linear Array Creation</H4>
+
+<H4>Linear Array Initialization</H4>
+
+<H4>Linear Array Subscription</H4>
+
+<H4>Linear Array Destruction</H4>
+
 <HR SIZE=1 ALIGN=LEFT><P>
 The code used for illustration is available <a
 href="linear-arrays.dats">here</a>.
