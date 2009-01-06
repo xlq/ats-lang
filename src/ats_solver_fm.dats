@@ -101,11 +101,11 @@ end
 (* ****** ****** *)
 
 fn intvec_ptr_alloc {n:nat} (n: int n)
-  : [l:addr] (free_gc_v l, (intvec n)? @ l | ptr l) =
+  :<> [l:addr] (free_gc_v (i0nt?, n, l), (intvec n)? @ l | ptr l) =
   array_ptr_alloc_tsz {i0nt} (n, sizeof<i0nt>)
 
 fn intvec_ptr_free {n:int} {l:addr}
-  (pf_gc: free_gc_v l, pf_arr: (intvec n)? @ l | p: ptr l): void =
+  (pf_gc: free_gc_v (i0nt?, n, l), pf_arr: (intvec n)? @ l | p: ptr l):<> void =
   array_ptr_free {i0nt} (pf_gc, pf_arr | p)
 
 (* ****** ****** *)
@@ -221,7 +221,7 @@ end // end of [local]
 
 dataviewtype intveclst (int) =
   | {n:pos} {l:addr}
-    INTVECLSTcons (n) of (free_gc_v l, intvec n @ l | ptr l, intveclst n)
+    INTVECLSTcons (n) of (free_gc_v (i0nt?, n, l), intvec n @ l | ptr l, intveclst n)
   | {n:pos} INTVECLSTnil (n)
 
 fun intveclst_free {n:int} (vecs: intveclst n): void = begin
@@ -484,8 +484,8 @@ end // end of [intvec_absmin_coeff_index_get]
 
 (* ****** ****** *)
 
-extern fun intvec_copy {n:nat}
-  (vec: &intvec n, n: int n): [l:addr] (free_gc_v l, intvec n @ l | ptr l)
+extern fun intvec_copy {n:nat} (vec: &intvec n, n: int n)
+  :<> [l:addr] (free_gc_v (i0nt?, n, l), intvec n @ l | ptr l)
   = "ats_solver_fm_intvec_copy"
 
 implement intvec_copy (vec, n) = let
@@ -498,7 +498,8 @@ end // end of [intvec_copy]
 //
 
 extern fun intvecptr_copy {n:nat}
-  (vec: !intvecptr_t n, n: int n): [l:addr] (free_gc_v l, intvec n @ l | ptr l)
+  (vec: !intvecptr_t n, n: int n)
+  :<> [l:addr] (free_gc_v (i0nt?, n, l), intvec n @ l | ptr l)
   = "ats_solver_fm_intvec_copy"
 
 (* ****** ****** *)
@@ -516,7 +517,8 @@ end // end of [intvec_negate]
 
 //
 
-extern fun intvec_scale {n:nat} (vec: &intvec n, n: int n, c: i0nt): void
+extern fun intvec_scale {n:nat}
+  (vec: &intvec n, n: int n, c: i0nt):<> void
 
 implement intvec_scale {n} (vec, n, c) = begin
 
@@ -532,7 +534,8 @@ end // end if [if]
 end // end of [intvec_scale]
 
 extern fun intvec_copy_and_scale {n:nat}
-  (vec: &intvec n, n: int n, c: i0nt): [l:addr] (free_gc_v l, intvec n @ l | ptr l)
+  (vec: &intvec n, n: int n, c: i0nt)
+  :<> [l:addr] (free_gc_v (i0nt?, n, l), intvec n @ l | ptr l)
 
 implement intvec_copy_and_scale (vec, n, c) = begin
   if c <> 1 then let
@@ -548,9 +551,9 @@ end // end of [intvec_copy_and_scale]
 
 // [vec1 := vec1 + vec2]
 extern fun intvec_add_by {n:nat}
-  (vec1: &intvec n, vec2: &intvec n, n: int n): void
+  (vec1: &intvec n, vec2: &intvec n, n: int n):<> void
 
-implement intvec_add_by {n} (vec1, vec2, n): void = let
+implement intvec_add_by {n} (vec1, vec2, n) = let
   var i = n - 1
 in
   while* // going downward
@@ -561,7 +564,7 @@ end // end of [intvec_add_by]
 
 // [vec1 := vec1 - vec2]
 extern fun intvec_sub_by {n:nat}
-  (vec1: &intvec n, vec2: &intvec n, n: int n): void
+  (vec1: &intvec n, vec2: &intvec n, n: int n):<> void
 
 implement intvec_sub_by {n} (vec1, vec2, n): void = let
   var i = n - 1
@@ -574,19 +577,19 @@ end // end of [intvec_sub_by]
 
 // [vec1 := vec1 + c * vec2]
 extern fun intvec_add_by_scale {n:nat}
-  (vec1: &intvec n, vec2: &intvec n, n: int n, c: i0nt): void
+  (vec1: &intvec n, vec2: &intvec n, n: int n, c: i0nt):<> void
 
-implement intvec_add_by_scale {n} (vec1, vec2, n, c): void = begin
+implement intvec_add_by_scale {n} (vec1, vec2, n, c) = begin
   if c = 0 then () // do nothing
   else if c = 1 then begin
     intvec_add_by (vec1, vec2, n)
   end else let
-    var i = n - 1
-  in
-    while* // going downward
+    var i = n - 1; val () = while* // going downward
       {i:int | ~1 <= i; i < n} .<i+1>. (i: int i) => (i >= 0) begin
         vec1.[i] := vec1.[i] + c * vec2.[i] ; i := i - 1 ;
       end // end of [while]
+  in
+    // empty
   end // end of [if]
 end // end of [intvec_add_by_scale]
   
@@ -594,7 +597,7 @@ end // end of [intvec_add_by_scale]
 
 extern fun intvec_combine_at
   {n,i:int | 0 < i; i < n} (_pos: &intvec n, _neg: &intvec n, n: int n, i: int i)
-  : [l:addr] (free_gc_v l, intvec n @ l | ptr l)
+  :<> [l:addr] (free_gc_v (i0nt?, n, l), intvec n @ l | ptr l)
 
 implement intvec_combine_at (vec_pos, vec_neg, n, i) = let
   val c_pos = vec_pos.[i] and c_neg = ~(vec_neg.[i])
@@ -757,7 +760,7 @@ end // end of [intveclst_elim_at]
 
 dataviewtype intveclst1 (int) =
   | {n:pos} {l:addr} INTVECLST1cons (n) of (
-      free_gc_v l, intvec n @ l
+      free_gc_v (i0nt?, n, l), intvec n @ l
     | int(*stamp*), ptr l, intBtw (0, n) (*0:gte/1+:eq*), intveclst1 n
     ) // end of [INTVECLST1cons]
   | {n:pos} INTVECLST1mark (n) of intveclst1 n

@@ -11,15 +11,65 @@ Given a viewtype <i>VT</i> and integer <i>I</i>, the special static term
 <i>@[VT][I]</i> is also a type. If a linear proof of the view <i>(@[VT][I])
 @ L</i> is available, then we say that a linear array of size <i>I</i> is
 stored at the location <i>L</i> in which each element is of the type
-<i>VT</i>.
+<i>VT</i>. A view of the form <i>@[VT][I] @ L</i> is often referred to
+as an array view.
+<P>
+
+The interfaces for various functions on linear arrays can be found in the
+file <A
+HREF="http://www.ats-lang.org/IMPLEMENTATION/Anairiats/ATS/prelude/SATS/array.sats">$ATSHOME/prelude/SATS/array.sats</A>.
+In particular, we have the following functions for manipulating array views:
+
+<pre>
+viewdef array_v (a:viewt@ype, n:int, l: addr) = @[a][n] @ l
+
+praxi array_v_nil :
+  {a:viewt@ype} {l:addr} () -<prf> array_v (a, 0, l)
+
+praxi array_v_unnil :
+  {a:viewt@ype} {l:addr} array_v (a, 0, l) -<prf> void
+
+praxi array_v_cons : {a:viewt@ype} {n:nat} {l:addr}
+  (a @ l, array_v (a, n, l+sizeof a)) -<prf> array_v (a, n+1, l)
+
+praxi array_v_uncons : {a:viewt@ype} {n:int | n > 0} {l:addr}
+  array_v (a, n, l) -<prf> (a @ l, array_v (a, n-1, l+sizeof a))
+</pre>
 
 <H4>Linear Array Creation</H4>
+The following function template <i>array_ptr_alloc</i> can be called to
+allocate memory for storing an array of elements:
+
+<pre>
+fun{a:viewt@ype}
+  array_ptr_alloc {n:nat} (asz: int n):<>
+    [l:addr | l <> null] (free_gc_v l, array_v (a?, n, l) | ptr l)
+</pre>
+
+Given an address <i>L</i>, a proof of the the view <i>free_gc_v(L)</i>
+indicates that the address <i>L</i> is associated with the garbage
+collector of ATS, and it must be provided when the allocated array.  The
+view <i>array_v (a?, n, l)</i> is for an uninitialized array of size
+<i>n</i> in which each element should be of the type <i>a</i> if
+initialized.
 
 <H4>Linear Array Initialization</H4>
 
 <H4>Linear Array Subscription</H4>
 
 <H4>Linear Array Destruction</H4>
+The following function is for freeing the memory occupied by a linear
+array:
+
+<pre>
+fun array_ptr_free {a:viewt@ype} {n:int} {l:addr}
+  (pf_gc: free_gc_v l, pf_arr: array_v (a?, n, l) | _: ptr l):<> void
+</pre>
+
+Note that in order to free an array allocated at an address <i>L</i>,
+a proof of the view <i>free_gc_v(L)</i> must be provided.
+
+<H4>An Example</>
 
 <HR SIZE=1 ALIGN=LEFT><P>
 The code used for illustration is available <a

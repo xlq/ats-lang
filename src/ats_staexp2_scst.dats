@@ -97,6 +97,7 @@ implement s2cst_make
 
 val stamp = $Stamp.s2cst_stamp_make ()
 val (pf_gc, pf | p) = ptr_alloc_tsz {s2cst_struct} (sizeof<s2cst_struct>)
+prval () = free_gc_elim {s2cst_struct} (pf_gc)
 
 val () = begin
 p->s2cst_sym := id;
@@ -115,9 +116,9 @@ p->s2cst_sup := S2CSTOPTnone ();
 p->s2cst_sVarset := s2Varset_nil;
 p->s2cst_stamp := stamp;
 p->s2cst_tag := (~1);
-end
+end // end of [val]
 
-val (pfbox | ()) = vbox_make_view_ptr_gc (pf_gc, pf | p)
+val (pfbox | ()) = vbox_make_view_ptr (pf | p)
 
 in
 

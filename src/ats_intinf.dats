@@ -59,8 +59,9 @@ assume intinf_t = ref (mpz_vt)
 
 implement intinf_make_int (i: int) = let
   val (pf_gc, pf | p) = ptr_alloc_tsz {mpz_vt} (sizeof<mpz_vt>)
+  prval () = free_gc_elim {mpz_vt} (pf_gc)
   val () = mpz_init_set_int (!p, i);
-  val (pfbox | ()) = vbox_make_view_ptr_gc (pf_gc, pf | p)
+  val (pfbox | ()) = vbox_make_view_ptr (pf | p)
 in
   ref_make_view_ptr (pfbox | p)
 end // end of [intinf_make_inf]
@@ -71,8 +72,9 @@ extern fun intinf_set_string
 
 implement intinf_make_string (s: string) = let
   val (pf_gc, pf | p) = ptr_alloc_tsz {mpz_vt} (sizeof<mpz_vt>)
+  prval () = free_gc_elim {mpz_vt} (pf_gc)
   val () = intinf_set_string (!p, s)
-  val (pfbox | ()) = vbox_make_view_ptr_gc (pf_gc, pf | p)
+  val (pfbox | ()) = vbox_make_view_ptr (pf | p)
 in
   ref_make_view_ptr (pfbox | p)
 end // end of [intinf_make_string]
@@ -83,8 +85,9 @@ extern fun intinf_set_stringsp
 
 implement intinf_make_stringsp (s: string) = let
   val (pf_gc, pf | p) = ptr_alloc_tsz {mpz_vt} (sizeof<mpz_vt>)
+  prval () = free_gc_elim {mpz_vt} (pf_gc)
   val () = intinf_set_stringsp (!p, s)
-  val (pfbox | ()) = vbox_make_view_ptr_gc (pf_gc, pf | p)
+  val (pfbox | ()) = vbox_make_view_ptr (pf | p)
 in
   ref_make_view_ptr (pfbox | p)
 end // end of [intinf_make_stringsp]

@@ -92,6 +92,7 @@ implement d2var_make (loc, id) = let
 
 val stamp = $Stamp.d2var_stamp_make ()
 val (pf_gc, pf | p) = ptr_alloc_tsz {d2var_struct} (sizeof<d2var_struct>)
+prval () = free_gc_elim {d2var_struct} (pf_gc)
 
 val () = begin
 p->d2var_loc := loc;
@@ -108,9 +109,9 @@ p->d2var_typ := None ();
 p->d2var_mastyp := None ();
 p->d2var_count := 0;
 p->d2var_stamp := stamp
-end
+end // end of [val]
 
-val (pfbox | ()) = vbox_make_view_ptr_gc (pf_gc, pf | p)
+val (pfbox | ()) = vbox_make_view_ptr (pf | p)
 
 in
 

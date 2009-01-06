@@ -125,15 +125,15 @@ overload tostring with tostring_ptr
 
 (* ****** ****** *)
 
-fun ptr_alloc_tsz // [a] is of fixed size
-  {a:viewt@ype} (tsz: sizeof_t a):<> [l:agz] (free_gc_v l, a? @ l | ptr l)
+fun{a:viewt@ype} ptr_alloc ()
+  :<> [l:addr | l > null] (free_gc_v (a?, l), a? @ l | ptr l)
+
+fun ptr_alloc_tsz {a:viewt@ype} (tsz: sizeof_t a)
+  :<> [l:addr | l > null] (free_gc_v (a?, l), a? @ l | ptr l)
   = "atspre_ptr_alloc_tsz"
 
-// [a] is of fixed size
-fun{a:viewt@ype} ptr_alloc ():<> [l:agz] (free_gc_v l, a? @ l | ptr l)
-
-fun ptr_free // [a] does not have to be of a fixed size
-  {a:t@ype} {l:addr} (_: free_gc_v l, _: a @ l | _: ptr l):<> void
+fun ptr_free {a:viewt@ype} {l:addr}
+  (_: free_gc_v (a?, l), _: a? @ l | _: ptr l):<> void
   = "atspre_ptr_free"
 
 (* ****** ****** *)

@@ -91,6 +91,7 @@ implement d2cst_make
 
 val stamp = $Stamp.d2cst_stamp_make ()
 val (pf_gc, pf | p) = ptr_alloc_tsz {d2cst_struct} (sizeof<d2cst_struct>)
+prval () = free_gc_elim {d2cst_struct} (pf_gc)
 
 val () = begin
 p->d2cst_loc := loc;
@@ -104,9 +105,9 @@ p->d2cst_ext := ext;
 p->d2cst_def := None ();
 p->d2cst_stamp := stamp;
 p->d2cst_hityp := None ();
-end
+end // end of [val]
 
-val (pfbox | ()) = vbox_make_view_ptr_gc (pf_gc, pf | p)
+val (pfbox | ()) = vbox_make_view_ptr (pf | p)
 
 in
 

@@ -1122,26 +1122,26 @@ in
   | S2Eapp (s2e1, s2es2) => begin case+ s2e1.s2exp_node of
     | S2Ecst s2c1 => s3bexp_make_s2cst_s2explst (s2c1, s2es2, s2cs, fds)
     | _ => None_vt ()
-    end
+    end // end of [S2Eapp]
   | S2Ecst s2c => begin case+ s2c of
     | _ when s2cstref_cst_equ (True_bool, s2c) => Some_vt (s3bexp_true)
     | _ when s2cstref_cst_equ (False_bool, s2c) => Some_vt (s3bexp_false)
     | _ => (s2cs := s2cstlst_add (s2cs, s2c); Some_vt (s3bexp_cst s2c))
-    end
+    end // end of [S2Ecst]
   | S2Evar s2v => Some_vt (s3bexp_var s2v)
   | S2Eeqeq (s2e1, s2e2) => aux_equal (s2e1, s2e2, s2cs, fds)
   | S2Emetlt (met, met_bound) => let
       val s2e_met = s2exp_metlt_reduce (met, met_bound)
     in
       s3bexp_make_s2exp (s2e_met, s2cs, fds)
-    end
+    end // end of [S3Emetlt]
   | _ => let // an expression that cannot be handled
       val () = begin
         print "s3bexp_make_s2exp: s2e0 = "; print s2e0; print_newline ();
       end
     in
       None_vt ()
-    end
+    end // end of [_]
 end // end of [s3bexp_make_s2exp]
 
 implement s3bexp_make_h3ypo (h3p, s2cs, fds) = begin
@@ -1459,35 +1459,35 @@ in
         $FM.ICveclst (0(*conj*), list_vt_nil ())
       end else begin
         $FM.ICveclst (1(*disj*), list_vt_nil ())
-      end
-    end
+      end // end of [if]
+    end // end of [S3BEbool]
   | S3BEcst s2c => let
       val ind = s2cst_index_find (loc0, cim, s2c, n)
       val (pf_gc, pf_arr | ivp) = $FM.intvec_ptr_make (n)
       val () = (ivp->[ind] := $FM.i0nt_1; ivp->[0] := $FM.i0nt_neg_1)
     in
       $FM.ICvec (2(*gte*), $FM.intvecptr_make_view_ptr (pf_gc, pf_arr | ivp))
-    end
+    end // end of [S3BEcst]
   | S3BEvar s2v => let
       val ind = s2var_index_find (loc0, vim, s2v, n)
       val (pf_gc, pf_arr | ivp) = $FM.intvec_ptr_make (n)
       val () = (ivp->[ind] := $FM.i0nt_1; ivp->[0] := $FM.i0nt_neg_1)
     in
       $FM.ICvec (2(*gte*), $FM.intvecptr_make_view_ptr (pf_gc, pf_arr | ivp))
-    end
+    end // end of [S3BEvar]
   | S3BEbneg s3be => $FM.icstr_negate (aux s3be)
   | S3BEbadd (s3be1, s3be2) => let
       val ic1 = aux s3be1 and ic2 = aux s3be2
       val ics = list_vt_cons (ic1, list_vt_cons (ic2, list_vt_nil ()))
     in
       $FM.ICveclst (1(*disj*), ics)
-    end
+    end // end of [S3BEbadd]
   | S3BEbmul (s3be1, s3be2) => let
       val ic1 = aux s3be1 and ic2 = aux s3be2
       val ics = list_vt_cons (ic1, list_vt_cons (ic2, list_vt_nil ()))
     in
       $FM.ICveclst (0(*conj*), ics)
-    end
+    end // end of [S3BEbmul]
   | S3BEiexp (knd, s3ie) => let (* gte/lt: 2/~2; eq/neq: 1/~1 *)
       val (pf_gc, pf_arr | ivp) = $FM.intvec_ptr_make (n)
       val () = s3iexp_intvec_update_err (
@@ -1495,7 +1495,7 @@ in
       ) // end of [s3iexp_intvec_update_err]
     in
       $FM.ICvec (knd, $FM.intvecptr_make_view_ptr (pf_gc, pf_arr | ivp))
-    end
+    end // end of [S3BEiexp]
   | S3BEexp _ => begin
       prerr "Internal Error: s3bexp_intvec_make_err: unsupported term: s3be0 = ";
       print s3be0;

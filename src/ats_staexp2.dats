@@ -156,10 +156,12 @@ implement s2rtdat_make (id) = let
 
 val stamp = $Stamp.s2rtdat_stamp_make ()
 val (pf_gc, pf | p) = ptr_alloc_tsz {s2rtdat_struct} (sizeof<s2rtdat_struct>)
+prval () = free_gc_elim {s2rtdat_struct} (pf_gc)
+
 val () = p->s2rtdat_sym := id
 val () = p->s2rtdat_conlst := S2CSTLSTnil ()
 val () = p->s2rtdat_stamp := stamp
-val (pfbox | ()) = vbox_make_view_ptr_gc (pf_gc, pf | p)
+val (pfbox | ()) = vbox_make_view_ptr (pf | p)
 
 in
 
@@ -184,7 +186,7 @@ implement eq_s2rtdat_s2rtdat (s2td1, s2td2) = let
   val stamp2 = let val (vbox pf2 | p2) = s2td2 in p2->s2rtdat_stamp end
 in
   stamp1 = stamp2
-end
+end // end of [eq_s2rtdat_s2rtdat]
 
 end // end of [local]
 
@@ -195,9 +197,11 @@ implement s2rt_tup (s2ts_elt) = S2RTtup s2ts_elt
 
 implement un_s2rt_fun (s2t) = case+ s2t of
   | S2RTfun (s2ts, s2t) => Some_vt @(s2ts, s2t) | _ => None_vt ()
+// end of [un_s2rt_fun]
 
 implement un_s2rt_tup (s2t) = case+ s2t of
   | S2RTtup s2ts => Some_vt (s2ts) | _ => None_vt ()
+// end of [un_s2rt_tup]
 
 (* ****** ****** *)
 

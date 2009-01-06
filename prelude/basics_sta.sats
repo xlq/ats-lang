@@ -585,11 +585,33 @@ typedef sizeof_t (a:viewt@ype) =
 (* ****** ****** *)
 
 // for memory deallocation (with/without GC)
-absview free_gc_v (l: addr) and free_ngc_v (l: addr)
+
+absview free_gc_addr_view (l:addr)
+absview free_ngc_addr_view (l:addr)
+
+stadef free_gc_v = free_gc_addr_view
+stadef free_ngc_v = free_ngc_addr_view
+
+absview free_gc_t0ype_addr_view (a:t@ype, l:addr)
+absview free_ngc_t0ype_addr_view (a:t@ype, l:addr)
+
+stadef free_gc_v = free_gc_t0ype_addr_view
+stadef free_ngc_v = free_ngc_t0ype_addr_view
+
+absview free_gc_t0ype_addr_int_view (a:t@ype, n:int, l:addr)
+absview free_ngc_t0ype_addr_int_view (a:t@ype, n:int, l: addr)
+
+stadef free_gc_v = free_gc_t0ype_addr_int_view
+stadef free_ngc_v = free_ngc_t0ype_addr_int_view
+
+viewdef free_gc_v (n:int, l:addr) = free_gc_v (byte?, n, l)
+viewdef free_ngc_v (n:int, l:addr) = free_ngc_v (byte?, n, l)
+
+(* ****** ****** *)
 
 // values of viewtype [junkptr] need to be freed by calling [free];
 // note that the viewtype [junkptr] may be just defined as follows:
-// [a:viewt@ype; l:addr] (free_gc_v l, a? @ l | ptr l)
+// [a:viewt@ype; l:addr] (free_gc_v (a, 1, l), a? @ l | ptr l)
 absviewtype junkptr_viewtype
 stadef junkptr = junkptr_viewtype
 
@@ -597,8 +619,8 @@ stadef junkptr = junkptr_viewtype
 
 // This definition should not be changed!
 viewtypedef
-arraysize_viewt0ype_int_viewt0ype (a: viewt@ype, n:int) =
-  [l:addr | l <> null] (free_gc_v l, @[a][n] @ l | ptr l, int n)
+arraysize_viewt0ype_int_viewt0ype (a:viewt@ype, n:int) =
+  [l:addr | l <> null] (free_gc_v (a?, n, l), @[a][n] @ l | ptr l, int n)
 
 stadef arraysize = arraysize_viewt0ype_int_viewt0ype
 

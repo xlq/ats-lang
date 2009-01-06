@@ -74,7 +74,8 @@ config.h: configure ; ./configure
 ###### bootstrap/Makefile ######
 
 bootstrap1/Makefile:
-	$(GCC) -E -x c .bootstrap_header | cat - .bootstrap_makefile > bootstrap1/Makefile
+	$(GCC) D_BOOTSTRAP1 -E -x c .bootstrap_header \
+      | cat - .bootstrap_makefile > bootstrap1/Makefile
 
 ###### w/o GC ######
 atsopt1: bootstrap1/Makefile; cd bootstrap1; make atsopt; mv atsopt "$(ATSHOME)"/bin

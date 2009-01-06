@@ -93,14 +93,15 @@ assume array_viewt0ype_int_type
 
 viewtypedef
 arraysize_viewt0ype_int_viewt0ype (a: viewt@ype, n:int) =
-  [l:addr | l <> null] (free_gc_v l, @[a][n] @ l | ptr l, int n)
+  [l:addr | l <> null] (free_gc_v (a?, n, l), @[a][n] @ l | ptr l, int n)
 
 *)
 
-implement array_make_arraysize (x) = let
-  val (pfbox | ()) = vbox_make_view_ptr_gc (x.0, x.1 | x.2)
+implement array_make_arraysize {a} {n} (arrsz) = let
+  prval () = free_gc_elim {a} {n} (arrsz.0)
+  val (pfbox | ()) = vbox_make_view_ptr (arrsz.1 | arrsz.2)
 in
-  @{ data= x.2, view= pfbox }
+  @{ data= arrsz.2, view= pfbox }
 end // end of [array]
 
 implement array_get_view_ptr (A) = @(A.view | A.data)

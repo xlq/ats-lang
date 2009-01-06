@@ -110,6 +110,7 @@ in
 end
 
 val (pf_gc, pf | p) = ptr_alloc_tsz {d2con_struct} (sizeof<d2con_struct>)
+prval () = free_gc_elim {d2con_struct} (pf_gc)
 
 val () = begin
 p->d2con_loc := loc;
@@ -126,9 +127,9 @@ p->d2con_ind := ind;
 p->d2con_typ := s2e_d2c;
 p->d2con_tag := ~1;
 p->d2con_stamp := stamp
-end
+end // end of [val]
 
-val (pfbox | ()) = vbox_make_view_ptr_gc (pf_gc, pf | p)
+val (pfbox | ()) = vbox_make_view_ptr (pf | p)
 
 in
 

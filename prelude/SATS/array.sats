@@ -86,16 +86,15 @@ praxi array_v_uncons : {a:viewt@ype} {n:int | n > 0} {l:addr}
 
 fun{a:viewt@ype}
   array_ptr_alloc {n:nat} (asz: int n):<>
-    [l:addr | l <> null] (free_gc_v l, array_v (a?, n, l) | ptr l)
+    [l:addr | l <> null] (free_gc_v (a?, n, l), array_v (a?, n, l) | ptr l)
 
 fun array_ptr_alloc_tsz
   {a:viewt@ype} {n:nat} (asz: int n, sz: sizeof_t a):<>
-    [l:addr | l <> null] (free_gc_v l, array_v (a?, n, l) | ptr l)
+    [l:addr | l <> null] (free_gc_v (a?, n, l), array_v (a?, n, l) | ptr l)
   = "atspre_array_ptr_alloc_tsz"
 
-fun array_ptr_free
-  {a:viewt@ype} {n:int} {l:addr}
-  (_: free_gc_v l, _: array_v (a?, n, l) | _: ptr l):<> void
+fun array_ptr_free {a:viewt@ype} {n:int} {l:addr}
+  (pf_gc: free_gc_v (a?, n, l), pf_arr: array_v (a?, n, l) | p_arr: ptr l):<> void
   = "atspre_array_ptr_free" 
 
 (* ****** ****** *)

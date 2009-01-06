@@ -200,8 +200,8 @@ end // end of [redef_find]
 
 (* ****** ****** *)
 
-extern fun array_of_CSIlst {n:nat}
-  (lst: CSIlst n, n: int n): [l:addr] (free_gc_v l, array_v (CSI, n, l) | ptr l) =
+extern fun array_of_CSIlst {n:nat} (lst: CSIlst n, n: int n)
+  :<> [l:addr] (free_gc_v (CSI?, n, l), array_v (CSI, n, l) | ptr l) =
   "array_of_CSIlst"
 
 %{
@@ -296,7 +296,7 @@ end // end of [regex_mark_rep]
 (* ****** ****** *)
 
 fun followpos {n:nat} (n0: int n, r: regex1)
-  : [l:addr] (free_gc_v l, array_v (intset_t, n, l) | ptr l) = let
+  : [l:addr] (free_gc_v (intset_t?,n, l), array_v (intset_t, n, l) | ptr l) = let
   fun aux {l:addr}
     (pf: !array_v (intset_t, n, l) | A: ptr l, n0: int n, r: regex1): void =
     aux_node (pf | A, n0, r.node)

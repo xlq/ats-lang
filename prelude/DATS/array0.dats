@@ -51,10 +51,12 @@ assume array0_viewt0ype_type
 
 (* ****** ****** *)
 
-implement array0_make_arraysize (x) = let
-  val (pfbox | ()) = vbox_make_view_ptr_gc (x.0, x.1 | x.2)
+implement array0_make_arraysize {a} {n} (arrsz) = let
+  prval () = free_gc_elim {a} (arrsz.0)
+  val (pfbox | ()) = vbox_make_view_ptr (arrsz.1 | arrsz.2)
+  // end of [val]
 in
-  '{ data= x.2, size= x.3, view= pfbox }
+  '{ data= arrsz.2, size= arrsz.3, view= pfbox }
 end // end of [array0_make_arraysize]
 
 (* ****** ****** *)

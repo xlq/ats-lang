@@ -193,6 +193,23 @@ overload main with main_argc_argv
 
 (* ****** ****** *)
 
+symintr free_gc_elim
+
+praxi free_gc_addr_elim // return the certificate to the GC
+  {l:addr} (pf: free_gc_v l):<> void
+
+praxi free_gc_t0ype_addr_elim // return the certificate to the GC
+  {a:viewt@ype} {l:addr} (pf: free_gc_v (a?, l)):<> void
+
+praxi free_gc_t0ype_int_addr_elim // return the certificate to the GC
+  {a:viewt@ype} {n:int} {l:addr} (pf: free_gc_v (a?, n, l)):<> void
+
+overload free_gc_elim with free_gc_addr_elim
+overload free_gc_elim with free_gc_t0ype_addr_elim
+overload free_gc_elim with free_gc_t0ype_int_addr_elim
+
+(* ****** ****** *)
+
 // implemented in [basics.cats]
 
 fun cloptr_get_view_ptr {a:viewt@ype}
@@ -222,11 +239,6 @@ fun cloptr_make_view_ptr {a:t@ype}
 fun vbox_make_view_ptr {a:viewt@ype} {l:addr} // for statically allocated
   (_: a @ l | _: ptr l):<> (vbox (a @ l) | void)
   = "atspre_vbox_make_view_ptr"
-
-// [vbox_make_view_ptr_gc] implemented in [basics.cats]
-fun vbox_make_view_ptr_gc {a:viewt@ype} {l:addr} // for dynamically allocated
-  (_: free_gc_v l, _: a @ l | _: ptr l):<> (vbox (a @ l) | void)
-  = "atspre_vbox_make_view_ptr_gc"
 
 (* ****** ****** *)
 

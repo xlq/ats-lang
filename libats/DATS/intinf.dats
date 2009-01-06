@@ -65,7 +65,7 @@ in
 end // end of [intinf_of_int1]
 
 implement intinf_free (pf_gc, pf_at | p) =
-  (mpz_clear (!p); ptr_free (pf_gc, pf_at | p))
+  (mpz_clear (!p); ptr_free {intinf0} (pf_gc, pf_at | p))
 // end of [intinf_free]
 
 (* ****** ****** *)

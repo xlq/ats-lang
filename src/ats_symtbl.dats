@@ -58,7 +58,7 @@ staload "ats_symtbl.sats"
 viewtypedef tblent = Option symbol_t
 viewtypedef symtbl (sz:int, n:int, l:addr) = @{
   ptr= ptr l
-, view= @(free_gc_v l, @[tblent][sz] @ l)
+, view= @(free_gc_v (tblent?, sz, l), @[tblent][sz] @ l)
 , size= int sz
 , nitm= int n
 }
@@ -73,6 +73,7 @@ assume symtbl_t = [l_tbl: addr] (vbox (symtbl @ l_tbl) | ptr l_tbl)
 implement symtbl_make (sz) = let
   val (pf_tbl_gc, pf_tbl | p_tbl) =
     ptr_alloc_tsz {symtbl0} (sizeof<symtbl>)
+  prval () = free_gc_elim {symtbl0} (pf_tbl_gc)
   val asz = max (sz, 1)
   val tsz = sizeof<tblent>
   val (pf_arr_gc, pf_arr | p_arr) =
@@ -87,7 +88,7 @@ implement symtbl_make (sz) = let
     p_tbl->view := @(pf_arr_gc, pf_arr);
     p_tbl->size := asz; p_tbl->nitm := 0
   end // end of [val]
-  val (pfbox | ()) = vbox_make_view_ptr_gc (pf_tbl_gc, pf_tbl | p_tbl)
+  val (pfbox | ()) = vbox_make_view_ptr (pf_tbl | p_tbl)
 in
   (pfbox | p_tbl)
 end // end of [symtbl_make]

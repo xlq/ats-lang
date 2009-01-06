@@ -72,7 +72,8 @@ assume matrix_viewt0ype_int_int_type
 
 implement matrix_make_arraysize_main {a} (m, n) =
   lam (pf_mul | asz) => let
-    val (pf_box | ()) = vbox_make_view_ptr_gc (asz.0, asz.1 | asz.2)
+    prval () = free_gc_elim {a} (asz.0) // return the certificate
+    val (pf_box | ()) = vbox_make_view_ptr (asz.1 | asz.2)
   in @{
     data= asz.2, mul= pf_mul, view= pf_box
   } end
@@ -85,8 +86,10 @@ implement{a} matrix_make_elt (m, n, x) = let
   prval () = mul_nat_nat_nat pf_mul
   val (pf_gc, pf_arr | p_arr) =
     array_ptr_alloc_tsz {a} (mn, sizeof<a>)
+  // end of [val]
+  prval () = free_gc_elim {a} (pf_gc) // return the certificate
   val () = array_ptr_initialize_elt<a> (!p_arr, mn, x)
-  val (pf_box | ()) = vbox_make_view_ptr_gc (pf_gc, pf_arr | p_arr)
+  val (pf_box | ()) = vbox_make_view_ptr (pf_arr | p_arr)
 in @{
   data= p_arr, mul= pf_mul, view= pf_box
 } end // end of [matrix_make_elt]
@@ -113,6 +116,7 @@ implement matrix_make_fun_tsz_main
   val [mn:int] (pf_mul | mn) = m imul2 n
   prval () = mul_nat_nat_nat pf_mul
   val (pf_gc, pf_arr | p_arr) = array_ptr_alloc_tsz {a} (mn, tsz)
+  prval () = free_gc_elim {a} (pf_gc) // return the certificate
   viewtypedef fun_t = (!v | &(a?) >> a, natLt m, natLt n, !vt) -<f> void
   fn f1 (pf: !v | x: &(a?) >> a, i: natLt mn, env: !vt):<cloptr,f> void = let
     val d = natdiv (pf_mul | i, n) and r = i nmod1 n
@@ -123,7 +127,7 @@ implement matrix_make_fun_tsz_main
     array_ptr_initialize_cloptr_tsz_main {a} {v} {vt} (pf | !p_arr, mn, f1, tsz, env)
   end // end of [val]
   val () = cloptr_free (f1)
-  val (pf_box | ()) = vbox_make_view_ptr_gc (pf_gc, pf_arr | p_arr)
+  val (pf_box | ()) = vbox_make_view_ptr (pf_arr | p_arr)
 in @{
   data= p_arr, mul= pf_mul, view= pf_box
 } end // end of [matrix_make_fun_tsz_main]

@@ -90,6 +90,7 @@ val narg = aux args where {
 val stamp = $Stamp.d2mac_stamp_make ()
 val (pf_gc, pf | p) =
   ptr_alloc_tsz {d2mac_struct narg} (sizeof<d2mac_struct narg>)
+prval () = free_gc_elim {d2mac_struct narg} (pf_gc)
 
 val () = begin
 p->d2mac_loc := loc;
@@ -99,9 +100,9 @@ p->d2mac_narg := narg;
 p->d2mac_arglst := args;
 p->d2mac_def := def;
 p->d2mac_stamp := stamp
-end
+end // end of [val]
 
-val (pfbox | ()) = vbox_make_view_ptr_gc (pf_gc, pf | p)
+val (pfbox | ()) = vbox_make_view_ptr (pf | p)
 
 in
 

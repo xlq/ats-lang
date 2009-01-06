@@ -53,19 +53,20 @@ staload "libc/SATS/gmp.sats"
 (* ****** ****** *)
 
 absviewt@ype intinf (int)
+viewtypedef intinf0 = intinf 0
 viewtypedef Intinf = [n:int] intinf n
 
 viewtypedef intinfptr_gc (i: int) =
-  [l:addr] (free_gc_v l, intinf i @ l | ptr l)
+  [l:addr] (free_gc_v (intinf0?, l), intinf i @ l | ptr l)
 viewtypedef Intinfptr_gc = [i:int] intinfptr_gc (i)
   
 (* ****** ****** *)
 
 fun intinf_make {i:int} (i: int i)
-  : [l:addr] (free_gc_v l, intinf i @ l | ptr l)
+  : [l:addr] (free_gc_v (intinf0?, l), intinf i @ l | ptr l)
 
 fun intinf_free {l:addr}
-  (pf_gc: free_gc_v l, pf_at: Intinf @ l | p: ptr l): void
+  (pf_gc: free_gc_v (intinf0?, l), pf_at: Intinf @ l | p: ptr l): void
 
 (* ****** ****** *)
 

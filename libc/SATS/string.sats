@@ -96,11 +96,11 @@ overload strcspn with strcspn_string_string
 (* ****** ****** *)
 
 fun strcpy_strbuf_string
-  {m,n1:nat,n2:nat | n1 + n2 < m} {l:addr} {ofs:int} (
+  {m,n1,n2:nat | n1 + n2 < m} {l:addr} {ofs:int} (
     pf_mul: MUL (n1, sizeof char, ofs)
   , pf_buf: strbuf (m, n1) @ l
   | sbf: ptr l, str: string n2
-  ) : (strbuf_v (m, n1+n2) @ l | ptr (l + ofs))
+  ) : (strbuf (m, n1+n2) @ l | ptr (l + ofs))
   = "atslib_strcpy"
 
 (* ****** ****** *)

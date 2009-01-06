@@ -91,6 +91,7 @@ implement s2var_make_id_srt (id, s2t) = let
 
 val stamp = $Stamp.s2var_stamp_make ()
 val (pf_gc, pf | p) = ptr_alloc_tsz {s2var_struct} (sizeof<s2var_struct>)
+prval () = free_gc_elim {s2var_struct} (pf_gc)
 
 val () = begin
 p->s2var_sym := id;
@@ -98,9 +99,9 @@ p->s2var_srt := s2t;
 p->s2var_tmplev := 0;
 p->s2var_sVarset := s2Varset_nil;
 p->s2var_stamp := stamp
-end
+end // end of [val]
 
-val (pfbox | ()) = vbox_make_view_ptr_gc (pf_gc, pf | p)
+val (pfbox | ()) = vbox_make_view_ptr (pf | p)
 
 in
 
@@ -340,9 +341,10 @@ in
 implement s2Varbound_make (loc, s2e) = let
   val (pf_gc, pf | p) = begin
     ptr_alloc_tsz {s2Varbound_struct} (sizeof<s2Varbound_struct>)
-  end
+  end // end of [val]
+  prval () = free_gc_elim {s2Varbound_struct} (pf_gc)
   val () = (p->s2Varbound_loc := loc; p->s2Varbound_val := s2e)
-  val (pfbox | ()) = vbox_make_view_ptr_gc (pf_gc, pf | p)
+  val (pfbox | ()) = vbox_make_view_ptr (pf | p)
 in
   (pfbox | p)
 end // end of [s2Varbound_make]
@@ -383,6 +385,7 @@ implement s2Var_make_srt (loc, s2t) = let
 val cnt = $Cnt.counter_get_and_inc (s2Var_name_counter)
 val stamp = $Stamp.s2Var_stamp_make ()
 val (pf_gc, pf | p) = ptr_alloc_tsz {s2Var_struct} (sizeof<s2Var_struct>)
+prval () = free_gc_elim {s2Var_struct} (pf_gc)
 
 val () = begin
 p->s2Var_loc := loc;
@@ -395,9 +398,9 @@ p->s2Var_lbs := list_nil ();
 p->s2Var_ubs := list_nil ();
 p->s2Var_sVarset := s2Varset_nil;
 p->s2Var_stamp := stamp
-end
+end // end of [val]
 
-val (pfbox | ()) = vbox_make_view_ptr_gc (pf_gc, pf | p)
+val (pfbox | ()) = vbox_make_view_ptr (pf | p)
 
 in
 
@@ -411,6 +414,7 @@ val cnt = $Cnt.counter_get_and_inc (s2Var_name_counter)
 val stamp = $Stamp.s2Var_stamp_make ()
 val s2t = s2var_srt_get s2v
 val (pf_gc, pf | p) = ptr_alloc_tsz {s2Var_struct} (sizeof<s2Var_struct>)
+prval () = free_gc_elim {s2Var_struct} (pf_gc)
 
 val () = begin
 p->s2Var_loc := loc;
@@ -423,9 +427,9 @@ p->s2Var_lbs := list_nil ();
 p->s2Var_ubs := list_nil ();
 p->s2Var_sVarset := s2Varset_nil;
 p->s2Var_stamp := stamp
-end
+end // end of [val]
 
-val (pfbox | ()) = vbox_make_view_ptr_gc (pf_gc, pf | p)
+val (pfbox | ()) = vbox_make_view_ptr (pf | p)
 
 in
 
