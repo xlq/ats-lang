@@ -52,8 +52,8 @@
 
 (* ****** ****** *)
 
-implement{a} atarray_get_elt_at (A, i) = A.[i]
-implement{a} atarray_set_elt_at (A, i, x) = (A.[i] := x)
+implement{a} array_ptr_get_elt_at (A, i) = A.[i]
+implement{a} array_ptr_set_elt_at (A, i, x) = (A.[i] := x)
 
 (* ****** ****** *)
 
@@ -128,6 +128,16 @@ in
 end // end of [array_ptr_initialize_cloptr_tsz]
 
 (* ****** ****** *)
+
+implement{a} array_ptr_takeout (pf | A, i) =
+  array_ptr_takeout_tsz {a} (pf | A, i, sizeof<a> )
+// end of [array_ptr_takeout]
+
+(* ****** ****** *)
+
+implement{a} array_ptr_takeout2 (pf | A, i1, i2) =
+  array_ptr_takeout2_tsz {a} (pf | A, i1, i2, sizeof<a> )
+// end of [array_ptr_takeout2]
 
 implement array_ptr_takeout2_tsz
   {a} {n, i1, i2} {l0} (pf | A, i1, i2, tsz) = let

@@ -976,16 +976,17 @@ implement s2zexp_make_s2exp (s2e0) = let
       | S2Etop (_(*knd*), s2e) => s2zexp_make_s2exp s2e
       | S2Etyarr (s2e_elt, s2ess_dim) => begin
           S2ZEtyarr (aux_s2exp (s2vss, s2e_elt), s2ess_dim)
-        end
+        end // end of [S2Etyarr]
       | S2Etyrec (knd, npf, ls2es) => begin case+ knd of
         | TYRECKINDbox () => S2ZEword 1
         | _ => S2ZEtyrec (knd, aux_labs2explst (s2vss, ls2es))
-        end
+        end // end of [S2Etyrec]
       | S2Euni (s2vs, _(*s2ps*), s2e) => aux_s2exp (s2vs :: s2vss, s2e)
       | S2Eunion (stamp, _(*s2i*), ls2es) => begin
           S2ZEunion (stamp, aux_labs2explst (s2vss, ls2es))
-        end
+        end // end of [S2Eunion]
       | S2Evar s2v => aux_s2var (s2vss, s2v)
+      | S2EVar s2V => aux_s2Var (s2vss, s2V)
       | _ => S2ZEbot ()
   end // end of [aux_s2exp]
 
@@ -995,8 +996,9 @@ implement s2zexp_make_s2exp (s2e0) = let
         val s2ze = aux_s2exp (s2vss, s2e)
       in
         LABS2ZEXPLSTcons (l, s2ze, aux_labs2explst (s2vss, ls2es))
-      end
+      end // end of [LABS2EXPLSTcons]
     | LABS2EXPLSTnil () => LABS2ZEXPLSTnil ()
+  // end of [aux_labs2explst]
 
   and aux_s2var (s2vss: s2varlstlst, s2v0: s2var_t): s2zexp =
     case+ s2vss of
@@ -1006,8 +1008,28 @@ implement s2zexp_make_s2exp (s2e0) = let
           | nil () => false
       in
         if f (s2vs, s2v0) then S2ZEbot () else aux_s2var (s2vss, s2v0)
-      end
+      end // end of [cons]
     | nil () => S2ZEvar s2v0
+  // end of [aux_s2var]
+  
+  and aux_s2Var
+    (s2vss: s2varlstlst, s2V0: s2Var_t): s2zexp = let
+    val lbs = s2Var_lbs_get s2V0
+  in
+    case+ lbs of
+    | list_cons (lb, _) => let
+        val s2e = s2Varbound_val_get lb in aux_s2exp (s2vss, s2e)
+      end // end of [list_cons]
+    | list_nil () => let
+        val ubs = s2Var_ubs_get s2V0
+      in
+        case+ ubs of
+        | list_cons (ub, _) => let
+            val s2e = s2Varbound_val_get ub in aux_s2exp (s2vss, s2e)
+          end // end of [list_cons]
+        | list_nil () => S2ZEbot () // no information
+      end // end of [list_nil]
+  end // end of [aux_s2Var]
 in
   aux_s2exp (nil (), s2e0)
 end // end of [s2zexp_make_s2exp]
@@ -1022,12 +1044,14 @@ implement s2cstlst_length (xs) = loop (xs, 0) where {
 implement s2cstlst_append (xs, ys) = case+ xs of
   | S2CSTLSTcons (x, xs) => S2CSTLSTcons (x, s2cstlst_append (xs, ys))
   | S2CSTLSTnil () => ys
+// end of [s2cstlst_append]
 
 implement s2cstlst_reverse (xs) = let
   fun loop (xs: s2cstlst, ys: s2cstlst): s2cstlst =
     case+ xs of
     | S2CSTLSTcons (x, xs) => loop (xs, S2CSTLSTcons (x, ys))
     | S2CSTLSTnil () => ys
+  // end of [loop]
 in
   loop (xs, S2CSTLSTnil ())
 end // end of [s2cstlst_reverse]
@@ -1035,6 +1059,7 @@ end // end of [s2cstlst_reverse]
 implement s2qualst_reverse (xs) = let
   fun loop (xs: s2qualst, ys: s2qualst): s2qualst =
     case+ xs of x :: xs => loop (xs, x :: ys) | nil () => ys
+  // end of [loop]
 in
   loop (xs, nil ())
 end // end of [s2qualst_reverse]

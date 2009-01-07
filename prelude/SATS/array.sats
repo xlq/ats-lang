@@ -48,14 +48,14 @@
 
 (* ****** ****** *)
 
-fun{a:t@ype} atarray_get_elt_at
+fun{a:t@ype} array_ptr_get_elt_at
   {n:nat} (A: &(@[a][n]), i: natLt n):<> a
 
-fun{a:t@ype} atarray_set_elt_at
+fun{a:t@ype} array_ptr_set_elt_at
   {n:nat} (A: &(@[a][n]), i: natLt n, x:a):<> void
 
-overload [] with atarray_get_elt_at
-overload [] with atarray_set_elt_at
+overload [] with array_ptr_get_elt_at
+overload [] with array_ptr_set_elt_at
 
 (* ****** ****** *)
 
@@ -81,6 +81,16 @@ praxi array_v_cons : {a:viewt@ype} {n:nat} {l:addr}
 
 praxi array_v_uncons : {a:viewt@ype} {n:int | n > 0} {l:addr}
   array_v (a, n, l) -<prf> (a @ l, array_v (a, n-1, l+sizeof a))
+
+(* ****** ****** *)
+
+praxi free_gc_viewt0ype_addr_trans
+  {a1,a2:viewt@ype | sizeof a1 == sizeof a2}
+  {n1,n2:int} {l:addr} {asz:int} (
+    pf1_mul: MUL (n1, sizeof a1, asz)
+  , pf2_mul: MUL (n2, sizeof a2, asz) 
+  , pf_gc: !free_gc_v (a1, n1, l) >> free_gc_v (a2, n2, l)
+  ) : void
 
 (* ****** ****** *)
 
@@ -200,6 +210,16 @@ prfun array_v_ungroup : {a:viewt@ype} {m,n:nat} {l:addr} {mn:int}
 
 (* ****** ****** *)
 
+fun{a:viewt@ype}
+  array_ptr_takeout {n,i:nat | i < n} {l0:addr} (
+    pf: array_v (a, n, l0) | base: ptr l0, offset: int i
+  ) :<> [l:addr] (
+      a @ l
+    , a @ l -<lin,prf> array_v (a, n, l0)
+    | ptr l
+    )
+// end of [array_ptr_takeout]
+
 fun array_ptr_takeout_tsz
   {a:viewt@ype} {n,i:nat | i < n} {l0:addr} (
     pf: array_v (a, n, l0)
@@ -212,6 +232,21 @@ fun array_ptr_takeout_tsz
     | ptr l
     )
   = "atspre_array_ptr_takeout_tsz"
+
+(* ****** ****** *)
+
+fun{a:viewt@ype} array_ptr_takeout2
+  {n,i1,i2:nat | i1 < n; i2 < n; i1 <> i2} {l0:addr} (
+    pf: array_v (a, n, l0)
+  | base: ptr l0
+  , off1: int i1, off2: int i2
+  ) :<> [l1,l2:addr] (
+      a @ l1
+    , a @ l2, (a @ l1, a @ l2) -<lin,prf> array_v (a, n, l0)
+    | ptr l1
+    , ptr l2
+    )
+// end of [array_ptr_takeout2]
 
 fun array_ptr_takeout2_tsz
   {a:viewt@ype} {n,i1,i2:nat | i1 < n; i2 < n; i1 <> i2} {l0:addr} (
@@ -227,7 +262,7 @@ fun array_ptr_takeout2_tsz
     )
   = "atspre_array_ptr_takeout2_tsz"
 
-//
+(* ****** ****** *)
 
 fun{a:t@ype} array_ptr_get_elt_at
   {n:nat} (A: &(@[a][n]), i: natLt n):<> a
@@ -239,7 +274,7 @@ fun{a:viewt@ype} array_ptr_xch_elt_at
   {n,i:nat | i < n} {l:addr}
   (A: &(@[a][n]), i: int i, x: &a):<> void
 
-//
+(* ****** ****** *)
 
 fun array_ptr_copy_tsz {a:t@ype} {n:nat} (
     A: &(@[a][n])

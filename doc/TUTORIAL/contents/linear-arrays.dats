@@ -6,6 +6,44 @@
 
 (* ****** ****** *)
 
+fn{a:t@ype}
+  array_ptr_initialize_list {n:nat}
+  (A: &(@[a?][n]) >> @[a][n], xs: list (a, n))
+  :<> void = loop (view@ A | &A, xs) where {
+  fun loop {n: nat} {l:addr} .<n>. ( // [loop] is tail-recursive!
+      pf_arr: !array_v (a?, n, l) >> array_v (a, n, l) | p_arr: ptr l, xs: list (a, n)
+    ) :<> void = case+ xs of
+    | list_cons (x, xs) => let
+        prval (pf1_at, pf2_arr) = array_v_uncons {a?} (pf_arr)
+        val () = !p_arr := x
+        val () = loop (pf2_arr | p_arr + sizeof<a>, xs)
+      in
+        pf_arr := array_v_cons {a} (pf1_at, pf2_arr)
+      end // end of [list_cons]
+    | list_nil () => let
+        prval () = array_v_unnil {a?} (pf_arr) in pf_arr := array_v_nil {a} ()
+      end // end of [list_nil]
+  // end of [loop]
+} // end of [array_ptr_initialize_list]  
+
+(* ****** ****** *)
+
+fn{a:t@ype} array_ptr_swap
+  {n:nat} {i,j:nat | i < n; j < n}
+  (A: &(@[a][n]), i: int i, j: int j):<> void = begin
+  let val tmp = A.[i] in A.[i] := A.[j]; A.[j] := tmp end
+end // endof [array_ptr_swap]
+
+(* ****** ****** *)
+
+fn{a:t@ype} array_ptr_swap
+  {n:nat} {i,j:nat | i < n; j < n}
+  (A: &(@[a][n]), i: int i, j: int j):<> void = begin
+  let val tmp = A[i] in A[i] := A[j]; A[j] := tmp end
+end // endof [array_ptr_swap]
+
+(* ****** ****** *)
+
 extern fun{a:t@ype} search {n:nat} {l:addr} {cmp:eff}
   (cmp: (a, a) -<cmp> Sgn, A: & @[a][n], key: a, n: int n)
   :<cmp> intBtw (~1, n)
@@ -19,8 +57,8 @@ implement{a} search {n} {l} (cmp, A, key, n) = let
      (l: int l, u: int u, res: int ~1)
      : (res: intBtw (~1, n)) => (l <= u) begin
        m := l + (u-l) / 2; case+ cmp (A.[m], key) of
-       | ~1 => (l := m + 1; continue) |  1 => (u := m - 1; continue)
-       |  0 => (res := m; break)
+       | ~1 => (l := m + 1; continue) | 1 => (u := m - 1; continue)
+       | 0 => (res := m; break)
    end // end of [while*]
 in
   res

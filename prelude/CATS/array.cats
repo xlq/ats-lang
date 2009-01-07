@@ -70,6 +70,8 @@ atspre_array_ptr_free (ats_ptr_type base) {
   ATS_FREE(base); return ;
 }
 
+/* ****** ****** */
+
 static inline
 ats_ptr_type
 atspre_array_ptr_takeout_tsz (
@@ -79,6 +81,8 @@ atspre_array_ptr_takeout_tsz (
  ) {
   return ((char*)base) + offset * tsz ;
 }
+
+/* ****** ****** */
 
 static inline
 ats_void_type

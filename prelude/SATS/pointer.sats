@@ -125,6 +125,12 @@ overload tostring with tostring_ptr
 
 (* ****** ****** *)
 
+praxi free_gc_viewt0ype_addr_trans
+  {a1,a2:viewt@ype | sizeof a1 == sizeof a2} {l:addr}
+  (pf_gc: !free_gc_v (a1, l) >> free_gc_v (a2, l)): void
+
+(* ****** ****** *)
+
 fun{a:viewt@ype} ptr_alloc ()
   :<> [l:addr | l > null] (free_gc_v (a, l), a? @ l | ptr l)
 
