@@ -1725,7 +1725,7 @@ fn ccomp_exp_arrsize_tmpvar (
 viewtypedef
 arraysize_viewt0ype_int_viewt0ype (a: viewt@ype, n:int) =
   [l:addr | l <> null]
-    (free_gc_v l, @[a][n] @ l | ptr l(*arr*), int n(*size*))
+    (free_gc_v (a, n, l), @[a][n] @ l | ptr l(*arr*), int n(*size*))
 *)
     val off = OFFSETlab ($Lab.label_make_int 2(*arr*), hit_arrsz)
   in

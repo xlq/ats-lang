@@ -59,7 +59,7 @@
 dataview slseg_v (a:viewt@ype+, addr, addr, int) =
   | {n:nat} {l1,l2,l3:addr}
     slseg_v_cons (a, l1, l3, n+1) of (
-      free_gc_v l1, (a, ptr l2) @ l1, slseg_v (a, l2, l3, n)
+      free_gc_v (@(a, ptr), l1), (a, ptr l2) @ l1, slseg_v (a, l2, l3, n)
     ) // end of [slseg_v_cons]
   | {l:addr} slseg_v_nil (a, l, l, 0)
 
@@ -68,7 +68,7 @@ viewdef sllst_v (a: viewt@ype, l:addr, n:int) = slseg_v (a, l, null, n)
 (* ****** ****** *)
 
 prfun slseg_v_extend {a:viewt@ype} {l1,l2,l3:addr} {n:nat}
-  (pf_seg: slseg_v (a, l1, l2, n), pf_gc: free_gc_v l2, pf_at: (a, ptr l3) @ l2)
+  (pf_seg: slseg_v (a, l1, l2, n), pf_gc: free_gc_v (@(a, ptr), l2), pf_at: (a, ptr l3) @ l2)
   :<prf> slseg_v (a, l1, l3, n+1)
 
 (* ****** ****** *)

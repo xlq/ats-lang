@@ -53,20 +53,19 @@ staload "libc/SATS/gmp.sats"
 (* ****** ****** *)
 
 absviewt@ype intinf (int)
-viewtypedef intinf0 = intinf 0
 viewtypedef Intinf = [n:int] intinf n
 
 viewtypedef intinfptr_gc (i: int) =
-  [l:addr] (free_gc_v (intinf0?, l), intinf i @ l | ptr l)
+  [l:addr] (free_gc_v (Intinf, l), intinf i @ l | ptr l)
 viewtypedef Intinfptr_gc = [i:int] intinfptr_gc (i)
   
 (* ****** ****** *)
 
 fun intinf_make {i:int} (i: int i)
-  : [l:addr] (free_gc_v (intinf0?, l), intinf i @ l | ptr l)
+  : [l:addr] (free_gc_v (Intinf, l), intinf i @ l | ptr l)
 
 fun intinf_free {l:addr}
-  (pf_gc: free_gc_v (intinf0?, l), pf_at: Intinf @ l | p: ptr l): void
+  (pf_gc: free_gc_v (Intinf, l), pf_at: Intinf @ l | p: ptr l): void
 
 (* ****** ****** *)
 
@@ -120,12 +119,16 @@ overload - with sub_intinf_intinf
 
 //
 
+fun mul_int_intinf {m,n:int}
+  (m: int m, n: &intinf n): [p:int] (MUL (m, n, p) | intinfptr_gc p)
+
 fun mul_intinf_int {m,n:int}
   (m: &intinf m, n: int n): [p:int] (MUL (m, n, p) | intinfptr_gc p)
 
 fun mul_intinf_intinf {m,n:int}
   (m: &intinf m, n: &intinf n): [p:int] (MUL (m, n, p) | intinfptr_gc p)
 
+overload * with mul_int_intinf
 overload * with mul_intinf_int
 overload * with mul_intinf_intinf
 

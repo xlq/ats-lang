@@ -592,20 +592,26 @@ absview free_ngc_addr_view (l:addr)
 stadef free_gc_v = free_gc_addr_view
 stadef free_ngc_v = free_ngc_addr_view
 
-absview free_gc_t0ype_addr_view (a:t@ype, l:addr)
-absview free_ngc_t0ype_addr_view (a:t@ype, l:addr)
+//
 
-stadef free_gc_v = free_gc_t0ype_addr_view
-stadef free_ngc_v = free_ngc_t0ype_addr_view
+absview free_gc_viewt0ype_addr_view (a:viewt@ype+, l:addr)
+absview free_ngc_viewt0ype_addr_view (a:viewt@ype+, l:addr)
 
-absview free_gc_t0ype_addr_int_view (a:t@ype, n:int, l:addr)
-absview free_ngc_t0ype_addr_int_view (a:t@ype, n:int, l: addr)
+stadef free_gc_v = free_gc_viewt0ype_addr_view
+stadef free_ngc_v = free_ngc_viewt0ype_addr_view
 
-stadef free_gc_v = free_gc_t0ype_addr_int_view
-stadef free_ngc_v = free_ngc_t0ype_addr_int_view
+//
 
-viewdef free_gc_v (n:int, l:addr) = free_gc_v (byte?, n, l)
-viewdef free_ngc_v (n:int, l:addr) = free_ngc_v (byte?, n, l)
+absview free_gc_viewt0ype_addr_int_view (a:viewt@ype+, n:int, l:addr)
+absview free_ngc_viewt0ype_addr_int_view (a:viewt@ype+, n:int, l: addr)
+
+stadef free_gc_v = free_gc_viewt0ype_addr_int_view
+stadef free_ngc_v = free_ngc_viewt0ype_addr_int_view
+
+//
+
+viewdef free_gc_v (n:int, l:addr) = free_gc_v (byte, n, l)
+viewdef free_ngc_v (n:int, l:addr) = free_ngc_v (byte, n, l)
 
 (* ****** ****** *)
 
@@ -620,7 +626,7 @@ stadef junkptr = junkptr_viewtype
 // This definition should not be changed!
 viewtypedef
 arraysize_viewt0ype_int_viewt0ype (a:viewt@ype, n:int) =
-  [l:addr | l <> null] (free_gc_v (a?, n, l), @[a][n] @ l | ptr l, int n)
+  [l:addr | l <> null] (free_gc_v (a, n, l), @[a][n] @ l | ptr l, int n)
 
 stadef arraysize = arraysize_viewt0ype_int_viewt0ype
 

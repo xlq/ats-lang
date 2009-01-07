@@ -537,7 +537,7 @@ fn shape_make {m,n:pos}
 }
 
 fn shapeObj_make {m,n:pos} (S: shape (m, n))
-  : [l:addr] (free_gc_v l, shapeObj (m, n) @ l | ptr l) = let
+  : [l:addr] (free_gc_v (shapeObj0, l), shapeObj (m, n) @ l | ptr l) = let
   val (pf_gc, pf | p) = ptr_alloc_tsz {shapeObj0} (sizeof<shapeObj>)
 in
   p->rot := 0;
@@ -736,7 +736,7 @@ ats_int_type natrand48 (ats_int_type range) {
 %}
 
 fn gen_shape_obj ()
-  : [l:addr] (free_gc_v l, shapeObj @ l | ptr l) = let
+  : [l:addr] (free_gc_v (shapeObj0, l), shapeObj @ l | ptr l) = let
   val i = natrand48 (7)
 in
   shapeObj_make (shape_arr[i])
@@ -753,7 +753,7 @@ fun loop (): void = let
   val (pf_gc, pf | p) = gen_shape_obj ()
 in
   shapeObj_falling !p;
-  ptr_free {shapeObj} (pf_gc, pf | p) ;
+  ptr_free {shapeObj0} (pf_gc, pf | p) ;
   loop ()
 end // end of [loop]
 

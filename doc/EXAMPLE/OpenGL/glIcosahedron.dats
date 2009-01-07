@@ -54,7 +54,7 @@ end
 
 extern fun add_float_3_float_3
   (v1: & @[float][3], v2: & @[float][3])
-  : [l:addr] (free_gc_v l, float_3_v l | ptr l)
+  : [l:addr] (free_gc_v (float, 3, l), float_3_v l | ptr l)
   = "add_float_3_float_3"
 
 overload + with add_float_3_float_3

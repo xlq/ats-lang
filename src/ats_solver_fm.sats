@@ -131,7 +131,7 @@ typedef intvec (n:int) = @[i0nt][n]
 
 // initialized with zeros
 fun intvec_ptr_make {n: nat}
-  (n: int n):<> [l:addr] @(free_gc_v (i0nt?, n, l), intvec n @ l | ptr l)
+  (n: int n):<> [l:addr] @(free_gc_v (i0nt, n, l), intvec n @ l | ptr l)
   = "ats_solver_fm_intvec_ptr_make"
 
 fun fprint_intvec {m:file_mode} {n:nat}
@@ -148,7 +148,7 @@ overload prerr with prerr_intvec
 absviewtype intvecptr_t (n:int) // a (read-only) pointer type
 
 fun intvecptr_make_view_ptr {n:pos} {l:addr}
-  (_: free_gc_v (i0nt?, n, l), _: intvec n @ l | _: ptr l):<> intvecptr_t n
+  (_: free_gc_v (i0nt, n, l), _: intvec n @ l | _: ptr l):<> intvecptr_t n
   = "ats_solver_fm_intvecptr_make_view_ptr"
 
 fun intvecptr_free {n:int} (ivp: intvecptr_t n): void

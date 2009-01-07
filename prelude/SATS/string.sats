@@ -136,7 +136,7 @@ fun string1_of_string0 (s: string):<> [n:nat] string n
   = "atspre_string1_of_string0"
 
 fun string1_of_strbuf {m,n:nat} {l:addr} (
-    pf_gc: free_gc_v l, pf: strbuf (m, n) @ l | p: ptr l
+    pf_gc: free_gc_v (m, l), pf: strbuf (m, n) @ l | p: ptr l
   ) :<> string n
   = "atspre_string1_of_strbuf"
 

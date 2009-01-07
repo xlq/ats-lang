@@ -91,7 +91,7 @@ implement infile_make_string (s) = let
   val n = string1_length s
   typedef T = natLte n
   val [l:addr] (pf_gc, pf_at | p) = ptr_alloc_tsz {T} (sizeof<T>)
-  viewdef V = @(free_gc_v (T?, l), T @ l)
+  viewdef V = @(free_gc_v (T, l), T @ l)
   fn _free (pf: V | (*none*)):<cloref1> void = begin
      ptr_free {Nat} (pf.0, pf.1 | p)
   end // end of [_free]
@@ -104,7 +104,7 @@ implement infile_make_string (s) = let
     pf.1 := pf_at; ans
   end // end of [_getc]
 in
-  !p := 0; #[ V | (@(pf_gc, pf_at) | '{ free= _free, getc= _getc }) ]
+  !p := 0; #[ V | ( @(pf_gc, pf_at) | '{ free= _free, getc= _getc } ) ]
 end // end of [infile_make_string]
 
 //

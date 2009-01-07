@@ -55,20 +55,18 @@ staload "prelude/DATS/reference.dats"
 val the_digits: array (int, NMAX) =
   array_make_arraysize $arrsz (0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
 
-fn digits_initialize () =
-  let
-    fun loop (i: natLte NMAX): void =
-      if (i < NMAX) then (the_digits[i] := 0; loop (i+1))
+fn digits_initialize () = let
+  fun loop (i: natLte NMAX): void =
+    if (i < NMAX) then (the_digits[i] := 0; loop (i+1))
   in
     loop 0
-  end
+  end // end of [loop]
 
-val the_labels: array (string, 10) =
-  array $arrsz ("", "1", "2", "3", "4", "5", "6", "7", "8", "9")
+val the_labels: array (string, 10) = array_make_arraysize
+  $arrsz ("", "1", "2", "3", "4", "5", "6", "7", "8", "9")
 
-val the_ulabels: array (string, 10) = array $arrsz (
-  "", "_1", "_2", "_3", "_4", "_5", "_6", "_7", "_8", "_9"
-)
+val the_ulabels: array (string, 10) = array_make_arraysize
+  $arrsz ("", "_1", "_2", "_3", "_4", "_5", "_6", "_7", "_8", "_9")
 
 typedef digit = [i:nat | i < NMAX] int i
 

@@ -19,18 +19,19 @@ dataprop FACT (int, int) =
   | FACTzero (0, 1)
   | {n,r,r1:int | n > 0} FACTsucc (n, r) of (FACT (n-1, r1), MUL (n, r1, r))
 
-fun fact3 {n:nat} .<n>. (n: !intinf n): [r:int] (FACT (n, r) | intinf r) =
+fun fact3 {n:nat} .<n>. (n: int n): [r:int] (FACT (n, r) | intinfptr_gc r) =
   if n > 0 then let
     val n1 = pred n
-    val (pf1 | r1) = fact3 (n1)
-    val () = intinf_free n1
-    val (pf_mul | r) = n * r1
-    val () = intinf_free r1
+    val (pf1 | (pf1_gc, pf1_at | p1)) = fact3 (n1)
+    val (pf_mul | r) = n * !p1
+    val () = intinf_free (pf1_gc, pf1_at | p1)
   in
     (FACTsucc (pf1, pf_mul) | r)
   end else begin
-    (FACTzero () | intinf_of 1)
-  end
+    (FACTzero () | intinf_make 1)
+  end // end of [if]
+
+(* ****** ****** *)
 
 // [fn] declares a non-recursive function
 // [@(...)] is used in ATS to group arguments for functions of variable arguments
@@ -43,22 +44,23 @@ implement main (argc, argv) =
     val n0 = int1_of argv.[1] // turning string into integer
     val () = assert_errmsg
       (n0 >= 0, "The integer argument needs to be nonnegative.\n")
-    val n = intinf_of n0
-    val (pf | res) = fact3 (n)
-    val () = intinf_free n
+    val (pf | (pf_gc, pf_at | p_res)) = fact3 (n0)
+    val () = begin
+      print "The factorial of "; print n0; print " = "; print !p_res; print_newline ()
+    end // end of [val]
   in
-    print "The factorial of "; print n0; print " = ";
-    print res; print_newline (); intinf_free res
+    intinf_free (pf_gc, pf_at | p_res)
   end else begin
     fact3_usage (argv.[0]); exit (1)
-  end
+  end // end of [if]
+// end of [main]
 
 (*
 
 The factorial of 100 =
-93326215443944152681699238856266700490715968264381
-62146859296389521759999322991560894146397615651828
-62536979208272237582511852109168640000000000000000
+93326215443944152681699238856266700490715968264381\
+62146859296389521759999322991560894146397615651828\
+62536979208272237582511852109168640000000000000000\
 00000000
 
 *)

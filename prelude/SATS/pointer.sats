@@ -126,14 +126,14 @@ overload tostring with tostring_ptr
 (* ****** ****** *)
 
 fun{a:viewt@ype} ptr_alloc ()
-  :<> [l:addr | l > null] (free_gc_v (a?, l), a? @ l | ptr l)
+  :<> [l:addr | l > null] (free_gc_v (a, l), a? @ l | ptr l)
 
 fun ptr_alloc_tsz {a:viewt@ype} (tsz: sizeof_t a)
-  :<> [l:addr | l > null] (free_gc_v (a?, l), a? @ l | ptr l)
+  :<> [l:addr | l > null] (free_gc_v (a, l), a? @ l | ptr l)
   = "atspre_ptr_alloc_tsz"
 
 fun ptr_free {a:viewt@ype} {l:addr}
-  (_: free_gc_v (a?, l), _: a? @ l | _: ptr l):<> void
+  (_: free_gc_v (a, l), _: a? @ l | _: ptr l):<> void
   = "atspre_ptr_free"
 
 (* ****** ****** *)

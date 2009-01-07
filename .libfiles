@@ -61,6 +61,7 @@ prelude/DATS/option.dats
 /* linked lists */
 
 prelude/SATS/slseg.sats
+prelude/DATS/slseg.dats
 
 /* libats files */
 

@@ -51,7 +51,7 @@ staload "prelude/SATS/slseg.sats"
 implement slseg_v_extend {a} (pf_seg, pf_gc, pf_at) = let
   prfun extend {l1,l2,l3:addr} {n:nat} .<n>. (
       pf_seg: slseg_v (a, l1, l2, n)
-    , pf_gc: free_gc_v l2
+    , pf_gc: free_gc_v (@(a, ptr), l2)
     , pf_at: (a, ptr l3) @ l2
     ) :<prf> slseg_v (a, l1, l3, n+1) = begin case+ pf_seg of
     | slseg_v_cons (pf1_gc, pf1_at, pf1_seg) => begin
