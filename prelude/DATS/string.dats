@@ -119,6 +119,7 @@ implement string_make_list_len (cs, n) = let
       :<> [l:addr] (free_gc_v (n+1, l), strbuf (n+1, n) @ l | ptr l)
       = "_string_alloc"
   } // end of [val]
+  prval () = free_gc_elim (pf_gc)
   val () = loop (!p_sb, n, 0, cs) where {
     fun loop {m,n:nat} {i,j:nat | i + j == n} .<n-i>.
       (buf: &strbuf (m, n), n: int n, i: int i, cs: list (char, j)):<> void =
@@ -136,7 +137,7 @@ implement string_make_list_len (cs, n) = let
       end // end of [if]
   } // end of [val]
 in
-  string1_of_strbuf (pf_gc, pf_sb | p_sb)
+  string1_of_strbuf (pf_sb | p_sb)
 end // end of [string_make_list_len]
 
 (* ****** ****** *)
@@ -170,9 +171,10 @@ implement stringlst_concat (ss) = let
       :<> [l:addr] (free_gc_v (n+1, l), strbuf (n+1, n) @ l | ptr l)
       = "_string_alloc"
   } // end of [val]
+  prval () = free_gc_elim (pf_gc)
   val () = loop2 (!p_sb, n0, 0, ss)
 in
-  string1_of_strbuf (pf_gc, pf_sb | p_sb)
+  string1_of_strbuf (pf_sb | p_sb)
 end // end of [stringlst_concat]
 
 (* ****** ****** *)
@@ -186,6 +188,53 @@ implement string1_explode (s) = let
 in
   loop (s, length s - 1, list_vt_nil ())
 end // end of [string1_explode]
+
+(* ****** ****** *)
+
+local
+
+fn string1_make_fun {n:nat}
+  (s: string n, f: c1har -<> c1har):<> string n = let
+  val n = string1_length (s)
+  val (pf_gc, pf_buf | p_buf) = malloc_gc (n+1)
+  prval () = free_gc_elim (pf_gc)
+  val () = loop (pf_buf | p_buf, 0) where {
+    fun loop {i:nat | i <= n} {l:addr} .<n-i>.
+      (pf: !b0ytes (n-i+1) @ l >> strbuf (n-i+1, n-i) @ l | p: ptr l, i: int i)
+      :<cloref> void = let
+      prval () = eqsize_byte_char ()
+      prval (pf1, pf2) = array_v_uncons {byte?} (pf)
+      prval pf1 = char_v_of_b0yte_v (pf1)
+    in
+      if i < n then let
+        val () = !p := f (s[i])
+        val () = loop (pf2 | p + sizeof<byte>, i + 1)
+        prval () = pf := strbuf_v_cons (pf1, pf2)
+      in
+        // empty
+      end else let
+        val () = !p := NUL
+        prval () = pf := strbuf_v_null (pf1, pf2)
+      in
+        // empty
+      end // end of [if]
+    end // end of [loop]
+  } // end of [val]
+in
+  string1_of_strbuf (pf_buf | p_buf)
+end // end of [string1_make_fun]
+
+in // in of [local]
+
+implement string1_tolower (s) = string1_make_fun (s, tolower) where {
+  extern fun tolower (c: c1har):<> c1har = "atspre_char_tolower"
+} // end of [string1_tolower]
+
+implement string1_toupper (s) = string1_make_fun (s, toupper) where {
+  extern fun toupper (c: c1har):<> c1har = "atspre_char_toupper"
+} // end of [string1_toupper]
+
+end // end of [local]
 
 (* ****** ****** *)
 
@@ -213,6 +262,8 @@ atspre_string_hash_33 (ats_ptr_type s0) {
 
 %{$
 
+/* ****** ****** */
+
 ats_ptr_type
 atspre_string_make_char
   (const ats_int_type n, const ats_char_type c) {
@@ -236,6 +287,8 @@ atspre_string_make_substring
   memcpy(des, src, len) ; des[len] = '\000' ;
   return des ;
 } /* atspre_string_make_substring */
+
+/* ****** ****** */
 
 %}
 

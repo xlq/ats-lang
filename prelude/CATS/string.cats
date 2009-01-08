@@ -301,36 +301,6 @@ atspre_string_singleton
 
 /* ****** ****** */
 
-static /* inline */
-ats_ptr_type
-atspre_string_tolower (const ats_ptr_type s) {
-  int n ;
-  char *src, *des0, *des ;
-  src = (char *)s ; n = strlen(src) ;
-  des0 = ATS_MALLOC(n+1) ; des = des0 ;
-  while (n > 0) {
-    *des = tolower (*src) ; ++des ; ++src ; --n ;
-  }
-  *des = '\000' ;
-  return des0 ;
-} /* atspre_string_tolower */
-
-static /* inline */
-ats_ptr_type
-atspre_string_toupper (const ats_ptr_type s) {
-  int n ;
-  char *src, *des0, *des ;
-  src = (char *)s ; n = strlen(src) ;
-  des0 = ATS_MALLOC(n+1) ; des = des0 ;
-  while (n > 0) {
-    *des = toupper (*src) ; ++des ; ++src ; --n ;
-  }
-  *des = '\000' ;
-  return des0 ;
-} /* atspre_string_toupper */
-
-/* ****** ****** */
-
 // functions for optional strings
 
 static

@@ -135,9 +135,8 @@ val string_empty : string 0
 fun string1_of_string0 (s: string):<> [n:nat] string n
   = "atspre_string1_of_string0"
 
-fun string1_of_strbuf {m,n:nat} {l:addr} (
-    pf_gc: free_gc_v (m, l), pf: strbuf (m, n) @ l | p: ptr l
-  ) :<> string n
+fun string1_of_strbuf {m,n:nat} {l:addr}
+  (pf: strbuf (m, n) @ l | p: ptr l) :<> string n
   = "atspre_string1_of_strbuf"
 
 fun strbuf_of_string1 {n:nat} (s: string n)
@@ -475,15 +474,11 @@ fun string_singleton (c: char):<> string 1
 
 (* ****** ****** *)
 
-fun strbuf_tolower {m,n:nat} (sb: &strbuf (m, n)):<> void
-  = "atspre_string_tolower"
+// a new string is created
 fun string1_tolower {n:nat} (s: string n):<> string n
   = "atspre_string_tolower"
 
-(* ****** ****** *)
-
-fun strbuf_toupper {m,n:nat} (sb: &strbuf (m, n)):<> void
-  = "atspre_string_toupper"
+// a new string is created
 fun string1_toupper {n:nat} (s: string n):<> string n
   = "atspre_string_toupper"
 
