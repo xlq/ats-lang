@@ -99,10 +99,12 @@ and stadefkind_viewtype (_: t0kn): stadefkind = "stadefkind_viewtype"
 (* ****** ****** *)
 
 datatype dcstkind =
-  | DCSTKINDfun | DCSTKINDval | DCSTKINDpraxi | DCSTKINDprfun | DCSTKINDprval
+  | DCSTKINDfun | DCSTKINDval | DCSTKINDcastfn
+  | DCSTKINDpraxi | DCSTKINDprfun | DCSTKINDprval
 
 fun dcstkind_fun (): dcstkind = "dcstkind_fun"
 fun dcstkind_val (): dcstkind = "dcstkind_val"
+fun dcstkind_castfn (): dcstkind = "dcstkind_castfn"
 fun dcstkind_praxi (): dcstkind = "dcstkind_praxi"
 fun dcstkind_prfun (): dcstkind = "dcstkind_prfun"
 fun dcstkind_prval (): dcstkind = "dcstkind_prval"
@@ -121,11 +123,13 @@ fun valkind_prval (): valkind = "valkind_prval"
 fun valkind_is_proof (vk: valkind): bool
 
 datatype funkind =
-  | FUNKINDfn | FUNKINDfnstar | FUNKINDfun | FUNKINDprfn | FUNKINDprfun
+  | FUNKINDfn | FUNKINDfnstar | FUNKINDfun
+  | FUNKINDprfn | FUNKINDprfun | FUNKINDcastfn
 
 fun funkind_fn (): funkind = "funkind_fn"
 fun funkind_fnstar (): funkind = "funkind_fnstar"
 fun funkind_fun (): funkind = "funkind_fun"
+fun funkind_castfn (): funkind = "funkind_castfn"
 fun funkind_prfn (): funkind = "funkind_prfn"
 fun funkind_prfun (): funkind = "funkind_prfun"
 

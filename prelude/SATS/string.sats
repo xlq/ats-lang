@@ -321,7 +321,7 @@ fun string_compare (s1: string, s2: string):<> Sgn
 
 (* ****** ****** *)
 
-fun string_concat (xs: List string):<> string
+fun stringlst_concat (xs: List string):<> string
 
 (* ****** ****** *)
 

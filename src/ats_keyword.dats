@@ -148,6 +148,7 @@ keyval_insert("assume", ASSUME) ;
 keyval_insert("begin", BEGIN) ;
 keyval_insert("break", BREAK) ;
 keyval_insert("case", CASE) ;
+keyval_insert("castfn", CASTFN) ; // for casting functions
 keyval_insert("class", CLASS) ;
 keyval_insert("continue", CONTINUE) ;
 keyval_insert("datasort", DATASORT) ;

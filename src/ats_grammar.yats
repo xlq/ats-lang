@@ -90,9 +90,10 @@ extern stadefkind_t stadefkind_viewtype (t0kn_t) ;
 typedef ats_ptr_type dcstkind_t ;
 extern dcstkind_t dcstkind_fun (void) ;
 extern dcstkind_t dcstkind_val (void) ;
+extern dcstkind_t dcstkind_castfn (void) ;
 extern dcstkind_t dcstkind_praxi (void) ;
-extern dcstkind_t dcstkind_prval (void) ;
 extern dcstkind_t dcstkind_prfun (void) ;
+extern dcstkind_t dcstkind_prval (void) ;
 
 typedef ats_ptr_type valkind_t ;
 extern valkind_t valkind_val (void) ;
@@ -104,6 +105,7 @@ typedef ats_ptr_type funkind_t ;
 extern funkind_t funkind_fn (void) ;
 extern funkind_t funkind_fnstar (void) ;
 extern funkind_t funkind_fun (void) ;
+extern funkind_t funkind_castfn (void) ;
 extern funkind_t funkind_prfn (void) ;
 extern funkind_t funkind_prfun (void) ;
 
@@ -1134,6 +1136,7 @@ guad0ec_t guad0ec ;
 %token <t0kn> BEGIN
 %token <t0kn> BREAK
 %token <t0kn> CASE CASEMINUS CASEPLUS
+%token <t0kn> CASTFN
 %token <t0kn> CLASS
 %token <t0kn> CONTINUE
 %token <t0kn> DATASORT
@@ -1623,6 +1626,7 @@ dcstkind
   | PRAXI                               { $$ = dcstkind_praxi () ; }
   | PRFUN                               { $$ = dcstkind_prfun () ; }
   | PRVAL                               { $$ = dcstkind_prval () ; }
+  | CASTFN                              { $$ = dcstkind_castfn () ; }
 ;
 
 valkind
@@ -1636,6 +1640,7 @@ funkind
   : FN                                  { $$ = funkind_fn () ; }
   | FNSTAR                              { $$ = funkind_fnstar () ; }
   | FUN                                 { $$ = funkind_fun () ; }
+  | CASTFN                              { $$ = funkind_castfn () ; }
   | PRFN                                { $$ = funkind_prfn () ; }
   | PRFUN                               { $$ = funkind_prfun () ; }
 ;

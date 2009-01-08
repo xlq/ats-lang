@@ -133,7 +133,7 @@ end // end of [hityp_namstr_get]
 
 implement hityp_tyarr (hit_elt, s2ess_dim) = let
   val name_elt = hityp_namstr_get (hit_elt)
-  val name_arr = string_concat '[ "[", name_elt, "]"]
+  val name_arr = stringlst_concat '[ "[", name_elt, "]"]
 in '{
   hityp_name= HITNAM (0(*non*), name_arr)
 , hityp_node= HITtyarr (hit_elt, s2ess_dim)

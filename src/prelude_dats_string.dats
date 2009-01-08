@@ -48,49 +48,48 @@ implement string_empty = "" // this requires dynamic loading
 
 static inline
 ats_ptr_type
-string_concat_alloc (const ats_int_type n) {
+_string_alloc (const ats_int_type n) {
   char *p ;
   p = ATS_MALLOC(n+1); p[n] = '\000'; return p ;
-} // end of [string_concat_alloc]
+} // end of [_string_alloc]
 
 %}
 
-implement string_concat (ss) = let
+(* ****** ****** *)
+
+implement stringlst_concat (ss) = let
   val n0 = aux (ss, 0) where {
     fun aux {k:nat} .<k>.
       (ss: list (string, k), n: Nat):<> Nat = case+ ss of
-      | list_cons (s, ss) => aux (ss, n + string0_length s)
-      | list_nil () => n
-  } // end of [where]
+      | list_cons (s, ss) => aux (ss, n + string0_length s) | list_nil () => n
+    // end of [aux]
+  } // end of [val n0]
   fun loop1 {m0,n0,i0,n,i:nat | i0 <= n0; i <= n} .<n0-i0>.
-    (s0: &strbuf (m0, n0), n0: int n0, i0: int i0, s: string n, n: int n, i: int i)
-    :<> [i0: nat | i0 <= n0] int i0 =
-    if i < n then begin
-      if i0 < n0 then (s0[i0] := s[i]; loop1 (s0, n0, i0+1, s, n, i+1)) else i0
-    end else begin
-      i0
-    end // end of [loop1]
+    (s0: &strbuf (m0, n0), n0: int n0, i0: int i0, s: string n, i: int i)
+    :<> [i0: nat | i0 <= n0] int i0 = begin
+    if string1_is_at_end (s, i) then i0 else begin
+      if i0 < n0 then (s0[i0] := s[i]; loop1 (s0, n0, i0+1, s, i+1)) else i0
+    end // end of [if]
+  end // end of [loop1]
   fun loop2 {m0,n0,i0,k:nat | i0 <= n0} .<k>.
     (s0: &strbuf (m0, n0), n0: int n0, i0: int i0, ss: list (string, k))
     :<> void = begin case+ ss of
     | list_cons (s, ss) => let
-        val s = string1_of_string0 s
-        val i0 = loop1 (s0, n0, i0, s, string1_length s, 0)
+        val s = string1_of_string0 s; val i0 = loop1 (s0, n0, i0, s, 0)
       in
         loop2 (s0, n0, i0, ss)
-      end
-    | list_nil () => ()
+      end // end of [list_cons]
+    | list_nil () => () // loop exists
   end // end of [loop2]
-  val (pf_gc, pf_sb | p_sb) =
-    string_concat_alloc n0 where {
-    extern fun string_concat_alloc {n:nat} (n: int n)
+  val (pf_gc, pf_sb | p_sb) = _string_alloc n0 where {
+    extern fun _string_alloc {n:nat} (n: int n)
       :<> [l:addr] (free_gc_v (n+1, l), strbuf (n+1, n) @ l | ptr l)
-      = "string_concat_alloc"
-  } // end of [where]
+      = "_string_alloc"
+  } // end of [val]
   val () = loop2 (!p_sb, n0, 0, ss)
 in
   string1_of_strbuf (pf_gc, pf_sb | p_sb)
-end // end of [string_concat]
+end // end of [stringlst_concat]
 
 (* ****** ****** *)
 

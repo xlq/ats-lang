@@ -245,7 +245,7 @@ fn filename_normalize (s0: string): string = let
   var dirs: List string = list_nil ()
   val () = loop1 (s0, n0, 0, dirs)
   val () = dirs := dirs_process (0, dirs, list_nil ())
-  val fullname = string_concat (dirs)
+  val fullname = stringlst_concat (dirs)
 in
   fullname
 end // end of [filename_normalize]

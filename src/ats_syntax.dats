@@ -102,6 +102,7 @@ implement stadefkind_viewtype (t) = STADEFKINDviewtype (t)
 
 implement dcstkind_fun () = DCSTKINDfun ()
 implement dcstkind_val () = DCSTKINDval ()
+implement dcstkind_castfn () = DCSTKINDcastfn ()
 implement dcstkind_praxi () = DCSTKINDpraxi ()
 implement dcstkind_prfun () = DCSTKINDprfun ()
 implement dcstkind_prval () = DCSTKINDprval ()
@@ -127,6 +128,7 @@ implement valkind_is_proof vk = case+ vk of
 implement funkind_fn () = FUNKINDfn ()
 implement funkind_fnstar () = FUNKINDfnstar ()
 implement funkind_fun () = FUNKINDfun ()
+implement funkind_castfn () = FUNKINDcastfn ()
 implement funkind_prfn () = FUNKINDprfn ()
 implement funkind_prfun () = FUNKINDprfun ()
 
@@ -134,6 +136,7 @@ implement funkind_is_proof fk = case+ fk of
   | FUNKINDfn () => false
   | FUNKINDfnstar () => false
   | FUNKINDfun () => false
+  | FUNKINDcastfn () => false
   | FUNKINDprfn () => true
   | FUNKINDprfun () => true
 
@@ -141,6 +144,7 @@ implement funkind_is_recursive fk = case+ fk of
   | FUNKINDfn () => false
   | FUNKINDfnstar () => true
   | FUNKINDfun () => true
+  | FUNKINDcastfn () => true
   | FUNKINDprfn () => false
   | FUNKINDprfun () => true
 

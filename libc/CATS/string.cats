@@ -104,6 +104,13 @@ atslib_strcpy (ats_ptr_type dst, ats_ptr_type src) {
   return strcpy ((char*)dst, (char*)src) ;
 } /* end of [atslib_strcpy] */
 
+/* ****** ****** */
+
+static inline
+ats_ptr_type
+atslib_strcat (ats_ptr_type dst, ats_ptr_type src) {
+  return strcat ((char*)dst, (char*)src) ;
+} /* end of [atslib_strcat] */
 
 /* ****** ****** */
 
