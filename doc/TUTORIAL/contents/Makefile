@@ -25,6 +25,9 @@ pattern-matching::
 call-by-reference::
 	scp call-by-reference.html ats-hwxi,ats-lang@web.sourceforge.net:htdocs/TUTORIAL/contents/
 
+lists::
+	scp lists.html ats-hwxi,ats-lang@web.sourceforge.net:htdocs/TUTORIAL/contents/
+
 references::
 	scp references.html ats-hwxi,ats-lang@web.sourceforge.net:htdocs/TUTORIAL/contents/
 
@@ -45,6 +48,9 @@ variadicity::
 
 function-or-closure::
 	scp function-or-closure.html ats-hwxi,ats-lang@web.sourceforge.net:htdocs/TUTORIAL/contents/
+
+val-and-var::
+	scp val-and-var.html ats-hwxi,ats-lang@web.sourceforge.net:htdocs/TUTORIAL/contents/
 
 input-and-output::
 	scp input-and-output.html ats-hwxi,ats-lang@web.sourceforge.net:htdocs/TUTORIAL/contents/

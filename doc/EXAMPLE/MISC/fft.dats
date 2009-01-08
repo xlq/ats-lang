@@ -97,7 +97,7 @@ fn compute_signal_sum {n:nat} {l:addr}
        if i < n then loop (pf | i+1, res + A[i]) else res
   in
      loop (pf | 0, d2r 0.0)
-  end
+  end // end of [compute_signal_sum]
 
 fn convolve_signal {n:nat} {l_r,l_i:addr}
   (pf_r: !array_v (real, n, l_r), pf_i: !array_v (imag, n, l_i) |
@@ -277,7 +277,7 @@ fun modular_reduce {n:nat} {l_r,l_b:addr}
       aux1 (pf_r, pf_b | i+1, floor (temp / bi))
     end else begin
       carry // return value
-    end
+    end // end of [if]
 
   fun aux2 {i:nat | i <= n} (
       pf_r: !array_v (real, n, l_r)
@@ -294,7 +294,7 @@ fun modular_reduce {n:nat} {l_r,l_b:addr}
       end
     else begin
       aux2 (pf_r, pf_b | 0, carry)
-    end
+    end // end of [if]
 
   val carry = aux1 (pf_r, pf_b | 0, d2r 0.0)
 in
@@ -325,7 +325,8 @@ fun subtract2 {n:nat} {l_r,l_b:addr}
         end
       end else begin
         // this is empty
-      end
+      end // end of [if]
+   // end of [if]
 in
   aux (pf_r, pf_b | 0, d2r 2.0)
 end // end of [substract2]
@@ -423,7 +424,7 @@ fun main_loop {n:nat} {l_r,l_i,l_b,l_w:addr}
     if (i mod STRIDE = 0) then (print '.'; fflush_stdout ());
     do_iteration (pf_r, pf_i, pf_b, pf_w | R, I, B, W, n);
     main_loop (pf_r, pf_i, pf_b, pf_w | R, I, B, W, n, i+1, limit)
-  end
+  end // end of [if]
 
 // Here are the first few Mersenne primes:
 // 2, 3, 5, 7, 13, 17, 19, 31, 61, 89, 107, 127, 521, 607,
@@ -493,7 +494,7 @@ in
     printf ("2 ^ %i - 1 is a prime!\n", @(exp))
   end else begin
     printf ("2 ^ %i - 1 is a composite.\n", @(exp))
-  end
+  end // end of [if]
 end // end of [main]
 
 ////

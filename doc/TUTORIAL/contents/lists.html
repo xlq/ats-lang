@@ -43,12 +43,12 @@ $lst {Nat} (1, 2, 3) // [Nat] is given as the type for the list elements
 </pre>
 
 The interfaces for various functions on lists can be found in the file
-<a href="../../IMPLEMENTATION/Anairiats/ATS/prelude/SATS/list.sats">
+<a href="http://www.ats-lang.org/IMPLEMENTATION/Anairiats/ATS/prelude/SATS/list.sats">
 $ATSHOME/prelude/SATS/list.sats</a>.
 <P>
 
 We now present some simple programs involving lists.  The following code
-implements a (template) function that computes the length of a given list:
+implements a function template that computes the length of a given list:
 
 <PRE><FONT COLOR="#E80000"><FONT COLOR="#787878">// This implementation is not tail-recursive
 </FONT><FONT COLOR="#000000">fun</FONT><FONT COLOR="#000000">{</FONT><FONT COLOR="#0000FF">a<FONT COLOR="#000000">:</FONT>t@ype</FONT><FONT COLOR="#000000">}</FONT> length <FONT COLOR="#0000FF"><FONT COLOR="#000000">{</FONT>n<FONT COLOR="#000000">:</FONT>nat<FONT COLOR="#000000">}</FONT></FONT> <FONT COLOR="#000000">(</FONT>xs<FONT COLOR="#000000">:</FONT> <FONT COLOR="#0000FF">list <FONT COLOR="#000000">(</FONT>a<FONT COLOR="#000000">,</FONT> n<FONT COLOR="#000000">)</FONT></FONT><FONT COLOR="#000000">)</FONT><FONT COLOR="#000000">:</FONT> <FONT COLOR="#0000FF">int n</FONT> <FONT COLOR="#000000">=</FONT>
