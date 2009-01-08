@@ -25,6 +25,9 @@ pattern-matching::
 call-by-reference::
 	scp call-by-reference.html ats-hwxi,ats-lang@web.sourceforge.net:htdocs/TUTORIAL/contents/
 
+templates::
+	scp templates.html ats-hwxi,ats-lang@web.sourceforge.net:htdocs/TUTORIAL/contents/
+
 lists::
 	scp lists.html ats-hwxi,ats-lang@web.sourceforge.net:htdocs/TUTORIAL/contents/
 

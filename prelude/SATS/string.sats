@@ -288,6 +288,7 @@ fun string_make_char {n:nat} (n: int n, c: char):<> string n
   = "atspre_string_make_char"
 
 fun string_make_list {n:nat} (cs: list (char, n)):<> string n
+  = "atspre_string_make_list"
 
 fun string_make_list_len {n:nat}
   (cs: list (char, n), n: int n):<> string n
@@ -393,12 +394,10 @@ fun string1_is_at_end
 (* ****** ****** *)
 
 // alias of [string_to_list]
-fun strbuf_explode {m,n:nat} (sb: &strbuf (m, n)):<> list (char, n)
-
-fun string0_explode (s: string):<> List char
+fun strbuf_explode {m,n:nat} (sb: &strbuf (m, n)):<> list_vt (char, n)
   = "atspre_string_explode"
 
-fun string1_explode {n:nat} (s: string n):<> list (char, n)
+fun string1_explode {n:nat} (s: string n):<> list_vt (char, n)
   = "atspre_string_explode"
 
 (* ****** ****** *)
@@ -435,8 +434,8 @@ fun string_set_char_at_exn (s: string, i: Nat, c: char):<!exnref> void
 (* ****** ****** *)
 
 // alias of [string_make_list]
-fun string_implode {n:nat} (cs: list (char, n)):<> string n
-  = "atspre_string_implode"
+fun string1_implode {n:nat} (cs: list (char, n)):<> string n
+  = "atspre_string_make_list"
 
 (* ****** ****** *)
 
@@ -454,11 +453,11 @@ fun string_index_of_char_from_left // locate a character from left
 // This function is based on [strrchr] in [string.h]
 // the NULL character at the end of a string is considered in the string
 
-fun strbuf_index_of_char_from_right // locate a character from left
+fun strbuf_index_of_char_from_right // locate a character from right
   {m,n:nat} (sb: &strbuf (m, n), c: char):<> [i:int | ~1 <= i; i <= n] int i
   = "atspre_string_index_of_char_from_right"
 
-fun string_index_of_char_from_right // locate a character from left
+fun string_index_of_char_from_right // locate a character from right
   {n:nat} (s: string n, c: char):<> [i:int | ~1 <= i; i <= n] int i
   = "atspre_string_index_of_char_from_right"
 
@@ -478,29 +477,15 @@ fun string_singleton (c: char):<> string 1
 
 fun strbuf_tolower {m,n:nat} (sb: &strbuf (m, n)):<> void
   = "atspre_string_tolower"
-fun string0_tolower (s: string):<> string
-  = "atspre_string_tolower"
 fun string1_tolower {n:nat} (s: string n):<> string n
   = "atspre_string_tolower"
-
-symintr string_tolower
-
-overload string_tolower with string0_tolower
-overload string_tolower with string1_tolower
 
 (* ****** ****** *)
 
 fun strbuf_toupper {m,n:nat} (sb: &strbuf (m, n)):<> void
   = "atspre_string_toupper"
-fun string0_toupper (s: string):<> string
-  = "atspre_string_toupper"
 fun string1_toupper {n:nat} (s: string n):<> string n
   = "atspre_string_toupper"
-
-symintr string_toupper
-
-overload string_toupper with string0_toupper
-overload string_toupper with string1_toupper
 
 (* ****** ****** *)
 

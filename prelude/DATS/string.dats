@@ -179,12 +179,12 @@ end // end of [stringlst_concat]
 
 implement string1_explode (s) = let
   fun loop {n,i:int | ~1 <= i; i < n} .<i+1>. (
-      s: string n, i: int i, cs: list (char, n-i-1)
-    ) :<> list (char, n) = begin
-    if i >= 0 then loop (s, i-1, list_cons (s[i], cs)) else cs
+      s: string n, i: int i, cs: list_vt (char, n-i-1)
+    ) :<> list_vt (char, n) = begin
+    if i >= 0 then loop (s, i-1, list_vt_cons (s[i], cs)) else cs
   end // end of [loop]
 in
-  loop (s, length s - 1, list_nil ())
+  loop (s, length s - 1, list_vt_nil ())
 end // end of [string1_explode]
 
 (* ****** ****** *)
