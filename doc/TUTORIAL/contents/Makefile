@@ -25,11 +25,17 @@ pattern-matching::
 call-by-reference::
 	scp call-by-reference.html ats-hwxi,ats-lang@web.sourceforge.net:htdocs/TUTORIAL/contents/
 
+tail-recursive-functions::
+	scp tail-recursive-functions.html ats-hwxi,ats-lang@web.sourceforge.net:htdocs/TUTORIAL/contents/
+
 templates::
 	scp templates.html ats-hwxi,ats-lang@web.sourceforge.net:htdocs/TUTORIAL/contents/
 
 lists::
 	scp lists.html ats-hwxi,ats-lang@web.sourceforge.net:htdocs/TUTORIAL/contents/
+
+strings::
+	scp strings.html ats-hwxi,ats-lang@web.sourceforge.net:htdocs/TUTORIAL/contents/
 
 references::
 	scp references.html ats-hwxi,ats-lang@web.sourceforge.net:htdocs/TUTORIAL/contents/
@@ -39,9 +45,6 @@ arrays-and-matrices::
 
 linear-arrays::
 	scp linear-arrays.html ats-hwxi,ats-lang@web.sourceforge.net:htdocs/TUTORIAL/contents/
-
-tail-recursive-functions::
-	scp tail-recursive-functions.html ats-hwxi,ats-lang@web.sourceforge.net:htdocs/TUTORIAL/contents/
 
 lazy-evaluation::
 	scp lazy-evaluation.html ats-hwxi,ats-lang@web.sourceforge.net:htdocs/TUTORIAL/contents/
