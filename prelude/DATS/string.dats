@@ -152,8 +152,10 @@ implement stringlst_concat (ss) = let
   fun loop1 {m0,n0,i0,n,i:nat | i0 <= n0; i <= n} .<n0-i0>.
     (s0: &strbuf (m0, n0), n0: int n0, i0: int i0, s: string n, i: int i)
     :<> [i0: nat | i0 <= n0] int i0 = begin
-    if string1_is_at_end (s, i) then i0 else begin
-      if i0 < n0 then (s0[i0] := s[i]; loop1 (s0, n0, i0+1, s, i+1)) else i0
+    if string1_is_at_end (s, i) then i0 else let
+      val c = $effmask_ref (s[i])
+    in
+      if i0 < n0 then (s0[i0] := c; loop1 (s0, n0, i0+1, s, i+1)) else i0
     end // end of [if]
   end // end of [loop1]
   fun loop2 {m0,n0,i0,k:nat | i0 <= n0} .<k>.
@@ -182,9 +184,13 @@ end // end of [stringlst_concat]
 implement string1_explode (s) = let
   fun loop {n,i:int | ~1 <= i; i < n} .<i+1>. (
       s: string n, i: int i, cs: list_vt (char, n-i-1)
-    ) :<> list_vt (char, n) = begin
-    if i >= 0 then loop (s, i-1, list_vt_cons (s[i], cs)) else cs
-  end // end of [loop]
+    ) :<> list_vt (char, n) =
+    if i >= 0 then let
+      val c = $effmask_ref (s[i]) in loop (s, i-1, list_vt_cons (c, cs))
+    end else begin
+      cs // loop exists
+    end
+  // end of [loop]
 in
   loop (s, length s - 1, list_vt_nil ())
 end // end of [string1_explode]
@@ -207,7 +213,8 @@ fn string1_make_fun {n:nat}
       prval pf1 = char_v_of_b0yte_v (pf1)
     in
       if i < n then let
-        val () = !p := f (s[i])
+        val c = $effmask_ref (s[i])
+        val () = !p := f (c)
         val () = loop (pf2 | p + sizeof<byte>, i + 1)
         prval () = pf := strbuf_v_cons (pf1, pf2)
       in

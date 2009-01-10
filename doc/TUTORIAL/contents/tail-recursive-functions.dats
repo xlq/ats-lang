@@ -1,5 +1,5 @@
 //
-// some code for illustrating tail-recursion
+// code used for illustration in tail-recursive-functions.html
 //
 
 // [sum1] is recursive but not tail-recursive

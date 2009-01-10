@@ -67,8 +67,10 @@ implement stringlst_concat (ss) = let
   fun loop1 {m0,n0,i0,n,i:nat | i0 <= n0; i <= n} .<n0-i0>.
     (s0: &strbuf (m0, n0), n0: int n0, i0: int i0, s: string n, i: int i)
     :<> [i0: nat | i0 <= n0] int i0 = begin
-    if string1_is_at_end (s, i) then i0 else begin
-      if i0 < n0 then (s0[i0] := s[i]; loop1 (s0, n0, i0+1, s, i+1)) else i0
+    if string1_is_at_end (s, i) then i0 else let
+      val c = $effmask_ref (s[i])
+    in
+      if i0 < n0 then (s0[i0] := c; loop1 (s0, n0, i0+1, s, i+1)) else i0
     end // end of [if]
   end // end of [loop1]
   fun loop2 {m0,n0,i0,k:nat | i0 <= n0} .<k>.
@@ -86,9 +88,10 @@ implement stringlst_concat (ss) = let
       :<> [l:addr] (free_gc_v (n+1, l), strbuf (n+1, n) @ l | ptr l)
       = "_string_alloc"
   } // end of [val]
+  prval () = free_gc_elim (pf_gc)
   val () = loop2 (!p_sb, n0, 0, ss)
 in
-  string1_of_strbuf (pf_gc, pf_sb | p_sb)
+  string1_of_strbuf (pf_sb | p_sb)
 end // end of [stringlst_concat]
 
 (* ****** ****** *)

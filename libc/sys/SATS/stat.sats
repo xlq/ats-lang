@@ -38,6 +38,8 @@
 
 staload "libc/sys/SATS/types.sats"
 
+(* ****** ****** *)
+
 %{#
 
 #include "libc/sys/CATS/stat.cats"
@@ -55,13 +57,6 @@ fun stat_st_mode_get (stbuf: &stat):<> mode_t
 
 fun stat_st_size_get (stbuf: &stat):<> off_t
   = "atslib_stat_st_size_get"
-
-(* ****** ****** *)
-
-fun lor_mode_mode (m1: mode_t, m2: mode_t): mode_t
-  = "atslib_lor_mode_mode"
-
-overload lor with lor_mode_mode
 
 (* ****** ****** *)
 

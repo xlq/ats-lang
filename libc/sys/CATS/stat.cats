@@ -66,14 +66,6 @@ atslib_stat_st_size_get (ats_ptr_type buf) {
 /* ****** ****** */
 
 static inline
-ats_mode_type atslib_lor_mode_mode
-  (ats_mode_type m1, ats_mode_type m2) {
-  return (m1 | m2) ;
-}
-
-/* ****** ****** */
-
-static inline
 ats_bool_type atslib_S_ISBLK (ats_mode_type m) {
   return S_ISBLK(m) ;
 }
@@ -155,7 +147,7 @@ ats_void_type
 atslib_stat_exn (ats_ptr_type name, ats_ptr_type buf) {
   int err ;
   err = stat ((char*)name, (ats_stat_type*)buf) ; if (err < 0) {
-    prerr ("stat"); ats_exit_errmsg (1, "exit(ATS): [stat] failed.\n") ;
+    perror ("stat"); ats_exit_errmsg (1, "exit(ATS): [stat] failed.\n") ;
   }
   return ;
 } /* end of [atslib_stat_exn] */

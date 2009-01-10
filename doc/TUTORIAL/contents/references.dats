@@ -17,15 +17,16 @@ val r_fun = ref_make_elt<int->int> (lam x => x+1)
 
 (*
 
-fun vbox_make_view_ptr_gc {a:viewt@ype} {l:addr}
-  (pf_gc: free_gc_v l, pf_at: a @ l | ptr l): (vbox (a @ l) | void)
+fun vbox_make_view_ptr {a:viewt@ype}
+  {l:addr} (pf_at: a @ l | ptr l): (vbox (a @ l) | void)
 
 *)
 
 fn{a:viewt@ype} ref_make_elt (x: a): ref a = let
   val (pf_gc, pf_at | p) = ptr_alloc<a> ()
+  prval () = free_gc_elim (pf_gc)
   val () = (!p := x)
-  val (pfbox | ()) = vbox_make_view_ptr_gc (pf_gc, pf_at | p)
+  val (pfbox | ()) = vbox_make_view_ptr (pf_at | p)
 in
   ref_make_view_ptr (pfbox | p)
 end // end of [ref_make_elt]

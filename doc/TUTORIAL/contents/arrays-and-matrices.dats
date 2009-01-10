@@ -21,15 +21,15 @@ staload "prelude/DATS/matrix.dats"
 // persistent arrays
 
 // digits: array (int, 10)
-val digits = array $arrsz[int](0, 1, 2, 3, 4, 5, 6, 7, 8, 9)
+val digits = array $arrsz {int} (0, 1, 2, 3, 4, 5, 6, 7, 8, 9)
 
 typedef digit = [i:nat | i < 10] int (i)
 
 // digits: array (digit, 10)
-val digits = array $arrsz[digit](0, 1, 2, 3, 4, 5, 6, 7, 8, 9)
+val digits = array $arrsz {digit} (0, 1, 2, 3, 4, 5, 6, 7, 8, 9)
 
 val digits = begin
-  array_make_fun_tsz_cloptr {digit}
+  array_make_cloptr_tsz {digit}
     (10, lam (x, i) =<cloptr> x := i, sizeof<digit>)
 end // end of [val]
 
@@ -66,7 +66,7 @@ end // end of [prarr]
 // persistent matrices
 
 val mat_10_10 =
-  matrix (10, 10) $arrsz[Int](
+  matrix (10, 10) $arrsz {Int} (
    0,  1,  2,  3,  4,  5,  6,  7,  8,  9
 , 10, 11, 12, 13, 14, 15, 16, 17, 18, 19
 , 20, 21, 22, 23, 24, 25, 26, 27, 28, 29
@@ -79,7 +79,7 @@ val mat_10_10 =
 , 90, 91, 92, 93, 94, 99, 96, 97, 98, 99
 ) // end of [val]
 
-val mat_10_10 = matrix_make_fun_tsz_cloptr {Int}
+val mat_10_10 = matrix_make_cloptr_tsz {Int}
   (10, 10, lam (x, i, j) =<cloptr> x := 10 * i + j, sizeof<Int>)
 
 // template function for transposing a square matrix

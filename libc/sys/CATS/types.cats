@@ -64,7 +64,17 @@ typedef ino_t ats_ino_type ; // for file serial numbers
 
 typedef key_t ats_key_type ; // for XSI interprocess communication
 
+/* ****** ****** */
+
 typedef mode_t ats_mode_type ; // file mode
+
+static inline
+ats_mode_type atslib_lor_mode_mode
+  (ats_mode_type m1, ats_mode_type m2) {
+  return (m1 | m2) ;
+}
+
+/* ****** ****** */
 
 typedef nlink_t ats_nlink_type ; // number of hard links to a file
 

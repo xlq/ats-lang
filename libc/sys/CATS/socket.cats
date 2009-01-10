@@ -66,7 +66,7 @@ atslib_socket_family_type_exn (address_family_t af, socket_type_t st) {
   int res ;
   res = socket(af, st, 0) ;
   if (res < 0) {
-    perror("socket"); ats_exit_errmsg(1, "Exit: [socket] failed.\n");
+    perror("socket"); ats_exit_errmsg(1, "exit(ATS): [socket] failed.\n");
   }
   return res ;
 }
@@ -97,7 +97,7 @@ ats_void_type atslib_connect_ipv4_exn
   int err ;
   err = connect(fd, (struct sockaddr*)servaddr, sizeof(struct sockaddr_in)) ;
   if (err < 0) {
-    perror("connect") ; ats_exit_errmsg(1, "Exit: [connect] failed.\n");
+    perror("connect") ; ats_exit_errmsg(1, "exit(ATS): [connect] failed.\n");
   }
   return ;
 }
@@ -116,7 +116,7 @@ ats_void_type atslib_bind_ipv4_exn
   int err ;
   err = bind(fd, (struct sockaddr *)servaddr, sizeof(struct sockaddr_in));
   if (err < 0) {
-    perror("bind"); ats_exit_errmsg(1, "Exit: [bind] failed.\n");
+    perror("bind"); ats_exit_errmsg(1, "exit(ATS): [bind] failed.\n");
   }
   return ;
 } /* atslib_bind_ipv4_exn */
@@ -134,7 +134,7 @@ ats_void_type atslib_listen_exn
   (ats_int_type fd, ats_int_type backlog) {
   int err = listen (fd, backlog) ;
   if (err < 0) {
-    perror("listen") ; ats_exit_errmsg(1, "Exit: [listen] failed.\n") ;
+    perror("listen") ; ats_exit_errmsg(1, "exit(ATS): [listen] failed.\n") ;
   }
   return ;
 } /* atslib_listen_exn */
@@ -152,7 +152,7 @@ ats_int_type atslib_accept_null_exn (ats_int_type fd_s) {
   int fd_c ;
   fd_c = accept(fd_s, (struct sockaddr *)0, (socklen_t *)0) ;
   if (fd_c < 0) {
-    perror("accept"); ats_exit_errmsg(1, "Exit: [accept] failed.\n");
+    perror("accept"); ats_exit_errmsg(1, "exit(ATS): [accept] failed.\n");
   }
   return fd_c;
 } /* atslib_accept_null_exn */
@@ -166,7 +166,7 @@ ats_int_type atslib_accept_ipv4_exn
   *(socklen_t *)addrlen = sizeof (struct sockaddr_in) ;
   fd_c = accept(fd_s, (struct sockaddr *)cliaddr, (socklen_t *)addrlen) ;
   if (fd_c < 0) {
-    perror("accept"); ats_exit_errmsg(1, "Exit: [accept] failed.\n");
+    perror("accept"); ats_exit_errmsg(1, "exit(ATS): [accept] failed.\n");
   }
   return fd_c;
 } /* atslib_accept_ipv4_exn */
@@ -182,7 +182,7 @@ ats_void_type
 atslib_socket_close_exn(ats_int_type fd) {
   int res =  close(fd) ;
   if (res < 0) {
-    perror("close") ; ats_exit_errmsg(1, "Exit: [socket_close] failed.\n") ;
+    perror("close") ; ats_exit_errmsg(1, "exit(ATS): [socket_close] failed.\n") ;
   }
   return ;
 } /* atslib_socket_close_exn */
@@ -194,7 +194,7 @@ ats_int_type
 atslib_socket_read_err
   (ats_int_type fd, ats_ptr_type buf, ats_int_type cnt) {
   return read(fd, buf, cnt) ;
-}
+} /* atslib_socket_read_err */
 
 static inline
 ats_int_type
@@ -203,7 +203,7 @@ atslib_socket_read_exn
   int res ;
   res = read(fd, buf, cnt) ;
   if (res < 0) {
-    perror("read") ; ats_exit_errmsg(1, "Exit: [socket_read] failed.\n") ;
+    perror("read") ; ats_exit_errmsg(1, "exit(ATS): [socket_read] failed.\n") ;
   }
   return res ;
 } /* atslib_socket_read_exn */
@@ -212,19 +212,12 @@ atslib_socket_read_exn
 
 static inline
 ats_int_type
-atslib_socket_write_err
-  (ats_int_type fd, ats_ptr_type buf, ats_int_type cnt) {
-  return write(fd, buf, cnt) ;
-} /* atslib_socket_write_err */
-
-static inline
-ats_int_type
 atslib_socket_write_exn
   (ats_int_type fd, ats_ptr_type buf, ats_int_type cnt) {
   int res ;
   res = write(fd, buf, cnt) ;
   if (res < 0) {
-    perror("write") ; ats_exit_errmsg(1, "Exit: [socket_write] failed.\n") ;
+    perror("write") ; ats_exit_errmsg(1, "exit(ATS): [socket_write] failed.\n") ;
   }
   return res ;
 } /* atslib_socket_write_exn */
@@ -234,20 +227,20 @@ atslib_socket_write_exn
 static inline
 ats_int_type
 atslib_socket_write_substring_err
-  (ats_int_type fd, ats_ptr_type s, ats_int_type start, ats_int_type n)
+  (ats_int_type fd, ats_ptr_type str, ats_int_type start, ats_int_type n)
 {
-  return write(fd, ((char*)s)+start, n) ;
+  return write(fd, ((char*)str)+start, n) ;
 }
 
 static inline
 ats_int_type
 atslib_socket_write_substring_exn
-  (ats_int_type fd, ats_ptr_type s, ats_int_type start, ats_int_type n)
+  (ats_int_type fd, ats_ptr_type str, ats_int_type start, ats_int_type n)
 {
   int res ;
-  res = write(fd, ((char*)s)+start, n) ;
+  res = write(fd, ((char*)str)+start, n) ;
   if (res < 0) {
-    perror("write") ; ats_exit_errmsg(1, "Exit: [socket_write] failed.\n") ;
+    perror("write") ; ats_exit_errmsg(1, "exit(ATS): [socket_write] failed.\n") ;
   }
   return res ;
 } /* ats_socket_write_substring_exn */

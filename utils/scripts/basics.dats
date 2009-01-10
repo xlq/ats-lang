@@ -106,7 +106,7 @@ implement ATSHOME_dir = let
   val n = length ATSHOME
 in
   if n > 0 then
-    if string_get_char_at (ATSHOME, n-1) = dirsep then ATSHOME
+    if ATSHOME[n-1] = dirsep then ATSHOME
     else ATSHOME + "/"
   else begin
     prerr "The variable [ATSHOME] is empty!\n" ;

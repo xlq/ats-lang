@@ -4,10 +4,6 @@ ATS::
 	scp ATS.html \
           ats-hwxi@web.sourceforge.net:/home/groups/a/at/ats-lang/htdocs/ATS.html
 
-manual_system::
-	scp DOCUMENTATION/manual_system.html \
-          ats-hwxi@web.sourceforge.net:/home/groups/a/at/ats-lang/htdocs/DOCUMENTATION/manual_system.html
-
 tutorial::
 	scp TUTORIAL/tutorial.html \
           ats-hwxi@web.sourceforge.net:/home/groups/a/at/ats-lang/htdocs/TUTORIAL/tutorial.html
@@ -35,3 +31,12 @@ paper::
 changelog::
 	scp CHANGELOG/changelog.html \
           ats-hwxi@web.sourceforge.net:/home/groups/a/at/ats-lang/htdocs/CHANGELOG/changelog.html
+
+######
+
+manual_system::
+	scp DOCUMENTATION/manual_system.html \
+          ats-hwxi@web.sourceforge.net:/home/groups/a/at/ats-lang/htdocs/DOCUMENTATION/manual_system.html
+
+
+###### end of [Makefile] ######

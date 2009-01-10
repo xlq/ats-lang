@@ -61,7 +61,6 @@ staload "libc/SATS/stdlib.sats"
 staload "libc/SATS/dirent.sats"
 
 staload "libc/sys/SATS/stat.sats"
-
 staload "libc/sys/SATS/types.sats"
 
 (* ****** ****** *)
@@ -146,7 +145,7 @@ end // end of [ATSPACKAGE_VERSION_get]
 val ATSPACKAGE_VERSION: string = ATSPACKAGE_VERSION_get ()
 
 val DSTROOT: string = begin
-  string_concat '[ATSPACKAGE_NAME, "-", ATSPACKAGE_VERSION, "/"]
+  stringlst_concat '[ATSPACKAGE_NAME, "-", ATSPACKAGE_VERSION, "/"]
 end // end of [DSTROOT]
 
 (* ****** ****** *)

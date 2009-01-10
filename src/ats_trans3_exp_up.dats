@@ -1892,7 +1892,7 @@ val d3e0 = (case+ d2e0.d2exp_node of
         val d2e0 = $Mac.macro_eval_app_short (loc0, d2m, d2as_arg)
       in
         d2exp_tr_up (d2e0)
-      end
+      end // end of [D2Emac]
     | D2Esym d2s => d2exp_apps_sym_tr_up (loc0, d2s, d2as_arg)
     | _ => let
         val d3e_fun = d2exp_tr_up d2e_fun
@@ -2165,7 +2165,19 @@ val d3e0 = (case+ d2e0.d2exp_node of
     end // end of [D2Elst]
   | D2Emac d2m => let
       val d2as = list_nil () // no arguments for [d2m]
+(*
+      val () = begin
+        prerr "d2exp_tr_up: D2Emac: loc0 = ";
+        $Loc.prerr_location loc0; prerr_newline ()
+      end // end of [val]
+*)
       val d2e0 = $Mac.macro_eval_app_short (loc0, d2m, d2as)
+(*
+      val () = begin
+        prerr "d2exp_tr_up: D2Emac: d2e0.d2exp_loc = ";
+        $Loc.prerr_location d2e0.d2exp_loc; prerr_newline ()
+      end // end of [val]
+*)
     in
       d2exp_tr_up (d2e0)
     end // end of [D2Emac]

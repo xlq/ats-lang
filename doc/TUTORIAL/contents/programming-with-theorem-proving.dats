@@ -7,6 +7,7 @@
 // Two verified implementations of the factorial function:
 // one is recurisve but not tail-recursive while the other
 // is tail-recursive
+//
 
 (*
 
@@ -22,13 +23,12 @@ fun fact {n:nat} (n: int n): Nat =
   if n > 0 then n nmul fact (n-1) else 1
 
 // tail-recursive
-fn fact {n:nat} (n: int n): Nat =
-  let
-    fun loop {n:nat} (n: int n, res: Nat): Nat =
-      if n > 0 then loop (n-1, n nmul res) else res
-  in
-    loop (n, 1)
-  end
+fn fact {n:nat} (n: int n): Nat = let
+  fun loop {n:nat} (n: int n, res: Nat): Nat =
+    if n > 0 then loop (n-1, n nmul res) else res
+in
+  loop (n, 1)
+end // end of [fact]
 
 *)
 
@@ -109,7 +109,7 @@ implement main (argc, argv) = case+ argc of
   | 2 => begin
       let
         val n = int1_of argv.[1]
-        val () = assert_prerrf (
+        val () = assert_prerrf_bool1 (
           n >= 0, "Exit: negative argument: %i\n", @(n)
         )
         val (pf1 | res1) = fact1 n
@@ -118,9 +118,14 @@ implement main (argc, argv) = case+ argc of
         printf ("The value of fact1(%i) is %i.\n", @(n, res1));
         printf ("The value of fact2(%i) is %i.\n", @(n, res2))
       end
-    end
-  | _ => begin
-      let val cmd = argv.[0] in
-         printf ("Usage: %s [integer]\n", @(cmd))
-      end
-    end
+    end // end of [2]
+  | _ => let
+      val cmd = argv.[0]
+    in
+      printf ("Usage: %s [integer]\n", @(cmd))
+    end // end of [_]
+// end of [main]
+
+(* ****** ****** *)
+
+(* end of [programming-with-theorem-proving.dats] *)

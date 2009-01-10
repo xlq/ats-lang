@@ -38,6 +38,7 @@
 (* ****** ****** *)
 
 staload "libc/SATS/errno.sats"
+staload "libc/SATS/stdio.sats"
 
 (* ****** ****** *)
 
@@ -49,26 +50,130 @@ staload "libc/SATS/fcntl.sats"
 
 (* ****** ****** *)
 
-implement close_exn {fd} {flag} (pf_fd | fd) = let
+macdef errno_is_EINTR () = (errno_get () = EINTR)
+
+(* ****** ****** *)
+
+implement close_loop_err
+  {fd} {flag} (pf_fd | fd) =
+  $effmask_all (loop (pf_fd | fd)) where {
   fun loop
-    (pf_fd: fildes_v (fd, flag) | fd: int fd): void = let
-    val (pf | i) = close_err (pf_fd | fd)
+    (pf_fd: fildes_v (fd, flag) | fd: int fd)
+    : [i:int] (close_v (fd, flag, i) | int i) = let
+    val (pf_err | i) = close_err (pf_fd | fd)
   in
-    if i >= 0 then let
-      prval close_v_succ () = pf // [i] actually equals 0
-    in
-      // loop exits
-    end else let
-      prval close_v_fail pf_fd = pf
-      // try again only if [close] is interrupted by a signal
-      val () = if errno_get () <> EINTR then exit {void} (1)
-    in
-      loop (pf_fd | fd)
+    if i >= 0 then (pf_err | i) else begin
+      if errno_is_EINTR () then let
+        prval close_v_fail pf_fd = pf_err in loop (pf_fd | fd)
+      end else (pf_err | i) // end of [if]
     end // end of [if]
   end // end of [loop]
+} // end of [close_exn]
+
+implement close_loop_exn (pf_fd | fd) = let
+  val (pf_err | i) = close_loop_err (pf_fd | fd)
 in
-  loop (pf_fd | fd)
-end // end of [close_exn]
+  if (i >= 0) then let
+    prval close_v_succ () = pf_err in (*empty*)
+  end else let
+    prval close_v_fail pf_fd = pf_err
+    val (pf_out | ()) = exit_main {void} {..} {unit_v} (pf_fd | 1)
+    prval unit_v () = pf_out
+  in
+    // empty
+  end // end of [if]
+end // end of [close_loop_exn]
+
+(* ****** ****** *)
+
+extern praxi bytes_v_split {n,i:nat | i <= n}
+  {l:addr} (pf: bytes n @ l): @(bytes i @ l, bytes (n-i) @ l + i)
+
+extern praxi bytes_v_unsplit {n1,n2:nat}
+  {l:addr} (pf1: bytes n1 @ l, pf2: bytes n2 @ l + n1): bytes (n1+n2) @ l
+
+implement fildes_read_loop_err
+  {fd} {flag} {n,sz} (pf_lte, pf_fd | fd, buf, ntotal) = let
+  fun loop {nleft:nat | nleft <= n} {l:addr} (
+      pf_fd: !fildes_v (fd, flag)
+    , pf_buf: !bytes (sz-n+nleft) @ l
+    | fd: int fd, p_buf: ptr l, nleft: int nleft, err: &int
+    ) : natLte n =
+    if nleft > 0 then let
+      val [nread:int] nread = fildes_read_err (pf_lte, pf_fd | fd, !p_buf, nleft)
+    in
+      if nread > 0 then let
+        prval @(pf1_buf, pf2_buf) = bytes_v_split {sz-n+nleft,nread} (pf_buf)
+        val nleft2 = loop (pf_fd, pf2_buf | fd, p_buf + nread, nleft - nread, err)
+        prval () = pf_buf := bytes_v_unsplit (pf1_buf, pf2_buf)
+      in
+        nleft2
+      end else let // nread <= 0
+        val retry = begin
+          if nread < 0 then errno_is_EINTR () else false (*EOF*)
+        end : bool
+      in        
+        if retry then loop (pf_fd, pf_buf | fd, p_buf, nleft, err)
+        else (if nread < 0 then err := 1; nleft)
+      end // end of [if]
+    end else begin
+      0 // all bytes are read
+    end // end of [if]
+  // end of [loop]
+  var err: int = 0; val nleft = loop (pf_fd, view@ buf | fd, &buf, ntotal, err)
+in
+  if err = 0 then ntotal - nleft else ~1
+end // end of [fildes_read_loop_err]
+
+//
+
+implement fildes_read_loop_exn
+  (pf_lte, pf_fd | fd, buf, ntotal) = let
+  val nread = fildes_read_loop_err (pf_lte, pf_fd | fd, buf, ntotal)
+in
+  if nread >= 0 then nread else (perror "fildes_read: "; exit 1)
+end // end of [fildes_read_loop_exn]
+
+(* ****** ****** *)
+
+implement fildes_write_loop_err
+  {fd} {flag} {n,sz} (pf_lte, pf_fd | fd, buf, ntotal) = let
+  fun loop {nleft:nat | nleft <= n} {l:addr} (
+      pf_fd: !fildes_v (fd, flag)
+    , pf_buf: !bytes (sz-n+nleft) @ l
+    | fd: int fd, p_buf: ptr l, nleft: int nleft, err: &int
+    ) : natLte n =
+    if nleft > 0 then let
+      val [nwrit:int] nwrit = fildes_write_err (pf_lte, pf_fd | fd, !p_buf, nleft)
+    in
+      if nwrit > 0 then let
+        prval @(pf1_buf, pf2_buf) = bytes_v_split {sz-n+nleft,nwrit} (pf_buf)
+        val nleft2 = loop (pf_fd, pf2_buf | fd, p_buf + nwrit, nleft - nwrit, err)
+        prval () = pf_buf := bytes_v_unsplit (pf1_buf, pf2_buf)
+      in
+        nleft2
+      end else let
+        val retry = (if nwrit < 0 then errno_is_EINTR () else true): bool
+      in
+        if retry then loop (pf_fd, pf_buf | fd, p_buf, nleft, err) else (err := 1; nleft)
+      end // end of [if]
+    end else begin
+      0 // all bytes are written
+    end // end of [if]
+  // end of [loop]
+  var err: int = 0; val nleft = loop (pf_fd, view@ buf | fd, &buf, ntotal, err)
+in
+  if err = 0 then ntotal - nleft else ~1
+end // end of [fildes_write_loop_err]
+
+//
+
+implement fildes_write_loop_exn
+  (pf_lte, pf_fd | fd, buf, ntotal) = let
+  val nwrit = fildes_write_loop_err (pf_lte, pf_fd | fd, buf, ntotal)
+in
+  if nwrit < ntotal then (perror "fildes_write: "; exit 1) else ()
+end // end of [fildes_write_loop_exn]
 
 (* ****** ****** *)
 

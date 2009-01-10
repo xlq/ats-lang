@@ -43,27 +43,144 @@
 
 /* ****** ****** */
 
-static inline
-ats_int_type
-atslib_open_path_flag_err
-  (ats_ptr_type path, ats_int_type flag)
-{
-  return open((char*)path, flag) ;
-} /* end of [atslib_open_path_flag_err]
+#include "libc/sys/CATS/types.cats"
+
+/* ****** ****** */
 
 static inline
 ats_int_type
-atslib_open_path_flag_mode_err
+atslib_lor_flag_orflag
+  (ats_int_type flag, ats_int_type orflag) {
+  return (flag | orflag) ;
+} /* end of [atslib_lor_flag_orflag] */
+
+/* ****** ****** */
+
+static inline
+ats_int_type
+atslib_open_flag_err
+  (ats_ptr_type path, ats_int_type flag)
+{
+  return open((char*)path, flag) ;
+} /* end of [atslib_open_flag_err] */
+
+static inline
+ats_int_type
+atslib_open_flag_mode_err
   (ats_ptr_type path, ats_int_type flag, ats_int_type mode)
 {
   return open((char*)path, flag, mode) ;
-} /* end of [atslib_open_path_flag_mode_err]
+} /* end of [atslib_open_flag_mode_err] */
+
+/* ****** ****** */
+
+static inline
+ats_int_type
+atslib_open_flag_exn
+  (ats_ptr_type path, ats_int_type flag)
+{
+  int fd = open((char*)path, flag) ;
+  if (fd < 0) {
+    perror ("open") ;
+    ats_exit_errmsg(1, "exit(ATS): [open_flag] failed.\n") ;
+  } // end of [if]
+  return fd ;
+} /* end of [atslib_open_flag_exn] */
+
+static inline
+ats_int_type
+atslib_open_flag_mode_exn
+  (ats_ptr_type path, ats_int_type flag, ats_mode_type mode)
+{
+  int fd = open((char*)path, flag, mode) ;
+  if (fd < 0) {
+    perror ("open") ;
+    ats_exit_errmsg(1, "exit(ATS): [open_flag_mode] failed.\n") ;
+  } // end of [if]
+  return fd ;
+} /* end of [atslib_open_flag_mode_exn] */
 
 /* ****** ****** */
 
 static inline
 ats_int_type
 atslib_close_err (ats_int_type fd) { return close(fd) ; }
+
+static inline
+ats_void_type
+atslib_close_exn (ats_int_type fd) {
+  int err = close(fd) ;
+  if (err < 0) {
+    perror ("close") ;
+    ats_exit_errmsg (1, "exit(ATS): [close] failed\n") ;
+  }
+  return ;
+} /* end of [atslib_close_exn] */
+
+/* ****** ****** */
+
+static inline
+ats_int_type
+atslib_fildes_read_err
+  (ats_int_type fd, ats_ptr_type buf, ats_int_type cnt) {
+  return read(fd, buf, cnt) ;
+} /* atslib_fildes_read_err */
+
+static inline
+ats_int_type
+atslib_fildes_read_exn
+  (ats_int_type fd, ats_ptr_type buf, ats_int_type cnt) {
+  int res ;
+  res = read(fd, buf, cnt) ;
+  if (res < 0) {
+    perror("read") ; ats_exit_errmsg(1, "Exit: [fildes_read] failed.\n") ;
+  }
+  return res ;
+} /* atslib_fildes_read_exn */
+
+/* ****** ****** */
+
+static inline
+ats_int_type
+atslib_fildes_write_err
+  (ats_int_type fd, ats_ptr_type buf, ats_int_type cnt) {
+  return write(fd, buf, cnt) ;
+} /* atslib_fildes_write_err */
+
+static inline
+ats_int_type
+atslib_fildes_write_exn
+  (ats_int_type fd, ats_ptr_type buf, ats_int_type cnt) {
+  int res ;
+  res = write(fd, buf, cnt) ;
+  if (res < 0) {
+    perror("write") ; ats_exit_errmsg(1, "Exit: [fildes_write] failed.\n") ;
+  }
+  return res ;
+} /* atslib_fildes_write_exn */
+
+/* ****** ****** */
+
+static inline
+ats_int_type
+atslib_fildes_write_substring_err
+  (ats_int_type fd, ats_ptr_type str, ats_int_type start, ats_int_type n)
+{
+  return write(fd, ((char*)str)+start, n) ;
+}
+
+static inline
+ats_int_type
+atslib_fildes_write_substring_exn
+  (ats_int_type fd, ats_ptr_type str, ats_int_type start, ats_int_type n)
+{
+  int res ;
+  res = write(fd, ((char*)str)+start, n) ;
+  if (res < 0) {
+    perror("write") ; ats_exit_errmsg(1, "exit(ATS): [fildes_write] failed.\n") ;
+  }
+  return res ;
+} /* ats_fildes_write_substring_exn */
 
 /* ****** ****** */
 

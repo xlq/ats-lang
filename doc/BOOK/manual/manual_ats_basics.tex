@@ -164,7 +164,14 @@ operator $!!$. This can be done as follows:
 postfix (!!) !!!
 \end{verbatim}
 This form of fixity declaration obviates the need for remembering the
-actual precedence value assigned to $!!$.
+actual precedence value assigned to $!!$. If it is needed to assign
+a precedence value to $!!!$ that is 1 higher than the one attached to
+$!!!$, then the following fixity declaration can be used:
+\begin{verbatim}
+postfix (!! + 1) !!!
+\end{verbatim}
+The constant $1$ can be replaced with other, possibly negative, integer
+constants, and the plus sign can be replaced with the minus sign as well.
 
 In addition, we may write $e_1~\backslash opr~e_2$ for $opr(e_1, e_2)$,
 where $e_1$ and $e_2$ are two expressions and $opr$ is some operator. More

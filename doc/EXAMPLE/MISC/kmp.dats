@@ -104,6 +104,14 @@ fn kmp_sub {n,i:int | 0 < i; i <= n} {l:addr}
 
 //
 
+extern fun string1_get_char_at {n:nat}
+  (s: string n, i: natLt n):<> [c:char | c <> NUL] char c
+  = "atspre_string_get_char_at"
+
+macdef get (s, i) = string1_get_char_at (,(s), ,(i))
+
+//
+
 fun kmp_table_make_aux
    {i,j,n:int | 0 <= j; j+1 < i; i <= n} {l:addr} {ofs:int} .<n-i,j>.
    (pf_mul: MUL (i, intsz, ofs),
@@ -112,30 +120,29 @@ fun kmp_table_make_aux
     w: string n, tbl: ptr l, n:int n, i: int i, j: int j, tbl_ofs: ptr(l+ofs))
   :<> (kmp_v (l, n-1) | void) = begin
   if i < n then
-    if w[i-1] = w[j] then
-      let
-         prval (pf_elt, pf_arr) = array_v_uncons {Int?} pf_arr
-         val () = ptr_set_t (pf_elt | tbl_ofs, j+1)
-         prval pf_kmp = kmp_v_more (pf_mul, pf_kmp, pf_elt)
-         prval pf_mul = mul_add_const {1} (pf_mul)
-      in
-         kmp_table_make_aux
-           (pf_mul, pf_kmp, pf_arr | w, tbl, n, i+1, j+1, tbl_ofs+intsz)
-      end
-    else if j > 0 then
+    if get (w, i-1) = get (w, j) then let
+       prval (pf_elt, pf_arr) = array_v_uncons {Int?} pf_arr
+       val () = ptr_set_t (pf_elt | tbl_ofs, j+1)
+       prval pf_kmp = kmp_v_more (pf_mul, pf_kmp, pf_elt)
+       prval pf_mul = mul_add_const {1} (pf_mul)
+    in
+       kmp_table_make_aux
+         (pf_mul, pf_kmp, pf_arr | w, tbl, n, i+1, j+1, tbl_ofs+intsz)
+    end else if j > 0 then
       kmp_table_make_aux
         (pf_mul, pf_kmp, pf_arr | w, tbl, n, i, kmp_sub (pf_kmp | tbl, j), tbl_ofs)
-    else
-      let
-         prval (pf_elt, pf_arr) = array_v_uncons {Int?} pf_arr
-         val () = ptr_set_t (pf_elt | tbl_ofs, 0)
-         prval pf_kmp = kmp_v_more (pf_mul, pf_kmp, pf_elt)
-         prval pf_mul = mul_add_const {1} (pf_mul)
-      in
-         kmp_table_make_aux
-           (pf_mul, pf_kmp, pf_arr | w, tbl, n, i+1, 0, tbl_ofs+intsz)
-      end
-   else let prval () = array_v_unnil pf_arr in (pf_kmp | ()) end
+    else let
+      prval (pf_elt, pf_arr) = array_v_uncons {Int?} pf_arr
+      val () = ptr_set_t (pf_elt | tbl_ofs, 0)
+      prval pf_kmp = kmp_v_more (pf_mul, pf_kmp, pf_elt)
+      prval pf_mul = mul_add_const {1} (pf_mul)
+    in
+      kmp_table_make_aux
+        (pf_mul, pf_kmp, pf_arr | w, tbl, n, i+1, 0, tbl_ofs+intsz)
+    end
+  else let
+    prval () = array_v_unnil pf_arr in (pf_kmp | ())
+  end // end of [if]
 end // end of [kmp_table_make_aux]
 
 //
@@ -198,7 +205,7 @@ fn kmp_search {ns:nat; nw:int | nw >= 1}
     (pf: !kmp_v (l, nw-1) | m: int m, i: int i):<cloptr> intBtw (~1, ns) =
     if i = nw then m else begin
       if m+i < ns then
-        if w[i] = s[m+i] then aux (pf | m, i+1) else begin
+        if get (w, i) = get (s, m+i) then aux (pf | m, i+1) else begin
           if i > 0 then begin
             let val i1 = kmp_sub (pf | tbl, i) in aux (pf | m+i-i1, i1) end
           end else begin

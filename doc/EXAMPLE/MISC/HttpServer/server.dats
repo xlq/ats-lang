@@ -106,7 +106,8 @@ in
 
 stavar len: int
 
-val (the_doctype_map_prop | ()) = vbox_make_view_ptr_gc (pf_gc, pf_arr | ptr)
+prval () = free_gc_elim (pf_gc)
+val (the_doctype_map_prop | ()) = vbox_make_view_ptr (pf_arr | ptr)
 val the_doctype_map_ptr = ptr
 val the_doctype_map_len: int len = len
 
@@ -232,7 +233,7 @@ implement doctype_of_filename (filename: string) = let
     if stropt_is_none sfx_opt then
       stropt_some "text/plain" // the doctype for files without suffix
     else let
-      val sfx = string_tolower (stropt_unsome sfx_opt) in doctype_find sfx
+      val sfx = string1_tolower (stropt_unsome sfx_opt) in doctype_find sfx
     end
   ) : Stropt
 in
@@ -635,7 +636,8 @@ in
     prval accept_succ pf_conn = pf_accept
     val n = socket_read_exn (pf_conn | fd_c, !p_buf, BUFSZ)
     val (pf_gc, pf | p) = strbuf_make_bytes (!p_buf, 0, n)
-    val msg = string1_of_strbuf (pf_gc, pf | p)
+    prval () = free_gc_elim (pf_gc)
+    val msg = string1_of_strbuf (pf | p)
   in
     case+ msg of // [msg] is leaked out!!!
     | _ when request_is_get (msg) => begin
@@ -677,7 +679,7 @@ dynload "libc/sys/DATS/socket.dats"
 
 implement main (argc, argv) = let
   val port = (if argc > 1 then int1_of (argv.[1]) else 8080): Int
-  val () = assert_prerrf
+  val () = assert_prerrf_bool1
     (port >= 1024, "The given port <%i> is not supported.\n", @(port))
   val (pf_sock | fd) = socket_family_type_exn (AF_INET, SOCK_STREAM)
   var servaddr: sockaddr_in_struct_t // uninitialized

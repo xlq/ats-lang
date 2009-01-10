@@ -52,6 +52,16 @@ typedef uid_t = $TYPES.uid_t
 
 (* ****** ****** *)
 
+sta stdin_int : int
+sta stdout_int : int
+sta stderr_int : int
+
+macdef STDIN_FILENO = $extval (int stdin_int, "STDIN_FILENO")
+macdef STDOUT_FILENO = $extval (int stdout_int, "STDOUT_FILENO")
+macdef STDERR_FILENO = $extval (int stderr_int, "STDERR_FILENO")
+
+(* ****** ****** *)
+
 // implemented in [libc/DATS/unistd.dats]
 
 fun fork_exn (): pid_t = "atslib_fork_exn"

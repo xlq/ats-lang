@@ -405,15 +405,12 @@ fun strbuf_get_char_at {m,n:nat}
   (sb: &strbuf (m, n), i: natLt n):<> [c:char | c <> NUL] char c
   = "atspre_string_get_char_at"
 
-fun string_get_char_at {n:nat}
-  (s: string n, i: natLt n):<> [c:char | c <> NUL] char c
+fun string1_get_char_at {n:nat}
+  (s: string n, i: natLt n):<!ref> [c:char | c <> NUL] char c
   = "atspre_string_get_char_at"
 
 overload [] with strbuf_get_char_at
-overload [] with string_get_char_at
-
-fun string_get_char_at_exn
-  (s: string, i: Nat):<!exn> [c:char | c <> NUL] char (c)
+overload [] with string1_get_char_at
 
 (* ****** ****** *)
 
@@ -421,14 +418,12 @@ fun strbuf_set_char_at {m,n:nat} {c: char | c <> NUL}
   (sb: &strbuf (m, n), i: natLt n, c: char c):<> void
   = "atspre_strbuf_set_char_at"
 
-fun string_set_char_at {n:nat} {c:char | c <> NUL}
+fun string1_set_char_at {n:nat} {c:char | c <> NUL}
   (s: string n, i: natLt n, c: char c):<!ref> void
   = "atspre_strbuf_set_char_at"
 
 overload [] with strbuf_set_char_at
-overload [] with string_set_char_at
-
-fun string_set_char_at_exn (s: string, i: Nat, c: char):<!exnref> void
+overload [] with string1_set_char_at
 
 (* ****** ****** *)
 
@@ -474,10 +469,12 @@ fun string_singleton (c: char):<> string 1
 
 (* ****** ****** *)
 
+// implemented in [prelude/DATS/string.dats]
 // a new string is created
 fun string1_tolower {n:nat} (s: string n):<> string n
   = "atspre_string_tolower"
 
+// implemented in [prelude/DATS/string.dats]
 // a new string is created
 fun string1_toupper {n:nat} (s: string n):<> string n
   = "atspre_string_toupper"

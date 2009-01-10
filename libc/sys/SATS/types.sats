@@ -61,7 +61,15 @@ abst@ype ino_t = $extype "ats_ino_type" // for file serial numbers
 
 abst@ype key_t = $extype "ats_key_type" // for XSI interprocess communication
 
+(* ****** ****** *)
+
 abst@ype mode_t = $extype "ats_mode_type" // file mode
+
+fun lor_mode_mode
+  (m1: mode_t, m2: mode_t): mode_t = "atslib_lor_mode_mode"
+overload lor with lor_mode_mode
+
+(* ****** ****** *)
 
 abst@ype nlink_t = $extype "ats_nlink_type" // number of hard links to a file
 
