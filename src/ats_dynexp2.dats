@@ -682,16 +682,21 @@ implement d2exp_lam_dyn (loc, lin, npf, arg, body) = '{
 , d2exp_typ= None ()
 }
 
+(* ****** ****** *)
+
 implement d2exp_lam_met (loc, r, met, body) = '{
   d2exp_loc= loc
 , d2exp_node= D2Elam_met (r, met, body)
 , d2exp_typ= None ()
 }
 
-implement d2exp_lam_met_new (loc, met, body) =
-  let val r = ref_make_elt<d2varlst> (nil ()) in
-    d2exp_lam_met (loc, r, met, body)
-  end
+implement
+  d2exp_lam_met_new (loc, met, body) =
+  d2exp_lam_met (loc, r, met, body) where {
+  val r = ref_make_elt<d2varlst> (nil ())
+} // end of [d2exp_lam_met_new]
+
+(* ****** ****** *)
 
 implement d2exp_lam_sta (loc, s2vs, s2ps, body) = '{
   d2exp_loc= loc
@@ -701,20 +706,24 @@ implement d2exp_lam_sta (loc, s2vs, s2ps, body) = '{
 
 (* ****** ****** *)
 
-implement d2exp_lazy_delay (loc, lin, d2e) = '{
-  d2exp_loc= loc, d2exp_node= D2Elazy_delay (lin, d2e), d2exp_typ= None ()
+implement d2exp_lazy_delay (loc, d2e) = '{
+  d2exp_loc= loc, d2exp_node= D2Elazy_delay d2e, d2exp_typ= None ()
 }
 
-implement d2exp_let (loc, d2cs, d2e) = '{
+implement d2exp_lazy_vt_delay (loc, d2e1, d2e2) = '{
   d2exp_loc= loc
-, d2exp_node= D2Elet (d2cs, d2e)
+, d2exp_node= D2Elazy_vt_delay (d2e1, d2e2)
 , d2exp_typ= None ()
+}
+
+(* ****** ****** *)
+
+implement d2exp_let (loc, d2cs, d2e) = '{
+  d2exp_loc= loc, d2exp_node= D2Elet (d2cs, d2e), d2exp_typ= None ()
 }
 
 implement d2exp_loopexn (loc, flag) = '{
-  d2exp_loc= loc
-, d2exp_node= D2Eloopexn (flag)
-, d2exp_typ= None ()
+  d2exp_loc= loc, d2exp_node= D2Eloopexn (flag), d2exp_typ= None ()
 }
 
 implement d2exp_lst (loc, lin, os2e_elt, d2es_elt) = '{
@@ -723,22 +732,26 @@ implement d2exp_lst (loc, lin, os2e_elt, d2es_elt) = '{
 , d2exp_typ= None ()
 }
 
+(* ****** ****** *)
+
 implement d2exp_mac (loc, d2m) = '{
   d2exp_loc= loc, d2exp_node= D2Emac (d2m), d2exp_typ= None ()
 }
 
 implement d2exp_macsyn (loc, knd, d2e) = '{
-  d2exp_loc= loc, d2exp_node= D2Emacsyn (knd, d2e), d2exp_typ= None ()
+  d2exp_loc= loc
+, d2exp_node= D2Emacsyn (knd, d2e)
+, d2exp_typ= None ()
 }
+
+(* ****** ****** *)
 
 implement d2exp_ptrof (loc, d2e) = '{
   d2exp_loc= loc, d2exp_node= D2Eptrof (d2e), d2exp_typ= None ()
 }
 
 implement d2exp_raise (loc, d2e_exn) = '{
-  d2exp_loc= loc
-, d2exp_node= D2Eraise (d2e_exn)
-, d2exp_typ= None ()
+  d2exp_loc= loc, d2exp_node= D2Eraise (d2e_exn), d2exp_typ= None ()
 }
 
 implement d2exp_rec (loc, recknd, npf, ld2es) = '{
@@ -783,7 +796,9 @@ implement d2exp_spawn (loc, d2e) = '{
 }
 
 implement d2exp_string (loc, str, len) = '{
-  d2exp_loc= loc, d2exp_node= D2Estring (str, len), d2exp_typ= None ()
+  d2exp_loc= loc
+, d2exp_node= D2Estring (str, len)
+, d2exp_typ= None ()
 }
 
 implement d2exp_struct (loc, ld2es) = '{
@@ -817,15 +832,11 @@ implement d2exp_var (loc, d2v) = '{
 }
 
 implement d2exp_viewat (loc, d2e) = '{
-  d2exp_loc= loc
-, d2exp_node= D2Eviewat (d2e)
-, d2exp_typ= None ()
+  d2exp_loc= loc, d2exp_node= D2Eviewat (d2e), d2exp_typ= None ()
 }
 
 implement d2exp_where (loc, d2e, d2cs) = '{
-  d2exp_loc= loc
-, d2exp_node= D2Ewhere (d2e, d2cs)
-, d2exp_typ= None ()
+  d2exp_loc= loc, d2exp_node= D2Ewhere (d2e, d2cs), d2exp_typ= None ()
 }
 
 implement d2exp_while (loc, inv, d2e_test, d2e_body) = '{

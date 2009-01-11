@@ -35,6 +35,9 @@ prelude/DATS/integer.dats
 prelude/SATS/lazy.sats
 prelude/DATS/lazy.dats
 
+prelude/SATS/lazy_vt.sats
+prelude/DATS/lazy_vt.dats
+
 prelude/DATS/pointer.dats
 prelude/DATS/printf.dats
 prelude/DATS/reference.dats

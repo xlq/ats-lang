@@ -385,10 +385,16 @@ implement hiexp_lam (loc, hit, hips_arg, hie_body) = '{
 
 (* ****** ****** *)
 
-implement hiexp_lazy_delay (loc, hit, lin: int, hie) = '{
+implement hiexp_lazy_delay (loc, hit, hie) = '{
   hiexp_loc= loc
-, hiexp_node= HIElazy_delay (lin, hie)
-, hiexp_typ= hit (* type of function body *)
+, hiexp_node= HIElazy_delay (hie(*eval*))
+, hiexp_typ= hit (* type of eval *)
+}
+
+implement hiexp_lazy_vt_delay (loc, hit, hie1, hie2) = '{
+  hiexp_loc= loc
+, hiexp_node= HIElazy_vt_delay (hie1(*eval*), hie2(*free*))
+, hiexp_typ= hit (* type of eval *)
 }
 
 implement hiexp_lazy_force (loc, hit, lin: int, hie) = '{

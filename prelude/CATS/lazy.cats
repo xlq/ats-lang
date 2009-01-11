@@ -58,9 +58,6 @@ typedef ats_ptr_type *thunkvalue ;
   ((thunkvalue)tmp)[0] = (ats_ptr_type)0 ; ((thunkvalue)tmp)[1] = (vp_clo) ; \
 } while (0) /* end of [do ... while ...] */
 
-#define ats_instr_move_lazy_vt_delay_mac(tmp, hit, vp_clo) \
-  do { tmp = (vp_clo) ; } while (0) /* end of [do ... while ...] */
-
 #define ats_instr_move_lazy_force_mac(tmp, hit, vp_lazy) do { \
   if (((thunkvalue)vp_lazy)[0] == 0) { \
     tmp = ((hit (*)(ats_clo_ptr_type))ats_closure_fun(((thunkvalue)vp_lazy)[1]))(((thunkvalue)vp_lazy)[1]) ; \
@@ -69,10 +66,6 @@ typedef ats_ptr_type *thunkvalue ;
   } else { \
     tmp = *(hit*)(((thunkvalue)vp_lazy)+1) ; \
   } /* end of [if] */ \
-} while (0) /* end of [do ... while ...] */
-
-#define ats_instr_move_lazy_vt_force_mac(tmp, hit, vp_lazy) do { \
-  tmp = ((hit (*)(ats_clo_ptr_type))ats_closure_fun(vp_lazy))(vp_lazy) ; ATS_FREE (vp_lazy) ; \
 } while (0) /* end of [do ... while ...] */
 
 /* ****** ****** */

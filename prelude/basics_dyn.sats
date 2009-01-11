@@ -423,7 +423,7 @@ prval unit_v_elim : unit_v -<prf> void
 
 (*
 
-// it is supported internally; see [lazy.cats]
+// it is now supported internally; see [lazy.cats]
 
 // for lazy call-by-need evaluation
 
@@ -448,6 +448,11 @@ fun{a:viewt@ype} lazy_vt_force_crypt (x: crypt (lazy_vt a)):<1,~ref> a
 macdef lazy_vt_force (x) = lazy_vt_force_crypt ($encrypt ,(x))
 
 *)
+
+fun lazy_vt_free {a:viewt@ype} (x: lazy_vt a):<1,~ref> void
+  = "ats_lazy_vt_free"
+
+overload ~ with lazy_vt_free
 
 (* ****** ****** *)
 

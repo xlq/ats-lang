@@ -251,6 +251,7 @@ keyval_insert("$extval", DLREXTVAL) ;
 keyval_insert("$extype", DLREXTYPE) ;
 keyval_insert("$decrypt", DLRDECRYPT) ;
 keyval_insert("$delay", DLRDELAY) ;
+keyval_insert("$delay_vt", DLRDELAYVT) ;
 keyval_insert("$dynload", DLRDYNLOAD) ;
 keyval_insert("$encrypt", DLRENCRYPT) ;
 keyval_insert("$fold", DLRFOLD) ;

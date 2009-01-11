@@ -27,7 +27,7 @@ typedef Nat2 = intGte 2
 fun sieve (ns: stream Nat2):<1,~ref> stream (Nat2) = let
   val- n :: ns = !ns
 in
-  $delay (n :: sieve (stream_filter<Nat2> (ns, lam x => x nmod n > 0)))
+  $delay (n :: sieve (stream_filter_cloref<Nat2> (ns, lam x => x nmod n > 0)))
 end // end of [sieve]
 
 //

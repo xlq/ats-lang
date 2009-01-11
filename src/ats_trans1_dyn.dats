@@ -452,18 +452,19 @@ fn f (d1e1: d1exp, d1e2: d1exp):<cloref1> d1expitm = let
     | D1Esexparg s1a => begin case+ d1e1.d1exp_node of
       | D1Eapp_sta (d1e1, s1as) => begin
           d1exp_app_sta (loc, d1e1, $Lst.list_extend (s1as, s1a))
-        end
+        end // end of [D1Eapp_sta]
       | _ => begin
           d1exp_app_sta (loc, d1e1, cons (s1a, nil ()))
-        end
+        end // end of [_]
       end // end of [D1Esexparg]
     | _ => d1exp_app_dyn
         (loc, d1e1, d1e2.d1exp_loc, 0, cons (d1e2, nil ()))
+      // end of [_]
   end // end of [val]
 (*
   val () = begin
     print "d1expitm_app: f: d1e_app = "; print d1e_app; print_newline ()
-  end
+  end // end of [val]
 *)
 in
   $Fix.ITEMatm d1e_app
@@ -496,16 +497,16 @@ fn s0exparg_tr (loc: loc_t, s0a: s0exparg): s1exparg =
   | S0EXPARGone () => s1exparg_one (loc)
   | S0EXPARGall () => s1exparg_all (loc)
   | S0EXPARGseq (s0as) => s1exparg_seq (loc, s0explst_tr s0as)
+// end of [s0exparg_tr]
 
 fn s0expdarg_tr (d0e: d0exp): s1exparg = let
   val d1e = d0exp_tr d0e in case+ d1e.d1exp_node of
-    | D1Esexparg s1a => s1a
-    | _ => begin
+    | D1Esexparg s1a => s1a | _ => begin
         prerr d0e.d0exp_loc;
         prerr ": Internal Error: d0exp_tr: D0Efoldat";
         prerr_newline ();
         $Err.abort {s1exparg} ()
-      end
+      end // end of [_]
 end // end of [s0expdarg_tr]
 
 fun s0expdarglst_tr (d0es: d0explst): s1exparglst = begin
@@ -587,10 +588,10 @@ fun aux
       case+ arg.f0arg_node of
       | F0ARGsta1 s0qs => begin
           d1exp_lam_sta_syn (loc, loc_arg, s0qualst_tr s0qs, d1e_body)
-        end
+        end // end of [F0ARGsta1]
       | F0ARGsta2 s0as => begin
           d1exp_lam_sta_ana (loc, loc_arg, s0arglst_tr s0as, d1e_body)
-        end
+        end // end of [F0ARGsta2]
       | F0ARGdyn p0t => let
           val p1t = p0at_tr p0t
           val d1e_body = (
@@ -601,10 +602,10 @@ fun aux
           ) : d1exp
         in
           d1exp_lam_dyn (loc, lin, p1t, d1e_body)
-        end
+        end // end of [F0ARGdyn]
       | F0ARGmet s0es => begin
           d1exp_lam_met (loc, loc_arg, s0explst_tr s0es, d1e_body)
-        end
+        end // end of [F0ARGmet]
     end // end of [::]
   | nil () => d1e_body
 end // end of [aux]
@@ -623,7 +624,7 @@ val d1e_body = (
       val s1e = s0exp_tr s0e
     in
       d1exp_ann_type (loc, d1e_body, s1e)
-    end
+    end // end of [Some]
   | None () => d1e_body
 ) : d1exp
 
@@ -631,7 +632,7 @@ val d1e_body = (
   case+ oefc of
   | Some efc => begin
       d1exp_ann_effc (d1e_body.d1exp_loc, d1e_body, efc)
-    end
+    end // end of [Some]
   | None () => d1e_body
 ) : d1exp
 
@@ -639,7 +640,7 @@ val d1e_body = (
   case+ ofc of
   | Some fc => begin
       d1exp_ann_funclo (d1e_body.d1exp_loc, d1e_body, fc)
-    end
+    end // end of [Some]
   | None () => d1e_body
 ) : d1exp
 
@@ -653,8 +654,9 @@ fn termination_metric_check
   (loc: loc_t, is_met: bool, oefc: efcopt): void =
   case+ oefc of
   | Some efc => let
-      val is_okay =
+      val is_okay = begin
         if is_met then true else $Eff.effcst_contain_ntm efc
+      end : bool
     in
       if (is_okay) then () else begin
         prerr loc;
@@ -662,21 +664,24 @@ fn termination_metric_check
         prerr ": a termination metric is missing.";
         prerr_newline ();
         $Err.abort ()
-      end
-    end
+      end // end of [if]
+    end // end of [Some]
   | None () => ()
+// end of [termination_metric_check]
 
 (* ****** ****** *)
 
-fn i0nvarg_tr (arg: i0nvarg): i1nvarg =
-  let val os1e = s0expopt_tr arg.i0nvarg_typ in
-    i1nvarg_make (arg.i0nvarg_loc, arg.i0nvarg_sym, os1e)
-  end
+fn i0nvarg_tr (arg: i0nvarg): i1nvarg = let
+  val os1e = s0expopt_tr arg.i0nvarg_typ
+in
+  i1nvarg_make (arg.i0nvarg_loc, arg.i0nvarg_sym, os1e)
+end // end of [i0nvarg_tr]
 
 fun i0nvarglst_tr (args: i0nvarglst): i1nvarglst =
   case+ args of
   | cons (arg, args) => cons (i0nvarg_tr arg, i0nvarglst_tr args)
   | nil () => nil ()
+// end of [i0nvarglst_tr]
 
 fn i0nvresstate_tr
   (res: i0nvresstate): i1nvresstate = let
@@ -722,10 +727,11 @@ fn m0atch_tr (m0at: m0atch): m1atch = let
   ) : p1atopt
 in
   m1atch_make (m0at.m0atch_loc, d1e, op1t)
-end
+end // end of [m0atch_tr]
 
 fn m0atchlst_tr (m0ats: m0atchlst): m1atchlst =
   $Lst.list_map_fun (m0ats, m0atch_tr)
+// end of [m0atchlst_tr]
 
 fn c0lau_tr (c0l: c0lau): c1lau = let
   val gp0t = c0l.c0lau_pat
@@ -738,6 +744,7 @@ end // end of [c0lau_tr]
 
 fn c0laulst_tr (c0ls: c0laulst): c1laulst =
   $Lst.list_map_fun (c0ls, c0lau_tr)
+// end of [c0laulst_tr]
 
 fn sc0lau_tr (sc0l: sc0lau): sc1lau = let
   val sp1t = sp0at_tr (sc0l.sc0lau_pat)
@@ -748,6 +755,7 @@ end // end of [sc0lau_tr]
 
 fn sc0laulst_tr (sc0ls: sc0laulst): sc1laulst =
   $Lst.list_map_fun (sc0ls, sc0lau_tr)
+// end of [sc0laulst_tr]
 
 (* ****** ****** *)
 
@@ -756,7 +764,7 @@ fn d0exp_tr_errmsg_opr (loc: loc_t): d1exp = begin
   prerr ": error(1)";
   prerr ": the operator needs to be applied.\n";
   $Err.abort {d1exp} ()
-end
+end // end of [d0exp_tr_errmsg_opr]
 
 implement d0exp_tr d0e0 = let
 

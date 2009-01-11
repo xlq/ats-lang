@@ -25,31 +25,42 @@ fn isBraunTree (bt0: bt): bool = let
         if (ls >= rs && rs+1 >= ls) then ls+rs+1 else $raise NotBraunTree()
       end
     | E () => 0
+  // end of [aux]
 in
   try let val s = aux bt0 in true end with ~NotBraunTree() => false
 end // end of [isBraunTree]
 
 (* ****** ****** *)
 
+extern fun{a:t@ype}
+  list_iforeach (xs: List a, f: (Nat, a) -> void): void
+
 fn{a:t@ype} nth (xs: List a, n: Nat): a = let
   exception Found of a
-  fn f (i: Nat, x: a):<cloptr1> void = if i = n then $raise (Found x)
+  fn f (i: Nat, x: a): void = if i = n then $raise (Found x)
 in
-  try list_iforeach_cloptr (xs, f); $raise ListSubscriptException ()
-  with ~Found x => x
+  try let
+    val () = list_iforeach (xs, f) in $raise ListSubscriptException ()
+  end with
+    ~Found x => x
+  // end of [try]
 end // end of [nth]
 
 (* ****** ****** *)
 
 fn{a:t@ype} nth (xs: List a, n: Nat): a = let
-  exception Found
+  exception Found of ()
   val ans = ref_make_elt<Option a> (None)
-  fn f (i: Nat, x: a):<cloptr1> void =
+  fn f (i: Nat, x: a): void =
     if i = n then (!ans := Some x; $raise Found ())
+  val () = (try let
+    val () = list_iforeach (xs, f) in $raise ListSubscriptException ()
+  end with
+    ~Found () => ()
+  ) : void // end of [try]
 in
-  try list_iforeach_cloptr (xs, f) with ~Found () => ();
   case !ans of
-    | Some x => x | None () => $raise ListSubscriptException ()
+  | Some x => x | None () => $raise ListSubscriptException ()
 end // end of [nth]
 
 (* ****** ****** *)

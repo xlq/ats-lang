@@ -389,13 +389,18 @@ in
       fprint_hiexp (pf | out, hie_body);
       strpr ")"
     end // end of [HIElam]
-  | HIElazy_delay (lin, hie_body) => begin
+  | HIElazy_delay (hie_eval) => begin
       strpr "HIElazy_delay(";
-      fprint1_int (pf | out, lin);
-      strpr "; ";
-      fprint_hiexp (pf | out, hie_body);
+      fprint_hiexp (pf | out, hie_eval);
       strpr ")"
     end // end of [HIElazy_delay]
+  | HIElazy_vt_delay (hie_eval, hie_free) => begin
+      strpr "HIElazy_delay(";
+      fprint_hiexp (pf | out, hie_eval);
+      strpr "; ";
+      fprint_hiexp (pf | out, hie_free);
+      strpr ")"
+    end // end of [HIElazy_vt_delay]
   | HIElazy_force (lin, hie_lazy) => begin
       strpr "HIElazy_force(";
       fprint_int (pf | out, lin);

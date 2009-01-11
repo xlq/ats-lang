@@ -8,7 +8,7 @@
 
 (* ****** ****** *)
 
-staload "prelude/DATS/lazy.dats"
+staload "prelude/DATS/lazy_vt.dats"
 staload "prelude/DATS/reference.dats"
 
 (* ****** ****** *)
@@ -17,15 +17,6 @@ staload "prelude/DATS/reference.dats"
 #define :: stream_vt_cons
 
 (* ****** ****** *)
-
-extern fun lazy_vt_destroy {a:viewt@ype} (x: lazy_vt a): void
-  = "ats_lazy_vt_destroy"
-
-%{$
-
-ats_void_type ats_lazy_vt_destroy (ats_ptr_type x) { return ; }
-
-%}
 
 fun{a:t@ype}
   stream_vt_nth (xs0: stream_vt a, i: Nat): a = let
@@ -38,9 +29,9 @@ fun{a:t@ype}
 in
   case+ xs0_con of
   | ~(x :: xs) => begin
-      if i = 0 then (lazy_vt_destroy xs; x) else stream_vt_nth (xs, i-1)
-    end
-  | ~nil () => $raise StreamSubscriptException ()
+      if i = 0 then (~xs; x) else stream_vt_nth (xs, i-1)
+    end // end of [::]
+  | ~nil () => $raise SubscriptException
 end // end of [stream_vt_nth]
 
 (* ****** ****** *)
@@ -48,7 +39,7 @@ end // end of [stream_vt_nth]
 fun from_con {n:int} (n: int n)
   :<1,~ref> stream_vt_con (intGte n) = n :: from (n+1)
 and from {n:int} (n: int n)
-  :<1,~ref> stream_vt (intGte n) = $delay (from_con n)
+  :<1,~ref> stream_vt (intGte n) = $delay_vt (from_con n)
 
 //
 
@@ -68,12 +59,13 @@ fun sieve_con (ns: stream_vt Nat2):<1,~ref> stream_vt_con (Nat2) = let
      end
 *)
      val ns = !p_ns
-     val () = (!p_ns := sieve (stream_vt_filter<Nat2> (ns, lam x => x nmod n > 0)))
+     val () = (!p_ns := sieve (stream_vt_filter_cloptr<Nat2> (ns, lam x => x nmod n > 0)))
   in
      fold@ ns_con; ns_con
   end
 
-and sieve (ns: stream_vt Nat2):<1,~ref> stream_vt (Nat2) = $delay (sieve_con ns)
+and sieve (ns: stream_vt Nat2)
+  :<1,~ref> stream_vt (Nat2) = $delay_vt (sieve_con ns, ~ns)
 
 //
 
@@ -90,7 +82,7 @@ implement main (argc, argv) = begin
 //printf ("prime 30000 = %i\n", @(prime 30000)) ; // = 350381 (2 min.)
 printf ("prime 50000 = %i\n", @(prime 50000)) ; // = 611957 (6 min.)
 
-end
+end // end of [main]
 
 (* ****** ****** *)
 

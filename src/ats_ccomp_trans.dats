@@ -463,7 +463,7 @@ implement ccomp_patck_rec
         val () = the_dynctx_add (d2v, vp)
       in
         ccomp_patck (res, vp, hip, fail)
-      end
+      end // end of [_]
   end // end of [aux]
   fun auxlst (res: &instrlst_vt, lhips: labhipatlst)
     :<cloptr1> void = begin case+ lhips of
@@ -502,7 +502,7 @@ implement ccomp_patck_sum
         val () = the_dynctx_add (d2v, vp)
       in
         ccomp_patck (res, vp, hip, fail)
-      end
+      end // end of [_]
   end // end of [aux]
   fun auxlst
     (res: &instrlst_vt, hips: hipatlst, i: int)
@@ -573,25 +573,25 @@ in
     end // end of [HIPcon_any]
   | HIPfloat f(*string*) => begin
       instr_add_patck (res, vp0, PATCKfloat f, fail)
-    end
+    end // end of [HIPfloat]
   | HIPempty () => ()
   | HIPint (str, int) => begin
       instr_add_patck (res, vp0, PATCKint (int), fail)
-    end
+    end // end of [HIPint]
   | HIPrec (_(*knd*), lhips, hit_rec) => let
       val hit_rec = hityp_normalize (hit_rec)
     in
       ccomp_patck_rec (res, vp0, lhips, hit_rec, fail)
-    end
+    end // end of [HIPrec]
   | HIPstring str => begin
       instr_add_patck (res, vp0, PATCKstring str, fail)
-    end
+    end // end of [HIPstring]
   | HIPvar _ => ()
   | _ => begin
       prerr "ccomp_patck: not implemented yet: hip0 = ";
       prerr hip0; prerr_newline ();
       $Err.abort {void} ()
-    end
+    end // end of [_]
 end // end of [ccomp_patck]
 
 (* ****** ****** *)
@@ -660,7 +660,7 @@ fn ccomp_match_sum (
         val () = the_dynctx_add (d2v, vp_ptr)
       in
         // empty
-      end
+      end // end of [_ when refknd > 0]
     | _ => let
         val hit = hityp_normalize (hip0.hipat_typ)
         val tmp = tmpvar_make (hit)
@@ -669,7 +669,7 @@ fn ccomp_match_sum (
         val () = the_dynctx_add (d2v, vp)
       in
         // empty
-      end
+      end // end of [_]
   end // end of [aux_var]
 
   fun aux_pat
@@ -947,7 +947,7 @@ fn ccomp_funarg (
         val () = ccomp_patck (res, vp, hip, fail)
       in
         list_vt_cons (vp, aux_patck (res, i+1, hips, fail))
-      end
+      end // end of [list_cons]
     | list_nil () => list_vt_nil ()
   end // end of [aux_patck]
   fun aux_match {n:nat} (
@@ -961,7 +961,7 @@ fn ccomp_funarg (
         val () = ccomp_match (res, level, vp, hip)
       in
         aux_match (res, level, vps, hips)
-      end
+      end // end of [list_vt_cons]
     | ~list_vt_nil () => ()
   end // end of [aux_match]
   val vps_arg = aux_patck (res, 0, hips_arg, KONTfunarg_fail fl)
@@ -974,7 +974,7 @@ implement ccomp_exp_lam_funlab
 (*
   val () = begin
     prerr "ccomp_exp_lam_funlab: fl = "; prerr_funlab fl; prerr_newline ()
-  end
+  end // end of [val]
 *)
   var res: instrlst_vt = list_vt_nil ()
 
@@ -983,7 +983,7 @@ implement ccomp_exp_lam_funlab
       : void = begin case+ inss of
       | list_cons (ins, inss) => begin
           res := list_vt_cons (ins, res); aux (res, inss)
-        end
+        end // end of [list_cons]
       | list_nil () => ()
     end // end of [aux]
   } // end of [where]
@@ -1024,16 +1024,16 @@ implement ccomp_exp_lam_funlab
 (*
   val () = begin
     prerr "ccomp_exp_lam_funlab: fls = "; prerr_funlabset fls; prerr_newline ()
-  end
+  end // end of [val]
 *)
 (*
   val () = begin
     prerr "ccomp_exp_lam_funlab: body = "; prerr_instrlst res; prerr_newline ()
-  end
+  end // end of [val]
 *)
   val entry = begin
     funentry_make (loc_fun, fl, level, fls, vtps, tmp_ret, res)
-  end
+  end // end of [val]
 in
   funentry_lablst_add (fl); funentry_associate (entry); entry
 end // end of [ccomp_exp_lam_funlab]
@@ -1061,14 +1061,27 @@ end // end of [ccomp_exp_lam]
 
 (* ****** ****** *)
 
-fn ccomp_exp_thunk (lin: int, hie: hiexp): valprim = let
-  val funclo = (
-    if lin > 0 then $Syn.FUNCLOclo (1) else $Syn.FUNCLOclo (~1)
-  ) : $Syn.funclo
-  val hit_fun = hityp_fun (funclo, '[], hie.hiexp_typ)
+fn ccomp_exp_lazy_delay
+  (loc0: loc_t, hie_eval: hiexp): valprim = let
+  val funclo = $Syn.FUNCLOclo (~1) // cloref
+  val hit_fun = hityp_fun (funclo, '[], hie_eval.hiexp_typ)
 in
-  ccomp_exp_lam (hie.hiexp_loc, hit_fun, '[], hie)
-end // end of [ccomp_exp_lam]
+  ccomp_exp_lam (loc0, hit_fun, '[], hie_eval)
+end // end of [ccomp_exp_lazy_delay]
+
+fn ccomp_exp_lazy_vt_delay
+  (loc0: loc_t, hie_eval: hiexp, hie_free: hiexp): valprim = let
+  val funclo = $Syn.FUNCLOclo ( 1) // cloptr
+  val hit_eval = hie_eval.hiexp_typ
+  val d2v_arg = d2var_make_any (loc0)
+  val () = d2var_count_inc (d2v_arg)
+  val hie_cond = hiexp_var (loc0, hityp_bool, d2v_arg)
+  val hie_if = hiexp_if (loc0, hit_eval, hie_cond, hie_eval, hie_free)
+  val hip_arg = hipat_var (loc0, hityp_bool, 0(*refknd*), d2v_arg)
+  val hit_fun = hityp_fun (funclo, '[hityp_bool], hit_eval)
+in
+  ccomp_exp_lam (loc0, hit_fun, '[hip_arg], hie_if)
+end // end of [ccomp_exp_lazy_vt_delay]
 
 (* ****** ****** *)
 
@@ -1079,7 +1092,7 @@ fn ccomp_exp_ptrof_ptr
   val () = begin
     prerr "ccomp_exp_ptrof_ptr: hie_ptr = "; prerr_hiexp hie_ptr;
     prerr_newline ()
-  end
+  end // end of [val]
 *)
   val vp_ptr = ccomp_exp (res, hie_ptr)
   val offs = ccomp_hilablst (res, hils)
@@ -1968,12 +1981,18 @@ in
     in
       instr_add_move_val (res, tmp_res, vp_lam)
     end // end of [HIElam]
-  | HIElazy_delay (lin, hie_body) => let
-      val vp_clo = ccomp_exp_thunk (lin, hie_body)
-      val hit_body = hityp_normalize (hie_body.hiexp_typ)
+  | HIElazy_delay (hie_eval) => let
+      val hit_eval = hityp_normalize (hie_eval.hiexp_typ)
+      val vp_clo = ccomp_exp_lazy_delay (hie0.hiexp_loc, hie_eval)
     in
-      instr_add_move_lazy_delay (res, tmp_res, lin, hit_body, vp_clo)
+      instr_add_move_lazy_delay (res, tmp_res, 0(*lin*), hit_eval, vp_clo)
     end // end of [HIElazy_delay]
+  | HIElazy_vt_delay (hie_eval, hie_free) => let
+      val hit_eval = hityp_normalize (hie_eval.hiexp_typ)
+      val vp_clo = ccomp_exp_lazy_vt_delay (hie0.hiexp_loc, hie_eval, hie_free)
+    in
+      instr_add_move_lazy_delay (res, tmp_res, 1(*lin*), hit_eval, vp_clo)
+    end // end of [HIElazy_vt_delay]
   | HIElazy_force (lin, hie) => let
       val vp_lazy = ccomp_exp (res, hie)
       val hit_val = hityp_normalize (hie0.hiexp_typ)

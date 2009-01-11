@@ -845,10 +845,16 @@ in
       hie_body
     end // end of [D3Elam_sta]
   | D3Elam_met (_(*s2es_met*), d3e) => d3exp_tr d3e
-  | D3Elazy_delay (lin, d3e_body) => let
+  | D3Elazy_delay (d3e_eval) => let
       val hit0 = s2exp_tr (0(*deep*), s2e0)
     in
-      hiexp_lazy_delay (loc0, hit0, lin, d3exp_tr d3e_body)
+      hiexp_lazy_delay (loc0, hit0, d3exp_tr d3e_eval)
+    end // end of [D3Elazy_delay]
+  | D3Elazy_vt_delay (d3e_eval, d3e_free) => let
+      val hit0 = s2exp_tr (0(*deep*), s2e0)
+      val hie_eval = d3exp_tr d3e_eval and hie_free = d3exp_tr d3e_free
+    in
+      hiexp_lazy_vt_delay (loc0, hit0, hie_eval, hie_free)
     end // end of [D3Elazy_delay]
   | D3Elazy_force (lin, d3e_lazy) => let
       val hit0 = s2exp_tr (0(*deep*), s2e0)

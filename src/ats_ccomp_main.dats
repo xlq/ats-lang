@@ -127,6 +127,7 @@ fn emit_include_cats {m:file_mode}
   val () = fprint1_string (pf | out, "#include \"prelude/CATS/float.cats\"\n")
   val () = fprint1_string (pf | out, "#include \"prelude/CATS/integer.cats\"\n")
   val () = fprint1_string (pf | out, "#include \"prelude/CATS/lazy.cats\"\n")
+  val () = fprint1_string (pf | out, "#include \"prelude/CATS/lazy_vt.cats\"\n")
   val () = fprint1_string (pf | out, "#include \"prelude/CATS/pointer.cats\"\n")
   val () = fprint1_string (pf | out, "#include \"prelude/CATS/printf.cats\"\n")
   val () = fprint1_string (pf | out, "#include \"prelude/CATS/reference.cats\"\n")

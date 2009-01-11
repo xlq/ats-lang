@@ -236,7 +236,9 @@ and d3exp_node =
   | D3Elam_sta of (* static abstraction *)
       (s2varlst, s2explst, d3exp)
   | D3Elazy_delay of (* delayed computation *)
-      (int(*lin*), d3exp)
+      d3exp (*eval*)
+  | D3Elazy_vt_delay of (* delayed linear computation *)
+      (d3exp (*eval*), d3exp (*free*))
   | D3Elazy_force of (* lazy value evaluation *)
       (int(*linearity*), d3exp)
   | D3Elet of // dynamic let-expression
@@ -544,7 +546,8 @@ fun d3exp_lam_sta
 
 (* ****** ****** *)
 
-fun d3exp_lazy_delay (_: loc_t, _: s2exp, lin: int, _: d3exp): d3exp
+fun d3exp_lazy_delay (_: loc_t, _: s2exp, _: d3exp): d3exp
+fun d3exp_lazy_vt_delay (_: loc_t, _: s2exp, _: d3exp, _: d3exp): d3exp
 
 fun d3exp_lazy_force (_: loc_t, _: s2exp, lin: int, _: d3exp): d3exp
 

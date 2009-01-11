@@ -35,7 +35,7 @@ val N2s: stream N2 = from 2 where {
 fun sieve (ns: stream N2):<1,~ref> stream N2 =
   // [val-] means no warning message from the compiler
   let val- n :: ns = !ns in
-     $delay (n :: sieve (stream_filter<N2> (ns, lam x => x nmod n > 0)))
+     $delay (n :: sieve (stream_filter_cloref<N2> (ns, lam x => x nmod n > 0)))
   end
 
 val primes: stream N2 = sieve N2s
@@ -51,7 +51,7 @@ val // the following values are defined mutually recursively
 rec fibs_1: stream int64 = $delay (one :: fibs_2) // fib1, fib2, ...
 and fibs_2: stream int64 = $delay (one :: fibs_3) // fib2, fib3, ...
 and fibs_3: stream int64 = ( // fib3, fib4, ...
-  stream_map2<int64,int64,int64> (fibs_1, fibs_2, lam (x, y) => x + y)
+  stream_map2_fun<int64,int64,int64> (fibs_1, fibs_2, lam (x, y) => x + y)
 )
 // find the nth Fibonacci number
 fn nfib {n:pos} (n: int n): int64 = stream_nth (fibs_1, n-1)

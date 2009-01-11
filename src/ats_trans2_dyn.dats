@@ -1442,7 +1442,35 @@ in
     in
       d2exp_lam_sta (loc0, s2vs, s2ps, d2e)
     end // end of [D1Elam_sta_syn]
-  | D1Elazy_delay (lin, d1e) => d2exp_lazy_delay (loc0, lin, d1exp_tr d1e)
+  | D1Elazy_delay (lin, d1e) => begin case+ 0 of
+    | _ when lin = 0 => let
+        val d2e = d1exp_tr d1e in d2exp_lazy_delay (loc0, d2e)
+      end // end of [_ when lin = 0]
+    | _ (* lin = 1 *) => begin case+ d1e.d1exp_node of
+      | D1Elist (_(*npf*), d1es) => begin case+ d1es of
+        | cons (d1e1, cons (d1e2, nil ())) => let
+            val d2e1 = d1exp_tr d1e1 and d2e2 = d1exp_tr d1e2
+          in
+            d2exp_lazy_vt_delay (loc0, d2e1, d2e2)
+          end // end of [cons (_, cons (_, nil))]
+        | _ => let
+            val n = $Lst.list_length d1es; val () = begin
+              prerr loc0; prerr ": error(2)";
+              if n > 2 then prerr ": less argumnets should be given.";
+              if n < 2 then prerr ": more argumnets should be given.";
+              prerr_newline ()
+            end // end of [val]
+          in
+            $Err.abort {d2exp} ()
+          end // end of [_]
+        end // end of [D1Elist]
+      | _ => let
+          val d2e1 = d1exp_tr d1e and d2e2 = d2exp_empty (d1e.d1exp_loc)
+        in
+          d2exp_lazy_vt_delay (loc0, d2e1, d2e2)
+        end // end of [_]
+      end // end of [_ when lin = 1]
+    end // end of [D1Elazy_delay]
   | D1Elet (d1cs, d1e) => let
       val (pf_env | ()) = trans2_env_push ()
       val d2cs = d1eclst_tr d1cs; val d2e = d1exp_tr d1e
@@ -1452,10 +1480,8 @@ in
     end // end of [D1Elet]
   | D1Elist (npf, d1es) => begin case+ d1es of
     | cons _ => let
-        val d2es = d1explst_tr d1es
-      in
-        d2exp_tup (loc0, 0, npf, d2es)
-      end
+        val d2es = d1explst_tr d1es in d2exp_tup (loc0, 0, npf, d2es)
+      end // end of [cons]
     | nil () => d2exp_empty (loc0)
     end // end of [D1Elist]
   | D1Eloopexn flag => d2exp_loopexn (loc0, flag)

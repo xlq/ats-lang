@@ -36,29 +36,34 @@
 
 (* ****** ****** *)
 
-exception StreamSubscriptException
+fun{a:t@ype} stream_filter_fun
+  (xs: stream a, p: a -<1,~ref> bool):<1,~ref> stream a
+
+fun{a:t@ype} stream_filter_cloref
+  (xs: stream a, p: a -<cloref1,~ref> bool):<1,~ref> stream a
 
 (* ****** ****** *)
 
-fun{a:t@ype} stream_filter
-  (xs: stream a, p: a -<cloptr1,~ref> bool):<1,~ref> stream a
+fun{a,b:t@ype} stream_map_fun
+  (xs: stream a, f: a -<1,~ref> b):<1,~ref> stream b
 
-fun{a:t@ype} stream_vt_filter
-  (xs: stream_vt a, p: a -<cloptr1,~ref> bool):<1,~ref> stream_vt a
+fun{a,b:t@ype} stream_map_cloref
+  (xs: stream a, f: a -<cloref1,~ref> b):<1,~ref> stream b
 
 (* ****** ****** *)
 
-fun{a,b:t@ype} stream_map
-  (xs: stream a, f: a -<cloptr1,~ref> b):<1,~ref> stream b
+fun{a1,a2,b:t@ype} stream_map2_fun
+  (xs1: stream a1, xs2: stream a2, f: (a1, a2) -<1,~ref> b)
+  :<1,~ref> stream b
 
-fun{a1,a2,b:t@ype} stream_map2
-  (xs1: stream a1, xs2: stream a2, f: (a1, a2) -<cloptr1,~ref> b)
+fun{a1,a2,b:t@ype} stream_map2_cloref
+  (xs1: stream a1, xs2: stream a2, f: (a1, a2) -<cloref1,~ref> b)
   :<1,~ref> stream b
 
 (* ****** ****** *)
 
 fun{a:t@ype} stream_merge_ord
-  (xs1: stream a, xs2: stream a, lte: (a, a) -<cloptr1,~ref> bool)
+  (xs1: stream a, xs2: stream a, lte: (a, a) -<cloref1,~ref> bool)
   :<1,~ref> stream a
 
 (* ****** ****** *)

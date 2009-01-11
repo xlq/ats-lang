@@ -582,6 +582,9 @@ clean::
 	rm -f $(DIR)/ats_grammar_yats.output
 	rm -f $(DIR)/*~
 
+cleanall: clean
+	rm -f atsopt
+
 ######
 
 #depend: ; ./atsopt -dep -s $(SOURCESsta) -d $(SOURCESdyn) >! .depend

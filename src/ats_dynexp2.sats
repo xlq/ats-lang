@@ -602,7 +602,9 @@ and d2exp_node =
   | D2Elam_sta of (* static abstraction *)
       (s2varlst, s2explst, d2exp)
   | D2Elazy_delay of (* delayed computation *)
-      (int(*lin*), d2exp)
+      d2exp (*eval*)
+  | D2Elazy_vt_delay of (* delayed computation *)
+      (d2exp (*eval*), d2exp (*free*))
   | D2Elet of (* dynamic let-expression *)
       (d2eclst, d2exp)
   | D2Eloopexn of (* break: 0 and continue: 1 *)
@@ -1038,7 +1040,12 @@ fun d2exp_lam_sta
 fun d2exp_lam_sta_para
   (_: loc_t, _: s2varlst, _: s2explst, body: d2exp): d2exp
 
-fun d2exp_lazy_delay (_: loc_t, lin: int, _: d2exp): d2exp
+//
+
+fun d2exp_lazy_delay (_: loc_t, _: d2exp): d2exp
+fun d2exp_lazy_vt_delay (_: loc_t, _: d2exp, _: d2exp): d2exp
+
+//
 
 fun d2exp_let (_: loc_t, _: d2eclst, _: d2exp): d2exp
 

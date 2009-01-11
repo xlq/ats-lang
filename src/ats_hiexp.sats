@@ -359,7 +359,9 @@ and hiexp_node =
   | HIElam of (* lambda-abstraction *)
       (hipatlst, hiexp)
   | HIElazy_delay of (* delayed computation *)
-      (int(*lin*), hiexp)
+      hiexp (*eval*)
+  | HIElazy_vt_delay of (* delayed linear computation *)
+      (hiexp (*eval*), hiexp (*free*))
   | HIElazy_force of (* lazy value evaluation *)
       (int(*linearity*), hiexp)
   | HIElet of (* let-expression *)
@@ -609,7 +611,10 @@ fun hiexp_lam
 (* ****** ****** *)
 
 fun hiexp_lazy_delay
-  (_: loc_t, _body: hityp, lin: int, _body: hiexp): hiexp
+  (_: loc_t, _body: hityp, _eval: hiexp): hiexp
+
+fun hiexp_lazy_vt_delay
+  (_: loc_t, _body: hityp, _eval: hiexp, _free: hiexp): hiexp
 
 fun hiexp_lazy_force
   (_: loc_t, _val: hityp, lin: int, _lazyval: hiexp): hiexp

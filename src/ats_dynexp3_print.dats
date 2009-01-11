@@ -326,13 +326,16 @@ in
       fprint_d3exp (pf | out, d3e);
       strpr ")"
     end // end of [D3Elam_sta]
-  | D3Elazy_delay (lin, d3e) => begin
-      strpr "D3Elazy_delay(";
-      fprint1_int (pf | out, lin);
-      strpr "; ";
-      fprint_d3exp (pf | out, d3e);
-      strpr ")"
+  | D3Elazy_delay (d3e) => begin
+      strpr "D3Elazy_delay("; fprint_d3exp (pf | out, d3e); strpr ")"
     end // end of [D3Elazy_delay]
+  | D3Elazy_vt_delay (d3e_eval, d3e_free) => begin
+      strpr "D3Elazy_delay(";
+      fprint_d3exp (pf | out, d3e_eval);
+      strpr "; ";
+      fprint_d3exp (pf | out, d3e_free);
+      strpr ")"
+    end // end of [D3Elazy_vt_delay]
   | D3Elazy_force (lin, d3e) => begin
       strpr "D3Elazy_force(";
       fprint_int (pf | out, lin);

@@ -411,16 +411,19 @@ in
       fprint_d2exp (pf | out, d2e);
       strpr ")"
     end // end of [D2Ecrypt]
-  | D2Elazy_delay (lin, d2e) => begin
-      strpr "D2Elazy_delay(";
-      fprint1_int (pf | out, lin);
-      strpr "; ";
-      fprint_d2exp (pf | out, d2e);
-      strpr ")"
+  | D2Elazy_delay (d2e) => begin
+      strpr "D2Elazy_delay("; fprint_d2exp (pf | out, d2e); strpr ")"
     end // end of [D2Elazy_delay]
+  | D2Elazy_vt_delay (d2e_eval, d2e_free) => begin
+      strpr "D2Elazy_vt_delay(";
+      fprint_d2exp (pf | out, d2e_eval);
+      strpr "; ";
+      fprint_d2exp (pf | out, d2e_free);
+      strpr ")"
+    end // end of [D2Elazy_vt_delay]
   | D2Ederef d2e => begin
       strpr "D2Ederef("; fprint_d2exp (pf | out, d2e); strpr ")"
-    end
+    end // end of [D2Ederef]
   | D2Edynload (fil) => begin
       strpr "D2Edynload("; $Fil.fprint_filename (pf | out, fil); strpr ")"
     end // end of [D2Edynload]

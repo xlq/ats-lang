@@ -45,7 +45,6 @@
 local // for call-by-need lazy evaluation
 
 assume lazy_t0ype_type (a:t@ype) = ref (thunkvalue a)
-assume lazy_viewt0ype_viewtype (a:viewt@ype) = thunkvalue_vt a
 
 in
 
@@ -64,22 +63,6 @@ in
     // end of [thunkvalue_value]
 end // end of [lazy_force_crypt]
 
-//
-
-implement{a} lazy_vt_force_crypt (v_lazy) = begin
-  case+ $decrypt (v_lazy) of
-  | ~thunkvalue_vt_thunk (xf) => let
-      stavar T: t@ype
-      val x = $effmask_ref((xf: () -<lin,cloptr1> a) ())
-      val (pf_gc, pf_at | p) = cloptr_get_view_ptr {T} (xf)
-    in
-      ptr_free (pf_gc, pf_at | p); x
-    end // end of [thunkvalue_vt_thunk]
-  | ~thunkvalue_vt_value (x) => x
-end // end of [lazy_vt_force_crypt]
-
-end // end of [local]
-
 *)
 
 (* ****** ****** *)
@@ -90,87 +73,67 @@ end // end of [local]
 
 (* ****** ****** *)
 
-fun{a:t@ype} stream_filter_con
-  (xs: stream a, p: a -<cloptr1,~ref> bool)
-  :<1,~ref> stream_con a = begin
-  case+ !xs of
+fun{a:t@ype} stream_filter_cloref_con
+  (xs: stream a, p: a -<cloref1,~ref> bool)
+  :<1,~ref> stream_con a = begin case+ !xs of
   | stream_cons (x, xs) => begin
-      if p x then stream_cons (x, stream_filter<a> (xs, p))
-      else stream_filter_con (xs, p)
-    end
-  | stream_nil () => begin
-      cloptr_free p; stream_nil ()
-    end
-end // end of [stream_filter_con]
+      if p x then stream_cons (x, stream_filter_cloref<a> (xs, p))
+      else stream_filter_cloref_con (xs, p)
+    end // end of [stream_cons]
+  | stream_nil () => stream_nil ()
+end // end of [stream_filter_cloref_con]
 
-implement{a} stream_filter (xs, p) =
-  $delay (stream_filter_con<a> (xs, p))
-
-fun{a:t@ype} stream_vt_filter_con
-  (xs: stream_vt a, p: a -<cloptr1,~ref> bool)
-  :<1,~ref> stream_vt_con a = let
-  val xs_con = !xs
-in
-  case+ xs_con of
-  | stream_vt_cons (x, !xs_ptr) => begin
-      if p x then let
-        val xs_val = !xs_ptr
-        val () = !xs_ptr := stream_vt_filter (xs_val, p)
-      in
-        fold@ {a} (xs_con); xs_con
-      end else let
-        val xs_val = !xs_ptr
-      in
-        free@ {a} (xs_con); stream_vt_filter_con (xs_val, p)
-      end
-    end
-  | stream_vt_nil () => begin
-      fold@ xs_con; cloptr_free p; xs_con
-    end
-end // end of [stream_vt_filter_con]
-
-implement{a} stream_vt_filter (xs, p) =
-  $delay (stream_vt_filter_con<a> (xs, p))
+implement{a} stream_filter_fun (xs, p) =
+  $delay (stream_filter_cloref_con<a> (xs, lam x => p x))
+  
+implement{a} stream_filter_cloref (xs, p) =
+  $delay (stream_filter_cloref_con<a> (xs, p))
 
 (* ****** ****** *)
 
-fun{a,b:t@ype} stream_map_con
-  (xs: stream a, f: a -<cloptr1,~ref> b)
+fun{a,b:t@ype} stream_map_cloref_con
+  (xs: stream a, f: a -<cloref1,~ref> b)
   :<1,~ref> stream_con b = begin
   case+ !xs of
-  | x :: xs => f x :: $delay (stream_map_con (xs, f))
-  | nil () => (cloptr_free f; nil ())
+  | stream_cons (x, xs) => f x :: $delay (stream_map_cloref_con (xs, f))
+  | stream_nil () => stream_nil ()
 end // end of [stream_map_con]
 
-implement{a,b} stream_map (xs, f) =
-  $delay (stream_map_con<a,b> (xs, f))
+implement{a,b} stream_map_fun (xs, f) =
+  $delay (stream_map_cloref_con<a,b> (xs, lam x => f x))
 
-//
+implement{a,b} stream_map_cloref (xs, f) =
+  $delay (stream_map_cloref_con<a,b> (xs, f))
 
-fun{a1,a2,b:t@ype} stream_map2_con (
+(* ****** ****** *)
+
+fun{a1,a2,b:t@ype} stream_map2_cloref_con (
     xs1: stream a1
   , xs2: stream a2
-  , f: (a1, a2) -<cloptr1,~ref> b
-  ) :<1,~ref> stream_con b = begin
-  case+ !xs1 of
+  , f: (a1, a2) -<cloref1,~ref> b
+  ) :<1,~ref> stream_con b = begin case+ !xs1 of
   | x1 :: xs1 => begin case+ !xs2 of
     | x2 :: xs2 => begin
-        f (x1, x2) :: $delay (stream_map2_con<a1,a2,b> (xs1, xs2, f))
+        f (x1, x2) :: $delay (stream_map2_cloref_con<a1,a2,b> (xs1, xs2, f))
       end
-    | nil () => let val () = cloptr_free f in nil () end
-    end
-  | nil () => let val () = cloptr_free f in nil () end
+    | nil () => nil ()
+    end // end of [::]
+  | nil () => nil ()
 end // end of [stream_map2_con]
 
-implement{a1,a2,b} stream_map2 (xs1, xs2, f) =
-  $delay (stream_map2_con<a1,a2,b> (xs1, xs2, f))
+implement{a1,a2,b} stream_map2_fun (xs1, xs2, f) = $delay (
+  stream_map2_cloref_con<a1,a2,b> (xs1, xs2, lam (x1, x2) => f (x1, x2))
+) // end of [stream_map2_fun]
+
+implement{a1,a2,b} stream_map2_cloref (xs1, xs2, f) =
+  $delay (stream_map2_cloref_con<a1,a2,b> (xs1, xs2, f))
 
 (* ****** ****** *)
 
 fun{a:t@ype} stream_merge_ord_con (
     xs10: stream a
   , xs20: stream a
-  , lte: (a, a) -<cloptr1,~ref> bool
+  , lte: (a, a) -<cloref1,~ref> bool
   ) :<1,~ref> stream_con a = begin
   case+ !xs10 of
   | x1 :: xs1 => begin case+ !xs20 of
@@ -179,15 +142,11 @@ fun{a:t@ype} stream_merge_ord_con (
           x1 :: stream_merge_ord (xs1, xs20, lte)
         end else begin
           x2 :: $delay (stream_merge_ord_con (xs10, xs2, lte))
-        end
+        end // end of [if]
       end // end of [::]
-    | nil () => begin
-        let val () = cloptr_free lte in x1 :: xs1 end
-      end // end of [nil]
+    | nil () => x1 :: xs1
     end // end of [::]
-  | nil () => begin
-      let val () = cloptr_free lte in !xs20 end
-    end // end of [nil]
+  | nil () => !xs20
 end // end of [stream_merge_ord_con]
 
 implement{a} stream_merge_ord (xs10, xs20, lte) =
@@ -195,10 +154,9 @@ implement{a} stream_merge_ord (xs10, xs20, lte) =
 
 (* ****** ****** *)
 
-implement{a} stream_nth (xs, n) = begin
-  case+ !xs of
-    | x :: xs => if n = 0 then x else stream_nth<a> (xs, n-1)
-    | nil () => $raise StreamSubscriptException
+implement{a} stream_nth (xs, n) = begin case+ !xs of
+  | x :: xs => if n = 0 then x else stream_nth<a> (xs, n-1)
+  | nil () => $raise (SubscriptException)
 end // end of [stream_nth]
 
 (* ****** ****** *)

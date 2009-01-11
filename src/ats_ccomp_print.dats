@@ -524,9 +524,9 @@ in
       fprint_tmpvar (pf | out, tmp);
       strpr "; ";
       fprint_int (pf | out, lin);
-      strpr ";";
+      strpr "; ";
       fprint_hityp (pf | out, hityp_decode hit);
-      strpr ";";
+      strpr "; ";
       fprint_valprim (pf | out, vp);
       strpr ")"
     end // end of [INSTRlazy_force]
@@ -535,9 +535,9 @@ in
       fprint_tmpvar (pf | out, tmp);
       strpr "; ";
       fprint_int (pf | out, lin);
-      strpr ";";
+      strpr "; ";
       fprint_hityp (pf | out, hityp_decode hit);
-      strpr ";";
+      strpr "; ";
       fprint_valprim (pf | out, vp);
       strpr ")"
     end // end of [INSTRlazy_force]

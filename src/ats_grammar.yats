@@ -1223,6 +1223,7 @@ guad0ec_t guad0ec ;
 
 %token <t0kn> DLRDECRYPT
 %token <t0kn> DLRDELAY
+%token <t0kn> DLRDELAYVT
 %token <t0kn> DLRDYNLOAD
 %token <t0kn> DLREFFMASK_ALL
 %token <t0kn> DLREFFMASK_EXN
@@ -2462,6 +2463,7 @@ atmd0exp
   | DLRDECRYPT                          { $$ = d0exp_crypt (-1, $1) ; }
   | DLRENCRYPT                          { $$ = d0exp_crypt ( 1, $1) ; }
   | DLRDELAY                            { $$ = d0exp_delay(0, $1) ; }
+  | DLRDELAYVT                          { $$ = d0exp_delay(1, $1) ; }
   | DLRDYNLOAD                          { $$ = d0exp_dynload($1) ; }
   | DLREFFMASK_ALL                      { $$ = d0exp_effmask_all($1) ; }
   | DLREFFMASK_EXN                      { $$ = d0exp_effmask_exn($1) ; }
