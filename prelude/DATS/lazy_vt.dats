@@ -71,24 +71,6 @@ end // end of [local]
 
 (* ****** ****** *)
 
-fun{a:t@ype} stream_filter_cloref_con
-  (xs: stream a, p: a -<cloref1,~ref> bool)
-  :<1,~ref> stream_con a = begin case+ !xs of
-  | stream_cons (x, xs) => begin
-      if p x then stream_cons (x, stream_filter_cloref<a> (xs, p))
-      else stream_filter_cloref_con (xs, p)
-    end // end of [stream_cons]
-  | stream_nil () => stream_nil ()
-end // end of [stream_filter_cloref_con]
-
-implement{a} stream_filter_fun (xs, p) =
-  $delay (stream_filter_cloref_con<a> (xs, lam x => p x))
-  
-implement{a} stream_filter_cloref (xs, p) =
-  $delay (stream_filter_cloref_con<a> (xs, p))
-
-(* ****** ****** *)
-
 fun{a:t@ype} stream_vt_filter_cloptr_con
   (xs: stream_vt a, p: a -<cloptr1,~ref> bool)
   :<1,~ref> stream_vt_con a = let
@@ -118,6 +100,36 @@ implement{a} stream_vt_filter_fun (xs, p) =
 
 implement{a} stream_vt_filter_cloptr (xs, p) =
   $delay_vt (stream_vt_filter_cloptr_con<a> (xs, p), (cloptr_free p; ~xs))
+
+(* ****** ****** *)
+
+fun{a1,a2,b:t@ype} stream_vt_map2_cloptr_con (
+    xs1: stream_vt a1
+  , xs2: stream_vt a2
+  , f: (a1, a2) -<cloptr1,~ref> b
+  ) :<1,~ref> stream_vt_con b = begin case+ !xs1 of
+  | ~(x1 :: xs1) => begin case+ !xs2 of
+    | ~(x2 :: xs2) => y :: ys where {
+        val y = f (x1, x2)
+        val ys = $delay_vt (
+          stream_vt_map2_cloptr_con<a1,a2,b> (xs1, xs2, f)
+        , (~xs1; ~xs2; cloptr_free f)
+        ) // end of [val ys]
+      } // end of [::]
+    | ~nil () => (~xs1; cloptr_free f; nil ())
+    end // end of [::]
+  | ~nil () => (~xs2; cloptr_free f; nil ())
+end // end of [stream_map2_con]
+
+implement{a1,a2,b} stream_vt_map2_fun (xs1, xs2, f) = $delay_vt (
+  stream_vt_map2_cloptr_con<a1,a2,b> (xs1, xs2, lam (x1, x2) => f (x1, x2))
+, (~xs1; ~xs2)
+) // end of [stream_map2_fun]
+
+implement{a1,a2,b} stream_vt_map2_cloptr (xs1, xs2, f) = $delay_vt (
+  stream_vt_map2_cloptr_con<a1,a2,b> (xs1, xs2, f)
+, (~xs1; ~xs2; cloptr_free f)
+)
 
 (* ****** ****** *)
 

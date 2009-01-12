@@ -183,7 +183,7 @@ implement template_name_make (basename, hitss) = let
 
   fun aux_string {n,i:nat | i <= n}
      (cs: &T, i: int i, s: string n): void = begin
-    if string1_is_at_end (s, i) then () else begin
+    if string_is_at_end (s, i) then () else begin
       cs := $CS.CHARLSTcons (s[i], cs); aux_string (cs, i+1, s)
     end // end of [if]
   end // end of [aux_string]
@@ -192,7 +192,7 @@ implement template_name_make (basename, hitss) = let
     (cs: &T, hit: hityp): void = let
     val HITNAM (knd, name) = hit.hityp_name
     val name = (if knd > 0 then PTR_TYPE_NAME else name): string
-    val name = string1_of_string0 name
+    val name = string1_of_string name
   in
     aux_string (cs, 0, name)
   end // end of [aux_hityp]
@@ -220,7 +220,7 @@ implement template_name_make (basename, hitss) = let
   end // end of [aux_hityplstlst]
 
   var cs: T = $CS.CHARLSTnil ()
-  val basename = string1_of_string0 (basename)
+  val basename = string1_of_string (basename)
   val () = aux_string (cs, 0, basename)
   val () = aux_hityplstlst (cs, hityplstlst_decode hitss)
 in

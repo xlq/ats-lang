@@ -18,10 +18,10 @@ staload "prelude/DATS/lazy.dats"
 
 (* ****** ****** *)
 
-fn lte (x: Nat, y: Nat):<cloptr> bool = x <= y
+fn lte (x: Nat, y: Nat):<cloref> bool = x <= y
 
 fn scale (S: stream Nat, n: Nat):<1,~ref> stream Nat =
-  stream_map<Nat, Nat> (S, lam x => n nmul x)
+  stream_map_cloref<Nat, Nat> (S, lam x => n nmul x)
 
 val rec S: stream Nat = $delay (
   1 :: stream_merge_ord (stream_merge_ord (scale (S, 2), scale (S, 3), lte), scale (S, 5), lte)

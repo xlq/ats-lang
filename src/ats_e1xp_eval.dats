@@ -65,10 +65,12 @@ fn is_debug (): bool = $Deb.debug_flag_get () > 0
 
 (* ****** ****** *)
 
-implement v1al_is_true (v) = begin
-  case+ v of
-  | V1ALchar c => c <> '\0' | V1ALfloat f => f <> 0.0
-  | V1ALint i => i <> 0 | V1ALstring s => string0_isnot_empty s
+implement v1al_is_true (v) = begin case+ v of
+  | V1ALchar c => c <> '\0'
+  | V1ALfloat f => f <> 0.0 | V1ALint i => i <> 0
+  | V1ALstring s => let
+      val s = string1_of_string s in string_isnot_empty s
+    end // end of [V1ALstring]
 end // end of [v1al_is_true]
 
 (* ****** ****** *)
@@ -224,8 +226,7 @@ end // end of [e1xp_eval_defined]
   
 and e1xp_eval_add
   (loc: loc_t, e1: e1xp, e2: e1xp): v1al = let
-  val v1 = e1xp_eval e1
-  val v2 = e1xp_eval e2
+  val v1 = e1xp_eval e1; val v2 = e1xp_eval e2
 in
   case+ (v1, v2) of
   | (V1ALfloat f1, V1ALfloat f2) => V1ALfloat (f1 + f2)
@@ -238,8 +239,7 @@ end // end of [e1xp_eval_add]
 
 and e1xp_eval_sub
   (loc: loc_t, e1: e1xp, e2: e1xp): v1al = let
-  val v1 = e1xp_eval e1
-  val v2 = e1xp_eval e2
+  val v1 = e1xp_eval e1; val v2 = e1xp_eval e2
 in
   case+ (v1, v2) of
   | (V1ALfloat f1, V1ALfloat f2) => V1ALfloat (f1 - f2)
@@ -251,8 +251,7 @@ end // end of [e1xp_eval_sub]
 
 and e1xp_eval_mul
   (loc: loc_t, e1: e1xp, e2: e1xp): v1al = let
-  val v1 = e1xp_eval e1
-  val v2 = e1xp_eval e2
+  val v1 = e1xp_eval e1; val v2 = e1xp_eval e2
 in
   case+ (v1, v2) of
   | (V1ALfloat f1, V1ALfloat f2) => V1ALfloat (f1 * f2)
@@ -264,8 +263,7 @@ end // end of [e1xp_eval_mul]
 
 and e1xp_eval_div
   (loc: loc_t, e1: e1xp, e2: e1xp): v1al = let
-  val v1 = e1xp_eval e1
-  val v2 = e1xp_eval e2
+  val v1 = e1xp_eval e1; val v2 = e1xp_eval e2
 in
   case+ (v1, v2) of
   | (V1ALfloat f1, V1ALfloat f2) => V1ALfloat (f1 / f2)
@@ -277,8 +275,7 @@ end // end of [e1xp_eval_div]
 
 and e1xp_eval_lt
   (loc: loc_t, e1: e1xp, e2: e1xp): v1al = let
-  val v1 = e1xp_eval e1
-  val v2 = e1xp_eval e2
+  val v1 = e1xp_eval e1; val v2 = e1xp_eval e2
 in
   case+ (v1, v2) of
   | (V1ALfloat f1, V1ALfloat f2) =>
@@ -294,8 +291,7 @@ end // end of [e1xp_eval_lt]
 
 and e1xp_eval_lte
   (loc: loc_t, e1: e1xp, e2: e1xp): v1al = let
-  val v1 = e1xp_eval e1
-  val v2 = e1xp_eval e2
+  val v1 = e1xp_eval e1; val v2 = e1xp_eval e2
 in
   case+ (v1, v2) of
   | (V1ALfloat f1, V1ALfloat f2) =>
@@ -311,8 +307,7 @@ end // end of [e1xp_eval_lte]
 
 and e1xp_eval_gt
   (loc: loc_t, e1: e1xp, e2: e1xp): v1al = let
-  val v1 = e1xp_eval e1
-  val v2 = e1xp_eval e2
+  val v1 = e1xp_eval e1; val v2 = e1xp_eval e2
 in
   case+ (v1, v2) of
   | (V1ALfloat f1, V1ALfloat f2) =>
@@ -328,8 +323,7 @@ end // end of [e1xp_eval_get]
 
 and e1xp_eval_gte
   (loc: loc_t, e1: e1xp, e2: e1xp): v1al = let
-  val v1 = e1xp_eval e1
-  val v2 = e1xp_eval e2
+  val v1 = e1xp_eval e1; val v2 = e1xp_eval e2
 in
   case+ (v1, v2) of
   | (V1ALfloat f1, V1ALfloat f2) =>
@@ -345,8 +339,7 @@ end // end of [e1xp_eval_gte]
 
 and e1xp_eval_eq
   (loc: loc_t, e1: e1xp, e2: e1xp): v1al = let
-  val v1 = e1xp_eval e1
-  val v2 = e1xp_eval e2
+  val v1 = e1xp_eval e1; val v2 = e1xp_eval e2
 in
   case+ (v1, v2) of
   | (V1ALint i1, V1ALint i2) =>
@@ -360,8 +353,7 @@ end // end of [e1xp_eval_eq]
 
 and e1xp_eval_neq
   (loc: loc_t, e1: e1xp, e2: e1xp): v1al = let
-  val v1 = e1xp_eval e1
-  val v2 = e1xp_eval e2
+  val v1 = e1xp_eval e1; val v2 = e1xp_eval e2
 in
   case+ (v1, v2) of
   | (V1ALint i1, V1ALint i2) =>
@@ -375,20 +367,21 @@ end // end of [e1xp_eval_neq]
 
 and e1xp_eval_and
   (loc: loc_t, e1: e1xp, e2: e1xp): v1al = let
-  val v1 = e1xp_eval e1
-  val v2 = e1xp_eval e2
+  val v1 = e1xp_eval e1; val v2 = e1xp_eval e2
 in
   case+ (v1, v2) of
   | (V1ALint i1, V1ALint i2) => begin
       if i1 = 0 then V1ALint 0
       else if i2 = 0 then V1ALint 0
       else V1ALint 1
-    end
-  | (V1ALstring s1, V1ALstring s2) => begin
-      if string0_is_empty s1 then V1ALint 0
-      else if string0_is_empty s1 then V1ALint 0
+    end // end of [V1ALint, V1ALint]
+  | (V1ALstring s1, V1ALstring s2) => let
+      val s1 = string1_of_string s1 and s2 = string1_of_string s2
+    in
+      if string_is_empty s1 then V1ALint 0
+      else if string_is_empty s1 then V1ALint 0
       else V1ALint 1
-    end
+    end // end of [V1ALstring, V1ALstring]
   | (_, _) => begin
       e1xp_eval_opr_errmsg (loc, $Sym.symbol_AND)
     end // end of [(_, _)]
@@ -396,30 +389,30 @@ end // end of [e1xp_eval_and]
 
 and e1xp_eval_or
   (loc: loc_t, e1: e1xp, e2: e1xp): v1al = let
-  val v1 = e1xp_eval e1
-  val v2 = e1xp_eval e2
+  val v1 = e1xp_eval e1; val v2 = e1xp_eval e2
 in
   case+ (v1, v2) of
   | (V1ALint i1, V1ALint i2) => begin
       if i1 <> 0 then V1ALint 1
       else if i2 <> 0 then V1ALint 1
       else V1ALint 0
-    end
-  | (V1ALstring s1, V1ALstring s2) => begin
-      if string0_isnot_empty s1 then V1ALint 1
-      else if string0_isnot_empty s2 then V1ALint 1
+    end // end of [V1ALint, V1ALint]
+  | (V1ALstring s1, V1ALstring s2) => let
+      val s1 = string1_of_string s1 and s2 = string1_of_string s2
+    in
+      if string_isnot_empty s1 then V1ALint 1
+      else if string_isnot_empty s2 then V1ALint 1
       else V1ALint 0
-    end
+    end // end of [V1ALstring, V1ALstring]
   | (_, _) => begin
       e1xp_eval_opr_errmsg (loc, $Sym.symbol_OR)
-    end // end of [(_, _)]
+    end // end of [_, _]
 end // end of [e1xp_eval_or]
 
 (* arithmetic shift to the left *)
 and e1xp_eval_asl
   (loc: loc_t, e1: e1xp, e2: e1xp): v1al = let
-  val v1 = e1xp_eval e1
-  val v2 = e1xp_eval e2
+  val v1 = e1xp_eval e1; val v2 = e1xp_eval e2
 in
   case+ (v1, v2) of
   | (V1ALint i1, V1ALint i2) => let
@@ -444,8 +437,7 @@ end // end of [e1xp_eval_asl]
 (* arithmetic shift to the right *)
 and e1xp_eval_asr
   (loc: loc_t, e1: e1xp, e2: e1xp): v1al = let
-  val v1 = e1xp_eval e1
-  val v2 = e1xp_eval e2
+  val v1 = e1xp_eval e1; val v2 = e1xp_eval e2
 in
   case+ (v1, v2) of
   | (V1ALint i1, V1ALint i2) => let
@@ -473,7 +465,7 @@ implement e1xp_eval (e0) = let
 (*
   val () = begin
     print "e1xp_eval: e0 = "; print e0; print_newline ()
-  end
+  end // end of [val]
 *)
 in
   case+ e0.e1xp_node of

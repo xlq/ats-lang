@@ -36,7 +36,7 @@ end // end of [loop]
 #else
 
 fun loop {l_buf:addr} (
-    pf_buf: !bytes(BUFSZ) @ l_buf
+    pf_buf: !b0ytes(BUFSZ) @ l_buf
   | file: &FILE r
   , buf: ptr l_buf
   , sum: int

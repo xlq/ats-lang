@@ -69,7 +69,7 @@ pcre *atslib_regexp_compile_exn
 (* ****** ****** *)
 
 implement test_regexp_match_str (re, str) = let
-  val str = string1_of_string0 (str); val len = string1_length (str)
+  val str = string1_of_string (str); val len = string_length (str)
 in
   test_regexp_match_str_len_ofs (re, str, len, 0(*ofs*))
 end // end of [test_regexp_match_str]
@@ -167,7 +167,7 @@ implement string_split_regexp (str, re) = let
         stream_nil ()
       end // end of [_]
 
-  val s0 = string1_of_string0 str; val n = string1_length s0
+  val s0 = string1_of_string str; val n = string_length s0
   val (pf_gc, pf_arr | p) = array_ptr_alloc_tsz {int} (3, sizeof<int>)
 in
   $delay loop (pf_gc, pf_arr | re, s0, n, 0, p)

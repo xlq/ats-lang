@@ -64,9 +64,9 @@ end
 #define nil STRLSTnil; #define :: STRLSTcons
 
 fn string_is_flag (s: string):<fun0> bool = let
-  val s = string1_of_string0 s
+  val s = string1_of_string s
 in
-  if string1_is_empty s then false else $effmask_ref (s[0] = '-')
+  if string_is_empty s then false else $effmask_ref (s[0] = '-')
 end // end of [string_is_flag]
 
 (* ****** ****** *)

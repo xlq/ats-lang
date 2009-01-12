@@ -132,8 +132,8 @@ val string_empty : string 0
 
 (* ****** ****** *)
 
-fun string1_of_string0 (s: string):<> [n:nat] string n
-  = "atspre_string1_of_string0"
+fun string1_of_string (s: string):<> [n:nat] string n
+  = "atspre_string1_of_string"
 
 fun string1_of_strbuf {m,n:nat} {l:addr}
   (pf: strbuf (m, n) @ l | p: ptr l) :<> string n
@@ -358,27 +358,37 @@ overload length with string_length
 
 (* ****** ****** *)
 
+symintr string_is_empty
+
 fun strbuf_is_empty {m,n:nat}
   (sb: &strbuf (m, n)):<> bool (n==0)
   = "atspre_string_is_empty"
+
 fun string0_is_empty (s: string):<> bool
   = "atspre_string_is_empty"
+
 fun string1_is_empty {n:nat} (s: string n):<> bool (n==0)
   = "atspre_string_is_empty"
 
+overload string_is_empty with string0_is_empty
+overload string_is_empty with string1_is_empty
+
 (* ****** ****** *)
+
+symintr string_isnot_empty
 
 fun strbuf_isnot_empty {m,n:nat}
   (sb: &strbuf (m, n)):<> bool (n > 0)
   = "atspre_string_isnot_empty"
+
 fun string0_isnot_empty (s: string):<> bool
   = "atspre_string_isnot_empty"
+
 fun string1_isnot_empty {n:nat} (s: string n):<> bool (n > 0)
   = "atspre_string_isnot_empty"
 
-overload ~ with strbuf_isnot_empty
-overload ~ with string0_isnot_empty
-overload ~ with string1_isnot_empty
+overload string_isnot_empty with string0_isnot_empty
+overload string_isnot_empty with string1_isnot_empty
 
 (* ****** ****** *)
 
@@ -386,7 +396,7 @@ fun strbuf_is_at_end
   {m,n,i:nat | i <= n} (sb: &strbuf (m, n), i: int i):<> bool (i == n)
   = "atspre_string_is_at_end"
 
-fun string1_is_at_end
+fun string_is_at_end
   {n,i:nat | i <= n} (s: string n, i: int i):<> bool (i == n)
   = "atspre_string_is_at_end"
 
@@ -396,7 +406,7 @@ fun string1_is_at_end
 fun strbuf_explode {m,n:nat} (sb: &strbuf (m, n)):<> list_vt (char, n)
   = "atspre_string_explode"
 
-fun string1_explode {n:nat} (s: string n):<> list_vt (char, n)
+fun string_explode {n:nat} (s: string n):<> list_vt (char, n)
   = "atspre_string_explode"
 
 (* ****** ****** *)
@@ -405,12 +415,12 @@ fun strbuf_get_char_at {m,n:nat}
   (sb: &strbuf (m, n), i: natLt n):<> [c:char | c <> NUL] char c
   = "atspre_string_get_char_at"
 
-fun string1_get_char_at {n:nat}
+fun string_get_char_at {n:nat}
   (s: string n, i: natLt n):<!ref> [c:char | c <> NUL] char c
   = "atspre_string_get_char_at"
 
 overload [] with strbuf_get_char_at
-overload [] with string1_get_char_at
+overload [] with string_get_char_at
 
 (* ****** ****** *)
 
@@ -418,17 +428,17 @@ fun strbuf_set_char_at {m,n:nat} {c: char | c <> NUL}
   (sb: &strbuf (m, n), i: natLt n, c: char c):<> void
   = "atspre_strbuf_set_char_at"
 
-fun string1_set_char_at {n:nat} {c:char | c <> NUL}
+fun string_set_char_at {n:nat} {c:char | c <> NUL}
   (s: string n, i: natLt n, c: char c):<!ref> void
   = "atspre_strbuf_set_char_at"
 
 overload [] with strbuf_set_char_at
-overload [] with string1_set_char_at
+overload [] with string_set_char_at
 
 (* ****** ****** *)
 
 // alias of [string_make_list]
-fun string1_implode {n:nat} (cs: list (char, n)):<> string n
+fun string_implode {n:nat} (cs: list (char, n)):<> string n
   = "atspre_string_make_list"
 
 (* ****** ****** *)
@@ -471,12 +481,12 @@ fun string_singleton (c: char):<> string 1
 
 // implemented in [prelude/DATS/string.dats]
 // a new string is created
-fun string1_tolower {n:nat} (s: string n):<> string n
+fun string_tolower {n:nat} (s: string n):<> string n
   = "atspre_string_tolower"
 
 // implemented in [prelude/DATS/string.dats]
 // a new string is created
-fun string1_toupper {n:nat} (s: string n):<> string n
+fun string_toupper {n:nat} (s: string n):<> string n
   = "atspre_string_toupper"
 
 (* ****** ****** *)

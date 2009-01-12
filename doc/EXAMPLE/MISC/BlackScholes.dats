@@ -65,7 +65,11 @@ Black-Scholes in C++
 
 By Espen Gaarder Haug
 
-C++: a bit harder than most other languages but very fast and powerful. After my opinion the Rolls Royce computer language for mathematical models where you need speed (for closed form solutions like Blacks-Scholes you are naturally doing fine in almost any language, but when it comes to large scale Monte Carlo C++ is really a plus).
+C++: a bit harder than most other languages but very fast and
+powerful. After my opinion the Rolls Royce computer language for
+mathematical models where you need speed (for closed form solutions like
+Blacks-Scholes you are naturally doing fine in almost any language, but
+when it comes to large scale Monte Carlo C++ is really a plus).
 
 #ifndef Pi 
 #define Pi 3.141592653589793238462643 

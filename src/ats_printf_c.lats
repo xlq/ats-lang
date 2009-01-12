@@ -128,7 +128,7 @@ val the_legal_zero_string: string = "aAdeEfFgGiouxX"
 
 fun flagstr_verify {n,i:nat | i <= n}
   (spec: char, flagstr: string n, i: int i): bool = begin
-  if string1_is_at_end (flagstr, i) then true else let
+  if string_is_at_end (flagstr, i) then true else let
     val flag = flagstr[i]
   in
     case+ flag of
@@ -153,12 +153,14 @@ fun flagstr_verify {n,i:nat | i <= n}
    end // end of [if]
 end // end of [flagstr_verify]
 
-fn precstr_verify (spec: char, precstr: string): bool =
-  if ~(precstr) then begin
+fn precstr_verify
+  (spec: char, precstr: string): bool = let
+  val precstr = string1_of_string precstr
+in
+  if string_is_empty precstr then true else begin
     string_contain_char (the_legal_prec_string, spec)
-  end else begin
-    true // [precstr] is empty
   end // end of [if]
+end // end of [precstr_verify]
 
 fn lenstr_translate
   (len: string): int = begin case+ len of
@@ -200,7 +202,7 @@ fn printf_c_output (
  , spec: char // special character
  ) : Option_vt (printf_c_argtype) = let
   var err: int = 0
-  val flagstr = string1_of_string0 flagstr
+  val flagstr = string1_of_string flagstr
   val ans = flagstr_verify (spec, flagstr, 0)
   val () = if (~ans) then (err := err + 1)
   val ans = precstr_verify (spec, precstr)

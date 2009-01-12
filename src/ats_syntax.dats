@@ -1295,7 +1295,7 @@ implement extnamopt_some (ext) = let
   end
 *)
 in
-  stropt_some (string1_of_string0 ext.s0tring_val)
+  stropt_some (string1_of_string ext.s0tring_val)
 end
 
 implement d0cstdec_make (id, arg, eff, res, ext) = let

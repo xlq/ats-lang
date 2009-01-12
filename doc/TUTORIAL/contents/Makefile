@@ -36,6 +36,7 @@ tutorial_all:
           pattern-matching.html \
           exceptions.html \
           lazy-evaluation.html \
+          llazy-evaluation.html \
           input-and-output.html \
           ATS-and-C.html \
           programming-with-theorem-proving.html \
@@ -76,6 +77,7 @@ ones::
 	$(FPROC) -one pattern-matching.html
 	$(FPROC) -one exceptions.html
 	$(FPROC) -one lazy-evaluation.html
+	$(FPROC) -one llazy-evaluation.html
 	$(FPROC) -one input-and-output.html
 	$(FPROC) -one ATS-and-C.html
 	$(FPROC) -one programming-with-theorem-proving.html
@@ -234,6 +236,11 @@ lazy-evaluation::
 	scp $(OUTPUT)/lazy-evaluation.html \
           ats-hwxi,ats-lang@web.sourceforge.net:htdocs/TUTORIAL/contents/
 
+llazy-evaluation::
+	$(FPROC) -one llazy-evaluation.html
+	scp $(OUTPUT)/llazy-evaluation.html \
+          ats-hwxi,ats-lang@web.sourceforge.net:htdocs/TUTORIAL/contents/
+
 input-and-output::
 	$(FPROC) -one input-and-output.html
 	scp $(OUTPUT)/input-and-output.html \
@@ -271,6 +278,7 @@ typecheck::
 	atscc  variadicity.dats
 	atscc  -tc pattern-matching.dats
 	atscc  lazy-evaluation.dats
+	atscc  llazy-evaluation.dats
 	atscc  input-and-output.dats
 	atscc  ATS-and-C.dats
 	atscc  programming-with-theorem-proving.dats

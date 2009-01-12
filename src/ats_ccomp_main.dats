@@ -144,9 +144,9 @@ end // end of [emit_include_cats]
 (* ****** ****** *)
 
 fn atarray_name_test (name: string): bool = let
-  val name = string1_of_string0 name
+  val name = string1_of_string name
 in
-  if string1_is_at_end (name, 0) then false else eq_char_char (name[0], '\[')
+  if string_is_at_end (name, 0) then false else eq_char_char (name[0], '\[')
 end // end of [atarray_name_test]
 
 fn fprint_atarray_name {m:file_mode}
@@ -155,7 +155,7 @@ fn fprint_atarray_name {m:file_mode}
   fun aux {n,i:nat | i <= n}
     (out: &FILE m, name: string n, i: int i)
     : void = begin
-    if string1_is_at_end (name, i) then ()
+    if string_is_at_end (name, i) then ()
     else let
       val c = name[i]
     in
@@ -164,9 +164,9 @@ fn fprint_atarray_name {m:file_mode}
       end
     end // end of [if]
   end // end of [aux]
-  val name = string1_of_string0 name
+  val name = string1_of_string name
 in
-  if string1_is_at_end (name, 0) then () else aux (out, name, 1)
+  if string_is_at_end (name, 0) then () else aux (out, name, 1)
 end // end of [fprint_atarray_name]
 
 fn emit_typdef_rec {m:file_mode} 

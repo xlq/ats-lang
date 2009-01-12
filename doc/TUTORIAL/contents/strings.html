@@ -20,53 +20,53 @@ type and a type constructor of the sort <i>int -&gt; type</i>.  The type
 following casting function is relating the former to the latter:
 
 <pre>
-castfn string1_of_string0 (s: string): [n:nat] string n
+castfn string1_of_string (s: string): [n:nat] string n
 </pre>
 
 <H4>Common Functions for Processing Strings</H4>
 
-The following function <i>string1_is_at_end</i> is of great use for
+The following function <i>string_is_at_end</i> is of great use for
 processing strings sequentially:
 
 <pre>
-fun string1_is_at_end
+fun string_is_at_end
   {n,i:nat | i <= n} (s: string n, i: int i):<> bool (i == n)
   = "atspre_string_is_at_end"
 </pre>
 
 Given a string of length <i>n</i> and a natural number <i>i</i> bounded by
-<i>n</i>, the function <i>string1_is_at_end</i> tests whether <i>i</i>
+<i>n</i>, the function <i>string_is_at_end</i> tests whether <i>i</i>
 equals <i>n</i>. Essentially, it checks whether the <i>i</i>th character in
 the string, where counting starts from <i>0</i>, is the null byte.
 <P>
 
 As an example, the following implementation of the length function for
-strings makes use of the function <i>string1_is_at_end</i>:
+strings makes use of the function <i>string_is_at_end</i>:
 
-<PRE><FONT COLOR="#E80000"><FONT COLOR="#000000">fn</FONT> string1_length <FONT COLOR="#0000FF"><FONT COLOR="#000000">{</FONT>n<FONT COLOR="#000000">:</FONT>nat<FONT COLOR="#000000">}</FONT></FONT>
+<PRE><FONT COLOR="#E80000"><FONT COLOR="#000000">fn</FONT> string_length <FONT COLOR="#0000FF"><FONT COLOR="#000000">{</FONT>n<FONT COLOR="#000000">:</FONT>nat<FONT COLOR="#000000">}</FONT></FONT>
   <FONT COLOR="#000000">(</FONT>s<FONT COLOR="#000000">:</FONT> <FONT COLOR="#0000FF">string n</FONT><FONT COLOR="#000000">)</FONT><FONT COLOR="#000000">:&lt;&gt;</FONT> <FONT COLOR="#0000FF">int n</FONT> <FONT COLOR="#000000">=</FONT> loop <FONT COLOR="#000000">(</FONT>s<FONT COLOR="#000000">,</FONT> 0<FONT COLOR="#000000">)</FONT> <FONT COLOR="#000000">where</FONT> <FONT COLOR="#000000">{</FONT>
   <FONT COLOR="#000000">fun</FONT> loop <FONT COLOR="#0000FF"><FONT COLOR="#000000">{</FONT>i<FONT COLOR="#000000">:</FONT>nat <FONT COLOR="#000000">|</FONT> i &lt;= n<FONT COLOR="#000000">}</FONT></FONT> <FONT COLOR="#0000FF"><FONT COLOR="#000000">.&lt;</FONT>n-i<FONT COLOR="#000000">&gt;.</FONT></FONT>
     <FONT COLOR="#000000">(</FONT>s<FONT COLOR="#000000">:</FONT> <FONT COLOR="#0000FF">string n</FONT><FONT COLOR="#000000">,</FONT> i<FONT COLOR="#000000">:</FONT> <FONT COLOR="#0000FF">int i</FONT><FONT COLOR="#000000">)</FONT><FONT COLOR="#000000">:&lt;&gt;</FONT> <FONT COLOR="#0000FF">int n</FONT> <FONT COLOR="#000000">=</FONT>
-    <FONT COLOR="#000000">if</FONT> string1_is_at_end <FONT COLOR="#000000">(</FONT>s<FONT COLOR="#000000">,</FONT> i<FONT COLOR="#000000">)</FONT> <FONT COLOR="#000000">then</FONT> i <FONT COLOR="#000000">else</FONT> loop <FONT COLOR="#000000">(</FONT>s<FONT COLOR="#000000">,</FONT> i+1<FONT COLOR="#000000">)</FONT>
+    <FONT COLOR="#000000">if</FONT> string_is_at_end <FONT COLOR="#000000">(</FONT>s<FONT COLOR="#000000">,</FONT> i<FONT COLOR="#000000">)</FONT> <FONT COLOR="#000000">then</FONT> i <FONT COLOR="#000000">else</FONT> loop <FONT COLOR="#000000">(</FONT>s<FONT COLOR="#000000">,</FONT> i+1<FONT COLOR="#000000">)</FONT>
   <FONT COLOR="#787878">// end of [loop]
-</FONT><FONT COLOR="#000000">}</FONT> <FONT COLOR="#787878">// end of [string1_length]
+</FONT><FONT COLOR="#000000">}</FONT> <FONT COLOR="#787878">// end of [string_length]
 </FONT></FONT></PRE>
 
 The following two functions
-<i>string1_get_char_at</i> and <i>string1_set_char_at</i> are for accessing
+<i>string_get_char_at</i> and <i>string_set_char_at</i> are for accessing
 and updating charaters stored in a string:
 
 <pre>
 #define NUL '\000'
 
-fun string1_get_char_at {n:nat}
+fun string_get_char_at {n:nat}
   (s: string n, i: natLt n):&lt;!ref&gt; [c:char | c <> NUL] char c
 
-fun string1_set_char_at {n:nat} {c:char | c <> NUL}
+fun string_set_char_at {n:nat} {c:char | c <> NUL}
   (s: string n, i: natLt n, c: char c):&lt;!ref&gt; void
 
-overload [] with string1_get_char_at
-overload [] with string1_set_char_at
+overload [] with string_get_char_at
+overload [] with string_set_char_at
 </pre>
 
 Note that only non-null characters can be stored in a string.

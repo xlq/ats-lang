@@ -36,6 +36,7 @@
 ATSOPT="$(ATSHOME)"/bin/atsopt
 ATSRUNTIME="$(ATSHOME)"/ccomp/runtime
 ATSLIBC="$(ATSHOME)"/libc
+ATSCC="$(ATSHOME)"/bin/atscc
 
 CC=gcc
 INCLUDES=-I"$(ATSHOME)" -I$(ATSRUNTIME)
@@ -61,10 +62,10 @@ atslib: atslib_main_dats.c \
           stdio_sats.o stdlib_sats.o unistd_sats.o sys_types_sats.o
 
 atspack: atspack.dats
-	atscc -o atspack $(CCFLAGS) atspack.dats
+	$(ATSCC) -o atspack $(CCFLAGS) atspack.dats
 
 deltabs: deltabs.dats
-	atscc -o deltabs $(CCFLAGS) deltabs.dats -D_ATS_gcats
+	$(ATSCC) -o deltabs $(CCFLAGS) deltabs.dats -D_ATS_gcats
 
 ######
 

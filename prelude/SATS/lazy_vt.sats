@@ -44,4 +44,14 @@ fun{a:t@ype} stream_vt_filter_cloptr
 
 (* ****** ****** *)
 
-(* end of [lazy.sats] *)
+fun{a1,a2,b:t@ype} stream_vt_map2_fun
+  (xs1: stream_vt a1, xs2: stream_vt a2, f: (a1, a2) -<1,~ref> b)
+  :<1,~ref> stream_vt b
+
+fun{a1,a2,b:t@ype} stream_vt_map2_cloptr
+  (xs1: stream_vt a1, xs2: stream_vt a2, f: (a1, a2) -<cloptr1,~ref> b)
+  :<1,~ref> stream_vt b
+
+(* ****** ****** *)
+
+(* end of [lazy_vt.sats] *)

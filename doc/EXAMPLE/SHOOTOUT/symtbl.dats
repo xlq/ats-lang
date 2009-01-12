@@ -40,7 +40,7 @@ viewtypedef symtbl (sz:int, n:int, l:addr) = @{
   dna= dna_t
 , ptr= ptr l
 , view_arr= @[tblent_t][sz] @ l
-, view_arr_gc= free_gc_v l
+, view_arr_gc= free_gc_v (tblent_t, sz, l)
 , size= int sz
 , nitm= int n
 }
@@ -129,8 +129,8 @@ ats_uint_type hash_symbol_33 (ats_ptr_type dna, symbol_t sym) {
 
 (* ****** ****** *)
 
-extern fun tblent_array_make {sz: nat}
-  (sz: int sz):<> [l:addr] (free_gc_v l, array_v (tblent_t, sz, l) | ptr l)
+extern fun tblent_array_make {sz: nat} (sz: int sz)
+  :<> [l:addr] (free_gc_v (tblent_t, sz, l), array_v (tblent_t, sz, l) | ptr l)
   = "tblent_array_make"
 
 %{
@@ -158,7 +158,8 @@ val () = begin
   p_tbl->nitm := 0
 end
 
-val (pfbox | ()) = vbox_make_view_ptr_gc (pf_tbl_gc, pf_tbl | p_tbl)
+prval () = free_gc_elim (pf_tbl_gc)
+val (pfbox | ()) = vbox_make_view_ptr (pf_tbl | p_tbl)
 
 in
   (pfbox | p_tbl)

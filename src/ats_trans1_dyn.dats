@@ -1652,16 +1652,16 @@ implement finalize () = () where {
       in
         case+ v1al of
         | V1ALstring s => let
-            val s = string1_of_string0 s
+            val s = string1_of_string s
           in
             $Glo.ats_function_name_prefix_set (stropt_some s)
-          end
+          end // end of [V1ALstring]
         | _ => begin
             prerr e1xp.e1xp_loc; prerr ": error(1)";
             prerr ": a string definition is required for ATS_FUNCTION_NAME_PREFIX.";
             prerr_newline ();
             $Err.abort {void} ()
-          end
+          end // end of [_]
       end // end of [Some_vt]
     | ~None_vt () => () // use the default value
     end // end of [aux_function_name_prefix]
@@ -1686,7 +1686,7 @@ implement finalize () = () where {
     | ~Some_vt e1xp => let
         val v1al = e1xp_eval (e1xp) in case+ v1al of
         | V1ALstring s => let
-            val s = string1_of_string0 s
+            val s = string1_of_string s
           in
             $Glo.ats_dynloadfuname_set (stropt_some s)
           end // end of [V1ALstring]

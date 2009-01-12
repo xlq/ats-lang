@@ -133,7 +133,7 @@ fun library_make_loop {m:fm} {l_file:addr}
   (file: &FILE r, dir: String, libfilename: string)
   : void = let
   fn filename_is_legal (name: String): bool =
-    if string1_is_at_end (name, 0) then false
+    if string_is_at_end (name, 0) then false
     else (if name[0] = '#' then false else true)
 in
   if feof (file) <> 0 then ()

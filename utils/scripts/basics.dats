@@ -89,7 +89,7 @@ fn ATSHOME_get (): String = let
   val ATSHOME_opt = $STDLIB.getenv_opt ATSHOME_var
 in
   if stropt_is_some ATSHOME_opt then
-    string1_of_string0 (stropt_unsome ATSHOME_opt)
+    string1_of_string (stropt_unsome ATSHOME_opt)
   else begin
     prerr "The environment variable [";
     prerr ATSHOME_var;
@@ -115,12 +115,12 @@ in
 end // end of [ATSHOME]
 
 implement ATSHOME_dir_append basename =
-  ATSHOME_dir + (string1_of_string0 basename)
+  ATSHOME_dir + (string1_of_string basename)
 
 (* ****** ****** *)
 
 implement basename_of_filename name = let
-  val name = string1_of_string0 name
+  val name = string1_of_string name
   val n = length name
   val i = string_index_of_char_from_right (name, dirsep)
 in
@@ -134,7 +134,7 @@ in
 end // end of [basename_of_filename]
 
 implement suffix_of_filename name = let
-  val name = string1_of_string0 name
+  val name = string1_of_string name
   val i = 1+string_index_of_char_from_right (name, '.')
 in
   if i > 0 then
@@ -147,7 +147,7 @@ in
 end // end of [suffix_of_filename]
 
 implement filename_is_local name = let
-   val name = string1_of_string0 name
+   val name = string1_of_string name
 in
    if string1_isnot_empty name then
      bool1_of_bool (name[0] <> dirsep)

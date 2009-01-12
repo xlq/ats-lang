@@ -53,9 +53,9 @@ implement comarg_parse (s) = let
     end else begin
       COMARGkey (n, s)
     end // end of [if]
-  val s = string1_of_string0 s
+  val s = string1_of_string s
 in
-  loop (s, string1_length s, 0)
+  loop (s, string_length s, 0)
 end // end of [comarg_parse]
 
 implement comarglst_parse {n} (argc, argv) = let

@@ -111,13 +111,18 @@ fun output_line (fil: FILEref, line: string): void
 
 (* ****** ****** *)
 
-// [fil] should be a regular file!
 // making a lazy char stream out of a file handler
 fun char_stream_make_file (fil: FILEref): stream (char)
 
-// [fil] should be a regular file!
 // making a lazy line stream out of a file handler
 fun line_stream_make_file (fil: FILEref): stream (string)
+
+(* ****** ****** *)
+
+// making a linear lazy char stream out of a file handler
+fun char_stream_vt_make_file {m:file_mode} {l:addr}
+  (pf_mod: file_mode_lte (m, r), pf_fil: FILE m @ l | p_fil: ptr l)
+  :<1,~ref> stream_vt (char)
 
 (* ****** ****** *)
 

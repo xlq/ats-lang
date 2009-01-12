@@ -66,7 +66,7 @@ atspre_bytes_strbuf_trans
 
 static inline
 ats_ptr_type
-atspre_string1_of_string0 (const ats_ptr_type s) { return s ; }
+atspre_string1_of_string (const ats_ptr_type s) { return s ; }
 
 static inline
 ats_ptr_type

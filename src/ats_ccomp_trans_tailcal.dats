@@ -62,7 +62,7 @@ fn tailjoin_name_make (f0: funentry_t, fs: funentrylst): string = let
 
   fun aux_string {n,i:nat | i <= n}
     (cs: &T, i: int i, s: string n): void = begin
-    if string1_is_at_end (s, i) then () else begin
+    if string_is_at_end (s, i) then () else begin
       cs := $CS.CHARLSTcons (s[i], cs); aux_string (cs, i+1, s)
     end // end of [if]
   end // end of [aux_string]
@@ -70,7 +70,7 @@ fn tailjoin_name_make (f0: funentry_t, fs: funentrylst): string = let
   fun aux_entry (cs: &T, f: funentry_t): void = let
     val name = funlab_name_get (funentry_lab_get (f))
   in
-    aux_string (cs, 0, string1_of_string0 name)
+    aux_string (cs, 0, string1_of_string name)
   end // end of [aux_entry]
 
   fun aux_entrylst (cs: &T, fs: funentrylst): void = begin

@@ -201,7 +201,7 @@ fn getenv_exn (name: string): String = let
   val stropt = getenv_opt name
 in
   if stropt_is_some stropt then
-    string1_of_string0 (stropt_unsome stropt)
+    string1_of_string (stropt_unsome stropt)
   else begin
     prerr "The environment variable [";
     prerr name;
@@ -702,7 +702,7 @@ fun loop {i:nat | i <= n} .<i>. (
     | _ when comkind_is_output (param.comkind) => let
         val () = param.comkind := COMKINDnone ()
         val COMARGkey (_(*n*), name) = arg
-        val name = string1_of_string0 name
+        val name = string1_of_string name
         val () = output_filename_set (stropt_some name)
       in
         loop (argv, param, args)

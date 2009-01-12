@@ -67,7 +67,7 @@ implement stringlst_concat (ss) = let
   fun loop1 {m0,n0,i0,n,i:nat | i0 <= n0; i <= n} .<n0-i0>.
     (s0: &strbuf (m0, n0), n0: int n0, i0: int i0, s: string n, i: int i)
     :<> [i0: nat | i0 <= n0] int i0 = begin
-    if string1_is_at_end (s, i) then i0 else let
+    if string_is_at_end (s, i) then i0 else let
       val c = $effmask_ref (s[i])
     in
       if i0 < n0 then (s0[i0] := c; loop1 (s0, n0, i0+1, s, i+1)) else i0
@@ -77,7 +77,7 @@ implement stringlst_concat (ss) = let
     (s0: &strbuf (m0, n0), n0: int n0, i0: int i0, ss: list (string, k))
     :<> void = begin case+ ss of
     | list_cons (s, ss) => let
-        val s = string1_of_string0 s; val i0 = loop1 (s0, n0, i0, s, 0)
+        val s = string1_of_string s; val i0 = loop1 (s0, n0, i0, s, 0)
       in
         loop2 (s0, n0, i0, ss)
       end // end of [list_cons]

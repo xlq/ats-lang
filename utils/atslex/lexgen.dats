@@ -272,25 +272,21 @@ fun regex_mark (env: redef, x0: &T, r0e: regex)
       regex1_seq (r1e1, r1e2)
     end
   | REGstar (r0e0) => regex1_star (regex_mark (env, x0, r0e0))
-  | REGstr (s) =>
-    let
-      val s = string1_of_string0 s
-      val l = length s
+  | REGstr (str) => let
+      val str = string1_of_string str
     in
-      regex_mark_str (env, x0, 0, l, s, regex1_nil ())
-    end
+      regex_mark_str (env, x0, 0, string_length str, str, regex1_nil ())
+    end // end of [REGstr]
 end // end of [regex_mark]
 
 and regex_mark_rep
   (env: redef, x0: &T, i: int, r0e: regex, r1e: regex1)
   : regex1 = begin
-  if i > 0 then
-    let
-      val r1e' = regex_mark (env, x0, r0e)
-    in
-      regex_mark_rep (env, x0, i-1, r0e, regex1_seq (r1e, r1e'))
-    end
-  else r1e
+  if i > 0 then let
+    val r1e' = regex_mark (env, x0, r0e)
+  in
+    regex_mark_rep (env, x0, i-1, r0e, regex1_seq (r1e, r1e'))
+  end else r1e // end of [if]
 end // end of [regex_mark_rep]
 
 (* ****** ****** *)

@@ -91,9 +91,9 @@ end // end of [local]
 #define THIS_FILE "ats_filename.dats"
 
 implement filename_is_relative (name) = let
-  val name = string1_of_string0 name
+  val name = string1_of_string name
   fn aux {n,i:nat | i <= n} (name: string n, i: int i): bool =
-    if string1_is_at_end (name, i) then true else name[0] <> dirsep
+    if string_is_at_end (name, i) then true else name[0] <> dirsep
 in
   aux (name, 0)
 end // [filename_is_relative]
@@ -192,8 +192,7 @@ implement prerr_filename_base (fname) = prerr_mac (fprint_filename_base, fname)
 staload Lst = "ats_list.sats"
 
 fn filename_normalize (s0: string): string = let
-  val s0 = string1_of_string0 s0
-  val n0 = string1_length s0
+  val s0 = string1_of_string s0; val n0 = string_length s0
   fn* loop1 {n0,i0:nat | i0 <= n0}
     (s0: string n0, n0: int n0, i0: int i0, dirs: &List string): void =
     if i0 < n0 then loop2 (s0, n0, i0, i0, dirs) else ()
@@ -370,12 +369,12 @@ in '{
 } end // end of [filename_make_absolute]
 
 implement filenameopt_make (basename) = let
-  val basename = string1_of_string0 basename
+  val basename = string1_of_string basename
   fun aux_try (paths: pathlst, basename: String): Stropt =
     case+ paths of
     | list_cons (path, paths) => let
         val fullname = filename_append (path, basename)
-        val fullname = string1_of_string0 fullname
+        val fullname = string1_of_string fullname
 (*
         val () = begin
           print "filenameopt_make: fullname = "; print fullname; print_newline ()
@@ -395,7 +394,7 @@ implement filenameopt_make (basename) = let
     | _ when filename_is_exist basename => let
         val cwd = getcwd ()
         val fullname = filename_append (cwd, basename)
-        val fullname = string1_of_string0 fullname
+        val fullname = string1_of_string fullname
       in
         stropt_some fullname
       end

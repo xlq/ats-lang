@@ -12,6 +12,7 @@ all: AutoDiff coin_flip \
      curve fft hamming_lazy \
      GaussElim GarsiaWachs \
      hanoi kmp queens \
+     longestline \
      passwdgen pi_lazy \
      sieve sieve_lazy \
      strmat sumup \
@@ -52,6 +53,10 @@ hanoi: hanoi.dats; $(ATSCC) -o hanoi hanoi.dats
 
 # Knuth-Morris-Pratt string search
 kmp: kmp.dats; $(ATSCC) -o kmp kmp.dats
+
+# An example of linear lazy evaluation
+longestline: longestlin.dats
+	$(ATSCC) -o longestline longestline.dats
 
 # the n-queen problem
 queens: queens.dats; $(ATSCC) -o queens queens.dats
@@ -97,6 +102,7 @@ html::
 	atsopt --posmark_html_only -d hanoi.dats
 	atsopt --posmark_html_only -d kmp.dats
 	atsopt --posmark_html_only -d listquicksort.dats
+	atsopt --posmark_html_only -d longestline.dats
 	atsopt --posmark_html_only -d passwdgen.dats
 	atsopt --posmark_html_only -d pi_lazy.dats
 	atsopt --posmark_html_only -d queens.dats
@@ -125,6 +131,7 @@ cleanall:: clean
 	rm -f hanoi
 	rm -f kmp
 	rm -f listquicksort
+	rm -f longestline
 	rm -f passwdgen
 	rm -f pi_lazy
 	rm -f queens

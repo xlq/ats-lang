@@ -83,8 +83,17 @@ ats_ptr_type string_make_charlst_rev
 macdef EOF = $extval (int, "EOF")
 
 extern fun feof0 (f: FILEref):<> int = "atslib_feof"
-extern fun fgetc0_err (f: FILEref):<> int = "atslib_fgetc_err"
-extern fun fclose0_exn (f: FILEref):<> void = "atslib_fclose_exn"
+
+extern fun fgetc0_err (fil: FILEref):<> int = "atslib_fgetc_err"
+extern fun fgetc1_err {m:file_mode} {l:addr}
+  (pf_mod: file_mode_lte (m, r) | fil: &FILE m):<> int
+  = "atslib_fgetc_err"
+
+extern fun fclose0_exn (fil: FILEref):<!exn> void = "atslib_fclose_exn"
+extern fun fclose1_exn {m:file_mode} {l:addr}
+  (pf_fil: FILE m @ l | p_fil: ptr l):<!exn> void = "atslib_fclose_exn"
+
+(* ****** ****** *)
 
 extern fun string_make_charlst_rev {n:nat}
   (sz: int n, cs: list_vt (char, n)):<> string
@@ -114,13 +123,13 @@ end // end of [input_line]
 
 (* ****** ****** *)
 
-extern fun fputc0_exn (c: char, fil: FILEref): void
+extern fun fputc0_exn (c: char, fil: FILEref):<!exn> void
   = "atslib_fputc_exn"
 
-extern fun fputs0_exn (str: string, fil: FILEref): void
+extern fun fputs0_exn (str: string, fil: FILEref):<!exn> void
   = "atslib_fputs_exn"
 
-extern fun fflush0_exn (fil: FILEref): void
+extern fun fflush0_exn (fil: FILEref):<!exn> void
   = "atslib_fflush_exn"
 
 // the character '\n' is added at the end
@@ -130,7 +139,6 @@ end // end of [output_line]
 
 (* ****** ****** *)
 
-// [fil] should be a regular file!
 implement char_stream_make_file (fil) = let
   val c = fgetc0_err (fil)
 in
@@ -145,7 +153,6 @@ end // end of [char_stream_make_file]
 
 (* ****** ****** *)
 
-// [fil] should be a regular file!
 implement line_stream_make_file (fil) = begin
   if feof0 (fil) <> 0 then let
     val () = fclose0_exn fil in $delay (stream_nil ())
@@ -155,6 +162,23 @@ implement line_stream_make_file (fil) = begin
     $delay ($effmask_ref (stream_cons (l, line_stream_make_file fil)))
   end // end of [if]
 end // end of [line_stream_make_file]
+
+(* ****** ****** *)
+
+implement char_stream_vt_make_file (pf_mod, pf_fil | p_fil) = let
+  val c = fgetc1_err (pf_mod | !p_fil)
+in
+  if c >= 0 then let // c <> EOF
+    val c = char_of_int (c)
+  in
+    $delay_vt (
+      stream_vt_cons (c, char_stream_vt_make_file (pf_mod, pf_fil | p_fil))
+    , fclose1_exn (pf_fil | p_fil)
+    ) // end of [$delay_vt]
+  end else let
+    val () = fclose1_exn (pf_fil | p_fil) in $delay_vt (stream_vt_nil ())
+  end // end of [if]
+end // end of [char_stream_vt_make_file]
 
 (* ****** ****** *)
 

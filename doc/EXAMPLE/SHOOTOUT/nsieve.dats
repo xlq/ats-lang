@@ -27,11 +27,10 @@ macdef false = int8_of_int 0
 typedef bool = int8
 
 fn nsieve {m:nat} (m: int m): void = let
-  val [l:addr] (pf_gc, pf | A) = let
-    fn f (x: &(bool?) >> bool, _i: natLt m):<cloptr> void = x := true
-  in
-    array_ptr_make_fun_tsz_cloptr {bool} (m, f, sizeof<bool>)
-  end
+  val [l:addr] (pf_gc, pf | A) =
+    array_ptr_alloc_tsz {bool} (m, sizeof<bool>)
+  var _true: bool = true
+  val () = array_ptr_initialize_elt_tsz {bool} (!A, m, _true, sizeof<bool>)
 
   fun loop1 (pf: !array_v (bool, m, l) | i: Nat, j: Nat):<cloptr1> void =
     if (j < m) then

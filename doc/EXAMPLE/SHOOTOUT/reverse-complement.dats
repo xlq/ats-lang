@@ -99,7 +99,7 @@ extern fun fread_buf_line
 implement main (argc, argv) = let
 
 fun loop {pos,bsz:nat | bsz > 0} {l_buf:addr} (
-    pf_ngc: free_ngc_v l_buf
+    pf_ngc: free_ngc_v (bsz, l_buf)
   , pf_buf: bytes bsz @ l_buf
   | inp: &FILE r
   , p_buf: ptr l_buf
@@ -137,6 +137,7 @@ fun loop {pos,bsz:nat | bsz > 0} {l_buf:addr} (
   end else let
     val bsz = bsz + bsz
     val (pf_ngc, pf_buf | p_buf) = realloc_ngc (pf_ngc, pf_buf | p_buf, bsz)
+    prval () = pf_buf := bytes_v_of_b0ytes_v (pf_buf)
   in
     loop (pf_ngc, pf_buf | inp, p_buf, bsz, pos)
   end // end of [if]
@@ -145,6 +146,7 @@ end // end of [loop]
 val () = buildIubComplement ()
 val (pf_stdin | stdin) = stdin_get ()
 val (pf_ngc, pf_buf | buf) = malloc_ngc (BUFSZ)
+prval () = pf_buf := bytes_v_of_b0ytes_v (pf_buf)
 
 in
   loop (pf_ngc, pf_buf | !stdin, buf, BUFSZ, 0);

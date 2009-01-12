@@ -152,7 +152,7 @@ implement stringlst_concat (ss) = let
   fun loop1 {m0,n0,i0,n,i:nat | i0 <= n0; i <= n} .<n0-i0>.
     (s0: &strbuf (m0, n0), n0: int n0, i0: int i0, s: string n, i: int i)
     :<> [i0: nat | i0 <= n0] int i0 = begin
-    if string1_is_at_end (s, i) then i0 else let
+    if string_is_at_end (s, i) then i0 else let
       val c = $effmask_ref (s[i])
     in
       if i0 < n0 then (s0[i0] := c; loop1 (s0, n0, i0+1, s, i+1)) else i0
@@ -162,7 +162,7 @@ implement stringlst_concat (ss) = let
     (s0: &strbuf (m0, n0), n0: int n0, i0: int i0, ss: list (string, k))
     :<> void = begin case+ ss of
     | list_cons (s, ss) => let
-        val s = string1_of_string0 s; val i0 = loop1 (s0, n0, i0, s, 0)
+        val s = string1_of_string s; val i0 = loop1 (s0, n0, i0, s, 0)
       in
         loop2 (s0, n0, i0, ss)
       end // end of [list_cons]
@@ -181,7 +181,7 @@ end // end of [stringlst_concat]
 
 (* ****** ****** *)
 
-implement string1_explode (s) = let
+implement string_explode (s) = let
   fun loop {n,i:int | ~1 <= i; i < n} .<i+1>. (
       s: string n, i: int i, cs: list_vt (char, n-i-1)
     ) :<> list_vt (char, n) =
@@ -199,7 +199,7 @@ end // end of [string1_explode]
 
 local
 
-fn string1_make_fun {n:nat}
+fn string_make_fun {n:nat}
   (s: string n, f: c1har -<> c1har):<> string n = let
   val n = string1_length (s)
   val (pf_gc, pf_buf | p_buf) = malloc_gc (n+1)
@@ -229,15 +229,15 @@ fn string1_make_fun {n:nat}
   } // end of [val]
 in
   string1_of_strbuf (pf_buf | p_buf)
-end // end of [string1_make_fun]
+end // end of [string_make_fun]
 
 in // in of [local]
 
-implement string1_tolower (s) = string1_make_fun (s, tolower) where {
+implement string_tolower (s) = string_make_fun (s, tolower) where {
   extern fun tolower (c: c1har):<> c1har = "atspre_char_tolower"
 } // end of [string1_tolower]
 
-implement string1_toupper (s) = string1_make_fun (s, toupper) where {
+implement string_toupper (s) = string_make_fun (s, toupper) where {
   extern fun toupper (c: c1har):<> c1har = "atspre_char_toupper"
 } // end of [string1_toupper]
 

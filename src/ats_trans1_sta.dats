@@ -397,26 +397,25 @@ end // end of [d0ec_nonfix_tr]
 (* ****** ****** *)
 
 implement do_e0xpact_assert (loc, v) = let
-  val is_false =
-    case+ v of
+  val is_false = (case+ v of
     | V1ALchar c => c = '\0'
-    | V1ALfloat f => f = 0.0
-    | V1ALint i => i = 0
-    | V1ALstring s => string0_is_empty s
+    | V1ALfloat f => f = 0.0 | V1ALint i => i = 0
+    | V1ALstring s => let
+        val s = string1_of_string s in string_is_empty s
+      end // end of [V1ALstring]
+  ) : bool
 in
   if is_false then begin
-    prerr loc;
-    prerr ": error(1)";
-    prerr ": [#assert] failed.";
-    prerr_newline ();
+    prerr loc; prerr ": error(1)";
+    prerr ": [#assert] failed."; prerr_newline ();
     exit {void} (1)
-  end
+  end // end of [if]
 end // end of [do_e0xpact_assert]
 
 implement do_e0xpact_error (loc, v) = let
   val () = begin
     prerr loc; prerr ": error(1)"; prerr ": [#error]: "
-  end
+  end // end of [val]
   val () = case+ v of
     | V1ALchar c => prerr c
     | V1ALfloat f => prerr f
@@ -431,6 +430,7 @@ implement do_e0xpact_print (v) = case+ v of
   | V1ALfloat f => prerr f
   | V1ALint i => prerr i
   | V1ALstring s => prerr s
+// end of [do_e0xpact_print]
 
 (* ****** ****** *)
 
