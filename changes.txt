@@ -1,5 +1,15 @@
 ########################################################################
 
+ats-lang-anariats-0.1.2:
+
+1. Linear lazy evaluation is now supported. See [prelude/DATS/file.dats]
+   for some code using this cool feature.
+
+2. Many new tutorials have been added. There is also a all-in-form format
+   that allows for easy printout.
+
+########################################################################
+
 ats-lang-anariats-0.1.1:
 
 1. A type [schar] for signed chars is added. Now, the type [char] depends

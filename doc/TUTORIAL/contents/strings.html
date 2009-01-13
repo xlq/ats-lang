@@ -7,7 +7,7 @@
 The representation of a string in ATS is exactly the same as in C, allowing
 most functions declared in the header file &lt;string.h&gt; to be imported
 into ATS directly. A variety of string functions are declared in <A
-HREF="http://www.ats-lang.org/IMPLEMENATION/prelude/SATS/string.sats">prelude/SATS/string.sats</A>.
+HREF="http://www.ats-lang.org/IMPLEMENTATION/Anairiats/ATS/prelude/SATS/string.sats">prelude/SATS/string.sats</A>.
 <P>
 
 Given an integer <i>I</i>, a string of length <i>I</i> is a pointer to some
@@ -164,12 +164,79 @@ the length of a string buffer that corresponds to the above C code:
 </FONT></FONT></PRE>
 
 Please see <A
-HREF="http://www.ats-lang.org/IMPLEMENATION/prelude/SATS/string.sats">prelude/SATS/string.sats</A>
+HREF="http://www.ats-lang.org/IMPLEMENTATION/Anairiats/ATS/prelude/SATS/string.sats">prelude/SATS/string.sats</A>
 for various dataview constructors and proof functions in this
 implementation.  In general, it can be quite involved in ATS to handle
 strings in a style that is often employed in C code.
 
 <H4>String Creation</H4>
+
+There are various function for creating strings that are delcared in <A
+HREF="http://www.ats-lang.org/IMPLEMENTATION/Anairiats/ATS/prelude/SATS/string.sats">prelude/SATS/string.sats</A>.
+For instance, the following function <i>string_make_substring</i> creates a
+string by copying a segment of another string:
+
+<pre>
+fun string_make_substring
+  {n:int} {st,ln:nat | st + ln <= n}
+  (s: string n, st: int st, ln: int ln):<> string ln
+</pre>
+
+In order to implement a string creation function, we often need a function
+such as the following one for initializing a string buffer:
+
+<pre>
+fun strbuf_initialize_cloptr {m,n:nat | m > n} (
+    pf_buf: !b0ytes m @ l >> strbuf (m, n) @ l
+  | p: ptr l, n: int n, f: !natLt n -<cloref> c1har
+  ) :<> void
+</pre>
+
+An implementation of <i>strbuf_initialize_cloptr</i> is given below:
+
+<PRE><FONT COLOR="#E80000"><FONT COLOR="#000000">implement</FONT> strbuf_initialize_cloptr <FONT COLOR="#0000FF"><FONT COLOR="#000000">{</FONT>m<FONT COLOR="#000000">,</FONT>n<FONT COLOR="#000000">}</FONT></FONT>
+  <FONT COLOR="#000000">(</FONT><FONT COLOR="#009000">pf_buf</FONT> <FONT COLOR="#000000">|</FONT> p_buf<FONT COLOR="#000000">,</FONT> n<FONT COLOR="#000000">,</FONT> f<FONT COLOR="#000000">)</FONT> <FONT COLOR="#000000">=</FONT> loop <FONT COLOR="#000000">(</FONT><FONT COLOR="#009000">pf_buf</FONT> <FONT COLOR="#000000">|</FONT> p_buf<FONT COLOR="#000000">,</FONT> f<FONT COLOR="#000000">,</FONT> 0<FONT COLOR="#000000">)</FONT> <FONT COLOR="#000000">where</FONT> <FONT COLOR="#000000">{</FONT>
+  <FONT COLOR="#000000">fun</FONT> loop <FONT COLOR="#0000FF"><FONT COLOR="#000000">{</FONT>i<FONT COLOR="#000000">:</FONT>nat <FONT COLOR="#000000">|</FONT> i &lt;= n<FONT COLOR="#000000">}</FONT></FONT> <FONT COLOR="#0000FF"><FONT COLOR="#000000">{</FONT>l<FONT COLOR="#000000">:</FONT>addr<FONT COLOR="#000000">}</FONT></FONT> <FONT COLOR="#0000FF"><FONT COLOR="#000000">.&lt;</FONT>n-i<FONT COLOR="#000000">&gt;.</FONT></FONT> <FONT COLOR="#000000">(</FONT>
+      <FONT COLOR="#009000">pf<FONT COLOR="#000000">:</FONT> <FONT COLOR="#0000FF"><FONT COLOR="#000000">!</FONT>b0ytes <FONT COLOR="#000000">(</FONT>m-i<FONT COLOR="#000000">)</FONT> @ l &gt;&gt; strbuf <FONT COLOR="#000000">(</FONT>m-i<FONT COLOR="#000000">,</FONT> n-i<FONT COLOR="#000000">)</FONT> @ l</FONT></FONT>
+    <FONT COLOR="#000000">|</FONT> p<FONT COLOR="#000000">:</FONT> <FONT COLOR="#0000FF">ptr l</FONT><FONT COLOR="#000000">,</FONT> f<FONT COLOR="#000000">:</FONT> <FONT COLOR="#0000FF"><FONT COLOR="#000000">!</FONT>natLt n <FONT COLOR="#000000">-&lt;</FONT>cloptr<FONT COLOR="#000000">&gt;</FONT> c1har</FONT><FONT COLOR="#000000">,</FONT> i<FONT COLOR="#000000">:</FONT> <FONT COLOR="#0000FF">int i</FONT><FONT COLOR="#000000">)</FONT>
+    <FONT COLOR="#000000">:&lt;</FONT><FONT COLOR="#0000FF">cloref</FONT><FONT COLOR="#000000">&gt;</FONT> <FONT COLOR="#0000FF">void</FONT> <FONT COLOR="#000000">=</FONT> <FONT COLOR="#000000">let</FONT>
+    <FONT COLOR="#000000">prval</FONT> <FONT COLOR="#009000"><FONT COLOR="#000000">(</FONT><FONT COLOR="#000000">)</FONT> <FONT COLOR="#000000">=</FONT> eqsize_byte_char <FONT COLOR="#000000">(</FONT><FONT COLOR="#000000">)</FONT></FONT>
+    <FONT COLOR="#000000">prval</FONT> <FONT COLOR="#009000"><FONT COLOR="#000000">(</FONT>pf1<FONT COLOR="#000000">,</FONT> pf2<FONT COLOR="#000000">)</FONT> <FONT COLOR="#000000">=</FONT> array_v_uncons <FONT COLOR="#0000FF"><FONT COLOR="#000000">{</FONT>byte?<FONT COLOR="#000000">}</FONT></FONT> <FONT COLOR="#000000">(</FONT>pf<FONT COLOR="#000000">)</FONT></FONT>
+    <FONT COLOR="#000000">prval</FONT> <FONT COLOR="#009000">pf1 <FONT COLOR="#000000">=</FONT> char_v_of_b0yte_v <FONT COLOR="#000000">(</FONT>pf1<FONT COLOR="#000000">)</FONT></FONT>
+  <FONT COLOR="#000000">in</FONT>
+    <FONT COLOR="#000000">if</FONT> i <FONT COLOR="#000000">&lt;</FONT> n <FONT COLOR="#000000">then</FONT> <FONT COLOR="#000000">let</FONT>
+      <FONT COLOR="#000000">val</FONT> <FONT COLOR="#000000">(</FONT><FONT COLOR="#000000">)</FONT> <FONT COLOR="#000000">=</FONT> <FONT COLOR="#000000">!</FONT>p := f <FONT COLOR="#000000">(</FONT>i<FONT COLOR="#000000">)</FONT>
+      <FONT COLOR="#000000">val</FONT> <FONT COLOR="#000000">(</FONT><FONT COLOR="#000000">)</FONT> <FONT COLOR="#000000">=</FONT> loop <FONT COLOR="#000000">(</FONT><FONT COLOR="#009000">pf2</FONT> <FONT COLOR="#000000">|</FONT> p + sizeof&lt;<FONT COLOR="#0000FF">byte</FONT><FONT COLOR="#000000">&gt;</FONT><FONT COLOR="#000000">,</FONT> f<FONT COLOR="#000000">,</FONT> i + 1<FONT COLOR="#000000">)</FONT>
+      <FONT COLOR="#000000">prval</FONT> <FONT COLOR="#009000"><FONT COLOR="#000000">(</FONT><FONT COLOR="#000000">)</FONT> <FONT COLOR="#000000">=</FONT> pf := strbuf_v_cons <FONT COLOR="#000000">(</FONT>pf1<FONT COLOR="#000000">,</FONT> pf2<FONT COLOR="#000000">)</FONT></FONT>
+    <FONT COLOR="#000000">in</FONT>
+      <FONT COLOR="#787878">// empty
+</FONT>    <FONT COLOR="#000000">end</FONT> <FONT COLOR="#000000">else</FONT> <FONT COLOR="#000000">let</FONT>
+      <FONT COLOR="#000000">val</FONT> <FONT COLOR="#000000">(</FONT><FONT COLOR="#000000">)</FONT> <FONT COLOR="#000000">=</FONT> <FONT COLOR="#000000">!</FONT>p := NUL
+      <FONT COLOR="#000000">prval</FONT> <FONT COLOR="#009000"><FONT COLOR="#000000">(</FONT><FONT COLOR="#000000">)</FONT> <FONT COLOR="#000000">=</FONT> pf := strbuf_v_null <FONT COLOR="#000000">(</FONT>pf1<FONT COLOR="#000000">,</FONT> pf2<FONT COLOR="#000000">)</FONT></FONT>
+    <FONT COLOR="#000000">in</FONT>
+      <FONT COLOR="#787878">// empty
+</FONT>    <FONT COLOR="#000000">end</FONT> <FONT COLOR="#787878">// end of [if]
+</FONT>  <FONT COLOR="#000000">end</FONT> <FONT COLOR="#787878">// end of [loop]
+</FONT><FONT COLOR="#000000">}</FONT> <FONT COLOR="#787878">// end of [val]
+</FONT></FONT></PRE>
+
+With <i>strbuf_initialize_cloptr</i>, the string creation function
+<i>string_make_substring</i> can be readily implemented as follows:
+
+<PRE><FONT COLOR="#E80000"><FONT COLOR="#000000">implement</FONT> string_make_substring <FONT COLOR="#000000">(</FONT>str<FONT COLOR="#000000">,</FONT> st<FONT COLOR="#000000">,</FONT> ln<FONT COLOR="#000000">)</FONT> <FONT COLOR="#000000">=</FONT> <FONT COLOR="#000000">let</FONT>
+  <FONT COLOR="#000000">val</FONT> <FONT COLOR="#000000">(</FONT><FONT COLOR="#009000">pf_gc</FONT><FONT COLOR="#000000">,</FONT> <FONT COLOR="#009000">pf_buf</FONT> <FONT COLOR="#000000">|</FONT> p_buf<FONT COLOR="#000000">)</FONT> <FONT COLOR="#000000">=</FONT> malloc_gc <FONT COLOR="#000000">(</FONT>ln + 1<FONT COLOR="#000000">)</FONT>
+  <FONT COLOR="#000000">prval</FONT> <FONT COLOR="#009000"><FONT COLOR="#000000">(</FONT><FONT COLOR="#000000">)</FONT> <FONT COLOR="#000000">=</FONT> free_gc_elim <FONT COLOR="#000000">(</FONT>pf_gc<FONT COLOR="#000000">)</FONT></FONT> <FONT COLOR="#787878">// give the certificate to GC
+</FONT>  <FONT COLOR="#000000">val</FONT> <FONT COLOR="#000000">(</FONT><FONT COLOR="#000000">)</FONT> <FONT COLOR="#000000">=</FONT> strbuf_initialize_cloptr <FONT COLOR="#000000">(</FONT><FONT COLOR="#009000">pf_buf</FONT> <FONT COLOR="#000000">|</FONT> p_buf<FONT COLOR="#000000">,</FONT> ln<FONT COLOR="#000000">,</FONT> <FONT COLOR="#000000">lam</FONT> <FONT COLOR="#000000">(</FONT>i<FONT COLOR="#000000">)</FONT> <FONT COLOR="#000000">=&gt;</FONT> str[<FONT COLOR="#009000">st + i</FONT><FONT COLOR="#000000">]</FONT><FONT COLOR="#000000">)</FONT>
+<FONT COLOR="#000000">in</FONT>
+  string1_of_strbuf <FONT COLOR="#000000">(</FONT><FONT COLOR="#009000">pf_buf</FONT> <FONT COLOR="#000000">|</FONT> p_buf<FONT COLOR="#000000">)</FONT>
+<FONT COLOR="#000000">end</FONT> <FONT COLOR="#787878">// end of [string_make_substring]
+</FONT></FONT></PRE>
+
+Note that a linear closure (cloptr) representing
+<i>lam (i) => str[st + i]</i> is formed for each call to
+<i>strbuf_initialize_cloptr</i> and this closure is freed once the call
+returns. The string created by a called to <i>string_make_substring</i> is
+persistent, and it can only be freed by GC.
 
 <HR SIZE=1 ALIGN=LEFT><P>
 The code used for illustration is available <A HREF="strings.dats">here</A>.

@@ -135,6 +135,16 @@ fun array_ptr_initialize_fun_tsz_main
   ) :<f> void
   = "atspre_array_ptr_initialize_fun_tsz_main"
 
+// implemented in [prelude/DATS/array.dats]
+fun array_ptr_initialize_fun_tsz
+  {a:viewt@ype} {n:nat} {f:eff} (
+    base: &(@[a?][n]) >> @[a][n]
+  , asz: int n
+  , f: (&(a?) >> a, natLt n) -<f> void
+  , tsz: sizeof_t a
+  ) :<f> void
+  = "atspre_array_ptr_initialize_fun_tsz"
+
 (* ****** ****** *)
 
 // implemented in [prelude/DATS/array.dats]

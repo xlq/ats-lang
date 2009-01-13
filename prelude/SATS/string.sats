@@ -415,8 +415,16 @@ fun strbuf_get_char_at {m,n:nat}
   (sb: &strbuf (m, n), i: natLt n):<> [c:char | c <> NUL] char c
   = "atspre_string_get_char_at"
 
+(*
+
 fun string_get_char_at {n:nat}
   (s: string n, i: natLt n):<!ref> [c:char | c <> NUL] char c
+  = "atspre_string_get_char_at"
+
+*)
+
+fun string_get_char_at {n:nat}
+  (s: string n, i: natLt n):<> [c:char | c <> NUL] char c
   = "atspre_string_get_char_at"
 
 overload [] with strbuf_get_char_at

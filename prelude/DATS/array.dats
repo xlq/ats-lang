@@ -108,20 +108,38 @@ end // end of [array_ptr_initialize_lst]
 
 (* ****** ****** *)
 
+implement array_ptr_initialize_fun_tsz
+  {a} {n} {f} (base, asz, f, tsz) = let
+
+  typedef funptr_t = (&(a?) >> a, natLt n) -<f> void
+  typedef funptr1_t = (!unit_v | &(a?) >> a, natLt n, !Ptr) -<f> void
+  val f1 = coerce (f) where {
+    extern fun coerce (f: funptr_t):<> funptr1_t = "atspre_fun_coerce"
+  }
+  prval pf = unit_v ()
+  val () = array_ptr_initialize_fun_tsz_main
+    {a} {unit_v} {Ptr} (pf | base, asz, f1, tsz, null)
+  prval unit_v () = pf
+in
+  // empty
+end // end of [array_ptr_initialize_fun_tsz]
+
+(* ****** ****** *)
+
 implement array_ptr_initialize_cloptr_tsz
   {a} {n} {f} (base, asz, f, tsz) = let
 
   viewtypedef cloptr_t = (&(a?) >> a, natLt n) -<cloptr,f> void
   viewtypedef cloptr1_t = (!unit_v | &(a?) >> a, natLt n, !Ptr) -<cloptr,f> void
   prval () = coerce (f) where {
-    extern fun coerce (f: !cloptr_t >> cloptr1_t):<> void
+    extern prfun coerce (f: !cloptr_t >> cloptr1_t):<> void
   }
   prval pf = unit_v ()
   val () = array_ptr_initialize_cloptr_tsz_main
     {a} {unit_v} {Ptr} (pf | base, asz, f, tsz, null)
   prval unit_v () = pf
   prval () = coerce (f) where {
-    extern fun coerce (f: !cloptr1_t >> cloptr_t):<> void
+    extern prfun coerce (f: !cloptr1_t >> cloptr_t):<> void
   }
 in
   // empty

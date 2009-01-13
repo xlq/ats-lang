@@ -97,7 +97,7 @@ fn getenv_exn (name: string): String = let
   val stropt = getenv_opt name
 in
   if stropt_is_some stropt then
-    string1_of_string0 (stropt_unsome stropt)
+    string1_of_string (stropt_unsome stropt)
   else begin
     prerr "The environment variable [";
     prerr name;
@@ -195,8 +195,8 @@ end // end of [DIRmode]
 
 fn dir_copy
   (srcdir: string, dstdir: string, test: string -> bool) = let
-  val srcdir = string1_of_string0 srcdir
-  and dstdir = string1_of_string0 dstdir
+  val srcdir = string1_of_string srcdir
+  and dstdir = string1_of_string dstdir
 
   macdef cp (name) = fcopy_exn (srcdir + ,(name), dstdir + ,(name))
 
@@ -288,8 +288,8 @@ end // end of [bin]
 (* ****** ****** *)
 
 fun name_is_c (name: string): bool = let
-  val name = string1_of_string0 name
-  val n = string1_length (name)
+  val name = string1_of_string name
+  val n = string_length (name)
 in
   if (n >= 2) then
     if (name[n-2] <> '.') then false
@@ -299,8 +299,8 @@ in
 end // end of [name_is_c]
 
 fun name_is_cats (name: string): bool = let
-  val name = string1_of_string0 name
-  val n = string1_length (name)
+  val name = string1_of_string name
+  val n = string_length (name)
 in
   if (n >= 5) then
     if (name[n-5] <> '.') then false
@@ -313,8 +313,8 @@ in
 end // end of [name_is_cats]
 
 fun name_is_dats (name: string): bool = let
-  val name = string1_of_string0 name
-  val n = string1_length (name)
+  val name = string1_of_string name
+  val n = string_length (name)
 in
   if (n >= 5) then
     if (name[n-5] <> '.') then false
@@ -327,8 +327,8 @@ in
 end // end of [name_is_dats]
 
 fun name_is_sats (name: string): bool = let
-  val name = string1_of_string0 name
-  val n = string1_length (name)
+  val name = string1_of_string name
+  val n = string_length (name)
 in
   if (n >= 5) then
     if (name[n-5] <> '.') then false
@@ -341,8 +341,8 @@ in
 end // end of [name_is_sats]
 
 fun name_is_xats (name: string): bool = let
-  val name = string1_of_string0 name
-  val n = string1_length (name)
+  val name = string1_of_string name
+  val n = string_length (name)
 in
   if (n >= 5) then
     if (name[n-5] <> '.') then false
@@ -581,8 +581,8 @@ end // end of [doc_dir_copy]
 
 fn lib_dir_copy
   (srclibname: string, dstlibname: string): void = let
-  val srclibname = string1_of_string0 srclibname
-  and dstlibname = string1_of_string0 dstlibname
+  val srclibname = string1_of_string srclibname
+  and dstlibname = string1_of_string dstlibname
   val () = mkdir_exn (dstlibname, DIRmode)
 
   val srclibname_CATS = srclibname + "CATS/"

@@ -37,11 +37,22 @@
 
 <MENU>
 <LI>
-The code stored in
-<A HREF="http://www.ats-lang.org/IMPLEMENTATION/Anairiats/ATS/libc/"><B>$ATSHOME/libc</B></A>
+The code stored in the directory <A
+HREF="http://www.ats-lang.org/IMPLEMENTATION/Anairiats/ATS/prelude/"><B>$ATSHOME/prelude</B></A>
+is assumed to be commonly used. The interfaces of functions in this
+directory are statically loaded whenever the ATS typechecker starts. So please
+do not statically load from within a program the files in <A
+HREF="http://www.ats-lang.org/IMPLEMENTATION/Anairiats/ATS/prelude/"><B>$ATSHOME/prelude/SATS</B></A>.
+<P>
+
+<LI>
+The code stored in <A
+HREF="http://www.ats-lang.org/IMPLEMENTATION/Anairiats/ATS/libc/"><B>$ATSHOME/libc</B></A>
 mostly acts as an interface for some corresponding code in
 <u>libc</u>.
+<P>
 
+<!--
 <UL>
 <LI>
 <A HREF="http://www.ats-lang.org/IMPLEMENTATION/Anairiats/ATS/libc/SATS/"><B>$ATSHOME/libc/SATS</B></A>
@@ -50,11 +61,14 @@ mostly acts as an interface for some corresponding code in
 <LI>
 <A HREF="http://www.ats-lang.org/IMPLEMENTATION/Anairiats/ATS/libc/CATS/"><B>$ATSHOME/libc/CATS</B></A>
 </UL>
+-->
 
 <LI>
-The code stored in
-<A HREF="http://www.ats-lang.org/IMPLEMENTATION/Anairiats/ATS/libats/"><B>$ATSHOME/libats</B></A>
+The code stored in <A
+HREF="http://www.ats-lang.org/IMPLEMENTATION/Anairiats/ATS/libats/"><B>$ATSHOME/libats</B></A>
 is mostly implemented in ATS.
+<P>
+
 </MENU>
 
 <HR SIZE=6 ALIGN=LEFT><P>

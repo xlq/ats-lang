@@ -49,6 +49,12 @@
 
 /* ****** ****** */
 
+static inline
+ats_ptr_type
+ats_castfn_ptr (ats_ptr_type p) { return p ; }
+
+/* ****** ****** */
+
 /*
 ** HX: cutting the corners? yes. worth it? probably.
 */
