@@ -97,25 +97,22 @@ fun setenv_exn (name: string, value: string, overwrite: int): void
 
 // a generic binary search function
 
-fun bsearch {a:viewt@ype} {n:nat}
-  (key: &a,
-   base: &(@[a][n]),
-   nmemb: int n,
-   size: sizeof_t a,
-   compar: (&a, &a) -<fun1> int)
-  : intBtw (~1, n)
+fun bsearch {a:viewt@ype} {n:nat} (
+    key: &a
+  , base: &(@[a][n]), nmemb: size_t n, size: sizeof_t a
+  , compar: (&a, &a) -<fun1> int
+  ) : intBtw (~1, n)
   = "atslib_bsearch"
 
 (* ****** ****** *)
 
 // a generic quicksort function
 
-fun qsort {a:viewt@ype} {n:nat}
-  (base: &(@[a][n]),
-   nmemb: int n,
-   size: sizeof_t a,
-   compar: (&a, &a) -<fun1> int)
-  : void
+fun qsort {a:viewt@ype} {n:nat} (
+    base: &(@[a][n])
+  , nmemb: size_t n, size: sizeof_t a
+  , compar: (&a, &a) -<fun1> int
+  ) : void
   = "atslib_qsort"
 
 (* ****** ****** *)

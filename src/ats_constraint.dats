@@ -1376,9 +1376,9 @@ in
     in
       ivp->[ind] := ivp->[ind] + coef
     end
-  | S3IEint (i) => begin
-      let val i0 = $FM.i0nt_of_int i in ivp->[0] := ivp->[0] + coef * i0 end
-    end
+  | S3IEint (i) => let
+      val i0 = $FM.i0nt_of_int i in ivp->[0] := ivp->[0] + coef * i0
+    end // end of [S3IEint]
   | S3IEintinf (i) => begin
       let val i0 = $FM.i0nt_of_intinf i in ivp->[0] := ivp->[0] + coef * i0 end
     end

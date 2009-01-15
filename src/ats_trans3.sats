@@ -166,6 +166,7 @@ fun assert_bool_tr_dn
   (loc: $Loc.location_t, b: bool, s2e: $SEXP2.s2exp): void
 
 fun d2exp_tr_dn (_: $DEXP2.d2exp, _: $SEXP2.s2exp): d3exp
+fun d2exp_tr_dn_rest (_: $DEXP2.d2exp, _: $SEXP2.s2exp): d3exp
 
 fun d2exp_if_tr_dn (
     loc0: $Loc.location_t

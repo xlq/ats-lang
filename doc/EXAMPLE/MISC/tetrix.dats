@@ -67,7 +67,11 @@ macdef SPEED_LIM = 100
 
 (* ****** ****** *)
 
-val frame: matrix (char, FD+1, FW) = matrix_make_elt (FD+1, FW, ' ')
+macdef matrix_make_elt (m, n, c) =
+  matrix_make_elt (size_of_int ,(m), size_of_int ,(n), ,(c))
+
+val frame: matrix (char, FD+1, FW) =
+  matrix_make_elt (FD+1, FW, ' ')
 
 fn frame_get_at (i: Int, j: Int): char =
   if i < 0 then '\0' else
@@ -325,7 +329,7 @@ end // end of [print_score]
 fun frame_delete (): void = let
   fn aux1 (i: natLte FD, j: natLte FD):<cloptr1> void = let
     val f = lam (k: natLt FW): void =<cloptr1>
-      matrix_set_elt_at (frame, i, FW, k, frame[j, FW, k])
+      matrix_set_elt_at__intsz (frame, i, FW, k, frame[j, FW, k])
     val () = iter (FW, f)
     val () = cloptr_free (f)
   in

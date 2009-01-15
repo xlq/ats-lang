@@ -46,7 +46,7 @@
 
 assume array0_viewt0ype_type
   (a:viewt@ype) = [n:nat] [l:addr] '{
-  data= ptr l, size= int n, view= vbox (array_v (a, n, l))
+  data= ptr l, size= size_t n, view= vbox (array_v (a, n, l))
 } // end of [array0_viewt0ype_type]
 
 (* ****** ****** *)
@@ -54,15 +54,14 @@ assume array0_viewt0ype_type
 implement array0_make_arraysize {a} {n} (arrsz) = let
   prval () = free_gc_elim {a} (arrsz.0)
   val (pfbox | ()) = vbox_make_view_ptr (arrsz.1 | arrsz.2)
-  // end of [val]
-in
-  '{ data= arrsz.2, size= arrsz.3, view= pfbox }
-end // end of [array0_make_arraysize]
+in '{
+  data= arrsz.2, size= size_of_int arrsz.3, view= pfbox
+} end // end of [array0_make_arraysize]
 
 (* ****** ****** *)
 
 implement{a} array0_make_elt (asz, x) = let
-  val asz = int1_of_int asz
+  val asz = size1_of_size asz
 in
   if asz >= 0 then let
     val A = array_make_elt<a> (asz, x)
@@ -81,37 +80,49 @@ implement array0_size (A) = A.size
 (* ****** ****** *)
 
 implement{a} array0_get_elt_at_exn (A, i) = let
-  val i = int1_of_int i
+  val i = size1_of_size i
+  val A_data = A.data; val asz = A.size
 in
-  if i >= 0 then let
-    val A_data = A.data; val asz = A.size
-  in
-    if i < asz then let
-      prval vbox pf = A.view in !A_data.[i]
-    end else begin
-      $raise SubscriptException
-    end
+  if i < asz then let
+    prval vbox pf = A.view in !A_data.[i]
   end else begin
     $raise SubscriptException
   end // end of [if]
 end // end of [array0_get_elt_at_exn]
 
 implement{a} array0_set_elt_at_exn (A, i, x) = let
-  val i = int1_of_int i
+  val i = size1_of_size i
+  val A_data = A.data; val asz = A.size
 in
-  if i >= 0 then let
-    val A_data = A.data; val asz = A.size
-  in
-    if i < asz then let
-      prval vbox pf = A.view in !A_data.[i] := x
-    end else begin
-      $raise SubscriptException
-    end
+  if i < asz then let
+    prval vbox pf = A.view in !A_data.[i] := x
   end else begin
     $raise SubscriptException
   end
 end // end of [array0_set_elt_at_exn]
 
+(* ****** ****** *)
+
+implement{a} array0_get_elt_at_exn__isz (A, i) = let
+  val i = int1_of_int i
+in
+  if i >= 0 then begin
+    array0_get_elt_at_exn<a> (A, size_of_int i)
+  end else begin
+    $raise SubscriptException
+  end // end of [if]
+end // end of [array0_get_elt_at_exn__isz] 
+  
+implement{a} array0_set_elt_at_exn__isz (A, i, x) = let
+  val i = int1_of_int i
+in
+  if i >= 0 then begin
+    array0_set_elt_at_exn<a> (A, size_of_int i, x)
+  end else begin
+    $raise SubscriptException
+  end // end of [if]
+end // end of [array0_set_elt_at_exn__isz] 
+  
 (* ****** ****** *)
 
 // [array0.sats] is already loaded by a call to [pervasive_load]

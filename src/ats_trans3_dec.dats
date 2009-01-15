@@ -522,6 +522,10 @@ fn v2ardec_tr_dyn (d2c: v2ardec): v3ardec = let
         val d3e_asz = d2exp_tr_up d2e_asz
         val s2e_asz = s2exp_whnf (d3e_asz.d3exp_typ)
         val os2e_dim = un_s2exp_int_int_t0ype (s2e_asz)
+        val os2e_dim = (case+ os2e_dim of
+          | Some_vt _ => (fold@ os2e_dim; os2e_dim)
+          | ~None_vt () => un_s2exp_size_int_t0ype (s2e_asz)
+        ) : s2expopt_vt
         val s2e_dim = case+ os2e_dim of
           | ~Some_vt s2e_dim => s2e_dim | ~None_vt () => begin
               $Loc.prerr_location loc_asz; prerr ": error(3)";

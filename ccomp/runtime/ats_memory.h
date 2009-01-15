@@ -68,35 +68,34 @@ extern void *alloca (size_t nsz) ; // declared in [alloca.h]
 
 extern ats_void_type ats_gc_init () ;
 extern ats_void_type
-ats_gc_markroot (ats_ptr_type p, ats_int_type bsz) ;
+ats_gc_markroot (ats_ptr_type p, ats_size_type bsz) ;
 
 /* ****** ****** */
 
-extern ats_ptr_type ats_malloc_ngc (const ats_int_type n) ;
+extern ats_ptr_type ats_malloc_ngc (ats_size_type n) ;
 
 extern ats_ptr_type
-ats_calloc_ngc (const ats_int_type n, const ats_int_type sz) ;
+ats_calloc_ngc (ats_size_type nmemb, ats_size_type bsz) ;
 
 extern ats_void_type ats_free_ngc (const ats_ptr_type p) ;
 
 extern ats_ptr_type
-ats_realloc_ngc (const ats_ptr_type p, const ats_int_type n) ;
+ats_realloc_ngc (const ats_ptr_type p, ats_size_type n) ;
 
 /* ****** ****** */
 
-extern ats_ptr_type ats_malloc_gc (const ats_int_type bsz) ;
+extern ats_ptr_type ats_malloc_gc (ats_size_type bsz) ;
 
 extern ats_ptr_type
-ats_calloc_gc (const ats_int_type nmemb, const ats_int_type bsz) ;
+ats_calloc_gc (ats_size_type nmemb, ats_size_type bsz) ;
 
 extern ats_void_type ats_free_gc (const ats_ptr_type p) ;
 
 extern ats_ptr_type
-ats_realloc_gc (const ats_ptr_type p, const ats_int_type bsz) ;
+ats_realloc_gc (const ats_ptr_type p, ats_size_type bsz) ;
 
 /* ****** ****** */
 
 #endif	/* __ATS_MEMORY_H */
 
 /* end of [ats_memory.h] */
-

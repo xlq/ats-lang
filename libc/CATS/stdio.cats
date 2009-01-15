@@ -251,24 +251,24 @@ atslib_fputs_exn(ats_ptr_type s, ats_ptr_type fil) {
 static inline
 ats_int_type
 atslib_fread
-  (ats_ptr_type buf, ats_int_type sz, ats_int_type n, ats_ptr_type fil)
+  (ats_ptr_type buf, ats_size_type sz, ats_size_type n, ats_ptr_type fil)
 {
-  return fread ((void*)buf, (size_t)sz, (size_t)n, (FILE*)fil) ;
+  return fread ((void*)buf, sz, n, (FILE*)fil) ;
 }
 
 static inline
 ats_int_type
 atslib_fread_byte
-  (ats_ptr_type buf, ats_int_type n, ats_ptr_type fil) {
-  return fread ((void*)buf, 1, (size_t)n, (FILE*)fil) ;
+  (ats_ptr_type buf, ats_size_type n, ats_ptr_type fil) {
+  return fread ((void*)buf, 1, n, (FILE*)fil) ;
 }
 
 static inline
 ats_int_type
 atslib_fread_byte_exn
-  (ats_ptr_type buf, ats_int_type ntotal, ats_ptr_type fil) {
+  (ats_ptr_type buf, ats_size_type ntotal, ats_ptr_type fil) {
   int nread ;
-  nread = fread ((void*)buf, 1, (size_t)ntotal, (FILE*)fil) ;
+  nread = fread ((void*)buf, 1, ntotal, (FILE*)fil) ;
   if (nread < ntotal) {
     perror ("fread") ;
     ats_exit_errmsg (1, "exit(ATS): [fread] failed\n") ;
@@ -390,26 +390,25 @@ atslib_ftell_exn
 /* --------------------------------------- */
 
 static inline
-ats_int_type
-atslib_fwrite
-  (ats_ptr_type buf, ats_int_type sz,
-  ats_int_type n, ats_ptr_type fil) {
-  return fwrite((void*)buf, (size_t)sz, (size_t)n, (FILE*)fil) ;
+ats_int_type atslib_fwrite (
+  ats_ptr_type buf, ats_size_type sz, ats_size_type n, ats_ptr_type fil
+) {
+  return fwrite((void*)buf, sz, n, (FILE*)fil) ;
 } /* atslib_fwrite */
 
 static inline
 ats_int_type
 atslib_fwrite_byte
-  (ats_ptr_type buf, ats_int_type n, ats_ptr_type fil) {
-  return fwrite((void*)buf, 1, (size_t)n, (FILE*)fil) ;
+  (ats_ptr_type buf, ats_size_type n, ats_ptr_type fil) {
+  return fwrite((void*)buf, 1, n, (FILE*)fil) ;
 } /* atslib_fwrite_byte */
 
 static inline
 ats_void_type
 atslib_fwrite_byte_exn
-  (ats_ptr_type buf0, ats_int_type ntotal, ats_ptr_type fil) {
+  (ats_ptr_type buf0, ats_size_type ntotal, ats_ptr_type fil) {
   char *buf = (char*) buf0 ; size_t nwritten ; size_t i ;
-  nwritten = fwrite((void*)buf, 1, (size_t)ntotal, (FILE*)fil) ;
+  nwritten = fwrite((void*)buf, 1, ntotal, (FILE*)fil) ;
   if (nwritten < ntotal) {
     perror ("fwrite") ;
     ats_exit_errmsg (1, "exit(ATS): [fwrite] failed\n") ; 

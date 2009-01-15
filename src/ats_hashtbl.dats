@@ -105,8 +105,9 @@ fn{key:t@ype;item:t@ype} table_search {sz:nat}
   (tbl: &table (key, item, sz), off: natLt sz, k0: key, eq: (key, key) -<fun> bool)
   :<> Option_vt item = let
   viewtypedef elt = Chain(key,item)
+  val off_sz = size_of_int (off)
   val (pf1, pf2 | p) =
-    array_ptr_takeout_tsz {elt} (view@ tbl | &tbl, off, sizeof<elt>)
+    array_ptr_takeout_tsz {elt} (view@ tbl | &tbl, off_sz, sizeof<elt>)
   val ans = chain_search (!p, k0, eq)
   prval () = view@ tbl := pf2 (pf1)
 in
@@ -117,8 +118,9 @@ fn{key:t@ype;item:viewt@ype} table_insert {sz:nat}
   (tbl: &table (key, item, sz), off: natLt sz, k: key, i: item)
   :<> void = let
   viewtypedef elt = Chain(key,item)
+  val off_sz = size_of_int (off)
   val (pf1, pf2 | p) =
-    array_ptr_takeout_tsz {elt} (view@ tbl | &tbl, off, sizeof<elt>)
+    array_ptr_takeout_tsz {elt} (view@ tbl | &tbl, off_sz, sizeof<elt>)
   val () = chain_insert (!p, k, i)
   prval () = view@ tbl := pf2 (pf1)
 in
@@ -126,7 +128,7 @@ in
 end // end of [table_insert]
 
 fn{key:t@ype;item:viewt@ype} table_remove {sz:nat}
-  (tbl: &table (key, item, sz), off: natLt sz, k: key, eq: (key, key) -<fun> bool)
+  (tbl: &table (key, item, sz), off: sizeLt sz, k: key, eq: (key, key) -<fun> bool)
   :<> Option_vt (item) = let
   viewtypedef elt = Chain(key,item)
   val (pf1, pf2 | p) =
@@ -143,8 +145,9 @@ extern fun table_chain_get
 
 implement table_chain_get {key,item} (tbl, off) = let
   viewtypedef elt = Chain(key,item)
+  val off_sz = size_of_int (off)
   val (pf1, pf2 | p) =
-    array_ptr_takeout_tsz {elt} (view@ tbl | &tbl, off, sizeof<elt>)
+    array_ptr_takeout_tsz {elt} (view@ tbl | &tbl, off_sz, sizeof<elt>)
   val ans = !p
   val () = !p := nil ()
   prval () = view@ tbl := pf2 (pf1)
@@ -193,7 +196,8 @@ end // end of [ht_insert_chain]
 fn{key:t@ype;item:viewt@ype} ht_remove {sz:pos}
   (ht: &HT (key, item, sz), k: key):<> Option_vt item = let
   val off = op uimod (ht.hash k, ht.size)
-  val ans = table_remove<key,item> (ht.table, off, k, ht.eq)
+  val off_sz = size_of_int (off)
+  val ans = table_remove<key,item> (ht.table, off_sz, k, ht.eq)
   val () = case+ ans of
     | Some_vt !i => (fold@ ans; ht.nitm := ht.nitm - 1)
     | None_vt () => fold@ ans

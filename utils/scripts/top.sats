@@ -93,7 +93,7 @@ fun strlst_is_nil {n:nat} (ss: strlst n): bool (n == 0) = "strlst_is_nil"
 fun strlst_head_get {n:pos} (ss: strlst n): string = "strlst_head_get"
 fun strlst_tail_get {n:pos} (ss: strlst n): strlst (n-1) = "strlst_tail_get"
 
-fun strlst_length {n:nat} (ss: strlst n): int n = "strlst_length"
+fun strlst_length {n:nat} (ss: strlst n): size_t n = "strlst_length"
 fun strlst_reverse {n:nat} (ss: strlst n): strlst n = "strlst_reverse"
 
 (* ****** ****** *)

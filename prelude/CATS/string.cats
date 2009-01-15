@@ -58,7 +58,7 @@ atspre_strbuf_bytes_trans (ats_ptr_type p) {
 static inline
 ats_void_type
 atspre_bytes_strbuf_trans
-  (ats_ptr_type p, ats_int_type n) {
+  (ats_ptr_type p, ats_size_type n) {
   ((char*)p)[n] = '\000' ; return ;
 } /* end of [atspre_bytes_strbuf_trans] */
 
@@ -82,7 +82,7 @@ static inline
 ats_bool_type
 atspre_lt_string_string
   (const ats_ptr_type s1, const ats_ptr_type s2) {
-  int i = strcmp((char *)s1, (char *)s2) ;
+  int i = strcmp((char*)s1, (char*)s2) ;
   return (i < 0 ? ats_true_bool : ats_false_bool) ;
 } /* atspre_lt_string_string */
 
@@ -90,7 +90,7 @@ static inline
 ats_bool_type
 atspre_lte_string_string
   (const ats_ptr_type s1, const ats_ptr_type s2) {
-  int i = strcmp((char *)s1, (char *)s2) ;
+  int i = strcmp((char*)s1, (char*)s2) ;
   return (i <= 0 ? ats_true_bool : ats_false_bool) ;
 } /* atspre_lte_string_string */
 
@@ -98,7 +98,7 @@ static inline
 ats_bool_type
 atspre_gt_string_string
   (const ats_ptr_type s1, const ats_ptr_type s2) {
-  int i = strcmp((char *)s1, (char *)s2) ;
+  int i = strcmp((char*)s1, (char*)s2) ;
   return (i > 0 ? ats_true_bool : ats_false_bool) ;
 } /* atspre_gt_string_string */
 
@@ -106,7 +106,7 @@ static inline
 ats_bool_type
 atspre_gte_string_string
   (const ats_ptr_type s1, const ats_ptr_type s2) {
-  int i = strcmp((char *)s1, (char *)s2) ;
+  int i = strcmp((char*)s1, (char*)s2) ;
   return (i >= 0 ? ats_true_bool : ats_false_bool) ;
 } /* atspre_gte_string_string */
 
@@ -114,7 +114,7 @@ static inline
 ats_bool_type
 atspre_eq_string_string
   (const ats_ptr_type s1, const ats_ptr_type s2) {
-  int i = strcmp((char *)s1, (char *)s2) ;
+  int i = strcmp((char*)s1, (char*)s2) ;
 /*
   fprintf (stdout, "ats_eq_string_string: s1 = %s and s2 = %s\n", s1, s2) ;
   fprintf (stdout, "ats_eq_string_string: i = %i\n", i) ;
@@ -126,7 +126,7 @@ static inline
 ats_bool_type
 atspre_neq_string_string
   (const ats_ptr_type s1, const ats_ptr_type s2) {
-  int i = strcmp((char *)s1, (char *)s2) ;
+  int i = strcmp((char*)s1, (char*)s2) ;
   return (i != 0 ? ats_true_bool : ats_false_bool) ;
 } /* atspre_neq_string_string */
 
@@ -134,7 +134,7 @@ static inline
 ats_int_type
 atspre_compare_string_string
   (const ats_ptr_type s1, const ats_ptr_type s2) {
-  int i = strcmp((char *)s1, (char *)s2) ;
+  int i = strcmp((char*)s1, (char*)s2) ;
   if (i < 0) return -1 ;
   if (i > 0) return  1 ;
   return 0 ;
@@ -146,7 +146,7 @@ static inline
 ats_void_type
 atspre_fprint_string
   (const ats_ptr_type out, const ats_ptr_type s) {
-  int n = fprintf ((FILE *)out, "%s", (char *)s) ;
+  int n = fprintf ((FILE *)out, "%s", (char*)s) ;
   if (n < 0) { ats_exit_errmsg
     (n, "exit(ATS): [fprint_string] failed.\n") ;
   }
@@ -174,10 +174,43 @@ atspre_prerr_string (const ats_ptr_type s) {
 /* ****** ****** */
 
 static inline
+ats_char_type
+atspre_string_get_char_at
+  (const ats_ptr_type s, ats_size_type offset) {
+  return *((char*)s + offset) ;
+} /* atspre_string_get_char_at */
+
+static inline
+ats_char_type
+atspre_string_get_char_at__isz
+  (const ats_ptr_type s, ats_int_type offset) {
+  return *((char*)s + offset) ;
+} /* atspre_string_get_char_at */
+
+static inline
 ats_void_type
-atspre_strbuf_initialize_substring
-  (ats_ptr_type p_buf, ats_ptr_type s, ats_int_type st, ats_int_type ln) {
-  memcpy (p_buf, ((char*)s)+st, ln) ; ((char*)p_buf)[ln] = '\000'; return ;
+atspre_strbuf_set_char_at
+  (ats_ptr_type s, ats_size_type offset, const char c) {
+  *((char*)s + offset) = c ; return ;
+}
+
+static inline
+ats_void_type
+atspre_strbuf_set_char_at__isz
+  (ats_ptr_type s, ats_int_type offset, const char c) {
+  *((char*)s + offset) = c ; return ;
+}
+
+/* ****** ****** */
+
+static inline
+ats_void_type
+atspre_strbuf_initialize_substring (
+  ats_ptr_type p_buf
+, ats_ptr_type s, ats_size_type st, ats_size_type ln
+) {
+  memcpy (p_buf, ((char*)s)+st, ln) ; ((char*)p_buf)[ln] = '\000' ;
+  return ;
 } /* atspre_strbuf_initialize_substring */
 
 /* ****** ****** */
@@ -187,8 +220,8 @@ ats_ptr_type
 atspre_string_append
   (const ats_ptr_type s1, const ats_ptr_type s2) {
   int n1, n2 ; char *des ;
-  n1 = strlen((char *)s1) ;
-  n2 = strlen((char *)s2) ;
+  n1 = strlen((char*)s1) ;
+  n2 = strlen((char*)s2) ;
   des = ATS_MALLOC(n1+n2+1) ;
   des[n1+n2] = '\000' ;
   memcpy(des, s1, n1) ; memcpy (des+n1, s2, n2) ;
@@ -208,9 +241,9 @@ atspre_string_contains
 /* ****** ****** */
 
 static inline
-ats_int_type
+ats_size_type
 atspre_string_length (const ats_ptr_type s) {
-  return (strlen((char *)s)) ;
+  return (strlen((char*)s)) ;
 } /* atspre_string_length */
 
 /* ****** ****** */
@@ -218,70 +251,54 @@ atspre_string_length (const ats_ptr_type s) {
 static inline
 ats_bool_type
 atspre_string_is_empty (const ats_ptr_type s) {
-  return (*((char *)s) == '\000') ;
+  return (*((char*)s) == '\000') ;
 } /* atspre_string_is_empty */
 
 static inline
 ats_bool_type
 atspre_string_isnot_empty (const ats_ptr_type s) {
-  return (*((char *)s) != '\000') ;
+  return (*((char*)s) != '\000') ;
 } /* atspre_string_isnot_empty */
 
 /* ****** ****** */
 
 static inline
 ats_bool_type
-atspre_string_is_at_end (const ats_ptr_type s, ats_int_type i) {
-  return (*((char *)s + i) == '\000' ? ats_true_bool : ats_false_bool) ;
+atspre_string_is_at_end (const ats_ptr_type s, ats_size_type i) {
+  return (*((char*)s + i) == '\000' ? ats_true_bool : ats_false_bool) ;
 } /* atspre_string_is_at_end */
 
 /* ****** ****** */
 
 static inline
-ats_char_type
-atspre_string_get_char_at
-  (const ats_ptr_type s, const ats_int_type offset) {
-  return *((char *)s + offset) ;
-} /* atspre_string_get_char_at */
-
-static inline
-ats_void_type
-atspre_strbuf_set_char_at
-  (ats_ptr_type s, const ats_int_type offset, const char c) {
-  *((char *)s + offset) = c ; return ;
-}
-
-/* ****** ****** */
-
-static inline
-ats_int_type
+ats_ssize_type
 atspre_string_index_of_char_from_left
   (const ats_ptr_type s, const ats_char_type c) {
   char *res ;
-  res = strchr ((char *)s, c) ;
-  if (res != (char *)0) return (res - (char *)s) ;
+  res = strchr ((char*)s, c) ;
+  if (res != (char*)0) return (res - (char*)s) ;
   return (-1) ;
 } /* atspre_string_index_of_char_from_left */
 
 static inline
-ats_int_type
+ats_ssize_type
 atspre_string_index_of_char_from_right
   (const ats_ptr_type s, const ats_char_type c) {
   char *res ;
-  res = strrchr ((char *)s, c) ;
-  if (res != (char *)0) return (res - (char *)s) ;
+  res = strrchr ((char*)s, c) ;
+  if (res != (char*)0) return (res - (char*)s) ;
   return (-1) ;
 } /* atspre_string_index_of_char_from_right */
 
 /* ****** ****** */
 
 static inline
-ats_int_type
+ats_ssize_type
 atspre_string_index_of_string
   (const ats_ptr_type s1, const ats_ptr_type s2) {
   char *res ;
-  res = strstr ((char *)s1, (char *)s2) ;
-  if (res != (char *)0) return (res - (char *)s1) ;
+  res = strstr ((char*)s1, (char*)s2) ;
+  if (res != (char*)0) return (res - (char*)s1) ;
   return (-1) ;
 }
 
@@ -289,7 +306,7 @@ atspre_string_index_of_string
 
 extern ats_ptr_type
 atspre_string_make_char (
-  const ats_int_type n, const ats_char_type c
+  const ats_size_type n, const ats_char_type c
 ) ; // implemented in [prelude/DATS/string.dats]
 
 static inline

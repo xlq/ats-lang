@@ -55,22 +55,31 @@ macdef array0 (x) = array0_make_arraysize ,(x)
 
 (* ****** ****** *)
 
-fun{a:t@ype} array0_make_elt (asz: int, x: a):<!exnref> array0 a
+fun{a:t@ype} array0_make_elt (asz: size_t, x: a):<!exnref> array0 a
 
 (* ****** ****** *)
 
-fun array0_size {a:t@ype} (A: array0 a):<> int
+fun array0_size {a:t@ype} (A: array0 a):<> size_t
 
 (* ****** ****** *)
 
 fun{a:t@ype} array0_get_elt_at_exn
-  (A: array0 a, i: int):<!exnref> a
+  (A: array0 a, i: size_t):<!exnref> a
+overload [] with array0_get_elt_at_exn
 
 fun{a:t@ype} array0_set_elt_at_exn
-  (A: array0 a, i: int, x: a):<!exnref> void
-
-overload [] with array0_get_elt_at_exn
+  (A: array0 a, i: size_t, x: a):<!exnref> void
 overload [] with array0_set_elt_at_exn
+
+(* ****** ****** *)
+
+fun{a:t@ype} array0_get_elt_at_exn__isz
+  (A: array0 a, i: int):<!exnref> a
+overload [] with array0_get_elt_at_exn__isz
+
+fun{a:t@ype} array0_set_elt_at_exn__isz
+  (A: array0 a, i: int, x: a):<!exnref> void
+overload [] with array0_set_elt_at_exn__isz
 
 (* ****** ****** *)
 

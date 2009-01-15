@@ -131,6 +131,7 @@ fn emit_include_cats {m:file_mode}
   val () = fprint1_string (pf | out, "#include \"prelude/CATS/pointer.cats\"\n")
   val () = fprint1_string (pf | out, "#include \"prelude/CATS/printf.cats\"\n")
   val () = fprint1_string (pf | out, "#include \"prelude/CATS/reference.cats\"\n")
+  val () = fprint1_string (pf | out, "#include \"prelude/CATS/sizetype.cats\"\n")
   val () = fprint1_string (pf | out, "#include \"prelude/CATS/string.cats\"\n")
   // array, list and option are so common, so they are added here:
   val () = fprint1_string (pf | out, "#include \"prelude/CATS/array.cats\"\n")
@@ -146,14 +147,16 @@ end // end of [emit_include_cats]
 fn atarray_name_test (name: string): bool = let
   val name = string1_of_string name
 in
-  if string_is_at_end (name, 0) then false else eq_char_char (name[0], '\[')
+  if string_is_at_end (name, 0) then false else
+    eq_char_char (string_get_char_at (name, 0), '\[')
+  // end of [if]
 end // end of [atarray_name_test]
 
 fn fprint_atarray_name {m:file_mode}
   (pf: file_mode_lte (m, w) | out: &FILE m, name: string)
   : void = let
   fun aux {n,i:nat | i <= n}
-    (out: &FILE m, name: string n, i: int i)
+    (out: &FILE m, name: string n, i: size_t i)
     : void = begin
     if string_is_at_end (name, i) then ()
     else let

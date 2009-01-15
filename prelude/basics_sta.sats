@@ -125,6 +125,11 @@ abst@ype uint32_t0ype = $extype "ats_uint32_type"
 abst@ype int64_t0ype = $extype "ats_int64_type"
 abst@ype uint64_t0ype = $extype "ats_uint64_type"
 
+// integer types for sizes
+abst@ype size_t0ype = $extype "ats_size_type"
+abst@ype ssize_t0ype = $extype "ats_ssize_type"
+abst@ype ptrdiff_t0ype = $extype "ats_ptrdiff_type"
+
 (* ****** ****** *)
 
 abstype ptr_type
@@ -407,6 +412,9 @@ abst@ype uint_int_t0ype (int) = $extype "ats_uint_type"
 
 abst@ype size_int_t0ype (i:int) = $extype "ats_size_type"
 abst@ype ssize_int_t0ype (i:int) = $extype "ats_ssize_type"
+abst@ype ptrdiff_int_t0ype (i:int) = $extype "ats_ptrdiff_type"
+
+(* ****** ****** *)
 
 abstype ptr_addr_type (addr)
 
@@ -526,8 +534,15 @@ stadef int = int_t0ype
 stadef uint = uint_int_t0ype
 stadef uint = uint_t0ype
 
+(* this order is significant! *)
 stadef size_t = size_int_t0ype
+stadef size_t = size_t0ype
+
 stadef ssize_t = ssize_int_t0ype
+stadef ssize_t = ssize_t0ype
+
+stadef ptrdiff_t = ptrdiff_int_t0ype
+stadef ptrdiff_t = ptrdiff_t0ype
 
 (* ****** ****** *)
 
@@ -565,7 +580,7 @@ typedef intBtw (lb:int, ub:int) = [i: int | lb <= i; i < ub] int i
 
 typedef Nat = [n:int | n >= 0] int n
 typedef natLt (n:int) = [i:int | 0 <=i; i < n] int i
-typedef natLte (n:int) = [i:int | 0<= i; i <= n] int i
+typedef natLte (n:int) = [i:int | 0 <= i; i <= n] int i
 
 typedef Pos = intGt 0
 typedef Neg = intLt 0
@@ -579,8 +594,14 @@ typedef Stropt = [n:int] stropt n
 
 typedef uInt = [n:int | n >=0] uint n
 
+(* ****** ****** *)
+
 typedef sizeof_t (a:viewt@ype) =
-  int_int_t0ype (sizeof_viewt0ype_int a)
+  size_int_t0ype (sizeof_viewt0ype_int a)
+
+typedef sizeLt (n: int) = [i:int | 0 <= i; i < n] size_t (i)
+typedef sizeLte (n: int) = [i:int | 0 <= i; i <= n] size_t (i)
+typedef sizeBtw (lb:int, ub:int) = [i: int | lb <= i; i < ub] ssize_t i
 
 (* ****** ****** *)
 

@@ -82,18 +82,18 @@ atspre_ppred (const ats_ptr_type p) {
 
 static inline
 ats_ptr_type
-atspre_padd (const ats_ptr_type p, const ats_int_type n) {
+atspre_padd (const ats_ptr_type p, const ats_size_type n) {
   return ((ats_byte_type*)p) + n ;
 }
 
 static inline
 ats_ptr_type
-atspre_psub (const ats_ptr_type p, const ats_int_type n) {
+atspre_psub (const ats_ptr_type p, const ats_size_type n) {
   return ((ats_byte_type*)p) - n ;
 }
 
 static inline
-ats_int_type
+ats_ptrdiff_type
 atspre_pdiff (const ats_ptr_type p1, const ats_ptr_type p2) {
   return ((ats_byte_type*)p1 - (ats_byte_type*)p2) ;
 }
@@ -170,7 +170,7 @@ atspre_prerr_ptr(const ats_ptr_type p) {
 
 static inline
 ats_ptr_type
-atspre_ptr_alloc_tsz(const ats_int_type tsz) {
+atspre_ptr_alloc_tsz(const ats_size_type tsz) {
   ats_ptr_type p ;
   p = ATS_MALLOC(tsz) ; return p ;
 }
@@ -188,8 +188,8 @@ atspre_ptr_free(const ats_ptr_type ptr) {
 static inline
 ats_void_type
 atspre_ptr_move_tsz
-  (ats_ptr_type p1, ats_ptr_type p2, ats_int_type tsz) {
-  memcpy (p2, p1, (size_t)tsz) ; return ;
+  (ats_ptr_type p1, ats_ptr_type p2, ats_size_type tsz) {
+  memcpy (p2, p1, tsz) ; return ;
 }
 
 /* ****** ****** */

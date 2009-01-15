@@ -1175,7 +1175,7 @@ fn sc2laulst_covercheck
           val+ SP2Tcon (s2c, _) = sp2t.sp2at_node
           val tag = s2cst_tag_get (s2c); val tag = int1_of_int tag
           val () = assert (tag >= 0); val () = assert (tag < n)
-          val () = p->[tag] := p->[tag] + 1
+          val () = (p->[tag] := p->[tag] + 1) // end of [val]
         in
           check (pf | p, n, sc2ls)
         end // end of [list_cons]

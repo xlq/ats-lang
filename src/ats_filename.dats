@@ -92,8 +92,8 @@ end // end of [local]
 
 implement filename_is_relative (name) = let
   val name = string1_of_string name
-  fn aux {n,i:nat | i <= n} (name: string n, i: int i): bool =
-    if string_is_at_end (name, i) then true else name[0] <> dirsep
+  fn aux {n,i:nat | i <= n} (name: string n, i: size_t i): bool =
+    if string_is_at_end (name, i) then true else name[i] <> dirsep
 in
   aux (name, 0)
 end // [filename_is_relative]
@@ -194,12 +194,16 @@ staload Lst = "ats_list.sats"
 fn filename_normalize (s0: string): string = let
   val s0 = string1_of_string s0; val n0 = string_length s0
   fn* loop1 {n0,i0:nat | i0 <= n0}
-    (s0: string n0, n0: int n0, i0: int i0, dirs: &List string): void =
+    (s0: string n0, n0: size_t n0, i0: size_t i0, dirs: &List string): void =
     if i0 < n0 then loop2 (s0, n0, i0, i0, dirs) else ()
   and loop2 {n0,i0,i:nat | i0 < n0; i0 <= i; i <= n0}
-    (s0: string n0, n0: int n0, i0: int i0, i: int i, dirs: &List string)
+    (s0: string n0, n0: size_t n0, i0: size_t i0, i: size_t i, dirs: &List string)
     : void =
-    if i < n0 then begin
+    if i < n0 then let
+(*
+      // empty
+*)
+    in
       if s0[i] <> dirsep then loop2 (s0, n0, i0, i+1, dirs)
       else let
         val dir = string_make_substring (s0, i0, i - i0 + 1)
@@ -220,7 +224,8 @@ fn filename_normalize (s0: string): string = let
 *)
     in
       dirs := list_cons (dir, dirs)
-    end
+    end // end of [if]
+  // end of [loop1] and [loop2]
   fun dirs_process
     (npre: Nat, dirs: List string, res: List string)
     : List string = case+ dirs of

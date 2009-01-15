@@ -590,8 +590,8 @@ fn puzzle_update (): void = let
     if j < NMAX1 then let
       val digit = digit_of_char (s[i * NMAX1 + j])
     in
-      matrix_set_elt_at (the_puzzle_ori, i, NMAX1, j, digit);
-      matrix_set_elt_at (the_puzzle_cur, i, NMAX1, j, digit);
+      matrix_set_elt_at__intsz (the_puzzle_ori, i, NMAX1, j, digit);
+      matrix_set_elt_at__intsz (the_puzzle_cur, i, NMAX1, j, digit);
       loop2 (i,j+1)
     end else begin
       loop1 (i+1)
@@ -607,7 +607,7 @@ fn button_matrix_update (): void = let
   and loop2 (i: natLt NMAX1, j: natLte NMAX1): void =
     if j < NMAX1 then let
       val is_fixed: bool = the_puzzle_ori[i, NMAX1, j] > 0
-      val r_button = matrix_get_elt_at (the_button_matrix, i, NMAX, j)
+      val r_button = matrix_get_elt_at__intsz (the_button_matrix, i, NMAX, j)
       val lab = let
         val ij = the_puzzle_cur[i, NMAX1, j]
       in

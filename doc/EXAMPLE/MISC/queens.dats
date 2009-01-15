@@ -58,19 +58,15 @@ end // end of [print_board]
 
 //
 
-fun board_make {sz:nat} (sz: int sz)
-  : [l:addr] (free_gc_v (Nat, sz, l), array_v (Nat, sz, l) | ptr l) = let
-
-
-val (pf_gc, pf | p) =
-  array_ptr_alloc_tsz {Nat} (sz, sizeof<Nat>)
-var x: Nat = 0; val () =
-  array_ptr_initialize_elt_tsz {Nat} (!p, sz, x, sizeof<Nat>)
-
+fn board_make {sz:nat} (sz: int sz):<> [l:addr] (
+    free_gc_v (Nat, sz, l), array_v (Nat, sz, l) | ptr l
+  ) = let
+  val sz = size_of_int sz
+  val (pf_gc, pf | p) = array_ptr_alloc_tsz {Nat} (sz, sizeof<Nat>)
+  var x: Nat = 0; val () =
+    array_ptr_initialize_elt_tsz {Nat} (!p, sz, x, sizeof<Nat>)
 in
-
-(pf_gc, pf | p)
-
+  (pf_gc, pf | p)
 end // end of [board_make]
 
 (* ****** ****** *)

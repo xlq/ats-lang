@@ -709,13 +709,13 @@ end // end of [emit_valprim_select_ptr]
 (* ****** ****** *)
 
 extern fun emit_valprim_string {m:file_mode}
-  (pf: file_mode_lte (m, w) | out: &FILE m, str: string, len: int): void
+  (pf: file_mode_lte (m, w) | out: &FILE m, str: string, len: size_t): void
   = "ats_ccomp_emit_valprim_string"
 
 %{$
 
 ats_void_type ats_ccomp_emit_valprim_string 
-  (ats_ptr_type out, ats_ptr_type str, ats_int_type len) {
+  (ats_ptr_type out, ats_ptr_type str, ats_size_type len) {
   char *s, c; int i;
 
   fputc ('"', (FILE*)out);
@@ -811,7 +811,11 @@ implement emit_valprim (pf | out, vp) = begin
     in
       // empty
     end // end of [VPsizeof]
-  | VPstring (str, len) => emit_valprim_string (pf | out, str, len)
+  | VPstring (str, len) => let
+      val len = int1_of_int len; val () = assert (len >= 0)
+    in
+      emit_valprim_string (pf | out, str, size_of_int len)
+    end // end of [VPstring]
   | VPtmp tmp => emit_valprim_tmpvar (pf | out, tmp)
   | VPtmp_ref tmp => emit_valprim_tmpvar (pf | out, tmp)
   | VPtop () => fprint1_string (pf | out, "?top") // for debugging
@@ -820,7 +824,7 @@ implement emit_valprim (pf | out, vp) = begin
   | _ => begin
       prerr "Internal Error: emit_valprim: vp = "; prerr vp; prerr_newline ();
       $Err.abort {void} ()
-    end
+    end // end of [_]
 *)
 end // end of [emit_valprim]
 

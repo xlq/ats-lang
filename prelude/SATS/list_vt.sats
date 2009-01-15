@@ -64,6 +64,10 @@ prfun list_vt_length_is_nonnegative
 fun{a:viewt@ype} list_vt_of_arraysize
   {n:nat} (arrsz: arraysize (a, n)):<> list_vt (a, n)
 
+(* ****** ****** *)
+
+fun{a:t@ype} list_vt_copy {n:nat} (xs: !list_vt (a, n)):<> list_vt (a, n)
+
 fun{a:t@ype} list_vt_free (xs: List_vt a):<> void
 
 (* ****** ****** *)

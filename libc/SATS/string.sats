@@ -54,7 +54,7 @@ overload strcmp with strcmp_string_string
   
 fun substrcmp_string_string
   {n1,i1:nat | i1 <= n1} {n2,i2:nat | i2 <= n2}
-  (str1: string n1, i: int i1, str2: string n2, i2: int i2): int
+  (str1: string n1, i: size_t i1, str2: string n2, i2: size_t i2): int
   = "atslib_substrcmp"
 
 overload substrcmp with substrcmp_string_string
@@ -62,7 +62,7 @@ overload substrcmp with substrcmp_string_string
 //
 
 fun strncmp_string_string {n:nat}
-  (str1: string, str2: string, n: int n): int
+  (str1: string, str2: string, n: size_t n): int
   = "atslib_strncmp"
 
 symintr strncmp substrncmp
@@ -71,7 +71,7 @@ overload strncmp with strncmp_string_string
 
 fun substrncmp_string_string
   {n1,i1:nat | i1 <= n1} {n2,i2:nat | i2 <= n2} {n: nat} (
-    str1: string n1, i1: int i1, str2: string n2, i2: int i2, n: int n
+    str1: string n1, i1: size_t i1, str2: string n2, i2: size_t i2, n: size_t n
   ) : int
   = "atslib_substrncmp"
 
@@ -79,17 +79,17 @@ overload substrncmp with substrncmp_string_string
 
 (* ****** ****** *)
 
-fun strlen_string {n:nat} (str: string n): int n = "atslib_strlen"
+fun strlen_string {n:nat} (str: string n): size_t n = "atslib_strlen"
 
 (* ****** ****** *)
 
 symintr strspn strcspn
 
-fun strspn_string_string {n:nat} (str: string n, cs: string): natLte n
+fun strspn_string_string {n:nat} (str: string n, cs: string): sizeLte n
   = "atslob_strspn"
 overload strspn with strspn_string_string
 
-fun strcspn_string_string {n:nat} (str: string n, cs: string): natLte n
+fun strcspn_string_string {n:nat} (str: string n, cs: string): sizeLte n
   = "atslob_strcspn"
 overload strcspn with strcspn_string_string
 

@@ -55,11 +55,14 @@ hanoi: hanoi.dats; $(ATSCC) -o hanoi hanoi.dats
 kmp: kmp.dats; $(ATSCC) -o kmp kmp.dats
 
 # An example of linear lazy evaluation
-longestline: longestlin.dats
+longestline: longestline.dats
 	$(ATSCC) -o longestline longestline.dats
 
 # the n-queen problem
 queens: queens.dats; $(ATSCC) -o queens queens.dats
+
+queens_lazy_vt: queens_lazy_vt.dats
+	$(ATSCC) -O3 -o queens_lazy_vt queens_lazy_vt.dats -D_ATS_GCATS
 
 # generating a password randomly
 passwdgen: passwdgen.dats; $(ATSCC) -O3 -o passwdgen passwdgen.dats
@@ -106,6 +109,7 @@ html::
 	atsopt --posmark_html_only -d passwdgen.dats
 	atsopt --posmark_html_only -d pi_lazy.dats
 	atsopt --posmark_html_only -d queens.dats
+	atsopt --posmark_html_only -d queens_lazy_vt.dats
 	atsopt --posmark_html_only -d sieve.dats
 	atsopt --posmark_html_only -d sieve_lazy.dats
 	atsopt --posmark_html_only -d strmat.dats
@@ -135,6 +139,7 @@ cleanall:: clean
 	rm -f passwdgen
 	rm -f pi_lazy
 	rm -f queens
+	rm -f queens_lazy_vt
 	rm -f sieve
 	rm -f strmat
 	rm -f sieve_lazy

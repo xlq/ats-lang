@@ -52,14 +52,24 @@ implement socket_read_loop_exn
   (pf_sock | fd, buf, ntotal) = let
   val nread = socket_read_loop_err (pf_sock | fd, buf, ntotal)
 in
-  if nread >= 0 then nread else (perror "socket_read: "; exit 1)
+  if nread >= 0 then
+    size_of_ssize (nread)
+  else begin
+    perror "socket_read: "; exit 1
+  end // end of [if]
 end // end of [socket_read_loop]
 
 implement socket_write_loop_exn
   (pf_sock | fd, buf, ntotal) = let
+  var err: int = 1
   val nwrit = socket_write_loop_err (pf_sock | fd, buf, ntotal)
+  val () = if nwrit >= 0 then let
+    val nwrit = size_of_ssize (nwrit)
+  in
+    if (nwrit = ntotal) then (err := 0)
+  end // end of [if]
 in
-  if nwrit < ntotal then (perror "socket_write: "; exit 1) else ()
+  if err > 0 then (perror "socket_write: "; exit 1) else ()
 end // end of [socket_write_loop]
 
 (* ****** ****** *)

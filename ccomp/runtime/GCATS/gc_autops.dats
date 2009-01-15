@@ -71,7 +71,7 @@ implement gc_aut_malloc_wsz (wsz) = let
 (*
   val () = begin
     prerr "gc_aut_malloc_wsz: wsz = "; prerr wsz; prerr_newline ()
-  end
+  end // end of [val]
 *)
   val itemwsz_log = begin
     if wsz > MAX_CHUNK_BLOCK_WORDSIZE then ~1 else log2_ceil (wsz)

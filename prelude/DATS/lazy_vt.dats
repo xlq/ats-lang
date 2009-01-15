@@ -72,22 +72,22 @@ end // end of [local]
 (* ****** ****** *)
 
 fun{a:t@ype} stream_vt_filter_cloptr_con
-  (xs: stream_vt a, p: a -<cloptr1,~ref> bool)
+  (xs: stream_vt a, p: (a) -<cloptr1,~ref> bool)
   :<1,~ref> stream_vt_con a = let
   val xs_con = !xs
 in
   case+ xs_con of
-  | stream_vt_cons (x, !xs_ptr) => begin
-      if p x then let
-        val xs_val = !xs_ptr
-        val () = !xs_ptr := stream_vt_filter_cloptr (xs_val, p)
+  | stream_vt_cons (x, !p_xs1) => begin
+      if p (x) then let
+        val xs1 = !p_xs1
+        val () = !p_xs1 := stream_vt_filter_cloptr (xs1, p)
       in
         fold@ {a} (xs_con); xs_con
       end else let
-        val xs_val = !xs_ptr
+        val xs1 = !p_xs1
         val () = free@ {a} (xs_con)
       in
-        stream_vt_filter_cloptr_con (xs_val, p)
+        stream_vt_filter_cloptr_con (xs1, p)
       end // end of [if]
     end // end of [stream_vt_cons]
   | stream_vt_nil () => begin

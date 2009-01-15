@@ -47,6 +47,12 @@
 
 /* ****** ****** */
 
+// declared in [unistd.h]
+extern ssize_t read  (int fd, void *buf, size_t cnt) ;
+extern ssize_t write  (int fd, const void *buf, size_t cnt) ;
+
+/* ****** ****** */
+
 static inline
 ats_int_type
 atslib_lor_flag_orflag
@@ -120,17 +126,17 @@ atslib_close_exn (ats_int_type fd) {
 /* ****** ****** */
 
 static inline
-ats_int_type
+ats_ssize_type
 atslib_fildes_read_err
-  (ats_int_type fd, ats_ptr_type buf, ats_int_type cnt) {
+  (ats_int_type fd, ats_ptr_type buf, ats_size_type cnt) {
   return read(fd, buf, cnt) ;
 } /* atslib_fildes_read_err */
 
 static inline
-ats_int_type
+ats_size_type
 atslib_fildes_read_exn
-  (ats_int_type fd, ats_ptr_type buf, ats_int_type cnt) {
-  int res ;
+  (ats_int_type fd, ats_ptr_type buf, ats_size_type cnt) {
+  ats_ssize_type res ;
   res = read(fd, buf, cnt) ;
   if (res < 0) {
     perror("read") ; ats_exit_errmsg(1, "Exit: [fildes_read] failed.\n") ;
@@ -141,17 +147,17 @@ atslib_fildes_read_exn
 /* ****** ****** */
 
 static inline
-ats_int_type
+ats_ssize_type
 atslib_fildes_write_err
-  (ats_int_type fd, ats_ptr_type buf, ats_int_type cnt) {
+  (ats_int_type fd, ats_ptr_type buf, ats_size_type cnt) {
   return write(fd, buf, cnt) ;
 } /* atslib_fildes_write_err */
 
 static inline
-ats_int_type
+ats_size_type
 atslib_fildes_write_exn
-  (ats_int_type fd, ats_ptr_type buf, ats_int_type cnt) {
-  int res ;
+  (ats_int_type fd, ats_ptr_type buf, ats_size_type cnt) {
+  ats_ssize_type res ;
   res = write(fd, buf, cnt) ;
   if (res < 0) {
     perror("write") ; ats_exit_errmsg(1, "Exit: [fildes_write] failed.\n") ;
@@ -162,19 +168,19 @@ atslib_fildes_write_exn
 /* ****** ****** */
 
 static inline
-ats_int_type
+ats_ssize_type
 atslib_fildes_write_substring_err
-  (ats_int_type fd, ats_ptr_type str, ats_int_type start, ats_int_type n)
+  (ats_int_type fd, ats_ptr_type str, ats_size_type start, ats_size_type n)
 {
   return write(fd, ((char*)str)+start, n) ;
 }
 
 static inline
-ats_int_type
+ats_size_type
 atslib_fildes_write_substring_exn
-  (ats_int_type fd, ats_ptr_type str, ats_int_type start, ats_int_type n)
+  (ats_int_type fd, ats_ptr_type str, ats_size_type start, ats_size_type n)
 {
-  int res ;
+  ats_ssize_type res ;
   res = write(fd, ((char*)str)+start, n) ;
   if (res < 0) {
     perror("write") ; ats_exit_errmsg(1, "exit(ATS): [fildes_write] failed.\n") ;

@@ -66,7 +66,9 @@ end
 fn string_is_flag (s: string):<fun0> bool = let
   val s = string1_of_string s
 in
-  if string_is_empty s then false else $effmask_ref (s[0] = '-')
+  if string_is_empty s then false else begin
+    string_get_char_at (s, size_of_int 0) = '-'
+  end // end of [if]
 end // end of [string_is_flag]
 
 (* ****** ****** *)

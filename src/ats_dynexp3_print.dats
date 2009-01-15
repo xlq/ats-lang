@@ -451,10 +451,10 @@ in
     end // end of [sif]
   | D3Espawn (d3e) => begin
       strpr "D3Espawn("; fprint_d3exp (pf | out, d3e); strpr ")"
-    end
+    end // end of [D3Espawn]
   | D3Estring (str, len) => begin
-      fprintf1_exn (pf | out, "D3Estring(\"%s\", %i)", @(str, len))
-    end
+      fprint1_string (pf | out, "D3Estring(...)")
+    end // end of [D3Estring]
   | D3Estruct (ld3es) => begin
       strpr "D3Estruct("; fprint_labd3explst (pf | out, ld3es); strpr ")"
     end // end of [D3Estruct]

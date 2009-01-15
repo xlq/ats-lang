@@ -47,6 +47,7 @@
 (* ****** ****** *)
 
 staload Err = "ats_error.sats"
+staload IntInf = "ats_intinf.sats"
 staload Lst = "ats_list.sats"
 
 (* ****** ****** *)

@@ -1,3 +1,13 @@
+(*
+// print out the longest line in a file; this example demonstrates
+// a case of linear lazy evaluation
+*)
+
+//
+// Author: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
+// Time: January, 2009
+//
+
 staload "libc/SATS/stdio.sats"
 
 (* ****** ****** *)
@@ -7,6 +17,7 @@ staload _(*anonymous*) = "prelude/DATS/list_vt.dats"
 
 viewtypedef cstream_vt = stream_vt (char)
 
+// tail-recursion; no persistent heap allocation
 fn* longestline_loop1 {n:nat}
   (cs: cstream_vt, cur: list_vt (char, n), n: int n): List_vt (char) =
   case+ !cs of

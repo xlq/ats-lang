@@ -66,32 +66,31 @@ fn list_vt_is_cons {a:viewt@ype} {n:nat} (xs: !list_vt (a, n)): bool (n>0) =
 viewtypedef List_vt = [a:viewt@ype] List_vt a
 
 implement{a} list_vt_of_arraysize (arrsz) = let
-
-fun loop {n:nat} {l1,l2:addr} .<n>.
-  (pf1: !array_v (a, n, l1) >> array_v (a?, n, l1),
-   pf2: !List_vt? @ l2 >> list_vt (a, n) @ l2 |
-   p_arr: ptr l1, res: ptr l2, n: int n):<> void =
-  if n > 0 then let
-    prval (pf11, pf12) = array_v_uncons {a} (pf1)
-    val () = !res := cons {a} {0} (!p_arr, ?)
-    val cons (_, !res_next) = !res
-    val () = begin
-      loop (pf12, view@ (!res_next) | p_arr+sizeof<a>, res_next, n-1)
-    end
-    prval () = pf1 := array_v_cons {a?} (pf11, pf12)
-  in
-    fold@ (!res)
-  end else let
-    prval () = array_v_unnil {a} (pf1)
-    prval () = pf1 := array_v_nil {a?} ()        
-  in
-    !res := nil {a} ()
-  end // end of [if]
-
-var res: List_vt?
-val (pf_gc, pf_arr | p_arr, sz) = arrsz
-val () = loop (pf_arr, view@ res | p_arr, &res, sz)
-
+  fun loop {n:nat} {l1,l2:addr} .<n>. (
+      pf1: !array_v (a, n, l1) >> array_v (a?, n, l1)
+    , pf2: !List_vt? @ l2 >> list_vt (a, n) @ l2
+    | p_arr: ptr l1, res: ptr l2, n: int n
+    ) :<> void =
+    if n > 0 then let
+      prval (pf11, pf12) = array_v_uncons {a} (pf1)
+      val () = !res := cons {a} {0} (!p_arr, ?)
+      val cons (_, !res_next) = !res
+      val () = loop 
+        (pf12, view@ (!res_next) | p_arr+sizeof<a>, res_next, n-1)
+      // end of [val]
+      prval () = pf1 := array_v_cons {a?} (pf11, pf12)
+    in
+      fold@ (!res)
+    end else let
+      prval () = array_v_unnil {a} (pf1)
+      prval () = pf1 := array_v_nil {a?} ()        
+    in
+      !res := nil {a} ()
+    end // end of [if]
+  // end of [loop]
+  var res: List_vt?
+  val (pf_gc, pf_arr | p_arr, sz) = arrsz
+  val () = loop (pf_arr, view@ res | p_arr, &res, sz)
 in
   array_ptr_free {a} (pf_gc, pf_arr | p_arr); res
 end // end of [list_vt_of_arraysize]
@@ -129,6 +128,24 @@ in
 end // end of [list_vt_of_arraysize]
 
 *)
+
+(* ****** ****** *)
+
+implement{a} list_vt_copy (xs0) = let
+  fun loop {n:nat} .<n>.
+    (xs: !list_vt (a, n), res: &List_vt a? >> list_vt (a, n))
+    :<> void = case+ xs of
+    | cons (x, !p_xs1) => let
+        val () = res := cons {a} {0} (x, ?)
+        val+ cons (_, !p_res1) = res; val () = loop (!p_xs1, !p_res1)
+      in
+        fold@ xs; fold@ res
+      end // end of [cons]
+    | nil () => (fold@ xs; res := nil ())
+  var res: List_vt a // uninitialized
+in
+  loop (xs0, res); res
+end // end of [list_vt_copy]
 
 (* ****** ****** *)
 

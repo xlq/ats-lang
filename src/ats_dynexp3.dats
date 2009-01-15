@@ -940,6 +940,10 @@ end // end of [labd3explst_typ_get]
 fn d3exp_ind_get (d3e: d3exp): s2exp = let
   val s2e = s2exp_whnf (d3e.d3exp_typ)
   val os2i = un_s2exp_int_int_t0ype (s2e)
+  val os2i = (case+ os2i of
+    | Some_vt _ => (fold@ os2i; os2i)
+    | ~None_vt () => un_s2exp_size_int_t0ype (s2e)
+  ) : s2expopt_vt // end of [val]
 in
   case+ os2i of
   | ~Some_vt s2i => s2i
@@ -951,7 +955,7 @@ in
       prerr "], which is not an indexed integer type.";
       prerr_newline ();
       $Err.abort {s2exp} ()
-    end
+    end // end of [None_vt]
 end // end of [d3exp_ind_get]
 
 fn d3explst_ind_get (d3es: d3explst): s2explst =

@@ -309,6 +309,7 @@ fn prelude_load (ATSHOME: string): void = let
   val () = pervasive_load (ATSHOME, "prelude/SATS/pointer.sats")
   val () = pervasive_load (ATSHOME, "prelude/SATS/printf.sats")
   val () = pervasive_load (ATSHOME, "prelude/SATS/reference.sats")
+  val () = pervasive_load (ATSHOME, "prelude/SATS/sizetype.sats")
   val () = pervasive_load (ATSHOME, "prelude/SATS/string.sats")
 
   // these data structures are so common!
@@ -620,10 +621,10 @@ fun loop {i:nat | i <= n} .<i>. (
           case+ str of
           | "-s" => begin
               param.comkind := COMKINDinput 0; param.wait := 1
-            end
+            end // end of ["-s"]
           | "-d" => begin
               param.comkind := COMKINDinput 1; param.wait := 1
-            end
+            end // end of ["-d"]
           | "-o" => begin
               param.comkind := COMKINDoutput ()
             end
@@ -631,7 +632,7 @@ fun loop {i:nat | i <= n} .<i>. (
           | "-tc" => (param.typecheck_only := 1)
           | "-h" => begin
               param.comkind := COMKINDnone (); atsopt_usage (argv.[0])
-            end
+            end // end of ["-h"]
           | "-v" => atsopt_version ()
           | _ when is_IATS_flag str => let
               val dir = IATS_extract str
@@ -651,26 +652,26 @@ fun loop {i:nat | i <= n} .<i>. (
           case+ str of
           | "--static" => begin
               param.comkind := COMKINDinput 0; param.wait := 1
-            end
+            end // end of ["--static"]
           | "--dynamic" => begin
               param.comkind := COMKINDinput 1; param.wait := 1
-            end
+            end // end of ["--dynamic"]
           | "--output" => begin
               param.comkind := COMKINDoutput ()
-            end
+            end // end of ["--output"]
           | "--depgen" => $Glo.ats_depgenflag_set (1)
           | "--typecheck" => (param.typecheck_only := 1)
           | "--posmark_html" => begin
               param.posmark := 1; param.posmark_html := 1
-            end
+            end // end of ["--posmark_html"]
           | "--posmark_html_only" => begin
               param.posmark := 1; param.posmark_html := 1; param.posmark_only := 1
-            end
+            end // end of ["--posmark_html_only"]
           | "--debug=0" => $Deb.debug_flag_set (0)
           | "--debug=1" => $Deb.debug_flag_set (1)
           | "--help" => begin
               param.comkind := COMKINDnone (); atsopt_usage (argv.[0])
-            end
+            end // end of ["--help"]
           | "--version" => atsopt_version ()
           | _ => warning (str)
       in

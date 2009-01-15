@@ -81,7 +81,6 @@ implement main (argc, argv) = begin
 //printf ("prime 20000 = %i\n", @(prime 20000)) ; // 224743
 //printf ("prime 30000 = %i\n", @(prime 30000)) ; // = 350381 (2 min.)
 printf ("prime 50000 = %i\n", @(prime 50000)) ; // = 611957 (6 min.)
-
 end // end of [main]
 
 (* ****** ****** *)

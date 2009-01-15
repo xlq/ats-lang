@@ -75,11 +75,12 @@ implement symtbl_make (sz) = let
     ptr_alloc_tsz {symtbl0} (sizeof<symtbl>)
   prval () = free_gc_elim {symtbl0} (pf_tbl_gc)
   val asz = max (sz, 1)
+  val asz_sz = size_of_int (asz)
   val tsz = sizeof<tblent>
   val (pf_arr_gc, pf_arr | p_arr) =
-    array_ptr_alloc_tsz {tblent} (asz, tsz)
+    array_ptr_alloc_tsz {tblent} (asz_sz, tsz)
   val () = begin
-    array_ptr_initialize_elt_tsz {tblent} (!p_arr, asz, ini, tsz)
+    array_ptr_initialize_elt_tsz {tblent} (!p_arr, asz_sz, ini, tsz)
   end where {
     var ini: tblent = None ()
   } // end of [val]
@@ -98,13 +99,13 @@ fun symtbl_search_probe {sz,i:nat | i < sz} {l:addr}
   (pf: !array_v(tblent, sz, l) | p: ptr l, sz: int sz, i: int i, name: string)
   :<!ntm> tblent =
   let val ent = p[i] in case+ ent of
-    | Some (sym) =>
-      if symbol_name sym = name then ent
-      else let
-        val i = i + 1; val i = (if i < sz then i else 0): natLt sz
-      in
-        symtbl_search_probe (pf | p, sz, i, name)
-      end
+    | Some (sym) => begin
+        if symbol_name sym = name then ent else let
+          val i = i + 1; val i = (if i < sz then i else 0): natLt sz
+        in
+          symtbl_search_probe (pf | p, sz, i, name)
+        end // end of [if]
+      end // end of [Some]
     | None () => None ()     
   end
 
@@ -128,17 +129,17 @@ end
 
 fun symtbl_insert_probe {sz,i:nat | i < sz} {l:addr}
   (pf: !array_v(tblent, sz, l) | p: ptr l, sz: int sz, i: int i, sym: symbol_t)
-  :<!ntm> void =
-  let val ent = p[i] in case+ ent of
+  :<!ntm> void = let
+  val ent = p[i] in case+ ent of
     | Some _ => let
         val i = i + 1; val i = (if i < sz then i else 0): natLt sz
       in
         symtbl_insert_probe (pf | p, sz, i, sym)
-      end
+      end // end of [Some]
     | None () => begin
         p[i] := Some sym
-      end
-  end
+      end // end of [None]
+end // end of [symtbl_insert_probe]
 
 (* ****** ****** *)
 
@@ -155,11 +156,11 @@ fun symtbl_resize_move {sz,i:nat | i <= sz} {l,l_new:addr}
           val i = hash_val uimod sz2
         in
           symtbl_insert_probe (pf_new | p_new, sz2, i, sym);
-        end
+        end // end of [Some]
      | None () => ()
   in
      symtbl_resize_move (pf, pf_new | p, p_new, sz, i+1)
-  end
+  end // end of [if]
 end // end of [symtbl_resize_move]
 
 fun symtbl_resize
@@ -169,10 +170,11 @@ fun symtbl_resize
   prval (pf_arr_gc, pf_arr) = p_tbl->view
   val sz = p_tbl->size
   val sz2 = sz + sz; val tsz = sizeof<tblent>
+  val sz2_sz = size_of_int sz2
   val (pf1_arr_gc, pf1_arr | p1_arr) =
-    array_ptr_alloc_tsz {tblent} (sz2, tsz)
+    array_ptr_alloc_tsz {tblent} (sz2_sz, tsz)
   val () = begin
-    array_ptr_initialize_elt_tsz {tblent} (!p1_arr, sz2, ini, tsz)
+    array_ptr_initialize_elt_tsz {tblent} (!p1_arr, sz2_sz, ini, tsz)
   end where {
     var ini: tblent = None ()
   } // end of [val]

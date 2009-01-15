@@ -52,8 +52,8 @@ atslib_strcmp (ats_ptr_type str1, ats_ptr_type str2) {
 static inline
 ats_int_type
 atslib_substrcmp (
-  ats_ptr_type str1, ats_int_type i1
-, ats_ptr_type str2, ats_int_type i2
+  ats_ptr_type str1, ats_size_type i1
+, ats_ptr_type str2, ats_size_type i2
 ) {
   return strcmp((char*)str1+i1, (char*)str2+i2) ;
 } /* end of [atslib_substrcmp] */
@@ -62,36 +62,36 @@ atslib_substrcmp (
 
 static inline
 ats_int_type
-atslib_strncmp (ats_ptr_type str1, ats_ptr_type str2, ats_int_type n) {
+atslib_strncmp (ats_ptr_type str1, ats_ptr_type str2, ats_size_type n) {
   return strncmp(str1, str2, n) ;
 } /* end of [atslib_strncmp] */
 
 static inline
 ats_int_type
 atslib_substrncmp (
-  ats_ptr_type str1, ats_int_type i1
-, ats_ptr_type str2, ats_int_type i2
-, ats_int_type n) {
+  ats_ptr_type str1, ats_size_type i1
+, ats_ptr_type str2, ats_size_type i2
+, ats_size_type n) {
   return strncmp((char*)str1+i1, (char*)str2+i2, n) ;
 } /* end of [atslib_substrncmp] */
 
 /* ****** ****** */
 
 static inline
-ats_int_type
+ats_size_type
 atslib_strlen (ats_ptr_type str) { return strlen ((char*)str) ; }
 /* end of [atslib_strspn] */
 
 /* ****** ****** */
 
 static inline
-ats_int_type
+ats_size_type
 atslib_strspn (ats_ptr_type str, ats_ptr_type cs) {
   return strspn ((char*)str, (char*)cs) ;
 } /* end of [atslib_strspn] */
 
 static inline
-ats_int_type
+ats_size_type
 atslib_strcspn (ats_ptr_type str, ats_ptr_type cs) {
   return strcspn ((char*)str, (char*)cs) ;
 } /* end of [atslib_strcspn] */

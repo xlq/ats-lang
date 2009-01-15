@@ -223,16 +223,14 @@ array_of_CSIlst (ats_ptr_type lst, ats_int_type n) {
 (* ****** ****** *)
 
 fun regex_mark_str {i,l:nat | i <= l} .<l-i>.
-  (env: redef, x0: &T, i: int i, l: int l, s: string l, r1e: regex1)
+  (env: redef, x0: &T, i: size_t i, l: size_t l, s: string l, r1e: regex1)
   : regex1 = begin
-  if i < l then
-    let
-      val cs = charset_singleton s[i]
-      val r1e = regex1_seq (r1e, regex1_chars (x0, cs))
-    in
-      regex_mark_str (env, x0, i+1, l, s, r1e)
-    end
-  else r1e
+  if i < l then let
+    val cs = charset_singleton s[i]
+    val r1e = regex1_seq (r1e, regex1_chars (x0, cs))
+  in
+    regex_mark_str (env, x0, i+1, l, s, r1e)
+  end else r1e
 end // end of [regex_mark_str]
 
 (* ****** ****** *)
@@ -275,7 +273,7 @@ fun regex_mark (env: redef, x0: &T, r0e: regex)
   | REGstr (str) => let
       val str = string1_of_string str
     in
-      regex_mark_str (env, x0, 0, string_length str, str, regex1_nil ())
+      regex_mark_str (env, x0, size_of_int 0, string_length str, str, regex1_nil ())
     end // end of [REGstr]
 end // end of [regex_mark]
 
@@ -361,9 +359,9 @@ fun followpos {n:nat} (n0: int n, r: regex1)
   // end of [aux] and [aux_node]
   val tsz = sizeof<intset_t>
   val (pf_arr_gc, pf_arr | p_arr) =
-    array_ptr_alloc_tsz {intset_t} (n0, tsz)
+    array_ptr_alloc_tsz {intset_t} (size_of_int n0, tsz)
   val () = begin
-    array_ptr_initialize_elt_tsz {intset_t} (!p_arr, n0, ini, tsz)
+    array_ptr_initialize_elt_tsz {intset_t} (!p_arr, size_of_int n0, ini, tsz)
   end where {
     var ini: intset_t = intset_nil
   } // end of [val]

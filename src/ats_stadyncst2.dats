@@ -179,6 +179,8 @@ implement Int_int_t0ype = s2cstref_make "int_int_t0ype"
 implement Ptr_type = s2cstref_make "ptr_type"
 implement Ptr_addr_type = s2cstref_make "ptr_addr_type"
 implement Ref_viewt0ype_type = s2cstref_make "ref_viewt0ype_type"
+implement Size_t0ype = s2cstref_make "size_t0ype"
+implement Size_int_t0ype = s2cstref_make "size_int_t0ype"
 implement String_type = s2cstref_make "string_type"
 implement String_int_type = s2cstref_make "string_int_type"
 implement Uint_t0ype = s2cstref_make "uint_t0ype"
@@ -638,6 +640,9 @@ implement un_s2exp_char_char_t0ype (s2e) =
 
 implement un_s2exp_int_int_t0ype (s2e) =
   un_s2exp_s2cstref_1 (s2e, Int_int_t0ype)
+
+implement un_s2exp_size_int_t0ype (s2e) =
+  un_s2exp_s2cstref_1 (s2e, Size_int_t0ype)
 
 implement un_s2exp_string_int_type (s2e) =
   un_s2exp_s2cstref_1 (s2e, String_int_type)

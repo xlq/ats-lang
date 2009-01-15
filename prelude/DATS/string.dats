@@ -88,7 +88,7 @@ implement strbuf_v_unsplit
 
 static inline
 ats_ptr_type
-_string_alloc (const ats_int_type n) {
+_string_alloc (const ats_size_type n) {
   char *p ;
   p = ATS_MALLOC(n+1); p[n] = '\000'; return p ;
 } // end of [_string_alloc]
@@ -114,8 +114,8 @@ end // end of [string_make_list]
 #define NUL '\000'
 
 implement string_make_list_len (cs, n) = let
-  val (pf_gc, pf_sb | p_sb) = _string_alloc n where {
-    extern fun _string_alloc {n:nat} (n: int n)
+  val (pf_gc, pf_sb | p_sb) = _string_alloc (size_of_int n) where {
+    extern fun _string_alloc {n:nat} (n: size_t n)
       :<> [l:addr] (free_gc_v (n+1, l), strbuf (n+1, n) @ l | ptr l)
       = "_string_alloc"
   } // end of [val]
@@ -130,8 +130,9 @@ implement string_make_list_len (cs, n) = let
           prerr ("exit(ATS): a string cannot contain null characters in the middle.");
           prerr_newline (); exit (1)
         end) : [c <> NUL] void // end of [val]
+        val () = strbuf_set_char_at (buf, size_of_int i, c)
       in
-        strbuf_set_char_at (buf, i, c); loop (buf, n, i+1, cs)
+        loop (buf, n, i+1, cs)
       end else begin
         // loop exists
       end // end of [if]
@@ -143,15 +144,16 @@ end // end of [string_make_list_len]
 (* ****** ****** *)
 
 implement stringlst_concat (ss) = let
-  val n0 = aux (ss, 0) where {
+  val n0 = aux (ss, size_of_int 0) where {
     fun aux {k:nat} .<k>.
-      (ss: list (string, k), n: Nat):<> Nat = case+ ss of
+      (ss: list (string, k), n: size_t):<> size_t = case+ ss of
       | list_cons (s, ss) => aux (ss, n + string0_length s) | list_nil () => n
     // end of [aux]
   } // end of [val n0]
+  val n0 = size1_of_size (n0)
   fun loop1 {m0,n0,i0,n,i:nat | i0 <= n0; i <= n} .<n0-i0>.
-    (s0: &strbuf (m0, n0), n0: int n0, i0: int i0, s: string n, i: int i)
-    :<> [i0: nat | i0 <= n0] int i0 = begin
+    (s0: &strbuf (m0, n0), n0: size_t n0, i0: size_t i0, s: string n, i: size_t i)
+    :<> [i0: nat | i0 <= n0] size_t i0 = begin
     if string_is_at_end (s, i) then i0 else let
       val c = $effmask_ref (s[i])
     in
@@ -159,7 +161,7 @@ implement stringlst_concat (ss) = let
     end // end of [if]
   end // end of [loop1]
   fun loop2 {m0,n0,i0,k:nat | i0 <= n0} .<k>.
-    (s0: &strbuf (m0, n0), n0: int n0, i0: int i0, ss: list (string, k))
+    (s0: &strbuf (m0, n0), n0: size_t n0, i0: size_t i0, ss: list (string, k))
     :<> void = begin case+ ss of
     | list_cons (s, ss) => let
         val s = string1_of_string s; val i0 = loop1 (s0, n0, i0, s, 0)
@@ -169,7 +171,7 @@ implement stringlst_concat (ss) = let
     | list_nil () => () // loop exists
   end // end of [loop2]
   val (pf_gc, pf_sb | p_sb) = _string_alloc n0 where {
-    extern fun _string_alloc {n:nat} (n: int n)
+    extern fun _string_alloc {n:nat} (n: size_t n)
       :<> [l:addr] (free_gc_v (n+1, l), strbuf (n+1, n) @ l | ptr l)
       = "_string_alloc"
   } // end of [val]
@@ -182,17 +184,19 @@ end // end of [stringlst_concat]
 (* ****** ****** *)
 
 implement string_explode (s) = let
-  fun loop {n,i:int | ~1 <= i; i < n} .<i+1>. (
-      s: string n, i: int i, cs: list_vt (char, n-i-1)
+  fun loop {n,i:int | 0 <= i; i <= n} .<i+1>. (
+      s: string n, i: size_t i, cs: list_vt (char, n-i)
     ) :<> list_vt (char, n) =
-    if i >= 0 then let
-      val c = $effmask_ref (s[i]) in loop (s, i-1, list_vt_cons (c, cs))
+    if i >= 1 then let
+      val i1 = i - 1
+      val c = string_get_char_at (s, i1) in loop (s, i1, list_vt_cons (c, cs))
     end else begin
       cs // loop exists
     end
   // end of [loop]
+  val n = string_length s
 in
-  loop (s, length s - 1, list_vt_nil ())
+  loop (s, n, list_vt_nil ())
 end // end of [string1_explode]
 
 (* ****** ****** *)
@@ -206,7 +210,7 @@ fn string_make_fun {n:nat}
   prval () = free_gc_elim (pf_gc)
   val () = loop (pf_buf | p_buf, 0) where {
     fun loop {i:nat | i <= n} {l:addr} .<n-i>.
-      (pf: !b0ytes (n-i+1) @ l >> strbuf (n-i+1, n-i) @ l | p: ptr l, i: int i)
+      (pf: !b0ytes (n-i+1) @ l >> strbuf (n-i+1, n-i) @ l | p: ptr l, i: size_t i)
       :<cloref> void = let
       prval () = eqsize_byte_char ()
       prval (pf1, pf2) = array_v_uncons {byte?} (pf)
@@ -273,7 +277,7 @@ atspre_string_hash_33 (ats_ptr_type s0) {
 
 ats_ptr_type
 atspre_string_make_char
-  (const ats_int_type n, const ats_char_type c) {
+  (ats_size_type n, ats_char_type c) {
   char *p ; 
   if (!c) { ats_exit_errmsg
     (1, "exit(ATS): [string_make_char] failed: null char.\n") ;
@@ -286,7 +290,7 @@ atspre_string_make_char
 
 ats_ptr_type
 atspre_string_make_substring
-  (const ats_ptr_type src0, const ats_int_type start, const ats_int_type len)
+  (ats_ptr_type src0, ats_size_type start, ats_size_type len)
 {
   char *des, *src ;
   des = ATS_MALLOC(len+1) ;

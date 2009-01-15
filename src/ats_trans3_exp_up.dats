@@ -2284,7 +2284,9 @@ val d3e0 = (case+ d2e0.d2exp_node of
       d2exp_sif_tr_dn (loc0, r2es, s2p_cond, d2e_then, d2e_else, s2e_sif)
     end // end of [D2Esif]
   | D2Estring (str, len) => let
-      val s2e = s2exp_string_int_type (string0_length str)
+      val n = string0_length str
+      val n = size1_of_size (n); val n = int_of_size (n)
+      val s2e = s2exp_string_int_type (n)
     in
       d3exp_string (loc0, s2e, str, len)
     end // end of [D2Estring]

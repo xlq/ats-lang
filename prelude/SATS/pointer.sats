@@ -66,13 +66,13 @@ and ppred {l:addr} (p: ptr l):<> ptr (l - 1)
 overload succ with psucc
 overload pred with ppred
 
-fun padd {l:addr} {i:int} (p: ptr l, i: int i):<> ptr (l + i)
+fun padd {l:addr} {i:int} (p: ptr l, i: size_t i):<> ptr (l + i)
   = "atspre_padd"
 
-and psub {l:addr} {i:int} (p: ptr l, i: int i):<> ptr (l - i)
+and psub {l:addr} {i:int} (p: ptr l, i: size_t i):<> ptr (l - i)
   = "atspre_psub"
 
-fun pdiff {l1,l2:addr} (p1: ptr l1, p2: ptr l2):<> int (l1 - l2)
+fun pdiff {l1,l2:addr} (p1: ptr l1, p2: ptr l2):<> ptrdiff_t (l1 - l2)
   = "atspre_pdiff"
 
 overload + with padd

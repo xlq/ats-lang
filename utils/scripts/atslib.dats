@@ -129,23 +129,27 @@ extern fun fget_line {m:fm}
   (pf: file_mode_lte (m, r) | f: &FILE m): String
   = "fget_line"
 
+#define i2sz size_of_int
+
 fun library_make_loop {m:fm} {l_file:addr}
   (file: &FILE r, dir: String, libfilename: string)
   : void = let
-  fn filename_is_legal (name: String): bool =
-    if string_is_at_end (name, 0) then false
-    else (if name[0] = '#' then false else true)
+  fn filename_is_legal (name: String): bool = let
+    val _0 = i2sz 0
+  in
+    if string_is_at_end (name, _0) then false
+    else (if name[_0] = '#' then false else true)
+  end // end of [filename_is_legal]
 in
   if feof (file) <> 0 then ()
   else let
     val name = fget_line (file_mode_lte_r_r | file)
-    val () =
-      if filename_is_legal name then begin
-        ccomp_gcc_ar_libfile (dir + name, libfilename)
-      end
+    val () = if filename_is_legal name then begin
+      ccomp_gcc_ar_libfile (dir + name, libfilename)
+    end // end of [val]
   in
     library_make_loop (file, dir, libfilename)
-  end
+  end (* end of [if] *)
 end // end of [library_make_loop]
 
 (* ****** ****** *)

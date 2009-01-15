@@ -65,7 +65,7 @@ extern fun fputc_exn {m:file_mode}
 // staload "libc/SATS/stdlib.sats"
 
 extern fun qsort {a:viewt@ype} {n:nat} {f:eff} (
-  base: &(@[a][n]), nmemb: int n, size: sizeof_t a, compar: (&a, &a) -<f> int
+  base: &(@[a][n]), nmemb: size_t n, size: sizeof_t a, compar: (&a, &a) -<f> int
 ) : void = "atslib_qsort"
 
 (* ****** ****** *)
@@ -187,38 +187,36 @@ implement posmark_insert_prfexp_end (p) =
 fn posmarklst_sort
   (ppms: List @(lint, posmark)): List_vt @(lint, posmark) = let
 
-typedef ppm = @(lint, posmark)
+  typedef ppm = @(lint, posmark)
 
-fn cmp (x1: &ppm, x2: &ppm): Sgn = begin
-  let val x10 = x1.0 and x20 = x2.0 in
+  fn cmp (x1: &ppm, x2: &ppm): Sgn = let
+    val x10 = x1.0 and x20 = x2.0
+  in
     if x10 < x20 then ~1 else begin
       (if x10 > x20 then 1 else compare_posmark_posmark (x1.1, x2.1))
     end // end of [if]
-  end // end of [let]
-end // end of [cmp]
+  end // end of [cmp]
 
-fun loop {n,i:int | 0 <= i + 1; i + 1 <= n}
-  (A: &(@[ppm][n]), i: int i, res: list_vt (ppm, n-i-1))
-  : list_vt (ppm, n) =
-  if i >= 0 then begin
-    loop (A, i-1, list_vt_cons (A.[i], res))
-  end else begin
-    res // return value
-  end
+  fun loop {n,i:int | 0 <= i + 1; i + 1 <= n}
+    (A: &(@[ppm][n]), i: int i, res: list_vt (ppm, n-i-1))
+    : list_vt (ppm, n) =
+    if i >= 0 then begin
+      loop (A, i-1, list_vt_cons (A.[i], res))
+    end else begin
+      res // return value
+    end
 
-val n = aux (ppms, 0) where {
-  fun aux {i,j:nat} (ppms: list (ppm, i), j: int j): int (i+j) =
-    case+ ppms of list_cons (_, ppms) => aux (ppms, j+1) | list_nil () => j
-} // end of where
-val (pf_gc, pf_arr | p_arr) = array_ptr_make_lst<ppm> (n, ppms)
-val () = qsort {ppm} (!p_arr, n, sizeof<ppm>, cmp)
-val res = loop (!p_arr, n-1, list_vt_nil ())
-val () = array_ptr_free {ppm} (pf_gc, pf_arr | p_arr)
+  val n = aux (ppms, 0) where {
+    fun aux {i,j:nat} (ppms: list (ppm, i), j: int j): int (i+j) =
+      case+ ppms of list_cons (_, ppms) => aux (ppms, j+1) | list_nil () => j
+  } // end of where
 
+  val (pf_gc, pf_arr | p_arr) = array_ptr_make_lst<ppm> (n, ppms)
+  val () = qsort {ppm} (!p_arr, size_of_int n, sizeof<ppm>, cmp)
+  val res = loop (!p_arr, n-1, list_vt_nil ())
+  val () = array_ptr_free {ppm} (pf_gc, pf_arr | p_arr)
 in
-
-res
-
+  res
 end // end of [posmarklst_sort]
   
 (* ****** ****** *)

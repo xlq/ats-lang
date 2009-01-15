@@ -60,7 +60,7 @@ and updating charaters stored in a string:
 #define NUL '\000'
 
 fun string_get_char_at {n:nat}
-  (s: string n, i: natLt n):&lt;!ref&gt; [c:char | c <> NUL] char c
+  (s: string n, i: natLt n):&lt;&gt; [c:char | c <> NUL] char c
 
 fun string_set_char_at {n:nat} {c:char | c <> NUL}
   (s: string n, i: natLt n, c: char c):&lt;!ref&gt; void

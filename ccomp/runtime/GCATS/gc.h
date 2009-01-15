@@ -67,7 +67,7 @@ extern
 ats_ptr_type gc_aut_malloc_bsz (ats_int_type bsz) ;
 
 extern
-ats_ptr_type gc_aut_calloc_bsz (ats_int_type nmemb, ats_int_type bsz) ;
+ats_ptr_type gc_aut_calloc_bsz (ats_int_type n, ats_int_type bsz) ;
 
 extern ats_void_type gc_aut_free (ats_ptr_type ptr) ;
 
@@ -86,7 +86,6 @@ extern ats_void_type gc_man_free (ats_ptr_type ptr) ;
 
 extern
 ats_ptr_type gc_man_realloc_bsz (ats_ptr_type ptr, ats_int_type bsz) ;
-
 
 /* ****** ****** */
 

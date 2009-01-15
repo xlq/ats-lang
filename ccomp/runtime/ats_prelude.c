@@ -135,7 +135,7 @@ ats_funarg_match_failure (void) {
 /* ****** ****** */
 
 ats_ptr_type
-ats_malloc_ngc (const ats_int_type n) {
+ats_malloc_ngc (ats_size_type n) {
   void *p ;
 #ifdef _ATS_GC
   p = GC_malloc(n) ;
@@ -171,25 +171,25 @@ ats_malloc_ngc (const ats_int_type n) {
 }
 
 ats_ptr_type
-ats_calloc_ngc (const ats_int_type n, const ats_int_type sz)
+ats_calloc_ngc (ats_size_type n, ats_size_type bsz)
 {
   void *p ;
 #ifdef _ATS_GC
-  p = GC_malloc(n * sz) ;
+  p = GC_malloc(n * bsz) ;
 #elif _ATS_GCATS
-  p = gc_man_calloc_bsz(n, sz) ;
+  p = gc_man_calloc_bsz(n, bsz) ;
 #elif _ATS_GCATS0
   /*
-  fprintf (stderr, "ats_calloc: _ATS_GCATS0: n = %i and sz = %i\n", n, sz) ;
+  fprintf (stderr, "ats_calloc: _ATS_GCATS0: n = %i and bsz = %i\n", n, bsz) ;
   */
-  p = gcats0_calloc(n, sz) ;
+  p = gcats0_calloc(n, bsz) ;
 #elif _ATS_gc
   /*
-  fprintf (stderr, "ats_calloc: _ATS_gc: n = %i and sz = %i\n", n, sz) ;
+  fprintf (stderr, "ats_calloc: _ATS_gc: n = %i and bsz = %i\n", n, bsz) ;
   */
-  p = gc_allocate_persistant_byte(n * sz) ;
+  p = gc_allocate_persistant_byte(n * bsz) ;
 #else
-  p = calloc(n, sz) ;
+  p = calloc(n, bsz) ;
 #endif
   if (!p) ats_exit_errmsg(1, "Exit: [ats_calloc_ngc] failed.\n") ;
   return p ;
@@ -223,7 +223,7 @@ ats_free_ngc (const ats_ptr_type p) {
 /* ****** ****** */
 
 ats_ptr_type
-ats_realloc_ngc (const ats_ptr_type p, const ats_int_type bsz) {
+ats_realloc_ngc (const ats_ptr_type p, ats_size_type bsz) {
   void *p_new ;
 #ifdef _ATS_GC
   p_new = GC_realloc(p, bsz) ;
@@ -266,7 +266,7 @@ ats_gc_init () {
 } /* end of [ats_gc_init] */
 
 ats_void_type
-ats_gc_markroot (const ats_ptr_type p, const ats_int_type bsz) {
+ats_gc_markroot (const ats_ptr_type p, ats_size_type bsz) {
 /*
   fprintf (stderr, "ats_gc_markroot: p = %p and bsz = %i\n", p, bsz) ;
 */
@@ -335,7 +335,7 @@ ats_gc_chunk_count_limit_max_set (ats_int_type nchunk) {
 /* ****** ****** */
 
 ats_ptr_type
-ats_malloc_gc (const ats_int_type n) {
+ats_malloc_gc (ats_size_type n) {
   void *p ;
 /*
   fprintf (stderr, "ats_malloc_gc: n = %i\n", n) ;
@@ -361,21 +361,21 @@ ats_malloc_gc (const ats_int_type n) {
 /* ****** ****** */
 
 ats_ptr_type
-ats_calloc_gc (const ats_int_type n, const ats_int_type sz) {
+ats_calloc_gc (ats_size_type n, ats_size_type bsz) {
   void *p ;
 /*
-  fprintf (stderr, "ats_calloc_gc: n = %i and sz = %i\n", n, sz) ;
+  fprintf (stderr, "ats_calloc_gc: n = %i and bsz = %i\n", n, bsz) ;
 */
 #ifdef _ATS_GC
-  p = GC_malloc(n*sz) ;
+  p = GC_malloc(n * bsz) ;
 #elif _ATS_GCATS
-  p = gc_aut_calloc_bsz(n, sz) ;
+  p = gc_aut_calloc_bsz(n, bsz) ;
 #elif _ATS_GCATS0
-  p = gcats1_calloc(n, sz) ;
+  p = gcats1_calloc(n, bsz) ;
 #elif _ATS_gc
-  p = gc_alloc_byte_zero(n*sz) ;
+  p = gc_alloc_byte_zero(n * bsz) ;
 #else
-  p = calloc(n, sz) ;
+  p = calloc(n, bsz) ;
 #endif
 /*
   fprintf (stderr, "ats_calloc_gc: p = %p(%li)\n", p, p) ;
@@ -408,7 +408,7 @@ ats_free_gc (const ats_ptr_type p) {
 /* ****** ****** */
 
 ats_ptr_type
-ats_realloc_gc (const ats_ptr_type p, const ats_int_type bsz) {
+ats_realloc_gc (const ats_ptr_type p, ats_size_type bsz) {
   ats_ptr_type p_new ;
 /*
   fprintf (stderr, "ats_realloc_gc: p = %p and bsz = %i\n", p, bsz) ;

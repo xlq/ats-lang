@@ -62,12 +62,12 @@ fun gc_init (): void = "ats_gc_init"
 
 // the following functions are implemented in ats_memory.h"
 
-fun malloc_ngc {n:nat} (n: int n)
+fun malloc_ngc {n:nat} (n: size_t n)
   :<> [l:addr] (free_ngc_v (n, l), b0ytes n @ l | ptr l)
   = "ats_malloc_ngc"
 
 fun calloc_ngc {a:viewt@ype} {n:nat}
-  (n: int n, tsz: sizeof_t a)
+  (n: size_t n, tsz: sizeof_t a)
   :<> [l:addr] (free_ngc_v (a?, n, l), @[a?][n] @ l | ptr l)
   = "ats_calloc_ngc"
 
@@ -77,7 +77,7 @@ fun free_ngc {n:nat} {l:addr}
 
 fun realloc_ngc {n0,n:nat} {l0:addr} (
     _: free_ngc_v (n0, l0), _: b0ytes n0 @ l0
-  | _: ptr l0, _: int n
+  | _: ptr l0, _: size_t n
   ) :<> [l:addr] (free_ngc_v (n, l), b0ytes n @ l | ptr l)
   = "ats_realloc_ngc"
 
@@ -98,11 +98,11 @@ fun gc_chunk_count_limit_max_set (n: int): void
 (* ****** ****** *)
 
 fun malloc_gc {n:nat}
-  (n: int n):<> [l:addr] (free_gc_v (n, l), b0ytes n @ l | ptr l)
+  (n: size_t n):<> [l:addr] (free_gc_v (n, l), b0ytes n @ l | ptr l)
   = "ats_malloc_gc"
 
 fun calloc_gc {a:viewt@ype} {n:nat}
-  (n: int n, tsz: sizeof_t a)
+  (n: size_t n, tsz: sizeof_t a)
   :<> [l:addr] (free_gc_v (n, l), @[a?][n] @ l | ptr l)
   = "ats_calloc_gc"
 
@@ -112,7 +112,7 @@ fun free_gc {n:nat} {l:addr}
 
 fun realloc_gc {n0,n:nat} {l0:addr} (
     _: free_gc_v (n0, l0), _: b0ytes n0 @ l0
-  | _: ptr l0, _: int n
+  | _: ptr l0, _: size_t n
   ) :<> [l:addr] (free_gc_v (n, l), b0ytes n @ l | ptr l)
   = "ats_realloc_gc"
 

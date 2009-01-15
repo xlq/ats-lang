@@ -71,6 +71,8 @@ val Int_int_t0ype : s2cstref_t
 val Ptr_type : s2cstref_t
 val Ptr_addr_type : s2cstref_t
 val Ref_viewt0ype_type : s2cstref_t
+val Size_t0ype : s2cstref_t
+val Size_int_t0ype : s2cstref_t
 val String_type : s2cstref_t
 val String_int_type : s2cstref_t
 val Uint_t0ype : s2cstref_t
@@ -273,6 +275,7 @@ fun s2exp_uint_intinf_t0ype (i: intinf_t): s2exp
 fun un_s2exp_bool_bool_t0ype (s2e: s2exp): Option_vt (s2exp)
 fun un_s2exp_char_char_t0ype (s2e: s2exp): Option_vt (s2exp)
 fun un_s2exp_int_int_t0ype (s2e: s2exp): Option_vt (s2exp)
+fun un_s2exp_size_int_t0ype (s2e: s2exp): Option_vt (s2exp)
 fun un_s2exp_string_int_type (s2e: s2exp): Option_vt (s2exp)
 
 (* ****** ****** *)

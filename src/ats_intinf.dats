@@ -100,6 +100,9 @@ in
   $effmask_ref (fprint_mpz (pf | out, !p))
 end // end of [fprint_intinf]
 
+implement print_intinf (r) = print_mac (fprint_intinf, r)
+implement prerr_intinf (r) = prerr_mac (fprint_intinf, r)
+
 (* ****** ****** *)
 
 val () = intinf_initialize () where {

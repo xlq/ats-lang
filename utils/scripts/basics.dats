@@ -103,7 +103,7 @@ end // end of [local]
 
 implement ATSHOME_dir = let
   val ATSHOME = ATSHOME_get ()
-  val n = length ATSHOME
+  val n = string_length ATSHOME
 in
   if n > 0 then
     if ATSHOME[n-1] = dirsep then ATSHOME
@@ -121,37 +121,42 @@ implement ATSHOME_dir_append basename =
 
 implement basename_of_filename name = let
   val name = string1_of_string name
-  val n = length name
+  val n = string_length name
   val i = string_index_of_char_from_right (name, dirsep)
 in
-  if (i >= 0) then
-    let val () = assert_prerrf_bool1
+  if (i >= 0) then let
+    val i = size_of_ssize (i)
+    val () = assert_prerrf_bool1
       (i < n, "[basename_of(%s)] failed.\n", @(name))
-    in
-      string_make_substring (name, i+1, n-i-1)
-    end
-  else name
+  in
+    string_make_substring (name, i+1, n-i-1)
+  end else begin
+    name (* [name] containing no [dirsep] *)
+  end // end of [if]
 end // end of [basename_of_filename]
 
 implement suffix_of_filename name = let
   val name = string1_of_string name
-  val i = 1+string_index_of_char_from_right (name, '.')
+  val i = string_index_of_char_from_right (name, '.')
 in
-  if i > 0 then
-    let val n = length name in
-      if i < n then
-        stropt_some (string_make_substring (name, i, n-i))
-      else stropt_none
-    end
-  else stropt_none
+  if i >= 0 then let
+    val i = size_of_ssize (i)
+    val n = string_length name
+  in
+    stropt_some (string_make_substring (name, i+1, n-i-1))
+  end else begin
+    stropt_none (* [name] containing no [dirsep] *)
+  end // end of [if]
 end // end of [suffix_of_filename]
 
 implement filename_is_local name = let
    val name = string1_of_string name
 in
-   if string1_isnot_empty name then
-     bool1_of_bool (name[0] <> dirsep)
-   else true
+   if string1_isnot_empty (name) then let
+     val _0 = size_of_int 0
+   in
+     if string_get_char_at (name, _0) <> dirsep then true else false
+   end else true
 end // end of [filename_is_local]
 
 (* ****** ****** *)
@@ -179,10 +184,10 @@ implement strlst_tail_get (ss) = let val _ :: ss = ss in ss end
 
 implement strlst_length {n} ss = let
   fun aux {i,j:nat | i+j == n} .<i>.
-    (ss: strlst i, res: int j): int n =
-    case+ ss of nil () => res | _ :: ss => aux (ss, 1+res)
+    (ss: strlst i, res: size_t j): size_t n =
+    case+ ss of nil () => res | _ :: ss => aux (ss, res+1)
 in
-  aux (ss, 0)
+  aux (ss, size_of_int 0)
 end // end of [strlst_length]
 
 implement strlst_reverse {n} ss = let
@@ -298,7 +303,7 @@ atspre_tostringf_size
 
 ats_ptr_type
 atspre_string_make_substring
-  (const ats_ptr_type src0, const ats_int_type start, const ats_int_type len)
+  (ats_ptr_type src0, ats_size_type start, ats_size_type len)
 {
   char *des, *src ;
   des = ATS_MALLOC(len+1) ;

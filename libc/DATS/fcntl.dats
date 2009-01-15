@@ -97,12 +97,13 @@ implement fildes_read_loop_err
   fun loop {nleft:nat | nleft <= n} {l:addr} (
       pf_fd: !fildes_v (fd, flag)
     , pf_buf: !bytes (sz-n+nleft) @ l
-    | fd: int fd, p_buf: ptr l, nleft: int nleft, err: &int
-    ) : natLte n =
+    | fd: int fd, p_buf: ptr l, nleft: size_t nleft, err: &int
+    ) : sizeLte n =
     if nleft > 0 then let
       val [nread:int] nread = fildes_read_err (pf_lte, pf_fd | fd, !p_buf, nleft)
     in
       if nread > 0 then let
+        val nread = size_of_ssize nread
         prval @(pf1_buf, pf2_buf) = bytes_v_split {sz-n+nleft,nread} (pf_buf)
         val nleft2 = loop (pf_fd, pf2_buf | fd, p_buf + nread, nleft - nread, err)
         prval () = pf_buf := bytes_v_unsplit (pf1_buf, pf2_buf)
@@ -117,21 +118,19 @@ implement fildes_read_loop_err
         else (if nread < 0 then err := 1; nleft)
       end // end of [if]
     end else begin
-      0 // all bytes are read
+      size_of_int 0 // all bytes are read
     end // end of [if]
   // end of [loop]
   var err: int = 0; val nleft = loop (pf_fd, view@ buf | fd, &buf, ntotal, err)
 in
-  if err = 0 then ntotal - nleft else ~1
+  if err = 0 then ssize_of_size (ntotal - nleft) else ssize_of_int (~1)
 end // end of [fildes_read_loop_err]
-
-//
 
 implement fildes_read_loop_exn
   (pf_lte, pf_fd | fd, buf, ntotal) = let
   val nread = fildes_read_loop_err (pf_lte, pf_fd | fd, buf, ntotal)
 in
-  if nread >= 0 then nread else (perror "fildes_read: "; exit 1)
+  if nread >= 0 then size_of_ssize (nread) else (perror "fildes_read: "; exit 1)
 end // end of [fildes_read_loop_exn]
 
 (* ****** ****** *)
@@ -141,12 +140,13 @@ implement fildes_write_loop_err
   fun loop {nleft:nat | nleft <= n} {l:addr} (
       pf_fd: !fildes_v (fd, flag)
     , pf_buf: !bytes (sz-n+nleft) @ l
-    | fd: int fd, p_buf: ptr l, nleft: int nleft, err: &int
-    ) : natLte n =
+    | fd: int fd, p_buf: ptr l, nleft: size_t nleft, err: &int
+    ) : sizeLte n =
     if nleft > 0 then let
       val [nwrit:int] nwrit = fildes_write_err (pf_lte, pf_fd | fd, !p_buf, nleft)
     in
       if nwrit > 0 then let
+        val nwrit = size_of_ssize (nwrit)
         prval @(pf1_buf, pf2_buf) = bytes_v_split {sz-n+nleft,nwrit} (pf_buf)
         val nleft2 = loop (pf_fd, pf2_buf | fd, p_buf + nwrit, nleft - nwrit, err)
         prval () = pf_buf := bytes_v_unsplit (pf1_buf, pf2_buf)
@@ -158,21 +158,25 @@ implement fildes_write_loop_err
         if retry then loop (pf_fd, pf_buf | fd, p_buf, nleft, err) else (err := 1; nleft)
       end // end of [if]
     end else begin
-      0 // all bytes are written
+      size_of_int 0 // all bytes are written
     end // end of [if]
   // end of [loop]
   var err: int = 0; val nleft = loop (pf_fd, view@ buf | fd, &buf, ntotal, err)
 in
-  if err = 0 then ntotal - nleft else ~1
+  if err = 0 then ssize_of_size (ntotal - nleft) else ssize_of_int (~1)
 end // end of [fildes_write_loop_err]
 
 //
 
 implement fildes_write_loop_exn
   (pf_lte, pf_fd | fd, buf, ntotal) = let
+  var err: int = 1
   val nwrit = fildes_write_loop_err (pf_lte, pf_fd | fd, buf, ntotal)
-in
-  if nwrit < ntotal then (perror "fildes_write: "; exit 1) else ()
+  val () = if nwrit >= 0 then let
+    val nwrit = size_of_ssize (nwrit) in if nwrit = ntotal then (err := 0)
+  end
+in  
+  if err > 0 then (perror "fildes_write: "; exit 1)
 end // end of [fildes_write_loop_exn]
 
 (* ****** ****** *)

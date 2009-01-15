@@ -88,7 +88,7 @@ val the_legal_alter_string: string = "aAfFeEgGxX"
 val the_legal_zero_string: string = "aAdeEfFgGiouxX"
 
 fun flagstr_verify {n,i:nat | i <= n}
-  (spec: char, flagstr: string n, i: int i): bool = begin
+  (spec: char, flagstr: string n, i: size_t i): bool = begin
   if string_is_at_end (flagstr, i) then true else let
     val flag = flagstr[i]
   in
@@ -174,7 +174,7 @@ fn printf_c_output (
 in
   if err > 0 then None_vt () else begin
     Some_vt (spec2type_translate (spec, len))
-  end // end of [if]
+  end
 end // end of [printf_c_output]
 
 (* ****** ****** *)

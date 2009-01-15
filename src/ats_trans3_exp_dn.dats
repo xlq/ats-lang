@@ -44,6 +44,7 @@
 staload Deb = "ats_debug.sats"
 staload Eff = "ats_effect.sats"
 staload Err = "ats_error.sats"
+staload IntInf = "ats_intinf.sats"
 staload Loc = "ats_location.sats"
 staload Lst = "ats_list.sats"
 staload SOL = "ats_staexp2_solve.sats"
@@ -155,7 +156,7 @@ end
 (* ****** ****** *)
 
 fn d2exp_float_tr_dn
-  (loc0: loc_t, fcst: string, s2e: s2exp): d3exp = let
+  (d2e0: d2exp, fcst: string, s2e0: s2exp): d3exp = let
   fn err (loc0: loc_t, s2e0: s2exp): d3exp = begin
     prerr loc0; prerr ": error(3)";
     prerr ": the type ["; prerr s2e0;
@@ -163,7 +164,8 @@ fn d2exp_float_tr_dn
     prerr_newline ();
     $Err.abort {d3exp} ()
   end
-  val s2e0 = s2exp_whnf s2e
+  val loc0 = d2e0.d2exp_loc
+  val s2e0 = s2exp_whnf s2e0
 in
   case+ s2e0.s2exp_node of
   | S2Ecst s2c => begin case+ s2c of
@@ -178,12 +180,7 @@ in
       end
     | _ => err (loc0, s2e0)
     end // end of [S2Ecst]
-  | _ => let
-      val s2e_flt = s2exp_double_t0ype ()
-      val () = $SOL.s2exp_tyleq_solve (loc0, s2e_flt, s2e0)
-    in
-      d3exp_float (loc0, s2e_flt, fcst)
-    end
+  | _ => d2exp_tr_dn_rest (d2e0, s2e0)
 end // end of [d2exp_float_tr_dn]
 
 (* ****** ****** *)
@@ -254,6 +251,82 @@ implement d2exp_sif_tr_dn
 in
   d3exp_sif (loc0, s2e0, s2p_cond, d3e_then, d3e_else)
 end // end of [d2exp_sif_tr_dn]
+
+(* ****** ****** *)
+
+fn d2exp_int_tr_dn (
+    d2e0: d2exp
+  , istr: string, icst: intinf_t
+  , s2e0: s2exp
+  ) : d3exp = let
+  fn err (loc0: loc_t, s2e0: s2exp): d3exp = begin
+    prerr loc0; prerr ": error(3)";
+    prerr ": the type ["; prerr s2e0;
+    prerr "] cannot be assigned to an integer constant.";
+    prerr_newline ();
+    $Err.abort {d3exp} ()
+  end
+  fn szcheck (loc0: loc_t, icst: intinf_t): void = begin
+    if $IntInf.gte_intinf_int (icst, 0) then () else begin
+      prerr loc0; prerr ": error(3)";
+      $Deb.debug_prerrf (": %s: d2exp_int_tr_dn", @(THISFILENAME));
+      prerr ": the negative number [";
+      $IntInf.prerr_intinf icst;
+      prerr "] cannot be a size."; prerr_newline ();
+      $Err.abort {void} ()
+    end // end of [if]
+  end // end of [szcheck]
+  val loc0 = d2e0.d2exp_loc
+  val s2e0 = s2exp_whnf s2e0
+in
+  case+ s2e0.s2exp_node of
+  | S2Eapp (s2e_fun, s2es_arg) => begin
+    case+ s2e_fun.s2exp_node of
+    | S2Ecst s2c => begin case+ s2c of
+      | _ when s2cstref_cst_equ (Int_int_t0ype, s2c) => let
+          val s2i = (case+ s2es_arg of
+            | list_cons (s2e, _) => s2e
+            | _ => begin
+                prerr "Internal Error: d2exp_int_tr_dn: Int_int_t0ype";
+                prerr_newline ();
+                $Err.abort {s2exp} ()
+              end // end of [_]
+          ) : s2exp
+          val () = $SOL.s2exp_equal_solve (loc0, s2exp_intinf icst, s2i)
+        in
+          d3exp_int (loc0, s2e0, istr, icst)
+        end // [Int_int_t0ype]
+      | _ when s2cstref_cst_equ (Size_int_t0ype, s2c) => let
+          val () = szcheck (loc0, icst)
+          val s2i = (case+ s2es_arg of
+            | list_cons (s2e, _) => s2e
+            | _ => begin
+                prerr "Internal Error: d2exp_int_tr_dn: Int_int_t0ype";
+                prerr_newline ();
+                $Err.abort {s2exp} ()
+              end // end of [_]
+          ) : s2exp
+          val () = $SOL.s2exp_equal_solve (loc0, s2exp_intinf icst, s2i)
+        in
+          d3exp_int (loc0, s2e0, istr, icst)
+        end // [Size_int_t0ype]
+      | _ => err (loc0, s2e0)
+      end // end of [S2Ecst]
+    | _ => d2exp_tr_dn_rest (d2e0, s2e0)
+    end // end [S2Eapp]
+  | S2Ecst s2c => begin case+ s2c of
+    | _ when s2cstref_cst_equ (Int_t0ype, s2c) => begin
+        d3exp_int (loc0, s2e0, istr, icst)
+      end // end of [_ when ...]
+    | _ when s2cstref_cst_equ (Size_t0ype, s2c) => let
+        val () = szcheck (loc0, icst)
+      in
+        d3exp_int (loc0, s2e0, istr, icst)
+      end // end of [_ when ...]
+    | _ => err (loc0, s2e0)
+    end // end of [S2Ecst]
+  | _ => d2exp_tr_dn_rest (d2e0, s2e0)
+end // end of [d2exp_int_tr_dn]
 
 (* ****** ****** *)
 
@@ -333,7 +406,7 @@ end // end of [d2exp_seq_tr_dn]
 (* ****** ****** *)
 
 fn d2exp_string_tr_dn
-  (loc0: loc_t, str: string, len: int, s2e0: s2exp): d3exp = let
+  (d2e0: d2exp, str: string, len: int, s2e0: s2exp): d3exp = let
   fn err (loc0: loc_t, s2e0: s2exp): d3exp = begin
     prerr loc0; prerr ": error(3)";
     prerr ": the type ["; prerr s2e0;
@@ -341,6 +414,7 @@ fn d2exp_string_tr_dn
     prerr_newline ();
     $Err.abort {d3exp} ()
   end
+  val loc0 = d2e0.d2exp_loc
   val s2e0 = s2exp_whnf s2e0
 in
   case+ s2e0.s2exp_node of
@@ -356,8 +430,9 @@ in
                 $Err.abort {s2exp} ()
               end
           ) : s2exp
-          val nstr = string0_length (str)
-          val () = $SOL.s2exp_equal_solve (loc0, s2exp_int nstr, s2i)
+          val n = string0_length (str)
+          val n = size1_of_size (n); val n = int_of_size (n)
+          val () = $SOL.s2exp_equal_solve (loc0, s2exp_int n, s2i)
         in
           d3exp_string (loc0, s2e0, str, len)
         end // [String_int_type]
@@ -402,13 +477,7 @@ in
       end
     | _ => err (loc0, s2e0)
     end // end of [S2Ecst]
-  | _ => let
-      val n = string0_length (str)
-      val s2e_str = s2exp_string_int_type (n)
-      val () = $SOL.s2exp_tyleq_solve (loc0, s2e_str, s2e0)
-    in
-      d3exp_string (loc0, s2e_str, str, len)
-    end
+  | _ => d2exp_tr_dn_rest (d2e0, s2e0)
 end // end of [d2exp_string_tr_dn]
 
 (* ****** ****** *)
@@ -447,10 +516,11 @@ val d3e0 = case+ d2e0.d2exp_node of
     in
       d2exp_tr_dn (d2e, s2e)
     end // end of [D2Eexist]
-  | D2Efloat fcst => d2exp_float_tr_dn (loc0, fcst, s2e0)
+  | D2Efloat fcst => d2exp_float_tr_dn (d2e0, fcst, s2e0)
   | D2Eif (res, d2e_cond, d2e_then, od2e_else) => begin
       d2exp_if_tr_dn (loc0, res, d2e_cond, d2e_then, od2e_else, s2e0)
     end // end of [D2Eif]
+  | D2Eint (istr, icst) => d2exp_int_tr_dn (d2e0, istr, icst, s2e0)
   | D2Elam_dyn (lin, npf, p2ts_arg, d2e_body) => let
 (*
       val () = begin
@@ -623,12 +693,12 @@ val d3e0 = case+ d2e0.d2exp_node of
     end // end of [let]
   | D2Escaseof (res, s2e_val, sc2ls) => begin
       d2exp_scaseof_tr_dn (loc0, res, s2e_val, sc2ls, s2e0)
-    end
+    end // end of [D2Escaseof]
   | D2Eseq d2es => d2exp_seq_tr_dn (loc0, d2es, s2e0)
   | D2Esif (res, s2p_cond, d2e_then, d2e_else) => begin
       d2exp_sif_tr_dn (loc0, res, s2p_cond, d2e_then, d2e_else, s2e0)
     end // end of [D2Esif]
-  | D2Estring (str, len) => d2exp_string_tr_dn (loc0, str, len, s2e0)
+  | D2Estring (str, len) => d2exp_string_tr_dn (d2e0, str, len, s2e0)
   | D2Estruct ld2es => let
       var iswth: int = 0
       val s2e0 = (
@@ -717,26 +787,31 @@ val d3e0 = case+ d2e0.d2exp_node of
     in
       d3exp_trywith (loc0, d3e, c3ls)
     end // end of [D2Etrywith]
-  | _ => let
-      var iswth: int = 0
-      val d3e0 = d2exp_tr_up d2e0
-      val s2e0: s2exp =
-        if s2exp_is_wth s2e0 then let
-          val () = iswth := 1; val () = d3exp_open_and_add d3e0
-        in
-          s2exp_wth_instantiate (loc0, s2e0)
-        end else begin
-          s2e0 // not a type with state
-        end // end of [if]
-      val () = $SOL.s2exp_tyleq_solve (loc0, d3e0.d3exp_typ, s2e0)
-      val () = if iswth > 0 then funarg_varfin_check (loc0)
-      val () = d3exp_typ_set (d3e0, s2e0)
-    in
-      d3e0
-    end // end of [_]
+  | _ => d2exp_tr_dn_rest (d2e0, s2e0)
 in
   d3e0
 end // end of [d2exp_tr_dn]
+
+(* ****** ****** *)
+
+implement d2exp_tr_dn_rest (d2e0, s2e0) = let
+  val loc0 = d2e0.d2exp_loc
+  var iswth: int = 0
+  val d3e0 = d2exp_tr_up d2e0
+  val s2e0: s2exp =
+    if s2exp_is_wth s2e0 then let
+      val () = iswth := 1; val () = d3exp_open_and_add d3e0
+    in
+      s2exp_wth_instantiate (loc0, s2e0)
+    end else begin
+      s2e0 // not a type with state
+    end // end of [if]
+  val () = $SOL.s2exp_tyleq_solve (loc0, d3e0.d3exp_typ, s2e0)
+  val () = if iswth > 0 then funarg_varfin_check (loc0)
+  val () = d3exp_typ_set (d3e0, s2e0)
+in
+  d3e0
+end // end of [d2exp_tr_dn_rest]
 
 (* ****** ****** *)
 
@@ -754,6 +829,7 @@ in
             prerr_newline ();
             $Err.abort {s2exp} ()
           end
+      // end of [s2e_arg]
     in
       trans3_env_hypo_add_eqeq (loc0, s2exp_bool b, s2e_arg)
     end

@@ -50,7 +50,7 @@
 
 static inline
 ats_ptr_type
-atspre_ref_make_elt_tsz (ats_ptr_type p0, ats_int_type sz) {
+atspre_ref_make_elt_tsz (ats_ptr_type p0, ats_size_type sz) {
   ats_ptr_type p ;
   p = ATS_MALLOC(sz) ;
   memcpy (p, p0, sz) ;

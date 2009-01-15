@@ -448,10 +448,10 @@ overload gcd with igcd
 
 fun imul1 (i: Int, j: Int):<> Int = "atspre_imul1"
 
-and idiv1 {j:int | j <> 0} (i: Int, j: int j):<> Int
+fun idiv1 {j:int | j <> 0} (i: Int, j: int j):<> Int
   = "atspre_idiv1"
 
-and igcd1 {i,j:int}
+fun igcd1 {i,j:int}
   (i: int i, j: int j):<> [r:int | r >= 0] int r
   = "atspre_igcd1"
 
@@ -459,7 +459,7 @@ fun imul2 {i,j:int}
   (i: int i, j: int j):<> [p:int] (MUL (i, j, p) | int p)
   = "atspre_imul2"
 
-and igcd2 {i,j:int}
+fun igcd2 {i,j:int}
   (i: int i, j: int j):<> [r:int] (GCD (i, j, r) | int r)
   = "atspre_igcd2"
 

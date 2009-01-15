@@ -59,11 +59,12 @@
 (* ****** ****** *)
 
 fun matrix_make_arraysize {a:viewt@ype} {m,n:int}
-  (m: int m, n: int n):<> arraysize (a, m * n) -<cloptr> matrix (a, m, n)
+  (m: size_t m, n: size_t n):<> arraysize (a, m * n) -<cloptr> matrix (a, m, n)
   = "atspre_matrix_make_arraysize_main"
 
 // implemented in [prelude/DATS/matrix.das]
-fun matrix_make_arraysize_main {a:viewt@ype} {m,n,mn:int} (m: int m, n: int n)
+fun matrix_make_arraysize_main
+  {a:viewt@ype} {m,n,mn:int} (m: size_t m, n: size_t n)
   :<> (MUL (m, n, mn) | arraysize (a, mn)) -<cloptr> matrix (a, m, n)
   = "atspre_matrix_make_arraysize_main"
 
@@ -72,74 +73,92 @@ macdef matrix (m, n) A = matrix_make_arraysize (,(m), ,(n)) ,(A)
 (* ****** ****** *)
 
 fun{a:t@ype} matrix_make_elt {m,n:pos}
-  (row: int m, col: int n, elt: a):<> matrix (a, m, n)
+  (row: size_t m, col: size_t n, elt: a):<> matrix (a, m, n)
 
 fun matrix_make_fun_tsz_main
   {a:viewt@ype} {v:view} {vt:viewtype} {m,n:pos} {f:eff} (
     pf: !v
-  | row: int m, col: int n
-  , f: (!v | &(a?) >> a, natLt m, natLt n, !vt) -<f> void
+  | row: size_t m, col: size_t n
+  , f: (!v | &(a?) >> a, sizeLt m, sizeLt n, !vt) -<f> void
   , tsz: sizeof_t a
   , env: !vt
   ) :<f> matrix (a, m, n)
 
 fun matrix_make_cloptr_tsz {a:viewt@ype} {m,n:pos} {f:eff} (
-    row: int m, col: int n
-  , f: !(&(a?) >> a, natLt m, natLt n) -<cloptr,f> void
+    row: size_t m, col: size_t n
+  , f: !(&(a?) >> a, sizeLt m, sizeLt n) -<cloptr,f> void
   , tsz: sizeof_t a
   ) :<f> matrix (a, m, n)
 
 (* ****** ****** *)
 
-fun{a:t@ype} matrix_get_elt_at {m,n:nat}
-  (A: matrix (a, m, n), i: natLt m, n: int n, j: natLt n):<!ref> a
-fun{a:t@ype} matrix_set_elt_at {m,n:nat}
-  (A: matrix (a, m, n), i: natLt m, n: int n, j: natLt n, x: a):<!ref> void
+fun{a:t@ype} matrix_get_elt_at {m,n:nat} {i,j:nat | i < m; j < n}
+  (A: matrix (a, m, n), i: size_t i, n: size_t n, j: size_t j):<!ref> a
+fun{a:t@ype} matrix_set_elt_at {m,n:nat} {i,j:nat | i < m; j < n}
+  (A: matrix (a, m, n), i: size_t i, n: size_t n, j: size_t j, x: a):<!ref> void
 
 overload [] with matrix_get_elt_at
 overload [] with matrix_set_elt_at
 
 (* ****** ****** *)
 
+fun{a:t@ype} matrix_get_elt_at__intsz {m,n:nat} {i,j:nat | i < m; j < n}
+  (A: matrix (a, m, n), i: int i, n: int n, j: int j):<!ref> a
+fun{a:t@ype} matrix_set_elt_at__intsz {m,n:nat} {i,j:nat | i < m; j < n}
+  (A: matrix (a, m, n), i: int i, n: int n, j: int j, x: a):<!ref> void
+
+overload [] with matrix_get_elt_at__intsz
+overload [] with matrix_set_elt_at__intsz
+
+(* ****** ****** *)
+
+//
+// these functions are just as easy to be implemented on the spot (HX)
+//
+
 fun{a:t@ype} foreach_matrix_main
   {v:view} {vt:viewtype} {m,n:nat} {f:eff} (
     pf: !v
   | f: (!v | a, !vt) -<fun,f> void
-  , M: matrix (a, m, n), m: int m, n: int n
+  , M: matrix (a, m, n), m: size_t m, n: size_t n
   , env: !vt
   ) :<f,!ref> void
 overload foreach with foreach_matrix_main
 
 fun{a:t@ype} foreach_matrix_cloptr {m,n:nat} {f:eff}
-  (f: !(a -<cloptr,f> void), M: matrix (a, m, n), m: int m, n: int n)
+  (f: !(a -<cloptr,f> void), M: matrix (a, m, n), m: size_t m, n: size_t n)
   :<f,!ref> void
 overload foreach with foreach_matrix_cloptr
 
 fun{a:t@ype} foreach_matrix_cloref {m,n:nat} {f:eff}
-  (f: !(a -<cloref,f> void), M: matrix (a, m, n), m: int m, n: int n)
+  (f: !(a -<cloref,f> void), M: matrix (a, m, n), m: size_t m, n: size_t n)
   :<f,!ref> void
 overload foreach with foreach_matrix_cloref
 
 (* ****** ****** *)
 
+//
+// these functions are just as easy to be implemented on the spot (HX)
+//
+
 fun{a:t@ype} iforeach_matrix_main
   {v:view} {vt:viewtype} {m,n:nat} {f:eff} (
     pf: !v
-  | f: (!v | natLt m, natLt n, a, !vt) -<fun,f> void
-  , M: matrix (a, m, n), m: int m, n: int n
+  | f: (!v | sizeLt m, sizeLt n, a, !vt) -<fun,f> void
+  , M: matrix (a, m, n), m: size_t m, n: size_t n
   , env: !vt
   ) :<f,!ref> void
 overload iforeach with iforeach_matrix_main
 
 fun{a:t@ype} iforeach_matrix_cloptr {m,n:nat} {f:eff} (
-    f: !(natLt m, natLt n, a) -<cloptr,f> void
-  , M: matrix (a, m, n), m: int m, n: int n
+    f: !(sizeLt m, sizeLt n, a) -<cloptr,f> void
+  , M: matrix (a, m, n), m: size_t m, n: size_t n
   ) :<f,!ref> void
 overload iforeach with iforeach_matrix_cloptr
 
 fun{a:t@ype} iforeach_matrix_cloref {m,n:nat} {f:eff} (
-    f: !(natLt m, natLt n, a) -<cloref,f> void
-  , M: matrix (a, m, n), m: int m, n: int n
+    f: !(sizeLt m, sizeLt n, a) -<cloref,f> void
+  , M: matrix (a, m, n), m: size_t m, n: size_t n
   ) :<f,!ref> void
 overload iforeach with iforeach_matrix_cloptr
 

@@ -51,11 +51,12 @@ implement comarg_parse (s) = let
     if i < n then begin
       if (s[i] <> '-') then COMARGkey (i, s) else loop (s, n, i+1)
     end else begin
-      COMARGkey (n, s)
+      COMARGkey (n, s) (* loop exists *)
     end // end of [if]
   val s = string1_of_string s
+  val n = string_length s; val n = int_of_size n
 in
-  loop (s, string_length s, 0)
+  loop (s, n, 0)
 end // end of [comarg_parse]
 
 implement comarglst_parse {n} (argc, argv) = let

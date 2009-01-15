@@ -449,18 +449,18 @@ staload _(*anonymous*) = "prelude/DATS/array.dats"
 // The following function tests whether 2^exponent-1 is a prime:
 fun is_mersenne_prime (exponent: intGte 2): bool = let
   val n = compute_optimal_signal_size (exponent)
+  val n_sz = size_of_int n
+  val (pf_gc_r, pf_r | R) = array_ptr_alloc<real> (n_sz)
+  val () = array_ptr_initialize_elt<real> (!R, n_sz, d2r 0.0)
 
-  val (pf_gc_r, pf_r | R) = array_ptr_alloc<real> (n)
-  val () = array_ptr_initialize_elt<real> (!R, n, d2r 0.0)
+  val (pf_gc_i, pf_i | I) = array_ptr_alloc<imag> (n_sz)
+  val () = array_ptr_initialize_elt<imag> (!I, n_sz, d2i 0.0)
 
-  val (pf_gc_i, pf_i | I) = array_ptr_alloc<imag> (n)
-  val () = array_ptr_initialize_elt<imag> (!I, n, d2i 0.0)
+  val (pf_gc_b, pf_b | B) = array_ptr_alloc<real> (n_sz)
+  val () = array_ptr_initialize_elt<real> (!B, n_sz, d2r 0.0)
 
-  val (pf_gc_b, pf_b | B) = array_ptr_alloc<real> (n)
-  val () = array_ptr_initialize_elt<real> (!B, n, d2r 0.0)
-
-  val (pf_gc_w, pf_w | W) = array_ptr_alloc<real> (n)
-  val () = array_ptr_initialize_elt<real> (!W, n, d2r 0.0)
+  val (pf_gc_w, pf_w | W) = array_ptr_alloc<real> (n_sz)
+  val () = array_ptr_initialize_elt<real> (!W, n_sz, d2r 0.0)
 
   val () = compute_base_signal (pf_b | B, exponent, n)
   val () = compute_weight_signal (pf_w | W, exponent, n)

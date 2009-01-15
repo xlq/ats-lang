@@ -106,30 +106,30 @@ atslib_setenv_exn
 
 static inline
 ats_int_type
-atslib_bsearch
-  (ats_ref_type key,
-   ats_ptr_type base,
-   ats_int_type nmemb,
-   ats_int_type size,
-   ats_fun_ptr_type compar)
-{
+atslib_bsearch (
+  ats_ref_type key,
+  ats_ptr_type base, ats_size_type nmemb, ats_size_type size,
+  ats_fun_ptr_type compar
+) {
   void *p ;
-  p = bsearch((void *)key, (void *)base, (size_t)nmemb, (size_t)size, (int(*)(const void*, const void*))compar) ;
+  p = bsearch (
+    key, base, nmemb, size, (int(*)(const void*, const void*))compar
+  ) ; // end of [bsearch]
   if (!p) return -1 ;
   return ((char *)p - (char *)base) / size ;
-}
+} /* end of [atslib_bsearch] */
 
 static inline
 ats_void_type
-atslib_qsort
-  (ats_ptr_type base,
-   ats_int_type nmemb,
-   ats_int_type size,
-   ats_fun_ptr_type compar)
-{
-  qsort((void *)base, (size_t)nmemb, (size_t)size, (int(*)(const void*, const void*))compar) ;
+atslib_qsort (
+  ats_ptr_type base,
+  ats_size_type nmemb,
+  ats_size_type size,
+  ats_fun_ptr_type compar
+) {
+  qsort(base, nmemb, size, (int(*)(const void*, const void*))compar) ;
   return ;
-}
+} /* end of [atslib_qsort] */
 
 /* ****** ****** */
 

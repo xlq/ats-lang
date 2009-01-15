@@ -1770,32 +1770,37 @@ implement trans3_env_initialize () = let
   val () = s2cst_sup_set (s2c1, S2CSTOPTsome s2c0) where {
     val s2c0 = s2cstref_cst_get (Bool_t0ype)
     val s2c1 = s2cstref_cst_get (Bool_bool_t0ype)
-  } // end where
+  } // end of [where]
 
   val () = s2cst_sup_set (s2c1, S2CSTOPTsome s2c0) where {
     val s2c0 = s2cstref_cst_get (Char_t0ype)
     val s2c1 = s2cstref_cst_get (Char_char_t0ype)
-  } // end where
+  } // end of [where]
 
   val () = s2cst_sup_set (s2c1, S2CSTOPTsome s2c0) where {
     val s2c0 = s2cstref_cst_get (Int_t0ype)
     val s2c1 = s2cstref_cst_get (Int_int_t0ype)
-  } // end where
+  } // end of [where]
 
   val () = s2cst_sup_set (s2c1, S2CSTOPTsome s2c0) where {
     val s2c0 = s2cstref_cst_get (Uint_t0ype)
     val s2c1 = s2cstref_cst_get (Uint_int_t0ype)
-  } // end where
+  } // end of [where]
+
+  val () = s2cst_sup_set (s2c1, S2CSTOPTsome s2c0) where {
+    val s2c0 = s2cstref_cst_get (Size_t0ype)
+    val s2c1 = s2cstref_cst_get (Size_int_t0ype)
+  } // end of [where]
 
   val () = s2cst_sup_set (s2c1, S2CSTOPTsome s2c0) where {
     val s2c0 = s2cstref_cst_get (Ptr_type)
     val s2c1 = s2cstref_cst_get (Ptr_addr_type)
-  } // end where
+  } // end of [where]
 
   val () = s2cst_sup_set (s2c1, S2CSTOPTsome s2c0) where {
     val s2c0 = s2cstref_cst_get (String_type)
     val s2c1 = s2cstref_cst_get (String_int_type)
-  } // end where
+  } // end of [where]
 
   val () = clo_viewt0ype_viewt0ype_assume ()
   val () = cloptr_viewt0ype_viewtype_assume ()

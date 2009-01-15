@@ -46,9 +46,6 @@
 
 // typedef lint = int_long_t0ype
 
-abst@ype size_t (i:int) = $extype "size_t"
-abst@ype ssize_t (i:int) = $extype "ssize_t"
-
 //
 
 sortdef fm = file_mode
@@ -464,19 +461,19 @@ must use [feof] and [ferror] to determine which occurred.
 fun fread
   {sz:pos} {n_buf,n,nsz:nat | nsz <= n_buf} {m:fm}
   (pf_mod: file_mode_lte (m, r), pf_mul: MUL (n, sz, nsz) |
-   buf: &bytes (n_buf), sz: int sz, n: int n, f: &FILE m)
-  :<> natLte n
+   buf: &bytes (n_buf), sz: size_t sz, n: size_t n, f: &FILE m)
+  :<> sizeLte n
   = "atslib_fread"
 
 fun fread_byte
   {n_buf,n:nat | n <= n_buf} {m:fm}
-  (pf_mod: file_mode_lte (m, r) | buf: &bytes (n_buf), n: int n, f: &FILE m)
-  :<> natLte n
+  (pf_mod: file_mode_lte (m, r) | buf: &bytes (n_buf), n: size_t n, f: &FILE m)
+  :<> sizeLte n
   = "atslib_fread_byte"
 
 fun fread_byte_exn
   {n_buf,n:nat | n <= n_buf} {m:fm}
-  (pf_mod: file_mode_lte (m, r) | buf: &bytes (n_buf), n: int n, f: &FILE m)
+  (pf_mod: file_mode_lte (m, r) | buf: &bytes (n_buf), n: size_t n, f: &FILE m)
   :<!exn> void
   = "atslib_fread_byte_exn"
 
@@ -635,21 +632,21 @@ written.
 fun fwrite
   {sz:pos} {n_buf,n,nsz:nat | nsz <= n_buf} {m:fm} (
     pf_mod: file_mode_lte (m, w), pf_mul: MUL (n, sz, nsz)
-  | buf: &bytes (n_buf), sz: int sz, n: int n, f: &FILE m
+  | buf: &bytes (n_buf), sz: size_t sz, n: size_t n, f: &FILE m
   ) :<> natLte n
   = "atslib_fwrite"
 
 // [fwrite_byte] is a special case of [fwrite] where [sz] equals 1.
 fun fwrite_byte // [fwrite_byte] only writes once
   {n_buf,n:nat | n <= n_buf} {m:fm} (
-    pf_mod: file_mode_lte (m, w) | buf: &bytes (n_buf), n: int n, f: &FILE m
+    pf_mod: file_mode_lte (m, w) | buf: &bytes (n_buf), n: size_t n, f: &FILE m
   ) :<> natLte n
   = "atslib_fwrite_byte"
 
 // an uncatchable exception is thrown if not all bytes are written
 fun fwrite_byte_exn
   {n_buf,n:nat | n <= n_buf} {m:fm} (
-    pf_mod: file_mode_lte (m, w) | buf: &bytes (n_buf), n: int n, f: &FILE m
+    pf_mod: file_mode_lte (m, w) | buf: &bytes (n_buf), n: size_t n, f: &FILE m
   ) :<!exn> void
   = "atslib_fwrite_byte_exn"
 

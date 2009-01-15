@@ -24,11 +24,11 @@ extern fun ptr_get_t
   = "ats_ptr_get_t"
 
 extern fun ptr_set_t {i:int} {l:addr} 
-  (pf: !(int i)? @ l >> int i @ l | p: ptr l, i: int i):<> void
+  (pf: !(int i)? @ l >> int i @ l | p: ptr l, i: size_t i):<> void
   = "ats_ptr_set_t"
   
 extern fun array_int_ptr_make {n:nat}
-  (n: int n):<> [l:addr] (free_ngc_v l, array_v (Int?, n, l) | ptr l) 
+  (n: size_t n):<> [l:addr] (free_ngc_v l, array_v (Int?, n, l) | ptr l) 
   = "ats_array_int_ptr_make"
 
 extern fun array_int_ptr_free {n:nat} {l:addr}
@@ -45,12 +45,12 @@ ats_int_type ats_ptr_get_t(ats_ptr_type arg) {
 }
 
 static inline
-ats_void_type ats_ptr_set_t(ats_ptr_type arg1, ats_int_type arg2) {
+ats_void_type ats_ptr_set_t(ats_ptr_type arg1, ats_size_type arg2) {
   *((ats_int_type *)arg1) = arg2;
 }
 
 static inline
-ats_ptr_type ats_array_int_ptr_make(ats_int_type n) {
+ats_ptr_type ats_array_int_ptr_make(ats_size_type n) {
   return ats_calloc_ngc(n, sizeof(int)) ;
 }
 
@@ -92,35 +92,32 @@ end // end of [kmp_v_takeout]
 //
 
 fn kmp_sub {n,i:int | 0 < i; i <= n} {l:addr}
-   (pf_kmp: !kmp_v (l, n) | tbl: ptr l, i: int i)
+   (pf_kmp: !kmp_v (l, n) | tbl: ptr l, i: size_t i)
   :<> [i1:nat | i1 < i] int (i1) =
   let
-     val (pf_mul | ofs) = i imul2 intsz
+     val (pf_mul | ofs) = i szmul2 intsz
      prval (pf_elt, pf_rest) = kmp_v_takeout (pf_mul, pf_kmp)
      val i1 = ptr_get_t (pf_elt | tbl + ofs)
   in
      pf_kmp := pf_rest pf_elt; i1
   end
+// end of [kmp_sub]
 
 //
 
 extern fun string1_get_char_at {n:nat}
-  (s: string n, i: natLt n):<> [c:char | c <> NUL] char c
+  (s: string n, i: sizeLt n):<> [c:char | c <> NUL] char c
   = "atspre_string_get_char_at"
-
-macdef get (s, i) = string1_get_char_at (,(s), ,(i))
-
-//
 
 fun kmp_table_make_aux
    {i,j,n:int | 0 <= j; j+1 < i; i <= n} {l:addr} {ofs:int} .<n-i,j>.
    (pf_mul: MUL (i, intsz, ofs),
     pf_kmp: kmp_v (l, i-1),
     pf_arr: array_v (Int?, n-i, l+ofs) |
-    w: string n, tbl: ptr l, n:int n, i: int i, j: int j, tbl_ofs: ptr(l+ofs))
+    w: string n, tbl: ptr l, n: size_t n, i: size_t i, j: size_t j, tbl_ofs: ptr(l+ofs))
   :<> (kmp_v (l, n-1) | void) = begin
   if i < n then
-    if get (w, i-1) = get (w, j) then let
+    if w[i-1] = w[j] then let
        prval (pf_elt, pf_arr) = array_v_uncons {Int?} pf_arr
        val () = ptr_set_t (pf_elt | tbl_ofs, j+1)
        prval pf_kmp = kmp_v_more (pf_mul, pf_kmp, pf_elt)
@@ -128,10 +125,11 @@ fun kmp_table_make_aux
     in
        kmp_table_make_aux
          (pf_mul, pf_kmp, pf_arr | w, tbl, n, i+1, j+1, tbl_ofs+intsz)
-    end else if j > 0 then
-      kmp_table_make_aux
-        (pf_mul, pf_kmp, pf_arr | w, tbl, n, i, kmp_sub (pf_kmp | tbl, j), tbl_ofs)
-    else let
+    end else if j > 0 then let
+      val i1 = kmp_sub (pf_kmp | tbl, j); val i1 = size_of_int i1
+    in
+      kmp_table_make_aux (pf_mul, pf_kmp, pf_arr | w, tbl, n, i, i1, tbl_ofs)
+    end else let
       prval (pf_elt, pf_arr) = array_v_uncons {Int?} pf_arr
       val () = ptr_set_t (pf_elt | tbl_ofs, 0)
       prval pf_kmp = kmp_v_more (pf_mul, pf_kmp, pf_elt)
@@ -147,7 +145,7 @@ end // end of [kmp_table_make_aux]
 
 //
 
-fn kmp_table_make {n:int | n >= 1} (w: string n, n: int n)
+fn kmp_table_make {n:int | n >= 1} (w: string n, n: size_t n)
   :<> [l:addr] (free_ngc_v (l+intsz), kmp_v (l, n-1) | ptr l) = let
   val n = string1_length w
   val [l:addr] (pf_ngc, pf_arr | p_arr) = array_int_ptr_make (n-1)
@@ -198,23 +196,27 @@ end // end of [kmp_table_free]
 
 fn kmp_search {ns:nat; nw:int | nw >= 1}
    (s: string ns, w: string nw):<> intBtw (~1, ns) = let
-  val ns = string1_length s
-  val nw = string1_length w
+  val ns = string1_length s; val nw = string1_length w
   val [l:addr] (pf_ngc, pf | tbl) = kmp_table_make (w, nw)
-  fun aux {m,i:nat | m+i <= ns; i <= nw} .<ns-m-i, i>.
+  val ns = int_of_size ns; val nw = int_of_size nw
+  fun loop {m,i:nat | m+i <= ns; i <= nw} .<ns-m-i, i>.
     (pf: !kmp_v (l, nw-1) | m: int m, i: int i):<cloptr> intBtw (~1, ns) =
-    if i = nw then m else begin
+    if i < nw then begin
       if m+i < ns then
-        if get (w, i) = get (s, m+i) then aux (pf | m, i+1) else begin
+        if w[i] = s[m+i] then loop (pf | m, i+1) else
           if i > 0 then begin
-            let val i1 = kmp_sub (pf | tbl, i) in aux (pf | m+i-i1, i1) end
+            let val i1 = kmp_sub (pf | tbl, size_of_int i) in loop (pf | m+i-i1, i1) end
           end else begin
-            aux (pf | m+1, 0)
-          end
-        end // end of [if]
-      else ~1
+            loop (pf | m+1, 0)
+          end // end of [if]
+        (* end of [if] *)
+      else begin
+        ~1 (* loop exists *)
+      end // end of [if]
+    end else begin
+      m // loop exits
     end // end of [if]
-  val ans = aux (pf | 0, 0)
+  val ans = loop (pf | 0, 0)
 in
   kmp_table_free (pf_ngc, pf | tbl); ans
 end // end of [kmp_search]

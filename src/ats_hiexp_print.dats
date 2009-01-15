@@ -508,7 +508,7 @@ in
       strpr "HIEspawn("; fprint_hiexp (pf | out,  hie); strpr ")"
     end // end of [HIEspawn]
   | HIEstring (str, len) => begin
-      fprintf1_exn (pf | out, "HIEstring(\"%s\", %i)", @(str, len))
+      fprint1_string (pf | out, "HIEstring(...)")
     end // end of [HIEstring]
   | HIEtmpcst (d2c, hitss) => begin
       strpr "HIEtmpcst(";

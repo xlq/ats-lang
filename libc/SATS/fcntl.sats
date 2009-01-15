@@ -192,15 +192,15 @@ fun close_loop_exn {fd:int} {flag: open_flag}
 fun fildes_read_err
   {fd:int} {flag:open_flag} {n,sz:nat | n <= sz} (
     pf1: open_flag_lte (flag, rd), pf2: !fildes_v (fd, flag)
-  | fd: int fd, buf: &bytes sz, ntotal: int n
-  ) : intBtw(~1, n+1)
+  | fd: int fd, buf: &bytes sz, ntotal: size_t n
+  ) : sizeBtw(~1, n+1)
   = "atslib_fildes_read_err"
 
 fun fildes_read_exn
   {fd:int} {flag:open_flag} {n,sz:nat | n <= sz} (
     pf1: open_flag_lte (flag, rd), pf2: !fildes_v (fd, flag)
   | fd: int fd, buf: &bytes sz, ntotal: int n
-  ) : natLte n
+  ) : sizeLte n
   = "atslib_fildes_read_exn"
 
 // implemented in [libc/DATS/fcntl.dats]
@@ -208,15 +208,15 @@ fun fildes_read_exn
 fun fildes_read_loop_err
   {fd:int} {flag:open_flag} {n,sz:nat | n <= sz} (
     pf1: open_flag_lte (flag, rd), pf2: !fildes_v (fd, flag)
-  | fd: int fd, buf: &bytes sz, ntotal: int n
-  ) : intBtw (~1, n+1)
+  | fd: int fd, buf: &bytes sz, ntotal: size_t n
+  ) : sizeBtw (~1, n+1)
   = "atslib_fildes_read_loop_err"
 
 fun fildes_read_loop_exn
   {fd:int} {flag:open_flag} {n,sz:nat | n <= sz} (
     pf1: open_flag_lte (flag, rd), pf2: !fildes_v (fd, flag)
-  | fd: int fd, buf: &bytes sz, ntotal: int n
-  ) : natLte n
+  | fd: int fd, buf: &bytes sz, ntotal: size_t n
+  ) : sizeLte n
   = "atslib_fildes_read_loop_exn"
 
 (* ****** ****** *)
@@ -226,15 +226,15 @@ fun fildes_read_loop_exn
 fun fildes_write_err
   {fd:int} {flag:open_flag} {n,sz:nat | n <= sz} (
     pf1: open_flag_lte (flag, wr), pf2: !fildes_v (fd, flag)
-  | fd: int fd, buf: &bytes sz, ntotal: int n
-  ) : intBtw(~1, n+1)
+  | fd: int fd, buf: &bytes sz, ntotal: size_t n
+  ) : sizeBtw(~1, n+1)
   = "atslib_fildes_write_err"
 
 fun fildes_write_exn
   {fd:int} {flag:open_flag} {n,sz:nat | n <= sz} (
     pf1: open_flag_lte (flag, wr), pf2: !fildes_v (fd, flag)
-  | fd: int fd, buf: &bytes sz, ntotal: int n
-  ) : natLte n
+  | fd: int fd, buf: &bytes sz, ntotal: size_t n
+  ) : sizeLte n
   = "atslib_fildes_write_exn"
 
 // implemented in [libc/DATS/fcntl.dats]
@@ -242,14 +242,14 @@ fun fildes_write_exn
 fun fildes_write_loop_err
   {fd:int} {flag:open_flag} {n,sz:nat | n <= sz} (
     pf1: open_flag_lte (flag, wr), pf2: !fildes_v (fd, flag)
-  | fd: int fd, buf: &bytes sz, ntotal: int n
-  ) : intBtw(~1, n+1)
+  | fd: int fd, buf: &bytes sz, ntotal: size_t n
+  ) : sizeBtw(~1, n+1)
   = "atslib_fildes_write_loop_err"
 
 fun fildes_write_loop_exn
   {fd:int} {flag:open_flag} {n,sz:nat | n <= sz} (
     pf1: open_flag_lte (flag, wr), pf2: !fildes_v (fd, flag)
-  | fd: int fd, buf: &bytes sz, ntotal: int n
+  | fd: int fd, buf: &bytes sz, ntotal: size_t n
   ) : void // all bytes must be written if this function returns
   = "atslib_fildes_write_loop_exn"
 
@@ -260,15 +260,15 @@ fun fildes_write_loop_exn
 fun fildes_write_substring_err
   {fd:int} {flag:open_flag} {i,n,sz:nat | i+n <= sz} (
     pf1: open_flag_lte (flag, wr), pf2: !fildes_v (fd, flag)
-  | fd: int fd, str: string sz, start: int i, n: int n
-  ) : intBtw(~1, n+1)
+  | fd: int fd, str: string sz, start: size_t i, n: size_t n
+  ) : sizeBtw(~1, n+1)
   = "atslib_fildes_write_substring_err"
 
 fun fildes_write_substring_exn
   {fd:int} {flag:open_flag} {i,n,sz:nat | i+n <= sz} (
     pf1: open_flag_lte (flag, wr), pf2: !fildes_v (fd, flag)
-  | fd: int fd, str: string sz, start: int i, n: int n
-  ) : natLte n
+  | fd: int fd, str: string sz, start: size_t i, n: size_t n
+  ) : sizeLte n
   = "atslib_fildes_write_substring_exn"
 
 (* ****** ****** *)

@@ -710,7 +710,7 @@ implement the_d2expenv_find_qua (q, id) = begin
             prerr "] should refer to a filename but it does not.";
             prerr_newline ();
             $Err.abort {fil_t} ()
-          end
+          end // end of [Some_vt]
         | ~None_vt _ => begin
             $Loc.prerr_location q.d0ynq_loc;
             prerr ": error(2)";
@@ -719,7 +719,7 @@ implement the_d2expenv_find_qua (q, id) = begin
             prerr "] is unrecognized.";
             prerr_newline ();
             $Err.abort {fil_t} ()
-          end
+          end // end of [None_vt]
       val fil_sym = $Fil.filename_full_sym fil
     in
       case+ $HT.hashtbl_search (the_d2itemmaptbl, fil_sym) of
@@ -760,7 +760,7 @@ in
       $Sym.prerr_symbol id;
       prerr_newline ();
       $Err.abort {void} ()
-    end
+    end // end of [Some_vt]
   | ~None_vt _ => ()  
 end // end of [the_d2expenv_namespace_add_top]
 

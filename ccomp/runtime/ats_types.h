@@ -44,6 +44,7 @@
 /* ****** ****** */
 
 #include <inttypes.h>
+#include <malloc.h> /* ptrdiff_t */
 #include <sys/types.h> /* size_t and ssize_t */
 
 /* ****** ****** */
@@ -82,6 +83,7 @@ typedef unsigned short int ats_usint_type ;
 
 typedef size_t ats_size_type ;
 typedef ssize_t ats_ssize_type ;
+typedef ptrdiff_t ats_ptrdiff_type ;
 
 /* ****** ****** */
 
