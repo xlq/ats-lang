@@ -249,7 +249,7 @@ atslib_fputs_exn(ats_ptr_type s, ats_ptr_type fil) {
 /* --------------------------------------- */
 
 static inline
-ats_int_type
+ats_size_type
 atslib_fread
   (ats_ptr_type buf, ats_size_type sz, ats_size_type n, ats_ptr_type fil)
 {
@@ -257,14 +257,14 @@ atslib_fread
 }
 
 static inline
-ats_int_type
+ats_size_type
 atslib_fread_byte
   (ats_ptr_type buf, ats_size_type n, ats_ptr_type fil) {
   return fread ((void*)buf, 1, n, (FILE*)fil) ;
 }
 
 static inline
-ats_int_type
+ats_void_type
 atslib_fread_byte_exn
   (ats_ptr_type buf, ats_size_type ntotal, ats_ptr_type fil) {
   int nread ;
@@ -390,14 +390,15 @@ atslib_ftell_exn
 /* --------------------------------------- */
 
 static inline
-ats_int_type atslib_fwrite (
+ats_size_type
+atslib_fwrite (
   ats_ptr_type buf, ats_size_type sz, ats_size_type n, ats_ptr_type fil
 ) {
   return fwrite((void*)buf, sz, n, (FILE*)fil) ;
 } /* atslib_fwrite */
 
 static inline
-ats_int_type
+ats_size_type
 atslib_fwrite_byte
   (ats_ptr_type buf, ats_size_type n, ats_ptr_type fil) {
   return fwrite((void*)buf, 1, n, (FILE*)fil) ;
