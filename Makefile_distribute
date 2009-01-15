@@ -74,7 +74,7 @@ config.h: configure ; ./configure
 ###### bootstrap/Makefile ######
 
 bootstrap1/Makefile:
-	$(GCC) D_BOOTSTRAP1 -E -x c .bootstrap_header \
+	$(GCC) -D_BOOTSTRAP1 -E -x c .bootstrap_header \
       | cat - .bootstrap_makefile > bootstrap1/Makefile
 
 ###### w/o GC ######
