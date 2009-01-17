@@ -285,18 +285,21 @@ fun string_get_char_at {n:nat} {i:nat | i < n}
 overload [] with strbuf_get_char_at
 overload [] with string_get_char_at
 
-// ------ ------ //
+//
+// these functions are present mostly for convenience as a programmer
+// ofter uses values of the type int as array indices:
+//
 
-fun strbuf_get_char_at__isz {m,n:nat} {i:nat | i < n}
+fun strbuf_get_char_at__intsz {m,n:nat} {i:nat | i < n}
   (sb: &strbuf (m, n), i: int i):<> [c:char | c <> NUL] char c
-  = "atspre_string_get_char_at__isz"
+  = "atspre_string_get_char_at__intsz"
 
-fun string_get_char_at__isz {n:nat} {i:nat | i < n}
+fun string_get_char_at__intsz {n:nat} {i:nat | i < n}
   (s: string n, i: int i):<> [c:char | c <> NUL] char c // no effect
-  = "atspre_string_get_char_at__isz"
+  = "atspre_string_get_char_at__intsz"
 
-overload [] with strbuf_get_char_at__isz
-overload [] with string_get_char_at__isz
+overload [] with strbuf_get_char_at__intsz
+overload [] with string_get_char_at__intsz
 
 (* ****** ****** *)
 
@@ -313,20 +316,23 @@ fun string_set_char_at {n:nat}
 overload [] with strbuf_set_char_at
 overload [] with string_set_char_at
 
-// ------ ------ //
+//
+// these functions are present mostly for convenience as a programmer
+// ofter uses values of the type int as array indices:
+//
 
-fun strbuf_set_char_at__isz {m,n:nat}
+fun strbuf_set_char_at__intsz {m,n:nat}
   {i:nat | i < n} {c: char | c <> NUL}
   (sb: &strbuf (m, n), i: int i, c: char c):<> void
-  = "atspre_strbuf_set_char_at__isz"
+  = "atspre_strbuf_set_char_at__intsz"
 
-fun string_set_char_at__isz {n:nat}
+fun string_set_char_at__intsz {n:nat}
   {i:nat | i < n} {c: char | c <> NUL}
   (s: string n, i: int i, c: char c):<!ref> void
-  = "atspre_strbuf_set_char_at__isz"
+  = "atspre_strbuf_set_char_at__intsz"
 
-overload [] with strbuf_set_char_at__isz
-overload [] with string_set_char_at__isz
+overload [] with strbuf_set_char_at__intsz
+overload [] with string_set_char_at__intsz
 
 (* ****** ****** *)
 

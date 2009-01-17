@@ -166,7 +166,7 @@ atspre_tostring_bool(const ats_bool_type b) {
 
 #define atspre_neg_bool1 atspre_neg_bool
 #define atspre_add_bool1_bool1 atspre_add_bool_bool
-#define atspre_mul_bool1_bool1 atspre_mul_bool1_bool1
+#define atspre_mul_bool1_bool1 atspre_mul_bool_bool
 
 #define atspre_lt_bool1_bool1 atspre_lt_bool_bool
 #define atspre_lte_bool1_bool1 atspre_lte_bool_bool

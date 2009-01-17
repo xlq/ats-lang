@@ -108,7 +108,7 @@ static inline
 ats_int_type
 atslib_bsearch (
   ats_ref_type key,
-  ats_ptr_type base, ats_size_type nmemb, ats_size_type size,
+  ats_ref_type base, ats_size_type nmemb, ats_size_type size,
   ats_fun_ptr_type compar
 ) {
   void *p ;
@@ -122,7 +122,7 @@ atslib_bsearch (
 static inline
 ats_void_type
 atslib_qsort (
-  ats_ptr_type base,
+  ats_ref_type base,
   ats_size_type nmemb,
   ats_size_type size,
   ats_fun_ptr_type compar

@@ -40,6 +40,7 @@
 /* ****** ****** */
 
 #include <stdio.h>
+#include <limits.h>
 
 /* ****** ****** */
 
@@ -47,14 +48,18 @@
 
 /* ****** ****** */
 
+#define atspre_size0_of_int atspre_size_of_int
+#define atspre_add_size0_size0 atspre_add_size_size
+#define atspre_mul_size0_size0 atspre_mul_size_size
+
+/* ****** ****** */
+
 static inline
 ats_int_type
 atspre_int_of_size (ats_size_type sz) {
-/*
-  if (sz > INTMAX) {
-    fprintf (stderr, "[ats_int_of_size(%li)] failed\n", sz) ; exit (1) ;
-  }
-*/
+  if (INT_MAX < sz) {
+    fprintf (stderr, "[ats_int_of_size(%lu)] failed\n", sz) ; exit (1) ;
+  } /* end of [if] */
   return ((ats_int_type)sz) ;
 } /* end of [atspre_int_of_size] */
 
@@ -70,13 +75,11 @@ atspre_size_of_int (ats_int_type i) { return (ats_size_type)i ; }
 
 static inline
 ats_size_type
-atspre_size_of_ssize
-  (ats_ssize_type x) { return (ats_size_type)x ; }
+atspre_size_of_ssize (ats_ssize_type ssz) { return (ats_size_type)ssz ; }
 
 static inline
 ats_size_type
-atspre_size_of_ptrdiff
-  (ats_ptrdiff_type x) { return (ats_size_type)x ; }
+atspre_size_of_ptrdiff (ats_ptrdiff_type x) { return (ats_size_type)x ; }
 
 /* ****** ****** */
 
@@ -86,28 +89,24 @@ static inline
 ats_void_type
 atspre_fprint_size (ats_ptr_type out, ats_size_type sz) {
   int n ;
-  n = fprintf ((FILE*)out, "%ld", sz) ;
+  n = fprintf ((FILE*)out, "%lu", sz) ;
   if (n < 0) {
     ats_exit_errmsg (n, "exit(ATS): [fprint_size] failed.\n") ;
   } /* end of [if] */
   return ;
-}
+} /* end of [atspre_fprint_size] */
 
 static inline
 ats_void_type
 atspre_print_size (ats_size_type sz) {
-  atspre_stdout_view_get () ;
-  atspre_fprint_size (stdout, sz) ;
-  atspre_stdout_view_set () ;
+  atspre_stdout_view_get () ; atspre_fprint_size (stdout, sz) ; atspre_stdout_view_set () ;
   return ;
 }
 
 static inline
 ats_void_type
 atspre_prerr_size (ats_size_type sz) {
-  atspre_stderr_view_get () ;
-  atspre_fprint_int (stderr, sz) ;
-  atspre_stderr_view_set () ;
+  atspre_stderr_view_get () ; atspre_fprint_size (stderr, sz) ; atspre_stderr_view_set () ;
   return ;
 }
 
@@ -135,7 +134,7 @@ atspre_add_size_int (ats_size_type sz1, ats_int_type i2) {
   return (sz1 + i2) ;
 }
 
-//
+// ------ ------
 
 static inline
 ats_size_type
@@ -149,7 +148,7 @@ atspre_sub_size_int (ats_size_type sz1, ats_int_type i2) {
   return (sz1 - i2) ;
 }
 
-//
+/* ****** ****** */
 
 static inline
 ats_size_type
@@ -160,7 +159,11 @@ atspre_mul_size_size (ats_size_type sz1, ats_size_type sz2) {
 #define atspre_mul1_size_size atspre_mul_size_size
 #define atspre_mul2_size_size atspre_mul_size_size
 
-//
+static inline
+ats_size_type
+atspre_div_size_size (ats_size_type sz1, ats_size_type sz2) {
+  return (sz1 / sz2) ;
+} /* end of [atspre_div_size_size] */
 
 static inline
 ats_size_type
@@ -186,7 +189,7 @@ atspre_lte_size_size
   return (sz1 <= sz2 ? ats_true_bool : ats_false_bool) ;
 } /* end of [atspre_lte_size_size] */
 
-//
+// ------ ------
 
 static inline
 ats_bool_type
@@ -202,7 +205,7 @@ atspre_gt_size_int
   return (sz1 > i2 ? ats_true_bool : ats_false_bool) ;
 } /* end of [atspre_gt_size_int] */
 
-//
+// ------ ------
 
 static inline
 ats_bool_type
@@ -242,13 +245,55 @@ atspre_neq_size_size
 /* ****** ****** */
 
 static inline
+ats_int_type
+atspre_int_of_ssize (ats_ssize_type ssz) {
+  if (INT_MAX < ssz || ssz < INT_MIN) {
+    fprintf (stderr, "[ats_int_of_ssize(%li)] failed\n", ssz) ; exit (1) ;
+  } /* end of [if] */
+  return (ats_int_type)ssz ;
+} /* end of [atspre_int_of_ssize] */
+
+static inline
 ats_ssize_type atspre_ssize_of_int (ats_int_type i) {
   return (ats_ssize_type)i ;
 }
 
 static inline
 ats_ssize_type atspre_ssize_of_size (ats_size_type sz) {
-  return (ats_ssize_type)sz ;
+  ats_ssize_type ssz = sz ;
+  if (ssz < 0) {
+    fprintf (stderr, "[ats_ssize_of_size(%lu)] failed\n", sz) ; exit (1) ;
+  } /* end of [if] */
+  return ssz ;
+} /* end of [atspre_ssize_of_size] */
+
+/* ****** ****** */
+
+// print functions
+
+static inline
+ats_void_type
+atspre_fprint_ssize (ats_ptr_type out, ats_ssize_type ssz) {
+  int n ;
+  n = fprintf ((FILE*)out, "%li", ssz) ;
+  if (n < 0) {
+    ats_exit_errmsg (n, "exit(ATS): [fprint_ssize] failed.\n") ;
+  } /* end of [if] */
+  return ;
+} /* end of [atspre_fprint_ssize] */
+
+static inline
+ats_void_type
+atspre_print_ssize (ats_ssize_type ssz) {
+  atspre_stdout_view_get () ; atspre_fprint_ssize (stdout, ssz) ; atspre_stdout_view_set () ;
+  return ;
+}
+
+static inline
+ats_void_type
+atspre_prerr_ssize (ats_size_type ssz) {
+  atspre_stderr_view_get () ; atspre_fprint_ssize (stderr, ssz) ; atspre_stderr_view_set () ;
+  return ;
 }
 
 /* ****** ****** */
@@ -256,15 +301,17 @@ ats_ssize_type atspre_ssize_of_size (ats_size_type sz) {
 static inline
 ats_bool_type
 atspre_lt_ssize_int
-  (ats_ssize_type sz2, ats_int_type i2) {
-  return (sz2 < i2 ? ats_true_bool : ats_false_bool) ;
+  (ats_ssize_type ssz1, ats_int_type i2) {
+  return (ssz1 < i2 ? ats_true_bool : ats_false_bool) ;
 } /* end of [atspre_lt_ssize_int] */
+
+// ------ ------
 
 static inline
 ats_bool_type
 atspre_lte_ssize_int
-  (ats_ssize_type sz2, ats_int_type i2) {
-  return (sz2 <= i2 ? ats_true_bool : ats_false_bool) ;
+  (ats_ssize_type ssz1, ats_int_type i2) {
+  return (ssz1 <= i2 ? ats_true_bool : ats_false_bool) ;
 } /* end of [atspre_lte_ssize_int] */
 
 /* ****** ****** */
@@ -272,15 +319,17 @@ atspre_lte_ssize_int
 static inline
 ats_bool_type
 atspre_gt_ssize_int
-  (ats_ssize_type sz2, ats_int_type i2) {
-  return (sz2 > i2 ? ats_true_bool : ats_false_bool) ;
+  (ats_ssize_type ssz1, ats_int_type i2) {
+  return (ssz1 > i2 ? ats_true_bool : ats_false_bool) ;
 } /* end of [atspre_gt_ssize_int] */
+
+// ------ ------
 
 static inline
 ats_bool_type
 atspre_gte_ssize_int
-  (ats_ssize_type sz2, ats_int_type i2) {
-  return (sz2 >= i2 ? ats_true_bool : ats_false_bool) ;
+  (ats_ssize_type ssz1, ats_int_type i2) {
+  return (ssz1 >= i2 ? ats_true_bool : ats_false_bool) ;
 } /* end of [atspre_gte_ssize_int] */
 
 /* ****** ****** */

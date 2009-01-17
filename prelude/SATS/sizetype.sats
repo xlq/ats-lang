@@ -58,6 +58,9 @@
 
 // unindexed size type
 
+fun size0_of_int {i:nat} (i: int i):<> size_t
+  = "atspre_size0_of_int"
+
 fun add_size0_size0 (sz1: size_t, sz2: size_t):<> size_t
   = "atspre_add_size_size"
 overload + with add_size0_size0
@@ -274,18 +277,16 @@ overload prerr with prerr_size
 
 (* ****** ****** *)
 
+fun int_of_ssize {i:int} (sz: ssize_t i):<> int i
+  = "atspre_int_of_ssize"
+
 fun ssize_of_int {i:int} (i: int i):<> ssize_t i
   = "atspre_ssize_of_int"
 
-fun ssize_of_size {i:nat} (i: size_t i):<> ssize_t i
+fun ssize_of_size {i:nat} (sz: size_t i):<> ssize_t i
   = "atspre_ssize_of_size"
 
 (* ****** ****** *)
-
-fun lt_ssize_ssize {i,j:int}
-  (i: ssize_t i, j: ssize_t j):<> bool (i < j)
-  = "atspre_lt_ssize_ssize"
-overload < with lt_ssize_ssize
 
 fun lt_ssize_int {i,j:int}
   (i: ssize_t i, j: int j):<> bool (i < j)
@@ -294,10 +295,12 @@ overload < with lt_ssize_int
 
 // ------ ------
 
-fun gt_ssize_ssize {i,j:int}
-  (i: ssize_t i, j: ssize_t j):<> bool (i > j)
-  = "atspre_gt_ssize_ssize"
-overload > with gt_ssize_ssize
+fun lte_ssize_int {i,j:int}
+  (i: ssize_t i, j: int j):<> bool (i <= j)
+  = "atspre_lt_ssize_int"
+overload <= with lte_ssize_int
+
+// ------ ------
 
 fun gt_ssize_int {i,j:int}
   (i: ssize_t i, j: int j):<> bool (i > j)
@@ -305,11 +308,6 @@ fun gt_ssize_int {i,j:int}
 overload > with gt_ssize_int
 
 // ------ ------
-
-fun gte_ssize_ssize {i,j:int}
-  (i: ssize_t i, j: ssize_t j):<> bool (i >= j)
-  = "atspre_gte_ssize_ssize"
-overload >= with gte_ssize_ssize
 
 fun gte_ssize_int {i,j:int}
   (i: ssize_t i, j: int j):<> bool (i >= j)

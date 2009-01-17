@@ -63,7 +63,8 @@ fun{a:viewt@ype} array_ptr_xch_elt_at
 (* ****** ****** *)
 
 //
-// these functions are present solely for convenience:
+// these functions are present mostly for convenience as a programmer
+// ofter uses values of the type int as array indices:
 //
 
 fun{a:t@ype} array_ptr_get_elt_at__intsz

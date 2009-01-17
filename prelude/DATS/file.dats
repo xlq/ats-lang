@@ -157,15 +157,15 @@ implement line_stream_make_file (fil) = begin
   if feof0 (fil) <> 0 then let
     val () = fclose0_exn fil in $delay (stream_nil ())
   end else let
-    val l = input_line (fil)
+    val line = $effmask_ref (input_line fil)
   in
-    $delay ($effmask_ref (stream_cons (l, line_stream_make_file fil)))
+    $delay ($effmask_ref (stream_cons (line, line_stream_make_file fil)))
   end // end of [if]
 end // end of [line_stream_make_file]
 
 (* ****** ****** *)
 
-implement char_stream_vt_make_file (pf_mod, pf_fil | p_fil) = let
+implement char_stream_vt_make_file {m} {l} (pf_mod, pf_fil | p_fil) = let
   val c = fgetc1_err (pf_mod | !p_fil)
 in
   if c >= 0 then let // c <> EOF
@@ -178,6 +178,45 @@ in
   end else let
     val () = fclose1_exn (pf_fil | p_fil) in $delay_vt (stream_vt_nil ())
   end // end of [if]
+end // end of [char_stream_vt_make_file]
+
+(* ****** ****** *)
+
+implement line_stream_vt_make_file {m} {l} (pf_mod, pf_fil | p_fil) = let
+  fun loop {n:nat}
+    (pf_fil: FILE m @ l | p_fil: ptr l, n: int n, cs: list_vt (char, n))
+    :<1,~ref> stream_vt (string) = let
+    val c = fgetc1_err (pf_mod | !p_fil)
+  in
+    if c >= 0 then let
+      val c = char_of_int (c) // c <> EOF
+    in
+      if c <> '\n' then
+        loop (pf_fil | p_fil, n+1, list_vt_cons (c, cs))
+      else let
+        val line = string_make_charlst_rev (n, cs)
+      in
+        $delay_vt (
+          stream_vt_cons (line, line_stream_vt_make_file (pf_mod, pf_fil | p_fil))
+        , fclose1_exn (pf_fil | p_fil)
+        ) // end of [$delay_vt]
+      end // end of [if]
+    end else let
+      val () = fclose1_exn (pf_fil | p_fil)
+    in
+      if n > 0 then let
+        val line = string_make_charlst_rev (n, cs)
+      in
+        $delay_vt (stream_vt_cons (line, $delay_vt stream_vt_nil))
+      end else let
+        val ~list_vt_nil () = cs
+      in
+        $delay_vt stream_vt_nil
+      end // end of [if]
+    end // end of [if]
+  end // end of [loop]
+in
+  loop (pf_fil | p_fil, 0, list_vt_nil ())
 end // end of [char_stream_vt_make_file]
 
 (* ****** ****** *)

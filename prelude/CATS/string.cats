@@ -84,7 +84,7 @@ atspre_lt_string_string
   (const ats_ptr_type s1, const ats_ptr_type s2) {
   int i = strcmp((char*)s1, (char*)s2) ;
   return (i < 0 ? ats_true_bool : ats_false_bool) ;
-} /* atspre_lt_string_string */
+} /* end of [atspre_lt_string_string] */
 
 static inline
 ats_bool_type
@@ -92,7 +92,7 @@ atspre_lte_string_string
   (const ats_ptr_type s1, const ats_ptr_type s2) {
   int i = strcmp((char*)s1, (char*)s2) ;
   return (i <= 0 ? ats_true_bool : ats_false_bool) ;
-} /* atspre_lte_string_string */
+} /* end of [atspre_lte_string_string] */
 
 static inline
 ats_bool_type
@@ -100,7 +100,7 @@ atspre_gt_string_string
   (const ats_ptr_type s1, const ats_ptr_type s2) {
   int i = strcmp((char*)s1, (char*)s2) ;
   return (i > 0 ? ats_true_bool : ats_false_bool) ;
-} /* atspre_gt_string_string */
+} /* end of [atspre_gt_string_string] */
 
 static inline
 ats_bool_type
@@ -108,7 +108,7 @@ atspre_gte_string_string
   (const ats_ptr_type s1, const ats_ptr_type s2) {
   int i = strcmp((char*)s1, (char*)s2) ;
   return (i >= 0 ? ats_true_bool : ats_false_bool) ;
-} /* atspre_gte_string_string */
+} /* end of [atspre_gte_string_string] */
 
 static inline
 ats_bool_type
@@ -120,7 +120,7 @@ atspre_eq_string_string
   fprintf (stdout, "ats_eq_string_string: i = %i\n", i) ;
 */
   return (i == 0 ? ats_true_bool : ats_false_bool) ;
-} /* atspre_eq_string_string */
+} /* end of [atspre_eq_string_string] */
 
 static inline
 ats_bool_type
@@ -128,7 +128,7 @@ atspre_neq_string_string
   (const ats_ptr_type s1, const ats_ptr_type s2) {
   int i = strcmp((char*)s1, (char*)s2) ;
   return (i != 0 ? ats_true_bool : ats_false_bool) ;
-} /* atspre_neq_string_string */
+} /* end of [atspre_neq_string_string] */
 
 static inline
 ats_int_type
@@ -138,7 +138,7 @@ atspre_compare_string_string
   if (i < 0) return -1 ;
   if (i > 0) return  1 ;
   return 0 ;
-} /* atspre_compare_string_string */
+} /* end of [atspre_compare_string_string] */
 
 // print functions
 
@@ -151,7 +151,7 @@ atspre_fprint_string
     (n, "exit(ATS): [fprint_string] failed.\n") ;
   }
   return ;
-} /* atspre_fprint_string */
+} /* end of [atspre_fprint_string] */
 
 static inline
 ats_void_type
@@ -160,7 +160,7 @@ atspre_print_string (const ats_ptr_type s) {
   atspre_fprint_string(stdout, s) ;
   atspre_stdout_view_set() ;
   return ;
-} /* atspre_print_string */
+} /* end of [atspre_print_string] */
 
 static inline
 ats_void_type
@@ -169,7 +169,7 @@ atspre_prerr_string (const ats_ptr_type s) {
   atspre_fprint_string(stderr, s) ;
   atspre_stderr_view_set() ;
   return ;
-} /* atspre_prerr_string */
+} /* end of [atspre_prerr_string] */
 
 /* ****** ****** */
 
@@ -178,28 +178,28 @@ ats_char_type
 atspre_string_get_char_at
   (const ats_ptr_type s, ats_size_type offset) {
   return *((char*)s + offset) ;
-} /* atspre_string_get_char_at */
+} /* end of [atspre_string_get_char_at] */
 
 static inline
 ats_char_type
-atspre_string_get_char_at__isz
+atspre_string_get_char_at__intsz
   (const ats_ptr_type s, ats_int_type offset) {
   return *((char*)s + offset) ;
-} /* atspre_string_get_char_at */
+} /* end of [atspre_string_get_char_at__intsz] */
 
 static inline
 ats_void_type
 atspre_strbuf_set_char_at
-  (ats_ptr_type s, ats_size_type offset, const char c) {
+  (ats_ptr_type s, ats_size_type offset, ats_char_type c) {
   *((char*)s + offset) = c ; return ;
-}
+} /* end of [atspre_strbuf_set_char_at] */
 
 static inline
 ats_void_type
-atspre_strbuf_set_char_at__isz
-  (ats_ptr_type s, ats_int_type offset, const char c) {
+atspre_strbuf_set_char_at__intsz
+  (ats_ptr_type s, ats_int_type offset, ats_char_type c) {
   *((char*)s + offset) = c ; return ;
-}
+} /* end of [atspre_strbuf_set_char_at__intsz] */
 
 /* ****** ****** */
 
@@ -211,7 +211,7 @@ atspre_strbuf_initialize_substring (
 ) {
   memcpy (p_buf, ((char*)s)+st, ln) ; ((char*)p_buf)[ln] = '\000' ;
   return ;
-} /* atspre_strbuf_initialize_substring */
+} /* end of [atspre_strbuf_initialize_substring] */
 
 /* ****** ****** */
 
@@ -226,7 +226,7 @@ atspre_string_append
   des[n1+n2] = '\000' ;
   memcpy(des, s1, n1) ; memcpy (des+n1, s2, n2) ;
   return des ;
-} /* atspre_string_append */
+} /* end of [atspre_string_append] */
 
 /* ****** ****** */
 
@@ -236,7 +236,7 @@ atspre_string_contains
   (const ats_ptr_type s0, const ats_char_type c) {
   char *s = strchr((char*)s0, (char)c) ;
   return (s != (char*)0 ? ats_true_bool : ats_false_bool) ;
-} /* atspre_string_contains */
+} /* end of [atspre_string_contains] */
 
 /* ****** ****** */
 
@@ -244,7 +244,7 @@ static inline
 ats_size_type
 atspre_string_length (const ats_ptr_type s) {
   return (strlen((char*)s)) ;
-} /* atspre_string_length */
+} /* end of [atspre_string_length] */
 
 /* ****** ****** */
 
@@ -252,13 +252,13 @@ static inline
 ats_bool_type
 atspre_string_is_empty (const ats_ptr_type s) {
   return (*((char*)s) == '\000') ;
-} /* atspre_string_is_empty */
+} /* end of [atspre_string_is_empty] */
 
 static inline
 ats_bool_type
 atspre_string_isnot_empty (const ats_ptr_type s) {
   return (*((char*)s) != '\000') ;
-} /* atspre_string_isnot_empty */
+} /* end of [atspre_string_isnot_empty] */
 
 /* ****** ****** */
 
@@ -266,7 +266,7 @@ static inline
 ats_bool_type
 atspre_string_is_at_end (const ats_ptr_type s, ats_size_type i) {
   return (*((char*)s + i) == '\000' ? ats_true_bool : ats_false_bool) ;
-} /* atspre_string_is_at_end */
+} /* end of [atspre_string_is_at_end] */
 
 /* ****** ****** */
 
@@ -278,7 +278,7 @@ atspre_string_index_of_char_from_left
   res = strchr ((char*)s, c) ;
   if (res != (char*)0) return (res - (char*)s) ;
   return (-1) ;
-} /* atspre_string_index_of_char_from_left */
+} /* end of [atspre_string_index_of_char_from_left] */
 
 static inline
 ats_ssize_type
@@ -288,7 +288,7 @@ atspre_string_index_of_char_from_right
   res = strrchr ((char*)s, c) ;
   if (res != (char*)0) return (res - (char*)s) ;
   return (-1) ;
-} /* atspre_string_index_of_char_from_right */
+} /* end of [atspre_string_index_of_char_from_right] */
 
 /* ****** ****** */
 
@@ -300,7 +300,7 @@ atspre_string_index_of_string
   res = strstr ((char*)s1, (char*)s2) ;
   if (res != (char*)0) return (res - (char*)s1) ;
   return (-1) ;
-}
+} /* end of [atspre_string_index_of_string] */
 
 /* ****** ****** */
 
@@ -314,7 +314,7 @@ ats_ptr_type
 atspre_string_singleton
   (const ats_char_type c) {
   return atspre_string_make_char (1, c) ;
-} /* atspre_string_singleton */
+} /* end of [atspre_string_singleton] */
 
 /* ****** ****** */
 
