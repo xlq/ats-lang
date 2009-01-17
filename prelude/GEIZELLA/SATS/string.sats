@@ -124,7 +124,7 @@ prfun strbuf_v_unsplit
 (*
 
 fun bytes_strbuf_trans {m,n:nat | n < m} {l:addr}
-  (pf: !b0ytes m @ l >> strbuf (m, n1) @ l | p: ptr l, n: int n)
+  (pf: !b0ytes m @ l >> strbuf (m, n1) @ l | p: ptr l, n: size_t n)
   :<> #[n1: nat | n1 <= n] void
   = "atspre_bytes_strbuf_trans"
 
@@ -136,12 +136,11 @@ val string_empty : string 0
 
 (* ****** ****** *)
 
-fun string1_of_string0 (s: string):<> [n:nat] string n
-  = "atspre_string1_of_string0"
+fun string1_of_string (s: string):<> [n:nat] string n
+  = "atspre_string1_of_string"
 
-fun string1_of_strbuf {m,n:nat} {l:addr} (
-    pf_gc: free_gc_v l, pf: strbuf (m, n) @ l | p: ptr l
-  ) :<> string n
+fun string1_of_strbuf {m,n:nat} {l:addr}
+  (pf: strbuf (m, n) @ l | p: ptr l) :<> string n
   = "atspre_string1_of_strbuf"
 
 fun strbuf_of_string1 {n:nat} (s: string n)
@@ -279,19 +278,78 @@ overload prerr with prerr_string
 
 (* ****** ****** *)
 
+fun strbuf_get_char_at {m,n:nat}
+  {i:nat | i < n} (sb: &strbuf (m, n), i: size_t i):<> char
+  = "atspre_string_get_char_at"
+
+fun string_get_char_at {n:nat}
+  {i:nat | i < n} (s: string n, i: size_t i):<> char // no effect
+  = "atspre_string_get_char_at"
+
+overload [] with strbuf_get_char_at
+overload [] with string_get_char_at
+
+//
+// these functions are present mostly for convenience as a programmer
+// ofter uses values of the type int as array indices:
+//
+
+fun strbuf_get_char_at__intsz {m,n:nat}
+  {i:nat | i < n} (sb: &strbuf (m, n), i: int i):<> char
+  = "atspre_string_get_char_at__intsz"
+
+fun string_get_char_at__intsz {n:nat}
+  {i:nat | i < n} (s: string n, i: int i):<> char // no effect
+  = "atspre_string_get_char_at__intsz"
+
+overload [] with strbuf_get_char_at__intsz
+overload [] with string_get_char_at__intsz
+
+(* ****** ****** *)
+
+fun strbuf_set_char_at {m,n:nat}
+  {i:nat | i < n} (sb: &strbuf (m, n), i: size_t i, c: char):<> void
+  = "atspre_strbuf_set_char_at"
+
+fun string_set_char_at {n:nat}
+  {i:nat | i < n} (s: string n, i: size_t i, c: char):<!ref> void
+  = "atspre_strbuf_set_char_at"
+
+overload [] with strbuf_set_char_at
+overload [] with string_set_char_at
+
+//
+// these functions are present mostly for convenience as a programmer
+// ofter uses values of the type int as array indices:
+//
+
+fun strbuf_set_char_at__intsz {m,n:nat}
+  {i:nat | i < n} (sb: &strbuf (m, n), i: int i, c: char):<> void
+  = "atspre_strbuf_set_char_at__intsz"
+
+fun string_set_char_at__intsz {n:nat}
+  {i:nat | i < n} (s: string n, i: int i, c: char):<!ref> void
+  = "atspre_strbuf_set_char_at__intsz"
+
+overload [] with strbuf_set_char_at__intsz
+overload [] with string_set_char_at__intsz
+
+(* ****** ****** *)
+
 fun strbuf_initialize_substring {bsz:int} {n:int}
   {st,ln:nat | st+ln <= n; ln < bsz} {l:addr} (
     pf: !b0ytes bsz @ l >> strbuf (bsz, ln) @ l
-  | p: ptr l, s: string n, st: int st, ln: int ln
+  | p: ptr l, s: string n, st: size_t st, ln: size_t ln
   ) : void
   = "atspre_strbuf_initialize_substring"
 
 (* ****** ****** *)
 
-fun string_make_char {n:nat} (n: int n, c: char):<> string n
+fun string_make_char {n:nat} (n: size_t n, c: char):<> string n
   = "atspre_string_make_char"
 
 fun string_make_list {n:nat} (cs: list (char, n)):<> string n
+  = "atspre_string_make_list"
 
 fun string_make_list_len {n:nat}
   (cs: list (char, n), n: int n):<> string n
@@ -299,12 +357,12 @@ fun string_make_list_len {n:nat}
 
 fun string_make_substring
   {n:int} {st,ln:nat | st + ln <= n}
-  (s: string n, st: int st, ln: int ln):<> string ln
+  (s: string n, st: size_t st, ln: size_t ln):<> string ln
   = "atspre_string_make_substring"
 
 fun string_make_substrbuf
   {m,n:int} {st,ln:nat | st + ln <= n}
-  (s: &strbuf (m, n), st: int st, ln: int ln):<> string ln
+  (s: &strbuf (m, n), st: size_t st, ln: size_t ln):<> string ln
   = "atspre_string_make_substring"
 
 (* ****** ****** *)
@@ -325,7 +383,7 @@ fun string_compare (s1: string, s2: string):<> Sgn
 
 (* ****** ****** *)
 
-fun string_concat (xs: List string):<> string
+fun stringlst_concat (xs: List string):<> string
 
 (* ****** ****** *)
 
@@ -343,104 +401,77 @@ fun string_equal (s1: string, s2: string):<> bool
 
 (* ****** ****** *)
 
-fun strbuf_length {m,n:nat} (sb: &strbuf (m, n)):<> int n
+fun strbuf_length {m,n:nat} (sb: &strbuf (m, n)):<> size_t n
   = "atspre_string_length"
 
-overload length with strbuf_length
-
-fun string0_length (s: string):<> Nat
+fun string0_length (s: string):<> size_t
   = "atspre_string_length"
 
-fun string1_length {n:nat} (s: string n):<> int n
+fun string1_length {n:nat} (s: string n):<> size_t n
   = "atspre_string_length"
 
 symintr string_length
 overload string_length with string0_length
 overload string_length with string1_length
 
-overload length with string_length
-
 (* ****** ****** *)
+
+symintr string_is_empty
 
 fun strbuf_is_empty {m,n:nat}
   (sb: &strbuf (m, n)):<> bool (n==0)
   = "atspre_string_is_empty"
+
 fun string0_is_empty (s: string):<> bool
   = "atspre_string_is_empty"
+
 fun string1_is_empty {n:nat} (s: string n):<> bool (n==0)
   = "atspre_string_is_empty"
 
+overload string_is_empty with string0_is_empty
+overload string_is_empty with string1_is_empty
+
 (* ****** ****** *)
+
+symintr string_isnot_empty
 
 fun strbuf_isnot_empty {m,n:nat}
   (sb: &strbuf (m, n)):<> bool (n > 0)
   = "atspre_string_isnot_empty"
+
 fun string0_isnot_empty (s: string):<> bool
   = "atspre_string_isnot_empty"
+
 fun string1_isnot_empty {n:nat} (s: string n):<> bool (n > 0)
   = "atspre_string_isnot_empty"
 
-overload ~ with strbuf_isnot_empty
-overload ~ with string0_isnot_empty
-overload ~ with string1_isnot_empty
+overload string_isnot_empty with string0_isnot_empty
+overload string_isnot_empty with string1_isnot_empty
 
 (* ****** ****** *)
 
 fun strbuf_is_at_end
-  {m,n,i:nat | i <= n} (sb: &strbuf (m, n), i: int i):<> bool (i == n)
+  {m,n,i:nat | i <= n} (sb: &strbuf (m, n), i: size_t i):<> bool (i == n)
   = "atspre_string_is_at_end"
 
-fun string1_is_at_end
-  {n,i:nat | i <= n} (s: string n, i: int i):<> bool (i == n)
+fun string_is_at_end
+  {n,i:nat | i <= n} (s: string n, i: size_t i):<> bool (i == n)
   = "atspre_string_is_at_end"
 
 (* ****** ****** *)
 
 // alias of [string_to_list]
-fun strbuf_explode {m,n:nat} (sb: &strbuf (m, n)):<> list (char, n)
-
-fun string0_explode (s: string):<> List char
+fun strbuf_explode {m,n:nat} (sb: &strbuf (m, n)):<> list_vt (char, n)
   = "atspre_string_explode"
 
-fun string1_explode {n:nat} (s: string n):<> list (char, n)
+fun string_explode {n:nat} (s: string n):<> list_vt (char, n)
   = "atspre_string_explode"
-
-(* ****** ****** *)
-
-fun strbuf_get_char_at {m,n:nat}
-  (sb: &strbuf (m, n), i: natLt n):<> char
-  = "atspre_string_get_char_at"
-
-fun string_get_char_at {n:nat}
-  (s: string n, i: natLt n):<> char
-  = "atspre_string_get_char_at"
-
-overload [] with strbuf_get_char_at
-overload [] with string_get_char_at
-
-fun string_get_char_at_exn
-  (s: string, i: Nat):<!exn> char
-
-(* ****** ****** *)
-
-fun strbuf_set_char_at {m,n:nat}
-  (sb: &strbuf (m, n), i: natLt n, c: char):<> void
-  = "atspre_strbuf_set_char_at"
-
-fun string_set_char_at {n:nat}
-  (s: string n, i: natLt n, c: char):<!ref> void
-  = "atspre_strbuf_set_char_at"
-
-overload [] with strbuf_set_char_at
-overload [] with string_set_char_at
-
-fun string_set_char_at_exn (s: string, i: Nat, c: char):<!exnref> void
 
 (* ****** ****** *)
 
 // alias of [string_make_list]
 fun string_implode {n:nat} (cs: list (char, n)):<> string n
-  = "atspre_string_implode"
+  = "atspre_string_make_list"
 
 (* ****** ****** *)
 
@@ -448,22 +479,22 @@ fun string_implode {n:nat} (cs: list (char, n)):<> string n
 // the NULL character at the end of a string is considered in the string
 
 fun strbuf_index_of_char_from_left // locate a character from left
-  {m,n:nat} (sb: &strbuf (m,n), c: char):<> [i:int | ~1 <= i; i <= n] int i
+  {m,n:nat} (sb: &strbuf (m,n), c: c1har):<> sizeBtw (~1, n)
   = "atspre_string_index_of_char_from_left"
 
 fun string_index_of_char_from_left // locate a character from left
-  {n:nat} (s: string n, c: char):<> [i:int | ~1 <= i; i <= n] int i
+  {n:nat} (s: string n, c: c1har):<> sizeBtw (~1, n)
   = "atspre_string_index_of_char_from_left"
 
 // This function is based on [strrchr] in [string.h]
 // the NULL character at the end of a string is considered in the string
 
-fun strbuf_index_of_char_from_right // locate a character from left
-  {m,n:nat} (sb: &strbuf (m, n), c: char):<> [i:int | ~1 <= i; i <= n] int i
+fun strbuf_index_of_char_from_right // locate a character from right
+  {m,n:nat} (sb: &strbuf (m, n), c: c1har):<> sizeBtw (~1, n)
   = "atspre_string_index_of_char_from_right"
 
-fun string_index_of_char_from_right // locate a character from left
-  {n:nat} (s: string n, c: char):<> [i:int | ~1 <= i; i <= n] int i
+fun string_index_of_char_from_right // locate a character from right
+  {n:nat} (s: string n, c: c1har):<> sizeBtw (~1, n)
   = "atspre_string_index_of_char_from_right"
 
 (* ****** ****** *)
@@ -471,7 +502,7 @@ fun string_index_of_char_from_right // locate a character from left
 // This function is based on [strstr] in [string.h]
 // Note that the NULL character is not compared
 fun string_index_of_string // locate a substring from left
-  {n1,n2:nat} (s1: string n1, s2: string n2):<> [i:int | ~1 <= i; i < n1] int i
+  {n1,n2:nat} (s1: string n1, s2: string n2):<> sizeBtw (~1, n1)
   = "atspre_string_index_of_string"
 
 (* ****** ****** *)
@@ -480,31 +511,15 @@ fun string_singleton (c: char):<> string 1
 
 (* ****** ****** *)
 
-fun strbuf_tolower {m,n:nat} (sb: &strbuf (m, n)):<> void
-  = "atspre_string_tolower"
-fun string0_tolower (s: string):<> string
-  = "atspre_string_tolower"
-fun string1_tolower {n:nat} (s: string n):<> string n
+// implemented in [prelude/DATS/string.dats]
+// a new string is created
+fun string_tolower {n:nat} (s: string n):<> string n
   = "atspre_string_tolower"
 
-symintr string_tolower
-
-overload string_tolower with string0_tolower
-overload string_tolower with string1_tolower
-
-(* ****** ****** *)
-
-fun strbuf_toupper {m,n:nat} (sb: &strbuf (m, n)):<> void
+// implemented in [prelude/DATS/string.dats]
+// a new string is created
+fun string_toupper {n:nat} (s: string n):<> string n
   = "atspre_string_toupper"
-fun string0_toupper (s: string):<> string
-  = "atspre_string_toupper"
-fun string1_toupper {n:nat} (s: string n):<> string n
-  = "atspre_string_toupper"
-
-symintr string_toupper
-
-overload string_toupper with string0_toupper
-overload string_toupper with string1_toupper
 
 (* ****** ****** *)
 

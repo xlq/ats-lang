@@ -41,6 +41,14 @@
 
 (* ****** ****** *)
 
+%{^
+
+#include "ats_intinf.cats" // this for the ATS/Geizeilla compiler
+
+%}
+
+(* ****** ****** *)
+
 staload Deb = "ats_debug.sats"
 staload Eff = "ats_effect.sats"
 staload Err = "ats_error.sats"

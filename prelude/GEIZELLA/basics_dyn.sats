@@ -85,7 +85,7 @@ val SubscriptException : exn = "SubscriptException"
 
 //
 
-val{elt:viewt@ype} sizeof : int (sizeof elt)
+val{elt:viewt@ype} sizeof : size_t (sizeof elt)
 val{elt:viewt@ype} junkof : elt?
 
 //
@@ -160,6 +160,23 @@ fun main_prelude (): void = "mainats_prelude"
 
 fun main {n:int | n >= 1} (argc: int n, argv: &(@[string][n])): void
   = "mainats"
+
+(* ****** ****** *)
+
+symintr free_gc_elim
+
+praxi free_gc_addr_elim // return the certificate to the GC
+  {l:addr} (pf: free_gc_v l):<> void
+
+praxi free_gc_t0ype_addr_elim // return the certificate to the GC
+  {a:viewt@ype} {l:addr} (pf: free_gc_v (a, l)):<> void
+
+praxi free_gc_t0ype_int_addr_elim // return the certificate to the GC
+  {a:viewt@ype} {n:int} {l:addr} (pf: free_gc_v (a, n, l)):<> void
+
+overload free_gc_elim with free_gc_addr_elim
+overload free_gc_elim with free_gc_t0ype_addr_elim
+overload free_gc_elim with free_gc_t0ype_int_addr_elim
 
 (* ****** ****** *)
 

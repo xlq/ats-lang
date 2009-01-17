@@ -125,6 +125,11 @@ abst@ype uint32_t0ype = $extype "ats_uint32_type"
 abst@ype int64_t0ype = $extype "ats_int64_type"
 abst@ype uint64_t0ype = $extype "ats_uint64_type"
 
+// integer types for sizes
+abst@ype size_t0ype = $extype "ats_size_type"
+abst@ype ssize_t0ype = $extype "ats_ssize_type"
+abst@ype ptrdiff_t0ype = $extype "ats_ptrdiff_type"
+
 (* ****** ****** *)
 
 abstype ptr_type
@@ -403,6 +408,9 @@ abst@ype uint_int_t0ype (int) = $extype "ats_uint_type"
 
 abst@ype size_int_t0ype (i:int) = $extype "ats_size_type"
 abst@ype ssize_int_t0ype (i:int) = $extype "ats_ssize_type"
+abst@ype ptrdiff_int_t0ype (i:int) = $extype "ats_ptrdiff_type"
+
+(* ****** ****** *)
 
 abstype ptr_addr_type (addr)
 
@@ -518,8 +526,15 @@ stadef int = int_t0ype
 stadef uint = uint_int_t0ype
 stadef uint = uint_t0ype
 
+(* this order is significant! *)
 stadef size_t = size_int_t0ype
+stadef size_t = size_t0ype
+
 stadef ssize_t = ssize_int_t0ype
+stadef ssize_t = ssize_t0ype
+
+stadef ptrdiff_t = ptrdiff_int_t0ype
+stadef ptrdiff_t = ptrdiff_t0ype
 
 (* ****** ****** *)
 
@@ -570,16 +585,48 @@ typedef Stropt = [n:int] stropt n
 typedef uInt = [n:int | n >=0] uint n
 
 typedef sizeof_t (a:viewt@ype) =
-  int_int_t0ype (sizeof_viewt0ype_int a)
+  size_int_t0ype (sizeof_viewt0ype_int a)
+
+typedef sizeLt (n: int) = [i:int | 0 <= i; i < n] size_t (i)
+typedef sizeLte (n: int) = [i:int | 0 <= i; i <= n] size_t (i)
+typedef sizeBtw (lb:int, ub:int) = [i: int | lb <= i; i < ub] ssize_t i
 
 (* ****** ****** *)
 
 // for memory deallocation (with/without GC)
-absview free_gc_v (l: addr) and free_ngc_v (l: addr)
+
+absview free_gc_addr_view (l:addr)
+absview free_ngc_addr_view (l:addr)
+
+stadef free_gc_v = free_gc_addr_view
+stadef free_ngc_v = free_ngc_addr_view
+
+//
+
+absview free_gc_viewt0ype_addr_view (a:viewt@ype+, l:addr)
+absview free_ngc_viewt0ype_addr_view (a:viewt@ype+, l:addr)
+
+stadef free_gc_v = free_gc_viewt0ype_addr_view
+stadef free_ngc_v = free_ngc_viewt0ype_addr_view
+
+//
+
+absview free_gc_viewt0ype_addr_int_view (a:viewt@ype+, n:int, l:addr)
+absview free_ngc_viewt0ype_addr_int_view (a:viewt@ype+, n:int, l: addr)
+
+stadef free_gc_v = free_gc_viewt0ype_addr_int_view
+stadef free_ngc_v = free_ngc_viewt0ype_addr_int_view
+
+//
+
+viewdef free_gc_v (n:int, l:addr) = free_gc_v (byte, n, l)
+viewdef free_ngc_v (n:int, l:addr) = free_ngc_v (byte, n, l)
+
+(* ****** ****** *)
 
 // values of viewtype [junkptr] need to be freed by calling [free];
 // note that the viewtype [junkptr] may be just defined as follows:
-// [a:viewt@ype; l:addr] (free_gc_v l, a? @ l | ptr l)
+// [a:viewt@ype; l:addr] (free_gc_v (a, l), a? @ l | ptr l)
 absviewtype junkptr_viewtype
 stadef junkptr = junkptr_viewtype
 
@@ -588,7 +635,7 @@ stadef junkptr = junkptr_viewtype
 // This definition should not be changed!
 viewtypedef
 arraysize_viewt0ype_int_viewt0ype (a: viewt@ype, n:int) =
-  [l:addr | l <> null] (free_gc_v l, @[a][n] @ l | ptr l, int n)
+  [l:addr | l <> null] (free_gc_v (a, n, l), @[a][n] @ l | ptr l, int n)
 
 stadef arraysize = arraysize_viewt0ype_int_viewt0ype
 
