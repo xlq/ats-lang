@@ -145,7 +145,7 @@ end // end of let
 
 //
 
-#define s2S string1_of_string0
+#define s2S string1_of_string
 
 extern fun doctype_find (sfx: string): Stropt
 implement doctype_find (sfx) = let
@@ -181,29 +181,28 @@ end // end of [doctype_find]
 extern fun suffix_of_filename (filename: string): Stropt
 implement suffix_of_filename filename = let
   val filename = s2S filename
-  val i = 1+string_index_of_char_from_right (filename, '.')
+  val i = string_index_of_char_from_right (filename, '.')
 in
-  if i > 0 then let
-    val n = length filename
+  if i >= 0 then let
+    val n = string_length filename
+    val i1 = size_of_ssize (i) + 1
   in
-    if i < n then
-      stropt_some (string_make_substring (filename, i, n-i))
-    else stropt_none
+    stropt_some (string_make_substring (filename, i1, n-i1))
   end else begin
     stropt_none // = null pointer
-  end
+  end // end of [if]
 end // end of [suffix_of_filename]
 
 //
 
 extern fun filename_extract {n:nat}
-  (msg: string n, n: int n): Stropt = "filename_extract"
+  (msg: string n, n: size_t n): Stropt = "filename_extract"
 
 %{$
 
 ats_ptr_type
-filename_extract(ats_ptr_type msg, ats_int_type n) {
-  int i = 5 ;
+filename_extract(ats_ptr_type msg, ats_size_type n) {
+  size_t i = 5 ;
   char *s = (char *)msg + i;
 /*
   fprintf (stdout, "filename_extract: msg = %s\n", msg);
@@ -233,7 +232,7 @@ implement doctype_of_filename (filename: string) = let
     if stropt_is_none sfx_opt then
       stropt_some "text/plain" // the doctype for files without suffix
     else let
-      val sfx = string1_tolower (stropt_unsome sfx_opt) in doctype_find sfx
+      val sfx = string_tolower (stropt_unsome sfx_opt) in doctype_find sfx
     end
   ) : Stropt
 in
@@ -244,23 +243,23 @@ end
 //
 
 extern fun socket_write_all {fd:int} {n,sz:nat | n <= sz}
-  (pf_socket: !socket_v (fd, conn) | fd: int fd, buf: &bytes sz, n: int n)
+  (pf_socket: !socket_v (fd, conn) | fd: int fd, buf: &bytes sz, n: size_t n)
   : void
   = "socket_write_all"
 
 extern fun socket_write_substring_all
   {fd:int} {i,n,sz:nat | i+n <= sz}
     (pf_socket: !socket_v (fd, conn) |
-     socket_id: int fd, s: string sz, start: int i, n: int n): void
+     socket_id: int fd, s: string sz, start: size_t i, n: size_t n): void
   = "socket_write_substring_all"
 
 %{^
 
 static inline
 ats_void_type
-socket_write_all(ats_int_type fd, ats_ref_type buf, ats_int_type cnt)
+socket_write_all(ats_int_type fd, ats_ref_type buf, ats_size_type cnt)
 {
-  int res ;
+  ssize_t res ;
 
   while (cnt) {
     res = write(fd, buf, cnt) ;
@@ -268,7 +267,7 @@ socket_write_all(ats_int_type fd, ats_ref_type buf, ats_int_type cnt)
       if (errno == EINTR) continue ; else return ;
     }
     if (res == 0) return ;
-    buf = ((char *)buf) + res ;
+    buf = ((char*)buf) + res ;
     cnt = cnt - res ;
   }
   return ;
@@ -277,9 +276,9 @@ socket_write_all(ats_int_type fd, ats_ref_type buf, ats_int_type cnt)
 static inline
 ats_void_type
 socket_write_substring_all
-  (ats_int_type fd, ats_ptr_type s, ats_int_type start, ats_int_type cnt)
+  (ats_int_type fd, ats_ptr_type buf, ats_size_type start, ats_size_type cnt)
 {
-  socket_write_all(fd, ((char *)s)+start, cnt) ;
+  socket_write_all(fd, ((char*)buf)+start, cnt) ;
   return ;
 }
 
@@ -291,7 +290,7 @@ val msg404_str = "\
 HTTP/1.0 404 not found\r\nServer: ATS/Vanilla\r\nContent-type: text/html\r\n
 <H1>The requested resource cannot be found!</H1>
 "
-val msg404_len = length msg404_str
+val msg404_len = string_length msg404_str
 
 fun msg404_send {fd:int}
   (pf_conn: !socket_v (fd, conn) | socket_id: int fd): void = 
@@ -343,7 +342,7 @@ val [l_buf:addr] (pf_ngc, pf_buf | p_buf) = malloc_ngc (BUFSZ)
 prval () = pf_buf := bytes_v_of_b0ytes_v (pf_buf)
 val msg200_str = msg200_of_filename filename
 val msg200_str = s2S msg200_str
-val msg200_len = length msg200_str
+val msg200_len = string_length msg200_str
 
 fun aux
   (pf_conn: !socket_v (fd, conn),
@@ -392,7 +391,7 @@ end // end of [file_send]
 val dir_msg1_str =
   "HTTP/1.0 200 OK\nServer: ATS/Vanilla\nContent-type: text/html\n\n"
 
-val dir_msg1_len = length dir_msg1_str
+val dir_msg1_len = string_length dir_msg1_str
 
 //
 
@@ -400,7 +399,7 @@ val dir_msg2_str = "<H1>\
 A simple web server implemented in <A HREF=\"http://www.ats-lang.org/\">ATS</A>\
 </H1>"
 
-val dir_msg2_len = length dir_msg2_str
+val dir_msg2_len = string_length dir_msg2_str
 
 //
 
@@ -425,11 +424,11 @@ ats_ptr_type server_ctime_get (void) {
 %}
 
 val dir_msg30_str = "<pre>starting time: "
-val dir_msg30_len = length dir_msg30_str
+val dir_msg30_len = string_length dir_msg30_str
 val dir_msg31_str = ctime_get ()
-val dir_msg31_len = length dir_msg31_str
+val dir_msg31_len = string_length dir_msg31_str
 val dir_msg32_str = "</pre>"
-val dir_msg32_len = length dir_msg32_str
+val dir_msg32_len = string_length dir_msg32_str
 
 //
 
@@ -532,7 +531,7 @@ implement directory_send_loop (pf_conn | fd, parent, ents): void =
         case+ ft of
         | 0 => let
             val msg = sprintf ("<A HREF=\"%s\">%s</A><BR>", @(ent, ent))
-            val len = length msg
+            val len = string_length msg
           in
             socket_write_substring_all (pf_conn | fd, msg, 0, len);
             directory_send_loop (pf_conn | fd, parent, ents)
@@ -540,7 +539,7 @@ implement directory_send_loop (pf_conn | fd, parent, ents): void =
         | 1 => let
             val msg = tostringf ("<A HREF=\"%s/\">%s/</A><BR>", @(ent, ent))
           in
-            socket_write_substring_all (pf_conn | fd, msg, 0, length msg);
+            socket_write_substring_all (pf_conn | fd, msg, 0, string_length msg);
             directory_send_loop (pf_conn | fd, parent, ents)
           end
         | _ => directory_send_loop (pf_conn | fd, parent, ents)
@@ -577,13 +576,13 @@ end // end of [directory_send]
 (* ****** ****** *)
 
 fun request_is_get {n:nat} (s: string n): bool =
-  if string1_is_at_end (s, 0) then false
+  if string_is_at_end (s, 0) then false
   else if s[0] <> 'G' then false
-  else if string1_is_at_end (s, 1) then false
+  else if string_is_at_end (s, 1) then false
   else if s[1] <> 'E' then false
-  else if string1_is_at_end (s, 2) then false
+  else if string_is_at_end (s, 2) then false
   else if s[2] <> 'T' then false
-  else if string1_is_at_end (s, 3) then false  
+  else if string_is_at_end (s, 3) then false  
   else if s[3] <> ' ' then false
   else true
 
@@ -592,7 +591,7 @@ fun request_is_get {n:nat} (s: string n): bool =
 extern fun main_loop_get {fd:int} {n:nat} {l_buf:addr} (
     pf_conn: socket_v (fd, conn)
   , pf_buf: !bytes BUFSZ @ l_buf
-  | fd: int fd, buf: ptr l_buf, msg: string n, n: int n
+  | fd: int fd, buf: ptr l_buf, msg: string n, n: size_t n
   ) : void
 
 implement main_loop_get (pf_conn, pf_buf | fd, buf, msg, n) = let
@@ -624,7 +623,7 @@ extern fun main_loop {fd:int} {l_buf:addr}
    
 extern fun strbuf_make_bytes
   {n:nat} {st,ln:nat | st + ln <= n}
-  (buf: &bytes n, st: int st, ln: int ln)
+  (buf: &bytes n, st: size_t st, ln: size_t ln)
   :<> [l:addr] (free_gc_v l, strbuf (ln+1,ln) @ l | ptr l)
   = "atspre_string_make_substring"
 

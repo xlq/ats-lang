@@ -11,11 +11,9 @@ ATSCC="$(ATSHOME)/bin/atscc"
 all: AutoDiff coin_flip \
      curve fft hamming_lazy \
      GaussElim GarsiaWachs \
-     hanoi kmp queens \
-     longestline \
-     passwdgen pi_lazy \
-     sieve sieve_lazy \
-     strmat sumup \
+     hanoi kmp queens queens_lazy_vt \
+     longestline passwdgen pi_lazy \
+     sieve sieve_lazy strmat sumup \
      tetrix wc
 
 # automatic differentiation
