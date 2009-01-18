@@ -44,8 +44,8 @@
 /* ****** ****** */
 
 #include <inttypes.h>
-#include <malloc.h> /* ptrdiff_t */
-#include <sys/types.h> /* size_t and ssize_t */
+#include <stddef.h> /* size_t and ptrdiff_t */
+#include <unistd.h> /* ssize_t */
 
 /* ****** ****** */
 
