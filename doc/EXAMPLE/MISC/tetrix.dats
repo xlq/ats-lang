@@ -68,7 +68,7 @@ macdef SPEED_LIM = 100
 (* ****** ****** *)
 
 macdef matrix_make_elt (m, n, c) =
-  matrix_make_elt (size_of_int ,(m), size_of_int ,(n), ,(c))
+  matrix_make_elt (size1_of_int1 ,(m), size1_of_int1 ,(n), ,(c))
 
 val frame: matrix (char, FD+1, FW) =
   matrix_make_elt (FD+1, FW, ' ')

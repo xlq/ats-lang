@@ -44,6 +44,11 @@ staload "libats/SATS/regexp.sats"
 
 (* ****** ****** *)
 
+#define i2sz size1_of_int1
+#define sz2i int1_of_size1
+
+(* ****** ****** *)
+
 %{
 
 pcre *atslib_regexp_compile_exn
@@ -70,7 +75,7 @@ pcre *atslib_regexp_compile_exn
 
 implement test_regexp_match_str (re, str) = let
   val str = string1_of_string (str)
-  val len = string_length (str); val len = int_of_size (len)
+  val len = string_length (str); val len = sz2i (len)
 in
   test_regexp_match_str_len_ofs (re, str, len, 0(*ofs*))
 end // end of [test_regexp_match_str]
@@ -152,13 +157,13 @@ implement string_split_regexp (str, re) = let
             val () = assert (i <= i1)
             val () = assert (i1 <= i2)
             val () = assert (i2 <= n)
-            val st = size_of_int i and ln = size_of_int (i1 - i)
+            val st = i2sz i and ln = i2sz (i1 - i)
             val s = string_make_substring (s0, st, ln)
           in
             stream_cons (s, $delay loop (pf_gc, pf_arr | re, s0, n, i2, p))
           end // end of [_ when rc >= 0]
         | _ => let
-            val st = size_of_int i and ln = size_of_int (n - i)
+            val st = i2sz i and ln = i2sz (n - i)
             val s = string_make_substring (s0, st, ln)
           in
             stream_cons (s, $delay loop (pf_gc, pf_arr | re, s0, n, n, p))
@@ -170,9 +175,9 @@ implement string_split_regexp (str, re) = let
         stream_nil ()
       end // end of [_]
 
-  val _3 = size_of_int 3
+  val _3 = i2sz 3
   val s0 = string1_of_string str
-  val n = string_length s0; val n = int_of_size (n)
+  val n = string_length s0; val n = sz2i (n)
   val (pf_gc, pf_arr | p) = array_ptr_alloc_tsz {int} (_3, sizeof<int>)
 in
   $delay loop (pf_gc, pf_arr | re, s0, n, 0, p)

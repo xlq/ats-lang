@@ -185,7 +185,7 @@ implement suffix_of_filename filename = let
 in
   if i >= 0 then let
     val n = string_length filename
-    val i1 = size_of_ssize (i) + 1
+    val i1 = size1_of_ssize1 (i) + 1
   in
     stropt_some (string_make_substring (filename, i1, n-i1))
   end else begin

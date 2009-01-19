@@ -126,7 +126,7 @@ fun kmp_table_make_aux
        kmp_table_make_aux
          (pf_mul, pf_kmp, pf_arr | w, tbl, n, i+1, j+1, tbl_ofs+intsz)
     end else if j > 0 then let
-      val i1 = kmp_sub (pf_kmp | tbl, j); val i1 = size_of_int i1
+      val i1 = kmp_sub (pf_kmp | tbl, j); val i1 = size1_of_int1 i1
     in
       kmp_table_make_aux (pf_mul, pf_kmp, pf_arr | w, tbl, n, i, i1, tbl_ofs)
     end else let
@@ -198,14 +198,16 @@ fn kmp_search {ns:nat; nw:int | nw >= 1}
    (s: string ns, w: string nw):<> intBtw (~1, ns) = let
   val ns = string1_length s; val nw = string1_length w
   val [l:addr] (pf_ngc, pf | tbl) = kmp_table_make (w, nw)
-  val ns = int_of_size ns; val nw = int_of_size nw
+  val ns = int1_of_size1 ns; val nw = int1_of_size1 nw
   fun loop {m,i:nat | m+i <= ns; i <= nw} .<ns-m-i, i>.
     (pf: !kmp_v (l, nw-1) | m: int m, i: int i):<cloptr> intBtw (~1, ns) =
     if i < nw then begin
       if m+i < ns then
         if w[i] = s[m+i] then loop (pf | m, i+1) else
-          if i > 0 then begin
-            let val i1 = kmp_sub (pf | tbl, size_of_int i) in loop (pf | m+i-i1, i1) end
+          if i > 0 then let
+            val i1 = kmp_sub (pf | tbl, size1_of_int1 i)
+          in
+            loop (pf | m+i-i1, i1)
           end else begin
             loop (pf | m+1, 0)
           end // end of [if]

@@ -101,6 +101,10 @@ implement string_empty = "" // this requires dynamic loading
 
 (* ****** ****** *)
 
+#define i2sz size1_of_int1 
+
+(* ****** ****** *)
+
 implement string_make_list (cs) = let
   val n = loop (cs, 0) where {
     fun loop {i,j:nat} .<i>.
@@ -114,7 +118,7 @@ end // end of [string_make_list]
 #define NUL '\000'
 
 implement string_make_list_len (cs, n) = let
-  val (pf_gc, pf_sb | p_sb) = _string_alloc (size_of_int n) where {
+  val (pf_gc, pf_sb | p_sb) = _string_alloc (i2sz n) where {
     extern fun _string_alloc {n:nat} (n: size_t n)
       :<> [l:addr] (free_gc_v (n+1, l), strbuf (n+1, n) @ l | ptr l)
       = "_string_alloc"
@@ -130,7 +134,7 @@ implement string_make_list_len (cs, n) = let
           prerr ("exit(ATS): a string cannot contain null characters in the middle.");
           prerr_newline (); exit (1)
         end) : [c <> NUL] void // end of [val]
-        val () = strbuf_set_char_at (buf, size_of_int i, c)
+        val () = strbuf_set_char_at (buf, i2sz i, c)
       in
         loop (buf, n, i+1, cs)
       end else begin
@@ -144,7 +148,7 @@ end // end of [string_make_list_len]
 (* ****** ****** *)
 
 implement stringlst_concat (ss) = let
-  val n0 = aux (ss, size_of_int 0) where {
+  val n0 = aux (ss, i2sz 0) where {
     fun aux {k:nat} .<k>.
       (ss: list (string, k), n: size_t):<> size_t = case+ ss of
       | list_cons (s, ss) => aux (ss, n + string0_length s) | list_nil () => n

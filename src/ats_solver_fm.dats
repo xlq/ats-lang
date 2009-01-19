@@ -102,7 +102,7 @@ end
 
 fn intvec_ptr_alloc {n:nat} (n: int n)
   :<> [l:addr] (free_gc_v (i0nt, n, l), (intvec n)? @ l | ptr l) =
-  array_ptr_alloc_tsz {i0nt} (size_of_int n, sizeof<i0nt>)
+  array_ptr_alloc_tsz {i0nt} (size1_of_int1 n, sizeof<i0nt>)
 
 fn intvec_ptr_free {n:int} {l:addr}
   (pf_gc: free_gc_v (i0nt, n, l), pf_arr: (intvec n)? @ l | p: ptr l):<> void =
@@ -490,7 +490,7 @@ extern fun intvec_copy {n:nat} (vec: &intvec n, n: int n)
 
 implement intvec_copy (vec, n) = let
   val (pf_gc, pf_arr | p) = intvec_ptr_alloc (n)
-  val () = array_ptr_copy_tsz {i0nt} (vec, !p, size_of_int n, sizeof<i0nt>)
+  val () = array_ptr_copy_tsz {i0nt} (vec, !p, size1_of_int1 n, sizeof<i0nt>)
 in
   @(pf_gc, pf_arr | p)
 end // end of [intvec_copy]

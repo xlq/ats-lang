@@ -40,6 +40,10 @@
 
 (* ****** ****** *)
 
+#define i2sz size1_of_int1
+
+(* ****** ****** *)
+
 // array0 implementation
 
 (* ****** ****** *)
@@ -55,7 +59,7 @@ implement array0_make_arraysize {a} {n} (arrsz) = let
   prval () = free_gc_elim {a} (arrsz.0)
   val (pfbox | ()) = vbox_make_view_ptr (arrsz.1 | arrsz.2)
 in '{
-  data= arrsz.2, size= size_of_int arrsz.3, view= pfbox
+  data= arrsz.2, size= i2sz arrsz.3, view= pfbox
 } end // end of [array0_make_arraysize]
 
 (* ****** ****** *)
@@ -107,7 +111,7 @@ implement{a} array0_get_elt_at_exn__isz (A, i) = let
   val i = int1_of_int i
 in
   if i >= 0 then begin
-    array0_get_elt_at_exn<a> (A, size_of_int i)
+    array0_get_elt_at_exn<a> (A, i2sz i)
   end else begin
     $raise SubscriptException
   end // end of [if]
@@ -117,7 +121,7 @@ implement{a} array0_set_elt_at_exn__isz (A, i, x) = let
   val i = int1_of_int i
 in
   if i >= 0 then begin
-    array0_set_elt_at_exn<a> (A, size_of_int i, x)
+    array0_set_elt_at_exn<a> (A, i2sz i, x)
   end else begin
     $raise SubscriptException
   end // end of [if]

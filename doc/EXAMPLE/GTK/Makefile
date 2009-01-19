@@ -4,6 +4,8 @@
 #
 #
 
+all:: HelloWorld menu sudoku
+
 # A warm-up example
 HelloWorld: HelloWorld.dats
 	atscc glib.sats gtk.sats HelloWorld.dats -o HelloWorld \

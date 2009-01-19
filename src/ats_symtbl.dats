@@ -75,7 +75,7 @@ implement symtbl_make (sz) = let
     ptr_alloc_tsz {symtbl0} (sizeof<symtbl>)
   prval () = free_gc_elim {symtbl0} (pf_tbl_gc)
   val asz = max (sz, 1)
-  val asz_sz = size_of_int (asz)
+  val asz_sz = size1_of_int1 (asz)
   val tsz = sizeof<tblent>
   val (pf_arr_gc, pf_arr | p_arr) =
     array_ptr_alloc_tsz {tblent} (asz_sz, tsz)
@@ -170,7 +170,7 @@ fun symtbl_resize
   prval (pf_arr_gc, pf_arr) = p_tbl->view
   val sz = p_tbl->size
   val sz2 = sz + sz; val tsz = sizeof<tblent>
-  val sz2_sz = size_of_int sz2
+  val sz2_sz = size1_of_int1 sz2
   val (pf1_arr_gc, pf1_arr | p1_arr) =
     array_ptr_alloc_tsz {tblent} (sz2_sz, tsz)
   val () = begin

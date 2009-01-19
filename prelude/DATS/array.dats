@@ -48,6 +48,10 @@
 
 (* ****** ****** *)
 
+#define i2sz size1_of_int1
+
+(* ****** ****** *)
+
 (* array pointers *)
 
 (* ****** ****** *)
@@ -70,13 +74,13 @@ end // end of [array_ptr_xch_elt_at]
 //
 
 implement{a} array_ptr_get_elt_at__intsz
-  (A, i) = let val i = size_of_int i in A.[i] end
+  (A, i) = let val i = i2sz i in A.[i] end
 
 implement{a} array_ptr_set_elt_at__intsz
-  (A, i, x) = let val i = size_of_int i in A.[i] := x end
+  (A, i, x) = let val i = i2sz i in A.[i] := x end
 
 implement{a} array_ptr_xch_elt_at__intsz (A, i, x) = let
-  val i = size_of_int i in array_ptr_xch_elt_at<a> (A, i, x)
+  val i = i2sz i in array_ptr_xch_elt_at<a> (A, i, x)
 end // end of [array_ptr_xch_elt_at__intsz]
 
 (* ****** ****** *)
@@ -264,19 +268,19 @@ end // end of [array_xch_elt_at]
 (* ****** ****** *)
 
 implement{a} array_get_elt_at__intsz (A, i) = let
-  val i = size_of_int i; val A_data = A.data; prval vbox pf = A.view
+  val i = i2sz i; val A_data = A.data; prval vbox pf = A.view
 in
   !A_data.[i]
 end // end of [array_get_elt]
 
 implement{a} array_set_elt_at__intsz (A, i, x) = let
-  val i = size_of_int i; val A_data = A.data; prval vbox pf = A.view
+  val i = i2sz i; val A_data = A.data; prval vbox pf = A.view
 in
   !A_data.[i] := x
 end // end of [array_set_elt_at]
 
 implement{a} array_xch_elt_at__intsz (A, i, x) = let
-  val i = size_of_int i; val A_data = A.data; prval vbox pf = A.view
+  val i = i2sz i; val A_data = A.data; prval vbox pf = A.view
 in
   array_ptr_xch_elt_at<a> (!A_data, i, x)
 end // end of [array_xch_elt_at]

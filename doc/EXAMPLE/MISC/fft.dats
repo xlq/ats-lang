@@ -449,7 +449,7 @@ staload _(*anonymous*) = "prelude/DATS/array.dats"
 // The following function tests whether 2^exponent-1 is a prime:
 fun is_mersenne_prime (exponent: intGte 2): bool = let
   val n = compute_optimal_signal_size (exponent)
-  val n_sz = size_of_int n
+  val n_sz = size1_of_int1 n
   val (pf_gc_r, pf_r | R) = array_ptr_alloc<real> (n_sz)
   val () = array_ptr_initialize_elt<real> (!R, n_sz, d2r 0.0)
 

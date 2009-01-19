@@ -125,7 +125,7 @@ implement basename_of_filename name = let
   val i = string_index_of_char_from_right (name, dirsep)
 in
   if (i >= 0) then let
-    val i = size_of_ssize (i)
+    val i = size1_of_ssize1 (i)
     val () = assert_prerrf_bool1
       (i < n, "[basename_of(%s)] failed.\n", @(name))
   in
@@ -140,7 +140,7 @@ implement suffix_of_filename name = let
   val i = string_index_of_char_from_right (name, '.')
 in
   if i >= 0 then let
-    val i = size_of_ssize (i)
+    val i = size1_of_ssize1 (i)
     val n = string_length name
   in
     stropt_some (string_make_substring (name, i+1, n-i-1))
@@ -153,7 +153,7 @@ implement filename_is_local name = let
    val name = string1_of_string name
 in
    if string1_isnot_empty (name) then let
-     val _0 = size_of_int 0
+     val _0 = size1_of_int1 0
    in
      if string_get_char_at (name, _0) <> dirsep then true else false
    end else true
@@ -187,7 +187,7 @@ implement strlst_length {n} ss = let
     (ss: strlst i, res: size_t j): size_t n =
     case+ ss of nil () => res | _ :: ss => aux (ss, res+1)
 in
-  aux (ss, size_of_int 0)
+  aux (ss, size1_of_int1 0)
 end // end of [strlst_length]
 
 implement strlst_reverse {n} ss = let

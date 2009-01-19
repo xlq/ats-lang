@@ -814,7 +814,7 @@ implement emit_valprim (pf | out, vp) = begin
   | VPstring (str, len) => let
       val len = int1_of_int len; val () = assert (len >= 0)
     in
-      emit_valprim_string (pf | out, str, size_of_int len)
+      emit_valprim_string (pf | out, str, size1_of_int1 len)
     end // end of [VPstring]
   | VPtmp tmp => emit_valprim_tmpvar (pf | out, tmp)
   | VPtmp_ref tmp => emit_valprim_tmpvar (pf | out, tmp)

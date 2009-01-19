@@ -44,6 +44,8 @@ extern fun fgets
 extern praxi lemma_addr_isnot_null
   {n:pos} {l:addr} (pf: !b0ytes n @ l): [l <> null] void
 
+#define i2sz size1_of_int1
+
 implement fgets {m}
   (pf_mod, pf_buf | p_buf, n, iop) = let
   var eof: int = 0
@@ -78,14 +80,14 @@ implement fgets {m}
 in
   if eof > 0 then begin
     if nleft < n then let
-      val () = bytes_strbuf_trans (pf_buf | p_buf, size_of_int (n - nleft))
+      val () = bytes_strbuf_trans (pf_buf | p_buf, i2sz (n - nleft))
     in
       (fgets_v_succ pf_buf | p_buf)
     end else begin
       (fgets_v_fail pf_buf | null)
     end // end of [if]
   end else let
-    val () = bytes_strbuf_trans (pf_buf | p_buf, size_of_int (n - nleft))
+    val () = bytes_strbuf_trans (pf_buf | p_buf, i2sz (n - nleft))
   in
     (fgets_v_succ pf_buf | p_buf)
   end // end of [if]

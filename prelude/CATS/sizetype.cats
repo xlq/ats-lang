@@ -48,20 +48,20 @@
 
 /* ****** ****** */
 
-#define atspre_size0_of_int atspre_size_of_int
-#define atspre_add_size0_size0 atspre_add_size_size
-#define atspre_mul_size0_size0 atspre_mul_size_size
+#define atspre_size_of_int1 atspre_size1_of_int1
+#define atspre_add_size_size atspre_add_size1_size1
+#define atspre_mul_size_size atspre_mul_size1_size1
 
 /* ****** ****** */
 
 static inline
 ats_int_type
-atspre_int_of_size (ats_size_type sz) {
+atspre_int1_of_size1 (ats_size_type sz) {
   if (INT_MAX < sz) {
     fprintf (stderr, "[ats_int_of_size(%lu)] failed\n", sz) ; exit (1) ;
   } /* end of [if] */
   return ((ats_int_type)sz) ;
-} /* end of [atspre_int_of_size] */
+} /* end of [atspre_int1_of_size1] */
 
 /* ****** ****** */
 
@@ -71,15 +71,15 @@ atspre_size1_of_size (ats_size_type sz) { return sz ; }
 
 static inline
 ats_size_type
-atspre_size_of_int (ats_int_type i) { return (ats_size_type)i ; }
+atspre_size1_of_int1 (ats_int_type i) { return (ats_size_type)i ; }
 
 static inline
 ats_size_type
-atspre_size_of_ssize (ats_ssize_type ssz) { return (ats_size_type)ssz ; }
+atspre_size1_of_ssize1 (ats_ssize_type ssz) { return (ats_size_type)ssz ; }
 
 static inline
 ats_size_type
-atspre_size_of_ptrdiff (ats_ptrdiff_type x) { return (ats_size_type)x ; }
+atspre_size1_of_ptrdiff1 (ats_ptrdiff_type x) { return (ats_size_type)x ; }
 
 /* ****** ****** */
 
@@ -114,23 +114,23 @@ atspre_prerr_size (ats_size_type sz) {
 
 static inline
 ats_size_type
-atspre_succ_size (ats_size_type sz) { return (sz + 1) ; }
+atspre_succ_size1 (ats_size_type sz) { return (sz + 1) ; }
 
 static inline
 ats_size_type
-atspre_pred_size (ats_size_type sz) { return (sz - 1) ; }
+atspre_pred_size1 (ats_size_type sz) { return (sz - 1) ; }
 
 /* ****** ****** */
 
 static inline
 ats_size_type
-atspre_add_size_size (ats_size_type sz1, ats_size_type sz2) {
+atspre_add_size1_size1 (ats_size_type sz1, ats_size_type sz2) {
   return (sz1 + sz2) ;
 }
 
 static inline
 ats_size_type
-atspre_add_size_int (ats_size_type sz1, ats_int_type i2) {
+atspre_add_size1_int1 (ats_size_type sz1, ats_int_type i2) {
   return (sz1 + i2) ;
 }
 
@@ -138,13 +138,13 @@ atspre_add_size_int (ats_size_type sz1, ats_int_type i2) {
 
 static inline
 ats_size_type
-atspre_sub_size_size (ats_size_type sz1, ats_size_type sz2) {
+atspre_sub_size1_size1 (ats_size_type sz1, ats_size_type sz2) {
   return (sz1 - sz2) ;
 }
 
 static inline
 ats_size_type
-atspre_sub_size_int (ats_size_type sz1, ats_int_type i2) {
+atspre_sub_size1_int1 (ats_size_type sz1, ats_int_type i2) {
   return (sz1 - i2) ;
 }
 
@@ -152,90 +152,90 @@ atspre_sub_size_int (ats_size_type sz1, ats_int_type i2) {
 
 static inline
 ats_size_type
-atspre_mul_size_size (ats_size_type sz1, ats_size_type sz2) {
+atspre_mul_size1_size1 (ats_size_type sz1, ats_size_type sz2) {
   return (sz1 * sz2) ;
 }
 
-#define atspre_mul1_size_size atspre_mul_size_size
-#define atspre_mul2_size_size atspre_mul_size_size
+#define atspre_mul1_size1_size1 atspre_mul_size1_size1
+#define atspre_mul2_size1_size1 atspre_mul_size1_size1
 
 static inline
 ats_size_type
-atspre_div_size_size (ats_size_type sz1, ats_size_type sz2) {
+atspre_div_size1_size1 (ats_size_type sz1, ats_size_type sz2) {
   return (sz1 / sz2) ;
-} /* end of [atspre_div_size_size] */
+} /* end of [atspre_div_size1_size1] */
 
 static inline
 ats_size_type
-atspre_mod_size_size (ats_size_type sz1, ats_size_type sz2) {
+atspre_mod_size1_size1 (ats_size_type sz1, ats_size_type sz2) {
   return (sz1 % sz2) ;
-} /* end of [atspre_mod_size_size] */
+} /* end of [atspre_mod_size1_size1] */
 
-#define atspre_mod1_size_size atspre_mod_size_size
+#define atspre_mod1_size1_size1 atspre_mod_size1_size1
 
 /* ****** ****** */
 
 static inline
 ats_bool_type
-atspre_lt_size_size
+atspre_lt_size1_size1
   (ats_size_type sz1, ats_size_type sz2) {
   return (sz1 < sz2 ? ats_true_bool : ats_false_bool) ;
-} /* end of [atspre_lt_size_size] */
+} /* end of [atspre_lt_size1_size1] */
 
 static inline
 ats_bool_type
-atspre_lte_size_size
+atspre_lte_size1_size1
   (ats_size_type sz1, ats_size_type sz2) {
   return (sz1 <= sz2 ? ats_true_bool : ats_false_bool) ;
-} /* end of [atspre_lte_size_size] */
+} /* end of [atspre_lte_size1_size1] */
 
 // ------ ------
 
 static inline
 ats_bool_type
-atspre_gt_size_size
+atspre_gt_size1_size1
   (ats_size_type sz1, ats_size_type sz2) {
   return (sz1 > sz2 ? ats_true_bool : ats_false_bool) ;
-} /* end of [atspre_gt_size_size] */
+} /* end of [atspre_gt_size1_size1] */
 
 static inline
 ats_bool_type
-atspre_gt_size_int
+atspre_gt_size1_int1
   (ats_size_type sz1, ats_int_type i2) {
   return (sz1 > i2 ? ats_true_bool : ats_false_bool) ;
-} /* end of [atspre_gt_size_int] */
+} /* end of [atspre_gt_size1_int1] */
 
 // ------ ------
 
 static inline
 ats_bool_type
-atspre_gte_size_size
+atspre_gte_size1_size1
   (ats_size_type sz1, ats_size_type sz2) {
   return (sz1 >= sz2 ? ats_true_bool : ats_false_bool) ;
-} /* end of [atspre_gte_size_size] */
+} /* end of [atspre_gte_size1_size1] */
 
 static inline
 ats_bool_type
-atspre_gte_size_int
+atspre_gte_size1_int1
   (ats_size_type sz1, ats_int_type i2) {
   return (sz1 >= i2 ? ats_true_bool : ats_false_bool) ;
-} /* end of [atspre_gte_size_int] */
+} /* end of [atspre_gte_size1_int1] */
 
 /* ****** ****** */
 
 static inline
 ats_bool_type
-atspre_eq_size_size
+atspre_eq_size1_size1
   (ats_size_type sz1, ats_size_type sz2) {
   return (sz1 == sz2 ? ats_true_bool : ats_false_bool) ;
-} /* end of [atspre_eq_size_size] */
+} /* end of [atspre_eq_size1_size1] */
 
 static inline
 ats_bool_type
-atspre_neq_size_size
+atspre_neq_size1_size1
   (ats_size_type sz1, ats_size_type sz2) {
   return (sz1 != sz2 ? ats_true_bool : ats_false_bool) ;
-} /* end of [atspre_neq_size_size] */
+} /* end of [atspre_neq_size1_size1] */
 
 
 /* ****** ****** */
@@ -300,37 +300,37 @@ atspre_prerr_ssize (ats_size_type ssz) {
 
 static inline
 ats_bool_type
-atspre_lt_ssize_int
+atspre_lt_ssize1_int1
   (ats_ssize_type ssz1, ats_int_type i2) {
   return (ssz1 < i2 ? ats_true_bool : ats_false_bool) ;
-} /* end of [atspre_lt_ssize_int] */
+} /* end of [atspre_lt_ssize1_int1] */
 
 // ------ ------
 
 static inline
 ats_bool_type
-atspre_lte_ssize_int
+atspre_lte_ssize1_int1
   (ats_ssize_type ssz1, ats_int_type i2) {
   return (ssz1 <= i2 ? ats_true_bool : ats_false_bool) ;
-} /* end of [atspre_lte_ssize_int] */
+} /* end of [atspre_lte_ssize1_int1] */
 
 /* ****** ****** */
 
 static inline
 ats_bool_type
-atspre_gt_ssize_int
+atspre_gt_ssize1_int1
   (ats_ssize_type ssz1, ats_int_type i2) {
   return (ssz1 > i2 ? ats_true_bool : ats_false_bool) ;
-} /* end of [atspre_gt_ssize_int] */
+} /* end of [atspre_gt_ssize1_int1] */
 
 // ------ ------
 
 static inline
 ats_bool_type
-atspre_gte_ssize_int
+atspre_gte_ssize1_int1
   (ats_ssize_type ssz1, ats_int_type i2) {
   return (ssz1 >= i2 ? ats_true_bool : ats_false_bool) ;
-} /* end of [atspre_gte_ssize_int] */
+} /* end of [atspre_gte_ssize1_int1] */
 
 /* ****** ****** */
 

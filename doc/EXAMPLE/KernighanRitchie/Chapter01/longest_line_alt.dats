@@ -83,8 +83,10 @@ implement main () = let
     end // end of [loop]
   }
   val (pf_stdout | p_stdout) = stdout_get ()
-  val () = if (max > 0) then begin
-    fwrite_byte_exn (file_mode_lte_w_w | !p_longest, size_of_int max, !p_stdout)
+  val () = if (max > 0) then let
+    val max_sz = size1_of_int1 max
+  in
+    fwrite_byte_exn (file_mode_lte_w_w | !p_longest, max_sz, !p_stdout)
   end // end of [val]
   val () = stdout_view_set (pf_stdout | (*none*))
 in

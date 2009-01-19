@@ -69,7 +69,7 @@ implement strlen {m,n} (s) = let
   } // end of [val]
   prval () = mul_elim {n,1} (pf_mul)
 in
-  size_of_ptrdiff (p_end - p_beg)
+  size1_of_ptrdiff1 (p_end - p_beg)
 end // end of [strlen]
 
 (* ****** ****** *)

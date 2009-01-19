@@ -74,7 +74,7 @@ fun acc {i0,n,i:nat} {b:two | i+b <= i0} .<n,i>. // metric for termination verif
 extern fun accept (cs0: String, p: Regexp): Bool
 
 implement accept (cs0, p) = let
-  val i0 = string_length cs0; val i0 = int_of_size i0
+  val i0 = string_length cs0; val i0 = int1_of_size1 i0
 in
   acc (cs0, i0, p, i0, 0, lam (i, _) => i = 0)
 end // end of [accept]

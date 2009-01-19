@@ -129,7 +129,7 @@ extern fun fget_line {m:fm}
   (pf: file_mode_lte (m, r) | f: &FILE m): String
   = "fget_line"
 
-#define i2sz size_of_int
+#define i2sz size1_of_int1
 
 fun library_make_loop {m:fm} {l_file:addr}
   (file: &FILE r, dir: String, libfilename: string)

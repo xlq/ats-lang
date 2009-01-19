@@ -1003,7 +1003,7 @@ in
                 $Err.abort {s2exp} ()
               end
           val n = string0_length str
-          val n = size1_of_size (n); val n = int_of_size (n)
+          val n = size1_of_size (n); val n = int1_of_size1 (n)
           val () = trans3_env_hypo_add_eqeq (loc0, s2e_arg, s2exp_int n)
         in
           p3at_string (loc0, s2exp_string_int_type n, str)

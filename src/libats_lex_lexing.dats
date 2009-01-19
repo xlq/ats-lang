@@ -102,7 +102,7 @@ implement infile_make_string (s) = let
   in
     pf.1 := pf_at; ans
   end // end of [_getc]
-  val () = !p := (size_of_int 0)
+  val () = !p := (size1_of_int1 0)
 in
   #[ V | ( @(pf_gc, pf_at) | '{ free= _free, getc= _getc } ) ]
 end // end of [infile_make_string]

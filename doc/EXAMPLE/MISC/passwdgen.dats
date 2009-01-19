@@ -26,7 +26,7 @@ implement main (argc, argv) = let
   val [n:int] n = int1_of n
   val () = assert (n >= 0)
   val () = $Rand.srand48_with_time ()
-  val passwd = array_make_elt<char> (size_of_int n, '\000')
+  val passwd = array_make_elt<char> (size1_of_int1 n, '\000')
   val () = loop (n, 0) where {
     fun loop {i:nat | i <= n} .<n-i>.
       (n: int n, i: int i):<cloref1> void =

@@ -30,8 +30,8 @@ fn* wc_aux_1 {n:nat} {l_buf,l1,l2,l3:addr}
     n: int n, inword: two, lc: ptr l1, wc: ptr l2, cc: ptr l3)
   : void = let
   val [m:int] m =
-    fread_byte (file_mode_lte_r_r | buf, size_of_int n, fil)
-  val m = int_of_size (m)
+    fread_byte (file_mode_lte_r_r | buf, size1_of_int1 n, fil)
+  val m = int1_of_size1 (m)
 (*
   val () = printf ("wc_aux_1: m = %i\n", @(m))
 *)

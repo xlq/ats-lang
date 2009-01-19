@@ -59,7 +59,7 @@ implement getword {lim} {l} (pf | word, lim) = let
     end // end of [if]
   end // end of [val]
 in
-  bytes_strbuf_trans (pf | word, size_of_int i)
+  bytes_strbuf_trans (pf | word, size1_of_int1 i)
 end // end of [getword]
 
 (* ****** ****** *)

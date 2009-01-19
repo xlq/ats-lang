@@ -13,7 +13,7 @@ extern fun reverse {m,n:nat | n < m} (s: &strbuf (m, n)): void
 
 implement reverse {m,n} (s) =
   loop {0,n} (s, 0, n - 1) where {
-  val n = strbuf_length s; val n = int_of_size n
+  val n = strbuf_length s; val n = int1_of_size1 n
   fun loop {i,j:nat | i+j==n} .<j>.
     (s: &strbuf (m, n), i: int i, j1: int (j-1)): void =
     if i < j1 then begin

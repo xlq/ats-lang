@@ -92,7 +92,7 @@ implement itoa_err {bsz} {l} (pf_buf | n, p_buf, bsz) = let
 in
   if i < bsz then let
     prval pf_buf = bytes_v_of_chars_v (pf1_buf)
-    val () = bytes_strbuf_trans (pf_buf | p_buf, size_of_int i)
+    val () = bytes_strbuf_trans (pf_buf | p_buf, size1_of_int1 i)
     val () = strbuf_reverse (!p_buf)
   in
     (itoa_v_succ (pf_buf) | 0)

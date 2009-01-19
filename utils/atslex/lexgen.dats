@@ -273,7 +273,7 @@ fun regex_mark (env: redef, x0: &T, r0e: regex)
   | REGstr (str) => let
       val str = string1_of_string str
     in
-      regex_mark_str (env, x0, size_of_int 0, string_length str, str, regex1_nil ())
+      regex_mark_str (env, x0, 0, string_length str, str, regex1_nil ())
     end // end of [REGstr]
 end // end of [regex_mark]
 
@@ -357,11 +357,12 @@ fun followpos {n:nat} (n0: int n, r: regex1)
         foreach_intset (pf | f, r0.lstpos); aux (pf | A, n0, r0)
       end
   // end of [aux] and [aux_node]
+  val n0_sz = size1_of_int1 n0
   val tsz = sizeof<intset_t>
   val (pf_arr_gc, pf_arr | p_arr) =
-    array_ptr_alloc_tsz {intset_t} (size_of_int n0, tsz)
+    array_ptr_alloc_tsz {intset_t} (n0_sz, tsz)
   val () = begin
-    array_ptr_initialize_elt_tsz {intset_t} (!p_arr, size_of_int n0, ini, tsz)
+    array_ptr_initialize_elt_tsz {intset_t} (!p_arr, n0_sz, ini, tsz)
   end where {
     var ini: intset_t = intset_nil
   } // end of [val]

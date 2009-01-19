@@ -10,7 +10,7 @@
 staload _(*anonymous*) = "prelude/DATS/array.dats"
 
 fn play {sz: pos} (sz: int (sz)): void = let
-  val sz1 = size_of_int sz
+  val sz1 = size1_of_int1 sz
   typedef T = natLte sz
   macdef tsz = sizeof<T>
   typedef post_t = array (T, sz)

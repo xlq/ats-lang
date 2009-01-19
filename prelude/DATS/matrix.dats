@@ -48,6 +48,10 @@
 
 (* ****** ****** *)
 
+#define i2sz size1_of_int1
+
+(* ****** ****** *)
+
 (* persistent matrices *)
 
 (* ****** ****** *)
@@ -82,7 +86,7 @@ implement matrix_make_arraysize_main {a} (m, n) =
 (* ****** ****** *)
 
 implement{a} matrix_make_elt (m, n, x) = let
-  val (pf_mul | mn) = mul2_size_size (m, n)
+  val (pf_mul | mn) = mul2_size1_size1 (m, n)
   prval () = mul_nat_nat_nat pf_mul
   val (pf_gc, pf_arr | p_arr) =
     array_ptr_alloc_tsz {a} (mn, sizeof<a>)
@@ -187,13 +191,13 @@ end // end of [matrix_set_elt_at]
 (* ****** ****** *)
 
 implement{a} matrix_get_elt_at__intsz (M, i, n, j) = let
-  val i = size_of_int i; val n = size_of_int n; val j = size_of_int j
+  val i = i2sz i; val n = i2sz n; val j = i2sz j
 in
   matrix_get_elt_at<a> (M, i, n, j)
 end // end of [matrix_get_elt_at__intsz]
 
 implement{a} matrix_set_elt_at__intsz (M, i, n, j, x) = let
-  val i = size_of_int i; val n = size_of_int n; val j = size_of_int j
+  val i = i2sz i; val n = i2sz n; val j = i2sz j
 in
   matrix_set_elt_at<a> (M, i, n, j, x)
 end // end of [matrix_set_elt_at__intsz]

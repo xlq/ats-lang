@@ -54,7 +54,7 @@ implement comarg_parse (s) = let
       COMARGkey (n, s) (* loop exists *)
     end // end of [if]
   val s = string1_of_string s
-  val n = string_length s; val n = int_of_size n
+  val n = string_length s; val n = int1_of_size1 n
 in
   loop (s, n, 0)
 end // end of [comarg_parse]

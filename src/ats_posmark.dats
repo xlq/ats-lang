@@ -212,7 +212,7 @@ fn posmarklst_sort
   } // end of where
 
   val (pf_gc, pf_arr | p_arr) = array_ptr_make_lst<ppm> (n, ppms)
-  val () = qsort {ppm} (!p_arr, size_of_int n, sizeof<ppm>, cmp)
+  val () = qsort {ppm} (!p_arr, size1_of_int1 n, sizeof<ppm>, cmp)
   val res = loop (!p_arr, n-1, list_vt_nil ())
   val () = array_ptr_free {ppm} (pf_gc, pf_arr | p_arr)
 in

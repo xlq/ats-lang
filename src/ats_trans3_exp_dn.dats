@@ -439,7 +439,7 @@ in
               end
           ) : s2exp
           val n = string0_length (str)
-          val n = size1_of_size (n); val n = int_of_size (n)
+          val n = size1_of_size (n); val n = int1_of_size1 (n)
           val () = $SOL.s2exp_equal_solve (loc0, s2exp_int n, s2i)
         in
           d3exp_string (loc0, s2e0, str, len)
