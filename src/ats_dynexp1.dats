@@ -320,9 +320,19 @@ implement d1exp_intsp (loc, str) = '{
 
 (* ****** ****** *)
 
-implement d1exp_lam_dyn (loc, lin, p1t, d1e) = '{
-  d1exp_loc= loc, d1exp_node= D1Elam_dyn (lin, p1t, d1e)
-}
+implement d1exp_lam_dyn (loc, lin, p1t, d1e) = let
+  val atlin = lin
+in '{
+  d1exp_loc= loc, d1exp_node= D1Elam_dyn (atlin, p1t, d1e)
+} end // end of [d1exp_lam_dyn]
+
+implement d1exp_laminit_dyn (loc, lin, p1t, d1e) = let
+  val atlin = 2 + lin
+in '{
+  d1exp_loc= loc, d1exp_node= D1Elam_dyn (atlin, p1t, d1e)
+} end // end of [d1exp_laminit_dyn]
+
+(* ****** ****** *)
 
 implement d1exp_lam_met (loc, loc_arg, s1es, d1e) = '{
   d1exp_loc= loc, d1exp_node= D1Elam_met (loc_arg, s1es, d1e)

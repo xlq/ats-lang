@@ -596,7 +596,7 @@ and d2exp_node =
   | D2Eintsp of (* dynamic specified integer constant *)
       (string, intinf_t)
   | D2Elam_dyn of (* dynamic abstraction *)
-      (int(*lin*), int(*npf*), p2atlst, d2exp)
+      (uint(*atlin*), int(*npf*), p2atlst, d2exp)
   | D2Elam_met of (* metric abstraction *)
       (ref d2varlst, s2explst, d2exp)
   | D2Elam_sta of (* static abstraction *)
@@ -1026,8 +1026,16 @@ fun d2exp_if
 fun d2exp_int (_: loc_t, str: string, int: intinf_t): d2exp
 fun d2exp_intsp (_: loc_t, str: string, int: intinf_t): d2exp
 
+
+(* ****** ****** *)
+
+fun atlin_is_at (atlin: uint): bool
+fun atlin_is_lin (atlin: uint): bool
+
 fun d2exp_lam_dyn
-  (_: loc_t, lin: int, npf: int, arg: p2atlst, body: d2exp): d2exp
+  (_: loc_t, atlin: uint, npf: int, arg: p2atlst, body: d2exp): d2exp
+
+(* ****** ****** *)
 
 fun d2exp_lam_met
   (_: loc_t, r: ref d2varlst, met: s2explst, body: d2exp): d2exp

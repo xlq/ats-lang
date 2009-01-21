@@ -508,68 +508,82 @@ fn v2ardec_tr_dyn (d2c: v2ardec): v3ardec = let
       end // end of [None]
   ) : d2exp // end of [val]
   val loc_ini = d2e_ini.d2exp_loc
-  val () = (case+ d2e_ini.d2exp_node of
-    | D2Earrinit _ => () | _ => begin
-        $Loc.prerr_location loc0; prerr ": error(3)";
-        prerr ": the syntax for allocating memory on stack (alloca) is incorrect.";
-        prerr_newline (); $Err.abort {void} ()
-      end // end of [_]
-  ) : void // end of [val]
-  val- D2Earrinit (s2e_elt, od2e_asz, d2es_elt) = d2e_ini.d2exp_node
-  var od3e_asz: Option d3exp = None (); val s2e_dim = case+ od2e_asz of
-    | Some d2e_asz => let
-        val loc_asz = d2e_asz.d2exp_loc
-        val d3e_asz = d2exp_tr_up d2e_asz
-        val s2e_asz = s2exp_whnf (d3e_asz.d3exp_typ)
-        val os2e_dim = un_s2exp_int_int_t0ype (s2e_asz)
-        val os2e_dim = (case+ os2e_dim of
-          | Some_vt _ => (fold@ os2e_dim; os2e_dim)
-          | ~None_vt () => un_s2exp_size_int_t0ype (s2e_asz)
-        ) : s2expopt_vt
-        val s2e_dim = case+ os2e_dim of
-          | ~Some_vt s2e_dim => s2e_dim | ~None_vt () => begin
-              $Loc.prerr_location loc_asz; prerr ": error(3)";
-              prerr ": the dynamic expression is assgined the type [";
-              prerr_s2exp s2e_asz;
-              prerr "], but it is expected to be a nonnegative integer.";
-              prerr_newline (); $Err.abort {s2exp} ()
-            end // end of [None]
-        // end of [val]
-        val () = trans3_env_add_prop (loc_asz, s2p) where {
-          val s2p = s2exp_gte_int_int_bool (s2e_dim, s2exp_int_0)
-        } // end of [val]
-      in
-        od3e_asz := Some d3e_asz; s2e_dim
-      end // end of [Some]
-    | None () => let
-        val n = $Lst.list_length (d2es_elt) in s2exp_int (n)
-      end // end of [None]
-  // end of [val]
-  val d3es_elt = aux (d2es_elt, s2e_elt) where {
-    fun aux (d2es: d2explst, s2e: s2exp): d3explst = case+ d2es of
-      | list_cons (d2e, d2es) => let
-          val d3e = d2exp_tr_dn (d2e, s2e) in list_cons (d3e, aux (d2es, s2e))
-        end // end of [list_cons]
-      | list_nil () => list_nil ()
-    // end of [aux]
-  } // end of [val]
-  val s2es_dim: s2explst = list_cons (s2e_dim, list_nil ())
-  val s2ess_dim: s2explstlst = list_cons (s2es_dim, list_nil ())
-  val s2e_ann = s2exp_tyarr (s2e_elt, s2ess_dim)
-  val s2e_ann_top = let
-    val s2e_elt = s2exp_topize_0 s2e_elt in s2exp_tyarr (s2e_elt, s2ess_dim)
-  end  // end of [val]
-  val s2e_ini = (case+ d3es_elt of list_cons _ => s2e_ann | _ => s2e_ann_top): s2exp
-  val d3e_ini = d3exp_arrinit (loc_ini, s2e_ini, s2e_elt, od3e_asz, d3es_elt)
-  val s2e_ann_view = s2exp_at_viewt0ype_addr_view (s2e_ann, s2e_addr)
-  val () = d2var_mastyp_set (d2v_view, Some s2e_ann_view)
-  val s2e_ini_view = s2exp_at_viewt0ype_addr_view (s2e_ini, s2e_addr)
-  val () = d2var_typ_set (d2v_view, Some s2e_ini_view)
-  val () = d2var_fin_set (d2v_view, D2VARFINsome s2e_view_fin) where {
-    val s2e_view_fin = s2exp_at_viewt0ype_addr_view (s2e_ann_top, s2e_addr)
-  }  // end of [val]
 in
-  v3ardec_make (loc0, 1(*knd*), d2v_ptr, d2v_view, s2e_ann, Some d3e_ini)
+  case+ d2e_ini.d2exp_node of
+  | D2Earrinit (s2e_elt, od2e_asz, d2es_elt) => let
+      var od3e_asz: d3expopt = None ()
+      val s2e_dim = (case+ od2e_asz of
+        | Some d2e_asz => let
+            val loc_asz = d2e_asz.d2exp_loc
+            val d3e_asz = d2exp_tr_up d2e_asz
+            val s2e_asz = s2exp_whnf (d3e_asz.d3exp_typ)
+            val os2e_dim = un_s2exp_int_int_t0ype (s2e_asz)
+            val os2e_dim = (case+ os2e_dim of
+              | Some_vt _ => (fold@ os2e_dim; os2e_dim)
+              | ~None_vt () => un_s2exp_size_int_t0ype (s2e_asz)
+            ) : s2expopt_vt
+            val s2e_dim = case+ os2e_dim of
+              | ~Some_vt s2e_dim => s2e_dim | ~None_vt () => begin
+                  $Loc.prerr_location loc_asz; prerr ": error(3)";
+                  prerr ": the dynamic expression is assgined the type [";
+                  prerr_s2exp s2e_asz;
+                  prerr "], but it is expected to be a nonnegative integer.";
+                  prerr_newline (); $Err.abort {s2exp} ()
+                end // end of [None]
+            // end of [val]
+            val () = trans3_env_add_prop (loc_asz, s2p) where {
+              val s2p = s2exp_gte_int_int_bool (s2e_dim, s2exp_int_0)
+            } // end of [val]
+          in
+            od3e_asz := Some d3e_asz; s2e_dim
+          end // end of [Some]
+        | None () => let
+            val n = $Lst.list_length (d2es_elt) in s2exp_int (n)
+          end // end of [None]
+      ) : s2exp // end of [val]
+      val d3es_elt = aux (d2es_elt, s2e_elt) where {
+        fun aux (d2es: d2explst, s2e: s2exp): d3explst = case+ d2es of
+          | list_cons (d2e, d2es) => let
+              val d3e = d2exp_tr_dn (d2e, s2e) in list_cons (d3e, aux (d2es, s2e))
+            end // end of [list_cons]
+          | list_nil () => list_nil ()
+        // end of [aux]
+      } // end of [val]
+      val s2es_dim: s2explst = list_cons (s2e_dim, list_nil ())
+      val s2ess_dim: s2explstlst = list_cons (s2es_dim, list_nil ())
+      val s2e_ann = s2exp_tyarr (s2e_elt, s2ess_dim)
+      val s2e_ann_top = let
+        val s2e_elt = s2exp_topize_0 s2e_elt in s2exp_tyarr (s2e_elt, s2ess_dim)
+      end  // end of [val]
+      val s2e_ini = (case+ d3es_elt of list_cons _ => s2e_ann | _ => s2e_ann_top): s2exp
+      val d3e_ini = d3exp_arrinit (loc_ini, s2e_ini, s2e_elt, od3e_asz, d3es_elt)
+      val s2e_ann_view = s2exp_at_viewt0ype_addr_view (s2e_ann, s2e_addr)
+      val () = d2var_mastyp_set (d2v_view, Some s2e_ann_view)
+      val s2e_ini_view = s2exp_at_viewt0ype_addr_view (s2e_ini, s2e_addr)
+      val () = d2var_typ_set (d2v_view, Some s2e_ini_view)
+      val () = d2var_fin_set (d2v_view, D2VARFINsome s2e_fin_view) where {
+        val s2e_fin_view = s2exp_at_viewt0ype_addr_view (s2e_ann_top, s2e_addr)
+      }  // end of [val]
+    in
+      v3ardec_make (loc0, 1(*knd*), d2v_ptr, d2v_view, s2e_ann, Some d3e_ini)
+    end // end of [D2Earrinit]
+  | D2Elam_dyn (atlin, _, _, _) when (atlin_is_at atlin) => let
+      val d3e_ini = d2exp_tr_up (d2e_ini)
+      val s2e_ini = d3e_ini.d3exp_typ
+      val s2e_ini_view = s2exp_at_viewt0ype_addr_view (s2e_ini, s2e_addr)
+      val s2e_fin = s2exp_topize_0 (s2e_ini)
+      val s2e_fin_view = s2exp_at_viewt0ype_addr_view (s2e_fin, s2e_addr)
+      val () = d2var_typ_set (d2v_view, Some s2e_ini_view)
+      val () = d2var_fin_set (d2v_view, D2VARFINsome s2e_fin_view)
+    in
+      v3ardec_make (loc0, 1(*knd*), d2v_ptr, d2v_view, s2e_ini, Some d3e_ini)
+    end // end of [D2Elam when ...]
+  | _ => begin
+      $Loc.prerr_location loc0; prerr ": error(3)";
+      prerr ": the syntax for allocating memory on stack (alloca) is incorrect.";
+      prerr_newline ();
+      $Err.abort {v3ardec} ()
+    end // end of [_]
 end // end of [v2ardec_tr_dyn]
 
 (* ****** ****** *)

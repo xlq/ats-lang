@@ -837,7 +837,7 @@ atslib_glColor3f_double (
 , ats_double_type blue
 ) {
   glColor3f (red, green, blue) ; return ;
-}
+} /* end of [atslib_glColor3f_double] */
 
 static inline
 ats_void_type
@@ -847,7 +847,7 @@ atslib_glColor3f_GLfloat (
 , ats_GLfloat_type blue
 ) {
   glColor3f (red, green, blue) ; return ;
-}
+} /* end of [atslib_glColor3f_GLfloat] */
 
 /* ****** ****** */
 
@@ -860,7 +860,7 @@ atslib_glColor4f_double (
 , ats_double_type alpha
 ) {
   glColor4f (red, green, blue, alpha) ; return ;
-}
+} /* end of [atslib_glColor4f_double] */
 
 static inline
 ats_void_type
@@ -871,7 +871,7 @@ atslib_glColor4f_GLfloat (
 , ats_GLfloat_type alpha
 ) {
   glColor4f (red, green, blue, alpha) ; return ;
-}
+} /* end of [atslib_glColor4f_GLfloat] */
 
 /* ****** ****** */
 
@@ -884,7 +884,7 @@ atslib_glRectf_double (
 , ats_double_type y2
 ) {
   glRectf (x1, y1, x2, y2) ; return ;
-}
+} /* end of [atslib_glRectf_double] */
 
 static inline
 ats_void_type
@@ -895,7 +895,7 @@ atslib_glRectf_GLfloat (
 , ats_GLfloat_type y2
 ) {
   glRectf (x1, y1, x2, y2) ; return ;
-}
+} /* end of [atslib_glRectf_GLfloat] */
 
 /* ****** ****** */
 
@@ -905,7 +905,7 @@ static inline
 ats_void_type
 atslib_glShadeModel (ats_GLenum_type mode) {
   glShadeModel (mode) ; return ;
-}
+} /* end of [atslib_glShadeModel] */
 
 static inline
 ats_void_type
@@ -914,7 +914,7 @@ atslib_glLightfv (
 , ats_GLenum_type pname
 , ats_ptr_type params) {
   glLightfv (light, pname, (GLfloat*)params) ; return ;
-}
+} /* end of [atslib_glLightfv] */
 
 static inline
 ats_void_type
@@ -923,7 +923,7 @@ atslib_glLightiv (
 , ats_GLenum_type pname
 , ats_ptr_type params) {
   glLightiv (light, pname, (GLint*)params) ; return ;
-}
+} /* end of [atslib_glLightiv] */
 
 /* ****** ****** */
 
@@ -933,7 +933,7 @@ atslib_glLightModelfv (
   ats_GLenum_type pname, ats_ptr_type params
 ) {
   glLightModelfv (pname, (GLfloat*)params) ; return ;
-}
+} /* end of [atslib_glLightModelfv] */
 
 static inline
 ats_void_type
@@ -941,7 +941,7 @@ atslib_glLightModeliv (
   ats_GLenum_type pname, ats_ptr_type params
 ) {
   glLightModeliv (pname, (GLint*)params) ; return ;
-}
+} /* end of [atslib_glLightModeliv] */
 
 /* ****** ****** */
 
@@ -953,7 +953,7 @@ atslib_glMaterialfv (
 , ats_ptr_type params
 ) {
   glMaterialfv (face, pname, (GLfloat*)params) ; return ;
-}
+} /* end of [atslib_glMaterialfv] */
 
 static inline
 ats_void_type
@@ -963,7 +963,7 @@ atslib_glMaterialiv (
 , ats_ptr_type params
 ) {
   glMaterialiv (face, pname, (GLint*)params) ; return ;
-}
+} /* end of [atslib_glMaterialiv] */
 
 /* ****** ****** */
 

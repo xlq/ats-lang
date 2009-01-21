@@ -111,6 +111,14 @@ extern funkind_t funkind_prfun (void) ;
 
 /* ****** ****** */
 
+typedef ats_ptr_type lamkind_t ;
+extern lamkind_t lamkind_lam (t0kn_t) ;
+extern lamkind_t lamkind_atlam (t0kn_t) ;
+extern lamkind_t lamkind_llam (t0kn_t) ;
+extern lamkind_t lamkind_atllam (t0kn_t) ;
+
+/* ****** ****** */
+
 typedef ats_ptr_type srpifkindtok_t ;
 extern srpifkindtok_t srpifkindtok_if (t0kn_t) ;
 extern srpifkindtok_t srpifkindtok_ifdef (t0kn_t) ;
@@ -663,7 +671,7 @@ extern d0exp_t d0exp_int (i0nt_t) ;
 extern d0exp_t d0exp_intsp (i0ntsp_t) ;
 
 extern d0exp_t d0exp_lam
-  (int, t0kn_t, f0arglst_t, s0expopt_t, e0fftaglstopt_t, d0exp_t) ;
+  (lamkind_t, f0arglst_t, s0expopt_t, e0fftaglstopt_t, d0exp_t) ;
 
 extern d0exp_t d0exp_let_seq
   (t0kn_t, d0eclst_t, t0kn_t, d0explst_t, t0kn_t) ;
@@ -891,6 +899,10 @@ stadefkind_t stadefkind ;
 dcstkind_t dcstkind ;
 valkind_t valkind ;
 funkind_t funkind ;
+
+//
+
+lamkind_t lamkind ;
 
 //
 
@@ -1133,6 +1145,7 @@ guad0ec_t guad0ec ;
 %token <t0kn> AS
 %token <t0kn> ASSUME
 %token <t0kn> AT
+%token <t0kn> ATLAM ATLLAM
 %token <t0kn> BEGIN
 %token <t0kn> BREAK
 %token <t0kn> CASE CASEMINUS CASEPLUS
@@ -1346,6 +1359,8 @@ guad0ec_t guad0ec ;
 %type <valkind> valkind
 %type <funkind> funkind
 
+%type <lamkind> lamkind
+
 %type <srpifkindtok> srpifkind
 %type <srpifkindtok> srpelifkind
 
@@ -1523,6 +1538,7 @@ guad0ec_t guad0ec ;
 %type <labd0explst> commalabd0expseq
 %type <labd0explst> labd0expseq
 %type <d0arrind> d0arrind
+%type <lamkind> lamkind
 %type <s0expopt> colons0expopt
 %type <e0fftaglstopt> funarrow
 %type <ifhead> ifhead
@@ -1644,6 +1660,15 @@ funkind
   | CASTFN                              { $$ = funkind_castfn () ; }
   | PRFN                                { $$ = funkind_prfn () ; }
   | PRFUN                               { $$ = funkind_prfun () ; }
+;
+
+/* ****** ****** */
+
+lamkind
+  : LAM                                 { $$ = lamkind_lam ($1) ; }
+  | ATLAM                               { $$ = lamkind_atlam ($1) ; }
+  | LLAM                                { $$ = lamkind_llam ($1) ; }
+  | ATLLAM                              { $$ = lamkind_atllam ($1) ; }
 ;
 
 /* ****** ****** */
@@ -2619,17 +2644,15 @@ d0exp
                                         { $$ = d0exp_caseof($1, $2, $3, $4) ; }
   | scasehead s0exp OF sc0lauseq %prec DEXPCASE
                                         { $$ = d0exp_scaseof($1, $2, $3, $4) ; }
-  | DLRRAISE d0exp %prec DEXPRAISE      { $$ = d0exp_raise($1, $2) ; }
-  | LAM f0arg1seq colons0expopt funarrow d0exp %prec DEXPLAM
-                                        { $$ = d0exp_lam(0, $1, $2, $3, $4, $5 ) ; }
-  | LLAM f0arg1seq colons0expopt funarrow d0exp %prec DEXPLAM
-                                        { $$ = d0exp_lam(1, $1, $2, $3, $4, $5 ) ; }
+  | lamkind f0arg1seq colons0expopt funarrow d0exp %prec DEXPLAM
+                                        { $$ = d0exp_lam($1, $2, $3, $4, $5 ) ; }
   | FIX di0de f0arg1seq colons0expopt funarrow d0exp %prec DEXPLAM
                                         { $$ = d0exp_fix($1, $2, $3, $4, $5, $6) ; }
   | forhead initestpost d0exp %prec DEXPFOR
                                         { $$ = d0exp_for_itp ($1, $2, $3) ; }
   | whilehead atmd0exp d0exp %prec DEXPWHILE
                                         { $$ = d0exp_while ($1, $2, $3) ; }
+  | DLRRAISE d0exp %prec DEXPRAISE      { $$ = d0exp_raise($1, $2) ; }
   | tryhead d0expsemiseq0 WITH c0lauseq %prec DEXPTRY
                                         { $$ = d0exp_trywith_seq($1, $2, $3, $4) ; }
   | d0exp WHERE LBRACE d0ecseq_dyn RBRACE

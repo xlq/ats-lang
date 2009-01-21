@@ -1611,7 +1611,7 @@ in
       prerr_d1exp d1e0;
       prerr_newline ();
       $Err.abort {d2exp} ()
-    end
+    end // end of [_]
 end // end of [d1exp_tr]
 
 implement d1explst_tr (d1es) = $Lst.list_map_fun (d1es, d1exp_tr)

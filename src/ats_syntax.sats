@@ -146,6 +146,20 @@ datatype macsynkind =
 
 (* ****** ****** *)
 
+datatype lamkind =
+  | LAMKINDlam of t0kn
+  | LAMKINDatlam of t0kn
+  | LAMKINDllam of t0kn  
+  | LAMKINDatllam of t0kn
+  | LAMKINDfix of ()
+
+fun lamkind_lam (t: t0kn): lamkind = "lamkind_lam"
+and lamkind_atlam (t: t0kn): lamkind = "lamkind_atlam"
+and lamkind_llam (t: t0kn): lamkind = "lamkind_llam"
+and lamkind_atllam (t: t0kn): lamkind = "lamkind_atllam"
+
+(* ****** ****** *)
+
 datatype srpifkind =
   | SRPIFKINDif | SRPIFKINDifdef | SRPIFKINDifndef
 
@@ -1378,7 +1392,7 @@ datatype d0exp_node =
   | D0Eintsp of (* dynamic specified integers *)
       string
   | D0Elam of (* linear/nonlinear lambda-abstraction *)
-      (int (*linearity*), f0arglst, s0expopt, e0fftaglstopt, d0exp)
+      (lamkind, f0arglst, s0expopt, e0fftaglstopt, d0exp)
   | D0Elet of (* dynamic let-expression *)
       (d0eclst, d0exp)
   | D0Elist of (* d0exp list *)
@@ -1743,9 +1757,14 @@ fun d0exp_if_some
 fun d0exp_int (i: i0nt): d0exp = "d0exp_int"
 fun d0exp_intsp (i: i0ntsp): d0exp = "d0exp_intsp"
 
-fun d0exp_lam
-  (lin: int, t_lam: t0kn, arg: f0arglst, res: s0expopt, eff: e0fftaglstopt, d0e: d0exp): d0exp
+(* ****** ****** *)
+
+fun d0exp_lam (
+    knd: lamkind, arg: f0arglst, res: s0expopt, eff: e0fftaglstopt, d0e: d0exp
+  ) : d0exp
   = "d0exp_lam"
+
+(* ****** ****** *)
 
 fun d0exp_let_seq
   (t_let: t0kn, d0cs: d0eclst, t_in: t0kn, d0e: d0explst, t_end: t0kn): d0exp

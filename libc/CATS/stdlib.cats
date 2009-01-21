@@ -125,7 +125,7 @@ atslib_qsort (
   ats_ref_type base,
   ats_size_type nmemb,
   ats_size_type size,
-  ats_fun_ptr_type compar
+  ats_ptr_type compar
 ) {
   qsort(base, nmemb, size, (int(*)(const void*, const void*))compar) ;
   return ;

@@ -292,8 +292,13 @@ and d1exp_node =
       string 
   | D1Efoldat of (* fold at a given address *)
       (s1exparglst, d1exp)
-  | D1Efor of (* for-loop *)
-      (loopi1nv, d1exp(*ini*), d1exp(*test*), d1exp(*post*), d1exp(*body*))
+  | D1Efor of ( // for-loop
+      loopi1nv
+    , d1exp(*ini*)
+    , d1exp(*test*)
+    , d1exp(*post*)
+    , d1exp(*body*)
+    ) // end of [D1Efor]
   | D1Efreeat of (* free at a given address *)
       (s1exparglst, d1exp)
   | D1Eif of (* conditional dynamic expression *)
@@ -303,7 +308,7 @@ and d1exp_node =
   | D1Eintsp of (* dynamic specified integer constant *)
       string
   | D1Elam_dyn of (* dynamic abstraction *)
-      (int (* linearity *), p1at, d1exp)
+      (int (* atlin *), p1at, d1exp)
   | D1Elam_met of (* metric abstraction *)
       (loc_t (*loc_arg*), s1explst, d1exp)
   | D1Elam_sta_ana of (* static abstraction: analysis *)
@@ -722,17 +727,36 @@ fun d1exp_freeat (_: loc_t, _: s1exparglst, _: d1exp): d1exp
 
 fun d1exp_ide (_: loc_t, _: sym_t): d1exp
 
-fun d1exp_if
-  (_: loc_t, _: i1nvresstate, _cond: d1exp, _then: d1exp, _else: d1expopt)
-  : d1exp
+fun d1exp_if (
+    _: loc_t
+  , _: i1nvresstate
+  , _cond: d1exp
+  , _then: d1exp
+  , _else: d1expopt
+  ) : d1exp
+
+(* ****** ****** *)
 
 fun d1exp_int (_: loc_t, int: string): d1exp
 fun d1exp_intsp (_: loc_t, int: string): d1exp
 
-fun d1exp_lam_dyn (_: loc_t, lin: int, arg: p1at, _: d1exp): d1exp
-fun d1exp_lam_met (_: loc_t, _arg: loc_t, _: s1explst, _: d1exp): d1exp
-fun d1exp_lam_sta_ana (_: loc_t, _arg: loc_t, _: s1arglst, _: d1exp): d1exp
-fun d1exp_lam_sta_syn (_: loc_t, _arg: loc_t, _: s1qualst, _: d1exp): d1exp
+(* ****** ****** *)
+
+fun d1exp_lam_dyn
+  (_: loc_t, lin: int, arg: p1at, _: d1exp): d1exp
+fun d1exp_laminit_dyn
+  (_: loc_t, lin: int, arg: p1at, _: d1exp): d1exp
+
+(* ****** ****** *)
+
+fun d1exp_lam_met
+  (_: loc_t, _arg: loc_t, _: s1explst, _: d1exp): d1exp
+fun d1exp_lam_sta_ana
+  (_: loc_t, _arg: loc_t, _: s1arglst, _: d1exp): d1exp
+fun d1exp_lam_sta_syn
+  (_: loc_t, _arg: loc_t, _: s1qualst, _: d1exp): d1exp
+
+(* ****** ****** *)
 
 fun d1exp_lazy_delay (_: loc_t, lin: int, _: d1exp): d1exp
 

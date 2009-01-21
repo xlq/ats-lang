@@ -209,6 +209,8 @@ macdef ABSVIEWT0YPE = $extval (token_t, "ABSVIEWT0YPE")
 macdef AND = $extval (token_t, "AND")
 macdef AS = $extval (token_t, "AS")
 macdef ASSUME = $extval (token_t, "ASSUME")
+macdef ATLAM = $extval (token_t, "ATLAM")
+macdef ATLLAM = $extval (token_t, "ATLLAM")
 macdef BEGIN = $extval (token_t, "BEGIN")
 macdef BREAK = $extval (token_t, "BREAK")
 macdef CASE = $extval (token_t, "CASE")
@@ -1010,6 +1012,8 @@ MAIN () =
   | "fold@" { process_token (); FOLDAT }
   | "free@" { process_token (); FREEAT }
   | "view@" { process_token (); VIEWAT }
+  | "@lam" { process_token (); ATLAM }
+  | "@llam" { process_token (); ATLLAM }
   | "r@ead" { process_token (); R0EAD }
   | "t@ype" { process_token (); T0YPE }
   | "t@ype+" { process_token (); T0YPEPLUS }

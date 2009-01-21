@@ -230,7 +230,7 @@ and d3exp_node =
   | D3Eintsp of (* dynamic specified integer *)
       (string, intinf_t)
   | D3Elam_dyn of (* dynamic abstraction *)
-      (int(*lin*), int(*npf*), p3atlst, d3exp)
+      (uint(*atlin*), int(*npf*), p3atlst, d3exp)
   | D3Elam_met of (* metric abstraction *)
       (s2explst(*metric*), d3exp)
   | D3Elam_sta of (* static abstraction *)

@@ -390,9 +390,9 @@ in
   | D1Eintsp i(*string*) => begin
       strpr "D1Eintsp("; fprint1_string (pf | out, i); strpr ")"
     end
-  | D1Elam_dyn (lin, p1t, d1e) => begin
+  | D1Elam_dyn (atlin, p1t, d1e) => begin
       strpr "D1Elam_dyn(";
-      fprint1_int (pf | out, lin);
+      fprint1_int (pf | out, atlin);
       strpr "; ";
       fprint_p1at (pf | out, p1t);
       strpr "; ";

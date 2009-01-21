@@ -1,3 +1,7 @@
+//
+// A simple example demonstrating the use of double buffering
+//
+
 %{^
 
 extern ats_void_type mainats (ats_int_type argc, ats_ptr_type argv) ;

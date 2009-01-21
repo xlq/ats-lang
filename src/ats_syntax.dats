@@ -153,6 +153,13 @@ implement funkind_is_tailrecur fk =
 
 (* ****** ****** *)
 
+implement lamkind_lam (t) = LAMKINDlam (t)
+implement lamkind_atlam (t) = LAMKINDatlam (t)
+implement lamkind_llam (t) = LAMKINDllam (t)
+implement lamkind_atllam (t) = LAMKINDatllam (t)
+
+(* ****** ****** *)
+
 implement srpifkindtok_if (t) = SRPIFKINDTOK (SRPIFKINDif (), t)
 implement srpifkindtok_ifdef (t) = SRPIFKINDTOK (SRPIFKINDifdef (), t)
 implement srpifkindtok_ifndef (t) = SRPIFKINDTOK (SRPIFKINDifndef (), t)
@@ -531,33 +538,54 @@ local
 
 fn name_is_prf (name: string): bool = name = "prf"
 
+//
+
 fn name_is_lin0 (name: string): bool = 
   if name = "lin" then true else name = "lin0"
 
 fn name_is_lin1 (name: string): bool = name = "lin1"
+
+//
 
 fn name_is_fun0 (name: string): bool = 
   if name = "fun" then true else name = "fun0"
 
 fn name_is_fun1 (name: string): bool = name = "fun1"
 
+//
+
+fn name_is_clo0 (name: string): bool =
+  if name = "clo" then true else name = "clo0"
+
+fn name_is_clo1 (name: string): bool = name = "clo1"
+
+//
+
 fn name_is_cloptr0 (name: string): bool = 
   if name = "cloptr" then true else name = "cloptr0"
 
 fn name_is_cloptr1 (name: string): bool = name = "cloptr1"
 
+//
+
 fn name_is_cloref0 (name: string): bool = 
   if name = "cloref" then true else name = "cloref0"
-in
 
 fn name_is_cloref1 (name: string): bool = name = "cloref1"
 
+//
+
+#define CLO 0
 #define CLOPTR  1
 #define CLOREF ~1
+
+in
 
 implement e0fftag_var (id) = let
   val name = $Sym.symbol_name (id.i0de_sym)
   val node: e0fftag_node = case+ name of
+    | _ when name_is_clo0 name => E0FFTAGclo (CLO, 0)
+    | _ when name_is_clo1 name => E0FFTAGclo (CLO, 1)
     | _ when name_is_cloptr0 name => E0FFTAGclo (CLOPTR, 0)
     | _ when name_is_cloptr1 name => E0FFTAGclo (CLOPTR, 1)
     | _ when name_is_cloref0 name => E0FFTAGclo (CLOREF, 0)
@@ -1700,12 +1728,30 @@ implement d0exp_intsp (i) = '{
   d0exp_loc= i.i0ntsp_loc, d0exp_node= D0Eintsp (i.i0ntsp_val)
 }
 
+(* ****** ****** *)
+
 implement d0exp_lam
-  (lin, t_lam, arg, res, eff, d0e) = let
-  val loc = combine (t_lam.t0kn_loc, d0e.d0exp_loc)
+  (knd, arg, res, eff, d0e) = let
+  val loc_knd = case+ knd of
+    | LAMKINDlam tok => tok.t0kn_loc
+    | LAMKINDatlam tok => tok.t0kn_loc
+    | LAMKINDllam tok => tok.t0kn_loc
+    | LAMKINDatllam tok => tok.t0kn_loc
+    | LAMKINDfix () => let
+        val () = begin
+          prerr "Internal Error";
+          prerr ": d0exp_lam: knd = LAMKINDfix ()";
+          prerr_newline ()
+        end // end of [val]
+      in
+        exit {loc_t} (1)
+      end // end of [LAMKINDfix]
+  val loc = combine (loc_knd, d0e.d0exp_loc)
 in '{
-  d0exp_loc= loc, d0exp_node= D0Elam (lin, arg, res, eff, d0e)
+  d0exp_loc= loc, d0exp_node= D0Elam (knd, arg, res, eff, d0e)
 } end // end of [d0exp_lam]
+
+(* ****** ****** *)
 
 implement d0exp_let_seq
   (t_beg, d0cs, t_in, d0es, t_end) = let

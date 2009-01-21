@@ -559,31 +559,35 @@ end // end of [d1exp_retpos_set]
 
 (* ****** ****** *)
 
-fn d0exp_lams_dyn_tr
-  (oloc: Option loc_t,
-   ofc: Option funclo,
-   lin: int,
-   args: f0arglst,
-   res: s0expopt,
-   oefc: efcopt,
-   d0e_body: d0exp): d1exp = let
+fn d0exp_lams_dyn_tr (
+    knd: lamkind
+  , oloc: Option loc_t, ofc: Option funclo
+  , lin: int
+  , args: f0arglst
+  , res: s0expopt
+  , oefc: efcopt
+  , d0e_body: d0exp
+  ) : d1exp = let
 
-fun aux
-  (args: f0arglst, d1e_body: d1exp, flag: int):<cloptr1> d1exp = begin
-  case+ args of
+fun aux (
+    knd: lamkind
+  , args: f0arglst
+  , d1e_body: d1exp
+  , flag: int
+  ) :<cloptr1> d1exp = begin case+ args of
   | arg :: args => let
       val loc_arg = arg.f0arg_loc
-      val d1e_body = aux (args, d1e_body, flag1) where {
+      val d1e_body = aux (knd, args, d1e_body, flag1) where {
         val flag1 = (
           case+ arg.f0arg_node of F0ARGdyn _ => flag + 1 | _ => flag
         ) : int
       } // end of [where]
       val loc_body = d1e_body.d1exp_loc
       val loc = case+ oloc of
-        | Some loc => loc
-        | None () => begin
+        | Some loc => loc | None () => begin
             $Loc.location_combine (loc_arg, loc_body)
-          end
+          end // end of [None]
+      // end of [val]
     in
       case+ arg.f0arg_node of
       | F0ARGsta1 s0qs => begin
@@ -592,14 +596,25 @@ fun aux
       | F0ARGsta2 s0as => begin
           d1exp_lam_sta_ana (loc, loc_arg, s0arglst_tr s0as, d1e_body)
         end // end of [F0ARGsta2]
-      | F0ARGdyn p0t => let
+      | F0ARGdyn p0t when flag = 0 => let
           val p1t = p0at_tr p0t
-          val d1e_body = (
-            if flag = 0 then d1e_body else begin
-              // linear closure
-              d1exp_ann_funclo_opt (loc_body, d1e_body, FUNCLOcloptr)
-            end // end of [if]
-          ) : d1exp
+          val isat = (case+ knd of
+            | LAMKINDlam _ => 0 | LAMKINDatlam _ => 1
+            | LAMKINDllam _ => 0 | LAMKINDatllam _ => 1
+            | LAMKINDfix () => 0
+          ) : int
+        in
+          if isat = 0 then
+            d1exp_lam_dyn (loc, lin, p1t, d1e_body)
+          else
+            d1exp_laminit_dyn (loc, lin, p1t, d1e_body)
+          // end of [if]
+        end // end of [F0ARGdyn when ...]
+      | F0ARGdyn p0t (* flag > 0 *) => let
+          val p1t = p0at_tr p0t
+          val d1e_body = // linear closure
+            d1exp_ann_funclo_opt (loc_body, d1e_body, FUNCLOcloptr)
+          // end of [val]
         in
           d1exp_lam_dyn (loc, lin, p1t, d1e_body)
         end // end of [F0ARGdyn]
@@ -645,7 +660,7 @@ val d1e_body = (
 ) : d1exp
 
 in
-  aux (args, d1e_body, 0(*flag*))
+  aux (knd, args, d1e_body, 0(*flag*))
 end // end of [d0exp_lams_dyn_tr]
 
 (* ****** ****** *)
@@ -892,8 +907,8 @@ fun aux_item (d0e0: d0exp): d1expitm = let
             end
           | None () => (None () (*ofc*), 0 (*lin*), None () (*oefc*))
         ) : (Option funclo, int, efcopt)
-        val d1e_fun =
-          d0exp_lams_dyn_tr (oloc0, ofc, lin, args, res, oefc, body)
+        val d1e_fun = d0exp_lams_dyn_tr
+          (LAMKINDfix (), oloc0, ofc, lin, args, res, oefc, body)
         val () = termination_metric_check (loc0, false (*met*), oefc)
       in
         $Fix.ITEMatm (d1exp_fix (loc0, id, d1e_fun))
@@ -956,8 +971,13 @@ fun aux_item (d0e0: d0exp): d1expitm = let
     | D0Eintsp (str (*int*)) => begin
         $Fix.ITEMatm (d1exp_intsp (loc0, str))
       end
-    | D0Elam (lin0, args, res, otags, body) => let
+    | D0Elam (knd, args, res, otags, body) => let
         val oloc0 = Some loc0
+        val lin0 = (case+ knd of
+          | LAMKINDlam _ => 0 | LAMKINDatlam _ => 0
+          | LAMKINDllam _ => 1 | LAMKINDatllam _ => 1
+          | LAMKINDfix () => 0
+        ) : int // end of [val]
         val (ofc, lin, oefc) = (
           case+ otags of
           | Some tags => let
@@ -969,7 +989,8 @@ fun aux_item (d0e0: d0exp): d1expitm = let
             end
           | None () => (None (), lin0, None ())
         ) : (Option funclo, int, efcopt)
-        val d1e_lam = d0exp_lams_dyn_tr (oloc0, ofc, lin, args, res, oefc, body)
+        val d1e_lam = d0exp_lams_dyn_tr
+          (knd, oloc0, ofc, lin, args, res, oefc, body)
       in
         $Fix.ITEMatm (d1e_lam)
       end // end of [D0Elam]
@@ -1226,6 +1247,7 @@ fn f0undec_tr
   (is_prf: bool, is_rec: bool, d: f0undec): f1undec = let
 
 val loc = d.f0undec_loc
+val knd = LAMKINDfix ()
 val otags = d.f0undec_eff
 val (ofc, oefc) = (
   case+ otags of
@@ -1243,9 +1265,9 @@ val (ofc, oefc) = (
     end
 ) : @(Option funclo, efcopt)
 
-val d1e_def =
-  d0exp_lams_dyn_tr (
-    None () (*oloc*), ofc, 0 (*lin*), d.f0undec_arg, d.f0undec_res, oefc, d.f0undec_def
+val d1e_def = d0exp_lams_dyn_tr (
+    knd, None () (*oloc*), ofc, 0 (*lin*)
+  , d.f0undec_arg, d.f0undec_res, oefc, d.f0undec_def
   ) // end of [d0exp_lams_dyn_tr]
 
 val () = begin
@@ -1286,9 +1308,10 @@ fn m0acdeflst_tr (ds: m0acdeflst): m1acdeflst =
 fn i0mpdec_tr (d: i0mpdec): i1mpdec = let
   val qid = d.i0mpdec_qid
   val tmparg = s0explstlst_tr qid.impqi0de_arg
+  val knd = LAMKINDfix ()
   val def = d0exp_lams_dyn_tr (
-    None () (*oloc*), None () (*ofc*), 0 (*lin*),
-    d.i0mpdec_arg, d.i0mpdec_res, None () (*oefc*),
+    knd, None(*oloc*), None(*ofc*), 0(*lin*),
+    d.i0mpdec_arg, d.i0mpdec_res, None(*oefc*),
     d.i0mpdec_def
   ) // end of [val]
 in

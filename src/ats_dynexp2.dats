@@ -676,9 +676,9 @@ implement d2exp_intsp (loc, str, int) = '{
 
 (* ****** ****** *)
 
-implement d2exp_lam_dyn (loc, lin, npf, arg, body) = '{
+implement d2exp_lam_dyn (loc, atlin, npf, arg, body) = '{
   d2exp_loc= loc
-, d2exp_node= D2Elam_dyn (lin, npf, arg, body)
+, d2exp_node= D2Elam_dyn (atlin, npf, arg, body)
 , d2exp_typ= None ()
 }
 

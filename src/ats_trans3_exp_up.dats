@@ -160,7 +160,7 @@ fn d2exp_seq_typ_syn (d2es: d2explst): s2exp = let
     | cons (d2e, d2es) => aux (d2e, d2es) | nil () => d2exp_typ_syn d2e
 in
   case+ d2es of
-    cons (d2e, d2es) => aux (d2e, d2es) | nil () => s2exp_void_t0ype ()
+  | cons (d2e, d2es) => aux (d2e, d2es) | nil () => s2exp_void_t0ype ()
 end // end of [d2exp_seq_typ_syn]
 
 implement d2exp_typ_syn (d2e0) = begin
@@ -177,7 +177,7 @@ implement d2exp_typ_syn (d2e0) = begin
   | D2Efloat _ => s2exp_double_t0ype ()
   | D2Efor _ => s2exp_void_t0ype ()
   | D2Eint _ => s2exp_int_t0ype ()
-  | D2Elam_dyn (lin, npf, p2ts_arg, d2e_body) => let
+  | D2Elam_dyn (atlin, npf, p2ts_arg, d2e_body) => let
 (*
       val () = begin
         prerr "d2exp_typ_syn: D2Elam_dyn: d2e_body = ";
@@ -192,19 +192,21 @@ implement d2exp_typ_syn (d2e0) = begin
       val d2e_body = d2exp_funclo_of_d2exp (d2e_body, fc)
       val s2fe = s2eff_of_d2exp d2e_body
       val isprf = s2exp_is_proof s2e_res
-      val s2t_fun: s2rt = s2rt_prf_lin_fc (loc0, isprf, lin > 0, fc)
-      val s2e_fun = s2exp_fun_srt 
+      val islin = atlin_is_lin (atlin)
+      val s2t_fun: s2rt = s2rt_prf_lin_fc (loc0, isprf, islin, fc)
+      val lin = (if islin then 1 else 0): int
+      val s2e_fun = s2exp_fun_srt
         (s2t_fun, fc, lin, s2fe, npf, s2es_arg, s2e_res)
 (*
       val () = begin
         prerr "d2exp_typ_syn: D2Elam_dyn: s2e_fun = ";
         prerr s2e_fun;
         prerr_newline ()
-      end
+      end // end of [val]
 *)
     in
       s2e_fun
-    end
+    end // end of [D2Elam_dyn]
   | D2Elam_met (r_d2vs, s2es_met, d2e) => begin
     case+ !r_d2vs of
     | cons _ => begin
