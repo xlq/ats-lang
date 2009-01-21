@@ -498,6 +498,15 @@ implement d3exp_lam_dyn
 , d3exp_node= D3Elam_dyn (lin, npf, p3ts_arg, d3e_body)
 } // end of [d3exp_lam_dyn]
 
+implement d3exp_laminit_dyn
+  (loc, s2e_fun, lin, npf, p3ts_arg, d3e_body) = '{
+  d3exp_loc= loc
+, d3exp_eff= S2EFFnil (), d3exp_typ= s2e_fun
+, d3exp_node= D3Elaminit_dyn (lin, npf, p3ts_arg, d3e_body)
+} // end of [d3exp_laminit_dyn]
+
+(* ****** ****** *)
+
 implement d3exp_lam_met
   (loc, s2es_met, d3e_body) = '{
   d3exp_loc= loc

@@ -229,8 +229,10 @@ and d3exp_node =
       (string, intinf_t)
   | D3Eintsp of (* dynamic specified integer *)
       (string, intinf_t)
-  | D3Elam_dyn of (* dynamic abstraction *)
-      (uint(*atlin*), int(*npf*), p3atlst, d3exp)
+  | D3Elam_dyn of (* dynamic abstraction: boxed *)
+      (int(*lin*), int(*npf*), p3atlst, d3exp)
+  | D3Elaminit_dyn of (* dynamic abstraction: unboxed *)
+      (int(*lin*), int(*npf*), p3atlst, d3exp)
   | D3Elam_met of (* metric abstraction *)
       (s2explst(*metric*), d3exp)
   | D3Elam_sta of (* static abstraction *)
@@ -534,9 +536,17 @@ fun d3exp_if
 fun d3exp_int (_: loc_t, _: s2exp, str: string, int: intinf_t): d3exp
 fun d3exp_intsp (_: loc_t, _: s2exp, str: string, int: intinf_t): d3exp
 
+(* ****** ****** *)
+
 fun d3exp_lam_dyn
   (_: loc_t, _: s2exp, lin: int, npf: int, _arg: p3atlst, _body: d3exp)
   : d3exp
+
+fun d3exp_laminit_dyn
+  (_: loc_t, _: s2exp, lin: int, npf: int, _arg: p3atlst, _body: d3exp)
+  : d3exp
+
+(* ****** ****** *)
 
 fun d3exp_lam_met (_: loc_t, met: s2explst, _body: d3exp): d3exp
 

@@ -1219,6 +1219,45 @@ end // end of [sc2laulst_covercheck]
 
 (* ****** ****** *)
 
+fn d1exp_arg_body_tr
+  (p1t_arg: p1at, d1e_body: d1exp)
+  : @(int, p2atlst, d2exp) = let
+  var wths1es = WTHS1EXPLSTnil ()
+  val p2t_arg = p1at_arg_tr (p1t_arg, wths1es)
+  val () = wths1es := wths1explst_reverse wths1es
+  var npf: int = 0
+  val p2ts_arg = (
+    case+ p2t_arg.p2at_node of
+    | P2Tlist (npf1, p2ts) => (npf := npf1; p2ts)
+    | _ => cons (p2t_arg, nil ())
+  ) : p2atlst
+  val (pf_env | ()) = trans2_env_push ()
+  val () = let
+    val s2vs = s2varlst_of_s2varlstord p2t_arg.p2at_svs
+  in
+    the_s2expenv_add_svarlst s2vs
+  end
+  val () = let
+    val d2vs = d2varlst_of_d2varlstord p2t_arg.p2at_dvs
+  in
+    the_d2expenv_add_dvarlst d2vs
+  end
+  val (pf_level | ()) = d2var_current_level_inc ()
+  val d2e_body: d2exp = begin
+    if wths1explst_is_none wths1es then begin
+      d1exp_tr d1e_body // regular translation
+    end else begin
+      d1exp_wths1explst_tr (d1e_body, wths1es)
+    end // end of [if]
+  end
+  val () = d2var_current_level_dec (pf_level | (*none*))
+  val () = trans2_env_pop (pf_env | (*none*))
+in
+  @(npf, p2ts_arg, d2e_body)
+end // end of [d1exp_arg_body_tr]
+
+(* ****** ****** *)
+
 implement d1exp_tr (d1e0): d2exp = let
   val loc0 = d1e0.d1exp_loc
 (*
@@ -1388,38 +1427,14 @@ in
       d2exp_intsp (loc0, str, $IntInf.intinf_make_stringsp str)
     end
   | D1Elam_dyn (lin, p1t_arg, d1e_body) => let
-      var wths1es = WTHS1EXPLSTnil ()
-      val p2t_arg = p1at_arg_tr (p1t_arg, wths1es)
-      val () = wths1es := wths1explst_reverse wths1es
-      var npf: int = 0
-      val p2ts_arg = (
-        case+ p2t_arg.p2at_node of
-        | P2Tlist (npf1, p2ts) => (npf := npf1; p2ts)
-        | _ => cons (p2t_arg, nil ())
-      ) : p2atlst
-      val (pf_env | ()) = trans2_env_push ()
-      val () = let
-        val s2vs = s2varlst_of_s2varlstord p2t_arg.p2at_svs
-      in
-        the_s2expenv_add_svarlst s2vs
-      end
-      val () = let
-        val d2vs = d2varlst_of_d2varlstord p2t_arg.p2at_dvs
-      in
-        the_d2expenv_add_dvarlst d2vs
-      end
-      val (pf_level | ()) = d2var_current_level_inc ()
-      val d2e_body: d2exp = begin
-        if wths1explst_is_none wths1es then begin
-          d1exp_tr d1e_body // regular translation
-        end else begin
-          d1exp_wths1explst_tr (d1e_body, wths1es)
-        end // end of [if]
-      end
-      val () = d2var_current_level_dec (pf_level | (*none*))
-      val () = trans2_env_pop (pf_env | (*none*))
+      val @(npf, p2ts_arg, d2e_body) = d1exp_arg_body_tr (p1t_arg, d1e_body)
     in
       d2exp_lam_dyn (loc0, lin, npf, p2ts_arg, d2e_body)
+    end // end of [D1Elam_dyn]
+  | D1Elaminit_dyn (lin, p1t_arg, d1e_body) => let
+      val @(npf, p2ts_arg, d2e_body) = d1exp_arg_body_tr (p1t_arg, d1e_body)
+    in
+      d2exp_laminit_dyn (loc0, lin, npf, p2ts_arg, d2e_body)
     end // end of [D1Elam_dyn]
   | D1Elam_met (_, met, body) => let
       val met = s1explst_tr_up met; val body = d1exp_tr body
@@ -1991,91 +2006,122 @@ fun d1exp_tr_ann (d1e0: d1exp, s2e0: s2exp): d2exp = begin
     end // end of [S2Euni]
   | S2Efun (fc, lin1, s2fe, npf1, s2es_arg, s2e_res) => begin
     case+ d1e0.d1exp_node of
-    | D1Elam_dyn (lin2, p1t_arg, d1e_body) => let // lin2 = 0
-        val () = // check of linearity match
-          if lin1 <> lin2 then begin
-            prerr d1e0.d1exp_loc;
-            prerr ": error(2)";
-            $Deb.debug_prerrf (": %s: d1exp_tr_ann", @(THISFILENAME));
-            if lin1 < lin2 then prerr ": linear function is given a nonlinear type.";
-            if lin1 > lin2 then prerr ": nonlinear function is given a linear type.";
-            prerr_newline ();
-            $Err.abort {void} ()
-          end
-        var wths1es = WTHS1EXPLSTnil ()
-        val p2t_arg = p1at_arg_tr (p1t_arg, wths1es)
-        val () = // check for refval types
-          if wths1explst_is_none wths1es then () else begin
-            prerr p1t_arg.p1at_loc;
-            prerr ": error(2)";
-            prerr ": the function argument cannot be ascribed refval types.";
-            prerr_newline ();
-            $Err.abort {void} ()
-          end
-        var npf2: int = 0
-        val p2ts_arg = (
-          case+ p2t_arg.p2at_node of
-          | P2Tlist (npf, p2ts) => (npf2 := npf; p2ts)
-          | _ => cons (p2t_arg, nil ())
-        ) : p2atlst
-        val () = // check for pfarity match
-          if npf1 <> npf2 then begin
-            prerr d1e0.d1exp_loc;
-            prerr ": error(2)";
-            $Deb.debug_prerrf (": %s: d1exp_tr_ann", @(THISFILENAME));
-            if npf1 < npf2 then prerr ": less proof arguments are expected.";
-            if npf1 > npf2 then prerr ": more proof arguments are expected.";
-            prerr_newline ();
-            $Err.abort {void} ()
-          end
-        val p2ts_arg: p2atlst = let
-          val ns2es = $Lst.list_length s2es_arg
-          val np2ts = $Lst.list_length p2ts_arg
-          fun aux {n:nat}
-            (p2ts: list (p2at, n), s2es: list (s2exp, n)): list (p2at, n) =
-            case+ p2ts of
-            | cons (p2t, p2ts) => let
-                val+ cons (s2e, s2es) = s2es
-              in
-                cons (p2at_ann (p2t.p2at_loc, p2t, s2e), aux (p2ts, s2es))
-              end
-            | nil () => nil ()            
-        in
-          if ns2es <> np2ts then begin
-            prerr d1e0.d1exp_loc;
-            prerr ": error(2)";
-            $Deb.debug_prerrf (": %s: d1exp_tr_ann", @(THISFILENAME));
-            if ns2es < np2ts then prerr ": less arguments are expected.";
-            if ns2es > np2ts then prerr ": more arguments are expected.";
-            prerr_newline ();
-            $Err.abort {p2atlst} ()
-          end else begin
-            aux (p2ts_arg, s2es_arg)
-          end
-        end
-        val (pf_env2 | ()) = trans2_env_push ()
-        val () = let
-          val s2vs = s2varlst_of_s2varlstord p2t_arg.p2at_svs
-        in
-          the_s2expenv_add_svarlst s2vs
-        end
-        val () = let
-          val d2vs = d2varlst_of_d2varlstord p2t_arg.p2at_dvs
-        in
-          the_d2expenv_add_dvarlst d2vs
-        end
-        val d2e_body = d1exp_tr_ann (d1e_body, s2e_res)
-        val () = trans2_env_pop (pf_env2 | (*none*))
-        val loc_body = d2e_body.d2exp_loc
-        val d2e_body = d2exp_ann_seff (loc_body, d2e_body, s2fe)
-        val d2e_body = d2exp_ann_funclo (loc_body, d2e_body, fc)
+    | D1Elam_dyn (lin2, p1t_arg, d1e_body) => let
+        val @(p2ts_arg, d2e_body) = d1exp_arg_body_tr_ann (
+          d1e0, fc, lin1, s2fe, npf1, s2es_arg, s2e_res, lin2, p1t_arg, d1e_body
+        ) // end of [val]
       in
         d2exp_lam_dyn (d1e0.d1exp_loc, lin1, npf1, p2ts_arg, d2e_body)
-      end
+      end // end of [D2Elam_dyn]
+    | D1Elaminit_dyn (lin2, p1t_arg, d1e_body) => let
+        val @(p2ts_arg, d2e_body) = d1exp_arg_body_tr_ann (
+          d1e0, fc, lin1, s2fe, npf1, s2es_arg, s2e_res, lin2, p1t_arg, d1e_body
+        ) // end of [val]
+      in
+        d2exp_laminit_dyn (d1e0.d1exp_loc, lin1, npf1, p2ts_arg, d2e_body)
+      end // end of [D2Elam_dyn]
     | _ => d2exp_ann_type (d1e0.d1exp_loc, d1exp_tr d1e0, s2e0)
     end // end of [S2Efun]
   | _ => d2exp_ann_type (d1e0.d1exp_loc, d1exp_tr d1e0, s2e0)
 end // end of [d1exp_tr_ann]
+
+and d1exp_arg_body_tr_ann (
+    d1e0: d1exp
+  , fc: $Syn.funclo
+  , lin1: int
+  , s2fe: s2eff
+  , npf1: int
+  , s2es_arg: s2explst
+  , s2e_res: s2exp
+  , lin2: int
+  , p1t_arg: p1at
+  , d1e_body: d1exp
+  ) : @(p2atlst, d2exp) = let
+  val () = case+ fc of
+    | $Syn.FUNCLOclo knd when knd = 0 => begin
+        prerr d1e0.d1exp_loc; prerr ": error(2)";
+        prerr ": function is given an unboxed closure type.";
+        $Err.abort {void} ()
+      end // end of [FUNCLOclo when ...]
+    | _ => ()
+  // end of [val]
+  val () = if lin1 <> lin2 then begin
+    prerr d1e0.d1exp_loc; prerr ": error(2)";
+    $Deb.debug_prerrf (": %s: d1exp_tr_ann", @(THISFILENAME));
+    if lin1 < lin2 then prerr ": linear function is given a nonlinear type.";
+    if lin1 > lin2 then prerr ": nonlinear function is given a linear type.";
+    prerr_newline ();
+    $Err.abort {void} ()
+  end // end of [val]
+  var wths1es = WTHS1EXPLSTnil ()
+  val p2t_arg = p1at_arg_tr (p1t_arg, wths1es)
+  val () = // check for refval types
+    if wths1explst_is_none wths1es then () else begin
+      prerr p1t_arg.p1at_loc;
+      prerr ": error(2)";
+      prerr ": the function argument cannot be ascribed refval types.";
+      prerr_newline ();
+      $Err.abort {void} ()
+    end
+  var npf2: int = 0
+  val p2ts_arg = (
+    case+ p2t_arg.p2at_node of
+    | P2Tlist (npf, p2ts) => (npf2 := npf; p2ts)
+    | _ => cons (p2t_arg, nil ())
+  ) : p2atlst
+  val () = // check for pfarity match
+    if npf1 <> npf2 then begin
+      prerr d1e0.d1exp_loc;
+      prerr ": error(2)";
+      $Deb.debug_prerrf (": %s: d1exp_tr_ann", @(THISFILENAME));
+      if npf1 < npf2 then prerr ": less proof arguments are expected.";
+      if npf1 > npf2 then prerr ": more proof arguments are expected.";
+      prerr_newline ();
+      $Err.abort {void} ()
+    end
+  val p2ts_arg = let
+    val ns2es = $Lst.list_length s2es_arg
+    val np2ts = $Lst.list_length p2ts_arg
+    fun aux {n:nat}
+      (p2ts: list (p2at, n), s2es: list (s2exp, n)): list (p2at, n) =
+      case+ p2ts of
+      | cons (p2t, p2ts) => let
+          val+ cons (s2e, s2es) = s2es
+        in
+          cons (p2at_ann (p2t.p2at_loc, p2t, s2e), aux (p2ts, s2es))
+        end
+      | nil () => nil ()            
+  in
+    if ns2es <> np2ts then begin
+      prerr d1e0.d1exp_loc; prerr ": error(2)";
+      $Deb.debug_prerrf (": %s: d1exp_tr_ann", @(THISFILENAME));
+      if ns2es < np2ts then prerr ": less arguments are expected.";
+      if ns2es > np2ts then prerr ": more arguments are expected.";
+      prerr_newline ();
+      $Err.abort {p2atlst} ()
+    end else begin
+      aux (p2ts_arg, s2es_arg)
+    end // end of [if]
+  end : p2atlst // end of [val]
+  val (pf_env2 | ()) = trans2_env_push ()
+  val () = let
+    val s2vs = s2varlst_of_s2varlstord p2t_arg.p2at_svs
+  in
+    the_s2expenv_add_svarlst s2vs
+  end // end of [val]
+  val () = let
+    val d2vs = d2varlst_of_d2varlstord p2t_arg.p2at_dvs
+  in
+    the_d2expenv_add_dvarlst d2vs
+  end
+  val d2e_body = d1exp_tr_ann (d1e_body, s2e_res)
+  val () = trans2_env_pop (pf_env2 | (*none*))
+  val loc_body = d2e_body.d2exp_loc
+  val d2e_body = d2exp_ann_seff (loc_body, d2e_body, s2fe)
+  val d2e_body = d2exp_ann_funclo (loc_body, d2e_body, fc)
+in
+  @(p2ts_arg, d2e_body)
+end // end of [d2exp_tr_arg_body_ann]
 
 (* ****** ****** *)
 
@@ -2176,7 +2222,7 @@ fun d1exp_arity_check (d1e: d1exp, ns: List int): bool = let
     | D1Elam_sta_ana (_(*loc*), _(*s1as*), d1e) => aux2 (d1e, n, ns)
     | D1Elam_sta_syn (_(*loc*), _(*s1qs*), d1e) => aux2 (d1e, n, ns)
     | _ => false
-  end
+  end // end of [aux2]
 in
   aux1 (d1e, ns)
 end // end of [d1exp_arity_check]

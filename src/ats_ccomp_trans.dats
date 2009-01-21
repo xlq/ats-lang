@@ -1019,7 +1019,6 @@ implement ccomp_exp_lam_funlab
       if d2var_lev_get d2v < level then the_vartypset_add vtp
     end
   } // end of [where]
-
   val res = $Lst.list_vt_reverse_list (res)
 (*
   val () = begin
@@ -2353,10 +2352,19 @@ fn ccomp_vardec_dyn
         prerr_newline (); $Err.abort {hiexp} ()
       end // end of [None]
   ) : hiexp
-  val- HIEarrinit (hit_elt, ohie_asz, hies_elt) = hie_ini.hiexp_node
-  val hit_elt = hityp_normalize hit_elt
 in
-  ccomp_exp_arrinit_tmpvar (res, hit_elt, ohie_asz, hies_elt, tmp_ptr)
+  case+ hie_ini.hiexp_node of
+  | HIEarrinit (hit_elt, ohie_asz, hies_elt) => let
+      val hit_elt = hityp_normalize hit_elt
+    in
+      ccomp_exp_arrinit_tmpvar (res, hit_elt, ohie_asz, hies_elt, tmp_ptr)
+    end // end of [HIEarrinit]
+  | _ => begin
+      prerr "Internal Error";
+      prerr ": ccomp_vardec_dyn: unsupported initialization form";
+      prerr ": hie_ini = "; prerr hie_ini; prerr_newline ();
+      $Err.abort {void} ()
+    end // end of [_]
 end // end of [ccomp_vardec_dyn]
 
 fn ccomp_vardec

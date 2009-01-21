@@ -142,6 +142,7 @@ fn s2eff_of_d2exp (d2e0: d2exp): s2eff =
   case+ d2e0.d2exp_node of
   | D2Eann_seff (_, s2fe) => s2fe
   | D2Elam_dyn _ => S2EFFnil ()
+  | D2Elaminit_dyn _ => S2EFFnil ()
   | D2Elam_sta _ => S2EFFnil ()
   | _ => S2EFFall ()
 
@@ -150,10 +151,46 @@ fn d2exp_s2eff_of_d2exp
   case+ :(s2fe0: s2eff) => d2e0.d2exp_node of
   | D2Eann_seff (d2e, s2fe) => (s2fe0 := s2fe; d2e)
   | D2Elam_dyn _ => (s2fe0 := S2EFFnil (); d2e0)
+  | D2Elaminit_dyn _ => (s2fe0 := S2EFFnil (); d2e0)
   | D2Elam_sta _ => (s2fe0 := S2EFFnil (); d2e0)
   | _ => (s2fe0 := S2EFFall (); d2e0)
 
 (* ****** ****** *)
+
+fn d2exp_arg_body_typ_syn (
+    d2e0: d2exp
+  , fc0: $Syn.funclo
+  , lin: int, npf: int
+  , p2ts_arg: p2atlst, d2e_body: d2exp
+  ) : s2exp = let
+(*
+  val () = begin
+    prerr "d2exp_arg_body_typ_syn: d2e_body = ";
+    prerr d2e_body;
+    prerr_newline ()
+  end // end of [val]
+*)
+  val loc0 = d2e0.d2exp_loc
+  var fc: $Syn.funclo = fc0
+  val s2es_arg = p2atlst_typ_syn p2ts_arg
+  val s2e_res = d2exp_typ_syn (d2e_body)
+  val d2e_body = d2exp_funclo_of_d2exp (d2e_body, fc)
+  val s2fe = s2eff_of_d2exp d2e_body
+  val isprf = s2exp_is_proof s2e_res
+  val islin = (if lin > 0 then true else false): bool
+  val s2t_fun: s2rt = s2rt_prf_lin_fc (loc0, isprf, islin, fc)
+  val s2e_fun = s2exp_fun_srt
+    (s2t_fun, fc, lin, s2fe, npf, s2es_arg, s2e_res)
+(*
+  val () = begin
+    prerr "d2exp_arg_body_typ_syn: s2e_fun = ";
+    prerr s2e_fun;
+    prerr_newline ()
+  end // end of [val]
+*)
+in
+  s2e_fun
+end // end of [d2exp_arg_body_typ_syn]
 
 fn d2exp_seq_typ_syn (d2es: d2explst): s2exp = let
   fun aux (d2e: d2exp, d2es: d2explst): s2exp = case+ d2es of
@@ -177,52 +214,32 @@ implement d2exp_typ_syn (d2e0) = begin
   | D2Efloat _ => s2exp_double_t0ype ()
   | D2Efor _ => s2exp_void_t0ype ()
   | D2Eint _ => s2exp_int_t0ype ()
-  | D2Elam_dyn (atlin, npf, p2ts_arg, d2e_body) => let
-(*
-      val () = begin
-        prerr "d2exp_typ_syn: D2Elam_dyn: d2e_body = ";
-        prerr d2e_body;
-        prerr_newline ()
-      end
-*)
-      val loc0 = d2e0.d2exp_loc
-      val s2es_arg = p2atlst_typ_syn p2ts_arg
-      val s2e_res = d2exp_typ_syn (d2e_body)
-      var fc: funclo = $Syn.FUNCLOfun () // default
-      val d2e_body = d2exp_funclo_of_d2exp (d2e_body, fc)
-      val s2fe = s2eff_of_d2exp d2e_body
-      val isprf = s2exp_is_proof s2e_res
-      val islin = atlin_is_lin (atlin)
-      val s2t_fun: s2rt = s2rt_prf_lin_fc (loc0, isprf, islin, fc)
-      val lin = (if islin then 1 else 0): int
-      val s2e_fun = s2exp_fun_srt
-        (s2t_fun, fc, lin, s2fe, npf, s2es_arg, s2e_res)
-(*
-      val () = begin
-        prerr "d2exp_typ_syn: D2Elam_dyn: s2e_fun = ";
-        prerr s2e_fun;
-        prerr_newline ()
-      end // end of [val]
-*)
+  | D2Elam_dyn (lin, npf, p2ts_arg, d2e_body) => let
+      val fc0: funclo = $Syn.FUNCLOfun () // default
     in
-      s2e_fun
+      d2exp_arg_body_typ_syn (d2e0, fc0, lin, npf, p2ts_arg, d2e_body)
     end // end of [D2Elam_dyn]
+  | D2Elaminit_dyn (lin, npf, p2ts_arg, d2e_body) => let
+      val fc: funclo = $Syn.FUNCLOclo 0(*unboxed*) // default
+    in
+      d2exp_arg_body_typ_syn (d2e0, fc, lin, npf, p2ts_arg, d2e_body)
+    end // end of [D2Elaminit_dyn]
   | D2Elam_met (r_d2vs, s2es_met, d2e) => begin
     case+ !r_d2vs of
     | cons _ => begin
         s2exp_metfn (None (), s2es_met, d2exp_typ_syn d2e)
-      end
+      end // end of [cons]
     | nil () => begin
         prerr d2e0.d2exp_loc;
         prerr ": error(3)";
         prerr ": illegal use of termination metric.";
         prerr_newline ();
         $Err.abort {s2exp} ()
-      end
-    end
+      end // end of [nil]
+    end // end of [D2Elam_met]
   | D2Elam_sta (s2vs, s2ps, d2e) => begin
       s2exp_uni (s2vs, s2ps, d2exp_typ_syn d2e)
-    end
+    end // end of [D2Elam_sta]
   | D2Elet (_, d2e) => d2exp_typ_syn (d2e)
   | D2Estring (_(*str*), _(*len*)) => s2exp_string_type ()
   | D2Ewhere (d2e, _) => d2exp_typ_syn (d2e)
@@ -232,7 +249,7 @@ implement d2exp_typ_syn (d2e0) = begin
       val () = d2exp_typ_set (d2e0, Some s2e)
     in
       s2e
-    end
+    end // end of [_]
 end // end of [d2exp_typ_syn]
 
 (* ****** ****** *)
@@ -264,19 +281,19 @@ fn pfarity_check_fun (loc_fun: loc_t, npf_fun: int, npf: int) =
     prerr "].";
     prerr_newline ();
     $Err.abort {void} ()
-end
+end // end of [pfarity_check_fun]
 
 (* ****** ****** *)
 
 fn d2lab_tr_up (d2l: d2lab): d3lab0 = case+ d2l.d2lab_node of
   | D2LABind d2ess => d3lab0_ind (d2l.d2lab_loc, d2explstlst_tr_up d2ess)
   | D2LABlab l => d3lab0_lab (d2l.d2lab_loc, l)
+// end of [d2lab_tr_up]
 
 fun d2lablst_tr_up (d2ls: d2lablst): d3lab0lst = case+ d2ls of
   | cons (d2l, d2ls) => cons (d2lab_tr_up d2l, d2lablst_tr_up d2ls)
   | nil () => nil ()
-
-//
+// end of [d2lablst_tr_up]
 
 fun s2lab0lst_of_d3lab0lst {n:nat} .<n>.
   (d3ls: list (d3lab0, n)): list (s2lab, n) = begin
@@ -287,7 +304,7 @@ fun s2lab0lst_of_d3lab0lst {n:nat} .<n>.
         | D3LAB0lab l => S2LAB0lab l
     in
       cons (s2l, s2lab0lst_of_d3lab0lst d3ls)
-    end
+    end // end of [cons]
   | nil () => nil ()
 end // end of [s2lab0lst_of_d3lab0lst]
 
@@ -302,7 +319,7 @@ fun s2lab1lst_of_d3lab1lst {n:nat} .<n>.
         | D3LAB1lab (l, s2e) => S2LAB1lab (l, s2e)
     in
       cons (s2l, s2lab1lst_of_d3lab1lst d3ls)
-    end
+    end // end of [cons]
   | nil () => nil ()
 end // end of [s2lab2lst_of_d3lab1lst]
 
@@ -334,13 +351,13 @@ fun d3lab1lst_of_d3lab0lst_s2lablst
           end
     in
       cons (d3l_new, d3lab1lst_of_d3lab0lst_s2lablst (d3ls, s2ls))
-    end
+    end // end of [cons, cons]
   | (nil (), nil ()) => nil ()
   | (_, _) => begin
       prerr "Internal Error: d3lab1lst_of_d3lab0lst_s2lablst: length mismatch";
       prerr_newline ();
       $Err.abort ()
-    end
+    end // end of [_, _]
 end // end of [d3lab1lst_of_d3lab0lst_s2lablst]
 
 (* ****** ****** *)
@@ -773,7 +790,6 @@ in
     end
   | nil () => nil ()
 end // end of [aux_filter]
-
 
 fun aux_select0 (xyzs: xyzlst_t): xyzlst_t = begin case+ xyzs of
   | cons (xyz, xyzs) => begin
@@ -1415,6 +1431,82 @@ fn d2exp_foldat_tr_up (loc0: loc_t, s2as: s2exparglst, d2e: d2exp): d3exp =
 
 fn d2exp_freeat_tr_up (loc0: loc_t, s2as: s2exparglst, d2e: d2exp): d3exp =
   d2exp_foldat_freeat_tr_up (loc0, false(*isfold*), s2as, d2e)
+
+(* ****** ****** *)
+
+fn d2exp_arg_body_tr_up (
+    loc0: loc_t
+  , fc0: $Syn.funclo
+  , lin: int, npf: int
+  , p2ts_arg: p2atlst, d2e_body: d2exp
+  ) : @(s2exp, p3atlst, d3exp) = let
+(*
+  val () = begin
+    prerr "d2exp_arg_body_tr_up: p2ts_arg = ";
+    prerr p2ts_arg; prerr_newline ();
+    prerr "d2exp_arg_body_tr_up: d2e_body = ";
+    prerr d2e_body; prerr_newline ();
+  end // end of [val]
+*)
+  val () = trans3_env_push_sta ()
+  var fc: funclo = fc0
+  val d2e_body = d2exp_funclo_of_d2exp (d2e_body, fc)
+  var s2fe: s2eff // uninitialized
+  val d2e_body = d2exp_s2eff_of_d2exp (d2e_body, s2fe)
+  val (pf_effect | ()) = the_effect_env_push_lam (s2fe)
+  val (pf_d2varset | ()) = the_d2varset_env_push_lam (lin)
+(*
+  val () = begin
+    prerr "d2exp_tr_up: D2Elam_dyn: d2varset = ";
+    the_d2varset_env_prerr_ld2vs; prerr_newline ()
+  end // end of [val]
+*)
+  val () = the_d2varset_env_add_p2atlst p2ts_arg
+(*
+  val () = begin
+    prerr "d2exp_tr_up: D2Elam_dyn: d2varset = ";
+    the_d2varset_env_prerr_ld2vs; prerr_newline ()
+  end // end of [val]
+*)
+  val s2es_arg = p2atlst_typ_syn p2ts_arg
+
+  // checking for pattern match exhaustiveness
+  val p2tcss = p2atcstlst_complement (p2atcstlst_of_p2atlst p2ts_arg)
+(*
+  val () = begin
+    prerr "d2exp_tr_up: D2Elam_dyn: p2tcss = "; prerr p2tcss; prerr_newline ()
+  end // end of [val]
+*)
+  val cmplt = (
+    case+ p2tcss of cons _ => 0(*incomplete*) | nil _ => 1
+  ) : int
+  val () = if cmplt = 0 then begin
+    trans3_env_add_p2atcstlstlst_false (loc0, 1(*casknd*), p2tcss, s2es_arg)
+  end // end of [val]
+
+  val p3ts_arg = p2atlst_arg_tr_up (npf, p2ts_arg)
+  val (pf_lamloop | ()) = the_lamloop_env_push_lam (p3ts_arg)
+  val d3e_body = d2exp_tr_up d2e_body
+  val () = the_d2varset_env_check loc0
+  val () = if lin > 0 then the_d2varset_env_check_llam loc0
+  val () = the_lamloop_env_pop (pf_lamloop | (*none*))
+  val () = the_d2varset_env_pop_lam (pf_d2varset | (*none*))
+  val () = the_effect_env_pop (pf_effect | (*none*))
+  val () = trans3_env_pop_sta_and_add_none (loc0)
+
+  val s2e_res = d3e_body.d3exp_typ
+  val isprf = s2exp_is_proof s2e_res
+  val s2t_fun = s2rt_prf_lin_fc (loc0, isprf, lin > 0, fc)
+  val s2e_fun =
+    s2exp_fun_srt (s2t_fun, fc, lin, s2fe, npf, s2es_arg, s2e_res)
+(*
+  val () = begin
+    prerr "d2exp_tr_up: D2Elam: s2e_fun = "; prerr s2e_fun; prerr_newline ()
+  end // end of [val]
+*)
+in
+  @(s2e_fun, p3ts_arg, d3e_body)
+end // end of [d2exp_arg_body_tr_up]
 
 (* ****** ****** *)
 
@@ -2068,72 +2160,20 @@ val d3e0 = (case+ d2e0.d2exp_node of
       d3exp_intsp (loc0, s2e, str, int)
     end // end of [D2Eintsp]
   | D2Elam_dyn (lin, npf, p2ts_arg, d2e_body) => let
-(*
-      val () = begin
-        prerr "d2exp_tr_up: D2Elam_dyn: p2ts_arg = ";
-        prerr p2ts_arg; prerr_newline ();
-        prerr "d2exp_tr_up: D2Elam_dyn: d2e_body = ";
-        prerr d2e_body; prerr_newline ();
-      end
-*)
-      val () = trans3_env_push_sta ()
-      var fc: funclo = $Syn.FUNCLOfun ()
-      val d2e_body = d2exp_funclo_of_d2exp (d2e_body, fc)
-      var s2fe: s2eff // uninitialized
-      val d2e_body = d2exp_s2eff_of_d2exp (d2e_body, s2fe)
-      val (pf_effect | ()) = the_effect_env_push_lam (s2fe)
-      val (pf_d2varset | ()) = the_d2varset_env_push_lam (lin)
-(*
-      val () = begin
-        prerr "d2exp_tr_up: D2Elam_dyn: d2varset = ";
-        the_d2varset_env_prerr_ld2vs; prerr_newline ()
-      end
-*)
-      val () = the_d2varset_env_add_p2atlst p2ts_arg
-(*
-      val () = begin
-        prerr "d2exp_tr_up: D2Elam_dyn: d2varset = ";
-        the_d2varset_env_prerr_ld2vs; prerr_newline ()
-      end
-*)
-      val s2es_arg = p2atlst_typ_syn p2ts_arg
-
-      // checking for pattern match exhaustiveness
-      val p2tcss = p2atcstlst_complement (p2atcstlst_of_p2atlst p2ts_arg)
-(*
-      val () = begin
-        prerr "d2exp_tr_up: D2Elam_dyn: p2tcss = "; prerr p2tcss; prerr_newline ()
-      end
-*)
-      val cmplt = (
-        case+ p2tcss of cons _ => 0(*incomplete*) | nil _ => 1
-      ) : int
-      val () = if cmplt = 0 then begin
-        trans3_env_add_p2atcstlstlst_false (loc0, 1(*casknd*), p2tcss, s2es_arg)
-      end
-
-      val p3ts_arg = p2atlst_arg_tr_up (npf, p2ts_arg)
-      val (pf_lamloop | ()) = the_lamloop_env_push_lam (p3ts_arg)
-      val d3e_body = d2exp_tr_up d2e_body
-      val () = the_d2varset_env_check loc0
-      val () = if lin > 0 then the_d2varset_env_check_llam loc0
-      val () = the_lamloop_env_pop (pf_lamloop | (*none*))
-      val () = the_d2varset_env_pop_lam (pf_d2varset | (*none*))
-      val () = the_effect_env_pop (pf_effect | (*none*))
-      val () = trans3_env_pop_sta_and_add_none (loc0)
-
-      val s2e_res = d3e_body.d3exp_typ
-      val isprf = s2exp_is_proof s2e_res
-      val s2t_fun = s2rt_prf_lin_fc (loc0, isprf, lin > 0, fc)
-      val s2e_fun =
-        s2exp_fun_srt (s2t_fun, fc, lin, s2fe, npf, s2es_arg, s2e_res)
-(*
-      val () = begin
-        prerr "d2exp_tr_up: D2Elam: s2e_fun = "; prerr s2e_fun; prerr_newline ()
-      end // end of [val]
-*)
+      val loc0 = d2e0.d2exp_loc
+      val fc0: $Syn.funclo = $Syn.FUNCLOfun () // default
+      val @(s2e_fun, p3ts_arg, d3e_body) =
+        d2exp_arg_body_tr_up (loc0, fc0, lin, npf, p2ts_arg, d2e_body)
     in
       d3exp_lam_dyn (loc0, s2e_fun, lin, npf, p3ts_arg, d3e_body)
+    end // end of [D2Elam_dyn]
+  | D2Elaminit_dyn (lin, npf, p2ts_arg, d2e_body) => let
+      val loc0 = d2e0.d2exp_loc
+      val fc0: $Syn.funclo = $Syn.FUNCLOclo 0(*unboxed*) // default
+      val @(s2e_fun, p3ts_arg, d3e_body) =
+        d2exp_arg_body_tr_up (loc0, fc0, lin, npf, p2ts_arg, d2e_body)
+    in
+      d3exp_laminit_dyn (loc0, s2e_fun, lin, npf, p3ts_arg, d3e_body)
     end // end of [D2Elam_dyn]
   | D2Elam_met (r_d2vs, s2es_met, d2e_body) => let
       val () = metric_nat_check (loc0, s2es_met)

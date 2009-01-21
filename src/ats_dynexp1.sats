@@ -307,8 +307,10 @@ and d1exp_node =
       string
   | D1Eintsp of (* dynamic specified integer constant *)
       string
-  | D1Elam_dyn of (* dynamic abstraction *)
-      (int (* atlin *), p1at, d1exp)
+  | D1Elam_dyn of (* dynamic abstraction: alloc / init *)
+      (int (*lin*), p1at, d1exp)
+  | D1Elaminit_dyn of (* dynamic abstraction initialization *)
+      (int (*lin*), p1at, d1exp)
   | D1Elam_met of (* metric abstraction *)
       (loc_t (*loc_arg*), s1explst, d1exp)
   | D1Elam_sta_ana of (* static abstraction: analysis *)

@@ -390,15 +390,24 @@ in
   | D1Eintsp i(*string*) => begin
       strpr "D1Eintsp("; fprint1_string (pf | out, i); strpr ")"
     end
-  | D1Elam_dyn (atlin, p1t, d1e) => begin
+  | D1Elam_dyn (lin, p1t, d1e) => begin
       strpr "D1Elam_dyn(";
-      fprint1_int (pf | out, atlin);
+      fprint1_int (pf | out, lin);
       strpr "; ";
       fprint_p1at (pf | out, p1t);
       strpr "; ";
       fprint_d1exp (pf | out, d1e);
       strpr ")"
     end // end of [D1Elam_dyn]
+  | D1Elaminit_dyn (lin, p1t, d1e) => begin
+      strpr "D1Elaminit_dyn(";
+      fprint1_int (pf | out, lin);
+      strpr "; ";
+      fprint_p1at (pf | out, p1t);
+      strpr "; ";
+      fprint_d1exp (pf | out, d1e);
+      strpr ")"
+    end // end of [D1Elaminit_dyn]
   | D1Elam_met (_, s1es, d1e) => begin
       strpr "D1Elam_met(";
       fprint_s1explst (pf | out, s1es);

@@ -832,6 +832,13 @@ in
     in
       hiexp_lam (loc0, hit_fun, hips_arg, hie_body)
     end // end of [D3Elam_dyn]
+  | D3Elaminit_dyn (lin, npf, p3ts_arg, d3e_body) => let
+      val hit_fun = s2exp_tr (1(*deep*), s2e0)
+      val hips_arg = p3atlst_arg_tr (npf, p3ts_arg)
+      val hie_body = d3exp_tr d3e_body
+    in
+      hiexp_laminit (loc0, hit_fun, hips_arg, hie_body)
+    end // end of [D3Elaminit_dyn]
   | D3Elam_sta (_(*s2vs*), _(*s2ps*), d3e_body) => let
       val hie_body = d3exp_tr d3e_body
       val () = // check for valueness

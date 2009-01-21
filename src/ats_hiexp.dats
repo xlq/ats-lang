@@ -377,11 +377,19 @@ implement hiexp_intsp (loc, hit, str, int) = '{
   hiexp_loc= loc, hiexp_node= HIEintsp (str, int), hiexp_typ= hit
 }
 
+(* ****** ****** *)
+
 implement hiexp_lam (loc, hit, hips_arg, hie_body) = '{
   hiexp_loc= loc
 , hiexp_node= HIElam (hips_arg, hie_body)
 , hiexp_typ= hit
 } // end of [hiexp_lam]
+
+implement hiexp_laminit (loc, hit, hips_arg, hie_body) = '{
+  hiexp_loc= loc
+, hiexp_node= HIElaminit (hips_arg, hie_body)
+, hiexp_typ= hit
+} // end of [hiexp_laminit]
 
 (* ****** ****** *)
 

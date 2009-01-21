@@ -567,7 +567,7 @@ in
     in
       v3ardec_make (loc0, 1(*knd*), d2v_ptr, d2v_view, s2e_ann, Some d3e_ini)
     end // end of [D2Earrinit]
-  | D2Elam_dyn (atlin, _, _, _) when (atlin_is_at atlin) => let
+  | D2Elaminit_dyn _ => let
       val d3e_ini = d2exp_tr_up (d2e_ini)
       val s2e_ini = d3e_ini.d3exp_typ
       val s2e_ini_view = s2exp_at_viewt0ype_addr_view (s2e_ini, s2e_addr)

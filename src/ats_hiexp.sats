@@ -356,7 +356,9 @@ and hiexp_node =
       (string, intinf_t)
   | HIEintsp of (* specified integer constant *)
       (string, intinf_t)
-  | HIElam of (* lambda-abstraction *)
+  | HIElam of (* lambda-abstraction: boxed *)
+      (hipatlst, hiexp)
+  | HIElaminit of (* lambda-abstraction: unboxed *)
       (hipatlst, hiexp)
   | HIElazy_delay of (* delayed computation *)
       hiexp (*eval*)
@@ -605,7 +607,12 @@ fun hiexp_int
 fun hiexp_intsp
   (_: loc_t, _: hityp, str: string, int: intinf_t): hiexp
 
+(* ****** ****** *)
+
 fun hiexp_lam
+  (_: loc_t, _: hityp, _arg: hipatlst, _body: hiexp): hiexp
+
+fun hiexp_laminit
   (_: loc_t, _: hityp, _arg: hipatlst, _body: hiexp): hiexp
 
 (* ****** ****** *)

@@ -310,6 +310,17 @@ in
       fprint_d3exp (pf | out, d3e);
       strpr ")"
     end // end of [D3Elam_dyn]
+  | D3Elaminit_dyn (lin, npf, p3ts, d3e) => begin
+      strpr "D3Elaminit_dyn(";
+      fprint1_int (pf | out, lin);
+      strpr "; ";
+      fprint1_int (pf | out, npf);
+      strpr "; ";
+      fprint_p3atlst (pf | out, p3ts);
+      strpr "; ";
+      fprint_d3exp (pf | out, d3e);
+      strpr ")"
+    end // end of [D3Elaminit_dyn]
   | D3Elam_met (s2es, d3e) => begin
       strpr "D3Elam_met(";
       fprint_s2explst (pf | out, s2es);

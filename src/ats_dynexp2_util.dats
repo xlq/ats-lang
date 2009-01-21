@@ -51,14 +51,6 @@ overload prerr with $Loc.prerr_location
 
 (* ****** ****** *)
 
-implement atlin_is_at (atlin: uint): bool =
-  if (atlin land 0x2U) > 0U then true else false
-
-implement atlin_is_lin (atlin: uint): bool =
-  if (atlin land 0x1U) > 0U then true else false
-
-(* ****** ****** *)
-
 implement d2var_readize (s2e_v, d2v) = let
   val () = d2var_lin_set (d2v, ~1) // nonlinear
   val () = d2var_mastyp_set (

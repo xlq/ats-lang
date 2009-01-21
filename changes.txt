@@ -1,5 +1,9 @@
 ########################################################################
 
+ats-lang-anariats-0.1.3:
+
+########################################################################
+
 ats-lang-anariats-0.1.2:
 
 1. Linear lazy evaluation is now supported. See [prelude/DATS/file.dats]
@@ -7,6 +11,9 @@ ats-lang-anariats-0.1.2:
 
 2. Many new tutorials have been added. There is also a all-in-form format
    that allows for easy printout.
+
+3. Many examples from the book K&R are translated into the directory:
+   [doc/EXAMPLE/KernighanRitchie].   
 
 ########################################################################
 

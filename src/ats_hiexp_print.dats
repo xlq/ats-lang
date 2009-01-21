@@ -389,6 +389,13 @@ in
       fprint_hiexp (pf | out, hie_body);
       strpr ")"
     end // end of [HIElam]
+  | HIElaminit (hips_arg, hie_body) => begin
+      strpr "HIElaminit(";
+      fprint_hipatlst (pf | out, hips_arg);
+      strpr "; ";
+      fprint_hiexp (pf | out, hie_body);
+      strpr ")"
+    end // end of [HIElaminit]
   | HIElazy_delay (hie_eval) => begin
       strpr "HIElazy_delay(";
       fprint_hiexp (pf | out, hie_eval);

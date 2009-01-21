@@ -517,6 +517,17 @@ in
       fprint_d2exp (pf | out, d2e);
       strpr ")"
     end // end of [D2Elam_dyn]
+  | D2Elaminit_dyn (lin, npf, p2ts, d2e) => begin
+      strpr "D2Elaminit_dyn(";
+      fprint1_int (pf | out, lin);
+      strpr "; ";
+      fprint1_int (pf | out, npf);
+      strpr "; ";
+      fprint_p2atlst (pf | out, p2ts);
+      strpr "; ";
+      fprint_d2exp (pf | out, d2e);
+      strpr ")"
+    end // end of [D2Elaminit_dyn]
   | D2Elam_met (_, s2es, d2e) => begin
       strpr "D2Elam_met(";
       fprint_s2explst (pf | out, s2es);
@@ -539,7 +550,7 @@ in
       strpr "; ";
       fprint_d2exp (pf | out, d2e);
       strpr ")"
-    end
+    end // end of [D2Elet]
   | D2Emac d2m => begin
       strpr "D2Emac("; fprint_d2mac (pf | out, d2m); strpr ")"
     end
