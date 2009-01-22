@@ -50,7 +50,8 @@
 /* ****** ****** */
 
 extern void *alloca (size_t nsz) ; // declared in [alloca.h]
-#define ATS_ALLOCA(n, sz) alloca(n * sz)
+#define ATS_ALLOCA1(sz) alloca(sz)
+#define ATS_ALLOCA2(n, sz) alloca(n * sz)
 
 /* ****** ****** */
 

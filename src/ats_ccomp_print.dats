@@ -357,17 +357,6 @@ implement fprint_instr (pf | out, ins) = let
   macdef strpr (s) = fprint1_string (pf | out, ,(s))
 in
   case+ ins of
-  | INSTRarr1asgn (vp_arr, vp_asz, tmp_elt, vp_tsz) => begin
-      strpr "INSTRarr1asgn(";
-      fprint_valprim (pf | out, vp_arr);
-      strpr "; ";
-      fprint_valprim (pf | out, vp_asz);
-      strpr "; ";
-      fprint_tmpvar (pf | out, tmp_elt);
-      strpr "; ";
-      fprint_valprim (pf | out, vp_tsz);
-      strpr ")";
-    end // end of [INSTRarr1asgn]
   | INSTRarr_heap (tmp, asz, hit_elt) => begin
       strpr "INSTRarr_heap(";
       fprint_tmpvar (pf | out, tmp);
@@ -386,6 +375,26 @@ in
       fprint_hityp (pf | out, hityp_decode hit_elt);
       strpr ")";
     end // end of [INSTRarr_stack]
+  | INSTRassgn_arr (vp_arr, vp_asz, tmp_elt, vp_tsz) => begin
+      strpr "INSTRassgn_arr(";
+      fprint_valprim (pf | out, vp_arr);
+      strpr "; ";
+      fprint_valprim (pf | out, vp_asz);
+      strpr "; ";
+      fprint_tmpvar (pf | out, tmp_elt);
+      strpr "; ";
+      fprint_valprim (pf | out, vp_tsz);
+      strpr ")";
+    end // end of [INSTRassgn_arr]
+  | INSTRassgn_clo (vp_clo, fl, env) => begin
+      strpr "INSTRassgn_clo(";
+      fprint_valprim (pf | out, vp_clo);
+      strpr "; ";
+      fprint_funlab (pf | out, fl);
+      strpr "; ";
+      fprint1_string (pf | out, "...");
+      strpr ")";
+    end // end of [INSTRassgn_clo]
   | INSTRcall (tmp, hit_fun, vp_fun, vps_arg) => begin
       strpr "INSTRcall(";
       fprint_tmpvar (pf | out, tmp);

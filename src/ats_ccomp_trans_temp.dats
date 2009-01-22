@@ -351,8 +351,8 @@ implement ccomp_tmpdef
   in
     case+ hie.hiexp_node of
     | HIElam (hips_arg, hie_body) => begin
-        ccomp_exp_lam_funlab (loc_fun, prolog, hips_arg, hie_body, fl)
-      end
+        ccomp_exp_arg_body_funlab (loc_fun, prolog, hips_arg, hie_body, fl)
+      end // end of [HIElam]
     | _ => begin
         $Loc.prerr_location loc_fun;
         prerr ": Internal Error: ccomp_tmpdef";

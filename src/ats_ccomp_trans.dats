@@ -875,6 +875,14 @@ end (* end of [hiexplst_refarg_tr] *)
 
 (* ****** ****** *)
 
+implement valprim_funclo_make (fl) = let
+  val fc = funlab_funclo_get (fl) in case+ fc of
+  | $Syn.FUNCLOclo knd => valprim_clo (knd, fl, cloenv_make ())
+  | $Syn.FUNCLOfun () => valprim_fun (fl)
+end // end of [valprim_funclo_make]
+
+(* ****** ****** *)
+
 fn ccomp_exp_assgn_ptr (
     res: &instrlst_vt
   , hie_ptr: hiexp
@@ -969,11 +977,11 @@ in
   aux_match (res, level, vps_arg, hips_arg)
 end // end of [ccomp_funarg]
 
-implement ccomp_exp_lam_funlab
-  (loc_fun, prolog, hips_arg, hie_body, fl: funlab_t) = let
+implement ccomp_exp_arg_body_funlab
+  (loc_fun, prolog, hips_arg, hie_body, fl) = let
 (*
   val () = begin
-    prerr "ccomp_exp_lam_funlab: fl = "; prerr_funlab fl; prerr_newline ()
+    prerr "ccomp_exp_arg_body_funlab: fl = "; prerr_funlab fl; prerr_newline ()
   end // end of [val]
 *)
   var res: instrlst_vt = list_vt_nil ()
@@ -1022,12 +1030,12 @@ implement ccomp_exp_lam_funlab
   val res = $Lst.list_vt_reverse_list (res)
 (*
   val () = begin
-    prerr "ccomp_exp_lam_funlab: fls = "; prerr_funlabset fls; prerr_newline ()
+    prerr "ccomp_exp_arg_body_funlab: fls = "; prerr_funlabset fls; prerr_newline ()
   end // end of [val]
 *)
 (*
   val () = begin
-    prerr "ccomp_exp_lam_funlab: body = "; prerr_instrlst res; prerr_newline ()
+    prerr "ccomp_exp_arg_body_funlab: body = "; prerr_instrlst res; prerr_newline ()
   end // end of [val]
 *)
   val entry = begin
@@ -1035,7 +1043,7 @@ implement ccomp_exp_lam_funlab
   end // end of [val]
 in
   funentry_lablst_add (fl); funentry_associate (entry); entry
-end // end of [ccomp_exp_lam_funlab]
+end // end of [ccomp_exp_arg_body_funlab]
 
 (* ****** ****** *)
 
@@ -1049,10 +1057,11 @@ fn ccomp_exp_lam (
   val fl = funlab_make_typ (hit0)
   val (pf_tailcallst_mark | ()) = the_tailcallst_mark ()
   val () = the_tailcallst_add (fl, list_nil ())
-  val _(*funentry*) = ccomp_exp_lam_funlab
-    (loc0, prolog, hips_arg, hie_body, fl) where {
-      val prolog = '[INSTRfunlab fl]
-    } // end of [where]
+  val _(*funentry*) = let
+    val prolog = '[INSTRfunlab fl]
+  in
+    ccomp_exp_arg_body_funlab (loc0, prolog, hips_arg, hie_body, fl)
+  end // end of [val]
   val () = the_tailcallst_unmark (pf_tailcallst_mark | (*none*))
 in
   valprim_funclo_make (fl)
@@ -1269,26 +1278,12 @@ end // end of [ccomp_exp_loop]
 
 (* ****** ****** *)
 
-implement valprim_funclo_make (fl) = let
-  val fc = funlab_funclo_get (fl)
-in
-  case+ fc of
-  | $Syn.FUNCLOclo knd => let
-      val env = cloenv_make ()
-    in
-      valprim_clo (knd, fl, env)
-    end
-  | $Syn.FUNCLOfun () => valprim_fun (fl)
-end // end of [valprim_funclo_make]
-
 implement ccomp_exp (res, hie0) = let
 (*
   val () = begin
-    prerr "ccomp_exp: hie0 = "; prerr hie0; prerr_newline ()
-  end
-  val () = begin
-    prerr "ccomp_exp: hit0 = "; prerr hie0.hiexp_typ; prerr_newline ()
-  end
+    prerr "ccomp_exp: hie0 = "; prerr hie0; prerr_newline ();
+    prerr "ccomp_exp: hit0 = "; prerr hie0.hiexp_typ; prerr_newline ();
+  end // end of [val]
 *)
 in
   case+ hie0.hiexp_node of
@@ -1296,12 +1291,12 @@ in
       val () = ccomp_exp_assgn_ptr (res, hie_ptr, hils, hie_val)
     in
       valprim_void ()
-    end
+    end // end of [HIEassgn_ptr]
   | HIEassgn_var (d2v_mut, hils, hie_val) => let
       val () = ccomp_exp_assgn_var (res, d2v_mut, hils, hie_val)
     in
       valprim_void ()
-    end
+    end // end of [HIEassgn_var]
   | HIEbool b => valprim_bool b
   | HIEchar c => valprim_char c
   | HIEcst d2c => begin case+ 0 of
@@ -1324,7 +1319,7 @@ in
       val () = instr_add_dynload_file (res, fil)
     in
       valprim_void ()
-    end
+    end // end of [HIEdynload]
   | HIEempty () => valprim_void ()
   | HIEextval code => let
       val hit0 = hityp_normalize (hie0.hiexp_typ)
@@ -1658,7 +1653,7 @@ end // end of [ccomp_exp_app_tmpvar]
 
 (* ****** ****** *)
 
-fn ccomp_exp_arr1asgn (
+fn ccomp_exp_assgn_arr (
     res: &instrlst_vt
   , vp_arr: valprim, hit_elt: hityp_t
   , hies_elt: hiexplst
@@ -1679,7 +1674,7 @@ fn ccomp_exp_arr1asgn (
   // end of [aux]
 in
   aux (res, 0, hies_elt)
-end // end of [ccomp_exp_arr1asgn]
+end // end of [ccomp_exp_assgn_arr]
 
 (* ****** ****** *)
 
@@ -1702,20 +1697,17 @@ fn ccomp_exp_arrinit_tmpvar (
   val () = instr_add_arr_stack (res, tmp_arr, vp_asz, hit_elt)
 in
   case+ ohie_asz of
-  | Some _ => begin
-    case+ hies_elt of
-    | list_cons (hie_elt, _) => let
+  | Some _ => begin case+ hies_elt of
+    | list_cons (hie_elt, _(*list_nil*)) => let
         val tmp_elt = tmpvar_make (hit_elt)
         val () = ccomp_exp_tmpvar (res, hie_elt, tmp_elt)
         val vp_tsz = valprim_sizeof (hit_elt)
       in
-        instr_add_arr1asgn (res, vp_arr, vp_asz, tmp_elt, vp_tsz)
+        instr_add_assgn_arr (res, vp_arr, vp_asz, tmp_elt, vp_tsz)
       end // end of [list_cons]
     | list_nil () => ()
     end // end of [Some]
-  | None () => begin
-      ccomp_exp_arr1asgn (res, vp_arr, hit_elt, hies_elt)
-    end // end of [None]
+  | None () => ccomp_exp_assgn_arr (res, vp_arr, hit_elt, hies_elt)
 end // end of [ccomp_exp_arrinit]
 
 (* ****** ****** *)
@@ -1744,7 +1736,7 @@ arraysize_viewt0ype_int_viewt0ype (a: viewt@ype, n:int) =
     instr_add_load_var_offs (res, tmp_arr, vp_res, '[off])
   end // end of [var]
 in
-  ccomp_exp_arr1asgn (res, vp_arr, hit_elt, hies_elt)
+  ccomp_exp_assgn_arr (res, vp_arr, hit_elt, hies_elt)
 end // end of [ccomp_exp_arrsize_tmpvar]
 
 (* ****** ****** *)
@@ -2191,12 +2183,13 @@ fn ccomp_fntdeclst_main {n:nat} (
   }
   val entrylst = auxlst_ccomp (fundecs, fls) where {
     fn aux_ccomp (fundec: hifundec, fl: funlab_t): funentry_t = let
-      val prolog = '[INSTRfunlab fl]
-      val hie_def = fundec.hifundec_def
+      val loc_dec = fundec.hifundec_loc
+      val prolog = '[INSTRfunlab fl]; val hie_def = fundec.hifundec_def
     in
       case+ hie_def.hiexp_node of
-      | HIElam (hips_arg, hie_body) => ccomp_exp_lam_funlab
-          (fundec.hifundec_loc, prolog, hips_arg, hie_body, fl)
+      | HIElam (hips_arg, hie_body) => begin
+          ccomp_exp_arg_body_funlab (loc_dec, prolog, hips_arg, hie_body, fl)
+        end // end of [HIElam]
       | _ => begin
           prerr "Internal Error: ccomp_fntdeclst_main; aux_ccomp: hie_def = ";
           prerr hie_def;
@@ -2215,7 +2208,7 @@ fn ccomp_fntdeclst_main {n:nat} (
         end
       | ~list_vt_nil () => list_nil ()
     end // end of [auxlst_ccomp]
-  }
+  } // end of [val entrylst]
   val () = the_tailcallst_unmark (pf_tailcallst_mark | (*none*))
 in
   ccomp_tailjoin_funentrylst (loc0, entrylst)
@@ -2234,12 +2227,12 @@ fun ccomp_fundeclst_main {n:nat} (
             val (pf_tailcallst_mark | ()) = the_tailcallst_mark ()
             val () = the_tailcallst_add (fl, list_nil ())
             val prolog = '[INSTRfunlab fl]
-            val _(*funentry*) = ccomp_exp_lam_funlab
+            val _(*funentry*) = ccomp_exp_arg_body_funlab
               (fundec.hifundec_loc, prolog, hips_arg, hie_body, fl)
             val () = the_tailcallst_unmark (pf_tailcallst_mark | (*none*))
           in
             // empty
-          end
+          end // end of [HIElam]
         | _ => begin
             prerr "Internal Error: ccomp_fundeclst_main: hie_def = ";
             prerr hie_def;
@@ -2359,6 +2352,21 @@ in
     in
       ccomp_exp_arrinit_tmpvar (res, hit_elt, ohie_asz, hies_elt, tmp_ptr)
     end // end of [HIEarrinit]
+  | HIElaminit (hips_arg, hie_body) => let
+      val hit_ini = hityp_normalize (hie_ini.hiexp_typ)
+      val fl = funlab_make_typ (hit_ini)
+      val (pf_tailcallst_mark | ()) = the_tailcallst_mark ()
+      val () = the_tailcallst_add (fl, list_nil ())
+      val _(*funentry*) = let
+        val loc = hie_ini.hiexp_loc; val prolog = '[INSTRfunlab fl]
+      in
+        ccomp_exp_arg_body_funlab (loc, prolog, hips_arg, hie_body, fl)
+      end // end of [val]
+      val () = the_tailcallst_unmark (pf_tailcallst_mark | (*none*))
+      val vp_clo = valprim_tmp (tmp_ptr); val env = cloenv_make ()
+    in
+      instr_add_assgn_clo (res, vp_clo, fl, env)
+    end // end of [HIElaminit]
   | _ => begin
       prerr "Internal Error";
       prerr ": ccomp_vardec_dyn: unsupported initialization form";
@@ -2419,9 +2427,9 @@ fn ccomp_impdec
 
         val (pf_tailcallst_mark | ()) = the_tailcallst_mark ()
         val () = the_tailcallst_add (fl, list_nil ())
-        val _(*funentry*) = ccomp_exp_lam_funlab
-          (hie.hiexp_loc, prolog, hips_arg, hie_body, fl) where {
-            val prolog = '[INSTRfunlab fl]
+        val _(*funentry*) = ccomp_exp_arg_body_funlab
+          (loc, prolog, hips_arg, hie_body, fl) where {
+            val loc = hie.hiexp_loc; val prolog = '[INSTRfunlab fl]
           } // end of [where]
         val () = the_tailcallst_unmark (pf_tailcallst_mark | (*none*))
 

@@ -301,8 +301,8 @@ end // end of [emit_hityp_fun]
 (* ****** ****** *)
 
 extern fun emit_cloenv {m:file_mode} (
-  pf: file_mode_lte (m, w) | out: &FILE m, map: envmap_t, vtps: vartypset
-) : int
+  pf: file_mode_lte (m, w) | out: &FILE m, map: envmap_t, vtps: vartypset, i0: int
+) : int // i0 = 0: without leading comma; i0 = 1: with leading comma
 
 (* ****** ****** *)
 
@@ -416,7 +416,23 @@ fn emit_valprim_char {m:file_mode}
   | _ => fprintf1_exn (pf | out, "'\\%.3o'", @(uint_of_char c))
 end // end of [emit_valprim_char]
 
-fn emit_valprim_clo {m:file_mode} (
+fn emit_valprim_clo_init {m:file_mode} (
+    pf: file_mode_lte (m, w)
+  | out: &FILE m, knd: int
+  , vp_clo: valprim, fl: funlab_t, map: envmap_t
+  ) : void = let
+  val entry = funlab_entry_get_some (fl)
+  val vtps = funentry_vtps_get_all (entry)
+  val () = emit_funlab (pf | out, fl)
+  val () = fprint1_string (pf | out, "_closure_init (")
+  val () = emit_valprim (pf | out, vp_clo)
+  val _(*int*) = emit_cloenv (pf | out, map, vtps, 1)
+  val () = fprint1_string (pf | out, ")")
+in
+  // empty
+end // end of [emit_valprim_clo_init]
+
+fn emit_valprim_clo_make {m:file_mode} (
     pf: file_mode_lte (m, w)
   | out: &FILE m, knd: int, fl: funlab_t, map: envmap_t
   ) : void = let
@@ -424,11 +440,11 @@ fn emit_valprim_clo {m:file_mode} (
   val vtps = funentry_vtps_get_all (entry)
   val () = emit_funlab (pf | out, fl)
   val () = fprint1_string (pf | out, "_closure_make (")
-  val _(*int*) = emit_cloenv (pf | out, map, vtps)
+  val _(*int*) = emit_cloenv (pf | out, map, vtps, 0)
   val () = fprint1_string (pf | out, ")")
 in
   // empty
-end // end of [emit_valprim_clo]
+end // end of [emit_valprim_clo_make]
 
 (* ****** ****** *)
 
@@ -764,13 +780,11 @@ implement emit_valprim (pf | out, vp) = begin
     end // end of [VParg_ref]
   | VPbool b => emit_valprim_bool (pf | out, b)
   | VPchar c => emit_valprim_char (pf | out, c)
-  | VPclo (knd, fl, env) => begin
-      emit_valprim_clo (pf | out, knd, fl, env)
-    end // end of [VPclo]
+  | VPclo (knd, fl, env) => emit_valprim_clo_make (pf | out, knd, fl, env)
   | VPcst d2c => begin case+ 0 of
     | _ when d2cst_is_fun d2c => begin
         fprint1_char (pf | out, '&'); emit_d2cst (pf | out, d2c)
-      end
+      end // end of [_ when ...]
     | _ => emit_d2cst (pf | out, d2c)
     end // end of [VPcst]
   | VPenv vtp => let
@@ -1021,7 +1035,7 @@ end // end of [emit_branchlst]
 (* ****** ****** *)
 
 implement emit_cloenv {m}
-  (pf | out, map, vtps): int = let
+  (pf | out, map, vtps, i0): int = let
   fn aux_envmap
     (out: &FILE m, map: envmap_t, d2v: d2var_t)
     : void = begin
@@ -1029,7 +1043,7 @@ implement emit_cloenv {m}
     | ~Some_vt vp => let
         val () = begin
           if d2var_is_mutable d2v then fprint1_char (pf | out, '&')
-        end
+        end // end of [val]
       in
         emit_valprim (pf | out, vp)
       end // end of [Some_vt]
@@ -1065,10 +1079,10 @@ implement emit_cloenv {m}
 
   val d2vs = vartypset_d2varlst_make (vtps)
   var err: int = 0
-  val n = aux_main (out, map, 0, d2vs, err)
+  val n = aux_main (out, map, i0, d2vs, err)
   val () = if err > 0 then $Err.abort {void} ()
 in
-  n // the number of variables in the closure environment
+  n - i0 // the number of variables in the closure environment
 end // end of [emit_cloenv]
 
 (* ****** ****** *)
@@ -1165,7 +1179,7 @@ end // end of [emit_move_con]
 
 (* ****** ****** *)
 
-fn emit_instr_arr1asgn {m:file_mode} (
+fn emit_instr_assgn_arr {m:file_mode} (
     pf: file_mode_lte (m, w)
   | out: &FILE m
   , vp_arr: valprim, vp_asz: valprim
@@ -1186,7 +1200,7 @@ fn emit_instr_arr1asgn {m:file_mode} (
   val () = fprint1_string (pf | out, ") ;")
 in
   // empty
-end // end of [emit_instr_arr1asgn]
+end // end of [emit_instr_assgn_arr]
 
 (* ****** ****** *)
 
@@ -1229,7 +1243,7 @@ fn emit_instr_arr_stack {m:file_mode} (
   val () = fprint1_string
     (pf | out, "/* array allocation on stack */\n")
   val () = emit_valprim_tmpvar (pf | out, tmp)
-  val () = fprint1_string (pf | out, " = ATS_ALLOCA (")
+  val () = fprint1_string (pf | out, " = ATS_ALLOCA2 (")
   val () = emit_valprim (pf | out, vp_asz)
   val () = fprint1_string (pf | out, ", sizeof(")
   val () = emit_hityp (pf | out, hit_elt)
@@ -1287,11 +1301,10 @@ in
       val vtps = funentry_vtps_get_all (entry)
       val () = emit_funlab (pf | out, fl)
       val () = fprint1_string (pf | out, " (")
-      val n = emit_cloenv (pf | out, envmap, vtps)
-      val () =
-        if n > 0 then begin case+ vps_arg of
-          | list_cons _ => fprint1_string (pf | out, ", ") | _ => ()
-        end
+      val n = emit_cloenv (pf | out, envmap, vtps, 0)
+      val () = if n > 0 then begin case+ vps_arg of
+        | list_cons _ => fprint1_string (pf | out, ", ") | _ => ()
+      end // end of [val]
       val () = emit_valprimlst (pf | out, vps_arg)
       val () = fprint1_string (pf | out, ") ;")
     in
@@ -1356,15 +1369,23 @@ implement emit_instr {m} (pf | out, ins) = let
     end // end of [if]
 in
   case+ ins of
-  | INSTRarr1asgn (vp_arr, vp_asz, tmp_elt, vp_tsz) => begin
-      emit_instr_arr1asgn (pf | out, vp_arr, vp_asz, tmp_elt, vp_tsz)
-    end // end of [INSTRarr1asgn]
   | INSTRarr_heap (tmp, asz, hit_elt) => begin
       emit_instr_arr_heap (pf | out, tmp, asz, hit_elt)
     end // end of [INSTRarr_heap]
   | INSTRarr_stack (tmp, vp_asz, hit_elt) => begin
       emit_instr_arr_stack (pf | out, tmp, vp_asz, hit_elt)
     end // end of [INSTRarr_heap]
+  | INSTRassgn_arr (vp_arr, vp_asz, tmp_elt, vp_tsz) => begin
+      emit_instr_assgn_arr (pf | out, vp_arr, vp_asz, tmp_elt, vp_tsz)
+    end // end of [INSTRassgn_arr]
+  | INSTRassgn_clo (vp_clo, fl, env) => begin
+      emit_valprim (pf | out, vp_clo);
+      fprint1_string (pf  | out, " = ATS_ALLOCA1 (sizeof(");
+      emit_funlab (pf | out, fl);
+      fprint1_string (pf | out, "_closure_type)) ;\n");
+      emit_valprim_clo_init (pf | out, 0(*unboxed*), vp_clo, fl, env);
+      fprint1_string (pf | out, " ; // closure initialization");
+    end // end of [INSTRassgn_clo]
   | INSTRcall (tmp, hit_fun, vp_fun, vps_arg) => begin
       emit_instr_call (pf | out, tmp, hit_fun, vp_fun, vps_arg)
     end // end of [INSTRcall]
@@ -1871,6 +1892,10 @@ extern fun emit_closure_type {m:file_mode} (
   pf_mod: file_mode_lte (m, w) | out: &FILE m, fl: funlab_t, vtps: vartypset
 ) : void
 
+extern fun emit_closure_init {m:file_mode} (
+  pf_mod: file_mode_lte (m, w) | out: &FILE m, fl: funlab_t, vtps: vartypset
+) : void
+
 extern fun emit_closure_make {m:file_mode} (
   pf_mod: file_mode_lte (m, w) | out: &FILE m, fl: funlab_t, vtps: vartypset
 ) : void
@@ -1879,14 +1904,15 @@ extern fun emit_closure_clofun {m:file_mode} (
   pf_mod: file_mode_lte (m, w) | out: &FILE m, fl: funlab_t, vtps: vartypset
 ) : void
 
-local
+// ------ ------ //
 
-dataviewtype ENV (l:addr, i:addr) = ENVcon2 (l, i) of (ptr l, ptr i)
+local
 
 fn _emit_closure_type {m:file_mode} {l:addr} (
     pf_mod: file_mode_lte (m, w), pf_fil: !FILE m @ l
   | p_l: ptr l, fl: funlab_t, vtps: vartypset
   ) : void = let
+  dataviewtype ENV (l:addr, i:addr) = ENVcon2 (l, i) of (ptr l, ptr i)
   var i: int = 0
   viewdef V = (FILE m @ l, int @ i)
   viewtypedef VT = ENV (l, i)
@@ -1921,12 +1947,83 @@ in
   // empty
 end // end of [_emit_closure_type]
 
-//
+// ------ ------ //
+
+fn _emit_closure_init {m:file_mode} {l:addr} (
+    pf_mod: file_mode_lte (m, w), pf_fil: !FILE m @ l
+  | p_l: ptr l, fl: funlab_t, vtps: vartypset
+  ) : void = let
+  dataviewtype ENV (l:addr, i:addr) = ENVcon2 (l, i) of (ptr l, ptr i)
+  var i: int // uninitialized
+  viewdef V = (FILE m @ l, int @ i)
+  viewtypedef VT = ENV (l, i)
+  fn f_arg (pf: !V | vtp: vartyp_t, env: !VT): void = let
+    prval @(pf_fil, pf_int) = pf
+    val+ ENVcon2 (p_l, p_i) = env
+    val i = !p_i; val () = (!p_i := i + 1)
+    val d2v = vartyp_var_get (vtp)
+    val hit = (
+      if d2var_is_mutable (d2v) then hityp_encode hityp_ptr
+      else vartyp_typ_get (vtp)
+    ) : hityp_t
+    val () = fprint1_string (pf_mod | !p_l, ", "); val () = begin
+      emit_hityp (pf_mod | !p_l, hit); fprintf1_exn (pf_mod | !p_l, " env%i", @(i))
+    end // end of [val]
+  in
+    pf := @(pf_fil, pf_int); fold@ env
+  end // end of [f_arg]
+
+  fn f_body (pf: !V | vtp: vartyp_t, env: !VT): void = let
+    prval @(pf_fil, pf_int) = pf
+    val+ ENVcon2 (p_l, p_i) = env
+    val i = !p_i; val () = (!p_i := i + 1)
+    val () = fprintf1_exn
+      (pf_mod | !p_l, "p_clo->closure_env_%i = env%i ;\n", @(i, i))
+  in
+    pf := @(pf_fil, pf_int); fold@ env
+  end // end of [f_body]
+
+  val () = fprint1_string (pf_mod | !p_l, "static inline\n")
+  val () = fprint1_string (pf_mod | !p_l, "ats_void_type\n")
+  val () = emit_funlab (pf_mod | !p_l, fl)
+  val () = fprint1_string (pf_mod | !p_l, "_closure_init (")
+  val () = emit_funlab (pf_mod | !p_l, fl)
+  val () = fprint1_string (pf_mod | !p_l, "_closure_type *p_clo")
+  
+  val env = ENVcon2 (p_l, &i)
+
+  val () = i := 0
+  prval pf = @(pf_fil, view@ i)
+  val () = vartypset_foreach_main {V} {VT} (pf | vtps, f_arg, env)
+  prval () = (pf_fil := pf.0; view@ i := pf.1)
+
+  val () = fprint1_string (pf_mod | !p_l, ") {\n")
+
+  val () = fprint1_string (pf_mod | !p_l, "p_clo->closure_fun = (ats_fun_ptr_type)&")
+  val () = emit_funlab (pf_mod | !p_l, fl)
+  val () = fprint1_string (pf_mod | !p_l, "_clofun ;\n")
+
+  val () = i := 0
+  prval pf = @(pf_fil, view@ i)
+  val () = vartypset_foreach_main {V} {VT} (pf | vtps, f_body, env)
+  prval () = (pf_fil := pf.0; view@ i := pf.1)
+
+  val+ ~ENVcon2 (_, _) = env
+
+  val () = fprint1_string (pf_mod | !p_l, "return ;\n")
+  val () = fprint1_string (pf_mod | !p_l, "} /* end of function */")
+
+in
+  // empty
+end // end of [_emit_closure_init]
+
+// ------ ------ //
 
 fn _emit_closure_make {m:file_mode} {l:addr} (
     pf_mod: file_mode_lte (m, w), pf_fil: !FILE m @ l
   | p_l: ptr l, fl: funlab_t, vtps: vartypset
   ) : void = let
+  dataviewtype ENV (l:addr, i:addr) = ENVcon2 (l, i) of (ptr l, ptr i)
   var i: int // uninitialized
   viewdef V = (FILE m @ l, int @ i)
   viewtypedef VT = ENV (l, i)
@@ -1940,21 +2037,12 @@ fn _emit_closure_make {m:file_mode} {l:addr} (
       else vartyp_typ_get (vtp)
     ) : hityp_t
     val () = if i > 0 then fprint1_string (pf_mod | !p_l, ", ")
-    val () = emit_hityp (pf_mod | !p_l, hit)
-    val () = fprintf1_exn (pf_mod | !p_l, " env%i", @(i))
+    val () = begin
+      emit_hityp (pf_mod | !p_l, hit); fprintf1_exn (pf_mod | !p_l, " env%i", @(i))
+    end // end of [val]
   in
     pf := @(pf_fil, pf_int); fold@ env
-  end
-
-  fn f_body (pf: !V | vtp: vartyp_t, env: !VT): void = let
-    prval @(pf_fil, pf_int) = pf
-    val+ ENVcon2 (p_l, p_i) = env
-    val i = !p_i; val () = (!p_i := i + 1)
-    val () = fprintf1_exn
-      (pf_mod | !p_l, "p->closure_env_%i = env%i ;\n", @(i, i))
-  in
-    pf := @(pf_fil, pf_int); fold@ env
-  end
+  end // end of [f_arg]
 
   val () = fprint1_string (pf_mod | !p_l, "ats_clo_ptr_type\n")
   val () = emit_funlab (pf_mod | !p_l, fl)
@@ -1966,38 +2054,42 @@ fn _emit_closure_make {m:file_mode} {l:addr} (
   prval pf = @(pf_fil, view@ i)
   val () = vartypset_foreach_main {V} {VT} (pf | vtps, f_arg, env)
   prval () = (pf_fil := pf.0; view@ i := pf.1)
+  val narg = i
 
   val () = fprint1_string (pf_mod | !p_l, ") {\n")
   val () = emit_funlab (pf_mod | !p_l, fl)
   val () = begin
-    fprint1_string (pf_mod | !p_l, "_closure_type *p = ATS_MALLOC (sizeof (")
-  end
+    fprint1_string (pf_mod | !p_l, "_closure_type *p_clo = ATS_MALLOC (sizeof(")
+  end // end of [val]
   val () = emit_funlab (pf_mod | !p_l, fl)
   val () = fprint1_string (pf_mod | !p_l, "_closure_type)) ;\n")
-  val () = fprint1_string (pf_mod | !p_l, "p->closure_fun = (ats_fun_ptr_type)&")
-  val () = emit_funlab (pf_mod | !p_l, fl)
-  val () = fprint1_string (pf_mod | !p_l, "_clofun ;\n")
 
-  val () = i := 0
-  prval pf = @(pf_fil, view@ i)
-  val () = vartypset_foreach_main {V} {VT} (pf | vtps, f_body, env)
-  prval () = (pf_fil := pf.0; view@ i := pf.1)
+  val () = emit_funlab (pf_mod | !p_l, fl)
+  val () = fprint1_string (pf_mod | !p_l, "_closure_init (p_clo")
+  val () = loop (!p_l, narg, 0) where {
+    fun loop (out: &FILE m, n: int, i: int): void =
+      if i < n then begin
+        fprintf1_exn (pf_mod | out, ", env%i", @(i)); loop (out, n, i+1)
+      end // end of [if]
+    // end of [loop]
+  } // end of [val]
+  val () = fprint1_string (pf_mod | !p_l, ") ;\n")
 
   val+ ~ENVcon2 (_, _) = env
 
-  val () = fprint1_string (pf_mod | !p_l, "return (ats_clo_ptr_type)p ;\n")
+  val () = fprint1_string (pf_mod | !p_l, "return (ats_clo_ptr_type)p_clo ;\n")
   val () = fprint1_string (pf_mod | !p_l, "} /* end of function */")
-
 in
   // empty
 end // end of [_emit_closure_make]
 
-dataviewtype ENV (l:addr, i:addr) = ENVcon3 (l, i) of (funlab_t, ptr l, ptr i)
+// ------ ------ //
 
 fn _emit_closure_clofun {m:file_mode} {l:addr} (
     pf_mod: file_mode_lte (m, w), pf_fil: !FILE m @ l
   | p_l: ptr l, fl: funlab_t, vtps: vartypset
   ) : void = let
+  dataviewtype ENV (l:addr, i:addr) = ENVcon3 (l, i) of (funlab_t, ptr l, ptr i)
   // function header
   val hit_res = funlab_typ_res_get (fl)
   val () = emit_hityp (pf_mod | !p_l, hit_res)
@@ -2078,8 +2170,13 @@ end // end of [_emit_clofun]
 
 in // in of [local]
 
+// ------ ------ //
+
 implement emit_closure_type (pf | out, fl, vtps) =
   _emit_closure_type (pf, view@ out | &out, fl, vtps)
+
+implement emit_closure_init (pf | out, fl, vtps) =
+  _emit_closure_init (pf, view@ out | &out, fl, vtps)
 
 implement emit_closure_make (pf | out, fl, vtps) =
   _emit_closure_make (pf, view@ out | &out, fl, vtps)
@@ -2189,12 +2286,14 @@ implement emit_funentry (pf | out, entry) = let
           val () = fprint1_string (pf | out, "\n\n")
           val () = emit_closure_type (pf | out, fl, vtps_all)
           val () = fprint1_string (pf | out, "\n\n")
+          val () = emit_closure_init (pf | out, fl, vtps_all)
+          val () = fprint1_string (pf | out, "\n\n")
           val () = emit_closure_make (pf | out, fl, vtps_all)
           val () = fprint1_string (pf | out, "\n\n")
           val () = emit_closure_clofun (pf | out, fl, vtps_all)
         in
           // empty
-        end
+        end // end of [FUNCLOclo]
       | $Syn.FUNCLOfun _ => ()
       end // end of [_]
 in
