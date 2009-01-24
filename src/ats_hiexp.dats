@@ -319,7 +319,13 @@ implement hiexp_caseof (loc, hit, knd, hies, hicls) = '{
   hiexp_loc= loc
 , hiexp_node= HIEcaseof (knd, hies, hicls)
 , hiexp_typ= hit
-} // end of [hiexp_case]
+} // end of [hiexp_caseof]
+
+implement hiexp_castfn (loc, hit, d2c, hie) = '{
+  hiexp_loc= loc
+, hiexp_node= HIEcastfn (d2c, hie)
+, hiexp_typ= hit
+} // end of [hiexp_castfn]
 
 implement hiexp_char (loc, hit, c) = '{
   hiexp_loc= loc, hiexp_node= HIEchar c, hiexp_typ= hit

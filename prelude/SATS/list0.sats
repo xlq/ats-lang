@@ -56,10 +56,12 @@ stadef list0 = list0_t0ype_type
 
 (* ****** ****** *)
 
-fun list0_of_list1 {a:t@ype} (xs: List a):<> list0 a
+// a casting function
+castfn list0_of_list1 {a:t@ype} (xs: List a):<> list0 a
   = "atspre_list0_of_list1"
 
-fun list1_of_list0 {a:t@ype} (xs: list0 a):<> List a
+// a casting function
+castfn list1_of_list0 {a:t@ype} (xs: list0 a):<> List a
   = "atspre_list1_of_list0"
 
 (* ****** ****** *)

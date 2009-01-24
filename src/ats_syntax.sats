@@ -110,6 +110,7 @@ fun dcstkind_prfun (): dcstkind = "dcstkind_prfun"
 fun dcstkind_prval (): dcstkind = "dcstkind_prval"
 
 fun dcstkind_is_fun (dck: dcstkind): bool
+fun dcstkind_is_castfn (dck: dcstkind): bool
 fun dcstkind_is_proof (dck: dcstkind): bool
 
 datatype valkind =

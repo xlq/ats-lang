@@ -31,8 +31,8 @@ fn{a:viewt@ype}
   fun loop {i,j:nat} .< i >.
     (xs: !list_vt (a, i), j: int j): int (i+j) =
     case+ xs of
-    | cons (_, !xs1) => begin
-        let val n = loop (!xs1, j+1) in fold@ xs; n end
+    | cons (_, !p_xs1) => begin
+        let val n = loop (!p_xs1, j+1) in fold@ xs; n end
       end
     | nil () => (fold@ xs; j)
 in
@@ -45,8 +45,9 @@ end // end of [list_vt_length]
 fun{a:viewt@ype} list_vt_append {m,n:nat}
   (xs0: &list_vt (a, m) >> list_vt (a, m+n), ys: list_vt (a, n)): void =
   case+ : (xs0: list_vt (a, m+n)) => xs0 of
-  | cons (_, !xs) => (list_vt_append (!xs, ys); fold@ xs0)
+  | cons (_, !p_xs) => (list_vt_append (!p_xs, ys); fold@ xs0)
   | ~nil () => (xs0 := ys)
+// end of [list_vt_append]
 
 (* ****** ****** *)
 
@@ -55,8 +56,8 @@ fn{a:viewt@ype} list_vt_reverse {n:nat} (xs: &list_vt (a, n)): void = let
   fun revapp {m,n:nat} .< m >.
     (xs: list_vt (a, m), ys: list_vt (a, n)): list_vt (a, m+n) =
     case+ xs of
-    | cons (_, !xs1) => begin
-        let val xs1_v = !xs1 in !xs1 := ys; fold@ xs; revapp (xs1_v, xs) end
+    | cons (_, !p_xs1) => begin
+        let val xs1 = !p_xs1 in !p_xs1 := ys; fold@ xs; revapp (xs1, xs) end
       end
     | ~nil () => ys
 in
@@ -68,31 +69,32 @@ end // end of [list_vt_reverse]
 // An implementation of quicksort on singly-linked lists
 fun{a:viewt@ype}
   list_vt_qsort {n:nat} .< n, 0 >.
-   (lte: (!a, !a) -> bool, xs: list_vt (a, n)): list_vt (a, n) =
+  (lte: (!a, !a) -> bool, xs: list_vt (a, n)): list_vt (a, n) =
   case+ xs of
-  | cons (!x1, !xs1) =>
-    let val xs1_v = !xs1 in
+  | cons (!p_x1, !p_xs1) =>
+    let val xs1 = !p_xs1 in
       list_vt_par<a> (
-        view@ (!x1), view@ (!xs1) | lte, xs, xs1, x1, xs1_v, nil (), nil ()
+        view@ (!p_x1), view@ (!p_xs1) | lte, xs, p_xs1, p_x1, xs1, nil (), nil ()
       )
     end
   | nil () => (fold@ xs; xs)
+// end of [list_vt_qsort]
 
 and // [list_vt_par] for partition
   list_vt_par {l0,l1:addr} {p,q,r:nat} .< p+q+r, p+1 >.
   (pf0: a @ l0, pf1: List_vt a? @ l1 |
    lte: (!a, !a) -> bool, node: list_vt_cons_unfold (l0, l1), node1: ptr l1,
-   x0: ptr l0, xs: list_vt (a, p), l: list_vt (a, q), r: list_vt (a, r))
+   p_x0: ptr l0, xs: list_vt (a, p), l: list_vt (a, q), r: list_vt (a, r))
   : list_vt (a, p+q+r+1) = case+ xs of
-  | cons (!x1, !xs1) => let
-      val xs1_v = !xs1
+  | cons (!p_x1, !p_xs1) => let
+      val xs1 = !p_xs1
     in
-      if lte (!x1, !x0) then begin
-        !xs1 := l; fold@ xs;
-        list_vt_par<a> (pf0, pf1 | lte, node, node1, x0, xs1_v, xs, r)
+      if lte (!p_x1, !p_x0) then begin
+        !p_xs1 := l; fold@ xs;
+        list_vt_par<a> (pf0, pf1 | lte, node, node1, p_x0, xs1, xs, r)
       end else begin
-        !xs1 := r; fold@ xs;
-        list_vt_par<a> (pf0, pf1 | lte, node, node1, x0, xs1_v, l, xs)
+        !p_xs1 := r; fold@ xs;
+        list_vt_par<a> (pf0, pf1 | lte, node, node1, p_x0, xs1, l, xs)
       end // end of [if]
     end // end of [cons]
   | ~nil () => let
@@ -100,6 +102,7 @@ and // [list_vt_par] for partition
     in
       !node1 := r; fold@ node; r := node; list_vt_append<a> (l, r); l
     end // end of [nil]
+// end of [list_vt_par]
 
 (* ****** ****** *)
 

@@ -322,10 +322,15 @@ in
     end
   | HIEcaseof _ => begin
       strpr "HIEcaseof("; fprint1_string (pf | out, "..."); strpr ")"
-    end
+    end // end of [HIEcaseof]
+  | HIEcastfn (d2c, hie) => begin
+      strpr "HIEcastfn(";
+      fprint_d2cst (pf | out, d2c); strpr "; "; fprint_hiexp (pf | out, hie);
+      strpr ")"
+    end // end of [HIEcastfn]
   | HIEchar c => begin
       strpr "HIEchar("; fprint1_char (pf | out, c); strpr ")"
-    end
+    end // end of [HIEchar]
   | HIEcon (hit_sum, d2c, hies_arg) => begin
       strpr "HIEcon(";
       fprint_hityp (pf | out, hit_sum);

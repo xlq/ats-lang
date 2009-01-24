@@ -78,7 +78,7 @@ typedef d2cst_struct = struct {
 , d2cst_def= d2expopt // definition
 , d2cst_stamp= stamp_t // unique stamp
 , d2cst_hityp= Option (hityp_t) // type erasure
-}
+} // end of [d2cst_struct]
 
 local
 
@@ -229,18 +229,28 @@ implement compare_d2cst_d2cst (d2c1, d2c2) =
 
 //
 
-implement d2cst_is_fun (d2c) = let
-  val knd = begin
+implement d2cst_is_castfn (d2c) = let
+  val knd =
     let val (vbox pf | p) = d2c in p->d2cst_kind end
-  end
+  // end of [val]
+in
+  $Syn.dcstkind_is_castfn (knd)
+end // end of [d2cst_is_castfn]
+
+//
+
+implement d2cst_is_fun (d2c) = let
+  val knd =
+    let val (vbox pf | p) = d2c in p->d2cst_kind end
+  // end of [val]
 in
   $Syn.dcstkind_is_fun (knd)
 end // end of [d2cst_is_fun]
 
 implement d2cst_is_proof (d2c) = let
-  val knd = begin
+  val knd =
     let val (vbox pf | p) = d2c in p->d2cst_kind end
-  end
+  // end of [val]
 in
   $Syn.dcstkind_is_proof (knd)
 end // end of [d2cst_is_proof]

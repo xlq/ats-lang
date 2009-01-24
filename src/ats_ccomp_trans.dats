@@ -1200,13 +1200,13 @@ implement ccomp_exp_var (d2v) = let
 (*
   val () = begin
     prerr "ccomp_exp_var: d2v = "; prerr d2v; prerr_newline ()
-  end
+  end // end of [val]
   val () = begin
     prerr "ccomp_exp_var: d2v_lev = "; prerr d2v_lev; prerr_newline ()
-  end
+  end // end of [val]
   val () = begin
     prerr "ccomp_exp_var: level = "; prerr level; prerr_newline ()
-  end
+  end // end of [val]
 *)
   val () = case+ 0 of
     | _ when d2v_lev < level => begin
@@ -1298,6 +1298,7 @@ in
       valprim_void ()
     end // end of [HIEassgn_var]
   | HIEbool b => valprim_bool b
+  | HIEcastfn (d2c, hie) => ccomp_exp (res, hie) // casting expression
   | HIEchar c => valprim_char c
   | HIEcst d2c => begin case+ 0 of
     | _ when d2cst_is_proof d2c => begin
@@ -1568,13 +1569,10 @@ fn ccomp_exp_app_tmpvar (
 (*
   val () = begin
     prerr "ccomp_exp_app_tmpvar: vp_fun = "; prerr vp_fun; prerr_newline ()
-  end
+  end // end of [val]
 *)
-  val vps_arg =
-    ccomp_explst (res, hies_arg) where {
-    val hies_arg = begin
-      hiexplst_refarg_tr (res, level, vps_free, hies_arg)
-    end
+  val vps_arg = ccomp_explst (res, hies_arg) where {
+    val hies_arg = hiexplst_refarg_tr (res, level, vps_free, hies_arg)
   } // end of [where]
 
   val vps_free = $Lst.list_vt_reverse {valprim} (vps_free)
@@ -1603,7 +1601,7 @@ fn ccomp_exp_app_tmpvar (
 (*
         val () = begin
           prerr "ccomp_exp_app_tmpvar: fl = "; prerr fl; prerr_newline ()
-        end
+        end // end of [val]
 *)
         val () = case+ vps_free of
           | list_vt_nil _ => begin
@@ -1623,11 +1621,12 @@ fn ccomp_exp_app_tmpvar (
             case+ otmps of
             | ~Some_vt (tmps) => (tmps_arg := tmps)
             | ~None_vt () => (istail := 0)
-          end
+          end // end of [if]
+        // end of [val]
 (*
         val () = begin
           prerr "ccomp_exp_app_tmpvar: istail = "; prerr istail; prerr_newline ()
-        end
+        end // end of [val]
 *)
       in
         if istail > 0 then let
@@ -1644,7 +1643,7 @@ fn ccomp_exp_app_tmpvar (
   val () = // handling non-tail-call
     if istail = 0 then begin
       instr_add_call (res, tmp_res, hit_fun, vp_fun, vps_arg)
-    end
+    end // end of [if]
 
   val () = instrlst_add_freeptr (res, vps_free)
 in
@@ -1867,13 +1866,13 @@ implement ccomp_exp_tmpvar (res, hie0, tmp_res) = let
 (*
   val () = begin
     prerr "ccomp_exp_tmpvar: hie0 = "; prerr hie0; prerr_newline ()
-  end
+  end // end of [val]
   val () = begin
     prerr "ccomp_exp_tmpvar: hit0 = "; prerr hie0.hiexp_typ; prerr_newline ()
-  end
+  end // end of [val]
   val () = begin
     prerr "ccomp_exp_tmpvar: tmp_res = "; prerr tmp_res; prerr_newline ()
-  end
+  end // end of [val]
 *)
 in
   case+ hie0.hiexp_node of
@@ -1881,10 +1880,8 @@ in
       val level = d2var_current_level_get ()
       val hit_fun = hityp_normalize (hit_fun)
     in
-      ccomp_exp_app_tmpvar (
-        res, level, hit_fun, hie_fun, hies_arg, tmp_res
-      )
-    end
+      ccomp_exp_app_tmpvar (res, level, hit_fun, hie_fun, hies_arg, tmp_res)
+    end // end of [HIEapp]
   | HIEarrsize (hit_elt, hies) => let
       val hit_elt = hityp_normalize (hit_elt)
     in
@@ -1895,6 +1892,7 @@ in
   | HIEassgn_var (d2v_mut, hils, hie_val) =>
       ccomp_exp_assgn_var (res, d2v_mut, hils, hie_val)
   | HIEbool b => instr_add_move_val (res, tmp_res, valprim_bool b)
+  | HIEcastfn (d2c, hie) => ccomp_exp_tmpvar (res, hie, tmp_res)
   | HIEchar c => instr_add_move_val (res, tmp_res, valprim_char c)
   | HIEcaseof (knd, hies, hicls) => let
       val level = d2var_current_level_get ()
@@ -1913,10 +1911,9 @@ in
   | HIEcon (hit_sum, d2c, hies_arg) => let
 (*
       val () = begin
-        prerr "ccomp_exp_tmpvar: HIEcon: hit_sum = ";
-        prerr hit_sum;
+        prerr "ccomp_exp_tmpvar: HIEcon: hit_sum = "; prerr hit_sum;
         prerr_newline ()
-      end
+      end // end of [val]
 *)
       val () = if (d2con_is_proof d2c) then begin
         $Loc.prerr_location (hie0.hiexp_loc);

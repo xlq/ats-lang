@@ -65,7 +65,8 @@ exception ListSubscriptException
 
 (* ****** ****** *)
 
-fun list_of_list_vt {a:t@ype}
+// a casting function
+castfn list_of_list_vt {a:t@ype}
   {n:nat} (xs: list_vt (a, n)):<> list (a, n)
   = "atspre_list_of_list_vt"
 

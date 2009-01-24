@@ -331,6 +331,8 @@ and hiexp_node =
       bool
   | HIEcaseof of (* case expression *)
       (int(*casknd*), hiexplst, hiclaulst)
+  | HIEcastfn of (* cast expression *)
+      (d2cst_t, hiexp)
   | HIEchar of (* character constant *)
       char
   | HIEcon of (* constructor *)
@@ -567,6 +569,8 @@ fun hiexp_assgn_var
 
 fun hiexp_bool (_: loc_t, _: hityp, _: bool): hiexp
 
+(* ****** ****** *)
+
 fun hiexp_caseof
   (_: loc_t, _: hityp, knd: int, hies: hiexplst, hicls: hiclaulst)
   : hiexp
@@ -574,6 +578,12 @@ fun hiexp_caseof
 fun hiexp_caseof_if
   (loc0: loc_t, hit0: hityp, knd: int, hies: hiexplst, hicls: hiclaulst)
   : hiexp
+
+(* ****** ****** *)
+
+fun hiexp_castfn (_: loc_t, _: hityp, d2c: d2cst_t, hie: hiexp): hiexp
+
+(* ****** ****** *)
 
 fun hiexp_char (_: loc_t, _: hityp, _: char): hiexp
 

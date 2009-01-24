@@ -659,11 +659,9 @@ implement d3exp_tr (d3e0) = let
   val s2e0 = d3e0.d3exp_typ
 (*
   val () = begin
-    prerr "d3exp_tr: s2e0 = " prerr s2e0; prerr_newline ()
-  end
-  val () = begin
-    prerr "d3exp_tr: d3e0 = " prerr d3e0; prerr_newline ()
-  end
+    prerr "d3exp_tr: s2e0 = " prerr s2e0; prerr_newline ();
+    prerr "d3exp_tr: d3e0 = " prerr d3e0; prerr_newline ();
+  end // end of [val]
 *)
 in
   case+ d3e0.d3exp_node of
@@ -675,7 +673,19 @@ in
       val isvararg = hityp_fun_is_vararg hit_fun
       val hies_arg = d3explst_funarg_tr (isvararg, npf, d3es_arg)
     in
-      hiexp_app (loc0, hit0, hit_fun, hie_fun, hies_arg)
+      case+ hie_fun.hiexp_node of
+      | HIEcst d2c when d2cst_is_castfn d2c => let
+          val hie = case+ hies_arg of
+          | list_cons (hie, list_nil ()) => hie | _ => begin
+              $Loc.prerr_location loc0; prerr ": Internal Error";
+              prerr ": a casting function must be applied to exactly one argument.";
+              prerr_newline (); $Err.abort {hiexp} ()
+            end // end of [list_cons]
+          // end of [val]
+        in
+          hiexp_castfn (loc0, hit0, d2c, hie)
+        end // end of [HIEcst]
+      | _ => hiexp_app (loc0, hit0, hit_fun, hie_fun, hies_arg)
     end // end of [D3Eapp_dyn]
   | D3Eapp_sta d3e => d3exp_tr d3e
   | D3Earrinit (s2e_elt, od3e_asz, d3es_elt) => let

@@ -1317,24 +1317,31 @@ in
       val () = fprint1_string (pf | out, ") ;")
     in
       // empty
-    end
-  | _ => begin case+ hit_fun.hityp_node of
+    end // end of [VPfun]
+  | _ (*variable function*) => begin
+    case+ hit_fun.hityp_node of
     | HITfun (fc, hits_arg, hit_res) => begin case+ fc of
-      | $Syn.FUNCLOclo _ => let
+      | $Syn.FUNCLOclo knd => let
+          macdef emit_fun_mac () =
+            if knd <> 0 then begin // boxed closure
+              emit_valprim (pf | out, vp_fun) // call-by-value
+            end else begin // unboxed closure
+              emit_valprim_ptrof (pf | out, vp_fun) // call-by-reference
+            end // end of [if]
           val hits_arg = hityplst_encode hits_arg
           val hit_res = hityp_encode hit_res
         in
           fprint1_string (pf | out, "((");
           emit_hityp_clofun (pf | out, hits_arg, hit_res);
           fprint1_string (pf | out, ")(ats_closure_fun(");
-          emit_valprim (pf | out, vp_fun);
+          emit_fun_mac ();
           fprint1_string (pf | out, "))) (");
-          emit_valprim (pf | out, vp_fun);
+          emit_fun_mac ();
           if $Lst.list_is_cons (vps_arg) then fprint1_string (pf | out, ", ");
           emit_valprimlst (pf | out, vps_arg);
           fprint1_string (pf | out, ") ;")
         end // end of [$Syn.FUNCLOclo]
-      | $Syn.FUNCLOfun _ => let
+      | $Syn.FUNCLOfun () => let
           val hits_arg = hityplst_encode hits_arg
           val hit_res = hityp_encode hit_res
         in
@@ -1351,8 +1358,8 @@ in
         prerr "Internal Error: emit_instr_call: hit_fun = ";
         prerr hit_fun; prerr_newline ();
         $Err.abort {void} ()
-      end
-    end
+      end // end of [_]
+    end // end of [_(*variable function*)]
 end // end of [emit_instr_call]
 
 (* ****** ****** *)
@@ -2282,15 +2289,19 @@ implement emit_funentry (pf | out, entry) = let
   val () = case+ 0 of
     | _ when istailjoin => ()
     | _ => begin case+ fc of
-      | $Syn.FUNCLOclo _ => let
+      | $Syn.FUNCLOclo knd => let
           val () = fprint1_string (pf | out, "\n\n")
           val () = emit_closure_type (pf | out, fl, vtps_all)
           val () = fprint1_string (pf | out, "\n\n")
           val () = emit_closure_init (pf | out, fl, vtps_all)
-          val () = fprint1_string (pf | out, "\n\n")
-          val () = emit_closure_make (pf | out, fl, vtps_all)
-          val () = fprint1_string (pf | out, "\n\n")
-          val () = emit_closure_clofun (pf | out, fl, vtps_all)
+          val () = if (knd <> 0) then let // boxed closure
+            val () = fprint1_string (pf | out, "\n\n")
+            val () = emit_closure_make (pf | out, fl, vtps_all)
+            val () = fprint1_string (pf | out, "\n\n")
+            val () = emit_closure_clofun (pf | out, fl, vtps_all)
+          in
+            // empty
+          end // end of [val]
         in
           // empty
         end // end of [FUNCLOclo]
@@ -2357,12 +2368,14 @@ implement emit_funentry_prototype {m} (pf | out, entry) = let
 in
   case+ funlab_qua_get (fl) of
   | D2CSTOPTsome _(*d2c*) => begin case+ fc of
-    | $Syn.FUNCLOclo _ => let
-        val () = aux_closure_make (out)
-        val () = aux_closure_clofun (out)
-      in
-        // empty
-      end
+    | $Syn.FUNCLOclo knd =>
+        if knd <> 0 then let
+          val () = aux_closure_make (out)
+          val () = aux_closure_clofun (out)
+        in
+          // empty
+        end // end of [if]
+      // end of [FUNCLOclo]
     | $Syn.FUNCLOfun () => ()
     end // end of [D2CSTOPTsome]
   | D2CSTOPTnone () => begin case+ fc of

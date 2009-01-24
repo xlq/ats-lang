@@ -110,6 +110,9 @@ implement dcstkind_prval () = DCSTKINDprval ()
 implement dcstkind_is_fun (dk) = case+ dk of
   | DCSTKINDfun () => true | _ => false
 
+implement dcstkind_is_castfn (dk) = case+ dk of
+  | DCSTKINDcastfn () => true | _ => false
+
 implement dcstkind_is_proof (dk) = case+ dk of
   | DCSTKINDpraxi () => true
   | DCSTKINDprfun () => true
