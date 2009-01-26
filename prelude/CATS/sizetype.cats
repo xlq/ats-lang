@@ -334,6 +334,22 @@ atspre_gte_ssize1_int1
 
 /* ****** ****** */
 
+static inline
+ats_bool_type
+atspre_eq_ssize1_ssize1
+  (ats_ssize_type ssz1, ats_ssize_type ssz2) {
+  return (ssz1 == ssz2 ? ats_true_bool : ats_false_bool) ;
+} /* end of [atspre_eq_ssize1_ssize1] */
+
+static inline
+ats_bool_type
+atspre_neq_ssize1_ssize1
+  (ats_ssize_type ssz1, ats_ssize_type ssz2) {
+  return (ssz1 != ssz2 ? ats_true_bool : ats_false_bool) ;
+} /* end of [atspre_eq_ssize1_ssize1] */
+
+/* ****** ****** */
+
 #endif /* ATS_PRELUDE_SIZETYPE_CATS */
 
 /* end of [sizetype.cats] */

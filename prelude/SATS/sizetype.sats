@@ -316,6 +316,18 @@ overload >= with gte_ssize1_int1
 
 (* ****** ****** *)
 
+fun eq_ssize1_ssize1 {i,j:int}
+  (i: ssize_t i, j: ssize_t j):<> bool (i == j)
+  = "atspre_eq_ssize1_ssize1"
+overload = with eq_ssize1_ssize1
+
+fun neq_ssize1_ssize1 {i,j:int}
+  (i: ssize_t i, j: ssize_t j):<> bool (i <> j)
+  = "atspre_neq_ssize1_ssize1"
+overload <> with neq_ssize1_ssize1
+
+(* ****** ****** *)
+
 #if VERBOSE_PRELUDE #then
 
 #print "Loading [sizetype.sats] finishes!\n"

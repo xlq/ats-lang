@@ -42,6 +42,8 @@ tutorial_all:
           input-and-output.html \
           ATS-and-C.html \
           programming-with-theorem-proving.html \
+          casting-functions.html \
+          stack-allocation.html \
 
 	scp $(OUTPUT)/tutorial_all.html \
           ats-hwxi,ats-lang@web.sourceforge.net:htdocs/TUTORIAL/contents/
@@ -83,6 +85,8 @@ ones::
 	$(FPROC) -one input-and-output.html
 	$(FPROC) -one ATS-and-C.html
 	$(FPROC) -one programming-with-theorem-proving.html
+	$(FPROC) -one casting-functions.html
+	$(FPROC) -one stack-allocation.html
 	scp $(OUTPUT)/*.html \
           ats-hwxi,ats-lang@web.sourceforge.net:htdocs/TUTORIAL/contents/
 
@@ -194,7 +198,7 @@ arrays-and-matrices::
           ats-hwxi,ats-lang@web.sourceforge.net:htdocs/TUTORIAL/contents/
 
 linear-arrays::
-	$(FPROC) -one linear-array.html
+	$(FPROC) -one linear-arrays.html
 	scp $(OUTPUT)/linear-arrays.html \
           ats-hwxi,ats-lang@web.sourceforge.net:htdocs/TUTORIAL/contents/
 
@@ -258,6 +262,16 @@ programming-with-theorem-proving::
 	scp $(OUTPUT)/programming-with-theorem-proving.html \
           ats-hwxi,ats-lang@web.sourceforge.net:htdocs/TUTORIAL/contents/
 
+casting-functions::
+	$(FPROC) -one casting-functions.html
+	scp $(OUTPUT)/casting-functions.html \
+          ats-hwxi,ats-lang@web.sourceforge.net:htdocs/TUTORIAL/contents/
+
+stack-allocation::
+	$(FPROC) -one stack-allocation.html
+	scp $(OUTPUT)/stack-allocation.html \
+          ats-hwxi,ats-lang@web.sourceforge.net:htdocs/TUTORIAL/contents/
+
 ######
 
 typecheck::
@@ -284,6 +298,8 @@ typecheck::
 	atscc  input-and-output.dats
 	atscc  ATS-and-C.dats
 	atscc  programming-with-theorem-proving.dats
+	atscc  casting-functions.dats
+	atscc  stack-allocation.dats
 
 ######
 

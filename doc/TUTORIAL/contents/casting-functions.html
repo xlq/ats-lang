@@ -1,0 +1,75 @@
+<!-- beg of [casting-functions.html] -->
+
+<H2><A id="castingfun" name="castingfun">Casting Functions</A></H2>
+
+<HR SIZE=1 ALIGN=LEFT><P>
+
+A casting function in ATS is equivalent to the identify function in terms
+of dynamic semantics. A call to such a function is evaluated at
+compile-time, and its argument is returned. For instance, we have the
+following commonly used casting functions:
+
+<PRE>
+castfn int1_of_int (x: int):<> [n:nat] int n
+castfn string1_of_string (x: string):<> [n:nat] string n
+</PRE>
+
+The keyword <i>castfn</i> is for introducing casting functions.
+
+<P>
+
+We now present a typical use of casting functions. The following declared
+function <i>list_concat</i> is intended for concatenating a list of lists:
+
+<PRE>
+fun{a:t@ype} list_concat (xss: List (List a)): List a
+</PRE>
+
+Let us say that we would like to verify that the concatenation of a list of
+lists yields a list whose length equals the sum of the lengths of the lists
+in the given list of lists. This, for instance, can be done as follows by
+introducting a datatype constructor <i>lstlst</i>.
+
+<PRE><FONT COLOR="#E80000"><FONT COLOR="#000000">datatype</FONT> <FONT COLOR="#0000FF">lstlst <FONT COLOR="#000000">(</FONT>a<FONT COLOR="#000000">:</FONT>t@ype+<FONT COLOR="#000000">,</FONT> int<FONT COLOR="#000000">,</FONT> int<FONT COLOR="#000000">)</FONT></FONT> <FONT COLOR="#000000">=</FONT>
+  <FONT COLOR="#000000">|</FONT> <FONT COLOR="#000000">{</FONT><FONT COLOR="#0000FF">m<FONT COLOR="#000000">,</FONT>t<FONT COLOR="#000000">:</FONT>nat</FONT><FONT COLOR="#000000">}</FONT> <FONT COLOR="#000000">{</FONT><FONT COLOR="#0000FF">n<FONT COLOR="#000000">:</FONT>nat</FONT><FONT COLOR="#000000">}</FONT>
+    lstlst_cons <FONT COLOR="#0000FF"><FONT COLOR="#000000">(</FONT>a<FONT COLOR="#000000">,</FONT> m+1<FONT COLOR="#000000">,</FONT> t+n<FONT COLOR="#000000">)</FONT></FONT> <FONT COLOR="#000000">of</FONT> <FONT COLOR="#0000FF"><FONT COLOR="#000000">(</FONT>list <FONT COLOR="#000000">(</FONT>a<FONT COLOR="#000000">,</FONT> n<FONT COLOR="#000000">)</FONT><FONT COLOR="#000000">,</FONT> lstlst <FONT COLOR="#000000">(</FONT>a<FONT COLOR="#000000">,</FONT> m<FONT COLOR="#000000">,</FONT> t<FONT COLOR="#000000">)</FONT><FONT COLOR="#000000">)</FONT></FONT>
+  <FONT COLOR="#000000">|</FONT> lstlst_nil <FONT COLOR="#0000FF"><FONT COLOR="#000000">(</FONT>a<FONT COLOR="#000000">,</FONT> 0<FONT COLOR="#000000">,</FONT> 0<FONT COLOR="#000000">)</FONT></FONT> <FONT COLOR="#000000">of</FONT> <FONT COLOR="#0000FF"><FONT COLOR="#000000">(</FONT><FONT COLOR="#000000">)</FONT></FONT>
+
+<FONT COLOR="#000000">fun</FONT><FONT COLOR="#000000">{</FONT><FONT COLOR="#0000FF">a<FONT COLOR="#000000">:</FONT>t@ype</FONT><FONT COLOR="#000000">}</FONT> _concat <FONT COLOR="#0000FF"><FONT COLOR="#000000">{</FONT>m<FONT COLOR="#000000">,</FONT>t<FONT COLOR="#000000">:</FONT>nat<FONT COLOR="#000000">}</FONT></FONT> <FONT COLOR="#0000FF"><FONT COLOR="#000000">.&lt;</FONT>m<FONT COLOR="#000000">&gt;.</FONT></FONT>
+  <FONT COLOR="#000000">(</FONT>xss<FONT COLOR="#000000">:</FONT> <FONT COLOR="#0000FF">lstlst <FONT COLOR="#000000">(</FONT>a<FONT COLOR="#000000">,</FONT> m<FONT COLOR="#000000">,</FONT> t<FONT COLOR="#000000">)</FONT></FONT><FONT COLOR="#000000">)</FONT><FONT COLOR="#000000">:</FONT> <FONT COLOR="#0000FF">list <FONT COLOR="#000000">(</FONT>a<FONT COLOR="#000000">,</FONT> t<FONT COLOR="#000000">)</FONT></FONT> <FONT COLOR="#000000">=</FONT> <FONT COLOR="#000000">case+</FONT> xss <FONT COLOR="#000000">of</FONT>
+  <FONT COLOR="#000000">|</FONT> lstlst_cons <FONT COLOR="#000000">(</FONT>xs<FONT COLOR="#000000">,</FONT> xss<FONT COLOR="#000000">)</FONT> <FONT COLOR="#000000">=&gt;</FONT> list_append <FONT COLOR="#000000">(</FONT>xs<FONT COLOR="#000000">,</FONT> _concat&lt;<FONT COLOR="#0000FF">a</FONT><FONT COLOR="#000000">&gt;</FONT> xss<FONT COLOR="#000000">)</FONT>
+  <FONT COLOR="#000000">|</FONT> lstlst_nil <FONT COLOR="#000000">(</FONT><FONT COLOR="#000000">)</FONT> <FONT COLOR="#000000">=&gt;</FONT> list_nil <FONT COLOR="#000000">(</FONT><FONT COLOR="#000000">)</FONT>
+<FONT COLOR="#787878">// end of [_concat]
+</FONT></FONT></PRE>
+
+Given a type <i>T</i> and integers <i>I</i> and <i>J</i>, the type
+<i>lstlst (T, I, J)</i> is for a list of lists such that the length of the
+list is <i>I</i> and each element in the list is a list of values of the
+type <i>T</i> and the sum of the lengths of these elements equals <i>J</i>.
+<P>
+
+The function <i>list_concat</i> is the same as the function <i>_concat</i>
+in terms of dynamic semantics, and it can be implemented as follows:
+
+<PRE><FONT COLOR="#E80000"><FONT COLOR="#000000">implement</FONT><FONT COLOR="#000000">{</FONT><FONT COLOR="#0000FF">a</FONT><FONT COLOR="#000000">}</FONT> list_concat <FONT COLOR="#000000">(</FONT>xss<FONT COLOR="#000000">)</FONT> <FONT COLOR="#000000">=</FONT>
+  _concat&lt;<FONT COLOR="#0000FF">a</FONT><FONT COLOR="#000000">&gt;</FONT> <FONT COLOR="#000000">(</FONT>lstlst_of_listlist xss<FONT COLOR="#000000">)</FONT> <FONT COLOR="#000000">where</FONT> <FONT COLOR="#000000">{</FONT>
+  <FONT COLOR="#000000">castfn</FONT> lstlst_of_listlist
+    <FONT COLOR="#0000FF"><FONT COLOR="#000000">{</FONT>m<FONT COLOR="#000000">:</FONT>nat<FONT COLOR="#000000">}</FONT></FONT> <FONT COLOR="#0000FF"><FONT COLOR="#000000">.&lt;</FONT>m<FONT COLOR="#000000">&gt;.</FONT></FONT> <FONT COLOR="#000000">(</FONT>xss<FONT COLOR="#000000">:</FONT> <FONT COLOR="#0000FF">list <FONT COLOR="#000000">(</FONT>List a<FONT COLOR="#000000">,</FONT> m<FONT COLOR="#000000">)</FONT></FONT><FONT COLOR="#000000">)</FONT>
+    <FONT COLOR="#000000">:&lt;&gt;</FONT> <FONT COLOR="#0000FF"><FONT COLOR="#000000">[</FONT>t<FONT COLOR="#000000">:</FONT>nat<FONT COLOR="#000000">]</FONT> lstlst <FONT COLOR="#000000">(</FONT>a<FONT COLOR="#000000">,</FONT> m<FONT COLOR="#000000">,</FONT> t<FONT COLOR="#000000">)</FONT></FONT> <FONT COLOR="#000000">=</FONT> <FONT COLOR="#000000">case+</FONT> xss <FONT COLOR="#000000">of</FONT>
+    <FONT COLOR="#000000">|</FONT> list_cons <FONT COLOR="#000000">(</FONT>xs<FONT COLOR="#000000">,</FONT> xss<FONT COLOR="#000000">)</FONT> <FONT COLOR="#000000">=&gt;</FONT> lstlst_cons <FONT COLOR="#000000">(</FONT>xs<FONT COLOR="#000000">,</FONT> lstlst_of_listlist xss<FONT COLOR="#000000">)</FONT>
+    <FONT COLOR="#000000">|</FONT> list_nil <FONT COLOR="#000000">(</FONT><FONT COLOR="#000000">)</FONT> <FONT COLOR="#000000">=&gt;</FONT> lstlst_nil <FONT COLOR="#000000">(</FONT><FONT COLOR="#000000">)</FONT>
+<FONT COLOR="#000000">}</FONT> <FONT COLOR="#787878">// end of [list_concat]
+</FONT></FONT></PRE>
+
+Given that <i>lstlst_of_listlist</i> being implemented as a casting
+function, the implementation of <i>list_concat</i> is equivalent to
+the following one in terms of dynamic semantics:
+<PRE>
+implement{a} list_concat (xss) = _concat<a> (xss) // this one does not typecheck
+</PRE>
+
+<HR SIZE=1 ALIGN=LEFT><P>
+The code used for illustration is available <a
+href="casting-functions.dats">here</a>.
+
+<!-- end of [casting-functions.html] -->

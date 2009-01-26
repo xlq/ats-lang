@@ -235,7 +235,7 @@ With <i>strbuf_initialize_cloptr</i>, the string creation function
 Note that a linear closure (cloptr) representing
 <i>lam (i) => str[st + i]</i> is formed for each call to
 <i>strbuf_initialize_cloptr</i> and this closure is freed once the call
-returns. The string created by a called to <i>string_make_substring</i> is
+returns. The string created by a call to <i>string_make_substring</i> is
 persistent, and it can only be freed by GC.
 
 <HR SIZE=1 ALIGN=LEFT><P>

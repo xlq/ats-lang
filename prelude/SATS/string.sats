@@ -132,8 +132,11 @@ val string_empty : string 0
 
 (* ****** ****** *)
 
-fun string1_of_string (s: string):<> [n:nat] string n
+// a casting function
+castfn string1_of_string (s: string):<> [n:nat] string n
   = "atspre_string1_of_string"
+
+(* ****** ****** *)
 
 fun string1_of_strbuf {m,n:nat} {l:addr}
   (pf: strbuf (m, n) @ l | p: ptr l) :<> string n
