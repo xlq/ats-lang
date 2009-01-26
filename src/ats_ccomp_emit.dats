@@ -796,10 +796,10 @@ implement emit_valprim (pf | out, vp) = begin
           fprint1_string (pf | out, "*(");
           emit_hityp (pf | out, vartyp_typ_get vtp);
           fprintf1_exn (pf | out, "*)env%i", @(ind))
-        end
+        end // end of [_ when ...]
       | _ => begin
           fprintf1_exn (pf | out, "env%i", @(ind))
-        end
+        end // end of [_]
     end // end of [VPenv]
   | VPext code => fprint1_string (pf | out, code)
   | VPfloat f => emit_valprim_float (pf | out, f)

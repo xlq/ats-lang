@@ -66,6 +66,9 @@ glDisplayList1: glDisplayList1.dats
 glFaces: glFaces.dats
 	$(ATSCC) -o glFaces glFaces.dats -lGL -lglut
 
+glTetrix: glTetrix.dats
+	$(ATSCC) -o glTetrix glTetrix.dats -lGL -lglut
+
 ######
 
 clean:
@@ -86,6 +89,7 @@ cleanall: clean
 	rm -f glBlending2
 	rm -f glDisplayList1
 	rm -f glFaces
+	rm -f glTetrix
 
 ###### end of [Makefile] ######
  

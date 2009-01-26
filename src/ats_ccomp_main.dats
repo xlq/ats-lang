@@ -462,7 +462,8 @@ in
             fprint1_string (pf | out, " (");
             emit_hityplst (pf | out, hits_arg);
             fprint1_string (pf | out, ") ;\n")
-          end
+          end // end of [_ when ...]
+        | _ when d2cst_is_castfn d2c => () // casting function
         | _ => begin
             fprint1_string (pf | out, "ATSextern(ats_fun_ptr_type, ");
             emit_d2cst (pf | out, d2c);
@@ -474,7 +475,7 @@ in
             fprint1_string (pf | out, "$fun (");
             emit_hityplst (pf | out, hits_arg);
             fprint1_string (pf | out, ") ;\n")
-          end
+          end // end of [_]
       end // end of [$Syn.FUNCLOfun]
     end // end of [HITfun]
   | _ => let
