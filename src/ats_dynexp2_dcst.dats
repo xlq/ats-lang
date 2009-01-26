@@ -227,17 +227,7 @@ end
 implement compare_d2cst_d2cst (d2c1, d2c2) =
   $effmask_all ( _compare_d2cst_d2cst (d2c1, d2c2) )
 
-//
-
-implement d2cst_is_castfn (d2c) = let
-  val knd =
-    let val (vbox pf | p) = d2c in p->d2cst_kind end
-  // end of [val]
-in
-  $Syn.dcstkind_is_castfn (knd)
-end // end of [d2cst_is_castfn]
-
-//
+(* ****** ****** *)
 
 implement d2cst_is_fun (d2c) = let
   val knd =
@@ -246,6 +236,14 @@ implement d2cst_is_fun (d2c) = let
 in
   $Syn.dcstkind_is_fun (knd)
 end // end of [d2cst_is_fun]
+
+implement d2cst_is_castfn (d2c) = let
+  val knd =
+    let val (vbox pf | p) = d2c in p->d2cst_kind end
+  // end of [val]
+in
+  $Syn.dcstkind_is_castfn (knd)
+end // end of [d2cst_is_castfn]
 
 implement d2cst_is_proof (d2c) = let
   val knd =
