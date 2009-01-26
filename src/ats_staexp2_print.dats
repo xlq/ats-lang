@@ -519,9 +519,12 @@ end // end of [fprint_s2expopt]
 implement fprint_labs2explst {m} (pf | out, ls2es) = let
   fun aux (out: &FILE m, i: int, ls2es: labs2explst): void =
     case+ ls2es of
-    | LABS2EXPLSTcons (l, s2e, ls2es) => begin
-        if i > 0 then fprint1_string (pf | out, ", ");
-        fprint_label (pf | out, l); fprint1_string (pf | out, "=");
+    | LABS2EXPLSTcons (l, s2e, ls2es) => let
+        val () = if i > 0 then fprint1_string (pf | out, ", ")
+        val () = fprint_label (pf | out, l)
+        val () = fprint1_string (pf | out, "=")
+        val () = fprint_s2exp (pf | out, s2e)
+      in
         aux (out, i+1, ls2es)
       end // end of [LABS2EXPLSTcons]
     | LABS2EXPLSTnil () => ()

@@ -548,15 +548,12 @@ in
   | HIPcon (_(*freeknd*), d2c, hips_arg, hit_sum) => let
 (*
       val () = begin
-        prerr "ccomp_patck: HIPcon: hit_sum = "; prerr hit_sum;
-        prerr_newline ()
-      end
+        prerr "ccomp_patck: HIPcon: hit_sum = "; prerr hit_sum; prerr_newline ()
+      end // end of [val]
 *)
       val () = the_dynconset_add d2c
       val isexn = d2con_is_exn d2c
-      val patck = (
-        if isexn then PATCKexn d2c else PATCKcon d2c
-      ) : patck
+      val patck = (if isexn then PATCKexn d2c else PATCKcon d2c): patck
       val () = instr_add_patck (res, vp0, patck, fail)
       val hit_sum = hityp_normalize hit_sum
     in

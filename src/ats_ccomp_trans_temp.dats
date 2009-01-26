@@ -85,6 +85,8 @@ staload _(*anonymois*) = "ats_map_lin.dats"
 absviewtype stactx_vt
 absview stactx_token_v
 
+extern fun prerr_the_stactx (): void
+
 extern fun the_stactx_add (s2v: s2var_t, hit: hityp_t): void
 extern fun the_stactx_free ():<> void // free the (toplevel) stactx
 extern fun the_stactx_find (s2v: s2var_t): Option_vt (hityp_t)
@@ -108,6 +110,24 @@ val the_stactxlst = ref_make_elt<stactxlst> (list_vt_nil ())
 
 in // in of [local]
 
+implement prerr_the_stactx () = let
+  val kis = $Map.map_list_pre (!p) where {
+    val (vbox pf | p) = ref_get_view_ptr (the_stactx)
+  } // end of [val]
+  fun loop (kis: List_vt @(s2var_t, hityp_t)): void = case+ kis of
+    | ~list_vt_cons (ki, kis) => let
+        val () = prerr_s2var (ki.0)
+        val () = prerr_string " -> "
+        val () = prerr_hityp_t (ki.1)
+        val () = prerr_newline ()
+      in
+        loop (kis)
+      end // end of [list_vt_cons]
+    | ~list_vt_nil () => ()
+in
+  loop (kis)
+end // end of [prerr_the_stactx]
+
 implement the_stactx_add (s2v, hit) = let
   val (vbox pf | p) = ref_get_view_ptr (the_stactx)
 in
@@ -126,12 +146,12 @@ implement the_stactx_push () = let
     val stactx = !p
   in
     !p := stactx_nil (); stactx
-  end
+  end // end of [val]
   val () = let
     val (vbox pf | p) = ref_get_view_ptr (the_stactxlst)
   in
     !p := list_vt_cons (stactx, !p)
-  end
+  end // end of [val]
 in
   (unit_v () | ())
 end // end of [the_stactx_push]
@@ -171,7 +191,14 @@ end // end of [local]
 (* ****** ****** *)
 
 // declared in [ats_hiexp.sats]
-implement hityp_s2var_normalize (s2v) = the_stactx_find (s2v)
+implement hityp_s2var_normalize (s2v) = let
+(*
+  val () = prerr "hityp_s2var_normalize: the_stactx =\n"
+  val () = prerr_the_stactx ()
+*)
+in
+  the_stactx_find (s2v)
+end // end of [hityp_s2var_normalize]
 
 (* ****** ****** *)
 

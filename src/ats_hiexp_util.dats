@@ -523,8 +523,8 @@ fun hityp_normalize_flag
   (hit0: hityp, flag: &int): hityp = let
 (*
   val () = begin
-    prerr "hityp_normalize_flag: hit0 = "; prerr hit0; prerr_newline ()
-  end
+    prerr "hityp_normalize_flag: hit0 = "; prerr_hityp hit0; prerr_newline ()
+  end // end of [val]
 *)
   val hit0_new = case+ hit0.hityp_node of
   | HITfun (fc, hits_arg, hit_res) => let
@@ -563,7 +563,7 @@ fun hityp_normalize_flag
   | _ => hit0
 (*
   val () = begin
-    prerr "hityp_normalize: hit0_new = "; prerr hit0_new; prerr_newline ()
+    prerr "hityp_normalize: hit0_new = "; prerr_hityp hit0_new; prerr_newline ()
   end // end of [val]
 *)
 in
@@ -597,7 +597,7 @@ end // end of [labhityplst_normalize_flag]
 //
 
 implement hityp_normalize (hit) = let
-  var flag = 0
+  var flag: int = 0
 in
   hityp_normalize_flag (hit, flag)
 end
