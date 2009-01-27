@@ -348,9 +348,9 @@ fn s2cfdeflst_add
    s2cs: &s2cstlst, fds: &s2cfdeflst_vt): void = let
 (*
   val () = begin
-    print "s2cfdeflst_add: s2c = "; print s2c; print_newline ();
-    print "s2cfdeflst_add: s2es = "; print s2es; print_newline ();
-    print "s2cfdeflst_add: s2v = "; print s2v; print_newline ();
+    prerr "s2cfdeflst_add: s2c = "; prerr s2c; prerr_newline ();
+    prerr "s2cfdeflst_add: s2es = "; prerr s2es; prerr_newline ();
+    prerr "s2cfdeflst_add: s2v = "; prerr s2v; prerr_newline ();
   end
 *)
   val s2e_s2c = s2exp_cst s2c
@@ -419,8 +419,8 @@ in
   | _ => let
 (*
       val () = begin
-        print "s3aexp_make_s2cst_s2explst: s2c = "; print s2c; print_newline ();
-        print "s3aexp_make_s2cst_s2explst: s2es = "; print s2es; print_newline ();
+        prerr "s3aexp_make_s2cst_s2explst: s2c = "; prerr s2c; prerr_newline ();
+        prerr "s3aexp_make_s2cst_s2explst: s2es = "; prerr s2es; prerr_newline ();
       end
 *)
     in
@@ -765,8 +765,8 @@ in
   | _ => let
 (*
       val () = begin
-        print "s3bexp_make_s2cst_s2explst: s2c = "; print s2c; print_newline ();
-        print "s3bexp_make_s2cst_s2explst: s2es = "; print s2es; print_newline ();
+        prerr "s3bexp_make_s2cst_s2explst: s2c = "; prerr s2c; prerr_newline ();
+        prerr "s3bexp_make_s2cst_s2explst: s2es = "; prerr s2es; prerr_newline ();
       end
 *)
     in
@@ -913,8 +913,8 @@ in
   | _ => let
 (*
       val () = begin
-        print "s3iexp_make_s2cst_s2explst: s2c = "; print s2c; print_newline ();
-        print "s3iexp_make_s2cst_s2explst: s2es = "; print s2es; print_newline ();
+        prerr "s3iexp_make_s2cst_s2explst: s2c = "; prerr s2c; prerr_newline ();
+        prerr "s3iexp_make_s2cst_s2explst: s2es = "; prerr s2es; prerr_newline ();
       end
 *)
     in
@@ -980,8 +980,8 @@ fn aux_bind
   : s3bexpopt_vt = let
 (*
   val () = begin
-    print "aux_bind: s2v1 = "; print s2v1; print_newline ();
-    print "aux_bind: s2e2 = "; print s2e2; print_newline ();
+    prerr "aux_bind: s2v1 = "; prerr s2v1; prerr_newline ();
+    prerr "aux_bind: s2e2 = "; prerr s2e2; prerr_newline ();
   end
 *)
   val os3be = aux_equal (s2exp_var s2v1, s2e2, s2cs, fds)
@@ -1007,7 +1007,7 @@ implement s3aexp_make_s2exp (s2e0, s2cs, fds) = let
   val s2e0 = s2exp_whnf s2e0
 (*
   val () = begin
-    print "s3aexp_make_s2exp: s2e0 = "; print s2e0; print_newline ()
+    prerr "s3aexp_make_s2exp: s2e0 = "; prerr s2e0; prerr_newline ()
   end
 *)
 in
@@ -1023,8 +1023,8 @@ in
   | S2Evar s2v => Some_vt (s3aexp_var s2v)
   | _ => let // an expression that cannot be handled
       val () = begin
-        print "s3aexp_make_s2exp: s2e0 = "; print s2e0; print_newline ();
-      end
+        prerr "s3aexp_make_s2exp: s2e0 = "; prerr s2e0; prerr_newline ();
+      end // end of [val]
     in
       None_vt ()
     end // end of [S2Evar]
@@ -1036,8 +1036,8 @@ fun s2exp_synlt (s2e1: s2exp, s2e2: s2exp): bool = let
   val s2e2 = s2exp_whnf s2e2
 (*
   val () = begin
-    print "s2exp_synlt: s2e1 = "; print s2e1; print_newline ();
-    print "s2exp_synlt: s2e2 = "; print s2e2; print_newline ();
+    prerr "s2exp_synlt: s2e1 = "; prerr s2e1; prerr_newline ();
+    prerr "s2exp_synlt: s2e2 = "; prerr s2e2; prerr_newline ();
   end
 *)
 in
@@ -1114,7 +1114,7 @@ implement s3bexp_make_s2exp (s2e0, s2cs, fds) = let
   val s2e0 = s2exp_whnf s2e0
 (*
   val () = begin
-    print "s3bexp_make_s2exp: s2e0 = "; print s2e0; print_newline ()
+    prerr "s3bexp_make_s2exp: s2e0 = "; prerr s2e0; prerr_newline ()
   end
 *)
 in
@@ -1137,7 +1137,7 @@ in
     end // end of [S3Emetlt]
   | _ => let // an expression that cannot be handled
       val () = begin
-        print "s3bexp_make_s2exp: s2e0 = "; print s2e0; print_newline ();
+        prerr "s3bexp_make_s2exp: s2e0 = "; prerr s2e0; prerr_newline ();
       end
     in
       None_vt ()
@@ -1159,7 +1159,7 @@ implement s3iexp_make_s2exp (s2e0, s2cs, fds) = let
   val s2e0 = s2exp_whnf s2e0
 (*
   val () = begin
-    print "s3iexp_make_s2exp: s2e0 = "; print s2e0; print_newline ()
+    prerr "s3iexp_make_s2exp: s2e0 = "; prerr s2e0; prerr_newline ()
   end
 *)
 in
@@ -1185,7 +1185,7 @@ in
   | S2Evar s2v => Some_vt (s3iexp_var s2v)
   | _ => let // an expression that cannot be handled
       val () = begin
-        print "s3iexp_make_s2exp: s2e0 = "; print s2e0; print_newline ();
+        prerr "s3iexp_make_s2exp: s2e0 = "; prerr s2e0; prerr_newline ();
       end
     in
       None_vt ()
@@ -1216,7 +1216,7 @@ fn s2cst_index_find {n:pos}
   (loc0: loc_t, m: !s2cst_index_map, s2c: s2cst_t, n: int n)
   : intBtw (1, n) = let
 (*
-  val () = print "s2cst_index_find: s2c = "; print s2c; print_newline ()
+  val () = prerr "s2cst_index_find: s2c = "; prerr s2c; prerr_newline ()
 *)
   val stamp = s2cst_stamp_get s2c
 in
@@ -1245,7 +1245,7 @@ fn s2var_index_find {n:pos}
   (loc0: loc_t, m: !s2var_index_map, s2v: s2var_t, n: int n)
   : intBtw (1, n) = let
 (*
-  val () = print "s2var_index_find: s2v = "; print s2v; print_newline ()
+  val () = prerr "s2var_index_find: s2v = "; prerr s2v; prerr_newline ()
 *)
   val stamp = s2var_stamp_get s2v
 in
@@ -1325,8 +1325,8 @@ implement s3aexp_intvec_update_err
   (pf_arr | loc0, cim, vim, ivp, n, coef, s3ae0, errno) = let
 (*
   val () = begin
-    print "s3aexp_intvec_update_err: coef = "; print coef; print_newline ();
-    print "s3aexp_intvec_update_err: s3ae0 = "; print s3ae0; print_newline ();
+    prerr "s3aexp_intvec_update_err: coef = "; prerr coef; prerr_newline ();
+    prerr "s3aexp_intvec_update_err: s3ae0 = "; prerr s3ae0; prerr_newline ();
   end
 *)
 in
@@ -1348,8 +1348,8 @@ in
     end
   | S3AEexp _ => begin
       prerr "Internal Error: s3aexp_intvec_update_err: unsupported term: s3ae0 = ";
-      print s3ae0;
-      print_newline ();
+      prerr s3ae0;
+      prerr_newline ();
       $Err.abort {void} ()
     end // end of [S3IEexp]
 end // end of [s3aexp_intvec_update_err]
@@ -1360,8 +1360,8 @@ implement s3iexp_intvec_update_err
   (pf_arr | loc0, cim, vim, ivp, n, coef, s3ie0, errno) = let
 (*
   val () = begin
-    print "s3iexp_intvec_update_err: coef = "; print coef; print_newline ();
-    print "s3iexp_intvec_update_err: s3ie0 = "; print s3ie0; print_newline ();
+    prerr "s3iexp_intvec_update_err: coef = "; prerr coef; prerr_newline ();
+    prerr "s3iexp_intvec_update_err: s3ie0 = "; prerr s3ie0; prerr_newline ();
   end
 *)
 in
@@ -1417,8 +1417,8 @@ in
         end
       | _ => begin
           prerr "Internal Error: s3iexp_intvec_update_err: nonlinear term: s3ie0 = ";
-          print s3ie0;
-          print_newline ();
+          prerr s3ie0;
+          prerr_newline ();
           $Err.abort {void} ()
         end
       end
@@ -1429,8 +1429,8 @@ in
     end
   | S3IEexp _ => begin
       prerr "Internal Error: s3iexp_intvec_update_err: unsupported term: s3ie0 = ";
-      print s3ie0;
-      print_newline ();
+      prerr s3ie0;
+      prerr_newline ();
       $Err.abort {void} ()
     end // end of [S3IEexp]
 end // end of [s3iexp_intvec_update_err]
@@ -1449,7 +1449,8 @@ extern fun s3bexp_icstr_make_err {n:pos} (
 implement s3bexp_icstr_make_err (loc0, cim, vim, n, s3be0, errno) = let
 (*
   val () = begin
-    print "s3bexp_icstr_err: s3be0 = %a\n" fprint_s3bexp s3be in
+    prerr "s3bexp_icstr_err: s3be0 = "; prerr_s3bexp s3be; prerr_newline ()
+  end // end of [val]
 *)
   macdef aux (s3be) = s3bexp_icstr_make_err (loc0, cim, vim, n, ,(s3be), errno)
 in
@@ -1498,8 +1499,8 @@ in
     end // end of [S3BEiexp]
   | S3BEexp _ => begin
       prerr "Internal Error: s3bexp_intvec_make_err: unsupported term: s3be0 = ";
-      print s3be0;
-      print_newline ();
+      prerr s3be0;
+      prerr_newline ();
       $Err.abort ()
     end // end of [S3BEexp]
 end // end of [s3bexp_icstr_make_err]
@@ -1519,9 +1520,9 @@ extern fun s3bexplst_s2exp_solve_fm (
 implement s3bexplst_s2exp_solve_fm (loc0, s2vs, s3bes, s2p, s2cs, fds, errno) = let
 (*
   val () = begin
-    print "s3bexplst_s2exp_solve_fm: s2vs = "; print s2vs; print_newline ();
-    print "s3bexplst_s2exp_solve_fm: s3bes = "; print s3bes; print_newline ();
-    print "s3bexplst_s2exp_solve_fm: s2p = "; print s2p; print_newline ();
+    prerr "s3bexplst_s2exp_solve_fm: s2vs = "; prerr s2vs; prerr_newline ();
+    prerr "s3bexplst_s2exp_solve_fm: s3bes = "; prerr s3bes; prerr_newline ();
+    prerr "s3bexplst_s2exp_solve_fm: s2p = "; prerr s2p; prerr_newline ();
   end
 *)
   viewtypedef cim_vt = s2cst_index_map and vim_vt = s2var_index_map
@@ -1626,18 +1627,18 @@ implement s3bexplst_s2exp_solve_fm (loc0, s2vs, s3bes, s2p, s2cs, fds, errno) = 
   val () = $Map.map_free cim and () = $Map.map_free vim
 (*
   val () = begin
-    print "s3bexp_s2exp_solve_fm: ics_asmp = \n";
-    print_icstrlst (ics_asmp, cnt); print_newline ();
-    print "s3bexp_s2exp_solve_fm: ic_conc = "; 
-    print_icstr (ic_conc, cnt); print_newline ()
+    prerr "s3bexp_s2exp_solve_fm: ics_asmp = \n";
+    prerr_icstrlst (ics_asmp, cnt); prerr_newline ();
+    prerr "s3bexp_s2exp_solve_fm: ic_conc = "; 
+    prerr_icstr (ic_conc, cnt); prerr_newline ()
   end
 *)
   var ics_all = list_vt_cons ($FM.icstr_negate ic_conc, ics_asmp)
 (*
   val () = begin
-    print "s3bexp_s2exp_solve_fm: ics_all = \n";
-    print_icstrlst (ics_all, cnt);
-    print_newline ()
+    prerr "s3bexp_s2exp_solve_fm: ics_all = \n";
+    prerr_icstrlst (ics_all, cnt);
+    prerr_newline ()
   end
 *)
   val ans = $FM.icstrlst_solve (ics_all, cnt)
@@ -1723,9 +1724,9 @@ implement c3str_solve_main
   (s2vs, s3bes, c3t, s2cs, fds, unsolved, errno) = let
 (*
   val () = begin
-    print "c3str_solve_main: s2vs = "; print s2vs; print_newline ();
-    print "c3str_solve_main: s3bes = "; print s3bes; print_newline ();
-    print "c3str_solve_main: c3t = "; print c3t; print_newline ();
+    prerr "c3str_solve_main: s2vs = "; prerr s2vs; prerr_newline ();
+    prerr "c3str_solve_main: s3bes = "; prerr s3bes; prerr_newline ();
+    prerr "c3str_solve_main: c3t = "; prerr c3t; prerr_newline ();
   end
 *)
   val loc0 = c3t.c3str_loc
@@ -1739,7 +1740,7 @@ implement c3str_solve_main
   ) : intBtw (~1, 1)
 (*
   val () = begin
-    print "c3str_solve_main: ans = "; print ans; print_newline ()
+    prerr "c3str_solve_main: ans = "; prerr ans; prerr_newline ()
   end
 *)
   val () = s2cfdeflst_pop (fds); val () = s2cs := s2cs0
@@ -1812,9 +1813,9 @@ implement c3str_solve_prop
   (loc0, s2vs, s3bes, s2p, s2cs, fds, errno) = let
 (*
   val () = begin
-    print "c3str_solve_prop: s2vs = "; print s2vs; print_newline ();
-    print "c3str_solve_prop: s3bes = "; print s3bes; print_newline ();
-    print "c3str_solve_prop: s2p = "; print s2p; print_newline ();
+    prerr "c3str_solve_prop: s2vs = "; prerr s2vs; prerr_newline ();
+    prerr "c3str_solve_prop: s3bes = "; prerr s3bes; prerr_newline ();
+    prerr "c3str_solve_prop: s2p = "; prerr s2p; prerr_newline ();
   end
 *)
 in
@@ -1827,9 +1828,9 @@ implement c3str_solve_itmlst
   (loc0, s2vs, s3bes, s3is, s2cs, fds, unsolved, errno) = let
 (*
   val () = begin
-    print "c3str_solve_itmlst: s2vs = "; print s2vs; print_newline ();
-    print "c3str_solve_itmlst: s3bes = "; print s3bes; print_newline ();
-    print "c3str_solve_itmlst: s3is = "; print s3is; print_newline ();
+    prerr "c3str_solve_itmlst: s2vs = "; prerr s2vs; prerr_newline ();
+    prerr "c3str_solve_itmlst: s3bes = "; prerr s3bes; prerr_newline ();
+    prerr "c3str_solve_itmlst: s3is = "; prerr s3is; prerr_newline ();
   end
 *)
 in
@@ -1890,9 +1891,9 @@ in
     | S3ITEMsVar s2V => let
 (*
         val () = begin
-          print loc0;
-          print ": c3str_solve_itmlst: s2V = "; print s2V;
-          print_newline ()
+          prerr loc0;
+          prerr ": c3str_solve_itmlst: s2V = "; prerr s2V;
+          prerr_newline ()
         end
 *)
       in
@@ -1927,8 +1928,8 @@ end // end of [c3str_solve_itmlst_disj]
 implement c3str_solve (c3t) = let
 (*
   val () = begin
-    print "c3str_solve: c3t = "; print c3t; print_newline ()
-  end
+    prerr "c3str_solve: c3t = "; prerr c3t; prerr_newline ()
+  end // end of [val]
 *)
 (*
   val () = the_s2varbindmap_initialize () // there is no need for initialization
