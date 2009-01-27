@@ -74,7 +74,7 @@ overload prerr with $Loc.prerr_location
 fun s2exp_link_remove_flag (s2e0: s2exp, flag: &int): s2exp = let
 (*
   val () = begin
-    print "s2exp_link_remove_flag: s2e0 = "; print s2e0; print_newline ()
+    prerr "s2exp_link_remove_flag: s2e0 = "; prerr s2e0; prerr_newline ()
   end // end of [val]
 *)
 in
@@ -86,13 +86,13 @@ in
             flag := flag + 1; s2exp_link_remove_flag (s2e, flag)
           end
         | None () => s2e0
-      end
+      end // end of [if]
     end // end of [S2Ecst]
     // the link of s2V should not be updated!!!
   | S2EVar s2V => begin case+ s2Var_link_get (s2V) of
     | Some s2e => begin
         flag := flag + 1; s2exp_link_remove_flag (s2e, flag)
-      end
+      end // end of [Some]
     | None () => s2e0
     end // end of [S2EVar]
   | _ => s2e0
@@ -104,12 +104,13 @@ end // end of [s2exp_link_remove]
 
 (* ****** ****** *)
 
-fun labs2explst_readize (_v: s2exp, ls2es: labs2explst): labs2explst =
-  case+ ls2es of
+fun labs2explst_readize
+  (_v: s2exp, ls2es: labs2explst): labs2explst = begin case+ ls2es of
   | LABS2EXPLSTcons (l, s2e, ls2es) => begin
       LABS2EXPLSTcons (l, s2exp_readize (_v, s2e), labs2explst_readize (_v, ls2es))
-    end
+    end // end of [LABS2EXPLSTcons]
   | LABS2EXPLSTnil () => LABS2EXPLSTnil ()
+end // end of [labs2explst_readize]
 
 implement s2exp_readize (_v, s2e) = let
   val s2t_s2e = s2e.s2exp_srt
@@ -122,24 +123,23 @@ in
         val ls2es = labs2explst_readize (_v, ls2es)
       in
         s2exp_tyrec_srt (s2t, knd, npf, ls2es)
-      end
+      end // end of [S2Etyrec]
     | S2Eunion (stamp, s2i, ls2es) => let
         val ls2es = labs2explst_readize (_v, ls2es)
       in
         s2exp_union_srt (s2t, stamp, s2i, ls2es)
-      end
+      end // end of [S2Eunion]
     | _ => s2exp_read_srt (s2t, _v, s2e)
   end else begin
     s2e // [r@ead] is identity on nonlinear types
-  end
+  end // end of [if]
 end // end of [s2exp_readize]
 
-implement s2expopt_readize (_v, os2e) = begin
-  case+ os2e of
+implement s2expopt_readize (_v, os2e) = begin case+ os2e of
   | Some s2e => begin
       if s2exp_is_linear s2e then Some (s2exp_readize (_v, s2e))
       else os2e
-    end
+    end // end of [Some]
   | None () => os2e
 end // end of [s2expopt_readize]
 
@@ -152,7 +152,7 @@ fun labs2explst_topize
       val s2e = s2exp_topize (knd, s2e)
     in
       LABS2EXPLSTcons (l, s2e, labs2explst_topize (knd, ls2es))
-    end
+    end // end of [LABS2EXPLSTcons]
   | LABS2EXPLSTnil () => LABS2EXPLSTnil ()
 end // end of [labs2explst_topize]
 
@@ -162,7 +162,7 @@ implement s2exp_topize (knd, s2e) = let
     if knd > 0 (*typization*) then
       if s2rt_is_linear s2t then false else true
     else false
-  end
+  end // end of [val]
   val s2e = s2exp_whnf s2e
 in
   if isdone then begin 
@@ -178,7 +178,7 @@ in
         val s2e_elt = s2exp_topize (knd, s2e_elt)
       in
         s2exp_tyarr (s2e_elt, s2ess_dim)
-      end
+      end // end of [S2Etyarr]
     | S2Etyrec (recknd, npf, ls2es) => begin
       case+ recknd of
       | TYRECKINDbox () => s2exp_top_srt (s2t_new, knd, s2e)
@@ -186,13 +186,13 @@ in
           val ls2es = labs2explst_topize (knd, ls2es)
         in
           s2exp_tyrec_srt (s2t_new, recknd, npf, ls2es)
-        end
+        end // end of [_]
       end // end of [S2Etyrec]
     | S2Eunion (stamp, _(*ind*), ls2es) => let
         val s2i = s2exp_int (~1)
       in
         s2exp_union_srt (s2t_new, stamp, s2i, ls2es)
-      end
+      end // end of [S2Eunion]
     | _ => s2exp_top_srt (s2t_new, knd, s2e)
   end // end of [if]
 end // end of [s2exp_topize]
@@ -221,19 +221,19 @@ in
                 prerr "Internal Error: s2exp_whnf: S2Eapp: arity error";
                 prerr_newline ();
                 $Err.abort {stasub_t} ()
-              end
+              end // end of [_, _]
           val sub = aux (s2vs_arg, s2es_arg)
           val () = flag := flag + 1
         in
           s2exp_whnf_flag (s2exp_subst (sub, s2e_body), flag)
-        end
+        end // end of [S2Elam]
       | _ => begin
           if flag > flag0 then begin
             s2exp_app_srt (s2e0.s2exp_srt, s2e_fun, s2es_arg)
           end else begin
             s2e0 // there is no change
-          end
-        end
+          end // end of [if]
+        end // end of [_]
     end // end of [S2Eapp]
   | S2Eclo (knd, s2e) => let
       val flag0 = flag; val s2e = s2exp_whnf_flag (s2e, flag)
@@ -242,18 +242,19 @@ in
       | S2Efun (_(*fc*), lin, s2fe, npf, s2es_arg, s2e_res) => let
           val fc1 = $Syn.FUNCLOclo knd
           val () = flag := flag + 1
-          val s2t1: s2rt =
+          val s2t1 = (
             if knd = 0 then
               if lin > 0 then s2rt_viewt0ype else s2rt_t0ype
             else begin
               s2e0.s2exp_srt
             end
+          ) : s2rt
         in
           s2exp_fun_srt (s2t1, fc1, lin, s2fe, npf, s2es_arg, s2e_res)
-        end
+        end // end of [S2Efun]
       | _ => begin
           if flag > flag0 then s2exp_clo_srt (s2e.s2exp_srt, knd, s2e) else s2e0
-        end
+        end // end of [_]
     end // end of [S2Eclo]
   | S2Ecrypt (s2e) => let
       val flag0 = flag; val s2e = s2exp_whnf_flag (s2e, flag)
@@ -311,7 +312,7 @@ in
       val () = flag := flag + 1; val s2ze = s2zexp_make_s2exp s2e
     in
       s2exp_size s2ze
-    end
+    end // end of [S2Esizeof]
   | S2Etop (knd, s2e) => let
       val flag0 = flag; val s2e = s2exp_whnf_flag (s2e, flag)
     in
@@ -321,12 +322,12 @@ in
           val knd1: int = if knd > 0 then knd1 else 0
         in
           s2exp_topize (knd1, s2e1)
-        end
+        end // end of [S2Etop]
       | S2Etyarr (s2e_elt, s2ess_dim) => let
           val s2e_elt = s2exp_topize (knd, s2e_elt)
         in
           flag := flag + 1; s2exp_tyarr (s2e_elt, s2ess_dim)
-        end
+        end // end of [S2Etyarr]
       | S2Etyrec (recknd, npf, ls2es) => begin case+ recknd of
         | TYRECKINDbox () => begin
             if flag > flag0 then s2exp_top_srt (s2e0.s2exp_srt, knd, s2e)
@@ -337,14 +338,14 @@ in
           in
             flag := flag + 1;
             s2exp_tyrec_srt (s2e0.s2exp_srt, recknd, npf, ls2es)
-          end
+          end // end of [_]
         end // end of [S2Etyrec]
       | S2Eunion (stamp, _(*ind*), ls2es) => let
           val s2i = s2exp_int (~1)
         in
           flag := flag + 1;
           s2exp_union_srt (s2e0.s2exp_srt, stamp, s2i, ls2es)
-        end
+        end // end of [S2Eunion]
       | _ => let
           val cond =
             if knd > 0 then (*typization*)
@@ -357,7 +358,7 @@ in
             if flag > flag0 then
               s2exp_top_srt (s2e0.s2exp_srt, knd, s2e)
             else s2e0
-          end
+          end // end of [if]
         end // end of [_]
     end // end of [S2Etop]
   | S2Evar s2v => begin case+ the_s2varbindmap_find s2v of
@@ -376,7 +377,7 @@ and s2explst_whnf_flag
       val s2es = s2explst_whnf_flag (s2es, flag)
     in
       if flag > flag0 then cons (s2e, s2es) else s2es0
-    end
+    end // end of [cons]
   | nil () => nil ()
 end // end of [s2explst_whnf_flag]
 
@@ -408,7 +409,7 @@ fun s2eff_syneq (s2fe1: s2eff, s2fe2: s2eff): bool = begin
   | (S2EFFnil (), S2EFFnil ()) => true
   | (S2EFFset (efs1, s2es1), S2EFFset (efs2, s2es2)) => begin
       $Eff.eq_effset_effset (efs1, efs2) andalso s2explst_syneq (s2es1, s2es2)
-    end
+    end // end of [S2EFFset, S2EFFset]
   | (_, _) => false
 end // end of [s2eff]
 
@@ -429,9 +430,9 @@ implement s2exp_syneq (s2e10, s2e20) = let
   val s2e10 = s2exp_whnf s2e10 and s2e20 = s2exp_whnf s2e20
 (*
   val () = begin
-    print "s2exp_syneq: s2e10 = "; print s2e10; print_newline ();
-    print "s2exp_syneq: s2e20 = "; print s2e20; print_newline ();
-  end
+    prerr "s2exp_syneq: s2e10 = "; prerr s2e10; prerr_newline ();
+    prerr "s2exp_syneq: s2e20 = "; prerr s2e20; prerr_newline ();
+  end // end of [val]
 *)
 in
   case+ s2e10.s2exp_node of
@@ -439,43 +440,43 @@ in
   | S2Eapp (s2e11, s2es12) => begin case+ s2e20.s2exp_node of
     | S2Eapp (s2e21, s2es22) => begin
         s2exp_syneq (s2e11, s2e21) andalso s2explst_syneq (s2es12, s2es22)
-      end
+      end // end of [S2Eapp]
     | _ => false
-    end
+    end // end of [S2Eapp]
   | S2Echar c1 => begin case+ s2e20.s2exp_node of
     | S2Echar c2 => eq_char_char (c1, c2) | _ => false
-    end
+    end // end of [S2Echar]
   | S2Eclo (knd1, s2e1) => begin case+ s2e20.s2exp_node of
     | S2Eclo (knd2, s2e2) => knd1 = knd2 andalso s2exp_syneq (s2e1, s2e2)
     | _ => false
-    end
+    end // end of [S2Eclo]
   | S2Ecst s2c1 => begin case+ s2e20.s2exp_node of
     | S2Ecst s2c2 => eq_s2cst_s2cst (s2c1, s2c2) | _ => false
-    end
+    end // end of [S2Ecst]
   | S2Edatconptr (d2c1, s2es1) => begin case+ s2e20.s2exp_node of
     | S2Edatconptr (d2c2, s2es2) => begin
         eq_d2con_d2con (d2c1, d2c2) andalso s2explst_syneq (s2es1, s2es2)
       end
     | _ => false
-    end
+    end // end of [S2Edatconptr]
   | S2Edatcontyp (d2c1, s2es1) => begin case+ s2e20.s2exp_node of
     | S2Edatcontyp (d2c2, s2es2) => begin
         eq_d2con_d2con (d2c1, d2c2) andalso s2explst_syneq (s2es1, s2es2)
       end
     | _ => false
-    end
+    end // end of [S2Edatcontyp]
   | S2Eeff s2fe1 => begin case+ s2e20.s2exp_node of
       | S2Eeff s2fe2 => s2eff_syneq (s2fe1, s2fe2) | _ => false
-    end
+    end // end of [S2Eeff]
   | S2Eeqeq (s2e11, s2e12) => begin case+ s2e20.s2exp_node of
     | S2Eeqeq (s2e21, s2e22) => begin
         s2exp_syneq (s2e11, s2e21) andalso s2exp_syneq (s2e12, s2e22)
       end
     | _ => false
-    end
+    end // end of [S2Eeqeq]
   | S2Eextype name1 => begin case+ s2e20.s2exp_node of
     | S2Eextype name2 => eq_string_string (name1, name2) | _ => false
-    end
+    end // end of [S2Eextype]
   | S2Efun (fc1, lin1, s2fe1, npf1, s2es1_arg, s2e1_res) => begin
       case+ s2e20.s2exp_node of
       | S2Efun (fc2, lin2, s2fe2, npf2, s2es2_arg, s2e2_res) => begin
@@ -487,26 +488,26 @@ in
           s2exp_syneq (s2e1_res, s2e2_res)
         end
       | _ => false
-    end
+    end // end of [S2Efun]
   | S2Eint i1 => begin case+ s2e20.s2exp_node of
     | S2Eint i2 => eq_int_int (i1, i2)
     | S2Eintinf i2 => $IntInf.eq_int_intinf (i1, i2)
     | _ => false
-    end
+    end // end of [S2Eint]
   | S2Eintinf i1 => begin case+ s2e20.s2exp_node of
     | S2Eint i2 => $IntInf.eq_intinf_int (i1, i2)
     | S2Eintinf i2 => $IntInf.eq_intinf_intinf (i1, i2)
     | _ => false
-    end
+    end // end of [S2Eintinf]
   | S2Eout s2e1 => begin case+ s2e20.s2exp_node of
     | S2Eout s2e2 => s2exp_syneq (s2e1, s2e2) | _ => false
-    end
+    end // end of [S2Eout]
   | S2Eproj (s2e1(*root*), s2l1) => begin case+ s2e20.s2exp_node of
     | S2Eproj (s2e2(*root*), s2l2) => begin
         s2exp_syneq (s2e1, s2e2) andalso s2lab_syneq (s2l1, s2l2)
       end
     | _ => false
-    end
+    end // end of [S2Eproj]
   | S2Eread (_v1, s2e1) => begin
     case+ s2e20.s2exp_node of
     | S2Eread (_v2, s2e2) => begin
@@ -524,44 +525,44 @@ in
   | S2Esel (s2e1, i1) => begin case+ s2e20.s2exp_node of
     | S2Esel (s2e2, i2) => (i1 = i2 andalso s2exp_syneq (s2e1, s2e2))
     | _ => false
-    end
+    end // end of [S2Esel]
   | S2Esize s2ze1 => begin case+ s2e20.s2exp_node of 
     | S2Esize s2ze2 => s2zexp_syneq (s2ze1, s2ze2) | _ => false
-    end
+    end // end of [S2Esize]
   | S2Esizeof s2e1 => begin case+ s2e20.s2exp_node of
     | S2Esizeof s2e2 => s2exp_syneq (s2e1, s2e2) | _ => false
-    end
+    end // end of [S2Esizeof]
   | S2Etop (knd1, s2e1) => begin case+ s2e20.s2exp_node of
     | S2Etop (knd2, s2e2) => (knd1 = knd2 andalso s2exp_syneq (s2e1, s2e2))
     | _ => false
-    end
+    end // end of [S2Etop]
   | S2Etup s2es1 => begin case+ s2e20.s2exp_node of
     | S2Etup s2es2 => s2explst_syneq (s2es1, s2es2) | _ => false
-    end
+    end // end of [S2Etup]
   | S2Etylst s2es1 => begin case+ s2e20.s2exp_node of
     | S2Etylst s2es2 => s2explst_syneq (s2es1, s2es2) | _ => false
-    end
+    end // end of [S2Etylst]
   | S2Etyarr (s2e1_elt, s2ess1_ind) => begin case+ s2e20.s2exp_node of
     | S2Etyarr (s2e2_elt, s2ess2_ind) => begin
         s2exp_syneq (s2e1_elt, s2e2_elt) andalso
         s2explstlst_syneq (s2ess1_ind, s2ess2_ind)
       end
     | _ => false
-    end
+    end // end of [S2Etyarr]
   | S2Etyleq (_(*knd*), s2e11, s2e12) => begin
     case+ s2e20.s2exp_node of
     | S2Etyleq (_(*knd*), s2e21, s2e22) => begin
         s2exp_syneq (s2e11, s2e21) andalso s2exp_syneq (s2e12, s2e22)
       end
     | _ => false
-    end
+    end // end of [S2Etyleq]
   | S2Etyrec (knd1, npf1, ls2es1) => begin case+ s2e20.s2exp_node of
     | S2Etyrec (knd2, npf2, ls2es2) => begin
         knd1 = knd2 andalso npf1 = npf2 andalso
         labs2explst_syneq (ls2es1, ls2es2)
       end
     | _ => false
-    end
+    end // end of [S2Etyrec]
   | S2Eunion (s1, s2e1_ind, ls2es1_body) => begin case+ s2e20.s2exp_node of
     | S2Eunion (s2, s2e2_ind, ls2es2_body) => begin
         $Stamp.eq_stamp_stamp (s1, s2) andalso
@@ -569,13 +570,13 @@ in
         labs2explst_syneq (ls2es1_body, ls2es2_body)
       end
     | _ => false
-    end
+    end // end of [S2Eunion]
   | S2Evar s2v1 => begin case+ s2e20.s2exp_node of
     | S2Evar s2v2 => eq_s2var_s2var (s2v1, s2v2) | _ => false
-    end
+    end // end of [S2Evar]
   | S2EVar s2V1 => begin case+ s2e20.s2exp_node of
     | S2EVar s2V2 => eq_s2Var_s2Var (s2V1, s2V2) | _ => false
-    end
+    end // end of [S2EVar]
   | _ => false (* test accuracy may be increased ... *)
 end // end of [s2exp_syneq]
 
@@ -583,7 +584,7 @@ implement s2explst_syneq (s2es10, s2es20) = begin
   case+ (s2es10, s2es20) of
   | (s2e1 :: s2es1, s2e2 :: s2es2) => begin
       s2exp_syneq (s2e1, s2e2) andalso s2explst_syneq (s2es1, s2es2)
-    end
+    end // end of [::, ::]
   | (nil (), nil ()) => true
   | (_, _) => false
 end // end of [s2explst_syneq]
@@ -592,7 +593,7 @@ implement s2explstlst_syneq (s2ess10, s2ess20) = begin
   case+ (s2ess10, s2ess20) of
   | (s2es1 :: s2ess1, s2es2 :: s2ess2) => begin
       s2explst_syneq (s2es1, s2es2) andalso s2explstlst_syneq (s2ess1, s2ess2)
-    end
+    end // end of [::, ::]
   | (nil (), nil ()) => true
   | (_, _) => false
 end // end of [s2explstlst_syneq]
@@ -617,7 +618,7 @@ fun s2zexplst_syneq (s2zes1: s2zexplst, s2zes2: s2zexplst): bool =
   | (cons (s2ze1, s2zes1), cons (s2ze2, s2zes2)) => begin
       if s2zexp_syneq (s2ze1, s2ze2) then s2zexplst_syneq (s2zes1, s2zes2)
       else false
-    end
+    end // end of [cons, cons]
   | (nil (), nil ()) => true
   | (_, _) => false
 
@@ -627,45 +628,45 @@ implement s2zexp_syneq (s2ze10, s2ze20) = begin
     | S2ZEapp (s2ze2, s2zes2) => begin
         if s2zexp_syneq (s2ze1, s2ze2) then s2zexplst_syneq (s2zes1, s2zes2)
         else false
-      end
+      end // end of [S2ZEapp]
     | _ => false
-    end
+    end // end of [S2ZEapp]
   | S2ZEbot () => false // [S2ZEbot <> S2ZEbot]!
   | S2ZEbyte i1 => begin case+ s2ze20 of
     | S2ZEbyte i2 => (i1 = i2) | _ => false
-    end
+    end // end of [S2ZEbyte]
   | S2ZEcst s2c1 => begin case+ s2ze20 of
     | S2ZEcst s2c2 => eq_s2cst_s2cst (s2c1, s2c2) | _ => false
-    end
+    end // end of [S2ZEcst]
   | S2ZEextype name1 => begin case+ s2ze20 of
     | S2ZEextype name2 => (name1 = name2) | _ => false
-    end
+    end // end of [S2ZEextype]
   | S2ZEtyarr (s2ze1_elt, s2ess1_dim) => begin case+ s2ze20 of
     | S2ZEtyarr (s2ze2_elt, s2ess2_dim) => begin
         s2zexp_syneq (s2ze1_elt, s2ze2_elt) andalso
         s2explstlst_syneq (s2ess1_dim, s2ess2_dim)
       end
     | _ => false
-    end
+    end // end of [S2ZEtyarr]
   | S2ZEtyrec (knd1, ls2zes1) => begin case+ s2ze20 of
     | S2ZEtyrec (knd2, ls2zes2) => begin
         knd1 = knd2 andalso labs2zexplst_syneq (ls2zes1, ls2zes2)
       end
     | _ => false
-    end
+    end // end of [S2ZEtyrec]
   | S2ZEunion (s1, ls2zes1) => begin case+ s2ze20 of
     | S2ZEunion (s2, ls2zes2) => begin
         $Stamp.eq_stamp_stamp (s1, s2) andalso
         labs2zexplst_syneq (ls2zes1, ls2zes2)
       end
     | _ => false
-    end
+    end // end of [S2ZEunion]
   | S2ZEvar s2v1 => begin case+ s2ze20 of
     | S2ZEvar s2v2 => eq_s2var_s2var (s2v1, s2v2) | _ => false
-    end
+    end // end of [S2ZEvar]
   | S2ZEword i1 => begin case+ s2ze20 of
     | S2ZEword i2 => (i1 = i2) | _ => false
-    end
+    end // end of [S2ZEword]
 end // end of [s2zexp_syneq]
 
 (* ****** ****** *)

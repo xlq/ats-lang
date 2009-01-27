@@ -332,9 +332,9 @@ fn p3at_con_free_update
   (p3t0: p3at, freeknd: int, d2c: d2con_t, p3ts: p3atlst): void = let
 (*
   val () = begin
-    print "p3at_con_free_update: p3t0 = "; print p3t0; print_newline ();
-    print "p3at_con_free_update: freeknd = "; print freeknd; print_newline ();
-    print "p3at_con_free_update: d2c = "; print d2c; print_newline ();
+    prerr "p3at_con_free_update: p3t0 = "; prerr p3t0; prerr_newline ();
+    prerr "p3at_con_free_update: freeknd = "; prerr freeknd; prerr_newline ();
+    prerr "p3at_con_free_update: d2c = "; prerr d2c; prerr_newline ();
   end
 *)
   fun aux_var
@@ -381,7 +381,7 @@ fn p3at_con_free_update
         end
 (*
     val () = begin
-      print "p3at_con_free_update: aux_pat: d2v_ptr = "; print d2v_ptr; print_newline ()
+      prerr "p3at_con_free_update: aux_pat: d2v_ptr = "; prerr d2v_ptr; prerr_newline ()
     end
 *)
     val s2e = d2var_typ_get_some (p3t.p3at_loc, d2v_ptr)
@@ -850,9 +850,9 @@ fn p2at_var_tr_dn
     end
 (*
   val () = begin
-    print "p2at_var_tr_dn: d2v = "; print d2v; print_newline ();
-    print "p2at_var_tr_dn: s2e0 = "; print s2e0; print_newline ();
-    print "p2at_var_tr_dn: s2t0 = "; print s2e0.s2exp_srt; print_newline ();
+    prerr "p2at_var_tr_dn: d2v = "; prerr d2v; prerr_newline ();
+    prerr "p2at_var_tr_dn: s2e0 = "; prerr s2e0; prerr_newline ();
+    prerr "p2at_var_tr_dn: s2t0 = "; prerr s2e0.s2exp_srt; prerr_newline ();
   end
 *)
   val s2e = s2exp_opnexi_and_add (loc0, s2e0)
@@ -860,8 +860,8 @@ fn p2at_var_tr_dn
   val p3t0 = p3at_var (loc0, s2e0, refknd, d2v)
 (*
   val () = begin
-    print "p2at_tr_var_dn: d2v = "; print d2v; print_newline ();
-    print "p2at_tr_var_dn: s2e = "; print s2e; print_newline ();
+    prerr "p2at_tr_var_dn: d2v = "; prerr d2v; prerr_newline ();
+    prerr "p2at_tr_var_dn: s2e = "; prerr s2e; prerr_newline ();
   end
 *)
 in
@@ -911,9 +911,9 @@ implement p2at_tr_dn (p2t0, s2e0) = let
   val loc0 = p2t0.p2at_loc
 (*
   val () = begin
-    print "p2at_tr_dn: p2t0 = "; print p2t0; print_newline ();
-    print "p2at_tr_dn: s2e0 = "; print s2e0; print_newline ();
-  end
+    prerr "p2at_tr_dn: p2t0 = "; prerr p2t0; prerr_newline ();
+    prerr "p2at_tr_dn: s2e0 = "; prerr s2e0; prerr_newline ();
+  end // end of [val]
 *)
 in
   case+ p2t0.p2at_node of
@@ -966,23 +966,22 @@ in
       | S2Eapp (s2e_fun, s2es_arg) when
           s2cstref_exp_equ (Int_int_t0ype, s2e_fun) => let
           val s2e_arg = case+ s2es_arg of
-            | cons (s2e, _) => s2e
-            | nil _ => begin
+            | cons (s2e, _) => s2e | nil () => begin
                 prerr loc0;
                 prerr ": Internal Error: p2at_tr_dn: P2Tint";
                 prerr_newline ();
                 $Err.abort {s2exp} ()
-              end
+              end // end of [nil]
           val () = trans3_env_hypo_add_eqeq (loc0, s2exp_intinf i, s2e_arg)
         in
           p3at_int (loc0, s2exp_int_intinf_t0ype i, s, i)
-        end
+        end // end of [S2Eapp]
       | _ => let
           val s2e_int = s2exp_int_t0ype ()
           val () = $SOL.s2exp_tyleq_solve (loc0, s2e0, s2e_int)
         in
           p3at_int (loc0, s2e_int, s, i)
-        end
+        end // end of [_]
     end // end of [P2Tint]
   | P2Tlst (p2ts) => p2at_lst_tr_dn (loc0, p2ts, s2e0)
   | P2Trec (recknd, npf, lp2ts) => begin
@@ -1001,7 +1000,7 @@ in
                 prerr ": Internal Error: p2at_tr_dn: P2Tstring";
                 prerr_newline ();
                 $Err.abort {s2exp} ()
-              end
+              end // end of [nil]
           val n = string0_length str
           val n = size1_of_size (n); val n = int1_of_size1 (n)
           val () = trans3_env_hypo_add_eqeq (loc0, s2e_arg, s2exp_int n)
@@ -1066,8 +1065,8 @@ implement p2at_arg_tr_dn (p2t0, s2e0) = let
     | S2Erefarg (refval, s2e_arg) => let
 (*
         val () = begin
-          print "p2at_arg_tr_dn: p2t0 = "; print p2t0; print_newline ();
-          print "p2at_arg_tr_dn: s2e_arg = "; print s2e_arg; print_newline ();
+          prerr "p2at_arg_tr_dn: p2t0 = "; prerr p2t0; prerr_newline ();
+          prerr "p2at_arg_tr_dn: s2e_arg = "; prerr s2e_arg; prerr_newline ();
         end
 *)
       in
