@@ -61,11 +61,13 @@ implement{a} avl_size (t) = case+ t of
   | Bl (_, _, l, r) => 1 + (avl_size l + avl_size r)
   | Br (_, _, l, r) => 1 + (avl_size l + avl_size r)
   | E () => 0
+// end of [avl_size]
 
 extern fun{a:t@ype} avl_height {h,s:nat} (t: avl (a, h, s)): int h
 
 implement{a} avl_height (t) = case+ t of
   | E () => 0 | Bl (_, h, _, _) => h | Br (_, h, _, _) => h
+// end of [avl_height]
 
 (* ****** ****** *)
 
@@ -78,12 +80,12 @@ implement{a} avl_member (t, e0, cmp) = begin
     | ~1 => avl_member (l, e0, cmp)
     |  1 => avl_member (r, e0, cmp)
     |  0 => true
-    end
+    end // end of [Bl]
   | Br (e, _, l, r) => begin case+ cmp (e0, e) of
     | ~1 => avl_member (l, e0, cmp)
     |  1 => avl_member (r, e0, cmp)
     |  0 => true
-    end
+    end // end of [Br]
   | E () => false
 end // end of [avl_member]
 
@@ -96,12 +98,12 @@ implement{a} avl_search (t, pred) = begin
     | ~1 => avl_search (l, pred)
     |  1 => avl_search (r, pred)
     |  0 => Some e
-    end
+    end // end of [Bl]
   | Br (e, _, l, r) => begin case+ pred e of
     | ~1 => avl_search (l, pred)
     |  1 => avl_search (r, pred)
     |  0 => Some e
-    end
+    end // end of [Br]
   | E () => None ()
 end // end of [avl_search]
 
@@ -111,10 +113,10 @@ extern fun{a:t@ype} avl_foreach {v:view} {vt:viewtype} {h,s:nat} {f:eff}
 implement{a} avl_foreach (pf | t, f, env) = begin case+ t of
   | Bl (e, _, l, r) => begin
       avl_foreach (pf | l, f, env); f (pf | e, env); avl_foreach (pf | r, f, env)
-    end
+    end // end of [Bl]
   | Br (e, _, l, r) => begin
       avl_foreach (pf | l, f, env); f (pf | e, env); avl_foreach (pf | r, f, env)
-    end
+    end // end of [Br]
   | E () => ()
 end // end of [avl_foreach]
 
@@ -140,7 +142,7 @@ implement{a} avl_rotate_l (e, l, r) = begin
             Br (lre, lh, Bl (le, llh+1, ll, lrl), Br (e, lh-1, lrr, r))
       end else begin
         Br (le, lrh+2, ll, Bl (e, lrh+1, lr, r))
-      end
+      end // end of [if]
     end // end of [Br]
 end // end of [avl_rotate_l]
 
@@ -220,8 +222,8 @@ implement{a} avl_takeout_min (t, x) = begin
         val lh' = avl_height l' and rh = avl_height r
       in
         if rh <= lh' then Bl (e, lh'+1, l', r) else Br (e, rh+1, l', r)
-      end
-    end
+      end // end of [_]
+    end // end of [Bl]
   | Br (e, _, l, r) => begin case+ : (x: a) => l of
     | E () => (x := e; r)
     | _ =>> let
@@ -231,8 +233,8 @@ implement{a} avl_takeout_min (t, x) = begin
         if rh <= lh' then Bl (e, lh'+1, l', r)
         else if rh <= lh'+1 then Br (e, rh+1, l', r)
         else avl_rotate_r (e, l', r)
-      end
-    end
+      end // end of [_]
+    end // end of [Br]
 end // end of [avl_takeout_min]
 
 (* ****** ****** *)
@@ -250,17 +252,17 @@ in
       in
         if lrh' <= llh then Bl (le, llh+1, ll, lr')
         else Br (le, lrh'+1, ll, lr')
-      end
+      end // end of [Bl]
     | Br (le, _, ll, lr) => let
         val lr' = avl_join_l<a> (e, lr, r)
         val llh = avl_height ll and lrh' = avl_height lr'
       in
         if lrh' <= llh+1 then Br (le, lrh'+1, ll, lr')
         else avl_rotate_r (le, ll, lr')
-      end
+      end // end of [Br]
   end else begin
     Bl (e, lh+1, l, r)
-  end
+  end // end of [if]
 end // end of [avl_join_l]
 
 extern fun{a:t@ype} avl_join_r {lh,ls,rh,rs:nat | lh <= rh}
@@ -276,17 +278,17 @@ in
       in
         if rlh' <= rrh+1 then Bl (re, rlh'+1, rl', rr)
         else avl_rotate_l (re, rl', rr)
-      end
+      end // end of [Bl]
     | Br (re, _, rl, rr) => let
         val rl' = avl_join_r<a> (e, l, rl)
         val rlh' = avl_height rl' and rrh = avl_height rr
       in
         if rlh' <= rrh then Br (re, rrh+1, rl', rr)
         else Bl (re, rlh'+1, rl', rr)
-      end
+      end // end of [Br]
    end else begin
      Br (e, rh+1, l, r)
-   end
+   end // end of [if]
 end // end of [avl_join_r]
 
 (* ****** ****** *)
@@ -304,7 +306,7 @@ implement{a} avl_concat (t1, t2) = begin
       val h1 = avl_height t1 and h2 = avl_height t2
     in
       if h1 <= h2 then avl_join_r (x, t1, t2) else avl_join_l (x, t1, t2)
-    end
+    end // end of [_, _]
 end // end of [avl_concat]
 
 (* ****** ****** *)
@@ -332,7 +334,8 @@ implement{a} avl_split (lpf, rpf | t, pred, lp, rp) = case+ t of
   | Br (e, h, l, r) => avl_split_br (lpf, rpf | e, h, l, r, pred, lp, rp)
   | E () => begin
       !lp := E (); !rp := E (); (lpf, rpf | 0)
-    end
+    end // end of [E]
+// end of [avl_split]
 
 implement{a} avl_split_br
   (lpf, rpf | e, h, l, r, pred, lp, rp) = begin

@@ -259,7 +259,7 @@ fun{key,itm:t@ype} bst_join_with {n1,n2:nat} .<n2>. (
       val t1 = bst_join_with (t1, t2r, cmp)
     in
       t1
-    end
+    end // end of [BSTcons]
   | ~BSTnil () => t1
 end // end of [bst_join_with]
 
@@ -302,7 +302,7 @@ fun{key,itm:t@ype} bst_foreach_pre
       val () = bst_foreach_pre (pf | !tr, f, env)
     in
       fold@ t
-    end
+    end // end of [BSTcons]
   | BSTnil () => fold@ t
 end // end of [bst_foreach_pre]
 
@@ -321,18 +321,18 @@ implement{key,item} map_free (m) =
 
 (* ****** ****** *)
 
-implement{key,itm} map_search (m, k) =
-  let
-    val+ MAP (cmp, !bst) = m
-    val ans = bst_search<key,itm> (!bst, k, cmp)
-  in
-    fold@ m; ans
-  end
+implement{key,itm} map_search (m, k) = let
+  val+ MAP (cmp, !bst) = m
+  val ans = bst_search<key,itm> (!bst, k, cmp)
+in
+  fold@ m; ans
+end // end of [map_search]
 
 implement{key,itm} map_insert (m, k, i) =
   let val+ MAP (cmp, !bst) = m in
     !bst := bst_insert_random<key,itm> (!bst, k, i, cmp); fold@ m
   end
+// end of [map_insert]
 
 implement{key,itm} map_remove (m, k) = let
   var i: Int and itmopt: Option_vt itm; val+ MAP (cmp, !bst) = m
@@ -340,7 +340,7 @@ implement{key,itm} map_remove (m, k) = let
     bst_remove<key,itm> (view@ i, view@ itmopt | !bst, k, &i, &itmopt, cmp)
 in
   view@ i := pf1; view@ itmopt := pf2; !bst := bst_new; fold@ m; itmopt
-end
+end // end of [map_remove]
 
 (* ****** ****** *)
 

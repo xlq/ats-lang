@@ -253,19 +253,19 @@ implement{itm} symenv_restore (env) = let
     | list_vt_nil () => begin
         fold@ (!p_saved); $effmask_ref (abort ())
       end
-  end : mms
+  end : mms // end of [val]
 
   val () = let
     val (vbox pf_m | p_m) = ref_get_view_ptr env.map
   in
     symmap_free<itm> (!p_m); !p_m := m
-  end
+  end // end of [val]
 
   val () = let
     val (vbox pf_ms | p_ms) = ref_get_view_ptr env.maplst
   in
     symmaplst_free<itm> (!p_ms); !p_ms := ms
-  end
+  end // end of [val]
 in
   // no return value
 end // end of [symenv_restore]
@@ -310,7 +310,7 @@ implement{itm} symenv_localjoin (env) = let
       | ~list_vt_cons (m, ms) => (!p_ms := (ms: symmaplst itm); m)
       | list_vt_nil () => begin
           fold@ (!p_ms); $effmask_ref (abort ())
-        end
+        end // end of [list_vt_nil]
     ) : symmap itm 
   } // end of [where]
 
