@@ -48,6 +48,7 @@
 
 /* ****** ****** */
 
+#define atspre_int_of_size atspre_int1_of_size1
 #define atspre_size_of_int1 atspre_size1_of_int1
 #define atspre_add_size_size atspre_add_size1_size1
 #define atspre_mul_size_size atspre_mul_size1_size1

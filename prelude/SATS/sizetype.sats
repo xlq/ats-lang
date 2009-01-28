@@ -58,6 +58,9 @@
 
 // unindexed size type
 
+fun int_of_size (sz: size_t):<> int
+  = "atspre_int_of_size"
+
 fun size_of_int1 {i:nat} (i: int i):<> size_t
   = "atspre_size_of_int1"
 
