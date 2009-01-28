@@ -403,6 +403,84 @@ end // end of [local]
 
 (* ****** ****** *)
 
+// application normalization
+
+fun s2exp_nfapp_flag
+  (s2e0: s2exp, flag: &int): s2exp = let
+  val s2e0 = s2exp_whnf_flag (s2e0, flag)
+in
+  case+ s2e0.s2exp_node of
+  | S2Eapp (s2e_fun, s2es_arg) => let
+      val flag0 = flag
+      val s2es_arg = s2explst_nfapp_flag (s2es_arg, flag)
+    in
+      if flag > flag0 then
+        s2exp_app_srt (s2e0.s2exp_srt, s2e_fun, s2es_arg)
+      else s2e0
+    end // end of [S2Eapp]
+  | S2Etyarr (s2e_elt, s2ess_dim) => let
+      val flag0 = flag
+      val s2e_elt = s2exp_nfapp_flag (s2e_elt, flag)
+    in
+      if flag > flag0 then s2exp_tyarr (s2e_elt, s2ess_dim)
+      else s2e0
+    end // end of [S2Etyarr]
+  | S2Etyrec (knd, npf, ls2es) => let
+      val flag0 = flag
+      val ls2es = labs2explst_nfapp_flag (ls2es, flag)
+    in
+      if flag > flag0 then
+        s2exp_tyrec_srt (s2e0.s2exp_srt, knd, npf, ls2es)
+      else s2e0
+    end // end of [S2Etyrec]
+  | S2Eunion (stamp, s2e_ind, ls2es) => let
+      val flag0 = flag
+      val ls2es = labs2explst_nfapp_flag (ls2es, flag)
+    in
+      if flag > flag0 then
+        s2exp_union_srt (s2e0.s2exp_srt, stamp, s2e_ind, ls2es)
+      else s2e0
+    end // end of [S2Eunion]
+  | _ => s2e0
+end // end of [s2exp_nfapp_flag]
+
+and s2explst_nfapp_flag {n:nat}
+  (s2es0: s2explst n, flag: &int): s2explst n =
+  case+ s2es0 of
+  | list_cons (s2e, s2es) => let
+      val flag0 = flag
+      val s2e = s2exp_nfapp_flag (s2e, flag)
+      val s2es = s2explst_nfapp_flag (s2es, flag)
+    in
+      if flag > flag0 then list_cons (s2e, s2es) else s2es0
+    end // end of [list_cons]
+  | list_nil () => list_nil ()
+// end of [s2explst_nfapp_flag]
+
+and labs2explst_nfapp_flag
+  (ls2es0: labs2explst, flag: &int): labs2explst =
+  case+ ls2es0 of
+  | LABS2EXPLSTcons (l, s2e, ls2es) => let
+      val flag0 = flag
+      val s2e = s2exp_nfapp_flag (s2e, flag)
+      val ls2es = labs2explst_nfapp_flag (ls2es, flag)
+    in
+      if flag > flag0 then LABS2EXPLSTcons (l, s2e, ls2es)
+      else ls2es0
+    end // end of [LABS2EXPLSTcons]
+  | LABS2EXPLSTnil () => LABS2EXPLSTnil ()
+// end of [labs2explst_nfapp_flag]
+
+implement s2exp_nfapp (s2e0) = let
+  var flag: int = 0 in s2exp_nfapp_flag (s2e0, flag)
+end // end of [s2exp_nfapp]
+
+implement s2explst_nfapp (s2es0) = let
+  var flag: int = 0 in s2explst_nfapp_flag (s2es0, flag)
+end // end of [s2explst_nfapp]
+
+(* ****** ****** *)
+
 fun s2eff_syneq (s2fe1: s2eff, s2fe2: s2eff): bool = begin
   case+ (s2fe1, s2fe2) of
   | (S2EFFall (), S2EFFall ()) => true

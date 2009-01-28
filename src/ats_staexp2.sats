@@ -1150,12 +1150,19 @@ fun s2exp_topize_1 (s2e: s2exp): s2exp // = s2exp_topize (1, s2e)
 
 (* ****** ****** *)
 
+// weak-head normalization
 fun s2exp_whnf (s2e: s2exp): s2exp
 fun s2explst_whnf {n:nat} (s2es: s2explst n): s2explst n
 
 abstype s2exp_whnf_t // boxed type
 fun s2exp_of_s2exp_whnf (s2e: s2exp_whnf_t): s2exp
 fun s2exp_whnf_of_s2exp (s2e: s2exp): s2exp_whnf_t
+
+(* ****** ****** *)
+
+// application normalization
+fun s2exp_nfapp (s2e: s2exp): s2exp
+fun s2explst_nfapp {n:nat} (s2es: s2explst n): s2explst n
 
 (* ****** ****** *)
 

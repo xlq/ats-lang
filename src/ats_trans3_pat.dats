@@ -557,7 +557,7 @@ fn p2at_con_tr_dn (
       val+ P2ATCONTRUPcon (p2ts, s2es_arg, s2e_res) =
         p2at_con_tr_up (loc0, d2c, s2vpss, s2e_con, npf, p2ts)
       val () = $SOL.s2exp_hypo_equal_solve (loc0, s2e_res, s2e0)
-      val s2es_arg = s2explst_whnf s2es_arg // this is important for erasure!
+      val s2es_arg = s2explst_nfapp s2es_arg // this is important for erasure!
       val p3ts = p2atlst_tr_dn (p2ts, s2es_arg)
       val p3t0 = p3at_con (loc0, s2e0, freeknd, d2c, npf, p3ts)
       val () = begin
