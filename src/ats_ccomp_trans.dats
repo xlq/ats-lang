@@ -2473,7 +2473,8 @@ in
       val () = the_topcstctx_add (d2c, valprim_void ())
     in
       // proof is not compiled
-    end
+    end // end of [_ when ...]
+  | _ when d2cst_is_castfn d2c => () // checking is needed!!!
   | _ => begin case+ impdec.hiimpdec_decarg of
     | list_cons _ => () // template is not compiled
     | list_nil () => begin

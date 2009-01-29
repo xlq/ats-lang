@@ -43,9 +43,7 @@
 
 /* ****** ****** */
 
-static inline
-ats_ptr_type
-atspre_option_of_option_vt (ats_ptr_type xs) { return xs ; }
+// it is still empty!
 
 /* ****** ****** */
 

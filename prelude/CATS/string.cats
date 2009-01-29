@@ -268,6 +268,12 @@ atspre_string_is_at_end (const ats_ptr_type s, ats_size_type i) {
   return (*((char*)s + i) == '\000' ? ats_true_bool : ats_false_bool) ;
 } /* end of [atspre_string_is_at_end] */
 
+static inline
+ats_bool_type
+atspre_string_isnot_at_end (const ats_ptr_type s, ats_size_type i) {
+  return (*((char*)s + i) != '\000' ? ats_true_bool : ats_false_bool) ;
+} /* end of [atspre_string_isnot_at_end] */
+
 /* ****** ****** */
 
 static inline

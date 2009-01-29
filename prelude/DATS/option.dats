@@ -40,6 +40,13 @@
 
 (* ****** ****** *)
 
+// this is a casting function
+implement option_of_option_vt (ov) = case+ ov of
+  | ~Some_vt (v) => Some (v) | ~None_vt () => None ()
+// end of [option_of_option_vt]
+
+(* ****** ****** *)
+
 implement option_is_none (ov) = case+ ov of
   | None () => true | Some _ => false
 

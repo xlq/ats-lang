@@ -65,10 +65,9 @@ exception ListSubscriptException
 
 (* ****** ****** *)
 
-// a casting function
+// a casting function implemented in [prelude/DATS/list.dats]
 castfn list_of_list_vt {a:t@ype}
   {n:nat} (xs: list_vt (a, n)):<> list (a, n)
-  = "atspre_list_of_list_vt"
 
 (* ****** ****** *)
 

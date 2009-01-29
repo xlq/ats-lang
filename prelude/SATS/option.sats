@@ -78,10 +78,9 @@ fun{a1,a2:t@ype} option_map {b:bool} {f:eff}
 
 (* ****** ****** *)
 
-// a casting function
+// a casting function implemented in [prelude/DATS/option.dats]
 castfn option_of_option_vt
   {a:t@ype} {b:bool} (x: option_vt (a, b)):<> option (a, b)
-  = "atspre_option_of_option_vt"
 
 (* ****** ****** *)
 

@@ -51,10 +51,6 @@ static inline
 ats_ptr_type
 atspre_list1_of_list0 (ats_ptr_type xs) { return xs ; }
 
-static inline
-ats_ptr_type
-atspre_list_of_list_vt (ats_ptr_type xs) { return xs ; }
-
 /* ****** ****** */
 
 #endif /* ATS_PRELUDE_LIST_CATS */

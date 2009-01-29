@@ -48,7 +48,7 @@
 
 (* ****** ****** *)
 
-implement{a} list0 (arrsz) =
+implement{a} list0_make_arraysize (arrsz) =
   list0_of_list1 (list_of_arraysize<a> arrsz)
 
 (* ****** ****** *)

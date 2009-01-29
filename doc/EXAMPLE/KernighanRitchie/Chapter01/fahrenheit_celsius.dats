@@ -51,11 +51,11 @@ end // end of [main]
 
 // here is another variant
 implement main () = let
-  var fahr: int
+  var fahr: int // uninitialized
 in
   for (fahr := LOWER; fahr <= UPPER; fahr := fahr + STEP) begin
     printf ("%3d %6.1f\n", @(fahr, (5.0/9.0) * double_of (fahr - 32)));
-  end // end of [while]
+  end // end of [for]
 end // end of [main]
 
 *)

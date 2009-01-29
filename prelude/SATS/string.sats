@@ -463,6 +463,16 @@ fun string_is_at_end
 
 (* ****** ****** *)
 
+fun strbuf_isnot_at_end
+  {m,n,i:nat | i <= n} (sb: &strbuf (m, n), i: size_t i):<> bool (i <> n)
+  = "atspre_string_isnot_at_end"
+
+fun string_isnot_at_end
+  {n,i:nat | i <= n} (s: string n, i: size_t i):<> bool (i <> n)
+  = "atspre_string_isnot_at_end"
+
+(* ****** ****** *)
+
 // alias of [string_to_list]
 fun strbuf_explode {m,n:nat} (sb: &strbuf (m, n)):<> list_vt (char, n)
   = "atspre_string_explode"

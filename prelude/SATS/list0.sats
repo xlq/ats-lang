@@ -56,17 +56,17 @@ stadef list0 = list0_t0ype_type
 
 (* ****** ****** *)
 
-// a casting function
+// a casting function implemented in [prelude/CATS/list.cats]
 castfn list0_of_list1 {a:t@ype} (xs: List a):<> list0 a
   = "atspre_list0_of_list1"
 
-// a casting function
+// a casting function implemented in [prelude/DATS/list.cats]
 castfn list1_of_list0 {a:t@ype} (xs: list0 a):<> List a
   = "atspre_list1_of_list0"
 
 (* ****** ****** *)
 
-fun{a:t@ype} list0 {n:nat} (arrsz: arraysize (a, n)):<> list0 a
+fun{a:t@ype} list0_make_arraysize {n:nat} (arrsz: arraysize (a, n)):<> list0 a
 
 (* ****** ****** *)
 
