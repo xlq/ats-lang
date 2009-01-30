@@ -365,19 +365,20 @@ end // end of [d3lab1lst_of_d3lab0lst_s2lablst]
 fn d3exp_clo_restore (d3e: d3exp): d3exp = let
   val loc = d3e.d3exp_loc
   val s2e_fun = d3e.d3exp_typ
+  var fc0: $Syn.funclo = $Syn.FUNCLOfun ()
   val s2e_fun_new: s2exp = case+ s2e_fun.s2exp_node of
-    | S2Efun (fc, lin, s2fe, npf, s2es_arg, s2e_res) => begin
-      case+ lin of
-      | _ when lin = 1 => s2exp_fun_srt
-          (s2rt_type, fc, ~1(*topized*), s2fe, npf, s2es_arg, s2e_res)
-      | _ when lin = 0 => s2e_fun
-      | _ (* lin = ~1 *) => begin
-          prerr loc;
-          prerr ": error(3)";
-          prerr ": a linear function cannot be applied repeatedly.";
-          prerr_newline ();
-          $Err.abort {s2exp} ()
-        end
+    | S2Efun (fc, lin, s2fe, npf, s2es_arg, s2e_res) => let
+        val () = fc0 := fc in case+ lin of
+        | _ when lin = 1 => s2exp_fun_srt
+            (s2rt_type, fc, ~1(*topized*), s2fe, npf, s2es_arg, s2e_res)
+        | _ when lin = 0 => s2e_fun
+        | _ (* lin = ~1 *) => begin
+            prerr loc;
+            prerr ": error(3)";
+            prerr ": a linear function cannot be applied repeatedly.";
+            prerr_newline ();
+            $Err.abort {s2exp} ()
+          end // end of [_]
       end // end of [S2Efun]
     | _ => begin
         prerr loc;
@@ -387,9 +388,13 @@ fn d3exp_clo_restore (d3e: d3exp): d3exp = let
         prerr_newline ();
         $Err.abort {s2exp} ()
       end
-  val freeknd = d3exp_lval_typ_set_arg (0(*val*), d3e, s2e_fun_new)
+  val refval = (case+ fc0 of
+    | $Syn.FUNCLOclo knd => if knd = 0 then 1 else 0
+    | $Syn.FUNCLOfun () => 0
+  ) : int
+  val freeknd = d3exp_lval_typ_set_arg (refval, d3e, s2e_fun_new)
 in
-  d3exp_refarg (loc, s2e_fun_new, 0(*val*), freeknd, d3e)
+  d3exp_refarg (loc, s2e_fun_new, refval, freeknd, d3e)
 end // end of [d3exp_clo_restore]
 
 //

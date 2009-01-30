@@ -159,24 +159,26 @@ end // end of [array_ptr_initialize_fun_tsz]
 
 (* ****** ****** *)
 
-implement array_ptr_initialize_cloptr_tsz
+implement array_ptr_initialize_clo_tsz
   {a} {n} {f} (base, asz, f, tsz) = let
 
-  viewtypedef cloptr_t = (&(a?) >> a, sizeLt n) -<cloptr,f> void
-  viewtypedef cloptr1_t = (!unit_v | &(a?) >> a, sizeLt n, !Ptr) -<cloptr,f> void
-  prval () = coerce (f) where {
-    extern prfun coerce (f: !cloptr_t >> cloptr1_t):<> void
+  val p_f = &f; prval pf_f = view@ f
+  viewtypedef clo_t = (&(a?) >> a, sizeLt n) -<clo,f> void
+  viewtypedef clo1_t = (!unit_v | &(a?) >> a, sizeLt n, !Ptr) -<clo,f> void
+  prval pf1_f = coerce (pf_f) where {
+    extern prfun coerce {l:addr} (pf: clo_t @ l): clo1_t @ l
   }
   prval pf = unit_v ()
-  val () = array_ptr_initialize_cloptr_tsz_main
-    {a} {unit_v} {Ptr} (pf | base, asz, f, tsz, null)
+  val () = array_ptr_initialize_clo_tsz_main
+    {a} {unit_v} {Ptr} (pf | base, asz, !p_f, tsz, null)
   prval unit_v () = pf
-  prval () = coerce (f) where {
-    extern prfun coerce (f: !cloptr1_t >> cloptr_t):<> void
+  prval pf_f = coerce (pf1_f) where {
+    extern prfun coerce {l:addr} (pf: clo1_t @ l): clo_t @ l
   }
+  prval () = view@ f := pf_f
 in
   // empty
-end // end of [array_ptr_initialize_cloptr_tsz]
+end // end of [array_ptr_initialize_clo_tsz]
 
 (* ****** ****** *)
 
@@ -238,14 +240,14 @@ in
   @{ data= p_arr, view= pfbox }
 end // end of [array_make_elt]
 
-implement array_make_cloptr_tsz {a} (asz, f, tsz) = let
+implement array_make_clo_tsz {a} (asz, f, tsz) = let
   val (pf_gc, pf_arr | p_arr) = array_ptr_alloc_tsz {a} (asz, tsz)
   prval () = free_gc_elim {a} (pf_gc) // return the certificate
-  val () = array_ptr_initialize_cloptr_tsz {a} (!p_arr, asz, f, tsz)
+  val () = array_ptr_initialize_clo_tsz {a} (!p_arr, asz, f, tsz)
   val (pfbox | ()) = vbox_make_view_ptr (pf_arr | p_arr)
 in
   @{ data= p_arr, view= pfbox }
-end // end of [array_make_cloptr_tsz]
+end // end of [array_make_clo_tsz]
 
 implement array_get_view_ptr (A) = @(A.view | A.data)
 
@@ -297,27 +299,43 @@ end // end of [array_exch]
 
 (* ****** ****** *)
 
-implement foreach_array_ptr_tsz_cloptr
-  {a} {v} {n} {f} (pf | f, A, asz, tsz) = let
-  viewtypedef cloptr_t = (!v | &a) -<cloptr,f> void
-  fn app (pf: !v | x: &a, f: !cloptr_t):<f> void = f (pf | x)
+implement foreach_array_ptr_tsz_clo
+  {a} {v} {n} {f} (pf_v | f, A, asz, tsz) = let
+  viewtypedef clo_t = (!v | &a) -<clo,f> void
+  stavar l_f: addr
+  val p_f: ptr l_f = &f
+  viewdef V = @(v, clo_t @ l_f)
+  fn app (pf: !V | x: &a, p_f: !ptr l_f):<f> void = let
+    prval (pf1, pf2) = pf; val () = !p_f (pf1 | x) in pf := (pf1, pf2)
+  end // end of [app]
+  prval pf = (pf_v, view@ f)
   val () = foreach_array_ptr_tsz_main
-    {a} {v} {cloptr_t} (pf | app, A, asz, tsz, f)
+    {a} {V} {ptr l_f} (pf | app, A, asz, tsz, p_f)
+  prval (pf1, pf2) = pf
+  prval () = (pf_v := pf1; view@ f := pf2)
 in
   // empty
-end // end of [foreach_array_ptr_tsz_cloptr]
+end // end of [foreach_array_ptr_tsz_clo]
 
 (* ****** ****** *)
 
 implement
-  iforeach_array_ptr_tsz_cloptr {a} {v} {n} {f} (pf | f, A, asz, tsz) = let
-  viewtypedef cloptr_t = (!v | sizeLt n, &a) -<cloptr,f> void
-  fn app (pf: !v | i: sizeLt n, x: &a, f: !cloptr_t):<f> void = f (pf | i, x)
+  iforeach_array_ptr_tsz_clo {a} {v} {n} {f} (pf_v | f, A, asz, tsz) = let
+  viewtypedef clo_t = (!v | sizeLt n, &a) -<clo,f> void
+  stavar l_f: addr
+  val p_f: ptr l_f = &f
+  viewdef V = @(v, clo_t @ l_f)
+  fn app (pf: !V | i: sizeLt n, x: &a, p_f: !ptr l_f):<f> void = let
+    prval (pf1, pf2) = pf; val () = !p_f (pf1 | i, x) in pf := (pf1, pf2)
+  end // end of [app]
+  prval pf = (pf_v, view@ f)
   val () = iforeach_array_ptr_tsz_main
-    {a} {v} {cloptr_t} (pf | app, A, asz, tsz, f)
+    {a} {V} {ptr l_f} (pf | app, A, asz, tsz, p_f)
+  prval (pf1, pf2) = pf
+  prval () = (pf_v := pf1; view@ f := pf2)
 in
   // empty
-end // end of [iforeach_array_ptr_tsz_cloptr]
+end // end of [iforeach_array_ptr_tsz_clo]
 
 (* ****** ****** *)
 
@@ -451,10 +469,10 @@ atspre_array_ptr_initialize_fun_tsz_main (
 } /* end of [atspre_array_ptr_initialize_fun_tsz_main] */
 
 ats_void_type
-atspre_array_ptr_initialize_cloptr_tsz_main (
+atspre_array_ptr_initialize_clo_tsz_main (
    ats_ptr_type A
  , ats_size_type asz
- , ats_ptr_type f
+ , ats_ref_type f
  , ats_size_type tsz
  , ats_ptr_type env
  ) {
@@ -466,7 +484,7 @@ atspre_array_ptr_initialize_cloptr_tsz_main (
     ++i ;
   }
   return ;
-} /* atspre_array_ptr_initialize_cloptr_tsz_main */
+} /* atspre_array_ptr_initialize_clo_tsz_main */
 
 /* ****** ****** */
 

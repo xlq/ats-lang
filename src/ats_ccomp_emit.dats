@@ -498,9 +498,9 @@ fn emit_valprim_ptrof {m:file_mode}
     end // end of [VPtmp]
   | _ => begin
       prerr "Internal Error: ats_ccomp_emit: emit_valprim_ptrof: vp = ";
-      prerr_valprim vp;
+      prerr_valprim vp; prerr_newline ();
       $Err.abort {void} ()
-    end
+    end // end of [_]
 end // end of [emit_valprim_ptrof]
 
 (* ****** ****** *)
@@ -1321,22 +1321,16 @@ in
   | _ (*variable function*) => begin
     case+ hit_fun.hityp_node of
     | HITfun (fc, hits_arg, hit_res) => begin case+ fc of
-      | $Syn.FUNCLOclo knd => let
-          macdef emit_fun_mac () =
-            if knd <> 0 then begin // boxed closure
-              emit_valprim (pf | out, vp_fun) // call-by-value
-            end else begin // unboxed closure
-              emit_valprim_ptrof (pf | out, vp_fun) // call-by-reference
-            end // end of [if]
+      | $Syn.FUNCLOclo _(*knd*) => let
           val hits_arg = hityplst_encode hits_arg
           val hit_res = hityp_encode hit_res
         in
           fprint1_string (pf | out, "((");
           emit_hityp_clofun (pf | out, hits_arg, hit_res);
           fprint1_string (pf | out, ")(ats_closure_fun(");
-          emit_fun_mac ();
+          emit_valprim (pf | out, vp_fun);
           fprint1_string (pf | out, "))) (");
-          emit_fun_mac ();
+          emit_valprim (pf | out, vp_fun);
           if $Lst.list_is_cons (vps_arg) then fprint1_string (pf | out, ", ");
           emit_valprimlst (pf | out, vps_arg);
           fprint1_string (pf | out, ") ;")
@@ -2294,11 +2288,11 @@ implement emit_funentry (pf | out, entry) = let
           val () = emit_closure_type (pf | out, fl, vtps_all)
           val () = fprint1_string (pf | out, "\n\n")
           val () = emit_closure_clofun (pf | out, fl, vtps_all)
+          val () = fprint1_string (pf | out, "\n\n")
           val () = emit_closure_init (pf | out, fl, vtps_all)
           val () = if (knd <> 0) then let // boxed closure
             val () = fprint1_string (pf | out, "\n\n")
             val () = emit_closure_make (pf | out, fl, vtps_all)
-            val () = fprint1_string (pf | out, "\n\n")
           in
             // empty
           end // end of [val]
@@ -2379,18 +2373,18 @@ in
     | $Syn.FUNCLOfun () => ()
     end // end of [D2CSTOPTsome]
   | D2CSTOPTnone () => begin case+ fc of
-    | $Syn.FUNCLOclo _ => let
+    | $Syn.FUNCLOclo _(*knd*) => let
         val () = aux_function (out)
         val () = aux_closure_make (out)
         val () = aux_closure_clofun (out)
       in
         // empty
-      end
+      end // end of [FUNCLOclo]
     | $Syn.FUNCLOfun () => let
         val () = aux_function (out)
       in
         // empty
-      end
+      end // end of [FUNCLOfun]
     end // end of [D2CSTOPTnone]
 end // end of [emit_funentry_prototype]
 

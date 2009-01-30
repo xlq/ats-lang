@@ -842,9 +842,7 @@ fn hiexp_refarg_tr (
       val hie_assgn = hiexp_assgn_var
         (loc, hityp_void, d2v_any, list_nil (), hie)
       val hie_var = hiexp_var (loc, hit, d2v_any)
-      val hie_res = begin
-        hiexp_refarg (loc, hit, refval, freeknd, hie_var)
-      end
+      val hie_res = hiexp_refarg (loc, hit, refval, freeknd, hie_var)
     in
       hiexp_seq (loc, hit, '[hie_assgn, hie_res])
     end // end of [HIErefarg]
@@ -1163,7 +1161,7 @@ fn ccomp_exp_refarg (
         prerr ": ccomp_exp_refarg: hie = ";
         prerr_hiexp hie; prerr_newline ();
         $Err.abort {valprim} ()
-      end
+      end // end of [_]
   end // end of [_]
 end // end of [ccomp_exp_refarg]
 
@@ -1604,12 +1602,13 @@ fn ccomp_exp_app_tmpvar (
           | list_vt_nil _ => begin
               if tmpvar_ret_get tmp_res > 0 then istail := 1;
               fold@ vps_free
-            end
+            end // end of [list_vt_nil]
           | list_vt_cons _ => (fold@ vps_free)
+        // end of [val]
 (*
         val () = begin
           prerr "ccomp_exp_app_tmpvar: istail = "; prerr istail; prerr_newline ()
-        end
+        end // end of [val]
 *)
         val () =
           if istail > 0 then let

@@ -192,15 +192,15 @@ fun lt_size1_size1 {i,j:nat}
   = "atspre_lt_size1_size1"
 overload < with lt_size1_size1
 
+fun lt_int1_size1 {i,j:nat}
+  (i: int i, j: size_t j):<> bool (i < j)
+  = "atspre_lt_int1_size1"
+overload < with lt_int1_size1
+
 fun lt_size1_int1 {i,j:nat}
   (i: size_t i, j: int j):<> bool (i < j)
   = "atspre_lt_size1_int1"
 overload < with lt_size1_int1
-
-fun lt_int_size {i,j:nat}
-  (i: int i, j: size_t j):<> bool (i < j)
-  = "atspre_lt_int_size"
-overload < with lt_int_size
 
 // ------ ------
 
@@ -208,6 +208,11 @@ fun lte_size1_size1 {i,j:nat}
   (i: size_t i, j: size_t j):<> bool (i <= j)
   = "atspre_lte_size1_size1"
 overload <= with lte_size1_size1
+
+fun lte_int1_size1 {i,j:nat}
+  (i: int i, j: size_t j):<> bool (i < j)
+  = "atspre_lte_int1_size1"
+overload <= with lte_int1_size1
 
 fun lte_size1_int1 {i,j:nat}
   (i: size_t i, j: int j):<> bool (i <= j)

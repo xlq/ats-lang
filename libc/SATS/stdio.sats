@@ -294,7 +294,8 @@ fun fgets_err
   ) :<> [l:addr] (fgets_v (sz, l_buf, l) | ptr l)
   = "atslib_fgets_err"
 
-// this function should be only if [feof] returns false
+// this function returns an empty strbuf in the case where
+// EOF is reached but no character is read
 fun fgets_exn {n0,sz:int | 0 < n0; n0 <= sz} {m:fm} {l_buf:addr}
   (pf_mod: file_mode_lte (m, r),
    pf_buf: !b0ytes (sz) @ l_buf >>

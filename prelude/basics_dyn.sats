@@ -227,7 +227,7 @@ fun cloref_get_view_ptr {a:t@ype}
   (f: cloref a):<> [l:addr] (vbox (clo a @ l) | ptr l)
   = "atspre_cloref_get_view_ptr"
 
-fun cloptr_make_view_ptr {a:t@ype}
+fun cloref_make_view_ptr {a:t@ype}
   {l:addr} (pf: vbox (clo a @ l) | p: ptr l):<> cloref a
   = "atspre_cloref_make_view_ptr"
 

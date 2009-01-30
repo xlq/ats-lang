@@ -10,7 +10,71 @@ cannot be accessed once the calling function returns.
 
 <H4>Storing Arrays in Stack Frames</H4>
 
+In the following contrived example, the function <i>name_of_month_1</i>
+allocates in its stack frame a string array of size <i>12</i> that is
+initialized with the names of 12 months, and then returns the name of the
+<i>i</i>th month.
+
+<PRE><FONT COLOR="#E80000"><FONT COLOR="#000000">fn</FONT> name_of_month_1 <FONT COLOR="#0000FF"><FONT COLOR="#000000">{</FONT>i<FONT COLOR="#000000">:</FONT>int <FONT COLOR="#000000">|</FONT> 1 &lt;= i<FONT COLOR="#000000">;</FONT> i &lt;= 12<FONT COLOR="#000000">}</FONT></FONT> <FONT COLOR="#000000">(</FONT>i<FONT COLOR="#000000">:</FONT> <FONT COLOR="#0000FF">int i</FONT><FONT COLOR="#000000">)</FONT><FONT COLOR="#000000">:</FONT> <FONT COLOR="#0000FF">string</FONT> <FONT COLOR="#000000">=</FONT> <FONT COLOR="#000000">let</FONT>
+  <FONT COLOR="#000000">var</FONT> <FONT COLOR="#000000">!</FONT>p_arr <FONT COLOR="#000000">with</FONT> pf_arr <FONT COLOR="#000000">=</FONT> <FONT COLOR="#000000">@[</FONT><FONT COLOR="#0000FF">string</FONT><FONT COLOR="#000000">]</FONT><FONT COLOR="#000000">(</FONT>
+    "Jan"<FONT COLOR="#000000">,</FONT> "Feb"<FONT COLOR="#000000">,</FONT> "Mar"<FONT COLOR="#000000">,</FONT> "Apr"<FONT COLOR="#000000">,</FONT> "May"<FONT COLOR="#000000">,</FONT> "Jun"<FONT COLOR="#000000">,</FONT> "Jul"<FONT COLOR="#000000">,</FONT> "Aug"<FONT COLOR="#000000">,</FONT> "Sep"<FONT COLOR="#000000">,</FONT> "Oct"<FONT COLOR="#000000">,</FONT> "Nov"<FONT COLOR="#000000">,</FONT> "Dec"
+  <FONT COLOR="#000000">)</FONT>
+<FONT COLOR="#000000">in</FONT>
+  p_arr<FONT COLOR="#000000">-&gt;</FONT><FONT COLOR="#000000">[</FONT><FONT COLOR="#009000">i-1</FONT><FONT COLOR="#000000">]</FONT>
+<FONT COLOR="#000000">end</FONT> <FONT COLOR="#787878">// end of [name_of_month_1]
+</FONT></FONT></PRE>
+
+The following syntax indicates that the starting address of the allocated
+array is stored in <i>p_arr</i> while the view of the array is stored in
+<i>pf_arr</i>:
+<PRE>
+  var !p_arr with pf_arr = @[string](
+    "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
+  )
+</PRE>
+This allocated array is initialized with the strings representing the names of the 12 months: "Jan", "Feb", "Mar", "Apr", "May", "Jun",
+"Jul", "Aug", "Sep", "Oct", "Nov", "Dec".
+<P>
+
+A variant of the function <i>name_of_month_1</i> is implemeneted as follows:
+<PRE><FONT COLOR="#E80000"><FONT COLOR="#000000">fn</FONT> name_of_month_2 <FONT COLOR="#0000FF"><FONT COLOR="#000000">{</FONT>i<FONT COLOR="#000000">:</FONT>int <FONT COLOR="#000000">|</FONT> 1 &lt;= i<FONT COLOR="#000000">;</FONT> i <FONT COLOR="#000000">&lt;</FONT> 12<FONT COLOR="#000000">}</FONT></FONT> <FONT COLOR="#000000">(</FONT>i<FONT COLOR="#000000">:</FONT> <FONT COLOR="#0000FF">int i</FONT><FONT COLOR="#000000">)</FONT><FONT COLOR="#000000">:</FONT> <FONT COLOR="#0000FF">string</FONT> <FONT COLOR="#000000">=</FONT> <FONT COLOR="#000000">let</FONT>
+  <FONT COLOR="#000000">var</FONT> <FONT COLOR="#000000">!</FONT>p_arr <FONT COLOR="#000000">with</FONT> pf_arr <FONT COLOR="#000000">=</FONT> <FONT COLOR="#000000">@[</FONT><FONT COLOR="#0000FF">string</FONT><FONT COLOR="#000000">]</FONT><FONT COLOR="#000000">[</FONT>12<FONT COLOR="#000000">]</FONT><FONT COLOR="#000000">(</FONT>""<FONT COLOR="#000000">)</FONT>
+  <FONT COLOR="#000000">val</FONT> <FONT COLOR="#000000">(</FONT><FONT COLOR="#000000">)</FONT> <FONT COLOR="#000000">=</FONT> p_arr<FONT COLOR="#000000">-&gt;</FONT><FONT COLOR="#000000">[</FONT><FONT COLOR="#009000">0</FONT><FONT COLOR="#000000">]</FONT> := "Jan"
+  <FONT COLOR="#000000">val</FONT> <FONT COLOR="#000000">(</FONT><FONT COLOR="#000000">)</FONT> <FONT COLOR="#000000">=</FONT> p_arr<FONT COLOR="#000000">-&gt;</FONT><FONT COLOR="#000000">[</FONT><FONT COLOR="#009000">1</FONT><FONT COLOR="#000000">]</FONT> := "Feb"
+  <FONT COLOR="#000000">val</FONT> <FONT COLOR="#000000">(</FONT><FONT COLOR="#000000">)</FONT> <FONT COLOR="#000000">=</FONT> p_arr<FONT COLOR="#000000">-&gt;</FONT><FONT COLOR="#000000">[</FONT><FONT COLOR="#009000">2</FONT><FONT COLOR="#000000">]</FONT> := "Mar"
+  <FONT COLOR="#000000">val</FONT> <FONT COLOR="#000000">(</FONT><FONT COLOR="#000000">)</FONT> <FONT COLOR="#000000">=</FONT> p_arr<FONT COLOR="#000000">-&gt;</FONT><FONT COLOR="#000000">[</FONT><FONT COLOR="#009000">3</FONT><FONT COLOR="#000000">]</FONT> := "Apr"
+  <FONT COLOR="#000000">val</FONT> <FONT COLOR="#000000">(</FONT><FONT COLOR="#000000">)</FONT> <FONT COLOR="#000000">=</FONT> p_arr<FONT COLOR="#000000">-&gt;</FONT><FONT COLOR="#000000">[</FONT><FONT COLOR="#009000">4</FONT><FONT COLOR="#000000">]</FONT> := "May"
+  <FONT COLOR="#000000">val</FONT> <FONT COLOR="#000000">(</FONT><FONT COLOR="#000000">)</FONT> <FONT COLOR="#000000">=</FONT> p_arr<FONT COLOR="#000000">-&gt;</FONT><FONT COLOR="#000000">[</FONT><FONT COLOR="#009000">5</FONT><FONT COLOR="#000000">]</FONT> := "Jun"
+  <FONT COLOR="#000000">val</FONT> <FONT COLOR="#000000">(</FONT><FONT COLOR="#000000">)</FONT> <FONT COLOR="#000000">=</FONT> p_arr<FONT COLOR="#000000">-&gt;</FONT><FONT COLOR="#000000">[</FONT><FONT COLOR="#009000">6</FONT><FONT COLOR="#000000">]</FONT> := "Jul"
+  <FONT COLOR="#000000">val</FONT> <FONT COLOR="#000000">(</FONT><FONT COLOR="#000000">)</FONT> <FONT COLOR="#000000">=</FONT> p_arr<FONT COLOR="#000000">-&gt;</FONT><FONT COLOR="#000000">[</FONT><FONT COLOR="#009000">7</FONT><FONT COLOR="#000000">]</FONT> := "Aug"
+  <FONT COLOR="#000000">val</FONT> <FONT COLOR="#000000">(</FONT><FONT COLOR="#000000">)</FONT> <FONT COLOR="#000000">=</FONT> p_arr<FONT COLOR="#000000">-&gt;</FONT><FONT COLOR="#000000">[</FONT><FONT COLOR="#009000">8</FONT><FONT COLOR="#000000">]</FONT> := "Sep"
+  <FONT COLOR="#000000">val</FONT> <FONT COLOR="#000000">(</FONT><FONT COLOR="#000000">)</FONT> <FONT COLOR="#000000">=</FONT> p_arr<FONT COLOR="#000000">-&gt;</FONT><FONT COLOR="#000000">[</FONT><FONT COLOR="#009000">9</FONT><FONT COLOR="#000000">]</FONT> := "Oct"
+  <FONT COLOR="#000000">val</FONT> <FONT COLOR="#000000">(</FONT><FONT COLOR="#000000">)</FONT> <FONT COLOR="#000000">=</FONT> p_arr<FONT COLOR="#000000">-&gt;</FONT><FONT COLOR="#000000">[</FONT><FONT COLOR="#009000">10</FONT><FONT COLOR="#000000">]</FONT> := "Nov"
+  <FONT COLOR="#000000">val</FONT> <FONT COLOR="#000000">(</FONT><FONT COLOR="#000000">)</FONT> <FONT COLOR="#000000">=</FONT> p_arr<FONT COLOR="#000000">-&gt;</FONT><FONT COLOR="#000000">[</FONT><FONT COLOR="#009000">11</FONT><FONT COLOR="#000000">]</FONT> := "Dec"
+<FONT COLOR="#000000">in</FONT>
+  p_arr<FONT COLOR="#000000">-&gt;</FONT><FONT COLOR="#000000">[</FONT><FONT COLOR="#009000">i-1</FONT><FONT COLOR="#000000">]</FONT>
+<FONT COLOR="#000000">end</FONT> <FONT COLOR="#787878">// end of [name_of_month_2]
+</FONT></FONT></PRE>
+
+The following syntax means that the function <i>name_of_month_2</i>
+allocates a string array of size 12 in its stack frame and initializes the
+array with the empty string:
+<PRE>var !p_arr with pf_arr = @[string][12]("")</PRE>
+
+The starting address and the view of the allocated array are stored in
+<i>p_arr</i> and <i>pf_arr</i>, respectively. If the following syntax is
+used:
+
+<PRE>var !p_arr with pf_arr = @[string][12]()</PRE>
+
+then the allocated array is uninitialized, that is, the view of the proof
+<i>pf_arr</i> is <i>[string?][12] @ p_arr</i> (instead of
+<i>[string][12] @ p_arr</i>).
+
 <H4>Storing Closures in Stack Frames</H4>
+When high-order functions are employed in systems programming, it is often
+desirable to form closures in the stack frame of the calling function so as
+to avoid the need for memory allocation on heap.
 
 <P>
 

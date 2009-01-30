@@ -278,7 +278,7 @@ implement d3exp_lval_typ_set (loc0, refval, d3e0, s2e_new, err) = let
       prerr ": the dynamic variable ["; prerr d2v;
       prerr "] is required to be mutable in order to support call-by-reference.";
       $Err.abort {void} ()
-    end
+    end // end of [if]
 in
   case+ d3e0.d3exp_node of
   | D3Eann_type (d3e, _(*s2e_ann*)) => begin

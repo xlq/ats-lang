@@ -84,9 +84,9 @@ fun matrix_make_fun_tsz_main
   , env: !vt
   ) :<f> matrix (a, m, n)
 
-fun matrix_make_cloptr_tsz {a:viewt@ype} {m,n:pos} {f:eff} (
+fun matrix_make_clo_tsz {a:viewt@ype} {m,n:pos} {f:eff} (
     row: size_t m, col: size_t n
-  , f: !(&(a?) >> a, sizeLt m, sizeLt n) -<cloptr,f> void
+  , f: &(&(a?) >> a, sizeLt m, sizeLt n) -<clo,f> void
   , tsz: sizeof_t a
   ) :<f> matrix (a, m, n)
 
@@ -125,13 +125,13 @@ fun{a:t@ype} foreach_matrix_main
   ) :<f,!ref> void
 overload foreach with foreach_matrix_main
 
-fun{a:t@ype} foreach_matrix_cloptr {m,n:nat} {f:eff}
-  (f: !(a -<cloptr,f> void), M: matrix (a, m, n), m: size_t m, n: size_t n)
+fun{a:t@ype} foreach_matrix_clo {v:view} {m,n:nat} {f:eff}
+  (pf: !v | f: &(!v | a) -<clo,f> void, M: matrix (a, m, n), m: size_t m, n: size_t n)
   :<f,!ref> void
-overload foreach with foreach_matrix_cloptr
+overload foreach with foreach_matrix_clo
 
-fun{a:t@ype} foreach_matrix_cloref {m,n:nat} {f:eff}
-  (f: !(a -<cloref,f> void), M: matrix (a, m, n), m: size_t m, n: size_t n)
+fun{a:t@ype} foreach_matrix_cloref {v:view} {m,n:nat} {f:eff}
+  (pf: !v | f: !(!v | a) -<cloref,f> void, M: matrix (a, m, n), m: size_t m, n: size_t n)
   :<f,!ref> void
 overload foreach with foreach_matrix_cloref
 
@@ -150,17 +150,21 @@ fun{a:t@ype} iforeach_matrix_main
   ) :<f,!ref> void
 overload iforeach with iforeach_matrix_main
 
-fun{a:t@ype} iforeach_matrix_cloptr {m,n:nat} {f:eff} (
-    f: !(sizeLt m, sizeLt n, a) -<cloptr,f> void
+fun{a:t@ype} iforeach_matrix_clo
+  {v:view} {m,n:nat} {f:eff} (
+    pf: !v
+  | f: &(!v | sizeLt m, sizeLt n, a) -<clo,f> void
   , M: matrix (a, m, n), m: size_t m, n: size_t n
   ) :<f,!ref> void
-overload iforeach with iforeach_matrix_cloptr
+overload iforeach with iforeach_matrix_clo
 
-fun{a:t@ype} iforeach_matrix_cloref {m,n:nat} {f:eff} (
-    f: !(sizeLt m, sizeLt n, a) -<cloref,f> void
+fun{a:t@ype} iforeach_matrix_cloref
+  {v:view} {m,n:nat} {f:eff} (
+    pf : !v
+  | f: !(!v | sizeLt m, sizeLt n, a) -<cloref,f> void
   , M: matrix (a, m, n), m: size_t m, n: size_t n
   ) :<f,!ref> void
-overload iforeach with iforeach_matrix_cloptr
+overload iforeach with iforeach_matrix_cloref
 
 (* ****** ****** *)
 

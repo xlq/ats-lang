@@ -172,9 +172,13 @@ atslib_fgets_exn
   ats_ptr_type p ;
   p = fgets((char*)buf, (int)n, (FILE*)fil) ;
   if (!p) {
-    perror ("fgets") ;
-    ats_exit_errmsg(1, "exit(ATS): [fgets] failed\n") ;
-  }
+    if (feof((FILE*)fil)) {
+      *(char*)buf = '\000' ; // EOF is reached
+    } else {
+      perror ("fgets") ;
+      ats_exit_errmsg(1, "exit(ATS): [fgets] failed\n") ;
+    } // end of [if]
+  } /* end of [if] */
   return ;  
 } /* end of [atslib_fgets_exn] */
 

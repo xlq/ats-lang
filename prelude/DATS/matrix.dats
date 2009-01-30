@@ -124,28 +124,29 @@ implement matrix_make_fun_tsz_main
   val (pf_gc, pf_arr | p_arr) = array_ptr_alloc_tsz {a} (mn, tsz)
   prval () = free_gc_elim {a} (pf_gc) // return the certificate
   viewtypedef fun_t = (!v | &(a?) >> a, sizeLt m, natLt n, !vt) -<f> void
-  fn f1 (pf: !v | x: &(a?) >> a, i: sizeLt mn, env: !vt):<cloptr,f> void = let
+  var !p_f1 = @lam
+    (pf: !v | x: &(a?) >> a, i: sizeLt mn, env: !vt): void =<clo,f> let
     val d = natdiv (pf_mul | i, n) and r = i szmod1 n
   in
     f (pf | x, d, r, env)
   end // end of [f1]
   val () = begin
-    array_ptr_initialize_cloptr_tsz_main {a} {v} {vt} (pf | !p_arr, mn, f1, tsz, env)
+    array_ptr_initialize_clo_tsz_main {a} {v} {vt} (pf | !p_arr, mn, !p_f1, tsz, env)
   end // end of [val]
-  val () = cloptr_free (f1)
   val (pf_box | ()) = vbox_make_view_ptr (pf_arr | p_arr)
 in @{
   data= p_arr, mul= pf_mul, view= pf_box
 } end // end of [matrix_make_fun_tsz_main]
 
-implement matrix_make_cloptr_tsz
+implement matrix_make_clo_tsz
   {a} {m,n} {f:eff} (m, n, f, tsz) = let
-  viewtypedef cloptr_t = (&(a?) >> a, sizeLt m, sizeLt n) -<cloptr,f> void
-  fn app (pf: !unit_v | x: &(a?) >> a, i: sizeLt m, j: sizeLt n, f: !cloptr_t)
-    :<f> void = f (x, i, j)
-  prval pf = unit_v ()
-  val M = matrix_make_fun_tsz_main {a} {unit_v} {cloptr_t} (pf | m, n, app, tsz, f)
-  prval unit_v () = pf
+  stavar l_f:addr
+  val p_f: ptr l_f = &f
+  typedef clo_t = (&(a?) >> a, sizeLt m, sizeLt n) -<clo,f> void
+  viewdef V = clo_t @ l_f
+  fn app (pf: !V | x: &(a?) >> a, i: sizeLt m, j: sizeLt n, p_f: !ptr l_f)
+    :<f> void = !p_f (x, i, j)
+  val M = matrix_make_fun_tsz_main {a} {V} {ptr l_f} (view@ f | m, n, app, tsz, p_f)
 in
   M // the returned matrix
 end // end of [matrix_make_fun_tsz_cloptr]
@@ -235,22 +236,27 @@ in
   loop1 (pf | f, M, m, n, 0, env)
 end // end of [foreach_matrix_main]
 
-implement{a} foreach_matrix_cloptr {m,n} {f:eff} (f, M, m, n) = let
-  viewtypedef cloptr_t = a -<cloptr,f> void
-  fn app (pf: !unit_v | x: a, f: !cloptr_t):<f> void = f (x)
-  prval pf = unit_v ()
-  val () = foreach_matrix_main<a> {unit_v} {cloptr_t} (pf | app, M, m, n, f)
-  prval unit_v () = pf
+implement{a} foreach_matrix_clo {v} {m,n} {f:eff} (pf_v | f, M, m, n) = let
+  stavar l_f: addr
+  val p_f: ptr l_f = &f
+  typedef clo_t = (!v | a) -<clo,f> void
+  viewdef V = @(v, clo_t @ l_f)
+  fn app (pf: !V | x: a, p_f: !ptr l_f):<f> void = let
+    prval (pf1, pf2) = pf in !p_f (pf1 | x); pf := @(pf1, pf2)
+  end // end of [app]
+  prval pf = (pf_v, view@ f)
+  val () = foreach_matrix_main<a> {V} {ptr l_f} (pf | app, M, m, n, p_f)
+  prval (pf1, pf2) = pf
+  prval () = (pf_v := pf1; view@ f := pf2)
 in
   // empty
-end // end of [foreach_matrix_cloptr]
+end // end of [foreach_matrix_clo]
 
-implement{a} foreach_matrix_cloref {m,n} {f:eff} (f, M, m, n) = let
-  viewtypedef cloref_t = a -<cloref,f> void
-  fn app (pf: !unit_v | x: a, f: !cloref_t):<f> void = f (x)
-  prval pf = unit_v ()
-  val () = foreach_matrix_main<a> {unit_v} {cloref_t} (pf | app, M, m, n, f)
-  prval unit_v () = pf
+implement{a} foreach_matrix_cloref
+  {v} {m,n} {f:eff} (pf | f, M, m, n) = let
+  viewtypedef cloref_t = (!v | a) -<cloref,f> void
+  fn app (pf: !v | x: a, f: !cloref_t):<f> void = f (pf | x)
+  val () = foreach_matrix_main<a> {v} {cloref_t} (pf | app, M, m, n, f)
 in
   // empty
 end // end of [foreach_matrix_cloref]
@@ -282,24 +288,32 @@ in
   loop1 (pf | f, M, m, n, 0, env)
 end // end of [iforeach_matrix_main]
 
-implement{a} iforeach_matrix_cloptr {m,n} {f:eff} (f, M, m, n) = let
-  viewtypedef cloptr_t = (sizeLt m, sizeLt n, a) -<cloptr,f> void
-  fn app (pf: !unit_v | i: sizeLt m, j: sizeLt n, x: a, f: !cloptr_t):<f> void =
-    f (i, j, x)
-  prval pf = unit_v ()
-  val () = iforeach_matrix_main<a> {unit_v} {cloptr_t} (pf | app, M, m, n, f)
-  prval unit_v () = pf
+implement{a} iforeach_matrix_clo
+  {v} {m,n} {f:eff} (pf_v | f, M, m, n) = let
+  stavar l_f: addr
+  val p_f: ptr l_f = &f
+  typedef clo_t = (!v | sizeLt m, sizeLt n, a) -<clo,f> void
+  viewdef V = @(v, clo_t @ l_f)
+  fn app
+    (pf: !V | i: sizeLt m, j: sizeLt n, x: a, f: !ptr l_f):<f> void = let
+    prval (pf1, pf2) = pf
+  in
+    !p_f (pf1 | i, j, x); pf := (pf1, pf2)
+  end // end of [app]
+  prval pf = (pf_v, view@ f)
+  val () = iforeach_matrix_main<a> {V} {ptr l_f} (pf | app, M, m, n, p_f)
+  prval (pf1, pf2) = pf
+  prval () = (pf_v := pf1; view@ f := pf2)
 in
   // empty
 end // end of [iforeach_matrix_cloptr]
 
-implement{a} iforeach_matrix_cloref {m,n} {f:eff} (f, M, m, n) = let
-  viewtypedef cloref_t = (sizeLt m, sizeLt n, a) -<cloref,f> void
-  fn app (pf: !unit_v | i: sizeLt m, j: sizeLt n, x: a, f: !cloref_t):<f> void =
-    f (i, j, x)
-  prval pf = unit_v ()
-  val () = iforeach_matrix_main<a> {unit_v} {cloref_t} (pf | app, M, m, n, f)
-  prval unit_v () = pf
+implement{a} iforeach_matrix_cloref
+  {v} {m,n} {f:eff} (pf | f, M, m, n) = let
+  viewtypedef cloref_t = (!v | sizeLt m, sizeLt n, a) -<cloref,f> void
+  fn app (pf: !v | i: sizeLt m, j: sizeLt n, x: a, f: !cloref_t):<f> void =
+    f (pf | i, j, x)
+  val () = iforeach_matrix_main<a> {v} {cloref_t} (pf | app, M, m, n, f)
 in
   // empty
 end // end of [iforeach_matrix_cloref]
