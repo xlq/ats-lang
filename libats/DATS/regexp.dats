@@ -49,7 +49,7 @@ staload "libats/SATS/regexp.sats"
 
 (* ****** ****** *)
 
-%{
+%{$
 
 pcre *atslib_regexp_compile_exn
   (ats_ptr_type pattern) {
@@ -82,7 +82,7 @@ end // end of [test_regexp_match_str]
 
 (* ****** ****** *)
 
-%{
+%{$
 
 ats_bool_type atslib_test_regexp_match_str_len_ofs
   (ats_ptr_type re, ats_ptr_type str, ats_int_type len, ats_int_type ofs) {

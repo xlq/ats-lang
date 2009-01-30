@@ -6,7 +6,10 @@
 
 ######
 
-all: HelloWorld f91 fact1 fact2 fact3 fibs
+all: HelloWorld f91 fact1 fact2 fact3 fibs revarr
+
+HelloWorld: HelloWorld.dats
+	atscc -o HelloWorld HelloWorld.dats
 
 f91: f91.dats
 	atscc -o f91 f91.dats
@@ -26,19 +29,20 @@ fact_in_c: fact_in_c.dats
 fibs: fibs.dats
 	atscc -o fibs fibs.dats -lats -lgmp
 
-HelloWorld: HelloWorld.dats
-	atscc -o HelloWorld HelloWorld.dats
+revarr: revarr.dats
+	atscc -o revarr revarr.dats
 
 ######
 
 html::
+	atsopt --posmark_html_only -d HelloWorld.dats
 	atsopt --posmark_html_only -d f91.dats
 	atsopt --posmark_html_only -d fact1.dats
 	atsopt --posmark_html_only -d fact2.dats
 	atsopt --posmark_html_only -d fact3.dats
 	atsopt --posmark_html_only -d fact_in_c.dats
 	atsopt --posmark_html_only -d fibs.dats
-	atsopt --posmark_html_only -d HelloWorld.dats
+	atsopt --posmark_html_only -d revarr.dats
 
 ######
 
@@ -47,12 +51,13 @@ clean::
 	rm -f *_dats.c *_sats.c *_dats.html *_sats.html *~
 
 cleanall:: clean
+	if [ -f HelloWorld ] ; then rm HelloWorld ; fi
 	if [ -f f91 ] ; then rm f91 ; fi
 	if [ -f fact1 ] ; then rm fact1 ; fi
 	if [ -f fact2 ] ; then rm fact2 ; fi
 	if [ -f fact3 ] ; then rm fact3 ; fi
 	if [ -f fact_in_c ] ; then rm fact_in_c ; fi
 	if [ -f fibs ] ; then rm fibs ; fi
-	if [ -f HelloWorld ] ; then rm HelloWorld ; fi
+	if [ -f revarr ] ; then rm revarr ; fi
 
 ###### end of [Makefile] ######

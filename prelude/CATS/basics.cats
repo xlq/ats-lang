@@ -69,30 +69,6 @@ atspre_clo_coerce (ats_ptr_type p) { return p ; }
 
 /* ****** ****** */
 
-/*
-** HX: cutting the corners? yes. worth it? probably.
-*/
-
-static inline
-ats_ptr_type
-atspre_cloref_cloptr_make (ats_ptr_type p) {
-  return p ;
-} /* atspre_cloref_cloptr_make */
-
-static inline
-ats_void_type
-atspre_cloref_cloptr_free (ats_ptr_type p) {
-  return ;
-} /* atspre_cloref_cloptr_free */
-
-static inline
-ats_ptr_type
-atspre_cloptr_cloref_make (ats_ptr_type p) {
-  return p ;
-} /* atspre_cloptr_cloref_make */
-
-/* ****** ****** */
-
 static inline
 ats_void_type
 atspre_cloptr_free (ats_ptr_type p) {

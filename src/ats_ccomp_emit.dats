@@ -2293,12 +2293,12 @@ implement emit_funentry (pf | out, entry) = let
           val () = fprint1_string (pf | out, "\n\n")
           val () = emit_closure_type (pf | out, fl, vtps_all)
           val () = fprint1_string (pf | out, "\n\n")
+          val () = emit_closure_clofun (pf | out, fl, vtps_all)
           val () = emit_closure_init (pf | out, fl, vtps_all)
           val () = if (knd <> 0) then let // boxed closure
             val () = fprint1_string (pf | out, "\n\n")
             val () = emit_closure_make (pf | out, fl, vtps_all)
             val () = fprint1_string (pf | out, "\n\n")
-            val () = emit_closure_clofun (pf | out, fl, vtps_all)
           in
             // empty
           end // end of [val]
