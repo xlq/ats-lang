@@ -474,6 +474,13 @@ in
   v3ardec_make (loc0, 0(*knd*), d2v_ptr, d2v_view, s2e_elt, od3e_ini)
 end // end of [v2ardec_tr_sta]
 
+fun d2exp_is_laminit_dyn (d2e: d2exp): bool =
+  case+ d2e.d2exp_node of
+  | D2Elaminit_dyn _ => true
+  | D2Elam_sta (_(*s2vs*), _(*s2ps*), d2e) => d2exp_is_laminit_dyn (d2e)
+  | _ => false
+// end of [d2exp_is_laminit_dyn]
+
 fn v2ardec_tr_dyn (d2c: v2ardec): v3ardec = let
   val loc0 = d2c.v2ardec_loc
   val d2v_ptr = d2c.v2ardec_dvar
@@ -567,7 +574,7 @@ in
     in
       v3ardec_make (loc0, 1(*knd*), d2v_ptr, d2v_view, s2e_ann, Some d3e_ini)
     end // end of [D2Earrinit]
-  | D2Elaminit_dyn _ => let
+  | _ when d2exp_is_laminit_dyn d2e_ini => let
       val d3e_ini = d2exp_tr_up (d2e_ini)
       val s2e_ini = d3e_ini.d3exp_typ
       val s2e_ini_view = s2exp_at_viewt0ype_addr_view (s2e_ini, s2e_addr)
@@ -582,6 +589,7 @@ in
       $Loc.prerr_location loc0; prerr ": error(3)";
       prerr ": the syntax for allocating memory on stack (alloca) is incorrect.";
       prerr_newline ();
+      prerr "d2e_ini = "; prerr_d2exp d2e_ini; prerr_newline ();
       $Err.abort {v3ardec} ()
     end // end of [_]
 end // end of [v2ardec_tr_dyn]

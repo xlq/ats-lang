@@ -72,6 +72,22 @@ fun mul_size_size (sz1: size_t, sz2: size_t):<> size_t
   = "atspre_mul_size_size"
 overload * with mul_size_size
 
+fun lt_size_size (sz1: size_t, sz2: size_t):<> bool
+  = "atspre_lt_size_size"
+overload < with lt_size_size
+
+fun lte_size_size (sz1: size_t, sz2: size_t):<> bool
+  = "atspre_lte_size_size"
+overload < with lte_size_size
+
+fun gt_size_size (sz1: size_t, sz2: size_t):<> bool
+  = "atspre_gt_size_size"
+overload < with gt_size_size
+
+fun gte_size_size (sz1: size_t, sz2: size_t):<> bool
+  = "atspre_gte_size_size"
+overload < with gte_size_size
+
 (* ****** ****** *)
 
 symintr fprint_size

@@ -10,10 +10,10 @@ cannot be accessed once the calling function returns.
 
 <H4>Storing Arrays in Stack Frames</H4>
 
-In the following contrived example, the function <i>name_of_month_1</i>
-allocates in its stack frame a string array of size <i>12</i> that is
-initialized with the names of 12 months, and then returns the name of the
-<i>i</i>th month.
+In the following contrived example, the implemented function
+<i>name_of_month_1</i> allocates in its stack frame a string array of size
+<i>12</i> that is initialized with the names of 12 months, and then returns
+the name of the <i>i</i>th month.
 
 <PRE><FONT COLOR="#E80000"><FONT COLOR="#000000">fn</FONT> name_of_month_1 <FONT COLOR="#0000FF"><FONT COLOR="#000000">{</FONT>i<FONT COLOR="#000000">:</FONT>int <FONT COLOR="#000000">|</FONT> 1 &lt;= i<FONT COLOR="#000000">;</FONT> i &lt;= 12<FONT COLOR="#000000">}</FONT></FONT> <FONT COLOR="#000000">(</FONT>i<FONT COLOR="#000000">:</FONT> <FONT COLOR="#0000FF">int i</FONT><FONT COLOR="#000000">)</FONT><FONT COLOR="#000000">:</FONT> <FONT COLOR="#0000FF">string</FONT> <FONT COLOR="#000000">=</FONT> <FONT COLOR="#000000">let</FONT>
   <FONT COLOR="#000000">var</FONT> <FONT COLOR="#000000">!</FONT>p_arr <FONT COLOR="#000000">with</FONT> pf_arr <FONT COLOR="#000000">=</FONT> <FONT COLOR="#000000">@[</FONT><FONT COLOR="#0000FF">string</FONT><FONT COLOR="#000000">]</FONT><FONT COLOR="#000000">(</FONT>
@@ -72,9 +72,29 @@ then the allocated array is uninitialized, that is, the view of the proof
 <i>[string][12] @ p_arr</i>).
 
 <H4>Storing Closures in Stack Frames</H4>
-When high-order functions are employed in systems programming, it is often
+When higher-order functions are employed in systems programming, it is often
 desirable to form closures in the stack frame of the calling function so as
 to avoid the need for memory allocation on heap.
+<P>
+
+In the following example, the implemented function <i>print_month_name</i>
+forms a closure in its stack frame, which is then passed to a higher-order
+function <i>iforeach_array_ptr_clo</i>:
+
+<PRE><FONT COLOR="#E80000"><FONT COLOR="#000000">fn</FONT> print_month_names <FONT COLOR="#000000">(</FONT><FONT COLOR="#000000">)</FONT> <FONT COLOR="#000000">=</FONT> <FONT COLOR="#000000">let</FONT>
+  <FONT COLOR="#000000">var</FONT> <FONT COLOR="#000000">!</FONT>p_arr <FONT COLOR="#000000">with</FONT> pf_arr <FONT COLOR="#000000">=</FONT> <FONT COLOR="#000000">@[</FONT><FONT COLOR="#0000FF">string</FONT><FONT COLOR="#000000">]</FONT><FONT COLOR="#000000">(</FONT>
+    "Jan"<FONT COLOR="#000000">,</FONT> "Feb"<FONT COLOR="#000000">,</FONT> "Mar"<FONT COLOR="#000000">,</FONT> "Apr"<FONT COLOR="#000000">,</FONT> "May"<FONT COLOR="#000000">,</FONT> "Jun"<FONT COLOR="#000000">,</FONT> "Jul"<FONT COLOR="#000000">,</FONT> "Aug"<FONT COLOR="#000000">,</FONT> "Sep"<FONT COLOR="#000000">,</FONT> "Oct"<FONT COLOR="#000000">,</FONT> "Nov"<FONT COLOR="#000000">,</FONT> "Dec"
+  <FONT COLOR="#000000">)</FONT>
+  <FONT COLOR="#000000">var</FONT> <FONT COLOR="#000000">!</FONT>p_clo <FONT COLOR="#000000">with</FONT> pf_clo <FONT COLOR="#000000">=</FONT> @lam <FONT COLOR="#787878">// this closure is allocated in the stack frame
+</FONT>    <FONT COLOR="#000000">(</FONT><FONT COLOR="#009000">pf<FONT COLOR="#000000">:</FONT> <FONT COLOR="#0000FF"><FONT COLOR="#000000">!</FONT>unit_v</FONT></FONT> <FONT COLOR="#000000">|</FONT> i<FONT COLOR="#000000">:</FONT> <FONT COLOR="#0000FF">sizeLt 12</FONT><FONT COLOR="#000000">,</FONT> x<FONT COLOR="#000000">:</FONT> <FONT COLOR="#0000FF"><FONT COLOR="#000000">&amp;</FONT>string</FONT><FONT COLOR="#000000">)</FONT><FONT COLOR="#000000">:</FONT> <FONT COLOR="#0000FF">void</FONT> <FONT COLOR="#000000">=&lt;</FONT><FONT COLOR="#0000FF">clo1</FONT><FONT COLOR="#000000">&gt;</FONT> <FONT COLOR="#000000">(</FONT><FONT COLOR="#000000">if</FONT> i <FONT COLOR="#000000">&gt;</FONT> 0 <FONT COLOR="#000000">then</FONT> print ", "<FONT COLOR="#000000">;</FONT> print x<FONT COLOR="#000000">)</FONT>
+  <FONT COLOR="#787878">// end of [var]
+</FONT>  <FONT COLOR="#000000">prval</FONT> <FONT COLOR="#009000">pf <FONT COLOR="#000000">=</FONT> unit_v <FONT COLOR="#000000">(</FONT><FONT COLOR="#000000">)</FONT></FONT>
+  <FONT COLOR="#000000">val</FONT> <FONT COLOR="#000000">(</FONT><FONT COLOR="#000000">)</FONT> <FONT COLOR="#000000">=</FONT> iforeach_array_ptr_tsz_clo <FONT COLOR="#0000FF"><FONT COLOR="#000000">{</FONT>string<FONT COLOR="#000000">}</FONT></FONT> <FONT COLOR="#0000FF"><FONT COLOR="#000000">{</FONT>unit_v<FONT COLOR="#000000">}</FONT></FONT> <FONT COLOR="#000000">(</FONT><FONT COLOR="#009000">pf</FONT> <FONT COLOR="#000000">|</FONT> <FONT COLOR="#000000">!</FONT>p_clo<FONT COLOR="#000000">,</FONT> <FONT COLOR="#000000">!</FONT>p_arr<FONT COLOR="#000000">,</FONT> 12<FONT COLOR="#000000">,</FONT> sizeof&lt;<FONT COLOR="#0000FF">string</FONT><FONT COLOR="#000000">&gt;</FONT><FONT COLOR="#000000">)</FONT>
+  <FONT COLOR="#000000">prval</FONT> <FONT COLOR="#009000">unit_v <FONT COLOR="#000000">(</FONT><FONT COLOR="#000000">)</FONT> <FONT COLOR="#000000">=</FONT> pf</FONT>
+<FONT COLOR="#000000">in</FONT>
+  <FONT COLOR="#787878">// empty
+</FONT><FONT COLOR="#000000">end</FONT> <FONT COLOR="#787878">// end of [print_month_names]
+</FONT></FONT></PRE>
 
 <P>
 

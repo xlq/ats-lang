@@ -79,10 +79,10 @@ prfun slseg_v_append {a:viewt@ype} {l1,l2,l3:addr} {n1,n2:nat}
 
 (* ****** ****** *)
 
-fun{a:viewt@ype} slseg_foreach_cloptr
+fun{a:viewt@ype} slseg_foreach_clo
    {v:view} {l1,l2:addr} {n:nat} {f:eff} (
     pf: !v, pf_seg: !slseg_v (a, l1, l2, n)
-  | p: ptr l1, n: int n, f: !(!v | &a) -<cloptr,f> void
+  | p: ptr l1, n: int n, f: &(!v | &a) -<clo,f> void
   ) :<f> void
 
 (* ****** ****** *)

@@ -81,11 +81,11 @@ end // end of [slseg_v_append]
 
 (* ****** ****** *)
 
-implement{a} slseg_foreach_cloptr
+implement{a} slseg_foreach_clo
   {v} {l1,l2} {n} {f} (pf, pf_seg | p, n, f) = let
   fun loop {l1,l2:addr} {n:nat} .<n>. (
       pf: !v, pf_seg: !slseg_v (a, l1, l2, n)
-    | p: ptr l1, n: int n, f: !(!v | &a) -<cloptr,f> void
+    | p: ptr l1, n: int n, f: &(!v | &a) -<clo,f> void
     ) :<f> void =
   if n > 0 then let
     prval slseg_v_cons (pf_gc, pf_at, pf1_seg) = pf_seg
@@ -95,7 +95,7 @@ implement{a} slseg_foreach_cloptr
   end // end of [if]
 in
   loop (pf, pf_seg | p, n, f)
-end // end of [slseg_foreach_cloptr]
+end // end of [slseg_foreach_clo]
   
 (* ****** ****** *)
 
