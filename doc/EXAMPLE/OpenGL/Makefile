@@ -67,7 +67,7 @@ glFaces: glFaces.dats
 	$(ATSCC) -o glFaces glFaces.dats -lGL -lglut
 
 glTetrix: glTetrix.dats
-	$(ATSCC) -o glTetrix glTetrix.dats -lGL -lglut
+	$(ATSCC) -O2 -o glTetrix glTetrix.dats -lGL -lglut
 
 ######
 

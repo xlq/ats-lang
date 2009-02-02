@@ -169,7 +169,7 @@ fn move_test {m,n:pos}
   (S: shape (m, n), r: rotate_t, xcen: Int, ycen: Int): bool = let
   val m = S.row and n = S.col and M = S.mat
   val m2 = nhalf m and n2 = nhalf n
-  fun aux (i: natLte m, j: natLte n):<cloptr1> bool =
+  fun aux (i: natLte m, j: natLte n):<cloref1> bool =
     if i < m then
       if j < n then let
         val (x, y): (Int, Int) = case+ r of
@@ -201,7 +201,7 @@ fn absorb {m,n:pos}
   (S: shape (m, n), r: rotate_t, xcen: Int, ycen: Int): void = let
   val m = S.row and n = S.col and M = S.mat
   val m2 = nhalf m and n2 = nhalf n
-  fun aux (i: natLte m, j: natLte n):<cloptr1> void =
+  fun aux (i: natLte m, j: natLte n):<cloref1> void =
     if i < m then begin
       if j < n then let
         val (x, y): (Int, Int) = case+ r of
@@ -256,7 +256,7 @@ in
 end // end of [frame_line_flash]
 
 fn frame_display (): void = let
-  fun aux1 (j: natLte FW):<cloptr1> void =
+  fun aux1 (j: natLte FW):<cloref1> void =
     if j < FW then let
       val c = frame[FD, FW, j]
     in
@@ -265,7 +265,7 @@ fn frame_display (): void = let
       curs_backward FW; curs_upward 1
     end // end of [if]
 
-  fun aux2 (i: intLte FD, j: natLte FW):<cloptr1> void =
+  fun aux2 (i: intLte FD, j: natLte FW):<cloref1> void =
     if i >= 0 then
       if j < FW then begin
         print frame[i, FW, j]; aux2 (i, j + 1)
@@ -278,11 +278,11 @@ in
 end // end of [frame_display]
 
 fn frame_find (): intBtw (~1, FD+1) = let // find a filled-up line
-  fn* aux1 {i:nat} (i: int i):<cloptr1> intBtw (~1, FD+1) =
+  fn* aux1 {i:nat} (i: int i):<cloref1> intBtw (~1, FD+1) =
     if i <= FD then aux2 (i, 0) else (~1)
 
   and aux2 {i,j:nat | i <= FD; j <= FW}
-    (i: int i, j: int j):<cloptr1> intBtw (~1, FD+1) =
+    (i: int i, j: int j):<cloref1> intBtw (~1, FD+1) =
     if j < FW then begin
       if frame[i, FW, j] <> ' ' then aux2 (i, j+1) else aux1 (i+1)
     end else begin
@@ -327,7 +327,7 @@ end // end of [print_score]
 //
 
 fun frame_delete (): void = let
-  fn aux1 (i: natLte FD, j: natLte FD):<cloptr1> void = let
+  fn aux1 (i: natLte FD, j: natLte FD):<cloref1> void = let
     val f = lam (k: natLt FW): void =<cloptr1>
       matrix_set_elt_at__intsz (frame, i, FW, k, frame[j, FW, k])
     val () = iter (FW, f)
@@ -336,7 +336,7 @@ fun frame_delete (): void = let
     // empty
   end // end of [aux1]
 
-  fn aux2 (i: natLte FD):<cloptr1> void = let
+  fn aux2 (i: natLte FD):<cloref1> void = let
     val f = lam (k: natLt FW): void =<cloptr1> frame[i, FW, k] := ' '
     val () = iter (FW, f)
     val () = cloptr_free (f)
@@ -344,7 +344,7 @@ fun frame_delete (): void = let
     // empty
   end // end of [aux2]
 
-  fun aux3 (i: intLte FD):<cloptr1> void =
+  fun aux3 (i: intLte FD):<cloref1> void =
     if i >= 0 then let
       val j = i-1
     in
@@ -366,7 +366,7 @@ end // end of [frame_delete]
 fn display_shape_0 {m,n:pos}
   (S: shape (m, n), b: bool): void = let
   val m = S.row and n = S.col and M = S.mat
-  fun aux (i: natLte m, j: natLte n):<cloptr1> void =
+  fun aux (i: natLte m, j: natLte n):<cloref1> void =
     if i < m then
       if j < n then begin
         print_block (M[i, n, j], b); aux (i, j + 1)
@@ -385,7 +385,7 @@ end // end of [display_shape_0]
 fn display_shape_1 {m,n:pos}
   (S: shape (m, n), b: bool): void = let
   val m = S.row and n = S.col and M = S.mat
-  fun aux (i: intLt m, j: natLte n):<cloptr1> void =
+  fun aux (i: intLt m, j: natLte n):<cloref1> void =
     if j < n then
       if i >= 0 then begin
         print_block (M[i, n, j], b); aux (i-1, j)
@@ -402,7 +402,7 @@ end // end of [display_shape_1]
 fn display_shape_2 {m,n:pos}
   (S: shape (m, n), b: bool): void = let
   val m = S.row and n = S.col and M = S.mat
-  fun aux (i: intLt m, j: intLt n):<cloptr1> void =
+  fun aux (i: intLt m, j: intLt n):<cloref1> void =
     if i >= 0 then
       if j >= 0 then begin
         print_block (M[i, n, j], b); aux (i, j - 1)
@@ -419,7 +419,7 @@ end // end of [display_shape_2]
 fn display_shape_3 {m,n:pos}
   (S: shape (m, n), b: bool): void = let
   val m = S.row and n = S.col and M = S.mat
-  fun aux (i: natLte m, j: intLt n):<cloptr1> void =
+  fun aux (i: natLte m, j: intLt n):<cloref1> void =
     if j >= 0 then
       if i < m then begin
         print_block (M[i, n, j], b); aux (i + 1, j)
@@ -561,7 +561,7 @@ fn set_block_at {m,n:pos}
   (S: shape (m*BSZ, n*BSZ), i: natLt m, j: natLt n, c: Char)
   : void = let
   val nBSZ = S.col and M = S.mat
-  fun aux (p: natLte BSZ, q: natLte BSZ):<cloptr1> void =
+  fun aux (p: natLte BSZ, q: natLte BSZ):<cloref1> void =
     if p < BSZ then begin
       if q < BSZ then let
         val () = M[i imul BSZ + p, nBSZ, j imul BSZ + q] := c
