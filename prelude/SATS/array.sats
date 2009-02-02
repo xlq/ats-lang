@@ -372,14 +372,14 @@ fun iforeach_array_ptr_tsz_clo
   , tsz: sizeof_t a
   ) :<f> void
 
-fun iforeach_array_ptr_tsz_cloptr
-  {a:viewt@ype} {v:view} {n:nat} {f:eff} (
+fun iforeach_array_ptr_tsz_cloref
+  {a:viewt@ype} {v:view} {n:nat} (
     pf: !v
-  | f: !(!v | sizeLt n, &a) -<cloptr,f> void
+  | f: !(!v | sizeLt n, &a) -<cloref1> void
   , base: &(@[a][n])
   , asz: size_t n
   , tsz: sizeof_t a
-  ) :<f> void
+  ) : void
 
 (* ****** ****** *)
 
@@ -412,11 +412,11 @@ fun array_make_clo_tsz {a:viewt@ype} {n:nat} {f:eff} (
   , tsz: sizeof_t a
   ) :<f> array (a, n)
 
-fun array_make_cloptr_tsz {a:viewt@ype} {n:nat} {f:eff} (
+fun array_make_cloref_tsz {a:viewt@ype} {n:nat} (
     asz: size_t n
-  , f: !(&(a?) >> a, sizeLt n) -<cloptr,f> void
+  , f: !(&(a?) >> a, sizeLt n) -<cloref1> void
   , tsz: sizeof_t a
-  ) :<f> array (a, n)
+  ) : array (a, n)
 
 (* ****** ****** *)
 
@@ -473,11 +473,6 @@ fun{a:t@ype} foreach_array_clo {v:view} {n:nat} {f:eff} (
   ) :<f,!ref> void
 overload foreach with foreach_array_clo
 
-fun{a:t@ype} foreach_array_cloptr {v:view} {n:nat} {f:eff} (
-    pf: !v | f: !(!v | a) -<cloptr,f> void, A: array (a, n), asz: size_t n
-  ) :<f,!ref> void
-overload foreach with foreach_array_cloptr
-
 fun{a:t@ype} foreach_array_cloref {v:view} {n:nat} {f:eff} (
     pf: !v | f: !(!v | a) -<cloref,f> void, A: array (a, n), asz: size_t n
   ) :<f,!ref> void
@@ -501,11 +496,6 @@ fun{a:t@ype} iforeach_array_clo {v:view} {n:nat} {f:eff} (
     pf: !v | f: &(!v | sizeLt n, a) -<clo,f> void, A: array (a, n), asz: size_t n
   ) :<f,!ref> void
 overload iforeach with iforeach_array_clo
-
-fun{a:t@ype} iforeach_array_cloptr {v:view} {n:nat} {f:eff} (
-    pf: !v | f: !(!v | sizeLt n, a) -<cloptr,f> void, A: array (a, n), asz: size_t n
-  ) :<f,!ref> void
-overload iforeach with iforeach_array_cloptr
 
 fun{a:t@ype} iforeach_array_cloref {v:view} {n:nat} {f:eff} (
     pf: !v | f: !(!v | sizeLt n, a) -<cloref,f> void, A: array (a, n), asz: size_t n

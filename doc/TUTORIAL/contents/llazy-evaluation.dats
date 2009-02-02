@@ -8,7 +8,9 @@ staload "libc/SATS/stdio.sats"
 
 (* ****** ****** *)
 
-extern fun char_stream_make_file (fil: FILEref): stream (char)
+// making a lazy char stream out of a file handle
+extern fun char_stream_make_file (fil: FILEref)
+  :<1,~ref> stream (char)
 
 implement char_stream_make_file (fil) = let
   val c = fgetc0_err (fil)

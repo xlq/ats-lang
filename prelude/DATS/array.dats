@@ -352,14 +352,22 @@ in
   loop (pf | f, A, asz, 0, env)
 end // end of [foreach_array_main]
 
-implement{a}
-  foreach_array_cloptr {v} {n} {f} (pf | f, A, asz) = let
-  viewtypedef cloptr_t = (!v | a) -<cloptr,f> void
-  fn app (pf: !v | x: a, f: !cloptr_t):<f> void = f (pf | x)
-  val () = foreach_array_main<a> {v} {cloptr_t} (pf | app, A, asz, f)
+implement{a} foreach_array_clo
+  {v} {n} {f} (pf_v | f, A, asz) = let
+  stavar l_f: addr
+  typedef clo_t = (!v | a) -<clo,f> void
+  val p_f: ptr l_f = &f
+  viewdef V = (v, clo_t @ l_f)
+  fn app (pf: !V | x: a, p_f: !ptr l_f):<f> void = let
+    prval (pf1, pf2) = pf in !p_f (pf1 | x); pf := (pf1, pf2)
+  end // end of [app]
+  prval pf = (pf_v, view@ f)
+  val () = foreach_array_main<a> {V} {ptr l_f} (pf | app, A, asz, p_f)
+  prval (pf1, pf2) = pf
+  prval () = (pf_v := pf1; view@ f := pf2)
 in
   // empty
-end // end of [foreach_array_cloptr]
+end // end of [foreach_array_clo]
 
 implement{a}
   foreach_array_cloref {v} {n} {f} (pf | f, A, asz) = let
@@ -388,14 +396,22 @@ in
   // empty
 end // end of [iforeach_array_main]
 
-implement{a}
-  iforeach_array_cloptr {v} {n} {f} (pf | f, A, asz) = let
-  viewtypedef cloptr_t = (!v | sizeLt n, a) -<cloptr,f> void
-  fn app (pf: !v | i: sizeLt n, x: a, f: !cloptr_t):<f> void = f (pf | i, x)
-  val () = iforeach_array_main<a> {v} {cloptr_t} (pf | app, A, asz, f)
+implement{a} iforeach_array_clo
+  {v} {n} {f} (pf_v | f, A, asz) = let
+  stavar l_f: addr
+  typedef clo_t = (!v | sizeLt n, a) -<clo,f> void
+  val p_f: ptr l_f = &f
+  viewdef V = (v, clo_t @ l_f)
+  fn app (pf: !V | i: sizeLt n, x: a, p_f: !ptr l_f):<f> void = let
+    prval (pf1, pf2) = pf in !p_f (pf1 | i, x); pf := (pf1, pf2)
+  end // end of [app]
+  prval pf = (pf_v, view@ f)
+  val () = iforeach_array_main<a> {V} {ptr l_f} (pf | app, A, asz, p_f)
+  prval (pf1, pf2) = pf
+  prval () = (pf_v := pf1; view@ f := pf2)
 in
   // empty
-end // end of [iforeach_array_cloptr]
+end // end of [iforeach_array_clo]
 
 implement{a}
   iforeach_array_cloref {v} {n} {f} (pf | f, A, asz) = let

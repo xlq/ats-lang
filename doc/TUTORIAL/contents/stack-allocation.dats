@@ -42,6 +42,7 @@ fn print_month_names () = let
   prval pf = unit_v ()
   val () = iforeach_array_ptr_tsz_clo {string} {unit_v} (pf | !p_clo, !p_arr, 12, sizeof<string>)
   prval unit_v () = pf
+  val () = print_newline ()
 in
   // empty
 end // end of [print_month_names]

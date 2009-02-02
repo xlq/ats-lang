@@ -50,8 +50,19 @@
 
 #define atspre_int_of_size atspre_int1_of_size1
 #define atspre_size_of_int1 atspre_size1_of_int1
+
 #define atspre_add_size_size atspre_add_size1_size1
+#define atspre_sub_size_size atspre_sub_size1_size1
 #define atspre_mul_size_size atspre_mul_size1_size1
+#define atspre_div_size_size atspre_div_size1_size1
+
+#define atspre_lt_size_size atspre_lt_size1_size1
+#define atspre_lte_size_size atspre_lte_size1_size1
+#define atspre_gt_size_size atspre_gt_size1_size1
+#define atspre_gte_size_size atspre_gte_size1_size1
+
+#define atspre_eq_size_size atspre_eq_size1_size1
+#define atspre_neq_size_size atspre_neq_size1_size1
 
 /* ****** ****** */
 

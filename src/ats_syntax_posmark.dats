@@ -66,32 +66,29 @@ fn externloc_posmark (loc: loc_t): void =
     posmark_insert_extern_end loc_endoff;
   end
 
-fn neuexploc_posmark (loc: loc_t): void =
-  let
-    val loc_begoff = $Loc.location_begpos_toff loc
-    val loc_endoff = $Loc.location_endpos_toff loc
-  in
-    posmark_insert_neuexp_beg loc_begoff;
-    posmark_insert_neuexp_end loc_endoff;
-  end
+fn neuexploc_posmark (loc: loc_t): void = let
+  val loc_begoff = $Loc.location_begpos_toff loc
+  val loc_endoff = $Loc.location_endpos_toff loc
+in
+  posmark_insert_neuexp_beg loc_begoff;
+  posmark_insert_neuexp_end loc_endoff;
+end // end of [neuexploc_posmark]
 
-fn staexploc_posmark (loc: loc_t): void =
-  let
-    val loc_begoff = $Loc.location_begpos_toff loc
-    val loc_endoff = $Loc.location_endpos_toff loc
-  in
-    posmark_insert_staexp_beg loc_begoff;
-    posmark_insert_staexp_end loc_endoff;
-  end
+fn staexploc_posmark (loc: loc_t): void = let
+  val loc_begoff = $Loc.location_begpos_toff loc
+  val loc_endoff = $Loc.location_endpos_toff loc
+in
+  posmark_insert_staexp_beg loc_begoff;
+  posmark_insert_staexp_end loc_endoff;
+end // end of [staexploc_posmark]
 
-fn prfexploc_posmark (loc: loc_t): void =
-  let
-    val loc_begoff = $Loc.location_begpos_toff loc
-    val loc_endoff = $Loc.location_endpos_toff loc
-  in
-    posmark_insert_prfexp_beg loc_begoff;
-    posmark_insert_prfexp_end loc_endoff;
-  end
+fn prfexploc_posmark (loc: loc_t): void = let
+  val loc_begoff = $Loc.location_begpos_toff loc
+  val loc_endoff = $Loc.location_endpos_toff loc
+in
+  posmark_insert_prfexp_beg loc_begoff;
+  posmark_insert_prfexp_end loc_endoff;
+end // end of [prfexploc_posmark]
 
 (* ****** ****** *)
 
@@ -470,8 +467,16 @@ fn f0undeclst_posmark (d0cs: f0undeclst): void =
 
 (* ****** ****** *)
 
-fn v0ardec_posmark (d0c: v0ardec): void = begin
-  s0expopt_posmark d0c.v0ardec_typ; d0expopt_posmark d0c.v0ardec_ini;
+fn v0ardec_posmark
+  (d0c: v0ardec): void = let
+  val () = s0expopt_posmark d0c.v0ardec_typ
+  val () = case+ d0c.v0ardec_wth of
+    | Some id => prfexploc_posmark (id.i0de_loc)
+    | None () => ()
+  // end of [val]
+  val () = d0expopt_posmark d0c.v0ardec_ini
+in
+  // empty
 end // end of [v0ardec_posmark]
 
 fn v0ardeclst_posmark (d0cs: v0ardeclst): void =

@@ -365,10 +365,9 @@ implement d3exp_lval_typ_set_arg (refval, d3e0, s2e_new) = let
       (if s2exp_is_linear (d3e0.d3exp_typ) then 1 else 0)
     else 1
   ) : int
-  val () =
-    if flag > 0 then begin
-      d3exp_lval_typ_set (loc0, refval, d3e0, s2e_new, err)
-    end
+  val () = if flag > 0 then begin
+    d3exp_lval_typ_set (loc0, refval, d3e0, s2e_new, err)
+  end // end of [val]
 in
   if err > 0 then begin case+ s2e_new of
     | _ when s2exp_fun_is_freeptr s2e_new => 1 (*freeknd*)
@@ -378,7 +377,7 @@ in
         prerr ": the dynamic expression needs to be a left-value but it is not.";
         prerr_newline ();
         $Err.abort {int} ()
-      end
+      end // end of [_]
   end else begin
     0 (*freeknd*)
   end // end of [if]

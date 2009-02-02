@@ -51,9 +51,7 @@ dataprop MUL (int, int, int) =
 
 (* ****** ****** *)
 
-praxi mul_make_const : {m,n:int} () -<prf> MUL (m, n, m*n)
-
-praxi mul_make : {m,n:int} () -<prf> [p:int] MUL (m, n, p)
+praxi mul_make : {m,n:int} () -<prf> MUL (m, n, m*n)
 praxi mul_elim : {m,n:int} {p:int} MUL (m, n, p) -<prf> [p == m*n] void
 
 (* ****** ****** *)
