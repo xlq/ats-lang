@@ -339,6 +339,12 @@ atspre_uint_of_int (ats_int_type i) {
   return i ;
 }
 
+static inline
+ats_uint_type
+atspre_uint_of_double (ats_double_type d) {
+  return (ats_uint_type)d ;
+}
+
 //
 
 static inline

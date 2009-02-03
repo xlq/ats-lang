@@ -7,6 +7,20 @@
 **
 *)
 
+//
+// Usage:
+//
+//   'i' : counterclockwise rotation
+//   'k' : clockwise rotation
+//   'j' : horizontal move to the left
+//   'l' : horizontal move to the right
+//   ' ' : free fall
+//
+//   'n' : show/hide the next piece
+//
+//   ESC : exit
+//
+
 (* ****** ****** *)
 
 staload "libc/SATS/random.sats"
@@ -74,8 +88,12 @@ and FRAME_ybase=  (1.0 - FRAME_ht) / 2
 
 (* ****** ****** *)
 
+// a color is really just an index
 abst@ype color_t = $extype "ats_int_type"
 extern typedef "color_t" = color_t
+
+extern fun color_index_get (c: color_t): int
+  = "color_index_get"
 
 extern fun color_is_none (c: color_t): bool // there is no color
   = "color_is_none"
@@ -92,6 +110,14 @@ macdef SHAPE3_color = $extval (color_t, "4")
 macdef SHAPE4_color = $extval (color_t, "5")
 macdef SHAPE5_color = $extval (color_t, "6")
 macdef SHAPE6_color = $extval (color_t, "7")
+
+extern fun eq_color_color (c1: color_t, c2: color_t): bool
+  = "eq_color_color"
+overload = with eq_color_color
+
+extern fun neq_color_color (c1: color_t, c2: color_t): bool
+  = "neq_color_color"
+overload <> with neq_color_color
 
 (* ****** ****** *)
 
@@ -134,6 +160,52 @@ extern val theShapeColorArray : array (color_t, NSHAPE)
 
 extern val theNextShapeRef : ref (shape0_t)
 extern val theCurrentShapeRef : ref (shape0_t)
+
+(* ****** ****** *)
+
+extern fun theNextShapeShow_get (): int
+extern fun theNextShapeShow_toggle (): void
+
+local
+
+val toggle = ref_make_elt<int> (1) // it is on by default
+
+in
+
+implement theNextShapeShow_get () = !toggle
+implement theNextShapeShow_toggle () = (!toggle := 1 - !toggle)
+
+end // end of [local]
+
+(* ****** ****** *)
+
+extern fun theTimerTimeInterval_get (): uint
+extern fun theTimerTimeInterval_inc (): void
+extern fun theTimerTimeInterval_dec (): void
+
+local
+
+val interval = ref_make_elt<double> (1000.0)
+
+in
+
+implement theTimerTimeInterval_get () =
+ let val ti = !interval in uint_of_double ti end
+// end of [theTimerTimeInterval_get]
+
+implement theTimerTimeInterval_inc () = let
+  val ti: double = 1.25 * !interval
+in
+  if ti <= 1000.0 then !interval := ti
+end // end of [theTimerTimeInterval_inc]
+
+implement theTimerTimeInterval_dec () = let
+  val ti: double = !interval / 1.25
+in
+  if ti >= 20.0 then !interval := ti
+end // end of [theTimerTimeInterval_dec]
+
+end // end of [local]
 
 (* ****** ****** *)
 
@@ -202,17 +274,71 @@ extern fun the_iy_center_set (y: int): void = "the_iy_center_set"
 
 (* ****** ****** *)
 
+staload "libc/SATS/math.sats"
+
+fn drawArc {n:int | n >= 1} (
+    pf: !glBeginView
+  | x0: double, y0: double
+  , radius: double, ang_init: double, ang_delta: double
+  , n: int n
+  ) : void = let
+  val theta = (ang_delta / n)
+  fun loop {i:nat | i <= n}
+    (i: int i, theta_i: double):<cloref1> void = let
+    val () = glVertex3f
+      (x0 + radius * cos (theta_i), y0 + radius * sin (theta_i), 0.0)
+  in
+    if i < n then loop (i + 1, theta_i + theta)
+  end // end of [loop]
+  val () = loop (0, ang_init)
+in
+  // empty
+end // end of [drawArc]
+
+#define PI 3.1415926535898
+
 // a plain vanilla version
 fn drawBlock (ix: int, iy: int): void = let
-  val x = ix * FRAME_unit and y = iy * FRAME_unit
-  val () = drawRectangle (x, y, FRAME_unit, FRAME_unit)
+  #define NARC 8
+  #define NCORNER 3
+  val u = FRAME_unit
+  val u_N0 = u / NCORNER
+  val u_N1 = u - u_N0
+  val x0 = ix * u and y0 = iy * u
+  val (pf_begin | ()) = glBegin (GL_POLYGON)
+(*
+// funky looking
+  val () = drawArc (pf_begin | x0 + u_N0, y0 + u_N0, u_N0, ~PI  , ~PI/2, NARC)
+  val () = drawArc (pf_begin | x0 + u_N1, y0 + u_N0, u_N0, ~PI/2,  0.0 , NARC)
+  val () = drawArc (pf_begin | x0 + u_N1, y0 + u_N1, u_N0,  0.0 ,  PI/2, NARC)
+  val () = drawArc (pf_begin | x0 + u_N0, y0 + u_N1, u_N0,  PI/2,  PI  , NARC)
+*)
+  val () = drawArc (pf_begin | x0 + u_N0, y0 + u_N0, u_N0, ~PI  , PI/2, NARC)
+  val () = drawArc (pf_begin | x0 + u_N1, y0 + u_N0, u_N0, ~PI/2, PI/2, NARC)
+  val () = drawArc (pf_begin | x0 + u_N1, y0 + u_N1, u_N0,  0.0 , PI/2, NARC)
+  val () = drawArc (pf_begin | x0 + u_N0, y0 + u_N1, u_N0,  PI/2, PI/2, NARC)
+
+  val () = glEnd (pf_begin | (*none*))
 in
   // empty
 end // end of [drawBlock]
 
 // a placeholder
-fn glColor3f_color (c: color_t): void = glColor3f (1.0, 1.0, 0.0)
+fn glColor3f_color (c: color_t): void = let
+  val index = color_index_get (c)
+in
+  case+ index of
+  | 1(*SHAPE0*) => glColor3f (1.0, 0.0, 0.0) // red
+  | 2(*SHAPE1*) => glColor3f (0.0, 1.0, 0.0) // green
+  | 3(*SHAPE2*) => glColor3f (0.5, 0.5, 1.0) // light blue
+  | 4(*SHAPE3*) => glColor3f (1.0, 1.0, 0.0) // yellow
+  | 5(*SHAPE4*) => glColor3f (1.0, 1.0, 0.0) // yellow
+  | 6(*SHAPE3*) => glColor3f (1.0, 0.475, 0.475) // pink?
+  | 7(*SHAPE4*) => glColor3f (1.0, 0.475, 0.475) // pink?
+  | _ => glColor3f (1.0, 1.0, 1.0)
+end // end of [glColor3f_color]
 
+// flag = 1: draw; flag = 0: undraw
 fn shape_draw (flag: int, S: shape0_t): void = let
   fn loop_row {m,n:nat} (
       flag: int
@@ -525,29 +651,16 @@ end // end of [theCurrentShape_ymove_if]
 extern fun theCurrentShape_freefall (): void
   = "theCurrentShape_freefall"
 
-#define MILLION 1000000
-val theFreeFallTimeIntervalRef = ref<Nat> (8 * 1024)
-
 implement theCurrentShape_freefall (): void = let
-  val S = !theCurrentShapeRef
-  val ti = let
-    val n = !theFreeFallTimeIntervalRef in if n <= MILLION then n else MILLION
-  end : natLte MILLION
-  fun loop
-    (S: shape0_t, ti: natLte MILLION): void = let
-    val () = usleep (ti)
+  #define FreeFallTimeInterval 2048
+  fun loop (S: shape0_t): void = let
+    val () = usleep (FreeFallTimeInterval)
     val res = theCurrentShape_ymove_if (~1)
   in
     if res <> 0 then let
-(*
-      val () = (prerr "loop: bef: ti = "; prerr ti; prerr_newline ())
-*)
       val () = glTetrix_display ()
-(*
-      val () = (prerr "loop: aft: ti = "; prerr ti; prerr_newline ())
-*)
     in
-      loop (S, ti)
+      loop (S)
     end else let
       val () = theCurrentShape_absorb ()
       val () = theCurrentShape_update ()
@@ -556,7 +669,7 @@ implement theCurrentShape_freefall (): void = let
     end // end of [if]
   end // end of [loop]
 in
-  loop (S, ti)
+  loop (!theCurrentShapeRef)
 end // end of [theCurrentShape_freefall]
 
 (* ****** ****** *)
@@ -606,14 +719,16 @@ implement glTetrix_display () = let
   val () = FRAME_glColor3f ()
   val () = FRAME_draw ()
   val () = FRAME_matrix_draw ()
-  val S = !theNextShapeRef
-  val () = shape_draw_atrot
-    (1(*flag*), S, X, Y, ROTKIND_000) where {
-    val xlen = shape_xlen_get (S)
-    val X = ~2 * ((xlen+1) / 2)
-    val ylen = shape_ylen_get (S)
-    val Y = FRAME_Y - (ylen+1) / 2
-  } // end of [val]
+  val () = if theNextShapeShow_get () > 0 then let
+    val S = !theNextShapeRef
+      val xlen = shape_xlen_get (S)
+      val X = ~2 * ((xlen+1) / 2)
+      val ylen = shape_ylen_get (S)
+      val Y = FRAME_Y - (ylen+1) / 2
+    in
+      shape_draw_atrot (1(*flag*), S, X, Y, ROTKIND_000)
+    end // end of [if]
+  // end of [val]
   val S = !theCurrentShapeRef
   val rotkind = the_rotkind_get ()
   val ix_center = the_ix_center_get ()
@@ -656,6 +771,8 @@ implement glTetrix_finalize () = exit (0)
 
 (* ****** ****** *)
 
+extern castfn char_of_uchar (c: uchar): char = "char_of_uchar"
+
 extern fun glTetrix_keyboard (key: uchar, ix: int, iy: int): void
   = "glTetrix_keyboard"
 
@@ -678,6 +795,11 @@ in
   | ' ' => let
       val () = theCurrentShape_freefall () in glutPostRedisplay ()
     end
+  | 'n' => let
+      val () = theNextShapeShow_toggle () in glutPostRedisplay ()
+    end
+  | 'a' => theTimerTimeInterval_dec () // acceleration
+  | 'd' => theTimerTimeInterval_inc () // deceleration
   | '\033' => exit (0)
   | _ => ()
 end // end of [glTetrix_keyboard]
@@ -685,8 +807,6 @@ end // end of [glTetrix_keyboard]
 (* ****** ****** *)
 
 extern fun glTetrix_timer (flag: int): void = "glTetrix_timer"
-
-val theTimerTimeIntervalRef = ref_make_elt<uint> (512U)
 
 implement glTetrix_timer (flag: int) = let
 (*
@@ -705,7 +825,7 @@ implement glTetrix_timer (flag: int) = let
   end // end of [val]
   val () = glutPostRedisplay ()
 in
-  glutTimerFunc (!theTimerTimeIntervalRef, glTetrix_timer, 0) ;
+  glutTimerFunc (theTimerTimeInterval_get (), glTetrix_timer, 0) ;
 end // end of [glTetrix_timer]
 
 (* ****** ****** *)
@@ -796,7 +916,7 @@ XX
 
 val SHAPE2_matrix
   : matrix (color_t, SHAPE2_X, SHAPE2_Y) = M where {
-  val M = matrix_make_elt (SHAPE2_X, SHAPE2_Y, SHAPE1_color)
+  val M = matrix_make_elt (SHAPE2_X, SHAPE2_Y, SHAPE2_color)
   val () = M[1, SHAPE2_Y, 0] := NONE_color
   val () = M[1, SHAPE2_Y, 2] := NONE_color
 } // end of [val]
@@ -819,7 +939,7 @@ XXXX
 
 val SHAPE3_matrix
   : matrix (color_t, SHAPE3_X, SHAPE3_Y) = M where {
-  val M = matrix_make_elt (SHAPE3_X, SHAPE3_Y, SHAPE1_color)
+  val M = matrix_make_elt (SHAPE3_X, SHAPE3_Y, SHAPE3_color)
   val () = M[1, SHAPE3_Y, 1] := NONE_color
   val () = M[1, SHAPE3_Y, 2] := NONE_color
 } // end of [val]
@@ -842,7 +962,7 @@ XXXX
 
 val SHAPE4_matrix
   : matrix (color_t, SHAPE4_X, SHAPE4_Y) = M where {
-  val M = matrix_make_elt (SHAPE4_X, SHAPE4_Y, SHAPE1_color)
+  val M = matrix_make_elt (SHAPE4_X, SHAPE4_Y, SHAPE4_color)
   val () = M[0, SHAPE4_Y, 1] := NONE_color
   val () = M[0, SHAPE4_Y, 2] := NONE_color
 } // end of [val]
@@ -865,7 +985,7 @@ XX
 
 val SHAPE5_matrix
   : matrix (color_t, SHAPE5_X, SHAPE5_Y) = M where {
-  val M = matrix_make_elt (SHAPE5_X, SHAPE5_Y, SHAPE1_color)
+  val M = matrix_make_elt (SHAPE5_X, SHAPE5_Y, SHAPE5_color)
   val () = M[0, SHAPE5_Y, 2] := NONE_color
   val () = M[1, SHAPE5_Y, 0] := NONE_color
 } // end of [val]
@@ -888,7 +1008,7 @@ XXXX
 
 val SHAPE6_matrix
   : matrix (color_t, SHAPE6_X, SHAPE6_Y) = M where {
-  val M = matrix_make_elt (SHAPE6_X, SHAPE6_Y, SHAPE1_color)
+  val M = matrix_make_elt (SHAPE6_X, SHAPE6_Y, SHAPE6_color)
   val () = M[0, SHAPE6_Y, 0] := NONE_color
   val () = M[1, SHAPE6_Y, 2] := NONE_color
 } // end of [val]
@@ -924,12 +1044,24 @@ end // end of [theCurrentShapeRef]
 
 %{$
 
+ats_int_type color_index_get (color_t c) {
+  return c ;
+}
+
 ats_bool_type color_is_none (color_t c) {
   return (c < 0) ? ats_true_bool : ats_false_bool ;
 }
 
 ats_bool_type color_is_some (color_t c) {
   return (c >= 0) ? ats_true_bool : ats_false_bool ;
+}
+
+ats_bool_type eq_color_color (color_t c1, color_t c2) {
+  return (c1 == c2) ? ats_true_bool : ats_false_bool ;
+}
+
+ats_bool_type neq_color_color (color_t c1, color_t c2) {
+  return (c1 != c2) ? ats_true_bool : ats_false_bool ;
 }
 
 %}
