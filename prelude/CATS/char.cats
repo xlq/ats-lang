@@ -55,13 +55,27 @@ atspre_char_of_char (const ats_char_type c) { return c ; }
 
 /* ****** ****** */
 
+/*
+
+// these are casting functions:
+
+static inline
+ats_char_type
+atspre_char_of_schar (const ats_schar_type c) { return c ; }
+
+static inline
+ats_schar_type
+atspre_schar_of_char (const ats_char_type c) { return c ; }
+
 static inline
 ats_char_type
 atspre_char_of_uchar (const ats_uchar_type c) { return c ; }
 
 static inline
-ats_char_type
+ats_uchar_type
 atspre_uchar_of_char (const ats_char_type c) { return c ; }
+
+*/
 
 /* ****** ****** */
 

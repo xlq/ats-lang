@@ -152,7 +152,11 @@ end // end of [accept_table_get]
 (* ****** ****** *)
 
 #define NBITS_PER_BYTE 8
-macdef NUMBER_OF_CHARS = (1 << NBITS_PER_BYTE - 1) + 1
+//
+// the characters with ascii from 0 to 127 and the special character -1
+//
+macdef CHAR_MAX_PLUS1 = 1 << 7 // 128
+macdef NUMBER_OF_CHARS = CHAR_MAX_PLUS1 + 1 // 129
 
 extern fun
 __transition_table_make_fun (n: int, s: string): transition_table_t =
@@ -184,8 +188,9 @@ implement transition_table_get (r_tblopt, nstate, c) = let
         This change was made after Eckehard Berns (ecki@ecki.to) reported a bug
         due to [char] being treated as [unsigned char].
 *)
-        val i = int1_of_int
-          ((nstate - 1) * NUMBER_OF_CHARS + (int_of_schar c) + 1)
+        // treat a char c as -1 if c >= CHAR_MAX_PLUS1
+        val c = (if c < CHAR_MAX_PLUS1 then c + 1 else 0): int
+        val i = int1_of_int ((nstate - 1) * NUMBER_OF_CHARS + c)
 (*
         val () = $effmask_all begin
           printf ("transition_table_get: nstate = %i\n", @(nstate))

@@ -54,11 +54,10 @@
 
 (* ****** ****** *)
 
-fun char_of_uchar (c: uchar):<> char
-  = "atspre_char_of_uchar"
-
-fun uchar_of_char (c: char):<> uchar
-  = "atspre_uchar_of_char"
+castfn char_of_schar (c: schar):<> char
+castfn schar_of_char (c: char):<> schar
+castfn char_of_uchar (c: uchar):<> char
+castfn uchar_of_char (c: char):<> uchar
 
 (* ****** ****** *)
 

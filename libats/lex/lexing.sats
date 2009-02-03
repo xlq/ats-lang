@@ -54,30 +54,30 @@ fun __transition_table_make (n: int) (s: string): transition_table_t
 
 fun __transition_table_free (transtbl: transition_table_t): void
 
-fun transition_table_get
-  (transtbl: transition_table_t, nstate: int, c: schar): int (* nstate *)
+fun transition_table_get // c >= -1
+  (transtbl: transition_table_t, nstate: int, c: int): int (* nstate *)
 
 (* ****** ****** *)
 
 abstype position_t // boxed type
 
 typedef lint = int_long_t0ype
-fun position_line (p: position_t): int
-fun position_loff (p: position_t): int
-fun position_toff (p: position_t): lint
+fun position_line (p: position_t):<> int
+fun position_loff (p: position_t):<> int
+fun position_toff (p: position_t):<> lint
 
 (* ****** ****** *)
 
-fun lt_position_position (p1: position_t, p2: position_t): bool
+fun lt_position_position (p1: position_t, p2: position_t):<> bool
 overload < with lt_position_position
 
-fun lte_position_position (p1: position_t, p2: position_t): bool
+fun lte_position_position (p1: position_t, p2: position_t):<> bool
 overload <= with lte_position_position
 
-fun eq_position_position (p1: position_t, p2: position_t): bool
+fun eq_position_position (p1: position_t, p2: position_t):<> bool
 overload = with eq_position_position
 
-fun neq_position_position (p1: position_t, p2: position_t): bool
+fun neq_position_position (p1: position_t, p2: position_t):<> bool
 overload <> with neq_position_position
 
 (* ****** ****** *)
@@ -127,7 +127,7 @@ fun lexbuf_curpos_get (lb: &lexbuf_t): position_t = "lexbuf_curpos_get"
 fun lexbuf_curpos_set (lb: &lexbuf_t): void = "lexbuf_curpos_set"
 
 fun lexbuf_size_get (lb: &lexbuf_t): Nat = "lexbuf_size_get"
-fun lexbuf_char_next (lb: &lexbuf_t): schar = "lexbuf_char_next"
+fun lexbuf_char_next (lb: &lexbuf_t): int = "lexbuf_char_next"
 fun lexbuf_is_eof (lb: &lexbuf_t): bool = "lexbuf_is_eof"
 
 fun lexing_engine_lexbuf
