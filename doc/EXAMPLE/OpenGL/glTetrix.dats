@@ -52,7 +52,10 @@ static ats_void_type
 
 (* ****** ****** *)
 
+// flag = 1/0: show/hide the current shape
+extern fun glTetrix_display_main (flag: int): void
 extern fun glTetrix_display (): void = "glTetrix_display"
+
 extern fun glTetrix_finalize (): void
 extern fun glTetrix_initialize (): void = "glTetrix_initialize"
 
@@ -245,12 +248,18 @@ implement FRAME_row_flash (j0: natLt FRAME_Y) = let
       for (i := 0; i < _X; i := i+1) arr.[i] := FRAME_matrix[i,_Y,j0]
     end // end of [save]
   } // end of [val]
-  var n: int = 8 // flash eight times
+  var n: int = 6 // flash six times
 in
   while (n > 0) let
     val () = n := n - 1
+    val () = disappear (!p_arr)
+    val () = glTetrix_display_main (0) // theCurrentShape is aborbed!
+    val () = usleep (25000)
+    val () = restore (!p_arr)
+    val () = glTetrix_display_main (0) // theCurrentShape is aborbed!
+    val () = usleep (25000)
   in
-    disappear (!p_arr); glTetrix_display (); restore (!p_arr); glTetrix_display ()
+    // empty
   end // end of [while]
 end // end of [FRAME_row_flash]
 
@@ -696,7 +705,7 @@ implement theCurrentShape_freefall (): void = let
     val res = theCurrentShape_ymove_if (~1)
   in
     if res <> 0 then let
-      val () = glTetrix_display ()
+      val () = glTetrix_display_main (1)
     in
       loop (S)
     end else let
@@ -752,7 +761,7 @@ in
   // empty
 end // end of [FRAME_matrix_draw]
 
-implement glTetrix_display () = let
+implement glTetrix_display_main (flag) = let
   val () = FRAME_glClear ()
   val () = FRAME_glColor3f ()
   val () = FRAME_draw ()
@@ -767,11 +776,14 @@ implement glTetrix_display () = let
       shape_draw_atrot (1(*flag*), S, X, Y, ROTKIND_000)
     end // end of [if]
   // end of [val]
-  val S = !theCurrentShapeRef
-  val rotkind = the_rotkind_get ()
-  val ix_center = the_ix_center_get ()
-  val iy_center = the_iy_center_get ()
-  val () = shape_draw_atrot (1, S, ix_center, iy_center, rotkind)
+  val () =  if flag > 0 then let
+    val S = !theCurrentShapeRef
+    val rotkind = the_rotkind_get ()
+    val ix_center = the_ix_center_get ()
+    val iy_center = the_iy_center_get ()
+  in
+    shape_draw_atrot (1, S, ix_center, iy_center, rotkind)
+  end // end of [val]
 (*
   val () = begin
     prerr "glTetrix_display: ix_center = "; prerr ix_center; prerr_newline ()
@@ -785,6 +797,8 @@ implement glTetrix_display () = let
 in
   // empty
 end // end of [display]
+
+implement glTetrix_display () = glTetrix_display_main (1) // show the current shape
 
 (* ****** ****** *)
 
