@@ -133,11 +133,12 @@ abstype shape_t (m: int, n: int)
 typedef shape0_t = [m,n:nat] shape_t (m, n)
 
 extern fun shape_make {m,n:nat}
-  (xlen: int m, ylen: int n, mat: matrix (color_t, m, n)): shape_t (m, n)
+  (xlen: int m, ylen: int n, mat: matrix (color_t, m, n), pts: int): shape_t (m, n)
 
 extern fun shape_xlen_get {m,n:nat} (S: shape_t (m, n)): int m
 extern fun shape_ylen_get {m,n:nat} (S: shape_t (m, n)): int n
 extern fun shape_matrix_get {m,n:nat} (S: shape_t (m, n)): matrix (color_t, m, n)
+extern fun shape_points_get (S: shape0_t): int 
 
 (* ****** ****** *)
 
@@ -211,6 +212,41 @@ implement theTimerTimeInterval_dec () = let
 in
   if ti >= 20.0 then !interval := ti
 end // end of [theTimerTimeInterval_dec]
+
+end // end of [local]
+
+(* ****** ****** *)
+
+extern fun theGameLevel_get (): int
+extern fun theTotalScore_get (): int
+extern fun theTotalScore_incby (pts: int): void
+
+local
+
+#define ACCTHRESHOLD 1000
+
+val theGameLevelRef = ref_make_elt<int> (1)
+val theTotalScoreRef = ref_make_elt<int> (0)
+
+in
+
+implement theGameLevel_get () = !theGameLevelRef
+
+implement theTotalScore_get () = !theTotalScoreRef
+
+implement theTotalScore_incby (pts) = let
+  val score = !theTotalScoreRef; val score_new = score + pts
+  val () = let
+    val level = !theGameLevelRef
+  in
+    if score_new > 1000 * level then begin
+      !theGameLevelRef := level + 1;
+      theTimerTimeInterval_dec () // acceleration by decreasing the time interval
+    end // end of [if]
+  end // end of [val]
+in
+  !theTotalScoreRef := score_new
+end // end of [theTotalScore_incby]
 
 end // end of [local]
 
@@ -304,11 +340,11 @@ implement FRAME_rows_remove_if () = let
   end // end of [test]
   var j: Nat = 0
 in
-  while (j < FRAME_Y) begin
+  while (j < FRAME_Y)
     if test (j) then let
       val () = FRAME_row_flash (j) in FRAME_row_remove (j)
     end else (j := j+1)
-  end // end of [while]
+  // end of [while]
 end // end of [FRAME_rows_remove]
 
 (* ****** ****** *)
@@ -627,6 +663,7 @@ implement theCurrentShape_absorb () = let
   and iy_center = the_iy_center_get ()
   val rk = the_rotkind_get ()
   val _(*0*) = shape_absorb_atrot (1(*flag*), S, ix_center, iy_center, rk)
+  val () = theTotalScore_incby (shape_points_get S)
   val () = FRAME_rows_remove_if ()
 in
   // empty
@@ -819,7 +856,17 @@ end // end of [glTetrix_initialize]
 
 (* ****** ****** *)
 
-implement glTetrix_finalize () = exit (0)
+implement glTetrix_finalize () = let
+  val level = theGameLevel_get ()
+  val score = theTotalScore_get ()
+  val () = begin
+    print "Game Over!\n";
+    printf ("The final level of the game is %i.\n", @(level));
+    printf ("The final score of the game is %i.\n", @(score));
+  end // end of [val]
+in
+  exit (0)
+end // end of [glTetrix_finalize]
 
 (* ****** ****** *)
 
@@ -887,7 +934,10 @@ implement main_dummy () = ()
 (* ****** ****** *)
 
 typedef shape_t (m: int, n: int) = '{
-  xlen= int m, ylen= int n, matrix= matrix (color_t, m, n)
+  xlen= int m
+, ylen= int n
+, matrix= matrix (color_t, m, n)
+, points= int
 }
 
 (* ****** ****** *)
@@ -898,13 +948,14 @@ assume shape_t (m: int, n: int) = shape_t (m, n)
 
 in
 
-implement shape_make (xlen, ylen, mat) =
-  '{ xlen= xlen, ylen= ylen, matrix= mat }
+implement shape_make (xlen, ylen, mat, pts) =
+  '{ xlen= xlen, ylen= ylen, matrix= mat, points= pts }
 // end of [shape_make]
 
 implement shape_xlen_get (S) = S.xlen
 implement shape_ylen_get (S) = S.ylen
 implement shape_matrix_get (S) = S.matrix
+implement shape_points_get (S) = S.points
 
 end // end of [local]
 
@@ -926,6 +977,8 @@ val SHAPE0_matrix
   : matrix (color_t, SHAPE0_X, SHAPE0_Y) =
   matrix_make_elt (SHAPE0_X, SHAPE0_Y, SHAPE0_color)
 // end of [val]
+
+#define SHAPE0_points 40
 
 (* ****** ****** *)
 
@@ -950,6 +1003,8 @@ val SHAPE1_matrix
   matrix_make_elt (SHAPE1_X, SHAPE1_Y, SHAPE1_color)
 // end of [val]
 
+#define SHAPE1_points 40
+
 (* ****** ****** *)
 
 (*
@@ -972,6 +1027,8 @@ val SHAPE2_matrix
   val () = M[1, SHAPE2_Y, 0] := NONE_color
   val () = M[1, SHAPE2_Y, 2] := NONE_color
 } // end of [val]
+
+#define SHAPE2_points 50
 
 (* ****** ****** *)
 
@@ -996,6 +1053,8 @@ val SHAPE3_matrix
   val () = M[1, SHAPE3_Y, 2] := NONE_color
 } // end of [val]
 
+#define SHAPE3_points 60
+
 (* ****** ****** *)
 
 (*
@@ -1018,6 +1077,8 @@ val SHAPE4_matrix
   val () = M[0, SHAPE4_Y, 1] := NONE_color
   val () = M[0, SHAPE4_Y, 2] := NONE_color
 } // end of [val]
+
+#define SHAPE4_points 60
 
 (* ****** ****** *)
 
@@ -1042,6 +1103,8 @@ val SHAPE5_matrix
   val () = M[1, SHAPE5_Y, 0] := NONE_color
 } // end of [val]
 
+#define SHAPE5_points 60
+
 (* ****** ****** *)
 
 (*
@@ -1065,19 +1128,21 @@ val SHAPE6_matrix
   val () = M[1, SHAPE6_Y, 2] := NONE_color
 } // end of [val]
 
+#define SHAPE6_points 60
+
 (* ****** ****** *)
   
 implement theShapeArray =
   array_make_arraysize $arrsz {shape0_t} (
   SHAPE0, SHAPE1, SHAPE2, SHAPE3, SHAPE4, SHAPE5, SHAPE6
 ) where {
-  val SHAPE0 = shape_make (SHAPE0_X, SHAPE0_Y, SHAPE0_matrix)
-  val SHAPE1 = shape_make (SHAPE1_X, SHAPE1_Y, SHAPE1_matrix)
-  val SHAPE2 = shape_make (SHAPE2_X, SHAPE2_Y, SHAPE2_matrix)
-  val SHAPE3 = shape_make (SHAPE3_X, SHAPE3_Y, SHAPE3_matrix)
-  val SHAPE4 = shape_make (SHAPE4_X, SHAPE4_Y, SHAPE4_matrix)
-  val SHAPE5 = shape_make (SHAPE5_X, SHAPE5_Y, SHAPE5_matrix)
-  val SHAPE6 = shape_make (SHAPE6_X, SHAPE6_Y, SHAPE6_matrix)
+  val SHAPE0 = shape_make (SHAPE0_X, SHAPE0_Y, SHAPE0_matrix, SHAPE0_points)
+  val SHAPE1 = shape_make (SHAPE1_X, SHAPE1_Y, SHAPE1_matrix, SHAPE1_points)
+  val SHAPE2 = shape_make (SHAPE2_X, SHAPE2_Y, SHAPE2_matrix, SHAPE2_points)
+  val SHAPE3 = shape_make (SHAPE3_X, SHAPE3_Y, SHAPE3_matrix, SHAPE3_points)
+  val SHAPE4 = shape_make (SHAPE4_X, SHAPE4_Y, SHAPE4_matrix, SHAPE4_points)
+  val SHAPE5 = shape_make (SHAPE5_X, SHAPE5_Y, SHAPE5_matrix, SHAPE5_points)
+  val SHAPE6 = shape_make (SHAPE6_X, SHAPE6_Y, SHAPE6_matrix, SHAPE6_points)
 } // end of [theShapeArray]
 
 implement theNextShapeRef = let
