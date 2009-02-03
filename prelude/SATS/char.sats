@@ -54,10 +54,10 @@
 
 (* ****** ****** *)
 
-fun char_of_uchar (c: char):<> char
+fun char_of_uchar (c: uchar):<> char
   = "atspre_char_of_uchar"
 
-fun uchar_of_char (c: char):<> char
+fun uchar_of_char (c: char):<> uchar
   = "atspre_uchar_of_char"
 
 (* ****** ****** *)
@@ -80,12 +80,30 @@ fun int1_of_char (c: char)
 
 //
 
+fun int_of_uchar (c: uchar):<> int
+  = "atspre_int_of_uchar"
+
+fun int1_of_uchar (c: uchar)
+  :<> [i:nat | i <= UCHAR_MAX] uint i
+  = "atspre_int_of_uchar"
+
+//
+
 fun uint_of_char (c: char):<> uint
   = "atspre_uint_of_char"
 
 fun uint1_of_char (c: char)
   :<> [i:nat | i <= UCHAR_MAX] uint i
   = "atspre_uint_of_char"
+
+//
+
+fun uint_of_uchar (c: uchar):<> uint
+  = "atspre_uint_of_uchar"
+
+fun uint1_of_uchar (c: uchar)
+  :<> [i:nat | i <= UCHAR_MAX] uint i
+  = "atspre_uint_of_uchar"
 
 (* ****** ****** *)
 
