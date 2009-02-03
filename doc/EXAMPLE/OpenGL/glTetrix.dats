@@ -17,6 +17,10 @@
 //   ' ' : free fall
 //
 //   'n' : show/hide the next piece
+
+//   'a' : acceleration
+//   'd' : deceleration
+
 //
 //   ESC : exit
 //
@@ -217,6 +221,38 @@ fn FRAME_glColor3f (): void =
 
 val FRAME_matrix: matrix (color_t, FRAME_X, FRAME_Y) =
   matrix_make_elt (FRAME_X, FRAME_Y, NONE_color)
+  
+extern fun FRAME_row_flash (j0: natLt FRAME_Y): void
+
+implement FRAME_row_flash (j0: natLt FRAME_Y) = let
+  #define _X FRAME_X; #define _Y FRAME_Y
+  // array allocation in the stack frame
+  var !p_arr with pf_arr = @[color_t][_X](NONE_color)
+  fn restore (arr: &(@[color_t][_X])):<cloref1> void = let
+    var i: natLte _X // uninitialized
+  in
+    for (i := 0; i < _X; i := i+1) FRAME_matrix[i,_Y,j0] := arr.[i]
+  end // end of [restore]
+  fn disappear (arr: &(@[color_t][_X])):<cloref1> void = let
+    var i: natLte _X // uninitialized
+  in
+    for (i := 0; i < _X; i := i+1) FRAME_matrix[i,_Y,j0] := NONE_color
+  end // end of [disappear]
+  val () = save (!p_arr) where {
+    fn save (arr: &(@[color_t][_X])):<cloref1> void = let
+      var i: natLte _X // uninitialized
+    in
+      for (i := 0; i < _X; i := i+1) arr.[i] := FRAME_matrix[i,_Y,j0]
+    end // end of [save]
+  } // end of [val]
+  var n: int = 8 // flash eight times
+in
+  while (n > 0) let
+    val () = n := n - 1
+  in
+    disappear (!p_arr); glTetrix_display (); restore (!p_arr); glTetrix_display ()
+  end // end of [while]
+end // end of [FRAME_row_flash]
 
 extern fun FRAME_row_remove (j0: natLt FRAME_Y): void
   = "FRAME_row_remove"
@@ -260,7 +296,9 @@ implement FRAME_rows_remove_if () = let
   var j: Nat = 0
 in
   while (j < FRAME_Y) begin
-    if test (j) then FRAME_row_remove (j) else (j := j+1)
+    if test (j) then let
+      val () = FRAME_row_flash (j) in FRAME_row_remove (j)
+    end else (j := j+1)
   end // end of [while]
 end // end of [FRAME_rows_remove]
 
@@ -307,7 +345,7 @@ fn drawBlock (ix: int, iy: int): void = let
   val x0 = ix * u and y0 = iy * u
   val (pf_begin | ()) = glBegin (GL_POLYGON)
 (*
-// funky looking
+  // kind of funky looking
   val () = drawArc (pf_begin | x0 + u_N0, y0 + u_N0, u_N0, ~PI  , ~PI/2, NARC)
   val () = drawArc (pf_begin | x0 + u_N1, y0 + u_N0, u_N0, ~PI/2,  0.0 , NARC)
   val () = drawArc (pf_begin | x0 + u_N1, y0 + u_N1, u_N0,  0.0 ,  PI/2, NARC)
