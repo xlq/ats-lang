@@ -187,15 +187,21 @@ end // end of [local]
 
 (* ****** ****** *)
 
+extern fun theGameLevel_get (): int
+
 extern fun theTimerTimeInterval_get (): uint
 extern fun theTimerTimeInterval_inc (): void
 extern fun theTimerTimeInterval_dec (): void
 
 local
 
+val level = ref_make_elt<int> (1)
 val interval = ref_make_elt<double> (1000.0)
 
 in
+
+
+implement theGameLevel_get () = !level
 
 implement theTimerTimeInterval_get () =
  let val ti = !interval in uint_of_double ti end
@@ -204,20 +210,23 @@ implement theTimerTimeInterval_get () =
 implement theTimerTimeInterval_inc () = let
   val ti: double = 1.25 * !interval
 in
-  if ti <= 1000.0 then !interval := ti
+  if ti <= 1000.0 then begin
+    !interval := ti; !level := !level - 1
+  end
 end // end of [theTimerTimeInterval_inc]
 
 implement theTimerTimeInterval_dec () = let
   val ti: double = !interval / 1.25
 in
-  if ti >= 20.0 then !interval := ti
+  if ti >= 20.0 then begin
+    !interval := ti; !level := !level + 1
+  end
 end // end of [theTimerTimeInterval_dec]
 
 end // end of [local]
 
 (* ****** ****** *)
 
-extern fun theGameLevel_get (): int
 extern fun theTotalScore_get (): int
 extern fun theTotalScore_incby (pts: int): void
 
@@ -225,22 +234,18 @@ local
 
 #define ACCTHRESHOLD 1000
 
-val theGameLevelRef = ref_make_elt<int> (1)
 val theTotalScoreRef = ref_make_elt<int> (0)
 
 in
-
-implement theGameLevel_get () = !theGameLevelRef
 
 implement theTotalScore_get () = !theTotalScoreRef
 
 implement theTotalScore_incby (pts) = let
   val score = !theTotalScoreRef; val score_new = score + pts
   val () = let
-    val level = !theGameLevelRef
+    val level = theGameLevel_get ()
   in
-    if score_new > 1000 * level then begin
-      !theGameLevelRef := level + 1;
+    if score_new > ACCTHRESHOLD * level then begin
       theTimerTimeInterval_dec () // acceleration by decreasing the time interval
     end // end of [if]
   end // end of [val]
@@ -324,6 +329,8 @@ end // end of [FRAME_row_remove]
 
 (* ****** ****** *)
 
+#define POINTS_FOR_FILLED_ROW 100
+
 extern fun FRAME_rows_remove_if (): void = "FRAME_rows_remove_if"
 
 implement FRAME_rows_remove_if () = let
@@ -342,7 +349,9 @@ implement FRAME_rows_remove_if () = let
 in
   while (j < FRAME_Y)
     if test (j) then let
-      val () = FRAME_row_flash (j) in FRAME_row_remove (j)
+      val () = theTotalScore_incby (POINTS_FOR_FILLED_ROW)
+    in
+      FRAME_row_flash (j); FRAME_row_remove (j)
     end else (j := j+1)
   // end of [while]
 end // end of [FRAME_rows_remove]
