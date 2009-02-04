@@ -318,7 +318,24 @@
     (set (make-local-variable 'compile-command)
          (let ((file buffer-file-name))
            (format "atscc -tc %s" file)))
-    (put 'compile-command 'permanent-local t)))
+    (put 'compile-command 'permanent-local t))
+  (setq indent-line-function 'c/ats-mode-indent-line))
+
+(defun c/ats-mode-indent-line (&optional arg)
+  (let (c-start c-end)
+    (save-excursion
+      (if (re-search-backward "%{[^$]?" 0 t)
+          (setq c-start (match-end 0))
+        (setq c-start 0)))
+    (save-excursion
+      (if (re-search-forward "%}" (point-max) t)
+          (setq c-end (match-beginning 0))
+        (setq c-start (point-max))))
+    (save-restriction
+      ;; restrict view of file to only the C code for the benefit of
+      ;; the cc-mode indentation engine.
+      (narrow-to-region c-start c-end)
+      (c-indent-line arg))))
    
 ;;;###autoload
 (define-derived-mode ats-mode fundamental-mode "ATS"
