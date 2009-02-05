@@ -139,53 +139,57 @@ end // end of [output_line]
 
 (* ****** ****** *)
 
-implement char_stream_make_file (fil) = let
+implement char_stream_make_file (fil) = $delay (let
   val c = fgetc0_err (fil)
 in
   if c <> EOF then let
     val c = i2c c
   in
-    $delay ($effmask_ref (stream_cons (c, char_stream_make_file fil)))
+    stream_cons (c, char_stream_make_file fil)
   end else begin
-    let val () = fclose0_exn (fil) in $delay (stream_nil ()) end
+    let val () = fclose0_exn (fil) in stream_nil () end
   end // end of [if]
-end // end of [char_stream_make_file]
+end : stream_con char) // end of [char_stream_make_file]
 
 (* ****** ****** *)
 
-implement line_stream_make_file (fil) = begin
+implement line_stream_make_file (fil) = $delay (
   if feof0 (fil) <> 0 then let
-    val () = fclose0_exn fil in $delay (stream_nil ())
+    val () = fclose0_exn fil in stream_nil ()
   end else let
     val line = $effmask_ref (input_line fil)
   in
-    $delay ($effmask_ref (stream_cons (line, line_stream_make_file fil)))
-  end // end of [if]
-end // end of [line_stream_make_file]
+    stream_cons (line, line_stream_make_file fil)
+  end : stream_con string // end of [if]
+) // end of [line_stream_make_file]
 
 (* ****** ****** *)
 
-implement char_stream_vt_make_file {m} {l} (pf_mod, pf_fil | p_fil) = let
-  val c = fgetc1_err (pf_mod | !p_fil)
-in
-  if c >= 0 then let // c <> EOF
-    val c = char_of_int (c)
+implement char_stream_vt_make_file
+  {m} {l} (pf_mod, pf_fil | p_fil) = $delay_vt (let
+    val c = fgetc1_err (pf_mod | !p_fil)
   in
-    $delay_vt (
-      stream_vt_cons (c, char_stream_vt_make_file (pf_mod, pf_fil | p_fil))
-    , fclose1_exn (pf_fil | p_fil)
-    ) // end of [$delay_vt]
-  end else let
-    val () = fclose1_exn (pf_fil | p_fil) in $delay_vt (stream_vt_nil ())
-  end // end of [if]
-end // end of [char_stream_vt_make_file]
+    if c >= 0 then let // c <> EOF
+      val c = char_of_int (c)
+    in
+      stream_vt_cons (
+        c, char_stream_vt_make_file (pf_mod, pf_fil | p_fil)
+      ) // end of [stream_vt_cons]
+    end else let
+      val () = fclose1_exn (pf_fil | p_fil) in stream_vt_nil ()
+    end // end of [if]
+  end : stream_vt_con char
+, fclose1_exn (pf_fil | p_fil)
+) // end of [char_stream_vt_make_file]
 
 (* ****** ****** *)
 
-implement line_stream_vt_make_file {m} {l} (pf_mod, pf_fil | p_fil) = let
-  fun loop {n:nat}
-    (pf_fil: FILE m @ l | p_fil: ptr l, n: int n, cs: list_vt (char, n))
-    :<1,~ref> stream_vt (string) = let
+implement line_stream_vt_make_file
+  {m} {l} (pf_mod, pf_fil | p_fil) = let
+  fun loop {n:nat} (
+      pf_fil: FILE m @ l
+    | p_fil: ptr l, n: int n, cs: list_vt (char, n)
+    ) :<1,~ref> stream_vt_con (string) = let
     val c = fgetc1_err (pf_mod | !p_fil)
   in
     if c >= 0 then let
@@ -196,10 +200,9 @@ implement line_stream_vt_make_file {m} {l} (pf_mod, pf_fil | p_fil) = let
       else let
         val line = string_make_charlst_rev (n, cs)
       in
-        $delay_vt (
-          stream_vt_cons (line, line_stream_vt_make_file (pf_mod, pf_fil | p_fil))
-        , fclose1_exn (pf_fil | p_fil)
-        ) // end of [$delay_vt]
+        stream_vt_cons (
+          line, line_stream_vt_make_file (pf_mod, pf_fil | p_fil)
+        )
       end // end of [if]
     end else let
       val () = fclose1_exn (pf_fil | p_fil)
@@ -207,16 +210,18 @@ implement line_stream_vt_make_file {m} {l} (pf_mod, pf_fil | p_fil) = let
       if n > 0 then let
         val line = string_make_charlst_rev (n, cs)
       in
-        $delay_vt (stream_vt_cons (line, $delay_vt stream_vt_nil))
+        stream_vt_cons (line, $delay_vt stream_vt_nil)
       end else let
         val ~list_vt_nil () = cs
       in
-        $delay_vt stream_vt_nil
+        stream_vt_nil ()
       end // end of [if]
     end // end of [if]
   end // end of [loop]
 in
-  loop (pf_fil | p_fil, 0, list_vt_nil ())
+  $delay_vt (
+    loop (pf_fil | p_fil, 0, list_vt_nil ()), fclose1_exn (pf_fil | p_fil)
+  ) // end of [$delay_vt]
 end // end of [char_stream_vt_make_file]
 
 (* ****** ****** *)
