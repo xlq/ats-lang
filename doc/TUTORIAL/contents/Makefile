@@ -2,7 +2,7 @@
 
 DIR="."
 OUTPUT="./OUTPUT"
-FPROC="code/fproc"
+FPROC="scripts/fproc"
 
 ######
 
@@ -294,11 +294,11 @@ typecheck::
 	atscc  variadicity.dats
 	atscc  -tc pattern-matching.dats
 	atscc  lazy-evaluation.dats
-	atscc  llazy-evaluation.dats
+	atscc  -tc llazy-evaluation.dats
 	atscc  input-and-output.dats
 	atscc  ATS-and-C.dats
 	atscc  programming-with-theorem-proving.dats
-	atscc  casting-functions.dats
+	atscc  -tc casting-functions.dats
 	atscc  stack-allocation.dats
 
 ######

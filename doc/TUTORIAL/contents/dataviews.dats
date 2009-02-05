@@ -99,10 +99,10 @@ fun{a:t@ype} ptr_set {l:addr} (pf: a @ l | p: ptr l, x: a): (a @ l | void)
 
 fn{a:t@ype} // a template function for array read
   array_ptr_get_at {n,i:nat | i < n} {l:addr}
-  (pf_arr: array_v (a, n, l) | p: ptr l, i: int i)
+  (pf_arr: array_v (a, n, l) | p: ptr l, i: size_t i)
   : (array_v (a, n, l) | a) =
   let
-    val (pf_mul | off) = i imul2 sizeof<a>
+    val (pf_mul | off) = mul2_size1_size1 (i, sizeof<a>)
     prval (pf_elt, pf_rst) = array_v_takeout {a} (pf_arr, pf_mul)
     val (pf_elt | x) = ptr_get<a> (pf_elt | p + off)
   in
@@ -111,10 +111,10 @@ fn{a:t@ype} // a template function for array read
 
 fn{a:t@ype} // a template function for array write
   array_ptr_set_at {n,i:nat | i < n} {l:addr}
-  (pf_arr: array_v (a, n, l) | p: ptr l, i: int i, x: a)
+  (pf_arr: array_v (a, n, l) | p: ptr l, i: size_t i, x: a)
   : (array_v (a, n, l) | void) =
   let
-    val (pf_mul | off) = i imul2 sizeof<a>
+    val (pf_mul | off) = mul2_size1_size1 (i, sizeof<a>)
     prval (pf_elt, pf_rst) = array_v_takeout {a} (pf_arr, pf_mul)
     val (pf_elt | ()) = ptr_set<a> (pf_elt | p + off, x)
   in

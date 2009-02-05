@@ -9,9 +9,9 @@
 (* ****** ****** *)
 
 fn string_length {n:nat}
-  (s: string n):<> int n = loop (s, 0) where {
+  (s: string n):<> size_t n = loop (s, 0) where {
   fun loop {i:nat | i <= n} .<n-i>.
-    (s: string n, i: int i):<> int n =
+    (s: string n, i: size_t i):<> size_t n =
     if string_is_at_end (s, i) then i else loop (s, i+1)
   // end of [loop]
 } // end of [string_length]
@@ -21,7 +21,7 @@ fn string_length {n:nat}
 fn strbuf_toupper {m,n:nat}
   (s: &strbuf (m, n)):<> void = loop (s, 0) where {
   extern fun toupper (c: c1har):<> c1har = "atspre_char_toupper"
-  fun loop {i:nat | i <= n} .<n-i>. (s: &strbuf (m, n), i: int i):<> void =
+  fun loop {i:nat | i <= n} .<n-i>. (s: &strbuf (m, n), i: size_t i):<> void =
     if strbuf_is_at_end (s, i) then ()
     else let
       val () = s[i] := toupper (s[i]) in loop (s, i+1)
@@ -30,7 +30,7 @@ fn strbuf_toupper {m,n:nat}
 
 (* ****** ****** *)
 
-extern fun strlen {m,n:nat} (s: &strbuf (m, n)):<> int n
+extern fun strlen {m,n:nat} (s: &strbuf (m, n)):<> size_t n
 
 implement strlen {m,n} (s) = let
   stadef bsz = sizeof(byte)
@@ -65,7 +65,7 @@ implement strlen {m,n} (s) = let
   } // end of [val]
   prval () = mul_elim {n,1} (pf_mul)
 in
-  p_end - p_beg
+  size1_of_ptrdiff1 (p_end - p_beg)
 end // end of [strlen]
 
 (* ****** ****** *)
@@ -73,14 +73,14 @@ end // end of [strlen]
 extern fun strbuf_initialize_cloptr
   {m,n:nat | n < m} {l:addr} (
     pf_buf: !b0ytes m @ l >> strbuf (m, n) @ l
-  | p_buf: ptr l, n: int n, f: !natLt n -<cloptr> c1har
+  | p_buf: ptr l, n: size_t n, f: !sizeLt n -<cloptr> c1har
   ) :<> void
 
 implement strbuf_initialize_cloptr {m,n}
   (pf_buf | p_buf, n, f) = loop (pf_buf | p_buf, f, 0) where {
   fun loop {i:nat | i <= n} {l:addr} .<n-i>. (
       pf: !b0ytes (m-i) @ l >> strbuf (m-i, n-i) @ l
-    | p: ptr l, f: !natLt n -<cloptr> c1har, i: int i)
+    | p: ptr l, f: !sizeLt n -<cloptr> c1har, i: size_t i)
     :<cloref> void = let
     prval () = eqsize_byte_char ()
     prval (pf1, pf2) = array_v_uncons {byte?} (pf)
