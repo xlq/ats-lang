@@ -54,10 +54,10 @@ abst@ype dirent = $extype "ats_dirent_type" // = struct dirent
 
 (* ****** ****** *)
 
-fun closedir_err {l_dir:addr} (pf: DIR @ l_dir | p: ptr l_dir): int
+fun closedir_err {l_dir:addr} (pf: DIR @ l_dir | p: ptr l_dir):<> int
   = "atslib_closedir_err"
 
-fun closedir_exn {l_dir:addr} (pf: DIR @ l_dir | p: ptr l_dir): void
+fun closedir_exn {l_dir:addr} (pf: DIR @ l_dir | p: ptr l_dir):<!exn> void
   = "atslib_closedir_exn"
 
 (* ****** ****** *)
@@ -106,6 +106,19 @@ fun rewinddir (dir: &DIR): void = "atslib_rewinddir"
 fun telldir (dir: &DIR): off_t = "atslib_telldir"
 
 fun seekdir (dir: &DIR, off: off_t): void = "atslib_seekdir"
+
+(* ****** ****** *)
+
+abst@ype dirent = $extype "ats_dirent_type" // = struct dirent
+
+fun dirent_stream_vt_make_DIR {l_dir:addr}
+  (pf: DIR @ l_dir | p: ptr l_dir):<1,~ref> stream_vt (dirent)
+
+viewtypedef direntptr_gc =
+  [l:addr] (free_gc_v (dirent, l), dirent @ l | ptr l)
+
+fun direntptr_stream_vt_make_DIR {l_dir:addr}
+  (pf: DIR @ l_dir | p: ptr l_dir):<1,~ref> stream_vt (direntptr_gc)
 
 (* ****** ****** *)
 

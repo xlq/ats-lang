@@ -36,11 +36,16 @@
 
 (* ****** ****** *)
 
+fun{a:viewt@ype} list_vt_of_stream_vt
+  (xs: stream_vt a):<1,~ref> [n:nat] (int n, list_vt (a, n))
+
+(* ****** ****** *)
+
 fun{a:t@ype} stream_vt_filter_fun
-  (xs: stream_vt a, p: (a) -<1,~ref> bool):<1,~ref> stream_vt a
+  (xs: stream_vt a, pred: (&a) -<1,~ref> bool):<1,~ref> stream_vt a
 
 fun{a:t@ype} stream_vt_filter_cloptr
-  (xs: stream_vt a, p: (a) -<cloptr1,~ref> bool):<1,~ref> stream_vt a
+  (xs: stream_vt a, pred: (&a) -<cloptr1,~ref> bool):<1,~ref> stream_vt a
 
 (* ****** ****** *)
 

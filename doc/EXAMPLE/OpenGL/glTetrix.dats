@@ -892,7 +892,7 @@ in
       val _ = theCurrentShape_rotate_if (1) in glutPostRedisplay ()
     end
   | 'k' => let // clockwise rotation
-      val _ = theCurrentShape_rotate_if (1) in glutPostRedisplay ()
+      val _ = theCurrentShape_rotate_if (3) in glutPostRedisplay ()
     end
   | 'j' => let // left horizontal move
       val _ = theCurrentShape_xmove_if (~1) in glutPostRedisplay ()

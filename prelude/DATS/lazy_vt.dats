@@ -65,43 +65,80 @@ end // end of [local]
 
 (* ****** ****** *)
 
-#define nil stream_vt_nil
-#define cons stream_vt_cons
-#define :: stream_vt_cons
+extern castfn
+  list_vt_cons_unfold_of_stream_vt_cons_unfold {l1,l2:addr}
+    (x: stream_vt_cons_unfold (l1, l2)):<> list_vt_cons_unfold (l1, l2)
+// casting one data constructor to another
+
+implement{a} list_vt_of_stream_vt (xs) = let
+  fun loop {n0:nat}
+    (xs: stream_vt a, n: &int n0 >> int (n + n0))
+    :<1,~ref> #[n:nat] list_vt (a, n) = let
+    val xs_con = !xs
+  in
+    case+ xs_con of
+    | stream_vt_cons (!p_x, !p_xs1) => let
+        val () = n := n + 1
+        val xs1 = !p_xs1
+        prval pf_xs1 = list_vt_of_lazy_vt (view@ !p_xs1) where {
+          extern prfun list_vt_of_lazy_vt
+            {l:addr} (pf: stream_vt a? @ l): List_vt a? @ l
+        } // end of [prval]
+        val () = !p_xs1 := loop (xs1, n)
+        val xs_cons = begin
+          list_vt_cons_unfold_of_stream_vt_cons_unfold (xs_con)
+        end // end of [val]
+      in
+        fold@ xs_cons; xs_cons
+      end // end of [stream_cons]
+    | ~stream_vt_nil () => list_vt_nil ()
+  end // end of [loop]
+  var n = 0; val res = loop (xs, n)
+in
+  (n, res)
+end // end of [list_vt_of_stream_vt]
 
 (* ****** ****** *)
 
 fun{a:t@ype} stream_vt_filter_cloptr_con
-  (xs: stream_vt a, p: (a) -<cloptr1,~ref> bool)
+  (xs: stream_vt a, pred: (&a) -<cloptr1,~ref> bool)
   :<1,~ref> stream_vt_con a = let
   val xs_con = !xs
 in
   case+ xs_con of
-  | stream_vt_cons (x, !p_xs1) => begin
-      if p (x) then let
+  | stream_vt_cons (!p_x, !p_xs1) => begin
+      if pred (!p_x) then let
         val xs1 = !p_xs1
-        val () = !p_xs1 := stream_vt_filter_cloptr (xs1, p)
+        val () = !p_xs1 := stream_vt_filter_cloptr (xs1, pred)
       in
         fold@ {a} (xs_con); xs_con
       end else let
         val xs1 = !p_xs1
         val () = free@ {a} (xs_con)
       in
-        stream_vt_filter_cloptr_con (xs1, p)
+        stream_vt_filter_cloptr_con (xs1, pred)
       end // end of [if]
     end // end of [stream_vt_cons]
   | stream_vt_nil () => begin
-      fold@ xs_con; cloptr_free p; xs_con
+      fold@ xs_con; cloptr_free pred; xs_con
     end // end of [stream_vt_nil]
 end // end of [stream_vt_filter_con]
 
-implement{a} stream_vt_filter_fun (xs, p) =
-  $delay_vt (stream_vt_filter_cloptr_con<a> (xs, lam x => p x), ~xs)
+implement{a} stream_vt_filter_fun (xs, pred) =
+  $delay_vt (stream_vt_filter_cloptr_con<a> (xs, lam x => pred x), ~xs)
+// end of [stream_vt_filter_fun]
 
-implement{a} stream_vt_filter_cloptr (xs, p) =
-  $delay_vt (stream_vt_filter_cloptr_con<a> (xs, p), (cloptr_free p; ~xs))
+implement{a} stream_vt_filter_cloptr (xs, pred) = $delay_vt (
+  stream_vt_filter_cloptr_con<a> (xs, pred), (cloptr_free pred; ~xs)
+) // end of [stream_vt_filter_cloptr]
 
 (* ****** ****** *)
+
+local
+
+#define nil stream_vt_nil; #define :: stream_vt_cons
+
+in
 
 fun{a1,a2,b:t@ype} stream_vt_map2_cloptr_con (
     xs1: stream_vt a1
@@ -130,6 +167,8 @@ implement{a1,a2,b} stream_vt_map2_cloptr (xs1, xs2, f) = $delay_vt (
   stream_vt_map2_cloptr_con<a1,a2,b> (xs1, xs2, f)
 , (~xs1; ~xs2; cloptr_free f)
 )
+
+end // end of [local]
 
 (* ****** ****** *)
 
