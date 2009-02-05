@@ -295,7 +295,7 @@ implement{a} iforeach_matrix_clo
   typedef clo_t = (!v | sizeLt m, sizeLt n, a) -<clo,f> void
   viewdef V = @(v, clo_t @ l_f)
   fn app
-    (pf: !V | i: sizeLt m, j: sizeLt n, x: a, f: !ptr l_f):<f> void = let
+    (pf: !V | i: sizeLt m, j: sizeLt n, x: a, p_f: !ptr l_f):<f> void = let
     prval (pf1, pf2) = pf
   in
     !p_f (pf1 | i, j, x); pf := (pf1, pf2)

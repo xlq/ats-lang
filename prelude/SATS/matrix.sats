@@ -155,7 +155,7 @@ fun{a:t@ype} iforeach_matrix_clo
     pf: !v
   | f: &(!v | sizeLt m, sizeLt n, a) -<clo,f> void
   , M: matrix (a, m, n), m: size_t m, n: size_t n
-  ) :<f,!ref> void
+  ) :<!ref,f> void
 overload iforeach with iforeach_matrix_clo
 
 fun{a:t@ype} iforeach_matrix_cloref
@@ -163,7 +163,7 @@ fun{a:t@ype} iforeach_matrix_cloref
     pf : !v
   | f: !(!v | sizeLt m, sizeLt n, a) -<cloref,f> void
   , M: matrix (a, m, n), m: size_t m, n: size_t n
-  ) :<f,!ref> void
+  ) :<!ref,f> void
 overload iforeach with iforeach_matrix_cloref
 
 (* ****** ****** *)

@@ -40,7 +40,7 @@ fn print_month_names () = let
     (pf: !unit_v | i: sizeLt 12, x: &string): void =<clo1> (if i > 0 then print ", "; print x)
   // end of [var]
   prval pf = unit_v ()
-  val () = iforeach_array_ptr_tsz_clo {string} {unit_v} (pf | !p_clo, !p_arr, 12, sizeof<string>)
+  val () = iforeach_array_ptr_clo_tsz {string} {unit_v} (pf | !p_clo, !p_arr, 12, sizeof<string>)
   prval unit_v () = pf
   val () = print_newline ()
 in
