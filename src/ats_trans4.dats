@@ -192,8 +192,11 @@ in
         val hit_res = s2exp_tr (0, s2e_res)
       in
         hityp_fun (fc, hits_arg, hit_res)
-      end else begin
-        hityp_ptr // funtion/closure pointer
+      end else begin case+ fc of
+        | $Syn.FUNCLOfun () => hityp_ptr // funtion
+        | $Syn.FUNCLOclo knd => begin
+            if knd = 0 then hityp_clo else hityp_ptr (*closure pointer*)
+          end // end of [FUNCLOclo]
       end // end of [if]
     end // end of [S2Efun]
   | S2Elam (_(*s2vs*), s2e_body) => s2exp_tr (deep, s2e_body)

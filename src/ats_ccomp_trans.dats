@@ -408,7 +408,7 @@ implement instr_add_valprimlst_free (res) = let
     : void = begin case+ vps of
     | ~list_vt_cons (vp, vps) => begin
         instr_add_freeptr (res, vp); aux_free (res, vps)
-      end
+      end // end of [list_vt_cons]
     | ~list_vt_nil () => ()
   end // end of [aux_free]
 in
@@ -1450,7 +1450,7 @@ fun instrlst_add_freeptr
   case+ vps of
   | ~list_vt_cons (vp, vps) => begin
       instr_add_freeptr (res, vp); instrlst_add_freeptr (res, vps)
-    end
+    end // end of [list_vt_cons]
   | ~list_vt_nil () => ()
 end // end of [instrlst_add_freeptr]
 

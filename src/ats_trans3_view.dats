@@ -293,13 +293,13 @@ in
         end
       in
         // empty
-      end // end of [D3Esel_ptr]
+      end // end of [Some_vt]
     | ~None_vt () => begin
         prerr loc0;
         prerr ": Internal Error: d3exp_lval_typ_set: D3Esel_ptr";
         prerr_newline ();
         $Err.abort {void} ()
-      end
+      end // end of [None_vt]
     end // end of [D3Esel_ptr]
   | D3Esel_var (d2v, d3ls) when d2var_is_linear d2v => let
       val () = refval_check (loc0, d2v, refval)
@@ -352,9 +352,11 @@ in
 end // end of [d3exp_lval_typ_set]
 
 fn s2exp_fun_is_freeptr (s2e: s2exp): bool = begin case+ s2e.s2exp_node of
-  | S2Efun (_(*fc*), lin, _(*s2fe*), _(*npf*), _(*arg*), _(*res*)) => begin
-      if lin > 0 then false else true
-    end
+  | S2Efun (fc, lin, _(*s2fe*), _(*npf*), _(*arg*), _(*res*)) => begin
+    case+ fc of
+    | $Syn.FUNCLOclo knd when knd <> 0 => if lin > 0 then false else true
+    | _ => false
+    end // end of [S2Efun]
   | _ => false
 end // end of [s2exp_fun_is_freeptr]
 
@@ -369,6 +371,7 @@ implement d3exp_lval_typ_set_arg (refval, d3e0, s2e_new) = let
     d3exp_lval_typ_set (loc0, refval, d3e0, s2e_new, err)
   end // end of [val]
 in
+  // if it cannot be returned, then it must be freed!
   if err > 0 then begin case+ s2e_new of
     | _ when s2exp_fun_is_freeptr s2e_new => 1 (*freeknd*)
     | _ => begin

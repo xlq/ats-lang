@@ -41,6 +41,7 @@
 
 (* ****** ****** *)
 
+staload Deb = "ats_debug.sats"
 staload Err = "ats_error.sats"
 staload Lst = "ats_list.sats"
 staload Map = "ats_map_lin.sats"
@@ -62,6 +63,10 @@ staload _(*anonymous*) = "ats_reference.dats"
 (* ****** ****** *)
 
 staload _(*anonymous*) = "ats_map_lin.dats"
+
+(* ****** ****** *)
+
+#define THISFILENAME "ats_hiexp_util.dats"
 
 (* ****** ****** *)
 
@@ -95,8 +100,9 @@ in
   case+ hit_fun.hityp_node of
   | HITfun (_(*fc*), _(*arg*), hit_res) => hityp_is_void (hit_res)
   | _ => begin
-      prerr "Internal Error: hityp_fun_is_void: hit_fun = ";
-      prerr hit_fun; prerr_newline ();
+      prerr "Internal Error";
+      $Deb.debug_prerrf (": %s", @(THISFILENAME));
+      prerr ": hityp_fun_is_void: hit_fun = "; prerr hit_fun; prerr_newline ();
       $Err.abort {bool} ()
     end // end of [_]
 end // end of [hityp_fun_is_void]
@@ -115,10 +121,10 @@ in
     end
   | _ => begin
       prerr "Internal Error";
-      prerr ": hityp_fun_is_vararg: hit_fun = ";
-      prerr hit_fun; print_newline ();
+      $Deb.debug_prerrf (": %s", @(THISFILENAME));
+      prerr ": hityp_fun_is_vararg: hit_fun = "; prerr hit_fun; print_newline ();
       $Err.abort {bool} ()
-    end
+    end // end of [_]
 end // end of [hityp_fun_is_vararg]
 
 implement hityp_is_tyrecbox (hit_rec) = begin

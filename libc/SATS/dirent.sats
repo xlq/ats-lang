@@ -90,13 +90,12 @@ overload opendir_exn with opendir_string_exn
 
 (* ****** ****** *)
 
-// this function is nonreentrant
 fun readdir_err (dir: &DIR)
-  : [l_ent:addr] (option_v (vbox (dirent @ l_ent), l_ent <> null) | ptr l_ent)
+  :<> [l_ent:addr] (option_v (vbox (dirent @ l_ent), l_ent <> null) | ptr l_ent)
   = "atslib_readdir_err"
 
 // this function is nonreentrant
-fun readdir_exn (dir: &DIR) : [l_ent:addr] (vbox (dirent @ l_ent) | ptr l_ent)
+fun readdir_exn (dir: &DIR):<!exn> [l_ent:addr] (vbox (dirent @ l_ent) | ptr l_ent)
   = "atslib_readdir_exn"
 
 (* ****** ****** *)
