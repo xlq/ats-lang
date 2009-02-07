@@ -222,36 +222,83 @@ end // end of [posmarklst_sort]
 (* ****** ****** *)
 
 // color= gray
-#define COMMENT_FONT_BEG "<FONT COLOR=\"#787878\">"
-#define COMMENT_FONT_END "</FONT>"
+// #define COMMENT_FONT_BEG "<FONT COLOR=\"#787878\">"
+// #define COMMENT_FONT_END "</FONT>"
+
+#define COMMENT_FONT_BEG "<span class=\"comment\">"
+#define COMMENT_FONT_END "</span>"
 
 // color= brown
-#define EXTERN_FONT_BEG "<FONT COLOR=\"#A52A2A\">"
-#define EXTERN_FONT_END "</FONT>"
+// #define EXTERN_FONT_BEG "<FONT COLOR=\"#A52A2A\">"
+// #define EXTERN_FONT_END "</FONT>"
+
+#define EXTERN_FONT_BEG "<span class=\"extern\">"
+#define EXTERN_FONT_END "</span>"
 
 // color= black
-#define KEYWORD_FONT_BEG "<FONT COLOR=\"#000000\">"
-#define KEYWORD_FONT_END "</FONT>"
+// #define KEYWORD_FONT_BEG "<FONT COLOR=\"#000000\">"
+// #define KEYWORD_FONT_END "</FONT>"
+
+#define KEYWORD_FONT_BEG "<span class=\"keyword\">"
+#define KEYWORD_FONT_END "</span>"
 
 // color= pink
-#define NEUEXP_FONT_BEG "<FONT COLOR=\"#800080\">"
-#define NEUEXP_FONT_END "</FONT>"
+// #define NEUEXP_FONT_BEG "<FONT COLOR=\"#800080\">"
+// #define NEUEXP_FONT_END "</FONT>"
+
+#define NEUEXP_FONT_BEG "<span class=\"neuexp\">"
+#define NEUEXP_FONT_END "</span>"
 
 // color= blue
-#define STAEXP_FONT_BEG "<FONT COLOR=\"#0000FF\">"
-#define STAEXP_FONT_END "</FONT>"
+// #define STAEXP_FONT_BEG "<FONT COLOR=\"#0000FF\">"
+// #define STAEXP_FONT_END "</FONT>"
+
+#define STAEXP_FONT_BEG "<span class=\"staexp\">"
+#define STAEXP_FONT_END "</span>"
 
 // color= red
-#define DYNEXP_FONT_BEG "<FONT COLOR=\"#E80000\">"
-#define DYNEXP_FONT_END "</FONT>"
+// #define DYNEXP_FONT_BEG "<FONT COLOR=\"#E80000\">"
+// #define DYNEXP_FONT_END "</FONT>"
+
+#define DYNEXP_FONT_BEG "<span class=\"dynexp\">"
+#define DYNEXP_FONT_END "</span>"
 
 // color= green
-#define PRFEXP_FONT_BEG "<FONT COLOR=\"#009000\">"
-#define PRFEXP_FONT_END "</FONT>"
+// #define PRFEXP_FONT_BEG "<FONT COLOR=\"#009000\">"
+// #define PRFEXP_FONT_END "</FONT>"
+
+#define PRFEXP_FONT_BEG "<span class=\"prfexp\">"
+#define PRFEXP_FONT_END "</span>"
 
 // color= light gray
-#define POSMARK_FILE_BEG "<BODY BGCOLOR=\"#E0E0E0\" TEXT=\"#E80000\"><PRE>"
-#define POSMARK_FILE_ENG "</PRE></BODY>"
+// #define POSMARK_FILE_BEG "<BODY BGCOLOR=\"#E0E0E0\" TEXT=\"#E80000\"><PRE>"
+// #define POSMARK_FILE_END "</PRE></BODY>"
+
+#define POSMARK_FILE_BEG "\
+<HTML>\n\
+<HEAD>\n\
+<STYLE TYPE=\"text/css\">\n\
+span.comment {color:787878;font-style:italic}\n\
+span.extern  {color:A52A2A}\n\
+span.keyword {color:000000;font-weight:bold}\n\
+span.neuexp  {color:800080}\n\
+span.staexp  {color:0000FF}\n\
+span.dynexp  {color:E80000}\n\
+span.prfexp  {color:009000}\n\
+</STYLE>\n\
+</HEAD>\n\
+\n\
+<BODY BGCOLOR=\"#E0E0E0\" TEXT=\"#E80000\">\n\
+<PRE>\n\
+"
+
+#define POSMARK_FILE_END "\
+</PRE>\n\
+</BODY>\n\
+</HTML>\n\
+"
+
+(* ****** ****** *)
 
 fn posmark_process_htm
   (fil_d: &FILE w, pm: posmark): void = begin case+ pm of
@@ -316,7 +363,7 @@ fn posmark_file_file
 
   fun lpfin1
     (fil_s: &FILE r, fil_d: &FILE w, pm: posmark, ppms: List_vt ppm)
-    :<cloptr1> void = let
+    :<cloref1> void = let
     val () = proc (fil_d, pm)
   in
     case+ ppms of
@@ -336,7 +383,7 @@ fn posmark_file_file
   fn* loop1
     (fil_s: &FILE r, fil_d: &FILE w,
      i: lint, p: lint, pm: posmark, ppms: List_vt ppm)
-    :<cloptr1> void = let
+    :<cloref1> void = let
     val c = fgetc_err (file_mode_lte_r_r | fil_s)
   in
     if (c >= 0) then begin
@@ -349,7 +396,7 @@ fn posmark_file_file
   and loop2
     (fil_s: &FILE r, fil_d: &FILE w,
      i: lint, p: lint, pm: posmark, ppms: List_vt ppm, c: int)
-    :<cloptr1> void = begin
+    :<cloref1> void = begin
     if i < p then begin
       fputc_html (file_mode_lte_w_w | char_of_int c, fil_d);
       loop1 (fil_s, fil_d, succ i, p, pm, ppms)
@@ -359,20 +406,20 @@ fn posmark_file_file
       case+ ppms of
       | ~list_vt_cons (ppm, ppms) => begin
           loop2 (fil_s, fil_d, i, ppm.0, ppm.1, ppms, c)
-        end
+        end // end of [list_vt_cons]
       | ~list_vt_nil () => begin
           fputc_html (file_mode_lte_w_w | char_of_int c, fil_d);
           lpfin2 (fil_s, fil_d)
-        end
+        end // end of [list_vt_nil]
     end
   end // end of [loop2]
 
-  val lint0 = lint_of_int 0
+  val lint0 = lint_of_int 0 // 0L
   val ppms = posmarklst_sort !the_posmarklst
 in
   fprint1_string (file_mode_lte_w_w | fil_d, POSMARK_FILE_BEG);
   loop1 (fil_s, fil_d, lint0, lint0, PMnone (), ppms);
-  fprint1_string (file_mode_lte_w_w | fil_d, POSMARK_FILE_ENG);
+  fprint1_string (file_mode_lte_w_w | fil_d, POSMARK_FILE_END);
   fprint1_newline (file_mode_lte_w_w | fil_d);
 end // end of [posmark_file_file]
 

@@ -12,20 +12,23 @@ datasort bt = E of () | B of (bt, bt)
 
 (* ****** ****** *)
 
+// size
 dataprop btsz (bt, int) =
   | {t1,t2:bt} {n1,n2:nat}
     btsz_B (B (t1, t2), n1+n2+1) of (btsz (t1, n1), btsz (t2, n2))
   | btsz_E (E (), 0)
 
-dataprop btsp (bt, int) =
-  | {t1,t2:bt} {n1,n2:nat}
-    btsp_B (B (t1, t2), min (n1,n2)+1) of (btsp (t1, n1), btsp (t2, n2))
-  | btsp_E (E (), 0)
-
+// height
 dataprop btht (bt, int) =
   | {t1,t2:bt} {n1,n2:nat}
     btht_B (B (t1, t2), max (n1,n2)+1) of (btht (t1, n1), btht (t2, n2))
   | btht_E (E (), 0)
+
+// shortest path
+dataprop btsp (bt, int) =
+  | {t1,t2:bt} {n1,n2:nat}
+    btsp_B (B (t1, t2), min (n1,n2)+1) of (btsp (t1, n1), btsp (t2, n2))
+  | btsp_E (E (), 0)
 
 (* ****** ****** *)
 

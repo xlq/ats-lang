@@ -691,7 +691,7 @@ prfun SubstitutionLemma3
     pf2: DD0 (sds, bs, ds, t, s, i2))
    : DD0 (sds, bs, ds, t', s', 1) = 
 
-   case+ pf1 of 
+   $effmask_exn (case pf1 of 
   
      | DDsub (pf11, pf12) =>
          inversion (DDsub (SubstitutionLemma3 (pf11, pf2), pf12))
@@ -701,10 +701,10 @@ prfun SubstitutionLemma3
            | DDIone () => inversion (DDsub (pf2, pf11)) 
            | DDIshi i => DDvar (i, pf11)
        end
-
+(*
      | DDlam pf1 => 
          DDlam (lampara {t:dtm} => SubstitutionLemma3 (exchDD (pf1 {t}), weakDD pf2))
-
+*)
      | DDapp (pf11, pf12) => 
 	 DDapp (SubstitutionLemma3 (pf11, pf2), SubstitutionLemma3 (pf12, pf2))
 
@@ -713,20 +713,20 @@ prfun SubstitutionLemma3
      | DDegua (pf11, pf12) => DDegua (SubstitutionLemma3 (pf11, pf2), pf12)
 
      | DDiass (pf11, pf12) => DDiass (SubstitutionLemma3 (pf11, pf2), pf12)    
-
+(*
      | DDeass (pf11, pf12) => 
          DDeass (SubstitutionLemma3 (pf11, pf2), 
                    lampara {x:dtm} => SubstitutionLemma3 (exchDD (pf12 {x}), weakDD (weakP pf2)))
  
      | DDiuni (pf1) =>
          DDiuni (lampara {y:stm} => SubstitutionLemma3 (pf1 {y}, weakSD (pf2)))
-     
+*)     
      | DDeuni (pf11, pf12) =>
          DDeuni (SubstitutionLemma3 (pf11, pf2), pf12)
 
      | DDiexi (pf11, pf12) =>
 	 DDiexi (SubstitutionLemma3 (pf11, pf2), pf12)
-
+(*
      | DDeexi (pf11, pf12) =>
         DDeexi (
           SubstitutionLemma3 (pf11, pf2), 
@@ -734,7 +734,8 @@ prfun SubstitutionLemma3
              SubstitutionLemma3
                (exchDD (pf12 {x, s1}), weakSD (weakDD (pf2)))
         )
-
+*)
+  ) // end of $effmask_exn
 
 // subject reduction theorem
 

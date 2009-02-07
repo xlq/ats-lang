@@ -1523,7 +1523,7 @@ implement s3bexplst_s2exp_solve_fm (loc0, s2vs, s3bes, s2p, s2cs, fds, errno) = 
     prerr "s3bexplst_s2exp_solve_fm: s2vs = "; prerr s2vs; prerr_newline ();
     prerr "s3bexplst_s2exp_solve_fm: s3bes = "; prerr s3bes; prerr_newline ();
     prerr "s3bexplst_s2exp_solve_fm: s2p = "; prerr s2p; prerr_newline ();
-  end
+  end // end of [val]
 *)
   viewtypedef cim_vt = s2cst_index_map and vim_vt = s2var_index_map
   val os3p = s3bexp_make_s2exp (s2p, s2cs, fds)
@@ -1558,7 +1558,7 @@ implement s3bexplst_s2exp_solve_fm (loc0, s2vs, s3bes, s2p, s2cs, fds, errno) = 
       in
         s3bexp_false (* make it the worst scenario *)
       end // end of [None_vt]
-  end
+  end // end of [val]
 
   var cnt: Pos = 1
   var cim = s2cst_index_map_make ()

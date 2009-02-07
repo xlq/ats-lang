@@ -212,24 +212,24 @@ overload free_gc_elim with free_gc_t0ype_int_addr_elim
 
 // implemented in [basics.cats]
 
-fun cloptr_get_view_ptr {a:viewt@ype}
+castfn cloptr_get_view_ptr {a:viewt@ype}
   (f: cloptr a):<> [l:addr] (free_gc_v l, clo a @ l | ptr l)
   = "atspre_cloptr_get_view_ptr"
 
-fun cloptr_make_view_ptr {a:viewt@ype}
+castfn cloptr_make_view_ptr {a:viewt@ype}
   {l:addr} (pf_gc: free_gc_v l, pf_at: clo a @ l | p: ptr l):<> cloptr a
   = "atspre_cloptr_make_view_ptr"
 
-fun cloptr_free {a:t@ype} (_: cloptr a):<> void
-  = "atspre_cloptr_free"
-
-fun cloref_get_view_ptr {a:t@ype}
+castfn cloref_get_view_ptr {a:t@ype}
   (f: cloref a):<> [l:addr] (vbox (clo a @ l) | ptr l)
   = "atspre_cloref_get_view_ptr"
 
-fun cloref_make_view_ptr {a:t@ype}
+castfn cloref_make_view_ptr {a:t@ype}
   {l:addr} (pf: vbox (clo a @ l) | p: ptr l):<> cloref a
   = "atspre_cloref_make_view_ptr"
+  
+fun cloptr_free {a:t@ype} (_: cloptr a):<> void
+  = "atspre_cloptr_free"
 
 (* ****** ****** *)
 
