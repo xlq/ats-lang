@@ -64,13 +64,13 @@ staload "ats_trans3.sats"
 
 (* ****** ****** *)
 
-#define nil list_nil
-#define cons list_cons
-#define :: list_cons
+#define THISFILENAME "ats_trans3_pat.dats"
 
 (* ****** ****** *)
 
-#define THISFILENAME "ats_trans3_pat.dats"
+#define nil list_nil
+#define cons list_cons
+#define :: list_cons
 
 (* ****** ****** *)
 

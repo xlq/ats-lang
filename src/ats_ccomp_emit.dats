@@ -1660,10 +1660,23 @@ in
     in
       emit_patck (pf | out, vp, patck, fail)
     end // end of [INSTRpatck]
-  | INSTRraise vp_exn => begin
-      fprint1_string (pf | out, "ats_raise_exn (");
-      emit_valprim (pf | out, vp_exn);
-      fprint1_string (pf | out, ") ;")
+  | INSTRprfck (d2c) => let
+      val () = fprint1_string (pf | out, "ats_proofcheck_beg_mac(")
+      val () = emit_d2cst (pf | out, d2c)
+      val () = fprint1_string (pf | out, ") ;\n")
+      // additional code for proof checking is here
+      val () = fprint1_string (pf | out, "ats_proofcheck_end_mac(")
+      val () = emit_d2cst (pf | out, d2c)
+      val () = fprint1_string (pf | out, ") ;")
+    in
+      // empty
+    end // end of [INSTRprfck]
+  | INSTRraise (vp_exn) => let
+      val () = fprint1_string (pf | out, "ats_raise_exn (")
+      val () = emit_valprim (pf | out, vp_exn)
+      val () = fprint1_string (pf | out, ") ;")
+    in
+      // empty
     end // end of [INSTRraise]
   | INSTRselect (tmp, vp_root, offs) => let
       val is_void = tmpvar_is_void tmp
@@ -2223,10 +2236,10 @@ implement emit_funentry (pf | out, entry) = let
   // function head
   val () = begin
      emit_hityp (pf | out, hit_res); fprint1_char (pf | out, '\n')
-  end
+  end // end of [val]
   val () = begin
     emit_funlab (pf | out, fl); fprint1_string (pf | out, " (")
-  end
+  end // end of [val]
   val n = emit_funenvarg (pf | out, vtps_all)
   val () = // comma separation if needed
     if n > 0 then begin case+ 0 of

@@ -132,6 +132,7 @@ fun prerr_vartypset (vtps: vartypset): void
 (* ****** ****** *)
 
 typedef funlabset = $Set.set_t (funlab_t)
+
 fun the_funlabset_add (fl: funlab_t): void
 fun the_funlabset_mem (fl: funlab_t): bool
 fun the_funlabset_pop (): funlabset and the_funlabset_push (): void
@@ -161,15 +162,24 @@ fun dynconset_foreach_main {v:view} {vt:viewtype} {f:eff} (
   , env: !vt
   ) :<f> void
 
+(* ****** ****** *)
+
 typedef dyncstset = $Set.set_t (d2cst_t)
-fun the_dyncstset_add_if (d2c: d2cst_t): void // [d2c] is added only if it has not been
-fun the_dyncstset_get (): dyncstset
+
 fun dyncstset_foreach_main {v:view} {vt:viewtype} {f:eff} (
     pf: !v
   | d2cs: dyncstset
   , f: (!v | d2cst_t, !vt) -<f> void
   , env: !vt
   ) :<f> void
+
+fun the_dyncstset_add_if (d2c: d2cst_t): void // [d2c] is added only if it has not been
+  = "ats_ccomp_env_the_dyncstset_add_if"
+fun the_dyncstset_get (): dyncstset
+
+fun the_dynprfcstset_add_if (d2c: d2cst_t): void // [d2c] is added only if it has not been
+  = "ats_ccomp_env_the_dynprfcstset_add_if"
+fun the_dynprfcstset_get (): dyncstset
 
 (* ****** ****** *)
 
@@ -242,6 +252,9 @@ fun funentry_make (
   , _ret: tmpvar_t
   , inss: instrlst
   ) : funentry_t
+
+fun funentry_prf_make
+  (loc: loc_t, d2c: d2cst_t, fl: funlab_t): funentry_t
 
 fun funentry_loc_get (entry: funentry_t): loc_t
 fun funentry_lab_get (entry: funentry_t): funlab_t

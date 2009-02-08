@@ -107,7 +107,7 @@ end // end of [array_ptr_make_lst]
 %{$
 
 ats_ptr_type
-ats_array_ptr_alloc_tsz (ats_int_type n, ats_int_type tsz) {
+ats_array_ptr_alloc_tsz (ats_int_type n, ats_size_type tsz) {
   return ATS_MALLOC (n * tsz) ;
 }
 

@@ -58,12 +58,12 @@ fn print_usage_of_ccomp_file (): void =
 (* ****** ****** *)
 
 extern fun typecheck_file_exec
-  (flag_stadyn: int, param: Strlst, s: string): void
+  (flag_stadyn: int, param_rev: Strlst, s: string): void
   = "typecheck_file_exec"
 
-implement typecheck_file (flag_stadyn, param, infile) = let
+implement typecheck_file (flag_stadyn, param_rev, infile) = let
   val cmd = lam (): void =<cloptr1>
-    typecheck_file_exec (flag_stadyn, param, infile)
+    typecheck_file_exec (flag_stadyn, param_rev, infile)
   val status = fork_exec_and_wait_cloptr_exn (cmd)
 in
   if (status <> 0) then exit_prerrf {void}
@@ -71,22 +71,22 @@ in
 end // end of [typecheck_file]
 
 extern fun ccomp_file_to_file_exec
-  (flag_stadyn: int, param: Strlst, s1: string, s2: string): void
+  (flag_stadyn: int, param_rev: Strlst, s1: string, s2: string): void
   = "ccomp_file_to_file_exec"
 
 implement ccomp_file_to_file_err
-  (flag_stadyn, param, infile, outfile) = let
+  (flag_stadyn, param_rev, infile, outfile) = let
   val cmd = lam(): void =<cloptr1>
-    ccomp_file_to_file_exec (flag_stadyn, param, infile, outfile)
+    ccomp_file_to_file_exec (flag_stadyn, param_rev, infile, outfile)
 in
   fork_exec_and_wait_cloptr_exn (cmd)
 end // end of [ccomp_file_to_file_err]
 
 implement ccomp_file_to_file
-  (flag_stadyn, param, infile, outfile) = let
+  (flag_stadyn, param_rev, infile, outfile) = let
   val status = begin
-    ccomp_file_to_file_err (flag_stadyn, param, infile, outfile)
-  end
+    ccomp_file_to_file_err (flag_stadyn, param_rev, infile, outfile)
+  end // end of [val]
 in
   if (status <> 0) then exit_prerrf {void}
     (status, "exit(ATS): [ccomp_file_to_file(%s, %s)] failed.\n", @(infile, outfile))
@@ -121,9 +121,10 @@ extern ats_ptr_type strlst_tail_get (ats_ptr_type) ;
 ats_void_type
 ccomp_file_to_file_exec (
   ats_int_type flag_stadyn
-, ats_ptr_type param, ats_ptr_type infile, ats_ptr_type outfile
+, ats_ptr_type param_rev
+, ats_ptr_type infile, ats_ptr_type outfile
 ) {
-  int ret ; char *flag_stadyn_str ;
+  int err ; char *flag_stadyn_str ;
   int n, argc ; char **argv, **argv_p, **argv_p1 ;
 
   switch (flag_stadyn) {
@@ -134,23 +135,25 @@ ccomp_file_to_file_exec (
     ) ;
   } // end of [switch]
 
-  argc = n = strlst_length (param) ;
-  argc += 2 ; /* self(*first*) and nullptr(*last) */
-  argc += 2 ; /* input */
-  if (outfile) argc += 2 ; /* output */
+  argc = n = strlst_length (param_rev) ;
+  argc += 1 ; // self(*first*)
+  argc += 2 ; // input */
+  if (outfile) argc += 2 ; // output
+  argc += 1 ; // nullptr(*last*)
 
   argv = (char**)malloc (argc * sizeof(ats_ptr_type)) ;
   if (!argv) {
-    fprintf (stderr, "ccomp_file_to_file_exec: malloc failed!\n") ;
-  }
+    fprintf (stderr, "exit(ATS): ccomp_file_to_file_exec: malloc failed!\n") ;
+    exit (1) ;
+  } // end of [if]
   argv_p = argv ;
   *argv_p = (char*)atsopt_global ; argv_p += 1 ;
 
-  // [param] is in the reversed order!!!
+  // [param_rev] is in the reversed order!!!
   argv_p += n ; argv_p1 = argv_p ; while (1) {
-    if (strlst_is_nil (param)) break ;
-    argv_p1 -= 1 ; *argv_p1 = (char*)strlst_head_get (param) ;
-    param = strlst_tail_get (param) ;
+    if (strlst_is_nil (param_rev)) break ;
+    argv_p1 -= 1 ; *argv_p1 = (char*)strlst_head_get (param_rev) ;
+    param_rev = strlst_tail_get (param_rev) ;
   }
 
   if (outfile) {
@@ -169,26 +172,29 @@ ccomp_file_to_file_exec (
   fputc ('\n', stderr) ;
 // */
 
-  ret = execv((char*)atsopt_global, argv) ;
-  if (ret < 0) perror ("ccomp_file_to_file_exec: [execv] failed: ") ;
-  exit (errno) ;
+  err = execv((char*)atsopt_global, argv) ;
+  if (err < 0) perror ("ccomp_file_to_file_exec: [execv] failed: ") ;
+  exit (1) ;
 
 } /* end of [ccomp_file_to_file_exec] */
 
 ats_void_type
 typecheck_file_exec (
-  ats_int_type flag_stadyn, ats_ptr_type param, ats_ptr_type infile) {
-  ccomp_file_to_file_exec (flag_stadyn, param, infile, (ats_ptr_type)0/*outfile*/) ;
+  ats_int_type flag_stadyn
+, ats_ptr_type param_rev
+, ats_ptr_type infile) {
+  ccomp_file_to_file_exec
+    (flag_stadyn, param_rev, infile, (ats_ptr_type)0/*outfile*/) ;
   return ;
 } // end of [typecheck_file_exec]
 
 ats_void_type
 atscc_version_exec () {
-  int ret = execl (
+  int err = execl (
     (char*)atsopt_global, (char*)atsopt_global, "--version", (ats_ptr_type)0
   ) ;
-  if (ret < 0) perror ("atscc_version: [execl] failed: ") ;
-  exit (errno) ;
+  if (err < 0) perror ("atscc_version: [execl] failed: ") ;
+  exit (1) ;
 } // end of [atscc_version]
 
 %}

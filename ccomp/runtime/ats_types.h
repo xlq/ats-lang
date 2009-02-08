@@ -143,7 +143,10 @@ typedef ats_exn_type *ats_exn_ptr_type ;
 /* ****** ****** */
 
 typedef struct { void *closure_fun ; } ats_clo_type ;
+
 typedef ats_clo_type *ats_clo_ptr_type ;
+typedef ats_clo_type *ats_clo_ref_type ;
+
 typedef void *ats_fun_ptr_type ;
 
 /* ****** ****** */

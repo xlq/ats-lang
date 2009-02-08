@@ -394,6 +394,8 @@ and hiexp_node =
       (d2var_t, hilablst)
   | HIEseq of (* sequencing *)
       hiexplst
+  | HIEsif of (* static conditional expression *)
+      (hiexp(*then*), hiexp(*else*))
   | HIEsizeof of (* size of type *)
       hityp
   | HIEspawn of (* spawned evaluation *)
@@ -685,6 +687,9 @@ fun hiexp_sel_var
 
 fun hiexp_seq (_: loc_t, _: hityp, _: hiexplst): hiexp
 
+fun hiexp_sif
+  (_: loc_t, _: hityp, _: hiexp(*then*), _: hiexp(*else*)): hiexp
+
 fun hiexp_sizeof (_: loc_t, _: hityp, _arg: hityp): hiexp
 
 fun hiexp_spawn (_: loc_t, _: hityp, _: hiexp): hiexp
@@ -775,6 +780,7 @@ abstype hityplstlst_t // boxed type
 fun hityp_encode (hit: hityp): hityp_t
 fun hityp_decode (hit: hityp_t): hityp
 
+val hityp_t_void: hityp_t
 fun hityp_t_s2var (s2v: s2var_t): hityp_t
 fun hityp_t_name_get (hit: hityp_t): hityp_name
 

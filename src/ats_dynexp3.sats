@@ -298,6 +298,7 @@ and d3exp_node =
   | D3Eviewat_var of (* viewat access through a variable *)
       (d2var_t, d3lab1lst, d2var_t(*viewroot*), s2lablst(*viewpath*))
   | D3Ewhere of (d3exp, d3eclst)
+(* end of [d3exp_node] *)
 
 and labd3explst =
   | LABD3EXPLSTnil

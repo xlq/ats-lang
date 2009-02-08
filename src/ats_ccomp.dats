@@ -45,6 +45,7 @@
 
 (* ****** ****** *)
 
+staload Deb = "ats_debug.sats"
 staload Err = "ats_error.sats"
 staload Lst = "ats_list.sats"
 staload Stamp = "ats_stamp.sats"
@@ -60,6 +61,10 @@ staload "ats_trans2_env.sats"
 staload "ats_hiexp.sats"
 staload "ats_ccomp.sats"
 staload "ats_ccomp_env.sats"
+
+(* ****** ****** *)
+
+#define THISFILENAME "ats_ccomp.dats"
 
 (* ****** ****** *)
 
@@ -264,12 +269,12 @@ implement funlab_make_cst_typ (d2c, tmparg, hit) = let
       val tmparg = hityplstlst_normalize (tmparg)
     in
       template_cst_name_make (d2c, tmparg)
-    end
+    end // end of [if]
   ) : string
 (*
   val () = begin
     prerr "funlab_make_cst_type: name = "; prerr name; prerr_newline ()
-  end
+  end // end of [val]
 *)
   val level = d2var_current_level_get ()
   val stamp = $Stamp.funlab_stamp_make ()
@@ -279,6 +284,18 @@ implement funlab_make_cst_typ (d2c, tmparg, hit) = let
 in
   fl
 end // end of [funlab_make_cst_typ]
+
+implement funlab_make_prfcst_typ (d2c) = let
+  val name = global_cst_name_make (d2c)
+  val hit = hityp_encode (
+    hityp_fun ($Syn.FUNCLOfun (), list_nil (), hityp_void)
+  ) // end of [val]
+  val stamp = $Stamp.funlab_stamp_make ()
+  val fl = _funlab_make (name, 0(*level*), hit, stamp)
+  val () = funlab_qua_set (fl, D2CSTOPTsome d2c)
+in
+  fl
+end // end of [funlab_make_prfcst_typ] 
 
 (* ****** ****** *)
 
@@ -350,7 +367,10 @@ implement funlab_entry_get (fl) = fl.funlab_entry
 implement funlab_entry_get_some (fl) = begin
   case+ fl.funlab_entry of
   | Some entry => entry | None () => begin
-      prerr "Internal Error: funlab_entry_get_some: no function entry";
+      prerr "Internal Error";
+      $Deb.debug_prerrf (": %s", @(THISFILENAME));
+      prerr ": funlab_entry_get_some";
+      prerr ": no entry assocated with ["; prerr_funlab fl; prerr "]";
       prerr_newline ();
       $Err.abort {funentry_t} ()
     end // end of [None]

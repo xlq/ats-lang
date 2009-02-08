@@ -497,6 +497,10 @@ implement hiexp_seq (loc, hit, hies) = '{
   hiexp_loc= loc, hiexp_node= HIEseq hies, hiexp_typ= hit
 }
 
+implement hiexp_sif (loc, hit, hie_then, hie_else) = '{
+  hiexp_loc= loc, hiexp_node= HIEsif (hie_then, hie_else), hiexp_typ= hit
+}
+
 implement hiexp_sizeof (loc, hit, hit_arg) = '{
   hiexp_loc= loc, hiexp_node= HIEsizeof hit_arg, hiexp_typ= hit
 }

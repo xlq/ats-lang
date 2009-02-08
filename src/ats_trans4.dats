@@ -73,7 +73,7 @@ local
   val the_typedef_base: ref string = ref_make_elt<string> (string_empty)
 in
   fn typedef_base_set (base: string): void = (!the_typedef_base := base)
-end
+end // end of [local]
 
 (* ****** ****** *)
 
@@ -193,9 +193,11 @@ in
       in
         hityp_fun (fc, hits_arg, hit_res)
       end else begin case+ fc of
-        | $Syn.FUNCLOfun () => hityp_ptr // funtion
-        | $Syn.FUNCLOclo knd => begin
-            if knd = 0 then hityp_clo else hityp_ptr (*closure pointer*)
+        | $Syn.FUNCLOfun () => hityp_ptr // function pointer
+        | $Syn.FUNCLOclo knd => if knd = 0 then begin
+            hityp_clo // GCC is to report an error as [hityp_clo] is abstract
+          end else begin
+            if knd > 0 then hityp_clo_ptr else hityp_clo_ref (*knd = -1*)
           end // end of [FUNCLOclo]
       end // end of [if]
     end // end of [S2Efun]
@@ -766,6 +768,10 @@ in
       hiexp_con (loc0, hit0, hit_sum, d2c, hies_arg)
     end // end of [D2Econ]
   | D3Ecst d2c => let (* d2c is external as it is used *)
+      val () = the_dyncstset_add_if (d2c) where { extern fun 
+        // this function is implemented in [ats_ccomp_env.dats]
+        the_dyncstset_add_if (d2c: d2cst_t): void = "ats_ccomp_env_the_dyncstset_add_if"
+      } // end of [val]
       val hit0 = s2exp_tr (0(*deep*), s2e0)
     in
       d3exp_cst_tr (loc0, hit0, d2c)
@@ -975,11 +981,11 @@ in
     in
       d3exp_seq_tr (loc0, hit0, d3es)
     end // end of [D3Eseq]
-  | D3Esif _ => begin
-      $Loc.prerr_location loc0; prerr ": Internal Error";
-      prerr ": the static conditional should have already been erased.";
-      prerr_newline ();
-      $Err.abort {hiexp} ()
+  | D3Esif (_(*cond*), d3e_then, d3e_else) => let
+      val hie_then = d3exp_tr d3e_then
+      and hie_else = d3exp_tr d3e_else
+    in
+      hiexp_sif (loc0, hityp_void, hie_then, hie_else)
     end // end of [D3Esif]
   | D3Espawn (d3e) => let
       val hit0 = s2exp_tr (0(*deep*), s2e0)
@@ -1062,6 +1068,161 @@ end // end of [d3expopt_tr]
 
 (* ****** ****** *)
 
+fun labd3explst_prf_tr (ld3es: labd3explst): void =
+  case+ ld3es of
+  | LABD3EXPLSTcons (l, d3e, ld3es) => begin
+      d3exp_prf_tr d3e; labd3explst_prf_tr ld3es
+    end // end of [LABD3EXPLSTcons]
+  | LABD3EXPLSTnil () => ()
+// end of [labd3explst_prf_tr]
+
+fn c3laulst_prf_tr (c3ls: c3laulst): void = let
+  fn f (c3l: c3lau): void = d3exp_prf_tr (c3l.c3lau_exp)
+in
+  $Lst.list_foreach_fun (c3ls,  f)
+end // end of [c3laulst_prf_tr]
+
+implement d3exp_prf_tr (d3e0) = let
+(*
+  val () = begin
+    prerr "d3exp_prf_tr: d3e0 = " prerr d3e0; prerr_newline ();
+  end // end of [val]
+*)
+in
+  case+ d3e0.d3exp_node of
+  | D3Eann_type (d3e, _) => d3exp_prf_tr d3e
+  | D3Eapp_dyn (d3e_fun, npf, d3es_arg) => let
+      val () = d3exp_prf_tr d3e_fun
+      val () = d3explst_prf_tr d3es_arg
+    in
+      // empty
+    end // end of [D3Eapp_dyn]
+  | D3Eapp_sta d3e => d3exp_prf_tr d3e
+  | D3Eassgn_ptr (d3e_ptr, d3ls, d3e_val) => let
+      val () = d3exp_prf_tr d3e_ptr
+      // val () = d3lab1lst_prf_tr (d3ls) // is this really needed?
+      val () = d3exp_prf_tr d3e_val
+    in
+      // empty
+    end // end of [D3Eassgn_ptr]
+  | D3Eassgn_var (d2v_ptr, d3ls, d3e_val) => let
+      // val hils = d3lab1lst_prf_tr (d3ls) // is this really needed?
+      val hie_val = d3exp_prf_tr d3e_val
+    in
+      // empty
+    end // end of [D3Eassgn_var]
+  | D3Ecaseof (knd, d3es, c3ls) => let
+      val () = d3explst_prf_tr d3es
+      val () = c3laulst_prf_tr c3ls
+    in
+      // empty
+    end // end of [D3Ecase]
+  | D3Echar c => ()
+  | D3Econ (d2c, npf, d3es_arg) => let
+      val () = d3explst_prf_tr (d3es_arg)
+    in
+      // empty
+    end // end of [D2Econ]
+  | D3Ecst d2c => let (* d2c is external as it is used *)
+      val () = the_dynprfcstset_add_if (d2c) where { extern fun 
+        // this function is implemented in [ats_ccomp_env.dats]
+        the_dynprfcstset_add_if (d2c: d2cst_t): void = "ats_ccomp_env_the_dynprfcstset_add_if"
+      } // end of [val]
+    in
+      // empty
+    end // end of [D3Ecst]
+  | D3Ecrypt (_(*knd*), d3e) => d3exp_prf_tr d3e
+  | D3Eeffmask (_, d3e) => d3exp_prf_tr d3e
+  | D3Eempty () => ()
+  | D3Eextval _(*code*) => ()
+  | D3Efix (d2v_fun, d3e_body) => d3exp_prf_tr d3e_body
+(*
+  | D3Efloat _(*str*) => ()
+  | D3Efloatsp _(*str*) => ()
+*)
+  | D3Efoldat d3e => d3exp_prf_tr d3e
+(*
+  | D3Efreeat _ => ()
+*)
+  | D3Eif (d3e_cond, d3e_then, d3e_else) => let
+      val () = d3exp_prf_tr d3e_cond
+      val () = d3exp_prf_tr d3e_then
+      val () = d3exp_prf_tr d3e_else
+    in
+      // empty
+    end // end of [D3Eif]
+  | D3Eint _ => ()
+  | D3Elam_dyn (_, _, _(*arg*), d3e_body) => d3exp_prf_tr d3e_body
+  | D3Elam_sta (_(*s2vs*), _(*s2ps*), d3e_body) => d3exp_prf_tr d3e_body
+  | D3Elam_met (_(*s2es_met*), d3e) => d3exp_prf_tr d3e
+  | D3Elet (d3cs, d3e) => let
+      val () = d3eclst_prf_tr d3cs; val () = d3exp_prf_tr d3e
+    in
+      // empty
+    end // end of [D3Elet]
+  | D3Elst (_(*lin*), _(*s2e*), d3es_elt) => let
+      val () = d3explst_prf_tr d3es_elt
+    in
+      // empty
+    end // end of [D3Elst]
+  | D3Erec (_(*knd*), _(*npf*), ld3es) => labd3explst_prf_tr ld3es
+  | D3Erefarg _ => ()
+  | D3Escaseof (_(*s2e*), sc3ls) => $Lst.list_foreach_fun (sc3ls, f) where {
+      fn f (sc3l: sc3lau): void = d3exp_prf_tr (sc3l.sc3lau_exp)
+    } // end of [D3Escaseof]
+  | D3Esel (d3e, d3ls) => d3exp_prf_tr d3e
+  | D3Esel_ptr (d3e_ptr, d3ls) => d3exp_prf_tr d3e_ptr
+  | D3Esel_var (d2v_ptr, d3ls) => ()
+  | D3Eseq d3es => d3explst_prf_tr d3es
+  | D3Esif (_(*cond*), d3e_then, d3e_else) => let
+      val () = d3exp_prf_tr d3e_then
+      and () = d3exp_prf_tr d3e_else
+    in
+      // empty
+    end // end of [D3Esif]
+  | D3Estring _ => ()
+  | D3Estruct ld3es => labd3explst_prf_tr ld3es
+  | D3Evar _ => ()
+  | D3Eviewat_assgn_ptr (d3e_ptr, d3ls, d3e_val) => let
+      val () = d3exp_prf_tr d3e_ptr
+      // val () = d3lablst_prf_tr (d3ls) // is this really needed?
+      val () = d3exp_prf_tr d3e_val
+    in
+      // empty
+    end // end of [D3Eviewat_assgn_ptr]
+  | D3Eviewat_assgn_var (d2v_ptr, d3ls, d3e_val) => let
+      // val () = d3lablst_prf_tr (d3ls) // is this really needed?
+      val () = d3exp_prf_tr d3e_val
+    in
+      // empty
+    end // end of [D3Eviewat_assgn_var]
+  | D3Eviewat_ptr (d3e_ptr, d3ls, _, _) => let
+      val () = d3exp_prf_tr d3e_ptr
+      // val () = d3lablst_prf_tr (d3ls) // is this really needed?
+    in
+      // empty
+    end // end of [D3Eviewat_ptr]
+  | D3Eviewat_var (d2v_ptr, d3ls, _, _) => let
+      // val () = d3lablst_prf_tr (d3ls) // is this really needed?
+    in
+      // empty
+    end // end of [D3Eviewat_var]
+  | D3Ewhere (d3e, d3cs) => let
+      val () = d3eclst_prf_tr d3cs; val () = d3exp_prf_tr d3e
+    in
+      // empty
+    end // end of [D3Ewhere]
+  | _ => begin
+      $Loc.prerr_location d3e0.d3exp_loc; prerr ": Internal Error";
+      prerr ": d3exp_prf_tr: d3e0 = "; prerr_d3exp d3e0; prerr_newline ();
+      $Err.abort {void} ()
+    end // end of [_]
+end // end of [d3exp_prf_tr]
+
+implement d3explst_prf_tr (d3es) = $Lst.list_foreach_fun (d3es, d3exp_prf_tr)
+
+(* ****** ****** *)
+
 fn f3undec_tr (decarg: s2qualst, d3c: f3undec): hifundec = let
   val loc = d3c.f3undec_loc
   val d2v_fun = d3c.f3undec_var
@@ -1088,6 +1249,16 @@ fn f3undeclst_tr
      d3cs, lam d3c =<cloptr1> f3undec_tr (decarg, d3c)
   )
 
+fun f3undeclst_prf_tr
+  (fundecs: f3undeclst): void = case+ fundecs of
+  | list_cons (fundec, fundecs) => begin
+      d3exp_prf_tr (fundec.f3undec_def); f3undeclst_prf_tr fundecs
+    end // end of [list_cons]
+  | list_nil () => ()
+// end of [f3undeclst_prf_tr]
+
+(* ****** ****** *)
+
 fn v3aldec_tr (d3c: v3aldec): hivaldec = let
   val loc = d3c.v3aldec_loc
   val hip = p3at_tr d3c.v3aldec_pat
@@ -1113,6 +1284,14 @@ end // end of [v3ardec_tr]
 
 fn v3ardeclst_tr (d3cs: v3ardeclst): hivardeclst =
   $Lst.list_map_fun (d3cs, v3ardec_tr)
+
+fun v3aldeclst_prf_tr
+  (valdecs: v3aldeclst): void = case+ valdecs of
+  | list_cons (valdec, valdecs) => begin
+      d3exp_prf_tr (valdec.v3aldec_def); v3aldeclst_prf_tr valdecs
+    end // end of [list_cons]
+  | list_nil () => ()
+// end of [v3aldeclst_prf_tr]
 
 (* ****** ****** *)
 
@@ -1150,7 +1329,7 @@ fn i3mpdec_is_proof
   (d3c: i3mpdec): bool = d2cst_is_proof (d3c.i3mpdec_cst)
 // end of [i3mpdec_is_proof]
 
-implement d3eclst_tr (d3cs: d3eclst): hideclst = let
+implement d3eclst_tr (d3cs0: d3eclst): hideclst = let
   // [aux0] and [aux1] are mutually tail-recursive
   fn* aux0 (d3cs: d3eclst, res: &hideclst? >> hideclst)
     : void = begin case+ d3cs of
@@ -1160,50 +1339,52 @@ implement d3eclst_tr (d3cs: d3eclst): hideclst = let
           val hid = hidec_list (d3c.d3ec_loc, d3eclst_tr d3cs1)
         in
           aux1 (d3cs, hid, res)
-        end
+        end // end of [D3Clist]
       | D3Csaspdec saspdec => let
           val hid = hidec_saspdec (d3c.d3ec_loc, saspdec)
         in
           aux1 (d3cs, hid, res)
-        end
+        end // end of [D3Csaspdec]
       | D3Cextype (name, s2e_def) => let
           val hit_def = s2exp_tr (1(*deep*), s2e_def)
           val hid = hidec_extype (d3c.d3ec_loc, name, hit_def)
         in
           aux1 (d3cs, hid, res)
-        end
+        end // end of [D3Cextype]
       | D3Cextval (name, d3e_def) => let
           val hie_def = d3exp_tr d3e_def
           val hid = hidec_extval (d3c.d3ec_loc, name, hie_def)
         in
           aux1 (d3cs, hid, res)
-        end
+        end // end of [D3Cextval]
       | D3Cextcode (position(*int*), code) => let
           val hid = hidec_extern (d3c.d3ec_loc, position, code)
         in
           aux1 (d3cs, hid, res)
-        end
+        end // end of [D3Cextcode]
       | D3Cdatdec (knd, s2cs) => let
           val hid = hidec_datdec (d3c.d3ec_loc, knd, s2cs)
         in
           aux1 (d3cs, hid, res)
-        end
+        end // end of [D3Cdatdec]
       | D3Cexndec d3cs1 => let
           val hid = hidec_exndec (d3c.d3ec_loc, d3cs1)
         in
           aux1 (d3cs, hid, res)
-        end
+        end // end of [D3Cexndec]
       | D3Cdcstdec (knd, d3cs1) => let
           val hid = hidec_dcstdec (d3c.d3ec_loc, knd, d3cs1)
         in
           aux1 (d3cs, hid, res)
-        end
+        end // end of [D3Cdcstdec]
       | D3Cimpdec impdec => let
           val loc = d3c.d3ec_loc
           val hid = (case+ 0 of
-            | _ when i3mpdec_is_proof impdec => begin
+            | _ when i3mpdec_is_proof impdec => let
+                val () = d3exp_prf_tr (impdec.i3mpdec_def)
+              in
                 hidec_impdec_prf (loc, impdec.i3mpdec_cst)
-              end // end of [_]
+              end // end of [_ when ...]
             | _ => begin
                 hidec_impdec (d3c.d3ec_loc, i3mpdec_tr impdec)
               end // end of [_]
@@ -1212,46 +1393,48 @@ implement d3eclst_tr (d3cs: d3eclst): hideclst = let
           aux1 (d3cs, hid, res)
         end // end of [D3Cimpdec]
       | D3Cfundecs (decarg, knd, fundecs) => begin
-          if $Syn.funkind_is_proof knd then aux0 (d3cs, res)
-          else let
+          if $Syn.funkind_is_proof knd then let
+            val () = f3undeclst_prf_tr (fundecs) in aux0 (d3cs, res)
+          end else let
             val hifundecs = f3undeclst_tr (decarg, fundecs)
             val hid = hidec_fundecs (d3c.d3ec_loc, decarg, knd, hifundecs)
           in
             aux1 (d3cs, hid, res)
-          end
+          end // end of [if]
         end // end of [D3Cfundecs]
       | D3Cvaldecs (knd, valdecs) => begin
-          if $Syn.valkind_is_proof knd then aux0 (d3cs, res)
-          else let
+          if $Syn.valkind_is_proof knd then let
+            val () = v3aldeclst_prf_tr (valdecs) in aux0 (d3cs, res)
+          end else let
             val hid = begin
               hidec_valdecs (d3c.d3ec_loc, knd, v3aldeclst_tr valdecs)
             end
           in
             aux1 (d3cs, hid, res)
-          end
+          end // end of [if]
         end // end of [D3Cvaldecs]
       | D3Cvaldecs_par valdecs => let
           val hid = hidec_valdecs_par (d3c.d3ec_loc, v3aldeclst_tr valdecs)
         in
           aux1 (d3cs, hid, res)
-        end
+        end // end of [D3Cvaldecs_par]
       | D3Cvaldecs_rec valdecs => let
           val hid = hidec_valdecs_rec (d3c.d3ec_loc, v3aldeclst_tr valdecs)
         in
           aux1 (d3cs, hid, res)
-        end
+        end // end of [D3Cvaldecs_rec]
       | D3Cvardecs vardecs => let
           val hid = hidec_vardecs (d3c.d3ec_loc, v3ardeclst_tr vardecs)
         in
           aux1 (d3cs, hid, res)
-        end
+        end // end of [D3Cvardecs]
       | D3Clocal (d3cs_head, d3cs_body) => let
           val hids_head = d3eclst_tr d3cs_head
           val hids_body = d3eclst_tr d3cs_body
           val hid = hidec_local (d3c.d3ec_loc, hids_head, hids_body)
         in
           aux1 (d3cs, hid, res)
-        end
+        end // end of [D3Clocal]
       | D3Cstaload (fil, od3c) => let
           val () = begin case+ od3c of
             | Some d3cs => begin
@@ -1263,12 +1446,12 @@ implement d3eclst_tr (d3cs: d3eclst): hideclst = let
           val hid = hidec_staload (d3c.d3ec_loc, fil)
         in
           aux1 (d3cs, hid, res)
-        end
+        end // end of [D3Cstaload]
       | D3Cdynload fil => let
           val hid = hidec_dynload (d3c.d3ec_loc, fil)
         in
           aux1 (d3cs, hid, res)
-        end
+        end // end of [D3Cdynload]
       end // end of [cons]
     | nil () => (res := nil ())
   end // end of [aux0]
@@ -1283,10 +1466,52 @@ implement d3eclst_tr (d3cs: d3eclst): hideclst = let
   end // end of [aux1]
 
   var res: hideclst // uninitialize
-  val () = aux0 (d3cs, res)
+  val () = aux0 (d3cs0, res)
 in
   res
 end // end of [d3eclst_tr]
+
+(* ****** ****** *)
+
+implement d3eclst_prf_tr (d3cs0: d3eclst): void = aux (d3cs0) where {
+  fun aux (d3cs: d3eclst): void = begin case+ d3cs of
+    | list_cons (d3c, d3cs) => begin case+ d3c.d3ec_node of
+      | D3Cnone () => aux (d3cs)
+      | D3Clist d3cs1 => let
+          val () = d3eclst_prf_tr d3cs1 in aux d3cs
+        end // end of [D3Clist]
+      | D3Cdatdec _ => aux d3cs
+      | D3Cexndec _ => aux d3cs
+      | D3Cdcstdec _ => aux d3cs
+      | D3Cimpdec impdec => let
+          val () = d3exp_prf_tr (impdec.i3mpdec_def) in aux d3cs
+        end // end of [D3Cimpdec]
+      | D3Cfundecs (decarg, knd, fundecs) => let
+          val () = f3undeclst_prf_tr fundecs in aux (d3cs)
+        end // end of [D3Cfundecs]
+      | D3Cvaldecs (knd, valdecs) => let
+          val () = v3aldeclst_prf_tr valdecs in aux (d3cs)
+        end // end of [D3Cvaldecs]
+      | D3Cvaldecs_rec valdecs => let
+          val () = v3aldeclst_prf_tr valdecs in aux (d3cs)
+        end // end of [D3Cvaldecs_rec]
+      | D3Clocal (d3cs_head, d3cs_body) => let
+          val () = d3eclst_prf_tr d3cs_head
+          val () = d3eclst_prf_tr d3cs_body
+        in
+          aux (d3cs)
+        end // end of [D3Clocal]
+      | D3Cstaload _ => aux d3cs
+      | D3Cdynload _ => aux d3cs
+      | _ => begin
+          $Loc.prerr_location d3c.d3ec_loc; prerr ": Internal Error";
+          prerr ": d3explst_prf_tr: illegal proof declaration"; prerr_newline ();
+          $Err.abort {void} ()
+        end // end of [_]
+      end // end of [list_cons]
+    | list_nil () => ()
+  end // end of [aux]
+} // end of [d3eclst_prf_tr]
 
 (* ****** ****** *)
 

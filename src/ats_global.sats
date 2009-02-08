@@ -55,6 +55,8 @@ fun ats_dynloadflag_get (): int
 fun ats_dynloadflag_set (flag: int): void
   = "ats_global_ats_dynloadflag_set"
 
+(* ****** ****** *)
+
 fun ats_dynloadfuname_get (): Stropt
   = "ats_global_ats_dynloadfuname_get"
 

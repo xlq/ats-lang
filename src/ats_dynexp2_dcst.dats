@@ -245,6 +245,14 @@ in
   $Syn.dcstkind_is_castfn (knd)
 end // end of [d2cst_is_castfn]
 
+implement d2cst_is_prfun (d2c) = let
+  val knd =
+    let val (vbox pf | p) = d2c in p->d2cst_kind end
+  // end of [val]
+in
+  $Syn.dcstkind_is_prfun (knd)
+end // end of [d2cst_is_prfun]
+
 implement d2cst_is_proof (d2c) = let
   val knd =
     let val (vbox pf | p) = d2c in p->d2cst_kind end

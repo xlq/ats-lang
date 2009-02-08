@@ -421,7 +421,7 @@ fun d3explst_arg_restore
       val () = assert_errmsg_bool1 (
         $Lst.list_is_cons d3es, "Interal Error: ats_trans3_exp: d3explst_arg_restore"
       ) // end of assert_errmsg
-      val+ cons (d3e, d3es) = d3es
+      val+ list_cons (d3e, d3es) = d3es
       val loc = d3e.d3exp_loc
       val s2e_res = s2exp_opnexi_and_add (loc, s2e_res)
 (*
@@ -429,21 +429,21 @@ fun d3explst_arg_restore
         prerr "d3explst_arg_restore: d3e = "; prerr d3e; prerr_newline ();
         prerr "d3explst_arg_restore: d3e.typ = "; prerr d3e.d3exp_typ; prerr_newline ();
         prerr "d3explst_arg_restore: s2e_res = "; prerr s2e_res; prerr_newline ();
-      end
+      end // end of [val]
 *)
       val freeknd = d3exp_lval_typ_set_arg (refval, d3e, s2e_res)
       val d3e = d3exp_refarg (loc, s2e_res, refval, freeknd, d3e)
     in
-      cons (d3e, d3explst_arg_restore (d3es, wths2es))
-    end
+      list_cons (d3e, d3explst_arg_restore (d3es, wths2es))
+    end // end of [WTHS2EXPLSTcons_some]
   | WTHS2EXPLSTcons_none wths2es => let
       val () = assert_errmsg_bool1 (
         $Lst.list_is_cons d3es, "Interal Error: ats_trans3_exp: d3explst_arg_restore"
       ) // end of assert_errmsg
-      val+ cons (d3e, d3es) = d3es
+      val+ list_cons (d3e, d3es) = d3es
     in
-      cons (d3e, d3explst_arg_restore (d3es, wths2es))
-    end
+      list_cons (d3e, d3explst_arg_restore (d3es, wths2es))
+    end // end of [WTHS2EXPLSTcons_none]
   | WTHS2EXPLSTnil () => nil ()
 end // end of [d3explst_arg_restore]
 
@@ -1303,9 +1303,10 @@ fn d2exp_decrypt_tr_up
         prerr ", but it is assigned the type ["; prerr s2e_crypt; prerr "].";
         $Err.abort {s2exp} ()
       end
+  // end of [val]
 in
   d3exp_crypt (loc0, s2e, ~1(*decrypt*), d3e)
-end
+end // end of [d2exp_decrypt_tr_up]
 
 fn d2exp_encrypt_tr_up
   (loc0: loc_t, d2e: d2exp): d3exp = let
@@ -1313,7 +1314,7 @@ fn d2exp_encrypt_tr_up
   val s2e = s2exp_crypt d3e.d3exp_typ
 in
   d3exp_crypt (loc0, s2e,  1(*encrypt*), d3e)
-end
+end // end of [d2exp_encrypt_tr_up]
 
 fn d2exp_crypt_tr_up
   (loc0: loc_t, knd: int, d2e: d2exp): d3exp = begin
@@ -1417,19 +1418,19 @@ fn d2exp_foldat_freeat_tr_up
             prerr ", but it is not.";
             prerr_newline ();
             $Err.abort {void} ()
-          end
-        end
-      end
+          end // end of [if]
+        end // end of [if]
+      end // end of [S2Efun]
     | _ => begin
         prerr loc0;
         prerr ": Internal Error: d2exp_foldat_freeat_tr_up";
         prerr ": not function type: s2e_d2c = ";
         prerr s2e_d2c; prerr "]."; prerr_newline ();
         $Err.abort {void} ()
-      end
+      end // end of [_]
 in
-    if isfold then d3exp_foldat (loc0, d3e) else d3exp_freeat (loc0, d3e)
-end
+  if isfold then d3exp_foldat (loc0, d3e) else d3exp_freeat (loc0, d3e)
+end // end of [d2exp_foldat_freeat_tr_up]
 
 fn d2exp_foldat_tr_up (loc0: loc_t, s2as: s2exparglst, d2e: d2exp): d3exp =
   d2exp_foldat_freeat_tr_up (loc0, true(*isfold*), s2as, d2e)
@@ -1630,7 +1631,7 @@ in
       prerr ": array subscription is not supported for address-of operation.";
       prerr_newline ();
       $Err.abort {d3exp} ()
-    end
+    end // end of [L2VALarrsub]
   | L2VALvar_lin (d2v, _) => begin
       prerr d2e0.d2exp_loc;
       prerr ": error(3)";
@@ -1638,7 +1639,7 @@ in
       prerr ", but it is not as ["; prerr d2v; prerr "] is not mutable.";
       prerr_newline ();
       $Err.abort {d3exp} ()
-    end 
+    end // end of [L2VALvar_lin]
   | L2VALnone _ => begin
       prerr d2e0.d2exp_loc;
       prerr ": error(3)";
@@ -1646,7 +1647,7 @@ in
       prerr ", but it is not.";
       prerr_newline ();
       $Err.abort {d3exp} ()
-    end
+    end // end of [L2VALnone]
 end // end of [d2exp_ptrof_tr_up]
 
 (* ****** ****** *)
@@ -1885,7 +1886,7 @@ in
           $Err.abort {d3exp} ()
         end
       // end of [case]
-    end
+    end // end of [L2VALptr]
   | L2VALvar_mut (d2v, d2ls) => let
       val d3ls_nt = d2lablst_tr_up d2ls
       val s2ls_nt = s2lab0lst_of_d3lab0lst d3ls_nt
@@ -1895,14 +1896,14 @@ in
       val d3ls = d3lab1lst_of_d3lab0lst_s2lablst (d3ls_nt, s2ls)
     in
       d3exp_viewat_var (loc0, s2e_at, d2v, d3ls, d2v_view, s2ls_view)
-    end
+    end // end of [L2VALvar_mul]
   | L2VALarrsub _ => begin
       prerr d2e0.d2exp_loc;
       prerr ": error(3)";
       prerr ": array subscription is not supported for view extraction.";
       prerr_newline ();
       $Err.abort {d3exp} ()
-    end
+    end // end of [L2VALarrsub]
   | L2VALvar_lin (d2v, _) => begin
       prerr d2e0.d2exp_loc;
       prerr ": error(3)";
@@ -1910,7 +1911,7 @@ in
       prerr ", but it is not as ["; prerr d2v; prerr "] is not mutable.";
       prerr_newline ();
       $Err.abort {d3exp} ()
-    end 
+    end // end of [L2VALvar]
   | L2VALnone _ => begin
       prerr d2e0.d2exp_loc;
       prerr ": error(3)";
@@ -1918,7 +1919,7 @@ in
       prerr ", but it is not.";
       prerr_newline ();
       $Err.abort {d3exp} ()
-    end
+    end // end of [L2VALnone]
 end // end of [d2exp_viewat_tr_up]
 
 (* ****** ****** *)
@@ -2015,6 +2016,7 @@ fun d2explst_elt_tr_dn (d2es: d2explst, s2e: s2exp): d3explst =
       cons (d2exp_tr_dn (d2e, s2e), d2explst_elt_tr_dn (d2es, s2e))
     end
   | nil () => nil ()
+// end of [d2explst_elt_tr_dn]
 
 (* ****** ****** *)
 

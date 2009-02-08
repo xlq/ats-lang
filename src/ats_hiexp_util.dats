@@ -462,6 +462,8 @@ end
 
 implement hityp_t_s2var (s2v) = hityp_s2var (s2v)
 implement hityp_t_name_get (hit) = hit.hityp_name
+implement hityp_t_void = hityp_void // so this file must be loaded
+// after [hityp_void] is defined
 
 implement hityp_t_is_void (hit) = hityp_is_void (hit)
 implement hityp_t_fun_is_void (hit_fun) = hityp_fun_is_void (hit_fun) 

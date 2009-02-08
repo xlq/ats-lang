@@ -244,7 +244,8 @@ dynload "gc_manops.dats"
 
 (* ****** ****** *)
 
-#define ATS_DYNLOADFLAG 0 // explicit dynamic loading
+#define ATS_DYNLOADFLAG 0 // disabling implicit dynamic loading and
+// using explicit dynamic loading instead
 #define ATS_DYNLOADFUNAME "gc_init" // name for the dynload function
 
 val () = let // initialization

@@ -221,144 +221,11 @@ end // end of [posmarklst_sort]
   
 (* ****** ****** *)
 
-// color= gray
-// #define COMMENT_FONT_BEG "<FONT COLOR=\"#787878\">"
-// #define COMMENT_FONT_END "</FONT>"
-
-#define COMMENT_FONT_BEG "<span class=\"comment\">"
-#define COMMENT_FONT_END "</span>"
-
-// color= brown
-// #define EXTERN_FONT_BEG "<FONT COLOR=\"#A52A2A\">"
-// #define EXTERN_FONT_END "</FONT>"
-
-#define EXTERN_FONT_BEG "<span class=\"extern\">"
-#define EXTERN_FONT_END "</span>"
-
-// color= black
-// #define KEYWORD_FONT_BEG "<FONT COLOR=\"#000000\">"
-// #define KEYWORD_FONT_END "</FONT>"
-
-#define KEYWORD_FONT_BEG "<span class=\"keyword\">"
-#define KEYWORD_FONT_END "</span>"
-
-// color= pink
-// #define NEUEXP_FONT_BEG "<FONT COLOR=\"#800080\">"
-// #define NEUEXP_FONT_END "</FONT>"
-
-#define NEUEXP_FONT_BEG "<span class=\"neuexp\">"
-#define NEUEXP_FONT_END "</span>"
-
-// color= blue
-// #define STAEXP_FONT_BEG "<FONT COLOR=\"#0000FF\">"
-// #define STAEXP_FONT_END "</FONT>"
-
-#define STAEXP_FONT_BEG "<span class=\"staexp\">"
-#define STAEXP_FONT_END "</span>"
-
-// color= red
-// #define DYNEXP_FONT_BEG "<FONT COLOR=\"#E80000\">"
-// #define DYNEXP_FONT_END "</FONT>"
-
-#define DYNEXP_FONT_BEG "<span class=\"dynexp\">"
-#define DYNEXP_FONT_END "</span>"
-
-// color= green
-// #define PRFEXP_FONT_BEG "<FONT COLOR=\"#009000\">"
-// #define PRFEXP_FONT_END "</FONT>"
-
-#define PRFEXP_FONT_BEG "<span class=\"prfexp\">"
-#define PRFEXP_FONT_END "</span>"
-
-// color= light gray
-// #define POSMARK_FILE_BEG "<BODY BGCOLOR=\"#E0E0E0\" TEXT=\"#E80000\"><PRE>"
-// #define POSMARK_FILE_END "</PRE></BODY>"
-
-#define POSMARK_FILE_BEG "\
-<HTML>\n\
-<HEAD>\n\
-<STYLE TYPE=\"text/css\">\n\
-span.comment {color:787878;font-style:italic}\n\
-span.extern  {color:A52A2A}\n\
-span.keyword {color:000000;font-weight:bold}\n\
-span.neuexp  {color:800080}\n\
-span.staexp  {color:0000FF}\n\
-span.dynexp  {color:E80000}\n\
-span.prfexp  {color:009000}\n\
-</STYLE>\n\
-</HEAD>\n\
-\n\
-<BODY BGCOLOR=\"#E0E0E0\" TEXT=\"#E80000\">\n\
-<PRE>\n\
-"
-
-#define POSMARK_FILE_END "\
-</PRE>\n\
-</BODY>\n\
-</HTML>\n\
-"
-
-(* ****** ****** *)
-
-fn posmark_process_htm
-  (fil_d: &FILE w, pm: posmark): void = begin case+ pm of
-  | PMnone () => ()
-  | PMcomment i => begin
-      if i = 0 then begin
-        fprint1_string (file_mode_lte_w_w | fil_d, COMMENT_FONT_BEG)
-      end else begin
-        fprint1_string (file_mode_lte_w_w | fil_d, COMMENT_FONT_END)
-      end
-    end // end of [PMcomment]
-  | PMextern i => begin
-      if i = 0 then begin
-        fprint1_string (file_mode_lte_w_w | fil_d, EXTERN_FONT_BEG)
-      end else begin
-        fprint1_string (file_mode_lte_w_w | fil_d, EXTERN_FONT_END)
-      end
-    end // end of [PMextern]
-  | PMkeyword i => begin
-      if i = 0 then begin
-        fprint1_string (file_mode_lte_w_w | fil_d, KEYWORD_FONT_BEG)
-      end else begin
-        fprint1_string (file_mode_lte_w_w | fil_d, KEYWORD_FONT_END)
-      end
-    end // end of [PMkeyword]
-  | PMneuexp i => begin
-      if i = 0 then begin
-        fprint1_string (file_mode_lte_w_w | fil_d, NEUEXP_FONT_BEG)
-      end else begin
-        fprint1_string (file_mode_lte_w_w | fil_d, NEUEXP_FONT_END)
-      end
-    end // end of [PMneuexp]
-  | PMstaexp i =>  begin
-      if i = 0 then begin
-        fprint1_string (file_mode_lte_w_w | fil_d, STAEXP_FONT_BEG)
-      end else begin
-        fprint1_string (file_mode_lte_w_w | fil_d, STAEXP_FONT_END)
-      end
-    end // end of [PMstaexp]
-  | PMprfexp i =>  begin
-      if i = 0 then begin
-        fprint1_string (file_mode_lte_w_w | fil_d, PRFEXP_FONT_BEG)
-      end else begin
-        fprint1_string (file_mode_lte_w_w | fil_d, PRFEXP_FONT_END)
-      end
-    end // end of [PMprfexp]
-end // end of [posmark_process_htm]
-
-fn fputc_html {m:file_mode}
-  (pf: file_mode_lte (m, w) | c: char, out: &FILE m)
-  : void = begin case+ c of
-    | '<' => fprint1_string (pf | out, "&lt;")
-    | '>' => fprint1_string (pf | out, "&gt;")
-    | '&' => fprint1_string (pf | out, "&amp;")
-    | _ => fputc_exn (pf | c, out)
-end // end of [fputc_html]
-
-fn posmark_file_file
-  (proc: (&FILE w, posmark) -<fun1> void, fil_s: &FILE r, fil_d: &FILE w)
-  : void = let
+fn posmark_file_file (
+    proc: (&FILE w, posmark) -<fun1> void
+  , fputchr: (char, &FILE w) -<fun1> void
+  , fil_s: &FILE r, fil_d: &FILE w
+  ) : void = let
   typedef ppm =  @(lint, posmark)
 
   fun lpfin1
@@ -371,13 +238,12 @@ fn posmark_file_file
     | ~list_vt_nil () => ()
   end // end of [lpfin1]
 
-  fun lpfin2 (fil_s: &FILE r, fil_d: &FILE w): void = let
+  fun lpfin2 (fil_s: &FILE r, fil_d: &FILE w):<cloref1> void = let
     val c = fgetc_err (file_mode_lte_r_r | fil_s)
   in
     if (c >= 0) then begin
-      fputc_html (file_mode_lte_w_w | char_of_int c, fil_d);
-      lpfin2 (fil_s, fil_d)
-    end
+      fputchr (char_of_int c, fil_d); lpfin2 (fil_s, fil_d)
+    end // end of [if]
   end // end of [lpfin2]
 
   fn* loop1
@@ -397,8 +263,9 @@ fn posmark_file_file
     (fil_s: &FILE r, fil_d: &FILE w,
      i: lint, p: lint, pm: posmark, ppms: List_vt ppm, c: int)
     :<cloref1> void = begin
-    if i < p then begin
-      fputc_html (file_mode_lte_w_w | char_of_int c, fil_d);
+    if i < p then let
+      val () = fputchr (char_of_int c, fil_d)
+    in
       loop1 (fil_s, fil_d, succ i, p, pm, ppms)
     end else let
       val () = proc (fil_d, pm)
@@ -408,8 +275,7 @@ fn posmark_file_file
           loop2 (fil_s, fil_d, i, ppm.0, ppm.1, ppms, c)
         end // end of [list_vt_cons]
       | ~list_vt_nil () => begin
-          fputc_html (file_mode_lte_w_w | char_of_int c, fil_d);
-          lpfin2 (fil_s, fil_d)
+          fputchr (char_of_int c, fil_d); lpfin2 (fil_s, fil_d)
         end // end of [list_vt_nil]
     end
   end // end of [loop2]
@@ -417,13 +283,134 @@ fn posmark_file_file
   val lint0 = lint_of_int 0 // 0L
   val ppms = posmarklst_sort !the_posmarklst
 in
-  fprint1_string (file_mode_lte_w_w | fil_d, POSMARK_FILE_BEG);
-  loop1 (fil_s, fil_d, lint0, lint0, PMnone (), ppms);
-  fprint1_string (file_mode_lte_w_w | fil_d, POSMARK_FILE_END);
-  fprint1_newline (file_mode_lte_w_w | fil_d);
+  loop1 (fil_s, fil_d, lint0, lint0, PMnone (), ppms)
 end // end of [posmark_file_file]
 
 (* ****** ****** *)
+
+local
+
+// color= gray
+// #define HTM_COMMENT_FONT_BEG "<FONT COLOR=\"#787878\">"
+// #define HTM_COMMENT_FONT_END "</FONT>"
+
+#define HTM_COMMENT_FONT_BEG "<span class=\"comment\">"
+#define HTM_COMMENT_FONT_END "</span>"
+
+// color= brown
+// #define HTM_EXTERN_FONT_BEG "<FONT COLOR=\"#A52A2A\">"
+// #define HTM_EXTERN_FONT_END "</FONT>"
+
+#define HTM_EXTERN_FONT_BEG "<span class=\"extern\">"
+#define HTM_EXTERN_FONT_END "</span>"
+
+// color= black
+// #define HTM_KEYWORD_FONT_BEG "<FONT COLOR=\"#000000\">"
+// #define HTM_KEYWORD_FONT_END "</FONT>"
+
+#define HTM_KEYWORD_FONT_BEG "<span class=\"keyword\">"
+#define HTM_KEYWORD_FONT_END "</span>"
+
+// color= pink
+// #define HTM_NEUEXP_FONT_BEG "<FONT COLOR=\"#800080\">"
+// #define HTM_NEUEXP_FONT_END "</FONT>"
+
+#define HTM_NEUEXP_FONT_BEG "<span class=\"neuexp\">"
+#define HTM_NEUEXP_FONT_END "</span>"
+
+// color= blue
+// #define HTM_STAEXP_FONT_BEG "<FONT COLOR=\"#0000FF\">"
+// #define HTM_STAEXP_FONT_END "</FONT>"
+
+#define HTM_STAEXP_FONT_BEG "<span class=\"staexp\">"
+#define HTM_STAEXP_FONT_END "</span>"
+
+// color= red
+// #define HTM_DYNEXP_FONT_BEG "<FONT COLOR=\"#E80000\">"
+// #define HTM_DYNEXP_FONT_END "</FONT>"
+
+#define HTM_DYNEXP_FONT_BEG "<span class=\"dynexp\">"
+#define HTM_DYNEXP_FONT_END "</span>"
+
+// color= green
+// #define HTM_PRFEXP_FONT_BEG "<FONT COLOR=\"#009000\">"
+// #define HTM_PRFEXP_FONT_END "</FONT>"
+
+#define HTM_PRFEXP_FONT_BEG "<span class=\"prfexp\">"
+#define HTM_PRFEXP_FONT_END "</span>"
+
+// color= light gray
+// #define HTM_POSMARK_FILE_BEG "<BODY BGCOLOR=\"#E0E0E0\" TEXT=\"#E80000\"><PRE>"
+// #define HTM_POSMARK_FILE_END "</PRE></BODY>"
+
+#define HTM_POSMARK_FILE_BEG "\
+<HTML>\n\
+<HEAD>\n\
+<STYLE TYPE=\"text/css\">\n\
+span.comment {color:787878;font-style:italic}\n\
+span.extern  {color:A52A2A}\n\
+span.keyword {color:000000;font-weight:bold}\n\
+span.neuexp  {color:800080}\n\
+span.staexp  {color:0000FF}\n\
+span.dynexp  {color:E80000}\n\
+span.prfexp  {color:009000}\n\
+</STYLE>\n\
+</HEAD>\n\
+\n\
+<BODY BGCOLOR=\"#E0E0E0\" TEXT=\"#E80000\">\n\
+<PRE>\n\
+"
+
+#define HTM_POSMARK_FILE_END "\
+</PRE>\n\
+</BODY>\n\
+</HTML>\n\
+"
+in // in of [local]
+
+fn posmark_process_htm
+  (fil_d: &FILE w, pm: posmark): void = begin case+ pm of
+  | PMnone () => ()
+  | PMcomment i => if i = 0 then begin
+      fprint1_string (file_mode_lte_w_w | fil_d, HTM_COMMENT_FONT_BEG)
+    end else begin
+      fprint1_string (file_mode_lte_w_w | fil_d, HTM_COMMENT_FONT_END)
+    end // end of [PMcomment]
+  | PMextern i => if i = 0 then begin
+      fprint1_string (file_mode_lte_w_w | fil_d, HTM_EXTERN_FONT_BEG)
+    end else begin
+      fprint1_string (file_mode_lte_w_w | fil_d, HTM_EXTERN_FONT_END)
+    end // end of [PMextern]
+  | PMkeyword i => if i = 0 then begin
+      fprint1_string (file_mode_lte_w_w | fil_d, HTM_KEYWORD_FONT_BEG)
+    end else begin
+      fprint1_string (file_mode_lte_w_w | fil_d, HTM_KEYWORD_FONT_END)
+    end // end of [PMkeyword]
+  | PMneuexp i => if i = 0 then begin
+      fprint1_string (file_mode_lte_w_w | fil_d, HTM_NEUEXP_FONT_BEG)
+    end else begin
+      fprint1_string (file_mode_lte_w_w | fil_d, HTM_NEUEXP_FONT_END)
+    end // end of [PMneuexp]
+  | PMstaexp i =>  if i = 0 then begin
+      fprint1_string (file_mode_lte_w_w | fil_d, HTM_STAEXP_FONT_BEG)
+    end else begin
+      fprint1_string (file_mode_lte_w_w | fil_d, HTM_STAEXP_FONT_END)
+    end // end of [PMstaexp]
+  | PMprfexp i => if i = 0 then begin
+      fprint1_string (file_mode_lte_w_w | fil_d, HTM_PRFEXP_FONT_BEG)
+    end else begin
+      fprint1_string (file_mode_lte_w_w | fil_d, HTM_PRFEXP_FONT_END)
+    end // end of [PMprfexp]
+end // end of [posmark_process_htm]
+
+fn fputchr_htm
+  (c: char, out: &FILE w): void = let
+  prval pf_mod = file_mode_lte_w_w in case+ c of
+  | '<' => fprint1_string (pf_mod | out, "&lt;")
+  | '>' => fprint1_string (pf_mod | out, "&gt;")
+  | '&' => fprint1_string (pf_mod | out, "&amp;")
+  | _ => fputc_exn (pf_mod | c, out)
+end // end of [fputchr_htm]
 
 extern fun posmark_htmlfilename_make (basename: string): string
   = "posmark_htmlfilename_make"
@@ -434,10 +421,17 @@ implement posmark_file_make_htm (basename): void = let
   val file_mode_w = $extval (file_mode w, "\"w\"")
   val (pf_in | p_in) = fopen_exn (basename, file_mode_r)
   val (pf_out | p_out) = fopen_exn (htmlfilename, file_mode_w)
-  val () = posmark_file_file (posmark_process_htm, !p_in, !p_out)
+  val () = fprint1_string (file_mode_lte_w_w | !p_out, HTM_POSMARK_FILE_BEG);
+  val () = posmark_file_file (posmark_process_htm, fputchr_htm, !p_in, !p_out)
+  val () = fprint1_string (file_mode_lte_w_w | !p_out, HTM_POSMARK_FILE_END);
+  val () = fprint1_newline (file_mode_lte_w_w | !p_out);
 in
   fclose_exn (pf_out | p_out); fclose_exn (pf_in | p_in)
 end // end of [posmark_file_make_htm]
+
+end // end of [local]
+
+(* ****** ****** *)
 
 %{$
 

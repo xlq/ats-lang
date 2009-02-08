@@ -1305,7 +1305,9 @@ in
         $Err.abort {valprim} ()
       end // end of [_ when ...]
     | _ => let
-        val () = the_dyncstset_add_if (d2c)
+(*
+        val () = the_dyncstset_add_if (d2c) // this is moved to [d3exp_tr]
+*)
         val hit0 = hityp_normalize (hie0.hiexp_typ)
       in
         valprim_cst (d2c, hit0)
@@ -2002,6 +2004,16 @@ in
     in
       ccomp_exp_lst_tmpvar (res, knd, hit_elt, hies, tmp_res)
     end // end of [HIElst]
+  | HIEptrof_ptr (hie_ptr, hils) => let
+      val vp_ptr = ccomp_exp_ptrof_ptr (res, hie_ptr, hils)
+    in
+      instr_add_move_val (res, tmp_res, vp_ptr)
+    end // end of [HIEptrof_ptr]
+  | HIEptrof_var (d2v_mut, hils) => let
+      val vp_ptr = ccomp_exp_ptrof_var (res, d2v_mut, hils)
+    in
+      instr_add_move_val (res, tmp_res, vp_ptr)
+    end // end of [HIEptrof_var]
   | HIEraise hie_exn => let
       val vp_exn = ccomp_exp (res, hie_exn)
     in
@@ -2413,7 +2425,7 @@ fn ccomp_impdec
 (*
         val () = begin
           prerr "ccomp_impdec: aux: fl = "; prerr fl; prerr_newline ()
-        end
+        end // end of [val]
 *)
         val vp_lam = valprim_funclo_make (fl)
         val () = the_topcstctx_add (d2c, vp_lam)
@@ -2432,12 +2444,12 @@ fn ccomp_impdec
             end // end of [_ when ...]
           | _ => begin case+ d2cst_kind_get d2c of
             | $Syn.DCSTKINDval () => begin case+ fc of
-              | $Syn.FUNCLOclo _ => begin
+              | $Syn.FUNCLOfun () => begin
+                  the_glocstlst_add_fun d2c; instr_add_define_fun (res, d2c, fl)
+                end // end of [FUNCLOfun]
+              | $Syn.FUNCLOclo _(*knd*) => begin // knd <> 0
                   the_glocstlst_add_clo d2c; instr_add_define_clo (res, d2c, fl)
                 end // end of [FUNCLOclo]
-              | $Syn.FUNCLOfun _ => begin
-                  the_glocstlst_add_fun d2c; instr_add_define_fun (res, d2c, fl)
-                 end
               end // end of [FUNCLOfun]
             | _ => ()
           end // end of [_]
@@ -2458,21 +2470,16 @@ fn ccomp_impdec
         val () = the_glocstlst_add_val (d2c, vp)
       in
         instr_add_define_val (res, d2c, vp)
-      end
+      end // end of [_]
   end // end of [aux]
-  val d2c = impdec.hiimpdec_cst
+  val d2c = impdec.hiimpdec_cst // [d2c] must not be a proof cst!
 (*
   val () = begin
     prerr "ccomp_impdec: d2c = "; prerr d2c; prerr_newline ()
-  end
+  end // end of [val]
 *)
 in
   case+ 0 of
-  | _ when d2cst_is_proof d2c => let
-      val () = the_topcstctx_add (d2c, valprim_void ())
-    in
-      // proof is not compiled
-    end // end of [_ when ...]
   | _ when d2cst_is_castfn d2c => () // checking is needed!!!
   | _ => begin case+ impdec.hiimpdec_decarg of
     | list_cons _ => () // template is not compiled
@@ -2481,6 +2488,26 @@ in
       end // end of [list_nil]
   end // end of [if]
 end // end of [ccomp_impdec]
+
+(* ****** ****** *)
+
+// [d2c] is a proof constant
+fn ccomp_impdec_prf
+  (loc: loc_t, d2c: d2cst_t): void = let
+  val () = begin
+    prerr "ccomp_impdec_prf: d2c = "; prerr d2c; prerr_newline ()
+  end // end of [val]
+  val fl = funlab_make_prfcst_typ (d2c)
+  val vp_fun = valprim_funclo_make (fl)
+  val (pf_funlab_mark | ()) = funlab_push (fl)
+  val () = funentry_lablst_add (fl)
+  val entry = funentry_prf_make (loc, d2c, fl)
+  val () = funentry_associate (entry)
+  val () = funlab_pop (pf_funlab_mark | (*none*))
+  val () = the_topcstctx_add (d2c, vp_fun)
+in
+  // empty
+end // end of [ccomp_impdec_prf]
 
 (* ****** ****** *)
 
@@ -2546,9 +2573,7 @@ in
       ccomp_vardeclst (res, level, vardecs)
     end // end of [HIDvardecs]
   | HIDimpdec impdec => ccomp_impdec (res, impdec)
-  | HIDimpdec_prf d2c => let
-      val vp = valprim_void () in the_topcstctx_add (d2c, vp)
-    end // end of [HIDimpdec_prf]
+  | HIDimpdec_prf d2c => ccomp_impdec_prf (hid0.hidec_loc, d2c)
   | HIDlocal (hids_head, hids_body) => let
       val () = ccomp_declst (res, hids_head)
     in
@@ -2566,13 +2591,12 @@ in
     end // end of [_]
 end // end of [ccomp_dec]
 
-implement ccomp_declst (res, hids) = begin
-  case+ hids of
+implement ccomp_declst (res, hids) = case+ hids of
   | list_cons (hid, hids) => begin
       ccomp_dec (res, hid); ccomp_declst (res, hids)
-    end
+    end // end of [list_cons]
   | list_nil () => ()
-end // end of [ccomp_dec]
+// end of [ccomp_dec]
 
 (* ****** ****** *)
 

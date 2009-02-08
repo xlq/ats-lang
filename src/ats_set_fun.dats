@@ -174,12 +174,12 @@ end // end of [avl_rotate_r]
 
 extern fun{a:t@ype} avl_insert {h,s:nat}
   (t: avl (a, h, s), ne: a, cmp: cmp_t a)
-  : [h':nat | h <= h'; h' <= h+1] avl (a, h', s+1)
+  : [s',h': nat | s <= s'; s' <= s+1; h <= h'; h' <= h+1] avl (a, h', s')
 
 extern fun{a:t@ype} avl_insert_br
   {h,lh,ls,rh,rs:nat | lh-1 <= rh; rh <= lh+1; max_r(lh, rh, h-1)}
   (e: a, h: int h, l: avl (a,lh,ls), r: avl (a,rh,rs), ne: a, cmp: cmp_t a)
-  : avl_inc (a, h, ls+rs+2)
+  : [s:int | ls+rs+1 <= s; s <= ls+rs+2] avl_inc (a, h, s)
 
 implement{a} avl_insert (t, ne, cmp) = begin case+ t of
   | E () => Bl (ne, 1, E (), E ())
@@ -191,20 +191,24 @@ implement{a} avl_insert_br
   (e, h, l, r, ne, cmp) = let
   val sgn = cmp (ne, e)
 in
-  if sgn <= 0 then let
+  if sgn < 0 then let
     val l' = avl_insert<a> (l, ne, cmp)
     val lh' = avl_height l' and rh = avl_height r
   in
     if lh' <= rh then Br (e, rh+1, l', r)
     else if lh' <= rh+1 then Bl (e, lh'+1, l', r)
     else avl_rotate_l (e, l', r)
-  end else let
+  end else if sgn > 0 then let
     val r' = avl_insert<a> (r, ne, cmp)
     val lh = avl_height l and rh' = avl_height r'
   in
     if rh' <= lh then Bl (e, lh+1, l, r')
     else if rh' <= lh + 1 then Br (e, rh'+1, l, r')
     else avl_rotate_r (e, l, r')
+  end else let
+    val lh = avl_height l and rh = avl_height r
+  in
+    if lh >= rh then Bl (e, h, l, r) else Br (e, h, l, r)
   end // end of [if]
 end // end of [avl_insert_br]
 
@@ -538,9 +542,7 @@ assume set_t (a: t@ype) = [h,s:nat] avl (a, h, s)
 
 implement set_nil = E ()
 implement{a} set_member (xs, x, cmp) = avl_member (xs, x, cmp)
-implement{a} set_insert (xs, x, cmp) = begin
-  if avl_member (xs, x, cmp) then xs else avl_insert (xs, x, cmp)
-end
+implement{a} set_insert (xs, x, cmp) = avl_insert (xs, x, cmp)
 implement{a} set_remove (xs, x, cmp) = avl_remove (xs, x, cmp)
 implement{a} set_inter (xs1, xs2, cmp) = avl_inter (xs1, xs2, cmp)
 implement{a} set_union (xs1, xs2, cmp) = avl_union (xs1, xs2, cmp)

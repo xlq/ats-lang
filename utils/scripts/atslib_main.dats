@@ -55,32 +55,50 @@ staload "top.sats"
 
 fn do_usage (cmd: string): void = begin
   printf ("The usage of %s is:\n", @(cmd));
-  printf ("  1. %s -all (* generating [libats.a] *)\n", @(cmd));
-  printf ("  2. %s [infile] (* compiling and archiving a single file *) \n", @(cmd));
-end
+  printf ("  1. %s <flags> --libats (* generating [libats.a] *)\n", @(cmd));
+  printf ("  2. %s <flags> [infile] (* compiling and archiving a single file *) \n", @(cmd));
+end // end of [do_usage]
 
-//
+(* ****** ****** *)
 
 dynload "basics.dats"
 dynload "atscc.dats"
 dynload "atslib.dats"
 
-//
+(* ****** ****** *)
 
 implement main_prelude () = ()
 
-//
+(* ****** ****** *)
 
-implement main (argc, argv) = begin
-  if argc > 1 then begin
-    case+ argv.[1] of
-      | "-all" => libats_make ()
-      | "-lex" => libatslex_make ()
-      | infile => ccomp_gcc_ar_libfile (infile, libats_global)
-  end else begin
-    do_usage argv.[0]
-  end // end of [if]
-end // end of [main]
+implement main {n} (argc, argv) =
+  loop (argc, argv, 1, param_rev) where {
+  var param_rev: Strlst = STRLSTnil ()
+  fun loop {i:nat | i <= n} .<n-i>. (
+      argc: int n
+    , argv: &(@[string][n])
+    , i: int i
+    , param_rev: &Strlst
+    ) : void =
+    if i < argc then let
+      val arg = string1_of_string (argv.[i])
+      val isempty = string_is_at_end (arg, 0)
+      val () = if isempty then begin
+        // empty // skip the empty argument
+      end else begin case+ arg of
+        | "--libats" => libats_make (param_rev)
+        | "--libatslex" => libatslex_make (param_rev)
+        | _ => if arg[0] = '-' then begin
+            param_rev := STRLSTcons (arg, param_rev)
+          end else begin
+            ccomp_gcc_ar_libfile (param_rev, arg, libats_global)
+          end // end of [_]
+      end // end of [val]
+    in
+      loop (argc, argv, i+1, param_rev)
+    end // end of [if]
+  // end of [loop]
+} // end of [main]
 
 (* ****** ****** *)
 

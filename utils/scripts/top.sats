@@ -121,14 +121,14 @@ fun atscc_version (): void
 
 (* ****** ****** *)
 
-fun gcc_libfile_err (infile: string, outfile: string): int
+fun gcc_libfile_err (param: Strlst, infile: string, outfile: string): int
 fun ar_r_err (libfile: string, objfile: string): int
 
-fun ccomp_gcc_ar_libfile (infile: string, libfile: string): void
+fun ccomp_gcc_ar_libfile (param: Strlst, infile: string, libfile: string): void
 
-fun libats_make (): void
-fun libats_mt_make (): void
-fun libatslex_make (): void
+fun libats_make (param: Strlst): void
+fun libats_mt_make (param: Strlst): void
+fun libatslex_make (param: Strlst): void
 
 (* ****** ****** *)
 

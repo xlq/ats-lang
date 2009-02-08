@@ -103,9 +103,14 @@ overload compare with compare_funlab_funlab
 //
 
 fun funlab_make_typ (hit: hityp_t): funlab_t
+
 fun funlab_make_nam_typ (name: string, hit: hityp_t): funlab_t
+
 fun funlab_make_cst_typ
   (d2c: d2cst_t, tmparg: hityplstlst, hit: hityp_t): funlab_t
+
+fun funlab_make_prfcst_typ (d2c: d2cst_t): funlab_t
+
 fun funlab_make_var_typ (d2v: d2var_t, hit: hityp_t): funlab_t
 
 //
@@ -438,6 +443,9 @@ datatype instr =
       tmpvar_t (*ret*)
 
   | INSTRpatck of (valprim, patck, kont) // pattern check
+  
+  | INSTRprfck of d2cst_t // proof check
+
   | INSTRraise of valprim // raising an exception
 
   | INSTRselect of // label selection

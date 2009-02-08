@@ -183,28 +183,12 @@ end // end of [mul_associate]
 
 (* ****** ****** *)
 
-(*
-
-implement mul_with_cst #{i} #{m,n} (pf0) = let
-  prval pf0' = mul_commute pf0
-  prval pf1 = mul_make {i,n} ()
-  prval pf1' = mul_commute pf1
-  prval pf' = mul_distribute (pf0', pf1')
-  prval () = mul_elim pf1
-in
-  mul_commute pf'
-end // end of [mul_with_cst]
-
-*)
-
-(* ****** ****** *)
-
 (* greatest common divisors *)
 
 local
 
 prfun aux1 {m,n:pos} {r:int} .<m+n>.
-  (pf: GCD (m, n, r)): GCD (n, m, r) =
+  (pf: GCD (m, n, r)):<> GCD (n, m, r) =
   sif m <= n then
     let prval GCDind1 pf1 = pf in
        sif m < n then GCDind2 (aux1 pf1) else pf
@@ -216,7 +200,7 @@ prfun aux1 {m,n:pos} {r:int} .<m+n>.
   end // end of [sif]
 
 prfn aux2 {m:nat;n:int} {r:int} 
-  (pf: GCD (m, n, r)): GCD (n, m, r) =
+  (pf: GCD (m, n, r)):<> GCD (n, m, r) =
   sif n > 0 then
     sif m > 0 then aux1 pf
     else let
@@ -243,18 +227,13 @@ in // in of [local]
 
 // gcd_commute: GCD (m, n, r) -> GCD (n, m, r)
 implement gcd_commute {m,n} (pf) =
-  sif m >= 0 then aux2 pf
-  else let
+  sif m >= 0 then aux2 pf else let
     prval GCDneg2 pf1 = pf
   in
-    sif n >= 0 then GCDneg1 (aux2 pf1)
-    else let
-      prval GCDneg2 pf2 = aux2 pf1
-    in
-      GCDneg2 (GCDneg1 pf2)
-    end
+    sif n >= 0 then GCDneg1 (aux2 pf1) else let
+      prval GCDneg2 pf2 = aux2 pf1 in GCDneg2 (GCDneg1 pf2)
+    end // end of [sif]
   end // end of [sif]
-
 end // end of local
 
 (* ****** ****** *)

@@ -513,6 +513,13 @@ in
   | HIEseq (hies) => begin
       strpr "HIEseq("; fprint_hiexplst (pf | out, hies); strpr ")"
     end // end of [HIEseq]
+  | HIEsif (hie_then, hie_else) => begin
+      strpr "HIEsif(";
+      fprint_hiexp (pf | out, hie_then);
+      strpr ", ";
+      fprint_hiexp (pf | out, hie_else);      
+      strpr ")"
+    end // end of [HIEsif]
   | HIEsizeof (hit) => begin
       strpr "HIEsizeof("; fprint_hityp (pf | out, hit); strpr ")"
     end // end of [HIEsizeof]

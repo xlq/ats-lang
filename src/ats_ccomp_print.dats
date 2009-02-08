@@ -603,6 +603,9 @@ in
       fprint_kont (pf | out, k_fail);
       strpr ")"
     end // end of [INSTRpatck]
+  | INSTRprfck (d2c) => begin
+      strpr "INSTRprfck("; fprint_d2cst (pf | out, d2c); strpr ")"
+    end // end of [INSTRprfck]
   | INSTRraise vp => begin
       strpr "INSTRraise("; fprint_valprim (pf | out, vp); strpr ")"
     end // end of [INSTRraise]

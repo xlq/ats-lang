@@ -63,8 +63,16 @@ fun d3expopt_tr (od3e: d3expopt): hiexpopt
 
 (* ****** ****** *)
 
+fun d3exp_prf_tr (d3e: d3exp): void
+fun d3explst_prf_tr (d3es: d3explst): void
+
+(* ****** ****** *)
+
 (* there is no [d3ec_tr] *)
 fun d3eclst_tr (d3cs: d3eclst): hideclst
+
+(* there is no [d3ec_prf_tr] *)
+fun d3eclst_prf_tr (d3cs: d3eclst): void
 
 (* ****** ****** *)
 

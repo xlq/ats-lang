@@ -523,15 +523,14 @@ implement the_funlabset_pop () = let
     case+ !p of
     | ~list_vt_cons (x, xs) => begin
         $effmask_ref (!the_funlabset := x); !p := (xs: funlabsetlst)
-      end
+      end // end of [list_vt_cons]
     | list_vt_nil () => (fold@ (!p); err := 1)
   end
-  val () = // error reporting
-    if err > 0 then begin
-      prerr "Internal Error: ats_ccomp_env: the_funlabset_pop";
-      prerr_newline ();
-      $Err.abort {void} ()
-    end
+  val () = if err > 0 then begin // error reporting
+    prerr "Internal Error: ats_ccomp_env: the_funlabset_pop";
+    prerr_newline ();
+    $Err.abort {void} ()
+  end // end of [val]
 in
   x0
 end // end of [the_funlabset_pop]
@@ -543,7 +542,7 @@ implement the_funlabset_push () = let
     prval vbox pf = pfbox
   in
     !p := list_vt_cons (fls, !p);
-  end
+  end // end of [val]
 in
   !the_funlabset := $Set.set_nil
 end // end of [the_funlabset_push]
@@ -616,36 +615,61 @@ end // end of [local]
 
 (* ****** ****** *)
 
+implement dyncstset_foreach_main (pf | d2cs, f, env) =
+  $Set.set_foreach_main (pf | d2cs, f, env)
+
 local
 
 val the_dyncstset = ref_make_elt<dyncstset> ($Set.set_nil) 
+val the_dynprfcstset = ref_make_elt<dyncstset> ($Set.set_nil) 
 
-in
-
-fn the_dyncstset_add (d2c: d2cst_t): void = let
+fn dyncstset_add
+  (d2cset_ref: ref dyncstset, d2c: d2cst_t): void = let
   val hit0 = s2exp_tr (1(*deep*), d2cst_typ_get d2c)
   val hit0 = hityp_normalize hit0
   val () = d2cst_hityp_set (d2c, Some hit0)
-  val _new = $Set.set_insert<d2cst_t> (!the_dyncstset, d2c, compare_d2cst_d2cst)
+  val d2cset = !d2cset_ref
 in
-  !the_dyncstset := _new
+  !d2cset_ref := $Set.set_insert<d2cst_t> (d2cset, d2c, compare_d2cst_d2cst)
 end // end of [the_dyncstset_add]
+
+fn dyncstset_add_if
+  (d2cset_ref: ref (dyncstset), d2c: d2cst_t): void =
+  // a template constant should not be added!
+  if d2cst_is_temp d2c then () else let
+    val d2cset = !d2cset_ref
+    val ismem = begin
+      $Set.set_member<d2cst_t> (!d2cset_ref, d2c, compare_d2cst_d2cst)
+    end // end of [val]
+  in
+    if ismem then () (*already added*) else dyncstset_add (d2cset_ref, d2c)
+  end // end of [if]
+// end of [dyncstset_add_if]
+
+in
+
+implement the_dyncstset_get () = !the_dyncstset
 
 implement the_dyncstset_add_if (d2c) =
   // a template constant should not be added!
   if d2cst_is_temp d2c then () else let
     val ismem = begin
       $Set.set_member<d2cst_t> (!the_dyncstset, d2c, compare_d2cst_d2cst)
-    end
+    end // end of [val]
   in
-    if ismem then () (*already added*) else the_dyncstset_add (d2c)
+    if ismem then () (*already added*) else dyncstset_add (the_dyncstset, d2c)
   end // end of [if]
 // end of [the_dyncstset_add_if]
 
-implement the_dyncstset_get () = !the_dyncstset
+implement the_dynprfcstset_get () = !the_dynprfcstset
 
-implement dyncstset_foreach_main (pf | d2cs, f, env) =
-  $Set.set_foreach_main (pf | d2cs, f, env)
+implement the_dynprfcstset_add_if (d2c: d2cst_t): void = let
+  val ismem = begin
+    $Set.set_member<d2cst_t> (!the_dynprfcstset, d2c, compare_d2cst_d2cst)
+  end // end of [val]
+in
+  if ismem then () (*already added*) else dyncstset_add (the_dynprfcstset, d2c)
+end // end of [if]
 
 end // end of [local]
 
@@ -939,7 +963,7 @@ fn _funentry_make (
 , funentry_lab= fl
 , funentry_lev= level
 , funentry_vtps= vtps
-, funentry_vtps_flag= 0 // needs finalized
+, funentry_vtps_flag= 0 // it needs to be finalized
 , funentry_labset= fls
 , funentry_ret= tmp_ret
 , funentry_body= inss
@@ -950,6 +974,15 @@ implement funentry_make
    (loc, fl, level, fls, vtps, tmp_ret, inss) = begin
   _funentry_make (loc, fl, level, fls, vtps, tmp_ret, inss)
 end // end of [funentry_make]
+
+implement funentry_prf_make (loc, d2c, fl) = let
+  val tmp_ret = tmpvar_make (hityp_t_void)
+  val ins = INSTRprfck (d2c); val inss = list_cons (ins, list_nil ())
+in
+  _funentry_make (loc, fl
+  , 0(*level*), $Set.set_nil(*fls*), $Set.set_nil(*vtps*), tmp_ret, inss
+  ) // end of [_funentry_make]
+end // end of [funentry_prf_make]
 
 implement funentry_loc_get (entry) = entry.funentry_loc
 implement funentry_lab_get (entry) = entry.funentry_lab
@@ -999,7 +1032,7 @@ fn funentry_labset_get_all
 (*
   val () = begin
     prerr "funentry_labset_get_all: fls0 = "; prerr_funlabset fls0; prerr_newline ()
-  end
+  end // end of [val]
 *)
   val () = funlabset_foreach_cloptr (fls0, aux)
 in
@@ -1151,7 +1184,7 @@ implement funentry_lablst_add (fl) = let
 (*
   val () = begin
     prerr "funentry_lablst_add: fl = "; prerr fl; prerr_newline ()
-  end
+  end // end of [val]
 *)
   val (pfbox | p) = ref_get_view_ptr (the_funlablst)
   prval vbox pf = pfbox

@@ -86,8 +86,26 @@
 
 /* ****** ****** */
 
+/* for initializing a reference */
 #define ats_instr_move_ref_mac(tmp, hit, val) \
   do { tmp = ATS_MALLOC (sizeof(hit)) ; *(hit*)tmp = val ; } while (0)
+
+/* ****** ****** */
+
+/* for proof checking at run-time */
+#define ats_proofcheck_beg_mac(prfcst) \
+  static int prfcst ## _flag = 0 ; \
+  do { \
+    if (prfcst ## _flag > 0) return ; \
+    if (prfcst ## _flag < 0) { \
+      fprintf (stderr, "exit(ATS): proof checking failure: [%s] is cyclically defined!\n", # prfcst) ; \
+      exit (1) ; \
+    } \
+    prfcst ## _flag = -1 ; \
+  } while (0) ;
+/* end of [ats_proofcheck_beg_mac] */
+
+#define ats_proofcheck_end_mac(prfcst) { prfcst ## _flag =  1 ; }
 
 /* ****** ****** */
 
