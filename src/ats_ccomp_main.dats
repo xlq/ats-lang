@@ -494,7 +494,9 @@ fn emit_d2cst_dec {m:file_mode}
   end // end of [_]
 in
   case+ 0 of
-  | _ when d2cst_is_proof d2c => f_isprf_mac ()
+  | _ when d2cst_is_praxi d2c => ()
+  | _ when d2cst_is_prfun d2c => f_isprf_mac ()
+  | _ when d2cst_is_prval d2c => f_isprf_mac ()
   | _ => begin case+ hit1.hityp_node of
     | HITfun (fc, hits_arg, hit_res) => begin case+ fc of
       | $Syn.FUNCLOclo _ => f_isfun_FUNCLOclo_mac (hits_arg, hit_res)
@@ -888,8 +890,9 @@ fn emit_dynload {m:file_mode} (
   val () = dyncstset_foreach_main {FILE m @ l_out} {ptr l_out}
     (view@ out | the_dynprfcstset_get (), f, p_out) where {
     fn f (pf_out: !FILE m @ l_out | d2c: d2cst_t, p_out: !ptr l_out): void = let
-      val () = emit_d2cst (pf | !p_out, d2c)
-      val () = fprint1_string (pf | !p_out, " () ;\n")
+      val () = if d2cst_is_praxi (d2c) then () else begin
+        emit_d2cst (pf | !p_out, d2c); fprint1_string (pf | !p_out, " () ;\n")
+      end // end of [val]
     in
       // empty
     end // end of [f]

@@ -111,6 +111,7 @@ fun dcstkind_prval (): dcstkind = "dcstkind_prval"
 
 fun dcstkind_is_fun (dck: dcstkind): bool
 fun dcstkind_is_castfn (dck: dcstkind): bool
+fun dcstkind_is_praxi (dck: dcstkind): bool
 fun dcstkind_is_prfun (dck: dcstkind): bool
 fun dcstkind_is_prval (dck: dcstkind): bool
 fun dcstkind_is_proof (dck: dcstkind): bool

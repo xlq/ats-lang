@@ -24,6 +24,7 @@ prelude/ats_main_prelude.dats
 
 /* prelude files */
 
+/* primary */
 prelude/DATS/basics.dats
 
 prelude/SATS/file.sats
@@ -43,8 +44,13 @@ prelude/DATS/printf.dats
 prelude/DATS/reference.dats
 prelude/DATS/string.dats
 
+/* secondary */
+prelude/SATS/arith.sats
+prelude/DATS/arith.dats
+
 prelude/SATS/array.sats
 prelude/DATS/array.dats
+prelude/DATS/array_v.dats
 prelude/SATS/array0.sats
 prelude/DATS/array0.dats
 

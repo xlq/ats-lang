@@ -111,9 +111,10 @@ bin/atspack:
 
 ###### library ######
 
-# [gcc -E] for preprocessing
 ATS_PROOFCHECK=
-# ATS_PROOFCHECK=-D_ATS_PROOFCHECK // it should be turned from time to time
+ATS_PROOFCHECK=-D_ATS_PROOFCHECK # it should be turned from time to time
+
+# [GCC -E] for preprocessing
 .libfiles_local: ; $(GCC) -E -P -x c .libfiles -o .libfiles_local
 libfiles: .libfiles_local
 	"$(ATSHOME)"/bin/atslib $(ATS_PROOFCHECK) -O2 --libats # for libats

@@ -146,7 +146,7 @@ implement array_ptr_initialize_fun_tsz
   typedef funptr_t = (&(a?) >> a, sizeLt n) -<f> void
   typedef funptr1_t = (!unit_v | &(a?) >> a, sizeLt n, !Ptr) -<f> void
   val f1 = coerce (f) where {
-    extern fun coerce (f: funptr_t):<> funptr1_t = "atspre_fun_coerce"
+    extern castfn coerce (f: funptr_t):<> funptr1_t
   }
   prval pf = unit_v ()
   val () = array_ptr_initialize_fun_tsz_main
@@ -164,15 +164,15 @@ implement array_ptr_initialize_clo_tsz
   viewtypedef clo_t = (&(a?) >> a, sizeLt n) -<clo,f> void
   viewtypedef clo1_t = (!unit_v | &(a?) >> a, sizeLt n, !Ptr) -<clo,f> void
   prval pf1_f = coerce (pf_f) where {
-    extern prfun coerce {l:addr} (pf: clo_t @ l): clo1_t @ l
-  }
+    extern praxi coerce {l:addr} (pf: clo_t @ l): clo1_t @ l
+  } // end of [prval]
   prval pf = unit_v ()
   val () = array_ptr_initialize_clo_tsz_main
     {a} {unit_v} {Ptr} (pf | base, asz, !p_f, tsz, null)
   prval unit_v () = pf
   prval pf_f = coerce (pf1_f) where {
-    extern prfun coerce {l:addr} (pf: clo1_t @ l): clo_t @ l
-  }
+    extern praxi coerce {l:addr} (pf: clo1_t @ l): clo_t @ l
+  } // end of [prval]
   prval () = view@ f := pf_f
 in
   // empty

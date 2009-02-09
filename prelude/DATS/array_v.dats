@@ -36,6 +36,10 @@
 
 (* ****** ****** *)
 
+#define ATS_DYNLOADFLAG 0 // loaded by [ats_main_prelude]
+
+(* ****** ****** *)
+
 implement array_v_split {a} (pf_mul, pf_arr) = split (pf_mul, pf_arr) where {
   prfun split
     {n,i:nat | i <= n} {l:addr} {ofs:int} .<i>.

@@ -182,7 +182,9 @@ overload compare with compare_d2cst_d2cst
 
 fun d2cst_is_fun (d2c: d2cst_t): bool
 fun d2cst_is_castfn (d2c: d2cst_t): bool
+fun d2cst_is_praxi (d2c: d2cst_t): bool
 fun d2cst_is_prfun (d2c: d2cst_t): bool
+fun d2cst_is_prval (d2c: d2cst_t): bool
 fun d2cst_is_proof (d2c: d2cst_t): bool
 fun d2cst_is_temp (d2c: d2cst_t): bool
 
