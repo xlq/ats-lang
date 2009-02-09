@@ -384,8 +384,6 @@ end // end of [emit_free_glocstlst]
 
 (* ****** ****** *)
 
-dataviewtype ENV (l:addr, i:addr) = ENVcon (l, i) of (ptr l, ptr i)
-
 fn _emit_dynconset {m:file_mode} {l:addr} (
     pf_mod: file_mode_lte (m, w)
   , pf_fil: !FILE m @ l
@@ -394,10 +392,11 @@ fn _emit_dynconset {m:file_mode} {l:addr} (
   ) : int = let
   var i: int = 0
   viewdef V = (FILE m @ l, int @ i)
-  viewtypedef VT = ENV (l, i)
+  dataviewtype ENV2 (l:addr, i:addr) = ENV2con (l, i) of (ptr l, ptr i)
+  viewtypedef VT = ENV2 (l, i)
   fn f_con (pf: !V | d2c: d2con_t, env: !VT): void = let
     prval @(pf_fil, pf_int) = pf
-    val+ ENVcon (p_l, p_i)= env
+    val+ ENV2con (p_l, p_i)= env
     val i = !p_i; val () = (!p_i := i + 1)
     val () = fprint1_string (pf_mod | !p_l, "ATSextern(")
     val () = case+ 0 of
@@ -413,11 +412,11 @@ fn _emit_dynconset {m:file_mode} {l:addr} (
   in
     pf := @(pf_fil, pf_int); fold@ env
   end
-  val env = ENVcon (p_l, &i)
+  val env = ENV2con (p_l, &i)
   prval pf = @(pf_fil, view@ i)
   val () = dynconset_foreach_main {V} {VT} (pf | d2cs, f_con, env)
   prval () = (pf_fil := pf.0; view@ i := pf.1)
-  val+ ~ENVcon (_, _) = env
+  val+ ~ENV2con (_, _) = env
 in
   i // the number of dynamic constructors
 end // end of [_emit_dynconset]
@@ -428,17 +427,9 @@ fn emit_dynconset {m:file_mode}
 
 (* ****** ****** *)
 
-fn emit_d2cst_dec {m:file_mode}
+fn emit_d2cst_dec {m:file_mode} // for a non-proof constant
   (pf: file_mode_lte (m, w)| out: &FILE m, d2c: d2cst_t): void = let
   val hit0 = d2cst_hityp_get_some (d2c); val hit1 = hityp_decode (hit0)
-  macdef f_isprf_mac () = begin
-    fprint1_string (pf | out, "extern ");
-    emit_hityp (pf | out, hityp_t_void);
-    fprint1_char (pf | out, ' ');
-    emit_d2cst (pf | out, d2c);
-    fprint1_string (pf | out, " (");
-    fprint1_string (pf | out, ") ;\n")
-  end // end of [macdef]
   macdef f_isfun_FUNCLOclo_mac (hits_arg, hit_res) = let
      val hits_arg = hityplst_encode ,(hits_arg)
      val hit_res = hityp_encode ,(hit_res)
@@ -493,35 +484,46 @@ fn emit_d2cst_dec {m:file_mode}
     // empty
   end // end of [_]
 in
-  case+ 0 of
-  | _ when d2cst_is_praxi d2c => ()
-  | _ when d2cst_is_prfun d2c => f_isprf_mac ()
-  | _ when d2cst_is_prval d2c => f_isprf_mac ()
-  | _ => begin case+ hit1.hityp_node of
-    | HITfun (fc, hits_arg, hit_res) => begin case+ fc of
-      | $Syn.FUNCLOclo _ => f_isfun_FUNCLOclo_mac (hits_arg, hit_res)
-      | $Syn.FUNCLOfun _ => f_isfun_FUNCLOfun_mac (hits_arg, hit_res)
-      end // end of [HITfun]
-    | _ => f_isnotfun_mac ()
-    end // end of [_]
+  case+ hit1.hityp_node of
+  | HITfun (fc, hits_arg, hit_res) => begin case+ fc of
+    | $Syn.FUNCLOclo _ => f_isfun_FUNCLOclo_mac (hits_arg, hit_res)
+    | $Syn.FUNCLOfun _ => f_isfun_FUNCLOfun_mac (hits_arg, hit_res)
+    end // end of [HITfun]
+  | _ => f_isnotfun_mac ()
+end // end of [emit_d2cst_dec]
+
+fn emit_d2cst_prf_dec {m:file_mode} // for a proof constant
+  (pf: file_mode_lte (m, w)| out: &FILE m, d2c: d2cst_t): void = let
+  val hit0 = d2cst_hityp_get_some (d2c); val hit1 = hityp_decode (hit0)
+  macdef f_isprf_mac () = begin
+    fprint1_string (pf | out, "extern ");
+    emit_hityp (pf | out, hityp_t_void);
+    fprint1_char (pf | out, ' ');
+    emit_d2cst (pf | out, d2c);
+    fprint1_string (pf | out, " (");
+    fprint1_string (pf | out, ") ;\n")
+  end // end of [macdef]
+in
+  if d2cst_is_praxi d2c then () else f_isprf_mac ()
 end // end of [emit_d2cst_dec]
 
 (* ****** ****** *)
 
-fn _emit_dyncstset {m:file_mode} {l:addr} (
-    pf_mod: file_mode_lte (m, w)
-  , pf_fil: !FILE m @ l
-  | p_l: ptr l
-  , d2cs: dyncstset
+fn _emit_dyncstset_proc {m:file_mode} {l:addr} (
+    pf_mod: file_mode_lte (m, w), pf_fil: !FILE m @ l
+  | p_l: ptr l, d2cs: dyncstset
+  , proc: (file_mode_lte (m, w) | &FILE m, d2cst_t) -> void
   ) : int = let
   var i: int = 0
   viewdef V = (FILE m @ l, int @ i)
-  viewtypedef VT = ENV (l, i)
+  typedef fun_type = (file_mode_lte (m, w) | &FILE m, d2cst_t) -> void
+  dataviewtype ENV3 (l:addr, i:addr) = ENV3con (l, i) of (ptr l, ptr i, fun_type)
+  viewtypedef VT = ENV3 (l, i)
   fn f_cst (pf: !V | d2c: d2cst_t, env: !VT): void = let
     prval @(pf_fil, pf_int) = pf
-    val+ ENVcon (p_l, p_i)= env
+    val+ ENV3con (p_l, p_i, proc)= env
     val i = !p_i; val () = (!p_i := i + 1)
-    val () = emit_d2cst_dec (pf_mod | !p_l, d2c)
+    val () = proc (pf_mod | !p_l, d2c)
   in
     pf := @(pf_fil, pf_int); fold@ env
   end // end of [f_cst]
@@ -529,18 +531,22 @@ fn _emit_dyncstset {m:file_mode} {l:addr} (
     case+ d2cst_decarg_get (d2c) of
     | list_cons _ => () | list_nil _ => f_cst (pf | d2c, env)
   end // end of [f_cst_if]
-  val env = ENVcon (p_l, &i)
+  val env = ENV3con (p_l, &i, proc)
   prval pf = @(pf_fil, view@ i)
   val () = dyncstset_foreach_main {V} {VT} (pf | d2cs, f_cst_if, env)
   prval () = (pf_fil := pf.0; view@ i := pf.1)
-  val+ ~ENVcon (_, _) = env
+  val+ ~ENV3con (_, _, _) = env
 in
   i // the number of dynamic constructors
 end // end of [_emit_dyncstset]
 
 fn emit_dyncstset {m:file_mode}
   (pf: file_mode_lte (m, w) | out: &FILE m, d2cs: dyncstset): int =
-  _emit_dyncstset (pf, view@ out | &out, d2cs)
+  _emit_dyncstset_proc (pf, view@ out | &out, d2cs, emit_d2cst_dec)
+
+fn emit_dynprfcstset {m:file_mode}
+  (pf: file_mode_lte (m, w) | out: &FILE m, d2cs: dyncstset): int =
+  _emit_dyncstset_proc (pf, view@ out | &out, d2cs, emit_d2cst_prf_dec)
 
 (* ****** ****** *)
 
@@ -1101,7 +1107,7 @@ implement ccomp_main {m}
   val () = if (flag > 0) then let // declaration for dynamic proof constants
     val () = fprint1_string (pf | out, "/* external dynamic proof constant declarations */\n")
     val () = fprint1_string (pf | out, "#ifdef _ATS_PROOFCHECK\n")
-    val n = emit_dyncstset (pf | out, the_dynprfcstset_get ())
+    val n = emit_dynprfcstset (pf | out, the_dynprfcstset_get ())
     val () = if n = 0 then fprint1_string (pf | out, "/* empty */\n")
     val () = fprint1_string (pf | out, "#endif /* _ATS_PROOFCHECK */\n\n")
   in

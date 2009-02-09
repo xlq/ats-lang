@@ -71,8 +71,7 @@ implement main_prelude () = ()
 
 (* ****** ****** *)
 
-implement main {n} (argc, argv) =
-  loop (argc, argv, 1, param_rev) where {
+implement main {n} (argc, argv) = let
   var param_rev: Strlst = STRLSTnil ()
   fun loop {i:nat | i <= n} .<n-i>. (
       argc: int n
@@ -98,7 +97,11 @@ implement main {n} (argc, argv) =
       loop (argc, argv, i+1, param_rev)
     end // end of [if]
   // end of [loop]
-} // end of [main]
+in
+  case+ argc of
+  | _ when argc >= 2 => loop (argc, argv, 1, param_rev)
+  | _ (* argc = 1 *) => do_usage (argv.[0])
+end // end of [main]
 
 (* ****** ****** *)
 

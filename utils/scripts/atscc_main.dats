@@ -58,8 +58,9 @@ staload "top.sats"
 fn do_usage (cmd: string): void = begin
   printf ("The usage of %s is:\n", @(cmd));
   printf ("  %s [flag-or-file]*\n", @(cmd));
-end
+end // end of [do_usage]
 
+(* ****** ****** *)
 
 #define nil STRLSTnil; #define :: STRLSTcons
 
@@ -337,16 +338,14 @@ end // end of [aux]
 
 extern val "atscc_argv_process" = atscc_argv_process
 
-//
+(* ****** ****** *)
 
 dynload "basics.dats"
 dynload "atscc.dats"
 
-//
-
 implement main_prelude () = ()
 
-//
+(* ****** ****** *)
 
 extern
 fun __ats_main {n:pos} (argc: int n, argv: &(@[string][n])): void
