@@ -230,17 +230,17 @@ implement compare_d2cst_d2cst (d2c1, d2c2) =
 (* ****** ****** *)
 
 implement d2cst_is_fun (d2c) = let
-  val knd =
+  val knd = $effmask_ref (
     let val (vbox pf | p) = d2c in p->d2cst_kind end
-  // end of [val]
+  ) // end of [val]
 in
   $Syn.dcstkind_is_fun (knd)
 end // end of [d2cst_is_fun]
 
 implement d2cst_is_castfn (d2c) = let
-  val knd =
+  val knd = $effmask_ref (
     let val (vbox pf | p) = d2c in p->d2cst_kind end
-  // end of [val]
+  ) // end of [val]
 in
   $Syn.dcstkind_is_castfn (knd)
 end // end of [d2cst_is_castfn]
@@ -248,33 +248,33 @@ end // end of [d2cst_is_castfn]
 //
 
 implement d2cst_is_praxi (d2c) = let
-  val knd =
+  val knd = $effmask_ref (
     let val (vbox pf | p) = d2c in p->d2cst_kind end
-  // end of [val]
+  ) // end of [val]
 in
   $Syn.dcstkind_is_praxi (knd)
 end // end of [d2cst_is_praxi]
 
 implement d2cst_is_prfun (d2c) = let
-  val knd =
+  val knd = $effmask_ref (
     let val (vbox pf | p) = d2c in p->d2cst_kind end
-  // end of [val]
+  ) // end of [val]
 in
   $Syn.dcstkind_is_prfun (knd)
 end // end of [d2cst_is_prfun]
 
 implement d2cst_is_prval (d2c) = let
-  val knd =
+  val knd = $effmask_ref (
     let val (vbox pf | p) = d2c in p->d2cst_kind end
-  // end of [val]
+  ) // end of [val]
 in
   $Syn.dcstkind_is_prval (knd)
 end // end of [d2cst_is_prval]
 
 implement d2cst_is_proof (d2c) = let
-  val knd =
+  val knd = $effmask_ref (
     let val (vbox pf | p) = d2c in p->d2cst_kind end
-  // end of [val]
+  ) // end of [val]
 in
   $Syn.dcstkind_is_proof (knd)
 end // end of [d2cst_is_proof]
@@ -282,9 +282,9 @@ end // end of [d2cst_is_proof]
 //
 
 implement d2cst_is_temp (d2c) = let
-  val decarg = begin
+  val decarg = $effmask_ref (
     let val (vbox pf | p) = d2c in p->d2cst_decarg end
-  end
+  ) // end of [val]
 in
   case+ decarg of list_cons _ => true | list_nil _ => false
 end // end of [d2cst_is_temp]

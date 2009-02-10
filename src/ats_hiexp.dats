@@ -603,11 +603,11 @@ implement hidec_extval (loc, name: string, hie_def) = '{
 (* ****** ****** *)
 
 implement hidec_impdec (loc, impdec) = '{
-  hidec_loc= loc, hidec_node= HIDimpdec impdec
+  hidec_loc= loc, hidec_node= HIDimpdec (impdec)
 }
 
-implement hidec_impdec_prf (loc, d2c) = '{
-  hidec_loc= loc, hidec_node= HIDimpdec_prf d2c
+implement hidec_impdec_prf (loc, impdec_prf) = '{
+  hidec_loc= loc, hidec_node= HIDimpdec_prf (impdec_prf)
 }
 
 (* ****** ****** *)
@@ -650,13 +650,19 @@ implement hidec_vardecs (loc, hids) = '{
 
 (* ****** ****** *)
 
-implement hiimpdec_make (loc, d2c, tmp, decarg, tmparg, hie_def) = '{
+implement hiimpdec_make
+  (loc, d2c, tmp, decarg, tmparg, hie_def, d2cs) = '{
   hiimpdec_loc= loc
 , hiimpdec_cst= d2c
 , hiimpdec_tmp= tmp
 , hiimpdec_decarg= decarg(*s2qualst*), hiimpdec_tmparg= tmparg(*hityplstlst*)
 , hiimpdec_def= hie_def
+, hiimpdec_cstset= d2cs
 } // end of [hiimpdec_make]
+
+implement hiimpdec_prf_make (loc, d2c, d2cs) = '{
+  hiimpdec_prf_loc= loc, hiimpdec_prf_cst= d2c, hiimpdec_prf_cstset= d2cs
+} // end of [hiimpdec_prf_make]
 
 (* ****** ****** *)
 

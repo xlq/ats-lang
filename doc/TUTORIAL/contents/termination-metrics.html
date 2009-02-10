@@ -21,9 +21,8 @@ ordering on natural numbers to order such tuples.
 The kind of recursion in the following implementation of the
 factorial function is primitive recursion:
 
-<PRE><FONT COLOR="#E80000"><FONT COLOR="#787878">// [fact] implements the factorial function
-</FONT><FONT COLOR="#000000">fun</FONT> fact <FONT COLOR="#0000FF"><FONT COLOR="#000000">{</FONT>n<FONT COLOR="#000000">:</FONT>nat<FONT COLOR="#000000">}</FONT></FONT> <FONT COLOR="#0000FF"><FONT COLOR="#000000">.&lt;</FONT> n <FONT COLOR="#000000">&gt;.</FONT></FONT> <FONT COLOR="#000000">(</FONT>n<FONT COLOR="#000000">:</FONT> <FONT COLOR="#0000FF">int n</FONT><FONT COLOR="#000000">)</FONT><FONT COLOR="#000000">:</FONT> <FONT COLOR="#0000FF">Int</FONT> <FONT COLOR="#000000">=</FONT> <FONT COLOR="#000000">if</FONT> n <FONT COLOR="#000000">&gt;</FONT> 0 <FONT COLOR="#000000">then</FONT> n * fact <FONT COLOR="#000000">(</FONT>n-1<FONT COLOR="#000000">)</FONT> <FONT COLOR="#000000">else</FONT> 1
-</FONT></PRE>
+<PRE><span class="dynexp"><span class="comment">// [fact] implements the factorial function
+</span><span class="keyword">fun</span> fact <span class="staexp"><span class="keyword">{</span>n<span class="keyword">:</span>nat<span class="keyword">}</span></span> <span class="staexp"><span class="keyword">.&lt;</span> n <span class="keyword">&gt;.</span></span> <span class="keyword">(</span>n<span class="keyword">:</span> <span class="staexp">int n</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">Int</span> <span class="keyword">=</span> <span class="keyword">if</span> n <span class="keyword">&gt;</span> 0 <span class="keyword">then</span> n * fact <span class="keyword">(</span>n-1<span class="keyword">)</span> <span class="keyword">else</span> 1</span></PRE>
 
 The syntax <i>.< n >.</i> indicates that the metric supplied for verifying
 the termination of the defined function is a singleton tuple <i>(n)</i>. In
@@ -36,13 +35,12 @@ function <i>fact</i> is terminating.
  We implement as follows a function <i>gcd</i> that computes the greatest
 common division of two given positive integers:
 
-<PRE><FONT COLOR="#E80000"><FONT COLOR="#787878">// [gcd] computes the greates common divisor of two positive integers
-</FONT><FONT COLOR="#000000">fun</FONT> gcd <FONT COLOR="#0000FF"><FONT COLOR="#000000">{</FONT>m<FONT COLOR="#000000">,</FONT>n<FONT COLOR="#000000">:</FONT>int <FONT COLOR="#000000">|</FONT> m <FONT COLOR="#000000">&gt;</FONT> 0<FONT COLOR="#000000">;</FONT> n <FONT COLOR="#000000">&gt;</FONT> 0<FONT COLOR="#000000">}</FONT></FONT> <FONT COLOR="#0000FF"><FONT COLOR="#000000">.&lt;</FONT> m+n <FONT COLOR="#000000">&gt;.</FONT></FONT>
-  <FONT COLOR="#000000">(</FONT>m<FONT COLOR="#000000">:</FONT> <FONT COLOR="#0000FF">int m</FONT><FONT COLOR="#000000">,</FONT> n<FONT COLOR="#000000">:</FONT> <FONT COLOR="#0000FF">int n</FONT><FONT COLOR="#000000">)</FONT><FONT COLOR="#000000">:</FONT> <FONT COLOR="#0000FF"><FONT COLOR="#000000">[</FONT>r<FONT COLOR="#000000">:</FONT>nat <FONT COLOR="#000000">|</FONT> 1 &lt;= r<FONT COLOR="#000000">;</FONT> r &lt;= min<FONT COLOR="#000000">(</FONT>m<FONT COLOR="#000000">,</FONT> n<FONT COLOR="#000000">)</FONT><FONT COLOR="#000000">]</FONT> int r</FONT> <FONT COLOR="#000000">=</FONT>
-  <FONT COLOR="#000000">if</FONT> m <FONT COLOR="#000000">&gt;</FONT> n <FONT COLOR="#000000">then</FONT> gcd <FONT COLOR="#000000">(</FONT>m - n<FONT COLOR="#000000">,</FONT> n<FONT COLOR="#000000">)</FONT>
-  <FONT COLOR="#000000">else</FONT> <FONT COLOR="#000000">if</FONT> m <FONT COLOR="#000000">&lt;</FONT> n <FONT COLOR="#000000">then</FONT> gcd <FONT COLOR="#000000">(</FONT>m<FONT COLOR="#000000">,</FONT> n - m<FONT COLOR="#000000">)</FONT>
-  <FONT COLOR="#000000">else</FONT> m
-</FONT></PRE>
+<PRE><span class="dynexp"><span class="comment">// [gcd] computes the greates common divisors of two positive integers
+</span><span class="keyword">fun</span> gcd <span class="staexp"><span class="keyword">{</span>m<span class="keyword">,</span>n<span class="keyword">:</span>int <span class="keyword">|</span> m <span class="keyword">&gt;</span> 0<span class="keyword">;</span> n <span class="keyword">&gt;</span> 0<span class="keyword">}</span></span> <span class="staexp"><span class="keyword">.&lt;</span> m+n <span class="keyword">&gt;.</span></span>
+  <span class="keyword">(</span>m<span class="keyword">:</span> <span class="staexp">int m</span><span class="keyword">,</span> n<span class="keyword">:</span> <span class="staexp">int n</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp"><span class="keyword">[</span>r<span class="keyword">:</span>nat <span class="keyword">|</span> 1 &lt;= r<span class="keyword">;</span> r &lt;= min<span class="keyword">(</span>m<span class="keyword">,</span> n<span class="keyword">)</span><span class="keyword">]</span> int r</span> <span class="keyword">=</span>
+  <span class="keyword">if</span> m <span class="keyword">&gt;</span> n <span class="keyword">then</span> gcd <span class="keyword">(</span>m - n<span class="keyword">,</span> n<span class="keyword">)</span>
+  <span class="keyword">else</span> <span class="keyword">if</span> m <span class="keyword">&lt;</span> n <span class="keyword">then</span> gcd <span class="keyword">(</span>m<span class="keyword">,</span> n - m<span class="keyword">)</span>
+  <span class="keyword">else</span> m</span></PRE>
 
 The syntax <i>.< m+n >.</i> indicates that the termination metric
 <i>(m+n)</i> should be used to verify that the defined function <i>gcd</i>
@@ -57,13 +55,12 @@ original termination metric <i>m+n</i> (as <i>m</i> is positive).  Thus,
 
 As another example, we implement as follows the Ackermann's function:
 
-<PRE><FONT COLOR="#E80000"><FONT COLOR="#787878">// [ack] implements the Ackermann's function
-</FONT><FONT COLOR="#000000">fun</FONT> ack <FONT COLOR="#0000FF"><FONT COLOR="#000000">{</FONT>m<FONT COLOR="#000000">,</FONT>n<FONT COLOR="#000000">:</FONT>nat<FONT COLOR="#000000">}</FONT></FONT> <FONT COLOR="#0000FF"><FONT COLOR="#000000">.&lt;</FONT> m<FONT COLOR="#000000">,</FONT> n <FONT COLOR="#000000">&gt;.</FONT></FONT>
-  <FONT COLOR="#000000">(</FONT>m<FONT COLOR="#000000">:</FONT> <FONT COLOR="#0000FF">int m</FONT><FONT COLOR="#000000">,</FONT> n<FONT COLOR="#000000">:</FONT> <FONT COLOR="#0000FF">int n</FONT><FONT COLOR="#000000">)</FONT><FONT COLOR="#000000">:</FONT> <FONT COLOR="#0000FF">Nat</FONT> <FONT COLOR="#000000">=</FONT>
-  <FONT COLOR="#000000">if</FONT> m <FONT COLOR="#000000">&gt;</FONT> 0 <FONT COLOR="#000000">then</FONT>
-    <FONT COLOR="#000000">if</FONT> n <FONT COLOR="#000000">&gt;</FONT> 0 <FONT COLOR="#000000">then</FONT> ack <FONT COLOR="#000000">(</FONT>m-1<FONT COLOR="#000000">,</FONT> ack <FONT COLOR="#000000">(</FONT>m<FONT COLOR="#000000">,</FONT> n-1<FONT COLOR="#000000">)</FONT><FONT COLOR="#000000">)</FONT> <FONT COLOR="#000000">else</FONT> ack <FONT COLOR="#000000">(</FONT>m-1<FONT COLOR="#000000">,</FONT> 1<FONT COLOR="#000000">)</FONT>
-  <FONT COLOR="#000000">else</FONT> n+1
-</FONT></PRE>
+<PRE><span class="dynexp"><span class="comment">// [ack] implements the Ackermann's function
+</span><span class="keyword">fun</span> ack <span class="staexp"><span class="keyword">{</span>m<span class="keyword">,</span>n<span class="keyword">:</span>nat<span class="keyword">}</span></span> <span class="staexp"><span class="keyword">.&lt;</span> m<span class="keyword">,</span> n <span class="keyword">&gt;.</span></span>
+  <span class="keyword">(</span>m<span class="keyword">:</span> <span class="staexp">int m</span><span class="keyword">,</span> n<span class="keyword">:</span> <span class="staexp">int n</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">Nat</span> <span class="keyword">=</span>
+  <span class="keyword">if</span> m <span class="keyword">&gt;</span> 0 <span class="keyword">then</span>
+    <span class="keyword">if</span> n <span class="keyword">&gt;</span> 0 <span class="keyword">then</span> ack <span class="keyword">(</span>m-1<span class="keyword">,</span> ack <span class="keyword">(</span>m<span class="keyword">,</span> n-1<span class="keyword">)</span><span class="keyword">)</span> <span class="keyword">else</span> ack <span class="keyword">(</span>m-1<span class="keyword">,</span> 1<span class="keyword">)</span>
+  <span class="keyword">else</span> n+1</span></PRE>
 
 The syntax <i>.< m, n >.</i> indicates that the termination metric is
 a pair of natural numbers: <i>(m, n)</i>. We use the lexicographical
@@ -95,12 +92,11 @@ When mutually recursive functions are to be verified, the termination
 metrics for these functions, which are tuples of natural numbers, must be
 of the same tuple length. We given a simple example as follows:
 
-<PRE><FONT COLOR="#E80000"><FONT COLOR="#787878">// mutually recursive functions
-</FONT><FONT COLOR="#000000">fun</FONT> isEven <FONT COLOR="#0000FF"><FONT COLOR="#000000">{</FONT>n<FONT COLOR="#000000">:</FONT>nat<FONT COLOR="#000000">}</FONT></FONT> <FONT COLOR="#0000FF"><FONT COLOR="#000000">.&lt;</FONT> 2*n+2 <FONT COLOR="#000000">&gt;.</FONT></FONT> <FONT COLOR="#000000">(</FONT>n<FONT COLOR="#000000">:</FONT> <FONT COLOR="#0000FF">int n</FONT><FONT COLOR="#000000">)</FONT><FONT COLOR="#000000">:</FONT> <FONT COLOR="#0000FF">bool</FONT> <FONT COLOR="#000000">=</FONT>
-  <FONT COLOR="#000000">if</FONT> n <FONT COLOR="#000000">&gt;</FONT> 0 <FONT COLOR="#000000">then</FONT> <FONT COLOR="#000000">~</FONT><FONT COLOR="#000000">(</FONT>isOdd n<FONT COLOR="#000000">)</FONT> <FONT COLOR="#000000">else</FONT> true
-<FONT COLOR="#000000">and</FONT> isOdd <FONT COLOR="#0000FF"><FONT COLOR="#000000">{</FONT>n<FONT COLOR="#000000">:</FONT>nat<FONT COLOR="#000000">}</FONT></FONT> <FONT COLOR="#0000FF"><FONT COLOR="#000000">.&lt;</FONT> 2*n+1 <FONT COLOR="#000000">&gt;.</FONT></FONT> <FONT COLOR="#000000">(</FONT>n<FONT COLOR="#000000">:</FONT> <FONT COLOR="#0000FF">int n</FONT><FONT COLOR="#000000">)</FONT><FONT COLOR="#000000">:</FONT> <FONT COLOR="#0000FF">bool</FONT> <FONT COLOR="#000000">=</FONT>
-  <FONT COLOR="#000000">if</FONT> n <FONT COLOR="#000000">&gt;</FONT> 0 <FONT COLOR="#000000">then</FONT> isEven <FONT COLOR="#000000">(</FONT>n-1<FONT COLOR="#000000">)</FONT> <FONT COLOR="#000000">else</FONT> false
-</FONT></PRE>
+<PRE><span class="dynexp"><span class="comment">// mutually recursive functions
+</span><span class="keyword">fun</span> isEven <span class="staexp"><span class="keyword">{</span>n<span class="keyword">:</span>nat<span class="keyword">}</span></span> <span class="staexp"><span class="keyword">.&lt;</span> 2*n+2 <span class="keyword">&gt;.</span></span> <span class="keyword">(</span>n<span class="keyword">:</span> <span class="staexp">int n</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">bool</span> <span class="keyword">=</span>
+  <span class="keyword">if</span> n <span class="keyword">&gt;</span> 0 <span class="keyword">then</span> <span class="keyword">~</span><span class="keyword">(</span>isOdd n<span class="keyword">)</span> <span class="keyword">else</span> true
+<span class="keyword">and</span> isOdd <span class="staexp"><span class="keyword">{</span>n<span class="keyword">:</span>nat<span class="keyword">}</span></span> <span class="staexp"><span class="keyword">.&lt;</span> 2*n+1 <span class="keyword">&gt;.</span></span> <span class="keyword">(</span>n<span class="keyword">:</span> <span class="staexp">int n</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">bool</span> <span class="keyword">=</span>
+  <span class="keyword">if</span> n <span class="keyword">&gt;</span> 0 <span class="keyword">then</span> isEven <span class="keyword">(</span>n-1<span class="keyword">)</span> <span class="keyword">else</span> false</span></PRE>
 
 Clearly, we may also verify the termination of these two functions by using
 the metrics
@@ -108,6 +104,41 @@ the metrics
 and
 <i> .< n, 0 >. </i>
 for <i>isEven</i> and <i>isOdd</i>, respectively.
+
+<H4>Termination Checking at Run-time</H4>
+Suppose that <i>foo</i> and <i>bar</i> are declared as follows:
+
+<PRE>
+fun foo ():<> void and bar ():<> void
+</PRE>
+
+Moreover, suppose that the following implementation of <i>foo</i>
+is given in a file named <i>foo.dats</i>:
+
+<PRE>
+implement foo () = $Bar.bar ()
+</PRE>
+
+while the following implementation of <i>bar</i> is given in another file
+named <i>bar.dats</i>:
+
+<PRE>
+implement bar () = $Foo.foo ()
+</PRE>
+
+Clearly, neither <i>foo</i> nor <i>bar</i> is terminating. In practice, it
+is difficult resolve this issue of calling cycles among terminating
+functions by solely relying on termination metrics. Instead, <i>atscc</i>
+can generate run-time code for detecting calling cycles among terminating
+functions if the flag <i>-D_ATS_TERMINATION_CHECK</i> is present. For
+instance, if <i>foo.dats</i> and <i>bar.dats</i> are compiled as follows:
+
+<PRE>
+atscc -D_ATS_TERMINATION_CHECK foo.dats and bar.dats
+</PRE>
+
+then a run-time error is to be reported to indicate a calling cycle when
+either <i>foo.dats</i> or <i>bar.dats</i> is loaded dynamically.
 
 <HR SIZE=1 ALIGN=LEFT><P>
 The code used for illustration is available <a

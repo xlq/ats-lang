@@ -603,9 +603,6 @@ in
       fprint_kont (pf | out, k_fail);
       strpr ")"
     end // end of [INSTRpatck]
-  | INSTRprfck (d2c) => begin
-      strpr "INSTRprfck("; fprint_d2cst (pf | out, d2c); strpr ")"
-    end // end of [INSTRprfck]
   | INSTRraise vp => begin
       strpr "INSTRraise("; fprint_valprim (pf | out, vp); strpr ")"
     end // end of [INSTRraise]
@@ -682,6 +679,15 @@ in
       fprint1_int (pf | out, i);
       strpr ")"
     end // end of [INSTRtmplabint]
+  | INSTRtrmck_beg (d2c) => begin
+      strpr "INSTRtrmck_beg("; fprint_d2cst (pf | out, d2c); strpr ")"
+    end // end of [INSTRtrmck_beg]
+  | INSTRtrmck_end (d2c) => begin
+      strpr "INSTRtrmck_end("; fprint_d2cst (pf | out, d2c); strpr ")"
+    end // end of [INSTRtrmck_end]
+  | INSTRtrmck_tst (d2c) => begin
+      strpr "INSTRtrmck_tst("; fprint_d2cst (pf | out, d2c); strpr ")"
+    end // end of [INSTRtrmck_tst]
   | INSTRtrywith _ => begin
       fprint1_string (pf | out, "INSTRtrywith(...)")
     end // end of [INSTRtrywith]

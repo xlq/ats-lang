@@ -109,9 +109,11 @@ fun funlab_make_nam_typ (name: string, hit: hityp_t): funlab_t
 fun funlab_make_cst_typ
   (d2c: d2cst_t, tmparg: hityplstlst, hit: hityp_t): funlab_t
 
-fun funlab_make_prfcst_typ (d2c: d2cst_t): funlab_t
-
 fun funlab_make_var_typ (d2v: d2var_t, hit: hityp_t): funlab_t
+
+//
+
+fun funlab_make_cst_trmck (d2c: d2cst_t): funlab_t
 
 //
 
@@ -128,15 +130,17 @@ fun funlab_qua_get (fl: funlab_t): d2cstopt
 fun funlab_qua_set (fl: funlab_t, _: d2cstopt): void
   = "ats_ccomp_funlab_qua_set"
 
+fun funlab_tailjoined_get (fl: funlab_t): tmpvarlst
+fun funlab_tailjoined_set (fl: funlab_t, tmps: tmpvarlst): void
+  = "ats_ccomp_funlab_tailjoined_set"
+
 fun funlab_entry_get (fl: funlab_t): funentryopt
 fun funlab_entry_set (fl: funlab_t, _: funentryopt): void
   = "ats_ccomp_funlab_entry_set"
 
 fun funlab_entry_get_some (fl: funlab_t): funentry_t
 
-fun funlab_tailjoined_get (fl: funlab_t): tmpvarlst
-fun funlab_tailjoined_set (fl: funlab_t, tmps: tmpvarlst): void
-  = "ats_ccomp_funlab_tailjoined_set"
+fun funlab_trmck_get (fl: funlab_t): int
 
 (* ****** ****** *)
 
@@ -444,8 +448,6 @@ datatype instr =
 
   | INSTRpatck of (valprim, patck, kont) // pattern check
   
-  | INSTRprfck of d2cst_t // proof check
-
   | INSTRraise of valprim // raising an exception
 
   | INSTRselect of // label selection
@@ -467,7 +469,13 @@ datatype instr =
       (valprim(*var*), offsetlst, valprim(*val*))
 
   | INSTRtmplabint of (tmplab_t, int)
+
+  | INSTRtrmck_beg of d2cst_t // beg of termination check
+  | INSTRtrmck_end of d2cst_t // end of termination check
+  | INSTRtrmck_tst of d2cst_t // test a given dynamic constant
+
   | INSTRtrywith of (instrlst, tmpvar_t, branchlst)
+
   | INSTRvardec of tmpvar_t
 
 where instrlst = List instr

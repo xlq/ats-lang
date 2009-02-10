@@ -182,24 +182,28 @@ in
     end
   end else begin
     // the default is the empty string
-  end
+  end // end of [if]
 end // end of [emit_funlab_prefix]
 
-implement emit_funlab (pf | out, fl) = begin
-  case+ funlab_qua_get fl of
-  | D2CSTOPTsome d2c => let // global function
-      val () = emit_d2cst (pf | out, d2c)
-    in
-      case+ d2cst_kind_get d2c of
-      | $Syn.DCSTKINDval () => fprint1_string (pf | out, "$fun")
-      | _ => ()
-    end // end of [D2CSTOPTsome]
-  | D2CSTOPTnone () => let // local function
-      val () = emit_funlab_prefix (pf | out)
-      val () = emit_identifier (pf | out, funlab_name_get fl)
-    in
-      // empty
-    end // end of [D2CSTOPTnone]
+implement emit_funlab (pf | out, fl) = let
+  val () = case+ funlab_qua_get fl of
+    | D2CSTOPTsome d2c => let // global function
+        val () = emit_d2cst (pf | out, d2c)
+        val () = case+ d2cst_kind_get d2c of
+          | $Syn.DCSTKINDval () => fprint1_string (pf | out, "$fun")
+          | _ => ()
+      in
+        // empty
+      end // end of [D2CSTOPTsome]
+    | D2CSTOPTnone () => let // local function
+        val () = emit_funlab_prefix (pf | out)
+        val () = emit_identifier (pf | out, funlab_name_get fl)
+      in
+        // empty
+      end // end of [D2CSTOPTnone]
+  // end of [val]
+in
+  if funlab_trmck_get fl > 0 then fprint1_string (pf | out, "_trmck")
 end // end of [emit_funlab]
 
 implement emit_tmplab (pf | out, tl) = begin
@@ -1660,17 +1664,6 @@ in
     in
       emit_patck (pf | out, vp, patck, fail)
     end // end of [INSTRpatck]
-  | INSTRprfck (d2c) => let
-      val () = fprint1_string (pf | out, "ats_proofcheck_beg_mac(")
-      val () = emit_d2cst (pf | out, d2c)
-      val () = fprint1_string (pf | out, ") ;\n")
-      // additional code for proof checking is here
-      val () = fprint1_string (pf | out, "ats_proofcheck_end_mac(")
-      val () = emit_d2cst (pf | out, d2c)
-      val () = fprint1_string (pf | out, ") ;")
-    in
-      // empty
-    end // end of [INSTRprfck]
   | INSTRraise (vp_exn) => let
       val () = fprint1_string (pf | out, "ats_raise_exn (")
       val () = emit_valprim (pf | out, vp_exn)
@@ -1742,6 +1735,23 @@ in
   | INSTRtmplabint (tl, i) => begin
       emit_tmplabint (pf | out, tl, i); fprint1_char (pf | out, ':')
     end // end of [INSTRtmplabint]
+  | INSTRtrmck_beg (d2c) => let
+      val () = fprint1_string (pf | out, "ats_termcheck_beg_mac(")
+      val () = emit_d2cst (pf | out, d2c)
+      val () = fprint1_string (pf | out, ") ;")
+    in
+      // empty
+    end // end of [INSTRtrmck_beg]
+  | INSTRtrmck_end (d2c) => let
+      val () = fprint1_string (pf | out, "ats_termcheck_end_mac(")
+      val () = emit_d2cst (pf | out, d2c)
+      val () = fprint1_string (pf | out, ") ;")
+    in
+      // empty
+    end // end of [INSTRtrmck_end]
+  | INSTRtrmck_tst (d2c) => begin
+      emit_d2cst (pf | out, d2c); fprint1_string (pf | out, "_trmck () ;")
+    end // end of [INSTRtrmck_end]
   | INSTRtrywith (res_try, tmp_exn, brs) => let
       val () = fprint1_string (pf | out, "ATS_TRYWITH_TRY(")
       val () = emit_valprim_tmpvar (pf | out, tmp_exn)
@@ -2207,7 +2217,7 @@ implement emit_funentry (pf | out, entry) = let
 (*
   val () = begin
     prerr "emit_funentry: fl = "; prerr_funlab fl; prerr_newline ()
-  end
+  end // end of [val]
 *)
   val fc = funlab_funclo_get (fl)
   val hits_arg = funlab_typ_arg_get (fl)
@@ -2217,7 +2227,7 @@ implement emit_funentry (pf | out, entry) = let
   val () = begin
     prerr "emit_funentry: vtps_all = "; prerr_vartypset vtps_all;
     prerr_newline ()
-  end
+  end // end of [val]
 *)
   val () = begin case+ fc of
     | $Syn.FUNCLOfun () => begin

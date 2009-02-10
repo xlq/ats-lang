@@ -29,6 +29,17 @@ extern fun fildescopy
 
 #define PROLOG_one "\
 <HTML>\n\
+<HEAD>\n\
+<STYLE TYPE=\"text/css\">\n\
+span.comment {color:787878;font-style:italic}\n\
+span.extern  {color:A52A2A}\n\
+span.keyword {color:000000;font-weight:bold}\n\
+span.neuexp  {color:800080}\n\
+span.staexp  {color:0000FF}\n\
+span.dynexp  {color:E80000}\n\
+span.prfexp  {color:009000}\n\
+</STYLE>\n\
+</HEAD>\n\
 <BODY text=\"#000000\" bgcolor=\"#ffffff\" link=\"#0000FF\" vlink=\"#CC00CC\" alink=\"#ff0000\">\n\
 \n\
 "
@@ -90,7 +101,15 @@ end // end of [copy_one]
 <TITLE>Home Page for ATS-tutorial-all</TITLE>\n\
 <META name=\"description\" content=\"Home Page for ATS-tutorial-all\">\n\
 <META name=\"keywords\" content=\"\">\n\
-<LINK REL=\"stylesheet\" HREF=\"../ATS.css\" TYPE=\"text/css\">\n\
+<STYLE TYPE=\"text/css\">\n\
+span.comment {color:787878;font-style:italic}\n\
+span.extern  {color:A52A2A}\n\
+span.keyword {color:000000;font-weight:bold}\n\
+span.neuexp  {color:800080}\n\
+span.staexp  {color:0000FF}\n\
+span.dynexp  {color:E80000}\n\
+span.prfexp  {color:009000}\n\
+</STYLE>\n\
 </HEAD>\n\
 <BODY text=\"#000000\" bgcolor=\"#ffffff\" link=\"#0000FF\" vlink=\"#CC00CC\" alink=\"#ff0000\">\n\
 \n\

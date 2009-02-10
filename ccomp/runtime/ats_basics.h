@@ -45,7 +45,10 @@
 
 /* ****** ****** */
 
+/* [ATSextern] -> [ATSextern_val] */
 #define ATSextern(ty, var) extern ty var
+#define ATSextern_prf(cst) /* proof constant */
+#define ATSextern_val(ty, val) extern ty val
 #define ATSstatic(ty, var) static ty var
 #define ATSstatic_void(var)
 #define ATSunused __attribute__ ((unused))
@@ -93,19 +96,19 @@
 /* ****** ****** */
 
 /* for proof checking at run-time */
-#define ats_proofcheck_beg_mac(prfcst) \
-  static int prfcst ## _flag = 0 ; \
+#define ats_termcheck_beg_mac(dyncst) \
+  static int dyncst ## _flag = 0 ; \
   do { \
-    if (prfcst ## _flag > 0) return ; \
-    if (prfcst ## _flag < 0) { \
-      fprintf (stderr, "exit(ATS): proof checking failure: [%s] is cyclically defined!\n", # prfcst) ; \
+    if (dyncst ## _flag > 0) return ; \
+    if (dyncst ## _flag < 0) { \
+      fprintf (stderr, "exit(ATS): termination checking failure: [%s] is cyclically defined!\n", # dyncst) ; \
       exit (1) ; \
     } \
-    prfcst ## _flag = -1 ; \
+    dyncst ## _flag = -1 ; \
   } while (0) ;
-/* end of [ats_proofcheck_beg_mac] */
+/* end of [ats_termcheck_beg_mac] */
 
-#define ats_proofcheck_end_mac(prfcst) { prfcst ## _flag =  1 ; }
+#define ats_termcheck_end_mac(dyncst) { dyncst ## _flag =  1 ; }
 
 /* ****** ****** */
 

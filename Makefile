@@ -111,14 +111,14 @@ bin/atspack:
 
 ###### library ######
 
-ATS_PROOFCHECK=
-ATS_PROOFCHECK=-D_ATS_PROOFCHECK # it should be turned from time to time
+ATS_TERMINATION_CHECK=
+ATS_TERMINATION_CHECK=-D_ATS_TERMINATION_CHECK # it should be turned from time to time
 
 # [GCC -E] for preprocessing
 .libfiles_local: ; $(GCC) -E -P -x c .libfiles -o .libfiles_local
 libfiles: .libfiles_local
-	"$(ATSHOME)"/bin/atslib $(ATS_PROOFCHECK) -O2 --libats # for libats
-	"$(ATSHOME)"/bin/atslib $(ATS_PROOFCHECK) -O2 --libatslex # for libatslex
+	"$(ATSHOME)"/bin/atslib $(ATS_TERMINATION_CHECK) -O2 --libats # for libats
+	"$(ATSHOME)"/bin/atslib $(ATS_TERMINATION_CHECK) -O2 --libatslex # for libatslex
 
 ###### a lexer for ATS ######
 bin/atslex:

@@ -2491,23 +2491,45 @@ end // end of [ccomp_impdec]
 
 (* ****** ****** *)
 
-// [d2c] is a proof constant
-fn ccomp_impdec_prf
-  (loc: loc_t, d2c: d2cst_t): void = let
+// [d2c] is a terminating constant
+fn ccomp_impdec_trmck
+  (loc: loc_t, d2c: d2cst_t, d2cs: dyncstset_t): void = let
   val () = begin
-    prerr "ccomp_impdec_prf: d2c = "; prerr d2c; prerr_newline ()
+    prerr "ccomp_impdec_trmck: d2c = "; prerr d2c; prerr_newline ()
   end // end of [val]
-  val fl = funlab_make_prfcst_typ (d2c)
+  val fl = funlab_make_cst_trmck (d2c)
   val vp_fun = valprim_funclo_make (fl)
   val (pf_funlab_mark | ()) = funlab_push (fl)
   val () = funentry_lablst_add (fl)
-  val entry = funentry_prf_make (loc, d2c, fl)
+  val entry = funentry_make (loc, fl,
+    0(*level*), $Set.set_nil (*fls*), $Set.set_nil(*vtps*), tmp_ret, inss
+  ) where {
+    val tmp_ret = tmpvar_make_ret (hityp_t_void)
+    var res: instrlst_vt = list_vt_nil ()
+    val () = res := list_vt_cons (INSTRtrmck_beg d2c, res)
+    val () = dyncstset_foreach_main
+      {V} {T} (view@ res | d2cs, f, &res) where {
+      viewdef V = instrlst_vt @ res; typedef T = ptr res
+      fn f (pf: !V | d2c: d2cst_t, p_res: !T):<> void =
+        case+ 0 of
+        | _ when d2cst_is_praxi d2c => ()
+        | _ when d2cst_is_prfun d2c => begin
+            !p_res := list_vt_cons (INSTRtrmck_tst d2c, !p_res)
+          end // end of [_ when ...]
+        | _ when d2cst_is_prval d2c => begin
+            !p_res := list_vt_cons (INSTRtrmck_tst d2c, !p_res)
+          end // end of [_ when ...]
+        | _ => ()
+    } // end of [val]
+    val () = res := list_vt_cons (INSTRtrmck_end d2c, res)
+    val inss = $Lst.list_vt_reverse_list (res)
+  } // end of [val]
   val () = funentry_associate (entry)
   val () = funlab_pop (pf_funlab_mark | (*none*))
   val () = the_topcstctx_add (d2c, vp_fun)
 in
   // empty
-end // end of [ccomp_impdec_prf]
+end // end of [ccomp_impdec_trmck]
 
 (* ****** ****** *)
 
@@ -2572,8 +2594,23 @@ in
     in
       ccomp_vardeclst (res, level, vardecs)
     end // end of [HIDvardecs]
-  | HIDimpdec impdec => ccomp_impdec (res, impdec)
-  | HIDimpdec_prf d2c => ccomp_impdec_prf (hid0.hidec_loc, d2c)
+  | HIDimpdec (impdec) => let
+      val d2c = impdec.hiimpdec_cst
+(*
+      // should this be done now?
+      val d2cs = impdec.hiimpdec_cstset
+      val () = ccomp_impdec_trmck (hid0.hidec_loc, d2c, d2cs)
+*)
+    in
+      ccomp_impdec (res, impdec)
+    end // end of [HiDimpdec]
+  | HIDimpdec_prf (impdec_prf) => let
+      val d2c = impdec_prf.hiimpdec_prf_cst
+      val d2cs = impdec_prf.hiimpdec_prf_cstset
+      val () = ccomp_impdec_trmck (hid0.hidec_loc, d2c, d2cs)
+    in
+      // empty
+    end // end of [HIDimpdec_prf]
   | HIDlocal (hids_head, hids_body) => let
       val () = ccomp_declst (res, hids_head)
     in

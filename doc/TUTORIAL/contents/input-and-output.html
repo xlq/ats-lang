@@ -170,24 +170,25 @@ In case of failure, <i>fputs_exn</i> raises an exception.
 
 The following function <i>filecopy_exn</i> copies a file into another one:
 
-<PRE><FONT COLOR="#E80000"><FONT COLOR="#000000">fn</FONT> filecopy_exn <FONT COLOR="#0000FF"><FONT COLOR="#000000">{</FONT>m1<FONT COLOR="#000000">,</FONT>m2<FONT COLOR="#000000">:</FONT>file_mode<FONT COLOR="#000000">}</FONT></FONT> <FONT COLOR="#000000">(</FONT>
-    <FONT COLOR="#009000">pf1<FONT COLOR="#000000">:</FONT> <FONT COLOR="#0000FF">file_mode_lte <FONT COLOR="#000000">(</FONT>m1<FONT COLOR="#000000">,</FONT> r<FONT COLOR="#000000">)</FONT></FONT></FONT>
-  <FONT COLOR="#000000">,</FONT> <FONT COLOR="#009000">pf2<FONT COLOR="#000000">:</FONT> <FONT COLOR="#0000FF">file_mode_lte <FONT COLOR="#000000">(</FONT>m2<FONT COLOR="#000000">,</FONT> w<FONT COLOR="#000000">)</FONT></FONT></FONT>
-  <FONT COLOR="#000000">|</FONT> fil_s<FONT COLOR="#000000">:</FONT> <FONT COLOR="#0000FF"><FONT COLOR="#000000">&amp;</FONT>FILE m1</FONT><FONT COLOR="#000000">,</FONT> fil_d<FONT COLOR="#000000">:</FONT> <FONT COLOR="#0000FF"><FONT COLOR="#000000">&amp;</FONT>FILE m2</FONT>
-  <FONT COLOR="#000000">)</FONT> <FONT COLOR="#000000">:</FONT> <FONT COLOR="#0000FF">void</FONT> <FONT COLOR="#000000">=</FONT> <FONT COLOR="#000000">let</FONT>
-  <FONT COLOR="#000000">fun</FONT> loop
-    <FONT COLOR="#000000">(</FONT>fil_s<FONT COLOR="#000000">:</FONT> <FONT COLOR="#0000FF"><FONT COLOR="#000000">&amp;</FONT>FILE m1</FONT><FONT COLOR="#000000">,</FONT> fil_d<FONT COLOR="#000000">:</FONT> <FONT COLOR="#0000FF"><FONT COLOR="#000000">&amp;</FONT>FILE m2</FONT><FONT COLOR="#000000">)</FONT><FONT COLOR="#000000">:</FONT> <FONT COLOR="#0000FF">void</FONT> <FONT COLOR="#000000">=</FONT> <FONT COLOR="#000000">let</FONT>
-    <FONT COLOR="#000000">val</FONT> c <FONT COLOR="#000000">=</FONT> fgetc_err <FONT COLOR="#000000">(</FONT><FONT COLOR="#009000">pf1</FONT> <FONT COLOR="#000000">|</FONT> fil_s<FONT COLOR="#000000">)</FONT>
-  <FONT COLOR="#000000">in</FONT>
-    <FONT COLOR="#000000">if</FONT> c &gt;= 0 <FONT COLOR="#000000">then</FONT> <FONT COLOR="#000000">begin</FONT>
-      fputc_exn <FONT COLOR="#000000">(</FONT><FONT COLOR="#009000">pf2</FONT> <FONT COLOR="#000000">|</FONT> i2c c<FONT COLOR="#000000">,</FONT> fil_d<FONT COLOR="#000000">)</FONT><FONT COLOR="#000000">;</FONT> loop <FONT COLOR="#000000">(</FONT>fil_s<FONT COLOR="#000000">,</FONT> fil_d<FONT COLOR="#000000">)</FONT>
-    <FONT COLOR="#000000">end</FONT> <FONT COLOR="#787878">// end of [if]
-</FONT>  <FONT COLOR="#000000">end</FONT> <FONT COLOR="#787878">// end of [loop]
-</FONT><FONT COLOR="#000000">in</FONT>
-  loop <FONT COLOR="#000000">(</FONT>fil_s<FONT COLOR="#000000">,</FONT> fil_d<FONT COLOR="#000000">)</FONT>
-<FONT COLOR="#000000">end</FONT> <FONT COLOR="#787878">// end of [filecopy_exn]
-</FONT>
-</FONT></PRE>
+<PRE><span class="dynexp"><span class="keyword">#define</span> <span class="neuexp">i2c char_of_int1</span>
+
+<span class="keyword">fn</span> filecopy_exn <span class="staexp"><span class="keyword">{</span>m1<span class="keyword">,</span>m2<span class="keyword">:</span>file_mode<span class="keyword">}</span></span> <span class="keyword">(</span>
+    <span class="prfexp">pf1<span class="keyword">:</span> <span class="staexp">file_mode_lte <span class="keyword">(</span>m1<span class="keyword">,</span> r<span class="keyword">)</span></span></span>
+  <span class="keyword">,</span> <span class="prfexp">pf2<span class="keyword">:</span> <span class="staexp">file_mode_lte <span class="keyword">(</span>m2<span class="keyword">,</span> w<span class="keyword">)</span></span></span>
+  <span class="keyword">|</span> fil_s<span class="keyword">:</span> <span class="staexp"><span class="keyword">&amp;</span>FILE m1</span><span class="keyword">,</span> fil_d<span class="keyword">:</span> <span class="staexp"><span class="keyword">&amp;</span>FILE m2</span>
+  <span class="keyword">)</span> <span class="keyword">:</span> <span class="staexp">void</span> <span class="keyword">=</span> <span class="keyword">let</span>
+  <span class="keyword">fun</span> loop
+    <span class="keyword">(</span>fil_s<span class="keyword">:</span> <span class="staexp"><span class="keyword">&amp;</span>FILE m1</span><span class="keyword">,</span> fil_d<span class="keyword">:</span> <span class="staexp"><span class="keyword">&amp;</span>FILE m2</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">void</span> <span class="keyword">=</span> <span class="keyword">let</span>
+    <span class="keyword">val</span> c <span class="keyword">=</span> fgetc_err <span class="keyword">(</span><span class="prfexp">pf1</span> <span class="keyword">|</span> fil_s<span class="keyword">)</span>
+  <span class="keyword">in</span>
+    <span class="keyword">if</span> c &gt;= 0 <span class="keyword">then</span> <span class="keyword">begin</span>
+      fputc_exn <span class="keyword">(</span><span class="prfexp">pf2</span> <span class="keyword">|</span> i2c c<span class="keyword">,</span> fil_d<span class="keyword">)</span><span class="keyword">;</span> loop <span class="keyword">(</span>fil_s<span class="keyword">,</span> fil_d<span class="keyword">)</span>
+    <span class="keyword">end</span> <span class="comment">// end of [if]
+</span>  <span class="keyword">end</span> <span class="comment">// end of [loop]
+</span><span class="keyword">in</span>
+  loop <span class="keyword">(</span>fil_s<span class="keyword">,</span> fil_d<span class="keyword">)</span>
+<span class="keyword">end</span> <span class="comment">// end of [filecopy_exn]
+</span></span></PRE>
 
 In case of error, <i>filecopy_exn</i> raises an exception.
 
@@ -196,82 +197,79 @@ The following function <i>filecopy_err</i> is a variant of
 <i>filecopy_exn</i>. Instead of raising an exception in case of error,
 <i>filecopy_err</i> returns EOF.
 
-<PRE><FONT COLOR="#E80000">
-<FONT COLOR="#000000">fn</FONT> filecopy_err <FONT COLOR="#0000FF"><FONT COLOR="#000000">{</FONT>m1<FONT COLOR="#000000">,</FONT>m2<FONT COLOR="#000000">:</FONT>file_mode<FONT COLOR="#000000">}</FONT></FONT> <FONT COLOR="#000000">(</FONT>
-    <FONT COLOR="#009000">pf1<FONT COLOR="#000000">:</FONT> <FONT COLOR="#0000FF">file_mode_lte <FONT COLOR="#000000">(</FONT>m1<FONT COLOR="#000000">,</FONT> r<FONT COLOR="#000000">)</FONT></FONT></FONT>
-  <FONT COLOR="#000000">,</FONT> <FONT COLOR="#009000">pf2<FONT COLOR="#000000">:</FONT> <FONT COLOR="#0000FF">file_mode_lte <FONT COLOR="#000000">(</FONT>m2<FONT COLOR="#000000">,</FONT> w<FONT COLOR="#000000">)</FONT></FONT></FONT>
-  <FONT COLOR="#000000">|</FONT> fil_s<FONT COLOR="#000000">:</FONT> <FONT COLOR="#0000FF"><FONT COLOR="#000000">&amp;</FONT>FILE m1</FONT><FONT COLOR="#000000">,</FONT> fil_d<FONT COLOR="#000000">:</FONT> <FONT COLOR="#0000FF"><FONT COLOR="#000000">&amp;</FONT>FILE m2</FONT>
-  <FONT COLOR="#000000">)</FONT> <FONT COLOR="#000000">:</FONT> <FONT COLOR="#0000FF">int</FONT> <FONT COLOR="#000000">=</FONT> <FONT COLOR="#000000">let</FONT>
-  <FONT COLOR="#000000">fun</FONT> loop
-    <FONT COLOR="#000000">(</FONT>fil_s<FONT COLOR="#000000">:</FONT> <FONT COLOR="#0000FF"><FONT COLOR="#000000">&amp;</FONT>FILE m1</FONT><FONT COLOR="#000000">,</FONT> fil_d<FONT COLOR="#000000">:</FONT> <FONT COLOR="#0000FF"><FONT COLOR="#000000">&amp;</FONT>FILE m2</FONT><FONT COLOR="#000000">)</FONT><FONT COLOR="#000000">:</FONT> <FONT COLOR="#0000FF">void</FONT> <FONT COLOR="#000000">=</FONT> <FONT COLOR="#000000">let</FONT>
-    <FONT COLOR="#000000">val</FONT> c <FONT COLOR="#000000">=</FONT> fgetc_err <FONT COLOR="#000000">(</FONT><FONT COLOR="#009000">pf1</FONT> <FONT COLOR="#000000">|</FONT> fil_s<FONT COLOR="#000000">)</FONT>
-  <FONT COLOR="#000000">in</FONT>
-    <FONT COLOR="#000000">if</FONT> c &gt;= 0 <FONT COLOR="#000000">then</FONT> <FONT COLOR="#000000">let</FONT>
-      <FONT COLOR="#000000">val</FONT> err <FONT COLOR="#000000">=</FONT> fputc_err <FONT COLOR="#000000">(</FONT><FONT COLOR="#009000">pf2</FONT> <FONT COLOR="#000000">|</FONT> i2c c<FONT COLOR="#000000">,</FONT> fil_d<FONT COLOR="#000000">)</FONT>
-    <FONT COLOR="#000000">in</FONT>
-      loop <FONT COLOR="#000000">(</FONT>fil_s<FONT COLOR="#000000">,</FONT> fil_d<FONT COLOR="#000000">)</FONT>
-    <FONT COLOR="#000000">end</FONT> <FONT COLOR="#787878">// end of [if]
-</FONT>  <FONT COLOR="#000000">end</FONT> <FONT COLOR="#787878">// end of [loop]
-</FONT>  <FONT COLOR="#000000">val</FONT> <FONT COLOR="#000000">(</FONT><FONT COLOR="#000000">)</FONT> <FONT COLOR="#000000">=</FONT> loop <FONT COLOR="#000000">(</FONT>fil_s<FONT COLOR="#000000">,</FONT> fil_d<FONT COLOR="#000000">)</FONT>
-<FONT COLOR="#000000">in</FONT>
-  <FONT COLOR="#000000">if</FONT> ferror <FONT COLOR="#000000">(</FONT>fil_d<FONT COLOR="#000000">)</FONT> <FONT COLOR="#000000">=</FONT> 0 <FONT COLOR="#000000">then</FONT> ~1 <FONT COLOR="#000000">else</FONT> 0
-<FONT COLOR="#000000">end</FONT> <FONT COLOR="#787878">// end of [filecopy_err]
-</FONT>
-</FONT></PRE>
+<PRE><span class="dynexp"><span class="keyword">fn</span> filecopy_err <span class="staexp"><span class="keyword">{</span>m1<span class="keyword">,</span>m2<span class="keyword">:</span>file_mode<span class="keyword">}</span></span> <span class="keyword">(</span>
+    <span class="prfexp">pf1<span class="keyword">:</span> <span class="staexp">file_mode_lte <span class="keyword">(</span>m1<span class="keyword">,</span> r<span class="keyword">)</span></span></span>
+  <span class="keyword">,</span> <span class="prfexp">pf2<span class="keyword">:</span> <span class="staexp">file_mode_lte <span class="keyword">(</span>m2<span class="keyword">,</span> w<span class="keyword">)</span></span></span>
+  <span class="keyword">|</span> fil_s<span class="keyword">:</span> <span class="staexp"><span class="keyword">&amp;</span>FILE m1</span><span class="keyword">,</span> fil_d<span class="keyword">:</span> <span class="staexp"><span class="keyword">&amp;</span>FILE m2</span>
+  <span class="keyword">)</span> <span class="keyword">:</span> <span class="staexp">int</span> <span class="keyword">=</span> <span class="keyword">let</span>
+  <span class="keyword">fun</span> loop
+    <span class="keyword">(</span>fil_s<span class="keyword">:</span> <span class="staexp"><span class="keyword">&amp;</span>FILE m1</span><span class="keyword">,</span> fil_d<span class="keyword">:</span> <span class="staexp"><span class="keyword">&amp;</span>FILE m2</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">void</span> <span class="keyword">=</span> <span class="keyword">let</span>
+    <span class="keyword">val</span> c <span class="keyword">=</span> fgetc_err <span class="keyword">(</span><span class="prfexp">pf1</span> <span class="keyword">|</span> fil_s<span class="keyword">)</span>
+  <span class="keyword">in</span>
+    <span class="keyword">if</span> c &gt;= 0 <span class="keyword">then</span> <span class="keyword">let</span>
+      <span class="keyword">val</span> err <span class="keyword">=</span> fputc_err <span class="keyword">(</span><span class="prfexp">pf2</span> <span class="keyword">|</span> i2c c<span class="keyword">,</span> fil_d<span class="keyword">)</span>
+    <span class="keyword">in</span>
+      loop <span class="keyword">(</span>fil_s<span class="keyword">,</span> fil_d<span class="keyword">)</span>
+    <span class="keyword">end</span> <span class="comment">// end of [if]
+</span>  <span class="keyword">end</span> <span class="comment">// end of [loop]
+</span>  <span class="keyword">val</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> loop <span class="keyword">(</span>fil_s<span class="keyword">,</span> fil_d<span class="keyword">)</span>
+<span class="keyword">in</span>
+  <span class="keyword">if</span> ferror <span class="keyword">(</span>fil_d<span class="keyword">)</span> <span class="keyword">=</span> 0 <span class="keyword">then</span> ~1 <span class="keyword">else</span> 0
+<span class="keyword">end</span> <span class="comment">// end of [filecopy_err]
+</span></span></PRE>
 
 We now use <i>filecopy_err</i> to implement as follows the functionality of
 concatenating a list of files into a single one:
 
-<PRE><FONT COLOR="#E80000">
-<FONT COLOR="#000000">implement</FONT> main <FONT COLOR="#0000FF"><FONT COLOR="#000000">{</FONT>n<FONT COLOR="#000000">}</FONT></FONT> <FONT COLOR="#000000">(</FONT>argc<FONT COLOR="#000000">,</FONT> argv<FONT COLOR="#000000">)</FONT> <FONT COLOR="#000000">=</FONT> <FONT COLOR="#000000">let</FONT>
-  <FONT COLOR="#000000">val</FONT> <FONT COLOR="#000000">(</FONT><FONT COLOR="#000000">)</FONT> <FONT COLOR="#000000">=</FONT> <FONT COLOR="#000000">case+</FONT> argc <FONT COLOR="#000000">of</FONT>
-  <FONT COLOR="#000000">|</FONT> 1 <FONT COLOR="#000000">=&gt;</FONT> <FONT COLOR="#000000">let</FONT>
-      <FONT COLOR="#000000">val</FONT> <FONT COLOR="#000000">(</FONT><FONT COLOR="#009000">pf_stdin</FONT> <FONT COLOR="#000000">|</FONT> p_stdin<FONT COLOR="#000000">)</FONT> <FONT COLOR="#000000">=</FONT> stdin_get <FONT COLOR="#000000">(</FONT><FONT COLOR="#000000">)</FONT>
-      <FONT COLOR="#000000">val</FONT> <FONT COLOR="#000000">(</FONT><FONT COLOR="#009000">pf_stdout</FONT> <FONT COLOR="#000000">|</FONT> p_stdout<FONT COLOR="#000000">)</FONT> <FONT COLOR="#000000">=</FONT> stdout_get <FONT COLOR="#000000">(</FONT><FONT COLOR="#000000">)</FONT>
-      <FONT COLOR="#000000">val</FONT> _<FONT COLOR="#787878">(*err*)</FONT> <FONT COLOR="#000000">=</FONT> filecopy_err
-        <FONT COLOR="#000000">(</FONT><FONT COLOR="#009000">file_mode_lte_r_r</FONT><FONT COLOR="#000000">,</FONT> <FONT COLOR="#009000">file_mode_lte_w_w</FONT> <FONT COLOR="#000000">|</FONT> <FONT COLOR="#000000">!</FONT>p_stdin<FONT COLOR="#000000">,</FONT> <FONT COLOR="#000000">!</FONT>p_stdout<FONT COLOR="#000000">)</FONT>
-      <FONT COLOR="#000000">val</FONT> <FONT COLOR="#000000">(</FONT><FONT COLOR="#000000">)</FONT> <FONT COLOR="#000000">=</FONT> stdout_view_set <FONT COLOR="#000000">(</FONT><FONT COLOR="#009000">pf_stdout</FONT> <FONT COLOR="#000000">|</FONT> <FONT COLOR="#787878">(*none*)</FONT><FONT COLOR="#000000">)</FONT>
-      <FONT COLOR="#000000">val</FONT> <FONT COLOR="#000000">(</FONT><FONT COLOR="#000000">)</FONT> <FONT COLOR="#000000">=</FONT> stdin_view_set <FONT COLOR="#000000">(</FONT><FONT COLOR="#009000">pf_stdin</FONT> <FONT COLOR="#000000">|</FONT> <FONT COLOR="#787878">(*none*)</FONT><FONT COLOR="#000000">)</FONT>
-    <FONT COLOR="#000000">in</FONT>
-      <FONT COLOR="#787878">// empty
-</FONT>    <FONT COLOR="#000000">end</FONT> <FONT COLOR="#787878">// end of [1]
-</FONT>  <FONT COLOR="#000000">|</FONT> _ <FONT COLOR="#787878">(*argc &gt;= 2*)</FONT> <FONT COLOR="#000000">=&gt;</FONT> loop <FONT COLOR="#000000">(</FONT>argc<FONT COLOR="#000000">,</FONT> argv<FONT COLOR="#000000">,</FONT> 1<FONT COLOR="#000000">)</FONT> <FONT COLOR="#000000">where</FONT> <FONT COLOR="#000000">{</FONT>
-      <FONT COLOR="#000000">fun</FONT> loop <FONT COLOR="#0000FF"><FONT COLOR="#000000">{</FONT>i<FONT COLOR="#000000">:</FONT>nat <FONT COLOR="#000000">|</FONT> i &lt;= n<FONT COLOR="#000000">}</FONT></FONT>
-        <FONT COLOR="#000000">(</FONT>argc<FONT COLOR="#000000">:</FONT> <FONT COLOR="#0000FF">int n</FONT><FONT COLOR="#000000">,</FONT> argv<FONT COLOR="#000000">:</FONT> <FONT COLOR="#0000FF"><FONT COLOR="#000000">&amp;</FONT><FONT COLOR="#000000">(</FONT><FONT COLOR="#000000">@[</FONT>string<FONT COLOR="#000000">]</FONT><FONT COLOR="#000000">[</FONT>n<FONT COLOR="#000000">]</FONT><FONT COLOR="#000000">)</FONT></FONT><FONT COLOR="#000000">,</FONT> i<FONT COLOR="#000000">:</FONT> <FONT COLOR="#0000FF">int i</FONT><FONT COLOR="#000000">)</FONT><FONT COLOR="#000000">:</FONT> <FONT COLOR="#0000FF">void</FONT> <FONT COLOR="#000000">=</FONT>
-        <FONT COLOR="#000000">if</FONT> i <FONT COLOR="#000000">&lt;</FONT> argc <FONT COLOR="#000000">then</FONT> <FONT COLOR="#000000">let</FONT>
-          <FONT COLOR="#000000">val</FONT> name <FONT COLOR="#000000">=</FONT> argv<FONT COLOR="#000000">.</FONT><FONT COLOR="#000000">[</FONT><FONT COLOR="#009000">i</FONT><FONT COLOR="#000000">]</FONT>
-          <FONT COLOR="#000000">val</FONT> <FONT COLOR="#000000">(</FONT><FONT COLOR="#009000">pfopt</FONT> <FONT COLOR="#000000">|</FONT> p_ifp<FONT COLOR="#000000">)</FONT> <FONT COLOR="#000000">=</FONT> fopen_err <FONT COLOR="#000000">(</FONT>name<FONT COLOR="#000000">,</FONT> file_mode_r<FONT COLOR="#000000">)</FONT>
-        <FONT COLOR="#000000">in</FONT>
-          <FONT COLOR="#000000">if</FONT> p_ifp &lt;&gt; null <FONT COLOR="#000000">then</FONT> <FONT COLOR="#000000">let</FONT>
-            <FONT COLOR="#000000">prval</FONT> <FONT COLOR="#009000">Some_v <FONT COLOR="#000000">(</FONT>pf<FONT COLOR="#000000">)</FONT> <FONT COLOR="#000000">=</FONT> pfopt</FONT>
-            <FONT COLOR="#000000">val</FONT> <FONT COLOR="#000000">(</FONT><FONT COLOR="#009000">pf_stdout</FONT> <FONT COLOR="#000000">|</FONT> p_stdout<FONT COLOR="#000000">)</FONT> <FONT COLOR="#000000">=</FONT> stdout_get <FONT COLOR="#000000">(</FONT><FONT COLOR="#000000">)</FONT>
-            <FONT COLOR="#000000">val</FONT> _<FONT COLOR="#787878">(*err*)</FONT> <FONT COLOR="#000000">=</FONT> filecopy_err
-              <FONT COLOR="#000000">(</FONT><FONT COLOR="#009000">file_mode_lte_r_r</FONT><FONT COLOR="#000000">,</FONT> <FONT COLOR="#009000">file_mode_lte_w_w</FONT> <FONT COLOR="#000000">|</FONT> <FONT COLOR="#000000">!</FONT>p_ifp<FONT COLOR="#000000">,</FONT> <FONT COLOR="#000000">!</FONT>p_stdout<FONT COLOR="#000000">)</FONT>
-            <FONT COLOR="#000000">val</FONT> <FONT COLOR="#000000">(</FONT><FONT COLOR="#000000">)</FONT> <FONT COLOR="#000000">=</FONT> stdout_view_set <FONT COLOR="#000000">(</FONT><FONT COLOR="#009000">pf_stdout</FONT> <FONT COLOR="#000000">|</FONT> <FONT COLOR="#787878">(*none*)</FONT><FONT COLOR="#000000">)</FONT>
-            <FONT COLOR="#000000">val</FONT> <FONT COLOR="#000000">(</FONT><FONT COLOR="#000000">)</FONT> <FONT COLOR="#000000">=</FONT> fclose_exn <FONT COLOR="#000000">(</FONT><FONT COLOR="#009000">pf</FONT> <FONT COLOR="#000000">|</FONT> p_ifp<FONT COLOR="#000000">)</FONT>
-          <FONT COLOR="#000000">in</FONT>
-            loop <FONT COLOR="#000000">(</FONT>argc<FONT COLOR="#000000">,</FONT> argv<FONT COLOR="#000000">,</FONT> i+1<FONT COLOR="#000000">)</FONT>
-          <FONT COLOR="#000000">end</FONT> <FONT COLOR="#000000">else</FONT> <FONT COLOR="#000000">let</FONT>
-            <FONT COLOR="#000000">prval</FONT> <FONT COLOR="#009000">None_v <FONT COLOR="#000000">(</FONT><FONT COLOR="#000000">)</FONT> <FONT COLOR="#000000">=</FONT> pfopt</FONT>
-            <FONT COLOR="#000000">val</FONT> <FONT COLOR="#000000">(</FONT><FONT COLOR="#000000">)</FONT> <FONT COLOR="#000000">=</FONT> prerrf <FONT COLOR="#000000">(</FONT>"%s: can't open [%s]\n"<FONT COLOR="#000000">,</FONT> <FONT COLOR="#000000">@(</FONT>argv<FONT COLOR="#000000">.</FONT><FONT COLOR="#000000">[</FONT><FONT COLOR="#009000">0</FONT><FONT COLOR="#000000">]</FONT><FONT COLOR="#000000">,</FONT> name<FONT COLOR="#000000">)</FONT><FONT COLOR="#000000">)</FONT>
-          <FONT COLOR="#000000">in</FONT>
-            exit <FONT COLOR="#0000FF"><FONT COLOR="#000000">{</FONT>void<FONT COLOR="#000000">}</FONT></FONT> <FONT COLOR="#000000">(</FONT>1<FONT COLOR="#000000">)</FONT>
-          <FONT COLOR="#000000">end</FONT> <FONT COLOR="#787878">// end of [if]
-</FONT>        <FONT COLOR="#000000">end</FONT> <FONT COLOR="#787878">// end of [if]
-</FONT>    <FONT COLOR="#000000">}</FONT> <FONT COLOR="#787878">// end of [_]
-</FONT>  <FONT COLOR="#787878">// end of [val]
-</FONT>  <FONT COLOR="#000000">val</FONT> <FONT COLOR="#000000">(</FONT><FONT COLOR="#009000">pf_stdout</FONT> <FONT COLOR="#000000">|</FONT> p_stdout<FONT COLOR="#000000">)</FONT> <FONT COLOR="#000000">=</FONT> stdout_get <FONT COLOR="#000000">(</FONT><FONT COLOR="#000000">)</FONT>
-  <FONT COLOR="#000000">val</FONT> err <FONT COLOR="#000000">=</FONT> ferror <FONT COLOR="#000000">(</FONT><FONT COLOR="#000000">!</FONT>p_stdout<FONT COLOR="#000000">)</FONT>
-  <FONT COLOR="#000000">val</FONT> <FONT COLOR="#000000">(</FONT><FONT COLOR="#000000">)</FONT> <FONT COLOR="#000000">=</FONT> stdout_view_set <FONT COLOR="#000000">(</FONT><FONT COLOR="#009000">pf_stdout</FONT> <FONT COLOR="#000000">|</FONT> <FONT COLOR="#787878">(*none*)</FONT><FONT COLOR="#000000">)</FONT>
-<FONT COLOR="#000000">in</FONT>
-  <FONT COLOR="#000000">if</FONT> <FONT COLOR="#000000">(</FONT>err &lt;&gt; 0<FONT COLOR="#000000">)</FONT> <FONT COLOR="#000000">then</FONT> <FONT COLOR="#000000">begin</FONT>
-    prerrf <FONT COLOR="#000000">(</FONT>"%s: error writing stdout\n"<FONT COLOR="#000000">,</FONT> <FONT COLOR="#000000">@(</FONT>argv<FONT COLOR="#000000">.</FONT><FONT COLOR="#000000">[</FONT><FONT COLOR="#009000">0</FONT><FONT COLOR="#000000">]</FONT><FONT COLOR="#000000">)</FONT><FONT COLOR="#000000">)</FONT><FONT COLOR="#000000">;</FONT> exit <FONT COLOR="#0000FF"><FONT COLOR="#000000">{</FONT>void<FONT COLOR="#000000">}</FONT></FONT> <FONT COLOR="#000000">(</FONT>2<FONT COLOR="#000000">)</FONT>
-  <FONT COLOR="#000000">end</FONT> <FONT COLOR="#000000">else</FONT> <FONT COLOR="#000000">begin</FONT>
-    exit <FONT COLOR="#0000FF"><FONT COLOR="#000000">{</FONT>void<FONT COLOR="#000000">}</FONT></FONT> <FONT COLOR="#000000">(</FONT>0<FONT COLOR="#000000">)</FONT> <FONT COLOR="#787878">// exit normally
-</FONT>  <FONT COLOR="#000000">end</FONT> <FONT COLOR="#787878">// end of [if]
-</FONT><FONT COLOR="#000000">end</FONT> <FONT COLOR="#787878">// end of [main]
-</FONT>
-</FONT></PRE>
+<PRE><span class="dynexp"><span class="comment">// concatenation of a list of files
+</span><span class="keyword">implement</span> main <span class="staexp"><span class="keyword">{</span>n<span class="keyword">}</span></span> <span class="keyword">(</span>argc<span class="keyword">,</span> argv<span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">let</span>
+  <span class="keyword">val</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">case+</span> argc <span class="keyword">of</span>
+  <span class="keyword">|</span> 1 <span class="keyword">=&gt;</span> <span class="keyword">let</span>
+      <span class="keyword">val</span> <span class="keyword">(</span><span class="prfexp">pf_stdin</span> <span class="keyword">|</span> p_stdin<span class="keyword">)</span> <span class="keyword">=</span> stdin_get <span class="keyword">(</span><span class="keyword">)</span>
+      <span class="keyword">val</span> <span class="keyword">(</span><span class="prfexp">pf_stdout</span> <span class="keyword">|</span> p_stdout<span class="keyword">)</span> <span class="keyword">=</span> stdout_get <span class="keyword">(</span><span class="keyword">)</span>
+      <span class="keyword">val</span> _<span class="comment">(*err*)</span> <span class="keyword">=</span> filecopy_err
+        <span class="keyword">(</span><span class="prfexp">file_mode_lte_r_r</span><span class="keyword">,</span> <span class="prfexp">file_mode_lte_w_w</span> <span class="keyword">|</span> <span class="keyword">!</span>p_stdin<span class="keyword">,</span> <span class="keyword">!</span>p_stdout<span class="keyword">)</span>
+      <span class="keyword">val</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> stdout_view_set <span class="keyword">(</span><span class="prfexp">pf_stdout</span> <span class="keyword">|</span> <span class="comment">(*none*)</span><span class="keyword">)</span>
+      <span class="keyword">val</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> stdin_view_set <span class="keyword">(</span><span class="prfexp">pf_stdin</span> <span class="keyword">|</span> <span class="comment">(*none*)</span><span class="keyword">)</span>
+    <span class="keyword">in</span>
+      <span class="comment">// empty
+</span>    <span class="keyword">end</span> <span class="comment">// end of [1]
+</span>  <span class="keyword">|</span> _ <span class="comment">(*argc &gt;= 2*)</span> <span class="keyword">=&gt;</span> loop <span class="keyword">(</span>argc<span class="keyword">,</span> argv<span class="keyword">,</span> 1<span class="keyword">)</span> <span class="keyword">where</span> <span class="keyword">{</span>
+      <span class="keyword">fun</span> loop <span class="staexp"><span class="keyword">{</span>i<span class="keyword">:</span>nat <span class="keyword">|</span> i &lt;= n<span class="keyword">}</span></span>
+        <span class="keyword">(</span>argc<span class="keyword">:</span> <span class="staexp">int n</span><span class="keyword">,</span> argv<span class="keyword">:</span> <span class="staexp"><span class="keyword">&amp;</span><span class="keyword">(</span><span class="keyword">@[</span>string<span class="keyword">]</span><span class="keyword">[</span>n<span class="keyword">]</span><span class="keyword">)</span></span><span class="keyword">,</span> i<span class="keyword">:</span> <span class="staexp">int i</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">void</span> <span class="keyword">=</span>
+        <span class="keyword">if</span> i <span class="keyword">&lt;</span> argc <span class="keyword">then</span> <span class="keyword">let</span>
+          <span class="keyword">val</span> name <span class="keyword">=</span> argv<span class="keyword">.</span><span class="keyword">[</span><span class="prfexp">i</span><span class="keyword">]</span>
+          <span class="keyword">val</span> <span class="keyword">(</span><span class="prfexp">pfopt</span> <span class="keyword">|</span> p_ifp<span class="keyword">)</span> <span class="keyword">=</span> fopen_err <span class="keyword">(</span>name<span class="keyword">,</span> file_mode_r<span class="keyword">)</span>
+        <span class="keyword">in</span>
+          <span class="keyword">if</span> p_ifp &lt;&gt; null <span class="keyword">then</span> <span class="keyword">let</span>
+            <span class="keyword">prval</span> <span class="prfexp">Some_v <span class="keyword">(</span>pf<span class="keyword">)</span> <span class="keyword">=</span> pfopt</span>
+            <span class="keyword">val</span> <span class="keyword">(</span><span class="prfexp">pf_stdout</span> <span class="keyword">|</span> p_stdout<span class="keyword">)</span> <span class="keyword">=</span> stdout_get <span class="keyword">(</span><span class="keyword">)</span>
+            <span class="keyword">val</span> _<span class="comment">(*err*)</span> <span class="keyword">=</span> filecopy_err
+              <span class="keyword">(</span><span class="prfexp">file_mode_lte_r_r</span><span class="keyword">,</span> <span class="prfexp">file_mode_lte_w_w</span> <span class="keyword">|</span> <span class="keyword">!</span>p_ifp<span class="keyword">,</span> <span class="keyword">!</span>p_stdout<span class="keyword">)</span>
+            <span class="keyword">val</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> stdout_view_set <span class="keyword">(</span><span class="prfexp">pf_stdout</span> <span class="keyword">|</span> <span class="comment">(*none*)</span><span class="keyword">)</span>
+            <span class="keyword">val</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> fclose_exn <span class="keyword">(</span><span class="prfexp">pf</span> <span class="keyword">|</span> p_ifp<span class="keyword">)</span>
+          <span class="keyword">in</span>
+            loop <span class="keyword">(</span>argc<span class="keyword">,</span> argv<span class="keyword">,</span> i+1<span class="keyword">)</span>
+          <span class="keyword">end</span> <span class="keyword">else</span> <span class="keyword">let</span>
+            <span class="keyword">prval</span> <span class="prfexp">None_v <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> pfopt</span>
+            <span class="keyword">val</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> prerrf <span class="keyword">(</span>"%s: can't open [%s]\n"<span class="keyword">,</span> <span class="keyword">@(</span>argv<span class="keyword">.</span><span class="keyword">[</span><span class="prfexp">0</span><span class="keyword">]</span><span class="keyword">,</span> name<span class="keyword">)</span><span class="keyword">)</span>
+          <span class="keyword">in</span>
+            exit <span class="staexp"><span class="keyword">{</span>void<span class="keyword">}</span></span> <span class="keyword">(</span>1<span class="keyword">)</span>
+          <span class="keyword">end</span> <span class="comment">// end of [if]
+</span>        <span class="keyword">end</span> <span class="comment">// end of [if]
+</span>    <span class="keyword">}</span> <span class="comment">// end of [_]
+</span>  <span class="comment">// end of [val]
+</span>  <span class="keyword">val</span> <span class="keyword">(</span><span class="prfexp">pf_stdout</span> <span class="keyword">|</span> p_stdout<span class="keyword">)</span> <span class="keyword">=</span> stdout_get <span class="keyword">(</span><span class="keyword">)</span>
+  <span class="keyword">val</span> err <span class="keyword">=</span> ferror <span class="keyword">(</span><span class="keyword">!</span>p_stdout<span class="keyword">)</span>
+  <span class="keyword">val</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> stdout_view_set <span class="keyword">(</span><span class="prfexp">pf_stdout</span> <span class="keyword">|</span> <span class="comment">(*none*)</span><span class="keyword">)</span>
+<span class="keyword">in</span>
+  <span class="keyword">if</span> <span class="keyword">(</span>err &lt;&gt; 0<span class="keyword">)</span> <span class="keyword">then</span> <span class="keyword">begin</span>
+    prerrf <span class="keyword">(</span>"%s: error writing stdout\n"<span class="keyword">,</span> <span class="keyword">@(</span>argv<span class="keyword">.</span><span class="keyword">[</span><span class="prfexp">0</span><span class="keyword">]</span><span class="keyword">)</span><span class="keyword">)</span><span class="keyword">;</span> exit <span class="staexp"><span class="keyword">{</span>void<span class="keyword">}</span></span> <span class="keyword">(</span>2<span class="keyword">)</span>
+  <span class="keyword">end</span> <span class="keyword">else</span> <span class="keyword">begin</span>
+    exit <span class="staexp"><span class="keyword">{</span>void<span class="keyword">}</span></span> <span class="keyword">(</span>0<span class="keyword">)</span> <span class="comment">// exit normally
+</span>  <span class="keyword">end</span> <span class="comment">// end of [if]
+</span><span class="keyword">end</span> <span class="comment">// end of [main]
+</span></span></PRE>
 
 <HR SIZE=1 ALIGN=LEFT><P>
 The code used for illustration is available

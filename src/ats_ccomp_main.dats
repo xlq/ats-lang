@@ -388,7 +388,7 @@ fn _emit_dynconset {m:file_mode} {l:addr} (
     pf_mod: file_mode_lte (m, w)
   , pf_fil: !FILE m @ l
   | p_l: ptr l
-  , d2cs: dynconset
+  , d2cs: dynconset_t
   ) : int = let
   var i: int = 0
   viewdef V = (FILE m @ l, int @ i)
@@ -398,7 +398,7 @@ fn _emit_dynconset {m:file_mode} {l:addr} (
     prval @(pf_fil, pf_int) = pf
     val+ ENV2con (p_l, p_i)= env
     val i = !p_i; val () = (!p_i := i + 1)
-    val () = fprint1_string (pf_mod | !p_l, "ATSextern(")
+    val () = fprint1_string (pf_mod | !p_l, "ATSextern_val(")
     val () = case+ 0 of
       | _ when d2con_is_exn d2c => begin
           fprint1_string (pf_mod | !p_l, "ats_exn_type, ")
@@ -422,7 +422,7 @@ in
 end // end of [_emit_dynconset]
 
 fn emit_dynconset {m:file_mode}
-  (pf: file_mode_lte (m, w) | out: &FILE m, d2cs: dynconset): int =
+  (pf: file_mode_lte (m, w) | out: &FILE m, d2cs: dynconset_t): int =
   _emit_dynconset (pf, view@ out | &out, d2cs)
 
 (* ****** ****** *)
@@ -430,11 +430,17 @@ fn emit_dynconset {m:file_mode}
 fn emit_d2cst_dec {m:file_mode} // for a non-proof constant
   (pf: file_mode_lte (m, w)| out: &FILE m, d2c: d2cst_t): void = let
   val hit0 = d2cst_hityp_get_some (d2c); val hit1 = hityp_decode (hit0)
+  macdef f_isprf_mac () = begin
+    fprint1_string (pf | out, "ATSextern_prf(");
+    emit_d2cst (pf | out, d2c);
+    fprint1_string (pf | out, ") ;\n")
+  end // end of [macdef]  
   macdef f_isfun_FUNCLOclo_mac (hits_arg, hit_res) = let
      val hits_arg = hityplst_encode ,(hits_arg)
      val hit_res = hityp_encode ,(hit_res)
    in
-     fprint1_string (pf | out, "ATSextern(ats_clo_ptr_type, ");
+     fprint1_string (pf | out, "ATSextern_val(");
+     fprint1_string (pf | out, "ats_clo_ptr_type, ");
      emit_d2cst (pf | out, d2c);
      fprint1_string (pf | out, ") ;\n");
      fprint1_string (pf | out, "extern ");
@@ -461,7 +467,8 @@ fn emit_d2cst_dec {m:file_mode} // for a non-proof constant
        end // end of [_ when ...]
      | _ when d2cst_is_castfn d2c => () // casting function
      | _ => begin // function value
-         fprint1_string (pf | out, "ATSextern(ats_fun_ptr_type, ");
+         fprint1_string (pf | out, "ATSextern_val(");
+         fprint1_string (pf | out, "ats_fun_ptr_type, ");
          emit_d2cst (pf | out, d2c);
          fprint1_string (pf | out, ") ;\n");
          fprint1_string (pf | out, "extern ");
@@ -475,7 +482,7 @@ fn emit_d2cst_dec {m:file_mode} // for a non-proof constant
     // end of [case]
   end // end of [macdef]
   macdef f_isnotfun_mac () = let
-    val () = fprint1_string (pf | out, "ATSextern(")
+    val () = fprint1_string (pf | out, "ATSextern_val(")
     val () = emit_hityp (pf | out, hit0)
     val () = fprint1_string (pf | out, ", ")
     val () = emit_d2cst (pf | out, d2c)
@@ -484,15 +491,17 @@ fn emit_d2cst_dec {m:file_mode} // for a non-proof constant
     // empty
   end // end of [_]
 in
-  case+ hit1.hityp_node of
-  | HITfun (fc, hits_arg, hit_res) => begin case+ fc of
-    | $Syn.FUNCLOclo _ => f_isfun_FUNCLOclo_mac (hits_arg, hit_res)
-    | $Syn.FUNCLOfun _ => f_isfun_FUNCLOfun_mac (hits_arg, hit_res)
-    end // end of [HITfun]
-  | _ => f_isnotfun_mac ()
+  if d2cst_is_proof d2c then () else begin
+    case+ hit1.hityp_node of
+    | HITfun (fc, hits_arg, hit_res) => begin case+ fc of
+      | $Syn.FUNCLOclo _ => f_isfun_FUNCLOclo_mac (hits_arg, hit_res)
+      | $Syn.FUNCLOfun _ => f_isfun_FUNCLOfun_mac (hits_arg, hit_res)
+      end // end of [HITfun]
+    | _ => f_isnotfun_mac ()
+  end // end of [if]
 end // end of [emit_d2cst_dec]
 
-fn emit_d2cst_prf_dec {m:file_mode} // for a proof constant
+fn emit_d2cst_dec_trmck {m:file_mode} // for terminating constants
   (pf: file_mode_lte (m, w)| out: &FILE m, d2c: d2cst_t): void = let
   val hit0 = d2cst_hityp_get_some (d2c); val hit1 = hityp_decode (hit0)
   macdef f_isprf_mac () = begin
@@ -500,18 +509,22 @@ fn emit_d2cst_prf_dec {m:file_mode} // for a proof constant
     emit_hityp (pf | out, hityp_t_void);
     fprint1_char (pf | out, ' ');
     emit_d2cst (pf | out, d2c);
-    fprint1_string (pf | out, " (");
+    fprint1_string (pf | out, "_trmck (");
     fprint1_string (pf | out, ") ;\n")
   end // end of [macdef]
 in
-  if d2cst_is_praxi d2c then () else f_isprf_mac ()
+  case+ 0 of
+  | _ when d2cst_is_praxi d2c => ()
+  | _ when d2cst_is_prfun d2c => f_isprf_mac ()
+  | _ when d2cst_is_prval d2c => f_isprf_mac ()
+  | _ => () // needs some fixing later
 end // end of [emit_d2cst_dec]
 
 (* ****** ****** *)
 
 fn _emit_dyncstset_proc {m:file_mode} {l:addr} (
     pf_mod: file_mode_lte (m, w), pf_fil: !FILE m @ l
-  | p_l: ptr l, d2cs: dyncstset
+  | p_l: ptr l, d2cs: dyncstset_t
   , proc: (file_mode_lte (m, w) | &FILE m, d2cst_t) -> void
   ) : int = let
   var i: int = 0
@@ -541,12 +554,12 @@ in
 end // end of [_emit_dyncstset]
 
 fn emit_dyncstset {m:file_mode}
-  (pf: file_mode_lte (m, w) | out: &FILE m, d2cs: dyncstset): int =
+  (pf: file_mode_lte (m, w) | out: &FILE m, d2cs: dyncstset_t): int =
   _emit_dyncstset_proc (pf, view@ out | &out, d2cs, emit_d2cst_dec)
 
-fn emit_dynprfcstset {m:file_mode}
-  (pf: file_mode_lte (m, w) | out: &FILE m, d2cs: dyncstset): int =
-  _emit_dyncstset_proc (pf, view@ out | &out, d2cs, emit_d2cst_prf_dec)
+fn emit_dyncstset_trmck {m:file_mode}
+  (pf: file_mode_lte (m, w) | out: &FILE m, d2cs: dyncstset_t): int =
+  _emit_dyncstset_proc (pf, view@ out | &out, d2cs, emit_d2cst_dec_trmck)
 
 (* ****** ****** *)
 
@@ -577,9 +590,17 @@ fun emit_funentry_lablst {m:file_mode}
   (pf: file_mode_lte (m, w) | out: &FILE m, fls0: !funlablst_vt)
   : void = begin case+ fls0 of
   | list_vt_cons (fl, !fls) => let
+      val trmck = funlab_trmck_get fl
       val entry = funlab_entry_get_some fl
+      val () = if trmck > 0 then
+        fprint1_string (pf | out, "#ifdef _ATS_TERMINATION_CHECK\n")
+      // end of [if]
       val () = emit_funentry (pf | out, entry)
-      val () = fprint1_string (pf | out, "\n\n")
+      val () = fprint1_string (pf | out, "\n")
+      val () = if trmck > 0 then
+        fprint1_string (pf | out, "#endif /* _ATS_TERMINATION_CHECK */\n")
+      // end of [if]
+      val () = fprint1_string (pf | out, "\n")
       val () = emit_funentry_lablst (pf | out, !fls)
     in
       fold@ (fls0)
@@ -890,20 +911,27 @@ fn emit_dynload {m:file_mode} (
   val () = emit_filename (pf | out, fil)
   val () = fprint1_string (pf | out, "__staload () ;\n")
 
-  // code for proof checking
-  val () = fprint1_string (pf | out, "#ifdef _ATS_PROOFCHECK\n")
+  // code for termination checking
+  val () = fprint1_string (pf | out, "#ifdef _ATS_TERMINATION_CHECK\n")
   stavar l_out: addr; val p_out: ptr l_out = &out
   val () = dyncstset_foreach_main {FILE m @ l_out} {ptr l_out}
-    (view@ out | the_dynprfcstset_get (), f, p_out) where {
+    (view@ out | the_dyncstset_get (), f, p_out) where {
     fn f (pf_out: !FILE m @ l_out | d2c: d2cst_t, p_out: !ptr l_out): void = let
-      val () = if d2cst_is_praxi (d2c) then () else begin
-        emit_d2cst (pf | !p_out, d2c); fprint1_string (pf | !p_out, " () ;\n")
+      val () = begin case+ 0 of
+        | _ when d2cst_is_praxi (d2c) => ()
+        | _ when d2cst_is_prfun (d2c) => begin
+            emit_d2cst (pf | !p_out, d2c); fprint1_string (pf | !p_out, "_trmck () ;\n")
+          end // end of [_]
+        | _ when d2cst_is_prval (d2c) => begin
+            emit_d2cst (pf | !p_out, d2c); fprint1_string (pf | !p_out, "_trmck () ;\n")
+          end // end of [_]
+        | _ => () // should nonproof terminating functions be checked as well?
       end // end of [val]
     in
       // empty
     end // end of [f]
   } // end of [where]
-  val () = fprint1_string (pf | out, "#endif /* _ATS_PROOFCHECK */\n")
+  val () = fprint1_string (pf | out, "#endif /* _ATS_TERMINATION_CHECK */\n")
 
   // code marking GC roots
   val () = fprint1_string
@@ -1074,42 +1102,45 @@ implement ccomp_main {m}
   val n = emit_extcodelst (pf | out, 0(*top*), extcodes)
   val () = if n > 0 then fprint1_char (pf | out, '\n')
 
-  val () = let
+  val () = let // type definitions
     val () = fprint1_string (pf | out, "/* type definitions */\n")
     val n = emit_typdeflst_free (pf | out, typdeflst_get ())
   in
     if n > 0 then fprint1_char (pf | out, '\n')
   end // end of [val]
 
-  val () = fprint1_string (pf | out, "/* external typedefs */\n")
-  val () = let
+  val () = let // external type definitions
+    val () = fprint1_string (pf | out, "/* external typedefs */\n")
     val ets = the_extypelst_get ()
     val n = emit_extypelst_free (pf | out, ets)
   in
     if n > 0 then fprint1_char (pf | out, '\n')
-  end  
+  end // end of [val]
 
-  val () = // declaration for dynamic constructors
-    if (flag > 0) then let
-      val () = fprint1_string (pf | out, "/* external dynamic constructor declarations */\n")
-      val n = emit_dynconset (pf | out, the_dynconset_get ())
-    in
-      if n > 0 then fprint1_char (pf | out, '\n')
-    end
+  val () = if (flag > 0) then let // declaration for dynamic constructors
+    val () = fprint1_string
+      (pf | out, "/* external dynamic constructor declarations */\n")
+    val n = emit_dynconset (pf | out, the_dynconset_get ())
+  in
+    if n > 0 then fprint1_char (pf | out, '\n')
+  end  // end of [val]
   
   val () = if (flag > 0) then let // declaration for dynamic constants
-    val () = fprint1_string (pf | out, "/* external dynamic constant declarations */\n")
+    val () = begin
+      fprint1_string (pf | out, "/* external dynamic constant declarations */\n")
+    end // end of [val]
     val n = emit_dyncstset (pf | out, the_dyncstset_get ())
   in
     if n > 0 then fprint1_char (pf | out, '\n')
   end // end of [val]
 
-  val () = if (flag > 0) then let // declaration for dynamic proof constants
-    val () = fprint1_string (pf | out, "/* external dynamic proof constant declarations */\n")
-    val () = fprint1_string (pf | out, "#ifdef _ATS_PROOFCHECK\n")
-    val n = emit_dynprfcstset (pf | out, the_dynprfcstset_get ())
+  val () = if (flag > 0) then let // declaration for dynamic terminating constants
+    val () = fprint1_string
+      (pf | out, "/* external dynamic terminating constant declarations */\n")
+    val () = fprint1_string (pf | out, "#ifdef _ATS_TERMINATION_CHECK\n")
+    val n = emit_dyncstset_trmck (pf | out, the_dyncstset_get ())
     val () = if n = 0 then fprint1_string (pf | out, "/* empty */\n")
-    val () = fprint1_string (pf | out, "#endif /* _ATS_PROOFCHECK */\n\n")
+    val () = fprint1_string (pf | out, "#endif /* _ATS_TERMINATION_CHECK */\n\n")
   in
     // empty
   end // end of [val]

@@ -102,44 +102,44 @@ datatype dcstkind =
   | DCSTKINDfun | DCSTKINDval | DCSTKINDcastfn
   | DCSTKINDpraxi | DCSTKINDprfun | DCSTKINDprval
 
-fun dcstkind_fun (): dcstkind = "dcstkind_fun"
-fun dcstkind_val (): dcstkind = "dcstkind_val"
-fun dcstkind_castfn (): dcstkind = "dcstkind_castfn"
-fun dcstkind_praxi (): dcstkind = "dcstkind_praxi"
-fun dcstkind_prfun (): dcstkind = "dcstkind_prfun"
-fun dcstkind_prval (): dcstkind = "dcstkind_prval"
+fun dcstkind_fun ():<> dcstkind = "dcstkind_fun"
+fun dcstkind_val ():<> dcstkind = "dcstkind_val"
+fun dcstkind_castfn ():<> dcstkind = "dcstkind_castfn"
+fun dcstkind_praxi ():<> dcstkind = "dcstkind_praxi"
+fun dcstkind_prfun ():<> dcstkind = "dcstkind_prfun"
+fun dcstkind_prval ():<> dcstkind = "dcstkind_prval"
 
-fun dcstkind_is_fun (dck: dcstkind): bool
-fun dcstkind_is_castfn (dck: dcstkind): bool
-fun dcstkind_is_praxi (dck: dcstkind): bool
-fun dcstkind_is_prfun (dck: dcstkind): bool
-fun dcstkind_is_prval (dck: dcstkind): bool
-fun dcstkind_is_proof (dck: dcstkind): bool
+fun dcstkind_is_fun (dck: dcstkind):<> bool
+fun dcstkind_is_castfn (dck: dcstkind):<> bool
+fun dcstkind_is_praxi (dck: dcstkind):<> bool
+fun dcstkind_is_prfun (dck: dcstkind):<> bool
+fun dcstkind_is_prval (dck: dcstkind):<> bool
+fun dcstkind_is_proof (dck: dcstkind):<> bool
 
 datatype valkind =
   | VALKINDval | VALKINDvalminus | VALKINDvalplus | VALKINDprval
 
-fun valkind_val (): valkind = "valkind_val"
-fun valkind_valminus (): valkind = "valkind_valminus"
-fun valkind_valplus (): valkind = "valkind_valplus"
-fun valkind_prval (): valkind = "valkind_prval"
+fun valkind_val ():<> valkind = "valkind_val"
+fun valkind_valminus ():<> valkind = "valkind_valminus"
+fun valkind_valplus ():<> valkind = "valkind_valplus"
+fun valkind_prval ():<> valkind = "valkind_prval"
 
-fun valkind_is_proof (vk: valkind): bool
+fun valkind_is_proof (vk: valkind):<> bool
 
 datatype funkind =
   | FUNKINDfn | FUNKINDfnstar | FUNKINDfun
   | FUNKINDprfn | FUNKINDprfun | FUNKINDcastfn
 
-fun funkind_fn (): funkind = "funkind_fn"
-fun funkind_fnstar (): funkind = "funkind_fnstar"
-fun funkind_fun (): funkind = "funkind_fun"
-fun funkind_castfn (): funkind = "funkind_castfn"
-fun funkind_prfn (): funkind = "funkind_prfn"
-fun funkind_prfun (): funkind = "funkind_prfun"
+fun funkind_fn ():<> funkind = "funkind_fn"
+fun funkind_fnstar ():<> funkind = "funkind_fnstar"
+fun funkind_fun ():<> funkind = "funkind_fun"
+fun funkind_castfn ():<> funkind = "funkind_castfn"
+fun funkind_prfn ():<> funkind = "funkind_prfn"
+fun funkind_prfun ():<> funkind = "funkind_prfun"
 
-fun funkind_is_proof (_: funkind): bool // proof
-fun funkind_is_recursive (_: funkind): bool // recursive
-fun funkind_is_tailrecur (_: funkind): bool // tail-recursive
+fun funkind_is_proof (_: funkind):<> bool // proof
+fun funkind_is_recursive (_: funkind):<> bool // recursive
+fun funkind_is_tailrecur (_: funkind):<> bool // tail-recursive
 
 (* ****** ****** *)
 

@@ -152,34 +152,35 @@ fun prerr_funlabset (fls: funlabset): void
 
 (* ****** ****** *)
 
-typedef dynconset = $Set.set_t (d2con_t)
-fun the_dynconset_add (d2c: d2con_t): void
-fun the_dynconset_get (): dynconset
+// [abstype dyncstcon_t] is in [ats_hiexp.sats]
+
 fun dynconset_foreach_main {v:view} {vt:viewtype} {f:eff} (
     pf: !v
-  | d2cs: dynconset
+  | d2cs: dynconset_t
   , f: (!v | d2con_t, !vt) -<f> void
   , env: !vt
   ) :<f> void
 
+fun the_dynconset_get (): dynconset_t
+fun the_dynconset_add (d2c: d2con_t): void
+
 (* ****** ****** *)
 
-typedef dyncstset = $Set.set_t (d2cst_t)
+// [abstype dyncstset_t] is in [ats_hiexp.sats]
 
 fun dyncstset_foreach_main {v:view} {vt:viewtype} {f:eff} (
     pf: !v
-  | d2cs: dyncstset
+  | d2cs: dyncstset_t
   , f: (!v | d2cst_t, !vt) -<f> void
   , env: !vt
   ) :<f> void
 
+fun the_dyncstset_get (): dyncstset_t = "ats_ccomp_env_the_dyncstset_get"
 fun the_dyncstset_add_if (d2c: d2cst_t): void // [d2c] is added only if it has not been
   = "ats_ccomp_env_the_dyncstset_add_if"
-fun the_dyncstset_get (): dyncstset
 
-fun the_dynprfcstset_add_if (d2c: d2cst_t): void // [d2c] is added only if it has not been
-  = "ats_ccomp_env_the_dynprfcstset_add_if"
-fun the_dynprfcstset_get (): dyncstset
+fun the_dyncstsetlst_push (): void = "ats_ccomp_env_the_dyncstsetlst_push"
+fun the_dyncstsetlst_pop (): dyncstset_t = "ats_ccomp_env_the_dyncstsetlst_pop"
 
 (* ****** ****** *)
 
@@ -252,9 +253,6 @@ fun funentry_make (
   , _ret: tmpvar_t
   , inss: instrlst
   ) : funentry_t
-
-fun funentry_prf_make
-  (loc: loc_t, d2c: d2cst_t, fl: funlab_t): funentry_t
 
 fun funentry_loc_get (entry: funentry_t): loc_t
 fun funentry_lab_get (entry: funentry_t): funlab_t

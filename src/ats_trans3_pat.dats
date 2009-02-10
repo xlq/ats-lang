@@ -188,13 +188,13 @@ implement p2atlst_typ_syn (p2ts) = case+ p2ts of
 fn pfarity_check (loc0: loc_t, npf1: int, npf2: int): void =
   if npf1 <> npf2 then begin
     prerr loc0; prerr ": error(3)";
-    $Deb.debug_prerrf (": %s: pfarity_check", @(THISFILENAME));
-    prerr ": pfarity mismatch.";
+    $Deb.debug_prerrf (": %s", @(THISFILENAME));
+    prerr ": pfarity_check: pfarity mismatch.";
     if npf1 < npf2 then prerr ": more proof components are needed.";
     if npf1 > npf2 then prerr ": less proof components are needed.";
     prerr_newline ();
     $Err.abort {void} ()
-  end
+  end // end of [if]
 // end of [pfarity_check]
 
 (* ****** ****** *)

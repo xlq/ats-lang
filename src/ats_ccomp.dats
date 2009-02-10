@@ -195,6 +195,7 @@ typedef funlab = '{
 , funlab_stamp= stamp_t
 , funlab_tailjoined= tmpvarlst (* tail-call optimization *)
 , funlab_entry= funentryopt
+, funlab_trmck= int (* trmck function status *)
 } // end of [typedef]
 
 assume funlab_t = funlab
@@ -218,7 +219,7 @@ end
 (* ****** ****** *)
 
 fn _funlab_make (
-    name: string, level: int, hit: hityp_t, stamp: stamp_t
+    name: string, level: int, hit: hityp_t, stamp: stamp_t, trmck: int
   ) : funlab = '{
   funlab_name= name
 , funlab_lev= level
@@ -227,6 +228,7 @@ fn _funlab_make (
 , funlab_stamp= stamp
 , funlab_tailjoined= list_nil ()
 , funlab_entry= None ()
+, funlab_trmck= trmck
 } // end of [funlab_make]
 
 implement funlab_make_typ (hit) = let
@@ -234,14 +236,14 @@ implement funlab_make_typ (hit) = let
   val stamp = $Stamp.funlab_stamp_make ()
   val name = "__ats_fun_" + $Stamp.tostring_stamp stamp
 in
-  _funlab_make (name, level, hit, stamp)
+  _funlab_make (name, level, hit, stamp, 0(*trmck*))
 end // end of [funlab_make_typ]
 
 implement funlab_make_nam_typ (name, hit) = let
   val level = d2var_current_level_get ()
   val stamp = $Stamp.funlab_stamp_make ()
 in
-  _funlab_make (name, level, hit, stamp)
+  _funlab_make (name, level, hit, stamp, 0(*trmck*))
 end // end of [funlab_make_nam_typ]
 
 (* ****** ****** *)
@@ -278,26 +280,12 @@ implement funlab_make_cst_typ (d2c, tmparg, hit) = let
 *)
   val level = d2var_current_level_get ()
   val stamp = $Stamp.funlab_stamp_make ()
-  val fl = _funlab_make (name, level, hit, stamp)
+  val fl = _funlab_make (name, level, hit, stamp, 0(*trmck*))
   // note that template instantiation is always *local* !!!
   val () = if is_global then funlab_qua_set (fl, D2CSTOPTsome d2c)
 in
   fl
 end // end of [funlab_make_cst_typ]
-
-implement funlab_make_prfcst_typ (d2c) = let
-  val name = global_cst_name_make (d2c)
-  val hit = hityp_encode (
-    hityp_fun ($Syn.FUNCLOfun (), list_nil (), hityp_void)
-  ) // end of [val]
-  val stamp = $Stamp.funlab_stamp_make ()
-  val fl = _funlab_make (name, 0(*level*), hit, stamp)
-  val () = funlab_qua_set (fl, D2CSTOPTsome d2c)
-in
-  fl
-end // end of [funlab_make_prfcst_typ] 
-
-(* ****** ****** *)
 
 implement funlab_make_var_typ (d2v, hit) = let
   val d2v_name = $Sym.symbol_name (d2var_sym_get d2v)
@@ -306,8 +294,22 @@ implement funlab_make_var_typ (d2v, hit) = let
   val stamp_name = $Stamp.tostring_stamp stamp
   val name = tostringf ("%s_%s", @(d2v_name, stamp_name))
 in
-  _funlab_make (name, level, hit, stamp)
+  _funlab_make (name, level, hit, stamp, 0(*trmck*))
 end // end of [funlab_make_var_typ]
+
+(* ****** ****** *)
+
+implement funlab_make_cst_trmck (d2c) = let
+  val name = global_cst_name_make (d2c)
+  val hit = hityp_encode (
+    hityp_fun ($Syn.FUNCLOfun (), list_nil (), hityp_void)
+  ) // end of [val]
+  val stamp = $Stamp.funlab_stamp_make ()
+  val fl = _funlab_make (name, 0(*level*), hit, stamp, 1(*trmck*))
+  val () = funlab_qua_set (fl, D2CSTOPTsome d2c)
+in
+  fl
+end // end of [funlab_make_cst_trmck] 
 
 (* ****** ****** *)
 
@@ -375,6 +377,8 @@ implement funlab_entry_get_some (fl) = begin
       $Err.abort {funentry_t} ()
     end // end of [None]
 end // end of [funlab_entry_get_some]
+
+implement funlab_trmck_get (fl) = fl.funlab_trmck
 
 end // end of [local]
 

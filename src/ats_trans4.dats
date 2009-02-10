@@ -36,8 +36,10 @@
 
 (* ****** ****** *)
 
+staload Deb = "ats_debug.sats"
 staload Err = "ats_error.sats"
 staload Lst = "ats_list.sats"
+staload Set = "ats_set_fun.sats"
 staload Sym = "ats_symbol.sats"
 staload Syn = "ats_syntax.sats"
 
@@ -57,6 +59,10 @@ staload "ats_trans4.sats"
 
 staload "ats_reference.sats"
 staload _(*anonymous*) = "ats_reference.dats"
+
+(* ****** ****** *)
+
+#define THISFILENAME "ats_trans4.dats"
 
 (* ****** ****** *)
 
@@ -109,7 +115,8 @@ in
                       stasub_add (aux (s2vs, s2es), s2v, s2e)
                   | (nil _, nil _) => stasub_nil
                   | (_, _) => begin
-                      prerr "Internal Error: [ats_trans4]";
+                      prerr "Internal Error";
+                      $Deb.debug_prerrf (": %s", @(THISFILENAME));
                       prerr ": s2exp_app_tr: S2Eapp: arity error";
                       prerr_newline ();
                       $Err.abort {stasub_t} ()
@@ -657,7 +664,19 @@ in
   res
 end // end of [c3laulst_tr]
 
-//
+(* ****** ****** *)
+
+absview dyncstsetlst_push_token
+extern fun the_dyncstset_get (): dyncstset_t
+  = "ats_ccomp_env_the_dyncstset_get"
+extern fun the_dyncstsetlst_push (): (dyncstsetlst_push_token | void)
+  = "ats_ccomp_env_the_dyncstsetlst_push"
+extern fun the_dyncstsetlst_pop (pf: dyncstsetlst_push_token | (*none*)): dyncstset_t
+  = "ats_ccomp_env_the_dyncstsetlst_pop"
+extern fun // this function is implemented in [ats_ccomp_env.dats]
+  the_dyncstset_add_if (d2c: d2cst_t): void = "ats_ccomp_env_the_dyncstset_add_if"
+
+(* ****** ****** *)
 
 implement d3exp_tr (d3e0) = let
   val loc0 = d3e0.d3exp_loc
@@ -768,10 +787,7 @@ in
       hiexp_con (loc0, hit0, hit_sum, d2c, hies_arg)
     end // end of [D2Econ]
   | D3Ecst d2c => let (* d2c is external as it is used *)
-      val () = the_dyncstset_add_if (d2c) where { extern fun 
-        // this function is implemented in [ats_ccomp_env.dats]
-        the_dyncstset_add_if (d2c: d2cst_t): void = "ats_ccomp_env_the_dyncstset_add_if"
-      } // end of [val]
+      val () = the_dyncstset_add_if (d2c)
       val hit0 = s2exp_tr (0(*deep*), s2e0)
     in
       d3exp_cst_tr (loc0, hit0, d2c)
@@ -1124,10 +1140,7 @@ in
       // empty
     end // end of [D2Econ]
   | D3Ecst d2c => let (* d2c is external as it is used *)
-      val () = the_dynprfcstset_add_if (d2c) where { extern fun 
-        // this function is implemented in [ats_ccomp_env.dats]
-        the_dynprfcstset_add_if (d2c: d2cst_t): void = "ats_ccomp_env_the_dynprfcstset_add_if"
-      } // end of [val]
+      val () = the_dyncstset_add_if (d2c)
     in
       // empty
     end // end of [D3Ecst]
@@ -1319,15 +1332,12 @@ fn i3mpdec_tr (d3c: i3mpdec): hiimpdec = let
     | _ => ()
   end : void // end of [val]
   val () = if tmp > 0 then tmpcstmap_add (d2c, decarg, def)
+  val d2cs = the_dyncstset_get ()
 in
-  hiimpdec_make (loc, d2c, tmp, decarg, tmparg, def)
+  hiimpdec_make (loc, d2c, tmp, decarg, tmparg, def, d2cs)
 end // end of [i3mpdec_tr]
 
 (* ****** ****** *)
-
-fn i3mpdec_is_proof
-  (d3c: i3mpdec): bool = d2cst_is_proof (d3c.i3mpdec_cst)
-// end of [i3mpdec_is_proof]
 
 implement d3eclst_tr (d3cs0: d3eclst): hideclst = let
   // [aux0] and [aux1] are mutually tail-recursive
@@ -1378,17 +1388,21 @@ implement d3eclst_tr (d3cs0: d3eclst): hideclst = let
           aux1 (d3cs, hid, res)
         end // end of [D3Cdcstdec]
       | D3Cimpdec impdec => let
-          val loc = d3c.d3ec_loc
-          val hid = (case+ 0 of
-            | _ when i3mpdec_is_proof impdec => let
+          val d2c = impdec.i3mpdec_cst
+          val hid = begin case+ 0 of
+            | _ when d2cst_is_proof d2c => let
+                val (pf_token | ()) = the_dyncstsetlst_push ()
                 val () = d3exp_prf_tr (impdec.i3mpdec_def)
+                val d2cs = the_dyncstsetlst_pop (pf_token | (*none*))
+                val () = the_dyncstset_add_if (d2c)
+                val hid = hiimpdec_prf_make (impdec.i3mpdec_loc, d2c, d2cs)
               in
-                hidec_impdec_prf (loc, impdec.i3mpdec_cst)
+                hidec_impdec_prf (d3c.d3ec_loc, hid)
               end // end of [_ when ...]
-            | _ => begin
-                hidec_impdec (d3c.d3ec_loc, i3mpdec_tr impdec)
+            | _ (* nonproof implementation *) => let
+                val hid = i3mpdec_tr impdec in hidec_impdec (d3c.d3ec_loc, hid)
               end // end of [_]
-          ) : hidec
+          end : hidec
         in
           aux1 (d3cs, hid, res)
         end // end of [D3Cimpdec]
@@ -1483,9 +1497,6 @@ implement d3eclst_prf_tr (d3cs0: d3eclst): void = aux (d3cs0) where {
       | D3Cdatdec _ => aux d3cs
       | D3Cexndec _ => aux d3cs
       | D3Cdcstdec _ => aux d3cs
-      | D3Cimpdec impdec => let
-          val () = d3exp_prf_tr (impdec.i3mpdec_def) in aux d3cs
-        end // end of [D3Cimpdec]
       | D3Cfundecs (decarg, knd, fundecs) => let
           val () = f3undeclst_prf_tr fundecs in aux (d3cs)
         end // end of [D3Cfundecs]

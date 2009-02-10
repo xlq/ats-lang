@@ -37,6 +37,7 @@
 
 (* ****** ****** *)
 
+staload Deb = "ats_debug.sats"
 staload Err = "ats_error.sats"
 staload Lst = "ats_list.sats"
 staload Map = "ats_map_lin.sats"
@@ -66,6 +67,10 @@ staload _(*anonymous*) = "ats_set_fun.dats"
 
 (* ****** ****** *)
 
+#define THISFILENAME "ats_ccomp_env.dats"
+
+(* ****** ****** *)
+
 extern fun compare_strlst_strlst (ss1: strlst, ss2: strlst):<> Sgn
 overload compare with compare_strlst_strlst
 
@@ -75,7 +80,7 @@ implement compare_strlst_strlst (ss1, ss2) = begin
       val sgn = compare (s1, s2)
     in
       if sgn <> 0 then sgn else compare (ss1, ss2)
-    end
+    end // end of [list_cons, list_cons]
   | (list_cons _, list_nil ()) =>  1
   | (list_nil (), list_cons _) => ~1
   | (list_nil (), list_nil ()) =>  0
@@ -596,9 +601,15 @@ end // end of [prerr_funlabset]
 
 local
 
+typedef dynconset = $Set.set_t (d2con_t)
+assume dynconset_t = dynconset
+
 val the_dynconset = ref_make_elt<dynconset> ($Set.set_nil) 
 
-in
+in // in of [local]
+
+implement dynconset_foreach_main (pf | d2cs, f, env) =
+  $Set.set_foreach_main (pf | d2cs, f, env)
 
 implement the_dynconset_add (d2c) = let
   val _new = $Set.set_insert<d2con_t> (!the_dynconset, d2c, compare_d2con_d2con)
@@ -608,20 +619,17 @@ end // end of [the_dynconset_add]
 
 implement the_dynconset_get () = !the_dynconset
 
-implement dynconset_foreach_main (pf | d2cs, f, env) =
-  $Set.set_foreach_main (pf | d2cs, f, env)
-
 end // end of [local]
 
 (* ****** ****** *)
 
-implement dyncstset_foreach_main (pf | d2cs, f, env) =
-  $Set.set_foreach_main (pf | d2cs, f, env)
-
 local
 
+typedef dyncstset = $Set.set_t (d2cst_t)
+assume dyncstset_t = dyncstset
+
 val the_dyncstset = ref_make_elt<dyncstset> ($Set.set_nil) 
-val the_dynprfcstset = ref_make_elt<dyncstset> ($Set.set_nil) 
+val the_dyncstsetlst = ref_make_elt<List_vt dyncstset> (list_vt_nil ())
 
 fn dyncstset_add
   (d2cset_ref: ref dyncstset, d2c: d2cst_t): void = let
@@ -646,7 +654,10 @@ fn dyncstset_add_if
   end // end of [if]
 // end of [dyncstset_add_if]
 
-in
+in // in of [local]
+
+implement dyncstset_foreach_main (pf | d2cs, f, env) =
+  $Set.set_foreach_main (pf | d2cs, f, env)
 
 implement the_dyncstset_get () = !the_dyncstset
 
@@ -661,15 +672,39 @@ implement the_dyncstset_add_if (d2c) =
   end // end of [if]
 // end of [the_dyncstset_add_if]
 
-implement the_dynprfcstset_get () = !the_dynprfcstset
+implement the_dyncstsetlst_push () = let
+  val d2cs = !the_dyncstset
+  val () = let
+    val (vbox pf | p) = ref_get_view_ptr (the_dyncstsetlst)
+  in
+    !p := list_vt_cons (d2cs, !p)
+  end // end of [val]
+  val () = !the_dyncstset := $Set.set_nil
+in
+  // empty
+end // end of [the_dyncstsetlst_push]
 
-implement the_dynprfcstset_add_if (d2c: d2cst_t): void = let
-  val ismem = begin
-    $Set.set_member<d2cst_t> (!the_dynprfcstset, d2c, compare_d2cst_d2cst)
+implement the_dyncstsetlst_pop () = let
+  var err: int = 0
+  val d2cs = !the_dyncstset
+  val () = let
+    val (vbox pf | p) = ref_get_view_ptr (the_dyncstsetlst)
+  in
+    case+ !p of
+    | ~list_vt_cons (d2cs1, d2cslst1) => begin
+        $effmask_ref (!the_dyncstset := d2cs1); !p := d2cslst1
+      end // end of [list_vt_cons]
+    | list_vt_nil () => (fold@ !p; err := 1)
+  end // end of [val]
+  val () = if (err > 0) then begin
+    prerr "Internal Error";
+    $Deb.debug_prerrf (": %s", @(THISFILENAME));
+    prerr ": the_dyncstsetlst_pop: the_dyncstsetlst is empty";
+    $Err.abort {void} ()
   end // end of [val]
 in
-  if ismem then () (*already added*) else dyncstset_add (the_dynprfcstset, d2c)
-end // end of [if]
+  d2cs
+end // end of [the_dyncstsetlst_pop]
 
 end // end of [local]
 
@@ -974,15 +1009,6 @@ implement funentry_make
    (loc, fl, level, fls, vtps, tmp_ret, inss) = begin
   _funentry_make (loc, fl, level, fls, vtps, tmp_ret, inss)
 end // end of [funentry_make]
-
-implement funentry_prf_make (loc, d2c, fl) = let
-  val tmp_ret = tmpvar_make (hityp_t_void)
-  val ins = INSTRprfck (d2c); val inss = list_cons (ins, list_nil ())
-in
-  _funentry_make (loc, fl
-  , 0(*level*), $Set.set_nil(*fls*), $Set.set_nil(*vtps*), tmp_ret, inss
-  ) // end of [_funentry_make]
-end // end of [funentry_prf_make]
 
 implement funentry_loc_get (entry) = entry.funentry_loc
 implement funentry_lab_get (entry) = entry.funentry_lab

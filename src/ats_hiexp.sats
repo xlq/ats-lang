@@ -280,6 +280,11 @@ fun hipat_asvar_set (hip: hipat, od2v: d2varopt): void
 
 (* ****** ****** *)
 
+abstype dynconset_t // defined in [ats_ccomp_env.dats]
+abstype dyncstset_t // defined in [ats_ccomp_env.dats]
+
+(* ****** ****** *)
+
 datatype hidec_node =
   | HIDlist of hideclst
   | HIDsaspdec of s2aspdec
@@ -308,7 +313,7 @@ datatype hidec_node =
   | HIDimpdec of (* implementation *)
       hiimpdec
   | HIDimpdec_prf of (* proof implementation *)
-      d2cst_t
+      hiimpdec_prf
   | HIDlocal of (* local declaration *)
       (hideclst (*head*), hideclst (*body*))
   | HIDstaload of (* static loading *)
@@ -492,6 +497,13 @@ and hiimpdec = '{ (* implementation *)
 , hiimpdec_tmp= int
 , hiimpdec_decarg= s2qualst, hiimpdec_tmparg= hityplstlst
 , hiimpdec_def= hiexp
+, hiimpdec_cstset= dyncstset_t
+}
+
+and hiimpdec_prf = '{ (* proof implementation *)
+  hiimpdec_prf_loc= loc_t
+, hiimpdec_prf_cst= d2cst_t
+, hiimpdec_prf_cstset= dyncstset_t
 }
 
 (* ****** ****** *)
@@ -756,13 +768,16 @@ fun hidec_vardecs (_: loc_t, hids: hivardeclst): hidec
 fun hiimpdec_make (
     _: loc_t
   , d2c: d2cst_t, tmp: int
-  , decarg: s2qualst, tmparg: hityplstlst,
-  _def: hiexp
+  , decarg: s2qualst, tmparg: hityplstlst, _def: hiexp
+  , _cstset: dyncstset_t
   ) : hiimpdec
 
 fun hidec_impdec (_: loc_t, hid: hiimpdec): hidec
 
-fun hidec_impdec_prf (_: loc_t, d2c: d2cst_t): hidec
+fun hiimpdec_prf_make
+  (_: loc_t, d2c: d2cst_t, _cstset: dyncstset_t) : hiimpdec_prf
+
+fun hidec_impdec_prf (_: loc_t, hid: hiimpdec_prf): hidec
 
 (* ****** ****** *)
 
