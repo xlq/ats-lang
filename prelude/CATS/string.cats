@@ -64,17 +64,21 @@ atspre_bytes_strbuf_trans
 
 /* ****** ****** */
 
+/* ******
+
 static inline
-ats_ptr_type
+ats_ptr_type // a casting function
 atspre_string1_of_string (const ats_ptr_type s) { return s ; }
 
 static inline
-ats_ptr_type
+ats_ptr_type // a casting function
 atspre_strbuf_of_string1 (const ats_ptr_type s) { return s ; }
 
 static inline
-ats_ptr_type
+ats_ptr_type // a casting function
 atspre_string1_of_strbuf (const ats_ptr_type s) { return s ; }
+
+****** */
 
 /* ****** ****** */
 
@@ -329,13 +333,17 @@ atspre_string_singleton
 static
 ats_ptr_type atspre_stropt_none = (ats_ptr_type)0 ;
 
+/* ******
+
 static inline
-ats_ptr_type
+ats_ptr_type // a casting function
 atspre_stropt_some (const ats_ptr_type s) { return s ; }
 
 static inline
-ats_ptr_type
+ats_ptr_type // a casting function
 atspre_stropt_unsome (const ats_ptr_type s) { return s ; }
+
+****** */
 
 static inline
 ats_bool_type

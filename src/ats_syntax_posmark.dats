@@ -57,14 +57,13 @@ typedef loc_t = $Loc.location_t
 
 (* ****** ****** *)
 
-fn externloc_posmark (loc: loc_t): void =
-  let
-    val loc_begoff = $Loc.location_begpos_toff loc
-    val loc_endoff = $Loc.location_endpos_toff loc
-  in
-    posmark_insert_extern_beg loc_begoff;
-    posmark_insert_extern_end loc_endoff;
-  end
+fn externloc_posmark (loc: loc_t): void = let
+  val loc_begoff = $Loc.location_begpos_toff loc
+  val loc_endoff = $Loc.location_endpos_toff loc
+in
+  posmark_insert_extern_beg loc_begoff;
+  posmark_insert_extern_end loc_endoff;
+end // end of [externloc_posmark]
 
 fn neuexploc_posmark (loc: loc_t): void = let
   val loc_begoff = $Loc.location_begpos_toff loc
@@ -111,8 +110,9 @@ fun tmps0explstlst_posmark (ts0ess: tmps0explstlst): void =
   case+ ts0ess of
   | TMPS0EXPLSTLSTcons (_(*loc*), s0es, ts0ess) => begin
       s0explst_posmark s0es; tmps0explstlst_posmark ts0ess
-    end
+    end // end of [TMPS0EXPLSTLSTcons]
   | TMPS0EXPLSTLSTnil () => ()
+// end of [tmps0explstlst_posmark]
 
 (* ****** ****** *)
 
@@ -147,25 +147,28 @@ fn e0fftaglst_posmark (tags: e0fftaglst): void =
 fn e0fftaglstopt_posmark
   (otags: e0fftaglstopt): void = case+ otags of
   | Some tags => e0fftaglst_posmark tags | None () => () 
+// end of [e0fftaglstopt_posmark]
 
 (* ****** ****** *)
 
 fn p0at_prf_posmark (p0t: p0at): void = begin
   prfexploc_posmark p0t.p0at_loc; p0at_posmark p0t;
-end
+end // end of [p0at_prf_posmark]
 
 fun p0atlst_prf_posmark (p0ts: p0atlst): void =
   $Lst.list_foreach_fun (p0ts, p0at_prf_posmark)
 
 fn p0atopt_posmark (op0t: p0atopt): void =
   case+ op0t of Some p0t => p0at_posmark p0t | None () => ()
+// end of [p0atopt_posmark]
 
 fun labp0atlst_posmark (lp0ts: labp0atlst): void =
   case+ lp0ts of
   | LABP0ATLSTcons (_(*lab*), p0t, lp0ts) => begin
       p0at_posmark p0t; labp0atlst_posmark lp0ts
-    end
+    end // end of [LABP0ATLSTcons]
   | _ => ()
+// end of [labp0atlst_posmark]
 
 implement p0at_posmark (p0t) = case+ p0t.p0at_node of
   | P0Tann (p0t, s0e) => begin
@@ -189,6 +192,7 @@ implement p0at_posmark (p0t) = case+ p0t.p0at_node of
       p0atlst_prf_posmark p0ts1; p0atlst_posmark p0ts2;
     end
   | _ => ()
+// end of [p0at_posmark]
 
 implement p0atlst_posmark (p0ts) =
   $Lst.list_foreach_fun (p0ts, p0at_posmark)
@@ -204,7 +208,7 @@ fn p0arglst_posmark (p0as: p0arglst) =
 
 fn p0arg_prf_posmark (p0a: p0arg): void = begin
   prfexploc_posmark (p0a.p0arg_loc); s0expopt_posmark (p0a.p0arg_ann)
-end
+end // end of [p0arg_prf_posmark]
 
 fn p0arglst_prf_posmark (p0as: p0arglst) =
   $Lst.list_foreach_fun (p0as, p0arg_prf_posmark)
@@ -217,7 +221,8 @@ fn d0arg_posmark (d0a: d0arg): void =
   | D0ARGdyn p0as => p0arglst_posmark p0as
   | D0ARGdyn2 (p0as1, p0as2) => begin
       p0arglst_prf_posmark p0as1; p0arglst_posmark p0as2
-    end
+    end // end of [D0ARGdyn2]
+// end of [d0arg_posmark]
 
 fn d0arglst_posmark (d0as: d0arglst) =
   $Lst.list_foreach_fun (d0as, d0arg_posmark)
@@ -230,6 +235,7 @@ fn f0arg_posmark (f0a: f0arg): void =
   | F0ARGsta2 _ => staexploc_posmark (f0a.f0arg_loc)
   | F0ARGdyn p0t => p0at_posmark p0t
   | F0ARGmet _ => staexploc_posmark (f0a.f0arg_loc)
+// end of [f0arg_posmark]
 
 fn f0arglst_posmark (f0as: f0arglst): void =
   $Lst.list_foreach_fun (f0as, f0arg_posmark)
@@ -269,7 +275,7 @@ fn loopi0nvopt_posmark (oinv: loopi0nvopt): void =
 
 fn d0exp_prf_posmark (d0e: d0exp): void = begin
   prfexploc_posmark d0e.d0exp_loc; d0exp_posmark d0e;
-end
+end // end of [d0exp_prf_posmark]
 
 fn d0explst_prf_posmark (d0es: d0explst): void =
   $Lst.list_foreach_fun (d0es, d0exp_prf_posmark)
@@ -282,18 +288,18 @@ fn d0expopt_posmark (od0e: d0expopt): void =
 
 fn m0atch_posmark (m0at: m0atch): void = begin
   d0exp_posmark (m0at.m0atch_exp); p0atopt_posmark (m0at.m0atch_pat)
-end
+end // end of [m0atch_posmark]
 
 fn m0atchlst_posmark (m0ats: m0atchlst): void =
   $Lst.list_foreach_fun (m0ats, m0atch_posmark)
 
 fn guap0at_posmark (gp0t: guap0at): void = begin
   p0at_posmark gp0t.guap0at_pat; m0atchlst_posmark gp0t.guap0at_gua
-end
+end // end of [guap0at_posmark]
 
 fn c0lau_posmark (c0l: c0lau): void = begin
   guap0at_posmark c0l.c0lau_pat; d0exp_posmark c0l.c0lau_body
-end
+end // end of [c0clau_posmark]
 
 fn c0laulst_posmark (c0ls: c0laulst): void =
   $Lst.list_foreach_fun (c0ls, c0lau_posmark)
@@ -304,6 +310,7 @@ fun labd0explst_posmark (ld0es: labd0explst): void =
       d0exp_posmark d0e; labd0explst_posmark ld0es
     end
   | LABD0EXPLSTnil () => ()
+// end of [labd0explst_posmark]
 
 implement d0exp_posmark (d0e0) = case+ d0e0.d0exp_node of
   | D0Eann (d0e, s0e) => begin
@@ -388,6 +395,7 @@ implement d0exp_posmark (d0e0) = case+ d0e0.d0exp_node of
       loopi0nvopt_posmark inv; d0exp_posmark d0e_test; d0exp_posmark d0e_body;
     end // end of [D0Ewhile]
   | _ => ()
+// end of [d0exp_posmark]
 
 implement d0explst_posmark (d0es) =
   $Lst.list_foreach_fun (d0es, d0exp_posmark)
@@ -418,7 +426,7 @@ fn d0atconlst_posmark (d0cs: d0atconlst): void =
 fn d0atdec_posmark (d0c: d0atdec): void = begin
   staexploc_posmark (d0c.d0atdec_headloc);
   d0atconlst_posmark (d0c.d0atdec_con);
-end
+end // end of [d0atdec_posmark]
 
 fn d0atdeclst_posmark (d0cs: d0atdeclst): void =
   $Lst.list_foreach_fun (d0cs, d0atdec_posmark)
@@ -428,7 +436,7 @@ fn d0atdeclst_posmark (d0cs: d0atdeclst): void =
 fn e0xndec_posmark (d0c: e0xndec): void = begin
   s0qualstlst_posmark (d0c.e0xndec_qua);
   s0expopt_posmark (d0c.e0xndec_arg);
-end
+end // end of [e0xndec_posmark]
 
 fn e0xndeclst_posmark (d0cs: e0xndeclst): void =
   $Lst.list_foreach_fun (d0cs, e0xndec_posmark)
@@ -439,7 +447,7 @@ fn d0cstdec_posmark (d0c: d0cstdec): void = begin
   d0arglst_posmark (d0c.d0cstdec_arg);
   e0fftaglstopt_posmark (d0c.d0cstdec_eff);
   s0exp_posmark (d0c.d0cstdec_res);
-end
+end // end of [d0cstdec_posmark]
 
 fn d0cstdeclst_posmark (d0cs: d0cstdeclst): void =
   $Lst.list_foreach_fun (d0cs, d0cstdec_posmark)
@@ -448,7 +456,7 @@ fn d0cstdeclst_posmark (d0cs: d0cstdeclst): void =
 
 fn v0aldec_posmark (d0c: v0aldec): void = begin
   p0at_posmark d0c.v0aldec_pat; d0exp_posmark d0c.v0aldec_def;
-end
+end // end of [v0aldec_posmark]
 
 fn v0aldeclst_posmark (d0cs: v0aldeclst): void =
   $Lst.list_foreach_fun (d0cs, v0aldec_posmark)
@@ -460,7 +468,7 @@ fn f0undec_posmark (d0c: f0undec): void = begin
   e0fftaglstopt_posmark d0c.f0undec_eff;
   s0expopt_posmark d0c.f0undec_res;
   d0exp_posmark d0c.f0undec_def;
-end
+end // end of [f0undec_posmark]
 
 fn f0undeclst_posmark (d0cs: f0undeclst): void =
   $Lst.list_foreach_fun (d0cs, f0undec_posmark)
@@ -484,13 +492,16 @@ fn v0ardeclst_posmark (d0cs: v0ardeclst): void =
 
 (* ****** ****** *)
 
-fn i0mpdec_posmark (d0c: i0mpdec): void =
-  let val qid = d0c.i0mpdec_qid in
-    s0explstlst_posmark (qid.impqi0de_arg);
-    f0arglst_posmark (d0c.i0mpdec_arg);
-    s0expopt_posmark (d0c.i0mpdec_res);
-    d0exp_posmark (d0c.i0mpdec_def);
-  end
+fn i0mpdec_posmark
+  (d0c: i0mpdec): void = let
+  val qid = d0c.i0mpdec_qid
+  val () = s0explstlst_posmark (qid.impqi0de_arg)
+  val () = f0arglst_posmark (d0c.i0mpdec_arg)
+  val () = s0expopt_posmark (d0c.i0mpdec_res)
+  val () = d0exp_posmark (d0c.i0mpdec_def)
+in
+  // empty
+end // end of [i0mpdec_posmark]
 
 (* ****** ****** *)
 

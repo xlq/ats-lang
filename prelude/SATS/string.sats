@@ -138,11 +138,11 @@ castfn string1_of_string (s: string):<> [n:nat] string n
 
 (* ****** ****** *)
 
-fun string1_of_strbuf {m,n:nat} {l:addr}
+castfn string1_of_strbuf {m,n:nat} {l:addr}
   (pf: strbuf (m, n) @ l | p: ptr l) :<> string n
   = "atspre_string1_of_strbuf"
 
-fun strbuf_of_string1 {n:nat} (s: string n)
+castfn strbuf_of_string1 {n:nat} (s: string n)
   :<> [m:int | n < m] [l:addr] (vbox (strbuf (m, n) @ l) | ptr l)
   = "atspre_strbuf_of_string1"
 
@@ -545,9 +545,10 @@ fun string_hash_33 (s: string):<> uInt = "atspre_string_hash_33"
 
 val stropt_none : stropt (~1)
   = "atspre_stropt_none"
-fun stropt_some {n:nat} (s: string n):<> stropt n
+
+castfn stropt_some {n:nat} (s: string n):<> stropt n
   = "atspre_stropt_some"
-fun stropt_unsome {n:nat} (s: stropt n):<> string n
+castfn stropt_unsome {n:nat} (s: stropt n):<> string n
   = "atspre_stropt_unsome"
 
 fun stropt_is_none {i:int} (s: stropt i):<> bool (i < 0)

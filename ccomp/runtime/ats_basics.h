@@ -55,6 +55,7 @@
 #define ATSlocal(ty, var) ty ATSunused var
 #define ATSlocal_void(var)
 #define ATSglobal(ty, var) ty var
+#define ATScastfn(castfn, val) val
 
 /* ****** ****** */
 
