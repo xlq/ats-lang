@@ -788,7 +788,7 @@ in
       prerr ": Internal Error";
       prerr ": ccomp_match: hip0 = "; prerr hip0; prerr_newline ();
       $Err.abort {void} ()
-    end
+    end // end of [_]
 end // end of [ccomp_match]
 
 (* ****** ****** *)
@@ -1421,7 +1421,7 @@ implement ccomp_explst (res, hies) = begin
       val vp = ccomp_exp (res, hie)
     in
       list_cons (vp, ccomp_explst (res, hies))
-    end
+    end // end of [list_cons]
   | list_nil () => list_nil ()
 end // end of [ccomp_explst]
 
@@ -1431,7 +1431,7 @@ implement ccomp_explstlst (res, hiess) = begin
       val vps = ccomp_explst (res, hies)
     in
       list_cons (vps, ccomp_explstlst (res, hiess))
-    end
+    end // end of [list_cons]
   | list_nil () => list_nil ()
 end // end of [ccomp_explstlst]
 
@@ -1441,7 +1441,7 @@ implement ccomp_labexplst (res, lhies) = begin
       val vp = ccomp_exp (res, hie)
     in
       LABVALPRIMLSTcons (l, vp, ccomp_labexplst (res, lhies))
-    end
+    end // end of [LABHIEXPLSTcons]
   | LABHIEXPLSTnil () => LABVALPRIMLSTnil ()
 end // end of [ccomp_labexplst]
 
@@ -1493,7 +1493,7 @@ fn tailcall_arg_move (
     : valprimlst_vt = begin case+ vps of
     | list_cons (vp, vps) => begin
         list_vt_cons (vp, aux2_arg (res, vps))
-      end
+      end // end of [list_cons]
     | list_nil () => list_vt_nil ()
   end // end of [aux2_arg]
 
@@ -1512,7 +1512,7 @@ fn tailcall_arg_move (
         val () = instr_add_move_arg (res, i, vp)
       in
         aux1_mov (res, i+1, vps)
-      end
+      end // end of [list_vt_cons]
     | ~list_vt_nil () => ()
   end // end of [aux1_mov]
 
@@ -1526,9 +1526,9 @@ fn tailcall_arg_move (
           val () = instr_add_move_val (res, tmp, vp)
         in
           aux2_mov (res, tmps, vps)
-        end
+        end // end of [list_cons]
       | list_nil () => aux2_mov (res, tmps, vps) // deadcode
-      end
+      end // end of [list_vt_cons]
     | ~list_vt_nil () => ()
   end // end of [aux2_mov]
 in

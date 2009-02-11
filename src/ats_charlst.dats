@@ -78,6 +78,9 @@ implement charlst_is_nil (cs) = case+ cs of
 
 implement charlst_uncons (cs) =
   let val+ ~CHARLSTcons (c, cs_r) = cs in cs := cs_r; c end
+// end of [charlst_uncons]
+
+(* ****** ****** *)
 
 %{
 
