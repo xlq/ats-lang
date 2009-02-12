@@ -216,22 +216,22 @@ implement tokenize_rest_text () = loop (nil (), 0) where {
   in
     if c >= 0 then let
       val c = i2c c in char_update (); loop (c :: cs, n+1)
-    end else begin
-      string_make_chars_int (cs, n)
+    end else begin // c = EOF
+      string_make_chars_int (cs, n) // the end of file is reached
     end // end of [if]
   end // end of [loop]
 } // end of [tokenize_rest_text]
 
 (* ****** ****** *)
 
-fun errmsg_unclosed_logue {a:viewt@ype} (): a = let
+fun errmsg_unclosed_logue (): string = let
   val pos = position_prev_get ()
 in
   prerr_string ("The logue starting at [");
   prerr_pos pos;
   prerr_string ("] is not closed.");
   prerr_newline ();
-  exit {a} (1)
+  exit {string} (1)
 end // end of [errmsg_unclosed_logue]
 
 implement tokenize_logue () =
@@ -247,22 +247,24 @@ implement tokenize_logue () =
         in
           if c1 >= 0 then let
             val c1 = i2c c1 in case+ c1 of
-            | '}' => begin
-                if l > 0 then begin
-                  char_update (); loop (c1 :: c :: cs, n+2, l-1)
-                end else begin
-                  char_update (); string_make_chars_int (cs, n)
-                end // end of [if]
+            | '}' => if l > 0 then begin
+                char_update (); loop (c1 :: c :: cs, n+2, l-1)
+              end else begin
+                char_update (); string_make_chars_int (cs, n)
               end // end of ['}']
-            | '\{' => (char_update (); loop (c1 :: c :: cs, n+2, l+1))
+            | '\{' => begin
+                char_update (); loop (c1 :: c :: cs, n+2, l+1)
+              end // end of ['\{']
             | _ => loop (c :: cs, n+1, l)
-          end else begin
-            chars_free cs; errmsg_unclosed_logue {string} ()
+          end else begin // c1 = EOF
+            chars_free cs; errmsg_unclosed_logue ()
           end // end of [if]
-        end // end of ['%']
-      | _ => (char_update (); loop (c :: cs, n+1, l))
+        end (* end of ['%'] *)
+      | _ (* c <> '%' *) => begin
+          char_update (); loop (c :: cs, n+1, l)
+        end // end of [_]
     end else begin // c = EOF
-      chars_free cs; errmsg_unclosed_logue {string} ()
+      chars_free cs; errmsg_unclosed_logue ()
     end // end of [if]
   end // end of [loop]
 } // end of [tokenize_logue]
@@ -341,7 +343,7 @@ fun tokenize_char_esc (): char = let
         | _ => c (* no effect on other chars *)
       end // end of [if]
     end // end of [_ when ...]
-  | _ (* c < 0 *) => '\000'
+  | _ (* c < 0 *) => '\000' // an error is to be reported later
 end // end of [tokenize_char_esc]
 
 fun errmsg_unclosed_char (): char = let
@@ -390,14 +392,18 @@ fun tokenize_code {n,level:nat}
 in
   if c >= 0 then let
     val c = i2c c in case+ c of
-    | '\{' =>
-      (char_update (); tokenize_code (c :: cs, n+1, level+1))
-    | '}' when level > 0 =>
-      (char_update (); tokenize_code (c :: cs, n+1, level-1))
-    | '}' =>
-      (char_update (); string_make_chars_int (cs, n))
-    | _ =>
-      (char_update (); tokenize_code (c :: cs, n+1, level))
+    | '\{' => begin
+        char_update (); tokenize_code (c :: cs, n+1, level+1)
+      end // end of ['\{']
+    | '}' when level > 0 => begin
+        char_update (); tokenize_code (c :: cs, n+1, level-1)
+      end // end of ['}' when ...]
+    | '}' (* level = 0 *) => begin
+        char_update (); string_make_chars_int (cs, n)
+      end // end of ['}']
+    | _ => begin
+        char_update (); tokenize_code (c :: cs, n+1, level)
+      end // end of [_]
   end else begin
     chars_free cs; errmsg_unclosed_code ()
   end // end of [if]
@@ -415,7 +421,7 @@ in
   exit {void} (1)
 end // end of [errmsg_unclosed_comment]
 
-fun tokenize_comment {l:nat} (l: int l): void = let
+fun tokenize_comment {level:nat} (level: int level): void = let
   val c = char_get ()
 in
   if c >= 0 then let
@@ -424,20 +430,22 @@ in
         val c1 = char_update_get () in case+ 0 of
         | _ when c1 >= 0 => let
             val c1 = i2c c1 in case+ c1 of
-            | '*' => tokenize_comment (l+1) | _ => tokenize_comment l
+            | '*' => tokenize_comment (level+1) | _ => tokenize_comment level
           end // end of [_ when ...]
-        | _ (* c1 < 0 *) => tokenize_comment l
+        | _ (* c1 < 0 *) => tokenize_comment level
       end // end of ['\(']
     | '*' => let
         val c1 = char_update_get () in case+ 0 of
         | _ when c1 >= 0 => let
             val c1 = i2c c1 in case+ c1 of 
-            | ')' => if l > 0 then tokenize_comment (l-1) else char_update ()
-            | _ => tokenize_comment l
+            | ')' => begin
+                if level > 0 then tokenize_comment (level-1) else char_update ()
+              end // end of [')']
+            | _ => tokenize_comment level
           end // end of [_ when ...]
-        | _ (* c1 < 0 *) => tokenize_comment l
+        | _ (* c1 < 0 *) => tokenize_comment level
       end // end of ['*']
-    | _ => (char_update (); tokenize_comment l)
+    | _ => (char_update (); tokenize_comment level)
   end else begin
     errmsg_unclosed_comment ()
   end // end of [if]
@@ -464,7 +472,7 @@ fun tokenize_string_char () = let
   | _ when c >= 0 => let
       val c = i2c c in if c = '\\' then tokenize_char_esc () else c
     end // end of [_ when ...]
-  | _ (* c < 0 *) => '\000'
+  | _ (* c < 0 *) => '\000' // an error is to be reported later
 end // end of [tokenize_string_char]
 
 fun errmsg_unclosed_string (): string = let
@@ -651,8 +659,8 @@ fun tokenize_main (c: char) = case+ c of
     in
       TOKword (tokenize_word_sym (c :: nil (), 1))
     end // end of [symbl]
-  | _ when char_isspace c => begin
-      let val () = char_update () in tokenize () end
+  | _ when char_isspace c => let
+      val () = char_update () in tokenize ()
     end // end of [space]
   | _ => let
       val () = pos_prev_reset_and_char_update ()
@@ -684,7 +692,12 @@ ats_ptr_type token_get_update () {
 %}
 
 // initialization
-val () = (char_update (); token_update ())
+val () = let
+  val () = char_update () // flush out a junk value
+  val () = token_update () // flush out a junk value
+in
+  // empty
+end // end of [let]
 
 (* ****** ****** *)
 

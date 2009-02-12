@@ -216,29 +216,6 @@ in
   lexing_lexbuf_set (pf_lexbuf | lexbuf); s
 end // end of [lexeme_string]
 
-implement lexeme_lint (base) = let
-  val (pf_lexbuf | lexbuf) = lexing_lexbuf_get ()
-  val li = lexeme_lint_lexbuf (!lexbuf, base)
-in
-  lexing_lexbuf_set (pf_lexbuf | lexbuf); li
-end // end of [lexeme_lint]
-
-//
-
-%{^
-
-static inline
-ats_int_type
-ats_int_of_lint (ats_lint_type i) { return i ; }
-
-%}
-
-implement lexeme_int (base) = let
-  extern fun int_of_lint (i: lint): int = "ats_int_of_lint"
-in
-  int_of_lint (lexeme_lint base)
-end
-
 //
 
 implement lexing_is_eof () = let
@@ -757,18 +734,6 @@ lexeme_string_lexbuf (ats_ptr_type lxbf0) {
   *dst = '\000' ;
 
   return dst0 ;
-}
-
-/* ****** ****** */
-
-ats_lint_type
-lexeme_lint_lexbuf (ats_ptr_type lxbf0, ats_int_type base) {
-  int fstpos ; char *src ; lexbuf *lxbf ;
-
-  lxbf = (lexbuf*)lxbf0 ;
-
-  fstpos = lxbf->fstpos ;
-  return strtol ((lxbf->buf_ptr) + fstpos, (char**)0, base) ;
 }
 
 /* ****** ****** */

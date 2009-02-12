@@ -90,68 +90,84 @@ dataviewtype token =
 
 //
 
-fun free_token (tok: token): void =
-  case+ tok of
-    | ~TOKid id => ()
-    | ~TOKint i => ()
-    | ~TOKop_add () => ()
-    | ~TOKop_sub () => ()
-    | ~TOKop_mul () => ()
-    | ~TOKop_div () => ()
-    | ~TOKparen_l () => ()
-    | ~TOKparen_r () => ()
-    | ~TOKeq () => ()
-    | ~TOKeof () => ()
-
-//
+fun free_token (tok: token): void = case+ tok of
+  | ~TOKid id => ()
+  | ~TOKint i => ()
+  | ~TOKop_add () => ()
+  | ~TOKop_sub () => ()
+  | ~TOKop_mul () => ()
+  | ~TOKop_div () => ()
+  | ~TOKparen_l () => ()
+  | ~TOKparen_r () => ()
+  | ~TOKeq () => ()
+  | ~TOKeof () => ()
+// end of [free_token]
 
 extern fun fprint_token {m:file_mode}
   (pf_mod: file_mode_lte (m, w) | fil: &FILE m, tok: !token): void
 
-implement fprint_token (pf_mod | fil, tok): void =
-  case+ tok of
-    | TOKid s =>
-        (fprintf (pf_mod | fil, "TOKid(%s)", @(s)); fold@ tok)
-    | TOKint i =>
-        (fprintf (pf_mod | fil, "TOKint(%i)", @(i)); fold@ tok)
-    | TOKop_add () =>
-        (fprint_string (pf_mod | fil, "+"); fold@ tok)
-    | TOKop_sub () =>
-        (fprint_string (pf_mod | fil, "-"); fold@ tok)
-    | TOKop_mul () =>
-        (fprint_string (pf_mod | fil, "*"); fold@ tok)
-    | TOKop_div () =>
-        (fprint_string (pf_mod | fil, "/"); fold@ tok)
-    | TOKparen_l () =>
-        (fprint_string (pf_mod | fil, "("); fold@ tok)
-    | TOKparen_r () =>
-        (fprint_string (pf_mod | fil, ")"); fold@ tok)
-    | TOKeq () =>
-        (fprint_string (pf_mod | fil, "="); fold@ tok)
-    | TOKeof () =>
-        (fprint_string (pf_mod | fil, "EOF"); fold@ tok)
+implement fprint_token
+  (pf_mod | fil, tok): void = case+ tok of
+  | TOKid s =>
+      (fprintf (pf_mod | fil, "TOKid(%s)", @(s)); fold@ tok)
+  | TOKint i =>
+      (fprintf (pf_mod | fil, "TOKint(%i)", @(i)); fold@ tok)
+  | TOKop_add () =>
+      (fprint_string (pf_mod | fil, "+"); fold@ tok)
+  | TOKop_sub () =>
+      (fprint_string (pf_mod | fil, "-"); fold@ tok)
+  | TOKop_mul () =>
+      (fprint_string (pf_mod | fil, "*"); fold@ tok)
+  | TOKop_div () =>
+      (fprint_string (pf_mod | fil, "/"); fold@ tok)
+  | TOKparen_l () =>
+      (fprint_string (pf_mod | fil, "("); fold@ tok)
+  | TOKparen_r () =>
+      (fprint_string (pf_mod | fil, ")"); fold@ tok)
+  | TOKeq () =>
+      (fprint_string (pf_mod | fil, "="); fold@ tok)
+  | TOKeof () =>
+      (fprint_string (pf_mod | fil, "EOF"); fold@ tok)
+// end of [fprint_token]
 
 extern fun print_token (tok: !token): void
 
-implement print_token (tok) =
-  let
-     val (pf_stdout | stdout) = stdout_get ()
-  in
-     fprint_token (file_mode_lte_w_w | !stdout, tok);
-     stdout_view_set (pf_stdout | (*none*))
-  end
+implement print_token (tok) = let
+  val (pf_stdout | stdout) = stdout_get ()
+in
+  fprint_token (file_mode_lte_w_w | !stdout, tok);
+  stdout_view_set (pf_stdout | (*none*))
+end // end of [print_token]
 
 extern fun prerr_token (tok: !token): void
 
-implement prerr_token (tok) =
-  let
-     val (pf_stderr | stderr) = stderr_get ()
-  in
-     fprint_token (file_mode_lte_w_w | !stderr, tok);
-     stderr_view_set (pf_stderr | (*none*))
-  end
+implement prerr_token (tok) = let
+  val (pf_stderr | stderr) = stderr_get ()
+in
+  fprint_token (file_mode_lte_w_w | !stderr, tok);
+  stderr_view_set (pf_stderr | (*none*))
+end // end of [prerr_token]
 
-//
+(* ****** ****** *)
+
+%{^
+
+extern long int
+strtol (const char *nptr, char **endptr, int base) ;
+
+ats_int_type __strtoi (ats_ptr_type str, ats_int_type base) {
+  return strtol ((char*)str, (char**)0, base) ;
+}
+
+%}
+
+fun lexeme_int (base: int): int = let
+  val str = lexeme_string () in __strtoi (str, base)
+end where {
+  extern fun __strtoi (str: string, base: int): int = "__strtoi"
+}
+
+(* ****** ****** *)
 
 extern fun TOKEN (): token
 fn TOKEN_lexing_error {a:viewt@ype} (): a = lexing_error ()
@@ -241,15 +257,35 @@ dataviewtype exp =
   | EXPid of string
   | EXPerr
 
-fun free_exp (e0: exp): void =
-  case+ e0 of
-    | ~EXPint i => ()
-    | ~EXPadd (e1, e2) => (free_exp e1; free_exp e2)
-    | ~EXPsub (e1, e2) => (free_exp e1; free_exp e2)
-    | ~EXPmul (e1, e2) => (free_exp e1; free_exp e2)
-    | ~EXPdiv (e1, e2) => (free_exp e1; free_exp e2)
-    | ~EXPid id => ()
-    | ~EXPerr () => ()
+fun free_exp (e0: exp): void = case+ e0 of
+  | ~EXPint i => ()
+  | ~EXPadd (e1, e2) => (free_exp e1; free_exp e2)
+  | ~EXPsub (e1, e2) => (free_exp e1; free_exp e2)
+  | ~EXPmul (e1, e2) => (free_exp e1; free_exp e2)
+  | ~EXPdiv (e1, e2) => (free_exp e1; free_exp e2)
+  | ~EXPid id => ()
+  | ~EXPerr () => ()
+// end of [free_exp]
+
+fun print_exp (e0: !exp): void = case+ e0 of
+  | EXPint i => begin
+      print "EXPint("; print i; print ")"; fold@ e0
+    end
+  | EXPadd (!p_e1, !p_e2) => begin
+      print "EXPadd("; print_exp !p_e1; print ", "; print_exp !p_e2; print ")"; fold@ e0
+    end
+  | EXPsub (!p_e1, !p_e2) => begin
+      print "EXPsub("; print_exp !p_e1; print ", "; print_exp !p_e2; print ")"; fold@ e0
+    end
+  | EXPmul (!p_e1, !p_e2) => begin
+      print "EXPmul("; print_exp !p_e1; print ", "; print_exp !p_e2; print ")"; fold@ e0
+    end
+  | EXPdiv (!p_e1, !p_e2) => begin
+      print "EXPdiv("; print_exp !p_e1; print ", "; print_exp !p_e2; print ")"; fold@ e0
+    end
+  | EXPid id => (print "EXPid("; print id; print ")"; fold@ e0)
+  | EXPerr () => (print "EXPerr("; print ")"; fold@ e0)
+// end of [print_exp]
 
 dataviewtype cmd =
   | CMDassgn of (string, exp)
@@ -410,15 +446,22 @@ fun env_find (env: env, id0: string): int =
       if id0 = id then i else env_find (env, id0)
     | ENVnil () => 0
 
-fun eval_exp (env: &env, e0: exp): int =
+fun eval_exp (env: &env, e0: exp): int = let
+(*
+  val () = begin
+    print "eval_exp: e0 = "; print_exp e0; print_newline ()
+  end
+*)
+in
   case+ e0 of
-    | ~EXPint i => i
-    | ~EXPadd (e1, e2) => eval_exp (env, e1) + eval_exp (env, e2)
-    | ~EXPsub (e1, e2) => eval_exp (env, e1) - eval_exp (env, e2)
-    | ~EXPmul (e1, e2) => eval_exp (env, e1) * eval_exp (env, e2)
-    | ~EXPdiv (e1, e2) => eval_exp (env, e1) / eval_exp (env, e2)
-    | ~EXPid (id) => env_find (env, id)
-    | ~EXPerr () => $raise EvalErrorException
+  | ~EXPint i => i
+  | ~EXPadd (e1, e2) => eval_exp (env, e1) + eval_exp (env, e2)
+  | ~EXPsub (e1, e2) => eval_exp (env, e1) - eval_exp (env, e2)
+  | ~EXPmul (e1, e2) => eval_exp (env, e1) * eval_exp (env, e2)
+  | ~EXPdiv (e1, e2) => eval_exp (env, e1) / eval_exp (env, e2)
+  | ~EXPid (id) => env_find (env, id)
+  | ~EXPerr () => $raise EvalErrorException
+end // end of [eval_exp]
 
 fun eval_cmd (env: &env, cmd: cmd): int =
   case+ cmd of
@@ -441,7 +484,7 @@ fun eval_cmd (env: &env, cmd: cmd): int =
     | ~CMDerror () => begin
         print "The command is illegal; please try again:\n"; 0
       end
-//
+// end of [eval_cmd]
 
 extern fun getline (): string
 
@@ -555,4 +598,4 @@ implement getline () = let
     end
 in
   loop (charlst_nil (), 0)
-end
+end // end of [getline]

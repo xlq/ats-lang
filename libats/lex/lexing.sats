@@ -177,13 +177,6 @@ fun lexeme_string_lexbuf (lb: &lexbuf_t): string
   = "lexeme_string_lexbuf"
 fun lexeme_string (): string = "lexeme_string"
 
-fun lexeme_lint_lexbuf (lb: &lexbuf_t, base: int): lint
-  = "lexeme_lint_lexbuf"
-fun lexeme_lint (base: int): lint = "lexeme_lint"
-
-// This function is for reading out an integer from the lexbuf.
-fun lexeme_int (base: int): int = "lexeme_int"
-
 (* ****** ****** *)
 
 // This function is for testing whether the lexbuf reaches the end.
