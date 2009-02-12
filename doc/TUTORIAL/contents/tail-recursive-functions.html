@@ -13,9 +13,8 @@ into direct (local) jumps.
 When applied to an integer <i>n</i>, the following defined function
 <i>sum1</i> sums up integers from <i>1</i> to <i>n</i>.
 
-<PRE><FONT COLOR="#E80000"><FONT COLOR="#787878">// [sum1] is recursive but not tail-recursive
-</FONT><FONT COLOR="#000000">fun</FONT> sum1 <FONT COLOR="#000000">(</FONT>n<FONT COLOR="#000000">:</FONT> <FONT COLOR="#0000FF">int</FONT><FONT COLOR="#000000">)</FONT><FONT COLOR="#000000">:</FONT> <FONT COLOR="#0000FF">int</FONT> <FONT COLOR="#000000">=</FONT> <FONT COLOR="#000000">if</FONT> n <FONT COLOR="#000000">&gt;</FONT> 0 <FONT COLOR="#000000">then</FONT> n + sum1 <FONT COLOR="#000000">(</FONT>n-1<FONT COLOR="#000000">)</FONT> <FONT COLOR="#000000">else</FONT> 0
-</FONT></PRE>
+<PRE><span class="dynexp"><span class="comment">// [sum1] is recursive but not tail-recursive
+</span><span class="keyword">fun</span> sum1 <span class="keyword">(</span>n<span class="keyword">:</span> <span class="staexp">int</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">int</span> <span class="keyword">=</span> <span class="keyword">if</span> n <span class="keyword">&gt;</span> 0 <span class="keyword">then</span> n + sum1 <span class="keyword">(</span>n-1<span class="keyword">)</span> <span class="keyword">else</span> 0</span></PRE>
 
 This function is recursive but not tail-recursive. The stack space it
 consumes is proportional to the value of its argument. Essentially,
@@ -32,12 +31,15 @@ When applied to an integer <i>n</i>,
 the following defined function <i>sum2</i> also sums up
 integers from <i>1</i> to <i>n</i>.
 
-<PRE><FONT COLOR="#E80000"><FONT COLOR="#000000">fn</FONT> sum2 <FONT COLOR="#000000">(</FONT>n<FONT COLOR="#000000">:</FONT> <FONT COLOR="#0000FF">int</FONT><FONT COLOR="#000000">)</FONT><FONT COLOR="#000000">:</FONT> <FONT COLOR="#0000FF">int</FONT> <FONT COLOR="#000000">=</FONT> <FONT COLOR="#787878">// sum2 is non-recursive
-</FONT>  <FONT COLOR="#787878">// [loop] is tail-recursive
-</FONT>  <FONT COLOR="#000000">let</FONT> <FONT COLOR="#000000">fun</FONT> loop <FONT COLOR="#000000">(</FONT>n<FONT COLOR="#000000">:</FONT> <FONT COLOR="#0000FF">int</FONT><FONT COLOR="#000000">,</FONT> res<FONT COLOR="#000000">:</FONT> <FONT COLOR="#0000FF">int</FONT><FONT COLOR="#000000">)</FONT> <FONT COLOR="#000000">=</FONT> <FONT COLOR="#000000">if</FONT> n <FONT COLOR="#000000">&gt;</FONT> 0 <FONT COLOR="#000000">then</FONT> loop <FONT COLOR="#000000">(</FONT>n-1<FONT COLOR="#000000">,</FONT> res+n<FONT COLOR="#000000">)</FONT> <FONT COLOR="#000000">else</FONT> res <FONT COLOR="#000000">in</FONT>
-    loop <FONT COLOR="#000000">(</FONT>n<FONT COLOR="#000000">,</FONT> 0<FONT COLOR="#000000">)</FONT>
-  <FONT COLOR="#000000">end</FONT>
-</FONT></PRE>
+<PRE><span class="dynexp><span class="keyword">fn</span> sum2 <span class="keyword">(</span>n<span class="keyword">:</span> <span class="staexp">int</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">int</span> <span class="keyword">=</span> <span class="keyword">let</span> <span class="comment">// sum2 is non-recursive
+</span>  <span class="comment">// [loop] is tail-recursive
+</span>  <span class="keyword">fun</span> loop <span class="keyword">(</span>n<span class="keyword">:</span> <span class="staexp">int</span><span class="keyword">,</span> res<span class="keyword">:</span> <span class="staexp">int</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">int</span> <span class="keyword">=</span>
+    <span class="keyword">if</span> n <span class="keyword">&gt;</span> 0 <span class="keyword">then</span> loop <span class="keyword">(</span>n-1<span class="keyword">,</span> res+n<span class="keyword">)</span> <span class="keyword">else</span> res
+  <span class="comment">// end of [loop]
+</span><span class="keyword">in</span>
+  loop <span class="keyword">(</span>n<span class="keyword">,</span> 0<span class="keyword">)</span>
+<span class="keyword">end</span> <span class="comment">// end of [sum2]
+</span></span></PRE>
 
 The inner function <i>loop</i> in the definition of <i>sum2</i> is
 tail-recursive.  The stack space consumed by <i>loop</i> is a constant
@@ -65,11 +67,10 @@ Sometimes, mutually tail-recursive functions are encountered.  For
 instance, in the following example, the functions <i>even</i> and
 <i>odd</i> are mutually tail-recursive.
 
-<PRE><FONT COLOR="#E80000"><FONT COLOR="#787878">// [fn*] indicates the need to combine two or more functions
-</FONT><FONT COLOR="#787878">// so as to translate tail-recursive calls into direct jumps
-</FONT><FONT COLOR="#000000">fn*</FONT> even <FONT COLOR="#000000">(</FONT>n<FONT COLOR="#000000">:</FONT> <FONT COLOR="#0000FF">int</FONT><FONT COLOR="#000000">)</FONT><FONT COLOR="#000000">:</FONT> <FONT COLOR="#0000FF">bool</FONT> <FONT COLOR="#000000">=</FONT> <FONT COLOR="#000000">if</FONT> n <FONT COLOR="#000000">&gt;</FONT> 0 <FONT COLOR="#000000">then</FONT> odd <FONT COLOR="#000000">(</FONT>n-1<FONT COLOR="#000000">)</FONT> <FONT COLOR="#000000">else</FONT> true
-<FONT COLOR="#000000">and</FONT> odd <FONT COLOR="#000000">(</FONT>n<FONT COLOR="#000000">:</FONT> <FONT COLOR="#0000FF">int</FONT><FONT COLOR="#000000">)</FONT><FONT COLOR="#000000">:</FONT> <FONT COLOR="#0000FF">bool</FONT> <FONT COLOR="#000000">=</FONT> <FONT COLOR="#000000">if</FONT> n <FONT COLOR="#000000">&gt;</FONT> 0 <FONT COLOR="#000000">then</FONT> even <FONT COLOR="#000000">(</FONT>n-1<FONT COLOR="#000000">)</FONT> <FONT COLOR="#000000">else</FONT> false
-</FONT></PRE>
+<PRE><span class="dynexp"><span class="comment">// [fn*] indicates the need to combine two or more functions
+</span><span class="comment">// so as to translate tail-recursive calls into direct jumps
+</span><span class="keyword">fn*</span> even <span class="keyword">(</span>n<span class="keyword">:</span> <span class="staexp">int</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">bool</span> <span class="keyword">=</span> <span class="keyword">if</span> n <span class="keyword">&gt;</span> 0 <span class="keyword">then</span> odd <span class="keyword">(</span>n-1<span class="keyword">)</span> <span class="keyword">else</span> true
+<span class="keyword">and</span> odd <span class="keyword">(</span>n<span class="keyword">:</span> <span class="staexp">int</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">bool</span> <span class="keyword">=</span> <span class="keyword">if</span> n <span class="keyword">&gt;</span> 0 <span class="keyword">then</span> even <span class="keyword">(</span>n-1<span class="keyword">)</span> <span class="keyword">else</span> false</span></PRE>
 
 The keyword <i>fn*</i> is used to indicate to the ATS compiler
 that the functions <i>even</i> and
@@ -127,21 +128,24 @@ int main (int argc, char *argv[]) {
 A straightforward translation of the C code into ATS (in functional style)
 is given as follows:
 
-<PRE><FONT COLOR="#E80000"><FONT COLOR="#000000">implement</FONT> main <FONT COLOR="#000000">(</FONT>argc<FONT COLOR="#000000">,</FONT> argv<FONT COLOR="#000000">)</FONT> <FONT COLOR="#000000">=</FONT> <FONT COLOR="#000000">let</FONT>
-
-<FONT COLOR="#000000">fn*</FONT> loop1 <FONT COLOR="#0000FF"><FONT COLOR="#000000">{</FONT>i<FONT COLOR="#000000">:</FONT>nat<FONT COLOR="#000000">}</FONT></FONT> <FONT COLOR="#000000">(</FONT>i<FONT COLOR="#000000">:</FONT> <FONT COLOR="#0000FF">int i</FONT><FONT COLOR="#000000">)</FONT><FONT COLOR="#000000">:</FONT> <FONT COLOR="#0000FF">void</FONT> <FONT COLOR="#000000">=</FONT>
-  <FONT COLOR="#000000">if</FONT> i &lt;= 9 <FONT COLOR="#000000">then</FONT> loop2 <FONT COLOR="#000000">(</FONT>i<FONT COLOR="#000000">,</FONT> i<FONT COLOR="#000000">)</FONT> <FONT COLOR="#000000">else</FONT> <FONT COLOR="#000000">(</FONT><FONT COLOR="#000000">)</FONT>
-
-<FONT COLOR="#000000">and</FONT> loop2 <FONT COLOR="#0000FF"><FONT COLOR="#000000">{</FONT>i<FONT COLOR="#000000">,</FONT>j<FONT COLOR="#000000">:</FONT>nat<FONT COLOR="#000000">}</FONT></FONT> <FONT COLOR="#000000">(</FONT>i<FONT COLOR="#000000">:</FONT> <FONT COLOR="#0000FF">int i</FONT><FONT COLOR="#000000">,</FONT> j<FONT COLOR="#000000">:</FONT> <FONT COLOR="#0000FF">int j</FONT><FONT COLOR="#000000">)</FONT><FONT COLOR="#000000">:</FONT> <FONT COLOR="#0000FF">void</FONT> <FONT COLOR="#000000">=</FONT>
-  <FONT COLOR="#000000">if</FONT> j &lt;= 9 <FONT COLOR="#000000">then</FONT> <FONT COLOR="#000000">begin</FONT>
-    <FONT COLOR="#000000">if</FONT> i <FONT COLOR="#000000">&lt;</FONT> j <FONT COLOR="#000000">then</FONT> print ", "<FONT COLOR="#000000">;</FONT> printf <FONT COLOR="#000000">(</FONT>"(%i, %i)"<FONT COLOR="#000000">,</FONT> <FONT COLOR="#000000">@(</FONT>i<FONT COLOR="#000000">,</FONT> j<FONT COLOR="#000000">)</FONT><FONT COLOR="#000000">)</FONT><FONT COLOR="#000000">;</FONT> loop2 <FONT COLOR="#000000">(</FONT>i<FONT COLOR="#000000">,</FONT> j+1<FONT COLOR="#000000">)</FONT>
-  <FONT COLOR="#000000">end</FONT> <FONT COLOR="#000000">else</FONT> <FONT COLOR="#000000">begin</FONT>
-    print_newline <FONT COLOR="#000000">(</FONT><FONT COLOR="#000000">)</FONT><FONT COLOR="#000000">;</FONT> loop1 <FONT COLOR="#000000">(</FONT>i+1<FONT COLOR="#000000">)</FONT>
-  <FONT COLOR="#000000">end</FONT>
-<FONT COLOR="#000000">in</FONT>
+<PRE><span class="dynexp"><span class="keyword">implement</span> main <span class="keyword">(</span>argc<span class="keyword">,</span> argv<span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">let</span>
+  <span class="keyword">fn*</span> loop1 <span class="staexp"><span class="keyword">{</span>i<span class="keyword">:</span>nat<span class="keyword">}</span></span> <span class="keyword">(</span>i<span class="keyword">:</span> <span class="staexp">int i</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">void</span> <span class="keyword">=</span>
+    <span class="keyword">if</span> i &lt;= 9 <span class="keyword">then</span> loop2 <span class="keyword">(</span>i<span class="keyword">,</span> i<span class="keyword">)</span> <span class="keyword">else</span> <span class="keyword">(</span><span class="keyword">)</span>
+  <span class="comment">// end of [loop1]
+</span>
+  <span class="keyword">and</span> loop2 <span class="staexp"><span class="keyword">{</span>i<span class="keyword">,</span>j<span class="keyword">:</span>nat<span class="keyword">}</span></span> <span class="keyword">(</span>i<span class="keyword">:</span> <span class="staexp">int i</span><span class="keyword">,</span> j<span class="keyword">:</span> <span class="staexp">int j</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">void</span> <span class="keyword">=</span>
+    <span class="keyword">if</span> j &lt;= 9 <span class="keyword">then</span> <span class="keyword">begin</span>
+      <span class="keyword">if</span> i <span class="keyword">&lt;</span> j <span class="keyword">then</span> <span class="keyword">begin</span>
+        print ", "<span class="keyword">;</span> printf <span class="keyword">(</span>"(%i, %i)"<span class="keyword">,</span> <span class="keyword">@(</span>i<span class="keyword">,</span> j<span class="keyword">)</span><span class="keyword">)</span><span class="keyword">;</span> loop2 <span class="keyword">(</span>i<span class="keyword">,</span> j+1<span class="keyword">)</span>
+      <span class="keyword">end</span> <span class="comment">// end of [if]
+</span>    <span class="keyword">end</span> <span class="keyword">else</span> <span class="keyword">begin</span>
+      print_newline <span class="keyword">(</span><span class="keyword">)</span><span class="keyword">;</span> loop1 <span class="keyword">(</span>i+1<span class="keyword">)</span>
+    <span class="keyword">end</span> <span class="comment">// end of [if]
+</span>  <span class="comment">// end of [loop2]
+</span><span class="keyword">in</span>
   loop1 0
-<FONT COLOR="#000000">end</FONT>
-</FONT></PRE>
+<span class="keyword">end</span> <span class="comment">// end of [main]
+</span></span></PRE>
 
 where the mutually tail-recursive funtions <i>loop1</i> and <i>loop2</i>
 correspond to the outer and inner loops in the C code, respectively.

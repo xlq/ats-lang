@@ -22,47 +22,46 @@ a character <i>c</i>, a double <i>d</i> and an integer <i>i</i>,
 <i>@(c, d, i)</i> is an argument of types <i>(char, double, int)</i>,
 and the following expression is well-typed in ATS:
 
-<PRE><FONT COLOR="#E80000">printf <FONT COLOR="#000000">(</FONT>"c = %c and d = %f and i = %i"<FONT COLOR="#000000">,</FONT> <FONT COLOR="#000000">@(</FONT>c<FONT COLOR="#000000">,</FONT> d<FONT COLOR="#000000">,</FONT> i<FONT COLOR="#000000">)</FONT><FONT COLOR="#000000">)</FONT>
-</FONT></PRE>
+<PRE><span class="dynexp">printf <span class="keyword">(</span>"c = %c and d = %f and i = %i"<span class="keyword">,</span> <span class="keyword">@(</span>c<span class="keyword">,</span> d<span class="keyword">,</span> i<span class="keyword">)</span><span class="keyword">)</span>
+</span></PRE>
 
 The type of the format string
 <i>"c = %c and d = %f and i = %i"</i> is computed to be
-<i>printf_c(char, double, int)</i>
-and then <i>@(c, d, i)</i> is checked to be of this type.
-Note that a format string must be a constant in order for
-its type to be computed during typechecking.
+<i>printf_c (char, double, int)</i>
+and then <i>@(c, d, i)</i> is checked to be of the type
+<i>(char, double, int)</i>.  Note that a format string must be a constant
+in order for its type to be computed during typechecking.
 <P>
 
 As an example, we present as follows a program that prints out a
 multiplication table for single digits:
 
-<PRE><FONT COLOR="#E80000">
-<FONT COLOR="#000000">#define</FONT> <FONT COLOR="#800080">N 9</FONT>
+<PRE><span class="dynexp"><span class="keyword">#define</span> <span class="neuexp">N 9</span>
 
-<FONT COLOR="#000000">implement</FONT> main <FONT COLOR="#000000">(</FONT>argc<FONT COLOR="#000000">,</FONT> argv<FONT COLOR="#000000">)</FONT> <FONT COLOR="#000000">=</FONT> <FONT COLOR="#000000">let</FONT>
+<span class="keyword">implement</span> main <span class="keyword">(</span>argc<span class="keyword">,</span> argv<span class="keyword">)</span> <span class="keyword">=</span> loop1 <span class="keyword">(</span>0<span class="keyword">)</span> <span class="keyword">where</span> <span class="keyword">{</span>
 
-<FONT COLOR="#787878">// [loop1] and [loop2] are verified to be terminating based on the supplied metrics
-</FONT>
-<FONT COLOR="#787878">// [.&lt; N-i, 0 &gt;.] is a termination metric
-</FONT><FONT COLOR="#787878">// Ignore it if you have not learned this feature yet
-</FONT><FONT COLOR="#000000">fun</FONT> loop1 <FONT COLOR="#0000FF"><FONT COLOR="#000000">{</FONT>i<FONT COLOR="#000000">:</FONT>nat <FONT COLOR="#000000">|</FONT> i &lt;= N<FONT COLOR="#000000">}</FONT></FONT> <FONT COLOR="#0000FF"><FONT COLOR="#000000">.&lt;</FONT> N-i<FONT COLOR="#000000">,</FONT> 0 <FONT COLOR="#000000">&gt;.</FONT></FONT> <FONT COLOR="#000000">(</FONT>i<FONT COLOR="#000000">:</FONT> <FONT COLOR="#0000FF">int i</FONT><FONT COLOR="#000000">)</FONT><FONT COLOR="#000000">:</FONT> <FONT COLOR="#0000FF">void</FONT> <FONT COLOR="#000000">=</FONT>
-  <FONT COLOR="#000000">if</FONT> i <FONT COLOR="#000000">&lt;</FONT> N <FONT COLOR="#000000">then</FONT> loop2 <FONT COLOR="#000000">(</FONT>i+1<FONT COLOR="#000000">,</FONT> 0<FONT COLOR="#000000">)</FONT> <FONT COLOR="#000000">else</FONT> <FONT COLOR="#000000">(</FONT><FONT COLOR="#000000">)</FONT>
-
-<FONT COLOR="#787878">// [.&lt; N-i, N+1-j &gt;.] is a termination metric
-</FONT><FONT COLOR="#787878">// Ignore it if you have notlearned this feature yet
-</FONT><FONT COLOR="#000000">and</FONT> loop2 <FONT COLOR="#0000FF"><FONT COLOR="#000000">{</FONT>i<FONT COLOR="#000000">,</FONT>j<FONT COLOR="#000000">:</FONT>nat <FONT COLOR="#000000">|</FONT> i &lt;= N<FONT COLOR="#000000">;</FONT> j &lt;= i<FONT COLOR="#000000">}</FONT></FONT> <FONT COLOR="#0000FF"><FONT COLOR="#000000">.&lt;</FONT> N-i<FONT COLOR="#000000">,</FONT> i-j+1 <FONT COLOR="#000000">&gt;.</FONT></FONT> <FONT COLOR="#000000">(</FONT>i<FONT COLOR="#000000">:</FONT> <FONT COLOR="#0000FF">int i</FONT><FONT COLOR="#000000">,</FONT> j<FONT COLOR="#000000">:</FONT> <FONT COLOR="#0000FF">int j</FONT><FONT COLOR="#000000">)</FONT><FONT COLOR="#000000">:</FONT> <FONT COLOR="#0000FF">void</FONT> <FONT COLOR="#000000">=</FONT>
-  <FONT COLOR="#000000">if</FONT> j <FONT COLOR="#000000">&lt;</FONT> i <FONT COLOR="#000000">then</FONT> <FONT COLOR="#000000">begin</FONT>
-    <FONT COLOR="#000000">if</FONT> <FONT COLOR="#000000">(</FONT>j <FONT COLOR="#000000">&gt;</FONT> 0<FONT COLOR="#000000">)</FONT> <FONT COLOR="#000000">then</FONT> print '\t'<FONT COLOR="#000000">;</FONT>
-    printf <FONT COLOR="#000000">(</FONT>"%1d*%1d=%2.2d"<FONT COLOR="#000000">,</FONT> <FONT COLOR="#000000">@(</FONT>j+1<FONT COLOR="#000000">,</FONT> i<FONT COLOR="#000000">,</FONT> <FONT COLOR="#000000">(</FONT>j+1<FONT COLOR="#000000">)</FONT> * i<FONT COLOR="#000000">)</FONT><FONT COLOR="#000000">)</FONT><FONT COLOR="#000000">;</FONT>
-    loop2 <FONT COLOR="#000000">(</FONT>i<FONT COLOR="#000000">,</FONT> j+1<FONT COLOR="#000000">)</FONT>
-  <FONT COLOR="#000000">end</FONT> <FONT COLOR="#000000">else</FONT> <FONT COLOR="#000000">begin</FONT>
-    print_newline <FONT COLOR="#000000">(</FONT><FONT COLOR="#000000">)</FONT><FONT COLOR="#000000">;</FONT> loop1 <FONT COLOR="#000000">(</FONT>i<FONT COLOR="#000000">)</FONT>
-  <FONT COLOR="#000000">end</FONT> <FONT COLOR="#787878">// end of [if]
-</FONT>
-<FONT COLOR="#000000">in</FONT>
-  loop1 <FONT COLOR="#000000">(</FONT>0<FONT COLOR="#000000">)</FONT> 
-<FONT COLOR="#000000">end</FONT> <FONT COLOR="#787878">// end of [main]
-</FONT></FONT></PRE>
+  <span class="comment">// [loop1] and [loop2] are verified to be terminating based on the supplied metrics
+</span>
+  <span class="comment">// [.&lt; N-i, 0 &gt;.] is a termination metric
+</span>  <span class="comment">// Ignore it if you have not learned this feature yet
+</span>  <span class="keyword">fun</span> loop1 <span class="staexp"><span class="keyword">{</span>i<span class="keyword">:</span>nat <span class="keyword">|</span> i &lt;= N<span class="keyword">}</span></span> <span class="staexp"><span class="keyword">.&lt;</span> N-i<span class="keyword">,</span> 0 <span class="keyword">&gt;.</span></span> <span class="keyword">(</span>i<span class="keyword">:</span> <span class="staexp">int i</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">void</span> <span class="keyword">=</span>
+    <span class="keyword">if</span> i <span class="keyword">&lt;</span> N <span class="keyword">then</span> loop2 <span class="keyword">(</span>i+1<span class="keyword">,</span> 0<span class="keyword">)</span> <span class="keyword">else</span> <span class="keyword">(</span><span class="keyword">)</span>
+  <span class="comment">// end of [loop1]
+</span>
+  <span class="comment">// [.&lt; N-i, N+1-j &gt;.] is a termination metric
+</span>  <span class="comment">// Ignore it if you have notlearned this feature yet
+</span>  <span class="keyword">and</span> loop2 <span class="staexp"><span class="keyword">{</span>i<span class="keyword">,</span>j<span class="keyword">:</span>nat <span class="keyword">|</span> i &lt;= N<span class="keyword">;</span> j &lt;= i<span class="keyword">}</span></span> <span class="staexp"><span class="keyword">.&lt;</span> N-i<span class="keyword">,</span> i-j+1 <span class="keyword">&gt;.</span></span> <span class="keyword">(</span>i<span class="keyword">:</span> <span class="staexp">int i</span><span class="keyword">,</span> j<span class="keyword">:</span> <span class="staexp">int j</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">void</span> <span class="keyword">=</span>
+    <span class="keyword">if</span> j <span class="keyword">&lt;</span> i <span class="keyword">then</span> <span class="keyword">begin</span>
+      <span class="keyword">if</span> <span class="keyword">(</span>j <span class="keyword">&gt;</span> 0<span class="keyword">)</span> <span class="keyword">then</span> print '\t'<span class="keyword">;</span>
+      printf <span class="keyword">(</span>"%1d*%1d=%2.2d"<span class="keyword">,</span> <span class="keyword">@(</span>j+1<span class="keyword">,</span> i<span class="keyword">,</span> <span class="keyword">(</span>j+1<span class="keyword">)</span> * i<span class="keyword">)</span><span class="keyword">)</span><span class="keyword">;</span>
+      loop2 <span class="keyword">(</span>i<span class="keyword">,</span> j+1<span class="keyword">)</span>
+    <span class="keyword">end</span> <span class="keyword">else</span> <span class="keyword">begin</span>
+      print_newline <span class="keyword">(</span><span class="keyword">)</span><span class="keyword">;</span> loop1 <span class="keyword">(</span>i<span class="keyword">)</span>
+    <span class="keyword">end</span> <span class="comment">// end of [if]
+</span>  <span class="comment">// end of [loop2]
+</span>
+<span class="keyword">}</span> <span class="comment">// end of [main]
+</span></span></PRE>
 
 The following text is the output of the program:
 <pre>

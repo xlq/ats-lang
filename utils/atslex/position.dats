@@ -87,21 +87,23 @@ overload max with max_pos_pos
 
 (* ****** ****** *)
 
-implement position_get () =
-  let
-    val line = pos_line_get ()
-    val char = pos_char_get ()
-  in
-    '{line= line, char= char }
-  end
+implement position_get () = let
+  // [pos_line_get] is implemented in [token.dats]
+  val line = pos_line_get ()
+  // [pos_char_get] is implemented in [token.dats]
+  val char = pos_char_get ()
+in
+  '{line= line, char= char }
+end // end of [position_get]
 
-implement position_prev_get () =
-  let
-    val line = pos_line_prev_get ()
-    val char = pos_char_prev_get ()
-  in
-    '{line= line, char= char }
-  end
+implement position_prev_get () = let
+  // [pos_line_prev_get] is implemented in [token.dats]
+  val line = pos_line_prev_get ()
+  // [pos_char_prev_get] is implemented in [token.dats]
+  val char = pos_char_prev_get ()
+in
+  '{line= line, char= char }
+end // end of [position_prev_get]
 
 (* ****** ****** *)
 

@@ -2494,9 +2494,11 @@ end // end of [ccomp_impdec]
 // [d2c] is a terminating constant
 fn ccomp_impdec_trmck
   (loc: loc_t, d2c: d2cst_t, d2cs: dyncstset_t): void = let
+(*
   val () = begin
     prerr "ccomp_impdec_trmck: d2c = "; prerr d2c; prerr_newline ()
   end // end of [val]
+*)
   val fl = funlab_make_cst_trmck (d2c)
   val vp_fun = valprim_funclo_make (fl)
   val (pf_funlab_mark | ()) = funlab_push (fl)

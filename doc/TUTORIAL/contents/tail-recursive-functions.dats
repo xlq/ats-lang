@@ -13,12 +13,14 @@ int sum1 (int n) {
 
 %}
 
-fn sum2 (n: int): int = // sum2 is non-recursive
+fn sum2 (n: int): int = let // sum2 is non-recursive
   // [loop] is tail-recursive
-  let fun loop (n: int, res: int): int =
-     if n > 0 then loop (n-1, res+n) else res in
-    loop (n, 0)
-  end
+  fun loop (n: int, res: int): int =
+    if n > 0 then loop (n-1, res+n) else res
+  // end of [loop]
+in
+  loop (n, 0)
+end // end of [sum2]
 
 %{
 
@@ -92,6 +94,8 @@ int main (int argc, char *argv[]) {
 implement main (argc, argv) = let
   fn* loop1 {i:nat} (i: int i): void =
     if i <= 9 then loop2 (i, i) else ()
+  // end of [loop1]
+
   and loop2 {i,j:nat} (i: int i, j: int j): void =
     if j <= 9 then begin
       if i < j then begin
@@ -100,6 +104,7 @@ implement main (argc, argv) = let
     end else begin
       print_newline (); loop1 (i+1)
     end // end of [if]
+  // end of [loop2]
 in
   loop1 0
 end // end of [main]

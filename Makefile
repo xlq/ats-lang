@@ -112,7 +112,7 @@ bin/atspack:
 ###### library ######
 
 ATS_TERMINATION_CHECK=
-# ATS_TERMINATION_CHECK=-D_ATS_TERMINATION_CHECK # it should be turned from time to time
+# ATS_TERMINATION_CHECK=-D_ATS_TERMINATION_CHECK # it should be turned on from time to time
 
 # [GCC -E] for preprocessing
 .libfiles_local: ; $(GCC) -E -P -x c .libfiles -o .libfiles_local

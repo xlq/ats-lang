@@ -13,10 +13,9 @@ heap-allocated and can be freed by the user as well as by the GC.
 
 The datatype for persistent lists in ATS is declared as follows:
 
-<PRE><FONT COLOR="#E80000"><FONT COLOR="#000000">datatype</FONT> <FONT COLOR="#0000FF">list <FONT COLOR="#000000">(</FONT>a<FONT COLOR="#000000">:</FONT>t@ype+<FONT COLOR="#000000">,</FONT> int<FONT COLOR="#000000">)</FONT></FONT> <FONT COLOR="#000000">=</FONT> <FONT COLOR="#787878">// t@ype+: covariant
-</FONT>  <FONT COLOR="#000000">|</FONT> list_nil <FONT COLOR="#0000FF"><FONT COLOR="#000000">(</FONT>a<FONT COLOR="#000000">,</FONT> 0<FONT COLOR="#000000">)</FONT></FONT>
-  <FONT COLOR="#000000">|</FONT> <FONT COLOR="#000000">{</FONT><FONT COLOR="#0000FF">n<FONT COLOR="#000000">:</FONT>int</FONT> <FONT COLOR="#000000">|</FONT> <FONT COLOR="#0000FF">n &gt;= 0</FONT><FONT COLOR="#000000">}</FONT> list_cons <FONT COLOR="#0000FF"><FONT COLOR="#000000">(</FONT>a<FONT COLOR="#000000">,</FONT> n+1<FONT COLOR="#000000">)</FONT></FONT> <FONT COLOR="#000000">of</FONT> <FONT COLOR="#0000FF"><FONT COLOR="#000000">(</FONT>a<FONT COLOR="#000000">,</FONT> list <FONT COLOR="#000000">(</FONT>a<FONT COLOR="#000000">,</FONT> n<FONT COLOR="#000000">)</FONT><FONT COLOR="#000000">)</FONT></FONT>
-</FONT></PRE>
+<PRE><span class="dynexp"><span class="keyword">datatype</span> <span class="staexp">list <span class="keyword">(</span>a<span class="keyword">:</span>t@ype+<span class="keyword">,</span> int<span class="keyword">)</span></span> <span class="keyword">=</span> <span class="comment">// t@ype+: covariant
+</span>  <span class="keyword">|</span> list_nil <span class="staexp"><span class="keyword">(</span>a<span class="keyword">,</span> 0<span class="keyword">)</span></span>
+  <span class="keyword">|</span> <span class="keyword">{</span><span class="staexp">n<span class="keyword">:</span>int</span> <span class="keyword">|</span> <span class="staexp">n &gt;= 0</span><span class="keyword">}</span> list_cons <span class="staexp"><span class="keyword">(</span>a<span class="keyword">,</span> n+1<span class="keyword">)</span></span> <span class="keyword">of</span> <span class="staexp"><span class="keyword">(</span>a<span class="keyword">,</span> list <span class="keyword">(</span>a<span class="keyword">,</span> n<span class="keyword">)</span><span class="keyword">)</span></span></span></PRE>
 
 Given a type <i>T</i> and an integer <i>I</i>, the type <i>list(T, I)</i>
 is for lists of length <i>I</i> in which each element is of type <i>T</i>.
@@ -49,23 +48,21 @@ HREF="http://www.ats-lang.org/IMPLEMENTATION/Anairiats/ATS/prelude/SATS/list.sat
 We now present some simple programs involving lists.  The following code
 implements a function template that computes the length of a given list:
 
-<PRE><FONT COLOR="#E80000"><FONT COLOR="#787878">// This implementation is not tail-recursive
-</FONT><FONT COLOR="#000000">fun</FONT><FONT COLOR="#000000">{</FONT><FONT COLOR="#0000FF">a<FONT COLOR="#000000">:</FONT>t@ype</FONT><FONT COLOR="#000000">}</FONT> length <FONT COLOR="#0000FF"><FONT COLOR="#000000">{</FONT>n<FONT COLOR="#000000">:</FONT>nat<FONT COLOR="#000000">}</FONT></FONT> <FONT COLOR="#000000">(</FONT>xs<FONT COLOR="#000000">:</FONT> <FONT COLOR="#0000FF">list <FONT COLOR="#000000">(</FONT>a<FONT COLOR="#000000">,</FONT> n<FONT COLOR="#000000">)</FONT></FONT><FONT COLOR="#000000">)</FONT><FONT COLOR="#000000">:</FONT> <FONT COLOR="#0000FF">int n</FONT> <FONT COLOR="#000000">=</FONT>
-  <FONT COLOR="#000000">case+</FONT> xs <FONT COLOR="#000000">of</FONT> _ :: xs <FONT COLOR="#000000">=&gt;</FONT> 1 + length xs <FONT COLOR="#000000">|</FONT> nil <FONT COLOR="#000000">(</FONT><FONT COLOR="#000000">)</FONT> <FONT COLOR="#000000">=&gt;</FONT> 0
-</FONT></PRE>
+<PRE><span class="dynexp"><span class="comment">// This implementation is not tail-recursive
+</span><span class="keyword">fun</span><span class="keyword">{</span><span class="staexp">a<span class="keyword">:</span>t@ype</span><span class="keyword">}</span> length <span class="staexp"><span class="keyword">{</span>n<span class="keyword">:</span>nat<span class="keyword">}</span></span> <span class="keyword">(</span>xs<span class="keyword">:</span> <span class="staexp">list <span class="keyword">(</span>a<span class="keyword">,</span> n<span class="keyword">)</span></span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">int n</span> <span class="keyword">=</span>
+  <span class="keyword">case+</span> xs <span class="keyword">of</span> _ :: xs <span class="keyword">=&gt;</span> 1 + length xs <span class="keyword">|</span> nil <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=&gt;</span> 0</span></PRE>
 
 This is a rather poor implementation as it is not tail-recursive.
 A better one, which is tail-recursive, is given as follows:
 
-<PRE><FONT COLOR="#E80000"><FONT COLOR="#787878">// This implementation is tail-recursive
-</FONT><FONT COLOR="#000000">fn</FONT><FONT COLOR="#000000">{</FONT><FONT COLOR="#0000FF">a<FONT COLOR="#000000">:</FONT>t@ype</FONT><FONT COLOR="#000000">}</FONT> length <FONT COLOR="#0000FF"><FONT COLOR="#000000">{</FONT>n<FONT COLOR="#000000">:</FONT>nat<FONT COLOR="#000000">}</FONT></FONT> <FONT COLOR="#000000">(</FONT>xs<FONT COLOR="#000000">:</FONT> <FONT COLOR="#0000FF">list <FONT COLOR="#000000">(</FONT>a<FONT COLOR="#000000">,</FONT> n<FONT COLOR="#000000">)</FONT></FONT><FONT COLOR="#000000">)</FONT><FONT COLOR="#000000">:</FONT> <FONT COLOR="#0000FF">int n</FONT> <FONT COLOR="#000000">=</FONT>
-  <FONT COLOR="#000000">let</FONT>
-    <FONT COLOR="#000000">fun</FONT> loop <FONT COLOR="#0000FF"><FONT COLOR="#000000">{</FONT>i<FONT COLOR="#000000">,</FONT>j<FONT COLOR="#000000">:</FONT>int<FONT COLOR="#000000">}</FONT></FONT> <FONT COLOR="#000000">(</FONT>xs<FONT COLOR="#000000">:</FONT> <FONT COLOR="#0000FF">list <FONT COLOR="#000000">(</FONT>a<FONT COLOR="#000000">,</FONT> i<FONT COLOR="#000000">)</FONT></FONT><FONT COLOR="#000000">,</FONT> j<FONT COLOR="#000000">:</FONT> <FONT COLOR="#0000FF">int j</FONT><FONT COLOR="#000000">)</FONT><FONT COLOR="#000000">:</FONT> <FONT COLOR="#0000FF">int <FONT COLOR="#000000">(</FONT>i+j<FONT COLOR="#000000">)</FONT></FONT> <FONT COLOR="#000000">=</FONT>
-      <FONT COLOR="#000000">case+</FONT> xs <FONT COLOR="#000000">of</FONT> _ :: xs <FONT COLOR="#000000">=&gt;</FONT> loop <FONT COLOR="#000000">(</FONT>xs<FONT COLOR="#000000">,</FONT> j+1<FONT COLOR="#000000">)</FONT> <FONT COLOR="#000000">|</FONT> nil <FONT COLOR="#000000">(</FONT><FONT COLOR="#000000">)</FONT> <FONT COLOR="#000000">=&gt;</FONT> j
-  <FONT COLOR="#000000">in</FONT>
-    loop <FONT COLOR="#000000">(</FONT>xs<FONT COLOR="#000000">,</FONT> 0<FONT COLOR="#000000">)</FONT>
-  <FONT COLOR="#000000">end</FONT>
-</FONT></PRE>
+<PRE><span class="dynexp"><span class="comment">// This implementation is tail-recursive
+</span><span class="keyword">fn</span><span class="keyword">{</span><span class="staexp">a<span class="keyword">:</span>t@ype</span><span class="keyword">}</span> length <span class="staexp"><span class="keyword">{</span>n<span class="keyword">:</span>nat<span class="keyword">}</span></span> <span class="keyword">(</span>xs<span class="keyword">:</span> <span class="staexp">list <span class="keyword">(</span>a<span class="keyword">,</span> n<span class="keyword">)</span></span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">int n</span> <span class="keyword">=</span> <span class="keyword">let</span>
+  <span class="keyword">fun</span> loop <span class="staexp"><span class="keyword">{</span>i<span class="keyword">,</span>j<span class="keyword">:</span>int<span class="keyword">}</span></span> <span class="keyword">(</span>xs<span class="keyword">:</span> <span class="staexp">list <span class="keyword">(</span>a<span class="keyword">,</span> i<span class="keyword">)</span></span><span class="keyword">,</span> j<span class="keyword">:</span> <span class="staexp">int j</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">int <span class="keyword">(</span>i+j<span class="keyword">)</span></span> <span class="keyword">=</span>
+    <span class="keyword">case+</span> xs <span class="keyword">of</span> _ :: xs <span class="keyword">=&gt;</span> loop <span class="keyword">(</span>xs<span class="keyword">,</span> j+1<span class="keyword">)</span> <span class="keyword">|</span> nil <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=&gt;</span> j
+<span class="keyword">in</span>
+  loop <span class="keyword">(</span>xs<span class="keyword">,</span> 0<span class="keyword">)</span>
+<span class="keyword">end</span> <span class="comment">// end of [length]
+</span></span></PRE>
 
 <HR SIZE=1 ALIGN=LEFT><P>
 The code used for illustration is available <a
