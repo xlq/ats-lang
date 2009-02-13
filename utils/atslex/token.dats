@@ -206,8 +206,9 @@ fun chars_free {n:nat} (cs: chars n): void =
 
 (* ****** ****** *)
 
-extern fun
-string_make_charlst_rev_int {n:nat} (cs: chars n, n: int n): string n =
+extern fun // [cs] must not contain null bytes
+string_make_charlst_rev_int
+  {n:nat} (cs: chars n, n: int n): string n =
   "string_make_charlst_rev_int"
 
 %{

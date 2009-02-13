@@ -105,19 +105,9 @@ implement string_empty = "" // this requires dynamic loading
 
 (* ****** ****** *)
 
-implement string_make_list (cs) = let
-  val n = loop (cs, 0) where {
-    fun loop {i,j:nat} .<i>.
-      (cs: list (char, i), j: int j):<> int (i+j) = case+ cs of
-      | list_cons (_, cs) => loop (cs, j+1) | list_nil () => j
-  } // end of [val]
-in
-  string_make_list_len (cs, n)
-end // end of [string_make_list]
-
 #define NUL '\000'
 
-implement string_make_list_len (cs, n) = let
+implement string_make_list_int (cs, n) = let
   val (pf_gc, pf_sb | p_sb) = _string_alloc (i2sz n) where {
     extern fun _string_alloc {n:nat} (n: size_t n)
       :<> [l:addr] (free_gc_v (n+1, l), strbuf (n+1, n) @ l | ptr l)
@@ -143,7 +133,7 @@ implement string_make_list_len (cs, n) = let
   } // end of [val]
 in
   string1_of_strbuf (pf_sb | p_sb)
-end // end of [string_make_list_len]
+end // end of [string_make_list_int]
 
 (* ****** ****** *)
 
@@ -202,6 +192,14 @@ implement string_explode (s) = let
 in
   loop (s, n, list_vt_nil ())
 end // end of [string1_explode]
+
+implement string_implode (cs) =
+  string_make_list_int (cs, loop (cs, 0)) where {
+  fun loop {i,j:nat} .<i>.
+    (cs: list (char, i), j: int j):<> int (i+j) = case+ cs of
+    | list_cons (_, cs) => loop (cs, j+1) | list_nil () => j
+  // end of [f]
+} // end of [string_implode]
 
 (* ****** ****** *)
 
