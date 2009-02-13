@@ -79,6 +79,10 @@ typedef lexer = '{
 
 (* ****** ****** *)
 
+fun the_atslex_input_set {l:addr} (pf: FILE r @ l | p: ptr l): void
+
+(* ****** ****** *)
+
 // implemented in [token.sats]
 
 fun pos_line_get (): int = "pos_line_get"
@@ -97,6 +101,8 @@ fun tokenize_funarg (): string
 
 fun print_token (tok: token): void = "print_token"
 fun prerr_token (tok: token): void = "prerr_token"
+
+fun token_initialization (): void
 
 (* ****** ****** *)
 

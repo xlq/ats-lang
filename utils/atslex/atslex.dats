@@ -53,6 +53,14 @@ dynload "lexgen.dats"
 
 implement main (argc, argv) = let
 
+val () = let
+  val (pf_stdin | p_stdin) = stdin_get ()
+in
+  the_atslex_input_set (pf_stdin | p_stdin)
+end // end of [val]
+
+val () = token_initialization ()
+
 // val () = prerr ("atslex: [lexer_parse] is started.\n")
 
 val lexer = lexer_parse ()
