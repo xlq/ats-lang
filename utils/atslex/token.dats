@@ -96,7 +96,7 @@ pos_advance (ats_char_type c) {
     case '\n':
       ++the_line_cnt ; the_char_cnt = 0 ; break ;
     default: ++the_char_cnt ; break ;
-  }
+  } /* end of [switch] */
   return ;
 }
 
@@ -138,23 +138,6 @@ dataviewtype chars (int) =
 #define nil chars_nil
 #define :: chars_cons
 
-extern fun chars_reverse {n:nat} (cs: chars n):<> chars n
-implement chars_reverse (cs) = let
-  fun loop {i,j:nat} .<i>.
-    (cs1: chars i, cs2: chars j):<> chars (i+j) =
-    case+ cs1 of
-    | c :: !cs1_r => let
-        val cs1_v = !cs1_r
-      in
-        !cs1_r := cs2; fold@ (cs1); loop (cs1_v, cs1)
-      end
-    | ~nil() => cs2
-in
-  loop (cs, nil ())
-end // chars_reverse
-     
-//
-
 extern fun chars_is_nil {n:nat} (cs: !chars n): bool (n == 0) =
   "chars_is_nil"
 
@@ -171,7 +154,7 @@ implement chars_uncons (cs) =
 fun chars_free {n:nat} (cs: chars n): void =
   case+ cs of ~(c :: cs) => chars_free cs | ~nil () => ()
 
-//
+(* ****** ****** *)
 
 extern fun
 string_make_charlst_rev_int {n:nat} (cs: chars n, n: int n): string n =
@@ -232,8 +215,7 @@ in
   exit {string} (1)
 end // end of [errmsg_unclosed_logue]
 
-implement tokenize_logue () =
-  loop (nil (), 0, 0) where {
+implement tokenize_logue () = loop (nil (), 0, 0) where {
   fun loop {n,level:nat}
     (cs: chars n, n: int n, level: int level): string = let
     val c = char_get ()

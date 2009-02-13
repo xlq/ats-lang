@@ -52,6 +52,7 @@ staload "libc/sys/SATS/types.sats" // for [off_t]
 abst@ype DIR = $extype "ats_DIR_type" // = DIR
 abst@ype dirent = $extype "ats_dirent_type" // = struct dirent
 
+
 (* ****** ****** *)
 
 fun closedir_err {l_dir:addr} (pf: DIR @ l_dir | p: ptr l_dir):<> int
@@ -107,8 +108,6 @@ fun telldir (dir: &DIR): off_t = "atslib_telldir"
 fun seekdir (dir: &DIR, off: off_t): void = "atslib_seekdir"
 
 (* ****** ****** *)
-
-abst@ype dirent = $extype "ats_dirent_type" // = struct dirent
 
 fun dirent_stream_vt_make_DIR {l_dir:addr}
   (pf: DIR @ l_dir | p: ptr l_dir):<1,~ref> stream_vt (dirent)
