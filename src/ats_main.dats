@@ -207,7 +207,7 @@ in
     prerr name;
     prerr "] is undefined!\n" ;
     exit (1)
-  end
+  end // end of [if]
 end // end of [getenv_exn]
 
 // this is primarily for ATS developers

@@ -450,12 +450,12 @@ overload string_isnot_empty with string1_isnot_empty
 
 (* ****** ****** *)
 
-fun strbuf_is_at_end
-  {m,n,i:nat | i <= n} (sbf: &strbuf (m, n), i: size_t i):<> bool (i == n)
+fun strbuf_is_at_end {m,n,i:nat | i <= n}
+  (sbf: &strbuf (m, n), i: size_t i):<> bool (i == n)
   = "atspre_string_is_at_end"
 
-fun string_is_at_end
-  {n,i:nat | i <= n} (str: string n, i: size_t i):<> bool (i == n)
+fun string_is_at_end {n,i:nat | i <= n}
+  (str: string n, i: size_t i):<> bool (i == n)
   = "atspre_string_is_at_end"
 
 (* ****** ****** *)
@@ -470,7 +470,6 @@ fun string_isnot_at_end {n,i:nat | i <= n}
 
 (* ****** ****** *)
 
-// alias of [string_to_list]
 fun strbuf_explode {m,n:nat}
   (sbf: &strbuf (m, n)):<> list_vt (char, n)
   = "atspre_string_explode"

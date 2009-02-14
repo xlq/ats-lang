@@ -79,7 +79,10 @@ typedef lexer = '{
 
 (* ****** ****** *)
 
+fun the_atslex_input_fin (): void
 fun the_atslex_input_set {l:addr} (pf: FILE r @ l | p: ptr l): void
+
+fun atslex_getchar (): int = "atslex_getchar"
 
 (* ****** ****** *)
 

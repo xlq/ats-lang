@@ -248,6 +248,9 @@ gcc_libfile_exec (
 
 ats_void_type
 ar_r_exec (ats_string_type lib, ats_string_type output_o) {
+// /*
+  fprintf (stderr, "ar -r %s %s\n", lib, output_o) ;
+// */
   execlp("ar", "ar", "-r", lib, output_o, (char*)0) ;
   return ;
 }

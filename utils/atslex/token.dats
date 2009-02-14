@@ -41,14 +41,6 @@ staload "top.sats"
 
 (* ****** ****** *)
 
-staload STDIO = "libc/SATS/stdio.sats"
-
-(* ****** ****** *)
-
-staload _(*anonymous*) = "prelude/DATS/reference.dats"
-
-(* ****** ****** *)
-
 extern fun errmsg {a:viewt@ype} (msg: string): a
 implement errmsg (msg) = (prerr msg; prerr_newline (); exit 1)
 
@@ -60,54 +52,12 @@ implement errmsg (msg) = (prerr msg; prerr_newline (); exit 1)
 
 (* ****** ****** *)
 
-extern fun atslex_getchar (): int = "atslex_getchar"
+typedef intch = intBtw (~1, UCHAR_MAX+1)
 
-local
-
-dataviewtype input =
-  | {l:addr} INPUTsome of (FILE r @ l | ptr l)
-  | INPUTnone of ()
-
-val theInputRef = ref<input> (INPUTnone ())
-
-in // in of [local]
-
-implement the_atslex_input_set (pf_fil | p_fil) = let
-  val (vbox pf | p) = ref_get_view_ptr (theInputRef)
-in
-  case+ !p of
-  | INPUTsome (!pf1_fil_r | !p1_fil_r) => let
-      val () = $STDIO.fclose1_exn (!pf1_fil_r | !p1_fil_r)
-    in
-      !pf1_fil_r := pf_fil; !p1_fil_r := p_fil; fold@ !p
-    end // end of [INPUTsome]
-  | ~INPUTnone () => (!p := INPUTsome (pf_fil | p_fil))
-end // end of [the_atslex_input_set]
-
-implement atslex_getchar () = let
-  val (vbox pf | p) = ref_get_view_ptr (theInputRef)
-in
-  case+ !p of
-  | INPUTsome (!pf_fil_r | p_fil) => let
-      prval pf_fil = !pf_fil_r
-      val c = $STDIO.fgetc1_err (file_mode_lte_r_r | !p_fil)
-      prval () = !pf_fil_r := pf_fil
-    in
-      fold@ !p; c
-    end // end of [INPUTsome]
-  | INPUTnone () => (fold@ !p; ~1 (*EOF*))
-end // end of [atslex_getchar]
-
-end // end of [local]
-
-(* ****** ****** *)
-
-typedef charint = intBtw (~1, UCHAR_MAX+1)
-
-extern fun char_get (): charint = "char_get"
+extern fun char_get (): intch = "char_get"
 extern fun char_update (): void = "char_update"
-extern fun char_get_update (): charint = "char_get_update"
-extern fun char_update_get (): charint = "char_update_get"
+extern fun char_get_update (): intch = "char_get_update"
+extern fun char_update_get (): intch = "char_update_get"
 
 extern fun pos_prev_reset (): void = "pos_prev_reset"
 
