@@ -176,6 +176,7 @@ fun aux (lxbf: &lexbuf_t, irule: &int, nstate: int):<cloptr1> int =
 *)
     irule
   end
+// end of [aux]
 
 var irule = (0: int)
 

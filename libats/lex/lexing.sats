@@ -116,7 +116,7 @@ absviewt@ype lexbuf_t (* implemented externally in lexing.dats*)
 
 (* ****** ****** *)
 
-// implemented externally in lexing.dats
+// implemented externally in [libats/lex/lexing.dats]
 fun lexbuf_fstpos_get (lb: &lexbuf_t): position_t = "lexbuf_fstpos_get"
 fun lexbuf_fstpos_set (lb: &lexbuf_t): void = "lexbuf_fstpos_set"
 

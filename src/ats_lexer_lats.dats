@@ -31,8 +31,11 @@ overload prerr with $Loc.prerr_location
 
 (* ****** ****** *)
 
-extern fun ats_lexer_lats_initialize (): void = "ats_lexer_lats_initialize"
-val () = ats_lexer_lats_initialize ()
+extern
+fun ats_lexer_lats_initialize (): void = "ats_lexer_lats_initialize"
+
+val () = ats_lexer_lats_initialize () // called when [ats_lexer_lats.dats]
+// is located dynamically
 
 (* ****** ****** *)
 
@@ -41,8 +44,7 @@ dataviewtype poslst = (* list of positions *)
 
 fun poslst_free (ps: poslst): void = case+ ps of
   | ~POSLSTcons (p, ps) => poslst_free ps | ~POSLSTnil () => ()
-
-//
+// end of [poslst_free]
 
 extern fun keyword_search (name: string): token_t
   = "keyword_search"
@@ -54,14 +56,17 @@ fn MAIN_lexing_error (): token_t = lexing_error ()
 //
 
 extern fun CHAR (fstpos: position_t): token_t
+
 fn CHAR_lexing_error (fstpos: position_t): token_t = lexing_error ()
 fn CHAR0 (): token_t = CHAR (lexing_fstpos_get ())
 
 (* ****** ****** *)
 
 extern fun COMMENT (p: position_t, ps: poslst): void
+
 fn COMMENT_lexing_error (p: position_t, ps: poslst): void =
   (poslst_free ps; lexing_error ())
+// end of [COMMENT_lexing_error]
 
 fn COMMENT0 (): void = let
   val fstpos = lexing_fstpos_get ()
@@ -71,11 +76,13 @@ in
   COMMENT (fstpos, POSLSTnil ())
 end // end of [COMMENT0]
 
-//
+(* ****** ****** *)
 
 extern fun COMMENT_CLIKE (p: position_t): void
+
 fn COMMENT_CLIKE_lexing_error
   (p: position_t): void = lexing_error ()
+// end of [COMMENT_CLIKE_lexing_error]
 
 fn COMMENT0_CLIKE (): void = let
   val fstpos = lexing_fstpos_get ()
@@ -85,7 +92,7 @@ in
   COMMENT_CLIKE (fstpos)
 end // end of [COMMENT0_CLIKE]
 
-//
+(* ****** ****** *)
 
 extern fun COMMENT_LINE (): void
 fn COMMENT_LINE_lexing_error (): void = lexing_error ()
@@ -101,11 +108,13 @@ extern fun STRING {n:nat}
 fn STRING_lexing_error {n:nat}
   (fstpos: position_t, cs: $CS.charlst_vt n, n: int n): token_t =
   ($CS.charlst_free cs; lexing_error ())
+// end of [STRING_lexing_error]
 
 fn STRING0 (): token_t =
   STRING (lexing_fstpos_get (), $CS.CHARLSTnil (), 0)
+// end of [STRING0]
 
-//
+(* ****** ****** *)
 
 extern fun EXTCODE {n:nat}
   (fstpos: position_t, i: int, cs: $CS.charlst_vt n, n: int n): token_t
@@ -113,11 +122,11 @@ extern fun EXTCODE {n:nat}
 fn EXTCODE_lexing_error {n:nat}
   (fstpos: position_t, i: int, cs: $CS.charlst_vt n, n: int n): token_t =
   ($CS.charlst_free cs; lexing_error ())
+// end of [EXTCODE_lexing_error]
 
 fn EXTCODE0 (i: int): token_t =
   EXTCODE (lexing_fstpos_get (), i, $CS.CHARLSTnil (), 0)
-
-//
+// end of [EXTCODE0]
 
 (* ****** ****** *)
 
@@ -392,12 +401,14 @@ fn process_keyword (): void = let
   val loc = begin
     $Loc.location_make ($Fil.the_filename_get (), fstpos, lstpos)
   end // end of [val]
-in
 (*
-  print "process_keyword:\n";
-  print "fstpos = "; print fstpos; print_newline ();
-  print "lstpos = "; print lstpos; print_newline ();
+  val () = begin
+    print "process_keyword:\n";
+    print "fstpos = "; print fstpos; print_newline ();
+    print "lstpos = "; print lstpos; print_newline ();
+  end // end of [val]
 *)
+in
   $POSMARK.posmark_insert_keyword_beg fstoff;
   $POSMARK.posmark_insert_keyword_end lstoff;
   yylval_token_set ($Syn.t0kn_make loc);
@@ -463,29 +474,29 @@ fn process_comment_line_close (): void =
 
 (* ****** ****** *)
 
-fn process_comment_rest_open (): void =
-  let
-    val fstpos = lexing_fstpos_get ()
-    val fstoff = position_toff fstpos
-  in
-    $POSMARK.posmark_insert_comment_beg fstoff
-  end
+fn process_comment_rest_open (): void = let
+  val fstpos = lexing_fstpos_get ()
+  val fstoff = position_toff fstpos
+in
+  $POSMARK.posmark_insert_comment_beg fstoff
+end // end of [process_comment_rest_open]
 
-fn process_comment_rest_close (): void =
-  let
-    val lstpos = lexing_lstpos_get ()
-    val lstoff = position_toff lstpos
-  in
-    $POSMARK.posmark_insert_comment_end lstoff
-  end
+fn process_comment_rest_close (): void = let
+  val lstpos = lexing_lstpos_get ()
+  val lstoff = position_toff lstpos
+in
+  $POSMARK.posmark_insert_comment_end lstoff
+end // end of [process_comment_rest_close]
 
 (* ****** ****** *)
 
 fn location_get (): $Loc.location_t = $Loc.location_make
   ($Fil.the_filename_get (), lexing_fstpos_get (), lexing_lstpos_get ())
+// end of [location_get]
 
 fn location_get_pos (fstpos: position_t): $Loc.location_t =
   $Loc.location_make ($Fil.the_filename_get (), fstpos, lexing_lstpos_get ())
+// end of [location_get_pos]
 
 fn tokenize_identifier_alp (): token_t = let
   val str = lexeme_string ()

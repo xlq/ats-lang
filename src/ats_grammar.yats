@@ -1537,10 +1537,11 @@ guad0ec_t guad0ec ;
 %type <d0explst> d0expsemiseq1
 %type <labd0explst> commalabd0expseq
 %type <labd0explst> labd0expseq
+
 %type <d0arrind> d0arrind
-%type <lamkind> lamkind
 %type <s0expopt> colons0expopt
 %type <e0fftaglstopt> funarrow
+
 %type <ifhead> ifhead
 %type <ifhead> sifhead
 %type <casehead> casehead
@@ -1548,23 +1549,31 @@ guad0ec_t guad0ec ;
 %type <loophead> forhead
 %type <loophead> whilehead
 %type <tryhead> tryhead
+
 %type <m0atch> m0atch
 %type <m0atchlst> m0atchseq
 %type <m0atchlst> andm0atchseq
+
 %type <guap0at> guap0at
+
 %type <c0lau> c0lau
 %type <c0laulst> c0lauseq
 %type <c0laulst> barc0lauseq
+
 %type <sc0lau> sc0lau
 %type <sc0laulst> sc0lauseq
 %type <sc0laulst> barsc0lauseq
+
 %type <s0qualstopt> i0nvqua
 %type <s0explstopt> i0nvmet
+
 %type <i0nvarg> i0nvarg
 %type <i0nvarglst> i0nvargseq
 %type <i0nvarglst> commai0nvargseq
 %type <i0nvarglst> i0nvargstate
+
 %type <s0qualstopt> i0nvresqua
+
 %type <i0nvresstate> i0nvresstate
 %type <i0nvresstate> caseinv
 %type <loopi0nv> loopi0nv
@@ -1591,7 +1600,7 @@ guad0ec_t guad0ec ;
 
 %type <d0ec> d0ec_sta
 %type <d0eclst> d0ecseq_sta
-%type <d0eclst> d0ecseq_r_sta
+%type <d0ecllst> d0ecseq_r_sta
 
 %type <d0ec> d0ec_dyn
 %type <d0eclst> d0ecseq_dyn
@@ -1773,6 +1782,7 @@ commae0xpseq
 e0xpopt
   : /* empty */                         { $$ = e0xpopt_none() ; }
   | e0xp                                { $$ = e0xpopt_some($1) ; }
+;
 
 /* ****** ****** */
 
@@ -1954,6 +1964,7 @@ dqi0de /* qualified dynamic identifier */
 pi0de /* dynamic pattern identifier */
   : IDENTIFIER_alp                      { $$ = $1 ; }
   | IDENTIFIER_sym                      { $$ = $1 ; }
+;
 
 arri0de /* array identifier */
   : IDENTIFIER_arr                      { $$ = $1 ; }
@@ -1982,6 +1993,7 @@ s0arg /* static argument */
 s0argseq /* static argument sequence */
   : /* empty */                         { $$ = s0arglst_nil() ; }
   | s0arg commas0argseq                 { $$ = s0arglst_cons ($1, $2) ; }
+;
 
 commas0argseq
   : /* empty */                         { $$ = s0arglst_nil() ; }
@@ -1997,7 +2009,7 @@ s0argseqseq /* static argument sequence sequence */
 /* template argument variables */
 
 commadecs0argseq
-  : /* empty */  %prec TMPSARG          { $$ = s0arglst_nil() ; }
+  : /* empty */ %prec TMPSARG           { $$ = s0arglst_nil() ; }
   | COMMA s0arg commadecs0argseq        { $$ = s0arglst_cons($2, $3) ; }
 ;
 
@@ -2202,6 +2214,7 @@ s0tacon /* abstract static constructor */
 ands0taconseq /* additional abstract static constructor sequence */
   : /* empty */                         { $$ = s0taconlst_nil() ; }
   | AND s0tacon ands0taconseq           { $$ = s0taconlst_cons($2, $3) ; }
+;
 
 /* ****** ****** */
 
@@ -2740,6 +2753,7 @@ barsc0lauseq
 sc0lauseq
   : barsc0lauseq                        { $$ = $1 ; }
   | sc0lau barsc0lauseq                 { $$ = sc0laulst_cons($1, $2) ; }
+;
 
 /* invariants */
 
@@ -2799,6 +2813,7 @@ initestpost
 /* macro declarations */
 
 m0arg : pi0de                           { $$ = $1 ; }
+;
 
 commam0argseq
   : /* empty */                         { $$ = i0delst_nil() ; }
@@ -2870,6 +2885,7 @@ andf0undecseq
 v0arwth
   : /* empty */                         { $$ = v0arwth_none () ; }
   | WITH pi0de                          { $$ = v0arwth_some ($2) ; }
+;
 
 v0ardec /* stack-allocated variable */
   : pi0de v0arwth EQ d0exp              { $$ = v0ardec_make_none_some(0, $1, $2, $4) ; }

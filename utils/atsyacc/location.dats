@@ -32,30 +32,25 @@
 
 (* ****** ****** *)
 
-// Time: July 2007
+// Time: February 2007
 // Author: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
 
 (* ****** ****** *)
 
-(* ats_location: Handling location information. *)
+(* location: Handling location information. *)
 
 (* ****** ****** *)
 
-staload "libats_lex_lexing.sats"
+staload "libats/lex/lexing.sats"
 
 (* ****** ****** *)
 
-staload "ats_filename.sats"
-
-(* ****** ****** *)
-
-staload "ats_location.sats"
+staload "location.sats"
 
 (* ****** ****** *)
 
 typedef location = '{
-  filename= filename_t // file name
-, begpos_line= int
+  begpos_line= int
 , begpos_loff= int
 , begpos_toff= lint // beginning char position
 , endpos_line= int
@@ -68,8 +63,7 @@ assume location_t = location
 (* ****** ****** *)
 
 implement location_none = '{
-  filename= filename_none
-, begpos_line= ~1
+  begpos_line= ~1
 , begpos_loff= ~1
 , begpos_toff= ~1L
 , endpos_line= ~1
@@ -80,9 +74,8 @@ implement location_none = '{
 fn location_is_none (loc: location):<> bool =
   (loc.begpos_toff < 0L)
 
-implement location_make (fname, begpos, endpos) = '{
-  filename= fname
-, begpos_line= position_line begpos
+implement location_make (begpos, endpos) = '{
+  begpos_line= position_line begpos
 , begpos_loff= position_loff begpos
 , begpos_toff= position_toff begpos
 , endpos_line= position_line endpos
@@ -95,8 +88,7 @@ implement location_end_make (loc) = let
   val loff = loc.endpos_loff
   val toff = loc.endpos_toff
 in '{
-  filename= loc.filename
-, begpos_line= line, begpos_loff= loff, begpos_toff= toff
+  begpos_line= line, begpos_loff= loff, begpos_toff= toff
 , endpos_line= line, endpos_loff= loff, endpos_toff= toff
 } end // end of [location_end_make]
 
@@ -132,8 +124,7 @@ fn location_combine_main
   // end of [val]
 
 in '{
-  filename = loc1.filename
-, begpos_line= begpos_line
+  begpos_line= begpos_line
 , begpos_loff= begpos_loff
 , begpos_toff= begpos_toff
 , endpos_line= endpos_line
@@ -160,8 +151,6 @@ end // end of [lte_location_location]
 (* ****** ****** *)
 
 implement fprint_location (pf | out, loc) = begin
-  fprint_filename (pf | out, loc.filename);
-  fprint1_string (pf | out, ": ");
   fprint1_lint (pf | out, loc.begpos_toff+1L);
   fprint1_string (pf | out, "(line=");
   fprint1_int (pf | out, loc.begpos_line+1);
@@ -181,4 +170,4 @@ implement prerr_location (loc) = prerr_mac (fprint_location, loc)
 
 (* ****** ****** *)
 
-(* end of [ats_location.dats] *)
+(* end of [location.dats] *)

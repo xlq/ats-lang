@@ -199,8 +199,10 @@ and char_toupper (c: char):<> char = "atspre_char_toupper"
 
 (* ****** ****** *)
 
-fun char1_of_char (c: char):<> [c:char] char c
+castfn char1_of_char (c: char):<> [c:char] char c
   = "atspre_char1_of_char"
+
+(* ****** ****** *)
 
 fun char1_of_int (i: int):<> [c:char] char c
   = "atspre_char1_of_int"

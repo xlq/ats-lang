@@ -153,7 +153,7 @@ in
   | _ when len = __LS_t => string_contain_char (ok1_string, spec)
   | _ when len = __LS_z => string_contain_char (ok1_string, spec)
   | _ => false
-end
+end // end of [lenint_verify]
 
 fn printf_c_output (
    flagstr: string // flag string

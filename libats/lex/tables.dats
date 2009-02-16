@@ -194,10 +194,8 @@ implement transition_table_get (r_tblopt, nstate, c) = let
 (*
         val () = $effmask_all begin
           printf ("transition_table_get: nstate = %i\n", @(nstate))
-        end
-        val () = $effmask_all begin
           printf ("transition_table_get: n = %i and i = %i\n", @(n,i))
-        end
+        end // end of [val]
 *)
       in
         if i < 0 then begin

@@ -38,13 +38,13 @@
 (* ****** ****** *)
 
 (*
- *
- * A simple calculator for evaluating arithmetic expressions.
- * This example shows how lexical analysis can be done in ATS.
- * Also, it shows some typical uses of dataviewtypes, a.k.a.
- * linear datatypes.
- *
- *)
+**
+** A simple calculator for evaluating arithmetic expressions.
+** This example shows how lexical analysis can be done in ATS.
+** Also, it shows some typical uses of dataviewtypes, a.k.a.
+** linear datatypes.
+**
+*)
 
 (*
 
@@ -489,22 +489,24 @@ fun eval_cmd (env: &env, cmd: cmd): int =
 extern fun getline (): string
 
 fun eval_string (env: &env, input: string): int = let
-  val (pf_infil | infil) = infile_make_string input
-  val (pf_lexbuf | lexbuf) = lexbuf_make_infile (pf_infil | infil)
+  val (pf_infil | p_infil) = infile_make_string input
+  val (pf_lexbuf | lexbuf) = lexbuf_make_infile (pf_infil | p_infil)
   val () = lexing_lexbuf_set (pf_lexbuf | lexbuf)
   var tok: token = TOKEN ()
   var err: int =  (0: int)
   val cmd = parse_cmd (tok, err)
 (*
-  val () =
-    (print "eval_string: err = "; print err; print_newline ())
+  val () = begin
+    print "eval_string: err = "; print err; print_newline ()
+  end // end of [val]
 *)
   val cmd = (
     if err > 0 then (free_cmd cmd; CMDerror ()) else cmd
   ) : cmd
 (*
-  val () =
-    (print "eval_string: tok = "; print_token tok; print_newline ())
+  val () = begin
+    print "eval_string: tok = "; print_token tok; print_newline ()
+  end // end of [val]
 *)
   val cmd = (case+ tok of
     | ~TOKeof () => cmd

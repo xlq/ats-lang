@@ -61,15 +61,17 @@ implement prerr_pos (p) = prerr_mac (fprint_pos, p)
 
 (* ****** ****** *)
 
-fun lt_pos_pos (p1: pos, p2: pos): bool =
+fn lt_pos_pos (p1: pos, p2: pos): bool =
   if p1.line < p2.line then true
   else if p1.line <= p2.line then p1.char < p2.char
   else false
+// end of [lt_pos_pos]
 
-fun lte_pos_pos (p1: pos, p2: pos): bool =
+fn lte_pos_pos (p1: pos, p2: pos): bool =
   if p1.line < p2.line then true
   else if p1.line <= p2.line then p1.char <= p2.char
   else false
+// end of [lte_pos_pos]
 
 overload < with lt_pos_pos
 overload <= with lte_pos_pos

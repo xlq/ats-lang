@@ -71,7 +71,7 @@ in
         fprintf (pf_mod | fil, "[ '%c'-'%c'", @(c1, c2));
         loop (fil, cs);
         fprint_string (pf_mod | fil, " ]")
-      end
+      end // end of [if]
     end // end of [chars_cons]
   | chars_nil () => begin
       fprint_string (pf_mod | fil, "[]")
@@ -83,15 +83,24 @@ implement prerr_charset (cs) = prerr_mac (fprint_charset, cs)
 
 (* ****** ****** *)
 
-implement charset_nil = chars_nil ()
-implement charset_all = chars_cons ('\000', '\177', chars_nil ())
-implement charset_eof = chars_cons ('\200', '\377', chars_nil ())
+#define CHAR_NUL '\000'
+#define CHAR_MAX '\177'
+#define CHAR_EOF '\377'
 
-//
+implement charset_nil = chars_nil ()
+implement charset_all = chars_cons (CHAR_NUL, CHAR_MAX, chars_nil ())
+
+// every char satisfying c <= -1 is treated as CHAR_EOF
+implement charset_eof = chars_cons (CHAR_EOF, CHAR_EOF, chars_nil ())
+
+(* ****** ****** *)
 
 implement charset_interval (c1, c2) = begin
-  if c1 <= c2 then chars_cons (c1, c2, chars_nil ())
-  else chars_cons (c2, c1, chars_nil ())
+  if c1 <= c2 then
+    chars_cons (c1, c2, chars_nil ())
+  else
+    chars_cons (c2, c1, chars_nil ())
+  // end of [if]
 end // end of [charset_interval]
 
 implement charset_singleton c = chars_cons (c, c, chars_nil ())
@@ -167,7 +176,6 @@ end // end of [charset_intersect]
 //
 
 implement add_char_int (c, i) = char_of_int (int_of_char c + i)
-
 implement sub_char_int (c, i) = char_of_int (int_of_char c - i)
 
 //

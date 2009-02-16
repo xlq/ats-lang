@@ -53,10 +53,6 @@ extern fun fopen_exn {m:file_mode}
 
 (* ****** ****** *)
 
-staload "libats_lex_lexing.sats"
-
-(* ****** ****** *)
-
 staload Fil = "ats_filename.sats"
 staload Syn = "ats_syntax.sats"
 
@@ -64,6 +60,10 @@ staload Syn = "ats_syntax.sats"
 
 staload "ats_lexer.sats"
 staload "ats_parser.sats"
+
+(* ****** ****** *)
+
+staload LEXING = "libats_lex_lexing.sats"
 
 (* ****** ****** *)
 
@@ -76,34 +76,35 @@ implement parse_from_filename (flag, filename) = let
 (*
   val () = begin
     prerr "parse_from_filename: "; $Fil.prerr_filename filename; prerr_newline ()
-  end
+  end // end of [val]
 *)
   val fullname = $Fil.filename_full filename
   val file_mode_r = $extval (file_mode r, "\"r\"")
-  val (pf_fil | fil) = fopen_exn (fullname, file_mode_r)
-  val (pf_infil | infil) =
-    infile_make_file (pf_fil, file_mode_lte_r_r | fil)
+  val (pf_fil | p_fil) = fopen_exn (fullname, file_mode_r)
+  val (pf_infil | p_infil) =
+    $LEXING.infile_make_file (pf_fil, file_mode_lte_r_r | p_fil)
   val (pf_lexbuf | lexbuf) =
-    lexbuf_make_infile (pf_infil | infil)
-  val () = lexing_lexbuf_set (pf_lexbuf | lexbuf)
+    $LEXING.lexbuf_make_infile (pf_infil | p_infil)
+  val () = $LEXING.lexing_lexbuf_set (pf_lexbuf | lexbuf)
   var tok0: token_t = ISNONE
   val () = if flag_is_sta flag then tok0 := ISSTATIC
   val () = if flag_is_dyn flag then tok0 := ISDYNAMIC
   val ans = yyparse_main (tok0)
 in
-  lexing_lexbuf_free (); ans
+  $LEXING.lexing_lexbuf_free (); ans
 end // end of [parse_from_filename]
 
 implement parse_from_stdin (flag) = let
-  val (pf_infil | infil) = infile_make_stdin ()
-  val (pf_lexbuf | lexbuf) = lexbuf_make_infile (pf_infil | infil)
-  val () = lexing_lexbuf_set (pf_lexbuf | lexbuf)
+  val (pf_infil | p_infil) = $LEXING.infile_make_stdin ()
+  val (pf_lexbuf | lexbuf) =
+    $LEXING.lexbuf_make_infile (pf_infil | p_infil)
+  val () = $LEXING.lexing_lexbuf_set (pf_lexbuf | lexbuf)
   var tok0: token_t = ISNONE
   val () = if flag_is_sta flag then tok0 := ISSTATIC
   val () = if flag_is_dyn flag then tok0 := ISDYNAMIC
   val ans = yyparse_main (tok0)
 in
-  lexing_lexbuf_free (); ans
+  $LEXING.lexing_lexbuf_free (); ans
 end // end of [parse_from_stdin]
 
 (* ****** ****** *)

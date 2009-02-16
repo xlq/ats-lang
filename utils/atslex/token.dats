@@ -149,7 +149,7 @@ chars_uncons {n:pos} (cs: &chars n >> chars (n-1)): char =
   "chars_uncons"
 
 implement chars_uncons (cs) =
-  let val ~(c :: cs1) = cs in cs := cs1; c end
+  let val+ ~(c :: cs1) = cs in cs := cs1; c end
 
 fun chars_free {n:nat} (cs: chars n): void =
   case+ cs of ~(c :: cs) => chars_free cs | ~nil () => ()
@@ -164,17 +164,13 @@ string_make_charlst_rev_int
 %{
 
 ats_ptr_type
-string_make_charlst_rev_int (ats_ptr_type cs, const ats_int_type n) {
+string_make_charlst_rev_int
+  (ats_ptr_type cs, const ats_int_type n) {
   char *s0, *s;
-
-  s0 = ats_malloc_gc(n+1) ;
-  s = s0 + n ;
-  *s = '\0' ; --s ;
-
+  s0 = ats_malloc_gc(n+1) ; s = s0 + n ; *s = '\0' ; --s ;
   while (!chars_is_nil(cs)) { *s = chars_uncons(&cs) ; --s ; }
-
   return s0 ;
-}
+} /* string_make_charlst_rev_int */
 
 %}
 
