@@ -38,22 +38,142 @@
 (* ****** ****** *)
 
 staload "atsyacc_top.sats"
+staload Sym = "symbol.sats"
+staload Gra = "grammar.sats"
 
 (* ****** ****** *)
 
-dynload "symbol.dats"
 dynload "location.dats"
+dynload "token.dats"
+dynload "grammar.dats"
+dynload "symbol.dats"
 
-dynload "atsyacc_token.dats" // tokenization
 
 dynload "libats/lex/lexing.dats"
 dynload "atsyacc_lexer_lats.dats"
 dynload "atsyacc_parser.dats"
 
+dynload "atsyacc_nullfrstfllw.dats"
+dynload "atsyacc_lrtable.dats"
+
+(* ****** ****** *)
+
+extern fun the_nullable_print (): void
+
+implement the_nullable_print () = loop (xs) where {
+  val xs = $Gra.the_rulelhslst_get ()
+  fun loop (xs: List $Sym.symbol_t): void =
+    case+ xs of
+    | list_cons (x, xs) => let
+        val () = begin
+          print "nullable(";
+          $Sym.print_symbol (x);
+          print ") = ";
+          print ($Sym.symbol_nullable_get x);
+          print_newline ()
+        end // end of [val]
+      in
+        loop (xs)
+      end // end of 
+    | list_nil () => ()
+  // end of [loop]
+} // end of [nullable_print]
+
+(* ****** ****** *)
+
+extern fun the_frstset_print (): void
+
+implement the_frstset_print () = loop (xs) where {
+  val xs = $Gra.the_rulelhslst_get ()
+  fun loop (xs: List $Sym.symbol_t): void =
+    case+ xs of
+    | list_cons (x, xs) => let
+        val () = begin
+          print "frstset(";
+          $Sym.print_symbol (x);
+          print ") = ";
+          $Sym.print_symbolset ($Sym.symbol_frstset_get x);
+          print_newline ()
+        end // end of [val]
+      in
+        loop (xs)
+      end // end of 
+    | list_nil () => ()
+  // end of [loop]
+} // end of [frstset_print]
+
+(* ****** ****** *)
+
+extern fun the_fllwset_print (): void
+
+implement the_fllwset_print () = loop (xs) where {
+  val xs = $Gra.the_rulelhslst_get ()
+  fun loop (xs: List $Sym.symbol_t): void =
+    case+ xs of
+    | list_cons (x, xs) => let
+        val () = begin
+          print "fllwset(";
+          $Sym.print_symbol (x);
+          print ") = ";
+          $Sym.print_symbolset ($Sym.symbol_fllwset_get x);
+          print_newline ()
+        end // end of [val]
+      in
+        loop (xs)
+      end // end of 
+    | list_nil () => ()
+  // end of [loop]
+} // end of [fllwset_print]
+
 (* ****** ****** *)
 
 implement main (argc, argv) = let
   val () = parse_from_stdin ()
+(*
+  val () = () where {
+    val nrhs = $Gra.the_nrulerhs_get ()
+    val () = begin
+      print "The total number of rules is "; print nrhs; print_newline ()
+    end // end of [val]
+  } // end of [val]
+*)
+  val () = let
+    val sym = $Gra.the_start_symbol_get () in
+    prerr "the start symbol is: "; $Sym.prerr_symbol sym; prerr_newline ()
+  end // end of [val]
+  
+  val () = $Gra.the_start_rule_set ()
+
+// (*
+  val () = () where {
+    val x0 = $Sym.the_accept_symbol
+    val xs = $Gra.the_rulelhslst_get ()
+    val (pf_stdout | p_stdout) = stdout_get ()
+    val () = $Gra.fprint_rulelhsrhss (file_mode_lte_w_w | !p_stdout, x0)
+    val () = fprint_newline (file_mode_lte_w_w | !p_stdout)
+    val () = $Gra.fprint_rulelhsrhsslst (file_mode_lte_w_w | !p_stdout, xs)
+    val () = stdout_view_set (pf_stdout | (*none*))
+  }
+// *)
+
+  val () = begin
+    prerr "the_nullfrstfllw_table_gen: bef"; prerr_newline ()
+  end // end of [val]
+  val () = the_nullfrstfllw_table_gen ()
+  val () = begin
+    prerr "the_nullfrstfllw_table_gen: aft"; prerr_newline ()
+  end // end of [val]
+
+// (*
+  val () = print "The nullablity table is given as follows:\n"
+  val () = the_nullable_print ()
+  val () = print "The firstset table is given as follows:\n"
+  val () = the_frstset_print ()
+  val () = print "The followset table is given as follows:\n"
+  val () = the_fllwset_print ()
+// *)
+
+  val () = the_lrtable_gen ()
 in
 end // end of [main]
 

@@ -100,8 +100,8 @@ fun poslst_free (ps: poslst): void = case+ ps of
 (* ****** ****** *)
 
 staload Loc = "location.sats"
-staload Tok = "atsyacc_token.sats"
-typedef token = $Tok.token
+
+staload Tok = "token.sats"; typedef token = $Tok.token
 
 (* ****** ****** *)
 
@@ -521,7 +521,7 @@ keychar = ( '|' | ':' | ';' )
 keyword = '%' $alpha $alnum*
 
 identfst = [ 'A'-'Z' 'a'-'z' '_' ]
-identrst = [ '0'-'9' 'A'-'Z' 'a'-'z' '_' ]
+identrst = [ '0'-'9' 'A'-'Z' 'a'-'z' '_' '\'' ]
 
 identifier = $identfst $identrst*
 

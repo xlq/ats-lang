@@ -79,6 +79,11 @@ prfun slseg_v_append {a:viewt@ype} {l1,l2,l3:addr} {n1,n2:nat}
 
 (* ****** ****** *)
 
+fun{a:t@ype} slseg_free {l1,l2:addr} {n:nat}
+  (pf_seg: slseg_v (a, l1, l2, n) | p: ptr l1, n: int n):<> void
+
+(* ****** ****** *)
+
 fun{a:viewt@ype} slseg_foreach_clo
    {v:view} {l1,l2:addr} {n:nat} {f:eff} (
     pf: !v, pf_seg: !slseg_v (a, l1, l2, n)
@@ -88,11 +93,11 @@ fun{a:viewt@ype} slseg_foreach_clo
 (* ****** ****** *)
 
 fun list_vt_of_sllst {a:viewt@ype} {n:nat} {l:addr}
-  (pf_seg: sllst_v (a, l, n) | p: ptr l): list_vt (a, n)
+  (pf_seg: sllst_v (a, l, n) | p: ptr l):<> list_vt (a, n)
   = "atspre_list_vt_of_sllst"
 
 fun sllst_of_list_vt {a:viewt@ype} {n:nat} {l:addr}
-  (xs: list_vt (a, n)): [l:addr] (sllst_v (a, l, n) | ptr l)
+  (xs: list_vt (a, n)):<> [l:addr] (sllst_v (a, l, n) | ptr l)
   = "atspre_sllst_list_vt_of"
 
 (* ****** ****** *)

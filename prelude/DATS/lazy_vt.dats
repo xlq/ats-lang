@@ -100,6 +100,13 @@ end // end of [list_vt_of_stream_vt]
 
 (* ****** ****** *)
 
+implement{a} stream_vt_free (xs) = case+ !xs of
+  | ~stream_vt_cons (_, xs) => stream_vt_free xs
+  | ~stream_vt_nil () => ()
+// end of [stream_vt_free]
+
+(* ****** ****** *)
+
 fun{a:t@ype} stream_vt_filter_cloptr_con
   (xs: stream_vt a, pred: (&a) -<cloptr1,~ref> bool)
   :<1,~ref> stream_vt_con a = let

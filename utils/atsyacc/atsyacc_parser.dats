@@ -43,16 +43,20 @@ staload STDIO = "libc/SATS/stdio.sats"
 
 staload Loc = "location.sats"
 staload Sym = "symbol.sats"
-staload Tok = "atsyacc_token.sats"
+staload Tok = "token.sats"
+staload Gra = "grammar.sats"
 
 (* ****** ****** *)
 
-typedef sym = $Sym.symbol_t
-typedef symopt = Option (sym)
+typedef symbol = $Sym.symbol_t
+typedef symlst = List (symbol)
+typedef symopt = Option (symbol)
+viewtypedef symlst_vt = List_vt (symbol)
 
 typedef token = $Tok.token
-typedef tokenlst = List (token)
-typedef tokenopt = Option (token)
+typedef tokenlst = $Tok.tokenlst
+typedef tokenopt = $Tok.tokenopt
+viewtypedef tokenlst_vt = List_vt (token)
 
 (* ****** ****** *)
 
@@ -60,6 +64,9 @@ staload "atsyacc_top.sats"
 
 (* ****** ****** *)
 
+staload _(*anonymois*) = "prelude/DATS/array.dats"
+staload _(*anonymois*) = "prelude/DATS/list_vt.dats"
+staload _(*anonymois*) = "prelude/DATS/pointer.dats"
 staload _(*anonymois*) = "prelude/DATS/reference.dats"
 
 (* ****** ****** *)
@@ -71,9 +78,6 @@ extern fun the_token_get_update (): token
 
 extern fun the_assocval_get_inc (): int
 
-extern fun the_startsym_get (): symopt
-extern fun the_startsym_set (symopt: symopt): void
-
 local
 
 val theTokenRef = let
@@ -81,8 +85,6 @@ val theTokenRef = let
 end // end of [val]
 
 val theAssocValRef = ref_make_elt<int> (0)
-
-val theStartSymRef = ref_make_elt<symopt> (None)
 
 in // in of [loca]
 
@@ -105,9 +107,6 @@ implement the_assocval_get_inc () = let
   val n = !theAssocValRef in !theAssocValRef := n+1; n
 end // end of [the_assoc_get_inc]
 
-implement the_startsym_get () = !theStartSymRef
-implement the_startsym_set (symopt) = !theStartSymRef := symopt
-
 end // end of [local]
 
 (* ****** ****** *)
@@ -117,9 +116,9 @@ fn parse_percperc (): void = let
   case+ tok.token_node of
   | $Tok.TOKpercperc () => the_token_update ()
   | _ => begin
-      prerr "The token at [";
       $Loc.prerr_location tok.token_loc;
-      prerr "] should be [%%] but it is not.";
+      prerr ": error(ATSYACC)";
+      prerr ": the token should be [%%] but it is not.";
       prerr_newline ();
       exit {void} (1)
     end // end of [_]
@@ -142,9 +141,9 @@ in
       val () = the_token_update () in tok
     end // end of [TOKptbrackstr]
   | _ => begin
-      prerr "The token at [";
       $Loc.prerr_location tok.token_loc;
-      prerr "] should represent a type but it does not.";
+      prerr ": error(ATSYACC)";
+      prerr ": the token should represent a type but it does not.";
       prerr_newline ();
       exit {token} (1)
     end // end of [_]
@@ -163,7 +162,7 @@ end // end of [parse_typeopt]
 (* ****** ****** *)
 
 fun parse_tokenlst
-  (tpopt: tokenopt): void = let
+  (knd: $Sym.symkind, tpopt: tokenopt): void = let
   val tok = the_token_get ()
 in
   case+ tok.token_node of
@@ -172,13 +171,13 @@ in
       val isnew = $Sym.name_is_new (name)
     in
       if isnew then let
-        val _(*sym*) = $Sym.symbol_make_newname (name)
+        val _(*sym*) = $Sym.symbol_make_newname (knd, name)
       in
-        parse_tokenlst (tpopt)
+        parse_tokenlst (knd, tpopt)
       end else begin
-        prerr "The token at [";
         $Loc.prerr_location tok.token_loc;
-        prerr "] is introduced repeatedly.";
+        prerr ": error(ATSYACC)";
+        prerr ": the token is introduced repeatedly.";
         prerr_newline ();
         exit {void} (1)
       end // end of [if]
@@ -194,7 +193,16 @@ in
   case+ tok.token_node of
   | $Tok.TOKident name => let
       val () = the_token_update ()
-      val sym = $Sym.symbol_make_name (name)
+      val knd = $Sym.SYMKINDterm ()
+      val sym = $Sym.symbol_make_name (knd, name)
+      val () = if $Sym.symbol_is_nonterm sym then begin
+        $Loc.prerr_location tok.token_loc;
+        prerr ": error(ATSYACC): the symbol [";
+        prerr name;
+        prerr "] is already introduced as a nonterminal.";
+        prerr_newline ();
+        exit {void} (1)
+      end // end of [val]
       val () = $Sym.symbol_assoc_set (sym, assoc)
     in
       parse_assoclst (assoc)
@@ -210,9 +218,18 @@ in
   case+ tok.token_node of
   | $Tok.TOKident name => let
       val () = the_token_update ()
-      val sym = $Sym.symbol_make_name (name)
+      val knd = $Sym.SYMKINDnonterm ()
+      val sym = $Sym.symbol_make_name (knd, name)
+      val () = if $Sym.symbol_is_term sym then begin
+        $Loc.prerr_location tok.token_loc;
+        prerr ": error(ATSYACC): the symbol [";
+        prerr name;
+        prerr "] is already introduced as a terminal.";
+        prerr_newline ();
+        exit {void} (1)
+      end // end of [val]
     in
-      the_startsym_set (Some sym)
+      $Gra.the_start_symbol_set (sym)
     end // end of [TOKident]
   | _ => ()
 end // end of [parse_start]
@@ -243,9 +260,10 @@ in
     in
       case+ name of
       | _ when (name = "%token") => let
-          val tpopt = parse_typeopt ()
+          val otp = parse_typeopt ()
+          val knd = $Sym.SYMKINDterm ()
         in
-          parse_tokenlst (tpopt)
+          parse_tokenlst (knd, otp)
         end // end of ["%token"]
       | _ when (name = "%nonassoc") => let
           val n = the_assocval_get_inc () in
@@ -261,14 +279,15 @@ in
         end
       | _ when (name = "%type") => let
           val tp = parse_type ()
+          val knd = $Sym.SYMKINDnonterm ()
         in
-          parse_tokenlst (Some tp)
+          parse_tokenlst (knd, Some tp)
         end
       | _ when (name = "%start") => parse_start ()
       | _ => begin
-          prerr "The keyword at [";
           $Loc.prerr_location tok.token_loc;
-          prerr "] is unrecognized.";
+          prerr ": error(ATSYACC)";
+          prerr ": the keyword ["; prerr name; prerr "] is unrecognized.";
           prerr_newline ();
           exit {void} (1)
         end // end of [_]
@@ -278,33 +297,27 @@ end // end of [parse_keyword_line]
 
 (* ****** ****** *)
 
-fun parse_identlst (): tokenlst = let
-  val tok = the_token_get ()
-in
-  case+ tok.token_node of
+fun parse_identlst (): tokenlst_vt = let
+  val tok = the_token_get () in case+ tok.token_node of
   | $Tok.TOKident _ => let
-      val () = the_token_update ()
-    in
-      list_cons (tok, parse_identlst ())
+      val () = the_token_update () in
+      list_vt_cons (tok, parse_identlst ())
     end // end of [TOKident]
-  | _ => list_nil ()
+  | _ => list_vt_nil ()
 end // end of [parse_identlst]
 
 fn parse_prec_ident (): tokenopt = let
-  val tok0 = the_token_get ()
-in
-  case+ tok0.token_node of
+  val tok0 = the_token_get () in case+ tok0.token_node of
   | $Tok.TOKkeyword "%prec" => let
-      val tok1 = the_token_update_get ()
-    in
+      val tok1 = the_token_update_get () in
       case+ tok1.token_node of
       | $Tok.TOKident _ => let
           val () = the_token_update () in Some (tok1)
         end // end of [TOKident]
       | _ => begin
-          prerr "The token at [";
           $Loc.prerr_location tok1.token_loc;
-          prerr "] should be an identifier but it is not.";
+          prerr ": error(ATSYACC)";
+          prerr "the token should be an identifier but it is not.";
           prerr_newline ();
           exit {tokenopt} (1)
         end // end of [_]
@@ -313,19 +326,29 @@ in
 end // end of [parse_prec_ident]
 
 fn parse_extcode (): tokenopt = let
-  val tok = the_token_get ()
-in
-  case+ tok.token_node of
+  val tok = the_token_get () in case+ tok.token_node of
   | $Tok.TOKextcode _ => let
       val () = the_token_update () in Some (tok)
     end // end of [TOKextcode]
   | _ => None ()
 end // end of [parse_extcode]
 
-typedef rulerhs =
-  @(tokenlst, tokenopt, tokenopt)
+(* ****** ****** *)
 
-fn parse_rulerhs (): rulerhs = let
+viewtypedef prerulerhs = @(
+  tokenlst_vt (*symseq*), tokenopt (*prec*), tokenopt (*extcode*)
+) // end of [rulerhs]
+
+viewtypedef prerulerhslst = List_vt (prerulerhs)
+
+viewtypedef prerule = @($Sym.symbol_t, prerulerhslst)
+
+viewtypedef prerulelst_vt = List_vt (prerule)
+viewtypedef preruleopt_vt = Option_vt (prerule)
+
+(* ****** ****** *)
+
+fn parse_rulerhs (): prerulerhs = let
   val ids = parse_identlst ()
   val prec = parse_prec_ident ()
   val ext = parse_extcode ()
@@ -333,98 +356,183 @@ in
   @(ids, prec, ext)
 end // end of [parse_rulerhs]
 
-typedef rulerhslst = List (rulerhs)
-
-fun parse_rulerhslst (): rulerhslst = let
-  val tok = the_token_get ()
-in
-  case+ tok.token_node of
+fun parse_rulerhslst (): prerulerhslst = let
+  val tok = the_token_get () in case+ tok.token_node of
   | $Tok.TOKkeychar '|' => let
       val () = the_token_update ()
-      val rhs = parse_rulerhs ()
-      val rhslst = parse_rulerhslst ()
+      val rhs = parse_rulerhs (); val rhss = parse_rulerhslst ()
     in
-      list_cons (rhs, rhslst)
+      list_vt_cons (rhs, rhss)
     end // end of [TOKkeychar '|']
   | $Tok.TOKkeychar ';' => let // ';' is optional
-      val () = the_token_update () in list_nil ()
+      val () = the_token_update () in list_vt_nil ()
     end // end of [TOKkeychar ';']
 (*
   | _ => begin
-      prerr "The token at [";
       $Loc.prerr_location tok.token_loc;
-      prerr "] should be either [;] but it is not.";
+      prerr ": error(ATSYACC)";
+      prerr ": the token at should be a semicolon [;] but it is not.";
       prerr_newline ();
       exit {rulerhslst} (1)
     end // end of [_]
 *)
-  | _ => list_nil ()
+  | _ => list_vt_nil ()
 end // end of [parse_rulerhslst]
 
-typedef rule = @(token, rulerhslst)
+(* ****** ****** *)
 
-fun parse_rule (): rule = let
-  val tok0 = the_token_get ()
-in
-  case+ tok0.token_node of
-  | $Tok.TOKident _ => let
-      val tok1 = the_token_update_get ()
-    in
-      case+ tok1.token_node of
+fun parse_rule (): prerule = let
+  val tok0 = the_token_get () in case+ tok0.token_node of
+  | $Tok.TOKident name => let
+      val knd = $Sym.SYMKINDnonterm ()
+      val sym0 = $Sym.symbol_make_name (knd, name)
+      val tok1 = the_token_update_get () in case+ tok1.token_node of
       | $Tok.TOKkeychar c
           when (c = ':' orelse c = '|') => let
           val () = the_token_update ()
-          val rhs = parse_rulerhs ()
-          val rhslst = parse_rulerhslst ()
+          val rhs = parse_rulerhs (); val rhss = parse_rulerhslst ()
         in
-          (tok0, list_cons (rhs, rhslst))
+          (sym0, list_vt_cons (rhs, rhss))
         end // end of [TOKkeychar when ...]
       | _ => begin
-          prerr "The token at [";
           $Loc.prerr_location tok1.token_loc;
-          prerr "] should be either [:] or [|] but it is not.";
+          prerr ": error(ATSYACC)";
+          prerr ": the token should be a colon [:] or a bar [|] but it is neither.";
           prerr_newline ();
           exit (1)
         end // end of [_]
     end // end of [TOKident]
   | _ => begin
-      prerr "The token at [";
       $Loc.prerr_location tok0.token_loc;
-      prerr "] should an identifer but it is not.";
+      prerr ": error(ATSYACC)";
+      prerr ": the token should an identifer but it is not.";
       prerr_newline ();
       exit (1)
     end // end of [_]
 end // end of [parse_rule]
 
-viewtypedef ruleopt_vt = Option_vt (rule)
-
-fun parse_ruleopt (): ruleopt_vt = let
-  val tok0 = the_token_get ()
-in
-  case+ tok0.token_node of
+fun parse_ruleopt (): preruleopt_vt = let
+  val tok0 = the_token_get () in case+ tok0.token_node of
   | $Tok.TOKident _ => Some_vt (parse_rule ())
   | _ => None_vt ()
 end // end of [parse_ruleopt]
 
 (* ****** ****** *)
 
+fn prerulerhs_process
+  (nrhs: int, rhs: prerulerhs): $Gra.rulerhs_t = let
+  val xs = rhs.0 and prec = rhs.1 and ext = rhs.2
+  val nsym = list_vt_length<token> (xs)
+  val symarr = array_make_arraysize {T}
+    @(pf_gc, pf_arr | p_arr, nsym) where {
+    typedef T = symbol
+    val (pf_gc, pf_arr | p_arr) =
+      array_ptr_alloc<T> (size1_of_int1 nsym)
+    val () = loop (pf_arr | p_arr, xs) where {
+      fun loop {n:nat} {l:addr} (
+          pf: !array_v (T?, n, l) >> array_v (T, n, l)
+        | p: ptr l, xs: list_vt (token, n)
+        ) : void =
+        case+ xs of
+        | ~list_vt_cons (x, xs) => let
+            val- $Tok.TOKident (name) = x.token_node
 (*
-
-fn parse_main () = loop () where {
-  fun loop (): void = let
-    val tok = atsyacc_lexer_token_get ()
-    val () = begin
-      $Loc.print tok.token_loc;
-      print ": tok = "; $Tok.print_token tok;
-      print_newline ()
-    end // end of [val]
-  in
-    case+ tok.token_node of
-    | $Tok.TOKeof () => () | _ => loop ()
-  end // end of [loop]
-} // end of [parse_main]
-
+            val () = begin
+              prerr "prerulerhs_process: name = "; prerr name; prerr_newline ()
+            end // end of [val]
 *)
+            val symopt = $Sym.symbol_find_name (name)
+            val sym = (case+ symopt of
+              | ~Some_vt sym => sym | ~None_vt () =>
+                  $Sym.symbol_make_newname (knd, name) where {
+(*
+                  val () = begin
+                    $Loc.prerr_location x.token_loc;
+                    prerr ": warning(ATSYACC)";
+                    prerr ": the symbol ["; prerr name;
+                    prerr "] is nonterminal";
+                    prerr ", but there are no production rules for it.";
+                    prerr_newline ();
+                  end // end of [None_vt]
+*)
+                  val knd = $Sym.SYMKINDnonterm ()
+                } // end of [None_vt]
+            ) : T // end of [val]
+            prval (pf1, pf2) = array_v_uncons {T?} (pf)
+            val () = !p := sym
+            val () = loop (pf2 | p + sizeof<T>, xs)
+          in
+            pf := array_v_cons {T} (pf1, pf2)
+          end // end of [list_vt_cons]
+        | ~list_vt_nil () => let
+            prval () = array_v_unnil {T?} (pf) in pf := array_v_nil ()
+          end // end of [list_vt_nil]
+      // end of [loop]
+    } // end of [val]
+  } (* end of [val symarr] *)
+in
+  $Gra.rulerhs_make (nrhs, nsym, symarr, prec, ext)
+end // end of [prerulerhs_process]
+
+fun prerulerhslst_process
+  (nrhs_r: &int, rhss: prerulerhslst)
+  : $Gra.rulerhslst = case+ rhss of
+  | ~list_vt_cons (rhs, rhss) => let
+      val nrhs = nrhs_r
+      val () = nrhs_r := nrhs + 1
+      val rhs = prerulerhs_process (nrhs, rhs)
+      val rhss = prerulerhslst_process (nrhs_r, rhss)
+    in
+      list_cons (rhs, rhss)
+    end // end of [list_vt_cons]
+  | ~list_vt_nil () => list_nil ()
+// end of [prerulerhslst_process]
+
+(* ****** ****** *)
+
+fn prerule_process
+  (nrhs_r: &int, rl: prerule): void = let
+  val lhs = rl.0 and rhss = rl.1
+  val rhss = prerulerhslst_process (nrhs_r, rhss)
+in
+  $Gra.symbol_rulerhslst_set (lhs, rhss)
+end // end of [val]
+
+(* ****** ****** *)
+
+staload Q = "LIB/linqueuelst.dats"
+
+extern fun the_preruleque_takeout (): prerulelst_vt
+extern fun the_preruleque_insert (rl: prerule): void
+
+local
+
+viewtypedef preruleque =
+  [n:nat] $Q.linqueuelst_vt (prerule, n)
+
+val thePrerulequeRef =
+  ref_make_elt<preruleque> ($Q.linqueuelst_nil<> ())
+
+in // in of [local]
+
+implement the_preruleque_insert (rl) = let
+  val (vbox pf | p) =
+    ref_get_view_ptr (thePrerulequeRef) in
+  $Q.linqueuelst_enqueue (!p, rl)
+end // end of [the_preruleque_insert]
+
+implement the_preruleque_takeout () = let
+  val (vbox pf | p) =
+    ref_get_view_ptr (thePrerulequeRef)
+  val xs = !p; val () = !p := $Q.linqueuelst_nil<> () in
+  $Q.list_vt_of_linqueuelst (xs)
+end // end of [the_preruleque_takeout]
+
+end // end of [local]
+
+(* ****** ****** *)
+
+#define NRHS_FIRST 1
 
 extern fun parse_main (): void
 
@@ -432,8 +540,9 @@ local
 
 val thePreambleRef = ref_make_elt<tokenopt> (None)
 val thePostambleRef = ref_make_elt<tokenopt> (None)
+val theRulelhslstRef = ref_make_elt<symlst> (list_nil)
 
-in
+in // in of [local]
 
 implement parse_main () = let
   val () = the_token_update () // flush out a junk value
@@ -462,9 +571,7 @@ implement parse_main () = let
     in
       case+ rlopt of
       | ~Some_vt (rl) => let
-          // [rl] needs to be processed!!!
-        in
-          loop ()
+          val () = the_preruleque_insert (rl) in loop ()
         end // end of [Some_vt]
       | ~None_vt () => () // loop exists
     end // end of [loop]
@@ -489,15 +596,73 @@ implement parse_main () = let
   in
     case+ tok.token_node of
     | $Tok.TOKeof () => () | _ => begin
-        prerr "The token at [";
         $Loc.prerr_location tok.token_loc;
-        prerr "] should have been consumed but it is not.";
+        prerr ": error(ATSYACC)";
+        prerr ": the token should have been consumed but it is not.";
         prerr_newline ();
       end // end of [_]
   end // end of [val]
+  
+  val () = () where { // processing the production rules
+    val rls = the_preruleque_takeout ()
+    val lhss0 = loop
+      (nrhs_r, rls, list_vt_nil ()) where {
+      fun loop (
+          nrhs_r: &int, rls: prerulelst_vt, lhss: symlst_vt
+        ) : symlst_vt = case+ rls of
+        | ~list_vt_cons (rl, rls) => let
+            val lhs = rl.0
+            val () = prerule_process (nrhs_r, rl) in
+            loop (nrhs_r, rls, list_vt_cons (lhs, lhss))
+          end // end of [list_vt_cons]
+        | ~list_vt_nil () => let
+(*
+            val () = begin
+              prerr "The next number of rhs = "; prerr nrhs_r; prerr_newline ()
+            end // end of [val]
+*)
+          in
+            lhss // loop exists
+          end // end of [list_vt_nil]
+      // end of [loop]
+      var nrhs_r: int = NRHS_FIRST
+    } // end of [val]
+    val lhss1 = loop (lhss0, list_nil ()) where {
+      fun loop (
+          lhss0: symlst_vt, lhss1: symlst
+        ) : symlst = case+ lhss0 of
+        | ~list_vt_cons (lhs, lhss0) =>
+             loop (lhss0, list_cons (lhs, lhss1))
+        | ~list_vt_nil () => lhss1
+      // end of [loop]
+    } // end of [val]
+    val () = !theRulelhslstRef := lhss1
+  } // end of [val]
+
+// (*
+  val () = begin
+    prerrf ("The total number of terminals is %i\n", @(nsym))
+  end where {
+    val nsym = $Sym.symbol_term_total_get ()
+  } // end of [val]
+
+  val () = begin
+    prerrf ("The total number of nonterminals is %i\n", @(nsym))
+  end where {
+    val nsym = $Sym.symbol_nonterm_total_get ()
+  } // end of [val]
+
+  val () = begin
+    prerrf ("The total number of symbols is %i\n", @(nsym))
+  end where {
+    val nsym = $Sym.symbol_total_get ()
+  } // end of [val]
+// *)
 in
   // empty
 end // end of [parse_main]
+
+implement $Gra.the_rulelhslst_get () = !theRulelhslstRef
 
 end // end of [local]
 

@@ -33,66 +33,113 @@
 
 ######
 
+LIB=LIB
+
 ATSCC="$(ATSHOME)"/bin/atscc
 ATSLEX="$(ATSHOME)"/bin/atslex
+
+GCFLAG=
+GCFLAG=-D_ATS_GCATS
+
+CCFLAGS=
+CCFLAGS=-O2
 
 ######
 
 atsyacc:: \
   atsyacc_main.dats \
+  linqueuelst_dats.o \
+  funmap_avltree_dats.o \
+  funset_avltree_dats.o \
   hashtable_dats.o \
-  symbol_sats.o symbol_dats.o \
   location_sats.o location_dats.o \
-  atsyacc_token_sats.o atsyacc_token_dats.o \
+  token_sats.o token_dats.o \
+  symbol_sats.o symbol_dats.o \
   atsyacc_top_sats.o \
   atsyacc_lexer_lats.dats \
   atsyacc_parser_dats.o \
+  grammar_sats.o grammar_dats.o \
+  atsyacc_nullfrstfllw_dats.o \
+  atsyacc_lrtable_dats.o \
 
-	$(ATSCC) -g -o atsyacc \
+	$(ATSCC) $(GCFLAG) $(CCFLAGS) -g -o atsyacc \
   atsyacc_main.dats \
+  linqueuelst_dats.o \
+  funmap_avltree_dats.o \
+  funset_avltree_dats.o \
   hashtable_dats.o \
-  symbol_sats.o symbol_dats.o \
   location_sats.o location_dats.o \
-  atsyacc_token_sats.o atsyacc_token_dats.o \
+  token_sats.o token_dats.o \
+  symbol_sats.o symbol_dats.o \
   atsyacc_top_sats.o \
   atsyacc_lexer_lats.dats -latslex \
-  atsyacc_parser_dats.o
+  atsyacc_parser_dats.o \
+  grammar_sats.o grammar_dats.o \
+  atsyacc_nullfrstfllw_dats.o \
+  atsyacc_lrtable_dats.o \
 
 ######
 
-hashtable_dats.o: hashtable.dats
-	$(ATSCC) -c -o hashtable_dats.o hashtable.dats
+linqueuelst_dats.o: $(LIB)/linqueuelst.dats
+	$(ATSCC) $(CCFLAGS) -c -o linqueuelst_dats.o $(LIB)/linqueuelst.dats
+
+funmap_avltree_dats.o: $(LIB)/funmap_avltree.dats
+	$(ATSCC) $(CCFLAGS) -c -o funmap_avltree_dats.o $(LIB)/funmap_avltree.dats
+
+funset_avltree_dats.o: $(LIB)/funset_avltree.dats
+	$(ATSCC) $(CCFLAGS) -c -o funset_avltree_dats.o $(LIB)/funset_avltree.dats
+
+hashtable_dats.o: $(LIB)/hashtable.dats
+	$(ATSCC) $(CCFLAGS) -c -o hashtable_dats.o $(LIB)/hashtable.dats
+
+######
 
 symbol_sats.o: symbol.sats
-	$(ATSCC) -c -o symbol_sats.o symbol.sats
+	$(ATSCC) $(CCFLAGS) -c -o symbol_sats.o symbol.sats
 
 symbol_dats.o: symbol.dats
-	$(ATSCC) -c -o symbol_dats.o symbol.dats
+	$(ATSCC) $(CCFLAGS) -c -o symbol_dats.o symbol.dats
 
 location_sats.o: location.sats
-	$(ATSCC) -c -o location_sats.o location.sats
+	$(ATSCC) $(CCFLAGS) -c -o location_sats.o location.sats
 
 location_dats.o: location.dats
-	$(ATSCC) -c -o location_dats.o location.dats
+	$(ATSCC) $(CCFLAGS) -c -o location_dats.o location.dats
 
 ######
 
-atsyacc_token_sats.o: atsyacc_token.sats
-	$(ATSCC) -c -o atsyacc_token_sats.o atsyacc_token.sats
+token_sats.o: token.sats
+	$(ATSCC) $(CCFLAGS) -c -o token_sats.o token.sats
 
-atsyacc_token_dats.o: atsyacc_token.dats
-	$(ATSCC) -c -o atsyacc_token_dats.o atsyacc_token.dats
+token_dats.o: token.dats
+	$(ATSCC) $(CCFLAGS) -c -o token_dats.o token.dats
+
+######
+
+grammar_sats.o: grammar.sats
+	$(ATSCC) $(CCFLAGS) -c -o grammar_sats.o grammar.sats
+
+grammar_dats.o: grammar.dats
+	$(ATSCC) $(CCFLAGS) -c -o grammar_dats.o grammar.dats
+
+######
+
+atsyacc_nullfrstfllw_dats.o: atsyacc_nullfrstfllw.dats
+	$(ATSCC) $(CCFLAGS) -c -o atsyacc_nullfrstfllw_dats.o atsyacc_nullfrstfllw.dats
+
+atsyacc_lrtable_dats.o: atsyacc_lrtable.dats
+	$(ATSCC) $(CCFLAGS) -c -o atsyacc_lrtable_dats.o atsyacc_lrtable.dats
 
 ######
 
 atsyacc_top_sats.o: atsyacc_top.sats
-	$(ATSCC) -c -o atsyacc_top_sats.o atsyacc_top.sats
+	$(ATSCC) $(CCFLAGS) -c -o atsyacc_top_sats.o atsyacc_top.sats
 
 atsyacc_lexer_lats.dats: atsyacc_lexer.lats
 	$(ATSLEX) < atsyacc_lexer.lats > atsyacc_lexer_lats.dats
 
 atsyacc_parser_dats.o: atsyacc_parser.dats
-	$(ATSCC) -c -o atsyacc_parser_dats.o atsyacc_parser.dats
+	$(ATSCC) $(CCFLAGS) -c -o atsyacc_parser_dats.o atsyacc_parser.dats
 
 ######
 

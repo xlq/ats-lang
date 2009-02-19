@@ -60,6 +60,7 @@ implement main_prelude () = let
   val () = $dynload "prelude/DATS/list_vt.dats"
   val () = $dynload "prelude/DATS/matrix.dats"
   val () = $dynload "prelude/DATS/option.dats"
+  val () = $dynload "prelude/DATS/slseg.dats"
 (*
   val () = begin
     print ("The prelude library is loaded."); print_newline ()

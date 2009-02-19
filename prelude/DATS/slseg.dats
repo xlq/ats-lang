@@ -36,15 +36,7 @@
 
 (* ****** ****** *)
 
-#if VERBOSE_PRELUDE #then
-
-#print "Loading [slseg_v.dats] starts!\n"
-
-#endif
-
-(* ****** ****** *)
-
-staload "prelude/SATS/slseg.sats"
+#define ATS_DYNLOADFLAG 0 // loaded by [ats_main_prelude]
 
 (* ****** ****** *)
 
@@ -81,6 +73,25 @@ end // end of [slseg_v_append]
 
 (* ****** ****** *)
 
+implement{a} slseg_free
+  (pf_seg | p, n) = _free (pf_seg | p, n) where {
+  typedef T = @(a, ptr)
+  fun _free {l1,l2:addr} {n:nat} .<n>. (
+      pf_seg: slseg_v (a, l1, l2, n) | p: ptr l1, n: int n
+    ) :<> void =
+    if n > 0 then let
+      prval slseg_v_cons (pf_gc, pf_at, pf1_seg) = pf_seg
+      val p1 = p->1; val () = ptr_free {T} (pf_gc, pf_at | p)
+    in
+      _free (pf1_seg | p1, n-1)
+    end else begin
+      let prval slseg_v_nil () = pf_seg in () end
+    end // end of [if]
+  // end of [_free]
+} (* end of [slseg_free] *)
+
+(* ****** ****** *)
+
 implement{a} slseg_foreach_clo
   {v} {l1,l2} {n} {f} (pf, pf_seg | p, n, f) = let
   fun loop {l1,l2:addr} {n:nat} .<n>. (
@@ -109,10 +120,11 @@ linqueuelst_list_vt_of_sllst (ats_ptr_type p) { return p ; }
 
 (* ****** ****** *)
 
-#if VERBOSE_PRELUDE #then
+// [slseg.sats] is already loaded by a call to [pervasive_load]
+staload _(*anonymous*) = "prelude/SATS/slseg.sats" // this forces that the static
+// loading function for [slseg.sats] is to be called at run-time
+// this is really needed only if some datatypes are declared in [slseg.sats]
 
-#print "Loading [slseg_v.dats] finishes!\n"
-
-#endif
+(* ****** ****** *)
 
 (* end of [slseg_v.dats] *)

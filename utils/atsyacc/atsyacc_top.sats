@@ -37,7 +37,7 @@
 
 (* ****** ****** *)
 
-staload "atsyacc_token.sats"
+staload "token.sats"
 
 (* ****** ****** *)
 
@@ -49,6 +49,16 @@ fun atsyacc_lexer_token_get (): token = "atsyacc_lexer_token_get"
 // implemented in [atsyacc_parser.dats]
 fun parse_from_stdin (): void
 fun parse_from_filename (filename: string): void
+
+(* ****** ****** *)
+
+// implemented in [atsyacc_nullfrstfllw.dats]
+fun the_nullfrstfllw_table_gen (): void
+
+(* ****** ****** *)
+
+// implemented in [atsyacc_lrtable.dats]
+fun the_lrtable_gen (): void
 
 (* ****** ****** *)
 

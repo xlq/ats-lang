@@ -41,6 +41,10 @@ fun{a:viewt@ype} list_vt_of_stream_vt
 
 (* ****** ****** *)
 
+fun{a:t@ype} stream_vt_free (xs: stream_vt a):<1,~ref> void
+
+(* ****** ****** *)
+
 fun{a:t@ype} stream_vt_filter_fun
   (xs: stream_vt a, pred: (&a) -<1,~ref> bool):<1,~ref> stream_vt a
 

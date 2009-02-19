@@ -56,6 +56,9 @@ where token = '{
   token_loc= location_t, token_node= token_node
 }
 
+typedef tokenlst = List (token)
+typedef tokenopt = Option (token)
+
 (* ****** ****** *)
 
 fun token_none_make (): token
@@ -82,4 +85,4 @@ fun prerr_token (tok: token): void
 
 (* ****** ****** *)
 
-(* end of [atsyacc_token.sats] *)
+(* end of [token.sats] *)

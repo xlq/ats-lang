@@ -267,7 +267,7 @@ fn pervasive_load
 (*
   val () = begin
     print "pervasive_load: parse: fullname = "; print fullname; print_newline ()
-  end
+  end // end of [val]
 *)
   val d0cs = $Par.parse_from_filename (0(*static*), filename)
 (*
@@ -320,6 +320,7 @@ fn prelude_load (ATSHOME: string): void = let
   val () = pervasive_load (ATSHOME, "prelude/SATS/list_vt.sats")
   val () = pervasive_load (ATSHOME, "prelude/SATS/matrix.sats")
   val () = pervasive_load (ATSHOME, "prelude/SATS/option.sats")
+  val () = pervasive_load (ATSHOME, "prelude/SATS/slseg.sats")
 
 (*
   val () = pervasive_load (ATSHOME, "prelude/SATS/slseg.sats")

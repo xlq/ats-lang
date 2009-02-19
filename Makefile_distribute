@@ -93,7 +93,7 @@ bin/atscc bin/atslib:
 
 # [gcc -E] for preprocessing
 .libfiles_local: ; $(GCC) -E -P -x c .libfiles -o .libfiles_local
-libfiles: .libfiles_local; "$(ATSHOME)"/bin/atslib -all
+libfiles: .libfiles_local; "$(ATSHOME)"/bin/atslib --libats
 
 ###### a lexer for ATS ######
 bin/atslex:
