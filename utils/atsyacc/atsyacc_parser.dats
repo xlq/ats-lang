@@ -540,7 +540,6 @@ local
 
 val thePreambleRef = ref_make_elt<tokenopt> (None)
 val thePostambleRef = ref_make_elt<tokenopt> (None)
-val theRulelhslstRef = ref_make_elt<symlst> (list_nil)
 
 in // in of [local]
 
@@ -636,7 +635,7 @@ implement parse_main () = let
         | ~list_vt_nil () => lhss1
       // end of [loop]
     } // end of [val]
-    val () = !theRulelhslstRef := lhss1
+    val () = $Gra.the_rulelhslst_set (lhss1)
   } // end of [val]
 
 // (*
@@ -662,7 +661,7 @@ in
   // empty
 end // end of [parse_main]
 
-implement $Gra.the_rulelhslst_get () = !theRulelhslstRef
+
 
 end // end of [local]
 

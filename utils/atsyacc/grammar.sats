@@ -71,8 +71,10 @@ fun rulerhs_make {n:nat} (
 
 (* ****** ****** *)
 
-// implemented in [atsyacc_parser.dats]
+fun the_rulelhslst_add (x: symbol_t): void
+
 fun the_rulelhslst_get (): List symbol_t
+fun the_rulelhslst_set (xs: List symbol_t): void
 
 (* ****** ****** *)
 

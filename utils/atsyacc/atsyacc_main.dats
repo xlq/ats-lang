@@ -141,8 +141,9 @@ implement main (argc, argv) = let
     val sym = $Gra.the_start_symbol_get () in
     prerr "the start symbol is: "; $Sym.prerr_symbol sym; prerr_newline ()
   end // end of [val]
-  
+
   val () = $Gra.the_start_rule_set ()
+  val () = $Gra.the_rulelhslst_add ($Sym.the_accept_symbol)
 
 // (*
   val () = () where {

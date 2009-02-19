@@ -126,6 +126,24 @@ end // end of [local]
 
 (* ****** ****** *)
 
+local
+
+typedef symlst = List (symbol_t)
+
+val theRulelhslstRef = ref_make_elt<symlst> (list_nil)
+
+in // in of [local]
+
+implement the_rulelhslst_add (x) = 
+  !theRulelhslstRef := list_cons (x, !theRulelhslstRef)
+
+implement the_rulelhslst_get () = !theRulelhslstRef
+implement the_rulelhslst_set (xs) = !theRulelhslstRef := xs
+
+end // end of [local]
+
+(* ****** ****** *)
+
 implement the_start_rule_set () = let
   val lhs = the_accept_symbol
   val num = 0
