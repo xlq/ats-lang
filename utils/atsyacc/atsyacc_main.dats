@@ -128,6 +128,9 @@ implement the_fllwset_print () = loop (xs) where {
 (* ****** ****** *)
 
 implement main (argc, argv) = let
+// (*
+  val () = gc_chunk_count_limit_max_set (~1) // infinite
+// *)
   val () = parse_from_stdin ()
 (*
   val () = () where {
@@ -145,7 +148,7 @@ implement main (argc, argv) = let
   val () = $Gra.the_start_rule_set ()
   val () = $Gra.the_rulelhslst_add ($Sym.the_accept_symbol)
 
-// (*
+(*
   val () = () where {
     val x0 = $Sym.the_accept_symbol
     val xs = $Gra.the_rulelhslst_get ()
@@ -155,7 +158,7 @@ implement main (argc, argv) = let
     val () = $Gra.fprint_rulelhsrhsslst (file_mode_lte_w_w | !p_stdout, xs)
     val () = stdout_view_set (pf_stdout | (*none*))
   }
-// *)
+*)
 
   val () = begin
     prerr "the_nullfrstfllw_table_gen: bef"; prerr_newline ()
@@ -165,14 +168,14 @@ implement main (argc, argv) = let
     prerr "the_nullfrstfllw_table_gen: aft"; prerr_newline ()
   end // end of [val]
 
-// (*
+(*
   val () = print "The nullablity table is given as follows:\n"
   val () = the_nullable_print ()
   val () = print "The firstset table is given as follows:\n"
   val () = the_frstset_print ()
   val () = print "The followset table is given as follows:\n"
   val () = the_fllwset_print ()
-// *)
+*)
 
   val () = the_lrtable_gen ()
 in
