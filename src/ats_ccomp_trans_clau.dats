@@ -154,9 +154,9 @@ implement ccomp_hiclau
         val mpts = aux_pat (res, tl, i, vps, hips)
       in
         list_cons (mpt, mpts)
-      end
+      end // end of [list_cons]
     | (_, _) => list_nil ()
-  end // end of [aux_patck]
+  end (* end of [aux_patck] *)
 
   fun aux_mat (
       res: &instrlst_vt
@@ -170,7 +170,7 @@ implement ccomp_hiclau
         aux_mat (res, level, vps, hips)
       end // end of [list_cons _, list_cons _]
     | (_, _) => ()
-  end // end of [aux_mat]
+  end (* end of [aux_mat] *)
 
   fun aux_gua (
       res: &instrlst_vt
@@ -189,9 +189,9 @@ implement ccomp_hiclau
         val () = ccomp_match (res, level, vp, hip)
       in
         aux_gua (res, level, himats, fail)
-      end
+      end // end of [list_cons]
     | list_nil () => ()
-  end // end of [aux_gua]
+  end (* end of [aux_gua] *)
 
   var i: int = 0
   var res: instrlst_vt = list_vt_nil ()
@@ -199,7 +199,7 @@ implement ccomp_hiclau
   val mpts = aux_pat (res, tl, i, vps, hips)
   val () = begin
     instr_add_tmplabint (res, tl, i) // [i] = the length of [hicls]
-  end
+  end // end of [val]
 
   val () = aux_mat (res, level, vps, hips)
 
@@ -237,11 +237,9 @@ extern fun labhipatlst_test_int
 implement hipat_test_int (hip1, hip2) = let
 (*
   val () = begin
-    prerr "hipat_test_int: hip1 = "; prerr hip1; prerr_newline ()
-  end
-  val () = begin
-    prerr "hipat_test_int: hip2 = "; prerr hip2; prerr_newline ()
-  end
+    prerr "hipat_test_int: hip1 = "; prerr hip1; prerr_newline ();
+    prerr "hipat_test_int: hip2 = "; prerr hip2; prerr_newline ();
+  end // end of [val]
 *)
 in
   case+ (hip1.hipat_node, hip2.hipat_node) of
@@ -249,6 +247,8 @@ in
   | (_, HIPann (hip2, _)) => hipat_test_int (hip1, hip2)
   | (HIPany _, _) => true
   | (_, HIPany _) => true
+  | (HIPas (_(*knd*), _(*d2v*), hip1), _) => hipat_test_int (hip1, hip2)
+  | (_, HIPas (_(*knd*), _(*d2v*), hip2)) => hipat_test_int (hip1, hip2)
   | (HIPvar _, _) => true
   | (_, HIPvar _) => true
   | (HIPbool b1, HIPbool b2) => (b1 = b2)
@@ -282,8 +282,8 @@ implement hipatlst_test_int
     end // end of [list_cons]
   | list_nil () => begin case+ hips2 of
     | list_cons _ => false | list_nil _ => true
-    end
-end // end of [hipatlst_test_int]
+    end // end of [list_nil]
+end (* end of [hipatlst_test_int] *)
 
 implement labhipatlst_test_int
   (lhips1, lhips2) = begin case+ lhips1 of
@@ -295,10 +295,10 @@ implement labhipatlst_test_int
           if hipat_test_int (hip1, hip2) then
             labhipatlst_test_int (lhips1, lhips2)
           else false
-      | _ => false
-      end // end of [LABHIPATLSTcons]
+      | _ => false // end of [_]
+      end (* end of [LABHIPATLSTcons] *)
     | _ => true
-    end // end of [LABHIPATLSTcons]
+    end (* end of [LABHIPATLSTcons] *)
   | _ => begin case+ lhips2 of
     | LABHIPATLSTcons _ => false | _ => true
     end // end of [_]
@@ -332,18 +332,18 @@ end // end of [hipatlst_is_any]
 implement hipat_test_sub (hip1, hip2) = let
 (*
   val () = begin
-    prerr "hipat_test_sub: hip1 = "; prerr hip1; prerr_newline ()
-  end
-  val () = begin
-    prerr "hipat_test_sub: hip2 = "; prerr hip2; prerr_newline ()
-  end
+    prerr "hipat_test_sub: hip1 = "; prerr hip1; prerr_newline ();
+    prerr "hipat_test_sub: hip2 = "; prerr hip2; prerr_newline ();
+  end // end of [val]
 *)
 in
   case+ (hip1.hipat_node, hip2.hipat_node) of
   | (_, HIPany _) => true
   | (_, HIPvar _) => true
   | (_, HIPann (hip2, _)) => hipat_test_sub (hip1, hip2)
+  | (_, HIPas (_(*knd*), _(*d2v*), hip2)) => hipat_test_sub (hip1, hip2)
   | (HIPann (hip1, _), _) => hipat_test_sub (hip1, hip2)
+  | (HIPas (_(*knd*), _(*d2v*), hip1), _) => hipat_test_sub (hip1, hip2)
   | (HIPbool b1, HIPbool b2) => (b1 = b2)
   | (HIPchar c1, HIPchar c2) => (c1 = c2)
   | (HIPcon (_, d2c1, hips1, _), HIPcon (_, d2c2, hips2, _)) =>
@@ -376,8 +376,8 @@ implement hipatlst_test_sub
     end // end of [list_cons]
   | list_nil () => begin case+ hips2 of
     | list_cons _ => false | list_nil _ => true
-    end
-end // end of [hipatlst_test_sub]
+    end // end of [list_nil]
+end (* end of [hipatlst_test_sub] *)
 
 implement labhipatlst_test_sub
   (lhips1, lhips2) = begin case+ lhips1 of
@@ -396,7 +396,7 @@ implement labhipatlst_test_sub
   | _ => begin case+ lhips2 of
     | LABHIPATLSTcons _ => false | _ => true
     end // end of [_]
-end // end of [labhipatlst_test_sub]
+end (* end of [labhipatlst_test_sub] *)
 
 (* ****** ****** *)
 
@@ -423,8 +423,8 @@ fun hipatlst_prefix_test_int
       end // end of [list_nil]
   end else begin
     true // return value
-  end
-end // end of [hipatlst_test_int]
+  end // end of [if]
+end (* end of [hipatlst_test_int] *)
 
 fun aux_major (i: int, hips0: hipatlst, xs: l0st)
   : Option_vt @(tmplab_t, hiclau) = begin case+ xs of
@@ -434,7 +434,7 @@ fun aux_major (i: int, hips0: hipatlst, xs: l0st)
       if isint then Some_vt @(tl, hicl) else aux_major (i, hips0, xs)
     end // end of [L0STcons]
   | L0STnil () => None_vt ()
-end // end [aux_major]
+end (* end [aux_major] *)
 
 fun aux_minor
   (i0: int, hips0: hipatlst, hicl: hiclau)
@@ -445,9 +445,9 @@ fun aux_minor
       | (list_cons (hip1, hips1), list_cons (hip2, hips2)) =>
           if hipat_test_sub (hip1, hip2) then f (i+1, hips1, hips2) else i
       | (_, _) => i // this clause should never be taken
-      end
+      end // end of [_ when ...]
     | _ => i
-  end // end of [f]
+  end (* end of [f] *)
 in
   f (0, hips0, hicl.hiclau_pat)
 end // end of [aux_minor]
@@ -464,27 +464,23 @@ fun aux_tmpmov
     | (_, HIPann (hip2, _)) => auxpat (hip1, hip2, res)
     | (HIPcon (_, d2c1, hips1, _), HIPcon (_, d2c2, hips2, _)) => begin
         if d2c1 = d2c2 then let
-          val od2v1 = hip1.hipat_asvar
-          val od2v2 = hip2.hipat_asvar
+          val od2v1 = hip1.hipat_asvar; val od2v2 = hip2.hipat_asvar
           val () = case+ (od2v1, od2v2) of
             | (D2VAROPTsome d2v1, D2VAROPTsome d2v2) => let
-                val vp1 = the_dynctx_find d2v1
-              in
-                case+ vp1.valprim_node of
+                val vp1 = the_dynctx_find d2v1 in case+ vp1.valprim_node of
                 | VPtmp tmp1 => let
-                    val vp2 = the_dynctx_find d2v2
-                  in
+                    val vp2 = the_dynctx_find d2v2 in
                     case+ vp2.valprim_node of
                     | VPtmp tmp2 => (res := TMPMOVLSTcons (tmp1, tmp2, res))
                     | _ => () // deadcode!
                   end // end of [VPtmp]
                 | _ => ()
-              end // end of [D2VAROPTsome, D2VAROPTsome]
+              end (* end of [D2VAROPTsome, D2VAROPTsome] *)
             | (_, _) => ()
         in
           auxpatlst (hips1, hips2, res)
         end // end of [if]
-      end
+      end (* end of [HIPcon, HIPcon] *)
     | (HIPrec (_, lhips1, _), HIPrec (_, lhips2, _)) =>
         auxlabpatlst (lhips1, lhips2, res)
     | (_, _) => ()
@@ -528,7 +524,7 @@ fun aux_tmpmov
       | (_, _) => ()
       end // end of [_ when i > 0]
     | _ => ()
-  end // end of [auxpatlst_prefix]
+  end (* end of [auxpatlst_prefix] *)
 
   var res: tmpmovlst = TMPMOVLSTnil ()
   val () = auxpatlst_prefix (i, hips0, hicl.hiclau_pat, res)
@@ -564,7 +560,7 @@ fun matpnt_kont_set_all
             } // end of [where]
           in
             // empty
-          end
+          end // end of [Some_vt]
         | ~None_vt () => ()
       end // end of [aux]
 

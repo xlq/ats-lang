@@ -672,25 +672,23 @@ fn ccomp_match_sum (
   fun aux_pat
     (res: &instrlst_vt, level: int, i: int, hip0: hipat)
     :<cloptr1> void = begin case+ hip0.hipat_node of
-    | HIPann (hip, __(*hit_ann*)) => aux_pat (res, level, i, hip)
+    | HIPann (hip, _(*hit_ann*)) => aux_pat (res, level, i, hip)
     | HIPany () => ()
     | HIPas (refknd, d2v, hip) => begin
         aux_var (res, level, i, hip0, refknd, d2v); aux_pat (res, level, i, hip)
       end // end of [HIPas]
     | HIPvar (refknd, d2v) => aux_var (res, level, i, hip0, refknd, d2v)
-    | _ => let
+    | _ => ccomp_match (res, level, vp, hip0) where {
         val vp = (
           case+ hip0.hipat_asvar of
           | D2VAROPTsome d2v => the_dynctx_find d2v
           | D2VAROPTnone () => begin
               prerr "ccomp_match_sum: aux: hip0 = "; prerr hip0; prerr_newline ();
               $Err.abort {valprim} ()
-            end
+            end // end of [D2VAROPTnone]
         ) : valprim
-      in
-        ccomp_match (res, level, vp, hip0)
-      end // end of [_]
-  end // end of [aux_pat]
+      } // end of [_]
+  end (* end of [aux_pat] *)
 
   fun auxlst_pat
     (res: &instrlst_vt, level: int, i: int, hips: hipatlst)
@@ -699,9 +697,9 @@ fn ccomp_match_sum (
         val () = aux_pat (res, level, i, hip)
       in
         auxlst_pat (res, level, i+1, hips)
-      end
+      end // end of [list_cons]
     | list_nil () => ()
-  end // end of [auxlst_pat]
+  end (* end of [auxlst_pat] *)
 in
   auxlst_pat (res, level, 0, hips_arg)
 end // end of [ccomp_match_sum]
