@@ -1750,6 +1750,36 @@ overload min with min_uintptr_uintptr
 
 (* ****** ****** *)
 
+// bit operations
+
+fun lnot_uintptr (u: uintptr):<> uintptr
+  = "atspre_lnot_uintptr" (* bitwise *)
+overload ~ with lnot_uintptr
+
+fun land_uintptr_uintptr (u1: uintptr, u2: uintptr):<> uintptr
+  = "atspre_land_uintptr_uintptr"
+
+fun lor_uintptr_uintptr (u1: uintptr, u2: uintptr):<> uintptr
+  = "atspre_lor_uintptr_uintptr"
+
+fun lxor_uintptr_uintptr (u1: uintptr, u2: uintptr):<> uintptr
+  = "atspre_lxor_uintptr_uintptr"
+
+overload land with lxor_uintptr_uintptr
+overload lor with lxor_uintptr_uintptr
+overload lxor with lxor_uintptr_uintptr
+
+fun lsl_uintptr_int1 (u: uintptr, n: Nat):<> uintptr
+  = "atspre_lsl_uintptr_int1"
+
+and lsr_uintptr_int1 (u: uintptr, n: Nat):<> uintptr
+  = "atspre_lsr_uintptr_int1"
+
+overload << with lsl_uintptr_int1
+overload >> with lsr_uintptr_int1
+
+(* ****** ****** *)
+
 symintr fprint_uintptr
 
 fun fprint0_uintptr (out: FILEref, x: uintptr):<!exnref> void

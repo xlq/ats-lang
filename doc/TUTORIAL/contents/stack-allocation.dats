@@ -74,13 +74,13 @@ implement print_file_rev () = let
   val (pf_stdin | p_stdin) = stdin_get ()
   val () = while (true) let
     val () = fgets_exn (file_mode_lte_r_r, pf_buf | p_buf, BUFSZ, !p_stdin)
-    val n = strbuf_length (!p_buf) // n is positive
+    val n = strbuf_length (!p_buf) // n needs to be positive
     val () = if (n = 0) then let
       prval () = pf_buf := bytes_v_of_strbuf_v (pf_buf)
     in
       break // loop exits
     end // end of [val]
-    val () = assert (n > 0) // the redundant check is redundant at run-time
+    val () = assert (n > 0) // the check is redundant at run-time
     val c_last = strbuf_get_char_at (!p_buf, n-1)
   in
     if c_last = '\n' then let
