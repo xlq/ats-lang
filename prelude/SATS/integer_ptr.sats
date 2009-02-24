@@ -250,8 +250,8 @@ fun lor_uintptr_uintptr (u1: uintptr, u2: uintptr):<> uintptr
 fun lxor_uintptr_uintptr (u1: uintptr, u2: uintptr):<> uintptr
   = "atspre_lxor_uintptr_uintptr"
 
-overload land with lxor_uintptr_uintptr
-overload lor with lxor_uintptr_uintptr
+overload land with land_uintptr_uintptr
+overload lor with lor_uintptr_uintptr
 overload lxor with lxor_uintptr_uintptr
 
 fun lsl_uintptr_int1 (u: uintptr, n: Nat):<> uintptr
