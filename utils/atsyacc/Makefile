@@ -42,7 +42,8 @@ GCFLAG=
 GCFLAG=-D_ATS_GCATS
 
 CCFLAGS=
-CCFLAGS=-O2 -pg
+CCFLAGS=-g
+CCFLAGS=-O2
 
 ######
 
@@ -54,7 +55,7 @@ atsyacc:: \
   hashtable_dats.o \
   location_sats.o location_dats.o \
   token_sats.o token_dats.o \
-  symbol_sats.o symbol_dats.o \
+  symbol_sats.o symbol_dats.o symbolset_dats.o \
   atsyacc_top_sats.o \
   atsyacc_lexer_lats.dats \
   atsyacc_parser_dats.o \
@@ -70,7 +71,7 @@ atsyacc:: \
   hashtable_dats.o \
   location_sats.o location_dats.o \
   token_sats.o token_dats.o \
-  symbol_sats.o symbol_dats.o \
+  symbol_sats.o symbol_dats.o symbolset_dats.o \
   atsyacc_top_sats.o \
   atsyacc_lexer_lats.dats -latslex \
   atsyacc_parser_dats.o \
@@ -99,6 +100,9 @@ symbol_sats.o: symbol.sats
 
 symbol_dats.o: symbol.dats
 	$(ATSCC) $(CCFLAGS) -c -o symbol_dats.o symbol.dats
+
+symbolset_dats.o: symbolset.dats
+	$(ATSCC) $(CCFLAGS) -c -o symbolset_dats.o symbolset.dats
 
 location_sats.o: location.sats
 	$(ATSCC) $(CCFLAGS) -c -o location_sats.o location.sats

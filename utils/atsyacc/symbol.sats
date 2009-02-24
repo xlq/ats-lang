@@ -43,6 +43,8 @@ abstype symbol_t // a boxed type for symbols
 
 fun symbol_name_get (x: symbol_t): string
 
+fun symbol_index_get (x: symbol_t): int = "atsyacc_symbol_index_get"
+
 //
 
 fun name_is_new (name: string): bool
@@ -74,6 +76,7 @@ overload compare with compare_symbol_symbol
 
 fun fprint_symbol {m:file_mode}
   (pf_mod: file_mode_lte (m, w) | out: &FILE m, _: symbol_t): void
+  = "atsyacc_fprint_symbol"
 
 fun print_symbol (_: symbol_t): void
 fun prerr_symbol (_: symbol_t): void
@@ -90,53 +93,70 @@ fun symbol_assoc_set (x: symbol_t, assoc: int): void
 
 (* ****** ****** *)
 
-abstype symbolset_t // a boxed type for sets of symbols
+fun symbol_term_total_get (): int
+  = "atsyacc_symbol_term_total_get"
 
-val symbolset_nil : symbolset_t
+fun symbol_nonterm_total_get (): int
 
-fun symbolset_sing (x: symbol_t): symbolset_t
+(* ****** ****** *)
 
-fun symbolset_is_nil (xs: symbolset_t): bool
-fun symbolset_isnot_nil (xs: symbolset_t): bool
+abst@ype symbolset_t // a boxed type for sets of symbols
 
-fun symbolset_ismem (xs: symbolset_t, x: symbol_t): bool
+typedef symbolsetref = ref (symbolset_t)
 
-fun symbolset_add (xs: symbolset_t, x: symbol_t): symbolset_t
-fun symbolset_union (xs: symbolset_t, ys: symbolset_t): symbolset_t
+fun symbolset_nil () : symbolsetref
+  = "atsyacc_symbolset_nil"
 
-fun symbolset_add_flag (xs: symbolset_t, x: symbol_t, flag: &int): symbolset_t
-fun symbolset_union_flag (xs: symbolset_t, ys: symbolset_t, flag: &int): symbolset_t
+fun symbolset_sing (x: symbol_t): symbolsetref
+  = "atsyacc_symbolset_sing"
+
+(*
+
+fun symbolset_is_nil (xs: symbolsetref): bool
+fun symbolset_isnot_nil (xs: symbolsetref): bool
+
+*)
+
+fun symbolset_ismem (xs: symbolsetref, x: symbol_t): bool
+  = "atsyacc_symbolset_ismem"
+
+fun symbolset_add (xs: symbolsetref, x: symbol_t): void
+  = "atsyacc_symbolset_add"
+
+fun symbolset_union (xs: symbolsetref, ys: symbolsetref): void
+  = "atsyacc_symbolset_union"
+
+fun symbolset_add_flag (xs: symbolsetref, x: symbol_t, flag: &int): void
+  = "atsyacc_symbolset_add_flag"
+
+fun symbolset_union_flag (xs: symbolsetref, ys: symbolsetref, flag: &int): void
+  = "atsyacc_symbolset_union_flag"
 
 //
 
 fun fprint_symbolset {m:file_mode}
-  (pf_mod: file_mode_lte (m, w) | out: &FILE m, _: symbolset_t): void
+  (pf_mod: file_mode_lte (m, w) | out: &FILE m, _: symbolsetref): void
+  = "atsyacc_fprint_symbolset"
 
-fun print_symbolset (_: symbolset_t): void
-fun prerr_symbolset (_: symbolset_t): void
+fun print_symbolset (_: symbolsetref): void
+fun prerr_symbolset (_: symbolsetref): void
 
-//
+(* ****** ****** *)
 
 fun symbol_nullable_get (x: symbol_t): bool
   = "atsyacc_symbol_nullable_get"
 fun symbol_nullable_set (x: symbol_t, nullable: bool): void
   = "atsyacc_symbol_nullable_set"
 
-fun symbol_frstset_get (x: symbol_t): symbolset_t
+fun symbol_frstset_get (x: symbol_t): symbolsetref
   = "atsyacc_symbol_frstset_get"
-fun symbol_frstset_set (x: symbol_t, frstset: symbolset_t): void
+fun symbol_frstset_set (x: symbol_t, frstset: symbolsetref): void
   = "atsyacc_symbol_frstset_set"
 
-fun symbol_fllwset_get (x: symbol_t): symbolset_t
+fun symbol_fllwset_get (x: symbol_t): symbolsetref
   = "atsyacc_symbol_fllwset_get"
-fun symbol_fllwset_set (x: symbol_t, fllwset: symbolset_t): void
+fun symbol_fllwset_set (x: symbol_t, fllwset: symbolsetref): void
   = "atsyacc_symbol_fllwset_set"
-
-(* ****** ****** *)
-
-fun symbol_total_get (): int
-fun symbol_term_total_get (): int
-fun symbol_nonterm_total_get (): int
 
 (* ****** ****** *)
 

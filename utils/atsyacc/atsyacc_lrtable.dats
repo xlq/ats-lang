@@ -181,10 +181,8 @@ implement prerr_lritem (itm) = prerr_mac (fprint_lritem, itm)
 
 (* ****** ****** *)
 
-abstype lrstate_t // for representing LR(1)-states
-
-typedef lrlst = List @(lritem, symbolset_t)
-viewtypedef lrlst_vt = List_vt @(lritem, symbolset_t)
+typedef lrlst = List @(lritem, symbolsetref)
+viewtypedef lrlst_vt = List_vt @(lritem, symbolsetref)
 
 typedef lrstaref = ref (lrstate_t)
 typedef lrgotolst = List @(symbol_t, lrstaref)
@@ -237,7 +235,7 @@ staload S = "LIB/funset_avltree.dats"
 typedef lrset = $S.set_t (lritem)
 
 staload M = "LIB/funmap_avltree.dats"
-typedef lrmap = $M.map_t (lritem, symbolset_t)
+typedef lrmap = $M.map_t (lritem, symbolsetref)
 
 (* ****** ****** *)
 
@@ -246,7 +244,7 @@ extern fun fprint_lrmap {m:file_mode}
 
 implement fprint_lrmap {m}
   (pf_mod | out, map) = loop (out, xs) where {
-  typedef keyitm = @(lritem, symbolset_t)
+  typedef keyitm = @(lritem, symbolsetref)
   fun loop (out: &FILE m, xs: stream_vt keyitm): void = case+ !xs of
     | ~stream_vt_cons (x, xs) => let
         val () = fprint_lritem (pf_mod | out, x.0)
@@ -284,9 +282,6 @@ implement print0_lrstate (st) = print_mac (fprint0_lrstate, st)
 implement prerr0_lrstate (st) = prerr_mac (fprint0_lrstate, st)
 
 (* ****** ****** *)
-
-extern fun fprint_lrstate {m:file_mode}
-  (pf_mod: file_mode_lte (m, w) | out: &FILE m, st: lrstate_t): void
 
 implement fprint_lrstate {m} (pf_mod | out, st) = let
   val num = lrstate_num_get (st)
@@ -333,9 +328,6 @@ in
   fprint_newline (pf_mod | out)
 end // end of [fprint0_lrstate]
 
-extern fun print_lrstate (st: lrstate_t): void
-extern fun prerr_lrstate (st: lrstate_t): void
-
 implement print_lrstate (st) = print_mac (fprint_lrstate, st)
 implement prerr_lrstate (st) = prerr_mac (fprint_lrstate, st)
 
@@ -346,10 +338,10 @@ extern
 fun lrmap_nil (): lrmap
 
 extern
-fun lrmap_search (map: lrmap, k: lritem): Option_vt (symbolset_t)
+fun lrmap_search (map: lrmap, k: lritem): Option_vt (symbolsetref)
 
 extern
-fun lrmap_insert (map: &lrmap, k: lritem, xs: symbolset_t): void
+fun lrmap_insert (map: &lrmap, k: lritem, xs: symbolsetref): void
 
 extern
 fun lrmap_remove (map: &lrmap, k: lritem): void
@@ -527,8 +519,7 @@ implement the_lrlst_merge (lst) = let
             case+ kis0 of
             | list_vt_cons (!p_ki0, !p_kis0) => begin case+ kis1 of
               | list_cons (ki1, kis1) => let
-                  val ki0_1 = p_ki0->1
-                  val () = p_ki0->1 := symbolset_union (ki0_1, ki1.1)
+                  val () = symbolset_union (p_ki0->1, ki1.1)
                 in
                   fold@ kis0
                 end // end of [let]
@@ -561,13 +552,13 @@ end // end of [local]
 fun symarr_frstset_gen
   {n:nat} {lb,ub:nat | lb <= ub; ub <= n}
   (alpha: symarr n, lb: int lb, ub: int ub, nullable: &bool)
-  : symbolset_t = let
+  : symbolsetref = let
   fun loop {lb,ub:nat | lb <= ub; ub <= n} .<ub-lb>.
-    (lb: int lb, ub: int ub, res: symbolset_t, nullable: &bool)
-    :<cloref1> symbolset_t =
+    (lb: int lb, ub: int ub, res: symbolsetref, nullable: &bool)
+    :<cloref1> symbolsetref =
     if lb < ub then let
       val x = alpha[lb]
-      val res = symbolset_union (res, symbol_frstset_get x)
+      val () = symbolset_union (res, symbol_frstset_get x)
     in
       if symbol_nullable_get x then loop (lb+1, ub, res, nullable) else res
     end else begin
@@ -575,13 +566,13 @@ fun symarr_frstset_gen
     end // end of [if]
   // end of [loop]
 in
-  loop (lb, ub, symbolset_nil, nullable)
+  loop (lb, ub, symbolset_nil (), nullable)
 end // end of [symarr_frstset_gen]
 
 (* ****** ****** *)
 
 fun lrmap_closurize (map0: lrmap): lrmap = let
-  typedef key = lritem and itm = symbolset_t
+  typedef key = lritem and itm = symbolsetref
   typedef keyset = $S.set_t (key)
   var set_r: keyset = $S.funset_empty<> ()
   viewdef V = keyset @ set_r
@@ -621,14 +612,15 @@ fun lrmap_closurize (map0: lrmap): lrmap = let
 *)
     in
       case+ X_rhss of
-      | list_cons _ => loop_if
-          (set_r, map_r, X, X_rhss, xs) where {
-          val xs = if ~nullable then xs else let
-            val oxs1 = lrmap_search (map_r, key) in case+ oxs1 of
-              | ~Some_vt xs1 => symbolset_union (xs, xs1) | ~None_vt () => xs
-          end : itm where {
+      | list_cons _ => loop (set_r, map_r, X, X_rhss, xs) where {
+          // if [xs] is empty, then the rule is not useful!!!
+          val xs = xs where {
             var nullable: bool = false
             val xs = symarr_frstset_gen (symarr, ind + 1, nsym, nullable)
+            val () = if nullable then let
+              val oxs1 = lrmap_search (map_r, key) in case+ oxs1 of
+                | ~Some_vt xs1 => symbolset_union (xs, xs1) | ~None_vt () => ()
+            end : void
           } // end of [val]
 (*
           val () = begin
@@ -638,7 +630,7 @@ fun lrmap_closurize (map0: lrmap): lrmap = let
 *)
           fun loop (
               set_r: &keyset, map_r: &lrmap
-            , lhs: symbol_t, rhss: rulerhslst, xs: symbolset_t
+            , lhs: symbol_t, rhss: rulerhslst, xs: symbolsetref
             ) : void = case+ rhss of
             | list_cons (rhs, rhss) => let
 (*
@@ -659,7 +651,7 @@ fun lrmap_closurize (map0: lrmap): lrmap = let
                         print_newline ()
                       end // end of [val]
 *)
-                      val xs0 = symbolset_union_flag (xs0, xs, flag)
+                      val () = symbolset_union_flag (xs0, xs, flag)
 (*
                       val () = begin
                         print "lrmap_closurize: loop: aft: xs0 = ";
@@ -679,14 +671,6 @@ fun lrmap_closurize (map0: lrmap): lrmap = let
               end // end of [list_cons]
             | list_nil () => ()
           // end of [loop]
-
-          fn loop_if (
-              set_r: &keyset, map_r: &lrmap
-            , lhs: symbol_t, rhss: rulerhslst, xs: symbolset_t
-            ) : void = begin
-            if symbolset_isnot_nil xs then
-               loop (set_r, map_r, lhs, rhss, xs)
-          end // end of [loop_if]
         } // end of [list_cons]
       | list_nil () => ()
     end // end of [if ind < nsym ...]
@@ -725,7 +709,7 @@ viewtypedef mapstrque =
 extern fun lrgotolst_make
   (que_r: &mapstrque, lst: lrlst): lrgotolst
 
-typedef itmset = @(lritem, symbolset_t)
+typedef itmset = @(lritem, symbolsetref)
 
 implement lrgotolst_make (que_r, lst) = let
   extern castfn lstcast_to (lst: lrlst): lrlst_vt
@@ -810,21 +794,63 @@ end // end of [lrgotolst_make]
 
 (* ****** ****** *)
 
+viewtypedef lrstatelst_vt = List_vt (lrstate_t)
+
+local
+
+val the_lrstatelst_vt = ref_make_elt<lrstatelst_vt> (list_vt_nil)
+
+in // in of [local]
+
+fn the_lrstatelst_vt_add (st: lrstate_t): void = let
+  val (vbox pf | p) = ref_get_view_ptr (the_lrstatelst_vt)
+in
+  !p := list_vt_cons (st, !p)
+end // end of [the_lrstatelst_vt_add]
+
+fn the_lrstatelst_vt_takeout (): lrstatelst_vt = let
+  val (vbox pf | p) = ref_get_view_ptr (the_lrstatelst_vt)
+  val sts = !p; val () = !p := list_vt_nil ()
+in
+  sts
+end // end of [the_lrstatelst_vt_takeout]
+
+end // end of [local]
+
+(* ****** ****** *)
+
+local
+
+val the_lrstatelst = ref_make_elt<lrstatelst> (list_nil)
+
+in // in of [local]
+
+implement the_lrstatelst_get () = !the_lrstatelst
+// end of [the_lrstatelst_get]
+
+implement the_lrstatelst_initialize () = () where {
+  val sts = the_lrstatelst_vt_takeout ()
+  val sts = list_vt_reverse (sts)
+  val () = !the_lrstatelst := list_of_list_vt (sts)
+} // end of [the_lrstatelst_initialize]
+
+end // end of [local]
+
+(* ****** ****** *)
+
 fn lrlst_make_lrmap (map: lrmap): lrlst = kis where {
-  typedef keyitm = @(lritem, symbolset_t)
+  typedef keyitm = @(lritem, symbolsetref)
   val kis = $M.funmap_make_stream_key_itm (map)
   val (_(*n*), kis) = list_vt_of_stream_vt<keyitm> (kis)
   val kis = list_of_list_vt (kis)
 } // end of [lrlst_make_lrmap]
-
-//
 
 implement the_lrtable_gen () = let
   var que_r: mapstrque = $Q.linqueuelst_nil<> ()
   val () = () where {
     var map_r: lrmap = lrmap_nil ()
     val itm = the_first_lritem_gen ()
-    val () = lrmap_insert (map_r, itm, symbolset_nil)
+    val () = lrmap_insert (map_r, itm, symbolset_nil ())
     val str = lrstaref_make_none ()
     val mapstr = @(map_r, str)
     val () = $Q.linqueuelst_enqueue (que_r, mapstr)
@@ -850,12 +876,13 @@ implement the_lrtable_gen () = let
           val gts = lrgotolst_make (que_r, lst)
           val num = the_lrstate_num_getinc ()
           val st_new = lrstate_make (num, lst, gts); val () = !str := st_new
-// (*
+          val () = the_lrstatelst_vt_add (st_new)
+(*
           val () = begin
             print "the_lrtable_gen: st_new = "; print_lrstate (st_new);
             print_newline ()
           end // end of [val]
-// *)
+*)
         in
           the_lrlst_insert (lst, st_new)
         end // end of [None_vt]

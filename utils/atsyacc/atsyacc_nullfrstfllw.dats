@@ -103,9 +103,8 @@ fun nullfrstfllw_process_rulerhs {n:nat}
           val flag0 = flag
           val frstset_x0 = symbol_frstset_get (x0)
           val frstset_yi = symbol_frstset_get (yi)
-          val frstset_x0_new = symbolset_union_flag (frstset_x0, frstset_yi, flag)
         in
-          if flag > flag0 then symbol_frstset_set (x0, frstset_x0_new)
+          symbolset_union_flag (frstset_x0, frstset_yi, flag)
         end // end of [if]
         // part 2.2:
         val test = test_nullability (alpha, i+1, n-i-1)
@@ -113,10 +112,9 @@ fun nullfrstfllw_process_rulerhs {n:nat}
           val flag0 = flag
           val fllwset_x0 = symbol_fllwset_get (x0)
           val fllwset_yi = symbol_fllwset_get (yi)
-          val fllwset_yi_new = symbolset_union_flag (fllwset_yi, fllwset_x0, flag)
         in
-          if flag > flag0 then symbol_fllwset_set (yi, fllwset_yi_new)
-        end
+          symbolset_union_flag (fllwset_yi, fllwset_x0, flag)
+        end // end of [val]
         // part 2.3:
         val () = loop2 (i, i+1, flag) where {
           fun loop2 {i,j:nat | i < j; j <= n}
@@ -129,9 +127,8 @@ fun nullfrstfllw_process_rulerhs {n:nat}
                 val yj = alpha[j]
                 val fllwset_yi = symbol_fllwset_get (yi)
                 val frstset_yj = symbol_frstset_get (yj)
-                val fllwset_yi_new = symbolset_union_flag (fllwset_yi, frstset_yj, flag)
               in
-                if flag > flag0 then symbol_fllwset_set (yi, fllwset_yi_new)
+                symbolset_union_flag (fllwset_yi, frstset_yj, flag)
               end // end of [val]
             in
               loop2 (i, j+1, flag)

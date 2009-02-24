@@ -58,7 +58,23 @@ fun the_nullfrstfllw_table_gen (): void
 (* ****** ****** *)
 
 // implemented in [atsyacc_lrtable.dats]
+
+abstype lrstate_t // for representing LR(1)-states
+
+fun fprint_lrstate {m:file_mode}
+  (pf_mod: file_mode_lte (m, w) | out: &FILE m, st: lrstate_t): void
+
+fun print_lrstate (st: lrstate_t): void
+fun prerr_lrstate (st: lrstate_t): void
+
+//
+
 fun the_lrtable_gen (): void
+
+typedef lrstatelst = List (lrstate_t)
+
+fun the_lrstatelst_get (): lrstatelst
+fun the_lrstatelst_initialize (): void
 
 (* ****** ****** *)
 

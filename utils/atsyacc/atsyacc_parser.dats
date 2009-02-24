@@ -76,7 +76,7 @@ extern fun the_token_update (): void
 extern fun the_token_update_get (): token
 extern fun the_token_get_update (): token
 
-extern fun the_assocval_get_inc (): int
+extern fun the_assocval_getinc (): int
 
 local
 
@@ -103,9 +103,9 @@ implement the_token_update_get () = let
   val tok = atsyacc_lexer_token_get () in !theTokenRef := tok; tok
 end // end of [the_token_update]
 
-implement the_assocval_get_inc () = let
+implement the_assocval_getinc () = let
   val n = !theAssocValRef in !theAssocValRef := n+1; n
-end // end of [the_assoc_get_inc]
+end // end of [the_assoc_getinc]
 
 end // end of [local]
 
@@ -266,15 +266,15 @@ in
           parse_tokenlst (knd, otp)
         end // end of ["%token"]
       | _ when (name = "%nonassoc") => let
-          val n = the_assocval_get_inc () in
+          val n = the_assocval_getinc () in
           parse_assoclst (3 * n)
         end
       | _ when (name_is_leftassoc name) => let
-          val n = the_assocval_get_inc () in
+          val n = the_assocval_getinc () in
           parse_assoclst (3 * n + 1)
         end
       | _ when (name_is_rightassoc name) => let
-          val n = the_assocval_get_inc () in
+          val n = the_assocval_getinc () in
           parse_assoclst (3 * n + 2)
         end
       | _ when (name = "%type") => let
@@ -650,13 +650,8 @@ implement parse_main () = let
   end where {
     val nsym = $Sym.symbol_nonterm_total_get ()
   } // end of [val]
-
-  val () = begin
-    prerrf ("The total number of symbols is %i\n", @(nsym))
-  end where {
-    val nsym = $Sym.symbol_total_get ()
-  } // end of [val]
 // *)
+
 in
   // empty
 end // end of [parse_main]

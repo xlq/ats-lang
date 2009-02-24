@@ -47,7 +47,7 @@ dynload "location.dats"
 dynload "token.dats"
 dynload "grammar.dats"
 dynload "symbol.dats"
-
+dynload "symbolset.dats"
 
 dynload "libats/lex/lexing.dats"
 dynload "atsyacc_lexer_lats.dats"
@@ -55,6 +55,10 @@ dynload "atsyacc_parser.dats"
 
 dynload "atsyacc_nullfrstfllw.dats"
 dynload "atsyacc_lrtable.dats"
+
+(* ****** ****** *)
+
+extern fun the_allsym_initialize (): void = "atsyacc_the_allsym_initialize"
 
 (* ****** ****** *)
 
@@ -128,9 +132,9 @@ implement the_fllwset_print () = loop (xs) where {
 (* ****** ****** *)
 
 implement main (argc, argv) = let
-// (*
+(*
   val () = gc_chunk_count_limit_max_set (~1) // infinite
-// *)
+*)
   val () = parse_from_stdin ()
 (*
   val () = () where {
@@ -140,6 +144,9 @@ implement main (argc, argv) = let
     end // end of [val]
   } // end of [val]
 *)
+
+  val () = the_allsym_initialize () // create the array of terminal symbols
+
   val () = let
     val sym = $Gra.the_start_symbol_get () in
     prerr "the start symbol is: "; $Sym.prerr_symbol sym; prerr_newline ()
@@ -178,6 +185,19 @@ implement main (argc, argv) = let
 *)
 
   val () = the_lrtable_gen ()
+  val () = the_lrstatelst_initialize ()
+  val () = loop (sts) where {
+    // print out all the generated states
+    val sts = the_lrstatelst_get ()
+    fun loop (sts: lrstatelst): void = case+ sts of
+      | list_cons (st, sts) => let
+          val () = print_lrstate (st)
+          val () = print_newline ()
+        in
+          loop (sts)
+        end // end of [list_cons]
+      | list_nil () => () // loop exists
+  } // end of [val]
 in
 end // end of [main]
 
