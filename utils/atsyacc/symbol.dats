@@ -196,6 +196,10 @@ implement symbol_make_newname (knd, name) = sym where {
 implement the_end_symbol =
   symbol_make_newname (SYMKINDterm, "$end")
 
+implement symbol_is_end (x) = begin
+  x.symbol_index = the_end_symbol.symbol_index
+end // end of [symbol_is_end]
+
 implement the_accept_symbol =
   symbol_make_newname (SYMKINDnonterm, "$accept")
 
@@ -266,13 +270,14 @@ implement the_allsym_initialize () = () where {
         val () = the_alltermarr_set (x) where { extern fun
           the_alltermarr_set (x: symbol_t): void = "atsyacc_the_alltermarr_set"
         } // end of [val]
+        val x_frstset = symbolset_sing x and x_fllwset = symbolset_nil ()
       in
-        symbol_frstset_set (x, symbolset_sing x);
-        symbol_fllwset_set (x, symbolset_nil ())
+        symbol_frstset_set (x, x_frstset); symbol_fllwset_set (x, x_fllwset)
       end // end of [_ when ...]
-    | _ => begin
-        symbol_frstset_set (x, symbolset_nil ());
-        symbol_fllwset_set (x, symbolset_nil ())
+    | _ => let
+        val x_frstset = symbolset_nil () and x_fllwset = symbolset_nil ()
+      in
+        symbol_frstset_set (x, x_frstset); symbol_fllwset_set (x, x_fllwset)
       end // end of [_]
   end // end of [var]
   prval pf = unit_v ()

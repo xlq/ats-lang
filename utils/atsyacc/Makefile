@@ -62,6 +62,7 @@ atsyacc:: \
   grammar_sats.o grammar_dats.o \
   atsyacc_nullfrstfllw_dats.o \
   atsyacc_lrtable_dats.o \
+  atsyacc_emit_dats.o \
 
 	$(ATSCC) $(GCFLAG) $(CCFLAGS) -g -o atsyacc \
   atsyacc_main.dats \
@@ -78,6 +79,7 @@ atsyacc:: \
   grammar_sats.o grammar_dats.o \
   atsyacc_nullfrstfllw_dats.o \
   atsyacc_lrtable_dats.o \
+  atsyacc_emit_dats.o \
 
 ######
 
@@ -133,6 +135,11 @@ atsyacc_nullfrstfllw_dats.o: atsyacc_nullfrstfllw.dats
 
 atsyacc_lrtable_dats.o: atsyacc_lrtable.dats
 	$(ATSCC) $(CCFLAGS) -c -o atsyacc_lrtable_dats.o atsyacc_lrtable.dats
+
+######
+
+atsyacc_emit_dats.o: atsyacc_emit.dats
+	$(ATSCC) $(CCFLAGS) -c -o atsyacc_emit_dats.o atsyacc_emit.dats
 
 ######
 

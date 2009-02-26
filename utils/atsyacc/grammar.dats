@@ -44,7 +44,17 @@ staload "grammar.sats"
 (* ****** ****** *)
 
 staload _(*anonymous*) = "prelude/DATS/array.dats"
+staload _(*anonymous*) = "prelude/DATS/list.dats"
 staload _(*anonymous*) = "prelude/DATS/reference.dats"
+
+(* ****** ****** *)
+
+implement symbol_rulerhslst_postpend (x, rhss_new) = let
+  val rhss0 = symbol_rulerhslst_get x
+  val rhss1 = list_append (rhss0, rhss_new)
+in
+  symbol_rulerhslst_set (x, rhss1)
+end // end of [symbol_rulerhslst_postpend]
 
 (* ****** ****** *)
 

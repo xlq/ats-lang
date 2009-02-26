@@ -291,39 +291,94 @@ implement fprint_lrstate {m} (pf_mod | out, st) = let
     fun loop (out: &FILE m, xs: lrlst): void =
       case+ xs of
       | list_cons (x, xs) => let
-          val itm = x.0; val () = if lritem_isnot_beg (x.0) then begin
+          val itm = x.0; val isprint = begin
+            if lritem_is_beg (itm) then lritem_is_end itm else true
+          end : bool
+          val () = if isprint then begin
             fprint_lritem (pf_mod | out, itm); fprint_newline (pf_mod | out)
           end // end of [val]
         in
           loop (out, xs)
         end // end of [list_cons]
-      | list_nil () => let
-          val () = fprint_string
-            (pf_mod | out, ". : error") in fprint_newline (pf_mod | out)
-        end // end of [nil]
+      | list_nil () => ()
     // end of [loop]
   } // end of [val]
-  val () = loop (out, gts) where {
+
+  val () = () where {
     val gts = lrstate_gotolst_get (st)
-    fun loop (out: &FILE m, xs: lrgotolst): void =
+    val () = fprint_newline (pf_mod | out)
+
+    // handling terminals
+    val () = loop (out, gts) where {
+      fun loop (out: &FILE m, xs: lrgotolst): void =
+        case+ xs of
+        | list_cons (x, xs) => let
+            val X = x.0 and r = x.1
+          in
+            case+ 0 of
+            | _ when symbol_is_end X => () where {
+                val () = fprint_symbol (pf_mod | out, X)
+                val () = fprint_string (pf_mod | out, " : accept")
+                val () = fprint_newline (pf_mod | out)
+                val () = loop (out, xs)
+              } // end of [_ when ...]
+            | _ when symbol_is_term X => () where {
+                val () = fprint_symbol (pf_mod | out, X)
+                val () = fprint_string (pf_mod | out, " : shft ")
+                val num1 = lrstate_num_get (!r)
+                val () = fprint_int (pf_mod | out, num1)
+                val () = fprint_newline (pf_mod | out)
+                val () = loop (out, xs)
+              } // end of [_ when ...]
+            | _ => loop (out, xs)
+          end // end of [list_cons]
+        | list_nil () => ()
+    } // end of [loop]
+
+    // handling nonterminals
+    val () = loop (out, gts) where {
+      fun loop (out: &FILE m, xs: lrgotolst): void =
+        case+ xs of
+        | list_cons (x, xs) => let
+            val X = x.0 and r = x.1
+          in
+            case+ 0 of
+            | _ when symbol_is_nonterm X => () where {
+                val () = fprint_symbol (pf_mod | out, X)
+                val () = fprint_string (pf_mod | out, " : goto ")
+                val num1 = lrstate_num_get (!r)
+                val () = fprint_int (pf_mod | out, num1)
+                val () = fprint_newline (pf_mod | out)
+                val () = loop (out, xs)
+              } // end of [_ when ...]
+            | _ => loop (out, xs)
+          end // end of [list_cons]
+        | list_nil () => ()
+    } // end of [loop]
+  } // end of [val]
+
+  val () = loop (out, lst) where {
+    val lst = lrstate_lst_get (st)
+    fun loop (out: &FILE m, xs: lrlst): void =
       case+ xs of
       | list_cons (x, xs) => let
-          val X = x.0 and r = x.1
-          val () = fprint_symbol (pf_mod | out, X)
-          val () = if symbol_is_term X then
-            fprint_string (pf_mod | out, ": shft ")
-          else
-            fprint_string (pf_mod | out, ": goto ")
-          // end of [if]
-          val num1 = lrstate_num_get (!r)
-          val () = fprint_int (pf_mod | out, num1)
-          val () = fprint_newline (pf_mod | out)
+          val itm = x.0
+          val () = if lritem_is_end (itm) then let
+            val () = fprint_string (pf_mod | out, "{")
+            val () = fprint_symbolset (pf_mod | out, x.1)
+            val () = fprint_string (pf_mod | out, "} reduce by ")
+            val nrhs = lritem_nrhs_get (itm)
+            val () = fprint_int (pf_mod | out, nrhs)
+            val () =  fprint_newline (pf_mod | out)
+          in
+            // empty
+          end // end of [val]
         in
           loop (out, xs)
         end // end of [list_cons]
       | list_nil () => ()
     // end of [loop]
-  } // en dof [val]
+  } // end of [val]
 in
   fprint_newline (pf_mod | out)
 end // end of [fprint0_lrstate]
@@ -557,16 +612,17 @@ fun symarr_frstset_gen
     (lb: int lb, ub: int ub, res: symbolsetref, nullable: &bool)
     :<cloref1> symbolsetref =
     if lb < ub then let
-      val x = alpha[lb]
-      val () = symbolset_union (res, symbol_frstset_get x)
+      val X = alpha[lb]
+      val X_fstset = symbol_frstset_get X
+      val () = symbolset_union (res, X_fstset)
     in
-      if symbol_nullable_get x then loop (lb+1, ub, res, nullable) else res
+      if symbol_nullable_get X then loop (lb+1, ub, res, nullable) else res
     end else begin
       nullable := true; res
     end // end of [if]
-  // end of [loop]
+  // end of [loop]  
 in
-  loop (lb, ub, symbolset_nil (), nullable)
+  loop (lb, ub, res, nullable) where { val res = symbolset_nil () }
 end // end of [symarr_frstset_gen]
 
 (* ****** ****** *)
@@ -642,30 +698,18 @@ fun lrmap_closurize (map0: lrmap): lrmap = let
 *)
                 val key0 = lritem_make (lhs, rhs, 0)
                 val oxs0 = lrmap_search (map_r, key0)
-                var flag: int = 0; val xs0 = (case+ oxs0 of
-                  | ~Some_vt xs0 => xs0 where {
-(*
-                      val () = begin
-                        print "lrmap_closurize: loop: bef: xs0 = ";
-                        print_symbolset xs0;
-                        print_newline ()
-                      end // end of [val]
-*)
-                      val () = symbolset_union_flag (xs0, xs, flag)
-(*
-                      val () = begin
-                        print "lrmap_closurize: loop: aft: xs0 = ";
-                        print_symbolset xs0;
-                        print_newline ()
-                      end // end of [val]
-*)
-                      val () = if flag > 0 then lrmap_remove (map_r, key0)
-                    } // end of [Some_vt]
-                  | ~None_vt () => (flag := 1; xs)
-                ) : itm // end of [val]
-                val () = if flag > 0 then begin
-                  lrmap_insert (map_r, key0, xs0); lrset_insert (set_r, key0)
-                end // end of [if]
+                var flag: int = 0
+                val () = case+ oxs0 of
+                  | ~Some_vt xs0 =>
+                      symbolset_union_flag (xs0, xs, flag)
+                  | ~None_vt () => () where {
+                      val xs0 = symbolset_nil ()
+                      val () = symbolset_union (xs0, xs)
+                      val () = flag := 1
+                      val () = lrmap_insert (map_r, key0, xs0)
+                    } // end of [None_vt]
+                 // end of [val]
+                 val () = if flag > 0 then lrset_insert (set_r, key0)
               in
                 loop (set_r, map_r, lhs, rhss, xs)
               end // end of [list_cons]
@@ -762,23 +806,31 @@ implement lrgotolst_make (que_r, lst) = let
         val ind = itm.lritem_ind
       in
         if ind < nsym then let
-          var lst_r = lst
           val symarr = rulerhs_symarr_get (rhs)
           val X = symarr[ind]
-          val itm_new = lritem_make (itm.lritem_lhs, rhs, ind+1)
-          val () = lrmap_insert (map_r, itm_new, itmxs.1)
-          val () = _make_one (X, map_r, lst_r)
-          val map = map_r; val () = map_r := lrmap_nil ()
-          val r = lrstaref_make_none ()
-          val mapr = @(map, r)
-          val () = $Q.linqueuelst_enqueue (que_r, mapr)
-          typedef T = @(symbol_t, lrstaref)
-          val Xr = @(X, r)
-          val () = res := list_cons {T} {0} (Xr, ?)
-          val+ list_cons (_, !p_res) = res
-          val () = _make_all (que_r, map_r, lst_r, !p_res)
         in
-          fold@ res
+          case+ 0 of
+          | _ when symbol_is_end X =>
+              _make_all (que_r, map_r, lst, res)
+          | _ => let
+              val itm_new =
+                lritem_make (itm.lritem_lhs, rhs, ind+1)
+              val () = lrmap_insert (map_r, itm_new, itmxs.1)
+              var lst_r = lst
+              val () = _make_one (X, map_r, lst_r)
+              val map = map_r; val () = map_r := lrmap_nil ()
+              val r = lrstaref_make_none ()
+              val mapr = @(map, r)
+              val () = $Q.linqueuelst_enqueue (que_r, mapr)
+              typedef T = @(symbol_t, lrstaref)
+              val Xr = @(X, r)
+              val () = res := list_cons {T} {0} (Xr, ?)
+              val+ list_cons (_, !p_res) = res
+              val () = _make_all (que_r, map_r, lst_r, !p_res)
+            in
+              fold@ res
+            end // end of [_]
+          // end of [case]
         end else begin
           _make_all (que_r, map_r, lst, res)
         end // end of [if]

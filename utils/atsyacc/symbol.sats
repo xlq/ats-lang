@@ -59,6 +59,9 @@ fun symbol_make_newname (knd: symkind, name: string): symbol_t
 //
 
 val the_end_symbol : symbol_t // terminal
+
+fun symbol_is_end (x: symbol_t): bool
+
 val the_accept_symbol : symbol_t // nonterm
 
 //

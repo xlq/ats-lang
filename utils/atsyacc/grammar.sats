@@ -55,6 +55,9 @@ fun symbol_rulerhslst_get (sym: symbol_t):<> rulerhslst
 fun symbol_rulerhslst_set (sym: symbol_t, rhss: rulerhslst): void
   = "atsyacc_symbol_rulerhslst_set"
 
+fun symbol_rulerhslst_postpend
+  (sym: symbol_t, rhss: rulerhslst): void
+
 (* ****** ****** *)
 
 fun rulerhs_num_get {n:nat} (rhs: rulerhs_t n):<> int
@@ -99,4 +102,4 @@ fun the_start_symbol_set (sym: symbol_t): void
 
 (* ****** ****** *)
 
-(* end of [atsyacc_grammar.dats] *)
+(* end of [grammar.dats] *)

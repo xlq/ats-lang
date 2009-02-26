@@ -38,6 +38,8 @@
 (* ****** ****** *)
 
 staload "token.sats"
+staload "symbol.sats"
+staload "grammar.sats"
 
 (* ****** ****** *)
 
@@ -49,6 +51,11 @@ fun atsyacc_lexer_token_get (): token = "atsyacc_lexer_token_get"
 // implemented in [atsyacc_parser.dats]
 fun parse_from_stdin (): void
 fun parse_from_filename (filename: string): void
+
+(* ****** ****** *)
+
+// implemented in [atsyacc_parser.dats]
+fun the_rulelhsrhsslst_get (): List @(symbol_t, rulerhslst)
 
 (* ****** ****** *)
 
@@ -75,6 +82,14 @@ typedef lrstatelst = List (lrstate_t)
 
 fun the_lrstatelst_get (): lrstatelst
 fun the_lrstatelst_initialize (): void
+
+(* ****** ****** *)
+
+fun theLHSarr_emit
+  (out: FILEref, xs: List @(symbol_t, rulerhslst)): void
+
+fun theLENarr_emit
+  (out: FILEref, xs: List @(symbol_t, rulerhslst)): void
 
 (* ****** ****** *)
 

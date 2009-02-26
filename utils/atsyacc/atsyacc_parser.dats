@@ -490,17 +490,59 @@ fun prerulerhslst_process
 
 (* ****** ****** *)
 
+staload Q = "LIB/linqueuelst.dats"
+
+(* ****** ****** *)
+
+local
+
+typedef rulelhsrhss =
+  @($Sym.symbol_t, $Gra.rulerhslst)
+
+viewtypedef rulelhsrhssque =
+  [n:nat] $Q.linqueuelst_vt (rulelhsrhss, n)
+
+val theRulelhsrhssqueRef =
+  ref_make_elt<rulelhsrhssque> ($Q.linqueuelst_nil<> ())
+
+in
+
+fn the_rulelhsrhssque_insert
+  (lhs: $Sym.symbol_t, rhss: $Gra.rulerhslst): void = let
+  val (vbox pf | p) =
+    ref_get_view_ptr (theRulelhsrhssqueRef) in
+  $Q.linqueuelst_enqueue (!p, @(lhs, rhss))
+end // end of [the_rulelhsrhssque_insert]
+
+fn the_rulelhsrhssque_takeout (): List_vt (rulelhsrhss) = let
+  val (vbox pf | p) =
+    ref_get_view_ptr (theRulelhsrhssqueRef)
+  val xs = !p; val () = !p := $Q.linqueuelst_nil<> ()
+in
+  $Q.list_vt_of_linqueuelst (xs)
+end // end of [the_rulelhsrhssque_insert]
+
+end
+
+(* ****** ****** *)
+
+implement the_rulelhsrhsslst_get () = begin
+  list_of_list_vt (the_rulelhsrhssque_takeout ())
+end // end of [the_rulelhsrhsslst_get]
+
+(* ****** ****** *)
+
 fn prerule_process
   (nrhs_r: &int, rl: prerule): void = let
   val lhs = rl.0 and rhss = rl.1
   val rhss = prerulerhslst_process (nrhs_r, rhss)
+  val () = the_rulelhsrhssque_insert (lhs, rhss)
 in
-  $Gra.symbol_rulerhslst_set (lhs, rhss)
+  // note that [postpend] is used here:
+  $Gra.symbol_rulerhslst_postpend (lhs, rhss)
 end // end of [val]
 
 (* ****** ****** *)
-
-staload Q = "LIB/linqueuelst.dats"
 
 extern fun the_preruleque_takeout (): prerulelst_vt
 extern fun the_preruleque_insert (rl: prerule): void
@@ -655,8 +697,6 @@ implement parse_main () = let
 in
   // empty
 end // end of [parse_main]
-
-
 
 end // end of [local]
 

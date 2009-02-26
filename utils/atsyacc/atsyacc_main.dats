@@ -54,7 +54,10 @@ dynload "atsyacc_lexer_lats.dats"
 dynload "atsyacc_parser.dats"
 
 dynload "atsyacc_nullfrstfllw.dats"
+
 dynload "atsyacc_lrtable.dats"
+
+dynload "atsyacc_emit.dats"
 
 (* ****** ****** *)
 
@@ -191,13 +194,21 @@ implement main (argc, argv) = let
     val sts = the_lrstatelst_get ()
     fun loop (sts: lrstatelst): void = case+ sts of
       | list_cons (st, sts) => let
-          val () = print_lrstate (st)
-          val () = print_newline ()
+          val () = print_lrstate (st); val () = print_newline ()
         in
           loop (sts)
         end // end of [list_cons]
       | list_nil () => () // loop exists
   } // end of [val]
+
+  val () = () where {
+    val xs = the_rulelhsrhsslst_get ()
+    val () = theLHSarr_emit (stdout_ref, xs)
+    val () = fprint_string (stdout_ref, "\n")
+    val () = theLENarr_emit (stdout_ref, xs)
+    val () = fprint_string (stdout_ref, "\n")
+  } // end of [val]
+
 in
 end // end of [main]
 
