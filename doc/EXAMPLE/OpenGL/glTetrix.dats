@@ -187,6 +187,9 @@ end // end of [local]
 
 (* ****** ****** *)
 
+extern fun theGameOver_get (): bool
+extern fun theGameOver_set (): void
+
 extern fun theGameLevel_get (): int
 
 extern fun theTimerTimeInterval_get (): uint
@@ -195,11 +198,14 @@ extern fun theTimerTimeInterval_dec (): void
 
 local
 
+val theGameOver = ref_make_elt<bool> (false)
 val level = ref_make_elt<int> (1)
 val interval = ref_make_elt<double> (1000.0)
 
 in
 
+implement theGameOver_get () = !theGameOver
+implement theGameOver_set () = !theGameOver := true
 
 implement theGameLevel_get () = !level
 
@@ -865,6 +871,8 @@ end // end of [glTetrix_initialize]
 
 (* ****** ****** *)
 
+(*
+
 implement glTetrix_finalize () = let
   val level = theGameLevel_get ()
   val score = theTotalScore_get ()
@@ -875,6 +883,64 @@ implement glTetrix_finalize () = let
   end // end of [val]
 in
   exit (0)
+end // end of [glTetrix_finalize]
+
+*)
+
+%{^
+
+static inline
+ats_void_type
+glTetrix_glutBitmapCharacter
+  (ats_ref_type ft, ats_char_type c) {
+  glutBitmapCharacter ((void*)ft, (int)c) ; return ;
+} /* end of [glTetrix_glutBitmapCharacter] */
+
+%}
+
+implement glTetrix_finalize () = let
+  val () = theGameOver_set ()
+
+  val () = glutDisplayFunc (lam () => ())
+  val () = glutKeyboardFunc (f) where {
+    fn f (key: uchar, ix: int, iy: int): void = exit (0)
+  }
+
+  val str_gameover = "Game Over!"
+  val level = theGameLevel_get ()
+  val score = theTotalScore_get ()
+  val str_level = sprintf ("The final level of the game is %i.", @(level))
+  val str_score = sprintf ("The final score of the game is %i.", @(score))
+  fun show_string {n:nat}
+    (str: string n): void = loop (str, 0) where {
+    abstype FONTref // a reference
+    macdef GLUT_BITMAP_TIMES_ROMAN_24 =
+      $extval (FONTref, "GLUT_BITMAP_TIMES_ROMAN_24")
+    extern fun glutBitmapCharacter (ft: FONTref, c: char): void
+      = "glTetrix_glutBitmapCharacter"
+    fun loop {i:nat | i <= n} .<n-i>.
+      (str: string n, i: size_t i): void =
+      if string_isnot_at_end (str, i) then let
+        val () = glutBitmapCharacter (GLUT_BITMAP_TIMES_ROMAN_24, str[i])
+      in
+        loop (str, i+1)
+      end // end of [if]
+  } // end of [show_string]
+
+  val () = glClear(GL_COLOR_BUFFER_BIT)
+  val () = glColor3f (0.0, 0.0, 0.0)
+  val () = glMatrixMode(GL_MODELVIEW)
+  val () = glLoadIdentity ()
+  val () = glRasterPos2f (0.25, 0.75)
+  val () = show_string (str_gameover)
+  val () = glRasterPos2f (0.25, 0.50)
+  val () = show_string (str_level)
+  val () = glRasterPos2f (0.25, 0.40)
+  val () = show_string (str_score)
+  val () = glFlush ()
+  val () = glutSwapBuffers ()
+in
+  // exit (0)
 end // end of [glTetrix_finalize]
 
 (* ****** ****** *)
@@ -916,7 +982,8 @@ end // end of [glTetrix_keyboard]
 
 extern fun glTetrix_timer (flag: int): void = "glTetrix_timer"
 
-implement glTetrix_timer (flag: int) = let
+implement glTetrix_timer
+  (flag) = if ~theGameOver_get () then let
 (*
   val () = begin
     prerr "glTetrix_timer: flag = "; prerr flag; prerr_newline ()
