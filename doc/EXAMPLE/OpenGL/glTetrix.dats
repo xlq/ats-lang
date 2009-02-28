@@ -911,32 +911,31 @@ implement glTetrix_finalize () = let
   val score = theTotalScore_get ()
   val str_level = sprintf ("The final level of the game is %i.", @(level))
   val str_score = sprintf ("The final score of the game is %i.", @(score))
+  abstype FONTref // a reference
   fun show_string {n:nat}
-    (str: string n): void = loop (str, 0) where {
-    abstype FONTref // a reference
-    macdef GLUT_BITMAP_TIMES_ROMAN_24 =
-      $extval (FONTref, "GLUT_BITMAP_TIMES_ROMAN_24")
+    (ft: FONTref, str: string n): void = loop (ft, str, 0) where {
     extern fun glutBitmapCharacter (ft: FONTref, c: char): void
       = "glTetrix_glutBitmapCharacter"
     fun loop {i:nat | i <= n} .<n-i>.
-      (str: string n, i: size_t i): void =
+      (ft: FONTref, str: string n, i: size_t i): void =
       if string_isnot_at_end (str, i) then let
-        val () = glutBitmapCharacter (GLUT_BITMAP_TIMES_ROMAN_24, str[i])
-      in
-        loop (str, i+1)
+        val () = glutBitmapCharacter (ft, str[i]) in loop (ft, str, i+1)
       end // end of [if]
   } // end of [show_string]
+
+  macdef TIMES_ROMAN_24 = $extval (FONTref, "GLUT_BITMAP_TIMES_ROMAN_24")
+  macdef HELVETICA_18 = $extval (FONTref, "GLUT_BITMAP_HELVETICA_18")
 
   val () = glClear(GL_COLOR_BUFFER_BIT)
   val () = glColor3f (0.0, 0.0, 0.0)
   val () = glMatrixMode(GL_MODELVIEW)
   val () = glLoadIdentity ()
   val () = glRasterPos2f (0.25, 0.75)
-  val () = show_string (str_gameover)
+  val () = show_string (TIMES_ROMAN_24, str_gameover)
   val () = glRasterPos2f (0.25, 0.50)
-  val () = show_string (str_level)
-  val () = glRasterPos2f (0.25, 0.40)
-  val () = show_string (str_score)
+  val () = show_string (HELVETICA_18, str_level)
+  val () = glRasterPos2f (0.25, 0.45)
+  val () = show_string (HELVETICA_18, str_score)
   val () = glFlush ()
   val () = glutSwapBuffers ()
 in

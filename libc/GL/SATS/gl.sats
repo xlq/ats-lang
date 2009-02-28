@@ -1314,8 +1314,30 @@ GLAPI void GLAPIENTRY glTexCoord4sv( const GLshort *v );
 
 *)
 
-fun glRasterPos2d (x: GLdouble, y: GLdouble): void = "atslib_glRasterPos2d"
-fun glRasterPos2f (x: GLfloat, y: GLfloat): void = "atslib_glRasterPos2f"
+symintr glRasterPos2d
+
+fun glRasterPos2d_double
+  (x: double, y: double): void = "atslib_glRasterPos2d_double"
+overload glRasterPos2d with glRasterPos2d_double
+
+fun glRasterPos2d_GLdouble
+  (x: GLdouble, y: GLdouble): void = "atslib_glRasterPos2d_GLdouble"
+overload glRasterPos2d with glRasterPos2d_GLdouble
+
+//
+
+symintr glRasterPos2f
+
+fun glRasterPos2f_double
+  (x: double, y: double): void = "atslib_glRasterPos2f_double"
+overload glRasterPos2f with glRasterPos2f_double
+
+fun glRasterPos2f_GLfloat
+  (x: GLfloat, y: GLfloat): void = "atslib_glRasterPos2f_GLfloat"
+overload glRasterPos2f with glRasterPos2f_GLfloat
+
+//
+
 fun glRasterPos2i (x: GLint, y: GLint): void = "atslib_glRasterPos2i"
 fun glRasterPos2s (x: GLshort, y: GLshort): void = "atslib_glRasterPos2s"
 

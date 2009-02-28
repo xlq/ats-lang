@@ -877,6 +877,24 @@ atslib_glColor4f_GLfloat (
 
 static inline
 ats_void_type
+atslib_glRasterPos2f_double (
+  ats_double_type x, ats_double_type y
+) {
+  glRasterPos2f (x, y) ; return ;
+}
+
+static inline
+ats_void_type
+atslib_glRasterPos2f_GLfloat (
+  ats_GLfloat_type x, ats_GLfloat_type y
+) {
+  glRasterPos2f (x, y) ; return ;
+}
+
+/* ****** ****** */
+
+static inline
+ats_void_type
 atslib_glRectf_double (
   ats_double_type x1
 , ats_double_type y1

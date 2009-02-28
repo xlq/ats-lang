@@ -107,7 +107,7 @@ fn symbol_make_name_index
 } where {
   // this is used as a place holder
   val _symbolset_nil = $extval (symbolsetref, "(ats_ptr_type)0")
-} // end of [symbol_make_string]
+} // end of [symbol_make_name_index]
 
 in // in of [local]
 

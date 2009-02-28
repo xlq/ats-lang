@@ -80,7 +80,8 @@ ats_void_type atslib_glutTimerFunc (
   glutTimerFunc (time, (void (*)(int))callback, value); return ;
 }
 
-static inline
+/* ****** ****** */
+
 ats_void_type
 atslib_glutIdleFunc (ats_ptr_type callback) {
   glutIdleFunc ((void (*)(void))callback) ; return ;

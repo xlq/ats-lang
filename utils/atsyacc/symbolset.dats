@@ -104,14 +104,15 @@ implement prerr_symbolset (x) = prerr_mac (fprint_symbolset, x)
 
 %{$
 
-static ats_int_type the_nterm = 0 ;
+// totol number of terminals
+static ats_int_type the_termtot = 0 ;
 static ats_int_type the_bitvecsz = 0 ;
 
 extern ats_int_type atsyacc_symbol_term_total_get () ;
 
 ats_void_type
 atsyacc_the_bitvecsz_set (ats_int_type n) {
-  the_nterm = n ;
+  the_termtot = n ;
   the_bitvecsz = (n + WORDSIZE - 1) >> WORDSIZE_LOG ;
   fprintf (stdout, "the_bitvecsz = %i\n", the_bitvecsz) ;
   return ;
@@ -198,7 +199,7 @@ atsyacc_fprint_symbolset (ats_ptr_type out, ats_ptr_type set) {
   ats_int_type ind ;
   int i = 0 ;
   
-  for (ind = 0 ; ind < the_nterm ; ind += 1) {
+  for (ind = 0 ; ind < the_termtot ; ind += 1) {
     if (atsyacc_bitvec_ismem (set, ind)) {
       if (i > 0) fprintf ((FILE*)out, ", ") ; i += 1 ;
       sym = atsyacc_the_alltermarr_get (ind) ;
