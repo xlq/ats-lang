@@ -482,9 +482,26 @@ implement{} list_is_empty {a} (xs) = begin
   case+ xs of cons _ => false | nil _ => true
 end // end of [list_is_empty]
 
-implement{} list_is_not_empty {a} (xs) = begin
+implement{} list_isnot_empty {a} (xs) = begin
   case+ xs of _ :: _ => true | nil () => false
 end // end of [list_is_not_empty]
+
+(* ****** ****** *)
+
+implement{a}
+  list_last (xs0) = loop (x, xs) where {
+  fun loop {n:nat} .<n>.
+    (x0: a, xs: list (a, n)):<> a = case+ xs of
+    | list_cons (x, xs) => loop (x, xs) | list_nil () => x0
+  // end of [loop]
+  val+ list_cons (x, xs) = xs0
+} // end of [list_last]
+
+implement{a} list_last_exn (xs) = case+ xs of
+  | _ :: _ => list_last (xs) | nil () => begin
+      $raise ListSubscriptException
+    end // end of [nil]
+// end of [list_last_exn]
 
 (* ****** ****** *)
 

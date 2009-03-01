@@ -483,15 +483,13 @@ fn emit_d2cst_dec {m:file_mode} // for a non-proof constant
        end // end of [_]
     // end of [case]
   end // end of [macdef]
-  macdef f_isnotfun_mac () = let
+  macdef f_isnotfun_mac () = () where {
     val () = fprint1_string (pf | out, "ATSextern_val(")
     val () = emit_hityp (pf | out, hit0)
     val () = fprint1_string (pf | out, ", ")
     val () = emit_d2cst (pf | out, d2c)
     val () = fprint1_string (pf | out, ") ;\n")
-  in
-    // empty
-  end // end of [_]
+  } // end of [_]
 in
   if d2cst_is_proof d2c then () else begin
     case+ hit1.hityp_node of
@@ -531,9 +529,11 @@ fn _emit_dyncstset_proc {m:file_mode} {l:addr} (
   ) : int = let
   var i: int = 0
   viewdef V = (FILE m @ l, int @ i)
-  typedef fun_type = (file_mode_lte (m, w) | &FILE m, d2cst_t) -> void
-  dataviewtype ENV3 (l:addr, i:addr) = ENV3con (l, i) of (ptr l, ptr i, fun_type)
-  viewtypedef VT = ENV3 (l, i)
+  typedef fun_type (m:file_mode) =
+    (file_mode_lte (m, w) | &FILE m, d2cst_t) -> void
+  dataviewtype ENV3 (m: file_mode, l:addr, i:addr) =
+    ENV3con (m, l, i) of (ptr l, ptr i, fun_type m)
+  viewtypedef VT = ENV3 (m, l, i)
   fn f_cst (pf: !V | d2c: d2cst_t, env: !VT): void = let
     prval @(pf_fil, pf_int) = pf
     val+ ENV3con (p_l, p_i, proc)= env

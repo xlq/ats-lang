@@ -1832,7 +1832,7 @@ in
       val s2ess = aux subs
     in
       d3exp_tmpcst (loc0, s2e_tmp, d2c, s2ess)
-    end
+    end // end of [D2Ecst]
   | D2Evar d2v => let
       val s2e_d2v = d2var_typ_get_some (loc0, d2v)
       val s2vpss = d2var_decarg_get (d2v)
@@ -1842,7 +1842,7 @@ in
       val s2ess = aux subs
     in
       d3exp_tmpvar (loc0, s2e_tmp, d2v, s2ess)
-    end
+    end // end of [D2Evar]
   | _ => begin
       prerr loc0;
       prerr ": error(3)";
@@ -1850,12 +1850,15 @@ in
       prerr ": the dynamic expression is expected to be a constant or a variable.";
       prerr_newline ();
       $Err.abort {d3exp} ()
-    end
-end // end of [d2exp_tmpid_tr_up]
+    end // end of [_]
+end (* end of [d2exp_tmpid_tr_up] *)
 
 (* ****** ****** *)
 
-fn d2exp_viewat_tr_up (loc0: loc_t, d2e0: d2exp): d3exp = let
+extern fun d2exp_viewat_tr_up
+  (loc0: loc_t, d2e0: d2exp): d3exp
+
+implement d2exp_viewat_tr_up (loc0, d2e0) = let
   val l2v0 = l2val_make_d2exp d2e0
 in
   case+ l2v0 of
@@ -1920,7 +1923,7 @@ in
       prerr_newline ();
       $Err.abort {d3exp} ()
     end // end of [L2VALnone]
-end // end of [d2exp_viewat_tr_up]
+end (* end of [d2exp_viewat_tr_up] *)
 
 (* ****** ****** *)
 

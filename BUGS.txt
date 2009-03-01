@@ -169,4 +169,19 @@ implementation.  This should be remedied so as to prevent misuse.
 
 ######
 
+Sunday, March 1, 2009 (HX)
+
+STATUS: not yet fixed
+
+The following bug could be serious:
+
+extern fun f
+  (x1: &int? >> int 1, x2: &int >> int 2): void
+
+implement main () = let
+  var x: int = 0 in f (x, x) // what is the type of [x] after the call?
+end // end of [main]
+
+######
+
  ------------------ end of [BUGS.txt] -------------------

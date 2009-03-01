@@ -628,8 +628,10 @@ local
 typedef dyncstset = $Set.set_t (d2cst_t)
 assume dyncstset_t = dyncstset
 
+viewtypedef dyncstsetlst = List_vt (dyncstset)
+
 val the_dyncstset = ref_make_elt<dyncstset> ($Set.set_nil) 
-val the_dyncstsetlst = ref_make_elt<List_vt dyncstset> (list_vt_nil ())
+val the_dyncstsetlst = ref_make_elt<dyncstsetlst> (list_vt_nil ())
 
 fn dyncstset_add
   (d2cset_ref: ref dyncstset, d2c: d2cst_t): void = let
@@ -675,7 +677,8 @@ implement the_dyncstset_add_if (d2c) =
 implement the_dyncstsetlst_push () = let
   val d2cs = !the_dyncstset
   val () = let
-    val (vbox pf | p) = ref_get_view_ptr (the_dyncstsetlst)
+    val (pfbox | p) = ref_get_view_ptr (the_dyncstsetlst)
+    prval vbox pf = pfbox
   in
     !p := list_vt_cons (d2cs, !p)
   end // end of [val]
@@ -688,13 +691,15 @@ implement the_dyncstsetlst_pop () = let
   var err: int = 0
   val d2cs = !the_dyncstset
   val () = let
-    val (vbox pf | p) = ref_get_view_ptr (the_dyncstsetlst)
+    val (pfbox | p) = ref_get_view_ptr (the_dyncstsetlst)
+    prval vbox pf = pfbox
   in
     case+ !p of
-    | ~list_vt_cons (d2cs1, d2cslst1) => begin
-        $effmask_ref (!the_dyncstset := d2cs1); !p := d2cslst1
+    | ~list_vt_cons (d2cs1, d2cslst1) => let
+        val () = $effmask_ref (!the_dyncstset := d2cs1) in
+        !p := (d2cslst1: dyncstsetlst)
       end // end of [list_vt_cons]
-    | list_vt_nil () => (fold@ !p; err := 1)
+    | list_vt_nil () => (fold@ (!p); err := 1)
   end // end of [val]
   val () = if (err > 0) then begin
     prerr "Internal Error";

@@ -64,7 +64,9 @@ atspre_bytes_strbuf_trans
 
 /* ****** ****** */
 
-/* ******
+#ifdef _ATS_GEIZELLA
+
+// this is still needed by the ATS/Geizella compiler
 
 static inline
 ats_ptr_type // a casting function
@@ -78,7 +80,7 @@ static inline
 ats_ptr_type // a casting function
 atspre_string1_of_strbuf (const ats_ptr_type s) { return s ; }
 
-****** */
+#endif /* end of [_ATS_GEIZELLA] */
 
 /* ****** ****** */
 
@@ -333,7 +335,9 @@ atspre_string_singleton
 static
 ats_ptr_type atspre_stropt_none = (ats_ptr_type)0 ;
 
-/* ******
+#ifdef _ATS_GEIZELLA
+
+// this is still needed by the ATS/Geizella compiler
 
 static inline
 ats_ptr_type // a casting function
@@ -343,7 +347,7 @@ static inline
 ats_ptr_type // a casting function
 atspre_stropt_unsome (const ats_ptr_type s) { return s ; }
 
-****** */
+#endif /* end of [_ATS_GEIZELLA] */
 
 static inline
 ats_bool_type

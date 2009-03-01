@@ -268,8 +268,8 @@ fun s2lab0lst_of_d3lab1lst {n:nat} .<n>.
 implement d3exp_lval_typ_set (loc0, refval, d3e0, s2e_new, err) = let
 (*
   val () = begin
-    print "d3exp_lval_typ_set: d3e0 = "; print d3e0; print_newline ()
-  end
+    prerr "d3exp_lval_typ_set: d3e0 = "; print d3e0; print_newline ()
+  end // end of [val]
 *)
   fn refval_check (loc0: loc_t, d2v: d2var_t, refval: int): void = 
     if refval > 1 then begin
@@ -290,9 +290,9 @@ in
         val s2ls_nt = s2lab0lst_of_d3lab1lst d3ls
         val _(* s2lablst *) = begin
           s2exp_addr_slablst_assgn (loc0, s2e_addr, s2ls_nt, s2e_new)
-        end
+        end // end of [val]
       in
-        // empty
+        (* empty *)
       end // end of [Some_vt]
     | ~None_vt () => begin
         prerr loc0;
@@ -306,50 +306,50 @@ in
       val s2ls_nt = s2lab0lst_of_d3lab1lst d3ls
       val _(* s2lablst *) = begin
         d2var_lin_slablst_assgn (loc0, d2v, s2ls_nt, s2e_new)
-      end
+      end // end of [val]
     in
-      // empty
+      (* empty *)
     end // end of [D3Esel_var when d2var_is_linear]
   | D3Esel_var (d2v, d3ls) when d2var_is_mutable d2v => let
       val s2ls_nt = s2lab0lst_of_d3lab1lst d3ls
       val _(* s2lablst *) = begin
         d2var_mut_slablst_assgn (loc0, d2v, s2ls_nt, s2e_new)
-      end
+      end // end of [val]
     in
-      // empty
+      (* empty *)
     end // end of [D3Esel_var when d2var_is_mutable]
   | D3Evar d2v when d2var_is_linear d2v => let
       val () = refval_check (loc0, d2v, refval)
       val _(* nil *) = begin
         d2var_lin_slablst_assgn (loc0, d2v, list_nil (), s2e_new)
-      end
+      end // end of [val]
     in
-      // empty
+      (* empty *)
     end // end of [D2Evar when d2var_is_linear]
   | D3Evar d2v when d2var_is_mutable d2v => let
       val _ (* nil *) = begin
         d2var_mut_slablst_assgn (loc0, d2v, list_nil (), s2e_new)
-      end
+      end // end of [val]
     in
-      // empty
+      (* empty *)
     end // end of [D2Evar when d2var_is_mutable]
   | D3Eviewat_ptr (d3e, d3ls, d2v_view, s2ls_nt) => let
       val (s2e_old, s2ls) = begin
         d2var_view_viewat_slablst_set (loc0, d2v_view, s2ls_nt, s2e_new)
-      end
+      end // end of [val]
     in
       $SOL.s2exp_out_void_solve (loc0, s2e_old)
     end // end of [D3Eviewat_ptr]
   | D3Eviewat_var (d2v, d3ls, d2v_view, s2ls_nt) => let
       val (s2e_old, s2ls) = begin
         d2var_view_viewat_slablst_set (loc0, d2v_view, s2ls_nt, s2e_new)
-      end
+      end // end of [val]
     in
       $SOL.s2exp_out_void_solve (loc0, s2e_old)
     end // end of [D3Eviewat_var]
   | _ => (err := err + 1)
   // end of [case]
-end // end of [d3exp_lval_typ_set]
+end (* end of [d3exp_lval_typ_set] *)
 
 fn s2exp_fun_is_freeptr (s2e: s2exp): bool = begin case+ s2e.s2exp_node of
   | S2Efun (fc, lin, _(*s2fe*), _(*npf*), _(*arg*), _(*res*)) => begin

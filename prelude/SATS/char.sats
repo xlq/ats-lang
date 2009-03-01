@@ -200,7 +200,9 @@ and char_toupper (c: char):<> char = "atspre_char_toupper"
 (* ****** ****** *)
 
 castfn char1_of_char (c: char):<> [c:char] char c
+(*
   = "atspre_char1_of_char"
+*)
 
 (* ****** ****** *)
 

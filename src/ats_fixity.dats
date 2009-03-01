@@ -190,42 +190,42 @@ end // end of [oper_make_backslahsh]
 
 //
 
-implement oper_make {a:type} (locf, appf, opr, fx) = let
+implement oper_make
+  {a:type} (locf, appf, opr, fx) = let
+  val loc_opr = locf opr
 
-val loc_opr = locf opr
-
-fn aux_inf (opr: a, p: prec_t, a: assoc):<cloptr1> item a = let
-  fn f (x1: a, x2: a):<cloref1> item a = let
-    val loc = $Loc.location_combine (locf x1, locf x2)
+  fn aux_inf
+    (opr: a, p: prec_t, a: assoc):<cloptr1> item a = let
+    fn f (x1: a, x2: a):<cloref1> item a = let
+      val loc = $Loc.location_combine (locf x1, locf x2)
+    in
+      ITEMatm (appf (loc, opr, loc, '[x1, x2]))
+    end // end of [f]
   in
-    ITEMatm (appf (loc, opr, loc, '[x1, x2]))
-  end // end of [f]
-in
-  ITEMopr (OPERinf (p, a, f))
-end // end of [aux_inf]
+    ITEMopr (OPERinf (p, a, f))
+  end // end of [aux_inf]
    
-fn aux_pre (opr: a, p: prec_t):<cloptr1> item a = let
-  fn f (x: a):<cloref1> item a = let
-    val loc_x = locf x
-    val loc = $Loc.location_combine (loc_opr, loc_x)
+  fn aux_pre (opr: a, p: prec_t):<cloptr1> item a = let
+    fn f (x: a):<cloref1> item a = let
+      val loc_x = locf x
+      val loc = $Loc.location_combine (loc_opr, loc_x)
+    in
+      ITEMatm (appf (loc, opr, loc_x, '[x]))
+    end // end of [f]
   in
-    ITEMatm (appf (loc, opr, loc_x, '[x]))
-  end // end of [f]
-in
-  ITEMopr (OPERpre (p, f))
-end // end of [aux_pre]
+    ITEMopr (OPERpre (p, f))
+  end // end of [aux_pre]
 
-fn aux_pos (opr: a, p: prec_t):<cloptr1> item a = let
-  fn f (x: a):<cloref1> item a = let
-    val loc_x = locf x
-    val loc = $Loc.location_combine (loc_x, loc_opr)
+  fn aux_pos (opr: a, p: prec_t):<cloptr1> item a = let
+    fn f (x: a):<cloref1> item a = let
+      val loc_x = locf x
+      val loc = $Loc.location_combine (loc_x, loc_opr)
+    in
+      ITEMatm (appf (loc, opr, loc_x, '[x]))
+    end // end of [f]
   in
-    ITEMatm (appf (loc, opr, loc_x, '[x]))
-  end // end of [f]
-in
-  ITEMopr (OPERpos (p, f))
-end // end of [aux_pos]
-
+    ITEMopr (OPERpos (p, f))
+  end // end of [aux_pos]
 in 
   case+ fx of
   | FXTYnon () => ITEMatm (opr)
@@ -234,7 +234,7 @@ in
   | FXTYpos p => aux_pos (opr, p)
 end // end of [oper_make]
 
-//
+(* ****** ****** *)
 
 implement oper_associativity opr = begin
   case+ opr of OPERinf (_, a, _) => a | _ => ASSOCnon ()
@@ -244,12 +244,13 @@ implement oper_precedence opr = begin case+ opr of
   | OPERinf (p, _, _) => p | OPERpre (p, _) => p | OPERpos (p, _) => p
 end // end of [oper_precedence]
 
-//
+(* ****** ****** *)
 
 #define nil list_nil
 #define :: list_cons
 
-implement fixity_resolve {a:type} (loc0, app, xs) = let
+implement fixity_resolve
+  {a:type} (loc0, app, xs) = let
 
 fn err (loc: $Loc.location_t): a = begin
   $Loc.prerr_location loc;
@@ -262,18 +263,18 @@ typedef I = item a and IS = List (item a)
 
 fun resolve (xs: IS, m: I, ys: IS)
   :<cloptr1> a = begin case+ (xs, m, ys) of
-  | (xs, ITEMatm _, ys) => begin case+ ys of
+  | (_, ITEMatm _, _) => begin case+ ys of
     | ITEMatm _ :: _ => resolve_app (xs, m, ys)
     | _ => next (xs, m :: ys)
     end // end of [begin]
-  | (xs, ITEMopr opr, ys) => begin case+ (opr, ys) of
-    | (OPERpre _, ys) => next (xs, m :: ys)
+  | (_, ITEMopr opr, _) => begin case+ (opr, ys) of
+    | (OPERpre _, _) => next (xs, m :: ys)
+    | (OPERinf _, _ :: nil ()) => next (xs, m :: ys)
     | (OPERinf _, _ :: ITEMopr opr1 :: _) => let
         val p = oper_precedence opr and p1 = oper_precedence opr1
       in
         case+ compare (p, p1) of
-        |  1 => next (xs, m :: ys)
-        | ~1 => reduce (m :: xs, ys)
+        |  1 => next (xs, m :: ys) | ~1 => reduce (m :: xs, ys)
         |  _ (* 0 *) => let
              val assoc = oper_associativity opr
              and assoc1 = oper_associativity opr1
@@ -284,13 +285,11 @@ fun resolve (xs: IS, m: I, ys: IS)
              | (_, _) => err (loc0)
            end // end of [_ (* 0 *)]
       end // end of [let]
-    | (OPERinf _, _ :: nil ()) => next (xs, m :: ys)
     | (OPERpos _, _ :: ITEMopr opr1 :: _) => let
         val p = oper_precedence opr and p1 = oper_precedence opr1
       in
         case+ compare (p, p1) of
-        |  1 => reduce (xs, m :: ys)
-        | ~1 => reduce (m :: xs, ys)
+        |  1 => reduce (xs, m :: ys) | ~1 => reduce (m :: xs, ys)
         |  _ (* 0 *) => err (loc0)
       end // end of [let]
     | (OPERpos _, _ :: nil ()) => reduce (xs, m :: ys)
@@ -298,37 +297,39 @@ fun resolve (xs: IS, m: I, ys: IS)
     end // end of [begin]
 end // end of [resolve]
 
-and resolve_app (xs: IS, m: I, ys: IS):<cloptr1> a = begin
-  case+ ys of
-  | _ :: ITEMopr opr1 :: _ => begin
-    case+ compare (app_prec, oper_precedence opr1) of
-    |  1 => next (xs, m :: app :: ys)
-    | ~1 => reduce (m :: xs, ys)
-    |  _ => begin case+ oper_associativity opr1 of
-         | ASSOClft () => reduce (m :: xs, ys) | _ => err (loc0)
-       end // end of [begin]
-    end // end of [begin]
+and resolve_app
+  (xs: IS, m: I, ys: IS):<cloptr1> a = case+ ys of
+  | _ :: ITEMopr opr1 :: _ => let
+      val p1 = oper_precedence opr1
+    in
+      case+ compare (app_prec, p1) of
+      |  1 => next (xs, m :: app :: ys)
+      | ~1 => reduce (m :: xs, ys)
+      |  _ (* 0 *) => let
+           val assoc1 = oper_associativity opr1 in case+ assoc1 of
+           | ASSOClft () => reduce (m :: xs, ys) | _ => err (loc0)
+         end // end of [_]
+    end // end of [_ :: ITERMopr :: _]
   | _ :: nil () => next (xs, m :: app :: ys)
   | _ => err (loc0)
-end // end of [resolve_app]
+// end of [resolve_app]
               
-and reduce (xs: IS, ys: IS):<cloptr1> a = begin
-  case+ (xs, ys) of
-  | (xs, ITEMatm t :: ITEMopr (OPERpre (_, f)) :: ys) =>
+and reduce
+  (xs: IS, ys: IS):<cloptr1> a = case+ ys of
+  | ITEMatm t :: ITEMopr (OPERpre (_, f)) :: ys =>
     next (f t :: xs, ys)
-  | (xs, ITEMatm t1 :: ITEMopr (OPERinf (_, _, f)) :: ITEMatm t2 :: ys) =>
+  | ITEMatm t1 :: ITEMopr (OPERinf (_, _, f)) :: ITEMatm t2 :: ys =>
     next (f (t2, t1) :: xs, ys)
-  | (xs, ITEMopr (OPERpos (_, f)) :: ITEMatm t :: ys) =>
+  | ITEMopr (OPERpos (_, f)) :: ITEMatm t :: ys =>
     next (xs, f t :: ys)
-  | (_, _) => err (loc0)
-end // end of [reduce]
+  | _ => err (loc0)
+// end of [reduce]
           
-and next (xs: IS, ys: IS):<cloptr1> a = begin
-  case+ (xs, ys) of
+and next (xs: IS, ys: IS):<cloptr1> a = case+ (xs, ys) of
   | (nil (), ITEMatm t :: nil ()) => t
   | (nil (), ys) => reduce (nil (), ys)
   | (x :: xs, ys) => resolve (xs, x, ys)
-end // end of [next]
+// end of [next]
 
 in
 

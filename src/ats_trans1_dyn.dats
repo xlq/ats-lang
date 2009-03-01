@@ -1188,9 +1188,11 @@ end // end of [d0exp_tr]
 
 implement d0explst_tr d0es = 
   $Lst.list_map_fun (d0es, d0exp_tr)
+// end of [d0explst_tr]
 
 implement d0explstlst_tr d0ess =
   $Lst.list_map_fun (d0ess, d0explst_tr)
+// end of [d0explstlst_tr]
 
 implement labd0explst_tr ld0es = case+ ld0es of
   | LABD0EXPLSTcons (l, d0e, ld0es) =>
@@ -1231,7 +1233,7 @@ fn v0aldec_tr
 (*
   val () = begin
     print "v0aldec_tr: d1e = "; print d1e; print_newline ()
-  end
+  end // end of [val]
 *)
   val ann = witht0ype_tr d.v0aldec_ann
 in
@@ -1245,37 +1247,34 @@ fn v0aldeclst_tr (ds: v0aldeclst): v1aldeclst =
 
 fn f0undec_tr
   (is_prf: bool, is_rec: bool, d: f0undec): f1undec = let
+  val loc = d.f0undec_loc
+  val knd = LAMKINDfix ()
+  val otags = d.f0undec_eff
+  val (ofc, oefc) = (case+ otags of
+    | Some tags => let
+        val fc0 = $Syn.FUNCLOfun () // default is [function]
+        val (fc, lin, prf, efc) = $Eff.e0fftaglst_tr (fc0, tags)
+      in
+        (Some fc, Some efc)
+      end // end of [Some]
+    | None () => let
+        val efc: efc =
+          if is_prf then $Eff.EFFCSTnil () else $Eff.EFFCSTall ()
+      in
+        (None(*ofc*), Some efc)
+      end // end of [None]
+    ) : @(Option funclo, efcopt)
 
-val loc = d.f0undec_loc
-val knd = LAMKINDfix ()
-val otags = d.f0undec_eff
-val (ofc, oefc) = (
-  case+ otags of
-  | Some tags => let
-      val fc0 = $Syn.FUNCLOfun () // default is [function]
-      val (fc, lin, prf, efc) = $Eff.e0fftaglst_tr (fc0, tags)
-    in
-      (Some fc, Some efc)
-    end
-  | None () => let
-      val efc: efc =
-        if is_prf then $Eff.EFFCSTnil () else $Eff.EFFCSTall ()
-    in
-      (None(*ofc*), Some efc)
-    end
-) : @(Option funclo, efcopt)
+  val d1e_def = d0exp_lams_dyn_tr (
+      knd, None () (*oloc*), ofc, 0 (*lin*)
+    , d.f0undec_arg, d.f0undec_res, oefc, d.f0undec_def
+    ) // end of [d0exp_lams_dyn_tr]
 
-val d1e_def = d0exp_lams_dyn_tr (
-    knd, None () (*oloc*), ofc, 0 (*lin*)
-  , d.f0undec_arg, d.f0undec_res, oefc, d.f0undec_def
-  ) // end of [d0exp_lams_dyn_tr]
+  val () = if is_rec then
+    termination_metric_check (loc, d1exp_is_metric d1e_def, oefc)
+  // end of [if]
 
-val () = begin
-  if is_rec then termination_metric_check (loc, d1exp_is_metric d1e_def, oefc)
-end
-
-val ann = witht0ype_tr d.f0undec_ann
-
+  val ann = witht0ype_tr d.f0undec_ann
 in
   f1undec_make (loc, d.f0undec_sym, d.f0undec_sym_loc, d1e_def, ann)
 end // end of [f0undec_tr]
@@ -1294,14 +1293,19 @@ end // end of [f0undeclst_tr]
 
 (* ****** ****** *)
 
-fn m0acdef_tr (d: m0acdef): m1acdef = let
+fn m0acdef_tr
+  (d: m0acdef): m1acdef = let
   val def = d0exp_tr d.m0acdef_def
 in
-  m1acdef_make (d.m0acdef_loc, d.m0acdef_sym, d.m0acdef_arg, def)
+  m1acdef_make (
+    d.m0acdef_loc, d.m0acdef_sym, d.m0acdef_arg, def
+  ) // end of [m1acdef_make]
 end // end of [m0acdef_tr]
 
-fn m0acdeflst_tr (ds: m0acdeflst): m1acdeflst =
+fn m0acdeflst_tr
+  (ds: m0acdeflst): m1acdeflst =
   $Lst.list_map_fun (ds, m0acdef_tr)
+// end of [m0acdeflst_tr]
 
 (* ****** ****** *)
 
@@ -1369,7 +1373,7 @@ fn i0nclude_tr
 
 in
   d1ec_list (loc, d1cs)
-end
+end // end of [i0nclude_tr]
 
 (* ****** ****** *)
 
@@ -1403,12 +1407,25 @@ ats_trans1_string_suffix_is_dats (ats_ptr_type s0) {
 
 %}
 
-fn s0taload_tr
-  (loc: loc_t, idopt: Option sym_t, fil: fil_t): d1ec = let
+fn s0taload_tr (
+    loc: loc_t
+  , idopt: Option sym_t
+  , fil: fil_t
+  ) : d1ec = let
   val fullname = $Fil.filename_full fil
-  val d1cs = (
-    case+ staload_file_search fullname of
-    | ~None_vt () => let
+  val od1cs = staload_file_search fullname
+  val d1cs = (case+ od1cs of
+    | ~Some_vt (d1cs) => let
+(*
+        val () = begin
+          printf ("The file [%s] is already loaded.", @(fullname));
+          print_newline ()
+        end // end of [val]
+*)
+      in
+        d1cs
+      end // end of [Some_vt]
+    | ~None_vt () => d1cs where {
         val () = $Fil.the_filenamelst_push fil
         val flag = (
           if string_suffix_is_dats fullname then 1(*dyn*) else 0(*sta*)
@@ -1428,22 +1445,10 @@ fn s0taload_tr
         val () = begin
           printf ("Translating [%s] ends.", @(fullname));
           print_newline ()
-        end
+        end // end of [val]
 *)
         val () = staload_file_insert (fullname, d1cs)
-      in
-        d1cs
-      end
-    | ~Some_vt (d1cs) => let
-(*
-        val () = begin
-          printf ("The file [%s] is already loaded.", @(fullname));
-          print_newline ()
-        end
-*)
-      in
-        d1cs
-      end
+      } // end of [None_vt]
   ) : d1eclst
 in
   d1ec_staload (loc, idopt, fil, 0(*loaded*), d1cs)
