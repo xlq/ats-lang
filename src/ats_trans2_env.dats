@@ -74,6 +74,12 @@ overload = with $Sym.eq_symbol_symbol
 
 (* ****** ****** *)
 
+fn prerr_loc_error2 (loc: loc_t): void =
+  ($Loc.prerr_location loc; prerr ": error(2)")
+// end of [prerr_loc_error2]
+
+(* ****** ****** *)
+
 viewtypedef s2rtextmap = $SymEnv.symmap_t (s2rtext)
 typedef s2rtextmapref = ref s2rtextmap
 typedef s2rtextmaptbl = $HT.hashtbl_t (sym_t, s2rtextmapref)
@@ -191,23 +197,21 @@ implement the_s2rtenv_find_qua (q, id) = begin
       val fil = case+ the_s2expenv_find q_id of
         | ~Some_vt (S2ITEMfil fil) => fil
         | ~Some_vt _ => begin
-            $Loc.prerr_location q.s0rtq_loc;
-            prerr ": error(2)";
+            prerr_loc_error2 q.s0rtq_loc;
             prerr ": the qualifier [";
             $Sym.prerr_symbol q_id;
             prerr "] should refer to a filename but it does not.";
             prerr_newline ();
             $Err.abort {fil_t} ()
-          end
+          end // end of [Some_vt]
         | ~None_vt _ => begin
-            $Loc.prerr_location q.s0rtq_loc;
-            prerr ": error(2)";
+            prerr_loc_error2 q.s0rtq_loc;
             prerr ": the qualifier [";
             $Sym.prerr_symbol q_id;
             prerr "] is unrecognized.";
             prerr_newline ();
             $Err.abort {fil_t} ()
-          end
+          end // end of [None_vt]
       val fil_sym = $Fil.filename_full_sym fil
     in
       case+ $HT.hashtbl_search (the_s2rtextmaptbl, fil_sym) of
@@ -395,8 +399,7 @@ implement the_s2expenv_find_qua (q, id) = begin
       val fil = case+ the_s2expenv_find q_id of
         | ~Some_vt (S2ITEMfil fil) => fil
         | ~Some_vt _ => begin
-            $Loc.prerr_location q.s0taq_loc;
-            prerr ": error(2)";
+            prerr_loc_error2 q.s0taq_loc;
             prerr ": the qualifier [";
             $Sym.prerr_symbol q_id;
             prerr "] should refer to a filename but it does not.";
@@ -404,8 +407,7 @@ implement the_s2expenv_find_qua (q, id) = begin
             $Err.abort {fil_t} ()
           end // end of [Some_vt]
         | ~None_vt _ => begin
-            $Loc.prerr_location q.s0taq_loc;
-            prerr ": error(2)";
+            prerr_loc_error2 q.s0taq_loc;
             prerr ": the qualifier [";
             $Sym.prerr_symbol q_id;
             prerr "] is unrecognized.";
@@ -475,14 +477,12 @@ implement macro_level_get () = !the_macro_level
 implement macro_level_inc (loc) = let
   val level = !the_macro_level
 (*
-  val () =
-    if level > 0 then begin
-      $Loc.prerr_location loc;
-      prerr ": error(2)";
-      prerr ": the syntax `(...) is used incorrectly at this location.";
-      prerr_newline ();
-      $Err.abort {void} ()
-    end
+  val () = if level > 0 then begin
+    prerr_loc_error2 loc;
+    prerr ": the syntax `(...) is used incorrectly at this location.";
+    prerr_newline ();
+    $Err.abort {void} ()
+  end // end of [val]
 *)
 in
   !the_macro_level := level + 1
@@ -490,13 +490,12 @@ end // end of [macro_level_inc]
 
 implement macro_level_dec (loc) = let
   val level = !the_macro_level
-  val () =
-    if level = 0 then begin
-      $Loc.prerr_location loc; prerr ": error(2)";
-      prerr ": the syntax ,(...) or %(...) is used incorrectly at this location.";
-      prerr_newline ();
-      $Err.abort {void} ()
-    end
+  val () = if level = 0 then begin
+    prerr_loc_error2 loc;
+    prerr ": the syntax ,(...) or %(...) is used incorrectly at this location.";
+    prerr_newline ();
+    $Err.abort {void} ()
+  end // end of [val]
 in
   !the_macro_level := level - 1
 end // end of [macro_level_dec]
@@ -531,7 +530,7 @@ in
       val tmplev = template_level_get ()
     in
       if s2v_tmplev < tmplev then begin
-        $Loc.prerr_location loc; prerr ": error(2)";
+        prerr_loc_error2 loc;
         prerr ": the static variable ["; prerr s2v; prerr "] is out of scope.";
         prerr_newline ();
         $Err.abort {void} ()
@@ -703,8 +702,7 @@ implement the_d2expenv_find_qua (q, id) = begin
       val fil = case+ the_s2expenv_find q_id of
         | ~Some_vt (S2ITEMfil fil) => fil
         | ~Some_vt _ => begin
-            $Loc.prerr_location q.d0ynq_loc;
-            prerr ": error(2)";
+            prerr_loc_error2 q.d0ynq_loc;
             prerr ": the qualifier [";
             $Sym.prerr_symbol q_id;
             prerr "] should refer to a filename but it does not.";
@@ -712,8 +710,7 @@ implement the_d2expenv_find_qua (q, id) = begin
             $Err.abort {fil_t} ()
           end // end of [Some_vt]
         | ~None_vt _ => begin
-            $Loc.prerr_location q.d0ynq_loc;
-            prerr ": error(2)";
+            prerr_loc_error2 q.d0ynq_loc;
             prerr ": the qualifier [";
             $Sym.prerr_symbol q_id;
             prerr "] is unrecognized.";
@@ -725,7 +722,7 @@ implement the_d2expenv_find_qua (q, id) = begin
       case+ $HT.hashtbl_search (the_d2itemmaptbl, fil_sym) of
       | ~Some_vt r_m => $SymEnv.symmap_ref_search (r_m, id)
       | ~None_vt () => None_vt ()
-    end
+    end // end of [D0YNQsymdoc]
   | _ => None_vt ()
 end // end of [the_d2expenv_find_qua]
 
@@ -738,15 +735,14 @@ implement the_d2expenv_push () = begin
 end // end of [the_d2expenv_push]
 
 implement the_d2expenv_localjoin (pf1, pf2 | (*none*)) = let
-  prval unit_v () = pf1 and unit_v () = pf2
-in
+  prval unit_v () = pf1 and unit_v () = pf2 in
   $SymEnv.symenv_localjoin (the_d2expenv)
 end // end of [the_d2expenv_localjoin]
 
-fn the_d2expenv_pervasive_add_top (): void =
-  let val m = $SymEnv.symenv_top (the_d2expenv) in
-    $SymEnv.symenv_pervasive_add (the_d2expenv, m)
-  end
+fn the_d2expenv_pervasive_add_top (): void = let
+  val m = $SymEnv.symenv_top (the_d2expenv) in
+  $SymEnv.symenv_pervasive_add (the_d2expenv, m)
+end // end of [the_d2expenv_pervasive_add_top]
 
 fn the_d2expenv_namespace_add_top (id: sym_t): void = let
   val m = $SymEnv.symenv_top the_d2expenv

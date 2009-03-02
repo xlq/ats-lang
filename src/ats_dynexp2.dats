@@ -43,6 +43,7 @@
 
 staload Err = "ats_error.sats"
 staload Lab = "ats_label.sats"
+staload Loc = "ats_location.sats"
 staload Lst = "ats_list.sats"
 
 (* ****** ****** *)
@@ -64,7 +65,6 @@ staload _(*anonymous*) = "ats_reference.dats"
 
 overload < with $Sym.lt_symbol_symbol
 overload <= with $Sym.lte_symbol_symbol
-overload prerr with $Loc.prerr_location
 
 (* ****** ****** *)
 
@@ -119,8 +119,7 @@ fn d2var_sym_lte (d2v1: d2var_t, d2v2: d2var_t): bool =
 (* ****** ****** *)
 
 fn s2var_errmsg (loc: loc_t, s2v: s2var_t): void = begin
-  prerr loc;
-  prerr ": error(2)";
+  $Loc.prerr_location loc; prerr ": error(2)";
   prerr ": the pattern contains repeated occurrences of the static variable [";
   prerr s2v;
   prerr "].";
@@ -128,8 +127,7 @@ fn s2var_errmsg (loc: loc_t, s2v: s2var_t): void = begin
 end // end of [s2var_errmsg]
 
 fn d2var_errmsg (loc: loc_t, d2v: d2var_t): void = begin
-  prerr loc;
-  prerr ": error(2)";
+  $Loc.prerr_location loc; prerr ": error(2)";
   prerr ": the pattern contains repeated occurrences of the dynamic variable [";
   prerr d2v;
   prerr "].";
@@ -1115,9 +1113,8 @@ fn d2exp_var_is_ptr (d2e: d2exp): bool = begin
     | None () => false
     end
   | _ => begin
-      prerr d2e.d2exp_loc;
-      prerr ": Internal Error: d2exp_var_is_ptr";
-      prerr_newline ();
+      $Loc.prerr_location d2e.d2exp_loc;
+      prerr ": INTERNAL ERROR: d2exp_var_is_ptr"; prerr_newline ();
       $Err.abort {bool} ()
     end
 end // end of [d2exp_var_is_ptr]
@@ -1133,15 +1130,15 @@ implement l2val_make_d2exp (d2e0) =
         L2VALptr (d2e_arr, cons (d2l, nil ()))
       end else begin
         L2VALarrsub (d2s_brackets, d2e_arr, loc_ind, d2ess_ind)
-      end
-    end
+      end // end of [if]
+    end (* end of [D2Earrsub] *)
   | D2Ederef d2e_ptr => L2VALptr (d2e_ptr, nil ())
   | D2Esel (d2e, d2ls) => begin case+ d2e.d2exp_node of
     | D2Evar d2v when d2var_is_linear d2v => L2VALvar_lin (d2v, d2ls)
     | D2Evar d2v when d2var_is_mutable d2v => L2VALvar_mut (d2v, d2ls)
     | D2Ederef d2e_ptr => L2VALptr (d2e_ptr, d2ls)
     | _ => L2VALnone (d2e0)
-    end
+    end // end of [D2Esel]
   | D2Evar d2v when d2var_is_linear d2v => L2VALvar_lin (d2v, nil ())
   | D2Evar d2v when d2var_is_mutable d2v => L2VALvar_mut (d2v, nil ())
   | _ => L2VALnone (d2e0)

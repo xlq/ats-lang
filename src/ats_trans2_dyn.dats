@@ -98,6 +98,12 @@ overload prerr with $Loc.prerr_location
 
 (* ****** ****** *)
 
+fn prerr_loc_error2 (loc: loc_t): void =
+  ($Loc.prerr_location loc; prerr ": error(2)")
+// end of [prerr_loc_error2]
+
+(* ****** ****** *)
+
 fun s2exp_arity_list (s2e: s2exp): List int = begin
   case+ s2e.s2exp_node of
   | S2Efun (_, _, _, _, s2es, s2e) => begin
@@ -160,8 +166,7 @@ end // end of [d2con_select_arity]
 
 fun d2con_select_arity_err_some
   (loc_id: loc_t, q: d0ynq, id: sym_t, n: int): d2con_t = begin
-  prerr loc_id;
-  prerr ": error(2)";
+  prerr_loc_error2 loc_id;
   prerr ": the dynamic identifier [";
   prerr q; prerr id;
   prerrf ("] refers to multiple constructors of arity %i.", @(n));
@@ -171,8 +176,7 @@ end // end of [d2con_select_arity_err_some]
 
 fun d2con_select_arity_err_none
   (loc_id: loc_t, q: d0ynq, id: sym_t, n: int): d2con_t = begin
-  prerr loc_id;
-  prerr ": error(2)";
+  prerr_loc_error2 loc_id;
   prerr ": the dynamic identifier [";
   prerr q; prerr id;
   prerrf ("] does not refer to any constructor of arity %i.", @(n));
@@ -250,8 +254,7 @@ fun aux2
    out: &s2qualst): s2exp = let
 
 fn err (loc_sap: loc_t, d2c: d2con_t): s2exp = begin
-  prerr loc_sap;
-  prerr ": error(2)";
+  prerr_loc_error2 loc_sap;
   $Deb.debug_prerrf (": %s: p1at_con_tr: aux2", @(THISFILENAME));
   prerr ": the constructor [";
   prerr d2c;
@@ -323,32 +326,30 @@ fn p1at_qid_app_dyn_tr
   : p2at = let
 
   fn err1 (loc_id: loc_t, q: $Syn.d0ynq, id: sym_t): d2conlst = begin
-    prerr loc_id;
-    prerr ": error(2)";
+    prerr_loc_error2 loc_id;
     $Deb.debug_prerrf (": %s: p1at_qid_app_dyn_tr", @(THISFILENAME));
     prerr ": the dynamic identifier [";
     prerr q; prerr id;
     prerr "] does not refer to a constructor.";
     prerr_newline ();
     $Err.abort {d2conlst} ()     
-  end
+  end // end of [err1]
 
   fn err2 (loc_id: loc_t, q: $Syn.d0ynq, id: sym_t): d2conlst = begin
-    prerr loc_id;
-    prerr ": error(2)";
+    prerr_loc_error2 loc_id;
     $Deb.debug_prerrf (": %s: p1at_qid_app_dyn_tr", @(THISFILENAME));
     prerr ": unrecognized dynamic constructor [";
     prerr q; prerr id;
     prerr "].";
     prerr_newline ();
     $Err.abort {d2conlst} ()
-  end
+  end // end of [err2]
 
   val d2cs = begin
     case+ the_d2expenv_find_qua (q, id) of
     | ~Some_vt d2i => begin case+ d2i of
       | D2ITEMcon d2cs => d2cs | _ => err1 (loc_id, q, id)
-      end
+      end // end of [Some_vt]
     | ~None_vt () => err2 (loc_id, q, id)
   end // end of [val]
   val is_arg_omit: bool = begin
@@ -406,8 +407,7 @@ in
       p1at_qid_app_dyn_tr (loc_dap, loc_sap, loc_id, q, id, sarg, npf, darg)
     end
   | _ => begin
-     prerr loc_dap;
-     prerr ": error(2)";
+     prerr_loc_error2 loc_dap;
      $Deb.debug_prerrf (": %s: p1at_app_tr", @(THISFILENAME));
      prerr ": the application in the pattern is not allowed.";
      prerr_newline ();
@@ -426,8 +426,7 @@ in
       p2at_con (loc0, ~freeknd, d2c, s2vpss, s2e, npf, p2ts)
     end
   | _ => begin
-      prerr loc0;
-      prerr ": error(2)";
+      prerr_loc_error2 loc0;
       $Deb.debug_prerrf (": %s: p1at_free_tr", @(THISFILENAME));
       prerr ": values that match this pattern are not allowed to be freed.";
       prerr_newline ();
@@ -444,12 +443,11 @@ end // end of [qid_is_vbox]
 
 fn p1at_vbox_tr (loc: loc_t, npf: int, p1ts: p1atlst): p2at = let
   fn err {a:viewt@ype} (loc: loc_t): a = begin
-    $Loc.prerr_location loc;
-    prerr ": error(2)";
+    prerr_loc_error2 loc;
     prerr ": the [vbox] pattern is syntactically incorrect.";
     prerr_newline ();
     $Err.abort {a} ()
-  end
+  end // end of [err]
 
   val () = if npf <> 0 then err {void} (loc) else ()
   val p1t = (
@@ -494,8 +492,7 @@ val p2t0 = (
           p1at_app_tr (loc0, loc1, p1t_fun, sarg, npf, darg)
         end // end of [P1Tapp_sta]
       | _ => begin
-          prerr loc0;
-          prerr ": error(2)";
+          prerr_loc_error2 loc0;
           $Deb.debug_prerrf (": %s: p1at_tr", @(THISFILENAME));
           prerr ": the application in the pattern is not allowed.";
           prerr_newline ();
@@ -699,8 +696,7 @@ fn macro_def_check
 in
   if level > 0 then begin
     if knd > 0 then begin (* long form *)
-      prerr loc0;
-      prerr ": error(2)";
+      prerr_loc_error2 loc0;
       prerr ": the identifier ["; prerr id;
       prerr "] refers to a macro definition in long form";
       prerr ", but one in short form is expected.";
@@ -709,23 +705,21 @@ in
     end
   end else begin (* level = 0 *)
     if knd = 0 then begin (* short form *)
-      prerr loc0;
-      prerr ": error(2)";
+      prerr_loc_error2 loc0;
       prerr ": the identifier ["; prerr id;
       prerr "] refers to a macro definition in short form";
       prerr ", but one in long form is expected.";
       prerr_newline ();
       $Err.abort {void} ()
-    end
-  end
-end // end of [macro_def_check]
+    end // end of [if]
+  end (* end of [if] *)
+end (* end of [macro_def_check] *)
 
 fn macro_var_check (loc0: loc_t, id: sym_t): void = let
   val level = macro_level_get ()
 in
   if level > 0 then begin
-    prerr loc0;
-    prerr ": error(2)";
+    prerr_loc_error2 loc0;
     prerr ": the identifier ["; prerr id;
     prerr "] incorrectly refers to a macro argument variable.";
     prerr_newline ();
@@ -789,8 +783,7 @@ fn d1exp_qid_tr
     | D2ITEMvar d2v => d2exp_var (loc0, d2v)
     end // end of [Some d2i]
   | ~None_vt () => begin
-      prerr loc0;
-      prerr ": error(2)";
+      prerr_loc_error2 loc0;
       $Deb.debug_prerrf (": %s: d1exp_qid_tr", @(THISFILENAME));
       prerr ": the dynamic identifier [";
       prerr q; prerr id;
@@ -836,43 +829,39 @@ in
         d2exp_app_sta (loc_sap, d2e_fun, s2as)
       end
     | D2ITEMmacdef _ => begin
-        prerr loc_id;
-        prerr ": error(2)";
+        prerr_loc_error2 loc_id;
         $Deb.debug_prerrf (": %s: d1exp_qid_app_sta_tr", @(THISFILENAME));
         prerr ": the identifier refers to a macro definition";
         prerr ", which cannot be applied to static arguments.";
         prerr_newline ();
         $Err.abort {d2exp} ()
-      end
+      end // end of [D2ITEMmacdef]
     | D2ITEMmacvar _ => begin
-        prerr loc_id;
-        prerr ": error(2)";
+        prerr_loc_error2 loc_id;
         $Deb.debug_prerrf (": %s: d1exp_qid_app_sta_tr", @(THISFILENAME));
         prerr ": the identifier refers to a macro argument variable";
         prerr ", which cannot be applied.";
         prerr_newline ();
         $Err.abort {d2exp} ()
-      end
+      end // end of [D2ITEMmacvar]
     | _ => begin
-        prerr loc_id;
-        prerr ": error(2)";
+        prerr_loc_error2 loc_id;
         $Deb.debug_prerrf (": %s: d1exp_qid_app_sta_tr", @(THISFILENAME));
         prerr ": the identifier refers to a dynamic term that cannot be applied.";
         prerr_newline ();
         $Err.abort {d2exp} ()
-      end
-    end // end of [Some d2i]
+      end // end of [_]
+    end (* end of [Some d2i] *)
   | ~None_vt () => begin
-      prerr loc_id;
-      prerr ": error(2)";
+      prerr_loc_error2 loc_id;
       $Deb.debug_prerrf (": %s: d1exp_qid_app_sta_tr", @(THISFILENAME));
       prerr ": unrecognized dynamic identifier [";
       prerr q; prerr id;
       prerr "]";
       prerr_newline ();
       $Err.abort {d2exp} ()
-    end
-end // end of [d2exp_qid_app_sta_tr]
+    end // end of [None_vt]
+end (* end of [d2exp_qid_app_sta_tr] *)
 
 (* ****** ****** *)
 
@@ -924,31 +913,29 @@ in
         d2exp_app_sta_dyn (loc_dap, loc_sap, d2e_fun, sarg, loc_arg, npf, darg)
       end
     | D2ITEMmacvar _ => begin
-        prerr loc_id;
-        prerr ": error(2)";
+        prerr_loc_error2 loc_id;
         prerr ": the identifer refers to a macro argument variable";
         prerr ", which cannot be applied.";
         prerr_newline ();
         $Err.abort {d2exp} ()
-      end
+      end // end of [D2ITEMmacvar]
     | D2ITEMe1xp _ => begin
-        prerr loc_id;
+        prerr_loc_error2 loc_id;
         prerr ": Internal Error: d1exp_qid_app_dyn_tr: D2ITEMe1xp";
         prerr_newline ();
         $Err.abort {d2exp} ()
-      end
-    end // end of [Some d2i]
+      end // end of [D2ITEMe1xp]
+    end (* end of [Some d2i] *)
   | ~None_vt () => begin
-      prerr loc_id;
-      prerr ": error(2)";
+      prerr_loc_error2 loc_id;
       $Deb.debug_prerrf (": %s: d1exp_qid_app_dyn_tr", @(THISFILENAME));
       prerr ": the dynamic identifier [";
       prerr q; prerr id;
       prerr "] is unrecognized.";
       prerr_newline ();
       $Err.abort {d2exp} ()
-    end
-end // end of [d1exp_qid_app_dyn_tr]
+    end // end of [None_vt]
+end (* end of [d1exp_qid_app_dyn_tr] *)
 
 (* ****** ****** *)
 
@@ -974,14 +961,13 @@ fun d1exp_wths1explst_tr
       d2exp_ann_funclo (d1e0.d1exp_loc, d2e, fc)
     end
   | _ => begin
-      prerr d1e0.d1exp_loc;
-      prerr ": error(2)";
+      prerr_loc_error2 d1e0.d1exp_loc;
       $Deb.debug_prerrf (": %s: d1exp_wths1explst_tr", @(THISFILENAME));
       prerr ": the dynamic expression is expected to be ascribed a type but it is not.";
       prerr_newline ();
       $Err.abort {d2exp} ()
-    end
-end // end of [d1exp_wths1explst_tr]
+    end // end of [_]
+end (* end of [d1exp_wths1explst_tr] *)
 
 (* ****** ****** *)
 
@@ -1001,19 +987,17 @@ fun i1nvarglst_tr
           cons (arg, i1nvarglst_tr xs)
         end // end of [D2ITEMvar]
       | _ => begin
-          prerr x.i1nvarg_loc;
-          prerr ": error(2)";
+          prerr_loc_error2 x.i1nvarg_loc;
           $Deb.debug_prerrf (": %s: i1nvarglst_tr", @(THISFILENAME));
           prerr ": the dynamic identifier [";
           prerr x.i1nvarg_sym;
           prerr "] does not refer to a variable.";
           prerr_newline ();
           $Err.abort ()
-        end
-      end // end of [Some_vt]
+        end // end of [_]
+      end (* end of [Some_vt] *)
     | ~None_vt () => begin
-        prerr x.i1nvarg_loc;
-        prerr ": error(2)";
+        prerr_loc_error2 x.i1nvarg_loc;
         $Deb.debug_prerrf (": %s: i1nvarglst_tr", @(THISFILENAME));
         prerr ": the dynamic identifier [";
         prerr x.i1nvarg_sym;
@@ -1021,7 +1005,7 @@ fun i1nvarglst_tr
         prerr_newline ();
         $Err.abort ()
       end // end of [None_vt]
-    end // end of [cons]
+    end (* end of [cons] *)
   | nil () => nil ()
 end // end of [i1nvarglst_tr]
 
@@ -1085,8 +1069,7 @@ fn c1lau_tr {n:nat} (n: int n, c1l: c1lau): c2lau n = let
 *)
   val () = (
     if np2ts <> n then begin
-      prerr c1l.c1lau_loc;
-      prerr ": error(2)";
+      prerr_loc_error2 c1l.c1lau_loc;
       $Deb.debug_prerrf (": %s: c1lau_tr", @(THISFILENAME));
       if np2ts < n then prerr ": this clause should contain more patterns.";
       if np2ts > n then prerr ": this clause should contain less patterns.";
@@ -1149,7 +1132,7 @@ fn sc2laulst_covercheck
   (loc0: loc_t, sc2ls: sc2laulst, s2t_pat: s2rt): void = let
   val s2tb_pat = case+ s2t_pat of
     | S2RTbas s2tb => s2tb | _ => begin
-        $Loc.prerr_location loc0; prerr ": error(2)";
+        prerr_loc_error2 loc0;
         prerr ": the static expression being analyzed is of the sort [";
         prerr s2t_pat; prerr "], which is not a base sort as is required.";
         prerr_newline ();
@@ -1157,7 +1140,7 @@ fn sc2laulst_covercheck
       end // end of [_]
   val s2tdat_pat = case+ s2tb_pat of
     | S2RTBASdef s2td => s2td | _ => begin
-        $Loc.prerr_location loc0; prerr ": error(2)";
+        prerr_loc_error2 loc0;
         prerr ": the static expression being analyzed is of the sort [";
         prerr s2t_pat; prerr "], which is not a datasort as is required.";
         prerr_newline ();
@@ -1181,36 +1164,36 @@ fn sc2laulst_covercheck
         end // end of [list_cons]
       | list_nil () => ()
   } // end of [val]
-  val err = errmsg
+  val err = loop_errmsg
     (pf_arr | loc0, A, ns2cs, s2cs, 0, 0) where {
-    fun errmsg {n,i:nat | i <= n} {l:addr} .<n-i>. (
+    fun loop_errmsg {n,i:nat | i <= n} {l:addr} .<n-i>. (
         pf: !array_v (int, n, l)
       | loc0: loc_t, p: ptr l, n: int n, s2cs: s2cstlst, i: int i, err: int
       ) : int =
       if i < n then let
         val times = p->[i] in case+ s2cs of
         | S2CSTLSTcons (s2c, s2cs) => begin case+ 0 of
-          | _ when times = 1 => errmsg (pf | loc0, p, n, s2cs, i+1, err)
+          | _ when times = 1 => loop_errmsg (pf | loc0, p, n, s2cs, i+1, err)
           | _ when times = 0 => begin
-              $Loc.prerr_location loc0; prerr ": error(2)";
+              prerr_loc_error2 loc0;
               prerr ": ill-formed static case-expression";
               prerr ": the constructor ["; prerr s2c; prerr "] is missing.";
               prerr_newline ();
-              errmsg (pf | loc0, p, n, s2cs, i+1, err+1)
+              loop_errmsg (pf | loc0, p, n, s2cs, i+1, err+1)
             end // end of [_ when times = 0]
           | _ (* times > 1 *) => begin
-              $Loc.prerr_location loc0; prerr ": error(2)";
+              prerr_loc_error2 loc0;
               prerr ": ill-formed static case-expression";
               prerr ": the constructor ["; prerr s2c; prerr "] occurs repeatedly.";
               prerr_newline ();
-              errmsg (pf | loc0, p, n, s2cs, i+1, err+1)
+              loop_errmsg (pf | loc0, p, n, s2cs, i+1, err+1)
             end // end of [_ when times > 0]
-          end // end of [S2CSTLSTcons]
+          end (* end of [S2CSTLSTcons] *)
         | S2CSTLSTnil () => err // deadcode!
       end else begin
-        err // return value
-      end // end of [if]
-  } // end of [errmsg]
+        err // loop exists
+      end (* end of [if] *)
+  } (* end of [loop_errmsg] *)
   val () = $Arr.array_ptr_free {int} (pf_gc, pf_arr | A)
   val () = if err > 0 then $Err.abort {void} ()
 in
@@ -1442,13 +1425,12 @@ in
       d2exp_lam_met_new (loc0, met, body)
     end // end of [D1Elam_met]
   | D1Elam_sta_ana _ => begin
-      prerr loc0;
-      prerr ": error(2)";
+      prerr_loc_error2 loc0;
       $Deb.debug_prerrf (": %s: d1exp_tr: D1Elam_sta_ana: ", @(THISFILENAME));
       prerr "illegal use of static lambda-abstraction in analysis form.";
       prerr_newline ();
       $Err.abort {d2exp} ()
-    end
+    end // end of [D1Elam_sta_ana]
   | D1Elam_sta_syn (_, s1qs, d1e) => let
       val (pf_s2expenv | ()) = the_s2expenv_push ()
       val @(s2vs, s2ps) = s1qualst_tr (s1qs)
@@ -1468,16 +1450,13 @@ in
           in
             d2exp_lazy_vt_delay (loc0, d2e1, d2e2)
           end // end of [cons (_, cons (_, nil))]
-        | _ => let
-            val n = $Lst.list_length d1es; val () = begin
-              prerr loc0; prerr ": error(2)";
-              if n > 2 then prerr ": less argumnets should be given.";
-              if n < 2 then prerr ": more argumnets should be given.";
-              prerr_newline ()
-            end // end of [val]
-          in
-            $Err.abort {d2exp} ()
-          end // end of [_]
+        | _ => $Err.abort {d2exp} () where {
+            val n = $Lst.list_length d1es
+            val () = prerr_loc_error2 loc0
+            val () = if n > 2 then prerr ": less argumnets should be given."
+            val () = if n < 2 then prerr ": more argumnets should be given."
+            val () = prerr_newline ()
+          } // end of [_]
         end // end of [D1Elist]
       | _ => let
           val d2e1 = d1exp_tr d1e and d2e2 = d2exp_empty (d1e.d1exp_loc)
@@ -1682,42 +1661,39 @@ end // end of [symelim_tr]
 fn overload_tr (id: $Syn.i0de, qid: $Syn.dqi0de): void = let
 (*
   val () = begin
-    print "overload_tr: id = "; print id.i0de_sym;
-    print " and qid = "; print qid.dqi0de_qua; print qid.dqi0de_sym;
-    print_newline ();
-  end
+    prerr "overload_tr: id = "; prerr id.i0de_sym;
+    prerr " and qid = "; prerr qid.dqi0de_qua; prerr qid.dqi0de_sym;
+    prerr_newline ();
+  end // end of [val]
 *)
   val d2i = (
     case+ the_d2expenv_find_qua (qid.dqi0de_qua, qid.dqi0de_sym) of
     | ~Some_vt d2i => d2i
     | ~None_vt () => begin
-        prerr qid.dqi0de_loc;
-        prerr ": error(2)";
+        prerr_loc_error2 qid.dqi0de_loc;
         $Deb.debug_prerrf (": %s: overload_tr", @(THISFILENAME));
         prerr ": the dynamic identifier [";
         prerr qid.dqi0de_qua; prerr qid.dqi0de_sym;
         prerr "] is unrecognized.";
         prerr_newline ();
         $Err.abort {d2item} ()
-      end
+      end // end of [None_vt]
   ) : d2item
   val d2is = (case+
     the_d2expenv_find id.i0de_sym of
     | ~Some_vt d2i => begin case+ d2i of
       | D2ITEMsym d2is => d2is | _ => begin
-          prerr id.i0de_loc;
-          prerr ": error(2)";
+          prerr_loc_error2 id.i0de_loc;
           $Deb.debug_prerrf (": %s: overload_tr", @(THISFILENAME));
           prerr ": the identifier [";
           prerr id.i0de_sym;
           prerr "] should refer to a symbol but it does not.";
           prerr_newline ();
           $Err.abort {d2itemlst} ()          
-        end
-      end // end of [Some_vt]
+        end // end of [_]
+      end (* end of [Some_vt] *)
     | ~None_vt () => begin
-        prerr id.i0de_loc;
-        prerr ": error(2)";
+        prerr_loc_error2 id.i0de_loc;
         $Deb.debug_prerrf (": %s: overload_tr", @(THISFILENAME));
         prerr ": the identifier [";
         prerr id.i0de_sym;
@@ -1907,8 +1883,7 @@ fn s1arglst_bind_svarlst
         val s2v_new = s1arg_var_tr_srt (s1a, s2var_srt_get s2v)
         val () =
           if ~(s2var_srt_get s2v <= s2var_srt_get s2v_new) then begin
-            prerr s1a.s1arg_loc;
-            prerr ": error(2)";
+            prerr_loc_error2 s1a.s1arg_loc;
             $Deb.debug_prerrf (": %s: s1arglst_bind_svarlst", @(THISFILENAME));
             prerr ": the ascribed sort for the static variable [";
             prerr s1a.s1arg_sym;
@@ -1925,8 +1900,7 @@ fn s1arglst_bind_svarlst
   val ns1as = $Lst.list_length s1as and ns2vs = $Lst.list_length s2vs
 in
   if ns1as <> ns2vs then begin
-    prerr loc0;
-    prerr ": error(2)";
+    prerr_loc_error2 loc0;
     if ns1as < ns2vs then prerr ": more static arguments should be given.";
     if ns1as > ns2vs then prerr ": less static arguments should be given.";
     prerr_newline ();
@@ -1949,17 +1923,15 @@ fn s1explst_bind_svarlst
     | cons (s1e, s1es) => let
         val+ cons (s2v, s2vs) = s2vs; val s2e = s1exp_tr_up (s1e)
         val s2t_s2v = s2var_srt_get s2v and s2t_s2e = s2e.s2exp_srt
-        val () =
-          if ~(s2t_s2e <= s2t_s2v) then begin
-            prerr s1e.s1exp_loc;
-            prerr ": error(2)";
-            $Deb.debug_prerrf (": %s: s1explst_bind_svarlst", @(THISFILENAME));
-            prerr ": the sort of the static expression ["; prerr s1e;
-            prerr "] is expected to be ["; prerr s2t_s2v;
-            prerr "], but it is ["; prerr s2t_s2e; prerr "] instead.";
-            prerr_newline ();
-            $Err.abort {void} ()
-          end
+        val () = if ~(s2t_s2e <= s2t_s2v) then begin
+          prerr_loc_error2 s1e.s1exp_loc;
+          $Deb.debug_prerrf (": %s: s1explst_bind_svarlst", @(THISFILENAME));
+          prerr ": the sort of the static expression ["; prerr s1e;
+          prerr "] is expected to be ["; prerr s2t_s2v;
+          prerr "], but it is ["; prerr s2t_s2e; prerr "] instead.";
+          prerr_newline ();
+          $Err.abort {void} ()
+        end // end of [val]
         val () = sub := stasub_add (sub, s2v, s2e)
       in
         list_cons (s2e, aux (s1es, s2vs, sub))
@@ -1969,8 +1941,7 @@ fn s1explst_bind_svarlst
   val ns1es = $Lst.list_length s1es and ns2vs = $Lst.list_length s2vs
 in
   if ns1es <> ns2vs then begin
-    prerr loc0;
-    prerr ": error(2)";
+    prerr_loc_error2 loc0;
     if ns1es < ns2vs then prerr ": more template arguments should be given.";
     if ns1es > ns2vs then prerr ": less template arguments should be given.";
     prerr_newline ();
@@ -2039,14 +2010,14 @@ and d1exp_arg_body_tr_ann (
   ) : @(p2atlst, d2exp) = let
   val () = case+ fc of
     | $Syn.FUNCLOclo knd when knd = 0 => begin
-        prerr d1e0.d1exp_loc; prerr ": error(2)";
+        prerr_loc_error2 d1e0.d1exp_loc;
         prerr ": function is given an unboxed closure type.";
         $Err.abort {void} ()
       end // end of [FUNCLOclo when ...]
     | _ => ()
   // end of [val]
   val () = if lin1 <> lin2 then begin
-    prerr d1e0.d1exp_loc; prerr ": error(2)";
+    prerr_loc_error2 d1e0.d1exp_loc;
     $Deb.debug_prerrf (": %s: d1exp_tr_ann", @(THISFILENAME));
     if lin1 < lin2 then prerr ": linear function is given a nonlinear type.";
     if lin1 > lin2 then prerr ": nonlinear function is given a linear type.";
@@ -2057,8 +2028,7 @@ and d1exp_arg_body_tr_ann (
   val p2t_arg = p1at_arg_tr (p1t_arg, wths1es)
   val () = // check for refval types
     if wths1explst_is_none wths1es then () else begin
-      prerr p1t_arg.p1at_loc;
-      prerr ": error(2)";
+      prerr_loc_error2 p1t_arg.p1at_loc;
       prerr ": the function argument cannot be ascribed refval types.";
       prerr_newline ();
       $Err.abort {void} ()
@@ -2069,16 +2039,14 @@ and d1exp_arg_body_tr_ann (
     | P2Tlist (npf, p2ts) => (npf2 := npf; p2ts)
     | _ => cons (p2t_arg, nil ())
   ) : p2atlst
-  val () = // check for pfarity match
-    if npf1 <> npf2 then begin
-      prerr d1e0.d1exp_loc;
-      prerr ": error(2)";
-      $Deb.debug_prerrf (": %s: d1exp_tr_ann", @(THISFILENAME));
-      if npf1 < npf2 then prerr ": less proof arguments are expected.";
-      if npf1 > npf2 then prerr ": more proof arguments are expected.";
-      prerr_newline ();
-      $Err.abort {void} ()
-    end
+  val () = if npf1 <> npf2 then begin // check for pfarity match
+    prerr_loc_error2 d1e0.d1exp_loc;
+    $Deb.debug_prerrf (": %s: d1exp_tr_ann", @(THISFILENAME));
+    if npf1 < npf2 then prerr ": less proof arguments are expected.";
+    if npf1 > npf2 then prerr ": more proof arguments are expected.";
+    prerr_newline ();
+    $Err.abort {void} ()
+  end // end of [val]
   val p2ts_arg = let
     val ns2es = $Lst.list_length s2es_arg
     val np2ts = $Lst.list_length p2ts_arg
@@ -2093,7 +2061,7 @@ and d1exp_arg_body_tr_ann (
       | nil () => nil ()            
   in
     if ns2es <> np2ts then begin
-      prerr d1e0.d1exp_loc; prerr ": error(2)";
+      prerr_loc_error2 d1e0.d1exp_loc;
       $Deb.debug_prerrf (": %s: d1exp_tr_ann", @(THISFILENAME));
       if ns2es < np2ts then prerr ": less arguments are expected.";
       if ns2es > np2ts then prerr ": more arguments are expected.";
@@ -2251,8 +2219,8 @@ in
         val qid = d1c.i1mpdec_qid
         val q = qid.impqi0de_qua and id = qid.impqi0de_sym
       in
-        $Loc.prerr_location d1c.i1mpdec_loc;
-        prerr ": error(2)"; prerr ": the dynamic constants [";
+        prerr_loc_error2 d1c.i1mpdec_loc;
+        prerr ": the dynamic constants [";
         prerr d2c1; prerr "] and [";
         prerr d2c2; prerr "] cannot be resolved for [";
         $Syn.prerr_d0ynq q; $Sym.prerr_symbol id; prerr "].";
@@ -2265,8 +2233,7 @@ in
       val qid = d1c.i1mpdec_qid
       val q = qid.impqi0de_qua and id = qid.impqi0de_sym
     in
-      $Loc.prerr_location d1c.i1mpdec_loc;
-      prerr ": error(2)";
+      prerr_loc_error2 d1c.i1mpdec_loc;
       prerr ": no dynamic constant can be found for [";
       $Syn.prerr_d0ynq q; $Sym.prerr_symbol id; prerr "].";
       prerr_newline ();
@@ -2279,12 +2246,13 @@ fn i1mpdec_tr
   val t1mparg = d1c.i1mpdec_tmparg
   val () = case+ (i1mparg, t1mparg) of
     | (cons _, cons _) => begin
-        prerr loc0; prerr ": error(2)";
+        prerr_loc_error2 loc0;
         prerr ": template implementation and instantiation may not be combined.";
         prerr_newline ();
         $Err.abort {void} ()
       end // end of [cons, cons]
     | (_, _) => ()
+  // end of [val]
   val qid = d1c.i1mpdec_qid
   val q = qid.impqi0de_qua and id = qid.impqi0de_sym
   val d2c = begin
@@ -2293,7 +2261,7 @@ fn i1mpdec_tr
       | D2ITEMcst d2c => d2c
       | D2ITEMsym (d2is) => i1mpdec_tr_d2cst_select (d1c, d2is)
       | _ => begin
-          prerr d1c.i1mpdec_loc; prerr ": error(2)";
+          prerr_loc_error2 d1c.i1mpdec_loc;
           $Deb.debug_prerrf (": %s: i1mpdec_tr", @(THISFILENAME));
           prerr ": the identifier [";
           prerr q; prerr id;
@@ -2301,10 +2269,9 @@ fn i1mpdec_tr
           prerr_newline ();
           $Err.abort {d2cst_t} ()
         end // end of [_]
-      end // end of [Some_vt]
+      end (* end of [Some_vt] *)
     | ~None_vt () => begin
-        prerr d1c.i1mpdec_loc;
-        prerr ": error(2)";
+        prerr_loc_error2 d1c.i1mpdec_loc;
         $Deb.debug_prerrf (": %s: i1mpdec_tr", @(THISFILENAME));
         prerr ": the dynamic identifier [";
         prerr q; prerr id;
@@ -2348,8 +2315,7 @@ fn i1mpdec_tr
           aux2_imp (loc0, args, s2vpss, s2e, out_imp)
         end // end of [cons]
       | nil () => begin
-          prerr loc0;
-          prerr ": error(2)";
+          prerr_loc_error2 loc0;
           $Deb.debug_prerrf (": %s: i1mpdec_tr: aux2_imp", @(THISFILENAME));
           prerr ": the implementation for [";
           prerr q; prerr id;
@@ -2361,8 +2327,7 @@ fn i1mpdec_tr
     | nil () => let
         val () = case+ s2vpss of
           | cons _ => begin
-              prerr loc0;
-              prerr ": error(2)";
+              prerr_loc_error2 loc0;
               $Deb.debug_prerrf (": %s: i1mpdec_tr: aux2_imp", @(THISFILENAME));
               prerr ": the implementation for [";
               prerr q; prerr id;
@@ -2395,8 +2360,7 @@ fn i1mpdec_tr
           aux2_tmp (loc0, args, s2vpss, s2e, out_tmparg, out_tmpgua)
         end // end of [cons]
       | nil () => begin
-          prerr loc0;
-          prerr ": error(2)";
+          prerr_loc_error2 loc0;
           $Deb.debug_prerrf (": %s: i1mpdec_tr: aux2_tmp", @(THISFILENAME));
           prerr ": the implementation for [";
           prerr q; prerr id;
@@ -2408,8 +2372,7 @@ fn i1mpdec_tr
     | nil () => let
         val () = case+ s2vpss of
           | cons _ => begin
-              prerr loc0;
-              prerr ": error(2)";
+              prerr_loc_error2 loc0;
               $Deb.debug_prerrf (": %s: i1mpdec_tr: aux2_tmp", @(THISFILENAME));
               prerr ": the implementation for [";
               prerr q; prerr id;
@@ -2427,7 +2390,7 @@ fn i1mpdec_tr
   val () = begin case+ decarg of
     | cons _ => begin case+ (i1mparg, t1mparg) of
       | (nil (), nil ()) => begin
-          prerr loc0; prerr ": error(2)";
+          prerr_loc_error2 loc0;
           prerr ": the dynamic constant [";
           prerr d2c; prerr "] requires a template implemenation";
           prerr_newline ();

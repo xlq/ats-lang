@@ -1521,7 +1521,7 @@ fn d2exp_lazy_delay_tr_up
   val d3e_eval = d2exp_tr_up d2e_eval
   val s2e_eval = d3e_eval.d3exp_typ
   val () = if s2exp_is_linear s2e_eval then begin // linearity checking
-    prerr loc0; prerr ": error(2)";
+    prerr loc0; prerr ": error(3)";
     prerr ": the keyword [$delay_vt] is needed to form a linear lazy value.";
     prerr_newline ()
   end // end of [val]
