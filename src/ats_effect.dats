@@ -302,8 +302,8 @@ fn name_is_write (name: string): bool =
 local
 
 fn loop_err (loc: loc_t, name: string): void = begin
-  prerr loc;
-  prerr ": error(1): unrecognized effect constant: ["; prerr name; prerr "]";
+  $Loc.prerr_location loc; prerr ": error(1)";
+  prerr ": unrecognized effect constant: ["; prerr name; prerr "]";
   prerr_newline ();
   $Err.abort ()
 end // end of [loop_err]

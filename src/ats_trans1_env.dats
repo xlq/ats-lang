@@ -127,7 +127,7 @@ end // end of [fxtyenv_pervasive_add_top]
 
 (* ****** ****** *)
 
-implement ats_fxtyenv_print () = let
+implement ats_fxtyenv_prerr () = let
   val r_m = $SymEnv.symenv_ref_top the_fxtyenv
   val kis = $SymEnv.symmap_ref_list (r_m)
   typedef ki = @(sym_t, fxty_t)
@@ -135,8 +135,8 @@ implement ats_fxtyenv_print () = let
     (kis: list_vt (ki, n)): void = begin case+ kis of
     | ~list_vt_cons (ki, kis) => let
         val (k, i) = ki; val () = begin
-          $Sym.print_symbol_code k; print " = "; $Fix.print_fxty i;
-          print_newline ()
+          $Sym.prerr_symbol_code k; prerr " = "; $Fix.prerr_fxty i;
+          prerr_newline ()
         end // end of [val]
       in
         loop (kis)
@@ -145,7 +145,7 @@ implement ats_fxtyenv_print () = let
   end // end of [loop]
 in
   loop kis
-end // end of [ats_fxtyenv_print]
+end // end of [ats_fxtyenv_prerr]
 
 (* ****** ****** *)
 

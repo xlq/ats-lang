@@ -52,7 +52,7 @@ staload _(*anonymous*) = "prelude/DATS/lazy_vt.dats"
 staload _(*anonymous*) = "prelude/DATS/list_vt.dats"
 staload _(*anonymous*) = "prelude/DATS/pointer.dats"
 staload _(*anonymous*) = "prelude/DATS/reference.dats"
-staload _(*anonymous*) = "prelude/DATS/slseg.dats"
+// staload _(*anonymous*) = "prelude/DATS/slseg.dats"
 
 (* ****** ****** *)
 

@@ -63,7 +63,7 @@ fun the_fxtyenv_pervasive_add_top (): void
 
 (* ****** ******* *)
 
-fun ats_fxtyenv_print (): void
+fun ats_fxtyenv_prerr (): void
 
 (* ****** ******* *)
 

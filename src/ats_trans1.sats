@@ -100,7 +100,7 @@ fun do_e0xpact_assert
 fun do_e0xpact_error
   (loc: $Loc.location_t, v: $SEXP.v1al): void
 
-fun do_e0xpact_print (v: $SEXP.v1al): void
+fun do_e0xpact_prerr (v: $SEXP.v1al): void
 
 (* ****** ****** *)
 

@@ -76,7 +76,6 @@ typedef fil_t = $Fil.filename_t
 
 (* ****** ****** *)
 
-overload prerr with $Loc.prerr_location
 overload prerr with $Sym.prerr_symbol
 
 (* ****** ****** *)
@@ -84,6 +83,12 @@ overload prerr with $Sym.prerr_symbol
 #define CLOPTR 1; #define CLOREF ~1
 macdef FUNCLOcloptr = $Syn.FUNCLOclo CLOPTR
 macdef FUNCLOcloref = $Syn.FUNCLOclo CLOREF
+
+(* ****** ****** *)
+
+fn prerr_loc_error1 (loc: loc_t): void =
+  ($Loc.prerr_location loc; prerr ": error(1)")
+// end of [prerr_loc_error1]
 
 (* ****** ****** *)
 
@@ -100,8 +105,7 @@ fun aux1 (xs: p0arglst): s1explst = begin case+ xs of
         let val s1e = s0exp_tr s0e in s1e :: aux1 xs end
       end // end of [Some]
     | None () => begin
-        prerr x.p0arg_loc;
-        prerr ": error(1)";
+        prerr_loc_error1 (x.p0arg_loc);
         prerr ": unascribed variable: ["; prerr x.p0arg_sym; prerr "]";
         prerr_newline ();
         $Err.abort ()
@@ -153,19 +157,17 @@ fun aux2
         val s1e_res = aux2 (fc, lin, prf, oefc, fst, lst, xs, s1e_res)
         val loc_res = s1e_res.s1exp_loc
         val loc = $Loc.location_combine (loc_x, loc_res)
-        val () =
-          if lst = 0 then begin
-            prerr loc_res;
-            prerr ": error(1)";
-            prerr ": illegal use of effect annotation.";
-            prerr_newline ();
-            $Err.abort {void} ()
-          end
+        val () = if lst = 0 then begin
+          prerr_loc_error1 (loc_res);
+          prerr ": illegal use of effect annotation";
+          prerr_newline ();
+          $Err.abort {void} ()
+        end // end of [val]
       in
         s1exp_uni (loc, s1qs, s1e_res)
-      end // end of [D0ARGsta]
-    end // end of [::]
-  | nil () => s1e_res
+      end (* end of [D0ARGsta] *)
+    end (* end of [::] *)
+  | list_nil () => s1e_res
 end // end of [aux2]
 
 fn aux3 (
@@ -189,18 +191,18 @@ fn aux3 (
   // end of [val]
   val () = case+ fc of
     | $Syn.FUNCLOclo knd => begin
-        if knd <> CLOREF then begin
-          prerr loc0;
-          prerr ": error(1)";
-          if knd = 0 then begin
-            prerr ": Internal Error: a closure at the toplevel."
-          end;
-          if knd = 1 then begin
-            prerr ": a closure pointer is not allowed at the toplevel."
-          end;
-          prerr_newline ();
-          $Err.abort {void} ()
-        end
+        if knd <> CLOREF then () where {
+          val () = if knd = 0 then begin
+            $Loc.prerr_location loc0;
+            prerr ": INTERNAL ERROR: a closure at the toplevel"
+          end // end of [val]
+          val () = if knd = 1 then begin
+            prerr_loc_error1 (loc0);
+            prerr ": a closure pointer is not allowed at the toplevel"
+          end // end of [val]
+          val () = prerr_newline ()
+          val () = $Err.abort {void} ()
+        } // end of [if]
       end // end of [FUNCLOclo]
     | $Syn.FUNCLOfun () => ()
   // end of [val]
@@ -295,11 +297,11 @@ fn s0vararg_tr (s0a: s0vararg): s1vararg =
 (* ****** ****** *)
 
 fn p0at_tr_errmsg_opr (loc: loc_t): p1at = begin
-  prerr loc;
-  prerr ": error(1)";
-  prerr ": the operator needs to be applied.\n";
+  prerr_loc_error1 loc;
+  prerr ": the operator needs to be applied";
+  prerr_newline ();
   $Err.abort {p1at} ()
-end
+end // end of [p0at_tr_errmsg_opr]
 
 implement p0at_tr p0t0 = let
 
@@ -395,37 +397,31 @@ fun aux_item (p0t0: p0at): p1atitm = let
       end
 (*
     | _ => begin
-        prerr p0t0.p0at_loc;
-        prerr ": error(1)";
-        prerr ": p0at_tr: not available yet.\n";
+        prerr_loc_error1 p0t0.p0at_loc;
+        prerr ": p0at_tr: not available yet"; prerr_newline ();
         $Err.abort {p1atitm} ()
-      end
+      end // end of [_]
 *)
-  end
+end // end of [aux_item]
 
-and aux_itemlst (p0t0: p0at): p1atitmlst =
-  let
-    fun aux (res: p1atitmlst, p0t0: p0at): p1atitmlst =
-      case+ p0t0.p0at_node of
-      | P0Tapp (p0t1, p0t2) => let
-          val res = aux_item p0t2 :: res
-        in
-          aux (res, p0t1)
-        end
-      | _ => aux_item p0t0 :: res
-  in
-    aux (nil (), p0t0)
-  end
+and aux_itemlst (p0t0: p0at): p1atitmlst = let
+  fun aux (res: p1atitmlst, p0t0: p0at): p1atitmlst =
+    case+ p0t0.p0at_node of
+    | P0Tapp (p0t1, p0t2) => let
+        val res = aux_item p0t2 :: res in aux (res, p0t1)
+      end // end of [P0Tapp]
+    | _ => aux_item p0t0 :: res
+in
+  aux (nil (), p0t0)
+end // end of [aux_itemlst]
 
 in
   case+ aux_item p0t0 of
     | $Fix.ITEMatm p1t => p1t
     | $Fix.ITEMopr _ => p0at_tr_errmsg_opr p0t0.p0at_loc
-end
+end // end of [p0at_tr]
 
-implement p0atlst_tr p0ts = case+ p0ts of
-  | p0t :: p0ts => p0at_tr p0t :: p0atlst_tr p0ts
-  | nil () => nil ()
+implement p0atlst_tr p0ts = $Lst.list_map_fun (p0ts, p0at_tr)
 
 implement labp0atlst_tr (lp0ts) = case+ lp0ts of
   | LABP0ATLSTcons (l, p0t, lp0ts) => begin
@@ -502,8 +498,8 @@ fn s0exparg_tr (loc: loc_t, s0a: s0exparg): s1exparg =
 fn s0expdarg_tr (d0e: d0exp): s1exparg = let
   val d1e = d0exp_tr d0e in case+ d1e.d1exp_node of
     | D1Esexparg s1a => s1a | _ => begin
-        prerr d0e.d0exp_loc;
-        prerr ": Internal Error: d0exp_tr: D0Efoldat";
+        $Loc.prerr_location d0e.d0exp_loc;
+        prerr ": INTERNAL ERROR: d0exp_tr: D0Efoldat";
         prerr_newline ();
         $Err.abort {s1exparg} ()
       end // end of [_]
@@ -674,10 +670,8 @@ fn termination_metric_check
       end : bool
     in
       if (is_okay) then () else begin
-        prerr loc;
-        prerr ": error(1)";
-        prerr ": a termination metric is missing.";
-        prerr_newline ();
+        prerr_loc_error1 loc;
+        prerr ": a termination metric is missing"; prerr_newline ();
         $Err.abort ()
       end // end of [if]
     end // end of [Some]
@@ -775,9 +769,9 @@ fn sc0laulst_tr (sc0ls: sc0laulst): sc1laulst =
 (* ****** ****** *)
 
 fn d0exp_tr_errmsg_opr (loc: loc_t): d1exp = begin
-  prerr loc;
-  prerr ": error(1)";
-  prerr ": the operator needs to be applied.\n";
+  prerr_loc_error1 loc;
+  prerr ": the operator needs to be applied";
+  prerr_newline ();
   $Err.abort {d1exp} ()
 end // end of [d0exp_tr_errmsg_opr]
 
@@ -856,9 +850,9 @@ fun aux_item (d0e0: d0exp): d1expitm = let
               val fil = case+ $Fil.filenameopt_make name of
                 | ~Some_vt fil => fil
                 | ~None_vt () => begin
-                    prerr d1e.d1exp_loc; prerr ": error(1)";
+                    prerr_loc_error1 d1e.d1exp_loc;
                     prerr ": the file ["; prerr name;
-                    prerr "] is not available for dynamic loading.";
+                    prerr "] is not available for dynamic loading";
                     prerr_newline ();
                     $Err.abort {fil_t} ()
                   end
@@ -867,8 +861,8 @@ fun aux_item (d0e0: d0exp): d1expitm = let
               $Fix.ITEMatm (d1exp_dynload (loc0, fil))
             end
           | _ => begin
-              prerr d1e.d1exp_loc; prerr ": error(1)";
-              prerr ": the dynamic expression must be a string constant.";
+              prerr_loc_error1 d1e.d1exp_loc;
+              prerr ": the dynamic expression must be a string constant";
               prerr_newline ();
               $Err.abort {d1expitm} ()
             end
@@ -1161,11 +1155,10 @@ fun aux_item (d0e0: d0exp): d1expitm = let
       end // end of [D0Ewhile]
 (*
     | _ => begin
-        prerr d0e0.d0exp_loc;
-        prerr ": error(1)";
-        prerr ": d0exp_tr: not available yet.\n";
+        prerr_loc_error1 d0e0.d0exp_loc;
+        prerr ": d0exp_tr: not available yet"; prerr_newline ();
         $Err.abort {d1expitm} ()
-      end
+      end // end of [_]
 *)
 end // end of [aux_item]
 
@@ -1486,7 +1479,7 @@ implement d0ec_tr d0c0 = begin
             do_e0xpact_assert (e0xp.e0xp_loc, v1al)
         | E0XPACTerror () =>
             do_e0xpact_error (e0xp.e0xp_loc, v1al)
-        | E0XPACTprint () => do_e0xpact_print v1al
+        | E0XPACTprint () => do_e0xpact_prerr v1al
     in
       d1ec_none (d0c0.d0ec_loc)
     end // end of [D0Ce0xpact]
@@ -1596,11 +1589,10 @@ implement d0ec_tr d0c0 = begin
   | D0Cdynload (name) => let
       val filename: fil_t = case+ $Fil.filenameopt_make name of
         | ~Some_vt filename => filename | ~None_vt () => begin
-            prerr d0c0.d0ec_loc;
-            prerr ": error(1)";
+            prerr_loc_error1 d0c0.d0ec_loc;
             prerr ": the file [";
             prerr name;
-            prerr "] is not available for dynamic loading.";
+            prerr "] is not available for dynamic loading";
             prerr_newline ();
             $Err.abort {fil_t} ()
           end // end of [None_vt]
@@ -1612,14 +1604,13 @@ implement d0ec_tr d0c0 = begin
       val filename: fil_t = case+ $Fil.filenameopt_make name of
         | ~Some_vt filename => filename
         | ~None_vt () => begin
-            prerr d0c0.d0ec_loc;
-            prerr ": error(1)";
+            prerr_loc_error1 d0c0.d0ec_loc;
             prerr ": the file [";
             prerr name;
-            prerr "] is not available for static loading.";
+            prerr "] is not available for static loading";
             prerr_newline ();
             $Err.abort {fil_t} ()
-          end
+          end // end of [None_vt]
     in
       s0taload_tr (d0c0.d0ec_loc, idopt, filename)
     end // end of [D0Cstaload]
@@ -1641,24 +1632,22 @@ implement d0ec_tr d0c0 = begin
       val filename: fil_t = case+ $Fil.filenameopt_make name of
         | ~Some_vt filename => filename
         | ~None_vt () => begin
-            prerr d0c0.d0ec_loc;
-            prerr ": error(1)";
+            prerr_loc_error1 d0c0.d0ec_loc;
             prerr ": the file [";
             prerr name;
-            prerr "] is not available for inclusion.";
+            prerr "] is not available for inclusion";
             prerr_newline ();
             $Err.abort {fil_t} ()
-          end
+          end // end of [None_vt]
     in
       i0nclude_tr (d0c0.d0ec_loc, stadyn, filename)
     end // end of [D0Cinclude]
 (*
   | _ => begin
-      prerr d0c0.d0ec_loc;
-      prerr ": error(1)";
+      prerr_loc_error1 d0c0.d0ec_loc;
       prerr ": d0ec_tr: not available yet.\n";
       $Err.abort {d1ec} ()
-    end
+    end // end of [_]
 *)
 end // end of [d0ec_tr]
 
@@ -1685,8 +1674,8 @@ implement finalize () = () where {
             $Glo.ats_function_name_prefix_set (stropt_some s)
           end // end of [V1ALstring]
         | _ => begin
-            prerr e1xp.e1xp_loc; prerr ": error(1)";
-            prerr ": a string definition is required for ATS_FUNCTION_NAME_PREFIX.";
+            prerr_loc_error1 e1xp.e1xp_loc;
+            prerr ": a string definition is required for [ATS_FUNCTION_NAME_PREFIX]";
             prerr_newline ();
             $Err.abort {void} ()
           end // end of [_]
@@ -1719,8 +1708,8 @@ implement finalize () = () where {
             $Glo.ats_dynloadfuname_set (stropt_some s)
           end // end of [V1ALstring]
         | _ => begin
-            prerr e1xp.e1xp_loc; prerr ": error(1)";
-            prerr ": a string definition is required for ATS_DYNLOADFUNAME.";
+            prerr_loc_error1 e1xp.e1xp_loc;
+            prerr ": a string definition is required for [ATS_DYNLOADFUNAME]";
             prerr_newline ();
             $Err.abort {void} ()
           end // end of [_]

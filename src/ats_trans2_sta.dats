@@ -91,7 +91,12 @@ typedef symopt_t = Option sym_t
 (* ****** ****** *)
 
 overload = with $Sym.eq_symbol_symbol
-overload prerr with $Loc.prerr_location
+
+(* ****** ****** *)
+
+fn prerr_loc_error2 (loc: loc_t): void =
+  ($Loc.prerr_location loc; prerr ": error(2)")
+// end of [prerr_loc_error2]
 
 (* ****** ****** *)
 
@@ -110,15 +115,14 @@ fun s1rt_app_tr
         S2RTfun (s2ts1, s2t2)
       end
     | _ => begin
-        prerr "Internal Error: ";
-        prerr "[s1rt_app_tr]: [->] is not an infix operator!";
+        prerr "INTERNAL ERROR";
+        prerr ": [s1rt_app_tr]: [->] is not an infix operator!";
         prerr_newline ();
-        exit (1)      
-      end
+        $Err.abort {s2rt} ()
+      end // end of [_]
     end // end of [s1rt_is_arrow]
   | _ => begin
-      prerr loc0;
-      prerr ": error(2)";
+      prerr_loc_error2 loc0;
       $Deb.debug_prerrf (": %s: s1rt_app_tr", @(THISFILENAME));
       prerr ": sort application is not supported.";
       prerr_newline ();
@@ -138,8 +142,7 @@ implement s1rt_tr (s1t0) = begin
   | S1RTqid (q, id) => begin case+ the_s2rtenv_find_qua (q, id) of
     | ~Some_vt s2te => begin case+ s2te of
       | S2TEsrt s2t => s2t | _ => begin
-          prerr s1t0.s1rt_loc;
-          prerr ": error(2)";
+          prerr_loc_error2 s1t0.s1rt_loc;
           $Deb.debug_prerrf (": %s: s1rt_tr", @(THISFILENAME));
           prerr ": the identifier ["; $Sym.prerr_symbol id;
           prerr "] refers to an extended sort but not a sort.";
@@ -148,8 +151,7 @@ implement s1rt_tr (s1t0) = begin
         end // end of [_]
       end // end of [Some_vt]
     | ~None_vt () => begin
-        prerr s1t0.s1rt_loc;
-        prerr ": error(2)";
+        prerr_loc_error2 s1t0.s1rt_loc;
         $Deb.debug_prerrf (": %s: s1rt_tr", @(THISFILENAME));
         prerr ": the identifier ["; $Sym.prerr_symbol id;
         prerr "] refers to an unrecognized sort.";
@@ -160,8 +162,7 @@ implement s1rt_tr (s1t0) = begin
   | S1RTtup s1ts => S2RTtup (s1rtlst_tr s1ts)
 (*
   | _ => begin
-      prerr s1t0.s1rt_loc;
-      prerr ": error(2)";
+      prerr_loc_error2 s1t0.s1rt_loc;
       prerr ": not yet implemented: ["; prerr s1t0; prerr "]";
       prerr_newline ();
       $Err.abort ()
@@ -203,8 +204,7 @@ fn effvar_tr
         s2exp_var (s2v)
       end // end of [S2ITEMvar]
     | _ => begin
-        prerr efv.i0de_loc;
-        prerr ": error(2)";
+        prerr_loc_error2 efv.i0de_loc;
         $Deb.debug_prerrf (": %s: effvar_tr", @(THISFILENAME));
         prerr ": the static identifer [";
         $Sym.prerr_symbol efv.i0de_sym;
@@ -214,8 +214,7 @@ fn effvar_tr
       end // end of [_]
     end // end of [Some_vt]
   | ~None_vt () => begin 
-      prerr efv.i0de_loc;
-      prerr ": error(2)";
+      prerr_loc_error2 efv.i0de_loc;
       $Deb.debug_prerrf (": %s: effvar_tr", @(THISFILENAME));
       prerr ": unrecognized static identifer [";
       $Sym.prerr_symbol efv.i0de_sym;
@@ -250,8 +249,7 @@ in
   | list_cons (s1a_fst, s1as_rst) => let
       val os1t = s1rtopt_search s1as; val s1t = case+ os1t of
         | Some s1t => s1t | None () => begin
-            prerr s1a_fst.s1arg_loc;
-            prerr ": error(2)";
+            prerr_loc_error2 s1a_fst.s1arg_loc;
             $Deb.debug_prerrf (": %s: s1arglst_var_tr", @(THISFILENAME));
             prerr ": the static variable [";
             $Sym.prerr_symbol s1a_fst.s1arg_sym;
@@ -278,9 +276,8 @@ implement s1arg_var_tr_srt (s1a, s2t0) = let
         val s2t = s1rt_tr s1t
       in
         if s2t0 <= s2t then s2t else begin
-          prerr s1a.s1arg_loc;
+          prerr_loc_error2 s1a.s1arg_loc;
           $Deb.debug_prerrf (": %s: s1arg_var_tr_srt", @(THISFILENAME));
-          prerr ": error(2)";
           prerr ": the static variable [";
           $Sym.prerr_symbol s1a.s1arg_sym;
           prerr "] is expected to be of the sort [";
@@ -310,8 +307,7 @@ fun sp1at_arg_tr_dn
     end // end of [list_cons, list_cons]
   | (list_nil (), list_nil ()) => list_nil ()
   | (_, _) => begin
-      prerr loc0;
-      prerr ": error(2)";
+      prerr_loc_error2 loc0;
       prerr ": the static constructor [";
       $Syn.prerr_s0taq q; $Sym.prerr_symbol id; prerr "] requires ";
       case+ s1as of list_cons _ => prerr "less" | _ => prerr "more";
@@ -341,7 +337,7 @@ implement sp1at_tr_dn (sp1t, s2t_pat) = let
   val loc0 = sp1t.sp1at_loc
   fn errmsg1
     (q: s0taq, id: sym_t):<cloref1> sp2at = begin
-    $Loc.prerr_location loc0; prerr ": error(2)";
+    prerr_loc_error2 loc0;
     $Deb.debug_prerrf (": %s: sp1at_tr_dn", @(THISFILENAME));
     prerr ": the static identifier [";
     $Syn.prerr_s0taq q; $Sym.prerr_symbol id;
@@ -351,7 +347,7 @@ implement sp1at_tr_dn (sp1t, s2t_pat) = let
   end // end of [errmsg1]
   fn errmsg2 
     (q: s0taq, id: sym_t):<cloref1> sp2at = begin
-    $Loc.prerr_location loc0; prerr ": error(2)";
+    prerr_loc_error2 loc0;
     $Deb.debug_prerrf (": %s: sp1at_tr_dn", @(THISFILENAME));
     prerr ": the static identifier [";
     $Syn.prerr_s0taq q; $Sym.prerr_symbol id;
@@ -361,7 +357,7 @@ implement sp1at_tr_dn (sp1t, s2t_pat) = let
   end // end of [errmsg2]
   fn errmsg3
     (q: s0taq, id: sym_t):<cloref1> sp2at = begin
-    $Loc.prerr_location loc0; prerr ": error(2)";
+    prerr_loc_error2 loc0;
     $Deb.debug_prerrf (": %s: sp1at_tr_dn", @(THISFILENAME));
     prerr ": the static identifier [";
     $Syn.prerr_s0taq q; $Sym.prerr_symbol id; prerr "] is unrecognized.";
@@ -449,8 +445,7 @@ implement s1exp_tr_dn_impredicative (s1e) = let
   val s2e = s1exp_tr_up s1e; val s2t = s2e.s2exp_srt
 in
   if s2rt_is_impredicative s2t then s2e else begin
-    prerr s1e.s1exp_loc;
-    prerr ": error(2)";
+    prerr_loc_error2 s1e.s1exp_loc;
     $Deb.debug_prerrf (": %s: s1exp_tr_dn_impredicative", @(THISFILENAME));
     prerr ": the static expression needs to be impredicative";
     prerr " but is assigned the sort [";
@@ -468,8 +463,7 @@ implement s1expopt_tr_dn_impredicative (os1e) = case+ os1e of
 (* ****** ****** *)
 
 fn s1exp_any_tr_up (loc0: loc_t): s2exp = begin
-  prerr loc0;
-  prerr ": error(2)";
+  prerr_loc_error2 loc0;
   $Deb.debug_prerrf (": %s: s1exp_any_tr_up", @(THISFILENAME));
   prerr "the static expression needs to be ascribed a sort.";
   prerr_newline ();
@@ -489,8 +483,7 @@ fn s1exp_app_tr_up
           case+ un_s2rt_fun (s2e.s2exp_srt) of
           | ~Some_vt s2ts_s2t => s2ts_s2t
           | ~None_vt () => begin
-              prerr loc_fun;
-              prerr ": error(2)";
+              prerr_loc_error2 loc_fun;
               $Deb.debug_prerrf (": %s: s1exp_app_tr_up", @(THISFILENAME));
               prerr ": the static expresstion [";
               prerr s2e;
@@ -506,21 +499,19 @@ fn s1exp_app_tr_up
         val s2es = case+ compare (ns2es, ns2ts) of
           |  0 => s1explst_tr_dn (s1es, s2ts)
           |  1 => begin
-              prerr loc_app;
-              prerr ": error(2)";
+              prerr_loc_error2 loc_app;
               $Deb.debug_prerrf (": %s: s1exp_app_tr_up", @(THISFILENAME));
               prerr ": the static application needs less arguments.";
               prerr_newline ();
               $Err.abort ()
-            end
-          | ~1 => begin
-              prerr loc_app;
-              prerr ": error(2)";
+            end // end of [1]
+          | _ (* ~1 *) => begin
+              prerr_loc_error2 loc_app;
               $Deb.debug_prerrf (": %s: s1exp_app_tr_up", @(THISFILENAME));
               prerr ": the static application needs more arguments.";
               prerr_newline ();
               $Err.abort ()
-            end
+            end // end [_]
       in
         loop (loc_fun, loc_app, s2exp_app_srt (s2t, s2e, s2es), s1ess)
       end // end of [::]
@@ -538,8 +529,7 @@ fn s1exp_app_datconptr_tr_up
     | cons (s1es, s1ess) => begin
       case+ s1ess of
       | nil _ => s1es | cons _ => begin
-          prerr loc_app;
-          prerr ": error(2)";
+          prerr_loc_error2 loc_app;
           $Deb.debug_prerrf (": %s: s1exp_app_datconptr_tr_up", @(THISFILENAME));
           prerr ": the type constructor [";
           prerr d2c;
@@ -561,8 +551,7 @@ fn s1exp_app_datconptr_tr_up
   val arity = d2con_arity_full_get d2c
   val () =
     if ns2es > arity then begin
-      prerr loc_app;
-      prerr ": error(2)";
+      prerr_loc_error2 loc_app;
       $Deb.debug_prerrf (": %s: s1exp_app_datcon_tr_up", @(THISFILENAME));
       prerr ": the type constructor [";
       prerr d2c;
@@ -572,8 +561,7 @@ fn s1exp_app_datconptr_tr_up
     end // end of [if]
   val () =
     if ns2es < arity then begin
-      prerr loc_app;
-      prerr ": error(2)";
+      prerr_loc_error2 loc_app;
       $Deb.debug_prerrf (": %s: s1exp_app_datcon_tr_up", @(THISFILENAME));
       prerr ": the type constructor [";
       prerr d2c;
@@ -591,8 +579,7 @@ fn s1exp_app_datcontyp_tr_up
   (loc_app: loc_t, d2c: d2con_t, s1ess: s1explstlst)
   : s2exp = let
   fn err (loc_app: loc_t, d2c: d2con_t): s1explst = begin
-     prerr loc_app;
-     prerr ": error(2)";
+     prerr_loc_error2 loc_app;
      $Deb.debug_prerrf (": %s: s1exp_app_datcon_tr_up", @(THISFILENAME));
      prerr ": the type constructor [";
      prerr d2c;
@@ -622,15 +609,14 @@ fun s1exp_qid_app_tr_up
       case+ s2cst_select_s2explstlst (s2cs, s2ess) of
       | S2CSTLSTcons (s2c, _) => s2exp_app_wind (s2exp_cst s2c, s2ess)
       | _ => begin
-          prerr loc_app;
-          prerr ": error(2)";
+          prerr_loc_error2 loc_app;
           $Deb.debug_prerrf (": %s: s1exp_qid_app_tr_up", @(THISFILENAME));
           prerr ": none of the static constants referred to by [";
           $Syn.prerr_s0taq q; $Sym.prerr_symbol id;
           prerr "] is applicable.";
           prerr_newline ();
           $Err.abort ()
-        end
+        end // end of [_]
     end // end of [S2ITEMcst]
   | S2ITEMvar s2v => let
       val () = s2var_tmplev_check (loc_id, s2v)
@@ -644,12 +630,12 @@ fun s1exp_qid_app_tr_up
   | S2ITEMmod _ -> s1exp_qid_app_tr_up_errmsg_mod loc_id qid
 *)
   | _ => begin
-      prerr loc_id;
-      prerr ": s1exp_qid_app_tr_up: not implemented yet: s2i = ";
+      $Loc.prerr_location loc_id;
+      prerr ": INTERNAL ERROR: s1exp_qid_app_tr_up: not implemented yet: s2i = ";
       prerr s2i;
       prerr_newline ();
       $Err.abort ()
-    end
+    end // end of [_]
 end // end of [s1exp_qid_app_tr_up]
 
 (* ****** ****** *)
@@ -671,8 +657,8 @@ fn s1exp_qid_tr_up
           | _ => s2e_s2c
         end // end of [S2CSTLSTcons]
       | S2CSTLSTnil () => begin // this clause should be unreachable
-          prerr "Internal Error: ";
-          prerr "s1exp_qid_tr_up: Some: S2ITEMcst: S2CSTLSTnil";
+          prerr "INTERNAL ERROR";
+          prerr ": s1exp_qid_tr_up: Some: S2ITEMcst: S2CSTLSTnil";
           prerr_newline ();
           $Err.abort ()
         end // end of [S2CSTLSTnil]
@@ -688,8 +674,7 @@ fn s1exp_qid_tr_up
       end // end of [_]
     end // end of [Some_vt]
   | ~None_vt () => begin
-      prerr loc0;
-      prerr ": error(2)";
+      prerr_loc_error2 loc0;
       $Deb.debug_prerrf (": %s: s1exp_qid_tr_up", @(THISFILENAME));
       prerr ": the static identifier [";
       $Syn.prerr_s0taq q; $Sym.prerr_symbol id; prerr "] is unrecognized.";
@@ -716,8 +701,7 @@ fn s1exp_read_tr_up (_v: s1exp, s1e: s1exp): s2exp = let
   val s2e = s1exp_tr_up s1e; val s2t_s2e = s2e.s2exp_srt
   val () =
     if s2rt_is_impredicative s2t_s2e then () else begin
-      prerr s1e.s1exp_loc;
-      prerr ": error(2)";
+      prerr_loc_error2 s1e.s1exp_loc;
       $Deb.debug_prerrf (": %s: s1exp_read_tr_up", @(THISFILENAME));
       prerr ": the static expression needs to be impredicative";
       prerr " but is assigned the sort [";
@@ -738,8 +722,7 @@ fn s1exp_top_tr_up (knd: int, s1e: s1exp): s2exp = let
   val s2t_res = s2rt_base_fun s2t_fun
   val () =
     if s2rt_is_impredicative s2t_res then () else begin
-      prerr s1e.s1exp_loc;
-      prerr ": error(2)";
+      prerr_loc_error2 s1e.s1exp_loc;
       $Deb.debug_prerrf (": %s: s1exp_top_tr_up", @(THISFILENAME));
       prerr ": the static expression needs to be impredicative";
       prerr " but is assigned the sort [";
@@ -772,8 +755,7 @@ implement s1exp_arg_tr_up (s1e0, wths1es) = begin
         s1exp_invar_tr_up (refval, s1e_arg)
       end // end of [S1Einvar]
     | _ => begin
-        prerr s1e1.s1exp_loc;
-        prerr ": error(1)";
+        prerr_loc_error2 s1e1.s1exp_loc;
         $Deb.debug_prerrf (": %s: s1exp_arg_tr_up", @(THISFILENAME));
         prerr ": a refval type must begin with !(call-by-value) or &(call-by-reference)";
         prerr_newline ();
@@ -791,8 +773,7 @@ implement s1exp_arg_tr_dn_impredicative (s1e, wths1es) = let
   val s2e = s1exp_arg_tr_up (s1e, wths1es); val s2t = s2e.s2exp_srt
 in
   if s2rt_is_impredicative s2t then s2e else begin
-    prerr s1e.s1exp_loc;
-    prerr ": error(2)";
+    prerr_loc_error2 s1e.s1exp_loc;
     $Deb.debug_prerrf (": %s: s1exp_arg_tr_dn_impredicative", @(THISFILENAME));
     prerr ": the static expression needs to be impredicative";
     prerr " but is assigned the sort [";
@@ -852,22 +833,20 @@ fn s1exp_arrow_tr_up // arrow is a special type constructor
   : s2exp = let
   val s1es = (
     case+ s1ess of
-    | cons (s1es, nil ()) => s1es
-    | _ => begin
-        prerr loc0;
-        prerr ": error(2)";
+    | cons (s1es, nil ()) => s1es | _ => begin
+        prerr_loc_error2 loc0;
         $Deb.debug_prerrf (": %s: s1exp_arrow_tr_up", @(THISFILENAME));
         prerr ": illegal static application.";
         prerr_newline ();
         $Err.abort ()
-      end
+      end // end of [_]
   ) : s1explst
   val @(s1e_arg, s1e_res) = (
     case+ s1es of
     | cons (s1e1, cons (s1e2, nil ())) => @(s1e1, s1e2)
     | _ => begin
-        prerr loc0;
-        prerr "Internal Error: s1exp_arrow_tr_up: s1es = ";
+        $Loc.prerr_location loc0;
+        prerr "INTERNAL ERROR: s1exp_arrow_tr_up: s1es = ";
         prerr_s1explst s1es;
         prerr_newline ();
         $Err.abort ()
@@ -897,8 +876,7 @@ fn s1exp_arrow_tr_up // arrow is a special type constructor
           case+ 0 of
           | _ when types > 0 => begin case+ s1es of
             | nil () => cons (s2exp_vararg s2e, nil ()) | _ => begin
-                prerr s1e.s1exp_loc;
-                prerr ": error(2)";
+                prerr_loc_error2 s1e.s1exp_loc;
                 $Deb.debug_prerrf (": %s: s1exp_arrow_tr_up", @(THISFILENAME));
                 prerr ": this static expression must be the last argument.";
                 prerr_newline ();
@@ -907,8 +885,7 @@ fn s1exp_arrow_tr_up // arrow is a special type constructor
             end // end of [_ when types > 0]
           | _ when (imp > 0) => cons (s2e, aux (s1es, wths1es))
           | _ => begin
-              prerr s1e.s1exp_loc;
-              prerr ": error(2)";
+              prerr_loc_error2 s1e.s1exp_loc;
               $Deb.debug_prerrf (": %s: s1exp_arrow_tr_up", @(THISFILENAME));
               prerr ": the static expression needs to be impredicative";
               prerr " but is assigned the sort [";
@@ -947,8 +924,7 @@ fun s1rtext_tr (s1te0: s1rtext): s2rtext = begin
   | S1TEsrt s1t => begin case+ s1t.s1rt_node of
     | S1RTqid (q, id) => begin case+ the_s2rtenv_find id of
       | ~Some_vt s2te => s2te | ~None_vt () => begin
-          prerr s1t.s1rt_loc;
-          prerr ": error(2)";
+          prerr_loc_error2 s1t.s1rt_loc;
           $Deb.debug_prerrf (": %s: s1rtext_tr", @(THISFILENAME));
           prerr ": the identifier [";
           $Sym.prerr_symbol id;
@@ -1164,9 +1140,8 @@ fn s1exp_tytup_tr_up
       s2exp_tyrec_srt (s2t_rec, TYRECKINDbox (), 0(*npf*), ls2es)
     end
   | _ => begin
-      prerr loc0;
-      prerr ": Internal Error: s1exp_tr: S1Etytup";
-      prerr_newline ();
+      $Loc.prerr_location loc0;
+      prerr ": INTERNAL ERROR: s1exp_tr: S1Etytup"; prerr_newline ();
       $Err.abort {s2exp} ()
     end
 end // end of [s1exp_tytup_tr_up]
@@ -1204,9 +1179,8 @@ fn s1exp_tytup2_tr_up
       s2exp_tyrec_srt (s2t_rec, TYRECKINDbox (), npf, ls2es)
     end
   | _ => begin
-      prerr loc0;
-      prerr ": Internal Error: s1exp_tytup2_tr_up";
-      prerr_newline ();
+      $Loc.prerr_location loc0;
+      prerr ": INTERNAL ERROR: s1exp_tytup2_tr_up"; prerr_newline ();
       $Err.abort {s2exp} ()
     end
 end // end of [s1exp_tytup2_tr_up]
@@ -1280,9 +1254,8 @@ fn s1exp_tyrec_tr_up
       s2exp_tyrec_srt (s2t_rec, TYRECKINDbox (), 0(*npf*), ls2es)
     end
   | _ => begin
-      prerr loc0;
-      prerr ": Internal Error: s1exp_tyrec_tr_up";
-      prerr_newline ();
+      $Loc.prerr_location loc0;
+      prerr ": INTERNAL ERROR: s1exp_tyrec_tr_up"; prerr_newline ();
       $Err.abort {s2exp} ()
     end
 end // end of [s1exp_tyrec_tr_up]
@@ -1326,8 +1299,7 @@ in
           | ~Some_vt s2i => s1exp_qid_app_tr_up
               (s1e0.s1exp_loc, s1e_opr.s1exp_loc, q, id, s2i, s1ess_arg)
           | ~None_vt () => begin
-              prerr s1e.s1exp_loc;
-              prerr ": error(2)";
+              prerr_loc_error2 s1e.s1exp_loc;
               $Deb.debug_prerrf (": %s: s1exp_tr_up", @(THISFILENAME));
               prerr ": unrecognized static identifier [";
               $Syn.prerr_s0taq q; $Sym.prerr_symbol id;
@@ -1354,8 +1326,7 @@ in
       end
 *)
       val () = if knd = 0 then () else begin
-        prerr s1e0.s1exp_loc;
-        prerr ": error(2)";
+        prerr_loc_error2 s1e0.s1exp_loc;
         prerr ": The kind of existential quantifier #[...] is used incorrectly.";
         prerr_newline ();
         $Err.abort {void} ()
@@ -1369,15 +1340,14 @@ in
     end // end of [S1Eexi]
   | S1Eextype name => s2exp_extype_srt (s2rt_viewt0ype, name)
   | S1Eimp _ => begin
-      prerr s1e0.s1exp_loc;
-      prerr "Internal Error: s1exp_tr_up: S1Eimp";
+      $Loc.prerr_location s1e0.s1exp_loc;
+      prerr ": INTERNAL ERROR: s1exp_tr_up: S1Eimp";
       prerr_newline ();
       $Err.abort {s2exp} ()
     end // end of [S1Eimp]
   | S1Eint i(*string*) => s2exp_intinf ($IntInf.intinf_make_string i)
   | S1Einvar (refval, s1e) => begin
-      prerr s1e0.s1exp_loc;
-      prerr ": error(1)";
+      prerr_loc_error2 s1e0.s1exp_loc;
       prerr ": an invariant type can only be assigned to the argument of a function.";
       prerr_newline ();
       $Err.abort {s2exp} ()
@@ -1399,8 +1369,8 @@ in
       s1exp_list_tr_up (s1e0.s1exp_loc, npf, s1es)
     end // end of [S1Elist]
   | S1Emod _ => begin
-      prerr s1e0.s1exp_loc;
-      prerr ": s1exp_tr_up: S1Emod: not implemented yet.";
+      $Loc.prerr_location s1e0.s1exp_loc;
+      prerr ": INTERNAL ERROR: s1exp_tr_up: S1Emod: not implemented yet.";
       prerr_newline ();
       $Err.abort {s2exp} ()
     end // end of [S1Emod]
@@ -1411,8 +1381,7 @@ in
     end // end of [S1Estruct]
   | S1Etop (knd, s1e) => s1exp_top_tr_up (knd, s1e)
   | S1Etrans _ => begin
-      prerr s1e0.s1exp_loc;
-      prerr ": error(1)";
+      prerr_loc_error2 s1e0.s1exp_loc;
       prerr ": a transitional type can only be assigned to the argument of a function.";
       prerr_newline ();
       $Err.abort {s2exp} ()
@@ -1464,8 +1433,7 @@ implement s1exp_tr_dn (s1e0, s2t0) = begin
       if s2t0 <= s2rt_viewt0ype then
         s2exp_extype_srt (s2t0, name)
       else begin
-        prerr s1e0.s1exp_loc;
-        prerr ": error(2)";
+        prerr_loc_error2 s1e0.s1exp_loc;
         $Deb.debug_prerrf (": %s: s1exp_tr_dn", @(THISFILENAME));
         prerr ": the external type cannot be assigned the sort [";
         prerr s2t0;
@@ -1479,8 +1447,7 @@ implement s1exp_tr_dn (s1e0, s2t0) = begin
       val s2t0_new = s2e0.s2exp_srt
     in
       if s2t0_new <= s2t0 then s2e0 else begin
-        prerr s1e0.s1exp_loc;
-        prerr ": error(2)";
+        prerr_loc_error2 s1e0.s1exp_loc;
         $Deb.debug_prerrf (": %s: s1exp_tr_dn", @(THISFILENAME));
         prerr ": the static expression is of sort [";
         prerr s2t0_new;
@@ -1766,8 +1733,7 @@ end // end of [s1expdef_s1aspdec_tr_main]
 
 fn s1expdef_tr (res: s2rtopt, d1c: s1expdef): s2cst_t = let
   fn err (d1c: s1expdef): void = begin
-    prerr d1c.s1expdef_loc;
-    prerr ": error(2)";
+    prerr_loc_error2 d1c.s1expdef_loc;
     $Deb.debug_prerrf (": %s: s1expdef_tr", @(THISFILENAME));
     prerr ": the sort for the definition does not match";
     prerr " the sort assigned to the static constant [";
@@ -1835,8 +1801,7 @@ implement s1aspdec_tr (d1c) = let
   fn err1
     (loc: loc_t, q: $Syn.s0taq, id: sym_t,
      s2t_s2c: s2rt, s2t_s2e: s2rt): s2aspdec = begin
-    prerr loc;
-    prerr ": error(2)";
+    prerr_loc_error2 loc;
     $Deb.debug_prerrf (": %s: s1aspdec_tr: err1", @(THISFILENAME));
     prerr ": sort mismatch";
     prerr ": the sort of the static constant [";
@@ -1851,8 +1816,7 @@ implement s1aspdec_tr (d1c) = let
   end // end of [err1]
 
   fn err2 (loc: loc_t, q: $Syn.s0taq, id: sym_t): s2aspdec = begin
-    prerr loc;
-    prerr ": error(2)";
+    prerr_loc_error2 loc;
     $Deb.debug_prerrf (": %s: s1aspdec_tr: err2", @(THISFILENAME));
     prerr ": the static constant [";
     $Syn.prerr_s0taq q; $Sym.prerr_symbol id;
@@ -1862,8 +1826,7 @@ implement s1aspdec_tr (d1c) = let
   end // end of [err2]
 
   fn err3 (loc: loc_t, q: $Syn.s0taq, id: sym_t): s2aspdec = begin
-    prerr loc;
-    prerr ": error(2)";
+    prerr_loc_error2 loc;
     $Deb.debug_prerrf (": %s: s1aspdec_tr: err2", @(THISFILENAME));
     prerr ": the static constant referred to by [";
     $Syn.prerr_s0taq q; $Sym.prerr_symbol id;
@@ -1873,8 +1836,7 @@ implement s1aspdec_tr (d1c) = let
   end // end of [err3]
 
   fn err4 (loc: loc_t, q: $Syn.s0taq, id: sym_t): s2aspdec = begin
-    prerr loc;
-    prerr ": error(2)";
+    prerr_loc_error2 loc;
     $Deb.debug_prerrf (": %s: s1aspdec_tr: err4", @(THISFILENAME));
     prerr ": the identifier [";
     $Syn.prerr_s0taq q; $Sym.prerr_symbol id;
@@ -1884,8 +1846,7 @@ implement s1aspdec_tr (d1c) = let
   end // end of [err4]
 
   fn err5 (loc: loc_t, q: $Syn.s0taq, id: sym_t): s2aspdec = begin
-    prerr loc;
-    prerr ": error(2)";
+    prerr_loc_error2 loc;
     $Deb.debug_prerrf (": %s: s1aspdec_tr: err5", @(THISFILENAME));
     prerr ": the identifier [";
     $Syn.prerr_s0taq q; $Sym.prerr_symbol id;

@@ -51,16 +51,6 @@ staload "ats_fixity.sats"
 
 (* ****** ****** *)
 
-val this_file: string = "ats_fixity.dats"
-
-fun error {a:viewtype} (msg: string): a =
-  (prerr this_file; prerr ": "; $Err.error msg)
-
-fun error_loc {a:viewtype} (loc: $Loc.location_t, msg: string): a =
-  (prerr this_file; prerr ": "; $Err.error_location (loc, msg))
-
-(* ****** ****** *)
-
 assume prec_t: t@ype = int
 
 implement prec_make_int (i: int) = i
@@ -249,12 +239,11 @@ end // end of [oper_precedence]
 #define nil list_nil
 #define :: list_cons
 
-implement fixity_resolve
-  {a:type} (loc0, app, xs) = let
+implement fixity_resolve {a:type} (loc0, app, xs) = let
 
 fn err (loc: $Loc.location_t): a = begin
-  $Loc.prerr_location loc;
-  prerr ": error(1): fixity cannot be resolved.";
+  $Loc.prerr_location loc; prerr ": error(1)";
+  prerr ": fixity cannot be resolved";
   prerr_newline ();
   $Err.abort {a} ()
 end // end of [err]
@@ -294,7 +283,7 @@ fun resolve (xs: IS, m: I, ys: IS)
       end // end of [let]
     | (OPERpos _, _ :: nil ()) => reduce (xs, m :: ys)
     | (_, _) => err (loc0)
-    end // end of [begin]
+    end // end of [_, ITEMopr, _]
 end // end of [resolve]
 
 and resolve_app

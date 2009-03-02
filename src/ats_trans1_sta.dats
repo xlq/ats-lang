@@ -74,17 +74,21 @@ typedef fil_t = $Fil.filename_t
 
 (* ****** ****** *)
 
-overload prerr with $Loc.prerr_location
 overload prerr with $Sym.prerr_symbol
 
 (* ****** ****** *)
 
+fn prerr_loc_error1 (loc: loc_t): void =
+  ($Loc.prerr_location loc; prerr ": error(1)")
+// end of [prerr_loc_error1]
+
+(* ****** ****** *)
+
 fn prec_tr_errmsg (opr: i0de): $Fix.prec_t = begin
-  prerr opr.i0de_loc;
-  prerr ": error(1)";
+  prerr_loc_error1 opr.i0de_loc;
   prerr ": the operator [";
   prerr opr.i0de_sym;
-  prerr "] is given no fixity.";
+  prerr "] is given no fixity";
   prerr_newline ();
   $Err.abort ()
 end // end of [prec_tr_errmsg]
@@ -97,9 +101,9 @@ fn p0rec_tr (p0: p0rec): $Fix.prec_t = let
     | ~Some_vt fxty => let
 (*
         val () = begin
-          print "p0rec_tr: Some: id = ";
-          $Sym.print_symbol_code id.i0de_sym;
-          print_newline ()
+          prerr "p0rec_tr: Some: id = ";
+          $Sym.prerr_symbol_code id.i0de_sym;
+          prerr_newline ()
         end // end of [val]
 *)
         val precopt = $Fix.precedence_of_fixity fxty
@@ -142,8 +146,8 @@ fn f (e1: e1xp, e2: e1xp):<cloref1> e1xpitm = let
   val e_app = e1xp_app (loc, e1, e2.e1xp_loc, es2)
 (*
   val () = begin
-    print "e1xpitm_app: f: e_app = "; print e_app; print_newline ()
-  end
+    prerr "e1xpitm_app: f: e_app = "; prerr e_app; prerr_newline ()
+  end // end of [val]
 *)
 in
   $Fix.ITEMatm (e_app)
@@ -170,11 +174,10 @@ end // end of [e1xpitm_backslash]
 (* ****** ****** *)
 
 fn e0xp_tr_errmsg_opr (loc: loc_t): e1xp = begin
-  prerr loc;
-  prerr ": error(1)";
+  prerr_loc_error1 loc;
   prerr ": the operator needs to be applied.\n";
   $Err.abort {e1xp} ()
-end
+end // end of [e0xp_tr_errmsg_opr]
   
 implement e0xp_tr e0 = let
 
@@ -260,9 +263,8 @@ end // end of [s1rtitm_backslash]
 (* ****** ****** *)
 
 fn s0rt_tr_errmsg_opr (loc: loc_t): s1rt = begin
-  prerr loc;
-  prerr ": error(1)";
-  prerr ": the operator needs to be applied.\n";
+  prerr_loc_error1 loc;
+  prerr ": the operator needs to be applied";
   $Err.abort {s1rt} ()
 end // end of [s0rt_tr_errmsg_opr]
   
@@ -318,9 +320,8 @@ fn s0rtpol_tr (s0tp: s0rtpol): s1rtpol =
 fn s0rtpol_srt_tr (s0tp: s0rtpol): s1rt =
   if s0tp.s0rtpol_pol = 0 then s0rt_tr s0tp.s0rtpol_srt
   else begin
-    prerr s0tp.s0rtpol_loc;
-    prerr ": error(1)";
-    prerr ": only a nonpolarized sort is allowed here.";
+    prerr_loc_error1 s0tp.s0rtpol_loc;
+    prerr ": only a nonpolarized sort is allowed here";
     prerr_newline ();
     $Err.abort ()
   end
@@ -362,19 +363,19 @@ implement d0ec_fixity_tr (f0xty, ids) = let
     | cons (id, ids) => let
 (*
         val () = begin
-          print "d0ec_fixity_tr: loop: id = ";
-          $Sym.print_symbol_code id.i0de_sym;
-          print_newline ()
+          prerr "d0ec_fixity_tr: loop: id = ";
+          $Sym.prerr_symbol_code id.i0de_sym;
+          prerr_newline ()
         end
         val () = begin
-          print "the_fxtyenv_add: before: \n"; fxty_env_print ()
-        end
+          prerr "the_fxtyenv_add: before: \n"; the_fxtyenv_prerr ()
+        end // end of [val]
 *)
         val () = the_fxtyenv_add (id.i0de_sym, fxty)
 (*
         val () = begin
-          print "the_fxtyenv_add: after: \n"; fxty_env_print ()
-        end
+          prerr "the_fxtyenv_add: after: \n"; the_fxtyenv_prerr ()
+        end // end of [val]
 *)
       in
         loop (fxty, ids)
@@ -406,31 +407,33 @@ implement do_e0xpact_assert (loc, v) = let
   ) : bool
 in
   if is_false then begin
-    prerr loc; prerr ": error(1)";
-    prerr ": [#assert] failed."; prerr_newline ();
+    prerr_loc_error1 loc;
+    prerr ": [#assert] failed"; prerr_newline ();
     exit {void} (1)
   end // end of [if]
 end // end of [do_e0xpact_assert]
 
 implement do_e0xpact_error (loc, v) = let
   val () = begin
-    prerr loc; prerr ": error(1)"; prerr ": [#error]: "
+    prerr_loc_error1 loc;
+    prerr ": [#error] directive encountered: "
   end // end of [val]
   val () = case+ v of
     | V1ALchar c => prerr c
     | V1ALfloat f => prerr f
     | V1ALint i => prerr i
     | V1ALstring s => prerr s
+  // end of [val]
 in
   exit {void} (1)
 end // end of [do_e0xpact_error]
 
-implement do_e0xpact_print (v) = case+ v of
+implement do_e0xpact_prerr (v) = case+ v of
   | V1ALchar c => prerr c
   | V1ALfloat f => prerr f
   | V1ALint i => prerr i
   | V1ALstring s => prerr s
-// end of [do_e0xpact_print]
+// end of [do_e0xpact_prerr]
 
 (* ****** ****** *)
 
@@ -538,8 +541,8 @@ fn f (s1e1: s1exp, s1e2: s1exp):<cloref1> s1expitm = let
   val s1e_app = s1exp_app (loc, s1e1, s1e2.s1exp_loc, s1es2)
 (*
   val () = begin
-    print "s1expitm_app: f: s1e_app = "; print s1e_app; print_newline ()
-  end
+    prerr "s1expitm_app: f: s1e_app = "; prerr s1e_app; prerr_newline ()
+  end // end of [val]
 *)
 in
   $Fix.ITEMatm s1e_app
@@ -579,9 +582,8 @@ implement s0qualstlst_tr (s0qss) = $Lst.list_map_fun (s0qss, s0qualst_tr)
 (* ****** ****** *)
 
 fn s0exp_tr_errmsg_opr (loc: loc_t): s1exp = begin
-  prerr loc;
-  prerr ": error(1)";
-  prerr ": the operator needs to be applied.\n";
+  prerr_loc_error1 loc;
+  prerr ": the operator needs to be applied";
   $Err.abort {s1exp} ()
 end
 
@@ -673,7 +675,7 @@ implement s0exp_tr s0e0 = let
         val (fc, lin, prf, efc) = $Eff.e0fftaglst_tr (fc, tags)
 (*
         val () = begin
-          print "s0exp_tr: S0Eimp: efc = "; $Eff.print_effcst efc; print_newline ()
+          prerr "s0exp_tr: S0Eimp: efc = "; $Eff.prerr_effcst efc; prerr_newline ()
         end // end of [val]
 *)
       in
@@ -697,9 +699,8 @@ implement s0exp_tr s0e0 = let
         val s1e_lam = s1exp_lam (loc0, arg, res, body)
 (*
         val () = begin
-          print "s0exp_tr: S0Elam: s1e_lam = ";
-          print s1e_lam;
-          print_newline ();
+          prerr "s0exp_tr: S0Elam: s1e_lam = "; prerr s1e_lam;
+          prerr_newline ();
         end // end of [val]
 *)
       in
@@ -761,21 +762,17 @@ implement s0exp_tr s0e0 = let
         $Fix.ITEMatm (s1exp_union (loc0, s1e, ls1es))
       end // end of [S0Eunion]
     | _ => begin
-        prerr loc0;
-        prerr ": error(1)";
-        prerr ": s0exp_tr: not available yet.\n";
+        prerr_loc_error1 loc0;
+        prerr ": s0exp_tr: not available yet";
         $Err.abort {s1expitm} ()
       end // end of [_]
-  end
-  // end of [aux_item]
+  end // end of [aux_item]
 
   and aux_itemlst (s0e0: s0exp): s1expitmlst = let
     fun aux (res: s1expitmlst, s0e0: s0exp): s1expitmlst =
       case+ s0e0.s0exp_node of
       | S0Eapp (s0e1, s0e2) => let
-          val res = aux_item s0e2 :: res
-        in
-          aux (res, s0e1)
+          val res = aux_item s0e2 :: res in aux (res, s0e1)
         end // end of [S0Eapp]
       | _ => aux_item s0e0 :: res
     // end of [aux]
@@ -825,8 +822,8 @@ implement tmps0explstlst_tr (ts0ess) = begin
   case+ ts0ess of
   | TMPS0EXPLSTLSTnil () => TMPS1EXPLSTLSTnil ()
   | TMPS0EXPLSTLSTcons (loc, s0es, ts0ess) => begin
-     TMPS1EXPLSTLSTcons (loc, s0explst_tr s0es, tmps0explstlst_tr ts0ess)
-    end
+      TMPS1EXPLSTLSTcons (loc, s0explst_tr s0es, tmps0explstlst_tr ts0ess)
+    end // end of [TMPS0EXPLSTLSTcons]
 end // end of [tmps0explstlst_tr]
 
 (* ****** ****** *)
@@ -844,11 +841,11 @@ end // end of [witht0ype_tr]
 implement s0rtdef_tr (d) = let
   val s1te = s0rtext_tr d.s0rtdef_def
 (*
-  val () = print "s0rtdef_tr: s1te = "
-  val (pf_stdout | ptr_stdout) = stdout_get ()
-  val () = fprint (file_mode_lte_w_w | !ptr_stdout, s1te)
-  val () = stdout_view_set (pf_stdout | (*none*))
-  val () = print_newline ()
+  val () = prerr "s0rtdef_tr: s1te = "
+  val (pf_stderr | ptr_stderr) = stderr_get ()
+  val () = fprint (file_mode_lte_w_w | !ptr_stderr, s1te)
+  val () = stderr_view_set (pf_stderr | (*none*))
+  val () = prerr_newline ()
 *)
 in
   s1rtdef_make (d.s0rtdef_loc, d.s0rtdef_sym, s1te)
@@ -864,8 +861,8 @@ implement s0expdef_tr (d) = let
   val def = s0exp_tr d.s0expdef_def
 (*
   val () = begin
-    print "s0expdef_tr: def = "; print def; print_newline ()
-  end
+    prerr "s0expdef_tr: def = "; prerr def; prerr_newline ()
+  end // end of [val]
 *)
 in
   s1expdef_make (d.s0expdef_loc, d.s0expdef_sym, arg, res, def)
