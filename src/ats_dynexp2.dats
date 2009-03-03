@@ -1052,6 +1052,10 @@ implement d2ec_dcstdec (loc, dck, d2cs) = '{
   d2ec_loc= loc, d2ec_node= D2Cdcstdec (dck, d2cs)
 }
 
+implement d2ec_overload (loc, id, qid) = '{
+  d2ec_loc= loc, d2ec_node= D2Coverload (id, qid)
+}
+
 implement d2ec_extype (loc, name, s2e_def) = '{
   d2ec_loc= loc, d2ec_node= D2Cextype (name, s2e_def)
 }

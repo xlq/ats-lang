@@ -261,7 +261,7 @@ fn err (loc_sap: loc_t, d2c: d2con_t): s2exp = begin
   prerr "] is applied to too many static arguments.";
   prerr_newline ();
   $Err.abort {s2exp} ()
-end
+end // end of [err]
 
 in // in of [let]
   case+ s1as of
@@ -1064,8 +1064,8 @@ fn c1lau_tr {n:nat} (n: int n, c1l: c1lau): c2lau n = let
   val np2ts: int np2ts = $Lst.list_length p2ts
 (*
   val () = begin
-    printf ("c1lau_tr: n = %i and np2ts = %i\n", @(n, np2ts))
-  end
+    prerrf ("c1lau_tr: n = %i and np2ts = %i\n", @(n, np2ts))
+  end // end of [val]
 *)
   val () = (
     if np2ts <> n then begin
@@ -1245,7 +1245,7 @@ implement d1exp_tr (d1e0): d2exp = let
   val loc0 = d1e0.d1exp_loc
 (*
   val () = begin
-    prerr "d1exp_tr: d1e0 = "; prerr_d1exp d1e0; print_newline ()
+    prerr "d1exp_tr: d1e0 = "; prerr_d1exp d1e0; prerr_newline ()
   end // end of [val]
 *)
 in
@@ -1494,8 +1494,8 @@ in
   | D1Emacsyn (knd, d1e) => let
 (*
       val () = begin
-        print "d1exp_tr: d1e0 = "; print d1e0; print_newline ()
-      end
+        prerr "d1exp_tr: d1e0 = "; prerr d1e0; prerr_newline ()
+      end // end of [val]
 *)
     in
       case+ knd of
@@ -1661,13 +1661,16 @@ end // end of [symelim_tr]
 fn overload_tr (id: $Syn.i0de, qid: $Syn.dqi0de): void = let
 (*
   val () = begin
-    prerr "overload_tr: id = "; prerr id.i0de_sym;
-    prerr " and qid = "; prerr qid.dqi0de_qua; prerr qid.dqi0de_sym;
-    prerr_newline ();
+    prerr "overload_tr: id = ";
+    prerr id.i0de_sym; prerr_newline ();
+    prerr "overload_tr: qid = ";
+    prerr qid.dqi0de_qua; prerr qid.dqi0de_sym; prerr_newline ();
   end // end of [val]
 *)
-  val d2i = (
-    case+ the_d2expenv_find_qua (qid.dqi0de_qua, qid.dqi0de_sym) of
+  val ans = 
+    the_d2expenv_find_qua (qid.dqi0de_qua, qid.dqi0de_sym)
+  // end of [val]
+  val d2i = (case+ ans of
     | ~Some_vt d2i => d2i
     | ~None_vt () => begin
         prerr_loc_error2 qid.dqi0de_loc;
@@ -1679,8 +1682,16 @@ fn overload_tr (id: $Syn.i0de, qid: $Syn.dqi0de): void = let
         $Err.abort {d2item} ()
       end // end of [None_vt]
   ) : d2item
-  val d2is = (case+
-    the_d2expenv_find id.i0de_sym of
+  var is_current: bool = false
+  val ans = ans where {
+    val id_sym = id.i0de_sym
+    val ans = the_d2expenv_current_find id_sym
+    val ans = (case+ ans of
+      | Some_vt _ => (is_current := true; fold@ ans; ans)
+      | ~None_vt () => the_d2expenv_pervasive_find id_sym
+    ) : d2itemopt_vt
+  } // end of [val]
+  val d2is = (case+ ans of
     | ~Some_vt d2i => begin case+ d2i of
       | D2ITEMsym d2is => d2is | _ => begin
           prerr_loc_error2 id.i0de_loc;
@@ -1702,9 +1713,27 @@ fn overload_tr (id: $Syn.i0de, qid: $Syn.dqi0de): void = let
         $Err.abort {d2itemlst} ()
       end // end of [None_vt]
   ) : d2itemlst
+(*
+  val () = begin
+    prerr "overload_tr: d2is := "; prerr_d2itemlst d2is; prerr_newline ()
+  end // end of [val]
+*)
+  val d2i_new = D2ITEMsym (d2i :: d2is)
 in
-  the_d2expenv_add (id.i0de_sym, D2ITEMsym (d2i :: d2is))
+  if is_current then begin
+    the_d2expenv_add (id.i0de_sym, d2i_new)
+  end else begin
+    the_d2expenv_pervasive_replace (id.i0de_sym, d2i_new)
+  end // end of [if]
 end // end of [overload_tr]
+
+fn overload_tr_if
+  (id: $Syn.i0de, qid: $Syn.dqi0de): void = let
+  val level = staload_level_get_level ()
+  val topknd = staload_level_get_topkind ()
+in
+  if (level + topknd) <= 1 then overload_tr (id, qid) else ()
+end // end of [overload_tr_if]
 
 (* ****** ****** *)
 
@@ -1761,10 +1790,8 @@ fn f1undec_tr (
   val def = d1exp_tr (d1c.f1undec_def)
 (*
   val () = begin
-    print "f1undec_tr: d2v = "; print d2v; print_newline ()
-  end
-  val () = begin
-    print "f1undec_tr: def = "; print def; print_newline ()
+    prerr "f1undec_tr: d2v = "; prerr d2v; prerr_newline ()
+    prerr "f1undec_tr: def = "; prerr def; prerr_newline ()
   end
 *)
   val ann = witht1ype_tr (d1c.f1undec_ann)
@@ -2442,28 +2469,32 @@ fn s1taload_tr
    d1cs: d1eclst)
   : d2ec = let
 (*
-  val () = begin case+ idopt of
-    | Some id => begin
-        print "s1taload_tr: staid = "; print id; print_newline ()
-      end
-    | None () => begin
-        print "s1taload_tr: staid = None"; print_newline ()
-      end
-  end // end of [val]
+  val () = prerr "s1taload_tr: staid = "
+  val () = case+ idopt of
+    | Some id => prerr id | None () => prerr "None"
+  // end of [val]
+  val () = prerr_newline ()
   val () = begin
-    print "s1taload_tr: filename = "; print fil; print_newline ()
+    prerr "s1taload_tr: filename = "; $Fil.prerr_filename fil;
+    prerr_newline ()
   end // end of [val]
 *)
+  var d2cs_loaded: d2eclst = list_nil ()
   val fil_sym = $Fil.filename_full_sym fil
-  val od2cs = (
-    case+ d2eclst_namespace_find fil_sym of
-    | ~Some_vt _ => None () | ~None_vt _ => let
-        val (pf_token | ()) = staload_level_inc ()
+  val staloadknd = (
+    case+ idopt of Some _ => 1 | None _ => 0 (*opened*)
+  ) : int // end of [val]
+  val (pf_token | ()) = staload_level_push (staloadknd)
+  val ans = d2eclst_namespace_find fil_sym
+  val od2cs = (case+ ans of
+    | ~Some_vt d2cs => let
+        val () = d2cs_loaded := d2cs in None ()
+      end // end of [Some_vt]
+    | ~None_vt _ => let
         val () = trans2_env_save ()
         val d2cs = d1eclst_tr d1cs
-        val () = trans2_env_namespace_add_top (fil_sym)
+        val () = trans2_env_namespace_add_topenv (fil_sym)
         val () = trans2_env_restore ()
-        val () = staload_level_dec (pf_token | (*none*))
         val () = d2eclst_namespace_add (fil_sym, d2cs)
       in
         Some d2cs
@@ -2473,7 +2504,28 @@ fn s1taload_tr
     | Some id => the_s2expenv_add (id, S2ITEMfil fil)
     | None () => begin
         $NS.the_namespace_add fil_sym (* opened file *)
-      end
+      end // end of [None]
+  // end of [val]
+  val () = (case+ d2cs_loaded of
+    | list_nil () => () | list_cons _ => let
+        val level = staload_level_get_level ()
+        val topknd = staload_level_get_topkind ()
+      in
+        if (level + topknd <= 1) then loop (d2cs_loaded)
+      end // end of [list_cons]
+  ) where {
+    fun loop (d2cs: d2eclst)
+      : void = begin case+ d2cs of
+      | list_cons (d2c, d2cs) => loop d2cs where {
+          val () = case+ d2c.d2ec_node of
+            | D2Coverload (id, qid) => overload_tr (id, qid)
+            | _ => ()
+          // end of [val]
+        } // end of [list_cons]
+      | list_nil () => ()
+    end // end of [loop]
+  } // end of [val]
+  val () = staload_level_pop (pf_token | (*none*))
 in
   d2ec_staload (loc0, fil, od2cs)
 end // end of [s1taload_tr]
@@ -2485,52 +2537,52 @@ implement d1ec_tr (d1c0) = begin
   | D1Cnone () => d2ec_none (d1c0.d1ec_loc)
   | D1Clist d1cs => begin
       d2ec_list (d1c0.d1ec_loc, d1eclst_tr d1cs)
-    end
+    end // end of [D1Clist]
   | D1Csymintr ids => begin
       symintr_tr (ids); d2ec_none (d1c0.d1ec_loc)
-    end
+    end // end of [D1Csymintr]
   | D1Csymelim ids => begin
       symelim_tr (ids); d2ec_none (d1c0.d1ec_loc)
-    end
+    end // end of [D1Csymelim]
   | D1Ce1xpdef (id, def) => begin
       the_s2expenv_add (id, S2ITEMe1xp def);
       the_d2expenv_add (id, D2ITEMe1xp def);
       d2ec_none (d1c0.d1ec_loc)
-    end
+    end // end of [D1Ce1xpdef]
   | D1Cdatsrts (para, d1cs) => begin
       d1atsrtdeclst_tr d1cs; d2ec_none (d1c0.d1ec_loc)
-    end
+    end // end of [D1Cdatsrts]
   | D1Csrtdefs d1cs => begin
       s1rtdeflst_tr d1cs; d2ec_none (d1c0.d1ec_loc)
-    end
+    end // end of [D1Csrtdefs]
   | D1Cstacons (absknd, d1cs) => begin
       s1taconlst_tr (absknd, d1cs); d2ec_none (d1c0.d1ec_loc)
-    end
+    end // end of [D1Cstacons]
   | D1Cstacsts d1cs => begin
       s1tacstlst_tr d1cs; d2ec_none (d1c0.d1ec_loc)
-    end
+    end // end of [D1Cstacsts]
   | D1Cstavars d1cs => let
       val d2cs = s1tavarlst_tr d1cs
     in
       d2ec_stavars (d1c0.d1ec_loc, d2cs)
-    end
+    end // end of [D1Cstavars]
   | D1Csexpdefs (os1t, d1cs) => begin
       s1expdeflst_tr (s1rtopt_tr os1t, d1cs);
       d2ec_none (d1c0.d1ec_loc)
-    end
+    end // end of [D1Csexpdefs]
   | D1Csaspdec (d1c) => begin
       d2ec_saspdec (d1c0.d1ec_loc, s1aspdec_tr d1c)
-    end
+    end // end of [D1Csaspdec]
   | D1Cdatdecs (dtk, d1cs_dat, d1cs_def) => let
       val s2cs = d1atdeclst_tr (dtk, d1cs_dat, d1cs_def)
     in
       d2ec_datdec (d1c0.d1ec_loc, dtk, s2cs)
-    end
+    end // end of [D1Cdatdecs]
   | D1Cexndecs (d1cs) => let
       val d2cs = e1xndeclst_tr d1cs
     in
       d2ec_exndec (d1c0.d1ec_loc, d2cs)
-    end
+    end // end of [D1Cexndecs]
   | D1Cdcstdecs (dck, decarg, d1cs) => let
       val (pf_s2expenv | ()) = the_s2expenv_push ()
       val s2vpss = s1qualstlst_tr (decarg)
@@ -2538,36 +2590,37 @@ implement d1ec_tr (d1c0) = begin
       val () = the_s2expenv_pop (pf_s2expenv | (*none*))
     in
       d2ec_dcstdec (d1c0.d1ec_loc, dck, d2cs)
-    end
-  | D1Coverload (id, qid) => begin
-      overload_tr (id, qid); d2ec_none (d1c0.d1ec_loc)
-    end
+    end // end of [D1Cdcstdecs]
+  | D1Coverload (id, qid) => let
+      val () = overload_tr_if (id, qid) in
+      d2ec_overload (d1c0.d1ec_loc, id, qid)
+    end // end of [D1Coverload]
   | D1Cextype (name, s1e_def) => let
       val s2e_def = s1exp_tr_dn_viewt0ype s1e_def
     in
       d2ec_extype (d1c0.d1ec_loc, name, s2e_def)
-    end
+    end // end of [D1Cextype]
   | D1Cextval (name, d1e_def) => begin
       d2ec_extval (d1c0.d1ec_loc, name, d1exp_tr d1e_def)
-    end
+    end // end of [D1Cextval]
   | D1Cextcode (pos, code) => begin
       d2ec_extcode (d1c0.d1ec_loc, pos, code)
-    end
+    end // end of [D1Cextcode]
   | D1Cvaldecs (valknd, d1cs) => let
       val d2cs = v1aldeclst_tr (false(*isrec*), d1cs)
     in
       d2ec_valdecs (d1c0.d1ec_loc, valknd, d2cs)
-    end
+    end // end of [D1Cvaldecs]
   | D1Cvaldecs_par (d1cs) => let
       val d2cs = v1aldeclst_tr (false(*isrec*), d1cs)
     in
       d2ec_valdecs_par (d1c0.d1ec_loc, d2cs)
-    end
+    end // end of [D1Cvaldecs_par]
   | D1Cvaldecs_rec (d1cs) => let
       val d2cs = v1aldeclst_tr (true(*isrec*), d1cs)
     in
       d2ec_valdecs_rec (d1c0.d1ec_loc, d2cs)
-    end
+    end // end of [D1Cvaldecs_rec]
   | D1Cfundecs (funknd, decarg, d1cs) => let
       val (pf_s2expenv | ()) = the_s2expenv_push ()
       val () = begin
@@ -2583,16 +2636,16 @@ implement d1ec_tr (d1c0) = begin
       end // end of [val]
     in
       d2ec_fundecs (d1c0.d1ec_loc, s2vpss, funknd, d2cs)
-    end
+    end // end of [D1Cfundecs]
   | D1Cvardecs (d1cs) => let
       val d2cs = v1ardeclst_tr d1cs
     in
       d2ec_vardecs (d1c0.d1ec_loc, d2cs)
-    end
+    end // end of [D1Cvardecs]
   | D1Cmacdefs (knd, d1cs) => begin
        // knd: 0/1/2 => short/long/long rec
        m1acdeflst_tr (knd, d1cs); d2ec_none (d1c0.d1ec_loc)
-    end
+    end // end of [D1Cmacdefs]
   | D1Cimpdec (i1mparg, d1c) => let
       val loc0 = d1c0.d1ec_loc
       val d2c = i1mpdec_tr (loc0, i1mparg, d1c)
@@ -2607,11 +2660,11 @@ implement d1ec_tr (d1c0) = begin
       val () = trans2_env_localjoin (pf1_env, pf2_env | (*none*))
     in
       d2ec_local (d1c0.d1ec_loc, d2cs_head, d2cs_body)
-    end
+    end // end of [D1Clocal]
   | D1Cdynload (fil) => d2ec_dynload (d1c0.d1ec_loc, fil)
   | D1Cstaload (idopt, fil, loaded, d1cs) => begin
       s1taload_tr (d1c0.d1ec_loc, idopt, fil, loaded, d1cs)
-    end
+    end // end of [D1Cstaload]
 end // end of [d1ec_tr]
 
 (* ****** ****** *)

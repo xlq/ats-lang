@@ -77,18 +77,20 @@ implement the_namespace_search {a} (f) = let
   fun auxlst (f: !name -<cloptr1> Option_vt a, ns: namelst): Option_vt a =
     case+ ns of
     | list_cons (n, ns) => begin
-      case+ f (n)  of ~None_vt () => auxlst (f, ns) | ans => ans
-      end
+        case+ f (n)  of ~None_vt () => auxlst (f, ns) | ans => ans
+      end // end of [list_cons]
     | list_nil () => None_vt ()
+  // end of [auxlst]
   fun auxlstlst (f: !name -<cloptr1> Option_vt a, nss: namelstlst): Option_vt a =
     case+ nss of
     | list_cons (ns, nss) => begin
-      case+ auxlst (f, ns) of ~None_vt () => auxlstlst (f, nss) | ans => ans
-      end
+        case+ auxlst (f, ns) of ~None_vt () => auxlstlst (f, nss) | ans => ans
+      end // end of [auxlstlst]
     | list_nil () => None_vt ()
+  // end of [auxlstlst]
 in
   case+ auxlst (f, !the_namelst) of
-    ~None_vt () => auxlstlst (f, !the_namelstlst) | ans => ans
+  | ~None_vt () => auxlstlst (f, !the_namelstlst) | ans => ans
 end // end of [the_namespace_search]
 
 (* ****** ****** *)

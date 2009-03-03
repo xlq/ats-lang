@@ -74,6 +74,7 @@ typedef fil_t = $Fil.filename_t
 
 (* ****** ****** *)
 
+overload = with $Sym.eq_symbol_symbol
 overload prerr with $Sym.prerr_symbol
 
 (* ****** ****** *)
@@ -180,9 +181,8 @@ fn e0xp_tr_errmsg_opr (loc: loc_t): e1xp = begin
 end // end of [e0xp_tr_errmsg_opr]
   
 implement e0xp_tr e0 = let
-
-fun aux_item (e0: e0xp): e1xpitm =
-  let val loc = e0.e0xp_loc in case+ e0.e0xp_node of
+  fun aux_item (e0: e0xp): e1xpitm = let
+    val loc = e0.e0xp_loc in case+ e0.e0xp_node of
     | E0XPapp _ => let
         val es_new = aux_itemlst e0
         val e0_new = $Fix.fixity_resolve (loc, e1xpitm_app, es_new)
@@ -201,19 +201,19 @@ fun aux_item (e0: e0xp): e1xpitm =
     | E0XPint (int: string) => $Fix.ITEMatm (e1xp_int (loc, int))
     | E0XPlist (es) => $Fix.ITEMatm (e1xp_list (loc, e0xplst_tr es))
     | E0XPstring (str, len) => $Fix.ITEMatm (e1xp_string (loc, str, len))
-  end
+  end // end of [aux_item]
 
-and aux_itemlst (e0: e0xp): e1xpitmlst =
-  let
+  and aux_itemlst (e0: e0xp): e1xpitmlst = let
     fun aux (res: e1xpitmlst, e0: e0xp): e1xpitmlst =
       case+ e0.e0xp_node of
-        | E0XPapp (e1, e2) =>
+      | E0XPapp (e1, e2) => begin
           let val res = aux_item e2 :: res in aux (res, e1) end
-        | _ => aux_item e0 :: res
+        end // end of [E0XPapp]
+      | _ => aux_item e0 :: res
+    // end of [aux]
   in
     aux (nil (), e0)
-  end
-
+  end // end of [aux_itemlst]
 in
   case+ aux_item e0 of
     | $Fix.ITEMatm e => e

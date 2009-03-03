@@ -178,7 +178,7 @@ implement list_vt_length {a} (xs) = let
     | list_vt_nil () => (fold@ xs; j)
 in
   aux (xs, 0)
-end
+end // end of [list_vt_length]
 
 (* ****** ****** *)
 

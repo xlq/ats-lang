@@ -60,6 +60,7 @@ staload Lst = "ats_list.sats"
 staload "ats_staexp2.sats"
 staload "ats_stadyncst2.sats"
 staload "ats_patcst2.sats"
+staload "ats_dynexp2.sats"
 staload "ats_trans3_env.sats"
 
 (* ****** ****** *)
@@ -924,8 +925,6 @@ end // end of [s3iexp_make_s2cst_s2explst]
 
 (* ****** ****** *)
 
-overload = with eq_s2rt_s2rt
-
 local
 
 fn aux_equal
@@ -940,7 +939,7 @@ in
         case+ s3iexp_make_s2exp (s2e2, s2cs, fds) of
         | ~Some_vt s3ie2 => Some_vt (s3bexp_ieq (s3ie1, s3ie2))
         | ~None_vt () => None_vt ()
-        end
+        end // end of [Some_vt]
       | ~None_vt () => None_vt ()
     end
   | _ when s2t1 = s2rt_addr => begin
@@ -949,7 +948,7 @@ in
         case+ s3aexp_make_s2exp (s2e2, s2cs, fds) of
         | ~Some_vt s3ae2 => Some_vt (s3bexp_peq (s3ae1, s3ae2))
         | ~None_vt () => None_vt ()
-        end
+        end // end of [Some_vt]
       | ~None_vt () => None_vt ()
     end
   | _ when s2t1 = s2rt_bool => begin
@@ -958,7 +957,7 @@ in
         case+ s3bexp_make_s2exp (s2e2, s2cs, fds) of
         | ~Some_vt s3be2 => Some_vt (s3bexp_beq (s3be1, s3be2))
         | ~None_vt () => None_vt ()
-        end
+        end // end of [Some_vt]
       | ~None_vt () => None_vt ()
     end
   | _ when s2t1 = s2rt_char => begin
@@ -967,7 +966,7 @@ in
         case+ s3iexp_make_s2exp (s2e2, s2cs, fds) of
         | ~Some_vt s3ie2 => Some_vt (s3bexp_ieq (s3ie1, s3ie2))
         | ~None_vt () => None_vt ()
-        end
+        end // end of [Some_vt]
       | ~None_vt () => None_vt ()
     end
   | _ => begin

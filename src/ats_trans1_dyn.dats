@@ -77,6 +77,7 @@ typedef fil_t = $Fil.filename_t
 (* ****** ****** *)
 
 overload prerr with $Sym.prerr_symbol
+overload = with $Sym.eq_symbol_symbol
 
 (* ****** ****** *)
 

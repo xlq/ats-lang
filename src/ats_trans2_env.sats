@@ -51,8 +51,12 @@ staload "ats_dynexp2.sats"
 
 absview s2rtenv_token
 fun the_s2rtenv_add (id: sym_t, s2te: s2rtext): void
+
+// [find] goes in the following order:
+// current env; namespace env; pervasive env
 fun the_s2rtenv_find (id: sym_t): s2rtextopt_vt
 fun the_s2rtenv_find_qua (q: $Syn.s0rtq, id: sym_t): s2rtextopt_vt
+
 fun the_s2rtenv_pop (pf: s2rtenv_token | (*none*)): void
 fun the_s2rtenv_push (): (s2rtenv_token | void)
 fun the_s2rtenv_localjoin
@@ -67,8 +71,12 @@ fun the_s2expenv_add_svar (s2v: s2var_t): void
 fun the_s2expenv_add_svarlst (s2vs: s2varlst): void
 fun the_s2expenv_add_datconptr (d2c: d2con_t): void
 fun the_s2expenv_add_datcontyp (d2c: d2con_t): void
+
+// [find] goes in the following order:
+// current env; namespace env; pervasive env
 fun the_s2expenv_find (id: sym_t): s2itemopt_vt
 fun the_s2expenv_find_qua (q: $Syn.s0taq, id: sym_t): s2itemopt_vt
+
 fun the_s2expenv_pop (pf: s2expenv_token | (*none*)): void
 fun the_s2expenv_push (): (s2expenv_token | void)
 fun the_s2expenv_localjoin
@@ -113,21 +121,32 @@ fun the_d2expenv_add_dmac_var (d2v: d2var_t): void
 fun the_d2expenv_add_dmac_varlst (d2vs: d2varlst): void
 fun the_d2expenv_add_dvar (d2v: d2var_t): void
 fun the_d2expenv_add_dvarlst (d2vs: d2varlst): void
+
+// this is for handling [overload]
+fun the_d2expenv_pervasive_replace (id: sym_t, d2i: d2item): void
+
+// [find] goes in the following order:
+// current env; namespace env; pervasive env
 fun the_d2expenv_find (id: sym_t): d2itemopt_vt
 fun the_d2expenv_find_qua (q: $Syn.d0ynq, id: sym_t): d2itemopt_vt
+
 fun the_d2expenv_pop (pf: d2expenv_token | (*none*)): void
 fun the_d2expenv_push (): (d2expenv_token | void)
 fun the_d2expenv_localjoin
   (pf1: d2expenv_token, pf2: d2expenv_token | (*none*)): void
 
+fun the_d2expenv_current_find (id: sym_t): d2itemopt_vt
 fun the_d2expenv_pervasive_find (id: sym_t): d2itemopt_vt
 
 (* ****** ****** *)
 
 absview staload_level_token
-fun staload_level_get (): int
-fun staload_level_inc (): (staload_level_token | void)
-fun staload_level_dec (pf: staload_level_token | (*none*)): void
+fun staload_level_get_level (): int
+fun staload_level_get_topkind (): int
+fun staload_level_push (knd: int): (staload_level_token | void)
+fun staload_level_pop (pf: staload_level_token | (*none*)): void
+
+(* ****** ****** *)
 
 fun d2eclst_namespace_add (_: sym_t, _: d2eclst): void
 fun d2eclst_namespace_find (_: sym_t): Option_vt (d2eclst)
@@ -143,8 +162,8 @@ fun trans2_env_localjoin
 fun trans2_env_save (): void
 fun trans2_env_restore (): void
 
-fun trans2_env_pervasive_add_top (): void
-fun trans2_env_namespace_add_top (id: sym_t): void
+fun trans2_env_pervasive_add_topenv (): void
+fun trans2_env_namespace_add_topenv (id: sym_t): void
 
 (* ****** ****** *)
 

@@ -50,10 +50,10 @@ fun{itm:t@ype} symmap_search
 fun{itm:t@ype} symmap_ref_search
   (_: ref (symmap_t itm), _: symbol_t): Option_vt itm
 
-fun{itm:t@ype} symmap_list
+fun{itm:t@ype} symmap_list_get
   (_: !symmap_t itm): List_vt @(symbol_t, itm)
 
-fun{itm:t@ype} symmap_ref_list
+fun{itm:t@ype} symmap_reflist_get
   (_: ref (symmap_t itm)): List_vt @(symbol_t, itm)
 
 (* ****** ****** *)
@@ -67,15 +67,24 @@ fun symenv_make {itm:t@ype} (): symenv_t (itm)
 
 (* ****** ****** *)
 
-fun{itm:t@ype} symenv_insert
+fun{itm:t@ype} symenv_insert_fst
   (_: symenv_t itm, _: symbol_t, _: itm): void
-fun{itm:t@ype} symenv_remove
+
+fun{itm:t@ype} symenv_remove_fst
   (_: symenv_t itm, _: symbol_t): Option_vt itm
 
-fun{itm:t@ype} symenv_search
+(* ****** ****** *)
+
+fun{itm:t@ype} symenv_search_all
   (_: symenv_t itm, _: symbol_t): Option_vt itm
+
+(* ****** ****** *)
+
 fun{itm:t@ype} symenv_pervasive_search
   (_: symenv_t itm, _: symbol_t): Option_vt itm
+
+fun{itm:t@ype} symenv_pervasive_replace
+  (_: symenv_t itm, _: symbol_t, _: itm): Option_vt itm
 
 (* ****** ****** *)
 
@@ -84,8 +93,8 @@ fun symenv_push {itm:t@ype} (_: symenv_t itm): void
 
 (* ****** ****** *)
 
-fun symenv_top {itm:t@ype} (_: symenv_t itm): symmap_t itm
-fun symenv_ref_top {itm:t@ype} (_: symenv_t itm): ref (symmap_t itm)
+fun symenv_top_get {itm:t@ype} (_: symenv_t itm): symmap_t itm
+fun symenv_reftop_get {itm:t@ype} (_: symenv_t itm): ref (symmap_t itm)
 
 (* ****** ****** *)
 

@@ -77,6 +77,10 @@ val combine = $Loc.location_combine
 
 (* ****** ****** *)
 
+overload = with $Sym.eq_symbol_symbol
+
+(* ****** ****** *)
+
 fn prerr_loc_error0 (loc: loc_t): void =
   ($Loc.prerr_location loc; prerr ": error(0)")
 // end of [prerr_loc_error0]

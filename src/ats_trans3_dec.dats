@@ -671,10 +671,16 @@ in
   | D2Cdcstdec (dck, d2cs) => begin
       d3ec_dcstdec (d2c0.d2ec_loc, dck, d2cs)
     end // end of [D2Cdcstdec]
-  | D2Cextype (name, s2e_def) => begin
+  | D2Coverload _ => d3ec_none (d2c0.d2ec_loc)
+  | D2Cextype (name, s2e_def) => let
 (*
-      prerr "d2ec_tr: D2Cextype: s2e_def = "; prerr s2e_def; prerr_newline ();
+      val () = begin
+        prerr "ats_trans3_dec";
+        prerr ": d2ec_tr: D2Cextype: s2e_def = "; prerr s2e_def;
+        prerr_newline ()
+      end // end of [val]
 *)
+    in
       d3ec_extype (d2c0.d2ec_loc, name, s2e_def)
     end // end of [D2Cextype]
   | D2Cextval (name, d2e_def) => begin

@@ -53,6 +53,8 @@ staload "ats_stadyncst2.sats"
 (* ****** ****** *)
 
 overload prerr with $Loc.prerr_location
+
+overload = with $Sym.eq_symbol_symbol
 overload prerr with $Sym.prerr_symbol
 
 (* ****** ****** *)
@@ -117,7 +119,7 @@ implement s2cstref_exp_get (s2cref, os2es) = let
 in
   case+ os2es of
   | ~Some_vt s2es => let
-      val s2t_res : s2rt = (
+      val s2t_res = (
         case+ s2cst_srt_get s2c of
         | S2RTfun (_, s2t_res) => s2t_res
         | _ => begin
@@ -125,8 +127,8 @@ in
             prerr s2c;
             prerr_newline ();
             $Err.abort {s2rt} ()
-          end
-      )
+          end // end of [_]
+      ) : s2rt // end of [val]
     in
       s2exp_app_srt (s2t_res, s2e, s2es)
     end

@@ -74,25 +74,21 @@ val the_e1xpenv = $SymEnv.symenv_make {e1xp} ()
 implement the_e1xpenv_add (opr, e1xp) = let
 (*
   val () = begin
-    print "e1xp_add: opr = ";
-    print opr;
-    print_newline ()
-  end
+    prerr "e1xp_add: opr = "; prerr opr; prerr_newline ()
+  end // end of [val]
 *)
 in
-  $SymEnv.symenv_insert (the_e1xpenv, opr, e1xp)
+  $SymEnv.symenv_insert_fst (the_e1xpenv, opr, e1xp)
 end // end of [the_e1xpenv_add]
 
 implement the_e1xpenv_find (opr) = let
 (*
   val () = begin
-    print "e1xp_find: opr = ";
-    print opr;
-    print_newline ()
-  end
+    prerr "e1xp_find: opr = "; prerr opr; prerr_newline ()
+  end // end of [val]
 *)
 in
-  $SymEnv.symenv_search (the_e1xpenv, opr)
+  $SymEnv.symenv_search_all (the_e1xpenv, opr)
 end // end of [the_e1xpenv_find]
 
 (* ****** ****** *)
@@ -102,15 +98,16 @@ typedef fxtyenv = symenv_t (fxty_t)
 val the_fxtyenv = $SymEnv.symenv_make {fxty_t} ()
 
 implement the_fxtyenv_add (opr, fxty) = let
-  val () = case+
-    $SymEnv.symenv_remove (the_fxtyenv, opr) of
-    | ~Some_vt _ => () | ~None_vt () => ()
+  val ans = $SymEnv.symenv_remove_fst (the_fxtyenv, opr)
+  val () =
+    case+ ans of ~Some_vt _ => () | ~None_vt () => ()
+  // end of [val]
 in
-  $SymEnv.symenv_insert (the_fxtyenv, opr, fxty)
+  $SymEnv.symenv_insert_fst (the_fxtyenv, opr, fxty)
 end // end of [the_fxtyenv_add]
 
 implement the_fxtyenv_find (opr) = let
-  val ans = $SymEnv.symenv_search (the_fxtyenv, opr)
+  val ans = $SymEnv.symenv_search_all (the_fxtyenv, opr)
 in
   case+ ans of
   | ~None_vt () => begin
@@ -119,17 +116,17 @@ in
   | Some_vt _ => (fold@ ans; ans)
 end // end of [the_fxtyenv_find]
 
-implement the_fxtyenv_pervasive_add_top () = let
-  val m = $SymEnv.symenv_top (the_fxtyenv)
+implement the_fxtyenv_pervasive_add_topenv () = let
+  val m = $SymEnv.symenv_top_get (the_fxtyenv)
 in
   $SymEnv.symenv_pervasive_add (the_fxtyenv, m)
-end // end of [fxtyenv_pervasive_add_top]
+end // end of [fxtyenv_pervasive_add_topenv]
 
 (* ****** ****** *)
 
 implement ats_fxtyenv_prerr () = let
-  val r_m = $SymEnv.symenv_ref_top the_fxtyenv
-  val kis = $SymEnv.symmap_ref_list (r_m)
+  val r_m = $SymEnv.symenv_reftop_get the_fxtyenv
+  val kis = $SymEnv.symmap_reflist_get (r_m)
   typedef ki = @(sym_t, fxty_t)
   fun loop {n:nat} .<n>.
     (kis: list_vt (ki, n)): void = begin case+ kis of
@@ -140,9 +137,9 @@ implement ats_fxtyenv_prerr () = let
         end // end of [val]
       in
         loop (kis)
-      end
+      end // end of [list_vt_cons]
     | ~list_vt_nil () => ()
-  end // end of [loop]
+  end (* end of [loop] *)
 in
   loop kis
 end // end of [ats_fxtyenv_prerr]
@@ -158,15 +155,15 @@ in // in of [local]
 
 implement trans1_level_get () = !the_trans1_level
 
-implement trans1_level_dec (pf | (*none*)) =
-  let prval unit_v () = pf in
-    !the_trans1_level := !the_trans1_level - 1
-  end
+implement trans1_level_dec (pf | (*none*)) = let
+  prval unit_v () = pf in
+  !the_trans1_level := !the_trans1_level - 1
+end // end of [trans1_level_dec]
 
-implement trans1_level_inc () =
-  let val () = !the_trans1_level := !the_trans1_level + 1 in
-    (unit_v () | ())
-  end
+implement trans1_level_inc () = let
+  val () = !the_trans1_level := !the_trans1_level + 1 in
+  (unit_v () | ())
+end // end of [trans1_level_inc]
 
 end // end of [local]
 
@@ -175,27 +172,27 @@ end // end of [local]
 implement trans1_env_pop () = begin
   $SymEnv.symenv_pop (the_e1xpenv);
   $SymEnv.symenv_pop (the_fxtyenv);
-end
+end // end of [trans1_env_pop]
 
 implement trans1_env_push () = begin
   $SymEnv.symenv_push (the_e1xpenv);
   $SymEnv.symenv_push (the_fxtyenv)
-end
+end // end of [trans1_env_push]
 
 implement trans1_env_localjoin () = begin
   $SymEnv.symenv_localjoin (the_e1xpenv);
   $SymEnv.symenv_localjoin (the_fxtyenv)
-end
+end // end of [trans1_env_localjoin]
 
 implement trans1_env_save () = begin
   $SymEnv.symenv_save (the_e1xpenv);
   $SymEnv.symenv_save (the_fxtyenv)
-end
+end // end of [trans1_env_save]
 
 implement trans1_env_restore () = begin
   $SymEnv.symenv_restore (the_e1xpenv);
   $SymEnv.symenv_restore (the_fxtyenv)
-end
+end // end of [trans1_env_restore]
 
 (* ****** ****** *)
 
@@ -205,10 +202,11 @@ staload HASHTBL = "ats_hashtbl.dats"
 local
 
 val SIZE_HINT = 7
-val theHashTable: $HT.hashtbl_t (string, d1eclst) =
-  $HT.hashtbl_str_make_hint (SIZE_HINT)
+val theHashTable = begin
+  $HT.hashtbl_str_make_hint (SIZE_HINT): $HT.hashtbl_t (string, d1eclst)
+end // end of [val]
 
-in
+in // in of [local]
 
 implement staload_file_insert (fullname, d1cs) = let
   val ans = $HT.hashtbl_insert (theHashTable, fullname, d1cs)
@@ -220,7 +218,7 @@ in
       prerr ": [staload_file_insert] failed.";
       prerr_newline ();
       exit {void} (1)
-    end
+    end // end of [Some_vt]
   | ~None_vt () => ()
 end // end of [staload_file_insert]
 

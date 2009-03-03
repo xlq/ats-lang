@@ -59,7 +59,7 @@ fun the_e1xpenv_find (id: sym_t): Option_vt e1xp
 
 fun the_fxtyenv_add (id: sym_t, _: fxty_t): void
 fun the_fxtyenv_find (id: sym_t): Option_vt fxty_t 
-fun the_fxtyenv_pervasive_add_top (): void
+fun the_fxtyenv_pervasive_add_topenv (): void
 
 (* ****** ******* *)
 

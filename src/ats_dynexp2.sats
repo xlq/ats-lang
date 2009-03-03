@@ -517,6 +517,8 @@ datatype d2ec_node =
   | D2Cdatdec of ($Syn.datakind, s2cstlst)
   | D2Cexndec of d2conlst
   | D2Cdcstdec of ($Syn.dcstkind, d2cstlst)
+  | D2Coverload of (* overloading *) // for temporary use
+      ($Syn.i0de, $Syn.dqi0de)
   | D2Cextype of // external type
       (string(*name*), s2exp(*definition*))
   | D2Cextval of (* external value *)
@@ -1178,11 +1180,12 @@ fun d2ec_list (_: loc_t, d2cs: d2eclst): d2ec
 fun d2ec_stavars (_: loc_t, ds: s2tavarlst): d2ec
 fun d2ec_saspdec (_: loc_t, d: s2aspdec): d2ec
 fun d2ec_datdec (_: loc_t, k: $Syn.datakind, ds: s2cstlst): d2ec
+fun d2ec_dcstdec (_: loc_t, _: $Syn.dcstkind, ds: d2cstlst): d2ec
+fun d2ec_overload (_: loc_t, id: $Syn.i0de, qid: $Syn.dqi0de): d2ec
 fun d2ec_exndec (_: loc_t, con: d2conlst): d2ec
 fun d2ec_extype (_: loc_t, name: string, def: s2exp): d2ec
 fun d2ec_extval (_: loc_t, name: string, def: d2exp): d2ec
 fun d2ec_extcode (_: loc_t, position: int, code: string): d2ec
-fun d2ec_dcstdec (_: loc_t, _: $Syn.dcstkind, ds: d2cstlst): d2ec
 fun d2ec_valdecs (_: loc_t, _: $Syn.valkind, ds: v2aldeclst): d2ec
 fun d2ec_valdecs_par (_: loc_t, ds: v2aldeclst): d2ec
 fun d2ec_valdecs_rec (_: loc_t, ds: v2aldeclst): d2ec

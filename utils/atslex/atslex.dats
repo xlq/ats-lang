@@ -76,7 +76,7 @@ implement the_atslex_input_fin () = let
 in
   case+ !p of
   | ~INPUTsome (pf_fil | p_fil) => let
-      val () = $STDIO.fclose_exn (pf_fil | p_fil)
+      val () = $STDIO.fclose1_exn (pf_fil | p_fil)
     in
       !p := INPUTnone ()
     end // end of [INPUTsome]

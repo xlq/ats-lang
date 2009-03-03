@@ -249,7 +249,7 @@ fn fixity_load (ATSHOME: string): void = let
   val d0cs = $Par.parse_from_filename (0 (*static*), filename)
   val () = $Fil.the_filenamelst_pop ()
   val d1cs = $Trans1.d0eclst_tr d0cs
-  val () = $TransEnv1.the_fxtyenv_pervasive_add_top ()
+  val () = $TransEnv1.the_fxtyenv_pervasive_add_topenv ()
 (*
   val () = begin
     print "[fixity_load] is finished."; print_newline ()
@@ -294,8 +294,10 @@ fn prelude_load (ATSHOME: string): void = let
   val () = pervasive_load (ATSHOME, "prelude/sortdef.sats")
   val () = pervasive_load (ATSHOME, "prelude/basics_dyn.sats")
   val () = pervasive_load (ATSHOME, "prelude/macrodef.sats")
-  //  [trans2_env_pervasive_add_top] needs to be called for the rest
-  val () = $TransEnv2.trans2_env_pervasive_add_top ()
+  //  [trans2_env_pervasive_add_topenv] needs to be called for the rest
+  val () = $TransEnv2.trans2_env_pervasive_add_topenv ()
+
+  // these are all the .sats files in $ATSHOME/prelude
   val () = pervasive_load (ATSHOME, "prelude/SATS/arith.sats")
   val () = pervasive_load (ATSHOME, "prelude/SATS/bool.sats")
   val () = pervasive_load (ATSHOME, "prelude/SATS/byte.sats")
@@ -313,7 +315,7 @@ fn prelude_load (ATSHOME: string): void = let
   val () = pervasive_load (ATSHOME, "prelude/SATS/sizetype.sats")
   val () = pervasive_load (ATSHOME, "prelude/SATS/string.sats")
 
-  // these data structures are so common!
+  // these are here because they are so commonly needed
   val () = pervasive_load (ATSHOME, "prelude/SATS/array.sats")
   val () = pervasive_load (ATSHOME, "prelude/SATS/array0.sats")
   val () = pervasive_load (ATSHOME, "prelude/SATS/list.sats")
@@ -327,7 +329,7 @@ fn prelude_load (ATSHOME: string): void = let
   val () = pervasive_load (ATSHOME, "prelude/SATS/slseg.sats")
 *)
 
-  val () = $TransEnv2.trans2_env_pervasive_add_top ()
+  val () = $TransEnv2.trans2_env_pervasive_add_topenv ()
   val () = $TransEnv3.trans3_env_initialize ()
 in
   // empty

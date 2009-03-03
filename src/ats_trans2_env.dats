@@ -88,6 +88,7 @@ val the_s2rtextmaptbl: s2rtextmaptbl =
   $HT.hashtbl_make_hint {sym_t, s2rtextmapref} (
     lam s => $Sym.symbol_hash s, lam (s1, s2) => s1 = s2, 256
   )
+// end of [the_s2rtextmaptbl]
 
 (* ****** ****** *)
 
@@ -110,6 +111,7 @@ val the_d2itemmaptbl: d2itemmaptbl =
   $HT.hashtbl_make_hint {sym_t, d2itemmapref} (
     lam s => $Sym.symbol_hash s, lam (s1, s2) => s1 = s2, 256
   )
+// end of [the_d2itemmaptbl]
 
 (* ****** ****** *)
 
@@ -119,18 +121,19 @@ val the_d2eclsttbl: d2eclsttbl =
   $HT.hashtbl_make_hint {sym_t, d2eclst} (
     lam s => $Sym.symbol_hash s, lam (s1, s2) => s1 = s2, 256
   )
+// end of [the_d2eclsttbl]
 
 implement d2eclst_namespace_add (id, d2cs) = let
   val ans = $HT.hashtbl_insert (the_d2eclsttbl, id, d2cs)
 in
   case+ ans of
   | ~Some_vt _ => begin
-      prerr "Internal Error: ";
-      prerr "d2eclst_namespace_add: id = ";
+      prerr "INTERNAL ERROR";
+      prerr ": d2eclst_namespace_add: id = ";
       $Sym.prerr_symbol id;
       prerr_newline ();
       $Err.abort {void} ()
-    end
+    end // end of [Some_vt]
   | ~None_vt _ => ()
 end // end of [d2eclst_namespace_add]
 
@@ -149,11 +152,12 @@ val the_s2rtenv: s2rtenv = $SymEnv.symenv_make ()
 in // in of [local]
 
 implement the_s2rtenv_add (id, s2te) = let
-  val () = case+
-    $SymEnv.symenv_remove (the_s2rtenv, id) of
-    | ~Some_vt _ => () | ~None_vt () => ()
+  val ans = $SymEnv.symenv_remove_fst (the_s2rtenv, id)
+  val () = begin
+    case+ ans of ~Some_vt _ => () | ~None_vt () => ()
+  end // end of [val]
 in
-  $SymEnv.symenv_insert (the_s2rtenv, id, s2te)
+  $SymEnv.symenv_insert_fst (the_s2rtenv, id, s2te)
 end // end of [the_s2rtenv_add]
 
 fn the_s2rtenv_namespace_find
@@ -162,7 +166,7 @@ fn the_s2rtenv_namespace_find
     val r_m: s2rtextmapref =
       case+ $HT.hashtbl_search (the_s2rtextmaptbl, name) of
       | ~Some_vt m => m | ~None_vt _ => begin
-          prerr "Internal Error: s2rtenv_namespace_find: name = ";
+          prerr "INTERNAL ERROR: s2rtenv_namespace_find: name = ";
           $Sym.prerr_symbol name;
           prerr_newline ();
           $Err.abort {s2rtextmapref} ()
@@ -175,7 +179,9 @@ in
 end // end of [the_s2rtenv_namespace_find]
 
 implement the_s2rtenv_find (id) = let
-  val ans = $SymEnv.symenv_search (the_s2rtenv, id)
+  val ans =
+    $SymEnv.symenv_search_all (the_s2rtenv, id)
+  // end of [ans]
 in
   case+ ans of
   | Some_vt _ => (fold@ ans; ans)
@@ -217,26 +223,26 @@ implement the_s2rtenv_find_qua (q, id) = begin
       case+ $HT.hashtbl_search (the_s2rtextmaptbl, fil_sym) of
       | ~Some_vt r_m => $SymEnv.symmap_ref_search (r_m, id)
       | ~None_vt () => begin
-          prerr "Internal Error: the loaded file [";
+          prerr "INTERNAL ERROR: the loaded file [";
           $Sym.prerr_symbol fil_sym;
           prerr "] cannot be located.";
           prerr_newline ();
           $Err.abort {s2rtextopt_vt} ()
-        end
-    end // end of [S0RTQsym]
+        end // end of [None_vt]
+    end (* end of [S0RTQsym] *)
   | $Syn.S0RTQstr name => let
-      // a feature that should probably be deprecated!!!
+      // this feature should probably be deprecated!!!
     in
       None_vt ()
-    end
+    end // end of [S0RTQstr]
 end // end [the_s2rtenv_find_qua]
 
 implement the_s2rtenv_pop (pf | (*none*)) = begin
   let prval unit_v () = pf in $SymEnv.symenv_pop (the_s2rtenv) end
 end // end of [the_s2rtenv_pop]
 
-implement the_s2rtenv_push () = begin
-  (unit_v | $SymEnv.symenv_push (the_s2rtenv))
+implement the_s2rtenv_push () = let
+  val () = $SymEnv.symenv_push (the_s2rtenv) in (unit_v | ())
 end // end of [the_s2rtenv_push]
 
 implement the_s2rtenv_localjoin (pf1, pf2 | (*none*)) = let
@@ -245,27 +251,27 @@ in
   $SymEnv.symenv_localjoin (the_s2rtenv)
 end // end of [the_s2rtenv_localjoin]
 
-fn the_s2rtenv_pervasive_add_top (): void = let
-  val m = $SymEnv.symenv_top (the_s2rtenv)
+fn the_s2rtenv_pervasive_add_topenv (): void = let
+  val m = $SymEnv.symenv_top_get (the_s2rtenv)
 in
   $SymEnv.symenv_pervasive_add (the_s2rtenv, m)
-end // end of [the_s2rtenv_pervasive_add_top]
+end // end of [the_s2rtenv_pervasive_add_topenv]
 
-fn the_s2rtenv_namespace_add_top (id: sym_t): void = let
-  val m = $SymEnv.symenv_top the_s2rtenv
-  val r_m: s2rtextmapref = ref_make_elt (m)
+fn the_s2rtenv_namespace_add_topenv (id: sym_t): void = let
+  val m = $SymEnv.symenv_top_get the_s2rtenv
+  val r_m = ref_make_elt<s2rtextmap> (m)
   val ans = $HT.hashtbl_insert (the_s2rtextmaptbl, id, r_m)
 in
   case+ ans of
   | ~Some_vt _ => begin
-      prerr "Internal Error: ";
-      prerr "s2rtenv_namespace_add_top: id = ";
+      prerr "INTERNAL ERROR";
+      prerr ": s2rtenv_namespace_add_topenv: id = ";
       $Sym.prerr_symbol id;
       prerr_newline ();
       $Err.abort {void} ()
     end
   | ~None_vt _ => ()  
-end // end of [the_s2rtenv_namespace_add_top]
+end // end of [the_s2rtenv_namespace_add_topenv]
 
 fn the_s2rtenv_save () = $SymEnv.symenv_save (the_s2rtenv)
 fn the_s2rtenv_restore () = $SymEnv.symenv_restore (the_s2rtenv)
@@ -284,11 +290,12 @@ val the_s2expenv: s2expenv = $SymEnv.symenv_make ()
 in // in of [local]
 
 implement the_s2expenv_add (id, s2i) = let
-  val () = case+
-    $SymEnv.symenv_remove (the_s2expenv, id) of
-    | ~Some_vt _ => () | ~None_vt () => ()
+  val ans = $SymEnv.symenv_remove_fst (the_s2expenv, id)
+  val () = begin
+    case+ ans of ~Some_vt _ => () | ~None_vt () => ()
+  end // end of [val]
 in
-  $SymEnv.symenv_insert (the_s2expenv, id, s2i)
+  $SymEnv.symenv_insert_fst (the_s2expenv, id, s2i)
 end // end of [the_s2expenv_add]
 
 implement the_s2expenv_add_scst (s2c) = let
@@ -310,14 +317,14 @@ implement the_s2expenv_add_scst (s2c) = let
       end
     | ~None_vt () => S2CSTLSTnil ()
   ) : s2cstlst
+  val ans = $SymEnv.symenv_remove_fst (the_s2expenv, id)
   val () = begin
-    case+ $SymEnv.symenv_remove (the_s2expenv, id) of
-    | ~Some_vt s2i => () | ~None_vt () => ()
+    case+ ans of ~Some_vt s2i => () | ~None_vt () => ()
   end // end of [val]
 in
-  $SymEnv.symenv_insert (
+  $SymEnv.symenv_insert_fst (
     the_s2expenv, id, S2ITEMcst (S2CSTLSTcons (s2c, s2cs))
-  )
+  ) // end of [$SymEnv.symenv_insert_fst]
 end // end of [the_s2expenv_add_scst]
 
 implement the_s2expenv_add_svar (s2v) = let
@@ -359,7 +366,7 @@ fn the_s2expenv_namespace_find (id: sym_t): s2itemopt_vt = let
     val r_m: s2itemmapref = begin
       case+ $HT.hashtbl_search (the_s2itemmaptbl, name) of
       | ~Some_vt m => m | ~None_vt _ => begin
-          prerr "Internal Error: the_s2expenv_namespace_find: name = ";
+          prerr "INTERNAL ERROR: the_s2expenv_namespace_find: name = ";
           $Sym.prerr_symbol name;
           prerr_newline ();
           $Err.abort {s2itemmapref} ()
@@ -373,18 +380,23 @@ in
 end // end of [the_s2expenv_namespace_find]
 
 implement the_s2expenv_find (id) = let
-  val ans = $SymEnv.symenv_search (the_s2expenv, id)
+  val ans =
+    $SymEnv.symenv_search_all (the_s2expenv, id) 
+  // end of [val]
 in
   case+ ans of
-  | Some_vt _ => (fold@ ans; ans)
+  | Some_vt _ => begin
+      let val () = fold@ ans in ans end
+    end // end of [Some]
   | ~None_vt () => let
-      val ans = the_s2expenv_namespace_find id
-    in
+      val ans = the_s2expenv_namespace_find id in
       case+ ans of
+      | Some_vt _ => begin
+          let val () = fold@ ans in ans end
+        end // end of [Some_vt]
       | ~None_vt () => begin
           $SymEnv.symenv_pervasive_search (the_s2expenv, id)
-        end
-      | Some_vt _ => (fold@ ans; ans)
+        end // end of [None_vt]
     end // end of [None_vt]
 end // end of [the_s2expenv_find]
 
@@ -396,7 +408,8 @@ implement the_s2expenv_find_qua (q, id) = begin
   case+ q.s0taq_node of
   | $Syn.S0TAQnone () => the_s2expenv_find id
   | $Syn.S0TAQsymdot (q_id) => let
-      val fil = case+ the_s2expenv_find q_id of
+      val ans = the_s2expenv_find q_id
+      val fil = case+ ans of
         | ~Some_vt (S2ITEMfil fil) => fil
         | ~Some_vt _ => begin
             prerr_loc_error2 q.s0taq_loc;
@@ -414,9 +427,11 @@ implement the_s2expenv_find_qua (q, id) = begin
             prerr_newline ();
             $Err.abort {fil_t} ()
           end // end of [None_vt]
+      // end of [val]
       val fil_sym = $Fil.filename_full_sym fil
+      val ans = $HT.hashtbl_search (the_s2itemmaptbl, fil_sym)
     in
-      case+ $HT.hashtbl_search (the_s2itemmaptbl, fil_sym) of
+      case+ ans of
       | ~Some_vt r_m => $SymEnv.symmap_ref_search (r_m, id)
       | ~None_vt () => None_vt ()
     end // end of [$Syn.S0TAQsymdot]
@@ -427,8 +442,8 @@ implement the_s2expenv_pop (pf | (*none*)) = begin
   let prval unit_v () = pf in $SymEnv.symenv_pop (the_s2expenv) end
 end // end of [the_s2expenv_pop]
 
-implement the_s2expenv_push () = begin
-  (unit_v | $SymEnv.symenv_push (the_s2expenv))
+implement the_s2expenv_push () = let
+  val () = $SymEnv.symenv_push (the_s2expenv) in (unit_v | ())
 end // end of [the_s2expenv_push]
 
 implement the_s2expenv_localjoin (pf1, pf2 | (*none*)) = let
@@ -437,27 +452,27 @@ in
   $SymEnv.symenv_localjoin (the_s2expenv)
 end // end of [the_s2expenv_localjoin]
 
-fn the_s2expenv_pervasive_add_top (): void = let
-  val m = $SymEnv.symenv_top (the_s2expenv)
+fn the_s2expenv_pervasive_add_topenv (): void = let
+  val m = $SymEnv.symenv_top_get (the_s2expenv)
 in
   $SymEnv.symenv_pervasive_add (the_s2expenv, m)
-end // end of [the_s2expenv_pervasive_add_top]
+end // end of [the_s2expenv_pervasive_add_topenv]
 
-fn the_s2expenv_namespace_add_top (id: sym_t): void = let
-  val m = $SymEnv.symenv_top the_s2expenv
-  val r_m: s2itemmapref = ref_make_elt (m)
+fn the_s2expenv_namespace_add_topenv (id: sym_t): void = let
+  val m = $SymEnv.symenv_top_get the_s2expenv
+  val r_m = ref_make_elt<s2itemmap> (m)
   val ans = $HT.hashtbl_insert (the_s2itemmaptbl, id, r_m)
 in
   case+ ans of
   | ~Some_vt _ => begin
-      prerr "Internal Error: ";
-      prerr "the_s2expenv_namespace_add_top: id = ";
+      prerr "INTERNAL ERROR";
+      prerr ": the_s2expenv_namespace_add_topenv: id = ";
       $Sym.prerr_symbol id;
       prerr_newline ();
       $Err.abort {void} ()
     end // end of [Some_vt]
   | ~None_vt _ => ()  
-end // end of [the_s2expenv_namespace_add_top]
+end // end of [the_s2expenv_namespace_add_topenv]
 
 fn the_s2expenv_save () = $SymEnv.symenv_save (the_s2expenv)
 fn the_s2expenv_restore () = $SymEnv.symenv_restore (the_s2expenv)
@@ -606,11 +621,12 @@ val the_d2expenv: d2expenv = $SymEnv.symenv_make ()
 in // in of [local]
 
 implement the_d2expenv_add (id, d2i) = let
-  val () = case+
-    $SymEnv.symenv_remove (the_d2expenv, id) of
-    | ~Some_vt _ => () | ~None_vt () => ()
+  val ans = $SymEnv.symenv_remove_fst (the_d2expenv, id)
+  val () = begin
+    case+ ans of ~Some_vt _ => () | ~None_vt () => ()
+  end // end of [val]
 in
-  $SymEnv.symenv_insert (the_d2expenv, id, d2i)
+  $SymEnv.symenv_insert_fst (the_d2expenv, id, d2i)
 end // end of [the_d2expenv_add]
 
 implement the_d2expenv_add_dcon (d2c) = let
@@ -622,14 +638,14 @@ implement the_d2expenv_add_dcon (d2c) = let
       end // end of [Some_vt]
     | ~None_vt () => D2CONLSTnil ()
   ) : d2conlst
+  val ans = $SymEnv.symenv_remove_fst (the_d2expenv, id)
   val () = begin
-    case+ $SymEnv.symenv_remove (the_d2expenv, id) of
-    | ~Some_vt _ => () | ~None_vt () => ()
+    case+ ans of ~Some_vt _ => () | ~None_vt () => ()
   end // end of [val]
 in
-  $SymEnv.symenv_insert (
+  $SymEnv.symenv_insert_fst (
     the_d2expenv, id, D2ITEMcon (D2CONLSTcons (d2c, d2cs))
-  )
+  ) // end of [$SymEnv.symenv_insert_fst]
 end // end of [the_d2expenv_add_dcon]
 
 implement the_d2expenv_add_dcst (d2c) = begin
@@ -656,17 +672,33 @@ implement the_d2expenv_add_dvarlst (d2vs) = begin
   $Lst.list_foreach_fun (d2vs, the_d2expenv_add_dvar)
 end // end of [the_d2expenv_add_dvarlst]
 
-fn the_d2expenv_namespace_find (id: sym_t): d2itemopt_vt = let
+(* ****** ****** *)
+
+// this is for handling [overload]
+implement the_d2expenv_pervasive_replace (id, d2i) = let
+  val ans =
+    $SymEnv.symenv_pervasive_replace (the_d2expenv, id, d2i)
+  // end of [val]
+  val () = begin
+    case+ ans of ~Some_vt _ => () | ~None_vt () => ()
+  end // end of [val]
+in
+  // empty
+end // end of [the_d2expenv_pervasive_replace]
+
+(* ****** ****** *)
+
+fn the_d2expenv_namespace_find
+  (id: sym_t): d2itemopt_vt = let
   fn f (name: sym_t):<cloptr1> d2itemopt_vt = let
-    val r_m = (
-      case+ $HT.hashtbl_search (the_d2itemmaptbl, name) of
-      | ~Some_vt m => m
-      | ~None_vt _ => begin
-          prerr "Internal Error: d2expenv_namespace_find: name = ";
+    val ans = $HT.hashtbl_search (the_d2itemmaptbl, name)
+    val r_m = (case+ ans of
+      | ~Some_vt m => m | ~None_vt _ => begin
+          prerr "INTERNAL ERROR: d2expenv_namespace_find: name = ";
           $Sym.prerr_symbol name;
           prerr_newline ();
           $Err.abort {d2itemmapref} ()
-        end
+        end // end of [None_vt]
     ) : d2itemmapref
   in
     $SymEnv.symmap_ref_search (r_m, id)
@@ -676,24 +708,32 @@ in
 end // end of [the_d2expenv_namespace_find]
 
 implement the_d2expenv_find (id) = let
-  val ans = $SymEnv.symenv_search (the_d2expenv, id)
-in
+  val ans =
+    $SymEnv.symenv_search_all (the_d2expenv, id) in
   case+ ans of
-  | Some_vt _ => (fold@ ans; ans)
-  | ~None_vt () => let
-      val ans = the_d2expenv_namespace_find id
-    in
-      case+ ans of
-      | Some_vt _ => (fold@ ans; ans)
-      | ~None_vt () => begin
+  | Some_vt _ => begin
+      let val () = fold@ ans in ans end
+    end // end of [Some_vt]
+  | ~None_vt _ => let
+      val ans =
+        the_d2expenv_namespace_find id in case+ ans of
+      | Some_vt _ => (fold@ ans; ans) | ~None_vt _ => begin
           $SymEnv.symenv_pervasive_search (the_d2expenv, id)
         end // end of [None_vt]
     end // end of [None_vt]
 end // end of [the_d2expenv_find]
 
+(* ****** ****** *)
+
+implement the_d2expenv_current_find (id) =
+  $SymEnv.symenv_search_all (the_d2expenv, id)
+// end of [the_d2expenv_current_find]
+
 implement the_d2expenv_pervasive_find (id) = begin
   $SymEnv.symenv_pervasive_search (the_d2expenv, id)
 end // end of [the_d2expenv_pervasive_find]
+
+(* ****** ****** *)
 
 implement the_d2expenv_find_qua (q, id) = begin
   case+ q.d0ynq_node of
@@ -726,39 +766,47 @@ implement the_d2expenv_find_qua (q, id) = begin
   | _ => None_vt ()
 end // end of [the_d2expenv_find_qua]
 
+(* ****** ****** *)
+
 implement the_d2expenv_pop (pf | (*none*)) = begin
   let prval unit_v () = pf in $SymEnv.symenv_pop (the_d2expenv) end
 end // end of [the_d2expenv_pop]
 
-implement the_d2expenv_push () = begin
-  (unit_v | $SymEnv.symenv_push (the_d2expenv))
+implement the_d2expenv_push () = let
+  val () = $SymEnv.symenv_push (the_d2expenv) in (unit_v | ())
 end // end of [the_d2expenv_push]
+
+(* ****** ****** *)
 
 implement the_d2expenv_localjoin (pf1, pf2 | (*none*)) = let
   prval unit_v () = pf1 and unit_v () = pf2 in
   $SymEnv.symenv_localjoin (the_d2expenv)
 end // end of [the_d2expenv_localjoin]
 
-fn the_d2expenv_pervasive_add_top (): void = let
-  val m = $SymEnv.symenv_top (the_d2expenv) in
-  $SymEnv.symenv_pervasive_add (the_d2expenv, m)
-end // end of [the_d2expenv_pervasive_add_top]
+(* ****** ****** *)
 
-fn the_d2expenv_namespace_add_top (id: sym_t): void = let
-  val m = $SymEnv.symenv_top the_d2expenv
-  val r_m: d2itemmapref = ref_make_elt (m)
+fn the_d2expenv_pervasive_add_topenv (): void = let
+  val m = $SymEnv.symenv_top_get (the_d2expenv) in
+  $SymEnv.symenv_pervasive_add (the_d2expenv, m)
+end // end of [the_d2expenv_pervasive_add_topenv]
+
+fn the_d2expenv_namespace_add_topenv (id: sym_t): void = let
+  val m = $SymEnv.symenv_top_get the_d2expenv
+  val r_m = ref_make_elt<d2itemmap> (m)
   val ans = $HT.hashtbl_insert (the_d2itemmaptbl, id, r_m)
 in
   case+ ans of
   | ~Some_vt _ => begin
-      prerr "Internal Error: ";
-      prerr "d2expenv_namespace_add_top: id = ";
+      prerr "INTERNAL ERROR";
+      prerr ": d2expenv_namespace_add_topenv: id = ";
       $Sym.prerr_symbol id;
       prerr_newline ();
       $Err.abort {void} ()
     end // end of [Some_vt]
   | ~None_vt _ => ()  
-end // end of [the_d2expenv_namespace_add_top]
+end // end of [the_d2expenv_namespace_add_topenv]
+
+(* ****** ****** *)
 
 fn the_d2expenv_save () = $SymEnv.symenv_save (the_d2expenv)
 fn the_d2expenv_restore () = $SymEnv.symenv_restore (the_d2expenv)
@@ -771,22 +819,51 @@ assume staload_level_token = unit_v
 
 local
 
-val the_staload_level = ref_make_elt<int> (0)
+viewtypedef intlst_vt = List_vt (int)
+val the_staload_level = ref_make_elt<intlst_vt> (list_vt_nil)
 
 in
 
-implement staload_level_get () = !the_staload_level
+implement staload_level_get_level () = n where {
+  val (pfbox | p) = ref_get_view_ptr (the_staload_level)
+  prval vbox pf = pfbox
+  val n = loop_length (!p, 0) where {
+    fun loop_length {i,j:nat} .<i>.
+      (xs: !list_vt (int, i), j: int j):<> int (i+j) =
+      case+ xs of
+      | list_vt_cons (_, !p_xs) => let
+          val n = loop_length (!p_xs, j+1) in fold@ xs; n
+        end // end of [list_vt_cons]
+      | list_vt_nil () => (fold@ xs; j)
+    // end of [loop_length]
+  }
+} // end of [staload_level_get]
 
-implement staload_level_inc () = let
-  val () = !the_staload_level := !the_staload_level + 1
+implement staload_level_get_topkind () = knd where {
+  val (pfbox | p) = ref_get_view_ptr (the_staload_level)
+  prval vbox pf = pfbox
+  val knd = (case+ !p of
+    | list_vt_cons (knd, _) => (fold@ (!p); knd)
+    | list_vt_nil () => (fold@ (!p); 0)
+  ) : int // end of [val]
+} // end of [staload_level_get_kind]
+
+implement staload_level_push (knd) = let
+  val (pfbox | p) = ref_get_view_ptr (the_staload_level)
+  prval vbox pf = pfbox
+  val () = !p := list_vt_cons (knd, !p)
 in
   (unit_v () | ())
 end // end of [staload_level_inc]
 
-implement staload_level_dec (pf | (*none*)) = let
+implement staload_level_pop (pf | (*none*)) = let
   prval unit_v () = pf
+  val (pfbox | p) = ref_get_view_ptr (the_staload_level)
+  prval vbox pf = pfbox
 in
-  !the_staload_level := !the_staload_level - 1
+  case+ !p of
+  | ~list_vt_cons (_(*knd*), kndlst) => !p := (kndlst: intlst_vt)
+  | list_vt_nil () => fold@ (!p)
 end // end of [staload_level_dec]
 
 end // end of [local]
@@ -823,31 +900,31 @@ in
 end // end of [trans2_env_localjoin]
 
 
-implement trans2_env_save () = begin
-  $NS.the_namespace_save ();
-  the_s2rtenv_save (); the_s2expenv_save (); the_d2expenv_save ()
-end
+implement trans2_env_save () = () where {
+  val () = $NS.the_namespace_save ()
+  val () = the_s2rtenv_save ()
+  val () = the_s2expenv_save ()
+  val () = the_d2expenv_save ()
+} // end of [trans2_env_save]
 
-implement trans2_env_restore () = begin
-  $NS.the_namespace_restore ();
-  the_s2rtenv_restore (); the_s2expenv_restore (); the_d2expenv_restore ()
-end
+implement trans2_env_restore () = () where {
+  val () = $NS.the_namespace_restore ()
+  val () = the_s2rtenv_restore ()
+  val () = the_s2expenv_restore ()
+  val () = the_d2expenv_restore ()
+} // end of [trans2_env_restore]
 
-implement trans2_env_pervasive_add_top () = let
-  val () = the_s2rtenv_pervasive_add_top ()
-  val () = the_s2expenv_pervasive_add_top ()
-  val () = the_d2expenv_pervasive_add_top ()
-in
-  // empty
-end // end of [trans2_env_pervasive_add_top]
+implement trans2_env_pervasive_add_topenv () = () where {
+  val () = the_s2rtenv_pervasive_add_topenv ()
+  val () = the_s2expenv_pervasive_add_topenv ()
+  val () = the_d2expenv_pervasive_add_topenv ()
+} // end of [trans2_env_pervasive_add_topenv]
 
-implement trans2_env_namespace_add_top (id) = let
-  val () = the_s2rtenv_namespace_add_top (id)
-  val () = the_s2expenv_namespace_add_top (id)
-  val () = the_d2expenv_namespace_add_top (id)
-in
-  // empty
-end // end of [trans2_env_namespace_add_top]
+implement trans2_env_namespace_add_topenv (id) = () where {
+  val () = the_s2rtenv_namespace_add_topenv (id)
+  val () = the_s2expenv_namespace_add_topenv (id)
+  val () = the_d2expenv_namespace_add_topenv (id)
+} // end of [trans2_env_namespace_add_topenv]
 
 implement trans2_env_initialize () = begin
   // sort environment
@@ -863,10 +940,10 @@ implement trans2_env_initialize () = begin
   the_s2rtenv_add ($Sym.symbol_VIEWTYPE, S2TEsrt s2rt_viewtype);
   the_s2rtenv_add ($Sym.symbol_VIEWT0YPE, S2TEsrt s2rt_viewt0ype);
   the_s2rtenv_add ($Sym.symbol_TYPES, S2TEsrt s2rt_types);
-  the_s2rtenv_pervasive_add_top ();
+  the_s2rtenv_pervasive_add_topenv ();
   // dynamic environment
   the_d2expenv_add ($Sym.symbol_LRBRACKETS, D2ITEMsym (nil ()));
-  the_d2expenv_pervasive_add_top ()
+  the_d2expenv_pervasive_add_topenv ()
 end // end of [trans2_env_initialize]
 
 (* ****** ****** *)
