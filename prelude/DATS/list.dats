@@ -561,6 +561,18 @@ in
   ys
 end // end of [list_map_fun]
 
+implement{a,b} list_map_clo {n:int} {f:eff} (xs, f) = let
+  viewtypedef clo_t = a -<clo,f> b
+  stavar l_f: addr; val p_f: ptr l_f = &f
+  viewdef V = clo_t @ l_f
+  fn app (pf: !V | x: a, p_f: !ptr l_f):<f> b = !p_f (x)
+  prval pf = view@ f
+  val ys = list_map_main<a,b> {V} {ptr l_f} (pf | xs, app, p_f)
+  prval () = view@ f := pf
+in
+  ys
+end // end of [list_map_clo]
+
 implement{a,b} list_map_cloptr {n:int} {f:eff} (xs, f) = let
   viewtypedef cloptr_t = a -<cloptr,f> b
   fn app (pf: !unit_v | x: a, f: !cloptr_t):<f> b = f (x)
@@ -572,11 +584,12 @@ in
 end // end of [list_map_cloptr]
 
 implement{a,b} list_map_cloref {n:int} {f:eff} (xs, f) = let
-  viewtypedef cloref_t = a -<cloref,f> b
-  fn app (pf: !unit_v | x: a, f: !cloref_t):<f> b = f (x)
-  prval pf = unit_v ()
-  val ys = list_map_main<a,b> {unit_v} {cloref_t} (pf | xs, app, f)
-  prval unit_v () = pf
+  typedef clo_type = a -<clo1> b
+  val ys = $effmask_ref let
+    val (vbox pf_f | p_f) = cloref_get_view_ptr {clo_type} (f)
+  in
+    $effmask_all (list_map_clo (xs, !p_f))
+  end // end of [val]
 in
   ys
 end // end of [list_map_cloref]

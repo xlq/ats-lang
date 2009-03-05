@@ -322,13 +322,9 @@ fun{a,b:t@ype} list_map_fun {n:nat} {f:eff}
   (xs: list (a, n), f: a -<fun,f> b):<f> list (b, n)
 overload list_map with list_map_fun
 
-(*
-
 fun{a,b:t@ype} list_map_clo {n:nat} {f:eff}
   (xs: list (a, n), f: &(a -<clo,f> b)):<f> list (b, n)
 overload list_map with list_map_clo
-
-*)
 
 fun{a,b:t@ype} list_map_cloptr {n:nat} {f:eff}
   (xs: list (a, n), f: !(a -<cloptr,f> b)):<f> list (b, n)

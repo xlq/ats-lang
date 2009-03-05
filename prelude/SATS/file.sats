@@ -93,6 +93,10 @@ fun reopen_file
 
 (* ****** ****** *)
 
+fun fflush (fil: FILEref): void = "atslib_fflush_exn"
+
+(* ****** ****** *)
+
 fun test_file_eof (fil: FILEref): bool = "atslib_feof"
 fun test_file_exists (path: string): bool = "atspre_test_file_exists"
 

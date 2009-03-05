@@ -92,7 +92,7 @@ in
   end else begin
     $raise SubscriptException
   end // end of [if]
-end // end of [array0_get_elt_at_exn]
+end (* end of [array0_get_elt_at_exn] *)
 
 implement{a} array0_set_elt_at_exn (A, i, x) = let
   val i = size1_of_size i
@@ -103,7 +103,7 @@ in
   end else begin
     $raise SubscriptException
   end
-end // end of [array0_set_elt_at_exn]
+end (* end of [array0_set_elt_at_exn] *)
 
 (* ****** ****** *)
 
@@ -115,7 +115,7 @@ in
   end else begin
     $raise SubscriptException
   end // end of [if]
-end // end of [array0_get_elt_at_exn__isz] 
+end (* end of [array0_get_elt_at_exn__isz] *)
   
 implement{a} array0_set_elt_at_exn__isz (A, i, x) = let
   val i = int1_of_int i
@@ -125,7 +125,7 @@ in
   end else begin
     $raise SubscriptException
   end // end of [if]
-end // end of [array0_set_elt_at_exn__isz] 
+end (* end of [array0_set_elt_at_exn__isz] *)
   
 (* ****** ****** *)
 

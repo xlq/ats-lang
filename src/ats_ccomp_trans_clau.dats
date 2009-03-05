@@ -213,7 +213,7 @@ implement ccomp_hiclau
         val () = aux_gua (res, level, himats, kont_matpnt mpt)
       in
         ompt := Some mpt
-      end
+      end // end of [list_cons]
     | list_nil () => ()
   end // end of [val]
 
@@ -541,7 +541,7 @@ in
 end // end of [aux_tmpmov]
 
 fun matpnt_kont_set_all
-  (xs: l0st): void = begin case+ xs of
+  (xs: l0st, fail_default: kont): void = begin case+ xs of
   | L0STcons (tl, hicl, mpts, ompt, xs) => let
       fn aux (
           i: int
@@ -561,7 +561,7 @@ fun matpnt_kont_set_all
           in
             // empty
           end // end of [Some_vt]
-        | ~None_vt () => ()
+        | ~None_vt () => matpnt_kont_set (mpt, fail_default)
       end // end of [aux]
 
       fun auxlst (
@@ -587,7 +587,7 @@ fun matpnt_kont_set_all
         val hips0 = hicl.hiclau_pat; val i = auxlst (0, hips0, mpts)
       } // end of [where]
     in
-      matpnt_kont_set_all (xs)
+      matpnt_kont_set_all (xs, fail_default)
     end // end ofl[L0STcons]
   | L0STnil () => ()
 end // end of [matpnt_kont_set_all]
@@ -595,7 +595,7 @@ end // end of [matpnt_kont_set_all]
 in // in of [local]
 
 implement ccomp_hiclaulst
-  (level, vps, hicls, tmp_res, fail) = let
+  (level, vps, hicls, tmp_res, fail_default) = let
   fun auxlst (
       branchlst: &branchlst_vt
     , hicls: hiclaulst
@@ -613,7 +613,7 @@ implement ccomp_hiclaulst
 
   var branchlst: branchlst_vt = list_vt_nil ()
   val xs(*l0st*) = auxlst (branchlst, hicls)
-  val () = matpnt_kont_set_all (xs)
+  val () = matpnt_kont_set_all (xs, fail_default)
 in
   $Lst.list_vt_reverse_list (branchlst)
 end // end of [ccomp_hiclaulst]

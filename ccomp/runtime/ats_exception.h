@@ -112,7 +112,7 @@ if ((intptr_t)tmp_exn == 0) { /* ... */
 #define ATS_TRYWITH_WITH(tmp_exn) \
 ATS_LEAVE_EXCEPTION_FRAME() ; \
 } else { \
-tmp_exn = ATS_CURRENT_FRAME->exn ;\
+tmp_exn = ATS_CURRENT_FRAME->exn ; \
 ATS_LEAVE_EXCEPTION_FRAME() ; /* exception handling */
 
 #define ATS_TRYWITH_END() \
