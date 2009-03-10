@@ -633,6 +633,8 @@ in
   | D2Clist d2cs => begin
       d3ec_list (d2c0.d2ec_loc, d2eclst_tr d2cs)
     end // end of [D2Clist]
+  | D2Csymintr _ => d3ec_none (d2c0.d2ec_loc)
+  | D2Csymelim _ => d3ec_none (d2c0.d2ec_loc)
   | D2Cstavars (d2cs) => let
       fn f (d2c: s2tavar): void = let
         val loc = d2c.s2tavar_loc; val s2v = d2c.s2tavar_var

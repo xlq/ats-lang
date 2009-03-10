@@ -1032,6 +1032,14 @@ implement d2ec_list (loc, d2cs) = '{
   d2ec_loc= loc, d2ec_node= D2Clist d2cs
 }
 
+implement d2ec_symintr (loc, ids) = '{
+  d2ec_loc= loc, d2ec_node= D2Csymintr (ids)
+}
+
+implement d2ec_symelim (loc, ids) = '{
+  d2ec_loc= loc, d2ec_node= D2Csymelim (ids)
+}
+
 implement d2ec_stavars (loc, d2cs) = '{
   d2ec_loc= loc, d2ec_node= D2Cstavars d2cs
 }

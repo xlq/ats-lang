@@ -1642,6 +1642,7 @@ fn symintr_tr (ids: i0delst): void = let
         the_d2expenv_add (id.i0de_sym, D2ITEMsym (nil ())); aux ids
       end
     | nil () => ()
+  // end of [aux]
 in
   aux ids
 end // end of [symintr_tr]
@@ -1652,6 +1653,7 @@ fn symelim_tr (ids: i0delst): void = let
         the_d2expenv_add (id.i0de_sym, D2ITEMsym (nil ())); aux ids
       end
     | nil () => ()
+  // end of [aux]
 in
   aux ids
 end // end of [symelim_tr]
@@ -2518,6 +2520,8 @@ fn s1taload_tr
       : void = begin case+ d2cs of
       | list_cons (d2c, d2cs) => loop d2cs where {
           val () = case+ d2c.d2ec_node of
+            | D2Csymintr ids => symintr_tr (ids)
+            | D2Csymelim ids => symelim_tr (ids)
             | D2Coverload (id, qid) => overload_tr (id, qid)
             | _ => ()
           // end of [val]
@@ -2538,11 +2542,13 @@ implement d1ec_tr (d1c0) = begin
   | D1Clist d1cs => begin
       d2ec_list (d1c0.d1ec_loc, d1eclst_tr d1cs)
     end // end of [D1Clist]
-  | D1Csymintr ids => begin
-      symintr_tr (ids); d2ec_none (d1c0.d1ec_loc)
+  | D1Csymintr ids => let
+      val () = symintr_tr (ids) in
+      d2ec_symintr (d1c0.d1ec_loc, ids)
     end // end of [D1Csymintr]
-  | D1Csymelim ids => begin
-      symelim_tr (ids); d2ec_none (d1c0.d1ec_loc)
+  | D1Csymelim ids => let
+      val () = symelim_tr (ids) in
+      d2ec_symelim (d1c0.d1ec_loc, ids)
     end // end of [D1Csymelim]
   | D1Ce1xpdef (id, def) => begin
       the_s2expenv_add (id, S2ITEMe1xp def);
