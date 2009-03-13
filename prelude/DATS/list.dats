@@ -73,18 +73,18 @@ implement{a} list_of_arraysize (arrsz) =
 
 implement{a} list_append {i,j} (xs, ys) = let
   var res: List a // uninitialized
-  fun aux {n1,n2:nat} .<n1>.
+  fun loop {n1,n2:nat} .<n1>.
     (xs: list (a, n1), ys: list (a, n2), res: &(List a)? >> list (a, n1+n2))
     :<> void = begin case+ xs of
     | x :: xs => let
         val () = (res := cons {a} {0} (x, ?)); val cons (_, !p) = res
       in
-        aux (xs, ys, !p); fold@ res
+        loop (xs, ys, !p); fold@ res
       end
     | nil () => (res := ys)
-  end // end of [aux]
+  end // end of [loop]
 in
-  aux (xs, ys, res); res
+  loop (xs, ys, res); res
 end // end of [list_append]
 
 (*
@@ -182,6 +182,24 @@ implement{a1,a2} list_exists2_cloptr {n} {p:eff} (xs1, xs2, p) = let
 in
   ans
 end // end of [list_exists2_cloptr]
+
+(* ****** ****** *)
+
+implement{a} list_extend (xs, y) = let
+  var res: List a // uninitialized
+  fun loop {n:nat} .<n>.
+    (xs: list (a, n), y: a, res: &(List a)? >> list (a, n+1))
+    :<> void = begin case+ xs of
+    | x :: xs => let
+        val () = (res := cons {a} {0} (x, ?)); val cons (_, !p) = res
+      in
+        loop (xs, y, !p); fold@ res
+      end
+    | nil () => (res := cons (y, nil ()))
+  end // end of [loop]
+in
+  loop (xs, y, res); res
+end // end of [list_extend]
 
 (* ****** ****** *)
 

@@ -856,8 +856,7 @@ fun d2exp_is_varlamcst (d2e: d2exp): bool
 
 //
 
-fun d2exp_var_is_arr (d2e: d2exp): bool
-fun d2exp_var_is_ptr (d2e: d2exp): bool
+fun d2exp_var_cst_is_ptr (d2e: d2exp): bool
 
 (* ****** ****** *)
 

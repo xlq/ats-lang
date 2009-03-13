@@ -1114,27 +1114,10 @@ implement d2ec_staload (loc, fil, od2cs) = '{
 
 (* ****** ****** *)
 
-fn d2exp_var_is_ptr (d2e: d2exp): bool = begin
-  case+ d2e.d2exp_node of
-  | D2Evar d2v => begin case+ d2var_typ_get d2v of
-    | Some s2e => let
-        val s2e = s2exp_whnf s2e
-      in
-        s2cstref_exp_equ (Ptr_addr_type, s2e)
-      end
-    | None () => false
-    end
-  | _ => begin
-      $Loc.prerr_location d2e.d2exp_loc;
-      prerr ": INTERNAL ERROR: d2exp_var_is_ptr"; prerr_newline ();
-      $Err.abort {bool} ()
-    end
-end // end of [d2exp_var_is_ptr]
-
 implement l2val_make_d2exp (d2e0) =
   case+ d2e0.d2exp_node of
   | D2Earrsub (d2s_brackets, d2e_arr, loc_ind, d2ess_ind) => let
-      val isptr = d2exp_var_is_ptr d2e_arr
+      val isptr = d2exp_var_cst_is_ptr d2e_arr
     in
       if isptr then let
         val d2l = d2lab_ind (loc_ind, d2ess_ind)

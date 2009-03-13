@@ -128,6 +128,12 @@ overload prerr with $Loc.prerr_location
 
 (* ****** ****** *)
 
+fn prerr_loc_error3 (loc: loc_t): void =
+  ($Loc.prerr_location loc; prerr ": error(3)")
+// end of [prerr_loc_error3]
+
+(* ****** ****** *)
+
 typedef funclo =  $Syn.funclo
 
 fn d2exp_funclo_of_d2exp
@@ -230,8 +236,7 @@ implement d2exp_typ_syn (d2e0) = begin
         s2exp_metfn (None (), s2es_met, d2exp_typ_syn d2e)
       end // end of [cons]
     | nil () => begin
-        prerr d2e0.d2exp_loc;
-        prerr ": error(3)";
+        prerr_loc_error3 d2e0.d2exp_loc;
         prerr ": illegal use of termination metric.";
         prerr_newline ();
         $Err.abort {s2exp} ()
@@ -272,8 +277,7 @@ end // end of [d3explst_open_and_add]
 
 fn pfarity_check_fun (loc_fun: loc_t, npf_fun: int, npf: int) =
   if npf_fun = npf then () else begin
-    prerr loc_fun;
-    prerr ": error(3)";
+    prerr_loc_error3 loc_fun;
     prerr ": the proof arity of the function is [";
     prerr npf_fun;
     prerr "] but it is expected to be [";
@@ -373,8 +377,7 @@ fn d3exp_clo_restore (d3e: d3exp): d3exp = let
             (s2rt_type, fc, ~1(*topized*), s2fe, npf, s2es_arg, s2e_res)
         | _ when lin = 0 => s2e_fun
         | _ (* lin = ~1 *) => begin
-            prerr loc;
-            prerr ": error(3)";
+            prerr_loc_error3 loc;
             prerr ": a linear function cannot be applied repeatedly.";
             prerr_newline ();
             $Err.abort {s2exp} ()
@@ -483,8 +486,7 @@ fn d23explst_tr_dn {n:nat}
   val [sgn:int] sgn = $Lst.list_length_compare (d23es, s2es)
   val () = (
     if sgn <> 0 then begin
-      prerr loc0;
-      prerr ": error(3)";
+      prerr_loc_error3 loc0;
       $Deb.debug_prerrf (": %s: d23explst_tr_dn", @(THISFILENAME));
       if sgn > 0 then prerr ": arity mismatch: less arguments are needed.";
       if sgn < 0 then prerr ": arity mismatch: more arguments are needed.";
@@ -608,8 +610,7 @@ in
       d3exp_app_dyn (loc_app, s2e_res, s2fe, d3e_fun, npf, d3es_arg)
     end
   | _ => begin
-      prerr loc_fun;
-      prerr ": error(3)";
+      prerr_loc_error3 loc_fun;
       $Deb.debug_prerrf (": %s: d23exp_app_tr_dn", @(THISFILENAME));
       prerr ": the dynamic expression is applied but its type is [";
       prerr s2e_fun;
@@ -751,8 +752,7 @@ fn d2exp_item_tr_up (loc0: loc_t, d2i: d2item): d3exp = begin
   | D2ITEMcst d2c => d2exp_cst_tr_up (loc0, d2c)
   | D2ITEMvar d2v => d2exp_var_tr_up (loc0, d2v)
   | _ => begin
-      prerr loc0;
-      prerr ": error(3)";
+      prerr_loc_error3 loc0;
       $Deb.debug_prerrf (": %s: d2exp_item_tr_up", @(THISFILENAME));
       prerr ": the dynamic expression needs to be a constant or a variable.";
       prerr_newline ();
@@ -806,7 +806,7 @@ end // end of [aux_select0]
 fun aux1
   (loc0: loc_t, d3e_fun: d3exp, d3as: d3exparglst, d2as: d2exparglst)
   : d3exp = begin case+ d3as of
-  | cons (d3a, d3as) => begin case+ d3a of
+  | list_cons (d3a, d3as) => begin case+ d3a of
     | D3EXPARGsta s2as => let
         val s2e_fun = begin
           s2exp_uni_instantiate_sexparglst (loc0, d3e_fun.d3exp_typ, s2as)
@@ -814,7 +814,7 @@ fun aux1
         val d3e_fun = d3exp_app_sta (loc0, s2e_fun, d3e_fun)
       in
         aux1 (loc0, d3e_fun, d3as, d2as)
-      end
+      end // end of [D3EXPARGsta]
     | D3EXPARGdyn (loc_arg, npf, d3es_arg) => let
         val () = d3explst_open_and_add d3es_arg
         val s2es_arg = d3explst_typ_get d3es_arg
@@ -857,28 +857,26 @@ fun aux1
               d3exp_app_dyn (loc0, s2e_res, s2fe_fun, d3e_fun, npf, d3es_arg)
           in
             aux1 (loc0, d3e_fun, d3as, d2as)
-          end
+          end // end of [S2Efun]
         | _ => begin
-            $Loc.prerr_location loc0;
-            prerr ": error(3)";
+            prerr_loc_error3 loc0;
             $Deb.debug_prerrf (": %s: d2exp_apps_sym_tr_up: aux1", @(THISFILENAME));
             prerr ": the dynamic expression is applied but its type is [";
             prerr s2e_fun;
             prerr "].";
             prerr_newline ();
             $Err.abort {d3exp} ()
-          end
-      end // end of [let]
-    end // end of [begin]
-  | nil () => d2exp_apps_tr_up (d3e_fun, d2as)
+          end // end of [_]
+      end // end of [D3EXPARGdyn]
+    end // end of [list_cons]
+  | list_nil () => d2exp_apps_tr_up (d3e_fun, d2as)
 end // end of [aux1]
 
 fun aux2
   (loc0: loc_t, d2s: d2sym, d3as: d3exparglst,
    xyzs: xyzlst_t, d2as: d2exparglst): d3exp = let
   fn err_nil (loc0: loc_t, d2s: d2sym):<cloref1> d3exp = begin
-     $Loc.prerr_location loc0;
-     prerr ": error(3)";
+     prerr_loc_error3 loc0;
      $Deb.debug_prerrf (": %s: d2exp_apps_sym_tr_up: aux2", @(THISFILENAME));
      prerr ": the symbol [";
      prerr d2s;
@@ -889,8 +887,7 @@ fun aux2
   fn err_cons_cons
      (loc0: loc_t, d2s: d2sym, xyz1: xyz_t, xyz2: xyz_t)
      :<cloref1> d3exp = begin
-     $Loc.prerr_location loc0;
-     prerr ": error(3)";
+     prerr_loc_error3 loc0;
      $Deb.debug_prerrf (": %s: d2exp_apps_sym_tr_up: aux2", @(THISFILENAME));
      prerr ": the symbol [";
      prerr d2s;
@@ -1043,7 +1040,7 @@ in
         d2exp_apps_sym_tr_up (loc_arg, d2s_brackets, '[d2a])
       end
     | _ => begin
-        prerr loc0; prerr ": error(3)";
+        prerr_loc_error3 loc0;
         prerr ": the format for array subscripts ["; prerr d2ess_ind;
         prerr "] is not supported."; prerr_newline ();
         $Err.abort {d3exp} ()
@@ -1091,8 +1088,7 @@ in
               val () = the_effect_env_check_ref (loc0) // write to a reference is effectful
               val () = // linearity checking
                 if s2exp_is_linear s2e_elt then begin
-                  prerr d2e0.d2exp_loc;
-                  prerr ": error(3)";
+                  prerr_loc_error3 d2e0.d2exp_loc;
                   prerr ": a reference to a linear value cannot be updated directly.";
                   prerr_newline ();
                   $Err.abort {void} ()
@@ -1102,22 +1098,20 @@ in
               d3exp_assgn_ptr (loc0, d3e0, nil (), d3e_r)
             end
           | ~None_vt () => begin
-              prerr d2e0.d2exp_loc;
-              prerr ": error(3)";
+              prerr_loc_error3 d2e0.d2exp_loc;
               prerr ": the dynamic expression is expected to be a pointer or reference";
               prerr ", but it is assigned the type ["; prerr s2e0; prerr "]";
               prerr_newline ();
               $Err.abort {d3exp} ()
-            end
-          end
-        | cons _ => begin
-            prerr d2e0.d2exp_loc;
-            prerr ": error(3)";
+            end // end of [None_vt]
+          end // end of [list_nil]
+        | list_cons _ => begin
+            prerr_loc_error3 d2e0.d2exp_loc;
             prerr ": the dynamic expression is expected to be a pointer";
             prerr ", but it is assigned the type ["; prerr s2e0; prerr "]";
             prerr_newline ();
             $Err.abort {d3exp} ()
-          end
+          end // end of [list_cons]
         end // end of [None_vt]
       // end of [case]
     end
@@ -1129,8 +1123,7 @@ in
       val s2e_r = d3e_r.d3exp_typ
       val () =
         if s2exp_is_proof s2e_r then () else begin
-          prerr d2e_l.d2exp_loc;
-          prerr ": error(3)";
+          prerr_loc_error3 d2e_l.d2exp_loc;
           prerr ": the linear dynamic variable ["; prerr d2v;
           prerr "] can support proof assignment but not value assignment.";
           prerr_newline ();
@@ -1177,7 +1170,7 @@ fn d3exp_s2exp_lazy_force_tr_up
   | ~None_vt () => begin case+ un_s2exp_lazy_viewt0ype_viewtype s2e0 of
     | ~Some_vt (s2e_elt) => d3exp_lazy_force (loc0, s2e_elt, 1(*lin*), d3e0)
     | ~None_vt () => begin
-        prerr d3e0.d3exp_loc; prerr ": error(3)";
+        prerr_loc_error3 d3e0.d3exp_loc;
         prerr ": the dynamic expression is assigned the type ["; prerr s2e0;
         prerr "], but a pointer, reference, or delayed computation is expected.";
         prerr_newline ();
@@ -1232,8 +1225,7 @@ in
           val () = the_effect_env_check_ref (loc0) // read from a reference is effectful
           val () = // linearity checking
             if s2exp_is_linear s2e_elt then begin
-              prerr d2e0.d2exp_loc;
-              prerr ": error(3)";
+              prerr_loc_error3 d2e0.d2exp_loc;
               prerr ": a reference to a linear value cannot be accessed directly.";
               prerr_newline ();
               $Err.abort {void} ()
@@ -1244,8 +1236,7 @@ in
       | ~None_vt () => d3exp_s2exp_lazy_force_tr_up (loc0, d3e0, s2e0)
       end // end of [nil]
     | cons _ => begin
-        prerr d2e0.d2exp_loc;
-        prerr ": error(3)";
+        prerr_loc_error3 d2e0.d2exp_loc;
         prerr ": the dynamic expression is expected to be a pointer";
         prerr ", but it is assigned the type ["; prerr s2e0; prerr "]";
         prerr_newline ();
@@ -1276,8 +1267,7 @@ in
       d3exp_con (loc0, s2e_fun_res, d2c, npf, d3es)
     end
   | _ => begin
-      prerr loc0;
-      prerr ": error(3)";
+      prerr_loc_error3 loc0;
       $Deb.debug_prerrf (": %s: d2exp_con_tr_up", @(THISFILENAME));
       prerr ": the dynamic constructor [";
       prerr d2c;
@@ -1297,12 +1287,11 @@ fn d2exp_decrypt_tr_up
   val s2e_crypt = d3e.d3exp_typ
   val s2e = case+ s2e_crypt.s2exp_node of
     | S2Ecrypt s2e => s2e | _ => begin
-        prerr loc0;
-        prerr ": error(3)";
+        prerr_loc_error3 loc0;
         prerr ": the dynamic expression is expected to be crypted";
         prerr ", but it is assigned the type ["; prerr s2e_crypt; prerr "].";
         $Err.abort {s2exp} ()
-      end
+      end // end of [_]
   // end of [val]
 in
   d3exp_crypt (loc0, s2e, ~1(*decrypt*), d3e)
@@ -1350,8 +1339,7 @@ fn d2exp_foldat_freeat_tr_up
   val d2c = case+ s2e.s2exp_node of
     | S2Edatconptr (d2c, s2es) => (s2es_addr := s2es; d2c)
     | _ => begin
-        prerr d2e.d2exp_loc;
-        prerr ": error(3)";
+        prerr_loc_error3 d2e.d2exp_loc;
         if isfold then begin
           prerr ": the dynamic expression cannot be folded as its type is ["
         end else begin
@@ -1396,8 +1384,7 @@ fn d2exp_foldat_freeat_tr_up
 *)
         val () = // error checking
           if err > 0 then begin
-            prerr loc0;
-            prerr ": error(3)";
+            prerr_loc_error3 loc0;
             if isfold then begin
               prerr ": argument type mismatch for folding"
             end else begin
@@ -1412,8 +1399,7 @@ fn d2exp_foldat_freeat_tr_up
           val () = d3exp_lval_typ_set (loc0, 0(*refval*), d3e, s2e_fun_res, err)
         in
           if err > 0 then begin
-            prerr loc0;
-            prerr ": error(3)";
+            prerr_loc_error3 loc0;
             prerr ": the dynamic expression needs to be a left-value for folding";
             prerr ", but it is not.";
             prerr_newline ();
@@ -1521,7 +1507,7 @@ fn d2exp_lazy_delay_tr_up
   val d3e_eval = d2exp_tr_up d2e_eval
   val s2e_eval = d3e_eval.d3exp_typ
   val () = if s2exp_is_linear s2e_eval then begin // linearity checking
-    prerr loc0; prerr ": error(3)";
+    prerr_loc_error3 loc0;
     prerr ": the keyword [$delay_vt] is needed to form a linear lazy value.";
     prerr_newline ()
   end // end of [val]
@@ -1575,17 +1561,16 @@ in
       val d3e_ptr = d2exp_tr_up d2e_ptr
       val () = d3exp_open_and_add d3e_ptr
       val s2e_ptr = d3e_ptr.d3exp_typ
-      val s2e_addr =
+      val s2e_addr = (
         case+ un_s2exp_ptr_addr_type s2e_ptr of
-        | ~Some_vt s2e => s2e
-        | ~None_vt () => begin
-            prerr d2e_ptr.d2exp_loc;
-            prerr ": error(3)";
+        | ~Some_vt s2e => s2e | ~None_vt () => begin
+            prerr_loc_error3 d2e_ptr.d2exp_loc;
             prerr ": the dynamic expression is expected to be a pointer";
             prerr ", but it is assigned the type ["; prerr s2e_ptr; prerr "].";
             prerr_newline ();
             $Err.abort {s2exp} ()
-          end
+          end // end of [None_vt]
+      ) : s2exp // end of [val]
     in
       case+ d2ls of
       | cons _ => let
@@ -1599,7 +1584,7 @@ in
           val s2e_prj_ptr = s2exp_ptr_addr_type (s2e_prj_addr)
         in
           d3exp_ptrof_ptr (loc0, s2e_prj_ptr, d3e_ptr, d3ls)
-        end
+        end // end of [cons]
       | nil () => d3exp_ptrof_ptr (loc0, s2e_ptr, d3e_ptr, nil ())
       // end of [case]
     end // end of [L2VALptr]
@@ -1626,23 +1611,20 @@ in
       // end of [case]
     end // end of [L2VALvar]
   | L2VALarrsub _ => begin
-      prerr d2e0.d2exp_loc;
-      prerr ": error(3)";
+      prerr_loc_error3 d2e0.d2exp_loc;
       prerr ": array subscription is not supported for address-of operation.";
       prerr_newline ();
       $Err.abort {d3exp} ()
     end // end of [L2VALarrsub]
   | L2VALvar_lin (d2v, _) => begin
-      prerr d2e0.d2exp_loc;
-      prerr ": error(3)";
+      prerr_loc_error3 d2e0.d2exp_loc;
       prerr ": the dynamic expression is expected to be a left-value";
       prerr ", but it is not as ["; prerr d2v; prerr "] is not mutable.";
       prerr_newline ();
       $Err.abort {d3exp} ()
     end // end of [L2VALvar_lin]
   | L2VALnone _ => begin
-      prerr d2e0.d2exp_loc;
-      prerr ": error(3)";
+      prerr_loc_error3 d2e0.d2exp_loc;
       prerr ": the dynamic expression is expected to be a left-value";
       prerr ", but it is not.";
       prerr_newline ();
@@ -1654,8 +1636,7 @@ end // end of [d2exp_ptrof_tr_up]
 
 fn d3exp_nonlin_check (d3e: d3exp): void = begin
   if s2exp_is_linear (d3e.d3exp_typ) then begin
-    prerr d3e.d3exp_loc;
-    prerr ": error(3)";
+    prerr_loc_error3 d3e.d3exp_loc;
     prerr ": the dynamic expression is linear but it should not be.";
     prerr_newline ();
     $Err.abort {void} ()
@@ -1709,14 +1690,12 @@ fn d3exp_sel_tr_up
       val @(s2e_prj, s2ls) = begin
         s2exp_slablst_get_restlin_cstr (loc0, d3e.d3exp_typ, s2ls_nt, restlin, cstr)
       end
-      val () = // restlin check
-        if restlin > 0 then begin
-          prerr loc0;
-          prerr ": error(3)";
-          prerr ": a linear component is abandoned by label selection.";
-          prerr_newline ();
-          $Err.abort {void} ()
-        end
+      val () = if restlin > 0 then begin // restlin check
+        prerr_loc_error3 loc0;
+        prerr ": a linear component is abandoned by label selection.";
+        prerr_newline ();
+        $Err.abort {void} ()
+      end // end of [val]
       val () = trans3_env_add_proplst (loc0, cstr)
       val d3ls = d3lab1lst_of_d3lab0lst_s2lablst (d3ls_nt, s2ls)
     in
@@ -1844,8 +1823,7 @@ in
       d3exp_tmpvar (loc0, s2e_tmp, d2v, s2ess)
     end // end of [D2Evar]
   | _ => begin
-      prerr loc0;
-      prerr ": error(3)";
+      prerr_loc_error3 loc0;
       $Deb.debug_prerrf (": %s: d2exp_tmpid_tr_up", @(THISFILENAME));
       prerr ": the dynamic expression is expected to be a constant or a variable.";
       prerr_newline ();
@@ -1878,8 +1856,7 @@ in
           d3exp_viewat_ptr (loc0, s2e_at, d3e_ptr, d3ls, d2v_view, s2ls_view)
         end
       | ~None_vt () => begin
-          prerr d2e_ptr.d2exp_loc;
-          prerr ": error(3)";
+          prerr_loc_error3 d2e_ptr.d2exp_loc;
           prerr ": the dynamic expression is expected to be a pointer";
           prerr ", but it is given the type ["; prerr s2e_ptr; prerr "].";
           prerr_newline ();
@@ -1901,23 +1878,21 @@ in
       d3exp_viewat_var (loc0, s2e_at, d2v, d3ls, d2v_view, s2ls_view)
     end // end of [L2VALvar_mul]
   | L2VALarrsub _ => begin
-      prerr d2e0.d2exp_loc;
+      prerr_loc_error3 d2e0.d2exp_loc;
       prerr ": error(3)";
       prerr ": array subscription is not supported for view extraction.";
       prerr_newline ();
       $Err.abort {d3exp} ()
     end // end of [L2VALarrsub]
   | L2VALvar_lin (d2v, _) => begin
-      prerr d2e0.d2exp_loc;
-      prerr ": error(3)";
+      prerr_loc_error3 d2e0.d2exp_loc;
       prerr ": the dynamic expression is expected to be a left-value";
       prerr ", but it is not as ["; prerr d2v; prerr "] is not mutable.";
       prerr_newline ();
       $Err.abort {d3exp} ()
     end // end of [L2VALvar]
   | L2VALnone _ => begin
-      prerr d2e0.d2exp_loc;
-      prerr ": error(3)";
+      prerr_loc_error3 d2e0.d2exp_loc;
       prerr ": the dynamic expression is expected to be a left-value";
       prerr ", but it is not.";
       prerr_newline ();
@@ -1950,8 +1925,7 @@ in
           d3exp_viewat_assgn_ptr (loc0, d3e_ptr, d3ls, d3e_r)
         end
       | ~None_vt () => begin
-          prerr d2e_ptr.d2exp_loc;
-          prerr ": error(3)";
+          prerr_loc_error3 d2e_ptr.d2exp_loc;
           prerr ": the dynamic expression is expected to be a pointer";
           prerr ", but it is given the type ["; prerr s2e_ptr; prerr "].";
           prerr_newline ();
@@ -1986,23 +1960,20 @@ in
       // end of [case]
     end // end of [L2VALvar_mul]
   | L2VALarrsub _ => begin
-      prerr d2e_l.d2exp_loc;
-      prerr ": error(3)";
+      prerr_loc_error3 d2e_l.d2exp_loc;
       prerr ": array subscription is not supported for view assignment.";
       prerr_newline ();
       $Err.abort {d3exp} ()
     end // end of [L2VALarrsub]
   | L2VALvar_lin (d2v, _) => begin
-      prerr d2e_l.d2exp_loc;
-      prerr ": error(3)";
+      prerr_loc_error3 d2e_l.d2exp_loc;
       prerr ": the dynamic expression is expected to be a left-value";
       prerr ", but it is not as ["; prerr d2v; prerr "] is not mutable.";
       prerr_newline ();
       $Err.abort {d3exp} ()
     end // end of [L2VALvar_lin]
   | L2VALnone _ => begin
-      prerr d2e_l.d2exp_loc;
-      prerr ": error(3)";
+      prerr_loc_error3 d2e_l.d2exp_loc;
       prerr ": the dynamic expression is expected to be a left-value";
       prerr ", but it is not.";
       prerr_newline ();
@@ -2071,7 +2042,7 @@ val d3e0 = (case+ d2e0.d2exp_node of
       d3exp_arrsize (loc0, s2e_arrsz, s2e_elt, d3es_elt)
     end // end of [D2Earrsize]
   | D2Earrsub (d2s_brackets, d2e_arr, loc_ind, d2ess_ind) => begin
-      if d2exp_var_is_ptr d2e_arr then let
+      if d2exp_var_cst_is_ptr d2e_arr then let
         val d2l = d2lab_ind (loc_ind, d2ess_ind)
       in
         d2exp_deref_tr_up (loc0, d2e_arr, '[d2l])
@@ -2082,8 +2053,7 @@ val d3e0 = (case+ d2e0.d2exp_node of
             d2exp_apps_sym_tr_up (loc0, d2s_brackets, '[d2a])
           end // end of [cons]
         | _ => begin
-            prerr loc_ind;
-            prerr ": error(3)";
+            prerr_loc_error3 loc_ind;
             prerr ": the format for array subscripts ["; prerr d2ess_ind;
             prerr "] is not supported."; prerr_newline ();
             $Err.abort {d3exp} ()
@@ -2346,8 +2316,7 @@ val d3e0 = (case+ d2e0.d2exp_node of
       d2exp_tmpid_tr_up (loc0, d2e, ts2ess)
     end // end of [D2Etmpid]
   | D2Etop () => begin
-      prerr loc0;
-      prerr ": error(3)";
+      prerr_loc_error3 loc0;
       prerr ": the type of [?] cannot be synthesized.";
       prerr_newline ();
       $Err.abort {d3exp} ()
@@ -2474,23 +2443,20 @@ fn d2exp_var_nonmut_tr_up (loc0: loc_t, d2v: d2var_t): d3exp = let
     the_d2varset_env_prerr_ld2vs (); prerr_newline ()
   end
 *)
-  val () = begin
-    if lin_d2v >= 0 then let
-      val is_llam_local = the_d2varset_env_d2var_is_llam_local d2v
-    in
-      if is_llam_local then begin
-        d2var_lin_set (d2v, 1+lin_d2v); d2var_typ_set (d2v, None ())
-      end else begin
-        prerr loc0;
-        prerr ": error(3)";
-        prerr ": the linear dynamic variable [";
-        prerr d2v;
-        prerr "] is expected to be local but it is not.";
-        prerr_newline ();
-        $Err.abort {void} ()
-      end // end of [begin]
-    end // end of [let]
-  end // end of [begin]
+  val () = if lin_d2v >= 0 then let
+    val is_llam_local = the_d2varset_env_d2var_is_llam_local d2v
+  in
+    if is_llam_local then begin
+      d2var_lin_set (d2v, 1+lin_d2v); d2var_typ_set (d2v, None ())
+    end else begin
+      prerr_loc_error3 loc0;
+      prerr ": the linear dynamic variable [";
+      prerr d2v;
+      prerr "] is expected to be local but it is not.";
+      prerr_newline ();
+      $Err.abort {void} ()
+    end // end of [begin]
+  end // end of [val]
 in
   case+ d2var_decarg_get d2v of
   | nil () => d3exp_var (loc0, s2e_d2v, d2v)
@@ -2505,7 +2471,7 @@ in
       } // end of [where]
     in
       d3exp_tmpvar (loc0, s2e_tmp, d2v, s2ess)
-    end
+    end // end of [cons]
 end // end of [d2exp_var_nonmut_tr_up]
 
 implement d2exp_var_tr_up (loc0, d2v) = begin case+ d2v of

@@ -144,6 +144,11 @@ overload list_exists2 with list_exists2_cloref
 
 (* ****** ****** *)
 
+fun{a:t@ype} list_extend {n:nat}
+  (xs: list (a, n), y: a):<> list (a, n+1)
+
+(* ****** ****** *)
+
 fun{a:t@ype} list_filter_cloptr {n:nat} {p:eff}
   (xs: list (a, n), p: !a -<cloptr,p> bool):<p> [n':nat | n' <= n] list (a, n')
 

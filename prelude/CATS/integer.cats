@@ -198,9 +198,9 @@ atspre_neq_int_int (ats_int_type i1, ats_int_type i2) {
 static inline
 ats_int_type
 atspre_compare_int_int (ats_int_type i1, ats_int_type i2) {
-  if (i1 < i2) return ((ats_int_type)(-1)) ;
-  if (i1 > i2) return ((ats_int_type)( 1)) ;
-  return 0 ;
+  if (i1 < i2) return (-1) ;
+  if (i1 > i2) return ( 1) ;
+  return (0) ;
 }
 
 static inline
@@ -430,9 +430,9 @@ atspre_neq_uint_uint (ats_uint_type i1, ats_uint_type i2) {
 static inline
 ats_int_type
 atspre_compare_uint_uint (ats_uint_type i1, ats_uint_type i2) {
-  if (i1 < i2) return ((ats_int_type)(-1)) ;
-  if (i1 > i2) return ((ats_int_type)( 1)) ;
-  return ((ats_int_type)(0)) ;
+  if (i1 < i2) return (-1) ;
+  if (i1 > i2) return ( 1) ;
+  return (0) ;
 }
 
 static inline
@@ -1251,6 +1251,28 @@ atspre_neq_int8_int8 (ats_int8_type i1, ats_int8_type i2) {
   return (i1 != i2) ;
 }
 
+// compare, max, min
+
+static inline
+ats_int_type
+atspre_compare_int8_int8 (ats_int8_type i1, ats_int8_type i2) {
+  if (i1 < i2) return (-1) ;
+  if (i1 > i2) return ( 1) ;
+  return (0) ;
+}
+
+static inline
+ats_int8_type
+atspre_max_int8_int8 (ats_int8_type i1, ats_int8_type i2) {
+  return (i1 >= i2) ? i1 : i2 ;
+}
+
+static inline
+ats_int8_type
+atspre_min_int8_int8 (ats_int8_type i1, ats_int8_type i2) {
+  return (i1 <= i2) ? i1 : i2 ;
+}
+
 // print functions
 
 static inline
@@ -1379,6 +1401,28 @@ static inline
 ats_bool_type
 atspre_neq_int16_int16 (ats_int16_type i1, ats_int16_type i2) {
   return (i1 != i2) ;
+}
+
+// compare, max, min
+
+static inline
+ats_int_type
+atspre_compare_int16_int16 (ats_int16_type i1, ats_int16_type i2) {
+  if (i1 < i2) return (-1) ;
+  if (i1 > i2) return ( 1) ;
+  return (0) ;
+}
+
+static inline
+ats_int16_type
+atspre_max_int16_int16 (ats_int16_type i1, ats_int16_type i2) {
+  return (i1 >= i2) ? i1 : i2 ;
+}
+
+static inline
+ats_int16_type
+atspre_min_int16_int16 (ats_int16_type i1, ats_int16_type i2) {
+  return (i1 <= i2) ? i1 : i2 ;
 }
 
 // print functions
@@ -1511,6 +1555,28 @@ atspre_neq_int32_int32 (ats_int32_type i1, ats_int32_type i2) {
   return (i1 != i2) ;
 }
 
+// compare, max, int
+
+static inline
+ats_int_type
+atspre_compare_int32_int32 (ats_int32_type i1, ats_int32_type i2) {
+  if (i1 < i2) return (-1) ;
+  if (i1 > i2) return ( 1) ;
+  return (0) ;
+}
+
+static inline
+ats_int32_type
+atspre_max_int32_int32 (ats_int32_type i1, ats_int32_type i2) {
+  return (i1 >= i2) ? i1 : i2 ;
+}
+
+static inline
+ats_int32_type
+atspre_min_int32_int32 (ats_int32_type i1, ats_int32_type i2) {
+  return (i1 <= i2) ? i1 : i2 ;
+}
+
 // print functions
 
 static inline
@@ -1547,7 +1613,7 @@ atspre_prerr_int32 (ats_int32_type i) {
 static inline
 ats_int64_type
 atspre_int64_of_int (ats_int_type i) {
-  return i ;
+  return (i) ;
 }
 
 // ------ ------
@@ -1636,6 +1702,28 @@ static inline
 ats_bool_type
 atspre_neq_int64_int64 (ats_int64_type i1, ats_int64_type i2) {
   return (i1 != i2) ;
+}
+
+// compare, max, min
+
+static inline
+ats_int_type
+atspre_compare_int64_int64 (ats_int64_type i1, ats_int64_type i2) {
+  if (i1 < i2) return (-1) ;
+  if (i1 > i2) return ( 1) ;
+  return (0) ;
+}
+
+static inline
+ats_int64_type
+atspre_max_int64_int64 (ats_int64_type i1, ats_int64_type i2) {
+  return (i1 >= i2) ? i1 : i2 ;
+}
+
+static inline
+ats_int64_type
+atspre_min_int64_int64 (ats_int64_type i1, ats_int64_type i2) {
+  return (i1 <= i2) ? i1 : i2 ;
 }
 
 // print functions

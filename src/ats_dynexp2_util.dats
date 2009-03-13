@@ -85,19 +85,25 @@ end // end of [d2exp_is_varlamcst]
 
 (* ****** ****** *)
 
-implement d2exp_var_is_ptr (d2e0) = begin
-  case+ d2e0.d2exp_node of
-  | D2Evar d2v => begin case+ d2var_typ_get d2v of
-    | Some s2e => s2cstref_exp_equ (Ptr_addr_type, s2e)
-    | None () => false
-    end
+implement d2exp_var_cst_is_ptr (d2e) = begin
+  case+ d2e.d2exp_node of
+  | D2Evar d2v => let
+      val os2e = d2var_typ_get d2v in case+ os2e of
+      | Some s2e => begin
+          s2cstref_exp_equ (Ptr_addr_type, s2exp_whnf s2e)
+        end // end of [Some]
+      | None () => false
+    end // end of [D2Evar]
+  | D2Ecst d2c => let
+      val s2e = d2cst_typ_get d2c in
+      s2cstref_exp_equ (Ptr_addr_type, s2exp_whnf s2e)
+    end // end of [D2Ecst]
   | _ => begin
-      prerr d2e0.d2exp_loc;
-      prerr ": Internal Error: d2exp_var_is_ptr: d2e0 = ";
-      prerr d2e0; prerr_newline ();
+      $Loc.prerr_location d2e.d2exp_loc;
+      prerr ": INTERNAL ERROR: d2exp_var_cst_is_ptr"; prerr_newline ();
       $Err.abort {bool} ()
-    end
-end // end of [d2exp_var_is_ptr]
+    end // end of [_]
+end // end of [d2exp_var_cst_is_ptr]
 
 (* ****** ****** *)
 

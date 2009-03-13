@@ -1412,6 +1412,10 @@ overload >= with gte_int32_int32
 overload = with eq_int32_int32
 overload <> with neq_int32_int32
 
+fun compare_int32_int32 (i1: int32, i2: int32):<> Sgn
+  = "atspre_compare_int32_int32"
+overload compare with compare_int32_int32
+
 fun max_int32_int32 (i: int32, j: int32):<> int32
   = "atspre_max_int32_int32"
 
@@ -1522,6 +1526,10 @@ overload > with gt_int64_int64
 overload >= with gte_int64_int64
 overload = with eq_int64_int64
 overload <> with neq_int64_int64
+
+fun compare_int64_int64 (i1: int64, i2: int64):<> Sgn
+  = "atspre_compare_int64_int64"
+overload compare with compare_int64_int64
 
 fun max_int64_int64 (i: int64, j: int64):<> int64
   = "atspre_max_int64_int64"
