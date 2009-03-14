@@ -265,7 +265,8 @@ in
       // empty
     end // end of [list_cons]
   | list_nil () => begin
-      prerr "Internal Error: the_s2varbindmap_pop: [s2varbind_svs_lst] is empty.";
+      prerr "INTERNAL ERROR";
+      prerr ": the_s2varbindmap_pop: [s2varbind_svs_lst] is empty.";
       prerr_newline ();
       $Err.abort {void} ()
     end // end of [list_nil]
@@ -318,7 +319,7 @@ implement the_s2Varset_env_pop () = let
   end
 in
   if err > 0 then begin
-    prerr "Internal Error: the_s2Varset_env_pop";
+    prerr "INTERNAL ERROR: the_s2Varset_env_pop";
     prerr_newline ();
     $Err.abort {void} ()
   end
@@ -467,7 +468,7 @@ fn the_d2varset_env_get_llam_ld2vs
   | list_cons (LD2VSITEMllam r, _) => !r
   | _ => begin
       prerr loc0;
-      prerr ": Internal Error: the_d2varset_env_get_llam_ld2vs";
+      prerr ": INTERNAL ERROR: the_d2varset_env_get_llam_ld2vs";
       prerr_newline ();
       $Err.abort {d2varlst} ()
     end
@@ -497,7 +498,7 @@ implement the_d2varset_env_pop_lam (pf | (*none*)) = let
     | list_nil () => (err := 1)
 in
   if err > 0 then begin
-    prerr "Internal Error: the_d2varset_env_pop_lam";
+    prerr "INTERNAL ERROR: the_d2varset_env_pop_lam";
     prerr_newline ();
     $Err.abort {void} ()
   end
@@ -528,7 +529,7 @@ implement the_d2varset_env_pop_let (pf | (*none*)) = let
     | list_nil () => (err := 1)
 in
   if err > 0 then begin
-    prerr "Internal Error: the_d2varset_env_pop_let";
+    prerr "INTERNAL ERROR: the_d2varset_env_pop_let";
     prerr_newline ();
     $Err.abort {void} ()
   end
@@ -564,7 +565,7 @@ implement the_d2varset_env_d2var_is_lam_local (d2v) = let
         end
       end
     | list_nil () => begin
-        prerr "Internal Error: d2var_is_lam_local: aux: d2v = ";
+        prerr "INTERNAL ERROR: d2var_is_lam_local: aux: d2v = ";
         prerr d2v;
         prerr_newline ();
         $Err.abort {bool} ()
@@ -588,7 +589,7 @@ implement the_d2varset_env_d2var_is_llam_local (d2v) = let
         end
       end
     | list_nil () => begin
-        prerr "Internal Error: d2var_is_llam_local: aux: d2v = ";
+        prerr "INTERNAL ERROR: d2var_is_llam_local: aux: d2v = ";
         prerr d2v;
         prerr_newline ();
         $Err.abort {bool} ()
@@ -765,12 +766,10 @@ implement the_d2varset_env_stbefitemlst_save () = let
   fun f (pf: !V | d2v: d2var_t, sbis: !sbisptr): void = let
     val lin = d2var_lin_get d2v
   in
-    if lin >= 0 then let
-      val sbi = stbefitem_make (d2v, lin)
-    in
-      !sbis := list_cons (sbi, !sbis)
-    end
-  end // end of [f]
+    if lin >= 0 then let val sbi =
+      stbefitem_make (d2v, lin) in !sbis := list_cons (sbi, !sbis)
+    end // end of [if]
+  end (* end of [f] *)
   fun aux (pf: !V | xs: ld2vsitemlst, sbis: !sbisptr): void = begin
     case+ xs of
     | list_cons (x, xs) => begin case+ x of
@@ -810,14 +809,14 @@ implement trans3_env_s3itemlst_copy () = let
   val (vbox pf | p) = ref_get_view_ptr (the_s3itemlst)
 in
   $Lst.list_vt_copy (!p)
-end
+end // end of [trans3_Env_s3itemlst_copy]
 
 implement trans3_env_s3itemlst_get () = let
   val (vbox pf | p) = ref_get_view_ptr (the_s3itemlst)
   val s3is = !p; val () = !p := list_vt_nil ()
 in
   s3is
-end
+end // end of [trans3_env_s3itemlst_get]
 
 implement trans3_env_s3itemlst_set (s3is) = let
   val (vbox pf | p) = ref_get_view_ptr (the_s3itemlst)
@@ -825,13 +824,13 @@ in
   case+ !p of
   | ~list_vt_nil () => (!p := s3is; None_vt ())
   | list_vt_cons _ => (fold@ (!p); Some_vt s3is)
-end
+end // end of [trans3_env_s3itemlst_set]
 
 implement trans3_env_add_svar (s2v) = let
   val (vbox pf | p) = ref_get_view_ptr (the_s3itemlst)
 in
   !p := list_vt_cons (S3ITEMsvar s2v, !p)
-end
+end // end of [trans3_env_add_svar]
 
 implement trans3_env_add_svarlst (s2vs) = let
   fun aux {n:nat} .<n>.
@@ -842,7 +841,7 @@ implement trans3_env_add_svarlst (s2vs) = let
   val (vbox pf | p) = ref_get_view_ptr (the_s3itemlst)
 in
   !p := aux (!p, s2vs)
-end
+end // end of [trans3_env_add_svarlst]
 
 (* ****** ****** *)
 
@@ -851,7 +850,7 @@ implement trans3_env_add_sVar (s2V) = let
   val (vbox pf | p) = ref_get_view_ptr the_s3itemlst
 in
  !p := list_vt_cons (S3ITEMsVar s2V, !p)
-end
+end // end of [trans3_env_add_sVar]
 
 implement trans3_env_add_sVarlst (s2Vs) = let
   fun aux {n:nat} .<n>.
@@ -866,7 +865,7 @@ implement trans3_env_add_sVarlst (s2Vs) = let
   val (vbox pf | p) = ref_get_view_ptr the_s3itemlst
 in
   !p := aux (!p, s2Vs)
-end
+end // end of [trans3_env_add_sVarlst]
 
 (* ****** ****** *)
 
@@ -880,7 +879,7 @@ implement trans3_env_add_cstr_ref (r) = let
   val (vbox pf | p) = ref_get_view_ptr the_s3itemlst
 in
   !p := list_vt_cons (S3ITEMcstr_ref r, !p)
-end
+end // end of [trans3_env_add_cstr_ref]
 
 //
 
@@ -892,10 +891,10 @@ implement trans3_env_add_prop (loc, s2p) = begin
       val () = trans3_env_pop_sta_and_add_none (loc)
     in
       // empty
-    end
+    end // end of [S2Etyleq when ...]
   | _ => begin
       trans3_env_add_cstr (c3str_prop (loc, s2p))
-    end
+    end // end of [_]
 end // end of [trans3_env_add_prop]
 
 implement trans3_env_add_proplst (loc, s2ps) = begin
@@ -938,7 +937,7 @@ implement trans3_env_hypo_add_prop (loc, s2p) = let
 (*
   val () = begin
     prerr "trans3_env_hypo_add_prop: s2p = "; prerr s2p; prerr_newline ()
-  end
+  end // end of [val]
 *)
   val h3p = h3ypo_prop (loc, s2p)
   val (vbox pf | p) = ref_get_view_ptr the_s3itemlst
@@ -1007,7 +1006,25 @@ end // end of [trans3_env_hypo_add_p2atcstlstlst]
 
 (* ****** ****** *)
 
+fn prerr_the_s3itemlst () = let
+  val (vbox pf | p) = ref_get_view_ptr the_s3itemlst
+in
+  $effmask_ref (prerr_s3itemlst_vt !p)
+end // end of [prerr_the_s3itemlst]
+
+fn prerr_the_s3itemlstlst () = let
+  val (vbox pf | ps) = ref_get_view_ptr the_s3itemlstlst
+in
+  $effmask_ref (prerr_s3itemlstlst_vt !ps)
+end // end of [prerr_the_s3itemlstlst]
+
 implement trans3_env_pop_sta () = let
+(*
+  val () = $effmask_ref begin
+    prerr "trans3_env_pop_sta: the_s3itemlst = "; prerr_the_s3itemlst (); prerr_newline ();
+    prerr "trans3_env_pop_sta: the_s3itemlstlst = "; prerr_the_s3itemlstlst (); prerr_newline ();
+  end // end of [val]
+*)
   val () = the_s2varbindmap_pop ()
   val () = the_s2Varset_env_pop ()
   var err: int = 0
@@ -1018,14 +1035,14 @@ implement trans3_env_pop_sta () = let
     | ~list_vt_cons (s3is, s3iss) => (!ps := (s3iss: s3itemlstlst_vt); s3is)
     | ~list_vt_nil () => begin
         !ps := list_vt_nil {s3itemlst_vt} (); err := 1; list_vt_nil {s3item} ()
-      end
+      end // end of [list_vt_nil]
   end) : s3itemlst_vt
-  val () =
-    if err > 0 then begin
-      prerr "Internal Error: trans3_env_pop_sta: [the_s3itemlstlst] is empty.";
-      prerr_newline ();
-      $Err.abort {void} ()
-    end
+  val () = if err > 0 then begin
+    prerr "INTERNAL ERROR";
+    prerr ": trans3_env_pop_sta: [the_s3itemlstlst] is empty.";
+    prerr_newline ();
+    $Err.abort {void} ()
+  end // end of [val]
   val (vbox pf | p) = ref_get_view_ptr the_s3itemlst
   val s3is0 = !p; val () = (!p := s3is1)
 in
@@ -1035,6 +1052,11 @@ end // end of [trans3_env_pop_sta]
 implement trans3_env_pop_sta_and_add (loc, cstrknd) = let
   val s3is0 = trans3_env_pop_sta ()
   val c3t = c3str_itmlst (loc, cstrknd, $Lst.list_vt_reverse_list s3is0)
+(*
+  val () = begin
+    prerr "trans3_env_pop_sta_and_add: c3t = "; prerr c3t; prerr_newline ()
+  end // end of [val]
+*)
   val (vbox pf | p) = ref_get_view_ptr the_s3itemlst
 in
   !p := list_vt_cons (S3ITEMcstr c3t, !p)
@@ -1043,14 +1065,18 @@ end // end of [trans3_env_pop_sta_and_add]
 implement trans3_env_pop_sta_and_add_none (loc) =
  trans3_env_pop_sta_and_add (loc, C3STRKINDnone ())
 
-implement trans3_env_pop_sta_and_free () =
-  $Lst.list_vt_free (trans3_env_pop_sta ())
+implement trans3_env_pop_sta_and_free () = let
+  val s3is = trans3_env_pop_sta () in $Lst.list_vt_free (s3is)
+end // end of [trans3_env_pop_sta_and_free]
+
+(* ****** ****** *)
 
 implement trans3_env_push_sta () = let
 (*
   val () = begin
-    prerr "trans3_env_push_sta: the_s3itemlst = "; prerr_newline ()
-  end
+    prerr "trans3_env_push_sta: the_s3itemlst = "; prerr_the_s3itemlst (); prerr_newline ();
+    prerr "trans3_env_push_sta: the_s3itemlstlst = "; prerr_the_s3itemlstlst (); prerr_newline ();
+  end // end of [val]
 *)
   var s3is0: s3itemlst_vt? // uninitialized
   val () = let
@@ -1062,7 +1088,7 @@ implement trans3_env_push_sta () = let
     val (vbox pf | ps) = ref_get_view_ptr the_s3itemlstlst
   in
     !ps := list_vt_cons (s3is0, !ps)
-  end
+  end // end of [val]
 in
   the_s2varbindmap_push (); the_s2Varset_env_push ()
 end // end of [trans3_env_push_sta]
@@ -1078,35 +1104,33 @@ implement s2exp_Var_make_srt (loc, s2t) = let
   val () = s2Var_sVarset_set (s2V, the_s2Varset_env_get_prev ())
 in
   trans3_env_add_sVar (s2V); s2exp_Var (s2V)
-end
+end // end of [s2exp_Var_make_srt]
 
 implement s2exp_Var_make_var (loc, s2v) = let
 (*
   val () = begin
     prerr "s2exp_Var_make_var: s2v = "; prerr s2v; prerr_newline ()
-  end
+  end // end of [val]
 *)
   val s2V = s2Var_make_var (loc, s2v)
   val () = s2Var_sVarset_set (s2V, the_s2Varset_env_get_prev ())
 (*
   val () = begin
     prerr "s2exp_Var_make_var: s2V = "; prerr s2V; prerr_newline ()
-  end
+  end // end of [val]
 *)
 in
   trans3_env_add_sVar (s2V); s2exp_Var (s2V)
-end
+end // end of [s2exp_Var_make_var]
 
 (* ****** ****** *)
 
 implement s2qua_instantiate_and_add (loc0, s2vs, s2ps) = let
 (*
   val () = begin
-    prerr "s2qua_instantiate_and_add: s2vs = "; prerr s2vs; prerr_newline ()
-  end
-  val () = begin
-    prerr "s2qua_instantiate_and_add: s2ps = "; prerr s2ps; prerr_newline ()
-  end
+    prerr "s2qua_instantiate_and_add: s2vs = "; prerr s2vs; prerr_newline ();
+    prerr "s2qua_instantiate_and_add: s2ps = "; prerr s2ps; prerr_newline ();
+  end // end of [val]
 *)
   val sub = aux (loc0, s2vs) where {
     fun aux (loc0: loc_t, s2vs: s2varlst): stasub_t =
@@ -1120,14 +1144,14 @@ implement s2qua_instantiate_and_add (loc0, s2vs, s2ps) = let
           val s2e = s2exp_Var_make_var (loc0, s2v)
         in
           stasub_add (aux (loc0, s2vs), s2v, s2e)
-        end
+        end // end of [list_cons]
       | list_nil () => stasub_nil
   } // end of [where]
   val s2ps_new = s2explst_subst (sub, s2ps)
 (*
   val () = begin
     prerr "s2qua_instantiate_and_add: s2ps_new = "; prerr s2ps_new; prerr_newline ()
-  end
+  end // end of [val]
 *)
 in
   trans3_env_add_proplst (loc0, s2ps_new); sub
@@ -1155,7 +1179,7 @@ implement s2qua_instantiate_with_and_add
           end
       in
         stasub_add (aux (s2vs, s2es), s2v, s2e)
-      end
+      end // end of [list_cons, list_cons]
     | (list_nil _, list_nil _) => stasub_nil
     | (list_cons _, list_nil _) => begin
         prerr loc0;
@@ -1163,14 +1187,14 @@ implement s2qua_instantiate_with_and_add
         prerr ": the static application needs more arguments.";
         prerr_newline ();
         $Err.abort {stasub_t} ()
-      end
+      end // end of [list_cons, list_nil]
     | (list_nil _, list_cons _) => begin
         prerr loc0;
         prerr ": error(3)";
         prerr ": the static application needs less arguments.";
         prerr_newline ();
         $Err.abort {stasub_t} ()
-      end
+      end // end of [list_nil, list_cons]
   val sub = aux (s2vs, s2es)
   val s2ps_new = s2explst_subst (sub, s2ps)
   val () = trans3_env_add_proplst (loc0, s2ps_new)
@@ -1192,22 +1216,20 @@ end // end of [s2qua_hypo_instantiate_and_add]
 implement s2exp_metric_instantiate (loc0, d2vopt, met) = begin
   case+ d2vopt of
   | Some d2v_stamp => let
-      val met_bound = (
-        case+ metric_env_get d2v_stamp of
-        | Some s2es => s2es
-        | None () => begin
-            prerr "Internal Error: s2exp_metric_instantiate: no metric bound";
+      val met_bound = (case+ metric_env_get d2v_stamp of
+        | Some s2es => s2es | None () => begin
+            prerr "INTERNAL ERROR: s2exp_metric_instantiate: no metric bound";
             prerr_newline ();            
             $Err.abort {s2explst} ()
-          end
+          end // end of [None]
       ) : s2explst
       val sgn = $Lst.list_length_compare (met, met_bound)
       val () = assert_errmsg_bool1 (sgn = 0,
-        "Internal Error: s2exp_metric_instantiate: metric length mismatch"
+        "INTERNAL ERROR: s2exp_metric_instantiate: metric length mismatch"
       ) // end of [assert_errmsg]
     in
       trans3_env_add_metric_dec (loc0, met, met_bound)
-    end
+    end // end of [Some]
   | None () => ()
 end // end of [s2exp_metric_instantiate]
 
@@ -1220,7 +1242,7 @@ implement s2exp_exi_instantiate_all (loc0, s2e0) = let
         val s2e = s2exp_subst (sub, s2e)
       in
         s2exp_exi_instantiate_all (loc0, s2e)
-      end
+      end // end of [S2Eexi]
     | _ => s2e0
 end // end of [s2exp_exi_instantiate_all]
 
@@ -1230,7 +1252,7 @@ implement s2exp_exi_instantiate_one (loc0, s2e0) = let
         val sub = s2qua_instantiate_and_add (loc0, s2vs, s2ps)
       in
         s2exp_subst (sub, s2e)
-      end
+      end // end of [S2Eexi]
     | _ => begin
         prerr loc0;
         prerr ": error(3)";
@@ -1239,7 +1261,7 @@ implement s2exp_exi_instantiate_one (loc0, s2e0) = let
         prerr "] is expected to be existentially quantified.";
         prerr_newline ();
         $Err.abort {s2exp} ()
-      end
+      end // end of [_]
 end // end of [s2exp_exi_instantiate_one]
 
 implement s2exp_exi_instantiate_seq (loc0, s2e0, loc_arg, s2es0) = let
@@ -1250,7 +1272,7 @@ implement s2exp_exi_instantiate_seq (loc0, s2e0, loc_arg, s2es0) = let
         end
       in
         s2exp_subst (sub, s2e)
-      end
+      end // end of [S2Eexi]
     | _ => begin
         prerr loc0;
         prerr ": error(3)";
@@ -1259,7 +1281,7 @@ implement s2exp_exi_instantiate_seq (loc0, s2e0, loc_arg, s2es0) = let
         prerr "] is expected to be existentially quantified.";
         prerr_newline ();
         $Err.abort {s2exp} ()
-      end
+      end // end of [_]
 end // end of [s2exp_exi_instantiate_seq]
 
 implement s2exp_exi_instantiate_sexparg (loc0, s2e0, s2a) =
@@ -1277,7 +1299,7 @@ implement funarg_varfin_check (loc0) = let
 (*
   val () = begin
     $Loc.prerr_location loc0; prerr ": funarg_varfin_check"; prerr_newline ()
-  end
+  end // end of [val]
 *)
   fn auxvar
     (loc0: loc_t, d2v: d2var_t): void = let
@@ -1307,11 +1329,11 @@ in
   | ~Some_vt p3ts => auxpatlst (loc0, p3ts)
   | ~None_vt () => begin
       prerr loc0;
-      prerr ": Internal Error: funarg_varfin_check: no argument(s).";
+      prerr ": INTERNAL ERROR: funarg_varfin_check: no argument(s).";
       prerr_newline ();
       $Err.abort {void} ()
-    end
-end
+    end // end of [None_vt]
+end // end of [funarg_varfin_check]
 
 (* ****** ****** *)
 
@@ -1319,24 +1341,24 @@ implement s2exp_wth_instantiate (loc0, s2e0) = let
 (*
   val () = begin
     prerr "s2exp_wth_instantiate: s2e0 = "; prerr s2e0; prerr_newline ()
-  end
+  end // end of [val]
 *)
   fn aux (loc0: loc_t, refval: int, p3t: p3at, s2e: s2exp): void = let
     val d2v: d2var_t = case+ p3t.p3at_node of
       | P3Tas (_, d2v, _) => d2v | P3Tvar (_, d2v) => d2v
       | _ => begin
           prerr loc0;
-          prerr ": Internal Error: s2exp_wth_instantiate: aux: p3t = ";
+          prerr ": INTERNAL ERROR: s2exp_wth_instantiate: aux: p3t = ";
           prerr p3t;
           prerr_newline ();
           $Err.abort {d2var_t} ()
-        end
+        end // end of [_]
 (*
     val () = begin
       prerr "s2exp_wth_instantiate: aux: refval = "; prerr refval; prerr_newline ();
       prerr "s2exp_wth_instantiate: aux: d2v = "; prerr d2v; prerr_newline ();
       prerr "s2exp_wth_instantiate: aux: s2e = "; prerr s2e; prerr_newline ();
-    end
+    end // end of [val]
 *)
   in
     case+ refval of
@@ -1353,7 +1375,7 @@ implement s2exp_wth_instantiate (loc0, s2e0) = let
     case+ wths2es of
     | WTHS2EXPLSTcons_some (refval, s2e, wths2es) => let
         val () = assert_errmsg_bool1 (
-          $Lst.list_is_cons p3ts, "Internal Error: s2exp_wth_instantiate"
+          $Lst.list_is_cons p3ts, "INTERNAL ERROR: s2exp_wth_instantiate"
         ) // end of [assert_errmsg]
         val+ list_cons (p3t, p3ts) = p3ts
         val () = aux (loc0, refval, p3t, s2e)
@@ -1362,7 +1384,7 @@ implement s2exp_wth_instantiate (loc0, s2e0) = let
       end // end of [WTHS2EXPLSTcons_some]
     | WTHS2EXPLSTcons_none (wths2es) => let
         val () = assert_errmsg_bool1 (
-          $Lst.list_is_cons p3ts, "Internal Error: s2exp_wth_instantiate"
+          $Lst.list_is_cons p3ts, "INTERNAL ERROR: s2exp_wth_instantiate"
         ) // end of [assert_errmsg]
         val+ list_cons (p3t, p3ts) = p3ts
       in
@@ -1377,7 +1399,7 @@ in
         case+ the_lamloop_env_arg_get (loc0) of
         | ~Some_vt p3ts => p3ts | ~None_vt () => begin
             prerr loc0;
-            prerr ": Internal Error: s2exp_wth_instantiate";
+            prerr ": INTERNAL ERROR: s2exp_wth_instantiate";
             prerr_newline ();
             $Err.abort {p3atlst} ()
           end // end of [None_vt]
@@ -1429,7 +1451,7 @@ implement s2exp_uni_instantiate_seq (loc0, s2e0, loc_arg, s2es0) = let
     | S2Euni (s2vs, s2ps, s2e) => let
         val sub = begin
           s2qua_instantiate_with_and_add (loc0, s2vs, s2ps, loc_arg, s2es0)
-        end
+        end // end of [val]
       in
         s2exp_subst (sub, s2e)
       end // end of [S2Euni]
@@ -1520,18 +1542,18 @@ implement s2exp_absuni_and_add (loc0, s2e0) = let
   val () = begin
     prerr "s2exp_absuni_and_add: before: s2e0 = "; prerr s2e0;
     prerr_newline ()
-  end
+  end // end of [val]
 *)
   val s2vss2pss2e = s2exp_absuni s2e0
 (*
   val () = begin
     prerr "s2exp_absuni_and_add: after: s2vs = "; prerr s2vss2pss2e.0;
     prerr_newline ()
-  end
+  end // end of [val]
   val () = begin
     prerr "s2exp_absuni_and_add: before: s2e = "; prerr s2vss2pss2e.2;
     prerr_newline ()
-  end
+  end // end of [val]
 *)
   val () = trans3_env_add_svarlst (s2vss2pss2e.0)
   val () = trans3_env_hypo_add_proplst (loc0, s2vss2pss2e.1)
@@ -1544,18 +1566,18 @@ implement s2exp_opnexi_and_add (loc0, s2e0) = let
   val () = begin
     prerr "s2exp_opnexi_and_add: before: s2e0 = "; prerr s2e0;
     prerr_newline ()
-  end
+  end // end of [val]
 *)
   val s2vss2pss2e = s2exp_opnexi s2e0
 (*
   val () = begin
     prerr "s2exp_opnexi_and_add: after: s2vs = "; prerr s2vss2pss2e.0;
     prerr_newline ()
-  end
+  end // end of [val]
   val () = begin
-    prerr "s2exp_opnexi_and_add: before: s2e = "; prerr s2vss2pss2e.2;
+    prerr "s2exp_opnexi_and_add: after: s2e = "; prerr s2vss2pss2e.2;
     prerr_newline ()
-  end
+  end // end of [val]
 *)
   val () = trans3_env_add_svarlst (s2vss2pss2e.0)
   val () = trans3_env_hypo_add_proplst (loc0, s2vss2pss2e.1)
@@ -1588,14 +1610,14 @@ implement trans3_env_hypo_add_p2atcst (loc0, p2tc, s2e0) =
             $SOL.s2exp_hypo_equal_solve (loc0, s2e_arg, s2exp_bool b)
           end // end of [Some_vt]
         | ~None_vt () => ()
-      end
+      end // end of [P2TCbool]
     | P2TCchar c => begin
         case+ un_s2exp_bool_bool_t0ype s2e0 of
         | ~Some_vt (s2e_arg) => begin
             $SOL.s2exp_hypo_equal_solve (loc0, s2e_arg, s2exp_char c)
           end // end of [Some_vt]
         | ~None_vt () => ()
-      end
+      end // end of [P2TCchar]
     | P2TCcon (d2c, p2tcs) => begin case+ s2e0.s2exp_node of
       | S2Edatcontyp (d2c1, _) => begin
           if (d2c <> d2c1) then trans3_env_hypo_add_prop (loc0, s2exp_bool false)
@@ -1606,7 +1628,7 @@ implement trans3_env_hypo_add_p2atcst (loc0, p2tc, s2e0) =
             case+ s2e_d2c.s2exp_node of
             | S2Efun (_, _, _, _, s2es, s2e) => @(s2es, s2e)
             | _ => begin
-                prerr "Internal Error: tran3_env_hypo_add_p2atcst: P2TCcon";
+                prerr "INTERNAL ERROR: tran3_env_hypo_add_p2atcst: P2TCcon";
                 prerr_newline ();
                 $Err.abort {@(s2explst, s2exp)} ()
               end
@@ -1645,7 +1667,7 @@ implement trans3_env_hypo_add_p2atcst (loc0, p2tc, s2e0) =
             $SOL.s2exp_hypo_equal_solve (loc0, s2e_arg, s2exp_intinf i)
           end // end of [Some_vt]
         | ~None_vt () => ()
-      end
+      end // end of [P2TCint]
     | P2TCintc xs => begin case+ un_s2exp_int_int_t0ype s2e0 of
       | ~Some_vt s2e_arg => aux (intinflst_of_intinfset xs) where {
           fun aux (xs: List intinf_t):<cloptr1> void = case+ xs of
@@ -1685,7 +1707,7 @@ implement trans3_env_hypo_add_p2atcstlst (loc0, p2tcs, s2es) = let
 in
   if err > 0 then begin
     prerr loc0;
-    prerr ": Internal Error: trans3_env_hypo_add_p2atcstlst";
+    prerr ": INTERNAL ERROR: trans3_env_hypo_add_p2atcstlst";
     prerr_newline ();
     $Err.abort {void} ()
   end // end of [if]
@@ -1698,18 +1720,18 @@ implement trans3_env_hypo_add_labp2atcstlst (loc0, lp2tcs, ls2es) = let
       | LABS2EXPLSTcons (_, s2e, ls2es) => begin
           trans3_env_hypo_add_p2atcst (loc0, p2tc, s2e);
           aux (loc0, lp2tcs, ls2es)
-        end
+        end // end of [LABS2EXPLSTcons]
       | LABS2EXPLSTnil () => 1
-      end
+      end // end of [LABP2ATCSTLSTcons]
     | LABP2ATCSTLSTnil () => begin
         case+ ls2es of LABS2EXPLSTcons _ => 1 | LABS2EXPLSTnil _ => 0
-      end
+      end // end of [LABP2ATCSTLSTnil]
   end // end of [aux]
   val err = aux (loc0, lp2tcs, ls2es)
 in
   if err > 0 then begin
     prerr loc0;
-    prerr ": Internal Error: trans3_env_hypo_add_labp2atcstlst";
+    prerr ": INTERNAL ERROR: trans3_env_hypo_add_labp2atcstlst";
     prerr_newline ();
     $Err.abort {void} ()
   end // end of [if]

@@ -242,7 +242,7 @@ implement d2exp_sif_tr_dn
     d3e_then
   end // end of [val]
 
-  val () = stbefitemlst_restore (sbis)
+  val () = stbefitemlst_restore_lin_typ (sbis)
 
   val d3e_else = let
     val () = trans3_env_push_sta ()
@@ -1065,9 +1065,10 @@ and c2laulst2_rest_tr_dn {n,ni:nat}
           print "c2laulst_rest_tr_dn: p2tcss2 = "; print p2tcss2; print_newline ();
         end
 *)
-        val () = stbefitemlst_restore (sbis)
+        val () = stbefitemlst_restore_lin_typ (sbis)
         val c3l = c2lau_tr_dn
           (c2l, op2tcss, d3es, n, s2es_pat, s2e0, SACSBISsome (sac, sbis))
+        // end of [val]
       in
         aux_main (list_vt_cons (c3l, c3ls), p2tcss0, c2ls)
       end
@@ -1145,13 +1146,14 @@ implement d2exp_scaseof_tr_dn
     sc3lau_make (sc2l.sc2lau_loc, sp2t, d3e_body)
   end // end of [aux_one]
 
-  fun aux_rest (sc2ls: sc2laulst):<cloref1> sc3laulst =
+  fun aux_rest
+    (sc2ls: sc2laulst):<cloref1> sc3laulst =
     case+ sc2ls of
     | list_cons (sc2l, sc2ls) => let
-        val () = stbefitemlst_restore (sbis)
+        val () = stbefitemlst_restore_lin_typ (sbis)
       in
         list_cons (aux_one sc2l, aux_rest sc2ls)
-      end
+      end // end of [list_cons]
     | list_nil () => list_nil ()
   // end of [aux_rest]
 

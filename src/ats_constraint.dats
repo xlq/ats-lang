@@ -1789,16 +1789,16 @@ implement c3str_solve_main
           prerr ", but it is given the type ["; prerr s2e_fin; prerr "]";
           prerr_newline ()
 *)
-        end // end of [C2STRKINDvarfin]
+        end // end of [C3STRKINDvarfin]
       | C3STRKINDloop (knd) => begin
           $Loc.prerr_location loc0; prerr ": error(3)";
-          if knd = 0 then prerr ": unsolved constraint for loop break";
-          if knd = 1 then prerr ": unsolved constraint for loop continue";
+          if knd = 0 then prerr ": unsolved constraint for loop enter";
+          if knd = 1 then prerr ": unsolved constraint for loop exit";
           if knd = 2 then prerr ": unsolved constraint for loop repeat";
           c3str_pr (unsolved, c3t);
           prerr_newline ()
-        end
-      end // end of [ans >= 0]
+        end // end of [C3STRKINDloop]
+      end (* end of [ans >= 0] *)
     | _ => ()
     end // end of [case]
   val () = if ans >= 0 then (unsolved := unsolved + i2u 1)
@@ -1830,7 +1830,7 @@ implement c3str_solve_itmlst
     prerr "c3str_solve_itmlst: s2vs = "; prerr s2vs; prerr_newline ();
     prerr "c3str_solve_itmlst: s3bes = "; prerr s3bes; prerr_newline ();
     prerr "c3str_solve_itmlst: s3is = "; prerr s3is; prerr_newline ();
-  end
+  end // end of [val]
 *)
 in
   case+ s3is of
@@ -1842,7 +1842,7 @@ in
           (loc0, s2vs, s3bes, s3is, s2cs, fds, unsolved, errno)
       in
         if ans1 >= 0 then 0 else ans2
-      end
+      end // end of [S3ITEMcstr]
     | S3ITEMcstr_ref c3t_r => let
         val ans1 = (
           case+ !c3t_r of
@@ -1854,7 +1854,7 @@ in
           (loc0, s2vs, s3bes, s3is, s2cs, fds, unsolved, errno)
       in
         if ans1 >= 0 then 0 else ans2
-      end
+      end // end of [S3ITEMcstr_ref]
     | S3ITEMdisj s3iss_disj => c3str_solve_itmlst_disj (
         loc0, s2vs, s3bes, s3is, s3iss_disj, s2cs, fds, unsolved, errno
       ) // end of [c3str_solve_itmlst_disj]
@@ -1869,15 +1869,15 @@ in
                 $Loc.prerr_location loc0;
                 prerr ": unused hypothesis: ["; prerr h3p; prerr "]";
                 prerr_newline ()
-              end
+              end // end of [val]
 *)
             in
               s3bes
-            end
+            end // end of [None_vt]
         ) : s3bexplst
         val ans = begin
           c3str_solve_itmlst (loc0, s2vs, s3bes, s3is, s2cs, fds, unsolved, errno)
-        end
+        end // end of [val]
         val () = the_s2varbindmap_pop ()
       in
         ans

@@ -116,7 +116,7 @@ fn d2exp_loopinv_tr
   end
 in
   @(i2nv_met, res_exit)
-end
+end // end of [d2exp_loopinv_tr]
 
 (* ****** ****** *)
 
@@ -135,12 +135,11 @@ implement d2exp_loop_tr_up
   val i2nv_met = i2nv.loopi2nv_met
   val () = begin case+ i2nv_met of // ntm effect or not
     | None _ => the_effect_env_check_ntm (loc0) | Some _ => ()
-  end
+  end // end of [val]
   val res_init = i2nvresstate_make_met
     (i2nv.loopi2nv_svs, i2nv.loopi2nv_gua, i2nv.loopi2nv_arg, i2nv_met)
   val sbis = the_d2varset_env_stbefitemlst_save ()
 //
-  val sac0_init = staftscstr_initialize (res_init, sbis)
   val () = trans3_env_push_sta ()
   val d3e_test = d2exp_tr_up d2e_test
   val () = d3exp_open_and_add d3e_test
@@ -155,16 +154,28 @@ implement d2exp_loop_tr_up
     | None () => None ()
   ) : d3expopt
   val () = the_lamloop_env_pop (pf_lamloop | (*none*))
-  val () = staftscstr_stbefitemlst_merge (loc0, sac0_init, sbis)
   val () = trans3_env_pop_sta_and_free ()
-  val () = staftscstr_stbefitemlst_check (loc0, sac0_init, sbis)
-  val () = staftscstr_stbefitemlst_update (loc0, sac0_init, sbis)
+//
+  val () = stbefitemlst_restore_typ (sbis) // keep [lin]
+  val sac0_init = staftscstr_initialize (res_init, sbis)
+  val () = trans3_env_push_sta ()
+  val () = staftscstr_stbefitemlst_merge (loc0, sac0_init, sbis)
+  val knd = C3STRKINDloop 0(*enter*)
+  val () = trans3_env_pop_sta_and_add (loc0, knd)
+//
+  val () = // checking that the loop invariant holds
+  // when the loop is entered for the first time
+    staftscstr_stbefitemlst_check (loc0, sac0_init, sbis)
+  val () = // updating the types of the modified variables
+    // according to the types given in the invariant
+    staftscstr_stbefitemlst_update (loc0, sac0_init, sbis)
+  (* end of [val] *)
 //
   val sac_init = staftscstr_initialize (res_init, sbis)
   val (i2nv_met, res_exit) = d2exp_loopinv_tr (i2nv)
   val () = staftscstr_met_set (sac_init, i2nv_met)
   val sac_exit = staftscstr_initialize (res_exit, sbis)
-
+//
   val d3e_test = d2exp_tr_up d2e_test
   val () = d3exp_open_and_add d3e_test
   val s2e_test = d3e_test.d3exp_typ
@@ -172,7 +183,7 @@ implement d2exp_loop_tr_up
     val () = trans3_env_push_sta ()
     val () = assert_bool_tr_dn (loc0, false, s2e_test)
     val () = staftscstr_stbefitemlst_merge (loc0, sac_exit, sbis)
-    val knd = C3STRKINDloop 0(*break*)
+    val knd = C3STRKINDloop 1(*exit*)
     val () = trans3_env_pop_sta_and_add (loc0, knd)
   in
     // empty
@@ -183,7 +194,7 @@ implement d2exp_loop_tr_up
     val () = assert_bool_tr_dn (loc0, true, s2e_test)
     val (pf_lamloop | ()) = begin
       the_lamloop_env_push_loop1 (sbis, sac_init, sac_exit, od2e_post)
-    end
+    end // end of [val]
     val d3e_body = d2exp_tr_dn (d2e_body, s2e_void)
     val () = begin case+ od2e_post of
       | Some d2e => begin
@@ -192,10 +203,9 @@ implement d2exp_loop_tr_up
       | None () => ()
     end // end of [val]
     val () = the_lamloop_env_pop (pf_lamloop | (*none*))
-    val () =
-      if not (d2exp_is_raised d2e_body) then begin
-        staftscstr_stbefitemlst_merge (loc0, sac_init, sbis)
-      end
+    val () = if not (d2exp_is_raised d2e_body) then
+      staftscstr_stbefitemlst_merge (loc0, sac_init, sbis)
+    // end of [val]
     val knd = C3STRKINDloop 2(*repeat*)
     val () = trans3_env_pop_sta_and_add (loc0, knd)
   in
@@ -204,11 +214,11 @@ implement d2exp_loop_tr_up
 //
   val () = staftscstr_stbefitemlst_check (loc0, sac_init, sbis)
   val () = staftscstr_stbefitemlst_check (loc0, sac_exit, sbis)
-
+//
   val () = staftscstr_stbefitemlst_update (loc0, sac_exit, sbis)
 in
   d3exp_loop (loc0, od3e_init, d3e_test, od3e_post, d3e_body)
-end // end of [d2exp_tr_up]
+end // end of [d2exp_loop_tr_up]
 
 (* ****** ****** *)
 
@@ -222,6 +232,7 @@ implement d2exp_loopexn_tr_up (loc0, i) = let
               let val _ = d2exp_tr_dn (d2e, s2exp_void_t0ype ()) in () end
             end // end of [Some]
           | None () => ()
+        // end of [val]
       in
         if i > 0 then begin // continue
           staftscstr_stbefitemlst_merge (loc0, sac_init, sbis)
@@ -231,8 +242,7 @@ implement d2exp_loopexn_tr_up (loc0, i) = let
       end // end of [LMLPloop1]
     | _ => begin
         $Loc.prerr_location loc0;
-        prerr ": Internal Error: d2exp_loopexn_tr_up";
-        prerr_newline ();
+        prerr ": Internal Error: d2exp_loopexn_tr_up"; prerr_newline ();
         $Err.abort {void} ()
       end // end of [_]
 in

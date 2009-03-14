@@ -104,6 +104,9 @@ end // end of [fprint_s3itemlstlst]
 implement print_s3itemlst (s3is) = print_mac (fprint_s3itemlst, s3is)
 implement prerr_s3itemlst (s3is) = prerr_mac (fprint_s3itemlst, s3is)
 
+implement print_s3itemlstlst (s3iss) = print_mac (fprint_s3itemlstlst, s3iss)
+implement prerr_s3itemlstlst (s3iss) = prerr_mac (fprint_s3itemlstlst, s3iss)
+
 (* ****** ****** *)
 
 implement fprint_c3strkind (pf | out, knd) = let

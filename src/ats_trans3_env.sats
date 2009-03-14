@@ -59,7 +59,7 @@ datatype c3strkind =
   | C3STRKINDpattern_match_exhaustiveness of
       (int (* kind: warning, error, etc. *), p2atcstlst)
   | C3STRKINDvarfin of (d2var_t, s2exp, s2exp)
-  | C3STRKINDloop of int (* 0/1: break/continue *)
+  | C3STRKINDloop of int (* 0/1/2: enter/break/continue *)
 
 datatype s3item =
   | S3ITEMcstr of c3str
@@ -131,6 +131,15 @@ fun prerr_s3itemlst (s3is: s3itemlst): void
 overload print with print_s3itemlst
 overload prerr with prerr_s3itemlst
 
+fun print_s3itemlstlst (s3iss: s3itemlstlst): void
+  = "ats_trans3_env_print_s3itemlstlst"
+
+fun prerr_s3itemlstlst (s3iss: s3itemlstlst): void
+  = "ats_trans3_env_prerr_s3itemlstlst"
+
+overload print with print_s3itemlstlst
+overload prerr with prerr_s3itemlstlst
+
 //
 
 fun print_s3itemlst_vt (s3is: !s3itemlst_vt): void
@@ -141,6 +150,15 @@ fun prerr_s3itemlst_vt (s3is: !s3itemlst_vt): void
 
 overload print with print_s3itemlst_vt
 overload prerr with prerr_s3itemlst_vt
+
+fun print_s3itemlstlst_vt (s3iss: !s3itemlstlst_vt): void
+  = "ats_trans3_env_print_s3itemlstlst"
+
+fun prerr_s3itemlstlst_vt (s3iss: !s3itemlstlst_vt): void
+  = "ats_trans3_env_prerr_s3itemlstlst"
+
+overload print with print_s3itemlstlst_vt
+overload prerr with prerr_s3itemlstlst_vt
 
 //
 
@@ -403,7 +421,9 @@ typedef stbefitemlst = [n:nat] stbefitemlst (n)
 fun the_d2varset_env_stbefitemlst_save (): stbefitemlst
 
 fun stbefitem_make (d2v: d2var_t, lin: int): stbefitem_t
-fun stbefitemlst_restore (sbis: stbefitemlst): void
+
+fun stbefitemlst_restore_typ (sbis: stbefitemlst): void
+fun stbefitemlst_restore_lin_typ (sbis: stbefitemlst): void
 
 abstype staftitem_t // assumed in [ats_trans3_env_state.dats]
 typedef staftitemlst (n:int) = list (staftitem_t, n)
