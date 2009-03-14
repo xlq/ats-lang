@@ -93,6 +93,7 @@ libats/DATS/regexp.dats
 // libc/DATS/complex.dats
 
 libc/SATS/dirent.sats
+libc/DATS/dirent.dats
 
 libc/SATS/errno.sats
 

@@ -43,7 +43,7 @@ implement main (argc, argv) = let
     val (vbox pf | p12) = strbuf_of_string1 (s12)
   in
     strbuf_explode (!p12)
-  end
+  end // end of [val]
   val cs = list_of_list_vt (cs)
   val s12' = string_implode (cs)
   val () = begin

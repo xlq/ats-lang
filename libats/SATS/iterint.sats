@@ -42,13 +42,16 @@ fun foreach_main {v:view} {vt: viewtype} {n:nat} {f:eff}
   (pf: !v | n: int n, f: (!v | natLt n, !vt) -<f> void, env: !vt):<f> void
 
 fun foreach_fun {v:view} {n:nat} {f:eff}
-  (pf: !v | f: int n, f: !(!v | natLt n) -<f> void):<f> void
+  (pf: !v | n: int n, f: !(!v | natLt n) -<f> void):<f> void
+
+fun foreach_clo {v:view} {n:nat} {f:eff}
+  (pf: !v | n: int n, f: &(!v | natLt n) -<clo,f> void):<f> void
 
 fun foreach_cloptr {v:view} {n:nat} {f:eff}
-  (pf: !v | f: int n, f: !(!v | natLt n) -<cloptr,f> void):<f> void
+  (pf: !v | n: int n, f: !(!v | natLt n) -<cloptr,f> void):<f> void
 
 fun foreach_cloref {v:view} {n:nat} {f:eff}
-  (pf: !v | f: int n, f: !(!v | natLt n) -<cloref,f> void):<f> void
+  (pf: !v | n: int n, f: !(!v | natLt n) -<cloref,f> void):<f> void
 
 (* ****** ****** *)
 
@@ -61,6 +64,9 @@ fun foreach2_main {v:view} {vt: viewtype} {m,n:nat} {f:eff} (
 
 fun foreach2_fun {v:view} {m,n:nat} {f:eff}
   (pf: !v | m: int m, n: int n, f: (!v | natLt m, natLt n) -<f> void) :<f> void
+
+fun foreach2_clo {v:view} {m,n:nat} {f:eff}
+  (pf: !v | m: int m, n: int n, f: &(!v | natLt m, natLt n) -<clo,f> void) :<f> void
 
 fun foreach2_cloptr {v:view} {m,n:nat} {f:eff}
   (pf: !v | m: int m, n: int n, f: !(!v | natLt m, natLt n) -<cloptr,f> void) :<f> void
@@ -75,6 +81,9 @@ fun repeat_main {v:view} {vt:viewtype} {n:nat} {f:eff}
 
 fun repeat_fun {v:view} {n:nat} {f:eff}
   (pf: !v | n: int n, f: (!v | (*none*)) -<f> void):<f> void
+
+fun repeat_clo {v:view} {n:nat} {f:eff}
+  (pf: !v | n: int n, f: &(!v | (*none*)) -<clo,f> void):<f> void
 
 fun repeat_cloptr {v:view} {n:nat} {f:eff}
   (pf: !v | n: int n, f: !(!v | (*none*)) -<cloptr,f> void):<f> void

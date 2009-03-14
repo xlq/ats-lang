@@ -1531,9 +1531,9 @@ fn d2exp_lazy_delay_vt_tr_up
   in
     d3e_eval
   end // end of [val]
-
+//
   val () = stbefitemlst_restore_lin_typ (sbis)
-
+//
   val d3e_free = let
     val () = trans3_env_push_sta ()
     val d3e_free = d2exp_tr_dn (d2e_free, s2exp_void_t0ype ())

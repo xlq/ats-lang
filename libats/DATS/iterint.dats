@@ -36,7 +36,10 @@
 
 (* ****** ****** *)
 
-// some common functions that iterate over integers
+//
+// some common functions that iterate over natural numbers;
+// The code serves as an example for writing iterative loops.
+//
 
 (* ****** ****** *)
 
@@ -66,6 +69,25 @@ implement foreach_fun {v} {n} {f:eff} (pf | n, f) = let
 in
   foreach_main {v} {ptr} (pf | n, f, null)
 end // end of [foreach_fun]
+
+//
+
+implement foreach_clo {v} {n} {f:eff} (pf | n, f) = let
+  viewtypedef clo_t = (!v | natLt n) -<clo,f> void
+  stavar l_f: addr; val p_f: ptr l_f = &f
+  viewdef v1 = @(v, clo_t @ l_f)
+  prval pf1 = (pf, view@ f)
+  fn app (pf1: !v1 | i: natLt n, p_f: !ptr l_f):<f> void = let
+    prval (pf, pf_clo) = pf1
+    val () = !p_f (pf | i)
+    prval () = pf1 := (pf, pf_clo)
+  in
+    // empty
+  end // end of [app]
+  val () = foreach_main {v1} {ptr l_f} {n} {f} (pf1 | n, app, p_f)
+in
+  pf := pf1.0; view@ f := pf1.1
+end // end of [foreach_clo]
 
 //
 
@@ -119,6 +141,25 @@ end // end of [foreach2_fun]
 
 //
 
+implement foreach2_clo {v} {m,n} {f:eff} (pf | m, n, f) = let
+  viewtypedef clo_t = (!v | natLt m, natLt n) -<clo,f> void
+  stavar l_f: addr; val p_f: ptr l_f = &f
+  viewdef v1 = @(v, clo_t @ l_f)
+  prval pf1 = (pf, view@ f)
+  fn app (pf1: !v1 | i: natLt m, j: natLt n, p_f: !ptr l_f):<f> void = let
+    prval (pf, pf_clo) = pf1
+    val () = !p_f (pf | i, j)
+    prval () = pf1 := (pf, pf_clo)
+  in
+    // empty
+  end // end of [app]
+  val () = foreach2_main {v1} {ptr l_f} {m,n} {f} (pf1 | m, n, app, p_f)
+in
+  pf := pf1.0; view@ f := pf1.1
+end // end of [foreach2_clo]
+
+//
+
 implement foreach2_cloptr {v} {m,n} {f:eff} (pf | m, n, f) = let
   viewtypedef cloptr_t = (!v | natLt m, natLt n) -<cloptr,f> void
   fn app (pf: !v | i: natLt m, j: natLt n, f: !cloptr_t):<f> void =
@@ -161,6 +202,25 @@ implement repeat_fun {v} {n} {f:eff} (pf | n, f) = let
 in
   repeat_main {v} {ptr} (pf | n, f, null)
 end // end of [repeat_fun]
+
+//
+
+implement repeat_clo {v} {n} {f:eff} (pf | n, f) = let
+  viewtypedef clo_t = (!v | (*none*)) -<clo,f> void
+  stavar l_f: addr; val p_f: ptr l_f = &f
+  viewdef v1 = @(v, clo_t @ l_f)
+  prval pf1 = (pf, view@ f)
+  fn app (pf1: !v1 | p_f: !ptr l_f):<f> void = let
+    prval (pf, pf_clo) = pf1
+    val () = !p_f (pf | (*none*))
+    prval () = pf1 := (pf, pf_clo)
+  in
+    // empty
+  end // end of [app]
+  val () = repeat_main {v1} {ptr l_f} {n} {f} (pf1 | n, app, p_f)
+in
+  pf := pf1.0; view@ f := pf1.1
+end // end of [repeat_clo]
 
 //
 

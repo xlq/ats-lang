@@ -7,7 +7,7 @@ all:: \
 ######
 
 prelude_string: prelude_string.dats
-	atscc -O2 -o prelude_string prelude_string.dats -lgmp
+	atscc -O2 -o prelude_string prelude_string.dats
 
 ######
 
@@ -15,6 +15,9 @@ libc_dirent: libc_dirent.dats
 	atscc -O2 -o libc_dirent libc_dirent.dats
 
 ######
+
+libats_iterint: libats_iterint.dats
+	atscc -O2 -o libats_iterint libats_iterint.dats
 
 libats_intinf: libats_intinf.dats
 	atscc -O2 -o libats_intinf libats_intinf.dats -lgmp

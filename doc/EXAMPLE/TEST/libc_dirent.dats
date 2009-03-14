@@ -119,7 +119,7 @@ in
   end else let
     prval None_v () = pfopt_dir
   in
-    printf ("*** Error ***: the directory [%s] cannot be opened\n", @(dirname))
+    printf ("*** ERROR ***: the directory [%s] cannot be opened\n", @(dirname))
   end // end of [if]
 end // end of [ls]
 

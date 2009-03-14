@@ -1,0 +1,82 @@
+######
+#
+# A Tiger compiler implemented in ATS
+#
+# Author: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
+# Time: Spring, 2009
+#
+######
+
+tiger_main: the main function is implemented here
+
+######
+
+error: for handling errors during compilation
+
+######
+
+stamp: for generating and manipulating stamps
+
+######
+
+symbol: for symbol manipulation
+
+######
+
+types: for handling types during typechecking
+
+######
+
+absyn: abstract syntax trees for Tiger
+
+######
+
+fixity: for resolving the issue of fixity (prefix, infix and postfix)
+
+######
+
+parser:
+
+A parser for Tiger that is built with parsing combinators.
+
+######
+
+interp0:
+
+An interpreter for Tiger; it should be called on a Tiger program after the
+program passes typechecking
+
+######
+
+tychecker:
+
+A typechecker for Tiger; it also does escape analysis on local variables.
+
+######
+
+irtree: a tree langauge for intermediate representation
+
+######
+
+translate:
+
+for translating a tiger programing into the tree language introduced for
+intermediate representation.
+
+######
+
+canonical:
+
+for puting the tree expression returned after translation into some
+canonical form
+
+######
+
+interp1:
+
+An interpreter for the tree language in Tiger; it is mainly for testing the
+code obtained after canonicalization.
+
+######
+
+## end of [README] ##
