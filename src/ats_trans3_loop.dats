@@ -76,29 +76,28 @@ end // end of [i2nvarglst_subst]
 fn d2exp_loopinv_tr
   (i2nv: loopi2nv): @(s2explstopt, i2nvresstate) = let
   val loc0 = i2nv.loopi2nv_loc
-  val sub = s2qua_hypo_instantiate_and_add
-    (loc0, i2nv.loopi2nv_svs, i2nv.loopi2nv_gua)
-  val i2nv_met = (
-    case+ i2nv.loopi2nv_met of
-    | Some s2es => let
-        val s2es = s2explst_subst (sub, s2es)
-        val () = metric_nat_check (loc0, s2es)
-      in
-        Some s2es
-      end
-    | None () => None ()
-  ) : s2explstopt
-  val i2nv_arg = i2nvarglst_subst (sub, i2nv.loopi2nv_arg)
+  val i2nv_arg = i2nv.loopi2nv_arg
+  val i2nv_res = i2nv.loopi2nv_res
+  val i2nv_res_svs = i2nv_res.i2nvresstate_svs
+  val i2nv_res_gua = i2nv_res.i2nvresstate_gua
+(*
+  // this is already done by [staftscstr_stbefitemlst_update]
+  val () = trans3_env_add_svarlst i2nv_res_svs
+  val () = trans3_env_hypo_add_proplst (loc0, i2nv_res_gua)
+*)
+  val i2nv_met = os2es where {
+    val os2es = i2nv.loopi2nv_met
+    val () = case+ os2es of
+      | Some s2es => metric_nat_check (loc0, s2es) | None _ => ()
+    // end of [val]
+  } // end of [val]
   val res_exit = let
-    val i2nv_res = i2nv.loopi2nv_res
-    val i2nv_res_svs = i2nv_res.i2nvresstate_svs
-    val i2nv_res_gua = s2explst_subst (sub, i2nv_res.i2nvresstate_gua)
-    val i2nv_res_arg = i2nvarglst_subst (sub, i2nv_res.i2nvresstate_arg)
+    val i2nv_res_arg = i2nv_res.i2nvresstate_arg
     // [i2nv_res_arg] must be ahead of [i2nv_arg]
     val i2nv_res_arg_new = $Lst.list_append (i2nv_res_arg, i2nv_arg)
   in
     i2nvresstate_make (i2nv_res_svs, i2nv_res_gua, i2nv_res_arg_new)
-  end
+  end // end of [val]
   val () = let
     fn aux (arg: i2nvarg):<cloptr1> void = let
       val d2v = arg.i2nvarg_var
@@ -108,12 +107,12 @@ fn d2exp_loopinv_tr
           val s2e = s2exp_opnexi_and_add (loc0, s2e)
         in
           d2var_typ_set (d2v, Some s2e)
-        end
+        end // end of [Some]
       | None () => d2var_typ_set (d2v, None ())
      end // end of [aux]
   in
     $Lst.list_foreach_cloptr (i2nv_arg, aux)
-  end
+  end // end of [val]
 in
   @(i2nv_met, res_exit)
 end // end of [d2exp_loopinv_tr]
@@ -162,17 +161,18 @@ implement d2exp_loop_tr_up
   val () = staftscstr_stbefitemlst_merge (loc0, sac0_init, sbis)
   val knd = C3STRKINDloop 0(*enter*)
   val () = trans3_env_pop_sta_and_add (loc0, knd)
-//
   val () = // checking that the loop invariant holds
   // when the loop is entered for the first time
     staftscstr_stbefitemlst_check (loc0, sac0_init, sbis)
+//
+  val () = trans3_env_push_sta () // loop checking begs
   val () = // updating the types of the modified variables
     // according to the types given in the invariant
     staftscstr_stbefitemlst_update (loc0, sac0_init, sbis)
   (* end of [val] *)
 //
-  val sac_init = staftscstr_initialize (res_init, sbis)
   val (i2nv_met, res_exit) = d2exp_loopinv_tr (i2nv)
+  val sac_init = staftscstr_initialize (res_init, sbis)
   val () = staftscstr_met_set (sac_init, i2nv_met)
   val sac_exit = staftscstr_initialize (res_exit, sbis)
 //
@@ -214,6 +214,7 @@ implement d2exp_loop_tr_up
 //
   val () = staftscstr_stbefitemlst_check (loc0, sac_init, sbis)
   val () = staftscstr_stbefitemlst_check (loc0, sac_exit, sbis)
+  val () = trans3_env_pop_sta_and_add_none (loc0) // loop checking ends
 //
   val () = staftscstr_stbefitemlst_update (loc0, sac_exit, sbis)
 in

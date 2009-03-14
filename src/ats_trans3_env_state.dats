@@ -318,9 +318,14 @@ fn d2var_is_done (d2v: d2var_t): bool = begin
   case+ d2var_fin_get d2v of D2VARFINdone () => true | _ => false
 end // end of [d2var_is_done]
 
-fn aux_find (sub: stasub_t, args: i2nvarglst, d2v: d2var_t)
-  : Option_vt (s2expopt) = begin
-  case+ i2nvarglst_d2var_find (args, d2v) of
+fn aux_find (
+    sub: stasub_t
+  , args: i2nvarglst
+  , d2v: d2var_t
+  ) : Option_vt (s2expopt) = let
+  val ans = i2nvarglst_d2var_find (args, d2v)
+in
+  case+ ans of
   | ~Some_vt arg => let
       val os2e = (
         case+ arg.i2nvarg_typ of
@@ -517,80 +522,82 @@ end // end of [local]
 
 (* ****** ****** *)
 
-implement staftscstr_stbefitemlst_update (loc0, sac, sbis) = let
-  fun aux_find (
-      sub: stasub_t
-    , args: i2nvarglst
-    , d2v: d2var_t
-    ) : Option_vt (s2expopt) = let
-    val ans = i2nvarglst_d2var_find (args, d2v) in case+ ans of
-    | ~Some_vt arg => let
-        val os2e = (case+ arg.i2nvarg_typ of
-          | Some s2e => Some (s2exp_subst (sub, s2e)) | None () => None ()
-        ) : s2expopt
-      in
-        Some_vt os2e
-      end // end of [Some_vt]
-    | ~None_vt () => None_vt ()
-  end // end of [aux_find]
-  fun aux_iter {n:nat} (
-      loc0: loc_t
-    , sub: stasub_t
-    , args: i2nvarglst
-    , sais: staftitemlst n
-    , sbis: stbefitemlst n
-    ) : void = begin case+ sais of
-    | list_cons (sai, sais) => let
-        val+ list_cons (sbi, sbis) = sbis
-        val d2v = sbi.stbefitem_var
-        val linaft = sai.staftitem_lin and linbef = sbi.stbefitem_lin
-(*
-        val () = begin
-          prerr "staftscstr_stbefitemlst_update: aux_iter: d2v = ";
-          prerr d2v; prerr_newline ();
-          prerrf (
-            "staftscstr_stbefitemlst_update: aux_iter: linaft = %i and linbef = %i"
-          , @(linaft, linbef)
-          );
-          prerr_newline ();
-        end // end of [val]
-*)
-        val () = begin
-          if linaft > linbef then d2var_lin_set (d2v, linaft)
-        end // end of [val]
-        val () = let
-          val ans = aux_find (sub, args, d2v) in case+ ans of
-          | ~Some_vt os2e => let
-              val os2e = s2expopt_opnexi_and_add (loc0, os2e)
-            in
-              d2var_typ_set (d2v, os2e)
-            end // end of [Some_vt]
-          | ~None_vt () => begin case+ 0 of
-            | _ when linaft > linbef => begin
-              case+ d2var_typ_get d2v of
-              | Some _ => let
-                  val os2e = d2var_mastyp_get d2v
-                  val os2e = s2expopt_opnexi_and_add (loc0, os2e)
-                in
-                  d2var_typ_set (d2v, os2e)
-                end // end of [Some]
-              | None _ => () // nothing to update
-              end // end of [_ when ...]
-            | _ => () // [d2v] is unused and no update is needed
-            end // end of [None_vt]
-        end // end of [val]
-      in
-        aux_iter (loc0, sub, args, sais, sbis)
-      end // end of [list_cons]
-    | list_nil () => ()
-  end // end of [aux_iter]
-  val res = sac.staftscstr_res and sais = sac.staftscstr_sais
-  val sub = s2qua_hypo_instantiate_and_add (loc0, svs, gua) where {
-    val svs = res.i2nvresstate_svs and gua = res.i2nvresstate_gua
-  } // end of [val]
+local
+
+fun aux_find (
+    args: i2nvarglst
+  , d2v: d2var_t
+  ) : Option_vt (s2expopt) = let
+  val ans = i2nvarglst_d2var_find (args, d2v)
 in
-  aux_iter (loc0, sub, res.i2nvresstate_arg, sais, sbis)
+  case+ ans of
+  | ~Some_vt arg => Some_vt (arg.i2nvarg_typ)
+  | ~None_vt () => None_vt ()
+end // end of [aux_find]
+
+fun aux_iter {n:nat} (
+    loc0: loc_t
+  , args: i2nvarglst
+  , sais: staftitemlst n
+  , sbis: stbefitemlst n
+  ) : void = begin case+ sais of
+  | list_cons (sai, sais) => let
+      val+ list_cons (sbi, sbis) = sbis
+      val d2v = sbi.stbefitem_var
+      val linaft = sai.staftitem_lin and linbef = sbi.stbefitem_lin
+(*
+      val () = begin
+        prerr "staftscstr_stbefitemlst_update: aux_iter: d2v = ";
+        prerr d2v; prerr_newline ();
+        prerrf (
+          "staftscstr_stbefitemlst_update: aux_iter: linaft = %i and linbef = %i"
+        , @(linaft, linbef)
+        );
+        prerr_newline ();
+      end // end of [val]
+*)
+      val () = begin
+        if linaft > linbef then d2var_lin_set (d2v, linaft)
+      end // end of [val]
+      val () = let
+        val ans = aux_find (args, d2v) in
+        case+ ans of
+        | ~Some_vt os2e => let
+            val os2e = s2expopt_opnexi_and_add (loc0, os2e)
+          in
+            d2var_typ_set (d2v, os2e)
+          end // end of [Some_vt]
+        | ~None_vt () => begin case+ 0 of
+          | _ when linaft > linbef => begin
+            case+ d2var_typ_get d2v of
+            | Some _ => let
+                val os2e = d2var_mastyp_get d2v
+                val os2e = s2expopt_opnexi_and_add (loc0, os2e)
+              in
+                d2var_typ_set (d2v, os2e)
+              end // end of [Some]
+            | None _ => () // nothing to update
+            end // end of [_ when ...]
+          | _ => () // [d2v] is unused and no update is needed
+          end // end of [None_vt]
+      end // end of [val]
+    in
+      aux_iter (loc0, args, sais, sbis)
+    end // end of [list_cons]
+  | list_nil () => ()
+end // end of [aux_iter]
+
+in // in of [local]
+
+implement staftscstr_stbefitemlst_update (loc0, sac, sbis) = let
+  val res = sac.staftscstr_res and sais = sac.staftscstr_sais
+  val () = trans3_env_add_svarlst res.i2nvresstate_svs
+  val () = trans3_env_hypo_add_proplst (loc0, res.i2nvresstate_gua)
+in
+  aux_iter (loc0, res.i2nvresstate_arg, sais, sbis)
 end // end of [staftscstr_stbefitemlst_update]
+
+end // end of [local]
 
 (* ****** ****** *)
 
