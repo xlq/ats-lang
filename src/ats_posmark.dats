@@ -95,13 +95,13 @@ datatype posmark = // 0/1 : begin/end
 
 (* ****** ****** *)
 
-val the_posmark_flag : ref int = ref_make_elt<int> 0
+val the_posmark_flag = ref_make_elt<int> 0
 val the_posmarklst : ref (List @(lint, posmark)) =
   ref_make_elt (list_nil ())
 
 (* ****** ****** *)
 
-#define NPOSMARK 64
+#define NPOSMARK 100
 fn int_of_posmark (pm: posmark): int =
   case+ pm of
   | PMnone () => 0
@@ -109,11 +109,14 @@ fn int_of_posmark (pm: posmark): int =
   | PMextern i => if i > 0 then 2 else NPOSMARK-2
   | PMkeyword i => if i > 0 then 3 else NPOSMARK-3
   | PMneuexp  i => if i > 0 then 4 else NPOSMARK-4
-  | PMstaexp  i => if i > 0 then 4 else NPOSMARK-5
-  | PMprfexp  i => if i > 0 then 5 else NPOSMARK-6
+  | PMstaexp  i => if i > 0 then 5 else NPOSMARK-5
+  | PMprfexp  i => if i > 0 then 6 else NPOSMARK-6
+// end of [int_of_posmark]
 
-fn compare_posmark_posmark (pm1: posmark, pm2: posmark): Sgn =
+fn compare_posmark_posmark
+  (pm1: posmark, pm2: posmark): Sgn =
   compare (int_of_posmark pm1, int_of_posmark pm2)
+// end of [compare_posmark_posmark]
 
 (* ****** ****** *)
 
@@ -121,20 +124,20 @@ local
 
 assume posmark_token = unit_v
 
-in
+in // in of [local]
 
 implement posmark_initiate () = let
   val () = !the_posmark_flag := 1
   val () = !the_posmarklst := list_nil ()
 in
   (unit_v () | ())
-end
+end // end of [posmark_initiate]
 
 // prevent memory leak!
-implement posmark_terminate (pf | (*none*)) =
-  let prval unit_v () = pf in
-    !the_posmark_flag := 0; !the_posmarklst := list_nil ()
-  end
+implement posmark_terminate (pf | (*none*)) = let
+  prval unit_v () = pf in
+  !the_posmark_flag := 0; !the_posmarklst := list_nil ()
+end // end of [posmark_terminate]
 
 end // end of [local]
 
@@ -143,8 +146,8 @@ end // end of [local]
 fn posmark_insert (p: lint, pm: posmark): void = begin
   if !the_posmark_flag > 0 then begin
     !the_posmarklst := list_cons ((p, pm), !the_posmarklst)
-  end
-end // end of [posmark_insert]
+  end // end of [if]
+end (* end of [posmark_insert] *)
 
 implement posmark_insert_comment_beg (p) =
   posmark_insert (p, PMcomment 0)
@@ -189,9 +192,9 @@ fn posmarklst_sort
 
   typedef ppm = @(lint, posmark)
 
-  fn cmp (x1: &ppm, x2: &ppm): Sgn = let
-    val x10 = x1.0 and x20 = x2.0
-  in
+  fn cmp
+    (x1: &ppm, x2: &ppm): Sgn = let
+    val x10 = x1.0 and x20 = x2.0 in
     if x10 < x20 then ~1 else begin
       (if x10 > x20 then 1 else compare_posmark_posmark (x1.1, x2.1))
     end // end of [if]
@@ -204,12 +207,13 @@ fn posmarklst_sort
       loop (A, i-1, list_vt_cons (A.[i], res))
     end else begin
       res // return value
-    end
+    end // end of [if]
+  // end of [loop]
 
   val n = aux (ppms, 0) where {
     fun aux {i,j:nat} (ppms: list (ppm, i), j: int j): int (i+j) =
       case+ ppms of list_cons (_, ppms) => aux (ppms, j+1) | list_nil () => j
-  } // end of where
+  } // end of [val]
 
   val (pf_gc, pf_arr | p_arr) = array_ptr_make_lst<ppm> (n, ppms)
   val () = qsort {ppm} (!p_arr, size1_of_int1 n, sizeof<ppm>, cmp)
@@ -450,7 +454,7 @@ posmark_htmlfilename_make (ats_ptr_type basename) {
   }
   while (n >= 0) { s[n] = ((char *)basename)[n] ; --n ; }
   return s ;
-}
+} /* posmark_htmlfilename_make */
 
 %}
 

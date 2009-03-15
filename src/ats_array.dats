@@ -41,7 +41,8 @@ staload "ats_array.sats"
 
 (* ****** ****** *)
 
-implement{a} array_ptr_initialize_elt (A0, n0, x0) = let
+implement{a}
+  array_ptr_initialize_elt (A0, n0, x0) = () where {
   fun aux {n:nat} {l:addr} .<n>.
     (pf: array_v (a?, n, l) | p: ptr l, n: int n, x: a)
     :<> (array_v (a, n, l) | void) =
@@ -57,9 +58,7 @@ implement{a} array_ptr_initialize_elt (A0, n0, x0) = let
   prval pf = view@ A0
   val (pf | ()) = aux (pf | &A0, n0, x0)
   prval () = view@ A0 := pf
-in
-  // empty
-end // end of [array_ptr_initialize_elt]
+} // end of [array_ptr_initialize_elt]
     
 (* ****** ****** *)
 

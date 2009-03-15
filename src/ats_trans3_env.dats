@@ -147,15 +147,18 @@ viewtypedef s2varbindmap = $Map.map_vt (stamp_t, s2exp)
 val s2varbind_svs: ref (s2varlst) = ref_make_elt (list_nil ())
 val s2varbind_svs_lst: ref (List s2varlst) = ref_make_elt (list_nil ())
 
-val the_s2varbindmap : ref s2varbindmap = begin
-  ref_make_elt (
-    $Map.map_make {stamp_t, s2exp} (
-      lam (s1, s2) => $Stamp.compare_stamp_stamp (s1, s2)
-    )
-  ) // end of [ref_make_elt]
-end // end of [the_s2varbindmap]
+val the_s2varbindmap = ref_make_elt<s2varbindmap> (
+  $Map.map_make {stamp_t, s2exp}
+    (lam (s1, s2) => $Stamp.compare_stamp_stamp (s1, s2))
+) // end of [the_s2varbindmap]
 
 in // in of [local]
+
+fn the_s2varbindmap_initialize () = let
+  val (vbox pf | p) =
+    ref_get_view_ptr (the_s2varbindmap) in
+  $Map.map_clean<stamp_t, s2exp> (!p)
+end // end of [the_s2varbindmap_initialize]
 
 implement fprint_the_s2varbindmap {m} (pfout | out) = let
   val kis = $Map.map_list_pre (!p) where {
@@ -236,7 +239,7 @@ implement the_s2varbindmap_pop () = let
 (*
   val () = begin
     prerr "the_s2varbindmap_pop: the_s2varbindmap =\n"; prerr_the_s2varbindmap ()
-  end
+  end // end of [val]
 *)
   fun aux {n:nat} {l:addr} .<n>.
     (pf: !s2varbindmap @ l | p: ptr l, s2vs: list (s2var_t, n)):<> void =
@@ -260,7 +263,7 @@ in
       end
       val () = begin
         !s2varbind_svs := s2vs; !s2varbind_svs_lst := s2vss
-      end
+      end // end of [val]
     in
       // empty
     end // end of [list_cons]
@@ -959,7 +962,7 @@ implement trans3_env_hypo_add_bind (loc, s2v1, s2e2) = let
   val () = begin
     prerr "trans3_env_hypo_add_bind: s2v1 = "; prerr s2v1; prerr_newline ();
     prerr "trans3_env_hypo_add_bind: s2e2 = "; prerr s2e2; prerr_newline ();
-  end
+  end // end of [val]
 *)
   val os2e1 = the_s2varbindmap_find (s2v1)
 in
@@ -979,7 +982,7 @@ implement trans3_env_hypo_add_eqeq (loc, s2e1, s2e2) = let
   val () = begin
     prerr "trans3_env_hypo_add_eqeq: s2e1 = "; prerr s2e1; prerr_newline ();
     prerr "trans3_env_hypo_add_eqeq: s2e2 = "; prerr s2e2; prerr_newline ();
-  end
+  end // end of [val]
 *)
   val h3p = h3ypo_eqeq (loc, s2e1, s2e2)
   val (vbox pf | p) = ref_get_view_ptr the_s3itemlst
@@ -1006,17 +1009,38 @@ end // end of [trans3_env_hypo_add_p2atcstlstlst]
 
 (* ****** ****** *)
 
-fn prerr_the_s3itemlst () = let
+extern fun prerr_the_s3itemlst (): void
+  = "ats_trans3_env_prerr_the_s3itemlst"
+
+extern fun prerr_the_s3itemlstlst (): void
+  = "ats_trans3_env_prerr_the_s3itemlstlst"
+  
+implement prerr_the_s3itemlst () = let
   val (vbox pf | p) = ref_get_view_ptr the_s3itemlst
 in
   $effmask_ref (prerr_s3itemlst_vt !p)
 end // end of [prerr_the_s3itemlst]
 
-fn prerr_the_s3itemlstlst () = let
+implement prerr_the_s3itemlstlst () = let
   val (vbox pf | ps) = ref_get_view_ptr the_s3itemlstlst
 in
   $effmask_ref (prerr_s3itemlstlst_vt !ps)
 end // end of [prerr_the_s3itemlstlst]
+
+(* ****** ****** *)
+
+extern fun free_the_s3itemlst (): void
+  = "ats_trans3_env_free_the_s3itemlst"
+
+implement free_the_s3itemlst () = let
+  val (vbox pf | p) = ref_get_view_ptr the_s3itemlst
+  val s3is = !p
+  val () = !p := list_vt_nil ()
+in
+  $Lst.list_vt_free (s3is)
+end // end of [free_the_s3itemlst]
+
+(* ****** ****** *)
 
 implement trans3_env_pop_sta () = let
 (*
@@ -1789,6 +1813,8 @@ implement trans3_env_add_p2atcstlstlst_false
 (* ****** ****** *)
 
 implement trans3_env_initialize () = let
+  val () = the_s2varbindmap_initialize ()
+
   val () = s2cst_sup_set (s2c1, S2CSTOPTsome s2c0) where {
     val s2c0 = s2cstref_cst_get (Bool_t0ype)
     val s2c1 = s2cstref_cst_get (Bool_bool_t0ype)

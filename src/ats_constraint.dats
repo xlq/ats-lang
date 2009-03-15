@@ -1205,9 +1205,11 @@ overload compare with $Stamp.compare_stamp_stamp
 
 fn s2cst_index_map_make (): s2cst_index_map =
   $Map.map_make {stamp_t, Pos} (lam (s1, s2) => compare (s1, s2))
+// end of [s2cst_index_map_make]
 
 fn s2var_index_map_make (): s2var_index_map =
   $Map.map_make {stamp_t, Pos} (lam (s1, s2) => compare (s1, s2))
+// end of [s2cst_index_map_make]
 
 //
 
@@ -1220,15 +1222,13 @@ fn s2cst_index_find {n:pos}
   val stamp = s2cst_stamp_get s2c
 in
   case+ $Map.map_search (m, stamp) of
-  | ~Some_vt (i) => begin
-      if i < n then i else begin
-        $Loc.prerr_location loc0;
-        prerr ": Internal Error: s2cst_index_find: the static constant [";
-        prerr_s2cst s2c;
-        prerr "] is associated with an index that is out-of-range.";
-        prerr_newline ();
-        $Err.abort {intBtw (1, n)} ()
-      end
+  | ~Some_vt (i) => if i < n then i else begin
+      $Loc.prerr_location loc0;
+      prerr ": Internal Error: s2cst_index_find: the static constant [";
+      prerr_s2cst s2c;
+      prerr "] is associated with an index that is out-of-range.";
+      prerr_newline ();
+      $Err.abort {intBtw (1, n)} ()
     end // end of [Some_vt]
   | ~None_vt () => begin
       $Loc.prerr_location loc0;
@@ -1237,7 +1237,7 @@ in
       prerr "] is not associated with any index.";
       prerr_newline ();
       $Err.abort {intBtw (1, n)} ()
-    end
+    end // end of [None_vt]
 end // end of [s2cst_index_find]
 
 fn s2var_index_find {n:pos}
@@ -1249,15 +1249,13 @@ fn s2var_index_find {n:pos}
   val stamp = s2var_stamp_get s2v
 in
   case+ $Map.map_search (m, stamp) of
-  | ~Some_vt (i) => begin
-      if i < n then i else begin
-        $Loc.prerr_location loc0;
-        prerr ": Internal Error: s2var_index_find: the static constant [";
-        prerr_s2var s2v;
-        prerr "] is associated with an index that is out-of-range.";
-        prerr_newline ();
-        $Err.abort {intBtw (1, n)} ()
-      end // end of [if]
+  | ~Some_vt (i) => if i < n then i else begin
+      $Loc.prerr_location loc0;
+      prerr ": Internal Error: s2var_index_find: the static constant [";
+      prerr_s2var s2v;
+      prerr "] is associated with an index that is out-of-range.";
+      prerr_newline ();
+      $Err.abort {intBtw (1, n)} ()
     end // end of [Some_vt]
   | ~None_vt () => begin
       $Loc.prerr_location loc0;
@@ -1334,17 +1332,17 @@ in
       val ind = s2cst_index_find (loc0, cim, s2c, n)
     in
       ivp->[ind] := ivp->[ind] + coef
-    end
+    end // end of [S3AEcst]
   | S3AEvar s2v => let
       val ind = s2var_index_find (loc0, vim, s2v, n)
     in
       ivp->[ind] := ivp->[ind] + coef
-    end
+    end // end of [S3AEvar]
   | S3AEnull () => ()
   | S3AEpadd (s3ae1, s3ie2) => begin
       s3aexp_intvec_update_err (pf_arr | loc0, cim, vim, ivp, n, coef, s3ae1, errno);
       s3iexp_intvec_update_err (pf_arr | loc0, cim, vim, ivp, n, coef, s3ie2, errno);
-    end
+    end // end of [S3AEpadd]
   | S3AEexp _ => begin
       prerr "Internal Error: s3aexp_intvec_update_err: unsupported term: s3ae0 = ";
       prerr s3ae0;
@@ -1361,7 +1359,7 @@ implement s3iexp_intvec_update_err
   val () = begin
     prerr "s3iexp_intvec_update_err: coef = "; prerr coef; prerr_newline ();
     prerr "s3iexp_intvec_update_err: s3ie0 = "; prerr s3ie0; prerr_newline ();
-  end
+  end // end of [val]
 *)
 in
   case+ s3ie0 of
@@ -1369,12 +1367,12 @@ in
       val ind = s2cst_index_find (loc0, cim, s2c, n)
     in
       ivp->[ind] := ivp->[ind] + coef
-    end
+    end // end of [S3IEcst]
   | S3IEvar s2v => let
       val ind = s2var_index_find (loc0, vim, s2v, n)
     in
       ivp->[ind] := ivp->[ind] + coef
-    end
+    end // end of [S3IEvar]
   | S3IEint (i) => let
       val i0 = $FM.i0nt_of_int i in ivp->[0] := ivp->[0] + coef * i0
     end // end of [S3IEint]
@@ -1419,15 +1417,16 @@ in
           prerr s3ie0;
           prerr_newline ();
           $Err.abort {void} ()
-        end
-      end
+        end // end of [_]
+      end (* end of [_] *)
     end // end of [S3IEimul]
   | S3IEpdiff (s3ae1, s3ae2) => begin
       s3aexp_intvec_update_err (pf_arr | loc0, cim, vim, ivp, n, coef, s3ae1, errno);
       s3aexp_intvec_update_err (pf_arr | loc0, cim, vim, ivp, n, ~coef, s3ae2, errno);
-    end
+    end // end of [S3IEpdiff]
   | S3IEexp _ => begin
-      prerr "Internal Error: s3iexp_intvec_update_err: unsupported term: s3ie0 = ";
+      prerr "INTERNAL ERROR";
+      prerr ": s3iexp_intvec_update_err: unsupported term: s3ie0 = ";
       prerr s3ie0;
       prerr_newline ();
       $Err.abort {void} ()
@@ -1497,7 +1496,8 @@ in
       $FM.ICvec (knd, $FM.intvecptr_make_view_ptr (pf_gc, pf_arr | ivp))
     end // end of [S3BEiexp]
   | S3BEexp _ => begin
-      prerr "Internal Error: s3bexp_intvec_make_err: unsupported term: s3be0 = ";
+      prerr "INTERNAL ERROR";
+      prerr ": s3bexp_intvec_make_err: unsupported term: s3be0 = ";
       prerr s3be0;
       prerr_newline ();
       $Err.abort ()
@@ -1516,7 +1516,8 @@ extern fun s3bexplst_s2exp_solve_fm (
   , errno: &int
   ) : intBtw (~1, 1)
 
-implement s3bexplst_s2exp_solve_fm (loc0, s2vs, s3bes, s2p, s2cs, fds, errno) = let
+implement s3bexplst_s2exp_solve_fm
+  (loc0, s2vs, s3bes, s2p, s2cs, fds, errno) = let
 (*
   val () = begin
     prerr "s3bexplst_s2exp_solve_fm: s2vs = "; prerr s2vs; prerr_newline ();
@@ -1630,7 +1631,7 @@ implement s3bexplst_s2exp_solve_fm (loc0, s2vs, s3bes, s2p, s2cs, fds, errno) = 
     prerr_icstrlst (ics_asmp, cnt); prerr_newline ();
     prerr "s3bexp_s2exp_solve_fm: ic_conc = "; 
     prerr_icstr (ic_conc, cnt); prerr_newline ()
-  end
+  end // end of [val]
 *)
   var ics_all = list_vt_cons ($FM.icstr_negate ic_conc, ics_asmp)
 (*
@@ -1726,27 +1727,26 @@ implement c3str_solve_main
     prerr "c3str_solve_main: s2vs = "; prerr s2vs; prerr_newline ();
     prerr "c3str_solve_main: s3bes = "; prerr s3bes; prerr_newline ();
     prerr "c3str_solve_main: c3t = "; prerr c3t; prerr_newline ();
-  end
+  end // end of [val]
 *)
   val loc0 = c3t.c3str_loc
   val s2cs0 = s2cs; val () = s2cfdeflst_push (fds)
-  val ans = (
-    case+ c3t.c3str_node of
+  val ans = (case+ c3t.c3str_node of
     | C3STRprop s2p => c3str_solve_prop
         (loc0, s2vs, s3bes, s2p, s2cs, fds, errno)
     | C3STRitmlst s3is => c3str_solve_itmlst
         (loc0, s2vs, s3bes, s3is, s2cs, fds, unsolved, errno)
-  ) : intBtw (~1, 1)
+  ) : intBtw (~1, 1) // end of [val]
 (*
   val () = begin
     prerr "c3str_solve_main: ans = "; prerr ans; prerr_newline ()
-  end
+  end // end of [val]
 *)
   val () = s2cfdeflst_pop (fds); val () = s2cs := s2cs0
 
   fn c3str_pr (unsolved: uint, c3t: c3str): void = begin
     if (unsolved > i2u 0) then () else (prerr ": "; prerr_c3str c3t)
-  end
+  end // end of [c3str_pr]
 
   var ans: intBtw (~1, 1) = ans
   val () = begin case+ ans of
@@ -1804,7 +1804,7 @@ implement c3str_solve_main
   val () = if ans >= 0 then (unsolved := unsolved + i2u 1)
 in
   ans (* 0: unsolved; ~1: solved *)
-end
+end // end of [c3str_solve_main]
 
 (* ****** ****** *)
 
@@ -1815,7 +1815,7 @@ implement c3str_solve_prop
     prerr "c3str_solve_prop: s2vs = "; prerr s2vs; prerr_newline ();
     prerr "c3str_solve_prop: s3bes = "; prerr s3bes; prerr_newline ();
     prerr "c3str_solve_prop: s2p = "; prerr s2p; prerr_newline ();
-  end
+  end // end of [val]
 *)
 in
   s3bexplst_s2exp_solve_fm (loc0, s2vs, s3bes, s2p, s2cs, fds, errno)

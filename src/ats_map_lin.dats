@@ -208,19 +208,19 @@ fun{key,itm:t@ype} bst_remove {n:nat} {l1,l2:addr} .<n>. (
           bst_remove (pf1, pf2 | !tl, k0, p1, p2, cmp)
       in
         !n := !n - !p1; !tl := tl_new; fold@ t; #[i | (pf1, pf2 | t)]
-      end
+      end // end of [~1]
     |  1 => let
         val [i:int] (pf1, pf2 | tr_new) =
           bst_remove (pf1, pf2 | !tr, k0, p1, p2, cmp)
       in
         !n := !n - !p1; !tr := tr_new; fold@ t; #[i | (pf1, pf2 | t)]
-      end
+      end // end of [1]
     |  0 => let
         val t_new = bst_join_left_right (!tl, !tr)
       in
         !p1 := 1; !p2 := Some_vt i; free@ {key,itm} {nl,nr} (t);
         #[1 | (pf1, pf2 | t_new)]
-      end
+      end // end of [0]
     end // end of [begin]
 end // end of [bst_remove]
 
@@ -316,9 +316,15 @@ assume map_vt = map
 (* ****** ****** *)
 
 implement map_make (cmp) = MAP (cmp, BSTnil ())
+
 implement{key,item} map_free (m) =
   let val+ ~MAP (cmp, bst) = m in bst_free bst end
 
+implement{key,item} map_clean (m) = let
+  val+ MAP (cmp, !p_bst) = m in
+  bst_free !p_bst; !p_bst := BSTnil (); fold@ m
+end // end of [map_clean]
+  
 (* ****** ****** *)
 
 implement{key,itm} map_search (m, k) = let

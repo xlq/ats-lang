@@ -45,8 +45,14 @@ absviewtype map_vt (key: t@ype, itm: t@ype) // boxed type
 
 (* ****** ****** *)
 
-fun map_make {key,itm:t@ype} (cmp: (key, key) -<fun> Sgn):<> map_vt (key, itm)
+fun map_make {key,itm:t@ype}
+  (cmp: (key, key) -<fun> Sgn):<> map_vt (key, itm)
+
+// free up the map
 fun{key,itm:t@ype} map_free (m: map_vt (key, itm)):<> void
+
+// clean up the map
+fun{key,itm:t@ype} map_clean (m: !map_vt (key, itm)):<> void
 
 (* ****** ****** *)
 

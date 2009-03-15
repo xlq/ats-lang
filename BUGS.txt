@@ -184,4 +184,17 @@ end // end of [main]
 
 ######
 
+Saturday, March 14, 2009 (HX)
+
+STATUS: Fixed on March 14, 2009 (HX)
+
+[atsopt] may run into an error when handling multiple files at once:
+
+./atsopt -tc -d ats_array.dats ats_ccomp.dats
+The file [ats_array.dats] is successfully typechecked!
+/home/fac2/hwxi/research/ATS/IMPLEMENT/Geizella/Anairiats/svn/ats-lang/src/ats_ccomp.dats: 3186(line=127, offs=3) -- 3251(line=127, offs=68): Internal Error: s2var_index_find: the static constant [n$31] is not associated with any index.
+Uncaught exception: _2fusr_2fshare_2fatshome_2fsrc_2fats_error_2esats__FatalErrorException(1003)
+
+######
+
  ------------------ end of [BUGS.txt] -------------------

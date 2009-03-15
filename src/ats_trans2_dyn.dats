@@ -229,7 +229,7 @@ fun aux1
       val s2ps = s2explst_subst (sub, s2vps.1)
     in
       out := @(s2vs, s2ps) :: out; aux1 (d2c, sub, s2vpslst, out)
-    end
+    end // end of [cons]
   | nil () => let
       val npf = d2con_npf_get d2c
       val s2es_arg =
@@ -245,24 +245,26 @@ fun aux1
     in
       out := s2qualst_reverse out;
       s2exp_confun (npf, s2es_arg, s2e_res)
-    end
+    end // end of [nil]
 end // end [aux1]
 
-fun aux2
-  (loc_sap: loc_t,
-   d2c: d2con_t, sub: stasub_t, s2vpss: s2qualst, s1as: s1vararglst,
-   out: &s2qualst): s2exp = let
-
-fn err (loc_sap: loc_t, d2c: d2con_t): s2exp = begin
-  prerr_loc_error2 loc_sap;
-  $Deb.debug_prerrf (": %s: p1at_con_tr: aux2", @(THISFILENAME));
-  prerr ": the constructor [";
-  prerr d2c;
-  prerr "] is applied to too many static arguments.";
-  prerr_newline ();
-  $Err.abort {s2exp} ()
-end // end of [err]
-
+fun aux2 (
+    loc_sap: loc_t
+  , d2c: d2con_t
+  , sub: stasub_t
+  , s2vpss: s2qualst
+  , s1as: s1vararglst
+  , out: &s2qualst
+  ) : s2exp = let
+  fn err (loc_sap: loc_t, d2c: d2con_t): s2exp = begin
+    prerr_loc_error2 loc_sap;
+    $Deb.debug_prerrf (": %s: p1at_con_tr: aux2", @(THISFILENAME));
+    prerr ": the constructor [";
+    prerr d2c;
+    prerr "] is applied to too many static arguments.";
+    prerr_newline ();
+    $Err.abort {s2exp} ()
+  end // end of [err]
 in // in of [let]
   case+ s1as of
   | cons (s1a, s1as) => begin case+ s1a of
@@ -308,10 +310,9 @@ in
 end // end of [p1at_con_tr]
 
 implement p1at_con_instantiate (loc_sap, d2c) = let
-  var out: s2qualst = nil ()
-  val s2e = begin
+  var out: s2qualst = nil (); val s2e = begin
     aux2 (loc_sap, d2c, stasub_nil, d2con_qua_get d2c, nil (), out)
-  end
+  end // end of [val]
 in
   @(out, s2e)
 end // end of [p1at_con_instantiate]
@@ -320,10 +321,16 @@ end // end of [local]
 
 (* ****** ****** *)
 
-fn p1at_qid_app_dyn_tr
-  (loc_dap: loc_t, loc_sap: loc_t, loc_id: loc_t,
-   q: $Syn.d0ynq, id: sym_t, s1as: s1vararglst, npf: int, p1ts: p1atlst)
-  : p2at = let
+fn p1at_qid_app_dyn_tr (
+    loc_dap: loc_t
+  , loc_sap: loc_t
+  , loc_id: loc_t
+  , q: $Syn.d0ynq
+  , id: sym_t
+  , s1as: s1vararglst
+  , npf: int
+  , p1ts: p1atlst
+  ) : p2at = let
 
   fn err1 (loc_id: loc_t, q: $Syn.d0ynq, id: sym_t): d2conlst = begin
     prerr_loc_error2 loc_id;
@@ -345,18 +352,17 @@ fn p1at_qid_app_dyn_tr
     $Err.abort {d2conlst} ()
   end // end of [err2]
 
-  val d2cs = begin
-    case+ the_d2expenv_find_qua (q, id) of
+  val d2cs = let
+    val ans = the_d2expenv_find_qua (q, id) in case+ ans of
     | ~Some_vt d2i => begin case+ d2i of
       | D2ITEMcon d2cs => d2cs | _ => err1 (loc_id, q, id)
       end // end of [Some_vt]
     | ~None_vt () => err2 (loc_id, q, id)
   end // end of [val]
-  val is_arg_omit: bool = begin
-    case+ p1ts of
+  val is_arg_omit: bool = begin case+ p1ts of
     | cons (p1t, nil ()) => begin
         case+ p1t.p1at_node of P1Tanys () => true | _ => false
-      end
+      end // end of [cons (_, nil)]
     | _ => false
   end // end of [val]
   val np1ts = $Lst.list_length p1ts
@@ -369,24 +375,26 @@ fn p1at_qid_app_dyn_tr
           d2con_select_arity_err_some (loc_id, q, id, np1ts)
         end
       | D2CONLSTnil _ => d2c
-      end
+      end // end of [D2CONLSTcons]
     | _ => begin
         d2con_select_arity_err_none (loc_id, q, id, np1ts)
-      end
+      end // end of [_]
   end // end of [val]
-  val p1ts = begin
-    if is_arg_omit then begin case+ p1ts of
-      | cons (p1t, nil ()) => let
-          val npf = d2con_npf_get d2c and s2es = d2con_arg_get d2c
-          fun aux (loc: loc_t, s2es: s2explst): p1atlst =
-            case+ s2es of
-            | cons (_, s2es) => cons (p1at_any loc, aux (loc, s2es))
-            | nil () => nil ()
-        in
-          aux (p1t.p1at_loc, s2es)
-        end
-      | _ => p1ts // deadcode
-    end else p1ts
+  val p1ts = if is_arg_omit then begin
+    case+ p1ts of
+    | cons (p1t, nil ()) => let
+        val npf = d2con_npf_get d2c
+        and s2es = d2con_arg_get d2c
+        fun aux (loc: loc_t, s2es: s2explst): p1atlst =
+          case+ s2es of
+          | cons (_, s2es) => cons (p1at_any loc, aux (loc, s2es))
+          | nil () => nil ()
+      in
+        aux (p1t.p1at_loc, s2es)
+      end // end of [cons (_, nil)]
+    | _ => p1ts // deadcode
+  end else begin
+    p1ts // there are no omitted arguments
   end // end of [val]
 in
   p1at_con_tr (loc_dap, loc_sap, d2c, s1as, npf, p1ts)
@@ -405,14 +413,14 @@ in
       val loc_id = p1t_fun.p1at_loc
     in
       p1at_qid_app_dyn_tr (loc_dap, loc_sap, loc_id, q, id, sarg, npf, darg)
-    end
+    end // end of [P1Tqid]
   | _ => begin
      prerr_loc_error2 loc_dap;
      $Deb.debug_prerrf (": %s: p1at_app_tr", @(THISFILENAME));
      prerr ": the application in the pattern is not allowed.";
      prerr_newline ();
      $Err.abort {p2at} ()
-   end
+   end // end of [_]
 end // end of [p1at_app_tr]
 
 (* ****** ****** *)
@@ -424,14 +432,14 @@ in
   case+ p2t.p2at_node of
   | P2Tcon (freeknd, d2c, s2vpss, s2e, npf, p2ts) => begin
       p2at_con (loc0, ~freeknd, d2c, s2vpss, s2e, npf, p2ts)
-    end
+    end // end of [P2Tcon]
   | _ => begin
       prerr_loc_error2 loc0;
       $Deb.debug_prerrf (": %s: p1at_free_tr", @(THISFILENAME));
       prerr ": values that match this pattern are not allowed to be freed.";
       prerr_newline ();
       $Err.abort {p2at} ()
-    end
+    end // end of [_]
 end // end of [p1at_free_tr]
 
 (* ****** ****** *)
@@ -472,7 +480,7 @@ val p2t0 = (
       val s2e = s1exp_tr_dn_impredicative s1e
     in
       p2at_ann (loc0, p2t, s2e)
-    end
+    end // end of [P1Tann]
   | P1Tany _ => p2at_any (loc0)
   | P1Tanys _ => p2at_any (loc0)
   | P1Tapp_dyn (p1t_fun, _(*loc_arg*), npf, darg) => let
@@ -498,19 +506,19 @@ val p2t0 = (
           prerr_newline ();
           $Err.abort {p2at} ()
         end
-    end
+    end // end of [P1Tapp_dyn]
   | P1Tapp_sta (p1t_fun, sarg) => let
       val loc1 = p1t_fun.p1at_loc
     in
       linearity_check := 1;
       p1at_app_tr (loc0, loc1, p1t_fun, sarg, 0, '[])
-    end
+    end // end of [P1Tapp_sta]
   | P1Tas (id, p1t) => let
       val d2v = d2var_make (id.i0de_loc, id.i0de_sym)
     in
       linearity_check := 2;
       p2at_as (loc0, 0(*refknd*), d2v, p1at_tr p1t)
-    end
+    end // end of [P1Tas]
   | P1Tchar c(*char*) => p2at_char (loc0, c)
   | P1Texist (s1as, p1t) => let
       val (pf_s2expenv | ()) = the_s2expenv_push ()
@@ -519,7 +527,7 @@ val p2t0 = (
       val () = the_s2expenv_pop (pf_s2expenv | (*none*))
     in
       linearity_check := 1; p2at_exist (loc0, s2vs, p2t)
-    end
+    end // end of [P1Texist]
   | P1Tempty () => p2at_empty (loc0)
   | P1Tfloat f(*string*) => p2at_float (loc0, f)
   | P1Tfree p1t => p1at_free_tr (loc0, p1t)
@@ -527,7 +535,7 @@ val p2t0 = (
       val int = $IntInf.intinf_make_string str
     in
       p2at_int (loc0, str, int)
-    end
+    end // end of [P1Tint]
   | P1Tqid (q, id) => begin case+ q.d0ynq_node of
     | $Syn.D0YNQnone () => begin case+ the_d2expenv_find id of
       | ~Some_vt d2i => begin case+ d2i of
@@ -541,7 +549,7 @@ val p2t0 = (
     | _ => begin
         p1at_qid_app_dyn_tr (loc0, loc0, loc0, q, id, '[], 0(*npf*), '[])
       end
-    end
+    end // end of [P1Tqid]
   | P1Tlist (npf, p1ts) => begin case+ p1ts of
     | cons _ => let
         val p2ts = p1atlst_tr p1ts
@@ -549,34 +557,34 @@ val p2t0 = (
         linearity_check := 2; p2at_tup (loc0, 0(*tupknd*), npf, p2ts)
       end
     | nil _ => p2at_empty (loc0)
-    end
+    end // end of [P1Tlist]
   | P1Tlst (p1ts) => begin
       linearity_check := 2; p2at_lst (loc0, p1atlst_tr p1ts)
-    end
+    end // end of [P1Tlst]
   | P1Trec (recknd, lp1ts) => let
       val lp2ts = labp1atlst_tr lp1ts
     in
       linearity_check := 2; p2at_rec (loc0, recknd, 0(*npf*), lp2ts)
-    end
+    end // end of [P1Trec]
   | P1Tref (id) => begin
       p2at_var (loc0, 1(*refknd*), d2var_make (id.i0de_loc, id.i0de_sym))
-    end
+    end // end of [P1Tref]
   | P1Trefas (id, p1t) => let
       val d2v = d2var_make (id.i0de_loc, id.i0de_sym)
     in
       linearity_check := 2;
       p2at_as (loc0, 1(*refknd*), d2v, p1at_tr p1t)
-    end
+    end // end of [P1Trefas]
   | P1Tstring str => p2at_string (loc0, str)
   | P1Tsvararg _ => begin
       prerr loc0;
       prerr ": Internal Error: p1at_tr: P1Tsvararg";
       prerr_newline ();
       $Err.abort {p2at} ()
-    end
+    end // end of [P1Tavararg]
   | P1Ttup (tupknd, npf, p1ts) => begin
       linearity_check := 2; p2at_tup (loc0, tupknd, npf, p1atlst_tr p1ts)
-    end
+    end // end of [P1Ttup]
 ) : p2at // end of [val]
 
 in
@@ -599,7 +607,7 @@ implement labp1atlst_tr (lp1ts) = begin
   case+ lp1ts of
   | LABP1ATLSTcons (l0, p1t, lp1ts) => begin
       LABP2ATLSTcons (l0.l0ab_lab, p1at_tr p1t, labp1atlst_tr lp1ts)
-    end
+    end // end of [LABP1ATLSTcons]
   | LABP1ATLSTnil () => LABP2ATLSTnil ()
   | LABP1ATLSTdot () => LABP2ATLSTdot ()
 end // end of [labp1atlst_tr]
@@ -613,12 +621,12 @@ implement p1at_arg_tr (p1t0, wths1es) = begin
       val s2e = s1exp_arg_tr_dn_impredicative (s1e, wths1es)
     in
       p2at_ann (p1t0.p1at_loc, p2t, s2e)
-    end
+    end // end of [P1Tann]
   | P1Tlist (npf, p1ts) => let
       val p2ts = p1atlst_arg_tr (p1ts, wths1es)
     in
       p2at_list (p1t0.p1at_loc, npf, p2ts)
-    end
+    end // end of [P1Tlist]
   | _ => p1at_tr p1t0
 end // end of [p1at_arg_tr]
 
@@ -626,7 +634,7 @@ implement p1atlst_arg_tr (p1ts, wths1es) = begin
   case+ p1ts of
   | cons (p1t, p1ts) => begin
       cons (p1at_arg_tr (p1t, wths1es), p1atlst_arg_tr (p1ts, wths1es))
-    end
+    end // end of [cons]
   | nil () => nil ()
 end // end of [p1atlst_arg_tr]
 
@@ -641,13 +649,12 @@ fn d2sym_lrbrackets (loc: loc_t): d2sym = let
       end
     | ~None_vt () => (err := 1)
   end // end of [val]
-  val () = // run-time checking
-    if err > 0 then begin
-      prerr loc;
-      prerr ": Internal Error: d2sym_lrbrackets";
-      prerr_newline ();
-      $Err.abort {void} ()
-    end
+  val () = if err > 0 then begin // run-time checking
+    prerr loc;
+    prerr ": INTERNAL ERROR: d2sym_lrbrackets";
+    prerr_newline ();
+    $Err.abort {void} ()
+  end // end of [val]
 in
   d2sym_make (loc, $Syn.d0ynq_none (), id, d2is0)
 end // end of [d2sym_lrbrackets]
@@ -761,7 +768,7 @@ fn d1exp_qid_tr
             end
       in
         d2exp_con (loc0, d2c, nil (), 0(*npf*), nil ())
-      end
+      end // end of [D2ITEMcon]
     | D2ITEMcst d2c => d2exp_cst (loc0, d2c)
     | D2ITEMe1xp e1xp => d1exp_tr (d1exp_make_e1xp (loc0, e1xp))
     | D2ITEMmacdef d2m => let
@@ -769,19 +776,19 @@ fn d1exp_qid_tr
         val () = macro_def_check (loc0, knd, id)
       in
         d2exp_mac (loc0, d2m)
-      end
+      end // end of [D2ITEMmacdef]
     | D2ITEMmacvar d2v => let
         val () = macro_var_check (loc0, id)
       in
         d2exp_var (loc0, d2v)
-      end
+      end // end of [D2ITEMmacvar]
     | D2ITEMsym d2is => let
         val d2s = d2sym_make (loc0, q, id, d2is)
       in
         d2exp_sym (loc0, d2s)
-      end
+      end // end of [D2ITEMmacsym]
     | D2ITEMvar d2v => d2exp_var (loc0, d2v)
-    end // end of [Some d2i]
+    end // end of [Some_vt]
   | ~None_vt () => begin
       prerr_loc_error2 loc0;
       $Deb.debug_prerrf (": %s: d1exp_qid_tr", @(THISFILENAME));
@@ -790,7 +797,7 @@ fn d1exp_qid_tr
       prerr "] is unrecognized.";
       prerr_newline ();
       $Err.abort {d2exp} ()
-    end
+    end // end of [None_vt]
 end // end of [d1exp_qid_tr]
 
 (* ****** ****** *)
@@ -817,17 +824,17 @@ in
             end
       in
         d2exp_con (loc_sap, d2c, s2as, 0(*npf*), nil ())
-      end
+      end // end of [D2ITEMcon]
     | D2ITEMcst d2c => let
         val d2e_fun = d2exp_cst (loc_id, d2c)
       in
         d2exp_app_sta (loc_sap, d2e_fun, s2as)
-      end
+      end // end of [D2ITEMcst]
     | D2ITEMvar d2v => let
         val d2e_fun = d2exp_var (loc_id, d2v)
       in
         d2exp_app_sta (loc_sap, d2e_fun, s2as)
-      end
+      end // end of [D2ITEMvar]
     | D2ITEMmacdef _ => begin
         prerr_loc_error2 loc_id;
         $Deb.debug_prerrf (": %s: d1exp_qid_app_sta_tr", @(THISFILENAME));
@@ -851,7 +858,7 @@ in
         prerr_newline ();
         $Err.abort {d2exp} ()
       end // end of [_]
-    end (* end of [Some d2i] *)
+    end (* end of [Some_vt] *)
   | ~None_vt () => begin
       prerr_loc_error2 loc_id;
       $Deb.debug_prerrf (": %s: d1exp_qid_app_sta_tr", @(THISFILENAME));
@@ -888,30 +895,30 @@ in
             end
       in
         d2exp_con (loc_dap, d2c, sarg, npf, darg)
-      end
+      end // end of [D2ITEMcon]
     | D2ITEMcst d2c => let
         val d2e_fun = d2exp_cst (loc_id, d2c)
       in
         d2exp_app_sta_dyn (loc_dap, loc_sap, d2e_fun, sarg, loc_arg, npf, darg)
-      end
+      end // end of [D2ITEMcst]
     | D2ITEMmacdef d2m => let
         val knd = d2mac_kind_get d2m
         val () = macro_def_check (loc_id, knd, id)
         val d2e_fun = d2exp_mac (loc_id, d2m)
       in
         d2exp_app_sta_dyn (loc_dap, loc_sap, d2e_fun, sarg, loc_arg, npf, darg)
-      end
+      end // end of [D2ITEMmacdef]
     | D2ITEMsym d2is => let
         val d2s = d2sym_make (loc_id, q, id, d2is)
         val d2e_fun = d2exp_sym (loc_id, d2s)
       in
         d2exp_app_sta_dyn (loc_dap, loc_sap, d2e_fun, sarg, loc_arg, npf, darg)
-      end
+      end // end of [D2ITEMsym]
     | D2ITEMvar d2v => let
         val d2e_fun = d2exp_var (loc_id, d2v)
       in
         d2exp_app_sta_dyn (loc_dap, loc_sap, d2e_fun, sarg, loc_arg, npf, darg)
-      end
+      end // end of [D2ITEMvar]
     | D2ITEMmacvar _ => begin
         prerr_loc_error2 loc_id;
         prerr ": the identifer refers to a macro argument variable";
@@ -925,7 +932,7 @@ in
         prerr_newline ();
         $Err.abort {d2exp} ()
       end // end of [D2ITEMe1xp]
-    end (* end of [Some d2i] *)
+    end (* end of [Some_vt] *)
   | ~None_vt () => begin
       prerr_loc_error2 loc_id;
       $Deb.debug_prerrf (": %s: d1exp_qid_app_dyn_tr", @(THISFILENAME));
@@ -948,18 +955,18 @@ fun d1exp_wths1explst_tr
       val s2e = s1exp_res_tr_dn_impredicative (s1e, wths1es)
     in
       d2exp_ann_type (d1e0.d1exp_loc, d2e, s2e)
-    end
+    end // end of [D1Eann_type]
   | D1Eann_effc (d1e, efc) => let
       val d2e = d1exp_wths1explst_tr (d1e, wths1es)
       val s2fe = effcst_tr (efc)
     in
       d2exp_ann_seff (d1e0.d1exp_loc, d2e, s2fe)
-    end
+    end // end of [D1Eann_effc]
   | D1Eann_funclo (d1e, fc) => let
       val d2e = d1exp_wths1explst_tr (d1e, wths1es)
     in
       d2exp_ann_funclo (d1e0.d1exp_loc, d2e, fc)
-    end
+    end // end of[D1Eann_funclo]
   | _ => begin
       prerr_loc_error2 d1e0.d1exp_loc;
       $Deb.debug_prerrf (": %s: d1exp_wths1explst_tr", @(THISFILENAME));
@@ -1041,15 +1048,16 @@ fn m1atch_tr (m1at: m1atch): m2atch = let
         val () = the_d2expenv_add_dvarlst d2vs
       in
         Some p2t
-      end
+      end // end of [Some]
     | None () => None ()
   ) : p2atopt // end of [val]
 in
   m2atch_make (m1at.m1atch_loc, d2e, op2t)
 end // end of [m1atch_tr]
 
-fn m1atchlst_tr (m1ats: m1atchlst): m2atchlst =
-  $Lst.list_map_fun (m1ats, m1atch_tr)
+fn m1atchlst_tr (m1ats: m1atchlst)
+  : m2atchlst = $Lst.list_map_fun (m1ats, m1atch_tr)
+// end of [m1atchlst_tr]
 
 (* ****** ****** *)
 
@@ -1078,19 +1086,19 @@ fn c1lau_tr {n:nat} (n: int n, c1l: c1lau): c2lau n = let
       assert (np2ts = n) // deadcode
     end else begin
       () // [np2ts = n] holds!
-    end // end of [if]
+    end (* end of [if] *)
   ) : [np2ts==n] void
   val (pf_env2 | ()) = trans2_env_push ()
   val () = let
     val s2vs = s2varlst_of_s2varlstord (p2atlst_svs_union p2ts)
   in
     the_s2expenv_add_svarlst s2vs
-  end
+  end // end of [val]
   val () = let
     val d2vs = d2varlst_of_d2varlstord (p2atlst_dvs_union p2ts)
   in
     the_d2expenv_add_dvarlst d2vs
-  end
+  end // end of [val]
   val gua = m1atchlst_tr (c1l.c1lau_gua)
   val d2e = d1exp_tr (c1l.c1lau_exp)
   val () = trans2_env_pop (pf_env2 | (*none*))
@@ -1219,12 +1227,12 @@ fn d1exp_arg_body_tr
     val s2vs = s2varlst_of_s2varlstord p2t_arg.p2at_svs
   in
     the_s2expenv_add_svarlst s2vs
-  end
+  end // end of [val]
   val () = let
     val d2vs = d2varlst_of_d2varlstord p2t_arg.p2at_dvs
   in
     the_d2expenv_add_dvarlst d2vs
-  end
+  end // end of [val]
   val (pf_level | ()) = d2var_current_level_inc ()
   val d2e_body: d2exp = begin
     if wths1explst_is_none wths1es then begin
@@ -1232,7 +1240,7 @@ fn d1exp_arg_body_tr
     end else begin
       d1exp_wths1explst_tr (d1e_body, wths1es)
     end // end of [if]
-  end
+  end // end of [val]
   val () = d2var_current_level_dec (pf_level | (*none*))
   val () = trans2_env_pop (pf_env | (*none*))
 in
@@ -1254,15 +1262,15 @@ in
       val d2e = d1exp_tr d1e; val s2e = s1exp_tr_dn_impredicative s1e
     in
       d2exp_ann_type (loc0, d2e, s2e)
-    end
+    end // end of [D1Eann_type]
   | D1Eann_effc (d1e, efc) => let
       val d2e = d1exp_tr d1e; val s2fe = effcst_tr (efc)
     in
       d2exp_ann_seff (loc0, d2e, s2fe)
-    end
+    end // end of [D1Eann_effc]
   | D1Eann_funclo (d1e, fc) => begin
       let val d2e = d1exp_tr d1e in d2exp_ann_funclo (loc0, d2e, fc) end
-    end
+    end // end of [D1Efunclo]
   | D1Eapp_dyn (d1e_fun, loc_arg, npf, darg) => let
       val loc1 = d1e_fun.d1exp_loc
       val d1e_fun = d1exp_make_d1exp d1e_fun
@@ -1288,7 +1296,7 @@ in
               d1exp_qid_app_dyn_tr (
                 loc0, loc1, loc_id, q, id, sarg, loc_arg, npf, darg
               ) // end of [d1exp_qid_app_dyn_tr]
-            end
+            end // end of [D1Eqid]
           | _ => let
               val d2e_fun = d1exp_tr d1e_fun
               val sarg = s1exparglst_tr sarg
@@ -1297,14 +1305,14 @@ in
               d2exp_app_sta_dyn (
                 loc0, loc1, d2e_fun, sarg, loc_arg, npf, darg
               ) // end of [d1exp_app_sta_dyn]
-            end
+            end // end of [_]
         end // end of [D1Eapp_sta]
       | _ => let
           val d2e_fun = d1exp_tr d1e_fun
           val darg = d1explst_tr darg
         in
           d2exp_app_dyn (loc0, d2e_fun, loc_arg, npf, darg)
-        end
+        end // end of [_]
     end // end of [D1Eapp_dyn]
   | D1Eapp_sta (d1e_fun, sarg) => let
       val d1e_fun = d1exp_make_d1exp d1e_fun
@@ -1380,7 +1388,7 @@ in
   | D1Efloatsp f(*string*) => d2exp_floatsp (d1e0.d1exp_loc, f)
   | D1Efoldat (s1as, d1e) => begin
       d2exp_foldat (loc0, s1exparglst_tr s1as, d1exp_tr d1e)
-    end
+    end // end of [D1Efoldat]
   | D1Efor (inv, ini, test, post, body) => let
       val ini = d1exp_tr ini
       val (pf_s2expenv | ()) = the_s2expenv_push ()
@@ -1394,7 +1402,7 @@ in
     end // end of [D1Efor]
   | D1Efreeat (s1as, d1e) => begin
       d2exp_freeat (loc0, s1exparglst_tr s1as, d1exp_tr d1e)
-    end
+    end // end of [D1Efreeat]
   | D1Eif (r1es, d1e_cond, d1e_then, od1e_else) => let
       val r2es = i1nvresstate_tr r1es
       val d2e_cond = d1exp_tr d1e_cond
@@ -1405,10 +1413,10 @@ in
     end // end of [D1Eif]
   | D1Eint str(*string*) => begin
       d2exp_int (loc0, str, $IntInf.intinf_make_string str)
-    end
+    end // end of [D1Eint]
   | D1Eintsp str(*string*) => begin
       d2exp_intsp (loc0, str, $IntInf.intinf_make_stringsp str)
-    end
+    end // end of [D1Eintsp]
   | D1Elam_dyn (lin, p1t_arg, d1e_body) => let
       val @(npf, p2ts_arg, d2e_body) = d1exp_arg_body_tr (p1t_arg, d1e_body)
     in
@@ -1613,15 +1621,18 @@ implement d1explstlst_tr (d1ess) = $Lst.list_map_fun (d1ess, d1explst_tr)
 
 implement d1expopt_tr (od1e) = case+ od1e of
   | Some d1e => Some (d1exp_tr d1e) | None () => None ()
+// end of [d1expopt_tr]
 
 implement labd1explst_tr (ld1es) = case+ ld1es of
   | LABD1EXPLSTcons (l0, d1e, ld1es) =>
       LABD2EXPLSTcons (l0.l0ab_lab, d1exp_tr d1e, labd1explst_tr ld1es)
   | LABD1EXPLSTnil () => LABD2EXPLSTnil ()
+// end of [labd1explst_tr]
 
 implement d1lab_tr (d1l) = case+ d1l.d1lab_node of
   | D1LABlab lab => d2lab_lab (d1l.d1lab_loc, lab)
   | D1LABind ind => d2lab_ind (d1l.d1lab_loc, d1explstlst_tr ind)
+// end of [d1lab_tr]
 
 (* ****** ****** *)
 
@@ -1776,8 +1787,8 @@ in
     val () = the_d2expenv_add_dvarlst d2vs
   in
     the_s2expenv_add_svarlst s2vs; d2cs
-  end
-end // end of [v1aldeclst_tr]
+  end // end of [if]
+end (* end of [v1aldeclst_tr] *)
 
 (* ****** ****** *)
 

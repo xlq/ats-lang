@@ -786,7 +786,8 @@ implement c3str_final_get () = let
  val s3is_rev = $Lst.list_vt_reverse_list s3is
 (*
  val () = begin
-   prerr "c3str_final_get: s3is_rev = "; prerr s3is_rev; prerr_newline ()
+   prerr "c3str_final_get: s3is_rev = "; prerr_s3itemlst s3is_rev;
+   prerr_newline ()
  end // end of [val]
 *)
 in

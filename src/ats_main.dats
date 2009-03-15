@@ -380,15 +380,17 @@ end // end of [local]
 
 (* ****** ****** *)
 
-fn do_parse_filename
-  (flag: int, param: param_t, basename: string)
-  : $Syn.d0eclst = let
+fn do_parse_filename (
+    flag: int
+  , param: param_t
+  , basename: string
+  ) : ($PM.posmark_token | $Syn.d0eclst) = let
   val debug_flag = $Deb.debug_flag_get ()
   val () = if debug_flag > 0 then let
-    val cwd = getcwd () where {
-      // staload "libc/SATS/unistd.sats"
+    val cwd = getcwd () where { // [atslib_getcwd]
+      // is defined in the file "libc/SATS/unistd.sats"
       extern fun getcwd (): String = "atslib_getcwd"
-    }
+    } // end of [val]
   in
     prerr "cwd = "; prerr cwd; prerr_newline ()
   end // end of [if]
@@ -406,18 +408,19 @@ fn do_parse_filename
   val depgen = $Glo.ats_depgenflag_get ()
   val () = begin
     if depgen > 0 then (print_string basename; print_string ":")
-  end
+  end // end of [val]
+//
   var d0cs: $Syn.d0eclst = list_nil ()
+  val () = $Fil.the_filenamelst_push filename
+  val () = d0cs := $Par.parse_from_filename (flag, filename)
+  val () = $Fil.the_filenamelst_pop ()
+  val (pf_posmark | ()) = $PM.posmark_initiate ()
   val () = if param.posmark > 0 then let
-    val (pf_posmark | ()) = $PM.posmark_initiate ()
-    val () = $Fil.the_filenamelst_push filename
-    val () = d0cs := $Par.parse_from_filename (flag, filename)
-    val () = $Fil.the_filenamelst_pop ()
     val () = $Syn.d0eclst_posmark d0cs
-    val () = begin
-      if param.posmark_html > 0 then $PM.posmark_file_make_htm (basename)
-    end
-    val () = $PM.posmark_terminate (pf_posmark | (*none*))
+    val () = if param.posmark_html = 1 then let
+      val () = $PM.posmark_file_make_htm (basename) in
+      // empty
+    end // end of [val]
     val () = begin
       print "The phase of syntax marking of [";
       print basename; print "] is successfully completed!";
@@ -425,17 +428,11 @@ fn do_parse_filename
     end // end of [val]
   in
     // empty
-  end else let
-    val () = $Fil.the_filenamelst_push filename
-    val () = d0cs := $Par.parse_from_filename (flag, filename)
-    val () = $Fil.the_filenamelst_pop ()
-  in
-    // empty
-  end // end of [if param.posmark > 0]
-
+  end // end of [if]
+//
   val () = if depgen > 0 then print_newline ()
 in
-  d0cs // the return value
+  (pf_posmark | d0cs) // the return value
 end // end of [do_parse_filename]
 
 (* ****** ****** *)
@@ -495,8 +492,24 @@ fn do_trans123
   (basename: string, d0cs: $Syn.d0eclst): $DEXP3.d3eclst = let
   val d2cs = do_trans12 (basename, d0cs)
   val d3cs = $Trans3.d2eclst_tr d2cs
-  val c3t = $Trans3.c3str_final_get ()
-  val () = $CSTR.c3str_solve (c3t)
+//
+  val () =
+    $CSTR.c3str_solve (c3t) where {
+    val c3t = $Trans3.c3str_final_get ()
+  } // end of [val]
+//
+(*
+  val () = prerr_the_s3itemlst () where {
+    extern fun prerr_the_s3itemlst ()
+      : void = "ats_trans3_env_prerr_the_s3itemlst"
+  } // end of [val]
+*)
+  // is this some sort of bug???
+  val () = free_the_s3itemlst () where {
+    extern fun free_the_s3itemlst ()
+      : void = "ats_trans3_env_free_the_s3itemlst"
+  } // end of [val]
+//
   val debug_flag = $Deb.debug_flag_get ()
   val () = if debug_flag > 0 then begin
     prerr "The 3rd translation (typechecking) of [";
@@ -652,8 +665,8 @@ fun loop {i:nat | i <= n} .<i>. (
         loop (argv, param, args)
       end // end of [COMARGkey (1, _)]
     | COMARGkey (2, str) => let
-        val () = param.comkind := COMKINDnone (); val () =
-          case+ str of
+        val () = param.comkind := COMKINDnone ()
+        val () = case+ str of
           | "--static" => begin
               param.comkind := COMKINDinput 0; param.wait := 1
             end // end of ["--static"]
@@ -678,18 +691,21 @@ fun loop {i:nat | i <= n} .<i>. (
             end // end of ["--help"]
           | "--version" => atsopt_version ()
           | _ => warning (str)
+        // end of [val]
       in
         loop (argv, param, args)
       end // end of [COMARG (2, _)]
     | _ when comkind_is_input (param.comkind) => let
-        var flag: int = 0; val () = begin
-          case+ param.comkind of COMKINDinput i => flag := i | _ => ()
-        end // end of [val]
-        val COMARGkey (_(*n*), name) = arg; val () = param.wait := 0
-        val () = begin // loading prelude if needed
-          if param.prelude = 0 then (param.prelude := 1; prelude_load ATSHOME)
-        end
-        val d0cs = do_parse_filename (flag, param, name)
+        var flag: int = 0
+        val () = case+ param.comkind of
+          | COMKINDinput i => flag := i | _ => ()
+        // end of [val]
+        val () = param.wait := 0
+        val () = if param.prelude = 0 then
+          (param.prelude := 1; prelude_load ATSHOME)
+        // end of [val]
+        val COMARGkey (_(*n*), name) = arg
+        val (pf_posmark | d0cs) = do_parse_filename (flag, param, name)
         val () = begin case+ 0 of
           | _ when param.posmark_only > 0 => ()
           | _ when $Glo.ats_depgenflag_get () > 0 => ()
@@ -701,6 +717,7 @@ fun loop {i:nat | i <= n} .<i>. (
             end // end of [_ when ...]
           | _ => do_trans1234 (flag, name, d0cs)
         end // end of [val]
+        val () = $PM.posmark_terminate (pf_posmark | (*none*))
       in
         loop (argv, param, args)
       end // end of [_ when ...]
@@ -721,10 +738,9 @@ fun loop {i:nat | i <= n} .<i>. (
   | ~list_vt_nil () when param.wait > 0 => begin
     case+ param.comkind of
     | COMKINDinput flag => let
-        val () =
-          if param.prelude = 0 then begin
-            param.prelude := 1; prelude_load (ATSHOME)
-          end
+        val () = if param.prelude = 0 then
+          (param.prelude := 1; prelude_load (ATSHOME))
+        // end of [val]
         val d0cs = do_parse_stdin (flag, param)
         val () = begin case+ 0 of
           | _ when param.posmark_only > 0 => ()
@@ -734,9 +750,9 @@ fun loop {i:nat | i <= n} .<i>. (
             in
               prerr ("The typechecking is successfully completed!");
               prerr_newline ()
-            end
+            end // end of [_ when ...]
           | _ => do_trans1234 (flag, "stdin", d0cs)
-        end
+        end // end of [val]
       in
         // empty
       end // end of [COMKINDinput]
@@ -754,7 +770,7 @@ var param: param_t = @{
 , posmark_html= 0
 , posmark_only= 0
 , typecheck_only= 0
-}
+} // end of [var]
 
 val () = loop (argv, param, args)
 

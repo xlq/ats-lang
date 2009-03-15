@@ -121,9 +121,11 @@ end // end of [fprint_tmpvar]
 
 implement eq_tmpvar_tmpvar (tmp1, tmp2) =
   $Stamp.eq_stamp_stamp (tmp1.tmpvar_stamp, tmp2.tmpvar_stamp)
+// end of [val]
 
 implement compare_tmpvar_tmpvar (tmp1, tmp2) =
   $Stamp.compare_stamp_stamp (tmp1.tmpvar_stamp, tmp2.tmpvar_stamp)
+// end of [val]
 
 //
 
