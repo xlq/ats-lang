@@ -90,7 +90,7 @@ implement tmplab_stamp_get (tl) = tl.tmplab_stamp
 implement fprint_tmplab (pf | out, tl) = begin
   fprint1_string (pf | out, "__ats_lab_");
   $Stamp.fprint_stamp (pf | out, tl.tmplab_stamp)
-end
+end // end of [fprint_tmplab]
 
 end // end of [local]
 
@@ -103,7 +103,7 @@ typedef tmpvar = '{
 , tmpvar_ret= int (* return status *)
 , tmpvar_root= tmpvaropt
 , tmpvar_stamp= stamp_t (* uniquicity *)
-}
+} // end of [tmpvar]
 
 assume tmpvar_t = tmpvar
 
@@ -130,8 +130,7 @@ implement compare_tmpvar_tmpvar (tmp1, tmp2) =
 //
 
 implement tmpvar_make (hit) = let
-  val stamp = $Stamp.tmpvar_stamp_make ()
-in '{
+  val stamp = $Stamp.tmpvar_stamp_make () in '{
   tmpvar_typ= hit
 , tmpvar_ret= 0
 , tmpvar_root= TMPVAROPTnone ()
@@ -181,7 +180,7 @@ implement tmpvar_is_void (tmp) = hityp_t_is_void (tmp.tmpvar_typ)
 
 implement tmpvar_is_nonvoid (tmp) = begin
   if hityp_t_is_void (tmp.tmpvar_typ) then false else true
-end
+end // end of [tmpvar_is_nonvoid]
 
 end // end of [local]
 
@@ -208,15 +207,15 @@ extern typedef "funlab_t" = funlab
 
 implement fprint_funlab (pf | out, fl) = begin
   fprint1_string (pf | out, fl.funlab_name)
-end
+end // end of [fprint_funlab]
 
 implement eq_funlab_funlab (fl1, fl2) = begin
   $Stamp.eq_stamp_stamp (fl1.funlab_stamp, fl2.funlab_stamp)
-end
+end // end of [eq_funlab_funlab]
 
 implement compare_funlab_funlab (fl1, fl2) = begin
   $Stamp.compare_stamp_stamp (fl1.funlab_stamp, fl2.funlab_stamp)
-end
+end // end of [compare_funlab_funlab]
 
 (* ****** ****** *)
 
@@ -322,8 +321,7 @@ implement funlab_lev_get (fl) = fl.funlab_lev
 implement funlab_typ_get (fl) = fl.funlab_typ
 
 implement funlab_typ_arg_get (fl) = let
-  val hit_fun = hityp_decode (fl.funlab_typ)
-in
+  val hit_fun = hityp_decode (fl.funlab_typ) in
   case+ hit_fun.hityp_node of
   | HITfun (_(*fc*), hits_arg, _(*hit_res*)) =>
       hityplst_encode (hits_arg)
@@ -336,8 +334,7 @@ in
 end // end of [funlab_typ_arg_get]
 
 implement funlab_typ_res_get (fl) = let
-  val hit_fun = hityp_decode (fl.funlab_typ)
-in
+  val hit_fun = hityp_decode (fl.funlab_typ) in
   case+ hit_fun.hityp_node of
   | HITfun (_(*fc*), _(*hits_arg*), hit_res) =>
       hityp_encode (hit_res)
@@ -350,8 +347,7 @@ in
 end // end of [funlab_typ_res_get]
 
 implement funlab_funclo_get (fl) = let
-  val hit_fun = hityp_decode (fl.funlab_typ)
-in
+  val hit_fun = hityp_decode (fl.funlab_typ) in
   case+ hit_fun.hityp_node of
   | HITfun (funclo, _(*hits_arg*), _(*hit_res*)) => funclo
   | _ => begin

@@ -14,6 +14,8 @@ abst@ype temp_t = int64
 fun temp_make_new (): temp_t
 fun temp_make_fixed (n: int): temp_t
 
+fun temp_name_get (tmp: temp_t): string
+
 fun compare_temp_temp (_: temp_t, _: temp_t):<> Sgn
 overload compare with compare_temp_temp
 
@@ -27,6 +29,8 @@ abstype label_t
 
 fun label_make_new (): label_t
 fun label_make_name (name: string): label_t
+
+fun label_name_get (lab: label_t): string
 
 fun eq_label_label (_: label_t, _: label_t):<> bool
 overload = with eq_label_label

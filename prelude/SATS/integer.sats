@@ -1451,6 +1451,13 @@ and prerr_int32 (i: int32):<!ref> void
 overload print with print_int32
 overload prerr with prerr_int32
 
+// stringization
+
+fun tostring_int32 (i: int32):<> string
+  = "atspre_tostring_int32"
+
+overload tostring with tostring_int32
+
 (* ****** ****** *)
 
 typedef int64 = int64_t0ype
@@ -1564,6 +1571,15 @@ and prerr_int64 (i: int64):<!ref> void
 
 overload print with print_int64
 overload prerr with prerr_int64
+
+(* ****** ****** *)
+
+// stringization
+
+fun tostring_int64 (i: int64):<> string
+  = "atspre_tostring_int64"
+
+overload tostring with tostring_int64
 
 (* ****** ****** *)
 

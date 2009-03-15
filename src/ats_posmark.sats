@@ -41,25 +41,39 @@ staload Fil = "ats_filename.sats"
 
 (* ****** ****** *)
 
-absview posmark_token
-fun posmark_initiate (): (posmark_token | void)
-fun posmark_terminate (pf: posmark_token | (*none*)): void
+fun posmark_initiate (): void
+fun posmark_terminate (): void
+
+fun posmark_pause (): void
+fun posmark_resume (): void
 
 (* ****** ****** *)
 
 typedef lint = int_long_t0ype
+
 fun posmark_insert_comment_beg (li: lint): void
 fun posmark_insert_comment_end (li: lint): void
+
 fun posmark_insert_extern_beg (li: lint): void
 fun posmark_insert_extern_end (li: lint): void
+
 fun posmark_insert_keyword_beg (li: lint): void
 fun posmark_insert_keyword_end (li: lint): void
+
 fun posmark_insert_neuexp_beg (li: lint): void
 fun posmark_insert_neuexp_end (li: lint): void
+
 fun posmark_insert_staexp_beg (li: lint): void
 fun posmark_insert_staexp_end (li: lint): void
+
 fun posmark_insert_prfexp_beg (li: lint): void
 fun posmark_insert_prfexp_end (li: lint): void
+
+fun posmark_insert_dyncstdec_beg (li: lint): void
+fun posmark_insert_dyncstdec_end (li: lint): void
+
+fun posmark_insert_dyncstimp_beg (li: lint): void
+fun posmark_insert_dyncstimp_end (li: lint): void
 
 (* ****** ****** *)
 

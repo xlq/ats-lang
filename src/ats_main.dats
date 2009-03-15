@@ -224,7 +224,8 @@ fn atsopt_usage (cmd: string): void = begin
   print "  --depgen (for generating dependency lists)\n";
   print "  -tc (for typechecking only)\n";
   print "  --typecheck (for typechecking only)\n";
-  print "  --posmark_html_only (for generating a html file depicting colored concrete syntax)\n";
+  print "  --posmark_html (for generating a html file depicting colored concrete syntax)\n";
+  print "  --posmark_xref (for generating a html file depicting some syntactic cross references)\n";
   print "  --debug=0 (for disabling the generation of debugging information)\n";
   print "  --debug=1 (for enabling the generation of debugging information)\n";
   print "  -h (for printing out the usage)\n";
@@ -360,7 +361,6 @@ typedef param_t = @{
 , prelude= int
 , posmark= int
 , posmark_html= int
-, posmark_only= int
 , typecheck_only= int
 } // end of [param_t]
 
@@ -384,7 +384,7 @@ fn do_parse_filename (
     flag: int
   , param: param_t
   , basename: string
-  ) : ($PM.posmark_token | $Syn.d0eclst) = let
+  ) : $Syn.d0eclst = let
   val debug_flag = $Deb.debug_flag_get ()
   val () = if debug_flag > 0 then let
     val cwd = getcwd () where { // [atslib_getcwd]
@@ -394,7 +394,6 @@ fn do_parse_filename (
   in
     prerr "cwd = "; prerr cwd; prerr_newline ()
   end // end of [if]
-
   val filename = (
     case+ $Fil.filenameopt_make basename of
     | ~Some_vt filename => filename
@@ -410,29 +409,18 @@ fn do_parse_filename (
     if depgen > 0 then (print_string basename; print_string ":")
   end // end of [val]
 //
+  val () = if param.posmark > 0 then $PM.posmark_initiate ()
   var d0cs: $Syn.d0eclst = list_nil ()
   val () = $Fil.the_filenamelst_push filename
   val () = d0cs := $Par.parse_from_filename (flag, filename)
   val () = $Fil.the_filenamelst_pop ()
-  val (pf_posmark | ()) = $PM.posmark_initiate ()
-  val () = if param.posmark > 0 then let
-    val () = $Syn.d0eclst_posmark d0cs
-    val () = if param.posmark_html = 1 then let
-      val () = $PM.posmark_file_make_htm (basename) in
-      // empty
-    end // end of [val]
-    val () = begin
-      print "The phase of syntax marking of [";
-      print basename; print "] is successfully completed!";
-      print_newline ()
-    end // end of [val]
-  in
-    // empty
-  end // end of [if]
+  val () = if param.posmark > 0 then $PM.posmark_pause ()
+//
+  val () = if param.posmark > 0 then $Syn.d0eclst_posmark d0cs
 //
   val () = if depgen > 0 then print_newline ()
 in
-  (pf_posmark | d0cs) // the return value
+  d0cs // the return value
 end // end of [do_parse_filename]
 
 (* ****** ****** *)
@@ -463,8 +451,9 @@ end // end of [local]
 
 (* ****** ****** *)
 
-fn do_trans12
-  (basename: string, d0cs: $Syn.d0eclst): $DEXP2.d2eclst = let
+fn do_trans12 (
+    param: param_t, basename: string, d0cs: $Syn.d0eclst
+  ) : $DEXP2.d2eclst = let
   val debug_flag = $Deb.debug_flag_get ()
 
   val () = $Trans1.initialize ()
@@ -477,7 +466,9 @@ fn do_trans12
     prerr_newline ()
   end // end of [if]
 
+  val () = if param.posmark_html = 2 then $PM.posmark_resume ()
   val d2cs = $Trans2.d1eclst_tr d1cs
+  val () = if param.posmark_html = 2 then $PM.posmark_pause ()
   val () = if debug_flag > 0 then begin
     prerr "The 2nd translation (binding) of [";
     prerr basename;
@@ -488,9 +479,10 @@ in
   d2cs
 end // end of [do_trans12]
 
-fn do_trans123
-  (basename: string, d0cs: $Syn.d0eclst): $DEXP3.d3eclst = let
-  val d2cs = do_trans12 (basename, d0cs)
+fn do_trans123 (
+    param: param_t, basename: string, d0cs: $Syn.d0eclst
+  ) : $DEXP3.d3eclst = let
+  val d2cs = do_trans12 (param, basename, d0cs)
   val d3cs = $Trans3.d2eclst_tr d2cs
 //
   val () =
@@ -521,9 +513,10 @@ in
   d3cs
 end // end of [do_trans123]
 
-fn do_trans1234
-  (flag: int, basename: string, d0cs: $Syn.d0eclst): void = let
-  val d3cs = do_trans123 (basename, d0cs)
+fn do_trans1234 (
+    param: param_t, flag: int, basename: string, d0cs: $Syn.d0eclst
+  ) : void = let
+  val d3cs = do_trans123 (param, basename, d0cs)
   val hids = $Trans4.d3eclst_tr (d3cs)
   val debug_flag = $Deb.debug_flag_get ()
   val () = if debug_flag > 0 then begin
@@ -681,9 +674,9 @@ fun loop {i:nat | i <= n} .<i>. (
           | "--posmark_html" => begin
               param.posmark := 1; param.posmark_html := 1
             end // end of ["--posmark_html"]
-          | "--posmark_html_only" => begin
-              param.posmark := 1; param.posmark_html := 1; param.posmark_only := 1
-            end // end of ["--posmark_html_only"]
+          | "--posmark_xref" => begin
+              param.posmark := 1; param.posmark_html := 2
+            end // end of ["--posmark_xref"]
           | "--debug=0" => $Deb.debug_flag_set (0)
           | "--debug=1" => $Deb.debug_flag_set (1)
           | "--help" => begin
@@ -704,28 +697,43 @@ fun loop {i:nat | i <= n} .<i>. (
         val () = if param.prelude = 0 then
           (param.prelude := 1; prelude_load ATSHOME)
         // end of [val]
-        val COMARGkey (_(*n*), name) = arg
-        val (pf_posmark | d0cs) = do_parse_filename (flag, param, name)
+        val COMARGkey (_(*n*), basename) = arg
+        val d0cs = do_parse_filename (flag, param, basename)
         val () = begin case+ 0 of
-          | _ when param.posmark_only > 0 => ()
+          | _ when param.posmark_html = 1 => let
+              val () = $PM.posmark_file_make_htm (basename)
+              val () = $PM.posmark_terminate ()
+            in
+              print "The syntax marking of [";
+              print basename; print "] is successfully completed!";
+              print_newline ()
+            end // end of [_]
+          | _ when param.posmark_html = 2 => let
+              val _(*d2cs*) = do_trans12 (param, basename, d0cs)
+              val () = $PM.posmark_file_make_htm (basename)
+              val () = $PM.posmark_terminate ()
+            in
+              print "The syntax cross referencing of [";
+              print basename; print "] is successfully completed!";
+              print_newline ()              
+            end // end of [_ when ...]
           | _ when $Glo.ats_depgenflag_get () > 0 => ()
           | _ when param.typecheck_only > 0 => let
-              val _(*d3cs*) = do_trans123 (name, d0cs)
+              val _(*d3cs*) = do_trans123 (param, basename, d0cs)
             in
-              prerrf ("The file [%s] is successfully typechecked!", @(name));
+              prerrf ("The file [%s] is successfully typechecked!", @(basename));
               prerr_newline ()
             end // end of [_ when ...]
-          | _ => do_trans1234 (flag, name, d0cs)
+          | _ => do_trans1234 (param, flag, basename, d0cs)
         end // end of [val]
-        val () = $PM.posmark_terminate (pf_posmark | (*none*))
       in
         loop (argv, param, args)
       end // end of [_ when ...]
     | _ when comkind_is_output (param.comkind) => let
         val () = param.comkind := COMKINDnone ()
-        val COMARGkey (_(*n*), name) = arg
-        val name = string1_of_string name
-        val () = output_filename_set (stropt_some name)
+        val COMARGkey (_(*n*), basename) = arg
+        val basename = string1_of_string basename
+        val () = output_filename_set (stropt_some basename)
       in
         loop (argv, param, args)
       end // end of [_ when ...]
@@ -737,25 +745,23 @@ fun loop {i:nat | i <= n} .<i>. (
     end // end of [list_vt_cons]
   | ~list_vt_nil () when param.wait > 0 => begin
     case+ param.comkind of
-    | COMKINDinput flag => let
+    | COMKINDinput flag => () where {
         val () = if param.prelude = 0 then
           (param.prelude := 1; prelude_load (ATSHOME))
         // end of [val]
         val d0cs = do_parse_stdin (flag, param)
         val () = begin case+ 0 of
-          | _ when param.posmark_only > 0 => ()
+          | _ when param.posmark = 1 => ()
           | _ when $Glo.ats_depgenflag_get () > 0 => ()
           | _ when param.typecheck_only > 0 => let
-              val _(*d3cs*) = do_trans123 ("stdin", d0cs)
+              val _(*d3cs*) = do_trans123 (param, "stdin", d0cs)
             in
               prerr ("The typechecking is successfully completed!");
               prerr_newline ()
             end // end of [_ when ...]
-          | _ => do_trans1234 (flag, "stdin", d0cs)
+          | _ => do_trans1234 (param, flag, "stdin", d0cs)
         end // end of [val]
-      in
-        // empty
-      end // end of [COMKINDinput]
+      } // end of [COMKINDinput]
     | _ => ()
     end // end of [list_vt_nil whne param.wait > 0]
   | ~list_vt_nil () => ()
@@ -768,7 +774,6 @@ var param: param_t = @{
 , prelude= 0
 , posmark= 0
 , posmark_html= 0
-, posmark_only= 0
 , typecheck_only= 0
 } // end of [var]
 

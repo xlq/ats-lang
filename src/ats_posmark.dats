@@ -92,12 +92,8 @@ datatype posmark = // 0/1 : begin/end
   | PMneuexp of int
   | PMstaexp of int
   | PMprfexp of int
-
-(* ****** ****** *)
-
-val the_posmark_flag = ref_make_elt<int> 0
-val the_posmarklst : ref (List @(lint, posmark)) =
-  ref_make_elt (list_nil ())
+  | PMdyncstdec of int
+  | PMdyncstimp of int
 
 (* ****** ****** *)
 
@@ -111,6 +107,8 @@ fn int_of_posmark (pm: posmark): int =
   | PMneuexp  i => if i > 0 then 4 else NPOSMARK-4
   | PMstaexp  i => if i > 0 then 5 else NPOSMARK-5
   | PMprfexp  i => if i > 0 then 6 else NPOSMARK-6
+  | PMdyncstdec i => if i > 0 then 7 else NPOSMARK-7
+  | PMdyncstimp i => if i > 0 then 8 else NPOSMARK-8
 // end of [int_of_posmark]
 
 fn compare_posmark_posmark
@@ -122,7 +120,9 @@ fn compare_posmark_posmark
 
 local
 
-assume posmark_token = unit_v
+val the_posmark_flag = ref_make_elt<int> 0
+val the_posmarklst : ref (List @(lint, posmark)) =
+  ref_make_elt (list_nil ())
 
 in // in of [local]
 
@@ -130,60 +130,99 @@ implement posmark_initiate () = let
   val () = !the_posmark_flag := 1
   val () = !the_posmarklst := list_nil ()
 in
-  (unit_v () | ())
+  // empty
 end // end of [posmark_initiate]
 
 // prevent memory leak!
-implement posmark_terminate (pf | (*none*)) = let
-  prval unit_v () = pf in
-  !the_posmark_flag := 0; !the_posmarklst := list_nil ()
+implement posmark_terminate () = let
+  val () = !the_posmark_flag := 0
+  val () = !the_posmarklst := list_nil ()
+in
+  // empty
 end // end of [posmark_terminate]
 
-end // end of [local]
+implement posmark_pause () = (!the_posmark_flag := 0)
+implement posmark_resume () = (!the_posmark_flag := 1)
 
-(* ****** ****** *)
+fn the_posmarklst_get ()
+  : List @(lint, posmark) = !the_posmarklst
+// end of [the_posmarklst_get]
 
-fn posmark_insert (p: lint, pm: posmark): void = begin
+fn the_posmarklst_insert (p: lint, pm: posmark): void = begin
   if !the_posmark_flag > 0 then begin
     !the_posmarklst := list_cons ((p, pm), !the_posmarklst)
   end // end of [if]
 end (* end of [posmark_insert] *)
 
+end // end of [local]
+
+(* ****** ****** *)
+
 implement posmark_insert_comment_beg (p) =
-  posmark_insert (p, PMcomment 0)
+  the_posmarklst_insert (p, PMcomment 0)
 
 implement posmark_insert_comment_end (p) =
-  posmark_insert (p, PMcomment 1)
+  the_posmarklst_insert (p, PMcomment 1)
 
 implement posmark_insert_extern_beg (p) =
-  posmark_insert (p, PMextern 0)
+  the_posmarklst_insert (p, PMextern 0)
 
 implement posmark_insert_extern_end (p) =
-  posmark_insert (p, PMextern 1)
+  the_posmarklst_insert (p, PMextern 1)
 
-implement posmark_insert_keyword_beg (p) =
-  posmark_insert (p, PMkeyword 0)
+//
 
-implement posmark_insert_keyword_end (p) =
-  posmark_insert (p, PMkeyword 1)
+implement posmark_insert_keyword_beg (p) = let
+(*
+  val () = begin
+    prerr "posmark_insert_keyword_beg"; prerr_newline ()
+  end // end of [val]
+*)
+in
+  the_posmarklst_insert (p, PMkeyword 0)
+end // end of [posmark_insert_keyword_beg]
+
+implement posmark_insert_keyword_end (p) = let
+(*
+  val () = begin
+    prerr "posmark_insert_keyword_end"; prerr_newline ()
+  end // end of [val]
+*)
+in
+  the_posmarklst_insert (p, PMkeyword 1)
+end // end of [posmark_insert_keyword_end]
+
+//
 
 implement posmark_insert_neuexp_beg (p) =
-  posmark_insert (p, PMneuexp 0)
+  the_posmarklst_insert (p, PMneuexp 0)
 
 implement posmark_insert_neuexp_end (p) =
-  posmark_insert (p, PMneuexp 1)
+  the_posmarklst_insert (p, PMneuexp 1)
 
 implement posmark_insert_staexp_beg (p) =
-  posmark_insert (p, PMstaexp 0)
+  the_posmarklst_insert (p, PMstaexp 0)
 
 implement posmark_insert_staexp_end (p) =
-  posmark_insert (p, PMstaexp 1)
+  the_posmarklst_insert (p, PMstaexp 1)
 
 implement posmark_insert_prfexp_beg (p) =
-  posmark_insert (p, PMprfexp 0)
+  the_posmarklst_insert (p, PMprfexp 0)
 
 implement posmark_insert_prfexp_end (p) =
-  posmark_insert (p, PMprfexp 1)
+  the_posmarklst_insert (p, PMprfexp 1)
+
+implement posmark_insert_dyncstdec_beg (p) =
+  the_posmarklst_insert (p, PMdyncstdec 0)
+
+implement posmark_insert_dyncstdec_end (p) =
+  the_posmarklst_insert (p, PMdyncstdec 1)
+
+implement posmark_insert_dyncstimp_beg (p) =
+  the_posmarklst_insert (p, PMdyncstimp 0)
+
+implement posmark_insert_dyncstimp_end (p) =
+  the_posmarklst_insert (p, PMdyncstimp 1)
 
 (* ****** ****** *)
 
@@ -260,8 +299,8 @@ fn posmark_file_file (
       loop2 (fil_s, fil_d, i, p, pm, ppms, c)
     end else begin
       lpfin1 (fil_s, fil_d, pm, ppms)
-    end
-  end // end of [loop1]
+    end // end of [if]
+  end (* end of [loop1] *)
 
   and loop2
     (fil_s: &FILE r, fil_d: &FILE w,
@@ -281,11 +320,11 @@ fn posmark_file_file (
       | ~list_vt_nil () => begin
           fputchr (char_of_int c, fil_d); lpfin2 (fil_s, fil_d)
         end // end of [list_vt_nil]
-    end
-  end // end of [loop2]
+    end // end of [if]
+  end (* end of [loop2] *)
 
   val lint0 = lint_of_int 0 // 0L
-  val ppms = posmarklst_sort !the_posmarklst
+  val ppms = posmarklst_sort (the_posmarklst_get ())
 in
   loop1 (fil_s, fil_d, lint0, lint0, PMnone (), ppms)
 end // end of [posmark_file_file]
@@ -343,6 +382,16 @@ local
 #define HTM_PRFEXP_FONT_BEG "<span class=\"prfexp\">"
 #define HTM_PRFEXP_FONT_END "</span>"
 
+//
+
+#define HTM_DYNCSTDEC_FONT_BEG "<span class=\"dyncstdec\">"
+#define HTM_DYNCSTDEC_FONT_END "</span>"
+
+#define HTM_DYNCSTIMP_FONT_BEG "<span class=\"dyncstimp\">"
+#define HTM_DYNCSTIMP_FONT_END "</span>"
+
+//
+
 // color= light gray
 // #define HTM_POSMARK_FILE_BEG "<BODY BGCOLOR=\"#E0E0E0\" TEXT=\"#E80000\"><PRE>"
 // #define HTM_POSMARK_FILE_END "</PRE></BODY>"
@@ -358,6 +407,8 @@ span.neuexp  {color:800080}\n\
 span.staexp  {color:0000FF}\n\
 span.dynexp  {color:E80000}\n\
 span.prfexp  {color:009000}\n\
+span.dyncstdec  {text-decoration:underline}\n\
+span.dyncstimp  {text-decoration:underline}\n\
 </STYLE>\n\
 </HEAD>\n\
 \n\
@@ -405,6 +456,16 @@ fn posmark_process_htm
     end else begin
       fprint1_string (file_mode_lte_w_w | fil_d, HTM_PRFEXP_FONT_END)
     end // end of [PMprfexp]
+  | PMdyncstdec i => if i = 0 then begin
+      fprint1_string (file_mode_lte_w_w | fil_d, HTM_DYNCSTDEC_FONT_BEG)
+    end else begin
+      fprint1_string (file_mode_lte_w_w | fil_d, HTM_DYNCSTDEC_FONT_END)
+    end // end of [PMdyncstdec]
+  | PMdyncstimp i => if i = 0 then begin
+      fprint1_string (file_mode_lte_w_w | fil_d, HTM_DYNCSTIMP_FONT_BEG)
+    end else begin
+      fprint1_string (file_mode_lte_w_w | fil_d, HTM_DYNCSTIMP_FONT_END)
+    end // end of [PMdyncstimp]
 end // end of [posmark_process_htm]
 
 fn fputchr_htm

@@ -49,6 +49,8 @@ implement prerr_temp tmp = fprint_temp (stderr_ref, tmp)
 
 (* ****** ****** *)
 
+#define LABEL_PREFIX "_TIGER_LAB"
+
 local
 
 datatype label = LABint of int64 | LABname of string
@@ -68,6 +70,11 @@ implement label_make_new () = let
 end // end of [temp_make_new]
 
 implement label_make_name (name) = LABname (name)
+
+implement label_name_get (lab) = case+ lab of
+  | LABint ind => LABEL_PREFIX + tostring_int64 (ind)
+  | LABname name => name
+// end of [label_name_get]
 
 (* ****** ****** *)
 
@@ -90,7 +97,7 @@ implement compare_label_label (lab1, lab2) =
 
 implement fprint_label (out, lab) = case+ lab of
   | LABint ind => begin
-      fprint_string (out, "LAB"); fprint_int64 (out, ind)
+      fprint_string (out, LABEL_PREFIX); fprint_int64 (out, ind)
     end // end of [LABint]
   | LABname name => fprint_string (out, name)
 // end of [fprint_label]

@@ -11,4 +11,4 @@
 
 (* ****** ****** *)
 
-(* end of [instrsel.dats] *)
+(* end of [codegen.dats] *)

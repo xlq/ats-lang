@@ -1608,6 +1608,12 @@ atspre_prerr_int32 (ats_int32_type i) {
   return ;
 }
 
+static inline
+ats_ptr_type
+atspre_tostring_int32 (ats_int32_type i) {
+  return atspre_tostring_llint (i) ;
+}
+
 /* ****** ****** */
 
 static inline
@@ -1755,6 +1761,12 @@ atspre_prerr_int64 (ats_int64_type i) {
   atspre_fprint_int64 (stderr, i) ;
   atspre_stderr_view_set () ;
   return ;
+}
+
+static inline
+ats_ptr_type
+atspre_tostring_int64 (ats_int64_type i) {
+  return atspre_tostring_llint (i) ;
 }
 
 /* ****** ****** */

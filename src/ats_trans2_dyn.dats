@@ -47,6 +47,7 @@ staload Lab = "ats_label.sats"
 staload Loc = "ats_location.sats"
 staload Lst = "ats_list.sats"
 staload NS = "ats_namespace.sats"
+staload PM = "ats_posmark.sats"
 staload Stamp = "ats_stamp.sats"
 staload Sym = "ats_symbol.sats"
 staload Syn = "ats_syntax.sats"
@@ -2235,6 +2236,19 @@ in
   aux1 (d1e, ns)
 end // end of [d1exp_arity_check]
 
+(* ****** ****** *)
+
+fn dyncstimploc_posmark (loc: loc_t): void = let
+  val loc_begoff = $Loc.location_begpos_toff loc
+  val () = $PM.posmark_insert_dyncstimp_beg (loc_begoff)
+  val loc_endoff = $Loc.location_endpos_toff loc
+  val () = $PM.posmark_insert_dyncstimp_end (loc_endoff)
+in
+  // empty
+end // end of [dyncstimploc_posmark]
+
+(* ****** ****** *)
+
 fn i1mpdec_tr_d2cst_select
   (d1c: i1mpdec, d2is: d2itemlst): d2cst_t = let
   fun aux (d2is: d2itemlst)
@@ -2295,6 +2309,9 @@ fn i1mpdec_tr
   // end of [val]
   val qid = d1c.i1mpdec_qid
   val q = qid.impqi0de_qua and id = qid.impqi0de_sym
+//
+  val () = dyncstimploc_posmark (qid.impqi0de_loc)
+//
   val d2c = begin
     case+ the_d2expenv_find_qua (q, id) of
     | ~Some_vt d2i => begin case+ d2i of
