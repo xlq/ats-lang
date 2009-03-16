@@ -69,6 +69,141 @@ implement{a} list_of_arraysize (arrsz) =
 
 (* ****** ****** *)
 
+implement{a} list_app_main
+  {v} {vt} {f:eff} (pf | xs, f, env) = let
+  typedef fun_t = (!v | a, !vt) -<fun,f> void
+  fun loop {n:nat} .<n>. (
+      pf: !v
+    | xs: list (a, n)
+    , f: fun_t
+    , env: !vt
+    ) :<f> void = begin case+ xs of
+    | x :: xs => let
+        val () = f (pf | x, env) in loop (pf | xs, f, env)
+      end // end of [::]
+    | nil () => ()
+  end // end of [loop]
+in
+  loop (pf | xs, f, env)
+end // end of [list_app_main]
+
+implement{a} list_app_fun {n:int} {f:eff} (xs, f) = let
+  val f = coerce (f) where {
+    extern fun coerce (f: a -<f> void):<> (!unit_v | a, !Ptr) -<f> void
+      = "atspre_fun_coerce"
+  } // end of [where]
+  prval pf = unit_v ()
+  val ys = list_app_main (pf | xs, f, null)
+  prval unit_v () = pf
+in
+  ys
+end // end of [list_app_fun]
+
+implement{a} list_app_clo {n:int} {f:eff} (xs, f) = let
+  viewtypedef clo_t = a -<clo,f> void
+  stavar l_f: addr; val p_f: ptr l_f = &f
+  viewdef V = clo_t @ l_f
+  fn app (pf: !V | x: a, p_f: !ptr l_f):<f> void = !p_f (x)
+  prval pf = view@ f
+  val ys = list_app_main<a> {V} {ptr l_f} (pf | xs, app, p_f)
+  prval () = view@ f := pf
+in
+  ys
+end // end of [list_app_clo]
+
+implement{a} list_app_cloptr {n:int} {f:eff} (xs, f) = let
+  viewtypedef cloptr_t = a -<cloptr,f> void
+  fn app (pf: !unit_v | x: a, f: !cloptr_t):<f> void = f (x)
+  prval pf = unit_v ()
+  val ys = list_app_main<a> {unit_v} {cloptr_t} (pf | xs, app, f)
+  prval unit_v () = pf
+in
+  ys
+end // end of [list_app_cloptr]
+
+implement{a} list_app_cloref {n:int} {f:eff} (xs, f) = let
+  typedef cloref_t = a -<cloref,f> void
+  fn app (pf: !unit_v | x: a, f: !cloref_t):<f> void = f (x)
+  prval pf = unit_v ()
+  val ys = list_app_main<a> {unit_v} {cloref_t} (pf | xs, app, f)
+  prval unit_v () = pf
+in
+  ys
+end // end of [list_app_cloref]
+
+(* ****** ****** *)
+
+implement{a1,a2} list_app2_main
+  {v:view} {vt:viewtype} {n} {f:eff} (pf | xs, ys, f, env) = let
+  fun loop {n:nat} .<n>. (
+      pf: !v
+    | xs: list (a1, n)
+    , ys: list (a2, n)
+    , f: (!v | a1, a2, !vt) -<fun,f> void
+    , env: !vt
+  ) :<f> void = begin case+ (xs, ys) of
+    | (x :: xs, y :: ys) => let
+        val z = f (pf | x, y, env)
+      in
+        loop (pf | xs, ys, f, env)
+      end
+    | (nil (), nil ()) => ()
+  end // end of [loop]
+in
+  loop (pf | xs, ys, f, env)
+end // end of [list_app2_main]
+
+implement{a1,a2} list_app2_fun {n} {f:eff} (xs, ys, f) = let
+  val f = coerce (f) where {
+    extern fun coerce
+      (f: (a1, a2) -<f> void):<> (!unit_v | a1, a2, !Ptr) -<f> void
+      = "atspre_fun_coerce"
+  } // end of [where]
+  prval pf = unit_v ()
+  val zs = list_app2_main (pf | xs, ys, f, null)
+  prval unit_v () = pf
+in
+  zs
+end // end of [list_app2_fun]
+
+implement{a1,a2} list_app2_clo {n} {f:eff} (xs1, xs2, f) = let
+  typedef clo_t = (a1, a2) -<clo,f> void
+  stavar l_f: addr; val p_f: ptr l_f = &f
+  viewdef V = clo_t @ l_f
+  fn app (pf: !V | x1: a1, x2: a2, p_f: !ptr l_f):<f> void = !p_f (x1, x2)
+  prval pf = view@ f
+  val ans = list_app2_main<a1,a2> {V} {ptr l_f} (pf | xs1, xs2, app, p_f)
+  prval () = view@ f := pf
+in
+  ans
+end // end of [list_app2_clo]
+
+implement{a1,a2} list_app2_cloptr {n} {f:eff} (xs, ys, f) = let
+  viewtypedef cloptr_t = (a1, a2) -<cloptr,f> void
+  fn app (pf: !unit_v | x: a1, y: a2, f: !cloptr_t):<f> void = f (x, y)
+  prval pf = unit_v ()
+  val zs = begin
+    list_app2_main<a1,a2> {unit_v} {cloptr_t} (pf | xs, ys, app, f)
+  end // end of [val]
+  prval unit_v () = pf
+in
+  zs
+end  // end of [list_app2_cloptr]
+
+implement{a1,a2} list_app2_cloref {n} {f:eff} (xs, ys, f) = let
+  typedef cloref_t = (a1, a2) -<cloref,f> void
+  fn app (pf: !unit_v | x: a1, y: a2, f: !cloref_t):<f> void = f (x, y)
+  prval pf = unit_v ()
+  val zs = begin
+    list_app2_main<a1,a2> {unit_v} {cloref_t} (pf | xs, ys, app, f)
+  end // end of [val]
+  prval unit_v () = pf
+in
+  zs
+end  // end of [list_app2_cloref]
+
+(* ****** ****** *)
+
 // a tail-recursive implementation of list-append
 
 implement{a} list_append {i,j} (xs, ys) = let
@@ -792,12 +927,11 @@ in
 end // end of [list_map_cloptr]
 
 implement{a,b} list_map_cloref {n:int} {f:eff} (xs, f) = let
-  typedef clo_type = a -<clo1> b
-  val ys = $effmask_ref let
-    val (vbox pf_f | p_f) = cloref_get_view_ptr {clo_type} (f)
-  in
-    $effmask_all (list_map_clo (xs, !p_f))
-  end // end of [val]
+  typedef cloref_t = a -<cloref,f> b
+  fn app (pf: !unit_v | x: a, f: !cloref_t):<f> b = f (x)
+  prval pf = unit_v ()
+  val ys = list_map_main<a,b> {unit_v} {cloref_t} (pf | xs, app, f)
+  prval unit_v () = pf
 in
   ys
 end // end of [list_map_cloref]

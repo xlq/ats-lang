@@ -76,6 +76,60 @@ fun{a:t@ype} list_of_arraysize
 
 (* ****** ****** *)
 
+fun{a:t@ype} list_app_main
+  {v:view} {vt:viewtype} {f:eff}
+  (pf: !v | xs: List a, f: (!v | a, !vt) -<fun,f> void, env: !vt)
+  :<f> void
+
+symintr list_app
+
+fun{a:t@ype} list_app_fun {n:nat} {f:eff}
+  (xs: List a, f: a -<fun,f> void):<f> void
+overload list_app with list_app_fun
+
+fun{a:t@ype} list_app_clo {n:nat} {f:eff}
+  (xs: List a, f: &(a -<clo,f> void)):<f> void
+overload list_app with list_app_clo
+
+fun{a:t@ype} list_app_cloptr {n:nat} {f:eff}
+  (xs: List a, f: !(a -<cloptr,f> void)):<f> void
+overload list_app with list_app_cloptr
+
+fun{a:t@ype} list_app_cloref {n:nat} {f:eff}
+  (xs: List a, f: (a -<cloref,f> void)):<f> void
+overload list_app with list_app_cloref
+
+(* ****** ****** *)
+
+fun{a1,a2:t@ype} list_app2_main
+  {v:view} {vt:viewtype} {n:nat} {f:eff} (
+    pf: !v
+  | xs: list (a1, n)
+  , ys: list (a2, n)
+  , f: (!v | a1, a2, !vt) -<fun,f> void
+  , env: !vt
+  ) :<f> void
+
+symintr list_app2
+
+fun{a1,a2:t@ype} list_app2_fun {n:nat} {f:eff}
+  (xs: list (a1, n), ys: list (a2, n), f: (a1, a2) -<fun,f> void):<f> void
+overload list_app2 with list_app2_fun
+
+fun{a1,a2:t@ype} list_app2_clo {n:nat} {f:eff}
+  (xs: list (a1, n), ys: list (a2, n), f: &(a1, a2) -<clo,f> void):<f> void
+overload list_app2 with list_app2_clo
+
+fun{a1,a2:t@ype} list_app2_cloptr {n:nat} {f:eff}
+  (xs: list (a1, n), ys: list (a2, n), f: !(a1, a2) -<cloptr,f> void):<f> void
+overload list_app2 with list_app2_cloptr
+
+fun{a1,a2:t@ype} list_app2_cloref {n:nat} {f:eff}
+  (xs: list (a1, n), ys: list (a2, n), f: !(a1, a2) -<cloref,f> void):<f> void
+overload list_app2 with list_app2_cloref
+
+(* ****** ****** *)
+
 fun{a:t@ype} list_append {i,j:nat}
   (xs: list (a, i), ys: list (a, j)):<> list (a, i+j)
 overload + with list_append
