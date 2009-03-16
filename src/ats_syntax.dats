@@ -778,13 +778,14 @@ implement sqi0de_make_none (id) =
 
 (* dynamic qualified identifiers *)
 
-implement dqi0de_make_some (q, id) = '{
-  dqi0de_loc= id.i0de_loc, dqi0de_qua= q, dqi0de_sym= id.i0de_sym
-}
+implement dqi0de_make_some (q, id) = let
+  val loc = combine (q.d0ynq_loc, id.i0de_loc) in '{
+  dqi0de_loc= loc, dqi0de_qua= q, dqi0de_sym= id.i0de_sym
+} end // end of [dqi0de_make_some]
 
 implement dqi0de_make_none (id) = begin
   let val q = d0ynq_none () in dqi0de_make_some (q, id) end
-end
+end // end of [dqi0de_make_none]
 
 //
 
@@ -854,12 +855,11 @@ implement impqi0de_make_none (qid) = '{
 , impqi0de_arg= s0explstlst_nil ()
 }
 
-implement impqi0de_make_some (qid, arg, args, t_gt) = let
-
-val loc = combine (qid.tmpqi0de_loc, t_gt.t0kn_loc)
-
+implement impqi0de_make_some
+  (qid, arg, args, t_gt) = let
+  val loc = combine (qid.tmpqi0de_loc, t_gt.t0kn_loc)
 in '{
-  impqi0de_loc= qid.tmpqi0de_loc
+  impqi0de_loc= loc
 , impqi0de_qua= qid.tmpqi0de_qua
 , impqi0de_sym= qid.tmpqi0de_sym
 , impqi0de_arg= s0explstlst_cons (arg, args)
