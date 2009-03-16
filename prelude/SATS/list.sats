@@ -109,6 +109,10 @@ fun{a:t@ype} list_exists_fun {p:eff}
   (xs: List a, p: a -<p> bool):<p> bool
 overload list_exists with list_exists_fun
 
+fun{a:t@ype} list_exists_clo {p:eff}
+  (xs: List a, p: &a -<p,clo> bool):<p> bool
+overload list_exists with list_exists_clo
+
 fun{a:t@ype} list_exists_cloptr {p:eff}
   (xs: List a, p: !a -<p,cloptr> bool):<p> bool
 overload list_exists with list_exists_cloptr
@@ -134,12 +138,16 @@ fun{a1,a2:t@ype} list_exists2_fun {n:nat} {p:eff}
   (xs: list (a1, n), ys: list (a2, n), p: (a1, a2) -<p> bool):<p> bool
 overload list_exists2 with list_exists2_fun
 
+fun{a1,a2:t@ype} list_exists2_clo {n:nat} {p:eff}
+  (xs: list (a1, n), ys: list (a2, n), p: &(a1, a2) -<clo,p> bool):<p> bool
+overload list_exists2 with list_exists2_fun
+
 fun{a1,a2:t@ype} list_exists2_cloptr {n:nat} {p:eff}
-  (xs: list (a1, n), ys: list (a2, n), p: !(a1, a2) -<p,cloptr> bool):<p> bool
+  (xs: list (a1, n), ys: list (a2, n), p: !(a1, a2) -<cloptr,p> bool):<p> bool
 overload list_exists2 with list_exists2_cloptr
 
 fun{a1,a2:t@ype} list_exists2_cloref {n:nat} {p:eff}
-  (xs: list (a1, n), ys: list (a2, n), p: !(a1, a2) -<p,cloref> bool):<p> bool
+  (xs: list (a1, n), ys: list (a2, n), p: !(a1, a2) -<cloref,p> bool):<p> bool
 overload list_exists2 with list_exists2_cloref
 
 (* ****** ****** *)
@@ -149,11 +157,36 @@ fun{a:t@ype} list_extend {n:nat}
 
 (* ****** ****** *)
 
+fun{a:t@ype} list_filter_main {v:view} {vt:viewtype} {n:nat} {p:eff}
+  (pf: !v | xs: list (a, n), p: (!v | a, !vt) -<fun,p> bool, env: !vt)
+  :<p> [n':nat | n' <= n] list (a, n')
+
+symintr list_filter
+
+fun{a:t@ype} list_filter_clo {n:nat} {p:eff}
+  (xs: list (a, n), p: &a -<clo,p> bool):<p> [n':nat | n' <= n] list (a, n')
+
 fun{a:t@ype} list_filter_cloptr {n:nat} {p:eff}
   (xs: list (a, n), p: !a -<cloptr,p> bool):<p> [n':nat | n' <= n] list (a, n')
 
+fun{a:t@ype} list_filter_cloref {n:nat} {p:eff}
+  (xs: list (a, n), p: !a -<cloref,p> bool):<p> [n':nat | n' <= n] list (a, n')
+
+(* ****** ****** *)
+
+fun{a:t@ype} list_find_main {v:view} {vt:viewtype} {p:eff}
+  (pf: !v | xs: List a, p: (!v | a, !vt) -<fun,p> bool, env: !vt):<p> Option_vt a
+
+symintr list_find
+
+fun{a:t@ype} list_find_clo {p:eff}
+  (xs: List a, p: &a -<clo,p> bool):<p> Option_vt a
+
 fun{a:t@ype} list_find_cloptr {p:eff}
-  (xs: List a, p: !a -<cloptr,p> bool):<p> Option a
+  (xs: List a, p: !a -<cloptr,p> bool):<p> Option_vt a
+
+fun{a:t@ype} list_find_cloref {p:eff}
+  (xs: List a, p: !a -<cloref,p> bool):<p> Option_vt a
 
 (* ****** ****** *)
 
@@ -163,6 +196,8 @@ fun{sink,a:t@ype} list_fold_left_cloptr {f:eff}
 fun{sink,a1,a2:t@ype} list_fold2_left_cloptr {n:nat} {f:eff}
   (f: !(sink, a1, a2) -<cloptr,f> sink, ini: sink, xs: list (a1, n), ys: list (a2, n))
   :<f> sink
+
+(* ****** ****** *)
 
 fun{a,sink:t@ype} list_fold_right_cloptr {f:eff}
   (f: !(a, sink) -<cloptr,f> sink, xs: List a, ini: sink):<f> sink
@@ -182,12 +217,16 @@ fun{a:t@ype} list_forall_fun {p:eff}
   (xs: List a, p: a -<p> bool):<p> bool
 overload list_forall with list_forall_fun
 
+fun{a:t@ype} list_forall_clo {p:eff}
+  (xs: List a, p: &a -<clo,p> bool):<p> bool
+overload list_forall with list_forall_clo
+
 fun{a:t@ype} list_forall_cloptr {p:eff}
-  (xs: List a, p: !a -<p,cloptr> bool):<p> bool
+  (xs: List a, p: !a -<cloptr,p> bool):<p> bool
 overload list_forall with list_forall_cloptr
 
 fun{a:t@ype} list_forall_cloref {p:eff}
-  (xs: List a, p: a -<p,cloref> bool):<p> bool
+  (xs: List a, p: a -<cloref,p> bool):<p> bool
 overload list_forall with list_forall_cloref
 
 (* ****** ****** *)
@@ -207,6 +246,10 @@ fun{a1,a2:t@ype} list_forall2_fun {n:nat} {p:eff}
   (xs: list (a1, n), ys: list (a2, n), p: (a1, a2) -<p> bool):<p> bool
 overload list_forall2 with list_forall2_fun
 
+fun{a1,a2:t@ype} list_forall2_clo {n:nat} {p:eff}
+  (xs: list (a1, n), ys: list (a2, n), p: &(a1, a2) -<p,clo> bool):<p> bool
+overload list_forall2 with list_forall2_clo
+
 fun{a1,a2:t@ype} list_forall2_cloptr {n:nat} {p:eff}
   (xs: list (a1, n), ys: list (a2, n), p: !(a1, a2) -<p,cloptr> bool):<p> bool
 overload list_forall2 with list_forall2_cloptr
@@ -220,8 +263,13 @@ overload list_forall2 with list_forall2_cloref
 fun{a:t@ype} list_foreach_main {v:view} {vt:viewtype} {f:eff}
   (pf: !v | xs: List a, f: (!v | a, !vt) -<fun,f> void, env: !vt):<f> void
 
+symintr list_foreach
+
 fun{a:t@ype} list_foreach_fun {v:view} {f:eff}
   (pf: !v | xs: List a, f: (!v | a) -<fun,f> void):<f> void
+
+fun{a:t@ype} list_foreach_clo {v:view} {f:eff}
+  (pf: !v | xs: List a, f: &(!v | a) -<clo,f> void):<f> void
 
 fun{a:t@ype} list_foreach_cloptr {v:view} {f:eff}
   (pf: !v | xs: List a, f: !(!v | a) -<cloptr,f> void):<f> void
@@ -240,11 +288,20 @@ fun{a1,a2:t@ype} list_foreach2_main
   , env: !vt
   ) :<f> void
 
+symintr list_foreach2
+
 fun{a1,a2:t@ype} list_foreach2_fun {v:view} {n:nat} {f:eff} (
     pf: !v
   | xs: list (a1, n)
   , ys: list (a2, n)
-  , f: !(!v | a1, a2) -<fun,f> void
+  , f: (!v | a1, a2) -<fun,f> void
+  ) :<f> void
+
+fun{a1,a2:t@ype} list_foreach2_clo {v:view} {n:nat} {f:eff} (
+    pf: !v
+  | xs: list (a1, n)
+  , ys: list (a2, n)
+  , f: &(!v | a1, a2) -<clo,f> void
   ) :<f> void
 
 fun{a1,a2:t@ype} list_foreach2_cloptr {v:view} {n:nat} {f:eff} (
@@ -254,7 +311,20 @@ fun{a1,a2:t@ype} list_foreach2_cloptr {v:view} {n:nat} {f:eff} (
   , f: !(!v | a1, a2) -<cloptr,f> void
   ) :<f> void
 
+fun{a1,a2:t@ype} list_foreach2_cloref {v:view} {n:nat} {f:eff} (
+    pf: !v
+  | xs: list (a1, n)
+  , ys: list (a2, n)
+  , f: !(!v | a1, a2) -<cloref,f> void
+  ) :<f> void
+
 (* ****** ****** *)
+
+fun{a:t@ype} list_iforeach_fun {v:view} {n:nat} {f:eff}
+  (pf: !v | xs: list (a, n), f: (!v | natLt n, a) -<fun,f> void):<f> void
+
+fun{a:t@ype} list_iforeach_clo {v:view} {n:nat} {f:eff}
+  (pf: !v | xs: list (a, n), f: &(!v | natLt n, a) -<clo,f> void):<f> void
 
 fun{a:t@ype} list_iforeach_cloptr {v:view} {n:nat} {f:eff}
   (pf: !v | xs: list (a, n), f: !(!v | natLt n, a) -<cloptr,f> void):<f> void
@@ -263,6 +333,20 @@ fun{a:t@ype} list_iforeach_cloref {v:view} {n:nat} {f:eff}
   (pf: !v | xs: list (a, n), f: !(!v | natLt n, a) -<cloref,f> void):<f> void
 
 (* ****** ****** *)
+
+fun{a1,a2:t@ype} list_iforeach2_fun {v:view} {n:nat} {f:eff} (
+    pf: !v
+  | xs: list (a1, n)
+  , ys: list (a2, n)
+  , f: (!v | natLt n, a1, a2) -<fun,f> void
+  ) :<f> void
+
+fun{a1,a2:t@ype} list_iforeach2_clo {v:view} {n:nat} {f:eff} (
+    pf: !v
+  | xs: list (a1, n)
+  , ys: list (a2, n)
+  , f: &(!v | natLt n, a1, a2) -<clo,f> void
+  ) :<f> void
 
 fun{a1,a2:t@ype} list_iforeach2_cloptr {v:view} {n:nat} {f:eff} (
     pf: !v
@@ -356,9 +440,17 @@ fun{a1,a2,b:t@ype} list_map2_fun {n:nat} {f:eff}
   (xs: list (a1, n), ys: list (a2, n), f: (a1, a2) -<fun,f> b):<f> list (b, n)
 overload list_map2 with list_map2_fun
 
+fun{a1,a2,b:t@ype} list_map2_clo {n:nat} {f:eff}
+  (xs: list (a1, n), ys: list (a2, n), f: &(a1, a2) -<clo,f> b):<f> list (b, n)
+overload list_map2 with list_map2_clo
+
 fun{a1,a2,b:t@ype} list_map2_cloptr {n:nat} {f:eff}
   (xs: list (a1, n), ys: list (a2, n), f: !(a1, a2) -<cloptr,f> b):<f> list (b, n)
 overload list_map2 with list_map2_cloptr
+
+fun{a1,a2,b:t@ype} list_map2_cloref {n:nat} {f:eff}
+  (xs: list (a1, n), ys: list (a2, n), f: !(a1, a2) -<cloref,f> b):<f> list (b, n)
+overload list_map2 with list_map2_cloref
 
 (* ****** ****** *)
 
@@ -411,9 +503,21 @@ fun{a:t@ype} list_tail_exn {n:nat}
 fun{a,b:t@ype} list_zip {n:nat}
   (xs: list (a, n), ys: list (b, n)):<> list ('(a, b), n)
 
-fun{a,b,c:t@ype} list_zip_with {n:nat} {f:eff}
-  (xs: list (a, n), ys: list (b, n), f: !(a, b) -<cloptr,f> c)
-  :<f> list (c, n)
+(* ****** ****** *)
+
+fun{a,b,c:t@ype} list_zipwith_fun {n:nat} {f:eff}
+  (xs: list (a, n), ys: list (b, n), f: (a, b) -<fun,f> c):<f> list (c, n)
+
+fun{a,b,c:t@ype} list_zipwith_clo {n:nat} {f:eff}
+  (xs: list (a, n), ys: list (b, n), f: &(a, b) -<clo,f> c):<f> list (c, n)
+
+fun{a,b,c:t@ype} list_zipwith_cloptr {n:nat} {f:eff}
+  (xs: list (a, n), ys: list (b, n), f: !(a, b) -<cloptr,f> c):<f> list (c, n)
+
+fun{a,b,c:t@ype} list_zipwith_cloref {n:nat} {f:eff}
+  (xs: list (a, n), ys: list (b, n), f: !(a, b) -<cloref,f> c):<f> list (c, n)
+
+(* ****** ****** *)
 
 fun{a1,a2:t@ype} list_unzip {n:nat}
   (xys: list ('(a1, a2), n)):<> (list (a1, n), list (a2, n))

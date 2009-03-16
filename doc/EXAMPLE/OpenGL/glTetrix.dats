@@ -796,7 +796,8 @@ fn FRAME_matrix_draw () = let
   var i: Nat and j: Nat
   val (pf_matrix | ()) = glPushMatrix ()
   val () = glTranslated (FRAME_xbase, FRAME_ybase, 0.0)
-  val () = for (i := 0; i < FRAME_X; i := i + 1) begin
+  val () = for* (j: Nat?) =>
+    (i := 0; i < FRAME_X; i := i + 1) begin
     for* (i: natLt FRAME_X) =>
       (j := 0; j < FRAME_Y; j := j + 1) let
       val c = FRAME_matrix[i, FRAME_Y, j]
