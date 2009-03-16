@@ -747,10 +747,11 @@ implement e1xndec_make (loc,fil, id, qua, npf, arg) = '{
 , e1xndec_arg= arg
 } // end of [e1xndec_make]
 
-implement d1cstdec_make (loc, fil, id, s1e, ext) = '{
+implement d1cstdec_make (loc, fil, id, loc_id, s1e, ext) = '{
   d1cstdec_loc= loc
 , d1cstdec_fil= fil
 , d1cstdec_sym= id
+, d1cstdec_loc_id= loc_id
 , d1cstdec_typ= s1e
 , d1cstdec_ext= ext
 } // end of [d1cstdec_make]

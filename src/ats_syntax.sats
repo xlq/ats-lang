@@ -1113,6 +1113,7 @@ typedef d0cstdec = '{
   d0cstdec_loc= loc_t
 , d0cstdec_fil= filename_t
 , d0cstdec_sym= sym_t
+, d0cstdec_loc_id= loc_t
 , d0cstdec_arg= d0arglst
 , d0cstdec_eff= e0fftaglstopt
 , d0cstdec_res= s0exp

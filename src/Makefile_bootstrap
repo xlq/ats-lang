@@ -93,7 +93,8 @@ SOURCES := \
   ats_trans2_env.sats ats_trans2_env.dats \
   ats_stadyncst2.sats ats_stadyncst2.dats \
   ats_trans2.sats \
-  ats_trans2_sta.dats ats_trans2_dyn.dats \
+  ats_trans2_sta.dats \
+  ats_trans2_dyn1.dats ats_trans2_dyn2.dats \
   ats_macro2.sats ats_macro2.dats \
   ats_patcst2.sats ats_patcst2.dats \
   ats_string_parse.sats ats_string_parse.dats \
@@ -462,8 +463,10 @@ $(BOOTDIR)/ats_trans2_sats.c: ats_trans2.sats
 
 $(BOOTDIR)/ats_trans2_sta_dats.c: ats_trans2_sta.dats
 	$(ATSOPT) --output $@ -d ats_trans2_sta.dats
-$(BOOTDIR)/ats_trans2_dyn_dats.c: ats_trans2_dyn.dats
-	$(ATSOPT) --output $@ -d ats_trans2_dyn.dats
+$(BOOTDIR)/ats_trans2_dyn1_dats.c: ats_trans2_dyn1.dats
+	$(ATSOPT) --output $@ -d ats_trans2_dyn1.dats
+$(BOOTDIR)/ats_trans2_dyn2_dats.c: ats_trans2_dyn2.dats
+	$(ATSOPT) --output $@ -d ats_trans2_dyn2.dats
 
 $(BOOTDIR)/ats_macro2_sats.c: ats_macro2.sats
 	$(ATSOPT) --output $@ -s ats_macro2.sats

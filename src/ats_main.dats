@@ -124,7 +124,8 @@ dynload "ats_dynexp2_util.dats"
 dynload "ats_trans2_env.dats"
 dynload "ats_stadyncst2.dats"
 dynload "ats_trans2_sta.dats"
-dynload "ats_trans2_dyn.dats"
+dynload "ats_trans2_dyn1.dats"
+dynload "ats_trans2_dyn2.dats"
 dynload "ats_macro2.dats"
 dynload "ats_patcst2.dats"
 dynload "ats_string_parse.dats"
@@ -414,9 +415,9 @@ fn do_parse_filename (
   val () = $Fil.the_filenamelst_push filename
   val () = d0cs := $Par.parse_from_filename (flag, filename)
   val () = $Fil.the_filenamelst_pop ()
-  val () = if param.posmark > 0 then $PM.posmark_pause ()
-//
-  val () = if param.posmark > 0 then $Syn.d0eclst_posmark d0cs
+  val () = if param.posmark > 0 then let
+    val () = $Syn.d0eclst_posmark d0cs in $PM.posmark_pause ()
+  end // end of [val]
 //
   val () = if depgen > 0 then print_newline ()
 in
@@ -674,9 +675,9 @@ fun loop {i:nat | i <= n} .<i>. (
           | "--posmark_html" => begin
               param.posmark := 1; param.posmark_html := 1
             end // end of ["--posmark_html"]
-          | "--posmark_xref" => begin
+          | "--posmark_html_xref" => begin
               param.posmark := 1; param.posmark_html := 2
-            end // end of ["--posmark_xref"]
+            end // end of ["--posmark_html_xref"]
           | "--debug=0" => $Deb.debug_flag_set (0)
           | "--debug=1" => $Deb.debug_flag_set (1)
           | "--help" => begin

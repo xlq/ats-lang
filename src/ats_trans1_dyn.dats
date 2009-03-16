@@ -214,12 +214,17 @@ end // end of [aux2]
 
 in // in of [local]
 
-fn d0cstdec_tr (isfun: bool, isprf: bool, d: d0cstdec): d1cstdec = let
+fn d0cstdec_tr
+  (isfun: bool, isprf: bool, d: d0cstdec): d1cstdec = let
   val loc0 = d.d0cstdec_loc
   val s1e_res = s0exp_tr d.d0cstdec_res
-  val s1e = aux3 (loc0, isfun, isprf, d.d0cstdec_arg, d.d0cstdec_eff, s1e_res)
+  val s1e = aux3 (
+    loc0, isfun, isprf, d.d0cstdec_arg, d.d0cstdec_eff, s1e_res
+  ) // end of [val]
 in
-  d1cstdec_make (loc0, d.d0cstdec_fil, d.d0cstdec_sym, s1e, d.d0cstdec_ext)
+  d1cstdec_make (loc0
+  , d.d0cstdec_fil, d.d0cstdec_sym, d.d0cstdec_loc_id, s1e, d.d0cstdec_ext
+  ) // end of [d1cstdec_make]
 end // end of [d0cstdec_tr]
 
 fun d0cstdeclst_tr

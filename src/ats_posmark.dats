@@ -94,6 +94,7 @@ datatype posmark = // 0/1 : begin/end
   | PMprfexp of int
   | PMdyncstdec of int
   | PMdyncstimp of int
+  | PMdyncstuse of int
 
 (* ****** ****** *)
 
@@ -109,6 +110,7 @@ fn int_of_posmark (pm: posmark): int =
   | PMprfexp  i => if i > 0 then 6 else NPOSMARK-6
   | PMdyncstdec i => if i > 0 then 7 else NPOSMARK-7
   | PMdyncstimp i => if i > 0 then 8 else NPOSMARK-8
+  | PMdyncstuse i => if i > 0 then 9 else NPOSMARK-9
 // end of [int_of_posmark]
 
 fn compare_posmark_posmark
@@ -143,6 +145,14 @@ end // end of [posmark_terminate]
 
 implement posmark_pause () = (!the_posmark_flag := 0)
 implement posmark_resume () = (!the_posmark_flag := 1)
+
+implement posmark_pause_get () = let
+  val flag = !the_posmark_flag in !the_posmark_flag := 0; flag
+end // end of [posmark_pause_get]
+
+implement posmark_resume_set
+  (flag) = !the_posmark_flag := flag
+// end of [posmark_resume_set]
 
 fn the_posmarklst_get ()
   : List @(lint, posmark) = !the_posmarklst
@@ -223,6 +233,12 @@ implement posmark_insert_dyncstimp_beg (p) =
 
 implement posmark_insert_dyncstimp_end (p) =
   the_posmarklst_insert (p, PMdyncstimp 1)
+
+implement posmark_insert_dyncstuse_beg (p) =
+  the_posmarklst_insert (p, PMdyncstuse 0)
+
+implement posmark_insert_dyncstuse_end (p) =
+  the_posmarklst_insert (p, PMdyncstuse 1)
 
 (* ****** ****** *)
 
@@ -390,6 +406,9 @@ local
 #define HTM_DYNCSTIMP_FONT_BEG "<span class=\"dyncstimp\">"
 #define HTM_DYNCSTIMP_FONT_END "</span>"
 
+#define HTM_DYNCSTUSE_FONT_BEG "<span class=\"dyncstuse\">"
+#define HTM_DYNCSTUSE_FONT_END "</span>"
+
 //
 
 // color= light gray
@@ -409,6 +428,7 @@ span.dynexp  {color:E80000}\n\
 span.prfexp  {color:009000}\n\
 span.dyncstdec  {text-decoration:underline}\n\
 span.dyncstimp  {text-decoration:underline}\n\
+span.dyncstuse  {text-decoration:underline}\n\
 </STYLE>\n\
 </HEAD>\n\
 \n\
@@ -466,6 +486,11 @@ fn posmark_process_htm
     end else begin
       fprint1_string (file_mode_lte_w_w | fil_d, HTM_DYNCSTIMP_FONT_END)
     end // end of [PMdyncstimp]
+  | PMdyncstuse i => if i = 0 then begin
+      fprint1_string (file_mode_lte_w_w | fil_d, HTM_DYNCSTIMP_FONT_BEG)
+    end else begin
+      fprint1_string (file_mode_lte_w_w | fil_d, HTM_DYNCSTIMP_FONT_END)
+    end // end of [PMdyncstuse]
 end // end of [posmark_process_htm]
 
 fn fputchr_htm

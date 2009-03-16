@@ -797,12 +797,14 @@ implement arrqi0de_make_none (id) =
 
 //
 
-implement tmpqi0de_make_some (q, id) = '{
-  tmpqi0de_loc= id.i0de_loc, tmpqi0de_qua= q, tmpqi0de_sym= id.i0de_sym
-}
+implement tmpqi0de_make_some (q, id) = let
+  val loc = combine (q.d0ynq_loc, id.i0de_loc) in '{
+  tmpqi0de_loc= loc, tmpqi0de_qua= q, tmpqi0de_sym= id.i0de_sym
+} end // end of [tmpqi0de_make_some]
 
 implement tmpqi0de_make_none (id) =
   let val q = d0ynq_none () in tmpqi0de_make_some (q, id) end
+// end of [tmpqi0de_make_none]
 
 (* ****** ****** *)
 
@@ -1387,12 +1389,14 @@ end
 implement d0cstdec_make (id, arg, eff, res, ext) = let
 
 val fil = $Fil.the_filename_get ()
-val loc = combine (id.i0de_loc, res.s0exp_loc)
+val loc_id = id.i0de_loc
+val loc = combine (loc_id, res.s0exp_loc)
 
 in '{
   d0cstdec_loc= loc
 , d0cstdec_fil= fil
 , d0cstdec_sym= id.i0de_sym
+, d0cstdec_loc_id= loc_id
 , d0cstdec_arg= arg
 , d0cstdec_eff= eff
 , d0cstdec_res= res

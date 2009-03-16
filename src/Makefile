@@ -113,7 +113,8 @@ SOURCES := \
   ats_trans2_env.sats ats_trans2_env.dats \
   ats_stadyncst2.sats ats_stadyncst2.dats \
   ats_trans2.sats \
-  ats_trans2_sta.dats ats_trans2_dyn.dats \
+  ats_trans2_sta.dats \
+  ats_trans2_dyn1.dats ats_trans2_dyn2.dats \
   ats_macro2.sats ats_macro2.dats \
   ats_patcst2.sats ats_patcst2.dats \
   ats_string_parse.sats ats_string_parse.dats \
@@ -402,11 +403,14 @@ ats_stadyncst2_sats.o: ats_stadyncst2.sats
 ats_stadyncst2_dats.o: ats_stadyncst2.dats
 	$(ATSCC) $(ATSCCFLAG) -c ats_stadyncst2.dats
 
-ats_trans2_sats.o: ats_trans2.sats; $(ATSCC) $(ATSCCFLAG) -c ats_trans2.sats
+ats_trans2_sats.o: ats_trans2.sats
+	$(ATSCC) $(ATSCCFLAG) -c ats_trans2.sats
 ats_trans2_sta_dats.o: ats_trans2_sta.dats
 	$(ATSCC) $(ATSCCFLAG) -c ats_trans2_sta.dats
-ats_trans2_dyn_dats.o: ats_trans2_dyn.dats
-	$(ATSCC) $(ATSCCFLAG) -c ats_trans2_dyn.dats
+ats_trans2_dyn1_dats.o: ats_trans2_dyn1.dats
+	$(ATSCC) $(ATSCCFLAG) -c ats_trans2_dyn1.dats
+ats_trans2_dyn2_dats.o: ats_trans2_dyn2.dats
+	$(ATSCC) $(ATSCCFLAG) -c ats_trans2_dyn2.dats
 
 ats_macro2_sats.o: ats_macro2.sats
 	$(ATSCC) $(ATSCCFLAG) -c ats_macro2.sats

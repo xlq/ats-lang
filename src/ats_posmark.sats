@@ -47,6 +47,9 @@ fun posmark_terminate (): void
 fun posmark_pause (): void
 fun posmark_resume (): void
 
+fun posmark_pause_get (): int
+fun posmark_resume_set (flag: int): void
+
 (* ****** ****** *)
 
 typedef lint = int_long_t0ype
@@ -74,6 +77,9 @@ fun posmark_insert_dyncstdec_end (li: lint): void
 
 fun posmark_insert_dyncstimp_beg (li: lint): void
 fun posmark_insert_dyncstimp_end (li: lint): void
+
+fun posmark_insert_dyncstuse_beg (li: lint): void
+fun posmark_insert_dyncstuse_end (li: lint): void
 
 (* ****** ****** *)
 

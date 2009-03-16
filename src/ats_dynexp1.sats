@@ -576,6 +576,7 @@ and d1cstdec = '{
   d1cstdec_loc= loc_t
 , d1cstdec_fil= fil_t
 , d1cstdec_sym= sym_t
+, d1cstdec_loc_id= loc_t
 , d1cstdec_typ= s1exp
 , d1cstdec_ext= Stropt
 }
@@ -955,7 +956,7 @@ fun e1xndec_make
   : e1xndec
 
 fun d1cstdec_make
-  (_: loc_t, fil: fil_t, id: sym_t, typ: s1exp, ext: Stropt)
+  (loc: loc_t, fil: fil_t, id: sym_t, loc_id: loc_t, typ: s1exp, ext: Stropt)
   : d1cstdec
 
 fun v1aldec_make
