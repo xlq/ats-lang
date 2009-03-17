@@ -229,13 +229,13 @@ implement transVar (tmap, vmap, x0) = let
       | VFTYvar (rb, ty) => ty where {
           val level = the_funlevel_get ()
           val isEscaped = level > vfty.vfty_level
-// (*
+(*
           val () = if isEscaped then begin
             prerr "transVar: the variable [";
             prerr_symbol sym; prerr "] escapes";
             prerr_newline ()
           end // end of [val]
-// *)
+*)
           val () = if isEscaped then !rb := true // escaped
         } // end of [VFTYvar]
       | VFTYfun _ => begin
@@ -376,56 +376,28 @@ fn transExpUp_opexp_eqop (
 fn transExpUp_opexp (
     tmap: tymap, vmap: vftymap
   , e0: exp, e1: exp, oper: oper, e2: exp
-  ) : ty =
+  ) : ty = let
+  // macros for fun!
+  macdef transExpUp_opexp_arith () = let
+    val () = transExpDn (tmap, vmap, e1, ty_INT)
+    val () = transExpDn (tmap, vmap, e2, ty_INT) in
+    ty_INT
+  end // [transExpUp_opexp_arith]
+  macdef transExpUp_opexp_logic () = let
+    val () = transExpDn (tmap, vmap, e1, ty_INT)
+    val () = transExpDn (tmap, vmap, e2, ty_INT) in
+    ty_INT
+  end // [transExpUp_opexp_logic]
+in
   case+ oper of
-  | PlusOp _ => let
-      val () = transExpDn (tmap, vmap, e1, ty_INT)
-      val () = transExpDn (tmap, vmap, e2, ty_INT)
-    in
-      ty_INT
-    end // end of [PlusOp]
-  | MinusOp _ => let
-      val () = transExpDn (tmap, vmap, e1, ty_INT)
-      val () = transExpDn (tmap, vmap, e2, ty_INT)
-    in
-      ty_INT
-    end // end of [MinusOp]
-  | TimesOp _ => let
-      val () = transExpDn (tmap, vmap, e1, ty_INT)
-      val () = transExpDn (tmap, vmap, e2, ty_INT)
-    in
-      ty_INT
-    end // end of [TimesOp]
-  | DivideOp _ => let
-      val () = transExpDn (tmap, vmap, e1, ty_INT)
-      val () = transExpDn (tmap, vmap, e2, ty_INT)
-    in
-      ty_INT
-    end // end of [DivideOp]
-  | GtOp _ => let
-      val () = transExpDn (tmap, vmap, e1, ty_INT)
-      val () = transExpDn (tmap, vmap, e2, ty_INT)
-    in
-      ty_INT
-    end // end of [GtOp]
-  | GeOp _ => let
-      val () = transExpDn (tmap, vmap, e1, ty_INT)
-      val () = transExpDn (tmap, vmap, e2, ty_INT)
-    in
-      ty_INT
-    end // end of [GeOp]
-  | LtOp _ => let
-      val () = transExpDn (tmap, vmap, e1, ty_INT)
-      val () = transExpDn (tmap, vmap, e2, ty_INT)
-    in
-      ty_INT
-    end // end of [LtOp]
-  | LeOp _ => let
-      val () = transExpDn (tmap, vmap, e1, ty_INT)
-      val () = transExpDn (tmap, vmap, e2, ty_INT)
-    in
-      ty_INT
-    end // end of [LeOp]
+  | PlusOp _ => transExpUp_opexp_arith ()
+  | MinusOp _ => transExpUp_opexp_arith ()
+  | TimesOp _ => transExpUp_opexp_arith ()
+  | DivideOp _ => transExpUp_opexp_arith () 
+  | GtOp _ => transExpUp_opexp_logic ()
+  | GeOp _ => transExpUp_opexp_logic ()
+  | LtOp _ => transExpUp_opexp_logic ()
+  | LeOp _ => transExpUp_opexp_logic ()
   | EqOp _ => let
       val () = transExpUp_opexp_eqop (tmap, vmap, e0, e1, e2)
     in
@@ -441,14 +413,14 @@ fn transExpUp_opexp (
       val () = transExpDn (tmap, vmap, e2, ty_INT)
     in
       ty_INT
-    end // end of [ANdOp]
+    end // end of [AndOp]
   | OrOp _ => let
       val () = transExpDn (tmap, vmap, e1, ty_INT)
       val () = transExpDn (tmap, vmap, e2, ty_INT)
     in
       ty_INT
     end // end of [OrOp]
-// end of [transExpUp_opexp]
+end // end of [transExpUp_opexp]
 
 fn transExpUp_recordexp (
     tmap: tymap, vmap: vftymap
@@ -589,9 +561,7 @@ implement transExpUp (tmap, vmap, e0) = let
             // end of [val]
           } // end of [Some]
         | None () => let
-            val () =
-              transExpDn (tmap, vmap, e2, ty_UNIT) in
-            ty_UNIT
+            val () = transExpDn (tmap, vmap, e2, ty_UNIT) in ty_UNIT
           end // end of [None]
       ) : ty // end of [val]
     } // end of [IfExp]

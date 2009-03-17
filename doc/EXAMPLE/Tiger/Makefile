@@ -220,9 +220,10 @@ funmap_avltree_dats.o: LIB/funmap_avltree.dats
 ######
 
 html::
-	atsopt --posmark_html_only -d *.dats -s *.sats
-	cd LIB; atsopt --posmark_html_only -d *.dats
-	cd PARCOMB; atsopt --posmark_html_only -d *.dats -s *.sats
+	atsopt -IATS PARCOMB -IATS LIB \
+          --posmark_html_xref -d *.dats -s *.sats
+	cd LIB; atsopt --posmark_html_xref -d *.dats
+	cd PARCOMB; atsopt --posmark_html_xref -d *.dats -s *.sats
 
 ######
 
