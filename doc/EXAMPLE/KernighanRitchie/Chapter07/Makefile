@@ -6,9 +6,9 @@ all: \
 ######
 
 html::
-	atsopt --posmark_html_only -d lower.dats
-	atsopt --posmark_html_only -d fgets.dats
-	atsopt --posmark_html_only -d filecopy.dats
+	atsopt --posmark_html -d lower.dats
+	atsopt --posmark_html -d fgets.dats
+	atsopt --posmark_html -d filecopy.dats
 
 ######
 

@@ -10,13 +10,13 @@ all: \
 ######
 
 html::
-	atsopt --posmark_html_only -d getint.dats
-	atsopt --posmark_html_only -d strlen.dats
-	atsopt --posmark_html_only -d strcpy.dats
-	atsopt --posmark_html_only -d strcmp.dats
-	atsopt --posmark_html_only -d strcmp_alt.dats
-	atsopt --posmark_html_only -d month_name.dats
-	atsopt --posmark_html_only -d month_day.dats
+	atsopt --posmark_html -d getint.dats
+	atsopt --posmark_html -d strlen.dats
+	atsopt --posmark_html -d strcpy.dats
+	atsopt --posmark_html -d strcmp.dats
+	atsopt --posmark_html -d strcmp_alt.dats
+	atsopt --posmark_html -d month_name.dats
+	atsopt --posmark_html -d month_day.dats
 
 ######
 

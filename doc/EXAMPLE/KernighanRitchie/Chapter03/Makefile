@@ -6,9 +6,9 @@ all: \
 ######
 
 html::
-	atsopt --posmark_html_only -d atoi.dats
-	atsopt --posmark_html_only -d reverse.dats
-	atsopt --posmark_html_only -d itoa.dats
+	atsopt --posmark_html -d atoi.dats
+	atsopt --posmark_html -d reverse.dats
+	atsopt --posmark_html -d itoa.dats
 
 ######
 

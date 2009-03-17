@@ -57,7 +57,7 @@ implement fgets {m}
       | p: ptr l, n: int n, iop: &FILE m, eof: &int
       ) : natLte n =
       if n > 0 then let
-        val c = $STDIO.fgetc_err (pf_mod | iop)
+        val c = $STDIO.fgetc1_err (pf_mod | iop)
       in
         if c >= 0 then let // c <> EOF
           prval @(pf1, pf2) = array_v_uncons {byte} (pf)

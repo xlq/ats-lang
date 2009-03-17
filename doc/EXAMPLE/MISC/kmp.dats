@@ -155,8 +155,10 @@ in
   if n > 1 then let
     prval (pf_elt, pf_arr) = array_v_uncons {Int?} (pf_arr)
     val () = ptr_set_t (pf_elt | p_arr, 0)
-    prval pf1_mul = mul_make_const {1,intsz} ()
-    prval pf2_mul = mul_make_const {2,intsz} ()
+    prval pf1_mul = mul_istot {1,intsz} ()
+    prval () = mul_elim (pf1_mul)
+    prval pf2_mul = mul_istot {2,intsz} ()
+    prval () = mul_elim (pf2_mul)
     prval pf_kmp = kmp_v_more {l-intsz} (pf1_mul, pf_kmp, pf_elt)
     val (pf_kmp | ()) = kmp_table_make_aux
       (pf2_mul, pf_kmp, pf_arr | w, tbl, n, 2, 0, p_arr+intsz)

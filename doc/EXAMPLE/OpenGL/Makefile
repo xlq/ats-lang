@@ -23,6 +23,7 @@ all: \
   glBlending1 \
   glBlending2 \
   glFaces \
+  glTetrix \
 
 glHello: glHello.dats
 	$(ATSCC) -o glHello glHello.dats -lGL -lglut

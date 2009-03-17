@@ -158,7 +158,7 @@ fun nullfrstfllw_process_rulerhslst
 (* ****** ****** *)
 
 implement the_nullfrstfllw_table_gen () = let
-  var flag: int // uninitialized
+  var flag: int? // uninitialized
   fun symlst_loop (xs: List symbol_t, flag: &int): void =
     case+ xs of
     | list_cons (x, xs) => let

@@ -11,7 +11,7 @@ staload "libc/SATS/stdio.sats"
 (* ****** ****** *)
 
 implement main () = let
-  var c: int
+  var c: int?
 in
   while (true) let
     val () = c := getchar1 ()

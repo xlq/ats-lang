@@ -4,7 +4,7 @@ all: \
 ######
 
 html::
-	atsopt --posmark_html_only -d fsize.dats
+	atsopt --posmark_html -d fsize.dats
 
 ######
 
