@@ -151,6 +151,7 @@ fun d2cst_make (
 
 //
 
+fun d2cst_loc_get (_: d2cst_t): loc_t
 fun d2cst_fil_get (_: d2cst_t): fil_t
 fun d2cst_sym_get (_: d2cst_t): sym_t
 fun d2cst_kind_get (_: d2cst_t): $Syn.dcstkind

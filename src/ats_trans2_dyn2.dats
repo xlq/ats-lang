@@ -785,8 +785,15 @@ fn i1mpdec_tr
       end // end of [None_vt]
   end // end of [val]
 (*
-  // automatic instantiation is not supported as it can readily lead
-  // to confusion as for whether an implementation is actually compiled.
+  val () = begin
+    prerr "i1mpdec_tr: loc0 = "; $Loc.prerr_location loc0; prerr_newline ();
+    prerr "i1mpdec_tr: d2c = "; prerr d2c; prerr_newline ();
+    prerr "i1mpdec_tr: d2c_loc = "; $Loc.prerr_location (d2cst_loc_get d2c); prerr_newline ();
+  end // end of [val]
+*)
+(*
+  // automatic instantiation is not supported because it can otherwise readily
+  // lead to confusion as to whether an implementation is actually compiled.
   fun aux1
     (s2vpss: s2qualst, s2e: s2exp, out: &s2qualst): s2exp = begin
     case+ s2vpss of

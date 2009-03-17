@@ -115,6 +115,9 @@ in
 
 end // end of [d2cst_make]
 
+implement d2cst_loc_get (d2c) =
+  let val (vbox pf | p) = d2c in p->d2cst_loc end
+
 implement d2cst_fil_get (d2c) =
   let val (vbox pf | p) = d2c in p->d2cst_fil end
 

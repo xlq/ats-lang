@@ -386,7 +386,8 @@ end // end of [local]
 
 local
 
-val the_valprimlst_free = ref_make_elt<valprimlst_vt> (list_vt_nil ())
+val the_valprimlst_free =
+  ref_make_elt<valprimlst_vt> (list_vt_nil ())
 
 in // in of [local]
 
@@ -521,16 +522,12 @@ implement ccomp_patck (res, vp0, hip0, fail) = let
 (*
   val () = begin
     prerr "ccomp_patck: vp0 = "; prerr vp0; prerr_newline ()
-  end
-  val () = begin
     prerr "ccomp_patck: vp0.typ = "; prerr vp0.valprim_typ; prerr_newline ()
-  end
+  end // end of [val]
   val () = begin
     prerr "ccomp_patck: hip0 = "; prerr hip0; prerr_newline ()
-  end
-  val () = begin
     prerr "ccomp_patck: hip0.typ = "; prerr hip0.hipat_typ; prerr_newline ()
-  end
+  end // end of [val]
 *)
 in
   case+ hip0.hipat_node of
