@@ -146,12 +146,13 @@ implement main (argc, argv) = let
   val () = begin
     print "ty = "; print_ty (ty); print_newline ()
   end // end of [val]
-(*
+// (*
   val vlu = $INT0.interp0Prog (exp)
   val () = begin
-    print "vlu = "; print_value (vlu); print_newline ()
+    print "vlu = "; $INT0.print_value (vlu); print_newline ()
   end // end of [val]
-*)
+// *)
+(*
   val e1xp = $TRAN.transProg1 (exp)
 (*
   val () = begin
@@ -201,6 +202,7 @@ implement main (argc, argv) = let
   val () = print_stmlst stms
 *)  
   val () = $INT1.interp1Prog (stms)
+*)
 in
   // empty
 end // end of [main]

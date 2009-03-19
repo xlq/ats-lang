@@ -67,6 +67,8 @@ fun location_combine (_1: location_t, _2: location_t):<> location_t
 
 //
 
+fun location_filename_get (p: location_t): filename_t
+
 typedef lint = int_long_t0ype
 fun location_begpos_toff (p: location_t): lint
 fun location_endpos_toff (p: location_t): lint

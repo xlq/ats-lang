@@ -100,6 +100,8 @@ in '{
 , endpos_line= line, endpos_loff= loff, endpos_toff= toff
 } end // end of [location_end_make]
 
+(* ****** ****** *)
+
 fn location_combine_main
   (loc1: location, loc2: location):<> location = let
   var begpos_line: int and begpos_loff: int
@@ -149,6 +151,8 @@ implement location_combine (loc1, loc2) = begin
 end // end of [location_combine]
 
 (* ****** ****** *)
+
+implement location_filename_get (loc) = loc.filename
 
 implement location_begpos_toff (loc) = loc.begpos_toff
 implement location_endpos_toff (loc) = loc.endpos_toff

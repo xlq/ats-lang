@@ -80,11 +80,13 @@ fn prerr_loc_error2 (loc: loc_t): void =
 
 (* ****** ****** *)
 
-fn dyncstimploc_posmark (loc: loc_t): void = let
+fn dyncstimploc_posmark
+  (loc: loc_t, d2c: d2cst_t): void = let
+  val loc_d2c = d2cst_loc_get (d2c)
   val loc_begoff = $Loc.location_begpos_toff loc
-  val () = $PM.posmark_insert_dyncstimp_beg (loc_begoff)
+  val () = $PM.posmark_insert_dyncstimp_beg (loc_begoff, loc_d2c)
   val loc_endoff = $Loc.location_endpos_toff loc
-  val () = $PM.posmark_insert_dyncstimp_end (loc_endoff)
+  val () = $PM.posmark_insert_dyncstimp_end (loc_endoff, loc_d2c)
 in
   // empty
 end // end of [dyncstimploc_posmark]
@@ -756,9 +758,6 @@ fn i1mpdec_tr
   // end of [val]
   val qid = d1c.i1mpdec_qid
   val q = qid.impqi0de_qua and id = qid.impqi0de_sym
-//
-  val () = dyncstimploc_posmark (qid.impqi0de_loc)
-//
   val d2c = begin
     case+ the_d2expenv_find_qua (q, id) of
     | ~Some_vt d2i => begin case+ d2i of
@@ -784,13 +783,9 @@ fn i1mpdec_tr
         $Err.abort {d2cst_t} ()
       end // end of [None_vt]
   end // end of [val]
-(*
-  val () = begin
-    prerr "i1mpdec_tr: loc0 = "; $Loc.prerr_location loc0; prerr_newline ();
-    prerr "i1mpdec_tr: d2c = "; prerr d2c; prerr_newline ();
-    prerr "i1mpdec_tr: d2c_loc = "; $Loc.prerr_location (d2cst_loc_get d2c); prerr_newline ();
-  end // end of [val]
-*)
+//
+  val () = dyncstimploc_posmark (qid.impqi0de_loc, d2c)
+//
 (*
   // automatic instantiation is not supported because it can otherwise readily
   // lead to confusion as to whether an implementation is actually compiled.

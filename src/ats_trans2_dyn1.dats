@@ -105,20 +105,24 @@ fn prerr_loc_error2 (loc: loc_t): void =
 
 (* ****** ****** *)
 
-fn dyncstdecloc_posmark (loc: loc_t): void = let
+fn dyncstdecloc_posmark
+  (loc: loc_t, d2c: d2cst_t): void = let
+  val loc_d2c = d2cst_loc_get (d2c)
   val loc_begoff = $Loc.location_begpos_toff loc
-  val () = $PM.posmark_insert_dyncstdec_beg (loc_begoff)
+  val () = $PM.posmark_insert_dyncstdec_beg (loc_begoff, loc_d2c)
   val loc_endoff = $Loc.location_endpos_toff loc
-  val () = $PM.posmark_insert_dyncstdec_end (loc_endoff)
+  val () = $PM.posmark_insert_dyncstdec_end (loc_endoff, loc_d2c)
 in
   // empty
 end // end of [dyncstdecloc_posmark]
 
-fn dyncstuseloc_posmark (loc: loc_t): void = let
+fn dyncstuseloc_posmark
+  (loc: loc_t, d2c: d2cst_t): void = let
+  val loc_d2c = d2cst_loc_get (d2c)
   val loc_begoff = $Loc.location_begpos_toff loc
-  val () = $PM.posmark_insert_dyncstuse_beg (loc_begoff)
+  val () = $PM.posmark_insert_dyncstuse_beg (loc_begoff, loc_d2c)
   val loc_endoff = $Loc.location_endpos_toff loc
-  val () = $PM.posmark_insert_dyncstuse_end (loc_endoff)
+  val () = $PM.posmark_insert_dyncstuse_end (loc_endoff, loc_d2c)
 in
   // empty
 end // end of [dyncstuseloc_posmark]
@@ -143,13 +147,13 @@ fn d1cstdec_tr
   val loc = d1c.d1cstdec_loc
   val fil = d1c.d1cstdec_fil
   val id = d1c.d1cstdec_sym
-  val () = dyncstdecloc_posmark (d1c.d1cstdec_loc_id)
   var s2e_cst: s2exp =
     if $Syn.dcstkind_is_proof dck then s1exp_tr_dn_view d1c.d1cstdec_typ
     else s1exp_tr_dn_viewt0ype d1c.d1cstdec_typ
   val arilst = s2exp_arity_list s2e_cst
   val ext = d1c.d1cstdec_ext
   val d2c = d2cst_make (loc, fil, id, dck, s2vpslst, arilst, s2e_cst, ext)
+  val () = dyncstdecloc_posmark (d1c.d1cstdec_loc_id, d2c)
 in
   the_d2expenv_add_dcst d2c; d2c
 end // end of [d1cstdec_tr]
@@ -801,7 +805,7 @@ fn d1exp_qid_tr
         d2exp_con (loc0, d2c, nil (), 0(*npf*), nil ())
       end // end of [D2ITEMcon]
     | D2ITEMcst d2c => let
-        val () = dyncstuseloc_posmark (loc0) in
+        val () = dyncstuseloc_posmark (loc0, d2c) in
         d2exp_cst (loc0, d2c)
       end // end of [D2ITEMcst]
     | D2ITEMe1xp e1xp => d1exp_tr (d1exp_make_e1xp (loc0, e1xp))
@@ -937,7 +941,7 @@ in
         d2exp_con (loc_dap, d2c, sarg, npf, darg)
       end // end of [D2ITEMcon]
     | D2ITEMcst d2c => let
-        val () = dyncstuseloc_posmark (loc_qid)
+        val () = dyncstuseloc_posmark (loc_qid, d2c)
         val d2e_fun = d2exp_cst (loc_qid, d2c) in
         d2exp_app_sta_dyn (loc_dap, loc_sap, d2e_fun, sarg, loc_arg, npf, darg)
       end // end of [D2ITEMcst]

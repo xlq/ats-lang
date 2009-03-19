@@ -460,17 +460,31 @@ end // end of [list_extend]
 
 (* ****** ****** *)
 
-implement{a} list_filter_main {v} {vt} {n} {p:eff} (pf | xs, p, env) = let
-  fun aux {n:nat} .<n>.
-    (pf: !v | xs: list (a, n), p: (!v | a, !vt) -<fun,p> bool, env: !vt)
-    :<p> [n':nat | n' <= n] list (a, n') = case+ xs of
+implement{a} list_filter_main
+  {v} {vt} {n} {p:eff} (pf | xs, p, env) = let
+  fun loop {n:nat} .<n>. (
+      pf: !v
+    | xs: list (a, n)
+    , p: (!v | a, !vt) -<fun,p> bool
+    , res: &(List a)? >> list (a, n1)
+    , env: !vt
+    ) :<p> #[n1:nat | n1 <= n] void = case+ xs of
     | x :: xs => begin
-        if p (pf | x, env) then x :: aux (pf | xs, p, env) else aux (pf | xs, p, env)
-      end // end of [::]
-    | nil () => nil ()
-  // end of [aux]
+        if p (pf | x, env) then let
+          val () = res := cons {a} {0} (x, ?)
+          val+ cons (_, !p_res) = res
+        in
+          loop (pf | xs, p, !p_res, env); fold@ res
+        end else begin
+          loop (pf | xs, p, res, env)
+        end // end of [if]
+      end (* end of [::] *)
+    | nil () => (res := nil ())
+  // end of [loop]
+  var res: List a // uninitialized
+  val () = loop (pf | xs, p, res, env)
 in
-  aux (pf | xs, p, env)
+  res
 end // end of [list_filter_main]
 
 implement{a} list_filter_clo {n} {p:eff} (xs, f) = let

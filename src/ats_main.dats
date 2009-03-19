@@ -675,7 +675,7 @@ fun loop {i:nat | i <= n} .<i>. (
           | "--posmark_html" => begin
               param.posmark := 1; param.posmark_html := 1
             end // end of ["--posmark_html"]
-          | "--posmark_html_xref" => begin
+          | "--posmark_xref" => begin
               param.posmark := 1; param.posmark_html := 2
             end // end of ["--posmark_html_xref"]
           | "--debug=0" => $Deb.debug_flag_set (0)

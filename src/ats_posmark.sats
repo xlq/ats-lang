@@ -37,7 +37,8 @@
 
 (* ****** ****** *)
 
-staload Fil = "ats_filename.sats"
+staload "ats_location.sats"
+typedef loc_t = location_t
 
 (* ****** ****** *)
 
@@ -72,14 +73,14 @@ fun posmark_insert_staexp_end (li: lint): void
 fun posmark_insert_prfexp_beg (li: lint): void
 fun posmark_insert_prfexp_end (li: lint): void
 
-fun posmark_insert_dyncstdec_beg (li: lint): void
-fun posmark_insert_dyncstdec_end (li: lint): void
+fun posmark_insert_dyncstdec_beg (li: lint, loc: loc_t): void
+fun posmark_insert_dyncstdec_end (li: lint, loc: loc_t): void
 
-fun posmark_insert_dyncstimp_beg (li: lint): void
-fun posmark_insert_dyncstimp_end (li: lint): void
+fun posmark_insert_dyncstimp_beg (li: lint, loc: loc_t): void
+fun posmark_insert_dyncstimp_end (li: lint, loc: loc_t): void
 
-fun posmark_insert_dyncstuse_beg (li: lint): void
-fun posmark_insert_dyncstuse_end (li: lint): void
+fun posmark_insert_dyncstuse_beg (li: lint, loc: loc_t): void
+fun posmark_insert_dyncstuse_end (li: lint, loc: loc_t): void
 
 (* ****** ****** *)
 
