@@ -28,11 +28,11 @@ echo_tcpserver: echo_tcpserver.dats
 
 ######
 
-update:
-	atsopt --posmark_html_only -d daytime_tcpclient.dats
-	atsopt --posmark_html_only -d daytime_tcpserver.dats
-	atsopt --posmark_html_only -d echo_tcpclient.dats
-	atsopt --posmark_html_only -d echo_tcpserver.dats
+html::
+	atsopt --posmark_html -d daytime_tcpclient.dats > daytime_tcpclient_dats.html
+	atsopt --posmark_html -d daytime_tcpserver.dats > daytime_tcpserver_dats.html
+	atsopt --posmark_html -d echo_tcpserver.dats > echo_tcpclient_dats.html
+	atsopt --posmark_html -d echo_tcpserver.dats > echo_tcpserver_dats.html
 
 ######
 

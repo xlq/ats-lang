@@ -4,7 +4,7 @@ all: \
 ######
 
 html::
-	atsopt --posmark_html -d getword.dats
+	atsopt --posmark_html -d getword.dats > getword_dats.html
 
 ######
 

@@ -13,16 +13,16 @@ all: \
 ######
 
 html::
-	atsopt --posmark_html -d hello.dats
-	atsopt --posmark_html -d fahrenheit_celsius.dats
-	atsopt --posmark_html -d echo.dats
-	atsopt --posmark_html -d charcnt.dats
-	atsopt --posmark_html -d linecnt.dats
-	atsopt --posmark_html -d wc.dats
-	atsopt --posmark_html -d digit_space_other_cnt.dats
-	atsopt --posmark_html -d power.dats
-	atsopt --posmark_html -d longest_line.dats
-	atsopt --posmark_html -d longest_line_alt.dats
+	atsopt --posmark_html -d hello.dats > hello_dats.html
+	atsopt --posmark_html -d fahrenheit_celsius.dats > fahrenheit_celsius_dats.html
+	atsopt --posmark_html -d echo.dats > echo_dats.html
+	atsopt --posmark_html -d charcnt.dats > charcnt_dats.html
+	atsopt --posmark_html -d linecnt.dats > linecnt_dats.html
+	atsopt --posmark_html -d wc.dats > wc_dats.html
+	atsopt --posmark_html -d digit_space_other_cnt.dats > digit_space_other_dats.html
+	atsopt --posmark_html -d power.dats > power_dats.html
+	atsopt --posmark_html -d longest_line.dats > longest_line_dats.html
+	atsopt --posmark_html -d longest_line_alt.dats > longest_line_alt_dats.html
 
 ######
 

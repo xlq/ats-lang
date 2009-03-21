@@ -94,26 +94,26 @@ wc: wc.dats; $(ATSCC) -O3 -o wc wc.dats
 ######
 
 html::
-	atsopt --posmark_html_only -d AutoDiff.dats
-	atsopt --posmark_html_only -d coin_flip.dats
-	atsopt --posmark_html_only -d curve.dats
-	atsopt --posmark_html_only -d fft.dats
-	atsopt --posmark_html_only -d GaussElim.dats
-	atsopt --posmark_html_only -d GarsiaWachs.dats
-	atsopt --posmark_html_only -d hanoi.dats
-	atsopt --posmark_html_only -d kmp.dats
-	atsopt --posmark_html_only -d listquicksort.dats
-	atsopt --posmark_html_only -d longestline.dats
-	atsopt --posmark_html_only -d passwdgen.dats
-	atsopt --posmark_html_only -d pi_lazy.dats
-	atsopt --posmark_html_only -d queens.dats
-	atsopt --posmark_html_only -d queens_lazy_vt.dats
-	atsopt --posmark_html_only -d sieve.dats
-	atsopt --posmark_html_only -d sieve_lazy.dats
-	atsopt --posmark_html_only -d strmat.dats
-	atsopt --posmark_html_only -d sumup.dats
-	atsopt --posmark_html_only -d tetrix.dats
-	atsopt --posmark_html_only -d wc.dats
+	atsopt --posmark_html -d AutoDiff.dats > AutoDiff_dats.html
+	atsopt --posmark_html -d coin_flip.dats > coin_flip_dats.html
+	atsopt --posmark_html -d curve.dats > curve_dats.html
+	atsopt --posmark_html -d fft.dats > fft_dats.html
+	atsopt --posmark_html -d GaussElim.dats > GaussElim_dats.html
+	atsopt --posmark_html -d GarsiaWachs.dats > GarsiaWachs_dats.html
+	atsopt --posmark_html -d hanoi.dats > hanoi_dats.html
+	atsopt --posmark_html -d kmp.dats > kmp_dats.html
+	atsopt --posmark_html -d listquicksort.dats > listquicksort_dats.html
+	atsopt --posmark_html -d longestline.dats > longestline_dats.html
+	atsopt --posmark_html -d passwdgen.dats > passwdgen_dats.html
+	atsopt --posmark_html -d pi_lazy.dats > pi_lazy_dats.html
+	atsopt --posmark_html -d queens.dats > queens_dats.html
+	atsopt --posmark_html -d queens_lazy_vt.dats > queen_lazy_vt_dats.html
+	atsopt --posmark_html -d sieve.dats > sieve_dats.html
+	atsopt --posmark_html -d sieve_lazy.dats > sieve_lazy_html.dats
+	atsopt --posmark_html -d strmat.dats > strmap_dats.html
+	atsopt --posmark_html -d sumup.dats > sumup_dats.html
+	atsopt --posmark_html -d tetrix.dats > tetrix_dats.html
+	atsopt --posmark_html -d wc.dats > wc_dats.html
 
 ######
 

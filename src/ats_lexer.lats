@@ -850,7 +850,7 @@ fn STRING_char_hex_2 {n:nat}
 
 fn process_literal_string {n:nat}
   (fstpos: position_t, cs: $CS.charlst_vt n, n: int n): void = let
-  val str = $CS.string_make_rev_charlst_int (cs, n)
+  val str = $CS.string_make_charlst_rev_int (cs, n)
   val loc = location_get_pos (fstpos)
 in
   yylval_string_set ($Syn.s0tring_make (loc, str, n))
@@ -867,7 +867,7 @@ fn EXTCODE_char {n:nat}
 fn process_literal_extcode {n:nat}
   (fstpos: position_t, i: int, cs: $CS.charlst_vt n, n: int n): void =
   let
-    val str = $CS.string_make_rev_charlst_int (cs, n)
+    val str = $CS.string_make_charlst_rev_int (cs, n)
     val loc = location_get_pos (fstpos)
   in
     yylval_extcode_set ($Syn.e0xtcode_make (loc, i, str))

@@ -728,7 +728,7 @@ in
         prerr d2c2; prerr "] cannot be resolved for [";
         $Syn.prerr_d0ynq q; $Sym.prerr_symbol id; prerr "].";
         prerr_newline ();
-        $Lst.list_vt_free (d2cs);
+        $Lst.list_vt_free__boxed (d2cs);
         $Err.abort {d2cst_t} ()
       end // end of [list_vt_cons]
     end // end of [list_vt_cons]

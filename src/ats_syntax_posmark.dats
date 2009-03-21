@@ -42,7 +42,10 @@ staload Lst = "ats_list.sats"
 
 (* ****** ****** *)
 
-staload "ats_posmark.sats"
+staload PM = "ats_posmark.sats"
+
+(* ****** ****** *)
+
 staload "ats_syntax.sats"
 
 (* ****** ****** *)
@@ -61,32 +64,32 @@ fn externloc_posmark (loc: loc_t): void = let
   val loc_begoff = $Loc.location_begpos_toff loc
   val loc_endoff = $Loc.location_endpos_toff loc
 in
-  posmark_insert_extern_beg loc_begoff;
-  posmark_insert_extern_end loc_endoff;
+  $PM.posmark_insert_extern_beg loc_begoff;
+  $PM.posmark_insert_extern_end loc_endoff;
 end // end of [externloc_posmark]
 
 fn neuexploc_posmark (loc: loc_t): void = let
   val loc_begoff = $Loc.location_begpos_toff loc
   val loc_endoff = $Loc.location_endpos_toff loc
 in
-  posmark_insert_neuexp_beg loc_begoff;
-  posmark_insert_neuexp_end loc_endoff;
+  $PM.posmark_insert_neuexp_beg loc_begoff;
+  $PM.posmark_insert_neuexp_end loc_endoff;
 end // end of [neuexploc_posmark]
 
 fn staexploc_posmark (loc: loc_t): void = let
   val loc_begoff = $Loc.location_begpos_toff loc
   val loc_endoff = $Loc.location_endpos_toff loc
 in
-  posmark_insert_staexp_beg loc_begoff;
-  posmark_insert_staexp_end loc_endoff;
+  $PM.posmark_insert_staexp_beg loc_begoff;
+  $PM.posmark_insert_staexp_end loc_endoff;
 end // end of [staexploc_posmark]
 
 fn prfexploc_posmark (loc: loc_t): void = let
   val loc_begoff = $Loc.location_begpos_toff loc
   val loc_endoff = $Loc.location_endpos_toff loc
 in
-  posmark_insert_prfexp_beg loc_begoff;
-  posmark_insert_prfexp_end loc_endoff;
+  $PM.posmark_insert_prfexp_beg loc_begoff;
+  $PM.posmark_insert_prfexp_end loc_endoff;
 end // end of [prfexploc_posmark]
 
 (* ****** ****** *)
@@ -443,10 +446,23 @@ fn e0xndeclst_posmark (d0cs: e0xndeclst): void =
 
 (* ****** ****** *)
 
-fn d0cstdec_posmark (d0c: d0cstdec): void = begin
-  d0arglst_posmark (d0c.d0cstdec_arg);
-  e0fftaglstopt_posmark (d0c.d0cstdec_eff);
-  s0exp_posmark (d0c.d0cstdec_res);
+fn dyncstdecloc_posmark (loc_id: loc_t): void = let
+  val loc_begoff = $Loc.location_begpos_toff loc_id
+  val () = $PM.posmark_insert_dyncstdec_beg (loc_begoff, loc_id)
+  val loc_endoff = $Loc.location_endpos_toff loc_id
+  val () = $PM.posmark_insert_dyncstdec_end (loc_endoff, loc_id)
+in
+  // empty
+end // end of [dyncstdecloc_posmark]
+
+fn d0cstdec_posmark (d0c: d0cstdec): void = let
+  val loc_id = d0c.d0cstdec_loc_id
+  val () = dyncstdecloc_posmark (loc_id)
+  val () = d0arglst_posmark (d0c.d0cstdec_arg)
+  val () = e0fftaglstopt_posmark (d0c.d0cstdec_eff)
+  val () = s0exp_posmark (d0c.d0cstdec_res)
+in
+  // empty
 end // end of [d0cstdec_posmark]
 
 fn d0cstdeclst_posmark (d0cs: d0cstdeclst): void =

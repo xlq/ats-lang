@@ -51,8 +51,8 @@ staload Fil = "ats_filename.sats"
 staload Glo = "ats_global.sats"
 staload IntInf = "ats_intinf.sats"
 staload Lab = "ats_label.sats"
-staload Loc = "ats_location.sats"
 staload Lst = "ats_list.sats"
+staload Loc = "ats_location.sats"
 
 (* ****** ****** *)
 
@@ -1874,7 +1874,7 @@ fn funentry_env_err
   (loc: loc_t, fl: funlab_t, vtps: vartypset)
   : void = let
   val d2vs = vartypset_d2varlst_make (vtps)
-  val n = $Lst.list_vt_length (d2vs)
+  val n = $Lst.list_vt_length__boxed (d2vs)
   val () =
     if n > 0 then begin
       $Loc.prerr_location loc; prerr ": error(ccomp)"

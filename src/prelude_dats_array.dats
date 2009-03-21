@@ -44,7 +44,7 @@
 
 (* ****** ****** *)
 
-#define ATS_DYNLOADFLAG 0 // loaded by [ats_main_prelude]
+#define ATS_DYNLOADFLAG 0 // no need for dynamic loading
 
 (* ****** ****** *)
 

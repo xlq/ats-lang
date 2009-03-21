@@ -251,7 +251,7 @@ implement template_name_make (basename, hitss) = let
   val () = aux_string (cs, 0, basename)
   val () = aux_hityplstlst (cs, hityplstlst_decode hitss)
 in
-  $CS.string_make_rev_charlst (cs)
+  $CS.string_make_charlst_rev (cs)
 end // end of [template_name_make]
 
 (* ****** ****** *)

@@ -60,9 +60,22 @@ implement charlst_length (cs) = aux (cs, 0) where {
 
 //
 
-implement string_make_rev_charlst (cs) = begin
-  string_make_rev_charlst_int (cs, charlst_length cs)
-end // end of [string_make_rev_charlst]
+implement charlst_add_string {m,n}
+  (cs, str) = loop (str, 0, cs) where {
+  fun loop {m,i:nat | i <= n} .<n-i>.
+    (str: string n, i: size_t i, cs: charlst_vt m)
+    : charlst_vt (m+n-i) =
+    if string_isnot_at_end (str, i) then
+      loop (str, i+1, CHARLSTcons (str[i], cs))
+    else cs
+  // end of [loop]
+} // end of [charlst_add_string]
+
+//
+
+implement string_make_charlst_rev (cs) = begin
+  string_make_charlst_rev_int (cs, charlst_length cs)
+end // end of [string_make_charlst_rev]
 
 //
 
@@ -85,7 +98,7 @@ implement charlst_uncons (cs) =
 %{
 
 ats_ptr_type
-string_make_rev_charlst_int (ats_ptr_type cs, const ats_int_type n) {
+string_make_charlst_rev_int (ats_ptr_type cs, const ats_int_type n) {
   char *s;
 
   s = ATS_MALLOC (n+1) ; s += n ; *s = '\000' ;

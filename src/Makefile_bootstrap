@@ -148,6 +148,7 @@ all:: \
   $(BOOTDIR)/ats_grammar_yats.c $(BOOTDIR)/ats_grammar_yats.h \
   $(BOOTDIR)/prelude_dats_array_dats.c \
   $(BOOTDIR)/prelude_dats_basics_dats.c \
+  $(BOOTDIR)/prelude_dats_file_dats.c \
   $(BOOTDIR)/prelude_dats_integer_dats.c \
   $(BOOTDIR)/prelude_dats_printf_dats.c \
   $(BOOTDIR)/prelude_dats_string_dats.c \
@@ -195,6 +196,9 @@ $(BOOTDIR)/prelude_dats_array_dats.c: prelude_dats_array.dats
 
 $(BOOTDIR)/prelude_dats_basics_dats.c: prelude_dats_basics.dats
 	$(ATSOPT) --output $@ -d prelude_dats_basics.dats
+
+$(BOOTDIR)/prelude_dats_file_dats.c: prelude_dats_file.dats
+	$(ATSOPT) --output $@ -d prelude_dats_file.dats
 
 $(BOOTDIR)/prelude_dats_integer_dats.c: prelude_dats_integer.dats
 	$(ATSOPT) --output $@ -d prelude_dats_integer.dats

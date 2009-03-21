@@ -1252,7 +1252,7 @@ implement ccomp_main {m}
     end // end of [if]
   ) : instrlst_vt
 
-  val () = $Lst.list_vt_free (res)
+  val () = $Lst.list_vt_free__boxed (res)
   val () = tmpvarmap_free (tmps_static)
   val () = extvallst_free (extvals)
 
@@ -1263,7 +1263,7 @@ implement ccomp_main {m}
     | _ => ()
   end // end of [val]
 
-  val () = $Lst.list_vt_free (fls)
+  val () = $Lst.list_vt_free__boxed (fls)
 
   val () = fprint1_string (pf | out, "/* external codes at mid */\n")
   val n = emit_extcodelst (pf | out, 1(*mid*), extcodes)

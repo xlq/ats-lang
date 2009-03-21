@@ -46,10 +46,13 @@ fun charlst_free {n:nat} (cs: charlst_vt n): void
 
 fun charlst_length {n:nat} (cs: !charlst_vt n): int n
 
+fun charlst_add_string {m,n:nat}
+  (cs: charlst_vt m, str: string n): charlst_vt (m+n)
+
 // the returned string represents the reverse of [cs]
-fun string_make_rev_charlst {n:nat} (cs: charlst_vt n): string n
-fun string_make_rev_charlst_int {n:nat} (cs: charlst_vt n, n: int n): string n
-  = "string_make_rev_charlst_int"
+fun string_make_charlst_rev {n:nat} (cs: charlst_vt n): string n
+fun string_make_charlst_rev_int {n:nat} (cs: charlst_vt n, n: int n): string n
+  = "string_make_charlst_rev_int"
 
 (* ****** ****** *)
 

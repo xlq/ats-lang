@@ -36,7 +36,7 @@
 
 (* ****** ****** *)
 
-#define ATS_DYNLOADFLAG 0 // no dynamic loading
+#define ATS_DYNLOADFLAG 0 // no need for dynamic loading
 
 (* ****** ****** *)
 

@@ -148,6 +148,12 @@ castfn strbuf_of_string1 {n:nat} (str: string n)
 
 (* ****** ****** *)
 
+fun strbuf_ptr_free {m,n:nat} {l:addr}
+  (pf_gc: free_gc_v (m, l), pf_buf: strbuf (m, n) @ l | base: ptr l): void
+  = "atspre_strbuf_ptr_free"
+
+(* ****** ****** *)
+
 fun lt_strbuf_strbuf {m1,n1,m2,n2:nat}
    (sb1: &strbuf (m1,n1), sb2: &strbuf (m2,n2)):<> bool
   = "atspre_lt_string_string"

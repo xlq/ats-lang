@@ -54,6 +54,9 @@
 (* ****** ****** *)
 
 staload Err = "ats_error.sats"
+
+(* ****** ****** *)
+
 staload Lst = "ats_list.sats"
 
 (* ****** ****** *)
@@ -1006,7 +1009,7 @@ fun aux_main {s:nat} (
         end // end of [ICvec]
       | ICveclst (knd(*conj:0/disj:1*), !ics1) => begin
           if knd = 0 then let // conjunction
-            val s1 = $Lst.list_vt_length (!ics1)
+            val s1 = $Lst.list_vt_length__boxed (!ics1)
             val () = !ics_nxt := $Lst.list_vt_append (!ics1, !ics_nxt)
             val ans = aux_main (stamp, v1ecs, v1ecs_eq, n, !ics_nxt)
             val () = !ics1 := $Lst.list_vt_prefix (!ics_nxt, s1)

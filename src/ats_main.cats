@@ -41,6 +41,38 @@
 
 /* ****** ****** */
 
+extern ats_void_type
+ats_posmark_xref_flag_set (ats_ptr_type flag) ;
+
+static inline
+ats_main_is_posmark_xref_prefix (ats_ptr_type s0) {
+  int cmp, n1, n2, ln ; char *s, *flag ;
+  static char* POSMARK_XREF = "--posmark_xref" ;
+  s = (char*)s0 ;
+  n1 = strlen (POSMARK_XREF) ;
+  cmp = strncmp (POSMARK_XREF, s, n1) ;
+  if (cmp == 0) {
+    n2 = strlen (s) ;
+    if (s[n1] == '=') n1 += 1 ;
+    ln = n2 - n1 ;
+    if (ln > 0) {
+      if (s[n2-1] == '/') { ln -= 1 ; }
+      flag = ATS_MALLOC (ln + 2) ;
+      strncpy (flag, &s[n1], ln) ;
+      flag[ln] = '/' ; flag[ln+1] = '\000' ;
+    } else {
+      flag = "" ;
+    } // end of [if]
+/*
+    fprintf (stderr, "ats_main_is_posmark_xref_prefix: flag = %s\n", flag) ;
+*/
+    ats_posmark_xref_flag_set (flag) ;
+  } // end of [if]
+  return (cmp == 0 ? ats_true_bool : ats_false_bool) ;
+} /* end of [ats_main_is_posmark_xref_prefix] */
+
+/* ****** ****** */
+
 static int the_IATS_wait = 0 ;
 
 static inline

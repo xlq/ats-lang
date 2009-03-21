@@ -75,8 +75,9 @@ overload = with $Sym.eq_symbol_symbol
 (* ****** ****** *)
 
 local
+  #define STRING_EMPTY ""
   val the_typedef_cnt: ref int = ref_make_elt<int> (0)
-  val the_typedef_base: ref string = ref_make_elt<string> (string_empty)
+  val the_typedef_base: ref string = ref_make_elt<string> (STRING_EMPTY)
 in
   fn typedef_base_set (base: string): void = (!the_typedef_base := base)
 end // end of [local]
@@ -465,7 +466,7 @@ implement d3explst_funarg_tr (isvararg, npf, d3es) = let
         if isvararg then begin case+ d3e.d3exp_node of
           | D3Erec (_, _, ld3es) => aux0 (hies, ld3es)
           | _ => begin
-            $Lst.list_vt_free (hies);
+            $Lst.list_vt_free__boxed (hies);
             prerr "Internal Error: [ats_trans4]";
             prerr ": d3explst_funarg_tr: aux1: d3e = "; prerr_d3exp d3e;
             prerr_newline ();

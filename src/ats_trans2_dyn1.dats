@@ -105,17 +105,6 @@ fn prerr_loc_error2 (loc: loc_t): void =
 
 (* ****** ****** *)
 
-fn dyncstdecloc_posmark
-  (loc: loc_t, d2c: d2cst_t): void = let
-  val loc_d2c = d2cst_loc_get (d2c)
-  val loc_begoff = $Loc.location_begpos_toff loc
-  val () = $PM.posmark_insert_dyncstdec_beg (loc_begoff, loc_d2c)
-  val loc_endoff = $Loc.location_endpos_toff loc
-  val () = $PM.posmark_insert_dyncstdec_end (loc_endoff, loc_d2c)
-in
-  // empty
-end // end of [dyncstdecloc_posmark]
-
 fn dyncstuseloc_posmark
   (loc: loc_t, d2c: d2cst_t): void = let
   val loc_d2c = d2cst_loc_get (d2c)
@@ -153,7 +142,6 @@ fn d1cstdec_tr
   val arilst = s2exp_arity_list s2e_cst
   val ext = d1c.d1cstdec_ext
   val d2c = d2cst_make (loc, fil, id, dck, s2vpslst, arilst, s2e_cst, ext)
-  val () = dyncstdecloc_posmark (d1c.d1cstdec_loc_id, d2c)
 in
   the_d2expenv_add_dcst d2c; d2c
 end // end of [d1cstdec_tr]

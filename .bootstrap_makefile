@@ -217,6 +217,9 @@ prelude_dats_array_dats.o: prelude_dats_array_dats.c
 prelude_dats_basics_dats.o: prelude_dats_basics_dats.c
 	$(CC) $(CCFLAG) -o $@ -c prelude_dats_basics_dats.c
 
+prelude_dats_file_dats.o: prelude_dats_file_dats.c
+	$(CC) $(CCFLAG) -o $@ -c prelude_dats_file_dats.c
+
 prelude_dats_integer_dats.o: prelude_dats_integer_dats.c
 	$(CC) $(CCFLAG) -o $@ -c prelude_dats_integer_dats.c
 
@@ -229,12 +232,14 @@ prelude_dats_string_dats.o: prelude_dats_string_dats.c
 prelude_dats.o: \
   prelude_dats_array_dats.o \
   prelude_dats_basics_dats.o \
+  prelude_dats_file_dats.o \
   prelude_dats_integer_dats.o \
   prelude_dats_printf_dats.o \
   prelude_dats_string_dats.o
 	$(LD) -r -o $@ \
   prelude_dats_array_dats.o \
   prelude_dats_basics_dats.o \
+  prelude_dats_file_dats.o \
   prelude_dats_integer_dats.o \
   prelude_dats_printf_dats.o \
   prelude_dats_string_dats.o

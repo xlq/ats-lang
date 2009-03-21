@@ -139,6 +139,33 @@ in
   view@ A0 := pf
 end // end of [array_ptr_initialize_lst]
 
+//
+
+implement{a} array_ptr_initialize_lst_vt (A0, n0, xs0) = let
+
+fun aux {n:nat} {l:addr} .<n>.
+  (pf: array_v (a?, n, l) | p: ptr l, n: size_t n, xs: list_vt (a, n))
+  :<> (array_v (a, n, l) | void) =
+  if n > 0 then let
+    prval (pf1, pf2) = array_v_uncons {a?} (pf)
+    val+ ~list_vt_cons (x, xs) = xs
+    val () = !p := x
+    val (pf2 | ans) = aux (pf2 | p+sizeof<a>, n-1, xs)
+  in
+    (array_v_cons {a} (pf1, pf2) | ans)
+  end else let
+    prval () = array_v_unnil {a?} pf
+    val+ ~list_vt_nil () = xs
+  in
+    (array_v_nil {a} () | ())
+  end
+
+val (pf | ()) = aux (view@ A0 | &A0, n0, xs0)
+
+in
+  view@ A0 := pf
+end // end of [array_ptr_initialize_lst_vt]
+
 (* ****** ****** *)
 
 implement array_ptr_initialize_fun_tsz

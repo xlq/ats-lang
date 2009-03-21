@@ -94,13 +94,13 @@ fun list_length_compare
 fun list_vt_copy
   {a:type} {n:nat} (xs: !list_vt (a, n)):<> list_vt (a, n)
 
-fun list_vt_free
-  {a:type} {n:nat} (xs: list_vt (a, n)):<> void
+fun {a:t@ype} list_vt_free {n:nat} (xs: list_vt (a, n)):<> void
+fun list_vt_free__boxed {a:type} {n:nat} (xs: list_vt (a, n)):<> void
 
 (* ****** ****** *)
 
-fun list_vt_length {a:viewtype} {n:nat} (xs: !list_vt (a, n))
-  :<> int n
+fun{a:viewt@ype} list_vt_length {n:nat} (xs: !list_vt (a, n)):<> int n
+fun list_vt_length__boxed {a:viewtype} {n:nat} (xs: !list_vt (a, n)):<> int n
 
 (* ****** ****** *)
 

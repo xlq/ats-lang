@@ -70,20 +70,21 @@ extern fun qsort {a:viewt@ype} {n:nat} {f:eff} (
 
 (* ****** ****** *)
 
+staload Err = "ats_error.sats"
 staload Fil = "ats_filename.sats"
 staload Loc = "ats_location.sats"
 
 (* ****** ****** *)
 
-staload "ats_array.sats"
+staload Arr = "ats_array.sats"
+staload _(*anonymous*) = "ats_array.dats"
+
+staload Lst = "ats_list.sats"
+staload _(*anonymous*) = "ats_list.dats"
 
 (* ****** ****** *)
 
 staload "ats_posmark.sats"
-
-(* ****** ****** *)
-
-staload _(*anonymous*) = "ats_array.dats"
 
 (* ****** ****** *)
 
@@ -128,31 +129,22 @@ fn compare_posmark_posmark
 
 (* ****** ****** *)
 
+typedef lintposmark = @(lint, posmark)
+viewtypedef lintposmarklst = List_vt lintposmark
+viewtypedef lintposmarklstlst = List_vt lintposmarklst
+
 local
 
 val the_posmark_flag = ref_make_elt<int> 0
-val the_posmarklst : ref (List @(lint, posmark)) =
-  ref_make_elt (list_nil ())
+val the_posmarklst =
+  ref_make_elt<lintposmarklst> (list_vt_nil ())
+val the_posmarklstlst =
+  ref_make_elt<lintposmarklstlst> (list_vt_nil ())
 
 in // in of [local]
 
-implement posmark_initiate () = let
-  val () = !the_posmark_flag := 1
-  val () = !the_posmarklst := list_nil ()
-in
-  // empty
-end // end of [posmark_initiate]
-
-// prevent memory leak!
-implement posmark_terminate () = let
-  val () = !the_posmark_flag := 0
-  val () = !the_posmarklst := list_nil ()
-in
-  // empty
-end // end of [posmark_terminate]
-
-implement posmark_pause () = (!the_posmark_flag := 0)
-implement posmark_resume () = (!the_posmark_flag := 1)
+implement posmark_enable () = (!the_posmark_flag := 1)
+implement posmark_disable () = (!the_posmark_flag := 0)
 
 implement posmark_pause_get () = let
   val flag = !the_posmark_flag in !the_posmark_flag := 0; flag
@@ -162,15 +154,61 @@ implement posmark_resume_set
   (flag) = !the_posmark_flag := flag
 // end of [posmark_resume_set]
 
-fn the_posmarklst_get ()
-  : List @(lint, posmark) = !the_posmarklst
-// end of [the_posmarklst_get]
+fn the_posmarklst_get (): lintposmarklst = let
+  val (vbox pf | p) = ref_get_view_ptr (the_posmarklst)
+  val xs = !p
+in
+  !p := list_vt_nil (); xs
+end // end of [the_posmarklst_get]
 
-fn the_posmarklst_insert (p: lint, pm: posmark): void = begin
-  if !the_posmark_flag > 0 then begin
-    !the_posmarklst := list_cons ((p, pm), !the_posmarklst)
+fn the_posmarklst_insert
+  (p: lint, pm: posmark): void =
+  if !the_posmark_flag > 0 then let
+    val (vbox pf | p_ref) = ref_get_view_ptr (the_posmarklst) in
+    !p_ref := list_vt_cons ((p, pm), !p_ref)
   end // end of [if]
-end (* end of [posmark_insert] *)
+// (* end of [posmark_insert] *)
+
+implement posmark_pop () = let
+  val xs = let
+    val (vbox pf | p) = ref_get_view_ptr (the_posmarklstlst)
+  in
+    case+ !p of
+    | ~list_vt_cons (xs, xss) => (!p := xss; xs)
+    | ~list_vt_nil () => let
+        val xs = $effmask_ref begin
+          prerr "INTERNAL ERROR";
+          prerr ": posmark_pop: empty stack"; prerr_newline ();
+          $Err.abort {lintposmarklst} ()
+        end // end of [val]
+      in
+        !p := list_vt_nil (); xs
+      end // end of [posmark_pop]
+  end : lintposmarklst // end of [val]
+  val xs1 = let
+    val (vbox pf | p) = ref_get_view_ptr (the_posmarklst)
+    val xs1 = !p; val () = !p := xs
+  in
+    $Lst.list_vt_free (xs1)
+  end // end of [val]
+in
+end // end of [val]
+
+implement posmark_push () = let
+  val xs = let
+    val (vbox pf | p) = ref_get_view_ptr (the_posmarklst)
+    val xs = !p
+  in
+    !p := list_vt_nil (); xs
+  end // end of [val]
+  val () = let
+    val (vbox pf | p) = ref_get_view_ptr (the_posmarklstlst)
+  in
+    !p := list_vt_cons (xs, !p)
+  end // end of [val]
+in
+  // empty
+end // end of [posmark_push]
 
 end // end of [local]
 
@@ -247,111 +285,6 @@ implement posmark_insert_dyncstuse_beg (p, loc) =
 
 implement posmark_insert_dyncstuse_end (p, loc) =
   the_posmarklst_insert (p, PMdyncstuse (1, loc))
-
-(* ****** ****** *)
-
-fn posmarklst_sort
-  (ppms: List @(lint, posmark)): List_vt @(lint, posmark) = let
-
-  typedef ppm = @(lint, posmark)
-
-  fn cmp
-    (x1: &ppm, x2: &ppm): Sgn = let
-    val x10 = x1.0 and x20 = x2.0 in
-    if x10 < x20 then ~1 else begin
-      (if x10 > x20 then 1 else compare_posmark_posmark (x1.1, x2.1))
-    end // end of [if]
-  end // end of [cmp]
-
-  fun loop {n,i:int | 0 <= i + 1; i + 1 <= n}
-    (A: &(@[ppm][n]), i: int i, res: list_vt (ppm, n-i-1))
-    : list_vt (ppm, n) =
-    if i >= 0 then begin
-      loop (A, i-1, list_vt_cons (A.[i], res))
-    end else begin
-      res // return value
-    end // end of [if]
-  // end of [loop]
-
-  val n = aux (ppms, 0) where {
-    fun aux {i,j:nat} (ppms: list (ppm, i), j: int j): int (i+j) =
-      case+ ppms of list_cons (_, ppms) => aux (ppms, j+1) | list_nil () => j
-  } // end of [val]
-
-  val (pf_gc, pf_arr | p_arr) = array_ptr_make_lst<ppm> (n, ppms)
-  val () = qsort {ppm} (!p_arr, size1_of_int1 n, sizeof<ppm>, cmp)
-  val res = loop (!p_arr, n-1, list_vt_nil ())
-  val () = array_ptr_free {ppm} (pf_gc, pf_arr | p_arr)
-in
-  res
-end // end of [posmarklst_sort]
-  
-(* ****** ****** *)
-
-fn posmark_file_file (
-    proc: (&FILE w, posmark) -<fun1> void
-  , fputchr: (char, &FILE w) -<fun1> void
-  , fil_s: &FILE r, fil_d: &FILE w
-  ) : void = let
-  typedef ppm =  @(lint, posmark)
-
-  fun lpfin1
-    (fil_s: &FILE r, fil_d: &FILE w, pm: posmark, ppms: List_vt ppm)
-    :<cloref1> void = let
-    val () = proc (fil_d, pm)
-  in
-    case+ ppms of
-    | ~list_vt_cons (ppm, ppms) => lpfin1 (fil_s, fil_d, ppm.1, ppms)
-    | ~list_vt_nil () => ()
-  end // end of [lpfin1]
-
-  fun lpfin2 (fil_s: &FILE r, fil_d: &FILE w):<cloref1> void = let
-    val c = fgetc_err (file_mode_lte_r_r | fil_s)
-  in
-    if (c >= 0) then begin
-      fputchr (char_of_int c, fil_d); lpfin2 (fil_s, fil_d)
-    end // end of [if]
-  end // end of [lpfin2]
-
-  fn* loop1
-    (fil_s: &FILE r, fil_d: &FILE w,
-     i: lint, p: lint, pm: posmark, ppms: List_vt ppm)
-    :<cloref1> void = let
-    val c = fgetc_err (file_mode_lte_r_r | fil_s)
-  in
-    if (c >= 0) then begin
-      loop2 (fil_s, fil_d, i, p, pm, ppms, c)
-    end else begin
-      lpfin1 (fil_s, fil_d, pm, ppms)
-    end // end of [if]
-  end (* end of [loop1] *)
-
-  and loop2
-    (fil_s: &FILE r, fil_d: &FILE w,
-     i: lint, p: lint, pm: posmark, ppms: List_vt ppm, c: int)
-    :<cloref1> void = begin
-    if i < p then let
-      val () = fputchr (char_of_int c, fil_d)
-    in
-      loop1 (fil_s, fil_d, succ i, p, pm, ppms)
-    end else let
-      val () = proc (fil_d, pm)
-    in
-      case+ ppms of
-      | ~list_vt_cons (ppm, ppms) => begin
-          loop2 (fil_s, fil_d, i, ppm.0, ppm.1, ppms, c)
-        end // end of [list_vt_cons]
-      | ~list_vt_nil () => begin
-          fputchr (char_of_int c, fil_d); lpfin2 (fil_s, fil_d)
-        end // end of [list_vt_nil]
-    end // end of [if]
-  end (* end of [loop2] *)
-
-  val lint0 = lint_of_int 0 // 0L
-  val ppms = posmarklst_sort (the_posmarklst_get ())
-in
-  loop1 (fil_s, fil_d, lint0, lint0, PMnone (), ppms)
-end // end of [posmark_file_file]
 
 (* ****** ****** *)
 
@@ -449,10 +382,152 @@ span.dyncstuse  {text-decoration:underline}\n\
 </BODY>\n\
 </HTML>\n\
 "
-in // in of [local]
+(* ****** ****** *)
+
+fn posmarklst_sort
+  (ppms: lintposmarklst): lintposmarklst = let
+
+  typedef ppm = lintposmark
+
+  fn cmp
+    (x1: &ppm, x2: &ppm): Sgn = let
+    val x10 = x1.0 and x20 = x2.0 in
+    if x10 < x20 then ~1 else begin
+      (if x10 > x20 then 1 else compare_posmark_posmark (x1.1, x2.1))
+    end // end of [if]
+  end // end of [cmp]
+
+  fun loop {n,i:int | 0 <= i + 1; i + 1 <= n}
+    (A: &(@[ppm][n]), i: int i, res: list_vt (ppm, n-i-1))
+    : list_vt (ppm, n) =
+    if i >= 0 then begin
+      loop (A, i-1, list_vt_cons (A.[i], res))
+    end else begin
+      res // return value
+    end // end of [if]
+  // end of [loop]
+
+  val n = $Lst.list_vt_length<ppm> (ppms)
+  val (pf_gc, pf_arr | p_arr) =
+    $Arr.array_ptr_make_lst_vt<ppm> (n, ppms)
+  val () = qsort {ppm} (!p_arr, size1_of_int1 n, sizeof<ppm>, cmp)
+  val res = loop (!p_arr, n-1, list_vt_nil ())
+  val () = array_ptr_free {ppm} (pf_gc, pf_arr | p_arr)
+in
+  res
+end // end of [posmarklst_sort]
+  
+(* ****** ****** *)
+
+fn posmark_file_file (
+    proc: (&FILE w, posmark) -<fun1> void
+  , fputchr: (char, &FILE w) -<fun1> void
+  , fil_s: &FILE r, fil_d: &FILE w
+  ) : void = let
+
+  typedef ppm =  lintposmark
+
+  fun lpfin1
+    (fil_s: &FILE r, fil_d: &FILE w, pm: posmark, ppms: List_vt ppm)
+    :<cloref1> void = let
+    val () = proc (fil_d, pm)
+  in
+    case+ ppms of
+    | ~list_vt_cons (ppm, ppms) => lpfin1 (fil_s, fil_d, ppm.1, ppms)
+    | ~list_vt_nil () => ()
+  end // end of [lpfin1]
+
+  fun lpfin2 (fil_s: &FILE r, fil_d: &FILE w):<cloref1> void = let
+    val c = fgetc_err (file_mode_lte_r_r | fil_s)
+  in
+    if (c >= 0) then begin
+      fputchr (char_of_int c, fil_d); lpfin2 (fil_s, fil_d)
+    end // end of [if]
+  end // end of [lpfin2]
+
+  fn* loop1
+    (fil_s: &FILE r, fil_d: &FILE w,
+     i: lint, p: lint, pm: posmark, ppms: List_vt ppm)
+    :<cloref1> void = let
+    val c = fgetc_err (file_mode_lte_r_r | fil_s)
+  in
+    if (c >= 0) then begin
+      loop2 (fil_s, fil_d, i, p, pm, ppms, c)
+    end else begin
+      lpfin1 (fil_s, fil_d, pm, ppms)
+    end // end of [if]
+  end (* end of [loop1] *)
+
+  and loop2
+    (fil_s: &FILE r, fil_d: &FILE w,
+     i: lint, p: lint, pm: posmark, ppms: List_vt ppm, c: int)
+    :<cloref1> void = begin
+    if i < p then let
+      val () = fputchr (char_of_int c, fil_d)
+    in
+      loop1 (fil_s, fil_d, succ i, p, pm, ppms)
+    end else let
+      val () = proc (fil_d, pm)
+    in
+      case+ ppms of
+      | ~list_vt_cons (ppm, ppms) => begin
+          loop2 (fil_s, fil_d, i, ppm.0, ppm.1, ppms, c)
+        end // end of [list_vt_cons]
+      | ~list_vt_nil () => begin
+          fputchr (char_of_int c, fil_d); lpfin2 (fil_s, fil_d)
+        end // end of [list_vt_nil]
+    end // end of [if]
+  end (* end of [loop2] *)
+
+  val lint0 = lint_of_int 0 // 0L
+  val ppms = posmarklst_sort (the_posmarklst_get ())
+
+  prval pf_mod = file_mode_lte_w_w
+  val () = fprint1_string (pf_mod | fil_d, HTM_POSMARK_FILE_BEG);
+  val () = loop1 (fil_s, fil_d, lint0, lint0, PMnone (), ppms)
+  val () = fprint1_string (pf_mod | fil_d, HTM_POSMARK_FILE_END);
+in
+  // empty
+end // end of [posmark_file_file]
+
+(* ****** ****** *)
 
 fn posmark_process_htm
   (fil_d: &FILE w, pm: posmark): void = let
+  fn fprint_dyncstpos (
+      pf_mod: file_mode_lte (w, w) | fil_d: &FILE w, name: string
+    ) : void = let
+    val name = string1_of_string (name)
+    fun loop {n,i:nat | i <= n} .<n-i>.
+      (fil_d: &FILE w, name: string n, i: size_t i): void =
+      if string_isnot_at_end (name, i) then let
+        val c = name[i]; val () = case+ c of
+          | _ when char_isalnum c => fprint_char (pf_mod | fil_d, c)
+          | _ => let
+              val () = fprint_char (pf_mod | fil_d, '_')
+              val u = uint_of_char c
+              val () = fprintf (pf_mod | fil_d, "%2x", @(u))
+            in
+              // empty
+            end // end of [_]
+      in
+        loop (fil_d, name, i + 1)
+      end else begin
+        fprint1_string (pf_mod | fil_d, ".html")
+      end // end of [if]
+    // end of [loop]
+    val () = () where {
+      val flag = posmark_xref_flag_get () where { extern fun
+        posmark_xref_flag_get (): Stropt = "ats_posmark_xref_flag_get"
+      } // end of [flag]
+      val () = if stropt_is_some flag then let
+        val flag = stropt_unsome (flag) in fprint1_string (pf_mod | fil_d, flag)
+      end // end of [val]
+    } // end of [val]
+    val () = loop (fil_d, name, 0)
+  in
+    // empty
+  end // end of [fprint_dyncstpos]
   prval pf_mod = file_mode_lte_w_w
 in
   case+ pm of
@@ -499,10 +574,15 @@ in
       fprint1_string (pf_mod | fil_d, "</A>")
     end // end of [PMdyncstdec]
   | PMdyncstimp (i, loc(*dec*)) => if i = 0 then let
-      val fil = $Loc.location_filename_get (loc)
-      val name = $Fil.filename_full (fil)
       val () = fprint1_string (pf_mod | fil_d, "<A href=\"")
+(*
       val () = fprint1_string (pf_mod | fil_d, name)
+*)      
+      val name = $Fil.filename_full fil where {
+        val fil = $Loc.location_filename_get (loc)
+      } // end of [val]
+      val name = string1_of_string (name)
+      val () = fprint_dyncstpos (pf_mod | fil_d, name)
       val () = fprint1_string (pf_mod | fil_d, "#")
       val ofs = $Loc.location_begpos_toff (loc)
       val () = fprint1_lint (pf_mod | fil_d, ofs)
@@ -514,10 +594,11 @@ in
       fprint1_string (pf_mod | fil_d, "</A>")
     end // end of [PMdyncstimp]
   | PMdyncstuse (i, loc(*dec*)) => if i = 0 then let
-      val fil = $Loc.location_filename_get (loc)
-      val name = $Fil.filename_full (fil)
       val () = fprint1_string (pf_mod | fil_d, "<A href=\"")
-      val () = fprint1_string (pf_mod | fil_d, name)
+      val name = $Fil.filename_full (fil) where {
+        val fil = $Loc.location_filename_get (loc)
+      } // end of [val]
+      val () = fprint_dyncstpos (pf_mod | fil_d, name)
       val () = fprint1_string (pf_mod | fil_d, "#")
       val ofs = $Loc.location_begpos_toff (loc)
       val () = fprint1_lint (pf_mod | fil_d, ofs)
@@ -539,21 +620,30 @@ fn fputchr_htm
   | _ => fputc_exn (pf_mod | c, out)
 end // end of [fputchr_htm]
 
+in // in of [local]
+
 extern fun posmark_htmlfilename_make (basename: string): string
   = "posmark_htmlfilename_make"
 
-implement posmark_file_make_htm (basename): void = let
-  val htmlfilename = posmark_htmlfilename_make (basename)
+implement posmark_file_make_htm (in_name, out_name) = let
   val file_mode_r = $extval (file_mode r, "\"r\"")
+  val (pf_in | p_in) = fopen_exn (in_name, file_mode_r)
   val file_mode_w = $extval (file_mode w, "\"w\"")
-  val (pf_in | p_in) = fopen_exn (basename, file_mode_r)
-  val (pf_out | p_out) = fopen_exn (htmlfilename, file_mode_w)
-  val () = fprint1_string (file_mode_lte_w_w | !p_out, HTM_POSMARK_FILE_BEG);
-  val () = posmark_file_file (posmark_process_htm, fputchr_htm, !p_in, !p_out)
-  val () = fprint1_string (file_mode_lte_w_w | !p_out, HTM_POSMARK_FILE_END);
-  val () = fprint1_newline (file_mode_lte_w_w | !p_out);
+  val () = if stropt_is_some out_name then let
+    val out_name = stropt_unsome (out_name)
+    val (pf_out | p_out) = fopen_exn (out_name, file_mode_w)
+    val () = posmark_file_file (posmark_process_htm, fputchr_htm, !p_in, !p_out)
+  in
+    fclose_exn (pf_out | p_out)
+  end else let
+    val (pf_out | p_out) = stdout_get ()
+    val () = posmark_file_file (posmark_process_htm, fputchr_htm, !p_in, !p_out)
+  in
+    stdout_view_set (pf_out | (*none*))
+  end
+  val () = fclose_exn (pf_in | p_in)
 in
-  fclose_exn (pf_out | p_out); fclose_exn (pf_in | p_in)
+  // empty
 end // end of [posmark_file_make_htm]
 
 end // end of [local]
@@ -578,6 +668,20 @@ posmark_htmlfilename_make (ats_ptr_type basename) {
   while (n >= 0) { s[n] = ((char *)basename)[n] ; --n ; }
   return s ;
 } /* posmark_htmlfilename_make */
+
+/* ****** ****** */
+
+static char* the_posmark_xref_flag = 0 ;
+
+ats_ptr_type
+ats_posmark_xref_flag_get () {
+  return the_posmark_xref_flag ;
+}
+
+ats_void_type
+ats_posmark_xref_flag_set (ats_ptr_type flag) {
+  the_posmark_xref_flag = flag ; return ;
+}
 
 %}
 

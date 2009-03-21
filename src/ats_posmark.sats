@@ -42,14 +42,14 @@ typedef loc_t = location_t
 
 (* ****** ****** *)
 
-fun posmark_initiate (): void
-fun posmark_terminate (): void
-
-fun posmark_pause (): void
-fun posmark_resume (): void
+fun posmark_enable (): void
+fun posmark_disable (): void
 
 fun posmark_pause_get (): int
 fun posmark_resume_set (flag: int): void
+
+fun posmark_pop (): void
+fun posmark_push (): void
 
 (* ****** ****** *)
 
@@ -85,9 +85,8 @@ fun posmark_insert_dyncstuse_end (li: lint, loc: loc_t): void
 (* ****** ****** *)
 
 fun posmark_file_make_tex (basename: string): void
-fun posmark_file_make_htm (basename: string): void
+fun posmark_file_make_htm (in_name: string, out_name: Stropt): void
 
 (* ****** ****** *)
 
 (* end of [ats_posmark.sats] *)
-

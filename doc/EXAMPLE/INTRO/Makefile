@@ -35,14 +35,14 @@ revarr: revarr.dats
 ######
 
 html::
-	atsopt --posmark_html_only -d HelloWorld.dats
-	atsopt --posmark_html_only -d f91.dats
-	atsopt --posmark_html_only -d fact1.dats
-	atsopt --posmark_html_only -d fact2.dats
-	atsopt --posmark_html_only -d fact3.dats
-	atsopt --posmark_html_only -d fact_in_c.dats
-	atsopt --posmark_html_only -d fibs.dats
-	atsopt --posmark_html_only -d revarr.dats
+	atsopt --posmark_html -d HelloWorld.dats > HelloWorld_dats.html
+	atsopt --posmark_html -d f91.dats > f91_dats.html
+	atsopt --posmark_html -d fact1.dats > fact1_dats.html
+	atsopt --posmark_html -d fact2.dats > fact2_dats.html
+	atsopt --posmark_html -d fact3.dats > fact3_dats.html
+	atsopt --posmark_html -d fact_in_c.dats > fact_in_c_dats.html
+	atsopt --posmark_html -d fibs.dats > fibs_dats.html
+	atsopt --posmark_html -d revarr.dats > revarr_dats.html
 
 ######
 

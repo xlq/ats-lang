@@ -84,7 +84,7 @@ fn tailjoin_name_make (f0: funentry_t, fs: funentrylst): string = let
   var cs: T = $CS.CHARLSTnil ()
   val () = aux_entry (cs, f0); val () = aux_entrylst (cs, fs)
 in
-  $CS.string_make_rev_charlst (cs)
+  $CS.string_make_charlst_rev (cs)
 end // end of [tailjoin_name_make]
 
 fn tailjoin_retyp_check // retyp: return type

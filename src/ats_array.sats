@@ -59,14 +59,24 @@ fun{a:t@ype} array_ptr_initialize_lst {n:nat} (
     base: &(@[a?][n]) >> @[a][n], asz: int n, xs: list (a, n)
   ) :<> void
 
+fun{a:viewt@ype} array_ptr_initialize_lst_vt {n:nat} (
+    base: &(@[a?][n]) >> @[a][n], asz: int n, xs: list_vt (a, n)
+  ) :<> void
+
 (* ****** ****** *)
 
 fun{a:t@ype} array_ptr_make_elt {n:nat} (asz: int n, x:a)
   :<> [l:addr | l <> null] (free_gc_v (a, n, l), array_v (a, n, l) | ptr l)
-// end of [array_ptr_make_lst]
+// end of [array_ptr_make_elt]
 
 fun{a:t@ype} array_ptr_make_lst {n:nat} (
     asz: int n, xs: list (a, n)
+  ) :<> [l:addr | l <> null] (
+    free_gc_v (a, n, l), array_v (a, n, l) | ptr l
+  ) // end of [array_ptr_make_lst]
+
+fun{a:viewt@ype} array_ptr_make_lst_vt {n:nat} (
+    asz: int n, xs: list_vt (a, n)
   ) :<> [l:addr | l <> null] (
     free_gc_v (a, n, l), array_v (a, n, l) | ptr l
   ) // end of [array_ptr_make_lst]

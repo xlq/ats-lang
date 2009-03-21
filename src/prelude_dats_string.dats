@@ -36,11 +36,11 @@
 
 (* ****** ****** *)
 
-#define ATS_DYNLOADFLAG 0 // loaded by [main_prelude]
+#define ATS_DYNLOADFLAG 0 // no need for dynamic loading
 
 (* ****** ****** *)
 
-implement string_empty = "" // this requires dynamic loading
+// implement string_empty = "" // this requires dynamic loading
 
 (* ****** ****** *)
 

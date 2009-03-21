@@ -168,7 +168,7 @@ implement list_length_compare (xs1, xs2) = case+ xs1 of
 
 (* ****** ****** *)
 
-implement list_vt_length {a} (xs) = let
+implement{a} list_vt_length (xs) = let
   fun aux {i,j:nat} .<i>.
     (xs: !list_vt (a, i), j: int j):<> int (i+j) =
     case+ xs of
@@ -176,9 +176,12 @@ implement list_vt_length {a} (xs) = let
         let val n = aux (!xs1, j + 1) in fold@ xs; n end
       end
     | list_vt_nil () => (fold@ xs; j)
+  // end of [aux]
 in
   aux (xs, 0)
 end // end of [list_vt_length]
+
+implement list_vt_length__boxed {a} (xs) = list_vt_length<a> (xs)
 
 (* ****** ****** *)
 
@@ -203,11 +206,13 @@ in
 end // end of [list_vt_copy]
 
 (* tail-recursive implementation *)
-implement list_vt_free (xs) = begin
+implement{a} list_vt_free (xs) = begin
   case+ xs of
   | ~list_vt_cons (_, xs) => list_vt_free xs
   | ~list_vt_nil () => ()
 end // end of [list_vt_free]
+
+implement list_vt_free__boxed {a} (xs) = list_vt_free<a> (xs)
 
 (* ****** ****** *)
 

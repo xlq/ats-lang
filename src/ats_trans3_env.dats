@@ -1035,9 +1035,8 @@ extern fun free_the_s3itemlst (): void
 implement free_the_s3itemlst () = let
   val (vbox pf | p) = ref_get_view_ptr the_s3itemlst
   val s3is = !p
-  val () = !p := list_vt_nil ()
 in
-  $Lst.list_vt_free (s3is)
+  !p := list_vt_nil (); $Lst.list_vt_free__boxed (s3is)
 end // end of [free_the_s3itemlst]
 
 (* ****** ****** *)
@@ -1090,7 +1089,7 @@ implement trans3_env_pop_sta_and_add_none (loc) =
  trans3_env_pop_sta_and_add (loc, C3STRKINDnone ())
 
 implement trans3_env_pop_sta_and_free () = let
-  val s3is = trans3_env_pop_sta () in $Lst.list_vt_free (s3is)
+  val s3is = trans3_env_pop_sta () in $Lst.list_vt_free__boxed (s3is)
 end // end of [trans3_env_pop_sta_and_free]
 
 (* ****** ****** *)

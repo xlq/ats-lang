@@ -111,10 +111,9 @@ implement ccomp_gcc_ar_libfile (param_rev, infile, libfile) = let
    else ()
   val outfile_o = outfile + ".o"
   val status = gcc_libfile_err (param_rev, outfile_c, outfile_o)
-  val () =
-    if (status <> 0) then begin exit_prerrf {void}
-      (status, "Exit: [ccomp_gcc_ar_libfile(%s)] failed: gcc\n", @(infile))
-    end
+  val () = if (status <> 0) then begin exit_prerrf {void}
+    (status, "Exit: [ccomp_gcc_ar_libfile(%s)] failed: gcc\n", @(infile))
+  end // end of [val]
   val status = ar_r_err (libfile, outfile_o)
   val () = if (status <> 0) then begin exit_prerrf {void}
     (status, "Exit: [ccomp_gcc_ar_libfile(%s)] failed: ar\n", @(infile))

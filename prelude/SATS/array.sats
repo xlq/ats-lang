@@ -145,6 +145,9 @@ fun array_ptr_initialize_elt_tsz {a:t@ype} {n:nat}
 fun{a:t@ype} array_ptr_initialize_lst {n:nat}
   (base: &(@[a?][n]) >> @[a][n], asz: size_t n, xs: list (a, n)):<> void
 
+fun{a:viewt@ype} array_ptr_initialize_lst_vt {n:nat}
+  (base: &(@[a?][n]) >> @[a][n], asz: size_t n, xs: list_vt (a, n)):<> void
+
 (* ****** ****** *)
 
 // implemented in [prelude/DATS/array.dats]
@@ -409,6 +412,9 @@ fun{a:t@ype} array_make_elt {n:nat} (asz: size_t n, elt: a):<> array (a, n)
 
 fun{a:t@ype} array_make_lst {n:nat}
   (asz: size_t n, xs: list (a, n)):<> array (a, n)
+
+fun{a:viewt@ype} array_make_lst_vt {n:nat}
+  (asz: size_t n, xs: list_vt (a, n)):<> array (a, n)
 
 fun array_make_clo_tsz {a:viewt@ype} {n:nat} {f:eff} (
     asz: size_t n

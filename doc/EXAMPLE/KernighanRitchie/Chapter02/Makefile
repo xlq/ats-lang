@@ -5,8 +5,8 @@ all: \
 ######
 
 html::
-	atsopt --posmark_html -d strlen.dats
-	atsopt --posmark_html -d rand.dats
+	atsopt --posmark_html -d strlen.dats > strlen_dats.html
+	atsopt --posmark_html -d rand.dats > rand_dats.html
 
 ######
 

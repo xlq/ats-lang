@@ -49,7 +49,9 @@ staload Glo = "ats_global.sats"
 staload Loc = "ats_location.sats"
 staload Lst = "ats_list.sats"
 staload Par = "ats_parser.sats"
+staload PM = "ats_posmark.sats"
 staload Sym = "ats_symbol.sats"
+staload Syn = "ats_syntax.sats"
 
 (* ****** ****** *)
 
@@ -62,6 +64,10 @@ staload "ats_e1xp_eval.sats"
 (* ****** ****** *)
 
 staload "ats_trans1.sats"
+
+(* ****** ****** *)
+
+#include "prelude/params_system.hats"
 
 (* ****** ****** *)
 
@@ -1406,6 +1412,70 @@ ats_trans1_string_suffix_is_dats (ats_ptr_type s0) {
 
 %}
 
+local
+
+staload "ats_charlst.sats"
+
+fn char_of_xdigit (i: int): char = let
+  val i = (
+    if i >= 10 then let
+      val a = int_of_char 'a' in int_of_char 'a' + i - 10
+    end else begin
+      int_of_char '0' + i
+    end
+  ) : int
+in
+  char_of_int (i)
+end // end of [char_of_xdigit]
+
+extern fun
+  posmark_xref_flag_get (): Stropt = "ats_posmark_xref_flag_get"
+
+in // in of [local]
+
+fun posmark_xref_testnot
+  (flag: string, name: string): Stropt = let
+  fun loop {n,i:nat | i <= n} .<n-i>.
+    (name: string n, i: size_t i, cs: Charlst_vt): Charlst_vt =
+    if string_isnot_at_end (name, i) then let
+      val c = name[i]
+      val cs = (case+ c of
+        | _ when char_isalnum c => CHARLSTcons (c, cs)
+        | _ => let
+            val cs = CHARLSTcons ('_', cs)
+            val i = int_of_char (c)
+            val i1 = i / 16 and i2 = i mod 16
+            val c1 = char_of_xdigit i1 and c2 = char_of_xdigit i2
+          in
+            CHARLSTcons (c2, CHARLSTcons (c1, cs))
+          end // end of [_]
+      ) : Charlst_vt
+    in
+      loop (name, i+1, cs)
+    end else begin
+      charlst_add_string (cs, ".html") // loop returns
+    end (* end of [if] *)
+  val flag = string1_of_string (flag)
+  val cs = charlst_add_string (CHARLSTnil (), flag) // [flag] ends with [dirsep]
+  val name = string1_of_string (name)
+  val cs = loop (name, 0, cs)
+  val name1 = string_make_charlst_rev (cs)
+in
+  if test_file_exists (name1) then stropt_none else stropt_some (name1)
+end // end of [posmark_xref_search]
+
+fun posmark_xref_testnot_if (name: string): Stropt = let
+  val flag = posmark_xref_flag_get ()
+in
+  if stropt_is_some flag then let
+    val flag = stropt_unsome (flag) in posmark_xref_testnot (flag, name)
+  end else stropt_none
+end // end of [posmark_xref_testnot_if]
+
+end // end of [local]
+
+(* ****** ****** *)
+
 fn s0taload_tr (
     loc: loc_t
   , idopt: Option sym_t
@@ -1429,7 +1499,17 @@ fn s0taload_tr (
         val flag = (
           if string_suffix_is_dats fullname then 1(*dyn*) else 0(*sta*)
         ) : int
+        val pmstropt = posmark_xref_testnot_if (fullname)
+        val isposmark = stropt_is_some pmstropt
+        val () = if isposmark then begin
+          $PM.posmark_push (); $PM.posmark_enable ()
+        end // end of [val]
         val d0cs = $Par.parse_from_filename (flag, fil)
+        val () = if isposmark then let
+          val () = $Syn.d0eclst_posmark d0cs
+          val () = $PM. posmark_file_make_htm (fullname, pmstropt) in
+          $PM.posmark_disable (); $PM.posmark_pop ()
+        end // end of [val]
         val () = $Fil.the_filenamelst_pop ()
 (*
         val () = begin

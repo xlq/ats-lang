@@ -410,13 +410,13 @@ fn do_parse_filename (
     if depgen > 0 then (print_string basename; print_string ":")
   end // end of [val]
 //
-  val () = if param.posmark > 0 then $PM.posmark_initiate ()
+  val () = if param.posmark > 0 then $PM.posmark_enable ()
   var d0cs: $Syn.d0eclst = list_nil ()
   val () = $Fil.the_filenamelst_push filename
   val () = d0cs := $Par.parse_from_filename (flag, filename)
   val () = $Fil.the_filenamelst_pop ()
   val () = if param.posmark > 0 then let
-    val () = $Syn.d0eclst_posmark d0cs in $PM.posmark_pause ()
+    val () = $Syn.d0eclst_posmark d0cs in $PM.posmark_disable ()
   end // end of [val]
 //
   val () = if depgen > 0 then print_newline ()
@@ -467,9 +467,9 @@ fn do_trans12 (
     prerr_newline ()
   end // end of [if]
 
-  val () = if param.posmark_html = 2 then $PM.posmark_resume ()
+  val () = if param.posmark_html = 2 then $PM.posmark_enable ()
   val d2cs = $Trans2.d1eclst_tr d1cs
-  val () = if param.posmark_html = 2 then $PM.posmark_pause ()
+  val () = if param.posmark_html = 2 then $PM.posmark_disable ()
   val () = if debug_flag > 0 then begin
     prerr "The 2nd translation (binding) of [";
     prerr basename;
@@ -577,6 +577,9 @@ ats_void_type mainats_prelude () { return ; }
 
 (* ****** ****** *)
 
+extern fun is_posmark_xref_prefix
+  (s: string): bool = "ats_main_is_posmark_xref_prefix"
+
 extern fun IATS_wait_set (): void = "ats_main_IATS_wait_set"
 extern fun IATS_wait_is_set (): bool = "ats_main_IATS_wait_is_set"
 extern fun IATS_wait_clear (): void = "ats_main_IATS_wait_clear"
@@ -675,7 +678,8 @@ fun loop {i:nat | i <= n} .<i>. (
           | "--posmark_html" => begin
               param.posmark := 1; param.posmark_html := 1
             end // end of ["--posmark_html"]
-          | "--posmark_xref" => begin
+          | _ when is_posmark_xref_prefix (str) => let
+            in
               param.posmark := 1; param.posmark_html := 2
             end // end of ["--posmark_html_xref"]
           | "--debug=0" => $Deb.debug_flag_set (0)
@@ -702,21 +706,21 @@ fun loop {i:nat | i <= n} .<i>. (
         val d0cs = do_parse_filename (flag, param, basename)
         val () = begin case+ 0 of
           | _ when param.posmark_html = 1 => let
-              val () = $PM.posmark_file_make_htm (basename)
-              val () = $PM.posmark_terminate ()
+              val () = $PM.posmark_file_make_htm (basename, stropt_none)
+              val () = $PM.posmark_disable ()
             in
-              print "The syntax marking of [";
-              print basename; print "] is successfully completed!";
-              print_newline ()
+              prerr "The syntax marking of [";
+              prerr basename; prerr "] is successfully completed!";
+              prerr_newline ()
             end // end of [_]
           | _ when param.posmark_html = 2 => let
               val _(*d2cs*) = do_trans12 (param, basename, d0cs)
-              val () = $PM.posmark_file_make_htm (basename)
-              val () = $PM.posmark_terminate ()
+              val () = $PM.posmark_file_make_htm (basename, stropt_none)
+              val () = $PM.posmark_disable ()
             in
-              print "The syntax cross referencing of [";
-              print basename; print "] is successfully completed!";
-              print_newline ()              
+              prerr "The syntax cross referencing of [";
+              prerr basename; prerr "] is successfully completed!";
+              prerr_newline ()              
             end // end of [_ when ...]
           | _ when $Glo.ats_depgenflag_get () > 0 => ()
           | _ when param.typecheck_only > 0 => let

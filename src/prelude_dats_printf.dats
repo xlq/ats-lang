@@ -36,7 +36,7 @@
 
 (* ****** ****** *)
 
-#define ATS_DYNLOADFLAG 0 // loaded by [ats_main_prelude]
+#define ATS_DYNLOADFLAG 0 // no need for dynamic loading
 
 (* ****** ****** *)
 
@@ -69,9 +69,8 @@ ats_void_type atspre_assert_prerrf
       ) ;
     }
   }
-
   return ;
-}
+} /* end of [atspre_assert_prerrf] */
 
 %}
 
@@ -130,7 +129,7 @@ atspre_tostringf (ats_ptr_type fmt, ...) {
     ats_exit_errmsg (1, "Exit: [ats_tostringf] failed.\n") ;
   }
   return res ;
-}
+} /* end of [atspre_tostringf] */
 
 %}
 

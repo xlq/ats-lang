@@ -85,6 +85,14 @@ atspre_string1_of_strbuf (const ats_ptr_type s) { return s ; }
 /* ****** ****** */
 
 static inline
+ats_void_type
+atspre_strbuf_ptr_free (ats_ptr_type base) { 
+  ATS_FREE(base); return ;
+}
+
+/* ****** ****** */
+
+static inline
 ats_bool_type
 atspre_lt_string_string
   (const ats_ptr_type s1, const ats_ptr_type s2) {

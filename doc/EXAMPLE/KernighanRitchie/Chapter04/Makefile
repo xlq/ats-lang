@@ -6,9 +6,9 @@ all: \
 ######
 
 html::
-	atsopt --posmark_html -d atof.dats
-	atsopt --posmark_html -d printd.dats
-	atsopt --posmark_html -d qsort.dats
+	atsopt --posmark_html -d atof.dats > atof_dats.html
+	atsopt --posmark_html -d printd.dats > printd_dats.html
+	atsopt --posmark_html -d qsort.dats > qsort_dats.html
 
 ######
 
