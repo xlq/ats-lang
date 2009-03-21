@@ -59,20 +59,21 @@ atsopt -tc -d foo.dats -s foo.sats
 \end{verbatim}
 
 \subsection{Generating HTML Files}
-The flag \verb`--posmark_html` can be added to turn ATS programs into HTML
+The flag \verb`--posmark_html` can be used to turn ATS programs into HTML
 files for the purpose of viewing (through a browser). For instance, if the
-following command line is issued, a file {\it foo\_dats.html} is generated
-before the code in {\it foo.dats} is typechecked:
+following command line is issued, a file {\it foo\_dats.html} is generated:
 \begin{verbatim}
-atsopt --posmark_html -tc -d foo.dats
+atsopt --posmark_html -d foo.dats > foo_dats.html
 \end{verbatim}
-If only HTML files need to be generated,
-the flag \verb`--posmark_html_only` can be used in place of
-\verb`--posmark_html`. For instance, the following command line,
-if executed successfully, generates HTML files {\it foo\_dats.html} and
-{\it foo\_sats.html}:
+
+\subsection{Generating HTML Files for cross-referencing}
+The flag \verb`--posmark_xref` can be used to turn ATS programs into HTML
+files for the purpose of viewing and cross-referencing (through a
+browser). For instance, if the following command line is issued, a file
+{\it foo\_dats.html} is generated while various other files are created
+in the directory {\it XREF/} for the purpose of cross-referencing:
 \begin{verbatim}
-atsopt --posmark_html -d foo.dats -s foo.sats
+atsopt --posmark_xref=XREF -d foo.dats > foo_dats.html
 \end{verbatim}
 
 \subsection{Generating Usage Information}

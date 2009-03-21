@@ -198,9 +198,9 @@ staload CC = "ats_ccomp.sats"
 
 (* ****** ****** *)
 
-fn getenv_exn (name: string): String = let
-  val stropt = getenv_opt name
-in
+fn getenv_exn
+  (name: string): String = let
+  val stropt = getenv_opt name in
   if stropt_is_some stropt then
     string1_of_string (stropt_unsome stropt)
   else begin
@@ -209,7 +209,7 @@ in
     prerr "] is undefined!\n" ;
     exit (1)
   end // end of [if]
-end // end of [getenv_exn]
+end (* end of [getenv_exn] *)
 
 // this is primarily for ATS developers
 fn atsopt_usage (cmd: string): void = begin
@@ -255,7 +255,7 @@ fn fixity_load (ATSHOME: string): void = let
 (*
   val () = begin
     print "[fixity_load] is finished."; print_newline ()
-  end
+  end // end of [val]
 *)
 in
   // empty
@@ -291,7 +291,7 @@ fn prelude_load (ATSHOME: string): void = let
   val () = begin
     print "pervasive_load: loading [prelude/basics_sta.sats] is done.";
     print_newline ()
-  end
+  end // end of [val]
 *)
   val () = pervasive_load (ATSHOME, "prelude/sortdef.sats")
   val () = pervasive_load (ATSHOME, "prelude/basics_dyn.sats")
@@ -382,9 +382,7 @@ end // end of [local]
 (* ****** ****** *)
 
 fn do_parse_filename (
-    flag: int
-  , param: param_t
-  , basename: string
+    flag: int, param: param_t, basename: string
   ) : $Syn.d0eclst = let
   val debug_flag = $Deb.debug_flag_get ()
   val () = if debug_flag > 0 then let
@@ -395,14 +393,13 @@ fn do_parse_filename (
   in
     prerr "cwd = "; prerr cwd; prerr_newline ()
   end // end of [if]
-  val filename = (
-    case+ $Fil.filenameopt_make basename of
-    | ~Some_vt filename => filename
-    | ~None_vt () => begin
-        prerr "error: the filename ["; prerr basename;
-        prerr "] is not available."; prerr_newline ();
-        exit (1)
-      end
+  val filename = (case+ $Fil.filenameopt_make basename of
+    | ~Some_vt filename => filename | ~None_vt () => begin
+        prerr "error(ATS)";
+        prerr ": the filename ["; prerr basename; prerr "] is not available.";
+        prerr_newline ();
+        exit {$Fil.filename_t} (1)
+      end // end of [None_vt]
   ) : $Fil.filename_t
   val () = input_filename_set (filename)
   val depgen = $Glo.ats_depgenflag_get ()
@@ -613,21 +610,22 @@ fn warning (str: string) = begin
 end // end of [warning]
 
 fun loop {i:nat | i <= n} .<i>. (
-    argv: &(@[string][n]), param: &param_t, args: arglst i
-  ) :<cloptr1> void = begin case+ args of
-  | ~list_vt_cons (arg, args) => begin case+ arg of
+    ATSHOME: string
+  , argv: &(@[string][n]), param: &param_t
+  , arglst: arglst i
+  ) :<fun1> void = begin case+ arglst of
+  | ~list_vt_cons (arg, arglst) => begin case+ arg of
     | _ when IATS_wait_is_set () => let
         val COMARGkey (_(*n*), dir) = arg
         val () = IATS_wait_clear (); val () = $Fil.the_pathlst_push dir
       in
-        loop (argv, param, args)
+        loop (ATSHOME, argv, param, arglst)
       end // end of [_ when ...]
 (*
     | _ when ATSHOME_RELOC_wait_is_set () => let
         val COMARGkey (_(*n*), dir) = arg
-        val () = ATSHOME_RELOC_wait_clear (); val () = atshome_reloc_dir_set (dir)
-      in
-        loop (argv, param, args)
+        val () = ATSHOME_RELOC_wait_clear ()
+        val () = atshome_reloc_dir_set (dir) in loop (ATSHOME, argv, param, arglst)
       end // end of [_ when ...]
 *)
     | COMARGkey (1, str) => let
@@ -656,11 +654,11 @@ fun loop {i:nat | i <= n} .<i>. (
               end else begin
                 IATS_wait_set ()
               end // end of [if]
-            end // end of [_ when ...]
+            end (* end of [_ when ...] *)
           | _ => ()
       in
-        loop (argv, param, args)
-      end // end of [COMARGkey (1, _)]
+        loop (ATSHOME, argv, param, arglst)
+      end (* end of [COMARGkey (1, _)] *)
     | COMARGkey (2, str) => let
         val () = param.comkind := COMKINDnone ()
         val () = case+ str of
@@ -691,7 +689,7 @@ fun loop {i:nat | i <= n} .<i>. (
           | _ => warning (str)
         // end of [val]
       in
-        loop (argv, param, args)
+        loop (ATSHOME, argv, param, arglst)
       end // end of [COMARG (2, _)]
     | _ when comkind_is_input (param.comkind) => let
         var flag: int = 0
@@ -706,7 +704,8 @@ fun loop {i:nat | i <= n} .<i>. (
         val d0cs = do_parse_filename (flag, param, basename)
         val () = begin case+ 0 of
           | _ when param.posmark_html = 1 => let
-              val () = $PM.posmark_file_make_htm (basename, stropt_none)
+              val outname = output_filename_get ()
+              val () = $PM.posmark_file_make_htm (basename, outname)
               val () = $PM.posmark_disable ()
             in
               prerr "The syntax marking of [";
@@ -715,10 +714,11 @@ fun loop {i:nat | i <= n} .<i>. (
             end // end of [_]
           | _ when param.posmark_html = 2 => let
               val _(*d2cs*) = do_trans12 (param, basename, d0cs)
-              val () = $PM.posmark_file_make_htm (basename, stropt_none)
+              val outname = output_filename_get ()
+              val () = $PM.posmark_file_make_htm (basename, outname)
               val () = $PM.posmark_disable ()
             in
-              prerr "The syntax cross referencing of [";
+              prerr "The syntax cross referencing for [";
               prerr basename; prerr "] is successfully completed!";
               prerr_newline ()              
             end // end of [_ when ...]
@@ -732,7 +732,7 @@ fun loop {i:nat | i <= n} .<i>. (
           | _ => do_trans1234 (param, flag, basename, d0cs)
         end // end of [val]
       in
-        loop (argv, param, args)
+        loop (ATSHOME, argv, param, arglst)
       end // end of [_ when ...]
     | _ when comkind_is_output (param.comkind) => let
         val () = param.comkind := COMKINDnone ()
@@ -740,14 +740,14 @@ fun loop {i:nat | i <= n} .<i>. (
         val basename = string1_of_string basename
         val () = output_filename_set (stropt_some basename)
       in
-        loop (argv, param, args)
+        loop (ATSHOME, argv, param, arglst)
       end // end of [_ when ...]
     | COMARGkey (_, str) => let
         val () = param.comkind := COMKINDnone ()
       in
-        warning (str); loop (argv, param, args)
+        warning (str); loop (ATSHOME, argv, param, arglst)
       end // end of [_]
-    end // end of [list_vt_cons]
+    end (* end of [list_vt_cons] *)
   | ~list_vt_nil () when param.wait > 0 => begin
     case+ param.comkind of
     | COMKINDinput flag => () where {
@@ -768,11 +768,11 @@ fun loop {i:nat | i <= n} .<i>. (
         end // end of [val]
       } // end of [COMKINDinput]
     | _ => ()
-    end // end of [list_vt_nil whne param.wait > 0]
+    end // end of [list_vt_nil when param.wait > 0]
   | ~list_vt_nil () => ()
 end // end of [loop]
 
-val+ ~list_vt_cons (_, args) = comarglst_parse (argc, argv)
+val+ ~list_vt_cons (_, arglst) = comarglst_parse (argc, argv)
 var param: param_t = @{
   comkind= COMKINDnone ()
 , wait= 0
@@ -782,7 +782,7 @@ var param: param_t = @{
 , typecheck_only= 0
 } // end of [var]
 
-val () = loop (argv, param, args)
+val () = loop (ATSHOME, argv, param, arglst)
 
 in
   // empty

@@ -564,8 +564,9 @@ in
     end // end of [PMprfexp]
   | PMdyncstdec (i, loc(*dec*)) => if i = 0 then let
       val () = fprint1_string (pf_mod | fil_d, "<A name=\"")
-      val ofs = $Loc.location_begpos_toff (loc)
-      val () = fprint1_lint (pf_mod | fil_d, ofs)
+      val () = fprint1_lint (pf_mod | fil_d, ofs) where {
+        val ofs = $Loc.location_begpos_toff (loc)
+      } // end of [val]
       val () = fprint1_string (pf_mod | fil_d, "\">")
     in
       fprint1_string (pf_mod | fil_d, HTM_DYNCSTDEC_FONT_BEG)
@@ -575,14 +576,10 @@ in
     end // end of [PMdyncstdec]
   | PMdyncstimp (i, loc(*dec*)) => if i = 0 then let
       val () = fprint1_string (pf_mod | fil_d, "<A href=\"")
-(*
-      val () = fprint1_string (pf_mod | fil_d, name)
-*)      
-      val name = $Fil.filename_full fil where {
-        val fil = $Loc.location_filename_get (loc)
+      val () = fprint_dyncstpos (pf_mod | fil_d, name) where {
+        val fil = $Loc.location_filename_get loc
+        val name = $Fil.filename_full (fil)
       } // end of [val]
-      val name = string1_of_string (name)
-      val () = fprint_dyncstpos (pf_mod | fil_d, name)
       val () = fprint1_string (pf_mod | fil_d, "#")
       val ofs = $Loc.location_begpos_toff (loc)
       val () = fprint1_lint (pf_mod | fil_d, ofs)
@@ -595,13 +592,14 @@ in
     end // end of [PMdyncstimp]
   | PMdyncstuse (i, loc(*dec*)) => if i = 0 then let
       val () = fprint1_string (pf_mod | fil_d, "<A href=\"")
-      val name = $Fil.filename_full (fil) where {
-        val fil = $Loc.location_filename_get (loc)
+      val () = fprint_dyncstpos (pf_mod | fil_d, name) where {
+        val fil = $Loc.location_filename_get loc
+        val name = $Fil.filename_full (fil)
       } // end of [val]
-      val () = fprint_dyncstpos (pf_mod | fil_d, name)
-      val () = fprint1_string (pf_mod | fil_d, "#")
-      val ofs = $Loc.location_begpos_toff (loc)
-      val () = fprint1_lint (pf_mod | fil_d, ofs)
+      val () = fprint1_string (pf_mod | fil_d, "#") 
+      val () = fprint1_lint (pf_mod | fil_d, ofs) where {
+        val ofs = $Loc.location_begpos_toff (loc)
+      } // end of [val]
       val () = fprint1_string (pf_mod | fil_d, "\">")
     in
       fprint1_string (pf_mod | fil_d, HTM_DYNCSTIMP_FONT_BEG)
