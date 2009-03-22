@@ -119,9 +119,7 @@ in
     end // end of [STMexp]
   | STMjump (e, labs) => begin
       prstr "STMjump(";
-      fprint_exp (out, e);
-      prstr "; ";
-      prstr "...";
+      fprint_exp (out, e); prstr "; "; prstr "...";
       prstr ")"
     end // end of [STMjump]
   | STMcjump (relop, e1, e2, tlab, flab) => begin

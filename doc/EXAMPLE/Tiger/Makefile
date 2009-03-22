@@ -220,10 +220,27 @@ funmap_avltree_dats.o: LIB/funmap_avltree.dats
 ######
 
 html::
+	atsopt --posmark_xref=XREF \
+          -d tiger_main.dats > tiger_main_dats.html
+	atsopt --posmark_xref=XREF -d error.dats > error_dats.html
+	atsopt --posmark_xref=XREF -d stamp.dats > stamp_dats.html
+	atsopt --posmark_xref=XREF -d symbol.dats > symbol_dats.html
+	atsopt --posmark_xref=XREF -d types.dats > types_dats.html
 	atsopt -IATS PARCOMB -IATS LIB \
-          --posmark_html_xref -d *.dats -s *.sats
-	cd LIB; atsopt --posmark_html_xref -d *.dats
-	cd PARCOMB; atsopt --posmark_html_xref -d *.dats -s *.sats
+          --posmark_xref=XREF -d absyn.dats > absyn_dats.html
+	atsopt -IATS PARCOMB -IATS LIB \
+	  --posmark_xref=XREF -d fixity.dats > fixity_dats.html
+	atsopt -IATS PARCOMB -IATS LIB \
+	  --posmark_xref=XREF -d parser.dats > parser_dats.html
+	atsopt -IATS PARCOMB -IATS LIB \
+	  --posmark_xref=XREF -d tychecker.dats > tychecker_dats.html
+	atsopt --posmark_xref=XREF -d interp0.dats > interp0_dats.html
+	atsopt --posmark_xref=XREF -d templab.dats > templab_dats.html
+	atsopt --posmark_xref=XREF -d irtree.dats > irtree_dats.html
+	atsopt --posmark_xref=XREF -d frame_x86.dats > frame_x86_dats.html
+	atsopt --posmark_xref=XREF -d translate.dats > translate_dats.html
+	atsopt --posmark_xref=XREF -d canonical.dats > canonical_dats.html
+	atsopt --posmark_xref=XREF -d interp1.dats > interp1_dats.html
 
 ######
 
@@ -250,6 +267,7 @@ clean::
 cleanall: clean
 	rm -f comptig
 	rm -f *_?ats.html */*_?ats.html
+	rm -f XREF/*.html
 
 ######
 
