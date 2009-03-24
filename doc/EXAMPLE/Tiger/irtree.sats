@@ -35,12 +35,16 @@ and stm =
 
 and binop =
   | PLUS | MINUS | MUL | DIV
+(*
   | AND | OR | LSHIFT | RSHIFT | ARSHIFT | XOR
+*)
 
 and relop = 
   | EQ | NEQ
   | GT | GE | LT | LE 
+(*
   | UGT | UGE | ULT | ULE
+*)
 
 where explst = List exp and stmlst = List stm
 
@@ -58,6 +62,11 @@ fun prerr_exp (exp: exp): void
 fun fprint_stm (out: FILEref, stm: stm): void
 fun print_stm (stm: stm): void
 fun prerr_stm (stm: stm): void
+
+(* ****** ****** *)
+
+fun binop_is_additive (binop: binop): bool
+fun binop_is_multiplicative (binop: binop): bool
 
 (* ****** ****** *)
 

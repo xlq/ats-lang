@@ -772,7 +772,7 @@ fn transFundec1_snd
         lev1: level
       , env: env
       , fts: fieldtyplst
-      , accs: List $F.access_t
+      , accs: $F.accesslst
       ) : env = begin case+ (fts, accs) of
       | (list_cons (ft, fts), list_cons (acc, accs)) => let
           val ent = VFENTvar (lev1, acc)
@@ -838,8 +838,7 @@ end // end of [transDec]
 (* ****** ****** *)
 
 implement transProg1 (e) = let
-  val lab0 = $TL.tigerats_main_lab
-  val frm0 = $F.frame_make_new (lab0, list_nil (*arglst*))
+  val frm0 = $F.theTopFrame
   val lev0 = LEVELtop frm0 and env = env_empty ()
 
   val ent = VFENTfun ($TL.tigerats_chr_lab, lev0)

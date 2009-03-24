@@ -22,12 +22,14 @@ fn fprint_binop (out: FILEref, binop: binop) = case+ binop of
   | MINUS _ => fprint_string (out, "-")
   | MUL _ => fprint_string (out, "*")
   | DIV _ => fprint_string (out, "/")
+(*
   | AND _ => fprint_string (out, "&")
   | OR _ => fprint_string (out, "|")
   | LSHIFT _ => fprint_string (out, "lsl")
   | RSHIFT _ => fprint_string (out, "lsr")
   | ARSHIFT _ => fprint_string (out, "asr")
   | XOR _ => fprint_string (out, "xor")
+*)
 // end of [fprint_binop]
 
 (* ****** ****** *)
@@ -39,10 +41,12 @@ fn fprint_relop (out: FILEref, relop: relop) = case+ relop of
   | GE _ => fprint_string (out, "GTE")
   | LT _ => fprint_string (out, "LT")
   | LE _ => fprint_string (out, "LE")
+(*
   | UGT _ => fprint_string (out, "UGT")
   | UGE _ => fprint_string (out, "UGE")
   | ULT _ => fprint_string (out, "ULT")
   | ULE _ => fprint_string (out, "ULE")
+*)
 // end of [fprint_relop]
 
 (* ****** ****** *)
@@ -152,6 +156,18 @@ implement prerr_stm (stm) = fprint_stm (stderr_ref, stm)
 
 implement exp_const_0 = EXPconst 0
 implement exp_const_1 = EXPconst 1
+
+(* ****** ****** *)
+
+implement binop_is_additive (binop) =
+  case+ binop of
+  | PLUS _ => true | MINUS _ => true | _ => false
+// end of [binop_is_additive]
+
+implement binop_is_multiplicative (binop) =
+  case+ binop of
+  | MUL _ => true | DIV _ => true | _ => false
+// end of [binop_is_multiplicative]
 
 (* ****** ****** *)
 

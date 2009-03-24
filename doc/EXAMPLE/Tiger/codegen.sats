@@ -11,9 +11,10 @@
 
 staload FRM = "frame.sats"
 staload TR = "irtree.sats"
-staload ASM = "assembly.sats"
+staload ASM = "assem.sats"
 
-fun codegen (frm: $FRM.frame_t, stm: $TR.stm): $ASM.instrlst
+fun codegen_stm (frm: $FRM.frame_t, stm: $TR.stm): $ASM.instrlst
+fun codegen_stmlst (frm: $FRM.frame_t, stms: $TR.stmlst): $ASM.instrlst
 
 (* ****** ****** *)
 

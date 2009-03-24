@@ -47,6 +47,23 @@ end // end of [local]
 implement print_temp tmp = fprint_temp (stdout_ref, tmp)
 implement prerr_temp tmp = fprint_temp (stderr_ref, tmp)
 
+implement fprint_templst (out, tmps) = let
+  fun loop
+    (out: FILEref, tmps: templst, i: int): void =
+    case+ tmps of
+    | list_cons (tmp, tmps) => begin
+        if i > 0 then fprint_string (out, ", ");
+        fprint_temp (out, tmp); loop (out, tmps, i+1)
+      end // end of [list_cons]
+    | list_nil () => ()
+  // end of [loop]
+in
+  loop (out, tmps, 0)
+end // end of [fprint_templst]
+
+implement print_templst tmps = fprint_templst (stdout_ref, tmps)
+implement prerr_templst tmps = fprint_templst (stderr_ref, tmps)
+
 (* ****** ****** *)
 
 #define LABEL_PREFIX "_TIGER_LAB"
@@ -106,6 +123,23 @@ end // end of [local]
 
 implement print_label lab = fprint_label (stdout_ref, lab)
 implement prerr_label lab = fprint_label (stderr_ref, lab)
+
+implement fprint_lablst (out, labs) = let
+  fun loop
+    (out: FILEref, labs: lablst, i: int): void =
+    case+ labs of
+    | list_cons (lab, labs) => begin
+        if i > 0 then fprint_string (out, ", ");
+        fprint_label (out, lab); loop (out, labs, i+1)
+      end // end of [list_cons]
+    | list_nil () => ()
+  // end of [loop]
+in
+  loop (out, labs, 0)
+end // end of [fprint_lablst]
+
+implement print_lablst labs = fprint_lablst (stdout_ref, labs)
+implement prerr_lablst labs = fprint_lablst (stderr_ref, labs)
 
 (* ****** ****** *)
 

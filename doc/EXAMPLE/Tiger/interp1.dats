@@ -390,7 +390,9 @@ in
       | $TR.MINUS _ => V1ALint (i1 - i2)
       | $TR.MUL _ => V1ALint (i1 * i2)
       | $TR.DIV _ => V1ALint (i1 / i2)
+(*
       | _ => err {v1al} (exp)
+*)
     end // end of [EXPbinop]
   | $TR.EXPmem e_ind => let
       val- V1ALint ind =
@@ -483,12 +485,17 @@ in
     | $TR.STMcjump (relop, e1, e2, tlab, flab) => let
         val- V1ALint i1 = interp1Exp (env, e1)
         val- V1ALint i2 = interp1Exp (env, e2)
-        val test = case+ relop of
-          | $TR.LT => (i1 < i2) | $TR.LE => (i1 <= i2)
-          | $TR.GT => (i1 > i2) | $TR.GE => (i1 >= i2)
-          | $TR.EQ => (i1 = i2) | $TR.NEQ => (i1 <> i2)
+        val test = (case+ relop of
+          | $TR.EQ => (i1 = i2)
+          | $TR.NEQ => (i1 <> i2)
+          | $TR.LT => (i1 < i2)
+          | $TR.LE => (i1 <= i2)
+          | $TR.GT => (i1 > i2)
+          | $TR.GE => (i1 >= i2)
+(*
           | _ => err {bool} (stm)
-        // end of [val]
+*)
+        ) : bool // end of [val]
       in
         if test then let
           val stms_new = stmlst_label_find (s0tms, tlab)

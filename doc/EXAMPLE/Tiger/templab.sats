@@ -10,6 +10,7 @@
 (* ****** ****** *)
 
 abst@ype temp_t = int64
+typedef templst = List temp_t
 
 fun temp_make_new (): temp_t
 fun temp_make_fixed (n: int): temp_t
@@ -23,9 +24,14 @@ fun fprint_temp (out: FILEref, tmp: temp_t): void
 fun print_temp (tmp: temp_t): void
 fun prerr_temp (tmp: temp_t): void
 
+fun fprint_templst (out: FILEref, tmps: templst): void
+fun print_templst (tmps: templst): void
+fun prerr_templst (tmps: templst): void
+
 (* ****** ****** *)
 
 abstype label_t
+typedef lablst = List label_t
 
 fun label_make_new (): label_t
 fun label_make_name (name: string): label_t
@@ -38,9 +44,13 @@ overload = with eq_label_label
 fun compare_label_label (_: label_t, _: label_t):<> Sgn
 overload compare with compare_label_label
 
-fun fprint_label (out: FILEref, lab:label_t): void
+fun fprint_label (out: FILEref, lab: label_t): void
 fun print_label (lab: label_t): void
 fun prerr_label (lab: label_t): void
+
+fun fprint_lablst (out: FILEref, labs :lablst): void
+fun print_lablst (labs: lablst): void
+fun prerr_lablst (labs: lablst): void
 
 (* ****** ****** *)
 

@@ -22,6 +22,9 @@ staload TRAN = "translate.sats"
 staload CA = "canonical.sats"
 staload INT1 = "interp1.sats"
 
+staload "assem.sats"
+staload "codegen.sats"
+
 (* ****** ****** *)
 
 staload _(*anonymous*) = "prelude/DATS/list.dats"
@@ -49,13 +52,17 @@ dynload "templab.dats"
 
 dynload "irtree.dats"
 
-dynload "frame_x86.dats"
+dynload "frame.dats"
 
 dynload "translate.dats"
 
 dynload "canonical.dats"
 
 dynload "interp1.dats"
+
+dynload "assem.dats"
+
+dynload "codegen.dats"
 
 (* ****** ****** *)
 
@@ -146,13 +153,13 @@ implement main (argc, argv) = let
   val () = begin
     print "ty = "; print_ty (ty); print_newline ()
   end // end of [val]
-// (*
+(*
   val vlu = $INT0.interp0Prog (exp)
   val () = begin
     print "vlu = "; $INT0.print_value (vlu); print_newline ()
   end // end of [val]
-// *)
-(*
+*)
+
   val e1xp = $TRAN.transProg1 (exp)
 (*
   val () = begin
@@ -198,11 +205,12 @@ implement main (argc, argv) = let
   val stms = $CA.linearize stm
   val (lab_done, blks) = $CA.blocklst_gen (stms)
   val stms = $CA.trace_schedule (lab_done, blks)
-(*
   val () = print_stmlst stms
-*)  
+(*
   val () = $INT1.interp1Prog (stms)
 *)
+  val inss = codegen_stmlst ($FRM.theTopFrame, stms)
+  val () = print_instrlst (inss)
 in
   // empty
 end // end of [main]

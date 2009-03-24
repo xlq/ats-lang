@@ -28,10 +28,12 @@ comptig: \
   interp0_sats.o interp0_dats.o \
   templab_sats.o templab_dats.o \
   irtree_sats.o irtree_dats.o \
-  frame_sats.o frame_x86_dats.o \
+  frame_sats.o frame_dats.o \
   translate_sats.o translate_dats.o \
   canonical_sats.o canonical_dats.o \
   interp1_sats.o interp1_dats.o \
+  assem_sats.o assem_dats.o \
+  codegen_sats.o codegen_dats.o \
   posloc_sats.o posloc_dats.o \
   tokenize_sats.o tokenize_dats.o \
   parcomb_sats.o parcomb_dats.o \
@@ -52,10 +54,12 @@ comptig: \
   interp0_sats.o interp0_dats.o \
   templab_sats.o templab_dats.o \
   irtree_sats.o irtree_dats.o \
-  frame_sats.o frame_x86_dats.o \
+  frame_sats.o frame_dats.o \
   translate_sats.o translate_dats.o \
   canonical_sats.o canonical_dats.o \
   interp1_sats.o interp1_dats.o \
+  assem_sats.o assem_dats.o \
+  codegen_sats.o codegen_dats.o \
   posloc_sats.o posloc_dats.o \
   tokenize_sats.o tokenize_dats.o \
   parcomb_sats.o parcomb_dats.o \
@@ -160,8 +164,8 @@ irtree_dats.o: irtree.dats
 frame_sats.o: frame.sats
 	atscc $(CCFLAGS) -o frame_sats.o -c frame.sats
 
-frame_x86_dats.o: frame_x86.dats
-	atscc $(CCFLAGS) -o frame_x86_dats.o -c frame_x86.dats
+frame_dats.o: frame.dats
+	atscc $(CCFLAGS) -o frame_dats.o -c frame.dats
 
 ######
 
@@ -186,6 +190,22 @@ interp1_sats.o: interp1.sats
 
 interp1_dats.o: interp1.dats
 	atscc $(CCFLAGS) -IATS LIB -o interp1_dats.o -c interp1.dats
+
+######
+
+assem_sats.o: assem.sats
+	atscc $(CCFLAGS) -o assem_sats.o -c assem.sats
+
+assem_dats.o: assem.dats
+	atscc $(CCFLAGS) -o assem_dats.o -c assem.dats
+
+######
+
+codegen_sats.o: codegen.sats
+	atscc $(CCFLAGS) -o codegen_sats.o -c codegen.sats
+
+codegen_dats.o: codegen.dats codegen_mips.dats
+	atscc $(CCFLAGS) -o codegen_dats.o -c codegen.dats
 
 ######
 
@@ -237,10 +257,12 @@ html::
 	atsopt --posmark_xref=XREF -d interp0.dats > interp0_dats.html
 	atsopt --posmark_xref=XREF -d templab.dats > templab_dats.html
 	atsopt --posmark_xref=XREF -d irtree.dats > irtree_dats.html
-	atsopt --posmark_xref=XREF -d frame_x86.dats > frame_x86_dats.html
+	atsopt --posmark_xref=XREF -d frame.dats > frame_dats.html
 	atsopt --posmark_xref=XREF -d translate.dats > translate_dats.html
 	atsopt --posmark_xref=XREF -d canonical.dats > canonical_dats.html
 	atsopt --posmark_xref=XREF -d interp1.dats > interp1_dats.html
+	atsopt --posmark_xref=XREF -d assem.dats > assem_dats.html
+	atsopt --posmark_xref=XREF -d codegen.dats > codegen_dats.html
 
 ######
 

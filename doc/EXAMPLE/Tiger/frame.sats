@@ -33,6 +33,8 @@ fun WORDSIZE_get (): int = "tigerats_WORDSIZE_get"
 
 (* ****** ****** *)
 
+val theTopFrame : frame_t
+
 fun frame_make_new
   (lab: label, arglst: List bool(*escape status*)): frame_t
 
@@ -59,6 +61,29 @@ typedef fraglst = List frag
 fun frame_theFraglst_get (): fraglst
 fun frame_theFraglst_add (frag: frag): void
 fun frame_theFraglst_reset (): void
+
+(* ****** ****** *)
+
+abstype reg_t (* string *)
+
+fun temp_reg_find (tmp: temp): Option (reg_t)
+
+val theFunargReglst : List temp // for passing function arguments
+val theSpecialReglst : List temp // for some special purposes (FP, RV, etc.)
+val theCallersavedReglst : List temp // caller saved registers
+val theCalleesavedReglst : List temp // callee saved registers
+
+(* ****** ****** *)
+
+#include "params.hats"
+
+#if MARCH = "x86_32" #then
+
+val EAX : temp
+val ESP : temp
+val EBP : temp
+
+#endif
 
 (* ****** ****** *)
 
