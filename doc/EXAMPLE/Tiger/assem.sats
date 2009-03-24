@@ -17,22 +17,31 @@ typedef temp = $TL.temp_t
 typedef templst = List temp
 typedef label = $TL.label_t
 typedef lablst = List label
+typedef lablstopt = Option (lablst)
 
-in
+in // in of [local]
 
 datatype instr =
   | INSTRoper of (
       string(*asm*)
-    , templst(*dst*)
     , templst(*src*)
-    , lablst(*jump*)
+    , templst(*dst*)
+    , lablstopt(*jump*)
     ) // end of [INSTRoper]
   | INSTRlabel of (string(*asm*), label)
   | INSTRmove of (
-      string(*asm*), temp(*dst*), temp(*dst*)
+      string(*asm*), temp(*src*), temp(*dst*)
     ) // end of [INSTRmove]
 
 typedef instrlst = List instr
+
+fun fprint_instr (out: FILEref, ins: instr): void
+fun print_instr (ins: instr): void
+fun prerr_instr (ins: instr): void
+
+fun fprint_instrlst (out: FILEref, inss: instrlst): void
+fun print_instrlst (inss: instrlst): void
+fun prerr_instrlst (inss: instrlst): void
 
 // Instead of turning an instruction into a string and then print it out,
 // it should make a lot more sense to print out the instruction directly,
@@ -43,4 +52,4 @@ end // end of [local]
 
 (* ****** ****** *)
 
-(* end of [assembly.sats] *)
+(* end of [assem.sats] *)
