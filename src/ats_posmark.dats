@@ -367,9 +367,9 @@ span.neuexp  {color:800080}\n\
 span.staexp  {color:0000FF}\n\
 span.dynexp  {color:E80000}\n\
 span.prfexp  {color:009000}\n\
-span.dyncstdec  {text-decoration:underline}\n\
-span.dyncstimp  {text-decoration:underline}\n\
-span.dyncstuse  {text-decoration:underline}\n\
+span.dyncstdec  {text-decoration:none}\n\
+span.dyncstimp  {color:B80000;text-decoration:underline}\n\
+span.dyncstuse  {color:B80000;text-decoration:underline}\n\
 </STYLE>\n\
 </HEAD>\n\
 \n\
