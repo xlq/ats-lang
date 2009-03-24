@@ -9,7 +9,10 @@
 
 (* ****** ****** *)
 
-staload "posloc.sats"
+staload "PARCOMB/posloc.sats"
+
+(* ****** ****** *)
+
 staload "fixity.sats"
 
 (* ****** ****** *)

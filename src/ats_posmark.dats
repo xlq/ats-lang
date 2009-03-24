@@ -648,6 +648,12 @@ end // end of [local]
 
 (* ****** ****** *)
 
+val () = ats_posmark_initialize () where {
+  extern fun ats_posmark_initialize (): void = "ats_posmark_initialize"
+}
+
+(* ****** ****** *)
+
 %{$
 
 ats_ptr_type
@@ -669,16 +675,21 @@ posmark_htmlfilename_make (ats_ptr_type basename) {
 
 /* ****** ****** */
 
-static char* the_posmark_xref_flag = 0 ;
+static char* the_ats_posmark_xref_flag = 0 ;
 
 ats_ptr_type
 ats_posmark_xref_flag_get () {
-  return the_posmark_xref_flag ;
+  return the_ats_posmark_xref_flag ;
 }
 
 ats_void_type
 ats_posmark_xref_flag_set (ats_ptr_type flag) {
-  the_posmark_xref_flag = flag ; return ;
+  the_ats_posmark_xref_flag = flag ; return ;
+}
+
+ats_void_type ats_posmark_initialize () {
+  ATS_GC_MARKROOT (&the_ats_posmark_xref_flag, sizeof(ats_ptr_type)) ;
+  return ;
 }
 
 %}

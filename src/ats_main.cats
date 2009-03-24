@@ -7,27 +7,27 @@
 /***********************************************************************/
 
 /*
- * ATS/Anairiats - Unleashing the Potential of Types!
- *
- * Copyright (C) 2002-2008 Hongwei Xi.
- *
- * All rights reserved
- *
- * ATS is free software;  you can  redistribute it and/or modify it under
- * the terms of  the GNU GENERAL PUBLIC LICENSE (GPL) as published by the
- * Free Software Foundation; either version 3, or (at  your  option)  any
- * later version.
- * 
- * ATS is distributed in the hope that it will be useful, but WITHOUT ANY
- * WARRANTY; without  even  the  implied  warranty  of MERCHANTABILITY or
- * FITNESS FOR A PARTICULAR PURPOSE.  See the  GNU General Public License
- * for more details.
- * 
- * You  should  have  received  a  copy of the GNU General Public License
- * along  with  ATS;  see the  file COPYING.  If not, please write to the
- * Free Software Foundation,  51 Franklin Street, Fifth Floor, Boston, MA
- * 02110-1301, USA.
- */
+** ATS/Anairiats - Unleashing the Potential of Types!
+**
+** Copyright (C) 2002-2008 Hongwei Xi.
+**
+** All rights reserved
+**
+** ATS is free software;  you can  redistribute it and/or modify it under
+** the terms of  the GNU GENERAL PUBLIC LICENSE (GPL) as published by the
+** Free Software Foundation; either version 3, or (at  your  option)  any
+** later version.
+** 
+** ATS is distributed in the hope that it will be useful, but WITHOUT ANY
+** WARRANTY; without  even  the  implied  warranty  of MERCHANTABILITY or
+** FITNESS FOR A PARTICULAR PURPOSE.  See the  GNU General Public License
+** for more details.
+** 
+** You  should  have  received  a  copy of the GNU General Public License
+** along  with  ATS;  see the  file COPYING.  If not, please write to the
+** Free Software Foundation,  51 Franklin Street, Fifth Floor, Boston, MA
+** 02110-1301, USA.
+*/
 
 /* ****** ****** */
 
@@ -115,13 +115,13 @@ ats_main_IATS_extract (ats_ptr_type s0) {
 
 /* ****** ****** */
 
-char *ats_main_ATSHOME = NULL ;
-int ats_main_ATSHOME_length = 0;
+static char *ats_main_ATSHOME = NULL ; // no need for marking as a root
+static int ats_main_ATSHOME_length = 0;
 
 ats_ptr_type
 ats_main_ATSHOME_getenv_exn () {
  char *value0 ;
- value0 = getenv ("ATSHOME") ;
+ value0 = getenv ("ATSHOME") ; // this value cannot be GCed
  if (!value0) {
    fprintf (stderr, "The environment variable ATSHOME is undefined.\n") ;
    exit (1) ;
@@ -132,11 +132,12 @@ ats_main_ATSHOME_getenv_exn () {
 
 /* ****** ****** */
 
-char *ats_main_ATSHOMERELOC = NULL ;
+static char *ats_main_ATSHOMERELOC = NULL ; // no need for marking as a root
 
 ats_void_type
 ats_main_ATSHOMERELOC_set () {
-  ats_main_ATSHOMERELOC = getenv ("ATSHOMERELOC") ; return ;
+  ats_main_ATSHOMERELOC = getenv ("ATSHOMERELOC") ; // this value cannot be GCed
+  return ;
 }
 
 /* ****** ****** */

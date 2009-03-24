@@ -197,4 +197,13 @@ Uncaught exception: _2fusr_2fshare_2fatshome_2fsrc_2fats_error_2esats__FatalErro
 
 ######
 
+Tuesday: March 24, 2009 (HX)
+
+STATUS: no solution yet
+
+How to make sure that each global variables declared in C
+is properly marked as a GC root (if needed)?
+
+######
+
  ------------------ end of [BUGS.txt] -------------------

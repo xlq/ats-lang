@@ -17,8 +17,9 @@
 
 staload "error.sats"
 
-staload "posloc.sats"
-staload "tokenize.sats"
+staload "PARCOMB/posloc.sats"
+staload "PARCOMB/tokenize.sats"
+
 staload "fixity.sats"
 
 (* ****** ****** *)

@@ -12,7 +12,7 @@
 staload "error.sats"
 staload "stamp.sats"
 
-staload "posloc.sats"
+staload "PARCOMB/posloc.sats"
 typedef loc = location_t
 
 staload "symbol.sats"
@@ -48,8 +48,8 @@ fun tyleq_solve
     end // end of [_, TYname]
   | (TYbase sym1, TYbase sym2) when sym1 = sym2 => ()
   | (TYnil _, TYnil _) => () | (TYnil _, TYrec _) => ()
-  | (TYrec (sym1, _), TYrec (sym2, _)) when sym1 = sym2 => ()
-  | (TYarr (sym1, _), TYarr (sym2, _)) when sym1 = sym2 => ()
+  | (TYrec (stamp1, _), TYrec (stamp2, _)) when stamp1 = stamp2 => ()
+  | (TYarr (stamp1, _), TYarr (stamp2, _)) when stamp1 = stamp2 => ()
   | (TYunit _, TYunit _) => ()
   | (_, _) => begin
       prerr_location loc;

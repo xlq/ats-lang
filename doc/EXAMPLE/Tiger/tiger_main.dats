@@ -159,13 +159,10 @@ implement main (argc, argv) = let
     print "vlu = "; $INT0.print_value (vlu); print_newline ()
   end // end of [val]
 *)
-
   val e1xp = $TRAN.transProg1 (exp)
-(*
   val () = begin
-    print "e1xp = "; print_e1xp e1xp; print_newline ()
+    print "e1xp = "; $TRAN.print_e1xp e1xp; print_newline ()
   end // end of [val]
-*)
   val stm = $TRAN.unNx (e1xp)
   val () = begin
     print "stm = "; $TR.print_stm stm; print_newline ()

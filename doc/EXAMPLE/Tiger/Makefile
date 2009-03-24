@@ -114,10 +114,10 @@ absyn_dats.o: absyn.dats
 ######
 
 fixity_sats.o: fixity.sats
-	atscc $(CCFLAGS) -IATS PARCOMB -c -o fixity_sats.o fixity.sats
+	atscc $(CCFLAGS) -c -o fixity_sats.o fixity.sats
 
 fixity_dats.o: fixity.dats
-	atscc $(CCFLAGS) -IATS PARCOMB -c -o fixity_dats.o fixity.dats
+	atscc $(CCFLAGS) -c -o fixity_dats.o fixity.dats
 
 ######
 
@@ -133,7 +133,7 @@ tychecker_sats.o: tychecker.sats
 	atscc $(CCFLAGS) -o tychecker_sats.o -c tychecker.sats
 
 tychecker_dats.o: tychecker.dats
-	atscc $(CCFLAGS) -IATS PARCOMB -o tychecker_dats.o -c tychecker.dats
+	atscc $(CCFLAGS) -o tychecker_dats.o -c tychecker.dats
 
 ######
 
@@ -239,30 +239,32 @@ funmap_avltree_dats.o: LIB/funmap_avltree.dats
 
 ######
 
-html::
-	atsopt --posmark_xref=XREF \
+ATSOPT=$(ATSHOME)/bin/atsopt
+
+xref::
+	$(ATSOPT) --posmark_xref=XREF \
           -d tiger_main.dats > tiger_main_dats.html
-	atsopt --posmark_xref=XREF -d error.dats > error_dats.html
-	atsopt --posmark_xref=XREF -d stamp.dats > stamp_dats.html
-	atsopt --posmark_xref=XREF -d symbol.dats > symbol_dats.html
-	atsopt --posmark_xref=XREF -d types.dats > types_dats.html
-	atsopt -IATS PARCOMB -IATS LIB \
+	$(ATSOPT) --posmark_xref=XREF -d error.dats > error_dats.html
+	$(ATSOPT) --posmark_xref=XREF -d stamp.dats > stamp_dats.html
+	$(ATSOPT) --posmark_xref=XREF -d symbol.dats > symbol_dats.html
+	$(ATSOPT) --posmark_xref=XREF -d types.dats > types_dats.html
+	$(ATSOPT) -IATS PARCOMB -IATS LIB \
           --posmark_xref=XREF -d absyn.dats > absyn_dats.html
-	atsopt -IATS PARCOMB -IATS LIB \
+	$(ATSOPT) -IATS PARCOMB -IATS LIB \
 	  --posmark_xref=XREF -d fixity.dats > fixity_dats.html
-	atsopt -IATS PARCOMB -IATS LIB \
+	$(ATSOPT) -IATS PARCOMB -IATS LIB \
 	  --posmark_xref=XREF -d parser.dats > parser_dats.html
-	atsopt -IATS PARCOMB -IATS LIB \
+	$(ATSOPT) -IATS PARCOMB -IATS LIB \
 	  --posmark_xref=XREF -d tychecker.dats > tychecker_dats.html
-	atsopt --posmark_xref=XREF -d interp0.dats > interp0_dats.html
-	atsopt --posmark_xref=XREF -d templab.dats > templab_dats.html
-	atsopt --posmark_xref=XREF -d irtree.dats > irtree_dats.html
-	atsopt --posmark_xref=XREF -d frame.dats > frame_dats.html
-	atsopt --posmark_xref=XREF -d translate.dats > translate_dats.html
-	atsopt --posmark_xref=XREF -d canonical.dats > canonical_dats.html
-	atsopt --posmark_xref=XREF -d interp1.dats > interp1_dats.html
-	atsopt --posmark_xref=XREF -d assem.dats > assem_dats.html
-	atsopt --posmark_xref=XREF -d codegen.dats > codegen_dats.html
+	$(ATSOPT) --posmark_xref=XREF -d interp0.dats > interp0_dats.html
+	$(ATSOPT) --posmark_xref=XREF -d templab.dats > templab_dats.html
+	$(ATSOPT) --posmark_xref=XREF -d irtree.dats > irtree_dats.html
+	$(ATSOPT) --posmark_xref=XREF -d frame.dats > frame_dats.html
+	$(ATSOPT) --posmark_xref=XREF -d translate.dats > translate_dats.html
+	$(ATSOPT) --posmark_xref=XREF -d canonical.dats > canonical_dats.html
+	$(ATSOPT) --posmark_xref=XREF -d interp1.dats > interp1_dats.html
+	$(ATSOPT) --posmark_xref=XREF -d assem.dats > assem_dats.html
+	$(ATSOPT) --posmark_xref=XREF -d codegen.dats > codegen_dats.html
 
 ######
 

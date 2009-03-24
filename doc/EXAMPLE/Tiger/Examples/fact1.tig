@@ -2,5 +2,5 @@ let
     function fact (x: int): int =
       if x > 0 then x * fact (x - 1) else 1
 in
-    print ("fact (10) = "); print_int (fact (10)); print ("\n")
+    print ("fact (10) = "); print_int (fact (100)); print ("\n")
 end
