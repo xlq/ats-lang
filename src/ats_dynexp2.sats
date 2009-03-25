@@ -513,6 +513,7 @@ fun p2at_vbox (_: loc_t, d2v: d2var_t): p2at
 datatype d2ec_node =
   | D2Cnone
   | D2Clist of d2eclst
+  | D2Cinclude of d2eclst (* inclusion *)
   | D2Csymintr of (* symbol intr *) // for temporary use
       $Syn.i0delst
   | D2Csymelim of (* symbol elim *) // for temporary use
@@ -1181,6 +1182,7 @@ fun i2mpdec_make (
 
 fun d2ec_none (_: loc_t): d2ec
 fun d2ec_list (_: loc_t, d2cs: d2eclst): d2ec
+fun d2ec_include (_: loc_t, d2cs: d2eclst): d2ec
 fun d2ec_symintr (_: loc_t, ids: $Syn.i0delst): d2ec
 fun d2ec_symelim (_: loc_t, ids: $Syn.i0delst): d2ec
 fun d2ec_stavars (_: loc_t, ds: s2tavarlst): d2ec

@@ -198,6 +198,7 @@ fun p1at_make_e1xp (_: loc_t, e: e1xp): p1at
 datatype d1ec_node =
   | D1Cnone
   | D1Clist of d1eclst
+  | D1Cinclude of d1eclst (* inclusion *)
   | D1Csymintr of (* overloaded symbol intr *)
       i0delst
   | D1Csymelim of (* overloaded symbol elim *)
@@ -857,6 +858,8 @@ fun loopi1nv_make
 fun d1ec_none (_: loc_t): d1ec
 
 fun d1ec_list (_: loc_t, ds: d1eclst): d1ec
+
+fun d1ec_include (_: loc_t, ds: d1eclst): d1ec
 
 fun d1ec_symelim (_: loc_t, ids: i0delst): d1ec
 

@@ -633,6 +633,9 @@ in
   | D2Clist d2cs => begin
       d3ec_list (d2c0.d2ec_loc, d2eclst_tr d2cs)
     end // end of [D2Clist]
+  | D2Cinclude d2cs => begin
+      d3ec_list (d2c0.d2ec_loc, d2eclst_tr d2cs)
+    end // end of [D2Cinclude]
   | D2Csymintr _ => d3ec_none (d2c0.d2ec_loc)
   | D2Csymelim _ => d3ec_none (d2c0.d2ec_loc)
   | D2Cstavars (d2cs) => let

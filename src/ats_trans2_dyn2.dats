@@ -1023,6 +1023,13 @@ implement d1ec_tr (d1c0) = begin
   | D1Clist d1cs => begin
       d2ec_list (d1c0.d1ec_loc, d1eclst_tr d1cs)
     end // end of [D1Clist]
+  | D1Cinclude d1cs => let
+      val flag = $PM.posmark_pause_get ()
+      val d2cs = d1eclst_tr d1cs
+      val () = $PM.posmark_resume_set (flag)
+    in
+      d2ec_include (d1c0.d1ec_loc, d2cs)
+    end // end of [D1Cinclude]
   | D1Csymintr ids => let
       val () = symintr_tr (ids) in
       d2ec_symintr (d1c0.d1ec_loc, ids)

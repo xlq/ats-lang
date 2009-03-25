@@ -561,6 +561,10 @@ implement d1ec_list (loc, d1cs) = '{
   d1ec_loc= loc, d1ec_node= D1Clist d1cs
 }
 
+implement d1ec_include (loc, d1cs) = '{
+  d1ec_loc= loc, d1ec_node= D1Cinclude d1cs
+}
+
 implement d1ec_symintr (loc, ids) = '{
   d1ec_loc= loc, d1ec_node= D1Csymintr ids
 }

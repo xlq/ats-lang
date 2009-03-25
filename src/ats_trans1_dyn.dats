@@ -1365,7 +1365,10 @@ fn i0nclude_tr
     print_newline ()
   end
 *)
+
+  val flag = $PM.posmark_pause_get ()
   val d0cs = $Par.parse_from_filename (stadyn, filename)
+  val () = $PM.posmark_resume_set (flag)
 (*
   val () = begin
     print "Including ["; print fullname; print "] finishes.";
@@ -1377,7 +1380,7 @@ fn i0nclude_tr
   val d1cs = d0eclst_tr d0cs
 
 in
-  d1ec_list (loc, d1cs)
+  d1ec_include (loc, d1cs)
 end // end of [i0nclude_tr]
 
 (* ****** ****** *)

@@ -115,8 +115,9 @@ ats_main_IATS_extract (ats_ptr_type s0) {
 
 /* ****** ****** */
 
-static char *ats_main_ATSHOME = NULL ; // no need for marking as a root
-static int ats_main_ATSHOME_length = 0;
+// global
+char *ats_main_ATSHOME = NULL ; // no need for marking as a root
+int ats_main_ATSHOME_length = 0;
 
 ats_ptr_type
 ats_main_ATSHOME_getenv_exn () {
@@ -132,7 +133,8 @@ ats_main_ATSHOME_getenv_exn () {
 
 /* ****** ****** */
 
-static char *ats_main_ATSHOMERELOC = NULL ; // no need for marking as a root
+// global
+char *ats_main_ATSHOMERELOC = NULL ; // no need for marking as a root
 
 ats_void_type
 ats_main_ATSHOMERELOC_set () {
