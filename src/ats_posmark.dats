@@ -109,21 +109,24 @@ datatype posmark = // 0/1 : begin/end
 
 (* ****** ****** *)
 
-#define NPOSMARK 100
+#define NPOSMARK1 100
+#define NPOSMARK2 200
+// please make sure that the values assigned to closing tags
+// (i=1) are less than the values assigned opening tags (i=0)
 fn int_of_posmark (pm: posmark): int =
   case+ pm of
   | PMnone () => 0
-  | PMcomment i => if i > 0 then 1 else NPOSMARK-1
-  | PMextern i => if i > 0 then 2 else NPOSMARK-2
-  | PMkeyword i => if i > 0 then 3 else NPOSMARK-3
-  | PMneuexp  i => if i > 0 then 4 else NPOSMARK-4
-  | PMstaexp  i => if i > 0 then 5 else NPOSMARK-5
-  | PMprfexp  i => if i > 0 then 6 else NPOSMARK-6
-  | PMstacstdec (i, _) => if i > 0 then 10 else NPOSMARK-10
-  | PMstacstuse (i, _) => if i > 0 then 11 else NPOSMARK-11
-  | PMdyncstdec (i, _) => if i > 0 then 20 else NPOSMARK-20
-  | PMdyncstimp (i, _) => if i > 0 then 21 else NPOSMARK-21
-  | PMdyncstuse (i, _) => if i > 0 then 22 else NPOSMARK-22
+  | PMcomment i => if i > 0 then 1 else NPOSMARK1-1
+  | PMextern  i => if i > 0 then 2 else NPOSMARK1-2
+  | PMkeyword i => if i > 0 then 3 else NPOSMARK1-3
+  | PMneuexp  i => if i > 0 then 4 else NPOSMARK1-4
+  | PMstaexp  i => if i > 0 then 5 else NPOSMARK1-5
+  | PMprfexp  i => if i > 0 then 6 else NPOSMARK1-6
+  | PMstacstdec (i, _) => if i > 0 then 10 else NPOSMARK2-10
+  | PMstacstuse (i, _) => if i > 0 then 11 else NPOSMARK2-11
+  | PMdyncstdec (i, _) => if i > 0 then 20 else NPOSMARK2-20
+  | PMdyncstimp (i, _) => if i > 0 then 21 else NPOSMARK2-21
+  | PMdyncstuse (i, _) => if i > 0 then 22 else NPOSMARK2-22
 // end of [int_of_posmark]
 
 fn compare_posmark_posmark
@@ -450,20 +453,24 @@ end // end of [posmarklst_sort]
 (* ****** ****** *)
 
 fn posmark_file_file (
-    proc: (&FILE w, posmark) -<fun1> void
+    proc: (&FILE w, lint, posmark) -<fun1> void
   , fputchr: (char, &FILE w) -<fun1> void
   , fil_s: &FILE r, fil_d: &FILE w
   ) : void = let
 
   typedef ppm =  lintposmark
 
-  fun lpfin1
-    (fil_s: &FILE r, fil_d: &FILE w, pm: posmark, ppms: List_vt ppm)
-    :<cloref1> void = let
-    val () = proc (fil_d, pm)
+  fun lpfin1 (
+      fil_s: &FILE r
+    , fil_d: &FILE w
+    , p: lint, pm: posmark
+    , ppms: List_vt ppm
+    ) :<cloref1> void = let
+    val () = proc (fil_d, p, pm)
   in
     case+ ppms of
-    | ~list_vt_cons (ppm, ppms) => lpfin1 (fil_s, fil_d, ppm.1, ppms)
+    | ~list_vt_cons (ppm, ppms) =>
+        lpfin1 (fil_s, fil_d, ppm.0, ppm.1, ppms)
     | ~list_vt_nil () => ()
   end // end of [lpfin1]
 
@@ -484,7 +491,7 @@ fn posmark_file_file (
     if (c >= 0) then begin
       loop2 (fil_s, fil_d, i, p, pm, ppms, c)
     end else begin
-      lpfin1 (fil_s, fil_d, pm, ppms)
+      lpfin1 (fil_s, fil_d, p, pm, ppms)
     end // end of [if]
   end (* end of [loop1] *)
 
@@ -497,7 +504,7 @@ fn posmark_file_file (
     in
       loop1 (fil_s, fil_d, succ i, p, pm, ppms)
     end else let
-      val () = proc (fil_d, pm)
+      val () = proc (fil_d, p, pm)
     in
       case+ ppms of
       | ~list_vt_cons (ppm, ppms) => begin
@@ -523,7 +530,7 @@ end // end of [posmark_file_file]
 (* ****** ****** *)
 
 fn posmark_process_htm
-  (fil_d: &FILE w, pm: posmark): void = let
+  (fil_d: &FILE w, p: lint, pm: posmark): void = let
   fn fprint_stadyncstpos (
       pf_mod: file_mode_lte (w, w) | fil_d: &FILE w, name: string
     ) : void = let

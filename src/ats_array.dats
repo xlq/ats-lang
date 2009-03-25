@@ -92,6 +92,7 @@ in
   view@ A0 := pf
 end // end of [array_ptr_initialize_lst]
 
+// note that [xs0] is freed after initialization
 implement{a} array_ptr_initialize_lst_vt (A0, n0, xs0) = let
   fun aux {n:nat} {l:addr} .<n>.
     (pf: array_v (a?, n, l) | p: ptr l, n: int n, xs: list_vt (a, n))
@@ -108,7 +109,7 @@ implement{a} array_ptr_initialize_lst_vt (A0, n0, xs0) = let
       val+ ~list_vt_nil () = xs
     in
       (array_v_nil {a} () | ())
-    end
+    end // end of [if]
   val (pf | ()) = aux (view@ A0 | &A0, n0, xs0)
 in
   view@ A0 := pf

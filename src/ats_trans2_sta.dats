@@ -388,7 +388,8 @@ implement sp1at_tr_dn (sp1t, s2t_pat) = let
   end // end of [argcheck_errmsg]
 in
   case+ sp1t.sp1at_node of
-  | SP1Tcon (q, id, s1as) => begin case+ the_s2expenv_find_qua (q, id) of
+  | SP1Tcon (q, id, s1as) => let
+    val ans = the_s2expenv_find_qua (q, id) in case+ ans of
     | ~Some_vt s2i => begin case+ s2i of
       | S2ITEMcst s2cs => let
           var s2ts_arg: s2rtlst = list_nil ()
@@ -490,10 +491,10 @@ end // end of [s1exp_any_tr_up]
 (* ****** ****** *)
 
 fn s1exp_app_tr_up
-  (loc_fun: loc_t, loc_app: loc_t, s2e: s2exp, s1ess: s1explstlst)
-  : s2exp = loop (loc_fun, loc_app, s2e, s1ess) where {
+  (loc_app: loc_t, loc_fun: loc_t, s2e: s2exp, s1ess: s1explstlst)
+  : s2exp = loop (loc_app, loc_fun, s2e, s1ess) where {
   fun loop
-    (loc_fun: loc_t, loc_app: loc_t, s2e: s2exp, s1ess: s1explstlst)
+    (loc_app: loc_t, loc_fun: loc_t, s2e: s2exp, s1ess: s1explstlst)
     : s2exp = begin case+ s1ess of
     | s1es :: s1ess => let
         val @(s2ts, s2t) = (
@@ -530,7 +531,7 @@ fn s1exp_app_tr_up
               $Err.abort ()
             end // end [_]
       in
-        loop (loc_fun, loc_app, s2exp_app_srt (s2t, s2e, s2es), s1ess)
+        loop (loc_app, loc_fun, s2exp_app_srt (s2t, s2e, s2es), s1ess)
       end // end of [::]
     | nil () => s2e
   end // end of [loop]
@@ -617,14 +618,23 @@ end // end of [s1exp_app_datcontyp_tr_up]
 
 (* ****** ****** *)
 
-fun s1exp_qid_app_tr_up
-  (loc_id: loc_t, loc_app: loc_t, q: s0taq, id: sym_t, s2i: s2item, s1ess: s1explstlst)
-  : s2exp = begin case+ s2i of
+fun s1exp_qid_app_tr_up (
+    loc_app: loc_t
+  , loc_qid: loc_t
+  , q: s0taq, id: sym_t
+  , s2i: s2item
+  , s1ess: s1explstlst
+  ) : s2exp = begin case+ s2i of
   | S2ITEMcst s2cs => let
       val s2ess = s1explstlst_tr_up s1ess
     in
       case+ s2cst_select_s2explstlst (s2cs, s2ess) of
-      | S2CSTLSTcons (s2c, _) => s2exp_app_wind (s2exp_cst s2c, s2ess)
+      | S2CSTLSTcons (s2c, _) => let
+//
+          val () = stacstuseloc_posmark (loc_qid, s2c) in
+//
+          s2exp_app_wind (s2exp_cst s2c, s2ess)
+        end // end of [S2CSTLSTcons]
       | _ => begin
           prerr_loc_error2 loc_app;
           $Deb.debug_prerrf (": %s: s1exp_qid_app_tr_up", @(THISFILENAME));
@@ -636,19 +646,20 @@ fun s1exp_qid_app_tr_up
         end // end of [_]
     end // end of [S2ITEMcst]
   | S2ITEMvar s2v => let
-      val () = s2var_tmplev_check (loc_id, s2v)
+      val () = s2var_tmplev_check (loc_qid, s2v)
     in
-      s1exp_app_tr_up (loc_id, loc_app, s2exp_var s2v, s1ess)
+      s1exp_app_tr_up (loc_app, loc_qid, s2exp_var s2v, s1ess)
     end // end of [S2ITEMvar]
   | S2ITEMdatconptr d2c => s1exp_app_datconptr_tr_up (loc_app, d2c, s1ess)
   | S2ITEMdatcontyp d2c => s1exp_app_datcontyp_tr_up (loc_app, d2c, s1ess)
 (*
-  | S2ITEMfil _ -> s1exp_qid_app_tr_up_errmsg_fil loc_id qid
-  | S2ITEMmod _ -> s1exp_qid_app_tr_up_errmsg_mod loc_id qid
+  | S2ITEMfil _ -> s1exp_qid_app_tr_up_errmsg_fil loc_qid qid
+  | S2ITEMmod _ -> s1exp_qid_app_tr_up_errmsg_mod loc_qid qid
 *)
   | _ => begin
-      $Loc.prerr_location loc_id;
-      prerr ": INTERNAL ERROR: s1exp_qid_app_tr_up: not implemented yet: s2i = ";
+      $Loc.prerr_location loc_qid;
+      prerr ": INTERNAL ERROR";
+      prerr ": s1exp_qid_app_tr_up: not implemented yet: s2i = ";
       prerr s2i;
       prerr_newline ();
       $Err.abort ()
@@ -663,7 +674,9 @@ fn s1exp_qid_tr_up
   | ~Some_vt s2i => begin case+ s2i of
     | S2ITEMcst s2cs => begin case+ s2cs of
       | S2CSTLSTcons (s2c, _) => let
+//
           val () = stacstuseloc_posmark (loc0, s2c)
+//
           val s2t = s2cst_srt_get s2c; val s2e_s2c = s2exp_cst s2c
         in
           case+ s2t of
@@ -1053,7 +1066,8 @@ fun s1exp_app_unwind
       s1ess := s1es :: s1ess; s1exp_app_unwind (s1e, s1ess)
     end // end of [S1Eapp]
   | S1Eqid (q, id) => begin case+ q.s0taq_node of
-    | $Syn.S0TAQnone () => begin case+ the_s2expenv_find id of
+    | $Syn.S0TAQnone () => let
+      val ans = the_s2expenv_find id in case+ ans of
       | ~Some_vt s2i => begin case+ s2i of
         | S2ITEMe1xp e1xp => let
             val s1e_new = s1exp_make_e1xp (s1e.s1exp_loc, e1xp)
@@ -1065,7 +1079,7 @@ fun s1exp_app_unwind
       | ~None_vt () => s1e
       end // end of [$Syn.S0TAQnone]
     | _ => s1e
-    end // end of [S1Eqid]
+    end (* end of [S1Eqid] *)
   | _ => s1e
 end // end of [s1exp_app_unwind]
 
@@ -1296,13 +1310,13 @@ implement s1exp_tr_up (s1e0) = let
 (*
   val () = begin
     print "s1exp_tr_up: s1e0 = "; print s1e0; print_newline ()
-  end
+  end // end of [val]
 *)
 in
   case+ s1e0.s1exp_node of
   | S1Eann (s1e, s1t) => begin
       let val s2t = s1rt_tr s1t in s1exp_tr_dn (s1e, s2t) end
-    end
+    end // end of [S1Eann]
   | S1Eany () => s1exp_any_tr_up (s1e0.s1exp_loc)
   | S1Eapp (s1e, _(*loc_arg*), s1es) => let
       var s1ess_arg: s1explstlst = '[s1es]
@@ -1312,7 +1326,8 @@ in
       | S1Eqid (q, id) => begin case+ staspecid_of_qid (q, id) of
         | SPSIDarrow () => s1exp_arrow_tr_up
             (s1e0.s1exp_loc, None (), false, false, None (), s1ess_arg)
-        | SPSIDnone () => begin case+ the_s2expenv_find_qua (q, id) of
+        | SPSIDnone () => let
+          val ans = the_s2expenv_find_qua (q, id) in case+ ans of
           | ~Some_vt s2i => s1exp_qid_app_tr_up
               (s1e0.s1exp_loc, s1e_opr.s1exp_loc, q, id, s2i, s1ess_arg)
           | ~None_vt () => begin
@@ -1331,7 +1346,9 @@ in
       | _ => let
           val s2e_opr = s1exp_tr_up s1e_opr
         in
-          s1exp_app_tr_up (s1e_opr.s1exp_loc, s1e0.s1exp_loc, s2e_opr, s1ess_arg)
+          s1exp_app_tr_up (
+            s1e0.s1exp_loc, s1e_opr.s1exp_loc, s2e_opr, s1ess_arg
+          ) // end of [s1exp_app_tr_up]
         end // end of [_]
       // end of [case]
     end // end of [S1Eapp]
