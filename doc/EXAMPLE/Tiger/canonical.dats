@@ -177,7 +177,7 @@ implement linearize (s0) = aux (doStm s0, list_nil ()) where {
 
 (* ****** ****** *)
 
-staload _(*anonymois*) = "prelude/DATS/list.dats"
+staload _(*anonymous*) = "prelude/DATS/list.dats"
 
 fn block_make
   (lab: label, ss: stmlst, s: stm): block = '{

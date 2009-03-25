@@ -218,20 +218,25 @@ implement s1exp_lam (loc, arg, res, body) = '{
 }
 
 implement s1exp_list (loc, s1es) = case+ s1es of
+(*
+  // this one affects postion marking
   | cons (s1e, nil ()) => '{ // singleton elimination
       s1exp_loc= loc, s1exp_node= s1e.s1exp_node
     }
+*)
+  | cons (s1e, nil ()) => s1e // singleton elimination
   | _ => '{
       s1exp_loc= loc, s1exp_node= S1Elist (0, s1es)
-    }
+    } // end of [_]
+// end of [s1exp_list]
 
-implement s1exp_list2 (loc, s1es1, s1es2) = 
-  let
-    val npf = $Lst.list_length s1es1
-    val s1es = $Lst.list_append (s1es1, s1es2)
-  in '{
-    s1exp_loc= loc, s1exp_node= S1Elist (npf, s1es)
-  } end
+implement s1exp_list2
+  (loc, s1es1, s1es2) = let
+  val npf = $Lst.list_length s1es1
+  val s1es = $Lst.list_append (s1es1, s1es2)
+in '{
+  s1exp_loc= loc, s1exp_node= S1Elist (npf, s1es)
+} end // end of [s1exp_list2]
 
 implement s1exp_mod (loc, q, id, ls1es) = '{
   s1exp_loc= loc, s1exp_node= S1Emod (q, id, ls1es)

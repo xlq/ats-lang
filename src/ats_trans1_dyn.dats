@@ -128,19 +128,20 @@ fun aux2
   | x :: xs => begin case+ x.d0arg_node of
     | D0ARGdyn ys => let
         val loc_x = x.d0arg_loc
-        val s1es_arg = s1exp_list (loc_x, aux1 ys)
-        val s1e_res = aux2 (fc, lin, prf, oefc, fst+1, lst, xs, s1e_res)
+        val s1e_arg: s1exp = s1exp_list (loc_x, aux1 ys)
+        val s1e_res: s1exp = aux2 (fc, lin, prf, oefc, fst+1, lst, xs, s1e_res)
         val loc_res = s1e_res.s1exp_loc
         val loc = $Loc.location_combine (loc_x, loc_res)
         val fc = if fst > 0 then FUNCLOcloptr else fc
-        val imp: s1exp =
+        val imp = (
           if lst > 0 then begin
             s1exp_imp (loc_res, fc, 0, 0, None ())
           end else begin
             s1exp_imp (loc_res, fc, lin, prf, oefc)
           end
+        ) : s1exp
       in
-        lst := lst + 1; s1exp_app (loc, imp, loc, '[s1es_arg, s1e_res])
+        lst := lst + 1; s1exp_app (loc, imp, loc, '[s1e_arg, s1e_res])
       end // end of [D0ARGdyn]
     | D0ARGdyn2 (ys1, ys2) => let
         val loc_x = x.d0arg_loc
@@ -216,7 +217,7 @@ fn aux3 (
   var lst: int = 0
 in
   aux2 (fc, lin, prf, oefc, 0, lst, xs, s1e_res)
-end // end of [aux2]
+end // end of [aux3]
 
 in // in of [local]
 

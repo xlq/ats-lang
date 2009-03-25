@@ -1333,10 +1333,11 @@ implement e0xndeclst_cons (x, xs) = list_cons (x, xs)
 implement p0arg_make_none (id) =
   '{ p0arg_loc= id.i0de_loc, p0arg_sym= id.i0de_sym, p0arg_ann= None () }
 
-implement p0arg_make_some (id, s0e) =
-  let val loc = combine (id.i0de_loc, s0e.s0exp_loc) in
-    '{ p0arg_loc= loc, p0arg_sym= id.i0de_sym, p0arg_ann= Some s0e }
-  end
+implement p0arg_make_some (id, s0e) = let
+  val loc = combine (id.i0de_loc, s0e.s0exp_loc)
+in '{
+  p0arg_loc= loc, p0arg_sym= id.i0de_sym, p0arg_ann= Some s0e
+} end // end of [p0arg_make_some]
 
 implement p0arglst_nil () = list_nil ()
 implement p0arglst_cons (x, xs) = list_cons (x, xs)
