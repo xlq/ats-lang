@@ -101,6 +101,8 @@ datatype posmark = // 0/1 : begin/end
   | PMneuexp of int
   | PMstaexp of int
   | PMprfexp of int
+  | PMstacstdec of (int, loc_t(*dec*))
+  | PMstacstuse of (int, loc_t(*dec*))
   | PMdyncstdec of (int, loc_t(*dec*))
   | PMdyncstimp of (int, loc_t(*dec*))
   | PMdyncstuse of (int, loc_t(*dec*))
@@ -117,9 +119,11 @@ fn int_of_posmark (pm: posmark): int =
   | PMneuexp  i => if i > 0 then 4 else NPOSMARK-4
   | PMstaexp  i => if i > 0 then 5 else NPOSMARK-5
   | PMprfexp  i => if i > 0 then 6 else NPOSMARK-6
-  | PMdyncstdec (i, _) => if i > 0 then 7 else NPOSMARK-7
-  | PMdyncstimp (i, _) => if i > 0 then 8 else NPOSMARK-8
-  | PMdyncstuse (i, _) => if i > 0 then 9 else NPOSMARK-9
+  | PMstacstdec (i, _) => if i > 0 then 10 else NPOSMARK-10
+  | PMstacstuse (i, _) => if i > 0 then 11 else NPOSMARK-11
+  | PMdyncstdec (i, _) => if i > 0 then 20 else NPOSMARK-20
+  | PMdyncstimp (i, _) => if i > 0 then 21 else NPOSMARK-21
+  | PMdyncstuse (i, _) => if i > 0 then 22 else NPOSMARK-22
 // end of [int_of_posmark]
 
 fn compare_posmark_posmark
@@ -268,6 +272,22 @@ implement posmark_insert_prfexp_beg (p) =
 implement posmark_insert_prfexp_end (p) =
   the_posmarklst_insert (p, PMprfexp 1)
 
+//
+
+implement posmark_insert_stacstdec_beg (p, loc) =
+  the_posmarklst_insert (p, PMstacstdec (0, loc))
+
+implement posmark_insert_stacstdec_end (p, loc) =
+  the_posmarklst_insert (p, PMstacstdec (1, loc))
+
+implement posmark_insert_stacstuse_beg (p, loc) =
+  the_posmarklst_insert (p, PMstacstuse (0, loc))
+
+implement posmark_insert_stacstuse_end (p, loc) =
+  the_posmarklst_insert (p, PMstacstuse (1, loc))
+
+//
+
 implement posmark_insert_dyncstdec_beg (p, loc) =
   the_posmarklst_insert (p, PMdyncstdec (0, loc))
 
@@ -341,6 +361,14 @@ local
 
 //
 
+#define HTM_STACSTDEC_FONT_BEG "<span class=\"stacstdec\">"
+#define HTM_STACSTDEC_FONT_END "</span>"
+
+#define HTM_STACSTUSE_FONT_BEG "<span class=\"stacstuse\">"
+#define HTM_STACSTUSE_FONT_END "</span>"
+
+//
+
 #define HTM_DYNCSTDEC_FONT_BEG "<span class=\"dyncstdec\">"
 #define HTM_DYNCSTDEC_FONT_END "</span>"
 
@@ -367,6 +395,8 @@ span.neuexp  {color:800080}\n\
 span.staexp  {color:0000FF}\n\
 span.dynexp  {color:E80000}\n\
 span.prfexp  {color:009000}\n\
+span.stacstdec  {text-decoration:none}\n\
+span.stacstuse  {color:0000CF;text-decoration:underline}\n\
 span.dyncstdec  {text-decoration:none}\n\
 span.dyncstimp  {color:B80000;text-decoration:underline}\n\
 span.dyncstuse  {color:B80000;text-decoration:underline}\n\
@@ -494,7 +524,7 @@ end // end of [posmark_file_file]
 
 fn posmark_process_htm
   (fil_d: &FILE w, pm: posmark): void = let
-  fn fprint_dyncstpos (
+  fn fprint_stadyncstpos (
       pf_mod: file_mode_lte (w, w) | fil_d: &FILE w, name: string
     ) : void = let
     val name = string1_of_string (name)
@@ -562,6 +592,35 @@ in
     end else begin
       fprint1_string (pf_mod | fil_d, HTM_PRFEXP_FONT_END)
     end // end of [PMprfexp]
+  | PMstacstdec (i, loc(*dec*)) => if i = 0 then let
+      val () = fprint1_string (pf_mod | fil_d, "<A name=\"")
+      val () = fprint1_lint (pf_mod | fil_d, ofs) where {
+        val ofs = $Loc.location_begpos_toff (loc)
+      } // end of [val]
+      val () = fprint1_string (pf_mod | fil_d, "\">")
+    in
+      fprint1_string (pf_mod | fil_d, HTM_STACSTDEC_FONT_BEG)
+    end else begin
+      fprint1_string (pf_mod | fil_d, HTM_STACSTDEC_FONT_END);
+      fprint1_string (pf_mod | fil_d, "</A>")
+    end // end of [PMdyncstdec]
+  | PMstacstuse (i, loc(*dec*)) => if i = 0 then let
+      val () = fprint1_string (pf_mod | fil_d, "<A href=\"")
+      val () = fprint_stadyncstpos (pf_mod | fil_d, name) where {
+        val fil = $Loc.location_filename_get loc
+        val name = $Fil.filename_full (fil)
+      } // end of [val]
+      val () = fprint1_string (pf_mod | fil_d, "#") 
+      val () = fprint1_lint (pf_mod | fil_d, ofs) where {
+        val ofs = $Loc.location_begpos_toff (loc)
+      } // end of [val]
+      val () = fprint1_string (pf_mod | fil_d, "\">")
+    in
+      fprint1_string (pf_mod | fil_d, HTM_STACSTUSE_FONT_BEG)
+    end else begin
+      fprint1_string (pf_mod | fil_d, HTM_STACSTUSE_FONT_END);
+      fprint1_string (pf_mod | fil_d, "</A>")
+    end // end of [PMstacstuse]
   | PMdyncstdec (i, loc(*dec*)) => if i = 0 then let
       val () = fprint1_string (pf_mod | fil_d, "<A name=\"")
       val () = fprint1_lint (pf_mod | fil_d, ofs) where {
@@ -576,7 +635,7 @@ in
     end // end of [PMdyncstdec]
   | PMdyncstimp (i, loc(*dec*)) => if i = 0 then let
       val () = fprint1_string (pf_mod | fil_d, "<A href=\"")
-      val () = fprint_dyncstpos (pf_mod | fil_d, name) where {
+      val () = fprint_stadyncstpos (pf_mod | fil_d, name) where {
         val fil = $Loc.location_filename_get loc
         val name = $Fil.filename_full (fil)
       } // end of [val]
@@ -592,7 +651,7 @@ in
     end // end of [PMdyncstimp]
   | PMdyncstuse (i, loc(*dec*)) => if i = 0 then let
       val () = fprint1_string (pf_mod | fil_d, "<A href=\"")
-      val () = fprint_dyncstpos (pf_mod | fil_d, name) where {
+      val () = fprint_stadyncstpos (pf_mod | fil_d, name) where {
         val fil = $Loc.location_filename_get loc
         val name = $Fil.filename_full (fil)
       } // end of [val]
@@ -602,9 +661,9 @@ in
       } // end of [val]
       val () = fprint1_string (pf_mod | fil_d, "\">")
     in
-      fprint1_string (pf_mod | fil_d, HTM_DYNCSTIMP_FONT_BEG)
+      fprint1_string (pf_mod | fil_d, HTM_DYNCSTUSE_FONT_BEG)
     end else begin
-      fprint1_string (pf_mod | fil_d, HTM_DYNCSTIMP_FONT_END);
+      fprint1_string (pf_mod | fil_d, HTM_DYNCSTUSE_FONT_END);
       fprint1_string (pf_mod | fil_d, "</A>")
     end // end of [PMdyncstuse]
 end // end of [posmark_process_htm]

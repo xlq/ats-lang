@@ -577,7 +577,6 @@ and d1cstdec = '{
   d1cstdec_loc= loc_t
 , d1cstdec_fil= fil_t
 , d1cstdec_sym= sym_t
-, d1cstdec_loc_id= loc_t
 , d1cstdec_typ= s1exp
 , d1cstdec_ext= Stropt
 }
@@ -937,9 +936,13 @@ fun s1tacst_make
 
 fun s1tavar_make (_: loc_t, id: sym_t, s1t: s1rt): s1tavar
 
-fun s1expdef_make
-  (_: loc_t, id: sym_t, arg: s1arglstlst, res: s1rtopt, def: s1exp)
-  : s1expdef
+fun s1expdef_make (
+    loc: loc_t
+  , id: sym_t
+  , arg: s1arglstlst
+  , res: s1rtopt
+  , def: s1exp
+  ) : s1expdef
 
 fun s1aspdec_make
   (loc: loc_t, qid: sqi0de, arg: s1arglstlst, res: s1rtopt, def: s1exp)
@@ -959,7 +962,7 @@ fun e1xndec_make
   : e1xndec
 
 fun d1cstdec_make
-  (loc: loc_t, fil: fil_t, id: sym_t, loc_id: loc_t, typ: s1exp, ext: Stropt)
+  (loc: loc_t, fil: fil_t, id: sym_t, typ: s1exp, ext: Stropt)
   : d1cstdec
 
 fun v1aldec_make

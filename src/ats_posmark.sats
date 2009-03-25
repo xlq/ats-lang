@@ -73,6 +73,12 @@ fun posmark_insert_staexp_end (li: lint): void
 fun posmark_insert_prfexp_beg (li: lint): void
 fun posmark_insert_prfexp_end (li: lint): void
 
+fun posmark_insert_stacstdec_beg (li: lint, loc: loc_t): void
+fun posmark_insert_stacstdec_end (li: lint, loc: loc_t): void
+
+fun posmark_insert_stacstuse_beg (li: lint, loc: loc_t): void
+fun posmark_insert_stacstuse_end (li: lint, loc: loc_t): void
+
 fun posmark_insert_dyncstdec_beg (li: lint, loc: loc_t): void
 fun posmark_insert_dyncstdec_end (li: lint, loc: loc_t): void
 

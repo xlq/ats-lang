@@ -56,6 +56,7 @@ staload "ats_staexp2.sats"
 
 typedef s2cst_struct = struct { (* builtin or abstract *)
   s2cst_sym= sym_t // the name
+, s2cst_loc= loc_t // the location of declaration
 , s2cst_srt= s2rt // the sort
 , s2cst_isabs= Option (s2expopt) // is abstract?
 , s2cst_iscon= bool // is constructive?
@@ -74,13 +75,14 @@ typedef s2cst_struct = struct { (* builtin or abstract *)
 , s2cst_sVarset= s2Varset_t // for occurrence checks
 , s2cst_stamp= stamp_t // unique stamp
 , s2cst_tag= int // tag >= 0 if associated with a datasort
-}
+} // end of [s2cst_struct]
 
 fun s2rt_arity_list (s2t: s2rt): List int = case+ s2t of
   | S2RTfun (s2ts, s2t) => begin
       list_cons ($Lst.list_length s2ts, s2rt_arity_list s2t)
     end
   | _ => list_nil ()
+// end of [s2rt_arity_list]
 
 (* ****** ****** *)
 
@@ -93,7 +95,7 @@ assume s2cst_t = [l:addr] (vbox (s2cst_struct @ l) | ptr l)
 in // in of [local]
 
 implement s2cst_make
-  (id, s2t, isabs, iscon, isrec, isasp, islst, argvar, def) = let
+  (id, loc, s2t, isabs, iscon, isrec, isasp, islst, argvar, def) = let
 
 val stamp = $Stamp.s2cst_stamp_make ()
 val (pf_gc, pf | p) = ptr_alloc_tsz {s2cst_struct} (sizeof<s2cst_struct>)
@@ -101,6 +103,7 @@ prval () = free_gc_elim {s2cst_struct} (pf_gc)
 
 val () = begin
 p->s2cst_sym := id;
+p->s2cst_loc := loc;
 p->s2cst_srt := s2t;
 p->s2cst_isabs := isabs;
 p->s2cst_iscon := iscon;
@@ -130,6 +133,9 @@ end // end of [s2cst_make]
 
 implement s2cst_sym_get (s2c) =
   let val (vbox pf | p) = s2c in p->s2cst_sym end
+
+implement s2cst_loc_get (s2c) =
+  let val (vbox pf | p) = s2c in p->s2cst_loc end
 
 implement s2cst_srt_get (s2c) =
   let val (vbox pf | p) = s2c in p->s2cst_srt end
@@ -332,7 +338,7 @@ end // end of [s2cst_is_singular]
 end // end of [local] (for assuming s2cst_t)
 
 implement s2cst_make_dat
-  (id, os2ts_arg, s2t_res, argvar) = let
+  (id, loc, os2ts_arg, s2t_res, argvar) = let
   val s2t = (
     case+ os2ts_arg of
     | Some s2ts_arg => s2rt_fun (s2ts_arg, s2t_res)
@@ -341,6 +347,7 @@ implement s2cst_make_dat
 in
   s2cst_make (
     id // name
+  , loc // the location of declaration
   , s2t // sort
   , None () // isabs
   , true // iscon

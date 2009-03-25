@@ -458,6 +458,7 @@ overload = with eq_s2rtdat_s2rtdat
 
 fun s2cst_make (
   id: sym_t // the name
+, loc: loc_t // the location of declaration
 , s2t: s2rt // the sort
 , isabs: Option (s2expopt)
 , iscon: bool
@@ -470,12 +471,14 @@ fun s2cst_make (
 
 fun s2cst_make_dat (
   id: sym_t
+, loc: loc_t
 , os2ts_arg: s2rtlstopt
 , s2t_res: s2rt
 , argvar: Option (List @(symopt_t, s2rt, int))
 ) : s2cst_t
 
 fun s2cst_sym_get (_: s2cst_t): sym_t
+fun s2cst_loc_get (_: s2cst_t): loc_t
 fun s2cst_srt_get (_: s2cst_t): s2rt
 fun s2cst_isabs_get (_: s2cst_t): Option (s2expopt)
 fun s2cst_iscon_get (_: s2cst_t): bool

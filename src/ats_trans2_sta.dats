@@ -51,6 +51,7 @@ staload IntInf = "ats_intinf.sats"
 staload Lab = "ats_label.sats"
 staload Loc = "ats_location.sats"
 staload Lst = "ats_list.sats"
+staload PM = "ats_posmark.sats"
 staload Stamp = "ats_stamp.sats"
 staload Sym = "ats_symbol.sats"
 staload Syn = "ats_syntax.sats"
@@ -100,9 +101,25 @@ fn prerr_loc_error2 (loc: loc_t): void =
 
 (* ****** ****** *)
 
-fun s1rt_app_tr
-  (loc0: loc_t, s1t_fun: s1rt, s1ts_arg: s1rtlst): s2rt = begin
-  case+ 0 of
+fn stacstuseloc_posmark
+  (loc: loc_t, s2c: s2cst_t): void = let
+  val loc_s2c = s2cst_loc_get (s2c)
+  val loc_begoff = $Loc.location_begpos_toff loc
+  val () = $PM.posmark_insert_stacstuse_beg (loc_begoff, loc_s2c)
+  val loc_endoff = $Loc.location_endpos_toff loc
+  val () = $PM.posmark_insert_stacstuse_end (loc_endoff, loc_s2c)
+in
+  // empty
+end // end of [stacstuseloc_posmark]
+
+
+(* ****** ****** *)
+
+fun s1rt_app_tr (
+    loc0: loc_t
+  , s1t_fun: s1rt
+  , s1ts_arg: s1rtlst
+  ) : s2rt = begin case+ 0 of
   | _ when s1rt_is_arrow s1t_fun => begin
     case+ s1ts_arg of
     | cons (s1t1, cons (s1t2, nil ())) => let
@@ -646,14 +663,14 @@ fn s1exp_qid_tr_up
   | ~Some_vt s2i => begin case+ s2i of
     | S2ITEMcst s2cs => begin case+ s2cs of
       | S2CSTLSTcons (s2c, _) => let
-          val s2t = s2cst_srt_get s2c
-          val s2e_s2c = s2exp_cst s2c
+          val () = stacstuseloc_posmark (loc0, s2c)
+          val s2t = s2cst_srt_get s2c; val s2e_s2c = s2exp_cst s2c
         in
           case+ s2t of
           | S2RTfun (nil (), _res) when s2rt_is_dat _res => begin
-              // a nullary constructor is automatically applied!
+              // note: a nullary constructor is automatically applied!
               s2exp_app_srt (_res, s2e_s2c, nil ())
-            end
+            end // end of [S2RTfun]
           | _ => s2e_s2c
         end // end of [S2CSTLSTcons]
       | S2CSTLSTnil () => begin // this clause should be unreachable
@@ -1518,6 +1535,7 @@ end // end of [d1atarglst_tr]
 
 fn s1tacon_tr (s2t_res: s2rt, d: s1tacon): void = let
   val id = d.s1tacon_sym
+  val loc = d.s1tacon_loc
   val argvar = (
     case+ d.s1tacon_arg of
     | Some d1as => Some (d1atarglst_tr d1as) | None () => None ()
@@ -1564,6 +1582,7 @@ fn s1tacon_tr (s2t_res: s2rt, d: s1tacon): void = let
   val () = the_s2expenv_pop (pf_s2expenv | (*none*))
   val s2c = s2cst_make (
         id // sym
+      , loc // location
       , s2t_fun // srt
       , Some def // isabs
       , true // iscon
@@ -1595,12 +1614,14 @@ end // end of [s1taconlst_tr]
 
 fn s1tacst_tr (d: s1tacst): void = let
   val id = d.s1tacst_sym
+  val loc = d.s1tacst_loc
   val s2t_res = s1rt_tr (d.s1tacst_res)
   val s2t: s2rt = case+ d.s1tacst_arg of
     | Some s1ts => s2rt_fun (s1rtlst_tr s1ts, s2t_res)
     | None () => s2t_res
   val s2c = s2cst_make (
         id // sym
+      , loc // location
       , s2t // srt
       , None () // isabs
       , false // iscon
@@ -1635,10 +1656,12 @@ implement s1tavarlst_tr (ds) = $Lst.list_map_fun (ds, s1tavar_tr)
 fn d1atsrtdec_tr (res: s2rt, d1c: d1atsrtdec): s2cstlst = let
   fn aux (i: int, res: s2rt, d1c: d1atsrtcon): s2cst_t = let
     val id = d1c.d1atsrtcon_sym
+    val loc = d1c.d1atsrtcon_loc
     val arg = s1rtlst_tr d1c.d1atsrtcon_arg
     val s2t = s2rt_fun (arg, res)
     val s2c = s2cst_make (
       id // sym
+    , loc // location
     , s2t // srt
     , None () // isabs
     , true // iscon
@@ -1680,11 +1703,13 @@ implement d1atsrtdeclst_tr (d1cs): void = let
     case+ d1cs of
     | list_cons (d1c, d1cs) => let
         val id = d1c.d1atsrtdec_sym
+        val loc = d1c.d1atsrtdec_loc
         val s2td = s2rtdat_make id
         val s2t = S2RTbas (S2RTBASdef s2td)
         val s2t_eq = s2rt_fun ('[s2t, s2t], s2rt_bool)
         val s2c_eq = s2cst_make (
           $Sym.symbol_EQEQ // sym
+        , loc // location
         , s2t_eq // srt
         , None () // isabs
         , false // iscon
@@ -1757,7 +1782,8 @@ fn s1expdef_tr (res: s2rtopt, d1c: s1expdef): s2cst_t = let
     (d1c.s1expdef_loc, d1c.s1expdef_arg, res, d1c.s1expdef_def)
 in
   s2cst_make (
-    d1c.s1expdef_sym // sym
+    d1c.s1expdef_sym // symbol
+  , d1c.s1expdef_loc // location
   , s2e.s2exp_srt // srt
   , None () // isabs
   , false // iscon
@@ -2076,12 +2102,16 @@ implement d1atdeclst_tr
         case+ argvar of Some xs => aux xs | None () => nil ()
       end : s2varlst
       val os2ts_arg = let
-        fun aux (xs: List @(symopt_t, s2rt, int)): s2rtlst =
-          case+ xs of cons (x, xs) => cons (x.1, aux xs) | nil () => nil ()
+        fun aux (xs: List @(symopt_t, s2rt, int))
+          : s2rtlst = case+ xs of
+          | cons (x, xs) => cons (x.1, aux xs) | nil () => nil ()
+        // end of [aux]
       in
         case+ argvar of Some xs => Some (aux xs) | None () => None ()
       end : s2rtlstopt
-      val s2c = s2cst_make_dat (d1c.d1atdec_sym, os2ts_arg, s2t_res, argvar)
+      val s2c = s2cst_make_dat (
+        d1c.d1atdec_sym, d1c.d1atdec_loc, os2ts_arg, s2t_res, argvar
+      ) // end of [val]
     in
       the_s2expenv_add_scst s2c; res := cons (@(d1c, s2c, s2vs), res)
     end // end of [val]

@@ -856,7 +856,9 @@ implement s0rtdeflst_tr (ds) = $Lst.list_map_fun (ds, s0rtdef_tr)
 (* ****** ****** *)
 
 implement s0expdef_tr (d) = let
+  val loc = d.s0expdef_loc
   val arg = s0arglstlst_tr d.s0expdef_arg
+  val id = d.s0expdef_sym
   val res = s0rtopt_tr d.s0expdef_res
   val def = s0exp_tr d.s0expdef_def
 (*
@@ -865,7 +867,7 @@ implement s0expdef_tr (d) = let
   end // end of [val]
 *)
 in
-  s1expdef_make (d.s0expdef_loc, d.s0expdef_sym, arg, res, def)
+  s1expdef_make (loc, id, arg, res, def)
 end // end of [s0expdef_tr]
 
 implement s0expdeflst_tr (ds) = $Lst.list_map_fun (ds, s0expdef_tr)

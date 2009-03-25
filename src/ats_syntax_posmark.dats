@@ -409,8 +409,22 @@ end // end of [d0explstopt_posmark]
 
 (* ****** ****** *)
 
-fn s0expdef_posmark (d0c: s0expdef): void =
-  staexploc_posmark (d0c.s0expdef_loc)
+fn stacstdecloc_posmark (loc_id: loc_t): void = let
+  val loc_begoff = $Loc.location_begpos_toff loc_id
+  val () = $PM.posmark_insert_stacstdec_beg (loc_begoff, loc_id)
+  val loc_endoff = $Loc.location_endpos_toff loc_id
+  val () = $PM.posmark_insert_stacstdec_end (loc_endoff, loc_id)
+in
+  // empty
+end // end of [stacstdecloc_posmark]
+
+(* ****** ****** *)
+
+fn s0expdef_posmark (d0c: s0expdef): void = let
+  val loc = d0c.s0expdef_loc; val () = stacstdecloc_posmark (loc)
+in
+  staexploc_posmark (loc)
+end // end of [s0expdef_posmark]
 
 fn s0expdeflst_posmark (d0cs: s0expdeflst): void =
   $Lst.list_foreach_fun (d0cs, s0expdef_posmark)
@@ -426,9 +440,13 @@ end
 fn d0atconlst_posmark (d0cs: d0atconlst): void =
   $Lst.list_foreach_fun (d0cs, d0atcon_posmark)
 
-fn d0atdec_posmark (d0c: d0atdec): void = begin
-  staexploc_posmark (d0c.d0atdec_headloc);
-  d0atconlst_posmark (d0c.d0atdec_con);
+fn d0atdec_posmark
+  (d0c: d0atdec): void = let
+  val () = stacstdecloc_posmark (d0c.d0atdec_loc)
+  val () = staexploc_posmark (d0c.d0atdec_headloc)
+  val () = d0atconlst_posmark (d0c.d0atdec_con)
+in
+  // empty
 end // end of [d0atdec_posmark]
 
 fn d0atdeclst_posmark (d0cs: d0atdeclst): void =
@@ -456,8 +474,8 @@ in
 end // end of [dyncstdecloc_posmark]
 
 fn d0cstdec_posmark (d0c: d0cstdec): void = let
-  val loc_id = d0c.d0cstdec_loc_id
-  val () = dyncstdecloc_posmark (loc_id)
+  val loc = d0c.d0cstdec_loc
+  val () = dyncstdecloc_posmark (loc)
   val () = d0arglst_posmark (d0c.d0cstdec_arg)
   val () = e0fftaglstopt_posmark (d0c.d0cstdec_eff)
   val () = s0exp_posmark (d0c.d0cstdec_res)
@@ -551,7 +569,9 @@ implement d0ec_posmark (d0c0) =
   | D0Cstacons _ => staexploc_posmark (d0c0.d0ec_loc)
   | D0Cstacsts _ => staexploc_posmark (d0c0.d0ec_loc)
   | D0Cstavars _ => staexploc_posmark (d0c0.d0ec_loc)
-  | D0Csexpdefs _ => staexploc_posmark (d0c0.d0ec_loc)
+  | D0Csexpdefs (_, d0c, d0cs) => begin
+      s0expdef_posmark (d0c); s0expdeflst_posmark (d0cs)
+    end // end of [D0Csexpdefs]
   | D0Csaspdec _ => staexploc_posmark (d0c0.d0ec_loc)
   | D0Cdatdecs (dk, d0c1, d0cs1, d0cs2) => begin
       if datakind_is_proof dk then

@@ -959,6 +959,7 @@ fun s0tavarlst_cons (x: s0tavar, xs: s0tavarlst): s0tavarlst
 typedef s0expdef = '{
   s0expdef_loc= loc_t
 , s0expdef_sym= sym_t
+, s0expdef_loc_id= loc_t
 , s0expdef_arg= s0arglstlst
 , s0expdef_res= s0rtopt
 , s0expdef_def= s0exp
@@ -1113,7 +1114,6 @@ typedef d0cstdec = '{
   d0cstdec_loc= loc_t
 , d0cstdec_fil= filename_t
 , d0cstdec_sym= sym_t
-, d0cstdec_loc_id= loc_t
 , d0cstdec_arg= d0arglst
 , d0cstdec_eff= e0fftaglstopt
 , d0cstdec_res= s0exp
