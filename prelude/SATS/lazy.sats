@@ -36,6 +36,18 @@
 
 (* ****** ****** *)
 
+#include "prelude/params.hats"
+
+(* ****** ****** *)
+
+#if VERBOSE_PRELUDE #then
+
+#print "Loading [lazy.sats] starts!\n"
+
+#endif
+
+(* ****** ****** *)
+
 fun{a:t@ype} stream_filter_fun
   (xs: stream a, p: a -<1,~ref> bool):<1,~ref> stream a
 
@@ -71,5 +83,11 @@ fun{a:t@ype} stream_merge_ord
 fun{a:t@ype} stream_nth (xs: stream a, i: Nat):<1,~ref> a
 
 (* ****** ****** *)
+
+#if VERBOSE_PRELUDE #then
+
+#print "Loading [lazy.sats] finishes!\n"
+
+#endif
 
 (* end of [lazy.sats] *)

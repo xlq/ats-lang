@@ -38,6 +38,12 @@
 
 // some common functions on pointers
 
+(* ****** ****** *)
+
+#include "prelude/params.hats"
+
+(* ****** ****** *)
+
 #if VERBOSE_PRELUDE #then
 
 #print "Loading [pointer.sats] starts!\n"

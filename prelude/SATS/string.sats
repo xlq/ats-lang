@@ -38,6 +38,12 @@
 
 // some string operations
 
+(* ****** ****** *)
+
+#include "prelude/params.hats"
+
+(* ****** ****** *)
+
 #if VERBOSE_PRELUDE #then
 
 #print "Loading [string.sats] starts!\n"
@@ -60,6 +66,13 @@ typedef c1hars (n:int) = @[c1har][n]
 
 (* ****** ****** *)
 
+viewdef strbuf_v (m: int, n: int, l:addr) = strbuf (m, n) @ l
+
+viewtypedef strbufptr_gc (m:int, n:int, l:addr) =
+  @(free_gc_v (m, l), strbuf_v (m, n, l) | ptr l)
+
+(* ****** ****** *)
+
 praxi bytes_v_of_b0ytes_v {bsz:int}
   {l:addr} (pf: b0ytes (bsz) @ l):<prf> bytes (bsz) @ l
 
@@ -77,8 +90,6 @@ praxi bytes_v_of_strbuf_v {bsz:int}
   {l:addr} (pf: strbuf (bsz) @ l):<prf> bytes (bsz) @ l
 
 (* ****** ****** *)
-
-viewdef strbuf_v (m: int, n: int, l:addr) = strbuf (m, n) @ l
 
 praxi strbuf_v_null {n:nat} {l:addr}
   (pf1: char NUL @ l, pf2: b0ytes (n) @ l + sizeof(char))
@@ -128,7 +139,7 @@ fun bytes_strbuf_trans {m,n:nat | n < m} {l:addr}
 
 (* ****** ****** *)
 
-val string_empty : string 0
+// val string_empty : string 0
 
 (* ****** ****** *)
 
@@ -357,18 +368,45 @@ fun strbuf_initialize_substring {bsz:int} {n:int}
 fun string_make_char {n:nat} (n: size_t n, c: char):<> string n
   = "atspre_string_make_char"
 
+fun string_make_char__ptr {n:nat}
+  (n: size_t n, c: char):<> [m:nat] [l:addr] strbufptr_gc (m, n, l)
+  = "atspre_string_make_char"
+
+(* ****** ****** *)
+
 fun string_make_list_int {n:nat}
   (cs: list (char, n), n: int n):<> string n
   = "atspre_string_make_list_int"
+
+fun string_make_list_int__ptr
+  {n:nat} (cs: list (char, n), n: int n)
+  :<> [m:nat] [l:addr] strbufptr_gc (m, n, l)
+  = "atspre_string_make_list_int"
+
+(* ****** ****** *)
 
 fun string_make_substring
   {n:int} {st,ln:nat | st + ln <= n}
   (str: string n, st: size_t st, ln: size_t ln):<> string ln
   = "atspre_string_make_substring"
 
+fun string_make_substring__ptr
+  {n:int} {st,ln:nat | st + ln <= n}
+  (str: string n, st: size_t st, ln: size_t ln)
+  :<> [m:nat] [l:addr] strbufptr_gc (m, ln, l)
+  = "atspre_string_make_substring"
+
+(* ****** ****** *)
+
 fun string_make_substrbuf
   {m,n:int} {st,ln:nat | st + ln <= n}
   (sbf: &strbuf (m, n), st: size_t st, ln: size_t ln):<> string ln
+  = "atspre_string_make_substring"
+
+fun string_make_substrbuf
+  {m,n:int} {st,ln:nat | st + ln <= n}
+  (sbf: &strbuf (m, n), st: size_t st, ln: size_t ln)
+  :<> [m:nat] [l:addr] strbufptr_gc (m, ln, l)
   = "atspre_string_make_substring"
 
 (* ****** ****** *)
@@ -376,11 +414,18 @@ fun string_make_substrbuf
 fun string0_append (s1: string, s2: string):<> string
   = "atspre_string_append" 
 
-fun string1_append {i,j:nat} (s1: string i, s2: string j):<> string (i+j)
+overload + with string0_append
+
+fun string1_append {i,j:nat}
+  (s1: string i, s2: string j):<> string (i+j)
   = "atspre_string_append"
 
-overload + with string0_append
 overload + with string1_append
+
+fun string1_append__ptr
+  {i,j:nat} (s1: string i, s2: string j)
+  :<> [m:nat] [l:addr] strbufptr_gc (m, i+j, l)
+  = "atspre_string_append"
 
 (* ****** ****** *)
 

@@ -97,7 +97,7 @@ _string_alloc (const ats_size_type n) {
 
 (* ****** ****** *)
 
-implement string_empty = "" // this requires dynamic loading
+// implement string_empty = "" // this requires dynamic loading
 
 (* ****** ****** *)
 

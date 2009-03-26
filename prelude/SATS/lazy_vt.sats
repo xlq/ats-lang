@@ -36,6 +36,18 @@
 
 (* ****** ****** *)
 
+#include "prelude/params.hats"
+
+(* ****** ****** *)
+
+#if VERBOSE_PRELUDE #then
+
+#print "Loading [lazy_vt.sats] starts!\n"
+
+#endif
+
+(* ****** ****** *)
+
 fun{a:viewt@ype} list_vt_of_stream_vt
   (xs: stream_vt a):<1,~ref> [n:nat] (int n, list_vt (a, n))
 
@@ -62,5 +74,11 @@ fun{a1,a2,b:t@ype} stream_vt_map2_cloptr
   :<1,~ref> stream_vt b
 
 (* ****** ****** *)
+
+#if VERBOSE_PRELUDE #then
+
+#print "Loading [lazy_vt.sats] finishes!\n"
+
+#endif
 
 (* end of [lazy_vt.sats] *)

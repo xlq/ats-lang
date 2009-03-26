@@ -442,8 +442,9 @@ fn d0atconlst_posmark (d0cs: d0atconlst): void =
 
 fn d0atdec_posmark
   (d0c: d0atdec): void = let
-  val () = stacstdecloc_posmark (d0c.d0atdec_loc)
-  val () = staexploc_posmark (d0c.d0atdec_headloc)
+  val headloc = d0c.d0atdec_headloc
+  val () = stacstdecloc_posmark (headloc)
+  val () = staexploc_posmark (headloc)
   val () = d0atconlst_posmark (d0c.d0atdec_con)
 in
   // empty
@@ -566,49 +567,55 @@ implement d0ec_posmark (d0c0) =
   | D0Ce0xpact _ => neuexploc_posmark (d0c0.d0ec_loc)
   | D0Cdatsrts _ => staexploc_posmark (d0c0.d0ec_loc)
   | D0Csrtdefs _ => staexploc_posmark (d0c0.d0ec_loc)
-  | D0Cstacons _ => staexploc_posmark (d0c0.d0ec_loc)
+  | D0Cstacons _ => let
+      val loc = d0c0.d0ec_loc; val () = stacstdecloc_posmark (loc)
+    in
+      staexploc_posmark (loc)
+    end // end of [D0Cstacons]
   | D0Cstacsts _ => staexploc_posmark (d0c0.d0ec_loc)
   | D0Cstavars _ => staexploc_posmark (d0c0.d0ec_loc)
   | D0Csexpdefs (_, d0c, d0cs) => begin
       s0expdef_posmark (d0c); s0expdeflst_posmark (d0cs)
     end // end of [D0Csexpdefs]
   | D0Csaspdec _ => staexploc_posmark (d0c0.d0ec_loc)
-  | D0Cdatdecs (dk, d0c1, d0cs1, d0cs2) => begin
-      if datakind_is_proof dk then
-        prfexploc_posmark (d0c0.d0ec_loc);
-      d0atdec_posmark d0c1; d0atdeclst_posmark d0cs1;
-      s0expdeflst_posmark d0cs2;
-    end
+  | D0Cdatdecs (dk, d0c1, d0cs1, d0cs2) => let
+      val isprf = datakind_is_proof dk
+      val () = if isprf then prfexploc_posmark (d0c0.d0ec_loc)
+      val () = (d0atdec_posmark d0c1; d0atdeclst_posmark d0cs1)
+      val () = s0expdeflst_posmark d0cs2
+    in
+      // empty
+    end // end of [D0Cdatdecs]
   | D0Cexndecs (d0c, d0cs) => begin
-      e0xndec_posmark d0c; e0xndeclst_posmark d0cs;
-    end
-  | D0Cdcstdecs (dk, s0qss, d0c, d0cs) => begin
-      if dcstkind_is_proof dk then
-        prfexploc_posmark (d0c0.d0ec_loc);
-      s0qualstlst_posmark s0qss;
-      d0cstdec_posmark d0c; d0cstdeclst_posmark d0cs;
-    end
+      e0xndec_posmark d0c; e0xndeclst_posmark d0cs
+    end // end of [val]
+  | D0Cdcstdecs (dk, s0qss, d0c, d0cs) => let
+      val isprf = dcstkind_is_proof dk
+      val () = if isprf then prfexploc_posmark (d0c0.d0ec_loc)
+      val () = s0qualstlst_posmark s0qss
+    in
+      d0cstdec_posmark d0c; d0cstdeclst_posmark d0cs
+    end // end of [D0Cdcstdecs]
   | D0Coverload _ => neuexploc_posmark (d0c0.d0ec_loc)
   | D0Cextype _ => staexploc_posmark (d0c0.d0ec_loc)
   | D0Cextval (_(*name*), d0e) => d0exp_posmark d0e
   | D0Cextcode (_, code) => begin
       externloc_posmark (d0c0.d0ec_loc)
-    end
+    end // end of [D0Cextcode]
   | D0Cvaldecs (vk, d0c, d0cs) => begin
       if valkind_is_proof vk then
         prfexploc_posmark (d0c0.d0ec_loc);
       v0aldec_posmark d0c; v0aldeclst_posmark d0cs;
-    end
+    end // end of [D0Cvaldecs]
   | D0Cvaldecs_par (d0c, d0cs) =>  begin
       v0aldec_posmark d0c; v0aldeclst_posmark d0cs
-    end
+    end // end of [D0Cvaldecs_par]
   | D0Cvaldecs_rec (d0c, d0cs) =>  begin
       v0aldec_posmark d0c; v0aldeclst_posmark d0cs
-    end
+    end // end of [D0Cvaldecs_rec]
   | D0Cfundecs (fk, decarg, d0c, d0cs) => let
-      val () = begin
-        if funkind_is_proof fk then prfexploc_posmark (d0c0.d0ec_loc)
-      end
+      val isprf = funkind_is_proof fk
+      val () = if isprf then prfexploc_posmark (d0c0.d0ec_loc)
       val () = s0qualstlst_posmark decarg
     in
       f0undec_posmark d0c; f0undeclst_posmark d0cs
