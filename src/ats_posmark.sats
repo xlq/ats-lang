@@ -50,6 +50,7 @@ fun posmark_resume_set (flag: int): void
 
 fun posmark_pop (): void
 fun posmark_push (): void
+fun posmark_push_dup (): void
 
 (* ****** ****** *)
 
@@ -92,6 +93,10 @@ fun posmark_insert_dyncstuse_end (li: lint, loc: loc_t): void
 
 fun posmark_file_make_tex (basename: string): void
 fun posmark_file_make_htm (in_name: string, out_name: Stropt): void
+
+(* ****** ****** *)
+
+fun posmark_xref_testnot_if (name: string): Stropt
 
 (* ****** ****** *)
 

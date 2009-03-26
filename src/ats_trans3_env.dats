@@ -811,7 +811,7 @@ in
 implement trans3_env_s3itemlst_copy () = let
   val (vbox pf | p) = ref_get_view_ptr (the_s3itemlst)
 in
-  $Lst.list_vt_copy (!p)
+  $Lst.list_vt_copy__boxed (!p)
 end // end of [trans3_Env_s3itemlst_copy]
 
 implement trans3_env_s3itemlst_get () = let

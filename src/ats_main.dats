@@ -416,6 +416,17 @@ fn do_parse_filename (
     val () = $Syn.d0eclst_posmark d0cs in $PM.posmark_disable ()
   end // end of [val]
 //
+  val fullname = $Fil.filename_full (filename)
+  val pmstropt = $PM.posmark_xref_testnot_if (fullname)
+  val isposmark = stropt_is_some pmstropt
+  val () = if isposmark then let
+    val () = $PM.posmark_push_dup ()
+    val () = $PM. posmark_file_make_htm (fullname, pmstropt)
+    val () = $PM.posmark_pop ()
+  in
+    // empty
+  end // end of [val]
+//
   val () = if depgen > 0 then print_newline ()
 in
   d0cs // the return value
@@ -679,7 +690,7 @@ fun loop {i:nat | i <= n} .<i>. (
           | _ when is_posmark_xref_prefix (str) => let
             in
               param.posmark := 1; param.posmark_html := 2
-            end // end of ["--posmark_html_xref"]
+            end // end of ["--posmark_xref"]
           | "--debug=0" => $Deb.debug_flag_set (0)
           | "--debug=1" => $Deb.debug_flag_set (1)
           | "--help" => begin

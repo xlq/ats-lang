@@ -122,7 +122,7 @@ fun s2exp_arity_list (s2e: s2exp): List int = begin
   case+ s2e.s2exp_node of
   | S2Efun (_, _, _, _, s2es, s2e) => begin
       cons ($Lst.list_length s2es, s2exp_arity_list s2e)
-    end
+    end // end of[S2Efun]
   | S2Eexi (_, _, s2e) => s2exp_arity_list s2e
   | S2Euni (_, _, s2e) => s2exp_arity_list s2e
   | S2Emetfn (_, _, s2e) => s2exp_arity_list s2e

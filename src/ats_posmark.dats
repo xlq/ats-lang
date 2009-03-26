@@ -217,6 +217,21 @@ in
   // empty
 end // end of [posmark_push]
 
+implement posmark_push_dup () = let
+  val xs = let
+    val (vbox pf | p) = ref_get_view_ptr (the_posmarklst)
+  in
+    $Lst.list_vt_copy (!p)
+  end // end of [val]
+  val () = let
+    val (vbox pf | p) = ref_get_view_ptr (the_posmarklstlst)
+  in
+    !p := list_vt_cons (xs, !p)
+  end // end of [val]
+in
+  // empty
+end // end of [posmark_push]
+
 end // end of [local]
 
 (* ****** ****** *)
@@ -709,6 +724,69 @@ implement posmark_file_make_htm (in_name, out_name) = let
 in
   // empty
 end // end of [posmark_file_make_htm]
+
+end // end of [local]
+
+(* ****** ****** *)
+
+local
+
+staload "ats_charlst.sats"
+
+fn char_of_xdigit (i: int): char = let
+  val i = (
+    if i >= 10 then let
+      val a = int_of_char 'a' in int_of_char 'a' + i - 10
+    end else begin
+      int_of_char '0' + i
+    end
+  ) : int
+in
+  char_of_int (i)
+end // end of [char_of_xdigit]
+
+fun posmark_xref_testnot
+  (flag: string, name: string): Stropt = let
+  fun loop {n,i:nat | i <= n} .<n-i>.
+    (name: string n, i: size_t i, cs: Charlst_vt): Charlst_vt =
+    if string_isnot_at_end (name, i) then let
+      val c = name[i]
+      val cs = (case+ c of
+        | _ when char_isalnum c => CHARLSTcons (c, cs)
+        | _ => let
+            val cs = CHARLSTcons ('_', cs)
+            val i = int_of_char (c)
+            val i1 = i / 16 and i2 = i mod 16
+            val c1 = char_of_xdigit i1 and c2 = char_of_xdigit i2
+          in
+            CHARLSTcons (c2, CHARLSTcons (c1, cs))
+          end // end of [_]
+      ) : Charlst_vt
+    in
+      loop (name, i+1, cs)
+    end else begin
+      charlst_add_string (cs, ".html") // loop returns
+    end (* end of [if] *)
+  val flag = string1_of_string (flag)
+  val cs = charlst_add_string (CHARLSTnil (), flag) // [flag] ends with [dirsep]
+  val name = string1_of_string (name)
+  val cs = loop (name, 0, cs)
+  val name1 = string_make_charlst_rev (cs)
+in
+  if test_file_exists (name1) then stropt_none else stropt_some (name1)
+end // end of [posmark_xref_testnot]
+
+extern fun posmark_xref_flag_get (): Stropt = "ats_posmark_xref_flag_get"
+
+in // in of [local]
+
+implement posmark_xref_testnot_if (name) = let
+  val flag = posmark_xref_flag_get ()
+in
+  if stropt_is_some flag then let
+    val flag = stropt_unsome (flag) in posmark_xref_testnot (flag, name)
+  end else stropt_none
+end // end of [posmark_xref_testnot_if]
 
 end // end of [local]
 

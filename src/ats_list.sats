@@ -91,8 +91,13 @@ fun list_length_compare
 
 (* ****** ****** *)
 
-fun list_vt_copy
-  {a:type} {n:nat} (xs: !list_vt (a, n)):<> list_vt (a, n)
+fun{a:t@ype} list_vt_copy
+  {n:nat} (xs: !list_vt (a, n)):<> list_vt (a, n)
+
+fun list_vt_copy__boxed {a:type}
+  {n:nat} (xs: !list_vt (a, n)):<> list_vt (a, n)
+  
+(* ****** ****** *)
 
 fun {a:t@ype} list_vt_free {n:nat} (xs: list_vt (a, n)):<> void
 fun list_vt_free__boxed {a:type} {n:nat} (xs: list_vt (a, n)):<> void

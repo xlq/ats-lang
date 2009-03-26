@@ -186,7 +186,7 @@ implement list_vt_length__boxed {a} (xs) = list_vt_length<a> (xs)
 (* ****** ****** *)
 
 (* tail-recursive implementation *)
-implement list_vt_copy {a} (xs) = let
+implement{a} list_vt_copy (xs) = let
   fun aux {n:nat} .<n>.
     (xs: !list_vt (a, n), res: &(List_vt a)? >> list_vt (a, n))
     :<> void = begin case+ xs of
@@ -204,6 +204,10 @@ implement list_vt_copy {a} (xs) = let
 in
   aux (xs, res); res
 end // end of [list_vt_copy]
+
+implement list_vt_copy__boxed {a} (xs) = list_vt_copy<a> (xs)
+
+(* ****** ****** *)
 
 (* tail-recursive implementation *)
 implement{a} list_vt_free (xs) = begin
