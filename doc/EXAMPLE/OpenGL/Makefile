@@ -64,9 +64,15 @@ glBlending2: glBlending2.dats
 glDisplayList1: glDisplayList1.dats
 	$(ATSCC) -o glDisplayList1 glDisplayList1.dats -lGL -lglut
 
+#
+# A little bit animation for fun
+#
 glFaces: glFaces.dats
 	$(ATSCC) -o glFaces glFaces.dats -lGL -lglut
 
+#
+# A simple game of Tetris implemented in ATS
+#
 glTetrix: glTetrix.dats
 	$(ATSCC) -O2 -o glTetrix glTetrix.dats -lGL -lglut
 

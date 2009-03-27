@@ -203,6 +203,17 @@ implement string_implode (cs) =
 
 (* ****** ****** *)
 
+implement strbuf_foreach
+  {v} {m,n} {f:eff} (pf | buf, f) =  loop (pf | buf, f, 0) where {
+  fun loop {i:nat | i <= n} .<n-i>. (
+      pf: !v | buf: &strbuf (m,n), f: &(!v | c1har) -<f,clo> void, i: size_t i
+    ) :<f> void =
+    if strbuf_isnot_at_end (buf, i) then (f (pf | buf[i]); loop (pf | buf, f, i+1))
+  // end of [loop]
+} // end of [strbuf_foreach]
+
+(* ****** ****** *)
+
 local
 
 fn string_make_fun {n:nat}
@@ -300,6 +311,22 @@ atspre_string_make_substring
   memcpy(des, src, len) ; des[len] = '\000' ;
   return des ;
 } /* atspre_string_make_substring */
+
+/* ****** ****** */
+
+ats_void_type
+atspre_strbuf_tolower (ats_ptr_type p0) {
+  int c ; char *p = (char*)p0 ;
+  while (c = *p) { *p = tolower (c) ; ++p ; }
+  return ;
+}
+
+ats_void_type
+atspre_strbuf_toupper (ats_ptr_type p0) {
+  int c ; char *p = (char*)p0 ;
+  while (c = *p) { *p = toupper (c) ; ++p ; }
+  return ;
+}
 
 /* ****** ****** */
 

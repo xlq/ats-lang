@@ -160,7 +160,7 @@ castfn strbuf_of_string1 {n:nat} (str: string n)
 (* ****** ****** *)
 
 fun strbuf_ptr_free {m,n:nat} {l:addr}
-  (pf_gc: free_gc_v (m, l), pf_buf: strbuf (m, n) @ l | base: ptr l): void
+  (pf_gc: free_gc_v (m, l), pf_buf: strbuf (m, n) @ l | base: ptr l):<> void
   = "atspre_strbuf_ptr_free"
 
 (* ****** ****** *)
@@ -569,14 +569,34 @@ fun string_index_of_string // locate a substring from left
 
 (* ****** ****** *)
 
+// implemented in [prelude/CATS/string.cats]
 fun string_singleton (c: char):<> string 1
+  = "atspre_string_singleton"
+
+fun string_singleton__ptr (c: char):<> [m:nat] [l:addr] strbufptr_gc (m, 1, l)
+  = "atspre_string_singleton"
 
 (* ****** ****** *)
+
+fun strbuf_foreach {v:view} {m,n:nat} {f:eff}
+  (pf: !v | buf: &strbuf (m,n), f: &(!v | c1har) -<f,clo> void) :<f> void
+
+(* ****** ****** *)
+
+// implemented in [prelude/DATS/string.dats]
+fun strbuf_tolower {m,n:nat} (buf: &strbuf (m, n)): void
+  = "atspre_strbuf_tolower"
 
 // implemented in [prelude/DATS/string.dats]
 // a new string is created
 fun string_tolower {n:nat} (str: string n):<> string n
   = "atspre_string_tolower"
+
+(* ****** ****** *)
+
+// implemented in [prelude/DATS/string.dats]
+fun strbuf_toupper {m,n:nat} (buf: &strbuf (m, n)): void
+  = "atspre_strbuf_toupper"
 
 // implemented in [prelude/DATS/string.dats]
 // a new string is created
