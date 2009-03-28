@@ -11,7 +11,10 @@ ATSCC="$(ATSHOME)"/bin/atscc
 #
 
 server: server.dats
-	$(ATSCC) -D_ATS_GCATS -o server -O3 server.dats
+	$(ATSCC) -D_ATS_GCATS -o server -O2 server.dats
+
+server2: server2.dats
+	$(ATSCC) -D_ATS_GCATS -o server2 -O2 server2.dats
 
 ######
 
@@ -27,6 +30,6 @@ clean::
 	rm -f *_dats.c *_sats.c *~
 
 cleanall:: clean
-	rm -f server
+	rm -f server server2
 
 ###### end of [Makefile] ######
