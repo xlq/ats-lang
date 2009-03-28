@@ -137,6 +137,7 @@ abstype ptr_type
 (* ****** ****** *)
 
 abstype string_type // boxed type
+abst@ype strbuf_t0ype // a type of variable size
 
 (* ****** ****** *)
 
@@ -553,6 +554,7 @@ stadef ptr = ptr_type
 
 stadef strbuf = strbuf_int_int_t0ype
 stadef strbuf (bsz:int) = [len:int] strbuf (bsz, len)
+stadef strbuf = strbuf_t0ype
 
 stadef string = string_int_type
 stadef string = string_type
@@ -755,8 +757,9 @@ dataview unit_v = unit_v of ()
 
 //
 
-dataprop vcontain_p (v1:view, v2:view) =
-  vcontain_p (v1, v2) of (v1 -<prf> [v:view] @(v2, v))
+absprop vcontain_p (v1:view-, v2: view+)
+stadef >= (v1:view, v2:view) = vcontain_p (v1, v2)
+stadef <= (v1:view, v2:view) = vcontain_p (v2, v1)
 
 (* ****** ****** *)
 

@@ -40,41 +40,28 @@
 
 (* ****** ****** *)
 
-#include "prelude/params.hats"
-
-#if VERBOSE_PRELUDE #then
-
-#print "Loading [vcontain.sats] starts!\n"
-
-#endif
+staload "prelude/SATS/vcontain.sats"
 
 (* ****** ****** *)
 
-prfun vcontain_refl {v:view} (): vcontain_p (v, v)
-prfun vcontain_trans {v1,v2,v3:view}
-  (pf12: vcontain_p (v1, v2), pf23: vcontain_p (v2, v3)): vcontain_p (v1, v3)
+assume vcontain_p
+  (v1:view, v2:view) = (v1 -<prf> [v:view] @(v2, v))
 
 (* ****** ****** *)
 
-prfun vcontain_tuple_2_0 {v0,v1:view} (): vcontain_p (@(v0, v1), v0)
-prfun vcontain_tuple_2_1 {v0,v1:view} (): vcontain_p (@(v0, v1), v1)
+implement vcontain_refl {v} () = lam (pf) => @(pf, unit_v ())
+
+implement vcontain_trans (fpf12, fpf23) = lam (pf1) => let
+  prval (pf2, pf12) = fpf12 (pf1); val (pf3, pf23) = fpf23 (pf2)
+in
+  (pf3, @(pf12, pf23))
+end // end of [vcontain_trans]
 
 (* ****** ****** *)
 
-prval vcontain_array_elt :
-  {a:viewtype} {n,i:nat | i < n} {l:addr} {ofs:int}
-  MUL (i, sizeof a, ofs) -<> vcontain_p (@[a][n] @ l, a @ l + ofs)
-
-prval vcontain_array_subarray :
-  {a:viewtype} {n,i,len:nat | i+len <= n} {l:addr} {ofs:int}
-  MUL (i, sizeof a, ofs) -<> vcontain_p (@[a][n] @ l, @[a][len] @ l + ofs)
+implement vcontain_tuple_2_0 () = lam (pf) => @(pf.0, pf.1)
+implement vcontain_tuple_2_1 () = lam (pf) => @(pf.1, pf.0)
 
 (* ****** ****** *)
 
-#if VERBOSE_PRELUDE #then
-
-#print "Loading [vcontain.dats] starts!\n"
-
-#endif
-
-(* end of [vcontain.sats] *)
+(* end of [vcontain.dats] *)
