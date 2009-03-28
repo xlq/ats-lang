@@ -435,6 +435,8 @@ ats_ptr_type dirent_name_get (ats_ptr_type dir) {
 
 %}
 
+(*
+
 dataview strbufopt_v (int, int, addr) =
   | {m,n:nat} strbufopt_v_none (m, n, null) of ()
   | {m,n:nat} {l:addr | l <> null}
@@ -443,25 +445,7 @@ dataview strbufopt_v (int, int, addr) =
 viewtypedef strbufoptptr_gc
   (m:int, n:int, l:addr) = @(strbufopt_v (m, n, l) | ptr l)
 
-absviewtype stropt_gc (m: int, n:int)
-
-extern castfn stropt_gc_some {m,n:nat} {l:addr}
-  (x: strbufptr_gc (m,n,l)): stropt_gc (m, n)
-
-extern castfn stropt_gc_unsome {m,n:nat | m > 0}
-  (x: stropt_gc (m, n)):<> [l:addr] strbufptr_gc (m, n, l)
-
-extern fun stropt_gc_is_none
-  {m,n:int} (s: !stropt_gc (m,n)):<> bool (m == 0)
-  = "atspre_stropt_is_none"
-
-extern castfn stropt_gc_unnone {m,n:nat} (x: stropt_gc (m, n)):<> ptr
-
-extern fun stropt_gc_is_some
-  {m,n:int} (s: !stropt_gc (m,n)):<> bool (m >= 1)
-  = "atspre_stropt_is_some"
-
-viewtypedef Stropt_gc = [m,n:nat] stropt_gc (m, n)
+*)
 
 extern fun dirent_name_get (dir: &DIR): Stropt_gc = "dirent_name_get"
 

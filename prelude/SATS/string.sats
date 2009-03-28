@@ -601,8 +601,8 @@ fun string_hash_33 (str: string):<> uInt = "atspre_string_hash_33"
 
 // functions for optional strings
 
-val stropt_none : stropt (~1)
-  = "atspre_stropt_none"
+// extval (ats_ptr_type, "0")
+val stropt_none : stropt (~1) = "atspre_stropt_none"
 
 castfn stropt_some {n:nat} (str: string n):<> stropt n
   = "atspre_stropt_some"
@@ -613,6 +613,34 @@ fun stropt_is_none {i:int} (stropt: stropt i):<> bool (i < 0)
   = "atspre_stropt_is_none"
 fun stropt_is_some {i:int} (stropt: stropt i):<> bool (i >= 0)
   = "atspre_stropt_is_some"
+
+(* ****** ****** *)
+
+absviewtype stropt_gc (m:int, n:int)
+
+// extval (ats_ptr_type, "0")
+val stropt_gc_none : stropt_gc (0,0) = "atspre_stropt_none"
+
+castfn stropt_gc_unnone
+  {n:int} (x: stropt_gc (0, n)):<> ptr (null)
+
+castfn stropt_gc_some {m,n:nat} {l:addr}
+  (x: strbufptr_gc (m,n,l)): stropt_gc (m, n) // [m > n]
+  = "atspre_stropt_some"
+
+castfn stropt_gc_unsome {m,n:nat | m > 0} // [m > n]
+  (x: stropt_gc (m, n)):<> [l:addr] strbufptr_gc (m, n, l)
+  = "atspre_stropt_unsome"
+
+fun stropt_gc_is_none
+  {m,n:nat} (s: !stropt_gc (m,n)):<> bool (m == 0)
+  = "atspre_stropt_is_none"
+
+fun stropt_gc_is_some
+  {m,n:nat} (s: !stropt_gc (m,n)):<> bool (m >= 1)
+  = "atspre_stropt_is_some"
+
+viewtypedef Stropt_gc = [m,n:nat] stropt_gc (m, n)
 
 (* ****** ****** *)
 
