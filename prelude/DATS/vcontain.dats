@@ -49,6 +49,10 @@ assume vcontain_p
 
 (* ****** ****** *)
 
+implement vcontain_make (fpf) = fpf
+
+(* ****** ****** *)
+
 implement vcontain_refl {v} () = lam (pf) => @(pf, unit_v ())
 
 implement vcontain_trans (fpf12, fpf23) = lam (pf1) => let

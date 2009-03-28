@@ -50,6 +50,11 @@
 
 (* ****** ****** *)
 
+prfun vcontain_make {v1:view} {v2:view}
+ (fpf: v1 -<prf> [v:view] @(v2, v)): vcontain_p (v1, v2)
+
+(* ****** ****** *)
+
 prfun vcontain_refl {v:view} (): vcontain_p (v, v)
 prfun vcontain_trans {v1,v2,v3:view}
   (pf12: vcontain_p (v1, v2), pf23: vcontain_p (v2, v3)): vcontain_p (v1, v3)

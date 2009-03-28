@@ -92,7 +92,7 @@ implement stringlst_concat (ss) = let
   prval () = free_gc_elim (pf_gc)
   val () = loop2 (!p_sb, n0, 0, ss)
 in
-  string1_of_strbuf (pf_sb | p_sb)
+  string1_of_strbuf1 (pf_sb | p_sb)
 end // end of [stringlst_concat]
 
 (* ****** ****** *)

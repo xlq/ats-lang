@@ -300,7 +300,10 @@ fn prelude_load (ATSHOME: string): void = let
   val () = $TransEnv2.trans2_env_pervasive_add_topenv ()
 
   // these are all the .sats files in $ATSHOME/prelude
+
   val () = pervasive_load (ATSHOME, "prelude/SATS/arith.sats")
+  val () = pervasive_load (ATSHOME, "prelude/SATS/vcontain.sats")
+
   val () = pervasive_load (ATSHOME, "prelude/SATS/bool.sats")
   val () = pervasive_load (ATSHOME, "prelude/SATS/byte.sats")
   val () = pervasive_load (ATSHOME, "prelude/SATS/char.sats")

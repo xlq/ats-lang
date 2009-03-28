@@ -151,41 +151,41 @@ implement filename_stdin = '{
 
 (* ****** ****** *)
 
-implement lt_filename_filename (fname1, fname2) =
-  fname1.filename_full < fname2.filename_full
+implement lt_filename_filename
+  (x1, x2) = x1.filename_full < x2.filename_full
 
-implement lte_filename_filename (fname1, fname2) =
-  fname1.filename_full <= fname2.filename_full
+implement lte_filename_filename
+  (x1, x2) = x1.filename_full <= x2.filename_full
 
-implement gt_filename_filename (fname1, fname2) =
-  fname1.filename_full > fname2.filename_full
+implement gt_filename_filename
+  (x1, x2) = x1.filename_full > x2.filename_full
 
-implement gte_filename_filename (fname1, fname2) =
-  fname1.filename_full >= fname2.filename_full
+implement gte_filename_filename
+  (x1, x2) = x1.filename_full >= x2.filename_full
 
-implement eq_filename_filename (fname1, fname2) =
-  fname1.filename_full = fname2.filename_full
+implement eq_filename_filename
+  (x1, x2) = x1.filename_full = x2.filename_full
 
-implement neq_filename_filename (fname1, fname2) =
-  fname1.filename_full <> fname2.filename_full
+implement neq_filename_filename
+  (x1, x2) = x1.filename_full <> x2.filename_full
 
-implement compare_filename_filename (fname1, fname2) =
-  compare (fname1.filename_full, fname2.filename_full)
-
-(* ****** ****** *)
-
-implement fprint_filename (pf | out, fname) =
-  fprint_string (pf | out, fname.filename_full)
-
-implement print_filename (fname) = print_mac (fprint_filename, fname)
-implement prerr_filename (fname) = prerr_mac (fprint_filename, fname)
+implement compare_filename_filename (x1, x2) =
+  compare (x1.filename_full, x2.filename_full)
 
 (* ****** ****** *)
 
-// implement fprint_filename_base (pf | out, fname) = (*implemented in C*)
+implement fprint_filename (pf | out, x) =
+  fprint_string (pf | out, x.filename_full)
 
-implement print_filename_base (fname) = print_mac (fprint_filename_base, fname)
-implement prerr_filename_base (fname) = prerr_mac (fprint_filename_base, fname)
+implement print_filename (x) = print_mac (fprint_filename, x)
+implement prerr_filename (x) = prerr_mac (fprint_filename, x)
+
+(* ****** ****** *)
+
+// implement fprint_filename_base (pf | out, x) = (*implemented in C*)
+
+implement print_filename_base (x) = print_mac (fprint_filename_base, x)
+implement prerr_filename_base (x) = prerr_mac (fprint_filename_base, x)
 
 (* ****** ****** *)
 

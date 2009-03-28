@@ -40,6 +40,14 @@
 
 (* ****** ****** *)
 
+// staload "prelude/SATS/vcontain.sats"
+
+(* ****** ****** *)
+
+// implement strbuf_vcontain_lemma0 () = vcontain_refl ()
+
+(* ****** ****** *)
+
 implement strbuf_v_split
   (pf_mul, pf_str) = split (pf_mul, pf_str) where {
   prfun split {m,n:nat} {i:nat | i <= n} {l:addr} {ofs:int} .<n>.
@@ -132,7 +140,7 @@ implement string_make_list_int (cs, n) = let
       end // end of [if]
   } // end of [val]
 in
-  string1_of_strbuf (pf_sb | p_sb)
+  string1_of_strbuf1 (pf_sb | p_sb)
 end // end of [string_make_list_int]
 
 (* ****** ****** *)
@@ -172,7 +180,7 @@ implement stringlst_concat (ss) = let
   prval () = free_gc_elim (pf_gc)
   val () = loop2 (!p_sb, n0, 0, ss)
 in
-  string1_of_strbuf (pf_sb | p_sb)
+  string1_of_strbuf1 (pf_sb | p_sb)
 end // end of [stringlst_concat]
 
 (* ****** ****** *)
@@ -245,7 +253,7 @@ fn string_make_fun {n:nat}
     end // end of [loop]
   } // end of [val]
 in
-  string1_of_strbuf (pf_buf | p_buf)
+  string1_of_strbuf1 (pf_buf | p_buf)
 end // end of [string_make_fun]
 
 in // in of [local]
