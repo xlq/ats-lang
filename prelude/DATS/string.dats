@@ -40,11 +40,8 @@
 
 (* ****** ****** *)
 
-// staload "prelude/SATS/vcontain.sats"
-
-(* ****** ****** *)
-
-// implement strbuf_vcontain_lemma0 () = vcontain_refl ()
+// declared in [prelude/SATS/vcontain.sats]
+implement strbuf_vcontain_lemma0 () = vcontain_refl ()
 
 (* ****** ****** *)
 

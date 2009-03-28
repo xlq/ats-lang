@@ -83,7 +83,10 @@ implement main () = let
   }
 in
   if (max > 0) then let
-    val () = print_strbuf (!p_longest)
+    val () = print_string (str) where {
+      extern castfn string_of_ptr (p: ptr): string
+      val str = string_of_ptr (p_longest)
+    } // end of [val]
     prval () = pf_longest := s2b (pf_longest)
   in
     // empty

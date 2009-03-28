@@ -81,13 +81,15 @@ implement main (argc, argv) = let
   val len = string_length (str)
   var !p_buf_new with pf_buf_new = @[byte][len+1]()
   val () = let
-    val (vbox pf_buf | p_buf) = strbuf_of_string1 str
+    val (vbox pf_buf | p_buf) = strbuf1_of_string1 str
   in
      strcpy (pf_buf_new | p_buf_new, !p_buf)
   end // end of [val]
-  val () = begin
-    printf ("strcpy (%s) = ", @(str)); print !p_buf_new; print_newline ()
-  end // end of [val]
+  val () = printf ("strcpy (%s) = ", @(str))
+  val () = print (__cast p_buf_new) where {
+    extern castfn __cast (p: ptr): string 
+  } // end of [val]
+  val () = print_newline ()
   prval () = pf_buf_new := bytes_v_of_strbuf_v (pf_buf_new)
 in
   // empty  

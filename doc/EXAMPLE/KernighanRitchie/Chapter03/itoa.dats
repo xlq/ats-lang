@@ -114,7 +114,10 @@ implement main (argc, argv) = let
 in
   if :(pf_buf: b0ytes bsz @ p_buf) => err >= 0 then let
     prval itoa_v_succ pf1_buf = pf_itoa
-    val () = (print (!p_buf); print_newline ())
+    val () = print (__cast p_buf) where {
+      extern castfn __cast (p: ptr): string 
+    }
+    val () = print_newline ()
     prval () = pf_buf := bytes_v_of_strbuf_v (pf1_buf)
   in
     // empty

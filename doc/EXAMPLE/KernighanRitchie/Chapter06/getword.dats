@@ -69,7 +69,10 @@ end // end of [getword]
 implement main (argc, argv) = let
   var !p_buf with pf_buf = @[byte][BUFSZ]()
   val () = getword (pf_buf | p_buf, BUFSZ)
-  val () = (print (!p_buf); print_newline ())
+  val () = print_string (__cast p_buf) where {
+    extern castfn __cast (p: ptr): string 
+  } // end of [val]
+  val () = print_newline ()
   prval () = pf_buf := bytes_v_of_strbuf_v (pf_buf)
 in
   // empty

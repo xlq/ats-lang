@@ -79,7 +79,7 @@ implement main (argc, argv) = let
   val str = argv.[1]
   val int = strlen (!p_buf) where {
     val str = string1_of_string str
-    val (vbox pf_buf | p_buf) = strbuf_of_string1 str
+    val (vbox pf_buf | p_buf) = strbuf1_of_string1 str
   } // end of [val]
 in
   printf ("strlen (%s) = ", @(str)); print_size int; print_newline ()

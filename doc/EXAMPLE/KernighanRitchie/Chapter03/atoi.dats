@@ -68,7 +68,7 @@ implement main (argc, argv) = let
   val () = assert (argc >= 2)
   val str = string1_of_string (argv.[1])
   val int = atoi (!p_buf) where {
-    val (vbox pf_buf | p_buf) = strbuf_of_string1 str
+    val (vbox pf_buf | p_buf) = strbuf1_of_string1 str
   } // end of [val]
 in
   printf ("str = %s and int = %i\n", @(str, int))

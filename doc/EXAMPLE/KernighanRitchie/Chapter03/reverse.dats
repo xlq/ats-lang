@@ -42,11 +42,15 @@ implement main () = let
   var !p_buf with pf_buf = @[byte][BUFLEN]()
   val () = strbuf_initialize_substring (pf_buf | p_buf, alphabet, 0, 26)
   val () = print "reverse bef: "
-  val () = print_strbuf (!p_buf)
+  val () = print_string (__cast p_buf) where {
+    extern castfn __cast (p: ptr): string 
+  }
   val () = print_newline ()
   val () = print "reverse aft: " 
   val () = reverse (!p_buf)
-  val () = print_strbuf (!p_buf)
+  val () = print_string (__cast p_buf) where {
+    extern castfn __cast (p: ptr): string 
+  }
   val () = print_newline ()
   prval () = pf_buf := bytes_v_of_strbuf_v (pf_buf)
 in

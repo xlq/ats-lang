@@ -113,7 +113,10 @@ implement main (argc, argv) = let
       if :(pf_buf: b0ytes (BUFSZ+1) @ p_buf) =>
         p1 <> null then let
         prval fgets_v_succ (pf1) = pf1
-        val () = (print !p_buf)
+        val () =
+          print_string (__cast p_buf) where {
+          extern castfn __cast (p: ptr): string 
+        } // end of [val]
         prval () = pf_buf := bytes_v_of_strbuf_v (pf1)
       in
         loop (pf_buf | p_buf, iop)
