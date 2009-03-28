@@ -401,6 +401,11 @@ fun string1_append {i,j:nat}
   = "atspre_string_append"
 overload + with string1_append
 
+fun string1_append__ptr {i,j:nat}
+  (s1: string i, s2: string j)
+  :<> [m:nat] [l:addr] strbufptr_gc (m, i+j, l)
+  = "atspre_string_append"
+
 fun string1_append__main
   {v:view} {m1,i:nat} {m2,j:nat} {l1,l2:addr} (
     pf: !v

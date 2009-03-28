@@ -140,18 +140,6 @@ extern fun doctype_find (sfx: string): Stropt = "doctype_find"
 
 in // in of [local]
 
-(*
-
-dataview strbufopt_v (int, int, addr) =
-  | {m,n:nat} strbufopt_v_none (m, n, null) of ()
-  | {m,n:nat} {l:addr | l <> null}
-    strbufopt_v_some (m, n, l) of (free_gc_v (m, l), strbuf_v (m, n, l))
-  
-viewtypedef strbufoptptr_gc (l:addr) =
-  [m,n:nat] [l:addr] @(strbufopt_v (m, n, l) | ptr l)
-
-*)
-
 implement doctype_find (sfx) = let // binary search
   fun loop {i,j,n:int | 0 <= i; i <= j+1; j+1 <= n} {l:addr} .<j-i+1>.
     (pf: !array_v ((string, string), n, l) | A: ptr l, i: int i, j: int j)
@@ -289,7 +277,7 @@ val dir_msg31_str = let
   val _(*p_buf*) = ctime_r (pf_buf | ntick, p_buf) // reentrant function
   prval () = free_gc_elim (pf_gc)
 in
-  string1_of_strbuf (pf_buf | p_buf)
+  string1_of_strbuf1 (pf_buf | p_buf)
 end // end of [val]
 
 val dir_msg31_len = string_length dir_msg31_str
@@ -432,7 +420,8 @@ filename_extract (ats_ptr_type msg, ats_size_type n) {
 %{^
 
 extern ats_ptr_type
-atspre_string_make_substring (ats_ptr_type p0, ats_size_type st, ats_size_type ln);
+atspre_string_make_substring
+  (ats_ptr_type p0, ats_size_type st, ats_size_type ln);
 
 ats_ptr_type dirent_name_get (ats_ptr_type dir) {
   struct dirent *ent ;
@@ -446,43 +435,83 @@ ats_ptr_type dirent_name_get (ats_ptr_type dir) {
 
 %}
 
-extern fun dirent_name_get (dir: &DIR): Stropt = "dirent_name_get"
+dataview strbufopt_v (int, int, addr) =
+  | {m,n:nat} strbufopt_v_none (m, n, null) of ()
+  | {m,n:nat} {l:addr | l <> null}
+    strbufopt_v_some (m, n, l) of (free_gc_v (m, l), strbuf_v (m, n, l))
+  
+viewtypedef strbufoptptr_gc
+  (m:int, n:int, l:addr) = @(strbufopt_v (m, n, l) | ptr l)
+
+absviewtype stropt_gc (m: int, n:int)
+
+extern castfn stropt_gc_some {m,n:nat} {l:addr}
+  (x: strbufptr_gc (m,n,l)): stropt_gc (m, n)
+
+extern castfn stropt_gc_unsome {m,n:nat | m > 0}
+  (x: stropt_gc (m, n)):<> [l:addr] strbufptr_gc (m, n, l)
+
+extern fun stropt_gc_is_none
+  {m,n:int} (s: !stropt_gc (m,n)):<> bool (m == 0)
+  = "atspre_stropt_is_none"
+
+extern castfn stropt_gc_unnone {m,n:nat} (x: stropt_gc (m, n)):<> ptr
+
+extern fun stropt_gc_is_some
+  {m,n:int} (s: !stropt_gc (m,n)):<> bool (m >= 1)
+  = "atspre_stropt_is_some"
+
+viewtypedef Stropt_gc = [m,n:nat] stropt_gc (m, n)
+
+extern fun dirent_name_get (dir: &DIR): Stropt_gc = "dirent_name_get"
 
 (* ****** ****** *)
 
-dataviewtype entlst = entlst_nil | entlst_cons of (String, entlst)
+viewtypedef Strlin = [m,n:nat] [l:addr] strbufptr_gc (m,n,l)
+
+dataviewtype entlst = entlst_nil | entlst_cons of (Strlin, entlst)
 
 fun entlst_append (xs0: &entlst >> entlst, ys: entlst): void =
   case+ xs0 of
-  | entlst_cons (x, !xs) => (entlst_append (!xs, ys); fold@ xs0)
+  | entlst_cons (_, !xs) => (entlst_append (!xs, ys); fold@ xs0)
   | ~entlst_nil () => (xs0 := ys)
+// end of [entlst_append]
 
 fun qsort (xs: entlst): entlst =
   case+ xs of
-  | entlst_cons (!x1_r, !xs1_r) => let
-      val x1 = !x1_r and xs1 = !xs1_r
+  | entlst_cons (!p_x1, !p_xs1) => let
+      val xs1 = !p_xs1
     in
-      part (view@ (!x1_r), view@ (!xs1_r) | xs, xs1_r, x1, xs1, entlst_nil (), entlst_nil ())
-    end
+      part (
+        view@ (!p_x1), view@ (!p_xs1)
+      | xs, p_x1, p_xs1, xs1, entlst_nil (), entlst_nil ()
+      ) // end of [part]
+    end // end of [entlst_cons]
   | entlst_nil () => (fold@ xs; xs)
+// end of [qsort]
 
 and part {l0,l1:addr} (
-    pf0: String @ l0, pf1: entlst? @ l1
+    pf0: Strlin @ l0, pf1: entlst? @ l1
   | node: entlst_cons_unfold (l0, l1)
-  , node1: ptr l1, x0: String, xs: entlst, l: entlst, r: entlst
+  , p_x0: ptr l0, p_xs0: ptr l1, xs: entlst, l: entlst, r: entlst
   ) : entlst = case+ xs of
-  | entlst_cons (x1, !xs1_ptr) => let
-      val xs1 = !xs1_ptr
+  | entlst_cons (!p_x1, !p_xs1) => let
+      val xs1 = !p_xs1
+      val sgn = compare_string_string
+        (__cast p_x1, __cast p_x0) where {
+        extern castfn __cast (p: ptr): string
+      } // end of [val]
     in
-      if compare (x1, x0) <= 0 then
-        (!xs1_ptr := l; fold@ xs; part (pf0, pf1 | node, node1, x0, xs1, xs, r))
+      if sgn <= 0 then
+        (!p_xs1 := l; fold@ xs; part (pf0, pf1 | node, p_x0, p_xs0, xs1, xs, r))
       else
-        (!xs1_ptr := r; fold@ xs; part (pf0, pf1 | node, node1, x0, xs1, l, xs))
+        (!p_xs1 := r; fold@ xs; part (pf0, pf1 | node, p_x0, p_xs0, xs1, l, xs))
+      // end of [if]
     end // end of [entlst_cons]
   | ~entlst_nil () => let
       var l = qsort l and r = qsort r
     in
-      !node1 := r; fold@ node; r := node; entlst_append (l, r); l
+      !p_xs0 := r; fold@ node; r := node; entlst_append (l, r); l
     end // end of [entlst_nil]
 // end of [part]
 
@@ -492,9 +521,11 @@ fun dirent_name_get_all
     (dir: &DIR, res: entlst)
     : entlst = let
     val ent = dirent_name_get (dir) in
-    if stropt_is_none ent then res else
-      loop (dir, entlst_cons (stropt_unsome ent, res))
-    // end of [if]
+    if stropt_gc_is_none ent then let
+      val _(*null*) = stropt_gc_unnone ent in res
+    end else begin
+      loop (dir, entlst_cons (stropt_gc_unsome ent, res))
+    end // end of [if]
   end // end of [loop]
   val ents = loop (dir, entlst_nil ())
 in
@@ -510,6 +541,7 @@ implement directory_send_loop
   (pf_conn | fd, parent, ents) = let
   #define MSGSZ 1024
   fn string_free (s: string) = let
+    // this is simply too ad hoc and dangerous ...
     val (pf_gc, pf_buf | p_buf) = __strbuf_of_string (s) where {
       extern castfn __strbuf_of_string (s: string)
         :<> [m,n:nat] [l:addr] (free_gc_v (m, l), strbuf (m,n) @ l | ptr l)
@@ -519,25 +551,42 @@ implement directory_send_loop
   end // end of [val]
 in
   case+ ents of
-  | ~entlst_cons (ent, ents) => let
+  | ~entlst_cons (ent_gc, ents) => let
 (*
       val () = prerrf ("directory_send_loop: parent = %s\n", @(parent))
       val () = prerrf ("directory_send_loop: ent = %s\n", @(ent))
 *)
-      val ft = case ent of
+      val (pf_gc, pf_ent | p_ent) = ent_gc
+      val ft = let
+        val ent = __cast p_ent where {
+          extern castfn __cast (p: ptr): string
+        }
+      in
+        case ent of
         | "." => 1 | ".." => 1 | _ => let
-            val filename = (parent + ent)
-            val ft = filename_type (filename)
-            val () = string_free filename
+            val parent = string1_of_string (parent)
+            val ent = string1_of_string (ent)
+            val fil = string1_append__ptr (parent, ent)
+            val (pf_gc, pf_fil | p_fil) = fil
+            val ft = filename_type (name) where {
+              extern castfn __cast (p: ptr): string; val name = __cast p_fil
+            } // end of [val]
+            val () = strbuf_ptr_free (pf_gc, pf_fil | p_fil)
           in
             ft
           end // end of [_]
+      end // end of [val]
     in
       case+ ft of
       | 0 => let
           var! p_msg with pf_msg = @[byte][MSGSZ]()
-          val _(*n*) = snprintf (pf_msg | p_msg, MSGSZ, "<A HREF=\"%s\">%s</A><BR>", @(ent, ent))
-          val () = string_free ent
+          val _(*n*) = snprintf (
+            pf_msg
+          | p_msg, MSGSZ, "<A HREF=\"%s\">%s</A><BR>", @(ent, ent)
+          ) where {
+            extern castfn __cast (p: ptr): string; val ent = __cast p_ent
+          } // end of [val]
+          val () = strbuf_ptr_free (pf_gc, pf_ent | p_ent)
           val len = strbuf_length !p_msg
           prval () = pf_msg := bytes_v_of_strbuf_v (pf_msg)
           val _ = socket_write_loop_exn (pf_conn | fd, !p_msg, len)
@@ -546,15 +595,24 @@ in
         end
       | 1 => let
           var! p_msg with pf_msg = @[byte][MSGSZ]()
-          val _(*n*) = snprintf (pf_msg | p_msg, MSGSZ, "<A HREF=\"%s/\">%s/</A><BR>", @(ent, ent))
-          val () = string_free ent
+          val _(*n*) = snprintf (
+            pf_msg
+          | p_msg, MSGSZ, "<A HREF=\"%s/\">%s/</A><BR>", @(ent, ent)
+          ) where {
+            extern castfn __cast (p: ptr): string; val ent = __cast p_ent
+          } // end of [val]
+          val () = strbuf_ptr_free (pf_gc, pf_ent | p_ent)
           val len = strbuf_length !p_msg
           prval () = pf_msg := bytes_v_of_strbuf_v (pf_msg)
           val _ = socket_write_loop_exn (pf_conn | fd, !p_msg, len)
         in
           directory_send_loop (pf_conn | fd, parent, ents)
         end
-      | _ => directory_send_loop (pf_conn | fd, parent, ents)
+      | _ => let
+          val () = strbuf_ptr_free (pf_gc, pf_ent | p_ent)
+        in
+          directory_send_loop (pf_conn | fd, parent, ents)
+        end // end of [_]
     end // end of [cons]
   | ~entlst_nil () => ()
 end // end of [directory_send_loop]
@@ -662,9 +720,12 @@ in
             socket_close_exn (pf_conn | fd_c)
           end // end of [_ when ...]
         | _ => let
-            val () = begin
-              prerr "main_loop: unsupported request: "; prerr !p_msg; prerr_newline ()
-            end // end of [val]
+            val () =
+              prerr "main_loop: unsupported request: "
+            val () = prerr_string (__cast p_msg) where {
+              extern castfn __cast (p: ptr): string
+            } // end of [val]
+            val () = prerr_newline ()
             prval () = pf_msg := bytes_v_of_strbuf_v (pf_msg)
           in
             socket_close_exn (pf_conn | fd_c)

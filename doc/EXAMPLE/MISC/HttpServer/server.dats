@@ -636,9 +636,9 @@ in
     val n = socket_read_exn (pf_conn | fd_c, !p_buf, BUFSZ)
     val (pf_gc, pf | p) = strbuf_make_bytes (!p_buf, 0, n)
     prval () = free_gc_elim (pf_gc)
-    val msg = string1_of_strbuf (pf | p)
+    val msg = string1_of_strbuf1 (pf | p)
   in
-    case+ msg of // [msg] is leaked out!!!
+    case+ msg of // [msg] is leaked out if not reclaimed!!!
     | _ when request_is_get (msg) => begin
         main_loop_get (pf_conn, pf_buf | fd_c, p_buf, msg, n);
         main_loop (pf_list, pf_buf | fd_s, p_buf)
