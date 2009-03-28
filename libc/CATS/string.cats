@@ -124,6 +124,16 @@ atslib_memcpy
 
 /* ****** ****** */
 
+static inline
+ats_ptr_type
+atslib_memset
+  (ats_ptr_type buf, ats_int_type chr, ats_size_type n)
+{
+  return memset (buf, chr, n) ;
+} /* end of [atslib_memcpy] */
+
+/* ****** ****** */
+
 #endif /* ATS_LIBC_STRING_CATS */
 
 /* end of [string.cats] */

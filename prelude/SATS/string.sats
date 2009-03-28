@@ -624,8 +624,9 @@ val stropt_gc_none : stropt_gc (0,0) = "atspre_stropt_none"
 castfn stropt_gc_unnone
   {n:int} (x: stropt_gc (0, n)):<> ptr (null)
 
-castfn stropt_gc_some {m,n:nat} {l:addr}
-  (x: strbufptr_gc (m,n,l)): stropt_gc (m, n) // [m > n]
+castfn stropt_gc_some
+  {m,n:nat} {l:addr} (x: strbufptr_gc (m,n,l))
+  :<> stropt_gc (m, n)
   = "atspre_stropt_some"
 
 castfn stropt_gc_unsome {m,n:nat | m > 0} // [m > n]
