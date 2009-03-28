@@ -114,6 +114,16 @@ atslib_strcat (ats_ptr_type dst, ats_ptr_type src) {
 
 /* ****** ****** */
 
+static inline
+ats_ptr_type
+atslib_memcpy
+  (ats_ptr_type dst, ats_ptr_type src, ats_size_type n)
+{
+  return memcpy (dst, src, n) ;
+} /* end of [atslib_memcpy] */
+
+/* ****** ****** */
+
 #endif /* ATS_LIBC_STRING_CATS */
 
 /* end of [string.cats] */

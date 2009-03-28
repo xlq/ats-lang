@@ -87,20 +87,24 @@ ats_ptr_type __tostringf_size
 {
   int n, sz ; char *res ; va_list ap ;
 
-  sz = guess ;
-  res = ats_malloc_gc (sz) ;
+  sz = guess ; res = ATS_MALLOC (sz) ;
+
   while (1) {
     va_copy (ap, ap0) ;
+
     n = vsnprintf (res, sz, (char*)fmt, ap) ;
+
     if (n >= 0) {
       if (n < sz) return res ;
       sz = n+1 ; /* exact size */
-      ats_free_gc (res) ; res = ats_malloc_gc (sz) ;
+      ATS_FREE (res) ; res = ATS_MALLOC (sz) ;
       continue ;
-    }
+    } /* end of [if] */
+
     return ((ats_ptr_type)0) ;
-  }
-}
+  } // end of [while]
+
+} /* end of [__tostringf_size] */
 
 ats_ptr_type atspre_tostringf_size
   (const ats_int_type guess, const ats_ptr_type fmt, ...)
@@ -115,7 +119,7 @@ ats_ptr_type atspre_tostringf_size
     ats_exit_errmsg (1, "Exit: [ats_tostringf_size] failed.\n") ;
   }
   return res ;
-}
+} /* end of [atspre_tostringf_size] */
 
 #define __TOSTRINGF_GUESS 16
 ats_ptr_type
@@ -126,11 +130,28 @@ atspre_tostringf (ats_ptr_type fmt, ...) {
   va_start(ap, fmt);
   res = (char*)__tostringf_size (__TOSTRINGF_GUESS, fmt, ap);
   va_end(ap);
+
   if (!res) {
     ats_exit_errmsg (1, "Exit: [ats_tostringf] failed.\n") ;
   }
+
   return res ;
-}
+} /* end of [atspre_tostringf] */
+
+%}
+
+(* ****** ****** *)
+
+%{
+
+ats_int_type
+atspre_snprintf (
+  ats_ptr_type buf, ats_size_type sz, ats_ptr_type fmt, ...
+) {
+  int n ; va_list ap ;
+  va_start(ap, fmt) ; n = vsnprintf (buf, sz, (char*)fmt, ap) ; va_end(ap) ;
+  return n ;
+} /* end of [atspre_snprintf] */
 
 %}
 

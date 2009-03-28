@@ -2,6 +2,14 @@
 
 ats-lang-anariats-0.1.3:
 
+1. Various bug fixes. In particular, a bug causing incorrect compilation
+   of pattern matching is fixed.
+
+2. It is now possible to generate html files for cross-referencing. The
+   flag for this feature is [--posmark_xref=XREF], where XREF should be
+   replaced with the name of some directory (already created) to store
+   the html files to be generated.
+
 ########################################################################
 
 ats-lang-anariats-0.1.2:
@@ -9,7 +17,7 @@ ats-lang-anariats-0.1.2:
 1. Linear lazy evaluation is now supported. See [prelude/DATS/file.dats]
    for some code using this cool feature.
 
-2. Many new tutorials have been added. There is also a all-in-form format
+2. Many new tutorials have been added. There is also a all-in-one format
    that allows for easy printout.
 
 3. Many examples from the book K&R are translated into the directory:

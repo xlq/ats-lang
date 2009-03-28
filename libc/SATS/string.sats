@@ -101,6 +101,12 @@ fun strcpy_strbuf_string
   ) : ptr l
   = "atslib_strcpy"
 
+fun strcpy_strbuf_strbuf
+  {m1,m2,n:nat | n < m1} {l:addr} {ofs:int} (
+    pf_buf: !b0ytes m1 @ l >> strbuf (m1, n) @ l | dst: ptr l, src: &strbuf (m2, n)
+  ) : ptr l
+  = "atslib_strcpy"
+
 (* ****** ****** *)
 
 fun strcat_strbuf_string
@@ -110,6 +116,15 @@ fun strcat_strbuf_string
   | sbf: ptr l, str: string n2
   ) : ptr l
   = "atslib_strcat"
+
+(* ****** ****** *)
+
+fun memcpy {n1,n2:nat}
+  {n:nat | n <= n1; n <= n2} {l:addr} (
+    pf_dst: !b0ytes n1 @ l >> bytes n1 @ l
+  | dst: ptr l, src: &bytes n2, n: size_t n
+  ) :<> ptr l
+  = "atslib_memcpy"
 
 (* ****** ****** *)
 
