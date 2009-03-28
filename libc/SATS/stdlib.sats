@@ -44,43 +44,10 @@
 
 (* ****** ****** *)
 
-symintr atof atoi atol atoll
-
-(* ****** ****** *)
-
-fun atof_strbuf {m,n:nat} (sb: &strbuf (m, n)):<> double
-  = "atslib_atsof"
-fun atof_string (s: string):<> double = "atslib_atof"
-
-overload atof with atof_strbuf
-overload atof with atof_string
-
-(* ****** ****** *)
-
-fun atoi_strbuf {m,n:nat} (sb: &strbuf (m, n)):<> Int
-  = "atslib_atoi"
-fun atoi_string (s: string):<> Int = "atslib_atoi"
-
-overload atoi with atoi_strbuf
-overload atoi with atoi_string
-
-(* ****** ****** *)
-
-fun atol_strbuf {m,n:nat} (sb: &strbuf (m, n)):<> lint
-  = "atslib_atol"
-fun atol_string (s: string):<> lint = "atslib_atol"
-
-overload atol with atol_strbuf
-overload atol with atol_string
-
-(* ****** ****** *)
-
-fun atoll_strbuf {m,n:nat} (sb: &strbuf (m, n)):<> llint
-  = "atslib_atoll"
-fun atoll_string (s: string):<> llint = "atslib_atoll"
-
-overload atoll with atoll_string
-overload atoll with atoll_strbuf
+fun atoi (s: string):<> int = "atslib_atoi"
+fun atof (s: string):<> double = "atslib_atof"
+fun atol (s: string):<> lint = "atslib_atol"
+fun atoll (s: string):<> llint = "atslib_atoll"
 
 (* ****** ****** *)
 

@@ -63,31 +63,13 @@ fun closedir_exn {l_dir:addr} (pf: DIR @ l_dir | p: ptr l_dir):<!exn> void
 
 (* ****** ****** *)
 
-symintr opendir_err
-
-fun opendir_strbuf_err {m,n:nat} (s: &strbuf (m, n))
+fun opendir_err (s: string)
   : [l_dir:addr] (option_v (DIR @ l_dir, l_dir <> null) | ptr l_dir)
   = "atslib_opendir_err"
 
-fun opendir_string_err (s: string)
-  : [l_dir:addr] (option_v (DIR @ l_dir, l_dir <> null) | ptr l_dir)
-  = "atslib_opendir_err"
-
-overload opendir_err with opendir_strbuf_err
-overload opendir_err with opendir_string_err
-
-symintr opendir_exn
-
-fun opendir_strbuf_exn {m,n:nat}
-  (s: &strbuf (m, n)): [l_dir:addr] (DIR @ l_dir | ptr l_dir)
-  = "atslib_opendir_exn"
-
-fun opendir_string_exn (s: string)
+fun opendir_exn (s: string)
   : [l_dir:addr] (DIR @ l_dir | ptr l_dir)
   = "atslib_opendir_exn"
-
-overload opendir_exn with opendir_strbuf_exn
-overload opendir_exn with opendir_string_exn
 
 (* ****** ****** *)
 

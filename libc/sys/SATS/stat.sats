@@ -124,26 +124,15 @@ dataview stat_v (l:addr, int) =
 symintr stat_err
 symintr stat_exn
 
-fun stat_strbuf_err {m,n:nat} {l:addr} (
-    pf_buf: stat? @ l | name: &strbuf (m, n), p_buf: ptr l
-  ) : [i:int] (stat_v (l, i) | int i)
-  = "atslib_stat_err"
-
 fun stat_string_err {l:addr} (
     pf_buf: stat? @ l | name: string, p_buf: ptr l
   ) : [i:int] (stat_v (l, i) | int i)
   = "atslib_stat_err"
 
-fun stat_strbuf_exn {m,n:nat}
-  (name: &strbuf (m, n), buf: &stat? >> stat): void
-  = "atslib_stat_exn"
-
 fun stat_string_exn (name: string, buf: &stat? >> stat): void
   = "atslib_stat_exn"
 
-overload stat_err with stat_strbuf_err
 overload stat_err with stat_string_err
-overload stat_exn with stat_strbuf_exn
 overload stat_exn with stat_string_exn
 
 (* ****** ****** *)
