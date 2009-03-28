@@ -498,8 +498,8 @@ and part {l0,l1:addr} (
   | entlst_cons (!p_x1, !p_xs1) => let
       val xs1 = !p_xs1
       val sgn = compare_string_string
-        (__cast p_x1, __cast p_x0) where {
-        extern castfn __cast (p: ptr): string
+        (__cast !p_x1, __cast !p_x0) where {
+        extern castfn __cast (s: !Strlin): string
       } // end of [val]
     in
       if sgn <= 0 then
@@ -540,8 +540,9 @@ extern fun directory_send_loop {fd:int}
 implement directory_send_loop
   (pf_conn | fd, parent, ents) = let
   #define MSGSZ 1024
+(*
+  // this is simply too ad hoc and dangerous ...
   fn string_free (s: string) = let
-    // this is simply too ad hoc and dangerous ...
     val (pf_gc, pf_buf | p_buf) = __strbuf_of_string (s) where {
       extern castfn __strbuf_of_string (s: string)
         :<> [m,n:nat] [l:addr] (free_gc_v (m, l), strbuf (m,n) @ l | ptr l)
@@ -549,6 +550,7 @@ implement directory_send_loop
   in
     strbuf_ptr_free (pf_gc, pf_buf | p_buf)
   end // end of [val]
+*)
 in
   case+ ents of
   | ~entlst_cons (ent_gc, ents) => let
