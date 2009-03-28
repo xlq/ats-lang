@@ -5,10 +5,14 @@ all: \
 
 ######
 
+ATSOPT=$(ATSHOME)/bin/atsopt
+
+######
+
 html::
-	atsopt --posmark_html -d atoi.dats > atoi_dats.html
-	atsopt --posmark_html -d reverse.dats > reverse_dats.html
-	atsopt --posmark_html -d itoa.dats > itoa_dats.html
+	$(ATSOPT) --posmark_html -d atoi.dats > atoi_dats.html
+	$(ATSOPT) --posmark_html -d reverse.dats > reverse_dats.html
+	$(ATSOPT) --posmark_html -d itoa.dats > itoa_dats.html
 
 ######
 

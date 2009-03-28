@@ -12,17 +12,21 @@ all: \
 
 ######
 
+ATSOPT=$(ATSHOME)/bin/atsopt
+
+######
+
 html::
-	atsopt --posmark_html -d hello.dats > hello_dats.html
-	atsopt --posmark_html -d fahrenheit_celsius.dats > fahrenheit_celsius_dats.html
-	atsopt --posmark_html -d echo.dats > echo_dats.html
-	atsopt --posmark_html -d charcnt.dats > charcnt_dats.html
-	atsopt --posmark_html -d linecnt.dats > linecnt_dats.html
-	atsopt --posmark_html -d wc.dats > wc_dats.html
-	atsopt --posmark_html -d digit_space_other_cnt.dats > digit_space_other_dats.html
-	atsopt --posmark_html -d power.dats > power_dats.html
-	atsopt --posmark_html -d longest_line.dats > longest_line_dats.html
-	atsopt --posmark_html -d longest_line_alt.dats > longest_line_alt_dats.html
+	$(ATSOPT) --posmark_html -d hello.dats > hello_dats.html
+	$(ATSOPT) --posmark_html -d fahrenheit_celsius.dats > fahrenheit_celsius_dats.html
+	$(ATSOPT) --posmark_html -d echo.dats > echo_dats.html
+	$(ATSOPT) --posmark_html -d charcnt.dats > charcnt_dats.html
+	$(ATSOPT) --posmark_html -d linecnt.dats > linecnt_dats.html
+	$(ATSOPT) --posmark_html -d wc.dats > wc_dats.html
+	$(ATSOPT) --posmark_html -d digit_space_other_cnt.dats > digit_space_other_dats.html
+	$(ATSOPT) --posmark_html -d power.dats > power_dats.html
+	$(ATSOPT) --posmark_html -d longest_line.dats > longest_line_dats.html
+	$(ATSOPT) --posmark_html -d longest_line_alt.dats > longest_line_alt_dats.html
 
 ######
 

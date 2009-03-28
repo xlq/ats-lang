@@ -5,10 +5,14 @@ all: \
 
 ######
 
+ATSOPT=$(ATSHOME)/bin/atsopt
+
+######
+
 html::
-	atsopt --posmark_html -d lower.dats > lower_dats.html
-	atsopt --posmark_html -d fgets.dats > fgets_dats.html
-	atsopt --posmark_html -d filecopy.dats > filecopy_dats.html
+	$(ATSOPT) --posmark_html -d lower.dats > lower_dats.html
+	$(ATSOPT) --posmark_html -d fgets.dats > fgets_dats.html
+	$(ATSOPT) --posmark_html -d filecopy.dats > filecopy_dats.html
 
 ######
 

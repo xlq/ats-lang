@@ -9,14 +9,18 @@ all: \
 
 ######
 
+ATSOPT=$(ATSHOME)/bin/atsopt
+
+######
+
 html::
-	atsopt --posmark_html -d getint.dats > getint_dats.html
-	atsopt --posmark_html -d strlen.dats > strlen_dats.html
-	atsopt --posmark_html -d strcpy.dats > strcpy_dats.html
-	atsopt --posmark_html -d strcmp.dats > strcmp_dats.html
-	atsopt --posmark_html -d strcmp_alt.dats > strcmp_alt_dats.html
-	atsopt --posmark_html -d month_name.dats > month_name_dats.html
-	atsopt --posmark_html -d month_day.dats > month_day_dats.html
+	$(ATSOPT) --posmark_html -d getint.dats > getint_dats.html
+	$(ATSOPT) --posmark_html -d strlen.dats > strlen_dats.html
+	$(ATSOPT) --posmark_html -d strcpy.dats > strcpy_dats.html
+	$(ATSOPT) --posmark_html -d strcmp.dats > strcmp_dats.html
+	$(ATSOPT) --posmark_html -d strcmp_alt.dats > strcmp_alt_dats.html
+	$(ATSOPT) --posmark_html -d month_name.dats > month_name_dats.html
+	$(ATSOPT) --posmark_html -d month_day.dats > month_day_dats.html
 
 ######
 

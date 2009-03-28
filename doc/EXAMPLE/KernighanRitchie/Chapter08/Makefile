@@ -3,8 +3,12 @@ all: \
 
 ######
 
+ATSOPT=$(ATSHOME)/bin/atsopt
+
+######
+
 html::
-	atsopt --posmark_html -d fsize.dats > fsize_dats.html
+	$(ATSOPT) --posmark_html -d fsize.dats > fsize_dats.html
 
 ######
 
