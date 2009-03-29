@@ -181,7 +181,9 @@ implement posmark_pop () = let
     val (vbox pf | p) = ref_get_view_ptr (the_posmarklstlst)
   in
     case+ !p of
-    | ~list_vt_cons (xs, xss) => (!p := xss; xs)
+    | ~list_vt_cons (xs, xss) => begin
+        !p := (xss: lintposmarklstlst); xs
+      end // end of [list_vt_cons]
     | ~list_vt_nil () => let
         val xs = $effmask_ref begin
           prerr "INTERNAL ERROR";
@@ -190,16 +192,17 @@ implement posmark_pop () = let
         end // end of [val]
       in
         !p := list_vt_nil (); xs
-      end // end of [posmark_pop]
+      end // end of [list_vt_nil]
   end : lintposmarklst // end of [val]
-  val xs1 = let
+  val () = let
     val (vbox pf | p) = ref_get_view_ptr (the_posmarklst)
     val xs1 = !p; val () = !p := xs
   in
     $Lst.list_vt_free (xs1)
   end // end of [val]
 in
-end // end of [val]
+  // empty
+end // end of [posmark_pop]
 
 implement posmark_push () = let
   val xs = let
@@ -558,7 +561,7 @@ fn posmark_process_htm
           | _ => let
               val () = fprint_char (pf_mod | fil_d, '_')
               val u = uint_of_char c
-              val () = fprintf (pf_mod | fil_d, "%2x", @(u))
+              val () = fprintf1_exn (pf_mod | fil_d, "%2x", @(u))
             in
               // empty
             end // end of [_]

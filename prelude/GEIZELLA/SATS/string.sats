@@ -139,13 +139,13 @@ val string_empty : string 0
 fun string1_of_string (s: string):<> [n:nat] string n
   = "atspre_string1_of_string"
 
-fun string1_of_strbuf {m,n:nat} {l:addr}
+fun string1_of_strbuf1 {m,n:nat} {l:addr}
   (pf: strbuf (m, n) @ l | p: ptr l) :<> string n
-  = "atspre_string1_of_strbuf"
+  = "atspre_string1_of_strbuf1"
 
-fun strbuf_of_string1 {n:nat} (s: string n)
+fun strbuf1_of_string1 {n:nat} (s: string n)
   :<> [m:int | n < m] [l:addr] (vbox (strbuf (m, n) @ l) | ptr l)
-  = "atspre_strbuf_of_string1"
+  = "atspre_strbuf1_of_string1"
 
 (* ****** ****** *)
 
@@ -454,9 +454,17 @@ fun strbuf_is_at_end
   {m,n,i:nat | i <= n} (sb: &strbuf (m, n), i: size_t i):<> bool (i == n)
   = "atspre_string_is_at_end"
 
+fun strbuf_isnot_at_end
+  {m,n,i:nat | i <= n} (sb: &strbuf (m, n), i: size_t i):<> bool (i <  n)
+  = "atspre_string_isnot_at_end"
+
 fun string_is_at_end
   {n,i:nat | i <= n} (s: string n, i: size_t i):<> bool (i == n)
   = "atspre_string_is_at_end"
+
+fun string_isnot_at_end
+  {n,i:nat | i <= n} (s: string n, i: size_t i):<> bool (i <  n)
+  = "atspre_string_isnot_at_end"
 
 (* ****** ****** *)
 
