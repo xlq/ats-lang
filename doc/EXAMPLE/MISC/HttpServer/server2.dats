@@ -355,15 +355,9 @@ end // end of [file_send]
 (* ****** ****** *)
 
 fn request_is_get {m,n:nat} (buf: &strbuf (m,n)): bool =
-  if strbuf_is_at_end (buf, 0) then false
-  else if buf[0] <> 'G' then false
-  else if strbuf_is_at_end (buf, 1) then false
-  else if buf[1] <> 'E' then false
-  else if strbuf_is_at_end (buf, 2) then false
-  else if buf[2] <> 'T' then false
-  else if strbuf_is_at_end (buf, 3) then false  
-  else if buf[3] <> ' ' then false
-  else true
+  strncmp (str, "GET ", 4)  = 0 where {
+  extern castfn __cast (p: ptr): string; val str = __cast (&buf)
+} // end of [request]
 
 (* ****** ****** *)
 
@@ -694,6 +688,7 @@ in
         val () = socket_close_exn (pf_list | fd_s)
         val n = socket_read_exn (pf_conn | fd_c, !p_buf, BUFSZ)
         var! p_msg with pf_msg = @[byte][n+1]()
+        prval () = pf_msg := bytes_v_of_b0ytes_v pf_msg
         val _(*p_msg*) = memcpy (pf_msg | p_msg, !p_buf, n)
         val () = bytes_strbuf_trans (pf_msg | p_msg, n)
       in

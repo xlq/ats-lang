@@ -113,15 +113,16 @@ fun strcat
 
 (* ****** ****** *)
 
-fun memcpy
-  {n1,n2:nat | n1 <= n2} {l:addr} (
-    pf_dst: !b0ytes n1 @ l >> bytes n1 @ l
-  | p_dst: ptr l, p_src: &bytes n2, n: size_t n1
+fun memcpy {n:nat}
+  {n1,n2:nat | n <= n1; n <= n2} {l:addr} (
+    pf_dst: !bytes n1 @ l >> bytes n1 @ l
+  | p_dst: ptr l, p_src: &bytes n2, n: size_t n
   ) :<> ptr l
   = "atslib_memcpy"
 
-fun memset {n:nat} {l:addr} (
-    pf: !b0ytes n @ l >> bytes n @ l
+fun memset {n:nat}
+  {n1:nat | n <= n1} {l:addr} (
+    pf: !bytes n1 @ l >> bytes n1 @ l
   | p_buf: ptr l, chr: int, n: size_t n
   ) :<> ptr l
   = "atslib_memset"

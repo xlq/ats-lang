@@ -145,8 +145,6 @@ end // end of let
 
 //
 
-#define s2S string1_of_string
-
 extern fun doctype_find (sfx: string): Stropt
 implement doctype_find (sfx) = let
 (*
@@ -165,7 +163,7 @@ implement doctype_find (sfx) = let
       case+ compare (key, sfx) of
       |  1 => loop (pf | A, i, m-1)
       | ~1 => loop (pf | A, m+1, j)
-      |  _ (* 0 *) => stropt_some (s2S !A.[m].1)
+      |  _ (* 0 *) => stropt_some (string1_of_string !A.[m].1)
     end else begin
       stropt_none // = null pointer
     end
@@ -180,7 +178,7 @@ end // end of [doctype_find]
 
 extern fun suffix_of_filename (filename: string): Stropt
 implement suffix_of_filename filename = let
-  val filename = s2S filename
+  val filename = string1_of_string filename
   val i = string_index_of_char_from_right (filename, '.')
 in
   if i >= 0 then let
@@ -341,8 +339,8 @@ fun file_send_main {fd: int}
 val [l_buf:addr] (pf_ngc, pf_buf | p_buf) = malloc_ngc (BUFSZ)
 prval () = pf_buf := bytes_v_of_b0ytes_v (pf_buf)
 val msg200_str = msg200_of_filename filename
-val msg200_str = s2S msg200_str
-val msg200_len = string_length msg200_str
+val msg200_str = string1_of_string msg200_str
+val msg200_len = string1_length msg200_str
 
 fun aux
   (pf_conn: !socket_v (fd, conn),
@@ -457,38 +455,45 @@ fun entlst_append (xs0: &entlst >> entlst, ys: entlst): void =
 
 fun qsort (xs: entlst): entlst =
   case+ xs of
-  | entlst_cons (!x1_r, !xs1_r) => let
-      val x1 = !x1_r and xs1 = !xs1_r
+  | entlst_cons (!p_x1, !p_xs1) => let
+      val x1 = !p_x1 and xs1 = !p_xs1
     in
-      part (view@ (!x1_r), view@ (!xs1_r) | xs, xs1_r, x1, xs1, entlst_nil (), entlst_nil ())
-    end
+      part (
+        view@ (!p_x1), view@ (!p_xs1)
+      | xs, x1, p_xs1, xs1, entlst_nil (), entlst_nil ()
+      )
+    end // end of [entlst_cons]
   | entlst_nil () => (fold@ xs; xs)
+// end of [qsort]
 
 and part {l0,l1:addr} (
     pf0: String @ l0, pf1: entlst? @ l1
   | node: entlst_cons_unfold (l0, l1)
-  , node1: ptr l1, x0: String, xs: entlst, l: entlst, r: entlst
+  , x0: String, p_xs0: ptr l1, xs: entlst, l: entlst, r: entlst
   ) : entlst = case+ xs of
-  | entlst_cons (x1, !xs1_ptr) => let
-      val xs1 = !xs1_ptr
-    in
+  | entlst_cons (x1, !p_xs1) => let
+      val xs1 = !p_xs1 in
       if compare (x1, x0) <= 0 then
-        (!xs1_ptr := l; fold@ xs; part (pf0, pf1 | node, node1, x0, xs1, xs, r))
+        (!p_xs1 := l; fold@ xs; part (pf0, pf1 | node, x0, p_xs0, xs1, xs, r))
       else
-        (!xs1_ptr := r; fold@ xs; part (pf0, pf1 | node, node1, x0, xs1, l, xs))
+        (!p_xs1 := r; fold@ xs; part (pf0, pf1 | node, x0, p_xs0, xs1, l, xs))
+      // end of [if]
     end // end of [entlst_cons]
   | ~entlst_nil () => let
       var l = qsort l and r = qsort r
     in
-      !node1 := r; fold@ node; r := node; entlst_append (l, r); l
+      !p_xs0 := r; fold@ node; r := node; entlst_append (l, r); l
     end // end of [entlst_nil]
+// end of [part]
 
 fun dirent_name_get_all (dir: &DIR): entlst = let
   fun aux (dir: &DIR, res: entlst): entlst =
     let val ent = dirent_name_get (dir) in
       if stropt_is_none ent then res else
         aux (dir, entlst_cons (stropt_unsome ent, res))
-    end
+      // end of [if]
+    end // end of [let]
+  // end of [aux]
   val ents = aux (dir, entlst_nil ())
 in
   qsort ents
@@ -565,7 +570,7 @@ in
     val () = socket_write_substring_all (pf_conn | fd, dir_msg30_str, 0, dir_msg30_len)
     val () = socket_write_substring_all (pf_conn | fd, dir_msg31_str, 0, dir_msg31_len)
     val () = socket_write_substring_all (pf_conn | fd, dir_msg32_str, 0, dir_msg32_len)
-    val dirname = s2S dirname
+    val dirname = string1_of_string dirname
     val ents = dirent_name_get_all (!p_dir)
     val () = closedir_exn (pf_dir | p_dir)
   in
@@ -585,6 +590,7 @@ fun request_is_get {n:nat} (s: string n): bool =
   else if string_is_at_end (s, 3) then false  
   else if s[3] <> ' ' then false
   else true
+// end of [request_is_get]
 
 (* ****** ****** *)
 
