@@ -44,12 +44,6 @@
 
 (* ****** ****** *)
 
-#define nil list_vt_nil
-#define cons list_vt_cons
-#define :: list_vt_cons
-
-(* ****** ****** *)
-
 implement list_vt_length_is_nonnegative (xs) = begin
   case+ xs of list_vt_cons _ => fold@ xs | list_vt_nil () => fold@ xs
 end // end of [list_vt_length_is_nonnegative]
@@ -57,7 +51,8 @@ end // end of [list_vt_length_is_nonnegative]
 (* ****** ****** *)
 
 fn list_vt_is_cons {a:viewt@ype} {n:nat} (xs: !list_vt (a, n)): bool (n>0) =
-  case+ xs of cons _ => (fold@ xs; true) | nil () => (fold@ xs; false)
+  case+ xs of list_vt_cons _ => (fold@ xs; true) | list_vt_nil () => (fold@ xs; false)
+// end of [list_vt_is_cons]
 
 (* ****** ****** *)
 
@@ -73,8 +68,8 @@ implement{a} list_vt_of_arraysize (arrsz) = let
     ) :<> void =
     if n > 0 then let
       prval (pf11, pf12) = array_v_uncons {a} (pf1)
-      val () = !res := cons {a} {0} (!p_arr, ?)
-      val cons (_, !res_next) = !res
+      val () = !res := list_vt_cons {a} {0} (!p_arr, ?)
+      val list_vt_cons (_, !res_next) = !res
       val () = loop 
         (pf12, view@ (!res_next) | p_arr+sizeof<a>, res_next, n-1)
       // end of [val]
@@ -85,7 +80,7 @@ implement{a} list_vt_of_arraysize (arrsz) = let
       prval () = array_v_unnil {a} (pf1)
       prval () = pf1 := array_v_nil {a?} ()        
     in
-      !res := nil {a} ()
+      !res := list_vt_nil {a} ()
     end // end of [if]
   // end of [loop]
   var res: List_vt?
@@ -135,13 +130,13 @@ implement{a} list_vt_copy (xs0) = let
   fun loop {n:nat} .<n>.
     (xs: !list_vt (a, n), res: &List_vt a? >> list_vt (a, n))
     :<> void = case+ xs of
-    | cons (x, !p_xs1) => let
-        val () = res := cons {a} {0} (x, ?)
-        val+ cons (_, !p_res1) = res; val () = loop (!p_xs1, !p_res1)
+    | list_vt_cons (x, !p_xs1) => let
+        val () = res := list_vt_cons {a} {0} (x, ?)
+        val+ list_vt_cons (_, !p_res1) = res; val () = loop (!p_xs1, !p_res1)
       in
         fold@ xs; fold@ res
       end // end of [cons]
-    | nil () => (fold@ xs; res := nil ())
+    | list_vt_nil () => (fold@ xs; res := list_vt_nil ())
   var res: List_vt a // uninitialized
 in
   loop (xs0, res); res
@@ -151,7 +146,8 @@ end // end of [list_vt_copy]
 
 implement{a} list_vt_free (xs0) = let
   fun loop {n:nat} .<n>. (xs: list_vt (a, n)):<> void =
-    case+ xs of ~cons (_, xs) => loop xs | ~nil () => ()
+    case+ xs of ~list_vt_cons (_, xs) => loop xs | ~list_vt_nil () => ()
+  // end of [list_vt_free]
 in
   loop (xs0)
 end // end of [list_vt_free]
@@ -162,9 +158,9 @@ implement{a} list_vt_length (xs0) = loop (xs0, 0) where {
   fun loop {i,j:nat} .<i>.
     (xs: !list_vt (a, i), j: int j):<> int (i+j) = begin
     case+ xs of
-    | cons (_, !xs1) =>
-        let val n = loop (!xs1, j+1) in fold@ xs; n end
-    | nil () => (fold@ xs; j)
+    | list_vt_cons (_, !p_xs1) =>
+        let val n = loop (!p_xs1, j+1) in fold@ xs; n end
+    | list_vt_nil () => (fold@ xs; j)
   end // end of [loop]
 } // end of [list_vt_length]
 
@@ -175,7 +171,8 @@ implement{a} list_vt_append (xs0, ys0) = let
   fun{a:viewt@ype} loop {m,n:nat} .<m>.
     (xs0: &list_vt (a, m) >> list_vt (a, m+n), ys0: list_vt (a, n))
     :<> void = begin case+ xs0 of
-    | cons (_, !xs) => (loop (!xs, ys0); fold@ xs0) | ~nil () => (xs0 := ys0)
+    | list_vt_cons (_, !p_xs) => (loop (!p_xs, ys0); fold@ xs0)
+    | ~list_vt_nil () => (xs0 := ys0)
   end // end of [loop]
 in
   loop (xs0, ys0); xs0
@@ -184,36 +181,36 @@ end // end of [list_vt_append]
 (* ****** ****** *)
 
 implement{a} list_vt_reverse (xs0) = let
-
-fun revapp {m,n:nat} .<m>.
-  (xs: list_vt (a, m), ys: list_vt (a, n)):<> list_vt (a, m+n) =
-  case+ xs of
-  | cons (!x, !xs1) => let
-      val xs1_v = !xs1
-    in
-      !xs1 := ys; fold@ xs; revapp (xs1_v, xs)
-    end
-  | ~nil () => ys
-
+  fun revapp {m,n:nat} .<m>.
+    (xs: list_vt (a, m), ys: list_vt (a, n)):<> list_vt (a, m+n) =
+    case+ xs of
+    | list_vt_cons (_, !p_xs1) => let
+        val xs1 = !p_xs1
+      in
+        !p_xs1 := ys; fold@ xs; revapp (xs1, xs)
+      end // end of [val]
+    | ~list_vt_nil () => ys
+  // end of [revapp]
 in
-  revapp (xs0, nil ())
+  revapp (xs0, list_vt_nil ())
 end // end of [list_vt_reverse]
 
 (* ****** ****** *)
 
-implement{a} list_vt_foreach_main
+implement{a} list_vt_foreach__main
   {v} {vt} {n} {f} (pf | xs0, f, env) = let
   viewtypedef fun_t = (!v | &a, !vt) -<f> void
   fun loop {i:nat} .<i>.
     (pf: !v | xs0: !list_vt (a, i), f: !fun_t, env: !vt):<f> void =
     case+ xs0 of
-    | cons (!x, !xs) => begin
+    | list_vt_cons (!x, !xs) => begin
         f (pf | !x, env); loop (pf | !xs, f, env); fold@ xs0
-      end
-    | nil () => (fold@ xs0)
+      end // end of [val]
+    | list_vt_nil () => (fold@ xs0)
+  // end of [loop]
 in
   loop (pf | xs0, f, env)
-end
+end // end of [list_vt_foreach__main]
 
 (* ****** ****** *)
 

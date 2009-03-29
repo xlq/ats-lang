@@ -1536,6 +1536,18 @@ in
   ans
 end // end of [list_tabulate_fun]
 
+implement{a} list_tabulate_clo {n} {f:eff} (f, n) = let
+  typedef clo_t = natLt n -<clo,f> a
+  stavar l_f: addr; val p_f: ptr l_f = &f
+  viewdef V = clo_t @ l_f
+  fn app (pf: !V | i: natLt n, p_f: !ptr l_f):<f> a = !p_f (i)
+  prval pf = view@ f
+  val ans = list_tabulate__main<a> {V} {ptr l_f} (pf | app, n, p_f)
+  prval () = view@ f := pf
+in
+  ans
+end // end of [list_tabulate_clo]
+
 (* ****** ****** *)
 
 implement{a,b} list_zip (xs, ys) = let

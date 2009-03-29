@@ -629,6 +629,9 @@ fun{a:t@ype} list_tabulate__main
 fun{a:t@ype} list_tabulate_fun {n:nat} {f:eff}
   (f: natLt n -<f> a, n: int n):<f> list (a, n)
 
+fun{a:t@ype} list_tabulate_clo {n:nat} {f:eff}
+  (f: &natLt n -<clo,f> a, n: int n):<f> list (a, n)
+
 (* ****** ****** *)
 
 fun{a:t@ype} list_tail {n:pos}
