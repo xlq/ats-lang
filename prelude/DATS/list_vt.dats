@@ -203,14 +203,31 @@ implement{a} list_vt_foreach__main
   fun loop {i:nat} .<i>.
     (pf: !v | xs0: !list_vt (a, i), f: !fun_t, env: !vt):<f> void =
     case+ xs0 of
-    | list_vt_cons (!x, !xs) => begin
-        f (pf | !x, env); loop (pf | !xs, f, env); fold@ xs0
+    | list_vt_cons (!p_x, !p_xs) => begin
+        f (pf | !p_x, env); loop (pf | !p_xs, f, env); fold@ xs0
       end // end of [val]
     | list_vt_nil () => (fold@ xs0)
   // end of [loop]
 in
   loop (pf | xs0, f, env)
 end // end of [list_vt_foreach__main]
+
+(* ****** ****** *)
+
+implement{a} list_vt_iforeach__main
+  {v} {vt} {n} {f} (pf | xs0, f, env) = let
+  viewtypedef fun_t = (!v | natLt n, &a, !vt) -<f> void
+  fun loop {i:nat | i <= n} .<n-i>.
+    (pf: !v | i: int i, xs0: !list_vt (a, n-i), f: !fun_t, env: !vt):<f> void =
+    case+ xs0 of
+    | list_vt_cons (!p_x, !p_xs) => begin
+        f (pf | i, !p_x, env); loop (pf | i+1, !p_xs, f, env); fold@ xs0
+      end // end of [val]
+    | list_vt_nil () => (fold@ xs0)
+  // end of [loop]
+in
+  loop (pf | 0, xs0, f, env)
+end // end of [list_vt_iforeach__main]
 
 (* ****** ****** *)
 

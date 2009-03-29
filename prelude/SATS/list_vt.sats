@@ -72,6 +72,7 @@ fun{a:t@ype} list_vt_free (xs: List_vt a):<> void
 
 (* ****** ****** *)
 
+// this one is more general than [list_length] as [a] can be linear
 fun{a:viewt@ype} list_vt_length {n:nat} (xs: !list_vt (a, n)):<> int n
 
 (* ****** ****** *)
@@ -87,6 +88,13 @@ fun{a:viewt@ype} list_vt_reverse
 fun{a:viewt@ype} list_vt_foreach__main
   {v:view} {vt:viewtype} {n:nat} {f:eff}
   (pf: !v | xs: !list_vt (a, n), f: !(!v | &a, !vt) -<f> void, env: !vt)
+  :<f> void
+
+(* ****** ****** *)
+
+fun{a:t@ype} list_vt_iforeach__main
+  {v:view} {vt:viewtype} {n:nat} {f:eff}
+  (pf: !v | xs: !list_vt (a, n), f: (!v | natLt n, &a, !vt) -<fun,f> void, env: !vt)
   :<f> void
 
 (* ****** ****** *)
