@@ -1,10 +1,14 @@
 all:: \
+  prelude_list \
   prelude_string \
   libc_dirent \
   libats_intinf \
   libats_regexp \
 
 ######
+
+prelude_list: prelude_list.dats
+	atscc -O2 -o prelude_list prelude_list.dats
 
 prelude_string: prelude_string.dats
 	atscc -O2 -o prelude_string prelude_string.dats

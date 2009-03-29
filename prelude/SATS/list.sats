@@ -76,7 +76,7 @@ fun{a:t@ype} list_of_arraysize
 
 (* ****** ****** *)
 
-fun{a:t@ype} list_app_main
+fun{a:t@ype} list_app__main
   {v:view} {vt:viewtype} {f:eff}
   (pf: !v | xs: List a, f: (!v | a, !vt) -<fun,f> void, env: !vt)
   :<f> void
@@ -101,7 +101,7 @@ overload list_app with list_app_cloref
 
 (* ****** ****** *)
 
-fun{a1,a2:t@ype} list_app2_main
+fun{a1,a2:t@ype} list_app2__main
   {v:view} {vt:viewtype} {n:nat} {f:eff} (
     pf: !v
   | xs: list (a1, n)
@@ -136,7 +136,7 @@ overload + with list_append
 
 (* ****** ****** *)
 
-fun{a1,a2:t@ype} list_assoc_main {v:view} {vt: viewtype} {eq:eff}
+fun{a1,a2:t@ype} list_assoc__main {v:view} {vt: viewtype} {eq:eff}
   (pf: !v | xs: List @(a1, a2), eq: (!v | a1, a1, !vt) -<fun, eq> bool, x: a1, env: !vt)
   :<eq> Option_vt a2
 
@@ -170,7 +170,7 @@ fun{a:t@ype} list_drop_exn {n,i:nat}
 
 (* ****** ****** *)
 
-fun{a:t@ype} list_exists_main {v:view} {vt:viewtype} {p:eff}
+fun{a:t@ype} list_exists__main {v:view} {vt:viewtype} {p:eff}
   (pf: !v | xs: List a, p: (!v | a, !vt) -<fun,p> bool, env: !vt):<p> bool
 
 symintr list_exists
@@ -193,7 +193,7 @@ overload list_exists with list_exists_cloref
 
 (* ****** ****** *)
 
-fun{a1,a2:t@ype} list_exists2_main
+fun{a1,a2:t@ype} list_exists2__main
   {v:view} {vt:viewtype} {n:nat} {p:eff} (
     pf: !v
   | xs1: list (a1, n)
@@ -227,11 +227,14 @@ fun{a:t@ype} list_extend {n:nat}
 
 (* ****** ****** *)
 
-fun{a:t@ype} list_filter_main {v:view} {vt:viewtype} {n:nat} {p:eff}
+fun{a:t@ype} list_filter__main {v:view} {vt:viewtype} {n:nat} {p:eff}
   (pf: !v | xs: list (a, n), p: (!v | a, !vt) -<fun,p> bool, env: !vt)
   :<p> [n':nat | n' <= n] list (a, n')
 
 symintr list_filter
+
+fun{a:t@ype} list_filter_fun {n:nat} {p:eff}
+  (xs: list (a, n), p: a -<fun,p> bool):<p> [n':nat | n' <= n] list (a, n')
 
 fun{a:t@ype} list_filter_clo {n:nat} {p:eff}
   (xs: list (a, n), p: &a -<clo,p> bool):<p> [n':nat | n' <= n] list (a, n')
@@ -244,10 +247,13 @@ fun{a:t@ype} list_filter_cloref {n:nat} {p:eff}
 
 (* ****** ****** *)
 
-fun{a:t@ype} list_find_main {v:view} {vt:viewtype} {p:eff}
+fun{a:t@ype} list_find__main {v:view} {vt:viewtype} {p:eff}
   (pf: !v | xs: List a, p: (!v | a, !vt) -<fun,p> bool, env: !vt):<p> Option_vt a
 
 symintr list_find
+
+fun{a:t@ype} list_find_fun {p:eff}
+  (xs: List a, p: a -<fun,p> bool):<p> Option_vt a
 
 fun{a:t@ype} list_find_clo {p:eff}
   (xs: List a, p: &a -<clo,p> bool):<p> Option_vt a
@@ -260,7 +266,7 @@ fun{a:t@ype} list_find_cloref {p:eff}
 
 (* ****** ****** *)
 
-fun{sink,a:t@ype} list_fold_left_main {v:view} {vt:viewtype} {f:eff}
+fun{sink,a:t@ype} list_fold_left__main {v:view} {vt:viewtype} {f:eff}
   (pf: !v | f: (!v | sink, a, !vt) -<fun,f> sink, ini: sink, xs: List a, env: !vt):<f> sink
 
 fun{sink,a:t@ype} list_fold_left_fun {f:eff}
@@ -277,7 +283,7 @@ fun{sink,a:t@ype} list_fold_left_cloref {f:eff}
 
 (* ****** ****** *)
 
-fun{sink,a1,a2:t@ype} list_fold2_left_main
+fun{sink,a1,a2:t@ype} list_fold2_left__main
   {v:view} {vt:viewtype} {n:nat} {f:eff} (
     pf: !v
   | f: (!v | sink, a1, a2, !vt) -<fun,f> sink
@@ -295,7 +301,7 @@ fun{sink,a1,a2:t@ype} list_fold2_left_cloref {n:nat} {f:eff}
 
 (* ****** ****** *)
 
-fun{a,sink:t@ype} list_fold_right_main {v:view} {vt:viewtype} {f:eff}
+fun{a,sink:t@ype} list_fold_right__main {v:view} {vt:viewtype} {f:eff}
   (pf: !v | f: (!v | a, sink, !vt) -<fun,f> sink, xs: List a, ini: sink, env: !vt):<f> sink
 
 fun{a,sink:t@ype} list_fold_right_fun {f:eff}
@@ -312,7 +318,7 @@ fun{a,sink:t@ype} list_fold_right_cloref {f:eff}
 
 (* ****** ****** *)
 
-fun{a1,a2,sink:t@ype} list_fold2_right_main
+fun{a1,a2,sink:t@ype} list_fold2_right__main
   {v:view} {vt:viewtype} {n:nat} {f:eff} (
     pf: !v
   | f: (!v | a1, a2, sink, !vt) -<fun,f> sink
@@ -324,7 +330,7 @@ fun{a1,a2,sink:t@ype} list_fold2_right_main
 
 (* ****** ****** *)
 
-fun{a:t@ype} list_forall_main {v:view} {vt:viewtype} {p:eff}
+fun{a:t@ype} list_forall__main {v:view} {vt:viewtype} {p:eff}
   (pf: !v | xs: List a, p: (!v | a, !vt) -<fun,p> bool, env: !vt):<p> bool
 
 symintr list_forall
@@ -347,7 +353,7 @@ overload list_forall with list_forall_cloref
 
 (* ****** ****** *)
 
-fun{a1,a2:t@ype} list_forall2_main
+fun{a1,a2:t@ype} list_forall2__main
   {v:view} {vt:viewtype} {n:nat} {p:eff} (
     pf: !v
   | xs1: list (a1, n)
@@ -376,7 +382,7 @@ overload list_forall2 with list_forall2_cloref
 
 (* ****** ****** *)
 
-fun{a:t@ype} list_foreach_main {v:view} {vt:viewtype} {f:eff}
+fun{a:t@ype} list_foreach__main {v:view} {vt:viewtype} {f:eff}
   (pf: !v | xs: List a, f: (!v | a, !vt) -<fun,f> void, env: !vt):<f> void
 
 symintr list_foreach
@@ -395,7 +401,7 @@ fun{a:t@ype} list_foreach_cloref {v:view} {f:eff}
 
 (* ****** ****** *)
 
-fun{a1,a2:t@ype} list_foreach2_main
+fun{a1,a2:t@ype} list_foreach2__main
   {v:view} {vt:viewtype} {n:nat} {f:eff} (
     pf: !v
   | xs: list (a1, n)
@@ -436,7 +442,7 @@ fun{a1,a2:t@ype} list_foreach2_cloref {v:view} {n:nat} {f:eff} (
 
 (* ****** ****** *)
 
-fun{a:t@ype} list_iforeach_main {v:view} {vt:viewtype} {n:nat} {f:eff}
+fun{a:t@ype} list_iforeach__main {v:view} {vt:viewtype} {n:nat} {f:eff}
   (pf: !v | xs: list (a, n), f: (!v | natLt n, a, !vt) -<fun,f> void, env: !vt)
   :<f> void
 
@@ -454,7 +460,7 @@ fun{a:t@ype} list_iforeach_cloref {v:view} {n:nat} {f:eff}
 
 (* ****** ****** *)
 
-fun{a1,a2:t@ype} list_iforeach2_main {v:view} {vt:viewtype} {n:nat} {f:eff} (
+fun{a1,a2:t@ype} list_iforeach2__main {v:view} {vt:viewtype} {n:nat} {f:eff} (
     pf: !v
   | xs: list (a1, n)
   , ys: list (a2, n)
@@ -528,7 +534,7 @@ fun{a:t@ype} list_make_elt {n:nat} (x: a, n: int n):<> list (a, n)
 
 (* ****** ****** *)
 
-fun{a,b:t@ype} list_map_main
+fun{a,b:t@ype} list_map__main
   {v:view} {vt:viewtype} {n:nat} {f:eff}
   (pf: !v | xs: list (a, n), f: (!v | a, !vt) -<fun,f> b, env: !vt)
   :<f> list (b, n)
@@ -553,7 +559,7 @@ overload list_map with list_map_cloref
 
 (* ****** ****** *)
 
-fun{a1,a2,b:t@ype} list_map2_main
+fun{a1,a2,b:t@ype} list_map2__main
   {v:view} {vt:viewtype} {n:nat} {f:eff} (
     pf: !v
   | xs: list (a1, n)
@@ -615,8 +621,13 @@ fun{a:t@ype} list_take_exn {n,i:nat}
 
 (* ****** ****** *)
 
-fun{a:t@ype} list_tabulate {n:nat} {f:eff}
-  (f: !natLt n -<f> a, n: int n):<f> list (a, n)
+fun{a:t@ype} list_tabulate__main
+  {v:view} {vt:viewtype} {n:nat} {f:eff}
+  (pf: !v | f: (!v | natLt n, !vt) -<f> a, n: int n, env: !vt)
+  :<f> list (a, n)
+
+fun{a:t@ype} list_tabulate_fun {n:nat} {f:eff}
+  (f: natLt n -<f> a, n: int n):<f> list (a, n)
 
 (* ****** ****** *)
 

@@ -40,7 +40,7 @@ implement main (argc, argv) = let
   val () = list_vt_free (cs)
 
   val cs = let
-    val (vbox pf | p12) = strbuf_of_string1 (s12)
+    val (vbox pf | p12) = strbuf1_of_string1 (s12)
   in
     strbuf_explode (!p12)
   end // end of [val]
