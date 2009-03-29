@@ -99,7 +99,7 @@ extern fun fputc {m:file_mode}
 
 fn repeat_fasta {len:nat}
   (file: &FILE w, s: string len, n: Nat): void = let
-  val len = length s
+  val len = string1_length s; val len = int1_of_size1 (len)
   val () = assert (len >= WIDTH)
   fun loop {n,pos:nat | pos <= len}
     (file: &FILE w, n: int n, pos: int pos):<cloptr1> void =
@@ -167,21 +167,31 @@ fn random_fasta {sz:nat} {l_tbl:addr}
    file: &FILE w, tbl: ptr l_tbl, sz: int sz, n: Nat): void = let
   fun loop {n:nat} {l_buf:addr} .<n>.
     (pf_tbl: !(@[amino][sz] @ l_tbl), pf_buf: !(@[byte][WIDTH+1] @ l_buf) |
-     file: &FILE w, buf: ptr l_buf, n: int n):<cloptr1> void =
-    if (n > WIDTH) then begin
-      random_buf (pf_tbl, pf_buf | tbl, buf, sz, WIDTH, 0);
-      ignore (fwrite_byte (file_mode_lte_w_w, pf_buf | buf, WIDTH+1, file));
-      loop (pf_tbl, pf_buf | file, buf, n-WIDTH)
-    end else begin
-      random_buf (pf_tbl, pf_buf | tbl, buf, sz, n, 0);
-      ignore (fwrite_byte (file_mode_lte_w_w, pf_buf | buf, n, file));
-      fputc (file_mode_lte_w_w | '\n', file)
-    end
+     file: &FILE w, p_buf: ptr l_buf, n: int n):<cloptr1> void =
+    if (n > WIDTH) then let
+      val () = random_buf (pf_tbl, pf_buf | tbl, p_buf, sz, WIDTH, 0)
+      val W1 = size1_of_int1 (WIDTH+1)
+      val _(*int*) = fwrite_byte (file_mode_lte_w_w | !p_buf, W1, file)
+    in
+      loop (pf_tbl, pf_buf | file, p_buf, n-WIDTH)
+    end else let
+      val () = random_buf (pf_tbl, pf_buf | tbl, p_buf, sz, n, 0)
+      val n = size1_of_int1 n
+      val _(*int*) = fwrite_byte (file_mode_lte_w_w | !p_buf, n, file)
+      val () = fputc (file_mode_lte_w_w | '\n', file)
+    in
+      // empty
+    end // end of [loop]
   val () = make_cumulative (pf_tbl | tbl, sz)
-  val (pf_ngc, pf_buf | buf) = malloc_ngc (WIDTH+1)
-  val () = buf[WIDTH] := byte_of_char '\n'
+  val (pf_ngc, pf_buf | p_buf) = malloc_ngc (WIDTH1) where {
+    val WIDTH1 = size1_of_int1 (WIDTH + 1)
+  }
+  prval pf_buf = bytes_v_of_b0ytes_v (pf_buf)
+  val () = p_buf->[WIDTH] := byte_of_char '\n'
+  val () = loop (pf_tbl, pf_buf | file, p_buf, n)
+  val () = free_ngc (pf_ngc, pf_buf | p_buf)
 in
-  loop (pf_tbl, pf_buf | file, buf, n); free_ngc (pf_ngc, pf_buf | buf)
+  // empty
 end // end of [random_fasta]
 
 //
@@ -201,10 +211,10 @@ implement main (argc, argv) = let
 
 val () = assert (argc = 2)
 val s = argv.[1]
-val n = atoi (s)
+val n = atoi (s); val n = int1_of_int n
 val () = assert (n >= 0)
 val (pf_stdout | stdout) = stdout_get ()
-val @(pf_gc, pf_iub | iub, iub_sz) = @[amino][
+val @(pf_gc, pf_iub | iub, iub_sz) = $arrsz{amino}(
   @{c='a', p=0.27}
 , @{c='c', p=0.12}
 , @{c='g', p=0.12}
@@ -220,14 +230,14 @@ val @(pf_gc, pf_iub | iub, iub_sz) = @[amino][
 , @{c='V', p=0.02}
 , @{c='W', p=0.02}
 , @{c='Y', p=0.02}
-]
+) // end of [val]
 
-val @(pf_homo_gc, pf_homo | homo, homo_sz) = @[amino][
+val @(pf_homo_gc, pf_homo | homo, homo_sz) = $arrsz{amino}(
   @{c='a', p=0.3029549426680}
 , @{c='c', p=0.1979883004921}
 , @{c='g', p=0.1975473066391}
 , @{c='t', p=0.3015094502008}
-]
+) // end of [val]
 
 in
 

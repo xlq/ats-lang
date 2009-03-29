@@ -182,8 +182,9 @@ implement main (argc, argv) = let
   val () = if 0 < NPRINT then print_intarr (!p_P, sz) else ()
   val () = loop (!p_C, !p_P, sz, 1) where {
     fun loop (C: &intarr, P: &intarr, sz: int, n: int) : void =
-      if n < NPRINT then begin
-        perm_next (C, P, 2); print_intarr (P, sz); loop (C, P, sz, n+1)
+      if n < NPRINT then let
+        val _(*int*) = perm_next (C, P, 2) in
+        print_intarr (P, sz); loop (C, P, sz, n+1)
       end // end of [if]
   }  // end of [where]
   var ans: int = 0
