@@ -539,6 +539,7 @@ fn doc_dir_copy () = let
   )
   val () = cp "Makefile"
   val () = cp "server.dats"
+  val () = cp "server2.dats"
 //
   val SRCROOTdoc_EXAMPLE_KernighanRitchie =
     SRCROOTdoc_EXAMPLE + "KernighanRitchie/"
