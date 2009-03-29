@@ -532,7 +532,7 @@ val p_token_ide = let
     prval pf = bytes_v_of_chars_v (pf)
     val () = bytes_strbuf_trans (pf | p0, size1_of_int1 (n+1))
     prval () = free_gc_elim (pf_gc)
-    val str = string1_of_strbuf (pf | p0)
+    val str = string1_of_strbuf1 (pf | p0)
   in
     token_ide_make (loc, str)
   end // end of [f1]

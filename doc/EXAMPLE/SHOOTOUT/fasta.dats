@@ -102,7 +102,8 @@ extern fun fputc {m:file_mode}
 
 fn repeat_fasta {len:nat}
   (file: &FILE w, s: string len, n: Nat): void = let
-  val len = length s
+  val len = string1_length s
+  val len = int1_of_size1 (len)
   val () = assert (len >= WIDTH)
   fun loop {n,pos:nat | pos <= len}
     (file: &FILE w, n: int n, pos: int pos):<cloptr1> void =
@@ -171,17 +172,24 @@ fn random_fasta {sz:nat} {l_tbl:addr}
   fun loop {n:nat} {l_buf:addr} .<n>.
     (pf_tbl: !(@[amino][sz] @ l_tbl), pf_buf: !(@[byte][WIDTH+1] @ l_buf) |
      file: &FILE w, p_buf: ptr l_buf, n: int n):<cloptr1> void =
-    if (n > WIDTH) then begin
-      random_buf (pf_tbl, pf_buf | tbl, p_buf, sz, WIDTH, 0);
-      ignore (fwrite_byte (file_mode_lte_w_w | !p_buf, WIDTH+1, file));
+    if (n > WIDTH) then let
+      val () = random_buf (pf_tbl, pf_buf | tbl, p_buf, sz, WIDTH, 0)
+      val WIDTH1 = size1_of_int1 (WIDTH+1)
+      val _ = fwrite_byte (file_mode_lte_w_w | !p_buf, WIDTH1, file)
+    in
       loop (pf_tbl, pf_buf | file, p_buf, n-WIDTH)
-    end else begin
-      random_buf (pf_tbl, pf_buf | tbl, p_buf, sz, n, 0);
-      ignore (fwrite_byte (file_mode_lte_w_w | !p_buf, n, file));
-      fputc (file_mode_lte_w_w | '\n', file)
-    end
+    end else let
+      val () = random_buf (pf_tbl, pf_buf | tbl, p_buf, sz, n, 0)
+      val n = size1_of_int1 n
+      val _ = fwrite_byte (file_mode_lte_w_w | !p_buf, n, file)
+      val () = fputc (file_mode_lte_w_w | '\n', file)
+    in
+      // loop exits
+    end // end of [if]
+  // end of [loop]
   val () = make_cumulative (pf_tbl | tbl, sz)
-  val (pf_ngc, pf_buf | buf) = malloc_ngc (WIDTH+1)
+  val WIDTH1 = size1_of_int1 (WIDTH+1)
+  val (pf_ngc, pf_buf | buf) = malloc_ngc (WIDTH1)
   prval () = pf_buf := bytes_v_of_b0ytes_v (pf_buf)
   val () = buf[WIDTH] := byte_of_char '\n'
 in
@@ -206,6 +214,7 @@ implement main (argc, argv) = let
 val () = assert (argc = 2)
 val s = argv.[1]
 val n = atoi (s)
+val n = int1_of_int n
 val () = assert (n >= 0)
 val (pf_stdout | stdout) = stdout_get ()
 val @(pf_gc, pf_iub | iub, iub_sz) = $arrsz {amino} (

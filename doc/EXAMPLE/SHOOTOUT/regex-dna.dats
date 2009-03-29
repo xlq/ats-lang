@@ -242,7 +242,7 @@ extern fun count_pattern_match {n:nat} {l:addr}
 (* ****** ****** *)
 
 #define variants_length 9
-val variants: array (string, variants_length) = array_make_arraysize @[string][
+val variants: array (string, variants_length) = array_make_arraysize $arrsz {string}(
   "agggtaaa|tttaccct"
 , "[cgt]gggtaaa|tttaccc[acg]"
 , "a[act]ggtaaa|tttacc[agt]t"
@@ -252,7 +252,7 @@ val variants: array (string, variants_length) = array_make_arraysize @[string][
 , "agggt[cgt]aa|tt[acg]accct"
 , "agggta[cgt]a|t[acg]taccct"
 , "agggtaa[cgt]|[acg]ttaccct"
-]
+)
 
 fun count_loop {i:nat} {n:nat} {l:addr}
   (pf: !bytes_v (n, l) | n: int n, p: ptr l, i: int i): void =
@@ -377,7 +377,7 @@ extern fun subst_pattern_string {n:nat} {l:addr}
 (* ****** ****** *)
 
 #define subst_length 22
-val subst: array (string, subst_length) = array_make_arraysize @[string][
+val subst: array (string, subst_length) = array_make_arraysize $arrsz{string}(
   "B", "(c|g|t)"
 , "D", "(a|g|t)"
 , "H", "(a|c|t)"
@@ -389,7 +389,7 @@ val subst: array (string, subst_length) = array_make_arraysize @[string][
 , "V", "(a|c|g)"
 , "W", "(a|t)"
 , "Y", "(c|t)"
-]
+)
 
 (* ****** ****** *)
 

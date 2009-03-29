@@ -116,7 +116,7 @@ end // end of [write_frequencies]
 
 fn write_count {n,k:nat}
   (tbl: symtbl_t, n: int n, seq: string k): void = let
-  val k = length seq
+  val k = string1_length seq; val k = int1_of_size1 k
   val () = assert (k <= n)
   val tbl = dna_count (tbl, n, k)
   val cnt = symtbl_search (tbl, seq)

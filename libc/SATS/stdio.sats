@@ -641,7 +641,7 @@ fun fwrite
 fun fwrite_byte // [fwrite_byte] only writes once
   {n_buf,n:nat | n <= n_buf} {m:fm} (
     pf_mod: file_mode_lte (m, w) | buf: &bytes (n_buf), n: size_t n, f: &FILE m
-  ) :<> natLte n
+  ) :<> sizeLte n
   = "atslib_fwrite_byte"
 
 // an uncatchable exception is thrown if not all bytes are written

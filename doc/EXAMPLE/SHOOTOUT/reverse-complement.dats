@@ -136,7 +136,10 @@ fun loop {pos,bsz:nat | bsz > 0} {l_buf:addr} (
     end
   end else let
     val bsz = bsz + bsz
-    val (pf_ngc, pf_buf | p_buf) = realloc_ngc (pf_ngc, pf_buf | p_buf, bsz)
+    val (pf_ngc, pf_buf | p_buf) =
+      realloc_ngc (pf_ngc, pf_buf | p_buf, bsz) where {
+      val bsz = size1_of_int1 bsz
+    } // end of [val]
     prval () = pf_buf := bytes_v_of_b0ytes_v (pf_buf)
   in
     loop (pf_ngc, pf_buf | inp, p_buf, bsz, pos)

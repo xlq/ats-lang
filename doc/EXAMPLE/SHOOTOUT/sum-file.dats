@@ -38,17 +38,20 @@ end // end of [loop]
 fun loop {l_buf:addr} (
     pf_buf: !b0ytes(BUFSZ) @ l_buf
   | file: &FILE r
-  , buf: ptr l_buf
+  , p_buf: ptr l_buf
   , sum: int
   ) : int = let
-  val (pf_res | res) = fgets_err (file_mode_lte_r_r, pf_buf | buf, BUFSZ, file)
+  val (pf_res | res) = fgets_err
+    (file_mode_lte_r_r, pf_buf | p_buf, BUFSZ, file)
 in
   if res <> null then let
     prval fgets_v_succ pf = pf_res
-    val i = atoi (!buf)
+    val i = atoi (cast_ptr_string p_buf) where {
+      extern castfn cast_ptr_string (p: ptr): string
+    } // end of [val]
     prval () = pf_buf := bytes_v_of_strbuf_v pf
   in
-    loop (pf_buf | file, buf, sum + i)
+    loop (pf_buf | file, p_buf, sum + i)
   end else let
     prval fgets_v_fail pf = pf_res
   in
