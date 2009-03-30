@@ -55,6 +55,7 @@ local
 
 datatype access =
   | InFrame of int | InReg of temp
+// end of [access]
 
 assume access_t = access
 
@@ -76,6 +77,7 @@ fn fprint_access (out: FILEref, acc: access_t): void =
   | InReg tmp => begin
       fprint_string (out, "InReg("); $TL.fprint_temp (out, tmp); fprint_string (out, ")")
     end // end of [InReg]
+// end of [fprint_access]
 
 fn prerr_access (acc: access_t): void = fprint_access (stderr_ref, acc)
 

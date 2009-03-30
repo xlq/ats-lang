@@ -1165,19 +1165,21 @@ implement s0tacon_make_some_none (id, arg) = '{
 , s0tacon_def= None ()
 }
 
-implement s0tacon_make_none_some (id, def) = '{
-  s0tacon_loc= id.i0de_loc
+implement s0tacon_make_none_some (id, def) = let
+  val loc = combine (id.i0de_loc, def.s0exp_loc) in '{
+  s0tacon_loc= loc
 , s0tacon_sym= id.i0de_sym
 , s0tacon_arg= None ()
 , s0tacon_def= Some def
-}
+} end // end of [s0tacon_make_none_some]
 
-implement s0tacon_make_some_some (id, arg, def) = '{
-  s0tacon_loc= id.i0de_loc
+implement s0tacon_make_some_some (id, arg, def) = let
+  val loc = combine (id.i0de_loc, def.s0exp_loc) in '{
+  s0tacon_loc= loc
 , s0tacon_sym= id.i0de_sym
 , s0tacon_arg= Some arg
 , s0tacon_def= Some def
-}
+} end // end of [s0tacon_make_some_some]
 
 implement s0taconlst_nil () = nil ()
 implement s0taconlst_cons (x, xs) = cons (x, xs)
