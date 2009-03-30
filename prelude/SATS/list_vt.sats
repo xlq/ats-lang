@@ -85,6 +85,19 @@ fun{a:viewt@ype} list_vt_reverse
 
 (* ****** ****** *)
 
+fun{a:viewt@ype} list_vt_tabulate__main
+  {v:view} {vt:viewtype} {n:nat} {f:eff}
+  (pf: !v | f: (!v | natLt n, !vt) -<f> a, n: int n, env: !vt)
+  :<f> list_vt (a, n)
+
+fun{a:viewt@ype} list_vt_tabulate_fun {n:nat} {f:eff}
+  (f: natLt n -<f> a, n: int n):<f> list_vt (a, n)
+
+fun{a:viewt@ype} list_vt_tabulate_clo {n:nat} {f:eff}
+  (f: &natLt n -<clo,f> a, n: int n):<f> list_vt (a, n)
+
+(* ****** ****** *)
+
 fun{a:viewt@ype} list_vt_foreach__main
   {v:view} {vt:viewtype} {n:nat} {f:eff}
   (pf: !v | xs: !list_vt (a, n), f: !(!v | &a, !vt) -<f> void, env: !vt)

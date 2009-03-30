@@ -197,6 +197,52 @@ end // end of [list_vt_reverse]
 
 (* ****** ****** *)
 
+implement{a} list_vt_tabulate__main
+  {v} {vt} {n} {f} (pf | f, n, env) = let
+  var res: List_vt a // uninitialized
+  fun loop {i:nat | i <= n} .<n-i>. (
+      pf: !v
+    | n: int n, i: int i, f: (!v | natLt n, !vt) -<f> a, env: !vt
+    , res: &(List_vt a)? >> list_vt (a, n-i)
+    ) :<f> void =
+    if i < n then let
+      val () = (res := list_vt_cons {a} {0} (f (pf | i, env), ?))
+      val+ list_vt_cons (_, !p) = res
+    in
+      loop (pf | n, i+1, f, env, !p); fold@ res
+    end else begin
+      res := list_vt_nil ()
+    end // end of [if]
+  // end of [loop]
+in
+  loop (pf | n, 0, f, env, res); res
+end // end of [list_vt_tabulate__main]
+
+implement{a} list_vt_tabulate_fun {n} {f:eff} (f, n) = let
+  val f = coerce (f) where { extern castfn
+    coerce (f: natLt n -<f> a):<> (!unit_v | natLt n, !Ptr) -<f> a
+  } // end of [where]
+  prval pf = unit_v ()
+  val ans = list_vt_tabulate__main (pf | f, n, null)
+  prval unit_v () = pf
+in
+  ans
+end // end of [list_vt_tabulate_fun]
+
+implement{a} list_vt_tabulate_clo {n} {f:eff} (f, n) = let
+  typedef clo_t = natLt n -<clo,f> a
+  stavar l_f: addr; val p_f: ptr l_f = &f
+  viewdef V = clo_t @ l_f
+  fn app (pf: !V | i: natLt n, p_f: !ptr l_f):<f> a = !p_f (i)
+  prval pf = view@ f
+  val ans = list_vt_tabulate__main<a> {V} {ptr l_f} (pf | app, n, p_f)
+  prval () = view@ f := pf
+in
+  ans
+end // end of [list_vt_tabulate_clo]
+
+(* ****** ****** *)
+
 implement{a} list_vt_foreach__main
   {v} {vt} {n} {f} (pf | xs0, f, env) = let
   viewtypedef fun_t = (!v | &a, !vt) -<f> void

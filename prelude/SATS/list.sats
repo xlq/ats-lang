@@ -621,16 +621,7 @@ fun{a:t@ype} list_take_exn {n,i:nat}
 
 (* ****** ****** *)
 
-fun{a:t@ype} list_tabulate__main
-  {v:view} {vt:viewtype} {n:nat} {f:eff}
-  (pf: !v | f: (!v | natLt n, !vt) -<f> a, n: int n, env: !vt)
-  :<f> list (a, n)
-
-fun{a:t@ype} list_tabulate_fun {n:nat} {f:eff}
-  (f: natLt n -<f> a, n: int n):<f> list (a, n)
-
-fun{a:t@ype} list_tabulate_clo {n:nat} {f:eff}
-  (f: &natLt n -<clo,f> a, n: int n):<f> list (a, n)
+// list_tabulate: try list_vt_tabulate
 
 (* ****** ****** *)
 

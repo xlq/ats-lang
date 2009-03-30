@@ -1505,51 +1505,6 @@ end // end of [list_take]
 
 (* ****** ****** *)
 
-implement{a} list_tabulate__main
-  {v} {vt} {n} {f} (pf | f, n, env) = let
-  var res: List a // uninitialized
-  fun loop {i:nat | i <= n} .<n-i>. (
-      pf: !v
-    | n: int n, i: int i, f: (!v | natLt n, !vt) -<f> a, env: !vt
-    , res: &(List a)? >> list (a, n-i)
-    ) :<f> void =
-    if i < n then let
-      val () = (res := cons {a} {0} (f (pf | i, env), ?)); val+ cons (_, !p) = res
-    in
-      loop (pf | n, i+1, f, env, !p); fold@ res
-    end else begin
-      res := nil ()
-    end // end of [if]
-  // end of [loop]
-in
-  loop (pf | n, 0, f, env, res); res
-end // end of [list_tabulate__main]
-
-implement{a} list_tabulate_fun {n} {f:eff} (f, n) = let
-  val f = coerce (f) where { extern castfn
-    coerce (f: natLt n -<f> a):<> (!unit_v | natLt n, !Ptr) -<f> a
-  } // end of [where]
-  prval pf = unit_v ()
-  val ans = list_tabulate__main (pf | f, n, null)
-  prval unit_v () = pf
-in
-  ans
-end // end of [list_tabulate_fun]
-
-implement{a} list_tabulate_clo {n} {f:eff} (f, n) = let
-  typedef clo_t = natLt n -<clo,f> a
-  stavar l_f: addr; val p_f: ptr l_f = &f
-  viewdef V = clo_t @ l_f
-  fn app (pf: !V | i: natLt n, p_f: !ptr l_f):<f> a = !p_f (i)
-  prval pf = view@ f
-  val ans = list_tabulate__main<a> {V} {ptr l_f} (pf | app, n, p_f)
-  prval () = view@ f := pf
-in
-  ans
-end // end of [list_tabulate_clo]
-
-(* ****** ****** *)
-
 implement{a,b} list_zip (xs, ys) = let
   typedef ab = '(a, b)
   var res: List ab // uninitialized

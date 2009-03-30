@@ -26,9 +26,10 @@ fun random_list_gen {n: nat}
 *)
 
 fun random_list_gen {n:nat}
-  (n: int n): list (natLt MAXELT, n) =
-  list_tabulate_fun (lam _ =<!ref> $Rand.randint MAXELT, n)
-// end of [val]
+  (n: int n): list (natLt MAXELT, n) = xs where {
+  val xs = list_vt_tabulate_fun (lam _ =<!ref> $Rand.randint MAXELT, n)
+  val xs = list_of_list_vt (xs)
+} // end of [val]
 
 (* ****** ****** *)
 
