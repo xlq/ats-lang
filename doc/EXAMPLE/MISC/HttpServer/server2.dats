@@ -2,7 +2,9 @@
 //
 // Another simple web server implemented in ATS; this one is a
 // concurrent server as it forks out a process for handling each
-// request.
+// request. Also, it uses array-quicksort in [stdlib.h] rather
+// than list-quicksort to sort directory entries.
+// 
 
 // The issue of memory leaks is taken care of here in a rather
 // ad hoc manner! This example really gives a glimpse of the
@@ -27,12 +29,18 @@
 
 staload "libc/SATS/dirent.sats"
 staload "libc/SATS/stdio.sats"
+staload STDLIB = "libc/SATS/stdlib.sats"
 staload "libc/SATS/string.sats"
 staload "libc/SATS/time.sats"
 staload "libc/SATS/unistd.sats"
 staload "libc/netinet/SATS/in.sats"
 staload "libc/sys/SATS/socket.sats"
 staload "libc/sys/SATS/types.sats"
+
+(* ****** ****** *)
+
+staload _(*anonymous*) = "prelude/DATS/array.dats"
+staload _(*anonymous*) = "prelude/DATS/list_vt.dats"
 
 (* ****** ****** *)
 
@@ -217,12 +225,10 @@ size_of_filename(ats_ptr_type filename) {
   struct stat buf ;
   
   res = stat((char *)filename, &buf) ;
-
   if (res < 0) {
     perror ("stat") ;
     atspre_exit_prerrf(1, "Exit: [stat(%s)] failed.\n", filename) ;
   }
-
   return buf.st_size ;
 }
 
@@ -447,54 +453,18 @@ extern fun dirent_name_get (dir: &DIR): Stropt_gc = "dirent_name_get"
 
 viewtypedef Strlin = [m,n:nat] [l:addr] strbufptr_gc (m,n,l)
 
-dataviewtype entlst = entlst_nil | entlst_cons of (Strlin, entlst)
+fn strbufptr_free (x: Strlin): void = let
+  val (pf_gc, pf_buf | p_buf) = x in strbuf_ptr_free (pf_gc, pf_buf | p_buf)
+end // end of [strbufptr_free]
 
-fun entlst_append (xs0: &entlst >> entlst, ys: entlst): void =
-  case+ xs0 of
-  | entlst_cons (_, !xs) => (entlst_append (!xs, ys); fold@ xs0)
-  | ~entlst_nil () => (xs0 := ys)
-// end of [entlst_append]
+(* ****** ****** *)
 
-fun qsort (xs: entlst): entlst =
-  case+ xs of
-  | entlst_cons (!p_x1, !p_xs1) => let
-      val xs1 = !p_xs1
-    in
-      part (
-        view@ (!p_x1), view@ (!p_xs1)
-      | xs, p_x1, p_xs1, xs1, entlst_nil (), entlst_nil ()
-      ) // end of [part]
-    end // end of [entlst_cons]
-  | entlst_nil () => (fold@ xs; xs)
-// end of [qsort]
-
-and part {l0,l1:addr} (
-    pf0: Strlin @ l0, pf1: entlst? @ l1
-  | node: entlst_cons_unfold (l0, l1)
-  , p_x0: ptr l0, p_xs0: ptr l1, xs: entlst, l: entlst, r: entlst
-  ) : entlst = case+ xs of
-  | entlst_cons (!p_x1, !p_xs1) => let
-      val xs1 = !p_xs1
-      val sgn = compare_string_string
-        (__cast !p_x1, __cast !p_x0) where {
-        extern castfn __cast (s: !Strlin): string
-      } // end of [val]
-    in
-      if sgn <= 0 then
-        (!p_xs1 := l; fold@ xs; part (pf0, pf1 | node, p_x0, p_xs0, xs1, xs, r))
-      else
-        (!p_xs1 := r; fold@ xs; part (pf0, pf1 | node, p_x0, p_xs0, xs1, l, xs))
-      // end of [if]
-    end // end of [entlst_cons]
-  | ~entlst_nil () => let
-      var l = qsort l and r = qsort r
-    in
-      !p_xs0 := r; fold@ node; r := node; entlst_append (l, r); l
-    end // end of [entlst_nil]
-// end of [part]
+viewtypedef entlst = List_vt (Strlin)
+viewtypedef entarrptr_gc (n: int, l:addr) =
+  (free_gc_v (Strlin, n, l), @[Strlin][n] @ l | ptr l)
 
 fun dirent_name_get_all
-  (dir: &DIR): entlst = let
+  (dir: &DIR, asz: &size_t 0? >> size_t n): #[n:nat][l:addr] entarrptr_gc (n, l) = let
   fun loop
     (dir: &DIR, res: entlst)
     : entlst = let
@@ -502,100 +472,99 @@ fun dirent_name_get_all
     if stropt_gc_is_none ent then let
       val _(*null*) = stropt_gc_unnone ent in res
     end else begin
-      loop (dir, entlst_cons (stropt_gc_unsome ent, res))
+      loop (dir, list_vt_cons (stropt_gc_unsome ent, res))
     end // end of [if]
   end // end of [loop]
-  val ents = loop (dir, entlst_nil ())
+  val ents = loop (dir, list_vt_nil ())
+  stavar n: int
+  val n: int n = list_vt_length ents
+  val () = asz := size1_of_int1 (n)
+  val [l:addr] (pf_gc, pf_arr | p_arr) =
+    array_ptr_alloc<Strlin> (asz)
+  val () = array_ptr_initialize_lst_vt<Strlin> (!p_arr, asz, ents)
+  val () = $STDLIB.qsort {Strlin} {n}
+     (!p_arr, asz, sizeof<Strlin>, cmp) where {
+     extern castfn __cast (x: !Strlin): string; val cmp = lam 
+       (x1: &Strlin, x2: &Strlin): Sgn =<fun1> compare (__cast x1, __cast x2)
+  } // end of [val]  
 in
-  qsort ents
+  #[n | #[l | (pf_gc, pf_arr | p_arr)]]
 end // end of [dirent_name_get_all]
 
 (* ****** ****** *)
 
-extern fun directory_send_loop {fd:int}
-  (pf_conn: !socket_v (fd, conn) | fd: int fd, parent: string, ents: entlst): void
-
-implement directory_send_loop
-  (pf_conn | fd, parent, ents) = let
-  #define MSGSZ 1024
-(*
-  // this is simply too ad hoc and dangerous ...
-  fn string_free (s: string) = let
-    val (pf_gc, pf_buf | p_buf) = __strbuf_of_string (s) where {
-      extern castfn __strbuf_of_string (s: string)
-        :<> [m,n:nat] [l:addr] (free_gc_v (m, l), strbuf (m,n) @ l | ptr l)
-    } // end of [val]
-  in
-    strbuf_ptr_free (pf_gc, pf_buf | p_buf)
-  end // end of [val]
-*)
+fun directory_send_loop
+  {fd:int} {n:nat} {l:addr} .<n>. (
+    pf_conn: !socket_v (fd, conn)
+  , pf_arr: ! @[Strlin][n] @ l >> @[Strlin?][n] @ l
+  | fd: int fd, parent: string, p_arr: ptr l, asz: size_t n
+  ) : void = let
+  #define MSGSZ 1024; viewtypedef T = Strlin
 in
-  case+ ents of
-  | ~entlst_cons (ent_gc, ents) => let
-(*
-      val () = prerrf ("directory_send_loop: parent = %s\n", @(parent))
-      val () = prerrf ("directory_send_loop: ent = %s\n", @(ent))
-*)
-      val (pf_gc, pf_ent | p_ent) = ent_gc
-      val ft = let
-        val ent = __cast p_ent where {
-          extern castfn __cast (p: ptr): string
-        }
-      in
-        case ent of
-        | "." => 1 | ".." => 1 | _ => let
-            val parent = string1_of_string (parent)
-            val ent = string1_of_string (ent)
-            val fil = string1_append__ptr (parent, ent)
-            val (pf_gc, pf_fil | p_fil) = fil
-            val ft = filename_type (name) where {
-              extern castfn __cast (p: ptr): string; val name = __cast p_fil
-            } // end of [val]
-            val () = strbuf_ptr_free (pf_gc, pf_fil | p_fil)
-          in
-            ft
-          end // end of [_]
-      end // end of [val]
+  if asz > 0 then let
+    prval @(pf1_elt, pf2_arr) = array_v_uncons {T} (pf_arr)
+    val ent = !p_arr
+    val ft = let
+      val str = __cast ent where {
+        extern castfn __cast (ent: !Strlin): string
+      } // end of [val]
     in
-      case+ ft of
-      | 0 => let
+      case+ str of
+      | "." => 1 | ".." => 1 | _ => ft where {
+          val str = string1_of_string (str)
+          val parent = string1_of_string (parent)
+          val fil = string1_append__ptr (parent, str)
+          val (pf_gc, pf_fil | p_fil) = fil
+          val ft = filename_type (name) where {
+            extern castfn __cast (p: ptr): string; val name = __cast p_fil
+          } // end of [val]
+          val () = strbuf_ptr_free (pf_gc, pf_fil | p_fil)
+        } // end of [_]
+    end (* end of [val] *)
+    val () = case+ ft of
+      | 0 => let // this is a non-directory file
           var! p_msg with pf_msg = @[byte][MSGSZ]()
           val _(*n*) = snprintf (
-            pf_msg
-          | p_msg, MSGSZ, "<A HREF=\"%s\">%s</A><BR>", @(ent, ent)
+            pf_msg | p_msg, MSGSZ, "<A HREF=\"%s\">%s</A><BR>", @(str, str)
           ) where {
-            extern castfn __cast (p: ptr): string; val ent = __cast p_ent
+            extern castfn __cast (ent: !Strlin): string; val str = __cast ent
           } // end of [val]
-          val () = strbuf_ptr_free (pf_gc, pf_ent | p_ent)
+          val () = strbufptr_free (ent)
           val len = strbuf_length !p_msg
           prval () = pf_msg := bytes_v_of_strbuf_v (pf_msg)
           val _ = socket_write_loop_exn (pf_conn | fd, !p_msg, len)
         in
-          directory_send_loop (pf_conn | fd, parent, ents)
-        end
-      | 1 => let
+          // empty
+        end // end of [0]
+      | 1 => let // this is a directory file
           var! p_msg with pf_msg = @[byte][MSGSZ]()
           val _(*n*) = snprintf (
             pf_msg
-          | p_msg, MSGSZ, "<A HREF=\"%s/\">%s/</A><BR>", @(ent, ent)
+          | p_msg, MSGSZ, "<A HREF=\"%s/\">%s/</A><BR>", @(str, str)
           ) where {
-            extern castfn __cast (p: ptr): string; val ent = __cast p_ent
+            extern castfn __cast (ent: !Strlin): string; val str = __cast ent
           } // end of [val]
-          val () = strbuf_ptr_free (pf_gc, pf_ent | p_ent)
+          val () = strbufptr_free (ent)
           val len = strbuf_length !p_msg
           prval () = pf_msg := bytes_v_of_strbuf_v (pf_msg)
           val _ = socket_write_loop_exn (pf_conn | fd, !p_msg, len)
         in
-          directory_send_loop (pf_conn | fd, parent, ents)
-        end
-      | _ => let
-          val () = strbuf_ptr_free (pf_gc, pf_ent | p_ent)
-        in
-          directory_send_loop (pf_conn | fd, parent, ents)
-        end // end of [_]
-    end // end of [cons]
-  | ~entlst_nil () => ()
-end // end of [directory_send_loop]
+          // empty
+        end // end of [1]
+      | _ => strbufptr_free (ent)
+    // end of [val]
+    val () = directory_send_loop
+      (pf_conn, pf2_arr | fd, parent, p_arr+sizeof<Strlin>, asz-1)
+    prval () = pf_arr := array_v_cons {T?} (pf1_elt, pf2_arr)
+  in
+    // empty
+  end else let
+    prval () = array_v_unnil {T} (pf_arr)
+    prval () = pf_arr := array_v_nil {T?} ()
+  in
+    // empty
+  end // end of [if]
+end (* end of [directory_send_loop] *)
 
 (* ****** ****** *)
 
@@ -615,10 +584,12 @@ in
     val _ = socket_write_substring_exn (pf_conn | fd, dir_msg30_str, 0, dir_msg30_len)
     val _ = socket_write_substring_exn (pf_conn | fd, dir_msg31_str, 0, dir_msg31_len)
     val _ = socket_write_substring_exn (pf_conn | fd, dir_msg32_str, 0, dir_msg32_len)
-    val ents = dirent_name_get_all (!p_dir)
+    var asz: size_t 0? // unintialized
+    val (pf_gc, pf_arr | p_arr) = dirent_name_get_all (!p_dir, asz)
     val () = closedir_exn (pf_dir | p_dir)
+    val () = directory_send_loop (pf_conn, pf_arr | fd, dirname, p_arr, asz)
   in
-    directory_send_loop (pf_conn | fd, dirname, ents)
+    array_ptr_free {Strlin} (pf_gc, pf_arr | p_arr)
   end // end of [if]
 end (* end of [directory_send] *)
 
