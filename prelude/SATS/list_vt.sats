@@ -112,6 +112,23 @@ fun{a:t@ype} list_vt_iforeach__main
 
 (* ****** ****** *)
 
+local
+
+typedef cmp (a:viewt@ype) = (&a, &a) -<fun> Sgn
+
+in // in of [local]
+
+// this one essentially copies a given list into an array;
+// then it sorts the array and copies it back into the list;
+// then it frees up the array.
+fun{a:viewt@ype}
+  list_vt_quicksort {n:nat} (xs: !list_vt (a, n), cmp: cmp a):<> void
+// end of [fun]
+
+end // end of [local]
+
+(* ****** ****** *)
+
 #if VERBOSE_PRELUDE #then
 
 #print "Loading [list_vt.sats] finishes!\n"

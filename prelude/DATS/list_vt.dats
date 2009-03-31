@@ -277,6 +277,64 @@ end // end of [list_vt_iforeach__main]
 
 (* ****** ****** *)
 
+local
+
+staload STDLIB = "libc/SATS/stdlib.sats"
+
+in // end of [val]
+
+implement{a} list_vt_quicksort {n} (xs, cmp) = let
+//
+// use an array to do quicksorting and then copy the sorted array back
+//
+  abst@ype a1 = a?
+  val _ = __cast (xs) where {
+    extern castfn __cast (xs: !list_vt (a, n) >> list_vt (a1, n)):<> ptr
+  } // end of [val]
+  val cmp = __cast (cmp) where {
+    extern castfn __cast (cmp: (&a, &a) -<fun> Sgn):<> (&a1, &a1) -<fun> Sgn
+  } // end of [val]
+  val asz = size1_of_int1 (list_vt_length xs)
+  val (pf_gc, pf_arr | p_arr) = array_ptr_alloc_tsz {a1} (asz, sizeof<a1>)
+  val () = array_ptr_initialize_lst<a1> (!p_arr, asz, __cast xs) where {
+    extern castfn __cast
+      (xs: !list_vt (a1, n) >> list_vt (a1?, n)):<> list (a1, n) // good hacking :)  
+  } // end of [val]
+  val () = $effmask_all ($STDLIB.qsort (!p_arr, asz, sizeof<a1>, cmp))
+  val () = loop (pf_arr | p_arr, xs) where {
+    fun loop {n:nat} {l:addr} .<n>. (
+        pf_arr: !array_v (a1, n, l)
+      | p_arr: ptr l, xs: !list_vt (a1?, n) >> list_vt (a1, n)
+      ) :<> void =
+      case+ xs of
+      | list_vt_cons (!p_x1, !p_xs1) => let
+          prval (pf1_elt, pf2_arr) = array_v_uncons {a1} (pf_arr)
+          val () = !p_x1 := !p_arr
+          val () = loop (pf2_arr | p_arr + sizeof<a1>, !p_xs1)
+          prval () = pf_arr := array_v_cons {a1} (pf1_elt, pf2_arr)
+        in
+          fold@ (xs)
+        end // end of [list_vt_cons]
+      | list_vt_nil () => let
+          prval () = array_v_unnil {a1} (pf_arr)
+          prval () = pf_arr := array_v_nil {a1} ()
+        in
+          fold@ (xs)
+        end // end of [list_vt_nil]
+    // end of [loop]
+  } // end of [val]
+  val () = array_ptr_free (pf_gc, pf_arr | p_arr)
+  val _ = __cast (xs) where {
+    extern castfn __cast (xs: !list_vt (a1, n) >> list_vt (a, n)):<> ptr
+  } // end of val]
+in
+  // empty
+end // end of [list_vt_quicksort]
+
+end // end of [local]
+
+(* ****** ****** *)
+
 // [list_vt.sats] is already loaded by a call to [pervasive_load]
 staload _(*anonymous*) = "prelude/SATS/list_vt.sats" // this forces that the static
 // loading function for [list_vt.sats] is to be called at run-time

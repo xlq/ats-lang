@@ -268,7 +268,7 @@ atspre_char_isupper (const ats_char_type c) {
 
 static inline
 ats_bool_type
-atspre_char_ixdigit (const ats_char_type c) {
+atspre_char_isxdigit (const ats_char_type c) {
  return isxdigit ((unsigned char)c) ;
 } /* end of [atspre_char_isxdigit] */
 

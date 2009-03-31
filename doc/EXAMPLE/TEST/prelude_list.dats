@@ -10,6 +10,7 @@ staload Rand = "libc/SATS/random.sats"
 (* ****** ****** *)
 
 staload _(*anonymous*) = "prelude/DATS/list.dats"
+staload _(*anonymous*) = "prelude/DATS/list_vt.dats"
 
 (* ****** ****** *)
 
@@ -34,6 +35,8 @@ fun random_list_gen {n:nat}
 (* ****** ****** *)
 
 implement main (argc, argv) = let
+// for printing out an integer list
+// also for testing [list_iforeach]
   fn lstpr (xs: List int): void = () where {
     prval pf = unit_v ()
     val () = list_iforeach_fun {unit_v} (pf | xs, f) where {
@@ -44,8 +47,8 @@ implement main (argc, argv) = let
     prval unit_v () = pf
   } // end of [lstpr]
   val () = $Rand.srand48_with_time () // a new seed is generated
-  val xs = random_list_gen (10)
 //
+  val xs = random_list_gen (10) // for testing [list_vt_tabulate]
   val () = () where {
     val () = print "xs (randomly generated) = "
     val () = lstpr (xs)
@@ -54,47 +57,52 @@ implement main (argc, argv) = let
 //
   val () = () where {
     val () = print "length (xs) = "
-    val () = print (list_length xs)
+    val () = print (list_length xs) // for testing [list_length]
     val () = print_newline ()
   } // end of [val]
 //
   val () = () where {
     val () = print "reverse (xs) = "
-    val () = lstpr (list_reverse xs)
+    val () = lstpr (list_reverse xs) // for testing [list_reverse]
     val () = print_newline ()
   } // end of [val]
 //
   val () = () where {
     val () = print "filter (xs, evn) = "
+    // for testing [list_filter]
     val () = lstpr (list_filter_fun<int> (xs, lam x =<0> x mod 2 = 0))
     val () = print_newline ()
   } // end of [val]
   val () = () where {
     val () = print "filter (xs, odd) = "
+    // for testing [list_filter] again
     val () = lstpr (list_filter_fun<int> (xs, lam x =<0> x mod 2 > 0))
     val () = print_newline ()
   } // end of [val]
 //
   val () = () where {
     val () = print "map (xs, double) = "
+    // for testing [list_map]
     val () = lstpr (list_map_fun<int,int> (xs, lam x =<0> 2 * x))
     val () = print_newline ()
   } // end of [val]
 //
   val () = () where {
     val () = print "last(xs) = "
-    val () = print (list_last xs)
+    val () = print (list_last xs) // for testing [list_last]
     val () = print_newline ()
   } // end of [val]
 //
   val () = () where {
     val () = print "mergesort (xs) = "
+    // for testing [list_mergesort]
     val () = lstpr (list_mergesort<int> (xs, lam (x1, x2, env) =<0> x1 <= x2, null))
     val () = print_newline ()
   } // end of [val]
 //
   val () = () where {
     val () = print "quicksort (xs) = "
+    // for testing [list_quicksort]
     val () = lstpr (list_quicksort<int> (xs, lam (x1, x2, env) =<0> x1 <= x2, null))
     val () = print_newline ()
   } // end of [val]

@@ -23,8 +23,12 @@
 
 staload "libc/SATS/dirent.sats"
 staload "libc/SATS/stdio.sats"
+staload "libc/SATS/stdlib.sats"
 staload "libc/netinet/SATS/in.sats"
 staload "libc/sys/SATS/socket.sats"
+
+staload _(*anonymous*) = "prelude/DATS/array.dats"
+staload _(*anonymous*) = "prelude/DATS/list_vt.dats"
 
 //
 
@@ -446,6 +450,8 @@ ats_ptr_type dirent_name_get(ats_ptr_type dir) {
 
 %}
 
+(*
+
 dataviewtype entlst = entlst_nil | entlst_cons of (String, entlst)
 
 fun entlst_append (xs0: &entlst >> entlst, ys: entlst): void =
@@ -486,6 +492,11 @@ and part {l0,l1:addr} (
     end // end of [entlst_nil]
 // end of [part]
 
+*)
+
+viewtypedef entlst = List_vt (String)
+#define entlst_nil list_vt_nil; #define entlst_cons list_vt_cons
+
 fun dirent_name_get_all (dir: &DIR): entlst = let
   fun aux (dir: &DIR, res: entlst): entlst =
     let val ent = dirent_name_get (dir) in
@@ -495,8 +506,11 @@ fun dirent_name_get_all (dir: &DIR): entlst = let
     end // end of [let]
   // end of [aux]
   val ents = aux (dir, entlst_nil ())
+  val () = list_vt_quicksort (ents, cmp) where {
+    fn cmp (x1: &String, x2: &String):<fun> Sgn = compare (x1, x2)
+  } // end of [list_vt_quicksort]
 in
-  qsort ents
+  ents
 end // end of [dirent_name_get_all]
 
 extern fun filename_type (filename: string): int = "filename_type"

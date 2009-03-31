@@ -122,8 +122,8 @@ stavar l: addr and n: int; typedef T = @[string2][n]
 
 prval () = free_gc_elim (pf_gc)
 val (the_doctype_map_prop | ()) = vbox_make_view_ptr {T} {l} (pf_arr | ptr)
-val the_doctype_map_ptr = (ptr: ptr l)
-val the_doctype_map_len = (len: int n)
+val the_doctype_map_ptr : ptr l = ptr
+val the_doctype_map_len : size_t n = size1_of_int1 (len)
 
 val () = if the_doctype_map_len >= 2 then let
   prval vbox pf = the_doctype_map_prop
@@ -132,7 +132,7 @@ in
   loop (pf | the_doctype_map_ptr, the_doctype_map_len, 1, sfx0)
 end where {
   fun loop {n,i:nat | i <= n} {l:addr} .<n-i>.
-    (pf: !array_v (string2, n, l) | A: ptr l, n: int n, i: int i, sfx0: string)
+    (pf: !array_v (string2, n, l) | A: ptr l, n: size_t n, i: size_t i, sfx0: string)
     :<> void =
     if i < n then let
       val sfx1 = !A.[i].0 in
@@ -148,22 +148,22 @@ extern fun doctype_find (sfx: string): Stropt = "doctype_find"
 
 in // in of [local]
 
-implement doctype_find (sfx) = let // binary search
-  fun loop {i,j,n:int | 0 <= i; i <= j+1; j+1 <= n} {l:addr} .<j-i+1>.
-    (pf: !array_v ((string, string), n, l) | A: ptr l, i: int i, j: int j)
-    :<cloptr> Stropt =
-    if i <= j then let
-      val m = i + (j - i) / 2; val key = !A.[m].0 in
-      case+ compare (key, sfx) of
-      |  1 => loop (pf | A, i, m-1)
-      | ~1 => loop (pf | A, m+1, j)
-      |  _ (* 0 *) => stropt_some (string1_of_string !A.[m].1)
-    end else begin
-      stropt_none // = null pointer
-    end // end of [val]
+//
+// it is probably easier to actually implement bsearch :)
+//
+implement doctype_find (sfx) = let
   prval vbox pf = the_doctype_map_prop
+  var key = @(sfx, nullstr) where { val nullstr = $extval (string, "0") }
+  val p_arr = the_doctype_map_ptr
+  val ind = $effmask_ref $STDLIB.bsearch {string2}
+    (key, !p_arr, the_doctype_map_len, sizeof<string2>, cmp) where {
+    val cmp = lam (x1: &string2, x2: &string2): Sgn =<0> compare (x1.0, x2.0)
+  } // end of [val]
 in
-  loop {0,n-1,n} (pf | the_doctype_map_ptr, 0, the_doctype_map_len - 1)
+  if ind >= 0 then let
+    val typ = string1_of_string (the_doctype_map_ptr->[ind].1) in
+    stropt_some (typ)
+  end else stropt_none
 end // end of [doctype_find]
 
 end // end of [local]
