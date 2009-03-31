@@ -188,7 +188,7 @@ end // end of [fcopy_exn]
 (* ****** ****** *)
 
 val DIRmode: mode_t = begin
-  S_IRWXU // lor S_IRGRP lor S_IXGRP lor S_IROTH lor S_IXOTH)
+  S_IRWXU // lor S_IRGRP lor S_IXGRP lor S_IROTH lor S_IXOTH
 end // end of [DIRmode]
 
 (* ****** ****** *)
@@ -201,9 +201,7 @@ fn dir_copy
   macdef cp (name) = fcopy_exn (srcdir + ,(name), dstdir + ,(name))
 
   fun loop (dir: &DIR):<cloref1> void = let
-    val name = dirent_name_get (dir)
-  in
-    case+ 0 of
+    val name = dirent_name_get (dir) in case+ 0 of
     | _ when stropt_is_some name => let
         val name = stropt_unsome (name)
         val () = case+ name of
