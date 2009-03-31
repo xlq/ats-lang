@@ -386,7 +386,7 @@ filename_type (ats_ptr_type filename) {
 
 %}
 
-extern fun filename_type (filename: string): int = "filename_type"
+extern fun filename_type (filename: string): Sgn = "filename_type"
 
 (* ****** ****** *)
 
@@ -520,37 +520,29 @@ in
           } // end of [val]
           val () = strbuf_ptr_free (pf_gc, pf_fil | p_fil)
         } // end of [_]
-    end (* end of [val] *)
-    val () = case+ ft of
-      | 0 => let // this is a non-directory file
-          var! p_msg with pf_msg = @[byte][MSGSZ]()
-          val _(*n*) = snprintf (
-            pf_msg | p_msg, MSGSZ, "<A HREF=\"%s\">%s</A><BR>", @(str, str)
-          ) where {
+    end : Sgn (* end of [val] *)
+    val () = case+ 0 of
+      | _ when ft >= 0 => let
+          var! p_msg with pf_msg = @[byte][MSGSZ](); stadef l_msg = p_msg
+          val _(*n*) : int = let
+            typedef mystrbuf = [n:nat | n < MSGSZ] strbuf (MSGSZ, n)
             extern castfn __cast (ent: !Strlin): string; val str = __cast ent
-          } // end of [val]
+          in
+            case+ :(pf_msg: mystrbuf @ l_msg) => ft of
+            | 0 => snprintf (
+                pf_msg | p_msg, MSGSZ, "<A HREF=\"%s\">%s</A><BR>", @(str, str)
+              ) // end of [0]
+            | _ (* 1 *) => snprintf ( // directory
+                pf_msg | p_msg, MSGSZ, "<A HREF=\"%s/\">%s/</A><BR>", @(str, str)
+              ) // end of [_]
+          end // end of [val]
           val () = strbufptr_free (ent)
           val len = strbuf_length !p_msg
           prval () = pf_msg := bytes_v_of_strbuf_v (pf_msg)
-          val _ = socket_write_loop_exn (pf_conn | fd, !p_msg, len)
+          val _ =  socket_write_loop_exn (pf_conn | fd, !p_msg, len)
         in
           // empty
         end // end of [0]
-      | 1 => let // this is a directory file
-          var! p_msg with pf_msg = @[byte][MSGSZ]()
-          val _(*n*) = snprintf (
-            pf_msg
-          | p_msg, MSGSZ, "<A HREF=\"%s/\">%s/</A><BR>", @(str, str)
-          ) where {
-            extern castfn __cast (ent: !Strlin): string; val str = __cast ent
-          } // end of [val]
-          val () = strbufptr_free (ent)
-          val len = strbuf_length !p_msg
-          prval () = pf_msg := bytes_v_of_strbuf_v (pf_msg)
-          val _ = socket_write_loop_exn (pf_conn | fd, !p_msg, len)
-        in
-          // empty
-        end // end of [1]
       | _ => strbufptr_free (ent)
     // end of [val]
     val () = directory_send_loop

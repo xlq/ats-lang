@@ -553,7 +553,8 @@ stadef ptr = ptr_type
 (* ****** ****** *)
 
 stadef strbuf = strbuf_int_int_t0ype
-stadef strbuf (bsz:int) = [len:int] strbuf (bsz, len)
+stadef strbuf (bsz:int) =
+  [len:int | 0 <= len; len < bsz] strbuf (bsz, len)
 stadef strbuf = strbuf_t0ype
 
 stadef string = string_int_type
