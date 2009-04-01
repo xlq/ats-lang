@@ -159,6 +159,7 @@ implement main (argc, argv) = let
     print "vlu = "; $INT0.print_value (vlu); print_newline ()
   end // end of [val]
 *)
+
   val e1xp = $TRAN.transProg1 (exp)
   val () = begin
     print "e1xp = "; $TRAN.print_e1xp e1xp; print_newline ()
@@ -181,17 +182,17 @@ implement main (argc, argv) = let
               val lab_frm = $FRM.frame_name_get (frm)
               val () = $INT1.the_labmap_stmlst_insert (lab_frm, stms)
             in
-(*
+// (*
               print_stmlst stms
-*)
+// *)
             end // end of [FRAGproc]
           | $FRM.FRAGstring (lab, str) => let
               val () = $INT1.the_labmap_string_insert (lab, str)
             in
-(*
+// (*
               $TL.print_label lab;
               print_string ": "; print_string str; print_newline ()
-*)
+// *)
             end // end of [val]
         in
           loop (xs)
@@ -203,11 +204,13 @@ implement main (argc, argv) = let
   val (lab_done, blks) = $CA.blocklst_gen (stms)
   val stms = $CA.trace_schedule (lab_done, blks)
   val () = print_stmlst stms
-(*
+// (*
   val () = $INT1.interp1Prog (stms)
-*)
+// *)
+(*
   val inss = codegen_stmlst ($FRM.theTopFrame, stms)
   val () = print_instrlst (inss)
+*)
 in
   // empty
 end // end of [main]

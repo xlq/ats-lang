@@ -733,6 +733,62 @@ end // end of [transExp1]
 
 (* ****** ****** *)
 
+fn funarglst_move (accs: $F.accesslst): $TR.stm = let
+  viewtypedef res_vt = List_vt ($TR.stm)
+  fun loop1 (
+      fars: $TL.templst
+    , accs: $F.accesslst
+    , ofs: int
+    , res: &res_vt
+    ) : void =
+    case+ accs of
+    | list_cons (acc, accs) => begin case+ fars of
+      | list_cons (far, fars) => let
+          val e_fp = $TR.EXPtemp $F.FP
+          val e_acc = $F.exp_make_access (e_fp, acc)
+          val e_far = $TR.EXPtemp far
+          val () = res := list_vt_cons ($TR.STMmove (e_acc, e_far), res)
+        in
+          loop1 (fars, accs, ofs + WORDSIZE, res)
+        end // end of [list_cons]
+      | list_nil () => loop2 (acc, accs, ofs, res)
+      end // end of [list_cons]
+    | list_nil () => ()
+  // end of [loop1]
+  
+  and loop2 (
+      acc: $F.access_t
+    , accs: $F.accesslst
+    , ofs: int
+    , res: &res_vt
+    ) : void = let
+    val e_fp = $TR.EXPtemp $F.FP
+    val e_acc = $F.exp_make_access (e_fp, acc)
+    val e_far = 
+      $TR.EXPmem ($TR.EXPbinop ($TR.PLUS, e_fp, $TR.EXPconst ofs))
+    val () = res := list_vt_cons ($TR.STMmove (e_acc, e_far), res)
+  in
+    case+ accs of
+    | list_cons (acc, accs) => loop2 (acc, accs, ofs + WORDSIZE, res)
+    | list_nil () => ()
+  end // end of [loop2]
+  var res: res_vt = list_vt_nil ()
+  val () = loop1 ($F.theFunargReglst, accs, 0, res)
+in
+  case+ res of
+    | ~list_vt_cons (stm, stms) => loop (stms, stm) where {
+        fun loop (stms: List_vt ($TR.stm), stm: $TR.stm): $TR.stm =
+          case+ stms of
+          | ~list_vt_cons (stm1, stms1) => loop (stms1, $TR.STMseq (stm1, stm))
+          | ~list_vt_nil () => stm
+        // end of [loop]
+      }
+    | ~list_vt_nil () => $TR.stm_nop
+  // end of [val]  
+end // end of [funarglst_move]
+
+(* ****** ****** *)
+
 fn transFundec1_fst
   (lev0: level, env: &env, fd: fundec): level = let
 (*
@@ -782,8 +838,10 @@ fn transFundec1_snd
       | (_, _) => env
     end // end of [loop]
   } // end of [env]
+  val stm_mov = funarglst_move (acclst)
   val e_body = transExp1 (lev1, env, fd.fundec_body)
-  val stm = $TR.STMmove ($F.exp_RV, unEx e_body)
+  val stm_rst = $TR.STMmove ($F.exp_RV, unEx e_body)
+  val stm = $TR.STMseq (stm_mov, stm_rst)
   val frag = $F.FRAGproc (frm, stm)
 in
   $F.frame_theFraglst_add (frag)

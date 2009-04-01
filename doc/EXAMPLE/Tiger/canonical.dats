@@ -42,16 +42,16 @@ fun expIsRead (exp: exp): bool = case+ exp of
 (*
     // this not needed:
   | EXPeseq (s1, e2) => begin
-      if stmIsPure s1 then expIsRead e2 else false
+      if stmIsRead s1 then expIsRead e2 else false
     end // end of [EXPeseq]
 *)
   | _ => false
 // end of [expIsRead]
 
-and stmIsPure (stm: stm): bool = case+ stm of
+and stmIsRead (stm: stm): bool = case+ stm of
   | STMexp exp => expIsRead exp
   | STMseq (stm1, stm2) => begin
-      if stmIsPure stm1 then stmIsPure stm2 else false
+      if stmIsRead stm1 then stmIsRead stm2 else false
     end // end of [STMseq]
   | _ => false
 // end of [stmIsPure]
@@ -59,20 +59,18 @@ and stmIsPure (stm: stm): bool = case+ stm of
 fn isCommutable
   (stm: stm, exp: exp)
   : bool = begin case+ (stm, exp) of
-  | (_, _) when stmIsPure stm => true
   | (_, _) when expIsPure exp => true
+  | (_, _) when stmIsRead stm andalso expIsRead exp => true
   | (_, _) => false
 end // end of [isCommutable]
 
 fn seqSimplify
   (stm1: stm, stm2: stm): stm = begin
   case+ (stm1, stm2) of
-  | (_, _) when stmIsPure stm1 => stm2
-  | (_, _) when stmIsPure stm2 => stm1
+  | (_, _) when stmIsRead stm1 => stm2
+  | (_, _) when stmIsRead stm2 => stm1
   | (_, _) => STMseq (stm1, stm2)
 end // end of [seqSimplify]
-
-val stm_nop = STMexp (exp_const_0)
 
 (* ****** ****** *)
 

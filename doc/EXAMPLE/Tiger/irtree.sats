@@ -55,6 +55,10 @@ val exp_const_1 : exp // = EXPconst (1)
 
 (* ****** ****** *)
 
+val stm_nop : stm // STMexp (exp_const_0)
+
+(* ****** ****** *)
+
 fun fprint_exp (out: FILEref, exp: exp): void
 fun print_exp (exp: exp): void
 fun prerr_exp (exp: exp): void

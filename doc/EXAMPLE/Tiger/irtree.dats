@@ -157,6 +157,8 @@ implement prerr_stm (stm) = fprint_stm (stderr_ref, stm)
 implement exp_const_0 = EXPconst 0
 implement exp_const_1 = EXPconst 1
 
+implement stm_nop = STMexp (exp_const_0)
+
 (* ****** ****** *)
 
 implement binop_is_additive (binop) =

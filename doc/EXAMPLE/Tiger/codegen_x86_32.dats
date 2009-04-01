@@ -190,7 +190,7 @@ fn instrlst_add_stm
       end // end of [EXPmem]
     | _ => begin
         prerr "INTERNAL ERROR";
-        prerr "auxexp: exp = "; prerr_exp exp; prerr_newline ();
+        prerr ": auxexp: exp = "; prerr_exp exp; prerr_newline ();
         exit {temp} (1)
       end // end of [_]
   end // end of [auxexp]
