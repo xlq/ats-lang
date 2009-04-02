@@ -309,6 +309,13 @@ in
       fprint1_string (pf | out, "...");
       strpr ")"
     end // end of [S1Emod]
+  | S1Enamed (name, s1e) => begin
+      strpr "S1Enamed(";
+      $Sym.fprint_symbol (pf | out, name);
+      strpr ", ";
+      fprint_s1exp (pf | out, s1e);
+      strpr ")"
+    end // end of [S1Enamed]
   | S1Eqid (q, id: sym_t) => begin
       $Syn.fprint_s0taq (pf | out, q);
       $Sym.fprint_symbol (pf | out, id)

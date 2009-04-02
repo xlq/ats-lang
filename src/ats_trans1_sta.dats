@@ -717,6 +717,10 @@ implement s0exp_tr s0e0 = let
       in
         $Fix.ITEMatm (s1exp_list2 (loc0, s1es1, s1es2))
       end // end of [S0Elist2]
+    | S0Enamed (name, s0e) => let
+        val s1e = s0exp_tr s0e in
+        $Fix.ITEMatm (s1exp_named (loc0, name, s1e))
+      end // end of [S0Enamed]
     | S0Eopide id => $Fix.ITEMatm (s1exp_ide (loc0, id))
     | S0Eqid (q, id) => $Fix.ITEMatm (s1exp_qid (loc0, q, id))
     | S0Estruct (ls0es) => let
@@ -763,7 +767,7 @@ implement s0exp_tr s0e0 = let
       end // end of [S0Eunion]
     | _ => begin
         prerr_loc_error1 loc0;
-        prerr ": s0exp_tr: not available yet";
+        prerr ": s0exp_tr: not available yet"; prerr_newline ();
         $Err.abort {s1expitm} ()
       end // end of [_]
   end // end of [aux_item]
@@ -818,13 +822,16 @@ end // end of [s0rtext_tr]
 
 (* ****** ****** *)
 
-implement tmps0explstlst_tr (ts0ess) = begin
+implement t1mps0explstlst_tr (ts0ess) = begin
   case+ ts0ess of
-  | TMPS0EXPLSTLSTnil () => TMPS1EXPLSTLSTnil ()
-  | TMPS0EXPLSTLSTcons (loc, s0es, ts0ess) => begin
-      TMPS1EXPLSTLSTcons (loc, s0explst_tr s0es, tmps0explstlst_tr ts0ess)
-    end // end of [TMPS0EXPLSTLSTcons]
-end // end of [tmps0explstlst_tr]
+  | T1MPS0EXPLSTLSTnil () => TMPS1EXPLSTLSTnil ()
+  | T1MPS0EXPLSTLSTcons (loc, s0es, ts0ess) => let
+      val s1es = s0explst_tr (s0es)
+      val ts1ess = t1mps0explstlst_tr ts0ess
+    in
+      TMPS1EXPLSTLSTcons (loc, s1es, ts1ess)
+    end // end of [T1MPS0EXPLSTLSTcons]
+end // end of [t1mps0explstlst_tr]
 
 (* ****** ****** *)
 

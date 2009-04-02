@@ -91,31 +91,20 @@ and hityplstlst = List hityplst
 
 fun fprint_hityp {m:file_mode}
   (pf: file_mode_lte (m, w) | out: &FILE m, hit: hityp): void
-overload fprint with fprint_hityp
 
 fun fprint_hityplst {m:file_mode}
   (pf: file_mode_lte (m, w) | out: &FILE m, hits: hityplst): void
-overload fprint with fprint_hityplst
 
 fun fprint_hityplstlst {m:file_mode}
   (pf: file_mode_lte (m, w) | out: &FILE m, hitss: hityplstlst): void
-overload fprint with fprint_hityplstlst
 
 //
 
 fun print_hityp (hit: hityp): void
 fun prerr_hityp (hit: hityp): void
 
-overload print with print_hityp
-overload prerr with prerr_hityp
-
-//
-
 fun print_hityplst (hits: hityplst): void
 fun prerr_hityplst (hits: hityplst): void
-
-overload print with print_hityplst
-overload prerr with prerr_hityplst
 
 (* ****** ****** *)
 
@@ -220,29 +209,18 @@ and hipatopt = Option hipat
 
 fun fprint_hipat {m:file_mode}
   (pf: file_mode_lte (m, w) | out: &FILE m, hip: hipat): void
-overload fprint with fprint_hipat
 
 fun fprint_hipatlst {m:file_mode}
   (pf: file_mode_lte (m, w) | out: &FILE m, hips: hipatlst): void
-overload fprint with fprint_hipatlst
 
 fun fprint_labhipatlst {m:file_mode}
   (pf: file_mode_lte (m, w) | out: &FILE m, lhips: labhipatlst): void
-overload fprint with fprint_labhipatlst
-
-//
 
 fun print_hipat (hip: hipat): void
 fun prerr_hipat (hip: hipat): void
 
-overload print with print_hipat
-overload prerr with prerr_hipat
-
 fun print_hipatlst (hips: hipatlst): void
 fun prerr_hipatlst (hips: hipatlst): void
-
-overload print with print_hipatlst
-overload prerr with prerr_hipatlst
 
 (* ****** ****** *)
 
@@ -510,43 +488,31 @@ and hiimpdec_prf = '{ (* proof implementation *)
 
 fun fprint_hilab {m:file_mode}
   (pf: file_mode_lte (m, w) | out: &FILE m, hil: hilab): void
-overload fprint with fprint_hilab
 
 fun fprint_hilablst {m:file_mode}
   (pf: file_mode_lte (m, w) | out: &FILE m, hils: hilablst): void
-overload fprint with fprint_hilablst
 
 //
 
 fun fprint_hiexp {m:file_mode}
   (pf: file_mode_lte (m, w) | out: &FILE m, hie: hiexp): void
-overload fprint with fprint_hiexp
 
 fun fprint_hiexplst {m:file_mode}
   (pf: file_mode_lte (m, w) | out: &FILE m, hies: hiexplst): void
-overload fprint with fprint_hiexplst
 
 fun fprint_hiexplstlst {m:file_mode}
   (pf: file_mode_lte (m, w) | out: &FILE m, hiess: hiexplstlst): void
-overload fprint with fprint_hiexplstlst
 
 fun fprint_labhiexplst {m:file_mode}
   (pf: file_mode_lte (m, w) | out: &FILE m, lhies: labhiexplst): void
-overload fprint with fprint_labhiexplst
 
 //
 
 fun print_hiexp (hie: hiexp): void
 fun prerr_hiexp (hie: hiexp): void
 
-overload print with print_hiexp
-overload prerr with prerr_hiexp
-
 fun print_hiexplst (hies: hiexplst): void
 fun prerr_hiexplst (hies: hiexplst): void
-
-overload print with print_hiexplst
-overload prerr with prerr_hiexplst
 
 (* ****** ****** *)
 
@@ -821,9 +787,6 @@ fun hityplstlst_is_cons (hitss: hityplstlst_t): bool
 fun print_hityp_t (hit: hityp_t): void
 fun prerr_hityp_t (hit: hityp_t): void
 
-overload print with print_hityp_t
-overload prerr with prerr_hityp_t
-
 //
 
 fun d2cst_hityp_get (_: d2cst_t): Option (hityp_t)
@@ -852,9 +815,6 @@ fun fprint_vartyp {m:file_mode}
 
 fun print_vartyp (vtp: vartyp_t): void
 fun prerr_vartyp (vtp: vartyp_t): void
-
-overload print with print_vartyp
-overload prerr with prerr_vartyp
 
 (* ****** ****** *)
 

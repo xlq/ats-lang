@@ -847,25 +847,6 @@ implement s0arglstlst_cons_ide (id, xss) =
 
 (* ****** ****** *)
 
-implement impqi0de_make_none (qid) = '{
-  impqi0de_loc= qid.dqi0de_loc
-, impqi0de_qua= qid.dqi0de_qua
-, impqi0de_sym= qid.dqi0de_sym
-, impqi0de_arg= s0explstlst_nil ()
-}
-
-implement impqi0de_make_some
-  (qid, arg, args, t_gt) = let
-  val loc = combine (qid.tmpqi0de_loc, t_gt.t0kn_loc)
-in '{
-  impqi0de_loc= loc
-, impqi0de_qua= qid.tmpqi0de_qua
-, impqi0de_sym= qid.tmpqi0de_sym
-, impqi0de_arg= s0explstlst_cons (arg, args)
-} end // end of [impqid0de_make_some]
-
-(* ****** ****** *)
-
 (* static patterns *)
 
 implement sp0at_con (qid, xs, t_end) = let
@@ -949,6 +930,8 @@ in
   | cons (arg, args) => aux (arg, args) | nil () => body
 end // end of [s0exp_lams]
 
+(* ****** ****** *)
+
 implement s0exp_list (t_beg, s0es, t_end) = let
   val loc = combine (t_beg.t0kn_loc, t_end.t0kn_loc) in
   '{ s0exp_loc= loc, s0exp_node= S0Elist (s0es) }
@@ -959,6 +942,14 @@ implement s0exp_list2
   val loc = combine (t_beg.t0kn_loc, t_end.t0kn_loc) in
   '{ s0exp_loc= loc, s0exp_node= S0Elist2 (s0es1, s0es2) }
 end // end of [s0exp_list2]
+
+(* ****** ****** *)
+
+implement s0exp_named (ide, s0e) = let
+  val loc = combine (ide.i0de_loc, s0e.s0exp_loc)
+in '{
+  s0exp_loc= loc, s0exp_node= S0Enamed (ide.i0de_sym, s0e)
+} end // end of [s0exp_named]
 
 implement s0exp_opide (t_op, id) = let
   val loc = combine (t_op.t0kn_loc, id.i0de_loc)
@@ -1049,22 +1040,49 @@ implement s0arrind_make_cons (s0es, ind) = '{
 
 (* ****** ****** *)
 
-implement gtlttmps0expseqseq_nil () = TMPS0EXPLSTLSTnil ()
+implement gtlt_t1mps0expseqseq_nil () = T1MPS0EXPLSTLSTnil ()
 
-fn gtlttmps0expseqseq_cons_loc
-  (loc0: loc_t, s0es: s0explst, ts0ess: tmps0explstlst) = let
-  fun aux (loc0: loc_t, s0e: s0exp, s0es: s0explst): loc_t =
+fn gtlt_t1mps0expseqseq_cons_loc (
+    loc0: loc_t, s0es: s0explst, ts0ess: t1mps0explstlst
+  ) : t1mps0explstlst = let
+  fun aux
+    (loc0: loc_t, s0e: s0exp, s0es: s0explst): loc_t =
     case+ s0es of
-    | cons (s0e, s0es) => aux (loc0, s0e, s0es)
-    | nil () => combine (loc0, s0e.s0exp_loc)
-  val loc: loc_t = case+ s0es of
-    | cons (s0e, s0es) => aux (loc0, s0e, s0es) | nil () => loc0
+    | list_cons (s0e, s0es) => aux (loc0, s0e, s0es)
+    | list_nil () => combine (loc0, s0e.s0exp_loc)
+  // end of [aux]
+  val loc = (case+ s0es of
+    | list_cons (s0e, s0es) => aux (loc0, s0e, s0es)
+    | list_nil () => loc0
+  ) : loc_t // end of [val]
 in
-  TMPS0EXPLSTLSTcons (loc, s0es, ts0ess)
-end
+  T1MPS0EXPLSTLSTcons (loc, s0es, ts0ess)
+end // end of [gtlt_t1mps0expseqseq_cons_loc]
 
-implement gtlttmps0expseqseq_cons_tok (t, s0es, ts0ess) =
-  gtlttmps0expseqseq_cons_loc (t.t0kn_loc, s0es, ts0ess)
+implement gtlt_t1mps0expseqseq_cons_tok (t, s0es, ts0ess) =
+  gtlt_t1mps0expseqseq_cons_loc (t.t0kn_loc, s0es, ts0ess)
+// end of [gtltt1mps0expseqseq_cons_tok]
+
+(* ****** ****** *)
+
+implement impqi0de_make_none (qid) = '{
+  impqi0de_loc= qid.dqi0de_loc
+, impqi0de_qua= qid.dqi0de_qua
+, impqi0de_sym= qid.dqi0de_sym
+, impqi0de_arg= gtlt_t1mps0expseqseq_nil ()
+}
+
+implement impqi0de_make_some (qid, arg, args, t_gt) = let
+  val loc_qid = qid.tmpqi0de_loc
+  val loc = combine (loc_qid, t_gt.t0kn_loc)
+  val loc_qid_end = $Loc.location_end_make loc_qid
+  val args = gtlt_t1mps0expseqseq_cons_loc (loc_qid_end, arg, args)
+in '{
+  impqi0de_loc= loc
+, impqi0de_qua= qid.tmpqi0de_qua
+, impqi0de_sym= qid.tmpqi0de_sym
+, impqi0de_arg= args
+} end // end of [impqid0de_make_some]
 
 (* ****** ****** *)
 
@@ -1981,7 +1999,7 @@ implement d0exp_string (s) = '{
 implement d0exp_tmpid (qid, arg, args, t_gt) = let
   val loc = combine (qid.tmpqi0de_loc, t_gt.t0kn_loc)
   val loc0 = $Loc.location_end_make loc
-  val args = gtlttmps0expseqseq_cons_loc (loc0, arg, args) 
+  val args = gtlt_t1mps0expseqseq_cons_loc (loc0, arg, args) 
 in
   '{ d0exp_loc= loc, d0exp_node= D0Etmpid (qid, args) }
 end // end of [d0exp_tmpid]

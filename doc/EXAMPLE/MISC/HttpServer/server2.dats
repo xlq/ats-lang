@@ -41,6 +41,7 @@ staload "libc/sys/SATS/types.sats"
 
 staload _(*anonymous*) = "prelude/DATS/array.dats"
 staload _(*anonymous*) = "prelude/DATS/list_vt.dats"
+staload _(*anonymous*) = "prelude/DATS/reference.dats"
 
 (* ****** ****** *)
 
@@ -292,6 +293,11 @@ val dir_msg31_len = string_length dir_msg31_str
 
 val dir_msg32_str = "</pre>"
 val dir_msg32_len = string_length dir_msg32_str
+
+//
+
+val dir_msg50_str = "<HR SIZE=2 ALIGN=LEFT>\n"
+val dir_msg50_len = string_length dir_msg50_str
 
 (* ****** ****** *)
 
@@ -560,6 +566,22 @@ end (* end of [directory_send_loop] *)
 
 (* ****** ****** *)
 
+local
+
+val the_nrequest = ref_make_elt<int> (0)
+
+in // in of [local]
+
+fn the_nrequest_get () = !the_nrequest
+
+fn the_nrequest_inc () = let
+  val n = !the_nrequest in !the_nrequest := n + 1
+end // end of [the_nrequest_inc]
+
+end // end of [local]
+
+(* ****** ****** *)
+
 extern fun directory_send {fd: int}
   (pf_conn: !socket_v (fd, conn) | fd: int fd, dirname: string): void
 
@@ -576,6 +598,19 @@ in
     val _ = socket_write_substring_exn (pf_conn | fd, dir_msg30_str, 0, dir_msg30_len)
     val _ = socket_write_substring_exn (pf_conn | fd, dir_msg31_str, 0, dir_msg31_len)
     val _ = socket_write_substring_exn (pf_conn | fd, dir_msg32_str, 0, dir_msg32_len)
+//
+    #define MSGSZ 64
+    var! p_msg with pf_msg = @[byte][MSGSZ]()
+    val _(*int*) = snprintf (
+      pf_msg | p_msg, MSGSZ, "The number of requests handled: %i\n", @(n)
+    ) where {
+      val n = the_nrequest_get ()
+    } // end of [val]
+    val len = strbuf_length (!p_msg)
+    prval () = pf_msg := bytes_v_of_strbuf_v (pf_msg)
+    val _ = socket_write_loop_exn (pf_conn | fd, !p_msg, len)
+//
+    val _ = socket_write_substring_exn (pf_conn | fd, dir_msg50_str, 0, dir_msg50_len)
     var asz: size_t 0? // unintialized
     val (pf_gc, pf_arr | p_arr) = dirent_name_get_all (!p_dir, asz)
     val () = closedir_exn (pf_dir | p_dir)
@@ -632,22 +667,23 @@ implement main_loop
   val (pf_accept | fd_c) = accept_null_err (pf_list | fd_s)
 in
   if fd_c >= 0 then let
+    val () = the_nrequest_inc ()
     prval accept_succ pf_conn = pf_accept
     val pid = fork_exn (); val ipid = int_of_pid (pid)
   in
     case+ 0 of
     | _ when ipid > 0 (* parent *) => let
-(*
+// (*
         val () = (prerr "parent: ipid = "; prerr ipid; prerr_newline ())
-*)
+// *)
         val () = socket_close_exn (pf_conn | fd_c)
       in
          main_loop (pf_list, pf_buf | fd_s, p_buf)
       end // end of [_ when ...]
     | _ (* child: ipid = 0 *) => let
-(*
+// (*
         val () = (prerr "child: ipid = "; prerr ipid; prerr_newline ())
-*)
+// *)
         val () = socket_close_exn (pf_list | fd_s)
         val n = socket_read_exn (pf_conn | fd_c, !p_buf, BUFSZ)
         var! p_msg with pf_msg = @[byte][n+1]()
@@ -664,12 +700,14 @@ in
             socket_close_exn (pf_conn | fd_c)
           end // end of [_ when ...]
         | _ => let
+(*
             val () =
               prerr "main_loop: unsupported request: "
             val () = prerr_string (__cast p_msg) where {
               extern castfn __cast (p: ptr): string
             } // end of [val]
             val () = prerr_newline ()
+*)
             prval () = pf_msg := bytes_v_of_strbuf_v (pf_msg)
           in
             socket_close_exn (pf_conn | fd_c)

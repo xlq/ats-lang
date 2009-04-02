@@ -71,6 +71,7 @@ castfn list_of_list_vt {a:t@ype}
 
 (* ****** ****** *)
 
+// implemented on top of [list_vt_of_arraysize]
 fun{a:t@ype} list_of_arraysize
   {n:nat} (arrsz: arraysize (a, n)):<> list (a, n)
 

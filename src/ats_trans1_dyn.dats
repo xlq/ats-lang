@@ -1115,7 +1115,7 @@ fun aux_item (d0e0: d0exp): d1expitm = let
         $Fix.ITEMatm (d1exp_struct (loc0, ld1es))
       end
     | D0Etmpid (qid, ts0ess) => let
-        val ts1ess = tmps0explstlst_tr ts0ess
+        val ts1ess = t1mps0explstlst_tr ts0ess
       in
         $Fix.ITEMatm (d1exp_tmpid (loc0, qid, ts1ess))
       end // end of [D0Etmpid]
@@ -1319,7 +1319,13 @@ fn m0acdeflst_tr
 
 fn i0mpdec_tr (d: i0mpdec): i1mpdec = let
   val qid = d.i0mpdec_qid
-  val tmparg = s0explstlst_tr qid.impqi0de_arg
+  val tmparg = t1mps0explstlst_tr qid.impqi0de_arg
+  val s1ess = aux tmparg where {
+    fun aux (ts1ess: tmps1explstlst): s1explstlst = case+ ts1ess of
+      | TMPS1EXPLSTLSTcons (_, s1es, ts1ess) => list_cons (s1es, aux ts1ess)
+      | TMPS1EXPLSTLSTnil () => list_nil ()
+    // end of [aux]
+  } // end of [val]
   val knd = LAMKINDfix ()
   val def = d0exp_lams_dyn_tr (
     knd, None(*oloc*), None(*ofc*), 0(*lin*),
@@ -1327,7 +1333,7 @@ fn i0mpdec_tr (d: i0mpdec): i1mpdec = let
     d.i0mpdec_def
   ) // end of [val]
 in
-  i1mpdec_make (d.i0mpdec_loc, qid, tmparg, def)
+  i1mpdec_make (d.i0mpdec_loc, qid, s1ess, def)
 end // end of [i0mpdec_tr]
 
 (* ****** ****** *)

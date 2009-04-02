@@ -81,20 +81,20 @@ extern fun emit_identifier {m:file_mode}
 ats_void_type
 ats_ccomp_emit_identifier (ats_ptr_type out, ats_ptr_type name) {
   char c, *s ;
-
   s = name ;
-
   while (c = *s++) {
     if (isalnum (c)) {
       fputc (c, (FILE*)out) ; continue ;
     }
-    if (c == '_' || c == '$') {
+    if (c == '_') {
       fputc (c, (FILE*)out) ; continue ;
+    }
+    if (c == '$') {
+      fputs ("__", (FILE*)out); continue ;
     }
     fputc ('_', (FILE*)out);
     fprintf ((FILE*)out, "%.2x", (unsigned char)c);
   } /* end of [while] */
-
   return ;
 } /* ats_ccomp_emit_identifier */
 
@@ -1071,10 +1071,10 @@ implement emit_cloenv {m}
     case+ d2vs of
     | ~list_vt_cons (d2v, d2vs) => let
         val () = if i > 0 then fprint1_string (pf | out, ", ")
-        val () = begin case+ varindmap_find (d2v) of
+        val () = case+ varindmap_find (d2v) of
           | ~Some_vt ind => fprintf1_exn (pf | out, "env%i", @(ind))
           | ~None_vt () => aux_envmap (out, map, d2v)
-        end
+        // end of [val]
       in
         aux_main (out, map, i+1, d2vs, err)
       end // end of [list_vt_cons]
@@ -1353,8 +1353,9 @@ in
         end // end of [$Syn.FUNCLOfun]
       end // end of [HITfun]
     | _ => begin
-        prerr "Internal Error: emit_instr_call: hit_fun = ";
-        prerr hit_fun; prerr_newline ();
+        prerr "INTERNAL ERROR";
+        prerr ": emit_instr_call: hit_fun = "; prerr_hityp hit_fun;
+        prerr_newline ();
         $Err.abort {void} ()
       end // end of [_]
     end // end of [_(*variable function*)]
@@ -2232,7 +2233,7 @@ implement emit_funentry (pf | out, entry) = let
   val () = begin case+ fc of
     | $Syn.FUNCLOfun () => begin
         funentry_env_err (funentry_loc_get entry, fl, vtps_all)
-      end
+      end // end of [FUNCLOfun]
     | $Syn.FUNCLOclo _ => ()
   end
 (*

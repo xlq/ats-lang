@@ -539,6 +539,21 @@ fn doc_dir_copy () = let
   val () = cp "server.dats"
   val () = cp "server2.dats"
 //
+  val SRCROOTdoc_EXAMPLE_TEST = SRCROOTdoc_EXAMPLE + "TEST/"
+  val DSTROOTdoc_EXAMPLE_TEST = DSTROOTdoc_EXAMPLE + "TEST/"
+  val () = mkdir_exn (DSTROOTdoc_EXAMPLE_TEST, DIRmode)
+  macdef cp (name) = fcopy_exn (
+    SRCROOTdoc_EXAMPLE_TEST + ,(name), DSTROOTdoc_EXAMPLE_TEST + ,(name)
+  )
+  val () = cp "Makefile"
+  val () = cp "prelude_list.dats"
+  val () = cp "prelude_list_vt.dats"
+  val () = cp "prelude_string.dats"
+  val () = cp "libc_dirent.dats"
+  val () = cp "libats_intinf.dats"
+  val () = cp "libats_iterint.dats"
+  val () = cp "libats_regexp.dats"
+//
   val SRCROOTdoc_EXAMPLE_KernighanRitchie =
     SRCROOTdoc_EXAMPLE + "KernighanRitchie/"
   val DSTROOTdoc_EXAMPLE_KernighanRitchie =

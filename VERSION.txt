@@ -1,5 +1,6 @@
-0.1.3
+0.1.4-unstable
 ###### this line as well as the following ones are ignored ######
+0.1.3
 0.1.3-unstable
 0.1.2
 0.1.2-unstable

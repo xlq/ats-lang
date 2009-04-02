@@ -326,8 +326,8 @@ implement funlab_typ_arg_get (fl) = let
   | HITfun (_(*fc*), hits_arg, _(*hit_res*)) =>
       hityplst_encode (hits_arg)
   | _ => begin
-      prerr "Internal Error: funlab_typ_arg_get: hit_fun = ";
-      prerr hit_fun;
+      prerr "INTERNAL ERROR";
+      prerr ": funlab_typ_arg_get: hit_fun = "; prerr_hityp hit_fun;
       prerr_newline ();
       $Err.abort {hityplst_t} ()
     end
@@ -339,8 +339,8 @@ implement funlab_typ_res_get (fl) = let
   | HITfun (_(*fc*), _(*hits_arg*), hit_res) =>
       hityp_encode (hit_res)
   | _ => begin
-      prerr "Internal Error: funlab_typ_res_get: hit_fun = ";
-      prerr hit_fun;
+      prerr "INTERNAL ERROR";
+      prerr ": funlab_typ_res_get: hit_fun = "; prerr_hityp hit_fun;
       prerr_newline ();
       $Err.abort {hityp_t} ()
     end // end of [_]
@@ -351,8 +351,8 @@ implement funlab_funclo_get (fl) = let
   case+ hit_fun.hityp_node of
   | HITfun (funclo, _(*hits_arg*), _(*hit_res*)) => funclo
   | _ => begin
-      prerr "Internal Error: funlab_funclo_get: hit_fun = ";
-      prerr hit_fun;
+      prerr "INTERNAL ERROR";
+      prerr ": funlab_funclo_get: hit_fun = "; prerr_hityp hit_fun;
       prerr_newline ();
       $Err.abort {$Syn.funclo} ()
     end // end of [_]

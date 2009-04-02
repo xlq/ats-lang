@@ -582,8 +582,9 @@ in
     end // end of [HIPstring]
   | HIPvar _ => ()
   | _ => begin
-      prerr "ccomp_patck: not implemented yet: hip0 = ";
-      prerr hip0; prerr_newline ();
+      prerr "INTERNAL ERROR";
+      prerr ": ccomp_patck: not implemented yet: hip0 = ";
+      prerr_hipat hip0; prerr_newline ();
       $Err.abort {void} ()
     end // end of [_]
 end // end of [ccomp_patck]
@@ -680,7 +681,8 @@ fn ccomp_match_sum (
           case+ hip0.hipat_asvar of
           | D2VAROPTsome d2v => the_dynctx_find d2v
           | D2VAROPTnone () => begin
-              prerr "ccomp_match_sum: aux: hip0 = "; prerr hip0; prerr_newline ();
+              prerr "INTERNAL ERROR";
+              prerr ": ccomp_match_sum: aux: hip0 = "; prerr_hipat hip0; prerr_newline ();
               $Err.abort {valprim} ()
             end // end of [D2VAROPTnone]
         ) : valprim
@@ -780,8 +782,8 @@ in
   | HIPvar (_(*refknd*), d2v) => aux_var (res, level, vp0, d2v)
   | _ => begin
       $Loc.prerr_location hip0.hipat_loc;
-      prerr ": Internal Error";
-      prerr ": ccomp_match: hip0 = "; prerr hip0; prerr_newline ();
+      prerr ": INTERNAL ERROR";
+      prerr ": ccomp_match: hip0 = "; prerr_hipat hip0; prerr_newline ();
       $Err.abort {void} ()
     end // end of [_]
 end // end of [ccomp_match]
@@ -2072,8 +2074,9 @@ in
     end // end of [HIEvar]
   | _ => begin
       $Loc.prerr_location (hie0.hiexp_loc);
+      prerr ": INTERNAL ERROR";
       prerr ": ccomp_exp_tmpvar: not implemented: hie0 = ";
-      prerr hie0; prerr_newline ();
+      prerr_hiexp hie0; prerr_newline ();
       $Err.abort {void} ()
     end // end of [_]
 end // end of [ccomp_exp_tmpvar]
@@ -2191,8 +2194,8 @@ fn ccomp_fntdeclst_main {n:nat} (
           ccomp_exp_arg_body_funlab (loc_dec, prolog, hips_arg, hie_body, fl)
         end // end of [HIElam]
       | _ => begin
-          prerr "Internal Error: ccomp_fntdeclst_main; aux_ccomp: hie_def = ";
-          prerr hie_def;
+          prerr "INTERNAL ERROR";
+          prerr ": ccomp_fntdeclst_main; aux_ccomp: hie_def = "; prerr_hiexp hie_def;
           prerr_newline ();
           $Err.abort {funentry_t} ()
         end
@@ -2234,8 +2237,8 @@ fun ccomp_fundeclst_main {n:nat} (
             // empty
           end // end of [HIElam]
         | _ => begin
-            prerr "Internal Error: ccomp_fundeclst_main: hie_def = ";
-            prerr hie_def;
+            prerr "INTERNAL ERROR";
+            prerr ": ccomp_fundeclst_main: hie_def = "; prerr_hiexp hie_def;
             prerr_newline ();
             $Err.abort {void} ();
           end
@@ -2368,9 +2371,9 @@ in
       instr_add_assgn_clo (res, vp_clo, fl, env)
     end // end of [HIElaminit]
   | _ => begin
-      prerr "Internal Error";
+      prerr "INTERNAL ERROR";
       prerr ": ccomp_vardec_dyn: unsupported initialization form";
-      prerr ": hie_ini = "; prerr hie_ini; prerr_newline ();
+      prerr ": hie_ini = "; prerr_hiexp hie_ini; prerr_newline ();
       $Err.abort {void} ()
     end // end of [_]
 end // end of [ccomp_vardec_dyn]

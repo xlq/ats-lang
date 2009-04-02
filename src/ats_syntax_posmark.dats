@@ -109,12 +109,26 @@ fn s0expopt_posmark (os0e: s0expopt): void =
 fn s0explstlst_posmark (s0ess: s0explstlst): void =
   $Lst.list_foreach_fun (s0ess, s0explst_posmark) 
 
-fun tmps0explstlst_posmark (ts0ess: tmps0explstlst): void =
+fun labs0explst_posmark (ls0es: labs0explst): void =
+  case+ ls0es of
+  | LABS0EXPLSTcons (lab, s0e, ls0es) => let
+      val loc1 = lab.l0ab_loc and loc2 = s0e.s0exp_loc
+      val loc_begoff = $Loc.location_begpos_toff loc1
+      val () = $PM.posmark_insert_staexp_beg loc_begoff
+      val loc_endoff = $Loc.location_endpos_toff loc2
+      val () = $PM.posmark_insert_staexp_end loc_endoff
+    in
+      labs0explst_posmark (ls0es)
+    end // end of [LABS0EXPcons]
+  | LABS0EXPLSTnil () => ()
+// end of [labs0explst_posmark]
+
+fun t1mps0explstlst_posmark (ts0ess: t1mps0explstlst): void =
   case+ ts0ess of
-  | TMPS0EXPLSTLSTcons (_(*loc*), s0es, ts0ess) => begin
-      s0explst_posmark s0es; tmps0explstlst_posmark ts0ess
-    end // end of [TMPS0EXPLSTLSTcons]
-  | TMPS0EXPLSTLSTnil () => ()
+  | T1MPS0EXPLSTLSTcons (_(*loc*), s0es, ts0ess) => begin
+      s0explst_posmark s0es; t1mps0explstlst_posmark ts0ess
+    end // end of [T1MPS0EXPLSTLSTcons]
+  | T1MPS0EXPLSTLSTnil () => ()
 // end of [tmps0explstlst_posmark]
 
 (* ****** ****** *)
@@ -383,7 +397,7 @@ implement d0exp_posmark (d0e0) = case+ d0e0.d0exp_node of
       d0exp_posmark d0e_else;
     end // end of [D0Esif]
   | D0Estruct ld0es => labd0explst_posmark ld0es
-  | D0Etmpid (_(*id*), ts0ess) => tmps0explstlst_posmark ts0ess
+  | D0Etmpid (_(*id*), ts0ess) => t1mps0explstlst_posmark ts0ess
   | D0Etrywith (hd, d0e, c0ls) => begin
       d0exp_posmark d0e; c0laulst_posmark c0ls;
     end // end of [D0Etrywith]
@@ -530,7 +544,7 @@ fn v0ardeclst_posmark (d0cs: v0ardeclst): void =
 fn i0mpdec_posmark
   (d0c: i0mpdec): void = let
   val qid = d0c.i0mpdec_qid
-  val () = s0explstlst_posmark (qid.impqi0de_arg)
+  val () = t1mps0explstlst_posmark (qid.impqi0de_arg)
   val () = f0arglst_posmark (d0c.i0mpdec_arg)
   val () = s0expopt_posmark (d0c.i0mpdec_res)
   val () = d0exp_posmark (d0c.i0mpdec_def)

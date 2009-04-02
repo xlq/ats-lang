@@ -223,6 +223,8 @@ and s2exp_node =
       (Option stamp_t, s2explst, s2exp)
   | {n:nat} S2Emetlt of (* strict metric ordering *)
       (s2explst n, s2explst n)
+  | S2Enamed of (* name type *)
+      (sym_t, s2exp)
   | S2Eout of (* taken out *)
       s2exp
   | S2Eproj of (s2exp (*addr*), s2lab)
@@ -1032,6 +1034,8 @@ fun s2exp_lam_srt (s2t: s2rt, s2vs: s2varlst, s2e: s2exp): s2exp
 fun s2exp_metfn
   (d2vopt: Option stamp_t, met: s2explst, s2e_fun: s2exp): s2exp
 fun s2exp_metlt {n:nat} (met1: s2explst n, met2: s2explst n): s2exp
+fun s2exp_named (s2t: s2rt, name: sym_t, s2e: s2exp): s2exp
+
 fun s2exp_out (s2e: s2exp): s2exp
 fun s2exp_proj (ptr: s2exp, lab: s2lab): s2exp
 

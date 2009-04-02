@@ -357,6 +357,10 @@ implement s2exp_metlt (s2es1, s2es2) = '{
   s2exp_srt= s2rt_bool, s2exp_node= S2Emetlt (s2es1, s2es2)
 }
 
+implement s2exp_named (s2t, name, s2e) = '{
+  s2exp_srt= s2t, s2exp_node= S2Enamed (name, s2e)
+}
+
 implement s2exp_out (s2e) = '{
   s2exp_srt= s2rt_t0ype, s2exp_node= S2Eout s2e
 }

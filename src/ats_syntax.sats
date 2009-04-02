@@ -663,6 +663,8 @@ datatype s0exp_node =
       (s0explst (*prop/view*), s0explst (*type/viewtype*))
   | S0Emod of (* module type *)
       (s0taq, sym_t, labs0explst)
+  | S0Enamed of (* named types *)
+      (sym_t, s0exp)
   | S0Eopide of (* noninfix static identifier *)
       sym_t
   | S0Eqid of (* qualified static identifier *)
@@ -693,9 +695,9 @@ and labs0explst =
   | LABS0EXPLSTnil
   | LABS0EXPLSTcons of (l0ab, s0exp, labs0explst)
 
-and tmps0explstlst =
-  | TMPS0EXPLSTLSTnil
-  | TMPS0EXPLSTLSTcons of (loc_t, s0explst, tmps0explstlst)
+and t1mps0explstlst =
+  | T1MPS0EXPLSTLSTnil
+  | T1MPS0EXPLSTLSTcons of (loc_t, s0explst, t1mps0explstlst)
 
 where s0exp: type = '{
   s0exp_loc= loc_t, s0exp_node= s0exp_node
@@ -751,11 +753,19 @@ fun s0exp_intsp_err (_: i0nt): s0exp = "s0exp_intsp_err"
 fun s0exp_lams (t: t0kn, arg: s0arglstlst, res: s0rtopt, body: s0exp): s0exp
   = "s0exp_lams"
 
+(* ****** ****** *)
+
 fun s0exp_list (t_beg: t0kn, _: s0explst, t_end: t0kn): s0exp
   = "s0exp_list"
+
 fun s0exp_list2
    (t_beg: t0kn, _1: s0explst, _2: s0explst, t_end: t0kn): s0exp
   = "s0exp_list2"
+
+(* ****** ****** *)
+
+fun s0exp_named (ide: i0de, s0e: s0exp): s0exp
+  = "s0exp_named"
 
 fun s0exp_opide (t_op: t0kn, id: i0de): s0exp = "s0exp_opide"
 
@@ -815,12 +825,12 @@ fun s0arrind_make_cons (ind: s0explst, indlst: s0arrind): s0arrind
 
 //
 
-fun gtlttmps0expseqseq_nil (): tmps0explstlst
-  = "gtlttmps0expseqseq_nil"
+fun gtlt_t1mps0expseqseq_nil (): t1mps0explstlst
+  = "gtlt_t1mps0expseqseq_nil"
 
-fun gtlttmps0expseqseq_cons_tok
-  (_: t0kn, _: s0explst, _: tmps0explstlst): tmps0explstlst
-  = "gtlttmps0expseqseq_cons_tok"
+fun gtlt_t1mps0expseqseq_cons_tok
+  (_: t0kn, _: s0explst, _: t1mps0explstlst): t1mps0explstlst
+  = "gtlt_t1mps0expseqseq_cons_tok"
 
 //
 
@@ -1444,7 +1454,7 @@ datatype d0exp_node =
   | D0Estruct of (* structure *)
       labd0explst
   | D0Etmpid of (* template id *)
-      (tmpqi0de, tmps0explstlst)
+      (tmpqi0de, t1mps0explstlst)
   | D0Etop (* uninitialized value *)
   | D0Etrywith of (* try-expression *)
       (tryhead, d0exp, c0laulst)
@@ -1643,7 +1653,7 @@ and impqi0de = '{
   impqi0de_loc= loc_t
 , impqi0de_qua= d0ynq
 , impqi0de_sym= sym_t
-, impqi0de_arg= s0explstlst
+, impqi0de_arg= t1mps0explstlst
 }
 
 and i0mpdec = '{
@@ -1841,7 +1851,7 @@ fun d0exp_struct (t_beg: t0kn, ld0es: labd0explst, t_end: t0kn): d0exp
   = "d0exp_struct"
 
 fun d0exp_tmpid
-  (qid: tmpqi0de, arg: s0explst, args: tmps0explstlst, t_gt: t0kn): d0exp
+  (qid: tmpqi0de, arg: s0explst, args: t1mps0explstlst, t_gt: t0kn): d0exp
   = "d0exp_tmpid"
 
 fun d0exp_trywith_seq
@@ -2002,9 +2012,12 @@ fun m0acdeflst_cons (x: m0acdef, xs: m0acdeflst): m0acdeflst
 
 (* ****** ****** *)
 
-fun impqi0de_make_none (qid: dqi0de): impqi0de = "impqi0de_make_none"
-fun impqi0de_make_some
-  (qid: tmpqi0de, arg: s0explst, args: s0explstlst, t_gt: t0kn): impqi0de
+fun impqi0de_make_none
+  (qid: dqi0de): impqi0de = "impqi0de_make_none"
+
+fun impqi0de_make_some (
+    qid: tmpqi0de, arg: s0explst, args: t1mps0explstlst, t_gt: t0kn
+  ) : impqi0de
   = "impqi0de_make_some"
 
 fun i0mpdec_make

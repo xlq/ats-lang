@@ -1285,6 +1285,7 @@ fun s2exp_subst_flag
     in
       if flag > flag0 then s2exp_metlt (s2es1, s2es2) else s2e0
     end // end of [S2Emetlt]
+  | S2Enamed _ => s2e0 // a named type must be closed!
   | S2Eout s2e => let
       val flag0 = flag
       val s2e = s2exp_subst_flag (sub, s2e, flag)
@@ -1641,7 +1642,7 @@ fun aux_s2exp (s2e0: s2exp, fvs: &s2varset_t): void =
   | S2Eextype _ => ()
   | S2Efun (_(*funclo*), _(*lin*), s2fe, _(*npf*), s2es_arg, s2e_res) => begin
       aux_s2eff (s2fe, fvs); aux_s2explst (s2es_arg, fvs); aux_s2exp (s2e_res, fvs)
-    end
+    end // end of [S2Efun]
   | S2Eint _ => ()
   | S2Eintinf _ => ()
   | S2Elam (s2vs, s2e) => let
@@ -1657,6 +1658,7 @@ fun aux_s2exp (s2e0: s2exp, fvs: &s2varset_t): void =
   | S2Emetlt (s2es1, s2es2) => begin
       aux_s2explst (s2es1, fvs); aux_s2explst (s2es2, fvs)
     end
+  | S2Enamed _ => () // a named type must be closed
   | S2Eout s2e => aux_s2exp (s2e, fvs)
   | S2Eproj (s2e(*ptr*), s2l(*lab*)) => begin
       aux_s2exp (s2e, fvs); aux_s2lab (s2l, fvs)
@@ -1824,7 +1826,7 @@ fun aux_s2exp
     end
   | S2Edatcontyp (d2c, s2es_arg) => begin
       aux_s2explst (s2V0, s2es_arg, ans, s2cs, s2vs)
-    end
+    end // end of [S2Edatcontyp]
   | S2Eeff s2fe => aux_s2eff (s2V0, s2fe, ans, s2cs, s2vs)
   | S2Eeqeq (s2e1, s2e2) => begin
       aux_s2exp (s2V0, s2e1, ans, s2cs, s2vs);
@@ -1846,11 +1848,12 @@ fun aux_s2exp
   | S2Emetfn (_(*d2vopt*), s2es, s2e) => begin
       aux_s2explst (s2V0, s2es, ans, s2cs, s2vs);
       aux_s2exp (s2V0, s2e, ans, s2cs, s2vs)
-    end
+    end // end of [S2Emetfn]
   | S2Emetlt (s2es1, s2es2) => begin
       aux_s2explst (s2V0, s2es1, ans, s2cs, s2vs);
       aux_s2explst (s2V0, s2es2, ans, s2cs, s2vs)
-    end
+    end // end of [S2Emetlt]
+  | S2Enamed _ => () // a named type should be closed
   | S2Eout s2e => aux_s2exp (s2V0, s2e, ans, s2cs, s2vs)
   | S2Eproj (s2e, s2l) => begin
       aux_s2exp (s2V0, s2e, ans, s2cs, s2vs);

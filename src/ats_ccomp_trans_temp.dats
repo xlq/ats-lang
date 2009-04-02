@@ -124,6 +124,7 @@ implement prerr_the_stactx () = let
         loop (kis)
       end // end of [list_vt_cons]
     | ~list_vt_nil () => ()
+  // end of [loop]
 in
   loop (kis)
 end // end of [prerr_the_stactx]
@@ -209,11 +210,11 @@ implement template_name_make (basename, hitss) = let
   fun aux_char (cs: &T, c: char): void = (cs := $CS.CHARLSTcons (c, cs))
 
   fun aux_string {n,i:nat | i <= n}
-     (cs: &T, i: size_t i, s: string n): void = begin
+     (cs: &T, i: size_t i, s: string n): void =
     if string_is_at_end (s, i) then () else begin
       cs := $CS.CHARLSTcons (s[i], cs); aux_string (cs, i+1, s)
     end // end of [if]
-  end // end of [aux_string]
+  // end of [aux_string]
 
   fun aux_hityp
     (cs: &T, hit: hityp): void = let
@@ -225,26 +226,24 @@ implement template_name_make (basename, hitss) = let
   end // end of [aux_hityp]
 
   fun aux_hityplst
-    (cs: &T, hits: hityplst): void = begin
-    case+ hits of
+    (cs: &T, hits: hityplst): void = case+ hits of
     | list_cons (hit, hits) => let
         val () = (aux_char (cs, '_'); aux_hityp (cs, hit))
       in
         aux_hityplst (cs, hits)
       end // end of [list_cons]
     | list_nil () => ()
-  end // end of [aux_hityplst]
+  // end of [aux_hityplst]
 
   fun aux_hityplstlst
-    (cs: &T, hitss: hityplstlst): void = begin
-    case+ hitss of
+    (cs: &T, hitss: hityplstlst): void = case+ hitss of
     | list_cons (hits, hitss) => let
         val () = (aux_char (cs, '_'); aux_hityplst (cs, hits))
       in
         aux_hityplstlst (cs, hitss)
       end // end of [list_cons]
     | list_nil () => ()
-  end // end of [aux_hityplstlst]
+  // end of [aux_hityplstlst]
 
   var cs: T = $CS.CHARLSTnil ()
   val basename = string1_of_string (basename)
@@ -382,8 +381,9 @@ implement ccomp_tmpdef
       end // end of [HIElam]
     | _ => begin
         $Loc.prerr_location loc_fun;
-        prerr ": Internal Error: ccomp_tmpdef";
-        prerr ": not a lambda-expression: ["; prerr hie; prerr "]";
+        prerr ": INTERNAL ERROR";
+        prerr ": ccomp_tmpdef: not a lambda-expression: [";
+        prerr_hiexp hie; prerr "]";
         prerr_newline ();
         $Err.abort {funentry_t} ()
       end

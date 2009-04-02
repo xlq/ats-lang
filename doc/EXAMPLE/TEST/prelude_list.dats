@@ -62,6 +62,12 @@ implement main (argc, argv) = let
   } // end of [val]
 //
   val () = () where {
+    val () = print "append (xs, xs) = "
+    val () = lstpr (list_append (xs, xs)) // for testing [list_append]
+    val () = print_newline ()
+  } // end of [val]
+//
+  val () = () where {
     val () = print "reverse (xs) = "
     val () = lstpr (list_reverse xs) // for testing [list_reverse]
     val () = print_newline ()
@@ -81,9 +87,27 @@ implement main (argc, argv) = let
   } // end of [val]
 //
   val () = () where {
+    val () = print "list_app: "
+    var i: int = 0
+    fn f (pf_i: !int @ i | x: int, p_i: !ptr i): void = () where {
+      val ()  = if !p_i > 0 then print ", "
+      val () = !p_i := !p_i + 1
+      val () = print x
+    } // end of [f]
+    val () = list_app__main {int @ i} {ptr i} (view@ i | xs, f, &i)
+    val () = print_newline ()
+  } // end of [val]
+//
+  val () = () where {
     val () = print "map (xs, double) = "
     // for testing [list_map]
     val () = lstpr (list_map_fun<int,int> (xs, lam x =<0> 2 * x))
+    val () = print_newline ()
+  } // end of [val]
+//
+  val () = () where {
+    val () = print "head(xs) = "
+    val () = print (list_head xs) // for testing [list_head]
     val () = print_newline ()
   } // end of [val]
 //

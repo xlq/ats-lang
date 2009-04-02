@@ -1408,6 +1408,10 @@ in
       prerr_newline ();
       $Err.abort {s2exp} ()
     end // end of [S1Emod]
+  | S1Enamed (name, s1e) => let
+      val s2e = s1exp_tr_up (s1e) in
+      s2exp_named (s2e.s2exp_srt, name, s2e)
+    end // end of [S1Enamed]
   | S1Eqid (q, id) => s1exp_qid_tr_up (s1e0.s1exp_loc, q, id)
   | S1Eread (_v, s1e) => s1exp_read_tr_up (_v, s1e)
   | S1Estruct (ls1es) => begin

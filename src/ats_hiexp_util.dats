@@ -100,9 +100,10 @@ in
   case+ hit_fun.hityp_node of
   | HITfun (_(*fc*), _(*arg*), hit_res) => hityp_is_void (hit_res)
   | _ => begin
-      prerr "Internal Error";
+      prerr "INTERNAL ERROR";
       $Deb.debug_prerrf (": %s", @(THISFILENAME));
-      prerr ": hityp_fun_is_void: hit_fun = "; prerr hit_fun; prerr_newline ();
+      prerr ": hityp_fun_is_void: hit_fun = "; prerr_hityp hit_fun;
+      prerr_newline ();
       $Err.abort {bool} ()
     end // end of [_]
 end // end of [hityp_fun_is_void]
@@ -120,9 +121,9 @@ in
       case+ arg of cons (hit, hits) => aux (hit, hits) | nil () => false
     end
   | _ => begin
-      prerr "Internal Error";
+      prerr "INTERNAL ERROR";
       $Deb.debug_prerrf (": %s", @(THISFILENAME));
-      prerr ": hityp_fun_is_vararg: hit_fun = "; prerr hit_fun; print_newline ();
+      prerr ": hityp_fun_is_vararg: hit_fun = "; prerr_hityp hit_fun; print_newline ();
       $Err.abort {bool} ()
     end // end of [_]
 end // end of [hityp_fun_is_vararg]

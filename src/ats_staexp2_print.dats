@@ -335,37 +335,44 @@ in
       fprint_s2explst (pf | out, s2es2);
       strpr ")"
     end // end of [S2Emetlt]
+  | S2Enamed (name, s2e) => begin
+      strpr "S2Enamed(";
+      $Sym.fprint_symbol (pf | out, name);
+      strpr ", ";
+      fprint_s2exp (pf | out, s2e);
+      strpr ")"
+    end // end of [S2Enamed]
   | S2Eout s2e => begin
       strpr "S2Eout("; fprint_s2exp (pf | out, s2e); strpr ")"
-    end
+    end // end of [S2Eout]
   | S2Eproj (s2e, s2l) => begin
       strpr "S2Eproj(";
       fprint_s2exp (pf | out, s2e);
       strpr "; ";
       fprint_s2lab (pf | out, s2l);
       strpr ")"
-    end
+    end // end of [S2Eproj]
   | S2Eread (s2e_v, s2e_vt) => begin
       strpr "S2Eread(";
       fprint_s2exp (pf | out, s2e_v);
       strpr ", ";
       fprint_s2exp (pf | out, s2e_vt);
       strpr ")"
-    end
+    end // end of [S2Eread]
   | S2Erefarg (refval, s2e) => begin
       strpr "S2Erefarg(";
       fprint1_int (pf | out, refval);
       strpr ", ";
       fprint_s2exp (pf | out, s2e);
       strpr ")"
-    end
+    end // end of [S2Erefarg]
   | S2Esel (s2e, i) => begin
       strpr "S2Esel(";
       fprint_s2exp (pf | out, s2e);
       strpr "; ";
       fprint1_int (pf | out, i);
       strpr ")"
-    end
+    end // end of [S2Esel]
   | S2Esize (s2ze) => begin
       strpr "S2Esize("; fprint_s2zexp (pf | out, s2ze); strpr ")"
     end

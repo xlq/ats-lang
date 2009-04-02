@@ -71,8 +71,8 @@ fun s0qualstlst_tr (s0qss: $Syn.s0qualstlst): $SEXP.s1qualstlst
 
 fun s0rtext_tr (_: $Syn.s0rtext): $SEXP.s1rtext
 
-fun tmps0explstlst_tr
-  (ts0ess: $Syn.tmps0explstlst): $SEXP.tmps1explstlst
+fun t1mps0explstlst_tr
+  (ts0ess: $Syn.t1mps0explstlst): $SEXP.tmps1explstlst
 
 fun witht0ype_tr (w0t: $Syn.witht0ype): $SEXP.witht1ype
 
