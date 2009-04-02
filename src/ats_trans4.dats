@@ -153,7 +153,7 @@ implement s2exp_tr (deep, s2e0) = let
 (*
   val () = begin
     prerr "s2exp_tr: s2e0 = "; prerr s2e0; prerr_newline ()
-  end
+  end // end of [val]
 *)
 in
   case+ s2e0.s2exp_node of
@@ -211,6 +211,9 @@ in
     end // end of [S2Efun]
   | S2Elam (_(*s2vs*), s2e_body) => s2exp_tr (deep, s2e_body)
   | S2Emetfn (_(*stamp*), _(*met*), s2e) => s2exp_tr (deep, s2e)
+  | S2Enamed (name, _) => let
+      val name = $Sym.symbol_name name in hityp_extype name
+    end // end of [S2Enamed]
   | S2Erefarg (refval, s2e_arg) => begin
       hityp_refarg (refval, s2exp_tr (0, s2e_arg))
     end // end of [S2Erefarg]

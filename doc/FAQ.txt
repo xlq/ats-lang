@@ -82,17 +82,35 @@ A. [C] and [C()] are really the same when used as expressions. However, as
    instance, the following program is rejected as the second clause is
    redundant (since [nil] is a variable pattern that matches anything):
 
-   fun isEmpty {a:t@ype} (xs: list (a, n)): bool (n == 0) =
-      case+ xs of
-        | nil => true
-        | cons _ => false
+   fun isEmpty {a:t@ype}
+     (xs: list (a, n)): bool (n == 0) =
+     case+ xs of nil => true | cons _ => false
+   // end of [isEmpty]
 
    Instead, the problem, which is quite common for beginners programming in
    ATS, can be easily fixed as follows:
 
-   fun isEmpty {a:t@ype} (xs: list (a, n)): bool (n == 0) =
+   fun isEmpty {a:t@ype}
+     (xs: list (a, n)): bool (n == 0) =
      case xs of
-       | nil () => true // using [nil _] for [nil ()] is fine, too
-       | cons _ => false
+     | nil () => true // using [nil _] for [nil ()] is fine, too
+     | cons _ => false
+   // end of [isEmpty]
+
+------
+
+Q. What is the difference between the following two forms of type annoation:
+
+   1. let val x : T = e in ... end
+   2. let val x = e : T in ... end
+
+A. In the first case, the type of [e] must be synthesized and this type is
+   then compared with the type T. If type synthesis fails, a type error is
+   reported.
+
+   In the second case, the type of the expression [e : T] is [T], which is
+   immediately assigned to [x], and [e] is then checked against [T].
+
+   If in double, please choose the second form of type annotation.
 
 ------

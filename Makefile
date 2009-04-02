@@ -58,6 +58,7 @@ all: \
   bin/atscc \
   bin/atslib \
   libfiles \
+  bin/atspack \
   bin/atslex \
   ccomp/runtime/GCATS/gc.o \
   atsopt1_gc

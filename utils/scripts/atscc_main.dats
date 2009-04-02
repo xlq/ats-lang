@@ -441,6 +441,10 @@ __ats_main (ats_int_type argc, ats_ptr_type argv) {
   ats_sum_ptr_type ss ;
   ats_ptr_type argv_new, p ; pid_t pid ; int status ;
 
+  extern ats_ptr_type ATSCCOMP_gcc ;
+
+  char *gcc = (char*) ATSCCOMP_gcc ;
+
   ss = ((ats_sum_ptr_type (*)(ats_int_type, ats_ptr_type))atscc_argv_process)(argc, argv) ;
 
   if (intref_get(is_compile_only) > 0) return ;
@@ -451,7 +455,7 @@ __ats_main (ats_int_type argc, ats_ptr_type argv) {
   p = argv_new ;
 
   // initialization for [argv_new]
-  *((ats_string_type *)p) = "gcc" ;
+  *((ats_string_type *)p) = gcc ;
   p = ((ats_string_type *)p) + 1 ;
   for (i = 0; i < n; ++i) {
     *((ats_string_type *)p) = strlst_head_get(ss) ;
@@ -469,10 +473,10 @@ __ats_main (ats_int_type argc, ats_ptr_type argv) {
   if (pid < 0) {
     ats_exit_errmsg (errno, "Exit: [fork] failed.\n") ;
   } /* end of [if] */
-  if (pid == 0) execvp ("gcc", argv_new) ; // this is the child
+  if (pid == 0) execvp (gcc, argv_new) ; // this is the child
   wait (&status) ; // this is the parent
   if (status) {
-    atspre_exit_prerrf (status, "Exit: [gcc] failed.\n") ;
+    atspre_exit_prerrf (status, "Exit: [%s] failed.\n", gcc) ;
   } /* end of [if] */
   return ;
 } /* end of [__ats_main] */

@@ -7,8 +7,7 @@
 The command for compiling ATS programs is
 <i>atscc</i>, which is stored in the directory "$ATSHOME/bin/" after
 ATS/Anairiats is installed. The ATS compiler translates ATS programs into C
-code, which is then compiled by the GNU C compiler <i>gcc</i>. It is
-possible to use other C compilers in place of <i>gcc</i>.
+code, which is then compiled by the GNU C compiler <i>gcc</i>. 
 <P>
 <i>atscc</i> accepts all the flags <i>gcc</i> recognizes and passes them to
 <i>gcc</i> directly. The following is a list of flags that are special
@@ -18,8 +17,11 @@ to <i>atscc</i>:
 <LI> The flag <i>--atscc</i> or <i>-cc</i> indicates compiling to C code only.
 <LI> The flag <i>-D_ATS_GCATS</i> indicates the need for garbage collection.
 </UL>
-
-For instance, the following command only typechecks the ATS code in
+If a C compiler other than <i>gcc</i> is to be used, please
+set the environment variable <i>ATSCCOMP</i> to the command name of
+this C compiler.
+<P>
+As an example, the following command only typechecks the ATS code in
 "foo.dats" and "bar.sats":
 
 <pre>

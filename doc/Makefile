@@ -4,6 +4,10 @@ ATS::
 	scp ATS.html \
           ats-hwxi@web.sourceforge.net:/home/groups/a/at/ats-lang/htdocs/ATS.html
 
+FAQ::
+	scp FAQ.txt \
+          ats-hwxi@web.sourceforge.net:/home/groups/a/at/ats-lang/htdocs/FAQ.txt
+
 tutorial::
 	scp TUTORIAL/tutorial.html \
           ats-hwxi@web.sourceforge.net:/home/groups/a/at/ats-lang/htdocs/TUTORIAL/tutorial.html

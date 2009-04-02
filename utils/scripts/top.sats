@@ -39,6 +39,7 @@
 (* ****** ****** *)
 
 val ATSHOME_dir : String = "ATSHOME_dir"
+val ATSCCOMP_gcc : String = "ATSCCOMP_gcc"
 
 val atsopt_local : String = "atsopt_local"
 and atsopt_global : String = "atsopt_global"

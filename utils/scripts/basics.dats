@@ -57,6 +57,7 @@ in
 #if OPERATING_SYSTEM_IS_UNIX_LIKE #then
 
 val dirsep: char = '/'
+val dirsep_str: string = "/"
 
 #endif
 
@@ -83,7 +84,7 @@ local
 
 #define ATSHOME_var "ATSHOME"
 
-in
+in // in of [local]
 
 fn ATSHOME_get (): String = let
   val ATSHOME_opt = $STDLIB.getenv_opt ATSHOME_var
@@ -106,8 +107,7 @@ implement ATSHOME_dir = let
   val n = string_length ATSHOME
 in
   if n > 0 then
-    if ATSHOME[n-1] = dirsep then ATSHOME
-    else ATSHOME + "/"
+    if ATSHOME[n-1] = dirsep then ATSHOME else ATSHOME + dirsep_str
   else begin
     prerr "The variable [ATSHOME] is empty!\n" ;
     $raise (Fatal "ATSHOME")
@@ -116,6 +116,24 @@ end // end of [ATSHOME]
 
 implement ATSHOME_dir_append basename =
   ATSHOME_dir + (string1_of_string basename)
+// end of [ATSHOME_dir_append]
+
+(* ****** ****** *)
+
+local
+
+#define ATSCCOMP_def "gcc"
+#define ATSCCOMP_var "ATSCCOMP"
+
+in // in of [local]
+
+implement ATSCCOMP_gcc = let
+  val def = $STDLIB.getenv_opt ATSCCOMP_var
+in
+  if stropt_is_some def then stropt_unsome (def) else ATSCCOMP_def
+end // end of [ATSCCOMP_gcc]
+
+end // end of [local]
 
 (* ****** ****** *)
 

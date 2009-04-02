@@ -87,11 +87,23 @@ ats_ccomp_emit_identifier (ats_ptr_type out, ats_ptr_type name) {
       fputc (c, (FILE*)out) ; continue ;
     }
     if (c == '_') {
-      fputc (c, (FILE*)out) ; continue ;
+/*
+    fputs ("_0", (FILE*)out); continue ;
+*/
+      fputc ('_', (FILE*)out); continue ;
     }
     if (c == '$') {
-      fputs ("__", (FILE*)out); continue ;
-    }
+      fputs ("_1", (FILE*)out); continue ;
+    } // end of [if]
+    if (c == '\'') {
+      fputs ("_2", (FILE*)out); continue ;
+    } // end of [if]
+    if (c == '/') {
+      fputs ("_3", (FILE*)out); continue ;
+    } // end of [if]
+    if (c == '\\') {
+      fputs ("_4", (FILE*)out); continue ;
+    } // end of [if]
     fputc ('_', (FILE*)out);
     fprintf ((FILE*)out, "%.2x", (unsigned char)c);
   } /* end of [while] */

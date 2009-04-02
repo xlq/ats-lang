@@ -4,7 +4,10 @@ The command for compiling ATS programs into C code is {\it atsopt}.  After
 C code is emitted by {\it atsopt}, it can then be compiled into machine
 code by {\it gcc}. The command {\it atscc}, which essentially combines {\it
 atsopt} and {\it gcc}, compiles ATS programs directly into machine code.
-Both {\it atsopt} and {\it atscc} are implemented in ATS.
+Both {\it atsopt} and {\it atscc} are implemented in ATS. If a
+C compiler other than {\it gcc} is to be used, the command name for
+this C compiler needs to be defined in the environment variable
+{\it ATSCCOMP}.
 
 \section{The Command {\it atsopt}}
 The command {\it atsopt} compiles ATS programs into C code.  This command
