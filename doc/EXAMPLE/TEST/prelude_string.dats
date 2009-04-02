@@ -44,8 +44,9 @@ implement main (argc, argv) = let
   in
     strbuf_explode (!p12)
   end // end of [val]
-  val cs = list_of_list_vt (cs)
-  val s12' = string_implode (cs)
+  val s12' = string_implode (__cast cs) where {
+    extern castfn __cast {n:nat} (cs: !list_vt (char, n)): list (char, n)
+  } // end of [val]
   val () = begin
     print "s12' (Hello, world!) = "; print s12'; print_newline ()
   end // end of [val]
@@ -53,6 +54,7 @@ implement main (argc, argv) = let
   val () = begin
     print "b(true) = "; print b; print_newline ()
   end // end of [val]
+  val () = list_vt_free (cs)
 //
   val s12_upper = string_toupper (s12)
   val () = begin
@@ -62,6 +64,24 @@ implement main (argc, argv) = let
   val () = begin
     print "s12_lower (hello, world!) = "; print s12_lower; print_newline ()
   end // end of [val]
+//
+  val ind = string_index_of_string ("abcdefghijklmnopqrstuvwsyz", "def")
+  val ind = int1_of_ssize1 (ind)
+  val () = begin
+    print "ind (3) = "; print ind; print_newline ()
+  end // end of [val]
+  val ind = string_index_of_string ("abcdefghijklmnopqrstuvwsyz", "defhij")
+  val ind = int1_of_ssize1 (ind)
+  val () = begin
+    print "ind (-1) = "; print ind; print_newline ()
+  end // end of [val]
+//
+  prval pf = unit_v ()
+  val () = string_foreach__main (pf | "Hello, world!", f, null) where {
+    fn f (pf: !unit_v | c: char, _p: !ptr):<1> void = print (c)
+  } // end of [val]
+  val () = print_newline ()
+  prval unit_v () = pf
 in
   print "The run of [prelude_string.dats] is done successfully!\n"
 end // end of [main]

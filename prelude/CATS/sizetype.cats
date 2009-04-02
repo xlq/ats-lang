@@ -50,6 +50,11 @@
 
 #define atspre_int_of_size atspre_int1_of_size1
 #define atspre_size_of_int1 atspre_size1_of_int1
+#define atspre_size_of_ssize atspre_size1_of_ssize1
+
+#define atspre_int_of_ssize atspre_int1_of_ssize1
+#define atspre_ssize_of_int1 atspre_ssize1_of_int1
+#define atspre_ssize_of_size atspre_ssize1_of_size1
 
 #define atspre_add_size_size atspre_add_size1_size1
 #define atspre_sub_size_size atspre_sub_size1_size1
@@ -303,26 +308,26 @@ atspre_neq_size1_int1
 
 static inline
 ats_int_type
-atspre_int_of_ssize (ats_ssize_type ssz) {
+atspre_int1_of_ssize1 (ats_ssize_type ssz) {
   if (INT_MAX < ssz || ssz < INT_MIN) {
-    fprintf (stderr, "[ats_int_of_ssize(%li)] failed\n", ssz) ; exit (1) ;
+    fprintf (stderr, "[ats_int1_of_ssize1(%li)] failed\n", ssz) ; exit (1) ;
   } /* end of [if] */
   return (ats_int_type)ssz ;
-} /* end of [atspre_int_of_ssize] */
+} /* end of [atspre_int1_of_ssize1] */
 
 static inline
-ats_ssize_type atspre_ssize_of_int (ats_int_type i) {
+ats_ssize_type atspre_ssize1_of_int1 (ats_int_type i) {
   return (ats_ssize_type)i ;
 }
 
 static inline
-ats_ssize_type atspre_ssize_of_size (ats_size_type sz) {
+ats_ssize_type atspre_ssize1_of_size1 (ats_size_type sz) {
   ats_ssize_type ssz = sz ;
   if (ssz < 0) {
-    fprintf (stderr, "[ats_ssize_of_size(%lu)] failed\n", sz) ; exit (1) ;
+    fprintf (stderr, "[ats_ssize1_of_size1(%lu)] failed\n", sz) ; exit (1) ;
   } /* end of [if] */
   return ssz ;
-} /* end of [atspre_ssize_of_size] */
+} /* end of [atspre_ssize1_of_size1] */
 
 /* ****** ****** */
 

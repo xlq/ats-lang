@@ -7,6 +7,7 @@
 ######
 
 all:: \
+  prelude_array \
   prelude_list \
   prelude_list_vt \
   prelude_string \
@@ -16,6 +17,9 @@ all:: \
   libats_regexp \
 
 ######
+
+prelude_array: prelude_array.dats
+	atscc -O2 -o prelude_array prelude_array.dats
 
 prelude_list: prelude_list.dats
 	atscc -O2 -o prelude_list prelude_list.dats

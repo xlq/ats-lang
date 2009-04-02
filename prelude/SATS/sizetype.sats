@@ -321,10 +321,10 @@ fun int1_of_ssize1 {i:int} (sz: ssize_t i):<> int i
   = "atspre_int1_of_ssize1"
 
 fun ssize1_of_int1 {i:int} (i: int i):<> ssize_t i
-  = "atspre_ssize_of_int"
+  = "atspre_ssize1_of_int1"
 
 fun ssize1_of_size1 {i:nat} (sz: size_t i):<> ssize_t i
-  = "atspre_ssize_of_size"
+  = "atspre_ssize1_of_size1"
 
 (* ****** ****** *)
 

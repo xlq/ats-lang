@@ -567,8 +567,9 @@ fun string_singleton__main (c: char)
 
 (* ****** ****** *)
 
-fun strbuf_foreach {v:view} {m,n:nat} {f:eff}
-  (pf: !v | buf: &strbuf (m,n), f: &(!v | c1har) -<f,clo> void) :<f> void
+// implemented in [prelude/DATS/string.dats]
+fun string_foreach__main {v:view} {vt:viewtype} {n:nat} {f:eff}
+  (pf: !v | str: string n, f: (!v | c1har, !vt) -<f> void, env: !vt) :<f> void
 
 (* ****** ****** *)
 
@@ -581,6 +582,11 @@ fun strbuf_tolower {m,n:nat} (buf: &strbuf (m, n)): void
 fun string_tolower {n:nat} (str: string n):<> string n
   = "atspre_string_tolower"
 
+fun string_tolower__main {v:view} {l:addr}
+  (pf: !v, fpf: strbuf_v l <= v | p: ptr l)
+  :<> [m,n:nat] [l:addr] strbufptr_gc (m, n, l)
+  = "atspre_string_tolower"
+
 (* ****** ****** *)
 
 // implemented in [prelude/DATS/string.dats]
@@ -590,6 +596,11 @@ fun strbuf_toupper {m,n:nat} (buf: &strbuf (m, n)): void
 // implemented in [prelude/DATS/string.dats]
 // a new string is created
 fun string_toupper {n:nat} (str: string n):<> string n
+  = "atspre_string_toupper"
+
+fun string_toupper__main {v:view} {l:addr}
+  (pf: !v, fpf: strbuf_v l <= v | p: ptr l)
+  :<> [m,n:nat] [l:addr] strbufptr_gc (m, n, l)
   = "atspre_string_toupper"
 
 (* ****** ****** *)

@@ -208,14 +208,15 @@ implement string_implode (cs) =
 
 (* ****** ****** *)
 
-implement strbuf_foreach
-  {v} {m,n} {f:eff} (pf | buf, f) =  loop (pf | buf, f, 0) where {
+implement string_foreach__main {v} {vt} {n} {f:eff}
+  (pf | buf, f, env) =  loop (pf | buf, f, env, 0) where {
   fun loop {i:nat | i <= n} .<n-i>. (
-      pf: !v | buf: &strbuf (m,n), f: &(!v | c1har) -<f,clo> void, i: size_t i
+      pf: !v
+    | str: string n, f: (!v | c1har, !vt) -<f> void, env: !vt, i: size_t i
     ) :<f> void =
-    if strbuf_isnot_at_end (buf, i) then (f (pf | buf[i]); loop (pf | buf, f, i+1))
+    if string_isnot_at_end (str, i) then (f (pf | str[i], env); loop (pf | str, f, env, i+1))
   // end of [loop]
-} // end of [strbuf_foreach]
+} // end of [strbuf_foreach__main]
 
 (* ****** ****** *)
 
