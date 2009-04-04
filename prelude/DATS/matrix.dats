@@ -56,16 +56,6 @@
 
 (* ****** ****** *)
 
-absview matrix_v (a:viewt@ype, m:int, n:int, l:addr)
-
-extern prfun array_v_of_matrix_v {a:viewt@ype} {m,n:int} {l:addr}
-  (pf_mat: matrix_v (a, m, n, l)):<> [mn:int] (MUL (m, n, mn), array_v (a, mn, l))
-
-extern prfun matrix_v_of_array_v {a:viewt@ype} {m,n:int} {mn:int} {l:addr}
-  (pf_mul: MUL (m, n, mn), pf_arr: array_v (a, mn, l)):<> matrix_v (a, m, n, l)
-
-(* ****** ****** *)
-
 local
 
 assume matrix_v
@@ -241,15 +231,8 @@ end // end of [matrix_set_elt_at__intsz]
 
 (* ****** ****** *)
 
-fn matrix_ptr_takeout_tsz {a:viewt@ype}
-  {m,n:int} {i,j:nat | i < m; j < n} {l0:addr} (
-    pf_mat: matrix_v (a, m, n, l0)
-  | base: ptr l0, i: size_t i, n: size_t n, j: size_t j, tsz: sizeof_t a
-  ) :<> [l:addr] (
-      a @ l
-    , a @ l -<lin,prf> matrix_v (a, m, n, l0)
-    | ptr l
-    ) = let
+implement matrix_ptr_takeout_tsz
+  {a} {m,n} {i,j} {l0} (pf_mat | base, i, n, j, tsz) = let
   prval (pf_mul_mn, pf_arr) = array_v_of_matrix_v {a} (pf_mat)
   val (pf_mul_i_n | i_n) = i szmul2 n
   prval () = mul_nat_nat_nat pf_mul_i_n
@@ -300,6 +283,14 @@ implement{a} matrix_foreach__main
 in
   loop1 (pf | f, M, m, n, 0, env)
 end // end of [matrix_foreach__main]
+
+implement{a} matrix_foreach_fun {v} {m,n} (pf_v | f, M, m, n) = let
+  val f = coerce (f) where { extern castfn
+    coerce (f: (!v | &a) -<> void):<> (!v | &a, !ptr) -<> void
+  } // end of [where]
+in
+  matrix_foreach__main (pf_v | f, M, m, n, null)
+end // end of [matrix_foreach_fun]
 
 implement{a} matrix_foreach_clo {v} {m,n} (pf_v | f, M, m, n) = let
   stavar l_f: addr
@@ -359,6 +350,16 @@ implement{a} matrix_iforeach__main
 in
   loop1 (pf | f, M, m, n, 0, env)
 end // end of [matrix_iforeach__main]
+
+implement{a} matrix_iforeach_fun
+  {v} {m,n} (pf | f, A, m, n) = let
+  val f = coerce (f) where { extern castfn
+    coerce (f: (!v | sizeLt m, sizeLt n, &a) -<> void)
+      :<> (!v | sizeLt m, sizeLt n, &a, !ptr) -<> void
+  } // end of [where]
+in
+  matrix_iforeach__main (pf | f, A, m, n, null)
+end // end of [matrix_foreach_fun]
 
 implement{a} matrix_iforeach_clo
   {v} {m,n} (pf_v | f, M, m, n) = let

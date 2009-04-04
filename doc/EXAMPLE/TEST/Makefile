@@ -27,6 +27,9 @@ prelude_list: prelude_list.dats
 prelude_list_vt: prelude_list_vt.dats
 	atscc -O2 -o prelude_list_vt prelude_list_vt.dats
 
+prelude_matrix: prelude_matrix.dats
+	atscc -O2 -o prelude_matrix prelude_matrix.dats
+
 prelude_string: prelude_string.dats
 	atscc -O2 -o prelude_string prelude_string.dats
 
@@ -53,8 +56,10 @@ clean::
 	rm -f a.out *_?ats.c *_?ats.o
 
 cleanall: clean
+	rm -f prelude_array
 	rm -f prelude_list
 	rm -f prelude_list_vt
+	rm -f prelude_matrix
 	rm -f prelude_string
 	rm -f libc_dirent
 	rm -f libats_intinf

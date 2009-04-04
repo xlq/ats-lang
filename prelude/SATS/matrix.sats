@@ -48,6 +48,29 @@
 
 (* ****** ****** *)
 
+absview matrix_v (a:viewt@ype, m:int, n:int, l:addr)
+
+prfun array_v_of_matrix_v {a:viewt@ype} {m,n:int} {l:addr}
+  (pf_mat: matrix_v (a, m, n, l)):<> [mn:int] (MUL (m, n, mn), array_v (a, mn, l))
+
+prfun matrix_v_of_array_v {a:viewt@ype} {m,n:int} {mn:int} {l:addr}
+  (pf_mul: MUL (m, n, mn), pf_arr: array_v (a, mn, l)):<> matrix_v (a, m, n, l)
+
+(* ****** ****** *)
+
+fun matrix_ptr_takeout_tsz {a:viewt@ype}
+  {m,n:int} {i,j:nat | i < m; j < n} {l0:addr} (
+    pf_mat: matrix_v (a, m, n, l0)
+  | base: ptr l0, i: size_t i, n: size_t n, j: size_t j, tsz: sizeof_t a
+  ) :<> [l:addr] (
+      a @ l
+    , a @ l -<lin,prf> matrix_v (a, m, n, l0)
+    | ptr l
+    )
+ // end of [matrix_ptr_takeout_tsz]
+
+(* ****** ****** *)
+
 (*
 **
 ** persistent matrices
@@ -58,7 +81,7 @@
 
 fun matrix_make_arraysize {a:viewt@ype} {m,n:int}
   (m: size_t m, n: size_t n):<> arraysize (a, m * n) -<cloptr> matrix (a, m, n)
-  = "atspre_matrix_make_arraysize_main"
+  = "atspre_matrix_make_arraysize__main"
 
 // implemented in [prelude/DATS/matrix.das]
 fun matrix_make_arraysize__main
@@ -122,6 +145,10 @@ fun{a:t@ype} matrix_foreach__main
   , env: !vt
   ) :<!ref> void
 
+fun{a:t@ype} matrix_foreach_fun {v:view} {m,n:nat}
+  (pf: !v | f: (!v | &a) -<fun> void, M: matrix (a, m, n), m: size_t m, n: size_t n)
+  :<!ref> void
+
 fun{a:t@ype} matrix_foreach_clo {v:view} {m,n:nat}
   (pf: !v | f: &(!v | &a) -<clo> void, M: matrix (a, m, n), m: size_t m, n: size_t n)
   :<!ref> void
@@ -143,6 +170,13 @@ fun{a:viewt@ype}
   | f: (!v | sizeLt m, sizeLt n, &a, !vt) -<fun> void
   , M: matrix (a, m, n), m: size_t m, n: size_t n
   , env: !vt
+  ) :<!ref> void
+
+fun{a:viewt@ype}
+  matrix_iforeach_fun {v:view} {m,n:nat} (
+    pf: !v
+  | f: (!v | sizeLt m, sizeLt n, &a) -<fun> void
+  , M: matrix (a, m, n), m: size_t m, n: size_t n
   ) :<!ref> void
 
 fun{a:viewt@ype}
