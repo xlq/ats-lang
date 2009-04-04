@@ -87,7 +87,8 @@ implement funclo_equal_solve (loc, fc1, fc2) =
     prerr ": function/closure mismatch.";
     prerr_newline ();
     $Err.abort {void} ()
-  end
+  end // end of [if]
+// end of [funclo_equal_solve]
 
 implement funclo_equal_solve_err (loc, fc1, fc2, err) =
   if fc1 = fc2 then () else (err := err + 1)
@@ -398,6 +399,12 @@ in
   | (_, S2EVar s2V2) => begin
       s2exp_tyleq_solve_Var_r_err (loc0, s2e10, s2V2, s2e20, err)
     end // end of [_, S2EVar]
+(*
+  | (S2Enamed (_(*name*), s2e1), _) =>
+      s2exp_tyleq_solve_err (loc0, s2e1, s2e20, err)
+  | (_, S2Enamed (_(*name*), s2e2)) =>
+      s2exp_tyleq_solve_err (loc0, s2e10, s2e2, err)
+*)
   | (s2en10, S2Etop (knd2, s2e2)) => begin case+ knd2 of
     | 0 (* topization *) => begin
         if s2exp_is_nonlin s2e10 then begin

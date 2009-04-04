@@ -105,10 +105,11 @@ fun{a:viewt@ype} list_vt_foreach__main
 
 (* ****** ****** *)
 
-fun{a:t@ype} list_vt_iforeach__main
-  {v:view} {vt:viewtype} {n:nat} {f:eff}
-  (pf: !v | xs: !list_vt (a, n), f: (!v | natLt n, &a, !vt) -<fun,f> void, env: !vt)
-  :<f> void
+fun{a:viewt@ype} list_vt_iforeach__main
+  {v:view} {vt:viewtype} {n:nat} {f:eff} (
+    pf: !v
+  | xs: !list_vt (a, n), f: (!v | natLt n, &a, !vt) -<fun,f> void, env: !vt
+  ) :<f> void
 
 (* ****** ****** *)
 

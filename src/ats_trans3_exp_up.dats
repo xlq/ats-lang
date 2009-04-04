@@ -105,13 +105,12 @@ ats_ptr_type ats_trans3_intkind_eval (ats_ptr_type s0) {
   char c, *s ; int nL, nU ;
   s = s0 ; nL = 0 ; nU = 0 ;
   while (c = *s) {
-    s += 1 ;
-    switch (c) {
+    s += 1 ; switch (c) {
       case 'l': case 'L': ++nL ; break ;
       case 'u': case 'U': ++nU ; break ;
       default : break ;
-    }
-  }
+    } // end of [switch]
+  } /* end of [while] */
 
   if (nL == 0 && nU == 0) return INTKINDint ; /* deadcode */
   if (nL == 1 && nU == 0) return INTKINDlint ; /* long */
@@ -711,7 +710,7 @@ fn fprint_xyz {m:file_mode}
   fprint1_string (pf | out, ", ");
   fprint1_int (pf | out, xyz.2);
   fprint1_string (pf | out, ")")
-end
+end // end of [fprint_xyz]
 
 fn print_xyz (xyz: xyz_t): void = print_mac (fprint_xyz, xyz)
 fn prerr_xyz (xyz: xyz_t): void = prerr_mac (fprint_xyz, xyz)
@@ -725,6 +724,7 @@ fn fprint_xyz_root {m:file_mode}
     | D3Eapp_dyn (d3e_fun, _(*npf*), _(*d3es_arg*)) => aux (d3e_fun)
     | D3Eapp_sta (d3e) => aux (d3e)
     | _ => d3e
+  // end of [aux]
   val d3e = aux (xyz.0)
 in
   case+ d3e.d3exp_node of
@@ -739,7 +739,8 @@ in
       fprint_d3exp (pf | out, d3e);
       fprint_newline (pf | out);
       $Err.abort ()
-    end
+    end // end of [_]
+  // end of [case]
 end // end of [fprint_xyz_root]
 
 fn print_xyz_root (xyz: xyz_t): void = print_mac (fprint_xyz_root, xyz)
@@ -757,26 +758,26 @@ fn d2exp_item_tr_up (loc0: loc_t, d2i: d2item): d3exp = begin
       prerr ": the dynamic expression needs to be a constant or a variable.";
       prerr_newline ();
       $Err.abort {d3exp} ()
-    end
+    end // end of [_]
 end // end of [d2exp_item_tr_up]
 
 fun s2kexplst_make_d3explst (d3es: d3explst): s2kexplst = begin
   case+ d3es of
-  | cons (d3e, d3es) => begin
-      cons (s2kexp_make_s2exp d3e.d3exp_typ, s2kexplst_make_d3explst d3es)
-    end
-  | nil () => nil ()
+  | list_cons (d3e, d3es) => list_cons
+      (s2kexp_make_s2exp d3e.d3exp_typ, s2kexplst_make_d3explst d3es)
+    // end of [list_cons]
+  | list_nil () => list_nil ()
 end // end of [s2kexplst_make_d3explst]
 
 fun aux_filter
   (xyzs: xyzlst_t, s2kes: s2kexplst): xyzlst_t = let
 in
   case+ xyzs of
-  | cons (xyz, xyzs) => let
+  | list_cons (xyz, xyzs) => let
 (*
       val () = begin
         prerr "aux_filter: xyz = "; prerr_xyz xyz; prerr_newline ()
-      end
+      end // end of [val]
 *)
     in
       case+ s2kexp_match_fun_arg (xyz.1, s2kes) of
@@ -790,10 +791,10 @@ in
 *)
         in
           xyz_new :: aux_filter (xyzs, s2kes)
-        end
+        end // end of [Some_vt]
       | ~None_vt () => aux_filter (xyzs, s2kes)
-    end
-  | nil () => nil ()
+    end // end of [list_cons]
+  | list_nil () => list_nil ()
 end // end of [aux_filter]
 
 fun aux_select0 (xyzs: xyzlst_t): xyzlst_t = begin case+ xyzs of
@@ -825,12 +826,12 @@ fun aux1
           prerr "d2exp_apps_sym_tr_up: aux1: s2e_fun = ";
           prerr s2e_fun;
           prerr_newline ()
-        end
+        end // end of [val]
         val () = begin
           prerr "d2exp_apps_sym_tr_up: aux1: s2es_arg = ";
           prerr s2es_arg;
           prerr_newline ()
-        end
+        end // end of [val]
 *)
       in
         case+ s2e_fun.s2exp_node of
@@ -901,12 +902,12 @@ fun aux2
   end // end of [err_cons_cons]
 in
   case+ xyzs of
-  | cons (xyz, xyzs1) => begin case+ xyzs1 of
-    | nil () => begin
+  | list_cons (xyz, xyzs1) => begin case+ xyzs1 of
+    | list_nil () => begin
         aux1 (loc0, xyz.0, $Lst.list_reverse d3as, d2as)
       end
-    | cons _ => begin case+ d2as of
-      | nil () => let
+    | list_cons _ => begin case+ d2as of
+      | list_nil () => let
           val xyzs = aux_select0 xyzs
         in
           case+ xyzs of
@@ -918,7 +919,7 @@ in
               err_cons_cons (loc0, d2s, xyz1, xyz2)
             end
         end // end of [let]
-      | cons (d2a, d2as) => begin case+ d2a of
+      | list_cons (d2a, d2as) => begin case+ d2a of
         | D2EXPARGsta s2as => let
             val d3a = D3EXPARGsta s2as
           in
@@ -937,19 +938,19 @@ in
           in
             aux2 (loc0, d2s, d3a :: d3as, xyzs, d2as)
           end // end of [D2EXPARGdyn]
-        end // end of [cons (d2a, d2as)]
-      end // end of [cons _]
-    end // end of [cons (xyz, xyzs1)]
+        end // end of [list_cons (d2a, d2as)]
+      end // end of [list_cons _]
+    end // end of [list_cons (xyz, xyzs1)]
   | nil () => err_nil (loc0, d2s)
 end // end of [aux2]
 
 fn* aux3 (d2as: d2exparglst, s2e: s2exp): bool = begin
   case+ d2as of
-  | cons (d2a, d2as) => begin case+ d2a of
+  | list_cons (d2a, d2as) => begin case+ d2a of
     | D2EXPARGdyn (_(*loc*), npf, d2es) => aux3_app (npf, d2es, d2as, s2e)
     | D2EXPARGsta _ => aux3 (d2as, s2e)
-    end
-  | nil () => true
+    end // end of [list_cons]
+  | list_nil () => true
 end // end of [aux3]
 
 and aux3_app
@@ -978,12 +979,12 @@ fn d2exp_apps_sym_tr_up
     prerr "d2exp_apps_sym_tr_up: d2s = ";
     prerr d2s;
     prerr_newline ()
-  end
+  end // end of [val]
   val () = begin
     prerr "d2exp_apps_sym_tr_up: d2s.d2sym_itm = ";
     prerr d2s.d2sym_itm;
     prerr_newline ()
-  end
+  end // end of [val]
 *)
   val xyzs =
     aux (loc0, d2as, d2s.d2sym_itm, list_vt_nil ()) where {
@@ -992,7 +993,7 @@ fn d2exp_apps_sym_tr_up
         loc0: loc_t
       , d2as: d2exparglst, d2is: d2itemlst, d2iss: d2itemlstlst_vt
       ) : xyzlst_t = begin case+ d2is of
-      | cons (d2i, d2is) => begin case+ d2i of
+      | list_cons (d2i, d2is) => begin case+ d2i of
         | D2ITEMsym (d2is_new) => begin
             aux (loc0, d2as, d2is_new, list_vt_cons (d2is, d2iss))
           end
@@ -1006,9 +1007,9 @@ fn d2exp_apps_sym_tr_up
             end else begin
               aux (loc0, d2as, d2is, d2iss)
             end
-          end
-        end // end of [cons]
-      | nil () => begin case+ d2iss of
+          end // end of [_]
+        end (* end of [list_cons] *)
+      | list_nil () => begin case+ d2iss of
         | ~list_vt_cons (d2is, d2iss) => aux (loc0, d2as, d2is, d2iss)
         | ~list_vt_nil () => nil ()
         end // end of [nil]
