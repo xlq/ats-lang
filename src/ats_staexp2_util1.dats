@@ -2081,10 +2081,10 @@ ats_bool_type
 ats_staexp2_s2exp_equal_ref
   (ats_ptr_type s2e1, ats_ptr_type s2e2) {
   return (s2e1 == s2e2 ? ats_true_bool : ats_false_bool) ;
-} /* end of [ats_staexp2_s2exp_equal_ref]
+} /* end of [ats_staexp2_s2exp_equal_ref] */
 
 %}
 
 (* ****** ****** *)
 
-(* end of [ats_staexp2_util2.dats] *)
+(* end of [ats_staexp2_util1.dats] *)

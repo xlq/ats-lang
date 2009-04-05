@@ -1345,7 +1345,7 @@ fn d2exp_foldat_freeat_tr_up
           prerr ": the dynamic expression cannot be folded as its type is ["
         end else begin
           prerr ": the dynamic expression cannot be freed as its type is ["
-        end;
+        end; // end of [if]
         prerr s2e; prerr "].";
         prerr_newline ();
         $Err.abort {d2con_t} ()
@@ -1364,7 +1364,7 @@ fn d2exp_foldat_freeat_tr_up
         ) : s2explst
         val () = begin
           $SOL.s2explst_tyleq_solve_err (loc0, s2es_arg, s2es_fun_arg, err)
-        end
+        end // end of [val]
 (*
         val () = // debugging information
           if isfold then begin

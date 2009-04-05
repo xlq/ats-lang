@@ -84,17 +84,17 @@ fun{key,itm:t@ype} bst_insert_at_root {n:nat} .<n>. (
   , i0: itm
   , cmp: (key, key) -<fun> Sgn
   ) :<> bst (key, itm, n+1) = begin case+ t of
-  | BSTcons (!n, k, i, !tl, !tr) => begin
+  | BSTcons (!n, k, _(*i*), !tl, !tr) => begin
       if cmp (k0, k) <= 0 then let
         val tl_new = bst_insert_at_root (!tl, k0, i0, cmp)
-        val+ BSTcons (!nl, kl, il, !tll, !tlr) = tl_new
+        val+ BSTcons (!nl, kl, _(*il*), !tll, !tlr) = tl_new
         val n_v = !n; val nll_v = bst_size !tll
       in
         !tl := !tlr; !n := n_v - nll_v; fold@ t;
         !tlr := t; !nl := n_v + 1; fold@ tl_new; tl_new
       end else let
         val tr_new = bst_insert_at_root (!tr, k0, i0, cmp)
-        val+ BSTcons (!nr, kr, ir, !trl, !trr) = tr_new
+        val+ BSTcons (!nr, kr, _(*ir*), !trl, !trr) = tr_new
         val n_v = !n; val nrr_v = bst_size !trr
       in
         !tr := !trl; !n := n_v - nrr_v; fold@ t;
@@ -124,7 +124,7 @@ end (* end of [bst_search] *)
 extern fun dice {m,n:int | m > 0; n > 0} (m: int m, n: int n):<> bool
   = "ats_map_lin_dice"
 
-%{
+%{^
 
 ats_bool_type ats_map_lin_dice (ats_int_type m, ats_int_type n) {
   double r = drand48 ();
@@ -180,7 +180,7 @@ end // end of [bst_join_random]
 
 //
 
-// the function [bst_remove] can be implemented much more elegantly by
+// the function [bst_remove_random] can be implemented more elegantly by
 // exploiting the existential quantifier #[...] as follows:
 // {n:nat} (
 //   t: bst (key, itm, n)
@@ -199,10 +199,8 @@ fun{key,itm:t@ype} bst_remove_random {n:nat} {l1,l2:addr} .<n>. (
   ) :<> [i:two | i <= n]
     (int i @ l1, option_vt (itm, i > 0) @ l2 | bst (key, itm, n-i)) = begin
   case+ t of
-  | BSTnil () => begin
-      !p1 := 0; !p2 := None_vt (); fold@ t; #[0 | (pf1, pf2 | t)]
-    end
-  | BSTcons {..} {nl,nr} (!n, k, i, !tl, !tr) => begin case+ cmp (k0, k) of
+  | BSTcons {..} {nl,nr}
+      (!n, k, i, !tl, !tr) => begin case+ cmp (k0, k) of
     | ~1 => let
         val [i:int] (pf1, pf2 | tl_new) =
           bst_remove_random (pf1, pf2 | !tl, k0, p1, p2, cmp)
@@ -221,7 +219,10 @@ fun{key,itm:t@ype} bst_remove_random {n:nat} {l1,l2:addr} .<n>. (
         !p1 := 1; !p2 := Some_vt i; free@ {key,itm} {nl,nr} (t);
         #[1 | (pf1, pf2 | t_new)]
       end // end of [0]
-    end // end of [begin]
+    end // end of [BSTcons]
+  | BSTnil () => begin
+      !p1 := 0; !p2 := None_vt (); fold@ t; #[0 | (pf1, pf2 | t)]
+    end // end of [BSTnil]
 end // end of [bst_remove_random]
 
 //
@@ -334,11 +335,11 @@ in
   fold@ m; ans
 end // end of [map_search]
 
-implement{key,itm} map_insert (m, k, i) =
-  let val+ MAP (cmp, !bst) = m in
-    !bst := bst_insert_random<key,itm> (!bst, k, i, cmp); fold@ m
-  end
-// end of [map_insert]
+implement{key,itm}
+  map_insert (m, k, i) = let
+  val+ MAP (cmp, !bst) = m in
+  !bst := bst_insert_random<key,itm> (!bst, k, i, cmp); fold@ m
+end // end of [map_insert]
 
 implement{key,itm} map_remove (m, k) = let
   var i: Int and itmopt: Option_vt itm; val+ MAP (cmp, !bst) = m
