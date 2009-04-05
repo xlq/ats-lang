@@ -105,12 +105,6 @@ fun matrix_make_fun_tsz__main
   , env: !vt
   ) :<f> matrix (a, m, n)
 
-fun matrix_make_clo_tsz {a:viewt@ype} {m,n:pos} {f:eff} (
-    row: size_t m, col: size_t n
-  , f: &(&(a?) >> a, sizeLt m, sizeLt n) -<clo,f> void
-  , tsz: sizeof_t a
-  ) :<f> matrix (a, m, n)
-
 (* ****** ****** *)
 
 fun{a:t@ype} matrix_get_elt_at {m,n:int} {i,j:nat | i < m; j < n}
@@ -144,6 +138,7 @@ fun{a:t@ype} matrix_foreach__main
   , M: matrix (a, m, n), m: size_t m, n: size_t n
   , env: !vt
   ) :<!ref> void
+// end of [matrix_foreach__main]
 
 fun{a:t@ype} matrix_foreach_fun {v:view} {m,n:nat}
   (pf: !v | f: (!v | &a) -<fun> void, M: matrix (a, m, n), m: size_t m, n: size_t n)

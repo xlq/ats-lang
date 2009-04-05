@@ -103,21 +103,21 @@ fun{key,itm:t@ype} bst_insert_at_root {n:nat} .<n>. (
     end // end of [begin]
   | ~BSTnil () => begin
       BSTcons (1, k0, i0, BSTnil (), BSTnil ())
-    end
-end // end of [bst_insert_at_root]
+    end // end of [BSTnil]
+end (* end of [bst_insert_at_root] *)
 
 //
 
 fun{key,itm:t@ype} bst_search {n:nat} .<n>.
   ( t: !bst (key, itm, n), k0: key, cmp: (key, key) -<fun> Sgn)
   :<> Option_vt itm = begin case+ t of
-  | BSTnil () => (fold@ t; None_vt ())
   | BSTcons (_, k, i, !tl, !tr) => begin case+ cmp (k0, k) of
     | ~1 => let val ans = bst_search (!tl, k0, cmp) in fold@ t; ans end
     |  1 => let val ans = bst_search (!tr, k0, cmp) in fold@ t; ans end
     |  0 => let val ans = Some_vt i in fold@ t; ans end
-    end
-end // end of [bst_search]
+    end // end of [BSTcons]
+  | BSTnil () => (fold@ t; None_vt ())
+end (* end of [bst_search] *)
 
 //
 
@@ -149,16 +149,16 @@ fun{key,itm:t@ype} bst_insert_random {n:nat} .<n>. (
         (!tl := bst_insert_random (!tl, k0, i0, cmp); !n := !n + 1; fold@ t; t)
       else
         (!tr := bst_insert_random (!tr, k0, i0, cmp); !n := !n + 1; fold@ t; t)
-    end
+    end // end of [BSTcons]
   | ~BSTnil () => begin
       BSTcons (1, k0, i0, BSTnil (), BSTnil ())
-    end
-end // end of [bst_insert_random]
+    end // end of [BSTnil]
+end (* end of [bst_insert_random] *)
 
 //
 
 fun{key,itm:t@ype}
-  bst_join_left_right {nl,nr:nat} .<nl+nr>.
+  bst_join_random {nl,nr:nat} .<nl+nr>.
   (tl: bst (key, itm, nl), tr: bst (key, itm, nr))
   :<> bst (key, itm, nl+nr) = begin case+ tl of
   | BSTcons (!nl, kl, il, !tll, !tlr) => begin case+ tr of
@@ -166,17 +166,17 @@ fun{key,itm:t@ype}
         val n = !nl + !nr
       in
         if dice (!nl, !nr) then begin
-          fold@ tr; !tlr := bst_join_left_right (!tlr, tr);
+          fold@ tr; !tlr := bst_join_random (!tlr, tr);
           !nl := n; fold@ tl; tl
         end else begin
-          fold@ tl; !trl := bst_join_left_right (tl, !trl);
+          fold@ tl; !trl := bst_join_random (tl, !trl);
           !nr := n; fold@ tr; tr
         end // end of [if]
-      end // end of [let]
+      end (* end of [BSTcons] *)
     | ~BSTnil () => (fold@ tl; tl)
-    end // end of [begin]
+    end // end of [BSTcons]
   | ~BSTnil () => tr
-end // end of [bst_join_left_right]
+end // end of [bst_join_random]
 
 //
 
@@ -189,7 +189,7 @@ end // end of [bst_join_left_right]
 // , r2: &Option_vt itm? >> option_vt (itm, i > 0)
 // ) : #[i:two | i <= n] bst (key, itm, n-i)
 
-fun{key,itm:t@ype} bst_remove {n:nat} {l1,l2:addr} .<n>. (
+fun{key,itm:t@ype} bst_remove_random {n:nat} {l1,l2:addr} .<n>. (
     pf1: Int? @ l1
   , pf2: Option_vt (itm)? @ l2
   | t: bst (key, itm, n)
@@ -205,24 +205,24 @@ fun{key,itm:t@ype} bst_remove {n:nat} {l1,l2:addr} .<n>. (
   | BSTcons {..} {nl,nr} (!n, k, i, !tl, !tr) => begin case+ cmp (k0, k) of
     | ~1 => let
         val [i:int] (pf1, pf2 | tl_new) =
-          bst_remove (pf1, pf2 | !tl, k0, p1, p2, cmp)
+          bst_remove_random (pf1, pf2 | !tl, k0, p1, p2, cmp)
       in
         !n := !n - !p1; !tl := tl_new; fold@ t; #[i | (pf1, pf2 | t)]
       end // end of [~1]
     |  1 => let
         val [i:int] (pf1, pf2 | tr_new) =
-          bst_remove (pf1, pf2 | !tr, k0, p1, p2, cmp)
+          bst_remove_random (pf1, pf2 | !tr, k0, p1, p2, cmp)
       in
         !n := !n - !p1; !tr := tr_new; fold@ t; #[i | (pf1, pf2 | t)]
       end // end of [1]
     |  0 => let
-        val t_new = bst_join_left_right (!tl, !tr)
+        val t_new = bst_join_random (!tl, !tr)
       in
         !p1 := 1; !p2 := Some_vt i; free@ {key,itm} {nl,nr} (t);
         #[1 | (pf1, pf2 | t_new)]
       end // end of [0]
     end // end of [begin]
-end // end of [bst_remove]
+end // end of [bst_remove_random]
 
 //
 
@@ -343,7 +343,7 @@ implement{key,itm} map_insert (m, k, i) =
 implement{key,itm} map_remove (m, k) = let
   var i: Int and itmopt: Option_vt itm; val+ MAP (cmp, !bst) = m
   val (pf1, pf2 | bst_new) =
-    bst_remove<key,itm> (view@ i, view@ itmopt | !bst, k, &i, &itmopt, cmp)
+    bst_remove_random<key,itm> (view@ i, view@ itmopt | !bst, k, &i, &itmopt, cmp)
 in
   view@ i := pf1; view@ itmopt := pf2; !bst := bst_new; fold@ m; itmopt
 end // end of [map_remove]

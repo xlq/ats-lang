@@ -160,19 +160,6 @@ in @{
   data= p_arr, view= pf_mat_box
 } end // end of [matrix_make_fun_tsz__main]
 
-implement matrix_make_clo_tsz
-  {a} {m,n} {f:eff} (m, n, f, tsz) = let
-  stavar l_f:addr
-  val p_f: ptr l_f = &f
-  typedef clo_t = (&(a?) >> a, sizeLt m, sizeLt n) -<clo,f> void
-  viewdef V = clo_t @ l_f
-  fn app (pf: !V | x: &(a?) >> a, i: sizeLt m, j: sizeLt n, p_f: !ptr l_f)
-    :<f> void = !p_f (x, i, j)
-  val M = matrix_make_fun_tsz__main {a} {V} {ptr l_f} (view@ f | m, n, app, tsz, p_f)
-in
-  M // the returned matrix
-end // end of [matrix_make_fun_tsz_cloptr]
-
 (* ****** ****** *)
 
 prfun lemma_for_matrix_subscripting
