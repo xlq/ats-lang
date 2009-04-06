@@ -139,9 +139,11 @@ in
   repeat (len, lam () => print cuu)
 end // end of [play]
 
-fun usage (): void = begin
+//
+
+fn prerr_usage (): void = begin
   print ("The board size needs to be positive!\n")
-end
+end // end of [prerr_usage]
 
 //
 
@@ -149,25 +151,26 @@ implement main (argc, argv) = let
   var len: Nat = 8
   var npause: Nat = 4
 in
-  if argc >= 2 then len := max (4, atoi argv.[1]);
+  if argc >= 2 then let
+    val i = atoi argv.[1] in len := max (4, int1_of_int i)
+  end;
 
-  if argc >= 3 then
-    let val n = atoi argv.[2] in
-       npause := min (max (0, n), 8)
-    end;
+  if argc >= 3 then let
+    val n = atoi argv.[2] in npause := min (max (0, int1_of_int n), 8)
+  end;
 
   let val n = len in
-    if n > 0 then
-      let
-         val start = time ()
-         val () = play (npause, n)
-         val finish = time ()
-         val diff = difftime (finish, start)
-      in
-         printf ("The amount of time spent on this run is %.0f seconds.", @(diff));
-         print_newline ()
-      end
-    else usage ()
+    if n > 0 then let
+      val start = time ()
+      val () = play (npause, n)
+      val finish = time ()
+      val diff = difftime (finish, start)
+    in
+      printf ("The amount of time spent on this run is %.0f seconds.", @(diff));
+      print_newline ()
+    end else begin
+      prerr_usage () // abnormal exit
+    end // end of [if]
   end // end of [let]
 end // end of [main]
 

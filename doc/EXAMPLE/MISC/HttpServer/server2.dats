@@ -491,7 +491,7 @@ fun dirent_name_get_all
   val () = $STDLIB.qsort {Strlin} {n}
      (!p_arr, asz, sizeof<Strlin>, cmp) where {
      extern castfn __cast (x: !Strlin): string; val cmp = lam 
-       (x1: &Strlin, x2: &Strlin): Sgn =<fun1> compare (__cast x1, __cast x2)
+       (x1: &Strlin, x2: &Strlin): Sgn =<fun1> compare_string_string (__cast x1, __cast x2)
   } // end of [val]  
 in
   #[n | #[l | (pf_gc, pf_arr | p_arr)]]

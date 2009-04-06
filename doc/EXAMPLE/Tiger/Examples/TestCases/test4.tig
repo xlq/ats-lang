@@ -8,6 +8,9 @@ function nfactor(n: int): int =
 			else n * nfactor(n-1)
 
 in
-	nfactor(10)
+// print_int (
+	nfactor(34)
+// );
+// print ("\n")
 end
 

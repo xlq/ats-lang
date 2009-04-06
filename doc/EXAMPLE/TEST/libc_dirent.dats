@@ -101,7 +101,7 @@ in
     ) // end of [val]
 
     prval pf = unit_v ()
-    val () = foreach_array_ptr_clo_tsz
+    val () = array_ptr_foreach_clo_tsz
       (pf | !p_f, !p_arr, nent_sz, sizeof<direntptr_gc>) where {
       var !p_f = @lam
         (pf: !unit_v | p_ent: &direntptr_gc): void
