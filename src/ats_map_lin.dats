@@ -78,7 +78,7 @@ fn{key,itm:t@ype}
 
 //
 
-fun{key,itm:t@ype} bst_insert_at_root {n:nat} .<n>. (
+fun{key,itm:t@ype} bst_insert_atroot {n:nat} .<n>. (
     t: bst (key, itm, n)
   , k0: key
   , i0: itm
@@ -86,14 +86,14 @@ fun{key,itm:t@ype} bst_insert_at_root {n:nat} .<n>. (
   ) :<> bst (key, itm, n+1) = begin case+ t of
   | BSTcons (!n, k, _(*i*), !tl, !tr) => begin
       if cmp (k0, k) <= 0 then let
-        val tl_new = bst_insert_at_root (!tl, k0, i0, cmp)
+        val tl_new = bst_insert_atroot (!tl, k0, i0, cmp)
         val+ BSTcons (!nl, kl, _(*il*), !tll, !tlr) = tl_new
         val n_v = !n; val nll_v = bst_size !tll
       in
         !tl := !tlr; !n := n_v - nll_v; fold@ t;
         !tlr := t; !nl := n_v + 1; fold@ tl_new; tl_new
       end else let
-        val tr_new = bst_insert_at_root (!tr, k0, i0, cmp)
+        val tr_new = bst_insert_atroot (!tr, k0, i0, cmp)
         val+ BSTcons (!nr, kr, _(*ir*), !trl, !trr) = tr_new
         val n_v = !n; val nrr_v = bst_size !trr
       in
@@ -104,7 +104,7 @@ fun{key,itm:t@ype} bst_insert_at_root {n:nat} .<n>. (
   | ~BSTnil () => begin
       BSTcons (1, k0, i0, BSTnil (), BSTnil ())
     end // end of [BSTnil]
-end (* end of [bst_insert_at_root] *)
+end (* end of [bst_insert_atroot] *)
 
 //
 
@@ -143,7 +143,7 @@ fun{key,itm:t@ype} bst_insert_random {n:nat} .<n>. (
   ) :<> bst (key, itm, n+1) = begin case+ t of
   | BSTcons (!n, k, i, !tl, !tr) =>
     if dice (1, !n) then
-      (fold@ t; bst_insert_at_root (t, k0, i0, cmp))
+      (fold@ t; bst_insert_atroot (t, k0, i0, cmp))
     else begin
       if cmp (k0, k) <= 0 then
         (!tl := bst_insert_random (!tl, k0, i0, cmp); !n := !n + 1; fold@ t; t)

@@ -53,7 +53,7 @@ in
     end // end of [INSTRoper]
   | INSTRlabel (asm, _) => begin
       prstr "INSTRlabel("; fprint_string (out, asm); prstr ")"
-    end // end of [ISNTRoper]
+    end // end of [INSTRlabel]
   | INSTRmove (asm, src, dst) => begin
       prstr "INSTRmove("; fprint_string (out, asm); prstr "): ";
       prstr "src=["; $TL.fprint_temp (out, src); prstr "]";
