@@ -18,7 +18,7 @@ staload TR = "irtree.sats"
 ** From an arbitrary Tree statement, produce a list of cleaned trees
 ** satisfying the following properties:
 ** 1.  No SEQ's or ESEQ's
-** 2.  The parent of every CALL is an EXP(..) or a MOVE(TEMP t,..)
+** 2.  The parent of every CALL is STMmove(TEMP t,..)
 *)
 
 fun linearize (stm: $TR.stm): $TR.stmlst

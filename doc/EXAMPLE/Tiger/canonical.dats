@@ -241,9 +241,9 @@ end // end of [blocklst_gen]
 
 (* ****** ****** *)
 
-staload M = "LIB/funmap_avltree.dats"
+staload M = "LIB/linmap_randbst.dats"
 
-typedef blockmap = $M.map_t (label, block)
+viewtypedef blockmap = $M.map_vt (label, block)
 
 local
 
@@ -255,24 +255,22 @@ in
 
 extern fun blockmap_empty (): blockmap
 
-extern fun blockmap_search
-  (map: blockmap, lab: label): Option_vt block
-
 extern fun blockmap_insert
-  (map: blockmap, lab: label, blk: block): blockmap
+  (map: &blockmap, lab: label, blk: block): void
 
 extern fun blockmap_remove
-  (map: blockmap, lab: label): blockmap
+  (map: &blockmap, lab: label): Option_vt (block)
 
-implement blockmap_empty () = $M.funmap_empty<> ()
+implement blockmap_empty () = $M.linmap_empty<> ()
 
-implement blockmap_search
-  (map, lab) = $M.funmap_search (map, lab, _cmp)
+implement blockmap_insert (map, lab, blk) = let
+  val ans = $M.linmap_insert<label,block> (map, lab, blk, _cmp) in
+  case+ ans of ~Some_vt _ => () | ~None_vt _ => ()
+end // end of [blockmap_insert]
 
-implement blockmap_insert
-  (map, lab, blk) = $M.funmap_insert (map, lab, blk, _cmp)
-implement blockmap_remove
-  (map, lab) = $M.funmap_remove (map, lab, _cmp)
+implement blockmap_remove (map, lab) =
+  $M.linmap_remove<label,block> (map, lab, _cmp)
+// end of [blockmap_remove]
 
 end // end of [local]
 
@@ -284,11 +282,10 @@ fun trace_gen
   val stm_lab = STMlabel blk_lab
   val blk_init = blk.block_init
   val blk_last = blk.block_last
-  val () = map := blockmap_remove (map, blk_lab)
 in
   case blk_last of
   | STMjump (EXPname lab1, _) => let
-      val ans = blockmap_search (map, lab1)
+      val ans = blockmap_remove (map, lab1)
     in
       case+ ans of
       | ~Some_vt (blk1) => let
@@ -300,7 +297,7 @@ in
         end // end of [None_vt]
     end // end of [STMjump]
   | STMcjump (_, _, _, tlab, flab) => let
-      val ans = blockmap_search (map, flab)
+      val ans = blockmap_remove (map, flab)
     in
       case+ ans of
       | ~Some_vt (blk1) => let
@@ -341,7 +338,7 @@ implement trace_schedule (lab_done, blks) = let
         // end of [loop]
       } // end of [list_nil]
     | list_cons (blk, blks) => let
-        val ans = blockmap_search (map, blk.block_lab)
+        val ans = blockmap_remove (map, blk.block_lab)
       in
         case+ ans of
         | ~Some_vt _ => let
@@ -355,15 +352,22 @@ implement trace_schedule (lab_done, blks) = let
   val () = loop (map, blks) where {
     fun loop (map: &blockmap, blks: blocklst): void = case+ blks of
       | list_cons (blk, blks) => let
-          val () = map := blockmap_insert (map, blk.block_lab, blk)
+          val () = blockmap_insert (map, blk.block_lab, blk)
         in
           loop (map, blks)
         end // end of [list_cons]
       | list_nil () => ()
     // end of [loop]
   } // end of [val]
+  val res = aux (map, blks, list_nil ())
+// (*
+  val () = let
+    val size = $M.linmap_size (map) in
+    prerr "size (0) = "; prerr size; print_newline ()
+  end // end of [val]
+// *)
 in
-  aux (map, blks, list_nil ())
+  $M.linmap_free (map); res  
 end // end of [trace_schedule]
 
 (* ****** ****** *)

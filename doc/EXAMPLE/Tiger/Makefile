@@ -39,6 +39,7 @@ comptig: \
   parcomb_sats.o parcomb_dats.o \
   hashtable_dats.o \
   funmap_avltree_dats.o \
+  linmap_randbst_dats.o \
 
 
 	atscc $(GCFLAG) -o comptig \
@@ -64,6 +65,7 @@ comptig: \
   tokenize_sats.o tokenize_dats.o \
   parcomb_sats.o parcomb_dats.o \
   hashtable_dats.o \
+  linmap_randbst_dats.o \
   funmap_avltree_dats.o \
 
 ######
@@ -236,6 +238,9 @@ hashtable_dats.o: LIB/hashtable.dats
 
 funmap_avltree_dats.o: LIB/funmap_avltree.dats
 	atscc $(CCFLAGS) -IATS LIB -c -o funmap_avltree_dats.o LIB/funmap_avltree.dats
+
+linmap_randbst_dats.o: LIB/linmap_randbst.dats
+	atscc $(CCFLAGS) -IATS LIB -c -o linmap_randbst_dats.o LIB/linmap_randbst.dats
 
 ######
 
