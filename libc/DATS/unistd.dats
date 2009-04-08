@@ -107,7 +107,7 @@ ats_ptr_type atslib_getcwd () {
   return buf ;
 }
 
-%}
+%} // end of [%{^ ... %}]
 
 (* ****** ****** *)
 

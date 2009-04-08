@@ -68,9 +68,36 @@ fun mrand48 ():<!ref> lint // signed [-2^31, 2^31)
 
 (* ****** ****** *)
 
+abst@ype drand48_data = $extype "ats_drand48_data_type"
+
+fun srand48_r // the return is always 0
+  (seed: lint, buf: &drand48_data? >> drand48_data):<> int
+  = "atslib_srand48_r"
+
+(* ****** ****** *)
+
+fun drand48_r // the return is always 0
+  (buf: &drand48_data, result: &double? >> double):<> int
+  = "atslib_drand48_r"
+
+fun lrand48_r // the return is always 0
+  (buf: &drand48_data, result: &lint? >> lint):<> int
+  = "atslib_lrand48_r"
+
+fun mrand48_r // the return is always 0
+  (buf: &drand48_data, result: &lint? >> lint):<> int
+  = "atslib_mrand48_r"
+
+(* ****** ****** *)
+
 // non-reentrant
-fun randint {n:pos} (n: int n):<!ref> [i: nat | i < n] int (i)
+fun randint {n:pos} (n: int n):<!ref> natLt n
   = "atslib_randint"
+
+// this one is reentrant
+fun randint_r {n:pos}
+  (buf: &drand48_data, n: int n, res: &int? >> natLt n):<> void
+  = "atslib_randint_r"
 
 (* ****** ****** *)
 

@@ -46,6 +46,10 @@
 
 /* ****** ****** */
 
+typedef struct drand48_data ats_drand48_data_type ;
+
+/* ****** ****** */
+
 static inline
 ats_void_type
 atslib_srand48 (ats_lint_type seed) {
@@ -73,6 +77,36 @@ atslib_lrand48 () { return lrand48() ; }
 static inline
 ats_lint_type
 atslib_mrand48 () { return mrand48() ; }
+
+/* ****** ****** */
+
+static inline
+ats_int_type
+atslib_srand48_r
+  (ats_lint_type seed, ats_ref_type buf) {
+  return srand48_r (seed, (ats_drand48_data_type*)buf) ;
+} // end of [atslib_srand48_r]
+
+/* ****** ****** */
+
+static inline
+ats_int_type
+atslib_drand48_r (ats_ref_type buf, ats_ref_type res) {
+  return drand48_r ((ats_drand48_data_type*)buf, (ats_double_type*)res) ;
+} // end of [drand48_r]
+
+static inline
+ats_int_type
+atslib_lrand48_r (ats_ref_type buf, ats_ref_type res) {
+  return lrand48_r ((ats_drand48_data_type*)buf, (ats_lint_type*)res) ;
+} // end of [lrand48_r]
+
+static inline
+ats_int_type
+atslib_mrand48_r (ats_ref_type buf, ats_ref_type res) {
+  return mrand48_r ((ats_drand48_data_type*)buf, (ats_lint_type*)res) ;
+} // end of [lrand48_r]
+
 
 /* ****** ****** */
 
