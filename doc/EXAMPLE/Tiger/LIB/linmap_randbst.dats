@@ -66,13 +66,15 @@ extern fun{key:t@ype;itm:t@ype}
 
 //
 
+// this one is nonreentrant
 extern fun{key:t@ype;itm:viewt@ype} linmap_insert
-  (m: &map_vt (key, itm), k0: key, x0: itm, cmp: cmp key):<> Option_vt itm
+  (m: &map_vt (key, itm), k0: key, x0: itm, cmp: cmp key):<!ref> Option_vt itm
 
 //
 
+// this one is nonreentrant
 extern fun{key:t@ype;itm:viewt@ype} linmap_remove
-  (m: &map_vt (key, itm), k0: key, cmp: cmp key):<> Option_vt itm
+  (m: &map_vt (key, itm), k0: key, cmp: cmp key):<!ref> Option_vt itm
 
 //
 
@@ -175,9 +177,21 @@ end // end of [bst_foreach_pre]
 
 (* ****** ****** *)
 
+local
+
+staload "libc/SATS/random.sats"
+
+in // end of [in]
+
 extern fun dice
-  {m,n:int | m > 0; n > 0} (m: int m, n: int n):<> bool
-  = "linmap_randbst_dice"
+  {m,n:int | m > 0; n > 0} (m: int m, n: int n):<!ref> bool
+// end of [dice]
+
+implement dice (m, n) = let
+  val r = randint (m+n) in if r < m then true else false
+end // end of [dice]
+
+end // end of [local]
 
 (* ****** ****** *)
 
@@ -231,7 +245,7 @@ fun{key:t@ype;itm:viewt@ype}
   bst_insert_random {n:nat} .<n>. (
     t: &bst (key, itm, n) >> bst (key, itm, n+1-i)
   , k0: key, i0: itm, cmp: cmp key, r: &int? >> int i
-  ) :<> #[i:two] option_vt (itm, i > 0) = begin case+ t of
+  ) :<!ref> #[i:two] option_vt (itm, i > 0) = begin case+ t of
   | BSTcons (!p_n, k, _(*i*), !p_tl, !p_tr) =>
     if dice (1, !p_n) then begin
       fold@ t; bst_insert_atroot<key,itm> (t, k0, i0, cmp, r)
@@ -257,7 +271,7 @@ end (* end of [bst_insert_random] *)
 fun{key:t@ype;itm:viewt@ype}
   bst_join_random {nl,nr:nat} .<nl+nr>.
   (tl: bst (key, itm, nl), tr: bst (key, itm, nr))
-  :<> bst (key, itm, nl+nr) = begin case+ tl of
+  :<!ref> bst (key, itm, nl+nr) = begin case+ tl of
   | BSTcons
       (!p_nl, _(*kl*), _(*il*), !p_tll, !p_tlr) => begin
     case+ tr of
@@ -284,7 +298,7 @@ fun{key:t@ype;itm:viewt@ype}
     t: &bst (key, itm, n) >> bst (key, itm, n-i)
   , k0: key, cmp: cmp key
   , r: &int? >> int i
-  ) :<> #[i:two | i <= n] option_vt (itm, i > 0) = begin
+  ) :<!ref> #[i:two | i <= n] option_vt (itm, i > 0) = begin
   case+ t of
   | BSTcons {..} {nl,nr}
       (!p_n, k, !p_i, !p_tl, !p_tr) => let
@@ -346,7 +360,7 @@ implement{key,itm}
 
 implement{key,itm} linmap_insert (m, k0, i0, cmp) = let
   var r: int (* uninitialized *) in bst_insert_random<key,itm> (m, k0, i0, cmp, r)
-end // end of [linmap_remove]
+end // end of [linmap_insert]
 
 (* ****** ****** *)
 
@@ -383,18 +397,6 @@ implement{key,itm}
 in
   // empty
 end // end of [linmap_foreach_cloref]
-
-(* ****** ****** *)
-
-%{^
-
-ats_bool_type // true: m/(m+n); false n/(m+n)
-linmap_randbst_dice (ats_int_type m, ats_int_type n) {
-  double r = drand48 ();
-  return ((m + n) * r < m) ? ats_true_bool : ats_false_bool ;
-} // end of [linmap_randbst_dice]
-
-%}
 
 (* ****** ****** *)
 

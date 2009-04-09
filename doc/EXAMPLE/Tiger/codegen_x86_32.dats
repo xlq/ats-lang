@@ -108,8 +108,8 @@ fn instrlst_add_stm
       in
         // empty
       end // end of [STMmove (EXPmem, _)]
-    | STMmove (EXPtemp d0, e2) => let
-        val s0 = auxexp (res, e2)
+    | STMmove (EXPtemp t1, e2) => let
+        val d0 = t1; val s0 = auxexp (res, e2)
         val () = emit
           (res, $ASM.INSTRmove (asm, src, dst)) where {
           val asm = "movl `s0, `d0"; val src = s0 and dst = d0
