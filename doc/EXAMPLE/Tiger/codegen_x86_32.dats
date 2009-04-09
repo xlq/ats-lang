@@ -45,7 +45,7 @@ fn instrlst_add_stm
     res := list_vt_cons (ins, res)
   // end of [emit]
 
-  // AT&T syntax is used for the assembly code
+  // AT&T-style of syntax is used for the assembly code
   fun auxstm (res: &instrlst_vt, stm: stm): void = let
 (*
     val () = begin

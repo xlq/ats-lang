@@ -204,13 +204,13 @@ implement main (argc, argv) = let
   val (lab_done, blks) = $CA.blocklst_gen (stms)
   val stms = $CA.trace_schedule (lab_done, blks)
   val () = print_stmlst stms
-// (*
-  val () = $INT1.interp1Prog (stms)
-// *)
 (*
+  val () = $INT1.interp1Prog (stms)
+*)
+// (*
   val inss = codegen_stmlst ($FRM.theTopFrame, stms)
   val () = print_instrlst (inss)
-*)
+// *)
 in
   // empty
 end // end of [main]

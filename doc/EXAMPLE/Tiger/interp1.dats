@@ -51,6 +51,7 @@ staload _(*anonymous*) = "prelude/DATS/reference.dats"
 
 datatype v1al =
   | V1ALint of int | V1ALlab of label | V1ALstr of string
+// end of [v1al]
 
 val v1al_int_0 = V1ALint 0
 
@@ -110,7 +111,7 @@ val the_labmap_ref = let
   val map = $M.funmap_empty<> {label, v2al} ()
 in
   ref_make_elt<labmap> (map)
-end // end of [the_labmap_ref]
+end (* end of [the_labmap_ref] *)
 
 in // in of [local]
 
@@ -418,17 +419,18 @@ in
     in
       case+ v2al of
       | V2ALcod stms => let
+          // push arguments onto the stack
           val () = loop (vs_arg_rev) where {
             fun loop (vs: List v1al): void = case+ vs of
               | list_cons (v, vs) => (the_stack_push v; loop vs)
               | list_nil () => ()
             // end of [loop]
           } // end of [val]
-          var env_new = tmpmap_empty () // this is like saving [env] on the stack
+          var env_new = tmpmap_empty () // so no need for saving [env]!
           val () = loop (env_new, fars, vs_arg) where {
             val fars = $FRM.theFunargReglst
             val vs_arg = list_reverse (vs_arg_rev)
-            fun loop
+            fun loop // passing some arguments in registers
               (env: &tmpmap, fars: List temp, vs: List v1al): void =
               case+ (fars, vs) of
               | (list_cons (far, fars), list_cons (v, vs)) => (
