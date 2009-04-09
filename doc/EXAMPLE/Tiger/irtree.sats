@@ -74,4 +74,8 @@ fun binop_is_multiplicative (binop: binop): bool
 
 (* ****** ****** *)
 
+fun relop_negate (relop: relop): relop
+
+(* ****** ****** *)
+
 (* end of [irtree.sats] *)

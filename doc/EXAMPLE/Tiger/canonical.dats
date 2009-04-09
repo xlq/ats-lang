@@ -296,9 +296,11 @@ in
           list_cons (stm_lab, list_extend (blk_init, blk_last))
         end // end of [None_vt]
     end // end of [STMjump]
-  | STMcjump (_, _, _, tlab, flab) => let
-      val ans = blockmap_remove (map, flab)
-    in
+  | STMcjump (relop, e1, e2, tlab, flab) => let
+      val relop = relop_negate (relop)
+      val tlab = flab and flab = tlab
+      val blk_last = STMcjump (relop, e1, e2, tlab, flab)
+      val ans = blockmap_remove (map, flab) in
       case+ ans of
       | ~Some_vt (blk1) => let
           val ss = trace_gen (map, blk1)

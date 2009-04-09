@@ -425,11 +425,25 @@ in
             // end of [loop]
           } // end of [val]
           var env_new = tmpmap_empty () // this is like saving [env] on the stack
+          val () = loop (env_new, fars, vs_arg) where {
+            val fars = $FRM.theFunargReglst
+            val vs_arg = list_reverse (vs_arg_rev)
+            fun loop
+              (env: &tmpmap, fars: List temp, vs: List v1al): void =
+              case+ (fars, vs) of
+              | (list_cons (far, fars), list_cons (v, vs)) => (
+                  tmpmap_insert (env, far, v); loop (env, fars, vs)
+                ) // end of [list_cons, list_cons]
+              | (_, _) => ()
+            // end of [loop]
+          } // end of [val]
+          // callee starts
           val i_sp = the_stackptr_get (); val f_sp = i_sp * WSZ
           val () = tmpmap_insert (env_new, $FRM.FP, V1ALint f_sp) // FP update
           val () = the_stackptr_set (i_sp - FRAMESIZE)
           val () = interp1Stmlst (stms, env_new, stms)
           val () = the_stackptr_set (i_sp)
+          // callee finishes
         in
           tmpmap_search (env_new, $FRM.RV) // fetch the return value
         end // end of [F1UNcod]

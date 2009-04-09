@@ -173,4 +173,15 @@ implement binop_is_multiplicative (binop) =
 
 (* ****** ****** *)
 
+implement relop_negate (relop) = case+ relop of
+  | EQ () => NEQ ()
+  | NEQ () => EQ ()
+  | GT () => LE ()
+  | GE () => LT ()
+  | LT () => GE ()
+  | LE () => GT ()
+// end of [relop_negate]
+
+(* ****** ****** *)
+
 (* end of [irtree.dats] *)

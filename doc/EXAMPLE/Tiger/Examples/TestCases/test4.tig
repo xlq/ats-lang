@@ -7,10 +7,12 @@ function nfactor(n: int): int =
 			then 1
 			else n * nfactor(n-1)
 
-in
+in // in of [let]
+
 // print_int (
-	nfactor(34)
+	nfactor(10)
 // );
 // print ("\n")
-end
+
+end // end of [let]
 
