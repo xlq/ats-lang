@@ -178,6 +178,7 @@ val temp_RA = $TL.temp_make_fixed (REGISTER_RA)
 
 implement RV = temp_RV
 implement FP = temp_FP
+implement SP = temp_SP
 
 implement theSpecialReglst = '[
   temp_SP, temp_FP, temp_RV, temp_RA
@@ -247,6 +248,7 @@ val temp_RV = $TL.temp_make_fixed (REGISTER_RV)
 
 implement RV = temp_RV
 implement FP = temp_FP
+implement SP = temp_SP
 
 implement EAX = temp_RV
 implement ESP = temp_SP

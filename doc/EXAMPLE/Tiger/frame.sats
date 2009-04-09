@@ -25,6 +25,7 @@ typedef accesslst = List access_t
 
 val RV : temp // return value
 val FP : temp // frame pointer
+val SP : temp // stack pointer
 
 (* ****** ****** *)
 
