@@ -166,7 +166,7 @@ fn instrlst_add_stm
         val s1 = auxexp (res, e2)
         val () = emit
           (res, $ASM.INSTRoper (asm, src, dst, jump)) where {
-          val asm = "addl `s1, `s0"
+          val asm = opcode + " `s1, `s0"
           val src = '[s0, s1] and dst = '[s0]; val jump = None ()
         } // end of [val]
       in
