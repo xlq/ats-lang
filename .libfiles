@@ -109,6 +109,7 @@ libc/SATS/math.sats
 libc/DATS/math.dats
 
 libc/SATS/random.sats
+libc/DATS/random.dats
 
 libc/SATS/signal.sats
 

@@ -68,13 +68,13 @@ extern fun{key:t@ype;itm:t@ype}
 
 // this one is nonreentrant
 extern fun{key:t@ype;itm:viewt@ype} linmap_insert
-  (m: &map_vt (key, itm), k0: key, x0: itm, cmp: cmp key):<!ref> Option_vt itm
+  (m: &map_vt (key, itm), k0: key, x0: itm, cmp: cmp key):<> Option_vt itm
 
 //
 
 // this one is nonreentrant
 extern fun{key:t@ype;itm:viewt@ype} linmap_remove
-  (m: &map_vt (key, itm), k0: key, cmp: cmp key):<!ref> Option_vt itm
+  (m: &map_vt (key, itm), k0: key, cmp: cmp key):<> Option_vt itm
 
 //
 
@@ -177,21 +177,17 @@ end // end of [bst_foreach_pre]
 
 (* ****** ****** *)
 
-local
-
 staload "libc/SATS/random.sats"
 
-in // end of [in]
-
 extern fun dice
-  {m,n:int | m > 0; n > 0} (m: int m, n: int n):<!ref> bool
+  {m,n:int | m > 0; n > 0}
+  (m: int m, n: int n, buf: &drand48_data):<> bool
 // end of [dice]
 
-implement dice (m, n) = let
-  val r = randint (m+n) in if r < m then true else false
+implement dice (m, n, buf) = let
+  var r: int // uninitialized
+  val () = randint_r (buf, m+n, r) in if r < m then true else false
 end // end of [dice]
-
-end // end of [local]
 
 (* ****** ****** *)
 
@@ -245,17 +241,18 @@ fun{key:t@ype;itm:viewt@ype}
   bst_insert_random {n:nat} .<n>. (
     t: &bst (key, itm, n) >> bst (key, itm, n+1-i)
   , k0: key, i0: itm, cmp: cmp key, r: &int? >> int i
-  ) :<!ref> #[i:two] option_vt (itm, i > 0) = begin case+ t of
+  , buf: &drand48_data
+  ) :<> #[i:two] option_vt (itm, i > 0) = begin case+ t of
   | BSTcons (!p_n, k, _(*i*), !p_tl, !p_tr) =>
-    if dice (1, !p_n) then begin
+    if dice (1, !p_n, buf) then begin
       fold@ t; bst_insert_atroot<key,itm> (t, k0, i0, cmp, r)
     end else let
       val sgn = compare_key_key (k0, k, cmp) in
       if sgn < 0 then let
-        val ans = bst_insert_random<key,itm> (!p_tl, k0, i0, cmp, r) in
+        val ans = bst_insert_random<key,itm> (!p_tl, k0, i0, cmp, r, buf) in
         if r = 0 then (!p_n := !p_n + 1; fold@ t; ans) else (fold@ t; ans)
       end else if sgn > 0 then let
-        val ans = bst_insert_random<key,itm> (!p_tr, k0, i0, cmp, r) in
+        val ans = bst_insert_random<key,itm> (!p_tr, k0, i0, cmp, r, buf) in
         if r = 0 then (!p_n := !p_n + 1; fold@ t; ans) else (fold@ t; ans)
       end else begin (* sgn = 0 *)
         fold@ t; r := 1; Some_vt (i0)
@@ -269,20 +266,22 @@ end (* end of [bst_insert_random] *)
 (* ****** ****** *)
 
 fun{key:t@ype;itm:viewt@ype}
-  bst_join_random {nl,nr:nat} .<nl+nr>.
-  (tl: bst (key, itm, nl), tr: bst (key, itm, nr))
-  :<!ref> bst (key, itm, nl+nr) = begin case+ tl of
+  bst_join_random {nl,nr:nat} .<nl+nr>. (
+    tl: bst (key, itm, nl)
+  , tr: bst (key, itm, nr)
+  , buf: &drand48_data
+  ) :<> bst (key, itm, nl+nr) = begin case+ tl of
   | BSTcons
       (!p_nl, _(*kl*), _(*il*), !p_tll, !p_tlr) => begin
     case+ tr of
     | BSTcons (!p_nr, _(*kr*), _(*ir*), !p_trl, !p_trr) => let
         val n = !p_nl + !p_nr
       in
-        if dice (!p_nl, !p_nr) then begin
-          fold@ tr; !p_tlr := bst_join_random (!p_tlr, tr);
+        if dice (!p_nl, !p_nr, buf) then begin
+          fold@ tr; !p_tlr := bst_join_random (!p_tlr, tr, buf);
           !p_nl := n; fold@ tl; tl
         end else begin
-          fold@ tl; !p_trl := bst_join_random (tl, !p_trl);
+          fold@ tl; !p_trl := bst_join_random (tl, !p_trl, buf);
           !p_nr := n; fold@ tr; tr
         end // end of [if]
       end (* end of [BSTcons] *)
@@ -298,22 +297,23 @@ fun{key:t@ype;itm:viewt@ype}
     t: &bst (key, itm, n) >> bst (key, itm, n-i)
   , k0: key, cmp: cmp key
   , r: &int? >> int i
-  ) :<!ref> #[i:two | i <= n] option_vt (itm, i > 0) = begin
+  , buf: &drand48_data
+  ) :<> #[i:two | i <= n] option_vt (itm, i > 0) = begin
   case+ t of
   | BSTcons {..} {nl,nr}
       (!p_n, k, !p_i, !p_tl, !p_tr) => let
       val sgn = compare_key_key (k0, k, cmp) in case+ sgn of
       | ~1 => let
-          val ans = bst_remove_random (!p_tl, k0, cmp, r) in
+          val ans = bst_remove_random (!p_tl, k0, cmp, r, buf) in
           !p_n := !p_n - r; fold@ t; ans
         end // end of [~1]
       |  1 => let
-          val ans = bst_remove_random (!p_tr, k0, cmp, r) in
+          val ans = bst_remove_random (!p_tr, k0, cmp, r, buf) in
           !p_n := !p_n - r; fold@ t; ans
         end // end of [1]
       |  _ (* 0 *) => let
           val ans = Some_vt (!p_i)
-          val t_new = bst_join_random (!p_tl, !p_tr) in
+          val t_new = bst_join_random (!p_tl, !p_tr, buf) in
           r := 1; free@ {key,itm} {0,0} (t); t := t_new; ans
         end // end of [0]
     end (* end of [BSTcons] *)
@@ -358,14 +358,22 @@ implement{key,itm}
 
 (* ****** ****** *)
 
-implement{key,itm} linmap_insert (m, k0, i0, cmp) = let
-  var r: int (* uninitialized *) in bst_insert_random<key,itm> (m, k0, i0, cmp, r)
+implement{key,itm}
+  linmap_insert (m, k0, i0, cmp) = let
+  var r: int (* uninitialized *)
+  var buf: drand48_data // uinitialized
+  val _(*0*) = srand48_r (0L, buf) in
+  bst_insert_random<key,itm> (m, k0, i0, cmp, r, buf)
 end // end of [linmap_insert]
 
 (* ****** ****** *)
 
-implement{key,itm} linmap_remove (m, k0, cmp) = let
-  var r: int (* uninitialized *) in bst_remove_random<key,itm> (m, k0, cmp, r)
+implement{key,itm}
+  linmap_remove (m, k0, cmp) = let
+  var r: int (* uninitialized *)
+  var buf: drand48_data // uinitialized
+  val _(*0*) = srand48_r (0L, buf) in
+  bst_remove_random<key,itm> (m, k0, cmp, r, buf)
 end // end of [linmap_remove]
 
 (* ****** ****** *)
