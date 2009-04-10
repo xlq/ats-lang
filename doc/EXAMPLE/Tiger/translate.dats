@@ -751,27 +751,35 @@ fn funarglst_move (accs: $F.accesslst): $TR.stm = let
         in
           loop1 (fars, accs, ofs + WORDSIZE, res)
         end // end of [list_cons]
-      | list_nil () => loop2 (acc, accs, ofs, res)
+      | list_nil () => loop2 (acc, accs, ofs, res) // the rest of the
+        // arguments are passed in the stack frame
       end // end of [list_cons]
     | list_nil () => ()
   // end of [loop1]
-  
+
   and loop2 (
       acc: $F.access_t
     , accs: $F.accesslst
     , ofs: int
     , res: &res_vt
     ) : void = let
-    val e_fp = $TR.EXPtemp $F.FP
-    val e_acc = $F.exp_make_access (e_fp, acc)
-    val e_far = 
-      $TR.EXPmem ($TR.EXPbinop ($TR.PLUS, e_fp, $TR.EXPconst ofs))
-    val () = res := list_vt_cons ($TR.STMmove (e_acc, e_far), res)
+    val () = if $F.access_is_inreg acc then let
+      val e_fp = $TR.EXPtemp $F.FP
+      val e_acc = $F.exp_make_access (e_fp, acc)
+      val e_far = 
+        $TR.EXPmem ($TR.EXPbinop ($TR.PLUS, e_fp, $TR.EXPconst ofs))
+      val () = res := list_vt_cons ($TR.STMmove (e_acc, e_far), res)
+    in
+      // empty
+    end else begin
+      // [acc] is allocated in the stack frame and no move is needed
+    end // end of [if]
   in
     case+ accs of
     | list_cons (acc, accs) => loop2 (acc, accs, ofs + WORDSIZE, res)
     | list_nil () => ()
   end // end of [loop2]
+
   var res: res_vt = list_vt_nil ()
   val () = loop1 ($F.theFunargReglst, accs, 0, res)
 in
@@ -842,9 +850,8 @@ fn transFundec1_snd
   val e_body = transExp1 (lev1, env, fd.fundec_body)
   val stm_rst = $TR.STMmove ($F.exp_RV, unEx e_body)
   val stm = $TR.STMseq (stm_mov, stm_rst)
-  val frag = $F.FRAGproc (frm, stm)
 in
-  $F.frame_theFraglst_add (frag)
+  $F.frame_theFraglst_add ($F.FRAGproc (frm, stm))
 end // end of [transFundec1_snd]
 
 (* ****** ****** *)

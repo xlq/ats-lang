@@ -104,31 +104,42 @@ fn instrlst_add_stm
       in
         // empty
       end // end of [STMcjump]
-    | STMmove (EXPmem (e1), e2) => let
-        val s0 = auxexp (res, e1); val s1 = auxexp (res, e2)
-        val () = emit
-          (res, $ASM.INSTRoper (asm, src, dst, jump)) where {
-          val asm = "movl `s1, 0(`s0)"
-          val src = '[s0, s1] and dst = '[]; val jump= None ()
-        } // end of [val]
-      in
-        // empty
-      end // end of [STMmove (EXPmem, _)]
-    | STMmove (EXPtemp t1, e2) => let
+    | STMmove (EXPmem (e1), e2) => begin case+ e1 of
+        | EXPbinop (binop, e1_base, EXPconst ofs)
+            when binop_is_additive binop => () where {
+            var ofs: int = ofs
+            val () = case+ binop of
+              | PLUS () => () | _ (*MINUS*) => (ofs := ~ofs)
+            // end of [val]
+            val s0 = auxexp (res, e1_base); val s1 = auxexp (res, e2)
+            val () = emit
+              (res, $ASM.INSTRoper (asm, src, dst, jump)) where {
+              val asm = sprintf ("movl `s1, %i(`s0)", @(ofs))
+              val src = '[s0, s1] and dst = '[]; val jump= None ()
+             } // end of [val]
+          } // end of [EXPbinop (_(*additive*), _, EXPconst)]
+        | _ => () where {
+            val s0 = auxexp (res, e1); val s1 = auxexp (res, e2)
+            val () = emit
+              (res, $ASM.INSTRoper (asm, src, dst, jump)) where {
+              val asm = "movl `s1, 0(`s0)"
+              val src = '[s0, s1] and dst = '[]; val jump= None ()
+             } // end of [val]
+           } (* end of [_] *)
+        // end of [case]
+      end (* end of [STMmove (EXPmem, _)] *)
+    | STMmove (EXPtemp t1, e2) => () where {
         val d0 = t1; val s0 = auxexp (res, e2)
         val () = emit
           (res, $ASM.INSTRmove (asm, src, dst)) where {
           val asm = "movl `s0, `d0"; val src = s0 and dst = d0
         } // end of [val]
-      in
-        // empty
-      end // end of [STMmove (EXPtemp, _)]
-    | STMlabel lab => let
+      } (* end of [STMmove (EXPtemp, _)] *)
+    | STMlabel lab => () where {
         val name = $TL.label_name_get lab
         val asm = sprintf (".%s:", @(name))
-      in
-        emit (res, $ASM.INSTRlabel (asm, lab))
-      end // end of [STMlabel]
+        val () = emit (res, $ASM.INSTRlabel (asm, lab))
+      } // end of [STMlabel]
     | STMexp e => begin
         let val _(*tmp*) = auxexp (res, e) in () end
       end // end of [STMexp]
@@ -147,72 +158,157 @@ fn instrlst_add_stm
 *)
   in
     case+ exp of
-    | EXPconst i => let
+    | EXPconst i => d0 where {
         val d0 = $TL.temp_make_new ()
         val asm = sprintf ("movl $%i, `d0", @(i))
         val src = '[] and dst = '[d0]; val jump = None ()
-      in
-        emit (res, $ASM.INSTRoper (asm, src, dst, jump)); d0        
-      end // end of [EXPconst]
-    | EXPname lab => let
+        val () = emit (res, $ASM.INSTRoper (asm, src, dst, jump))
+      } (* end of [EXPconst] *)
+    | EXPname lab => d0 where {
         val d0 = $TL.temp_make_new ()
         val name = $TL.label_name_get (lab)
         val asm = sprintf ("movl .%s, `d0", @(name))
         val src = '[] and dst = '[d0]; val jump = None ()
-      in
-        emit (res, $ASM.INSTRoper (asm, src, dst, jump)); d0        
-      end // end of [EXPconst]
-    | EXPtemp t => t
+        val () = emit (res, $ASM.INSTRoper (asm, src, dst, jump))
+      } (* end of [EXPconst] *)
+    | EXPtemp tmp => tmp
+//
     | EXPbinop (binop, e1, e2)
-        when binop_is_additive binop => let
+        when binop_is_additive binop => d0 where {
         val opcode = (case+ binop of
-          | PLUS _ => "addl" | MINUS _ => "subl" | _ => $Err.abort {string} (1)
+          | PLUS _ => "addl" | MINUS _ => "subl" | _ => "notaddsub"
         ) : string // end of [val]
+        val d0 = $TL.temp_make_new ()
+        val () = case+ e2 of
+        | EXPconst i2 => () where {
+            val s0 = auxexp (res, e1)
+            val () = emit
+              (res, $ASM.INSTRmove (asm, src, dst)) where {
+              val asm = "movl `s0, `d0"; val src = s0  and dst = d0
+            } // end of [val]
+            val () = emit
+              (res, $ASM.INSTRoper (asm, src, dst, jump)) where {
+              val asm = sprintf ("%s $%i, `d0", @(opcode, i2))
+              val src = '[d0] and dst = '[d0]; val jump = None ()
+            } // end of [val]
+          } (* end of [EXPcons] *)
+        | _ => () where {
+            val s0 = auxexp (res, e1)
+            val s1 = auxexp (res, e2)
+            val () = emit
+              (res, $ASM.INSTRmove (asm, src, dst)) where {
+              val asm = "movl `s0, `d0"; val src = s0 and dst = d0
+            } // end of [val]
+            val () = emit
+              (res, $ASM.INSTRoper (asm, src, dst, jump)) where {
+              val asm = opcode + " `s1, `d0"
+              val src = '[d0, s1] and dst = '[d0]; val jump = None ()
+            } // end of [val]
+          } (* end of [_] *)
+        // end of [val]
+      } (* end of [val] *)
+//
+    | EXPbinop (MUL (), e1, e2) => $FRM.EAX where {
         val s0 = auxexp (res, e1)
         val s1 = auxexp (res, e2)
         val () = emit
-          (res, $ASM.INSTRoper (asm, src, dst, jump)) where {
-          val asm = opcode + " `s1, `s0"
-          val src = '[s0, s1] and dst = '[s0]; val jump = None ()
+          (res, $ASM.INSTRmove (asm, src, dst)) where {
+          val asm = "movl `s0, `d0"; val src = s0 and dst = $FRM.EAX
         } // end of [val]
-      in
-        s0 // the return value
-      end (* end of [val] *)
-    | EXPmem (e) => let
-        val s0 = auxexp (res, e)
-        val d0 = $TL.temp_make_new ()
         val () = emit
           (res, $ASM.INSTRoper (asm, src, dst, jump)) where {
-          val asm = "movl (`s0), `d0"
-          val src = '[s0] and dst = '[d0]; val jump = None ()
-        } // end of [val]
-      in
-        d0 // the return value
-      end // end of [EXPmem]
-    | EXPcall (e_fun, es_arg) => let
-        val s_fun = auxexp (res, e_fun)
-        val (tmps, ss_arg) = auxarglst (res, es_arg)
-        val ss_arg = list_of_list_vt (ss_arg)
-        val () = emit
-          (res, $ASM.INSTRoper (asm, src, dst, jump)) where {
-          val asm = "call `s0"
-          val src = list_cons (s_fun, ss_arg) and dst = '[]
+          val asm = "imull `s1"
+          val src = '[$FRM.EAX, s1] and dst = '[$FRM.EAX, $FRM.EDX]
           val jump = None ()
         } // end of [val]
+     } (* end of [EXPbinop (MUL, _, _)] *)
+//
+    | EXPbinop (DIV (), e1, e2) => $FRM.EAX where {
+        val s0 = auxexp (res, e1)
+        val s1 = auxexp (res, e2)
+        val () = emit
+          (res, $ASM.INSTRmove (asm, src, dst)) where {
+          val asm = "movl `s0, `d0"; val src = s0 and dst = $FRM.EAX
+        } // end of [val]
+        val () = emit
+          (res, $ASM.INSTRoper (asm, src, dst, jump)) where {
+          val asm = "cltd"; val src = '[$FRM.EAX] and dst = '[$FRM.EDX]
+          val jump = None ()
+        } // end of [val]
+        val () = emit
+          (res, $ASM.INSTRoper (asm, src, dst, jump)) where {
+          val asm = "idivl `s2"
+          val src = '[$FRM.EAX, $FRM.EDX, s1] and dst = '[$FRM.EAX, $FRM.EDX]
+          val jump = None ()
+        } // end of [val]
+      } (* end of [EXPbinop (DIV, _, _)] *)
+//
+    | EXPmem (e) => d0 where {
+        val d0 = $TL.temp_make_new ()
+        val () = case+ e of
+        | EXPbinop (binop, e_base, EXPconst ofs)
+            when binop_is_additive binop => () where {
+            var ofs: int = ofs
+            val () = case+ binop of
+              | PLUS () => () | _ (*MUNUS*) => (ofs := ~ofs)
+            val s0 = auxexp (res, e_base)
+            val () = emit
+              (res, $ASM.INSTRoper (asm, src, dst, jump)) where {
+              val asm = sprintf ("movl %i(`s0), `d0", @(ofs))
+              val src = '[s0] and dst = '[d0]; val jump = None ()
+            } // end of [val]
+          } (* end of [EXPbinop _(*additive*), _, EXPconst)] *)
+        | _ => () where {
+            val s0 = auxexp (res, e)
+            val () = emit
+              (res, $ASM.INSTRoper (asm, src, dst, jump)) where {
+              val asm = "movl (`s0), `d0"
+              val src = '[s0] and dst = '[d0]; val jump = None ()
+            } // end of [val]
+          } (* end of [_] *)
+        // end of [val]
+      } (* end of [EXPmem] *)
+//
+    | EXPcall (e_fun, es_arg) => let
+        val tmpsfars = (case+ e_fun of
+        | EXPname lab_fun => let
+            val tmpsfars = auxarglst (res, es_arg)
+            val () = emit
+              (res, $ASM.INSTRoper (asm, src, dst, jump)) where {
+              val name = $TL.label_name_get (lab_fun)
+              val asm = sprintf ("call .%s", @(name))
+              val src = tmpsfars.1 and dst = '[]; val jump = None ()
+            } // end of [val]
+          in
+            tmpsfars
+          end // end of [_]
+        | _ => let
+            val s_fun = auxexp (res, e_fun)
+            val tmpsfars = auxarglst (res, es_arg)
+            val () = emit
+              (res, $ASM.INSTRoper (asm, src, dst, jump)) where {
+              val asm = "call `s0"
+              val src = list_cons (s_fun, tmpsfars.1) and dst = '[]
+              val jump = None ()
+            } // end of [val]
+          in
+            tmpsfars
+          end // end of [_]
+        ) : @(templst, templst) // end of [val]
         val () = loop
-          (res, $FRM.theFunargReglst, tmps) where {
+          (res, tmpsfars.0, tmpsfars.1) where {
           fun loop (
-            res: &instrlst_vt, fars: templst, tmps: templst_vt
-            ) : void = case+ (fars, tmps) of
-            | (list_cons (far, fars), ~list_vt_cons (tmp, tmps)) => let
+            res: &instrlst_vt, tmps: templst, fars: templst
+            ) : void = case+ (tmps, fars) of
+            | (list_cons (tmp, tmps), list_cons (far, fars)) => let
                 val () = emit
                   (res, $ASM.INSTRmove (asm, src, dst)) where {
                   val asm = "movl `s0, `d0"; val src = tmp and dst = far
                 } // end of [val]
               in
-                loop (res, fars, tmps)
+                loop (res, tmps, fars)
               end // end of [list_cons, list_cons]
-            | (fars, tmps) => list_vt_free (tmps)
+            | (_, _) => ()
           // end of [loop]
         } // end of [val]
       in
@@ -226,17 +322,18 @@ fn instrlst_add_stm
   end // end of [auxexp]
   
   and auxarglst
-    (res: &instrlst_vt, es: explst)
-    : @(templst_vt, templst_vt) = let
+    (res: &instrlst_vt, es: explst): @(templst, templst) = let
     val narg = list_length (es)
     val nWORDSIZE = narg * WORDSIZE
-    val tmps_rev = loop
-      (res, $FRM.theFunargReglst, narg, list_vt_nil ()) where {
+    val tmpsfars = loop (
+        res
+      , $FRM.theFunargReglst, narg
+      , list_vt_nil, list_vt_nil
+      ) where {
       fun loop (
-          res: &instrlst_vt
-        , fars: templst, n: int
-        , tmps: templst_vt
-        ) : templst_vt =
+          res: &instrlst_vt, fars: templst, n: int
+        , res_tmps: templst_vt, res_fars: templst_vt
+        ) : @(templst, templst) =
         if n > 0 then begin case+ fars of
           | list_cons (far, fars) => let
               val d0 = $TL.temp_make_new ()
@@ -244,30 +341,34 @@ fn instrlst_add_stm
                 (res, $ASM.INSTRmove (asm, src, dst)) where {
                 val asm = "movl `s0, `d0"; val src = far and dst = d0
               } // end of [val]
+              val res_tmps = list_vt_cons (d0, res_tmps)
+              val res_fars = list_vt_cons (far, res_fars)
             in
-              loop (res, fars, n-1, list_vt_cons (d0, tmps))
+              loop (res, fars, n-1, res_tmps, res_fars)
             end // end of [list_cons]
-          | list_nil () => tmps
-        end else begin
-          tmps // no more arguments and loop exits
+          | list_nil () => let
+              val tmps = list_of_list_vt (list_vt_reverse res_tmps)
+              val fars = list_of_list_vt (list_vt_reverse res_fars) in
+              @(tmps, fars)
+            end  // end of [list_nil]
+        end else let
+          val tmps = list_of_list_vt (list_vt_reverse res_tmps)
+          val fars = list_of_list_vt (list_vt_reverse res_fars) in
+          @(tmps, fars) // no more arguments and loop exits
         end // end of [if]
       // end of [loop]
     } // end of [val]
-    val tmps = list_vt_reverse tmps_rev
     val () = emit
       (res, $ASM.INSTRoper (asm, src, dst, jump)) where {
       val asm = sprintf ("subl $%i, `s0", @(nWORDSIZE))
       val s0 = $FRM.SP; val src = '[s0] and dst = '[s0]; val jump = None ()
     } // end of [val]
-    val ss_arg_rev = loop
-      (res, es, $FRM.theFunargReglst, 0(*ofs*), list_vt_nil) where {
-      fun loop (
-          res: &instrlst_vt, es: explst, fars: templst, ofs: int, ss: templst_vt
-        ) : templst_vt =
+    val () = loop (res, es, tmpsfars.1, 0(*ofs*)) where {
+      fun loop
+        (res: &instrlst_vt, es: explst, fars: templst, ofs: int): void =
         case+ es of
         | list_cons (e, es) => let
-            val s0 = auxexp (res, e); val ss = list_vt_cons (s0, ss)
-          in
+            val s0 = auxexp (res, e) in
             case+ fars of
             | list_cons (far, fars) => let
                 val () = emit
@@ -275,7 +376,7 @@ fn instrlst_add_stm
                   val asm = "movl `s0, `d0"; val src = s0 and dst = far
                 } // end of [val]
               in
-                loop (res, es, fars, ofs + WORDSIZE, ss)
+                loop (res, es, fars, ofs + WORDSIZE)
               end // end of [list_cons]
             | list_nil () => let
                 val () = emit
@@ -284,15 +385,14 @@ fn instrlst_add_stm
                   val src = '[s0, $FRM.SP] and dst = '[]; val jump = None ()
                 } // end of [val]
               in
-                loop (res, es, fars, ofs + WORDSIZE, ss)
+                loop (res, es, fars, ofs + WORDSIZE)
               end // end of [val]
           end // end of [list_cons]
-        | list_nil () => ss
+        | list_nil () => ()
       // end of [loop]
     } // end of [val]
-    val ss_arg = list_vt_reverse (ss_arg_rev)
   in
-    @(tmps, ss_arg)
+    tmpsfars
   end // end of [auxarglst]
 in
   auxstm (res, stm)

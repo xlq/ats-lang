@@ -21,6 +21,9 @@ abstype frame_t
 abstype access_t
 typedef accesslst = List access_t
 
+fun access_is_inreg (acc: access_t): bool // allocated in a reg
+fun access_is_inframe (acc: access_t): bool // allocated in the frame
+
 (* ****** ****** *)
 
 val RV : temp // return value
@@ -81,6 +84,13 @@ val theCalleesavedReglst : List temp // callee saved registers
 #if MARCH = "x86_32" #then
 
 val EAX : temp
+val EBX : temp
+val ECX : temp
+val EDX : temp
+
+val ESI : temp
+val EDI : temp
+
 val ESP : temp
 val EBP : temp
 

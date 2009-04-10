@@ -142,74 +142,112 @@ implement main (argc, argv) = let
       end // end of [_ when ...]
     | _ => ()
   // end of [val]
-  val exp = case+ argc of
+  val prog_exp = case+ argc of
     | 1 => parse_from_stdin ()
     | _ (* argc >= 2 *) =>> parse_from_file (argv.[1])
   // end of [val]
   val () = begin
-    print "exp = "; print_exp (exp); print_newline ()
+    print "prog_exp = "; print_exp (prog_exp); print_newline ()
   end // end of [val]
-  val ty = transProg (exp)
+  val prog_ty = transProg (prog_exp)
   val () = begin
-    print "ty = "; print_ty (ty); print_newline ()
+    print "prog_ty = "; print_ty (prog_ty); print_newline ()
   end // end of [val]
 (*
-  val vlu = $INT0.interp0Prog (exp)
+  val prog_vlu = $INT0.interp0Prog (prog_exp)
   val () = begin
-    print "vlu = "; $INT0.print_value (vlu); print_newline ()
+    print "prog_vlu = "; $INT0.print_value (prog_vlu); print_newline ()
   end // end of [val]
 *)
 
-  val e1xp = $TRAN.transProg1 (exp)
+  val prog_e1xp = $TRAN.transProg1 (prog_exp)
   val () = begin
-    print "e1xp = "; $TRAN.print_e1xp e1xp; print_newline ()
+    print "prog_e1xp = "; $TRAN.print_e1xp prog_e1xp; print_newline ()
   end // end of [val]
-  val stm = $TRAN.unNx (e1xp)
+  val prog_stm = $TRAN.unNx (prog_e1xp)
   val () = begin
-    print "stm = "; $TR.print_stm stm; print_newline ()
+    print "prog_stm = "; $TR.print_stm prog_stm; print_newline ()
   end // end of [val]
   
-  val fraglst_rev = $FRM.frame_theFraglst_get ()
-  val fraglst = list_reverse (fraglst_rev)
-  val () = loop (fraglst) where {
-    fun loop (xs: $FRM.fraglst): void = case+ xs of
+  val theFraglst = list_reverse ($FRM.frame_theFraglst_get ())
+  
+  datatype f1rag =
+    | F1RAGproc of ($FRM.frame_t, $TR.stmlst) | F1RAGstring of ($TL.label_t, string)
+  // end of [frag]
+  typedef f1raglst = List f1rag
+
+  val theF1raglst = loop (theFraglst, list_nil) where {
+    fun loop (xs: $FRM.fraglst, res: f1raglst): f1raglst = case+ xs of
       | list_cons (x, xs) => let
-          val () = case+ x of
+          val f1rag = case+ x of
           | $FRM.FRAGproc (frm, stm) => let
+              val lab_frm = $FRM.frame_name_get (frm)
+              val stm = $TR.STMseq ($TR.STMlabel lab_frm, stm)
               val stms = $CA.linearize stm
               val (lab_done, blks) = $CA.blocklst_gen (stms)
               val stms = $CA.trace_schedule (lab_done, blks)
-              val lab_frm = $FRM.frame_name_get (frm)
               val () = $INT1.the_labmap_stmlst_insert (lab_frm, stms)
-            in
 // (*
-              print_stmlst stms
+              val () = begin
+                print "FRAGproc: "; $TL.print_label lab_frm; print_string ":\n";
+                print_stmlst stms
+              end // end of [val]
 // *)
+            in
+              F1RAGproc (frm, stms)
             end // end of [FRAGproc]
           | $FRM.FRAGstring (lab, str) => let
               val () = $INT1.the_labmap_string_insert (lab, str)
-            in
 // (*
-              $TL.print_label lab;
-              print_string ": "; print_string str; print_newline ()
+              val () = begin
+                print "FRAGstring: "; $TL.print_label lab; print_string ": ";
+                print_string str; print_newline ()
+              end // end of [val]
 // *)
+            in
+              F1RAGstring (lab, str)
             end // end of [val]
+        in
+          loop (xs, list_cons (f1rag, res))
+        end // end of [list_cons]
+      | list_nil () => list_reverse (res)
+    // end of [loop]
+  } // end of [val]
+
+  val prog_stms = $CA.linearize prog_stm
+  val (lab_done, prog_blks) = $CA.blocklst_gen (prog_stms)
+  val prog_stms = $CA.trace_schedule (lab_done, prog_blks)
+  val () = print_stmlst prog_stms
+(*
+  val () = $INT1.interp1Prog (prog_stms)
+*)
+
+  val () = loop (theF1raglst) where {
+    fun loop (xs: f1raglst): void = case+ xs of
+      | list_cons (x, xs) => let
+          val () = case+ x of
+            | F1RAGproc (frm, stms) => let
+                val lab_frm = $FRM.frame_name_get (frm)
+                val () = begin
+                  print "F1RAGproc: "; $TL.print_label lab_frm; print_string ":\n"
+                end // end of [val]
+                val inss = codegen_stmlst (frm, stms)
+                val () = print_instrlst (inss)
+              in
+                // empty
+              end // end of [val]
+            | F1RAGstring (label, str) => ()
+          // end of [val]
         in
           loop (xs)
         end // end of [list_cons]
       | list_nil () => ()
+    // end of [loop]
   } // end of [val]
 
-  val stms = $CA.linearize stm
-  val (lab_done, blks) = $CA.blocklst_gen (stms)
-  val stms = $CA.trace_schedule (lab_done, blks)
-  val () = print_stmlst stms
-(*
-  val () = $INT1.interp1Prog (stms)
-*)
 // (*
-  val inss = codegen_stmlst ($FRM.theTopFrame, stms)
-  val () = print_instrlst (inss)
+  val prog_inss = codegen_stmlst ($FRM.theTopFrame, prog_stms)
+  val () = print_instrlst (prog_inss)
 // *)
 in
   // empty

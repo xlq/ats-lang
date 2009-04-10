@@ -66,7 +66,7 @@ implement prerr_templst tmps = fprint_templst (stderr_ref, tmps)
 
 (* ****** ****** *)
 
-#define LABEL_PREFIX "_TIGER_LAB"
+#define LABEL_PREFIX "_TIGERATS_LAB"
 
 local
 

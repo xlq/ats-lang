@@ -81,6 +81,9 @@ fn fprint_access (out: FILEref, acc: access_t): void =
 
 fn prerr_access (acc: access_t): void = fprint_access (stderr_ref, acc)
 
+implement access_is_inreg (acc) = case+ acc of InReg _ => true | _ => false
+implement access_is_inframe (acc) = case+ acc of InFrame _ => true | _ => false
+
 implement exp_make_access (e_off, acc) = case+ acc of
   | InFrame (k) => begin
       $TREE.EXPmem ($TREE.EXPbinop ($TREE.PLUS, e_off, $TREE.EXPconst k))
@@ -254,13 +257,27 @@ implement EAX = temp_RV
 implement ESP = temp_SP
 implement EBP = temp_FP
 
+#define REGISTER_ECX 11
+#define REGISTER_EDX 12
+
+implement ECX = $TL.temp_make_fixed (REGISTER_ECX)
+implement EDX = $TL.temp_make_fixed (REGISTER_EDX)
+
 implement theCallersavedReglst = '[
   temp_eax, temp_ecx, temp_edx
 ] where {
   val temp_eax = EAX
-  val temp_ecx = $TL.temp_make_fixed (11)
-  val temp_edx = $TL.temp_make_fixed (12)
+  val temp_ecx = ECX
+  val temp_edx = EDX
 }
+
+#define REGISTER_EBX 20
+#define REGISTER_ESI 21
+#define REGISTER_EDI 22
+
+implement EBX = $TL.temp_make_fixed (REGISTER_EBX)
+implement ESI = $TL.temp_make_fixed (REGISTER_ESI)
+implement EDI = $TL.temp_make_fixed (REGISTER_EDI)
 
 implement theCalleesavedReglst = '[
   temp_ebx, temp_esi, temp_edi, temp_esp, temp_ebp
