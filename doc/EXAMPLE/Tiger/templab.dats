@@ -42,6 +42,10 @@ implement fprint_temp (out, tmp) = begin
   fprint_string (out, "tmp"); fprint_int64 (out, tmp)
 end
 
+implement temp_is_special (tmp) =
+  if tmp < the_temp_base then true else false
+// end of [temp_is_special]
+
 end // end of [local]
 
 implement print_temp tmp = fprint_temp (stdout_ref, tmp)

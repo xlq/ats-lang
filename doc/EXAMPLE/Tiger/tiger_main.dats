@@ -186,7 +186,7 @@ implement main (argc, argv) = let
               val stms = $CA.linearize stm
               val (lab_done, blks) = $CA.blocklst_gen (stms)
               val stms = $CA.trace_schedule (lab_done, blks)
-              val () = $INT1.the_labmap_stmlst_insert (lab_frm, stms)
+              val () = $INT1.the_labmap_frame_stmlst_insert (lab_frm, frm, stms)
 // (*
               val () = begin
                 print "FRAGproc: "; $TL.print_label lab_frm; print_string ":\n";
@@ -218,9 +218,9 @@ implement main (argc, argv) = let
   val (lab_done, prog_blks) = $CA.blocklst_gen (prog_stms)
   val prog_stms = $CA.trace_schedule (lab_done, prog_blks)
   val () = print_stmlst prog_stms
-(*
+// (*
   val () = $INT1.interp1Prog (prog_stms)
-*)
+// *)
 
   val () = loop (theF1raglst) where {
     fun loop (xs: f1raglst): void = case+ xs of

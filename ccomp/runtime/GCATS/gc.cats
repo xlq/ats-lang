@@ -179,7 +179,9 @@ ats_void_type the_manmemlst_lock_release () {
 
 //
 
+#ifdef _ATS_MULTITHREAD
 extern pthread_mutex_t the_threadinfolst_lock ;
+#endif
 
 static inline
 ats_void_type the_threadinfolst_lock_acquire () {
@@ -782,6 +784,8 @@ ats_ptr_type manmemlst_data_get (ats_ptr_type mms) {
 //
 // ------------------------------------------------------
 
+#ifdef _ATS_MULTITHREAD
+
 typedef struct threadinfo_struct {
   pthread_t pid ;
   ats_ptr_type stack_beg ; ats_ptr_type stack_end ;
@@ -791,6 +795,8 @@ typedef struct threadinfo_struct {
 } threadinfo ;
 
 typedef threadinfo *threadinfolst ;
+
+#endif
 
 // ------------------------------------------------------
 //

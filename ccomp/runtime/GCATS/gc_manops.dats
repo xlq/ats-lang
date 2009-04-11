@@ -59,9 +59,9 @@ staload "gc.sats"
 (* ****** ****** *)
 
 implement manmemlst_length (mms) = let
-  fun aux {i,j:nat} (mms: manmemlst i, j: int j): int (i+j) = begin
+  fun aux {i,j:nat} (mms: manmemlst i, j: int j): int (i+j) =
     if manmemlst_is_cons mms then aux (manmemlst_next_get mms, j+1) else j
-  end
+  // end of [aux]
 in
   aux (mms, 0)
 end // end of [manmemlst_length]
@@ -104,7 +104,10 @@ end
 %{$
 
 extern manmemlst the_manmemlst ;
+
+#ifdef _ATS_MULTITHREAD
 extern pthread_mutex_t the_manmemlst_lock ;
+#endif
 
 ats_ptr_type gc_man_malloc_bsz (ats_int_type bsz) {
   manmemlst mms ;
@@ -216,4 +219,4 @@ ats_ptr_type gc_man_realloc_bsz
 
 (* ****** ****** *)
 
-(* end of [gc_top.dats] *)
+(* end of [gc_manops.dats] *)

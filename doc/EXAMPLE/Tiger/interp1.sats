@@ -9,14 +9,17 @@
 
 (* ****** ****** *)
 
+staload F = "frame.sats"
 staload TL = "templab.sats"
-
 staload TR = "irtree.sats"
 
 (* ****** ****** *)
 
-fun the_labmap_string_insert (lab: $TL.label_t, str: string): void
-fun the_labmap_stmlst_insert (lab: $TL.label_t, stms: $TR.stmlst): void
+fun the_labmap_string_insert
+  (lab: $TL.label_t, str: string): void
+
+fun the_labmap_frame_stmlst_insert
+  (lab: $TL.label_t, frm: $F.frame_t, stms: $TR.stmlst): void
 
 (* ****** ****** *)
 

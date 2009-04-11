@@ -39,10 +39,13 @@ fun WORDSIZE_get (): int = "tigerats_WORDSIZE_get"
 
 val theTopFrame : frame_t
 
+// The stack pointer may be pushed further after args are loaded
+// [argofs] tells the difference between SP and the 1st argument
 fun frame_make_new
-  (lab: label, arglst: List bool(*escape status*)): frame_t
+  (lab: label, argofs: int, arglst: List bool(*escape status*)): frame_t
 
 fun frame_name_get (f: frame_t): label
+fun frame_argofs_get (f: frame_t): int
 fun frame_arglst_get (f: frame_t): accesslst
 
 fun frame_alloc_local (f: frame_t, isEscaped: bool): access_t
@@ -52,6 +55,7 @@ fun frame_alloc_local (f: frame_t, isEscaped: bool): access_t
 staload TREE = "irtree.sats"
 
 val exp_FP : $TREE.exp
+val exp_SP : $TREE.exp
 val exp_RV : $TREE.exp
 
 fun exp_make_access (e_off: $TREE.exp, acc: access_t): $TREE.exp

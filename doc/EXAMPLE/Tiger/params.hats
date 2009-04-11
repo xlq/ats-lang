@@ -19,5 +19,9 @@
 
 /* ****** ****** */
 
+#define TIGER_OMIT_FRAME_POINTER 0
+
+/* ****** ****** */
+
 /* end of [params.hats] */
 

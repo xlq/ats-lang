@@ -58,7 +58,7 @@ val v1al_int_0 = V1ALint 0
 (* ****** ****** *)
 
 datatype v2al =
-  | V2ALcod of stmlst
+  | V2ALcod of ($FRM.frame_t, stmlst)
   | V2ALpre of (List v1al -<cloref1> v1al)
   | V2ALstr of string
 
@@ -418,7 +418,7 @@ in
       val v2al = the_labmap_search (lab)
     in
       case+ v2al of
-      | V2ALcod stms => let
+      | V2ALcod (frm, stms) => let
           // push arguments onto the stack
           val () = loop (vs_arg_rev) where {
             fun loop (vs: List v1al): void = case+ vs of
@@ -440,8 +440,10 @@ in
             // end of [loop]
           } // end of [val]
           // callee starts
-          val i_sp = the_stackptr_get (); val f_sp = i_sp * WSZ
-          val () = tmpmap_insert (env_new, $FRM.FP, V1ALint f_sp) // FP update
+          val i_sp = the_stackptr_get ()
+          val ofs0 = $FRM.frame_argofs_get frm
+          val () = tmpmap_insert
+            (env_new, $FRM.SP, V1ALint (i_sp * WSZ - ofs0)) // SP update
           val () = the_stackptr_set (i_sp - FRAMESIZE)
           val () = interp1Stmlst (stms, env_new, stms)
           val () = the_stackptr_set (i_sp)
@@ -534,8 +536,8 @@ staload "interp1.sats"
 implement the_labmap_string_insert
   (lab, str) = the_labmap_insert (lab, V2ALstr str)
 
-implement the_labmap_stmlst_insert
-  (lab, stms) = the_labmap_insert (lab, V2ALcod stms)
+implement the_labmap_frame_stmlst_insert
+  (lab, frm, stms) = the_labmap_insert (lab, V2ALcod (frm, stms))
 
 #define FRAMESIZE_TOP 1024
 

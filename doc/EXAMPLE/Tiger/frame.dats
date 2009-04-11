@@ -61,6 +61,7 @@ assume access_t = access
 
 typedef frame = '{
   frame_name= label
+, frame_argofs= int // the difference between SP and 1st arg
 , frame_arglst= accesslst
 , frame_nlocvar= int // number of local variables in the frame
 } // end of [frame]
@@ -98,13 +99,14 @@ val WORDSIZE = WORDSIZE_get ()
 implement theTopFrame = let
   val lab0 = $TL.tigerats_main_lab
 in
-  frame_make_new (lab0, list_nil (*arglst*))
+  frame_make_new (lab0, 0(*argofs*), list_nil (*arglst*))
 end // end of [theTopFrame]
 
 (* ****** ****** *)
 
-implement frame_make_new (lab, arglst) = '{
+implement frame_make_new (lab, ofs0, arglst) = '{
   frame_name= lab
+, frame_argofs= ofs0
 , frame_arglst= arglst
 , frame_nlocvar= 0
 } where {
@@ -129,10 +131,11 @@ implement frame_make_new (lab, arglst) = '{
       end // end of [list_cons]
     | list_nil () => list_nil ()
   // end of [aux]
- val arglst = aux (arglst, 0)
+ val arglst = aux (arglst, ofs0)
 } // end of [frame_make_new]
 
 implement frame_name_get (f) = f.frame_name
+implement frame_argofs_get (f) = f.frame_argofs
 implement frame_arglst_get (f) = f.frame_arglst
 
 extern fun frame_nlocvar_set (f: frame, n: int): void
@@ -294,6 +297,7 @@ implement theCalleesavedReglst = '[
 (* ****** ****** *)
 
 implement exp_FP = $TREE.EXPtemp (temp_FP)
+implement exp_SP = $TREE.EXPtemp (temp_SP)
 implement exp_RV = $TREE.EXPtemp (temp_RV)
 
 (* ****** ****** *)

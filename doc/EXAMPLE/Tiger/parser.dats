@@ -839,8 +839,8 @@ implement parse_from_file (filename) = let
   val cs = char_stream_make_file fileref
   val res: exp = parse_from_charstream (cs)
   val () = filename_pop ()
-  // this should not be called as [fileref] may have already been closed!!!
-  // val () = close_file (fileref)
+  // ALERT: this should not be called as [fileref] may
+  // val () = close_file (fileref) // have already been closed!!!
 in
   res
 end // end of [parse_from_file]

@@ -289,7 +289,9 @@ extern __thread threadinfolst the_threadinfolst_self ;
 ats_void_type gc_collect () {
   int overflow, nchunk, nmarkstackpage ;
   jmp_buf reg_save ; // register contents are roots
+#ifdef _ATS_MULTITHREAD
   threadinfolst infolst ; int nother ;
+#endif
 /*
   fprintf(
     stderr

@@ -9,6 +9,10 @@
 
 (* ****** ****** *)
 
+#include "params.hats"
+
+(* ****** ****** *)
+
 staload TL = "templab.sats"
 
 typedef label = $TL.label_t
@@ -422,6 +426,28 @@ end // end of [local]
 
 (* ****** ****** *)
 
+fn expbinop_plus_make
+  (e1: $TR.exp, e2: $TR.exp): $TR.exp =
+  case+ e1 of
+  | $TR.EXPconst i1 => begin case+ e2 of
+      | $TR.EXPconst i2 => $TR.EXPconst (i1 + i2)
+      | _ => $TR.EXPbinop ($TR.PLUS, e2, e1)
+    end // end of [EXPconst]
+  | _ => $TR.EXPbinop ($TR.PLUS, e1, e2)
+// end of [expbinop_plus_make]
+
+fn expbinop_minus_make
+  (e1: $TR.exp, e2: $TR.exp): $TR.exp =
+  case+ e1 of
+  | $TR.EXPconst i1 => begin case+ e2 of
+      | $TR.EXPconst i2 => $TR.EXPconst (i1 - i2)
+      | _ => $TR.EXPbinop ($TR.MINUS, e1, e2)
+    end // end of [EXPconst]
+  | _ => $TR.EXPbinop ($TR.MINUS, e1, e2)
+// end of [expbinop_minus_make]
+
+(* ****** ****** *)
+
 implement transExp1 (lev0, env, e0) = let
 (*
   val () = begin
@@ -483,9 +509,9 @@ in
     in
       case+ oper of
       | PlusOp _ =>
-          Ex ($TR.EXPbinop ($TR.PLUS, unEx e1, unEx e2))
+          Ex (expbinop_plus_make (unEx e1, unEx e2))
       | MinusOp _ =>
-          Ex ($TR.EXPbinop ($TR.MINUS, unEx e1, unEx e2))
+          Ex (expbinop_minus_make (unEx e1, unEx e2))
       | TimesOp _ =>
           Ex ($TR.EXPbinop ($TR.MUL, unEx e1, unEx e2))
       | DivideOp _ =>
@@ -733,7 +759,8 @@ end // end of [transExp1]
 
 (* ****** ****** *)
 
-fn funarglst_move (accs: $F.accesslst): $TR.stm = let
+fn funarglst_move
+  (accs: $F.accesslst, ofs0: int): $TR.stm = let
   viewtypedef res_vt = List_vt ($TR.stm)
   fun loop1 (
       fars: $TL.templst
@@ -781,7 +808,7 @@ fn funarglst_move (accs: $F.accesslst): $TR.stm = let
   end // end of [loop2]
 
   var res: res_vt = list_vt_nil ()
-  val () = loop1 ($F.theFunargReglst, accs, 0, res)
+  val () = loop1 ($F.theFunargReglst, accs, ofs0, res)
 in
   case+ res of
     | ~list_vt_cons (stm, stms) => loop (stms, stm) where {
@@ -816,7 +843,14 @@ fn transFundec1_fst
     // end of [aux]
   } // end of [val]
   val esclst = list_extend (esclst, true(*stalnk*))
-  val frm = $F.frame_make_new (flab, esclst)
+  var ofs0: int = 0
+#if MARCH  = "x86_32"
+  val () = ofs0 := ofs0 + WORDSIZE // [call] pushes EIP onto the stack
+#endif
+#if TIGER_OMIT_FRAME_POINTER = 0 #then
+  val () = ofs0 := ofs0 + WORDSIZE // [EBP] is to be pushed onto the stack
+#endif
+  val frm = $F.frame_make_new (flab, ofs0, esclst)
   val acclst = $F.frame_arglst_get (frm)
   val stamp = $S.stamp_make ()
   val lev1 = LEVELsub (stamp, frm, lev0)
@@ -830,6 +864,7 @@ fn transFundec1_snd
   (env: env, fd: fundec, lev1: level): void = let
   val arglst = fd.fundec_arglst
   val frm = level_frame_get (lev1)
+  val argofs = $F.frame_argofs_get (frm)
   val acclst = $F.frame_arglst_get (frm)
   val env = loop (lev1, env, arglst, acclst) where {
     fun loop (
@@ -846,10 +881,22 @@ fn transFundec1_snd
       | (_, _) => env
     end // end of [loop]
   } // end of [env]
-  val stm_mov = funarglst_move (acclst)
   val e_body = transExp1 (lev1, env, fd.fundec_body)
-  val stm_rst = $TR.STMmove ($F.exp_RV, unEx e_body)
-  val stm = $TR.STMseq (stm_mov, stm_rst)
+  val stm = $TR.STMmove ($F.exp_RV, unEx e_body)
+  val stm_argmov = funarglst_move (acclst, argofs)
+  val stm = $TR.STMseq (stm_argmov, stm)
+  val stm_spmov = $TR.STMmove ($F.exp_FP, $F.exp_SP)
+  val stm = $TR.STMseq (stm_spmov, stm)
+(*
+// this is to be added at the very end:
+#if TIGER_OMIT_FRAME_POINTER = 0 #then
+  val stm_spinc = $TR.STMmove
+    ($F.exp_SP, $TR.EXPbinop ($TR.PLUS, $F.exp_SP, $TR.EXPconst WORDSIZE))
+  val stm = $TR.STMseq (stm_spinc, stm)
+  val stm_fpmov = $TR.STMmove ($TR.EXPmem ($F.exp_SP), $F.exp_FP)
+  val stm = $TR.STMseq (stm_fpmov, stm)
+#endif
+*)
 in
   $F.frame_theFraglst_add ($F.FRAGproc (frm, stm))
 end // end of [transFundec1_snd]

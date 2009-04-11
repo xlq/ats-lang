@@ -30,6 +30,10 @@ fun prerr_templst (tmps: templst): void
 
 (* ****** ****** *)
 
+fun temp_is_special (tmp: temp_t): bool
+
+(* ****** ****** *)
+
 abstype label_t
 typedef lablst = List label_t
 
