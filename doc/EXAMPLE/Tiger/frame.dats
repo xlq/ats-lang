@@ -47,7 +47,8 @@ typedef label = $TL.label_t
 
 (* ****** ****** *)
 
-staload  TREE = "irtree.sats"
+staload AS = "assem.sats"
+staload TR = "irtree.sats"
 
 (* ****** ****** *)
 
@@ -87,9 +88,9 @@ implement access_is_inframe (acc) = case+ acc of InFrame _ => true | _ => false
 
 implement exp_make_access (e_off, acc) = case+ acc of
   | InFrame (k) => begin
-      $TREE.EXPmem ($TREE.EXPbinop ($TREE.PLUS, e_off, $TREE.EXPconst k))
+      $TR.EXPmem ($TR.EXPbinop ($TR.PLUS, e_off, $TR.EXPconst k))
     end // end of [InFrame]
-  | InReg tmp => $TREE.EXPtemp tmp
+  | InReg tmp => $TR.EXPtemp tmp
 // end of [exp_make_access]
 
 val WORDSIZE = WORDSIZE_get ()
@@ -269,10 +270,8 @@ implement EDX = $TL.temp_make_fixed (REGISTER_EDX)
 implement theCallersavedReglst = '[
   temp_eax, temp_ecx, temp_edx
 ] where {
-  val temp_eax = EAX
-  val temp_ecx = ECX
-  val temp_edx = EDX
-}
+  val temp_eax = EAX and temp_ecx = ECX and temp_edx = EDX
+} // end of [theCallersavedReglst]
 
 #define REGISTER_EBX 20
 #define REGISTER_ESI 21
@@ -283,22 +282,84 @@ implement ESI = $TL.temp_make_fixed (REGISTER_ESI)
 implement EDI = $TL.temp_make_fixed (REGISTER_EDI)
 
 implement theCalleesavedReglst = '[
-  temp_ebx, temp_esi, temp_edi, temp_esp, temp_ebp
+  temp_ebx, temp_esi, temp_edi
+(*
+, temp_esp, temp_ebp // special registers
+*)
 ] where {
   val temp_ebx = $TL.temp_make_fixed (20)
   val temp_esi = $TL.temp_make_fixed (21)
   val temp_edi = $TL.temp_make_fixed (22)
-  val temp_esp = ESP
-  val temp_ebp = EBP
-}
+(*
+  val temp_esp = ESP // a special register
+  val temp_ebp = EBP // a special register
+*)
+} // end of [theCalleesavedReglst]
+
+(* ****** ****** *)
+
+implement procEntryExit1_entr (frm, inss) = let
+#if TIGER_OMIT_FRAME_POINTER = 0 #then
+  val () = () where {
+    val asm = "pushl `s0"
+    val src = '[FP] and dst = '[]; val jump = None ()
+    val ins = $AS.INSTRoper (asm, src, dst, jump)
+    val () = inss := list_vt_cons (ins, inss)
+  } // end of [val]
+#endif
+//
+  val () = () where {
+    val asm = "movl `s0, `d0"
+    val src = '[SP] and dst = '[FP]; val jump = None ()
+    val ins = $AS.INSTRoper (asm, src, dst, jump)
+    val () = inss := list_vt_cons (ins, inss)
+  } // end of [val]
+//
+in
+  // empty
+end // end of [procEntryExit1_entr]
+
+implement procEntryExit1_exit (frm, inss) = let
+  viewtypedef instrlst_vt = $AS.instrlst_vt
+  val () = () where {
+    val asm = "movl `s0, `d0"
+    val src = '[FP] and dst = '[SP]; val jump = None ()
+    val ins = $AS.INSTRoper (asm, src, dst, jump)
+    val () = inss := list_vt_cons (ins, inss)
+  } // end of [val]
+//
+#if TIGER_OMIT_FRAME_POINTER = 0 #then
+  val () = () where {
+    val asm = "popl `s0"
+    val src = '[FP] and dst = '[]; val jump = None ()
+    val ins = $AS.INSTRoper (asm, src, dst, jump)
+    val () = inss := list_vt_cons (ins, inss)
+  } // end of [val]
+#endif
+//
+in
+  // empty
+end // end of [procEntryExit1_exit]
+
+(* ****** ****** *)
+
+implement procEntryExit2 (_(*frm*), inss) =
+  inss := list_vt_cons (ins, inss) where {
+  val asm = "ret"
+  val src = theCalleesavedReglst and dst = '[]
+  val jump = None ()
+  val ins = $AS.INSTRoper (asm, src, dst, jump)
+} // end of [procEntryExit2]
+
+(* ****** ****** *)
 
 #endif
 
 (* ****** ****** *)
 
-implement exp_FP = $TREE.EXPtemp (temp_FP)
-implement exp_SP = $TREE.EXPtemp (temp_SP)
-implement exp_RV = $TREE.EXPtemp (temp_RV)
+implement exp_FP = $TR.EXPtemp (temp_FP)
+implement exp_SP = $TR.EXPtemp (temp_SP)
+implement exp_RV = $TR.EXPtemp (temp_RV)
 
 (* ****** ****** *)
 

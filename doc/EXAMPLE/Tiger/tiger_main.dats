@@ -17,7 +17,7 @@ staload "tychecker.sats"
 staload INT0 = "interp0.sats"
 staload TL = "templab.sats"
 staload TR = "irtree.sats"
-staload FRM = "frame.sats"
+staload F = "frame.sats"
 staload TRAN = "translate.sats"
 staload CA = "canonical.sats"
 staload INT1 = "interp1.sats"
@@ -169,23 +169,22 @@ implement main (argc, argv) = let
     print "prog_stm = "; $TR.print_stm prog_stm; print_newline ()
   end // end of [val]
   
-  val theFraglst = list_reverse ($FRM.frame_theFraglst_get ())
+  val theFraglst = list_reverse ($F.frame_theFraglst_get ())
   
   datatype f1rag =
-    | F1RAGproc of ($FRM.frame_t, $TR.stmlst) | F1RAGstring of ($TL.label_t, string)
+    | F1RAGproc of ($F.frame_t, $TR.stmlst) | F1RAGstring of ($TL.label_t, string)
   // end of [frag]
   typedef f1raglst = List f1rag
 
   val theF1raglst = loop (theFraglst, list_nil) where {
-    fun loop (xs: $FRM.fraglst, res: f1raglst): f1raglst = case+ xs of
+    fun loop (xs: $F.fraglst, res: f1raglst): f1raglst = case+ xs of
       | list_cons (x, xs) => let
           val f1rag = case+ x of
-          | $FRM.FRAGproc (frm, stm) => let
-              val lab_frm = $FRM.frame_name_get (frm)
-              val stm = $TR.STMseq ($TR.STMlabel lab_frm, stm)
+          | $F.FRAGproc (frm, stm) => let
               val stms = $CA.linearize stm
               val (lab_done, blks) = $CA.blocklst_gen (stms)
               val stms = $CA.trace_schedule (lab_done, blks)
+              val lab_frm = $F.frame_name_get (frm)
               val () = $INT1.the_labmap_frame_stmlst_insert (lab_frm, frm, stms)
 // (*
               val () = begin
@@ -196,7 +195,7 @@ implement main (argc, argv) = let
             in
               F1RAGproc (frm, stms)
             end // end of [FRAGproc]
-          | $FRM.FRAGstring (lab, str) => let
+          | $F.FRAGstring (lab, str) => let
               val () = $INT1.the_labmap_string_insert (lab, str)
 // (*
               val () = begin
@@ -227,11 +226,11 @@ implement main (argc, argv) = let
       | list_cons (x, xs) => let
           val () = case+ x of
             | F1RAGproc (frm, stms) => let
-                val lab_frm = $FRM.frame_name_get (frm)
+                val lab_frm = $F.frame_name_get (frm)
                 val () = begin
                   print "F1RAGproc: "; $TL.print_label lab_frm; print_string ":\n"
                 end // end of [val]
-                val inss = codegen_stmlst (frm, stms)
+                val inss = codegen_proc (frm, stms)
                 val () = print_instrlst (inss)
               in
                 // empty
@@ -246,7 +245,7 @@ implement main (argc, argv) = let
   } // end of [val]
 
 // (*
-  val prog_inss = codegen_stmlst ($FRM.theTopFrame, prog_stms)
+  val prog_inss = codegen_stmlst ($F.theTopFrame, prog_stms)
   val () = print_instrlst (prog_inss)
 // *)
 in

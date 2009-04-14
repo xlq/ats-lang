@@ -38,7 +38,7 @@ typedef stmlst = $TR.stmlst
 
 (* ****** ****** *)
 
-staload FRM = "frame.sats"
+staload F = "frame.sats"
 
 (* ****** ****** *)
 
@@ -58,7 +58,7 @@ val v1al_int_0 = V1ALint 0
 (* ****** ****** *)
 
 datatype v2al =
-  | V2ALcod of ($FRM.frame_t, stmlst)
+  | V2ALcod of ($F.frame_t, stmlst)
   | V2ALpre of (List v1al -<cloref1> v1al)
   | V2ALstr of string
 
@@ -269,7 +269,7 @@ val () = the_labmap_insert (
 
 (* ****** ****** *)
 
-val WSZ = $FRM.WORDSIZE_get ()
+val WSZ = $F.WORDSIZE_get ()
 
 extern fun the_memory_get (i: int): v1al
 extern fun the_memory_set (i: int, v: v1al): void
@@ -428,7 +428,7 @@ in
           } // end of [val]
           var env_new = tmpmap_empty () // so no need for saving [env]!
           val () = loop (env_new, fars, vs_arg) where {
-            val fars = $FRM.theFunargReglst
+            val fars = $F.theFunargReglst
             val vs_arg = list_reverse (vs_arg_rev)
             fun loop // passing some arguments in registers
               (env: &tmpmap, fars: List temp, vs: List v1al): void =
@@ -441,15 +441,14 @@ in
           } // end of [val]
           // callee starts
           val i_sp = the_stackptr_get ()
-          val ofs0 = $FRM.frame_argofs_get frm
-          val () = tmpmap_insert
-            (env_new, $FRM.SP, V1ALint (i_sp * WSZ - ofs0)) // SP update
+          val ofs0 = $F.frame_argofs_get frm
+          val () = tmpmap_insert (env_new, $F.FP, V1ALint (i_sp * WSZ - ofs0)) // FP update
           val () = the_stackptr_set (i_sp - FRAMESIZE)
           val () = interp1Stmlst (stms, env_new, stms)
           val () = the_stackptr_set (i_sp)
           // callee finishes
         in
-          tmpmap_search (env_new, $FRM.RV) // fetch the return value
+          tmpmap_search (env_new, $F.RV) // fetch the return value
         end // end of [F1UNcod]
       | V2ALpre f_pre => begin
           let val vs_arg = list_reverse vs_arg_rev in f_pre vs_arg end
@@ -551,7 +550,7 @@ implement interp1Prog (stms) = let
   val i_sp = the_stackptr_get ()
   val f_sp = i_sp * WSZ
   val () = the_stackptr_set (i_sp - FRAMESIZE_TOP)
-  val () = tmpmap_insert (env, $FRM.FP, V1ALint f_sp) in
+  val () = tmpmap_insert (env, $F.FP, V1ALint f_sp) in
   interp1Stmlst (stms, env, stms)
 end // end of [val]
 

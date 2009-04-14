@@ -16,6 +16,10 @@ typedef label = $TL.label_t
 
 (* ****** ****** *)
 
+staload AS = "assem.sats"
+
+(* ****** ****** *)
+
 abstype frame_t
 
 abstype access_t
@@ -80,6 +84,16 @@ val theFunargReglst : List temp // for passing function arguments
 val theSpecialReglst : List temp // for some special purposes (FP, RV, etc.)
 val theCallersavedReglst : List temp // caller saved registers
 val theCalleesavedReglst : List temp // callee saved registers
+
+(* ****** ****** *)
+
+// viewshifting and saving/restoring calleesaved registers have
+// been merged into [translate.dats]
+fun procEntryExit1_entr (frm: frame_t, inss: &($AS.instrlst_vt)): void
+fun procEntryExit1_exit (frm: frame_t, inss: &($AS.instrlst_vt)): void
+
+// adding a "sink" instruction
+fun procEntryExit2 (frm: frame_t, inss: &($AS.instrlst_vt)): void
 
 (* ****** ****** *)
 

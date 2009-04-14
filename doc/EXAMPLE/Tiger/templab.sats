@@ -11,6 +11,7 @@
 
 abst@ype temp_t = int64
 typedef templst = List temp_t
+viewtypedef templst_vt = List_vt temp_t
 
 fun temp_make_new (): temp_t
 fun temp_make_fixed (n: int): temp_t

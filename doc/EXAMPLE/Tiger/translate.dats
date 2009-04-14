@@ -824,6 +824,45 @@ end // end of [funarglst_move]
 
 (* ****** ****** *)
 
+fn calleesaved_save ()
+  : @($TR.stm, $TL.templst_vt) = let
+  fun aux (tmps: $TL.templst): @($TR.stm, $TL.templst_vt) =
+    case+ tmps of
+    | list_cons (tmp, tmps) => let
+        val tmp_new = $TL.temp_make_new ()
+        val stm = $TR.STMmove ($TR.EXPtemp tmp_new, $TR.EXPtemp tmp)
+        val res = aux (tmps)
+      in
+        ($TR.STMseq (stm, res.0), list_vt_cons (tmp_new, res.1))
+      end // end of [list_cons]
+    | list_nil () => @($TR.stm_nop, list_vt_nil)
+  // end of [aux]
+in
+  aux ($F.theCalleesavedReglst)
+end // end of [calleesave_save]
+
+fn calleesaved_restore
+  (tmps_new: $TL.templst_vt): $TR.stm = let
+  fun aux
+    (tmps_new: $TL.templst_vt, tmps: $TL.templst): $TR.stm =
+    case+ tmps_new of
+    | ~list_vt_cons (tmp_new, tmps_new) => begin case+ tmps of
+      | list_cons (tmp, tmps) => let
+          val stm_fst = $TR.STMmove ($TR.EXPtemp tmp, $TR.EXPtemp tmp_new)
+          val stm_rst = aux (tmps_new, tmps)
+        in
+          $TR.STMseq (stm_fst, stm_rst)
+        end // end of [list_cons]
+      | list_nil () => aux (tmps_new, tmps)
+      end // end of [list_vt_cons]
+    | ~list_vt_nil () => $TR.stm_nop
+  // end of [aux]
+in
+  aux (tmps_new, $F.theCalleesavedReglst)
+end // end of [calleesaved_restore]
+
+(* ****** ****** *)
+
 fn transFundec1_fst
   (lev0: level, env: &env, fd: fundec): level = let
 (*
@@ -881,12 +920,14 @@ fn transFundec1_snd
       | (_, _) => env
     end // end of [loop]
   } // end of [env]
-  val e_body = transExp1 (lev1, env, fd.fundec_body)
-  val stm = $TR.STMmove ($F.exp_RV, unEx e_body)
+  val res_calleesaved_save = calleesaved_save ()
   val stm_argmov = funarglst_move (acclst, argofs)
+  val e_body = transExp1 (lev1, env, fd.fundec_body)
+  val stm_body = $TR.STMmove ($F.exp_RV, unEx e_body)
+  val stm = calleesaved_restore (res_calleesaved_save.1)
+  val stm = $TR.STMseq (stm_body, stm)
   val stm = $TR.STMseq (stm_argmov, stm)
-  val stm_spmov = $TR.STMmove ($F.exp_FP, $F.exp_SP)
-  val stm = $TR.STMseq (stm_spmov, stm)
+  val stm = $TR.STMseq (res_calleesaved_save.0, stm)
 (*
 // this is to be added at the very end:
 #if TIGER_OMIT_FRAME_POINTER = 0 #then

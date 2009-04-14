@@ -9,6 +9,10 @@
 
 (* ****** ****** *)
 
+staload F = "frame.sats"
+
+(* ****** ****** *)
+
 #include "params.hats"
 
 (* ****** ****** *)
@@ -49,20 +53,26 @@ end // end of [codegen]
 
 implement codegen_stmlst (frm, stms) = let
   var res: instrlst_vt = list_vt_nil ()
-  val () = loop (frm, stms, res) where {
-    fun loop (frm: frame, stms: stmlst, res: &instrlst_vt): void =
-      case+ stms of
-      | list_cons (stm, stms) => let
-          val () = instrlst_add_stm (frm, res, stm) in loop (frm, stms, res)
-        end // end of [list_cons]
-      | list_nil () => ()
-    // end of [loop]
-  }
+  val () = instrlst_add_stmlst (frm, res, stms)
   val res = list_vt_reverse (res)
   val res = list_of_list_vt (res)
 in
   res
-end // end of [codegen]
+end // end of [codegen_stmlst]
+
+(* ****** ****** *)
+
+implement codegen_proc (frm, stms) = let
+  var res: instrlst_vt = list_vt_nil ()
+  val () = $F.procEntryExit1_entr (frm, res)
+  val () = instrlst_add_stmlst (frm, res, stms)
+  val () = $F.procEntryExit1_exit (frm, res)
+  val () = $F.procEntryExit2 (frm, res)
+  val res = list_vt_reverse (res)
+  val res = list_of_list_vt (res)
+in
+  res
+end // end of [codegen_proc]
 
 (* ****** ****** *)
 

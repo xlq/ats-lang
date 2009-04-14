@@ -34,6 +34,7 @@ datatype instr =
     ) // end of [INSTRmove]
 
 typedef instrlst = List instr
+viewtypedef instrlst_vt = List_vt (instr)
 
 fun fprint_instr (out: FILEref, ins: instr): void
 fun print_instr (ins: instr): void
