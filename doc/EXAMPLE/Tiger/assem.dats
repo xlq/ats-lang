@@ -255,4 +255,24 @@ end // end of [instr_format]
 
 (* ****** ****** *)
 
+implement instr_uselst_get (ins) =
+  case+ ins of
+  | INSTRoper (_, src, _, _) => src
+  | INSTRlabel _ => '[]
+  | INSTRmove (_, src, _) => '[src]
+// end of [instr_uselst_get]
+
+implement instr_deflst_get (ins) =
+  case+ ins of
+  | INSTRoper (_, _, def, _) => def
+  | INSTRlabel _ => '[]
+  | INSTRmove (_, _, def) => '[def]
+// end of [instr_deflst_get]
+
+implement instr_jump_get (ins) = case+ ins of
+  | INSTRoper (_, _, _, jump) => jump | _ => None ()
+// end of [instr_jump_get]
+
+(* ****** ****** *)
+
 (* end of [assemb.dats] *)

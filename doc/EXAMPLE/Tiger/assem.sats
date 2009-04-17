@@ -49,6 +49,11 @@ fun prerr_instrlst (inss: instrlst): void
 // right?
 fun instr_format (fmt: temp -<cloref1> string, ins: instr): string
 
+fun instr_uselst_get (ins: instr): templst
+fun instr_deflst_get (ins: instr): templst
+
+fun instr_jump_get (ins: instr): Option (lablst)
+
 end // end of [local]
 
 (* ****** ****** *)

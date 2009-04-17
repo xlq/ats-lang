@@ -25,6 +25,8 @@ staload INT1 = "interp1.sats"
 staload "assem.sats"
 staload "codegen.sats"
 
+staload "fgraph.sats"
+
 (* ****** ****** *)
 
 staload _(*anonymous*) = "prelude/DATS/list.dats"
@@ -63,6 +65,13 @@ dynload "interp1.dats"
 dynload "assem.dats"
 
 dynload "codegen.dats"
+
+dynload "gnode.dats"
+dynload "gtemp.dats"
+
+dynload "fgraph.dats"
+
+dynload "liveness.dats"
 
 (* ****** ****** *)
 
@@ -186,23 +195,23 @@ implement main (argc, argv) = let
               val stms = $CA.trace_schedule (lab_done, blks)
               val lab_frm = $F.frame_name_get (frm)
               val () = $INT1.the_labmap_frame_stmlst_insert (lab_frm, frm, stms)
-// (*
+(*
               val () = begin
                 print "FRAGproc: "; $TL.print_label lab_frm; print_string ":\n";
                 print_stmlst stms
               end // end of [val]
-// *)
+*)
             in
               F1RAGproc (frm, stms)
             end // end of [FRAGproc]
           | $F.FRAGstring (lab, str) => let
               val () = $INT1.the_labmap_string_insert (lab, str)
-// (*
+(*
               val () = begin
                 print "FRAGstring: "; $TL.print_label lab; print_string ": ";
                 print_string str; print_newline ()
               end // end of [val]
-// *)
+*)
             in
               F1RAGstring (lab, str)
             end // end of [val]
@@ -216,11 +225,12 @@ implement main (argc, argv) = let
   val prog_stms = $CA.linearize prog_stm
   val (lab_done, prog_blks) = $CA.blocklst_gen (prog_stms)
   val prog_stms = $CA.trace_schedule (lab_done, prog_blks)
-  val () = print_stmlst prog_stms
 // (*
+  val () = print_stmlst prog_stms
   val () = $INT1.interp1Prog (prog_stms)
 // *)
 
+(*
   val () = loop (theF1raglst) where {
     fun loop (xs: f1raglst): void = case+ xs of
       | list_cons (x, xs) => let
@@ -243,11 +253,17 @@ implement main (argc, argv) = let
       | list_nil () => ()
     // end of [loop]
   } // end of [val]
+*)
 
 // (*
   val prog_inss = codegen_stmlst ($F.theTopFrame, prog_stms)
   val () = print_instrlst (prog_inss)
 // *)
+
+  val prog_fg = fgraph_make_instrlst (prog_inss)
+  val () = print "prog_fg=\n"
+  val () = fprint_fgraph (stdout_ref, prog_fg)
+  val () = print_newline ()
 in
   // empty
 end // end of [main]

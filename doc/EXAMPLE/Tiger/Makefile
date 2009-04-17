@@ -34,11 +34,16 @@ comptig: \
   interp1_sats.o interp1_dats.o \
   assem_sats.o assem_dats.o \
   codegen_sats.o codegen_dats.o \
+  gnode_sats.o gnode_dats.o \
+  gtemp_sats.o gtemp_dats.o \
+  fgraph_sats.o fgraph_dats.o \
+  liveness_dats.o \
   posloc_sats.o posloc_dats.o \
   tokenize_sats.o tokenize_dats.o \
   parcomb_sats.o parcomb_dats.o \
-  hashtable_dats.o \
+  funarray_dats.o \
   funmap_avltree_dats.o \
+  hashtable_dats.o \
   linmap_randbst_dats.o \
 
 
@@ -61,12 +66,17 @@ comptig: \
   interp1_sats.o interp1_dats.o \
   assem_sats.o assem_dats.o \
   codegen_sats.o codegen_dats.o \
+  gnode_sats.o gnode_dats.o \
+  gtemp_sats.o gtemp_dats.o \
+  fgraph_sats.o fgraph_dats.o \
+  liveness_dats.o \
   posloc_sats.o posloc_dats.o \
   tokenize_sats.o tokenize_dats.o \
   parcomb_sats.o parcomb_dats.o \
+  funarray_dats.o \
+  funmap_avltree_dats.o \
   hashtable_dats.o \
   linmap_randbst_dats.o \
-  funmap_avltree_dats.o \
 
 ######
 
@@ -211,6 +221,35 @@ codegen_dats.o: codegen.dats codegen_mips.dats
 
 ######
 
+gnode_sats.o: gnode.sats
+	atscc $(CCFLAGS) -o gnode_sats.o -c gnode.sats
+
+gnode_dats.o: gnode.dats
+	atscc $(CCFLAGS) -o gnode_dats.o -c gnode.dats
+
+######
+
+gtemp_sats.o: gtemp.sats
+	atscc $(CCFLAGS) -o gtemp_sats.o -c gtemp.sats
+
+gtemp_dats.o: gtemp.dats
+	atscc $(CCFLAGS) -o gtemp_dats.o -c gtemp.dats
+
+######
+
+fgraph_sats.o: fgraph.sats
+	atscc $(CCFLAGS) -o fgraph_sats.o -c fgraph.sats
+
+fgraph_dats.o: fgraph.dats
+	atscc $(CCFLAGS) -o fgraph_dats.o -c fgraph.dats
+
+######
+
+liveness_dats.o: liveness.dats
+	atscc $(CCFLAGS) -o liveness_dats.o -c liveness.dats
+
+######
+
 posloc_sats.o: PARCOMB/posloc.sats
 	atscc $(CCFLAGS) -c -o posloc_sats.o PARCOMB/posloc.sats
 
@@ -231,13 +270,20 @@ tokenize_dats.o: PARCOMB/tokenize.dats
 
 ######
 
-hashtable_dats.o: LIB/hashtable.dats
-	atscc $(CCFLAGS) -IATS LIB -c -o hashtable_dats.o LIB/hashtable.dats
+funarray_dats.o: LIB/funarray.dats
+	atscc $(CCFLAGS) -IATS LIB -c -o funarray_dats.o LIB/funarray.dats
 
 ######
 
 funmap_avltree_dats.o: LIB/funmap_avltree.dats
 	atscc $(CCFLAGS) -IATS LIB -c -o funmap_avltree_dats.o LIB/funmap_avltree.dats
+
+######
+
+hashtable_dats.o: LIB/hashtable.dats
+	atscc $(CCFLAGS) -IATS LIB -c -o hashtable_dats.o LIB/hashtable.dats
+
+######
 
 linmap_randbst_dats.o: LIB/linmap_randbst.dats
 	atscc $(CCFLAGS) -IATS LIB -c -o linmap_randbst_dats.o LIB/linmap_randbst.dats
@@ -270,6 +316,10 @@ xref::
 	$(ATSOPT) --posmark_xref=XREF -d interp1.dats > interp1_dats.html
 	$(ATSOPT) --posmark_xref=XREF -d assem.dats > assem_dats.html
 	$(ATSOPT) --posmark_xref=XREF -d codegen.dats > codegen_dats.html
+	$(ATSOPT) --posmark_xref=XREF -d gnode.dats > gnode_dats.html
+	$(ATSOPT) --posmark_xref=XREF -d gtemp.dats > gtemp_dats.html
+	$(ATSOPT) --posmark_xref=XREF -d fgraph.dats > fgraph_dats.html
+	$(ATSOPT) --posmark_xref=XREF -d liveness.dats > liveness_dats.html
 
 ######
 

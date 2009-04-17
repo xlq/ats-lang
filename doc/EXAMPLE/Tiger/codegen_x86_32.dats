@@ -118,6 +118,14 @@ fn instrlst_add_stm
                     val src = '[s0] and dst = '[]; val jump= None ()
                   } // end of [val]
                 } (* end of [EXPconst] *)
+              | EXPname lab2 => () where {
+                  val () = emit
+                    (res, $AS.INSTRoper (asm, src, dst, jump)) where {
+                    val name = $TL.label_name_get (lab2)
+                    val asm = sprintf ("movl `.%s, %i(`s0)", @(name, ofs))
+                    val src = '[s0] and dst = '[]; val jump= None ()
+                  } // end of [val]              
+                } (* end of [EXPname] *)
               | _ => () where {
                   val s1 = auxexp (res, e2)
                   val () = emit
@@ -138,6 +146,14 @@ fn instrlst_add_stm
                     val src = '[s0] and dst = '[]; val jump = None ()
                   } // end of [val]
                 } (* end of [EXPconst] *)
+              | EXPname lab2 => () where {
+                  val () = emit
+                    (res, $AS.INSTRoper (asm, src, dst, jump)) where {
+                    val name = $TL.label_name_get (lab2)
+                    val asm = sprintf ("movl .%s, 0(`s0)", @(name))
+                    val src = '[s0] and dst = '[]; val jump = None ()
+                  } // end of [val]
+                } (* end of [EXPname] *)
               | _ => () where {
                   val s1 = auxexp (res, e2)
                   val () = emit
@@ -159,6 +175,14 @@ fn instrlst_add_stm
                 val src = '[] and dst = '[t1]; val jump = None ()
               } // end of [val]
             } (* end of [EXPconst] *)
+          | EXPname lab2 => () where {
+              val () = emit
+                (res, $AS.INSTRoper (asm, src, dst, jump)) where {
+                val name = $TL.label_name_get (lab2)
+                val asm = sprintf ("movl .%s, `d0", @(name))
+                val src = '[] and dst = '[t1]; val jump = None ()
+              } // end of [val]          
+            } (* end of [EXPname] *)
           | _ => () where {
               val s0 = auxexp (res, e2); val () = emit
                 (res, $AS.INSTRmove (asm, src, dst)) where {
@@ -269,6 +293,7 @@ fn instrlst_add_stm
           (res, $AS.INSTRmove (asm, src, dst)) where {
           val asm = "movl `s0, `d0"; val src = s0 and dst = $F.EAX
         } // end of [val]
+        // NOTE: one-operand style of [imull] is used here
         val () = emit
           (res, $AS.INSTRoper (asm, src, dst, jump)) where {
           val asm = "imull `s1"
