@@ -81,9 +81,15 @@ end // end of [array0_make_elt]
 
 implement array0_size (A) = A.size
 
+implement array0_ptr_size (A) = let
+  val A1 = array_make_view_ptr (A.view | A.data)
+in
+  (A1, A.size)
+end // end of [array0_ptr_size]
+
 (* ****** ****** *)
 
-implement{a} array0_get_elt_at_exn (A, i) = let
+implement{a} array0_get_elt_at (A, i) = let
   val i = size1_of_size i
   val A_data = A.data; val asz = A.size
 in
@@ -92,9 +98,9 @@ in
   end else begin
     $raise SubscriptException
   end // end of [if]
-end (* end of [array0_get_elt_at_exn] *)
+end (* end of [array0_get_elt_at] *)
 
-implement{a} array0_set_elt_at_exn (A, i, x) = let
+implement{a} array0_set_elt_at (A, i, x) = let
   val i = size1_of_size i
   val A_data = A.data; val asz = A.size
 in
@@ -103,29 +109,29 @@ in
   end else begin
     $raise SubscriptException
   end
-end (* end of [array0_set_elt_at_exn] *)
+end (* end of [array0_set_elt_at] *)
 
 (* ****** ****** *)
 
-implement{a} array0_get_elt_at_exn__isz (A, i) = let
+implement{a} array0_get_elt_at__intsz (A, i) = let
   val i = int1_of_int i
 in
   if i >= 0 then begin
-    array0_get_elt_at_exn<a> (A, i2sz i)
+    array0_get_elt_at<a> (A, i2sz i)
   end else begin
     $raise SubscriptException
   end // end of [if]
-end (* end of [array0_get_elt_at_exn__isz] *)
+end (* end of [array0_get_elt_at__intsz] *)
   
-implement{a} array0_set_elt_at_exn__isz (A, i, x) = let
+implement{a} array0_set_elt_at__intsz (A, i, x) = let
   val i = int1_of_int i
 in
   if i >= 0 then begin
-    array0_set_elt_at_exn<a> (A, i2sz i, x)
+    array0_set_elt_at<a> (A, i2sz i, x)
   end else begin
     $raise SubscriptException
   end // end of [if]
-end (* end of [array0_set_elt_at_exn__isz] *)
+end (* end of [array0_set_elt_at__intsz] *)
   
 (* ****** ****** *)
 

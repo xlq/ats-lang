@@ -402,10 +402,22 @@ fun{a:t@ype} array_ptr_to_list {n:nat}
 
 (* ****** ****** *)
 
+castfn array_make_view_ptr {a:viewt@ype} {n:nat} {l:addr}
+  (pf: vbox (array_v (a, n, l)) | p: ptr l):<> array (a, n)
+// end of [array_make_view_ptr]
+
+castfn array_get_view_ptr {a:viewt@ype} {n:nat}
+  (A: array (a, n)):<> [l:addr] (vbox (array_v (a, n, l)) | ptr l)
+// end of [array_get_view_ptr]
+
+(* ****** ****** *)
+
 fun array_make_arraysize
   {a:viewt@ype} {n:nat} (arrsz: arraysize (a, n)):<> array (a, n)
 
 macdef array (x) = array_make_arraysize ,(x)
+
+(* ****** ****** *)
 
 fun{a:t@ype} array_make_elt {n:nat} (asz: size_t n, elt: a):<> array (a, n)
 
@@ -428,11 +440,6 @@ fun array_make_cloref_tsz {a:viewt@ype} {n:nat} (
   , f: !(&(a?) >> a, sizeLt n) -<cloref1> void
   , tsz: sizeof_t a
   ) : array (a, n)
-
-(* ****** ****** *)
-
-fun array_get_view_ptr {a:viewt@ype} {n:nat}
-  (A: array (a, n)):<> [l:addr] (vbox (array_v (a, n, l)) | ptr l)
 
 (* ****** ****** *)
 

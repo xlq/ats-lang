@@ -299,7 +299,15 @@ in
   @{ data= p_arr, view= pfbox }
 end // end of [array_make_clo_tsz]
 
+(* ****** ****** *)
+
+(*
+
+// these are now casting funtions:
+implement array_make_view_ptr (pf | p) = @(pf | p)
 implement array_get_view_ptr (A) = @(A.view | A.data)
+
+*)
 
 (* ****** ****** *)
 

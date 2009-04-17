@@ -61,25 +61,29 @@ fun{a:t@ype} array0_make_elt (asz: size_t, x: a):<!exnref> array0 a
 
 fun array0_size {a:t@ype} (A: array0 a):<> size_t
 
+fun array0_ptr_size {a:t@ype}
+  (A: array0 a):<> [n:nat] (array (a, n), size_t n)
+// end of [array0_ptr_size]
+
 (* ****** ****** *)
 
-fun{a:t@ype} array0_get_elt_at_exn
+fun{a:t@ype} array0_get_elt_at
   (A: array0 a, i: size_t):<!exnref> a
-overload [] with array0_get_elt_at_exn
+overload [] with array0_get_elt_at
 
-fun{a:t@ype} array0_set_elt_at_exn
+fun{a:t@ype} array0_set_elt_at
   (A: array0 a, i: size_t, x: a):<!exnref> void
-overload [] with array0_set_elt_at_exn
+overload [] with array0_set_elt_at
 
 (* ****** ****** *)
 
-fun{a:t@ype} array0_get_elt_at_exn__isz
+fun{a:t@ype} array0_get_elt_at__intsz
   (A: array0 a, i: int):<!exnref> a
-overload [] with array0_get_elt_at_exn__isz
+overload [] with array0_get_elt_at__intsz
 
-fun{a:t@ype} array0_set_elt_at_exn__isz
+fun{a:t@ype} array0_set_elt_at__intsz
   (A: array0 a, i: int, x: a):<!exnref> void
-overload [] with array0_set_elt_at_exn__isz
+overload [] with array0_set_elt_at__intsz
 
 (* ****** ****** *)
 

@@ -352,6 +352,11 @@ extern fun file_send {fd: int}
   (pf_conn: !socket_v (fd, conn) | fd: int fd, filename: string): void
 
 implement file_send (pf_conn | fd, filename) = let
+(*
+  val () = begin
+    prerr "file_send: filename = "; prerr filename; prerr_newline ()
+  end // end of [val]
+*)
   val [l_fil:addr] (pf_fil_opt | p_fil) = fopen_err (filename, file_mode_r)
 in
   if (p_fil <> null) then let
@@ -405,16 +410,24 @@ extern fun filename_extract {m,n:nat}
 ats_ptr_type
 filename_extract (ats_ptr_type msg, ats_size_type n) {
   size_t i = 5 ;
-  char *s0 = (char*)msg + i; char *s = s0 ;
+  char *s0 = (char*)msg + i;
+  char *sa = s0 ;
+  char *sb = s0 ;
 /*
   fprintf (stderr, "filename_extract: msg = %s\n", msg);
 */
   while (i < n) {
-    if (*s == ' ') { *s = '\000'; break ; }
-    ++i ; ++s ;
+    if (*sa == ' ') { *sb = '\000'; break ; }
+    if (*sa == '%') {
+      if (i + 2 < n) {
+        sb[0] = (sa[1]-'0') * 16 + (sa[2]-'0') ;
+        i += 3 ; sa += 3 ; sb += 1 ; continue ;
+      } /* end of [if] */
+    } /* end of [if] */
+    ++i ; *sb = *sa ; ++sa ; ++sb ;
   } // end of [while]
 /*
-  fprintf (stderr, "filename_extract: s = %s\n", s);
+  fprintf (stderr, "filename_extract: s0 = %s\n", s0);
 */
   return (i > 5 ? s0 : (char*)0) ;
 } /* end of [filename_extract] */
@@ -632,7 +645,9 @@ implement main_loop_get {fd} {m,n}
 (*
   val () = begin
     prerr "main_loop_get: msg = "; prerr msg; prerr_newline ()
-  end // end of [val]
+  end where {
+    val msg = __cast (&msg) where { extern castfn __cast (p: Ptr): string }
+  } (* end of [val] *)
 *)
   val ptr = filename_extract (msg, n); val () =
     if ptr <> null then let
