@@ -34,8 +34,8 @@ comptig: \
   interp1_sats.o interp1_dats.o \
   assem_sats.o assem_dats.o \
   codegen_sats.o codegen_dats.o \
-  gnode_sats.o gnode_dats.o \
-  gtemp_sats.o gtemp_dats.o \
+  fgnode_sats.o fgnode_dats.o \
+  tempset_sats.o tempset_dats.o \
   fgraph_sats.o fgraph_dats.o \
   liveness_dats.o \
   posloc_sats.o posloc_dats.o \
@@ -66,8 +66,8 @@ comptig: \
   interp1_sats.o interp1_dats.o \
   assem_sats.o assem_dats.o \
   codegen_sats.o codegen_dats.o \
-  gnode_sats.o gnode_dats.o \
-  gtemp_sats.o gtemp_dats.o \
+  fgnode_sats.o fgnode_dats.o \
+  tempset_sats.o tempset_dats.o \
   fgraph_sats.o fgraph_dats.o \
   liveness_dats.o \
   posloc_sats.o posloc_dats.o \
@@ -221,19 +221,19 @@ codegen_dats.o: codegen.dats codegen_mips.dats
 
 ######
 
-gnode_sats.o: gnode.sats
-	atscc $(CCFLAGS) -o gnode_sats.o -c gnode.sats
+fgnode_sats.o: fgnode.sats
+	atscc $(CCFLAGS) -o fgnode_sats.o -c fgnode.sats
 
-gnode_dats.o: gnode.dats
-	atscc $(CCFLAGS) -o gnode_dats.o -c gnode.dats
+fgnode_dats.o: fgnode.dats
+	atscc $(CCFLAGS) -o fgnode_dats.o -c fgnode.dats
 
 ######
 
-gtemp_sats.o: gtemp.sats
-	atscc $(CCFLAGS) -o gtemp_sats.o -c gtemp.sats
+tempset_sats.o: tempset.sats
+	atscc $(CCFLAGS) -o tempset_sats.o -c tempset.sats
 
-gtemp_dats.o: gtemp.dats
-	atscc $(CCFLAGS) -o gtemp_dats.o -c gtemp.dats
+tempset_dats.o: tempset.dats
+	atscc $(CCFLAGS) -o tempset_dats.o -c tempset.dats
 
 ######
 
@@ -316,8 +316,8 @@ xref::
 	$(ATSOPT) --posmark_xref=XREF -d interp1.dats > interp1_dats.html
 	$(ATSOPT) --posmark_xref=XREF -d assem.dats > assem_dats.html
 	$(ATSOPT) --posmark_xref=XREF -d codegen.dats > codegen_dats.html
-	$(ATSOPT) --posmark_xref=XREF -d gnode.dats > gnode_dats.html
-	$(ATSOPT) --posmark_xref=XREF -d gtemp.dats > gtemp_dats.html
+	$(ATSOPT) --posmark_xref=XREF -d fgnode.dats > fgnode_dats.html
+	$(ATSOPT) --posmark_xref=XREF -d tempset.dats > tempset_dats.html
 	$(ATSOPT) --posmark_xref=XREF -d fgraph.dats > fgraph_dats.html
 	$(ATSOPT) --posmark_xref=XREF -d liveness.dats > liveness_dats.html
 

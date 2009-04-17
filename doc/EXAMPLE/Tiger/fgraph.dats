@@ -9,8 +9,8 @@
 
 (* ****** ****** *)
 
-staload "gnode.sats"
-staload "gtemp.sats"
+staload "fgnode.sats"
+staload "tempset.sats"
 
 (* ****** ****** *)
 
@@ -22,14 +22,19 @@ staload "fgraph.sats"
 
 (* ****** ****** *)
 
+staload _(*anonymous*) = "prelude/DATS/array.dats"
+staload _(*anonymous*) = "prelude/DATS/array0.dats"
+
+(* ****** ****** *)
+
 local
 
 typedef fgnodeinfo = '{
-  node= gnode_t
-, pred= gnodelst_t(*pred*)
-, succ= gnodelst_t(*succ*)
-, uselst= $TL.templst, deflst= $TL.templst
-, inset= gtempset_t, outset= gtempset_t
+  node= fgnode_t
+, pred= fgnodelst_t(*pred*)
+, succ= fgnodelst_t(*succ*)
+, useset= tempset_t, defset= tempset_t
+, inset= tempset_t, outset= tempset_t
 }
 
 assume fgnodeinfo_t = fgnodeinfo
@@ -39,43 +44,57 @@ in // in of [local]
 extern typedef "fgnodeinfo_t" = fgnodeinfo
 
 extern fun fgnodeinfo_pred_set
-  (rep: fgnodeinfo_t, gns: gnodelst_t): void
+  (info: fgnodeinfo_t, fgns: fgnodelst_t): void
   = "fgnodeinfo_pred_set"
 
 extern fun fgnodeinfo_succ_set
-  (rep: fgnodeinfo_t, gns: gnodelst_t): void
+  (info: fgnodeinfo_t, fgns: fgnodelst_t): void
   = "fgnodeinfo_succ_set"
 
+extern fun fgnodeinfo_inset_set
+  (info: fgnodeinfo_t, ts: tempset_t): void
+  = "fgnodeinfo_inset_set"
+
+extern fun fgnodeinfo_outset_set
+  (info: fgnodeinfo_t, ts: tempset_t): void
+  = "fgnodeinfo_outset_set"
+
 implement fgnodeinfo_make
-  (gn, uselst, deflst) = '{
-  node= gn
-, pred= gnodelst_nil (), succ= gnodelst_nil ()
-, uselst= uselst, deflst= deflst
-, inset= gtempset_nil (), outset= gtempset_nil ()
-} // end of [fgnodeinfo_make]
+  (fgn, uselst, deflst) = let
+  val fgns_nil = fgnodelst_nil ()
+  val useset = tempset_make_templst (uselst)
+  val defset = tempset_make_templst (deflst)
+in '{
+  node= fgn
+, pred= fgns_nil, succ= fgns_nil
+, useset= useset, defset= defset
+, inset= useset, outset= tempset_nil ()
+} end // end of [fgnodeinfo_make]
 
 implement fgnodeinfo_pred_get (info) = info.pred
 implement fgnodeinfo_succ_get (info) = info.succ
 
 implement fprint_fgnodeinfo (out, info) = () where {
   val () = fprint_string (out, "node= ")
-  val () = fprint_gnode (out, info.node)
+  val () = fprint_fgnode (out, info.node)
   val () = fprint_newline (out)
   val () = fprint_string (out, "pred= ")
-  val () = fprint_gnodelst (out, info.pred)
+  val () = fprint_fgnodelst (out, info.pred)
   val () = fprint_newline (out)
   val () = fprint_string (out, "succ= ")
-  val () = fprint_gnodelst (out, info.succ)
+  val () = fprint_fgnodelst (out, info.succ)
   val () = fprint_newline (out)
-  val () = fprint_string (out, "uselst= ")
-  val () = $TL.fprint_templst (out, info.uselst)
+  val () = fprint_string (out, "useset= ")
+  val () = fprint_tempset (out, info.useset)
   val () = fprint_newline (out)
-  val () = fprint_string (out, "deflst= ")
-  val () = $TL.fprint_templst (out, info.deflst)
+  val () = fprint_string (out, "defset= ")
+  val () = fprint_tempset (out, info.defset)
   val () = fprint_newline (out)
   val () = fprint_string (out, "inset= ")
+  val () = fprint_tempset (out, info.inset)
   val () = fprint_newline (out)
   val () = fprint_string (out, "outset= ")
+  val () = fprint_tempset (out, info.outset)
   val () = fprint_newline (out)
 } // end of [fprint_fgnodeinfo]
 
@@ -86,42 +105,46 @@ implement prerr_fgnodeinfo (info) = fprint_fgnodeinfo (stderr_ref, info)
 
 (* ****** ****** *)
 
-staload "LIB/funarray.dats"
-
-(* ****** ****** *)
-
-assume fgraph_t (n:int) = funarray_t (fgnodeinfo_t, n)
-
-(* ****** ****** *)
-
-implement fgraph_empty () = funarray_empty ()
-
-implement fgraph_extend (fg, n, info) = funarray_hiadd (fg, n, info)
+assume fgraph_t = array0 (fgnodeinfo_t)
 
 (* ****** ****** *)
 
 implement fprint_fgraph (out, fg) = let
-  val n = funarray_length (fg)
-  fun loop {n,i:nat | i <= n} .<n-i>.
-    (out: FILEref, fg: fgraph_t n, n: int n, i: int i): void =
+  fun loop {n,i:nat | i <= n} .<n-i>. (
+      out: FILEref, A: array (fgnodeinfo_t, n), n: size_t n, i: size_t i
+    ) : void =
     if i < n then let
-      val info = funarray_get_elt_at (fg, i)
-      val () = fprint_fgnodeinfo (out, info)
-      val () = fprint_newline (out)
+      val () = fprint_fgnodeinfo (out, A[i]); val () = fprint_newline (out)
     in
-      loop (out, fg, n, i + 1)
+      loop (out, A, n, i+1)
     end // end of [if]
   // end of [loop
+  val @(A, n) = array0_ptr_size (fg)
 in
-  loop (out, fg, n, 0)
+  loop (out, A, n, 0)
 end (* end of [fprint_fgraph] *)
 
+(* ****** ****** *)
+
+implement fgraph_make_elt (n, info) = let
+  val asz = size1_of_int1 n in array0_make_elt (asz, info)
+end // end of [fgraph_make_elt]
+
+(* ****** ****** *)
+
+implement fgraph_size (fg) = array0_size (fg)
 
 (* ****** ****** *)
 
 implement fgraph_nodeinfo_get (fg, n) = let
-  val n = int_of_gnode (n) in funarray_get_elt_at_exn (fg, n)
+  val n = int_of_fgnode (n) in array0_get_elt_at__intsz (fg, n)
 end // end of [fgraph_nodeinfo_get]
+
+implement fgraph_nodeinfo_set (fg, n, info) = let
+  val n = int_of_fgnode (n) in array0_set_elt_at__intsz (fg, n, info)
+end // end of [fgraph_nodeinfo_get]
+
+(* ****** ****** *)
 
 implement
   fgraph_node_predlst_get (fg, n) = let
@@ -138,20 +161,20 @@ end // end of [fgraph_node_succlst_get]
 (* ****** ****** *)
 
 implement fgraph_edge_insert
-  (fg, gn_fr, gn_to) = () where {
+  (fg, fgn_fr, fgn_to) = () where {
 // modifying the representation for [n_fr]
   val () = () where {
-    val info = fgraph_nodeinfo_get (fg, gn_fr)
-    val gns_succ = fgnodeinfo_succ_get (info)
-    val gns_succ = gnodelst_add (gns_succ, gn_to)
-    val () = fgnodeinfo_succ_set (info, gns_succ)
+    val info = fgraph_nodeinfo_get (fg, fgn_fr)
+    val fgns_succ = fgnodeinfo_succ_get (info)
+    val fgns_succ = fgnodelst_add (fgns_succ, fgn_to)
+    val () = fgnodeinfo_succ_set (info, fgns_succ)
   } // end of [val]
 // modifying the representation for [n_to]
   val () = () where {
-    val info = fgraph_nodeinfo_get (fg, gn_to)
-    val gns_pred = fgnodeinfo_pred_get (info)
-    val gns_pred = gnodelst_add (gns_pred, gn_fr)
-    val () = fgnodeinfo_pred_set (info, gns_pred)
+    val info = fgraph_nodeinfo_get (fg, fgn_to)
+    val fgns_pred = fgnodeinfo_pred_get (info)
+    val fgns_pred = fgnodelst_add (fgns_pred, fgn_fr)
+    val () = fgnodeinfo_pred_set (info, fgns_pred)
   } // end of [val]
 } // end of [fgraph_edge_insert]
 
@@ -169,6 +192,18 @@ ats_void_type
 fgnodeinfo_succ_set
   (ats_ptr_type info, ats_ptr_type succlst) {
   ((fgnodeinfo_t)info)->atslab_succ = succlst ; return ;
+}
+
+ats_void_type
+fgnodeinfo_inset_set
+  (ats_ptr_type info, ats_ptr_type inset) {
+  ((fgnodeinfo_t)info)->atslab_inset = inset ; return ;
+}
+
+ats_void_type
+fgnodeinfo_outset_set
+  (ats_ptr_type info, ats_ptr_type outset) {
+  ((fgnodeinfo_t)info)->atslab_outset = outset ; return ;
 }
 
 %}

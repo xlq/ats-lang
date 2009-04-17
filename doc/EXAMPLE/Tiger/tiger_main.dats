@@ -66,8 +66,8 @@ dynload "assem.dats"
 
 dynload "codegen.dats"
 
-dynload "gnode.dats"
-dynload "gtemp.dats"
+dynload "fgnode.dats"
+dynload "tempset.dats"
 
 dynload "fgraph.dats"
 
