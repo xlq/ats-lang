@@ -197,6 +197,7 @@ overload = with $TL.eq_temp_temp
 
 implement igraph_make_fgraph (fg) = ig where {
   val ig = igraph_make_empty ()
+  val () = igraph_initialize (ig)
   val sz = fgraph_size (fg)
   val sz = size1_of_size (sz)
   val sz = int1_of_size1 (sz)

@@ -62,6 +62,10 @@ fun tempset_diff
 
 (* ****** ****** *)
 
+fun tempset_remove
+  (ts: tempset_t, t: $TL.temp_t): tempset_t
+// end of [tempset_remove]
+
 fun tempset_remove_flag
   (ts: tempset_t, t: $TL.temp_t, flag: &int): tempset_t
 // end of [tempset_remove_flag]

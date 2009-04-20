@@ -134,6 +134,10 @@ implement tempset_diff (ts1, ts2) = case+ (ts1, ts2) of
 
 (* ****** ****** *)
 
+implement tempset_remove (ts, t0) = let
+  var flag: int = 0 in tempset_remove_flag (ts, t0, flag)
+end // end of [tempset_remove]
+
 implement tempset_remove_flag (ts, t0, flag) =
   case+ ts of
   | list_cons (t, ts_tl) => let
