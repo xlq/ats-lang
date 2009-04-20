@@ -9,6 +9,11 @@
 
 (* ****** ****** *)
 
+//
+// it is probably not necessary to make [fgnode_t]
+// abstract, but I really don't have the desire to
+// re-write the code.
+//
 abst@ype fgnode_t = $extype "ats_int_type"
 
 castfn int_of_fgnode (_: fgnode_t): Nat
@@ -55,9 +60,6 @@ fun fgnodelst_ismem (fgns: fgnodelst_t, fgn: fgnode_t): bool
 
 fun fgnodelst_add
   (fgns: fgnodelst_t, fgn: fgnode_t): fgnodelst_t
-
-fun fgnodelst_union
-  (fgns1: fgnodelst_t, fgns2: fgnodelst_t): fgnodelst_t
 
 (* ****** ****** *)
 

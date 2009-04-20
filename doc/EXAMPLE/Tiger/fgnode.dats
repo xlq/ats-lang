@@ -84,20 +84,4 @@ implement fgnodelst_add (fgns, fgn0) = case+ fgns of
 
 (* ****** ****** *)
 
-implement fgnodelst_union (fgns1, fgns2) = case+ (fgns1, fgns2) of
-  | (list_cons (fgn1, fgns1_tl), list_cons (fgn2, fgns2_tl)) => begin
-      if fgn2 < fgn1 then begin
-        list_cons (fgn2, fgnodelst_union (fgns1, fgns2_tl))
-      end else if fgn2 > fgn1 then
-        list_cons (fgn1, fgnodelst_union (fgns1_tl, fgns2))
-      else begin
-        list_cons (fgn1, fgnodelst_union (fgns1_tl, fgns2_tl))
-      end // end of [if]
-    end (* end of [list_cons, list_cons] *)
-  | (_, list_nil ()) => fgns1
-  | (list_nil (), _) => fgns2
-// end of [fgnodelst_union_flag]
-
-(* ****** ****** *)
-
 (* end of [fgnode.sats] *)
