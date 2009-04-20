@@ -20,7 +20,11 @@ typedef label_t = $TL.label_t
 
 staload "fgnode.sats"
 staload "tempset.sats"
+
+(* ****** ****** *)
+
 staload "fgraph.sats"
+staload "igraph.sats"
 
 (* ****** ****** *)
 
@@ -51,9 +55,10 @@ implement fgraph_make_instrlst (inss) = let
       | list_cons _ => let
           val fgn = fgnode_make_int (n)
           val+ list_cons (ins, inss) = inss
+          val ismove = $AS.instr_ismove (ins)
           val uselst = $AS.instr_uselst_get (ins)
           val deflst = $AS.instr_deflst_get (ins)
-          val info = fgnodeinfo_make (fgn, uselst, deflst)
+          val info = fgnodeinfo_make (fgn, ismove, uselst, deflst)
           val () = fgraph_nodeinfo_set (fg, fgn, info)
           val () = case+ ins of
           | $AS.INSTRlabel (_(*asm*), lab) => () where {
@@ -127,7 +132,167 @@ end // end of [fgraph_make_instrlst]
 **
 *)
 
-fn fgraph_outset_compute (fg: fgraph_t) =
+implement fgraph_compute_outset (fg) = let
+  fun loop_one {i:nat}
+    (fg: fgraph_t, flag: &int, i: int i): void =
+    if i > 0 then let
+      val i1 = i - 1
+      val fgn = fgnode_make_int (i1)
+      val info = fgraph_nodeinfo_get (fg, fgn)
+      val succlst = fgnodeinfo_succ_get (info)
+      val succlst = fgnodelst_list_get (succlst)
+      val inset = fgnodeinfo_inset_get (info)
+      val outset = fgnodeinfo_outset_get (info)
+//
+      val flag0 = flag
+      val outset = loop_outset (fg, outset, flag, succlst) where {
+        fun loop_outset (
+            fg: fgraph_t
+          , outset: tempset_t
+          , flag: &int
+          , fgns: List fgnode_t
+          ) : tempset_t = case+ fgns of
+          | list_cons (fgn, fgns) => let
+              val info = fgraph_nodeinfo_get (fg, fgn)
+              val inset = fgnodeinfo_inset_get (info)
+              val outset = tempset_union_flag (outset, inset, flag)
+            in
+              loop_outset (fg, outset, flag, fgns)
+            end // end of [list_cons]
+          | list_nil () => outset
+        // end of [loop_outset]
+      } // end of [val]
+      val () = if flag > flag0 then fgnodeinfo_outset_set (info, outset)
+//
+      val defset = fgnodeinfo_defset_get (info)
+      val diffset = tempset_diff (outset, defset)
+      val flag0 = flag
+      val inset = tempset_union_flag (inset, diffset, flag)
+      val () = if flag > flag0 then fgnodeinfo_inset_set (info, inset)
+    in
+      loop_one (fg, flag, i1)
+    end // end of [if]
+  // end of [loop_one]
+  val sz = fgraph_size (fg)
+  val sz = size1_of_size (sz)
+  val sz = int1_of_size1 (sz)
+  var ntimes: int = 0
+  var flag: int = 0
+in
+  while (true) let
+    val flag0 = flag
+    val () = print "fgraph_compute_outset: ntimes = ";
+    val () = print ntimes;
+    val () = print_newline ()
+    val () = loop_one (fg, flag, sz)
+    val () = ntimes := ntimes + 1
+  in
+    if (flag = flag0) then break
+  end // end of [while]
+end (* end of [fgraph_compute_outset] *)
+
+(* ****** ****** *)
+
+overload = with $TL.eq_temp_temp
+
+implement igraph_make_fgraph (fg) = ig where {
+  val ig = igraph_make_empty ()
+  val sz = fgraph_size (fg)
+  val sz = size1_of_size (sz)
+  val sz = int1_of_size1 (sz)
+  val () = loop (ig, fg, 0, sz) where {
+    fun loop {sz,i:nat | i <= sz} (
+        ig: igraph_t, fg: fgraph_t, i: int i, sz: int sz
+      ) : void =
+      if i < sz then let
+        val fgn = fgnode_make_int (i)
+        val info = fgraph_nodeinfo_get (fg, fgn)
+        val ismove = fgnodeinfo_ismove_get (info)
+        val defset = fgnodeinfo_defset_get (info)
+        val deflst = templst_of_tempset (defset)
+        val outset = fgnodeinfo_outset_get (info)
+        val outlst = templst_of_tempset (outset)
+(*
+        val () = begin
+          prerr "igraph_make_fgraph:\n";
+          prerr "deflst = "; $TL.prerr_templst deflst; prerr_newline ();
+          prerr "outlst = "; $TL.prerr_templst outlst; prerr_newline ();
+        end // end of [val]
+*)
+        val () = if ~ismove then
+          loop1 (ig, deflst, outlst) where {
+          fun loop1 (
+              ig: igraph_t
+            , ts1: $TL.templst
+            , ts2: $TL.templst
+            ) : void =
+            case+ ts1 of
+            | list_cons (t1, ts1) => let
+                val () = loop2 (ig, t1, ts2) in
+                loop1 (ig, ts1, ts2)
+              end // end of [list_cons]
+            | list_nil () => ()
+          // end of [loop]
+          
+          and loop2 (
+              ig: igraph_t
+            , t1: $TL.temp_t
+            , ts2: $TL.templst
+            ) : void =
+            case+ ts2 of
+            | list_cons (t2, ts2) => let
+                val () = if ~(t1 = t2) then
+                  igraph_int_edge_insert (ig, t1, t2)
+                // end of [val]
+              in
+                loop2 (ig, t1, ts2)
+              end // end of [list_cons]
+            | list_nil () => ()
+          // end of [loop2]
+        } // end of [val]
+        val () = if ismove then let
+          val useset = fgnodeinfo_useset_get (info)
+          val uselst = templst_of_tempset (useset)
+          val- list_cons (t_src, _) = uselst
+          val- list_cons (t_dst, _) = deflst
+          val () = igraph_mov_edge_insert (ig, t_src, t_dst)
+          fun loop3 (
+              ig: igraph_t
+            , t_src: $TL.temp_t, t_dst: $TL.temp_t
+            , ts: $TL.templst
+            ) : void = begin case+ ts of
+            | list_cons (t, ts) => let
+                val () =
+                  if t = t_src then () else
+                    if t = t_dst then () else begin
+                      igraph_int_edge_insert (ig, t_dst, t)
+                    end
+                  // end of [if]
+              in
+                loop3 (ig, t_src, t_dst, ts)
+              end // end of [list_cons]
+            | list_nil () => ()
+          end // end of [loop3]
+        in
+          loop3 (ig, t_src, t_dst, outlst)
+        end // end of [val]
+      in
+        loop (ig, fg, i + 1, sz)
+      end // end of [if]
+    // end of [loop]
+  } // end of [val]
+} (* end of [igraph_make_fgraph] *)
+
+(* ****** ****** *)
+
+implement
+  igraph_make_instrlst (inss) = let
+  val fg = fgraph_make_instrlst (inss)
+  val () = fgraph_compute_outset (fg)
+  val ig = igraph_make_fgraph (fg)
+in
+  ig
+end // end of [igraph_make_instrlst]
 
 (* ****** ****** *)
 

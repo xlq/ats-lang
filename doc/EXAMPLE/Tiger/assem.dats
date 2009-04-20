@@ -255,6 +255,13 @@ end // end of [instr_format]
 
 (* ****** ****** *)
 
+implement instr_ismove (ins) =
+  case+ ins of
+  | INSTRoper _ => false
+  | INSTRlabel _ => false
+  | INSTRmove _ => true
+// end of [instr_ismove]  
+
 implement instr_uselst_get (ins) =
   case+ ins of
   | INSTRoper (_, src, _, _) => src

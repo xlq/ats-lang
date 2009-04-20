@@ -35,8 +35,13 @@ end // end of [temp_make_new]
 
 implement temp_make_fixed (n) = int64_of_int n
 
+implement eq_temp_temp
+  (tmp1, tmp2) = eq_int64_int64 (tmp1, tmp2)
+// end of [eq_temp_temp]
+
 implement compare_temp_temp
   (tmp1, tmp2) = compare_int64_int64 (tmp1, tmp2)
+// end of [compare_temp_temp]
 
 implement fprint_temp (out, tmp) = begin
   fprint_string (out, "tmp"); fprint_int64 (out, tmp)

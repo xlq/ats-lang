@@ -18,6 +18,8 @@ fun temp_make_fixed (n: int): temp_t
 
 fun temp_name_get (tmp: temp_t): string
 
+fun eq_temp_temp (_: temp_t, _: temp_t):<> bool
+
 fun compare_temp_temp (_: temp_t, _: temp_t):<> Sgn
 overload compare with compare_temp_temp
 

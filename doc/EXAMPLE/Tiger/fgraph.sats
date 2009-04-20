@@ -9,12 +9,16 @@
 
 (* ****** ****** *)
 
-// directional graph for liveness analysis
+// control flow graph for liveness analysis
 
 (* ****** ****** *)
 
 staload AS = "assem.sats"
 staload TL = "templab.sats"
+
+(* ****** ****** *)
+
+staload "tempset.sats"
 
 (* ****** ****** *)
 
@@ -24,11 +28,42 @@ staload "fgnode.sats"
 
 abstype fgnodeinfo_t // information stored at each node
 
+(* ****** ****** *)
+
+fun fgnodeinfo_ismove_get (info: fgnodeinfo_t): bool
+
 fun fgnodeinfo_pred_get (info: fgnodeinfo_t): fgnodelst_t
 fun fgnodeinfo_succ_get (info: fgnodeinfo_t): fgnodelst_t
 
-fun fgnodeinfo_make
-  (fgn: fgnode_t, uselst: $TL.templst, deflst: $TL.templst): fgnodeinfo_t
+fun fgnodeinfo_useset_get (info: fgnodeinfo_t): tempset_t
+fun fgnodeinfo_defset_get (info: fgnodeinfo_t): tempset_t
+fun fgnodeinfo_inset_get (info: fgnodeinfo_t): tempset_t
+fun fgnodeinfo_outset_get (info: fgnodeinfo_t): tempset_t
+
+(* ****** ****** *)
+
+fun fgnodeinfo_pred_set
+  (info: fgnodeinfo_t, fgns: fgnodelst_t): void
+  = "fgnodeinfo_pred_set"
+
+fun fgnodeinfo_succ_set
+  (info: fgnodeinfo_t, fgns: fgnodelst_t): void
+  = "fgnodeinfo_succ_set"
+
+fun fgnodeinfo_inset_set
+  (info: fgnodeinfo_t, ts: tempset_t): void
+  = "fgnodeinfo_inset_set"
+
+fun fgnodeinfo_outset_set
+  (info: fgnodeinfo_t, ts: tempset_t): void
+  = "fgnodeinfo_outset_set"
+
+(* ****** ****** *)
+
+fun fgnodeinfo_make (
+    fgn: fgnode_t
+  , ismove: bool, uselst: $TL.templst, deflst: $TL.templst
+  ) :<> fgnodeinfo_t
 // end of [fgnodeinfo_make]
 
 (* ****** ****** *)
@@ -57,20 +92,16 @@ fun fgraph_size (fg: fgraph_t): size_t
 (* ****** ****** *)
 
 fun fgraph_nodeinfo_get (fg: fgraph_t, n: fgnode_t): fgnodeinfo_t
-
 fun fgraph_nodeinfo_set (fg: fgraph_t, n: fgnode_t, info: fgnodeinfo_t): void
-
-fun fgraph_node_succlst_get (fg: fgraph_t, n: fgnode_t): fgnodelst_t
-fun fgraph_node_predlst_get (fg: fgraph_t, n: fgnode_t): fgnodelst_t
 
 (* ****** ****** *)
 
 fun fgraph_edge_insert (fg: fgraph_t, fr: fgnode_t, to: fgnode_t): void
-fun fgraph_edge_remove (fg: fgraph_t, fr: fgnode_t, to: fgnode_t): void
 
 (* ****** ****** *)
 
 fun fgraph_make_instrlst (inss: $AS.instrlst): fgraph_t
+fun fgraph_compute_outset (fg: fgraph_t): void
 
 (* ****** ****** *)
 

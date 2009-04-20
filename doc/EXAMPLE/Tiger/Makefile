@@ -37,7 +37,9 @@ comptig: \
   fgnode_sats.o fgnode_dats.o \
   tempset_sats.o tempset_dats.o \
   fgraph_sats.o fgraph_dats.o \
+  igraph_sats.o igraph_dats.o \
   liveness_dats.o \
+  regalloc_sats.o regalloc_dats.o \
   posloc_sats.o posloc_dats.o \
   tokenize_sats.o tokenize_dats.o \
   parcomb_sats.o parcomb_dats.o \
@@ -69,7 +71,9 @@ comptig: \
   fgnode_sats.o fgnode_dats.o \
   tempset_sats.o tempset_dats.o \
   fgraph_sats.o fgraph_dats.o \
+  igraph_sats.o igraph_dats.o \
   liveness_dats.o \
+  regalloc_sats.o regalloc_dats.o \
   posloc_sats.o posloc_dats.o \
   tokenize_sats.o tokenize_dats.o \
   parcomb_sats.o parcomb_dats.o \
@@ -245,8 +249,24 @@ fgraph_dats.o: fgraph.dats
 
 ######
 
+igraph_sats.o: igraph.sats
+	atscc $(CCFLAGS) -o igraph_sats.o -c igraph.sats
+
+igraph_dats.o: igraph.dats
+	atscc $(CCFLAGS) -o igraph_dats.o -c igraph.dats
+
+######
+
 liveness_dats.o: liveness.dats
 	atscc $(CCFLAGS) -o liveness_dats.o -c liveness.dats
+
+######
+
+regalloc_sats.o: regalloc.sats
+	atscc $(CCFLAGS) -o regalloc_sats.o -c regalloc.sats
+
+regalloc_dats.o: regalloc.dats
+	atscc $(CCFLAGS) -o regalloc_dats.o -c regalloc.dats
 
 ######
 
@@ -319,7 +339,9 @@ xref::
 	$(ATSOPT) --posmark_xref=XREF -d fgnode.dats > fgnode_dats.html
 	$(ATSOPT) --posmark_xref=XREF -d tempset.dats > tempset_dats.html
 	$(ATSOPT) --posmark_xref=XREF -d fgraph.dats > fgraph_dats.html
+	$(ATSOPT) --posmark_xref=XREF -d igraph.dats > igraph_dats.html
 	$(ATSOPT) --posmark_xref=XREF -d liveness.dats > liveness_dats.html
+	$(ATSOPT) --posmark_xref=XREF -d regalloc.dats > regalloc_dats.html
 
 ######
 

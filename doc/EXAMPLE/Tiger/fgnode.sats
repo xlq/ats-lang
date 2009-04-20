@@ -11,10 +11,6 @@
 
 abst@ype fgnode_t = $extype "ats_int_type"
 
-abstype fgnodelst_t // this list is assumed to be ordered
-
-(* ****** ****** *)
-
 castfn int_of_fgnode (_: fgnode_t): Nat
 castfn fgnode_of_int (_: Nat): fgnode_t
 
@@ -27,6 +23,12 @@ fun fgnode_make_int (n: Nat): fgnode_t
 fun fprint_fgnode (out: FILEref, fgn: fgnode_t): void
 fun print_fgnode (fgn: fgnode_t): void
 fun prerr_fgnode (fgn: fgnode_t): void
+
+(* ****** ****** *)
+
+abstype fgnodelst_t // this list is assumed to be ordered
+
+castfn fgnodelst_list_get (fgns: fgnodelst_t): List (fgnode_t)
 
 (* ****** ****** *)
 
@@ -44,8 +46,8 @@ overload compare with compare_fgnode_fgnode
 
 (* ****** ****** *)
 
-fun fgnodelst_nil (): fgnodelst_t
-fun fgnodelst_sing (fgn: fgnode_t): fgnodelst_t
+fun fgnodelst_nil ():<> fgnodelst_t
+fun fgnodelst_sing (fgn: fgnode_t):<> fgnodelst_t
 
 (* ****** ****** *)
 

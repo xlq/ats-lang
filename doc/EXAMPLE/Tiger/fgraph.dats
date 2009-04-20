@@ -31,6 +31,7 @@ local
 
 typedef fgnodeinfo = '{
   node= fgnode_t
+, ismove= bool
 , pred= fgnodelst_t(*pred*)
 , succ= fgnodelst_t(*succ*)
 , useset= tempset_t, defset= tempset_t
@@ -43,56 +44,56 @@ in // in of [local]
 
 extern typedef "fgnodeinfo_t" = fgnodeinfo
 
-extern fun fgnodeinfo_pred_set
-  (info: fgnodeinfo_t, fgns: fgnodelst_t): void
-  = "fgnodeinfo_pred_set"
-
-extern fun fgnodeinfo_succ_set
-  (info: fgnodeinfo_t, fgns: fgnodelst_t): void
-  = "fgnodeinfo_succ_set"
-
-extern fun fgnodeinfo_inset_set
-  (info: fgnodeinfo_t, ts: tempset_t): void
-  = "fgnodeinfo_inset_set"
-
-extern fun fgnodeinfo_outset_set
-  (info: fgnodeinfo_t, ts: tempset_t): void
-  = "fgnodeinfo_outset_set"
-
 implement fgnodeinfo_make
-  (fgn, uselst, deflst) = let
+  (fgn, ismove, uselst, deflst) = let
   val fgns_nil = fgnodelst_nil ()
   val useset = tempset_make_templst (uselst)
   val defset = tempset_make_templst (deflst)
 in '{
   node= fgn
+, ismove= ismove
 , pred= fgns_nil, succ= fgns_nil
 , useset= useset, defset= defset
 , inset= useset, outset= tempset_nil ()
 } end // end of [fgnodeinfo_make]
 
+implement fgnodeinfo_ismove_get (info) = info.ismove
 implement fgnodeinfo_pred_get (info) = info.pred
 implement fgnodeinfo_succ_get (info) = info.succ
+implement fgnodeinfo_useset_get (info) = info.useset
+implement fgnodeinfo_defset_get (info) = info.defset
+implement fgnodeinfo_inset_get (info) = info.inset
+implement fgnodeinfo_outset_get (info) = info.outset
 
 implement fprint_fgnodeinfo (out, info) = () where {
   val () = fprint_string (out, "node= ")
   val () = fprint_fgnode (out, info.node)
   val () = fprint_newline (out)
+//
+  val () = fprint_string (out, "ismove= ")
+  val () = fprint_bool (out, info.ismove)
+  val () = fprint_newline (out)
+//
   val () = fprint_string (out, "pred= ")
   val () = fprint_fgnodelst (out, info.pred)
   val () = fprint_newline (out)
+//
   val () = fprint_string (out, "succ= ")
   val () = fprint_fgnodelst (out, info.succ)
   val () = fprint_newline (out)
+//
   val () = fprint_string (out, "useset= ")
   val () = fprint_tempset (out, info.useset)
   val () = fprint_newline (out)
+//
   val () = fprint_string (out, "defset= ")
   val () = fprint_tempset (out, info.defset)
   val () = fprint_newline (out)
+//
   val () = fprint_string (out, "inset= ")
   val () = fprint_tempset (out, info.inset)
   val () = fprint_newline (out)
+//
   val () = fprint_string (out, "outset= ")
   val () = fprint_tempset (out, info.outset)
   val () = fprint_newline (out)
@@ -143,20 +144,6 @@ end // end of [fgraph_nodeinfo_get]
 implement fgraph_nodeinfo_set (fg, n, info) = let
   val n = int_of_fgnode (n) in array0_set_elt_at__intsz (fg, n, info)
 end // end of [fgraph_nodeinfo_get]
-
-(* ****** ****** *)
-
-implement
-  fgraph_node_predlst_get (fg, n) = let
-  val info = fgraph_nodeinfo_get (fg, n) in
-  fgnodeinfo_pred_get (info)
-end // end of [fgraph_node_predlst_get]
-
-implement
-  fgraph_node_succlst_get (fg, n) = let
-  val info = fgraph_nodeinfo_get (fg, n) in
-  fgnodeinfo_succ_get (info)
-end // end of [fgraph_node_succlst_get]
 
 (* ****** ****** *)
 

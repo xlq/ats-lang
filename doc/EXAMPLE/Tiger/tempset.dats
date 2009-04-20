@@ -17,7 +17,15 @@ staload "tempset.sats"
 
 (* ****** ****** *)
 
+staload _(*anonymous*) = "prelude/DATS/list.dats"
+
+(* ****** ****** *)
+
 assume tempset_t = $TL.templst
+
+(* ****** ****** *)
+
+implement templst_of_tempset (ts) = ts
 
 (* ****** ****** *)
 
@@ -29,12 +37,26 @@ implement tempset_make_templst (ts) = let
     | list_cons (t, ts) => loop (ts, tempset_add (res, t))
     | list_nil () => res
 in
-  loop (ts, list_nil ())
+  $effmask_all (loop (ts, list_nil ()))
 end // end of [tempset_make_templst]
 
 (* ****** ****** *)
 
 implement fprint_tempset (out, ts) = $TL.fprint_templst (out, ts)
+
+(* ****** ****** *)
+
+implement tempset_size (ts) = list_length (ts)
+
+(* ****** ****** *)
+
+implement tempset_is_empty (ts) =
+  case+ ts of list_cons _ => false | list_nil _ => true
+// end of [tempset_is_empty]
+
+implement tempset_isnot_empty (ts) =
+  case+ ts of list_cons _ => true | list_nil _ => false
+// end of [tempset_isnot_empty]
 
 (* ****** ****** *)
 
@@ -109,6 +131,26 @@ implement tempset_diff (ts1, ts2) = case+ (ts1, ts2) of
   | (list_nil _, _) => list_nil ()
   | (_, list_nil _) => ts1
 // end of [tempset_diff]
+
+(* ****** ****** *)
+
+implement tempset_remove_flag (ts, t0, flag) =
+  case+ ts of
+  | list_cons (t, ts_tl) => let
+      val sgn = $TL.compare_temp_temp (t0, t)
+    in
+      if sgn < 0 then ts
+      else if sgn > 0 then let
+        val flag0 = flag
+        val ts_tl = tempset_remove_flag (ts_tl, t0, flag)
+      in
+        if flag > flag0 then list_cons (t, ts_tl) else ts
+      end else let
+        val () = flag := flag + 1 in ts_tl
+      end // end of [if]
+    end (* end of [list_cons] *)
+  | list_nil () => list_nil ()
+// end of [tempset_remove_flag]
 
 (* ****** ****** *)
 

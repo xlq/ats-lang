@@ -17,13 +17,23 @@ abstype tempset_t
 
 (* ****** ****** *)
 
-fun tempset_nil (): tempset_t
+fun tempset_nil ():<> tempset_t
 
-fun tempset_make_templst (ts: $TL.templst): tempset_t
+fun templst_of_tempset (ts: tempset_t):<> $TL.templst
+fun tempset_make_templst (ts: $TL.templst):<> tempset_t
 
 (* ****** ****** *)
 
 fun fprint_tempset (out: FILEref, ts: tempset_t): void
+
+(* ****** ****** *)
+
+fun tempset_size (ts: tempset_t): Nat
+
+(* ****** ****** *)
+
+fun tempset_is_empty (ts: tempset_t):<> bool
+fun tempset_isnot_empty (ts: tempset_t):<> bool
 
 (* ****** ****** *)
 
@@ -49,6 +59,12 @@ fun tempset_union_flag
 
 fun tempset_diff
   (ts1: tempset_t, ts2: tempset_t): tempset_t
+
+(* ****** ****** *)
+
+fun tempset_remove_flag
+  (ts: tempset_t, t: $TL.temp_t, flag: &int): tempset_t
+// end of [tempset_remove_flag]
 
 (* ****** ****** *)
 

@@ -80,8 +80,14 @@ abstype reg_t (* string *)
 
 fun temp_reg_find (tmp: temp): Option (reg_t)
 
-val theFunargReglst : List temp // for passing function arguments
-val theSpecialReglst : List temp // for some special purposes (FP, RV, etc.)
+val theFunargReglst : List temp //
+// registers for passing function arguments
+
+val theSpecialReglst : List temp //
+// registers for some special purposes (e.g., SP, FP)
+
+val theGeneralReglst : List temp // for general purpose
+
 val theCallersavedReglst : List temp // caller saved registers
 val theCalleesavedReglst : List temp // callee saved registers
 

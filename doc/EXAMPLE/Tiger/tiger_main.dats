@@ -26,6 +26,8 @@ staload "assem.sats"
 staload "codegen.sats"
 
 staload "fgraph.sats"
+staload "igraph.sats"
+staload "regalloc.sats"
 
 (* ****** ****** *)
 
@@ -70,8 +72,10 @@ dynload "fgnode.dats"
 dynload "tempset.dats"
 
 dynload "fgraph.dats"
+dynload "igraph.dats"
 
 dynload "liveness.dats"
+dynload "regalloc.dats"
 
 (* ****** ****** *)
 
@@ -230,7 +234,7 @@ implement main (argc, argv) = let
   val () = $INT1.interp1Prog (prog_stms)
 // *)
 
-(*
+// (*
   val () = loop (theF1raglst) where {
     fun loop (xs: f1raglst): void = case+ xs of
       | list_cons (x, xs) => let
@@ -242,6 +246,15 @@ implement main (argc, argv) = let
                 end // end of [val]
                 val inss = codegen_proc (frm, stms)
                 val () = print_instrlst (inss)
+                val ig = igraph_make_instrlst (inss)
+                val () = print "ig()=\n"
+                val () = fprint_igraph (stdout_ref, ig)
+                val () = igraph_simplify0 (ig)
+                val () = print "ig(simplify0)=\n"
+                val () = fprint_igraph (stdout_ref, ig)
+                val () = igraph_simplify1 (ig)
+                val () = print "ig(simplify1)=\n"
+                val () = fprint_igraph (stdout_ref, ig)
               in
                 // empty
               end // end of [val]
@@ -253,16 +266,24 @@ implement main (argc, argv) = let
       | list_nil () => ()
     // end of [loop]
   } // end of [val]
-*)
+// *)
 
 // (*
   val prog_inss = codegen_stmlst ($F.theTopFrame, prog_stms)
   val () = print_instrlst (prog_inss)
 // *)
 
-  val prog_fg = fgraph_make_instrlst (prog_inss)
-  val () = print "prog_fg=\n"
-  val () = fprint_fgraph (stdout_ref, prog_fg)
+  val prog_ig = igraph_make_instrlst (prog_inss)
+  val () = print "prog_ig=\n"
+  val () = fprint_igraph (stdout_ref, prog_ig)
+  val () = print_newline ()
+  val () = igraph_simplify0 (prog_ig)
+  val () = print "prog_ig(simplify0)=\n"
+  val () = fprint_igraph (stdout_ref, prog_ig)
+  val () = print_newline ()
+  val () = igraph_simplify1 (prog_ig)
+  val () = print "prog_ig(simplify1)=\n"
+  val () = fprint_igraph (stdout_ref, prog_ig)
   val () = print_newline ()
 in
   // empty

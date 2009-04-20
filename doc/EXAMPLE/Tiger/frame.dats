@@ -253,9 +253,12 @@ val temp_SP = $TL.temp_make_fixed (REGISTER_SP)
 val temp_FP = $TL.temp_make_fixed (REGISTER_FP)
 val temp_RV = $TL.temp_make_fixed (REGISTER_RV)
 
-implement RV = temp_RV
-implement FP = temp_FP
 implement SP = temp_SP
+implement FP = temp_FP
+implement RV = temp_RV
+
+// [RV] is [EAX] on x86-32
+implement theSpecialReglst = '[temp_SP, temp_FP]
 
 implement EAX = temp_RV
 implement ESP = temp_SP
@@ -295,6 +298,22 @@ implement theCalleesavedReglst = '[
   val temp_ebp = EBP // a special register
 *)
 } // end of [theCalleesavedReglst]
+
+implement theGeneralReglst = '[
+  temp_eax
+, temp_ebx
+, temp_ecx
+, temp_edx
+, temp_esi
+, temp_edi
+] where {
+  val temp_eax = EAX
+  val temp_ebx = EBX
+  val temp_ecx = ECX
+  val temp_edx = EDX
+  val temp_esi = ESI
+  val temp_edi = EDI
+} // end of [theGeneralReglst]
 
 (* ****** ****** *)
 
