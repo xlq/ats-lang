@@ -64,7 +64,7 @@ implement{a} list_vt_of_arraysize (arrsz) = let
   fun loop {n:nat} {l1,l2:addr} .<n>. (
       pf1: !array_v (a, n, l1) >> array_v (a?, n, l1)
     , pf2: !List_vt? @ l2 >> list_vt (a, n) @ l2
-    | p_arr: ptr l1, res: ptr l2, n: int n
+    | p_arr: ptr l1, res: ptr l2, n: size_t n
     ) :<> void =
     if n > 0 then let
       prval (pf11, pf12) = array_v_uncons {a} (pf1)

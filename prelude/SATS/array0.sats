@@ -48,10 +48,15 @@
 
 (* ****** ****** *)
 
-fun array0_make_arraysize
-  {a:viewt@ype} {n:nat} (arrsz: arraysize (a, n)):<> array0 (a)
+fun array0_make_arraysize {a:viewt@ype}
+  {n:nat} (arrsz: arraysize (a, n)):<> array0 (a)
+// end of [array0_make_arraysize]
 
 macdef array0 (x) = array0_make_arraysize ,(x)
+
+fun array0_get_arraysize_ref
+  {a:viewt@ype} (A: array0 a):<> ref (Arraysize a)
+// end of [array0_get_arraysize_ref]
 
 (* ****** ****** *)
 
@@ -59,11 +64,7 @@ fun{a:t@ype} array0_make_elt (asz: size_t, x: a):<!exnref> array0 a
 
 (* ****** ****** *)
 
-fun array0_size {a:t@ype} (A: array0 a):<> size_t
-
-fun array0_ptr_size {a:t@ype}
-  (A: array0 a):<> [n:nat] (array (a, n), size_t n)
-// end of [array0_ptr_size]
+fun array0_size {a:t@ype} (A: array0 a):<!ref> size_t
 
 (* ****** ****** *)
 

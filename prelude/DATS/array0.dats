@@ -48,67 +48,78 @@
 
 (* ****** ****** *)
 
+staload _(*anonymous*) = "prelude/DATS/reference.dats"
+
+(* ****** ****** *)
+
 assume array0_viewt0ype_type
-  (a:viewt@ype) = [n:nat] [l:addr] '{
-  data= ptr l, size= size_t n, view= vbox (array_v (a, n, l))
-} // end of [array0_viewt0ype_type]
+  (a:viewt@ype) = ref (Arraysize a)
+// end of [array0_viewt0ype_type]
 
 (* ****** ****** *)
 
-implement array0_make_arraysize {a} {n} (arrsz) = let
-  prval () = free_gc_elim {a} (arrsz.0)
-  val (pfbox | ()) = vbox_make_view_ptr (arrsz.1 | arrsz.2)
-in '{
-  data= arrsz.2, size= i2sz arrsz.3, view= pfbox
-} end // end of [array0_make_arraysize]
+implement array0_make_arraysize (arrsz) = ref_make_elt (arrsz)
+implement array0_get_arraysize_ref (A) = A
 
 (* ****** ****** *)
 
-implement{a} array0_make_elt (asz, x) = let
-  val asz = size1_of_size asz
+implement{a} array0_make_elt (asz, x0) = let
+  val [n:int] asz = size1_of_size asz
 in
-  if asz >= 0 then let
-    val A = array_make_elt<a> (asz, x)
-    val (A_view | A_data) = array_get_view_ptr (A)
-  in '{
-    data= A_data, size= asz, view= A_view
-  } end else begin
-    exit_errmsg (1, "Exit: [array0_make]: negative array size\n")
-  end // end of [if]
+  case+ 0 of
+  | _ when asz >= 0 => let
+      val tsz = sizeof<a>
+      val (pf_gc, pf_arr | p_arr) = array_ptr_alloc_tsz {a} (asz, tsz)
+      var ini: a = x0
+      val () = array_ptr_initialize_elt_tsz {a} (!p_arr, asz, ini, tsz)
+    in
+      array0_make_arraysize {a} {n} @(pf_gc, pf_arr | p_arr, asz)
+    end // end of [_ when ...]
+  | _ => begin
+      exit_errmsg (1, "Exit: [array0_make]: negative array size\n")
+    end // end of [_]
 end // end of [array0_make_elt]
 
 (* ****** ****** *)
 
-implement array0_size (A) = A.size
-
-implement array0_ptr_size (A) = let
-  val A1 = array_make_view_ptr (A.view | A.data)
+implement array0_size (A) = let
+  val (vbox pf_arrsz | p_arrsz) = ref_get_view_ptr (A)
 in
-  (A1, A.size)
-end // end of [array0_ptr_size]
+  p_arrsz->3
+end // end of [array0_size]
 
 (* ****** ****** *)
 
 implement{a} array0_get_elt_at (A, i) = let
+  val (vbox pf_arrsz | p_arrsz) = ref_get_view_ptr (A)
   val i = size1_of_size i
-  val A_data = A.data; val asz = A.size
+  val p_data = p_arrsz->2; val asz = p_arrsz->3
 in
   if i < asz then let
-    prval vbox pf = A.view in !A_data.[i]
+    prval pf_data = p_arrsz->1
+    val x = p_data->[i]
+    prval () = p_arrsz->1 := pf_data
+  in
+    x // return value
   end else begin
     $raise SubscriptException
   end // end of [if]
 end (* end of [array0_get_elt_at] *)
 
 implement{a} array0_set_elt_at (A, i, x) = let
+  val (vbox pf_arrsz | p_arrsz) = ref_get_view_ptr (A)
   val i = size1_of_size i
-  val A_data = A.data; val asz = A.size
+  val p_data = p_arrsz->2; val asz = p_arrsz->3
 in
   if i < asz then let
-    prval vbox pf = A.view in !A_data.[i] := x
+    prval pf_data = p_arrsz->1
+    val () = p_data->[i] := x
+    prval () = p_arrsz->1 := pf_data
+  in
+    () // return no value
   end else begin
     $raise SubscriptException
-  end
+  end // end of [if]
 end (* end of [array0_set_elt_at] *)
 
 (* ****** ****** *)

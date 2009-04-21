@@ -87,6 +87,7 @@ dataview array_v (a:viewt@ype+, int, addr) =
   | {n:int | n >= 0} {l:addr}
       array_v_cons (a, n+1, l) of (a @ l, array_v (a, n, l+sizeof a))
   | {l:addr} array_v_nil (a, 0, l)
+// end of [array_v]
 
 *)
 
@@ -113,6 +114,7 @@ praxi free_gc_viewt0ype_addr_trans
   , pf2_mul: MUL (n2, sizeof a2, asz) 
   , pf_gc: !free_gc_v (a1, n1, l) >> free_gc_v (a2, n2, l)
   ) : void
+// end of [praxi]
 
 (* ****** ****** *)
 
@@ -121,7 +123,7 @@ fun{a:viewt@ype}
     [l:addr | l <> null] (free_gc_v (a, n, l), array_v (a?, n, l) | ptr l)
 
 fun array_ptr_alloc_tsz
-  {a:viewt@ype} {n:nat} (asz: size_t n, sz: sizeof_t a):<>
+  {a:viewt@ype} {n:nat} (asz: size_t n, tsz: sizeof_t a):<>
     [l:addr | l <> null] (free_gc_v (a, n, l), array_v (a?, n, l) | ptr l)
   = "atspre_array_ptr_alloc_tsz"
 

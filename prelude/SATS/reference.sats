@@ -118,6 +118,28 @@ macdef r-- = let val x = !r in r := x - 1; x end
 
 (* ****** ****** *)
 
+(*
+
+//
+// HX: should this be added?
+//
+
+// extval (ats_ptr_type, "0")
+val refopt_none: {a:viewt@ype} refopt (a, false)
+  = "atspre_refopt_none"
+
+fun refopt_some {a:viewt@ype} (r: ref a): refopt (a, true)
+
+fun refopt_is_some {a:viewt@ype}
+  {b:bool} (r: refopt (a, b)): bool (b)
+
+fun refopt_is_none {a:viewt@ype}
+  {b:bool} (r: refopt (a, b)): bool (~b)
+
+*)
+
+(* ****** ****** *)
+
 #if VERBOSE_PRELUDE #then
 
 #print "Loading [reference.sats] finishes!\n"

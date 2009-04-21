@@ -340,6 +340,16 @@ stadef ref = ref_viewt0ype_type
 abstype refconst_t0ype_type (t@ype) // boxed type
 stadef refconst = refconst_t0ype_type
 
+(*
+
+// HX: should this be added?
+abstype refopt_viewt0ype_bool_type (viewt@ype, bool)
+stadef refopt = refopt_viewt0ype_bool_type
+
+typedef Refopt (a: viewt@ype) = [b:bool] refopt (a, b)
+
+*)
+
 (* ****** ****** *)
 
 // for taking out a component in a record
@@ -649,9 +659,14 @@ stadef junkptr = junkptr_viewtype
 // This definition should not be changed!
 viewtypedef
 arraysize_viewt0ype_int_viewt0ype (a:viewt@ype, n:int) =
-  [l:addr] (free_gc_v (a, n, l), @[a][n] @ l | ptr l, int n)
+  [l:addr] (free_gc_v (a, n, l), @[a][n] @ l | ptr l, size_t n)
+// end of [viewtypedef]
 
 stadef arraysize = arraysize_viewt0ype_int_viewt0ype
+
+viewtypedef Arraysize
+  (a:viewt@ype) = [n:int | n >= 0] arraysize (a, n)
+// end of [Arraysize]
 
 (* ****** ****** *)
 

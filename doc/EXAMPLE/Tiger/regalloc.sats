@@ -9,6 +9,10 @@
 
 (* ****** ****** *)
 
+staload TL = "templab.sats"
+
+(* ****** ****** *)
+
 staload "igraph.sats"
 
 (* ****** ****** *)
