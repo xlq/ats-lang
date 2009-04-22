@@ -36,6 +36,12 @@
 
 (* ****** ****** *)
 
+//
+// [array0] is a persistent array with size information attached.
+//
+
+(* ****** ****** *)
+
 #include "prelude/params.hats"
 
 (* ****** ****** *)
@@ -45,6 +51,12 @@
 #print "Loading [array0.sats] starts!\n"
 
 #endif
+
+(* ****** ****** *)
+
+//
+// array0 (a) = ref (Arraysize a)
+//
 
 (* ****** ****** *)
 
@@ -60,7 +72,9 @@ fun array0_get_arraysize_ref
 
 (* ****** ****** *)
 
-fun{a:t@ype} array0_make_elt (asz: size_t, x: a):<!exnref> array0 a
+fun{a:t@ype}
+  array0_make_elt (asz: size_t, x: a):<> array0 a
+// end of [array0_make_elt]
 
 (* ****** ****** *)
 

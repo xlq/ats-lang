@@ -9,10 +9,7 @@
 
 (* ****** ****** *)
 
-staload "prelude/DATS/list_vt.dats"
-
-(* ****** ****** *)
-
+staload _(*anonymous*) = "prelude/DATS/list_vt.dats"
 staload _(*anonymous*) = "prelude/DATS/matrix.dats"
 
 (* ****** ****** *)

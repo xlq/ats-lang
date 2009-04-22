@@ -147,7 +147,7 @@ fun bytes_strbuf_trans {m,n:nat | n < m} {l:addr}
 
 (* ****** ****** *)
 
-// val string_empty : string 0
+// val string_empty : string 0 // this not really necessary
 
 (* ****** ****** *)
 

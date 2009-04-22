@@ -8,6 +8,7 @@
 
 all:: \
   prelude_array \
+  prelude_array0 \
   prelude_list \
   prelude_list_vt \
   prelude_string \
@@ -20,6 +21,9 @@ all:: \
 
 prelude_array: prelude_array.dats
 	atscc -O2 -o prelude_array prelude_array.dats
+
+prelude_array0: prelude_array0.dats
+	atscc -O2 -o prelude_array0 prelude_array0.dats
 
 prelude_list: prelude_list.dats
 	atscc -O2 -o prelude_list prelude_list.dats
@@ -57,6 +61,7 @@ clean::
 
 cleanall: clean
 	rm -f prelude_array
+	rm -f prelude_array0
 	rm -f prelude_list
 	rm -f prelude_list_vt
 	rm -f prelude_matrix
