@@ -36,6 +36,7 @@ local
 typedef ignodeinfo = '{
   node= $TL.temp_t
 , intset= tempset_t, movset= tempset_t
+, nlivtot= int, nusedef= int
 } // end of [ignodeinfo]
 
 assume ignodeinfo_t = ignodeinfo
@@ -47,7 +48,11 @@ extern typedef "ignodeinfo_t" = ignodeinfo
 implement
   ignodeinfo_make (tmp) = let
   val tmps_nil = tempset_nil () in '{
-  node= tmp, intset= tmps_nil, movset= tmps_nil
+  node= tmp
+, intset= tmps_nil
+, movset= tmps_nil
+, nlivtot= 0
+, nusedef= 0
 } end // end of [ignodeinfo_make]
 
 implement fprint_ignodeinfo (out, info) = () where {
@@ -60,6 +65,12 @@ implement fprint_ignodeinfo (out, info) = () where {
   val () = fprint_string (out, "movset= ")
   val () = fprint_tempset (out, info.movset)
   val () = fprint_newline (out)
+  val () = fprint_string (out, "nlivtot_= ")
+  val () = fprint_int (out, info.nlivtot)
+  val () = fprint_newline (out)
+  val () = fprint_string (out, "nusedef= ")
+  val () = fprint_int (out, info.nusedef)
+  val () = fprint_newline (out)
 } // end of [fprint_ignodeinfo]
 
 implement ignodeinfo_ismove
@@ -67,6 +78,8 @@ implement ignodeinfo_ismove
 
 implement ignodeinfo_intset_get (ign) = ign.intset
 implement ignodeinfo_movset_get (ign) = ign.movset
+implement ignodeinfo_nlivtot_get (ign) = ign.nlivtot
+implement ignodeinfo_nusedef_get (ign) = ign.nusedef
 
 end // end of [local]
 
@@ -89,7 +102,9 @@ val _cmp_temp = lam (t1: key, t2: key)
   : Sgn =<cloref> $TL.compare_temp_temp (t1, t2)
 // end of [_cmp_temp]
 
-in
+in // in of [local]
+
+(* ****** ****** *)
 
 implement igraph_make_empty () = let
   val map = $LM.linmap_empty {key,itm} () in ref_make_elt (map)
@@ -252,11 +267,42 @@ in
           | list_nil () => ()
         // end of [loop]
       } // end of [val]
+      val () = () where {
+        val nlivtot0 = ignodeinfo_nlivtot_get (info0)
+        val nlivtot1 = ignodeinfo_nlivtot_get (info1)      
+        val () = ignodeinfo_nlivtot_set (info0, nlivtot0 + nlivtot1)      
+      } // end of [val]
+      val () = () where {
+        val nusedef0 = ignodeinfo_nusedef_get (info0)
+        val nusedef1 = ignodeinfo_nusedef_get (info1)
+        // a move involves 1 use and 1 def
+        val () = ignodeinfo_nusedef_set (info0, nusedef0 + nusedef1 - 2)
+      } // end of [val]
     in
       // empty
     end // end of [Some_vt]
   | ~None_vt () => ()
 end // end of [igraph_merge_node]
+
+implement igraph_freeze_node (ig, tmp) = let
+  val info = igraph_nodeinfo_get (ig, tmp)
+  val movset = ignodeinfo_movset_get (info)
+  val movlst = templst_of_tempset (movset)
+  val () = loop (ig, tmp, movlst) where {
+    fun loop (
+        ig: igraph_t, t0: $TL.temp_t, ts: $TL.templst
+      ) : void =
+      case+ ts of
+      | list_cons (t, ts) => let
+          val () = igraph_int_edge_insert (ig, t0, t) in
+          loop (ig, t0, ts)
+        end // end of [list_cons]
+      | list_nil () => ()
+    // end of [loop]
+  } // end of [val]
+in
+  // empty
+end // end of [igraph_freeze_node]
 
 (* ****** ****** *)
 
@@ -341,6 +387,69 @@ in
     | ~Found (t0, t1) => Some_vt @(t0, t1)
   // end of [try]
 end // end of [igraph_search_coalesce]
+
+implement igraph_search_freeze (ig) = let
+  exception Found of $TL.temp_t in try let
+    val (vbox pf_ig | p_ig) = ref_get_view_ptr (ig)
+    var !p_clo = @lam (
+        pf: !unit_v | tmp: key, info: &itm
+      ) : void =<clo> $effmask_all let
+      val movset = ignodeinfo_movset_get (info)
+    in
+      if tempset_isnot_empty (movset) then let
+        val intset = ignodeinfo_intset_get (info)
+        val size_mov = tempset_size (movset)
+        val size_int = tempset_size (intset)
+      in
+        if size_mov + size_int < K then $raise (Found tmp) else ()
+      end
+    end // end of [var]
+    prval pf = unit_v ()
+    val () = $LM.linmap_foreach_clo (pf | !p_ig, !p_clo)
+    prval unit_v () = pf  
+  in
+    None_vt ()
+  end with
+    | ~Found tmp => Some_vt (tmp)
+  // end of [try]
+end // end of [igraph_search_freeze]
+
+implement igraph_search_spill (ig) = let
+  typedef temp = $TL.temp_t
+  exception Found of $TL.temp_t in try let
+    val (vbox pf_ig | p_ig) = ref_get_view_ptr (ig)
+    var tmp0: temp = $TL.temp_bogus
+    var nlivtot0: int = 0
+    var nusedef0: int = 0
+    viewdef V = (temp@tmp0, int@nlivtot0, int@nusedef0)
+    var !p_clo with pf_clo = @lam (
+        pf: !V | tmp: key, info: &itm
+      ) : void =<clo> $effmask_all let
+      prval @(pf0, pf1, pf2) = pf
+      val nusedef = ignodeinfo_nusedef_get (info)
+      val () = if nusedef = 0 then $raise Found (tmp)
+      val nlivtot = ignodeinfo_nlivtot_get (info)
+      val isupdate = nlivtot0 * nusedef <= nlivtot * nusedef0
+      val () = if isupdate then begin
+        tmp0 := tmp; nlivtot0 := nlivtot; nusedef0 := nusedef
+      end // end of [val]
+      prval () = pf := @(pf0, pf1, pf2)
+    in
+      // empty
+    end // end of [var]
+    prval pf = (view@ tmp0, view@ nlivtot0, view@ nusedef0)
+    val () = $LM.linmap_foreach_clo<key,itm> {V} (pf | !p_ig, !p_clo)
+    prval () = begin
+      view@ tmp0 := pf.0; view@ nlivtot0 := pf.1; view@ nusedef0 := pf.2
+    end // end of [prval]
+  in
+    if $TL.temp_isnot_bogus (tmp0) then Some_vt (tmp0) else None_vt ()
+  end with
+    | ~Found tmp => Some_vt tmp
+  // end of [try]
+end // end of [igraph_search_spill]
+
+(* ****** ****** *)
 
 end // end of [local]
 
@@ -482,6 +591,28 @@ ats_void_type
 ignodeinfo_movset_set
   (ats_ptr_type info, ats_ptr_type movset) {
   ((ignodeinfo_t)info)->atslab_movset = movset ; return ;
+}
+
+ats_void_type
+ignodeinfo_nusedef_set
+  (ats_ptr_type info, ats_int_type n) {
+  ((ignodeinfo_t)info)->atslab_nusedef = n ; return ;
+}
+
+ats_void_type
+ignodeinfo_nusedef_inc (ats_ptr_type info) {
+  ++(((ignodeinfo_t)info)->atslab_nusedef) ; return ;
+}
+
+ats_void_type
+ignodeinfo_nlivtot_set
+  (ats_ptr_type info, ats_int_type n) {
+  ((ignodeinfo_t)info)->atslab_nlivtot = n ; return ;
+}
+
+ats_void_type
+ignodeinfo_nlivtot_inc (ats_ptr_type info) {
+  ++(((ignodeinfo_t)info)->atslab_nlivtot) ; return ;
 }
 
 %}

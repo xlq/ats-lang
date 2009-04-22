@@ -13,6 +13,10 @@ abst@ype temp_t = int64
 typedef templst = List temp_t
 viewtypedef templst_vt = List_vt temp_t
 
+val temp_bogus : temp_t
+fun temp_is_bogus (tmp: temp_t):<> bool
+fun temp_isnot_bogus (tmp: temp_t):<> bool
+
 fun temp_make_new (): temp_t
 fun temp_make_fixed (n: int): temp_t
 

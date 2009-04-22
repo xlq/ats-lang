@@ -29,6 +29,18 @@ val the_temp_count = ref_make_elt<int64> (the_temp_base)
 
 in // in of [local]
 
+implement temp_bogus = int64_of_int (~1)
+
+implement temp_is_bogus (tmp) =
+  if tmp < zro then true else false
+// end of [temp_is_bogus]
+
+implement temp_isnot_bogus (tmp) =
+  if tmp >= zro then true else false
+// end of [temp_isnot_bogus]
+
+(* ****** ****** *)
+
 implement temp_make_new () = let
   val n = !the_temp_count in !the_temp_count := n + one; n
 end // end of [temp_make_new]

@@ -52,6 +52,18 @@ fun ignodeinfo_movset_set
   = "ignodeinfo_movset_set"
 // end of [ignodeinfo_movset_set]
 
+fun ignodeinfo_nlivtot_get (info: ignodeinfo_t):<> int
+fun ignodeinfo_nlivtot_set (info: ignodeinfo_t, n: int):<!ref> void
+  = "ignodeinfo_nlivtot_set"
+fun ignodeinfo_nlivtot_inc (info: ignodeinfo_t):<!ref> void
+  = "ignodeinfo_nlivtot_inc"
+
+fun ignodeinfo_nusedef_get (info: ignodeinfo_t):<> int
+fun ignodeinfo_nusedef_set (info: ignodeinfo_t, n: int):<!ref> void
+  = "ignodeinfo_nusedef_set"
+fun ignodeinfo_nusedef_inc (info: ignodeinfo_t):<!ref> void
+  = "ignodeinfo_nusedef_inc"
+
 (* ****** ****** *)
 
 fun ignodeinfo_make (tmp: $TL.temp_t):<> ignodeinfo_t
@@ -125,19 +137,36 @@ fun igraph_merge_node
   (ig: igraph_t, tmp0: $TL.temp_t, tmp1: $TL.temp_t): void
 // end of [igraph_merge_node]
 
+// freezing [tm[]
+fun igraph_freeze_node
+  (ig: igraph_t, tmp: $TL.temp_t): void
+// end of [igraph_freeze_node]
+
 (* ****** ****** *)
 
 fun igraph_make_fgraph (fg: fgraph_t): igraph_t
+
+fun spillcost_compute (fg: fgraph_t, ig: igraph_t): void
+
 fun igraph_make_instrlst (inss: $AS.instrlst): igraph_t
 
 (* ****** ****** *)
 
 fun igraph_search_lowdeg
   (ig: igraph_t): Option_vt ($TL.temp_t)
+// end of [igraph_search_lowdeg]
 
 fun igraph_search_coalesce
   (ig: igraph_t): Option_vt @($TL.temp_t, $TL.temp_t)
 // end of [igraph_search_coalesce]
+
+fun igraph_search_freeze
+  (ig: igraph_t): Option_vt ($TL.temp_t)
+// end of [igraph_search_freeze]
+
+fun igraph_search_spill
+  (ig: igraph_t): Option_vt ($TL.temp_t)
+// end of [igraph_search_spill]
 
 (* ****** ****** *)
 

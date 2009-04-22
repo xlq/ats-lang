@@ -252,8 +252,8 @@ implement main (argc, argv) = let
                 val () = igraph_simplify0 (ig)
                 val () = print "ig(simplify0)=\n"
                 val () = fprint_igraph (stdout_ref, ig)
-                val () = igraph_simplify1 (ig)
-                val () = print "ig(simplify1)=\n"
+                val _ = igraph_regalloc (ig)
+                val () = print "ig(regalloc)=\n"
                 val () = fprint_igraph (stdout_ref, ig)
               in
                 // empty
@@ -281,8 +281,8 @@ implement main (argc, argv) = let
   val () = print "prog_ig(simplify0)=\n"
   val () = fprint_igraph (stdout_ref, prog_ig)
   val () = print_newline ()
-  val () = igraph_simplify1 (prog_ig)
-  val () = print "prog_ig(simplify1)=\n"
+  val _ = igraph_regalloc (prog_ig)
+  val () = print "prog_ig(regalloc)=\n"
   val () = fprint_igraph (stdout_ref, prog_ig)
   val () = print_newline ()
 in

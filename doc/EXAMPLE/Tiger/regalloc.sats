@@ -13,6 +13,7 @@ staload TL = "templab.sats"
 
 (* ****** ****** *)
 
+staload "fgraph.sats"
 staload "igraph.sats"
 
 (* ****** ****** *)
@@ -25,12 +26,8 @@ fun igraph_simplify0 (ig: igraph_t): void
 
 (* ****** ****** *)
 
-//
-// remove nodes that have degrees strictly less
-// that K, where K is the number of available
-// general-purpose registers
-//
-fun igraph_simplify1 (ig: igraph_t): void
+// the returned list gives an order to be used for selecting
+fun igraph_regalloc (ig: igraph_t): $TL.templst // registers
 
 (* ****** ****** *)
 

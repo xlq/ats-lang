@@ -193,83 +193,6 @@ end (* end of [fgraph_compute_outset] *)
 
 (* ****** ****** *)
 
-local 
-
-typedef key = $TL.temp_t
-typedef itm = @(int(*total*), int(*used*))
-
-assume spillcostmap_vt = $LM.map_vt (key, itm)
-
-val _cmp_temp = lam
-  (t1: $TL.temp_t, t2: $TL.temp_t): Sgn =<cloref>
-  $TL.compare_temp_temp (t1, t2)
-// end of [val]
-
-in // in of [local]
-
-implement fgraph_compute_spillcost (fg) = let
-  fun loop_tot (
-      scm: &spillcostmap_vt, ts: $TL.templst
-    ) : void = begin case+ ts of
-    | list_cons (t, ts) => let
-        val ans = $LM.linmap_remove<key,itm> (scm, t, _cmp_temp)
-        val itm = (case+ ans of
-          | ~Some_vt itm => @(itm.0 + 1, itm.1) | ~None_vt () => @(1, 0)
-        ) : itm // end of [val]
-        val ans = $LM.linmap_insert<key,itm> (scm, t, itm, _cmp_temp)
-        val () = case+ ans of ~Some_vt _ => () | ~None_vt _ => ()
-      in
-        loop_tot (scm, ts)
-      end // end of [list_cons]
-    | list_nil () => ()
-  end // end of [loop_tot]
-  fun loop_usedef (
-      scm: &spillcostmap_vt, ts: $TL.templst
-    ) : void = begin case+ ts of
-    | list_cons (t, ts) => let
-        val ans = $LM.linmap_remove<key,itm> (scm, t, _cmp_temp)
-        val itm = (case+ ans of
-          | ~Some_vt itm => @(itm.0, itm.1 + 1) | ~None_vt () => @(0, 1)
-        ) : itm // end of [val]
-        val ans = $LM.linmap_insert<key,itm> (scm, t, itm, _cmp_temp)
-        val () = case+ ans of ~Some_vt _ => () | ~None_vt _ => ()
-      in
-        loop_usedef (scm, ts)
-      end // end of [list_cons]
-    | list_nil () => ()
-  end // end of [loop_usedef]
-  var scm: spillcostmap_vt = $LM.linmap_empty {key,itm} ()
-  val sz = fgraph_size (fg)
-  val sz = size1_of_size (sz)
-  val sz = int1_of_size1 (sz)
-  var i: Nat // uninitialized
-  val () = for (i := 0; i < sz; i := i + 1) let
-    val n = fgnode_make_int (i)
-    val info = fgraph_nodeinfo_get (fg, n)
-//
-    val outset = fgnodeinfo_outset_get (info)
-    val outlst = templst_of_tempset (outset)
-    val () = loop_tot (scm, outlst)
-//
-    val useset = fgnodeinfo_useset_get (info)
-    val uselst = templst_of_tempset (useset)
-    val () = loop_usedef (scm, uselst)
-//
-    val defset = fgnodeinfo_defset_get (info)
-    val deflst = templst_of_tempset (defset)
-    val () = loop_usedef (scm, deflst)
-//
-  in
-    // empty
-  end // end of [val]
-in
-  scm
-end // end of [fgraph_compute_spillcost]
-
-end // end of [local]
-
-(* ****** ****** *)
-
 overload = with $TL.eq_temp_temp
 
 implement igraph_make_fgraph (fg) = ig where {
@@ -363,11 +286,64 @@ implement igraph_make_fgraph (fg) = ig where {
 
 (* ****** ****** *)
 
+implement spillcost_compute (fg, ig) = let
+  fun loop_livtot (
+      ig: igraph_t, ts: $TL.templst
+    ) : void = begin case+ ts of
+    | list_cons (t, ts) => let
+        val info = igraph_nodeinfo_get (ig, t)
+        val () = ignodeinfo_nlivtot_inc (info)
+      in
+        loop_livtot (ig, ts)
+      end // end of [list_cons]
+    | list_nil () => ()
+  end // end of [loop_livtot]
+  fun loop_usedef (
+      ig: igraph_t, ts: $TL.templst
+    ) : void = begin case+ ts of
+    | list_cons (t, ts) => let
+        val info = igraph_nodeinfo_get (ig, t)
+        val () = ignodeinfo_nusedef_inc (info)
+      in
+        loop_usedef (ig, ts)
+      end // end of [list_cons]
+    | list_nil () => ()
+  end // end of [loop_usedef]
+  val sz = fgraph_size (fg)
+  val sz = size1_of_size (sz)
+  val sz = int1_of_size1 (sz)
+  var i: Nat // uninitialized
+  val () = for (i := 0; i < sz; i := i + 1) let
+    val n = fgnode_make_int (i)
+    val info = fgraph_nodeinfo_get (fg, n)
+//
+    val outset = fgnodeinfo_outset_get (info)
+    val outlst = templst_of_tempset (outset)
+    val () = loop_livtot (ig, outlst)
+//
+    val useset = fgnodeinfo_useset_get (info)
+    val uselst = templst_of_tempset (useset)
+    val () = loop_usedef (ig, uselst)
+//
+    val defset = fgnodeinfo_defset_get (info)
+    val deflst = templst_of_tempset (defset)
+    val () = loop_usedef (ig, deflst)
+//
+  in
+    // empty
+  end // end of [val]
+in
+  // empty
+end // end of [spillcost_compute]
+
+(* ****** ****** *)
+
 implement
   igraph_make_instrlst (inss) = let
   val fg = fgraph_make_instrlst (inss)
   val () = fgraph_compute_outset (fg)
   val ig = igraph_make_fgraph (fg)
+  val () = spillcost_compute (fg, ig)
 in
   ig
 end // end of [igraph_make_instrlst]

@@ -38,18 +38,24 @@ implement igraph_simplify0
 
 (* ****** ****** *)
 
-implement igraph_simplify1 (ig) = let
-  fun loop1 (ig: igraph_t): void = let
+implement igraph_regalloc (ig) = let
+  typedef templst = $TL.templst
+  fun loop1 (
+      ig: igraph_t, res: &templst
+    ) : void = let
     val ans = igraph_search_lowdeg (ig) in
     case+ ans of
     | ~Some_vt tmp => let
+        val () = res := list_cons (tmp, res)
         val () = igraph_remove_node (ig, tmp)
       in
-        loop1 (ig)
+        loop1 (ig, res)
       end // end of [Some_vt]
     | ~None_vt () => ()
   end // end of [loop1]
-  fun loop2 (ig: igraph_t): void = let
+  fun loop2 (
+      ig: igraph_t, res: &templst
+    ) : void = let
     val ans = igraph_search_coalesce (ig) in
     case+ ans of
     | ~Some_vt tmptmp => let
@@ -66,15 +72,55 @@ implement igraph_simplify1 (ig) = let
 *)
         val () = igraph_merge_node (ig, tmp0, tmp1)
       in
-        loop1 (ig); loop2 (ig)
+        loop1 (ig, res); loop2 (ig, res)
       end // end of [Some_vt]
     | ~None_vt () => ()
   end // end of [loop2]
-  val () = loop1 (ig)
-  val () = loop2 (ig)
+  fun loop3 (
+      ig: igraph_t, res: &templst
+    ) : void = let
+    val ans = igraph_search_freeze (ig) in
+    case+ ans of
+    | ~Some_vt tmp => let
+         val () = begin
+           prerr "igraph_regalloc: loop3(freeze): tmp = ";
+           $TL.prerr_temp tmp;
+           prerr_newline ()
+         end // end of [val]
+         val () = igraph_freeze_node (ig, tmp)
+       in
+         loop1 (ig, res); loop2 (ig, res); loop3 (ig, res)
+       end // end of [Some_vt]
+    | ~None_vt () => ()
+  end // end of [loop3]
+  fun loop4 (
+      ig: igraph_t, res: &templst
+    ) : void = let
+    val ans = igraph_search_spill (ig) in
+    case+ ans of
+    | ~Some_vt tmp => let
+         val () = begin
+           prerr "igraph_regalloc: loop4(spill): tmp = ";
+           $TL.prerr_temp tmp;
+           prerr_newline ()
+         end // end of [val]
+         val () = igraph_remove_node (ig, tmp)
+         val () = loop1 (ig, res)
+         val () = loop2 (ig, res)
+         val () = loop3 (ig, res)
+       in
+         loop4 (ig, res)
+       end // end of [Some_vt]
+    | ~None_vt () => ()
+  end // end of [loop4]
+  var res: templst = list_nil ()
+  val () = loop1 (ig, res) // simplify
+  val () = loop2 (ig, res) // coalesce
+  val () = loop3 (ig, res) // freeze
+  val () = loop4 (ig, res) // spill
 in
-  // empty
-end // end of [igraph_simplify]
+  res
+end // end of [igraph_regalloc]
 
 (* ****** ****** *)
 
