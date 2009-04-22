@@ -111,18 +111,22 @@ assume fgraph_t = array0 (fgnodeinfo_t)
 (* ****** ****** *)
 
 implement fprint_fgraph (out, fg) = let
-  fun loop {n,i:nat | i <= n} .<n-i>. (
-      out: FILEref, A: array (fgnodeinfo_t, n), n: size_t n, i: size_t i
+  fun loop {n,i:nat | i <= n} {l:addr} .<n-i>. (
+      pf_A: !array_v (fgnodeinfo_t, n, l)
+    | out: FILEref, p_A: ptr l, n: size_t n, i: size_t i
     ) : void =
     if i < n then let
-      val () = fprint_fgnodeinfo (out, A[i]); val () = fprint_newline (out)
+      val () = fprint_fgnodeinfo (out, p_A->[i]); val () = fprint_newline (out)
     in
-      loop (out, A, n, i+1)
+      loop (pf_A | out, p_A, n, i+1)
     end // end of [if]
   // end of [loop
-  val @(A, n) = array0_ptr_size (fg)
+  val r_arrsz = array0_get_arraysize_ref (fg)
+  val (vbox pf_arrsz | p_arrsz) = ref_get_view_ptr (r_arrsz)
 in
-  loop (out, A, n, 0)
+  $effmask_ref (
+    loop (p_arrsz->1 | out, p_arrsz->2, p_arrsz->3, 0)
+  ) // end of [$effmask_ref]
 end (* end of [fprint_fgraph] *)
 
 (* ****** ****** *)
