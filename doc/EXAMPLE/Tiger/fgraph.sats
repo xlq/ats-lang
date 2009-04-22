@@ -105,4 +105,10 @@ fun fgraph_compute_outset (fg: fgraph_t): void
 
 (* ****** ****** *)
 
+absviewtype spillcostmap_vt
+
+fun fgraph_compute_spillcost (fg: fgraph_t): spillcostmap_vt
+
+(* ****** ****** *)
+
 (* end of [fgraph.sats] *)

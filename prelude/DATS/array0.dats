@@ -75,7 +75,7 @@ in
     in
       array0_make_arraysize {a} {n} @(pf_gc, pf_arr | p_arr, asz)
     end // end of [_ when ...]
-  | _ => begin
+  | _ => $effmask_all begin // this is a form of ultimate failure
       exit_errmsg (1, "Exit: [array0_make]: negative array size\n")
     end // end of [_]
 end // end of [array0_make_elt]
