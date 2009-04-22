@@ -403,6 +403,7 @@ end // end of [d2var_ptr_viewat_make]
 
 implement d2var_ptr_viewat_make_none (d2v_ptr) =
   d2var_ptr_viewat_make (d2v_ptr, D2VAROPTnone ())
+// end of [d2var_ptr_viewat_make_none]
 
 (* ****** ****** *)
 

@@ -341,7 +341,7 @@ fn aux_item_errmsg1 (loc: loc_t, d2v: d2var_t): s2exp = begin
   $Loc.prerr_location loc;
   prerr ": error(3)";
   prerr ": the dynamic variable ["; prerr d2v;
-  prerr "] is expected to be preserved but it is not.";
+  prerr "] is expected to be consumed but it is not.";
   prerr_newline ();
   $Err.abort {s2exp} ()
 end // end of [aux_item_errmsg1]
@@ -350,7 +350,7 @@ fn aux_item_errmsg2 (loc: loc_t, d2v: d2var_t): void = begin
   $Loc.prerr_location loc;
   prerr ": error(3)";
   prerr ": the dynamic variable ["; prerr d2v;
-  prerr "] is expected to be consumed but it is not.";
+  prerr "] is expected to be preserved but it is not.";
   prerr_newline ();
   $Err.abort {void} ()
 end // end of [aux_item_errmsg2]
@@ -361,6 +361,16 @@ fn aux_saityp (
   ) : void = begin case+ x of
   | SAITYPsome (loc, s2e) => let
       var used1: int = used
+(*
+      val () = begin
+        prerr "staftscstr_stbefitemlst_check: aux_saityp: used1 = ";      
+        prerr used1; prerr_newline ();
+        prerr "staftscstr_stbefitemlst_check: aux_saityp: d2v = ";
+        prerr d2v; prerr_newline ();
+        prerr "staftscstr_stbefitemlst_check: aux_saityp: s2e = ";
+        prerr s2e; prerr_newline ()
+      end // end of [val]
+*)
       val s2e_check = (case+ aux_find (sub, args, d2v) of
         | ~Some_vt os2e => let
             val () = used1 := used1 + 1 in case+ os2e of
@@ -374,10 +384,6 @@ fn aux_saityp (
       val () = begin
         prerr "staftscstr_stbefitemlst_check: aux_saityp: used1 = ";      
         prerr used1; prerr_newline ();
-        prerr "staftscstr_stbefitemlst_check: aux_saityp: d2v = ";
-        prerr d2v; prerr_newline ();
-        prerr "staftscstr_stbefitemlst_check: aux_saityp: s2e = ";
-        prerr s2e; prerr_newline ();
         prerr "staftscstr_stbefitemlst_check: aux_saityp: s2e_check = ";
         prerr s2e_check; prerr_newline ();
       end // end of [val]

@@ -389,6 +389,7 @@ end
 
 (* ****** ****** *)
 
+// [sta] means allocation at compile-time
 fn v2ardec_tr_sta (d2c: v2ardec): v3ardec = let
   val loc0 = d2c.v2ardec_loc
   val d2v_ptr = d2c.v2ardec_dvar
@@ -481,6 +482,7 @@ fun d2exp_is_laminit_dyn (d2e: d2exp): bool =
   | _ => false
 // end of [d2exp_is_laminit_dyn]
 
+// [dyn] means allocation at run-time
 fn v2ardec_tr_dyn (d2c: v2ardec): v3ardec = let
   val loc0 = d2c.v2ardec_loc
   val d2v_ptr = d2c.v2ardec_dvar
@@ -562,10 +564,10 @@ in
       val s2e_ann_top = let
         val s2e_elt = s2exp_topize_0 s2e_elt in s2exp_tyarr (s2e_elt, s2ess_dim)
       end  // end of [val]
-      val s2e_ini = (case+ d3es_elt of list_cons _ => s2e_ann | _ => s2e_ann_top): s2exp
-      val d3e_ini = d3exp_arrinit (loc_ini, s2e_ini, s2e_elt, od3e_asz, d3es_elt)
       val s2e_ann_view = s2exp_at_viewt0ype_addr_view (s2e_ann, s2e_addr)
       val () = d2var_mastyp_set (d2v_view, Some s2e_ann_view)
+      val s2e_ini = (case+ d3es_elt of list_cons _ => s2e_ann | _ => s2e_ann_top): s2exp
+      val d3e_ini = d3exp_arrinit (loc_ini, s2e_ini, s2e_elt, od3e_asz, d3es_elt)
       val s2e_ini_view = s2exp_at_viewt0ype_addr_view (s2e_ini, s2e_addr)
       val () = d2var_typ_set (d2v_view, Some s2e_ini_view)
       val () = d2var_fin_set (d2v_view, D2VARFINsome s2e_fin_view) where {
@@ -578,6 +580,7 @@ in
       val d3e_ini = d2exp_tr_up (d2e_ini)
       val s2e_ini = d3e_ini.d3exp_typ
       val s2e_ini_view = s2exp_at_viewt0ype_addr_view (s2e_ini, s2e_addr)
+      val () = d2var_mastyp_set (d2v_view, Some s2e_ini_view)
       val s2e_fin = s2exp_topize_0 (s2e_ini)
       val s2e_fin_view = s2exp_at_viewt0ype_addr_view (s2e_fin, s2e_addr)
       val () = d2var_typ_set (d2v_view, Some s2e_ini_view)
