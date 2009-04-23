@@ -9,6 +9,10 @@
 
 (* ****** ****** *)
 
+staload Err = "error.sats"
+
+(* ****** ****** *)
+
 staload "tempset.sats"
 
 (* ****** ****** *)
@@ -137,27 +141,31 @@ implement igraph_nodeinfo_get (ig, tmp) = let
   val ans = $LM.linmap_search<key,itm> (!p_ig, tmp, _cmp_temp)
 in
   case+ ans of
-  | ~Some_vt ign => ign
-  | ~None_vt () => ign where {
-      val ign = ignodeinfo_make (tmp)
-      val ans =
-        $LM.linmap_insert<key,itm> (!p_ig, tmp, ign, _cmp_temp)
-      // end of [val]
-      val () = case+ ans of ~Some_vt _ => () | ~None_vt _ => ()
-    } // end of [None_vt]
-  // end of [case]
+  | ~Some_vt ign => ign | ~None_vt () => $effmask_all begin
+      prerr "igraph_nodeinfo_get: tmp = "; $TL.prerr_temp tmp; prerr_newline ();
+      $Err.abort (1)
+    end // end of [val]
 end (* end of [igraph_nodeinfo_get] *)
 
 (* ****** ****** *)
 
-implement igraph_remove_node (ig, tmp) = let
+implement igraph_node_insert (ig, tmp) = () where {
+  val ign = ignodeinfo_make (tmp)
+  val (vbox pf_ig | p_ig) = ref_get_view_ptr (ig)
+  val ans =
+    $LM.linmap_insert<key,itm> (!p_ig, tmp, ign, _cmp_temp)
+  // end of [val]
+  val () = case+ ans of ~Some_vt _ => () | ~None_vt _ => ()
+} // end of [igraph_node_insert]
+
+implement igraph_node_remove (ig, tmp) = let
   val ans = let
     val (vbox pf_ig | p_ig) = ref_get_view_ptr (ig)
   in
-    $LM.linmap_remove<key,itm> (!p_ig, tmp, _cmp_temp)
+    $LM.linmap_search<key,itm> (!p_ig, tmp, _cmp_temp)
   end // end of [val]
-in
-  case+ ans of
+//
+  val () = case+ ans of
   | ~Some_vt info => let
       val intset = ignodeinfo_intset_get (info)
       val intlst = templst_of_tempset (intset)
@@ -191,18 +199,27 @@ in
       // empty
     end // end of [Some_vt]
   | ~None_vt () => ()
-end // end of [igraph_remove_node]
-
-(* ****** ****** *)
-
-implement igraph_merge_node (ig, tmp0, tmp1) = let
+//
   val ans = let
     val (vbox pf_ig | p_ig) = ref_get_view_ptr (ig)
   in
-    $LM.linmap_remove<key,itm> (!p_ig, tmp1, _cmp_temp)
+    $LM.linmap_remove<key,itm> (!p_ig, tmp, _cmp_temp)
   end // end of [val]
+  val () = case+ ans of ~Some_vt _ => () | ~None_vt _ => ()
 in
-  case+ ans of
+  // empty
+end // end of [igraph_node_remove]
+
+(* ****** ****** *)
+
+implement igraph_node_merge (ig, tmp0, tmp1) = let
+  val ans = let
+    val (vbox pf_ig | p_ig) = ref_get_view_ptr (ig)
+  in
+    $LM.linmap_search<key,itm> (!p_ig, tmp1, _cmp_temp)
+  end // end of [val]
+//
+  val () = case+ ans of
   | ~Some_vt info1 => let
       val info0 = igraph_nodeinfo_get (ig, tmp0)
       val () = () where {
@@ -282,9 +299,18 @@ in
       // empty
     end // end of [Some_vt]
   | ~None_vt () => ()
-end // end of [igraph_merge_node]
+//
+  val ans = let
+    val (vbox pf_ig | p_ig) = ref_get_view_ptr (ig)
+  in
+    $LM.linmap_remove<key,itm> (!p_ig, tmp1, _cmp_temp)
+  end // end of [val]
+  val () = case+ ans of ~Some_vt _ => () | ~None_vt _ => ()
+in
+  // empty
+end // end of [igraph_node_merge]
 
-implement igraph_freeze_node (ig, tmp) = let
+implement igraph_node_freeze (ig, tmp) = let
   val info = igraph_nodeinfo_get (ig, tmp)
   val movset = ignodeinfo_movset_get (info)
   val movlst = templst_of_tempset (movset)
@@ -302,7 +328,7 @@ implement igraph_freeze_node (ig, tmp) = let
   } // end of [val]
 in
   // empty
-end // end of [igraph_freeze_node]
+end // end of [igraph_node_freeze]
 
 (* ****** ****** *)
 

@@ -30,7 +30,7 @@ implement igraph_simplify0
   fun loop (ig: igraph_t, ts: $TL.templst): void =
     case+ ts of
     | list_cons (t, ts) => let
-        val () = igraph_remove_node (ig, t) in loop (ig, ts)
+        val () = igraph_node_remove (ig, t) in loop (ig, ts)
       end // end of [list_cons]
     | list_nil () => ()
   // end of [loop]
@@ -46,8 +46,13 @@ implement igraph_regalloc (ig) = let
     val ans = igraph_search_lowdeg (ig) in
     case+ ans of
     | ~Some_vt tmp => let
+        val () = begin
+          prerr "igraph_regalloc: loop1(simplify): tmp = ";
+          $TL.prerr_temp tmp;
+          prerr_newline ()
+        end // end of [val]
+        val () = igraph_node_remove (ig, tmp)
         val () = res := list_cons (tmp, res)
-        val () = igraph_remove_node (ig, tmp)
       in
         loop1 (ig, res)
       end // end of [Some_vt]
@@ -70,7 +75,7 @@ implement igraph_regalloc (ig) = let
           $TL.prerr_temp tmp1; prerr_newline ()
         end // end of [val]
 *)
-        val () = igraph_merge_node (ig, tmp0, tmp1)
+        val () = igraph_node_merge (ig, tmp0, tmp1)
       in
         loop1 (ig, res); loop2 (ig, res)
       end // end of [Some_vt]
@@ -82,15 +87,15 @@ implement igraph_regalloc (ig) = let
     val ans = igraph_search_freeze (ig) in
     case+ ans of
     | ~Some_vt tmp => let
-         val () = begin
-           prerr "igraph_regalloc: loop3(freeze): tmp = ";
-           $TL.prerr_temp tmp;
-           prerr_newline ()
-         end // end of [val]
-         val () = igraph_freeze_node (ig, tmp)
-       in
-         loop1 (ig, res); loop2 (ig, res); loop3 (ig, res)
-       end // end of [Some_vt]
+        val () = begin
+          prerr "igraph_regalloc: loop3(freeze): tmp = ";
+          $TL.prerr_temp tmp;
+          prerr_newline ()
+        end // end of [val]
+        val () = igraph_node_freeze (ig, tmp)
+      in
+        loop1 (ig, res); loop2 (ig, res); loop3 (ig, res)
+      end // end of [Some_vt]
     | ~None_vt () => ()
   end // end of [loop3]
   fun loop4 (
@@ -99,18 +104,18 @@ implement igraph_regalloc (ig) = let
     val ans = igraph_search_spill (ig) in
     case+ ans of
     | ~Some_vt tmp => let
-         val () = begin
-           prerr "igraph_regalloc: loop4(spill): tmp = ";
-           $TL.prerr_temp tmp;
-           prerr_newline ()
-         end // end of [val]
-         val () = igraph_remove_node (ig, tmp)
-         val () = loop1 (ig, res)
-         val () = loop2 (ig, res)
-         val () = loop3 (ig, res)
-       in
-         loop4 (ig, res)
-       end // end of [Some_vt]
+        val () = begin
+          prerr "igraph_regalloc: loop4(spill): tmp = ";
+          $TL.prerr_temp tmp;
+          prerr_newline ()
+        end // end of [val]
+        val () = igraph_node_remove (ig, tmp)
+        val () = loop1 (ig, res)
+        val () = loop2 (ig, res)
+        val () = loop3 (ig, res)
+      in
+        loop4 (ig, res)
+      end // end of [Some_vt]
     | ~None_vt () => ()
   end // end of [loop4]
   var res: templst = list_nil ()
@@ -118,6 +123,9 @@ implement igraph_regalloc (ig) = let
   val () = loop2 (ig, res) // coalesce
   val () = loop3 (ig, res) // freeze
   val () = loop4 (ig, res) // spill
+  val () = begin
+    prerr "igraph_regalloc: res = "; $TL.prerr_templst res; prerr_newline ()
+  end // end of [val]
 in
   res
 end // end of [igraph_regalloc]

@@ -127,20 +127,25 @@ fun igraph_mov_edge_remove
 
 (* ****** ****** *)
 
-// removing a node and all the edges involving this node
-fun igraph_remove_node
+// inserting a node
+fun igraph_node_insert
   (ig: igraph_t, tmp: $TL.temp_t): void
-// end of [igraph_remove_node]
+// end of [[igraph_node_insert]
+
+// removing a node and all the edges involving this node
+fun igraph_node_remove
+  (ig: igraph_t, tmp: $TL.temp_t): void
+// end of [igraph_node_remove]
 
 // merging [tmp0] and [tmp1]
-fun igraph_merge_node
+fun igraph_node_merge
   (ig: igraph_t, tmp0: $TL.temp_t, tmp1: $TL.temp_t): void
-// end of [igraph_merge_node]
+// end of [igraph_node_merge]
 
-// freezing [tm[]
-fun igraph_freeze_node
+// freezing [tmp]
+fun igraph_node_freeze
   (ig: igraph_t, tmp: $TL.temp_t): void
-// end of [igraph_freeze_node]
+// end of [igraph_node_freeze]
 
 (* ****** ****** *)
 

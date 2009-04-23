@@ -16,6 +16,8 @@ staload TL = "templab.sats"
 typedef temp_t = $TL.temp_t
 typedef label_t = $TL.label_t
 
+staload F = "frame.sats"
+
 (* ****** ****** *)
 
 staload "fgnode.sats"
@@ -195,12 +197,40 @@ end (* end of [fgraph_compute_outset] *)
 
 overload = with $TL.eq_temp_temp
 
+fun igraph_nodelst_insert
+  (ig: igraph_t, ts: $TL.templst): void = case+ ts of
+  | list_cons (t, ts) => let
+      val () = igraph_node_insert (ig, t) in igraph_nodelst_insert (ig, ts)
+    end // end of [list_cons]
+  | list_nil () => ()
+// end of [igraph_nodelst_insert]
+
 implement igraph_make_fgraph (fg) = ig where {
   val ig = igraph_make_empty ()
-  val () = igraph_initialize (ig)
+  val () = igraph_nodelst_insert (ig, $F.theSpecialReglst)
+  val () = igraph_nodelst_insert (ig, $F.theGeneralReglst)
   val sz = fgraph_size (fg)
   val sz = size1_of_size (sz)
   val sz = int1_of_size1 (sz)
+  val () = loop (fg, ig, 0, sz) where {
+    fun loop {sz,i:nat | i <= sz} .<sz-i>. (
+        fg: fgraph_t, ig: igraph_t, i: int i, sz: int sz
+      ) : void =
+      if i < sz then let
+        val fgn = fgnode_make_int (i)
+        val info = fgraph_nodeinfo_get (fg, fgn)
+        val useset = fgnodeinfo_useset_get (info)
+        val uselst = templst_of_tempset (useset)
+        val () = igraph_nodelst_insert (ig, uselst)
+        val defset = fgnodeinfo_defset_get (info)
+        val deflst = templst_of_tempset (defset)
+        val () = igraph_nodelst_insert (ig, deflst)
+      in
+        loop (fg, ig, i + 1, sz)
+      end // end of [if]
+    // end of [loop]
+  } // end of [val]
+  val () = igraph_initialize (ig)
   val () = loop (ig, fg, 0, sz) where {
     fun loop {sz,i:nat | i <= sz} (
         ig: igraph_t, fg: fgraph_t, i: int i, sz: int sz
