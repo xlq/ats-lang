@@ -30,7 +30,7 @@ abstype ignodeinfo_t // information stored at each node
 
 (* ****** ****** *)
 
-fun ignodeinfo_ismove (info: ignodeinfo_t):<> bool
+fun ignodeinfo_ismov (info: ignodeinfo_t):<> bool
 
 (* ****** ****** *)
 
@@ -138,9 +138,9 @@ fun igraph_node_remove
 // end of [igraph_node_remove]
 
 // merging [tmp0] and [tmp1]
-fun igraph_node_merge
+fun igraph_node_coalesce
   (ig: igraph_t, tmp0: $TL.temp_t, tmp1: $TL.temp_t): void
-// end of [igraph_node_merge]
+// end of [igraph_node_coalesce]
 
 // freezing [tmp]
 fun igraph_node_freeze

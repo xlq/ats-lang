@@ -13,7 +13,10 @@ staload TL = "templab.sats"
 
 (* ****** ****** *)
 
+staload "tempset.sats"
+
 staload "fgraph.sats"
+
 staload "igraph.sats"
 
 (* ****** ****** *)
@@ -26,8 +29,25 @@ fun igraph_simplify0 (ig: igraph_t): void
 
 (* ****** ****** *)
 
+datatype regassgn =
+  | REGASSGNsimplify of ($TL.temp_t, tempset_t)
+  | REGASSGNcoalesce of ($TL.temp_t, $TL.temp_t)
+  | REGASSGNspill of ($TL.temp_t, tempset_t)
+
+typedef regassgnlst = List regassgn
+
+fun fprint_regassgn (out: FILEref, rasgn: regassgn): void
+
+fun fprint_regassgnlst (out: FILEref, rasgns: regassgnlst): void
+
+(* ****** ****** *)
+
+fun regassgn_select (rasgn: regassgn): void
+
+(* ****** ****** *)
+
 // the returned list gives an order to be used for selecting
-fun igraph_regalloc (ig: igraph_t): $TL.templst // registers
+fun igraph_regalloc (ig: igraph_t): regassgnlst // registers
 
 (* ****** ****** *)
 

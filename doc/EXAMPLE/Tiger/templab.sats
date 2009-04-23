@@ -10,8 +10,14 @@
 (* ****** ****** *)
 
 abst@ype temp_t = int64
+
 typedef templst = List temp_t
 viewtypedef templst_vt = List_vt temp_t
+
+typedef tempopt = Option (temp_t)
+viewtypedef tempopt_vt = Option_vt (temp_t)
+
+(* ****** ****** *)
 
 val temp_bogus : temp_t
 fun temp_is_bogus (tmp: temp_t):<> bool
@@ -37,7 +43,7 @@ fun prerr_templst (tmps: templst): void
 
 (* ****** ****** *)
 
-fun temp_is_special (tmp: temp_t): bool
+fun temp_is_fixed (tmp: temp_t):<> bool
 
 (* ****** ****** *)
 

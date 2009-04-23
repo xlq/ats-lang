@@ -231,7 +231,7 @@ implement main (argc, argv) = let
   val prog_stms = $CA.trace_schedule (lab_done, prog_blks)
 // (*
   val () = print_stmlst prog_stms
-  val () = $INT1.interp1Prog (prog_stms)
+//val () = $INT1.interp1Prog (prog_stms)
 // *)
 
 // (*

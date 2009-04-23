@@ -69,7 +69,7 @@ implement fprint_ignodeinfo (out, info) = () where {
   val () = fprint_string (out, "movset= ")
   val () = fprint_tempset (out, info.movset)
   val () = fprint_newline (out)
-  val () = fprint_string (out, "nlivtot_= ")
+  val () = fprint_string (out, "nlivtot = ")
   val () = fprint_int (out, info.nlivtot)
   val () = fprint_newline (out)
   val () = fprint_string (out, "nusedef= ")
@@ -77,8 +77,11 @@ implement fprint_ignodeinfo (out, info) = () where {
   val () = fprint_newline (out)
 } // end of [fprint_ignodeinfo]
 
-implement ignodeinfo_ismove
+(* ****** ****** *)
+
+implement ignodeinfo_ismov
   (ign) = tempset_isnot_empty (ign.movset)
+// end of [ignodeinfo_ismov]
 
 implement ignodeinfo_intset_get (ign) = ign.intset
 implement ignodeinfo_movset_get (ign) = ign.movset
@@ -212,7 +215,7 @@ end // end of [igraph_node_remove]
 
 (* ****** ****** *)
 
-implement igraph_node_merge (ig, tmp0, tmp1) = let
+implement igraph_node_coalesce (ig, tmp0, tmp1) = let
   val ans = let
     val (vbox pf_ig | p_ig) = ref_get_view_ptr (ig)
   in
@@ -241,8 +244,7 @@ implement igraph_node_merge (ig, tmp0, tmp1) = let
           , ts: $TL.templst
           ) : void = case+ ts of
           | list_cons (t, ts) when
-              $TL.eq_temp_temp (t, t0) =>
-              loop (ig, t0, t1, ts)
+              $TL.eq_temp_temp (t, t0) => loop (ig, t0, t1, ts)
             // end of [list_cons when ...]
           | list_cons (t, ts) => let
               val () = igraph_int_edge_remove (ig, t, t1)
@@ -308,7 +310,7 @@ implement igraph_node_merge (ig, tmp0, tmp1) = let
   val () = case+ ans of ~Some_vt _ => () | ~None_vt _ => ()
 in
   // empty
-end // end of [igraph_node_merge]
+end // end of [igraph_node_coalesce]
 
 implement igraph_node_freeze (ig, tmp) = let
   val info = igraph_nodeinfo_get (ig, tmp)
@@ -336,14 +338,17 @@ implement igraph_search_lowdeg (ig) = let
   exception Found of $TL.temp_t in try let
     val (vbox pf_ig | p_ig) = ref_get_view_ptr (ig)
     var !p_clo = @lam
-      (pf: !unit_v | tmp: key, info: &itm): void =<clo>
-      if ignodeinfo_ismove (info) then () else $effmask_all (let
-        val intset = ignodeinfo_intset_get (info)
-        val size = tempset_size (intset)
-      in
-        if size < K then $raise (Found tmp) else ()
-      end) // end of [if]
-    // end of [var]
+      (pf: !unit_v | tmp: key, info: &itm): void =<clo> begin
+      case+ 0 of
+      | _ when $TL.temp_is_fixed (tmp) => ()
+      | _ when ignodeinfo_ismov (info) => ()
+      | _ => $effmask_all (let
+          val intset = ignodeinfo_intset_get (info)
+          val size = tempset_size (intset)
+        in
+          if size < K then $raise (Found tmp) else ()
+        end) // end of [if]
+    end // end of [var]
     prval pf = unit_v ()
     val () = $LM.linmap_foreach_clo (pf | !p_ig, !p_clo)
     prval unit_v () = pf  
@@ -387,9 +392,10 @@ implement igraph_search_coalesce (ig) = let
     , t0: $TL.temp_t, intset0: tempset_t
     , ts1: $TL.templst
     ) : void = case+ ts1 of
-    | list_cons (t1, ts1) => begin
-        if test (ig, t0, intset0, t1) then $raise (Found (t0, t1))
-        else proc (ig, t0, intset0, ts1)
+    | list_cons (t1, ts1) => begin case+ 0 of
+      | _ when $TL.temp_is_fixed t1 => proc (ig, t0, intset0, ts1)
+      | _ when test (ig, t0, intset0, t1) => $raise (Found (t0, t1))
+      | _ => proc (ig, t0, intset0, ts1)
       end // end of [list_cons]
     | list_nil () => ()
   // end of [proc]
@@ -445,23 +451,27 @@ implement igraph_search_spill (ig) = let
   exception Found of $TL.temp_t in try let
     val (vbox pf_ig | p_ig) = ref_get_view_ptr (ig)
     var tmp0: temp = $TL.temp_bogus
-    var nlivtot0: int = 0
-    var nusedef0: int = 0
+    var nlivtot0: int = ~1
+    var nusedef0: int =  0
     viewdef V = (temp@tmp0, int@nlivtot0, int@nusedef0)
-    var !p_clo with pf_clo = @lam (
-        pf: !V | tmp: key, info: &itm
-      ) : void =<clo> $effmask_all let
-      prval @(pf0, pf1, pf2) = pf
-      val nusedef = ignodeinfo_nusedef_get (info)
-      val () = if nusedef = 0 then $raise Found (tmp)
-      val nlivtot = ignodeinfo_nlivtot_get (info)
-      val isupdate = nlivtot0 * nusedef <= nlivtot * nusedef0
-      val () = if isupdate then begin
-        tmp0 := tmp; nlivtot0 := nlivtot; nusedef0 := nusedef
-      end // end of [val]
-      prval () = pf := @(pf0, pf1, pf2)
-    in
-      // empty
+    var !p_clo with pf_clo = @lam
+      (pf: !V | tmp: key, info: &itm): void =<clo> begin
+      case+ 0 of
+      | _ when $TL.temp_is_fixed tmp => () | _ => let
+          prval @(pf0, pf1, pf2) = pf
+          val nusedef = ignodeinfo_nusedef_get (info)
+          val () = if nusedef = 0 then $raise Found (tmp)
+          val nlivtot = ignodeinfo_nlivtot_get (info)
+          val isupdate = (if nlivtot0 >= 0
+            then nlivtot0 * nusedef < nlivtot * nusedef0 else true
+          ) : bool
+          val () = if isupdate then begin
+            tmp0 := tmp; nlivtot0 := nlivtot; nusedef0 := nusedef
+          end // end of [val]
+          prval () = pf := @(pf0, pf1, pf2)
+        in
+          // empty
+        end // end of [_]
     end // end of [var]
     prval pf = (view@ tmp0, view@ nlivtot0, view@ nusedef0)
     val () = $LM.linmap_foreach_clo<key,itm> {V} (pf | !p_ig, !p_clo)
@@ -555,8 +565,9 @@ implement igraph_initialize (ig) = let
   fun loop2 (
       ig: igraph_t, ts: $TL.templst
     ) : void = case+ ts of
-    | list_cons (t, ts) => let
-        val () = loop1 (ig, t, ts) in loop2 (ig, ts)
+    | list_cons (t0, ts) => let
+        val info = igraph_nodeinfo_get (ig, t0)
+        val () = loop1 (ig, t0, ts) in loop2 (ig, ts)
       end // end of [list_cons]
     | list_nil () => ()
   // end of [loop2]
