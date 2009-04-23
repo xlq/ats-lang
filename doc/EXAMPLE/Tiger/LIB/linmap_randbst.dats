@@ -66,13 +66,13 @@ extern fun{key:t@ype;itm:t@ype}
 
 //
 
-// this one is nonreentrant
+// this one is reentrant
 extern fun{key:t@ype;itm:viewt@ype} linmap_insert
   (m: &map_vt (key, itm), k0: key, x0: itm, cmp: cmp key):<> Option_vt itm
 
 //
 
-// this one is nonreentrant
+// this one is reentrant
 extern fun{key:t@ype;itm:viewt@ype} linmap_remove
   (m: &map_vt (key, itm), k0: key, cmp: cmp key):<> Option_vt itm
 

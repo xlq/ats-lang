@@ -9,6 +9,10 @@
 
 (* ****** ****** *)
 
+staload Err = "error.sats"
+
+(* ****** ****** *)
+
 staload "frame.sats"
 
 (* ****** ****** *)
@@ -50,6 +54,12 @@ typedef label = $TL.label_t
 staload AS = "assem.sats"
 staload TR = "irtree.sats"
 
+typedef instr = $AS.instr
+
+(* ****** ****** *)
+
+#include "params.hats"
+
 (* ****** ****** *)
 
 local
@@ -82,6 +92,8 @@ fn fprint_access (out: FILEref, acc: access_t): void =
 // end of [fprint_access]
 
 fn prerr_access (acc: access_t): void = fprint_access (stderr_ref, acc)
+
+(* ****** ****** *)
 
 implement access_is_inreg (acc) = case+ acc of InReg _ => true | _ => false
 implement access_is_inframe (acc) = case+ acc of InFrame _ => true | _ => false
@@ -158,11 +170,45 @@ implement frame_alloc_local
 
 extern typedef "frame_t" = frame
 
-end // end of [local]
+(* ****** ****** *)
+
+implement instr_make_mem_read (acc, tmp) = case+ acc of
+  | InFrame (ofs) => 
+     $AS.INSTRoper (asm, src, dst, jump) where {
+#if (MARCH == "MIPS") #then
+      val asm = sprintf ("lw `d0, %i(`s0)", @(ofs))
+#endif
+#if (MARCH == "x86_32") #then
+      val asm = sprintf ("movl %i(`s0), `d0", @(ofs))
+#endif
+      val src = '[FP] and dst = '[tmp]; val jump = None ()
+    } // end of [INSTRoper]
+  | InReg _ => begin
+      prerr "FATAL ERROR: instr_make_mem_read: acc = InReg (...)";
+      $Err.abort {instr} (1)
+    end // end of [InReg]
+// end of [instr_make_mem_read]
+
+implement instr_make_mem_write (acc, tmp) = case+ acc of
+  | InFrame (ofs) => 
+     $AS.INSTRoper (asm, src, dst, jump) where {
+#if (MARCH == "MIPS") #then
+      val asm = sprintf ("sw `s1, %i(`s0)", @(ofs))
+#endif
+#if (MARCH == "x86_32") #then
+      val asm = sprintf ("movl `s1, %i(`s0)", @(ofs))
+#endif
+      val src = '[FP, tmp] and dst = '[]; val jump = None ()
+    } // end of [INSTRoper]
+  | InReg _ => begin
+      prerr "FATAL ERROR: instr_make_mem_write: acc = InReg (...)";
+      $Err.abort {instr} (1)
+    end // end of [InReg]
+// end of [instr_make_mem_write]
 
 (* ****** ****** *)
 
-#include "params.hats"
+end // end of [local]
 
 (* ****** ****** *)
 

@@ -9,7 +9,12 @@
 
 (* ****** ****** *)
 
+staload AS = "assem.sats"
 staload TL = "templab.sats"
+
+(* ****** ****** *)
+
+staload F = "frame.sats"
 
 (* ****** ****** *)
 
@@ -46,8 +51,9 @@ fun regassgn_select (rasgn: regassgn): void
 
 (* ****** ****** *)
 
-// the returned list gives an order to be used for selecting
-fun igraph_regalloc (ig: igraph_t): regassgnlst // registers
+fun regassgn_find (tmp: $TL.temp_t): $TL.tempopt_vt
+
+fun instrlst_regalloc (frm: $F.frame_t, inss: $AS.instrlst): $AS.instrlst
 
 (* ****** ****** *)
 

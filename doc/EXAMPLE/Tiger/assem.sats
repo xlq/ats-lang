@@ -35,6 +35,8 @@ datatype instr =
 
 typedef instrlst = List instr
 viewtypedef instrlst_vt = List_vt (instr)
+typedef instropt = Option instr
+viewtypedef instropt_vt = Option_vt (instr)
 
 fun fprint_instr (out: FILEref, ins: instr): void
 fun print_instr (ins: instr): void
@@ -52,6 +54,7 @@ fun instr_format (fmt: temp -<cloref1> string, ins: instr): string
 fun instr_ismove (ins: instr): bool
 
 fun instr_uselst_get (ins: instr): templst
+
 fun instr_deflst_get (ins: instr): templst
 
 fun instr_jump_get (ins: instr): Option (lablst)

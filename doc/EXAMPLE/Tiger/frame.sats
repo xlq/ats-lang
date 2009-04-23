@@ -103,6 +103,15 @@ fun procEntryExit2 (frm: frame_t, inss: &($AS.instrlst_vt)): void
 
 (* ****** ****** *)
 
+//
+// for generating instructions to be inserted after actuall spilling happens
+// during register allocation
+//
+fun instr_make_mem_read (acc: access_t, tmp: $TL.temp_t): $AS.instr
+fun instr_make_mem_write (acc: access_t, tmp: $TL.temp_t): $AS.instr
+
+(* ****** ****** *)
+
 #include "params.hats"
 
 #if MARCH = "x86_32" #then

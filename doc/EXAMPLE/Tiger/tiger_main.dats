@@ -231,7 +231,7 @@ implement main (argc, argv) = let
   val prog_stms = $CA.trace_schedule (lab_done, prog_blks)
 // (*
   val () = print_stmlst prog_stms
-//val () = $INT1.interp1Prog (prog_stms)
+// val () = $INT1.interp1Prog (prog_stms)
 // *)
 
 // (*
@@ -245,16 +245,7 @@ implement main (argc, argv) = let
                   print "F1RAGproc: "; $TL.print_label lab_frm; print_string ":\n"
                 end // end of [val]
                 val inss = codegen_proc (frm, stms)
-                val () = print_instrlst (inss)
-                val ig = igraph_make_instrlst (inss)
-                val () = print "ig()=\n"
-                val () = fprint_igraph (stdout_ref, ig)
-                val () = igraph_simplify0 (ig)
-                val () = print "ig(simplify0)=\n"
-                val () = fprint_igraph (stdout_ref, ig)
-                val _ = igraph_regalloc (ig)
-                val () = print "ig(regalloc)=\n"
-                val () = fprint_igraph (stdout_ref, ig)
+                val inss = instrlst_regalloc (frm, inss)
               in
                 // empty
               end // end of [val]
@@ -269,22 +260,11 @@ implement main (argc, argv) = let
 // *)
 
 // (*
-  val prog_inss = codegen_stmlst ($F.theTopFrame, prog_stms)
+  val prog_frm = $F.theTopFrame
+  val prog_inss = codegen_stmlst (prog_frm, prog_stms)
   val () = print_instrlst (prog_inss)
 // *)
-
-  val prog_ig = igraph_make_instrlst (prog_inss)
-  val () = print "prog_ig=\n"
-  val () = fprint_igraph (stdout_ref, prog_ig)
-  val () = print_newline ()
-  val () = igraph_simplify0 (prog_ig)
-  val () = print "prog_ig(simplify0)=\n"
-  val () = fprint_igraph (stdout_ref, prog_ig)
-  val () = print_newline ()
-  val _ = igraph_regalloc (prog_ig)
-  val () = print "prog_ig(regalloc)=\n"
-  val () = fprint_igraph (stdout_ref, prog_ig)
-  val () = print_newline ()
+  val prog_inss = instrlst_regalloc (prog_frm, prog_inss)
 in
   // empty
 end // end of [main]
