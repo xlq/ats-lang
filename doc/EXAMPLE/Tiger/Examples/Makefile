@@ -23,7 +23,7 @@ all:: \
 ######
 
 chmod::
-	chmod 644 *.tig *_tig.s
+	chmod 644 Makefile *.tig *_tig.s
 
 ######
 
@@ -119,5 +119,8 @@ clean::
 	rm -f intpair hanoi listops
 	rm -f merge prettyprint
 	rm -f queens0 queens1
+
+cleanall: clean
+	rm -f *_tig.s
 
 ###### end of [Makefile_test] ######
