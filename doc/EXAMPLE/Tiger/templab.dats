@@ -9,6 +9,10 @@
 
 (* ****** ****** *)
 
+staload Sym = "symbol.sats"
+
+(* ****** ****** *)
+
 staload "templab.sats"
 
 (* ****** ****** *)
@@ -87,30 +91,49 @@ implement prerr_templst tmps = fprint_templst (stderr_ref, tmps)
 
 (* ****** ****** *)
 
-#define LABEL_PREFIX "_TIGERATS_LAB"
-
 local
 
-datatype label = LABint of int64 | LABname of string
+datatype label =
+  LABint of int | LABname of string
+// end of [label]
 
 assume label_t = label
 
-#define zro (int64_of_int 0)
-#define one (int64_of_int 1)
-
-val the_label_count = ref_make_elt<int64> (zro)
+val the_label_count = ref_make_elt<int> (0)
+val the_label_fun_count = ref_make_elt<int> (0)
+val the_label_str_count = ref_make_elt<int> (0)
 
 in
 
+(* ****** ****** *)
+
 implement label_make_new () = let
-  val n = !the_label_count in
-  !the_label_count := n + one; LABint n
-end // end of [temp_make_new]
+  val ind = !the_label_count
+  val () = !the_label_count := ind + 1 in
+  LABint ind
+end // end of [label_make_new]
+
+implement label_make_str_new () = let
+  val ind = !the_label_str_count
+  val () = !the_label_str_count := ind + 1
+  val name = sprintf ("LC%i_TIGERATS", @(ind)) in
+  LABname (name)
+end // end of [label_make_str_new]
+
+implement label_make_fun_new (fsym) = let
+  val ind = !the_label_fun_count
+  val () = !the_label_fun_count := ind + 1
+  val fnam = $Sym.symbol_name_get fsym
+  val name = sprintf ("LF%i_TIGERATS_%s", @(ind, fnam)) in
+  LABname (name)
+end // end of [label_make_fun_new]
 
 implement label_make_name (name) = LABname (name)
 
+(* ****** ****** *)
+
 implement label_name_get (lab) = case+ lab of
-  | LABint ind => LABEL_PREFIX + tostring_int64 (ind)
+  | LABint ind => sprintf ("L%i_TIGERATS", @(ind))
   | LABname name => name
 // end of [label_name_get]
 
@@ -118,14 +141,14 @@ implement label_name_get (lab) = case+ lab of
 
 implement eq_label_label (lab1, lab2) =
   case+ (lab1, lab2) of
-  | (LABint i1, LABint i2) => eq_int64_int64 (i1, i2)
+  | (LABint i1, LABint i2) => eq_int_int (i1, i2)
   | (LABname s1, LABname s2) => eq_string_string (s1, s2)
   | (_, _) => false
 // end of [eq_label_label]
 
 implement compare_label_label (lab1, lab2) =
   case+ (lab1, lab2) of
-  | (LABint i1, LABint i2) => compare_int64_int64 (i1, i2)
+  | (LABint i1, LABint i2) => compare_int_int (i1, i2)
   | (LABname s1, LABname s2) => compare_string_string (s1, s2)
   | (LABint _, LABname _) => ~1
   | (LABname _, LABint _) =>  1
@@ -133,10 +156,11 @@ implement compare_label_label (lab1, lab2) =
 
 (* ****** ****** *)
 
-implement fprint_label (out, lab) = case+ lab of
-  | LABint ind => begin
-      fprint_string (out, LABEL_PREFIX); fprint_int64 (out, ind)
-    end // end of [LABint]
+implement fprint_label (out, lab) =
+  case+ lab of
+  | LABint ind =>
+      fprintf (out, "L%i_TIGERATS", @(ind))
+    // end of [LABint]
   | LABname name => fprint_string (out, name)
 // end of [fprint_label]
 

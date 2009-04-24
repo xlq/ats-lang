@@ -143,6 +143,90 @@ fun fprint_stmlst (out: FILEref, ss: $TR.stmlst): void =
 
 (* ****** ****** *)
 
+fn emit_proc (
+    knd: int, frm: $F.frame_t, inss: instrlst
+  ) : void = () where {
+  val frmsz = $F.frame_size_get (frm)
+  val lab_frm = $F.frame_name_get (frm)
+  val nam_frm = $TL.label_name_get (lab_frm)
+  val () = print ("\t.text\n")
+  val () = if knd > 0 // [tiger_main] is global
+    then printf (".globl %s\n", @(nam_frm))
+  // end of [val]
+  val () = printf ("\t.type\t%s, @function\n", @(nam_frm))
+  val () = printf ("%s:\n", @(nam_frm))
+  val () = printf ("\t.set\t.%s_framesize, %i\n", @(nam_frm, frmsz))
+  // end of [val]
+  fun loop (inss: instrlst): void = case+ inss of
+    | list_cons (ins, inss) => let
+(*
+        val () = (print_instr (ins); print_newline ())
+*)
+        val () = case+ ins of
+          | INSTRoper _ => let
+              val asm = regalloc_insfmt (ins) in printf ("\t%s\n", @(asm))
+            end // end of [_]
+          | INSTRlabel (asm, _) => printf ("%s\n", @(asm))
+          | INSTRmove (_, src, dst) => let
+              val src = regassgn_find src and dst = regassgn_find dst in
+              if $TL.eq_temp_temp (src, dst) then () else let
+                val asm = regalloc_insfmt (ins) in printf ("\t%s\n", @(asm))
+              end // end of [if]
+            end (* end of [INSTRmove] *)
+      in
+        loop inss
+      end // end of [list_cons]
+    | list_nil () => ()
+  // end of [loop]
+  val () = loop (inss)
+  val () = printf ("\t.size\t%s, .-%s\n", @(nam_frm, nam_frm))
+} // end of [emit_proc]
+
+(* ****** ****** *)
+
+fn emit_char (c: char): void =
+  case+ 0 of
+  | _ when char_isprint c => print_char c
+  | _ when (c = '\n') => print_string "\\n"
+  | _ when (c = '\t') => print_string "\\t"
+  | _ => let
+      val _0 = int_of_char '0'
+      val d = uint1_of_char c
+      val d2 = int_of (d umod 8U)
+      val c2 = char_of_int (_0 + d2)
+      val d = d udiv 8U
+      val d1 = int_of (d umod 8U)
+      val c1 = char_of_int (_0 + d1)
+      val d = d udiv 8U
+      val d0 = int_of (d)
+      val c0 = char_of_int (_0 + d0)
+    in
+      print_char '\\'; print_char c0; print_char c1; print_char c2
+    end // end of [_]
+// end of [emit_char]
+
+fn emit_string
+  (lab: $TL.label_t, str: string): void = () where {
+  val () = print "."
+  val () = $TL.print_label (lab)
+  val () = print ":\n"
+  val () = print "\t.string\t"
+  val () = print_char '"'
+  val () = loop (str, 0) where {
+    val str = string1_of_string str
+    fun loop {n,i:nat | i <= n}
+      (str: string n, i: size_t i): void =
+      if string_isnot_at_end (str, i)
+        then (emit_char str[i]; loop (str, i+1))
+      // end of [if]
+    // end of [loop]
+  }
+  val () = print_char '"'
+  val () = print "\n"
+} // end of [emit_string]
+
+(* ****** ****** *)
+
 implement main (argc, argv) = let
   val () = case+ argc of
     | _ when argc >= 2 => begin
@@ -247,44 +331,19 @@ implement main (argc, argv) = let
       | list_cons (x, xs) => let
           val () = case+ x of
             | F1RAGproc (frm, stms) => let
+(*
                 val lab_frm = $F.frame_name_get (frm)
                 val () = begin
                   print "F1RAGproc: "; $TL.print_label lab_frm; print_string ":\n"
                 end // end of [val]
+*)
                 val inss = codegen_proc (frm, stms)
                 val inss = instrlst_regalloc (frm, inss)
-                val () = () where {
-                  val frmsz = $F.frame_size_get (frm)
-                  val nam_frm = $TL.label_name_get (lab_frm)
-                  val () = printf ("\t.set\t.%s_framesize, %i\n", @(nam_frm, frmsz))
-                } // end of [val]
-                val () = loop (inss) where {
-                  fun loop (inss: instrlst): void = case+ inss of
-                    | list_cons (ins, inss) => let
-(*
-                        val () = (print_instr (ins); print_newline ())
-*)
-                        val () = case+ ins of
-                          | INSTRoper _ => let
-                              val asm = regalloc_insfmt (ins) in printf ("\t%s\n", @(asm))
-                            end // end of [_]
-                          | INSTRlabel (asm, _) => printf ("%s\n", @(asm))
-                          | INSTRmove (_, src, dst) => let
-                              val src = regassgn_find src and dst = regassgn_find dst in
-                              if $TL.eq_temp_temp (src, dst) then () else let
-                                val asm = regalloc_insfmt (ins) in printf ("\t%s\n", @(asm))
-                              end // end of [if]
-                            end (* end of [INSTRmove] *)
-                      in
-                        loop inss
-                      end // end of [list_cons]
-                    | list_nil () => ()
-                  // end of [loop]
-                } // end of [val]
+                val () = emit_proc (0(*local*), frm, inss)
               in
                 // empty
               end // end of [val]
-            | F1RAGstring (label, str) => ()
+            | F1RAGstring (label, str) => emit_string (label, str)
           // end of [val]
         in
           loop (xs)
@@ -295,9 +354,10 @@ implement main (argc, argv) = let
 // *)
 
   val prog_frm = $F.theTopFrame
-  val prog_inss = codegen_stmlst (prog_frm, prog_stms)
+  val prog_inss = codegen_proc (prog_frm, prog_stms)
   // val () = prerr_instrlst (prog_inss)
   val prog_inss = instrlst_regalloc (prog_frm, prog_inss)
+  val () = emit_proc (1(*global*), prog_frm, prog_inss)
 in
   // empty
 end // end of [main]

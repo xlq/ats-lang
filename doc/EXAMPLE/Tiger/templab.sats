@@ -9,6 +9,10 @@
 
 (* ****** ****** *)
 
+staload Sym = "symbol.sats"
+
+(* ****** ****** *)
+
 abst@ype temp_t = int64
 
 typedef templst = List temp_t
@@ -58,6 +62,13 @@ typedef lablst = List label_t
 
 fun label_make_new (): label_t
 fun label_make_name (name: string): label_t
+
+//
+
+fun label_make_str_new (): label_t
+fun label_make_fun_new (fsym: $Sym.symbol_t): label_t
+
+//
 
 fun label_name_get (lab: label_t): string
 

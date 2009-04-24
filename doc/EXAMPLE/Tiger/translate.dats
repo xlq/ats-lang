@@ -460,7 +460,7 @@ in
   | NilExp _ => Ex ($TR.EXPconst 0)
   | IntExp int => Ex ($TR.EXPconst int)
   | StringExp str => let
-      val lab = $TL.label_make_new ()
+      val lab = $TL.label_make_str_new ()
       val frag = $F.FRAGstring (lab, str)
       val () = $F.frame_theFraglst_add (frag)
     in
@@ -871,7 +871,7 @@ fn transFundec1_fst
     $Sym.prerr_symbol fd.fundec_name; prerr_newline ()
   end // end of [val]
 *)
-  val flab = $TL.label_make_new ()
+  val lab_frm = $TL.label_make_fun_new (fd.fundec_name)
   val arglst = fd.fundec_arglst
   val esclst = aux (arglst) where {
     fun aux (fts: fieldtyplst): List bool = case+ fts of
@@ -889,12 +889,12 @@ fn transFundec1_fst
 #if TIGER_OMIT_FRAME_POINTER = 0 #then
   val () = ofs0 := ofs0 + WORDSIZE // [EBP] is to be pushed onto the stack
 #endif
-  val frm = $F.frame_make_new (flab, ofs0, esclst)
+  val frm = $F.frame_make_new (lab_frm, ofs0, esclst)
   val acclst = $F.frame_arglst_get (frm)
   val stamp = $S.stamp_make ()
   val lev1 = LEVELsub (stamp, frm, lev0)
   val () = env :=
-    env_insert (env, fd.fundec_name, VFENTfun (flab, lev1))
+    env_insert (env, fd.fundec_name, VFENTfun (lab_frm, lev1))
 in
   lev1
 end // end of [transFundec1_fst]

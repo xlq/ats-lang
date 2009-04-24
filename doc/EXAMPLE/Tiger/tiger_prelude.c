@@ -18,8 +18,19 @@
 #include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 /* ****** ****** */
+
+void*
+tiger_array_alloc (size_t asz) {
+  void **p0_arr ;
+  p0_arr = (void**)malloc(asz * sizeof(void*)) ;
+  if (!p0_arr) {
+    fprintf (stderr, "FATAL ERROR: [tiger_array_alloc] failed\n") ;
+  }
+  return p0_arr ;
+} /* tiger_array_alloc */
 
 void*
 tiger_array_make_elt (size_t asz, void *elt) {
@@ -32,9 +43,14 @@ tiger_array_make_elt (size_t asz, void *elt) {
     (stderr, "tiger_array_make_elt: elt = %li\n", elt) ;
 */
   p0_arr = p_arr = (void**)malloc(asz * sizeof(void*)) ;
+  if (!p0_arr) {
+    fprintf (stderr, "FATAL ERROR: [tiger_array_make_elt] failed\n") ;
+  }
   for (i = 0; i < asz; i += 1) *p_arr++ = elt ;
   return p0_arr ;
 } /* tiger_array_make_elt */
+
+/* ****** ****** */
 
 void
 tiger_flush () {
@@ -50,6 +66,22 @@ void
 tiger_print_int (intptr_t i) {
   fprintf (stdout, "%li", i) ; return ;
 } /* tiger_print_int */
+
+/* ****** ****** */
+
+char*
+tiger_concat (char* s1, char* s2) {
+  int n, n1, n2 ; char* p_res ;
+  n1 = strlen (s1) ; n2 = strlen (s2) ; n = n1 + n2 ;
+  p_res = malloc (n + 1) ;
+  if (!p_res) {
+    fprintf (stderr, "FATAL ERROR: [tiger_concat]: failed\n") ;
+  }
+  memcpy (p_res, s1, n1);
+  memcpy (p_res + n1, s2, n2);
+  p_res[n] = '\000' ;
+  return p_res ;
+} /* end of [tiger_concat] */
 
 /* ****** ****** */
 

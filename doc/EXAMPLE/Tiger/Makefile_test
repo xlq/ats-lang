@@ -1,0 +1,86 @@
+######
+#
+# Makefile for testing the TIGERATS compiler
+#
+# Author: Hongwei Xi
+#
+######
+
+GCC=gcc
+TIGDIR=.
+TIGCOM=./comptig
+
+######
+
+ack: Examples/ack.tig
+	$(TIGCOM) Examples/ack.tig > ack.tig.s
+	$(GCC) -o ack ack.tig.s $(TIGDIR)/tiger_prelude.c
+
+######
+
+evenodd: Examples/evenodd.tig
+	$(TIGCOM) Examples/evenodd.tig > evenodd.tig.s
+	$(GCC) -o evenodd evenodd.tig.s $(TIGDIR)/tiger_prelude.c
+
+######
+
+f91: Examples/f91.tig
+	$(TIGCOM) Examples/f91.tig > f91.tig.s
+	$(GCC) -o f91 f91.tig.s $(TIGDIR)/tiger_prelude.c
+
+######
+
+fact1: Examples/fact1.tig
+	$(TIGCOM) Examples/fact1.tig > fact1.tig.s
+	$(GCC) -o fact1 fact1.tig.s $(TIGDIR)/tiger_prelude.c
+
+fact2: Examples/fact2.tig
+	$(TIGCOM) Examples/fact2.tig > fact2.tig.s
+	$(GCC) -o fact2 fact2.tig.s $(TIGDIR)/tiger_prelude.c
+######
+
+fib1: Examples/fib1.tig
+	$(TIGCOM) Examples/fib1.tig > fib1.tig.s
+	$(GCC) -o fib1 fib1.tig.s $(TIGDIR)/tiger_prelude.c
+
+fib2: Examples/fib2.tig
+	$(TIGCOM) Examples/fib2.tig > fib2.tig.s
+	$(GCC) -o fib2 fib2.tig.s $(TIGDIR)/tiger_prelude.c
+
+fib3: Examples/fib3.tig
+	$(TIGCOM) Examples/fib3.tig > fib3.tig.s
+	$(GCC) -o fib3 fib3.tig.s $(TIGDIR)/tiger_prelude.c
+
+fib4: Examples/fib4.tig
+	$(TIGCOM) Examples/fib4.tig > fib4.tig.s
+	$(GCC) -o fib4 fib4.tig.s $(TIGDIR)/tiger_prelude.c
+
+######
+
+listops: Examples/listops.tig
+	$(TIGCOM) Examples/listops.tig > listops.tig.s
+	$(GCC) -o listops listops.tig.s $(TIGDIR)/tiger_prelude.c
+
+######
+
+merge: Examples/merge.tig
+	$(TIGCOM) Examples/merge.tig > merge.tig.s
+	$(GCC) -o merge merge.tig.s $(TIGDIR)/tiger_prelude.c
+
+######
+
+prettyprint: Examples/prettyprint.tig
+	$(TIGCOM) Examples/prettyprint.tig > prettyprint.tig.s
+	$(GCC) -o prettyprint prettyprint.tig.s $(TIGDIR)/tiger_prelude.c
+
+######
+
+queens0: Examples/queens0.tig
+	$(TIGCOM) Examples/queens0.tig > queens0.tig.s
+	$(GCC) -o queens0 queens0.tig.s $(TIGDIR)/tiger_prelude.c
+
+queens1: Examples/queens1.tig
+	$(TIGCOM) Examples/queens1.tig > queens1.tig.s
+	$(GCC) -o queens1 queens1.tig.s $(TIGDIR)/tiger_prelude.c
+
+###### end of [Makefile_test] ######
