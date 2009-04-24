@@ -43,7 +43,6 @@ comptig: \
   posloc_sats.o posloc_dats.o \
   tokenize_sats.o tokenize_dats.o \
   parcomb_sats.o parcomb_dats.o \
-  funarray_dats.o \
   funmap_avltree_dats.o \
   hashtable_dats.o \
   linmap_randbst_dats.o \
@@ -77,7 +76,6 @@ comptig: \
   posloc_sats.o posloc_dats.o \
   tokenize_sats.o tokenize_dats.o \
   parcomb_sats.o parcomb_dats.o \
-  funarray_dats.o \
   funmap_avltree_dats.o \
   hashtable_dats.o \
   linmap_randbst_dats.o \
@@ -288,11 +286,6 @@ tokenize_sats.o: PARCOMB/tokenize.sats
 
 tokenize_dats.o: PARCOMB/tokenize.dats
 	atscc $(CCFLAGS) -IATS PARCOMB -c -o tokenize_dats.o PARCOMB/tokenize.dats
-
-######
-
-funarray_dats.o: LIB/funarray.dats
-	atscc $(CCFLAGS) -IATS LIB -c -o funarray_dats.o LIB/funarray.dats
 
 ######
 
