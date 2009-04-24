@@ -49,7 +49,7 @@ fun prerr_instrlst (inss: instrlst): void
 // Instead of turning an instruction into a string and then print it out,
 // it should make a lot more sense to print out the instruction directly,
 // right?
-fun instr_format (fmt: temp -<cloref1> string, ins: instr): string
+fun instr_format (fmt: temp -<fun1> string, ins: instr): string
 
 fun instr_ismove (ins: instr): bool
 

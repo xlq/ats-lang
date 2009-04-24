@@ -133,13 +133,13 @@ end // end of [comptest]
 
 (* ****** ****** *)
 
-fun print_stmlst (ss: $TR.stmlst): void =
+fun fprint_stmlst (out: FILEref, ss: $TR.stmlst): void =
   case+ ss of
   | list_cons (s, ss) => begin
-      $TR.print_stm s; print_newline (); print_stmlst (ss)
+      $TR.fprint_stm (out, s); fprint_newline (out); fprint_stmlst (out, ss)
     end // end of [list_cons]
-  | list_nil () => print_newline ()
-// end of [print_stmlst]
+  | list_nil () => fprint_newline (out)
+// end of [fprint_stmlst]
 
 (* ****** ****** *)
 
@@ -159,13 +159,17 @@ implement main (argc, argv) = let
     | 1 => parse_from_stdin ()
     | _ (* argc >= 2 *) =>> parse_from_file (argv.[1])
   // end of [val]
+(*
   val () = begin
     print "prog_exp = "; print_exp (prog_exp); print_newline ()
   end // end of [val]
+*)
   val prog_ty = transProg (prog_exp)
+(*
   val () = begin
     print "prog_ty = "; print_ty (prog_ty); print_newline ()
   end // end of [val]
+*)
 (*
   val prog_vlu = $INT0.interp0Prog (prog_exp)
   val () = begin
@@ -174,14 +178,17 @@ implement main (argc, argv) = let
 *)
 
   val prog_e1xp = $TRAN.transProg1 (prog_exp)
+(*
   val () = begin
     print "prog_e1xp = "; $TRAN.print_e1xp prog_e1xp; print_newline ()
   end // end of [val]
+*)
   val prog_stm = $TRAN.unNx (prog_e1xp)
+(*
   val () = begin
     print "prog_stm = "; $TR.print_stm prog_stm; print_newline ()
   end // end of [val]
-  
+*)  
   val theFraglst = list_reverse ($F.frame_theFraglst_get ())
   
   datatype f1rag =
@@ -229,10 +236,10 @@ implement main (argc, argv) = let
   val prog_stms = $CA.linearize prog_stm
   val (lab_done, prog_blks) = $CA.blocklst_gen (prog_stms)
   val prog_stms = $CA.trace_schedule (lab_done, prog_blks)
-// (*
-  val () = print_stmlst prog_stms
-// val () = $INT1.interp1Prog (prog_stms)
-// *)
+(*
+  val () = fprint_stmlst (stderr_ref, prog_stms)
+  val () = $INT1.interp1Prog (prog_stms)
+*)
 
 // (*
   val () = loop (theF1raglst) where {
@@ -246,6 +253,34 @@ implement main (argc, argv) = let
                 end // end of [val]
                 val inss = codegen_proc (frm, stms)
                 val inss = instrlst_regalloc (frm, inss)
+                val () = () where {
+                  val frmsz = $F.frame_size_get (frm)
+                  val nam_frm = $TL.label_name_get (lab_frm)
+                  val () = printf ("\t.set\t.%s_framesize, %i\n", @(nam_frm, frmsz))
+                } // end of [val]
+                val () = loop (inss) where {
+                  fun loop (inss: instrlst): void = case+ inss of
+                    | list_cons (ins, inss) => let
+(*
+                        val () = (print_instr (ins); print_newline ())
+*)
+                        val () = case+ ins of
+                          | INSTRoper _ => let
+                              val asm = regalloc_insfmt (ins) in printf ("\t%s\n", @(asm))
+                            end // end of [_]
+                          | INSTRlabel (asm, _) => printf ("%s\n", @(asm))
+                          | INSTRmove (_, src, dst) => let
+                              val src = regassgn_find src and dst = regassgn_find dst in
+                              if $TL.eq_temp_temp (src, dst) then () else let
+                                val asm = regalloc_insfmt (ins) in printf ("\t%s\n", @(asm))
+                              end // end of [if]
+                            end (* end of [INSTRmove] *)
+                      in
+                        loop inss
+                      end // end of [list_cons]
+                    | list_nil () => ()
+                  // end of [loop]
+                } // end of [val]
               in
                 // empty
               end // end of [val]
@@ -259,11 +294,9 @@ implement main (argc, argv) = let
   } // end of [val]
 // *)
 
-// (*
   val prog_frm = $F.theTopFrame
   val prog_inss = codegen_stmlst (prog_frm, prog_stms)
-  val () = print_instrlst (prog_inss)
-// *)
+  // val () = prerr_instrlst (prog_inss)
   val prog_inss = instrlst_regalloc (prog_frm, prog_inss)
 in
   // empty

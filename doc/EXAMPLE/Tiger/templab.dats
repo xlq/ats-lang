@@ -55,13 +55,13 @@ implement compare_temp_temp
   (tmp1, tmp2) = compare_int64_int64 (tmp1, tmp2)
 // end of [compare_temp_temp]
 
-implement fprint_temp (out, tmp) = begin
-  fprint_string (out, "tmp"); fprint_int64 (out, tmp)
-end
-
 implement temp_is_fixed (tmp) =
   if tmp < the_temp_base then true else false
 // end of [temp_is_special]
+
+implement fprint_temp (out, tmp) = begin
+  fprint_string (out, "tmp"); fprint_int64 (out, tmp)
+end
 
 end // end of [local]
 
@@ -183,6 +183,23 @@ implement tigerats_array_make_elt_lab = label_make_name ("tigerats_array_make_el
 
 implement tigerats_eq_string_string_lab = label_make_name ("tigerats_eq_string_string")
 implement tigerats_neq_string_string_lab = label_make_name ("tigerats_neq_string_string")
+
+(* ****** ****** *)
+
+%{$
+
+ats_uint_type
+tigerats_hash_temp (ats_int64_type tmp) {
+  uint64_t utmp = tmp ;
+  uint hashval = 31415926U ;
+  while (utmp) {
+    hashval = (hashval << 5) + hashval ;
+    hashval += (utmp & 0xFF) ; utmp >>= 8 ;
+  } /* end of [while] */
+  return hashval ;
+} /* end of [hash_temp] */
+
+%}
 
 (* ****** ****** *)
 

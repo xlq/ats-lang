@@ -51,7 +51,12 @@ fun regassgn_select (rasgn: regassgn): void
 
 (* ****** ****** *)
 
-fun regassgn_find (tmp: $TL.temp_t): $TL.tempopt_vt
+fun regassgn_find (tmp: $TL.temp_t): $TL.temp_t
+
+(* ****** ****** *)
+
+fun regalloc_tmpfmt (tmp: $TL.temp_t): string
+fun regalloc_insfmt (ins: $AS.instr): string
 
 fun instrlst_regalloc (frm: $F.frame_t, inss: $AS.instrlst): $AS.instrlst
 

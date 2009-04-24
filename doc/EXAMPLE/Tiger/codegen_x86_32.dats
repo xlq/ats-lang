@@ -90,15 +90,24 @@ fn instrlst_add_stm
           | LE  _ => "jle"
         ) : string // end of [val]
         val s0 = auxexp (res, e1)
-        val s1 = auxexp (res, e2)
+        val () = case+ e2 of
+          | EXPconst i2 => emit
+              (res, $AS.INSTRoper (asm, src, dst, jump)) where {
+              val asm = sprintf ("cmpl $%i, `s0", @(i2))
+              val src = '[s0] and dst = '[]; val jump = None ()
+            } // end of [val]
+          | _ => () where {
+              val s1 = auxexp (res, e2); val () = emit
+                (res, $AS.INSTRoper (asm, src, dst, jump)) where {
+                val asm = "cmpl `s1, `s0"
+                val src = '[s0, s1] and dst = '[]; val jump = None ()
+              } // end of [val]
+            } (* end of [_] *)
+        // end of [val]
         val () = emit
           (res, $AS.INSTRoper (asm, src, dst, jump)) where {
-           val asm = "cmpl `s0, `s1"
-           val src = '[s0, s1] and dst = '[]; val jump = None ()
-        } // end of [val]
-        val () = emit
-          (res, $AS.INSTRoper (asm, src, dst, jump)) where {
-          val asm = opcode + " `j0"
+          val tname = $TL.label_name_get tlab
+          val asm = sprintf ("%s .%s", @(opcode, tname))
           val src = '[] and dst = '[]; val jump = Some '[tlab, flab]
         } // end of [val]
       } (* end of [STMcjump] *)
@@ -114,7 +123,7 @@ fn instrlst_add_stm
               | EXPconst i2 => () where {
                   val () = emit
                     (res, $AS.INSTRoper (asm, src, dst, jump)) where {
-                    val asm = sprintf ("movl `$%i, %i(`s0)", @(i2, ofs))
+                    val asm = sprintf ("movl $%i, %i(`s0)", @(i2, ofs))
                     val src = '[s0] and dst = '[]; val jump= None ()
                   } // end of [val]
                 } (* end of [EXPconst] *)
@@ -122,7 +131,7 @@ fn instrlst_add_stm
                   val () = emit
                     (res, $AS.INSTRoper (asm, src, dst, jump)) where {
                     val name = $TL.label_name_get (lab2)
-                    val asm = sprintf ("movl `.%s, %i(`s0)", @(name, ofs))
+                    val asm = sprintf ("movl .%s, %i(`s0)", @(name, ofs))
                     val src = '[s0] and dst = '[]; val jump= None ()
                   } // end of [val]              
                 } (* end of [EXPname] *)

@@ -72,10 +72,10 @@ extern fun{} hashtbl_free_exn
 (* ****** ****** *)
 
 extern fun{key:t@ype;itm:viewt@ype} hashtbl_foreach_clo {v:view}
-  (pf: !v | tbl: hashtbl_t (key, itm), f: &(!v | key, &itm) -<clo1> void): void
+  (pf: !v | tbl: hashtbl_t (key, itm), f: &(!v | key, &itm) -<clo> void):<!ref> void
 
 extern fun{key:t@ype;itm:viewt@ype} hashtbl_foreach_cloref {v:view}
-  (pf: !v | tbl: hashtbl_t (key, itm), f: !(!v | key, &itm) -<cloref1> void): void
+  (pf: !v | tbl: hashtbl_t (key, itm), f: !(!v | key, &itm) -<cloref> void):<!ref> void
 
 (* ****** ****** *)
 
@@ -93,13 +93,10 @@ extern typedef "chain0" = chain0
 
 (* ****** ****** *)
 
-#define nil CHAINnil; #define cons CHAINcons
-
-(* ****** ****** *)
-
 fun{key:t@ype;itm:t@ype} chain_free {n:nat} .<n>.
   (kis: chain (key, itm, n)):<> void = begin case+ kis of
-  | ~cons (_(*key*), _(*itm*), kis) => chain_free (kis) | ~nil () => ()
+  | ~CHAINcons (_(*key*), _(*itm*), kis) => chain_free (kis)
+  | ~CHAINnil () => ()
 end // end of [chain_free]
 
 (* ****** ****** *)
@@ -107,7 +104,7 @@ end // end of [chain_free]
 fun{key:t@ype;itm:t@ype} chain_search {n:nat} .<n>.
   (kis: !chain (key,itm,n), k0: key, eq: eq key):<> Option_vt itm =
   case+ kis of
-  | cons (k, i, !kis1) => let
+  | CHAINcons (k, i, !kis1) => let
       val keq = equal_key_key (k0, k, eq)
     in
       if keq then (fold@ kis; Some_vt i) else let
@@ -116,19 +113,23 @@ fun{key:t@ype;itm:t@ype} chain_search {n:nat} .<n>.
         fold@ kis; ans
       end // end of [if]
     end // end of [cons]
-  | nil () => (fold@ kis; None_vt ())
+  | CHAINnil () => (fold@ kis; None_vt ())
 // end of [chain_search]
+
+(* ****** ****** *)
 
 fn{key:t@ype;itm:viewt@ype} chain_insert {n:nat}
   (kis: &chain (key,itm,n) >> chain (key,itm,n+1), k: key, i: itm):<> void =
-  kis := cons (k, i, kis)
+  kis := CHAINcons (k, i, kis)
 // end of [chain_insert]
+
+(* ****** ****** *)
 
 stadef b2i = int_of_bool
 fun{key:t@ype;itm:viewt@ype} chain_remove {n:nat} .<n>.
   (kis: &chain (key,itm,n) >> chain (key,itm,n-b2i b), k0: key, eq: eq key)
   :<> #[b:bool | b2i b <= n] option_vt (itm, b) = begin case+ kis of
-  | cons (k, !i, !kis1) => let
+  | CHAINcons (k, !i, !kis1) => let
       val keq = equal_key_key (k0, k, eq)
     in
       if keq then let
@@ -141,7 +142,7 @@ fun{key:t@ype;itm:viewt@ype} chain_remove {n:nat} .<n>.
         fold@ kis; ans
       end // end of [if]
     end // end of [cons]
-  | nil () => let
+  | CHAINnil () => let
       prval () = fold@ kis in None_vt ()
     end // end of [nil]
 end // end of [chain_remove]
@@ -150,20 +151,21 @@ fun{key:t@ype;itm:viewt@ype}
   chain_foreach_clo {v:view} {n:nat} {f:eff} .<n>. (
     pf: !v | kis: !chain (key, itm, n), f: &(!v | key, &itm) -<clo,f> void
   ) :<f> void = begin case+ kis of
-  | cons (k, !i, !kis1) => begin
+  | CHAINcons (k, !i, !kis1) => begin
       f (pf | k, !i); chain_foreach_clo (pf | !kis1, f); fold@ kis
     end // end of [cons]
-  | nil () => fold@ kis
+  | CHAINnil () => fold@ kis
 end // end of [chain_foreach_clo]
 
 (* ****** ****** *)
 
-dataview hashtbl_v
+dataview hashtbl_v // it is just an array of chains
   (key:t@ype, itm:viewt@ype+, int(*sz*), int(*tot*), addr, addr) =
   | {sz,tot,n:nat} {l_beg,l_end:addr}
     hashtbl_v_cons (key, itm, sz+1, tot+n, l_beg, l_end) of
       (chain (key, itm, n) @ l_beg, hashtbl_v (key, itm, sz, tot, l_beg+chainsz, l_end))
   | {l:addr} hashtbl_v_nil (key, itm, 0, 0, l, l)
+// end of [hashtbl_v]
 
 extern prfun // proof is omitted
   hashtbl_v_split {key:t@ype;itm:viewt@ype}
@@ -173,7 +175,7 @@ extern prfun // proof is omitted
   ) :<> [tot1:nat | tot1 <= tot] @(
     hashtbl_v (key, itm, sz1, tot1, l_beg, l_beg+ofs)
   , hashtbl_v (key, itm, sz-sz1, tot-tot1, l_beg+ofs, l_end)
-  ) // end of [hashtbl_split]
+  ) // end of [hashtbl_v_split]
 
 extern prfun // proof is omitted
   hashtbl_v_unsplit {key:t@ype;itm:viewt@ype}
@@ -266,7 +268,7 @@ fun{key:t@ype;itm:viewt@ype}
   , kis: chain (key, itm, n)
   , hash: hash key
   ) :<> void = begin case+ kis of
-  | ~cons (k, i, kis) => let
+  | ~CHAINcons (k, i, kis) => let
       // insertion must be done in the reverse order!
       val () = hashtbl_ptr_insert_chain (pf | sz, p_beg, kis, hash)
       val h = hash_key (k, hash)
@@ -281,7 +283,7 @@ fun{key:t@ype;itm:viewt@ype}
     in
       // empty
     end // end of [cons]
-  | ~nil () => ()
+  | ~CHAINnil () => ()
 end // end of [hashtbl_ptr_insert_chain]
 
 (* ****** ****** *)
@@ -299,7 +301,7 @@ fun{key:t@ype;itm:viewt@ype}
   ) :<> void = begin
   if sz1 > 0 then let
     prval hashtbl_v_cons (pf11, pf12) = pf1
-    val kis = !p1_beg; val () = !p1_beg := nil ()
+    val kis = !p1_beg; val () = !p1_beg := CHAINnil ()
     val () = hashtbl_ptr_insert_chain (pf2 | sz2, p2_beg, kis, hash)
     val () = hashtbl_ptr_relocate
       (pf12, pf2 | sz1-1, sz2, p1_beg+sizeof<chain0>, p2_beg, hash)
@@ -324,7 +326,7 @@ fun{key:t@ype;itm:t@ype}
   ) :<> void = begin
   if sz > 0 then let
     prval hashtbl_v_cons (pf1, pf2) = pf
-    val () = chain_free (!p_beg); val () = !p_beg := nil ()
+    val () = chain_free (!p_beg); val () = !p_beg := CHAINnil ()
     val () = hashtbl_ptr_clear<key,itm> (pf2 | sz-1, p_beg+sizeof<chain0>)
     prval () = pf := hashtbl_v_cons (pf1, pf2)
   in
@@ -536,9 +538,9 @@ end // end of [hashtbl_remove_err]
 
 #define HASHTABLE_SIZE_HINT 97
 
-implement{key,itm} hashtbl_make (hash, eq) = begin
-  hashtbl_make_hint<key,itm> (hash, eq, 0)
-end // end of [hashtbl_make]
+implement{key,itm} hashtbl_make
+  (hash, eq) = hashtbl_make_hint<key,itm> (hash, eq, 0)
+// end of [hashtbl_make]
 
 implement{key,itm} hashtbl_make_hint (hash, eq, hint) = let
   val sz = (if hint > 0 then hint else HASHTABLE_SIZE_HINT): Pos
@@ -600,13 +602,12 @@ end // end of [hashtbl]
 
 implement{key,itm}
   hashtbl_foreach_clo {v} (pf0 | tbl, f) = let
-  val (vbox pf_tbl | p_tbl) = ref_get_view_ptr (tbl)
-in
+  val (vbox pf_tbl | p_tbl) = ref_get_view_ptr (tbl) in
   case+ !p_tbl of
   | hashtbl_vt_some (_, !pf | sz, _, p_beg, _, _) => let
       val () = $effmask_ref begin
         hashtbl_ptr_foreach_clo {v} (pf0, !pf | sz, p_beg, f)
-      end
+      end // end of [val]
     in
       fold@ !p_tbl
     end // end of [cons]
@@ -617,9 +618,10 @@ end // end of [hashtbl_foreach_clo]
 
 implement{key,itm}
   hashtbl_foreach_cloref {v} (pf0 | tbl, f) = let
-  typedef clo_type = (!v | key, &itm) -<clo1> void
+  typedef clo_type = (!v | key, &itm) -<clo> void
   val (vbox pf_f | p_f) = cloref_get_view_ptr {clo_type} (f)
-  val () = $effmask_ref (hashtbl_foreach_clo<key,itm> {v} (pf0 | tbl, !p_f))
+  val () = $effmask_ref
+    (hashtbl_foreach_clo<key,itm> {v} (pf0 | tbl, !p_f))
 in
   // empty
 end // end of [hashtbl_foreach_cloref]
@@ -634,7 +636,7 @@ end // end of [hashtbl_foreach_cloref]
 ats_ptr_type
 hashtbl_ptr_make (ats_int_type sz) {
   ats_ptr_type p ;
-  /* zeroing the allocated memory is mandatory!!! */
+  /* zeroing the allocated memory is mandatory! */
   p = ATS_CALLOC(sz, sizeof(chain0)) ;
   return p ;
 } /* end of [hashtbl_ptr_make] */

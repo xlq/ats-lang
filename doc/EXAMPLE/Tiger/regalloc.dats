@@ -113,8 +113,10 @@ val theSpilledReglst = ref_make_elt<$TL.templst> (list_nil)
 in // in of [local]
 
 implement regassgn_find (tmp) = let
-  val (vbox pf | p) = ref_get_view_ptr (theRegAssgnMap) in
-  $LM.linmap_search<key,itm> (!p, tmp, _cmp_temp)
+  val (vbox pf | p) = ref_get_view_ptr (theRegAssgnMap)
+  val ans = $LM.linmap_search<key,itm> (!p, tmp, _cmp_temp)
+in
+  case+ ans of ~Some_vt tmp => tmp | ~None_vt () => tmp
 end (* end of [regassgn_find] *)
 
 fn regassgn_insert
@@ -152,9 +154,7 @@ implement regassgn_select (rasgn) = let
     (rems: tempset_t, ts: $TL.templst): $TL.tempopt_vt =
     case+ ts of
     | list_cons (t, ts) => let
-        val t = begin
-          case+ regassgn_find (t) of ~Some_vt t => t | ~None_vt () => t
-        end // end of [val]
+        val t = regassgn_find (t)
         val rems = tempset_remove (rems, t) in auxsel (rems, ts)
       end (* end of [list_cons] *)
     | list_nil () => let
@@ -169,15 +169,14 @@ implement regassgn_select (rasgn) = let
         val ts = templst_of_tempset ts in auxsel (theGeneralRegset, ts)
       end // end of [REGASSGNsimplify]
     | REGASSGNcoalesce (t0, t1) => let
-        val () = tmp0 := t1
-        val t0 = begin
-          case+ regassgn_find (t0) of ~Some_vt t => t | ~None_vt () => t0
-        end // end of [val]
+        val () = tmp0 := t1; val t0 = regassgn_find (t0)
       in
         Some_vt t0
       end // end of [REGASSGNcoalesce]
     | REGASSGNspill (t0, ts) => let
+(*
         val () = prerr "regassgn_select: potential spill\n"
+*)
         val () = tmp0 := t0
         val ts = templst_of_tempset ts in auxsel (theGeneralRegset, ts)
       end // end of [REGASSGNspill]
@@ -186,16 +185,20 @@ implement regassgn_select (rasgn) = let
     | ~Some_vt tmp1 => let
         val () = regassgn_insert (tmp0, tmp1)
       in
+(*
         prerr "regassgn_select: ";
         $TL.prerr_temp tmp0; prerr " --> "; $TL.prerr_temp tmp1;
         prerr_newline ()
+*)
       end // end of [Some_vt]
     | ~None_vt () => let
         val () = spillreglst_add (tmp0)
       in
+(*
         prerr "regassgn_select: ";
         $TL.prerr_temp tmp0; prerr " --> (spill)";
         prerr_newline ()
+*)
       end // end of [None_vt]
 in
   // empty        
@@ -369,9 +372,11 @@ implement igraph_regalloc (ig) = let
     case+ ans of
     | ~Some_vt tmp => let
         val () = begin
+(*
           prerr "igraph_regalloc: loop1(simplify): tmp = ";
           $TL.prerr_temp tmp;
           prerr_newline ()
+*)
         end // end of [val]
         val info = igraph_nodeinfo_get (ig, tmp)
         val intset = ignodeinfo_intset_get (info)
@@ -390,7 +395,7 @@ implement igraph_regalloc (ig) = let
     case+ ans of
     | ~Some_vt tmptmp => let
         val tmp0 = tmptmp.0 and tmp1 = tmptmp.1
-// (*
+(*
         val () = begin
           prerr "igraph_regalloc: loop2(coalesce): ";
           $TL.prerr_temp tmp0;
@@ -398,7 +403,7 @@ implement igraph_regalloc (ig) = let
           $TL.prerr_temp tmp1;
           prerr_newline ()
         end // end of [val]
-// *)
+*)
         val rasgn = REGASSGNcoalesce (tmp0, tmp1)
         val () = rasgns := list_cons (rasgn, rasgns)
         val () = igraph_node_coalesce (ig, tmp0, tmp1)
@@ -413,11 +418,13 @@ implement igraph_regalloc (ig) = let
     val ans = igraph_search_freeze (ig) in
     case+ ans of
     | ~Some_vt tmp => let
+(*
         val () = begin
           prerr "igraph_regalloc: loop3(freeze): tmp = ";
           $TL.prerr_temp tmp;
           prerr_newline ()
         end // end of [val]
+*)
         val () = igraph_node_freeze (ig, tmp)
         val () = loop1 (ig, rasgns)
         val () = loop2 (ig, rasgns)
@@ -433,11 +440,13 @@ implement igraph_regalloc (ig) = let
     val ans = igraph_search_spill (ig) in
     case+ ans of
     | ~Some_vt tmp => let
+(*
         val () = begin
           prerr "igraph_regalloc: loop4(spill): tmp = ";
           $TL.prerr_temp tmp;
           prerr_newline ()
         end // end of [val]
+*)
         val info = igraph_nodeinfo_get (ig, tmp)
         val intset = ignodeinfo_intset_get (info)
         val rasgn = REGASSGNspill (tmp, intset)
@@ -457,11 +466,13 @@ implement igraph_regalloc (ig) = let
   val () = loop2 (ig, rasgns) // coalesce
   val () = loop3 (ig, rasgns) // freeze
   val () = loop4 (ig, rasgns) // spill
+(*
   val () = begin
     prerr "igraph_regalloc: rasgns =\n";
     fprint_regassgnlst (stderr_ref, rasgns);
     prerr_newline ()
   end // end of [val]
+*)
   val () = regassgn_clear ()
   val () = spillreglst_clear ()
   val () = loop5 (rasgns) where {
@@ -482,17 +493,25 @@ end // end of [igraph_regalloc]
 implement instrlst_regalloc
   (frm, inss0) = loop (frm, inss0) where {
   fun loop (frm: $F.frame_t, inss: $AS.instrlst): $AS.instrlst = let
-    val () = print "instrlst_regalloc: loop: inss =\n"
-    val () = $AS.print_instrlst (inss)
+(*
+    val () = prerr "instrlst_regalloc: loop: inss =\n"
+    val () = $AS.prerr_instrlst (inss)
+*)
     val ig = igraph_make_instrlst (inss)
-    val () = print "instrlst_regalloc: loop: ig(init) =\n"
-    val () = fprint_igraph (stdout_ref, ig)
+(*
+    val () = prerr "instrlst_regalloc: loop: ig(init) =\n"
+    val () = fprint_igraph (stderr_ref, ig)
+*)
     val () = igraph_simplify0 (ig)
-    val () = print "instrlst_regalloc: loop: ig(simplify0) =\n"
-    val () = fprint_igraph (stdout_ref, ig)
+(*
+    val () = prerr "instrlst_regalloc: loop: ig(simplify0) =\n"
+    val () = fprint_igraph (stderr_ref, ig)
+*)
     val () = igraph_regalloc (ig)
-    val () = print "instrlst_regalloc: loop: ig(regalloc) =\n"
-    val () = fprint_igraph (stdout_ref, ig)
+(*
+    val () = prerr "instrlst_regalloc: loop: ig(regalloc) =\n"
+    val () = fprint_igraph (stderr_ref, ig)
+*)
     val spills = spillreglst_get ()
   in
     case+ spills of
@@ -504,6 +523,14 @@ implement instrlst_regalloc
     | list_nil () => inss
   end // end of [val]
 } // end of [instrlst_regalloc]
+
+(* ****** ****** *)
+
+implement regalloc_tmpfmt (tmp) = let
+  val tmp = regassgn_find (tmp) in $F.register_name_get (tmp)
+end // end of [regalloc_tmpfmt]
+
+implement regalloc_insfmt (ins) = $AS.instr_format (regalloc_tmpfmt, ins)
 
 (* ****** ****** *)
 

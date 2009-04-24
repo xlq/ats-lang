@@ -131,12 +131,12 @@ implement frame_make_new (lab, ofs0, arglst) = '{
             let val tmp = $TL.temp_make_new () in InReg (tmp) end
           end // end of [if]
         ) : access
-// (*
+(*
         val () = begin
           prerr "frame_make_new: aux: ofs = "; prerr ofs; prerr_newline ();
           prerr "frame_make_new: aux: acc = "; prerr_access acc; prerr_newline ();
         end // end of [val]
-// *)
+*)
         // [ofs] is increased regardless [acc] is InFrame or InReg
         val accs = aux (xs, ofs + WORDSIZE) // stack grows downward
       in
@@ -153,6 +153,8 @@ implement frame_arglst_get (f) = f.frame_arglst
 
 extern fun frame_nlocvar_set (f: frame, n: int): void
   = "tigerats_frame_nlocvar_set"
+
+implement frame_size_get (f) = ~f.frame_nlocvar
 
 implement frame_alloc_local
   (frame, isEscaped) = case+ 0 of
@@ -184,7 +186,7 @@ implement instr_make_mem_read (acc, tmp) = case+ acc of
       val src = '[FP] and dst = '[tmp]; val jump = None ()
     } // end of [INSTRoper]
   | InReg _ => begin
-      prerr "FATAL ERROR: instr_make_mem_read: acc = InReg (...)";
+      prerr "INTERNAL ERROR: instr_make_mem_read: acc = InReg (...)";
       $Err.abort {instr} (1)
     end // end of [InReg]
 // end of [instr_make_mem_read]
@@ -201,7 +203,7 @@ implement instr_make_mem_write (acc, tmp) = case+ acc of
       val src = '[FP, tmp] and dst = '[]; val jump = None ()
     } // end of [INSTRoper]
   | InReg _ => begin
-      prerr "FATAL ERROR: instr_make_mem_write: acc = InReg (...)";
+      prerr "INTERNAL ERROR: instr_make_mem_write: acc = InReg (...)";
       $Err.abort {instr} (1)
     end // end of [InReg]
 // end of [instr_make_mem_write]
@@ -277,7 +279,7 @@ implement theCalleesavedReglst = '[
   val temp_r23 = $TL.temp_make_fixed (47)
 }
 
-#endif
+#endif // end of [MARCH == "MIPS"]
 
 (* ****** ****** *)
 
@@ -363,7 +365,49 @@ implement theGeneralReglst = '[
 
 (* ****** ****** *)
 
+local
+
+staload H = "LIB/hashtable.dats"
+
+typedef key = $TL.temp_t and itm = string
+
+val _hash_temp = lam (tmp: key): uint =<cloref> $TL.hash_temp (tmp)
+
+val _eq_temp = lam
+  (tmp1: key, tmp2: key): bool =<cloref> $TL.eq_temp_temp (tmp1, tmp2)
+// end of [_eq_temp]
+
+val theRegNameTbl = $H.hashtbl_make_hint<key,itm> (_hash_temp, _eq_temp, 32)
+
+fn regname_insert (tmp: $TL.temp_t, name: string): void = let
+  val ans = $H.hashtbl_insert_err<key,itm> (theRegNameTbl, tmp, name)
+in
+  case+ ans of ~Some_vt _ => () | ~None_vt _ => ()
+end // end of [regname_insert]
+
+val () = regname_insert (SP, "%esp")
+val () = regname_insert (FP, "%ebp")
+val () = regname_insert (EAX, "%eax")
+val () = regname_insert (EBX, "%ebx")
+val () = regname_insert (ECX, "%ecx")
+val () = regname_insert (EDX, "%edx")
+val () = regname_insert (ESI, "%esi")
+val () = regname_insert (EDI, "%edi")
+
+in
+
+implement register_name_get (tmp) = let
+  val ans = $H.hashtbl_search<key,itm> (theRegNameTbl, tmp)
+in
+  case+ ans of ~Some_vt name => name | ~None_vt () => "tmp?"
+end // end of [register_name_get]
+
+end // end of [local]
+
+(* ****** ****** *)
+
 implement procEntryExit1_entr (frm, inss) = let
+//
 #if TIGER_OMIT_FRAME_POINTER = 0 #then
   val () = () where {
     val asm = "pushl `s0"
@@ -376,6 +420,15 @@ implement procEntryExit1_entr (frm, inss) = let
   val () = () where {
     val asm = "movl `s0, `d0"
     val src = '[SP] and dst = '[FP]; val jump = None ()
+    val ins = $AS.INSTRoper (asm, src, dst, jump)
+    val () = inss := list_vt_cons (ins, inss)
+  } // end of [val]
+//
+  val () = () where {
+    val lab = frame_name_get (frm)
+    val nam = $TL.label_name_get (lab)
+    val asm = sprintf ("subl $.%s_framesize, `s0", @(nam))
+    val src = '[SP] and dst = '[SP]; val jump = None ()
     val ins = $AS.INSTRoper (asm, src, dst, jump)
     val () = inss := list_vt_cons (ins, inss)
   } // end of [val]
@@ -418,7 +471,7 @@ implement procEntryExit2 (_(*frm*), inss) =
 
 (* ****** ****** *)
 
-#endif
+#endif // end of [MARCH == "x86_32"]
 
 (* ****** ****** *)
 

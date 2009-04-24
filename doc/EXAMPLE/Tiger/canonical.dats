@@ -362,12 +362,12 @@ implement trace_schedule (lab_done, blks) = let
     // end of [loop]
   } // end of [val]
   val res = aux (map, blks, list_nil ())
-// (*
+(*
   val () = let
     val size = $M.linmap_size (map) in
     prerr "size (0) = "; prerr size; print_newline ()
   end // end of [val]
-// *)
+*)
 in
   $M.linmap_free (map); res  
 end // end of [trace_schedule]

@@ -52,6 +52,7 @@ fun frame_name_get (f: frame_t): label
 fun frame_argofs_get (f: frame_t): int
 fun frame_arglst_get (f: frame_t): accesslst
 
+fun frame_size_get (f: frame_t): int
 fun frame_alloc_local (f: frame_t, isEscaped: bool): access_t
 
 (* ****** ****** *)
@@ -109,6 +110,11 @@ fun procEntryExit2 (frm: frame_t, inss: &($AS.instrlst_vt)): void
 //
 fun instr_make_mem_read (acc: access_t, tmp: $TL.temp_t): $AS.instr
 fun instr_make_mem_write (acc: access_t, tmp: $TL.temp_t): $AS.instr
+
+(* ****** ****** *)
+
+// return the name of a machine register
+fun register_name_get (tmp: $TL.temp_t): string
 
 (* ****** ****** *)
 

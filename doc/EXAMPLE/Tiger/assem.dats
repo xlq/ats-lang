@@ -131,7 +131,11 @@ implement revapp_string_list_vt (str, cs) = loop (str, cs, 0) where {
 
 implement instr_format (tmpfmt, ins) = let
   #define c2i int_of_char; #define i2c char_of_int
-
+(*
+  val () = begin
+    prerr "instr_format: ins = "; prerr_instr ins; prerr_newline ()
+  end // end of [instr_format]
+*)
   fn err (asm: string, res: charlst_vt): string = let
     val () = list_vt_free (res)
   in
@@ -162,7 +166,7 @@ implement instr_format (tmpfmt, ins) = let
 
   and aux2 {n,i:nat | i <= n} .<n-i>. (
       asm: string n
-    , dst: templst, src: templst, jump: lablstopt, i: size_t i
+    , src: templst, dst: templst, jump: lablstopt, i: size_t i
     , res: charlst_vt
     ) :<cloref1> string =
     if string_isnot_at_end (asm, i) then let
@@ -183,14 +187,20 @@ implement instr_format (tmpfmt, ins) = let
 
   and aux3 {n,i:nat | i <= n} .<n-i>. (
       asm: string n
-    , dst: templst, src: templst, jump: lablstopt, c: int, i: size_t i
+    , src: templst, dst: templst, jump: lablstopt, c: int, i: size_t i
     , res: charlst_vt  
     ) :<cloref1> string =
     if string_isnot_at_end (asm, i) then let
       val c = i2c c; val c1 = asm[i]
     in
       if char_isdigit (c1) then let
-        val ind = c1 - '0'; val () = assert (ind >= 0)
+        val ind = c1 - '0'
+(*
+        val () = begin
+          prerr "instr_format: aux3: ind ="; prerr ind; prerr_newline ()
+        end // end of [val]
+*)
+        val () = assert (ind >= 0)
       in
         case+ c of
         | 's' => let
@@ -248,7 +258,7 @@ in
   | INSTRlabel (asm, _(*lab*)) => asm
   | INSTRmove (asm, src, dst) => let
       val asm = string1_of_string asm
-      val dst = '[dst] and src = '[src] and jump = None ()
+      val src = '[src] and dst = '[dst] and jump = None ()
       val res = list_vt_nil () in aux1 (asm, src, dst, jump, 0, res)
     end // end of [INSTRmove]
 end // end of [instr_format]

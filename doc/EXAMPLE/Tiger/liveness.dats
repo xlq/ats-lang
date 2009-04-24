@@ -183,9 +183,13 @@ implement fgraph_compute_outset (fg) = let
 in
   while (true) let
     val flag0 = flag
-    val () = print "fgraph_compute_outset: ntimes = ";
-    val () = print ntimes;
-    val () = print_newline ()
+(*
+    val () = begin
+      print "fgraph_compute_outset: ntimes = ";
+      print ntimes;
+      print_newline ()
+    end // end of [val]
+*)
     val () = loop_one (fg, flag, sz)
     val () = ntimes := ntimes + 1
   in
