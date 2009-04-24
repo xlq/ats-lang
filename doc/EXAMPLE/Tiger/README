@@ -1,10 +1,14 @@
 ######
 #
-# A Tiger compiler implemented in ATS
+# TIGERATS: a Tiger compiler implemented in ATS
 #
 # Author: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
 # Time: Spring, 2009
 #
+######
+
+So far, both x86-32 and mips are targeted.
+
 ######
 
 tiger_main: the main function is implemented here
@@ -76,6 +80,51 @@ interp1:
 
 An interpreter for the tree language in Tiger; it is mainly for testing the
 code obtained after canonicalization.
+
+######
+
+codegen:
+
+for performing instruction selection.
+
+codegen_x86_32:
+
+for performing instruction selection on the 32-bit x86 arch; this one is functioning
+
+codegen_mips:
+
+for performing instruction selection on the mips arch; this one is not yet functioning
+
+######
+
+tempset:
+
+for representing and processing sets of temporary registers; this one currently uses
+(unrealistic) list represention for sets.
+
+######
+
+fgraph:
+
+for representing and processing flow graphs
+
+######
+
+liveness:
+
+for permforming liveness analysis that yields inteference graphs
+
+######
+
+igraph:
+
+for representing and processing interference graphs
+
+######
+
+regalloc:
+
+for performing register allocation.
 
 ######
 

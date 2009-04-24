@@ -220,7 +220,8 @@ assem_dats.o: assem.dats
 codegen_sats.o: codegen.sats
 	atscc $(CCFLAGS) -o codegen_sats.o -c codegen.sats
 
-codegen_dats.o: codegen.dats codegen_mips.dats
+codegen_dats.o: codegen.dats \
+        codegen_mips.dats codegen_x86_32.dats
 	atscc $(CCFLAGS) -o codegen_dats.o -c codegen.dats
 
 ######

@@ -1,6 +1,6 @@
 (*
 **
-** a Tiger compiler written in ATS
+** TIGERATS: a Tiger compiler written in ATS
 **
 ** Author: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
 ** Time: Spring, 2009
@@ -256,7 +256,7 @@ implement igraph_make_fgraph (fg) = ig where {
 *)
         val () = if ~ismove then
           loop1 (ig, deflst, outlst) where {
-          fun loop1 (
+          fn* loop1 (
               ig: igraph_t
             , ts1: $TL.templst
             , ts2: $TL.templst

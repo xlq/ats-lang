@@ -1,6 +1,6 @@
 (*
 **
-** a Tiger compiler written in ATS
+** TIGERATS: a Tiger compiler written in ATS
 **
 ** Author: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
 ** Time: Spring, 2009
@@ -394,7 +394,7 @@ val () = regname_insert (EDX, "%edx")
 val () = regname_insert (ESI, "%esi")
 val () = regname_insert (EDI, "%edi")
 
-in
+in // in of [local]
 
 implement register_name_get (tmp) = let
   val ans = $H.hashtbl_search<key,itm> (theRegNameTbl, tmp)
