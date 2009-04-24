@@ -1168,41 +1168,41 @@ end // end of [list_iforeach2_cloref]
 
 (* ****** ****** *)
 
-implement{a} list_get_elt_at (xs, n) = let
+implement{a} list_get_elt_at (xs, i) = let
   fun loop {n,i:nat | i < n} .<n>.
     (xs: list (a, n), i: int i):<> a = let
     val x :: xs = xs
   in
-    if i > 0 then loop (xs, pred i) else x
+    if i > 0 then loop (xs, i - 1) else x
   end // end of [loop]
 in
-  loop (xs, 0)
+  loop (xs, i)
 end // end of [list_get_elt_at]
 
-implement{a} list_nth (xs, n) = list_get_elt_at<a> (xs, n)
+implement{a} list_nth (xs, i) = list_get_elt_at<a> (xs, i)
 
-implement{a} list_get_elt_at_exn (xs, n) = let
+implement{a} list_get_elt_at_exn (xs, i) = let
   fun loop {n,i:nat} .<n>. 
-    (xs: list (a, n), i: int i):<!exn> [n>0] a = begin
+    (xs: list (a, n), i: int i):<!exn> [n>0] a =
     case+ xs of
-    | x :: xs => if i > 0 then loop (xs, pred i) else x
+    | x :: xs => if i > 0 then loop (xs, i - 1) else x
     | nil () => $raise ListSubscriptException ()
-  end // end of [loop]
+  // end of [loop]
 in
-  loop (xs, 0)
+  loop (xs, i)
 end // end of [list_get_elt_at_exn]
 
-implement{a} list_nth_exn (xs, n) = list_get_elt_at_exn<a> (xs, n)
+implement{a} list_nth_exn (xs, i) = list_get_elt_at_exn<a> (xs, i)
 
-implement{a} list_get_elt_at_opt (xs, n) = let
+implement{a} list_get_elt_at_opt (xs, i) = let
   fun loop {n,i:nat} .<n>.
-    (xs: list (a, n), i: int i):<> Option_vt a = begin
+    (xs: list (a, n), i: int i):<> Option_vt a =
     case+ xs of
-    | x :: xs => if i > 0 then loop (xs, pred i) else Some_vt x
+    | x :: xs => if i > 0 then loop (xs, i - 1) else Some_vt x
     | nil () => None_vt ()
-  end // end of [loop]
+  // end of [loop]
 in
-  loop (xs, 0)
+  loop (xs, i)
 end // end of [list_get_elt_at_opt]
 
 implement{a} list_nth_opt (xs, n) = list_get_elt_at_opt<a> (xs, n)
