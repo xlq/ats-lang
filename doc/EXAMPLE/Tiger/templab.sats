@@ -77,24 +77,24 @@ fun prerr_lablst (labs: lablst): void
 
 (* ****** ****** *)
 
-val tigerats_chr_lab : label_t
-val tigerats_flush_lab : label_t
-val tigerats_getchar_lab : label_t
-val tigerats_ord_lab : label_t
-val tigerats_print_lab : label_t
-val tigerats_print_int_lab : label_t
-val tigerats_size_lab : label_t
-val tigerats_substring_lab : label_t
-val tigerats_concat_lab : label_t
-val tigerats_not_lab : label_t
-val tigerats_exit_lab : label_t
+val tiger_chr : label_t
+val tiger_flush : label_t
+val tiger_getchar : label_t
+val tiger_ord : label_t
+val tiger_print : label_t
+val tiger_print_int : label_t
+val tiger_size : label_t
+val tiger_substring : label_t
+val tiger_concat : label_t
+val tiger_not : label_t
+val tiger_exit : label_t
 
-val tigerats_main_lab : label_t
-val tigerats_array_alloc_lab : label_t
-val tigerats_array_make_elt_lab : label_t
+val tiger_main : label_t
+val tiger_array_alloc : label_t
+val tiger_array_make_elt : label_t
 
-val tigerats_eq_string_string_lab : label_t
-val tigerats_neq_string_string_lab : label_t
+val tiger_eq_string_string : label_t
+val tiger_neq_string_string : label_t
 
 (* ****** ****** *)
 

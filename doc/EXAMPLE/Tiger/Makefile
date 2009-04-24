@@ -16,7 +16,7 @@ GCFLAG=-D_ATS_GCATS
 ######
 
 comptig: \
-  tiger_main_dats.o \
+  tigerats_main_dats.o \
   error_sats.o error_dats.o \
   stamp_sats.o stamp_dats.o \
   symbol_sats.o symbol_dats.o \
@@ -50,7 +50,7 @@ comptig: \
 
 
 	atscc $(GCFLAG) -o comptig \
-  tiger_main_dats.o \
+  tigerats_main_dats.o \
   error_sats.o error_dats.o \
   stamp_sats.o stamp_dats.o \
   symbol_sats.o symbol_dats.o \
@@ -84,8 +84,8 @@ comptig: \
 
 ######
 
-tiger_main_dats.o: tiger_main.dats
-	atscc $(CCFLAGS) -c -o tiger_main_dats.o tiger_main.dats
+tigerats_main_dats.o: tigerats_main.dats
+	atscc $(CCFLAGS) -c -o tigerats_main_dats.o tigerats_main.dats
 
 ######
 
@@ -317,7 +317,7 @@ xref::
 	$(ATSOPT) --posmark_xref=XREF \
           -d ats_prelude_xref.dats > /dev/null
 	$(ATSOPT) --posmark_xref=XREF \
-          -d tiger_main.dats > tiger_main_dats.html
+          -d tigerats_main.dats > tigerats_main_dats.html
 	$(ATSOPT) --posmark_xref=XREF -d error.dats > error_dats.html
 	$(ATSOPT) --posmark_xref=XREF -d stamp.dats > stamp_dats.html
 	$(ATSOPT) --posmark_xref=XREF -d symbol.dats > symbol_dats.html

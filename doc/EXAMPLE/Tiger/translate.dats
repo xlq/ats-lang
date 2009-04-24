@@ -524,7 +524,7 @@ in
               lam (tl, fl) => $TR.STMcjump ($TR.EQ, te1, te2, tl, fl)
             ) // end of [TYbase INT]
           | TYbase name when name = $Sym.symbol_STRING => let
-              val te_fun = $TR.EXPname $TL.tigerats_eq_string_string_lab
+              val te_fun = $TR.EXPname $TL.tiger_eq_string_string
             in
               Ex ($TR.EXPcall (te_fun, '[te1, te2]))
             end // end of [TYbase STRING]
@@ -540,7 +540,7 @@ in
               lam (tl, fl) => $TR.STMcjump ($TR.NEQ, te1, te2, tl, fl)
             ) // end of [TYbase INT]
           | TYbase name when name = $Sym.symbol_STRING => let
-              val te_fun = $TR.EXPname $TL.tigerats_neq_string_string_lab
+              val te_fun = $TR.EXPname $TL.tiger_neq_string_string
             in
               Ex ($TR.EXPcall (te_fun, '[te1, te2]))
             end // end of [TYbase STRING]
@@ -588,7 +588,7 @@ in
       val te_size = $TR.EXPconst (n)
       val tmp = $TL.temp_make_new ()
       val te_tmp = $TR.EXPtemp (tmp)
-      val te_alloc = $TR.EXPname $TL.tigerats_array_alloc_lab
+      val te_alloc = $TR.EXPname $TL.tiger_array_alloc
       val te_arrptr = $TR.EXPcall (te_alloc, '[te_size])
       val stm0 = $TR.STMmove (te_tmp, te_arrptr)
       fun aux (fes: fieldexplst, ofs: int, stms: stmlst):<cloref1> stmlst =
@@ -753,7 +753,7 @@ in
       val e_init = transExp1 (lev0, env, e_init)
       val arg1 = unEx e_size; val arg2 = unEx e_init
     in
-      Ex ($TR.EXPcall ($TR.EXPname $TL.tigerats_array_make_elt_lab, '[arg1, arg2]))
+      Ex ($TR.EXPcall ($TR.EXPname $TL.tiger_array_make_elt, '[arg1, arg2]))
     end // end of [ArrayExp]
 end // end of [transExp1]
 
@@ -994,37 +994,37 @@ implement transProg1 (e) = let
   val frm0 = $F.theTopFrame
   val lev0 = LEVELtop frm0 and env = env_empty ()
 
-  val ent = VFENTfun ($TL.tigerats_chr_lab, lev0)
+  val ent = VFENTfun ($TL.tiger_chr, lev0)
   val env = env_insert (env, $Sym.symbol_CHR, ent)
 
-  val ent = VFENTfun ($TL.tigerats_flush_lab, lev0)
+  val ent = VFENTfun ($TL.tiger_flush, lev0)
   val env = env_insert (env, $Sym.symbol_FLUSH, ent)
 
-  val ent = VFENTfun ($TL.tigerats_getchar_lab, lev0)
+  val ent = VFENTfun ($TL.tiger_getchar, lev0)
   val env = env_insert (env, $Sym.symbol_GETCHAR, ent)
 
-  val ent = VFENTfun ($TL.tigerats_ord_lab, lev0)
+  val ent = VFENTfun ($TL.tiger_ord, lev0)
   val env = env_insert (env, $Sym.symbol_ORD, ent)
 
-  val ent = VFENTfun ($TL.tigerats_print_lab, lev0)
+  val ent = VFENTfun ($TL.tiger_print, lev0)
   val env = env_insert (env, $Sym.symbol_PRINT, ent)
 
-  val ent = VFENTfun ($TL.tigerats_print_int_lab, lev0)
+  val ent = VFENTfun ($TL.tiger_print_int, lev0)
   val env = env_insert (env, $Sym.symbol_PRINT_INT, ent)
 
-  val ent = VFENTfun ($TL.tigerats_size_lab, lev0)
+  val ent = VFENTfun ($TL.tiger_size, lev0)
   val env = env_insert (env, $Sym.symbol_SIZE, ent)
 
-  val ent = VFENTfun ($TL.tigerats_substring_lab, lev0)
+  val ent = VFENTfun ($TL.tiger_substring, lev0)
   val env = env_insert (env, $Sym.symbol_SUBSTRING, ent)
 
-  val ent = VFENTfun ($TL.tigerats_concat_lab, lev0)
+  val ent = VFENTfun ($TL.tiger_concat, lev0)
   val env = env_insert (env, $Sym.symbol_CONCAT, ent)
 
-  val ent = VFENTfun ($TL.tigerats_not_lab, lev0)
+  val ent = VFENTfun ($TL.tiger_not, lev0)
   val env = env_insert (env, $Sym.symbol_NOT, ent)
 
-  val ent = VFENTfun ($TL.tigerats_exit_lab, lev0)
+  val ent = VFENTfun ($TL.tiger_exit, lev0)
   val env = env_insert (env, $Sym.symbol_EXIT, ent)
 in
   transExp1 (lev0, env, e)

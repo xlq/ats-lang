@@ -110,8 +110,7 @@ val WORDSIZE = WORDSIZE_get ()
 (* ****** ****** *)
 
 implement theTopFrame = let
-  val lab0 = $TL.tigerats_main_lab
-in
+  val lab0 = $TL.tiger_main in
   frame_make_new (lab0, 0(*argofs*), list_nil (*arglst*))
 end // end of [theTopFrame]
 

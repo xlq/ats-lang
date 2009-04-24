@@ -46,6 +46,11 @@ viewtypedef instrlst_vt = $AS.instrlst_vt
 
 (* ****** ****** *)
 
+(*
+// it is impractical to achieve decent instruction selection
+// by a manual approach; some kind of tool is clearly needed.
+*)
+
 fn instrlst_add_stm
   (frm: frame, res: &instrlst_vt, stm: stm): void = let
   typedef instr = $AS.instr

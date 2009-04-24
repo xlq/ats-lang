@@ -151,7 +151,7 @@ fn string_of_v1al (v: v1al): string = case- v of
 (* ****** ****** *)
 
 val () = the_labmap_insert (
-  $TL.tigerats_print_lab, V2ALpre f_pre
+  $TL.tiger_print, V2ALpre f_pre
 ) where {
   val f_pre = lam
     (vs: List v1al): v1al =<cloref1> let
@@ -163,7 +163,7 @@ val () = the_labmap_insert (
 } // end of [val]
 
 val () = the_labmap_insert (
-  $TL.tigerats_print_int_lab, V2ALpre f_pre
+  $TL.tiger_print_int, V2ALpre f_pre
 ) where {
   val f_pre = lam
     (vs: List v1al): v1al =<cloref1> let
@@ -173,7 +173,7 @@ val () = the_labmap_insert (
 } // end of [val]
 
 val () = the_labmap_insert (
-  $TL.tigerats_flush_lab, V2ALpre f_pre
+  $TL.tiger_flush, V2ALpre f_pre
 ) where {
   val f_pre = lam
     (vs: List v1al): v1al =<cloref1> let
@@ -182,7 +182,7 @@ val () = the_labmap_insert (
 } // end of [val]
 
 val () = the_labmap_insert (
-  $TL.tigerats_getchar_lab, V2ALpre f_pre
+  $TL.tiger_getchar, V2ALpre f_pre
 ) where {
   val f_pre = lam
     (vs: List v1al): v1al =<cloref1> let
@@ -192,7 +192,7 @@ val () = the_labmap_insert (
 } // end of [val]
 
 val () = the_labmap_insert (
-  $TL.tigerats_concat_lab, V2ALpre f_pre
+  $TL.tiger_concat, V2ALpre f_pre
 ) where {
   val f_pre = lam
     (vs: List v1al): v1al =<cloref1> let
@@ -208,7 +208,7 @@ val () = the_labmap_insert (
 (* ****** ****** *)
 
 val () = the_labmap_insert (
-  $TL.tigerats_chr_lab, V2ALpre f_pre
+  $TL.tiger_chr, V2ALpre f_pre
 ) where {
   val f_pre = lam
     (vs: List v1al): v1al =<cloref1> let
@@ -222,7 +222,7 @@ val () = the_labmap_insert (
 } // end of [val]
 
 val () = the_labmap_insert (
-  $TL.tigerats_ord_lab, V2ALpre f_pre
+  $TL.tiger_ord, V2ALpre f_pre
 ) where {
   val f_pre = lam
     (vs: List v1al): v1al =<cloref1> let
@@ -240,7 +240,7 @@ val () = the_labmap_insert (
 (* ****** ****** *)
 
 val () = the_labmap_insert (
-  $TL.tigerats_eq_string_string_lab, V2ALpre f_pre
+  $TL.tiger_eq_string_string, V2ALpre f_pre
 ) where {
   val f_pre = lam
     (vs: List v1al): v1al =<cloref1> let
@@ -254,7 +254,7 @@ val () = the_labmap_insert (
 } // end of [val]
 
 val () = the_labmap_insert (
-  $TL.tigerats_neq_string_string_lab, V2ALpre f_pre
+  $TL.tiger_neq_string_string, V2ALpre f_pre
 ) where {
   val f_pre = lam
     (vs: List v1al): v1al =<cloref1> let
@@ -306,7 +306,7 @@ implement the_stackptr_get () = !the_stackptr
 implement the_stackptr_set (i) = !the_stackptr := i
 
 val () = the_labmap_insert (
-  $TL.tigerats_array_alloc_lab, V2ALpre f_pre
+  $TL.tiger_array_alloc, V2ALpre f_pre
 ) where {
   val f_pre = lam
     (vs: List v1al): v1al =<cloref1> let
@@ -317,7 +317,7 @@ val () = the_labmap_insert (
 } // end of [val]
 
 val () = the_labmap_insert (
-  $TL.tigerats_array_make_elt_lab, V2ALpre f_pre
+  $TL.tiger_array_make_elt, V2ALpre f_pre
 ) where {
   val f_pre = lam
     (vs: List v1al): v1al =<cloref1> let
