@@ -28,14 +28,14 @@ chmod::
 ######
 
 ack: ack.tig
-	$(TIGCOMP) ack.tig > ack.tig.s
-	$(GCC) -o ack ack.tig.s $(TIGDIR)/tiger_prelude.c
+	$(TIGCOMP) ack.tig > ack_tig.s
+	$(GCC) -o ack ack_tig.s $(TIGDIR)/tiger_prelude.c
 
 ######
 
 evenodd: evenodd.tig
-	$(TIGCOMP) evenodd.tig > evenodd.tig.s
-	$(GCC) -o evenodd evenodd.tig.s $(TIGDIR)/tiger_prelude.c
+	$(TIGCOMP) evenodd.tig > evenodd_tig.s
+	$(GCC) -o evenodd evenodd_tig.s $(TIGDIR)/tiger_prelude.c
 
 ######
 
