@@ -69,6 +69,30 @@ tiger_print_int (intptr_t i) {
 
 /* ****** ****** */
 
+int
+tiger_ord (char* s) { return s[0] ; }
+
+char*
+tiger_chr (int c) {
+  char *p_res ;
+  p_res = malloc (2) ;
+  if (!p_res) {
+    fprintf (stderr, "FATAL ERROR: [tiger_chr]: failed\n") ;
+  }
+  p_res[0] = c ; p_res[1] = '\000' ; return p_res ;
+} /* end of [tiger_chr] */
+
+char*
+tiger_getchar () { return tiger_chr (getchar ()) ; }
+
+/* ****** ****** */
+
+int
+tiger_eq_string_string
+  (char* s1, char* s2) {
+  return (strcmp (s1, s2) == 0 ? 1 : 0) ;
+} /* end of [tiger_eq_string_string] */
+
 char*
 tiger_concat (char* s1, char* s2) {
   int n, n1, n2 ; char* p_res ;
