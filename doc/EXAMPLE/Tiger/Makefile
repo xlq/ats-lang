@@ -315,6 +315,8 @@ ATSOPT=$(ATSHOME)/bin/atsopt
 
 xref::
 	$(ATSOPT) --posmark_xref=XREF \
+          -d ats_prelude_xref.dats > /dev/null
+	$(ATSOPT) --posmark_xref=XREF \
           -d tiger_main.dats > tiger_main_dats.html
 	$(ATSOPT) --posmark_xref=XREF -d error.dats > error_dats.html
 	$(ATSOPT) --posmark_xref=XREF -d stamp.dats > stamp_dats.html
@@ -347,9 +349,9 @@ xref::
 ######
 
 chmod::
+	chmod 644 *.?ats
 	chmod 644 *_?ats.html
-	cd LIB; chmod 644 *_?ats.html
-	cd PARCOMB; chmod 644 *_?ats.html
+	cd XREF; chmod 644 *.html
 
 ######
 

@@ -71,9 +71,11 @@ implement ty_lnkrmv (r_ty) = case+ !r_ty of
       val ty1 = ty_lnkrmv r_ty1 in !r_ty := ty1; ty1
     end // end of [TYname]
   | ty => ty
+// end of [ty_lnkrmv]
 
 implement ty_normalize (ty) = case+ ty of
   | TYname (_, r_ty) => ty_lnkrmv (r_ty) | _ => ty
+// end of [ty_normalize]
 
 implement join_ty_ty (ty1, ty2) = case+ (ty1, ty2) of
   | (TYname (_, r_ty1), _) => let
@@ -90,6 +92,7 @@ implement join_ty_ty (ty1, ty2) = case+ (ty1, ty2) of
   | (TYnil _, TYnil _) => ty1
   | (TYarr (stamp1, _), TYarr (stamp2, _)) when (stamp1 = stamp2) => ty1
   | (_, _) => TYtop ()
+// end of [join_ty_ty]
 
 implement ty_normalize_max (ty, n) = case+ 0 of
   | _ when n > 0 => begin case+ ty of

@@ -6,4 +6,4 @@ in
   print ("x.left + x.right = ");
   print_int (x.left + x.right);
   print ("\n")
-end
+end /* end of [let] */
