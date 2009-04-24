@@ -63,8 +63,8 @@ tiger_print (char *str) {
 } /* tiger_print */
 
 void
-tiger_print_int (intptr_t i) {
-  fprintf (stdout, "%li", i) ; return ;
+tiger_print_int (int i) {
+  fprintf (stdout, "%i", i) ; return ;
 } /* tiger_print_int */
 
 /* ****** ****** */
