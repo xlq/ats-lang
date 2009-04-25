@@ -118,6 +118,7 @@ libc/SATS/stdio.sats
 libc/SATS/stdlib.sats
 
 libc/SATS/string.sats
+libc/SATS/strings.sats
 
 libc/SATS/time.sats
 
