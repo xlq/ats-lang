@@ -18,6 +18,16 @@ let
     else nil
   /* end of [function] */
 
+  /* list append */
+  function listapp (xs: list, ys: list): list = let
+    var xs0 := xs
+  in
+    if xs = nil then ys else (
+      while (xs.tail <> nil) do (xs := xs.tail) ; xs.tail := ys ; xs0
+    ) /* end of [if] */
+  end /* end of [listapp] */
+
+  /* list reverse */    
   function listrev (xs: list): list = let
     var xs1: list := nil
     var res: list := nil
@@ -31,10 +41,14 @@ let
 
   var list_0_9: list := nil
   var list_9_0: list := nil
+  var list_0_9_9_0: list := nil
 in
   list_0_9 := listgen (0, 10);
   print ("list_0_9 = "); listprint (list_0_9); print ("\n");
   list_9_0 := listrev (list_0_9);
   print ("list_9_0 = "); listprint (list_9_0); print ("\n");
+  list_0_9 := listgen (0, 10);
+  list_0_9_9_0 := listapp (list_0_9, list_9_0);
+  print ("list_0_9_9_0 = "); listprint (list_0_9_9_0); print ("\n");  
   ()
 end /* end of [let] */

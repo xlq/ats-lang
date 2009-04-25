@@ -11,7 +11,7 @@ So far, both x86-32 and mips are targeted.
 
 ######
 
-tiger_main: the main function is implemented here
+tigerats_main: the main function is implemented here
 
 ######
 
@@ -124,7 +124,9 @@ for representing and processing interference graphs
 
 regalloc:
 
-for performing register allocation.
+for performing register allocation. The algorithm used largely follows
+what is presented in the textbook. However, the implementation, for better
+or worse, is done moslty in a style of improvision.
 
 ######
 

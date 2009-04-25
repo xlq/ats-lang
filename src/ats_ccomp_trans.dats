@@ -103,12 +103,18 @@ end // end of [local]
 
 local
 
-viewtypedef dynctx = $Map.map_vt (d2var_t, valprim)
-viewtypedef dynctxlst = List_vt (dynctx)
+viewtypedef dynctx =
+  $Map.map_vt (d2var_t, valprim)
+// end of [dynctx]
 
 assume dynctx_vt = dynctx
 
-fn dynctx_nil ():<> dynctx = $Map.map_make (compare_d2var_d2var)
+viewtypedef dynctxlst = List_vt (dynctx)
+
+fn dynctx_nil ():<> dynctx =
+  $Map.map_make (compare_d2var_d2var)
+// end of [dynctx_nil]
+
 val the_dynctx = ref_make_elt<dynctx> (dynctx_nil ())
 val the_dynctxlst = ref_make_elt<dynctxlst> (list_vt_nil ())
 
@@ -116,6 +122,7 @@ dataviewtype dynmarklst =
   | DYNMARKLSTcons of (d2var_t, dynmarklst)
   | DYNMARKLSTmark of dynmarklst
   | DYNMARKLSTnil
+// end of [dynmarklst]
 
 assume dynctx_mark_token = unit_v
 assume dynctx_push_token = unit_v
@@ -130,13 +137,13 @@ implement the_dynctx_add (d2v, vp) = let
     prval vbox pf = pfbox
   in
     $Map.map_insert<d2var_t,valprim> (!p, d2v, vp)
-  end
+  end // end of [val]
   val () = let
     val (pfbox | p) = ref_get_view_ptr (the_dynmarklst)
     prval vbox pf = pfbox
   in
     !p := DYNMARKLSTcons (d2v, !p)
-  end
+  end // end of [val]
 in
   // empty
 end // end of [the_dynctx_add]
@@ -149,7 +156,7 @@ implement the_dynctx_mark () = let
     prval vbox pf = pfbox
   in
     !p := DYNMARKLSTmark (!p)
-  end
+  end // end of [val]
 in
   (unit_v () | ())
 end // end of [the_dynctx_mark]
@@ -162,20 +169,19 @@ fn the_dynctx_del (d2v: d2var_t): void = let
     prval vbox pf = pfbox
   in
     $Map.map_remove<d2var_t,valprim> (!p, d2v)
-  end
+  end // end of [val]
 in
   case+ ans of
   | ~Some_vt _ => () | ~None_vt () => begin
       prerr "Internal Error: the_dynctx_del: d2v = ";
       prerr d2v; prerr_newline ();
       $Err.abort {void} ()
-    end
+    end // end of [None_vt]
 end // end of [the_dynctx_del]
 
 implement the_dynctx_unmark (pf_mark | (*none*)) = let
   prval unit_v () = pf_mark
-  fun aux (vms: dynmarklst)
-    : dynmarklst = begin case+ vms of
+  fun aux (vms: dynmarklst): dynmarklst = begin case+ vms of
     | ~DYNMARKLSTcons (d2v, vms) =>
         (the_dynctx_del (d2v); aux (vms))
     | ~DYNMARKLSTmark (vms) => vms
@@ -183,7 +189,7 @@ implement the_dynctx_unmark (pf_mark | (*none*)) = let
         prerr "Internal Error: the_dynctx_unmark: aux";
         prerr_newline ();
         $Err.abort {dynmarklst} ()
-      end
+      end // end of [DYNMARKLSTnil]
   end // end of [aux]
   val () = let
     val (pfbox | p) = ref_get_view_ptr (the_dynmarklst)
@@ -243,17 +249,16 @@ implement the_dynctx_pop (pf_push | (*none*)) = let
     case+ !p of
     | ~list_vt_cons (x, xs) => begin
         let val () = !p := (xs: dynctxlst) in x end
-      end
+      end // end of [list_vt_cons]
     | list_vt_nil () => begin
         fold@ (!p); err := 1; dynctx_nil ()
-      end
+      end // end of [list_vt_nil]
   end : dynctx // end of [val]
-  val () = // error checking
-    if err > 0 then begin
-      prerr "Internal Error; ats-ccomp_trans: the_dynctx_pop";
-      prerr_newline ();
-      $Err.abort {void} ()
-    end
+  val () = if err > 0 then begin // error checking
+    prerr "Internal Error; ats-ccomp_trans: the_dynctx_pop";
+    prerr_newline ();
+    $Err.abort {void} ()
+  end // end of [val]
   val () = the_dynctx_unmark (unit_v () | (*none*))
   val (vbox pf | p) = ref_get_view_ptr (the_dynctx)
 in
@@ -266,7 +271,7 @@ implement the_dynctx_push () = let
     val x = !p
   in
     !p := dynctx_nil (); x
-  end
+  end // end of [val]
   val (pf_mark | ()) = the_dynctx_mark ()
   prval unit_v () = pf_mark
   val (vbox pf | p) = ref_get_view_ptr (the_dynctxlst)
@@ -279,6 +284,7 @@ end // end of [the_dynctx_push]
 
 implement dynctx_foreach_main
   (pf | ctx, f, env) = $Map.map_foreach_pre (pf | ctx, f, env)
+// end of [dynctx_foreach_main]
 
 (* ****** ****** *)
 
@@ -347,7 +353,7 @@ implement the_glocstlst_get () = let
     val xs = !p
   in
     !p := GLOCSTLSTnil (); xs
-  end
+  end // end of [val]
 in
   glocstlst_reverse (xs)
 end // end of [the_glocstlst_get]
@@ -360,7 +366,9 @@ local
 
 viewtypedef cstctx = $Map.map_vt (d2cst_t, valprim)
 
-fn cstctx_nil (): cstctx = $Map.map_make (compare_d2cst_d2cst)
+fn cstctx_nil ()
+  : cstctx = $Map.map_make (compare_d2cst_d2cst)
+// end of [cstctx]
 
 val the_topcstctx = ref_make_elt<cstctx> (cstctx_nil ())
 

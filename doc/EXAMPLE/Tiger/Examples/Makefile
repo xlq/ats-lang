@@ -1,8 +1,12 @@
 ######
 #
+# TIGERATS: A Tiger compiler written in ATS
+#
 # Makefile for testing the TIGERATS compiler
 #
 # Author: Hongwei Xi
+#
+# Time: Spring, 2009
 #
 ######
 
@@ -123,4 +127,4 @@ clean::
 cleanall: clean
 	rm -f *_tig.s
 
-###### end of [Makefile_test] ######
+###### end of [Makefile] ######
