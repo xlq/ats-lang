@@ -122,13 +122,20 @@ sum: sum.tig
 
 ######
 
+tak: tak.tig
+	$(TIGCOMP) tak.tig > tak_tig.s
+	$(GCC) -o tak tak_tig.s $(TIGDIR)/tiger_prelude.c
+
+######
+
 clean::
 	rm -f ack evenodd
 	rm -f f91 fact1 fact2
 	rm -f fib1 fib2 fib3 fib4
 	rm -f intpair hanoi listops
 	rm -f merge prettyprint
-	rm -f queens0 queens1 sum
+	rm -f queens0 queens1
+	rm -f sum tak
 
 cleanall: clean
 	rm -f *_tig.s

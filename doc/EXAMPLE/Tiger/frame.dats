@@ -176,12 +176,12 @@ extern typedef "frame_t" = frame
 implement instr_make_mem_read (acc, tmp) = case+ acc of
   | InFrame (ofs) => 
      $AS.INSTRoper (asm, src, dst, jump) where {
-#if (MARCH == "MIPS") #then
+#if (MARCH == "SPIM") #then
       val asm = sprintf ("lw `d0, %i(`s0)", @(ofs))
-#endif
+#endif // MARCH == "SPIM"
 #if (MARCH == "x86_32") #then
       val asm = sprintf ("movl %i(`s0), `d0", @(ofs))
-#endif
+#endif // MARCH == "x86_32"
       val src = '[FP] and dst = '[tmp]; val jump = None ()
     } // end of [INSTRoper]
   | InReg _ => begin
@@ -193,7 +193,7 @@ implement instr_make_mem_read (acc, tmp) = case+ acc of
 implement instr_make_mem_write (acc, tmp) = case+ acc of
   | InFrame (ofs) => 
      $AS.INSTRoper (asm, src, dst, jump) where {
-#if (MARCH == "MIPS") #then
+#if (MARCH == "SPIM") #then
       val asm = sprintf ("sw `s1, %i(`s0)", @(ofs))
 #endif
 #if (MARCH == "x86_32") #then
@@ -213,7 +213,7 @@ end // end of [local]
 
 (* ****** ****** *)
 
-#if (MARCH == "MIPS") #then
+#if (MARCH == "SPIM") #then
 
 // tmp0 (*SP*) -> r29
 // tmp1 (*FP*) -> r30
@@ -334,7 +334,7 @@ implement theGeneralReglst = '[
 
 (* ****** ****** *)
 
-#endif // end of [MARCH == "MIPS"]
+#endif // end of [MARCH == "SPIM"]
 
 (* ****** ****** *)
 
@@ -434,7 +434,7 @@ in
   case+ ans of ~Some_vt _ => () | ~None_vt _ => ()
 end // end of [regname_insert]
 
-#if (MARCH == "MIPS") #then
+#if (MARCH == "SPIM") #then
 
 val () = regname_insert (temp_r0, "$zero")
 //
@@ -499,7 +499,7 @@ end // end of [local]
 
 (* ****** ****** *)
 
-#if (MARCH == "MIPS") #then
+#if (MARCH == "SPIM") #then
 
 (* ****** ****** *)
 
@@ -574,7 +574,7 @@ implement procEntryExit2 (_(*frm*), inss) =
 
 (* ****** ****** *)
 
-#endif // end of [MARCH = "MIPS"]
+#endif // end of [MARCH = "SPIM"]
 
 (* ****** ****** *)
 

@@ -22,11 +22,11 @@ staload _(*anonymous*) = "prelude/DATS/list_vt.dats"
 
 (* ****** ****** *)
 
-#if MARCH == "MIPS" #then
+#if MARCH == "SPIM" #then
 
-#print "MARCH == MIPS\n"
+#print "MARCH == SPIM\n"
 
-#include "codegen_mips.dats"
+#include "codegen_spim.dats"
 
 #endif
 

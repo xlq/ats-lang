@@ -10,11 +10,13 @@
 /* ****** ****** */
 
 /*
-#define MARCH "MIPS"
+#define MARCH "SPIM" // the emitted code is intended to be run
+// by the SPIM simulator
 */
 
 // /*
-#define MARCH "x86_32"
+#define MARCH "x86_32" // the emitted code is to be run on an x86
+// 32-bit machine
 // */
 
 /* ****** ****** */

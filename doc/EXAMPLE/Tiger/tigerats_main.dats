@@ -141,6 +141,12 @@ fun fprint_stmlst (out: FILEref, ss: $TR.stmlst): void =
   | list_nil () => fprint_newline (out)
 // end of [fprint_stmlst]
 
+fn print_stmlst (ss: $TR.stmlst): void = fprint_stmlst (stdout_ref, ss)
+
+(* ****** ****** *)
+
+#include "params.hats"
+
 (* ****** ****** *)
 
 fn emit_proc (
@@ -205,25 +211,46 @@ fn emit_char (c: char): void =
     end // end of [_]
 // end of [emit_char]
 
-fn emit_string
-  (lab: $TL.label_t, str: string): void = () where {
-  val () = print "."
-  val () = $TL.print_label (lab)
-  val () = print ":\n"
-  val () = print "\t.string\t"
+(* ****** ****** *)
+
+fn emit_string_def
+  (def: string): void = () where {
   val () = print_char '"'
-  val () = loop (str, 0) where {
-    val str = string1_of_string str
+  val () = loop (def, 0) where {
+    val def = string1_of_string def
     fun loop {n,i:nat | i <= n}
       (str: string n, i: size_t i): void =
       if string_isnot_at_end (str, i)
         then (emit_char str[i]; loop (str, i+1))
       // end of [if]
     // end of [loop]
-  }
+  } // end of [val]
   val () = print_char '"'
+} // end of [emit_string]
+
+#if (MARCH == "SPIM") #then
+fn emit_string
+  (lab: $TL.label_t, def: string): void = () where {
+  val () = print ("\t.data\n")
+  val () = $TL.print_label (lab)
+  val () = print ":\n"
+  val () = print "\t.asciiz\t"
+  val () = emit_string_def (def)
   val () = print "\n"
 } // end of [emit_string]
+#endif // MARCH == "SPIM"
+
+#if (MARCH == "x86_32") #then
+fn emit_string
+  (lab: $TL.label_t, def: string): void = () where {
+  val () = print "."
+  val () = $TL.print_label (lab)
+  val () = print ":\n"
+  val () = print "\t.string\t"
+  val () = emit_string_def (def)
+  val () = print "\n"
+} // end of [emit_string]
+#endif // MARCH == "x86_32"
 
 (* ****** ****** *)
 
@@ -292,8 +319,8 @@ implement main (argc, argv) = let
 (*
               val () = $INT1.the_labmap_frame_stmlst_insert (lab_frm, frm, stms)
               val () = begin
-                print "FRAGproc: "; $TL.print_label lab_frm; print_string ":\n";
-                print_stmlst stms
+                prerr "FRAGproc: "; $TL.prerr_label lab_frm; prerr_string ":\n";
+                fprint_stmlst (stderr_ref, stms)
               end // end of [val]
 *)
             in
@@ -303,8 +330,8 @@ implement main (argc, argv) = let
 (*
               val () = $INT1.the_labmap_string_insert (lab, str)
               val () = begin
-                print "FRAGstring: "; $TL.print_label lab; print_string ": ";
-                print_string str; print_newline ()
+                prerr "FRAGstring: "; $TL.prerr_label lab; prerr_string ": ";
+                prerr_string str; prerr_newline ()
               end // end of [val]
 *)
             in
@@ -333,7 +360,7 @@ implement main (argc, argv) = let
 (*
                 val lab_frm = $F.frame_name_get (frm)
                 val () = begin
-                  print "F1RAGproc: "; $TL.print_label lab_frm; print_string ":\n"
+                  prerr "F1RAGproc: "; $TL.prerr_label lab_frm; prerr_string ":\n"
                 end // end of [val]
 *)
                 val inss = codegen_proc (frm, stms)

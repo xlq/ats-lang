@@ -219,7 +219,7 @@ codegen_sats.o: codegen.sats
 	atscc $(CCFLAGS) -o codegen_sats.o -c codegen.sats
 
 codegen_dats.o: codegen.dats \
-        codegen_mips.dats codegen_x86_32.dats
+        codegen_spim.dats codegen_x86_32.dats
 	atscc $(CCFLAGS) -o codegen_dats.o -c codegen.dats
 
 ######
@@ -368,7 +368,7 @@ tar:: cleanall
 	cp interp1.sats interp1.dats Tigerats
 	cp assem.sats assem.dats Tigerats
 	cp codegen.sats codegen.dats Tigerats
-	cp codegen_mips.dats codegen_x86_32.dats Tigerats
+	cp codegen_spim.dats codegen_x86_32.dats Tigerats
 	cp fgnode.sats fgnode.dats Tigerats
 	cp tempset.sats tempset.dats Tigerats
 	cp fgraph.sats fgraph.dats Tigerats

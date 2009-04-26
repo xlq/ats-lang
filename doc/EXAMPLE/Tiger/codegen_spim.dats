@@ -164,28 +164,53 @@ fn instrlst_add_stm
           emit (res, $AS.INSTRoper (asm, src, dst, jump)); d0        
         end // end of [EXPconst]
       end (* end of [EXPconst] *)
-    | EXPname lab => let
+    | EXPname lab => d0 where {
         val d0 = $TL.temp_make_new ()
         val asm = "la `d0, " + $TL.label_name_get (lab)
         val src = '[] and dst = '[d0]; val jump = None ()
-      in
-        emit (res, $AS.INSTRoper (asm, src, dst, jump)); d0        
-      end // end of [EXPname]
+        val () = emit (res, $AS.INSTRoper (asm, src, dst, jump))
+      } // end of [EXPname]
     | EXPtemp tmp => tmp
-    | EXPbinop (binop, e1, e2) => let
-        val opcode = case binop of
-          | PLUS _  => "add"
-          | MINUS _ => "sub"
-          | MUL _   => "mul"
-          | DIV _   => "div"
-        // end of [val]
+    | EXPbinop (binop, e1, e2)
+        when binop_is_additive binop => d0 where {
+        val opcode = (case+ binop of
+          | PLUS _  => "add" | MINUS _ => "sub" | _ => "notaddsub"
+        ) : string // end of [val]
         val d0 = $TL.temp_make_new ()
-        val s0 = auxexp (res, e1); val s1 = auxexp (res, e2)
-        val asm = opcode + " `d0, `s0, `s1"
-        val src = '[s0, s1] and dst = '[d0]; val jump = None ()
-      in
-        emit (res, $AS.INSTRoper (asm, src, dst, jump)); d0
-      end // end of [EXPbinop]
+        val () = case+ e2 of
+        | EXPconst i2 => () where {
+            val s0 = auxexp (res, e1)
+            val i2 = (case+ binop of MINUS _ => ~i2 | _ => i2): int
+            val () = emit
+              (res, $AS.INSTRoper (asm, src, dst, jump)) where {
+              val asm = sprintf ("addi `d0, `s0, %i", @(i2))
+              val src = '[s0] and dst = '[d0]; val jump = None ()
+            } // end of [val]
+          } (* end of [EXPcons] *)
+        | _ => () where {
+            val s0 = auxexp (res, e1)
+            val s1 = auxexp (res, e2)
+            val () = emit
+              (res, $AS.INSTRoper (asm, src, dst, jump)) where {
+              val asm = opcode + " `d0, `s0, `s1"
+              val src = '[s0, s1] and dst = '[d0]; val jump = None ()
+            } // end of [val]
+          } (* end of [_] *)
+        // end of [val]
+      } (* end of [val] *)
+    | EXPbinop (binop, e1, e2) => d0 where {
+        val opcode = (case+ binop of
+          | MUL _  => "mul" | DIV _ => "div" | _ => "notmuldiv"
+        ) : string // end of [val]
+        val d0 = $TL.temp_make_new ()
+        val s0 = auxexp (res, e1)
+        val s1 = auxexp (res, e2)
+        val () = emit
+          (res, $AS.INSTRoper (asm, src, dst, jump)) where {
+          val asm = opcode + " `d0, `s0, `s1"
+          val src = '[s0, s1] and dst = '[d0]; val jump = None ()
+        } // end of [val]
+      } (* end of [val] *)
     | EXPmem (e) => d0 where {
         val d0 = $TL.temp_make_new ()
         val () = case+ e of
