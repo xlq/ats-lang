@@ -886,9 +886,9 @@ fn transFundec1_fst
 #if MARCH  = "x86_32"
   val () = ofs0 := ofs0 + WORDSIZE // [call] pushes EIP onto the stack
 #endif
-#if TIGER_OMIT_FRAME_POINTER = 0 #then
-  val () = ofs0 := ofs0 + WORDSIZE // [EBP] is to be pushed onto the stack
-#endif
+//
+  val () = ofs0 := ofs0 + WORDSIZE // [FP] is to be pushed onto the stack
+//
   val frm = $F.frame_make_new (lab_frm, ofs0, esclst)
   val acclst = $F.frame_arglst_get (frm)
   val stamp = $S.stamp_make ()
@@ -928,16 +928,6 @@ fn transFundec1_snd
   val stm = $TR.STMseq (stm_body, stm)
   val stm = $TR.STMseq (stm_argmov, stm)
   val stm = $TR.STMseq (res_calleesaved_save.0, stm)
-(*
-// this is to be added at the very end:
-#if TIGER_OMIT_FRAME_POINTER = 0 #then
-  val stm_spinc = $TR.STMmove
-    ($F.exp_SP, $TR.EXPbinop ($TR.PLUS, $F.exp_SP, $TR.EXPconst WORDSIZE))
-  val stm = $TR.STMseq (stm_spinc, stm)
-  val stm_fpmov = $TR.STMmove ($TR.EXPmem ($F.exp_SP), $F.exp_FP)
-  val stm = $TR.STMseq (stm_fpmov, stm)
-#endif
-*)
 in
   $F.frame_theFraglst_add ($F.FRAGproc (frm, stm))
 end // end of [transFundec1_snd]

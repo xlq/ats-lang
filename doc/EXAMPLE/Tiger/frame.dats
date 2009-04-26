@@ -220,63 +220,119 @@ end // end of [local]
 // tmp2 (*RV*) -> r2 (* or r3 *)
 // tmp3 (*RA*) -> r31
 
-#define REGISTER_SP 0
-#define REGISTER_FP 1
-#define REGISTER_RV 2
-#define REGISTER_RA 3
+#define REGISTER_0 0
+#define REGISTER_SP 1
+#define REGISTER_FP 2
+#define REGISTER_RV 3
+#define REGISTER_RV2 4
+#define REGISTER_RA 5 // it is callee saved
+
+val temp_r0 = $TL.temp_make_fixed (REGISTER_0)
+
+implement ZERO = temp_r0
 
 val temp_SP = $TL.temp_make_fixed (REGISTER_SP)
 val temp_FP = $TL.temp_make_fixed (REGISTER_FP)
 val temp_RV = $TL.temp_make_fixed (REGISTER_RV)
-val temp_RA = $TL.temp_make_fixed (REGISTER_RA)
+val temp_RV2 = $TL.temp_make_fixed (REGISTER_RV2)
 
-implement RV = temp_RV
-implement FP = temp_FP
 implement SP = temp_SP
+implement FP = temp_FP
+implement RV = temp_RV
+
+val temp_r2 = temp_RV
+val temp_r3 = temp_RV2
 
 implement theSpecialReglst = '[
-  temp_SP, temp_FP, temp_RV, temp_RA
+  temp_r0, temp_SP, temp_FP
 ] // end of [theSpecialReglst]
+
+val temp_r4 = $TL.temp_make_fixed (10)
+val temp_r5 = $TL.temp_make_fixed (11)
+val temp_r6 = $TL.temp_make_fixed (12)
+val temp_r7 = $TL.temp_make_fixed (13)
 
 implement theFunargReglst = '[
   temp_r4, temp_r5, temp_r6, temp_r7
-] where {
-  val temp_r4 = $TL.temp_make_fixed (10)
-  val temp_r5 = $TL.temp_make_fixed (11)
-  val temp_r6 = $TL.temp_make_fixed (12)
-  val temp_r7 = $TL.temp_make_fixed (13)
-} // end of [theFunargReglst]
+] // end of [theFunargReglst]
+
+val temp_r8 = $TL.temp_make_fixed (20)
+val temp_r9 = $TL.temp_make_fixed (21)
+val temp_r10 = $TL.temp_make_fixed (22)
+val temp_r11 = $TL.temp_make_fixed (23)
+val temp_r12 = $TL.temp_make_fixed (24)
+val temp_r13 = $TL.temp_make_fixed (25)
+val temp_r14 = $TL.temp_make_fixed (26)
+val temp_r15 = $TL.temp_make_fixed (27)
+val temp_r24 = $TL.temp_make_fixed (28)
+val temp_r25 = $TL.temp_make_fixed (29)
 
 implement theCallersavedReglst = '[
-  temp_r08, temp_r09, temp_r10, temp_r11
+  temp_r8, temp_r9, temp_r10, temp_r11
 , temp_r12, temp_r13, temp_r14, temp_r15
 , temp_r24, temp_r25
-] where {
-  val temp_r08 = $TL.temp_make_fixed (20)
-  val temp_r09 = $TL.temp_make_fixed (21)
-  val temp_r10 = $TL.temp_make_fixed (22)
-  val temp_r11 = $TL.temp_make_fixed (23)
-  val temp_r12 = $TL.temp_make_fixed (24)
-  val temp_r13 = $TL.temp_make_fixed (25)
-  val temp_r14 = $TL.temp_make_fixed (26)
-  val temp_r15 = $TL.temp_make_fixed (27)
-  val temp_r24 = $TL.temp_make_fixed (28)
-  val temp_r25 = $TL.temp_make_fixed (29)
-}
+] // end of [theCallersavedReglst]
+
+val temp_r16 = $TL.temp_make_fixed (40)
+val temp_r17 = $TL.temp_make_fixed (41)
+val temp_r18 = $TL.temp_make_fixed (42)
+val temp_r19 = $TL.temp_make_fixed (43)
+val temp_r20 = $TL.temp_make_fixed (44)
+val temp_r21 = $TL.temp_make_fixed (45)
+val temp_r22 = $TL.temp_make_fixed (46)
+val temp_r23 = $TL.temp_make_fixed (47)
+val temp_r31 = $TL.temp_make_fixed (REGISTER_RA)
+
+implement RA = temp_r31
 
 implement theCalleesavedReglst = '[
   temp_r16, temp_r17, temp_r18, temp_r19
 , temp_r20, temp_r21, temp_r22, temp_r23
-] where {
-  val temp_r16 = $TL.temp_make_fixed (40)
-  val temp_r17 = $TL.temp_make_fixed (41)
-  val temp_r18 = $TL.temp_make_fixed (42)
-  val temp_r19 = $TL.temp_make_fixed (43)
-  val temp_r20 = $TL.temp_make_fixed (44)
-  val temp_r21 = $TL.temp_make_fixed (45)
-  val temp_r22 = $TL.temp_make_fixed (46)
-  val temp_r23 = $TL.temp_make_fixed (47)
-}
+, temp_r31(*RA*)
+] // end of [theCalleesavedReglst]
+
+implement theGeneralReglst = '[
+(*
+  temp_r0 // zero reigster
+  temp_r1 // [at] register; reserved for assembler
+*)
+  temp_r2
+(*
+, temp_r3 // not used
+*)
+, temp_r4
+, temp_r5
+, temp_r6
+, temp_r7
+, temp_r8
+, temp_r9
+, temp_r10
+, temp_r11
+, temp_r12
+, temp_r13
+, temp_r14
+, temp_r15
+, temp_r16
+, temp_r17
+, temp_r18
+, temp_r19
+, temp_r20
+, temp_r21
+, temp_r22
+, temp_r23
+, temp_r24
+, temp_r25
+(*
+, temp_r26 // reserved for OS kernel
+, temp_r27 // reserved for OS kernel
+, temp_r28 // poiner to global area
+, temp_r29 // SP
+, temp_r30 // FP
+*)
+, temp_r31(*RA*)
+] // end of [theGeneralReglst]
+
+(* ****** ****** *)
 
 #endif // end of [MARCH == "MIPS"]
 
@@ -294,7 +350,6 @@ implement theFunargReglst = '[]
 #define REGISTER_SP 0
 #define REGISTER_FP 1
 #define REGISTER_RV 2 // tmp2 (*RV*) -> %eax
-#define REGISTER_RA 3
 
 val temp_SP = $TL.temp_make_fixed (REGISTER_SP)
 val temp_FP = $TL.temp_make_fixed (REGISTER_FP)
@@ -307,44 +362,42 @@ implement RV = temp_RV
 // [RV] is [EAX] on x86-32
 implement theSpecialReglst = '[temp_SP, temp_FP]
 
-implement EAX = temp_RV
-implement ESP = temp_SP
-implement EBP = temp_FP
+val temp_eax = temp_RV
+val temp_esp = temp_SP
+val temp_ebp = temp_FP
+
+implement EAX = temp_eax
+implement ESP = temp_esp
+implement EBP = temp_ebp
 
 #define REGISTER_ECX 11
 #define REGISTER_EDX 12
 
-implement ECX = $TL.temp_make_fixed (REGISTER_ECX)
-implement EDX = $TL.temp_make_fixed (REGISTER_EDX)
+val temp_ecx = $TL.temp_make_fixed (REGISTER_ECX)
+val temp_edx = $TL.temp_make_fixed (REGISTER_EDX)
+
+implement ECX = temp_ecx
+implement EDX = temp_edx
 
 implement theCallersavedReglst = '[
   temp_eax, temp_ecx, temp_edx
-] where {
-  val temp_eax = EAX and temp_ecx = ECX and temp_edx = EDX
-} // end of [theCallersavedReglst]
+] // end of [theCallersavedReglst]
 
 #define REGISTER_EBX 20
 #define REGISTER_ESI 21
 #define REGISTER_EDI 22
 
-implement EBX = $TL.temp_make_fixed (REGISTER_EBX)
-implement ESI = $TL.temp_make_fixed (REGISTER_ESI)
-implement EDI = $TL.temp_make_fixed (REGISTER_EDI)
+val temp_ebx = $TL.temp_make_fixed (REGISTER_EBX)
+val temp_esi = $TL.temp_make_fixed (REGISTER_ESI)
+val temp_edi = $TL.temp_make_fixed (REGISTER_EDI)
+
+implement EBX = temp_ebx
+implement ESI = temp_esi
+implement EDI = temp_edi
 
 implement theCalleesavedReglst = '[
   temp_ebx, temp_esi, temp_edi
-(*
-, temp_esp, temp_ebp // special registers
-*)
-] where {
-  val temp_ebx = $TL.temp_make_fixed (20)
-  val temp_esi = $TL.temp_make_fixed (21)
-  val temp_edi = $TL.temp_make_fixed (22)
-(*
-  val temp_esp = ESP // a special register
-  val temp_ebp = EBP // a special register
-*)
-} // end of [theCalleesavedReglst]
+] // end of [theCalleesavedReglst]
 
 implement theGeneralReglst = '[
   temp_eax
@@ -353,14 +406,11 @@ implement theGeneralReglst = '[
 , temp_edx
 , temp_esi
 , temp_edi
-] where {
-  val temp_eax = EAX
-  val temp_ebx = EBX
-  val temp_ecx = ECX
-  val temp_edx = EDX
-  val temp_esi = ESI
-  val temp_edi = EDI
-} // end of [theGeneralReglst]
+] // end of [theGeneralReglst]
+
+(* ****** ****** *)
+
+#endif // end of [MARCH == "x86_32"]
 
 (* ****** ****** *)
 
@@ -384,6 +434,48 @@ in
   case+ ans of ~Some_vt _ => () | ~None_vt _ => ()
 end // end of [regname_insert]
 
+#if (MARCH == "MIPS") #then
+
+val () = regname_insert (temp_r0, "$zero")
+//
+val () = regname_insert (SP, "$sp") // r29
+val () = regname_insert (FP, "$fp") // r30
+// for return values
+val () = regname_insert (temp_r2, "$v0")
+val () = regname_insert (temp_r3, "$v1")
+// for passing funargs
+val () = regname_insert (temp_r4, "$a0")
+val () = regname_insert (temp_r5, "$a1")
+val () = regname_insert (temp_r6, "$a2")
+val () = regname_insert (temp_r7, "$a3")
+// caller saved
+val () = regname_insert (temp_r8, "$t0")
+val () = regname_insert (temp_r9, "$t1")
+val () = regname_insert (temp_r10, "$t2")
+val () = regname_insert (temp_r11, "$t3")
+val () = regname_insert (temp_r12, "$t4")
+val () = regname_insert (temp_r13, "$t5")
+val () = regname_insert (temp_r14, "$t6")
+val () = regname_insert (temp_r15, "$t7")
+// callee saved
+val () = regname_insert (temp_r16, "$s0")
+val () = regname_insert (temp_r17, "$s1")
+val () = regname_insert (temp_r18, "$s2")
+val () = regname_insert (temp_r19, "$s3")
+val () = regname_insert (temp_r20, "$s4")
+val () = regname_insert (temp_r21, "$s5")
+val () = regname_insert (temp_r22, "$s6")
+val () = regname_insert (temp_r23, "$s7")
+// caller saved
+val () = regname_insert (temp_r24, "$t8")
+val () = regname_insert (temp_r25, "$t9")
+//
+val () = regname_insert (temp_r31, "$ra") // r31
+
+#endif
+
+#if (MARCH == "x86_32") #then
+
 val () = regname_insert (SP, "%esp")
 val () = regname_insert (FP, "%ebp")
 val () = regname_insert (EAX, "%eax")
@@ -392,6 +484,8 @@ val () = regname_insert (ECX, "%ecx")
 val () = regname_insert (EDX, "%edx")
 val () = regname_insert (ESI, "%esi")
 val () = regname_insert (EDI, "%edi")
+
+#endif
 
 in // in of [local]
 
@@ -405,19 +499,27 @@ end // end of [local]
 
 (* ****** ****** *)
 
+#if (MARCH == "MIPS") #then
+
+(* ****** ****** *)
+
 implement procEntryExit1_entr (frm, inss) = let
-//
-#if TIGER_OMIT_FRAME_POINTER = 0 #then
+// for saving the FP on the stack
   val () = () where {
-    val asm = "pushl `s0"
-    val src = '[FP] and dst = '[]; val jump = None ()
+    val asm = sprintf ("addi `d0, `s0, -%i", @(WORDSIZE))
+    val src = '[SP] and dst = '[SP]; val jump = None ()
     val ins = $AS.INSTRoper (asm, src, dst, jump)
     val () = inss := list_vt_cons (ins, inss)
   } // end of [val]
-#endif
+  val () = () where {
+    val asm = "sw `s0, 0(`s1)"
+    val src = '[FP, SP] and dst = '[]; val jump = None ()
+    val ins = $AS.INSTRoper (asm, src, dst, jump)
+    val () = inss := list_vt_cons (ins, inss)
+  } // end of [val]
 //
   val () = () where {
-    val asm = "movl `s0, `d0"
+    val asm = "move `d0, `s0"
     val src = '[SP] and dst = '[FP]; val jump = None ()
     val ins = $AS.INSTRoper (asm, src, dst, jump)
     val () = inss := list_vt_cons (ins, inss)
@@ -439,21 +541,81 @@ end // end of [procEntryExit1_entr]
 implement procEntryExit1_exit (frm, inss) = let
   viewtypedef instrlst_vt = $AS.instrlst_vt
   val () = () where {
-    val asm = "movl `s0, `d0"
+    val asm = "move `d0, `s0"
     val src = '[FP] and dst = '[SP]; val jump = None ()
     val ins = $AS.INSTRoper (asm, src, dst, jump)
     val () = inss := list_vt_cons (ins, inss)
   } // end of [val]
-//
-#if TIGER_OMIT_FRAME_POINTER = 0 #then
+// for restoring the FP from the stack
   val () = () where {
-    val asm = "popl `s0"
+    val asm = "lw `d0, 0(`s0)"
+    val src = '[SP] and dst = '[FP]; val jump = None ()
+    val ins = $AS.INSTRoper (asm, src, dst, jump)
+    val () = inss := list_vt_cons (ins, inss)
+  } // end of [val]
+  val () = () where {
+    val asm = sprintf ("addi `d0, `s0, %i", @(WORDSIZE))
+    val src = '[SP] and dst = '[SP]; val jump = None ()
+    val ins = $AS.INSTRoper (asm, src, dst, jump)
+    val () = inss := list_vt_cons (ins, inss)
+  } // end of [val]
+in
+  // empty
+end // end of [procEntryExit1_exit]
+
+(* ****** ****** *)
+
+implement procEntryExit2 (_(*frm*), inss) =
+  inss := list_vt_cons (ins, inss) where {
+  val asm = "jr $ra"
+  val src = theCalleesavedReglst and dst = '[]; val jump = None ()
+  val ins = $AS.INSTRoper (asm, src, dst, jump)
+} // end of [procEntryExit2]
+
+(* ****** ****** *)
+
+#endif // end of [MARCH = "MIPS"]
+
+(* ****** ****** *)
+
+#if (MARCH == "x86_32") #then
+
+(* ****** ****** *)
+
+implement procEntryExit1_entr (frm, inss) = let
+  val () = () where {
+    val asm = "pushl `s0"
     val src = '[FP] and dst = '[]; val jump = None ()
     val ins = $AS.INSTRoper (asm, src, dst, jump)
     val () = inss := list_vt_cons (ins, inss)
   } // end of [val]
-#endif
+  val () = () where {
+    val asm = "movl `s0, `d0"
+    val src = '[SP] and dst = '[FP]; val jump = None ()
+    val ins = $AS.INSTRoper (asm, src, dst, jump)
+    val () = inss := list_vt_cons (ins, inss)
+  } // end of [val]
 //
+  val () = () where {
+    val lab = frame_name_get (frm)
+    val nam = $TL.label_name_get (lab)
+    val asm = sprintf ("subl $.%s_framesize, `s0", @(nam))
+    val src = '[SP] and dst = '[SP]; val jump = None ()
+    val ins = $AS.INSTRoper (asm, src, dst, jump)
+    val () = inss := list_vt_cons (ins, inss)
+  } // end of [val]
+in
+  // empty
+end // end of [procEntryExit1_entr]
+
+implement procEntryExit1_exit (frm, inss) = let
+  viewtypedef instrlst_vt = $AS.instrlst_vt
+  val () = () where {
+    val asm = "leave"
+    val src = '[FP] and dst = '[SP]; val jump = None ()
+    val ins = $AS.INSTRoper (asm, src, dst, jump)
+    val () = inss := list_vt_cons (ins, inss)
+  } // end of [val]
 in
   // empty
 end // end of [procEntryExit1_exit]
@@ -463,14 +625,13 @@ end // end of [procEntryExit1_exit]
 implement procEntryExit2 (_(*frm*), inss) =
   inss := list_vt_cons (ins, inss) where {
   val asm = "ret"
-  val src = theCalleesavedReglst and dst = '[]
-  val jump = None ()
+  val src = theCalleesavedReglst and dst = '[]; val jump = None ()
   val ins = $AS.INSTRoper (asm, src, dst, jump)
 } // end of [procEntryExit2]
 
 (* ****** ****** *)
 
-#endif // end of [MARCH == "x86_32"]
+#endif // end of [MARCH = "x86_32"]
 
 (* ****** ****** *)
 

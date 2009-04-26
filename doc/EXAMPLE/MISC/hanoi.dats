@@ -9,8 +9,7 @@
 
 staload _(*anonymous*) = "prelude/DATS/array.dats"
 
-fn play {sz: pos} (sz: int (sz)): void = let
-  val sz1 = size1_of_int1 sz
+fn play {sz: pos} (sz: size_t sz): void = let
   typedef T = natLte sz
   macdef tsz = sizeof<T>
   typedef post_t = array (T, sz)
@@ -18,24 +17,24 @@ fn play {sz: pos} (sz: int (sz)): void = let
   var x: T = 0
   val leftPost = let
     val (pf_gc, pf | p) =
-      array_ptr_alloc_tsz {T} (sz1, sizeof<T>)
-    val () = array_ptr_initialize_elt_tsz {T} (!p, sz1, x, tsz)
+      array_ptr_alloc_tsz {T} (sz, sizeof<T>)
+    val () = array_ptr_initialize_elt_tsz {T} (!p, sz, x, tsz)
   in
     array_make_arraysize {T} @(pf_gc, pf | p, sz)
   end // end of [val]
 
   val middlePost = let
     val (pf_gc, pf | p) =
-      array_ptr_alloc_tsz {T} (sz1, sizeof<T>)
-    val () = array_ptr_initialize_elt_tsz {T} (!p, sz1, x, tsz)
+      array_ptr_alloc_tsz {T} (sz, sizeof<T>)
+    val () = array_ptr_initialize_elt_tsz {T} (!p, sz, x, tsz)
   in
     array_make_arraysize {T} @(pf_gc, pf | p, sz)
   end // end of [val]
 
   val rightPost = let
     val (pf_gc, pf | p) =
-      array_ptr_alloc_tsz {T} (sz1, sizeof<T>)
-    val () = array_ptr_initialize_elt_tsz {T} (!p, sz1, x, tsz)
+      array_ptr_alloc_tsz {T} (sz, sizeof<T>)
+    val () = array_ptr_initialize_elt_tsz {T} (!p, sz, x, tsz)
   in
     array_make_arraysize {T} @(pf_gc, pf | p, sz)
   end // end of [val]
@@ -92,9 +91,10 @@ fn play {sz: pos} (sz: int (sz)): void = let
       move (n - 1, post', p' - n + 1, post, p - 1, source, s + n)
     end
   end // end of [move]
+  val sz_int = int1_of_size1 sz
 in
   showposts ();
-  move (sz, leftPost, 0, rightPost, sz, middlePost, sz)
+  move (sz_int, leftPost, 0, rightPost, sz_int, middlePost, sz_int)
 end // end of [play]
 
 (* ****** ****** *)

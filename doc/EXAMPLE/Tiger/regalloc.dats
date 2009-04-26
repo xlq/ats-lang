@@ -493,10 +493,10 @@ end // end of [igraph_regalloc]
 implement instrlst_regalloc
   (frm, inss0) = loop (frm, inss0) where {
   fun loop (frm: $F.frame_t, inss: $AS.instrlst): $AS.instrlst = let
-(*
+// (*
     val () = prerr "instrlst_regalloc: loop: inss =\n"
     val () = $AS.prerr_instrlst (inss)
-*)
+// *)
     val ig = igraph_make_instrlst (inss)
 (*
     val () = prerr "instrlst_regalloc: loop: ig(init) =\n"

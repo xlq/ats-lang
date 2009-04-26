@@ -349,10 +349,44 @@ chmod::
 ######
 
 tar:: cleanall
-	cd ..; tar vcfz Tiger.tar.gz Tiger/
-
-update:: tar
-	mv ../Tiger.tar.gz $(CS525)/code/; cd $(CS525)/code/; tar vxfz Tiger.tar.gz
+	cp tigerats_main.dats Tigerats
+	cp error.sats error.dats Tigerats
+	cp fixity.sats fixity.dats Tigerats
+	cp stamp.sats stamp.dats Tigerats
+	cp symbol.sats symbol.dats Tigerats
+	cp types.sats types.dats Tigerats
+	cp absyn.sats absyn.dats Tigerats
+	cp fixity.sats fixity.dats Tigerats
+	cp parser.sats parser.dats Tigerats
+	cp tychecker.sats tychecker.dats Tigerats
+	cp interp0.sats interp0.dats Tigerats
+	cp templab.sats templab.dats Tigerats
+	cp irtree.sats irtree.dats Tigerats
+	cp frame.sats frame.dats Tigerats
+	cp translate.sats translate.dats Tigerats
+	cp canonical.sats canonical.dats Tigerats
+	cp interp1.sats interp1.dats Tigerats
+	cp assem.sats assem.dats Tigerats
+	cp codegen.sats codegen.dats Tigerats
+	cp codegen_mips.dats codegen_x86_32.dats Tigerats
+	cp fgnode.sats fgnode.dats Tigerats
+	cp tempset.sats tempset.dats Tigerats
+	cp fgraph.sats fgraph.dats Tigerats
+	cp igraph.sats igraph.dats Tigerats
+	cp liveness.dats Tigerats
+	cp regalloc.sats regalloc.dats Tigerats
+	cp PARCOMB/posloc.sats PARCOMB/posloc.dats Tigerats/PARCOMB
+	cp PARCOMB/tokenize.sats PARCOMB/tokenize.dats Tigerats/PARCOMB
+	cp PARCOMB/parcomb.sats PARCOMB/parcomb.dats Tigerats/PARCOMB
+	cp LIB/funmap_avltree.dats Tigerats/LIB
+	cp LIB/hashtable.dats Tigerats/LIB
+	cp LIB/linmap_randbst.dats Tigerats/LIB
+	cp Makefile_tigerats Tigerats/Makefile
+	cp params.hats Tigerats
+	cp tiger_prelude.c Tigerats
+	cp Examples/*.tig Tigerats/Examples
+	cp Examples/Makefile Tigerats/Examples
+	tar vcfz Tigerats.tar.gz Tigerats/
 
 ######
 

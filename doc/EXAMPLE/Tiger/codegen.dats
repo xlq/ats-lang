@@ -42,6 +42,18 @@ staload _(*anonymous*) = "prelude/DATS/list_vt.dats"
 
 (* ****** ****** *)
 
+fun instrlst_add_stmlst
+  (frm: frame, res: &instrlst_vt, stms: stmlst): void =
+  case+ stms of
+  | list_cons (stm, stms) => let
+      val () = instrlst_add_stm (frm, res, stm) in
+      instrlst_add_stmlst (frm, res, stms)
+    end // end of [list_cons]
+  | list_nil () => ()
+// end of [instrlst_add_stmlst]
+
+(* ****** ****** *)
+
 implement codegen_stm (frm, stm) = let
   var res: instrlst_vt = list_vt_nil ()
   val () = instrlst_add_stm (frm, res, stm)

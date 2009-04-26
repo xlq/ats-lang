@@ -120,6 +120,15 @@ fun register_name_get (tmp: $TL.temp_t): string
 
 #include "params.hats"
 
+#if MARCH = "MIPS" #then
+
+val RA : temp (* the return value register // r31 *)
+val ZERO : temp (* r0 *)
+
+#endif
+
+(* ****** ****** *)
+
 #if MARCH = "x86_32" #then
 
 val EAX : temp

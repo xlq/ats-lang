@@ -289,8 +289,8 @@ implement main (argc, argv) = let
               val (lab_done, blks) = $CA.blocklst_gen (stms)
               val stms = $CA.trace_schedule (lab_done, blks)
               val lab_frm = $F.frame_name_get (frm)
-              val () = $INT1.the_labmap_frame_stmlst_insert (lab_frm, frm, stms)
 (*
+              val () = $INT1.the_labmap_frame_stmlst_insert (lab_frm, frm, stms)
               val () = begin
                 print "FRAGproc: "; $TL.print_label lab_frm; print_string ":\n";
                 print_stmlst stms
@@ -300,8 +300,8 @@ implement main (argc, argv) = let
               F1RAGproc (frm, stms)
             end // end of [FRAGproc]
           | $F.FRAGstring (lab, str) => let
-              val () = $INT1.the_labmap_string_insert (lab, str)
 (*
+              val () = $INT1.the_labmap_string_insert (lab, str)
               val () = begin
                 print "FRAGstring: "; $TL.print_label lab; print_string ": ";
                 print_string str; print_newline ()
@@ -324,8 +324,7 @@ implement main (argc, argv) = let
   val () = fprint_stmlst (stderr_ref, prog_stms)
   val () = $INT1.interp1Prog (prog_stms)
 *)
-
-// (*
+//
   val () = loop (theF1raglst) where {
     fun loop (xs: f1raglst): void = case+ xs of
       | list_cons (x, xs) => let
@@ -351,8 +350,7 @@ implement main (argc, argv) = let
       | list_nil () => ()
     // end of [loop]
   } // end of [val]
-// *)
-
+//
   val prog_frm = $F.theTopFrame
   val prog_inss = codegen_proc (prog_frm, prog_stms)
   // val () = prerr_instrlst (prog_inss)
