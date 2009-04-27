@@ -384,6 +384,7 @@ tar:: cleanall
 	cp Makefile_tigerats Tigerats/Makefile
 	cp params.hats Tigerats
 	cp tiger_prelude.c Tigerats
+	cp tiger_prelude_spim.s Tigerats
 	cp Examples/*.tig Tigerats/Examples
 	cp Examples/Makefile Tigerats/Examples
 	tar vcfz Tigerats.tar.gz Tigerats/
