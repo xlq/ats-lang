@@ -503,40 +503,25 @@ end // end of [local]
 
 (* ****** ****** *)
 
-implement procEntryExit1_entr (frm, inss) = let
+implement procEntryExit1_entr (frm, inss) = ()
+
+implement procEntryExit1_entr_emit (out, frm) = let
 // for saving the FP on the stack
-  val () = () where {
-    val asm = sprintf ("addi `d0, `s0, -%i", @(WORDSIZE))
-    val src = '[SP] and dst = '[SP]; val jump = None ()
-    val ins = $AS.INSTRoper (asm, src, dst, jump)
-    val () = inss := list_vt_cons (ins, inss)
-  } // end of [val]
-  val () = () where {
-    val asm = "sw `s0, 0(`s1)"
-    val src = '[FP, SP] and dst = '[]; val jump = None ()
-    val ins = $AS.INSTRoper (asm, src, dst, jump)
-    val () = inss := list_vt_cons (ins, inss)
-  } // end of [val]
-//
-  val () = () where {
-    val asm = "move `d0, `s0"
-    val src = '[SP] and dst = '[FP]; val jump = None ()
-    val ins = $AS.INSTRoper (asm, src, dst, jump)
-    val () = inss := list_vt_cons (ins, inss)
-  } // end of [val]
-//
-  val () = () where {
-    val lab = frame_name_get (frm)
-    val nam = $TL.label_name_get (lab)
-    val asm = sprintf ("subl $.%s_framesize, `s0", @(nam))
-    val src = '[SP] and dst = '[SP]; val jump = None ()
-    val ins = $AS.INSTRoper (asm, src, dst, jump)
-    val () = inss := list_vt_cons (ins, inss)
-  } // end of [val]
-//
+  val () = fprintf (out, "\taddi $sp, $sp, -%i\n", @(WORDSIZE))
+  val () = fprintf (out, "\tsw $fp, 0($sp)\n", @())
+  val () = fprintf (out, "\tmove $fp, $sp\n", @())
+  val frmsz = frame_size_get (frm)
+(*
+  val () = begin
+    prerr "procEntryExit1_entr: frmsz = "; prerr frmsz; prerr_newline ()
+  end // end of [val]
+*)
+  val () = if frmsz > 0 then
+    fprintf (out, "\taddi $sp, $sp, -%i\n", @(frmsz))
+  // end of [val]
 in
   // empty
-end // end of [procEntryExit1_entr]
+end // end of [procEntryExit1_entr_emit]
 
 implement procEntryExit1_exit (frm, inss) = let
   viewtypedef instrlst_vt = $AS.instrlst_vt
@@ -583,6 +568,7 @@ implement procEntryExit2 (_(*frm*), inss) =
 (* ****** ****** *)
 
 implement procEntryExit1_entr (frm, inss) = let
+(*
   val () = () where {
     val asm = "pushl `s0"
     val src = '[FP] and dst = '[]; val jump = None ()
@@ -604,9 +590,25 @@ implement procEntryExit1_entr (frm, inss) = let
     val ins = $AS.INSTRoper (asm, src, dst, jump)
     val () = inss := list_vt_cons (ins, inss)
   } // end of [val]
+*)
 in
   // empty
 end // end of [procEntryExit1_entr]
+
+implement procEntryExit1_entr_emit (out, frm) = let
+  val () = fprintf (out, "\tpushl %%ebp\n", @())
+  val () = fprintf (out, "\tmovl %%esp, %%ebp\n", @())
+  val frmsz = frame_size_get (frm)
+  val () = if frmsz > 0 then let
+    val lab = frame_name_get (frm)
+    val nam = $TL.label_name_get (lab)
+    val () = fprintf (out, "\tsubl $.%s_framesize, %%esp\n", @(nam))
+  in
+    // empty
+  end // end of [val]
+in
+  // empty
+end // end of [procEntryExit_entr_emit]
 
 implement procEntryExit1_exit (frm, inss) = let
   viewtypedef instrlst_vt = $AS.instrlst_vt

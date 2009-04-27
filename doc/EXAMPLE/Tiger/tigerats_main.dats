@@ -159,10 +159,15 @@ fn emit_proc (
   val () = if knd > 0 // [tiger_main] is global
     then printf (".globl %s\n", @(nam_frm))
   // end of [val]
+#if MARCH == "x86_32" #then
   val () = printf ("\t.type\t%s, @function\n", @(nam_frm))
+#endif  // MARCH == "x86_32"
   val () = printf ("%s:\n", @(nam_frm))
+#if MARCH == "x86_32" #then
+  // this style requires a feature like ".set"
   val () = printf ("\t.set\t.%s_framesize, %i\n", @(nam_frm, frmsz))
-  // end of [val]
+#endif // MARCH == "x86_32"
+  val () = $F.procEntryExit1_entr_emit (stdout_ref, frm)
   fun loop (inss: instrlst): void = case+ inss of
     | list_cons (ins, inss) => let
 (*
@@ -185,7 +190,9 @@ fn emit_proc (
     | list_nil () => ()
   // end of [loop]
   val () = loop (inss)
+#if (MARCH == "x86_32") #then
   val () = printf ("\t.size\t%s, .-%s\n", @(nam_frm, nam_frm))
+#endif // MARCH == "x86_32"
 } // end of [emit_proc]
 
 (* ****** ****** *)

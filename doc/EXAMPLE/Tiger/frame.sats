@@ -99,6 +99,8 @@ val theCalleesavedReglst : List temp // callee saved registers
 fun procEntryExit1_entr (frm: frame_t, inss: &($AS.instrlst_vt)): void
 fun procEntryExit1_exit (frm: frame_t, inss: &($AS.instrlst_vt)): void
 
+fun procEntryExit1_entr_emit (out: FILEref, frm: frame_t): void
+
 // adding a "sink" instruction
 fun procEntryExit2 (frm: frame_t, inss: &($AS.instrlst_vt)): void
 
