@@ -980,7 +980,7 @@ end // end of [transDec]
 
 (* ****** ****** *)
 
-implement transProg1 (e) = let
+implement transProg1 (e_prog) = let
   val frm0 = $F.theTopFrame
   val lev0 = LEVELtop frm0 and env = env_empty ()
 
@@ -1016,8 +1016,18 @@ implement transProg1 (e) = let
 
   val ent = VFENTfun ($TL.tiger_exit, lev0)
   val env = env_insert (env, $Sym.symbol_EXIT, ent)
+//
+  val res_calleesaved_save = calleesaved_save ()
+  val e_prog = transExp1 (lev0, env, e_prog)
+  val stm_prog = $TR.STMmove ($F.exp_RV, unEx e_prog)
+  val stm_save = res_calleesaved_save.0
+  val stm_restore = calleesaved_restore (res_calleesaved_save.1)
+//
+  val te_all = $TR.EXPeseq (
+    $TR.STMseq (stm_save, $TR.STMseq (stm_prog, stm_restore)), $F.exp_RV
+  ) // end of [EXPeseq]
 in
-  transExp1 (lev0, env, e)
+  Ex (te_all)
 end // end of [transProg1]
 
 (* ****** ****** *)

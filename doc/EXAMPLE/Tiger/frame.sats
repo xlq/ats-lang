@@ -124,8 +124,10 @@ fun register_name_get (tmp: $TL.temp_t): string
 
 #if MARCH = "SPIM" #then
 
-val RA : temp (* the return value register // r31 *)
 val ZERO : temp (* r0 *)
+
+val RA : temp (* the return value register // r31 *)
+val exp_RA: $TREE.exp
 
 #endif
 

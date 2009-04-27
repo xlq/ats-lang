@@ -284,6 +284,7 @@ val temp_r23 = $TL.temp_make_fixed (47)
 val temp_r31 = $TL.temp_make_fixed (REGISTER_RA)
 
 implement RA = temp_r31
+implement exp_RA = $TR.EXPtemp RA
 
 implement theCalleesavedReglst = '[
   temp_r16, temp_r17, temp_r18, temp_r19

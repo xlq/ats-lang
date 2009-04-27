@@ -372,30 +372,36 @@ fn instrlst_add_stm
 //
     | EXPcall (e_fun, es_arg) => d0 where {
         val d0 = $TL.temp_make_new ()
-        val calldefs = $F.theFunargReglst + $F.theCallersavedReglst // EAX, ECX, EDX
-        val () = (case+ e_fun of
-          | EXPname lab_fun => () where {
-              val fars = auxarglst (res, es_arg)
+        val calldefs =
+          $F.theFunargReglst + $F.theCallersavedReglst // EAX, ECX, EDX
+        // end of [val]
+        val nargsz = (case+ e_fun of
+          | EXPname lab_fun => nargsz where {
+              val @(nargsz, fars) = auxarglst (res, es_arg)
               val () = emit
                 (res, $AS.INSTRoper (asm, src, dst, jump)) where {
                 val name = $TL.label_name_get (lab_fun)
                 val asm = sprintf ("call %s", @(name))
-                val src = fars and dst = calldefs
-                val jump = None ()
+                val src = fars and dst = calldefs; val jump = None ()
               } // end of [val]
-            } // end of [_]
-          | _ => () where {
+            } (* end of [_] *)
+          | _ => nargsz where {
               val s_fun = auxexp (res, e_fun)
-              val fars = auxarglst (res, es_arg)
+              val @(nargsz, fars) = auxarglst (res, es_arg)
               val () = emit
                 (res, $AS.INSTRoper (asm, src, dst, jump)) where {
                 val asm = "call `s0"
                 val src = list_cons (s_fun, fars) and dst = calldefs
                 val jump = None ()
               } // end of [val]
-            } // end of [_]
+            } (* end of [_] *)
           // end of [case]
-        ) : void // end of [val]
+        ) : int (*nargsz*) // end of [val]
+        val () = emit
+          (res, $AS.INSTRoper (asm, src, dst, jump)) where {
+          val asm = sprintf ("addl $%i, `s0", @(nargsz))
+          val s0 = $F.SP; val src = '[s0] and dst = '[s0]; val jump = None ()
+        } // end of [val]
         val () = emit
           (res, $AS.INSTRmove (asm, src, dst)) where {
           val asm = "movl `s0, `d0"; val src = $F.RV and dst = d0
@@ -409,9 +415,9 @@ fn instrlst_add_stm
   end // end of [auxexp]
   
   and auxarglst // moving args into places
-    (res: &instrlst_vt, es: explst):templst = let
+    (res: &instrlst_vt, es: explst): (int(*nargsz*), templst) = let
     val narg = list_length (es)
-    val nWORDSIZE = narg * WORDSIZE
+    val nargsz = narg * WORDSIZE
     val rev_fars = loop
       ($F.theFunargReglst, narg, list_vt_nil) where {
       fun loop (
@@ -432,7 +438,7 @@ fn instrlst_add_stm
     val fars = list_of_list_vt (list_vt_reverse rev_fars)
     val () = emit
       (res, $AS.INSTRoper (asm, src, dst, jump)) where {
-      val asm = sprintf ("subl $%i, `s0", @(nWORDSIZE))
+      val asm = sprintf ("subl $%i, `s0", @(nargsz))
       val s0 = $F.SP; val src = '[s0] and dst = '[s0]; val jump = None ()
     } // end of [val]
     val () = loop (res, es, fars, 0(*ofs*)) where {
@@ -464,7 +470,7 @@ fn instrlst_add_stm
       // end of [loop]
     } // end of [val]
   in
-    fars
+    @(nargsz, fars)
   end // end of [auxarglst]
 in
   auxstm (res, stm)

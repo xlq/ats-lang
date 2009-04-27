@@ -23,6 +23,7 @@ all:: \
   intpair hanoi listops \
   merge prettyprint \
   queens0 queens1 \
+  sum tak \
 
 ######
 

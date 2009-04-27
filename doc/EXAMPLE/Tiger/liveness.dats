@@ -254,25 +254,19 @@ implement igraph_make_fgraph (fg) = ig where {
           prerr "outlst = "; $TL.prerr_templst outlst; prerr_newline ();
         end // end of [val]
 *)
-        val () = if ~ismove then
-          loop1 (ig, deflst, outlst) where {
+        val () = if ~ismove then let
           fn* loop1 (
-              ig: igraph_t
-            , ts1: $TL.templst
-            , ts2: $TL.templst
+              ig: igraph_t, ts1: $TL.templst, ts2: $TL.templst
             ) : void =
             case+ ts1 of
             | list_cons (t1, ts1) => let
-                val () = loop2 (ig, t1, ts2) in
-                loop1 (ig, ts1, ts2)
+                val () = loop2 (ig, t1, ts2) in loop1 (ig, ts1, ts2)
               end // end of [list_cons]
             | list_nil () => ()
           // end of [loop]
           
           and loop2 (
-              ig: igraph_t
-            , t1: $TL.temp_t
-            , ts2: $TL.templst
+              ig: igraph_t, t1: $TL.temp_t, ts2: $TL.templst
             ) : void =
             case+ ts2 of
             | list_cons (t2, ts2) => let
@@ -284,7 +278,9 @@ implement igraph_make_fgraph (fg) = ig where {
               end // end of [list_cons]
             | list_nil () => ()
           // end of [loop2]
-        } // end of [val]
+        in
+          loop1 (ig, deflst, outlst)
+        end // end of [val]
         val () = if ismove then let
           val useset = fgnodeinfo_useset_get (info)
           val uselst = templst_of_tempset (useset)
@@ -308,8 +304,9 @@ implement igraph_make_fgraph (fg) = ig where {
               end // end of [list_cons]
             | list_nil () => ()
           end // end of [loop3]
+          val isout = tempset_ismem (outset, t_dst)
         in
-          loop3 (ig, t_src, t_dst, outlst)
+          if isout then loop3 (ig, t_src, t_dst, outlst)
         end // end of [val]
       in
         loop (ig, fg, i + 1, sz)
