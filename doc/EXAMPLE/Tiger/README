@@ -7,7 +7,15 @@
 #
 ######
 
-So far, both x86-32 and mips are targeted.
+So far, only x86-32 and mips are targeted.
+
+######
+
+tiger_prelude.c :
+  C code for lib functions in Tiger is defined here
+
+tiger_prelude_spim.s :
+  SPIM assembly code for some lib functions in Tiger is here.
 
 ######
 
