@@ -129,11 +129,30 @@ tak: tak.tig
 
 ######
 
+MIPS32::
+	$(TIGCOMP) fact1.tig > MIPS32/fact1_tig.s
+	$(TIGCOMP) fact2.tig > MIPS32/fact2_tig.s
+	$(TIGCOMP) fib1.tig > MIPS32/fib1_tig.s
+	$(TIGCOMP) fib2.tig > MIPS32/fib2_tig.s
+	$(TIGCOMP) fib3.tig > MIPS32/fib3_tig.s
+	$(TIGCOMP) fib4.tig > MIPS32/fib4_tig.s
+	$(TIGCOMP) hanoi.tig > MIPS32/hanoi_tig.s
+	$(TIGCOMP) intpair.tig > MIPS32/intpair_tig.s
+	$(TIGCOMP) listops.tig > MIPS32/listops_tig.s
+	$(TIGCOMP) merge.tig > MIPS32/merge_tig.s
+	$(TIGCOMP) prettyprint.tig > MIPS32/prettyprint_tig.s
+	$(TIGCOMP) queens0.tig > MIPS32/queens0_tig.s
+	$(TIGCOMP) queens1.tig > MIPS32/queens1_tig.s
+	$(TIGCOMP) sum.tig > MIPS32/sum_tig.s
+	$(TIGCOMP) tak.tig > MIPS32/tak_tig.s
+
+######
+
 clean::
 	rm -f ack evenodd
 	rm -f f91 fact1 fact2
 	rm -f fib1 fib2 fib3 fib4
-	rm -f intpair hanoi listops
+	rm -f hanoi intpair listops
 	rm -f merge prettyprint
 	rm -f queens0 queens1
 	rm -f sum tak
