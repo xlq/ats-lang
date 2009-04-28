@@ -9,6 +9,10 @@
 
 (* ****** ****** *)
 
+// this one does instruction selection for x86-32 arch.
+
+(* ****** ****** *)
+
 staload Err = "error.sats"
 
 staload TL = "templab.sats"

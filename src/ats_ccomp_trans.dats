@@ -203,7 +203,7 @@ end // end of [the_dynctx_unmark]
 
 //
 
-implement the_dynctx_free () = let
+implement the_dynctx_free () = () where {
   fun aux (vms: dynmarklst): void = begin case+ vms of
     | ~DYNMARKLSTcons (d2v, vms) => (the_dynctx_del d2v; aux vms)
     | ~DYNMARKLSTmark (vms) => aux (vms)
@@ -216,9 +216,7 @@ implement the_dynctx_free () = let
   in
     !p := DYNMARKLSTnil ()
   end // end of [val]
-in
-  // empty  
-end // end of [the_dynctx_free]
+} (* end of [the_dynctx_free] *)
 
 //
 
@@ -237,7 +235,7 @@ in
       prerr d2v; prerr_newline ();
       $Err.abort {valprim} ()
     end // end of [None_vt]
-end // end of [the_dynctx_find]
+end (* end of [the_dynctx_find] *)
 
 //
 
@@ -325,7 +323,7 @@ fn glocstlst_reverse (xs: glocstlst): glocstlst = let
   end // end of [aux]
 in
   aux (xs, GLOCSTLSTnil ())
-end // end of [glocstlst_reverse]
+end (* end of [glocstlst_reverse] *)
 
 in // in of [local]
 

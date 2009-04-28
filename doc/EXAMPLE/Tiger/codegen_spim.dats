@@ -9,6 +9,11 @@
 
 (* ****** ****** *)
 
+// this one does instruction selection for MIPS arch.
+// note that pseudo SPIM instructions are allowed here
+
+(* ****** ****** *)
+
 staload TL = "templab.sats"
 typedef temp = $TL.temp_t
 typedef templst = $TL.templst
