@@ -37,12 +37,12 @@ let
           row[r]:=1; diag1[r+c]:=1; diag2[r+N1-c]:=1; col[c]:=r;
           try(c+1); row[r]:=0; diag1[r+c]:=0; diag2[r+N1-c]:=0
         )
-      ) // end of [for]
+      ) /* end of [for] */
     )
-  ) // end of [function]
+  ) /* end of [function] */
 in
   try (0)
-end // end of [let]
+end /* end of [let] */
 	
 /* ****** ****** */
 

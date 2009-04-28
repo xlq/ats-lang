@@ -4,4 +4,5 @@ let
   var fib10: int := fib (10)
 in
   print ("fib (10) = "); print_int (fib10); print ("\n")
-end // end of [let]
+end /* end of [let] */
+

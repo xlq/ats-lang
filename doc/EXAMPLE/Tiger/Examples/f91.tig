@@ -14,4 +14,4 @@ print ("f91 (57) = "); print_int (f91 (57)); print ("\n");
 print ("f91 (91) = "); print_int (f91 (91)); print ("\n");
 ()
 
-end // end of [let]
+end /* end of [let] */

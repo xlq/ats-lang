@@ -36,6 +36,6 @@ let
            try(c+1); row[r]:=0; diag1[r+c]:=0; diag2[r+7-c]:=0)
 in
     try(0)
-end // end of [let]
+end /* end of [let] */
 
 /* end of [queens2.tig] */
