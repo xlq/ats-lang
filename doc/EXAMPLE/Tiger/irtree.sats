@@ -32,6 +32,9 @@ and stm =
   | STMcjump of (relop, exp, exp, label, label)
   | STMseq of (stm, stm)
   | STMlabel of label
+  | STMusedef of  // for regalloc
+      ($TL.templst(*use*), $TL.templst(*def*))
+    // end of [STMusedef]
 
 and binop =
   | PLUS | MINUS | MUL | DIV

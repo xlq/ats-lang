@@ -921,13 +921,17 @@ fn transFundec1_snd
     end // end of [loop]
   } // end of [env]
   val res_calleesaved_save = calleesaved_save ()
+  val stm_save = res_calleesaved_save.0
+  val stm_restore = calleesaved_restore (res_calleesaved_save.1)
+  // there is no point in saving calleesaved into callersaved
+  val stm_usedef = $TR.STMusedef ('[], $F.theCallersavedReglst)
   val stm_argmov = funarglst_move (acclst, argofs)
   val e_body = transExp1 (lev1, env, fd.fundec_body)
-  val stm_body = $TR.STMmove ($F.exp_RV, unEx e_body)
-  val stm = calleesaved_restore (res_calleesaved_save.1)
-  val stm = $TR.STMseq (stm_body, stm)
+  val stm = $TR.STMmove ($F.exp_RV, unEx e_body)
+  val stm = $TR.STMseq (stm, stm_restore)
   val stm = $TR.STMseq (stm_argmov, stm)
-  val stm = $TR.STMseq (res_calleesaved_save.0, stm)
+  val stm = $TR.STMseq (stm_usedef, stm)
+  val stm = $TR.STMseq (stm_save, stm)
 in
   $F.frame_theFraglst_add ($F.FRAGproc (frm, stm))
 end // end of [transFundec1_snd]
@@ -1018,16 +1022,16 @@ implement transProg1 (e_prog) = let
   val env = env_insert (env, $Sym.symbol_EXIT, ent)
 //
   val res_calleesaved_save = calleesaved_save ()
-  val e_prog = transExp1 (lev0, env, e_prog)
-  val stm_prog = $TR.STMmove ($F.exp_RV, unEx e_prog)
   val stm_save = res_calleesaved_save.0
   val stm_restore = calleesaved_restore (res_calleesaved_save.1)
-//
-  val te_all = $TR.EXPeseq (
-    $TR.STMseq (stm_save, $TR.STMseq (stm_prog, stm_restore)), $F.exp_RV
-  ) // end of [EXPeseq]
+  val stm_usedef = $TR.STMusedef ('[], $F.theCallersavedReglst)
+  val e_prog = transExp1 (lev0, env, e_prog)
+  val stm = $TR.STMmove ($F.exp_RV, unEx e_prog)
+  val stm = $TR.STMseq (stm, stm_restore)
+  val stm = $TR.STMseq (stm_usedef, stm)
+  val stm = $TR.STMseq (stm_save, stm)
 in
-  Ex (te_all)
+  Ex ($TR.EXPeseq (stm, $F.exp_RV))
 end // end of [transProg1]
 
 (* ****** ****** *)

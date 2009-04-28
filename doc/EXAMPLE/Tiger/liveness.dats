@@ -304,6 +304,7 @@ implement igraph_make_fgraph (fg) = ig where {
               end // end of [list_cons]
             | list_nil () => ()
           end // end of [loop3]
+          // isout = true iff [t_dst] is unused
           val isout = tempset_ismem (outset, t_dst)
         in
           if isout then loop3 (ig, t_src, t_dst, outlst)

@@ -147,6 +147,9 @@ in
   | STMlabel lab => begin
       prstr "STMlabel("; $TL.fprint_label (out, lab); prstr ")"
     end // end of [STMlabel]
+  | STMusedef _ => begin
+      prstr "STMusedef("; prstr "..."; prstr ")"
+    end // end of [STMusedef]
 end (* end of [fprint_stm] *)
 
 implement print_stm (stm) = fprint_stm (stdout_ref, stm)

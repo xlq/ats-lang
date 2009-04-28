@@ -114,6 +114,7 @@ in
     in
       seqSimplify (s, STMmove (e1, e2))
     end // end of [STMmove (_, _)]
+  | STMusedef _ => s0
 end // end of [doStm]
 
 and doExp (e0: exp): @(stm, exp) = let

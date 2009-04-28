@@ -174,9 +174,12 @@ fn emit_proc (
         val () = (print_instr (ins); print_newline ())
 *)
         val () = case+ ins of
+          | INSTRoper (asm, _, _, _)
+              when string_is_empty asm => ()
+            // [INSTRoper ("", _, _, _)
           | INSTRoper _ => let
               val asm = regalloc_insfmt (ins) in printf ("\t%s\n", @(asm))
-            end // end of [_]
+            end // end of [INSTRoper]
           | INSTRlabel (asm, _) => printf ("%s\n", @(asm))
           | INSTRmove (_, src, dst) => let
               val src = regassgn_find src and dst = regassgn_find dst in

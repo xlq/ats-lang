@@ -213,6 +213,12 @@ fn instrlst_add_stm
     | STMexp e => begin
         let val _(*tmp*) = auxexp (res, e) in () end
       end // end of [STMexp]
+    | STMusedef (uselst, deflst) => () where {
+        val asm = "" // this instruction is not emitted
+        val src = uselst and dst = deflst
+        val jump = None ()
+        val () = emit (res, $AS.INSTRoper (asm, src, dst, jump))
+      } // end of [STMusedef]
     | _ => begin
         prerr "INTERNAL ERROR";
         prerr ": auxstm: stm = "; prerr_stm stm; prerr_newline ();
