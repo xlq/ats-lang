@@ -7,28 +7,28 @@
 (***********************************************************************)
 
 (*
- * ATS - Unleashing the Potential of Types!
- *
- * Copyright (C) 2002-2008 Hongwei Xi, Boston University
- *
- * All rights reserved
- *
- * ATS is free software;  you can  redistribute it and/or modify it under
- * the terms of the GNU LESSER GENERAL PUBLIC LICENSE as published by the
- * Free Software Foundation; either version 2.1, or (at your option)  any
- * later version.
- * 
- * ATS is distributed in the hope that it will be useful, but WITHOUT ANY
- * WARRANTY; without  even  the  implied  warranty  of MERCHANTABILITY or
- * FITNESS FOR A PARTICULAR PURPOSE.  See the  GNU General Public License
- * for more details.
- * 
- * You  should  have  received  a  copy of the GNU General Public License
- * along  with  ATS;  see the  file COPYING.  If not, please write to the
- * Free Software Foundation,  51 Franklin Street, Fifth Floor, Boston, MA
- * 02110-1301, USA.
- *
- *)
+** ATS - Unleashing the Potential of Types!
+**
+** Copyright (C) 2002-2008 Hongwei Xi, Boston University
+**
+** All rights reserved
+**
+** ATS is free software;  you can  redistribute it and/or modify it under
+** the terms of the GNU LESSER GENERAL PUBLIC LICENSE as published by the
+** Free Software Foundation; either version 2.1, or (at your option)  any
+** later version.
+** 
+** ATS is distributed in the hope that it will be useful, but WITHOUT ANY
+** WARRANTY; without  even  the  implied  warranty  of MERCHANTABILITY or
+** FITNESS FOR A PARTICULAR PURPOSE.  See the  GNU General Public License
+** for more details.
+** 
+** You  should  have  received  a  copy of the GNU General Public License
+** along  with  ATS;  see the  file COPYING.  If not, please write to the
+** Free Software Foundation,  51 Franklin Street, Fifth Floor, Boston, MA
+** 02110-1301, USA.
+**
+*)
 
 (* ****** ****** *)
 
@@ -103,6 +103,10 @@ fun{a:viewt@ype} list_vt_foreach__main
   (pf: !v | xs: !list_vt (a, n), f: !(!v | &a, !vt) -<f> void, env: !vt)
   :<f> void
 
+fun{a:t@ype} list_vt_foreach_clo {v:view} {n:nat} {f:eff}
+  (pf: !v | xs: !list_vt (a, n), f: &(!v | a) -<clo,f> void):<f> void
+// end of [list_vt_foreach_clo]
+
 (* ****** ****** *)
 
 fun{a:viewt@ype} list_vt_iforeach__main
@@ -110,6 +114,10 @@ fun{a:viewt@ype} list_vt_iforeach__main
     pf: !v
   | xs: !list_vt (a, n), f: (!v | natLt n, &a, !vt) -<fun,f> void, env: !vt
   ) :<f> void
+
+fun{a:t@ype} list_vt_iforeach_clo {v:view} {n:nat} {f:eff}
+  (pf: !v | xs: !list_vt (a, n), f: &(!v | natLt n, a) -<clo,f> void):<f> void
+// end of [list_vt_iforeach_clo]
 
 (* ****** ****** *)
 

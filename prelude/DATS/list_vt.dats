@@ -7,28 +7,28 @@
 (***********************************************************************)
 
 (*
- * ATS - Unleashing the Potential of Types!
- *
- * Copyright (C) 2002-2008 Hongwei Xi, Boston University
- *
- * All rights reserved
- *
- * ATS is free software;  you can  redistribute it and/or modify it under
- * the terms of the GNU LESSER GENERAL PUBLIC LICENSE as published by the
- * Free Software Foundation; either version 2.1, or (at your option)  any
- * later version.
- * 
- * ATS is distributed in the hope that it will be useful, but WITHOUT ANY
- * WARRANTY; without  even  the  implied  warranty  of MERCHANTABILITY or
- * FITNESS FOR A PARTICULAR PURPOSE.  See the  GNU General Public License
- * for more details.
- * 
- * You  should  have  received  a  copy of the GNU General Public License
- * along  with  ATS;  see the  file COPYING.  If not, please write to the
- * Free Software Foundation,  51 Franklin Street, Fifth Floor, Boston, MA
- * 02110-1301, USA.
- *
- *)
+** ATS - Unleashing the Potential of Types!
+**
+** Copyright (C) 2002-2008 Hongwei Xi, Boston University
+**
+** All rights reserved
+**
+** ATS is free software;  you can  redistribute it and/or modify it under
+** the terms of the GNU LESSER GENERAL PUBLIC LICENSE as published by the
+** Free Software Foundation; either version 2.1, or (at your option)  any
+** later version.
+** 
+** ATS is distributed in the hope that it will be useful, but WITHOUT ANY
+** WARRANTY; without  even  the  implied  warranty  of MERCHANTABILITY or
+** FITNESS FOR A PARTICULAR PURPOSE.  See the  GNU General Public License
+** for more details.
+** 
+** You  should  have  received  a  copy of the GNU General Public License
+** along  with  ATS;  see the  file COPYING.  If not, please write to the
+** Free Software Foundation,  51 Franklin Street, Fifth Floor, Boston, MA
+** 02110-1301, USA.
+**
+*)
 
 (* ****** ****** *)
 
@@ -258,6 +258,22 @@ in
   loop (pf | xs0, f, env)
 end // end of [list_vt_foreach__main]
 
+implement{a} list_vt_foreach_clo {v} {n} {f:eff} (pf1 | xs, f) = let
+  typedef clo_t = (!v | a) -<clo,f> void
+  stavar l_f: addr; val p_f: ptr l_f = &f
+  viewdef V = (v, clo_t @ l_f)
+  fn app (pf: !V | x: &a, p_f: !ptr l_f):<f> void = () where {
+    prval (pf1, pf2) = pf
+    val () = !p_f (pf1 | x)
+    prval () = pf := (pf1, pf2)
+  } // end of [val]
+  prval pf = (pf1, view@ f)
+  val ans = list_vt_foreach__main<a> {V} {ptr l_f} (pf | xs, app, p_f)
+  prval () = pf1 := pf.0 and () = view@ f := pf.1
+in
+  ans
+end // end of [list_vt_foreach_clo]
+
 (* ****** ****** *)
 
 implement{a} list_vt_iforeach__main
@@ -274,6 +290,22 @@ implement{a} list_vt_iforeach__main
 in
   loop (pf | 0, xs0, f, env)
 end // end of [list_vt_iforeach__main]
+
+implement{a} list_vt_iforeach_clo {v} {n} {f:eff} (pf1 | xs, f) = let
+  typedef clo_t = (!v | natLt n, a) -<clo,f> void
+  stavar l_f: addr; val p_f: ptr l_f = &f
+  viewdef V = (v, clo_t @ l_f)
+  fn app (pf: !V | i: natLt n, x: &a, p_f: !ptr l_f):<f> void = () where {
+    prval (pf1, pf2) = pf
+    val () = !p_f (pf1 | i, x)
+    prval () = pf := (pf1, pf2)
+  } // end of [val]
+  prval pf = (pf1, view@ f)
+  val () = list_vt_iforeach__main<a> {V} {ptr l_f} (pf | xs, app, p_f)
+  prval () = pf1 := pf.0 and () = view@ f := pf.1
+in
+  // empty
+end // end of [list_vt_iforeach_clo]
 
 (* ****** ****** *)
 

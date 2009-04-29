@@ -958,18 +958,22 @@ in
   ans
 end // end of [list_foreach_clo]
 
-implement{a} list_foreach_cloptr {v} {f:eff} (pf | xs, f) = let
-  viewtypedef cloptr_t = (!v | a) -<cloptr,f> void
-  fn app (pf: !v | x: a, f: !cloptr_t):<f> void = f (pf | x)
-  val () = list_foreach__main<a> {v} {cloptr_t} (pf | xs, app, f)
+implement{a} list_foreach_cloptr {f:eff} (xs, f) = let
+  viewtypedef cloptr_t = (a) -<cloptr,f> void
+  fn app (pf: !unit_v | x: a, f: !cloptr_t):<f> void = f (x)
+  prval pf = unit_v ()
+  val () = list_foreach__main<a> {unit_v} {cloptr_t} (pf | xs, app, f)
+  prval unit_v () = pf
 in
   // empty
 end // end of [list_foreach_cloptr]
 
-implement{a} list_foreach_cloref {v} {f:eff} (pf | xs, f) = let
-  typedef cloref_t = (!v | a) -<cloref,f> void
-  fn app (pf: !v | x: a, f: !cloref_t):<f> void = f (pf | x)
-  val () = list_foreach__main<a> {v} {cloref_t} (pf | xs, app, f)
+implement{a} list_foreach_cloref {f:eff} (xs, f) = let
+  typedef cloref_t = (a) -<cloref,f> void
+  fn app (pf: !unit_v | x: a, f: !cloref_t):<f> void = f (x)
+  prval pf = unit_v ()
+  val () = list_foreach__main<a> {unit_v} {cloref_t} (pf | xs, app, f)
+  prval unit_v () = pf
 in
   // empty
 end // end of [list_foreach_cloref]
@@ -1016,32 +1020,36 @@ implement{a1,a2} list_foreach2_clo {v} {n} {f:eff} (pf1 | xs1, xs2, f) = let
     prval () = pf := (pf1, pf2)
   } // end of [val]
   prval pf = (pf1, view@ f)
-  val ans = list_foreach2__main<a1,a2> {V} {ptr l_f} (pf | xs1, xs2, app, p_f)
+  val () = list_foreach2__main<a1,a2> {V} {ptr l_f} (pf | xs1, xs2, app, p_f)
   prval () = pf1 := pf.0 and () = view@ f := pf.1
 in
-  ans
+  // empty
 end // end of [list_foreach2_clo]
 
 implement{a1,a2}
-  list_foreach2_cloptr {v} {n} {f:eff} (pf | xs1, xs2, f) = let
-  viewtypedef cloptr_t = (!v | a1, a2) -<cloptr,f> void
-  fn app (pf: !v | x1: a1, x2: a2, f: !cloptr_t):<f> void =
-    f (pf | x1, x2)
+  list_foreach2_cloptr {n} {f:eff} (xs1, xs2, f) = let
+  viewtypedef cloptr_t = (a1, a2) -<cloptr,f> void
+  fn app (pf: !unit_v | x1: a1, x2: a2, f: !cloptr_t):<f> void =
+    f (x1, x2)
+  prval pf = unit_v ()
   val () = begin
-    list_foreach2__main<a1,a2> {v} {cloptr_t} (pf | xs1, xs2, app, f)
+    list_foreach2__main<a1,a2> {unit_v} {cloptr_t} (pf | xs1, xs2, app, f)
   end // end of [val]
+  prval unit_v () = pf
 in
   // empty
 end // end of [list_foreach2_cloptr]
 
 implement{a1,a2}
-  list_foreach2_cloref {v} {n} {f:eff} (pf | xs1, xs2, f) = let
-  typedef cloref_t = (!v | a1, a2) -<cloref,f> void
-  fn app (pf: !v | x1: a1, x2: a2, f: !cloref_t):<f> void =
-    f (pf | x1, x2)
+  list_foreach2_cloref {n} {f:eff} (xs1, xs2, f) = let
+  typedef cloref_t = (a1, a2) -<cloref,f> void
+  fn app (pf: !unit_v | x1: a1, x2: a2, f: !cloref_t):<f> void =
+    f (x1, x2)
+  prval pf = unit_v ()
   val () = begin
-    list_foreach2__main<a1,a2> {v} {cloref_t} (pf | xs1, xs2, app, f)
+    list_foreach2__main<a1,a2> {unit_v} {cloref_t} (pf | xs1, xs2, app, f)
   end // end of [val]
+  prval unit_v () = pf
 in
   // empty
 end // end of [list_foreach2_cloref]
@@ -1086,24 +1094,28 @@ implement{a} list_iforeach_clo {v} {n} {f:eff} (pf1 | xs, f) = let
     prval () = pf := (pf1, pf2)
   } // end of [val]
   prval pf = (pf1, view@ f)
-  val ans = list_iforeach__main<a> {V} {ptr l_f} (pf | xs, app, p_f)
+  val () = list_iforeach__main<a> {V} {ptr l_f} (pf | xs, app, p_f)
   prval () = pf1 := pf.0 and () = view@ f := pf.1
 in
-  ans
+  // empty
 end // end of [list_iforeach_clo]
 
-implement{a} list_iforeach_cloptr {v} {n} {f:eff} (pf | xs, f) = let
-  viewtypedef cloptr_t = (!v | natLt n, a) -<cloptr,f> void
-  fn app (pf: !v | i: natLt n, x: a, f: !cloptr_t):<f> void = f (pf | i, x)
-  val () = list_iforeach__main<a> {v} {cloptr_t} (pf | xs, app, f)
+implement{a} list_iforeach_cloptr {n} {f:eff} (xs, f) = let
+  viewtypedef cloptr_t = (natLt n, a) -<cloptr,f> void
+  fn app (pf: !unit_v | i: natLt n, x: a, f: !cloptr_t):<f> void = f (i, x)
+  prval pf = unit_v ()
+  val () = list_iforeach__main<a> {unit_v} {cloptr_t} (pf | xs, app, f)
+  prval unit_v () = pf
 in
   // empty
 end // end of [list_iforeach_cloptr]
 
-implement{a} list_iforeach_cloref {v} {n} {f:eff} (pf | xs, f) = let
-  typedef cloref_t = (!v | natLt n, a) -<cloref,f> void
-  fn app (pf: !v | i: natLt n, x: a, f: !cloref_t):<f> void = f (pf | i, x)
-  val () = list_iforeach__main<a> {v} {cloref_t} (pf | xs, app, f)
+implement{a} list_iforeach_cloref {n} {f:eff} (xs, f) = let
+  typedef cloref_t = (natLt n, a) -<cloref,f> void
+  fn app (pf: !unit_v | i: natLt n, x: a, f: !cloref_t):<f> void = f (i, x)
+  prval pf = unit_v ()
+  val () = list_iforeach__main<a> {unit_v} {cloref_t} (pf | xs, app, f)
+  prval unit_v () = pf
 in
   // empty
 end // end of [list_iforeach_cloref]
@@ -1143,25 +1155,29 @@ in
 end // end of [list_iforeach2_clo]
 
 implement{a1,a2}
-  list_iforeach2_cloptr {v} {n} {f:eff} (pf | xs1, xs2, f) = let
-  viewtypedef cloptr_t = (!v | natLt n, a1, a2) -<cloptr,f> void
-  fn app (pf: !v | i: natLt n, x1: a1, x2: a2, f: !cloptr_t):<f> void =
-    f (pf | i, x1, x2)
+  list_iforeach2_cloptr {n} {f:eff} (xs1, xs2, f) = let
+  viewtypedef cloptr_t = (natLt n, a1, a2) -<cloptr,f> void
+  fn app (pf: !unit_v | i: natLt n, x1: a1, x2: a2, f: !cloptr_t):<f> void =
+    f (i, x1, x2)
+  prval pf = unit_v ()
   val () = begin
-    list_iforeach2__main<a1,a2> {v} {cloptr_t} (pf | xs1, xs2, app, f)
+    list_iforeach2__main<a1,a2> {unit_v} {cloptr_t} (pf | xs1, xs2, app, f)
   end // end of [val]
+  prval unit_v () = pf
 in
   // empty
 end // end of [list_iforeach2_cloptr]
 
 implement{a1,a2}
-  list_iforeach2_cloref {v} {n} {f:eff} (pf | xs1, xs2, f) = let
-  viewtypedef cloref_t = (!v | natLt n, a1, a2) -<cloref,f> void
-  fn app (pf: !v | i: natLt n, x1: a1, x2: a2, f: !cloref_t):<f> void =
-    f (pf | i, x1, x2)
+  list_iforeach2_cloref {n} {f:eff} (xs1, xs2, f) = let
+  viewtypedef cloref_t = (natLt n, a1, a2) -<cloref,f> void
+  fn app (pf: !unit_v | i: natLt n, x1: a1, x2: a2, f: !cloref_t):<f> void =
+    f (i, x1, x2)
+  prval pf = unit_v ()
   val () = begin
-    list_iforeach2__main<a1,a2> {v} {cloref_t} (pf | xs1, xs2, app, f)
+    list_iforeach2__main<a1,a2> {unit_v} {cloref_t} (pf | xs1, xs2, app, f)
   end // end of [val]
+  prval unit_v () = pf
 in
   // empty
 end // end of [list_iforeach2_cloref]

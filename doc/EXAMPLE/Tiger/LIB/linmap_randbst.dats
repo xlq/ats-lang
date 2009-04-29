@@ -81,8 +81,8 @@ extern fun{key:t@ype;itm:viewt@ype} linmap_remove
 extern fun{key:t@ype;itm:viewt@ype} linmap_foreach_clo {v:view}
   (pf: !v | xs: !map_vt (key, itm), f: &(!v | key, &itm) -<clo> void):<> void
 
-extern fun{key:t@ype;itm:viewt@ype} linmap_foreach_cloref {v:view}
-  (pf: !v | xs: !map_vt (key, itm), f: !(!v | key, &itm) -<cloref> void):<!ref> void
+extern fun{key:t@ype;itm:viewt@ype} linmap_foreach_cloref
+  (xs: !map_vt (key, itm), f: (key, &itm) -<cloref> void):<!ref> void
 
 (* ****** ****** *)
 
@@ -398,10 +398,12 @@ in
 end // end of [linmap_foreach_clo]
 
 implement{key,itm}
-  linmap_foreach_cloref {v} (pf | m, f) = let
-  typedef cloref_t = (!v | key, &itm) -<cloref> void
-  fn app (pf: !v | k: key, i: &itm, f: !cloref_t):<> void = f (pf | k, i)
-  val () = bst_foreach_pre<key,itm> {v} {cloref_t} (pf | m, app, f)
+  linmap_foreach_cloref (m, f) = let
+  typedef cloref_t = (key, &itm) -<cloref> void
+  fn app (pf: !unit_v | k: key, i: &itm, f: !cloref_t):<> void = f (k, i)
+  prval pf = unit_v ()
+  val () = bst_foreach_pre<key,itm> {unit_v} {cloref_t} (pf | m, app, f)
+  prval unit_v () = pf
 in
   // empty
 end // end of [linmap_foreach_cloref]

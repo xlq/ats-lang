@@ -57,6 +57,7 @@ dataviewtype bst (key:t@ype, itm:t@ype+, int) =
   | {nl,nr:nat} BSTcons (key, itm, 1+nl+nr) of
       (int (1+nl+nr), key, itm, bst (key, itm, nl), bst (key, itm, nr))
   | BSTnil (key, itm, 0)
+// end of [bst]
 
 (* ****** ****** *)
 

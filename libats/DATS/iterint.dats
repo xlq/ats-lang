@@ -91,18 +91,12 @@ end // end of [foreach_clo]
 
 //
 
-implement foreach_cloptr {v} {n} {f:eff} (pf | n, f) = let
-  viewtypedef cloptr_t = (!v | natLt n) -<cloptr,f> void
-  fn app (pf: !v | i: natLt n, f: !cloptr_t):<f> void = f (pf | i)
-  val () = foreach_main {v} {cloptr_t} {n} {f} (pf | n, app, f)
-in
-  // empty
-end // end of [foreach_cloptr]
-
-implement foreach_cloref {v} {n} {f:eff} (pf | n, f) = let
-  typedef cloref_t = (!v | natLt n) -<cloref,f> void
-  fn app (pf: !v | i: natLt n, f: !cloref_t):<f> void = f (pf | i)
-  val () = foreach_main {v} {cloref_t} {n} {f} (pf | n, app, f)
+implement foreach_cloref {n} {f:eff} (n, f) = let
+  typedef cloref_t = (natLt n) -<cloref,f> void
+  fn app (pf: !unit_v | i: natLt n, f: !cloref_t):<f> void = f (i)
+  prval pf = unit_v ()
+  val () = foreach_main {unit_v} {cloref_t} {n} {f} (pf | n, app, f)
+  prval unit_v () = pf
 in
   // empty
 end // end of [foreach_cloref]
@@ -160,20 +154,13 @@ end // end of [foreach2_clo]
 
 //
 
-implement foreach2_cloptr {v} {m,n} {f:eff} (pf | m, n, f) = let
-  viewtypedef cloptr_t = (!v | natLt m, natLt n) -<cloptr,f> void
-  fn app (pf: !v | i: natLt m, j: natLt n, f: !cloptr_t):<f> void =
-    f (pf | i, j)
-  val () = foreach2_main {v} {cloptr_t} (pf | m, n, app, f)
-in
-  // empty
-end // end of [foreach2_cloptr]
-
-implement foreach2_cloref {v} {m,n} {f:eff} (pf | m, n, f) = let
-  typedef cloref_t = (!v | natLt m, natLt n) -<cloref,f> void
-  fn app (pf: !v | i: natLt m, j: natLt n, f: !cloref_t):<f> void =
-    f (pf | i, j)
-  val () = foreach2_main {v} {cloref_t} (pf | m, n, app, f)
+implement foreach2_cloref {m,n} {f:eff} (m, n, f) = let
+  typedef cloref_t = (natLt m, natLt n) -<cloref,f> void
+  fn app (pf: !unit_v | i: natLt m, j: natLt n, f: !cloref_t):<f> void =
+    f (i, j)
+  prval pf = unit_v ()
+  val () = foreach2_main {unit_v} {cloref_t} (pf | m, n, app, f)
+  prval unit_v () = pf
 in
   // empty
 end // end of [foreach2_cloref]
@@ -224,18 +211,12 @@ end // end of [repeat_clo]
 
 //
 
-implement repeat_cloptr {v} {n} {f} (pf | n, f) = let
-  viewtypedef cloptr_t = (!v | (*none*)) -<cloptr,f> void
-  fn app (pf: !v | f: !cloptr_t):<f> void = f (pf | (*none*))
-  val () = repeat_main {v} {cloptr_t} (pf | n, app, f)
-in
-  // empty
-end // end of [repeat_cloptr]
-
-implement repeat_cloref {v} {n} {f} (pf | n, f) = let
-  typedef cloref_t = (!v | (*none*)) -<cloref,f> void
-  fn app (pf: !v | f: !cloref_t):<f> void = f (pf | (*none*))
-  val () = repeat_main {v} {cloref_t} (pf | n, app, f)
+implement repeat_cloref {n} {f} (n, f) = let
+  typedef cloref_t = () -<cloref,f> void
+  fn app (pf: !unit_v | f: !cloref_t):<f> void = f ()
+  prval pf = unit_v ()
+  val () = repeat_main {unit_v} {cloref_t} (pf | n, app, f)
+  prval unit_v () = pf
 in
   // empty
 end // end of [repeat_cloref]
