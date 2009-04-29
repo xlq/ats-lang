@@ -136,11 +136,12 @@ fn tymap_empty () = $M.funmap_empty<> ()
 fn vftymap_empty () = $M.funmap_empty<> ()
 
 fn tymap_search
-  (tmap: tymap, sym: sym): ty = let
+  (loc0: loc, tmap: tymap, sym: sym): ty = let
   val ans =
     $M.funmap_search<sym,ty> (tmap, sym, _cmp) in
     case+ ans of
     | ~Some_vt ty => ty | ~None_vt () => begin
+      prerr_location loc0;
       prerr ": exit(TIGER)";
       prerr ": unrecognized type symbol ["; prerr_symbol sym;
       prerr "]"; prerr_newline ();
@@ -149,11 +150,12 @@ fn tymap_search
 end // end of [tymap_search]
 
 fn vftymap_search
-  (vmap: vftymap, sym: sym): vfty = let
+  (loc0: loc, vmap: vftymap, sym: sym): vfty = let
   val ans =
     $M.funmap_search<sym,vfty> (vmap, sym, _cmp) in
   case+ ans of
   | ~Some_vt (vfty) => vfty | ~None_vt () => begin
+      prerr_location loc0;
       prerr ": exit(TIGER)";
       prerr ": unrecognized var/fun symbol ["; prerr_symbol sym;
       prerr "]"; prerr_newline ();
@@ -178,31 +180,36 @@ end // end of [local]
 fun ty_make_typ
   (tmap: tymap, typ: typ): ty = let
   val ty0 = case+ typ.typ_node of
-  | NameTyp sym => tymap_search (tmap, sym)
-  | RecordTyp fts => let
-      val stamp = stamp_make ()
-      val lts = aux (tmap, fts) where {
-        fun aux (tmap: tymap, fts: fieldtyplst): labtylst =
-          case+ fts of
-          | list_cons (ft, fts) => let
-              val lab = ft.fieldtyp_lab
-              val sym = ft.fieldtyp_typ
-              val ty = tymap_search (tmap, sym)
-            in
-              LABTYLSTcons (lab, ty, aux (tmap, fts))
-            end // end of [list_cons]
-          | list_nil () => LABTYLSTnil ()
-        // end of [aux]
-      } // end of [val]
-    in
-      TYrec (stamp, lts)
-    end // end of [RecordTyp]
-  | ArrayTyp sym => let
-      val stamp = stamp_make ()
-      val ty = tymap_search (tmap, sym)
-    in
-      TYarr (stamp, ty)
-    end // end of [ArrayTyp]
+    | NameTyp sym => let
+        val loc0 = typ.typ_loc in tymap_search (loc0, tmap, sym)
+      end // end of [NameTyp]
+    | RecordTyp fts => let
+        val stamp = stamp_make ()
+        val lts = aux (tmap, fts) where {
+          fun aux (tmap: tymap, fts: fieldtyplst): labtylst =
+            case+ fts of
+            | list_cons (ft, fts) => let
+                val loc = ft.fieldtyp_loc
+                val lab = ft.fieldtyp_lab
+                val sym = ft.fieldtyp_typ
+                val ty = tymap_search (loc, tmap, sym)
+              in
+                LABTYLSTcons (lab, ty, aux (tmap, fts))
+              end // end of [list_cons]
+            | list_nil () => LABTYLSTnil ()
+          // end of [aux]
+        } // end of [val]
+      in
+        TYrec (stamp, lts)
+      end // end of [RecordTyp]
+    | ArrayTyp sym => let
+        val loc0 = typ.typ_loc
+        val stamp = stamp_make ()
+        val ty = tymap_search (loc0, tmap, sym)
+      in
+        TYarr (stamp, ty)
+      end // end of [ArrayTyp]
+  // end of [val]
 in
   typ_ty_set (typ, ty0); ty0
 end // end of [ty_make_typ]
@@ -223,7 +230,7 @@ extern fun transDeclst
 implement transVar (tmap, vmap, x0) = let
   val ty0 = case+ x0.v1ar_node of
   | SimpleVar sym => let
-      val vfty = vftymap_search (vmap, sym)
+      val vfty = vftymap_search (x0.v1ar_loc, vmap, sym)
     in
       case+ vfty.vfty_node of
       | VFTYvar (rb, ty) => ty where {
@@ -311,7 +318,7 @@ fn transExpUp_callexp (
     tmap: tymap, vmap: vftymap
   , e0: exp, f: sym, es: explst
   ) : ty = let
-  val vfty = vftymap_search (vmap, f)
+  val vfty = vftymap_search (e0.exp_loc, vmap, f)
 in
   case+ vfty.vfty_node of
   | VFTYfun (tys, ty) => ty where {
@@ -716,9 +723,11 @@ fn transFundec (
       , fts: fieldtyplst
       ) : labrbtylst = begin case+ fts of
       | list_cons (ft, fts) => let
+          val loc = ft.fieldtyp_loc
           val lab = ft.fieldtyp_lab
+          val typ = ft.fieldtyp_typ
+          val ty = tymap_search (loc, tmap, typ)
           val rb = ft.fieldtyp_escape
-          val ty = tymap_search (tmap, ft.fieldtyp_typ)
           val x = @(lab, rb, ty)
         in
           list_cons (x, aux (tmap, vmap, fts))
@@ -733,7 +742,8 @@ fn transFundec (
     // end of [aux]
   } // end of [val]
   val ty_res = (case+ fd.fundec_result of
-    | Some typ => ty_make_typ (tmap, typ) | None () => ty_UNIT
+    | Some typ => ty_make_typ (tmap, typ)
+    | None () => ty_UNIT
   ) : ty // end of [val]
   val level = the_funlevel_get ()
   val vfty_fun = vfty_fun_make (level, tys_arg, ty_res)
@@ -865,6 +875,7 @@ implement transProg (e) = let
     val tmap = tymap_empty ()
     val tmap = tymap_insert (tmap, symbol_INT, ty_INT)
     val tmap = tymap_insert (tmap, symbol_STRING, ty_STRING)
+    val tmap = tymap_insert (tmap, symbol_UNIT, ty_UNIT)
   } // end of [val]
   val vmap = vmap where {
     val vmap = vftymap_empty ()
