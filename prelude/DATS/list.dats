@@ -254,7 +254,7 @@ implement{a1,a2} list_assoc_fun {eq:eff} (xys, eq, x0) = let
   val eq = coerce (eq) where { extern castfn
     coerce (eq: (a1, a1) -<eq> bool):<> (!unit_v | a1, a1, !Ptr) -<eq> bool
   } // end of [where]
-  prval pf = unit_v
+  prval pf = unit_v ()
   val ans = list_assoc__main (pf | xys, eq, x0, null)
   prval unit_v () = pf
 in

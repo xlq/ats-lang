@@ -87,13 +87,10 @@ in
 end // end of [list0_foreach_fun]
   
 implement{a} list0_foreach_cloref (xs, f) = let
-  fn f (pf: !unit_v | x: a):<cloref1> void = f (x)
-  prval pf = unit_v ()
-  val () = list_foreach_cloref<a> {unit_v} (pf | list1_of_list0 xs, f)
-  prval unit_v () = pf
+  val () = list_foreach_cloref<a> (list1_of_list0 xs, f)
 in
   // empty
-end // end of [list0_foreach_fun]
+end // end of [list0_foreach_cloref]
 
 (* ****** ****** *)
 
