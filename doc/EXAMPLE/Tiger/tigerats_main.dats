@@ -81,12 +81,16 @@ dynload "regalloc.dats"
 
 fn compusage (cmd: string) = begin
   printf ("%s --help: print out usage\n", @(cmd));
+(*
   printf ("%s --test: test a set of selected examples\n", @(cmd));
+*)
   printf ("%s <file>: compile the given <file>\n", @(cmd));
   printf ("%s : compile the program read from the stdin\n", @(cmd));
 end // end of [compusage]
 
 (* ****** ****** *)
+
+(*
 
 fn comptest () = let
   val dirname = "Examples/TestCases"
@@ -130,6 +134,8 @@ fn comptest () = let
 in
   // empty
 end // end of [comptest]
+
+*)
 
 (* ****** ****** *)
 
@@ -266,12 +272,13 @@ fn emit_string
 
 implement main (argc, argv) = let
   val () = case+ argc of
-    | _ when argc >= 2 => begin
-      case+ argv.[1] of
+    | _ when argc >= 2 => begin case+ argv.[1] of
       | "--help" => (
           compusage (argv.[0]); exit {void} (0)
         ) // end [--help]
+(*
       | "--test" => (comptest (); exit {void} (0))
+*)
       | _ => () // continue
       end // end of [_ when ...]
     | _ => ()
@@ -314,7 +321,7 @@ implement main (argc, argv) = let
   
   datatype f1rag =
     | F1RAGproc of ($F.frame_t, $TR.stmlst) | F1RAGstring of ($TL.label_t, string)
-  // end of [frag]
+  // end of [f1rag]
   typedef f1raglst = List f1rag
 
   val theF1raglst = loop (theFraglst, list_nil) where {
@@ -322,6 +329,9 @@ implement main (argc, argv) = let
       | list_cons (x, xs) => let
           val f1rag = case+ x of
           | $F.FRAGproc (frm, stm) => let
+(*
+              val () = $TR.prerr_stm (stm)
+*)
               val stms = $CA.linearize stm
               val (lab_done, blks) = $CA.blocklst_gen (stms)
               val stms = $CA.trace_schedule (lab_done, blks)
