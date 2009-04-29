@@ -74,14 +74,16 @@ extern fun{} hashtbl_free_exn
 extern fun{key:t@ype;itm:viewt@ype} hashtbl_foreach_clo {v:view}
   (pf: !v | tbl: hashtbl_t (key, itm), f: &(!v | key, &itm) -<clo> void):<!ref> void
 
-extern fun{key:t@ype;itm:viewt@ype} hashtbl_foreach_cloref {v:view}
-  (pf: !v | tbl: hashtbl_t (key, itm), f: !(!v | key, &itm) -<cloref> void):<!ref> void
+extern fun{key:t@ype;itm:viewt@ype} hashtbl_foreach_cloref
+  (tbl: hashtbl_t (key, itm), f: !(key, &itm) -<cloref> void):<!ref> void
+// end of [hashtbl_foreach_cloref__nvw]
 
 (* ****** ****** *)
 
 dataviewtype chain (key:t@ype, itm:viewt@ype+, int) =
   | {n:nat} CHAINcons (key, itm, n+1) of (key, itm, chain (key, itm, n))
   | CHAINnil (key, itm, 0)
+// end of [chain]
 
 viewtypedef chain (key:t@ype,itm:viewt@ype) = [n:nat] chain (key, itm, n)
 viewtypedef chain0 = chain (void, void, 0)
@@ -617,11 +619,16 @@ end // end of [hashtbl_foreach_clo]
 (* ****** ****** *)
 
 implement{key,itm}
-  hashtbl_foreach_cloref {v} (pf0 | tbl, f) = let
-  typedef clo_type = (!v | key, &itm) -<clo> void
+  hashtbl_foreach_cloref (tbl, f) = let
+  val f = __cast (f) where { extern castfn __cast
+    (f: (key, &itm) -<cloref> void):<> (!unit_v | key, &itm) -<cloref> void
+  } // end of [val]
+  typedef clo_type = (!unit_v | key, &itm) -<clo> void
   val (vbox pf_f | p_f) = cloref_get_view_ptr {clo_type} (f)
+  prval pf0 = unit_v ()
   val () = $effmask_ref
-    (hashtbl_foreach_clo<key,itm> {v} (pf0 | tbl, !p_f))
+    (hashtbl_foreach_clo<key,itm> {unit_v} (pf0 | tbl, !p_f))
+  prval unit_v () = pf0
 in
   // empty
 end // end of [hashtbl_foreach_cloref]

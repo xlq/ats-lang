@@ -67,10 +67,10 @@ extern fun{key,itm:t@ype} funmap_remove_status
 //
 
 extern fun{key,itm:t@ype} funmap_foreach_clo {v:view}
-  (pf: !v | xs: map_t (key, itm), f: &(!v | key, itm) -<clo1> void): void
+  (pf: !v | xs: map_t (key, itm), f: &(!v | key, itm) -<clo> void):<> void
 
-extern fun{key,itm:t@ype} funmap_foreach_cloref {v:view}
-  (pf: !v | xs: map_t (key, itm), f: !(!v | key, itm) -<cloref1> void): void
+extern fun{key,itm:t@ype} funmap_foreach_cloref
+  (xs: map_t (key, itm), f: (key, itm) -<cloref> void):<!ref> void
 
 //
 
@@ -374,10 +374,10 @@ end // end of [funmap_remove_status]
 
 implement{key,itm}
   funmap_foreach_clo {v} (pf | t, f) = aux (pf | f, t) where {
-  viewtypedef clo_type = (!v | key, itm) -<clo1> void
-  fun aux {h:nat} .<h>.
-    (pf: !v | f: &clo_type, t: avltree (key, itm, h))
-    : void = begin case+ t of
+  viewtypedef clo_type = (!v | key, itm) -<clo> void
+  fun aux {h:nat} .<h>. (
+      pf: !v | f: &clo_type, t: avltree (key, itm, h)
+    ) :<> void = begin case+ t of
     | B (_(*h*), k, xs, tl, tr) => let (* inorder traversal *)
         val+ list_cons (x, _) = xs
       in
@@ -388,10 +388,15 @@ implement{key,itm}
 } // end of [funmap_foreach_clo]
 
 implement{key,itm}
-  funmap_foreach_cloref {v} (pf | t, f) = let
-  typedef clo_type = (!v | key, itm) -<clo1> void
+  funmap_foreach_cloref (t, f) = let
+  val f = __cast (f) where { extern castfn __cast
+    (f: (key, itm) -<cloref> void):<> (!unit_v | key, itm) -<cloref> void
+  } // end of [val]
+  typedef clo_type = (!unit_v | key, itm) -<clo> void
   val (vbox pf_f | p_f) = cloref_get_view_ptr {clo_type} (f)
-  val () = $effmask_ref (funmap_foreach_clo<key,itm> {v} (pf | t, !p_f))
+  prval pf = unit_v ()
+  val () = $effmask_ref (funmap_foreach_clo<key,itm> {unit_v} (pf | t, !p_f))
+  prval unit_v () = pf
 in
   // empty
 end // end of [funmap_foreach_cloref]

@@ -22,10 +22,12 @@ datatype ty =
   | TYrec of (stamp_t, labtylst)
   | TYtop of () // [TYtop] should not be assigned to any expression
   | TYunit of ()
+// end of [ty]
 
 and labtylst =
   | LABTYLSTcons of (symbol_t,  ty, labtylst)
   | LABTYLSTnil of ()
+// end of [labtylst]
 
 where tylst = List ty and tyref = ref ty
 
