@@ -105,13 +105,65 @@ implement{a} list0_length (xs) =
 
 (* ****** ****** *)
 
-implement{a,b} list0_map_fun (xs, f) = begin
+implement{a,b} list0_map_fun (xs, f) =
   list0_of_list1 (list_map_fun (list1_of_list0 xs, f))
-end
+// end of [list0_map_fun]
 
-implement{a,b} list0_map_cloref (xs, f) = begin
+implement{a,b} list0_map_cloref (xs, f) =
   list0_of_list1 (list_map_cloref (list1_of_list0 xs, f))
-end
+// end of [list0_map_cloref]
+
+(* ****** ****** *)
+
+implement{a1,a2,b} list0_map2_fun (xs1, xs2, f) = let
+  fun loop {n1,n2:nat} .<n1>.
+    (xs1: list (a1, n1), xs2: list (a2, n2), res: &list0 b? >> list0 b)
+    :<cloref1> void =
+    case+ (xs1, xs2) of
+    | (list_cons (x1, xs1), list_cons (x2, xs2)) => let
+        val y = f (x1, x2)
+        val () = res := cons (y, ?)
+        val+ cons (_, !p_ys) = res
+        val () = loop (xs1, xs2, !p_ys)
+      in
+        fold@ (res)
+      end // end of [list_cons _, list_cons _]
+    | (_, _) => let
+        val () = res := nil () in ()
+      end // end of [_, _]
+  // end of [loop]
+  var res: list0 b // uninitialized
+  val () = loop (xs1, xs2, res) where {
+    val xs1 = list1_of_list0 (xs1) and xs2 = list1_of_list0 (xs2)
+  } // end of [val]
+in
+  res
+end // end of [list0_map2_fun]
+
+implement{a1,a2,b} list0_map2_cloref (xs1, xs2, f) = let
+  fun loop {n1,n2:nat} .<n1>.
+    (xs1: list (a1, n1), xs2: list (a2, n2), res: &list0 b? >> list0 b)
+    :<cloref1> void =
+    case+ (xs1, xs2) of
+    | (list_cons (x1, xs1), list_cons (x2, xs2)) => let
+        val y = f (x1, x2)
+        val () = res := cons (y, ?)
+        val+ cons (_, !p_ys) = res
+        val () = loop (xs1, xs2, !p_ys)
+      in
+        fold@ (res)
+      end // end of [list_cons _, list_cons _]
+    | (_, _) => let
+        val () = res := nil () in ()
+      end // end of [_, _]
+  // end of [loop]
+  var res: list0 b // uninitialized
+  val () = loop (xs1, xs2, res) where {
+    val xs1 = list1_of_list0 (xs1) and xs2 = list1_of_list0 (xs2)
+  } // end of [val]
+in
+  res
+end // end of [list0_map2_cloref]
 
 (* ****** ****** *)
 

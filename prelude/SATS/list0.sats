@@ -102,6 +102,12 @@ fun{a:t@ype} list0_length (xs: list0 a):<> int
 fun{a,b:t@ype} list0_map_fun (xs: list0 a, f: a -<fun1> b): list0 b
 fun{a,b:t@ype} list0_map_cloref (xs: list0 a, f: a -<cloref1> b): list0 b
 
+fun{a1,a2,b:t@ype} list0_map2_fun
+  (xs1: list0 a1, xs2: list0 a2, f: (a1, a2) -<fun1> b): list0 b
+
+fun{a1,a2,b:t@ype} list0_map2_cloref
+  (xs1: list0 a1, xs2: list0 a2, f: (a1, a2) -<cloref1> b): list0 b
+
 (* ****** ****** *)
 
 fun{a:t@ype} list0_nth_exn (xs: list0 a, i: int): a

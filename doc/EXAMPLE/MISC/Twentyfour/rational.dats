@@ -29,6 +29,7 @@ implement rat_make_int_int (m, n) =
   else begin
     $raise DivisionByZeroException
   end // end of [if]
+// end of [rat_make_int_int]
 
 implement rat_zero = @{ numer=0, denom=1 }
 implement rat_one = @{ numer=1, denom=1 }
