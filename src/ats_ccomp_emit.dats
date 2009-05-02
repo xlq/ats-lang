@@ -7,28 +7,28 @@
 (***********************************************************************)
 
 (*
- * ATS/Anairiats - Unleashing the Potential of Types!
- *
- * Copyright (C) 2002-2008 Hongwei Xi, Boston University
- *
- * All rights reserved
- *
- * ATS is free software;  you can  redistribute it and/or modify it under
- * the terms of  the GNU GENERAL PUBLIC LICENSE (GPL) as published by the
- * Free Software Foundation; either version 3, or (at  your  option)  any
- * later version.
- * 
- * ATS is distributed in the hope that it will be useful, but WITHOUT ANY
- * WARRANTY; without  even  the  implied  warranty  of MERCHANTABILITY or
- * FITNESS FOR A PARTICULAR PURPOSE.  See the  GNU General Public License
- * for more details.
- * 
- * You  should  have  received  a  copy of the GNU General Public License
- * along  with  ATS;  see the  file COPYING.  If not, please write to the
- * Free Software Foundation,  51 Franklin Street, Fifth Floor, Boston, MA
- * 02110-1301, USA.
- *
- *)
+** ATS/Anairiats - Unleashing the Potential of Types!
+**
+** Copyright (C) 2002-2008 Hongwei Xi, Boston University
+**
+** All rights reserved
+**
+** ATS is free software;  you can  redistribute it and/or modify it under
+** the terms of  the GNU GENERAL PUBLIC LICENSE (GPL) as published by the
+** Free Software Foundation; either version 3, or (at  your  option)  any
+** later version.
+** 
+** ATS is distributed in the hope that it will be useful, but WITHOUT ANY
+** WARRANTY; without  even  the  implied  warranty  of MERCHANTABILITY or
+** FITNESS FOR A PARTICULAR PURPOSE.  See the  GNU General Public License
+** for more details.
+** 
+** You  should  have  received  a  copy of the GNU General Public License
+** along  with  ATS;  see the  file COPYING.  If not, please write to the
+** Free Software Foundation,  51 Franklin Street, Fifth Floor, Boston, MA
+** 02110-1301, USA.
+**
+*)
 
 (* ****** ****** *)
 
@@ -188,10 +188,8 @@ fn emit_funlab_prefix {m:file_mode}
   : void = let
   val prfx = $Glo.ats_function_name_prefix_get ()
 in
-  if stropt_is_some prfx then begin
-    let val prfx = stropt_unsome prfx in
-      fprint1_string (pf | out, prfx)
-    end
+  if stropt_is_some prfx then let
+    val prfx = stropt_unsome prfx in fprint1_string (pf | out, prfx)
   end else begin
     // the default is the empty string
   end // end of [if]
@@ -218,8 +216,8 @@ in
   if funlab_trmck_get fl > 0 then fprint1_string (pf | out, "_trmck")
 end // end of [emit_funlab]
 
-implement emit_tmplab (pf | out, tl) = begin
-  fprint1_string (pf | out, "__ats_lab_");
+implement emit_tmplab (pf | out, tl) = let
+  val () = fprint1_string (pf | out, "__ats_lab_") in
   $Stamp.fprint_stamp (pf | out, tmplab_stamp_get tl)
 end // end of [emit_tmplab]
 
@@ -227,8 +225,8 @@ implement emit_tmplabint (pf | out, tl, i) = begin
   emit_tmplab (pf | out, tl); fprintf1_exn (pf | out, "_%i", @(i))
 end // end of [emit_tmplabint]
 
-implement emit_tmpvar (pf | out, tmp) = begin
-  fprint1_string (pf | out, "tmp");
+implement emit_tmpvar (pf | out, tmp) = let
+  val () = fprint1_string (pf | out, "tmp") in
   $Stamp.fprint_stamp (pf | out, tmpvar_stamp_get tmp)
 end // end of [emit_tmpvar]
 
@@ -2273,24 +2271,30 @@ implement emit_funentry (pf | out, entry) = let
     emit_funarg (pf | out, hits_arg); fprint1_string (pf | out, ") {\n")
   end
 
+  // tailjoinlst
+  val tjs = funentry_tailjoin_get (entry)
+
   // local variable declaration
   val () = let
     val () = fprint1_string (pf | out, "/* local vardec */\n")
-    val tmps_local = funentry_tmpvarmap_gen (entry)
+    var tmps_local: tmpvarmap_vt = tmpvarmap_nil ()
+    val () =
+      tailjoinlst_tmpvarmap_add (tmps_local, tjs)
+    // end of [val]
+    val () = funentry_tmpvarmap_add (tmps_local, entry)
     val n = emit_tmpvarmap_dec_local (pf | out, tmps_local)
     val () = if n > 0 then fprint1_char (pf | out, '\n')
   in
     tmpvarmap_free (tmps_local)
-  end
+  end (* end of [val] *)
 
   // mutual tail-recursion
-  val tjs = funentry_tailjoin_get (entry)
   val istailjoin = (case+ tjs of
     | TAILJOINLSTcons _ => true | TAILJOINLSTnil () => false
   ) : bool
   val () = begin
     if istailjoin then emit_tailjoinlst (pf | out, tjs)
-  end
+  end // end of [val]
 
   // function body
   val () = emit_instrlst (pf | out, funentry_body_get entry)

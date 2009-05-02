@@ -339,13 +339,12 @@ end // end of [d2exp_int_tr_dn]
 (* ****** ****** *)
 
 fun labd2explst_tr_dn
-  (loc0: loc_t, ld2es: labd2explst, ls2es: labs2explst)
-  : labd3explst = begin case+ (ld2es, ls2es) of
+  (loc0: loc_t, ld2es: labd2explst, ls2es: labs2explst): labd3explst =
+  case+ (ld2es, ls2es) of
   | (LABD2EXPLSTcons (l1, d2e, ld2es), 
      LABS2EXPLSTcons (l2, s2e, ls2es)) => begin
       if l1 = l2 then let
-        val d3e = d2exp_tr_dn (d2e, s2e)
-      in
+        val d3e = d2exp_tr_dn (d2e, s2e) in
         LABD3EXPLSTcons (l1, d3e, labd2explst_tr_dn (loc0, ld2es, ls2es))
       end else begin
         prerr d2e.d2exp_loc;
@@ -359,26 +358,28 @@ fun labd2explst_tr_dn
         prerr "].";
         prerr_newline ();
         $Err.abort {labd3explst} ()
-      end
-    end
+      end // end of [if]
+    end (* end of [LABD2EXPLSTcons, LABS2EXPLSTcons] *)
   | (LABD2EXPLSTnil (), LABS2EXPLSTnil ()) => LABD3EXPLSTnil ()
-  | (LABD2EXPLSTcons _, LABS2EXPLSTnil ()) => begin
+  | (LABD2EXPLSTcons (l1, _, _), LABS2EXPLSTnil ()) => begin
       prerr loc0;
       prerr ": error(3)";
       $Deb.debug_prerrf (": %s: labd2explst_tr_dn", @(THISFILENAME));
-      prerr ": the tuple or record needs less components.";
+      prerr ": the tuple/record needs less components";
+      prerr ": a component with the label ["; prerr l1; prerr "] should be removed.";
       prerr_newline ();
       $Err.abort {labd3explst} ()
-    end
-  | (LABD2EXPLSTnil (), LABS2EXPLSTcons _) => begin
+    end (* end of [LABD2EXPLSTcons, LABS2EXPLSTnil] *)
+  | (LABD2EXPLSTnil (), LABS2EXPLSTcons (l2, _, _)) => begin
       prerr loc0;
       prerr ": error(3)";
       $Deb.debug_prerrf (": %s: labd2explst_tr_dn", @(THISFILENAME));
-      prerr ": the tuple or record needs more components.";
+      prerr ": the tuple/record needs more components";
+      prerr ": a component with the label ["; prerr l2; prerr "] should be inserted.";
       prerr_newline ();
       $Err.abort {labd3explst} ()
-    end    
-end // end of [labd2explst_tr_dn]
+    end (* end of [LABD2EXPLSTnil, LABS2EXPLSTcons] *)
+// end of [labd2explst_tr_dn]
 
 (* ****** ****** *)
 

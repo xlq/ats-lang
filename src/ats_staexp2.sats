@@ -92,13 +92,15 @@ datatype s2cstlst =
 datatype d2conlst =
   | D2CONLSTcons of (d2con_t, d2conlst) | D2CONLSTnil
 
-datatype s2item = (* static items *)
+datatype s2item =
+  (* static items *)
   | S2ITEMcst of s2cstlst
   | S2ITEMdatconptr of d2con_t
   | S2ITEMdatcontyp of d2con_t
   | S2ITEMe1xp of e1xp
   | S2ITEMfil of fil_t
   | S2ITEMvar of s2var_t
+// end of [s2item]
 
 where s2itemlst = List s2item
 and s2itemopt_vt = Option_vt s2item

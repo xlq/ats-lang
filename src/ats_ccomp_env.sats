@@ -271,15 +271,6 @@ fun funentry_body_get (entry: funentry_t): instrlst
 
 //
 
-datatype tailjoinlst =
-  | TAILJOINLSTcons of (int(*tag*), funlab_t, tmpvarlst(*arg*), tailjoinlst)
-  | TAILJOINLSTnil
-
-fun emit_tailjoinlst {m:file_mode}
-  (pf: file_mode_lte (m, w) | out: &FILE m, tjs: tailjoinlst): void
-
-//
-
 fun funentry_tailjoin_get (entry: funentry_t): tailjoinlst
 fun funentry_tailjoin_set (entry: funentry_t, tjs: tailjoinlst): void
   = "ats_ccomp_env_funentry_tailjoin_set"
@@ -316,6 +307,7 @@ dataviewtype glocstlst =
   | GLOCSTLSTcons_fun of (d2cst_t, glocstlst)
   | GLOCSTLSTcons_val of (d2cst_t, valprim, glocstlst)
   | GLOCSTLSTnil
+// end of [glocstlst]
 
 fun the_glocstlst_add_clo (d2c: d2cst_t): void
 fun the_glocstlst_add_fun (d2c: d2cst_t): void
@@ -342,6 +334,7 @@ dataviewtype tailcallst =
   | TAILCALLSTcons of (funlab_t, tmpvarlst, tailcallst)
   | TAILCALLSTmark of tailcallst
   | TAILCALLSTnil
+// end of [tailcallst]
 
 absview tailcallst_token
 

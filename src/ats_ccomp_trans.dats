@@ -2118,7 +2118,8 @@ end // end of [ccomp_hilablst]
 
 (* ****** ****** *)
 
-fn d2var_typ_ptr_get (d2v: d2var_t): s2exp = let
+fn d2var_typ_ptr_get
+  (d2v: d2var_t): s2exp = s2e_elt where {
   val d2v_view = (
     case+ d2var_view_get d2v of
     | D2VAROPTsome d2v_view => d2v_view
@@ -2126,27 +2127,25 @@ fn d2var_typ_ptr_get (d2v: d2var_t): s2exp = let
         prerr "Internal Error: d2var_typ_ptr_get: d2v = ";
         prerr d2v; prerr_newline ();
         $Err.abort {d2var_t} ()
-      end
-  ) : d2var_t
+      end // end of [D2VAROPTnone]
+  ) : d2var_t // end of [val d2v_view]
   val s2e_view = (
     case+ d2var_mastyp_get (d2v_view) of
     | Some s2e_view => s2e_view | None () => begin
         prerr "Internal Error: d2var_typ_ptr_get: d2v_view = ";
         prerr d2v_view; prerr_newline ();
         $Err.abort {s2exp} ()
-      end
-  ) : s2exp
+      end // end of [None]
+  ) : s2exp // end of [s2e_view]
   val s2e_elt = (
     case+ un_s2exp_at_viewt0ype_addr_view (s2e_view) of
     | ~Some_vt (s2es2e) => s2es2e.0 | ~None_vt () => begin
       prerr "Internal Error: d2var_typ_ptr_get: s2e_view = ";
       prerr s2e_view; prerr_newline ();
       $Err.abort {s2exp} ()
-    end
-  ) : s2exp
-in
-  s2e_elt
-end // end of [d2var_typ_ptr_get]
+    end // end of [None_vt]
+  ) : s2exp // end of [val s2e_elt]
+} (* end of [d2var_typ_ptr_get] *)
 
 (* ****** ****** *)
 
@@ -2164,9 +2163,9 @@ fun ccomp_fundeclst_init {n:nat}
       val () = the_dynctx_add (d2v, vp)
     in
       list_vt_cons (fl, ccomp_fundeclst_init (level, fundecs))
-    end
+    end // end of [list_cons]
   | list_nil () => list_vt_nil ()
-end // end of [ccomp_fundeclst_init]
+end (* end of [ccomp_fundeclst_init] *)
 
 //
 
@@ -2178,20 +2177,30 @@ fn ccomp_fntdeclst_main {n:nat} (
   val (pf_tailcallst_mark | ()) = the_tailcallst_mark ()
   val () = auxlst_push (fls) where {
     fn aux_push (fl: funlab_t): void = let
+(*
+      val () = begin
+        prerr "ccomp_fntdeclst_main: aux_push: fl = "; prerr_funlab fl; prerr_newline ()
+      end // end of [val]
+*)
       val tmps = tmpvarlst_make (funlab_typ_arg_get fl)
+(*
+      val () = begin
+        prerr "ccomp_fntdeclst_main: aux_push: tmps = "; prerr_tmpvarlst tmps; prerr_newline ()
+      end // end of [val]
+*)
       val () = funlab_tailjoined_set (fl, tmps)
     in
       the_tailcallst_add (fl, tmps)
-    end
+    end (* end of [aux_push] *)
     fun auxlst_push {n:nat}
       (fls: !list_vt (funlab_t, n)): void = begin
       case+ fls of
       | list_vt_cons (fl, !fls1) => begin
           aux_push fl; auxlst_push (!fls1); fold@ fls
-        end
+        end // end of [list_vt_cons]
       | list_vt_nil () => fold@ fls
-    end
-  }
+    end (* end of [auxlst_push] *)
+  } // end of [val]
   val entrylst = auxlst_ccomp (fundecs, fls) where {
     fn aux_ccomp (fundec: hifundec, fl: funlab_t): funentry_t = let
       val loc_dec = fundec.hifundec_loc
@@ -2206,19 +2215,19 @@ fn ccomp_fntdeclst_main {n:nat} (
           prerr ": ccomp_fntdeclst_main; aux_ccomp: hie_def = "; prerr_hiexp hie_def;
           prerr_newline ();
           $Err.abort {funentry_t} ()
-        end
+        end // end of [_]
     end // end of [aux_ccomp]
-    fun auxlst_ccomp {n:nat}
-      (fundecs: list (hifundec, n), fls: list_vt (funlab_t, n))
-      : list (funentry_t, n) = begin case+ fls of
+    fun auxlst_ccomp {n:nat} .<n>. (
+        fundecs: list (hifundec, n), fls: list_vt (funlab_t, n)
+      ) : list (funentry_t, n) = case+ fls of
       | ~list_vt_cons (fl, fls) => let
           val+ list_cons (fundec, fundecs) = fundecs
           val entry = aux_ccomp (fundec, fl)
         in
           list_cons (entry, auxlst_ccomp (fundecs, fls))
-        end
+        end // end of [list_vt_cons]
       | ~list_vt_nil () => list_nil ()
-    end // end of [auxlst_ccomp]
+    // end of [auxlst_ccomp]
   } // end of [val entrylst]
   val () = the_tailcallst_unmark (pf_tailcallst_mark | (*none*))
 in

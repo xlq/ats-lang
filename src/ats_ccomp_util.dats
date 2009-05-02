@@ -70,6 +70,15 @@ in
   | ~Some_vt _ => () | ~None_vt () => $Map.map_insert (m, tmp, 0)
 end // end of [tmpvarmap]
 
+fun tmpvarmap_addlst
+  (m: &tmpvarmap, tmps: tmpvarlst): void = begin
+  case+ tmps of
+  | list_cons (tmp, tmps) => begin
+      tmpvarmap_add (m, tmp); tmpvarmap_addlst (m, tmps)
+    end // end of [list_cons]
+  | list_nil () => ()
+end // end of [tmpvarmap_addlst]
+
 (* ****** ****** *)
 
 local
@@ -162,10 +171,11 @@ in
   i // the number of tmpvars
 end // end of [_emit_tmpvarmap_markroot]
 
-in // in of [local]
+in (* in of [local] *)
 
 implement tmpvarmap_nil () =
   $Map.map_make {tmpvar_t,int} (compare_tmpvar_tmpvar)
+// end of [tmpvarmap_nil]
 
 implement tmpvarmap_free (tmps) = $Map.map_free (tmps)
 
@@ -231,21 +241,22 @@ in
   | _ => ()
 end // end of [instr_tmpvarmap_add]
 
-implement instrlst_tmpvarmap_add (m, inss) = begin
-  case+ inss of
+implement instrlst_tmpvarmap_add (m, inss) = case+ inss of
   | list_cons (ins, inss) => begin
       instr_tmpvarmap_add (m, ins); instrlst_tmpvarmap_add (m, inss)
-    end
+    end // end of [list_cons]
   | list_nil () => ()
-end // end of [instrlst_tmpvarmap_add]
+// end of [instrlst_tmpvarmap_add]
 
 //
 
 implement emit_tmpvarmap_dec_local (pf | out, tmps) =
   _emit_tmpvarmap_dec (pf, view@ out | &out, 0(*local*), tmps)
+// end of [emit_tmpvarmap_dec_local]
 
 implement emit_tmpvarmap_dec_static (pf | out, tmps) =
   _emit_tmpvarmap_dec (pf, view@ out | &out, 1(*static*), tmps)
+// end of [emit_tmpvarmap_dec_static]
 
 //
 
@@ -254,13 +265,21 @@ implement emit_tmpvarmap_markroot (pf | out, tmps) =
 
 //
 
-implement funentry_tmpvarmap_gen (entry) = let
-  var tmps = tmpvarmap_nil ()
+implement funentry_tmpvarmap_add (tmps, entry) = () where {
   val () = instrlst_tmpvarmap_add (tmps, funentry_body_get entry)
   val () = tmpvarmap_add_root (tmps, funentry_ret_get entry)
+} // end of [funentry_tmpvarmap_add]
+
+implement tailjoinlst_tmpvarmap_add (tmps, tjs) = let
+  fun aux (tmps: &tmpvarmap_vt, tjs: tailjoinlst): void =
+    case+ tjs of
+    | TAILJOINLSTcons (_(*tag*), _(*fl*), tvs(*arg*), tjs) =>
+        let val () = tmpvarmap_addlst (tmps, tvs) in aux (tmps, tjs) end
+      // end of [TAILJOINTLSTcons]
+    | TAILJOINLSTnil () => ()
 in
-  tmps
-end // end of [funentry_tmpvarmap_gen]
+  aux (tmps, tjs)
+end // end of [tailjoinlst_tmpvarmap_add]
 
 end // end of [local]
 

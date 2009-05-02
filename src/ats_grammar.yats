@@ -1179,8 +1179,6 @@ guad0ec_t guad0ec ;
 %token <t0kn> LOCAL
 %token <t0kn> MACDEF MACRODEF
 %token <t0kn> METHOD METHODSTAR
-%token <t0kn> MODPROP MODTYPE
-%token <t0kn> MODULE
 %token <t0kn> NONFIX
 %token <t0kn> OBJECT
 %token <t0kn> OF

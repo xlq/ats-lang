@@ -654,7 +654,6 @@ fun s1exp_qid_app_tr_up (
   | S2ITEMdatcontyp d2c => s1exp_app_datcontyp_tr_up (loc_app, d2c, s1ess)
 (*
   | S2ITEMfil _ -> s1exp_qid_app_tr_up_errmsg_fil loc_qid qid
-  | S2ITEMmod _ -> s1exp_qid_app_tr_up_errmsg_mod loc_qid qid
 *)
   | _ => begin
       $Loc.prerr_location loc_qid;

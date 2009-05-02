@@ -73,13 +73,13 @@ fn tailjoin_name_make (f0: funentry_t, fs: funentrylst): string = let
     aux_string (cs, 0, string1_of_string name)
   end // end of [aux_entry]
 
-  fun aux_entrylst (cs: &T, fs: funentrylst): void = begin
-    case+ fs of
+  fun aux_entrylst
+    (cs: &T, fs: funentrylst): void = case+ fs of
     | list_cons (f, fs) => begin
         aux_char (cs, '$'); aux_entry (cs, f); aux_entrylst (cs, fs)
-      end
+      end // end of [list_cons]
     | list_nil () => ()
-  end // end of [aux_entrylst]
+  // end of [aux_entrylst]
 
   var cs: T = $CS.CHARLSTnil ()
   val () = aux_entry (cs, f0); val () = aux_entrylst (cs, fs)
@@ -202,13 +202,12 @@ end // end of [tailjoin_funentrylst_update]
 (* ****** ****** *)
 
 implement ccomp_tailjoin_funentrylst (loc_all, fs0) = let
-  val @(f0, fs) = (
-    case+ fs0 of
+  val @(f0, fs) = (case+ fs0 of
     | list_cons (f0, fs) => @(f0, fs) | list_nil () => begin
-        prerr "Internal Error: tailjoin_funentrylst: empty funentrylst";
-        prerr_newline ();
+        prerr "INTERNAL ERROR";
+        prerr ": tailjoin_funentrylst: empty funentrylst"; prerr_newline ();
         $Err.abort ()
-      end
+      end // end of [list_nil]
   ) : @(funentry_t, funentrylst)
 
   val name_all = tailjoin_name_make (f0, fs)
@@ -218,13 +217,13 @@ implement ccomp_tailjoin_funentrylst (loc_all, fs0) = let
 
   val tmp_ret_all = tmpvar_make_ret (hit0_ret)
 
-  val fl_all: funlab_t = let
+  val fl_all = let
     val fc0 = funlab_funclo_get (funentry_lab_get f0)
     val hits_arg = '[hityp_int, hityp_vararg]
     val hit_fun = hityp_fun (fc0, hits_arg, hityp_decode hit0_ret)
   in
     funlab_make_nam_typ (name_all, hityp_encode hit_fun)
-  end
+  end : funlab_t // end of [val]
 
   val vtps_all = aux_vtps (vtps0, fs) where {
     val vtps0 = funentry_vtps_get_all f0
@@ -372,16 +371,15 @@ implement emit_tailjoinlst {m} (pf | out, tjs) = let
     fprint1_string (pf | out, "switch (");
     fprint1_string (pf | out, FUNTAGNAME);
     fprint1_string (pf | out, ") {\n")
-  end
+  end // end of [val]
   val () = aux (out, tjs) where {
-    fun aux (out: &FILE m, tjs: tailjoinlst): void = begin
-      case+ tjs of
+    fun aux (out: &FILE m, tjs: tailjoinlst): void = case+ tjs of
       | TAILJOINLSTcons (tag, fl, tmps, tjs) => begin
           emit_tailjoin_case (pf | out, tag, fl, tmps); aux (out, tjs)
-        end
+        end // end of [TAILJOINLSTcons]
       | TAILJOINLSTnil () => ()
-    end // end of [aux]
-  } // end of [aux]
+    // end of [aux]
+  } // end of [val]
   val () = fprint1_string (
     pf | out, "default: exit(1) ; /* deadcode */\n} /* end of switch */\n\n"
   ) // end of [fprint1_string]

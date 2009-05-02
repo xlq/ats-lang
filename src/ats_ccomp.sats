@@ -219,14 +219,16 @@ datatype valprim_node =
   | VPtmp_ref of tmpvar_t
   | VPtop
   | VPvoid
+// end of [valprim_node]
 
 and offset =
   | OFFSETlab of (lab_t, hityp_t(*rec*))
   | OFFSETind of (valprimlstlst(*ind*), hityp_t(*elt*))
+// end of [offset]
 
 where valprim = '{ // primitive values
   valprim_node= valprim_node, valprim_typ= hityp_t // type erasure
-}
+} // end of [valprim]
 
 and valprimlst = List valprim
 and valprimlstlst = List valprimlst
@@ -239,6 +241,7 @@ and offsetlst = List offset
 datatype labvalprimlst =
   | LABVALPRIMLSTcons of (lab_t, valprim, labvalprimlst)
   | LABVALPRIMLSTnil
+// end of [labvalprimlst]
 
 (* ****** ****** *)
 
@@ -477,6 +480,7 @@ datatype instr =
   | INSTRtrywith of (instrlst, tmpvar_t, branchlst)
 
   | INSTRvardec of tmpvar_t
+// end of [instr]
 
 where instrlst = List instr
 
@@ -751,10 +755,24 @@ absviewtype tmpvarmap_vt
 fun tmpvarmap_nil(): tmpvarmap_vt
 fun tmpvarmap_free (tmps: tmpvarmap_vt): void
 
-fun instr_tmpvarmap_add (m: &tmpvarmap_vt, ins: instr): void
-fun instrlst_tmpvarmap_add (m: &tmpvarmap_vt, inss: instrlst): void
+fun instr_tmpvarmap_add (tmps: &tmpvarmap_vt, ins: instr): void
+fun instrlst_tmpvarmap_add (tmps: &tmpvarmap_vt, inss: instrlst): void
 
-fun funentry_tmpvarmap_gen (entry: funentry_t): tmpvarmap_vt
+fun funentry_tmpvarmap_add (tmps: &tmpvarmap_vt, entry: funentry_t): void
+
+(* ****** ****** *)
+
+datatype tailjoinlst =
+  | TAILJOINLSTcons of (int(*tag*), funlab_t, tmpvarlst(*arg*), tailjoinlst)
+  | TAILJOINLSTnil
+// end of [tailjoinlst]
+
+fun tailjoinlst_tmpvarmap_add (tmps: &tmpvarmap_vt, tjs: tailjoinlst): void
+
+fun emit_tailjoinlst {m:file_mode}
+  (pf: file_mode_lte (m, w) | out: &FILE m, tjs: tailjoinlst): void
+
+(* ****** ****** *)
 
 // implemented in [ats_ccomp_util.dats]
 fun emit_tmpvarmap_dec_local {m:file_mode}

@@ -171,17 +171,17 @@ datatype ratpairs =
 #define rp_nil ratpairs_nil
 #define rp_cons ratpairs_cons
 
-fun member
+fn ismem
   (x0: rat_t, y0: rat_t, xys: ratpairs): Bool = let
   fun aux (xys: ratpairs):<cloptr1> Bool = case+ xys of
     | rp_nil () => false
     | rp_cons (x, y, xys) => begin
-        if x0 = x then (if y0 = y then true else aux xys)
-        else aux xys
-      end
+        if x0 = x then (if y0 = y then true else aux xys) else aux xys
+      end // end of [rp_cons]
+  // end of [aux]
 in
   aux xys
-end // end of [member]
+end // end of [ismem]
 
 (* ****** ****** *)
 
@@ -192,40 +192,46 @@ fn fatal{a:viewtype} (msg: String): a = (print msg; $raise Fatal)
 //
 
 fun playGame (cs: cards, res: rat_t): Bool = let
-  fun aux_main (zs: cards, xys: ratpairs):<cloptr1> Bool =
+  // [fn*]: mutual tail-call optimization
+  fn* aux_main (zs: cards, xys: ratpairs):<cloptr1> Bool =
     case- zs of
     | x :: nil () => 
        if res = val_of_card_mac x then begin
          (print_card_mac x; print " = "; print res; true)
        end else false
     | x :: y :: zs => aux1 (x, nil (), y, nil (), zs, xys)
+  // end of [aux_main]
 
   and aux1
     (x: card, xs: cards, y: card, ys: cards, zs: cards, xys: ratpairs)
     :<cloptr1> Bool =
-    if member (val_of_card_mac x, val_of_card_mac y, xys) then
-      aux2 (x, xs, y, ys, zs, xys)
-    else aux1_ (combine (x, y), x, xs, y, ys, zs, xys)
+    if ismem (val_of_card_mac x, val_of_card_mac y, xys) then
+      aux2 (x, xs, y, ys, zs, xys) else aux1_ (combine (x, y), x, xs, y, ys, zs, xys)
+    // end of [if]
+  (* end of [aux1] *)
 
   and aux1_
     (rs: cards, x: card, xs: cards, y: card, ys: cards, zs: cards, xys: ratpairs)
     :<cloptr1> Bool =
     case+ rs of
+    | r :: rs =>
+        if aux_main (cards_append_r (xs, cards_append_r (ys, r :: zs)), rp_nil ()) then true
+        else  aux1_ (rs, x, xs, y, ys, zs, xys)
+      // end of [::]
     | nil () =>
         aux2 (x, xs, y, ys, zs, rp_cons (val_of_card_mac x, val_of_card_mac y, xys))
-    | r :: rs =>
-       if aux_main (cards_append_r (xs, cards_append_r (ys, r :: zs)), rp_nil ()) then true
-      else  aux1_ (rs, x, xs, y, ys, zs, xys)
+      // end of [nil]
+  (* end of [aux_] *)
 
   and aux2 (x: card, xs: cards, y: card, ys: cards, zs: cards, xys: ratpairs)
     :<cloptr1> Bool =
     case+ zs of
-    | nil () => (
+    | z :: zs => aux1 (x, xs, z, y :: ys, zs, xys) | nil () => (
         case+ cards_append_r (ys, y :: nil ()) of
         | x1 :: y1 :: zs1 => aux1 (x1, x :: xs, y1, nil (), zs1, xys)
         | _ => false
-      )
-    | z :: zs => aux1 (x, xs, z, y :: ys, zs, xys)
+      ) // end of [nil]
+  // end of [aux2]
 in
   aux_main (cs, rp_nil ())
 end // end of [playGame]
