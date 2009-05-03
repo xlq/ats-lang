@@ -41,26 +41,26 @@
 
 (* ****** ****** *)
 
-staload "libc/SATS/random.sats"
+staload "libc/SATS/string.sats"
 
 (* ****** ****** *)
 
-%{^
+implement strdup_gc (str) = let
+  val n = strlen (str)
+  val (pf_gc, pf_buf | p_buf) = malloc_gc (n + 1)
+  val p_buf = strcpy (pf_buf | p_buf, str)
+in
+  @(pf_gc, pf_buf | p_buf)
+end // end of [strdup_gc]
 
-/* ****** ****** */
-
-ats_void_type // [n] is assumed to be positive!
-atslib_randint_r (
-  ats_ref_type buf, ats_int_type n, ats_ref_type i
-) {
-  ats_lint_type tmp ;
-  atslib_lrand48_r ((ats_drand48_data_type*)buf, &tmp) ; // the return is 0
-  *(ats_int_type*)i = tmp % n ;
-  return ;
-} /* end of [atslib_randint_r] */
-
-%} // end of [%{^ ... %}]
+implement strdup_ngc (str) = let
+  val n = strlen (str)
+  val (pf_ngc, pf_buf | p_buf) = malloc_ngc (n + 1)
+  val p_buf = strcpy (pf_buf | p_buf, str)
+in
+  @(pf_ngc, pf_buf | p_buf)
+end // end of [strdup_ngc]
 
 (* ****** ****** *)
 
-(* end of [random.dats] *)
+(* end of string.dats] *)

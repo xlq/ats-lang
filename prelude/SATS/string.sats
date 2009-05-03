@@ -392,7 +392,8 @@ fun string_make_substring__main {v:view}
 
 (* ****** ****** *)
 
-fun string0_append (s1: string, s2: string):<> string
+fun string0_append
+  (s1: string, s2: string):<> string
   = "atspre_string_append" 
 overload + with string0_append
 
@@ -509,13 +510,8 @@ fun string_isnot_at_end {n,i:nat | i <= n}
 
 (* ****** ****** *)
 
-fun strbuf_explode {m,n:nat}
-  (sbf: &strbuf (m, n)):<> list_vt (char, n)
-  = "atspre_string_explode"
-
 fun string_explode {n:nat}
-  (str: string n):<> list_vt (char, n)
-  = "atspre_string_explode"
+  (str: string n):<> list_vt (char, n) = "atspre_string_explode"
 
 (* ****** ****** *)
 
@@ -528,20 +524,12 @@ fun string_implode {n:nat} (cs: list (char, n)):<> string n
 // This function is based on [strchr] in [string.h]
 // the NULL character at the end of a string is considered in the string
 
-fun strbuf_index_of_char_from_left // locate a character from left
-  {m,n:nat} (sbf: &strbuf (m,n), c: c1har):<> sizeBtw (~1, n)
-  = "atspre_string_index_of_char_from_left"
-
 fun string_index_of_char_from_left // locate a character from left
   {n:nat} (str: string n, c: c1har):<> sizeBtw (~1, n)
   = "atspre_string_index_of_char_from_left"
 
 // This function is based on [strrchr] in [string.h]
 // the NULL character at the end of a string is considered in the string
-
-fun strbuf_index_of_char_from_right // locate a character from right
-  {m,n:nat} (sbf: &strbuf (m, n), c: c1har):<> sizeBtw (~1, n)
-  = "atspre_string_index_of_char_from_right"
 
 fun string_index_of_char_from_right // locate a character from right
   {n:nat} (str: string n, c: c1har):<> sizeBtw (~1, n)
@@ -558,12 +546,10 @@ fun string_index_of_string // locate a substring from left
 (* ****** ****** *)
 
 // implemented in [prelude/CATS/string.cats]
-fun string_singleton (c: char):<> string 1
-  = "atspre_string_singleton"
+fun string_singleton (c: char):<> string 1 = "atspre_string_singleton"
 
 fun string_singleton__main (c: char)
-  :<> [m:nat] [l:addr] strbufptr_gc (m, 1, l)
-  = "atspre_string_singleton"
+  :<> [m:nat] [l:addr] strbufptr_gc (m, 1, l) = "atspre_string_singleton"
 
 (* ****** ****** *)
 
@@ -577,14 +563,12 @@ fun string_foreach__main {v:view} {vt:viewtype} {n:nat} {f:eff}
 fun strbuf_tolower {m,n:nat} (buf: &strbuf (m, n)): void
   = "atspre_strbuf_tolower"
 
-// implemented in [prelude/DATS/string.dats]
-// a new string is created
-fun string_tolower {n:nat} (str: string n):<> string n
+// implemented in [prelude/DATS/string.dats] // note that
+fun string_tolower {n:nat} (str: string n):<> string n // a new string is created
   = "atspre_string_tolower"
 
 fun string_tolower__main {v:view} {l:addr}
-  (pf: !v, fpf: strbuf_v l <= v | p: ptr l)
-  :<> [m,n:nat] [l:addr] strbufptr_gc (m, n, l)
+  (pf: !v, fpf: strbuf_v l <= v | p: ptr l):<> [m,n:nat] [l:addr] strbufptr_gc (m, n, l)
   = "atspre_string_tolower"
 
 (* ****** ****** *)
@@ -593,14 +577,12 @@ fun string_tolower__main {v:view} {l:addr}
 fun strbuf_toupper {m,n:nat} (buf: &strbuf (m, n)): void
   = "atspre_strbuf_toupper"
 
-// implemented in [prelude/DATS/string.dats]
-// a new string is created
-fun string_toupper {n:nat} (str: string n):<> string n
+// implemented in [prelude/DATS/string.dats] // note that
+fun string_toupper {n:nat} (str: string n):<> string n // a new string is created
   = "atspre_string_toupper"
 
 fun string_toupper__main {v:view} {l:addr}
-  (pf: !v, fpf: strbuf_v l <= v | p: ptr l)
-  :<> [m,n:nat] [l:addr] strbufptr_gc (m, n, l)
+  (pf: !v, fpf: strbuf_v l <= v | p: ptr l):<> [m,n:nat] [l:addr] strbufptr_gc (m, n, l)
   = "atspre_string_toupper"
 
 (* ****** ****** *)

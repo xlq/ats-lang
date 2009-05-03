@@ -45,7 +45,10 @@
 
 static inline
 ats_int_type
-atslib_strcmp (ats_ptr_type str1, ats_ptr_type str2) {
+atslib_strcmp (
+  ats_ptr_type str1
+, ats_ptr_type str2
+) {
   return strcmp(str1, str2) ;
 } /* end of [atslib_strcmp] */
 
@@ -100,7 +103,8 @@ atslib_strcspn (ats_ptr_type str, ats_ptr_type cs) {
 
 static inline
 ats_ptr_type
-atslib_strcpy (ats_ptr_type dst, ats_ptr_type src) {
+atslib_strcpy
+  (ats_ptr_type dst, ats_ptr_type src) {
   return strcpy ((char*)dst, (char*)src) ;
 } /* end of [atslib_strcpy] */
 
@@ -108,9 +112,39 @@ atslib_strcpy (ats_ptr_type dst, ats_ptr_type src) {
 
 static inline
 ats_ptr_type
-atslib_strcat (ats_ptr_type dst, ats_ptr_type src) {
+atslib_strcat
+  (ats_ptr_type dst, ats_ptr_type src) {
   return strcat ((char*)dst, (char*)src) ;
 } /* end of [atslib_strcat] */
+
+/* ****** ****** */
+
+static inline
+ats_ptr_type
+atslib_strpbrk (
+  ats_ptr_type buf, ats_ptr_type accept) {
+  return strpbrk ((char*)buf, (char*)accept) ;
+} /* end of [atslib_strpbrk] */
+
+/* ****** ****** */
+
+static inline
+ats_ptr_type
+atslib_memchr (
+  ats_ptr_type buf, ats_int_type chr, ats_size_type n
+) {
+  return memchr ((void*)buf, (int)chr, (size_t)n) ;
+} /* end of [atslib_memchr] */
+
+/* ****** ****** */
+
+static inline
+ats_int_type
+atslib_memcmp (
+  ats_ptr_type buf1, ats_ptr_type buf2, ats_size_type n
+) {
+  return memcmp ((void*)buf1, (void*)buf2, (size_t)n) ;
+} /* end of [atslib_memcmp] */
 
 /* ****** ****** */
 
@@ -119,7 +153,7 @@ ats_ptr_type
 atslib_memcpy
   (ats_ptr_type dst, ats_ptr_type src, ats_size_type n)
 {
-  return memcpy (dst, src, n) ;
+  return memcpy ((void*)dst, (void*)src, (size_t)n) ;
 } /* end of [atslib_memcpy] */
 
 /* ****** ****** */
@@ -129,7 +163,7 @@ ats_ptr_type
 atslib_memset
   (ats_ptr_type buf, ats_int_type chr, ats_size_type n)
 {
-  return memset (buf, chr, n) ;
+  return memset ((void*)buf, (int)chr, (size_t)n) ;
 } /* end of [atslib_memcpy] */
 
 /* ****** ****** */
