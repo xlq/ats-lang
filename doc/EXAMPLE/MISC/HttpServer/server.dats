@@ -113,7 +113,7 @@ stavar len: int
 prval () = free_gc_elim (pf_gc)
 val (the_doctype_map_prop | ()) = vbox_make_view_ptr (pf_arr | ptr)
 val the_doctype_map_ptr = ptr
-val the_doctype_map_len: int len = len
+val the_doctype_map_len: int len = int1_of_size1 (len)
 
 end // end of [local]
 

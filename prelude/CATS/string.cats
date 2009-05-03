@@ -163,7 +163,7 @@ atspre_fprint_string
   int n = fprintf ((FILE *)out, "%s", (char*)s) ;
   if (n < 0) { ats_exit_errmsg
     (n, "exit(ATS): [fprint_string] failed.\n") ;
-  }
+  } // end of [if]
   return ;
 } /* end of [atspre_fprint_string] */
 

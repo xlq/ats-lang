@@ -124,7 +124,7 @@ stavar l: addr and n: int; typedef T = @[string2][n]
 prval () = free_gc_elim (pf_gc)
 val (the_doctype_map_prop | ()) = vbox_make_view_ptr {T} {l} (pf_arr | ptr)
 val the_doctype_map_ptr : ptr l = ptr
-val the_doctype_map_len : size_t n = size1_of_int1 (len)
+val the_doctype_map_len : size_t n = len
 
 val () = if the_doctype_map_len >= 2 then let
   prval vbox pf = the_doctype_map_prop

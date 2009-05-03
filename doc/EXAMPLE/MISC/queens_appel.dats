@@ -28,18 +28,32 @@ val diag2 = array_make_elt<int> (size1_of_int1 N+N1, 0)
 
 (* ****** ****** *)
 
+%{^
+
+#include <stdio.h>
+
+// for efficiency
+ats_void_type
+  print_string (ats_ptr_type s) {
+  fputs ((char*)s, stdout) ; return ;
+}
+
+%}
+
+extern fun print_string (str: string): void = "print_string"
+
 fn printboard (): void = let
   var i: natLte N and j: natLte N
   val () = for* (j: int?) =>
     (i := 0; i < N; i := i + 1) let
     val () = for* (i: natLt N) =>
-      (j := 0; j < N; j := j + 1) begin
-      print_string (if :(j: natLt N) => (col[i] = j) then " Q" else " .")
+      (j := 0; j < N; j := j + 1) begin print_string
+      (if :(j: natLt N) => (col[i] = j) then " Q" else " .")
     end // end of [val]
   in
-    print_newline ()
+    print_string ("\n")
   end // end of [for]
-  val () = print_newline ()
+  val () = print_string ("\n")
 in
   // empty
 end (* end of [printboard] *)
