@@ -11,7 +11,8 @@ ATSCC="$(ATSHOME)/bin/atscc"
 all: AutoDiff coin_flip \
      curve fft hamming_lazy \
      GaussElim GarsiaWachs \
-     hanoi kmp queens queens_lazy_vt \
+     hanoi kmp \
+     queens queens_appel queens_lazy_vt \
      longestline passwdgen pi_lazy \
      sieve sieve_lazy strmat sumup \
      tetrix wc
@@ -58,6 +59,9 @@ longestline: longestline.dats
 
 # the n-queen problem
 queens: queens.dats; $(ATSCC) -o queens queens.dats
+
+queens_appel: queens_appel.dats
+	$(ATSCC) -o queens_appel queens_appel.dats
 
 queens_lazy_vt: queens_lazy_vt.dats
 	$(ATSCC) -O3 -o queens_lazy_vt queens_lazy_vt.dats -D_ATS_GCATS
@@ -107,6 +111,7 @@ html::
 	atsopt --posmark_html -d passwdgen.dats > passwdgen_dats.html
 	atsopt --posmark_html -d pi_lazy.dats > pi_lazy_dats.html
 	atsopt --posmark_html -d queens.dats > queens_dats.html
+	atsopt --posmark_html -d queens_appel.dats > queens_appel_dats.html
 	atsopt --posmark_html -d queens_lazy_vt.dats > queen_lazy_vt_dats.html
 	atsopt --posmark_html -d sieve.dats > sieve_dats.html
 	atsopt --posmark_html -d sieve_lazy.dats > sieve_lazy_html.dats
@@ -137,6 +142,7 @@ cleanall:: clean
 	rm -f passwdgen
 	rm -f pi_lazy
 	rm -f queens
+	rm -f queens_appel
 	rm -f queens_lazy_vt
 	rm -f sieve
 	rm -f strmat
