@@ -125,6 +125,7 @@ cleanall: clean
 	rm -f n-body_smp
 	rm -f n-body1
 	rm -f pidigits
+	rm -f pidigits2
 	rm -f regex-dna
 	rm -f regex-dna_smp
 	rm -f reverse-complement
