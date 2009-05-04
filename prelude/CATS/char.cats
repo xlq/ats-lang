@@ -83,10 +83,15 @@ static inline
 ats_char_type
 atspre_char_of_int (const ats_int_type i) { return i ; }
 
+static inline
+ats_char_type
+atspre_char_of_uint (const ats_uint_type u) { return u ; }
+
 /* ****** ****** */
 
 #define atspre_char1_of_char atspre_char_of_char
 #define atspre_char1_of_int atspre_char_of_int
+#define atspre_char1_of_uint atspre_char_of_uint
 
 /* ****** ****** */
 

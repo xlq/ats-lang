@@ -362,6 +362,8 @@ overload mpz_sub with mpz_sub_lint_2
 overload mpz_sub with mpz_sub_uint_2
 overload mpz_sub with mpz_sub_ulint_2
 
+(* ****** ****** *)
+
 // multiplication
 
 symintr mpz_mul
@@ -423,6 +425,8 @@ overload mpz_mul with mpz_mul_mpz_1
 
 (* ****** ****** *)
 
+// division
+
 symintr mpz_tdiv_q
 
 // [q] := [n] / [d]
@@ -446,6 +450,38 @@ fun mpz_tdiv_q_ulint_2 (q: &mpz_vt, d: ulint):<> void
 
 overload mpz_tdiv_q with mpz_tdiv_q_mpz_2
 overload mpz_tdiv_q with mpz_tdiv_q_ulint_2
+
+(* ****** ****** *)
+
+// add/mul combination
+
+symintr mpz_addmul
+
+fun mpz_addmul_mpz_3
+  (x: &mpz_vt, y: &mpz_vt, z: &mpz_vt):<> void
+  = "atslib_mpz_addmul_mpz_3"
+
+fun mpz_addmul_uint_3
+  (x: &mpz_vt, y: &mpz_vt, z: uint):<> void
+  = "atslib_mpz_addmul_uint_3"
+
+overload mpz_addmul with mpz_addmul_mpz_3
+overload mpz_addmul with mpz_addmul_uint_3
+
+// sub/mul combination
+
+symintr mpz_submul
+
+fun mpz_submul_mpz_3
+  (x: &mpz_vt, y: &mpz_vt, z: &mpz_vt):<> void
+  = "atslib_mpz_submul_mpz_3"
+
+fun mpz_submul_uint_3
+  (x: &mpz_vt, y: &mpz_vt, z: uint):<> void
+  = "atslib_mpz_submul_uint_3"
+
+overload mpz_submul with mpz_submul_mpz_3
+overload mpz_submul with mpz_submul_uint_3
 
 (* ****** ****** *)
 

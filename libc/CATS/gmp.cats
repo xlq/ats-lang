@@ -564,6 +564,40 @@ atslib_mpz_tdiv_q_ulint_2 (ats_mpz_ptr_type x, ats_ulint_type d) {
   mpz_tdiv_q_ui ((mpz_ptr)x, (mpz_ptr)x, d) ; return ;
 }
 
+// add/mul and submul compibination
+
+static inline
+ats_void_type
+atslib_mpz_addmul_mpz_3 (
+  ats_mpz_ptr_type x, ats_mpz_ptr_type y, ats_mpz_ptr_type z
+) {
+  mpz_addmul_mpz ((mpz_ptr)x, (mpz_ptr)y, (mpz_ptr)z) ; return ;
+} /* end of [atslib_mpz_addmul_mpz_3] */
+
+static inline
+ats_void_type
+atslib_mpz_addmul_uint_3 (
+  ats_mpz_ptr_type x, ats_mpz_ptr_type y, ats_uint_type z
+) {
+  mpz_addmul_ui ((mpz_ptr)x, (mpz_ptr)y, (unsigned int)z) ; return ;
+} /* end of [atslib_mpz_addmul_mpz_3] */
+
+static inline
+ats_void_type
+atslib_mpz_submul_mpz_3 (
+  ats_mpz_ptr_type x, ats_mpz_ptr_type y, ats_mpz_ptr_type z
+) {
+  mpz_submul_mpz ((mpz_ptr)x, (mpz_ptr)y, (mpz_ptr)z) ; return ;
+} /* end of [atslib_mpz_submul_uint_3] */
+
+static inline
+ats_void_type
+atslib_mpz_submul_uint_3 (
+  ats_mpz_ptr_type x, ats_mpz_ptr_type y, ats_uint_type z
+) {
+  mpz_submul_ui ((mpz_ptr)x, (mpz_ptr)y, (unsigned int)z) ; return ;
+} /* end of [atslib_mpz_submul_uint_3] */
+
 /* ****** ****** */
 
 // comparison

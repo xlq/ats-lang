@@ -72,6 +72,13 @@ fun char_of_int1
   {i: nat | i <= UCHAR_MAX} (i: int i):<> char
   = "atspre_char_of_int"
 
+fun char_of_uint (u: uint):<> char
+  = "atspre_char_of_uint"
+
+fun char_of_uint1
+  {i: nat | i <= UCHAR_MAX} (u: uint i):<> char
+  = "atspre_char_of_uint"
+
 //
 
 fun int_of_char (c: char):<> int
@@ -212,6 +219,9 @@ castfn char1_of_char (c: char):<> [c:char] char c
 
 fun char1_of_int (i: int):<> [c:char] char c
   = "atspre_char1_of_int"
+
+fun char1_of_uint (u: uint):<> [c:char] char c
+  = "atspre_char1_of_uint"
 
 (* ****** ****** *)
 

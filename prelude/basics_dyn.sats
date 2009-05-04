@@ -236,7 +236,8 @@ fun cloptr_free {a:t@ype} (_: cloptr a):<> void
 // fun void ():<> void = "ats_void"
 
 // [vbox_make_view_ptr] implemented in [basics.cats]
-fun vbox_make_view_ptr {a:viewt@ype} {l:addr} // for statically allocated
+fun vbox_make_view_ptr
+  {a:viewt@ype} {l:addr} // for statically allocated
   (_: a @ l | _: ptr l):<> (vbox (a @ l) | void)
   = "atspre_vbox_make_view_ptr"
 

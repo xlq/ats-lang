@@ -4,7 +4,7 @@ CC=$(HOME)/gcc-4.3.2/bin/gcc
 
 all: binary-trees \
      fannkuch fasta k-nucleotide \
-     mandelbrot n-body pidigits \
+     mandelbrot n-body pidigits pidigits2 \
      regex-dna reverse-complement \
      spectral-norm thread-ring \
 
@@ -69,6 +69,9 @@ n-body_smp: n-body_smp.dats
 
 pidigits: pidigits.dats
 	$(ATSCC) -O3 -fomit-frame-pointer pidigits.dats -o pidigits -lgmp
+
+pidigits2: pidigits2.dats
+	$(ATSCC) -O3 -fomit-frame-pointer pidigits2.dats -o pidigits2 -lgmp
 
 regex-dna: regex-dna.dats
 #	$(ATSCC) -O3 -fomit-frame-pointer regex-dna.dats -o regex-dna -lpcre

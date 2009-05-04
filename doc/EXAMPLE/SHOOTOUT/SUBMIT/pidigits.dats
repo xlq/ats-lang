@@ -13,7 +13,7 @@ staload "libc/SATS/gmp.sats"
 fn print_digit (i: int, d: int): void = begin
   print (char_of_int (d + int_of '0')) ;
   if i mod 10 = 0 then printf ("\t:%i\n", @(i))
-end
+end // end of [print_digit]
 
 fun g (
     q: &mpz_vt, r: &mpz_vt, t: &mpz_vt
@@ -40,7 +40,7 @@ in
       mpz_mul (q, k);
       mpz_clear x1; mpz_clear x2;
       g (q, r, t, k+1, n, l+2, i, N)
-    end
+    end // end of [_ when ...]
   | _ => begin
       print_digit (i, mpz_get_int n);
       mpz_mul (x1, t, n);
@@ -56,7 +56,7 @@ in
       mpz_mul (q, 10);
       mpz_clear x1; mpz_clear x2;
       if i < N then g (q, r, t, k, n, l, i+1, N)
-    end
+    end // end of [_]
 end // end of [g]
 
 implement main (argc, argv) = let
