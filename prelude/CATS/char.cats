@@ -57,7 +57,7 @@ atspre_char_of_char (const ats_char_type c) { return c ; }
 
 /*
 
-// these are casting functions:
+// these are now casting functions:
 
 static inline
 ats_char_type
@@ -97,8 +97,10 @@ atspre_char_of_uint (const ats_uint_type u) { return u ; }
 
 static inline
 ats_int_type
-atspre_sub_char_char
-  (const ats_char_type c1, const ats_char_type c2) {
+atspre_sub_char_char (
+  const ats_char_type c1
+, const ats_char_type c2
+) {
   return (c1 - c2) ;
 } /* end of [atspre_sub_char_char] */
 

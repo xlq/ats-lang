@@ -236,12 +236,12 @@ overload tostring with tostring_int
 
 (* ****** ****** *)
 
-fun uint_of_char (c: char):<> uint
-  = "atspre_uint_of_char"
+fun uint_of_char
+  (c: char):<> uint = "atspre_uint_of_char"
 overload uint_of with uint_of_char
 
-fun uint_of_int (i: int):<> uint
-  = "atspre_uint_of_int"
+fun uint_of_int
+  (i: int):<> uint = "atspre_uint_of_int"
 overload uint_of with uint_of_int
 
 fun uint_of_double (d: double):<> uint

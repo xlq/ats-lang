@@ -335,6 +335,14 @@ atspre_uint_of_char (ats_char_type c) {
 
 static inline
 ats_uint_type
+atspre_uint_of_uchar (ats_uchar_type c) {
+  return ((unsigned char)c) ;
+}
+
+//
+
+static inline
+ats_uint_type
 atspre_uint_of_int (ats_int_type i) {
   return i ;
 }

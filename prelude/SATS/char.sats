@@ -71,6 +71,9 @@ fun char_of_int (i: int):<> char
 fun char_of_int1
   {i: nat | i <= UCHAR_MAX} (i: int i):<> char
   = "atspre_char_of_int"
+// end of [char_of_int1]
+
+//
 
 fun char_of_uint (u: uint):<> char
   = "atspre_char_of_uint"
@@ -78,42 +81,44 @@ fun char_of_uint (u: uint):<> char
 fun char_of_uint1
   {i: nat | i <= UCHAR_MAX} (u: uint i):<> char
   = "atspre_char_of_uint"
+// end of [char_of_uint1]
 
-//
+(* ****** ****** *)
 
+// also declared in [integer.sats]
 fun int_of_char (c: char):<> int
   = "atspre_int_of_char"
 
 fun int1_of_char (c: char)
   :<> [i:int | CHAR_MIN <= i; i <= CHAR_MAX] int i
   = "atspre_int_of_char"
+// end of [int1_of_char]
 
-//
-
-fun int_of_uchar (c: uchar):<> int
-  = "atspre_int_of_uchar"
+// also declared in [integer.sats]
+fun int_of_uchar (c: uchar):<> int = "atspre_int_of_uchar"
 
 fun int1_of_uchar (c: uchar)
-  :<> [i:nat | i <= UCHAR_MAX] uint i
-  = "atspre_int_of_uchar"
+  :<> [i:nat | i <= UCHAR_MAX] int i = "atspre_int_of_uchar"
+// end of [int1_of_uchar]
 
-//
+(* ****** ****** *)
 
-fun uint_of_char (c: char):<> uint
-  = "atspre_uint_of_char"
+// implemented in [integer.cats]
+fun uint_of_char (c: char):<> uint = "atspre_uint_of_char"
 
+// implemented in [integer.cats]
 fun uint1_of_char (c: char)
-  :<> [i:nat | i <= UCHAR_MAX] uint i
-  = "atspre_uint_of_char"
+  :<> [i:nat | i <= UCHAR_MAX] uint i = "atspre_uint_of_char"
+// end of [uint1_of_char]
 
-//
-
+// implemented in [integer.cats]
 fun uint_of_uchar (c: uchar):<> uint
   = "atspre_uint_of_uchar"
 
+// implemented in [integer.cats]
 fun uint1_of_uchar (c: uchar)
-  :<> [i:nat | i <= UCHAR_MAX] uint i
-  = "atspre_uint_of_uchar"
+  :<> [i:nat | i <= UCHAR_MAX] uint i = "atspre_uint_of_uchar"
+// end of [uint1_of_uchar]
 
 (* ****** ****** *)
 
