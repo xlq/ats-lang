@@ -5,17 +5,12 @@
 ** contributed by Hongwei Xi (hwxi AT cs DOT bu DOT edu)
 **
 ** compilation command:
-**   atscc -O3 fasta.dats -msse2 -mfpmath=sse -o fasta
+**   atscc -O3 fasta2.dats -msse2 -mfpmath=sse -o fasta2
 *)
 
 (* ****** ****** *)
 
 staload "libc/SATS/stdio.sats"
-staload "libc/SATS/stdlib.sats" // for [atoi]
-
-(* ****** ****** *)
-
-staload _(*anonymous*) = "prelude/DATS/array.dats"
 
 (* ****** ****** *)
 
@@ -48,11 +43,12 @@ end // end of [local]
 (* ****** ****** *)
 
 typedef amino = @{ c= char, p= float }
+typedef aminoarr (n:int) = @[amino][n] // amino array of size n
 
 fn make_cumulative {n:nat}
-  (table: &(@[amino][n]), n: size_t n): void = let
+  (table: &aminoarr(n), n: size_t n): void = let
   fun loop {i:nat | i <= n} .<n-i>. (
-      table: &(@[amino][n]), n: size_t n, i: int i, prob: float
+      table: &aminoarr(n), n: size_t n, i: int i, prob: float
     ) : void =
     if i < n then let
       val prob = prob + table.[i].p in
@@ -70,6 +66,10 @@ extern fun fwrite_substring {m,p,n:nat | p + n <= m}
   = "fasta_fwrite_substring"
 
 extern fun fputc (c: char, out: FILEref): void = "fasta_fputc"
+
+extern fun fwrite_byte {bsz,n:nat | n <= bsz}
+  (buf: &bytes (bsz), n: size_t n, out: FILEref):<> sizeLte n
+  = "atslib_fwrite_byte"
 
 (* ****** ****** *)
 
@@ -105,60 +105,53 @@ in
   loop (out, n, 0)
 end // end of [repeat_fasta]
 
-fun random_char {sz,i:nat | i <= sz}
-  (tbl: &(@[amino][sz]), sz: size_t sz, prob: float, i: size_t i): char =
-  if i < sz then
-    if prob >= tbl.[i].p then random_char (tbl, sz, prob, i+1) else tbl.[i].c
+fun random_char {n,i:nat | i <= n}
+  (tbl: &aminoarr(n), n: size_t n, prob: float, i: size_t i): char =
+  if i < n then
+    if prob >= tbl.[i].p then random_char (tbl, n, prob, i+1) else tbl.[i].c
   else begin
-    exit_errmsg {char} (1, "Exit: [random_char] failed.\n")
+    exit_errmsg {char} (1, "Exit: [random_char] failed.\n") // char not found
   end (* end of [if] *)
 // end of [random_char]
 
 fun random_buf
-  {sz:nat} {i,len,bsz:nat | i <= len; len <= bsz}
-  (tbl: &(@[amino][sz]), buf: &bytes(bsz), sz: size_t sz, len: size_t len, i: size_t i)
+  {n:nat} {i,len,bsz:nat | i <= len; len <= bsz}
+  (tbl: &aminoarr(n), buf: &bytes(bsz), n: size_t n, len: size_t len, i: size_t i)
   : void =
   if i < len then let
-    val c = random_char (tbl, sz, random_gen (1.0: float), 0)
-    val () = buf[i] := byte_of_char c
+    val c = random_char (tbl, n, random_gen (1.0: float), 0)
+    val () = buf.[i] := byte_of_char c
   in
-    random_buf (tbl, buf, sz, len, i+1)
-  end
+    random_buf (tbl, buf, n, len, i+1)
+  end (* end of [if] *)
 // end of [random_buf]
 
-extern fun fwrite_byte {bsz,n:nat | n <= bsz}
-  (buf: &bytes (bsz), n: size_t n, out: FILEref):<> sizeLte n
-  = "atslib_fwrite_byte"
-
-fn random_fasta {sz,n:nat} (
-    out: FILEref, tbl: &(@[amino][sz]), sz: size_t sz, n: size_t n
-  ) : void = let
+fn random_fasta {n:nat} {len:nat} (
+    out: FILEref, tbl: &aminoarr(n), n: size_t n, len: size_t len
+  ) : void = () where {
   macdef WIDTH_sz = size1_of_int1 (WIDTH)
-  fun loop {n:nat} .<n>. (
+  fun loop {len:nat} .<len>. (
       out: FILEref
-    , tbl: &(@[amino][sz]), buf: &bytes(WIDTH+1)
-    , sz: size_t sz, n: size_t n
+    , tbl: &aminoarr(n), buf: &bytes(WIDTH+1), n: size_t n, len: size_t len
     ) : void =
-    if (n > WIDTH_sz) then let
-      val () = random_buf (tbl, buf, sz, WIDTH_sz, 0)
+    if (len > WIDTH_sz) then let
+      val () = random_buf (tbl, buf, n, WIDTH_sz, 0)
       val _(*int*) = fwrite_byte (buf, WIDTH_sz+1, out)
     in
-      loop (out, tbl, buf, sz, n-WIDTH_sz)
+      loop (out, tbl, buf, n, len-WIDTH_sz)
     end else let
-      val () = random_buf (tbl, buf, sz, n, 0)
-      val _(*int*) = fwrite_byte (buf, n, out)
+      val () = random_buf (tbl, buf, n, len, 0)
+      val _(*int*) = fwrite_byte (buf, len, out)
       val () = fputc ('\n', out)
     in
       // empty
     end // end of [loop]
-  val () = make_cumulative (tbl, sz)
+  val () = make_cumulative (tbl, n)
   var !p_buf with pf_buf = @[byte][WIDTH+1]()
   prval () = pf_buf := bytes_v_of_b0ytes_v (pf_buf)
   val () = p_buf->[WIDTH_sz] := byte_of_char '\n'
-  val () = loop (out, tbl, !p_buf, sz, n)
-in
-  // empty
-end // end of [random_fasta]
+  val () = loop (out, tbl, !p_buf, n, len)
+} // end of [random_fasta]
 
 val alu ="\
 GGCCGGGCGCGGTGGCTCACGCCTGTAATCCCAGCACTTTGG\
