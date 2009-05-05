@@ -7,26 +7,25 @@
 /************************************************************************/
 
 /*
- * ATS - Unleashing the Potential of Types!
- *
- * Copyright (C) 2002-2008 Hongwei Xi.
- *
- * ATS is free software;  you can  redistribute it and/or modify it under
- * the terms of the GNU LESSER GENERAL PUBLIC LICENSE as published by the
- * Free Software Foundation; either version 2.1, or (at your option)  any
- * later version.
- * 
- * ATS is distributed in the hope that it will be useful, but WITHOUT ANY
- * WARRANTY; without  even  the  implied  warranty  of MERCHANTABILITY or
- * FITNESS FOR A PARTICULAR PURPOSE.  See the  GNU General Public License
- * for more details.
- * 
- * You  should  have  received  a  copy of the GNU General Public License
- * along  with  ATS;  see the  file COPYING.  If not, please write to the
- * Free Software Foundation,  51 Franklin Street, Fifth Floor, Boston, MA
- * 02110-1301, USA.
- *
- */
+** ATS - Unleashing the Potential of Types!
+**
+** Copyright (C) 2002-2008 Hongwei Xi.
+**
+** ATS is free software;  you can  redistribute it and/or modify it under
+** the terms of the GNU LESSER GENERAL PUBLIC LICENSE as published by the
+** Free Software Foundation; either version 2.1, or (at your option)  any
+** later version.
+** 
+** ATS is distributed in the hope that it will be useful, but WITHOUT ANY
+** WARRANTY; without  even  the  implied  warranty  of MERCHANTABILITY or
+** FITNESS FOR A PARTICULAR PURPOSE.  See the  GNU General Public License
+** for more details.
+** 
+** You  should  have  received  a  copy of the GNU General Public License
+** along  with  ATS;  see the  file COPYING.  If not, please write to the
+** Free Software Foundation,  51 Franklin Street, Fifth Floor, Boston, MA
+** 02110-1301, USA.
+*/
 
 /* ****** ****** */
 
@@ -227,13 +226,15 @@ atspre_square_float (const ats_float_type f) {
 
 static inline
 ats_void_type
-atspre_fprint_float (const ats_ptr_type out, const ats_float_type f) {
+atspre_fprint_float (
+  const ats_ptr_type out, const ats_float_type f
+) {
   int n = fprintf ((FILE *)out, "%f", f) ;
   if (n < 0) {
     ats_exit_errmsg (n, "Exit: [fprint_float] failed.\n") ;
   }
   return ;
-}
+} /* end of [atspre_fprint_float] */
 
 static inline
 ats_void_type
@@ -445,7 +446,7 @@ atspre_fprint_double
     ats_exit_errmsg (n, "Exit: [fprint_double] failed.\n") ;
   }
   return ;
-}
+} /* end of [atspre_fprint_double] */
 
 static inline
 ats_void_type
@@ -651,7 +652,7 @@ atspre_fprint_ldouble
     ats_exit_errmsg (n, "Exit: [fprint_ldouble] failed.\n") ;
   }
   return ;
-} /* atspre_fprint_ldouble */
+} /* end of [atspre_fprint_ldouble] */
 
 static inline
 ats_void_type

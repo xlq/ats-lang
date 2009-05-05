@@ -63,10 +63,10 @@ typedef amino = @{ c= char, p= float }
 extern fun gen_random (max: float): float = "gen_random"
 
 fn make_cumulative {n:nat} {l:addr}
-  (pf: !(@[amino][n] @ l) | table: ptr l, n: int n): void = let
+  (pf: !(@[amino][n] @ l) | table: ptr l, n: size_t n): void = let
   fun loop (
       pf: !(@[amino][n] @ l)
-    | table: ptr l, n: int n, i: natLte n, prob: float
+    | table: ptr l, n: size_t n, i: natLte n, prob: float
   ) : void =
     if i < n then let
       val prob = prob + !table.[i].p
@@ -136,7 +136,7 @@ end // end of [repeat_fasta]
 
 fun random_char {i,sz:nat | i <= sz} {l_tbl:addr}
   (pf_tbl: !(@[amino][sz] @ l_tbl) |
-  tbl: ptr l_tbl, sz: int sz, prob: float, i: int i): char =
+  tbl: ptr l_tbl, sz: size_t sz, prob: float, i: int i): char =
   if i < sz then
     if prob >= !tbl.[i].p then random_char (pf_tbl | tbl, sz, prob, i+1)
     else !tbl.[i].c
@@ -147,7 +147,7 @@ fun random_char {i,sz:nat | i <= sz} {l_tbl:addr}
 fun random_buf
   {sz:nat} {i,len,bsz:nat | i <= len; len <= bsz} {l_tbl,l_buf:addr}
   (pf_tbl: !(@[amino][sz] @ l_tbl), pf_buf: !(@[byte][bsz] @ l_buf) |
-   tbl: ptr l_tbl, buf: ptr l_buf, sz: int sz, len: int len, i: int i)
+   tbl: ptr l_tbl, buf: ptr l_buf, sz: size_t sz, len: int len, i: int i)
   : void =
   if i < len then let
     val c = random_char (pf_tbl | tbl, sz, gen_random (1.0: float), 0)
@@ -164,7 +164,7 @@ fn ignore (x: int): void = ()
 
 fn random_fasta {sz:nat} {l_tbl:addr}
   (pf_tbl: !(@[amino][sz] @ l_tbl) |
-   file: &FILE w, tbl: ptr l_tbl, sz: int sz, n: Nat): void = let
+   file: &FILE w, tbl: ptr l_tbl, sz: size_t sz, n: Nat): void = let
   fun loop {n:nat} {l_buf:addr} .<n>.
     (pf_tbl: !(@[amino][sz] @ l_tbl), pf_buf: !(@[byte][WIDTH+1] @ l_buf) |
      file: &FILE w, p_buf: ptr l_buf, n: int n):<cloptr1> void =

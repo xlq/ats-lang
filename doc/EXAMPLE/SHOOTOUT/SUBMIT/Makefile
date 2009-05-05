@@ -31,7 +31,11 @@ fannkuch_smp1: fannkuch_smp1.dats
 	$(ATSCC) -D_ATS_MULTITHREAD -O3 -fomit-frame-pointer fannkuch_smp1.dats -o fannkuch_smp1 -lpthread
 
 
-fasta: fasta.dats; $(ATSCC) -msse2 -mfpmath=sse -O3 fasta.dats -o fasta
+fasta: fasta.dats
+	$(ATSCC) -msse2 -mfpmath=sse -O3 fasta.dats -o fasta
+
+fasta2: fasta2.dats
+	$(ATSCC) -msse2 -mfpmath=sse -O3 fasta2.dats -o fasta2
 
 k-nucleotide: k-nucleotide.dats
 #	$(ATSCC) -O3 k-nucleotide.dats -o k-nucleotide
@@ -116,6 +120,7 @@ cleanall: clean
 	rm -f fannkuch1
 	rm -f fasta
 	rm -f fasta_smp
+	rm -f fasta2
 	rm -f fasta_output.txt
 	rm -f k-nucleotide
 	rm -f mandelbrot

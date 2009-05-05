@@ -688,17 +688,17 @@ in
   in
     case+ 0 of
     | _ when ipid > 0 (* parent *) => let
-// (*
+(*
         val () = (prerr "parent: ipid = "; prerr ipid; prerr_newline ())
-// *)
+*)
         val () = socket_close_exn (pf_conn | fd_c)
       in
          main_loop (pf_list, pf_buf | fd_s, p_buf)
       end // end of [_ when ...]
     | _ (* child: ipid = 0 *) => let
-// (*
+(*
         val () = (prerr "child: ipid = "; prerr ipid; prerr_newline ())
-// *)
+*)
         val () = socket_close_exn (pf_list | fd_s)
         val n = socket_read_exn (pf_conn | fd_c, !p_buf, BUFSZ)
         var! p_msg with pf_msg = @[byte][n+1]()

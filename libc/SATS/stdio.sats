@@ -630,24 +630,24 @@ written.
 
 *)
 
-fun fwrite
-  {sz:pos} {n_buf,n,nsz:nat | nsz <= n_buf} {m:fm} (
+fun fwrite // [sz]: the size of each item
+  {sz:pos} {bsz,n,nsz:nat | nsz <= bsz} {m:fm} (
     pf_mod: file_mode_lte (m, w), pf_mul: MUL (n, sz, nsz)
-  | buf: &bytes (n_buf), sz: size_t sz, n: size_t n, f: &FILE m
+  | buf: &bytes (bsz), sz: size_t sz, n: size_t n, fil: &FILE m
   ) :<> natLte n
   = "atslib_fwrite"
 
 // [fwrite_byte] is a special case of [fwrite] where [sz] equals 1.
 fun fwrite_byte // [fwrite_byte] only writes once
-  {n_buf,n:nat | n <= n_buf} {m:fm} (
-    pf_mod: file_mode_lte (m, w) | buf: &bytes (n_buf), n: size_t n, f: &FILE m
+  {bsz,n:nat | n <= bsz} {m:fm} (
+    pf_mod: file_mode_lte (m, w) | buf: &bytes (bsz), n: size_t n, fil: &FILE m
   ) :<> sizeLte n
   = "atslib_fwrite_byte"
 
 // an uncatchable exception is thrown if not all bytes are written
 fun fwrite_byte_exn
-  {n_buf,n:nat | n <= n_buf} {m:fm} (
-    pf_mod: file_mode_lte (m, w) | buf: &bytes (n_buf), n: size_t n, f: &FILE m
+  {bsz,n:nat | n <= bsz} {m:fm} (
+    pf_mod: file_mode_lte (m, w) | buf: &bytes (bsz), n: size_t n, fil: &FILE m
   ) :<!exn> void
   = "atslib_fwrite_byte_exn"
 
