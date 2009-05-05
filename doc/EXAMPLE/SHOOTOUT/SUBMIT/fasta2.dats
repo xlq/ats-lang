@@ -35,7 +35,7 @@ in // in of [local]
 fn random_gen
   (max: float): float = let
   prval vbox pf = pfbox
-  val () = state := (state * IA + IC) mod IM in max * (i2f state / IM)
+  val () = state := (state * IA + IC) mod IM in (max * i2f state) / IM
 end // end of [random_gen]
 
 end // end of [local]
@@ -69,7 +69,7 @@ extern fun fputc (c: char, out: FILEref): void = "fasta_fputc"
 
 extern fun fwrite_byte {bsz,n:nat | n <= bsz}
   (buf: &bytes (bsz), n: size_t n, out: FILEref):<> sizeLte n
-  = "atslib_fwrite_byte"
+  = "fasta_fwrite_byte"
 
 (* ****** ****** *)
 
@@ -105,28 +105,40 @@ in
   loop (out, n, 0)
 end // end of [repeat_fasta]
 
-fun random_char {n,i:nat | i <= n}
-  (tbl: &aminoarr(n), n: size_t n, prob: float, i: size_t i): char =
-  if i < n then
-    if prob >= tbl.[i].p then random_char (tbl, n, prob, i+1) else tbl.[i].c
-  else begin
-    exit_errmsg {char} (1, "Exit: [random_char] failed.\n") // char not found
+fun random_char {n:pos} {l:addr} (
+    pf_tbl: !aminoarr(n) @ l | p_tbl: ptr l, n: size_t n, prob: float
+  ) : char = let
+  prval (pf1, pf2) = array_v_uncons {amino} (pf_tbl)
+in
+  if prob >= p_tbl->p then let
+    prval () = __meta_info () where {
+      extern prfun __meta_info (): [n > 1] void // a piece of meta information
+    }
+    val ans = random_char (pf2 | p_tbl + sizeof<amino>, n - 1, prob)
+    prval () = pf_tbl := array_v_cons {amino} (pf1, pf2)
+  in
+    ans
+  end else let
+    val ans = p_tbl->c
+    prval () = pf_tbl := array_v_cons {amino} (pf1, pf2)
+  in
+    ans
   end (* end of [if] *)
-// end of [random_char]
+end // end of [random_char]
 
 fun random_buf
-  {n:nat} {i,len,bsz:nat | i <= len; len <= bsz}
+  {n:pos} {i,len,bsz:nat | i <= len; len <= bsz}
   (tbl: &aminoarr(n), buf: &bytes(bsz), n: size_t n, len: size_t len, i: size_t i)
   : void =
   if i < len then let
-    val c = random_char (tbl, n, random_gen (1.0: float), 0)
+    val c = random_char (view@ tbl | &tbl, n, random_gen (1.0: float))
     val () = buf.[i] := byte_of_char c
   in
     random_buf (tbl, buf, n, len, i+1)
   end (* end of [if] *)
 // end of [random_buf]
 
-fn random_fasta {n:nat} {len:nat} (
+fn random_fasta {n:pos} {len:nat} (
     out: FILEref, tbl: &aminoarr(n), n: size_t n, len: size_t len
   ) : void = () where {
   macdef WIDTH_sz = size1_of_int1 (WIDTH)
@@ -208,21 +220,25 @@ val () = array_ptr_free {amino} (pf_homo_gc, pf_homo | p_homo)
 
 (* ****** ****** *)
 
-%{$
+%{^
 
 ats_void_type
 fasta_fwrite_substring (
   ats_ptr_type str, ats_size_type beg
 , ats_size_type len, ats_ptr_type out
 ) {
-  // locked/unlocked: no observable difference
   fwrite_unlocked(((char*)str)+beg, 1, len, (FILE*)out) ; return ;
 }
 
 ats_void_type
 fasta_fputc (ats_char_type c, ats_ptr_type out) {
-  // locked/unlocked: no observable difference
   fputc_unlocked ((char)c, (FILE*)out) ; return ;
+}
+
+ats_size_type
+fasta_fwrite_byte
+  (ats_ptr_type buf, ats_size_type n, ats_ptr_type fil) {
+  return fwrite_unlocked ((void*)buf, (size_t)1, (size_t)n, (FILE*)fil) ;
 }
 
 %}
