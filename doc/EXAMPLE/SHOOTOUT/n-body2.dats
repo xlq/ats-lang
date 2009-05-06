@@ -34,8 +34,9 @@ infix 0 += -=  // for similar C notation
 macdef += (x, d) = (,(x) := ,(x) + ,(d))
 macdef -= (x, d) = (,(x) := ,(x) - ,(d))
 
-fn advance {n:pos}
-  (bodies: &planetarr n, n: int n, dt: double):<> void = () where {
+fn advance {n:pos} (
+    bodies: &planetarr n, n: int n, dt: double
+  ) :<> void = () where {
   fun loop_inner
     {l1:addr} {n2:nat} {l2:addr} .<n2>. (
       pf1: !planet @ l1, pf2: !planetarr n2 @ l2
@@ -43,7 +44,9 @@ fn advance {n:pos}
     ) :<> void =
     if n2 > 0 then let
       prval (pf21, pf22) = array_v_uncons {planet} (pf2)
-      val dx = p1->x - p2->x and dy = p1->y - p2->y and dz = p1->z - p2->z
+      val dx = p1->x - p2->x
+      val dy = p1->y - p2->y
+      val dz = p1->z - p2->z
       val dist2 = dx * dx + dy * dy + dz * dz
       val dist = sqrt (dist2)
       val mag = dt / (dist * dist2)
@@ -95,8 +98,9 @@ fn advance {n:pos}
   val () = loop (view@ bodies | &bodies, n, dt)
 } // end of [advance]
 
-fn energy {n:pos}
-  (bodies: &planetarr n, n: int n):<> double = e where {
+fn energy {n:nat} (
+    bodies: &planetarr n, n: int n
+  ) :<> double = e where {
   fun loop_inner
     {l1:addr} {n2:nat} {l2:addr} .<n2>. (
       pf1: !planet @ l1, pf2: !planetarr n2 @ l2
@@ -105,8 +109,8 @@ fn energy {n:pos}
     if n2 > 0 then let
       prval (pf21, pf22) = array_v_uncons {planet} (pf2)
       val dx = p1->x - p2->x
-      and dy = p1->y - p2->y
-      and dz = p1->z - p2->z
+      val dy = p1->y - p2->y
+      val dz = p1->z - p2->z
       val dist = sqrt (dx * dx + dy * dy + dz * dz)
       val () = e -= (p1->mass * p2->mass) / dist
       val () = loop_inner (pf1, pf22 | p1, p2+sizeof<planet>, n2-1, e)
@@ -139,9 +143,12 @@ fn energy {n:pos}
 #define PI 3.1415926535898
 #define SOLAR_MASS (4.0 * PI * PI)
 
-fn offmoment {n:pos}
-  (bodies: &planetarr n, n: int n):<> void = () where {
-  var px: double = 0.0 and py: double = 0.0 and pz: double = 0.0
+fn offmoment {n:pos} (
+    bodies: &planetarr n, n: int n
+  ) :<> void = () where {
+  var px: double = 0.0
+  and py: double = 0.0
+  and pz: double = 0.0
   var i: natLte (n) // uninitialized
   val () = for* {i: nat | i <= n} .<n-i>. 
     (i: int i) => (i := 0; i < n; i := i + 1) let
@@ -163,6 +170,7 @@ fn offmoment {n:pos}
 
 sta l_theBodies: addr
 extern prval pfbox_theBodies: vbox (planetarr(N) @ l_theBodies)
+
 val p_theBodies = $extval (ptr (l_theBodies), "&theBodies[0]")
 
 implement main (argc, argv) = () where {
@@ -181,9 +189,7 @@ implement main (argc, argv) = () where {
 
 (* ****** ****** *)
 
-// reuse some existing C code
-
-%{^ // put at the beginning
+%{^
 
 #define PI 3.1415926535898
 #define SOLAR_MASS (4.0 * PI * PI)
@@ -192,8 +198,12 @@ implement main (argc, argv) = () where {
 #define NBODY 5
 
 struct planet {
-  double x; double y; double z;
-  double vx; double vy; double vz;
+  double x;
+  double y;
+  double z;
+  double vx;
+  double vy;
+  double vz;
   double mass;
 } ;
 
@@ -244,3 +254,147 @@ struct planet theBodies[NBODY] = {
 (* ****** ****** *)
 
 (* end of [n-body2.dats] *)
+
+////
+
+/*
+ * The Great Computer Language Shootout
+ * http://shootout.alioth.debian.org/
+ *
+ * contributed by Christoph Bauer
+ *
+ */
+
+#include <math.h>
+#include <stdio.h>
+#include <stdlib.h>
+
+#define pi 3.141592653589793
+#define solar_mass (4 * pi * pi)
+#define days_per_year 365.24
+
+struct planet {
+  double x, y, z;
+  double vx, vy, vz;
+  double mass;
+};
+
+void advance(int nbodies, struct planet * bodies, double dt)
+{
+  int i, j;
+
+  for (i = 0; i < nbodies; i++) {
+    struct planet * b = &(bodies[i]);
+    for (j = i + 1; j < nbodies; j++) {
+      struct planet * b2 = &(bodies[j]);
+      double dx = b->x - b2->x;
+      double dy = b->y - b2->y;
+      double dz = b->z - b2->z;
+      double distance = sqrt(dx * dx + dy * dy + dz * dz);
+      double mag = dt / (distance * distance * distance);
+      b->vx -= dx * b2->mass * mag;
+      b->vy -= dy * b2->mass * mag;
+      b->vz -= dz * b2->mass * mag;
+      b2->vx += dx * b->mass * mag;
+      b2->vy += dy * b->mass * mag;
+      b2->vz += dz * b->mass * mag;
+    }
+  }
+  for (i = 0; i < nbodies; i++) {
+    struct planet * b = &(bodies[i]);
+    b->x += dt * b->vx;
+    b->y += dt * b->vy;
+    b->z += dt * b->vz;
+  }
+}
+
+double energy(int nbodies, struct planet * bodies)
+{
+  double e;
+  int i, j;
+
+  e = 0.0;
+  for (i = 0; i < nbodies; i++) {
+    struct planet * b = &(bodies[i]);
+    e += 0.5 * b->mass * (b->vx * b->vx + b->vy * b->vy + b->vz * b->vz);
+    for (j = i + 1; j < nbodies; j++) {
+      struct planet * b2 = &(bodies[j]);
+      double dx = b->x - b2->x;
+      double dy = b->y - b2->y;
+      double dz = b->z - b2->z;
+      double distance = sqrt(dx * dx + dy * dy + dz * dz);
+      e -= (b->mass * b2->mass) / distance;
+    }
+  }
+  return e;
+}
+
+void offset_momentum(int nbodies, struct planet * bodies)
+{
+  double px = 0.0, py = 0.0, pz = 0.0;
+  int i;
+  for (i = 0; i < nbodies; i++) {
+    px += bodies[i].vx * bodies[i].mass;
+    py += bodies[i].vy * bodies[i].mass;
+    pz += bodies[i].vz * bodies[i].mass;
+  }
+  bodies[0].vx = - px / solar_mass;
+  bodies[0].vy = - py / solar_mass;
+  bodies[0].vz = - pz / solar_mass;
+}
+
+#define NBODIES 5
+struct planet bodies[NBODIES] = {
+  {                               /* sun */
+    0, 0, 0, 0, 0, 0, solar_mass
+  },
+  {                               /* jupiter */
+    4.84143144246472090e+00,
+    -1.16032004402742839e+00,
+    -1.03622044471123109e-01,
+    1.66007664274403694e-03 * days_per_year,
+    7.69901118419740425e-03 * days_per_year,
+    -6.90460016972063023e-05 * days_per_year,
+    9.54791938424326609e-04 * solar_mass
+  },
+  {                               /* saturn */
+    8.34336671824457987e+00,
+    4.12479856412430479e+00,
+    -4.03523417114321381e-01,
+    -2.76742510726862411e-03 * days_per_year,
+    4.99852801234917238e-03 * days_per_year,
+    2.30417297573763929e-05 * days_per_year,
+    2.85885980666130812e-04 * solar_mass
+  },
+  {                               /* uranus */
+    1.28943695621391310e+01,
+    -1.51111514016986312e+01,
+    -2.23307578892655734e-01,
+    2.96460137564761618e-03 * days_per_year,
+    2.37847173959480950e-03 * days_per_year,
+    -2.96589568540237556e-05 * days_per_year,
+    4.36624404335156298e-05 * solar_mass
+  },
+  {                               /* neptune */
+    1.53796971148509165e+01,
+    -2.59193146099879641e+01,
+    1.79258772950371181e-01,
+    2.68067772490389322e-03 * days_per_year,
+    1.62824170038242295e-03 * days_per_year,
+    -9.51592254519715870e-05 * days_per_year,
+    5.15138902046611451e-05 * solar_mass
+  }
+};
+
+int main(int argc, char ** argv)
+{
+  int n = atoi(argv[1]);
+  int i;
+
+  offset_momentum(NBODIES, bodies);
+  printf ("%.9f\n", energy(NBODIES, bodies));
+  for (i = 1; i <= n; i++)
+    advance(NBODIES, bodies, 0.01);
+  printf ("%.9f\n", energy(NBODIES, bodies));
+  return 0;
+}
