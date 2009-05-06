@@ -63,6 +63,7 @@ mandelbrot_simd: mandelbrot_simd.dats
 mandelbrot_simd_smp: mandelbrot_simd_smp.dats
 	$(ATSCC) -D_ATS_MULTITHREAD -O3 -fomit-frame-pointer -D_ISOC9X_SOURCE -mfpmath=sse -msse2 -o mandelbrot_simd_smp mandelbrot_simd_smp.dats -lpthread
 
+######
 
 n-body: n-body.dats
 	$(ATSCC) -msse2 -mfpmath=sse -O3 n-body.dats -o n-body -lm
@@ -70,6 +71,14 @@ n-body1: n-body1.dats
 	$(ATSCC) -msse2 -mfpmath=sse -O3 n-body1.dats -o n-body1 -lm
 n-body_smp: n-body_smp.dats
 	$(ATSCC) -D_ATS_MULTITHREAD -msse2 -mfpmath=sse -O3 n-body_smp.dats -o n-body_smp -lm -lpthread
+
+n-body2: n-body2.dats
+	$(ATSCC) -msse2 -mfpmath=sse -O3 n-body2.dats -o n-body2 -lm
+
+n-body2_c: n-body2.c
+	$(ATSCC) -fomit-frame-pointer -msse2 -mfpmath=sse -O3 n-body2.c -o n-body2_c -lm
+
+######
 
 pidigits: pidigits.dats
 	$(ATSCC) -O3 -fomit-frame-pointer pidigits.dats -o pidigits -lgmp
@@ -129,6 +138,7 @@ cleanall: clean
 	rm -f n-body
 	rm -f n-body_smp
 	rm -f n-body1
+	rm -f n-body2
 	rm -f pidigits
 	rm -f pidigits2
 	rm -f regex-dna

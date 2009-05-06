@@ -152,6 +152,8 @@ in
   printf ("%.9f\n", @(energy()));
   advances n;
   printf ("%.9f\n", @(energy()));
-end
+end // end of [main]
+
+(* ****** ****** *)
 
 (* end of [n-body1.dats] *)
