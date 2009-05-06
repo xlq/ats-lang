@@ -525,14 +525,14 @@ fun string_implode {n:nat} (cs: list (char, n)):<> string n
 // the NULL character at the end of a string is considered in the string
 
 fun string_index_of_char_from_left // locate a character from left
-  {n:nat} (str: string n, c: c1har):<> sizeBtw (~1, n)
+  {n:nat} (str: string n, c: c1har):<> ssizeBtw (~1, n)
   = "atspre_string_index_of_char_from_left"
 
 // This function is based on [strrchr] in [string.h]
 // the NULL character at the end of a string is considered in the string
 
 fun string_index_of_char_from_right // locate a character from right
-  {n:nat} (str: string n, c: c1har):<> sizeBtw (~1, n)
+  {n:nat} (str: string n, c: c1har):<> ssizeBtw (~1, n)
   = "atspre_string_index_of_char_from_right"
 
 (* ****** ****** *)
@@ -540,7 +540,7 @@ fun string_index_of_char_from_right // locate a character from right
 // This function is based on [strstr] in [string.h]
 // Note that the NULL character is not compared
 fun string_index_of_string // locate a substring from left
-  {n1,n2:nat} (s1: string n1, s2: string n2):<> sizeBtw (~1, n1)
+  {n1,n2:nat} (s1: string n1, s2: string n2):<> ssizeBtw (~1, n1)
   = "atspre_string_index_of_string"
 
 (* ****** ****** *)

@@ -49,6 +49,10 @@
 
 /* ****** ****** */
 
+/*
+
+// these are now casting functions:
+
 static inline
 ats_byte_type
 atspre_byte_of_char (ats_char_type c) { return c ; }
@@ -56,6 +60,10 @@ atspre_byte_of_char (ats_char_type c) { return c ; }
 static inline
 ats_char_type
 atspre_char_of_byte (ats_byte_type b) { return b ; }
+
+*/
+
+/* ****** ****** */
 
 static inline
 ats_byte_type

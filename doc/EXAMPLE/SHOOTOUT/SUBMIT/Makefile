@@ -73,7 +73,7 @@ n-body_smp: n-body_smp.dats
 	$(ATSCC) -D_ATS_MULTITHREAD -msse2 -mfpmath=sse -O3 n-body_smp.dats -o n-body_smp -lm -lpthread
 
 n-body2: n-body2.dats
-	$(ATSCC) -msse2 -mfpmath=sse -O3 n-body2.dats -o n-body2 -lm
+	$(ATSCC) -fomit-frame-pointer -msse2 -mfpmath=sse -O3 n-body2.dats -o n-body2 -lm
 
 n-body2_c: n-body2.c
 	$(ATSCC) -fomit-frame-pointer -msse2 -mfpmath=sse -O3 n-body2.c -o n-body2_c -lm
@@ -93,8 +93,15 @@ regex-dna: regex-dna.dats
 regex-dna_smp: regex-dna_smp.dats
 	$(ATSCC) -D_ATS_MULTITHREAD -O3 -fomit-frame-pointer regex-dna_smp.dats -o regex-dna_smp -lpthread -lpcre
 
+######
+
 reverse-complement: reverse-complement.dats
 	$(ATSCC) -O3 -fomit-frame-pointer reverse-complement.dats -o reverse-complement
+
+reverse-complement2: reverse-complement2.dats
+	$(ATSCC) -O3 -fomit-frame-pointer reverse-complement2.dats -o reverse-complement2
+
+######
 
 spectral-norm: spectral-norm.dats
 	$(ATSCC) -O3 -fomit-frame-pointer -msse2 spectral-norm.dats -o spectral-norm -lm

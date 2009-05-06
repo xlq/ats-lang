@@ -193,7 +193,7 @@ fun fildes_read_err
   {fd:int} {flag:open_flag} {n,sz:nat | n <= sz} (
     pf1: open_flag_lte (flag, rd), pf2: !fildes_v (fd, flag)
   | fd: int fd, buf: &bytes sz, ntotal: size_t n
-  ) : sizeBtw(~1, n+1)
+  ) : ssizeBtw(~1, n+1)
   = "atslib_fildes_read_err"
 
 fun fildes_read_exn
@@ -209,7 +209,7 @@ fun fildes_read_loop_err
   {fd:int} {flag:open_flag} {n,sz:nat | n <= sz} (
     pf1: open_flag_lte (flag, rd), pf2: !fildes_v (fd, flag)
   | fd: int fd, buf: &bytes sz, ntotal: size_t n
-  ) : sizeBtw (~1, n+1)
+  ) : ssizeBtw (~1, n+1)
   = "atslib_fildes_read_loop_err"
 
 fun fildes_read_loop_exn
@@ -227,7 +227,7 @@ fun fildes_write_err
   {fd:int} {flag:open_flag} {n,sz:nat | n <= sz} (
     pf1: open_flag_lte (flag, wr), pf2: !fildes_v (fd, flag)
   | fd: int fd, buf: &bytes sz, ntotal: size_t n
-  ) : sizeBtw(~1, n+1)
+  ) : ssizeBtw(~1, n+1)
   = "atslib_fildes_write_err"
 
 fun fildes_write_exn
@@ -243,7 +243,7 @@ fun fildes_write_loop_err
   {fd:int} {flag:open_flag} {n,sz:nat | n <= sz} (
     pf1: open_flag_lte (flag, wr), pf2: !fildes_v (fd, flag)
   | fd: int fd, buf: &bytes sz, ntotal: size_t n
-  ) : sizeBtw(~1, n+1)
+  ) : ssizeBtw(~1, n+1)
   = "atslib_fildes_write_loop_err"
 
 fun fildes_write_loop_exn
@@ -261,7 +261,7 @@ fun fildes_write_substring_err
   {fd:int} {flag:open_flag} {i,n,sz:nat | i+n <= sz} (
     pf1: open_flag_lte (flag, wr), pf2: !fildes_v (fd, flag)
   | fd: int fd, str: string sz, start: size_t i, n: size_t n
-  ) : sizeBtw(~1, n+1)
+  ) : ssizeBtw(~1, n+1)
   = "atslib_fildes_write_substring_err"
 
 fun fildes_write_substring_exn

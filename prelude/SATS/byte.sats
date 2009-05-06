@@ -36,14 +36,28 @@
 
 (* ****** ****** *)
 
+// note that a byte is just an unsigned char (uchar)
+
+(* ****** ****** *)
+
 #define BYTE_MAX 255 // 2^8 - 1
 
 (* ****** ****** *)
 
-// some common functions on bytes (i.e., unsigned chars)
+castfn byte_of_char (c: char):<> byte
+(*
+  = "atspre_byte_of_char"
+*)
 
-fun byte_of_char (c: char):<> byte = "atspre_byte_of_char"
-and char_of_byte (b: byte):<> char = "atspre_char_of_byte"
+castfn char_of_byte (b: byte):<> char
+(*
+  = "atspre_char_of_byte"
+*)
+
+castfn byte_of_uchar (c: uchar):<> byte
+castfn uchar_of_byte (b: byte):<> uchar
+
+(* ****** ****** *)
 
 fun byte_of_int (i: int):<> byte = "atspre_byte_of_int"
 and int_of_byte (b: byte):<> int = "atspre_int_of_byte"

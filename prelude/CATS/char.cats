@@ -49,12 +49,6 @@
 
 /* ****** ****** */
 
-static inline
-ats_char_type
-atspre_char_of_char (const ats_char_type c) { return c ; }
-
-/* ****** ****** */
-
 /*
 
 // these are now casting functions:

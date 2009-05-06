@@ -5,28 +5,22 @@
 ** contributed by Hongwei Xi (hwxi AT cs DOT bu DOT edu)
 **
 ** compilation command:
-**   atscc -msse2 -mfpmath=sse -O3 n-body.dats -o n-body -lm
+**   atscc -fomit-frame-pointer -msse2 -mfpmath=sse -O3 n-body2.dats -o n-body2 -lm
 *)
 
 (* ****** ****** *)
 
+staload "libc/SATS/math.sats"
+
+(* ****** ****** *)
+
 typedef planet = @{
-  x= double
-, y= double
-, z= double
-, vx= double
-, vy= double
-, vz= double
+  x= double, y= double, z= double
+, vx= double, vy= double, vz= double
 , mass= double
 } // end of [planet]
 
 typedef planetarr (n:int) = @[planet][n]
-
-extern typedef "planet_t" = planet
-
-(* ****** ****** *)
-
-staload "libc/SATS/math.sats"
 
 (* ****** ****** *)
 
@@ -181,7 +175,7 @@ implement main (argc, argv) = () where {
 
 (* ****** ****** *)
 
-// reuse some existing C code
+// reuse some existing C code for initialization
 
 %{^ // put at the beginning
 
@@ -192,9 +186,7 @@ implement main (argc, argv) = () where {
 #define NBODY 5
 
 struct planet {
-  double x; double y; double z;
-  double vx; double vy; double vz;
-  double mass;
+  double x; double y; double z; double vx; double vy; double vz; double mass;
 } ;
 
 struct planet theBodies[NBODY] = {

@@ -186,7 +186,7 @@ fun socket_close_exn {fd:int} {s:status}
 
 fun socket_read_err {fd:int} {n,sz:nat | n <= sz} (
     pf_sock: !socket_v (fd, conn) | fd: int fd, buf: &bytes sz, ntotal: size_t n
-  ) : sizeBtw(~1, n+1)
+  ) : ssizeBtw(~1, n+1)
   = "atslib_fildes_read_err"
 
 // implemented in [libc/sys/CATS/socket.cats]
@@ -200,7 +200,7 @@ fun socket_read_exn {fd:int} {n,sz:nat | n <= sz} (
 // implemented in [libc/DATS/fcntl.dats]
 fun socket_read_loop_err {fd:int} {n,sz:nat | n <= sz} (
     pf_sock: !socket_v (fd, conn) | fd: int fd, buf: &bytes sz, ntotal: size_t n
-  ) : sizeBtw (~1, n+1)
+  ) : ssizeBtw (~1, n+1)
   = "atslib_fildes_read_loop_err"
 
 // implemented in [libc/sys/DATSsocket.dats]
@@ -214,7 +214,7 @@ fun socket_read_loop_exn {fd:int} {n,sz:nat | n <= sz} (
 // implemented in [libc/CATS/fcntl.cats]
 fun socket_write_err {fd:int} {n,sz:nat | n <= sz} (
     pf_sock: !socket_v (fd, conn) | fd: int fd, buf: &bytes sz, ntotal: size_t n
-  ) : sizeBtw(~1, n+1)
+  ) : ssizeBtw(~1, n+1)
   = "atslib_fildes_write_err"
 
 // implemented in [libc/sys/CATS/socket.cats]
@@ -228,7 +228,7 @@ fun socket_write_exn {fd:int} {n,sz:nat | n <= sz} (
 // implemented in [libc/DATS/fcntl.dats]
 fun socket_write_loop_err {fd:int} {n,sz:nat | n <= sz} (
     pf_sock: !socket_v (fd, conn) | fd: int fd, buf: &bytes sz, ntotal: size_t n
-  ) : sizeBtw(~1, n+1)
+  ) : ssizeBtw(~1, n+1)
   = "atslib_fildes_write_loop_err"
 
 // implemented in [libc/sys/DATS/socket.dats]
@@ -243,7 +243,7 @@ fun socket_write_loop_exn {fd:int} {n,sz:nat | n <= sz} (
 
 fun socket_write_substring_err {fd:int} {i,n,sz:nat | i+n <= sz}
   (pf_socket: !socket_v (fd, conn) |
-   sockfd: int fd, str: string sz, start: size_t i, n: size_t n): sizeBtw(~1, n+1)
+   sockfd: int fd, str: string sz, start: size_t i, n: size_t n): ssizeBtw(~1, n+1)
   = "atslib_socket_write_substring_err"
 
 fun socket_write_substring_exn {fd:int} {i,n,sz:nat | i+n <= sz}
