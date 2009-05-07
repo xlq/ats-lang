@@ -5,7 +5,7 @@
 ** contributed by Hongwei Xi (hwxi AT cs DOT bu DOT edu)
 **
 ** compilation command:
-**   atscc -O3 -fomit-frame-pointer reverse-complement.dats -o reverse-complement
+**   atscc -O3 -fomit-frame-pointer reverse-complement2.dats -o reverse-complement2
 *)
 
 (* ****** ****** *)

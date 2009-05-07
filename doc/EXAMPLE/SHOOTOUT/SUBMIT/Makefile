@@ -24,6 +24,8 @@ fannkuch: fannkuch.dats
 	$(ATSCC) -fomit-frame-pointer -O3 fannkuch.dats -o fannkuch
 fannkuch1: fannkuch1.dats
 	$(ATSCC) -fomit-frame-pointer -O3 fannkuch1.dats -o fannkuch1
+fannkuch2: fannkuch2.dats
+	$(ATSCC) -fomit-frame-pointer -O3 fannkuch2.dats -o fannkuch2
 
 fannkuch_smp: fannkuch_smp.dats
 	$(ATSCC) -D_ATS_MULTITHREAD -O3 -fomit-frame-pointer fannkuch_smp.dats -o fannkuch_smp -lpthread
@@ -151,6 +153,7 @@ cleanall: clean
 	rm -f regex-dna
 	rm -f regex-dna_smp
 	rm -f reverse-complement
+	rm -f reverse-complement2
 	rm -f spectral-norm
 	rm -f spectral-norm_smp
 	rm -f spectral-norm_smp2
