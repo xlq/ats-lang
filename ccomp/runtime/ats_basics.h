@@ -113,8 +113,8 @@
 
 /* ****** ****** */
 
-/* [main_prelude] is called in the function [mainats] */
-extern void main_prelude () ;
+/* [mainats_prelude] is called in the function [main] */
+extern void mainats_prelude () ;
 
 /* ****** ****** */
 

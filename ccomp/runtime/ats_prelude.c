@@ -50,7 +50,7 @@
 
 /* ****** ****** */
 
-extern ats_exit_errmsg (int err, char *msg) ;
+extern void ats_exit_errmsg (int err, char *msg) ;
 
 /* ****** ****** */
 

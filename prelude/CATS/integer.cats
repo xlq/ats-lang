@@ -306,7 +306,7 @@ static inline
 ats_void_type
 atspre_fscan_int_exn (ats_ptr_type inp, ats_ref_type r) {
   int n ;
-  n = fscanf ((FILE*)inp, "%d", r) ;
+  n = fscanf ((FILE*)inp, "%d", (int*)r) ;
   if (n < 1) {
     ats_exit_errmsg (n, "exit(ATS): [fscan_int_exn] failed.\n") ;
   }
