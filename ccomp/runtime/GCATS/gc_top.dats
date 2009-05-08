@@ -7,28 +7,27 @@
 (***********************************************************************)
 
 (*
- * ATS/Anairiats - Unleashing the Power of Types!
- *
- * Copyright (C) 2002-2008 Hongwei Xi, Boston University
- *
- * All rights reserved
- *
- * ATS is free software;  you can  redistribute it and/or modify it under
- * the terms of  the GNU GENERAL PUBLIC LICENSE (GPL) as published by the
- * Free Software Foundation; either version 3, or (at  your  option)  any
- * later version.
- * 
- * ATS is distributed in the hope that it will be useful, but WITHOUT ANY
- * WARRANTY; without  even  the  implied  warranty  of MERCHANTABILITY or
- * FITNESS FOR A PARTICULAR PURPOSE.  See the  GNU General Public License
- * for more details.
- * 
- * You  should  have  received  a  copy of the GNU General Public License
- * along  with  ATS;  see the  file COPYING.  If not, please write to the
- * Free Software Foundation,  51 Franklin Street, Fifth Floor, Boston, MA
- * 02110-1301, USA.
- *
- *)
+** ATS/Anairiats - Unleashing the Power of Types!
+**
+** Copyright (C) 2002-2008 Hongwei Xi, Boston University
+**
+** All rights reserved
+**
+** ATS is free software;  you can  redistribute it and/or modify it under
+** the terms of  the GNU GENERAL PUBLIC LICENSE (GPL) as published by the
+** Free Software Foundation; either version 3, or (at  your  option)  any
+** later version.
+** 
+** ATS is distributed in the hope that it will be useful, but WITHOUT ANY
+** WARRANTY; without  even  the  implied  warranty  of MERCHANTABILITY or
+** FITNESS FOR A PARTICULAR PURPOSE.  See the  GNU General Public License
+** for more details.
+** 
+** You  should  have  received  a  copy of the GNU General Public License
+** along  with  ATS;  see the  file COPYING.  If not, please write to the
+** Free Software Foundation,  51 Franklin Street, Fifth Floor, Boston, MA
+** 02110-1301, USA.
+*)
 
 (* ****** ****** *)
 
@@ -54,7 +53,7 @@ freeitmlst the_freeitmlst_chunk_data = (freeitmlst)0 ;
 #ifdef _ATS_MULTITHREAD
 // this is the lock that protects the previous variables
 pthread_mutex_t the_gc_main_lock = PTHREAD_MUTEX_INITIALIZER ;
-#endif
+#endif // [_ATS_MULTITHREAD]
 
 /* ****** ****** */
 
@@ -265,15 +264,16 @@ val () = let // initialization
   val () = gc_threadinfo_init () where {
     extern fun gc_threadinfo_init (): void = "gc_threadinfo_init"
   }
-#endif
+#endif // [_ATS_MULTITHREAD]
 
   val () = the_markstack_extend (1)
 
-  val () = begin
-    prerr "GC initialization is done."; prerr_newline ();
-  end
+#if (ATS_GC_VERBOSE >= 1)
+  val () = (prerr "GC initialization is done."; prerr_newline ())
+#endif // [ATS_GC_VERBOSE]
+
 in  
-  // empty
+  (* empty *)
 end // end of [gc_init]
 
 (* ****** ****** *)

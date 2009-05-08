@@ -56,7 +56,7 @@ extern fun fwrite_byte {bsz,n:nat | n <= bsz} {l:addr}
   (pf: !bytes (bsz) @ l | p: ptr l, n: size_t n, out: FILEref):<> sizeLte n
   = "fasta_fwrite_byte"
 
-// no proof is provided for the following two theoremsp
+// no proofs are provided for the following two theorems:
 extern prfun bytes_v_split {n,i:nat | i <= n}
   {l:addr} (pf: bytes (n) @ l): @(bytes (i) @ l, bytes (n-i) @ l+i)
 extern prfun bytes_v_unsplit {n1,n2:nat}
