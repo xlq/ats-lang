@@ -36,6 +36,7 @@ staload "libc/SATS/unistd.sats"
 staload "libc/netinet/SATS/in.sats"
 staload "libc/sys/SATS/socket.sats"
 staload "libc/sys/SATS/types.sats"
+staload "libc/sys/SATS/wait.sats"
 
 (* ****** ****** *)
 
@@ -692,10 +693,12 @@ in
         val () = (prerr "parent: ipid = "; prerr ipid; prerr_newline ())
 *)
         val () = socket_close_exn (pf_conn | fd_c)
+        var status: int // uninitialized
+        val _(*pid*) = waitpid (pid, status, WNONE)
       in
          main_loop (pf_list, pf_buf | fd_s, p_buf)
       end // end of [_ when ...]
-    | _ (* child: ipid = 0 *) => let
+    | _ (* child: ipid = 0 *) => exit (0) where {
 (*
         val () = (prerr "child: ipid = "; prerr ipid; prerr_newline ())
 *)
@@ -705,29 +708,27 @@ in
         prval () = pf_msg := bytes_v_of_b0ytes_v pf_msg
         val _(*p_msg*) = memcpy (pf_msg | p_msg, !p_buf, n)
         val () = bytes_strbuf_trans (pf_msg | p_msg, n)
-      in
-        case+ 0 of
-        | _ when request_is_get (!p_msg) => let
-            val n = strbuf_length (!p_msg)
-            val () = main_loop_get (pf_conn, pf_buf | fd_c, p_buf, !p_msg, n)
-            prval () = pf_msg := bytes_v_of_strbuf_v (pf_msg)
-          in
-            socket_close_exn (pf_conn | fd_c)
-          end // end of [_ when ...]
-        | _ => let
+        val () = case+ 0 of
+          | _ when request_is_get (!p_msg) => let
+              val n = strbuf_length (!p_msg)
+              val () = main_loop_get (pf_conn, pf_buf | fd_c, p_buf, !p_msg, n)
+              prval () = pf_msg := bytes_v_of_strbuf_v (pf_msg)
+            in
+              socket_close_exn (pf_conn | fd_c)
+            end // end of [_ when ...]
+          | _ => let
 (*
-            val () =
-              prerr "main_loop: unsupported request: "
-            val () = prerr_string (__cast p_msg) where {
-              extern castfn __cast (p: ptr): string
-            } // end of [val]
-            val () = prerr_newline ()
+              val () = prerr "main_loop: unsupported request: "
+              val () = prerr_string
+                (__cast p_msg) where { extern castfn __cast (p: ptr): string }
+              val () = prerr_newline ()
 *)
-            prval () = pf_msg := bytes_v_of_strbuf_v (pf_msg)
-          in
-            socket_close_exn (pf_conn | fd_c)
-          end // end of [val]
-      end // end of [_]
+              prval () = pf_msg := bytes_v_of_strbuf_v (pf_msg)
+            in
+              socket_close_exn (pf_conn | fd_c)
+            end // end of [val]
+      } (* end of [_] *)
+    // end of [case]
   end else let
     prval accept_fail () = pf_accept
     val () = (prerr "Error: [accept] failed!"; prerr_newline ())

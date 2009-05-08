@@ -20,6 +20,9 @@ binary-trees_smp: binary-trees_smp_dats.c
 binary-trees_smp_dats.c: binary-trees_smp.dats
 	$(ATSOPT) -o binary-trees_smp_dats.c -d binary-trees_smp.dats
 
+binary-trees2: binary-trees2.dats
+	$(ATSCC) -O3 binary-trees2.dats -o binary-trees2 -D_ATS_GCATS
+
 fannkuch: fannkuch.dats
 	$(ATSCC) -fomit-frame-pointer -O3 fannkuch.dats -o fannkuch
 fannkuch1: fannkuch1.dats
@@ -136,6 +139,7 @@ cleanall: clean
 	rm -f fannkuch_smp
 	rm -f fannkuch_smp1
 	rm -f fannkuch1
+	rm -f fannkuch2
 	rm -f fasta
 	rm -f fasta_smp
 	rm -f fasta2

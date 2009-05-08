@@ -127,12 +127,14 @@ libc/SATS/time.sats
 libc/SATS/unistd.sats
 libc/DATS/unistd.dats
 
+libc/sys/SATS/types.sats
+
 libc/sys/SATS/socket.sats
 libc/sys/DATS/socket.dats
 
 libc/sys/SATS/stat.sats
 
-libc/sys/SATS/types.sats
+libc/sys/SATS/wait.sats
 
 libc/arpa/SATS/inet.sats
 

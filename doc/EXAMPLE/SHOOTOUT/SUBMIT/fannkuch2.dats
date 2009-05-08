@@ -70,6 +70,8 @@ in
     end
 end (* end of [perm_next] *)
 
+(* ****** ****** *)
+
 fun fannkuch_count {n:int | n >= 2}
   (C: iarr n, P: iarr n, S: iarr n, n: int n, max: int): int = let
   fun rev0
@@ -91,7 +93,7 @@ fun fannkuch_count {n:int | n >= 2}
       var S1: natLte n = S[1]
       val () = while (S1 > 1) begin
         cnt := cnt + 1; fannkuch_rev1 (S, S1); S1 := S[1]
-      end
+      end (* end of [val] *)
     in
       if max < cnt then max := cnt
     end (* end of [if] *)
@@ -103,6 +105,8 @@ end (* end of [fannkuch] *)
 fun iarr_init {n:nat} (A: iarr n, n: int n): void =
   let var i: intGte 1 = 1 in while (i <= n) (A[i] := i; i := i+1) end
 // end of [iarr_init]
+
+(* ****** ****** *)
 
 #define NPRINT 30
 
@@ -122,5 +126,7 @@ implement main (argc, argv) = let
 in
   printf ("Pfannkuchen(%i) = %i\n", @(n, ans))
 end (* end of [main] *)
+
+(* ****** ****** *)
 
 (* end of [fannkuch2.dats] *)

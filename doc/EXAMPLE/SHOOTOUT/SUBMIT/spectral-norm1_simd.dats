@@ -157,22 +157,22 @@ infix 0 +=; macdef += (x, d) = (,(x) := ,(x) + ,(d))
 
 fn eval_A_times_u {N:nat}
   (N: int N, u: &ddarr N, Au: &ddarr N): void = let
-  var d0: double and d1: double
+  var d0: double? and d1: double?
   var dd: v2df?
   var AA: v2df?
-  var i: natLte N = 0; var j: natLte N
-  var i2: Nat = 0; var j2: Nat
+  var i: natLte N = 0; var j: int?; var i2: Nat = 0; var j2: int?
 in
   while (i < N) begin
     dd := zero_v2df; j := 0; j2 := 0;
-    while* (dd: v2df, i: natLt N) => (j < N) begin
+    while*
+      (dd: v2df, i: natLt N, j: natLte N, i2:Nat, j2:Nat) => (j < N) begin
       v2df_set2 (AA, A(i2,j2), A(i2,j2+1));
       dd += AA * u[j]; j += 1; j2 += 2;
     end;
     d0 := v2df_fst_get (dd) + v2df_snd_get (dd) ;
 
     dd := zero_v2df; j := 0; j2 := 0;
-    while* (dd: v2df, i: natLt N) => (j < N) begin
+    while* (dd: v2df, i: natLt N, j: natLte N, i2:Nat, j2:Nat) => (j < N) begin
       v2df_set2 (AA, A(i2+1,j2), A(i2+1,j2+1));
       dd += AA * u[j];
       j += 1; j2 += 2;
@@ -187,22 +187,21 @@ end // end of [eval_A_times_u]
 
 fn eval_At_times_u {N:nat}
   (N: int N, u: &ddarr N, Au: &ddarr N): void = let
-  var d0: double and d1: double
+  var d0: double? and d1: double?
   var dd: v2df?
   var AA: v2df?
-  var i: natLte N = 0; var j: natLte N
-  var i2: Nat = 0; var j2: Nat
+  var i: natLte N = 0; var j: int?; var i2: Nat = 0; var j2: int?
 in
   while (i < N) begin
     dd := zero_v2df; j := 0; j2 := 0;
-    while* (dd: v2df, i: natLt N) => (j < N) begin
+    while* (dd: v2df, i: natLt N, j:natLte N, i2:Nat, j2:Nat) => (j < N) begin
       v2df_set2 (AA, A(j2,i2), A(j2+1,i2));
       dd += AA * u[j]; j += 1; j2 += 2;
     end;
     d0 := v2df_fst_get (dd) + v2df_snd_get (dd) ;
 
     dd := zero_v2df; j := 0; j2 := 0;
-    while* (dd: v2df, i: natLt N) => (j < N) begin
+    while* (dd: v2df, i: natLt N, j:natLte N, i2:Nat, j2:Nat) => (j < N) begin
       v2df_set2 (AA, A(j2,i2+1), A(j2+1,i2+1));
       dd += AA * u[j]; j += 1; j2 += 2;
     end;
