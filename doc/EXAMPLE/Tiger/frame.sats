@@ -37,7 +37,7 @@ val SP : temp // stack pointer
 (* ****** ****** *)
 
 // [WORDSIZE} is the number of bytes in a pointer
-fun WORDSIZE_get (): int = "tigerats_WORDSIZE_get"
+val WORDSIZE : int // it is defined in [params.hats]
 
 (* ****** ****** *)
 

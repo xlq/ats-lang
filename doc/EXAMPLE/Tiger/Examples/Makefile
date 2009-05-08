@@ -17,7 +17,7 @@ TIGCOMP=$(TIGDIR)/comptig
 ######
 
 all:: \
-  ack evenodd \
+  ack ack2 evenodd \
   f91 fact1 fact2 \
   fib1 fib2 fib3 fib4 \
   intpair hanoi listops \
@@ -35,6 +35,10 @@ chmod::
 ack: ack.tig
 	$(TIGCOMP) ack.tig > ack_tig.s
 	$(GCC) -o ack ack_tig.s $(TIGDIR)/tiger_prelude.c
+
+ack2: ack2.tig
+	$(TIGCOMP) ack2.tig > ack2_tig.s
+	$(GCC) -o ack2 ack2_tig.s $(TIGDIR)/tiger_prelude.c
 
 ######
 
@@ -115,6 +119,10 @@ queens1: queens1.tig
 	$(TIGCOMP) queens1.tig > queens1_tig.s
 	$(GCC) -o queens1 queens1_tig.s $(TIGDIR)/tiger_prelude.c
 
+queens3: queens3.tig
+	$(TIGCOMP) queens3.tig > queens3_tig.s
+	$(GCC) -o queens3 queens3_tig.s $(TIGDIR)/tiger_prelude.c
+
 ######
 
 sum: sum.tig
@@ -149,7 +157,7 @@ MIPS32::
 ######
 
 clean::
-	rm -f ack evenodd
+	rm -f ack ack2 evenodd
 	rm -f f91 fact1 fact2
 	rm -f fib1 fib2 fib3 fib4
 	rm -f hanoi intpair listops

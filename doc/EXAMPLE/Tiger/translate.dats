@@ -94,8 +94,6 @@ implement prerr_e1xp (e1xp) = fprint_e1xp (stderr_ref, e1xp)
 staload S = "stamp.sats"
 staload F = "frame.sats"
 
-val WORDSIZE = $F.WORDSIZE_get ()
-
 datatype level =
   | LEVELtop of $F.frame_t
   | LEVELsub of (
@@ -286,7 +284,7 @@ in
         fun loop (lts: labtylst, lab: sym, ofs: int): int =
           case+ lts of
           | LABTYLSTcons (lab1, _(*ty*), lts) => begin
-              if lab = lab1 then ofs else loop (lts, lab, ofs + WORDSIZE)
+              if lab = lab1 then ofs else loop (lts, lab, ofs + $F.WORDSIZE)
             end // end of [LABTYLSTcons]
           | LABTYLSTnil () => ofs
         // end of [loop]
@@ -301,7 +299,7 @@ in
       val e_ind = transExp1 (lev0, env, e_ind)
       val te_arr = unEx e_arr
       val te_ind = unEx e_ind
-      val te_ofs = $TR.EXPbinop ($TR.MUL, te_ind, $TR.EXPconst WORDSIZE)
+      val te_ofs = $TR.EXPbinop ($TR.MUL, te_ind, $TR.EXPconst $F.WORDSIZE)
       val te_addr = $TR.EXPbinop ($TR.PLUS, te_arr, te_ofs)
     in
       Ex ($TR.EXPmem te_addr)
@@ -598,7 +596,7 @@ in
             val te_addr = $TR.EXPbinop ($TR.PLUS, te_tmp, $TR.EXPconst ofs)
             val stm = $TR.STMmove ($TR.EXPmem te_addr, unEx e)
           in
-            aux (fes, ofs + WORDSIZE, list_cons (stm, stms))
+            aux (fes, ofs + $F.WORDSIZE, list_cons (stm, stms))
           end // end of [list_cons]
         | list_nil () => stms
       // end of [aux]
@@ -776,7 +774,7 @@ fn funarglst_move
           val e_far = $TR.EXPtemp far
           val () = res := list_vt_cons ($TR.STMmove (e_acc, e_far), res)
         in
-          loop1 (fars, accs, ofs + WORDSIZE, res)
+          loop1 (fars, accs, ofs + $F.WORDSIZE, res)
         end // end of [list_cons]
       | list_nil () => loop2 (acc, accs, ofs, res) // the rest of the
         // arguments are passed in the stack frame
@@ -803,7 +801,7 @@ fn funarglst_move
     end // end of [if]
   in
     case+ accs of
-    | list_cons (acc, accs) => loop2 (acc, accs, ofs + WORDSIZE, res)
+    | list_cons (acc, accs) => loop2 (acc, accs, ofs + $F.WORDSIZE, res)
     | list_nil () => ()
   end // end of [loop2]
 
@@ -884,10 +882,10 @@ fn transFundec1_fst
   val esclst = list_extend (esclst, true(*stalnk*))
   var ofs0: int = 0
 #if MARCH  = "x86_32"
-  val () = ofs0 := ofs0 + WORDSIZE // [call] pushes EIP onto the stack
+  val () = ofs0 := ofs0 + $F.WORDSIZE // [call] pushes EIP onto the stack
 #endif
 //
-  val () = ofs0 := ofs0 + WORDSIZE // [FP] is to be pushed onto the stack
+  val () = ofs0 := ofs0 + $F.WORDSIZE // [FP] is to be pushed onto the stack
 //
   val frm = $F.frame_make_new (lab_frm, ofs0, esclst)
   val acclst = $F.frame_arglst_get (frm)

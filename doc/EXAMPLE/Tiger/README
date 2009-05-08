@@ -7,7 +7,7 @@
 #
 ######
 
-So far, only x86-32 and mips are targeted.
+So far, only x86-32 and MIPS32 are targeted.
 
 ######
 

@@ -44,8 +44,6 @@ staload _(*anonymous*) = "prelude/DATS/list_vt.dats"
 
 (* ****** ****** *)
 
-val WORDSIZE = $F.WORDSIZE_get ()
-
 viewtypedef instrlst_vt = $AS.instrlst_vt
 
 (* ****** ****** *)
@@ -427,7 +425,7 @@ fn instrlst_add_stm
   and auxarglst // moving args into places
     (res: &instrlst_vt, es: explst): (int(*nargsz*), templst) = let
     val narg = list_length (es)
-    val nargsz = narg * WORDSIZE
+    val nargsz = narg * $F.WORDSIZE
     val rev_fars = loop
       ($F.theFunargReglst, narg, list_vt_nil) where {
       fun loop (
@@ -464,7 +462,7 @@ fn instrlst_add_stm
                   val asm = "movl `s0, `d0"; val src = s0 and dst = far
                 } // end of [val]
               in
-                loop (res, es, fars, ofs + WORDSIZE)
+                loop (res, es, fars, ofs + $F.WORDSIZE)
               end // end of [list_cons]
             | list_nil () => let
                 val () = emit
@@ -473,7 +471,7 @@ fn instrlst_add_stm
                   val src = '[s0, $F.SP] and dst = '[]; val jump = None ()
                 } // end of [val]
               in
-                loop (res, es, fars, ofs + WORDSIZE)
+                loop (res, es, fars, ofs + $F.WORDSIZE)
               end // end of [val]
           end // end of [list_cons]
         | list_nil () => ()

@@ -1,8 +1,7 @@
 let
   function fib (x: int): int =
-    if x > 1 then fib (x-1) + fib (x-2) else x
-  var fib10: int := fib (10)
+    if x > 1 then fib (x-2) + fib (x-1) else x
 in
-  print ("fib (10) = "); print_int (fib10); print ("\n")
+  print ("fib (40) = "); print_int (fib(40)); print ("\n")
 end /* end of [let] */
 

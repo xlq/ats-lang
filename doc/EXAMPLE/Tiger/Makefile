@@ -342,6 +342,8 @@ xref::
 ######
 
 chmod::
+	chmod 644 Makefile
+	chmod 644 tiger_prelude.c tiger_prelude_spim.s
 	chmod 644 *.?ats
 	chmod 644 *_?ats.html
 	cd XREF; chmod 644 *.html

@@ -269,7 +269,7 @@ val () = the_labmap_insert (
 
 (* ****** ****** *)
 
-val WSZ = $F.WORDSIZE_get ()
+val WSZ = $F.WORDSIZE
 
 extern fun the_memory_get (i: int): v1al
 extern fun the_memory_set (i: int, v: v1al): void

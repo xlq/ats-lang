@@ -105,7 +105,17 @@ implement exp_make_access (e_off, acc) = case+ acc of
   | InReg tmp => $TR.EXPtemp tmp
 // end of [exp_make_access]
 
-val WORDSIZE = WORDSIZE_get ()
+(* ****** ****** *)
+
+local
+
+#include "params.hats"
+
+in
+
+implement WORDSIZE = (WORDSIZE_TARGET / 8)
+
+end // end of [local]
 
 (* ****** ****** *)
 
@@ -647,11 +657,6 @@ implement exp_RV = $TR.EXPtemp (temp_RV)
 %{$
 
 #define NBIT_PER_BYTE 8
-
-ats_int_type
-tigerats_WORDSIZE_get () {
-  return (__WORDSIZE / NBIT_PER_BYTE) ;
-}
 
 ats_void_type
 tigerats_frame_nlocvar_set

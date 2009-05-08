@@ -7,6 +7,6 @@ function ack (m: int, n: int): int =
 
 in
 
-  print ("ack (3, 3) = "); print_int (ack (3, 3)); print ("\n")
+  print ("ack (3, 12) = "); print_int (ack (3, 12)); print ("\n")
 
 end /* end of [let] */

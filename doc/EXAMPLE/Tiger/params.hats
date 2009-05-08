@@ -9,6 +9,10 @@
 
 /* ****** ****** */
 
+#define WORDSIZE_TARGET 32 (* bits *)
+
+/* ****** ****** */
+
 /*
 // please uncomment this one if you need to generate a compiler //
 // for Tiger that spills out MIPS code (or more precisely, SPIM code)
