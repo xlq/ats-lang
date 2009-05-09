@@ -46,7 +46,7 @@ extern fun pthread_mutexref_unlock {a:viewt@ype} {l:addr}
 
 (* ****** ****** *)
 
-implement pthread_mutexref_create<a> (x) = let
+implement{a} pthread_mutexref_create (x) = let
   var x = x
 in
   pthread_mutexref_create_tsz {a} (view@ (x) | &x, sizeof<a>)
@@ -63,7 +63,7 @@ typedef struct {
 static inline
 ats_ptr_type
 atslib_pthread_mutexref_create_tsz
-  (ats_ptr_type p_x, ats_int_type tsz) {
+  (ats_ptr_type p_x, ats_size_type tsz) {
   pthread_mutexref_struct *p ;
   p = ats_malloc_gc (sizeof (pthread_mutexref_struct) + tsz) ;
   pthread_mutex_init (&(p->mutex), NULL) ;
