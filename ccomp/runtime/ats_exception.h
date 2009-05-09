@@ -37,8 +37,8 @@
  *
  */
 
-#ifndef __ATS_EXCEPTION_H
-#define __ATS_EXCEPTION_H
+#ifndef ATS_EXCEPTION_H
+#define ATS_EXCEPTION_H // the file should only be loaded once
 
 #include <alloca.h>
 #include <setjmp.h>
@@ -99,9 +99,11 @@ ats_exception_frame_type *the_ats_exception_stack ;
     siglongjmp(ATS_CURRENT_FRAME->env, 0) ; \
   } while(0)
 
-/* End of warning */
+/* ****** ****** */
 
-/* DO use the following macros. */
+/* WARNING:
+**   DO NOT USE THE FOLLOWING MACROS:
+*/
 
 #define ATS_TRYWITH_TRY(tmp_exn) \
 do { \
@@ -119,23 +121,26 @@ ATS_LEAVE_EXCEPTION_FRAME() ; /* exception handling */
 } \
 } while(0)
 
-/* function for raising exceptions */
+/* end of WARNING */
+
+/* ****** ****** */
 
 static inline
-ats_void_type ats_raise_exn
+ats_void_type ats_raise_exn // raising an exception
   (const ats_exn_ptr_type exn) { ATS_RAISE(exn) ; return ; }
+/* end of [ats_raise_exn] */
 
 /* ****** ****** */
 
 /* function for generating new exception constructor tag */
 
-/* the following variable is defined in [ats_global.c] */
-extern int ats_exception_con_tag ;
+extern int ats_exception_con_tag ; // this global variable is
+// defined in [ats_prelude.c]
 
 static inline
 int ats_exception_con_tag_new () {
-  return (++ats_exception_con_tag) ;
-}
+  ats_exception_con_tag += 1 ; return (ats_exception_con_tag) ;
+} /* end of [ats_exception_con_tag_new] */
 
 /* functions for handling match failures */
 
@@ -147,6 +152,6 @@ ats_void_type ats_funarg_match_failure(void) ;
 
 /* ****** ****** */
 
-#endif /* __ATS_EXCEPTION_H */
+#endif /* ATS_EXCEPTION_H */
 
 /* end of [ats_exception.h] */
