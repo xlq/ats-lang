@@ -62,19 +62,28 @@ int ats_stderr_view_lock = 1 ;
 
 // some common exceptions
 
-ats_exn_type AssertionExceptionCon = { 10, "AssertionException" } ;
+ats_exn_type
+AssertionExceptionCon = { 10, "AssertionException" } ;
 ats_exn_ptr_type AssertionException = &AssertionExceptionCon ;
 
-ats_exn_type DivisionByZeroExceptionCon = { 20, "DivisionByZeroException" } ;
-ats_exn_ptr_type DivisionByZeroException = &DivisionByZeroExceptionCon ;
+/* ****** ****** */
 
-ats_exn_type NotFoundExceptionCon = { 30, "NotFoundException" } ;
-ats_exn_ptr_type NotFoundException = &NotFoundExceptionCon ;
-
-ats_exn_type OverflowExceptionCon = { 40, "OverflowException" } ;
+ats_exn_type
+OverflowExceptionCon = { 20, "OverflowException" } ;
 ats_exn_ptr_type OverflowException = &OverflowExceptionCon ;
 
-ats_exn_type SubscriptExceptionCon = { 50, "SubscriptException" } ;
+ats_exn_type
+DivisionByZeroExceptionCon = { 30, "DivisionByZeroException" } ;
+ats_exn_ptr_type DivisionByZeroException = &DivisionByZeroExceptionCon ;
+
+/* ****** ****** */
+
+ats_exn_type
+NotFoundExceptionCon = { 40, "NotFoundException" } ;
+ats_exn_ptr_type NotFoundException = &NotFoundExceptionCon ;
+
+ats_exn_type
+SubscriptExceptionCon = { 50, "SubscriptException" } ;
 ats_exn_ptr_type SubscriptException = &SubscriptExceptionCon ;
 
 /* ****** ****** */
@@ -94,26 +103,22 @@ ats_exception_frame_type *the_ats_exception_stack = NULL ;
 /* function for handling uncaught exceptions */
 
 ats_void_type
-ats_handle_exception (const ats_exn_ptr_type exn) {
-  fprintf (
-    stderr, "Uncaught exception: %s(%d)\n", exn->name, exn->tag
-  ) ;
-  exit(1);
-}
+ats_uncaught_exception_handle (const ats_exn_ptr_type exn) {
+  fprintf (stderr, "Uncaught exception: %s(%d)\n", exn->name, exn->tag) ;
+  exit(1) ;
+} /* end of [ats_uncaught_exception_handle] */
 
 /* functions for handling match failures */
 
 ats_void_type
-ats_caseof_failure (void) {
-  ats_exit_errmsg(1, "Exit: match failure.\n") ;
-  return ;
-}
+ats_caseof_failure_handle (void) {
+  ats_exit_errmsg(1, "Exit: match failure.\n") ; return ;
+} /* end of [ats_caseof_failure_handle] */
 
 ats_void_type
-ats_funarg_match_failure (void) {
-  ats_exit_errmsg(1, "Exit: funarg match failure.\n") ;
-  return ;
-}
+ats_funarg_match_failure_handle (void) {
+  ats_exit_errmsg(1, "Exit: funarg match failure.\n") ; return ;
+} /* end of [ats_funarg_match_failure_handle] */
 
 /* ****** ****** */
 

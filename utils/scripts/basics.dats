@@ -197,8 +197,8 @@ implement strlst_nil () = STRLSTnil ()
 implement strlst_is_nil (ss) =
   case+ ss of nil () => true | _ :: _ => false
 
-implement strlst_head_get (ss) = let val s :: _ = ss in s end
-implement strlst_tail_get (ss) = let val _ :: ss = ss in ss end
+implement strlst_head_get (ss) = let val+ s :: _ = ss in s end
+implement strlst_tail_get (ss) = let val+ _ :: ss = ss in ss end
 
 implement strlst_length {n} ss = let
   fun aux {i,j:nat | i+j == n} .<i>.

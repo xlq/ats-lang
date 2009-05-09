@@ -157,15 +157,15 @@ end : stream_con char) // end of [char_stream_make_file]
 
 (* ****** ****** *)
 
-implement line_stream_make_file (fil) = $delay (
-  if feof0 (fil) <> 0 then let
+implement line_stream_make_file
+  (fil) = $delay (if 
+    feof0 (fil) <> 0 then let
     val () = fclose0_exn fil in stream_nil ()
   end else let
-    val line = $effmask_ref (input_line fil)
-  in
+    val line = $effmask_ref (input_line fil) in
     stream_cons (line, line_stream_make_file fil)
   end : stream_con string // end of [if]
-) // end of [line_stream_make_file]
+) (* end of [line_stream_make_file] *)
 
 (* ****** ****** *)
 
@@ -181,7 +181,7 @@ implement char_stream_vt_make_file
       ) // end of [stream_vt_cons]
     end else let
       val () = fclose1_exn (pf_fil | p_fil) in stream_vt_nil ()
-    end // end of [if]
+    end (* end of [if] *)
   end : stream_vt_con char
 , fclose1_exn (pf_fil | p_fil)
 ) // end of [char_stream_vt_make_file]
@@ -202,26 +202,22 @@ implement line_stream_vt_make_file
       if c <> '\n' then
         loop (pf_fil | p_fil, n+1, list_vt_cons (c, cs))
       else let
-        val line = string_make_charlst_rev (n, cs)
-      in
+        val line = string_make_charlst_rev (n, cs) in
         stream_vt_cons (
           line, line_stream_vt_make_file (pf_mod, pf_fil | p_fil)
-        )
+        ) // end of [stream_vt_cons]
       end // end of [if]
     end else let
       val () = fclose1_exn (pf_fil | p_fil)
     in
       if n > 0 then let
-        val line = string_make_charlst_rev (n, cs)
-      in
+        val line = string_make_charlst_rev (n, cs) in
         stream_vt_cons (line, $delay_vt stream_vt_nil)
       end else let
-        val ~list_vt_nil () = cs
-      in
-        stream_vt_nil ()
+        val+ ~list_vt_nil () = cs in stream_vt_nil ()
       end // end of [if]
-    end // end of [if]
-  end // end of [loop]
+    end (* end of [if] *)
+  end (* end of [loop] *)
 in
   $delay_vt (
     loop (pf_fil | p_fil, 0, list_vt_nil ()), fclose1_exn (pf_fil | p_fil)

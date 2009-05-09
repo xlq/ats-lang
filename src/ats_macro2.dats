@@ -879,13 +879,11 @@ fn symbol_is_binary (sym: sym_t) = begin
   | _ => false
 end // end of [symbol_is_binary]
 
-implement eval0_exp_app_sym
-  (loc0, sym, ctx, env, d2as) = let
+implement eval0_exp_app_sym (loc0, sym, ctx, env, d2as) = let
 (*
   val () = begin
-    prerr "eval0_exp_app_sym: sym = ";
-    $Sym.prerr_symbol sym; prerr_newline ()
-  end
+    prerr "eval0_exp_app_sym: sym = "; $Sym.prerr_symbol sym; prerr_newline ()
+  end // end of [val]
 *)
   fn err (loc0: loc_t, sym: sym_t): v2alue = begin
     prerr loc0;
@@ -895,12 +893,13 @@ implement eval0_exp_app_sym
     prerr "] is encountered during macro expansion.";
     prerr_newline ();
     $Err.abort {v2alue} ()
-  end
+  end (* end of [err] *)
 in
   case+ sym of
   | _ when symbol_is_binary sym => let
       var d2e10: d2exp? and d2e20: d2exp?
-      val () = case+ :(d2e10: d2exp, d2e20: d2exp) => d2as of
+      val () = case+
+        :(d2e10: d2exp, d2e20: d2exp) => d2as of
         | list_cons (d2a, list_nil ()) => let
             val d2es = d2exparg_dyn_get (loc0, sym, d2a, 2)
             val+ list_cons (d2e1, d2es) = d2es
@@ -960,10 +959,10 @@ in
       val () = case+ :(d2e0: d2exp) => d2as of
         | list_cons (d2a, list_nil ()) => let
             val d2es = d2exparg_dyn_get (loc0, sym, d2a, 1)
-            val list_cons (d2e, d2es) = d2es
+            val+ list_cons (d2e, d2es) = d2es
           in
             d2e0 := d2e
-          end
+          end (* end of [list_cons] *)
         | _ => begin
             prerr loc0; prerr ": error(macro)";
             prerr ": the dynamic symbol ["; $Sym.prerr_symbol sym;
@@ -971,7 +970,7 @@ in
             prerr_newline ();
             d2e0 := $Err.abort {d2exp} ();
             $Err.abort {void} ()
-          end
+          end (* end of [_] *)
       val v2al = eval0_exp (loc0, ctx, env, d2e0)
     in
       case+ sym of

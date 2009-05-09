@@ -871,32 +871,29 @@ end // end of [emit_valprimlst]
 
 (* ****** ****** *)
 
-implement emit_kont (pf | out, kont) = begin
-  case+ kont of
+implement emit_kont (pf | out, kont) = case+ kont of
   | KONTtmplab tl => begin
-      fprint1_string (pf | out, "goto ");
-      emit_tmplab (pf | out, tl)
+      fprint1_string (pf | out, "goto "); emit_tmplab (pf | out, tl)
     end // end of [KONTtmplab]
   | KONTtmplabint (tl, i) => begin
-      fprint1_string (pf | out, "goto ");
-      emit_tmplabint (pf | out, tl, i)
+      fprint1_string (pf | out, "goto "); emit_tmplabint (pf | out, tl, i)
     end // end of [KONTtmplabint]
-  | KONTcaseof_fail () => begin
-      fprint1_string (pf | out, "ats_caseof_failure ()")
-    end // end of [KONTcaseof_fail]
-  | KONTfunarg_fail fl => begin
-      fprint1_string (pf | out, "ats_funarg_failure ()")
-    end // end of [KONTfunarg_fail]
-  | KONTraise vp_exn => begin
-      fprint1_string (pf | out, "ats_raise_exn (");
-      emit_valprim (pf | out, vp_exn);
-      fprint1_string (pf | out, ")")
-    end // end of [KONTraise]
+  | KONTcaseof_fail () => () where {
+      val () = fprint1_string (pf | out, "ats_caseof_failure_handle ()")
+    } // end of [KONTcaseof_fail]
+  | KONTfunarg_fail fl => () where {
+      val () = fprint1_string (pf | out, "ats_funarg_failure_handle ()")
+    } // end of [KONTfunarg_fail]
+  | KONTraise vp_exn => () where {
+      val () = fprint1_string (pf | out, "ats_raise_exn (")
+      val () = emit_valprim (pf | out, vp_exn)
+      val () = fprint1_string (pf | out, ")")
+    } // end of [KONTraise]
   | KONTmatpnt mpt => emit_matpnt (pf | out, mpt)
   | KONTnone () => begin
-      fprint1_string (pf | out, "ats_deadcode_failure ()")
+      fprint1_string (pf | out, "ats_deadcode_failure_handle ()")
     end // end of [KONTnone]
-end // end of [emit_kont]
+// end of [emit_kont]
 
 (* ****** ****** *)
 

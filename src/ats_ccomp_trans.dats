@@ -965,7 +965,7 @@ fn ccomp_funarg (
     , hips: list (hipat, n)
     ) : void = begin case+ vps of
     | ~list_vt_cons (vp, vps) => let
-        val list_cons (hip, hips) = hips
+        val+ list_cons (hip, hips) = hips
         val () = ccomp_match (res, level, vp, hip)
       in
         aux_match (res, level, vps, hips)

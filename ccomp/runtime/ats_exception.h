@@ -54,7 +54,7 @@
 
 extern
 ats_void_type
-ats_handle_exception(const ats_exn_ptr_type exn) ;
+ats_uncaught_exception_handle(const ats_exn_ptr_type exn) ;
 
 /* ****** ****** */
 
@@ -94,7 +94,7 @@ ats_exception_frame_type *the_ats_exception_stack ;
 
 #define ATS_RAISE(exn) \
   do { \
-    if (ATS_CURRENT_FRAME == 0 /*null*/) ats_handle_exception(exn) ; \
+    if (ATS_CURRENT_FRAME == 0 /*null*/) ats_uncaught_exception_handle(exn) ; \
     ATS_CURRENT_FRAME->exn = exn ; \
     siglongjmp(ATS_CURRENT_FRAME->env, 0) ; \
   } while(0)
