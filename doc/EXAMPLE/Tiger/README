@@ -11,6 +11,11 @@ So far, only x86-32 and MIPS32 are targeted.
 
 ######
 
+params.hats: meta-parameters for the compiler are defined in this
+  file. Please set the parameters properly before compiling the code.
+
+######
+
 tiger_prelude.c :
   C code for lib functions in Tiger is here
 
@@ -140,4 +145,4 @@ or worse, is done moslty in a style of improvision.
 
 ######
 
-## end of [README] ##
+### end of [README] ###
