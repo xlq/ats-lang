@@ -87,25 +87,29 @@ val n = int1_of (argv.[1]); val () =
   end // end of [val]
 val () = assert (n >= 0)
 
+(*
 val fib1_n = fib1 n
-val fib2_n = fib2 n
-val fib3_n = fib3 n
-val (_ | fib4_n) = fib4 n
-val (_ | fib5_n) = fib5 n
-
 val () = begin
   printf ("fib1(%i) = ", @(n)); print fib1_n; print_newline ()
 end // end of [val]
+
+val fib2_n = fib2 n
 val () = begin
   printf ("fib2(%i) = ", @(n)); print fib2_n; print_newline ()
 end // end of [val]
+*)
+
+val fib3_n = fib3 n
 val () = begin
   printf ("fib3(%i) = ", @(n)); print fib3_n; print_newline ()
 end // end of [val]
+
+val (_ | fib4_n) = fib4 n
 val () = begin
   printf ("fib4(%i) = ", @(n)); print fib4_n; print_newline ()
 end // end of [val]
 
+val (_ | fib5_n) = fib5 n
 val () = let
   val (pf_gc, pf_at | p) = fib5_n
   val () = begin

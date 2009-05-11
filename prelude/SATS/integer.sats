@@ -1136,6 +1136,9 @@ fun int8_of_int (i: int):<> int8
   = "atspre_int8_of_int"
 overload int8_of with int8_of_int
 
+fun int_of_int8 (i: int8):<> int
+  = "atspre_int_of_int8"
+
 // ------ ------
 
 fun abs_int8 (i: int8):<> int8
@@ -1246,6 +1249,11 @@ fun int16_of_int (i: int):<> int16
   = "atspre_int16_of_int"
 overload int16_of with int16_of_int
 
+fun int_of_int16 (i: int16):<> int
+  = "atspre_int_of_int16"
+
+// ------ ------
+
 fun abs_int16 (i: int16):<> int16
   = "atspre_abs_int16"
 overload abs with abs_int16
@@ -1353,6 +1361,9 @@ symintr int32_of
 fun int32_of_int (i: int):<> int32
   = "atspre_int32_of_int"
 overload int32_of with int32_of_int
+
+fun int_of_int32 (i: int32):<> int
+  = "atspre_int_of_int32"
 
 // ------ ------
 
@@ -1470,8 +1481,10 @@ symintr int64_of
 
 fun int64_of_int (i: int):<> int64
   = "atspre_int64_of_int"
-
 overload int64_of with int64_of_int
+
+fun int_of_int64 (i: int64):<> int
+  = "atspre_int_of_int64"
 
 // ------ ------
 

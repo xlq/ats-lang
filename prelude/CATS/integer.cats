@@ -1167,6 +1167,12 @@ atspre_int8_of_int (ats_int_type i) {
   return i ;
 }
 
+static inline
+ats_int_type
+atspre_int_of_int8 (ats_int8_type i) {
+  return i ;
+}
+
 // ------ ------
 
 static inline
@@ -1319,6 +1325,12 @@ atspre_int16_of_int (ats_int_type i) {
   return i ;
 }
 
+static inline
+ats_int_type
+atspre_int_of_int16 (ats_int16_type i) {
+  return i ;
+}
+
 // ------ ------
 
 static inline
@@ -1468,6 +1480,12 @@ atspre_prerr_int16 (ats_int16_type i) {
 static inline
 ats_int32_type
 atspre_int32_of_int (ats_int_type i) {
+  return i ;
+}
+
+static inline
+ats_int_type
+atspre_int_of_int32 (ats_int32_type i) {
   return i ;
 }
 
@@ -1628,6 +1646,12 @@ static inline
 ats_int64_type
 atspre_int64_of_int (ats_int_type i) {
   return (i) ;
+}
+
+static inline
+ats_int_type
+atspre_int_of_int64 (ats_int64_type i) {
+  return i ;
 }
 
 // ------ ------
