@@ -283,9 +283,8 @@ val dir_msg31_str = let
   val (pf_gc, pf_buf | p_buf) = malloc_gc (THIRTYTWO)
   var ntick = time_get ()
   val _(*p_buf*) = ctime_r (pf_buf | ntick, p_buf) // reentrant function
-  prval () = free_gc_elim (pf_gc)
 in
-  string1_of_strbuf1 (pf_buf | p_buf)
+  string1_of_strbuf (pf_gc, pf_buf | p_buf)
 end // end of [val]
 
 val dir_msg31_len = string_length dir_msg31_str

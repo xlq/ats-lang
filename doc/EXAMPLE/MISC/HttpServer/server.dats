@@ -644,7 +644,7 @@ extern fun main_loop {fd:int} {l_buf:addr}
 extern fun strbuf_make_bytes
   {n:nat} {st,ln:nat | st + ln <= n}
   (buf: &bytes n, st: size_t st, ln: size_t ln)
-  :<> [l:addr] (free_gc_v l, strbuf (ln+1,ln) @ l | ptr l)
+  :<> [l:addr] (free_gc_v (ln+1, l), strbuf (ln+1,ln) @ l | ptr l)
   = "atspre_string_make_substring"
 
 implement main_loop
@@ -654,9 +654,8 @@ in
   if fd_c >= 0 then let
     prval accept_succ pf_conn = pf_accept
     val n = socket_read_exn (pf_conn | fd_c, !p_buf, BUFSZ)
-    val (pf_gc, pf | p) = strbuf_make_bytes (!p_buf, 0, n)
-    prval () = free_gc_elim (pf_gc)
-    val msg = string1_of_strbuf1 (pf | p)
+    val (pf_gc, pf_sb | p) = strbuf_make_bytes (!p_buf, 0, n)
+    val msg = string1_of_strbuf (pf_gc, pf_sb | p)
   in
     case+ msg of // [msg] is leaked out if not reclaimed!!!
     | _ when request_is_get (msg) => begin
@@ -673,8 +672,8 @@ in
     val () = prerr "Error: [accept] failed!\n"
   in
     main_loop (pf_list, pf_buf | fd_s, p_buf)
-  end
-end // end of [main_loop]
+  end // end of [if]
+end (* end of [main_loop] *)
 
 (* ****** ****** *)
 

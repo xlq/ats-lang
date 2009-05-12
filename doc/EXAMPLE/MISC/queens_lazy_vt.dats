@@ -77,12 +77,13 @@ fun queens {n,k:nat | k <= n}
   end else begin
     $delay_vt (board_extend {n,k-1} (n, queens (n, k-1)))
   end // end of [if]
+(* end of [queens] *)
 
 (* ****** ****** *)
 
 #define EIGHT 8
 
-implement main (argc, argv) = let
+implement main (argc, argv) = loop (1, xss) where {
   val N = if argc >= 2 then int_of_string argv.[1] else EIGHT
   val [N:int] N = int1_of_int N
   val () = assert (N >= 0)
@@ -96,9 +97,7 @@ implement main (argc, argv) = let
       end // end of [stream_vt_cons]
     | ~stream_vt_nil () => ()
   // end of [loop]        
-in
-  loop (1, xss)
-end // end of [main]
+} // end of [main]
 
 (* ****** ****** *)
 
