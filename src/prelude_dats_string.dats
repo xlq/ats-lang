@@ -89,10 +89,9 @@ implement stringlst_concat (ss) = let
       :<> [l:addr] (free_gc_v (n+1, l), strbuf (n+1, n) @ l | ptr l)
       = "_string_alloc"
   } // end of [val]
-  prval () = free_gc_elim (pf_gc)
   val () = loop2 (!p_sb, n0, 0, ss)
 in
-  string1_of_strbuf1 (pf_sb | p_sb)
+  string1_of_strbuf (pf_gc, pf_sb | p_sb)
 end // end of [stringlst_concat]
 
 (* ****** ****** *)
