@@ -136,7 +136,7 @@ implement string_make_list_int (cs, n) = let
       end // end of [if]
   } // end of [val]
 in
-  string1_of_strbuf1 (pf_gc, pf_sb | p_sb)
+  string1_of_strbuf (pf_gc, pf_sb | p_sb)
 end // end of [string_make_list_int]
 
 (* ****** ****** *)
@@ -175,7 +175,7 @@ implement stringlst_concat (ss) = let
   } // end of [val]
   val () = loop2 (!p_sb, n0, 0, ss)
 in
-  string1_of_strbuf1 (pf_gc, pf_sb | p_sb)
+  string1_of_strbuf (pf_gc, pf_sb | p_sb)
 end // end of [stringlst_concat]
 
 (* ****** ****** *)
@@ -248,7 +248,7 @@ fn string_make_fun {n:nat}
     end // end of [loop]
   } // end of [val]
 in
-  string1_of_strbuf1 (pf_gc, pf_buf | p_buf)
+  string1_of_strbuf (pf_gc, pf_buf | p_buf)
 end // end of [string_make_fun]
 
 in // in of [local]

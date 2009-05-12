@@ -157,13 +157,13 @@ castfn string1_of_string (str: string):<> [n:nat] string n
 
 (* ****** ****** *)
 
-castfn string1_of_strbuf1 {m,n:nat} {l:addr}
+castfn string1_of_strbuf {m,n:nat} {l:addr}
   (pf_gc: free_gc_v (m, l), pf_buf: strbuf (m, n) @ l | p: ptr l) :<> string n
-  = "atspre_string1_of_strbuf1"
+  = "atspre_string1_of_strbuf"
 
-castfn strbuf1_of_string1 {n:nat} (str: string n)
+castfn strbuf_of_string1 {n:nat} (str: string n)
   :<> [m:int | n < m] [l:addr] (vbox (strbuf (m, n) @ l) | ptr l)
-  = "atspre_strbuf1_of_string1"
+  = "atspre_strbuf_of_string1"
 
 (* ****** ****** *)
 

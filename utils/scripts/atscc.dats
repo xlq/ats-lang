@@ -54,6 +54,7 @@ val () = assert_prerrf_bool (
 
 fn print_usage_of_ccomp_file (): void =
   print ("Usage: ccomp_file [infile] -output=[outfile]\n")
+// end of [print_usage_of_comp_file]
 
 (* ****** ****** *)
 

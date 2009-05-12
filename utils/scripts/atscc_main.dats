@@ -64,12 +64,10 @@ end // end of [do_usage]
 
 #define nil STRLSTnil; #define :: STRLSTcons
 
-fn string_is_flag (s: string):<fun0> bool = let
-  val s = string1_of_string s
-in
-  if string_is_empty s then false else begin
-    string_get_char_at (s, size1_of_int1 0) = '-'
-  end // end of [if]
+fn string_is_flag
+  (s: string):<fun0> bool = let
+  val s = string1_of_string s in
+  if string_is_empty s then false else (s[0] = '-')
 end // end of [string_is_flag]
 
 (* ****** ****** *)
@@ -129,10 +127,10 @@ fn flag_is_ATS_GCATS0 (flag: string): Bool = begin
 end // end of [flag_is_ATS_GCATS0]
 val is_ATS_GCATS0: intref = intref_make 0
 
-fn flag_is_ATS_gc (flag: string): Bool = begin
-  case+ flag of "-D_ATS_gc" => true | _ => false
-end // end of [flag_is_ATS_gc]
-val is_ATS_gc: intref = intref_make 0
+fn flag_is_ATS_GCHB (flag: string): Bool = begin
+  case+ flag of "-D_ATS_GCHB" => true | _ => false
+end // end of [flag_is_ATS_GCHB]
+val is_ATS_GCHB: intref = intref_make 0
 
 (* ****** ****** *)
 
@@ -205,14 +203,14 @@ fn* aux {i:nat | i <= n} ( // .<n-i,0>.
       | _ when intref_get is_ATS_GCATS0 > 0 => let
           val gc_o = runtime_global + "GCATS0/gc.o" in gc_o :: param_c
         end // end of [ATS_GCATS0]
-      | _ when intref_get is_ATS_gc > 0 => let
+      | _ when intref_get is_ATS_GCHB > 0 => let
           val is_mt = intref_get is_ATS_MULTITHREAD > 0
           val gcobj_local =
-            (if is_mt then "gc/gc_mt.o" else "gc/gc.o") : string
+            (if is_mt then "GCHB/gc_mt.o" else "GCHB/gc.o") : string
           val gcobj_global: string = runtime_global + gcobj_local
         in
           gcobj_global :: param_c
-        end // end of [ATS_gc]
+        end // end of [ATS_GCHB]
       | _ => param_c
     ) : Strlst // end of [val]
     val param_c = (
@@ -271,8 +269,8 @@ and aux_flag {i:nat | i < n} // .<n-i-1,1>.
     in
       aux (pf | param_ats, flag :: param_c, i+1)
     end
-  | _ when flag_is_ATS_gc flag => let
-      val () = intref_set (is_ATS_gc, 1)
+  | _ when flag_is_ATS_GCHB flag => let
+      val () = intref_set (is_ATS_GCHB, 1)
     in
       aux (pf | param_ats, flag :: param_c, i+1)
     end
