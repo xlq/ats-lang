@@ -14,14 +14,19 @@ binary-trees: binary-trees.dats
 #	$(ATSCC) -O3 binary-trees.dats -o binary-trees -D_ATS_gcats
 	$(ATSCC) -O3 binary-trees.dats -o binary-trees -D_ATS_GCATS
 binary-trees_smp: binary-trees_smp_dats.c
-	$(ATSCC) -D_ATS_MULTITHREAD -D_ATS_GCATS -g binary-trees_smp_dats.c -o binary-trees_smp -lpthread
-#	$(ATSCC) -D_ATS_MULTITHREAD -D_ATS_gc -g binary-trees_smp_dats.c -o binary-trees_smp -lpthread
+	$(ATSCC) -D_ATS_MULTITHREAD -D_ATS_GCATS -O3 -g binary-trees_smp_dats.c -o binary-trees_smp -lpthread
+#	$(ATSCC) -D_ATS_MULTITHREAD -D_ATS_gc -O3 -g binary-trees_smp_dats.c -o binary-trees_smp -lpthread
 
 binary-trees_smp_dats.c: binary-trees_smp.dats
 	$(ATSOPT) -o binary-trees_smp_dats.c -d binary-trees_smp.dats
 
 binary-trees2: binary-trees2.dats
 	$(ATSCC) -O3 binary-trees2.dats -o binary-trees2 -D_ATS_GCATS
+
+binary-trees2_smp: binary-trees2_smp.dats
+	$(ATSCC) -D_ATS_MULTITHREAD -O3 binary-trees2_smp.dats -o binary-trees2_smp -D_ATS_GCATS -lpthread
+
+######
 
 fannkuch: fannkuch.dats
 	$(ATSCC) -fomit-frame-pointer -O3 fannkuch.dats -o fannkuch

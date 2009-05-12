@@ -87,6 +87,7 @@ implement main (argc, argv) = let
     (n >= 0, "The input integer needs to be a natural number.\n")
   // this simply means that no garbage collection can be triggered
   // and memory allocation and deallocation must be handled manually
+  val () = gc_chunk_count_limit_set (1 << 15)
   val () = gc_chunk_count_limit_max_set (~1) // infinite
   val max_depth = max (MIN_DEPTH + 2, n)
   val () = stretch (max_depth)

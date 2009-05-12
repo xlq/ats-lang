@@ -9,7 +9,7 @@
 /*
 ** ATS/Anairiats - Unleashing the Power of Types!
 **
-** Copyright (C) 2002-2008 Hongwei Xi.
+** Copyright (C) 2002-2009 Hongwei Xi.
 **
 ** All rights reserved
 **
@@ -31,20 +31,18 @@
 
 /* ****** ****** */
 
-#ifndef _ATS_GCBDW_H
-#define _ATS_GCBDW_H
-
-/* ****** ****** */
-
 /* author: Likai Liu (liulk AT cs DOT bu DOT edu) */
 /* author: Hongwei Xi (hwxi AT cs DOT bu DOT edu) */
 
 /* ****** ****** */
 
-static inline
+#ifndef _ATS_GCBDW_H
+#define _ATS_GCBDW_H
+
+/* ****** ****** */
+
 ats_ptr_type
-ats_malloc_ngc
-  (ats_size_type n) {
+ats_malloc_ngc (ats_size_type n) {
   void *p = GC_malloc(n) ; return p ;
 } /* end of [ats_malloc_ngc] */
 
