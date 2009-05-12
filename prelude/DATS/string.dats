@@ -118,7 +118,6 @@ implement string_make_list_int (cs, n) = let
       :<> [l:addr] (free_gc_v (n+1, l), strbuf (n+1, n) @ l | ptr l)
       = "_string_alloc"
   } // end of [val]
-  prval () = free_gc_elim (pf_gc)
   val () = loop (!p_sb, n, 0, cs) where {
     fun loop {m,n:nat} {i,j:nat | i + j == n} .<n-i>.
       (buf: &strbuf (m, n), n: int n, i: int i, cs: list (char, j)):<> void =
@@ -137,7 +136,7 @@ implement string_make_list_int (cs, n) = let
       end // end of [if]
   } // end of [val]
 in
-  string1_of_strbuf1 (pf_sb | p_sb)
+  string1_of_strbuf1 (pf_gc, pf_sb | p_sb)
 end // end of [string_make_list_int]
 
 (* ****** ****** *)
@@ -174,10 +173,9 @@ implement stringlst_concat (ss) = let
       :<> [l:addr] (free_gc_v (n+1, l), strbuf (n+1, n) @ l | ptr l)
       = "_string_alloc"
   } // end of [val]
-  prval () = free_gc_elim (pf_gc)
   val () = loop2 (!p_sb, n0, 0, ss)
 in
-  string1_of_strbuf1 (pf_sb | p_sb)
+  string1_of_strbuf1 (pf_gc, pf_sb | p_sb)
 end // end of [stringlst_concat]
 
 (* ****** ****** *)
@@ -226,7 +224,6 @@ fn string_make_fun {n:nat}
   (s: string n, f: c1har -<> c1har):<> string n = let
   val n = string1_length (s)
   val (pf_gc, pf_buf | p_buf) = malloc_gc (n+1)
-  prval () = free_gc_elim (pf_gc)
   val () = loop (pf_buf | p_buf, 0) where {
     fun loop {i:nat | i <= n} {l:addr} .<n-i>.
       (pf: !b0ytes (n-i+1) @ l >> strbuf (n-i+1, n-i) @ l | p: ptr l, i: size_t i)
@@ -251,7 +248,7 @@ fn string_make_fun {n:nat}
     end // end of [loop]
   } // end of [val]
 in
-  string1_of_strbuf1 (pf_buf | p_buf)
+  string1_of_strbuf1 (pf_gc, pf_buf | p_buf)
 end // end of [string_make_fun]
 
 in // in of [local]

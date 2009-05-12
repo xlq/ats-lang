@@ -158,7 +158,7 @@ castfn string1_of_string (str: string):<> [n:nat] string n
 (* ****** ****** *)
 
 castfn string1_of_strbuf1 {m,n:nat} {l:addr}
-  (pf: strbuf (m, n) @ l | p: ptr l) :<> string n
+  (pf_gc: free_gc_v (m, l), pf_buf: strbuf (m, n) @ l | p: ptr l) :<> string n
   = "atspre_string1_of_strbuf1"
 
 castfn strbuf1_of_string1 {n:nat} (str: string n)
