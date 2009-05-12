@@ -31,94 +31,51 @@
 
 /* ****** ****** */
 
-// June 2008
+// May 2009
 // Author: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
 
 /* ****** ****** */
 
-#ifndef _ATS_GCATS_H
-#define _ATS_GCATS_H
+#ifndef _ATS_NGC_H
+#define _ATS_NGC_H
 
 /* ****** ****** */
 
-//
-
-extern
-ats_int_type gc_chunk_count_limit_get () ;
-
-extern
-ats_void_type gc_chunk_count_limit_set (ats_int_type n) ;
-
-extern
-ats_int_type gc_chunk_count_limit_max_get () ;
-
-extern
-ats_void_type gc_chunk_count_limit_max_set (ats_int_type n) ;
-
-//
-
-extern
-ats_void_type gc_markroot_bsz (ats_ptr_type ptr, ats_int_type bsz) ;
-
-/* ****** ****** */
-
-extern
-ats_ptr_type gc_aut_malloc_bsz (ats_int_type bsz) ;
-
-extern
-ats_ptr_type gc_aut_calloc_bsz (ats_int_type n, ats_int_type bsz) ;
-
-extern ats_void_type gc_aut_free (ats_ptr_type ptr) ;
-
-extern
-ats_ptr_type gc_aut_realloc_bsz (ats_ptr_type ptr, ats_int_type bsz) ;
-
-/* ****** ****** */
-
-extern
-ats_ptr_type gc_man_malloc_bsz (ats_int_type bsz) ;
-
-extern
-ats_ptr_type gc_man_calloc_bsz (ats_int_type n, ats_int_type bsz) ;
-
-extern ats_void_type gc_man_free (ats_ptr_type ptr) ;
-
-extern
-ats_ptr_type gc_man_realloc_bsz (ats_ptr_type ptr, ats_int_type bsz) ;
+// declared in [stdlib.h]
+extern void *malloc (size_t bsz) ;
+extern void *calloc (size_t n, size_t bsz) ;
+extern void free (void *p) ;
+extern void *realloc (void* p, size_t bsz) ;
 
 /* ****** ****** */
 
 ats_void_type
-ats_gc_init () {
-  gc_init () ; return ;
-} /* end of [ats_gc_init] */
+ats_gc_init () { return ; }
+/* end of [ats_gc_init] */
 
 ats_void_type
-ats_gc_markroot (const ats_ptr_type p, ats_size_type bsz) {
-/*
-  fprintf (stderr, "ats_gc_markroot: p = %p and bsz = %i\n", p, bsz) ;
-*/
-  gc_markroot_bsz (p, bsz) ; return ;
+ats_gc_markroot (
+  const ats_ptr_type p, ats_size_type bsz
+) {
+  return ;
 } /* end of [ats_gc_markroot] */
 
 ats_int_type
-ats_gc_chunk_count_limit_get () {
-  return gc_chunk_count_limit_get () ;
-} /* end of [ats_gc_chunk_count_limit_get] */
+ats_gc_chunk_count_limit_get () { return 0 ; }
+/* end of [ats_gc_chunk_count_limit_get] */
 
 ats_void_type
-ats_gc_chunk_count_limit_set (ats_int_type nchunk)
-  { gc_chunk_count_limit_set (nchunk) ; return ; }
+ats_gc_chunk_count_limit_set
+  (ats_int_type nchunk) { return ; }
 /* end of [ats_gc_chunk_count_limit_set] */
 
 ats_int_type
-ats_gc_chunk_count_limit_max_get () {
-  return gc_chunk_count_limit_max_get () ;
-} /* end of [ats_gc_chunk_count_limit_max_get] */
+ats_gc_chunk_count_limit_max_get () { return 0 ; }
+/* end of [ats_gc_chunk_count_limit_max_get] */
 
 ats_void_type
-ats_gc_chunk_count_limit_max_set (ats_int_type nchunk)
-  { gc_chunk_count_limit_max_set (nchunk) ; return ; }
+ats_gc_chunk_count_limit_max_set
+  (ats_int_type nchunk) { return ; }
 /* end of [ats_gc_chunk_count_limit_max_set] */
 
 /* ****** ****** */
@@ -129,7 +86,7 @@ ats_malloc_gc (ats_size_type n) {
 /*
   fprintf (stderr, "ats_malloc_gc: n = %i\n", n) ;
 */
-  p = gc_aut_malloc_bsz(n) ;
+  p = malloc(n) ;
 /*
   fprintf (stderr, "ats_malloc_gc: p = %p(%li)\n", p, p) ;
 */
@@ -143,7 +100,7 @@ ats_calloc_gc (ats_size_type n, ats_size_type bsz) {
 /*
   fprintf (stderr, "ats_calloc_gc: n = %i and bsz = %i\n", n, bsz) ;
 */
-  p = gc_aut_calloc_bsz(n, bsz) ;
+  p = calloc(n, bsz) ;
 /*
   fprintf (stderr, "ats_calloc_gc: p = %p(%li)\n", p, p) ;
 */
@@ -156,7 +113,7 @@ ats_free_gc (const ats_ptr_type p) {
 /*
   fprintf (stderr, "ats_free_gc: p = %p(%li)\n", p, p) ;
 */
-  gc_aut_free(p) ; return ;
+  free(p) ; return ;
 } /* end of [ats_free_gc] */
 
 ats_ptr_type
@@ -165,7 +122,7 @@ ats_realloc_gc (const ats_ptr_type p, ats_size_type bsz) {
 /*
   fprintf (stderr, "ats_realloc_gc: p = %p and bsz = %i\n", p, bsz) ;
 */
-  p_new = gc_aut_realloc_bsz(p, bsz) ;
+  p_new = realloc(p, bsz) ;
 /*
   fprintf (stderr, "ats_realloc_gc: p_new = %p(%li)\n", p_new, p_new) ;
 */
@@ -179,11 +136,11 @@ ats_ptr_type
 ats_malloc_ngc (ats_size_type n) {
   ats_ptr_type *p ;
   /*
-  fprintf (stderr, "ats_malloc_ngc: _ATS_GCATS: n = %i\n", n) ;
+  fprintf (stderr, "ats_malloc_ngc: _ATS_NGC: n = %i\n", n) ;
   */
-  p = gc_man_malloc_bsz(n) ;
+  p = malloc(n) ;
   /*
-  fprintf (stderr, "ats_malloc_ngc: _ATS_GCATS: p = %p(%li)\n", p, p) ;
+  fprintf (stderr, "ats_malloc_ngc: _ATS_NGC: p = %p(%li)\n", p, p) ;
   */
   if (!p) ats_exit_errmsg(1, "Exit: [ats_malloc_ngc] failed.\n") ;
   return p ;
@@ -193,7 +150,7 @@ ats_ptr_type
 ats_calloc_ngc (ats_size_type n, ats_size_type bsz)
 {
   ats_ptr_type *p ;
-  p = gc_man_calloc_bsz(n, bsz) ;
+  p = calloc(n, bsz) ;
   if (!p) ats_exit_errmsg (1, "Exit: [ats_calloc_ngc] failed.\n") ;
   return p ;
 } /* end of [ats_calloc_ngc] */
@@ -201,21 +158,21 @@ ats_calloc_ngc (ats_size_type n, ats_size_type bsz)
 ats_void_type
 ats_free_ngc (const ats_ptr_type p) {
   /*
-  fprintf (stderr, "ats_free_ngc: _ATS_GCATS: p = %p\n", p) ;
+  fprintf (stderr, "ats_free_ngc: _ATS_NGC: p = %p\n", p) ;
   */
-  gc_man_free(p) ; return ;
+  free(p) ; return ;
 } /* end of [ats_free_ngc] */
 
 ats_ptr_type
 ats_realloc_ngc (const ats_ptr_type p, ats_size_type bsz) {
   ats_ptr_type *p_new ;
   /*
-  fprintf (stderr, "ats_realloc_ngc: _ATS_GCATS: p = %p\n", p) ;
-  fprintf (stderr, "ats_realloc_ngc: _ATS_GCATS: bsz = %i\n", bsz) ;
+  fprintf (stderr, "ats_realloc_ngc: _ATS_NGC: p = %p\n", p) ;
+  fprintf (stderr, "ats_realloc_ngc: _ATS_NGC: bsz = %i\n", bsz) ;
   */
-  p_new = gc_man_realloc_bsz(p, bsz) ;
+  p_new = realloc(p, bsz) ;
   /*
-  fprintf (stderr, "ats_realloc_ngc: _ATS_GCATS: p_new = %p\n", p_new) ;
+  fprintf (stderr, "ats_realloc_ngc: _ATS_NGC: p_new = %p\n", p_new) ;
   */
   if (!p_new) ats_exit_errmsg(1, "Exit: [ats_realloc_ngc] failed.\n") ;
   return p_new ;
@@ -223,6 +180,6 @@ ats_realloc_ngc (const ats_ptr_type p, ats_size_type bsz) {
 
 /* ****** ****** */
 
-#endif /* _ATS_GCATS_H */
+#endif /* _ATS_NGC_H */
 
 /* end of [gc.h] */
