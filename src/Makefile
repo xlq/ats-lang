@@ -38,7 +38,8 @@
 
 DIR=.
 
-MAKE=gmake
+MAKE=make
+#MAKE=gmake
 
 CC=gcc
 YACC=yacc
@@ -56,9 +57,12 @@ ATSCCFLAG=-O2 -g
 #GCFLAG=-D_ATS_gc
 #GCFLAG=-D_ATS_gcats
 #GCFLAG=-D_ATS_GC
+
+GCFLAG=-D_ATS_GCATS
+GC_o=gc_o
+
 #GCFLAG=-D_ATS_GCATS -pthread
 #GC_o=gc_mt_o
-#GC_o=gc_o
 
 ATSLEX="$(ATSHOME)"/bin/atslex
 

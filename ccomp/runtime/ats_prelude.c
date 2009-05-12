@@ -33,8 +33,6 @@
 
 /* ****** ****** */
 
-#include <stdarg.h>
-#include <stdlib.h>
 #include <stdio.h>
 
 #ifdef _ATS_MULTITHREAD
@@ -43,8 +41,6 @@
 
 /* ****** ****** */
 
-#include "ats_exception.h"
-#include "ats_memory.h"
 #include "ats_types.h"
 
 /* ****** ****** */
@@ -57,6 +53,20 @@ extern void ats_exit_errmsg (int err, char *msg) ;
 int ats_stdin_view_lock = 1 ;
 int ats_stdout_view_lock = 1 ;
 int ats_stderr_view_lock = 1 ;
+
+/* ****** ****** */
+
+/*
+** the type of [the_ats_exception_stack]
+** is given in the file [ats_exception.h]
+*/
+
+#ifdef _ATS_MULTITHREAD
+__thread
+ats_ptr_type *the_ats_exception_stack = NULL ;
+#else /* single thread */
+ats_ptr_type *the_ats_exception_stack = NULL ;
+#endif
 
 /* ****** ****** */
 
@@ -88,19 +98,14 @@ ats_exn_ptr_type SubscriptException = &SubscriptExceptionCon ;
 
 /* ****** ****** */
 
-/* tags for exception constructors */
+// the numbers less than 1000 are all
+int ats_exception_con_tag = 1000 ; // reserved for special use
 
-// numbers less than 1000 are reserved
-int ats_exception_con_tag = 1000 ;
+/*
+** function for handling uncaught exceptions
+*/
 
-#ifdef _ATS_MULTITHREAD
-__thread
-ats_exception_frame_type *the_ats_exception_stack = NULL ;
-#else /* single thread */
-ats_exception_frame_type *the_ats_exception_stack = NULL ;
-#endif
-
-/* function for handling uncaught exceptions */
+extern void exit (int status) ; // declared in [stdlib.h]
 
 ats_void_type
 ats_uncaught_exception_handle (const ats_exn_ptr_type exn) {
@@ -108,7 +113,9 @@ ats_uncaught_exception_handle (const ats_exn_ptr_type exn) {
   exit(1) ;
 } /* end of [ats_uncaught_exception_handle] */
 
-/* functions for handling match failures */
+/*
+** functions for handling match failures
+*/
 
 ats_void_type
 ats_caseof_failure_handle (void) {

@@ -29,28 +29,35 @@
  */
 
 /*
- *
- * Authors: 
- * Likai Liu (liulk AT cs DOT bu DOT edu) // Summer 2005
- * Rick Lavoie (coldfury AT cs DOT bu DOT edu) // Fall 2006
- * Hongwei Xi (hwxi AT cs DOT bu DOT edu) // Summer 2007
- *
- */
+**
+** Authors: 
+** Likai Liu (liulk AT cs DOT bu DOT edu) // Summer 2005
+** Rick Lavoie (coldfury AT cs DOT bu DOT edu) // Fall 2006
+** Hongwei Xi (hwxi AT cs DOT bu DOT edu) // Summer 2007
+**
+*/
 
 #ifndef ATS_EXCEPTION_H
 #define ATS_EXCEPTION_H // the file should only be loaded once
+
+/* ****** ****** */
+
+/*
+** always loaded after the following two files:
+*/
+#include "ats_types.h"
+#include "ats_basics.h"
+
+/* ****** ****** */
 
 #include <alloca.h>
 #include <setjmp.h>
 
 /* ****** ****** */
 
-#include "ats_basics.h"
-#include "ats_types.h"
-
-/* ****** ****** */
-
-/* function for handling uncaught exceptions */
+/*
+** function for handling uncaught exceptions
+*/
 
 extern
 ats_void_type
@@ -132,10 +139,13 @@ ats_void_type ats_raise_exn // raising an exception
 
 /* ****** ****** */
 
-/* function for generating new exception constructor tag */
+/*
+**
+** function for generating new exception constructor tag
+**
+*/
 
-extern int ats_exception_con_tag ; // this global variable is
-// defined in [ats_prelude.c]
+extern int ats_exception_con_tag ;
 
 static inline
 int ats_exception_con_tag_new () {
