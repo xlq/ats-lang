@@ -79,6 +79,7 @@ fun fprint_tyreckind {m:file_mode}
 fn fprint_s2rtdat {m:file_mode}
   (pf: file_mode_lte (m, w) | out: &FILE m, s2td: s2rtdat_t): void =
   fprint_symbol (pf | out, s2rtdat_sym_get s2td)
+// end of [fprint_s2rtdat]
 
 fn fprint_s2rtbas {m:file_mode}
   (pf: file_mode_lte (m, w) | out: &FILE m, s2tb: s2rtbas): void =
@@ -86,6 +87,7 @@ fn fprint_s2rtbas {m:file_mode}
   | S2RTBASpre x => fprint_symbol (pf | out, x)
   | S2RTBASimp (x, _, _) => fprint_symbol (pf | out, x)
   | S2RTBASdef x => fprint_s2rtdat (pf | out, x)
+// end of [fprint_s2rtbas]
 
 (* ****** ****** *)
 
@@ -95,25 +97,25 @@ in
   case+ s2i of
   | S2ITEMcst _ => begin
       fprint1_string (pf | out, "S2ITEMcst(...)")
-    end
+    end // end of [S2ITEMcst]
   | S2ITEMdatconptr d2c => begin
       strpr "S2ITEMdatconptr("; fprint_d2con (pf | out, d2c); strpr ")"
-    end
+    end // end of [S2ITEMdatconptr]
   | S2ITEMdatcontyp d2c => begin
       strpr "S2ITEMdatcontyp("; fprint_d2con (pf | out, d2c); strpr ")"
-    end
+    end // end of [S2ITEMdatcontyp]
   | S2ITEMe1xp e1xp => begin
       strpr "S2ITEMe1xp("; fprint_e1xp (pf | out, e1xp); strpr ")"
-    end
+    end // end of [S2ITEMe1xp]
   | S2ITEMfil fil => begin
       strpr "S2ITEMfil(";
       $Fil.fprint_filename (pf | out, fil);
       strpr ")"
-    end
+    end // end of [S2ITEMfil]
   | S2ITEMvar s2v => begin
       strpr "S2ITEMvar("; fprint_s2var (pf | out, s2v); strpr ")"
-    end
-end // end of [fprint_s2item]
+    end // end of [S2ITEMvar]
+end (* end of [fprint_s2item] *)
 
 implement print_s2item (s2i) = print_mac (fprint_s2item, s2i)
 implement prerr_s2item (s2i) = prerr_mac (fprint_s2item, s2i)
@@ -135,32 +137,34 @@ in
   | S2RTtup s2ts => begin
       strpr "S2RTtup("; fprint_s2rtlst (pf | out, s2ts); strpr ")"
     end // end of [S2RTtup]
-end // end of [fprint_s2rt]
+end (* end of [fprint_s2rt] *)
 
 (* ****** ****** *)
 
 implement fprint_s2rtlst {m} (pf | out, s2ts) = let
-  fun aux (out: &FILE m, i: int, s2ts: s2rtlst): void =
+  fun aux (out: &FILE m, s2ts: s2rtlst, i: int): void =
     case+ s2ts of
-    | cons (s2t, s2ts) => begin
-        if i > 0 then fprint1_string (pf | out, ", ");
-        fprint_s2rt (pf | out, s2t); aux (out, i+1, s2ts)
-      end
+    | cons (s2t, s2ts) => aux (out, s2ts, i+1) where {
+        val () = if i > 0 then fprint1_string (pf | out, ", ")
+        val () = fprint_s2rt (pf | out, s2t)
+      } // end of [cons]
     | nil () => ()
+  // end of [aux]
 in
-  aux (out, 0, s2ts)
-end // end of [fprint_s2rtlst]
+  aux (out, s2ts, 0)
+end (* end of [fprint_s2rtlst] *)
 
 implement fprint_s2rtlstlst {m} (pf | out, s2tss) = let
-  fun aux (out: &FILE m, i: int, s2tss: s2rtlstlst): void =
+  fun aux (out: &FILE m, s2tss: s2rtlstlst, i: int): void =
     case+ s2tss of
-    | cons (s2ts, s2tss) => begin
-        if i > 0 then fprint1_string (pf | out, ", ");
-        fprint_s2rtlst (pf | out, s2ts); aux (out, i+1, s2tss)
-      end
+    | cons (s2ts, s2tss) => aux (out, s2tss, i+1) where {
+        val () = if i > 0 then fprint1_string (pf | out, ", ")
+        val () = fprint_s2rtlst (pf | out, s2ts)
+      } // end of [cons]
     | nil () => ()
+  // end of [aux]
 in
-  aux (out, 0, s2tss)
+  aux (out, s2tss, 0)
 end // end of [fprint_s2rtlstlst]
 
 (* ****** ****** *)
@@ -198,7 +202,7 @@ implement fprint_s2rtext (pf | out, s2te) = begin
       fprint1_string (pf | out, ")")
     end // end of [S2TEapp]
 *)
-end // end of [fprint_s2rtext]
+end (* end of [fprint_s2rtext] *)
 
 (* ****** ****** *)
 
@@ -217,7 +221,7 @@ implement fprint_s2eff (pf | out, s2fe) = begin
       fprint_s2explst (pf | out, s2es);
       fprint1_string (pf | out, ">")
     end
-end // end of [fprint_s2eff]
+end (* end of [fprint_s2eff] *)
 
 implement print_s2eff (s2fe) = print_mac (fprint_s2eff, s2fe)
 implement prerr_s2eff (s2fe) = prerr_mac (fprint_s2eff, s2fe)
@@ -246,15 +250,11 @@ in
       strpr ")"
     end // end of [S2Eclo]
   | S2Ecrypt (s2e) => begin
-      strpr "S2Ecrypt(";
-      fprint_s2exp (pf | out, s2e);
-      strpr ")"
-    end
+      strpr "S2Ecrypt("; fprint_s2exp (pf | out, s2e); strpr ")"
+    end // end of [S2Ecrypt]
   | S2Ecst s2c => begin
-      strpr "S2Ecst(";
-      fprint_s2cst (pf | out, s2c);
-      strpr ")"
-    end
+      strpr "S2Ecst("; fprint_s2cst (pf | out, s2c); strpr ")"
+    end // end of [S2Ecst]
   | S2Edatconptr (d2c, s2es) => begin
       strpr "S2Edatconptr(";
       fprint_d2con (pf | out, d2c);
@@ -270,9 +270,7 @@ in
       strpr ")"
     end // end of [S2Edatcontyp]
   | S2Eeff s2fe => begin
-      strpr "S2Eeff(";
-      fprint_s2eff (pf | out, s2fe);
-      strpr ")"
+      strpr "S2Eeff("; fprint_s2eff (pf | out, s2fe); strpr ")"
     end // end of [S2Eeff]
   | S2Eeqeq (s2e1, s2e2) => begin
       strpr "S2Eeqeq(";
@@ -308,26 +306,26 @@ in
     end // end of [S2Efun]
   | S2Eint i(*int*) => begin
       strpr "S2Eint("; fprint1_int (pf | out, i); strpr ")"
-    end
+    end // end of [S2Eint]
   | S2Eintinf i(*intinf*) => begin
       strpr "S2Eint(";
       $IntInf.fprint_intinf (pf | out, i);
       strpr ")"
-    end
+    end // end of [S2Eintinf]
   | S2Elam (s2vs, s2e) => begin
       strpr "S2Elam(";
       fprint_s2varlst (pf | out, s2vs);
       strpr "; ";
       fprint_s2exp (pf | out, s2e);
       strpr ")"
-    end
+    end // end of [S2Elam]
   | S2Emetfn (_(*stamp*), s2es, s2e) => begin
       strpr "S2Emetfn(";
       fprint_s2explst (pf | out, s2es);
       strpr "; ";
       fprint_s2exp (pf | out, s2e);
       strpr ")"
-    end
+    end // end of [S2Emetfn]
   | S2Emetlt (s2es1, s2es2) => begin
       strpr "S2Emetlt(";
       fprint_s2explst (pf | out, s2es1);
@@ -390,14 +388,14 @@ in
       strpr "S2Etup(";
       fprint_s2explst (pf | out, s2es);
       strpr ")"
-    end
+    end // end of [S2Etup]
   | S2Etyarr (s2e_elt, s2ess_dim) => begin
       strpr "S2Etyarr(";
       fprint_s2exp (pf | out, s2e_elt);
       strpr "; ";
       fprint_s2explstlst (pf | out, s2ess_dim);
       strpr ")"
-    end
+    end // end of [S2Etyarr]
   | S2Etyleq (knd, s2e1, s2e2) => begin
       strpr "S2Etyleq(";
       fprint1_int (pf | out, knd);
@@ -409,7 +407,7 @@ in
     end // end of [S2Etyleq]
   | S2Etylst s2es => begin
       strpr "S2Etylst("; fprint_s2explst (pf | out, s2es); strpr ")"
-    end
+    end // end of [S2Etylst]
   | S2Etyrec (k, npf, ls2es) => begin
       strpr "S2Etyrec(";
       fprint_tyreckind (pf | out, k);
@@ -418,7 +416,7 @@ in
       strpr "; ";
       fprint_labs2explst (pf | out, ls2es);
       strpr ")"
-    end
+    end // end of [S2Etyrec]
   | S2Euni (s2vs, s2ps, s2e) => begin
       strpr "S2Euni(";
       fprint_s2varlst (pf | out, s2vs);
@@ -427,7 +425,7 @@ in
       strpr "; ";
       fprint_s2exp (pf | out, s2e);
       strpr ")"
-    end
+    end // end of [S2Euni]
   | S2Eunion (stamp, s2e_ind, ls2es) => begin
       strpr "S2Eunion(";
       $Stamp.fprint_stamp (pf | out, stamp);
@@ -436,14 +434,14 @@ in
       strpr "; ";
       fprint_labs2explst (pf | out, ls2es);
       strpr ")"
-    end
+    end // end of [S2Eunion]
   | S2Evar s2v => begin
       strpr "S2Evar("; fprint_s2var (pf | out, s2v); strpr ")"
-    end
+    end // end of [S2Evar]
   | S2EVar s2V => let
       val () = begin
         strpr "S2EVar("; fprint_s2Var (pf | out, s2V); strpr ")"
-      end
+      end // end of [val]
 (*
       val () = let
         val os2e = s2Var_link_get s2V in case+ os2e of
@@ -458,23 +456,23 @@ in
     end // end of [S2EVar]
   | S2Evararg s2e => begin
       strpr "S2Evararg("; fprint_s2exp (pf | out, s2e); strpr ")"
-    end
+    end // end of [S2Evararg]
   | S2Ewth (s2e_res, wths2es) => begin
       strpr "S2Ewth(";
       fprint_s2exp (pf | out, s2e_res);
       strpr "; ";
       fprint_wths2explst (pf | out, wths2es);
       strpr ")"
-    end
+    end // end of [S2Ewth]
 (*
   | _ => begin
       prerr "Internal Error: ";
       prerr "[fprint_s2exp]: unsupported static expression";
       prerr_newline ();
       exit (1)      
-    end
+    end (* end of [_] *)
 *)
-end // end of [fprint_s2exp]
+end (* end of [fprint_s2exp] *)
 
 (* ****** ****** *)
 
@@ -484,28 +482,30 @@ implement prerr_s2exp (s2e) = prerr_mac (fprint_s2exp, s2e)
 (* ****** ****** *)
 
 implement fprint_s2explst {m} (pf | out, s2es) = let
-  fun aux (out: &FILE m, i: int, s2es: s2explst): void =
+  fun aux (out: &FILE m, s2es: s2explst, i: int): void =
     case+ s2es of
-    | cons (s2e, s2es) => begin
-        if i > 0 then fprint1_string (pf | out, ", ");
-        fprint_s2exp (pf | out, s2e); aux (out, i+1, s2es)
-      end // end of [cons]
+    | cons (s2e, s2es) => aux (out, s2es, i+1) where {
+        val () = if i > 0 then fprint1_string (pf | out, ", ")
+        val () = fprint_s2exp (pf | out, s2e)
+      } // end of [cons]
     | nil () => ()
+  // end of [aux]
 in
-  aux (out, 0, s2es)
-end // end of [fprint_s2explst]
+  aux (out, s2es, 0)
+end (* end of [fprint_s2explst] *)
 
 implement fprint_s2explstlst {m} (pf | out, s2ess) = let
-  fun aux (out: &FILE m, i: int, s2ess: s2explstlst): void =
+  fun aux (out: &FILE m, s2ess: s2explstlst, i: int): void =
     case+ s2ess of
-    | cons (s2es, s2ess) => begin
-        if i > 0 then fprint1_string (pf | out, "; ");
-        fprint_s2explst (pf | out, s2es); aux (out, i + 1, s2ess)
-      end // end of [cons]
+    | cons (s2es, s2ess) => aux (out, s2ess, i+1) where {
+        val () = if i > 0 then fprint1_string (pf | out, "; ")
+        val () = fprint_s2explst (pf | out, s2es)
+      } // end of [cons]
     | nil () => ()
+  // end of [aux]
 in
-  aux (out, 0, s2ess)
-end // end of [fprint_s2explstlst]
+  aux (out, s2ess, 0)
+end (* end of [fprint_s2explstlst] *)
 
 (* ****** ****** *)
 
@@ -515,16 +515,16 @@ implement fprint_s2expopt {m} (pf | out, os2e) = begin
       fprint1_string (pf | out, "Some(");
       fprint_s2exp (pf | out, s2e);
       fprint1_string (pf | out, ")")
-    end
+    end // end of [Some]
   | None () => begin
       fprint1_string (pf | out, "None()")
-    end
-end // end of [fprint_s2expopt]
+    end // end of [None]
+end (* end of [fprint_s2expopt] *)
 
 (* ****** ****** *)
 
 implement fprint_labs2explst {m} (pf | out, ls2es) = let
-  fun aux (out: &FILE m, i: int, ls2es: labs2explst): void =
+  fun aux (out: &FILE m, ls2es: labs2explst, i: int): void =
     case+ ls2es of
     | LABS2EXPLSTcons (l, s2e, ls2es) => let
         val () = if i > 0 then fprint1_string (pf | out, ", ")
@@ -532,13 +532,13 @@ implement fprint_labs2explst {m} (pf | out, ls2es) = let
         val () = fprint1_string (pf | out, "=")
         val () = fprint_s2exp (pf | out, s2e)
       in
-        aux (out, i+1, ls2es)
+        aux (out, ls2es, i+1)
       end // end of [LABS2EXPLSTcons]
     | LABS2EXPLSTnil () => ()
   // end of [aux]
 in
-  aux (out, 0, ls2es)
-end // end of [fprint_labs2explst]
+  aux (out, ls2es, 0)
+end (* end of [fprint_labs2explst] *)
 
 (* ****** ****** *)
 
@@ -556,25 +556,31 @@ in
 end // end of [fprint_s2explstlst]
 
 implement fprint_wths2explst {m} (pf | out, wths2es) = let
-  fun aux (out: &FILE m, i: int, wths2es: wths2explst): void = let
+  fun aux (
+      out: &FILE m, wths2es: wths2explst, i: int
+    ) : void = let
     macdef strpr (s) = fprint1_string (pf | out, ,(s))
   in
     case+ wths2es of
-    | WTHS2EXPLSTcons_some (refval, s2e, wths2es) => begin
-        if i > 0 then strpr "; ";
-        strpr "Some("; fprint_s2exp (pf | out, s2e); strpr ")";
-        aux (out, i + 1, wths2es)
-      end
-    | WTHS2EXPLSTcons_none (wths2es) => begin
-        if i > 0 then strpr "; ";
-        fprint1_string (pf | out, "None()");
-        aux (out, i + 1, wths2es)
-      end
+    | WTHS2EXPLSTcons_some (refval, s2e, wths2es) => let
+        val () = if i > 0 then strpr "; "
+        val () = begin
+          strpr "Some("; fprint_s2exp (pf | out, s2e); strpr ")"
+        end // end of [val]
+      in
+        aux (out, wths2es, i+1)
+      end // end of [WTHS2EXPLSTcons_some]
+    | WTHS2EXPLSTcons_none (wths2es) => let
+        val () = if i > 0 then strpr "; "
+        val () = fprint1_string (pf | out, "None()")
+      in
+        aux (out, wths2es, i+1)
+      end // end of [STHS2EXPLSTcons_none]
     | WTHS2EXPLSTnil () => ()
   end // end of [aux]
 in
-  aux (out, 0, wths2es)
-end // end of [fprint_wths2explst]
+  aux (out, wths2es, 0)
+end (* end of [fprint_wths2explst] *)
 
 (* ****** ****** *)
 
@@ -590,7 +596,7 @@ in
   | S2LAB1ind (s2ess, _) =>  begin
       strpr "["; fprint_s2explstlst (pf | out, s2ess); strpr "]"
     end
-end // end of [fprint_s2lab]
+end (* end of [fprint_s2lab] *)
 
 implement print_s2lab (s2l) = print_mac (fprint_s2lab, s2l)
 implement prerr_s2lab (s2l) = prerr_mac (fprint_s2lab, s2l)
@@ -640,45 +646,41 @@ in
 end // end of [fprint_sk2exp]
 
 implement fprint_s2kexplst {m} (pf | out, s2kes) = let
-  fun aux (out: &FILE m, i: int, s2kes: s2kexplst): void =
+  fun aux (out: &FILE m, s2kes: s2kexplst, i: int): void =
     case+ s2kes of
-    | cons (s2ke, s2kes) => let
+    | cons (s2ke, s2kes) => aux (out, s2kes, i+1) where {
         val () = if i > 0 then fprint1_string (pf | out, ", ")
-      in
-        fprint_s2kexp (pf | out, s2ke); aux (out, i+1, s2kes)
-      end
+        val () = fprint_s2kexp (pf | out, s2ke)
+      } // end of [cons]
     | nil () => ()
   // end of [aux]
 in
-  aux (out, 0, s2kes)
+  aux (out, s2kes, 0)
 end // end of [fprint_s2kexplst]
 
 implement fprint_labs2kexplst {m} (pf | out, ls2kes) = let
   fun aux (
       out: &FILE m
-    , l0: lab_t, s2ke0: s2kexp
     , ls2kes: labs2kexplst
+    , i: int
     ) : void = let
     macdef strpr (s) = fprint1_string (pf | out, ,(s))
   in
     case+ ls2kes of
-    | LABS2KEXPLSTcons (l, s2ke, ls2kes) => begin
-        fprint_label (pf | out, l0); strpr "=";
-        fprint_s2kexp (pf | out, s2ke0); strpr ", ";
-        aux (out, l, s2ke, ls2kes)
-      end
-    | LABS2KEXPLSTnil () => begin
-        fprint_label (pf | out, l0); strpr "=";
-        fprint_s2kexp (pf | out, s2ke0)
-      end
+    | LABS2KEXPLSTcons (l, s2ke, ls2kes) => let
+        val () = if (i > 0) then strpr ", "
+        val () = (fprint_label (pf | out, l); strpr "=")
+        val () = fprint_s2kexp (pf | out, s2ke)
+      in
+        aux (out, ls2kes, i+1)
+      end // end of [LABS2KEXPLSTcons]
+    | LABS2KEXPLSTnil () => ()
   end // end of [aux]
 in
-  case+ ls2kes of
-  | LABS2KEXPLSTcons (l, s2ke, ls2kes) => aux (out, l, s2ke, ls2kes)
-  | LABS2KEXPLSTnil () => ()
-end // end of [fprint_labs2kexplst]
+  aux (out, ls2kes, 0)
+end (* end of [fprint_labs2kexplst] *)
 
-//
+(* ****** ****** *)
 
 implement print_s2kexp (s2ke) = print_mac (fprint_s2kexp, s2ke)
 implement prerr_s2kexp (s2ke) = prerr_mac (fprint_s2kexp, s2ke)
@@ -695,25 +697,25 @@ in
       strpr "; ";
       fprint_s2zexplst (pf | out, s2zes_arg);
       strpr ")"
-    end
+    end // end of [S2ZEapp]
   | S2ZEbot () => begin
       fprint1_string (pf | out, "S2ZEbot()")
-    end
+    end // end of [S2ZEbot]
   | S2ZEbyte n => begin
       strpr "S2ZEbyte("; fprint1_int (pf | out, n); strpr ")"
-    end
+    end // end of [S2ZEbyte]
   | S2ZEcst s2c => begin
       strpr "S2ZEcst("; fprint_s2cst (pf | out, s2c); strpr ")"
-    end
+    end // end of [S2ZEcst]
   | S2ZEextype name => begin
       strpr "S2ZEextype("; fprint1_string (pf | out, name); strpr ")"
-    end
+    end // end of [S2ZEextype]
 (*
   | S2ZEout s2ze => begin
       strpr "S2ZEout(");
       fprint_s2zexp (pf | out, s2ze);
       strpr ")")
-    end
+    end // end of [S2ZEout]
 *)
   | S2ZEtyarr (s2ze, s2ess_dim) => begin
       strpr "S2ZEtyarr(";
@@ -721,54 +723,55 @@ in
       strpr "; ";
       fprint_s2explstlst (pf | out, s2ess_dim);
       strpr ")"
-    end
+    end // end of [S2ZEtyarr]
   | S2ZEtyrec (_(*knd*), ls2zes) => begin
       strpr "S2ZEtyrec(";
       fprint_labs2zexplst (pf | out, ls2zes);
       strpr ")"
-    end
+    end // end of [S2ZEtyrec]
   | S2ZEunion (_(*stamp*), ls2zes) => begin
       strpr "S2ZEunion(";
       fprint_labs2zexplst (pf | out, ls2zes);
       strpr ")"
-    end
+    end // end of [S2ZEunion]
   | S2ZEvar s2v => begin
       strpr "S2ZEvar("; fprint_s2var (pf | out, s2v); strpr ")"
-    end
+    end // end of [S2ZEvar]
   | S2ZEword n => begin
       strpr "S2ZEword("; fprint1_int (pf | out, n); strpr ")"
-    end
-end // end of [fprint_s2zexp]
+    end // end of [S2ZEword]
+end (* end of [fprint_s2zexp] *)
 
 (* ****** ****** *)
 
 implement fprint_s2zexplst {m} (pf | out, s2zes) = let
-fun aux (out: &FILE m, i: int, s2zes: s2zexplst): void =
-  case+ s2zes of
-  | cons (s2ze, s2zes) => begin
-      if i > 0 then fprint1_string (pf | out, ", ");
-      fprint_s2zexp (pf | out, s2ze); aux (out, i+1, s2zes)
-    end
-  | nil () => ()
+  fun aux (out: &FILE m, s2zes: s2zexplst, i: int): void =
+    case+ s2zes of
+    | cons (s2ze, s2zes) => aux (out, s2zes, i+1) where {
+        val () = if i > 0 then fprint1_string (pf | out, ", ")
+        val () = fprint_s2zexp (pf | out, s2ze)
+      } // end of [cons]
+    | nil () => ()
+  // end of [aux]
 in
-  aux (out, 0, s2zes)
-end // end of [fprint_s2zexplst]
+  aux (out, s2zes, 0)
+end (* end of [fprint_s2zexplst] *)
 
 (* ****** ****** *)
 
 implement fprint_labs2zexplst {m} (pf | out, ls2zes) = let
-fun aux (out: &FILE m, i: int, ls2zes: labs2zexplst): void =
-  case+ ls2zes of
-  | LABS2ZEXPLSTcons (l, s2ze, ls2zes) => begin
-      if i > 0 then fprint1_string (pf | out, ", ");
-      fprint_label (pf | out, l); fprint1_string (pf | out, "=");
-      fprint_s2zexp (pf | out, s2ze);
-      aux (out, i+1, ls2zes)
-    end
-  | LABS2ZEXPLSTnil () => ()
+  fun aux (out: &FILE m, ls2zes: labs2zexplst, i: int): void =
+    case+ ls2zes of
+    | LABS2ZEXPLSTcons
+        (l, s2ze, ls2zes) => aux (out, ls2zes, i+1) where {
+        val () = if i > 0 then fprint1_string (pf | out, ", ")
+        val () = (fprint_label (pf | out, l); fprint1_string (pf | out, "="))
+        val () = fprint_s2zexp (pf | out, s2ze)
+      } // end of [LABS2ZEXPLSTcons]
+    | LABS2ZEXPLSTnil () => ()
 in
-  aux (out, 0, ls2zes)
-end // end of [fprint_labs2zexplst]
+  aux (out, ls2zes, 0)
+end (* end of [fprint_labs2zexplst] *)
 
 (* ****** ****** *)
 
@@ -787,20 +790,20 @@ implement fprint_s2exparg (pf | out, s2a) =
   | S2EXPARGone() => fprint1_string (pf | out, "..")
   | S2EXPARGall() => fprint1_string (pf | out, "...")
   | S2EXPARGseq s2es => fprint_s2explst (pf | out, s2es)
+// end of [fprint_s2exparg]
 
-implement fprint_s2exparglst {m} (pf | out, s2as0) = let
-  fun aux (out: &FILE m, s2a0: s2exparg, s2as: s2exparglst): void =
+implement fprint_s2exparglst {m} (pf | out, s2as) = let
+  fun aux (out: &FILE m, s2as: s2exparglst, i: int): void =
     case+ s2as of
-    | cons (s2a, s2as) => begin
-        fprint_s2exparg (pf | out, s2a0);
-        fprint1_string (pf | out, ", ");
-        aux (out, s2a, s2as)
-      end
-    | nil () => fprint_s2exparg (pf | out, s2a0)
+    | cons (s2a, s2as) => aux (out, s2as, i+1) where {
+        val () = if i > 0 then fprint1_string (pf | out, ", ")
+        val () = fprint_s2exparg (pf | out, s2a)
+      } // end of [cons]
+    | nil () => ()
+  // end of [aux]
 in
-  case+ s2as0 of
-    | cons (s2a, s2as) => aux (out, s2a, s2as) | nil () => ()
-end // end of [fprint_s2exparglst]
+  aux (out, s2as, 0)
+end (* end of [fprint_s2exparglst] *)
 
 implement print_s2exparglst (s2as) = print_mac (fprint_s2exparglst, s2as)
 implement prerr_s2exparglst (s2as) = prerr_mac (fprint_s2exparglst, s2as)
@@ -818,14 +821,17 @@ end // end of [fprint_s2qua]
 implement fprint_s2qualst {m} (pf | out, s2qs) = let
   fun aux (out: &FILE m, i: int, s2qs: s2qualst): void =
     case+ s2qs of
-    | cons (s2q, s2qs) => begin
-        if i > 0 then fprint1_string (pf | out, ", ");
-        fprint_s2qua (pf | out, s2q); aux (out, i+1, s2qs)
-      end // end of [cons]
+    | cons (s2q, s2qs) => aux (out, i+1, s2qs) where {
+        val () = if i > 0 then fprint1_string (pf | out, ", ")
+        val () = fprint_s2qua (pf | out, s2q)
+      } // end of [cons]
     | nil () => ()
+  // end of [aux]
 in
   aux (out, 0, s2qs)
 end // end of [fprint_s2qualst]
+
+(* ****** ****** *)
 
 implement print_s2qualst (s2qs) = print_mac (fprint_s2qualst, s2qs)
 implement prerr_s2qualst (s2qs) = prerr_mac (fprint_s2qualst, s2qs)
