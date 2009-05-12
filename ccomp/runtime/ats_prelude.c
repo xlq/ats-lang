@@ -124,14 +124,14 @@ ats_funarg_match_failure_handle (void) {
 
 /* function for memory allocation and deallocation */
 
-#ifdef _ATS_GC // generic GC for ATS
-#include "gc/gc.h"
+#ifdef _ATS_GC // default GC for ATS
+#include "GCATS/gc.h"
 #elif _ATS_GCATS // special GC for ATS
 #include "GCATS/gc.h"
 #elif _ATS_GCATS0 // special GC for ATS
 #include "GCATS0/gc.h"
-#elif _ATS_gc // special GC for ATS by Rick Lavoie
-#include "gc/gc.h"
+#elif _ATS_GCBDW // Boehm-Demers-Weise conservative GC for C/C++
+#include "GCBDW/gc.h"
 #else // no GC for ATS
 #include <stdlib.h>
 #endif
