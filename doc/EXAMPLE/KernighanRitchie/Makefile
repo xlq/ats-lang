@@ -56,6 +56,18 @@ Chapter08::
 
 ######
 
+compall:
+	cd Chapter01; make all
+	cd Chapter02; make all
+	cd Chapter03; make all
+	cd Chapter04; make all
+	cd Chapter05; make all
+	cd Chapter06; make all
+	cd Chapter07; make all
+	cd Chapter08; make all
+
+######
+
 cleanall:
 	cd Chapter01; make cleanall
 	cd Chapter02; make cleanall

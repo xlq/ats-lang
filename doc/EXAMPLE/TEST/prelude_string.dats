@@ -39,11 +39,7 @@ implement main (argc, argv) = let
   val cs = string_explode (s12)
   val () = list_vt_free (cs)
 //
-  val cs = let
-    val (vbox pf | p12) = strbuf1_of_string1 (s12)
-  in
-    strbuf_explode (!p12)
-  end // end of [val]
+  val cs = string_explode (s12)
   val s12' = string_implode (__cast cs) where {
     extern castfn __cast {n:nat} (cs: !list_vt (char, n)): list (char, n)
   } // end of [val]

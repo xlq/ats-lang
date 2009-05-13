@@ -7,28 +7,27 @@
 (***********************************************************************)
 
 (*
- * ATS - Unleashing the Potential of Types!
- *
- * Copyright (C) 2002-2008 Hongwei Xi, Boston University
- *
- * All rights reserved
- *
- * ATS is free software;  you can  redistribute it and/or modify it under
- * the terms of the GNU LESSER GENERAL PUBLIC LICENSE as published by the
- * Free Software Foundation; either version 2.1, or (at your option)  any
- * later version.
- * 
- * ATS is distributed in the hope that it will be useful, but WITHOUT ANY
- * WARRANTY; without  even  the  implied  warranty  of MERCHANTABILITY or
- * FITNESS FOR A PARTICULAR PURPOSE.  See the  GNU General Public License
- * for more details.
- * 
- * You  should  have  received  a  copy of the GNU General Public License
- * along  with  ATS;  see the  file COPYING.  If not, please write to the
- * Free Software Foundation,  51 Franklin Street, Fifth Floor, Boston, MA
- * 02110-1301, USA.
- *
- *)
+** ATS - Unleashing the Potential of Types!
+**
+** Copyright (C) 2002-2009 Hongwei Xi, Boston University
+**
+** All rights reserved
+**
+** ATS is free software;  you can  redistribute it and/or modify it under
+** the terms of the GNU LESSER GENERAL PUBLIC LICENSE as published by the
+** Free Software Foundation; either version 2.1, or (at your option)  any
+** later version.
+** 
+** ATS is distributed in the hope that it will be useful, but WITHOUT ANY
+** WARRANTY; without  even  the  implied  warranty  of MERCHANTABILITY or
+** FITNESS FOR A PARTICULAR PURPOSE.  See the  GNU General Public License
+** for more details.
+** 
+** You  should  have  received  a  copy of the GNU General Public License
+** along  with  ATS;  see the  file COPYING.  If not, please write to the
+** Free Software Foundation,  51 Franklin Street, Fifth Floor, Boston, MA
+** 02110-1301, USA.
+*)
 
 (* ****** ****** *)
 
@@ -531,8 +530,7 @@ val p_token_ide = let
     prval pf = array_v_cons {char} (pf1, pf2)
     prval pf = bytes_v_of_chars_v (pf)
     val () = bytes_strbuf_trans (pf | p0, size1_of_int1 (n+1))
-    prval () = free_gc_elim (pf_gc)
-    val str = string1_of_strbuf1 (pf | p0)
+    val str = string1_of_strbuf (pf_gc, pf | p0)
   in
     token_ide_make (loc, str)
   end // end of [f1]

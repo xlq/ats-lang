@@ -97,11 +97,13 @@ pidigits2: pidigits2.dats
 	$(ATSCC) -O3 -fomit-frame-pointer pidigits2.dats -o pidigits2 -lgmp
 
 regex-dna: regex-dna.dats
-#	$(ATSCC) -O3 -fomit-frame-pointer regex-dna.dats -o regex-dna -lpcre
 	$(ATSCC) -D_ATS_GCATS -O3 -fomit-frame-pointer regex-dna.dats -o regex-dna -lpcre
 
 regex-dna_smp: regex-dna_smp.dats
 	$(ATSCC) -D_ATS_MULTITHREAD -O3 -fomit-frame-pointer regex-dna_smp.dats -o regex-dna_smp -lpthread -lpcre
+
+regex-dna2: regex-dna2.dats
+	$(ATSCC) -D_ATS_GCATS -O3 -fomit-frame-pointer regex-dna2.dats -o regex-dna2 -lpcre
 
 ######
 
@@ -161,6 +163,7 @@ cleanall: clean
 	rm -f pidigits2
 	rm -f regex-dna
 	rm -f regex-dna_smp
+	rm -f regex-dna2
 	rm -f reverse-complement
 	rm -f reverse-complement2
 	rm -f spectral-norm

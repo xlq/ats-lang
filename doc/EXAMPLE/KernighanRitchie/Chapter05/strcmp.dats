@@ -42,11 +42,9 @@ implement main (argc, argv) = let
   val str1 = string1_of_string (argv.[1])
   and str2 = string1_of_string (argv.[2])
   val sgn = let
-    val (vbox pf1_buf | p1_buf) = strbuf1_of_string1 str1
-  in
+    val (vbox pf1_buf | p1_buf) = strbuf_of_string1 str1 in
     $effmask_all let
-      val (vbox pf2_buf | p2_buf) = strbuf1_of_string1 str2
-    in
+      val (vbox pf2_buf | p2_buf) = strbuf_of_string1 str2 in
       strcmp (!p1_buf, !p2_buf)
     end // end of [let]
   end // end of [val]
