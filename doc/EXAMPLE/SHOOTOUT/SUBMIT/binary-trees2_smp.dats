@@ -32,12 +32,13 @@ dataviewtype tree (int) =
 
 viewtypedef Tree = [n:two] tree n
 
-fun make (d: int, i: int): Tree =
+fun tree_make (d: int, i: int): Tree =
   if d > 0 then
     let val d1 = d-1 and i2 = i << 1 in      
-      Node (make (d1, i2 - 1), i, make (d1, i2))
+      Node (tree_make (d1, i2 - 1), i, tree_make (d1, i2))
     end
   else Node (Nil (), i, Nil ())
+// end of [tree_make]
 
 fun check_and_free (t: Tree):<!ntm> int =  case+ t of
   | ~Node (tl, i, tr) => i + check_and_free tl - check_and_free tr
@@ -62,7 +63,7 @@ end // end of [check_ref]
 
 fn stretch (max_depth: Nat): void = let
    val stretch_depth = max_depth + 1
-   val t = make (stretch_depth, 0)
+   val t = tree_make (stretch_depth, 0)
    val c = check_and_free (t)
 in
    printf ("stretch tree of depth %i\t check: %i\n", @(stretch_depth, c));
@@ -70,7 +71,7 @@ end // end of [stretch]
 
 fn long_lived_tree_make
   (max_depth: Nat): ref Tree = let
-  val t = make (max_depth, 0); val t_r = ref<Tree> (t)
+  val t = tree_make (max_depth, 0); val t_r = ref<Tree> (t)
 in
   t_r
 end // end of [long_lived_tree_make]
@@ -121,8 +122,8 @@ fun worker {l_n,l_d,l_c:addr} {d,md:nat | d <= md} (
   val n = 1 << (max_depth - d + MIN_DEPTH)
   fun loop (i: Nat, c: int):<cloref1> int =
     if i < n then let
-      val t = make(d,  i); val c1 = check_and_free t
-      val t = make(d, ~i); val c2 = check_and_free t
+      val t = tree_make(d,  i); val c1 = check_and_free t
+      val t = tree_make(d, ~i); val c2 = check_and_free t
     in
       loop (i+1, c + c1 + c2)
     end else begin

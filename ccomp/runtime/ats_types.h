@@ -34,8 +34,8 @@
 
 /* ****** ****** */
 
-#ifndef __ATS_TYPES_H
-#define __ATS_TYPES_H
+#ifndef ATS_TYPES_H
+#define ATS_TYPES_H
 
 /* ****** ****** */
 
@@ -151,6 +151,6 @@ typedef void *ats_fun_ptr_type ;
 
 /* ****** ****** */
 
-#endif /* __ATS_TYPES_H */
+#endif /* ATS_TYPES_H */
 
 /* end of [ats_types.h] */
