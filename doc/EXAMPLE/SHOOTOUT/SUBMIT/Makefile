@@ -12,9 +12,12 @@ binary-trees: binary-trees.dats
 #	$(ATSCC) -O3 binary-trees.dats -o binary-trees
 #	$(ATSCC) -O3 binary-trees.dats -o binary-trees -D_ATS_gc
 #	$(ATSCC) -O3 binary-trees.dats -o binary-trees -D_ATS_gcats
-	$(ATSCC) -O3 binary-trees.dats -o binary-trees -D_ATS_GCATS
+#	$(ATSCC) -O3 binary-trees.dats -o binary-trees -D_ATS_GCATS
+	$(ATSCC) -O3 binary-trees.dats -o binary-trees -D_ATS_GCBDW
+
 binary-trees_smp: binary-trees_smp_dats.c
-	$(ATSCC) -D_ATS_MULTITHREAD -D_ATS_GCATS -O3 -g binary-trees_smp_dats.c -o binary-trees_smp -lpthread
+	$(ATSCC) -D_ATS_MULTITHREAD -D_ATS_GCBDW -O3 -g binary-trees_smp_dats.c -o binary-trees_smp -lpthread
+#	$(ATSCC) -D_ATS_MULTITHREAD -D_ATS_GCATS -O3 -g binary-trees_smp_dats.c -o binary-trees_smp -lpthread
 #	$(ATSCC) -D_ATS_MULTITHREAD -D_ATS_gc -O3 -g binary-trees_smp_dats.c -o binary-trees_smp -lpthread
 
 binary-trees_smp_dats.c: binary-trees_smp.dats

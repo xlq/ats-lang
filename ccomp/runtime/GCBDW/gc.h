@@ -41,16 +41,96 @@
 
 /* ****** ****** */
 
+#include "GCBDW/include/gc/gc.h" // interface file for [bdwgc]
+
+/* ****** ****** */
+
+ats_void_type
+ats_gc_init () { GC_INIT() ; return ; }
+/* end of [ats_gc_init] */
+
+ats_void_type
+ats_gc_markroot (
+  const ats_ptr_type p, ats_size_type bsz
+) {
+  return ;
+} /* end of [ats_gc_markroot] */
+
+ats_int_type
+ats_gc_chunk_count_limit_get () { return 0 ; }
+/* end of [ats_gc_chunk_count_limit_get] */
+
+ats_void_type
+ats_gc_chunk_count_limit_set
+  (ats_int_type nchunk) { return ; }
+/* end of [ats_gc_chunk_count_limit_set] */
+
+ats_int_type
+ats_gc_chunk_count_limit_max_get () { return 0 ; }
+/* end of [ats_gc_chunk_count_limit_max_get] */
+
+ats_void_type
+ats_gc_chunk_count_limit_max_set
+  (ats_int_type nchunk) { return ; }
+/* end of [ats_gc_chunk_count_limit_max_set] */
+
+/* ****** ****** */
+
 ats_ptr_type
-ats_malloc_ngc (ats_size_type n) {
-  void *p = GC_malloc(n) ; return p ;
+ats_malloc_gc (
+  ats_size_type nbytes
+) { 
+  return GC_MALLOC(nbytes) ; // allocated memory is cleared
 } /* end of [ats_malloc_ngc] */
 
 ats_ptr_type
-ats_calloc_ngc
-  (ats_size_type n, ats_size_type bsz) {
-  void *p = GC_malloc(n * bsz) ; return p ;
+ats_calloc_gc (
+  ats_size_type nitm
+, ats_size_type bsz
+) {
+  return GC_MALLOC(nitm * bsz) ; // allocated memory is cleared
 } /* end of [ats_calloc_ngc] */
+
+ats_void_type
+ats_free_gc (ats_ptr_type p) { GC_FREE(p) ; return ; }
+/* end of [ats_free_gc] */
+
+ats_ptr_type
+ats_realloc_gc (
+  ats_ptr_type p_old
+, ats_size_type nbytes_new
+) {
+  return GC_REALLOC(p_old, nbytes_new) ;
+} /* end of [ats_realloc_gc] */
+
+/* ****** ****** */
+
+ats_ptr_type
+ats_malloc_ngc (
+  ats_size_type nbytes
+) { 
+  return GC_MALLOC_UNCOLLECTABLE(nbytes) ; // allocated memory is cleared
+} /* end of [ats_malloc_ngc] */
+
+ats_ptr_type
+ats_calloc_ngc (
+  ats_size_type nitm
+, ats_size_type bsz
+) {
+  return GC_MALLOC_UNCOLLECTABLE(nitm * bsz) ; // allocated memory is cleared
+} /* end of [ats_calloc_ngc] */
+
+ats_void_type
+ats_free_ngc (ats_ptr_type p) { GC_FREE (p) ; return ; }
+/* end of [ats_free_ngc] */
+
+ats_ptr_type
+ats_realloc_ngc (
+  ats_ptr_type p_old
+, ats_size_type nbytes_new
+) {
+  return GC_REALLOC (p_old, nbytes_new) ;
+} /* end of [ats_realloc_ngc] */
 
 /* ****** ****** */
 
