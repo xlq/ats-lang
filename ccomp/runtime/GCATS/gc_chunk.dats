@@ -67,6 +67,10 @@ int gcats_memalign (
   ptr = malloc (size + alignment - 1) ; *memptr = ptr ;
   err = (ptr ? 0 : -1) ;
 #endif
+/*
+  fprintf (stderr, "gcats_memalign: size = %i\n", size);
+  fprintf (stderr, "gcats_memalign: *memptr = %p(%i)\n", *memptr, *memptr);
+*/
   return err ;
 } /* end of [gcats_memalign] */
 

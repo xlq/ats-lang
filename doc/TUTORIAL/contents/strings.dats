@@ -103,10 +103,9 @@ implement strbuf_initialize_cloptr {m,n}
 
 implement string_make_substring (str, st, ln) = let
   val (pf_gc, pf_buf | p_buf) = malloc_gc (ln + 1)
-  prval () = free_gc_elim (pf_gc) // give the certificate to GC
   val () = strbuf_initialize_cloptr (pf_buf | p_buf, ln, lam (i) => str[st + i])
 in
-  string1_of_strbuf (pf_buf | p_buf)
+  string1_of_strbuf (pf_gc, pf_buf | p_buf)
 end // end of [string_make_substring]
 
 (* ****** ****** *)

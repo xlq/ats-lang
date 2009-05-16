@@ -40,7 +40,7 @@ fn print_month_names () = let
     (pf: !unit_v | i: sizeLt 12, x: &string): void =<clo1> (if i > 0 then print ", "; print x)
   // end of [var]
   prval pf = unit_v ()
-  val () = iforeach_array_ptr_clo_tsz {string} {unit_v} (pf | !p_clo, !p_arr, 12, sizeof<string>)
+  val () = array_ptr_iforeach_clo_tsz {string} {unit_v} (pf | !p_clo, !p_arr, 12, sizeof<string>)
   prval unit_v () = pf
   val () = print_newline ()
 in
@@ -71,6 +71,7 @@ extern fun print_file_rev (): void
 
 implement print_file_rev () = let
   var !p_buf with pf_buf = @[byte][BUFSZ]() // allocation in the stack frame
+  prval () = pf_buf := bytes_v_of_b0ytes_v (pf_buf)
   val (pf_stdin | p_stdin) = stdin_get ()
   val () = while (true) let
     val () = fgets_exn (file_mode_lte_r_r, pf_buf | p_buf, BUFSZ, !p_stdin)

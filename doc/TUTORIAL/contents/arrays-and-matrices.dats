@@ -36,23 +36,11 @@ val digits =
 
 fn array_square {n:nat}
   (A: array (double, n), sz: int n): void = loop (0) where {
-  fun loop {i:nat | i <= n} .<n-i>. (i: int i):<cloptr1> void =
+  fun loop {i:nat | i <= n} .<n-i>. (i: int i):<cloref1> void =
     if i < sz then
       let val x = A[i] in A[i] := x * x; loop (i+1) end
     else ()
 } // end of [array_square]
-
-fn array_square {n:nat}
-  (A: array (double, n), sz: size_t n): void = let
-  prval pf = unit_v ()
-  val () =  iforeach_array_clo<double> (pf | !p_f, A, sz) where {
-    var !p_f = @lam
-      (pf: !unit_v | i: sizeLt n, x: double): void =<clo,!ref> A[i] := x * x
-  }
-  prval unit_v () = pf
-in
-  // empty
-end // end of [array_square]
 
 // printing an array
 
@@ -68,8 +56,7 @@ end // end of [prarr]
 
 // persistent matrices
 
-val mat_10_10 =
-  matrix (10, 10) $arrsz {Int} (
+val mat_10_10 = matrix_make_arraysize {Int} (10, 10) $arrsz (
    0,  1,  2,  3,  4,  5,  6,  7,  8,  9
 , 10, 11, 12, 13, 14, 15, 16, 17, 18, 19
 , 20, 21, 22, 23, 24, 25, 26, 27, 28, 29
@@ -81,13 +68,6 @@ val mat_10_10 =
 , 80, 81, 82, 83, 84, 85, 86, 87, 88, 89
 , 90, 91, 92, 93, 94, 99, 96, 97, 98, 99
 ) // end of [val]
-
-val mat_10_10 =
-  matrix_make_clo_tsz {Int} (10, 10, !p_f, sizeof<Int>) where {
-  var !p_f = @lam 
-    (x: &int? >> Int, i: sizeLt 10, j: sizeLt 10): void
-    =<clo> x := 10 * (int1_of_size1 i) + int1_of_size1 j
-}
 
 // template function for transposing a square matrix
 
@@ -121,23 +101,6 @@ in
   loop1 0
 end // end of [matrix_transpose]
 
-fn{a:t@ype} matrix_transpose {n:nat}
-  (M: matrix (a, n, n), n: size_t n): void = let
-  prval pf = unit_v ()
-  val () = iforeach_matrix_clo<a> {unit_v}
-    (pf | !p_f, M, n, n) where { // end of [iforeach_matrix]
-    var !p_f = @lam
-      (pf: !unit_v | i: sizeLt n, j: sizeLt n, _: a): void =<clo,!ref>
-      if i > j then let
-        val x = M[i, n, j] in M[i, n, j] := M[j, n, i]; M[j, n, i] := x
-      end // end of [if]
-    // end of [var]
-  } // end of [val]
-  prval unit_v () = pf
-in
-  // empty
-end // end of [matrix_transpose]
-
 // printing a matrix
 
 fn{a:t@ype} prmat {m,n:nat}
@@ -159,54 +122,6 @@ end // end of [prmat]
 
 (* ****** ****** *)
 
-// a variant implementation of [prarr] based in array iteration
-
-fn{a:t@ype} prarr_ {n:nat}
-  (pr: a -> void, A: array (a, n), n: size_t n): void = let
-  var i: int = (0: int)
-  typedef env_t = @(a -> void, ptr i)
-  var env: env_t; val () = env.0 := pr; val () = env.1 := &i
-  viewdef V = (int @ i, env_t @ env)
-  fn f (pf: !V | x: a, p_env: !ptr env): void = let
-    prval (pf1, pf2) = pf; val p = p_env->1; val i = !p
-    val () = (if i > 0 then print ", "; p_env->0 (x); !p := i + 1)
-  in
-    pf := (pf1, pf2)
-  end
-  prval pf = (view@ i, view@ env)
-in
-  foreach_array_main<a> {V} (pf | f, A, n, &env);
-  view@ i := pf.0; view@ env := pf.1;
-  print_newline ();
-end // end of [prarr_]
-
-// a variant implementation of [prmat] based in matrix iteration
-
-fn{a:t@ype} prmat_ {m,n:nat}
-  (pr: a -> void, M: matrix (a, m, n), m: int m, n: int n)
-  : void = let
-  var j: int = (0: int)
-  typedef env_t = @(int (n-1), a -> void, ptr j)
-  var env: env_t; val () = (env.0 := n-1; env.1 := pr; env.2 := &j)
-  viewdef V = (int @ j, env_t @ env)
-  fn f (pf: !V | x: a, p_env: !ptr env): void = let
-    prval (pf1, pf2) = pf
-    val p = p_env->2; val j = !p
-  in
-    if j > 0 then print ", "; p_env->1 (x); !p := j + 1;
-    if j >= p_env->0 then (!p := 0; print_newline ());
-    pf := (pf1, pf2)
-  end
-  prval pf = (view@ j, view@ env)
-  val m_sz = size1_of_int1 m and n_sz = size1_of_int1 n
-in
-  foreach_matrix_main<a> {V} (pf | f, M, m_sz, n_sz, &env);
-  view@ j := pf.0; view@ env := pf.1;
-  print_newline ()
-end // end of [prmat_]
-
-(* ****** ****** *)
-
 implement main (argc, argv) = let
 
 fn pr1 (x: Int): void = print x
@@ -215,25 +130,18 @@ fn pr2 (x: Int): void = printf ("%2i", @(x))
 in
 
 // testing prarr
-print "printed by [prarr]:\n";
-prarr (pr1, digits, 10);
-print_newline ();
-
-// testing prarr and prarr_:
-print "printed by [prarr_]:\n";
-prarr_ (pr1, digits, 10);
-print_newline ();
+prarr (pr1, digits, 10); print_newline ();
 
 // testing prmat
-print "before matrix transposition (printed by [prmat]):\n";
+print "before matrix transposition:\n";
 prmat (pr2, mat_10_10, 10, 10);
 
 // testing matrix_transpose
 matrix_transpose (mat_10_10, 10);
 
 // testing prmat_
-print "after matrix transposition (printed by [prmat_]):\n";
-prmat_ (pr2, mat_10_10, 10, 10);
+print "after matrix transposition:\n";
+prmat (pr2, mat_10_10, 10, 10);
 
 end // end of [main]
 
