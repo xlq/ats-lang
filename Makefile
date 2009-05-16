@@ -70,7 +70,7 @@ all: \
 atscheck:
 	echo "$(ATSHOME)" > .ATSHOME
 ifeq ($(ATSHOMEDEF),1)
-	/bin/bash -r ./atshomecheck.sh
+	/bin/bash -r ./ATSHOME_check.sh
 endif
 ifdef ATSHOMERELOC
 	echo "$(ATSHOMERELOC)" > .ATSHOMERELOC
@@ -137,6 +137,7 @@ package::
 	bin/atspack --source
 
 precompiled::
+	/bin/bash -r ./ATSHOMERELOC_check.sh
 	bin/atspack --precompiled
 	rm -fr usr/share/atshome
 	mv ats-lang-anairiats-* usr/share/atshome

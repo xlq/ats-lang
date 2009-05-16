@@ -63,7 +63,7 @@ all: \
 atscheck:
 	echo "$(ATSHOME)" > .ATSHOME
 ifeq ($(ATSHOMEDEF),1)
-	/bin/bash -r ./atshomecheck.sh
+	/bin/bash -r ./ATSHOME_check.sh
 endif
 ifdef ATSHOMERELOC
 	echo "$(ATSHOMERELOC)" > .ATSHOMERELOC
