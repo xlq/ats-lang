@@ -7,28 +7,27 @@
 (***********************************************************************)
 
 (*
- * ATS - Unleashing the Power of Types!
- *
- * Copyright (C) 2002-2008 Hongwei Xi, Boston University
- *
- * All rights reserved
- *
- * ATS is free software;  you can  redistribute it and/or modify it under
- * the terms of the GNU LESSER GENERAL PUBLIC LICENSE as published by the
- * Free Software Foundation; either version 2.1, or (at your option)  any
- * later version.
- * 
- * ATS is distributed in the hope that it will be useful, but WITHOUT ANY
- * WARRANTY; without  even  the  implied  warranty  of MERCHANTABILITY or
- * FITNESS FOR A PARTICULAR PURPOSE.  See the  GNU General Public License
- * for more details.
- * 
- * You  should  have  received  a  copy of the GNU General Public License
- * along  with  ATS;  see  the  file  COPYING.  If not, write to the Free
- * Software Foundation, 51  Franklin  Street,  Fifth  Floor,  Boston,  MA
- * 02110-1301, USA.
- *
- *)
+** ATS - Unleashing the Power of Types!
+**
+** Copyright (C) 2002-2008 Hongwei Xi, Boston University
+**
+** All rights reserved
+**
+** ATS is free software;  you can  redistribute it and/or modify it under
+** the terms of the GNU LESSER GENERAL PUBLIC LICENSE as published by the
+** Free Software Foundation; either version 2.1, or (at your option)  any
+** later version.
+** 
+** ATS is distributed in the hope that it will be useful, but WITHOUT ANY
+** WARRANTY; without  even  the  implied  warranty  of MERCHANTABILITY or
+** FITNESS FOR A PARTICULAR PURPOSE.  See the  GNU General Public License
+** for more details.
+** 
+** You  should  have  received  a  copy of the GNU General Public License
+** along  with  ATS;  see  the  file  COPYING.  If not, write to the Free
+** Software Foundation, 51  Franklin  Street,  Fifth  Floor,  Boston,  MA
+** 02110-1301, USA.
+*)
 
 (* ****** ****** *)
 
@@ -285,7 +284,7 @@ and regex_mark_rep
   in
     regex_mark_rep (env, x0, i-1, r0e, regex1_seq (r1e, r1e'))
   end else r1e // end of [if]
-end // end of [regex_mark_rep]
+end (* end of [regex_mark_rep] *)
 
 (* ****** ****** *)
 
@@ -386,7 +385,7 @@ fn rules_mark (env: redef, x0: &T, rls: rules): regex1 = let
     | rules_nil () => regex1_null ()
 in
    aux (env, x0, 1, rls) // irule starts from 1!
-end
+end (* rules_mark *)
 
 (* ****** ****** *)
 
@@ -456,25 +455,25 @@ fun transition_one {n:nat} {l_csi,l_pos:addr}
     val st = transition_char (pf1, pf2 | A_csi, A_pos, n, st0, c)
     val nst = states_find (sts, st)
     val nst =
-      if nst < 0 then // not found
-        let
-          val nst = nst_r
-          val () = nst_r := nst+1
-          val () = states_insert (sts, nst, st)
-          val () = stlst := statelst_cons (st, stlst)
-        in
-          nst
-        end
-      else nst
+      if nst < 0 then let // not found
+        val nst = nst_r
+        val () = nst_r := nst+1
+        val () = states_insert (sts, nst, st)
+        val () = stlst := statelst_cons (st, stlst)
+      in
+        nst
+      end else begin
+        nst (* found *)
+      end // end of [if]
     val ns = intlst_cons (nst, ns)
   in
     transition_one (
       pf1, pf2 | A_csi, A_pos, n, nst_r, sts, stlst, st0, c-1, ns
-    )
+    ) // end of [transition_one]
   end else begin
     ns
-  end
-end // end of [transition_one]
+  end // end of [if]
+end (* end of [transition_one] *)
 
 macdef CHAR_MAX = '\177'
 
@@ -489,14 +488,14 @@ fun transition_all {n:nat} {l_csi,l_pos:addr}
       val nst = states_find (sts, st)
       var stlst = stlst
       val ns = transition_one (
-        pf1, pf2 |
-        A_csi, A_pos, n, nst_r, sts, stlst, st, CHAR_MAX, intlst_nil ()
-      )
+        pf1, pf2
+      | A_csi, A_pos, n, nst_r, sts, stlst, st, CHAR_MAX, intlst_nil ()
+      ) // transition_one
     in
       transition_all (
-        pf1, pf2 |
-        A_csi, A_pos, n, nst_r, sts, stlst, translst_cons (nst, ns, ans)
-      )
+        pf1, pf2
+      | A_csi, A_pos, n, nst_r, sts, stlst, translst_cons (nst, ns, ans)
+      ) // end of [transition_all]
     end
   | ~statelst_nil () => ans
 end // end of [transition_all]

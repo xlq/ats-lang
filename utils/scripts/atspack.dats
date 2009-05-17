@@ -233,6 +233,9 @@ val DSTROOTccomp_lib_output = DSTROOTccomp_lib + "output/"
 val SRCROOTccomp_runtime = SRCROOTccomp + "runtime/"
 val DSTROOTccomp_runtime = DSTROOTccomp + "runtime/"
 
+val SRCROOTccomp_runtime_NGC = SRCROOTccomp_runtime + "NGC/"
+val DSTROOTccomp_runtime_NGC = DSTROOTccomp_runtime + "NGC/"
+
 val SRCROOTccomp_runtime_GCATS = SRCROOTccomp_runtime + "GCATS/"
 val DSTROOTccomp_runtime_GCATS = DSTROOTccomp_runtime + "GCATS/"
 
@@ -393,6 +396,18 @@ end // end of [ccomp_lib_dir_copy]
 
 (* ****** ****** *)
 
+fn ccomp_runtime_NGC_dir_copy (knd: packnd): void = () where {
+  val () = mkdir_exn (DSTROOTccomp_runtime_NGC, DIRmode)
+  macdef cp (name) = fcopy_exn (
+    SRCROOTccomp_runtime_NGC + ,(name), DSTROOTccomp_runtime_NGC + ,(name)
+  ) // end of [fcopy_exn]
+  val () = cp "gc.h"
+  val () = prerr "The [ccomp/runtime/NGC] directory is successfully copied.";
+  val () = prerr_newline ()
+} // end of [ccomp_runtime_NGC_dir_copy]
+
+(* ****** ****** *)
+
 fn ccomp_runtime_GCATS_dir_copy (knd: packnd): void = let
   fn test (name: string): bool = begin case+ name of
     | _ when name_is_xats (name) => true | _ => false
@@ -417,7 +432,7 @@ in
   prerr_newline ()
 end // end of [ccomp_runtime_GCATS_dir_copy]
 
-//
+(* ****** ****** *)
 
 fn ccomp_runtime_dir_copy (knd: packnd): void = let
   macdef cp (name) = fcopy_exn (
@@ -430,6 +445,7 @@ in
   cp "ats_memory.h";
   cp "ats_types.h";
   cp "ats_prelude.c";
+  ccomp_runtime_NGC_dir_copy (knd);
   ccomp_runtime_GCATS_dir_copy (knd);
   prerr "The [ccomp/runtime] directory is successfully copied.";
   prerr_newline ()
