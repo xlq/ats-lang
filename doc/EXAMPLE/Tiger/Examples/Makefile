@@ -12,7 +12,7 @@
 
 GCC=gcc
 TIGDIR=..
-TIGCOMP=$(TIGDIR)/comptig
+TIGCOMP=$(TIGDIR)/tigcomp
 
 ######
 

@@ -8,7 +8,11 @@ ATSCC="$(ATSHOME)"/bin/atscc
 
 ######
 
-all: \
+checkall: compall cleanall
+
+######
+
+compall: \
   glHello \
   glDoubleBuffer \
   glIcosahedron \

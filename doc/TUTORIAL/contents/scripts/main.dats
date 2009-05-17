@@ -11,7 +11,7 @@ staload "libc/sys/SATS/types.sats"
 
 (* ****** ****** *)
 
-overload lor with lor_flag_orflag
+// overload lor with lor_flag_orflag
 // overload lor with lor_mode_mode
 
 (* ****** ****** *)

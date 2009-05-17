@@ -6,7 +6,11 @@
 
 ######
 
-all:: \
+checkall: compall cleanall
+
+######
+
+compall:: \
   prelude_array \
   prelude_array0 \
   prelude_list \

@@ -6,7 +6,12 @@
 
 ######
 
-all: HelloWorld f91 fact1 fact2 fact3 fibs revarr
+checkall: compall cleanall
+
+######
+
+compall: \
+  HelloWorld f91 fact1 fact2 fact3 fibs revarr revstr
 
 HelloWorld: HelloWorld.dats
 	atscc -o HelloWorld HelloWorld.dats
@@ -32,6 +37,9 @@ fibs: fibs.dats
 revarr: revarr.dats
 	atscc -o revarr revarr.dats
 
+revstr: revstr.dats
+	atscc -o revstr revstr.dats
+
 ######
 
 html::
@@ -43,6 +51,7 @@ html::
 	atsopt --posmark_html -d fact_in_c.dats > fact_in_c_dats.html
 	atsopt --posmark_html -d fibs.dats > fibs_dats.html
 	atsopt --posmark_html -d revarr.dats > revarr_dats.html
+	atsopt --posmark_html -d revstr.dats > revstr_dats.html
 
 ######
 
@@ -59,5 +68,6 @@ cleanall:: clean
 	if [ -f fact_in_c ] ; then rm fact_in_c ; fi
 	if [ -f fibs ] ; then rm fibs ; fi
 	if [ -f revarr ] ; then rm revarr ; fi
+	if [ -f revstr ] ; then rm revstr ; fi
 
 ###### end of [Makefile] ######

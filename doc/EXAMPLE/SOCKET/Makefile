@@ -4,7 +4,11 @@
 #
 ######
 
-all: \
+checkall: compall cleanall
+
+######
+
+compall: \
   daytime_tcpclient \
   daytime_tcpserver \
   echo_tcpclient \
