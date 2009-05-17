@@ -237,7 +237,7 @@ fn atsopt_usage (cmd: string): void = begin
 end // end of [atsopt_usage]
 
 fn atsopt_version (): void = begin
-  print "ATS/Anairiats version 0.1.4"; print_newline ()
+  print "ATS/Anairiats version 0.1.5"; print_newline ()
 end // end of [atsopt_version]
 
 (* ****** ****** *)

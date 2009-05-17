@@ -140,19 +140,18 @@ hash_string (ats_ptr_type str, ats_size_type len) {
 
 (* ****** ****** *)
 
-extern fun tblent_array_make {sz: nat}
-  (sz: int sz):<> [l:addr] (free_gc_v l, array_v (tblent_t, sz, l) | ptr l)
-  = "tblent_array_make"
+%{^
 
-%{
-
-ats_ptr_type tblent_array_make (ats_int_type sz) {
-  int nsz = sz * sizeof(tblent_t) ;
-  // fprintf (stderr, "tblent_array_make: nsz = %i\n", nsz) ;
+ats_ptr_type
+tblent_array_make (ats_int_type sz) {
   return ats_calloc_gc (sz, sizeof(tblent_t)) ;
-}
+} /* end of [tblent_array_make] */
 
 %}
+
+extern fun tblent_array_make {sz: nat} (sz: int sz)
+  :<> [l:addr] (free_gc_v l, array_v (tblent_t, sz, l) | ptr l)
+  = "tblent_array_make"
 
 (* ****** ****** *)
 
@@ -230,7 +229,7 @@ val hash_val = hash_string (name, string1_length name)
 (*
 val () = begin
   prerr "symtbl_search: hash_val = "; prerr hash_val; prerr_newline ()
-end
+end // end [val]
 *)
 val (vbox pf_tbl | p_tbl) = tbl
 val i = hash_val uimod p_tbl->size
@@ -241,7 +240,7 @@ symtbl_search_probe (
   p_tbl->view_arr | p_tbl->ptr, p_tbl->size, p_tbl->symlen, name, i
 )
 
-end
+end // end of [symtbl_search]
 
 (* ****** ****** *)
 

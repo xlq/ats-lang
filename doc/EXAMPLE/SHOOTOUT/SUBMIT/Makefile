@@ -2,11 +2,17 @@ ATSCC="$(ATSHOME)"/bin/atscc
 ATSOPT="$(ATSHOME)"/bin/atsopt
 CC=$(HOME)/gcc-4.3.2/bin/gcc
 
-all: binary-trees \
-     fannkuch fasta k-nucleotide \
-     mandelbrot n-body pidigits pidigits2 \
-     regex-dna reverse-complement \
-     spectral-norm thread-ring \
+all: \
+  binary-trees binary-trees2 \
+  fannkuch fannkuch2 \
+  fasta fasta2 \
+  k-nucleotide k-nucleotide2 \
+  mandelbrot \
+  n-body n-body2 \
+  pidigits pidigits2 \
+  regex-dna regex-dna2 \
+  reverse-complement reverse-complement2 \
+  spectral-norm thread-ring \
 
 binary-trees: binary-trees.dats
 #	$(ATSCC) -O3 binary-trees.dats -o binary-trees
@@ -144,6 +150,7 @@ clean:: ; rm -f a.out *_dats.c *_sats.c *~
 cleanall: clean
 	rm -f binary-trees
 	rm -f binary-trees_smp
+	rm -f binary-trees2
 	rm -f fannkuch
 	rm -f fannkuch_smp
 	rm -f fannkuch_smp1
@@ -154,6 +161,7 @@ cleanall: clean
 	rm -f fasta2
 	rm -f fasta_output.txt
 	rm -f k-nucleotide
+	rm -f k-nucleotide2
 	rm -f mandelbrot
 	rm -f mandelbrot_simd
 	rm -f mandelbrot_simd_smp

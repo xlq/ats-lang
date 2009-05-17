@@ -1,4 +1,10 @@
 ########################################################################
+ats-lang-anariats-0.1.5:
+
+1. A character whose ascii code is greater than 127 is treated as the null
+   character by the ATS lexer.
+
+########################################################################
 
 ats-lang-anariats-0.1.4:
 
