@@ -52,7 +52,7 @@ extern fun{a:t@ype} search {n:nat} {l:addr} {cmp:eff}
 // as 100% C-style
 implement{a} search {n} {l} (cmp, A, key, n) = let
    var l = 0 and u = n-1 and res = ~1
-   var m: Int; val () =  while*
+   var m: Int?; val () =  while*
      {l,u:int | 0<=l; l <= u+1; u+1 <= n} .<u-l+1>.
      (l: int l, u: int u, res: int ~1)
      : (res: intBtw (~1, n)) => (l <= u) begin
@@ -69,6 +69,8 @@ implement main (argc, argv) = let
 val (pf_gc, pf_arr | arr, sz) = $arrsz{double}(
   0.0, 2.0, 4.0, 6.0, 8.0, 10.0, 12.0, 14.0, 16.0, 18.0
 )
+
+val sz = int1_of_size1 (sz)
 
 fn cmp (x: double, y: double):<> Sgn = compare (x, y)
 

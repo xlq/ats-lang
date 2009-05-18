@@ -84,9 +84,7 @@ implement main (argc, argv) = let
   val n = int1_of argv.[1]
   val () = assert_errmsg
     (n >= 0, "The input integer needs to be a natural number.\n")
-(*
   val () = gc_chunk_count_limit_set (1 << 15)
-*)
   val () = gc_chunk_count_limit_max_set (~1) // infinite
   val max_depth = max (min_depth + 2, n)
   val () = stretch (max_depth)

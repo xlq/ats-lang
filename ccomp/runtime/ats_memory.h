@@ -36,8 +36,8 @@
 
 /* ****** ****** */
 
-#ifndef	__ATS_MEMORY_H
-#define __ATS_MEMORY_H
+#ifndef	ATS_MEMORY_H
+#define ATS_MEMORY_H
 
 /* ****** ****** */
 
@@ -49,7 +49,9 @@
 
 /* ****** ****** */
 
-extern void *alloca (size_t nsz) ; // declared in [alloca.h]
+// the function [alloca] is declared in
+extern void *alloca (size_t nsz) ; // [alloca.h]
+
 #define ATS_ALLOCA1(sz) alloca(sz)
 #define ATS_ALLOCA2(n, sz) alloca(n * sz)
 
@@ -97,6 +99,6 @@ ats_realloc_gc (const ats_ptr_type p, ats_size_type bsz) ;
 
 /* ****** ****** */
 
-#endif	/* __ATS_MEMORY_H */
+#endif	/* ATS_MEMORY_H */
 
 /* end of [ats_memory.h] */

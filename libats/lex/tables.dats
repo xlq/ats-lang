@@ -188,9 +188,10 @@ implement transition_table_get (r_tblopt, nstate, c) = let
         This change was made after Eckehard Berns (ecki@ecki.to) reported a bug
         due to [char] being treated as [unsigned char].
 *)
-        // treat a char c as -1 if c >= CHAR_MAX_PLUS1
-        val c = (if c < CHAR_MAX_PLUS1 then c + 1 else 0): int
-        val i = int1_of_int ((nstate - 1) * NUMBER_OF_CHARS + c)
+        // [c] is treated as the null character if [c] > CHAR_MAX holds
+        val c = (if c < CHAR_MAX_PLUS1 then c else 0(*null*)): int
+        val c1 = c + 1
+        val i = int1_of_int ((nstate - 1) * NUMBER_OF_CHARS + c1)
 (*
         val () = $effmask_all begin
           printf ("transition_table_get: nstate = %i\n", @(nstate))

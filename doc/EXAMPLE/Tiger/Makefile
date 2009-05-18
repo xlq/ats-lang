@@ -15,7 +15,11 @@ GCFLAG=-D_ATS_GCATS
 
 ######
 
-comptig: \
+checkall:: tigcomp cleanall
+
+######
+
+tigcomp: \
   tigerats_main_dats.o \
   error_sats.o error_dats.o \
   stamp_sats.o stamp_dats.o \
@@ -48,7 +52,7 @@ comptig: \
   linmap_randbst_dats.o \
 
 
-	atscc $(GCFLAG) -o comptig \
+	atscc $(GCFLAG) -o tigcomp \
   tigerats_main_dats.o \
   error_sats.o error_dats.o \
   stamp_sats.o stamp_dats.o \
@@ -399,7 +403,7 @@ clean::
 	rm -f *_sats.o *_dats.o
 
 cleanall: clean
-	rm -f comptig
+	rm -f tigcomp
 	rm -f *_?ats.html */*_?ats.html
 	rm -f XREF/*.html
 

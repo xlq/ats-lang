@@ -81,7 +81,7 @@ implement main (argc, argv) = let
   val len = string_length (str)
   var !p_buf_new with pf_buf_new = @[byte][len+1]()
   val () = let
-    val (vbox pf_buf | p_buf) = strbuf1_of_string1 str
+    val (vbox pf_buf | p_buf) = strbuf_of_string1 str
   in
      strcpy (pf_buf_new | p_buf_new, !p_buf)
   end // end of [val]

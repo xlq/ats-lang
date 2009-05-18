@@ -8,7 +8,11 @@ ATSCC="$(ATSHOME)/bin/atscc"
 
 ######
 
-all: AutoDiff coin_flip \
+checkall: compall cleanall
+
+######
+
+compall: AutoDiff coin_flip \
      curve fft hamming_lazy \
      GaussElim GarsiaWachs \
      hanoi kmp \

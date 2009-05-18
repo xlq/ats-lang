@@ -143,9 +143,9 @@ ats_funarg_match_failure_handle (void) {
 #include "GCATS0/gc.h"
 #elif _ATS_GCBDW // Boehm-Demers-Weise conservative GC for C/C++
 #include "GCBDW/gc.h"
-#else // no GC for ATS
+#else // no GC for ATS in this case
 #include <NGC/gc.h>
-#endif
+#endif // end of [ifdef]
 
 /* ****** ****** */
 

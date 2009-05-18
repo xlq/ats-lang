@@ -70,11 +70,15 @@ all: \
 atscheck:
 	echo "$(ATSHOME)" > .ATSHOME
 ifeq ($(ATSHOMEDEF),1)
-	/bin/bash -r ./atshomecheck.sh
+	/bin/bash -r ./ATSHOME_check.sh
 endif
 ifdef ATSHOMERELOC
 	echo "$(ATSHOMERELOC)" > .ATSHOMERELOC
 endif
+
+configure: configure.ac
+	automake --add-missing || true
+	autoconf
 
 config.h: configure ; ./configure
 
@@ -137,6 +141,7 @@ package::
 	bin/atspack --source
 
 precompiled::
+	/bin/bash -r ./ATSHOMERELOC_check.sh
 	bin/atspack --precompiled
 	rm -fr usr/share/atshome
 	mv ats-lang-anairiats-* usr/share/atshome
@@ -152,6 +157,7 @@ clean::
 	cd utils/scripts; $(MAKE) clean
 	cd utils/atslex; $(MAKE) clean
 	cd ccomp/runtime/GCATS; $(MAKE) clean
+	cd third_party/bdwgc; $(MAKE) clean || true
 
 cleanall:: clean
 	rm -f config.h
@@ -161,7 +167,9 @@ cleanall:: clean
 	rm -f ccomp/lib/libatslex.a
 	rm -f ccomp/lib/output/*
 	cd ccomp/runtime/GCATS; $(MAKE) cleanall
-	rm -f .*~ *~ */*~ */*/*~ */*/*/*~ */*/*/*/*~
+	cd third_party/bdwgc/libatomic_ops-1.2; $(MAKE) distclean || true
+	cd third_party/bdwgc; $(MAKE) distclean || true
+	find . -name .svn -prune -o -name \*~ -exec rm \{} \;
 
 ######
 
@@ -194,6 +202,7 @@ tar:: cleanall
 	mkdir ATS/ccomp/lib/output
 	cp -r prelude libc libats ATS
 	cp -r utils ATS
+	cp -r third_party ATS
 	mkdir ATS/src
 	cp src/Makefile ATS/src
 	cp src/Makefile_bootstrap ATS/src

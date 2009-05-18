@@ -194,9 +194,10 @@ fn* aux {i:nat | i <= n} ( // .<n-i,0>.
       | _ when intref_get is_ATS_GC > 0 => "-lgc" :: param_c
       | _ when intref_get is_ATS_GCATS > 0 => let
           val is_mt = intref_get is_ATS_MULTITHREAD > 0
-          val gcobj_local =
-            (if is_mt then "GCATS/gc_mt.o" else "GCATS/gc.o") : string
-          val gcobj_global: string = runtime_global + gcobj_local
+          val gcobj_local = (
+            if is_mt then "GCATS/gc_mt.o" else "GCATS/gc.o"
+          ) : string
+          val gcobj_global = runtime_global + gcobj_local
         in
           gcobj_global :: param_c
         end // end of [ATS_GCATS]
@@ -204,14 +205,16 @@ fn* aux {i:nat | i <= n} ( // .<n-i,0>.
           val gc_o = runtime_global + "GCATS0/gc.o" in gc_o :: param_c
         end // end of [ATS_GCATS0]
       | _ when intref_get is_ATS_GCBDW > 0 => let
+(*
           val () = begin
             prerr "is_ATS_GCBDW = 1"; prerr_newline ()
           end // end of [val]
+*)
 (*
           val is_mt = intref_get is_ATS_MULTITHREAD > 0
 *)
           val gcobj_local_lib = "GCBDW/lib": string
-          val gcobj_global_lib = (runtime_global + gcobj_local_lib): string
+          val gcobj_global_lib = runtime_global + gcobj_local_lib
           val param_c = ("-L" + gcobj_global_lib) :: param_c
           val param_c = "-lgc" :: param_c
         in

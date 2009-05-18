@@ -34,8 +34,8 @@
 
 /* ****** ****** */
 
-#ifndef __ATS_BASICS_H
-#define __ATS_BASICS_H
+#ifndef ATS_BASICS_H
+#define ATS_BASICS_H
 
 /* ****** ****** */
 
@@ -118,6 +118,6 @@ extern void mainats_prelude () ;
 
 /* ****** ****** */
 
-#endif /* __ATS_BASICS_H */
+#endif /* ATS_BASICS_H */
 
 /* end of [ats_basics.h] */

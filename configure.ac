@@ -46,7 +46,7 @@ dnl = checks for library functions
 dnl = checks for system services
 dnl = AC_CONFIG_FILES([file...])
 
-AC_INIT([ATS/Anairiats], [version-0.1.3], [hwxi@cs.bu.edu])
+AC_INIT([ATS/Anairiats], [version-0.1.4], [hwxi@cs.bu.edu])
 
 AC_CONFIG_SRCDIR([config.h.in])
 AC_CONFIG_HEADERS([config.h], [], [])
@@ -62,6 +62,10 @@ AC_CHECK_SIZEOF(void*)
 dnl = check for some functions
 AC_CHECK_FUNCS(posix_memalign memalign)
 
+AC_CONFIG_SUBDIRS([third_party/bdwgc])
+
+# Additional configure arguments for sub-packages.
+ac_configure_args="$ac_configure_args --enable-static --disable-shared"
 AC_OUTPUT
 
 dnl = end of [configure.ac]

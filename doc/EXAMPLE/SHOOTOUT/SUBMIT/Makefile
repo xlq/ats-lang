@@ -2,26 +2,40 @@ ATSCC="$(ATSHOME)"/bin/atscc
 ATSOPT="$(ATSHOME)"/bin/atsopt
 CC=$(HOME)/gcc-4.3.2/bin/gcc
 
-all: binary-trees \
-     fannkuch fasta k-nucleotide \
-     mandelbrot n-body pidigits pidigits2 \
-     regex-dna reverse-complement \
-     spectral-norm thread-ring \
+all: \
+  binary-trees binary-trees2 \
+  fannkuch fannkuch2 \
+  fasta fasta2 \
+  k-nucleotide k-nucleotide2 \
+  mandelbrot \
+  n-body n-body2 \
+  pidigits pidigits2 \
+  regex-dna regex-dna2 \
+  reverse-complement reverse-complement2 \
+  spectral-norm thread-ring \
 
 binary-trees: binary-trees.dats
 #	$(ATSCC) -O3 binary-trees.dats -o binary-trees
 #	$(ATSCC) -O3 binary-trees.dats -o binary-trees -D_ATS_gc
 #	$(ATSCC) -O3 binary-trees.dats -o binary-trees -D_ATS_gcats
 	$(ATSCC) -O3 binary-trees.dats -o binary-trees -D_ATS_GCATS
+#	$(ATSCC) -O3 binary-trees.dats -o binary-trees -D_ATS_GCBDW
+
 binary-trees_smp: binary-trees_smp_dats.c
-	$(ATSCC) -D_ATS_MULTITHREAD -D_ATS_GCATS -g binary-trees_smp_dats.c -o binary-trees_smp -lpthread
-#	$(ATSCC) -D_ATS_MULTITHREAD -D_ATS_gc -g binary-trees_smp_dats.c -o binary-trees_smp -lpthread
+	$(ATSCC) -D_ATS_MULTITHREAD -D_ATS_GCBDW -O3 -g binary-trees_smp_dats.c -o binary-trees_smp -lpthread
+#	$(ATSCC) -D_ATS_MULTITHREAD -D_ATS_GCATS -O3 -g binary-trees_smp_dats.c -o binary-trees_smp -lpthread
+#	$(ATSCC) -D_ATS_MULTITHREAD -D_ATS_gc -O3 -g binary-trees_smp_dats.c -o binary-trees_smp -lpthread
 
 binary-trees_smp_dats.c: binary-trees_smp.dats
 	$(ATSOPT) -o binary-trees_smp_dats.c -d binary-trees_smp.dats
 
 binary-trees2: binary-trees2.dats
 	$(ATSCC) -O3 binary-trees2.dats -o binary-trees2 -D_ATS_GCATS
+
+binary-trees2_smp: binary-trees2_smp.dats
+	$(ATSCC) -D_ATS_MULTITHREAD -O3 binary-trees2_smp.dats -o binary-trees2_smp -D_ATS_GCATS -lpthread
+
+######
 
 fannkuch: fannkuch.dats
 	$(ATSCC) -fomit-frame-pointer -O3 fannkuch.dats -o fannkuch
@@ -50,11 +64,10 @@ k-nucleotide: k-nucleotide.dats
 #	$(ATSCC) -O3 k-nucleotide.dats -o k-nucleotide
 
 k-nucleotide1: k-nucleotide1.dats
-	$(ATSCC) -D_ATS_GCATS -O3 k-nucleotide1.dats -o k-nucleotide1
-#	$(ATSCC) -O3 k-nucleotide1.dats -o k-nucleotide1
+	$(ATSCC) -D_ATS_GCATS -O3 k-nucleotide1.dats hashtable.dats -o k-nucleotide1
 
 k-nucleotide2: k-nucleotide2.dats
-	$(ATSCC) -D_ATS_GCATS -O3 k-nucleotide2.dats hashtable.dats -o k-nucleotide2
+	$(ATSCC) -D_ATS_GCATS -O3 k-nucleotide2.dats -o k-nucleotide2
 #	$(ATSCC) -O3 k-nucleotide2.dats -o k-nucleotide2
 
 k-nucleotide3: k-nucleotide3.dats
@@ -92,11 +105,13 @@ pidigits2: pidigits2.dats
 	$(ATSCC) -O3 -fomit-frame-pointer pidigits2.dats -o pidigits2 -lgmp
 
 regex-dna: regex-dna.dats
-#	$(ATSCC) -O3 -fomit-frame-pointer regex-dna.dats -o regex-dna -lpcre
 	$(ATSCC) -D_ATS_GCATS -O3 -fomit-frame-pointer regex-dna.dats -o regex-dna -lpcre
 
 regex-dna_smp: regex-dna_smp.dats
 	$(ATSCC) -D_ATS_MULTITHREAD -O3 -fomit-frame-pointer regex-dna_smp.dats -o regex-dna_smp -lpthread -lpcre
+
+regex-dna2: regex-dna2.dats
+	$(ATSCC) -D_ATS_GCATS -O3 -fomit-frame-pointer regex-dna2.dats -o regex-dna2 -lpcre
 
 ######
 
@@ -135,6 +150,7 @@ clean:: ; rm -f a.out *_dats.c *_sats.c *~
 cleanall: clean
 	rm -f binary-trees
 	rm -f binary-trees_smp
+	rm -f binary-trees2
 	rm -f fannkuch
 	rm -f fannkuch_smp
 	rm -f fannkuch_smp1
@@ -145,6 +161,7 @@ cleanall: clean
 	rm -f fasta2
 	rm -f fasta_output.txt
 	rm -f k-nucleotide
+	rm -f k-nucleotide2
 	rm -f mandelbrot
 	rm -f mandelbrot_simd
 	rm -f mandelbrot_simd_smp
@@ -156,6 +173,7 @@ cleanall: clean
 	rm -f pidigits2
 	rm -f regex-dna
 	rm -f regex-dna_smp
+	rm -f regex-dna2
 	rm -f reverse-complement
 	rm -f reverse-complement2
 	rm -f spectral-norm

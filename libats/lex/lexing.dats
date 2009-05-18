@@ -135,9 +135,9 @@ end // end of [infile_make_file]
 
 implement infile_make_stdin () = let
   viewdef V = unit_v
-  fn _free (pf: V | (*none*)):<cloref1> void = begin
-     let prval unit_v () = pf in end
-  end
+  fn _free (pf: V | (*none*)):<cloref1> void = () where {
+     prval unit_v () = pf
+  } // end of [_free]
   fn _getc (pf: !V | (*none*)):<cloref1> int = getchar ()
 in
   #[ V | (unit_v () | '{ free= _free, getc= _getc } ) ]
@@ -247,6 +247,8 @@ end
 #include "libc/CATS/stdio.cats"
 
 %}
+
+(* ****** ****** *)
 
 %{
 

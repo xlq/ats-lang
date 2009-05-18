@@ -1,12 +1,8 @@
-(*
+//
+// A simple example for illustrating some benefits of dependent types
+//
 
-void swap (int *x, int *y) ;
-void swap (int &x, int &y) ;
-
-extern
-void revstr (char *src, char *dst)
-
-*)
+// Author: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
 
 extern fun revstr {m,n:nat} {l:addr}
   (pf: !strbuf (m, n) @ l | p: ptr l):<> void
@@ -37,9 +33,7 @@ implement main (argc, argv) = let
   end // end of [val]
   val (pfbox | p) = strbuf_of_string1 (str)
   val () = let
-    prval vbox pf = pfbox
-  in
-    revstr (pf | p)
+    prval vbox pf = pfbox in revstr (pf | p)
   end // end of [val]
   val () = begin
     print "str = "; print str; print_newline ()
@@ -47,3 +41,7 @@ implement main (argc, argv) = let
 in
   // empty
 end // end of [main]  
+
+(* ****** ****** *)
+
+(* end of [revstr.dats] *)

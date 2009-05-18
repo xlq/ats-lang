@@ -598,22 +598,25 @@ ats_bool_type is_three (ats_ptr_type s0) {
 
 implement main (argc, argv) = let
 
-fun dna_three_get (): string_int = let
-  val s = getline ()
-in
-  if s <> "" then
-    if is_three (s) then getrest () else dna_three_get ()
-  else begin
-    exit_errmsg {string_int} (1, "[dna_three_get] failed.\n")
-  end
-end // end of [dna_three_get]
+  fun dna_three_get (): string_int = let
+    val s = getline ()
+    val () = assert (s <> "")
+    val is3 = is_three (s)
+(*
+    val () = string_free (s) where {
+      extern fun string_free (s: string): void = "ATS_FREE"
+    } // end of [val]
+*)
+  in
+    if is3 then getrest () else dna_three_get ()
+  end // end of [dna_three_get]
 
-val () = gc_chunk_count_limit_max_set (~1) // no max
+  val () = gc_chunk_count_limit_max_set (~1) // no max
   
-val (dna_three, n) = dna_three_get ()
-val dna_three = dna_of_string dna_three
-val dna_table = symtbl_make (dna_three, 0x40000)
-val () = assert (n >= 2)
+  val (dna_three, n) = dna_three_get ()
+  val dna_three = dna_of_string dna_three
+  val dna_table = symtbl_make (dna_three, 0x40000)
+  val () = assert (n >= 2)
 
 in
 
