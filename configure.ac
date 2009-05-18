@@ -49,10 +49,12 @@ dnl = AC_CONFIG_FILES([file...])
 AC_INIT([ATS/Anairiats], [version-0.1.4], [hwxi@cs.bu.edu])
 AC_CONFIG_SRCDIR([config.h.in])
 AC_CONFIG_HEADER([config.h])
+AC_CONFIG_FILES([config.mk])
 
 AM_INIT_AUTOMAKE
 
 AC_PROG_CC
+PKG_PROG_PKG_CONFIG
 
 dnl = check for [gmp.h pcre.h]
 AC_CHECK_HEADERS(gmp.h pcre.h)
@@ -65,15 +67,13 @@ AC_CHECK_SIZEOF(void*)
 dnl = check for some functions
 AC_CHECK_FUNCS(posix_memalign memalign)
 
-dnl AC_CONFIG_SUBDIRS([third_party/...])
-dnl 
-dnl # Additional configure arguments for sub-packages.
-dnl ac_configure_args="$ac_configure_args --enable-static --disable-shared"
-
 AH_TEMPLATE([HAVE_BDWGC],
 	    [Informs us the availability of Boehm-Demers-Weiser
 	     garbage collection installed on the system.])
-PKG_CHECK_MODULES([BDWGC], [bdw-gc >= 7.1], [AC_DEFINE(HAVE_BDWGC)])
+PKG_CHECK_MODULES([BDWGC], [bdw-gc >= 7.1], [AC_DEFINE(HAVE_BDWGC)], [true])
+
+CFLAGS="$CFLAGS $BDWGC_CFLAGS"
+LDFLAGS="$LDFLAGS $BDWGC_LDFLAGS"
 
 AC_OUTPUT
 

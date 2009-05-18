@@ -41,7 +41,11 @@
 
 /* ****** ****** */
 
-#include "GCBDW/include/gc/gc.h" // interface file for [bdwgc]
+#ifdef HAVE_BDWGC	// from config.h
+#include <gc/gc.h> // interface file for [bdwgc]
+#else
+#error "bdw-gc >= 7.1 must be installed first."
+#endif
 
 /* ****** ****** */
 

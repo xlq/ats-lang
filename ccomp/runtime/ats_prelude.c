@@ -33,6 +33,8 @@
 
 /* ****** ****** */
 
+#include "config.h"
+
 #include <stdio.h>
 
 #ifdef _ATS_MULTITHREAD
@@ -136,15 +138,15 @@ ats_funarg_match_failure_handle (void) {
 */
 
 #ifdef _ATS_GC // default GC for ATS
-#include "GCATS/gc.h"
+#include "ats_prelude_gcats.c"
 #elif _ATS_GCATS // special GC for ATS
-#include "GCATS/gc.h"
+#include "ats_prelude_gcats.c"
 #elif _ATS_GCATS0 // special GC for ATS
-#include "GCATS0/gc.h"
+#include "ats_prelude_gcats0.c"
 #elif _ATS_GCBDW // Boehm-Demers-Weise conservative GC for C/C++
-#include "GCBDW/gc.h"
+#include "ats_prelude_bdwgc.c"
 #else // no GC for ATS in this case
-#include <NGC/gc.h>
+#include "ats_prelude_ngc.c"
 #endif // end of [ifdef]
 
 /* ****** ****** */
