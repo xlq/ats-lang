@@ -76,11 +76,16 @@ ifdef ATSHOMERELOC
 	echo "$(ATSHOMERELOC)" > .ATSHOMERELOC
 endif
 
-configure: configure.ac
-	automake --add-missing || true
+config.h.in: configure.ac
+	autoheader
+
+configure: configure.ac config.h.in
+	aclocal
+	automake --add-missing --foreign || true
 	autoconf
 
-config.h: configure ; ./configure
+config.h: config.h.in configure
+	./configure
 
 ###### bootstrap/Makefile ######
 

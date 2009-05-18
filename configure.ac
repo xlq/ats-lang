@@ -47,9 +47,12 @@ dnl = checks for system services
 dnl = AC_CONFIG_FILES([file...])
 
 AC_INIT([ATS/Anairiats], [version-0.1.4], [hwxi@cs.bu.edu])
-
 AC_CONFIG_SRCDIR([config.h.in])
-AC_CONFIG_HEADERS([config.h], [], [])
+AC_CONFIG_HEADER([config.h])
+
+AM_INIT_AUTOMAKE
+
+AC_PROG_CC
 
 dnl = check for [gmp.h pcre.h]
 AC_CHECK_HEADERS(gmp.h pcre.h)
@@ -62,10 +65,16 @@ AC_CHECK_SIZEOF(void*)
 dnl = check for some functions
 AC_CHECK_FUNCS(posix_memalign memalign)
 
-AC_CONFIG_SUBDIRS([third_party/bdwgc])
+dnl AC_CONFIG_SUBDIRS([third_party/...])
+dnl 
+dnl # Additional configure arguments for sub-packages.
+dnl ac_configure_args="$ac_configure_args --enable-static --disable-shared"
 
-# Additional configure arguments for sub-packages.
-ac_configure_args="$ac_configure_args --enable-static --disable-shared"
+AH_TEMPLATE([HAVE_BDWGC],
+	    [Informs us the availability of Boehm-Demers-Weiser
+	     garbage collection installed on the system.])
+PKG_CHECK_MODULES([BDWGC], [bdw-gc >= 7.1], [AC_DEFINE(HAVE_BDWGC)])
+
 AC_OUTPUT
 
 dnl = end of [configure.ac]
