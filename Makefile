@@ -162,7 +162,6 @@ clean::
 	cd utils/scripts; $(MAKE) clean
 	cd utils/atslex; $(MAKE) clean
 	cd ccomp/runtime/GCATS; $(MAKE) clean
-	cd third_party/bdwgc; $(MAKE) clean || true
 
 cleanall:: clean
 	rm -f config.h
@@ -172,8 +171,6 @@ cleanall:: clean
 	rm -f ccomp/lib/libatslex.a
 	rm -f ccomp/lib/output/*
 	cd ccomp/runtime/GCATS; $(MAKE) cleanall
-	cd third_party/bdwgc/libatomic_ops-1.2; $(MAKE) distclean || true
-	cd third_party/bdwgc; $(MAKE) distclean || true
 	find . -name .svn -prune -o -name \*~ -exec rm \{} \;
 
 ######
