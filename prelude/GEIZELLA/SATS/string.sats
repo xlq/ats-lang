@@ -139,13 +139,13 @@ val string_empty : string 0
 fun string1_of_string (s: string):<> [n:nat] string n
   = "atspre_string1_of_string"
 
-fun string1_of_strbuf1 {m,n:nat} {l:addr}
-  (pf: strbuf (m, n) @ l | p: ptr l) :<> string n
-  = "atspre_string1_of_strbuf1"
+fun string1_of_strbuf {m,n:nat} {l:addr}
+  (pf_gc: free_gc_v (m, l), pf_buf: strbuf (m, n) @ l | p: ptr l) :<> string n
+  = "atspre_string1_of_strbuf"
 
-fun strbuf1_of_string1 {n:nat} (s: string n)
+fun strbuf_of_string1 {n:nat} (s: string n)
   :<> [m:int | n < m] [l:addr] (vbox (strbuf (m, n) @ l) | ptr l)
-  = "atspre_strbuf1_of_string1"
+  = "atspre_strbuf_of_string1"
 
 (* ****** ****** *)
 

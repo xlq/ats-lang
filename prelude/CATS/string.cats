@@ -73,11 +73,11 @@ atspre_string1_of_string (const ats_ptr_type s) { return s ; }
 
 static inline
 ats_ptr_type // a casting function
-atspre_strbuf1_of_string1 (const ats_ptr_type s) { return s ; }
+atspre_strbuf_of_string1 (const ats_ptr_type s) { return s ; }
 
 static inline
 ats_ptr_type // a casting function
-atspre_string1_of_strbuf1 (const ats_ptr_type s) { return s ; }
+atspre_string1_of_strbuf (const ats_ptr_type s) { return s ; }
 
 #endif /* end of [_ATS_GEIZELLA] */
 
