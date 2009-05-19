@@ -214,6 +214,20 @@ atspre_strbuf_set_char_at__intsz
   *((char*)s + offset) = c ; return ;
 } /* end of [atspre_strbuf_set_char_at__intsz] */
 
+static inline
+ats_char_type
+atspre_string_test_char_at
+  (const ats_ptr_type s, ats_size_type offset) {
+  return *((char*)s + offset) ;
+} /* end of [atspre_string_test_char_at] */
+
+static inline
+ats_char_type
+atspre_string_test_char_at__intsz
+  (const ats_ptr_type s, ats_int_type offset) {
+  return *((char*)s + offset) ;
+} /* end of [atspre_string_test_char_at__intsz] */
+
 /* ****** ****** */
 
 static inline

@@ -105,11 +105,11 @@ implement strcmp (s1, s2) =
           prval () = pf2 := strbuf_v_cons (pf21, pf22)
         in
           sgn // loop exits
-        end // end of [if]
+        end (* end of [if] *)
       end // end of [if]
-    end // end of [if]
+    end (* end of [if] *)
   end // end of [loop]
-} // end of [strcmp]
+} (* end of [strcmp] *)
 
 (* ****** ****** *)
 

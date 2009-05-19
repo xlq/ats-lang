@@ -1,6 +1,8 @@
-Frequently Asked Questions:
-
-------
+######
+#
+# Frequently Asked Questions:
+#
+######
 
 Q. What is the difference between sorts and extended sorts?
 
@@ -114,3 +116,5 @@ A. In the first case, the type of [e] must be synthesized and this type is
    If in double, please choose the second form of type annotation.
 
 ------
+
+###### end of [FAQ.txt] ######

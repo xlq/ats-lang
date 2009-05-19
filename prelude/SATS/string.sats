@@ -66,10 +66,10 @@ typedef c1hars (n:int) = @[c1har][n]
 
 (* ****** ****** *)
 
-viewdef strbuf_v (l:addr) = strbuf @ l
-
 viewdef strbuf_v
   (m: int, n: int, l:addr) = strbuf (m, n) @ l
+
+viewdef strbuf_v (l:addr) = [m,n:nat] strbuf (m, n) @ l
 
 prfun strbuf_vcontain_lemma0
   {m,n:nat} {l:addr} (): strbuf_v l <= strbuf_v (m, n, l)
@@ -342,6 +342,33 @@ fun string_set_char_at__intsz {n:nat}
 
 overload [] with strbuf_set_char_at__intsz
 overload [] with string_set_char_at__intsz
+
+(* ****** ****** *)
+
+fun strbuf_test_char_at {m,n:nat}
+  {i:nat | i <= n} (sbf: &strbuf (m, n), i: size_t i)
+  :<> [c:char | (c <> NUL && i < n) || (c == NUL && i >= n)] char c
+  = "atspre_string_test_char_at"
+
+fun string_test_char_at {n:nat}
+  {i:nat | i <= n} (str: string n, i: size_t i)
+  :<> [c:char | (c <> NUL && i < n) || (c == NUL && i >= n)] char c
+  = "atspre_string_test_char_at"
+
+//
+// these functions are present mostly for convenience as a programmer
+// ofter uses values of the type int as array indices:
+//
+
+fun strbuf_test_char_at__intsz {m,n:nat}
+  {i:nat | i <= n} (sbf: &strbuf (m, n), i: size_t i)
+  :<> [c:char | (c <> NUL && i < n) || (c == NUL && i >= n)] char c
+  = "atspre_string_test_char_at__intsz"
+
+fun string_test_char_at__intsz {n:nat}
+  {i:nat | i <= n} (str: string n, i: size_t i)
+  :<> [c:char | (c <> NUL && i < n) || (c == NUL && i >= n)] char c
+  = "atspre_string_test_char_at__intsz"
 
 (* ****** ****** *)
 
@@ -635,6 +662,20 @@ fun stropt_gc_is_some
   = "atspre_stropt_is_some"
 
 viewtypedef Stropt_gc = [m,n:nat] stropt_gc (m, n)
+
+(* ****** ****** *)
+
+//
+// [tostringf] and [sprintf] are declared in [printf.sats]
+//
+
+fun tostringf__ptr {ts:types}
+  (fmt: printf_c ts, arg: ts):<> [m,n:nat][l:addr] strbufptr_gc (m, n, l)
+  = "atspre_tostringf"
+
+fun sprintf__ptr {ts:types}
+  (fmt: printf_c ts, arg: ts):<> [m,n:nat][l:addr] strbufptr_gc (m, n, l)
+  = "atspre_tostringf"
 
 (* ****** ****** *)
 
