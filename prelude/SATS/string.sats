@@ -385,7 +385,7 @@ fun string_make_char {n:nat}
   (n: size_t n, c: char):<> string n
   = "atspre_string_make_char"
 
-fun string_make_char__main
+fun string_make_char__bufptr
   {n:nat} (n: size_t n, c: char)
   :<> [m:nat] [l:addr] strbufptr_gc (m, n, l)
   = "atspre_string_make_char"
@@ -396,7 +396,7 @@ fun string_make_list_int {n:nat}
   (cs: list (char, n), n: int n):<> string n
   = "atspre_string_make_list_int"
 
-fun string_make_list_int__main
+fun string_make_list_int__bufptr
   {n:nat} (cs: list (char, n), n: int n)
   :<> [m:nat] [l:addr] strbufptr_gc (m, n, l)
   = "atspre_string_make_list_int"
@@ -409,7 +409,7 @@ fun string_make_substring
   :<> string ln
   = "atspre_string_make_substring"
 
-fun string_make_substring__main {v:view}
+fun string_make_substring__bufptr {v:view}
   {m,n:int} {st,ln:nat | st+ln <= n} {l:addr} (
     pf: !v
   , pf_con: strbuf_v (m, n, l) <= v
@@ -429,7 +429,7 @@ fun string1_append {i,j:nat}
   = "atspre_string_append"
 overload + with string1_append
 
-fun string1_append__ptr {i,j:nat}
+fun string1_append__bufptr {i,j:nat}
   (s1: string i, s2: string j)
   :<> [m:nat] [l:addr] strbufptr_gc (m, i+j, l)
   = "atspre_string_append"
@@ -575,7 +575,7 @@ fun string_index_of_string // locate a substring from left
 // implemented in [prelude/CATS/string.cats]
 fun string_singleton (c: char):<> string 1 = "atspre_string_singleton"
 
-fun string_singleton__main (c: char)
+fun string_singleton__bufptr (c: char)
   :<> [m:nat] [l:addr] strbufptr_gc (m, 1, l) = "atspre_string_singleton"
 
 (* ****** ****** *)
@@ -594,7 +594,7 @@ fun strbuf_tolower {m,n:nat} (buf: &strbuf (m, n)): void
 fun string_tolower {n:nat} (str: string n):<> string n // a new string is created
   = "atspre_string_tolower"
 
-fun string_tolower__main {v:view} {l:addr}
+fun string_tolower__bufptr {v:view} {l:addr}
   (pf: !v, fpf: strbuf_v l <= v | p: ptr l):<> [m,n:nat] [l:addr] strbufptr_gc (m, n, l)
   = "atspre_string_tolower"
 
@@ -608,7 +608,7 @@ fun strbuf_toupper {m,n:nat} (buf: &strbuf (m, n)): void
 fun string_toupper {n:nat} (str: string n):<> string n // a new string is created
   = "atspre_string_toupper"
 
-fun string_toupper__main {v:view} {l:addr}
+fun string_toupper__bufptr {v:view} {l:addr}
   (pf: !v, fpf: strbuf_v l <= v | p: ptr l):<> [m,n:nat] [l:addr] strbufptr_gc (m, n, l)
   = "atspre_string_toupper"
 
@@ -669,11 +669,11 @@ viewtypedef Stropt_gc = [m,n:nat] stropt_gc (m, n)
 // [tostringf] and [sprintf] are declared in [printf.sats]
 //
 
-fun tostringf__ptr {ts:types}
+fun tostringf__bufptr {ts:types}
   (fmt: printf_c ts, arg: ts):<> [m,n:nat][l:addr] strbufptr_gc (m, n, l)
   = "atspre_tostringf"
 
-fun sprintf__ptr {ts:types}
+fun sprintf__bufptr {ts:types}
   (fmt: printf_c ts, arg: ts):<> [m,n:nat][l:addr] strbufptr_gc (m, n, l)
   = "atspre_tostringf"
 
