@@ -84,19 +84,19 @@ fun{a:t@ype} list_app__main
 
 symintr list_app
 
-fun{a:t@ype} list_app_fun {n:nat} {f:eff}
+fun{a:t@ype} list_app_fun {f:eff}
   (xs: List a, f: a -<fun,f> void):<f> void
 overload list_app with list_app_fun
 
-fun{a:t@ype} list_app_clo {n:nat} {f:eff}
+fun{a:t@ype} list_app_clo {f:eff}
   (xs: List a, f: &(a -<clo,f> void)):<f> void
 overload list_app with list_app_clo
 
-fun{a:t@ype} list_app_cloptr {n:nat} {f:eff}
+fun{a:t@ype} list_app_cloptr {f:eff}
   (xs: List a, f: !(a -<cloptr,f> void)):<f> void
 overload list_app with list_app_cloptr
 
-fun{a:t@ype} list_app_cloref {n:nat} {f:eff}
+fun{a:t@ype} list_app_cloref {f:eff}
   (xs: List a, f: (a -<cloref,f> void)):<f> void
 overload list_app with list_app_cloref
 

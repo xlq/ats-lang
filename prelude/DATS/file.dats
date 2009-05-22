@@ -68,12 +68,12 @@ static inline
 ats_ptr_type string_make_charlst_rev
   (ats_int_type sz, ats_ptr_type cs) {
   char *s0, *s ; charlst cs_next ;
-  s0 = (char*)ats_malloc_gc (sz + 1) ; s = s0 + sz ;
-  *s = '\0' ; --s ;
+  s0 = (char*)ATS_MALLOC (sz + 1) ; s = s0 + sz ;
+  *s-- = '\0' ;
   while (cs != (charlst)0) {
-    *s = ((charlst)cs)->atslab_0 ; --s ;
+    *s-- = ((charlst)cs)->atslab_0 ;
     cs_next = ((charlst)cs)->atslab_1 ;
-    ats_free_gc (cs) ; cs = cs_next ;
+    ATS_FREE (cs) ; cs = cs_next ;
   }  
   return s0 ;
 } /* string_make_charlst_rev */

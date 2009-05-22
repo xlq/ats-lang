@@ -50,7 +50,7 @@ extern fun shelltok_parse (inp: string): List_vt (string) = "shelltok_parse"
 //
 // HX: The implementation is largely adopted from one written by Likai Liu
 // in C. I hereby experiment with a programming style involving [alloca] that
-// I have considering for some time.
+// I have been considering for some time.
 //
 
 staload STRING = "libc/SATS/string.sats"
@@ -71,10 +71,8 @@ implement shelltok_parse (inp) = let
   in
     if (c <> NUL) then begin case+ 0 of
       | _ when char_isspace (c) => loop1 (inp, i+1, buf, bsz, itms)
-      | _ when c = SQUOTE =>
-          loop2 (inp, SQUOTE(*quote*), 0(*escape*), i+1, buf, bsz, 0, itms)
-      | _ when c = DQUOTE =>
-          loop2 (inp, DQUOTE(*quote*), 0(*escape*), i+1, buf, bsz, 0, itms)
+      | _ when (c = SQUOTE orelse c = DQUOTE) =>
+          loop2 (inp, c(*quote*), 0(*escape*), i+1, buf, bsz, 0, itms)
       | _ => let
           val () = buf.[0] := byte_of_char c in
           loop3 {n,i+1} (inp, NUL(*quote*), 0(*escape*), i+1, buf, bsz, 1, itms)
@@ -107,11 +105,8 @@ implement shelltok_parse (inp) = let
         in
           loop3 (inp, quotechar, escape, i+1, buf, bsz, k+1, itms)
         end // end of [_ when ...]
-      | _ when c = SQUOTE =>
-          loop2 (inp, SQUOTE, 0(*escape*), i+1, buf, bsz, k, itms)
-        // end of [_ when ...]
-      | _ when c = DQUOTE =>
-          loop2 (inp, DQUOTE, 0(*escape*), i+1, buf, bsz, k, itms)
+      | _ when (c = SQUOTE orelse c = DQUOTE) =>
+          loop2 (inp, c(*quote*), 0(*escape*), i+1, buf, bsz, k, itms)
         // end of [_ when ...]
       | _ when c = SLASH =>
           loop2 (inp, NUL(*quote*), 1(*escape*), i+1, buf, bsz, k, itms)
