@@ -4,8 +4,8 @@
 ** The code is a direct translation from an earlier version written
 ** in DML, the predessor of ATS.
 **
-** Hongwei Xi (January 2008)
-**
+** Author: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
+** Time: January, 2008
 *)
 
 //

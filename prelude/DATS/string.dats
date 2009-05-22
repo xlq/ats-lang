@@ -139,6 +139,33 @@ in
   string1_of_strbuf (pf_gc, pf_sb | p_sb)
 end // end of [string_make_list_int]
 
+implement string_make_list_rev_int (cs, n) = let
+  val (pf_gc, pf_sb | p_sb) = _string_alloc (i2sz n) where {
+    extern fun _string_alloc {n:nat} (n: size_t n)
+      :<> [l:addr] (free_gc_v (n+1, l), strbuf (n+1, n) @ l | ptr l)
+      = "_string_alloc"
+  } // end of [val]
+  val () = loop (!p_sb, n-1, 0, cs) where {
+    fun loop {m,n:nat} {i,j:nat | i + j == n} .<n-i>.
+      (buf: &strbuf (m, n), n1: int (n-1), i: int i, cs: list (char, j)):<> void =
+      if i <= n1 then let
+        val+ list_cons (c, cs) = cs
+        val [c:char] c = char1_of_char c
+        val () = $effmask_all (if (c <> NUL) then () else begin
+          prerr ("exit(ATS): a string cannot contain null characters in the middle.");
+          prerr_newline (); exit (1)
+        end) : [c <> NUL] void // end of [val]
+        val () = strbuf_set_char_at (buf, i2sz (n1-i), c)
+      in
+        loop (buf, n1, i+1, cs)
+      end else begin
+        // loop exists
+      end // end of [if]
+  } // end of [val]
+in
+  string1_of_strbuf (pf_gc, pf_sb | p_sb)
+end // end of [string_make_list_int]
+
 (* ****** ****** *)
 
 implement stringlst_concat (ss) = let

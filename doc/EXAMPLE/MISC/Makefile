@@ -116,10 +116,10 @@ html::
 	atsopt --posmark_html -d pi_lazy.dats > pi_lazy_dats.html
 	atsopt --posmark_html -d queens.dats > queens_dats.html
 	atsopt --posmark_html -d queens_appel.dats > queens_appel_dats.html
-	atsopt --posmark_html -d queens_lazy_vt.dats > queen_lazy_vt_dats.html
+	atsopt --posmark_html -d queens_lazy_vt.dats > queens_lazy_vt_dats.html
 	atsopt --posmark_html -d sieve.dats > sieve_dats.html
-	atsopt --posmark_html -d sieve_lazy.dats > sieve_lazy_html.dats
-	atsopt --posmark_html -d strmat.dats > strmap_dats.html
+	atsopt --posmark_html -d sieve_lazy.dats > sieve_lazy_dats.html
+	atsopt --posmark_html -d strmat.dats > strmat_dats.html
 	atsopt --posmark_html -d sumup.dats > sumup_dats.html
 	atsopt --posmark_html -d tetrix.dats > tetrix_dats.html
 	atsopt --posmark_html -d wc.dats > wc_dats.html

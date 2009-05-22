@@ -1,11 +1,11 @@
 (*
- *
- * An implementation of KMP string search algorithm in ATS
- * 
- *)
+**
+** An implementation of KMP string search algorithm in ATS
+** 
+*)
 
-// March 2007:
 // Author: Hongwei Xi (* hwxi AT CS DOT BU DOT EDU *)
+// Time: March 2007
 
 // In this implementation, both memory safety and termination
 // of the algorithm are guaranteed with no use of run-time
@@ -93,15 +93,13 @@ end // end of [kmp_v_takeout]
 
 fn kmp_sub {n,i:int | 0 < i; i <= n} {l:addr}
    (pf_kmp: !kmp_v (l, n) | tbl: ptr l, i: size_t i)
-  :<> [i1:nat | i1 < i] int (i1) =
-  let
-     val (pf_mul | ofs) = i szmul2 intsz
-     prval (pf_elt, pf_rest) = kmp_v_takeout (pf_mul, pf_kmp)
-     val i1 = ptr_get_t (pf_elt | tbl + ofs)
-  in
-     pf_kmp := pf_rest pf_elt; i1
-  end
-// end of [kmp_sub]
+  :<> [i1:nat | i1 < i] int (i1) = let
+  val (pf_mul | ofs) = i szmul2 intsz
+  prval (pf_elt, pf_rest) = kmp_v_takeout (pf_mul, pf_kmp)
+  val i1 = ptr_get_t (pf_elt | tbl + ofs)
+in
+  pf_kmp := pf_rest pf_elt; i1
+end // end of [kmp_sub]
 
 //
 

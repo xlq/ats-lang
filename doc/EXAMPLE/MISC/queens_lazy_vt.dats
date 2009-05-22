@@ -1,6 +1,10 @@
-//
-//
-//
+(*
+** An implementation of the QUEENS problem that
+** makes use of lazy-evaluation
+**
+** Author: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
+** Time: 2009
+*)
 
 (* ****** ****** *)
 
