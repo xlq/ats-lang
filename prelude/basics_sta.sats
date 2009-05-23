@@ -141,7 +141,8 @@ abst@ype strbuf_t0ype // a type of variable size
 
 (* ****** ****** *)
 
-abst@ype void_t0ype = $extype "ats_void_type" // sizeof (void) = 0
+abst@ype void_t0ype = $extype "ats_void_type" // sizeof (void) = 1
+abst@ype empty_t0ype = $extype "ats_empty_type" // sizeof (empty) = 0
 
 (* ****** ****** *)
 
@@ -573,6 +574,7 @@ stadef stropt = stropt_int_type
 (* ****** ****** *)
 
 stadef void = void_t0ype
+stadef empty = empty_t0ype
 
 (* ****** ****** *)
 
