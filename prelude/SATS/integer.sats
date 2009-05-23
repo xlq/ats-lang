@@ -1090,6 +1090,10 @@ overload >= with gte_ullint_ullint
 overload = with eq_ullint_ullint
 overload <> with neq_ullint_ullint
 
+fun compare_ullint_ullint (i1: ullint, i2: ullint):<> Sgn
+  = "atspre_compare_ullint_ullint"
+overload compare with compare_ullint_ullint
+
 fun max_ullint_ullint (i: ullint, j: ullint):<> ullint
   = "atspre_max_ullint_ullint"
 

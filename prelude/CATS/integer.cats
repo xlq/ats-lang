@@ -1193,6 +1193,29 @@ atspre_neq_ullint_ullint (ats_ullint_type i1, ats_ullint_type i2) {
   return (i1 != i2) ;
 }
 
+// compare, max and min
+
+static inline
+ats_int_type
+atspre_compare_ullint_ullint
+  (ats_ullint_type i1, ats_ullint_type i2) {
+  if (i1 < i2) return (-1) ;
+  else if (i1 > i2) return ( 1) ;
+  else return (0) ;
+}
+
+static inline
+ats_ullint_type
+atspre_max_ullint_ullint (ats_ullint_type i1, ats_ullint_type i2) {
+  return (i1 >= i2 ? i1 : i2) ;
+}
+
+static inline
+ats_ullint_type
+atspre_min_ullint_ullint (ats_ullint_type i1, ats_ullint_type i2) {
+  return (i1 <= i2 ? i1 : i2) ;
+}
+
 // print functions
 
 static inline

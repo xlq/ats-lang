@@ -92,7 +92,7 @@ implement{a} list_vt_of_stream_vt (xs) = let
         fold@ xs_cons; xs_cons
       end // end of [stream_cons]
     | ~stream_vt_nil () => list_vt_nil ()
-  end // end of [loop]
+  end (* end of [loop] *)
   var n = 0; val res = loop (xs, n)
 in
   (n, res)
@@ -125,7 +125,7 @@ in
       in
         stream_vt_filter_cloptr_con (xs1, pred)
       end // end of [if]
-    end // end of [stream_vt_cons]
+    end (* end of [stream_vt_cons] *)
   | stream_vt_nil () => begin
       fold@ xs_con; cloptr_free pred; xs_con
     end // end of [stream_vt_nil]
@@ -159,7 +159,7 @@ fun{a1,a2,b:t@ype} stream_vt_map2_cloptr_con (
           stream_vt_map2_cloptr_con<a1,a2,b> (xs1, xs2, f)
         , (~xs1; ~xs2; cloptr_free f)
         ) // end of [val ys]
-      } // end of [::]
+      } (* end of [::] *)
     | ~nil () => (~xs1; cloptr_free f; nil ())
     end // end of [::]
   | ~nil () => (~xs2; cloptr_free f; nil ())
