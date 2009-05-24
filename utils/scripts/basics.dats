@@ -190,8 +190,12 @@ implement libats_mt_global = ATSHOME_dir_append libats_mt_local
 
 (* ****** ****** *)
 
+local
+
 #define nil STRLSTnil
 #define :: STRLSTcons
+
+in // in of [local]
 
 implement strlst_nil () = STRLSTnil ()
 implement strlst_is_nil (ss) =
@@ -215,6 +219,23 @@ implement strlst_reverse {n} ss = let
 in
    aux (ss, nil ())
 end // end of [strlst_reverse]
+
+end // end of [local]
+
+(* ****** ****** *)
+
+implement lstrlst_reverse (xs0) = let
+  fun revapp {m,n:nat} .<m>.
+    (xs: lstrlst m, ys: lstrlst n):<> lstrlst (m+n) =
+    case+ xs of
+    | LSTRLSTcons (_, !p_xs1) => let
+        val xs1 = !p_xs1 in !p_xs1 := ys; fold@ xs; revapp (xs1, xs)
+      end // end of [val]
+    | ~LSTRLSTnil () => ys
+  // end of [revapp]
+in
+  revapp (xs0, LSTRLSTnil ())
+end // end of [lstrlst_reverse]
 
 (* ****** ****** *)
 

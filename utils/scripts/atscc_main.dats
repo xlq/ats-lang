@@ -31,9 +31,17 @@
 
 (* ****** ****** *)
 
+//
+// Author: Hongwei Xi (hwxi AT cs DOT bu DOT edu) *)
 // Time: Summer 2007
+//
+// This is one of the first programs written in ATS/Geizella. The coding
+// style is clearly awkward.
+//
 
-(* Author: Hongwei Xi (hwxi AT cs DOT bu DOT edu) *)
+(* ****** ****** *)
+
+#include "prelude/params.hats"
 
 (* ****** ****** *)
 
@@ -212,10 +220,24 @@ fn* aux {i:nat | i <= n} ( // .<n-i,0>.
 (*
           val is_mt = intref_get is_ATS_MULTITHREAD > 0
 *)
+#if ATS_PKGCONFIG == 1 #then
+          val toks = pkgconfig_cflags_libs ("bdw-gc") where {
+            extern fun pkgconfig_cflags_libs (pkgname: string): List_vt string
+              = "pkgconfig_cflags_libs"
+          } // end of [val]
+          val param_c = loop (param_c, toks) where {
+            fun loop (param_c: Strlst, toks: List_vt string): Strlst =
+              case+ toks of
+              | ~list_vt_cons (tok, toks) => loop (STRLSTcons (tok, param_c), toks)
+              | ~list_vt_nil () => param_c
+            // end of [loop]
+          } // end of [val param_c]
+#else
           val gcobj_local_lib = "GCBDW/lib": string
           val gcobj_global_lib = runtime_global + gcobj_local_lib
           val param_c = ("-L" + gcobj_global_lib) :: param_c
           val param_c = "-lgc" :: param_c
+#endif
         in
           param_c
         end // end of [ATS_GCBDW]

@@ -99,6 +99,15 @@ fun strlst_reverse {n:nat} (ss: strlst n): strlst n = "strlst_reverse"
 
 (* ****** ****** *)
 
+dataviewtype lstrlst (int) = // for linear string lists
+  | LSTRLSTnil (0) | {n:nat} LSTRLSTcons (n+1) of (string, lstrlst n)
+
+viewtypedef Lstrlst = [n:nat] lstrlst n
+
+fun lstrlst_reverse {n:nat} (xs: lstrlst n):<> lstrlst n
+
+(* ****** ****** *)
+
 fun strlst_to_strarr {n:nat} {l:addr}
   (pf: !array_v (String?, n, l) >> array_v (String, n, l) | ss: strlst n, p: ptr l)
   : void

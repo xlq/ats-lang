@@ -48,11 +48,11 @@ all: atscc atslib
 	echo "[atscc] and [atslib] have been generated."
 
 atscc:  atscc_main_dats.c \
-          top_sats.o basics_dats.o atscc_dats.o \
-          stdio_sats.o stdlib_sats.o unistd_sats.o sys_types_sats.o
+          top_sats.o basics_dats.o pkgconfig.o atscc_dats.o \
+          stdio_sats.o stdlib_sats.o string_sats.o unistd_sats.o sys_types_sats.o
 	$(CC) $(INCLUDES) $(CCFLAGS) -o atscc atscc_main_dats.c $(ATSRUNTIME)/ats_prelude.c \
-          top_sats.o basics_dats.o atscc_dats.o \
-          stdio_sats.o stdlib_sats.o unistd_sats.o sys_types_sats.o
+          top_sats.o basics_dats.o pkgconfig.o atscc_dats.o \
+          stdio_sats.o stdlib_sats.o string_sats.o unistd_sats.o sys_types_sats.o
 
 atslib: atslib_main_dats.c \
           top_sats.o basics_dats.o atscc_dats.o atslib_dats.o \
@@ -78,6 +78,14 @@ basics_dats.c: top.sats basics.dats
 	$(ATSOPT) --output $@ --dynamic basics.dats
 basics_dats.o: basics_dats.c
 	$(CC) $(INCLUDES) $(CCFLAGS) -o $@ -c basics_dats.c
+
+######
+
+pkgconfig_dats.c: pkgconfig.dats
+	$(ATSOPT) --output $@ --dynamic pkgconfig.dats
+
+pkgconfig.o: pkgconfig_dats.c
+	$(CC) $(INCLUDES) $(CCFLAGS) -o $@ -c pkgconfig_dats.c
 
 ######
 
@@ -110,6 +118,11 @@ stdlib_sats.c:
 	$(ATSOPT) --output $@ --static $(ATSLIBC)/SATS/stdlib.sats
 stdlib_sats.o: stdlib_sats.c
 	$(CC) $(INCLUDES) $(CCFLAGS) -o $@ -c stdlib_sats.c
+
+string_sats.c:
+	$(ATSOPT) --output $@ --static $(ATSLIBC)/SATS/string.sats
+string_sats.o: string_sats.c
+	$(CC) $(INCLUDES) $(CCFLAGS) -o $@ -c string_sats.c
 
 unistd_sats.c:
 	$(ATSOPT) --output $@ --static $(ATSLIBC)/SATS/unistd.sats
