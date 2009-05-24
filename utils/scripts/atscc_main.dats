@@ -221,9 +221,11 @@ fn* aux {i:nat | i <= n} ( // .<n-i,0>.
           val is_mt = intref_get is_ATS_MULTITHREAD > 0
 *)
 #if ATS_PKGCONFIG == 1 #then
-          val toks = pkgconfig_cflags_libs ("bdw-gc") where {
-            extern fun pkgconfig_cflags_libs (pkgname: string): List_vt string
-              = "pkgconfig_cflags_libs"
+          #define :: STRLSTcons; #define nil STRLSTnil
+          val arglst = "bdw-gc" :: "--libs" :: nil ()
+          val toks = atscc_pkgconfig (arglst, 2) where {
+            extern fun atscc_pkgconfig
+              {n:nat} (arglst: strlst n, narg: int n): List_vt string = "atscc_pkgconfig"
           } // end of [val]
           val param_c = loop (param_c, toks) where {
             fun loop (param_c: Strlst, toks: List_vt string): Strlst =
