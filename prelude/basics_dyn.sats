@@ -27,7 +27,6 @@
 ** along  with  ATS;  see the  file COPYING.  If not, please write to the
 ** Free Software Foundation,  51 Franklin Street, Fifth Floor, Boston, MA
 ** 02110-1301, USA.
-**
 *)
 
 (* ****** ****** *)
@@ -95,12 +94,15 @@ val NotFoundException : exn = "NotFoundException"
 val OverflowException : exn = "OverflowException"
 val SubscriptException : exn = "SubscriptException"
 
-//
+(* ****** ****** *)
 
 val{elt:viewt@ype} sizeof : size_t (sizeof elt)
 val{elt:viewt@ype} junkof : elt?
 
-//
+(* ****** ****** *)
+
+// note that sizeof(empty) = 0 and sizeof(void) = 1
+val empval : empty = "ats_empty_value" // the empty value in ATS
 
 val true : bool (true) and false : bool (false)
 

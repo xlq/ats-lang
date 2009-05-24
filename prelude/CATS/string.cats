@@ -73,11 +73,11 @@ atspre_string1_of_string (const ats_ptr_type s) { return s ; }
 
 static inline
 ats_ptr_type // a casting function
-atspre_strbuf1_of_string1 (const ats_ptr_type s) { return s ; }
+atspre_strbuf_of_string1 (const ats_ptr_type s) { return s ; }
 
 static inline
 ats_ptr_type // a casting function
-atspre_string1_of_strbuf1 (const ats_ptr_type s) { return s ; }
+atspre_string1_of_strbuf (const ats_ptr_type s) { return s ; }
 
 #endif /* end of [_ATS_GEIZELLA] */
 
@@ -213,6 +213,20 @@ atspre_strbuf_set_char_at__intsz
   (ats_ptr_type s, ats_int_type offset, ats_char_type c) {
   *((char*)s + offset) = c ; return ;
 } /* end of [atspre_strbuf_set_char_at__intsz] */
+
+static inline
+ats_char_type
+atspre_string_test_char_at
+  (const ats_ptr_type s, ats_size_type offset) {
+  return *((char*)s + offset) ;
+} /* end of [atspre_string_test_char_at] */
+
+static inline
+ats_char_type
+atspre_string_test_char_at__intsz
+  (const ats_ptr_type s, ats_int_type offset) {
+  return *((char*)s + offset) ;
+} /* end of [atspre_string_test_char_at__intsz] */
 
 /* ****** ****** */
 

@@ -62,9 +62,9 @@ viewdef FILE_opt_v (m:fm, l:addr) = option_v (FILE m @ l, l <> null)
 
 //
 
-praxi stdin_is_not_null : [stdin_addr > null] void
-praxi stdout_is_not_null : [stdout_addr > null] void
-praxi stderr_is_not_null : [stderr_addr > null] void
+praxi stdin_isnot_null : [stdin_addr > null] void
+praxi stdout_isnot_null : [stdout_addr > null] void
+praxi stderr_isnot_null : [stderr_addr > null] void
 
 // ------------------------------------------------
 

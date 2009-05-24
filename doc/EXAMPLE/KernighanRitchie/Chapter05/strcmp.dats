@@ -20,20 +20,24 @@ extern fun strcmp
     s1: &strbuf (m1, n1), s2: &strbuf (m2, n2)
   ) :<> Sgn
 
+#define NUL '\0'
+
 implement strcmp {m1,n1} {m2,n2}
   (s1, s2) = loop (s1, s2, 0) where {
   fun loop {i:nat | i <= n1; i <= n2} .<n1-i>.
-    (s1: &strbuf (m1, n1), s2: &strbuf (m2, n2), i: size_t i):<> Sgn =
-    if strbuf_is_at_end (s1, i) then begin
-      if strbuf_is_at_end (s2, i) then 0 else ~1
-    end else begin
-      if strbuf_is_at_end (s2, i) then 1 else let
-        val sgn = compare (s1[i], s2[i])
-      in
-        if (sgn = 0) then loop (s1, s2, i+1) else sgn
+    (s1: &strbuf (m1, n1), s2: &strbuf (m2, n2), i: size_t i):<> Sgn = let
+    val c1 = strbuf_test_char_at (s1, i)
+    and c2 = strbuf_test_char_at (s2, i)
+  in
+    if c1 = NUL then
+      if c2 = NUL then 0 else ~1
+    else
+      if c2 = NUL then 1 else begin
+        if c1 < c2 then ~1 else if c1 > c2 then 1 else loop (s1, s2, i+1)
       end // end of [if]
-    end // end of [if]
-} // end of [strcmp]
+    // end of [if]
+  end // end of [loop]
+} (* end of [strcmp] *)
 
 (* ****** ****** *)
 

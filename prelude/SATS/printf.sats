@@ -112,6 +112,10 @@ fun tostringf {ts:types}
 fun sprintf {ts:types}
   (fmt: printf_c ts, arg: ts):<> String = "atspre_tostringf"
 
+//
+// [tostringf__ptr] and [sprintf__ptr] are declared in [string.sats]
+//
+
 (* ****** ****** *)
 
 (*
@@ -124,7 +128,8 @@ fun snprintf {ts:types} {m1,m2:nat | m2 <= m1} {l:addr} (
 
 *)
 
-fun snprintf {ts:types} {m1,m2:nat | m2 <= m1} {l:addr} (
+fun snprintf {ts:types}
+  {m1,m2:nat | m2 <= m1} {l:addr} (
     pf: ! @[byte?][m1] @ l >> strbuf (m1, n1) @ l
   | p: ptr l, m2: size_t m2, fmt: printf_c ts, arg: ts
   ) :<> #[n1:nat | n1 < m2] [n2:nat] int n2

@@ -86,7 +86,7 @@ in
   loop (pf | xs, f, env)
 end // end of [list_app__main]
 
-implement{a} list_app_fun {n:int} {f:eff} (xs, f) = let
+implement{a} list_app_fun {f:eff} (xs, f) = let
   val f = coerce (f) where {
     extern castfn coerce (f: a -<f> void):<> (!unit_v | a, !Ptr) -<f> void
   } // end of [where]
@@ -97,7 +97,7 @@ in
   ()
 end // end of [list_app_fun]
 
-implement{a} list_app_clo {n:int} {f:eff} (xs, f) = let
+implement{a} list_app_clo {f:eff} (xs, f) = let
   viewtypedef clo_t = a -<clo,f> void
   stavar l_f: addr; val p_f: ptr l_f = &f
   viewdef V = clo_t @ l_f
@@ -109,7 +109,7 @@ in
   ()
 end // end of [list_app_clo]
 
-implement{a} list_app_cloptr {n:int} {f:eff} (xs, f) = let
+implement{a} list_app_cloptr {f:eff} (xs, f) = let
   viewtypedef cloptr_t = a -<cloptr,f> void
   fn app (pf: !unit_v | x: a, f: !cloptr_t):<f> void = f (x)
   prval pf = unit_v ()
@@ -119,7 +119,7 @@ in
   ()
 end // end of [list_app_cloptr]
 
-implement{a} list_app_cloref {n:int} {f:eff} (xs, f) = let
+implement{a} list_app_cloref {f:eff} (xs, f) = let
   typedef cloref_t = a -<cloref,f> void
   fn app (pf: !unit_v | x: a, f: !cloref_t):<f> void = f (x)
   prval pf = unit_v ()

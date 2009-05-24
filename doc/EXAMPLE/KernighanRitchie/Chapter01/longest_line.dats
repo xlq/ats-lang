@@ -77,9 +77,9 @@ implement main () = let
           prval () = pf_line := s2b (pf_line_new)
         in
           loop (pf_line, pf_longest | p_line, p_longest, max)
-        end // end of [if]
+        end (* endif *)
       end // end of [if]
-    end // end of [loop]
+    end (* end of [loop] *)
   }
 in
   if (max > 0) then let

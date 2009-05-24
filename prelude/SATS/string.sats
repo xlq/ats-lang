@@ -7,28 +7,27 @@
 (***********************************************************************)
 
 (*
- * ATS - Unleashing the Potential of Types!
- *
- * Copyright (C) 2002-2008 Hongwei Xi, Boston University
- *
- * All rights reserved
- *
- * ATS is free software;  you can  redistribute it and/or modify it under
- * the terms of the GNU LESSER GENERAL PUBLIC LICENSE as published by the
- * Free Software Foundation; either version 2.1, or (at your option)  any
- * later version.
- * 
- * ATS is distributed in the hope that it will be useful, but WITHOUT ANY
- * WARRANTY; without  even  the  implied  warranty  of MERCHANTABILITY or
- * FITNESS FOR A PARTICULAR PURPOSE.  See the  GNU General Public License
- * for more details.
- * 
- * You  should  have  received  a  copy of the GNU General Public License
- * along  with  ATS;  see the  file COPYING.  If not, please write to the
- * Free Software Foundation,  51 Franklin Street, Fifth Floor, Boston, MA
- * 02110-1301, USA.
- *
- *)
+** ATS - Unleashing the Potential of Types!
+**
+** Copyright (C) 2002-2008 Hongwei Xi, Boston University
+**
+** All rights reserved
+**
+** ATS is free software;  you can  redistribute it and/or modify it under
+** the terms of the GNU LESSER GENERAL PUBLIC LICENSE as published by the
+** Free Software Foundation; either version 2.1, or (at your option)  any
+** later version.
+** 
+** ATS is distributed in the hope that it will be useful, but WITHOUT ANY
+** WARRANTY; without  even  the  implied  warranty  of MERCHANTABILITY or
+** FITNESS FOR A PARTICULAR PURPOSE.  See the  GNU General Public License
+** for more details.
+** 
+** You  should  have  received  a  copy of the GNU General Public License
+** along  with  ATS;  see the  file COPYING.  If not, please write to the
+** Free Software Foundation,  51 Franklin Street, Fifth Floor, Boston, MA
+** 02110-1301, USA.
+*)
 
 (* ****** ****** *)
 
@@ -66,10 +65,10 @@ typedef c1hars (n:int) = @[c1har][n]
 
 (* ****** ****** *)
 
-viewdef strbuf_v (l:addr) = strbuf @ l
-
 viewdef strbuf_v
   (m: int, n: int, l:addr) = strbuf (m, n) @ l
+
+viewdef strbuf_v (l:addr) = [m,n:nat] strbuf (m, n) @ l
 
 prfun strbuf_vcontain_lemma0
   {m,n:nat} {l:addr} (): strbuf_v l <= strbuf_v (m, n, l)
@@ -345,6 +344,33 @@ overload [] with string_set_char_at__intsz
 
 (* ****** ****** *)
 
+fun strbuf_test_char_at {m,n:nat}
+  {i:nat | i <= n} (sbf: &strbuf (m, n), i: size_t i)
+  :<> [c:char | (c <> NUL && i < n) || (c == NUL && i >= n)] char c
+  = "atspre_string_test_char_at"
+
+fun string_test_char_at {n:nat}
+  {i:nat | i <= n} (str: string n, i: size_t i)
+  :<> [c:char | (c <> NUL && i < n) || (c == NUL && i >= n)] char c
+  = "atspre_string_test_char_at"
+
+//
+// these functions are present mostly for convenience as a programmer
+// ofter uses values of the type int as array indices:
+//
+
+fun strbuf_test_char_at__intsz {m,n:nat}
+  {i:nat | i <= n} (sbf: &strbuf (m, n), i: size_t i)
+  :<> [c:char | (c <> NUL && i < n) || (c == NUL && i >= n)] char c
+  = "atspre_string_test_char_at__intsz"
+
+fun string_test_char_at__intsz {n:nat}
+  {i:nat | i <= n} (str: string n, i: size_t i)
+  :<> [c:char | (c <> NUL && i < n) || (c == NUL && i >= n)] char c
+  = "atspre_string_test_char_at__intsz"
+
+(* ****** ****** *)
+
 fun strbuf_initialize_substring {bsz:int}
   {n:int} {st,ln:nat | st+ln <= n; ln < bsz} {l:addr} (
     pf: !b0ytes bsz @ l >> strbuf (bsz, ln) @ l
@@ -358,7 +384,7 @@ fun string_make_char {n:nat}
   (n: size_t n, c: char):<> string n
   = "atspre_string_make_char"
 
-fun string_make_char__main
+fun string_make_char__bufptr
   {n:nat} (n: size_t n, c: char)
   :<> [m:nat] [l:addr] strbufptr_gc (m, n, l)
   = "atspre_string_make_char"
@@ -369,10 +395,21 @@ fun string_make_list_int {n:nat}
   (cs: list (char, n), n: int n):<> string n
   = "atspre_string_make_list_int"
 
-fun string_make_list_int__main
+fun string_make_list_int__bufptr
   {n:nat} (cs: list (char, n), n: int n)
   :<> [m:nat] [l:addr] strbufptr_gc (m, n, l)
   = "atspre_string_make_list_int"
+
+(* ****** ****** *)
+
+fun string_make_list_rev_int {n:nat}
+  (cs: list (char, n), n: int n):<> string n
+  = "atspre_string_make_list_rev_int"
+
+fun string_make_list_rev_int__bufptr
+  {n:nat} (cs: list (char, n), n: int n)
+  :<> [m:nat] [l:addr] strbufptr_gc (m, n, l)
+  = "atspre_string_make_list_rev_int"
 
 (* ****** ****** *)
 
@@ -382,7 +419,7 @@ fun string_make_substring
   :<> string ln
   = "atspre_string_make_substring"
 
-fun string_make_substring__main {v:view}
+fun string_make_substring__bufptr {v:view}
   {m,n:int} {st,ln:nat | st+ln <= n} {l:addr} (
     pf: !v
   , pf_con: strbuf_v (m, n, l) <= v
@@ -402,7 +439,7 @@ fun string1_append {i,j:nat}
   = "atspre_string_append"
 overload + with string1_append
 
-fun string1_append__ptr {i,j:nat}
+fun string1_append__bufptr {i,j:nat}
   (s1: string i, s2: string j)
   :<> [m:nat] [l:addr] strbufptr_gc (m, i+j, l)
   = "atspre_string_append"
@@ -426,10 +463,6 @@ fun string_compare (s1: string, s2: string):<> Sgn
 fun stringlst_concat (xs: List string):<> string
 
 (* ****** ****** *)
-
-fun strbuf_contains {m,n:nat}
-  (sbf: &strbuf (m, n), c: char):<> bool
-  = "atspre_string_contains"
 
 fun string_contains (str: string, c: char):<> bool
   = "atspre_string_contains"
@@ -548,7 +581,7 @@ fun string_index_of_string // locate a substring from left
 // implemented in [prelude/CATS/string.cats]
 fun string_singleton (c: char):<> string 1 = "atspre_string_singleton"
 
-fun string_singleton__main (c: char)
+fun string_singleton__bufptr (c: char)
   :<> [m:nat] [l:addr] strbufptr_gc (m, 1, l) = "atspre_string_singleton"
 
 (* ****** ****** *)
@@ -567,7 +600,7 @@ fun strbuf_tolower {m,n:nat} (buf: &strbuf (m, n)): void
 fun string_tolower {n:nat} (str: string n):<> string n // a new string is created
   = "atspre_string_tolower"
 
-fun string_tolower__main {v:view} {l:addr}
+fun string_tolower__bufptr {v:view} {l:addr}
   (pf: !v, fpf: strbuf_v l <= v | p: ptr l):<> [m,n:nat] [l:addr] strbufptr_gc (m, n, l)
   = "atspre_string_tolower"
 
@@ -581,7 +614,7 @@ fun strbuf_toupper {m,n:nat} (buf: &strbuf (m, n)): void
 fun string_toupper {n:nat} (str: string n):<> string n // a new string is created
   = "atspre_string_toupper"
 
-fun string_toupper__main {v:view} {l:addr}
+fun string_toupper__bufptr {v:view} {l:addr}
   (pf: !v, fpf: strbuf_v l <= v | p: ptr l):<> [m,n:nat] [l:addr] strbufptr_gc (m, n, l)
   = "atspre_string_toupper"
 
@@ -635,6 +668,20 @@ fun stropt_gc_is_some
   = "atspre_stropt_is_some"
 
 viewtypedef Stropt_gc = [m,n:nat] stropt_gc (m, n)
+
+(* ****** ****** *)
+
+//
+// [tostringf] and [sprintf] are declared in [printf.sats]
+//
+
+fun tostringf__bufptr {ts:types}
+  (fmt: printf_c ts, arg: ts):<> [m,n:nat][l:addr] strbufptr_gc (m, n, l)
+  = "atspre_tostringf"
+
+fun sprintf__bufptr {ts:types}
+  (fmt: printf_c ts, arg: ts):<> [m,n:nat][l:addr] strbufptr_gc (m, n, l)
+  = "atspre_tostringf"
 
 (* ****** ****** *)
 

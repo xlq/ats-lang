@@ -7,34 +7,41 @@
 (***********************************************************************)
 
 (*
- * ATS - Unleashing the Power of Types!
- *
- * Copyright (C) 2002-2008 Hongwei Xi, Boston University
- *
- * All rights reserved
- *
- * ATS is free software;  you can  redistribute it and/or modify it under
- * the terms of the GNU LESSER GENERAL PUBLIC LICENSE as published by the
- * Free Software Foundation; either version 2.1, or (at your option)  any
- * later version.
- * 
- * ATS is distributed in the hope that it will be useful, but WITHOUT ANY
- * WARRANTY; without  even  the  implied  warranty  of MERCHANTABILITY or
- * FITNESS FOR A PARTICULAR PURPOSE.  See the  GNU General Public License
- * for more details.
- * 
- * You  should  have  received  a  copy of the GNU General Public License
- * along  with  ATS;  see the  file COPYING.  If not, please write to the
- * Free Software Foundation,  51 Franklin Street, Fifth Floor, Boston, MA
- * 02110-1301, USA.
- *
- *)
+** ATS - Unleashing the Power of Types!
+**
+** Copyright (C) 2002-2008 Hongwei Xi, Boston University
+**
+** All rights reserved
+**
+** ATS is free software;  you can  redistribute it and/or modify it under
+** the terms of the GNU LESSER GENERAL PUBLIC LICENSE as published by the
+** Free Software Foundation; either version 2.1, or (at your option)  any
+** later version.
+** 
+** ATS is distributed in the hope that it will be useful, but WITHOUT ANY
+** WARRANTY; without  even  the  implied  warranty  of MERCHANTABILITY or
+** FITNESS FOR A PARTICULAR PURPOSE.  See the  GNU General Public License
+** for more details.
+** 
+** You  should  have  received  a  copy of the GNU General Public License
+** along  with  ATS;  see the  file COPYING.  If not, please write to the
+** Free Software Foundation,  51 Franklin Street, Fifth Floor, Boston, MA
+** 02110-1301, USA.
+*)
 
 (* ****** ****** *)
 
+//
+// Author: Hongwei Xi (hwxi AT cs DOT bu DOT edu) *)
 // Time: Summer 2007
+//
+// This is one of the first programs written in ATS/Geizella. The coding
+// style is clearly awkward.
+//
 
-(* Author: Hongwei Xi (hwxi AT cs DOT bu DOT edu) *)
+(* ****** ****** *)
+
+#include "prelude/params.hats"
 
 (* ****** ****** *)
 
@@ -213,10 +220,24 @@ fn* aux {i:nat | i <= n} ( // .<n-i,0>.
 (*
           val is_mt = intref_get is_ATS_MULTITHREAD > 0
 *)
+#if ATS_PKGCONFIG == 1 #then
+          val toks = pkgconfig_cflags_libs ("bdw-gc") where {
+            extern fun pkgconfig_cflags_libs (pkgname: string): List_vt string
+              = "pkgconfig_cflags_libs"
+          } // end of [val]
+          val param_c = loop (param_c, toks) where {
+            fun loop (param_c: Strlst, toks: List_vt string): Strlst =
+              case+ toks of
+              | ~list_vt_cons (tok, toks) => loop (STRLSTcons (tok, param_c), toks)
+              | ~list_vt_nil () => param_c
+            // end of [loop]
+          } // end of [val param_c]
+#else
           val gcobj_local_lib = "GCBDW/lib": string
           val gcobj_global_lib = runtime_global + gcobj_local_lib
           val param_c = ("-L" + gcobj_global_lib) :: param_c
           val param_c = "-lgc" :: param_c
+#endif
         in
           param_c
         end // end of [ATS_GCBDW]

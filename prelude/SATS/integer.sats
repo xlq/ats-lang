@@ -716,6 +716,10 @@ overload >= with gte_lint_lint
 overload = with eq_lint_lint
 overload <> with neq_lint_lint
 
+fun compare_lint_lint (i1: lint, i2: lint):<> Sgn
+  = "atspre_compare_lint_lint"
+overload compare with compare_lint_lint
+
 fun max_lint_lint (i: lint, j: lint):<> lint
   = "atspre_max_lint_lint"
 and min_lint_lint (i: lint, j: lint):<> lint
@@ -836,6 +840,10 @@ overload > with gt_ulint_ulint
 overload >= with gte_ulint_ulint
 overload = with eq_ulint_ulint
 overload <> with neq_ulint_ulint
+
+fun compare_ulint_ulint (i1: ulint, i2: ulint):<> Sgn
+  = "atspre_compare_ulint_ulint"
+overload compare with compare_ulint_ulint
 
 fun max_ulint_ulint (i: ulint, j: ulint):<> ulint
   = "atspre_max_ulint_ulint"
@@ -964,6 +972,10 @@ overload >= with gte_llint_llint
 overload = with eq_llint_llint
 overload <> with neq_llint_llint
 
+fun compare_llint_llint (i1: llint, i2: llint):<> Sgn
+  = "atspre_compare_llint_llint"
+overload compare with compare_llint_llint
+
 fun max_llint_llint (i: llint, j: llint):<> llint
   = "atspre_max_llint_llint"
 
@@ -1077,6 +1089,10 @@ overload > with gt_ullint_ullint
 overload >= with gte_ullint_ullint
 overload = with eq_ullint_ullint
 overload <> with neq_ullint_ullint
+
+fun compare_ullint_ullint (i1: ullint, i2: ullint):<> Sgn
+  = "atspre_compare_ullint_ullint"
+overload compare with compare_ullint_ullint
 
 fun max_ullint_ullint (i: ullint, j: ullint):<> ullint
   = "atspre_max_ullint_ullint"

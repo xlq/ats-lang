@@ -41,4 +41,9 @@
 
 (* ****** ****** *)
 
+#define ATS_PKGCONFIG 1 // this one is used in the following files:
+// $ATSHOME/utils/scripts/atscc_main.dats
+
+(* ****** ****** *)
+
 (* end of [params.hats] *)

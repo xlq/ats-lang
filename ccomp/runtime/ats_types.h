@@ -55,6 +55,8 @@ typedef void *ats_ref_type ;
 typedef void ats_var_type ;
 typedef void ats_void_type ;
 
+typedef struct{} ats_empty_type ;
+
 /* ****** ****** */
 
 typedef int ats_bool_type ;
