@@ -7,28 +7,27 @@
 (***********************************************************************)
 
 (*
- * ATS - Unleashing the Power of Types!
- *
- * Copyright (C) 2002-2008 Hongwei Xi, Boston University
- *
- * All rights reserved
- *
- * ATS is free software;  you can  redistribute it and/or modify it under
- * the terms of  the GNU GENERAL PUBLIC LICENSE (GPL) as published by the
- * Free Software Foundation; either version 3, or (at  your  option)  any
- * later version.
- * 
- * ATS is distributed in the hope that it will be useful, but WITHOUT ANY
- * WARRANTY; without  even  the  implied  warranty  of MERCHANTABILITY or
- * FITNESS FOR A PARTICULAR PURPOSE.  See the  GNU General Public License
- * for more details.
- * 
- * You  should  have  received  a  copy of the GNU General Public License
- * along  with  ATS;  see the  file COPYING.  If not, please write to the
- * Free Software Foundation,  51 Franklin Street, Fifth Floor, Boston, MA
- * 02110-1301, USA.
- *
- *)
+** ATS - Unleashing the Power of Types!
+**
+** Copyright (C) 2002-2008 Hongwei Xi, Boston University
+**
+** All rights reserved
+**
+** ATS is free software;  you can  redistribute it and/or modify it under
+** the terms of  the GNU GENERAL PUBLIC LICENSE (GPL) as published by the
+** Free Software Foundation; either version 3, or (at  your  option)  any
+** later version.
+** 
+** ATS is distributed in the hope that it will be useful, but WITHOUT ANY
+** WARRANTY; without  even  the  implied  warranty  of MERCHANTABILITY or
+** FITNESS FOR A PARTICULAR PURPOSE.  See the  GNU General Public License
+** for more details.
+** 
+** You  should  have  received  a  copy of the GNU General Public License
+** along  with  ATS;  see the  file COPYING.  If not, please write to the
+** Free Software Foundation,  51 Franklin Street, Fifth Floor, Boston, MA
+** 02110-1301, USA.
+*)
 
 (* ****** ****** *)
 
@@ -252,25 +251,29 @@ end // end of [lstrlst_reverse]
 /* ****** ****** */
 
 ats_void_type // also defined in [prelude/DATS/basics.dats]
-ats_exit(const ats_int_type n) { exit(n) ; return ; }
+ats_exit(const ats_int_type status) { exit(status) ; return ; }
 
 ats_void_type // also defined in [prelude/DATS/basics.dats]
 ats_exit_errmsg
-  (const ats_int_type n, const ats_ptr_type errmsg)
+  (const ats_int_type status, const ats_ptr_type errmsg)
 {
-  fprintf(stderr, "%s", (char *)errmsg) ; exit(n) ; return ;
+  fprintf(stderr, "%s", (char *)errmsg) ; exit(status) ; return ;
 }
 
 /* ****** ****** */
 
 ats_void_type // also defined in [prelude/DATS/printf.dats]
-atspre_exit_prerrf
-  (const ats_int_type n, const ats_ptr_type fmt, ...)
+atspre_exit_prerrf // [status] should be of the type uint8
+  (const ats_int_type status, const ats_ptr_type fmt, ...)
 {
   va_list ap ;
   va_start(ap, fmt) ; vfprintf(stderr, (char *)fmt, ap) ; va_end(ap) ;
-  exit (n) ;
-}
+/*
+  fprintf (stderr, "atspre_exit_prerrf: status = %i\n", status) ;
+*/
+  exit(status) ;
+  return ; // deadcode
+} /* end of [atspre_exit_prerrf] */
 
 //
 
@@ -278,22 +281,22 @@ ats_void_type // also defined in [prelude/DATS/printf.dats]
 atspre_assert_prerrf
   (ats_bool_type assertion, ats_ptr_type fmt, ...)
 {
-  int n ;
+  int err ;
   va_list ap ;
 
   if (!assertion) {
     va_start(ap, fmt) ;
-    n = vfprintf(stderr, (char *)fmt, ap) ;
+    err = vfprintf(stderr, (char *)fmt, ap) ;
     va_end(ap) ;
-    if (n < 0) { ats_exit_errmsg
-      (n, "exit(ATS): [atspre_assert_prerrf: prerrf] failed\n") ;
+    if (err < 0) { ats_exit_errmsg
+      (err, "exit(ATS): [atspre_assert_prerrf]: prerrf failed\n") ;
     } else { ats_exit_errmsg
-      (1, "exit(ATS): [atspre_assert_prerrf: assert] failed\n") ;
+      (  1, "exit(ATS): [atspre_assert_prerrf]: assert failed\n") ;
     } /* end of [if] */
   } /* end of [if] */
 
   return ;
-} /* atspre_assert_prerrf */
+} /* end of [atspre_assert_prerrf] */
 
 //
 

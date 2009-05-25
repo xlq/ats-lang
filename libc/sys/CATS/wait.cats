@@ -46,6 +46,45 @@
 /* ****** ****** */
 
 static inline
+ats_int_type
+atslib_WIFEXITED (ats_int_type status) { return WIFEXITED(status) ; }
+// end of [atslib_WIFEXITED]
+
+static inline
+ats_int_type
+atslib_WEXITSTATUS
+  (ats_int_type status) { return WEXITSTATUS(status) ; }
+// end of [atslib_WEXITSTATUS]
+
+/* ****** ****** */
+
+static inline
+ats_int_type
+atslib_WIFSIGNALED (ats_int_type status) { return WIFSIGNALED(status) ; }
+// end of [atslib_WIFSIGNALED]
+
+static inline
+ats_int_type
+atslib_WTERMSIG
+  (ats_int_type status) { return WTERMSIG(status) ; }
+// end of [atslib_WTERMSIG]
+
+/* ****** ****** */
+
+static inline
+ats_int_type
+atslib_WIFSTOPPED (ats_int_type status) { return WIFSTOPPED(status) ; }
+// end of [atslib_WIFSTOPPED]
+
+static inline
+ats_int_type
+atslib_WSTOPSIG
+  (ats_int_type status) { return WSTOPSIG(status) ; }
+// end of [atslib_WSTOPSIG]
+
+/* ****** ****** */
+
+static inline
 ats_pid_type
 atslib_wait
   (ats_ref_type status) { return wait ((int*)status) ; }

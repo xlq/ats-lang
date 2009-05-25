@@ -356,10 +356,10 @@ in
       val param_c = outfile_c :: param_c
     in
       aux (pf | param_ats, param_c, i+1)
-    end
+    end // end of [if]
   else begin
     aux (pf | param_ats, file :: param_c, i+1)
-  end
+  end (* end of [if] *)
 end // end of [aux_file]
 
 in

@@ -42,35 +42,37 @@
 %{
 
 ats_void_type atspre_exit_prerrf
-  (const ats_int_type n, const ats_ptr_type fmt, ...)
+  (const ats_int_type status, const ats_ptr_type fmt, ...)
 {
   va_list ap ;
   va_start(ap, fmt) ; vfprintf(stderr, (char*)fmt, ap) ; va_end(ap) ;
-  exit(n) ;
-}
+/*
+  fprintf (stderr, "atspre_exit_prerrf: status = %i\n", status) ;
+*/
+  exit(status) ;
+  return ; // deadcode
+} /* end of [atspre_exit_prerrf] */
 
 ats_void_type atspre_assert_prerrf
   (ats_bool_type assertion, ats_ptr_type fmt, ...) {
-  int n ;
+  int err ;
   va_list ap ;
 
-  if (!assertion) {
+  if (!assertion) { /* assertion is false */
     va_start(ap, fmt) ;
-    n = vfprintf(stderr, (char*)fmt, ap) ;
+    err = vfprintf(stderr, (char*)fmt, ap) ;
     va_end(ap) ;
-    if (n < 0) {
+    if (err < 0) {
       ats_exit_errmsg (
-        n, "[atspre_assert_prerrf: prerrf] failed\n"
+        err, "[atspre_assert_prerrf]: prerrf failed\n"
       ) ;
     } else {
-      ats_exit_errmsg (
-        1, "[atspre_assert_prerrf: assert] failed\n"
-      ) ;
+      ats_exit_errmsg (1, "[atspre_assert_prerrf]: assert failed\n") ;
     }
-  }
+  } /* end of [if] */
 
   return ;
-}
+} /* end of [atspre_assert_prerrf] */
 
 %}
 

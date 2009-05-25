@@ -69,7 +69,7 @@ fun fork_exec_cloptr_exn {v:view}
  (pf: !v | f: (v | (*none*)) -<cloptr1> void): void
  = "atslib_fork_exec_cloptr_exn"
 
-fun fork_exec_and_wait_cloptr_exn (proc: () -<cloptr1> void): int
+fun fork_exec_and_wait_cloptr_exn (proc: () -<cloptr1> void): Int
   = "atslib_fork_exec_and_wait_cloptr_exn"
 
 (* ****** ****** *)
