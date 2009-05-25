@@ -70,7 +70,6 @@ fun{a:t@ype} list0_make_arraysize {n:nat} (arrsz: arraysize (a, n)):<> list0 a
 (* ****** ****** *)
 
 fun{a:t@ype} list0_append (xs: list0 a, ys: list0 a):<> list0 a
-
 overload + with list0_append
 
 (* ****** ****** *)
