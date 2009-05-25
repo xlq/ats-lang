@@ -495,12 +495,10 @@ implement ccomp_patck_sum
     | _ => let
         val d2v = (
           case+ hip.hipat_asvar of
-          | D2VAROPTnone () => let
+          | D2VAROPTnone () => d2v where {
               val d2v = d2var_make_any (hip.hipat_loc)
               val () = hipat_asvar_set (hip, D2VAROPTsome d2v)
-            in
-              d2v
-            end // end of [D2VAROPTnone]
+            } // end of [D2VAROPTnone]
           | D2VAROPTsome d2v => d2v // may happen in template compialtion
         ) : d2var_t
         val () = hipat_asvar_set (hip, D2VAROPTsome d2v)
@@ -541,15 +539,15 @@ in
   case+ hip0.hipat_node of
   | HIPann (hip, _(*ann*)) => begin
       ccomp_patck (res, vp0, hip, fail)
-    end
+    end // end of [HIPann]
   | HIPany () => ()
   | HIPas (_(*knd*), _(*d2v*), hip) => ccomp_patck (res, vp0, hip, fail)
   | HIPbool b => begin
       instr_add_patck (res, vp0, PATCKbool b, fail)
-    end
+    end // end of [HIPbool]
   | HIPchar c => begin
       instr_add_patck (res, vp0, PATCKchar c, fail)
-    end
+    end // end of [HIPchar]
   | HIPcon (_(*freeknd*), d2c, hips_arg, hit_sum) => let
 (*
       val () = begin
@@ -685,8 +683,7 @@ fn ccomp_match_sum (
       end // end of [HIPas]
     | HIPvar (refknd, d2v) => aux_var (res, level, i, hip0, refknd, d2v)
     | _ => ccomp_match (res, level, vp, hip0) where {
-        val vp = (
-          case+ hip0.hipat_asvar of
+        val vp = (case+ hip0.hipat_asvar of
           | D2VAROPTsome d2v => the_dynctx_find d2v
           | D2VAROPTnone () => begin
               prerr "INTERNAL ERROR";
@@ -717,13 +714,9 @@ implement ccomp_match (res, level, vp0, hip0) = let
 (*
   val () = begin
     prerr "ccomp_match: level = "; prerr level; prerr_newline ()
-  end
-  val () = begin
     prerr "ccomp_match: vp0 = "; prerr vp0; prerr_newline ()
-  end
-  val () = begin
     prerr "ccomp_match: hip0 = "; prerr hip0; prerr_newline ()
-  end
+  end // end [val]
 *)
   fun aux_var (
       res: &instrlst_vt
@@ -760,6 +753,7 @@ in
   case+ hip0.hipat_node of
   | HIPann (hip, _(*ann*)) =>
       ccomp_match (res, level, vp0, hip)
+    // end of [HIPann]
   | HIPany _ => ()
   | HIPas (_(*refknd*), d2v, hip) => let
       val () = aux_var (res, level, vp0, d2v)
@@ -828,16 +822,14 @@ fn hiexp_refarg_tr (
   ) : hiexp = begin case+ hie0.hiexp_node of
   | HIErefarg (refval, freeknd, hie) when freeknd > 0 => let
       val loc = hie.hiexp_loc
-      val d2v_any = let
+      val d2v_any = d2v_any where {
         val d2v_any = d2var_make_any (loc)
         val d2v_any_view = d2var_make_any (loc)
         val () = d2var_lev_set (d2v_any, level)
         val () = begin
           d2var_view_set (d2v_any, D2VAROPTsome d2v_any_view)
-        end
-      in
-        d2v_any
-      end // end of [val]
+        end (* end of [val] *)
+      } // end of [val]
       val hit = hie.hiexp_typ
       val tmp = tmpvar_make (hityp_normalize hit)
       val () = instr_add_vardec (res, tmp)
@@ -863,13 +855,13 @@ fun hiexplst_refarg_tr (
   | list_cons (hie, hies) => let
       val hie = begin
         hiexp_refarg_tr (res, level, vps_free, hie)
-      end
+      end // end of [val]
       val hies = begin
         hiexplst_refarg_tr (res, level, vps_free, hies)
-      end
+      end // end of [val]
     in
       list_cons (hie, hies)
-    end
+    end (* end of [list_cons] *)
   | list_nil () => list_nil ()
 end (* end of [hiexplst_refarg_tr] *)
 
@@ -934,6 +926,7 @@ end // end of [funarg_valprim_make]
 fn ccomp_funarg (
     res: &instrlst_vt
   , level: int
+  , loc_fun: loc_t
   , hips_arg: hipatlst
   , fl: funlab_t
   ) : void = let
@@ -949,7 +942,7 @@ fn ccomp_funarg (
         val () = begin
           prerr "ccomp_funarg: aux_patck: hip = "; prerr hip; prerr_newline ();
           prerr "ccomp_funarg: aux_patck: hit = "; prerr hit; prerr_newline ();
-        end
+        end // end of [val]
 *)
         val vp = funarg_valprim_make (i, hit)
         val () = ccomp_patck (res, vp, hip, fail)
@@ -972,7 +965,8 @@ fn ccomp_funarg (
       end // end of [list_vt_cons]
     | ~list_vt_nil () => ()
   end // end of [aux_match]
-  val vps_arg = aux_patck (res, 0, hips_arg, KONTfunarg_fail fl)
+  val fail = KONTfunarg_fail (loc_fun, fl)
+  val vps_arg = aux_patck (res, 0, hips_arg, fail)
 in
   aux_match (res, level, vps_arg, hips_arg)
 end // end of [ccomp_funarg]
@@ -1001,7 +995,7 @@ implement ccomp_exp_arg_body_funlab
 
   val (pf_dynctx_mark | ()) = the_dynctx_mark ()
 
-  val () = ccomp_funarg (res, level, hips_arg, fl)
+  val () = ccomp_funarg (res, level, loc_fun, hips_arg, fl)
   val hit_body = hityp_normalize (hie_body.hiexp_typ)
   val tmp_ret = tmpvar_make_ret (hit_body)
 
@@ -1139,7 +1133,7 @@ fn ccomp_exp_ptrof_var
         end
       end // end of [_ when ...]
     | _ => () // [d2v_mut] is at the current level
-  end
+  end // end of [val ()]
   val offs = ccomp_hilablst (res, hils)
 in
   valprim_ptrof_var_offs (vp_mut, offs)
@@ -1168,7 +1162,7 @@ fn ccomp_exp_refarg (
         $Err.abort {valprim} ()
       end // end of [_]
   end // end of [_]
-end // end of [ccomp_exp_refarg]
+end (* end of [ccomp_exp_refarg] *)
 
 (* ****** ****** *)
 
@@ -1180,11 +1174,9 @@ fn ccomp_exp_seq
         val _(*void*) = ccomp_exp (res, hie0)
       in
         aux (res, hie, hies)
-      end
-    | list_nil () => begin
-        ccomp_exp (res, hie0)
-      end
-  end // end of [aux]
+      end // end of [list_cons]
+    | list_nil () => ccomp_exp (res, hie0)
+  end (* end of [aux] *)
 in
   case+ hies of
   | list_cons (hie, hies) => aux (res, hie, hies)
@@ -1200,11 +1192,7 @@ implement ccomp_exp_var (d2v) = let
 (*
   val () = begin
     prerr "ccomp_exp_var: d2v = "; prerr d2v; prerr_newline ()
-  end // end of [val]
-  val () = begin
     prerr "ccomp_exp_var: d2v_lev = "; prerr d2v_lev; prerr_newline ()
-  end // end of [val]
-  val () = begin
     prerr "ccomp_exp_var: level = "; prerr level; prerr_newline ()
   end // end of [val]
 *)
@@ -1225,6 +1213,7 @@ implement ccomp_exp_var (d2v) = let
         end
       end // end of [_ when ...]
     | _ => () // [d2v] is at the current level
+  // end of [val]
 in
   vp
 end // end of [ccomp_exp_var]
@@ -1901,7 +1890,7 @@ in
       val level = d2var_current_level_get ()
       val vps = ccomp_explst (res, hies)
       val fail = (
-        if knd > 0 then KONTnone () else KONTcaseof_fail ()
+        if knd > 0 then KONTnone () else KONTcaseof_fail (hie0.hiexp_loc)
       ) : kont
       val (pf_mark | ()) = the_dynctx_mark ()
       val branchlst = begin
@@ -2271,14 +2260,18 @@ end // end of [ccomp_fundeclst_main]
 fn ccomp_valdeclst (
     res: &instrlst_vt
   , level: int
+  , valknd: $Syn.valkind
   , valdecs: hivaldeclst
-  , fail: kont
   ) : void = let
   fun aux (res: &instrlst_vt, valdecs: hivaldeclst)
     :<cloptr1> void = begin case+ valdecs of
     | list_cons (valdec, valdecs) => let
         val vp = ccomp_exp (res, valdec.hivaldec_def)
         val hip = valdec.hivaldec_pat
+        val fail = (case+ valknd of
+          | $Syn.VALKINDvalplus _ => KONTnone ()
+          | _ => KONTcaseof_fail (valdec.hivaldec_loc)
+        ) : kont
         val () = ccomp_patck (res, vp, hip, fail)
         val () = ccomp_match (res, level, vp, hip)
         val () = instr_add_valprimlst_free (res)
@@ -2588,18 +2581,14 @@ in
           | list_cons (_, list_cons (_, _)) // mutual recursion
               when $Syn.funkind_is_tailrecur knd => begin
               ccomp_fntdeclst_main (hid0.hidec_loc, fundecs, fls)
-            end
+            end (* end of [list_cons (_, list_cons (_, _))] *)
           | _ => ccomp_fundeclst_main (fundecs, fls)
         end // end of [list_nil]
       | list_cons _ => () // template
     end // end of [HIDfundecs]
   | HIDvaldecs (valknd, valdecs) => let
-      val level = d2var_current_level_get ()
-      val fail = (case+ valknd of
-        | $Syn.VALKINDvalplus () => KONTnone () | _ => KONTcaseof_fail ()
-      ) : kont
-    in
-      ccomp_valdeclst (res, level, valdecs, fail)
+      val level = d2var_current_level_get () in
+      ccomp_valdeclst (res, level, valknd, valdecs)
     end // end of [HIDvaldecs]
   | HIDvaldecs_rec (valdecs) => let
       val level = d2var_current_level_get ()
@@ -2650,7 +2639,7 @@ implement ccomp_declst (res, hids) = case+ hids of
       ccomp_dec (res, hid); ccomp_declst (res, hids)
     end // end of [list_cons]
   | list_nil () => ()
-// end of [ccomp_dec]
+(* end of [ccomp_dec] *)
 
 (* ****** ****** *)
 

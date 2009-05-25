@@ -27,7 +27,6 @@
 ** along  with  ATS;  see the  file COPYING.  If not, please write to the
 ** Free Software Foundation,  51 Franklin Street, Fifth Floor, Boston, MA
 ** 02110-1301, USA.
-**
 *)
 
 (* ****** ****** *)
@@ -878,11 +877,15 @@ implement emit_kont (pf | out, kont) = case+ kont of
   | KONTtmplabint (tl, i) => begin
       fprint1_string (pf | out, "goto "); emit_tmplabint (pf | out, tl, i)
     end // end of [KONTtmplabint]
-  | KONTcaseof_fail () => () where {
-      val () = fprint1_string (pf | out, "ats_caseof_failure_handle ()")
+  | KONTcaseof_fail (loc) => () where {
+      val () = fprint1_string (pf | out, "ats_caseof_failure_handle (\"")
+      val () = $Loc.fprint_location (pf | out, loc)
+      val () = fprint1_string (pf | out, "\")")
     } // end of [KONTcaseof_fail]
-  | KONTfunarg_fail fl => () where {
-      val () = fprint1_string (pf | out, "ats_funarg_failure_handle ()")
+  | KONTfunarg_fail (loc, fl) => () where {
+      val () = fprint1_string (pf | out, "ats_funarg_failure_handle (\"")
+      val () = $Loc.fprint_location (pf | out, loc)
+      val () = fprint1_string (pf | out, "\")")
     } // end of [KONTfunarg_fail]
   | KONTraise vp_exn => () where {
       val () = fprint1_string (pf | out, "ats_raise_exn (")
@@ -893,7 +896,7 @@ implement emit_kont (pf | out, kont) = case+ kont of
   | KONTnone () => begin
       fprint1_string (pf | out, "ats_deadcode_failure_handle ()")
     end // end of [KONTnone]
-// end of [emit_kont]
+(* end of [emit_kont] *)
 
 (* ****** ****** *)
 
@@ -902,7 +905,8 @@ extern fun emit_patck {m:file_mode} (
 ) : void
 
 implement emit_patck
-  (pf | out, vp, patck, fail) = begin case+ patck of
+  (pf | out, vp, patck, fail) = begin
+  case+ patck of
   | PATCKbool b => begin
       fprint1_string (pf | out, "if (");
       if b then fprint1_char (pf | out, '!');
@@ -1006,9 +1010,9 @@ implement emit_patck
       prerr "Internal Error: emit_patck: not implemented yet";
       prerr_newline ();
       $Err.abort {void} ()
-    end
+    end // end of [_]
 *)
-end // end of [emit_patck]
+end (* end of [emit_patck] *)
 
 (* ****** ****** *)
 

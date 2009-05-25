@@ -322,22 +322,22 @@ in
       fprint1_int (pf | out, i);
       strpr ")"
     end // end of [KONTtmplabint]
-  | KONTcaseof_fail () => begin
-      fprint1_string (pf | out, "KONTcaseof_fail()")
-    end
-  | KONTfunarg_fail fl => begin
-      strpr "KONTfunarg_fail("; fprint_funlab (pf | out, fl); strpr ")"
-    end
+  | KONTcaseof_fail (loc) => begin
+      fprint1_string (pf | out, "KONTcaseof_fail(...)")
+    end // end of [KONTcaseof_fail]
+  | KONTfunarg_fail (loc, fl) => begin
+      strpr "KONTfunarg_fail(..., "; fprint_funlab (pf | out, fl); strpr ")"
+    end // end of [KONTfunarg_fail]
   | KONTmatpnt mpt => begin
       fprint1_string (pf | out, "KONTmatpnt(...)")
-    end
+    end // end of [KONTmatpnt]
   | KONTraise vp => begin
       strpr "KONTraise("; fprint_valprim (pf | out, vp); strpr ")"
-    end
+    end // end of [KONTraise]
   | KONTnone () => begin
       fprint1_string (pf | out, "KONTnone()")
-    end
-end // end of [fprint_kont]
+    end // end of [KONTnone]
+end (* end of [fprint_kont] *)
 
 implement fprint_kontlst {m} (pf | out, ks) = let
   fun aux (out: &FILE m, i: int, ks: kontlst): void =
@@ -347,6 +347,7 @@ implement fprint_kontlst {m} (pf | out, ks) = let
         fprint_kont (pf | out, k); aux (out, i+1, ks)
       end
     | list_nil () => ()
+  // end of [aux]
 in
   aux (out, 0, ks)
 end // end of [fprint_kontlst]
