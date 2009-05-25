@@ -587,6 +587,7 @@ clean::
 	rm -f $(DIR)/*_dats.c
 	rm -f $(DIR)/*_?ats.html
 	rm -f $(DIR)/*_lats.dats
+	rm -f $(DIR)/libats_lex.o
 	rm -f $(DIR)/ats_grammar_yats.output
 	rm -f $(DIR)/*~
 

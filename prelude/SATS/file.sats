@@ -109,7 +109,18 @@ fun test_file_issock (path: string): bool = "atspre_test_file_issock"
 
 (* ****** ****** *)
 
+(*
+** [input_line] reads a sequence of characters ending with a newline
+** character or EOF; the string returned by [input_line] does not include
+** the newline character it reads; if [input_line] encounters EOF when it
+** starts, then an empty string is returned.
+*)
 fun input_line (fil: FILEref): string
+
+(*
+** [output_line] writes to a given file handle a string plus a newline
+** character at the end.
+*)
 fun output_line (fil: FILEref, line: string): void
 
 (* ****** ****** *)
@@ -118,6 +129,7 @@ fun output_line (fil: FILEref, line: string): void
 fun char_stream_make_file (fil: FILEref):<1,~ref> stream (char)
 
 // making a lazy line stream out of a file handle
+// note that the newline character at the end of each line is dropped
 fun line_stream_make_file (fil: FILEref):<1,~ref> stream (string)
 
 (* ****** ****** *)
@@ -128,6 +140,7 @@ fun char_stream_vt_make_file {m:file_mode} {l:addr}
   :<1,~ref> stream_vt (char)
 
 // making a linear lazy line stream out of a file handle
+// note that the newline character at the end of each line is dropped
 fun line_stream_vt_make_file {m:file_mode} {l:addr}
   (pf_mod: file_mode_lte (m, r), pf_fil: FILE m @ l | p_fil: ptr l)
   :<1,~ref> stream_vt (string)

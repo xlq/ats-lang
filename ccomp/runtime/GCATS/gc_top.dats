@@ -36,6 +36,10 @@
 
 (* ****** ****** *)
 
+#include "prelude/params.hats"
+
+(* ****** ****** *)
+
 %{^
 
 #include "gc.cats"
@@ -268,9 +272,9 @@ val () = let // initialization
 
   val () = the_markstack_extend (1)
 
-#if (ATS_GC_VERBOSE >= 1)
+#if (ATS_GC_VERBOSE_LEVEL >= 1)
   val () = (prerr "GC initialization is done."; prerr_newline ())
-#endif // [ATS_GC_VERBOSE]
+#endif // [ATS_GC_VERBOSE_LEVEL]
 
 in  
   (* empty *)

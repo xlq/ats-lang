@@ -7,6 +7,9 @@ ats-lang-anariats-0.1.5:
 2. Some location information is reported when a match failure occurs at
    run-time.
 
+3. [atscc] now returns a nonzero exit status to the OS if compilation does
+   not finish normally.
+
 ########################################################################
 
 ats-lang-anariats-0.1.4:
