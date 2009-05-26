@@ -283,7 +283,7 @@ end // end of [the_dynctx_push]
 //
 
 implement dynctx_foreach_main
-  (pf | ctx, f, env) = $Map.map_foreach_pre (pf | ctx, f, env)
+  (pf | ctx, f, env) = $Map.map_foreach_inf (pf | ctx, f, env)
 // end of [dynctx_foreach_main]
 
 (* ****** ****** *)

@@ -272,8 +272,8 @@ end // end of [bst_merge_random]
 
 (* ****** ****** *)
 
-// preorder listing
-fn{key,itm:t@ype} bst_list_pre {n:nat}
+// infix order listing
+fn{key,itm:t@ype} bst_list_inf {n:nat}
   (t: !bst (key, itm, n)):<> list_vt (@(key, itm), n) = let
   typedef ki = @(key, itm)
   fun aux {i,j:nat} .<i>. (
@@ -293,8 +293,8 @@ end // end of [bst_list_pre]
 
 (* ****** ****** *)
 
-// preorder foreach
-fun{key,itm:t@ype} bst_foreach_pre
+// infix order foreach
+fun{key,itm:t@ype} bst_foreach_inf
   {v:view} {vt:viewtype} {n:nat} {f:eff} .<n>. (
     pf: !v
   | t: !bst (key, itm, n)
@@ -302,14 +302,14 @@ fun{key,itm:t@ype} bst_foreach_pre
   , env: !vt
   ) :<f> void = begin case+ t of
   | BSTcons (_, k, i, !p_tl, !p_tr) => let
-      val () = bst_foreach_pre (pf | !p_tl, f, env)
+      val () = bst_foreach_inf (pf | !p_tl, f, env)
       val () = f (pf | k, i, env)
-      val () = bst_foreach_pre (pf | !p_tr, f, env)
+      val () = bst_foreach_inf (pf | !p_tr, f, env)
     in
       fold@ t
     end // end of [BSTcons]
   | BSTnil () => fold@ t
-end // end of [bst_foreach_pre]
+end // end of [bst_foreach_inf]
 
 (* ****** ****** *)
 
@@ -363,20 +363,20 @@ end // end of [map_join]
 
 (* ****** ****** *)
 
-implement{key,itm} map_list_pre (m) = let
-  val+ MAP (_(*cmp*), !p_bst) = m; val ans = bst_list_pre<key,itm> !p_bst
+implement{key,itm} map_list_inf (m) = let
+  val+ MAP (_(*cmp*), !p_bst) = m; val ans = bst_list_inf<key,itm> !p_bst
 in
   fold@ (m); ans
-end // end of [map_list_pre]
+end // end of [map_list_inf]
 
 (* ****** ****** *)
 
-implement{key,itm} map_foreach_pre (pf | m, f, env) = let
+implement{key,itm} map_foreach_inf (pf | m, f, env) = let
   val+ MAP (_(*cmp*), !p_bst) = m
-  val ans = bst_foreach_pre<key,itm> (pf | !p_bst, f, env)
+  val ans = bst_foreach_inf<key,itm> (pf | !p_bst, f, env)
 in
   fold@ (m); ans
-end // end of [map_foreach_pre]
+end // end of [map_foreach_inf]
 
 (* ****** ****** *)
 

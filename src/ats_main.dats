@@ -346,12 +346,15 @@ datatype comkind =
   | COMKINDnone
   | COMKINDinput of int (* 0: static; 1: dynamic; 2: dynamic and main *)
   | COMKINDoutput
+// end of [comkind]
 
 fn comkind_is_input (knd: comkind): bool =
   case+ knd of COMKINDinput _ => true | _ => false
+// end of [comkind_is_input]
 
 fn comkind_is_output (knd: comkind): bool =
   case+ knd of COMKINDoutput _ => true | _ => false
+// end of [comkind_is_output]
 
 (* ****** ****** *)
 
