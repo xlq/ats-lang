@@ -67,14 +67,18 @@ fun{key,itm:t@ype} map_join
 (* ****** ****** *)
 
 // list a map in pre-order
-fun{key,itm:t@ype} map_list_pre (m: !map_vt (key, itm)):<> List_vt @(key, itm)
+fun{key,itm:t@ype}
+  map_list_inf (m: !map_vt (key, itm)):<> List_vt @(key, itm)
+// end of [fun]
 
-fun{key,itm:t@ype} map_foreach_pre {v:view} {vt:viewtype} {f:eff} (
+fun{key,itm:t@ype}
+  map_foreach_inf {v:view} {vt:viewtype} {f:eff} (
     pf: !v
   | m: !map_vt (key, itm)
   , f: (!v | key, itm, !vt) -<f> void
   , env: !vt
   ) :<f> void
+// end of [fun]
 
 (* ****** ****** *)
 

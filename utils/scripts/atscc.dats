@@ -38,6 +38,7 @@
 (* ****** ****** *)
 
 staload "libc/SATS/unistd.sats"
+staload "libc/sys/SATS/wait.sats"
 
 (* ****** ****** *)
 
@@ -61,14 +62,22 @@ extern fun typecheck_file_exec
   (flag_stadyn: int, param_rev: Strlst, s: string): void
   = "typecheck_file_exec"
 
-implement typecheck_file (flag_stadyn, param_rev, infile) = let
+implement typecheck_file
+  (flag_stadyn, param_rev, infile) = () where {
   val cmd = lam (): void =<cloptr1>
     typecheck_file_exec (flag_stadyn, param_rev, infile)
   val status = fork_exec_and_wait_cloptr_exn (cmd)
-in
-  if (status <> 0) then exit_prerrf {void}
-    (status, "exit(ATS): [typecheck_file(%s)] failed.\n", @(infile))
-end // end of [typecheck_file]
+  val (pf_ifexited | ifexited) = WIFEXITED (status)
+  val () = if ifexited <> 0 then let
+    val code = WEXITSTATUS (pf_ifexited | status) in
+    if code <> 0 then exit_prerrf {void}
+      (code, "exit(ATS): [typecheck_file(%s)] failed.\n", @(infile))
+    // end of [if]
+  end // end of [val]
+  val () = if ifexited = 0 then begin
+    prerr ("[typecheck_file] is sigtermed\n"); exit (1)
+  end // end of [val]
+} (* end of [typecheck_file] *)
 
 extern fun ccomp_file_to_file_exec
   (flag_stadyn: int, param_rev: Strlst, s1: string, s2: string): void
@@ -78,30 +87,46 @@ implement ccomp_file_to_file_err
   (flag_stadyn, param_rev, infile, outfile) = let
   val cmd = lam(): void =<cloptr1>
     ccomp_file_to_file_exec (flag_stadyn, param_rev, infile, outfile)
+  // end of [val]
 in
   fork_exec_and_wait_cloptr_exn (cmd)
 end // end of [ccomp_file_to_file_err]
 
 implement ccomp_file_to_file
-  (flag_stadyn, param_rev, infile, outfile) = let
+  (flag_stadyn, param_rev, infile, outfile) = () where {
   val status = begin
     ccomp_file_to_file_err (flag_stadyn, param_rev, infile, outfile)
   end // end of [val]
-in
-  if (status <> 0) then exit_prerrf {void}
-    (status, "exit(ATS): [ccomp_file_to_file(%s, %s)] failed.\n", @(infile, outfile))
-end // end of [ccomp_file_to_file]
+  val (pf_ifexited | ifexited) = WIFEXITED (status)
+  val () = if ifexited <> 0 then let
+    val code = WEXITSTATUS (pf_ifexited | status) in
+    if (code <> 0) then exit_prerrf {void} (code,
+      "exit(ATS): [ccomp_file_to_file(%s, %s)] failed.\n", @(infile, outfile)
+    ) // end of [if]
+  end // end of [val]
+  val () = if ifexited = 0 then begin
+    prerr ("[compile_file_to_file] is sigtermed\n"); exit (1)
+  end // end of [val]
+} // end of [ccomp_file_to_file]
 
 (* ****** ****** *)
 
 extern fun atscc_version_exec (): void = "atscc_version_exec"
 
-implement atscc_version () = let
-  val status = fork_exec_and_wait_cloptr_exn (lam () => atscc_version_exec ())
-in
-  if (status <> 0) then exit_prerrf {void}
-    (status, "exit(ATS): [atscc_version] failed.\n", @())
-end // end of [atscc_version]
+implement atscc_version () = () where { val status =
+    fork_exec_and_wait_cloptr_exn (lam () => atscc_version_exec ())
+  // end of [val]
+  val (pf_ifexited | ifexited) = WIFEXITED (status)
+  val () = if ifexited <> 0 then let
+    val code = WEXITSTATUS (pf_ifexited | status) in
+    if code <> 0 then exit_prerrf {void}
+      (code, "exit(ATS): [atscc_version] failed.\n", @())
+    // end of [if]
+  end // end of [val]
+  val () = if ifexited = 0 then begin
+    prerr ("[atscc_version] is sigtermed\n"); exit (1)
+  end // end of [val]
+} // end of [atscc_version]
 
 (* ****** ****** *)
 

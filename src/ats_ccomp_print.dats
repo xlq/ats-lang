@@ -7,28 +7,27 @@
 (***********************************************************************)
 
 (*
- * ATS/Anairiats - Unleashing the Potential of Types!
- *
- * Copyright (C) 2002-2008 Hongwei Xi, Boston University
- *
- * All rights reserved
- *
- * ATS is free software;  you can  redistribute it and/or modify it under
- * the terms of  the GNU GENERAL PUBLIC LICENSE (GPL) as published by the
- * Free Software Foundation; either version 3, or (at  your  option)  any
- * later version.
- * 
- * ATS is distributed in the hope that it will be useful, but WITHOUT ANY
- * WARRANTY; without  even  the  implied  warranty  of MERCHANTABILITY or
- * FITNESS FOR A PARTICULAR PURPOSE.  See the  GNU General Public License
- * for more details.
- * 
- * You  should  have  received  a  copy of the GNU General Public License
- * along  with  ATS;  see the  file COPYING.  If not, please write to the
- * Free Software Foundation,  51 Franklin Street, Fifth Floor, Boston, MA
- * 02110-1301, USA.
- *
- *)
+** ATS/Anairiats - Unleashing the Potential of Types!
+**
+** Copyright (C) 2002-2008 Hongwei Xi, Boston University
+**
+** All rights reserved
+**
+** ATS is free software;  you can  redistribute it and/or modify it under
+** the terms of  the GNU GENERAL PUBLIC LICENSE (GPL) as published by the
+** Free Software Foundation; either version 3, or (at  your  option)  any
+** later version.
+** 
+** ATS is distributed in the hope that it will be useful, but WITHOUT ANY
+** WARRANTY; without  even  the  implied  warranty  of MERCHANTABILITY or
+** FITNESS FOR A PARTICULAR PURPOSE.  See the  GNU General Public License
+** for more details.
+** 
+** You  should  have  received  a  copy of the GNU General Public License
+** along  with  ATS;  see the  file COPYING.  If not, please write to the
+** Free Software Foundation,  51 Franklin Street, Fifth Floor, Boston, MA
+** 02110-1301, USA.
+*)
 
 (* ****** ****** *)
 
@@ -322,22 +321,22 @@ in
       fprint1_int (pf | out, i);
       strpr ")"
     end // end of [KONTtmplabint]
-  | KONTcaseof_fail () => begin
-      fprint1_string (pf | out, "KONTcaseof_fail()")
-    end
-  | KONTfunarg_fail fl => begin
-      strpr "KONTfunarg_fail("; fprint_funlab (pf | out, fl); strpr ")"
-    end
+  | KONTcaseof_fail (loc) => begin
+      fprint1_string (pf | out, "KONTcaseof_fail(...)")
+    end // end of [KONTcaseof_fail]
+  | KONTfunarg_fail (loc, fl) => begin
+      strpr "KONTfunarg_fail(..., "; fprint_funlab (pf | out, fl); strpr ")"
+    end // end of [KONTfunarg_fail]
   | KONTmatpnt mpt => begin
       fprint1_string (pf | out, "KONTmatpnt(...)")
-    end
+    end // end of [KONTmatpnt]
   | KONTraise vp => begin
       strpr "KONTraise("; fprint_valprim (pf | out, vp); strpr ")"
-    end
+    end // end of [KONTraise]
   | KONTnone () => begin
       fprint1_string (pf | out, "KONTnone()")
-    end
-end // end of [fprint_kont]
+    end // end of [KONTnone]
+end (* end of [fprint_kont] *)
 
 implement fprint_kontlst {m} (pf | out, ks) = let
   fun aux (out: &FILE m, i: int, ks: kontlst): void =
@@ -347,6 +346,7 @@ implement fprint_kontlst {m} (pf | out, ks) = let
         fprint_kont (pf | out, k); aux (out, i+1, ks)
       end
     | list_nil () => ()
+  // end of [aux]
 in
   aux (out, 0, ks)
 end // end of [fprint_kontlst]

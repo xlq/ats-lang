@@ -7,28 +7,27 @@
 (***********************************************************************)
 
 (*
- * ATS/Anairiats - Unleashing the Potential of Types!
- *
- * Copyright (C) 2002-2008 Hongwei Xi, Boston University
- *
- * All rights reserved
- *
- * ATS is free software;  you can  redistribute it and/or modify it under
- * the terms of  the GNU GENERAL PUBLIC LICENSE (GPL) as published by the
- * Free Software Foundation; either version 3, or (at  your  option)  any
- * later version.
- * 
- * ATS is distributed in the hope that it will be useful, but WITHOUT ANY
- * WARRANTY; without  even  the  implied  warranty  of MERCHANTABILITY or
- * FITNESS FOR A PARTICULAR PURPOSE.  See the  GNU General Public License
- * for more details.
- * 
- * You  should  have  received  a  copy of the GNU General Public License
- * along  with  ATS;  see the  file COPYING.  If not, please write to the
- * Free Software Foundation,  51 Franklin Street, Fifth Floor, Boston, MA
- * 02110-1301, USA.
- *
- *)
+** ATS/Anairiats - Unleashing the Potential of Types!
+**
+** Copyright (C) 2002-2008 Hongwei Xi, Boston University
+**
+** All rights reserved
+**
+** ATS is free software;  you can  redistribute it and/or modify it under
+** the terms of  the GNU GENERAL PUBLIC LICENSE (GPL) as published by the
+** Free Software Foundation; either version 3, or (at  your  option)  any
+** later version.
+** 
+** ATS is distributed in the hope that it will be useful, but WITHOUT ANY
+** WARRANTY; without  even  the  implied  warranty  of MERCHANTABILITY or
+** FITNESS FOR A PARTICULAR PURPOSE.  See the  GNU General Public License
+** for more details.
+** 
+** You  should  have  received  a  copy of the GNU General Public License
+** along  with  ATS;  see the  file COPYING.  If not, please write to the
+** Free Software Foundation,  51 Franklin Street, Fifth Floor, Boston, MA
+** 02110-1301, USA.
+*)
 
 (* ****** ****** *)
 
@@ -127,7 +126,7 @@ fn _emit_tmpvarmap_dec {m:file_mode} {l:addr} (
   end // end of [f]
   val env = ENVcon (l, &i, knd)
   prval pf = @(pf_fil, view@ i)
-  val () = $Map.map_foreach_pre {V} {VT} (pf | tmps, f, env)
+  val () = $Map.map_foreach_inf {V} {VT} (pf | tmps, f, env)
   prval () = (pf_fil := pf.0; view@ i := pf.1)
   val+ ~ENVcon (_, _, _) = env
 in
@@ -164,7 +163,7 @@ fn _emit_tmpvarmap_markroot {m:file_mode} {l:addr} (
   end // end of [f]
   val env = ENVcon (l, &i)
   prval pf = @(pf_fil, view@ i)
-  val () = $Map.map_foreach_pre {V} {VT} (pf | tmps, f, env)
+  val () = $Map.map_foreach_inf {V} {VT} (pf | tmps, f, env)
   prval () = (pf_fil := pf.0; view@ i := pf.1)
   val+ ~ENVcon (_, _) = env
 in

@@ -5,6 +5,7 @@
 #GCFLAG=-D_ATS_gc
 #GCFLAG=-D_ATS_gcats
 GCFLAG=-D_ATS_GCATS
+#GCFLAG=-D_ATS_GCBDW
 
 ATSCC="$(ATSHOME)"/bin/atscc
 

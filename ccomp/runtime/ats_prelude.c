@@ -124,13 +124,15 @@ ats_uncaught_exception_handle (const ats_exn_ptr_type exn) {
 */
 
 ats_void_type
-ats_caseof_failure_handle (void) {
-  ats_exit_errmsg(1, "Exit: match failure.\n") ; return ;
+ats_caseof_failure_handle (char *loc) {
+  fprintf (stderr, "Exit: %s: match failure.\n", loc) ;
+  exit(1) ;
 } /* end of [ats_caseof_failure_handle] */
 
 ats_void_type
-ats_funarg_match_failure_handle (void) {
-  ats_exit_errmsg(1, "Exit: funarg match failure.\n") ; return ;
+ats_funarg_match_failure_handle (char *loc) {
+  fprintf (stderr, "Exit: %s: funarg match failure.\n", loc) ;
+  exit(1) ;
 } /* end of [ats_funarg_match_failure_handle] */
 
 /* ****** ****** */

@@ -14,31 +14,33 @@ compall: \
   HelloWorld f91 fact1 fact2 fact3 fibs revarr revstr
 
 HelloWorld: HelloWorld.dats
-	atscc -o HelloWorld HelloWorld.dats
+	rm -f HelloWorld
+	atscc -o HelloWorld HelloWorld.dats && ./HelloWorld
 
 f91: f91.dats
-	atscc -o f91 f91.dats
+	rm -f f91
+	atscc -o f91 f91.dats && ./f91 0
 
 fact1: fact1.dats
-	atscc -o fact1 fact1.dats
+	atscc -o fact1 fact1.dats && ./fact1 10
 
 fact2: fact2.dats
-	atscc -o fact2 fact2.dats
+	atscc -o fact2 fact2.dats && ./fact2 10
 
 fact3: fact3.dats
-	atscc -o fact3 fact3.dats -lats -lgmp
+	atscc -o fact3 fact3.dats -lats -lgmp && ./fact3 100
 
 fact_in_c: fact_in_c.dats
-	atscc -o fact_in_c fact_in_c.dats
+	atscc -o fact_in_c fact_in_c.dats && ./fact_in_c 10
 
 fibs: fibs.dats
-	atscc -o fibs fibs.dats -lats -lgmp
+	atscc -o fibs fibs.dats -lats -lgmp && ./fibs 40
 
 revarr: revarr.dats
-	atscc -o revarr revarr.dats
+	atscc -o revarr revarr.dats && ./revarr
 
 revstr: revstr.dats
-	atscc -o revstr revstr.dats
+	atscc -o revstr revstr.dats && ./revstr "abcdefghijklmnopqrstuvwxyz"
 
 ######
 

@@ -33,6 +33,7 @@
 
 //
 // Author: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
+// Author: Likai Liu (liulk AT cs DOT bu DOT edu)
 // Time: Summer, 2009
 //
 
@@ -46,30 +47,48 @@ staload "top.sats"
 
 (* ****** ****** *)
 
-extern fun pkgconfig_cflags_libs (pkgname: string): Lstrlst
-  = "pkgconfig_cflags_libs"
+%{^
+
+extern int execvp_with_stdout (char **result, char* argv[]) ;
+
+%}
+
+(* ****** ****** *)
+
+extern fun atscc_pkgconfig
+  {n:nat} (arglst: strlst n, narg: int n): Lstrlst = "atscc_pkgconfig"
+// end of [atscc_pkgconfig]
 
 extern fun shelltok_parse (inp: string): Lstrlst = "shelltok_parse"
 
 (* ****** ****** *)
 
-extern typedef "stringlst_t" = Lstrlst
+extern typedef "lstrlst_t" = lstrlst 0
+extern typedef "strlst_t" = STRLSTcons_pstruct (string, strlst 0)
 
 %{$
 
-ats_ptr_type
-pkgconfig_cflags_libs (ats_ptr_type pkgname) {
-  char *buf ; int err ; stringlst_t toks ;
+ats_ptr_type atscc_pkgconfig (
+  ats_ptr_type arglst, ats_int_type narg
+) {
+  char **argv, *buf ; int i, err ; strlst_t toks ;
 
-  err = execlp_with_stdout(
-    &buf, "pkg-config", "--cflags", "--libs", pkgname, (char*)0
-  ) ;
+  i = 0 ;
+  argv = alloca(1/*cmd*/ + narg + 1/*NULL*/) ;
+  argv[i] = "pkg-config"; i += 1 ;
+  while (arglst != 0) {
+    argv[i] = (char*)(((strlst_t)arglst)->atslab_0);
+    i += 1; arglst = (((strlst_t)arglst)->atslab_1);
+  } /* end of [while] */
+  argv[i] = (char*)0 ; /* i == narg + 1 */
+
+  err = execvp_with_stdout(&buf, argv) ;
 
   if (err != 0) {
     if (buf != 0) free (buf) ; return (ats_ptr_type)0 ;
   }
 
-  toks = (stringlst_t)shelltok_parse (buf) ; free (buf) ;
+  toks = (lstrlst_t)shelltok_parse (buf) ; free (buf) ;
   
   return toks ;
 }
@@ -195,15 +214,14 @@ end (* end of [shelltok_parse] *)
 
 (* ****** ****** *)
 
-%{^
+%{$
 
 /*
-** Author: Likai Liu (liulk AT cs DOT bu DOT edu)
+** Author: Likai Liu (liulk AT cs DOT bu DOT edu); some modification by HX
 ** Time: Summer, 2009
 */
 
 #include <errno.h>      /* EINTR */
-#include <stdarg.h>     /* va_list */
 #include <stdio.h>      /* perror() */
 #include <stdlib.h>     /* malloc(), realloc(), free(), abort() */
 #include <sys/wait.h>   /* waitpid() */
@@ -211,8 +229,7 @@ end (* end of [shelltok_parse] *)
 
 #define BUFSZ_INIT 1024
 
-static int
-execlp_with_stdout (char **result, const char *file, ...)
+int execvp_with_stdout (char **result, char* argv[])
 {
   *result = NULL;
 
@@ -223,31 +240,10 @@ execlp_with_stdout (char **result, const char *file, ...)
   pid_t pid = fork();
   if (pid == 0) {
     /* prepare execution of child process. */
-    va_list ap;
-    size_t num_args = 1;
-
-    va_start(ap, file);
-    do
-      num_args++;
-    while(va_arg(ap, char *) != NULL);
-    va_end(ap);
-
-    const char **argv = alloca(num_args * sizeof(char *));
-    argv[0] = file;
-
-    size_t i;
-    va_start(ap, file);
-    for (i = 1; i < num_args; i++)
-      argv[i] = va_arg(ap, char *);
-    va_end(ap);
-
     dup2(filedes[1], STDOUT_FILENO);
     close(filedes[0]);
     close(filedes[1]);
-
-    execvp(file, (char *const *) argv);
-    perror(file);
-    abort();
+    execvp(argv[0], argv); perror(argv[0]); abort();
   } else if (pid == -1) {
     close(filedes[0]);
     close(filedes[1]);

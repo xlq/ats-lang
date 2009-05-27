@@ -221,9 +221,11 @@ fn* aux {i:nat | i <= n} ( // .<n-i,0>.
           val is_mt = intref_get is_ATS_MULTITHREAD > 0
 *)
 #if ATS_PKGCONFIG == 1 #then
-          val toks = pkgconfig_cflags_libs ("bdw-gc") where {
-            extern fun pkgconfig_cflags_libs (pkgname: string): List_vt string
-              = "pkgconfig_cflags_libs"
+          #define :: STRLSTcons; #define nil STRLSTnil
+          val arglst = "bdw-gc" :: "--libs" :: nil ()
+          val toks = atscc_pkgconfig (arglst, 2) where {
+            extern fun atscc_pkgconfig
+              {n:nat} (arglst: strlst n, narg: int n): List_vt string = "atscc_pkgconfig"
           } // end of [val]
           val param_c = loop (param_c, toks) where {
             fun loop (param_c: Strlst, toks: List_vt string): Strlst =
@@ -354,10 +356,10 @@ in
       val param_c = outfile_c :: param_c
     in
       aux (pf | param_ats, param_c, i+1)
-    end
+    end // end of [if]
   else begin
     aux (pf | param_ats, file :: param_c, i+1)
-  end
+  end (* end of [if] *)
 end // end of [aux_file]
 
 in
@@ -376,12 +378,12 @@ implement main_prelude () = ()
 (* ****** ****** *)
 
 extern
-fun __ats_main {n:pos} (argc: int n, argv: &(@[string][n])): void
-  = "__ats_main"
+fun atscc_main {n:pos} (argc: int n, argv: &(@[string][n])): void
+  = "atscc_main"
 
 implement main (argc, argv) = case+ argc of
   | 1 => let val cmd = argv.[0] in do_usage (basename_of_filename cmd) end
-  | _ => __ats_main (argc, argv)
+  | _ => atscc_main (argc, argv)
 // end of [main]
 
 (* ****** ****** *)
@@ -464,7 +466,7 @@ atscc_outfile_name_make (ats_string_type basename) {
 } /* end of [atscc_outfile_name_make] */
 
 ats_void_type
-__ats_main (ats_int_type argc, ats_ptr_type argv) {
+atscc_main (ats_int_type argc, ats_ptr_type argv) {
   int i, n ;
   ats_sum_ptr_type ss ;
   ats_ptr_type argv_new, p ; pid_t pid ; int status ;
@@ -507,7 +509,7 @@ __ats_main (ats_int_type argc, ats_ptr_type argv) {
     atspre_exit_prerrf (status, "Exit: [%s] failed.\n", gcc) ;
   } /* end of [if] */
   return ;
-} /* end of [__ats_main] */
+} /* end of [atscc_main] */
 
 %}
 

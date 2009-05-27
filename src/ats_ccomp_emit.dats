@@ -27,7 +27,6 @@
 ** along  with  ATS;  see the  file COPYING.  If not, please write to the
 ** Free Software Foundation,  51 Franklin Street, Fifth Floor, Boston, MA
 ** 02110-1301, USA.
-**
 *)
 
 (* ****** ****** *)
@@ -42,6 +41,10 @@
 #include "ats_counter.cats" /* only needed for [ATS/Geizella] */
 
 %}
+
+(* ****** ****** *)
+
+#include "prelude/params.hats"
 
 (* ****** ****** *)
 
@@ -878,11 +881,15 @@ implement emit_kont (pf | out, kont) = case+ kont of
   | KONTtmplabint (tl, i) => begin
       fprint1_string (pf | out, "goto "); emit_tmplabint (pf | out, tl, i)
     end // end of [KONTtmplabint]
-  | KONTcaseof_fail () => () where {
-      val () = fprint1_string (pf | out, "ats_caseof_failure_handle ()")
+  | KONTcaseof_fail (loc) => () where {
+      val () = fprint1_string (pf | out, "ats_caseof_failure_handle (\"")
+      val () = $Loc.fprint_location (pf | out, loc)
+      val () = fprint1_string (pf | out, "\")")
     } // end of [KONTcaseof_fail]
-  | KONTfunarg_fail fl => () where {
-      val () = fprint1_string (pf | out, "ats_funarg_failure_handle ()")
+  | KONTfunarg_fail (loc, fl) => () where {
+      val () = fprint1_string (pf | out, "ats_funarg_failure_handle (\"")
+      val () = $Loc.fprint_location (pf | out, loc)
+      val () = fprint1_string (pf | out, "\")")
     } // end of [KONTfunarg_fail]
   | KONTraise vp_exn => () where {
       val () = fprint1_string (pf | out, "ats_raise_exn (")
@@ -893,7 +900,7 @@ implement emit_kont (pf | out, kont) = case+ kont of
   | KONTnone () => begin
       fprint1_string (pf | out, "ats_deadcode_failure_handle ()")
     end // end of [KONTnone]
-// end of [emit_kont]
+(* end of [emit_kont] *)
 
 (* ****** ****** *)
 
@@ -902,7 +909,8 @@ extern fun emit_patck {m:file_mode} (
 ) : void
 
 implement emit_patck
-  (pf | out, vp, patck, fail) = begin case+ patck of
+  (pf | out, vp, patck, fail) = begin
+  case+ patck of
   | PATCKbool b => begin
       fprint1_string (pf | out, "if (");
       if b then fprint1_char (pf | out, '!');
@@ -1006,9 +1014,9 @@ implement emit_patck
       prerr "Internal Error: emit_patck: not implemented yet";
       prerr_newline ();
       $Err.abort {void} ()
-    end
+    end // end of [_]
 *)
-end // end of [emit_patck]
+end (* end of [emit_patck] *)
 
 (* ****** ****** *)
 
@@ -1883,37 +1891,32 @@ fn funentry_env_err
   : void = let
   val d2vs = vartypset_d2varlst_make (vtps)
   val n = $Lst.list_vt_length__boxed (d2vs)
-  val () =
+  val () = if n > 0 then begin
+    $Loc.prerr_location loc; prerr ": error(ccomp)"
+  end // end of [val]
+  val () = if n > 1 then begin
+    prerr ": the dynamic variables ["
+  end else begin
     if n > 0 then begin
-      $Loc.prerr_location loc; prerr ": error(ccomp)"
+      prerr ": the dynamic variable ["
     end
-  val () =
-    if n > 1 then begin
-      prerr ": the dynamic variables ["
-    end else begin
-      if n > 0 then begin
-        prerr ": the dynamic variable ["
-      end
-    end // end of [if]
+  end // end of [if]
   fun aux (d2vs: d2varlst_vt, i: int): void = begin
     case+ d2vs of
     | ~list_vt_cons (d2v, d2vs) => begin
         if i > 0 then prerr ", "; prerr d2v; aux (d2vs, i+1)
-      end
+      end // end of [list_vt_cons]
     | ~list_vt_nil () => ()
   end // end of [aux]
   val () = aux (d2vs, 0)
-  val () =
-    if n > 1 then begin
-      prerr "] are not function arguments."
-    end else begin
-      if n > 0 then begin
-        prerr "] is not a function argument."
-      end
-    end // end of [if]
-  val () = begin
-    if n > 0 then prerr_newline ()
-  end
+  val () = if n > 1 then begin
+    prerr "] are not function arguments."
+  end else begin
+    if n > 0 then begin
+      prerr "] is not a function argument."
+    end
+  end // end of [if]
+  val () = (if n > 0 then prerr_newline ())
 in
   if n > 0 then $Err.abort {void} ()
 end // end of [funentry_env_err]
@@ -2237,19 +2240,28 @@ implement emit_funentry (pf | out, entry) = let
     prerr_newline ()
   end // end of [val]
 *)
+  val loc_entry = funentry_loc_get entry
   val () = begin case+ fc of
     | $Syn.FUNCLOfun () => begin
-        funentry_env_err (funentry_loc_get entry, fl, vtps_all)
+        funentry_env_err (loc_entry, fl, vtps_all)
       end // end of [FUNCLOfun]
     | $Syn.FUNCLOclo _ => ()
   end
 (*
   val () = begin
     prerr "emit_funentry: after [funentry_env_err]"; prerr_newline ()
-  end
+  end // end of [val]
 *)
   val tmp_ret = funentry_ret_get (entry)
   val () = funentry_varindmap_set (vtps_all)
+
+#if (ATS_CC_VERBOSE_LEVEL >= 1) #then
+  // this location information is mostly for the purpose of debugging
+  val () = fprint1_string (pf | out, "/*\n")
+  val () = fprint1_string (pf | out, "// ")
+  val () = $Loc.fprint_location (pf | out, loc_entry)
+  val () = fprint1_string (pf | out, "\n*/\n")
+#endif
 
   // function head
   val () = begin
@@ -2263,10 +2275,10 @@ implement emit_funentry (pf | out, entry) = let
     if n > 0 then begin case+ 0 of
       | _ when hityplst_is_cons hits_arg => fprint1_string (pf | out, ", ")
       | _ => ()
-    end
+    end (* end of [if] *)
   val () = begin
     emit_funarg (pf | out, hits_arg); fprint1_string (pf | out, ") {\n")
-  end
+  end // end of [val]
 
   // tailjoinlst
   val tjs = funentry_tailjoin_get (entry)

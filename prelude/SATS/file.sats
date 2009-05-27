@@ -7,28 +7,27 @@
 (***********************************************************************)
 
 (*
- * ATS - Unleashing the Potential of Types!
- *
- * Copyright (C) 2002-2008 Hongwei Xi, Boston University
- *
- * All rights reserved
- *
- * ATS is free software;  you can  redistribute it and/or modify it under
- * the terms of the GNU LESSER GENERAL PUBLIC LICENSE as published by the
- * Free Software Foundation; either version 2.1, or (at your option)  any
- * later version.
- * 
- * ATS is distributed in the hope that it will be useful, but WITHOUT ANY
- * WARRANTY; without  even  the  implied  warranty  of MERCHANTABILITY or
- * FITNESS FOR A PARTICULAR PURPOSE.  See the  GNU General Public License
- * for more details.
- * 
- * You  should  have  received  a  copy of the GNU General Public License
- * along  with  ATS;  see the  file COPYING.  If not, please write to the
- * Free Software Foundation,  51 Franklin Street, Fifth Floor, Boston, MA
- * 02110-1301, USA.
- *
- *)
+** ATS - Unleashing the Potential of Types!
+**
+** Copyright (C) 2002-2008 Hongwei Xi, Boston University
+**
+** All rights reserved
+**
+** ATS is free software;  you can  redistribute it and/or modify it under
+** the terms of the GNU LESSER GENERAL PUBLIC LICENSE as published by the
+** Free Software Foundation; either version 2.1, or (at your option)  any
+** later version.
+** 
+** ATS is distributed in the hope that it will be useful, but WITHOUT ANY
+** WARRANTY; without  even  the  implied  warranty  of MERCHANTABILITY or
+** FITNESS FOR A PARTICULAR PURPOSE.  See the  GNU General Public License
+** for more details.
+** 
+** You  should  have  received  a  copy of the GNU General Public License
+** along  with  ATS;  see the  file COPYING.  If not, please write to the
+** Free Software Foundation,  51 Franklin Street, Fifth Floor, Boston, MA
+** 02110-1301, USA.
+*)
 
 (* ****** ****** *)
 
@@ -110,7 +109,18 @@ fun test_file_issock (path: string): bool = "atspre_test_file_issock"
 
 (* ****** ****** *)
 
+(*
+** [input_line] reads a sequence of characters ending with a newline
+** character or EOF; the string returned by [input_line] does not include
+** the newline character it reads; if [input_line] encounters EOF when it
+** starts, then an empty string is returned.
+*)
 fun input_line (fil: FILEref): string
+
+(*
+** [output_line] writes to a given file handle a string plus a newline
+** character at the end.
+*)
 fun output_line (fil: FILEref, line: string): void
 
 (* ****** ****** *)
@@ -119,6 +129,7 @@ fun output_line (fil: FILEref, line: string): void
 fun char_stream_make_file (fil: FILEref):<1,~ref> stream (char)
 
 // making a lazy line stream out of a file handle
+// note that the newline character at the end of each line is dropped
 fun line_stream_make_file (fil: FILEref):<1,~ref> stream (string)
 
 (* ****** ****** *)
@@ -129,6 +140,7 @@ fun char_stream_vt_make_file {m:file_mode} {l:addr}
   :<1,~ref> stream_vt (char)
 
 // making a linear lazy line stream out of a file handle
+// note that the newline character at the end of each line is dropped
 fun line_stream_vt_make_file {m:file_mode} {l:addr}
   (pf_mod: file_mode_lte (m, r), pf_fil: FILE m @ l | p_fil: ptr l)
   :<1,~ref> stream_vt (string)
