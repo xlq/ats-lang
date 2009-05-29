@@ -90,7 +90,6 @@ praxi eqsize_char_uchar (): [sizeof char == sizeof uchar] void
 
 val AssertionException : exn = "AssertionException"
 val DivisionByZeroException : exn = "DivisionByZeroException"
-val NotFoundException : exn = "NotFoundException"
 val OverflowException : exn = "OverflowException"
 val SubscriptException : exn = "SubscriptException"
 
