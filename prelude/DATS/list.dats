@@ -1513,21 +1513,52 @@ implement{a} list_take (xs, i) = let
       loop (xs, i-1, !p); fold@ res
     end else begin
       res := nil ()
-   end
+    end (* end of [loop] *)
+  // end of [loop]
 in
   loop (xs, i, res); res
 end // end of [list_take]
 
+implement{a} list_take_exn {n,i} (xs, i) = let
+  fun loop {n,i:nat} .<i>.
+    (xs: list (a, n), i: int i, res: &List a? >> list (a, j))
+    :<> #[j:nat | (i <= n && i == j) || (n < i && n == j)] bool (n < i)  =
+    if i > 0 then begin case+ xs of
+      | list_cons (x, xs) =>
+          (fold@ res; ans) where {
+          val () = res := list_cons {a} {0} (x, ?)
+          val+ list_cons (_, !p_res1) = res
+          val ans = loop (xs, i-1, !p_res1)
+        } // end of [list_cons]
+      | list_nil () => (res := list_nil (); true(*err*))
+    end else begin
+      res := list_nil (); false(*err*)
+    end (* end of [if] *)
+  // end of [loop]    
+  var res: List a // uninitialized
+  val err = loop {n,i} (xs, i, res)
+in
+  if err then let
+    val () = list_vt_free (__cast res) where {
+      extern castfn __cast (_: List a):<> List_vt a
+    } // end of [val]
+  in
+    $raise ListSubscriptException ()
+  end else begin
+    res // i <= n && length (res) == i
+  end (* end of [if] *)
+end (* end of [list_take_exn] *)
+
 (* ****** ****** *)
 
 implement{a,b} list_zip (xs, ys) = let
-  typedef ab = '(a, b)
+  typedef ab = @(a, b)
   var res: List ab // uninitialized
   fun loop {i:nat} .<i>.
     (xs: list (a, i), ys: list (b, i), res: &(List ab)? >> list (ab, i)):<> void =
     case+ (xs, ys) of
     | (x :: xs, y :: ys) => let
-        val () = (res := cons {ab} {0} ('(x, y), ?)); val+ cons (_, !p) = res
+        val () = (res := cons {ab} {0} (@(x, y), ?)); val+ cons (_, !p) = res
       in
         loop (xs, ys, !p); fold@ res
       end
@@ -1555,7 +1586,7 @@ implement{a,b,c} list_zipwith_cloref {n} {f:eff} (xs, ys, f) =
 implement{a1,a2} list_unzip xys = let
   var res1: List a1 and res2: List a2 // uninitialized
   fun loop {n:nat} .<n>. (
-      xys: list ('(a1, a2), n)
+      xys: list (@(a1, a2), n)
     , res1: &(List a1)? >> list (a1, n)
     , res2: &(List a2)? >> list (a2, n)
   ) :<> void = begin case+ xys of

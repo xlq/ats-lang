@@ -630,7 +630,7 @@ fun{a:t@ype} list_tail_exn {n:nat}
 (* ****** ****** *)
 
 fun{a,b:t@ype} list_zip {n:nat}
-  (xs: list (a, n), ys: list (b, n)):<> list ('(a, b), n)
+  (xs: list (a, n), ys: list (b, n)):<> list (@(a, b), n)
 
 (* ****** ****** *)
 
@@ -649,7 +649,8 @@ fun{a,b,c:t@ype} list_zipwith_cloref {n:nat} {f:eff}
 (* ****** ****** *)
 
 fun{a1,a2:t@ype} list_unzip {n:nat}
-  (xys: list ('(a1, a2), n)):<> (list (a1, n), list (a2, n))
+  (xys: list (@(a1, a2), n)):<> (list (a1, n), list (a2, n))
+// end of [list_unzip]
 
 (* ****** ****** *)
 

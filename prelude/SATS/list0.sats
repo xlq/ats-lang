@@ -122,6 +122,11 @@ fun{a:t@ype} list0_tail_exn (xs: list0 a): list0 a
 
 (* ****** ****** *)
 
+fun{a:t@ype} list0_take_exn (xs: list0 a, n: int): list0 a
+fun{a:t@ype} list0_drop_exn (xs: list0 a, n: int): list0 a
+
+(* ****** ****** *)
+
 #if VERBOSE_PRELUDE #then
 
 #print "Loading [list0.sats] finishes!\n"

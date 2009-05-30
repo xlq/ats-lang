@@ -461,6 +461,11 @@ fun string_compare (s1: string, s2: string):<> Sgn
 (* ****** ****** *)
 
 fun stringlst_concat (xs: List string):<> string
+  = "atspre_stringlst_concat"
+
+fun stringlst_concat__bufptr
+  (xs: List string):<> [m,n:nat] [l:addr] strbufptr_gc (m, n, l)
+  = "atspre_stringlst_concat"
 
 (* ****** ****** *)
 

@@ -7,28 +7,27 @@
 (***********************************************************************)
 
 (*
- * ATS - Unleashing the Potential of Types!
- *
- * Copyright (C) 2002-2008 Hongwei Xi, Boston University
- *
- * All rights reserved
- *
- * ATS is free software;  you can  redistribute it and/or modify it under
- * the terms of the GNU LESSER GENERAL PUBLIC LICENSE as published by the
- * Free Software Foundation; either version 2.1, or (at your option)  any
- * later version.
- * 
- * ATS is distributed in the hope that it will be useful, but WITHOUT ANY
- * WARRANTY; without  even  the  implied  warranty  of MERCHANTABILITY or
- * FITNESS FOR A PARTICULAR PURPOSE.  See the  GNU General Public License
- * for more details.
- * 
- * You  should  have  received  a  copy of the GNU General Public License
- * along  with  ATS;  see the  file COPYING.  If not, please write to the
- * Free Software Foundation,  51 Franklin Street, Fifth Floor, Boston, MA
- * 02110-1301, USA.
- *
- *)
+** ATS - Unleashing the Potential of Types!
+**
+** Copyright (C) 2002-2008 Hongwei Xi, Boston University
+**
+** All rights reserved
+**
+** ATS is free software;  you can  redistribute it and/or modify it under
+** the terms of the GNU LESSER GENERAL PUBLIC LICENSE as published by the
+** Free Software Foundation; either version 2.1, or (at your option)  any
+** later version.
+** 
+** ATS is distributed in the hope that it will be useful, but WITHOUT ANY
+** WARRANTY; without  even  the  implied  warranty  of MERCHANTABILITY or
+** FITNESS FOR A PARTICULAR PURPOSE.  See the  GNU General Public License
+** for more details.
+** 
+** You  should  have  received  a  copy of the GNU General Public License
+** along  with  ATS;  see the  file COPYING.  If not, please write to the
+** Free Software Foundation,  51 Franklin Street, Fifth Floor, Boston, MA
+** 02110-1301, USA.
+*)
 
 (* ****** ****** *)
 
@@ -168,42 +167,42 @@ end // end of [string_make_list_int]
 
 (* ****** ****** *)
 
-implement stringlst_concat (ss) = let
+implement stringlst_concat__bufptr (ss) = let
   val n0 = aux (ss, i2sz 0) where {
     fun aux {k:nat} .<k>.
       (ss: list (string, k), n: size_t):<> size_t = case+ ss of
       | list_cons (s, ss) => aux (ss, n + string0_length s) | list_nil () => n
     // end of [aux]
   } // end of [val n0]
-  val n0 = size1_of_size (n0)
-  fun loop1 {m0,n0,i0,n,i:nat | i0 <= n0; i <= n} .<n0-i0>.
-    (s0: &strbuf (m0, n0), n0: size_t n0, i0: size_t i0, s: string n, i: size_t i)
-    :<> [i0: nat | i0 <= n0] size_t i0 = begin
-    if string_is_at_end (s, i) then i0 else let
-      val c = $effmask_ref (s[i])
-    in
+  val [n0:int] n0 = size1_of_size (n0)
+  fun loop1 {m0,n0,i0,n,i:nat | i0 <= n0; i <= n} .<n0-i0>. (
+      s0: &strbuf (m0, n0), n0: size_t n0, i0: size_t i0, s: string n, i: size_t i
+    ) :<> sizeLte n0 = let
+    val c = string_test_char_at (s, i) in
+    if c <> NUL then begin
       if i0 < n0 then (s0[i0] := c; loop1 (s0, n0, i0+1, s, i+1)) else i0
-    end // end of [if]
-  end // end of [loop1]
-  fun loop2 {m0,n0,i0,k:nat | i0 <= n0} .<k>.
-    (s0: &strbuf (m0, n0), n0: size_t n0, i0: size_t i0, ss: list (string, k))
-    :<> void = begin case+ ss of
+    end else i0 // end of [if]
+  end (* end of [loop1] *)
+  fun loop2 {m0,n0,i0,k:nat | i0 <= n0} .<k>. (
+      s0: &strbuf (m0, n0), n0: size_t n0, i0: size_t i0, ss: list (string, k)
+    ) :<> void = begin
+    case+ ss of
     | list_cons (s, ss) => let
         val s = string1_of_string s; val i0 = loop1 (s0, n0, i0, s, 0)
       in
         loop2 (s0, n0, i0, ss)
       end // end of [list_cons]
     | list_nil () => () // loop exists
-  end // end of [loop2]
-  val (pf_gc, pf_sb | p_sb) = _string_alloc n0 where {
+  end (* end of [loop2] *)
+  val [l:addr] (pf_gc, pf_sb | p_sb) = _string_alloc n0 where {
     extern fun _string_alloc {n:nat} (n: size_t n)
       :<> [l:addr] (free_gc_v (n+1, l), strbuf (n+1, n) @ l | ptr l)
       = "_string_alloc"
   } // end of [val]
   val () = loop2 (!p_sb, n0, 0, ss)
 in
-  string1_of_strbuf (pf_gc, pf_sb | p_sb)
-end // end of [stringlst_concat]
+  #[n0+1,n0 | #[l | @(pf_gc, pf_sb | p_sb)]]
+end // end of [stringlst_concat__bufptr]
 
 (* ****** ****** *)
 
