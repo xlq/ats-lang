@@ -5,6 +5,10 @@
 
 (* ****** ****** *)
 
+// Author: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
+
+(* ****** ****** *)
+
 staload RAND = "libc/SATS/random.sats"
 staload STDLIB = "libc/SATS/stdlib.sats"
 

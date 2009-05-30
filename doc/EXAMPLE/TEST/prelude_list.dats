@@ -5,6 +5,10 @@
 
 (* ****** ****** *)
 
+// Author: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
+
+(* ****** ****** *)
+
 staload Rand = "libc/SATS/random.sats"
 
 (* ****** ****** *)
@@ -16,7 +20,7 @@ staload _(*anonymous*) = "prelude/DATS/list_vt.dats"
 
 #define MAXELT 100
 (*
-fun random_list_gen {n: nat}
+fun random_list_gen {n:nat}
   (n: int n): list (natLt MAXELT, n) = loop (n, list_nil) where {
   typedef T = natLt MAXELT
   fun loop {i,j:nat} .<i>.
@@ -46,9 +50,19 @@ implement main (argc, argv) = let
     } // end of [val]
     prval unit_v () = pf
   } // end of [lstpr]
+  fun lsteq (xs1: List int, xs2: List int): bool =
+    case+ (xs1, xs2) of
+    | (list_nil _, list_nil _) => true
+    | (list_cons (x1, xs1), list_cons (x2, xs2)) when x1 = x2 => lsteq (xs1, xs2)
+    | (_, _) => false
+  // end of [lsteq]
+//
   val () = $Rand.srand48_with_time () // a new seed is generated
 //
-  val xs = random_list_gen (10) // for testing [list_vt_tabulate]
+  #define N 20
+  #define N2 10
+  #assert (N == 2 * N2)
+  val xs = random_list_gen (N) // for testing [list_vt_tabulate]
   val () = () where {
     val () = print "xs (randomly generated) = "
     val () = lstpr (xs)
@@ -56,21 +70,26 @@ implement main (argc, argv) = let
   } // end of [val]
 //
   val () = () where {
-    val () = print "length (xs) = "
-    val () = print (list_length xs) // for testing [list_length]
-    val () = print_newline ()
+    val () = print "testing [list_take] and [list_drop]: starts\n"
+    val xs1 = list_take (xs, N2)
+    val xs2 = list_drop (xs, N2)
+    val xs12 = xs1 + xs2 // testing list_append
+    val () = assert (lsteq (xs, xs12))
+    val () = print "testing [list_take] and [list_drop]: finishes\n"
   } // end of [val]
 //
   val () = () where {
-    val () = print "append (xs, xs) = "
-    val () = lstpr (list_append (xs, xs)) // for testing [list_append]
-    val () = print_newline ()
+    val () = print "testing [list_reverse]: starts\n"
+    val () = assert (lsteq (xs, list_reverse (list_reverse xs)))
+    val () = print "testing [list_reverse]: finishes\n"
   } // end of [val]
 //
   val () = () where {
-    val () = print "reverse (xs) = "
-    val () = lstpr (list_reverse xs) // for testing [list_reverse]
-    val () = print_newline ()
+    val () = print "testing [list_nth]: starts\n"
+    val x1 = list_nth<int> (xs, N/3)
+    val x2 = list_nth<int> (list_reverse<int> xs, N-N/3-1)
+    val () = assert (x1 = x2)
+    val () = print "testing [list_nth]: finishes\n"
   } // end of [val]
 //
   val () = () where {
@@ -106,29 +125,22 @@ implement main (argc, argv) = let
   } // end of [val]
 //
   val () = () where {
-    val () = print "head(xs) = "
-    val () = print (list_head xs) // for testing [list_head]
-    val () = print_newline ()
+    val () = print "testing [list_head] and [list_last]: starts\n"
+    val () = assert (list_head xs = list_last (list_reverse<int> xs))
+    val () = assert (list_last xs = list_head (list_reverse<int> xs))
+    val () = print "testing [list_head] and [list_last]: finishes\n"
   } // end of [val]
 //
   val () = () where {
-    val () = print "last(xs) = "
-    val () = print (list_last xs) // for testing [list_last]
+    val () = print "testing [list_mergesort] and [list_quicksort]: starts\n"
+    val xs_ms = list_mergesort<int> (xs, lam (x1, x2, env) =<0> x1 <= x2, null)
+    val xs_qs = list_quicksort<int> (xs, lam (x1, x2, env) =<0> x1 <= x2, null)
+    val () = lstpr (xs_ms)
     val () = print_newline ()
-  } // end of [val]
-//
-  val () = () where {
-    val () = print "mergesort (xs) = "
-    // for testing [list_mergesort]
-    val () = lstpr (list_mergesort<int> (xs, lam (x1, x2, env) =<0> x1 <= x2, null))
+    val () = lstpr (xs_qs)
     val () = print_newline ()
-  } // end of [val]
-//
-  val () = () where {
-    val () = print "quicksort (xs) = "
-    // for testing [list_quicksort]
-    val () = lstpr (list_quicksort<int> (xs, lam (x1, x2, env) =<0> x1 <= x2, null))
-    val () = print_newline ()
+    val () = assert (lsteq (xs_ms, xs_qs))
+    val () = print "testing [list_mergesort] and [list_quicksort]: finishes\n"
   } // end of [val]
 //
 in
