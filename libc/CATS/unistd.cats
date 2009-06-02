@@ -118,6 +118,16 @@ ats_void_type
 atslib_sync () { sync () ; return ; }
 // end of [atslib_sync]
 
+static inline
+ats_int_type
+atslib_fsync (ats_int_type fd) { return fsync (fd) ; }
+// end of [atslib_fsync]
+
+static inline
+ats_int_type
+atslib_fdatasync (ats_int_type fd) { return fdatasync (fd) ; }
+// end of [atslib_fdatasync]
+
 /* ****** ****** */
 
 #endif /* ATS_LIBC_UNISTD_CATS */

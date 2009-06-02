@@ -72,6 +72,8 @@ macdef STDERR_FILENO = $extval (int stderr_int, "STDERR_FILENO")
 
 (* ****** ****** *)
 
+// implemented in [$ATSHOME/prelude/CATS/basics.cats]
+
 fun stdin_fildes_view_get (): (fildes_v (stdin_int, rd) | void)
   = "atspre_stdin_view_get"
 
@@ -96,7 +98,7 @@ fun stderr_fildes_view_set (pf: fildes_v (stderr_int, wr) | (*none*)): void
 
 (* ****** ****** *)
 
-// implemented in [libc/DATS/unistd.dats]
+// implemented in [$ATSHOME/libc/DATS/unistd.dats]
 
 fun fork_exn (): pid_t = "atslib_fork_exn"
   
@@ -109,7 +111,7 @@ fun fork_exec_and_wait_cloptr_exn (proc: () -<cloptr1> void): Int
 
 (* ****** ****** *)
 
-// implemented in [libc/DATS/unistd.dats]
+// implemented in [$ATSHOME/libc/DATS/unistd.dats]
 fun getcwd (): String = "atslib_getcwd"
 
 (* ****** ****** *)
@@ -160,6 +162,11 @@ fun sync (): void = "atslib_sync"
 fun fsync_err {fd:int} {flag:open_flag} // (sets errno)
   (pf: !fildes_v (fd, flag) | fd: int fd): int
   = "atslib_fsync"
+
+// [fdatasync] returns 0 on success or -1 on error
+fun fdatasync_err {fd:int} {flag:open_flag} // (sets errno)
+  (pf: !fildes_v (fd, flag) | fd: int fd): int
+  = "atslib_fdatasync"
   
 (* ****** ****** *)
 

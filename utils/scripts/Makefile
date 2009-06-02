@@ -49,20 +49,20 @@ all: atscc atslib
 
 atscc:  atscc_main_dats.c \
           top_sats.o basics_dats.o pkgconfig.o atscc_dats.o \
-          stdio_sats.o stdlib_sats.o string_sats.o unistd_sats.o \
+          fcntl_sats.o stdio_sats.o stdlib_sats.o string_sats.o unistd_sats.o \
           sys_types_sats.o sys_wait_sats.o
 	$(CC) $(INCLUDES) $(CCFLAGS) -o atscc atscc_main_dats.c $(ATSRUNTIME)/ats_prelude.c \
           top_sats.o basics_dats.o pkgconfig.o atscc_dats.o \
-          stdio_sats.o stdlib_sats.o string_sats.o unistd_sats.o \
+          fcntl_sats.o stdio_sats.o stdlib_sats.o string_sats.o unistd_sats.o \
           sys_types_sats.o sys_wait_sats.o
 
 atslib: atslib_main_dats.c \
           top_sats.o basics_dats.o atscc_dats.o atslib_dats.o \
-          stdio_sats.o stdlib_sats.o unistd_sats.o \
+          fcntl_sats.o stdio_sats.o stdlib_sats.o unistd_sats.o \
           sys_types_sats.o sys_wait_sats.o
 	$(CC) $(INCLUDES) $(CCFLAGS) -o atslib atslib_main_dats.c $(ATSRUNTIME)/ats_prelude.c \
           top_sats.o basics_dats.o atscc_dats.o atslib_dats.o \
-          stdio_sats.o stdlib_sats.o unistd_sats.o \
+          fcntl_sats.o stdio_sats.o stdlib_sats.o unistd_sats.o \
           sys_types_sats.o sys_wait_sats.o
 
 atspack: atspack.dats
@@ -112,6 +112,11 @@ atslib_main_dats.c: atslib_main.dats
 	$(ATSOPT) --output $@ --dynamic atslib_main.dats
 
 ######
+
+fcntl_sats.c:
+	$(ATSOPT) --output $@ --static $(ATSLIBC)/SATS/fcntl.sats
+fcntl_sats.o: fcntl_sats.c
+	$(CC) $(INCLUDES) $(CCFLAGS) -o $@ -c fcntl_sats.c
 
 stdio_sats.c:
 	$(ATSOPT) --output $@ --static $(ATSLIBC)/SATS/stdio.sats
