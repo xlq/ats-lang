@@ -4,7 +4,7 @@
 //
 
 // Author: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
-// Time: Februrary, 2009
+// Time: February, 2009
 
 (* ****** ****** *)
 

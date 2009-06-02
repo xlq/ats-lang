@@ -28,7 +28,6 @@
 ** along  with  ATS;  see the  file COPYING.  If not, please write to the
 ** Free Software Foundation,  51 Franklin Street, Fifth Floor, Boston, MA
 ** 02110-1301, USA.
-**
 *)
 
 (* ****** ****** *)
@@ -74,8 +73,8 @@ implement close_loop_err
         prval close_v_fail pf_fd = pf_err in loop (pf_fd | fd)
       end else (pf_err | i) // end of [if]
     end // end of [if]
-  end // end of [loop]
-} // end of [close_exn]
+  end (* end of [loop] *)
+} // end of [close_loop_err]
 
 implement close_loop_exn (pf_fd | fd) = let
   val (pf_err | i) = close_loop_err (pf_fd | fd)

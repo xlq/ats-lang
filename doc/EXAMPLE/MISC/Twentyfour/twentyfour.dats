@@ -221,7 +221,7 @@ fun playGame (cs: cards, res: rat_t): Bool = let
     | nil () =>
         aux2 (x, xs, y, ys, zs, rp_cons (val_of_card_mac x, val_of_card_mac y, xys))
       // end of [nil]
-  (* end of [aux_] *)
+  (* end of [aux1_] *)
 
   and aux2 (x: card, xs: cards, y: card, ys: cards, zs: cards, xys: ratpairs)
     :<cloptr1> Bool =

@@ -49,13 +49,6 @@ typedef mode_t = $TYPES.mode_t
 
 (* ****** ****** *)
 
-staload UNISTD = "libc/SATS/unistd.sats"
-stadef stdin_int = $UNISTD.stdin_int
-stadef stdout_int = $UNISTD.stdout_int
-stadef stderr_int = $UNISTD.stderr_int
-
-(* ****** ****** *)
-
 datasort open_flag =
   | open_flag_rd (* read *)
   | open_flag_wr (* write *)
@@ -89,15 +82,16 @@ macdef O_RDWR   = $extval (flag_t rdwr, "O_RDWR")
 abst@ype orflag_t = $extype "ats_int_type"
 
 macdef O_CREAT = $extval (orflag_t, "O_CREAT")
+macdef O_APPEND = $extval (orflag_t, "O_APPEND")
+
+macdef O_EXCL = $extval (orflag_t, "O_EXCL")
+macdef O_NOCTTY = $extval (orflag_t, "O_NOCTTY")
+macdef O_NONBLOCK = $extval (orflag_t, "O_NONBLOCK")
+macdef O_SYNC = $extval (orflag_t, "O_SYNC")
 macdef O_TRUNC = $extval (orflag_t, "O_TRUNC")
 
 (*
-macdef O_EXCL
-macdef O_NOCTTY
-macdef O_APPEND
-macdef O_NONBLOCK
 macdef O_NDELAY
-macdef O_SYNC
 macdef O_NOFOLLOW
 macdef O_DIRECTORY
 macdef O_DIRECT
@@ -116,30 +110,6 @@ dataview fildes_opt_v (int, open_flag) =
   | {fd:nat} {flag:open_flag}
     fildes_some (fd, flag) of fildes_v (fd, flag)
   | {flag:open_flag} fildes_none (~1, flag) of ()
-
-(* ****** ****** *)
-
-fun stdin_fildes_view_get (): (fildes_v (stdin_int, rd) | void)
-  = "atspre_stdin_view_get"
-
-fun stdin_fildes_view_set (pf: fildes_v (stdin_int, rd) | (*none*)): void
-  = "atspre_stdin_view_set"
-
-//
-
-fun stdout_fildes_view_get (): (fildes_v (stdout_int, wr) | void)
-  = "atspre_stdout_view_get"
-
-fun stdout_fildes_view_set (pf: fildes_v (stdout_int, wr) | (*none*)): void
-  = "atspre_stdout_view_set"
-
-//
-
-fun stderr_fildes_view_get (): (fildes_v (stderr_int, wr) | void)
-  = "atspre_stderr_view_get"
-
-fun stderr_fildes_view_set (pf: fildes_v (stderr_int, wr) | (*none*)): void
-  = "atspre_stderr_view_set"
 
 (* ****** ****** *)
 

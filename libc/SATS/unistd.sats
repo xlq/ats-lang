@@ -51,6 +51,17 @@ typedef uid_t = $TYPES.uid_t
 
 (* ****** ****** *)
 
+staload FCNTL = "libc/SATS/fcntl.sats"
+
+sortdef open_flag = $FCNTL.open_flag
+
+stadef rd = $FCNTL.open_flag_rd
+stadef wr = $FCNTL.open_flag_wr
+
+stadef fildes_v = $FCNTL.fildes_v
+
+(* ****** ****** *)
+
 sta stdin_int : int
 sta stdout_int : int
 sta stderr_int : int
@@ -58,6 +69,30 @@ sta stderr_int : int
 macdef STDIN_FILENO = $extval (int stdin_int, "STDIN_FILENO")
 macdef STDOUT_FILENO = $extval (int stdout_int, "STDOUT_FILENO")
 macdef STDERR_FILENO = $extval (int stderr_int, "STDERR_FILENO")
+
+(* ****** ****** *)
+
+fun stdin_fildes_view_get (): (fildes_v (stdin_int, rd) | void)
+  = "atspre_stdin_view_get"
+
+fun stdin_fildes_view_set (pf: fildes_v (stdin_int, rd) | (*none*)): void
+  = "atspre_stdin_view_set"
+
+//
+
+fun stdout_fildes_view_get (): (fildes_v (stdout_int, wr) | void)
+  = "atspre_stdout_view_get"
+
+fun stdout_fildes_view_set (pf: fildes_v (stdout_int, wr) | (*none*)): void
+  = "atspre_stdout_view_set"
+
+//
+
+fun stderr_fildes_view_get (): (fildes_v (stderr_int, wr) | void)
+  = "atspre_stderr_view_get"
+
+fun stderr_fildes_view_set (pf: fildes_v (stderr_int, wr) | (*none*)): void
+  = "atspre_stderr_view_set"
 
 (* ****** ****** *)
 
@@ -105,9 +140,27 @@ fun usleep (n: natLte MILLION (* microseconds *)): void
 
 (* ****** ****** *)
 
+fun getpid (): pid_t = "atslib_getpid"
+fun getppid (): pid_t = "atslib_getppid"
+
+(* ****** ****** *)
+
 fun getuid ():<> uid_t = "atslib_getuid"
 fun geteuid ():<> uid_t = "atslib_geteuid"
 
+(* ****** ****** *)
+
+fun unlink_err (path: string): int = "atslib_unlink_err"
+
+(* ****** ****** *)
+
+fun sync (): void = "atslib_sync"
+
+// [fsync] returns 0 on success or -1 on error
+fun fsync_err {fd:int} {flag:open_flag} // (sets errno)
+  (pf: !fildes_v (fd, flag) | fd: int fd): int
+  = "atslib_fsync"
+  
 (* ****** ****** *)
 
 (* end of [unistd.sats] *)

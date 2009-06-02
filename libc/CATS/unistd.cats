@@ -87,12 +87,36 @@ atslib_usleep (ats_int_type n) { usleep (n) ; return ; }
 /* ****** ****** */
 
 static inline
+ats_pid_type
+atslib_getpid () { return getpid () ; }
+
+static inline
+ats_pid_type
+atslib_getppid () { return getppid () ; }
+
+/* ****** ****** */
+
+static inline
 ats_uid_type
 atslib_getuid () { return getuid () ; }
 
 static inline
 ats_uid_type
 atslib_geteuid () { return geteuid () ; }
+
+/* ****** ****** */
+
+static inline
+ats_int_type
+atslib_unlink_err (ats_ptr_type name) { return unlink ((char*)name) ; }
+// end of [atslib_unlink_err]
+
+/* ****** ****** */
+
+static inline
+ats_void_type
+atslib_sync () { sync () ; return ; }
+// end of [atslib_sync]
 
 /* ****** ****** */
 

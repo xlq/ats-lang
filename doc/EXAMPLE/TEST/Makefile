@@ -17,6 +17,7 @@ compall:: \
   prelude_list_vt \
   prelude_string \
   libc_dirent \
+  libc_stdlib \
   libats_intinf \
   libats_iterint \
   libats_regexp \
@@ -46,6 +47,9 @@ prelude_string: prelude_string.dats
 libc_dirent: libc_dirent.dats
 	atscc -O2 -o libc_dirent libc_dirent.dats
 
+libc_stdlib: libc_stdlib.dats
+	atscc -O2 -o libc_stdlib libc_stdlib.dats
+
 ######
 
 libats_intinf: libats_intinf.dats
@@ -71,6 +75,7 @@ cleanall: clean
 	rm -f prelude_matrix
 	rm -f prelude_string
 	rm -f libc_dirent
+	rm -f libc_stdlib
 	rm -f libats_intinf
 	rm -f libats_iterint
 	rm -f libats_regexp

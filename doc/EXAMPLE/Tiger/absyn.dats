@@ -42,7 +42,7 @@ implement fprint_oper (out, oper) = case+ oper of
   | LeOp _ => fprint_string (out, "<=")
   | AndOp _ => fprint_string (out, "&")
   | OrOp _ => fprint_string (out, "|")
-// end of [fprnt_oper]
+// end of [fprint_oper]
 
 implement print_oper (oper) = fprint_oper (stdout_ref, oper)
 implement prerr_oper (oper) = fprint_oper (stderr_ref, oper)

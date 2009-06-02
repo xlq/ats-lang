@@ -7,28 +7,27 @@
 (***********************************************************************)
 
 (*
- * ATS/Anairiats - Unleashing the Potential of Types!
- *
- * Copyright (C) 2002-2008 Hongwei Xi, Boston University
- *
- * All rights reserved
- *
- * ATS is free software;  you can  redistribute it and/or modify it under
- * the terms of  the GNU GENERAL PUBLIC LICENSE (GPL) as published by the
- * Free Software Foundation; either version 3, or (at  your  option)  any
- * later version.
- * 
- * ATS is distributed in the hope that it will be useful, but WITHOUT ANY
- * WARRANTY; without  even  the  implied  warranty  of MERCHANTABILITY or
- * FITNESS FOR A PARTICULAR PURPOSE.  See the  GNU General Public License
- * for more details.
- * 
- * You  should  have  received  a  copy of the GNU General Public License
- * along  with  ATS;  see the  file COPYING.  If not, please write to the
- * Free Software Foundation,  51 Franklin Street, Fifth Floor, Boston, MA
- * 02110-1301, USA.
- *
- *)
+** ATS/Anairiats - Unleashing the Potential of Types!
+**
+** Copyright (C) 2002-2008 Hongwei Xi, Boston University
+**
+** All rights reserved
+**
+** ATS is free software;  you can  redistribute it and/or modify it under
+** the terms of  the GNU GENERAL PUBLIC LICENSE (GPL) as published by the
+** Free Software Foundation; either version 3, or (at  your  option)  any
+** later version.
+** 
+** ATS is distributed in the hope that it will be useful, but WITHOUT ANY
+** WARRANTY; without  even  the  implied  warranty  of MERCHANTABILITY or
+** FITNESS FOR A PARTICULAR PURPOSE.  See the  GNU General Public License
+** for more details.
+** 
+** You  should  have  received  a  copy of the GNU General Public License
+** along  with  ATS;  see the  file COPYING.  If not, please write to the
+** Free Software Foundation,  51 Franklin Street, Fifth Floor, Boston, MA
+** 02110-1301, USA.
+*)
 
 (* ****** ****** *)
 
@@ -386,14 +385,17 @@ implement fprint_s0rtq (pf | out, q) = case+ q.s0rtq_node of
       fprint1_string (pf | out, fname);
       fprint1_char (pf | out, '"');
       fprint1_char (pf | out, '.')
-    end
+    end // end of [S0RTQstr]
   | S0RTQsym id => begin
-      fprint1_char (pf | out, '$');
       $Sym.fprint_symbol (pf | out, id);
       fprint1_char (pf | out, '.')
-    end
+    end // end of [S0RTQsym]
+// end of [fprint_s0rtq]
 
-//
+implement print_s0rtq (q) = print_mac (fprint_s0rtq, q)
+implement prerr_s0rtq (q) = prerr_mac (fprint_s0rtq, q)
+
+(* ****** ****** *)
 
 implement s0rtq_none () = '{
   s0rtq_loc= location_none, s0rtq_node= S0RTQnone ()

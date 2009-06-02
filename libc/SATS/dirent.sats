@@ -35,7 +35,9 @@
 
 (* ****** ****** *)
 
-staload "libc/sys/SATS/types.sats" // for [off_t]
+staload TYPES = "libc/sys/SATS/types.sats" // for [off_t]
+
+typedef off_t = $TYPES.off_t
 
 (* ****** ****** *)
 

@@ -7,26 +7,25 @@
 /************************************************************************/
 
 /*
- * ATS - Unleashing the Potential of Types!
- *
- * Copyright (C) 2002-2008 Hongwei Xi.
- *
- * ATS is  free software;  you can redistribute it and/or modify it under
- * the  terms of the  GNU General Public License as published by the Free
- * Software Foundation; either version 2.1, or (at your option) any later
- * version.
- * 
- * ATS is distributed in the hope that it will be useful, but WITHOUT ANY
- * WARRANTY; without  even  the  implied  warranty  of MERCHANTABILITY or
- * FITNESS FOR A PARTICULAR PURPOSE.  See the  GNU General Public License
- * for more details.
- * 
- * You  should  have  received  a  copy of the GNU General Public License
- * along  with  ATS;  see the  file COPYING.  If not, please write to the
- * Free Software Foundation,  51 Franklin Street, Fifth Floor, Boston, MA
- * 02110-1301, USA.
- *
- */
+** ATS - Unleashing the Potential of Types!
+**
+** Copyright (C) 2002-2008 Hongwei Xi.
+**
+** ATS is  free software;  you can redistribute it and/or modify it under
+** the  terms of the  GNU General Public License as published by the Free
+** Software Foundation; either version 2.1, or (at your option) any later
+** version.
+** 
+** ATS is distributed in the hope that it will be useful, but WITHOUT ANY
+** WARRANTY; without  even  the  implied  warranty  of MERCHANTABILITY or
+** FITNESS FOR A PARTICULAR PURPOSE.  See the  GNU General Public License
+** for more details.
+** 
+** You  should  have  received  a  copy of the GNU General Public License
+** along  with  ATS;  see the  file COPYING.  If not, please write to the
+** Free Software Foundation,  51 Franklin Street, Fifth Floor, Boston, MA
+** 02110-1301, USA.
+*/
 
 /* ****** ****** */
 
@@ -78,7 +77,7 @@ atslib_getenv_exn (const ats_ptr_type name) {
     atspre_exit_prerrf (1, "Exit: [getenv(%s)] failed.\n", name) ;
   }
   return res ;
-}
+} /* end of [atslib_getenv_exn] */
 
 /* ****** ****** */
 
@@ -87,7 +86,7 @@ ats_int_type
 atslib_setenv_err
   (ats_ptr_type name, ats_ptr_type value, ats_int_type overwrite) {
   return setenv((char*)name, (char*)value, (int)overwrite) ;
-}
+} /* end of [atslib_setenv_err] */
 
 static inline
 ats_void_type
@@ -100,7 +99,32 @@ atslib_setenv_exn
     ) ; // end of [atspre_exit_prerrf]
   } /* end of [if] */
   return ;
-} /* atslib_setenv_exn */
+} /* end of [atslib_setenv_exn] */
+
+/* ****** ****** */
+
+static inline
+ats_int_type
+atslib_atexit_err (ats_ptr_type fcn) {
+  return atexit ((void(*)(void))fcn) ;
+} /* end of [atslib_atexit_err] */
+
+static inline
+ats_void_type
+atslib_atexit_exn (ats_ptr_type fcn) {
+  int err ;
+  err = atexit ((void(*)(void))fcn) ;
+  if (err != 0) atspre_exit_prerrf (1, "Exit: [atexit] failed.\n") ;
+  return ;
+} /* end of [atslib_atexit_exn] */
+
+/* ****** ****** */
+
+static inline
+ats_int_type
+atslib_mkstemp (ats_ptr_type template) {
+  return mkstemp ((char*)template) ; // may not set errno on error
+} /* end of [atslib_mkstemp] */
 
 /* ****** ****** */
 

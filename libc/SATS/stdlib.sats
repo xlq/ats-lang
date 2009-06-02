@@ -7,28 +7,27 @@
 (***********************************************************************)
 
 (*
- * ATS - Unleashing the Potential of Types!
- *
- * Copyright (C) 2002-2008 Hongwei Xi, Boston University
- *
- * All rights reserved
- *
- * ATS is free software;  you can  redistribute it and/or modify it under
- * the  terms of the  GNU General Public License as published by the Free
- * Software Foundation; either version 2.1, or (at your option) any later
- * version.
- * 
- * ATS is distributed in the hope that it will be useful, but WITHOUT ANY
- * WARRANTY; without  even  the  implied  warranty  of MERCHANTABILITY or
- * FITNESS FOR A PARTICULAR PURPOSE.  See the  GNU General Public License
- * for more details.
- * 
- * You  should  have  received  a  copy of the GNU General Public License
- * along  with  ATS;  see the  file COPYING.  If not, please write to the
- * Free Software Foundation,  51 Franklin Street, Fifth Floor, Boston, MA
- * 02110-1301, USA.
- *
- *)
+** ATS - Unleashing the Potential of Types!
+**
+** Copyright (C) 2002-2008 Hongwei Xi, Boston University
+**
+** All rights reserved
+**
+** ATS is free software;  you can  redistribute it and/or modify it under
+** the  terms of the  GNU General Public License as published by the Free
+** Software Foundation; either version 2.1, or (at your option) any later
+** version.
+** 
+** ATS is distributed in the hope that it will be useful, but WITHOUT ANY
+** WARRANTY; without  even  the  implied  warranty  of MERCHANTABILITY or
+** FITNESS FOR A PARTICULAR PURPOSE.  See the  GNU General Public License
+** for more details.
+** 
+** You  should  have  received  a  copy of the GNU General Public License
+** along  with  ATS;  see the  file COPYING.  If not, please write to the
+** Free Software Foundation,  51 Franklin Street, Fifth Floor, Boston, MA
+** 02110-1301, USA.
+*)
 
 (* ****** ****** *)
 
@@ -41,6 +40,14 @@
 #include "libc/CATS/stdlib.cats"
 
 %}
+
+(* ****** ****** *)
+
+staload FCNTL = "libc/SATS/fcntl.sats" // for [mkstemp]
+
+stadef open_flag_rdwr = $FCNTL.open_flag_rdwr
+
+stadef fildes_opt_v = $FCNTL.fildes_opt_v
 
 (* ****** ****** *)
 
@@ -59,6 +66,18 @@ fun setenv_err (name: string, value: string, overwrite: int): int
 
 fun setenv_exn (name: string, value: string, overwrite: int): void
   = "atslib_setenv_exn"
+
+(* ****** ****** *)
+
+fun atexit_err (f: () -> void): int = "atslib_atexit_err"
+fun atexit_exn (f: () -> void): void = "atslib_atexit_exn"
+
+(* ****** ****** *)
+
+fun mkstemp_err {m,n:nat}
+  (buf: &strbuf (m, n)): [i: int] (fildes_opt_v (i, open_flag_rdwr) | int i)
+  = "atslib_mkstemp_err"
+// end of [mkstemp]
 
 (* ****** ****** *)
 

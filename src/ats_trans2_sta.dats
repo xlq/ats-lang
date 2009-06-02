@@ -7,28 +7,27 @@
 (***********************************************************************)
 
 (*
- * ATS/Anairiats - Unleashing the Potential of Types!
- *
- * Copyright (C) 2002-2008 Hongwei Xi, Boston University
- *
- * All rights reserved
- *
- * ATS is free software;  you can  redistribute it and/or modify it under
- * the terms of  the GNU GENERAL PUBLIC LICENSE (GPL) as published by the
- * Free Software Foundation; either version 3, or (at  your  option)  any
- * later version.
- * 
- * ATS is distributed in the hope that it will be useful, but WITHOUT ANY
- * WARRANTY; without  even  the  implied  warranty  of MERCHANTABILITY or
- * FITNESS FOR A PARTICULAR PURPOSE.  See the  GNU General Public License
- * for more details.
- * 
- * You  should  have  received  a  copy of the GNU General Public License
- * along  with  ATS;  see the  file COPYING.  If not, please write to the
- * Free Software Foundation,  51 Franklin Street, Fifth Floor, Boston, MA
- * 02110-1301, USA.
- *
- *)
+** ATS/Anairiats - Unleashing the Potential of Types!
+**
+** Copyright (C) 2002-2008 Hongwei Xi, Boston University
+**
+** All rights reserved
+**
+** ATS is free software;  you can  redistribute it and/or modify it under
+** the terms of  the GNU GENERAL PUBLIC LICENSE (GPL) as published by the
+** Free Software Foundation; either version 3, or (at  your  option)  any
+** later version.
+** 
+** ATS is distributed in the hope that it will be useful, but WITHOUT ANY
+** WARRANTY; without  even  the  implied  warranty  of MERCHANTABILITY or
+** FITNESS FOR A PARTICULAR PURPOSE.  See the  GNU General Public License
+** for more details.
+** 
+** You  should  have  received  a  copy of the GNU General Public License
+** along  with  ATS;  see the  file COPYING.  If not, please write to the
+** Free Software Foundation,  51 Franklin Street, Fifth Floor, Boston, MA
+** 02110-1301, USA.
+*)
 
 (* ****** ****** *)
 
@@ -156,7 +155,8 @@ implement s1rt_tr (s1t0) = begin
       s1rt_app_tr (s1t0.s1rt_loc, s1t, s1ts)
     end // end of [S1RTapp]
   | S1RTlist s1ts => S2RTtup (s1rtlst_tr s1ts) 
-  | S1RTqid (q, id) => begin case+ the_s2rtenv_find_qua (q, id) of
+  | S1RTqid (q, id) => begin
+    case+ the_s2rtenv_find_qua (q, id) of
     | ~Some_vt s2te => begin case+ s2te of
       | S2TEsrt s2t => s2t | _ => begin
           prerr_loc_error2 s1t0.s1rt_loc;
@@ -170,7 +170,8 @@ implement s1rt_tr (s1t0) = begin
     | ~None_vt () => begin
         prerr_loc_error2 s1t0.s1rt_loc;
         $Deb.debug_prerrf (": %s: s1rt_tr", @(THISFILENAME));
-        prerr ": the identifier ["; $Sym.prerr_symbol id;
+        prerr ": the identifier [";
+        $Syn.prerr_s0rtq q; $Sym.prerr_symbol id;
         prerr "] refers to an unrecognized sort.";
         prerr_newline ();
         $Err.abort ()
@@ -951,12 +952,13 @@ end // end of [s1exp_arrow_tr_up]
 fun s1rtext_tr (s1te0: s1rtext): s2rtext = begin
   case+ s1te0.s1rtext_node of
   | S1TEsrt s1t => begin case+ s1t.s1rt_node of
-    | S1RTqid (q, id) => begin case+ the_s2rtenv_find id of
+    | S1RTqid (q, id) => begin
+      case+ the_s2rtenv_find_qua (q, id) of
       | ~Some_vt s2te => s2te | ~None_vt () => begin
           prerr_loc_error2 s1t.s1rt_loc;
           $Deb.debug_prerrf (": %s: s1rtext_tr", @(THISFILENAME));
           prerr ": the identifier [";
-          $Sym.prerr_symbol id;
+          $Syn.prerr_s0rtq q; $Sym.prerr_symbol id;
           prerr "] refers to an unrecognized sort.";
           prerr_newline ();
           $Err.abort ()

@@ -136,4 +136,8 @@ overload stat_exn with stat_string_exn
 
 (* ****** ****** *)
 
+fun umask (mask_new: mode_t): mode_t(*mask_old*) = "atslib_umask"
+
+(* ****** ****** *)
+
 (* end of [stat.sats] *)
