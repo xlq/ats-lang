@@ -79,6 +79,18 @@ fun{a:t@ype} list0_exists_cloref (xs: list0 a, f: a -<cloref1> bool): bool
 
 (* ****** ****** *)
 
+fun{a:t@ype} list0_filter (xs: list0 a, pred: a -<cloref1> bool): list0 a
+
+(* ****** ****** *)
+
+fun{init,a:t@ype} list0_fold_left {f:eff}
+  (f: (init, a) -<cloref,f> init, ini: init, xs: list0 a):<f> init
+
+fun{a,sink:t@ype} list0_fold_right {f:eff}
+  (f: (a, sink) -<cloref,f> sink, xs: list0 a, ini: sink):<f> sink
+
+(* ****** ****** *)
+
 fun{a:t@ype} list0_forall_fun (xs: list0 a, f: a -<fun1> bool): bool
 fun{a:t@ype} list0_forall_cloref (xs: list0 a, f: a -<cloref1> bool): bool
 

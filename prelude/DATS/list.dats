@@ -606,15 +606,15 @@ macrodef list_fold_left_mac (list_fold_left, f, res, xs) = `(
 
 *)
 
-implement{sink,a} list_fold_left__main
+implement{init,a} list_fold_left__main
   {v} {vt} {f:eff} (pf | f, res, xs, env) = let
   fun loop {n:nat} .<n>. (
       pf: !v
-    | f: (!v | sink, a, !vt) -<fun,f> sink
-    , res: sink
+    | f: (!v | init, a, !vt) -<fun,f> init
+    , res: init
     , xs: list (a, n)
     , env: !vt
-  ) :<f> sink = case+ xs of
+  ) :<f> init = case+ xs of
     | x :: xs => let
         val res = f (pf | res, x, env) in loop (pf | f, res, xs, env)
       end // end of [::]
@@ -624,9 +624,9 @@ in
   loop (pf | f, res, xs, env)
 end // end of [list_fold_left__main]
 
-implement{sink,a} list_fold_left_fun {f:eff} (f, res, xs) = let
+implement{init,a} list_fold_left_fun {f:eff} (f, res, xs) = let
   val f = coerce (f) where {
-    extern castfn coerce (f: (sink, a) -<f> sink):<> (!unit_v | sink, a, !Ptr) -<f> sink
+    extern castfn coerce (f: (init, a) -<f> init):<> (!unit_v | init, a, !Ptr) -<f> init
   } // end of [where]
   prval pf = unit_v ()
   val ans = list_fold_left__main (pf | f, res, xs, null)
@@ -635,33 +635,33 @@ in
   ans
 end // end of [list_fold_left_fun]
 
-implement{sink,a} list_fold_left_clo {f:eff} (f, res, xs) = let
-  viewtypedef clo_t = (sink, a) -<clo,f> sink
+implement{init,a} list_fold_left_clo {f:eff} (f, res, xs) = let
+  viewtypedef clo_t = (init, a) -<clo,f> init
   stavar l_f: addr; val p_f: ptr l_f = &f
   viewdef V = clo_t @ l_f
-  fn app (pf: !V | res: sink, x: a, p_f: !ptr l_f):<f> sink = !p_f (res, x)
+  fn app (pf: !V | res: init, x: a, p_f: !ptr l_f):<f> init = !p_f (res, x)
   prval pf = view@ f
-  val ans = list_fold_left__main<sink,a> {V} {ptr l_f} (pf | app, res, xs, p_f)
+  val ans = list_fold_left__main<init,a> {V} {ptr l_f} (pf | app, res, xs, p_f)
   prval () = view@ f := pf
 in
   ans
 end // end of [list_fold_left_clo]
 
-implement{sink,a} list_fold_left_cloptr {f:eff} (f, res, xs) = let
-  viewtypedef cloptr_t = (sink, a) -<cloptr,f> sink
-  fn app (pf: !unit_v | res: sink, x: a, f: !cloptr_t):<f> sink = f (res, x)
+implement{init,a} list_fold_left_cloptr {f:eff} (f, res, xs) = let
+  viewtypedef cloptr_t = (init, a) -<cloptr,f> init
+  fn app (pf: !unit_v | res: init, x: a, f: !cloptr_t):<f> init = f (res, x)
   prval pf = unit_v ()
-  val ans = list_fold_left__main<sink,a> {unit_v} {cloptr_t} (pf | app, res, xs, f)
+  val ans = list_fold_left__main<init,a> {unit_v} {cloptr_t} (pf | app, res, xs, f)
   prval unit_v () = pf
 in
   ans
 end // end of [list_fold_left_cloptr]
 
-implement{sink,a} list_fold_left_cloref {f:eff} (f, res, xs) = let
-  typedef cloref_t = (sink, a) -<cloref,f> sink
-  fn app (pf: !unit_v | res: sink, x: a, f: !cloref_t):<f> sink = f (res, x)
+implement{init,a} list_fold_left_cloref {f:eff} (f, res, xs) = let
+  typedef cloref_t = (init, a) -<cloref,f> init
+  fn app (pf: !unit_v | res: init, x: a, f: !cloref_t):<f> init = f (res, x)
   prval pf = unit_v ()
-  val ans = list_fold_left__main<sink,a> {unit_v} {cloref_t} (pf | app, res, xs, f)
+  val ans = list_fold_left__main<init,a> {unit_v} {cloref_t} (pf | app, res, xs, f)
   prval unit_v () = pf
 in
   ans
@@ -669,16 +669,16 @@ end // end of [list_fold_left_cloref]
 
 (* ****** ****** *)
 
-implement{sink,a1,a2} list_fold2_left__main
+implement{init,a1,a2} list_fold2_left__main
   {v} {vt} {n} {f:eff} (pf | f, res, xs1, xs2, env) = let
   fun loop {n:nat} .<n>. (
       pf: !v
-    | f: !(!v | sink, a1, a2, !vt) -<fun,f> sink
-    , res: sink
+    | f: !(!v | init, a1, a2, !vt) -<fun,f> init
+    , res: init
     , xs1: list (a1, n)
     , xs2: list (a2, n)
     , env: !vt
-    ) :<f> sink = case+ xs1 of
+    ) :<f> init = case+ xs1 of
     | x1 :: xs1 => let
         val+ x2 :: xs2 = xs2; val res = f (pf | res, x1, x2, env)
       in
@@ -690,21 +690,21 @@ in
   loop (pf | f, res, xs1, xs2, env)
 end // end of [list_fold2_left__main]
 
-implement{sink,a1,a2} list_fold2_left_cloptr {n} {f:eff} (f, res, xs1, xs2) = let
-  viewtypedef cloptr_t = (sink, a1, a2) -<cloptr,f> sink
-  fn app (pf: !unit_v | res: sink, x1: a1, x2: a2, f: !cloptr_t):<f> sink = f (res, x1, x2)
+implement{init,a1,a2} list_fold2_left_cloptr {n} {f:eff} (f, res, xs1, xs2) = let
+  viewtypedef cloptr_t = (init, a1, a2) -<cloptr,f> init
+  fn app (pf: !unit_v | res: init, x1: a1, x2: a2, f: !cloptr_t):<f> init = f (res, x1, x2)
   prval pf = unit_v ()
-  val ans = list_fold2_left__main<sink,a1,a2> {unit_v} {cloptr_t} (pf | app, res, xs1, xs2, f)
+  val ans = list_fold2_left__main<init,a1,a2> {unit_v} {cloptr_t} (pf | app, res, xs1, xs2, f)
   prval unit_v () = pf
 in
   ans
 end // end of [list_fold2_left_cloptr]
 
-implement{sink,a1,a2} list_fold2_left_cloref {n} {f:eff} (f, res, xs1, xs2) = let
-  typedef cloref_t = (sink, a1, a2) -<cloref,f> sink
-  fn app (pf: !unit_v | res: sink, x1: a1, x2: a2, f: !cloref_t):<f> sink = f (res, x1, x2)
+implement{init,a1,a2} list_fold2_left_cloref {n} {f:eff} (f, res, xs1, xs2) = let
+  typedef cloref_t = (init, a1, a2) -<cloref,f> init
+  fn app (pf: !unit_v | res: init, x1: a1, x2: a2, f: !cloref_t):<f> init = f (res, x1, x2)
   prval pf = unit_v ()
-  val ans = list_fold2_left__main<sink,a1,a2> {unit_v} {cloref_t} (pf | app, res, xs1, xs2, f)
+  val ans = list_fold2_left__main<init,a1,a2> {unit_v} {cloref_t} (pf | app, res, xs1, xs2, f)
   prval unit_v () = pf
 in
   ans

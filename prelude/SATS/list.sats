@@ -266,38 +266,38 @@ fun{a:t@ype} list_find_cloref {p:eff}
 
 (* ****** ****** *)
 
-fun{sink,a:t@ype} list_fold_left__main {v:view} {vt:viewtype} {f:eff}
-  (pf: !v | f: (!v | sink, a, !vt) -<fun,f> sink, ini: sink, xs: List a, env: !vt):<f> sink
+fun{init,a:t@ype} list_fold_left__main {v:view} {vt:viewtype} {f:eff}
+  (pf: !v | f: (!v | init, a, !vt) -<fun,f> init, ini: init, xs: List a, env: !vt):<f> init
 
-fun{sink,a:t@ype} list_fold_left_fun {f:eff}
-  (f: (sink, a) -<fun,f> sink, ini: sink, xs: List a):<f> sink
+fun{init,a:t@ype} list_fold_left_fun {f:eff}
+  (f: (init, a) -<fun,f> init, ini: init, xs: List a):<f> init
 
-fun{sink,a:t@ype} list_fold_left_clo {f:eff}
-  (f: &(sink, a) -<clo,f> sink, ini: sink, xs: List a):<f> sink
+fun{init,a:t@ype} list_fold_left_clo {f:eff}
+  (f: &(init, a) -<clo,f> init, ini: init, xs: List a):<f> init
 
-fun{sink,a:t@ype} list_fold_left_cloptr {f:eff}
-  (f: !(sink, a) -<cloptr,f> sink, ini: sink, xs: List a):<f> sink
+fun{init,a:t@ype} list_fold_left_cloptr {f:eff}
+  (f: !(init, a) -<cloptr,f> init, ini: init, xs: List a):<f> init
 
-fun{sink,a:t@ype} list_fold_left_cloref {f:eff}
-  (f: (sink, a) -<cloref,f> sink, ini: sink, xs: List a):<f> sink
+fun{init,a:t@ype} list_fold_left_cloref {f:eff}
+  (f: (init, a) -<cloref,f> init, ini: init, xs: List a):<f> init
 
 (* ****** ****** *)
 
-fun{sink,a1,a2:t@ype} list_fold2_left__main
+fun{init,a1,a2:t@ype} list_fold2_left__main
   {v:view} {vt:viewtype} {n:nat} {f:eff} (
     pf: !v
-  | f: (!v | sink, a1, a2, !vt) -<fun,f> sink
-  , ini: sink
+  | f: (!v | init, a1, a2, !vt) -<fun,f> init
+  , ini: init
   , xs1: list (a1, n)
   , xs2: list (a2, n)
   , env: !vt
-  ) :<f> sink
+  ) :<f> init
 
-fun{sink,a1,a2:t@ype} list_fold2_left_cloptr {n:nat} {f:eff}
-  (f: !(sink, a1, a2) -<cloptr,f> sink, ini: sink, xs1: list (a1, n), xs2: list (a2, n)):<f> sink
+fun{init,a1,a2:t@ype} list_fold2_left_cloptr {n:nat} {f:eff}
+  (f: !(init, a1, a2) -<cloptr,f> init, ini: init, xs1: list (a1, n), xs2: list (a2, n)):<f> init
 
-fun{sink,a1,a2:t@ype} list_fold2_left_cloref {n:nat} {f:eff}
-  (f: (sink, a1, a2) -<cloref,f> sink, ini: sink, xs1: list (a1, n), xs2: list (a2, n)):<f> sink
+fun{init,a1,a2:t@ype} list_fold2_left_cloref {n:nat} {f:eff}
+  (f: (init, a1, a2) -<cloref,f> init, ini: init, xs1: list (a1, n), xs2: list (a2, n)):<f> init
 
 (* ****** ****** *)
 

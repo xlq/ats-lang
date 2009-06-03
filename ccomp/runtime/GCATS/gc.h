@@ -27,12 +27,12 @@
 ** along  with  ATS;  see the  file COPYING.  If not, please write to the
 ** Free Software Foundation,  51 Franklin Street, Fifth Floor, Boston, MA
 ** 02110-1301, USA.
- */
+*/
 
 /* ****** ****** */
 
-// June 2008
 // Author: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
+// Time: June 2008
 
 /* ****** ****** */
 

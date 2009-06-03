@@ -68,6 +68,25 @@ implement{a} list0_exists_cloref (xs, f) =
 
 (* ****** ****** *)
 
+// this implementation
+implement{a} // of [list0_filter] is tail-recursive
+  list0_filter (xs, pred) = let
+  val xs = list1_of_list0 (xs) in
+  list0_of_list1 (list_filter_cloref (xs, pred))
+end // end of [list0_filter]
+
+(* ****** ****** *)
+
+implement{init,a} list0_fold_left (f, init, xs) =
+  list_fold_left_cloref<init,a> (f, init, list1_of_list0 xs)
+// end of [list0_fold_left]
+
+implement{a,sink} list0_fold_right (f, xs, sink) =
+  list_fold_right_cloref<a,sink> (f, list1_of_list0 xs, sink)
+// end of [list0_fold_right]
+
+(* ****** ****** *)
+
 implement{a} list0_forall_fun (xs, f) =
   list_forall_fun (list1_of_list0 xs, f)
 
