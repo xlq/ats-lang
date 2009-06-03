@@ -51,7 +51,17 @@ typedef clock_t ats_clock_type ; // for CLOCKS_PER_SEC
 // not supported on Mac OSX ?
 // typedef clockid_t ats_clockid_type ; // for clock ID type
 
+/* ****** ****** */
+
 typedef dev_t ats_dev_type ; // for device IDs
+
+static inline
+ats_bool_type
+atslib_eq_dev_dev (dev_t x1, dev_t x2) {
+  return (x1 == x2 ? ats_true_bool : ats_false_bool) ;
+}
+
+/* ****** ****** */
 
 typedef fsblkcnt_t ats_fsblkcnt_type ; // file system block counts
 
@@ -59,7 +69,17 @@ typedef fsfilcnt_t ats_fsfilcnt_type ; // file system file counts
 
 typedef gid_t ats_gid_type ; // for group IDs
 
+/* ****** ****** */
+
 typedef ino_t ats_ino_type ; // for file serial numbers
+
+static inline
+ats_bool_type
+atslib_eq_ino_ino (ino_t x1, ino_t x2) {
+  return (x1 == x2 ? ats_true_bool : ats_false_bool) ;
+}
+
+/* ****** ****** */
 
 typedef key_t ats_key_type ; // for XSI interprocess communication
 
@@ -84,6 +104,11 @@ typedef off_t ats_off_type ; // file size in bytes
 static inline
 ats_lint_type atslib_lint_of_off (ats_off_type off) {
   return off ;
+}
+
+static inline
+ats_off_type atslib_off_of_lint (ats_lint_type li) {
+  return li ;
 }
 
 /* ****** ****** */

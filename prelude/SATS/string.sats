@@ -419,7 +419,13 @@ fun string_make_substring
   :<> string ln
   = "atspre_string_make_substring"
 
-fun string_make_substring__bufptr {v:view}
+fun string_make_substring__bufptr
+  {n:int} {st,ln:nat | st + ln <= n} (
+    str: string n, st: size_t st, ln: size_t ln
+  ) :<> [m:nat] [l:addr] strbufptr_gc (m, ln, l)
+  = "atspre_string_make_substring"
+
+fun string_make_substring__main {v:view}
   {m,n:int} {st,ln:nat | st+ln <= n} {l:addr} (
     pf: !v
   , pf_con: strbuf_v (m, n, l) <= v

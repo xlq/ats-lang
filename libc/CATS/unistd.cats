@@ -108,8 +108,103 @@ atslib_geteuid () { return geteuid () ; }
 
 static inline
 ats_int_type
-atslib_unlink_err (ats_ptr_type name) { return unlink ((char*)name) ; }
+atslib_chdir_err (ats_ptr_type path) { return chdir ((char*)path) ; }
+// end of [atslib_chdir_err]
+
+static inline
+ats_void_type
+atslib_chdir_exn (ats_ptr_type path) {
+  int err ;
+  err = chdir ((char*)path) ;
+  if (err == -1) {
+    perror ("chdir") ; ats_exit_errmsg (1, "exit(ATS): [chdir] failed\n") ;
+  }
+} /* end of [atslib_chdir_exn] */
+
+static inline
+ats_int_type
+atslib_fchdir_err (ats_int_type fd) { return fchdir (fd) ; }
+// end of [atslib_chdir_err]
+
+static inline
+ats_void_type
+atslib_fchdir_exn (ats_int_type fd) {
+  int err ;
+  err = fchdir (fd) ;
+  if (err == -1) {
+    perror ("fchdir") ; ats_exit_errmsg (1, "exit(ATS): [fchdir] failed\n") ;
+  }
+} /* end of [atslib_fchdir_exn] */
+
+/* ****** ****** */
+
+static inline
+ats_int_type
+atslib_unlink_err (ats_ptr_type path) { return unlink ((char*)path) ; }
 // end of [atslib_unlink_err]
+
+static inline
+ats_void_type
+atslib_unlink_exn (ats_ptr_type name) { 
+  int err ;
+  err = unlink ((char*)name) ;
+  if (err == -1) {
+    perror ("unlink") ; ats_exit_errmsg (1, "exit(ATS): [unlink] failed\n") ;
+  }
+  return ;
+} /* end of [atslib_unlink_exn] */
+
+/* ****** ****** */
+
+static inline
+ats_off_type
+atslib_fildes_lseek_err (
+  ats_int_type fd
+, ats_off_type ofs
+, ats_int_type whence
+) {
+  return lseek(fd, ofs, whence) ;
+} /* end of [atslib_fildes_lseek_err] */
+
+static inline
+ats_off_type
+atslib_fildes_lseek_exn (
+  ats_int_type fd
+, ats_off_type ofs
+, ats_int_type whence
+) {
+  off_t ofs_new ;
+  ofs_new = lseek(fd, ofs, whence) ;
+  if (ofs_new == ofs - 1) {
+    perror ("lseek") ;
+    ats_exit_errmsg (1, "exit(ATS): [lseek] failed\n") ;
+  }
+  return ofs_new ;
+} /* end of [atslib_fildes_lseek_exn] */
+
+/* ****** ****** */
+
+static inline
+ats_ssize_type
+atslib_fildes_pread_err (
+  ats_int_type fd
+, ats_ptr_type buf
+, ats_size_type cnt
+, ats_off_type ofs
+) {
+  return pread(fd, buf, cnt, ofs) ;
+} /* end of [atslib_fildes_pread_err] */
+
+static inline
+ats_ssize_type
+atslib_fildes_pwrite_err (
+  ats_int_type fd
+, ats_ptr_type buf
+, ats_size_type cnt
+, ats_off_type ofs
+) {
+  return pwrite(fd, buf, cnt, ofs) ;
+} /* end of [atslib_fildes_pwrite_err] */
 
 /* ****** ****** */
 

@@ -28,7 +28,7 @@ print_dirent_d_name (ats_ref_type p_ent) {
 %}
 
 extern fun print_dirent_d_name
-  (ent: &dirent): void = "print_dirent_d_name"
+  (ent: &dirent_t): void = "print_dirent_d_name"
 
 extern fun print_direntptr
   (p: &direntptr_gc): void = "print_direntptr"
@@ -112,7 +112,7 @@ in
     val () = array_ptr_clear_clo_tsz
       {direntptr_gc} (!p_arr, nent_sz, !p_f, sizeof<direntptr_gc>) where {
       var !p_f = @lam
-        (p: &direntptr_gc >> direntptr_gc?): void =<clo> ptr_free {dirent} (p.0, p.1 | p.2)
+        (p: &direntptr_gc >> direntptr_gc?): void =<clo> ptr_free {dirent_t} (p.0, p.1 | p.2)
     } // end of [val]
   in
     printf ("There are %i entries in the directory [%s]\n", @(nent, dirname))

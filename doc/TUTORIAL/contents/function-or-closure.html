@@ -160,7 +160,7 @@ change <i>int -&lt;cloref&gt; int</i> into
 the function <i>add0_x</i> does require a nonempty environment that binds
 the variable <i>x</i> to some value. If <i>add0</i> is needed in a place
 where a closure is expected, we can simply write
-<i>lam x => add (x)</i> instead.
+<i>lam x => add0 (x)</i> instead.
 <P>
 When a function is declared via the keyword <i>fun</i> or <i>fn</i>, it is
 assumed by default that the function is without environment. For instance,

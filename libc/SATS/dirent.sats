@@ -50,9 +50,13 @@ typedef off_t = $TYPES.off_t
 (* ****** ****** *)
 
 // defined in dirent.cats
-abst@ype DIR = $extype "ats_DIR_type" // = DIR
-abst@ype dirent = $extype "ats_dirent_type" // = struct dirent
+abst@ype DIR = $extype "ats_DIRype" // = DIR
+abst@ype dirent_t = $extype "ats_dirent_type" // = struct dirent
 
+(* ****** ****** *)
+
+fun dirent_d_name_get (ent: &dirent_t): string
+  = "atslib_dirent_d_name_get"
 
 (* ****** ****** *)
 
@@ -75,11 +79,11 @@ fun opendir_exn (s: string)
 (* ****** ****** *)
 
 fun readdir_err (dir: &DIR)
-  :<> [l_ent:addr] (option_v (vbox (dirent @ l_ent), l_ent <> null) | ptr l_ent)
+  :<> [l_ent:addr] (option_v (vbox (dirent_t @ l_ent), l_ent <> null) | ptr l_ent)
   = "atslib_readdir_err"
 
 // this function is nonreentrant
-fun readdir_exn (dir: &DIR):<!exn> [l_ent:addr] (vbox (dirent @ l_ent) | ptr l_ent)
+fun readdir_exn (dir: &DIR):<!exn> [l_ent:addr] (vbox (dirent_t @ l_ent) | ptr l_ent)
   = "atslib_readdir_exn"
 
 (* ****** ****** *)
@@ -92,12 +96,14 @@ fun seekdir (dir: &DIR, off: off_t): void = "atslib_seekdir"
 
 (* ****** ****** *)
 
+// [dirent_stream_vt_make_DIR] is reentrant
 fun dirent_stream_vt_make_DIR {l_dir:addr}
-  (pf: DIR @ l_dir | p: ptr l_dir):<1,~ref> stream_vt (dirent)
+  (pf: DIR @ l_dir | p: ptr l_dir):<1,~ref> stream_vt (dirent_t)
 
 viewtypedef direntptr_gc =
-  [l:addr] (free_gc_v (dirent, l), dirent @ l | ptr l)
+  [l:addr] (free_gc_v (dirent_t, l), dirent_t @ l | ptr l)
 
+// [direntptr_stream_vt_make_DIR] is reentrant
 fun direntptr_stream_vt_make_DIR {l_dir:addr}
   (pf: DIR @ l_dir | p: ptr l_dir):<1,~ref> stream_vt (direntptr_gc)
 

@@ -312,6 +312,8 @@ atspre_pred_double (const ats_double_type f) {
   return (f - 1.0) ;
 }
 
+//
+
 static inline
 ats_double_type
 atspre_add_double_double
@@ -321,9 +323,39 @@ atspre_add_double_double
 
 static inline
 ats_double_type
+atspre_add_double_int
+  (const ats_double_type f1, const ats_int_type i2) {
+  return (f1 + i2) ;
+}
+
+static inline
+ats_double_type
+atspre_add_int_double
+  (const ats_int_type i1, const ats_double_type f2) {
+  return (i1 + f2) ;
+}
+
+//
+
+static inline
+ats_double_type
 atspre_sub_double_double
   (const ats_double_type f1, const ats_double_type f2) {
   return (f1 - f2) ;
+}
+
+static inline
+ats_double_type
+atspre_sub_double_int
+  (const ats_double_type f1, const ats_int_type i2) {
+  return (f1 - i2) ;
+}
+
+static inline
+ats_double_type
+atspre_sub_int_double
+  (const ats_double_type i1, const ats_int_type f2) {
+  return (i1 - f2) ;
 }
 
 //
@@ -333,6 +365,13 @@ ats_double_type
 atspre_mul_double_double
   (const ats_double_type d1, const ats_double_type d2) {
   return (d1 * d2) ;
+}
+
+static inline
+ats_double_type
+atspre_mul_double_int
+  (const ats_double_type d1, const ats_int_type i2) {
+  return (d1 * (double)i2) ;
 }
 
 static inline
@@ -356,6 +395,13 @@ ats_double_type
 atspre_div_double_int
   (const ats_double_type d1, const ats_int_type i2) {
   return (d1 / (double)i2) ;
+}
+
+static inline
+ats_double_type
+atspre_div_int_double
+  (const ats_int_type i1, const ats_double_type d2) {
+  return ((double)i1 / d2) ;
 }
 
 //

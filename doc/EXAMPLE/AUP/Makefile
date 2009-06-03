@@ -12,6 +12,17 @@
 
 ######
 
+checkall: compall cleanall
+
+######
+
+compall: \
+  testlock \
+  backward2 \
+  getcwdx \
+
+######
+
 testlock: AUP_2_4_3.dats
 	atscc -o testlock AUP_2_4_3.dats
 
@@ -31,6 +42,7 @@ clean::
 cleanall: clean
 	rm -f testlock
 	rm -f backward2
+	rm -f getcwdx
 
 ###### end of [Makefile] ######
  

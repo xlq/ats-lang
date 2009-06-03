@@ -47,7 +47,7 @@ staload FCNTL = "libc/SATS/fcntl.sats" // for [mkstemp]
 
 stadef open_flag_rdwr = $FCNTL.open_flag_rdwr
 
-stadef fildes_opt_v = $FCNTL.fildes_opt_v
+stadef open_v = $FCNTL.open_v
 
 (* ****** ****** *)
 
@@ -69,13 +69,18 @@ fun setenv_exn (name: string, value: string, overwrite: int): void
 
 (* ****** ****** *)
 
+macdef EXIT_SUCCESS = $extval (int, "EXIT_SUCCESS")
+macdef EXIT_FAILURE = $extval (int, "EXIT_FAILURE")
+
+(* ****** ****** *)
+
 fun atexit_err (f: () -> void): int = "atslib_atexit_err"
 fun atexit_exn (f: () -> void): void = "atslib_atexit_exn"
 
 (* ****** ****** *)
 
 fun mkstemp_err {m,n:nat}
-  (buf: &strbuf (m, n)): [i: int] (fildes_opt_v (i, open_flag_rdwr) | int i)
+  (buf: &strbuf (m, n)): [i: int] (open_v (i, open_flag_rdwr) | int i)
   = "atslib_mkstemp_err"
 // end of [mkstemp]
 

@@ -7,28 +7,27 @@
 (***********************************************************************)
 
 (*
- * ATS - Unleashing the Potential of Types!
- *
- * Copyright (C) 2002-2009 Hongwei Xi, Boston University
- *
- * All rights reserved
- *
- * ATS is free software;  you can  redistribute it and/or modify it under
- * the  terms of the  GNU General Public License as published by the Free
- * Software Foundation; either version 2.1, or (at your option) any later
- * version.
- * 
- * ATS is distributed in the hope that it will be useful, but WITHOUT ANY
- * WARRANTY; without  even  the  implied  warranty  of MERCHANTABILITY or
- * FITNESS FOR A PARTICULAR PURPOSE.  See the  GNU General Public License
- * for more details.
- * 
- * You  should  have  received  a  copy of the GNU General Public License
- * along  with  ATS;  see the  file COPYING.  If not, please write to the
- * Free Software Foundation,  51 Franklin Street, Fifth Floor, Boston, MA
- * 02110-1301, USA.
- *
- *)
+** ATS - Unleashing the Potential of Types!
+**
+** Copyright (C) 2002-2009 Hongwei Xi, Boston University
+**
+** All rights reserved
+**
+** ATS is free software;  you can  redistribute it and/or modify it under
+** the  terms of the  GNU General Public License as published by the Free
+** Software Foundation; either version 2.1, or (at your option) any later
+** version.
+** 
+** ATS is distributed in the hope that it will be useful, but WITHOUT ANY
+** WARRANTY; without  even  the  implied  warranty  of MERCHANTABILITY or
+** FITNESS FOR A PARTICULAR PURPOSE.  See the  GNU General Public License
+** for more details.
+** 
+** You  should  have  received  a  copy of the GNU General Public License
+** along  with  ATS;  see the  file COPYING.  If not, please write to the
+** Free Software Foundation,  51 Franklin Street, Fifth Floor, Boston, MA
+** 02110-1301, USA.
+*)
 
 (* ****** ****** *)
 
@@ -47,19 +46,19 @@ staload "libc/SATS/dirent.sats"
 implement dirent_stream_vt_make_DIR
   {l_dir:addr} (pf_dir | p_dir) = $delay_vt (
   res where {
-    var res: stream_vt_con dirent ; val () = f (pf_dir | p_dir, res)
+    var res: stream_vt_con dirent_t ; val () = f (pf_dir | p_dir, res)
   } // end of [where]
 , $effmask_exn (closedir_exn (pf_dir | p_dir))
 ) where {
   extern fun readdir_r_err
-    (_: &DIR, _: &dirent? >> dirent, _: &ptr? >> Ptr):<> int
+    (_: &DIR, _: &dirent_t? >> dirent_t, _: &ptr? >> Ptr):<> int
     = "atslib_readdir_r_err"
   fn f (
       pf_dir: DIR @ l_dir
-    | p_dir: ptr l_dir, res: &stream_vt_con dirent? >> stream_vt_con dirent
+    | p_dir: ptr l_dir, res: &stream_vt_con dirent_t? >> stream_vt_con dirent_t
     ) :<1,~ref> void = let
     var ret: ptr // uninitialized
-    val () = (res := stream_vt_cons {dirent} (?, ?))
+    val () = (res := stream_vt_cons {dirent_t} (?, ?))
     val+ stream_vt_cons (!p_x, !p_xs) = res
     val err = readdir_r_err (!p_dir, !p_x, ret)
     val islast = if (err <> 0) then true else (ret = null)
@@ -67,7 +66,7 @@ implement dirent_stream_vt_make_DIR
     if islast then let
       val () = $effmask_exn (closedir_exn (pf_dir | p_dir))
     in
-      free@ {dirent} res; res := stream_vt_nil ()
+      free@ {dirent_t} res; res := stream_vt_nil ()
     end else let
       val () = !p_xs := dirent_stream_vt_make_DIR (pf_dir | p_dir)
     in
@@ -81,12 +80,12 @@ implement dirent_stream_vt_make_DIR
 implement direntptr_stream_vt_make_DIR
   {l_dir:addr} (pf_dir | p_dir) = $delay_vt (
   res where {
-    var res: stream_vt_con dirent ; val () = f (pf_dir | p_dir, res)
+    var res: stream_vt_con dirent_t ; val () = f (pf_dir | p_dir, res)
   } // end of [where]
 , $effmask_exn (closedir_exn (pf_dir | p_dir))
 ) where {
   extern fun readdir_r_err
-    (_: &DIR, _: &dirent? >> dirent, _: &ptr? >> Ptr):<> int
+    (_: &DIR, _: &dirent_t? >> dirent_t, _: &ptr? >> Ptr):<> int
     = "atslib_readdir_r_err"
   fn f (
       pf_dir: DIR @ l_dir
@@ -94,12 +93,12 @@ implement direntptr_stream_vt_make_DIR
     , res: &stream_vt_con direntptr_gc? >> stream_vt_con direntptr_gc
     ) :<1,~ref> void = let
     var ret: ptr // uninitialized
-    val (pf_ent_gc, pf_ent | p_ent) = ptr_alloc_tsz {dirent} (sizeof<dirent>)
+    val (pf_ent_gc, pf_ent | p_ent) = ptr_alloc_tsz {dirent_t} (sizeof<dirent_t>)
     val err = readdir_r_err (!p_dir, !p_ent, ret)
     val islast = if (err <> 0) then true else (ret = null)
   in
     if islast then let
-      val () = ptr_free {dirent} (pf_ent_gc, pf_ent | p_ent)
+      val () = ptr_free {dirent_t} (pf_ent_gc, pf_ent | p_ent)
       val () = $effmask_exn (closedir_exn (pf_dir | p_dir))
     in
       res := stream_vt_nil ()
@@ -111,7 +110,7 @@ implement direntptr_stream_vt_make_DIR
     in
       fold@ res
     end // end of [if]
-  end // end of [f]
+  end (* end of [f] *)
 } // end of [direntptr_stream_vt_make_DIR]
 
 (* ****** ****** *)

@@ -46,14 +46,19 @@
 
 staload TYPES = "libc/sys/SATS/types.sats"
 
+typedef off_t = $TYPES.off_t
 typedef pid_t = $TYPES.pid_t
 typedef uid_t = $TYPES.uid_t
+
+typedef whence_t = $TYPES.whence_t
 
 (* ****** ****** *)
 
 staload FCNTL = "libc/SATS/fcntl.sats"
 
 sortdef open_flag = $FCNTL.open_flag
+
+stadef open_flag_lte = $FCNTL.open_flag_lte
 
 stadef rd = $FCNTL.open_flag_rd
 stadef wr = $FCNTL.open_flag_wr
@@ -152,7 +157,51 @@ fun geteuid ():<> uid_t = "atslib_geteuid"
 
 (* ****** ****** *)
 
+fun chdir_err (path: string): int(*errno*)
+  = "atslib_chdir_err"
+
+fun chdir_exn (path: string): void
+  = "atslib_chdir_exn"
+
+fun fchdir_err {fd:int} {flag:open_flag}
+  (pf: !fildes_v (fd, flag) | fd: int): int(*errno*) 
+  = "atslib_fchdir_err"
+
+fun fchdir_exn {fd:int} {flag:open_flag}
+  (pf: !fildes_v (fd, flag) | fd: int): void
+  = "atslib_fchdir_exn"
+
+(* ****** ****** *)
+
 fun unlink_err (path: string): int = "atslib_unlink_err"
+
+fun unlink_exn (path: string): void = "atslib_unlink_exn"
+
+(* ****** ****** *)
+
+fun fildes_lseek_err {fd:int} {flag:open_flag}
+  (pf: !fildes_v (fd, flag) | fd: int fd, ofs: off_t, whence: whence_t): off_t
+  = "atslib_fildes_lseek_err"
+
+fun fildes_lseek_exn {fd:int} {flag:open_flag}
+  (pf: !fildes_v (fd, flag) | fd: int fd, ofs: off_t, whence: whence_t): off_t
+  = "atslib_fildes_lseek_exn"
+
+(* ****** ****** *)
+
+fun fildes_pread_err
+  {fd:int} {flag:open_flag} {n,sz:nat | n <= sz} (
+    pf1: open_flag_lte (flag, rd), pf2: !fildes_v (fd, flag)
+  | fd: int fd, buf: &bytes sz, ntotal: size_t n, ofs: off_t
+  ) : ssizeBtw(~1, n+1)
+  = "atslib_fildes_pread_err"
+
+fun fildes_pwrite_err
+  {fd:int} {flag:open_flag} {n,sz:nat | n <= sz} (
+    pf1: open_flag_lte (flag, wr), pf2: !fildes_v (fd, flag)
+  | fd: int fd, buf: &bytes sz, ntotal: size_t n, ofs: off_t
+  ) : ssizeBtw(~1, n+1)
+  = "atslib_fildes_pwrite_err"
 
 (* ****** ****** *)
 

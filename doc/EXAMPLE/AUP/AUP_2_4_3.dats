@@ -71,11 +71,11 @@ in
         val (pf_fdopt | fd) = open_flag_err (path, flag)
       in
         if (fd >= 0) then let
-          prval fildes_some (pf_fd) = pf_fdopt
+          prval open_v_succ (pf_fd) = pf_fdopt
         in
           close_loop_exn (pf_fd | fd); 0(*success*)
         end else let
-          prval fildes_none () = pf_fdopt
+          prval open_v_fail () = pf_fdopt
         in
           if errno_is_EEXIST () then
             (if n >= MAXTRIES - 1 then (errno_set EAGAIN; ~1)

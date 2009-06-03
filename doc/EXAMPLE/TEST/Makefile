@@ -7,6 +7,7 @@
 ######
 
 checkall: compall cleanall
+	echo "[checkall] is finished successfully!"
 
 ######
 

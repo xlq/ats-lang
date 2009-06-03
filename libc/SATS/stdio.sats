@@ -43,9 +43,10 @@
 
 (* ****** ****** *)
 
-// typedef lint = int_long_t0ype
+staload TYPES = "libc/sys/SATS/types.sats"
+typedef whence_t = $TYPES.whence_t
 
-//
+(* ****** ****** *)
 
 sortdef fm = file_mode
 
@@ -549,10 +550,10 @@ it returns -1.
 *)
 
 fun fseek0_err
-  (f: FILEref, offset: lint, whence: int):<> int
+  (f: FILEref, offset: lint, whence: whence_t):<> int
   = "atslib_fseek0_err"
 
-fun fseek1_err {m:fm} (f: &FILE m, offset: lint, whence: int):<> int
+fun fseek1_err {m:fm} (f: &FILE m, offset: lint, whence: whence_t):<> int
   = "atslib_fseek1_err"
 
 symintr fseek_err
@@ -562,10 +563,10 @@ overload fseek_err with fseek1_err
 //
 
 fun fseek0_exn
-  (f: FILEref, offset: lint, whence: int):<!exn> void
+  (f: FILEref, offset: lint, whence: whence_t):<!exn> void
   = "atslib_fseek_exn"
 
-fun fseek1_exn {m:fm} (f: &FILE m, offset: lint, whence: int):<!exn> void
+fun fseek1_exn {m:fm} (f: &FILE m, offset: lint, whence: whence_t):<!exn> void
   = "atslib_fseek_exn"
 
 symintr fseek_exn

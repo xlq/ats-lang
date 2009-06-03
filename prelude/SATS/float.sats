@@ -225,30 +225,53 @@ and pred_double (d: double):<> double = "atspre_pred_double"
 overload succ with succ_double
 overload pred with pred_double
 
+//
+
 fun add_double_double (d1: double, d2: double):<> double
   = "atspre_add_double_double"
-and sub_double_double (d1: double, d2: double):<> double
-  = "atspre_sub_double_double"
+and add_double_int (d1: double, i2: int):<> double
+  = "atspre_add_double_int"
+and add_int_double (i1: int, d2: double):<> double
+  = "atspre_add_int_double"
+overload + with add_double_double
+overload + with add_double_int
+overload + with add_int_double
 
-and mul_double_double (d1: double, d2: double):<> double
+fun sub_double_double (d1: double, d2: double):<> double
+  = "atspre_sub_double_double"
+and sub_double_int (d1: double, i2: int):<> double
+  = "atspre_sub_double_int"
+and sub_int_double (i1: int, d2: double):<> double
+  = "atspre_sub_int_double"
+overload - with sub_double_double
+overload - with sub_double_int
+overload - with sub_int_double
+
+//
+
+fun mul_double_double (d1: double, d2: double):<> double
   = "atspre_mul_double_double"
+and mul_double_int (d1: double, i2: int):<> double
+  = "atspre_mul_double_int"
 and mul_int_double (i1: int, d2: double):<> double
   = "atspre_mul_int_double"
+overload * with mul_double_double
+overload * with mul_double_int
+overload * with mul_int_double
 
-and div_double_double (d1: double, d2: double):<> double
+//
+
+fun div_double_double (d1: double, d2: double):<> double
   = "atspre_div_double_double"
 and div_double_int (f1: double, i2: int):<> double
   = "atspre_div_double_int"
-
-
-overload + with add_double_double
-overload - with sub_double_double
-
-overload * with mul_double_double
-overload * with mul_int_double
-
+and div_int_double (i1: int, d2: double):<> double
+  = "atspre_div_int_double"
 overload / with div_double_double
 overload / with div_double_int
+overload / with div_int_double
+
+//
 
 fun lt_double_double (d1: double, d2: double):<> bool
   = "atspre_lt_double_double"

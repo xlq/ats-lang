@@ -106,10 +106,6 @@ overload lor with lor_flag_orflag
 (* ****** ****** *)
 
 absview fildes_v (int, open_flag) // file descriptor view
-dataview fildes_opt_v (int, open_flag) =
-  | {fd:nat} {flag:open_flag}
-    fildes_some (fd, flag) of fildes_v (fd, flag)
-  | {flag:open_flag} fildes_none (~1, flag) of ()
 
 (* ****** ****** *)
 
@@ -118,7 +114,7 @@ dataview open_v (int, open_flag) =
   | {f:open_flag} open_v_fail (~1, f) of ()
 
 fun open_flag_err {f:open_flag}
-  (path: string, flag: flag_t f): [i: int] (fildes_opt_v (i, f) | int i)
+  (path: string, flag: flag_t f): [i: int] (open_v (i, f) | int i)
   = "atslib_open_flag_err"
 
 fun open_flag_exn {f:open_flag}
