@@ -1,6 +1,12 @@
 //
 // Author: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
+// Time: Summer, 2009
 //
+
+(* ****** ****** *)
+
+// book: AUP (2nd edition), pages 80 - 85
+
 (* ****** ****** *)
 
 staload "libc/sys/SATS/types.sats"
