@@ -175,7 +175,7 @@ atslib_fildes_lseek_exn (
 ) {
   off_t ofs_new ;
   ofs_new = lseek(fd, ofs, whence) ;
-  if (ofs_new == ofs - 1) {
+  if (ofs_new == (ats_off_type)(-1)) {
     perror ("lseek") ;
     ats_exit_errmsg (1, "exit(ATS): [lseek] failed\n") ;
   }
