@@ -7,34 +7,34 @@
 (***********************************************************************)
 
 (*
- * ATS - Unleashing the Power of Types!
- *
- * Copyright (C) 2002-2008 Hongwei Xi, Boston University
- *
- * All rights reserved
- *
- * ATS is free software;  you can  redistribute it and/or modify it under
- * the terms of the GNU LESSER GENERAL PUBLIC LICENSE as published by the
- * Free Software Foundation; either version 2.1, or (at your option)  any
- * later version.
- * 
- * ATS is distributed in the hope that it will be useful, but WITHOUT ANY
- * WARRANTY; without  even  the  implied  warranty  of MERCHANTABILITY or
- * FITNESS FOR A PARTICULAR PURPOSE.  See the  GNU General Public License
- * for more details.
- * 
- * You  should  have  received  a  copy of the GNU General Public License
- * along  with  ATS;  see the  file COPYING.  If not, please write to the
- * Free Software Foundation,  51 Franklin Street, Fifth Floor, Boston, MA
- * 02110-1301, USA.
- *
- *)
+** ATS - Unleashing the Power of Types!
+**
+** Copyright (C) 2002-2008 Hongwei Xi, Boston University
+**
+** All rights reserved
+**
+** ATS is free software;  you can  redistribute it and/or modify it under
+** the terms of the GNU LESSER GENERAL PUBLIC LICENSE as published by the
+** Free Software Foundation; either version 2.1, or (at your option)  any
+** later version.
+** 
+** ATS is distributed in the hope that it will be useful, but WITHOUT ANY
+** WARRANTY; without  even  the  implied  warranty  of MERCHANTABILITY or
+** FITNESS FOR A PARTICULAR PURPOSE.  See the  GNU General Public License
+** for more details.
+** 
+** You  should  have  received  a  copy of the GNU General Public License
+** along  with  ATS;  see the  file COPYING.  If not, please write to the
+** Free Software Foundation,  51 Franklin Street, Fifth Floor, Boston, MA
+** 02110-1301, USA.
+*)
 
 (* ****** ****** *)
 
+//
+// Author: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
 // Time: Summer 2007
-
-(* Author: Hongwei Xi (hwxi AT cs DOT bu DOT edu) *)
+//
 
 (* ****** ****** *)
 
@@ -165,17 +165,28 @@ end // end of [libats_make]
 
 (* ****** ****** *)
 
-val libatslex_local = "ccomp/lib/libatslex.a"
-val libatslex_global = ATSHOME_dir_append libatslex_local
+val libats_lex_local = "ccomp/lib/libats_lex.a"
+val libats_lex_global = ATSHOME_dir_append libats_lex_local
 
-// this function is currently not in use
-implement libatslex_make (param_rev) = let
+implement libats_lex_make (param_rev) = let
   val dir = ATSHOME_dir_append "libats/lex/"
 in
-  ccomp_gcc_ar_libfile (param_rev, dir + "lexing.sats", libatslex_global) ;
-  ccomp_gcc_ar_libfile (param_rev, dir + "lexing.dats", libatslex_global) ;
-  ccomp_gcc_ar_libfile (param_rev, dir + "tables.dats", libatslex_global) ;
-end // end of [libatslex_make]
+  ccomp_gcc_ar_libfile (param_rev, dir + "lexing.sats", libats_lex_global) ;
+  ccomp_gcc_ar_libfile (param_rev, dir + "lexing.dats", libats_lex_global) ;
+  ccomp_gcc_ar_libfile (param_rev, dir + "tables.dats", libats_lex_global) ;
+end // end of [libats_lex_make]
+
+(* ****** ****** *)
+
+val libats_smlbas_local = "ccomp/lib/libats_smlbas.a"
+val libats_smlbas_global = ATSHOME_dir_append libats_smlbas_local
+
+implement libats_smlbas_make (param_rev) = () where {
+   val smlbas_libfiles = ATSHOME_dir_append "libats/smlbas/.libfiles"
+   val (pf_file | p_file) = fopen_exn (smlbas_libfiles, file_mode_r)
+   val () = library_make_loop (param_rev, !p_file, ATSHOME_dir, libats_smlbas_global);
+   val () = fclose_exn (pf_file | p_file)
+} // end of [libats_smlbas_make]
 
 (* ****** ****** *)
 

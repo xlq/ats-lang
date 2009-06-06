@@ -64,6 +64,11 @@ libats_regexp: libats_regexp.dats
 
 ######
 
+libats_smlbas_array: libats_smlbas_array.dats
+	atscc -O2 -o libats_smlbas_array libats_smlbas_array.dats -lats_smlbas
+
+######
+
 clean::
 	rm -f *~
 	rm -f a.out *_?ats.c *_?ats.o
@@ -80,5 +85,6 @@ cleanall: clean
 	rm -f libats_intinf
 	rm -f libats_iterint
 	rm -f libats_regexp
+	rm -f libats_smlbas_array
 
 ###### end of [Makefile] ######

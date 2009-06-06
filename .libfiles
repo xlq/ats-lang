@@ -6,11 +6,12 @@
 /*                                                                     */
 /***********************************************************************/
 
-//
-//
-// This file is to be preprocessed to generate .libfiles, which is needed
-// by [atslib -all] for building libats.a
-//
+/*
+**
+** This file is to be preprocessed to generate .libfiles_local, which is
+** needed by [atslib -all] for building libats.a
+**
+*/
 
 /* ****** ****** */
 

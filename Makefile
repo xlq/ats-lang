@@ -119,9 +119,11 @@ ATS_TERMINATION_CHECK=
 .libfiles_local: ; $(GCC) -E -P -x c .libfiles -o .libfiles_local
 libfiles: .libfiles_local
 	"$(ATSHOME)"/bin/atslib $(ATS_TERMINATION_CHECK) -O2 --libats # for libats
-	"$(ATSHOME)"/bin/atslib $(ATS_TERMINATION_CHECK) -O2 --libatslex # for libatslex
+	"$(ATSHOME)"/bin/atslib $(ATS_TERMINATION_CHECK) -O2 --libats_lex # for libats_lex
+	"$(ATSHOME)"/bin/atslib $(ATS_TERMINATION_CHECK) -O2 --libats_smlbas # for libats_smlbas
 
 ###### a lexer for ATS ######
+
 bin/atslex:
 	cd utils/atslex; $(MAKE) atslex; mv atslex "$(ATSHOME)"/bin
 	cd utils/atslex; $(MAKE) clean
@@ -159,7 +161,7 @@ cleanall:: clean
 	rm -f .libfiles_local
 	rm -f bin/atsopt bin/atscc bin/atslib bin/atslex bin/atspack
 	rm -f ccomp/lib/libats.a
-	rm -f ccomp/lib/libatslex.a
+	rm -f ccomp/lib/libats_lex.a
 	rm -f ccomp/lib/output/*
 	cd ccomp/runtime/GCATS; $(MAKE) cleanall
 	rm -f .*~ *~ */*~ */*/*~ */*/*/*~ */*/*/*/*~

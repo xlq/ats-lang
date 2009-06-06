@@ -1,7 +1,7 @@
-//
-// some testing code for functions declared in
-// libc/DATS/dirent.sats
-//
+(*
+** some testing code for functions declared in
+** libc/SATS/dirent.sats
+*)
 
 // Author: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
 // Time: February, 2009

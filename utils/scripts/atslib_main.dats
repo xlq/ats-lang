@@ -7,34 +7,34 @@
 (***********************************************************************)
 
 (*
- * ATS - Unleashing the Power of Types!
- *
- * Copyright (C) 2002-2008 Hongwei Xi, Boston University
- *
- * All rights reserved
- *
- * ATS is free software;  you can  redistribute it and/or modify it under
- * the terms of the GNU LESSER GENERAL PUBLIC LICENSE as published by the
- * Free Software Foundation; either version 2.1, or (at your option)  any
- * later version.
- * 
- * ATS is distributed in the hope that it will be useful, but WITHOUT ANY
- * WARRANTY; without  even  the  implied  warranty  of MERCHANTABILITY or
- * FITNESS FOR A PARTICULAR PURPOSE.  See the  GNU General Public License
- * for more details.
- * 
- * You  should  have  received  a  copy of the GNU General Public License
- * along  with  ATS;  see the  file COPYING.  If not, please write to the
- * Free Software Foundation,  51 Franklin Street, Fifth Floor, Boston, MA
- * 02110-1301, USA.
- *
- *)
+** ATS - Unleashing the Power of Types!
+**
+** Copyright (C) 2002-2008 Hongwei Xi, Boston University
+**
+** All rights reserved
+**
+** ATS is free software;  you can  redistribute it and/or modify it under
+** the terms of the GNU LESSER GENERAL PUBLIC LICENSE as published by the
+** Free Software Foundation; either version 2.1, or (at your option)  any
+** later version.
+** 
+** ATS is distributed in the hope that it will be useful, but WITHOUT ANY
+** WARRANTY; without  even  the  implied  warranty  of MERCHANTABILITY or
+** FITNESS FOR A PARTICULAR PURPOSE.  See the  GNU General Public License
+** for more details.
+** 
+** You  should  have  received  a  copy of the GNU General Public License
+** along  with  ATS;  see the  file COPYING.  If not, please write to the
+** Free Software Foundation,  51 Franklin Street, Fifth Floor, Boston, MA
+** 02110-1301, USA.
+*)
 
 (* ****** ****** *)
 
+//
+// Author: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
 // Time: Summer 2007
-
-(* Author: Hongwei Xi (hwxi AT cs DOT bu DOT edu) *)
+//
 
 (* ****** ****** *)
 
@@ -56,7 +56,9 @@ staload "top.sats"
 fn do_usage (cmd: string): void = begin
   printf ("The usage of %s is:\n", @(cmd));
   printf ("  1. %s <flags> --libats (* generating [libats.a] *)\n", @(cmd));
-  printf ("  2. %s <flags> [infile] (* compiling and archiving a single file *) \n", @(cmd));
+  printf ("  2. %s <flags> --libats_smlbas (* generating [libats_smlbas.a] *)\n", @(cmd));
+  printf ("  3. %s <flags> --libats_lex (* generating [libats_lex.a] *)\n", @(cmd));
+  printf ("  4. %s <flags> [infile] (* compiling and archiving a single file *) \n", @(cmd));
 end // end of [do_usage]
 
 (* ****** ****** *)
@@ -86,7 +88,8 @@ implement main {n} (argc, argv) = let
         // empty // skip the empty argument
       end else begin case+ arg of
         | "--libats" => libats_make (param_rev)
-        | "--libatslex" => libatslex_make (param_rev)
+        | "--libats_smlbas" => libats_smlbas_make (param_rev)
+        | "--libats_lex" => libats_lex_make (param_rev)
         | _ => if arg[0] = '-' then begin
             param_rev := STRLSTcons (arg, param_rev)
           end else begin

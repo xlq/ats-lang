@@ -1,6 +1,11 @@
+(*
+** some testing code for functions declared in
+** libats/SATS/intinf.sats
+*)
+
 //
-// some testing code for functions declared in
-// libats/SATS/intinf.sats
+// Author: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
+// Time: Spring, 2009
 //
 
 (* ****** ****** *)

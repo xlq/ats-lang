@@ -35,76 +35,38 @@
 
 (* ****** ****** *)
 
-//
-// [array0] is a persistent array with size information attached.
-//
-
-(* ****** ****** *)
-
 #include "prelude/params.hats"
 
 (* ****** ****** *)
 
 #if VERBOSE_PRELUDE #then
 
-#print "Loading [array0.sats] starts!\n"
+#print "Loading [option.sats] starts!\n"
 
 #endif
 
 (* ****** ****** *)
 
-//
-// array0 (a) = ref (Arraysize a)
-//
+datatype option0 (a: t@ype) =
+  | option0_some of (a) | option0_none ()
+// end of [val]  
 
 (* ****** ****** *)
 
-fun array0_make_arraysize {a:viewt@ype}
-  {n:nat} (arrsz: arraysize (a, n)):<> array0 (a)
-// end of [array0_make_arraysize]
+// a casting function implemented in [prelude/DATS/option.cats]
+castfn option0_of_option1 {a:t@ype} (xs: List a):<> option0 a
+  = "atspre_option0_of_option1"
 
-macdef array0 (x) = array0_make_arraysize ,(x)
-
-fun array0_get_arraysize_ref
-  {a:viewt@ype} (A: array0 a):<> ref (Arraysize a)
-// end of [array0_get_arraysize_ref]
-
-(* ****** ****** *)
-
-fun{a:t@ype}
-  array0_make_elt (asz: size_t, x: a):<> array0 a
-// end of [array0_make_elt]
-
-(* ****** ****** *)
-
-fun array0_size {a:t@ype} (A: array0 a):<!ref> size_t
-
-(* ****** ****** *)
-
-fun{a:t@ype} array0_get_elt_at
-  (A: array0 a, i: size_t):<!exnref> a
-overload [] with array0_get_elt_at
-
-fun{a:t@ype} array0_set_elt_at
-  (A: array0 a, i: size_t, x: a):<!exnref> void
-overload [] with array0_set_elt_at
-
-(* ****** ****** *)
-
-fun{a:t@ype} array0_get_elt_at__intsz
-  (A: array0 a, i: int):<!exnref> a
-overload [] with array0_get_elt_at__intsz
-
-fun{a:t@ype} array0_set_elt_at__intsz
-  (A: array0 a, i: int, x: a):<!exnref> void
-overload [] with array0_set_elt_at__intsz
+// a casting function implemented in [prelude/DATS/option.cats]
+castfn option1_of_option0 {a:t@ype} (xs: option0 a):<> List a
+  = "atspre_option1_of_option0"
 
 (* ****** ****** *)
 
 #if VERBOSE_PRELUDE #then
 
-#print "Loading [array0.sats] finishes!\n"
+#print "Loading [option0.sats] finishes!\n"
 
 #endif
 
-(* end of [array0.sats] *)
+(* end of [option0.sats] *)

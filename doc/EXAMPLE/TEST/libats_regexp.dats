@@ -1,6 +1,11 @@
+(*
+** some testing code for functions declared in
+** libats/SATS/regexp.sats
+*)
+
 //
-// some testing code for functions declared in
-// libats/SATS/regexp.sats
+// Author: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
+// Time: Summer, 2009
 //
 
 (* ****** ****** *)

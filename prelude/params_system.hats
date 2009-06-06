@@ -13,10 +13,10 @@
 **
 ** All rights reserved
 **
-** ATS is  free software;  you can redistribute it and/or modify it under
-** the  terms of the  GNU General Public License as published by the Free
-** Software Foundation; either version 2.1, or (at your option) any later
-** version.
+** ATS is free software;  you can  redistribute it and/or modify it under
+** the terms of  the GNU GENERAL PUBLIC LICENSE (GPL) as published by the
+** Free Software Foundation; either version 3, or (at  your  option)  any
+** later version.
 ** 
 ** ATS is distributed in the hope that it will be useful, but WITHOUT ANY
 ** WARRANTY; without  even  the  implied  warranty  of MERCHANTABILITY or
@@ -37,13 +37,15 @@
 
 // some system parameters
 
-#define BYTE_BIT_SIZE 8 (* 8 bits in each byte *)
+#define NBIT_PER_BYTE 8 (* 8 bits in each byte *)
 
+//
 // The following one is machine-dependent!
-// #define WORD_BYTE_SIZE 4 (* 4 bytes in each word *)
+// #define NBYTE_PER_WORD // 4 or 8 bytes in each word
+//
 
 // The following one is OS-dependent!
-// #define OPERATING_SYSTEM_IS_UNIX_LIKE 1
+#define OPERATING_SYSTEM_IS_UNIX_LIKE 1
 
 (* ****** ****** *)
 
