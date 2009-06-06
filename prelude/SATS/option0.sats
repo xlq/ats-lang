@@ -48,7 +48,7 @@
 (* ****** ****** *)
 
 datatype option0 (a: t@ype) =
-  | option0_some of (a) | option0_none ()
+  | option0_some (a) of (a) | option0_none (a) of ()
 // end of [val]  
 
 (* ****** ****** *)

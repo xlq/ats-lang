@@ -67,6 +67,11 @@ prelude/DATS/matrix.dats
 
 prelude/SATS/option.sats
 prelude/DATS/option.dats
+/*
+prelude/SATS/option_vt.sats
+prelude/DATS/option_vt.dats
+*/
+prelude/SATS/option0.sats
 
 /* linked lists */
 
