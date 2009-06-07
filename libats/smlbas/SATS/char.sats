@@ -39,16 +39,75 @@
 (* ****** ****** *)
 
 //
-// SML Basis Library: Array (http://www.standardml.org/Basis/bool.html)
+// SML Basis Library: Array (http://www.standardml.org/Basis/char.html)
 //
 
 (* ****** ****** *)
 
-fun not (b: bool): bool
+val minChar : char
+val maxChar : char
+val maxOrd : uint
 
-fun toString (b: bool): string
+(* ****** ****** *)
 
-fun fromString (s: string): option0 (bool)
+fun ord (c: char): uint
+fun chr (i: uint): char
+fun succ (c: char): char
+fun pred (c: char): char
+
+fun compare (c1: char, c2: char): int
+
+fun lt_char_char (c1: char, c2: char): bool
+overload < with lt_char_char
+
+fun lte_char_char (c1: char, c2: char): bool
+overload <= with lte_char_char
+
+fun gt_char_char (c1: char, c2: char): bool
+overload > with gt_char_char
+
+fun gte_char_char (c1: char, c2: char): bool
+overload >= with gte_char_char
+
+(* ****** ****** *)
+
+fun contains (s: string, c: char): bool
+fun notContains (s: string, c: char): bool
+
+(* ****** ****** *)
+
+fun isAscii (c: char): bool
+fun isAlpha (c: char): bool
+fun isAlphaNum (c: char): bool
+fun isCntrl (c: char): bool
+fun isDigit (c: char): bool
+fun isGraph (c: char): bool
+fun isHexDigit (c: char): bool
+fun isLower (c: char): bool
+fun isPrint (c: char): bool
+fun isSpace (c: char): bool
+fun isPunct (c: char): bool
+fun isUpper (c: char): bool
+
+(* ****** ****** *)
+
+fun toLower (c: char): char
+fun toUpper (c: char): char
+
+(* ****** ****** *)
+
+(*
+
+fun toString (c: char): string
+fun fromString (s: string): option0 char
+val scan : (Char.char, 'a) StringCvt.reader -> (char, 'a) StringCvt.reader
+
+*)
+
+(* ****** ****** *)
+
+fun toCString (c: char): string
+fun fromCString (s: string): option0 char
 
 (* ****** ****** *)
 

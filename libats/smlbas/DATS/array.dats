@@ -31,15 +31,18 @@
 
 (* ****** ****** *)
 
-(* author: Hongwei Xi (hwxi AT cs DOT bu DOT edu) *)
+//
+// Author: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
+// Time: Summer, 2009
+//
+
+(* ****** ****** *)
+
+staload "libats/smlbas/SATS/general.sats"
 
 (* ****** ****** *)
 
 staload "libats/smlbas/SATS/array.sats"
-
-(* ****** ****** *)
-
-exception Subscript of ()
 
 (* ****** ****** *)
 

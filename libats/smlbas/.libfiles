@@ -1,3 +1,12 @@
 
 libats/smlbas/SATS/array.sats
 libats/smlbas/DATS/array.dats
+
+libats/smlbas/SATS/bool.sats
+libats/smlbas/DATS/bool.dats
+
+libats/smlbas/SATS/char.sats
+libats/smlbas/DATS/char.dats
+
+libats/smlbas/SATS/list.sats
+libats/smlbas/DATS/list.dats

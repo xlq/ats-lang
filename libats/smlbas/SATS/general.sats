@@ -9,7 +9,7 @@
 (*
 ** ATS - Unleashing the Potential of Types!
 **
-** Copyright (C) 2002-2008 Hongwei Xi, Boston University
+** Copyright (C) 2002-2009 Hongwei Xi, Boston University
 **
 ** All rights reserved
 **
@@ -31,34 +31,39 @@
 
 (* ****** ****** *)
 
-(* author: Hongwei Xi (hwxi AT cs DOT bu DOT edu) *)
+//
+// Author: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
+// Time: Summer, 2009
+//
 
 (* ****** ****** *)
 
-staload "libats/smlbas/SATS/bool.sats"
+//
+// SML Basis Library: Array (http://www.standardml.org/Basis/general.html)
+//
 
 (* ****** ****** *)
 
-implement not (b) = ~b
-
-implement toString (b) =
-  if b then "true" else "false"
-// end of [toString]
-
-local
-
-staload "libc/SATS/string.sats"
-
-in // in of [local]
-
-implement fromString (s) = case+ s of
-  | _ when strncmp (s, "true", 4) = 0 => option0_some true
-  | _ when strncmp (s, "false", 5) = 0 => option0_some false
-  | _ => option0_none () 
-// end of [fromString]
-
-end // end of [local]
+exception Bind of ()
+exception Match of ()
+exception Chr of ()
+exception Div of ()
+exception Domain of ()
+exception Empty of ()
+exception Fail of string
+exception Overflow of ()
+exception Size of ()
+exception Span of ()
+exception Subscript of ()
 
 (* ****** ****** *)
 
-(* end of [bool.dats] *)
+fun{a,b,c:t@ype} compose
+  (_: b -<cloref1> c, _: a -<cloref1> b): a -<cloref1> c
+// end of [compose]
+
+fun{a:t@ype} ignore (x: a): void
+
+(* ****** ****** *)
+
+(* end of [list.sats] *)

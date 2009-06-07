@@ -39,73 +39,70 @@
 (* ****** ****** *)
 
 //
-// SML Basis Library: Array (http://www.standardml.org/Basis/array.html)
+// SML Basis Library: Array (http://www.standardml.org/Basis/list.html)
 //
 
 (* ****** ****** *)
 
-abstype array_t0ype_type (a:t@ype)
-typedef array (a:t@ype) = array_t0ype_type (a)
+exception Empty of ()
 
 (* ****** ****** *)
 
-val maxLen : size_t // maximal array size allowed
+fun null {a:t@ype} (xs: list0 a): bool
+
+fun{a:t@ype} length (xs: list0 a): int
+
+fun{a:t@ype} append (xs: list0 a, ys: list0 a): list0 a
+
+fun{a:t@ype} hd (xs: list0 a): a 
+fun{a:t@ype} tl (xs: list0 a): list0 a 
+
+fun{a:t@ype} last (xs: list0 a): a 
+
+fun{a:t@ype} getItem (xs: list0 a): option0 @(a, list0 a)
+
+fun{a:t@ype} nth (xs: list0 a, n: int): a
+
+fun{a:t@ype} take (xs: list0 a, i: int): list0 a
+fun{a:t@ype} drop (xs: list0 a, i: int): list0 a
+ 
+fun{a:t@ype} rev (xs: list0 a): list0 a
+fun{a:t@ype} revAppend (xs: list0 a, ys: list0 a): list0 a
+
+fun{a:t@ype} concat (xs: list0 (list0 a)): list0 a 
+    
+(* ****** ****** *)
+
+fun{a:t@ype} app (f: a -<cloref1> void, xs: list0 a): void
+
+fun{a,b:t@ype} map (f: a -<cloref1> b, xs: list0 a) : list0 b
+
+fun{a,b:t@ype} mapPartial (f: a -<cloref1> option0 b, xs: list0 a) : list0 b
 
 (* ****** ****** *)
 
-fun{a:t@ype} array (asz: size_t, ini: a): array a
-
-fun{a:t@ype} fromList (xs: list0 a): array a
-
-fun{a:t@ype} tabulate (asz: size_t, f: size_t -<cloref1> a): array a
+fun{a:t@ype} find (f: a -<cloref1> bool, xs: list0 a): option0 a
+fun{a:t@ype} filter (f: a -<cloref1> bool, xs: list0 a): list0 a
 
 (* ****** ****** *)
 
-fun length {a:t@ype} (A: array a): size_t
+fun{a:t@ype} partition (f: a -<cloref1> bool, xs: list0 a): @(list0 a, list0 a)
 
 (* ****** ****** *)
 
-fun{a:t@ype} sub (A: array a, i: size_t): a
-fun{a:t@ype} update (A: array a, i: size_t, x: a): void
+fun{a,b:t@ype} foldl (f: (a, b) -<cloref1> b, ini: b, xs: list0 a): b
+fun{a,b:t@ype} foldr (f: (a, b) -<cloref1> b, snk: b, xs: list0 a): b
 
 (* ****** ****** *)
 
-fun{a:t@ype} copy (src: array a, dst: array a, di: size_t): void
+fun{a:t@ype} all (f: a -<cloref1> bool, xs: list0 a): bool
+fun{a:t@ype} exists (f: a -<cloref1> bool, xs: list0 a): bool
 
 (* ****** ****** *)
 
-fun{a:t@ype} app (f: a -<cloref1> void, A: array a): void
-fun{a:t@ype} appi (f: (size_t, a) -<cloref1> void, A: array a): void
+fun{a:t@ype} tabulate (lsz: int, f: int -<cloref1> a): list0 a
+fun{a:t@ype} collate (cmp: (a, a) -<cloref1> int, xs: list0 a, ys: list0 a): int 
 
 (* ****** ****** *)
 
-fun{a:t@ype} modify (f: a -<cloref1> a, A: array a): void
-fun{a:t@ype} modifyi (f: (size_t, a) -<cloref1> a, A: array a): void
-
-(* ****** ****** *)
-
-fun{a,b:t@ype} foldl (f: (a, b) -<cloref1> b, ini: b, A: array a): b 
-fun{a,b:t@ype} foldli (f: (size_t, a, b) -<cloref1> b, ini: b, A: array a): b 
-
-fun{a,b:t@ype} foldr (f: (a, b) -<cloref1> b, fin: b, A: array a): b 
-fun{a,b:t@ype} foldri (f: (size_t, a, b) -<cloref1> b, fin: b, A: array a): b 
-
-(* ****** ****** *)
-
-fun{a:t@ype} find (f: a -<cloref1> bool, A: array a): option0 a
-fun{a:t@ype} findi (f: (size_t, a) -<cloref1> bool, A: array a): option0 @(size_t, a)
-
-(* ****** ****** *)
-
-fun{a:t@ype} all (f: a -<cloref1> bool, A: array a): bool
-fun{a:t@ype} exists (f: a -<cloref1> bool, A: array a): bool
-
-(* ****** ****** *)
-
-// collate: lexicographic ordering
-// GREATER: > 0; EQUAL  : = 0; LESS   : < 0
-fun{a:t@ype} collate (cmp: (a, a) -<cloref1> int, A1: array a, A2: array a): int
-
-(* ****** ****** *)
-
-(* end of [array.sats] *)
+(* end of [list.sats] *)

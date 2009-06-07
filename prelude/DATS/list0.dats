@@ -60,6 +60,22 @@ end
 
 (* ****** ****** *)
 
+implement{a} list0_concat (xss) = let
+  castfn __cast {n:nat} .<n>. 
+    (xss: list (list0 a, n)):<> List (List a) =
+    case+ xss of
+    | list_cons (xs, xss) => let
+        val xs = list1_of_list0 (xs) in list_cons (xs, __cast xss)
+      end // end of [list0_cons]
+    | list_nil () => list_nil ()
+  // end of [castfn]
+  val xss = list1_of_list0 {list0 a} (xss)
+in
+  list0_of_list1 (list_concat (__cast xss)) 
+end // end of [list0_concat]
+
+(* ****** ****** *)
+
 implement{a} list0_exists_fun (xs, f) =
   list_exists_fun (list1_of_list0 xs, f)
 

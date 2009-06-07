@@ -74,6 +74,10 @@ overload + with list0_append
 
 (* ****** ****** *)
 
+fun{a:t@ype} list0_concat (xs: list0 (list0 a)):<> list0 a
+
+(* ****** ****** *)
+
 fun{a:t@ype} list0_exists_fun (xs: list0 a, f: a -<fun1> bool): bool
 fun{a:t@ype} list0_exists_cloref (xs: list0 a, f: a -<cloref1> bool): bool
 
