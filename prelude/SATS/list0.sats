@@ -49,15 +49,25 @@
 
 // [list0_t0ype_type] is co-variant
 datatype list0_t0ype_type (a: t@ype+) =
-  | list0_cons (a) of (a, list0_t0ype_type a) | list0_nil (a)
+  | list0_cons (a) of (a, list0_t0ype_type a) | list0_nil (a) of ()
+// end of [list0_t0ype_type]
 
 stadef list0 = list0_t0ype_type
+
+(* ****** ****** *)
+
+// for forming singleton lists
+// macdef list0_sing (x) = list0_cons (,(x), list0_nil ())
 
 (* ****** ****** *)
 
 // a casting function implemented in [prelude/CATS/list.cats]
 castfn list0_of_list1 {a:t@ype} (xs: List a):<> list0 a
   = "atspre_list0_of_list1"
+
+// a casting function implemented in [prelude/CATS/list.cats]
+castfn list0_of_list_vt {a:t@ype} (xs: List_vt a):<> list0 a
+  = "atspre_list0_of_list_vt"
 
 // a casting function implemented in [prelude/DATS/list.cats]
 castfn list1_of_list0 {a:t@ype} (xs: list0 a):<> List a
@@ -91,7 +101,7 @@ fun{init,a:t@ype} list0_fold_left {f:eff}
   (f: (init, a) -<cloref,f> init, ini: init, xs: list0 a):<f> init
 
 fun{a,sink:t@ype} list0_fold_right {f:eff}
-  (f: (a, sink) -<cloref,f> sink, xs: list0 a, ini: sink):<f> sink
+  (f: (a, sink) -<cloref,f> sink, xs: list0 a, snk: sink):<f> sink
 
 (* ****** ****** *)
 

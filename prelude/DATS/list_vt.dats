@@ -165,6 +165,16 @@ implement{a} list_vt_length (xs0) = loop (xs0, 0) where {
 
 (* ****** ****** *)
 
+implement{a} list_vt_make_elt (x, n) = let
+  fun loop {i,j:nat} .<i>.
+    (i: int i, res: list_vt (a, j)):<> list_vt (a, i+j) =
+    if i > 0 then loop (i-1, list_vt_cons (x, res)) else res
+in
+  loop (n, list_vt_nil)
+end // end of [list_make_elt]
+
+(* ****** ****** *)
+
 implement{a} list_vt_append (xs0, ys0) = let
   var xs0 = xs0
   fun{a:viewt@ype} loop {m,n:nat} .<m>.

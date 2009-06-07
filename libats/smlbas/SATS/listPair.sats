@@ -39,66 +39,76 @@
 (* ****** ****** *)
 
 //
-// SML Basis Library: Array (http://www.standardml.org/Basis/list.html)
+// SML Basis Library: Array (http://www.standardml.org/Basis/list-pair.html)
 //
 
 (* ****** ****** *)
 
-fun null {a:t@ype} (xs: list0 a): bool
-
-fun{a:t@ype} length (xs: list0 a): int
-
-fun{a:t@ype} append (xs: list0 a, ys: list0 a): list0 a
-
-fun{a:t@ype} hd (xs: list0 a): a 
-fun{a:t@ype} tl (xs: list0 a): list0 a 
-
-fun{a:t@ype} last (xs: list0 a): a 
-
-fun{a:t@ype} getItem (xs: list0 a): option0 @(a, list0 a)
-
-fun{a:t@ype} nth (xs: list0 a, n: int): a
-
-fun{a:t@ype} take (xs: list0 a, i: int): list0 a
-fun{a:t@ype} drop (xs: list0 a, i: int): list0 a
- 
-fun{a:t@ype} rev (xs: list0 a): list0 a
-fun{a:t@ype} revAppend (xs: list0 a, ys: list0 a): list0 a
-
-fun{a:t@ype} concat (xs: list0 (list0 a)): list0 a 
-    
-(* ****** ****** *)
-
-fun{a:t@ype} app (f: a -<cloref1> void, xs: list0 a): void
-
-fun{a,b:t@ype} map (f: a -<cloref1> b, xs: list0 a) : list0 b
-
-fun{a,b:t@ype} mapPartial (f: a -<cloref1> option0 b, xs: list0 a) : list0 b
+exception UnequalLengths of ()
 
 (* ****** ****** *)
 
-fun{a:t@ype} find (f: a -<cloref1> bool, xs: list0 a): option0 a
-fun{a:t@ype} filter (f: a -<cloref1> bool, xs: list0 a): list0 a
+fun{a,b:t@ype} zip (xs: list0 a, ys: list0 b): list0 @(a, b)
+fun{a,b:t@ype} zipEq (xs: list0 a, ys: list0 b): list0 @(a, b)
+
+fun{a,b:t@ype} unzip (xys: list0 @(a, b)): @(list0 a, list0 b)
 
 (* ****** ****** *)
 
-fun{a:t@ype} partition (f: a -<cloref1> bool, xs: list0 a): @(list0 a, list0 a)
+fun{a,b:t@ype} app
+  (f: (a, b) -<cloref1> void, xs: list0 a, ys: list0 b): void
+// end of [app
+
+fun{a,b:t@ype} appEq
+  (f: (a, b) -<cloref1> void, xs: list0 a, ys: list0 b): void
+// end of [appEq]
 
 (* ****** ****** *)
 
-fun{a,b:t@ype} foldl (f: (a, b) -<cloref1> b, ini: b, xs: list0 a): b
-fun{a,b:t@ype} foldr (f: (a, b) -<cloref1> b, snk: b, xs: list0 a): b
+fun{a,b,c:t@ype} map
+  (f: (a, b) -<cloref1> c, xs: list0 a, ys: list0 b): list0 c
+// end of [app
+
+fun{a,b,c:t@ype} mapEq
+  (f: (a, b) -<cloref1> c, xs: list0 a, ys: list0 b): list0 c
+// end of [appEq]
 
 (* ****** ****** *)
 
-fun{a:t@ype} all (f: a -<cloref1> bool, xs: list0 a): bool
-fun{a:t@ype} exists (f: a -<cloref1> bool, xs: list0 a): bool
+fun{a,b,c:t@ype}
+  foldl (f: (a, b, c) -<cloref1> c, ini: c, xs: list0 a, ys: list0 b): c
+// end of [foldl]
+
+fun{a,b,c:t@ype}
+  foldlEq (f: (a, b, c) -<cloref1> c, ini: c, xs: list0 a, ys: list0 b): c
+// end of [foldl]
 
 (* ****** ****** *)
 
-fun{a:t@ype} tabulate (lsz: int, f: int -<cloref1> a): list0 a
-fun{a:t@ype} collate (cmp: (a, a) -<cloref1> int, xs: list0 a, ys: list0 a): int 
+fun{a,b,c:t@ype}
+  foldr (f: (a, b, c) -<cloref1> c, ini: c, xs: list0 a, ys: list0 b): c
+// end of [foldr]
+
+fun{a,b,c:t@ype}
+  foldrEq (f: (a, b, c) -<cloref1> c, ini: c, xs: list0 a, ys: list0 b): c
+// end of [foldr]
 
 (* ****** ****** *)
 
-(* end of [list.sats] *)
+fun{a,b:t@ype} all
+  (f: (a, b) -<cloref1> bool, xs: list0 a, ys: list0 b): bool
+// end of [app
+
+fun{a,b:t@ype} allEq
+  (f: (a, b) -<cloref1> bool, xs: list0 a, ys: list0 b): bool
+// end of [appEq]
+
+(* ****** ****** *)
+
+fun{a,b:t@ype} exits
+  (f: (a, b) -<cloref1> bool, xs: list0 a, ys: list0 b): bool
+// end of [app
+
+(* ****** ****** *)
+
+(* end of [listPair.sats] *)

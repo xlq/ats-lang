@@ -48,6 +48,10 @@ atspre_list0_of_list1 (ats_ptr_type x) { return x ; }
 
 static inline
 ats_ptr_type
+atspre_list0_of_list_vt (ats_ptr_type x) { return x ; }
+
+static inline
+ats_ptr_type
 atspre_list1_of_list0 (ats_ptr_type x) { return x ; }
 
 /* ****** ****** */

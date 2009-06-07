@@ -234,13 +234,15 @@ val @(pf_gc, pf_iub | iub, iub_sz) = $arrsz {amino} (
 , @{c='W', p=0.02}
 , @{c='Y', p=0.02}
 ) // end of [$arrsz]
-
 val @(pf_homo_gc, pf_homo | homo, homo_sz) = $arrsz {amino} (
   @{c='a', p=0.3029549426680}
 , @{c='c', p=0.1979883004921}
 , @{c='g', p=0.1975473066391}
 , @{c='t', p=0.3015094502008}
 ) // end of [$arrsz]
+
+val iub_sz = int1_of_size1 (iub_sz)
+val homo_sz = int1_of_size1 (homo_sz)
 
 in
 

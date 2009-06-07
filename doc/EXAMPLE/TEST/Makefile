@@ -26,49 +26,52 @@ compall:: \
 ######
 
 prelude_array: prelude_array.dats
-	atscc -O2 -o prelude_array prelude_array.dats
+	atscc -O2 -o prelude_array prelude_array.dats && ./prelude_array
 
 prelude_array0: prelude_array0.dats
-	atscc -O2 -o prelude_array0 prelude_array0.dats
+	atscc -O2 -o prelude_array0 prelude_array0.dats && ./prelude_array0
 
 prelude_list: prelude_list.dats
-	atscc -O2 -o prelude_list prelude_list.dats
+	atscc -O2 -o prelude_list prelude_list.dats && ./prelude_list
 
 prelude_list_vt: prelude_list_vt.dats
-	atscc -O2 -o prelude_list_vt prelude_list_vt.dats
+	atscc -O2 -o prelude_list_vt prelude_list_vt.dats && ./prelude_list_vt
 
 prelude_matrix: prelude_matrix.dats
-	atscc -O2 -o prelude_matrix prelude_matrix.dats
+	atscc -O2 -o prelude_matrix prelude_matrix.dats && ./prelude_matrix
 
 prelude_string: prelude_string.dats
-	atscc -O2 -o prelude_string prelude_string.dats
+	atscc -O2 -o prelude_string prelude_string.dats && ./prelude_string
 
 ######
 
 libc_dirent: libc_dirent.dats
-	atscc -O2 -o libc_dirent libc_dirent.dats
+	atscc -O2 -o libc_dirent libc_dirent.dats && ./libc_dirent "."
 
 libc_stdlib: libc_stdlib.dats
-	atscc -O2 -o libc_stdlib libc_stdlib.dats
+	atscc -O2 -o libc_stdlib libc_stdlib.dats && ./libc_stdlib
 
 ######
 
 libats_intinf: libats_intinf.dats
-	atscc -O2 -o libats_intinf libats_intinf.dats -lgmp
+	atscc -O2 -o libats_intinf libats_intinf.dats -lgmp && ./libats_intinf 10
 
 libats_iterint: libats_iterint.dats
-	atscc -O2 -o libats_iterint libats_iterint.dats
+	atscc -O2 -o libats_iterint libats_iterint.dats && ./libats_iterint
 
 libats_regexp: libats_regexp.dats
-	atscc -O2 -o libats_regexp libats_regexp.dats -lpcre
+	atscc -O2 -o libats_regexp libats_regexp.dats -lpcre && ./libats_regexp "12345789"
 
 ######
 
 libats_smlbas_array: libats_smlbas_array.dats
-	atscc -O2 -o libats_smlbas_array libats_smlbas_array.dats -lats_smlbas
+	atscc -O2 -o libats_smlbas_array libats_smlbas_array.dats -lats_smlbas && ./libats_smlbas_array
 
 libats_smlbas_char: libats_smlbas_char.dats
-	atscc -O2 -o libats_smlbas_char libats_smlbas_char.dats -lats_smlbas
+	atscc -O2 -o libats_smlbas_char libats_smlbas_char.dats -lats_smlbas && ./libats_smlbas_char
+
+libats_smlbas_list: libats_smlbas_list.dats
+	atscc -O2 -o libats_smlbas_list libats_smlbas_list.dats -lats_smlbas && ./libats_smlbas_list
 
 ######
 
@@ -90,5 +93,6 @@ cleanall: clean
 	rm -f libats_regexp
 	rm -f libats_smlbas_array
 	rm -f libats_smlbas_char
+	rm -f libats_smlbas_list
 
 ###### end of [Makefile] ######

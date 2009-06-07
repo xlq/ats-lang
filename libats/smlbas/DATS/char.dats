@@ -70,11 +70,13 @@ end // end of [pred]
 
 (* ****** ****** *)
 
-implement lt_char_char (c1, c2) = uint_of_char (c1) < uint_of_char (c2)
-implement lte_char_char (c1, c2) = uint_of_char (c1) <= uint_of_char (c2)
+implement lt (c1, c2) = lt_char_char (c1, c2)
+implement lte (c1, c2) = lte_char_char (c1, c2)
 
-implement gt_char_char (c1, c2) = uint_of_char (c1) > uint_of_char (c2)
-implement gte_char_char (c1, c2) = uint_of_char (c1) >= uint_of_char (c2)
+implement gt (c1, c2) = gt_char_char (c1, c2)
+implement gte (c1, c2) = gte_char_char (c1, c2)
+
+implement compare (c1, c2) = compare_char_char (c1, c2)
 
 (* ****** ****** *)
 
@@ -124,7 +126,7 @@ implement toCString (c) = case+ c of
       val u = u >> 3
       val u1 = u land 0x7U
     in
-      sprintf ("\\%u%u%u", @(u1,u2,u3))
+      sprintf ("\\%o%o%o", @(u1,u2,u3))
     end // end of [_]
 // end of [toCString]
 

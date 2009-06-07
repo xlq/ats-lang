@@ -121,7 +121,9 @@ implement main (argc, argv) = let
   val () = () where {
     val () = print "map (xs, double) = "
     // for testing [list_map]
-    val () = lstpr (list_map_fun<int,int> (xs, lam x =<0> 2 * x))
+    val () = lstpr (list_of_list_vt xs) where {
+      val xs = list_map_fun<int,int> (xs, lam x =<0> 2 * x)
+    }
     val () = print_newline ()
   } // end of [val]
 //

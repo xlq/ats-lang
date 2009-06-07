@@ -140,11 +140,11 @@ implement{a} list0_length (xs) =
 (* ****** ****** *)
 
 implement{a,b} list0_map_fun (xs, f) =
-  list0_of_list1 (list_map_fun (list1_of_list0 xs, f))
+  list0_of_list_vt (list_map_fun (list1_of_list0 xs, f))
 // end of [list0_map_fun]
 
 implement{a,b} list0_map_cloref (xs, f) =
-  list0_of_list1 (list_map_cloref (list1_of_list0 xs, f))
+  list0_of_list_vt (list_map_cloref (list1_of_list0 xs, f))
 // end of [list0_map_cloref]
 
 (* ****** ****** *)

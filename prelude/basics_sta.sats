@@ -726,6 +726,7 @@ list_t0ype_int_type (a:t@ype+, int) =
   | {n:int | n >= 0}
       list_cons (a, n+1) of (a, list_t0ype_int_type (a, n))
   | list_nil (a, 0)
+// end of [datatype]
 
 stadef list = list_t0ype_int_type
 typedef List (a:t@ype) = [n:int | n >= 0] list (a, n)
@@ -734,6 +735,7 @@ typedef List (a:t@ype) = [n:int | n >= 0] list (a, n)
 datatype  // t@ype+: covariant
 option_t0ype_bool_type (a:t@ype+, bool) =
   | None (a, false) | Some (a, true) of a
+// end of [datatype]
 
 stadef option = option_t0ype_bool_type
 typedef Option (a:t@ype) = [b:bool] option (a, b)

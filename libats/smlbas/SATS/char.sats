@@ -57,17 +57,17 @@ fun pred (c: char): char
 
 fun compare (c1: char, c2: char): int
 
-fun lt_char_char (c1: char, c2: char): bool
-overload < with lt_char_char
+fun lt (c1: char, c2: char): bool
+overload < with lt
 
-fun lte_char_char (c1: char, c2: char): bool
-overload <= with lte_char_char
+fun lte (c1: char, c2: char): bool
+overload <= with lte
 
-fun gt_char_char (c1: char, c2: char): bool
-overload > with gt_char_char
+fun gt (c1: char, c2: char): bool
+overload > with gt
 
-fun gte_char_char (c1: char, c2: char): bool
-overload >= with gte_char_char
+fun gte (c1: char, c2: char): bool
+overload >= with gte
 
 (* ****** ****** *)
 

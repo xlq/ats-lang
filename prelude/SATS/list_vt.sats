@@ -77,6 +77,10 @@ fun{a:viewt@ype} list_vt_length {n:nat} (xs: !list_vt (a, n)):<> int n
 
 (* ****** ****** *)
 
+fun{a:t@ype} list_vt_make_elt {n:nat} (x: a, n: int n):<> list_vt (a, n)
+
+(* ****** ****** *)
+
 fun{a:viewt@ype} list_vt_append
   {m,n:nat} (xs: list_vt (a, m), ys: list_vt (a, n)):<> list_vt (a, m+n)
 

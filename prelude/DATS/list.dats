@@ -1276,16 +1276,6 @@ end // end of [list_length]
 
 (* ****** ****** *)
 
-implement{a} list_make_elt (x, n) = let
-  fun loop {i,j:nat} .<i>.
-    (i: int i, res: list (a, j)):<> list (a, i+j) =
-    if i > 0 then loop (i-1, x :: res) else res
-in
-  loop (n, nil)
-end // end of [list_make_elt]
-
-(* ****** ****** *)
-
 implement{a,b} list_map__main
   {v} {vt} {n} {f:eff} (pf | xs, f, env) = let
   typedef fun_t = (!v | a, !vt) -<fun,f> b
@@ -1293,18 +1283,18 @@ implement{a,b} list_map__main
       pf: !v
     | xs: list (a, n)
     , f: fun_t
-    , res: &(List b)? >> list (b, n)
+    , res: &(List_vt b)? >> list_vt (b, n)
     , env: !vt
     ) :<f> void = begin case+ xs of
     | x :: xs => let
         val y = f (pf | x, env)
-        val+ () = (res := cons {b} {0} (y, ?)); val+ cons (_, !p) = res
+        val+ () = (res := list_vt_cons {b} {0} (y, ?)); val+ list_vt_cons (_, !p) = res
       in
         loop (pf | xs, f, !p, env); fold@ res
       end // end of [::]
-    | nil () => (res := nil ())
+    | nil () => (res := list_vt_nil ())
   end // end of [loop]
-  var res: List b // uninitialized
+  var res: List_vt b // uninitialized
 in
   loop (pf | xs, f, res, env); res
 end // end of [list_map__main]
@@ -1356,23 +1346,23 @@ end // end of [list_map_cloref]
 
 implement{a1,a2,b} list_map2__main
   {v:view} {vt:viewtype} {n} {f:eff} (pf | xs, ys, f, env) = let
-  var res: List b // uninitialized
+  var res: List_vt b? // uninitialized
   fun loop {n:nat} .<n>. (
       pf: !v
     | xs: list (a1, n)
     , ys: list (a2, n)
     , f: (!v | a1, a2, !vt) -<fun,f> b
-    , res: &(List b)? >> list (b, n)
+    , res: &(List_vt b)? >> list_vt (b, n)
     , env: !vt
   ) :<f> void = begin case+ (xs, ys) of
     | (x :: xs, y :: ys) => let
         val z = f (pf | x, y, env)
-        val+ () = (res := cons {b} {0} (z, ?))
-        val+ cons (_, !p) = res
+        val+ () = (res := list_vt_cons {b} {0} (z, ?))
+        val+ list_vt_cons (_, !p_res1) = res
       in
-        loop (pf | xs, ys, f, !p, env); fold@ res
+        loop (pf | xs, ys, f, !p_res1, env); fold@ res
       end
-    | (nil (), nil ()) => (res := nil ())
+    | (nil (), nil ()) => (res := list_vt_nil ())
   end // end of [loop]
 in
   loop (pf | xs, ys, f, res, env); res
@@ -1560,16 +1550,16 @@ end (* end of [list_take_exn] *)
 
 implement{a,b} list_zip (xs, ys) = let
   typedef ab = @(a, b)
-  var res: List ab // uninitialized
+  var res: List_vt ab // uninitialized
   fun loop {i:nat} .<i>.
-    (xs: list (a, i), ys: list (b, i), res: &(List ab)? >> list (ab, i)):<> void =
+    (xs: list (a, i), ys: list (b, i), res: &(List_vt ab)? >> list_vt (ab, i)):<> void =
     case+ (xs, ys) of
     | (x :: xs, y :: ys) => let
-        val () = (res := cons {ab} {0} (@(x, y), ?)); val+ cons (_, !p) = res
+        val () = (res := list_vt_cons {ab} {0} (@(x, y), ?)); val+ list_vt_cons (_, !p) = res
       in
         loop (xs, ys, !p); fold@ res
       end
-    | (nil (), nil ()) => (res := nil ())
+    | (nil (), nil ()) => (res := list_vt_nil ())
 in
   loop (xs, ys, res); res
 end // end of [list_zip]
@@ -1591,19 +1581,19 @@ implement{a,b,c} list_zipwith_cloref {n} {f:eff} (xs, ys, f) =
 (* ****** ****** *)
 
 implement{a1,a2} list_unzip xys = let
-  var res1: List a1 and res2: List a2 // uninitialized
+  var res1: List_vt a1 and res2: List_vt a2 // uninitialized
   fun loop {n:nat} .<n>. (
       xys: list (@(a1, a2), n)
-    , res1: &(List a1)? >> list (a1, n)
-    , res2: &(List a2)? >> list (a2, n)
+    , res1: &(List_vt a1)? >> list_vt (a1, n)
+    , res2: &(List_vt a2)? >> list_vt (a2, n)
   ) :<> void = begin case+ xys of
     | xy :: xys => let
-        val () = (res1 := cons {a1} {0} (xy.0, ?)); val+ cons (_, !p1) = res1
-        val () = (res2 := cons {a2} {0} (xy.1, ?)); val+ cons (_, !p2) = res2
+        val () = (res1 := list_vt_cons {a1} {0} (xy.0, ?)); val+ list_vt_cons (_, !p1) = res1
+        val () = (res2 := list_vt_cons {a2} {0} (xy.1, ?)); val+ list_vt_cons (_, !p2) = res2
       in
         loop (xys, !p1, !p2); fold@ res1; fold@ res2
       end
-    | nil () => (res1 := nil (); res2 := nil ())
+    | nil () => (res1 := list_vt_nil (); res2 := list_vt_nil ())
   end // end of [loop]
 in
   loop (xys, res1, res2); (res1, res2)
