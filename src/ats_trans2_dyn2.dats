@@ -897,7 +897,7 @@ fn i1mpdec_tr
       | (nil (), nil ()) => begin
           prerr_loc_error2 loc0;
           prerr ": the dynamic constant [";
-          prerr d2c; prerr "] requires a template implemenation";
+          prerr d2c; prerr "] requires a template implementation";
           prerr_newline ();
           $Err.abort {void} ()
         end // end of [nil, nil]
