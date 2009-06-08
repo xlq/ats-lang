@@ -34,56 +34,56 @@ chmod::
 
 ack: ack.tig
 	$(TIGCOMP) ack.tig > ack_tig.s
-	$(GCC) -o ack ack_tig.s $(TIGDIR)/tiger_prelude.c
+	$(GCC) -o ack ack_tig.s $(TIGDIR)/tiger_prelude.c && ./ack
 
 ack2: ack2.tig
 	$(TIGCOMP) ack2.tig > ack2_tig.s
-	$(GCC) -o ack2 ack2_tig.s $(TIGDIR)/tiger_prelude.c
+	$(GCC) -o ack2 ack2_tig.s $(TIGDIR)/tiger_prelude.c && ./ack2
 
 ######
 
 evenodd: evenodd.tig
 	$(TIGCOMP) evenodd.tig > evenodd_tig.s
-	$(GCC) -o evenodd evenodd_tig.s $(TIGDIR)/tiger_prelude.c
+	$(GCC) -o evenodd evenodd_tig.s $(TIGDIR)/tiger_prelude.c && ./evenodd
 
 ######
 
 f91: f91.tig
 	$(TIGCOMP) f91.tig > f91_tig.s
-	$(GCC) -o f91 f91_tig.s $(TIGDIR)/tiger_prelude.c
+	$(GCC) -o f91 f91_tig.s $(TIGDIR)/tiger_prelude.c && ./f91
 
 ######
 
 fact1: fact1.tig
 	$(TIGCOMP) fact1.tig > fact1_tig.s
-	$(GCC) -o fact1 fact1_tig.s $(TIGDIR)/tiger_prelude.c
+	$(GCC) -o fact1 fact1_tig.s $(TIGDIR)/tiger_prelude.c && ./fact1
 
 fact2: fact2.tig
 	$(TIGCOMP) fact2.tig > fact2_tig.s
-	$(GCC) -o fact2 fact2_tig.s $(TIGDIR)/tiger_prelude.c
+	$(GCC) -o fact2 fact2_tig.s $(TIGDIR)/tiger_prelude.c && ./fact2
 ######
 
 fib1: fib1.tig
 	$(TIGCOMP) fib1.tig > fib1_tig.s
-	$(GCC) -o fib1 fib1_tig.s $(TIGDIR)/tiger_prelude.c
+	$(GCC) -o fib1 fib1_tig.s $(TIGDIR)/tiger_prelude.c && ./fib1
 
 fib2: fib2.tig
 	$(TIGCOMP) fib2.tig > fib2_tig.s
-	$(GCC) -o fib2 fib2_tig.s $(TIGDIR)/tiger_prelude.c
+	$(GCC) -o fib2 fib2_tig.s $(TIGDIR)/tiger_prelude.c && ./fib2
 
 fib3: fib3.tig
 	$(TIGCOMP) fib3.tig > fib3_tig.s
-	$(GCC) -o fib3 fib3_tig.s $(TIGDIR)/tiger_prelude.c
+	$(GCC) -o fib3 fib3_tig.s $(TIGDIR)/tiger_prelude.c && ./fib3
 
 fib4: fib4.tig
 	$(TIGCOMP) fib4.tig > fib4_tig.s
-	$(GCC) -o fib4 fib4_tig.s $(TIGDIR)/tiger_prelude.c
+	$(GCC) -o fib4 fib4_tig.s $(TIGDIR)/tiger_prelude.c && ./fib4
 
 ######
 
 hanoi: hanoi.tig
 	$(TIGCOMP) hanoi.tig > hanoi_tig.s
-	$(GCC) -o hanoi hanoi_tig.s $(TIGDIR)/tiger_prelude.c
+	$(GCC) -o hanoi hanoi_tig.s $(TIGDIR)/tiger_prelude.c && ./hanoi
 
 ######
 
@@ -95,45 +95,45 @@ intpair: intpair.tig
 
 listops: listops.tig
 	$(TIGCOMP) listops.tig > listops_tig.s
-	$(GCC) -o listops listops_tig.s $(TIGDIR)/tiger_prelude.c
+	$(GCC) -o listops listops_tig.s $(TIGDIR)/tiger_prelude.c && ./listops
 
 ######
 
 merge: merge.tig
 	$(TIGCOMP) merge.tig > merge_tig.s
-	$(GCC) -o merge merge_tig.s $(TIGDIR)/tiger_prelude.c
+	$(GCC) -o merge merge_tig.s $(TIGDIR)/tiger_prelude.c && ./merge
 
 ######
 
 prettyprint: prettyprint.tig
 	$(TIGCOMP) prettyprint.tig > prettyprint_tig.s
-	$(GCC) -o prettyprint prettyprint_tig.s $(TIGDIR)/tiger_prelude.c
+	$(GCC) -o prettyprint prettyprint_tig.s $(TIGDIR)/tiger_prelude.c && ./prettyprint
 
 ######
 
 queens0: queens0.tig
 	$(TIGCOMP) queens0.tig > queens0_tig.s
-	$(GCC) -o queens0 queens0_tig.s $(TIGDIR)/tiger_prelude.c
+	$(GCC) -o queens0 queens0_tig.s $(TIGDIR)/tiger_prelude.c && ./queens0
 
 queens1: queens1.tig
 	$(TIGCOMP) queens1.tig > queens1_tig.s
-	$(GCC) -o queens1 queens1_tig.s $(TIGDIR)/tiger_prelude.c
+	$(GCC) -o queens1 queens1_tig.s $(TIGDIR)/tiger_prelude.c && ./queens1
 
-queens3: queens3.tig
-	$(TIGCOMP) queens3.tig > queens3_tig.s
-	$(GCC) -o queens3 queens3_tig.s $(TIGDIR)/tiger_prelude.c
+queens2: queens2.tig
+	$(TIGCOMP) queens2.tig > queens2_tig.s
+	$(GCC) -o queens2 queens2_tig.s $(TIGDIR)/tiger_prelude.c && ./queens2
 
 ######
 
 sum: sum.tig
 	$(TIGCOMP) sum.tig > sum_tig.s
-	$(GCC) -o sum sum_tig.s $(TIGDIR)/tiger_prelude.c
+	$(GCC) -o sum sum_tig.s $(TIGDIR)/tiger_prelude.c && ./sum
 
 ######
 
 tak: tak.tig
 	$(TIGCOMP) tak.tig > tak_tig.s
-	$(GCC) -o tak tak_tig.s $(TIGDIR)/tiger_prelude.c
+	$(GCC) -o tak tak_tig.s $(TIGDIR)/tiger_prelude.c && ./tak
 
 ######
 

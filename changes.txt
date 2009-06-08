@@ -1,4 +1,5 @@
 ########################################################################
+
 ats-lang-anariats-0.1.5:
 
 1. A character whose ascii code is greater than 127 is treated as the null
@@ -9,6 +10,11 @@ ats-lang-anariats-0.1.5:
 
 3. [atscc] now returns a nonzero exit status to the OS if compilation does
    not finish normally.
+
+4. various list functions (e.g., list_map_* functions) now return linear
+   lists instead of nonlinear ones.
+
+5. Some packages in SML Basis Library are implemented in [libats/smlbas]
 
 ########################################################################
 
