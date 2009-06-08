@@ -49,11 +49,11 @@ all: atscc atslib
 
 atscc:  atscc_main_dats.c \
           top_sats.o basics_dats.o pkgconfig.o atscc_dats.o \
-          fcntl_sats.o stdio_sats.o stdlib_sats.o string_sats.o unistd_sats.o \
+          errno_sats.o fcntl_sats.o stdio_sats.o stdlib_sats.o string_sats.o unistd_sats.o \
           sys_types_sats.o sys_wait_sats.o
 	$(CC) $(INCLUDES) $(CCFLAGS) -o atscc atscc_main_dats.c $(ATSRUNTIME)/ats_prelude.c \
           top_sats.o basics_dats.o pkgconfig.o atscc_dats.o \
-          fcntl_sats.o stdio_sats.o stdlib_sats.o string_sats.o unistd_sats.o \
+          errno_sats.o fcntl_sats.o stdio_sats.o stdlib_sats.o string_sats.o unistd_sats.o \
           sys_types_sats.o sys_wait_sats.o
 
 atslib: atslib_main_dats.c \
@@ -112,6 +112,11 @@ atslib_main_dats.c: atslib_main.dats
 	$(ATSOPT) --output $@ --dynamic atslib_main.dats
 
 ######
+
+errno_sats.c:
+	$(ATSOPT) --output $@ --static $(ATSLIBC)/SATS/errno.sats
+errno_sats.o: errno_sats.c
+	$(CC) $(INCLUDES) $(CCFLAGS) -o $@ -c errno_sats.c
 
 fcntl_sats.c:
 	$(ATSOPT) --output $@ --static $(ATSLIBC)/SATS/fcntl.sats

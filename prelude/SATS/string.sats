@@ -609,11 +609,9 @@ fun strbuf_tolower {m,n:nat} (buf: &strbuf (m, n)): void
 
 // implemented in [prelude/DATS/string.dats] // note that
 fun string_tolower {n:nat} (str: string n):<> string n // a new string is created
-  = "atspre_string_tolower"
 
 fun string_tolower__bufptr {n:nat} {l:addr}
   (str: string n) :<> [m:nat] [l:addr] strbufptr_gc (m, n, l)
-  = "atspre_string_tolower"
 
 (* ****** ****** *)
 
@@ -623,11 +621,9 @@ fun strbuf_toupper {m,n:nat} (buf: &strbuf (m, n)): void
 
 // implemented in [prelude/DATS/string.dats] // note that
 fun string_toupper {n:nat} (str: string n):<> string n // a new string is created
-  = "atspre_string_toupper"
 
 fun string_toupper__bufptr {n:nat} {l:addr}
   (str: string n) :<> [m:nat] [l:addr] strbufptr_gc (m, n, l)
-  = "atspre_string_toupper"
 
 (* ****** ****** *)
 
