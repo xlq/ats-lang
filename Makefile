@@ -90,18 +90,23 @@ bootstrap1/Makefile:
       | cat - .bootstrap_makefile > bootstrap1/Makefile
 
 ###### w/o GC ######
+
 atsopt0: bootstrap0/Makefile; cd bootstrap0; $(MAKE) atsopt
 
 ###### bootstrapping ######
+
 bootstrapping: ; cd src; $(MAKE) -f Makefile_bootstrap all
 
 ###### w/o GC ######
+
 atsopt1: bootstrap1/Makefile; cd bootstrap1; $(MAKE) atsopt; mv atsopt "$(ATSHOME)"/bin
 
 ###### with GC ######
+
 atsopt1_gc: bootstrap1/Makefile; cd bootstrap1; $(MAKE) atsopt_gc; mv atsopt "$(ATSHOME)"/bin
 
 ###### some toplevel commands ######
+
 bin/atscc bin/atslib:
 	cd utils/scripts; $(MAKE) atscc; mv atscc "$(ATSHOME)"/bin
 	cd utils/scripts; $(MAKE) atslib; mv atslib "$(ATSHOME)"/bin
@@ -145,6 +150,14 @@ precompiled::
 	mv ats-lang-anairiats-* usr/share/atshome
 	tar -zvcf ats-lang-anairiats-precompiled.tar.gz \
           --exclude=usr/.svn --exclude=usr/bin/.svn --exclude=usr/share/.svn usr/
+
+######
+
+srclines:
+	cd src; make lines
+
+liblines:
+	wc -l prelude/*/*.?ats prelude/*/*/*.?ats  libc/*/*.?ats libc/*/*/*.?ats libats/*/*.?ats libats/*/*/*.?ats 
 
 ######
 
