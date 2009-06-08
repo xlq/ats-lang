@@ -1425,7 +1425,19 @@ in
   loop (xs, ys)
 end // end of [list_reverse_append]
 
-implement{a} list_reverse xs = list_reverse_append (xs, nil ())
+(* ****** ****** *)
+
+implement{a} list_reverse (xs) =
+  list_reverse_append_vt<a> (xs, list_vt_nil ())
+// end of [list_reverse]
+
+implement{a} list_reverse_append_vt (xs, ys) = let
+  fun loop {n1,n2:nat} .<n1>.
+    (xs: list (a, n1), ys: list_vt (a, n2)):<> list_vt (a, n1+n2) =
+    case+ xs of x :: xs => loop (xs, list_vt_cons (x, ys)) | nil () => ys
+in
+  loop (xs, ys)
+end (* end of [list_reverse] *)
 
 (* ****** ****** *)
 
@@ -1472,18 +1484,18 @@ end // end of [local]
 (* ****** ****** *)
 
 implement{a} list_split_at {n,i} (xs, i) = let
-  var fsts: List a // uninitialized
+  var fsts: List_vt a? // uninitialized
   fun loop {j:nat | j <= i} .<i-j>.
-    (xs: list (a, n-j), ij: int (i-j), fsts: &(List a)? >> list (a, i-j))
+    (xs: list (a, n-j), ij: int (i-j), fsts: &(List_vt a)? >> list_vt (a, i-j))
     :<> list (a, n-i) =
     if ij > 0 then let
       val+ x :: xs = xs
-      val () = (fsts := cons {a} {0} (x, ?)); val+ cons (_, !p) = fsts
+      val () = (fsts := list_vt_cons {a} {0} (x, ?)); val+ list_vt_cons (_, !p) = fsts
       val snds = loop {j+1} (xs, ij - 1, !p)
     in
       fold@ fsts; snds
     end else begin
-      fsts := nil (); xs
+      fsts := list_vt_nil (); xs
     end
   val snds = loop {0} (xs, i, fsts)
 in
@@ -1499,17 +1511,17 @@ implement{a} list_tail_exn (xs) = case+ xs of
 (* ****** ****** *)
 
 implement{a} list_take (xs, i) = let
-  var res: List a // uninitialized
+  var res: List_vt a // uninitialized
   fun loop {n,i:nat | i <= n} .<i>.
-    (xs: list (a, n), i: int i, res: &(List a)? >> list (a, i)):<> void =
+    (xs: list (a, n), i: int i, res: &(List_vt a)? >> list_vt (a, i)):<> void =
     if i > 0 then let
       val x :: xs = xs
-      val () = (res := cons {a} {0} (x, ?))
-      val+ cons (_, !p) = res
+      val () = (res := list_vt_cons {a} {0} (x, ?))
+      val+ list_vt_cons (_, !p) = res
     in
       loop (xs, i-1, !p); fold@ res
     end else begin
-      res := nil ()
+      res := list_vt_nil ()
     end (* end of [loop] *)
   // end of [loop]
 in
@@ -1518,29 +1530,25 @@ end // end of [list_take]
 
 implement{a} list_take_exn {n,i} (xs, i) = let
   fun loop {n,i:nat} .<i>.
-    (xs: list (a, n), i: int i, res: &List a? >> list (a, j))
+    (xs: list (a, n), i: int i, res: &List_vt a? >> list_vt (a, j))
     :<> #[j:nat | (i <= n && i == j) || (n < i && n == j)] bool (n < i)  =
     if i > 0 then begin case+ xs of
       | list_cons (x, xs) =>
           (fold@ res; ans) where {
-          val () = res := list_cons {a} {0} (x, ?)
-          val+ list_cons (_, !p_res1) = res
+          val () = res := list_vt_cons {a} {0} (x, ?)
+          val+ list_vt_cons (_, !p_res1) = res
           val ans = loop (xs, i-1, !p_res1)
         } // end of [list_cons]
-      | list_nil () => (res := list_nil (); true(*err*))
+      | list_nil () => (res := list_vt_nil (); true(*err*))
     end else begin
-      res := list_nil (); false(*err*)
+      res := list_vt_nil (); false(*err*)
     end (* end of [if] *)
   // end of [loop]    
-  var res: List a // uninitialized
+  var res: List_vt a? // uninitialized
   val err = loop {n,i} (xs, i, res)
 in
   if err then let
-    val () = list_vt_free (__cast res) where {
-      extern castfn __cast (_: List a):<> List_vt a
-    } // end of [val]
-  in
-    $raise ListSubscriptException ()
+    val () = list_vt_free res in $raise ListSubscriptException ()
   end else begin
     res // i <= n && length (res) == i
   end (* end of [if] *)
@@ -1566,17 +1574,21 @@ end // end of [list_zip]
 
 (* ****** ****** *)
 
-implement{a,b,c} list_zipwith_fun {n} {f:eff} (xs, ys, f) =
-  list_map2_fun<a,b,c> (xs, ys, f)
+implement{a1,a2,b} list_zipwth_fun
+  (xs, ys, f) = list_map2_fun<a1,a2,b> (xs, ys, f)
+// end of [list_zipwth_fun]
 
-implement{a,b,c} list_zipwith_clo {n} {f:eff} (xs, ys, f) =
-  list_map2_clo<a,b,c> (xs, ys, f)
+implement{a1,a2,b} list_zipwth_clo
+  (xs, ys, f) = list_map2_clo<a1,a2,b> (xs, ys, f)
+// end of [list_zipwth_clo]
 
-implement{a,b,c} list_zipwith_cloptr {n} {f:eff} (xs, ys, f) =
-  list_map2_cloptr<a,b,c> (xs, ys, f)
+implement{a1,a2,b} list_zipwth_cloptr
+  (xs, ys, f) = list_map2_cloptr<a1,a2,b> (xs, ys, f)
+// end of [list_zipwth_cloptr]
 
-implement{a,b,c} list_zipwith_cloref {n} {f:eff} (xs, ys, f) =
-  list_map2_cloref<a,b,c> (xs, ys, f)
+implement{a1,a2,b} list_zipwth_cloref
+  (xs, ys, f) = list_map2_cloref<a1,a2,b> (xs, ys, f)
+// end of [list_zipwth_cloref]
 
 (* ****** ****** *)
 
