@@ -206,7 +206,7 @@ implement{a} list_append {i,j} (xs, ys) = let
     (xs: list (a, n1), ys: list (a, n2), res: &(List a)? >> list (a, n1+n2))
     :<> void = begin case+ xs of
     | x :: xs => let
-        val () = (res := cons {a} {0} (x, ?)); val cons (_, !p) = res
+        val () = (res := cons {a} {0} (x, ?)); val+ cons (_, !p) = res
       in
         loop (xs, ys, !p); fold@ res
       end
@@ -229,6 +229,22 @@ in
 end
 
 *)
+
+implement{a} list_append_vt {i,j} (xs, ys) = let
+  var res: List_vt a // uninitialized
+  fun loop {n1,n2:nat} .<n1>.
+    (xs: list (a, n1), ys: list_vt (a, n2), res: &(List_vt a)? >> list_vt (a, n1+n2))
+    :<> void = begin case+ xs of
+    | x :: xs => let
+        val () = (res := list_vt_cons {a} {0} (x, ?)); val+ list_vt_cons (_, !p) = res
+      in
+        loop (xs, ys, !p); fold@ res
+      end
+    | nil () => (res := ys)
+  end // end of [loop]
+in
+  loop (xs, ys, res); res
+end // end of [list_append_vt]
 
 (* ****** ****** *)
 

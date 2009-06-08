@@ -247,9 +247,9 @@ implement string_foreach__main {v} {vt} {n} {f:eff}
 local
 
 fn string_make_fun {n:nat}
-  (s: string n, f: c1har -<> c1har):<> string n = let
+  (s: string n, f: c1har -<> c1har):<> [l:addr] strbufptr_gc (n+1, n, l) = let
   val n = string1_length (s)
-  val (pf_gc, pf_buf | p_buf) = malloc_gc (n+1)
+  val [l:addr] (pf_gc, pf_buf | p_buf) = malloc_gc (n+1)
   val () = loop (pf_buf | p_buf, 0) where {
     fun loop {i:nat | i <= n} {l:addr} .<n-i>.
       (pf: !b0ytes (n-i+1) @ l >> strbuf (n-i+1, n-i) @ l | p: ptr l, i: size_t i)
@@ -271,21 +271,35 @@ fn string_make_fun {n:nat}
       in
         // empty
       end // end of [if]
-    end // end of [loop]
+    end (* end of [loop] *)
   } // end of [val]
 in
-  string1_of_strbuf (pf_gc, pf_buf | p_buf)
+  #[l | (pf_gc, pf_buf | p_buf)]
 end // end of [string_make_fun]
 
 in // in of [local]
 
-implement string_tolower (s) = string_make_fun (s, tolower) where {
+implement string_tolower__bufptr (s) = let
   extern fun tolower (c: c1har):<> c1har = "atspre_char_tolower"
-} // end of [string1_tolower]
+in
+  string_make_fun (s, tolower)
+end // end of [string_tolower__bufptr]
 
-implement string_toupper (s) = string_make_fun (s, toupper) where {
+implement string_tolower (s) =
+  string1_of_strbuf (pf_gc, pf_buf | p_buf) where {
+  val (pf_gc, pf_buf | p_buf) = string_tolower__bufptr (s)
+} // end of [string_tolower]
+
+implement string_toupper__bufptr (s) = let
   extern fun toupper (c: c1har):<> c1har = "atspre_char_toupper"
-} // end of [string1_toupper]
+in
+  string_make_fun (s, toupper)
+end // end of [string_toupper__bufptr]
+
+implement string_toupper (s) =
+  string1_of_strbuf (pf_gc, pf_buf | p_buf) where {
+  val (pf_gc, pf_buf | p_buf) = string_toupper__bufptr (s)
+} // end of [string_toupper]
 
 end // end of [local]
 

@@ -49,7 +49,8 @@ typedef array (a:t@ype) = array_t0ype_type (a)
 
 (* ****** ****** *)
 
-val maxLen : size_t // maximal array size allowed
+// this one is undefined!
+fun maxLen (): size_t // maximal array size allowed
 
 (* ****** ****** *)
 

@@ -39,6 +39,8 @@ fun random_list_gen {n:nat}
 
 (* ****** ****** *)
 
+#define l2l list_of_list_vt 
+
 implement main (argc, argv) = let
 // for printing out an integer list
 // also for testing [list_iforeach]
@@ -72,7 +74,7 @@ implement main (argc, argv) = let
 //
   val () = () where {
     val () = print "testing [list_take] and [list_drop]: starts\n"
-    val xs1 = list_take (xs, N2)
+    val xs1 = l2l (list_take (xs, N2))
     val xs2 = list_drop (xs, N2)
     val xs12 = xs1 + xs2 // testing list_append
     val () = assert (lsteq (xs, xs12))
@@ -81,14 +83,14 @@ implement main (argc, argv) = let
 //
   val () = () where {
     val () = print "testing [list_reverse]: starts\n"
-    val () = assert (lsteq (xs, list_reverse (list_reverse xs)))
+    val () = assert (lsteq (xs, l2l (list_reverse (l2l (list_reverse xs)))))
     val () = print "testing [list_reverse]: finishes\n"
   } // end of [val]
 //
   val () = () where {
     val () = print "testing [list_nth]: starts\n"
     val x1 = list_nth<int> (xs, N/3)
-    val x2 = list_nth<int> (list_reverse<int> xs, N-N/3-1)
+    val x2 = list_nth<int> (l2l (list_reverse<int> xs), N-N/3-1)
     val () = assert (x1 = x2)
     val () = print "testing [list_nth]: finishes\n"
   } // end of [val]
@@ -129,8 +131,8 @@ implement main (argc, argv) = let
 //
   val () = () where {
     val () = print "testing [list_head] and [list_last]: starts\n"
-    val () = assert (list_head xs = list_last (list_reverse<int> xs))
-    val () = assert (list_last xs = list_head (list_reverse<int> xs))
+    val () = assert (list_head xs = list_last (l2l (list_reverse<int> xs)))
+    val () = assert (list_last xs = list_head (l2l (list_reverse<int> xs)))
     val () = print "testing [list_head] and [list_last]: finishes\n"
   } // end of [val]
 //

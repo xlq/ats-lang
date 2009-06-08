@@ -46,9 +46,7 @@ staload "libats/smlbas/SATS/array.sats"
 
 (* ****** ****** *)
 
-macdef SIZE_T_MAX = $extval (size_t, "((size_t)-1)")
-
-implement maxLen = SIZE_T_MAX
+implement maxLen () = $raise Undefined "array:maxLen"
 
 (* ****** ****** *)
 

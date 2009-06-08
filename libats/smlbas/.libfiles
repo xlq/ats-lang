@@ -14,3 +14,6 @@ libats/smlbas/DATS/list.dats
 
 libats/smlbas/SATS/listPair.sats
 libats/smlbas/DATS/listPair.dats
+
+libats/smlbas/SATS/string.sats
+libats/smlbas/DATS/string.dats

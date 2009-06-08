@@ -142,6 +142,10 @@ fun{a:t@ype} list_append {i,j:nat}
   (xs: list (a, i), ys: list (a, j)):<> list (a, i+j)
 overload + with list_append
 
+fun{a:t@ype} list_append_vt {i,j:nat}
+  (xs: list (a, i), ys: list_vt (a, j)):<> list_vt (a, i+j)
+// end of [list_append_vt]
+
 (* ****** ****** *)
 
 fun{a1,a2:t@ype} list_assoc__main {v:view} {vt: viewtype} {eq:eff}

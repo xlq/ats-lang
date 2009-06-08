@@ -43,6 +43,10 @@
 
 (* ****** ****** *)
 
+staload ERRNO = "libc/SATS/errno.sats"
+
+(* ****** ****** *)
+
 fun strcmp (str1: string, str2: string): int = "atslib_strcmp"
 
 fun substrcmp
@@ -70,11 +74,14 @@ fun strlen {n:nat} (str: string n):<> size_t n = "atslib_strlen"
 
 (*
 
-char *strchr(const char *, int):
+char *strchr(const char*, int):
 please use [string_index_of_char_from_left] in [prelude/SATS/string.sats]
 
-char *strrchr(const char *, int):
+char *strrchr(const char*, int):
 please use [string_index_of_char_from_right] in [prelude/SATS/string.sats]
+
+char *strstr(const char*, const char* ): 
+please use [string_index_of_string] in [prelude/SATS/string.sats]
 
 *)
 
@@ -175,11 +182,26 @@ fun memchr {n:nat}
 
 (* ****** ****** *)
 
+// [strerror] is not reentrant
+fun strerror (errno: $ERRNO.errno_t): string
+  = "atslib_strerror"
+    
+dataview strerror_v (m:int, l:addr, int(*err*)) =
+  | {n:nat} strerror_succ (m, l, 0) of strbuf (m, n) @ l
+  | strerror_fail (m, l, ~1) of b0ytes m @ l
+// end of [strerror_v]
+
+// [strerror_r] is reentrant // this is the POSIX version
+fun strerror_r {m:nat} {l:addr} (
+    pf: b0ytes m @ l | errno: $ERRNO.errno_t, p_buf: ptr l, m: size_t m
+  ) : [i:int] @(strerror_v (m, l, i) | int i)
+  = "atslib_strerror_r"
+  
+(* ****** ****** *)
+
 (* end of [string.sats] *)
 
 ////
                   
 void    *memccpy(void *dst, const void *src, int/*c*/, size_t n);
 void    *memmove(void *, const void *, size_t);
-char    *strerror(int);
-int     *strerror_r(int, char *, size_t);

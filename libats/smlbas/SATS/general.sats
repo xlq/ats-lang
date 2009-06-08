@@ -48,13 +48,15 @@ exception Bind of ()
 exception Match of ()
 exception Chr of ()
 exception Div of ()
-exception Domain of ()
+exception Domain of () // out-of-domain type of error
 exception Empty of ()
 exception Fail of string
 exception Overflow of ()
+exception Range of () // out-of-range type of error
 exception Size of ()
 exception Span of ()
 exception Subscript of ()
+exception Undefined of string // for undefined values and functions 
 
 (* ****** ****** *)
 

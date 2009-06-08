@@ -584,7 +584,7 @@ fun string_index_of_char_from_right // locate a character from right
 // This function is based on [strstr] in [string.h]
 // Note that the NULL character is not compared
 fun string_index_of_string // locate a substring from left
-  {n1,n2:nat} (s1: string n1, s2: string n2):<> ssizeBtw (~1, n1)
+  {n1,n2:nat} (haystack: string n1, needle: string n2):<> ssizeBtw (~1, n1)
   = "atspre_string_index_of_string"
 
 (* ****** ****** *)
@@ -611,8 +611,8 @@ fun strbuf_tolower {m,n:nat} (buf: &strbuf (m, n)): void
 fun string_tolower {n:nat} (str: string n):<> string n // a new string is created
   = "atspre_string_tolower"
 
-fun string_tolower__bufptr {v:view} {l:addr}
-  (pf: !v, fpf: strbuf_v l <= v | p: ptr l):<> [m,n:nat] [l:addr] strbufptr_gc (m, n, l)
+fun string_tolower__bufptr {n:nat} {l:addr}
+  (str: string n) :<> [m:nat] [l:addr] strbufptr_gc (m, n, l)
   = "atspre_string_tolower"
 
 (* ****** ****** *)
@@ -625,8 +625,8 @@ fun strbuf_toupper {m,n:nat} (buf: &strbuf (m, n)): void
 fun string_toupper {n:nat} (str: string n):<> string n // a new string is created
   = "atspre_string_toupper"
 
-fun string_toupper__bufptr {v:view} {l:addr}
-  (pf: !v, fpf: strbuf_v l <= v | p: ptr l):<> [m,n:nat] [l:addr] strbufptr_gc (m, n, l)
+fun string_toupper__bufptr {n:nat} {l:addr}
+  (str: string n) :<> [m:nat] [l:addr] strbufptr_gc (m, n, l)
   = "atspre_string_toupper"
 
 (* ****** ****** *)
