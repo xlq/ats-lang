@@ -98,11 +98,15 @@ fun toUpper (c: char): char
 
 (*
 
-fun toString (c: char): string
-fun fromString (s: string): option0 char
-val scan : (Char.char, 'a) StringCvt.reader -> (char, 'a) StringCvt.reader
+fun toString (c: char): string // not implemented
+fun fromString (s: string): option0 char // not implemented
 
 *)
+
+(* ****** ****** *)
+
+// not yet implemented
+// fun scan : (Char.char, 'a) StringCvt.reader -> (char, 'a) StringCvt.reader
 
 (* ****** ****** *)
 

@@ -67,10 +67,6 @@ overload int_of with int_of_uchar
 
 //
 
-fun int_of_double (d: double):<> int
-  = "atspre_int_of_double"
-overload int_of with int_of_double
-
 // This function is based on [atoi] in [stdlib.h]
 fun int_of_string (s: string):<> int
   = "atspre_int_of_string"

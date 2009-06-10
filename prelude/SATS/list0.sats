@@ -35,6 +35,18 @@
 
 (* ****** ****** *)
 
+(* 
+** Note that the functions declared in this file are for supporting list
+** processing in ML-like manner. Many more functions are available in the
+** following file:
+**
+** $ATSHOME/libats/smlbas/SATS/list.sats
+**
+** that are implemented for the same purpose.
+*)
+
+(* ****** ****** *)
+
 #include "prelude/params.hats"
 
 (* ****** ****** *)
@@ -93,7 +105,8 @@ fun{a:t@ype} list0_exists_cloref (xs: list0 a, f: a -<cloref1> bool): bool
 
 (* ****** ****** *)
 
-fun{a:t@ype} list0_filter (xs: list0 a, pred: a -<cloref1> bool): list0 a
+fun{a:t@ype} list0_filter_fun (xs: list0 a, pred: a -<fun1> bool): list0 a
+fun{a:t@ype} list0_filter_cloref (xs: list0 a, pred: a -<cloref1> bool): list0 a
 
 (* ****** ****** *)
 
@@ -126,9 +139,10 @@ fun{a:t@ype} list0_length (xs: list0 a):<> int
 fun{a,b:t@ype} list0_map_fun (xs: list0 a, f: a -<fun1> b): list0 b
 fun{a,b:t@ype} list0_map_cloref (xs: list0 a, f: a -<cloref1> b): list0 b
 
+(* ****** ****** *)
+
 fun{a1,a2,b:t@ype} list0_map2_fun
   (xs1: list0 a1, xs2: list0 a2, f: (a1, a2) -<fun1> b): list0 b
-
 fun{a1,a2,b:t@ype} list0_map2_cloref
   (xs1: list0 a1, xs2: list0 a2, f: (a1, a2) -<cloref1> b): list0 b
 

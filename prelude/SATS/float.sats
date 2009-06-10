@@ -63,6 +63,12 @@ stadef ldouble = double_long_t0ype
 
 (* ****** ****** *)
 
+fun int_of_float (f: float):<> int
+  = "atspre_int_of_float"
+overload int_of with int_of_float
+
+//
+
 fun float_of_int (i: int):<> float
   = "atspre_float_of_int"
 overload float_of with float_of_int
@@ -197,6 +203,12 @@ overload tostring with tostring_float
 // floating point numbers of double precision
 
 (* ****** ****** *)
+
+fun int_of_double (d: double):<> int
+  = "atspre_int_of_double"
+overload int_of with int_of_double
+
+//
 
 fun double_of_int (i: int):<> double
   = "atspre_double_of_int"

@@ -56,7 +56,7 @@ fun srand48_with_time (): void = "atslib_srand48_with_time"
 
 (* ****** ****** *)
 
-fun drand48 ():<!ref> double // inside [0.0, 1.0)
+fun drand48 ():<!ref> double // inside [0.0, 1.0) // actually, it is [0.0, 1.0] (try 10 million times)!!!
   = "atslib_drand48"
 
 fun lrand48 ():<!ref> lint // signed [0, 2^31)

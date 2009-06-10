@@ -56,6 +56,12 @@ ats_ptr_type atspre_tostringf (ats_ptr_type fmt, ...) ;
 /* ****** ****** */
 
 static inline
+ats_int_type
+atspre_int_of_float (ats_float_type f) { return f ; }
+
+//
+
+static inline
 ats_float_type
 atspre_float_of_int (const ats_int_type i) {
   return (ats_float_type)i ;
@@ -267,6 +273,12 @@ atspre_tostring_float (const ats_float_type f) {
 /* floating point numbers of double precision */
 
 /* ****** ****** */
+
+static inline
+ats_int_type
+atspre_int_of_double (ats_double_type f) { return f ; }
+
+//
 
 static inline
 ats_double_type

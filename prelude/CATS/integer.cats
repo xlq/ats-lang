@@ -83,10 +83,6 @@ atspre_int_of_int (ats_int_type i) { return i ; }
 
 static inline
 ats_int_type
-atspre_int_of_double (ats_double_type f) { return f ; }
-
-static inline
-ats_int_type
 atspre_int_of_string (ats_ptr_type s)
 {
   return atoi((char*)s) ;
