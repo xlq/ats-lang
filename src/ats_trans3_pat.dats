@@ -583,7 +583,7 @@ fn p2at_con_tr_dn (
       end // end of [val]
     in
       p3t0 // the returned constructor pattern
-    end
+    end (* end of [_ when flag = 0] *)
   | _ (*flag<>0*) => let // s2e0 = S2Edatuni (...)
       val s2es_arg = (s2es_arg_var: s2explst)
       val [sgn:int] sgn = $Lst.list_length_compare (p2ts, s2es_arg)
@@ -601,7 +601,7 @@ fn p2at_con_tr_dn (
       val () = p3at_con_free_update (p3t0, freeknd, d2c, p3ts)
     in
       p3t0 // the returned constructor pattern
-    end // end of [if]
+    end (* end of [_ when flag <> 0] *)
   ) : p3at // end of [val]
   val () = begin case+ os2e_v of
     | ~Some_vt s2e_v => p3at_readize (s2e_v, p3t0) | ~None_vt () => ()
@@ -659,7 +659,7 @@ in
       val p3t = p2at_tr_dn (p2t, s2exp_subst (sub, s2e))
     in
       p3at_exist (loc0, s2e0, s2vs0, p3t)
-    end
+    end (* end of [S2Eexist] *)
   | _ => begin
       prerr loc0; prerr ": error(3)";
       prerr ": the pattern is given the type [";
@@ -667,7 +667,7 @@ in
       prerr "] but an existentially quantified type is expected.";
       prerr_newline ();
       $Err.abort {p3at} ()
-    end
+    end (* end of [_] *)
 end // end of [p2at_exist_tr_dn]
 
 (* ****** ****** *)
