@@ -2011,7 +2011,7 @@ in
   | HIEraise hie_exn => let
       val vp_exn = ccomp_exp (res, hie_exn)
     in
-      instr_add_raise (res, vp_exn)
+      instr_add_raise (res, tmp_res, vp_exn)
     end // end of [HIEraise]
   | HIErec (recknd, hit_rec, lhies) => let
       val hit_rec = hityp_normalize (hit_rec)

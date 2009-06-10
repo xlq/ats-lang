@@ -603,8 +603,12 @@ in
       fprint_kont (pf | out, k_fail);
       strpr ")"
     end // end of [INSTRpatck]
-  | INSTRraise vp => begin
-      strpr "INSTRraise("; fprint_valprim (pf | out, vp); strpr ")"
+  | INSTRraise (tmp, vp) => begin
+      strpr "INSTRraise(";
+      fprint_tmpvar (pf | out, tmp);
+      strpr "; ";
+      fprint_valprim (pf | out, vp);
+      strpr ")"
     end // end of [INSTRraise]
   | INSTRselcon (tmp, vp_sum, hit_sum, i) => begin
       strpr "INSTRselcon(";

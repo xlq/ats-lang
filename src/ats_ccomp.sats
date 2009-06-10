@@ -450,7 +450,7 @@ datatype instr =
 
   | INSTRpatck of (valprim, patck, kont) // pattern check
   
-  | INSTRraise of valprim // raising an exception
+  | INSTRraise of (tmpvar_t(*uninitialized*), valprim) // raising an exception
 
   | INSTRselect of // label selection
       (tmpvar_t, valprim, offsetlst)
@@ -648,7 +648,9 @@ fun instr_add_move_val
 
 //
 
-fun instr_add_raise (res: &instrlst_vt, vp_exn: valprim): void
+fun instr_add_raise
+  (res: &instrlst_vt, tmp_res: tmpvar_t, vp_exn: valprim): void
+// end of [instr_add_raise]
 
 //
 

@@ -655,8 +655,8 @@ implement instr_add_move_val (res, tmp_res, vp) =
 
 //
 
-implement instr_add_raise (res, vp_exn) =
-  res := list_vt_cons (INSTRraise vp_exn, res)
+implement instr_add_raise (res, tmp_res, vp_exn) =
+  res := list_vt_cons (INSTRraise (tmp_res, vp_exn), res)
 
 //
 

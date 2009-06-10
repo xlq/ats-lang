@@ -1680,13 +1680,13 @@ in
     in
       emit_patck (pf | out, vp, patck, fail)
     end // end of [INSTRpatck]
-  | INSTRraise (vp_exn) => let
-      val () = fprint1_string (pf | out, "ats_raise_exn (")
+  | INSTRraise (tmp, vp_exn) => () where {
+      val () = fprint1_string (pf | out, "/* ")
+      val () = emit_tmpvar (pf | out, tmp)
+      val () = fprint1_string (pf | out, " = */ ats_raise_exn (")
       val () = emit_valprim (pf | out, vp_exn)
       val () = fprint1_string (pf | out, ") ;")
-    in
-      // empty
-    end // end of [INSTRraise]
+    } // end of [INSTRraise]
   | INSTRselect (tmp, vp_root, offs) => let
       val is_void = tmpvar_is_void tmp
       val () = if is_void then fprint1_string (pf | out, "/* ")

@@ -225,6 +225,7 @@ in
   | INSTRmove_rec_flt (tmp, _, _) => tmpvarmap_add_root (m, tmp)
   | INSTRmove_ref (tmp, _) => tmpvarmap_add_root (m, tmp)
   | INSTRmove_val (tmp, _) => tmpvarmap_add_root (m, tmp)
+  | INSTRraise (tmp, _) => tmpvarmap_add_root (m, tmp)
   | INSTRselect (tmp, _, _) => tmpvarmap_add_root (m, tmp)
   | INSTRselcon (tmp, _, _, _) => tmpvarmap_add_root (m, tmp)
   | INSTRselcon_ptr (tmp, _, _, _) => tmpvarmap_add_root (m, tmp)
