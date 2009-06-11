@@ -18,8 +18,8 @@ compall: AutoDiff coin_flip \
      hanoi kmp \
      queens queens_appel queens_lazy_vt \
      longestline passwdgen pi_lazy \
-     sieve sieve_lazy strmat sumup \
-     tetrix wc
+     sieve sieve_lazy sieve_lazy_vt \
+     strmat sumup tetrix wc
 
 # automatic differentiation
 AutoDiff: AutoDiff.dats
