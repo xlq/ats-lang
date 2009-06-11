@@ -47,6 +47,10 @@
 
 (* ****** ****** *)
 
+exception StreamSubscriptException of ()
+
+(* ****** ****** *)
+
 fun{a:t@ype} stream_filter_fun
   (xs: stream a, p: a -<1,~ref> bool):<1,~ref> stream a
 
