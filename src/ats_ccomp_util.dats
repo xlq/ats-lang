@@ -225,7 +225,7 @@ in
   | INSTRmove_rec_flt (tmp, _, _) => tmpvarmap_add_root (m, tmp)
   | INSTRmove_ref (tmp, _) => tmpvarmap_add_root (m, tmp)
   | INSTRmove_val (tmp, _) => tmpvarmap_add_root (m, tmp)
-  | INSTRraise (tmp, _) => tmpvarmap_add_root (m, tmp)
+  | INSTRraise (tmp(*uninitialized*), _) => tmpvarmap_add_root (m, tmp)
   | INSTRselect (tmp, _, _) => tmpvarmap_add_root (m, tmp)
   | INSTRselcon (tmp, _, _, _) => tmpvarmap_add_root (m, tmp)
   | INSTRselcon_ptr (tmp, _, _, _) => tmpvarmap_add_root (m, tmp)
@@ -270,16 +270,16 @@ implement funentry_tmpvarmap_add (tmps, entry) = () where {
   val () = tmpvarmap_add_root (tmps, funentry_ret_get entry)
 } // end of [funentry_tmpvarmap_add]
 
-implement tailjoinlst_tmpvarmap_add (tmps, tjs) = let
-  fun aux (tmps: &tmpvarmap_vt, tjs: tailjoinlst): void =
+implement tailjoinlst_tmpvarmap_add
+  (tmps, tjs) = loop (tmps, tjs) where {
+  fun loop (tmps: &tmpvarmap_vt, tjs: tailjoinlst): void =
     case+ tjs of
     | TAILJOINLSTcons (_(*tag*), _(*fl*), tvs(*arg*), tjs) =>
-        let val () = tmpvarmap_addlst (tmps, tvs) in aux (tmps, tjs) end
+        let val () = tmpvarmap_addlst (tmps, tvs) in loop (tmps, tjs) end
       // end of [TAILJOINTLSTcons]
     | TAILJOINLSTnil () => ()
-in
-  aux (tmps, tjs)
-end // end of [tailjoinlst_tmpvarmap_add]
+  // end of [loop]
+} // end of [tailjoinlst_tmpvarmap_add]
 
 end // end of [local]
 
