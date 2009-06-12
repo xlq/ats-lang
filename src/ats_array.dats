@@ -70,9 +70,7 @@ end // end of [array_ptr_make_elt]
 
 (* ****** ****** *)
 
-(*
-
-implement{a} // not used
+implement{a}
   array_ptr_initialize_lst (A0, xs0) = let
   fun aux {n:nat} {l:addr} .<n>.
     (pf: array_v (a?, n, l) | p: ptr l, xs: list (a, n))
@@ -93,8 +91,16 @@ in
   view@ A0 := pf
 end // end of [array_ptr_initialize_lst]
 
-// note that [xs0] is freed after initialization
-implement{a} // not used
+implement{a} array_ptr_make_lst (n, xs) = let
+  val (pf_gc, pf | p) = array_ptr_alloc_tsz {a} (n, sizeof<a>)
+  val () = array_ptr_initialize_lst<a> (!p, xs)
+in
+  (pf_gc, pf | p)
+end // end of [array_ptr_make_lst]
+
+(* ****** ****** *)
+
+implement{a} // [xs0] is freed
   array_ptr_initialize_lst_vt (A0, xs0) = let
   fun aux {n:nat} {l:addr} .<n>. (
       pf: array_v (a?, n, l)
@@ -115,17 +121,6 @@ implement{a} // not used
 in
   view@ A0 := pf
 end // end of [array_ptr_initialize_lst_vt]
-
-*)
-
-(* ****** ****** *)
-
-implement{a} array_ptr_make_lst (n, xs) = let
-  val (pf_gc, pf | p) = array_ptr_alloc_tsz {a} (n, sizeof<a>)
-  val () = array_ptr_initialize_lst<a> (!p, xs)
-in
-  (pf_gc, pf | p)
-end // end of [array_ptr_make_lst]
 
 implement{a} array_ptr_make_lst_vt (n, xs) = let
   val (pf_gc, pf | p) = array_ptr_alloc_tsz {a} (n, sizeof<a>)

@@ -63,6 +63,8 @@ fun int_of_size (sz: size_t):<> int
 fun size_of_int1 {i:nat} (i: int i):<> size_t
   = "atspre_size_of_int1"
 
+(* ****** ****** *)
+
 fun add_size_size (sz1: size_t, sz2: size_t):<> size_t
   = "atspre_add_size_size"
 overload + with add_size_size
@@ -78,6 +80,12 @@ overload * with mul_size_size
 fun div_size_size (sz1: size_t, sz2: size_t):<> size_t
   = "atspre_div_size_size"
 overload / with div_size_size
+
+fun mod_size_size (sz1: size_t, sz2: size_t):<> size_t
+  = "atspre_mod_size_size"
+overload mod with mod_size_size
+
+(* ****** ****** *)
 
 fun lt_size_size (sz1: size_t, sz2: size_t):<> bool
   = "atspre_lt_size_size"

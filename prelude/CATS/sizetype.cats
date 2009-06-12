@@ -59,6 +59,7 @@
 #define atspre_sub_size_size atspre_sub_size1_size1
 #define atspre_mul_size_size atspre_mul_size1_size1
 #define atspre_div_size_size atspre_div_size1_size1
+#define atspre_mod_size_size atspre_mod_size1_size1
 
 #define atspre_lt_size_size atspre_lt_size1_size1
 #define atspre_lte_size_size atspre_lte_size1_size1
