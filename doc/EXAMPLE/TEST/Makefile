@@ -23,6 +23,7 @@ compall:: \
   libats_iterint \
   libats_regexp \
   libats_smlbas_array \
+  libats_smlbas_array2 \
   libats_smlbas_char \
   libats_smlbas_list \
   libats_smlbas_string \
@@ -71,6 +72,9 @@ libats_regexp: libats_regexp.dats
 libats_smlbas_array: libats_smlbas_array.dats
 	atscc -O2 -o libats_smlbas_array libats_smlbas_array.dats -lats_smlbas && ./libats_smlbas_array
 
+libats_smlbas_array2: libats_smlbas_array2.dats
+	atscc -O2 -o libats_smlbas_array2 libats_smlbas_array2.dats -lats_smlbas && ./libats_smlbas_array2
+
 libats_smlbas_char: libats_smlbas_char.dats
 	atscc -O2 -o libats_smlbas_char libats_smlbas_char.dats -lats_smlbas && ./libats_smlbas_char
 
@@ -99,6 +103,7 @@ cleanall: clean
 	rm -f libats_iterint
 	rm -f libats_regexp
 	rm -f libats_smlbas_array
+	rm -f libats_smlbas_array2
 	rm -f libats_smlbas_char
 	rm -f libats_smlbas_list
 	rm -f libats_smlbas_string

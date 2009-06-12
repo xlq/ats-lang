@@ -90,7 +90,7 @@ implement{a} array_ptr_initialize_lstlst
   fun loop {n:nat} {mn:int} {l:addr} .<n>. (
       pf_mul: MUL (n, m, mn), pf_arr: !array_v (a?, mn, l) >> array_v (a, mn, l)
     | p_arr: ptr l, xss: list (list (a, m), n)
-    ) :<> void =
+    ) :<cloref> void =
     case+ xss of
     | list_nil () => () where {
         prval MULbas () = pf_mul
@@ -133,7 +133,7 @@ implement{a} fromList (xss) = let
 // There should be a better way of doing this
 //
   val xss = __cast (xss) where {
-    extern fun __cast (xss: list0 (list0 a)):<> list (list (a, m), n)
+    extern castfn __cast (xss: list0 (list0 a)):<> list (list (a, m), n)
   } (* end of [val] *)
 //
   val m = size1_of_int1 (m) and n = size1_of_int1 (n)
