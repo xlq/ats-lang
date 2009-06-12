@@ -1384,7 +1384,7 @@ in
     in
       d2exp_viewat (loc0, d2e)
     end // end of [D2Eviewat]
-// (*
+(*
   | _ => begin
       prerr loc0;
       prerr ": error(macro)";
@@ -1392,10 +1392,10 @@ in
       prerr d2e0; prerr_newline ();
       $Err.abort {d2exp} ()
     end // end of [_]
-// *)
-(*
-  | _ => d2e0 // location is not changed; it needs to be changed recursively!
 *)
+// (*
+  | _ => d2e0 // location is not changed; it needs to be changed recursively!
+// *)
 end // end of [eval1_d2exp]
 
 (* ****** ****** *)
