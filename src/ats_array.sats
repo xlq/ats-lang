@@ -55,13 +55,21 @@ fun{a:t@ype} array_ptr_initialize_elt {n:nat} (
     base: &(@[a?][n]) >> @[a][n], asz: int n, x: a
   ) :<> void
 
+(* ****** ****** *)
+
+(*
+
+// not used
 fun{a:t@ype} array_ptr_initialize_lst {n:nat} (
-    base: &(@[a?][n]) >> @[a][n], asz: int n, xs: list (a, n)
+    base: &(@[a?][n]) >> @[a][n], xs: list (a, n)
   ) :<> void
 
+// not used
 fun{a:viewt@ype} array_ptr_initialize_lst_vt {n:nat} (
-    base: &(@[a?][n]) >> @[a][n], asz: int n, xs: list_vt (a, n)
+    base: &(@[a?][n]) >> @[a][n], xs: list_vt (a, n)
   ) :<> void
+
+*)
 
 (* ****** ****** *)
 

@@ -76,16 +76,6 @@ assume matrix_viewt0ype_int_int_type
   data= ptr l, view= vbox (matrix_v (a, m, n, l))
 } // end of [matrix_viewt0ype_int_int_type]
 
-(*
-assume matrix_viewt0ype_int_int_type
-  (a:viewt@ype, m:int, n:int) = [mn:int] [l:addr] '{
-  data= ptr l,
-  row= int m,
-  col= int n,
-  view= vbox (matrix_v (a, m, n, l))
-} // end of [matrix_viewt0ype_int_int_type]
-*)
-
 (* ****** ****** *)
 
 extern fun vbox_make_view_ptr_matrix {a:viewt@ype} {m,n:int} {l:addr} 

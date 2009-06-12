@@ -62,11 +62,10 @@ fun matrix_ptr_takeout_tsz {a:viewt@ype}
     pf_mat: matrix_v (a, m, n, l0)
   | base: ptr l0, i: size_t i, n: size_t n, j: size_t j, tsz: sizeof_t a
   ) :<> [l:addr] (
-      a @ l
-    , a @ l -<lin,prf> matrix_v (a, m, n, l0)
-    | ptr l
-    )
-// end of [matrix_ptr_takeout_tsz]
+    a @ l
+  , a @ l -<lin,prf> matrix_v (a, m, n, l0)
+  | ptr l
+  ) // end of [matrix_ptr_takeout_tsz]
 
 (* ****** ****** *)
 

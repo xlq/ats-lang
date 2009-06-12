@@ -144,11 +144,11 @@ fun array_ptr_initialize_elt_tsz {a:t@ype} {n:nat}
 (* ****** ****** *)
 
 fun{a:t@ype} array_ptr_initialize_lst {n:nat}
-  (base: &(@[a?][n]) >> @[a][n], asz: size_t n, xs: list (a, n)):<> void
+  (base: &(@[a?][n]) >> @[a][n], xs: list (a, n)):<> void
 
 // the linear list is freed along the way
 fun{a:viewt@ype} array_ptr_initialize_lst_vt {n:nat}
-  (base: &(@[a?][n]) >> @[a][n], asz: size_t n, xs: list_vt (a, n)):<> void
+  (base: &(@[a?][n]) >> @[a][n], xs: list_vt (a, n)):<> void
 
 (* ****** ****** *)
 

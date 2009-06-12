@@ -152,7 +152,7 @@ implement{a} find (f, xs) = loop (f, xs) where {
   // end of [loop]  
 } // end of [find]
 
-implement{a} filter (f, xs) = list0_filter<a> (xs, f)
+implement{a} filter (f, xs) = list0_filter_cloref<a> (xs, f)
 
 (* ****** ****** *)
 
