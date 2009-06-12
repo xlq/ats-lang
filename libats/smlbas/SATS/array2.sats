@@ -100,7 +100,7 @@ fun{a,b:t@ype} fold (
 // end of [fold]
 
 fun{a:t@ype} modify
-  (trv: traversal, f: a -<cloref1> void, M: array a): void
+  (trv: traversal, f: a -<cloref1> a, M: array a): void
 // end of [modify]
 
 (* ****** ****** *)

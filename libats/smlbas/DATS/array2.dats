@@ -133,7 +133,7 @@ implement{a} fromList (xss) = let
 // There should be a better way of doing this
 //
   val xss = __cast (xss) where {
-    extern fun __cast (xss: list0 (list0 a)): list (list (a, m), n)
+    extern fun __cast (xss: list0 (list0 a)):<> list (list (a, m), n)
   } (* end of [val] *)
 //
   val m = size1_of_int1 (m) and n = size1_of_int1 (n)
@@ -163,7 +163,7 @@ implement{a} tabulate (trv, m, n, f) = let
   // end of [val]
   prval () = free_gc_elim {a} (pf_gc) // return the certificate
   prval pf_arr = __cast pf_arr where {
-    extern prfun __cast (pf_arr: array_v (a?, mn, l)): array_v (a, mn, l) 
+    extern prfun __cast (pf_arr: array_v (a?, mn, l)):<> array_v (a, mn, l) 
   } (* end of [prval] *)
   val _0 = size1_of_int1 0 and _1 = size1_of_int1 1
   val () = case+ :(pf_arr: array_v (a, mn, l)) => trv of
@@ -173,7 +173,7 @@ implement{a} tabulate (trv, m, n, f) = let
         for* (i: sizeLte m) => (i := _0; i < m; i := i + _1) 
         for* (i: sizeLt m, j: sizeLte n) => (j := _0; j < n; j := j + _1) let
           val k1 = __cast k where {
-            extern castfn __cast (k: size_t): sizeLt (mn)
+            extern castfn __cast (k: size_t):<> sizeLt (mn)
           } // end of [val]
         in   
           p_arr->[k1] := f (i, j); k := k + _1
@@ -187,7 +187,7 @@ implement{a} tabulate (trv, m, n, f) = let
         in  
           for* (i: sizeLte m, j: sizeLt n) => (i := _0; i < m; i := i + _1) let
             val k1 = __cast k where {
-              extern castfn __cast (k: size_t): sizeLt (mn)
+              extern castfn __cast (k: size_t):<> sizeLt (mn)
             } // end of [val]
           in   
             p_arr->[k1] := f (i, j); k := k + n
@@ -274,11 +274,125 @@ implement nCols (M) = M.col
 
 (* ****** ****** *)
 
-implement{a} app (trv, f, M) = let
+implement{a} app (trv, f, [m,n:int] [l:addr] M) = let
+  val p_arr = M.data; prval vbox pf_mat = M.view
+  val m = M.row and n = M.col
+  prval [mn:int] (pf_mul_mn, pf_arr) = array_v_of_matrix_v (pf_mat)
+  val _0 = size1_of_int1 0 and _1 = size1_of_int1 1
+  val () = case+ trv of
+    | RowMajor () => let
+        var i: size_t? and j: size_t? ; var k: size_t = _0
+      in
+        for* (i: sizeLte m) => (i := _0; i < m; i := i + _1) 
+        for* (i: sizeLt m, j: sizeLte n) => (j := _0; j < n; j := j + _1) let
+          val k1 = __cast k where {
+            extern castfn __cast (k: size_t):<> sizeLt (mn)
+          } // end of [val]
+        in   
+          $effmask_ref (f (p_arr->[k1])); k := k + _1
+        end // end of [for] // end of [for]
+      end // end of [RowMajor]
+    | ColMajor () =>  let
+        var i: size_t? and j: size_t? ; var k: size_t = _0
+      in
+        for* (j: sizeLte n) => (j := _0; j < n; j := j + _1) let
+          val () = k := j
+        in  
+          for* (i: sizeLte m, j: sizeLt n) => (i := _0; i < m; i := i + _1) let
+            val k1 = __cast k where {
+              extern castfn __cast (k: size_t):<> sizeLt (mn)
+            } // end of [val]
+          in   
+            $effmask_ref (f (p_arr->[k1])); k := k + n
+          end // end of [for]
+        end // end of [for]
+      end (* end of [ColMajor] *)
+  // end of [val]
 in
-  
+  pf_mat := matrix_v_of_array_v (pf_mul_mn, pf_arr)
 end // end of [app]
   
+(* ****** ****** *)
+
+implement{a,b} fold (trv, f, ini, [m,n:int] [l:addr] M) = let
+  val p_arr = M.data; prval vbox pf_mat = M.view
+  val m = M.row and n = M.col
+  prval [mn:int] (pf_mul_mn, pf_arr) = array_v_of_matrix_v (pf_mat)
+  val _0 = size1_of_int1 0 and _1 = size1_of_int1 1
+  var res: b = ini
+  val () = case+ trv of
+    | RowMajor () => let
+        var i: size_t? and j: size_t? ; var k: size_t = _0
+      in
+        for* (i: sizeLte m) => (i := _0; i < m; i := i + _1) 
+        for* (i: sizeLt m, j: sizeLte n) => (j := _0; j < n; j := j + _1) let
+          val k1 = __cast k where {
+            extern castfn __cast (k: size_t):<> sizeLt (mn)
+          } // end of [val]
+        in   
+          res := $effmask_ref (f (p_arr->[k1], res)); k := k + _1
+        end // end of [for] // end of [for]
+      end // end of [RowMajor]
+    | ColMajor () =>  let
+        var i: size_t? and j: size_t? ; var k: size_t = _0
+      in
+        for* (j: sizeLte n) => (j := _0; j < n; j := j + _1) let
+          val () = k := j
+        in  
+          for* (i: sizeLte m, j: sizeLt n) => (i := _0; i < m; i := i + _1) let
+            val k1 = __cast k where {
+              extern castfn __cast (k: size_t):<> sizeLt (mn)
+            } // end of [val]
+          in   
+            res := $effmask_ref (f (p_arr->[k1], res)); k := k + n
+          end // end of [for]
+        end // end of [for]
+      end (* end of [ColMajor] *)
+  // end of [val]
+in
+  pf_mat := matrix_v_of_array_v (pf_mul_mn, pf_arr)
+end // end of [fold]
+
+(* ****** ****** *)
+
+implement{a} modify (trv, f, [m,n:int] [l:addr] M) = let
+  val p_arr = M.data; prval vbox pf_mat = M.view
+  val m = M.row and n = M.col
+  prval [mn:int] (pf_mul_mn, pf_arr) = array_v_of_matrix_v (pf_mat)
+  val _0 = size1_of_int1 0 and _1 = size1_of_int1 1
+  val () = case+ trv of
+    | RowMajor () => let
+        var i: size_t? and j: size_t? ; var k: size_t = _0
+      in
+        for* (i: sizeLte m) => (i := _0; i < m; i := i + _1) 
+        for* (i: sizeLt m, j: sizeLte n) => (j := _0; j < n; j := j + _1) let
+          val k1 = __cast k where {
+            extern castfn __cast (k: size_t):<> sizeLt (mn)
+          } // end of [val]
+        in   
+          p_arr->[k1] := $effmask_ref (f (p_arr->[k1])); k := k + _1
+        end // end of [for] // end of [for]
+      end // end of [RowMajor]
+    | ColMajor () =>  let
+        var i: size_t? and j: size_t? ; var k: size_t = _0
+      in
+        for* (j: sizeLte n) => (j := _0; j < n; j := j + _1) let
+          val () = k := j
+        in  
+          for* (i: sizeLte m, j: sizeLt n) => (i := _0; i < m; i := i + _1) let
+            val k1 = __cast k where {
+              extern castfn __cast (k: size_t):<> sizeLt (mn)
+            } // end of [val]
+          in   
+            p_arr->[k1] := $effmask_ref (f (p_arr->[k1])); k := k + n
+          end // end of [for]
+        end // end of [for]
+      end (* end of [ColMajor] *)
+  // end of [val]
+in
+  pf_mat := matrix_v_of_array_v (pf_mul_mn, pf_arr)
+end // end of [modify]
+
 (* ****** ****** *)
 
 (* end of [array2.dats] *)
