@@ -52,7 +52,8 @@ staload Rand = "libc/SATS/random.sats"
 
 extern fun rand_double (): double (* btw 0 and 1 *)
 
-implement rand_double () = $Rand.drand48 ()
+// without the adjustment, [rand_double] may return 1.000000
+implement rand_double () = $Rand.drand48 () * (1.0 - 1.0 / NN)
 
 (* ****** ****** *)
 

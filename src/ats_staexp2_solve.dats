@@ -7,33 +7,32 @@
 (***********************************************************************)
 
 (*
- * ATS/Anairiats - Unleashing the Potential of Types!
- *
- * Copyright (C) 2002-2008 Hongwei Xi, Boston University
- *
- * All rights reserved
- *
- * ATS is free software;  you can  redistribute it and/or modify it under
- * the terms of  the GNU GENERAL PUBLIC LICENSE (GPL) as published by the
- * Free Software Foundation; either version 3, or (at  your  option)  any
- * later version.
- * 
- * ATS is distributed in the hope that it will be useful, but WITHOUT ANY
- * WARRANTY; without  even  the  implied  warranty  of MERCHANTABILITY or
- * FITNESS FOR A PARTICULAR PURPOSE.  See the  GNU General Public License
- * for more details.
- * 
- * You  should  have  received  a  copy of the GNU General Public License
- * along  with  ATS;  see the  file COPYING.  If not, please write to the
- * Free Software Foundation,  51 Franklin Street, Fifth Floor, Boston, MA
- * 02110-1301, USA.
- *
- *)
+** ATS/Anairiats - Unleashing the Potential of Types!
+**
+** Copyright (C) 2002-2008 Hongwei Xi, Boston University
+**
+** All rights reserved
+**
+** ATS is free software;  you can  redistribute it and/or modify it under
+** the terms of  the GNU GENERAL PUBLIC LICENSE (GPL) as published by the
+** Free Software Foundation; either version 3, or (at  your  option)  any
+** later version.
+** 
+** ATS is distributed in the hope that it will be useful, but WITHOUT ANY
+** WARRANTY; without  even  the  implied  warranty  of MERCHANTABILITY or
+** FITNESS FOR A PARTICULAR PURPOSE.  See the  GNU General Public License
+** for more details.
+** 
+** You  should  have  received  a  copy of the GNU General Public License
+** along  with  ATS;  see the  file COPYING.  If not, please write to the
+** Free Software Foundation,  51 Franklin Street, Fifth Floor, Boston, MA
+** 02110-1301, USA.
+*)
 
 (* ****** ****** *)
 
-// Time: December 2007
 // Author: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
+// Time: December 2007
 
 (* ****** ****** *)
 
@@ -92,27 +91,35 @@ implement funclo_equal_solve (loc, fc1, fc2) =
 
 implement funclo_equal_solve_err (loc, fc1, fc2, err) =
   if fc1 = fc2 then () else (err := err + 1)
+// end of [funclo_equal_solve_err]
 
 implement clokind_equal_solve_err (loc, knd1, knd2, err) =
   if knd1 = knd2 then () else (err := err + 1)
+// end of [clokind_equal_solve_err]
 
 implement label_equal_solve_err (loc, l1, l2, err) =
   if l1 = l2 then () else (err := err + 1)
+// end of [label_equal_solve_err]
 
 implement linearity_equal_solve_err (loc, lin1, lin2, err) =
   if lin1 = lin2 then () else (err := err + 1)
+// end of [linearity_equal_solve_err]
 
 implement pfarity_equal_solve_err (loc, npf1, npf2, err) =
   if npf1 = npf2 then () else (err := err + 1)
+// end of [pfarity_equal_solve_err]
 
 implement refval_equal_solve_err (loc0, refval1, refval2, err) =
   if refval1 = refval2 then () else (err := err + 1)
+// end of [refval_equal_solve_err]
 
 implement stamp_equal_solve_err (loc, s1, s2, err) =
   if s1 = s2 then () else (err := err + 1)
+// end of [stamp_equal_solve_err]
 
 implement tyreckind_equal_solve_err (loc, knd1, knd2, err) =
   if knd1 = knd2 then () else (err := err + 1)
+// end of [tyreckind_equal_solve_err]
 
 (* ****** ****** *)
 
@@ -232,6 +239,14 @@ in
   | (_, S2EVar s2V2) => begin
       s2exp_equal_solve_Var_err (loc0, s2V2, s2e20, s2e10, err)
     end // end of [_, S2EVar]
+// (*
+  | (S2Enamed (_(*name*), s2e1), _) =>
+      s2exp_equal_solve_err (loc0, s2e1, s2e20, err)
+    // end of [S2Enamed, _]  
+  | (_, S2Enamed (_(*name*), s2e2)) =>
+      s2exp_equal_solve_err (loc0, s2e10, s2e2, err)
+    // end of [_, S2Enamed]  
+// *)
   | (S2Ecrypt s2e1, s2en20) => begin case+ s2en20 of
     | S2Ecrypt s2e2 => s2exp_equal_solve_err (loc0, s2e1, s2e2, err)
     | _ => (err := err + 1)
@@ -1014,6 +1029,14 @@ in
   | (_, _) when (s2exp_is_abscon s2e1 andalso s2exp_is_abscon s2e2) =>
       s2exp_hypo_equal_solve_con (loc0, s2e1, s2e2)
   | (S2Ecst s2c1, S2Ecst s2c2) when s2c1 = s2c2 => ()
+// (*
+  | (S2Enamed (_(*name*), s2e1), _) =>
+      s2exp_hypo_equal_solve (loc0, s2e1, s2e2)
+    // end of [S2Enamed, _]  
+  | (_, S2Enamed (_(*name*), s2e2)) =>
+      s2exp_hypo_equal_solve (loc0, s2e1, s2e2)
+    // end of [_, S2Enamed]  
+// *)
 (*
   | (S2Evar s2v1, S2Evar s2v2) when s2v1 = s2v2 => ()
 *)

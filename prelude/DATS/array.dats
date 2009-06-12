@@ -267,13 +267,13 @@ implement array_make_arraysize {a} {n} (arrsz) = let
   val (pfbox | ()) = vbox_make_view_ptr (arrsz.1 | arrsz.2)
 in
   @{ data= arrsz.2, view= pfbox }
-end // end of [array]
+end // end of [array_make_arraysize]
 
 //
 
 implement{a} array_make_elt (asz, x) = let
   val (pf_gc, pf_arr | p_arr) = array_ptr_alloc_tsz {a} (asz, sizeof<a>)
-  prval () = free_gc_elim {a} (pf_gc) // return the certificate
+  prval () = free_gc_elim {a} (pf_gc) // return the certificate to GC
   val () = array_ptr_initialize_elt<a> (!p_arr, asz, x)
   val (pfbox | ()) = vbox_make_view_ptr (pf_arr | p_arr)
 in
@@ -282,16 +282,16 @@ end // end of [array_make_elt]
 
 implement{a} array_make_lst (asz, xs) = let
   val (pf_gc, pf_arr | p_arr) = array_ptr_alloc_tsz {a} (asz, sizeof<a>)
-  prval () = free_gc_elim {a} (pf_gc) // return the certificate
+  prval () = free_gc_elim {a} (pf_gc) // return the certificate to GC
   val () = array_ptr_initialize_lst<a> (!p_arr, xs)
   val (pfbox | ()) = vbox_make_view_ptr (pf_arr | p_arr)
 in
   @{ data= p_arr, view= pfbox }
-end // end of [array_make_elt]
+end // end of [array_make_lst]
 
 implement array_make_clo_tsz {a} (asz, f, tsz) = let
   val (pf_gc, pf_arr | p_arr) = array_ptr_alloc_tsz {a} (asz, tsz)
-  prval () = free_gc_elim {a} (pf_gc) // return the certificate
+  prval () = free_gc_elim {a} (pf_gc) // return the certificate to GC
   val () = array_ptr_initialize_clo_tsz {a} (!p_arr, asz, f, tsz)
   val (pfbox | ()) = vbox_make_view_ptr (pf_arr | p_arr)
 in
