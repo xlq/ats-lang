@@ -7,33 +7,32 @@
 (***********************************************************************)
 
 (*
- * ATS/Anairiats - Unleashing the Potential of Types!
- *
- * Copyright (C) 2002-2008 Hongwei Xi, Boston University
- *
- * All rights reserved
- *
- * ATS is free software;  you can  redistribute it and/or modify it under
- * the terms of  the GNU GENERAL PUBLIC LICENSE (GPL) as published by the
- * Free Software Foundation; either version 3, or (at  your  option)  any
- * later version.
- * 
- * ATS is distributed in the hope that it will be useful, but WITHOUT ANY
- * WARRANTY; without  even  the  implied  warranty  of MERCHANTABILITY or
- * FITNESS FOR A PARTICULAR PURPOSE.  See the  GNU General Public License
- * for more details.
- * 
- * You  should  have  received  a  copy of the GNU General Public License
- * along  with  ATS;  see the  file COPYING.  If not, please write to the
- * Free Software Foundation,  51 Franklin Street, Fifth Floor, Boston, MA
- * 02110-1301, USA.
- *
- *)
+** ATS/Anairiats - Unleashing the Potential of Types!
+**
+** Copyright (C) 2002-2008 Hongwei Xi, Boston University
+**
+** All rights reserved
+**
+** ATS is free software;  you can  redistribute it and/or modify it under
+** the terms of  the GNU GENERAL PUBLIC LICENSE (GPL) as published by the
+** Free Software Foundation; either version 3, or (at  your  option)  any
+** later version.
+** 
+** ATS is distributed in the hope that it will be useful, but WITHOUT ANY
+** WARRANTY; without  even  the  implied  warranty  of MERCHANTABILITY or
+** FITNESS FOR A PARTICULAR PURPOSE.  See the  GNU General Public License
+** for more details.
+** 
+** You  should  have  received  a  copy of the GNU General Public License
+** along  with  ATS;  see the  file COPYING.  If not, please write to the
+** Free Software Foundation,  51 Franklin Street, Fifth Floor, Boston, MA
+** 02110-1301, USA.
+*)
 
 (* ****** ****** *)
 
-// Time: February 2008
 // Author: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
+// Time: February 2008
 
 (* ****** ****** *)
 
@@ -97,31 +96,44 @@ in
   case+ v2al of
   | V2ALbool b => begin
       strpr "V2ALbool("; fprint1_bool (pf | out, b); strpr ")"
-    end
+    end // end of [V2ALbool]
   | V2ALchar (c) => begin
       strpr "V2ALchar("; fprint1_char (pf | out, c); strpr ")"
-    end
+    end // end of [V2ALchar]
   | V2ALcode (d2e) => begin
       strpr "V2ALcode("; fprint_d2exp (pf | out, d2e); strpr ")"
-    end
+    end // end of [V2ALcode]
   | V2ALfloat f(*string*) => begin
       strpr "V2ALfloat("; fprint1_string (pf | out, f); strpr ")"
-    end
+    end // end of [V2ALfloat]
   | V2ALint (i) => begin
-      strpr "V2ALint(";
-      $IntInf.fprint_intinf (pf | out, i);
-      strpr ")"
+      strpr "V2ALint("; $IntInf.fprint_intinf (pf | out, i); strpr ")"
     end // end of [V2ALint]
   | V2ALlst (vs) => begin
-      fprint1_string (pf | out, "V2ALlst(...)")
-    end
+      strpr "V2ALlst("; fprint_v2aluelst (pf | out, vs); strpr ")"
+    end // end of [V2ALlst]
   | V2ALstring (str, len) => begin
       fprintf1_exn (pf | out, "V2ALstring(\"%s\", %i)", @(str, len))
-    end
+    end (* end of [V2ALstring] *)
   | V2ALunit () => begin
       fprint1_string (pf | out, "V2ALunit()")
-    end
+    end (* end of [V2ALunit] *)
 end // end of [fprint_v2alue]
+
+and fprint_v2aluelst {m:file_mode}
+  (pf: file_mode_lte (m, w) | out: &FILE m, vs: v2aluelst)
+  : void = let
+  fun loop (out: &FILE m, vs: v2aluelst, i: int): void =
+    case+ vs of
+    | list_cons (v, vs) => loop (out, vs, i+1) where {
+        val () = if (i > 0) then fprint1_string (pf | out, ", ")
+        val () = fprint_v2alue (pf | out, v)
+      } // end of [list_cons]  
+    | list_nil () => ()
+  // end of [loop]  
+in
+  loop (out, vs, 0)
+end // end of [fprint_v2aluelst]
 
 fn print_v2alue (v2al: v2alue): void = print_mac (fprint_v2alue, v2al)
 fn prerr_v2alue (v2al: v2alue): void = prerr_mac (fprint_v2alue, v2al)
@@ -549,33 +561,35 @@ end // end of [eval0_exp_app_div]
 
 (* ****** ****** *)
 
-fn eval0_exp_app_is_nil (loc0: loc_t, v2al: v2alue): v2alue = let
+fn eval0_exp_app_is_nil
+  (loc0: loc_t, v2al: v2alue): v2alue = let
   fn err (loc0: loc_t, v2al: v2alue): v2alue = begin
     prerr loc0; prerr ": error(macro)";
     prerr ": [is_nil] is performed on a value that do not support it.";
     prerr_newline ();
     $Err.abort {v2alue} ()
-  end
+  end (* end of [err] *)
 in
   case+ v2al of
   | V2ALlst (vs) => begin case+ vs of
     | list_cons _ => v2alue_bool_false | list_nil () => v2alue_bool_true
-    end
+    end (* end of [V2ALlst] *)
   | _ => err (loc0, v2al)
 end // end of [eval0_exp_app_is_nil]
 
-fn eval0_exp_app_is_cons (loc0: loc_t, v2al: v2alue): v2alue = let
+fn eval0_exp_app_is_cons
+  (loc0: loc_t, v2al: v2alue): v2alue = let
   fn err (loc0: loc_t, v2al: v2alue): v2alue = begin
     prerr loc0; prerr ": error(macro)";
     prerr ": [is_cons] is performed on a value that do not support it.";
     prerr_newline ();
     $Err.abort {v2alue} ()
-  end
+  end (* end of [err] *)
 in
   case+ v2al of
   | V2ALlst (vs) => begin case+ vs of
     | list_cons _ => v2alue_bool_false | list_nil () => v2alue_bool_true
-    end
+    end (* end of [V2ALlst] *)
   | _ => err (loc0, v2al)
 end // end of [eval0_exp_app_is_cons]
 
@@ -585,27 +599,27 @@ fn eval0_exp_app_tup_head (loc0: loc_t, v2al: v2alue): v2alue = let
 (*
   val () = begin
     prerr "eval0_exp_app_tup_head: v2al = "; prerr v2al; prerr_newline ()
-  end
+  end // end of [val]
 *)
   fn err (loc0: loc_t, v2al: v2alue): v2alue = begin
     prerr loc0; prerr ": error(macro)";
     prerr ": [tup_head] is performed on a value that do not support it.";
     prerr_newline ();
     $Err.abort {v2alue} ()
-  end
+  end (* end of [err] *)
   val ret = case+ v2al of
     | V2ALlst (vs) => begin case+ vs of
       | list_cons (v, _) => v | list_nil _ => err (loc0, v2al)
-      end
+      end (* end of [V2ALlst] *)
     | _ => err (loc0, v2al)
 (*
   val () = begin
     prerr "eval0_exp_app_tup_head: ret = "; prerr ret; prerr_newline ()
-  end
+  end // end of [val]
 *)
 in
   ret // the return value
-end // end of [eval0_exp_app_tup_head]
+end (* end of [eval0_exp_app_tup_head] *)
 
 fn eval0_exp_app_tup_tail (loc0: loc_t, v2al: v2alue): v2alue = let
 (*
@@ -622,7 +636,7 @@ fn eval0_exp_app_tup_tail (loc0: loc_t, v2al: v2alue): v2alue = let
   val ret = (case+ v2al of
     | V2ALlst (vs) => begin case+ vs of
       | list_cons (_, vs) => V2ALlst (vs) | list_nil _ => err (loc0, v2al)
-      end
+      end (* end of [V2ALlst] *)
     | _ => err (loc0, v2al)
   ) : v2alue // end of [val]
 (*
@@ -632,7 +646,7 @@ fn eval0_exp_app_tup_tail (loc0: loc_t, v2al: v2alue): v2alue = let
 *)
 in
   ret // the return value
-end // end of [eval0_exp_app_tup_tail]
+end (* end of [eval0_exp_app_tup_tail] *)
 
 (* ****** ****** *)
 
@@ -643,7 +657,7 @@ fn eval0_exp_app_eval
     prerr ": evaluation is performed on a value not representing code.";
     prerr_newline ();
     $Err.abort {v2alue} ()
-  end
+  end (* end of [err] *)
 in
   case+ v2al of
   | V2ALcode d2e => let
@@ -656,7 +670,7 @@ in
       v2al_res
     end // end of [V2ALcode]
   | _ => err (loc0, v2al)
-end // end of [eval0_exp_app_eval]
+end (* end of [eval0_exp_app_eval] *)
 
 fn eval0_exp_app_lift
   (loc0: loc_t, v2al: v2alue): v2alue = begin
@@ -667,21 +681,27 @@ end // end of [eval0_exp_app_lift]
 
 extern fun eval1_d2exp
   (loc0: loc_t, ctx: !eval0ctx, env: &alphaenv, d2e0: d2exp): d2exp
+// end of [eval1_d2exp]
 
 extern fun eval1_d2explst {n:nat}
   (loc0: loc_t, ctx: !eval0ctx, env: &alphaenv, d2es: d2explst n): d2explst n
+// end of [eval1_d2explst]
 
 extern fun eval1_d2explstlst
   (loc0: loc_t, ctx: !eval0ctx, env: &alphaenv, d2ess: d2explstlst): d2explstlst
+// end of [eval1_d2explstlst]
 
 extern fun eval1_labd2explst
   (loc0: loc_t, ctx: !eval0ctx, env: &alphaenv, ld2es: labd2explst): labd2explst
+// end of [eval1_labd2explst]
 
 extern fun eval1_d2ec
   (loc0: loc_t, ctx: !eval0ctx, env: &alphaenv, d2c0: d2ec): d2ec
+// end of [eval1_d2ec]
 
 extern fun eval1_d2eclst
   (loc0: loc_t, ctx: !eval0ctx, env: &alphaenv, d2cs: d2eclst): d2eclst
+// end of [eval1_d2eclst]
 
 (* ****** ****** *)
 
@@ -691,7 +711,7 @@ fun eval0_var (loc0: loc_t, ctx: !eval0ctx, d2v: d2var_t): v2alue = let
      prerr ": the variable ["; prerr d2v; prerr "] is unbound.";
      prerr_newline ();
      $Err.abort {v2alue} ()
-  end
+  end (* end of [err] *)
   fun auxfind
     (ctx: !eval0ctx, stamp0: stamp_t):<cloptr1> v2alue =
     case+ ctx of
@@ -704,9 +724,10 @@ fun eval0_var (loc0: loc_t, ctx: !eval0ctx, d2v: d2var_t): v2alue = let
         fold@ ctx; ans
       end
     | EVAL0CTXnil () => (fold@ ctx; err (loc0, d2v))
+  // end of [auxfind]
 in
   auxfind (ctx, d2var_stamp_get d2v)
-end
+end (* end of [eval0_var] *)
 
 (* ****** ****** *)
 
@@ -1124,7 +1145,13 @@ end // end of [eval1_c2laulst]
 
 (* ****** ****** *)
 
-implement eval1_d2exp (loc0, ctx, env, d2e0) = begin
+implement eval1_d2exp (loc0, ctx, env, d2e0) = let
+(*
+  val () = begin
+    prerr "eval1_d2exp: d2e0 = "; prerr_d2exp d2e0; prerr_newline ()
+  end (* end of [val] *)
+*)
+in
   case+ d2e0.d2exp_node of
   | D2Eann_funclo (d2e, fcr) => let
       val d2e = eval1_d2exp (loc0, ctx, env, d2e)
@@ -1211,6 +1238,7 @@ implement eval1_d2exp (loc0, ctx, env, d2e0) = begin
     in
       d2exp_crypt (loc0, knd, d2e)
     end // end of [D2Ecrypt]
+  | D2Ecst _ => d2e0
   | D2Ederef d2e => let
       val d2e = eval1_d2exp (loc0, ctx, env, d2e)
     in
@@ -1253,6 +1281,7 @@ implement eval1_d2exp (loc0, ctx, env, d2e0) = begin
     in
       d2exp_if (loc0, res, d2e_cond, d2e_then, od2e_else)
     end // end of [D2Eif]
+  | D2Eint _ => d2e0
   | D2Elazy_delay (d2e) => let
       val d2e = eval1_d2exp (loc0, ctx, env, d2e)
     in
@@ -1278,8 +1307,7 @@ implement eval1_d2exp (loc0, ctx, env, d2e0) = begin
       d2exp_lst (loc0, lin, os2e, d2es)
     end // end of [D2Elst]
   | D2Emacsyn (knd, d2e) => let
-      val v2al = (
-        case+ knd of
+      val v2al = (case+ knd of
         | $Syn.MACSYNKINDcross () => let
             val v2al = eval0_exp (loc0, ctx, env, d2e)
           in
@@ -1301,6 +1329,10 @@ implement eval1_d2exp (loc0, ctx, env, d2e0) = begin
           prerr d2e.d2exp_loc;
           prerr ") should return a value representing code (abstract syntax tree)";
           prerr ", but it did not do so."; prerr_newline ();
+(*
+          prerr "d2e = "; prerr_d2exp d2e; prerr_newline ();
+          prerr "v2al = "; prerr_v2alue v2al; prerr_newline ();
+*)
           $Err.abort {d2exp} ()
         end // end of [_]
     end // end of [D2Emacsyn]
@@ -1331,6 +1363,7 @@ implement eval1_d2exp (loc0, ctx, env, d2e0) = begin
     in
       d2exp_sif (loc0, res, s2e_cond, d2e_then, d2e_else)
     end // end of [D2Esif]
+  | D2Estring _ => d2e0
   | D2Estruct ld2es => let
       val ld2es = eval1_labd2explst (loc0, ctx, env, ld2es)
     in
@@ -1351,7 +1384,7 @@ implement eval1_d2exp (loc0, ctx, env, d2e0) = begin
     in
       d2exp_viewat (loc0, d2e)
     end // end of [D2Eviewat]
-(*
+// (*
   | _ => begin
       prerr loc0;
       prerr ": error(macro)";
@@ -1359,8 +1392,10 @@ implement eval1_d2exp (loc0, ctx, env, d2e0) = begin
       prerr d2e0; prerr_newline ();
       $Err.abort {d2exp} ()
     end // end of [_]
-*)
+// *)
+(*
   | _ => d2e0 // location is not changed; it needs to be changed recursively!
+*)
 end // end of [eval1_d2exp]
 
 (* ****** ****** *)

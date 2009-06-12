@@ -7,27 +7,27 @@
 (***********************************************************************)
 
 (*
- * ATS/Anairiats - Unleashing the Potential of Types!
- *
- * Copyright (C) 2002-2008 Hongwei Xi, Boston University
- *
- * All rights reserved
- *
- * ATS is free software;  you can  redistribute it and/or modify it under
- * the terms of  the GNU GENERAL PUBLIC LICENSE (GPL) as published by the
- * Free Software Foundation; either version 3, or (at  your  option)  any
- * later version.
- * 
- * ATS is distributed in the hope that it will be useful, but WITHOUT ANY
- * WARRANTY; without  even  the  implied  warranty  of MERCHANTABILITY or
- * FITNESS FOR A PARTICULAR PURPOSE.  See the  GNU General Public License
- * for more details.
- * 
- * You  should  have  received  a  copy of the GNU General Public License
- * along  with  ATS;  see the  file COPYING.  If not, please write to the
- * Free Software Foundation,  51 Franklin Street, Fifth Floor, Boston, MA
- * 02110-1301, USA.
- *)
+** ATS/Anairiats - Unleashing the Potential of Types!
+**
+** Copyright (C) 2002-2008 Hongwei Xi, Boston University
+**
+** All rights reserved
+**
+** ATS is free software;  you can  redistribute it and/or modify it under
+** the terms of  the GNU GENERAL PUBLIC LICENSE (GPL) as published by the
+** Free Software Foundation; either version 3, or (at  your  option)  any
+** later version.
+** 
+** ATS is distributed in the hope that it will be useful, but WITHOUT ANY
+** WARRANTY; without  even  the  implied  warranty  of MERCHANTABILITY or
+** FITNESS FOR A PARTICULAR PURPOSE.  See the  GNU General Public License
+** for more details.
+** 
+** You  should  have  received  a  copy of the GNU General Public License
+** along  with  ATS;  see the  file COPYING.  If not, please write to the
+** Free Software Foundation,  51 Franklin Street, Fifth Floor, Boston, MA
+** 02110-1301, USA.
+*)
 
 (* ****** ****** *)
 
@@ -450,6 +450,7 @@ viewtypedef hiexplst_vt = List_vt hiexp
 
 extern fun d3explst_funarg_tr
   (isvararg: bool, npf: int, arg: d3explst): hiexplst
+// end of [d3explst_funarg_tr]
 
 implement d3explst_funarg_tr (isvararg, npf, d3es) = let
   fun aux0 (
@@ -460,7 +461,7 @@ implement d3explst_funarg_tr (isvararg, npf, d3es) = let
         val hie = d3exp_tr d3e; val hies = list_vt_cons (hie, hies)
       in
         aux0 (hies, ld3es)
-      end
+      end // end of [LABD3EXPLSTcons]
     | LABD3EXPLSTnil () => $Lst.list_vt_reverse_list (hies)
   // end of [aux0]
   fun aux1 (
@@ -472,9 +473,16 @@ implement d3explst_funarg_tr (isvararg, npf, d3es) = let
         val hie = d3exp_tr d3e; val hies = list_vt_cons (hie, hies)
       in
         aux1 (hies, d3e1, d3es1)
-      end
-    | nil () => begin
-        if isvararg then begin case+ d3e.d3exp_node of
+      end // end of [cons]
+    | nil () => let
+        val d3e = loop (d3e) where {
+          fun loop // for a case like ,(`(@(1,2,3)))
+            (d3e: d3exp): d3exp = case+ d3e.d3exp_node of
+            | D3Eseq (cons (d3e, nil ())) => loop (d3e) | _ => d3e
+          // end of [loop]  
+        }
+      in  
+        if isvararg then (case+ d3e.d3exp_node of
           | D3Erec (_, _, ld3es) => aux0 (hies, ld3es)
           | _ => begin
             $Lst.list_vt_free__boxed (hies);
@@ -483,17 +491,17 @@ implement d3explst_funarg_tr (isvararg, npf, d3es) = let
             prerr_newline ();
             $Err.abort {hiexplst} ()
           end
-        end else let
+        ) else let
           val hie = d3exp_tr d3e; val hies = list_vt_cons (hie, hies)
         in
           $Lst.list_vt_reverse_list (hies)
-        end
-      end // end of [nil ()]
+        end // end of [if]
+      end (* end of [nil] *)
   // end of [aux1]
   fun aux2 (i: int, d3es: d3explst):<cloptr1> hiexplst = case+ d3es of
     | cons (d3e, d3es) => begin
         if i > 0 then aux2 (i-1, d3es) else aux1 (list_vt_nil (), d3e, d3es)
-      end
+      end // end of [cons]
     | nil () => nil ()
   // end of [aux2]
 in
@@ -552,6 +560,8 @@ fn d3exp_cst_tr
   | _ => hiexp_cst (loc0, hit0, d2c)
 end // end of [d3exp_cst_tr]
 
+//
+
 fn d3exp_seq_tr
   (loc0: loc_t, hit0: hityp, d3es: d3explst): hiexp = let
   val hies = d3explst_tr d3es in
@@ -563,8 +573,7 @@ end // end of [d3exp_seq_tr]
 and d3exp_tmpcst_tr
   (loc0: loc_t, hit0: hityp, d2c: d2cst_t, s2ess: s2explstlst)
   : hiexp = let
-  val sym = d2cst_sym_get d2c in
-  case+ sym of
+  val sym = d2cst_sym_get d2c in case+ sym of
   | _ when sym = $Sym.symbol_SIZEOF => begin case+ s2ess of
     | cons (cons (s2e, nil ()), nil ()) => begin
         hiexp_sizeof (loc0, hit0, s2exp_tr (0(*deep*), s2e))
@@ -573,19 +582,19 @@ and d3exp_tmpcst_tr
         prerr "Internal Error: [ats_trans4]";
         prerr ": d3exp_tmpcst_tr: sizeof"; prerr_newline ();
         $Err.abort {hiexp} ()
-      end
-    end
+      end (* end of [_] *)
+    end // end of [_ when ...]
   | _ => let
       val hitss = $Lst.list_map_fun (s2ess, s2explst_tr)
 (*
       val () = begin
         prerr "d3exp_tmpcst_tr: hitss = "; prerr hitss; prerr_newline ()
-      end
+      end // end of [val]
 *)
     in
       hiexp_tmpcst (loc0, hit0, d2c, hitss)
-    end
-end // end of [d3exp_tmpcst_tr]
+    end // end of [_]
+end (* end of [d3exp_tmpcst_tr] *)
 
 fn d3exp_tmpvar_tr (
     loc0: loc_t
