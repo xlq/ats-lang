@@ -86,7 +86,7 @@ extern fun{a:t@ype} array_ptr_initialize_lstlst {m,n:nat} {mn:int} (
 
 implement{a} array_ptr_initialize_lstlst
   {m,n}{mn} (pf_mul | base, m, xss) = let
-  val (pf_ofs | ofs) = op szmul2 (m, sizeof<a>)
+  val (pf_ofs | ofs) = mul2_size1_size1 (m, sizeof<a>)
   fun loop {n:nat} {mn:int} {l:addr} .<n>. (
       pf_mul: MUL (n, m, mn), pf_arr: !array_v (a?, mn, l) >> array_v (a, mn, l)
     | p_arr: ptr l, xss: list (list (a, m), n)
@@ -225,7 +225,7 @@ in
     if j < n then let
       prval vbox pf_mat = M.view
       prval (pf_mul_mn, pf_arr) = array_v_of_matrix_v (pf_mat)
-      val (pf_mul_i_n | i_n) = i szmul2 n
+      val (pf_mul_i_n | i_n) = mul2_size1_size1 (i, n)
       prval () = mul_nat_nat_nat pf_mul_i_n
       prval () = lemma_for_matrix_subscripting (pf_mul_mn, pf_mul_i_n)
       val M_data = M.data
@@ -249,7 +249,7 @@ in
     if j < n then let
       prval vbox pf_mat = M.view
       prval (pf_mul_mn, pf_arr) = array_v_of_matrix_v (pf_mat)
-      val (pf_mul_i_n | i_n) = i szmul2 n
+      val (pf_mul_i_n | i_n) = mul2_size1_size1 (i, n)
       prval () = mul_nat_nat_nat pf_mul_i_n
       prval () = lemma_for_matrix_subscripting (pf_mul_mn, pf_mul_i_n)
       val M_data = M.data
