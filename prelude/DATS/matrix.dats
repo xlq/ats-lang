@@ -289,7 +289,7 @@ implement{a} matrix_foreach_fun {v} {m,n} (pf_v | f, M, m, n) = let
     coerce (f: (!v | &a) -<> void):<> (!v | &a, !ptr) -<> void
   } // end of [where]
 in
-  matrix_foreach__main (pf_v | f, M, m, n, null)
+  matrix_foreach__main<a> (pf_v | f, M, m, n, null)
 end // end of [matrix_foreach_fun]
 
 implement{a} matrix_foreach_clo {v} {m,n} (pf_v | f, M, m, n) = let
@@ -308,11 +308,12 @@ in
   // empty
 end // end of [matrix_foreach_clo]
 
-implement{a} matrix_foreach_cloref
-  {v} {m,n} (pf | f, M, m, n) = let
-  viewtypedef cloref_t = (!v | &a) -<cloref> void
-  fn app (pf: !v | x: &a, f: !cloref_t):<> void = f (pf | x)
-  val () = matrix_foreach__main<a> {v} {cloref_t} (pf | app, M, m, n, f)
+implement{a} matrix_foreach_cloref {m,n} (f, M, m, n) = let
+  viewtypedef cloref_t = (&a) -<cloref> void
+  fn app (pf: !unit_v | x: &a, f: !cloref_t):<> void = f (x)
+  prval pf = unit_v () 
+  val () = matrix_foreach__main<a> {unit_v} {cloref_t} (pf | app, M, m, n, f)
+  prval unit_v () = pf
 in
   // empty
 end // end of [matrix_foreach_cloref]
@@ -382,11 +383,13 @@ in
 end // end of [matrix_iforeach_cloptr]
 
 implement{a}
-  matrix_iforeach_cloref {v} {m,n} (pf | f, M, m, n) = let
-  viewtypedef cloref_t = (!v | sizeLt m, sizeLt n, &a) -<cloref> void
-  fn app (pf: !v | i: sizeLt m, j: sizeLt n, x: &a, f: !cloref_t):<> void =
-    f (pf | i, j, x)
-  val () = matrix_iforeach__main<a> {v} {cloref_t} (pf | app, M, m, n, f)
+  matrix_iforeach_cloref {m,n} (f, M, m, n) = let
+  viewtypedef cloref_t = (sizeLt m, sizeLt n, &a) -<cloref1> void
+  prval pf = unit_v ()
+  fn app (pf: !unit_v | i: sizeLt m, j: sizeLt n, x: &a, f: !cloref_t):<> void =
+    $effmask_all (f (i, j, x))
+  val () = matrix_iforeach__main<a> {unit_v} {cloref_t} (pf | app, M, m, n, f)
+  prval unit_v () = pf
 in
   // empty
 end // end of [matrix_iforeach_cloref]

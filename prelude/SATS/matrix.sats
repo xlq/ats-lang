@@ -139,7 +139,7 @@ overload [] with matrix_set_elt_at__intsz
 // these functions are just as easy to be implemented on the spot (HX)
 //
 
-fun{a:t@ype} matrix_foreach__main
+fun{a:viewt@ype} matrix_foreach__main
   {v:view} {vt:viewtype} {m,n:nat} (
     pf: !v
   | f: (!v | &a, !vt) -<fun> void
@@ -148,17 +148,24 @@ fun{a:t@ype} matrix_foreach__main
   ) :<!ref> void
 // end of [matrix_foreach__main]
 
-fun{a:t@ype} matrix_foreach_fun {v:view} {m,n:nat}
-  (pf: !v | f: (!v | &a) -<fun> void, M: matrix (a, m, n), m: size_t m, n: size_t n)
-  :<!ref> void
+fun{a:viewt@ype}
+  matrix_foreach_fun {v:view} {m,n:nat} (
+    pf: !v
+  | f: (!v | &a) -<fun> void
+  , M: matrix (a, m, n), m: size_t m, n: size_t n
+  ) :<!ref> void
 
-fun{a:t@ype} matrix_foreach_clo {v:view} {m,n:nat}
-  (pf: !v | f: &(!v | &a) -<clo> void, M: matrix (a, m, n), m: size_t m, n: size_t n)
-  :<!ref> void
+fun{a:viewt@ype}
+  matrix_foreach_clo {v:view} {m,n:nat} (
+    pf: !v
+  | f: &(!v | &a) -<clo> void
+  , M: matrix (a, m, n), m: size_t m, n: size_t n
+  ) :<!ref> void
 
-fun{a:t@ype} matrix_foreach_cloref {v:view} {m,n:nat}
-  (pf: !v | f: !(!v | &a) -<cloref> void, M: matrix (a, m, n), m: size_t m, n: size_t n)
-  :<!ref> void
+fun{a:viewt@ype}
+  matrix_foreach_cloref {m,n:nat} (
+    f: (&a) -<cloref> void, M: matrix (a, m, n), m: size_t m, n: size_t n
+  ) :<!ref> void
 
 (* ****** ****** *)
 
@@ -190,11 +197,10 @@ fun{a:viewt@ype}
   ) :<!ref> void
 
 fun{a:viewt@ype}
-  matrix_iforeach_cloref {v:view} {m,n:nat} (
-    pf : !v
-  | f: !(!v | sizeLt m, sizeLt n, &a) -<cloref> void
+  matrix_iforeach_cloref {m,n:nat} (
+    f: (sizeLt m, sizeLt n, &a) -<cloref1> void
   , M: matrix (a, m, n), m: size_t m, n: size_t n
-  ) :<!ref> void
+  ) :<fun1> void
 
 (* ****** ****** *)
 
