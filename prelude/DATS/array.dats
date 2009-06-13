@@ -443,11 +443,13 @@ in
   // empty
 end // end of [array_foreach_clo]
 
-implement{a} array_foreach_cloref
-  {v} {n} (pf | f, A, asz) = let
-  viewtypedef cloref_t = (!v | &a) -<cloref> void
-  fn app (pf: !v | x: &a, f: !cloref_t):<> void = f (pf | x)
-  val () = array_foreach__main<a> {v} {cloref_t} (pf | app, A, asz, f)
+implement{a}
+  array_foreach_cloref {n} (f, A, asz) = let
+  viewtypedef cloref_t = (&a) -<cloref1> void
+  fn app (pf: !unit_v | x: &a, f: !cloref_t):<> void = $effmask_all (f x)
+  prval pf = unit_v ()
+  val () = array_foreach__main<a> {unit_v} {cloref_t} (pf | app, A, asz, f)
+  prval unit_v () = pf
 in
   // empty
 end // end of [array_foreach_cloref]
@@ -503,11 +505,13 @@ in
   // empty
 end // end of [array_iforeach_clo]
 
-implement{a} array_iforeach_cloref
-  {v} {n} (pf | f, A, asz) = let
-  viewtypedef cloref_t = (!v | sizeLt n, &a) -<cloref> void
-  fn app (pf: !v | i: sizeLt n, x: &a, f: !cloref_t):<> void = f (pf | i, x)
-  val () = array_iforeach__main<a> {v} {cloref_t} (pf | app, A, asz, f)
+implement{a}
+  array_iforeach_cloref {n} (f, A, asz) = let
+  viewtypedef cloref_t = (sizeLt n, &a) -<cloref> void
+  fn app (pf: !unit_v | i: sizeLt n, x: &a, f: !cloref_t):<> void = f (i, x)
+  prval pf = unit_v ()
+  val () = array_iforeach__main<a> {unit_v} {cloref_t} (pf | app, A, asz, f)
+  prval unit_v () = pf
 in
   // empty
 end // end of [array_iforeach_cloref]

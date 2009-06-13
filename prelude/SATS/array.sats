@@ -447,7 +447,7 @@ fun array_make_cloref_tsz
     asz: size_t n
   , f: !(&(a?) >> a, sizeLt n) -<cloref1> void
   , tsz: sizeof_t a
-  ) : array (a, n)
+  ) :<fun1> array (a, n)
 
 (* ****** ****** *)
 
@@ -501,9 +501,9 @@ fun{a:viewt@ype} array_foreach_clo {v:view} {n:nat} (
     pf: !v | f: &(!v | &a) -<clo> void, A: array (a, n), asz: size_t n
   ) :<!ref> void
 
-fun{a:viewt@ype} array_foreach_cloref {v:view} {n:nat} (
-    pf: !v | f: !(!v | &a) -<cloref> void, A: array (a, n), asz: size_t n
-  ) :<!ref> void
+fun{a:viewt@ype} array_foreach_cloref {n:nat} (
+    f: (&a) -<cloref1> void, A: array (a, n), asz: size_t n
+  ) :<fun1> void
 
 (* ****** ****** *)
 
@@ -526,9 +526,9 @@ fun{a:viewt@ype} array_iforeach_clo {v:view} {n:nat} (
     pf: !v | f: &(!v | sizeLt n, &a) -<clo> void, A: array (a, n), asz: size_t n
   ) :<!ref> void
 
-fun{a:viewt@ype} array_iforeach_cloref {v:view} {n:nat} (
-    pf: !v | f: !(!v | sizeLt n, &a) -<cloref> void, A: array (a, n), asz: size_t n
-  ) :<!ref> void
+fun{a:viewt@ype} array_iforeach_cloref {n:nat} (
+    f: (sizeLt n, &a) -<cloref> void, A: array (a, n), asz: size_t n
+  ) :<fun1> void
 
 (* ****** ****** *)
 
