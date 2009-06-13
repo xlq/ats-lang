@@ -7,26 +7,25 @@
 /************************************************************************/
 
 /*
- * ATS - Unleashing the Potential of Types!
- *
- * Copyright (C) 2002-2008 Hongwei Xi.
- *
- * ATS is  free software;  you can redistribute it and/or modify it under
- * the  terms of the  GNU General Public License as published by the Free
- * Software Foundation; either version 2.1, or (at your option) any later
- * version.
- * 
- * ATS is distributed in the hope that it will be useful, but WITHOUT ANY
- * WARRANTY; without  even  the  implied  warranty  of MERCHANTABILITY or
- * FITNESS FOR A PARTICULAR PURPOSE.  See the  GNU General Public License
- * for more details.
- * 
- * You  should  have  received  a  copy of the GNU General Public License
- * along  with  ATS;  see the  file COPYING.  If not, please write to the
- * Free Software Foundation,  51 Franklin Street, Fifth Floor, Boston, MA
- * 02110-1301, USA.
- *
- */
+** ATS - Unleashing the Potential of Types!
+**
+** Copyright (C) 2002-2008 Hongwei Xi.
+**
+** ATS is  free software;  you can redistribute it and/or modify it under
+** the  terms of the  GNU General Public License as published by the Free
+** Software Foundation; either version 2.1, or (at your option) any later
+** version.
+** 
+** ATS is distributed in the hope that it will be useful, but WITHOUT ANY
+** WARRANTY; without  even  the  implied  warranty  of MERCHANTABILITY or
+** FITNESS FOR A PARTICULAR PURPOSE.  See the  GNU General Public License
+** for more details.
+** 
+** You  should  have  received  a  copy of the GNU General Public License
+** along  with  ATS;  see the  file COPYING.  If not, please write to the
+** Free Software Foundation,  51 Franklin Street, Fifth Floor, Boston, MA
+** 02110-1301, USA.
+*/
 
 /* ****** ****** */
 
@@ -56,6 +55,14 @@ extern long double ceill (long double x) ;
 extern double floor (double x) ;
 extern float floorf (float x) ;
 extern long double floorl (long double x) ;
+
+extern double round (double x) ;
+extern float roundf (float x) ;
+extern long double roundl (long double x) ;
+
+extern double trunc (double x) ;
+extern float truncf (float x) ;
+extern long double truncl (long double x) ;
 
 extern double fmod (double x, double y) ;
 extern float fmodf (float x, float y) ;
@@ -133,6 +140,8 @@ atslib_ceill(ats_ldouble_type x) {
   return ceill(x);
 }
 
+//
+
 static inline
 ats_double_type
 atslib_floor(ats_double_type x) { return floor(x); }
@@ -144,6 +153,34 @@ atslib_floorf(ats_float_type x) { return floorf(x); }
 static inline
 ats_ldouble_type
 atslib_floorl(ats_ldouble_type x) { return floorl(x); }
+
+//
+
+static inline
+ats_double_type
+atslib_round(ats_double_type x) { return round(x); }
+
+static inline
+ats_float_type
+atslib_roundf(ats_float_type x) { return roundf(x); }
+
+static inline
+ats_ldouble_type
+atslib_roundl(ats_ldouble_type x) { return roundl(x); }
+
+//
+
+static inline
+ats_double_type
+atslib_trunc(ats_double_type x) { return trunc(x); }
+
+static inline
+ats_float_type
+atslib_truncf(ats_float_type x) { return truncf(x); }
+
+static inline
+ats_ldouble_type
+atslib_truncl(ats_ldouble_type x) { return truncl(x); }
 
 //
 

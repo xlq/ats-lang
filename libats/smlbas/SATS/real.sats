@@ -53,6 +53,71 @@ castfn double_of_real (x: real): double
 
 (* ****** ****** *)
 
+fun add_real_real (r1: real, r2: real): real
+overload + with add_real_real
+
+fun sub_real_real (r1: real, r2: real): real
+overload - with sub_real_real
+
+fun mul_real_real (r1: real, r2: real): real
+overload * with mul_real_real
+
+fun div_real_real (r1: real, r2: real): real
+overload / with div_real_real
+
+// this one is name [rem] in [smlbas]
+fun mod_real_real (r1: real, r2: real): real
+overload mod with mod_real_real
+
+(* ****** ****** *)
+
+fun muladd_real_real (r1: real, r2: real, r3: real): real
+fun mulsub_real_real (r1: real, r2: real, r3: real): real
+
+(* ****** ****** *)
+
+fun neg_real (r: real): real
+fun abs_real (r: real): real
+
+(* ****** ****** *)
+
+fun lt_real_real (r1: real, r2: real): bool
+overload < with lt_real_real
+
+fun lte_real_real (r1: real, r2: real): bool
+overload <= with lte_real_real
+
+fun gt_real_real (r1: real, r2: real): bool
+overload > with gt_real_real
+
+fun gte_real_real (r1: real, r2: real): bool
+overload >= with gte_real_real
+
+fun eq_real_real (r1: real, r2: real): bool
+overload = with eq_real_real
+
+fun neq_real_real (r1: real, r2: real): bool
+overload <> with neq_real_real
+
+fun compare_real_real (r1: real, r2: real): int
+
+(* ****** ****** *)
+
+fun min_real_real (r1: real, r2: real): real
+overload min with min_real_real
+
+fun max_real_real (r1: real, r2: real): real
+overload max with max_real_real
+
+(* ****** ****** *)
+
+fun realCeil (r: real): real
+fun realFloor (r: real): real
+fun realRound (r: real): real
+fun realTrunc (r: real): real
+
+(* ****** ****** *)
+
 (* end of [real.sats] *)
 
 

@@ -44,14 +44,67 @@
 
 (* ****** ****** *)
 
+staload MATH = "libc/SATS/math.sats"
+
+(* ****** ****** *)
+
 staload "libats/smlbas/SATS/real.sats"
 
 (* ****** ****** *)
 
-assume real = double
+// please note that this does not really
+assume real = double // implement the specification given in [smlbas].
+
+(* ****** ****** *)
+
+implement real_of_double (x) = x // cast function
+implement double_of_real (x) = x // cast function
+
+(* ****** ****** *)
+
+implement add_real_real (r1, r2) = add_double_double (r1, r2)
+implement sub_real_real (r1, r2) = sub_double_double (r1, r2)
+implement mul_real_real (r1, r2) = mul_double_double (r1, r2)
+implement div_real_real (r1, r2) = div_double_double (r1, r2)
+implement mod_real_real (r1, r2) = $MATH.fmod (r1, r2)
+
+(* ****** ****** *)
+
+implement muladd_real_real (r1, r2, r3) =
+  add_double_double (mul_double_double (r1, r2), r3)
+
+implement mulsub_real_real (r1, r2, r3) =
+  sub_double_double (mul_double_double (r1, r2), r3)
+
+(* ****** ****** *)
+
+implement neg_real (r) = neg_double (r)
+implement abs_real (r) = abs_double (r)
+
+(* ****** ****** *)
+
+implement lt_real_real (r1, r2) = lt_double_double (r1, r2)
+implement lte_real_real (r1, r2) = lte_double_double (r1, r2)
+implement gt_real_real (r1, r2) = gt_double_double (r1, r2)
+implement gte_real_real (r1, r2) = gte_double_double (r1, r2)
+
+implement eq_real_real (r1, r2) = eq_double_double (r1, r2)
+implement neq_real_real (r1, r2) = neq_double_double (r1, r2)
+
+implement compare_real_real (r1, r2) = compare_double_double (r1, r2)
+
+(* ****** ****** *)
+
+implement min_real_real (r1, r2) = min_double_double (r1, r2)
+implement max_real_real (r1, r2) = max_double_double (r1, r2)
+
+(* ****** ****** *)
+
+implement realCeil (r) = $MATH.ceil (r)
+implement realFloor (r) = $MATH.floor (r)
+implement realRound (r) = $MATH.round (r)
+implement realTrunc (r) = $MATH.trunc (r)
 
 (* ****** ****** *)
 
 (* end of [real.dats] *)
-
-

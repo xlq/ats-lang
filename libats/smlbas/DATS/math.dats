@@ -86,16 +86,7 @@ implement pow (x, y) = d2r ($LM.pow (r2d x, r2d y))
 (* ****** ****** *)
 
 implement ln (x) = d2r ($LM.log (r2d x))
-
-local
-
-val ln10 = $LM.log (10.0)
-
-in // in of [local]
-
-implement log10 (x) = d2r ($LM.log (r2d x) / ln10)
-
-end // end of [local]
+implement log10 (x) = d2r ($LM.log10 (r2d x))
 
 (* ****** ****** *)
 

@@ -68,6 +68,18 @@ fun floorl (ld: ldouble):<> ldouble = "atslib_floorl"
 
 (* ****** ****** *)
 
+fun round (d: double):<> double = "atslib_round"
+fun roundf (f: float):<> float = "atslib_roundf"
+fun roundl (ld: ldouble):<> ldouble = "atslib_roundl"
+
+(* ****** ****** *)
+
+fun trunc (d: double):<> double = "atslib_trunc"
+fun truncf (f: float):<> float = "atslib_truncf"
+fun truncl (ld: ldouble):<> ldouble = "atslib_truncl"
+
+(* ****** ****** *)
+
 fun fmod (d1: double, d2: double):<> double = "atslib_fmod"
 fun fmodf (f1: float, f2: float):<> float = "atslib_fmodf"
 fun fmodl (ld1: ldouble, ld2: ldouble):<> ldouble = "atslib_fmodl"
