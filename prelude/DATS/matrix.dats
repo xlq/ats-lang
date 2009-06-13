@@ -128,14 +128,15 @@ ats_size_type ats_matrix_natdiv (ats_size_type i, ats_size_type n) {
 infixl ( * ) szmul2; infixl ( mod ) szmod1
 
 implement matrix_make_fun_tsz__main
-  {a} {v} {vt} {m,n} {f:eff} (pf | m, n, f, tsz, env) = let
+  {a} {v} {vt} {m,n} (pf | m, n, f, tsz, env) = let
   val [mn:int] (pf_mul | mn) = m szmul2 n
   prval () = mul_nat_nat_nat pf_mul
   val (pf_gc, pf_arr | p_arr) = array_ptr_alloc_tsz {a} (mn, tsz)
   prval () = free_gc_elim {a} (pf_gc) // return the certificate
-  viewtypedef fun_t = (!v | &(a?) >> a, sizeLt m, natLt n, !vt) -<f> void
+  viewtypedef fun_t =
+    (!v | &(a?) >> a, sizeLt m, natLt n, !vt) -<> void
   var !p_f1 = @lam
-    (pf: !v | x: &(a?) >> a, i: sizeLt mn, env: !vt): void =<clo,f> let
+    (pf: !v | x: &(a?) >> a, i: sizeLt mn, env: !vt): void =<clo> let
     val d = natdiv (pf_mul | i, n) and r = i szmod1 n
   in
     f (pf | x, d, r, env)
@@ -148,6 +149,29 @@ implement matrix_make_fun_tsz__main
 in @{
   data= p_arr, view= pf_mat_box
 } end // end of [matrix_make_fun_tsz__main]
+
+(* ****** ****** *)
+
+implement matrix_make_clo_tsz
+  {a} {v} {m,n} (pf1 | m, n, f, tsz) = M where {
+  stavar l_f: addr
+  val p_f: ptr l_f = &f
+  typedef clo_t = (!v | &(a?) >> a, sizeLt m, sizeLt n) -<clo> void
+  viewdef V = (v, clo_t @ l_f)
+  fn app (
+      pf: !V
+    | x: &(a?) >> a, i: sizeLt m, j: sizeLt n, p_f: !ptr l_f
+    ) :<> void = let
+    prval (pf1, pf2) = pf
+    val () = !p_f (pf1 | x, i, j)
+    prval () = pf := (pf1, pf2)
+  in
+    // nothing
+  end // end of [app]
+  prval pf = (pf1, view@ f)
+  val M = matrix_make_fun_tsz__main {a} {V} {ptr l_f} (pf | m, n, app, tsz, p_f)
+  prval () = (pf1 := pf.0; view@ f := pf.1)
+} // end of [matrix_make_clo_tsz]  
 
 (* ****** ****** *)
 

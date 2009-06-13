@@ -94,14 +94,24 @@ macdef matrix (m, n) A = matrix_make_arraysize (,(m), ,(n)) ,(A)
 fun{a:t@ype} matrix_make_elt {m,n:pos}
   (row: size_t m, col: size_t n, elt: a):<> matrix (a, m, n)
 
+(* ****** ****** *)
+
 fun matrix_make_fun_tsz__main
-  {a:viewt@ype} {v:view} {vt:viewtype} {m,n:pos} {f:eff} (
+  {a:viewt@ype} {v:view} {vt:viewtype} {m,n:pos} (
     pf: !v
   | row: size_t m, col: size_t n
-  , f: (!v | &(a?) >> a, sizeLt m, sizeLt n, !vt) -<f> void
+  , f: (!v | &(a?) >> a, sizeLt m, sizeLt n, !vt) -<> void
   , tsz: sizeof_t a
   , env: !vt
-  ) :<f> matrix (a, m, n)
+  ) :<> matrix (a, m, n)
+
+fun matrix_make_clo_tsz
+  {a:viewt@ype} {v:view} {m,n:pos} (
+    pf: !v
+  | row: size_t m, col: size_t n
+  , f: &(!v | &(a?) >> a, sizeLt m, sizeLt n) -<clo> void
+  , tsz: sizeof_t a
+  ) :<> matrix (a, m, n)
 
 (* ****** ****** *)
 
