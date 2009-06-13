@@ -18,5 +18,11 @@ libats/smlbas/DATS/list.dats
 libats/smlbas/SATS/listPair.sats
 libats/smlbas/DATS/listPair.dats
 
+libats/smlbas/SATS/math.sats
+libats/smlbas/DATS/math.dats
+
+libats/smlbas/SATS/real.sats
+libats/smlbas/DATS/real.dats
+
 libats/smlbas/SATS/string.sats
 libats/smlbas/DATS/string.dats
