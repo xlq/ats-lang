@@ -176,17 +176,15 @@ end // end of [array_ptr_initialize_fun_tsz]
 (* ****** ****** *)
 
 implement array_ptr_initialize_clo_tsz
-  {a} {n} {f} (base, asz, f, tsz) = let
+  {a} {v} {n} (pf | base, asz, f, tsz) = let
   val p_f = &f; prval pf_f = view@ f
-  viewtypedef clo_t = (&(a?) >> a, sizeLt n) -<clo,f> void
-  viewtypedef clo1_t = (!unit_v | &(a?) >> a, sizeLt n, !Ptr) -<clo,f> void
+  viewtypedef clo_t = (!v | &(a?) >> a, sizeLt n) -<clo> void
+  viewtypedef clo1_t = (!v | &(a?) >> a, sizeLt n, !Ptr) -<clo> void
   prval pf1_f = coerce (pf_f) where {
     extern praxi coerce {l:addr} (pf: clo_t @ l): clo1_t @ l
   } // end of [prval]
-  prval pf = unit_v ()
   val () = array_ptr_initialize_clo_tsz__main
-    {a} {unit_v} {Ptr} (pf | base, asz, !p_f, tsz, null)
-  prval unit_v () = pf
+    {a} {v} {Ptr} (pf | base, asz, !p_f, tsz, null)
   prval pf_f = coerce (pf1_f) where {
     extern praxi coerce {l:addr} (pf: clo1_t @ l): clo_t @ l
   } // end of [prval]
@@ -198,16 +196,17 @@ end // end of [array_ptr_initialize_clo_tsz]
 (* ****** ****** *)
 
 implement array_ptr_clear_clo_tsz
-  {a} {n} {f} (base, asz, f, tsz) = let
+  {a} {v} {n} (pf | base, asz, f, tsz) = let
   fun clear {n:nat} {l:addr} .<n>. (
+      pf: !v,
       pf_arr: !array_v (a, n, l) >> array_v (a?, n, l)
     | p_arr: ptr l, n: size_t n
-    , f: &(&a >> a?) -<clo,f> void, tsz: sizeof_t a
-    ) :<f> void =
+    , f: &(!v | &a >> a?) -<clo> void, tsz: sizeof_t a
+    ) :<> void =
     if n > 0 then let
       prval (pf1_at, pf2_arr) = array_v_uncons {a} (pf_arr)
-      val () = f (!p_arr)
-      val () = clear (pf2_arr | p_arr + tsz, n-1, f, tsz)
+      val () = f (pf | !p_arr)
+      val () = clear (pf, pf2_arr | p_arr + tsz, n-1, f, tsz)
     in
       pf_arr := array_v_cons {a?} (pf1_at, pf2_arr)
     end else let
@@ -217,7 +216,7 @@ implement array_ptr_clear_clo_tsz
     end // end of [if]
   // end of [clear]
 in
-  clear (view@ base | &base, asz, f, tsz)
+  clear (pf, view@ base | &base, asz, f, tsz)
 end // end of [array_ptr_clear_clo_tsz]
 
 (* ****** ****** *)
@@ -289,10 +288,10 @@ in
   @{ data= p_arr, view= pfbox }
 end // end of [array_make_lst]
 
-implement array_make_clo_tsz {a} (asz, f, tsz) = let
+implement array_make_clo_tsz {a} (pf | asz, f, tsz) = let
   val (pf_gc, pf_arr | p_arr) = array_ptr_alloc_tsz {a} (asz, tsz)
   prval () = free_gc_elim {a} (pf_gc) // return the certificate to GC
-  val () = array_ptr_initialize_clo_tsz {a} (!p_arr, asz, f, tsz)
+  val () = array_ptr_initialize_clo_tsz {a} (pf | !p_arr, asz, f, tsz)
   val (pfbox | ()) = vbox_make_view_ptr (pf_arr | p_arr)
 in
   @{ data= p_arr, view= pfbox }

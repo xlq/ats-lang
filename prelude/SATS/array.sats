@@ -178,34 +178,38 @@ fun array_ptr_initialize_fun_tsz
 
 // implemented in [prelude/DATS/array.dats]
 fun array_ptr_initialize_clo_tsz__main
-  {a:viewt@ype} {v:view} {vt:viewtype} {n:nat} {f:eff} (
+  {a:viewt@ype} {v:view} {vt:viewtype} {n:nat} (
     pf: !v
   | base: &(@[a?][n]) >> @[a][n]
   , asz: size_t n
-  , f: &(!v | &(a?) >> a, sizeLt n, !vt) -<clo,f> void
+  , f: &(!v | &(a?) >> a, sizeLt n, !vt) -<clo> void
   , tsz: sizeof_t a
   , env: !vt
-  ) :<f> void
+  ) :<> void
   = "atspre_array_ptr_initialize_clo_tsz__main"
 
 // implemented in [prelude/DATS/array.dats]
-fun array_ptr_initialize_clo_tsz {a:viewt@ype} {n:nat} {f:eff} (
-    base: &(@[a?][n]) >> @[a][n]
+fun array_ptr_initialize_clo_tsz
+  {a:viewt@ype} {v:view} {n:nat} (
+    pf: !v 
+  | base: &(@[a?][n]) >> @[a][n]
   , asz: size_t n
-  , f: &(&(a?) >> a, sizeLt n) -<clo,f> void
+  , f: &(!v | &(a?) >> a, sizeLt n) -<clo> void
   , tsz: sizeof_t a
-  ) :<f> void
+  ) :<> void
   = "atspre_array_ptr_initialize_clo_tsz"
 
 (* ****** ****** *)
 
 // implemented in [prelude/DATS/array.dats]
-fun array_ptr_clear_clo_tsz {a:viewt@ype} {n:nat} {f:eff} (
-    base: &(@[a][n]) >> @[a?][n]
+fun array_ptr_clear_clo_tsz
+  {a:viewt@ype} {v:view} {n:nat} (
+    pf: !v
+  | base: &(@[a][n]) >> @[a?][n]
   , asz: size_t n
-  , f: &(&a >> a?) -<clo,f> void
+  , f: &(!v | &a >> a?) -<clo> void
   , tsz: sizeof_t (a)
-  ) :<f> void
+  ) :<> void
   = "atspre_array_ptr_clear_clo_tsz"
 
 (* ****** ****** *)
@@ -430,13 +434,16 @@ fun{a:viewt@ype} array_make_lst_vt {n:nat}
 
 (* ****** ****** *)
 
-fun array_make_clo_tsz {a:viewt@ype} {n:nat} {f:eff} (
-    asz: size_t n
-  , f: &(&(a?) >> a, sizeLt n) -<clo,f> void
+fun array_make_clo_tsz
+  {a:viewt@ype} {v:view} {n:nat} (
+    pf: !v
+  | asz: size_t n
+  , f: &(!v | &(a?) >> a, sizeLt n) -<clo> void
   , tsz: sizeof_t a
-  ) :<f> array (a, n)
+  ) :<> array (a, n)
 
-fun array_make_cloref_tsz {a:viewt@ype} {n:nat} (
+fun array_make_cloref_tsz
+  {a:viewt@ype} {n:nat} (
     asz: size_t n
   , f: !(&(a?) >> a, sizeLt n) -<cloref1> void
   , tsz: sizeof_t a
