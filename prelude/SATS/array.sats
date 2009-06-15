@@ -233,34 +233,41 @@ prfun array_v_extend :
   {a:viewt@ype} {n:nat} {l:addr} {ofs:int}
     (MUL (n, sizeof a, ofs), array_v (a, n, l), a @ l+ofs) -<prf>
     array_v (a, n+1, l)
+// end of [array_v_extend]
 
 prfun array_v_unextend :
   {a:viewt@ype} {n:int | n > 0} {l:addr} {ofs:int}
     (MUL (n, sizeof a, ofs), array_v (a, n, l)) -<prf>
     (array_v (a, n-1, l), a @ l+ofs-sizeof a)
+// end of [array_v_unextend]
 
 prfun array_v_takeout :
   {a:viewt@ype} {n,i:nat | i < n} {l:addr} {ofs:int}
     (MUL (i, sizeof a, ofs), array_v (a, n, l)) -<prf>
     (a @ l+ofs, a @ l+ofs -<lin> array_v (a, n, l))
+// end of [array_v_takeout]
 
 prfun array_v_takeout2 :
   {a:viewt@ype} {n,i1,i2:nat | i1 < n; i2 < n; i1 <> i2} {l:addr} {ofs1,ofs2:int}
     (MUL (i1, sizeof a, ofs1), MUL (i2, sizeof a, ofs2), array_v (a, n, l)) -<prf>
     (a @ l+ofs1, a @ l+ofs2, (a @ l+ofs1, a @ l+ofs2) -<lin> array_v (a, n, l))
+// end of [array_v_takeout2]
 
 (* ***** ***** *)
 
 prfun array_v_clear :
   {a:t@ype} {n:nat} {l:addr} array_v (a, n, l) -<prf> array_v (a?, n, l)
+// end of [array_v_clear]
 
 (* ***** ***** *)
 
 prfun array_v_group : {a:viewt@ype} {m,n:nat} {l:addr} {mn:int}
   (MUL (m, n, mn) | array_v (a, mn, l)) -<prf> array_v (@[a][n], m, l)
+// end of [array_v_group]
 
 prfun array_v_ungroup : {a:viewt@ype} {m,n:nat} {l:addr} {mn:int}
   (MUL (m, n, mn) | array_v (@[a][n], m, l)) -<prf> array_v (a, mn, l)
+// end of [array_v_ungroup]
 
 (* ****** ****** *)
 
@@ -300,8 +307,8 @@ fun{a:viewt@ype} array_ptr_takeout2
     )
 // end of [array_ptr_takeout2]
 
-fun array_ptr_takeout2_tsz
-  {a:viewt@ype} {n,i1,i2:nat | i1 < n; i2 < n; i1 <> i2} {l0:addr} (
+fun array_ptr_takeout2_tsz {a:viewt@ype}
+  {n,i1,i2:nat | i1 < n; i2 < n; i1 <> i2} {l0:addr} (
     pf: array_v (a, n, l0)
   | base: ptr l0
   , off1: size_t i1, off2: size_t i2
@@ -361,6 +368,7 @@ fun array_ptr_foreach_clo_tsz
     pf: !v
   | base: &(@[a][n]), f: &(!v | &a) -<clo> void, asz: size_t n, tsz: sizeof_t a
   ) :<> void
+// end of [array_ptr_foreach_clo_tsz]
 
 (* ****** ****** *)
 
@@ -386,6 +394,7 @@ fun array_ptr_iforeach_clo_tsz
   | base: &(@[a][n])
   , f: &(!v | sizeLt n, &a) -<clo> void, asz: size_t n, tsz: sizeof_t a
   ) :<> void
+// end of [array_ptr_iforeach_clo_tsz]
 
 (* ****** ****** *)
 
@@ -420,13 +429,17 @@ macdef array (x) = array_make_arraysize ,(x)
 
 (* ****** ****** *)
 
-fun{a:t@ype} array_make_elt {n:nat} (asz: size_t n, elt: a):<> array (a, n)
+fun{a:t@ype} array_make_elt
+  {n:nat} (asz: size_t n, elt: a):<> array (a, n)
+// end of [array_make_elt]
 
 fun{a:t@ype} array_make_lst {n:nat}
   (asz: size_t n, xs: list (a, n)):<> array (a, n)
+// end of [array_make_lst]
 
 fun{a:viewt@ype} array_make_lst_vt {n:nat}
   (asz: size_t n, xs: list_vt (a, n)):<> array (a, n)
+// end of [array_make_lst_vt]
 
 (* ****** ****** *)
 
@@ -437,11 +450,15 @@ fun array_make_clo_tsz
   , f: &(!v | &(a?) >> a, sizeLt n) -<clo> void
   , tsz: sizeof_t a
   ) :<> array (a, n)
+// end of [array_make_clo_tsz]
 
 fun array_make_cloref_tsz
   {a:viewt@ype} {n:nat} (
-    asz: size_t n, f: (&(a?) >> a, sizeLt n) -<cloref1> void, tsz: sizeof_t a
+    asz: size_t n
+  , f: (&(a?) >> a, sizeLt n) -<cloref1> void
+  , tsz: sizeof_t a
   ) :<fun1> array (a, n)
+// end of [array_make_cloref_tsz]
 
 (* ****** ****** *)
 
@@ -455,6 +472,7 @@ overload [] with array_set_elt_at
 
 fun{a:viewt@ype} array_xch_elt_at {n:nat}
   {i:nat | i < n} (A: array (a, n), i: size_t i, x: &a):<!ref> void
+// end of [array_xch_elt_at]
 
 (* ****** ****** *)
 
@@ -468,6 +486,7 @@ overload [] with array_set_elt_at__intsz
 
 fun{a:viewt@ype} array_xch_elt_at__intsz {n:nat}
   {i:nat | i < n} (A: array (a, n), i: int i, x: &a):<!ref> void
+// end of [array_xch_elt_at__intsz]
 
 (* ****** ****** *)
 
@@ -485,18 +504,22 @@ fun{a:viewt@ype} array_foreach__main {v:view} {vt:viewtype} {n:nat} (
   | A: array (a, n)
   , f: (!v | &a, !vt) -<> void, asz: size_t n, env: !vt
   ) :<!ref> void
+// end of [array_foreach__main]
 
 fun{a:viewt@ype} array_foreach_fun {v:view} {n:nat} (
     pf: !v | A: array (a, n), f: (!v | &a) -<fun> void, asz: size_t n
   ) :<!ref> void
+// end of [array_foreach_fun]
 
 fun{a:viewt@ype} array_foreach_clo {v:view} {n:nat} (
     pf: !v | A: array (a, n), f: &(!v | &a) -<clo> void, asz: size_t n
   ) :<!ref> void
+// end of [array_foreach_clo]
 
 fun{a:viewt@ype} array_foreach_cloref {n:nat} (
     A: array (a, n), f: (&a) -<cloref1> void, asz: size_t n
   ) :<fun1> void
+// end of [array_foreach_cloref]
 
 (* ****** ****** *)
 
@@ -511,18 +534,22 @@ fun{a:viewt@ype} array_iforeach__main {v:view} {vt:viewtype} {n:nat} (
   , asz: size_t n
   , env: !vt
   ) :<!ref> void
+// end of [array_iforeach__main]
 
 fun{a:viewt@ype} array_iforeach_fun {v:view} {n:nat} (
     pf: !v | A: array (a, n), f: (!v | sizeLt n, &a) -<fun> void, asz: size_t n
   ) :<!ref> void
+// end of [array_iforeach_fun]
 
 fun{a:viewt@ype} array_iforeach_clo {v:view} {n:nat} (
     pf: !v | A: array (a, n), f: &(!v | sizeLt n, &a) -<clo> void, asz: size_t n
   ) :<!ref> void
+// end of [array_iforeach_clo]
 
 fun{a:viewt@ype} array_iforeach_cloref {n:nat} (
     A: array (a, n), f: (sizeLt n, &a) -<cloref> void, asz: size_t n
   ) :<fun1> void
+// end of [array_iforeach_cloref]
 
 (* ****** ****** *)
 

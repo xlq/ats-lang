@@ -42,6 +42,7 @@
 /* ****** ****** */
 
 #include "ats_types.h"
+#include "ats_memory.h"
 
 /* ****** ****** */
 

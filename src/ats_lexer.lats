@@ -27,7 +27,6 @@
 ** along  with  ATS;  see the  file COPYING.  If not, please write to the
 ** Free Software Foundation,  51 Franklin Street, Fifth Floor, Boston, MA
 ** 02110-1301, USA.
-**
 *)
 
 (* ****** ****** *)
@@ -697,8 +696,10 @@ end // end of [char_for_oct_code_3]
 (* ****** ****** *)
 
 fn int_of_xdigit (c: char): int =
-  if char_isdigit c then c - '0' else
-    (if char_isupper c then c - 'A' else c - 'a')
+  if char_isdigit c then c - '0' else begin
+    if char_isupper c then 10 + (c - 'A') else 10 + (c - 'a')
+  end (* end of [if] *)
+(* end of [int_of_xdigit] *)    
 
 fn char_for_hex_code_1 (i: int): char = let
   val d0 = int_of_xdigit (lexeme_get i) in char_of_int d0
