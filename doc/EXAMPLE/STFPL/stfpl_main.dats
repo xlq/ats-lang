@@ -11,20 +11,22 @@
 
 (* ****** ****** *)
 
-//
-// A parser for STFPL (a simple typed functional programming language)
-// The code was originally written by Hongwei Xi in May 2005
-//
+dynload "error.dats"
+dynload "symbol.dats"
+dynload "absyn.dats"
+dynload "fixity.dats"
+dynload "parser.dats"
+
+dynload "PARCOMB/posloc.dats"
+dynload "PARCOMB/tokenize.dats"
+dynload "PARCOMB/parcomb.dats"
 
 (* ****** ****** *)
 
-staload "absyn.sats"
+implement main () = () where {
+
+} // end of [main]
 
 (* ****** ****** *)
 
-fun parse_from_stdin (): e0xp
-fun parse_from_file (filename: string): e0xp
-
-(* ****** ****** *)
-
-(* end of [parser.sats] *)
+(* end of [stfpl_main] *)

@@ -15,7 +15,7 @@ staload "symbol.sats"
 
 (* ****** ****** *)
 
-staload H = "LIB/hashtable.dats"
+staload H = "HASHTABLE/hashtable.dats"
 
 staload _ = "prelude/DATS/reference.dats"
 
@@ -97,10 +97,6 @@ end // end of [local]
 implement symbol_INT = symbol_make_name "int"
 implement symbol_STRING = symbol_make_name "string"
 implement symbol_UNIT = symbol_make_name "unit"
-
-(* ****** ****** *)
-
-staload H = "LIB/hashtable.dats"
 
 (* ****** ****** *)
 

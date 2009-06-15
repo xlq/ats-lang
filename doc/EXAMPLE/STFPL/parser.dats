@@ -18,6 +18,365 @@
 
 (* ****** ****** *)
 
+staload "error.sats"
+
+staload "PARCOMB/posloc.sats"
+staload "PARCOMB/tokenize.sats"
+
+staload "fixity.sats"
+
+(* ****** ****** *)
+
+staload "PARCOMB/parcomb.sats" ;
+staload _(*anonymous*) = "PARCOMB/parcomb.dats" ;
+
+(* ****** ****** *)
+
+staload _(*anonymous*) = "prelude/SATS/file.sats" // for [stdio.cats]?
+
+staload _(*anonymous*) = "prelude/DATS/array.dats"
+staload _(*anonymous*) = "prelude/DATS/list.dats"
+
+(* ****** ****** *)
+
+staload "absyn.sats"
+staload "symbol.sats"
+
+(* ****** ****** *)
+
+staload "parser.sats"
+
+(* ****** ****** *)
+
+infix (|| + 1) wth
+infixl (&& + 2) <<; infixr (&& + 1) >>
+postfix ^* ^+ ^?
+
+(* ****** ****** *)
+
+typedef P (a: t@ype) = parser_t (a, token)
+typedef LP (a: t@ype) = lazy (parser_t (a, token))
+
+(* ****** ****** *)
+
+val anytoken = any_parser<token> ()
+val anyopttoken = anyopt_parser<token> ()
+
+(* ****** ****** *)
+
+fn litchar (c0: char): P token =
+  anytoken \sat (lam (tok: token): bool =<cloref>
+    case+ tok.token_node of TOKsingleton c => c0 = c | _ => false
+  )
+
+val LPAREN = litchar '\('
+val RPAREN = litchar ')'
+val LBRACKET = litchar '\['
+val RBRACKET = litchar ']'
+val LBRACE = litchar '\{'
+val RBRACE = litchar '}'
+
+val COMMA = litchar ','
+val SEMICOLON = litchar ';'
+
+(* ****** ****** *)
+
+fn litident (name0: string): P token =
+  anytoken \sat (lam (tok: token): bool =<cloref>
+    case+ tok.token_node of TOKide name => name0 = name | _ => false
+  )
+// end of [litident]
+
+//
+
+val COLON = litident ":"
+val DOT = litident "."
+
+val UMINUS = litident "~"
+
+val PLUS = litident "+"
+val MINUS = litident "-"
+val TIMES = litident "*"
+val DIVIDE = litident "/"
+
+val EQ = litident "="
+val NEQ = litident "<>"
+val COLONEQ = litident ":="
+
+val GTEQ = litident ">="
+val GT = litident ">"
+val LTEQ = litident "<="
+val LT = litident "<"
+
+val AMP = litident "&"
+val BAR = litident "|"
+
+//
+
+val AND = litident"and"
+val APP = litident"app"
+val ELSE = litident"else"
+val END = litident"end"
+val FALSE = litident"false"
+val FI = litident"fi"
+val FN = litident"fn"
+val FUN = litident"fun"
+val IF = litident"if"
+val IN = litident"in"
+val LAM = litident"lam"
+val LET = litident"let"
+val PRINT = litident"print"
+val THEN = litident"then"
+val TRUE = litident"true"
+
+(* ****** ****** *)
+
+local
+
+val arrsz = $arrsz {string} (
+  "and"
+, "else"
+, "end"
+, "fun"
+, "if"
+, "in"
+, "lam"
+, "let"
+, "then"
+, "|", "&"
+, ".", ":"
+, "+", "-", "/", "*"
+, "=",":="
+, ">=", ">", "<=", "<", "<>"
+) // end of [arrsz]
+
+in // in of [local]
+
+val theKeywordArrSz = arrsz.3
+val theKeywordArray = array_make_arraysize {string} arrsz
+
+end // end of [local]
+
+(* ****** ****** *)
+
+fn isKeyword
+  (name0: string):<> bool = ans where {
+  var i: Nat = 0 and ans: bool = false
+  val () = $effmask_all (
+    while (i < theKeywordArrSz) let
+      val name = theKeywordArray[i] in
+      if name0 = name then (ans := true; break); i := i+1
+    end // end of [while]
+  ) // end of [val]
+} (* end of [isKeyword] *)
+
+(* ****** ****** *)
+
+val p_ident: P token =
+  anytoken \sat (lam (tok: token): bool =<fun> case+ tok.token_node of
+    | TOKide name => if isKeyword name then false else true | _ => false
+  )
+// end of [p_ident]
+
+val p_number: P token =
+  anytoken \sat (lam (tok: token): bool =<fun>
+    case+ tok.token_node of TOKint _ => true | _ => false
+  )
+// end of [p_number]
+
+val p_string: P token =
+  anytoken \sat (lam (tok: token): bool =<fun>
+    case+ tok.token_node of TOKstr _ => true | _ => false
+  )
+// end of [p_string]
+
+(* ****** ****** *)
+
+local
+
+#define PLUS_precedence 40
+#define MINUS_precedence 40
+
+#define TIMES_precedence 60
+#define DIVIDE_precedence 60
+
+#define UMINUS_precedence 80
+
+#define EQ_precedence 20
+#define NEQ_precedence 20
+
+#define GTEQ_precedence 20
+#define GT_precedence 20
+#define LTEQ_precedence 20
+#define LT_precedence 20
+
+#define AMP_precedence 9
+#define BAR_precedence 8
+
+#define L LeftAssoc; #define R RightAssoc; #define N NonAssoc
+
+in // in of [local]
+
+val p_oper: P (fixopr e0xp) = begin
+  PLUS wth (
+    lam (tok: token) =<fun> f_infix (tok, L, PLUS_precedence, OPRplus)
+  ) ||
+  MINUS wth (
+    lam (tok: token) =<fun> f_infix (tok, L, MINUS_precedence, OPRminus)
+  ) ||
+  TIMES wth (
+    lam (tok: token) =<fun> f_infix (tok, L, TIMES_precedence, OPRtimes)
+  ) ||
+  DIVIDE wth (
+    lam (tok: token) =<fun> f_infix (tok, L, DIVIDE_precedence, OPRslash)
+  ) ||
+  GTEQ wth (
+    lam (tok: token) =<fun> f_infix (tok, N, GTEQ_precedence, OPRgte)
+  ) ||
+  GT wth (
+    lam (tok: token) =<fun> f_infix (tok, N, GT_precedence, OPRgt)
+  ) ||
+  LTEQ wth (
+    lam (tok: token) =<fun> f_infix (tok, N, LTEQ_precedence, OPRlte)
+  ) ||
+  LT wth (
+    lam (tok: token) =<fun> f_infix (tok, N, LT_precedence, OPRlte)
+  ) ||
+  EQ wth (
+    lam (tok: token) =<fun> f_infix (tok, N, EQ_precedence, OPReq)
+  ) ||
+  NEQ wth (
+    lam (tok: token) =<fun> f_infix (tok, N, NEQ_precedence, OPRneq)
+  ) ||
+  UMINUS wth (
+    lam (tok: token) =<fun> f_prefx (tok, UMINUS_precedence, OPRuminus)
+  )
+end where {
+  fn f_prefx
+    (tok: token, prec: int, opr: opr)
+    :<> fixopr e0xp = let
+    val tok_loc = tok.token_loc
+    val f = lam (e: e0xp): e0xp =<cloref> let
+      val loc = location_combine (tok_loc, e.e0xp_loc)
+    in
+      e0xp_make_opr (loc, opr, '[e])
+    end // end of [f]
+  in
+    Prefix (tok.token_loc, prec, f)
+  end // end of [f_minus]
+  fn f_infix
+    (tok: token, assoc: assoc, prec: int, opr: opr)
+    :<> fixopr e0xp = let
+    val f = lam
+      (e1: e0xp, e2: e0xp): e0xp =<cloref> let
+      val loc = location_combine (e1.e0xp_loc, e2.e0xp_loc) in
+      e0xp_make_opr (loc, opr, '[e1, e2])
+    end // end of [f]
+  in
+    Infix (tok.token_loc, prec, assoc, f)
+  end // end of [f_infix]
+} (* end of [where] *)
+
+end // end of [local]
+  
+(* ****** ****** *)
+
+fn symbol_make_token
+  (tok: token):<> sym = let
+  val- TOKide name = tok.token_node
+in
+  $effmask_all (symbol_make_name name)
+end // end of [symbol_make_token]
+
+(* ****** ****** *)
+
+extern fun lp_e0xp: LP (e0xp) 
+
+(* ****** ****** *)
+
+extern fun parse_failure
+  (tks: stream token, ncur: int, nmax: int): void
+
+implement parse_failure (tks, ncur, nmax) = let
+  fun loop
+    (tks: stream token, n: int): Option_vt (token) =
+    case+ !tks of
+    | stream_cons (tk, tks) =>
+        if n > 0 then loop (tks, n-1) else Some_vt (tk)
+    | stream_nil () => None_vt ()
+  // end of [loop]
+  val otk = loop (tks, nmax - ncur)
+in
+  case+ otk of
+  | ~Some_vt tk => begin
+      prerr_location tk.token_loc;
+      prerr ": exit(TIGER)";
+      prerr ": parsing failure";
+      prerr_newline ()
+    end // end of [Some_vt]
+  | ~None_vt () => begin
+      prerr ": exit(TIGER)";
+      prerr ": parsing failure at the end of the token stream.";
+      prerr_newline ()
+    end // end of [None_vt]
+end // end of [parse_failure]
+
+(* ****** ****** *)
+
+fn parse_from_charstream (cs: stream char): e0xp = let
+  val tks0 = tokenstream_make_charstream (cs)
+  var tks: stream token = tks0
+  var ncur: int = 0 and nmax: int = 0
+  val r = apply_parser (!lp_e0xp, tks, ncur, nmax)
+  val res = (case+ r of
+    | ~Some_vt e => e
+    | ~None_vt _ => let
+        val () = parse_failure (tks, ncur, nmax) in abort {e0xp} (1)
+      end // end of [Fail]
+  ) : e0xp // end of [val]
+  val otk = stream_item_get<token> (tks)
+  val () = (case+ otk of
+    | ~Some_vt tk => begin
+        prerr_location tk.token_loc;
+        prerr ": exit(TIGER)";
+        prerr ": parsing failure: unconsumed token";
+        prerr_newline ();
+        abort {void} (1)
+      end // end of [Some]
+    // there are no unconsumed tokens
+    | ~None_vt () => ()
+  ) : void // end of [token]
+in
+  res
+end // end of [parse_from_charstream]
+
+(* ****** ****** *)
+
+implement parse_from_stdin () = let
+  val () = filename_push (filename_stdin)
+  val cs = char_stream_make_file stdin_ref
+  val res = parse_from_charstream (cs)
+  val () = filename_pop ()
+in
+  res
+end // end of [parse_from_stdin]
+
+implement parse_from_file (filename) = let
+  val fileref = open_file (filename, file_mode_r)
+  val () = filename_push (filename) where
+    { val filename = filename_make_string (filename) }
+  // end of [val]
+  val cs = char_stream_make_file fileref
+  val res: e0xp = parse_from_charstream (cs)
+  val () = filename_pop ()
+  // ALERT: this should not be called as [fileref] may
+  // val () = close_file (fileref) // have already been closed!!!
+in
+  res
+end // end of [parse_from_file]
+
+(* ****** ****** *)
+
 (* end of [parser.dats] *)
 
 ////
@@ -142,7 +501,7 @@ fun isIdent (c: Char): Bool =
 (*
  * aty = bool | int | string | (typ)
  * ty = aty | aty -> typ | aty * ... * aty
- *)
+
 
 fun aty (): Parser (ty, Token) =
   BOOL return (TYbase "bool") ||
@@ -365,19 +724,6 @@ and explist (): Parser (exp0s, Token) =
 
 fun error {a:type} (msg: String) (pos: Pos): a =
   ($Error.error "parser" msg pos; raise Fatal)
-
-//
-
-implement parseString (s): exp0 =
-  let
-     val s = $Input.readString s
-     val s = $Pos.markStream s
-     val ts = transform $Token.token s
-     val p = op-- {exp0,exp0,Token} (!exp, done)
- in
-     parseWith {exp0,exp0,Token}
-       (lam x => x, lam pos => error ("Syntax error") pos, p, ts)
-  end
 
 //
 
