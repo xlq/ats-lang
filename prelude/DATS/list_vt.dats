@@ -165,12 +165,12 @@ implement{a} list_vt_length (xs0) = loop (xs0, 0) where {
 
 (* ****** ****** *)
 
-implement{a} list_vt_make_elt (x, n) = let
+implement{a} list_vt_make_elt (x0, n) = let
   fun loop {i,j:nat} .<i>.
-    (i: int i, res: list_vt (a, j)):<> list_vt (a, i+j) =
-    if i > 0 then loop (i-1, list_vt_cons (x, res)) else res
+    (x0: a, i: int i, res: list_vt (a, j)):<> list_vt (a, i+j) =
+    if i > 0 then loop (x0, i-1, list_vt_cons (x0, res)) else res
 in
-  loop (n, list_vt_nil)
+  loop (x0, n, list_vt_nil)
 end // end of [list_make_elt]
 
 (* ****** ****** *)
