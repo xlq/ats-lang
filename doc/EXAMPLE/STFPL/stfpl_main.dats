@@ -11,6 +11,11 @@
 
 (* ****** ****** *)
 
+staload "absyn.sats"
+staload "parser.sats"
+
+(* ****** ****** *)
+
 dynload "error.dats"
 dynload "symbol.dats"
 dynload "absyn.dats"
@@ -24,7 +29,11 @@ dynload "PARCOMB/parcomb.dats"
 (* ****** ****** *)
 
 implement main () = () where {
-
+  val () = (print "stfpl_main: "; print_newline ())
+  val prog = parse_from_stdin ()
+  val () = print "prog =\n"
+  val () = fprint_e0xp (stdout_ref, prog) 
+  val () = print_newline ()
 } // end of [main]
 
 (* ****** ****** *)

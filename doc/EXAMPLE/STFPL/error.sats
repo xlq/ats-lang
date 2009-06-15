@@ -13,7 +13,7 @@
 
 exception Fatal of int (*errcode*)
 
-fun abort {a:viewt@ype} (err: int): a
+fun abort {a:viewt@ype} (err: int):<!exn> a
 
 (* ****** ****** *)
 

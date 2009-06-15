@@ -51,7 +51,6 @@ tigcomp: \
   hashtable_dats.o \
   linmap_randbst_dats.o \
 
-
 	atscc $(GCFLAG) -o tigcomp \
   tigerats_main_dats.o \
   error_sats.o error_dats.o \

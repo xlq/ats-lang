@@ -61,10 +61,10 @@ implement main () = () where {
   val () = print_newline ()
 //
   val words = tokens (lam (c) => c = '|', "|abc||efgh||ijk|")
-  val () = assert (words = 3)
+  val () = assert (list0_length words = 3)
   val () = $List.app<string> (lam s => (print "tokens="; print s; print_newline ()), words)
   val words = fields (lam (c) => c = '|', "|abc||efgh||ijk|")
-  val () = assert (words = 7)
+  val () = assert (list0_length words = 7)
   val () = $List.app<string> (lam s => (print "field="; print s; print_newline ()), words)
 //
   val abs = explode abs

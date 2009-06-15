@@ -111,10 +111,6 @@ implement symbol_SUBSTRING = symbol_make_name "substring"
 
 (* ****** ****** *)
 
-staload H = "LIB/hashtable.dats"
-
-(* ****** ****** *)
-
 local
 
 typedef sym = symbol_t

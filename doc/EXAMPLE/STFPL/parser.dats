@@ -113,6 +113,10 @@ val BAR = litident "|"
 
 //
 
+val MINUSGT = litident "->"
+
+//
+
 val AND = litident"and"
 val APP = litident"app"
 val ELSE = litident"else"
@@ -217,7 +221,7 @@ local
 
 in // in of [local]
 
-val p_oper: P (fixopr e0xp) = begin
+val p_opr: P (fixopr e0xp) = begin
   PLUS wth (
     lam (tok: token) =<fun> f_infix (tok, L, PLUS_precedence, OPRplus)
   ) ||
@@ -290,7 +294,177 @@ end // end of [symbol_make_token]
 
 (* ****** ****** *)
 
-extern fun lp_e0xp: LP (e0xp) 
+(*
+** ty0 = sym | (ty, ..., ty); ty = ty0 | ty0 -> ty
+*)
+
+typedef typc = typ -<cloref> typ
+
+val
+rec lp_typ: LP (typ) = $delay (
+  seq2wth_parser_fun (lzeta lp_typ1, lzeta lp_typc, f)
+) where {
+  val f = lam (t: typ, tc: typc) =<fun> tc (t) 
+} (* end of [lp_typ] *)
+
+and lp_typlist: LP typlst = $delay (
+  repeat0_sep_parser<typ,token> (!lp_typ, COMMA)
+) // end of [lp_typlst]
+
+and lp_typ1: LP (typ) = $delay (
+  p_ident wth f_ident ||
+  seq3wth_parser_fun (LPAREN, lzeta lp_typlist, RPAREN, f_seq)
+) where {
+  val f_ident = lam
+    (tk_id: token) =<> let
+    val loc = tk_id.token_loc; val sym_id = symbol_make_token tk_id
+  in
+    typ_make_sym (loc, sym_id)
+  end // end of [f_ident]
+  val f_seq = lam
+    (tk1: token, ts: typlst, tk2: token) =<> let
+    val loc = location_combine (tk1.token_loc, tk2.token_loc) in
+    typ_make_list (loc, ts)
+  end // end of [f_seq]  
+} (* end of [lp_typ1] *)
+
+and lp_typc: LP (typc) = $delay (
+  seq2wth_parser_fun (MINUSGT, !lp_typ, f)
+) where {
+  val f = lam
+    (_: token, t_res: typ): typc =<fun> (lam t_arg => let
+    val loc = location_combine (t_arg.typ_loc, t_res.typ_loc)
+    val ts_arg = (case+ t_arg.typ_node of
+      | TYPlist (ts_arg) => ts_arg | _ => list_cons (t_arg, list_nil)
+    ) : typlst // end of [val]  
+  in
+    typ_make_fun (loc, ts_arg, t_res)
+  end) // end of [val]
+} (* end of [lp_typc] *)
+
+(* ****** ****** *)
+
+val lp_typann: LP (typopt) = $delay (
+  seq2wth_parser_fun (COLON, !lp_typ, f_some) ||
+  return_parser (None ())
+) where {
+  val f_some = lam (_: token, t: typ) =<fun> Some (t)
+} // end of [lp_annty]
+
+(* ****** ****** *)
+
+val
+rec lp_e0xp
+  : LP (e0xp) = $delay (
+  lzeta lp_e0xp_if ||
+  lzeta lp_e0xp1
+) // end of [lp_e0xp]
+
+and lp_e0xplist: LP e0xplst = $delay (
+  repeat0_sep_parser<e0xp,token> (!lp_e0xp, COMMA)
+) // end of [p_explst]
+
+(* ****** ****** *)
+
+and lp_e0xp_if: LP e0xp = $delay (seq4wth_parser_fun
+  (IF, !lp_e0xp, THEN >> !lp_e0xp, (ELSE >> !lp_e0xp)^?, f_if)
+) where {
+  fn f_if
+    (tk_if: token, e1: e0xp, e2: e0xp, oe3: e0xpopt):<> e0xp = let
+    val loc = case+ oe3 of
+    | Some e3 => location_combine (tk_if.token_loc, e3.e0xp_loc)
+    | None () => location_combine (tk_if.token_loc, e2.e0xp_loc)
+  in
+    e0xp_make_if (loc, e1, e2, oe3)
+  end // end of [f_if]
+} // end of [lp_e0xp_if]
+
+(* ****** ****** *)
+  
+and lp_e0xp0: LP e0xp = $delay ( // ordering is significant!
+  TRUE wth f_true ||
+  FALSE wth f_false ||
+  p_ident wth f_var ||
+  p_number wth f_number ||
+  p_string wth f_string ||
+  seq3wth_parser_fun (LPAREN, !lp_e0xplist, RPAREN, f_list)
+) where {
+  fn f_var (tok: token):<> e0xp = let
+    val loc = tok.token_loc; val sym = symbol_make_token tok in
+    e0xp_make_var (loc, sym)
+  end // end of [f_string]
+  fn f_true (tok: token):<> e0xp = e0xp_make_bool (tok.token_loc, true)
+  fn f_false (tok: token):<> e0xp = e0xp_make_bool (tok.token_loc, false)
+  fn f_number (tok: token):<> e0xp = let
+    val loc = tok.token_loc; val- TOKint int = tok.token_node in
+    e0xp_make_int (loc, int)
+  end // end of [f_string]
+  fn f_string (tok: token):<> e0xp = let
+    val loc = tok.token_loc; val- TOKstr str = tok.token_node in
+    e0xp_make_str (loc, str)
+  end // end of [f_string]
+  fn f_list
+    (tk_beg: token, es: e0xplst, tk_end: token):<> e0xp = begin
+    case+ es of
+    | list_cons (e, list_nil ()) => e | _ => let
+        val loc = location_combine (tk_beg.token_loc, tk_end.token_loc)
+      in
+        e0xp_make_list (loc, es)
+      end // end of [_]
+  end // end of [f_seq]
+} // end of [lp_e0xp0]
+
+(* ****** ****** *)
+
+and lp_opre0xp0: LP (fixitm e0xp) = $delay (
+  p_opr wth f_opr || !lp_e0xp0 wth f_e0xp
+) where {
+  fn f_opr (opr: fixopr e0xp):<> fixitm e0xp =
+    FIXITMopr opr
+  fn f_e0xp (exp: e0xp):<> fixitm e0xp = FIXITMatm exp
+} // end of [lp_opre0xp0]
+
+(* ****** ****** *)
+
+and lp_e0xp1: LP (e0xp) = $delay (
+  (repeat1_parser !lp_opre0xp0) wth f
+) where {
+  typedef T = fixitm e0xp
+  fn err (loc: loc): e0xp = begin
+    prerr_location loc;
+    prerr ": exit(STFPL)";
+    prerr ": parsing failure: unresolved fixity";
+    prerr_newline ();
+    abort {e0xp} (1)
+  end // end [err]
+
+  fn fixitm_loc_get
+    (itm: fixitm e0xp):<> loc = case+ itm of
+    | FIXITMatm exp => exp.e0xp_loc
+    | FIXITMopr opr => fixopr_loc_get opr
+  // end of [fixitm_loc_get]
+
+  fn f (itms: List1 T):<> e0xp = let
+    val res = $effmask_all (fixity_resolve itms)
+  in
+    case+ res of
+    | ~Some_vt e => e | ~None_vt () => let
+        val+ list_cons (itm0, itms) = itms
+        val loc0 = fixitm_loc_get (itm0)
+        val loc01 = case+ itms of
+          | list_cons _ => let
+              val itm1 = list_last<T> (itms)
+              val loc1 = fixitm_loc_get itm1
+            in
+              location_combine (loc0, loc1)
+            end // end of [list_cons]
+          | list_nil () => loc0
+        // end of [val]
+      in
+        $effmask_all (err loc01) // report the error right here!
+      end // end of [None_vt]
+  end // end of [f]
+} // end of [lp_e0xp1]
 
 (* ****** ****** *)
 
@@ -310,12 +484,12 @@ in
   case+ otk of
   | ~Some_vt tk => begin
       prerr_location tk.token_loc;
-      prerr ": exit(TIGER)";
+      prerr ": exit(STFPL)";
       prerr ": parsing failure";
       prerr_newline ()
     end // end of [Some_vt]
   | ~None_vt () => begin
-      prerr ": exit(TIGER)";
+      prerr ": exit(STFPL)";
       prerr ": parsing failure at the end of the token stream.";
       prerr_newline ()
     end // end of [None_vt]
@@ -338,7 +512,7 @@ fn parse_from_charstream (cs: stream char): e0xp = let
   val () = (case+ otk of
     | ~Some_vt tk => begin
         prerr_location tk.token_loc;
-        prerr ": exit(TIGER)";
+        prerr ": exit(STFPL)";
         prerr ": parsing failure: unconsumed token";
         prerr_newline ();
         abort {void} (1)
@@ -749,3 +923,5 @@ implement parseFile (filename) =
      parseWith {exp0,exp0,Token}
        (lam x => x, lam pos => error ("Syntax error") pos, p, ts)
   end
+
+////
