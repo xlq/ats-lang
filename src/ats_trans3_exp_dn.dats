@@ -150,10 +150,10 @@ fn d2exp_s2eff_opt_of_d2exp
 implement d3exp_tr_dn (d3e, s2e) = let
 (*
   val () = begin
-    print "d3exp_tr_dn: d3e.d3exp_typ = "; print d3e.d3exp_typ; print_newline ()
+    prerr "d3exp_tr_dn: d3e.d3exp_typ = "; prerr d3e.d3exp_typ; prerr_newline ()
   end
   val () = begin
-    print "d3exp_tr_dn: s2e = "; print s2e; print_newline ()
+    prerr "d3exp_tr_dn: s2e = "; prerr s2e; prerr_newline ()
   end
 *)
 in
@@ -464,11 +464,11 @@ in
           val s2e_fats = s2exp_make_printf_c_argtypes fats
 (*
           val () = begin
-            print "d2exp_string_tr_dn: s2e_arg = "; print s2e_arg;
-            print_newline ();
-            print "d2exp_string_tr_dn: s2e_fats = "; print s2e_fats;
-            print_newline ();
-          end
+            prerr "d2exp_string_tr_dn: s2e_arg = "; prerr s2e_arg;
+            prerr_newline ();
+            prerr "d2exp_string_tr_dn: s2e_fats = "; prerr s2e_fats;
+            prerr_newline ();
+          end (* end of [val] *)
 *)
           (* printf_c_types_type is contravariant! *)
           val () = $SOL.s2exp_tyleq_solve (loc0, s2e_arg, s2e_fats)
@@ -493,10 +493,8 @@ end // end of [d2exp_string_tr_dn]
 implement d2exp_tr_dn (d2e0, s2e0) = let
 (*
 val () = begin
-  print "d2exp_tr_dn: d2e0 = "; print d2e0; print_newline ()
-end
-val () = begin
-  print "d2exp_tr_dn: s2e0 = "; print s2e0; print_newline ()
+  prerr "d2exp_tr_dn: d2e0 = "; prerr d2e0; prerr_newline ()
+  prerr "d2exp_tr_dn: s2e0 = "; prerr s2e0; prerr_newline ()
 end
 *)
 val loc0 = d2e0.d2exp_loc
@@ -532,10 +530,10 @@ val d3e0 = case+ d2e0.d2exp_node of
   | D2Elam_dyn (lin, npf, p2ts_arg, d2e_body) => let
 (*
       val () = begin
-        print "d2exp_tr_dn: D2Elam_dyn: p2ts_arg = ";
-        print p2at_arg; print_newline ();
-        print "d2exp_tr_dn: D2Elam_dyn: d2e_body = ";
-        print d2e_body; print_newline ();
+        prerr "d2exp_tr_dn: D2Elam_dyn: p2ts_arg = ";
+        prerr p2at_arg; prerr_newline ();
+        prerr "d2exp_tr_dn: D2Elam_dyn: d2e_body = ";
+        prerr d2e_body; prerr_newline ();
       end
 *)
       val s2e0 = s2exp_whnf s2e0
@@ -601,7 +599,7 @@ val d3e0 = case+ d2e0.d2exp_node of
           val p2tcss = p2atcstlst_complement (p2atcstlst_of_p2atlst p2ts_arg)
 (*
           val () = begin
-            print "d2exp_tr_dn: D2Elam_dyn: p2tcss = "; print p2tcss; print_newline ()
+            prerr "d2exp_tr_dn: D2Elam_dyn: p2tcss = "; prerr p2tcss; prerr_newline ()
           end
 *)
           val cmplt = (
@@ -875,9 +873,9 @@ implement c2lau_tr_dn
   val p2ts = c2l.c2lau_pat
 (*
   val () = begin
-    print "c2lau_tr_dn: p2ts = "; print p2ts; print_newline ();
-    print "c2lau_tr_dn: s2es_pat = "; print s2es_pat; print_newline ();
-    print "c2lau_tr_dn: s2e0 = "; print s2e0; print_newline ();
+    prerr "c2lau_tr_dn: p2ts = "; prerr p2ts; prerr_newline ();
+    prerr "c2lau_tr_dn: s2es_pat = "; prerr s2es_pat; prerr_newline ();
+    prerr "c2lau_tr_dn: s2e0 = "; prerr s2e0; prerr_newline ();
   end
 *)
   val () = trans3_env_push_sta ()
@@ -955,13 +953,12 @@ fn c2laulst1_tr_dn {n:nat}
   val c3l = c2lau_tr_dn
     (c2l, None_vt (), d3es, n, s2es_pat, s2e0, SACSBISnone ())
   // checking for pattern matching exhaustiveness
-  val () = // checking for pattern matching exhaustiveness
-    if cmplt = 0 then begin
-      trans3_env_add_p2atcstlstlst_false (loc0, casknd, p2tcss, s2es_pat)
-    end
+  val () = if cmplt = 0 then begin
+    trans3_env_add_p2atcstlstlst_false (loc0, casknd, p2tcss, s2es_pat)
+  end // end of [val]
 in
   c3l
-end // end of [c2laulst1_tr]
+end (* end of [c2laulst1_tr] *)
 
 fun c2laulst2_tr_dn {n:nat}
   (loc0: loc_t,
@@ -975,8 +972,8 @@ fun c2laulst2_tr_dn {n:nat}
   : c3laulst n = let
 (*
   val () = begin
-    print "c2laulst2_tr_dn: s2es_pat = "; print s2es_pat; print_newline ();
-  end
+    prerr "c2laulst2_tr_dn: s2es_pat = "; prerr s2es_pat; prerr_newline ();
+  end // end of [val]
 *)
   var p2tcss: p2atcstlstlst n = c2lau_pat_complement c2l
   val sbis = the_d2varset_env_stbefitemlst_save ()
@@ -986,15 +983,15 @@ fun c2laulst2_tr_dn {n:nat}
   val c3ls = c2laulst2_rest_tr_dn
     (loc0, casknd, c3l, c2ls, p2tcss, d3es, n, s2es_pat, s2e0, sac, sbis)
   val () = case+ p2tcss of cons _ => () | nil _ => cmplt := 1
-  val () = // checking for pattern matching exhaustiveness
-    if cmplt = 0 then begin
-      trans3_env_add_p2atcstlstlst_false (loc0, casknd, p2tcss, s2es_pat)
-    end
+  // checking for pattern matching exhaustiveness
+  val () = if cmplt = 0 then begin
+    trans3_env_add_p2atcstlstlst_false (loc0, casknd, p2tcss, s2es_pat)
+  end // end of [val]
   val () = staftscstr_stbefitemlst_check (loc0, sac, sbis)
   val () = staftscstr_stbefitemlst_update (loc0, sac, sbis)
 in
   c3ls
-end // end of [c2laulst2_tr_dn]
+end (* end of [c2laulst2_tr_dn] *)
 
 and c2laulst2_rest_tr_dn {n,ni:nat}
   (loc0: loc_t, 
@@ -1008,21 +1005,25 @@ and c2laulst2_rest_tr_dn {n,ni:nat}
    sac: staftscstr_t ni,
    sbis: stbefitemlst ni)
   : c3laulst n = let
-  fun aux_main
-    (c3ls: List_vt (c3lau n), p2tcss0: &p2atcstlstlst n, c2ls: c2laulst n)
-    :<cloptr1> c3laulst n = begin case+ c2ls of
+  fun aux_main (
+      c3ls: List_vt (c3lau n)
+    , p2tcss0: &p2atcstlstlst n
+    , c2ls: c2laulst n
+    ) :<cloref1> c3laulst n = begin case+ c2ls of
     | cons (c2l, c2ls) => let
         val p2ts = c2l.c2lau_pat
         val p2tcs0 = p2atcstlst_of_p2atlst p2ts
 (*
         val () = begin
-          print "c2laulst2_rest_tr_dn: p2tcs0 = "; print p2tcs0; print_newline ();
-          print "c2laulst2_rest_tr_nd: p2tcss0 = " print p2tcss0; print_newline ();
-        end
+          prerr "c2laulst2_rest_tr_dn: p2tcs0 = "; prerr p2tcs0; prerr_newline ();
+          prerr "c2laulst2_rest_tr_dn: p2tcss0 = "; prerr p2tcss0; prerr_newline ();
+        end (* end of [val] *)
 *)
         val p2tcss1 = aux (p2tcss0, list_vt_nil ()) where {
-          fun aux (p2tcss: p2atcstlstlst n, res: List_vt (p2atcstlst n))
-            :<cloptr1> p2atcstlstlst n = case+ p2tcss of
+          fun aux (
+              p2tcss: p2atcstlstlst n
+            , res: List_vt (p2atcstlst n)
+            ) :<cloref1> p2atcstlstlst n = case+ p2tcss of
             | list_cons (p2tcs, p2tcss) => begin
                 if p2atcstlst_intersect_test (p2tcs, p2tcs0) then
                   aux (p2tcss, list_vt_cons (p2tcs, res))
@@ -1031,11 +1032,11 @@ and c2laulst2_rest_tr_dn {n,ni:nat}
                 end
               end // end of [begin]
             | list_nil () => $Lst.list_vt_reverse_list res
-        } // end of where
+        } // end of [where]
 (*
         val () = begin
-          print "c2laulst2_rest_tr_dn: p2tcss1 = "; print p2tcss1; print_newline ();
-        end
+          prerr "c2laulst2_rest_tr_dn: p2tcss1 = "; prerr p2tcss1; prerr_newline ();
+        end // end of [val]
 *)
         val () = case+ p2tcss1 of
           | cons _ => ()
@@ -1049,21 +1050,22 @@ and c2laulst2_rest_tr_dn {n,ni:nat}
         ) : Option_vt (p2atcstlstlst n)
         val () = case+ c2l.c2lau_gua of
           | list_nil _ => p2tcss0 := aux (p2tcss0, nil ()) where {
-              fun aux (p2tcss: p2atcstlstlst n, res: p2atcstlstlst n)
-                :<cloptr1> p2atcstlstlst n = case+ p2tcss of
+              fun aux (
+                  p2tcss: p2atcstlstlst n, res: p2atcstlstlst n
+                ) :<cloref1> p2atcstlstlst n = case+ p2tcss of
                 | cons (p2tcs, p2tcss) => let
                     val p2tcss_diff = p2atcstlst_difference (p2tcs, p2tcs0)
                   in
                     aux (p2tcss, $Lst.list_append (p2tcss_diff, res))
-                  end
+                  end // end of [cons]
                 | nil () => res
             } // end of [where]
           | list_cons _ => ()
         // end of [val]
 (*
         val () = begin
-          print "c2laulst_rest_tr_dn: p2tcss2 = "; print p2tcss2; print_newline ();
-        end
+          prerr "c2laulst_rest_tr_dn: p2tcss0 = "; prerr p2tcss0; prerr_newline ();
+        end // end of [val]
 *)
         val () = stbefitemlst_restore_lin_typ (sbis)
         val c3l = c2lau_tr_dn
@@ -1077,8 +1079,8 @@ and c2laulst2_rest_tr_dn {n,ni:nat}
   val c3ls_rst  = aux_main (list_vt_nil (), p2tcss0, c2ls_rst)
 (*
   val () = begin
-    print "c2laulst2_rest_tr_dn: p2tcss0 = "; print p2tcss0; print_newline ();
-  end
+    prerr "c2laulst2_rest_tr_dn: p2tcss0 = "; prerr p2tcss0; prerr_newline ();
+  end // end of [val]
 *)
 in
   c3l_fst :: c3ls_rst
@@ -1103,7 +1105,7 @@ implement c2laulst_tr_dn
     in
       nil ()
     end // end of [nil]
-end // end of [c2laulst_tr_dn]
+end (* end of [c2laulst_tr_dn] *)
 
 (* ****** ****** *)
 

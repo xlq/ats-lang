@@ -281,7 +281,7 @@ implement prerr_p2atcstlstlst (p2tcss) = prerr_mac (fprint_p2atcstlstlst, p2tcss
 fn p2atcst_con_complement
   (d2c0: d2con_t, d2cs: d2conlst, p2tcs: p2atcstlst)
   : p2atcstlst = let
-  fun aux (d2cs: d2conlst, res: p2atcstlst_vt):<cloptr1> p2atcstlst = begin
+  fun aux (d2cs: d2conlst, res: p2atcstlst_vt):<cloref1> p2atcstlst = begin
     case+ d2cs of
     | D2CONLSTcons (d2c, d2cs) => begin
         if d2c0 = d2c then let
@@ -372,13 +372,13 @@ implement p2atcstlst_complement {n} (p2tcs0) = begin
       } // end of [where]
       val p2tcss = aux (p2atcstlst_complement p2tcs1) where {
         fun aux {n:nat}
-          (p2tcss: p2atcstlstlst n):<cloptr1> p2atcstlstlst (n+1) =
+          (p2tcss: p2atcstlstlst n):<cloref1> p2atcstlstlst (n+1) =
           case+ p2tcss of
           | p2tcs :: p2tcss => cons (p2tc1 :: p2tcs, aux p2tcss)
           | nil () => nil ()
       } // end of [where]
       val p2tcss = aux (p2atcst_complement p2tc1) where {
-        fun aux (p2tcs: p2atcstlst):<cloptr1> p2atcstlstlst (n) =
+        fun aux (p2tcs: p2atcstlst):<cloref1> p2atcstlstlst (n) =
         case+ p2tcs of
         | p2tc :: p2tcs => cons (p2tc :: p2tcs1_any, aux p2tcs)
         | nil () => p2tcss
@@ -401,7 +401,7 @@ implement labp2atcstlst_complement (lp2tcs0) = begin
           | LABP2ATCSTLSTnil () => LABP2ATCSTLSTnil ()
       } // end of [where]
       val lp2tcss = aux (labp2atcstlst_complement lp2tcs1) where {
-        fun aux (lp2tcss: labp2atcstlstlst):<cloptr1> labp2atcstlstlst =
+        fun aux (lp2tcss: labp2atcstlstlst):<cloref1> labp2atcstlstlst =
           case+ lp2tcss of
           | lp2tcs :: lp2tcss => begin
               cons (LABP2ATCSTLSTcons (l1, p2tc1, lp2tcs), aux lp2tcss)
@@ -409,7 +409,7 @@ implement labp2atcstlst_complement (lp2tcs0) = begin
           | nil () => nil ()
       } // end of [where]
       val lp2tcss = aux (p2atcst_complement p2tc1) where {
-        fun aux (p2tcs: p2atcstlst):<cloptr1> labp2atcstlstlst =
+        fun aux (p2tcs: p2atcstlst):<cloref1> labp2atcstlstlst =
         case+ p2tcs of
         | cons (p2tc, p2tcs) => begin
             cons (LABP2ATCSTLSTcons (l1, p2tc, lp2tcs1_any), aux p2tcs)
@@ -456,10 +456,8 @@ implement p2atcst_intersect_test (p2tc1, p2tc2) = begin
         val () = assert_errmsg_bool1 (sgn = 0, "p2atcst_intersect_test")
       in
         p2atcstlst_intersect_test (p2tcs1, p2tcs2)
-      end else begin
-        false
-      end
-    end
+      end else false
+    end // end of [P2TCcon, P2TCcon]
   | (P2TCempty (), P2TCempty ()) => true
   | (P2TCint i1, P2TCint i2) => i1 = i2
   | (P2TCint i, P2TCintc xs) => aux (i, xs) where {
@@ -477,8 +475,11 @@ implement p2atcst_intersect_test (p2tc1, p2tc2) = begin
         | list_nil () => true
     } // end of [where]
   | (P2TCintc _, P2TCintc _) => true
+  | (P2TCrec (_, lp2atcs1), P2TCrec (_, lp2atcs2)) =>
+      labp2atcstlst_intersect_test (lp2atcs1, lp2atcs2)
+    // end of [P2TCrec, P2TCrec]
   | (_, _) => false
-end // end of [p2atcst_intersect_test]
+end (* end of [p2atcst_intersect_test] *)
 
 implement p2atcstlst_intersect_test (p2tcs1, p2tcs2) =
   case+ p2tcs1 of
@@ -488,8 +489,20 @@ implement p2atcstlst_intersect_test (p2tcs1, p2tcs2) =
       if p2atcst_intersect_test (p2tc1, p2tc2) then
         p2atcstlst_intersect_test (p2tcs1, p2tcs2)
       else false
-    end
+    end // end of [cons]
   | nil () => true
+(* end of [p2atcstlst_intersect_test] *)
+
+implement labp2atcstlst_intersect_test (lp2tcs1, lp2tcs2) =
+  case+ (lp2tcs1, lp2tcs2) of
+  | (LABP2ATCSTLSTcons (l1, p2tc1, lp2tcs1),
+     LABP2ATCSTLSTcons (l2, p2tc2, lp2tcs2)) =>
+      if p2atcst_intersect_test (p2tc1, p2tc2) then
+        labp2atcstlst_intersect_test (lp2tcs1, lp2tcs2)
+      else false
+    // end of [LABP2ATCSTLSTcons, LABP2ATCSTLSTcons]
+  | (_, _) => true
+(* end of [labp2atcstlst_intersect_test] *)
 
 (* ****** ****** *)
 
@@ -499,10 +512,10 @@ implement p2atcst_difference (p2tc1, p2tc2) =
   | (P2TCany (), _) => p2atcst_complement p2tc2
   | (P2TCbool b1, P2TCbool b2) => begin
       if b1 = b2 then nil () else cons (p2tc1, nil ())
-    end
+    end // end of [P2TCbool, P2TCbool]
   | (P2TCchar c1, P2TCchar c2) => begin
       if c1 = c2 then nil () else cons (p2tc1, nil ())
-    end
+    end // end of [P2TCchar, P2TCchar]
   | (P2TCcon (d2c1, p2tcs1), P2TCcon (d2c2, p2tcs2)) =>
     if d2c1 = d2c2 then let
       fun aux (d2c: d2con_t, p2tcss: p2atcstlstlst): p2atcstlst =
@@ -516,25 +529,33 @@ implement p2atcst_difference (p2tc1, p2tc2) =
       aux (d2c1, p2atcstlst_difference (p2tcs1, p2tcs2))
     end else begin
       cons (p2tc1, nil ())
-    end
+    end // end of [P2TCcon, P2TCcon]
   | (P2TCempty (), P2TCempty ()) => nil ()
   | (P2TCint i1, P2TCint i2) => begin
       if i1 = i2 then nil () else cons (p2tc1, nil ())
-    end
+    end // end of [P2TCint, P2TCint]
   | (P2TCstring s1, P2TCstring s2) => begin
       if s1 = s2 then nil () else cons (p2tc1, nil ())
-    end
+    end // end of [P2TCstring, P2TCstring]
   | (P2TCintc xs, P2TCint x) => let
       var err: int = 0
       val xs = intinfset_add (xs, x, err)
     in
       if err > 0 then cons (p2tc1, nil ()) else cons (P2TCintc xs, nil ())
-    end
+    end // end of [P2TCintc, P2TCint]
+  | (P2TCrec (knd1, lp2tcs1),
+     P2TCrec (knd2, lp2tcs2)) => let
+      val lp2tcss = labp2atcstlst_difference (lp2tcs1, lp2tcs2)
+    in
+      $Lst.list_map_cloptr {labp2atcstlst,p2atcst}
+        (lp2tcss, lam (lp2tcs) =<cloptr> P2TCrec (knd1, lp2tcs))
+    end // end of [P2TCrec, P2TCrec]
   | (_, _) => begin
-      prerr "Internal Error: p2atcst_difference";
-      prerr_newline ();
+      prerr "INTERNAL ERROR";
+      prerr ": [p2atcst_difference] failed"; prerr_newline ();
       $Err.abort {p2atcstlst} ()
-    end
+    end // end of [_, _]
+(* end of [p2atcst_difference] *)
 
 implement p2atcstlst_difference {n} (p2tcs1, p2tcs2) = begin
   case+ p2tcs1 of
@@ -543,22 +564,50 @@ implement p2atcstlst_difference {n} (p2tcs1, p2tcs2) = begin
       val p2tcss: List (list (p2atcst, n)) =
         aux (p2atcstlst_difference (p2tcs1, p2tcs2)) where {
         fun aux (p2tcss: List (list (p2atcst, n-1)))
-          :<cloptr1> List (list (p2atcst, n)) = case+ p2tcss of
+          :<cloref1> List (list (p2atcst, n)) = case+ p2tcss of
           | cons (p2tcs, p2tcss) => cons (p2tc1 :: p2tcs, aux p2tcss)
           | nil () => nil ()
       } // end of [where]
       val p2tcss: List (list (p2atcst, n)) =
         aux (p2atcst_difference (p2tc1, p2tc2)) where {
         fun aux (p2tcs: p2atcstlst)
-          :<cloptr1> List (list (p2atcst, n)) = case+ p2tcs of
+          :<cloref1> List (list (p2atcst, n)) = case+ p2tcs of
           | cons (p2tc, p2tcs) => cons (p2tc :: p2tcs1, aux p2tcs)
           | nil () => p2tcss
       } // end of [where]
     in
       p2tcss
-    end
+    end // end of [cons]
   | nil () => nil ()
-end // end of [p2atcstlst_difference]
+end (* end of [p2atcstlst_difference] *)
+
+implement labp2atcstlst_difference (lp2tcs1, lp2tcs2) = begin
+  case+ (lp2tcs1, lp2tcs2) of
+  | (LABP2ATCSTLSTcons (l1, p2tc1, lp2tcs1),
+     LABP2ATCSTLSTcons (l2, p2tc2, lp2tcs2)) => let
+      val lp2tcss: List (labp2atcstlst) =
+        aux (labp2atcstlst_difference (lp2tcs1, lp2tcs2)) where {
+        fun aux (lp2tcss: List (labp2atcstlst))
+          :<cloref1> List (labp2atcstlst) = case+ lp2tcss of
+          | cons (lp2tcs, lp2tcss) => begin
+              cons (LABP2ATCSTLSTcons (l1, p2tc1, lp2tcs), aux lp2tcss)
+            end // end of [cons]  
+          | nil () => nil ()
+      } // end of [where]
+      val lp2tcss: List (labp2atcstlst) =
+        aux (p2atcst_difference (p2tc1, p2tc2)) where {
+        fun aux (p2tcs: p2atcstlst)
+          :<cloref1> List (labp2atcstlst) = case+ p2tcs of
+          | cons (p2tc, p2tcs) => begin
+              cons (LABP2ATCSTLSTcons (l1, p2tc, lp2tcs1), aux p2tcs)
+            end // end of [cons]  
+          | nil () => lp2tcss
+      } // end of [where]
+    in
+      lp2tcss
+    end // end of [cons]
+  | (_, _) => nil ()
+end (* end of [labp2atcstlst_difference] *)
 
 (* ****** ****** *)
 

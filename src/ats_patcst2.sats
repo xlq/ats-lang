@@ -100,6 +100,7 @@ overload fprint with fprint_p2atcstlstlst
 
 fun fprint_labp2atcstlst {m:file_mode}
   (pf: file_mode_lte (m, w) | out: &FILE m, _: labp2atcstlst): void
+// end of [fprint_labp2atcstlst]
 
 overload fprint with fprint_labp2atcstlst
 
@@ -124,24 +125,33 @@ overload prerr with prerr_p2atcstlstlst
 (* ****** ****** *)
 
 fun p2atcst_complement (_: p2atcst): p2atcstlst
+
 fun p2atcstlst_complement {n:nat} (_: p2atcstlst n): p2atcstlstlst n
+
 fun labp2atcstlst_complement (_: labp2atcstlst): labp2atcstlstlst
 
 //
 
 fun c2lau_pat_complement {n:nat} (_: c2lau n): p2atcstlstlst n
 
-//
+(* ****** ****** *)
 
 fun p2atcst_intersect_test (_: p2atcst, _: p2atcst): bool
+
 fun p2atcstlst_intersect_test {n:nat}
   (_: list (p2atcst, n), _: list (p2atcst, n)): bool
 
-//
+fun labp2atcstlst_intersect_test (_: labp2atcstlst, _: labp2atcstlst): bool
+
+(* ****** ****** *)
 
 fun p2atcst_difference (_: p2atcst, _: p2atcst): p2atcstlst
+
 fun p2atcstlst_difference {n:nat}
   (_: list (p2atcst, n), _: list (p2atcst, n)): List (list (p2atcst, n))
+
+fun labp2atcstlst_difference
+  (_: labp2atcstlst, _: labp2atcstlst): List (labp2atcstlst)
 
 (* ****** ****** *)
 
