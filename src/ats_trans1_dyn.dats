@@ -198,7 +198,7 @@ fn aux3 (
   // end of [val]
   val () = case+ fc of
     | $Syn.FUNCLOclo knd => begin
-        if knd <> CLOREF then () where {
+        if knd <> CLOREF then let
           val () = if knd = 0 then begin
             $Loc.prerr_location loc0;
             prerr ": INTERNAL ERROR: a closure at the toplevel"
@@ -209,7 +209,9 @@ fn aux3 (
           end // end of [val]
           val () = prerr_newline ()
           val () = $Err.abort {void} ()
-        } // end of [if]
+        in
+          // nothing
+        end // end of [if]
       end // end of [FUNCLOclo]
     | $Syn.FUNCLOfun () => ()
   // end of [val]

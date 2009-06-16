@@ -16,6 +16,7 @@ compall:: \
   prelude_array0 \
   prelude_list \
   prelude_list_vt \
+  prelude_matrix \
   prelude_string \
   libc_dirent \
   libc_stdlib \
@@ -35,6 +36,9 @@ prelude_array: prelude_array.dats
 
 prelude_array0: prelude_array0.dats
 	atscc -O2 -o prelude_array0 prelude_array0.dats && ./prelude_array0
+
+prelude_matrix: prelude_matrix.dats
+	atscc -O2 -o prelude_matrix prelude_matrix.dats && ./prelude_matrix
 
 prelude_list: prelude_list.dats
 	atscc -O2 -o prelude_list prelude_list.dats && ./prelude_list

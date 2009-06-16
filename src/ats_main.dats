@@ -415,10 +415,16 @@ fn do_parse_filename (
   end // end of [val]
 //
   val () = if param.posmark > 0 then $PM.posmark_enable ()
+//
   var d0cs: $Syn.d0eclst = list_nil ()
   val () = $Fil.the_filenamelst_push filename
   val () = d0cs := $Par.parse_from_filename (flag, filename)
   val () = $Fil.the_filenamelst_pop ()
+//
+  val () = if debug_flag > 0 then begin
+    prerrf ("The file [%s] is successfully parsed!\n", @(basename))
+  end // end of [if]
+//
   val () = if param.posmark > 0 then let
     val () = $Syn.d0eclst_posmark d0cs in $PM.posmark_disable ()
   end // end of [val]

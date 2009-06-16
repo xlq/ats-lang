@@ -28,7 +28,7 @@ implement main (argc, argv) = let
     prval pf = unit_v ()
     // testing [matrix_iforeach_fun]
     val () = print "M (0-9) =\n"
-    val () = matrix_iforeach_fun {unit_v} (pf | f, M, row, col) where {
+    val () = matrix_iforeach_fun {unit_v} (pf | M, f, row, col) where {
       fn f (
           pf: !unit_v | i: sizeLt row, j: sizeLt col, x: &int
         ) :<> void = $effmask_all let
@@ -39,7 +39,7 @@ implement main (argc, argv) = let
     val () = print_newline ()
     // testing [matrix_iforeach_clo]
     val () = print "M (0-9) =\n"
-    val () = matrix_iforeach_clo {unit_v} (pf | !p_f, M, row, col) where {
+    val () = matrix_iforeach_clo {unit_v} (pf | M, !p_f, row, col) where {
       var !p_f = @lam
         (pf: !unit_v | i: sizeLt row, j: sizeLt col, x: &int): void =<clo>
         $effmask_all (let

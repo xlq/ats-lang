@@ -66,6 +66,7 @@ fun matrix_ptr_takeout_tsz {a:viewt@ype}
   , a @ l -<lin,prf> matrix_v (a, m, n, l0)
   | ptr l
   ) // end of [matrix_ptr_takeout_tsz]
+(* end of [matrix_ptr_takeout_tsz] *)
 
 (* ****** ****** *)
 
@@ -142,8 +143,8 @@ overload [] with matrix_set_elt_at__intsz
 fun{a:viewt@ype} matrix_foreach__main
   {v:view} {vt:viewtype} {m,n:nat} (
     pf: !v
-  | f: (!v | &a, !vt) -<fun> void
-  , M: matrix (a, m, n), m: size_t m, n: size_t n
+  | M: matrix (a, m, n)
+  , f: (!v | &a, !vt) -<fun> void, m: size_t m, n: size_t n
   , env: !vt
   ) :<!ref> void
 // end of [matrix_foreach__main]
@@ -151,20 +152,20 @@ fun{a:viewt@ype} matrix_foreach__main
 fun{a:viewt@ype}
   matrix_foreach_fun {v:view} {m,n:nat} (
     pf: !v
-  | f: (!v | &a) -<fun> void
-  , M: matrix (a, m, n), m: size_t m, n: size_t n
+  | M: matrix (a, m, n)
+  , f: (!v | &a) -<fun> void, m: size_t m, n: size_t n
   ) :<!ref> void
 
 fun{a:viewt@ype}
   matrix_foreach_clo {v:view} {m,n:nat} (
     pf: !v
-  | f: &(!v | &a) -<clo> void
-  , M: matrix (a, m, n), m: size_t m, n: size_t n
+  | M: matrix (a, m, n)
+  , f: &(!v | &a) -<clo> void, m: size_t m, n: size_t n
   ) :<!ref> void
 
 fun{a:viewt@ype}
   matrix_foreach_cloref {m,n:nat} (
-    f: (&a) -<cloref> void, M: matrix (a, m, n), m: size_t m, n: size_t n
+    M: matrix (a, m, n), f: (&a) -<cloref> void, m: size_t m, n: size_t n
   ) :<!ref> void
 
 (* ****** ****** *)
@@ -177,29 +178,29 @@ fun{a:viewt@ype}
   matrix_iforeach__main
   {v:view} {vt:viewtype} {m,n:nat} (
     pf: !v
-  | f: (!v | sizeLt m, sizeLt n, &a, !vt) -<fun> void
-  , M: matrix (a, m, n), m: size_t m, n: size_t n
+  | M: matrix (a, m, n)
+  , f: (!v | sizeLt m, sizeLt n, &a, !vt) -<fun> void, m: size_t m, n: size_t n
   , env: !vt
   ) :<!ref> void
 
 fun{a:viewt@ype}
   matrix_iforeach_fun {v:view} {m,n:nat} (
     pf: !v
-  | f: (!v | sizeLt m, sizeLt n, &a) -<fun> void
-  , M: matrix (a, m, n), m: size_t m, n: size_t n
+  | M: matrix (a, m, n)
+  , f: (!v | sizeLt m, sizeLt n, &a) -<fun> void, m: size_t m, n: size_t n
   ) :<!ref> void
 
 fun{a:viewt@ype}
   matrix_iforeach_clo {v:view} {m,n:nat} (
     pf: !v
-  | f: &(!v | sizeLt m, sizeLt n, &a) -<clo> void
-  , M: matrix (a, m, n), m: size_t m, n: size_t n
+  | M: matrix (a, m, n)
+  , f: &(!v | sizeLt m, sizeLt n, &a) -<clo> void, m: size_t m, n: size_t n
   ) :<!ref> void
 
 fun{a:viewt@ype}
   matrix_iforeach_cloref {m,n:nat} (
-    f: (sizeLt m, sizeLt n, &a) -<cloref1> void
-  , M: matrix (a, m, n), m: size_t m, n: size_t n
+    M: matrix (a, m, n)
+  , f: (sizeLt m, sizeLt n, &a) -<cloref1> void, m: size_t m, n: size_t n
   ) :<fun1> void
 
 (* ****** ****** *)

@@ -28,11 +28,13 @@ typedef digit = [i:nat | i < 10] int (i)
 // digits: array (digit, 10)
 val digits = array $arrsz {digit} (0, 1, 2, 3, 4, 5, 6, 7, 8, 9)
 
+val pf = unit_v ()
 val digits =
-  array_make_clo_tsz {digit} (10, !p_f, sizeof<digit>) where {
+  array_make_clo_tsz {digit} {unit_v} (pf | 10, !p_f, sizeof<digit>) where {
   var !p_f = @lam
-    (x: &digit? >> digit, i: sizeLt 10): void =<clo> x := int1_of_size1 (i)
+    (pf: !unit_v | x: &digit? >> digit, i: sizeLt 10): void =<clo> x := int1_of_size1 (i)
 } // end of [val]
+val unit_v () = pf
 
 fn array_square {n:nat}
   (A: array (double, n), sz: int n): void = loop (0) where {
