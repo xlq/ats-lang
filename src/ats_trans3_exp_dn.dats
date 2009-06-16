@@ -1073,9 +1073,9 @@ and c2laulst2_rest_tr_dn {n,ni:nat}
         // end of [val]
       in
         aux_main (list_vt_cons (c3l, c3ls), p2tcss0, c2ls)
-      end
-    | nil => $Lst.list_vt_reverse_list c3ls
-    end // end of [aux_main]
+      end // end of [cons]
+    | nil () => $Lst.list_vt_reverse_list c3ls
+    end (* end of [aux_main] *)
   val c3ls_rst  = aux_main (list_vt_nil (), p2tcss0, c2ls_rst)
 (*
   val () = begin
@@ -1084,7 +1084,7 @@ and c2laulst2_rest_tr_dn {n,ni:nat}
 *)
 in
   c3l_fst :: c3ls_rst
-end // end of [c2laulst2_rest_tr_dn]
+end (* end of [c2laulst2_rest_tr_dn] *)
 
 implement c2laulst_tr_dn
   (loc0, cmplt, casknd, res, c2ls, d3es, n, s2es_pat, s2e0) = begin
@@ -1099,12 +1099,12 @@ implement c2laulst_tr_dn
       in
         cons (c3l, nil ())
       end // end of [nil]
-    end // end of [cons]
+    end (* end of [cons] *)
   | nil () => let
       val () = c2laulst0_tr_dn (loc0, casknd, res, n, s2es_pat, s2e0)
     in
       nil ()
-    end // end of [nil]
+    end (* end of [nil] *)
 end (* end of [c2laulst_tr_dn] *)
 
 (* ****** ****** *)
@@ -1120,10 +1120,10 @@ implement d2exp_caseof_tr_dn
     (loc0, cmplt, casknd, r2es, c2ls, d3es, n, s2es_pat, s2e0)
   val () = begin
     if cmplt = 0 then (if casknd < 1 then the_effect_env_check_exn (loc0))
-  end
+  end // end of [val]
 in
   d3exp_caseof (loc0, s2e0, casknd, d3es, c3ls)
-end // end of [d2exp_caseof_tr_dn]
+end (* end of [d2exp_caseof_tr_dn] *)
 
 (* ****** ****** *)
 
