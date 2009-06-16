@@ -31,8 +31,8 @@
 
 (* ****** ****** *)
 
-// Time: March 2008
 // Author: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
+// Time: March 2008
 
 (* ****** ****** *)
 
@@ -561,28 +561,31 @@ fn emit_valprim_select_bef {m:file_mode} (
   fun aux (
       out: &FILE m , offs: offsetlst
     ) : void = begin case+ offs of
-    | list_cons (off, offs) => begin
-      case+ off of
-      | OFFSETind (vpss, hit_elt) => begin
-          fprint1_string (pf | out, "((");
-          emit_hityp (pf | out, hit_elt);
-          fprint1_string (pf | out, "*)");
-          aux (out, offs)
-        end // end of [OFFSETind]
-      | OFFSETlab (lab, hit_rec) => let
-          val hit_rec = hityp_decode (hit_rec)
-          val HITNAM (knd, name) = hit_rec.hityp_name
-          val () = fprint1_string (pf | out, "(")
-          val () =
-            if knd > 0 (*ptr*) then begin
-              fprint1_string (pf | out, "(");
-              fprint1_string (pf | out, name);
-              fprint1_string (pf | out, "*)")
-            end // end of [if]
-        in
-          aux (out, offs)
-        end // end of [OFFSETlab]
-      end // end of [list_cons]
+    | list_cons (off, offs) => let
+        val () = aux (out, offs) in
+        case+ off of
+        | OFFSETind (vpss, hit_elt) => () where {
+            val () = fprint1_string (pf | out, "(")
+            val () = fprint1_string (pf | out, "(")
+            val () = emit_hityp (pf | out, hit_elt)
+            val () = fprint1_string (pf | out, "*)")
+          } // end of [OFFSETind]
+        | OFFSETlab (lab, hit_rec) => let
+            val hit_rec = hityp_decode (hit_rec)
+            val HITNAM (knd, name) = hit_rec.hityp_name
+            val () = fprint1_string (pf | out, "(")
+            val () = case+ 0 of
+              | _ when knd > 0 (*ptr*) => () where {
+                  val () = fprint1_string (pf | out, "(")
+                  val () = fprint1_string (pf | out, name)
+                  val () = fprint1_string (pf | out, "*)")
+                } // end of [_ when knd > 0]
+              | _ => ()  
+            // end of [val]
+          in
+            // empty   
+          end // end of [OFFSETlab]
+      end (* end of [list_cons] *)
     | list_nil () => ()
   end // end of [aux]
 in
@@ -621,13 +624,13 @@ fn emit_valprim_select_aft {m:file_mode} (
           in
             aux (out, offs)
           end // end of [_]
-        end // end of [OFFSETlab]
-      end // end of [list_cons]
+        end (* end of [OFFSETlab] *)
+      end (* end of [list_cons] *)
     | list_nil () => ()
   end // end of [aux]
 in
   aux (out, offs)
-end // end of [emit_valprim_select_aft]
+end (* end of [emit_valprim_select_aft] *)
 
 (* ****** ****** *)
 
@@ -2445,12 +2448,12 @@ implement emit_mainfun (pf | out, fil) = let
   val () = fprint1_string (pf | out, "ATS_GC_INIT() ;\n")
 
   val () = fprint1_string (pf | out, "mainats_prelude() ;\n")
-
+//
   val () = fprint1_string (pf | out, "\n#ifndef _ATS_DYNLOADFUN_NONE\n")
   val () = emit_filename (pf | out, fil)
   val () = fprint1_string (pf | out, "__dynload () ;\n")
   val () = fprint1_string (pf | out, "#endif\n\n")
-
+//
   val () = fprint1_string (pf | out, "mainats ((ats_int_type)argc, (ats_ptr_type)argv) ;\n")
 
   val () = fprint1_string (pf | out, "return (0) ;\n")
