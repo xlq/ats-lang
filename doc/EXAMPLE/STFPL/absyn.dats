@@ -179,6 +179,10 @@ implement e0xp_make_ann (loc, e, t) = '{
   e0xp_loc= loc, e0xp_node= E0XPann (e, t)
 } // end of [e0xp_make_ann]
 
+implement e0xp_make_app (loc, e1, e2) = '{
+  e0xp_loc= loc, e0xp_node= E0XPapp (e1, e2)
+} // end of [e0xp_make_app]
+
 implement e0xp_make_bool (loc, b) = '{
   e0xp_loc= loc, e0xp_node= E0XPbool (b)
 } // end of [e0xp_make_bool]

@@ -353,6 +353,19 @@ val lp_typann: LP (typopt) = $delay (
 
 (* ****** ****** *)
 
+val app_e0xp : fixitm e0xp = let
+  val f = lam
+    (e1: e0xp, e2: e0xp): e0xp =<cloref> let
+    val loc = location_combine (e1.e0xp_loc, e2.e0xp_loc)
+  in
+    e0xp_make_app (loc, e1, e2)
+  end // end of [val]
+in
+  fixitm_make_app (f)  
+end (* end of [app_e0xp] *)
+
+(* ****** ****** *)
+
 val
 rec lp_e0xp
   : LP (e0xp) = $delay (
@@ -445,7 +458,7 @@ and lp_e0xp1: LP (e0xp) = $delay (
   // end of [fixitm_loc_get]
 
   fn f (itms: List1 T):<> e0xp = let
-    val res = $effmask_all (fixity_resolve itms)
+    val res = $effmask_all (fixity_resolve (app_e0xp, itms))
   in
     case+ res of
     | ~Some_vt e => e | ~None_vt () => let

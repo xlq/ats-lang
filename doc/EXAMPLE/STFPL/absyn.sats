@@ -114,6 +114,7 @@ fun fprint_e0xplst (out: FILEref, _: e0xplst): void
 (* ****** ****** *)
 
 fun e0xp_make_ann (_: loc, e: e0xp, t: typ):<> e0xp
+fun e0xp_make_app (_: loc, _fun: e0xp, _arg: e0xp):<> e0xp
 fun e0xp_make_bool (_: loc, _: bool):<> e0xp
 fun e0xp_make_if (_: loc, _: e0xp, _: e0xp, _: e0xpopt):<> e0xp
 fun e0xp_make_int (_: loc, _: int):<> e0xp
