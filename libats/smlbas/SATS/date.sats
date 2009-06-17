@@ -39,76 +39,56 @@
 (* ****** ****** *)
 
 //
-// SML Basis Library: Array (http://www.standardml.org/Basis/list-pair.html)
+// SML Basis Library: Array (http://www.standardml.org/Basis/date.html)
 //
 
 (* ****** ****** *)
 
-exception UnequalLengths of ()
+datatype weekday =
+  | Mon | Tue | Wed | Thu | Fri | Sat | Sun
+// end of [weekday]
+
+datatype month =
+  | Jan | Feb | Mar | Apr | May | Jun
+  | Jul | Aug | Sep | Oct | Nov | Dec
+// end of [month]
+
+abstype date // a boxed abstract type
+
+exception Date of ()
+  
+(* ****** ****** *)
+
+fun date (
+    year: int, month: month, day: int
+  , hour: int, minute: int, second: int
+(*
+  , offset: option0 ($Time.time)
+*)
+  ) : date
+// end of [date]  
+
+fun year (_: date): int 
+fun month (_: date): month
+fun day (_: date): int
+fun hour (_: date): int
+fun minute (_: date): int
+fun second (_: date): int
+fun weekday (_: date): weekday
+fun yearday (_: date): int
+// val offset (_: date): option0 ($Time.time)
+val isDst (_: date): option0 (bool)
+
+// fun localOffset (): $Time.time
+
+fun compare_date_date (d1: date, d2: date): int
 
 (* ****** ****** *)
 
-fun{a,b:t@ype} zip (xs: list0 a, ys: list0 b): list0 @(a, b)
-fun{a,b:t@ype} zipEq (xs: list0 a, ys: list0 b): list0 @(a, b)
+fun toString (d: date): string
 
-fun{a,b:t@ype} unzip (xys: list0 @(a, b)): @(list0 a, list0 b)
-
-(* ****** ****** *)
-
-fun{a,b:t@ype} app
-  (f: (a, b) -<cloref1> void, xs: list0 a, ys: list0 b): void
-// end of [app
-
-fun{a,b:t@ype} appEq
-  (f: (a, b) -<cloref1> void, xs: list0 a, ys: list0 b): void
-// end of [appEq]
+fun fromString (s: string): date
 
 (* ****** ****** *)
 
-fun{a,b,c:t@ype} map
-  (f: (a, b) -<cloref1> c, xs: list0 a, ys: list0 b): list0 c
-// end of [app
-
-fun{a,b,c:t@ype} mapEq
-  (f: (a, b) -<cloref1> c, xs: list0 a, ys: list0 b): list0 c
-// end of [appEq]
-
-(* ****** ****** *)
-
-fun{a,b,c:t@ype}
-  foldl (f: (a, b, c) -<cloref1> c, ini: c, xs: list0 a, ys: list0 b): c
-// end of [foldl]
-
-fun{a,b,c:t@ype}
-  foldlEq (f: (a, b, c) -<cloref1> c, ini: c, xs: list0 a, ys: list0 b): c
-// end of [foldl]
-
-(* ****** ****** *)
-
-fun{a,b,c:t@ype}
-  foldr (f: (a, b, c) -<cloref1> c, ini: c, xs: list0 a, ys: list0 b): c
-// end of [foldr]
-
-fun{a,b,c:t@ype}
-  foldrEq (f: (a, b, c) -<cloref1> c, ini: c, xs: list0 a, ys: list0 b): c
-// end of [foldr]
-
-(* ****** ****** *)
-
-fun{a,b:t@ype} all
-  (f: (a, b) -<cloref1> bool, xs: list0 a, ys: list0 b): bool
-// end of [app
-
-fun{a,b:t@ype} allEq
-  (f: (a, b) -<cloref1> bool, xs: list0 a, ys: list0 b): bool
-// end of [appEq]
-
-(* ****** ****** *)
-
-fun{a,b:t@ype} exits
-  (f: (a, b) -<cloref1> bool, xs: list0 a, ys: list0 b): bool
-// end of [app]
-
-(* ****** ****** *)
-
-(* end of [listPair.sats] *)
+(* end of [date.sats] *)

@@ -92,10 +92,6 @@ static inline
 ats_int_type
 atspre_int_of_uint (ats_uint_type u) { return u ; }
 
-static inline
-ats_int_type
-atspre_int_of_lint (ats_lint_type li) { return li ; }
-
 //
 
 static inline
@@ -620,6 +616,12 @@ atspre_lint_of_int (ats_int_type i) {
 }
 
 static inline
+ats_int_type
+atspre_int_of_lint (ats_lint_type li) { return li ; }
+
+//
+
+static inline
 ats_lint_type
 atspre_lint_of_string (ats_ptr_type s) {
   return atol ((char*)s) ;
@@ -782,31 +784,33 @@ atspre_tostring_lint (ats_lint_type i) {
 
 static inline
 ats_ulint_type
-atspre_ulint_of_int (ats_int_type i) {
-  return ((ats_ulint_type)i) ;
-}
+atspre_ulint_of_int (ats_int_type i) { return i ; }
 
 static inline
-ats_ulint_type
-atspre_ulint_of_uint (ats_uint_type u) {
-  return ((ats_ulint_type)u) ;
-}
-
-static inline
-ats_ulint_type
-atspre_ulint_of_lint (ats_lint_type li) {
-  return ((ats_ulint_type)li) ;
-}
+ats_int_type
+atspre_int_of_ulint (ats_ulint_type ul) { return ul ; }
 
 //
+
+static inline
+ats_ulint_type
+atspre_ulint_of_uint (ats_uint_type u) { return u ; }
 
 static inline
 ats_uint_type
-atspre_uint_of_ulint (ats_ulint_type ul) {
-  return ((ats_uint_type)ul) ;
-}
+atspre_uint_of_ulint (ats_ulint_type ul) { return ul ; }
 
 //
+
+static inline
+ats_ulint_type
+atspre_ulint_of_lint (ats_lint_type li) { return li ; }
+
+static inline
+ats_lint_type
+atspre_lint_of_ulint (ats_ulint_type ul) { return ul ; }
+
+/* ****** ****** */
 
 static inline
 ats_ulint_type

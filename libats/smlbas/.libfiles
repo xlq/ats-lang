@@ -12,6 +12,9 @@ libats/smlbas/DATS/bool.dats
 libats/smlbas/SATS/char.sats
 libats/smlbas/DATS/char.dats
 
+libats/smlbas/SATS/date.sats
+libats/smlbas/DATS/date.dats
+
 libats/smlbas/SATS/list.sats
 libats/smlbas/DATS/list.dats
 

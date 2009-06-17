@@ -128,59 +128,59 @@ extern long double tanl (long double x) ;
 
 static inline
 ats_double_type
-atslib_ceil(ats_double_type x) { return ceil(x); }
+atslib_ceil(ats_double_type x) { return ceil(x) ; }
 
 static inline
 ats_float_type
-atslib_ceilf(ats_float_type x) { return ceilf(x); }
+atslib_ceilf(ats_float_type x) { return ceilf(x) ; }
 
 static inline
 ats_ldouble_type
 atslib_ceill(ats_ldouble_type x) {
-  return ceill(x);
+  return ceill(x) ;
 }
 
 //
 
 static inline
 ats_double_type
-atslib_floor(ats_double_type x) { return floor(x); }
+atslib_floor(ats_double_type x) { return floor(x) ; }
 
 static inline
 ats_float_type
-atslib_floorf(ats_float_type x) { return floorf(x); }
+atslib_floorf(ats_float_type x) { return floorf(x) ; }
 
 static inline
 ats_ldouble_type
-atslib_floorl(ats_ldouble_type x) { return floorl(x); }
+atslib_floorl(ats_ldouble_type x) { return floorl(x) ; }
 
 //
 
 static inline
 ats_double_type
-atslib_round(ats_double_type x) { return round(x); }
+atslib_round(ats_double_type x) { return round(x) ; }
 
 static inline
 ats_float_type
-atslib_roundf(ats_float_type x) { return roundf(x); }
+atslib_roundf(ats_float_type x) { return roundf(x) ; }
 
 static inline
 ats_ldouble_type
-atslib_roundl(ats_ldouble_type x) { return roundl(x); }
+atslib_roundl(ats_ldouble_type x) { return roundl(x) ; }
 
 //
 
 static inline
 ats_double_type
-atslib_trunc(ats_double_type x) { return trunc(x); }
+atslib_trunc(ats_double_type x) { return trunc(x) ; }
 
 static inline
 ats_float_type
-atslib_truncf(ats_float_type x) { return truncf(x); }
+atslib_truncf(ats_float_type x) { return truncf(x) ; }
 
 static inline
 ats_ldouble_type
-atslib_truncl(ats_ldouble_type x) { return truncl(x); }
+atslib_truncl(ats_ldouble_type x) { return truncl(x) ; }
 
 //
 
@@ -266,161 +266,171 @@ atslib_powl (ats_ldouble_type f1, ats_ldouble_type f2) {
 
 static inline
 ats_double_type
-atslib_exp(ats_double_type x) { return exp(x); }
+atslib_exp(ats_double_type x) { return exp(x) ; }
 
 static inline
 ats_float_type
-atslib_expf(ats_float_type x) { return expf(x); }
+atslib_expf(ats_float_type x) { return expf(x) ; }
 
 static inline
 ats_ldouble_type
-atslib_expl(ats_ldouble_type x) { return expl(x); }
+atslib_expl(ats_ldouble_type x) { return expl(x) ; }
 
 /* ****** ****** */
 
 static inline
 ats_double_type
-atslib_log(ats_double_type x) { return log(x); }
+atslib_log(ats_double_type x) { return log(x) ; }
 
 static inline
 ats_float_type
-atslib_logf(ats_float_type x) { return logf(x); }
+atslib_logf(ats_float_type x) { return logf(x) ; }
 
 static inline
 ats_ldouble_type
-atslib_logl(ats_ldouble_type x) { return logl(x); }
+atslib_logl(ats_ldouble_type x) { return logl(x) ; }
 
 /* ****** ****** */
 
 static inline
 ats_double_type
-atslib_asin(ats_double_type x) { return asin(x); }
+atslib_asin(ats_double_type x) { return asin(x) ; }
 
 static inline
 ats_float_type
-atslib_asinf(ats_float_type x) { return asinf(x); }
+atslib_asinf(ats_float_type x) { return asinf(x) ; }
 
 static inline
 ats_ldouble_type
 atslib_asinl(ats_ldouble_type x) {
-  return asinl(x);
+  return asinl(x) ;
 }
 
 static inline
 ats_double_type
-atslib_acos(ats_double_type x) { return acos(x); }
+atslib_acos(ats_double_type x) { return acos(x) ; }
 
 static inline
 ats_float_type
-atslib_acosf(ats_float_type x) { return acosf(x); }
+atslib_acosf(ats_float_type x) { return acosf(x) ; }
 
 static inline
 ats_ldouble_type
 atslib_acosl(ats_ldouble_type x) {
-  return acosl(x);
+  return acosl(x) ;
 }
 
 static inline
 ats_double_type
-atslib_atan(ats_double_type x) { return atan(x); }
+atslib_atan(ats_double_type x) { return atan(x) ; }
 
 static inline
 ats_float_type
-atslib_atanf(ats_float_type x) { return atanf(x); }
+atslib_atanf(ats_float_type x) { return atanf(x) ; }
 
 static inline
 ats_ldouble_type
-atslib_atanl(ats_ldouble_type x) { return atanl(x); }
+atslib_atanl(ats_ldouble_type x) { return atanl(x) ; }
 
 static inline
 ats_double_type
 atslib_atan2(ats_double_type x, ats_double_type y) {
-  return atan2(x, y);
+  return atan2(x, y) ;
 }
 
 static inline
 ats_float_type
 atslib_atan2f(ats_float_type x, ats_float_type y) {
-  return atan2(x, y);
+  return atan2(x, y) ;
 }
 
 static inline
 ats_ldouble_type
 atslib_atan2l(ats_ldouble_type x, ats_ldouble_type y) {
-  return atan2l(x, y);
+  return atan2l(x, y) ;
 }
 
 //
 
 static inline
 ats_double_type
-atslib_asinh(ats_double_type x) { return asinh(x); }
+atslib_asinh(ats_double_type x) { return asinh(x) ; }
 
 static inline
 ats_float_type
-atslib_asinhf(ats_float_type x) { return asinhf(x); }
+atslib_asinhf(ats_float_type x) { return asinhf(x) ; }
 
 static inline
 ats_ldouble_type
 atslib_asinhl(ats_ldouble_type x) {
-  return asinhl(x);
+  return asinhl(x) ;
 }
 
 static inline
 ats_double_type
-atslib_acosh(ats_double_type x) { return acosh(x); }
+atslib_acosh(ats_double_type x) { return acosh(x) ; }
 
 static inline
 ats_float_type
-atslib_acoshf(ats_float_type x) { return acoshf(x); }
+atslib_acoshf(ats_float_type x) { return acoshf(x) ; }
 
 static inline
 ats_ldouble_type
 atslib_acoshl(ats_ldouble_type x) {
-  return acoshl(x);
+  return acoshl(x) ;
 }
 
 //
 
 static inline
 ats_double_type
-atslib_sin(ats_double_type x) { return sin(x); }
+atslib_sin(ats_double_type x) { return sin(x) ; }
 
 static inline
 ats_float_type
-atslib_sinf(ats_float_type x) { return sinf(x); }
+atslib_sinf(ats_float_type x) { return sinf(x) ; }
 
 static inline
 ats_ldouble_type
-atslib_sinl(ats_ldouble_type x) { return sinl(x); }
+atslib_sinl(ats_ldouble_type x) { return sinl(x) ; }
 
 //
 
 static inline
 ats_double_type
-atslib_cos(ats_double_type x) { return cos(x); }
+atslib_cos(ats_double_type x) { return cos(x) ; }
 
 static inline
 ats_float_type
-atslib_cosf(ats_float_type x) { return cosf(x); }
+atslib_cosf(ats_float_type x) { return cosf(x) ; }
 
 static inline
 ats_ldouble_type
-atslib_cosl(ats_ldouble_type x) { return cosl(x); }
+atslib_cosl(ats_ldouble_type x) { return cosl(x) ; }
 
 //
 
 static inline
 ats_double_type
-atslib_tan(ats_double_type x) { return tan(x); }
+atslib_tan(ats_double_type x) { return tan(x) ; }
 
 static inline
 ats_float_type
-atslib_tanf(ats_float_type x) { return tanf(x); }
+atslib_tanf(ats_float_type x) { return tanf(x) ; }
 
 static inline
 ats_ldouble_type
-atslib_tanl(ats_ldouble_type x) { return tanl(x); }
+atslib_tanl(ats_ldouble_type x) { return tanl(x) ; }
+
+/* ****** ****** */
+
+static inline
+ats_int_type
+atslib_isinf (ats_double_type x) { return isinf(x) ; } 
+
+static inline
+ats_int_type
+atslib_isnan (ats_double_type x) { return isnan(x) ; } 
 
 /* ****** ****** */
 

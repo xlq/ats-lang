@@ -214,19 +214,21 @@ implement{a,b} all (f, xs, ys) = loop (f, xs, ys) where {
   // end of [loop]
 } // end of [all]
 
-implement{a,b} exits (f, xs, ys) = loop (f, xs, ys) where {
-  fun loop (f: (a, b) -<cloref1> bool, xs: list0 a, ys: list0 b): bool =
-    case+ (xs, ys) of
-    | (list0_cons (x, xs), list0_cons (y, ys)) => f (x, y) orelse loop (f, xs, ys)
-    | (_, _) => false
-  // end of [loop]
-} // end of [all]
-
 implement{a,b} allEq (f, xs, ys) = loop (f, xs, ys) where {
   fun loop (f: (a, b) -<cloref1> bool, xs: list0 a, ys: list0 b): bool =
     case+ (xs, ys) of
     | (list0_cons (x, xs), list0_cons (y, ys)) => f (x, y) andalso loop (f, xs, ys)
     | (list0_nil (), list0_nil ()) => true
+    | (_, _) => false
+  // end of [loop]
+} // end of [all]
+
+(* ****** ****** *)
+
+implement{a,b} exits (f, xs, ys) = loop (f, xs, ys) where {
+  fun loop (f: (a, b) -<cloref1> bool, xs: list0 a, ys: list0 b): bool =
+    case+ (xs, ys) of
+    | (list0_cons (x, xs), list0_cons (y, ys)) => f (x, y) orelse loop (f, xs, ys)
     | (_, _) => false
   // end of [loop]
 } // end of [all]

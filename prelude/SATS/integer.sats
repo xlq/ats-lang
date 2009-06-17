@@ -53,27 +53,22 @@
 
 //
 
-fun int_of_char (c: char):<> int
-  = "atspre_int_of_char"
+fun int_of_char (c: char):<> int = "atspre_int_of_char"
 overload int_of with int_of_char
 
-fun int_of_schar (c: schar):<> int
-  = "atspre_int_of_schar"
+fun int_of_schar (c: schar):<> int = "atspre_int_of_schar"
 overload int_of with int_of_schar
 
-fun int_of_uchar (c: uchar):<> int
-  = "atspre_int_of_uchar"
+fun int_of_uchar (c: uchar):<> int = "atspre_int_of_uchar"
 overload int_of with int_of_uchar
 
 //
 
 // This function is based on [atoi] in [stdlib.h]
-fun int_of_string (s: string):<> int
-  = "atspre_int_of_string"
+fun int_of_string (s: string):<> int = "atspre_int_of_string"
 overload int_of with int_of_string
 
-fun int_of_uint (u: uint):<> int
-  = "atspre_int_of_uint"
+fun int_of_uint (u: uint):<> int  = "atspre_int_of_uint"
 overload int_of with int_of_uint
 
 // arithmetic functions and comparison functions
@@ -637,10 +632,13 @@ fun uhalf {i:nat} (i: uint i):<> uint (i/2)
 
 typedef lint = int_long_t0ype
 
-// Note that the following coersion is automatic
 fun lint_of_int (i: int):<> lint
   = "atspre_lint_of_int"
 overload lint_of with lint_of_int
+
+fun int_of_lint (li: lint):<> int
+  = "atspre_int_of_lint"
+overload int_of with int_of_lint
 
 // This function is based on [atol] in [stdlib.h]
 fun lint_of_string (s: string):<> lint
@@ -769,15 +767,21 @@ typedef ulint = uint_long_t0ype
 fun ulint_of_int (i: int):<> ulint = "atspre_ulint_of_int"
 overload ulint_of with ulint_of_int
 
+//
+
 fun ulint_of_uint (u: uint):<> ulint = "atspre_ulint_of_uint"
 overload ulint_of with ulint_of_uint
+
+fun uint_of_ulint (ul: ulint):<> uint = "atspre_uint_of_ulint"
+overload uint_of with uint_of_ulint
+
+//
 
 fun ulint_of_lint (li: lint):<> ulint = "atspre_ulint_of_lint"
 overload ulint_of with ulint_of_lint
 
-//
-
-fun uint_of_ulint (ul: ulint):<> uint = "atspre_uint_of_ulint"
+fun lint_of_ulint (ul: ulint):<> lint = "atspre_lint_of_ulint"
+overload lint_of with lint_of_ulint
 
 // arithmetic functions and comparison functions
 

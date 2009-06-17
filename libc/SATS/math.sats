@@ -172,4 +172,9 @@ fun tanhl (ld: ldouble):<> ldouble = "atslib_tanhl"
 
 (* ****** ****** *)
 
+fun isinf (d: double):<> int = "atslib_isinf"
+fun isnan (d: double):<> int = "atslib_isnan"
+
+(* ****** ****** *)
+
 (* end of [math.sats] *)
