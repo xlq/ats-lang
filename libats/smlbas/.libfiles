@@ -29,3 +29,6 @@ libats/smlbas/DATS/real.dats
 
 libats/smlbas/SATS/string.sats
 libats/smlbas/DATS/string.dats
+
+libats/smlbas/SATS/time.sats
+libats/smlbas/DATS/time.dats
