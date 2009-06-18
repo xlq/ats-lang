@@ -492,7 +492,7 @@ fun d1exp_make_opr (d1e: d1exp, f: $Fix.fxty_t): d1expitm = begin
   , lam (loc, x, loc_arg, xs) => d1exp_app_dyn (loc, x, loc_arg, 0, xs)
   , d1e
   , f
-  )
+  ) // end of [oper_make]
 end // end of [d1exp_make_opr]
 
 val d1expitm_backslash : d1expitm = begin

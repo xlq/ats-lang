@@ -53,7 +53,7 @@ staload "libats/smlbas/SATS/real.sats"
 (* ****** ****** *)
 
 // please note that this does not really
-assume real = double // implement the specification given in [smlbas].
+assume real_t0ype = double // implement the specification given in [smlbas].
 
 (* ****** ****** *)
 

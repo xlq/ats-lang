@@ -72,6 +72,7 @@ implement do_one_square (pt, i, j) = let
                            else loop (pt0, pts, res+1)
       end // end of [list0_cons]                     
     | list0_nil () => res
+  // end of [loop]
 in
   loop (pt, pts, 0(*res*)) 
 end (* end of [do_one_square] *)

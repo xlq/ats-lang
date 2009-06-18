@@ -7,33 +7,32 @@
 (***********************************************************************)
 
 (*
- * ATS/Anairiats - Unleashing the Potential of Types!
- *
- * Copyright (C) 2002-2008 Hongwei Xi, Boston University
- *
- * All rights reserved
- *
- * ATS is free software;  you can  redistribute it and/or modify it under
- * the terms of  the GNU GENERAL PUBLIC LICENSE (GPL) as published by the
- * Free Software Foundation; either version 3, or (at  your  option)  any
- * later version.
- * 
- * ATS is distributed in the hope that it will be useful, but WITHOUT ANY
- * WARRANTY; without  even  the  implied  warranty  of MERCHANTABILITY or
- * FITNESS FOR A PARTICULAR PURPOSE.  See the  GNU General Public License
- * for more details.
- * 
- * You  should  have  received  a  copy of the GNU General Public License
- * along  with  ATS;  see the  file COPYING.  If not, please write to the
- * Free Software Foundation,  51 Franklin Street, Fifth Floor, Boston, MA
- * 02110-1301, USA.
- *
- *)
+** ATS/Anairiats - Unleashing the Potential of Types!
+**
+** Copyright (C) 2002-2008 Hongwei Xi, Boston University
+**
+** All rights reserved
+**
+** ATS is free software;  you can  redistribute it and/or modify it under
+** the terms of  the GNU GENERAL PUBLIC LICENSE (GPL) as published by the
+** Free Software Foundation; either version 3, or (at  your  option)  any
+** later version.
+** 
+** ATS is distributed in the hope that it will be useful, but WITHOUT ANY
+** WARRANTY; without  even  the  implied  warranty  of MERCHANTABILITY or
+** FITNESS FOR A PARTICULAR PURPOSE.  See the  GNU General Public License
+** for more details.
+** 
+** You  should  have  received  a  copy of the GNU General Public License
+** along  with  ATS;  see the  file COPYING.  If not, please write to the
+** Free Software Foundation,  51 Franklin Street, Fifth Floor, Boston, MA
+** 02110-1301, USA.
+*)
 
 (* ****** ****** *)
 
-// Time: July 2007
 // Author: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
+// Time: July 2007
 
 (* ****** ****** *)
 
@@ -62,6 +61,7 @@ datatype fxty =
   | FXTYinf of (prec_t, assoc)
   | FXTYpre of prec_t
   | FXTYpos of prec_t
+// end of [fxty]
 
 assume fxty_t = fxty
 
@@ -111,8 +111,12 @@ implement fxty_pos (p: prec_t) = FXTYpos p
 
 (* ****** ****** *)
 
-val app_prec = 70 and app_assc = ASSOClft
+val app_prec = 70
+and app_assoc = ASSOClft
+
 val backslash_prec = app_prec + 1
+
+//
 
 implement select_prec = 80 (* .label is a postfix operator *)
 implement selptr_fixity_dyn = FXTYinf (select_prec, ASSOClft)
@@ -160,7 +164,7 @@ implement deref_fixity_dyn = FXTYpre (deref_prec_dyn)
 
 //
 
-implement item_app f = ITEMopr (OPERinf (app_prec, app_assc, f))
+implement item_app f = ITEMopr (OPERinf (app_prec, app_assoc, f))
 
 //
 
@@ -185,7 +189,7 @@ implement oper_make
   val loc_opr = locf opr
 
   fn aux_inf
-    (opr: a, p: prec_t, a: assoc):<cloptr1> item a = let
+    (opr: a, p: prec_t, a: assoc):<cloref1> item a = let
     fn f (x1: a, x2: a):<cloref1> item a = let
       val loc = $Loc.location_combine (locf x1, locf x2)
     in
@@ -195,7 +199,7 @@ implement oper_make
     ITEMopr (OPERinf (p, a, f))
   end // end of [aux_inf]
    
-  fn aux_pre (opr: a, p: prec_t):<cloptr1> item a = let
+  fn aux_pre (opr: a, p: prec_t):<cloref1> item a = let
     fn f (x: a):<cloref1> item a = let
       val loc_x = locf x
       val loc = $Loc.location_combine (loc_opr, loc_x)
@@ -206,7 +210,7 @@ implement oper_make
     ITEMopr (OPERpre (p, f))
   end // end of [aux_pre]
 
-  fn aux_pos (opr: a, p: prec_t):<cloptr1> item a = let
+  fn aux_pos (opr: a, p: prec_t):<cloref1> item a = let
     fn f (x: a):<cloref1> item a = let
       val loc_x = locf x
       val loc = $Loc.location_combine (loc_x, loc_opr)
@@ -250,8 +254,11 @@ end // end of [err]
 
 typedef I = item a and IS = List (item a)
 
-fun resolve (xs: IS, m: I, ys: IS)
-  :<cloptr1> a = begin case+ (xs, m, ys) of
+(*
+** [fn*] for mutual tail-recursion
+*)
+fn* resolve (xs: IS, m: I, ys: IS)
+  :<cloref1> a = begin case+ (xs, m, ys) of
   | (_, ITEMatm _, _) => begin case+ ys of
     | ITEMatm _ :: _ => resolve_app (xs, m, ys)
     | _ => next (xs, m :: ys)
@@ -287,16 +294,16 @@ fun resolve (xs: IS, m: I, ys: IS)
 end // end of [resolve]
 
 and resolve_app
-  (xs: IS, m: I, ys: IS):<cloptr1> a = case+ ys of
+  (xs: IS, m: I, ys: IS):<cloref1> a = case+ ys of
   | _ :: ITEMopr opr1 :: _ => let
       val p1 = oper_precedence opr1
+      val sgn = compare (app_prec, p1): Sgn
     in
-      case+ compare (app_prec, p1) of
-      |  1 => next (xs, m :: app :: ys)
-      | ~1 => reduce (m :: xs, ys)
-      |  _ (* 0 *) => let
+      case+ sgn of
+      | 1 => next (xs, m :: app :: ys) | ~1 => reduce (m :: xs, ys)
+      | _ (*0*) => let
            val assoc1 = oper_associativity opr1 in case+ assoc1 of
-           | ASSOClft () => reduce (m :: xs, ys) | _ => err (loc0)
+             | ASSOClft () => reduce (m :: xs, ys) | _ => err (loc0)
          end // end of [_]
     end // end of [_ :: ITERMopr :: _]
   | _ :: nil () => next (xs, m :: app :: ys)
@@ -304,7 +311,7 @@ and resolve_app
 // end of [resolve_app]
               
 and reduce
-  (xs: IS, ys: IS):<cloptr1> a = case+ ys of
+  (xs: IS, ys: IS):<cloref1> a = case+ ys of
   | ITEMatm t :: ITEMopr (OPERpre (_, f)) :: ys =>
     next (f t :: xs, ys)
   | ITEMatm t1 :: ITEMopr (OPERinf (_, _, f)) :: ITEMatm t2 :: ys =>
@@ -314,7 +321,7 @@ and reduce
   | _ => err (loc0)
 // end of [reduce]
           
-and next (xs: IS, ys: IS):<cloptr1> a = case+ (xs, ys) of
+and next (xs: IS, ys: IS):<cloref1> a = case+ (xs, ys) of
   | (nil (), ITEMatm t :: nil ()) => t
   | (nil (), ys) => reduce (nil (), ys)
   | (x :: xs, ys) => resolve (xs, x, ys)

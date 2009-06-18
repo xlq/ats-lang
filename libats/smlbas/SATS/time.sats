@@ -44,81 +44,32 @@
 
 (* ****** ****** *)
 
-abst@ype real_t0ype = double // implemented as floating point number of double precision
-typedef real = real_t0ype
+staload REAL = "libats/smlbas/SATS/real.sats" 
 
 (* ****** ****** *)
 
-castfn real_of_double (x: double): real
-castfn double_of_real (x: real): double
+abst@ype time_t0ype = $extype "ats_time_type"
+typedef time = time_t0ype
 
 (* ****** ****** *)
 
-fun add_real_real (r1: real, r2: real): real
-overload + with add_real_real
-
-fun sub_real_real (r1: real, r2: real): real
-overload - with sub_real_real
-
-fun mul_real_real (r1: real, r2: real): real
-overload * with mul_real_real
-
-fun div_real_real (r1: real, r2: real): real
-overload / with div_real_real
-
-// this one is name [rem] in [smlbas]
-fun mod_real_real (r1: real, r2: real): real
-overload mod with mod_real_real
+fun toReal (x: time): $REAL.real
+fun fromReal (x: $REAL.real): time 
 
 (* ****** ****** *)
 
-fun muladd_real_real (r1: real, r2: real, r3: real): real
-fun mulsub_real_real (r1: real, r2: real, r3: real): real
+fun toSeconds (x: time): lint
+fun fromSeconds (x: lint): time
+
+fun toMilliseconds (x: time): llint
+fun fromMilliseconds (x: llint): time
+
+fun toMicroseconds (x: time): llint
+fun fromMicroseconds (x: llint): time
+
+fun toNanoseconds (x: time): llint
+fun fromNanoseconds (x: llint): time
 
 (* ****** ****** *)
 
-fun neg_real (r: real): real
-fun abs_real (r: real): real
-
-(* ****** ****** *)
-
-fun lt_real_real (r1: real, r2: real): bool
-overload < with lt_real_real
-
-fun lte_real_real (r1: real, r2: real): bool
-overload <= with lte_real_real
-
-fun gt_real_real (r1: real, r2: real): bool
-overload > with gt_real_real
-
-fun gte_real_real (r1: real, r2: real): bool
-overload >= with gte_real_real
-
-fun eq_real_real (r1: real, r2: real): bool
-overload = with eq_real_real
-
-fun neq_real_real (r1: real, r2: real): bool
-overload <> with neq_real_real
-
-fun compare_real_real (r1: real, r2: real): int
-
-(* ****** ****** *)
-
-fun min_real_real (r1: real, r2: real): real
-overload min with min_real_real
-
-fun max_real_real (r1: real, r2: real): real
-overload max with max_real_real
-
-(* ****** ****** *)
-
-fun realCeil (r: real): real
-fun realFloor (r: real): real
-fun realRound (r: real): real
-fun realTrunc (r: real): real
-
-(* ****** ****** *)
-
-(* end of [real.sats] *)
-
-
+(* end of [time.sats] *)

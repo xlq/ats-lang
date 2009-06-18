@@ -51,9 +51,7 @@ staload "libats/smlbas/SATS/date.sats"
 assume date = '{
   year= int, month= month, day= int
 , hour= int, minute= int, second= int
-(*
-, offset= option0 ($Time.time)
-*)
+, offset= option0 ($TIME.time)
 } // end of [date]
 
 (* ****** ****** *)
@@ -65,9 +63,11 @@ implement date (
   , hour
   , minute
   , second
+  , ofsopt
   ) : date = '{
   year= year, month= month, day= day
 , hour= hour, minute= minute, second= second
+, offset= ofsopt
 } // end of [date]
 
 (* ****** ****** *)
@@ -99,9 +99,12 @@ implement second (date) = date.second
 (*
 fun weekday (_: date): weekday
 fun yearday (_: date): int
-fun offset (_: date): option0 ($Time.time)
-fun isDst (_: date): option0 (bool)
+*)
 
+implement offset (date) = date.offset
+
+(*
+fun isDst (_: date): option0 (bool)
 fun localOffset (): $Time.time
 *)
 

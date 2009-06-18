@@ -7,28 +7,27 @@
 (***********************************************************************)
 
 (*
- * ATS/Anairiats - Unleashing the Potential of Types!
- *
- * Copyright (C) 2002-2008 Hongwei Xi, Boston University
- *
- * All rights reserved
- *
- * ATS is free software;  you can  redistribute it and/or modify it under
- * the terms of  the GNU GENERAL PUBLIC LICENSE (GPL) as published by the
- * Free Software Foundation; either version 3, or (at  your  option)  any
- * later version.
- * 
- * ATS is distributed in the hope that it will be useful, but WITHOUT ANY
- * WARRANTY; without  even  the  implied  warranty  of MERCHANTABILITY or
- * FITNESS FOR A PARTICULAR PURPOSE.  See the  GNU General Public License
- * for more details.
- * 
- * You  should  have  received  a  copy of the GNU General Public License
- * along  with  ATS;  see the  file COPYING.  If not, please write to the
- * Free Software Foundation,  51 Franklin Street, Fifth Floor, Boston, MA
- * 02110-1301, USA.
- *
- *)
+** ATS/Anairiats - Unleashing the Potential of Types!
+**
+** Copyright (C) 2002-2008 Hongwei Xi, Boston University
+**
+** All rights reserved
+**
+** ATS is free software;  you can  redistribute it and/or modify it under
+** the terms of  the GNU GENERAL PUBLIC LICENSE (GPL) as published by the
+** Free Software Foundation; either version 3, or (at  your  option)  any
+** later version.
+** 
+** ATS is distributed in the hope that it will be useful, but WITHOUT ANY
+** WARRANTY; without  even  the  implied  warranty  of MERCHANTABILITY or
+** FITNESS FOR A PARTICULAR PURPOSE.  See the  GNU General Public License
+** for more details.
+** 
+** You  should  have  received  a  copy of the GNU General Public License
+** along  with  ATS;  see the  file COPYING.  If not, please write to the
+** Free Software Foundation,  51 Franklin Street, Fifth Floor, Boston, MA
+** 02110-1301, USA.
+*)
 
 (* ****** ****** *)
 
@@ -111,6 +110,7 @@ datatype oper (a:type) =
   | OPERinf (a) of (prec_t, assoc, (a, a) -<cloref1> item a)
   | OPERpre (a) of (prec_t, a -<cloref1> item a)
   | OPERpos (a) of (prec_t, a -<cloref1> item a)
+// end of [oper]
         
 and item (a: type) = ITEMatm (a) of a | ITEMopr (a) of oper a
 
@@ -125,6 +125,7 @@ fun oper_make_backslash {a:type} (
     locf: a -<cloref1> location_t
   , appf: (location_t, a, location_t, List a) -<cloref1> a
   ) : item a 
+// end of [oper_make_backslash]
 
 fun oper_make {a:type} (
     locf: a -<cloref1> location_t
@@ -132,11 +133,13 @@ fun oper_make {a:type} (
   , opr: a
   , fxty: fxty_t
   ) : item a 
+// end of [oper_make]
 
 (* ****** ****** *)
 
 fun fixity_resolve {a:type}
   (loc: location_t, app: item a, xs: List (item a)): a
+// end of [fixity_resolve]
 
 (* ****** ****** *)
 

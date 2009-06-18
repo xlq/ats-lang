@@ -329,7 +329,9 @@ and lp_typ1: LP (typ) = $delay (
 } (* end of [lp_typ1] *)
 
 and lp_typc: LP (typc) = $delay (
-  seq2wth_parser_fun (MINUSGT, !lp_typ, f)
+  seq2wth_parser_fun
+    (MINUSGT, !lp_typ, f) ||
+  return_parser<typc> (lam t => t) 
 ) where {
   val f = lam
     (_: token, t_res: typ): typc =<fun> (lam t_arg => let
@@ -366,11 +368,15 @@ end (* end of [app_e0xp] *)
 
 (* ****** ****** *)
 
+typedef e0xpc = e0xp -<cloref> e0xp
+
+(* ****** ****** *)
+
 val
 rec lp_e0xp
   : LP (e0xp) = $delay (
   lzeta lp_e0xp_if ||
-  lzeta lp_e0xp1
+  lzeta lp_e0xp2
 ) // end of [lp_e0xp]
 
 and lp_e0xplist: LP e0xplst = $delay (
@@ -478,6 +484,22 @@ and lp_e0xp1: LP (e0xp) = $delay (
       end // end of [None_vt]
   end // end of [f]
 } // end of [lp_e0xp1]
+
+and lp_e0xp1c: LP (e0xpc) = $delay (
+  COLON >> !lp_typ wth f_ann || return_parser<e0xpc> (lam e => e)
+) where {
+  fn f_ann (t: typ):<> e0xpc = lam e => let
+    val loc = location_combine (e.e0xp_loc, t.typ_loc)
+  in
+    e0xp_make_ann (loc, e, t)
+  end // end of [f]
+} // end of [lp_e0xp1c]
+
+and lp_e0xp2: LP (e0xp) = $delay (
+  seq2wth_parser_fun (!lp_e0xp1, !lp_e0xp1c, f)
+) where {
+  val f = lam (e: e0xp, ec: e0xpc) =<fun> ec (e)
+} (* end of [lp_e0xp2] *)
 
 (* ****** ****** *)
 

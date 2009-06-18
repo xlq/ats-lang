@@ -39,58 +39,13 @@
 (* ****** ****** *)
 
 //
-// SML Basis Library: Array (http://www.standardml.org/Basis/date.html)
+// SML Basis Library: Array (http://www.standardml.org/Basis/real.html)
 //
 
 (* ****** ****** *)
 
-staload TIME = "libats/smlbas/SATS/time.sats"
+staload "libats/smlbas/SATS/time.sats" 
 
 (* ****** ****** *)
 
-datatype weekday =
-  | Mon | Tue | Wed | Thu | Fri | Sat | Sun
-// end of [weekday]
-
-datatype month =
-  | Jan | Feb | Mar | Apr | May | Jun
-  | Jul | Aug | Sep | Oct | Nov | Dec
-// end of [month]
-
-abstype date // a boxed abstract type
-
-exception Date of ()
-  
-(* ****** ****** *)
-
-fun date (
-    year: int, month: month, day: int
-  , hour: int, minute: int, second: int
-  , offset: option0 ($TIME.time)
-  ) : date
-// end of [date]  
-
-fun year (_: date): int 
-fun month (_: date): month
-fun day (_: date): int
-fun hour (_: date): int
-fun minute (_: date): int
-fun second (_: date): int
-fun weekday (_: date): weekday
-fun yearday (_: date): int
-fun offset (_: date): option0 ($TIME.time)
-fun isDst (_: date): option0 (bool)
-
-// fun localOffset (): $Time.time
-
-fun compare_date_date (d1: date, d2: date): int
-
-(* ****** ****** *)
-
-fun toString (d: date): string
-
-fun fromString (s: string): date
-
-(* ****** ****** *)
-
-(* end of [date.sats] *)
+(* end of [time.dats] *)
