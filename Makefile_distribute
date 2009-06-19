@@ -34,6 +34,7 @@
 ######
 
 GCC=gcc
+RANLIB=ranlib
 
 PWD=$(shell pwd)
 ifdef ATSHOME
@@ -97,8 +98,13 @@ bin/atscc bin/atslib:
 # [gcc -E] for preprocessing
 .libfiles_local: ; $(GCC) -E -P -x c .libfiles -o .libfiles_local
 libfiles: .libfiles_local
-	"$(ATSHOME)"/bin/atslib $(ATS_TERMINATION_CHECK) -O2 --libats # for libats
-	"$(ATSHOME)"/bin/atslib $(ATS_TERMINATION_CHECK) -O2 --libats_smlbas # for libats_smlbas
+	# for libats
+	"$(ATSHOME)"/bin/atslib $(ATS_TERMINATION_CHECK) -O2 --libats
+	$(RANLIB) "$(ATSHOME)"/ccomp/lib/libats.a
+
+	# for libats_smlbas
+	"$(ATSHOME)"/bin/atslib $(ATS_TERMINATION_CHECK) -O2 --libats_smlbas
+	$(RANLIB) "$(ATSHOME)"/ccomp/lib/libats_smlbas.a
 
 ###### a lexer for ATS ######
 
