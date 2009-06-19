@@ -113,25 +113,29 @@ val BAR = litident "|"
 
 //
 
+val EQGT = litident "=>"
+
 val MINUSGT = litident "->"
 
 //
 
-val AND = litident"and"
-val APP = litident"app"
-val ELSE = litident"else"
-val END = litident"end"
-val FALSE = litident"false"
-val FI = litident"fi"
-val FN = litident"fn"
-val FUN = litident"fun"
-val IF = litident"if"
-val IN = litident"in"
-val LAM = litident"lam"
-val LET = litident"let"
-val PRINT = litident"print"
-val THEN = litident"then"
-val TRUE = litident"true"
+val AND   = litident "and"
+val APP   = litident "app"
+val ELSE  = litident "else"
+val END   = litident "end"
+val FALSE = litident "false"
+val FIX   = litident "fix"
+val FN    = litident "fn"
+val FUN   = litident "fun"
+val IF    = litident "if"
+val IN    = litident "in"
+val LAM   = litident "lam"
+val LET   = litident "let"
+val PRINT = litident "print"
+val THEN  = litident "then"
+val TRUE  = litident "true"
+val VAL   = litident "val"
+val REC   = litident "rec"
 
 (* ****** ****** *)
 
@@ -141,17 +145,20 @@ val arrsz = $arrsz {string} (
   "and"
 , "else"
 , "end"
+, "fix"
 , "fun"
 , "if"
 , "in"
 , "lam"
 , "let"
 , "then"
-, "|", "&"
+, "rec"
+, "val"
 , ".", ":"
-, "+", "-", "/", "*"
+, "~", "+", "-", "*", "/"
 , "=",":="
 , ">=", ">", "<=", "<", "<>"
+, "|", "&"
 ) // end of [arrsz]
 
 in // in of [local]
@@ -204,7 +211,7 @@ local
 #define TIMES_precedence 60
 #define DIVIDE_precedence 60
 
-#define UMINUS_precedence 80
+#define UMINUS_precedence 61
 
 #define EQ_precedence 20
 #define NEQ_precedence 20
@@ -316,14 +323,14 @@ and lp_typ1: LP (typ) = $delay (
   seq3wth_parser_fun (LPAREN, lzeta lp_typlist, RPAREN, f_seq)
 ) where {
   val f_ident = lam
-    (tk_id: token) =<> let
-    val loc = tk_id.token_loc; val sym_id = symbol_make_token tk_id
+    (tok_ide: token) =<> let
+    val loc = tok_ide.token_loc; val sym_id = symbol_make_token tok_ide
   in
     typ_make_sym (loc, sym_id)
   end // end of [f_ident]
   val f_seq = lam
-    (tk1: token, ts: typlst, tk2: token) =<> let
-    val loc = location_combine (tk1.token_loc, tk2.token_loc) in
+    (tok1: token, ts: typlst, tok2: token) =<> let
+    val loc = location_combine (tok1.token_loc, tok2.token_loc) in
     typ_make_list (loc, ts)
   end // end of [f_seq]  
 } (* end of [lp_typ1] *)
@@ -376,6 +383,8 @@ val
 rec lp_e0xp
   : LP (e0xp) = $delay (
   lzeta lp_e0xp_if ||
+  lzeta lp_e0xp_lam || 
+  lzeta lp_e0xp_fix || 
   lzeta lp_e0xp2
 ) // end of [lp_e0xp]
 
@@ -389,24 +398,82 @@ and lp_e0xp_if: LP e0xp = $delay (seq4wth_parser_fun
   (IF, !lp_e0xp, THEN >> !lp_e0xp, (ELSE >> !lp_e0xp)^?, f_if)
 ) where {
   fn f_if
-    (tk_if: token, e1: e0xp, e2: e0xp, oe3: e0xpopt):<> e0xp = let
+    (tok_if: token, e1: e0xp, e2: e0xp, oe3: e0xpopt):<> e0xp = let
     val loc = case+ oe3 of
-    | Some e3 => location_combine (tk_if.token_loc, e3.e0xp_loc)
-    | None () => location_combine (tk_if.token_loc, e2.e0xp_loc)
+      | Some e3 => location_combine (tok_if.token_loc, e3.e0xp_loc)
+      | None () => location_combine (tok_if.token_loc, e2.e0xp_loc)
+    // end of [val]  
   in
     e0xp_make_if (loc, e1, e2, oe3)
   end // end of [f_if]
 } // end of [lp_e0xp_if]
 
 (* ****** ****** *)
-  
+
+and lp_a0rg: LP a0rg = $delay (
+  seq2wth_parser_fun (p_ident, !lp_typann, f_a0rg) 
+) where {
+  fn f_a0rg
+    (tok_ide: token, oty: typopt):<> a0rg = let
+    val sym = symbol_make_token (tok_ide) in @{
+    a0rg_loc= tok_ide.token_loc, a0rg_nam= sym, a0rg_typ= oty
+  } end // end of [f_a0rg]
+} (* end of [lp_a0rg] *)
+
+and lp_a0rglist: LP a0rglst = $delay (
+  repeat0_sep_parser<a0rg,token> (!lp_a0rg, COMMA)
+) // end of [p_explst]
+
+and lp_e0xp_lam: LP e0xp = $delay (
+  seq4wth_parser_fun (
+    LAM, LPAREN >> !lp_a0rglist << RPAREN, !lp_typann, EQGT >> !lp_e0xp, f_lam
+  ) // end of [seq5wth]
+) where {
+  fn f_lam (
+      tok_lam: token
+    , args: a0rglst
+    , res: typopt
+    , body: e0xp
+    ) :<> e0xp = let
+    val loc = location_combine (tok_lam.token_loc, body.e0xp_loc)
+  in
+    e0xp_make_lam (loc, args, res, body)
+  end // end of [f_lam]  
+} // end of [lp_e0xp_lam]
+
+and lp_e0xp_fix: LP e0xp = $delay (
+  seq5wth_parser_fun (
+    FIX,  p_ident, LPAREN >> !lp_a0rglist << RPAREN, !lp_typann, EQGT >> !lp_e0xp, f_fix
+  ) // end of [seq5wth]
+) where {
+  fn f_fix (
+      tok_fix: token
+    , tok_ide: token  
+    , args: a0rglst
+    , res: typopt
+    , body: e0xp
+    ) :<> e0xp = let
+    val loc = location_combine (tok_fix.token_loc, body.e0xp_loc)
+    val sym = symbol_make_token (tok_ide)
+  in
+    e0xp_make_fix (loc, sym, args, res, body)
+  end // end of [f_lam]  
+} // end of [lp_e0xp_lam]
+
+(* ****** ****** *)
+
 and lp_e0xp0: LP e0xp = $delay ( // ordering is significant!
   TRUE wth f_true ||
   FALSE wth f_false ||
   p_ident wth f_var ||
   p_number wth f_number ||
   p_string wth f_string ||
-  seq3wth_parser_fun (LPAREN, !lp_e0xplist, RPAREN, f_list)
+  seq3wth_parser_fun
+    (LPAREN, !lp_e0xplist, RPAREN, f_list) ||
+  // end of [seq3wth_parser]
+  seq5wth_parser_fun
+    (LET, lzeta lp_d0eclist, IN, !lp_e0xp, END, f_let)
+  // end of [seq5wth_parser]
 ) where {
   fn f_var (tok: token):<> e0xp = let
     val loc = tok.token_loc; val sym = symbol_make_token tok in
@@ -423,23 +490,52 @@ and lp_e0xp0: LP e0xp = $delay ( // ordering is significant!
     e0xp_make_str (loc, str)
   end // end of [f_string]
   fn f_list
-    (tk_beg: token, es: e0xplst, tk_end: token):<> e0xp = begin
+    (tok_beg: token, es: e0xplst, tok_end: token):<> e0xp = begin
     case+ es of
     | list_cons (e, list_nil ()) => e | _ => let
-        val loc = location_combine (tk_beg.token_loc, tk_end.token_loc)
+        val loc = location_combine (tok_beg.token_loc, tok_end.token_loc)
       in
         e0xp_make_list (loc, es)
       end // end of [_]
   end // end of [f_seq]
+  fn f_let (
+      tok_let: token
+    , ds: d0eclst
+    , _(*in*)
+    , e: e0xp
+    , tok_end: token
+    ) :<> e0xp = let
+    val loc = location_combine
+      (tok_let.token_loc, tok_end.token_loc) in e0xp_make_let (loc, ds, e)
+  end // end of [f_let]  
+    
 } // end of [lp_e0xp0]
 
 (* ****** ****** *)
 
 and lp_opre0xp0: LP (fixitm e0xp) = $delay (
-  p_opr wth f_opr || !lp_e0xp0 wth f_e0xp
+  p_opr wth f_opr ||
+  seq2wth_parser_fun (DOT, p_number, f_proj) ||
+  !lp_e0xp0 wth f_e0xp
 ) where {
-  fn f_opr (opr: fixopr e0xp):<> fixitm e0xp =
-    FIXITMopr opr
+  fn f_opr
+    (opr: fixopr e0xp):<> fixitm e0xp = FIXITMopr opr
+  #define DOT_precedence 80
+  fn f_proj (tok_dot: token, tok_num: token):<> fixitm e0xp = let
+    val loc = location_combine (tok_dot.token_loc, tok_num.token_loc)
+    val- TOKint n = tok_num.token_node
+    val opr = Postfix {e0xp} (
+      loc
+    , DOT_precedence
+    , lam (e) => let
+        val loc = location_combine (loc, e.e0xp_loc)
+      in
+        e0xp_make_proj (loc, e, n)
+      end
+    ) // end of [Postfix]  
+  in
+    FIXITMopr (opr)
+  end // end of [f_proj]
   fn f_e0xp (exp: e0xp):<> fixitm e0xp = FIXITMatm exp
 } // end of [lp_opre0xp0]
 
@@ -503,22 +599,63 @@ and lp_e0xp2: LP (e0xp) = $delay (
 
 (* ****** ****** *)
 
-extern fun parse_failure
-  (tks: stream token, ncur: int, nmax: int): void
+and lp_v0aldec: LP (v0aldec) = $delay (
+  seq3wth_parser_fun (p_ident, !lp_typann, EQ >> !lp_e0xp, f_v0aldec)
+) where {
+  fn f_v0aldec (
+      tok_ide: token, oty: typopt, e: e0xp
+    ) :<> v0aldec = let
+    val loc = location_combine (tok_ide.token_loc, e.e0xp_loc)
+    val sym = symbol_make_token (tok_ide)
+  in @{
+    v0aldec_loc= loc, v0aldec_nam= sym, v0aldec_ann= oty, v0aldec_def= e
+  } end // end of [f_v0aldec]
+} // end of [lp_v0aldec]
 
-implement parse_failure (tks, ncur, nmax) = let
+and lp_v0aldeclist: LP (List1 v0aldec) = $delay (
+  repeat1_sep_parser<v0aldec,token> (!lp_v0aldec, AND)
+) // end of [lp_v0aldeclist]
+
+(* ****** ****** *)
+
+and lp_d0ec: LP (d0ec) = $delay (
+  seq3wth_parser_fun (VAL, (REC)^?, !lp_v0aldeclist, f_v0al)
+) where {
+  fn f_v0al (
+      tok_val: token
+    , tokopt_rec: Option token
+    , vds: List1 v0aldec
+    ) :<> d0ec = let
+    val isrec = (
+      case+ tokopt_rec of Some _ => true | None _ => false
+    ) : bool
+    val vd = list_last<v0aldec> (vds)
+    val loc = location_combine (tok_val.token_loc, vd.v0aldec_loc)
+  in  
+    d0ec_make_val (loc, isrec, vds)
+  end // end of [f_v0al]  
+} // end of [lp_d0ec]
+
+and lp_d0eclist: LP (d0eclst) = $delay (repeat0_parser<d0ec> (!lp_d0ec))
+
+(* ****** ****** *)
+
+extern fun parse_failure
+  (toks: stream token, ncur: int, nmax: int): void
+
+implement parse_failure (toks, ncur, nmax) = let
   fun loop
-    (tks: stream token, n: int): Option_vt (token) =
-    case+ !tks of
-    | stream_cons (tk, tks) =>
-        if n > 0 then loop (tks, n-1) else Some_vt (tk)
+    (toks: stream token, n: int): Option_vt (token) =
+    case+ !toks of
+    | stream_cons (tok, toks) =>
+        if n > 0 then loop (toks, n-1) else Some_vt (tok)
     | stream_nil () => None_vt ()
   // end of [loop]
-  val otk = loop (tks, nmax - ncur)
+  val tokopt = loop (toks, nmax - ncur)
 in
-  case+ otk of
-  | ~Some_vt tk => begin
-      prerr_location tk.token_loc;
+  case+ tokopt of
+  | ~Some_vt tok => begin
+      prerr_location tok.token_loc;
       prerr ": exit(STFPL)";
       prerr ": parsing failure";
       prerr_newline ()
@@ -533,20 +670,20 @@ end // end of [parse_failure]
 (* ****** ****** *)
 
 fn parse_from_charstream (cs: stream char): e0xp = let
-  val tks0 = tokenstream_make_charstream (cs)
-  var tks: stream token = tks0
+  val toks0 = tokenstream_make_charstream (cs)
+  var toks: stream token = toks0
   var ncur: int = 0 and nmax: int = 0
-  val r = apply_parser (!lp_e0xp, tks, ncur, nmax)
+  val r = apply_parser (!lp_e0xp, toks, ncur, nmax)
   val res = (case+ r of
     | ~Some_vt e => e
     | ~None_vt _ => let
-        val () = parse_failure (tks, ncur, nmax) in abort {e0xp} (1)
+        val () = parse_failure (toks, ncur, nmax) in abort {e0xp} (1)
       end // end of [Fail]
   ) : e0xp // end of [val]
-  val otk = stream_item_get<token> (tks)
-  val () = (case+ otk of
-    | ~Some_vt tk => begin
-        prerr_location tk.token_loc;
+  val otok = stream_item_get<token> (toks)
+  val () = (case+ otok of
+    | ~Some_vt tok => begin
+        prerr_location tok.token_loc;
         prerr ": exit(STFPL)";
         prerr ": parsing failure: unconsumed token";
         prerr_newline ();
@@ -587,376 +724,3 @@ end // end of [parse_from_file]
 (* ****** ****** *)
 
 (* end of [parser.dats] *)
-
-////
-
-infixl 4 << >>
-infixl 3 &&
-infixl 2 -- ##
-infixl 2 wth suchthat return guard
-infixr 1 ||
-
-//
-
-staload Char = "char.sats"
-staload "io.sats"
-staload List = "List/list.sats"
-staload "option.sats"
-staload String = "string.sats"
-
-//
-
-staload Error = "utils/ParsingCombinators/error.sats"
-staload Input = "utils/ParsingCombinators/input.sats"
-
-staload Pos = "utils/ParsingCombinators/pos.sats"
-typedef Pos = $Pos.T
-
-staload Token = "utils/ParsingCombinators/token.sats"
-typedef Token = $Token.T
-
-//
-
-staload "utils/ParsingCombinators/parsing.sats"
-typedef Parser (a:type, t:type) = T (a, t)
-
-//
-
-staload "parser.sats"
-
-//
-
-exception Fatal
-
-fun fatal {a:type} (): a = raise Fatal
-
-val keywords =
-  '["abs", "and", "app", "else", "end", "false", "fi",
-    "fn", "fun", "if", "in", "is", "let", "then", "true"]
-
-val ABS = $Token.litWord "abs"
-val UMINUS = $Token.litWord "~"
-val PLUS = $Token.litWord "+"
-val MINUS = $Token.litWord "-"
-val STAR = $Token.litWord "*"
-val SLASH = $Token.litWord "/"
-val PERCENT = $Token.litWord "%"
-val EQ = $Token.litWord "="
-val EQEQ = $Token.litWord "=="
-val EQGT = $Token.litWord "=>"
-val NEQ = $Token.litWord "<>"
-val LT = $Token.litWord "<"
-val LTEQ = $Token.litWord "<="
-val GT = $Token.litWord ">"
-val GTEQ = $Token.litWord ">="
-val COLON = $Token.litWord ":"
-val COMMA = $Token.litWord ","
-val UNDERSCORE = $Token.litWord "_"
-val SEMICOLON = $Token.litWord ";"
-val DOT = $Token.litWord "."
-val SHARP = $Token.litWord "#"
-val MINUSGT = $Token.litWord "->"
-
-val LPAREN = $Token.litWord "("
-val RPAREN = $Token.litWord ")"
-val LBRACKET = $Token.litWord "["
-val RBRACKET = $Token.litWord "]"
-val LBRACE = $Token.litWord "{"
-val RBRACE = $Token.litWord "}"
-
-val QUOTE = $Token.litWord "'"
-
-val AND = $Token.litWord "and"
-val APP = $Token.litWord "app"
-val ELSE = $Token.litWord "else"
-val END = $Token.litWord "end"
-val FALSE = $Token.litWord "false"
-val FI = $Token.litWord "fi"
-val FN = $Token.litWord "fn"
-val FUN = $Token.litWord "fun"
-val IF = $Token.litWord "if"
-val IN = $Token.litWord "in"
-val LET = $Token.litWord "let"
-val PRINT = $Token.litWord "print"
-val THEN = $Token.litWord "then"
-val TRUE = $Token.litWord "true"
-
-val BOOL = $Token.litWord "bool"
-val INT = $Token.litWord "int"
-val STRING = $Token.litWord "string"
-val UNIT = $Token.litWord "unit"
-
-fun ty2strList (ts: tys): String = $String.concatList ($List.map (ts, ty2str))
-
-implement ty2str t =
-  case t of
-    | TYbase s => s
-    | TYpair (t1, t2) => sprintf $fmt="TYtup (%s, %s)" (ty2str t1) (ty2str t2)
-    | TYfun (ts, t) => sprintf $fmt="TYtup (%s, %s)" (ty2strList ts) (ty2str t)
-    | TYlist ts => ty2strList ts
-    | TYvar X => sprintf $fmt="TYvar(%d)" X.name
-  
-//
-
-fun isLetter (c: Char): Bool =
-  if $Char.isAlpha c then true else $Char.equal (c, '_')
-
-fun isIdent (c: Char): Bool =
-  if isLetter c then true
-  else if $Char.isDigit c then true
-  else $Char.equal (c, '\'')
-
-
-(*
- * aty = bool | int | string | (typ)
- * ty = aty | aty -> typ | aty * ... * aty
-
-
-fun aty (): Parser (ty, Token) =
-  BOOL return (TYbase "bool") ||
-  INT return (TYbase "int") ||
-  STRING return (TYbase "string") ||
-  UNIT return (TYbase "unit") ||
-  LPAREN >> !ty << RPAREN
-
-and ty (): Parser (ty, Token) =
-  !aty && !ty' wth (lam '(t:ty, k:ty->ty): ty => k t) ||
-  LPAREN >> !tys << RPAREN && !ty'' wth (lam '(ts:tys, k:tys->ty): ty => k ts)
-
-and tys (): Parser (tys, Token) =
-  !ty && repeat (COMMA >> !ty) wth (lam '(t:ty, ts: tys): tys => cons (t, ts)) ||
-  succeed '[]
-
-and ty' (): Parser (ty -> ty, Token) =
-  MINUSGT >> !ty wth (lam (t:ty): ty->ty => lam (s:ty): ty => TYfun ('[s], t)) ||
-  STAR >> !aty && !ty' wth (lam '(t:ty, k:ty->ty) => lam (s:ty): ty => k (TYpair (s, t))) ||
-  succeed (lam (t:ty): ty => t)
-
-and ty'' (): Parser (tys -> ty, Token) =
-  MINUSGT >> !ty wth (lam (t:ty): tys->ty => lam (ts:tys): ty => TYfun (ts, t))
-
-val oty: Parser (oty, Token) = COLON >> !ty wth some || succeed None
-
-//
-
-val int: Parser (Int, Token) = $Token.anyInteger
-
-//
-
-fun isKeyword (s: id): Bool =
-  $List.exists {...} (keywords, lam x => $String.equal (x, s))
-
-fun isVar (s: id): Bool =
-  if isKeyword s then false
-  else
-    let
-       val cs = $String.explode s
-    in
-       case cs of
-	 | '[] => false
-         | cons (c, cs) => if isLetter c then $List.forall (cs, isIdent) else false
-    end
-
-//
-
-val var: Parser (id, Token) = $Token.anyWord suchthat isVar
-
-//
-
-fun exp0tostrList (es: exp0s): String =
-  let
-     fun aux (es: exp0s, res: List String): String =
-       case es of
-         | '[] => $String.concatList ($List.reverse res)
-         | cons (e, es) =>
-           aux (es, cons (exp0tostr e, cons (", ", res)))
-  in
-     case es of
-       | '[] => ""
-       | cons (e, es) => let val s = exp0tostr e in aux (es, '[s]) end
-  end
-
-implement exp0tostr (e: exp0): String =
-  case e of
-    | EXP0var x => sprintf $fmt="EXP0var(%s)" x
-    | EXP0bool b => sprintf $fmt="EXP0bool(%b)" b
-    | EXP0int i => sprintf $fmt="EXP0int(%i)" i
-    | EXP0str s => sprintf $fmt="EXP0str(%s)" s
-    | EXP0op (oper, es) => sprintf $fmt="EXP0op(%s; %s)" oper (exp0tostrList es)
-    | EXP0tup es => sprintf $fmt="EXP0tup(%s)" (exp0tostrList es)
-    | EXP0proj (e, n) => sprintf $fmt="EXP0proj(%s, %i)" (exp0tostr e) n
-    | EXP0list es => sprintf $fmt="EXP0list(%s)" (exp0tostrList es)
-    | EXP0if (e1, e2, e3) =>
-      sprintf $fmt="EXP0if(%s, %s, %s)" (exp0tostr e1) (exp0tostr e2) (exp0tostr e3)
-    | EXP0funs _ => "EXP0funs(...)"
-    | EXP0choose (e, n) => sprintf $fmt="EXP0choose(%s, %i)" (exp0tostr e) n
-    | EXP0app (e1, e2) => sprintf $fmt="EXP0app(%s, %s)" (exp0tostr e1) (exp0tostr e2)
-    | EXP0let (x, e1, e2) =>
-      sprintf $fmt="EXP0let(%s, %s, %s)" x (exp0tostr e1) (exp0tostr e2)
-    | EXP0ann (e, t) => sprintf $fmt="EXP0ann(%s, %s)" (exp0tostr e) (ty2str t)
-
-//
-
-fun Abs (e: exp0): exp0 = EXP0op ("abs", '[e])
-fun Neg (e: exp0): exp0 = EXP0op ("~", '[e])
-fun Add (e1: exp0, e2: exp0): exp0 = EXP0op ("+", '[e1, e2])
-fun Sub (e1: exp0, e2: exp0): exp0 = EXP0op ("-", '[e1, e2])
-fun Mul (e1: exp0, e2: exp0): exp0 = EXP0op ("*", '[e1, e2])
-fun Div (e1: exp0, e2: exp0): exp0 = EXP0op ("/", '[e1, e2])
-fun Mod (e1: exp0, e2: exp0): exp0 = EXP0op ("%", '[e1, e2])
-fun Gt (e1: exp0, e2: exp0): exp0 = EXP0op (">", '[e1, e2])
-fun Gte (e1: exp0, e2: exp0): exp0 = EXP0op (">=", '[e1, e2])
-fun Lt (e1: exp0, e2: exp0): exp0 = EXP0op ("<", '[e1, e2])
-fun Lte (e1: exp0, e2: exp0): exp0 = EXP0op ("<=", '[e1, e2])
-fun Eq (e1: exp0, e2: exp0): exp0 = EXP0op ("==", '[e1, e2])
-fun Neq (e1: exp0, e2: exp0): exp0 = EXP0op ("<>", '[e1, e2])
-fun Print (e: exp0): exp0 = EXP0op ("print", '[e])
-
-//
-
-(*
- * aexp = x | int | if exp then exp else exp fi
- *      | app (exp; exps) | let x = exp in exp end | (exps) 
- *
- * exp = aexp | aexp ... aexp | exp: typ
- * exps = exp, ..., exp
- *)
-
-val opr: Parser (Fixity exp0, Token)  =
-  ABS return Prefix(4, Abs) ||
-  UMINUS return Prefix(4, Neg) ||
-  PLUS return Infix(LeftAssoc, 2, Add) ||
-  MINUS return Infix(LeftAssoc, 2, Sub) ||
-  STAR return Infix(LeftAssoc, 3, Mul) ||
-  SLASH return Infix(LeftAssoc, 3, Div) ||
-  PERCENT return Infix(LeftAssoc, 3, Mod) ||
-  GT return Infix(NonAssoc, 1, Gt) ||
-  GTEQ return Infix(NonAssoc, 1, Gte) ||
-  LT return Infix(NonAssoc, 1, Lt) ||
-  LTEQ return Infix(NonAssoc, 1, Lte) ||
-  EQEQ return Infix(NonAssoc, 1, Eq) ||
-  NEQ return Infix(NonAssoc, 1, Neq) ||
-  PRINT return Prefix (4, Print)
-
-//
-
-fun var_oty_list (): Parser (arg0s, Token) =
-  (var && oty) && (repeat (COMMA >> var && oty))
-  wth (lam '(xt: arg0, xts: arg0s): arg0s => cons (xt, xts)) ||
-  succeed '[]
-
-val proj: Parser (Int, Token) = DOT >> int
-
-val choose: Parser (Int, Token) = SHARP >> int
-
-val oFI: Parser (unit, Token) = FI return '() || succeed '()
-val oEND: Parser (unit, Token) = END return '() || succeed '()
-
-//
-
-datatype modifier =
-  | Empty
-  | Proj of Int
-  | Choose of Int
-
-fun atExp (): Parser (exp0, Token) =
-  var wth (lam (x: id) => EXP0var x) ||
-
-  TRUE return (EXP0bool true) ||
-
-  FALSE return (EXP0bool false) ||
-
-  int wth (lam (i: Int): exp0 => EXP0int i) ||
-
-  $Token.anyString wth (lam (s: String): exp0 => EXP0str s) ||
-
-  IF >> !exp << THEN && !exp << ELSE && !exp << oFI wth
-    (lam '( '(e1: exp0, e2: exp0), e3: exp0 ): exp0 => EXP0if (e1, e2, e3)) ||
-
-  FN >> LPAREN >> !var_oty_list << RPAREN && oty && EQGT >> !exp wth
-    (lam '( '(xts: arg0s, ot: oty), e: exp0 ): exp0 => EXP0funs '[ '("", xts, ot, e)]) ||
-
-  FUN >> !fdef && (repeat (AND >> !fdef)) wth
-    (lam '(fd: fdef0, fds: fdef0s ): exp0 => EXP0funs (cons (fd, fds))) ||
-
-  LET >> var << EQ && !exp << IN && !exp << oEND wth
-    (lam '( '(x: id, e1: exp0), e2: exp0 ) => EXP0let (x, e1, e2)) ||
-
-  LPAREN >> !explist << RPAREN wth (lam (es: exp0s): exp0 => EXP0list es) ||
-
-  QUOTE >> LPAREN >> !explist << RPAREN wth (lam (es: exp0s): exp0 => EXP0tup es)
-
-and atsExp' (): Parser (modifier, Token) =
-  proj wth (lam (n:Int): modifier => Proj n) ||
-  choose wth (lam (n:Int): modifier => Choose n) ||
-  succeed Empty
-
-and exp0 (): Parser (exp0, Token) =
-  !atExp && !atsExp' wth
-     (lam '(e: exp0, m: modifier): exp0 =>
-        case m of
-          | Empty () => e
-          | Proj n => EXP0proj (e, n)
-          | Choose n => EXP0choose (e, n))
-
-and exp1 (): Parser (exp0, Token) =
-  !exp0 && !exp1' wth (lam '(e: exp0, k: exp0->exp0): exp0 => k e)
-
-and exp1' (): Parser (exp0->exp0, Token) =
-  !exp0  && !exp1' wth
-    (lam '(e: exp0, k: exp0->exp0): exp0->exp0 => lam (e0: exp0): exp0 => k (EXP0app (e0, e))) ||
-
-  succeed (lam (e: exp0): exp0 => e)
-
-and opr_exp1 (): Parser (FixityItem exp0, Token) =
-  opr wth (lam (p: Fixity exp0): FixityItem exp0 => Opr p) ||
-  !exp1 wth (lam (e: exp0): FixityItem exp0 => Atm e)
-
-and fdef (): Parser (fdef0, Token) =
-  var && LPAREN >> !var_oty_list << RPAREN && oty && EQGT >> !exp wth
-    (lam '( '( '(f: id, xts: arg0s), ot: oty ), e: exp0 ): fdef0 => '(f, xts, ot, e))
-
-and exp2 (): Parser (exp0, Token) =
-  repeat (!opr_exp1) wth
-    (lam (items: List (FixityItem exp0)): exp0 => result (resolveFixity items))
-
-and exp (): Parser (exp0, Token) =
-  !exp2 && oty wth
-    (lam '(e: exp0, ot: oty): exp0 =>
-       case ot of None () => e | Some t => EXP0ann (e, t))
-
-and explist (): Parser (exp0s, Token) =
-  !exp && repeat (COMMA >> !exp) wth (lam '(e: exp0, es: exp0s): exp0s => cons (e, es)) ||
-  succeed '[]
-
-//
-
-fun error {a:type} (msg: String) (pos: Pos): a =
-  ($Error.error "parser" msg pos; raise Fatal)
-
-//
-
-implement parseKeybd () =
-  let
-     val '() = STDOUT # printLine "Please input an expression:"
-     val s = $Input.readKeybd ()
-     val s = $Pos.markStream s
-     val ts = transform $Token.token s
-     val p = op-- {exp0,exp0,Token} (!exp, done)
-  in
-     parseWith {exp0,exp0,Token}
-       (lam x => x, lam pos => error ("Syntax error") pos, p, ts)
-  end
-
-implement parseFile (filename) =
-  let
-     val s = $Input.readFile (filename)
-     val s = $Pos.markStream s
-     val ts = transform $Token.token s
-     val p = op-- {exp0,exp0,Token} (!exp, done)
-  in
-     parseWith {exp0,exp0,Token}
-       (lam x => x, lam pos => error ("Syntax error") pos, p, ts)
-  end
-
-////

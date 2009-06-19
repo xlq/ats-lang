@@ -38,6 +38,7 @@ MAKE=make
 ######
 
 GCC=gcc
+RANLIB=ranlib
 
 PWD=$(shell pwd)
 ifdef ATSHOME
@@ -123,9 +124,17 @@ ATS_TERMINATION_CHECK=
 # [GCC -E] for preprocessing
 .libfiles_local: ; $(GCC) -E -P -x c .libfiles -o .libfiles_local
 libfiles: .libfiles_local
-	"$(ATSHOME)"/bin/atslib $(ATS_TERMINATION_CHECK) -O2 --libats # for libats
-	"$(ATSHOME)"/bin/atslib $(ATS_TERMINATION_CHECK) -O2 --libats_lex # for libats_lex
-	"$(ATSHOME)"/bin/atslib $(ATS_TERMINATION_CHECK) -O2 --libats_smlbas # for libats_smlbas
+	# for libats
+	"$(ATSHOME)"/bin/atslib $(ATS_TERMINATION_CHECK) -O2 --libats
+	$(RANLIB) "$(ATSHOME)"/ccomp/lib/libats.a
+
+	# for libats_lex
+	"$(ATSHOME)"/bin/atslib $(ATS_TERMINATION_CHECK) -O2 --libats_lex
+	$(RANLIB) "$(ATSHOME)"/ccomp/lib/libats_lex.a
+
+	# for libats_smlbas
+	"$(ATSHOME)"/bin/atslib $(ATS_TERMINATION_CHECK) -O2 --libats_smlbas
+	$(RANLIB) "$(ATSHOME)"/ccomp/lib/libats_smlbas.a
 
 ###### a lexer for ATS ######
 

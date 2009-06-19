@@ -99,6 +99,31 @@ implement fprint_opr (out, opr) =
 
 (* ****** ****** *)
 
+fn fprint_a0rg
+  (out: FILEref, arg: a0rg): void = () where {
+  val () = fprint_symbol (out, arg.a0rg_nam)
+  val () = case+ arg.a0rg_typ of
+    | Some typ => begin
+        fprint_string (out, ": "); fprint_typ (out, typ)
+      end // end of [Some]  
+    | None () => ()
+  // end of [val]  
+} // end of [fprint_a0rg]
+
+fn fprint_a0rglst
+  (out, args) = loop (args, 0) where {
+  fun loop (args: a0rglst, i: int)
+    :<cloref1> void = case+ args of
+    | list_cons (arg, args) => loop (args, i+1) where {
+        val () = if i > 0 then fprint_string (out, ", ")
+        val () = fprint_a0rg (out, arg)
+      } // end of [list_cons]
+    | list_nil () => ()
+  // end of [loop]  
+} (* end of [fprint_a0rglst] *)
+
+(* ****** ****** *)
+
 implement fprint_e0xp (out, e0) = let
   macdef prexp (e) = fprint_e0xp (out, ,(e))
   macdef prstr (s) = fprint_string (out, ,(s))
@@ -115,6 +140,18 @@ in
   | E0XPbool b => begin
       prstr "E0XPbool("; fprint_bool (out, b); prstr ")"
     end // end of [E0XPbool] 
+  | E0XPfix (f, args, res, body) => begin
+      prstr "E0XPfix(";
+      fprint_symbol (out, f);
+      prstr "; ";
+      fprint_a0rglst (out, args);
+      begin case+ res of
+      | Some typ => (prstr "; "; fprint_typ (out, typ)) | None () => ()
+      end; 
+      prstr "; ";
+      fprint_e0xp (out, body);
+      prstr ")"
+    end // end of [E0XPlam]  
   | E0XPif (e1, e2, oe3) => begin
       prstr "E0XPif(";
       prexp e1; prstr "; "; prexp e2;
@@ -126,17 +163,22 @@ in
   | E0XPint i => begin
       prstr "E0XPint("; fprint_int (out, i); prstr ")"
     end // end of [E0XPint]
-  | E0XPlam _ => (prstr "E0XPlam("; prstr "..."; prstr ")")
+  | E0XPlam (args, res, body) => begin
+      prstr "E0XPlam(";
+      fprint_a0rglst (out, args);
+      begin case+ res of
+      | Some typ => (prstr "; "; fprint_typ (out, typ)) | None () => ()
+      end; 
+      prstr "; ";
+      fprint_e0xp (out, body);
+      prstr ")"
+    end // end of [E0XPlam]  
   | E0XPlist es => begin
         prstr "E0XPlist("; fprint_e0xplst (out, es); prstr ")"
     end // end of [E0XPlist]    
-  | E0XPfunlst _ => (prstr "E0XPfunlst("; prstr "..."; prstr ")")
-  | E0XPfunsel (e, i) => begin
-      prstr "E0XPfunsel("; prexp e; fprint_int (out, i); prstr ")"
-    end // end of [E0XPchoose]
-  | E0XPlet (sym, e_bnd, e_def) => begin
+  | E0XPlet (decs, e_body) => begin
       prstr "E0XPlet(";
-      fprint_symbol (out, sym); prstr "; "; prexp e_bnd; prstr "; "; prexp e_def;
+      fprint_string (out, "..."); prstr "; "; prexp e_body;
       prstr ")"
     end // end of [E0XPlet]
   | E0XPopr (sym, es) => begin
@@ -145,7 +187,7 @@ in
       prstr ")"
     end // end of [E0XPop]
   | E0XPproj (e, i) => begin
-      prstr "E0XPproj("; prexp e; fprint_int (out, i); prstr ")"
+      prstr "E0XPproj("; prexp e; prstr "; "; fprint_int (out, i); prstr ")"
     end // end of [E0XPproj]
   | E0XPstr s => begin
       prstr "E0XPstr("; fprint_string (out, s); prstr ")"
@@ -187,6 +229,11 @@ implement e0xp_make_bool (loc, b) = '{
   e0xp_loc= loc, e0xp_node= E0XPbool (b)
 } // end of [e0xp_make_bool]
 
+implement e0xp_make_fix
+  (loc, nam, arg, res, body) = '{
+  e0xp_loc= loc, e0xp_node= E0XPfix (nam, arg, res, body)
+} // end of [e0xp_make_fix]
+  
 implement e0xp_make_if (loc, e1, e2, oe3) = '{
   e0xp_loc= loc, e0xp_node= E0XPif (e1, e2, oe3)
 } // end of [e0xp_make_if]
@@ -195,9 +242,15 @@ implement e0xp_make_int (loc, i) = '{
   e0xp_loc= loc, e0xp_node= E0XPint (i)
 } // end of [e0xp_make_int]
 
-implement e0xp_make_lam (loc, arg, res, body) = '{
+implement e0xp_make_lam
+  (loc, arg, res, body) = '{
   e0xp_loc= loc, e0xp_node= E0XPlam (arg, res, body)
 } // end of [e0xp_make_lam]
+
+implement e0xp_make_let
+  (loc, decs, body) = '{
+  e0xp_loc= loc, e0xp_node= E0XPlet (decs, body)
+} // end of [e0xp_make_let]
   
 implement e0xp_make_opr (loc, opr, es) = '{
   e0xp_loc= loc, e0xp_node= E0XPopr (opr, es)
@@ -222,6 +275,12 @@ implement e0xp_make_tup (loc, es) = '{
 implement e0xp_make_var (loc, sym) = '{
   e0xp_loc= loc, e0xp_node= E0XPvar (sym)
 } // end of [e0xp_make_var]
+
+(* ****** ****** *)
+
+implement d0ec_make_val (loc, isrec, vds) = @{
+  d0ec_loc= loc, d0ec_node= D0ECval (isrec, vds)
+} // end of [d0ec_make_val]
 
 (* ****** ****** *)
 
