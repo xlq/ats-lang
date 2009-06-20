@@ -33,22 +33,19 @@ in
   | TYPbase (sym) => begin
       prstr "TYPbase("; fprint_symbol (out, sym); prstr ")"
     end // end of [TYPbase]   
-  | TYPfun (ts_arg, t_res) => begin
+  | TYPfun (t_arg, t_res) => begin
       prstr "TYPfun(";
-      fprint_typlst (out, ts_arg); prstr "; "; fprint_typ (out, t_res);
+      fprint_typ (out, t_arg); prstr "; "; fprint_typ (out, t_res);
       prstr ")"
     end (* end of [TYPfun] *)
-  | TYPpair (t1, t2) => begin
-      prstr "TYPpair(";
-      fprint_typ (out, t1); prstr ", "; fprint_typ (out, t2);
-      prstr ")"
-    end (* end of [TYPpair] *)
-  | TYPlist (ts) => begin
+  | TYPtup (ts) => begin
       prstr "TYPlist("; fprint_typlst (out, ts); prstr ")"
     end (* end of [TYPlist] *)
+(*
   | TYPxVar (X) => begin
       prstr "TYPxVar("; fprint_int (out, X.name); prstr ")"
     end (* end of [TYPxVar] *)
+*)
 end // end of [fprint_typ]
 
 implement fprint_typlst
@@ -71,14 +68,14 @@ implement
 } // end of [typ_make_sym]
 
 implement
-  typ_make_list (loc, ts) = '{
-  typ_loc= loc, typ_node= TYPlist (ts)
-} // end of [typ_make_list]
+  typ_make_fun (loc, t_arg, t_res) = '{
+  typ_loc= loc, typ_node= TYPfun (t_arg, t_res)
+} // end of [typ_make_fun]
 
 implement
-  typ_make_fun (loc, ts_arg, t_res) = '{
-  typ_loc= loc, typ_node= TYPfun (ts_arg, t_res)
-} // end of [typ_make_fun]
+  typ_make_tup (loc, ts) = '{
+  typ_loc= loc, typ_node= TYPtup (ts)
+} // end of [typ_make_list]
 
 (* ****** ****** *)
 
@@ -173,9 +170,6 @@ in
       fprint_e0xp (out, body);
       prstr ")"
     end // end of [E0XPlam]  
-  | E0XPlist es => begin
-        prstr "E0XPlist("; fprint_e0xplst (out, es); prstr ")"
-    end // end of [E0XPlist]    
   | E0XPlet (decs, e_body) => begin
       prstr "E0XPlet(";
       fprint_string (out, "..."); prstr "; "; prexp e_body;
@@ -193,8 +187,8 @@ in
       prstr "E0XPstr("; fprint_string (out, s); prstr ")"
     end // end of [E0XPstr]
   | E0XPtup es => begin
-      prstr "E0XPtup("; fprint_e0xplst (out, es); prstr ")"
-    end // end of [E0XPtup]
+        prstr "E0XPtup("; fprint_e0xplst (out, es); prstr ")"
+    end // end of [E0XPlist]    
   | E0XPvar (sym) => begin
       prstr "E0XPvar("; fprint_symbol (out, sym); prstr ")"
     end // end of [E0XPvar]
@@ -260,17 +254,13 @@ implement e0xp_make_proj (loc, e, i) = '{
   e0xp_loc= loc, e0xp_node= E0XPproj (e, i)
 } // end of [e0xp_make_proj]
 
-implement e0xp_make_list (loc, es) = '{
-  e0xp_loc= loc, e0xp_node= E0XPlist (es)
-} // end of [e0xp_make_list]
-
 implement e0xp_make_str (loc, str) = '{
   e0xp_loc= loc, e0xp_node= E0XPstr (str)
 } // end of [e0xp_make_str]
 
 implement e0xp_make_tup (loc, es) = '{
   e0xp_loc= loc, e0xp_node= E0XPtup (es)
-} // end of [e0xp_make_tup]
+} // end of [e0xp_make_list]
 
 implement e0xp_make_var (loc, sym) = '{
   e0xp_loc= loc, e0xp_node= E0XPvar (sym)

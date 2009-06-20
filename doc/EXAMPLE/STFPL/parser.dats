@@ -320,7 +320,7 @@ and lp_typlist: LP typlst = $delay (
 
 and lp_typ1: LP (typ) = $delay (
   p_ident wth f_ident ||
-  seq3wth_parser_fun (LPAREN, lzeta lp_typlist, RPAREN, f_seq)
+  seq3wth_parser_fun (LPAREN, lzeta lp_typlist, RPAREN, f_tup)
 ) where {
   val f_ident = lam
     (tok_ide: token) =<> let
@@ -328,10 +328,10 @@ and lp_typ1: LP (typ) = $delay (
   in
     typ_make_sym (loc, sym_id)
   end // end of [f_ident]
-  val f_seq = lam
+  val f_tup = lam
     (tok1: token, ts: typlst, tok2: token) =<> let
     val loc = location_combine (tok1.token_loc, tok2.token_loc) in
-    typ_make_list (loc, ts)
+    typ_make_tup (loc, ts)
   end // end of [f_seq]  
 } (* end of [lp_typ1] *)
 
@@ -343,11 +343,8 @@ and lp_typc: LP (typc) = $delay (
   val f = lam
     (_: token, t_res: typ): typc =<fun> (lam t_arg => let
     val loc = location_combine (t_arg.typ_loc, t_res.typ_loc)
-    val ts_arg = (case+ t_arg.typ_node of
-      | TYPlist (ts_arg) => ts_arg | _ => list_cons (t_arg, list_nil)
-    ) : typlst // end of [val]  
   in
-    typ_make_fun (loc, ts_arg, t_res)
+    typ_make_fun (loc, t_arg, t_res)
   end) // end of [val]
 } (* end of [lp_typc] *)
 
@@ -469,7 +466,7 @@ and lp_e0xp0: LP e0xp = $delay ( // ordering is significant!
   p_number wth f_number ||
   p_string wth f_string ||
   seq3wth_parser_fun
-    (LPAREN, !lp_e0xplist, RPAREN, f_list) ||
+    (LPAREN, !lp_e0xplist, RPAREN, f_tup) ||
   // end of [seq3wth_parser]
   seq5wth_parser_fun
     (LET, lzeta lp_d0eclist, IN, !lp_e0xp, END, f_let)
@@ -489,13 +486,13 @@ and lp_e0xp0: LP e0xp = $delay ( // ordering is significant!
     val loc = tok.token_loc; val- TOKstr str = tok.token_node in
     e0xp_make_str (loc, str)
   end // end of [f_string]
-  fn f_list
+  fn f_tup
     (tok_beg: token, es: e0xplst, tok_end: token):<> e0xp = begin
     case+ es of
     | list_cons (e, list_nil ()) => e | _ => let
         val loc = location_combine (tok_beg.token_loc, tok_end.token_loc)
       in
-        e0xp_make_list (loc, es)
+        e0xp_make_tup (loc, es)
       end // end of [_]
   end // end of [f_seq]
   fn f_let (

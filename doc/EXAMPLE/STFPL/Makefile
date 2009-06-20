@@ -24,6 +24,7 @@ stfpl: \
   absyn_sats.o absyn_dats.o \
   fixity_sats.o fixity_dats.o \
   parser_sats.o parser_dats.o \
+  trans1_sats.o trans1_dats.o \
   posloc_sats.o posloc_dats.o \
   tokenize_sats.o tokenize_dats.o \
   parcomb_sats.o parcomb_dats.o \
@@ -36,6 +37,7 @@ stfpl: \
   absyn_sats.o absyn_dats.o \
   fixity_sats.o fixity_dats.o \
   parser_sats.o parser_dats.o \
+  trans1_sats.o trans1_dats.o \
   posloc_sats.o posloc_dats.o \
   tokenize_sats.o tokenize_dats.o \
   parcomb_sats.o parcomb_dats.o \
@@ -88,6 +90,14 @@ parser_dats.o: parser.dats
 
 ######
 
+trans1_sats.o: trans1.sats
+	atscc $(CCFLAGS) -o trans1_sats.o -c trans1.sats
+
+trans1_dats.o: trans1.dats
+	atscc $(CCFLAGS) -IATS PARCOMB -o trans1_dats.o -c trans1.dats
+
+######
+
 posloc_sats.o: PARCOMB/posloc.sats
 	atscc $(CCFLAGS) -c -o posloc_sats.o PARCOMB/posloc.sats
 
@@ -123,6 +133,8 @@ xref::
 	$(ATSOPT) --posmark_xref=XREF -d error.dats > error_dats.html
 	$(ATSOPT) --posmark_xref=XREF -d symbol.dats > symbol_dats.html
 	$(ATSOPT) --posmark_xref=XREF -d absyn.dats > absyn_dats.html
+	$(ATSOPT) --posmark_xref=XREF -d parser.dats > parser_dats.html
+	$(ATSOPT) --posmark_xref=XREF -d trans1.dats > trans1_dats.html
 
 ######
 

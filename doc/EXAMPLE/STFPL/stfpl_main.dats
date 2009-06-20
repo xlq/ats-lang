@@ -21,6 +21,7 @@ dynload "symbol.dats"
 dynload "absyn.dats"
 dynload "fixity.dats"
 dynload "parser.dats"
+dynload "trans1.dats"
 
 dynload "PARCOMB/posloc.dats"
 dynload "PARCOMB/tokenize.dats"

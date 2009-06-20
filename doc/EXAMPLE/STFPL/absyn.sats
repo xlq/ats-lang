@@ -23,11 +23,6 @@ staload POSLOC = "PARCOMB/posloc.sats"
 
 (* ****** ****** *)
 
-staload _(*anonymous*) = "prelude/DATS/option.dats"
-staload _(*anonymous*) = "prelude/DATS/reference.dats"
-
-(* ****** ****** *)
-
 typedef loc = $POSLOC.location_t
 
 (* ****** ****** *)
@@ -36,10 +31,12 @@ typedef sym = $SYMBOL.symbol_t
 
 datatype typ_node =
   | TYPbase of sym
-  | TYPfun of (typlst, typ)
-  | TYPpair of (typ, typ)
-  | TYPlist of typlst
+  | TYPfun of (typ, typ)
+  | TYPtup of typlst
+(*
+  // not needed as no type inference is supported in STFPL
   | TYPxVar of @{name= int, link= ref typopt} // existential type variable
+*)
 // end of [typ_node]
 
 where typ = '{
@@ -56,8 +53,8 @@ fun fprint_typlst (out: FILEref, _: typlst): void
 (* ****** ****** *)
 
 fun typ_make_sym (_: loc, _: sym):<> typ 
-fun typ_make_list (_: loc, _: typlst):<> typ
-fun typ_make_fun (_: loc, arg: typlst, res: typ):<> typ
+fun typ_make_fun (_: loc, arg: typ, res: typ):<> typ
+fun typ_make_tup (_: loc, _: typlst):<> typ
 
 (* ****** ****** *)
 
@@ -82,7 +79,6 @@ datatype e0xp_node =
   | E0XPint of int
   | E0XPlam of (a0rglst, typopt, e0xp)
   | E0XPlet of (d0eclst, e0xp)
-  | E0XPlist of e0xplst // for temporary use
   | E0XPopr of (opr, e0xplst)
   | E0XPproj of (e0xp, int)
   | E0XPstr of string
@@ -137,7 +133,6 @@ fun e0xp_make_if (_: loc, _: e0xp, _: e0xp, _: e0xpopt):<> e0xp
 fun e0xp_make_int (_: loc, _: int):<> e0xp
 fun e0xp_make_lam (_: loc, _: a0rglst, _: typopt, _: e0xp):<> e0xp
 fun e0xp_make_let (_: loc, ds: d0eclst, e: e0xp):<> e0xp
-fun e0xp_make_list (_: loc, _: e0xplst):<> e0xp
 fun e0xp_make_opr (_: loc, _: opr, _: e0xplst):<> e0xp
 fun e0xp_make_proj (_: loc, e: e0xp, i: int):<> e0xp
 fun e0xp_make_str (_: loc, _: string):<> e0xp
