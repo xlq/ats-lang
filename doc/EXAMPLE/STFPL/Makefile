@@ -28,6 +28,7 @@ stfpl: \
   posloc_sats.o posloc_dats.o \
   tokenize_sats.o tokenize_dats.o \
   parcomb_sats.o parcomb_dats.o \
+  funmap_avltree_dats.o \
   hashtable_dats.o \
 
 	atscc $(GCFLAG) -o stfpl \
@@ -41,6 +42,7 @@ stfpl: \
   posloc_sats.o posloc_dats.o \
   tokenize_sats.o tokenize_dats.o \
   parcomb_sats.o parcomb_dats.o \
+  funmap_avltree_dats.o \
   hashtable_dats.o \
 
 ######
@@ -115,6 +117,11 @@ tokenize_sats.o: PARCOMB/tokenize.sats
 
 tokenize_dats.o: PARCOMB/tokenize.dats
 	atscc $(CCFLAGS) -IATS PARCOMB -c -o tokenize_dats.o PARCOMB/tokenize.dats
+
+######
+
+funmap_avltree_dats.o: FUNMAP/funmap_avltree.dats
+	atscc $(CCFLAGS) -IATS FUNMAP -c -o funmap_avltree_dats.o FUNMAP/funmap_avltree.dats
 
 ######
 

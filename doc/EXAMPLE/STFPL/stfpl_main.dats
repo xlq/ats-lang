@@ -13,6 +13,7 @@
 
 staload "absyn.sats"
 staload "parser.sats"
+staload "trans1.sats"
 
 (* ****** ****** *)
 
@@ -35,6 +36,9 @@ implement main () = () where {
   val () = print "prog =\n"
   val () = fprint_e0xp (stdout_ref, prog) 
   val () = print_newline ()
+  val e1xp = trans1_exp (prog)
+  val t1yp = e1xp.e1xp_typ
+  val () = (print "t1yp = "; print_t1yp t1yp; print_newline ())
 } // end of [main]
 
 (* ****** ****** *)

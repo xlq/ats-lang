@@ -42,9 +42,26 @@ overload compare with compare_symbol_symbol
 
 (* ****** ****** *)
 
+val symbol_BOOL : symbol_t // for [bool] type
 val symbol_INT : symbol_t // for [int] type
 val symbol_STRING : symbol_t // for [string] type
 val symbol_UNIT : symbol_t // for [unit] type
+
+(* ****** ****** *)
+
+val symbol_PLUS : symbol_t
+val symbol_MINUS : symbol_t
+val symbol_TIMES : symbol_t
+val symbol_SLASH : symbol_t
+
+val symbol_UMINUS : symbol_t
+
+val symbol_GT : symbol_t
+val symbol_GTE : symbol_t
+val symbol_LT : symbol_t
+val symbol_LTE : symbol_t
+val symbol_EQ : symbol_t
+val symbol_NEQ : symbol_t
 
 (* ****** ****** *)
 

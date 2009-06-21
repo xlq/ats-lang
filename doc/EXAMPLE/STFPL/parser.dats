@@ -203,6 +203,15 @@ val p_string: P token =
 
 (* ****** ****** *)
 
+fn symbol_make_token
+  (tok: token):<> sym = let
+  val- TOKide name = tok.token_node
+in
+  $effmask_all (symbol_make_name name)
+end // end of [symbol_make_token]
+
+(* ****** ****** *)
+
 local
 
 #define PLUS_precedence 40
@@ -230,45 +239,45 @@ in // in of [local]
 
 val p_opr: P (fixopr e0xp) = begin
   PLUS wth (
-    lam (tok: token) =<fun> f_infix (tok, L, PLUS_precedence, OPRplus)
+    lam (tok: token) =<fun> f_infix (tok, L, PLUS_precedence)
   ) ||
   MINUS wth (
-    lam (tok: token) =<fun> f_infix (tok, L, MINUS_precedence, OPRminus)
+    lam (tok: token) =<fun> f_infix (tok, L, MINUS_precedence)
   ) ||
   TIMES wth (
-    lam (tok: token) =<fun> f_infix (tok, L, TIMES_precedence, OPRtimes)
+    lam (tok: token) =<fun> f_infix (tok, L, TIMES_precedence)
   ) ||
   DIVIDE wth (
-    lam (tok: token) =<fun> f_infix (tok, L, DIVIDE_precedence, OPRslash)
+    lam (tok: token) =<fun> f_infix (tok, L, DIVIDE_precedence)
   ) ||
   GTEQ wth (
-    lam (tok: token) =<fun> f_infix (tok, N, GTEQ_precedence, OPRgte)
+    lam (tok: token) =<fun> f_infix (tok, N, GTEQ_precedence)
   ) ||
   GT wth (
-    lam (tok: token) =<fun> f_infix (tok, N, GT_precedence, OPRgt)
+    lam (tok: token) =<fun> f_infix (tok, N, GT_precedence)
   ) ||
   LTEQ wth (
-    lam (tok: token) =<fun> f_infix (tok, N, LTEQ_precedence, OPRlte)
+    lam (tok: token) =<fun> f_infix (tok, N, LTEQ_precedence)
   ) ||
   LT wth (
-    lam (tok: token) =<fun> f_infix (tok, N, LT_precedence, OPRlte)
+    lam (tok: token) =<fun> f_infix (tok, N, LT_precedence)
   ) ||
   EQ wth (
-    lam (tok: token) =<fun> f_infix (tok, N, EQ_precedence, OPReq)
+    lam (tok: token) =<fun> f_infix (tok, N, EQ_precedence)
   ) ||
   NEQ wth (
-    lam (tok: token) =<fun> f_infix (tok, N, NEQ_precedence, OPRneq)
+    lam (tok: token) =<fun> f_infix (tok, N, NEQ_precedence)
   ) ||
   UMINUS wth (
-    lam (tok: token) =<fun> f_prefx (tok, UMINUS_precedence, OPRuminus)
+    lam (tok: token) =<fun> f_prefx (tok, UMINUS_precedence)
   )
 end where {
   fn f_prefx
-    (tok: token, prec: int, opr: opr)
+    (tok: token, prec: int)
     :<> fixopr e0xp = let
-    val tok_loc = tok.token_loc
+    val opr = OPR (symbol_make_token tok)
     val f = lam (e: e0xp): e0xp =<cloref> let
-      val loc = location_combine (tok_loc, e.e0xp_loc)
+      val loc = location_combine (tok.token_loc, e.e0xp_loc)
     in
       e0xp_make_opr (loc, opr, '[e])
     end // end of [f]
@@ -276,10 +285,11 @@ end where {
     Prefix (tok.token_loc, prec, f)
   end // end of [f_minus]
   fn f_infix
-    (tok: token, assoc: assoc, prec: int, opr: opr)
+    (tok: token, assoc: assoc, prec: int)
     :<> fixopr e0xp = let
     val f = lam
       (e1: e0xp, e2: e0xp): e0xp =<cloref> let
+      val opr = OPR (symbol_make_token tok)
       val loc = location_combine (e1.e0xp_loc, e2.e0xp_loc) in
       e0xp_make_opr (loc, opr, '[e1, e2])
     end // end of [f]
@@ -292,69 +302,60 @@ end // end of [local]
   
 (* ****** ****** *)
 
-fn symbol_make_token
-  (tok: token):<> sym = let
-  val- TOKide name = tok.token_node
-in
-  $effmask_all (symbol_make_name name)
-end // end of [symbol_make_token]
-
-(* ****** ****** *)
-
 (*
 ** ty0 = sym | (ty, ..., ty); ty = ty0 | ty0 -> ty
 *)
 
-typedef typc = typ -<cloref> typ
+typedef t0ypc = t0yp -<cloref> t0yp
 
 val
-rec lp_typ: LP (typ) = $delay (
-  seq2wth_parser_fun (lzeta lp_typ1, lzeta lp_typc, f)
+rec lp_t0yp: LP (t0yp) = $delay (
+  seq2wth_parser_fun (lzeta lp_t0yp1, lzeta lp_t0ypc, f)
 ) where {
-  val f = lam (t: typ, tc: typc) =<fun> tc (t) 
-} (* end of [lp_typ] *)
+  val f = lam (t: t0yp, tc: t0ypc) =<fun> tc (t) 
+} (* end of [lp_t0yp] *)
 
-and lp_typlist: LP typlst = $delay (
-  repeat0_sep_parser<typ,token> (!lp_typ, COMMA)
-) // end of [lp_typlst]
+and lp_t0yplist: LP t0yplst = $delay (
+  repeat0_sep_parser<t0yp,token> (!lp_t0yp, COMMA)
+) // end of [lp_t0yplst]
 
-and lp_typ1: LP (typ) = $delay (
+and lp_t0yp1: LP (t0yp) = $delay (
   p_ident wth f_ident ||
-  seq3wth_parser_fun (LPAREN, lzeta lp_typlist, RPAREN, f_tup)
+  seq3wth_parser_fun (LPAREN, lzeta lp_t0yplist, RPAREN, f_tup)
 ) where {
   val f_ident = lam
     (tok_ide: token) =<> let
     val loc = tok_ide.token_loc; val sym_id = symbol_make_token tok_ide
   in
-    typ_make_sym (loc, sym_id)
+    t0yp_make_sym (loc, sym_id)
   end // end of [f_ident]
   val f_tup = lam
-    (tok1: token, ts: typlst, tok2: token) =<> let
+    (tok1: token, ts: t0yplst, tok2: token) =<> let
     val loc = location_combine (tok1.token_loc, tok2.token_loc) in
-    typ_make_tup (loc, ts)
+    t0yp_make_tup (loc, ts)
   end // end of [f_seq]  
-} (* end of [lp_typ1] *)
+} (* end of [lp_t0yp1] *)
 
-and lp_typc: LP (typc) = $delay (
+and lp_t0ypc: LP (t0ypc) = $delay (
   seq2wth_parser_fun
-    (MINUSGT, !lp_typ, f) ||
-  return_parser<typc> (lam t => t) 
+    (MINUSGT, !lp_t0yp, f) ||
+  return_parser<t0ypc> (lam t => t) 
 ) where {
   val f = lam
-    (_: token, t_res: typ): typc =<fun> (lam t_arg => let
-    val loc = location_combine (t_arg.typ_loc, t_res.typ_loc)
+    (_: token, t_res: t0yp): t0ypc =<fun> (lam t_arg => let
+    val loc = location_combine (t_arg.t0yp_loc, t_res.t0yp_loc)
   in
-    typ_make_fun (loc, t_arg, t_res)
+    t0yp_make_fun (loc, t_arg, t_res)
   end) // end of [val]
-} (* end of [lp_typc] *)
+} (* end of [lp_t0ypc] *)
 
 (* ****** ****** *)
 
-val lp_typann: LP (typopt) = $delay (
-  seq2wth_parser_fun (COLON, !lp_typ, f_some) ||
+val lp_typann: LP (t0ypopt) = $delay (
+  seq2wth_parser_fun (COLON, !lp_t0yp, f_some) ||
   return_parser (None ())
 ) where {
-  val f_some = lam (_: token, t: typ) =<fun> Some (t)
+  val f_some = lam (_: token, t: t0yp) =<fun> Some (t)
 } // end of [lp_annty]
 
 (* ****** ****** *)
@@ -411,7 +412,7 @@ and lp_a0rg: LP a0rg = $delay (
   seq2wth_parser_fun (p_ident, !lp_typann, f_a0rg) 
 ) where {
   fn f_a0rg
-    (tok_ide: token, oty: typopt):<> a0rg = let
+    (tok_ide: token, oty: t0ypopt):<> a0rg = let
     val sym = symbol_make_token (tok_ide) in @{
     a0rg_loc= tok_ide.token_loc, a0rg_nam= sym, a0rg_typ= oty
   } end // end of [f_a0rg]
@@ -429,7 +430,7 @@ and lp_e0xp_lam: LP e0xp = $delay (
   fn f_lam (
       tok_lam: token
     , args: a0rglst
-    , res: typopt
+    , res: t0ypopt
     , body: e0xp
     ) :<> e0xp = let
     val loc = location_combine (tok_lam.token_loc, body.e0xp_loc)
@@ -447,7 +448,7 @@ and lp_e0xp_fix: LP e0xp = $delay (
       tok_fix: token
     , tok_ide: token  
     , args: a0rglst
-    , res: typopt
+    , res: t0ypopt
     , body: e0xp
     ) :<> e0xp = let
     val loc = location_combine (tok_fix.token_loc, body.e0xp_loc)
@@ -579,10 +580,10 @@ and lp_e0xp1: LP (e0xp) = $delay (
 } // end of [lp_e0xp1]
 
 and lp_e0xp1c: LP (e0xpc) = $delay (
-  COLON >> !lp_typ wth f_ann || return_parser<e0xpc> (lam e => e)
+  COLON >> !lp_t0yp wth f_ann || return_parser<e0xpc> (lam e => e)
 ) where {
-  fn f_ann (t: typ):<> e0xpc = lam e => let
-    val loc = location_combine (e.e0xp_loc, t.typ_loc)
+  fn f_ann (t: t0yp):<> e0xpc = lam e => let
+    val loc = location_combine (e.e0xp_loc, t.t0yp_loc)
   in
     e0xp_make_ann (loc, e, t)
   end // end of [f]
@@ -600,11 +601,11 @@ and lp_v0aldec: LP (v0aldec) = $delay (
   seq3wth_parser_fun (p_ident, !lp_typann, EQ >> !lp_e0xp, f_v0aldec)
 ) where {
   fn f_v0aldec (
-      tok_ide: token, oty: typopt, e: e0xp
+      tok_ide: token, oty: t0ypopt, e: e0xp
     ) :<> v0aldec = let
     val loc = location_combine (tok_ide.token_loc, e.e0xp_loc)
     val sym = symbol_make_token (tok_ide)
-  in @{
+  in '{
     v0aldec_loc= loc, v0aldec_nam= sym, v0aldec_ann= oty, v0aldec_def= e
   } end // end of [f_v0aldec]
 } // end of [lp_v0aldec]

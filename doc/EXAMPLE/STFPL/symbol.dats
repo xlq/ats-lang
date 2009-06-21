@@ -16,8 +16,7 @@ staload "symbol.sats"
 (* ****** ****** *)
 
 staload H = "HASHTABLE/hashtable.dats"
-
-staload _ = "prelude/DATS/reference.dats"
+staload _(*anonymous*) = "prelude/DATS/reference.dats"
 
 (* ****** ****** *)
 
@@ -94,9 +93,25 @@ end // end of [local]
 
 (* ****** ****** *)
 
+implement symbol_BOOL = symbol_make_name "bool"
 implement symbol_INT = symbol_make_name "int"
 implement symbol_STRING = symbol_make_name "string"
 implement symbol_UNIT = symbol_make_name "unit"
+
+(* ****** ****** *)
+
+implement symbol_PLUS = symbol_make_name "+"
+implement symbol_MINUS = symbol_make_name "-"
+implement symbol_TIMES = symbol_make_name "*"
+implement symbol_SLASH = symbol_make_name "/"
+implement symbol_UMINUS = symbol_make_name "~"
+
+implement symbol_GT = symbol_make_name ">"
+implement symbol_GTE = symbol_make_name ">="
+implement symbol_LT = symbol_make_name "<"
+implement symbol_LTE = symbol_make_name "<="
+implement symbol_EQ = symbol_make_name "="
+implement symbol_NEQ = symbol_make_name "<>"
 
 (* ****** ****** *)
 

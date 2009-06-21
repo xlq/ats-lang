@@ -26,73 +26,57 @@ staload "absyn.sats"
 
 (* ****** ****** *)
 
-implement fprint_typ (out, t) = let
+implement fprint_t0yp (out, t) = let
   macdef prstr (s) = fprint_string (out, ,(s))
 in
-  case+ t.typ_node of
-  | TYPbase (sym) => begin
-      prstr "TYPbase("; fprint_symbol (out, sym); prstr ")"
-    end // end of [TYPbase]   
-  | TYPfun (t_arg, t_res) => begin
-      prstr "TYPfun(";
-      fprint_typ (out, t_arg); prstr "; "; fprint_typ (out, t_res);
+  case+ t.t0yp_node of
+  | T0YPbase (sym) => begin
+      prstr "T0YPbase("; fprint_symbol (out, sym); prstr ")"
+    end // end of [T0YPbase]   
+  | T0YPfun (t_arg, t_res) => begin
+      prstr "T0YPfun(";
+      fprint_t0yp (out, t_arg); prstr "; "; fprint_t0yp (out, t_res);
       prstr ")"
-    end (* end of [TYPfun] *)
-  | TYPtup (ts) => begin
-      prstr "TYPlist("; fprint_typlst (out, ts); prstr ")"
-    end (* end of [TYPlist] *)
-(*
-  | TYPxVar (X) => begin
-      prstr "TYPxVar("; fprint_int (out, X.name); prstr ")"
-    end (* end of [TYPxVar] *)
-*)
-end // end of [fprint_typ]
+    end (* end of [T0YPfun] *)
+  | T0YPtup (ts) => begin
+      prstr "T0YPlist("; fprint_t0yplst (out, ts); prstr ")"
+    end (* end of [T0YPlist] *)
+end // end of [fprint_t0yp]
 
-implement fprint_typlst
+implement fprint_t0yplst
   (out, ts) = loop (ts, 0) where {
-  fun loop (ts: typlst, i: int)
+  fun loop (ts: t0yplst, i: int)
     :<cloref1> void = case+ ts of
     | list_cons (t, ts) => loop (ts, i+1) where {
         val () = if i > 0 then fprint_string (out, ", ")
-        val () = fprint_typ (out, t)
+        val () = fprint_t0yp (out, t)
       } // end of [list_cons]
     | list_nil () => ()
   // end of [loop]  
-} (* end of [fprint_typlst] *)
+} (* end of [fprint_t0yplst] *)
 
 (* ****** ****** *)
 
 implement
-  typ_make_sym (loc, sym) = '{
-  typ_loc= loc, typ_node= TYPbase (sym)
-} // end of [typ_make_sym]
+  t0yp_make_sym (loc, sym) = '{
+  t0yp_loc= loc, t0yp_node= T0YPbase (sym)
+} // end of [t0yp_make_sym]
 
 implement
-  typ_make_fun (loc, t_arg, t_res) = '{
-  typ_loc= loc, typ_node= TYPfun (t_arg, t_res)
-} // end of [typ_make_fun]
+  t0yp_make_fun (loc, t_arg, t_res) = '{
+  t0yp_loc= loc, t0yp_node= T0YPfun (t_arg, t_res)
+} // end of [t0yp_make_fun]
 
 implement
-  typ_make_tup (loc, ts) = '{
-  typ_loc= loc, typ_node= TYPtup (ts)
-} // end of [typ_make_list]
+  t0yp_make_tup (loc, ts) = '{
+  t0yp_loc= loc, t0yp_node= T0YPtup (ts)
+} // end of [t0yp_make_list]
 
 (* ****** ****** *)
 
-implement fprint_opr (out, opr) =
-  case+ opr of
-  | OPRplus () => fprint_string (out, "+")
-  | OPRminus () => fprint_string (out, "-")
-  | OPRtimes () => fprint_string (out, "*")
-  | OPRslash () => fprint_string (out, "/")
-  | OPRgt () => fprint_string (out, ">")
-  | OPRgte () => fprint_string (out, ">=")
-  | OPRlt () => fprint_string (out, "<")
-  | OPRlte () => fprint_string (out, "<=")
-  | OPReq () => fprint_string (out, "=")
-  | OPRneq () => fprint_string (out, "<>")
-  | OPRuminus () => fprint_string (out, "~") 
-// end of [fprint_opr]
+implement fprint_opr (out, opr) = let
+  val+ OPR sym = opr in fprint_symbol (out, sym)
+end // end of [fprint_opr]
 
 (* ****** ****** *)
 
@@ -101,7 +85,7 @@ fn fprint_a0rg
   val () = fprint_symbol (out, arg.a0rg_nam)
   val () = case+ arg.a0rg_typ of
     | Some typ => begin
-        fprint_string (out, ": "); fprint_typ (out, typ)
+        fprint_string (out, ": "); fprint_t0yp (out, typ)
       end // end of [Some]  
     | None () => ()
   // end of [val]  
@@ -127,7 +111,7 @@ implement fprint_e0xp (out, e0) = let
 in
   case+ e0.e0xp_node of
   | E0XPann (e, t) => begin
-      prstr "E0XPann("; prexp e; prstr "; "; fprint_typ (out, t); prstr ")"
+      prstr "E0XPann("; prexp e; prstr "; "; fprint_t0yp (out, t); prstr ")"
     end // end of [E0XPann]
   | E0XPapp (e_fun, e_arg) => begin
       prstr "E0XPapp(";
@@ -143,7 +127,7 @@ in
       prstr "; ";
       fprint_a0rglst (out, args);
       begin case+ res of
-      | Some typ => (prstr "; "; fprint_typ (out, typ)) | None () => ()
+      | Some typ => (prstr "; "; fprint_t0yp (out, typ)) | None () => ()
       end; 
       prstr "; ";
       fprint_e0xp (out, body);
@@ -164,7 +148,7 @@ in
       prstr "E0XPlam(";
       fprint_a0rglst (out, args);
       begin case+ res of
-      | Some typ => (prstr "; "; fprint_typ (out, typ)) | None () => ()
+      | Some typ => (prstr "; "; fprint_t0yp (out, typ)) | None () => ()
       end; 
       prstr "; ";
       fprint_e0xp (out, body);
@@ -208,6 +192,9 @@ implement fprint_e0xplst
     | list_nil () => ()
   // end of [loop]  
 } (* end of [fprint_e0xplst] *)
+
+implement print_e0xp (e) = fprint_e0xp (stdout_ref, e)
+implement prerr_e0xp (e) = fprint_e0xp (stderr_ref, e)
 
 (* ****** ****** *)
 
@@ -268,7 +255,7 @@ implement e0xp_make_var (loc, sym) = '{
 
 (* ****** ****** *)
 
-implement d0ec_make_val (loc, isrec, vds) = @{
+implement d0ec_make_val (loc, isrec, vds) = '{
   d0ec_loc= loc, d0ec_node= D0ECval (isrec, vds)
 } // end of [d0ec_make_val]
 
