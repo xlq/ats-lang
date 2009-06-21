@@ -27,7 +27,7 @@ datatype v1al =
   | V1ALint of int
   | V1ALstr of string
   | V1ALtup of List v1al 
-  | V1ALclo of ($TRANS1.v1arlst, $TRANS1.e1xp, env)
+  | V1ALclo of (env, $TRANS1.v1arlst, $TRANS1.e1xp)
 
 where env = List @($TRANS1.v1ar, v1al)
 

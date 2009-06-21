@@ -186,7 +186,7 @@ implement prerr_t1yp (t) = fprint_t1yp (stderr_ref, t)
 (* ****** ****** *)
 
 implement v1ar_make (loc, sym, t) = '{
-  v1ar_loc= loc, v1ar_nam= sym, v1ar_typ= t
+  v1ar_loc= loc, v1ar_nam= sym, v1ar_typ= t, v1ar_def= None ()
 }
 
 implement e1xp_make_ann (loc, e, t) = '{
@@ -346,7 +346,8 @@ implement trans1_exp (e) = auxExp (G0, e) where {
         val t_fun = T1YPfun (t_arg, t_res)
         val f = v1ar_make (loc0, sym, t_fun)
         val G = $M.funmap_insert (G, sym, f, cmp_sym_sym)
-        val body = auxExpCK (G, body, t_res)  
+        val body = auxExpCK (G, body, t_res)
+        val () = v1ar_def_set (f, Some body)
       in
         e1xp_make_fix (loc0, f, xs, body, t_fun)
       end // end of [E0XPfix]  
@@ -568,6 +569,7 @@ implement trans1_exp (e) = auxExp (G0, e) where {
                 val+ list_cons (vd, vds) = vds
                 val def = auxExp (G, vd.v0aldec_def)
                 val vd = v1aldec_make (vd.v0aldec_loc, x, def)
+                val () = v1ar_def_set (x, Some def)
               in
                 list_cons (vd, aux (G, xs, vds))
               end // end of [list_cons]
@@ -627,6 +629,27 @@ implement trans1_exp (e) = auxExp (G0, e) where {
     | list_nil () => (G, list_nil ())
   // end of [auxDeclst]  
 } (* end of [trans1_exp] *)
+
+(* ****** ****** *)
+
+extern typedef "v1ar_t" = v1ar
+
+%{$
+
+ats_bool_type
+eq_v1ar_v1ar (v1ar_t x1, v1ar_t x2) {
+  return (x1 == x2 ? ats_true_bool : ats_false_bool) ;
+} /* end of [eq_v1ar_v1ar] */
+
+ats_void_type
+v1ar_def_set (
+  ats_ptr_type x
+, ats_ptr_type oe
+) {
+  ((v1ar_t)x)->atslab_v1ar_def = oe ;  return ;
+} /* end of [v1ar_def_set] */
+
+%}
 
 (* ****** ****** *)
 

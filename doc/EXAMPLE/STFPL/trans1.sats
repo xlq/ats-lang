@@ -81,7 +81,7 @@ and e1xplst = List (e1xp)
 and e1xpopt = Option (e1xp)
 
 and v1ar = '{
-  v1ar_loc= loc, v1ar_nam= sym, v1ar_typ= t1yp
+  v1ar_loc= loc, v1ar_nam= sym, v1ar_typ= t1yp, v1ar_def= e1xpopt
 } // end of [v1ar]
 and v1arlst = List (v1ar)
 
@@ -104,6 +104,13 @@ and v1aldeclst = List (v1aldec)
 (* ****** ****** *)
 
 fun v1ar_make (_: loc, _: sym, _: t1yp): v1ar
+
+fun eq_v1ar_v1ar (x1: v1ar, x2: v1ar): bool = "eq_v1ar_v1ar"
+overload = with eq_v1ar_v1ar
+
+fun v1ar_def_set (x: v1ar, def: e1xpopt): void = "v1ar_def_set"
+
+(* ****** ****** *)
 
 fun e1xp_make_ann (_: loc, e: e1xp, t: t1yp): e1xp
 fun e1xp_make_app (_: loc, e1: e1xp, e2: e1xp, t: t1yp): e1xp

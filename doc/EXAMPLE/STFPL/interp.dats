@@ -73,8 +73,29 @@ implement interp_exp (e0) = let
   fun auxExp (env: env, e0: e1xp): v1al = begin
     case+ e0.e1xp_node of
     | E1XPann (e, t) => auxExp (env, e)
+    | E1XPapp (e1, e2) => auxExp (env1, body) where {
+        val- V1ALclo (env1, xs, body) = auxExp (env, e1)
+        val v2 = auxExp (env, e2)
+        val env1 = (case+ v2 of
+          | V1ALtup vs => loop (env1, xs, vs) where {
+              fun loop (
+                  env1: env, xs: v1arlst, vs: List v1al
+                ) : env = case+ vs of
+                | list_cons (v, vs) => let
+                    val- list_cons (x, xs) = xs 
+                    val env1 = list_cons (@(x, v), env1)
+                  in
+                    loop (env1, xs, vs)
+                  end // end of [list_cons]  
+                | list_nil () => env1
+              // end of [loop]   
+            } // end of [V1ALtup]
+          | _ => let
+              val- list_cons (x, _) = xs in list_cons (@(x, v2), env1)
+            end // end of [_]  
+        ) : env
+      } // end of [E1XPapp]
     | E1XPbool (b) => V1ALbool (b)
-    | E1XPint (i) => V1ALint (i)
     | E1XPif (e1, e2, oe3) => let
         val- V1ALbool b = auxExp (env, e1)
       in
@@ -82,6 +103,11 @@ implement interp_exp (e0) = let
           | Some e3 => auxExp (env, e3) | None () => V1ALtup (nil)
         end // end of [if]
       end // end of [E1XPif]
+    | E1XPint (i) => V1ALint (i)
+    | E1XPlam (xs, body) => V1ALclo (env, xs, body)
+    | E1XPlet (decs, body) => let
+        val env = auxDeclst (env, decs) in auxExp (env, body)
+      end // end of [E1XPlet]
     | E1XPopr (opr, es) => auxOpr (env, opr, es)
     | E1XPproj (e, i) => loop (vs, i) where {
         val- V1ALtup vs = auxExp (env, e)
@@ -95,13 +121,13 @@ implement interp_exp (e0) = let
     | E1XPtup (es) => let
         val vs = auxExp_list (env, es) in V1ALtup (vs)
       end // end of [E1XPtup]
+    | E1XPvar (x) => auxVar (env, x)
     | _ => begin
         prerr "auxExp: not implemented"; prerr_newline (); abort (1)
       end // end of [_]
   end // end of [auxExp]    
 //
-  and auxExp_list (env: env, es: e1xplst): List v1al =
-    case+ es of
+  and auxExp_list (env: env, es: e1xplst): List v1al = case+ es of
     | list_cons (e, es) => list_cons (auxExp (env, e), auxExp_list (env, es))
     | list_nil () => list_nil ()
   (* end of [auxExp_list] *)
@@ -161,7 +187,45 @@ implement interp_exp (e0) = let
         abort {v1al} (1)
       end // end of [_]
   end // end of [auxOpr]
-
+//
+  and auxVar (env: env, x: v1ar): v1al = case+ x.v1ar_def of
+    | Some def => auxExp (env, def)
+    | None () => let
+        val- list_cons (xv, env1) = env in if x = xv.0 then xv.1 else auxVar (env1, x)
+      end // end of [None]
+  (* end of [auxVar] *)
+//
+  and auxDec (env: env, dec: d1ec): env =
+    case+ dec.d1ec_node of
+    | D1ECval (isrec, vds) => auxValdeclst (env, isrec, vds)
+  (* end of [auxDec] *)
+//
+  and auxValdeclst
+    (env: env, isrec: bool, vds: v1aldeclst): env =
+    case+ 0 of
+    | _ when isrec => env
+    | _ (*nonrec*) => loop (env, vds) where  {
+        fun loop (env: env, vds: v1aldeclst): env =
+          case+ vds of
+          | list_cons (vd, vds) => let
+              val def = auxExp (env, vd.v1aldec_def)
+              val env = list_cons (@(vd.v1aldec_var, def), env)
+            in
+              loop (env, vds)
+            end // end of [list_cons]
+          | list_nil () => env
+        // end of [loop]  
+      } // end of [_ (*nonrec*) ]
+  (* end of [auxValdeclst] *)
+//
+  and auxDeclst (env: env, decs: d1eclst): env = begin
+    case+ decs of
+    | list_cons (dec, decs) => let
+        val env = auxDec (env, dec) in auxDeclst (env, decs)
+      end // end of [list_cons]
+    | list_nil () => env
+  end // end of [auxDeclst]     
+//
   val env0 = list_nil ()
 in
   auxExp (env0, e0)
