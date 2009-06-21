@@ -482,7 +482,7 @@ implement ccomp_patck_rec
   end // end of [auxlst]
 in
   auxlst (res, lhips)
-end // end of [ccomp_patck_rec]
+end (* end of [ccomp_patck_rec] *)
 
 implement ccomp_patck_sum
   (res, vp_sum, d2c, hips_arg, hit_sum, fail) = let
@@ -499,9 +499,8 @@ implement ccomp_patck_sum
               val d2v = d2var_make_any (hip.hipat_loc)
               val () = hipat_asvar_set (hip, D2VAROPTsome d2v)
             } // end of [D2VAROPTnone]
-          | D2VAROPTsome d2v => d2v // may happen in template compialtion
+          | D2VAROPTsome d2v => d2v // may happen in template compilation
         ) : d2var_t
-        val () = hipat_asvar_set (hip, D2VAROPTsome d2v)
         val hit = hityp_normalize (hip.hipat_typ)
         val tmp = tmpvar_make (hit)
         val () = instr_add_selcon (res, tmp, vp_sum, hit_sum, i)
@@ -520,7 +519,7 @@ implement ccomp_patck_sum
   end // end of [auxlst]
 in
   auxlst (res, hips_arg, 0)
-end // end of [ccomp_patck_sum]
+end (* end of [ccomp_patck_sum] *)
 
 (* ****** ****** *)
 
@@ -640,7 +639,14 @@ fn ccomp_match_sum (
   , hips_arg: hipatlst
   , hit_sum: hityp_t
   ) : void = let
-
+(*
+  val () = begin
+    prerr "ccomp_match_sum: level = "; prerr level; prerr_newline ();
+    prerr "ccomp_match_sum: vp_sum = "; prerr vp_sum; prerr_newline ();
+    prerr "ccomp_match_sum: d2c = "; prerr_d2con d2c; prerr_newline ();
+    prerr "ccomp_match_sum: hips_arg = "; prerr_hipatlst hips_arg; prerr_newline ();
+  end // end [val]
+*)
   fun aux_var (
       res: &instrlst_vt
     , level: int
@@ -649,6 +655,12 @@ fn ccomp_match_sum (
     , refknd: int
     , d2v: d2var_t
     ) :<cloptr1> void = let
+(*
+    val () = begin
+      prerr "ccomp_match_sum: aux_var: hip0 = "; prerr_hipat hip0 ; prerr_newline ();
+      prerr "ccomp_match_sum: aux_var: d2v = "; prerr_d2var d2v ; prerr_newline ();
+    end // end of [val]
+*)
     val () = d2var_lev_set (d2v, level)
   in
     case+ 0 of
@@ -671,51 +683,60 @@ fn ccomp_match_sum (
       in
         // empty
       end // end of [_]
-  end // end of [aux_var]
+  end (* end of [aux_var] *)
 
   fun aux_pat
     (res: &instrlst_vt, level: int, i: int, hip0: hipat)
-    :<cloptr1> void = begin case+ hip0.hipat_node of
+    :<cloptr1> void = let
+(*
+    val () = begin
+      prerr "ccomp_match_sum: aux_pat: hip0 = "; prerr_hipat hip0 ; prerr_newline ();
+    end // end of [val]
+*)
+  in
+    case+ hip0.hipat_node of
     | HIPann (hip, _(*hit_ann*)) => aux_pat (res, level, i, hip)
     | HIPany () => ()
-    | HIPas (refknd, d2v, hip) => begin
-        aux_var (res, level, i, hip0, refknd, d2v); aux_pat (res, level, i, hip)
+    | HIPas (refknd, d2v, hip) => let
+        val () = aux_var (res, level, i, hip0, refknd, d2v); val vp = the_dynctx_find d2v
+      in
+        ccomp_match (res, level, vp, hip)
       end // end of [HIPas]
     | HIPvar (refknd, d2v) => aux_var (res, level, i, hip0, refknd, d2v)
-    | _ => ccomp_match (res, level, vp, hip0) where {
+    | _ => let
         val vp = (case+ hip0.hipat_asvar of
-          | D2VAROPTsome d2v => the_dynctx_find d2v
-          | D2VAROPTnone () => begin
+          | D2VAROPTsome d2v => the_dynctx_find d2v | D2VAROPTnone () => begin
               prerr "INTERNAL ERROR";
-              prerr ": ccomp_match_sum: aux: hip0 = "; prerr_hipat hip0; prerr_newline ();
+              prerr ": ccomp_match_sum: aux_pat: hip0 = "; prerr_hipat hip0; prerr_newline ();
               $Err.abort {valprim} ()
             end // end of [D2VAROPTnone]
         ) : valprim
-      } // end of [_]
+      in  
+        ccomp_match (res, level, vp, hip0)
+      end // end of [_]
   end (* end of [aux_pat] *)
 
   fun auxlst_pat
     (res: &instrlst_vt, level: int, i: int, hips: hipatlst)
     :<cloptr1> void = begin case+ hips of
-    | list_cons (hip, hips) => let
+    | list_cons (hip, hips) => () where {
         val () = aux_pat (res, level, i, hip)
-      in
-        auxlst_pat (res, level, i+1, hips)
-      end // end of [list_cons]
+        val () = auxlst_pat (res, level, i+1, hips)
+      } // end of [list_cons]
     | list_nil () => ()
   end (* end of [auxlst_pat] *)
 in
   auxlst_pat (res, level, 0, hips_arg)
-end // end of [ccomp_match_sum]
+end (* end of [ccomp_match_sum] *)
 
 (* ****** ****** *)
 
 implement ccomp_match (res, level, vp0, hip0) = let
 (*
   val () = begin
-    prerr "ccomp_match: level = "; prerr level; prerr_newline ()
-    prerr "ccomp_match: vp0 = "; prerr vp0; prerr_newline ()
-    prerr "ccomp_match: hip0 = "; prerr hip0; prerr_newline ()
+    prerr "ccomp_match: level = "; prerr level; prerr_newline ();
+    prerr "ccomp_match: vp0 = "; prerr vp0; prerr_newline ();
+    prerr "ccomp_match: hip0 = "; prerr_hipat hip0; prerr_newline ();
   end // end [val]
 *)
   fun aux_var (
@@ -724,6 +745,12 @@ implement ccomp_match (res, level, vp0, hip0) = let
     , vp0: valprim
     , d2v: d2var_t
     ) : void = let
+(*
+    val () = begin
+      prerr "ccomp_match: aux_var: vp0 = "; prerr vp0; prerr_newline ();
+      prerr "ccomp_match: aux_var: d2v = "; prerr d2v; prerr_newline ();
+    end // end of [val]
+*)
     val () = d2var_lev_set (d2v, level)
   in
     case+ d2v of
@@ -766,6 +793,7 @@ in
       val hit_sum = hityp_normalize (hit_sum)
       val () = ccomp_match_sum
         (res, level, vp0, freeknd, d2c, hips_arg, hit_sum)
+      // end of [val]
     in
       if freeknd < 0 then the_valprimlst_free_add vp0
     end // end of [HIPcon]
@@ -788,7 +816,7 @@ in
       prerr ": ccomp_match: hip0 = "; prerr_hipat hip0; prerr_newline ();
       $Err.abort {void} ()
     end // end of [_]
-end // end of [ccomp_match]
+end (* end of [ccomp_match] *)
 
 (* ****** ****** *)
 

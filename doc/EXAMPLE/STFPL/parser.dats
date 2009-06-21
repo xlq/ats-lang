@@ -558,6 +558,20 @@ and lp_e0xp1: LP (e0xp) = $delay (
   // end of [fixitm_loc_get]
 
   fn f (itms: List1 T):<> e0xp = let
+    val () = $effmask_all (loop (itms, 0)) where {
+      val out = stderr_ref
+      fun loop (itms: List T, i: int):<cloref1> void =
+        case+ itms of
+        | list_cons (itm, itms) => loop (itms, i+1) where {
+            val () = if i > 0 then fprint_string (out, ", ")
+            val () = (case+ itm of
+              | FIXITMatm exp => fprint_e0xp (out, exp)
+              | FIXITMopr opr => fprint_fixopr (out, opr)
+            ) : void // end of [val]  
+          } // end of [list_cons]
+        | list_nil () => ()
+    } // end of [val]
+    val () = $effmask_all (prerr_newline ())
     val res = $effmask_all (fixity_resolve (app_e0xp, itms))
   in
     case+ res of

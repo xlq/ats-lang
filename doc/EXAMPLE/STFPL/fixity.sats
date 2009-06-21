@@ -33,11 +33,16 @@ datatype fixopr (a:type) =
 
 end // end of [local]
 
+fun fprint_fixopr {a:type} (out: FILEref, opr: fixopr a): void
+
 (* ****** ****** *)
 
 datatype fixitm (a:type) = 
   | FIXITMatm (a) of a | FIXITMopr (a) of fixopr a
 // end of [fixitm]
+
+fun fprint_fixitm {a:type} (out: FILEref, itm: fixitm a): void
+fun fprint_fixitmlst {a:type} (out: FILEref, itms: List (fixitm a)): void
 
 (* ****** ****** *)
 

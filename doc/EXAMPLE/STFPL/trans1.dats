@@ -221,6 +221,14 @@ implement e1xp_make_opr (loc, opr, es, t_res) = '{
   e1xp_loc= loc, e1xp_node= E1XPopr (opr, es), e1xp_typ= t_res
 }
 
+implement e1xp_make_proj (loc, e, i, t_proj) = '{
+  e1xp_loc= loc, e1xp_node= E1XPproj (e, i), e1xp_typ= t_proj
+}
+
+implement e1xp_make_str (loc, s) = '{
+  e1xp_loc= loc, e1xp_node = E1XPstr s, e1xp_typ= t1yp_string
+}
+
 implement e1xp_make_tup (loc, es, t_tup) = '{
   e1xp_loc= loc, e1xp_node = E1XPtup es, e1xp_typ= t_tup
 }
@@ -419,6 +427,43 @@ implement trans1_exp (e) = auxExp (G0, e) where {
       in
         e1xp_make_let (loc0, decs, body, body.e1xp_typ)
       end // end of [val]  
+    | E0XPproj (e, i) => let
+        val [i:int] i = int1_of_int (i)
+        val () = (if i >= 0 then () else begin
+          $POSLOC.prerr_location loc0;
+          prerr ": exit(STFPL)"; prerr ": negative index is illegal";
+          prerr_newline ();
+          abort (1)
+        end) : [i >= 0] void
+        val e = auxExp (G, e)
+        val t_tup = e.e1xp_typ
+        val t_proj = (case+ t_tup of
+          | T1YPtup ts => loop (ts, i) where {
+              fun loop (ts: t1yplst, i: Nat):<cloref1> t1yp =
+                case+ ts of
+                | list_cons (t, ts) => if i > 0 then loop (ts, i-1) else t
+                | list_nil () => begin
+                    $POSLOC.prerr_location loc0;
+                    prerr ": exit(STFPL)";
+                    prerr ": index is too large for the tuple expression.";
+                    prerr_newline ();
+                    abort (1)
+                  end // end of [list_nil]
+              // end of [loop]    
+            } // end of [T1YPtup]
+          | _ => begin
+              $POSLOC.prerr_location loc0;
+              prerr ": exit(STFPL)";
+              prerr ": a tuple type for the expression is expected: ";
+              prerr_t1yp t_tup;
+              prerr_newline ();
+              abort (1)
+            end // end of [_]  
+        ) : t1yp
+      in
+        e1xp_make_proj (loc0, e, i, t_proj)
+      end // end of [E0XPproj]  
+    | E0XPstr (s) => e1xp_make_str (loc0, s)
     | E0XPtup (es) => let
         val es = list_map_clo (es, !p_clo) where {
           var !p_clo = @lam (e: e0xp): e1xp =<clo> $effmask_all (auxExp (G, e))
@@ -440,7 +485,9 @@ implement trans1_exp (e) = auxExp (G0, e) where {
             val () = prerr_newline ()
           } // end of [None_vt]
       end (* end of [E0XPvar] *)
+(*
     | _ => exit (1)
+*)
   end // end of [auxExp]
 //
   and auxExpCK

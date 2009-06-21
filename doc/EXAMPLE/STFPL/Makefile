@@ -11,9 +11,10 @@
 
 ######
 
+CCFLAGS=-O0 -g
 CCFLAGS=
-CCFLAGS=-g
 GCFLAG=-D_ATS_GCATS
+#GCFLAG=
 
 ######
 
@@ -81,6 +82,9 @@ fixity_sats.o: fixity.sats
 
 fixity_dats.o: fixity.dats
 	atscc $(CCFLAGS) -c -o fixity_dats.o fixity.dats
+
+#fixity_dats.o: fixity_dats1.c
+#	atscc $(CCFLAGS) -c -o fixity_dats.o fixity_dats1.c
 
 ######
 

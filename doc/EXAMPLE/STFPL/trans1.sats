@@ -109,6 +109,8 @@ fun e1xp_make_int (_: loc, i: int): e1xp
 fun e1xp_make_lam (_: loc, xs: v1arlst, body: e1xp, t: t1yp): e1xp
 fun e1xp_make_let (_: loc, decs: d1eclst, body: e1xp, t: t1yp): e1xp
 fun e1xp_make_opr (_: loc, opr: $ABSYN.opr, es: e1xplst, t: t1yp): e1xp
+fun e1xp_make_proj (_: loc, e: e1xp, i: int, t: t1yp): e1xp
+fun e1xp_make_str (_: loc, s: string): e1xp
 fun e1xp_make_tup (_: loc, es: e1xplst, t: t1yp): e1xp
 fun e1xp_make_var (_: loc, x: v1ar): e1xp
 

@@ -381,7 +381,9 @@ in
       hipat_ann (loc0, hit0, hip, hit_ann)
     end // end of [P3Tann]
   | P3Tany _ => hipat_any (loc0, hit0)
-  | P3Tas (refknd, d2v, p3t) => begin
+  | P3Tas (refknd, d2v, p3t) => let
+      val () = d2var_count_inc (d2v)
+    in  
       hipat_as (loc0, hit0, refknd, d2v, p3at_tr p3t)
     end // end of [P3Tas]
   | P3Tbool b => hipat_bool (loc0, hit0, b)
