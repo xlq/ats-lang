@@ -99,8 +99,13 @@ and v1aldeclst = List (v1aldec)
 
 (* ****** ****** *)
 
+// fun fprint_e1xp (out: FILEref, e: e1xp): void
+
+(* ****** ****** *)
+
 fun v1ar_make (_: loc, _: sym, _: t1yp): v1ar
 
+fun e1xp_make_ann (_: loc, e: e1xp, t: t1yp): e1xp
 fun e1xp_make_app (_: loc, e1: e1xp, e2: e1xp, t: t1yp): e1xp
 fun e1xp_make_bool (_: loc, b: bool): e1xp
 fun e1xp_make_fix (_: loc, f: v1ar, xs: v1arlst, body: e1xp, t: t1yp): e1xp

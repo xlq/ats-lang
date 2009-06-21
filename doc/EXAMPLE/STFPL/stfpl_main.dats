@@ -14,6 +14,7 @@
 staload "absyn.sats"
 staload "parser.sats"
 staload "trans1.sats"
+staload "interp.sats"
 
 (* ****** ****** *)
 
@@ -28,6 +29,7 @@ dynload "PARCOMB/parcomb.dats"
 
 dynload "parser.dats"
 dynload "trans1.dats"
+dynload "interp.dats"
 
 (* ****** ****** *)
 
@@ -40,6 +42,8 @@ implement main () = () where {
   val e1xp = trans1_exp (prog)
   val t1yp = e1xp.e1xp_typ
   val () = (print "t1yp = "; print_t1yp t1yp; print_newline ())
+  val v1al = interp_exp (e1xp)
+  val () = (print "v1al = "; print_v1al v1al; print_newline ())
 } // end of [main]
 
 (* ****** ****** *)

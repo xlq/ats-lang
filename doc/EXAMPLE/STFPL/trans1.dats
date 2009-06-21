@@ -189,6 +189,10 @@ implement v1ar_make (loc, sym, t) = '{
   v1ar_loc= loc, v1ar_nam= sym, v1ar_typ= t
 }
 
+implement e1xp_make_ann (loc, e, t) = '{
+  e1xp_loc= loc, e1xp_node = E1XPann (e, t), e1xp_typ= t
+}
+
 implement e1xp_make_app (loc, e1, e2, t) = '{
   e1xp_loc= loc, e1xp_node = E1XPapp (e1, e2), e1xp_typ= t
 }
@@ -302,9 +306,9 @@ implement trans1_exp (e) = auxExp (G0, e) where {
     case+ e0.e0xp_node of
     | E0XPann (e, t) => let
         val t = trans1_typ t; val e = auxExpCK (G, e, t)
-      in '{
-        e1xp_loc= loc0, e1xp_node= e.e1xp_node, e1xp_typ= t
-      } end // end pf [E0XPann]  
+      in
+        e1xp_make_ann (loc0, e, t)
+      end // end pf [E0XPann]  
     | E0XPapp (e1, e2) => let
         val e1 = auxExp (G, e1); val t_fun = e1.e1xp_typ
       in
