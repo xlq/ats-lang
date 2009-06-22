@@ -33,6 +33,10 @@ dynload "interp.dats"
 
 (* ****** ****** *)
 
+//
+// Usage: ./stfpl < [input file]
+//
+
 implement main () = () where {
   val () = (print "stfpl_main: "; print_newline ())
   val prog = parse_from_stdin ()
