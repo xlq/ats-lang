@@ -63,6 +63,9 @@ val symbol_LTE : symbol_t
 val symbol_EQ : symbol_t
 val symbol_NEQ : symbol_t
 
+val symbol_PRINT : symbol_t
+val symbol_PRINT_INT : symbol_t
+
 (* ****** ****** *)
 
 abstype symtbl_t (a: t@ype) // hashtable-based implementation

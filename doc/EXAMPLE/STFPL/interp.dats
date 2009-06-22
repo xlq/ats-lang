@@ -76,8 +76,11 @@ implement interp_exp (e0) = let
     | E1XPapp (e1, e2) => auxExp (env1, body) where {
         val- V1ALclo (env1, xs, body) = auxExp (env, e1)
         val v2 = auxExp (env, e2)
-        val env1 = (case+ v2 of
-          | V1ALtup vs => loop (env1, xs, vs) where {
+        val env1 = (case+ xs of
+          | x :: nil () =>
+              list_cons (@(x, v2), env1)
+            // unary function call  
+          | _ => loop (env1, xs, vs) where {
               fun loop (
                   env1: env, xs: v1arlst, vs: List v1al
                 ) : env = case+ vs of
@@ -89,13 +92,12 @@ implement interp_exp (e0) = let
                   end // end of [list_cons]  
                 | list_nil () => env1
               // end of [loop]   
-            } // end of [V1ALtup]
-          | _ => let
-              val- list_cons (x, _) = xs in list_cons (@(x, v2), env1)
-            end // end of [_]  
-        ) : env
-      } // end of [E1XPapp]
+              val- V1ALtup vs = v2
+            } // end of [_]
+        ) : env // end of [val]
+      } (* end of [E1XPapp] *)
     | E1XPbool (b) => V1ALbool (b)
+    | E1XPfix (f, xs, body) => V1ALclo (env, xs, body) 
     | E1XPif (e1, e2, oe3) => let
         val- V1ALbool b = auxExp (env, e1)
       in
@@ -122,9 +124,11 @@ implement interp_exp (e0) = let
         val vs = auxExp_list (env, es) in V1ALtup (vs)
       end // end of [E1XPtup]
     | E1XPvar (x) => auxVar (env, x)
+(*
     | _ => begin
         prerr "auxExp: not implemented"; prerr_newline (); abort (1)
       end // end of [_]
+*)
   end // end of [auxExp]    
 //
   and auxExp_list (env: env, es: e1xplst): List v1al = case+ es of
@@ -180,6 +184,26 @@ implement interp_exp (e0) = let
         val- V1ALint i1 :: V1ALint i2 :: _ = vs
       in
         V1ALbool (i1 <= i2)
+      end // end of [_ when ...]
+    | _ when sym = symbol_EQ => let      
+        val- V1ALint i1 :: V1ALint i2 :: _ = vs
+      in
+        V1ALbool (i1 = i2)
+      end // end of [_ when ...]
+    | _ when sym = symbol_NEQ => let
+        val- V1ALint i1 :: V1ALint i2 :: _ = vs
+      in
+        V1ALbool (i1 <> i2)
+      end // end of [_ when ...]
+    | _ when sym = symbol_PRINT => let
+        val- V1ALstr s :: _ = vs; val () = print_string s
+      in
+        V1ALtup (nil)
+      end // end of [_ when ...]
+    | _ when sym = symbol_PRINT_INT => let
+        val- V1ALint i  :: _ = vs; val () = print_int i
+      in
+        V1ALtup (nil)
       end // end of [_ when ...]
     | _ => begin
         prerr "INTERNAL ERROR";

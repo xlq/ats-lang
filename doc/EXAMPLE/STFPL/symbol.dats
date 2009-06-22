@@ -113,6 +113,9 @@ implement symbol_LTE = symbol_make_name "<="
 implement symbol_EQ = symbol_make_name "="
 implement symbol_NEQ = symbol_make_name "<>"
 
+implement symbol_PRINT = symbol_make_name "print"
+implement symbol_PRINT_INT = symbol_make_name "print_int"
+
 (* ****** ****** *)
 
 local

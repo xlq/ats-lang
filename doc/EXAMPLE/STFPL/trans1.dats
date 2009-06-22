@@ -84,7 +84,9 @@ implement fprint_t1yplst
 
 implement trans1_typ (t) = aux (t) where {
   fun aux (t: t0yp): t1yp = case+ t.t0yp_node of
-    | T0YPbase sym => T1YPbase sym
+    | T0YPbase sym => begin case+ 0 of
+        | _ when sym = symbol_UNIT => t1yp_unit | _ => T1YPbase sym
+      end // end of [T0YPbase]  
     | T0YPfun (t1, t2) => T1YPfun (aux t1, aux t2)
     | T0YPtup (ts) => T1YPtup (l2l (list_map_fun (ts, aux)))
   // end of [aux]
@@ -112,7 +114,9 @@ macdef list_sing (x) = list_cons (,(x), list_nil ())
 
 val theConstTypMap = loop (cts, ini) where {
   val ini = $M.funmap_empty ()
+  val t1yp_int1 = T1YPtup (t1yp_int :: nil)
   val t1yp_int2 = T1YPtup (t1yp_int :: t1yp_int :: nil)
+  val t1yp_str1 = T1YPtup (t1yp_string :: nil)
   val t1yp_aop = T1YPfun (t1yp_int2, t1yp_int)
   val t1yp_bop = T1YPfun (t1yp_int2, t1yp_bool)
   val cts =
@@ -120,13 +124,15 @@ val theConstTypMap = loop (cts, ini) where {
     (symbol_MINUS, t1yp_aop) ::
     (symbol_TIMES, t1yp_aop) ::
     (symbol_SLASH, t1yp_aop) ::
-    (symbol_UMINUS, T1YPfun (T1YPtup (list_sing (t1yp_int)), t1yp_int)) ::
+    (symbol_UMINUS, T1YPfun (t1yp_int1, t1yp_int)) ::
     (symbol_GT, t1yp_bop) ::
     (symbol_GTE, t1yp_bop) ::
     (symbol_LT, t1yp_bop) ::
     (symbol_LTE, t1yp_bop) ::
     (symbol_EQ, t1yp_bop) ::
     (symbol_NEQ, t1yp_bop) ::
+    (symbol_PRINT_INT, T1YPfun (t1yp_int1, t1yp_unit)) ::
+    (symbol_PRINT, T1YPfun (t1yp_str1, t1yp_unit)) ::
     nil ()
   typedef T = @(sym, t1yp)
   fun loop (cts: List T, res: theConstTypMap_t): theConstTypMap_t =
@@ -173,7 +179,7 @@ fun lte_t1yp_t1yp
 
 and lte_t1yplst_t1yplst (ts1: t1yplst, ts2: t1yplst): bool =
   case+ (ts1, ts2) of
-  | (list_cons (t1, ts2), list_cons (t2, ts2)) =>
+  | (list_cons (t1, ts1), list_cons (t2, ts2)) =>
       lte_t1yp_t1yp (t1, t2) andalso lte_t1yplst_t1yplst (ts1, ts2)
     // end of [list_cons, list_cons]
   | (list_nil (), list_nil ()) => true
@@ -347,9 +353,10 @@ implement trans1_exp (e) = auxExp (G0, e) where {
         val f = v1ar_make (loc0, sym, t_fun)
         val G = $M.funmap_insert (G, sym, f, cmp_sym_sym)
         val body = auxExpCK (G, body, t_res)
-        val () = v1ar_def_set (f, Some body)
+        val e_fix = e1xp_make_fix (loc0, f, xs, body, t_fun)
+        val () = v1ar_def_set (f, Some e_fix)
       in
-        e1xp_make_fix (loc0, f, xs, body, t_fun)
+        e_fix
       end // end of [E0XPfix]  
     | E0XPopr (opr, es) => let
         val t_opr = theConstTypFind (opr)

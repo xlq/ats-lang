@@ -99,17 +99,13 @@ val MINUS = litident "-"
 val TIMES = litident "*"
 val DIVIDE = litident "/"
 
-val EQ = litident "="
-val NEQ = litident "<>"
-val COLONEQ = litident ":="
-
 val GTEQ = litident ">="
 val GT = litident ">"
 val LTEQ = litident "<="
 val LT = litident "<"
 
-val AMP = litident "&"
-val BAR = litident "|"
+val EQ = litident "="
+val NEQ = litident "<>"
 
 //
 
@@ -131,11 +127,13 @@ val IF    = litident "if"
 val IN    = litident "in"
 val LAM   = litident "lam"
 val LET   = litident "let"
-val PRINT = litident "print"
 val THEN  = litident "then"
 val TRUE  = litident "true"
 val VAL   = litident "val"
 val REC   = litident "rec"
+
+val PRINT = litident "print"
+val PRINT_INT = litident "print_int"
 
 (* ****** ****** *)
 
@@ -230,8 +228,11 @@ local
 #define LTEQ_precedence 20
 #define LT_precedence 20
 
-#define AMP_precedence 9
-#define BAR_precedence 8
+#define AMPAMP_precedence 9
+#define BARBAR_precedence 8
+
+#define PRINT_precedence 61
+#define PRINT_INT_precedence 61
 
 #define L LeftAssoc; #define R RightAssoc; #define N NonAssoc
 
@@ -270,6 +271,12 @@ val p_opr: P (fixopr e0xp) = begin
   ) ||
   UMINUS wth (
     lam (tok: token) =<fun> f_prefx (tok, UMINUS_precedence)
+  ) ||
+  PRINT wth (
+    lam (tok: token) =<fun> f_prefx (tok, PRINT_precedence)  
+  ) ||
+  PRINT_INT wth (
+    lam (tok: token) =<fun> f_prefx (tok, PRINT_INT_precedence)  
   )
 end where {
   fn f_prefx
@@ -330,10 +337,13 @@ and lp_t0yp1: LP (t0yp) = $delay (
     t0yp_make_sym (loc, sym_id)
   end // end of [f_ident]
   val f_tup = lam
-    (tok1: token, ts: t0yplst, tok2: token) =<> let
-    val loc = location_combine (tok1.token_loc, tok2.token_loc) in
-    t0yp_make_tup (loc, ts)
-  end // end of [f_seq]  
+    (tok1: token, ts: t0yplst, tok2: token) =<> begin
+    case+ ts of
+    | list_cons (t, list_nil ()) => t | _ => let
+        val loc = location_combine (tok1.token_loc, tok2.token_loc) in
+        t0yp_make_tup (loc, ts)
+      end // end of [f_seq]  
+  end // end of [lam]     
 } (* end of [lp_t0yp1] *)
 
 and lp_t0ypc: LP (t0ypc) = $delay (
