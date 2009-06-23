@@ -64,7 +64,7 @@ fun double_of_time (t: time_t):<> double_t0ype
 
 overload double_of with double_of_time
 
-//
+(* ****** ****** *)
 
 symintr time
 

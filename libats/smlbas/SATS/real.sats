@@ -54,6 +54,11 @@ castfn double_of_real (x: real): double
 
 (* ****** ****** *)
 
+fun fprint_real (out: FILEref, r: real): void
+overload fprint with fprint_real
+
+(* ****** ****** *)
+
 fun add_real_real (r1: real, r2: real): real
 overload + with add_real_real
 

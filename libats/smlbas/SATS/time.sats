@@ -48,13 +48,18 @@ staload REAL = "libats/smlbas/SATS/real.sats"
 
 (* ****** ****** *)
 
-abst@ype time_t0ype = $extype "ats_time_type"
+abst@ype time_t0ype = $REAL.real
 typedef time = time_t0ype
 
 (* ****** ****** *)
 
 fun toReal (x: time): $REAL.real
 fun fromReal (x: $REAL.real): time 
+
+(* ****** ****** *)
+
+fun fprint_time (out: FILEref, x: time): void
+overload fprint with fprint_time
 
 (* ****** ****** *)
 
@@ -69,6 +74,10 @@ fun fromMicroseconds (x: llint): time
 
 fun toNanoseconds (x: time): llint
 fun fromNanoseconds (x: llint): time
+
+(* ****** ****** *)
+
+fun now (): time
 
 (* ****** ****** *)
 

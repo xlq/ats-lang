@@ -59,6 +59,14 @@ static inline
 ats_int_type
 atspre_int_of_float (ats_float_type f) { return f ; }
 
+static inline
+ats_lint_type
+atspre_lint_of_float (ats_float_type f) { return f ; }
+
+static inline
+ats_llint_type
+atspre_llint_of_float (ats_float_type f) { return f ; }
+
 //
 
 static inline
@@ -66,6 +74,20 @@ ats_float_type
 atspre_float_of_int (const ats_int_type i) {
   return (ats_float_type)i ;
 }
+
+static inline
+ats_float_type
+atspre_float_of_lint (const ats_lint_type li) {
+  return (ats_float_type)li ;
+}
+
+static inline
+ats_float_type
+atspre_float_of_llint (const ats_llint_type lli) {
+  return (ats_float_type)lli ;
+}
+
+//
 
 static inline
 ats_float_type
@@ -276,7 +298,15 @@ atspre_tostring_float (const ats_float_type f) {
 
 static inline
 ats_int_type
-atspre_int_of_double (ats_double_type f) { return f ; }
+atspre_int_of_double (ats_double_type d) { return d ; }
+
+static inline
+ats_lint_type
+atspre_lint_of_double (ats_double_type d) { return d ; }
+
+static inline
+ats_llint_type
+atspre_llint_of_double (ats_double_type d) { return d ; }
 
 //
 
@@ -285,6 +315,20 @@ ats_double_type
 atspre_double_of_int (const ats_int_type i) {
   return (ats_double_type)i ;
 }
+
+static inline
+ats_double_type
+atspre_double_of_lint (const ats_lint_type li) {
+  return (ats_double_type)li ;
+}
+
+static inline
+ats_double_type
+atspre_double_of_llint (const ats_llint_type lli) {
+  return (ats_double_type)lli ;
+}
+
+//
 
 static inline
 ats_double_type
@@ -539,6 +583,20 @@ atspre_tostring_double (const ats_double_type f) {
 /* ****** ****** */
 
 static inline
+ats_int_type
+atspre_int_of_ldouble (ats_ldouble_type ld) { return ld ; }
+
+static inline
+ats_lint_type
+atspre_lint_of_ldouble (ats_ldouble_type ld) { return ld ; }
+
+static inline
+ats_llint_type
+atspre_llint_of_ldouble (ats_ldouble_type ld) { return ld ; }
+
+//
+
+static inline
 ats_ldouble_type
 atspre_ldouble_of_int (const ats_int_type i) {
   return ((ats_ldouble_type)i) ;
@@ -546,8 +604,28 @@ atspre_ldouble_of_int (const ats_int_type i) {
 
 static inline
 ats_ldouble_type
-atspre_ldouble_of_double (const ats_double_type f) {
+atspre_ldouble_of_lint (const ats_lint_type li) {
+  return (ats_ldouble_type)li ;
+}
+
+static inline
+ats_ldouble_type
+atspre_ldouble_of_llint (const ats_llint_type lli) {
+  return (ats_ldouble_type)lli ;
+}
+
+//
+
+static inline
+ats_ldouble_type
+atspre_ldouble_of_float (const ats_float_type f) {
   return ((ats_ldouble_type)f) ;
+}
+
+static inline
+ats_ldouble_type
+atspre_ldouble_of_double (const ats_double_type d) {
+  return ((ats_ldouble_type)d) ;
 }
 
 //

@@ -62,6 +62,10 @@ implement double_of_real (x) = x // cast function
 
 (* ****** ****** *)
 
+implement fprint_real (out, x) = fprint_double (out, x)
+
+(* ****** ****** *)
+
 implement add_real_real (r1, r2) = add_double_double (r1, r2)
 implement sub_real_real (r1, r2) = sub_double_double (r1, r2)
 implement mul_real_real (r1, r2) = mul_double_double (r1, r2)

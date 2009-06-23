@@ -28,6 +28,7 @@ compall:: \
   libats_smlbas_char \
   libats_smlbas_list \
   libats_smlbas_string \
+  libats_smlbas_time \
 
 ######
 
@@ -36,9 +37,6 @@ prelude_array: prelude_array.dats
 
 prelude_array0: prelude_array0.dats
 	atscc -O2 -o prelude_array0 prelude_array0.dats && ./prelude_array0
-
-prelude_matrix: prelude_matrix.dats
-	atscc -O2 -o prelude_matrix prelude_matrix.dats && ./prelude_matrix
 
 prelude_list: prelude_list.dats
 	atscc -O2 -o prelude_list prelude_list.dats && ./prelude_list
@@ -88,6 +86,9 @@ libats_smlbas_list: libats_smlbas_list.dats
 libats_smlbas_string: libats_smlbas_string.dats
 	atscc -O2 -o libats_smlbas_string libats_smlbas_string.dats -lats_smlbas && ./libats_smlbas_string
 
+libats_smlbas_time: libats_smlbas_time.dats
+	atscc -O2 -o libats_smlbas_time libats_smlbas_time.dats -lats_smlbas -lm && ./libats_smlbas_time
+
 ######
 
 clean::
@@ -111,5 +112,6 @@ cleanall: clean
 	rm -f libats_smlbas_char
 	rm -f libats_smlbas_list
 	rm -f libats_smlbas_string
+	rm -f libats_smlbas_time
 
 ###### end of [Makefile] ######
