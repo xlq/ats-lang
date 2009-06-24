@@ -91,8 +91,8 @@ fun mkstemp_err {m,n:nat}
 fun bsearch {a:viewt@ype} {n:nat} (
     key: &a
   , base: &(@[a][n]), nmemb: size_t n, size: sizeof_t a
-  , compar: (&a, &a) -<fun1> int
-  ) : intBtw (~1, n)
+  , compar: (&a, &a) -<fun> int
+  ) :<> intBtw (~1, n)
   = "atslib_bsearch"
 
 (* ****** ****** *)
@@ -102,8 +102,8 @@ fun bsearch {a:viewt@ype} {n:nat} (
 fun qsort {a:viewt@ype} {n:nat} (
     base: &(@[a][n])
   , nmemb: size_t n, size: sizeof_t a
-  , compar: (&a, &a) -<fun1> int
-  ) : void
+  , compar: (&a, &a) -<fun> int
+  ) :<> void
   = "atslib_qsort"
 
 (* ****** ****** *)

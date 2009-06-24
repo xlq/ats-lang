@@ -243,6 +243,18 @@ overload szmul2 with mul2_size1_size1
 
 // ------ ------
 
+fun div_size1_int1 {i,j:int | j <> 0}
+  (i: size_t i, j: int j):<> size_t (i/j)
+  = "atspre_div_size1_int1"
+overload / with div_size1_int1
+
+fun div_size1_size1 {i,j:int | j <> 0}
+  (i: size_t i, j: size_t j):<> size_t (i/j)
+  = "atspre_div_size1_size1"
+overload / with div_size1_size1
+
+// ------ ------
+
 symintr szmod1; infixl szmod1
 
 fun mod1_size1_size1 {i:nat;j:int | j > 0}

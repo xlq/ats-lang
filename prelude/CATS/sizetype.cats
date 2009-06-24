@@ -177,11 +177,21 @@ atspre_mul_size1_size1 (ats_size_type sz1, ats_size_type sz2) {
 #define atspre_mul1_size1_size1 atspre_mul_size1_size1
 #define atspre_mul2_size1_size1 atspre_mul_size1_size1
 
+// ------ ------
+
+static inline
+ats_size_type
+atspre_div_size1_int1 (ats_size_type sz1, ats_int_type i2) {
+  return (sz1 / i2) ;
+} /* end of [atspre_div_size1_int1] */
+
 static inline
 ats_size_type
 atspre_div_size1_size1 (ats_size_type sz1, ats_size_type sz2) {
   return (sz1 / sz2) ;
 } /* end of [atspre_div_size1_size1] */
+
+// ------ ------
 
 static inline
 ats_size_type
@@ -210,7 +220,7 @@ atspre_lt_int1_size1
 static inline
 ats_bool_type
 atspre_lt_size1_int1
-  (ats_int_type sz1, ats_size_type i2) {
+  (ats_size_type sz1, ats_int_type i2) {
   return (sz1 < i2 ? ats_true_bool : ats_false_bool) ;
 } /* end of [atspre_lt_size1_int1] */
 
