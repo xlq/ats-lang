@@ -221,8 +221,14 @@ end // end of [array_ptr_clear_clo_tsz]
 
 (* ****** ****** *)
 
+implement{a} array_ptr_split (pf | A, i) =
+  array_ptr_split_tsz {a} (pf | A, i, sizeof<a>)
+// end of [array_ptr_split]
+
+(* ****** ****** *)
+
 implement{a} array_ptr_takeout (pf | A, i) =
-  array_ptr_takeout_tsz {a} (pf | A, i, sizeof<a> )
+  array_ptr_takeout_tsz {a} (pf | A, i, sizeof<a>)
 // end of [array_ptr_takeout]
 
 (* ****** ****** *)

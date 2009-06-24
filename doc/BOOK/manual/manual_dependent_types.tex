@@ -72,14 +72,14 @@ sortdef nat = {a: int | a >= 0 }
 where {\it sortdef} is a keyword in ATS for introducing a sort definition.
 It is important to not confuse sorts with subsets. The latter can only used
 to classify quantified static variables.  For instance, the following type
-(in the concrete syntax)
+(written in the concrete syntax)
 can be assigned to a function that tests whether two given natural numbers
 are equal:
 \begin{verbatim}
 {i,j:nat} (int (i), int (j)) -> bool (i == j)
 \end{verbatim}
 This type is essentially treated like syntactic sugar for the following
-one (also in the concrete syntax):
+one (also written in the concrete syntax):
 \begin{verbatim}
 {i,j:int | i >= 0; j >= 0} (int (i), int (j)) -> bool (i == j)
 \end{verbatim}

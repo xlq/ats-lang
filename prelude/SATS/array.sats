@@ -272,24 +272,46 @@ prfun array_v_ungroup : {a:viewt@ype} {m,n:nat} {l:addr} {mn:int}
 (* ****** ****** *)
 
 fun{a:viewt@ype}
+  array_ptr_split {n,i:nat | i < n} {l0:addr} (
+    pf: array_v (a, n, l0) | base: ptr l0, offset: size_t i
+  ) :<> [l:addr] (
+    array_v (a, i, l0)
+  , array_v (a, n-i, l)
+  , (array_v (a, i, l0), array_v (a, n-i, l)) -<prf> array_v (a, n, l)
+  | ptr l
+  ) // end of [array_ptr_split]
+
+fun array_ptr_split_tsz
+  {a:viewt@ype} {n,i:nat | i < n} {l0:addr} (
+    pf: array_v (a, n, l0) | base: ptr l0, offset: size_t i, tsz: sizeof_t a
+  ) :<> [l:addr] (
+    array_v (a, i, l0)
+  , array_v (a, n-i, l)
+  , (array_v (a, i, l0), array_v (a, n-i, l)) -<prf> array_v (a, n, l)
+  | ptr l
+  ) // end of [array_ptr_split_tsz]
+  = "atspre_array_ptr_split_tsz"
+
+(* ****** ****** *)
+
+fun{a:viewt@ype}
   array_ptr_takeout {n,i:nat | i < n} {l0:addr} (
     pf: array_v (a, n, l0) | base: ptr l0, offset: size_t i
   ) :<> [l:addr] (
-      a @ l
-    , a @ l -<lin,prf> array_v (a, n, l0)
-    | ptr l
-    )
-// end of [array_ptr_takeout]
+    a @ l
+  , a @ l -<lin,prf> array_v (a, n, l0)
+  | ptr l
+  ) // end of [array_ptr_takeout]
 
 fun array_ptr_takeout_tsz
   {a:viewt@ype} {n,i:nat | i < n} {l0:addr} (
     pf: array_v (a, n, l0)
   | base: ptr l0, offset: size_t i, tsz: sizeof_t a
   ) :<> [l:addr] (
-      a @ l
-    , a @ l -<lin,prf> array_v (a, n, l0)
-    | ptr l
-    )
+    a @ l
+  , a @ l -<lin,prf> array_v (a, n, l0)
+  | ptr l
+  ) // end of [array_ptr_takeout_tsz]
   = "atspre_array_ptr_takeout_tsz"
 
 (* ****** ****** *)

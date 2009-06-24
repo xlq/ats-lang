@@ -75,6 +75,18 @@ atspre_array_ptr_free (ats_ptr_type base) {
 
 static inline
 ats_ptr_type
+atspre_array_ptr_split_tsz (
+  ats_ptr_type base
+, ats_size_type offset
+, ats_size_type tsz
+) {
+  return ((char*)base) + offset * tsz ;
+} /* end of [atspre_array_ptr_split_tsz] */
+
+/* ****** ****** */
+
+static inline
+ats_ptr_type
 atspre_array_ptr_takeout_tsz (
   ats_ptr_type base
 , ats_size_type offset
