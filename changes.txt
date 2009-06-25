@@ -16,8 +16,14 @@ ats-lang-anariats-0.1.5:
 
 5. Some packages in SML Basis Library are implemented in [libats/smlbas]
 
-6. A bug is fixed that was caused by nonlinear constructor patterns being
+6. A bug is fixed that was due to nonlinear constructor patterns being
    given reference arguments.
+
+7. The constant [div_int_int_int_bool] is re-defined as the previous
+   definition was wrong if the divider and the dividee are of different
+   signs.
+
+8. A bug is fixed that was duo to [as] patterns being wrongly compiled.
 
 ########################################################################
 

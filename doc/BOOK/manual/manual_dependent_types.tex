@@ -353,15 +353,15 @@ empty.
 \subsection{Sequentiality}
 In ATS, pattern matching is performed sequentially at run-time. In other
 words, a clause is selected only if the given value matches the pattern
-associated with this clause but they do not match the patterns associated
-with the clauses ahead of it. Naturally, one might expect that the
-following implementation of ${\it list\_zip\_with}$ also typechecks:
-\input{DATS/list_zip_with_function_3.dats}
-This, however, is not the case. In ATS, typechecking clauses is done
-nondeterministically (rather than sequentially). In this example, the
-second clause fails to typecheck as it is done without assuming that the
-given value does not match the pattern associated with the first clause.
-The second clause can be modified as follows:
+associated with this clause but the value does not match the patterns
+associated with the clauses ahead of it. Naturally, one might expect that
+the following implementation of ${\it list\_zip\_with}$ also typechecks:
+\input{DATS/list_zip_with_function_3.dats} This, however, is not the
+case. In ATS, typechecking clauses is done nondeterministically (rather
+than sequentially). In this example, the second clause fails to typecheck
+as it is done without assuming that the given value does not match the
+pattern associated with the first clause.  The second clause can be
+modified as follows:
 \begin{verbatim}
   | (_, _) =>> list_nil ()
 \end{verbatim}
