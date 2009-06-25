@@ -493,8 +493,8 @@ stadef ndiv_r = ndiv_int_int_int_bool
 
 stadef div_int_int_int_bool (x: int, y: int, q: int) =
   (x >= 0 && y > 0 && ndiv_int_int_int_bool (x, y, q)) ||
-  (x >= 0 && y < 0 && ndiv_int_int_int_bool (x, ~y, q)) ||
-  (x <= 0 && y > 0 && ndiv_int_int_int_bool (~x, y, q)) ||
+  (x >= 0 && y < 0 && ndiv_int_int_int_bool (x, ~y, ~q)) ||
+  (x <= 0 && y > 0 && ndiv_int_int_int_bool (~x, y, ~q)) ||
   (x <= 0 && y < 0 && ndiv_int_int_int_bool (~x, ~y, q))
 
 stadef div_r = div_int_int_int_bool
