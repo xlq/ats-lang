@@ -277,7 +277,7 @@ fun{a:viewt@ype}
   ) :<> [l:addr] (
     array_v (a, i, l0)
   , array_v (a, n-i, l)
-  , (array_v (a, i, l0), array_v (a, n-i, l)) -<prf> array_v (a, n, l)
+  , (array_v (a, i, l0), array_v (a, n-i, l)) -<prf> array_v (a, n, l0)
   | ptr l
   ) // end of [array_ptr_split]
 
@@ -287,7 +287,7 @@ fun array_ptr_split_tsz
   ) :<> [l:addr] (
     array_v (a, i, l0)
   , array_v (a, n-i, l)
-  , (array_v (a, i, l0), array_v (a, n-i, l)) -<prf> array_v (a, n, l)
+  , (array_v (a, i, l0), array_v (a, n-i, l)) -<prf> array_v (a, n, l0)
   | ptr l
   ) // end of [array_ptr_split_tsz]
   = "atspre_array_ptr_split_tsz"
