@@ -24,7 +24,7 @@ implement main (argc, argv) = let
     #define row 2
     #define col 5
     val M = matrix_make_arraysize {int}
-      (row, col) ($arrsz (0, 1, 2, 3, 4, 5, 6, 7, 8, 9))
+      (row, col, $arrsz (0, 1, 2, 3, 4, 5, 6, 7, 8, 9))
     prval pf = unit_v ()
     // testing [matrix_iforeach_fun]
     val () = print "M (0-9) =\n"

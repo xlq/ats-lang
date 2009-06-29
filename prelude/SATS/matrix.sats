@@ -79,16 +79,17 @@ fun matrix_ptr_takeout_tsz {a:viewt@ype}
 (* ****** ****** *)
 
 fun matrix_make_arraysize {a:viewt@ype} {m,n:int}
-  (m: size_t m, n: size_t n):<> arraysize (a, m * n) -<cloptr> matrix (a, m, n)
+  (m: size_t m, n: size_t n, arrsz: arraysize (a, m * n))
+  :<> matrix (a, m, n)
   = "atspre_matrix_make_arraysize__main"
 
 // implemented in [prelude/DATS/matrix.das]
-fun matrix_make_arraysize__main
-  {a:viewt@ype} {m,n,mn:int} (m: size_t m, n: size_t n)
-  :<> (MUL (m, n, mn) | arraysize (a, mn)) -<cloptr> matrix (a, m, n)
+fun matrix_make_arraysize__main {a:viewt@ype} {m,n,mn:int}
+  (pf: MUL (m, n, mn) | m: size_t m, n: size_t n, arrsz: arraysize (a, mn))
+  :<> matrix (a, m, n)
   = "atspre_matrix_make_arraysize__main"
 
-macdef matrix (m, n) A = matrix_make_arraysize (,(m), ,(n)) ,(A)
+macdef matrix (m, n) arrsz = matrix_make_arraysize (,(m), ,(n), ,(arrsz))
 
 (* ****** ****** *)
 

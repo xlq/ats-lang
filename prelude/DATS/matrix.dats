@@ -82,14 +82,15 @@ extern fun vbox_make_view_ptr_matrix {a:viewt@ype} {m,n:int} {l:addr}
   (pf: matrix_v (a, m, n, l) | p: ptr l):<> (vbox (matrix_v (a, m, n, l)) | void)
   = "atspre_vbox_make_view_ptr"
 
-implement matrix_make_arraysize__main {a} (m, n) =
-  lam (pf_mul | arrsz) => let
-    prval () = free_gc_elim {a} (arrsz.0) // return the certificate
-    prval pf_mat = matrix_v_of_array_v (pf_mul, arrsz.1)
-    val (pf_mat_box | ()) = vbox_make_view_ptr_matrix (pf_mat | arrsz.2)
-  in @{
-    data= arrsz.2, view= pf_mat_box
-  } end
+implement
+  matrix_make_arraysize__main
+  {a} (pf_mul | m, n, arrsz) = let
+  prval () = free_gc_elim {a} (arrsz.0) // return the certificate to GC
+  prval pf_mat = matrix_v_of_array_v (pf_mul, arrsz.1)
+  val (pf_mat_box | ()) = vbox_make_view_ptr_matrix (pf_mat | arrsz.2)
+in @{
+  data= arrsz.2, view= pf_mat_box
+} end
 // end of [matrix_make_arrsize__main]
 
 (* ****** ****** *)
