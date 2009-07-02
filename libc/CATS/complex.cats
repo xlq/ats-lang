@@ -7,26 +7,25 @@
 /************************************************************************/
 
 /*
- * ATS - Unleashing the Potential of Types!
- *
- * Copyright (C) 2002-2008 Hongwei Xi.
- *
- * ATS is  free software;  you can redistribute it and/or modify it under
- * the  terms of the  GNU General Public License as published by the Free
- * Software Foundation; either version 2.1, or (at your option) any later
- * version.
- * 
- * ATS is distributed in the hope that it will be useful, but WITHOUT ANY
- * WARRANTY; without  even  the  implied  warranty  of MERCHANTABILITY or
- * FITNESS FOR A PARTICULAR PURPOSE.  See the  GNU General Public License
- * for more details.
- * 
- * You  should  have  received  a  copy of the GNU General Public License
- * along  with  ATS;  see the  file COPYING.  If not, please write to the
- * Free Software Foundation,  51 Franklin Street, Fifth Floor, Boston, MA
- * 02110-1301, USA.
- *
- */
+** ATS - Unleashing the Potential of Types!
+**
+** Copyright (C) 2002-2008 Hongwei Xi.
+**
+** ATS is  free software;  you can redistribute it and/or modify it under
+** the  terms of the  GNU General Public License as published by the Free
+** Software Foundation; either version 2.1, or (at your option) any later
+** version.
+** 
+** ATS is distributed in the hope that it will be useful, but WITHOUT ANY
+** WARRANTY; without  even  the  implied  warranty  of MERCHANTABILITY or
+** FITNESS FOR A PARTICULAR PURPOSE.  See the  GNU General Public License
+** for more details.
+** 
+** You  should  have  received  a  copy of the GNU General Public License
+** along  with  ATS;  see the  file COPYING.  If not, please write to the
+** Free Software Foundation,  51 Franklin Street, Fifth Floor, Boston, MA
+** 02110-1301, USA.
+*/
 
 /* ****** ****** */
 
@@ -41,7 +40,6 @@
 
 #include <complex.h>
 #include <math.h>
-#include <stdio.h> // for [stdout]
 
 /* ****** ****** */
 
@@ -49,73 +47,76 @@
 
 /* ****** ****** */
 
-typedef double complex ats_complex_type ;
 typedef float complex ats_fcomplex_type ;
+typedef double complex ats_dcomplex_type ;
 typedef long double complex ats_lcomplex_type ;
 
 /* ****** ****** */
 
 static inline
-ats_complex_type
-atslib_complex_of_int (ats_int_type i) {
-  return i;
-}
+ats_dcomplex_type
+atslib_complex_of_int (ats_int_type i) { return i ; }
 
 static inline
-ats_complex_type
-atslib_complex_of_double (ats_double_type f) {
-  return f;
-}
+ats_dcomplex_type
+atslib_complex_of_double (ats_double_type f) { return f ; }
 
 static inline
-ats_complex_type
-atslib_complex_make_cart (ats_double_type r, ats_double_type i) {
+ats_dcomplex_type
+atslib_complex_make_cart
+  (ats_double_type r, ats_double_type i) {
   return (r + i * I) ;
 }
 
 static inline
-ats_complex_type
-atslib_complex_make_polar (ats_double_type r, ats_double_type t) {
+ats_dcomplex_type
+atslib_complex_make_polar
+  (ats_double_type r, ats_double_type t) {
   return (r * cos(t)) + (r * sin(t)) * I ;
 }
 
 /* ****** ****** */
 
 static inline
-ats_complex_type
-atslib_conj_complex (ats_complex_type z) { return conj(z) ; }
+ats_dcomplex_type
+atslib_conj_complex (ats_dcomplex_type c) { return conj(c) ; }
 
 static inline
-ats_complex_type
-atslib_sqrt_complex (ats_complex_type z) { return csqrt(z) ; }
+ats_dcomplex_type
+atslib_sqrt_complex (ats_dcomplex_type c) { return csqrt(c) ; }
 
 static inline
-ats_complex_type
-atslib_exp_complex (ats_complex_type z) { return cexp(z) ; }
+ats_dcomplex_type
+atslib_exp_complex (ats_dcomplex_type c) { return cexp(c) ; }
 
 /* ****** ****** */
 
+extern FILE *stdout ; // declared in [stdio.h]
+extern FILE *stderr ; // declared in [stdio.h]
+
 extern
 ats_void_type
-atslib_fprint_complex (ats_ptr_type file, ats_complex_type z) ;
+atslib_fprint_complex
+  (ats_ptr_type file, ats_dcomplex_type c) ;
+// end of [atslib_fprint_complex]
 
 static inline
 ats_void_type
-atslib_print_complex (ats_complex_type f) {
+atslib_print_complex (ats_dcomplex_type f) {
   atspre_stdout_view_get () ;
   atslib_fprint_complex (stdout, f) ;
   atspre_stdout_view_set () ;
   return ;
-}
+} /* end of [atslib_print_complex] */
 
 static inline
 ats_void_type
-atslib_prerr_complex (ats_complex_type f) {
+atslib_prerr_complex (ats_dcomplex_type f) {
   atspre_stderr_view_get () ;
   atslib_fprint_complex (stderr, f) ;
   atspre_stderr_view_set () ;
   return ;
-}
+} /* end of [atslib_prerr_complex] */
 
 /* ****** ****** */
 
