@@ -1,6 +1,6 @@
 ######
 ##
-## An implementation of a simply typed functional programming language
+## A *realistic* implementation of a simply typed functional programming language
 ## (STFPL) is given here.
 ##
 ######
@@ -10,6 +10,14 @@
 ######
 
 Usage: ./stfpl < [input file]
+
+For instance, the following examples are available:
+
+  ./stfpl < EXAMPLE/ackermann.stfpl
+  ./stfpl < EXAMPLE/fact.stfpl
+  ./stfpl < EXAMPLE/fact_fix.stfpl
+  ./stfpl < EXAMPLE/fib.stfpl
+  ./stfpl < EXAMPLE/queens.stfpl
 
 ######
 
