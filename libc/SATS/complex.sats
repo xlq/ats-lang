@@ -43,105 +43,112 @@
 
 (* ****** ****** *)
 
-abst@ype complex = $extype "ats_dcomplex_type"
+// single precision
+abst@ype zcmplx_t0ype = $extype "ats_fcomplex_type"
+typedef zcmplx = zcmplx_t0ype
+
+// double precision
+abst@ype ccmplx_t0ype = $extype "ats_dcomplex_type"
+typedef ccmplx = ccmplx_t0ype
 
 (* ****** ****** *)
 
-symintr complex_of
+symintr ccmplx_of
 
 (* ****** ****** *)
 
-val complex_imag_unit : complex // imaginary unit
-  = "atslib_complex_imag_unit"
+val ccmplx_imag_unit : ccmplx
+  = "atslib_ccmplx_imag_unit" // imaginary unit
+// end of [val]  
 
-fun complex_of_int (i: int):<> complex
-  = "atslib_complex_of_int"
+fun ccmplx_of_int (i: int):<> ccmplx
+  = "atslib_ccmplx_of_int"
 
-fun complex_of_double (d: double):<> complex
-  = "atslib_complex_of_double"
+fun ccmplx_of_double (d: double):<> ccmplx
+  = "atslib_ccmplx_of_double"
 
-overload complex_of with complex_of_int
-overload complex_of with complex_of_double
+overload ccmplx_of with ccmplx_of_int
+overload ccmplx_of with ccmplx_of_double
 
-fun complex_make_cart (d1: double, d2: double):<> complex
-  = "atslib_complex_make_cart"
+fun ccmplx_make_cart (d1: double, d2: double):<> ccmplx
+  = "atslib_ccmplx_make_cart"
 
-fun complex_make_polar (d1: double, d2: double):<> complex
-  = "atslib_complex_make_polar"
+fun ccmplx_make_polar (d1: double, d2: double):<> ccmplx
+  = "atslib_ccmplx_make_polar"
 
-fun complex_real (c: complex):<> double
-  = "atslib_complex_real"
+fun ccmplx_real (c: ccmplx):<> double
+  = "atslib_ccmplx_real"
 
-fun complex_imag (c: complex):<> double
-  = "atslib_complex_imag"
-
-(* ****** ****** *)
-
-fun abs_complex (c: complex):<> double
-  = "atslib_abs_complex"
-
-fun neg_complex (c: complex):<> complex
-  = "atslib_neg_complex"
-
-overload abs with abs_complex
-overload ~ with neg_complex
-
-fun add_complex_complex (c1: complex, c2: complex):<> complex
-  = "atslib_add_complex_complex"
-
-and sub_complex_complex (c1: complex, c2: complex):<> complex
-  = "atslib_sub_complex_complex"
-
-and mul_complex_complex (c1: complex, c2: complex):<> complex
-  = "atslib_mul_complex_complex"
-
-and div_complex_complex (c1: complex, c2: complex):<> complex
-  = "atslib_div_complex_complex"
-
-overload + with add_complex_complex
-overload - with sub_complex_complex
-overload * with mul_complex_complex
-overload / with div_complex_complex
-
-fun sqrt_complex (c: complex):<> complex
-  = "atslib_sqrt_complex"
-
-fun cbrt_complex (c: complex):<> complex
-  = "atslib_cbrt_complex"
-
-overload sqrt with sqrt_complex
-overload cbrt with cbrt_complex
+fun ccmplx_imag (c: ccmplx):<> double
+  = "atslib_ccmplx_imag"
 
 (* ****** ****** *)
 
-fun arg_complex (c: complex):<> double
-  = "atslib_arg_complex"
+fun abs_ccmplx (c: ccmplx):<> double
+  = "atslib_abs_ccmplx"
 
-fun conj_complex (c: complex):<> complex
-  = "atslib_conj_complex"
+fun neg_ccmplx (c: ccmplx):<> ccmplx
+  = "atslib_neg_ccmplx"
+
+overload abs with abs_ccmplx
+overload ~ with neg_ccmplx
+
+fun add_ccmplx_ccmplx (c1: ccmplx, c2: ccmplx):<> ccmplx
+  = "atslib_add_ccmplx_ccmplx"
+
+and sub_ccmplx_ccmplx (c1: ccmplx, c2: ccmplx):<> ccmplx
+  = "atslib_sub_ccmplx_ccmplx"
+
+and mul_ccmplx_ccmplx (c1: ccmplx, c2: ccmplx):<> ccmplx
+  = "atslib_mul_ccmplx_ccmplx"
+
+and div_ccmplx_ccmplx (c1: ccmplx, c2: ccmplx):<> ccmplx
+  = "atslib_div_ccmplx_ccmplx"
+
+overload + with add_ccmplx_ccmplx
+overload - with sub_ccmplx_ccmplx
+overload * with mul_ccmplx_ccmplx
+overload / with div_ccmplx_ccmplx
+
+fun sqrt_ccmplx (c: ccmplx):<> ccmplx
+  = "atslib_sqrt_ccmplx"
+
+fun cbrt_ccmplx (c: ccmplx):<> ccmplx
+  = "atslib_cbrt_ccmplx"
+
+overload sqrt with sqrt_ccmplx
+overload cbrt with cbrt_ccmplx
 
 (* ****** ****** *)
 
-fun exp_complex (c: complex):<> complex
-  = "atslib_exp_complex"
+fun arg_ccmplx (c: ccmplx):<> double
+  = "atslib_arg_ccmplx"
 
-fun log_complex (c: complex):<> complex
-  = "atslib_log_complex"
-
-fun pow_complex_complex (c1: complex, c2: complex):<> complex
+fun conj_ccmplx (c: ccmplx):<> ccmplx
+  = "atslib_conj_ccmplx"
 
 (* ****** ****** *)
 
-fun fprint_complex {m:file_mode}
-  (pf: file_mode_lte (m, w) | out: &FILE m, x: complex):<!exnref> void
-  = "atspre_fprint_complex"
+fun exp_ccmplx (c: ccmplx):<> ccmplx
+  = "atslib_exp_ccmplx"
 
-fun print_complex (c: complex):<!ref> void = "atspre_print_complex"
-and prerr_complex (c: complex):<!ref> void = "atspre_prerr_complex"
+fun log_ccmplx (c: ccmplx):<> ccmplx
+  = "atslib_log_ccmplx"
 
-overload fprint with fprint_complex
-overload print with print_complex
-overload prerr with prerr_complex
+fun pow_ccmplx_ccmplx (c1: ccmplx, c2: ccmplx):<> ccmplx
+
+(* ****** ****** *)
+
+fun fprint_ccmplx {m:file_mode}
+  (pf: file_mode_lte (m, w) | out: &FILE m, x: ccmplx):<!exnref> void
+  = "atspre_fprint_ccmplx"
+
+fun print_ccmplx (c: ccmplx):<!ref> void = "atspre_print_ccmplx"
+and prerr_ccmplx (c: ccmplx):<!ref> void = "atspre_prerr_ccmplx"
+
+overload fprint with fprint_ccmplx
+overload print with print_ccmplx
+overload prerr with prerr_ccmplx
 
 (* ****** ****** *)
 

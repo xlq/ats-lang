@@ -3,7 +3,7 @@
 ats-lang-anariats-0.1.5:
 
 1. A character whose ascii code is greater than 127 is treated as the null
-   character by the ATS lexer.
+   character by the ATS lexer. So any chars can now appear in comments.
 
 2. Some location information is reported when a match failure occurs at
    run-time.
@@ -24,6 +24,8 @@ ats-lang-anariats-0.1.5:
    signs.
 
 8. A bug is fixed that was duo to [as] patterns being wrongly compiled.
+
+9. [prelude/SATS/matrix0.sats] and [prelude/DATS/matrix0.dats] are added.
 
 ########################################################################
 

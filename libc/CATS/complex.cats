@@ -55,22 +55,22 @@ typedef long double complex ats_lcomplex_type ;
 
 static inline
 ats_dcomplex_type
-atslib_complex_of_int (ats_int_type i) { return i ; }
+atslib_ccmplx_of_int (ats_int_type i) { return i ; }
 
 static inline
 ats_dcomplex_type
-atslib_complex_of_double (ats_double_type f) { return f ; }
+atslib_ccmplx_of_double (ats_double_type f) { return f ; }
 
 static inline
 ats_dcomplex_type
-atslib_complex_make_cart
+atslib_ccmplx_make_cart
   (ats_double_type r, ats_double_type i) {
   return (r + i * I) ;
 }
 
 static inline
 ats_dcomplex_type
-atslib_complex_make_polar
+atslib_ccmplx_make_polar
   (ats_double_type r, ats_double_type t) {
   return (r * cos(t)) + (r * sin(t)) * I ;
 }
@@ -79,44 +79,45 @@ atslib_complex_make_polar
 
 static inline
 ats_dcomplex_type
-atslib_conj_complex (ats_dcomplex_type c) { return conj(c) ; }
+atslib_conj_ccmplx (ats_dcomplex_type c) { return conj(c) ; }
 
 static inline
 ats_dcomplex_type
-atslib_sqrt_complex (ats_dcomplex_type c) { return csqrt(c) ; }
+atslib_sqrt_ccmplx (ats_dcomplex_type c) { return csqrt(c) ; }
 
 static inline
 ats_dcomplex_type
-atslib_exp_complex (ats_dcomplex_type c) { return cexp(c) ; }
+atslib_exp_ccmplx (ats_dcomplex_type c) { return cexp(c) ; }
 
 /* ****** ****** */
 
-extern FILE *stdout ; // declared in [stdio.h]
-extern FILE *stderr ; // declared in [stdio.h]
+#include <stdio.h>
+// extern FILE *stdout ; // declared in [stdio.h]
+// extern FILE *stderr ; // declared in [stdio.h]
 
 extern
 ats_void_type
-atslib_fprint_complex
+atslib_fprint_ccmplx
   (ats_ptr_type file, ats_dcomplex_type c) ;
-// end of [atslib_fprint_complex]
+// end of [atslib_fprint_ccmplx]
 
 static inline
 ats_void_type
-atslib_print_complex (ats_dcomplex_type f) {
+atslib_print_ccmplx (ats_dcomplex_type f) {
   atspre_stdout_view_get () ;
-  atslib_fprint_complex (stdout, f) ;
+  atslib_fprint_ccmplx (stdout, f) ;
   atspre_stdout_view_set () ;
   return ;
-} /* end of [atslib_print_complex] */
+} /* end of [atslib_print_ccmplx] */
 
 static inline
 ats_void_type
-atslib_prerr_complex (ats_dcomplex_type f) {
+atslib_prerr_ccmplx (ats_dcomplex_type f) {
   atspre_stderr_view_get () ;
-  atslib_fprint_complex (stderr, f) ;
+  atslib_fprint_ccmplx (stderr, f) ;
   atspre_stderr_view_set () ;
   return ;
-} /* end of [atslib_prerr_complex] */
+} /* end of [atslib_prerr_ccmplx] */
 
 /* ****** ****** */
 
