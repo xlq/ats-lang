@@ -43,16 +43,12 @@
 
 (* ****** ****** *)
 
-// single precision
-abst@ype zcmplx_t0ype = $extype "ats_fcomplex_type"
-typedef zcmplx = zcmplx_t0ype
+(*
+** complex numbers of single precision
+*)
 
-// double precision
-abst@ype ccmplx_t0ype = $extype "ats_dcomplex_type"
+abst@ype ccmplx_t0ype = $extype "ats_fcomplex_type"
 typedef ccmplx = ccmplx_t0ype
-
-(* ****** ****** *)
-
 symintr ccmplx_of
 
 (* ****** ****** *)
@@ -63,34 +59,32 @@ val ccmplx_imag_unit : ccmplx
 
 fun ccmplx_of_int (i: int):<> ccmplx
   = "atslib_ccmplx_of_int"
-
-fun ccmplx_of_double (d: double):<> ccmplx
-  = "atslib_ccmplx_of_double"
-
 overload ccmplx_of with ccmplx_of_int
-overload ccmplx_of with ccmplx_of_double
 
-fun ccmplx_make_cart (d1: double, d2: double):<> ccmplx
+fun ccmplx_of_float (f: float):<> ccmplx
+  = "atslib_ccmplx_of_float"
+overload ccmplx_of with ccmplx_of_float
+
+fun ccmplx_make_cart (f1: float, f2: float):<> ccmplx
   = "atslib_ccmplx_make_cart"
 
-fun ccmplx_make_polar (d1: double, d2: double):<> ccmplx
+fun ccmplx_make_polar (f1: float, f2: float):<> ccmplx
   = "atslib_ccmplx_make_polar"
 
-fun ccmplx_real (c: ccmplx):<> double
+fun ccmplx_real (c: ccmplx):<> float
   = "atslib_ccmplx_real"
 
-fun ccmplx_imag (c: ccmplx):<> double
+fun ccmplx_imag (c: ccmplx):<> float
   = "atslib_ccmplx_imag"
 
 (* ****** ****** *)
 
-fun abs_ccmplx (c: ccmplx):<> double
+fun abs_ccmplx (c: ccmplx):<> float
   = "atslib_abs_ccmplx"
+overload abs with abs_ccmplx
 
 fun neg_ccmplx (c: ccmplx):<> ccmplx
   = "atslib_neg_ccmplx"
-
-overload abs with abs_ccmplx
 overload ~ with neg_ccmplx
 
 fun add_ccmplx_ccmplx (c1: ccmplx, c2: ccmplx):<> ccmplx
@@ -121,7 +115,7 @@ overload cbrt with cbrt_ccmplx
 
 (* ****** ****** *)
 
-fun arg_ccmplx (c: ccmplx):<> double
+fun arg_ccmplx (c: ccmplx):<> float
   = "atslib_arg_ccmplx"
 
 fun conj_ccmplx (c: ccmplx):<> ccmplx
@@ -139,16 +133,108 @@ fun pow_ccmplx_ccmplx (c1: ccmplx, c2: ccmplx):<> ccmplx
 
 (* ****** ****** *)
 
-fun fprint_ccmplx {m:file_mode}
-  (pf: file_mode_lte (m, w) | out: &FILE m, x: ccmplx):<!exnref> void
-  = "atspre_fprint_ccmplx"
+(*
+** complex numbers of double precision
+*)
 
-fun print_ccmplx (c: ccmplx):<!ref> void = "atspre_print_ccmplx"
-and prerr_ccmplx (c: ccmplx):<!ref> void = "atspre_prerr_ccmplx"
+(* ****** ****** *)
 
-overload fprint with fprint_ccmplx
-overload print with print_ccmplx
-overload prerr with prerr_ccmplx
+abst@ype zcmplx_t0ype = $extype "ats_dcomplex_type"
+typedef zcmplx = zcmplx_t0ype
+symintr zcmplx_of
+
+(* ****** ****** *)
+
+val zcmplx_imag_unit : zcmplx
+  = "atslib_zcmplx_imag_unit" // imaginary unit
+// end of [val]  
+
+fun zcmplx_of_int (i: int):<> zcmplx
+  = "atslib_zcmplx_of_int"
+overload zcmplx_of with zcmplx_of_int
+
+fun zcmplx_of_double (d: double):<> zcmplx
+  = "atslib_zcmplx_of_double"
+overload zcmplx_of with zcmplx_of_double
+
+fun zcmplx_make_cart (d1: double, d2: double):<> zcmplx
+  = "atslib_zcmplx_make_cart"
+
+fun zcmplx_make_polar (d1: double, d2: double):<> zcmplx
+  = "atslib_zcmplx_make_polar"
+
+fun zcmplx_real (z: zcmplx):<> double
+  = "atslib_zcmplx_real"
+
+fun zcmplx_imag (z: zcmplx):<> double
+  = "atslib_zcmplx_imag"
+
+(* ****** ****** *)
+
+fun abs_zcmplx (z: zcmplx):<> double
+  = "atslib_abs_zcmplx"
+overload abs with abs_zcmplx
+
+fun neg_zcmplx (z: zcmplx):<> zcmplx
+  = "atslib_neg_zcmplx"
+overload ~ with neg_zcmplx
+
+fun add_zcmplx_zcmplx (z1: zcmplx, z2: zcmplx):<> zcmplx
+  = "atslib_add_zcmplx_zcmplx"
+
+and sub_zcmplx_zcmplx (z1: zcmplx, z2: zcmplx):<> zcmplx
+  = "atslib_sub_zcmplx_zcmplx"
+
+and mul_zcmplx_zcmplx (z1: zcmplx, z2: zcmplx):<> zcmplx
+  = "atslib_mul_zcmplx_zcmplx"
+
+and div_zcmplx_zcmplx (z1: zcmplx, z2: zcmplx):<> zcmplx
+  = "atslib_div_zcmplx_zcmplx"
+
+overload + with add_zcmplx_zcmplx
+overload - with sub_zcmplx_zcmplx
+overload * with mul_zcmplx_zcmplx
+overload / with div_zcmplx_zcmplx
+
+fun sqrt_zcmplx (z: zcmplx):<> zcmplx
+  = "atslib_sqrt_zcmplx"
+
+fun cbrt_zcmplx (z: zcmplx):<> zcmplx
+  = "atslib_cbrt_zcmplx"
+
+overload sqrt with sqrt_zcmplx
+overload cbrt with cbrt_zcmplx
+
+(* ****** ****** *)
+
+fun arg_zcmplx (z: zcmplx):<> double
+  = "atslib_arg_zcmplx"
+
+fun conj_zcmplx (z: zcmplx):<> zcmplx
+  = "atslib_conj_zcmplx"
+
+(* ****** ****** *)
+
+fun exp_zcmplx (z: zcmplx):<> zcmplx
+  = "atslib_exp_zcmplx"
+
+fun log_zcmplx (z: zcmplx):<> zcmplx
+  = "atslib_log_zcmplx"
+
+fun pow_zcmplx_zcmplx (z1: zcmplx, z2: zcmplx):<> zcmplx
+
+(* ****** ****** *)
+
+fun fprint_zcmplx {m:file_mode}
+  (pf: file_mode_lte (m, w) | out: &FILE m, x: zcmplx):<!exnref> void
+  = "atspre_fprint_zcmplx"
+
+fun print_zcmplx (z: zcmplx):<!ref> void = "atspre_print_zcmplx"
+and prerr_zcmplx (z: zcmplx):<!ref> void = "atspre_prerr_zcmplx"
+
+overload fprint with fprint_zcmplx
+overload print with print_zcmplx
+overload prerr with prerr_zcmplx
 
 (* ****** ****** *)
 

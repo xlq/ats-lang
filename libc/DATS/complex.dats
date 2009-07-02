@@ -39,12 +39,16 @@
 
 #include "libc/CATS/complex.cats"
 
-ats_dcomplex_type ats_complex_imag_unit = _Complex_I ;
+// ccmplx = ats_fcomplex_type
+// zcmplx = ats_dcomplex_type
+
+ats_dcomplex_type
+ats_zcmplx_imag_unit = _Complex_I ;
 
 // print function
 
 ats_void_type
-ats_fprint_ccmplx
+ats_fprint_zcmplx
   (ats_ptr_type out, ats_dcomplex_type z) {
   int n ;
   double z_i = cimag(z) ;
@@ -58,7 +62,7 @@ ats_fprint_ccmplx
     ats_exit_errmsg(n, "Exit: [fprint_complex] failed.\n") ;
   }
   return ;
-} // end of [ats_fprint_ccmplx]
+} // end of [ats_fprint_zcmplx]
 
 %}
 
