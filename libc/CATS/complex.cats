@@ -89,26 +89,27 @@ atslib_ccmplx_make_polar
 
 /* ****** ****** */
 
-extern
-ats_void_type
-atslib_fprint_ccmplx
+extern ats_void_type
+atslib_fprint_ccmplx // implemented in [complex.dats]
   (ats_ptr_type file, ats_fcomplex_type z) ;
 // end of [atslib_fprint_ccmplx]
 
 static inline
 ats_void_type
-atslib_print_ccmplx (ats_fcomplex_type f) {
+atslib_print_ccmplx
+  (ats_fcomplex_type c) {
   atspre_stdout_view_get () ;
-  atslib_fprint_ccmplx (stdout, f) ;
+  atslib_fprint_ccmplx (stdout, c) ;
   atspre_stdout_view_set () ;
   return ;
 } /* end of [atslib_print_ccmplx] */
 
 static inline
 ats_void_type
-atslib_prerr_ccmplx (ats_fcomplex_type f) {
+atslib_prerr_ccmplx
+  (ats_fcomplex_type c) {
   atspre_stderr_view_get () ;
-  atslib_fprint_ccmplx (stderr, f) ;
+  atslib_fprint_ccmplx (stderr, c) ;
   atspre_stderr_view_set () ;
   return ;
 } /* end of [atslib_prerr_ccmplx] */
@@ -117,7 +118,13 @@ atslib_prerr_ccmplx (ats_fcomplex_type f) {
 
 static inline
 ats_float_type
-atslib_abs_ccmplx (ats_fcomplex_type c) { return cabsf(c) ; }
+atslib_crealf (ats_fcomplex_type c) { return crealf(c) ; }
+
+static inline
+ats_float_type
+atslib_cimagf (ats_fcomplex_type c) { return cimagf(c) ; }
+
+/* ****** ****** */
 
 static inline
 ats_fcomplex_type
@@ -156,34 +163,103 @@ atslib_div_ccmplx_ccmplx
 /* ****** ****** */
 
 static inline
+ats_float_type
+atslib_cabsf (ats_fcomplex_type c) { return cabsf(c) ; }
+
+static inline
 ats_fcomplex_type
-atslib_sqrt_ccmplx (ats_fcomplex_type c) { return csqrtf(c) ; }
+atslib_csqrtf (ats_fcomplex_type c) { return csqrtf(c) ; }
 
 /* ****** ****** */
 
 static inline
 ats_float_type
-atslib_arg_ccmplx (ats_fcomplex_type c) { return argf(c) ; }
+atslib_cargf (ats_fcomplex_type c) { return cargf(c) ; }
 
 static inline
 ats_fcomplex_type
-atslib_conj_ccmplx (ats_fcomplex_type c) { return conjf(c) ; }
+atslib_conjf (ats_fcomplex_type c) { return conjf(c) ; }
 
 /* ****** ****** */
 
 static inline
 ats_fcomplex_type
-atslib_exp_ccmplx (ats_fcomplex_type c) { return cexpf(c) ; }
+atslib_csinf (ats_fcomplex_type c) { return csinf(c) ; }
 
 static inline
 ats_fcomplex_type
-atslib_log_ccmplx (ats_fcomplex_type c) { return clogf(c) ; }
+atslib_ccosf (ats_fcomplex_type c) { return ccosf(c) ; }
 
 static inline
 ats_fcomplex_type
-atslib_pow_ccmplx_ccmplx
-  (ats_fcomplex_type c1, ats_fcomplex_type c2) { return cpowf(c1, c2) ; }
-/* end of [atslib_pow_ccmplx_ccmplx] */
+atslib_ctanf (ats_fcomplex_type c) { return ctanf(c) ; }
+
+/* ****** ****** */
+
+static inline
+ats_fcomplex_type
+atslib_casinf (ats_fcomplex_type c) { return casinf(c) ; }
+
+static inline
+ats_fcomplex_type
+atslib_cacosf (ats_fcomplex_type c) { return cacosf(c) ; }
+
+static inline
+ats_fcomplex_type
+atslib_catanf (ats_fcomplex_type c) { return catanf(c) ; }
+
+/* ****** ****** */
+
+static inline
+ats_fcomplex_type
+atslib_csinhf (ats_fcomplex_type c) { return csinhf(c) ; }
+
+static inline
+ats_fcomplex_type
+atslib_ccoshf (ats_fcomplex_type c) { return ccoshf(c) ; }
+
+static inline
+ats_fcomplex_type
+atslib_ctanhf (ats_fcomplex_type c) { return ctanhf(c) ; }
+
+/* ****** ****** */
+
+static inline
+ats_fcomplex_type
+atslib_casinhf (ats_fcomplex_type c) { return casinhf(c) ; }
+
+static inline
+ats_fcomplex_type
+atslib_cacoshf (ats_fcomplex_type c) { return cacoshf(c) ; }
+
+static inline
+ats_fcomplex_type
+atslib_catanhf (ats_fcomplex_type c) { return catanhf(c) ; }
+
+/* ****** ****** */
+
+static inline
+ats_fcomplex_type
+atslib_cexpf (ats_fcomplex_type c) { return cexpf(c) ; }
+
+static inline
+ats_fcomplex_type
+atslib_clogf (ats_fcomplex_type c) { return clogf(c) ; }
+
+static inline
+ats_fcomplex_type
+atslib_cpowf (
+  ats_fcomplex_type c1
+, ats_fcomplex_type c2
+) {
+  return cpowf(c1, c2) ;
+} /* end of [atslib_cpowf] */
+
+/* ****** ****** */
+
+static inline
+ats_float_type
+atslib_cprojf (ats_fcomplex_type c) { return cprojf(c) ; }
 
 /* ****** ****** */
 
@@ -217,26 +293,27 @@ atslib_zcmplx_make_polar
 
 /* ****** ****** */
 
-extern
-ats_void_type
-atslib_fprint_zcmplx
+extern ats_void_type
+atslib_fprint_zcmplx // implemented in [complex.dats]
   (ats_ptr_type file, ats_dcomplex_type z) ;
 // end of [atslib_fprint_zcmplx]
 
 static inline
 ats_void_type
-atslib_print_zcmplx (ats_dcomplex_type d) {
+atslib_print_zcmplx
+  (ats_dcomplex_type z) {
   atspre_stdout_view_get () ;
-  atslib_fprint_zcmplx (stdout, d) ;
+  atslib_fprint_zcmplx (stdout, z) ;
   atspre_stdout_view_set () ;
   return ;
 } /* end of [atslib_print_zcmplx] */
 
 static inline
 ats_void_type
-atslib_prerr_zcmplx (ats_dcomplex_type d) {
+atslib_prerr_zcmplx
+  (ats_dcomplex_type z) {
   atspre_stderr_view_get () ;
-  atslib_fprint_zcmplx (stderr, d) ;
+  atslib_fprint_zcmplx (stderr, z) ;
   atspre_stderr_view_set () ;
   return ;
 } /* end of [atslib_prerr_zcmplx] */
@@ -245,7 +322,13 @@ atslib_prerr_zcmplx (ats_dcomplex_type d) {
 
 static inline
 ats_double_type
-atslib_abs_zcmplx (ats_dcomplex_type z) { return cabs(z) ; }
+atslib_creal (ats_dcomplex_type z) { return creal(z) ; }
+
+static inline
+ats_double_type
+atslib_cimag (ats_dcomplex_type z) { return cimag(z) ; }
+
+/* ****** ****** */
 
 static inline
 ats_dcomplex_type
@@ -284,34 +367,103 @@ atslib_div_zcmplx_zcmplx
 /* ****** ****** */
 
 static inline
+ats_double_type
+atslib_cabs (ats_dcomplex_type z) { return cabs(z) ; }
+
+static inline
 ats_dcomplex_type
-atslib_sqrt_zcmplx (ats_dcomplex_type z) { return csqrt(z) ; }
+atslib_csqrt (ats_dcomplex_type z) { return csqrt(z) ; }
 
 /* ****** ****** */
 
 static inline
 ats_double_type
-atslib_arg_zcmplx (ats_dcomplex_type z) { return arg(z) ; }
+atslib_carg (ats_dcomplex_type z) { return carg(z) ; }
 
 static inline
 ats_dcomplex_type
-atslib_conj_zcmplx (ats_dcomplex_type z) { return conj(z) ; }
+atslib_conj (ats_dcomplex_type z) { return conj(z) ; }
 
 /* ****** ****** */
 
 static inline
 ats_dcomplex_type
-atslib_exp_zcmplx (ats_dcomplex_type z) { return cexp(z) ; }
+atslib_csin (ats_dcomplex_type z) { return csin(z) ; }
 
 static inline
 ats_dcomplex_type
-atslib_log_zcmplx (ats_dcomplex_type z) { return clog(z) ; }
+atslib_ccos (ats_dcomplex_type z) { return ccos(z) ; }
 
 static inline
 ats_dcomplex_type
-atslib_pow_zcmplx_zcmplx
-  (ats_dcomplex_type z1, ats_dcomplex_type z2) { return cpow(z1, z2) ; }
-/* end of [atslib_pow_zcmplx_zcmplx] */
+atslib_ctan (ats_dcomplex_type z) { return ctan(z) ; }
+
+/* ****** ****** */
+
+static inline
+ats_dcomplex_type
+atslib_casin (ats_dcomplex_type z) { return casin(z) ; }
+
+static inline
+ats_dcomplex_type
+atslib_cacos (ats_dcomplex_type z) { return cacos(z) ; }
+
+static inline
+ats_dcomplex_type
+atslib_catan (ats_dcomplex_type z) { return catan(z) ; }
+
+/* ****** ****** */
+
+static inline
+ats_dcomplex_type
+atslib_csinh (ats_dcomplex_type z) { return csinh(z) ; }
+
+static inline
+ats_dcomplex_type
+atslib_ccosh (ats_dcomplex_type z) { return ccosh(z) ; }
+
+static inline
+ats_dcomplex_type
+atslib_ctanh (ats_dcomplex_type z) { return ctanh(z) ; }
+
+/* ****** ****** */
+
+static inline
+ats_dcomplex_type
+atslib_casinh (ats_dcomplex_type z) { return casinh(z) ; }
+
+static inline
+ats_dcomplex_type
+atslib_cacosh (ats_dcomplex_type z) { return cacosh(z) ; }
+
+static inline
+ats_dcomplex_type
+atslib_catanh (ats_dcomplex_type z) { return catanh(z) ; }
+
+/* ****** ****** */
+
+static inline
+ats_dcomplex_type
+atslib_cexp (ats_dcomplex_type z) { return cexp(z) ; }
+
+static inline
+ats_dcomplex_type
+atslib_clog (ats_dcomplex_type z) { return clog(z) ; }
+
+static inline
+ats_dcomplex_type
+atslib_cpow (
+  ats_dcomplex_type z1
+, ats_dcomplex_type z2
+) {
+  return cpow(z1, z2) ;
+} /* end of [atslib_cpow] */
+
+/* ****** ****** */
+
+static inline
+ats_double_type
+atslib_cproj (ats_dcomplex_type z) { return cproj(z) ; }
 
 /* ****** ****** */
 
