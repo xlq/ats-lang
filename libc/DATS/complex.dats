@@ -42,10 +42,27 @@
 // ccmplx = ats_fcomplex_type
 // zcmplx = ats_dcomplex_type
 
+ats_fcomplex_type
+ats_ccmplx_imag_unit = _Complex_I ;
+
 ats_dcomplex_type
 ats_zcmplx_imag_unit = _Complex_I ;
 
 // print function
+
+ats_void_type
+ats_fprint_ccmplx
+  (ats_ptr_type out, ats_fcomplex_type c) {
+  int n ;
+  float c_i = cimagf(c) ;
+
+  if (c_i >= 0.0) {
+    n = fprintf((FILE *)out, "%f+i*%f", crealf(c), c_i) ;
+  } else {
+    n = fprintf((FILE *)out, "%f-i*%f", crealf(c), -c_i) ;
+  }
+  return ;
+} // end of [ats_fprint_ccmplx]
 
 ats_void_type
 ats_fprint_zcmplx
@@ -58,15 +75,20 @@ ats_fprint_zcmplx
   } else {
     n = fprintf((FILE *)out, "%f-i*%f", creal(z), -z_i) ;
   }
-  if (n < 0) {
-    ats_exit_errmsg(n, "Exit: [fprint_complex] failed.\n") ;
-  }
   return ;
 } // end of [ats_fprint_zcmplx]
 
 %}
 
-//// implemented in complex.cats
+(* ****** ****** *)
+
+(* end of [complex.dats] *)
+
+////
+
+(* ****** ****** *)
+
+// implemented in complex.cats
 
 staload M = "math.sats"
 staload "complex.sats"
@@ -180,5 +202,3 @@ implement pow_complex_complex (z1, z2) =
   exp_complex (mul_complex_complex (z2,  log_complex z1))
 
 (* ****** ****** *)
-
-// end of complex.dats
