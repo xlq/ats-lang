@@ -97,7 +97,7 @@ libats/DATS/regexp.dats
 
 /* libc files */
 
-// libc/SATS/complex.sats
+libc/SATS/complex.sats
 // libc/DATS/complex.dats
 
 libc/SATS/dirent.sats
