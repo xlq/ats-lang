@@ -7,28 +7,27 @@
 (***********************************************************************)
 
 (*
- * ATS - Unleashing the Power of Types!
- *
- * Copyright (C) 2002-2008 Hongwei Xi, Boston University
- *
- * All rights reserved
- *
- * ATS is free software;  you can  redistribute it and/or modify it under
- * the terms of the GNU LESSER GENERAL PUBLIC LICENSE as published by the
- * Free Software Foundation; either version 2.1, or (at your option)  any
- * later version.
- * 
- * ATS is distributed in the hope that it will be useful, but WITHOUT ANY
- * WARRANTY; without  even  the  implied  warranty  of MERCHANTABILITY or
- * FITNESS FOR A PARTICULAR PURPOSE.  See the  GNU General Public License
- * for more details.
- * 
- * You  should  have  received  a  copy of the GNU General Public License
- * along  with  ATS;  see  the  file  COPYING.  If not, write to the Free
- * Software Foundation, 51  Franklin  Street,  Fifth  Floor,  Boston,  MA
- * 02110-1301, USA.
- *
- *)
+** ATS - Unleashing the Power of Types!
+**
+** Copyright (C) 2002-2008 Hongwei Xi, Boston University
+**
+** All rights reserved
+**
+** ATS is free software;  you can  redistribute it and/or modify it under
+** the terms of the GNU LESSER GENERAL PUBLIC LICENSE as published by the
+** Free Software Foundation; either version 2.1, or (at your option)  any
+** later version.
+** 
+** ATS is distributed in the hope that it will be useful, but WITHOUT ANY
+** WARRANTY; without  even  the  implied  warranty  of MERCHANTABILITY or
+** FITNESS FOR A PARTICULAR PURPOSE.  See the  GNU General Public License
+** for more details.
+** 
+** You  should  have  received  a  copy of the GNU General Public License
+** along  with  ATS;  see  the  file  COPYING.  If not, write to the Free
+** Software Foundation, 51  Franklin  Street,  Fifth  Floor,  Boston,  MA
+** 02110-1301, USA.
+*)
 
 (* ****** ****** *)
 
@@ -106,8 +105,10 @@ end // end of [states_size]
 #define i2d double_of_int
 staload Rand = "libc/SATS/random.sats"
 
-fn dice {m,n:int | m > 0; n > 0} (m: int m, n: int n): bool =
-  let val r = $Rand.drand48 () in i2d (m + n) * r < i2d m end
+fn dice {m,n:pos}
+  (m: int m, n: int n): bool = let
+  val r = $Rand.drand48 () in i2d (m + n) * r < i2d m
+end // end of [dice]
 
 (* ****** ****** *)
 
@@ -115,22 +116,22 @@ implement states_insert (sts, tag0, ns0) = let
 fun insert_at_root {s:nat} .<s>.
   (sts: states s, tag0: int, ns0: intset_t): states (s+1) =
   case+ sts of
-  | STScons (!s, tag, ns, !sts_l, !sts_r) => begin
+  | STScons (!p_s, tag, ns, !p_sts_l, !p_sts_r) => begin
       if compare (ns0, ns) >= 0 then let
-        val sts_r_new = insert_at_root (!sts_r, tag0, ns0)
-        val+ STScons (!sr, tag_r, ns_r, !sts_rl, !sts_rr) = sts_r_new
-        val s_v = !s; val srr_v = states_size !sts_rr
+        val sts_r_new = insert_at_root (!p_sts_r, tag0, ns0)
+        val+ STScons (!p_sr, tag_r, ns_r, !p_sts_rl, !p_sts_rr) = sts_r_new
+        val s = !p_s; val srr = states_size !p_sts_rr
       in
-        !sts_r := !sts_rl; !s := s_v - srr_v; fold@ sts;
-        !sts_rl := sts; !sr := s_v + 1; fold@ sts_r_new; sts_r_new
+        !p_sts_r := !p_sts_rl; !p_s := s - srr; fold@ sts;
+        !p_sts_rl := sts; !p_sr := s + 1; fold@ sts_r_new; sts_r_new
       end else let
-        val sts_l_new = insert_at_root (!sts_l, tag0, ns0)
-        val+ STScons (!sl, tag_l, ns_l, !sts_ll, !sts_lr) = sts_l_new
-        val s_v = !s; val sll_v = states_size !sts_ll
+        val sts_l_new = insert_at_root (!p_sts_l, tag0, ns0)
+        val+ STScons (!p_sl, tag_l, ns_l, !p_sts_ll, !p_sts_lr) = sts_l_new
+        val s = !p_s; val sll = states_size !p_sts_ll
       in
-        !sts_l := !sts_lr; !s := s_v - sll_v; fold@ sts;
-        !sts_lr := sts; !sl := s_v + 1; fold@ sts_l_new; sts_l_new
-      end
+        !p_sts_l := !p_sts_lr; !p_s := s - sll; fold@ sts;
+        !p_sts_lr := sts; !p_sl := s + 1; fold@ sts_l_new; sts_l_new
+      end (* end of [if] *)
     end // end of [STScons]
   | ~STSnil () => STScons (1, tag0, ns0, STSnil (), STSnil ())
 // end of [insert_at_root]
@@ -138,19 +139,24 @@ fun insert_at_root {s:nat} .<s>.
 fun insert_random {s:nat} .<s>.
   (sts: states s, tag0: int, ns0: intset_t): states (s+1) =
   case+ sts of
-  | STScons (!s as s_v, tag, ns, !sts_l, !sts_r) =>
-    if dice (1, s_v) then begin
-      fold@ sts; insert_at_root (sts, tag0, ns0)
-    end else begin
-      if compare (ns0, ns) >= 0 then begin
-        !sts_r := insert_random (!sts_r, tag0, ns0);
-        !s := s_v + 1; fold@ sts; sts
+  | STScons (
+      !p_s as s_v, tag, ns, !p_sts_l, !p_sts_r
+    ) => begin
+      if dice (1, s_v) then begin
+        fold@ sts; insert_at_root (sts, tag0, ns0)
       end else begin
-        !sts_l := insert_random (!sts_l, tag0, ns0);
-        !s := s_v + 1; fold@ sts; sts
-      end
-    end
-  | ~STSnil () => STScons (1, tag0, ns0, STSnil (), STSnil ())
+        if compare (ns0, ns) >= 0 then begin
+          !p_sts_r := insert_random (!p_sts_r, tag0, ns0);
+          !p_s := s_v + 1; fold@ sts; sts
+        end else begin
+          !p_sts_l := insert_random (!p_sts_l, tag0, ns0);
+          !p_s := s_v + 1; fold@ sts; sts
+        end (* end of [if] *)
+      end (* end of [if] *)
+    end // end of [STScons]  
+  | ~STSnil () => begin
+      STScons (1, tag0, ns0, STSnil (), STSnil ())
+    end // end of [STSnil]
 in
   sts := insert_random (sts, tag0, ns0)
 end // end of [insert_random]
