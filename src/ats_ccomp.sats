@@ -334,8 +334,6 @@ datatype patck =
 
 typedef patcklst = List patck
 
-//
-
 fun fprint_patck {m:file_mode}
   (pf: file_mode_lte (m, w) | out: &FILE m, _: patck): void
 overload fprint with fprint_patck
@@ -581,6 +579,9 @@ fun instr_add_patck
 fun instr_add_dynload_file (res: &instrlst_vt, fil: fil_t): void
 
 //
+
+fun instr_add_load_ptr
+  (res: &instrlst_vt, tmp: tmpvar_t, vp: valprim): void
 
 fun instr_add_load_ptr_offs
   (res: &instrlst_vt, tmp: tmpvar_t, vp: valprim, offs: offsetlst): void

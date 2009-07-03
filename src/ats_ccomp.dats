@@ -578,13 +578,17 @@ implement instr_add_dynload_file (res, fil) =
 
 //
 
+implement instr_add_load_ptr (res, tmp, vp) = begin
+  res := list_vt_cons (INSTRload_ptr (tmp, vp), res)
+end (* end of [instr_add_load_ptr] *)
+
 implement instr_add_load_ptr_offs (res, tmp, vp, offs) = let
   val ins = case+ offs of
     | list_cons _ => INSTRload_ptr_offs (tmp, vp, offs)
     | list_nil () => INSTRload_ptr (tmp, vp)
 in
   res := list_vt_cons (ins, res)
-end // end of [instr_add_load_ptr_offs]
+end (* end of [instr_add_load_ptr_offs] *)
 
 implement instr_add_load_var_offs (res, tmp, vp, offs) = let
   val ins = case+ offs of
@@ -592,7 +596,7 @@ implement instr_add_load_var_offs (res, tmp, vp, offs) = let
     | list_nil () => INSTRload_var (tmp, vp)
 in
   res := list_vt_cons (ins, res)
-end // end of [instr_add_load_var_offs]
+end (* end of [instr_add_load_var_offs] *)
 
 //
 
@@ -613,22 +617,27 @@ end // end of [instr_add_loop]
 
 implement instr_add_loopexn (res, knd, tl) = 
   res := list_vt_cons (INSTRloopexn (knd, tl), res)
+// end of [instr_add_loopexn]
 
 //
 
 implement instr_add_move_arg (res, arg, vp) =
   res := list_vt_cons (INSTRmove_arg (arg, vp), res)
+// end of [instr_add_move_arg]
 
 implement instr_add_move_con (res, tmp_res, hit_sum, d2c, vps_arg) =
   res := list_vt_cons (INSTRmove_con (tmp_res, hit_sum, d2c, vps_arg), res)
+// end of [instr_add_move_con]
 
 //
 
 implement instr_add_move_lazy_delay (res, tmp_res, lin, hit_body, vp_clo) =
   res := list_vt_cons (INSTRmove_lazy_delay (tmp_res, lin, hit_body, vp_clo), res)
+// end of [instr_add_move_lazy_delay]
 
 implement instr_add_move_lazy_force (res, tmp_res, lin, hit_val, vp_lazy) =
   res := list_vt_cons (INSTRmove_lazy_force (tmp_res, lin, hit_val, vp_lazy), res)
+// end of [instr_add_move_lazy_force]
 
 //
 
@@ -649,25 +658,31 @@ end // end of [instr_add_move_rec]
 
 implement instr_add_move_ref (res, tmp_res, vp) =
   res := list_vt_cons (INSTRmove_ref (tmp_res, vp), res)
+// end of [instr_add_move_ref]
 
 implement instr_add_move_val (res, tmp_res, vp) =
   res := list_vt_cons (INSTRmove_val (tmp_res, vp), res)
+// end of [instr_add_move_val]
 
 //
 
 implement instr_add_raise (res, tmp_res, vp_exn) =
   res := list_vt_cons (INSTRraise (tmp_res, vp_exn), res)
+// end of [instr_add_raise]
 
 //
 
 implement instr_add_select (res, tmp_res, vp_root, offs) =
   res := list_vt_cons (INSTRselect (tmp_res, vp_root, offs), res)
+// end of [instr_add_select]
 
 implement instr_add_selcon (res, tmp_res, vp_sum, hit_sum, i) =
   res := list_vt_cons (INSTRselcon (tmp_res, vp_sum, hit_sum, i), res)
+// end of [instr_add_selcon]
 
 implement instr_add_selcon_ptr (res, tmp_res, vp_sum, hit_sum, i) =
   res := list_vt_cons (INSTRselcon_ptr (tmp_res, vp_sum, hit_sum, i), res)
+// end of [instr_add_selcon_ptr]
 
 //
 
@@ -693,15 +708,19 @@ end // end of [instr_add_store_var_offs]
 
 implement instr_add_switch (res, brs) =
   res := list_vt_cons (INSTRswitch brs, res)
+// end of [instr_add_switch]
 
 implement instr_add_tmplabint (res, tl, i) =
   res := list_vt_cons (INSTRtmplabint (tl, i), res)
+// end of [instr_add_tmplabint]
 
 implement instr_add_trywith (res, res_try, tmp_exn, brs) =
   res := list_vt_cons (INSTRtrywith (res_try, tmp_exn, brs), res)
+// end of [instr_add_trywith]
 
 implement instr_add_vardec (res, tmp) =
   res := list_vt_cons (INSTRvardec tmp, res)
+// end of [instr_add_vardec]
 
 (* ****** ****** *)
 

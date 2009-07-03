@@ -698,7 +698,18 @@ fn ccomp_match_sum (
     | HIPann (hip, _(*hit_ann*)) => aux_pat (res, level, i, hip)
     | HIPany () => ()
     | HIPas (refknd, d2v, hip) => let
-        val () = aux_var (res, level, i, hip0, refknd, d2v); val vp = the_dynctx_find d2v
+        val () = aux_var (res, level, i, hip0, refknd, d2v)
+        val vp0 = the_dynctx_find d2v
+        val vp = begin case+ 0 of
+          | _ when refknd > 0 => let
+              val hit = hityp_normalize (hip0.hipat_typ)
+              val tmp = tmpvar_make (hit)
+              val () = instr_add_load_ptr (res, tmp, vp0)
+            in
+              valprim_tmp (tmp)
+            end // end of [_ when refknd > 0]
+          | _ => vp0
+        end : valprim // end of [val]
       in
         ccomp_match (res, level, vp, hip)
       end // end of [HIPas]
