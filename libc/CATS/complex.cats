@@ -89,33 +89,6 @@ atslib_ccmplx_make_polar
 
 /* ****** ****** */
 
-extern ats_void_type
-atslib_fprint_ccmplx // implemented in [complex.dats]
-  (ats_ptr_type file, ats_fcomplex_type z) ;
-// end of [atslib_fprint_ccmplx]
-
-static inline
-ats_void_type
-atslib_print_ccmplx
-  (ats_fcomplex_type c) {
-  atspre_stdout_view_get () ;
-  atslib_fprint_ccmplx (stdout, c) ;
-  atspre_stdout_view_set () ;
-  return ;
-} /* end of [atslib_print_ccmplx] */
-
-static inline
-ats_void_type
-atslib_prerr_ccmplx
-  (ats_fcomplex_type c) {
-  atspre_stderr_view_get () ;
-  atslib_fprint_ccmplx (stderr, c) ;
-  atspre_stderr_view_set () ;
-  return ;
-} /* end of [atslib_prerr_ccmplx] */
-
-/* ****** ****** */
-
 static inline
 ats_float_type
 atslib_crealf (ats_fcomplex_type c) { return crealf(c) ; }
@@ -290,33 +263,6 @@ atslib_zcmplx_make_polar
   (ats_double_type r, ats_double_type t) {
   return (r * cos(t)) + (r * sin(t)) * I ;
 }
-
-/* ****** ****** */
-
-extern ats_void_type
-atslib_fprint_zcmplx // implemented in [complex.dats]
-  (ats_ptr_type file, ats_dcomplex_type z) ;
-// end of [atslib_fprint_zcmplx]
-
-static inline
-ats_void_type
-atslib_print_zcmplx
-  (ats_dcomplex_type z) {
-  atspre_stdout_view_get () ;
-  atslib_fprint_zcmplx (stdout, z) ;
-  atspre_stdout_view_set () ;
-  return ;
-} /* end of [atslib_print_zcmplx] */
-
-static inline
-ats_void_type
-atslib_prerr_zcmplx
-  (ats_dcomplex_type z) {
-  atspre_stderr_view_get () ;
-  atslib_fprint_zcmplx (stderr, z) ;
-  atspre_stderr_view_set () ;
-  return ;
-} /* end of [atslib_prerr_zcmplx] */
 
 /* ****** ****** */
 

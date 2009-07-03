@@ -53,6 +53,19 @@ symintr ccmplx_of
 
 (* ****** ****** *)
 
+fun fprint_ccmplx {m:file_mode}
+  (pf: file_mode_lte (m, w) | out: &FILE m, x: ccmplx):<!exnref> void
+  = "atslib_fprint_ccmplx"
+
+fun print_ccmplx (c: ccmplx):<!exnref> void = "atslib_print_ccmplx"
+and prerr_ccmplx (c: ccmplx):<!exnref> void = "atslib_prerr_ccmplx"
+
+overload fprint with fprint_ccmplx
+overload print with print_ccmplx
+overload prerr with prerr_ccmplx
+
+(* ****** ****** *)
+
 val ccmplx_imag_unit : ccmplx
   = "atslib_ccmplx_imag_unit" // imaginary unit
 // end of [val]
@@ -240,10 +253,10 @@ symintr zcmplx_of
 
 fun fprint_zcmplx {m:file_mode}
   (pf: file_mode_lte (m, w) | out: &FILE m, x: zcmplx):<!exnref> void
-  = "atspre_fprint_zcmplx"
+  = "atslib_fprint_zcmplx"
 
-fun print_zcmplx (z: zcmplx):<!ref> void = "atspre_print_zcmplx"
-and prerr_zcmplx (z: zcmplx):<!ref> void = "atspre_prerr_zcmplx"
+fun print_zcmplx (z: zcmplx):<!exnref> void = "atslib_print_zcmplx"
+and prerr_zcmplx (z: zcmplx):<!exnref> void = "atslib_prerr_zcmplx"
 
 overload fprint with fprint_zcmplx
 overload print with print_zcmplx

@@ -35,7 +35,11 @@
 
 (* ****** ****** *)
 
-%{
+staload "libc/SATS/complex.sats"
+
+(* ****** ****** *)
+
+%{^
 
 #include "libc/CATS/complex.cats"
 
@@ -43,15 +47,15 @@
 // zcmplx = ats_dcomplex_type
 
 ats_fcomplex_type
-ats_ccmplx_imag_unit = _Complex_I ;
+atslib_ccmplx_imag_unit = _Complex_I ;
 
 ats_dcomplex_type
-ats_zcmplx_imag_unit = _Complex_I ;
+atslib_zcmplx_imag_unit = _Complex_I ;
 
 // print function
 
 ats_void_type
-ats_fprint_ccmplx
+atslib_fprint_ccmplx
   (ats_ptr_type out, ats_fcomplex_type c) {
   int n ;
   float c_i = cimagf(c) ;
@@ -65,7 +69,7 @@ ats_fprint_ccmplx
 } // end of [ats_fprint_ccmplx]
 
 ats_void_type
-ats_fprint_zcmplx
+atslib_fprint_zcmplx
   (ats_ptr_type out, ats_dcomplex_type z) {
   int n ;
   double z_i = cimag(z) ;
@@ -79,6 +83,14 @@ ats_fprint_zcmplx
 } // end of [ats_fprint_zcmplx]
 
 %}
+
+(* ****** ****** *)
+
+implement print_ccmplx (c) = print_mac (fprint_ccmplx, c)
+implement prerr_ccmplx (c) = prerr_mac (fprint_ccmplx, c)
+
+implement print_zcmplx (z) = print_mac (fprint_zcmplx, z)
+implement prerr_zcmplx (z) = prerr_mac (fprint_zcmplx, z)
 
 (* ****** ****** *)
 
