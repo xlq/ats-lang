@@ -140,23 +140,25 @@ fun insert_random {s:nat} .<s>.
   (sts: states s, tag0: int, ns0: intset_t): states (s+1) =
   case+ sts of
   | STScons (
-      !p_s as s_v, tag, ns, !p_sts_l, !p_sts_r
+      !p_s as s, tag, ns, !p_sts_l, !p_sts_r
     ) => begin
-      if dice (1, s_v) then begin
+      if dice (1, s) then begin
         fold@ sts; insert_at_root (sts, tag0, ns0)
       end else begin
         if compare (ns0, ns) >= 0 then begin
           !p_sts_r := insert_random (!p_sts_r, tag0, ns0);
-          !p_s := s_v + 1; fold@ sts; sts
+          !p_s := s + 1; fold@ sts; sts
         end else begin
           !p_sts_l := insert_random (!p_sts_l, tag0, ns0);
-          !p_s := s_v + 1; fold@ sts; sts
+          !p_s := s + 1; fold@ sts; sts
         end (* end of [if] *)
       end (* end of [if] *)
     end // end of [STScons]  
   | ~STSnil () => begin
       STScons (1, tag0, ns0, STSnil (), STSnil ())
     end // end of [STSnil]
+// end of [insert_random]
+
 in
   sts := insert_random (sts, tag0, ns0)
 end // end of [insert_random]
