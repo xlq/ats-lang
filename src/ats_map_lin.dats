@@ -7,28 +7,27 @@
 (***********************************************************************)
 
 (*
- * ATS/Anairiats - Unleashing the Potential of Types!
- *
- * Copyright (C) 2002-2008 Hongwei Xi, Boston University
- *
- * All rights reserved
- *
- * ATS is free software;  you can  redistribute it and/or modify it under
- * the terms of  the GNU GENERAL PUBLIC LICENSE (GPL) as published by the
- * Free Software Foundation; either version 3, or (at  your  option)  any
- * later version.
- * 
- * ATS is distributed in the hope that it will be useful, but WITHOUT ANY
- * WARRANTY; without  even  the  implied  warranty  of MERCHANTABILITY or
- * FITNESS FOR A PARTICULAR PURPOSE.  See the  GNU General Public License
- * for more details.
- * 
- * You  should  have  received  a  copy of the GNU General Public License
- * along  with  ATS;  see the  file COPYING.  If not, please write to the
- * Free Software Foundation,  51 Franklin Street, Fifth Floor, Boston, MA
- * 02110-1301, USA.
- *
- *)
+** ATS/Anairiats - Unleashing the Potential of Types!
+**
+** Copyright (C) 2002-2008 Hongwei Xi, Boston University
+**
+** All rights reserved
+**
+** ATS is free software;  you can  redistribute it and/or modify it under
+** the terms of  the GNU GENERAL PUBLIC LICENSE (GPL) as published by the
+** Free Software Foundation; either version 3, or (at  your  option)  any
+** later version.
+** 
+** ATS is distributed in the hope that it will be useful, but WITHOUT ANY
+** WARRANTY; without  even  the  implied  warranty  of MERCHANTABILITY or
+** FITNESS FOR A PARTICULAR PURPOSE.  See the  GNU General Public License
+** for more details.
+** 
+** You  should  have  received  a  copy of the GNU General Public License
+** along  with  ATS;  see the  file COPYING.  If not, please write to the
+** Free Software Foundation,  51 Franklin Street, Fifth Floor, Boston, MA
+** 02110-1301, USA.
+*)
 
 (* ****** ****** *)
 
@@ -255,23 +254,6 @@ end // end of [bst_select]
 
 (* ****** ****** *)
 
-fun{key,itm:t@ype} bst_merge_random {n1,n2:nat} .<n2>. (
-    t1: bst (key, itm, n1)
-  , t2: bst (key, itm, n2)
-  , cmp: (key, key) -<fun> Sgn
-  ) :<> bst (key, itm, n1+n2) = begin case+ t2 of
-  | ~BSTcons (_, k2, i2, t2l, t2r) => let
-      val t1 = bst_merge_random (t1, t2l, cmp)
-      val t1 = bst_insert_random (t1, k2, i2, cmp)
-      val t1 = bst_merge_random (t1, t2r, cmp)
-    in
-      t1
-    end // end of [BSTcons]
-  | ~BSTnil () => t1
-end // end of [bst_merge_random]
-
-(* ****** ****** *)
-
 // infix order listing
 fn{key,itm:t@ype} bst_list_inf {n:nat}
   (t: !bst (key, itm, n)):<> list_vt (@(key, itm), n) = let
@@ -289,7 +271,7 @@ fn{key,itm:t@ype} bst_list_inf {n:nat}
   end // end of [aux]
 in
   aux (t, list_vt_nil ())
-end // end of [bst_list_pre]
+end // end of [bst_list_inf]
 
 (* ****** ****** *)
 
@@ -346,7 +328,7 @@ implement{key,itm}
 end // end of [map_insert]
 
 implement{key,itm} map_remove (m, k) = let
-  var i: Int and itmopt: Option_vt itm; val+ MAP (cmp, !p_bst) = m
+  var i: int and itmopt: Option_vt itm; val+ MAP (cmp, !p_bst) = m
   val (pf1, pf2 | bst_new) =
     bst_remove_random<key,itm> (view@ i, view@ itmopt | !p_bst, k, &i, &itmopt, cmp)
 in
@@ -357,8 +339,29 @@ end // end of [map_remove]
 
 implement{key,itm} map_join (m1, m2) = let
   val+ MAP (cmp, !p_t1) = m1 and ~MAP (_(*cmp*), t2) = m2
+  val kis = bst_list_inf (t2); val () = bst_free (t2)
+  fun aux {m:nat} {n:nat} .<n>.
+    (t: bst (key, itm, m), kis: list_vt (@(key, itm), n))
+    :<cloref> [m:nat] bst (key, itm, m) =
+    case+ kis of
+    | ~list_vt_cons (ki, kis) => let
+         val k = ki.0
+         var i: int and itmopt: Option_vt itm
+         val (pf1, pf2 | t) = bst_remove_random<key,itm>
+           (view@ i, view@ itmopt | t, k, &i, &itmopt, cmp)
+         prval () = view@ i := pf1
+         prval () = view@ itmopt := pf2
+         val () = case+ itmopt of
+           | ~Some_vt _ => () | ~None_vt () => ()
+         // end of [val]
+         val t = bst_insert_random (t, k, ki.1, cmp)
+       in
+         aux (t, kis)
+       end // end of [list_vt_cons]
+    | ~list_vt_nil () => t
+  // end of [aux]
 in
-  !p_t1 := bst_merge_random<key,itm> (!p_t1, t2, cmp); fold@ m1; m1
+  !p_t1 := aux (!p_t1, kis); fold@ m1; m1
 end // end of [map_join]
 
 (* ****** ****** *)

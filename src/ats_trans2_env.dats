@@ -268,7 +268,7 @@ in
       $Sym.prerr_symbol id;
       prerr_newline ();
       $Err.abort {void} ()
-    end
+    end // end of [Some_vt]
   | ~None_vt _ => ()  
 end // end of [the_s2rtenv_namespace_add_topenv]
 
@@ -303,17 +303,16 @@ implement the_s2expenv_add_scst (s2c) = let
     print "s2expenv_add_scst: s2c = "; print s2c; print_newline ()
   end
   val () = begin
-    print "s2expenv_add_scst: s2c_s2t = ";
-    print (s2cst_srt_get s2c);
+    print "s2expenv_add_scst: s2c_s2t = "; print (s2cst_srt_get s2c);
     print_newline ()
-  end
+  end // end of [val]
 *)
   val id = s2cst_sym_get s2c
   val s2cs = (
     case+ the_s2expenv_find (id) of
     | ~Some_vt s2i => begin case+ s2i of
       | S2ITEMcst s2cs => s2cs | _ => S2CSTLSTnil ()
-      end
+      end // end of [Some_vt]
     | ~None_vt () => S2CSTLSTnil ()
   ) : s2cstlst
   val ans = $SymEnv.symenv_remove_fst (the_s2expenv, id)
@@ -334,7 +333,7 @@ implement the_s2expenv_add_svarlst (s2vs) = begin
   case+ s2vs of
   | cons (s2v, s2vs) => begin
       the_s2expenv_add_svar s2v; the_s2expenv_add_svarlst s2vs
-    end
+    end // end of [cons]
   | nil () => ()
 end // end of [the_s2expenv_add_svarlst]
 
@@ -897,7 +896,6 @@ implement trans2_env_localjoin (pf1, pf2 | (*none*)) = let
 in
   // empty
 end // end of [trans2_env_localjoin]
-
 
 implement trans2_env_save () = () where {
   val () = $NS.the_namespace_save ()
