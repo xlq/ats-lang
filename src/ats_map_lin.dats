@@ -31,8 +31,8 @@
 
 (* ****** ****** *)
 
-// Time: October 2008
 // Author: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
+// Time: October 2008
 
 (* ****** ****** *)
 
@@ -328,40 +328,39 @@ implement{key,itm}
 end // end of [map_insert]
 
 implement{key,itm} map_remove (m, k) = let
-  var i: int and itmopt: Option_vt itm; val+ MAP (cmp, !p_bst) = m
-  val (pf1, pf2 | bst_new) =
-    bst_remove_random<key,itm> (view@ i, view@ itmopt | !p_bst, k, &i, &itmopt, cmp)
+  val+ MAP (cmp, !p_bst) = m
+  var status: int and itmopt: Option_vt itm
+  val (pf1, pf2 | bst_new) = bst_remove_random<key,itm>
+    (view@ status, view@ itmopt | !p_bst, k, &status, &itmopt, cmp)
+  // end of [val]
+  prval () = view@ status := pf1 and () = view@ itmopt := pf2
 in
-  view@ i := pf1; view@ itmopt := pf2; !p_bst := bst_new; fold@ m; itmopt
+  !p_bst := bst_new; fold@ m; itmopt
 end // end of [map_remove]
 
 (* ****** ****** *)
 
 implement{key,itm} map_join (m1, m2) = let
-  val+ MAP (cmp, !p_t1) = m1 and ~MAP (_(*cmp*), t2) = m2
-  val kis = bst_list_inf (t2); val () = bst_free (t2)
+  typedef cmp_t = (key, key) -<fun> Sgn
   fun aux {m:nat} {n:nat} .<n>.
-    (t: bst (key, itm, m), kis: list_vt (@(key, itm), n))
-    :<cloref> [m:nat] bst (key, itm, m) =
-    case+ kis of
-    | ~list_vt_cons (ki, kis) => let
-         val k = ki.0
-         var i: int and itmopt: Option_vt itm
-         val (pf1, pf2 | t) = bst_remove_random<key,itm>
-           (view@ i, view@ itmopt | t, k, &i, &itmopt, cmp)
-         prval () = view@ i := pf1
-         prval () = view@ itmopt := pf2
-         val () = case+ itmopt of
-           | ~Some_vt _ => () | ~None_vt () => ()
-         // end of [val]
-         val t = bst_insert_random (t, k, ki.1, cmp)
-       in
-         aux (t, kis)
-       end // end of [list_vt_cons]
-    | ~list_vt_nil () => t
+    (t0: bst (key, itm, m), t: bst (key, itm, n), cmp: cmp_t)
+    :<> [m:nat] bst (key, itm, m) =
+    case+ t of // it is done in infix order
+    | ~BSTcons (_, k, i, tl, tr) => t0 where {
+         val t0 = aux (t0, tl, cmp)
+         var status: int and itmopt: Option_vt itm
+         val (pf1, pf2 | t0) = bst_remove_random<key,itm>
+           (view@ status, view@ itmopt | t0, k, &status, &itmopt, cmp)
+         prval () = view@ status := pf1 and () = view@ itmopt := pf2
+         val () = case+ itmopt of ~Some_vt _ => () | ~None_vt () => ()
+         val t0 = bst_insert_random (t0, k, i, cmp)
+         val t0 = aux (t0, tr, cmp)
+       } // end of [list_vt_cons]
+    | ~BSTnil () => t0
   // end of [aux]
+  val+ MAP (cmp, !p_t1) = m1; val+ ~MAP (_(*cmp*), t2) = m2
 in
-  !p_t1 := aux (!p_t1, kis); fold@ m1; m1
+  !p_t1 := aux (!p_t1, t2, cmp); fold@ m1; m1
 end // end of [map_join]
 
 (* ****** ****** *)
