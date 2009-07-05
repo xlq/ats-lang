@@ -272,7 +272,7 @@ prfun array_v_ungroup : {a:viewt@ype} {m,n:nat} {l:addr} {mn:int}
 (* ****** ****** *)
 
 fun{a:viewt@ype}
-  array_ptr_split {n,i:nat | i < n} {l0:addr} (
+  array_ptr_split {n,i:nat | i <= n} {l0:addr} (
     pf: array_v (a, n, l0) | base: ptr l0, offset: size_t i
   ) :<> [l:addr] (
     array_v (a, i, l0)
@@ -282,7 +282,7 @@ fun{a:viewt@ype}
   ) // end of [array_ptr_split]
 
 fun array_ptr_split_tsz
-  {a:viewt@ype} {n,i:nat | i < n} {l0:addr} (
+  {a:viewt@ype} {n,i:nat | i <= n} {l0:addr} (
     pf: array_v (a, n, l0) | base: ptr l0, offset: size_t i, tsz: sizeof_t a
   ) :<> [l:addr] (
     array_v (a, i, l0)
