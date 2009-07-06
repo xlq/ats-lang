@@ -13,7 +13,7 @@
 
 %{#
 
-#include "libats/CATS/genmatrices.cats"
+#include "libats/CATS/genarrays.cats"
 
 %}
 
@@ -102,7 +102,7 @@ viewdef GEMAT_v
 
 (* ****** ****** *)
 
-// implemented in [genmatrices.dats]
+// implemented in [genarrays.dats]
 fun GEMAT_trans // as [GEMAT_trans_dummy]
   {a:t@ype}
   {ord1:order}
@@ -118,7 +118,7 @@ fun GEMAT_trans // as [GEMAT_trans_dummy]
 
 (* ****** ****** *)
 
-// implemented in [genmatrices.dats]
+// implemented in [genarrays.dats]
 fun GEVEC_of_GEMAT // as GEVEC_of_GEMAT_dummy
   {a:t@ype} {ord1,ord2:order}
   {n:nat} {lda:pos} {l:addr} (
@@ -309,6 +309,6 @@ fun GEMAT_ptr_split2x2_tsz
 
 (* ****** ****** *)
 
-(* end of [genmatrices.sats] *)
+(* end of [genarrays.sats] *)
 
 

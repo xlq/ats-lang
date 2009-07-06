@@ -15,7 +15,7 @@
 
 (* ****** ****** *)
 
-staload "libats/SATS/genmatrices.sats"
+staload "libats/SATS/genarrays.sats"
 
 (* ****** ****** *)
 
@@ -216,4 +216,4 @@ implement{a} GEMAT_ptr_split2x2
 
 (* ****** ****** *)
 
-(* end of [genmatrices.dats] *)
+(* end of [genarrays.dats] *)

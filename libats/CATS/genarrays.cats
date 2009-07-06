@@ -11,8 +11,8 @@
 
 /* ****** ****** */
 
-#ifndef ATS_LIBATS_GENMATRICES_CATS
-#define ATS_LIBATS_GENMATRICES_CATS
+#ifndef ATS_LIBATS_GENARRAYS_CATS
+#define ATS_LIBATS_GENARRAYS_CATS
 
 /* ****** ****** */
 
@@ -29,6 +29,6 @@ atslib_GEVEC_split_tsz (
 
 /* ****** ****** */
 
-#endif /* ATS_LIBATS_GENMATRICES_CATS */
+#endif /* ATS_LIBATS_GENARRAYS_CATS */
 
-/* end of [genmatrices.cats] */
+/* end of [genarrays.cats] */
