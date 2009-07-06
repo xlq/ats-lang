@@ -82,9 +82,9 @@ prelude/DATS/slseg.dats
 
 /* libats files */
 
-/* generic matrices */
-libats/SATS/genmatrices.sats
-libats/DATS/genmatrices.dats
+/* generic arrays of various dimensions */
+libats/SATS/genarrays.sats
+libats/DATS/genarrays.dats
 
 #ifdef HAVE_GMP_H
 libats/SATS/intinf.sats
