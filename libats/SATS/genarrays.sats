@@ -111,12 +111,63 @@ datatype DIAG (diag) = DIAGunit (unit) | DIAGnonunit (nonunit)
 
 (* ****** ****** *)
 
+datasort transpose =
+  | N
+  | T
+  | CT 
+
+datatype
+TRANSPOSE (transpose) =
+  | TRANSPOSE_N (N) of ()
+  | TRANSPOSE_T (T) of ()
+  | TRANSPOSE_CT (CT) of ()
+// end of [TRANSPOSE]
+
+(* ****** ****** *)
+
 (*
 ** capturing the relation between transpose and order
 *)
 dataprop tranord_p (order, order) =
   | TRANORDrowcol (row, col) | TRANORDcolrow (col, row)
 // end of [tranord_p]
+
+(* ****** ****** *)
+
+(*
+** capturing the relation between transpose and dimensions
+*)
+dataprop trandim_p (
+  transpose
+, int // row
+, int // col
+, int // new row
+, int // new col
+) =
+  | {m,n:nat} TRANDIM_N (N, m, n, m, n) of ()
+  | {m,n:nat} TRANDIM_T (T, m, n, n, m) of ()
+  | {m,n:nat} TRANDIM_CT (CT, m, n, n, m) of ()
+(*
+  | {m,n:nat} TRANDIM_AC (AC, m, n, m, n) of ()
+*)
+// end of [trandim_p]
+
+(* ****** ****** *)
+
+datasort side = left | right
+datatype SIDE (side) = SIDEleft (left) | SIDEright (right)
+
+(* ****** ****** *)
+
+(*
+** capturing the relation between side and row/col
+*)
+dataprop sidedim_p (
+  side, int(*row*), int(*col*), int(*row/col*)
+) =
+  | {m,n:nat} SIDEDIM_L (left, m, n, m)
+  | {m,n:nat} SIDEDIM_R (right, m, n, n)
+// end of [sidedim_p]
 
 (* ****** ****** *)
 
@@ -353,6 +404,220 @@ fun GEMAT_ptr_split2x2_tsz
 
 (* ****** ****** *)
 
+//
+// TRiangular MATrix representation (part of GEMAT)
+//
+
+// elt, row/col, ord, ul
+abst@ype TRMAT // dimension: n x n
+  (a:t@ype, n:int, ord: order, ul: uplo, dg: diag, lda: int)
+// end of [TRMAT]
+
+viewdef TRMAT_v
+  (a:t@ype, n:int, ord: order, ul: uplo, dg: diag, lda: int, l:addr) =
+  TRMAT (a, n, ord, ul, dg, lda) @ l
+// end of [TRMAT_v]
+
+(* ****** ****** *)
+
+prfun TRMAT_of_GEMAT
+  {a:t@ype} {n:nat}
+  {ord:order} {ul:uplo} {dg:diag}
+  {lda:pos} {l:addr} (
+    pf: GEMAT_v (a, n, n, ord, lda, l)
+  , Uplo: UPLO ul, Diag: DIAG dg
+  ) :<> (
+    TRMAT_v (a, n, ord, ul, dg, lda, l)
+  , TRMAT_v (a, n, ord, ul, dg, lda, l) -<lin,prf> GEMAT_v (a, n, n, ord, lda, l)
+  )
+// end of [TRMAT_of_GEMAT]
+
+(* ****** ****** *)
+
+//
+// SYmmetric MATrix representation (part of GEMAT)
+//
+
+// elt, row/col, ord, ul
+abst@ype SYMAT // dimension: n x n
+  (a:t@ype, n:int, ord: order, ul: uplo, lda: int)
+// end of [SYMAT]
+
+viewdef SYMAT_v
+  (a:t@ype, n:int, ord: order, ul: uplo, lda: int, l:addr) =
+  SYMAT (a, n, ord, ul, lda) @ l
+// end of [SYMAT_v]
+
+(* ****** ****** *)
+
+prfun SYMAT_of_GEMAT
+  {a:t@ype} {n:nat}
+  {ord:order} {ul:uplo} {lda:pos} {l:addr} (
+    pf: GEMAT_v (a, n, n, ord, lda, l), Uplo: UPLO ul
+  ) :<> (
+    SYMAT_v (a, n, ord, ul, lda, l)
+  , SYMAT_v (a, n, ord, ul, lda, l) -<lin,prf> GEMAT_v (a, n, n, ord, lda, l)
+  )
+// end of [SYMAT_of_GEMAT]
+
+(* ****** ****** *)
+
+//
+// HErmitian matrix representation (* part of GEMAT *)
+//
+
+// elt, row/col, ord, ul
+abst@ype HEMAT // dimension: n x n
+  (a:t@ype, n:int, ord: order, ul: uplo, lda: int)
+// end of [HEMAT]
+
+viewdef HEMAT_v
+  (a:t@ype, n:int, ord: order, ul: uplo, lda: int, l:addr) =
+  HEMAT (a, n, ord, ul, lda) @ l
+// end of [HEMAT_v]
+
+(* ****** ****** *)
+
+dataprop realtyp_p (a:t@ype) =
+  | REALTYPfloat (float) of () | REALTYPdouble (double) of ()
+// end of [TYPE_IS_REAL]
+
+(* ****** ****** *)
+
+prfun HEMAT_of_SYMAT
+  {a:t@ype} {n:nat}
+  {ord:order} {ul:uplo} {lda:pos} {l:addr} (
+    pf_typ: realtyp_p (a), pf_mat: SYMAT_v (a, n, ord, ul, lda, l)
+  ) :<> HEMAT_v (a, n, ord, ul, lda, l)
+// end of [HEMAT_of_SYMAT]
+
+prfun SYMAT_of_HEMAT
+  {a:t@ype} {n:nat}
+  {ord:order} {ul:uplo} {lda:pos} {l:addr} (
+    pf_typ: realtyp_p (a), pf_mat: HEMAT_v (a, n, ord, ul, lda, l)
+  ) :<> SYMAT_v (a, n, ord, ul, lda, l)
+// end of [SYMAT_of_HEMAT]
+
+(* ****** ****** *)
+
+prfun HEMAT_of_GEMAT
+  {a:t@ype} {n:nat}
+  {ord:order} {ul:uplo} {lda:pos} {l:addr} (
+    pf: GEMAT_v (a, n, n, ord, lda, l), Uplo: UPLO ul
+  ) :<> (
+    HEMAT_v (a, n, ord, ul, lda, l)
+  , HEMAT_v (a, n, ord, ul, lda, l) -<lin,prf> GEMAT_v (a, n, n, ord, lda, l)
+  )
+// end of [HEMAT_of_GEMAT]
+
+(* ****** ****** *)
+
+//
+// General Band MATrix representation
+//
+
+// elt, row, col, ord, lower-bandwidth, upper-bandwidth
+abst@ype GBMAT // dimension: m x n, lower-bandwidth: kl, upper-bandwidth: ku
+  (a:t@ype, m:int, n:int, ord: order, kl: int, ku: int, lda: int)
+// end of [GBMAT]
+
+viewdef GBMAT_v
+  (a:t@ype, m:int, n:int, ord: order, kl: int, ku: int, lda: int, l: addr) =
+  GBMAT (a, m, n, ord, kl, ku, lda) @ l
+// end of [GBMAT_v]
+
+(* ****** ****** *)
+
+//
+// Triangular Band MATrix representation
+//
+
+// elt, row/col, ord, ul, diag, bandwidth
+abst@ype TBMAT // dimension: n x n, bandwidth: k
+  (a:t@ype, n:int, ord: order, ul: uplo, dg: diag, k: int, lda: int)
+// end of [TBMAT]
+
+viewdef TBMAT_v
+  (a:t@ype, n:int, ord: order, ul: uplo, dg: diag, k: int, lda: int, l: addr) =
+  TBMAT (a, n, ord, ul, dg, k, lda) @ l
+
+(* ****** ****** *)
+
+//
+// Triangular Packed MATrix representation
+//
+
+// elt, row/col, ord, ul, diag
+abst@ype TPMAT // dimension: n x n
+  (a:t@ype, n:int, ord: order, ul: uplo, dg: diag)
+// end of [TPMAT]
+
+viewdef TPMAT_v
+  (a:t@ype, n:int, ord: order, ul: uplo, dg: diag, l: addr) =
+  TPMAT (a, n, ord, ul, dg) @ l
+// end of [TPMAT_v]
+
+(* ****** ****** *)
+
+prfun TPMAT_of_GEVEC
+  {a:t@ype} {n,m:nat}
+  {ord:order} {ul:uplo} {dg:diag}
+  {lda:pos} {l:addr} (
+    pf_mul : MUL (n, n+1, 2*m), pf: GEVEC_v (a, m, 1, l)
+  ) :<> (
+    TPMAT_v (a, n, ord, ul, dg, l)
+  , TPMAT_v (a, n, ord, ul, dg, l) -<prf> GEVEC_v (a, m, 1, l)
+  )
+// end of [TPMAT_of_GEVEC]
+
+(* ****** ****** *)
+
+//
+// Symmetric Packed MATrix representation
+//
+
+// elt, row/col, ord, ul, diag
+abst@ype SPMAT // dimension: n x n
+  (a:t@ype, n:int, ord: order, ul: uplo)
+// end of [SPMAT]
+
+viewdef SPMAT_v
+  (a:t@ype, n:int, ord: order, ul: uplo, l: addr) =
+  SPMAT (a, n, ord, ul) @ l
+// end of [SPMAT_v]
+
+(* ****** ****** *)
+
+//
+// Hermitian Packed MATrix representation
+//
+
+// elt, row/col, ord, ul, diag
+abst@ype HPMAT // dimension: n x n
+  (a:t@ype, n:int, ord: order, ul: uplo)
+// end of [HPMAT]
+
+viewdef HPMAT_v
+  (a:t@ype, n:int, ord: order, ul: uplo, l: addr) =
+  HPMAT (a, n, ord, ul) @ l
+// end of [HPMAT_v]
+
+(* ****** ****** *)
+
+prfun HPMAT_of_SPMAT
+  {a:t@ype} {n:nat}
+  {ord:order} {ul:uplo} {l:addr} (
+    pf_typ: realtyp_p (a), pf_mat: SPMAT_v (a, n, ord, ul, l)
+  ) :<> HPMAT_v (a, n, ord, ul, l)
+// end of [HPMAT_of_SPMAT]
+
+prfun SPMAT_of_HPMAT
+  {a:t@ype} {n:nat}
+  {ord:order} {ul:uplo} {l:addr} (
+    pf_typ: realtyp_p (a), pf_mat: HPMAT_v (a, n, ord, ul, l)
+  ) :<> SPMAT_v (a, n, ord, ul, l)
+// end of [SPMAT_of_HPMAT]
+
+(* ****** ****** *)
+
 (* end of [genarrays.sats] *)
-
-
