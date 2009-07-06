@@ -32,6 +32,30 @@ viewdef GEVEC_v
 
 (* ****** ****** *)
 
+fun{a:t@ype} GEVEC_ptr_takeout
+  {n:nat} {d:inc} {l0:addr} (
+    pf: GEVEC_v (a, n, d, l0)
+  | p_vec: ptr l0, d: int d, i: natLt n
+  ) :<> [l:addr] (
+    a @ l
+  , a @ l -<> GEVEC_v (a, n, d, l0)
+  | ptr l
+  )
+// end of [GEVEC_ptr_takeout]
+
+fun GEVEC_ptr_takeout_tsz
+  {a:t@ype} {n:nat} {d:inc} {l0:addr} (
+    pf: GEVEC_v (a, n, d, l0)
+  | p_vec: ptr l0, d: int d, i: natLt n, tsz: sizeof_t a
+  ) :<> [l:addr] (
+    a @ l
+  , a @ l -<> GEVEC_v (a, n, d, l0)
+  | ptr l
+  ) = "atslib_GEVEC_ptr_split_tsz"
+// end of [GEVEC_ptr_takeout_tsz]
+
+(* ****** ****** *)
+
 fun{a:t@ype} GEVEC_ptr_split
   {n,i:nat | i <= n} {d:inc} {l0:addr} (
     pf: GEVEC_v (a, n, d, l0)
@@ -49,6 +73,16 @@ fun GEVEC_ptr_split_tsz {a:t@ype}
     GEVEC_v (a, i, d, l0), GEVEC_v (a, n-i, d, l) | ptr l
   ) = "atslib_GEVEC_ptr_split_tsz"
 // end of [GEVEC_ptr_split_tsz]
+
+(* ****** ****** *)
+
+fun{a:t@ype} GEVEC_ptr_get_elt_at {n:nat}
+  {d:inc} (V: &GEVEC (a, n, d), d: int d, i: natLt n):<> a
+// end of [GEVEC_ptr_get_elt_at]
+
+fun{a:t@ype} GEVEC_ptr_set_elt_at {n:nat}
+  {d:inc} (V: &GEVEC (a, n, d), d: int d, i: natLt n, x: a):<> void
+// end of [GEVEC_ptr_set_elt_at]
 
 (* ****** ****** *)
 
@@ -141,13 +175,14 @@ fun GEVEC_of_GEMAT_col // as GEVEC_of_GEMAT_col_dummy
 
 (* ****** ****** *)
 
-fun{a:t@ype} GEMAT_ptr_takeout {m,n:nat}
-  {i,j:nat | i < m; j < n} {ord:order} {lda:pos} {l0:addr} (
+fun{a:t@ype} GEMAT_ptr_takeout
+  {m,n:nat}
+  {ord:order} {lda:pos} {l0:addr} (
     pf_mat: GEMAT_v (a, m, n, ord, lda, l0)
   | p_mat: ptr l0
   , ord: ORDER ord
   , lda: int lda
-  , i: int i, j: int j
+  , i: natLt m, j: natLt n
   ) :<> [l:addr] (
     a @ l
   , a @ l -<lin,prf> GEMAT_v (a, m, n, ord, lda, l0)
@@ -155,13 +190,14 @@ fun{a:t@ype} GEMAT_ptr_takeout {m,n:nat}
   )
 // end of [GEMAT_ptr_takeout]
 
-fun GEMAT_ptr_takeout_tsz {a:t@ype} {m,n:nat}
-  {i,j:nat | i < m; j < n} {ord:order} {lda:pos} {l0:addr} (
+fun GEMAT_ptr_takeout_tsz
+  {a:t@ype} {m,n:nat}
+  {ord:order} {lda:pos} {l0:addr} (
     pf_mat: GEMAT_v (a, m, n, ord, lda, l0)
   | p_mat: ptr l0
   , ord: ORDER ord
   , lda: int lda
-  , i: int i, j: int j
+  , i: natLt m, j: natLt n
   , tsz: sizeof_t a
   ) :<> [l:addr] (
     a @ l
@@ -172,21 +208,21 @@ fun GEMAT_ptr_takeout_tsz {a:t@ype} {m,n:nat}
 
 (* ****** ****** *)
 
-fun{a:t@ype} GEMAT_ptr_get_elt_at {m,n:nat}
-  {i,j:nat | i < m; j < n} {ord:order} {lda:pos} (
+fun{a:t@ype} GEMAT_ptr_get_elt_at
+  {m,n:nat} {ord:order} {lda:pos} (
     A: &GEMAT (a, m, n, ord, lda)
   , ord: ORDER ord
   , lda: int lda
-  , i: int i, j: int j
+  , i: natLt m, j: natLt n
   ) :<> a
 // end of [GEMAT_ptr_get_elt_at]
 
-fun{a:t@ype} GEMAT_ptr_set_elt_at {m,n:nat}
-  {i,j:nat | i < m; j < n} {ord:order} {lda:pos} (
+fun{a:t@ype} GEMAT_ptr_set_elt_at
+  {m,n:nat} {ord:order} {lda:pos} (
     A: &GEMAT (a, m, n, ord, lda)
   , ord: ORDER ord
   , lda: int lda
-  , i: int i, j: int j
+  , i: natLt m, j: natLt n
   , x: a
   ) :<> void 
 // end of [GEMAT_ptr_set_elt_at]

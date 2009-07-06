@@ -19,9 +19,33 @@ staload "libats/SATS/genarrays.sats"
 
 (* ****** ****** *)
 
+implement{a} GEVEC_ptr_takeout (pf_vec | p_vec, d, i) =
+  GEVEC_ptr_takeout_tsz {a} (pf_vec | p_vec, d, i, sizeof<a>)
+// end of [GEVEC_ptr_split]
+
+(* ****** ****** *)
+
 implement{a} GEVEC_ptr_split (pf_vec | p_vec, d, i) =
   GEVEC_ptr_split_tsz {a} (pf_vec | p_vec, d, i, sizeof<a>)
 // end of [GEVEC_ptr_split]
+
+(* ****** ****** *)
+
+implement{a} GEVEC_ptr_get_elt_at (V, d, i) = x where {
+  val (pf, fpf | p) =
+    GEVEC_ptr_takeout_tsz {a} (view@ V | &V, d, i, sizeof<a>)
+  // end of [val]  
+  val x = !p
+  prval () = view@ V := fpf (pf)
+} // end of [GEVEC_ptr_get_elt_at]
+
+implement{a} GEVEC_ptr_set_elt_at (V, d, i, x) = () where {
+  val (pf, fpf | p) =
+    GEVEC_ptr_takeout_tsz {a} (view@ V | &V, d, i, sizeof<a>)
+  // end of [val]  
+  val () = !p := x
+  prval () = view@ V := fpf (pf)
+} // end of [GEVEC_ptr_set_elt_at]
 
 (* ****** ****** *)
 
