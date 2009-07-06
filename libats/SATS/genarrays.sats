@@ -119,17 +119,30 @@ fun GEMAT_trans // as [GEMAT_trans_dummy]
 (* ****** ****** *)
 
 // implemented in [genarrays.dats]
-fun GEVEC_of_GEMAT // as GEVEC_of_GEMAT_dummy
-  {a:t@ype} {ord1,ord2:order}
+fun GEVEC_of_GEMAT_row // as GEVEC_of_GEMAT_row_dummy
+  {a:t@ype} {ord:order}
   {n:nat} {lda:pos} {l:addr} (
-    pf: GEMAT_v (a, 1, n, ord1, lda, l)
-  | ord1: ORDER ord1, ord2: ORDER ord2, lda: int lda
+    pf: GEMAT_v (a, 1, n, ord, lda, l)
+  | ord1: ORDER ord, lda: int lda
   ) :<> [inc:int | inc > 0] (
     GEVEC_v (a, n, inc, l)
-  , GEVEC_v (a, n, inc, l) -<prf> GEMAT_v (a, 1, n, ord1, lda, l)
+  , GEVEC_v (a, n, inc, l) -<prf> GEMAT_v (a, 1, n, ord, lda, l)
   | int inc
-  ) = "atslib_GEVEC_of_GEMAT"
-// end of [GEVEC_of_GEMAT]
+  ) = "atslib_GEVEC_of_GEMAT_row"
+// end of [GEVEC_of_GEMAT_row]
+
+// implemented in [genarrays.dats]
+fun GEVEC_of_GEMAT_col // as GEVEC_of_GEMAT_col_dummy
+  {a:t@ype} {ord:order}
+  {n:nat} {lda:pos} {l:addr} (
+    pf: GEMAT_v (a, n, 1, ord, lda, l)
+  | ord1: ORDER ord, lda: int lda
+  ) :<> [inc:int | inc > 0] (
+    GEVEC_v (a, n, inc, l)
+  , GEVEC_v (a, n, inc, l) -<prf> GEMAT_v (a, n, 1, ord, lda, l)
+  | int inc
+  ) = "atslib_GEVEC_of_GEMAT_col"
+// end of [GEVEC_of_GEMAT_col]
 
 (* ****** ****** *)
 
@@ -197,7 +210,7 @@ viewtypedef GEMAT_ptr_split1x2_res_t (
   // [fpf]
 | ptr l1 // l1 should equal l0
 , ptr l2
-) // end of [GEMAT_ptr_split2x2_res_t]
+) // end of [GEMAT_ptr_split1x2_res_t]
 
 fun{a:t@ype} GEMAT_ptr_split1x2 {m,n:nat}
   {j:nat | j <= n} {ord:order} {lda:pos} {l0:addr} (

@@ -82,6 +82,10 @@ prelude/DATS/slseg.dats
 
 /* libats files */
 
+/* FORTRAN matrix: column-major */
+libats/SATS/fmatrix.sats
+libats/DATS/fmatrix.dats
+
 /* generic arrays of various dimensions */
 libats/SATS/genarrays.sats
 libats/DATS/genarrays.dats
