@@ -102,19 +102,14 @@ viewdef GEMAT_v
 
 (* ****** ****** *)
 
-// implemented in [genarrays.dats]
-fun GEMAT_trans // as [GEMAT_trans_dummy]
-  {a:t@ype}
-  {ord1:order}
+prfun GEMAT_trans
+  {a:t@ype} {ord1:order}
   {m,n:nat} {lda:pos} {l:addr} (
-    pf1: GEMAT_v (a, m, n, ord1, lda, l)
-  | ord1: ORDER (ord1)
-  ) :<> [ord2:order] (
-    tranord_p (ord1, ord2)
-  , GEMAT_v (a, n, m, ord2, lda, l)
-  | ORDER (ord2)
-  ) // end of [GEMAT_trans]
-  = "atslib_GEMAT_trans"
+    pf_mat: !GEMAT_v (a, m, n, ord1, lda, l) >>
+             GEMAT_v (a, n, m, ord2, lda, l)
+    // end of [pf_mat]
+  ) :<> #[ord2:order] tranord_p (ord1, ord2)
+// end of [GEMAT_trans]
 
 (* ****** ****** *)
 

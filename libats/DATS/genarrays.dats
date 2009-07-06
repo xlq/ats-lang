@@ -25,27 +25,6 @@ implement{a} GEVEC_ptr_split (pf_vec | p_vec, d, i) =
 
 (* ****** ****** *)
 
-extern fun GEMAT_trans_dummy
-  {a:t@ype} {ord1:order}
-  {m,n:nat} {lda:pos} {l:addr} (
-    pf1: unit_v // GEMAT_v (a, n, m, ord1, lda, l)
-  | ord1: ORDER (ord1)
-  ) :<> [ord2:order] (
-    tranord_p (ord1, ord2)
-  , unit_v // GEMAT_v (a, n, m, ord2, lda, l)
-  | ORDER ord2
-  ) = "atslib_GEMAT_trans"
-
-implement GEMAT_trans_dummy (pf | ord1) = let
-  prval unit_v () = pf
-in
-  case+ ord1 of
-  | ORDERrow () => (TRANORDrowcol (), unit_v | ORDERcol ())
-  | ORDERcol () => (TRANORDcolrow (), unit_v | ORDERrow ())
-end // end of [GEMAT_trans_dummy]
-
-(* ****** ****** *)
-
 extern fun
   GEVEC_of_GEMAT_row_dummy
   {a:t@ype} {ord:order}
