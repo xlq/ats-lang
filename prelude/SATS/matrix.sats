@@ -141,14 +141,15 @@ overload [] with matrix_set_elt_at__intsz
 // these functions are just as easy to be implemented on the spot (HX)
 //
 
-fun{a:viewt@ype} matrix_foreach__main
+fun{a:viewt@ype}
+  matrix_foreach_fun__main
   {v:view} {vt:viewtype} {m,n:nat} (
     pf: !v
   | M: matrix (a, m, n)
   , f: (!v | &a, !vt) -<fun> void, m: size_t m, n: size_t n
   , env: !vt
   ) :<!ref> void
-// end of [matrix_foreach__main]
+// end of [matrix_foreach_fun__main]
 
 fun{a:viewt@ype}
   matrix_foreach_fun {v:view} {m,n:nat} (
@@ -176,7 +177,7 @@ fun{a:viewt@ype}
 //
 
 fun{a:viewt@ype}
-  matrix_iforeach__main
+  matrix_iforeach_fun__main
   {v:view} {vt:viewtype} {m,n:nat} (
     pf: !v
   | M: matrix (a, m, n)

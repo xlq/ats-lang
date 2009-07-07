@@ -49,9 +49,11 @@ implement{a} GEVEC_ptr_set_elt_at (V, d, i, x) = () where {
 
 (* ****** ****** *)
 
+(*
+
 extern fun
   GEVEC_of_GEMAT_row_dummy
-  {a:t@ype} {ord:order}
+  {a:viewt@ype} {ord:order}
   {n:nat} {lda:pos} {l:addr} (
     pf: unit_v // GEMAT_v (a, 1, n, ord, lda, l)
   | ord: ORDER ord, lda: int lda
@@ -72,11 +74,9 @@ implement
   | ORDERcol () => (unit_v, unit_p | lda)
 end // end of [GEVEC_of_GEMAT_row_dummy]
 
-(* ****** ****** *)
-
 extern fun
   GEVEC_of_GEMAT_col_dummy
-  {a:t@ype} {ord:order}
+  {a:viewt@ype} {ord:order}
   {n:nat} {lda:pos} {l:addr} (
     pf: unit_v // GEMAT_v (a, n, 1, ord, lda, l)
   | ord: ORDER ord, lda: int lda
@@ -97,11 +97,13 @@ implement
   | ORDERcol () => (unit_v, unit_p | 1)
 end // end of [GEVEC_of_GEMAT_col_dummy]
 
+*)
+
 (* ****** ****** *)
 
 extern fun
   GEMAT_ptr_takeout_tsz_dummy
-  {a:t@ype} {m,n:nat}
+  {a:viewt@ype} {m,n:nat}
   {i,j:nat | i < m; j < n}
   {ord:order} {lda:pos} {l0:addr} (
     pf_mat: unit_v // GEMAT_v (a, m, n, ord, lda, l0)
@@ -161,7 +163,8 @@ end // end of [GEMAT_ptr_set_elt_at]
 (* ****** ****** *)
 
 extern fun
-  GEMAT_ptr_split1x2_tsz_dummy {a:t@ype} {m,n:nat}
+GEMAT_ptr_split1x2_tsz_dummy
+  {a:viewt@ype} {m,n:nat}
   {j:nat | j <= n} {ord:order} {lda:pos} {l0:addr} (
     pf_mat: unit_v // GEMAT_v (a, m, n, ord, lda, l0)
   | p_mat: ptr l0
@@ -193,8 +196,9 @@ end // end of [GEMAT_ptr_split1x2_tsz_dummy]
 
 (* ****** ****** *)
 
-extern fun GEMAT_ptr_split2x1_tsz_dummy
-  {a:t@ype} {m,n:nat}
+extern fun
+GEMAT_ptr_split2x1_tsz_dummy
+  {a:viewt@ype} {m,n:nat}
   {i:nat | i <= m} {ord:order} {lda:pos} {l0:addr} (
     pf_mat: unit_v // GEMAT_v (a, m, n, ord, lda, l0)
   | p_mat: ptr l0
@@ -227,8 +231,8 @@ end // end of [GEMAT_ptr_split1x2_tsz_dummy]
 (* ****** ****** *)
 
 extern fun
-  GEMAT_ptr_split2x2_tsz_dummy
-  {a:t@ype}
+GEMAT_ptr_split2x2_tsz_dummy
+  {a:viewt@ype}
   {m,n:nat} {i,j:nat | i <= m; j <= n}
   {ord:order} {lda:pos} {l0:addr} (
     pf_mat: unit_v // GEMAT_v (a, m, n, ord, lda, l0)

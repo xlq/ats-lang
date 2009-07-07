@@ -248,7 +248,8 @@ end // end of [val]
 
 (* ****** ****** *)
 
-implement{a} matrix_foreach__main
+implement{a}
+matrix_foreach_fun__main
   {v} {vt} {m,n} (pf | M, f, m, n, env) = let
   typedef fun_t = (!v | &a, !vt) -<fun> void
   typedef mat_t = matrix (a, m, n)
@@ -283,17 +284,19 @@ implement{a} matrix_foreach__main
   end // end of [loop2]
 in
   loop1 (pf | M, f, m, n, 0, env)
-end // end of [matrix_foreach__main]
+end // end of [matrix_foreach_fun__main]
 
-implement{a} matrix_foreach_fun {v} {m,n} (pf_v | M, f, m, n) = let
+implement{a}
+matrix_foreach_fun {v} {m,n} (pf_v | M, f, m, n) = let
   val f = coerce (f) where { extern castfn
     coerce (f: (!v | &a) -<> void):<> (!v | &a, !ptr) -<> void
   } // end of [where]
 in
-  matrix_foreach__main<a> (pf_v | M, f, m, n, null)
+  matrix_foreach_fun__main<a> (pf_v | M, f, m, n, null)
 end // end of [matrix_foreach_fun]
 
-implement{a} matrix_foreach_clo {v} {m,n} (pf_v | M, f, m, n) = let
+implement{a}
+matrix_foreach_clo {v} {m,n} (pf_v | M, f, m, n) = let
   stavar l_f: addr
   val p_f: ptr l_f = &f
   typedef clo_t = (!v | &a) -<clo> void
@@ -302,7 +305,8 @@ implement{a} matrix_foreach_clo {v} {m,n} (pf_v | M, f, m, n) = let
     prval (pf1, pf2) = pf in !p_f (pf1 | x); pf := @(pf1, pf2)
   end // end of [app]
   prval pf = (pf_v, view@ f)
-  val () = matrix_foreach__main<a> {V} {ptr l_f} (pf | M, app, m, n, p_f)
+  val () = matrix_foreach_fun__main<a>
+    {V} {ptr l_f} (pf | M, app, m, n, p_f)
   prval (pf1, pf2) = pf
   prval () = (pf_v := pf1; view@ f := pf2)
 in
@@ -313,7 +317,8 @@ implement{a} matrix_foreach_cloref {m,n} (M, f, m, n) = let
   viewtypedef cloref_t = (&a) -<cloref> void
   fn app (pf: !unit_v | x: &a, f: !cloref_t):<> void = f (x)
   prval pf = unit_v () 
-  val () = matrix_foreach__main<a> {unit_v} {cloref_t} (pf | M, app, m, n, f)
+  val () = matrix_foreach_fun__main<a>
+    {unit_v} {cloref_t} (pf | M, app, m, n, f)
   prval unit_v () = pf
 in
   // empty
@@ -321,7 +326,8 @@ end // end of [matrix_foreach_cloref]
 
 (* ****** ****** *)
 
-implement{a} matrix_iforeach__main
+implement{a}
+matrix_iforeach_fun__main
   {v} {vt} {m,n} (pf | M, f, m, n, env) = let
   typedef fun_t = (!v | sizeLt m, sizeLt n, &a, !vt) -<fun> void
   typedef mat_t = matrix (a, m, n)
@@ -351,7 +357,7 @@ implement{a} matrix_iforeach__main
   end // end of [loop2]
 in
   loop1 (pf | M, f, m, n, 0, env)
-end // end of [matrix_iforeach__main]
+end // end of [matrix_iforeach_fun__main]
 
 implement{a} matrix_iforeach_fun
   {v} {m,n} (pf | M, f, m, n) = let
@@ -360,7 +366,7 @@ implement{a} matrix_iforeach_fun
       :<> (!v | sizeLt m, sizeLt n, &a, !ptr) -<> void
   } // end of [where]
 in
-  matrix_iforeach__main (pf | M, f, m, n, null)
+  matrix_iforeach_fun__main (pf | M, f, m, n, null)
 end // end of [matrix_foreach_fun]
 
 implement{a} matrix_iforeach_clo
@@ -369,14 +375,16 @@ implement{a} matrix_iforeach_clo
   val p_f: ptr l_f = &f
   typedef clo_t = (!v | sizeLt m, sizeLt n, &a) -<clo> void
   viewdef V = @(v, clo_t @ l_f)
-  fn app
-    (pf: !V | i: sizeLt m, j: sizeLt n, x: &a, p_f: !ptr l_f):<> void = let
+  fn app (
+      pf: !V
+    | i: sizeLt m, j: sizeLt n, x: &a, p_f: !ptr l_f
+    ) :<> void = let
     prval (pf1, pf2) = pf
   in
     !p_f (pf1 | i, j, x); pf := (pf1, pf2)
   end // end of [app]
   prval pf = (pf_v, view@ f)
-  val () = matrix_iforeach__main<a> {V} {ptr l_f} (pf | M, app, m, n, p_f)
+  val () = matrix_iforeach_fun__main<a> {V} {ptr l_f} (pf | M, app, m, n, p_f)
   prval (pf1, pf2) = pf
   prval () = (pf_v := pf1; view@ f := pf2)
 in
@@ -387,9 +395,14 @@ implement{a}
   matrix_iforeach_cloref {m,n} (M, f, m, n) = let
   viewtypedef cloref_t = (sizeLt m, sizeLt n, &a) -<cloref1> void
   prval pf = unit_v ()
-  fn app (pf: !unit_v | i: sizeLt m, j: sizeLt n, x: &a, f: !cloref_t):<> void =
+  fn app (
+      pf: !unit_v
+    | i: sizeLt m, j: sizeLt n, x: &a, f: !cloref_t
+    ) :<> void = begin
     $effmask_all (f (i, j, x))
-  val () = matrix_iforeach__main<a> {unit_v} {cloref_t} (pf | M, app, m, n, f)
+  end // end of [app]
+  val () = matrix_iforeach_fun__main<a>
+    {unit_v} {cloref_t} (pf | M, app, m, n, f)
   prval unit_v () = pf
 in
   // empty

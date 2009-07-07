@@ -11,6 +11,10 @@
 
 (* ****** ****** *)
 
+staload "libats/SATS/genarrays.sats"
+
+(* ****** ****** *)
+
 staload "libats/SATS/fmatrix.sats"
 
 (* ****** ****** *)
@@ -76,7 +80,7 @@ implement // worth it???
       array_ptr_split_tsz {a?} (pf_arr | p, m_sz, tsz)
     val () = loop_one (pf1_arr, pf | p, f, m, n-nj)
     val () = loop_all (pf1_mul, pf2_arr, pf | p1, f, nj-1)
-    propdef fpf_p (a:t@ype) =
+    propdef fpf_p (a:viewt@ype) =
       (array_v (a, m, l), array_v (a, p-m, l1)) -<prf> array_v (a, p, l)
     prval fpf_arr = __cast fpf_arr where {
       extern prfun __cast (fpf: fpf_p (a?)):<prf> fpf_p (a)
@@ -128,6 +132,79 @@ implement{a}
   val () = !p_elt := x
   prval () = view@ base := fpf_mat (pf_elt)
 } // end of [fmatrix_ptr_set_elt_at]
+
+(* ****** ****** *)
+
+// loop proceeds column by column
+implement
+fmatrix_ptr_foreach_fun_tsz__main
+  {a} {v} {vt} {m,n} (pf | M, f, m, n, tsz, env) = let
+  val tsz = sizeof<a>
+  fun loop {m:pos}
+    {ni:nat | ni <= n} {l:addr} .<ni>. (
+    pf_mat: !GEMAT_v (a, m, ni, col, m, l)
+  , pf: !v
+  | p: ptr l
+  , f: (!v | &a, !vt) -<fun> void, m: int m, ni: int ni
+  , tsz: sizeof_t a
+  , env: !vt
+  ) :<> void =
+  if ni > 0 then let
+    val (pf1_mat, pf2_mat, fpf | p1, p2) =
+      GEMAT_ptr_split1x2_tsz {a} (pf_mat | p, ORDERcol, m, 1, tsz)
+    prval (pf1_arr, fpf1_mat) = array_of_GEMAT_col (pf1_mat)
+    val () = array_ptr_foreach_fun_tsz__main
+      {a} {v} (pf | !p1, f, size1_of_int1 m, tsz, env) where {
+    } // end of [val]
+    prval () = pf1_mat := fpf1_mat (pf1_arr)
+    val () = loop (pf2_mat, pf | p2, f, m, ni-1, tsz, env)
+    prval () = pf_mat := fpf (pf1_mat, pf2_mat)
+  in
+    // nothing
+  end // end of [if]
+in
+  if m > 0 then let
+    prval (pf_mat, fpf) = GEMAT_of_fmatrix {a} (view@ M)
+    val () = loop (pf_mat, pf | &M, f, m, n, tsz, env)
+    prval () = view@ M := fpf (pf_mat)
+  in
+    // nothing
+  end else begin
+    // nothing
+  end // end of [if]
+end (* end of [fmatrix_ptr_foreach_fun_tsz__main] *)
+
+(* ****** ****** *)
+
+implement fmatrix_ptr_foreach_fun_tsz
+  {a} {v} (pf | M, f, m, n, tsz) = let
+  val f = coerce (f) where { extern castfn
+    coerce (f: (!v | &a) -<> void) :<> (!v | &a, !ptr) -<> void
+  } // end of [where]
+in
+  fmatrix_ptr_foreach_fun_tsz__main (pf | M, f, m, n, tsz, null)
+end // end of [matrix_foreach_fun]
+
+(* ****** ****** *)
+
+implement
+fmatrix_ptr_foreach_clo_tsz
+  {a} {v} (pf_v | M, f, m, n, tsz) = let
+  stavar l_f: addr
+  val p_f: ptr l_f = &f
+  typedef clo_t = (!v | &a) -<clo> void
+  viewdef V = @(v, clo_t @ l_f)
+  fn app (pf: !V | x: &a, p_f: !ptr l_f):<> void = let
+    prval (pf1, pf2) = pf in !p_f (pf1 | x); pf := @(pf1, pf2)
+  end // end of [app]
+  prval pf = (pf_v, view@ f)
+  val () = fmatrix_ptr_foreach_fun_tsz__main
+    {a} {V} {ptr l_f} (pf | M, app, m, n, tsz, p_f)
+  prval (pf1, pf2) = pf
+  prval () = (pf_v := pf1; view@ f := pf2)
+in
+  // empty
+end // end of [fmatrix_ptr_foreach_clo]
 
 (* ****** ****** *)
 

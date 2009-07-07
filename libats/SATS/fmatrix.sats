@@ -29,25 +29,34 @@ staload "libats/SATS/genarrays.sats"
 
 (* ****** ****** *)
 
-abst@ype fmatrix_t0ype_int_int_t0ype (a: t@ype, row: int, col: int)
+absviewt@ype
+  fmatrix_viewt0ype_int_int_viewt0ype (a:viewt@ype,row:int,col:int)
+// [end of fmatrix_viewt0ype_int_int_viewt0ype]
 
-stadef fmatrix = fmatrix_t0ype_int_int_t0ype
+stadef fmatrix = fmatrix_viewt0ype_int_int_viewt0ype
 viewdef fmatrix_v
-  (a: t@ype, row: int, col: int, l:addr) = fmatrix (a, row, col) @ l
+  (a:viewt@ype, row:int, col:int, l:addr) = fmatrix (a, row, col) @ l
 // end of [fmatrix_v]
 
 (* ****** ****** *)
 
-prfun array_v_of_fmatrix_v {a:t@ype} {m,n:int} {l:addr}
-  (pf_mat: fmatrix_v (a, m, n, l)):<> [mn:int] (MUL (m, n, mn), array_v (a, mn, l))
+prfun array_v_of_fmatrix_v
+  {a:viewt@ype} {m,n:int} {l:addr}
+  (pf_mat: fmatrix_v (a, m, n, l))
+  :<> [mn:int] (MUL (m, n, mn), array_v (a, mn, l))
+// end of [array_v_of_fmatrix_v]
 
-prfun fmatrix_v_of_array_v {a:t@ype} {m,n:int} {mn:int} {l:addr}
-  (pf_mul: MUL (m, n, mn), pf_arr: array_v (a, mn, l)):<> fmatrix_v (a, m, n, l)
+prfun fmatrix_v_of_array_v
+  {a:viewt@ype} {m,n:int} {mn:int} {l:addr}
+  (pf_mul: MUL (m, n, mn), pf_arr: array_v (a, mn, l))
+  :<> fmatrix_v (a, m, n, l)
+// end of [fmatrix_v_of_array_v]
 
 (* ****** ****** *)
 
-fun fmatrix_ptr_initialize_elt_tsz {a:t@ype}
-  {m,n:nat} {l:addr} (
+fun
+fmatrix_ptr_initialize_elt_tsz
+  {a:t@ype} {m,n:nat} {l:addr} (
     base:
       &fmatrix (a?, m, n) >> fmatrix (a, m, n)
     // end of [base]
@@ -58,7 +67,7 @@ fun fmatrix_ptr_initialize_elt_tsz {a:t@ype}
 (* ****** ****** *)
 
 fun fmatrix_ptr_initialize_clo_tsz
-  {a:t@ype} {v:view} {m,n:nat} (
+  {a:viewt@ype} {v:view} {m,n:nat} (
     pf: !v 
   | base: &fmatrix (a?, m, n) >> fmatrix (a, m, n)
   , m: int m, n: int n
@@ -69,7 +78,7 @@ fun fmatrix_ptr_initialize_clo_tsz
 
 (* ****** ****** *)
 
-fun{a:t@ype} fmatrix_ptr_takeout
+fun{a:viewt@ype} fmatrix_ptr_takeout
   {m,n:int} {i,j:nat | i < m; j < n} {l0:addr} (
     pf_mat: fmatrix_v (a, m, n, l0)
   | base: ptr l0, i: int i, m: int m, j: int j
@@ -80,7 +89,7 @@ fun{a:t@ype} fmatrix_ptr_takeout
   ) // end of [fmatrix_ptr_takeout]
 (* end of [fmatrix_ptr_takeout] *)
 
-fun fmatrix_ptr_takeout_tsz {a:t@ype}
+fun fmatrix_ptr_takeout_tsz {a:viewt@ype}
   {m,n:int} {i,j:nat | i < m; j < n} {l0:addr} (
     pf_mat: fmatrix_v (a, m, n, l0)
   | base: ptr l0, i: int i, m: int m, j: int j, tsz: sizeof_t a
@@ -112,7 +121,7 @@ overload [] with fmatrix_ptr_set_elt_at
 (* ****** ****** *)
 
 prfun GEVEC_of_fmatrix
-  {a:t@ype} {m,n:nat} {mn:nat} {l:addr} (
+  {a:viewt@ype} {m,n:nat} {mn:nat} {l:addr} (
     pf_mul: MUL (m, n, mn), pf_mat: fmatrix_v (a, m, n, l)
   ) :<> (
     GEVEC_v (a, mn, 1, l)
@@ -123,7 +132,7 @@ prfun GEVEC_of_fmatrix
 (* ****** ****** *)
 
 prfun GEMAT_of_fmatrix
-  {a:t@ype} {m,n:nat} {l:addr} (
+  {a:viewt@ype} {m,n:nat} {l:addr} (
     pf_mat: fmatrix_v (a, m, n, l)
   ) :<> (
     GEMAT_v (a, m, n, col, m, l)
@@ -133,43 +142,34 @@ prfun GEMAT_of_fmatrix
 
 (* ****** ****** *)
 
-(*
+// loop proceeds column by column
+fun fmatrix_ptr_foreach_fun_tsz__main
+  {a:viewt@ype} {v:view} {vt:viewtype} {m,n:nat} (
+    pf: !v
+  | M: &fmatrix (a, m, n)
+  , f: (!v | &a, !vt) -<fun> void, m: int m, n: int n
+  , tsz: sizeof_t a
+  , env: !vt
+  ) :<> void
+// end of [fmatrix_foreach_fun_tsz__main]
 
-fun GEMAT_trans
-  {a:t@ype}
-  {ord1:order}
-  {m,n:nat} {lda:pos} {l:addr} (
-    pf1: GEMAT_v (a, m, n, ord1, lda, l)
-  | ord1: CBLAS_ORDER_t (ord1)
-  ) :<> [ord2:order] (
-    tranord_p (ord1, ord2)
-  , GEMAT_v (a, n, m, ord2, lda, l) | CBLAS_ORDER_t (ord2)
-  ) // end of [GEMAT_trans]
-  = "atslib_GEMAT_trans"
+fun fmatrix_ptr_foreach_fun_tsz
+  {a:viewt@ype} {v:view} {m,n:nat} (
+    pf: !v
+  | M: &fmatrix (a, m, n)
+  , f: (!v | &a) -<fun> void, m: int m, n: int n
+  , tsz: sizeof_t a
+  ) :<> void
+// end of [fmatrix_foreach_fun_tsz]
 
-*)
-
-(* ****** ****** *)
-
-fun GEVEC_of_GEMAT_row
-  {a:t@ype} {ord:order} {n:nat} {lda:pos} {l:addr} (
-    pf: GEMAT_v (a, 1, n, ord, lda, l) | ord: ORDER ord, lda: int lda
-  ) :<> [inc:int | inc > 0] (
-    GEVEC_v (a, n, inc, l)
-  , GEVEC_v (a, n, inc, l) -<prf> GEMAT_v (a, 1, n, ord, lda, l)
-  | int inc
-  ) = "atslib_GEVEC_of_GEMAT_row"
-// end of [GEVEC_of_GEMAT_row]
-
-fun GEVEC_of_GEMAT_col
-  {a:t@ype} {ord:order} {m:nat} {lda:pos} {l:addr} (
-    pf: GEMAT_v (a, m, 1, ord, lda, l) | ord: ORDER ord, lda: int lda
-  ) :<> [inc:int | inc > 0] (
-    GEVEC_v (a, m, inc, l)
-  , GEVEC_v (a, m, inc, l) -<prf> GEMAT_v (a, m, 1, ord, lda, l)
-  | int inc
-  ) = "atslib_GEVEC_of_GEMAT_col"
-// end of [GEVEC_of_GEMAT_col]
+fun fmatrix_ptr_foreach_clo_tsz
+  {a:viewt@ype} {v:view} {m,n:nat} (
+    pf: !v
+  | M: &fmatrix (a, m, n)
+  , f: &(!v | &a) -<clo> void, m: int m, n: int n
+  , tsz: sizeof_t a
+  ) :<> void
+// end of [fmatrix_foreach_fun_tsz]
 
 (* ****** ****** *)
 
