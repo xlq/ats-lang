@@ -135,15 +135,15 @@ datatype DIAG (diag) = DIAGunit (unit) | DIAGnonunit (nonunit)
 (* ****** ****** *)
 
 datasort transpose =
-  | N
-  | T
-  | CT 
+  | TPN
+  | TPT
+  | TPC
 
 datatype
 TRANSPOSE (transpose) =
-  | TRANSPOSE_N (N) of ()
-  | TRANSPOSE_T (T) of ()
-  | TRANSPOSE_CT (CT) of ()
+  | TRANSPOSE_N (TPN) of ()
+  | TRANSPOSE_T (TPT) of ()
+  | TRANSPOSE_C (TPC) of ()
 // end of [TRANSPOSE]
 
 (* ****** ****** *)
@@ -167,9 +167,9 @@ dataprop trandim_p (
 , int // new row
 , int // new col
 ) =
-  | {m,n:nat} TRANDIM_N (N, m, n, m, n) of ()
-  | {m,n:nat} TRANDIM_T (T, m, n, n, m) of ()
-  | {m,n:nat} TRANDIM_CT (CT, m, n, n, m) of ()
+  | {m,n:nat} TRANDIM_N (TPN, m, n, m, n) of ()
+  | {m,n:nat} TRANDIM_T (TPT, m, n, n, m) of ()
+  | {m,n:nat} TRANDIM_C (TPC, m, n, n, m) of ()
 (*
   | {m,n:nat} TRANDIM_AC (AC, m, n, m, n) of ()
 *)
