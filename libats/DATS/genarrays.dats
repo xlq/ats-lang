@@ -49,55 +49,21 @@ implement{a} GEVEC_ptr_set_elt_at (V, d, i, x) = () where {
 
 (* ****** ****** *)
 
-(*
-
-extern fun
-  GEVEC_of_GEMAT_row_dummy
-  {a:viewt@ype} {ord:order}
-  {n:nat} {lda:pos} {l:addr} (
-    pf: unit_v // GEMAT_v (a, 1, n, ord, lda, l)
-  | ord: ORDER ord, lda: int lda
-  ) :<> [inc:int | inc > 0] (
-    unit_v // GEVEC_v (a, n, inc, l)
-  , unit_p // GEVEC_v (a, n, inc, l)
-      // -<prf> GEMAT_v (a, 1, n, ord, lda, l)
-  | int inc
-  ) = "atslib_GEVEC_of_GEMAT_row"
-// end of [GEVEC_of_GEMAT_row_dummy]
-
-implement
-  GEVEC_of_GEMAT_row_dummy
-  (pf | ord, lda) = let
-  prval unit_v () = pf in
-  case+ ord of
-  | ORDERrow () => (unit_v, unit_p | 1)
-  | ORDERcol () => (unit_v, unit_p | lda)
-end // end of [GEVEC_of_GEMAT_row_dummy]
-
-extern fun
-  GEVEC_of_GEMAT_col_dummy
-  {a:viewt@ype} {ord:order}
-  {n:nat} {lda:pos} {l:addr} (
-    pf: unit_v // GEMAT_v (a, n, 1, ord, lda, l)
-  | ord: ORDER ord, lda: int lda
-  ) :<> [inc:int | inc > 0] (
-    unit_v // GEVEC_v (a, n, inc, l)
-  , unit_p // GEVEC_v (a, n, inc, l)
-      // -<prf> GEMAT_v (a, n, 1, ord, lda, l)
-  | int inc
-  ) = "atslib_GEVEC_of_GEMAT_col"
-// end of [GEVEC_of_GEMAT_col_dummy]
-
-implement
-  GEVEC_of_GEMAT_col_dummy
-  (pf | ord, lda) = let
-  prval unit_v () = pf in
-  case+ ord of
-  | ORDERrow () => (unit_v, unit_p | lda)
-  | ORDERcol () => (unit_v, unit_p | 1)
-end // end of [GEVEC_of_GEMAT_col_dummy]
-
-*)
+implement MATVECINC_get (pf | x1, x2, ld) =
+  case+ (x1, x2) of
+  | (ORDERrow (), ORDERrow ()) => let
+      prval MATVECINCrowrow () = pf in 1 end
+    // end [row, row]
+  | (ORDERrow (), ORDERcol ()) => let
+      prval MATVECINCrowcol () = pf in ld end
+    // end [row, col]
+  | (ORDERcol (), ORDERrow ()) => let
+      prval MATVECINCcolrow () = pf in ld end
+    // end [col, row]
+  | (ORDERcol (), ORDERcol ()) => let
+      prval MATVECINCcolcol () = pf in 1 end
+    // end [col, col]
+// end of [MATVECINC_get]
 
 (* ****** ****** *)
 

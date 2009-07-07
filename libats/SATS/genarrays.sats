@@ -227,6 +227,13 @@ dataprop MATVECINC (order, order, int, int) =
   | {ld:pos} MATVECINCcolrow (col, row, ld, ld)
   | {ld:pos} MATVECINCcolcol (col, col, ld, 1)
 
+// implemented in [genarrays.dats]
+fun MATVECINC_get
+  {ord1,ord2:order} {ld:int} {d:inc} (
+    pf: MATVECINC (ord1, ord2, ld, d)
+  | x1: ORDER ord1, x2: ORDER ord2, ld: int ld
+  ) :<> int d
+
 (* ****** ****** *)
 
 prfun GEMAT_uncons_row
