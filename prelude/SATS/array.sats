@@ -120,35 +120,42 @@ praxi free_gc_viewt0ype_addr_trans
 fun{a:viewt@ype}
   array_ptr_alloc {n:nat} (asz: size_t n):<>
     [l:addr | l <> null] (free_gc_v (a, n, l), array_v (a?, n, l) | ptr l)
+// end of [fun]
 
 fun array_ptr_alloc_tsz
   {a:viewt@ype} {n:nat} (asz: size_t n, tsz: sizeof_t a):<>
     [l:addr | l <> null] (free_gc_v (a, n, l), array_v (a?, n, l) | ptr l)
   = "atspre_array_ptr_alloc_tsz"
+// end of [fun]
 
 (* ****** ****** *)
 
 fun array_ptr_free {a:viewt@ype} {n:int} {l:addr}
   (pf_gc: free_gc_v (a, n, l), pf_arr: array_v (a?, n, l) | p_arr: ptr l):<> void
   = "atspre_array_ptr_free" 
+// end of [fun]
 
 (* ****** ****** *)
 
 fun{a:t@ype} array_ptr_initialize_elt {n:nat}
   (base: &(@[a?][n]) >> @[a][n], asz: size_t n, ini: a):<> void
+// end of [fun]
 
 fun array_ptr_initialize_elt_tsz {a:t@ype} {n:nat}
   (base: &(@[a?][n]) >> @[a][n], asz: size_t n, ini: &a, tsz: sizeof_t a):<> void
   = "atspre_array_ptr_initialize_elt_tsz"
+// end of [fun]
 
 (* ****** ****** *)
 
 fun{a:t@ype} array_ptr_initialize_lst {n:nat}
   (base: &(@[a?][n]) >> @[a][n], xs: list (a, n)):<> void
+// end of [fun]
 
 // the linear list is freed along the way
 fun{a:viewt@ype} array_ptr_initialize_lst_vt {n:nat}
   (base: &(@[a?][n]) >> @[a][n], xs: list_vt (a, n)):<> void
+// end of [fun]
 
 (* ****** ****** *)
 
@@ -163,16 +170,19 @@ fun array_ptr_initialize_fun_tsz__main
   , env: !vt
   ) :<> void
   = "atspre_array_ptr_initialize_fun_tsz__main"
+// end of [fun]
 
 // implemented in [prelude/DATS/array.dats]
 fun array_ptr_initialize_fun_tsz
-  {a:viewt@ype} {n:nat} (
-    base: &(@[a?][n]) >> @[a][n]
+  {a:viewt@ype} {v:view} {n:nat} (
+    pf: !v
+  | base: &(@[a?][n]) >> @[a][n]
   , asz: size_t n
-  , f: (&(a?) >> a, sizeLt n) -<> void
+  , f: (!v | &(a?) >> a, sizeLt n) -<> void
   , tsz: sizeof_t a
   ) :<> void
   = "atspre_array_ptr_initialize_fun_tsz"
+// end of [fun]
 
 (* ****** ****** *)
 
@@ -187,6 +197,7 @@ fun array_ptr_initialize_clo_tsz__main
   , env: !vt
   ) :<> void
   = "atspre_array_ptr_initialize_clo_tsz__main"
+// end of [fun]
 
 // implemented in [prelude/DATS/array.dats]
 fun array_ptr_initialize_clo_tsz
@@ -198,6 +209,7 @@ fun array_ptr_initialize_clo_tsz
   , tsz: sizeof_t a
   ) :<> void
   = "atspre_array_ptr_initialize_clo_tsz"
+// end of [fun]
 
 (* ****** ****** *)
 
@@ -211,6 +223,7 @@ fun array_ptr_clear_clo_tsz
   , tsz: sizeof_t (a)
   ) :<> void
   = "atspre_array_ptr_clear_clo_tsz"
+// end of [fun]
 
 (* ****** ****** *)
 
@@ -218,6 +231,7 @@ prfun array_v_split {a:viewt@ype}
   {n,i:nat | i <= n} {l:addr} {ofs:int}
   (pf_mul: MUL (i, sizeof a, ofs), pf_arr: array_v (a, n, l))
   :<prf> @(array_v (a, i, l), array_v (a, n-i, l+ofs))
+// end of [prfun]
 
 (* ***** ***** *)
 
@@ -226,6 +240,7 @@ prfun array_v_unsplit
     pf_mul: MUL (n1, sizeof a, ofs)
   , pf1_arr: array_v (a, n1, l), pf2_arr: array_v (a, n2, l+ofs)
   ) :<prf> array_v (a, n1+n2, l)
+// end of [prfun]
 
 (* ***** ***** *)
 
@@ -233,41 +248,41 @@ prfun array_v_extend :
   {a:viewt@ype} {n:nat} {l:addr} {ofs:int}
     (MUL (n, sizeof a, ofs), array_v (a, n, l), a @ l+ofs) -<prf>
     array_v (a, n+1, l)
-// end of [array_v_extend]
+// end of [prfun]
 
 prfun array_v_unextend :
   {a:viewt@ype} {n:int | n > 0} {l:addr} {ofs:int}
     (MUL (n, sizeof a, ofs), array_v (a, n, l)) -<prf>
     (array_v (a, n-1, l), a @ l+ofs-sizeof a)
-// end of [array_v_unextend]
+// end of [prfun]
 
 prfun array_v_takeout :
   {a:viewt@ype} {n,i:nat | i < n} {l:addr} {ofs:int}
     (MUL (i, sizeof a, ofs), array_v (a, n, l)) -<prf>
     (a @ l+ofs, a @ l+ofs -<lin> array_v (a, n, l))
-// end of [array_v_takeout]
+// end of [prfun]
 
 prfun array_v_takeout2 :
   {a:viewt@ype} {n,i1,i2:nat | i1 < n; i2 < n; i1 <> i2} {l:addr} {ofs1,ofs2:int}
     (MUL (i1, sizeof a, ofs1), MUL (i2, sizeof a, ofs2), array_v (a, n, l)) -<prf>
     (a @ l+ofs1, a @ l+ofs2, (a @ l+ofs1, a @ l+ofs2) -<lin> array_v (a, n, l))
-// end of [array_v_takeout2]
+// end of [prfun]
 
 (* ***** ***** *)
 
 prfun array_v_clear :
   {a:t@ype} {n:nat} {l:addr} array_v (a, n, l) -<prf> array_v (a?, n, l)
-// end of [array_v_clear]
+// end of [prfun]
 
 (* ***** ***** *)
 
 prfun array_v_group : {a:viewt@ype} {m,n:nat} {l:addr} {mn:int}
   (MUL (m, n, mn) | array_v (a, mn, l)) -<prf> array_v (@[a][n], m, l)
-// end of [array_v_group]
+// end of [prfun]
 
 prfun array_v_ungroup : {a:viewt@ype} {m,n:nat} {l:addr} {mn:int}
   (MUL (m, n, mn) | array_v (@[a][n], m, l)) -<prf> array_v (a, mn, l)
-// end of [array_v_ungroup]
+// end of [prfun]
 
 (* ****** ****** *)
 
@@ -280,6 +295,7 @@ fun{a:viewt@ype}
   , (array_v (a, i, l0), array_v (a, n-i, l)) -<prf> array_v (a, n, l0)
   | ptr l
   ) // end of [array_ptr_split]
+// end of [fun]
 
 fun array_ptr_split_tsz
   {a:viewt@ype} {n,i:nat | i <= n} {l0:addr} (
@@ -291,6 +307,7 @@ fun array_ptr_split_tsz
   | ptr l
   ) // end of [array_ptr_split_tsz]
   = "atspre_array_ptr_split_tsz"
+// end of [fun]
 
 (* ****** ****** *)
 
@@ -302,6 +319,7 @@ fun{a:viewt@ype}
   , a @ l -<lin,prf> array_v (a, n, l0)
   | ptr l
   ) // end of [array_ptr_takeout]
+// end of [fun]
 
 fun array_ptr_takeout_tsz
   {a:viewt@ype} {n,i:nat | i < n} {l0:addr} (
@@ -313,6 +331,7 @@ fun array_ptr_takeout_tsz
   | ptr l
   ) // end of [array_ptr_takeout_tsz]
   = "atspre_array_ptr_takeout_tsz"
+// end of [fun]
 
 (* ****** ****** *)
 
@@ -327,7 +346,7 @@ fun{a:viewt@ype} array_ptr_takeout2
     | ptr l1
     , ptr l2
     )
-// end of [array_ptr_takeout2]
+// end of [fun]
 
 fun array_ptr_takeout2_tsz {a:viewt@ype}
   {n,i1,i2:nat | i1 < n; i2 < n; i1 <> i2} {l0:addr} (
@@ -342,6 +361,7 @@ fun array_ptr_takeout2_tsz {a:viewt@ype}
     , ptr l2
     )
   = "atspre_array_ptr_takeout2_tsz"
+// end of [fun]
 
 (* ****** ****** *)
 
@@ -352,6 +372,7 @@ fun array_ptr_copy_tsz {a:t@ype} {n:nat} (
   , tsz: sizeof_t a
   ) :<> void
   = "atspre_array_ptr_copy_tsz"
+// end of [fun]
 
 fun array_ptr_move_tsz {a:viewt@ype} {n:nat} (
     A: &(@[a][n]) >> @[a?][n]
@@ -360,12 +381,12 @@ fun array_ptr_move_tsz {a:viewt@ype} {n:nat} (
   , tsz: sizeof_t a
   ) :<> void
   = "atspre_array_ptr_move_tsz"
-
-//
+// end of [fun]
 
 fun{a:viewt@ype} array_ptr_exch
   {n,i1,i2:nat | i1 < n; i2 < n; i1 <> i2}
   (A: &(@[a][n]), i1: size_t i1, i2: size_t i2):<> void
+// end of [fun]
 
 (* ****** ****** *)
 
@@ -384,13 +405,14 @@ fun array_ptr_foreach_fun_tsz__main
   , env: !vt
   ) :<> void
   = "atspre_array_ptr_foreach_fun_tsz__main"
+// end of [fun]
 
 fun array_ptr_foreach_clo_tsz
   {a:viewt@ype} {v:view} {n:nat} (
     pf: !v
   | base: &(@[a][n]), f: &(!v | &a) -<clo> void, asz: size_t n, tsz: sizeof_t a
   ) :<> void
-// end of [array_ptr_foreach_clo_tsz]
+// end of [fun]
 
 (* ****** ****** *)
 
@@ -416,13 +438,13 @@ fun array_ptr_iforeach_clo_tsz
   | base: &(@[a][n])
   , f: &(!v | sizeLt n, &a) -<clo> void, asz: size_t n, tsz: sizeof_t a
   ) :<> void
-// end of [array_ptr_iforeach_clo_tsz]
+// end of [fun]
 
 (* ****** ****** *)
 
 fun{a:t@ype} array_ptr_to_list {n:nat}
   (base: &(@[a][n]) >> @[a?][n], asz: size_t n):<> list_vt (a, n)
-// end of [array_ptr_to_list]
+// end of [fun]
 
 (* ****** ****** *)
 
@@ -446,6 +468,7 @@ castfn array_get_view_ptr {a:viewt@ype} {n:nat}
 
 fun array_make_arraysize
   {a:viewt@ype} {n:nat} (arrsz: arraysize (a, n)):<> array (a, n)
+// end of [fun]
 
 macdef array (x) = array_make_arraysize ,(x)
 

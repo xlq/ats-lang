@@ -159,16 +159,14 @@ end // end of [array_ptr_initialize_lst_vt]
 (* ****** ****** *)
 
 implement array_ptr_initialize_fun_tsz
-  {a} {n} (base, asz, f, tsz) = let
-  typedef funptr_t = (&(a?) >> a, sizeLt n) -<> void
-  typedef funptr1_t = (!unit_v | &(a?) >> a, sizeLt n, !Ptr) -<> void
+  {a} {v} {n} (pf | base, asz, f, tsz) = let
+  typedef funptr_t = (!v | &(a?) >> a, sizeLt n) -<> void
+  typedef funptr1_t = (!v | &(a?) >> a, sizeLt n, !ptr) -<> void
   val f1 = coerce (f) where {
     extern castfn coerce (f: funptr_t):<> funptr1_t
   }
-  prval pf = unit_v ()
   val () = array_ptr_initialize_fun_tsz__main
-    {a} {unit_v} {Ptr} (pf | base, asz, f1, tsz, null)
-  prval unit_v () = pf
+    {a} {v} {ptr} (pf | base, asz, f1, tsz, null)
 in
   // empty
 end // end of [array_ptr_initialize_fun_tsz]
