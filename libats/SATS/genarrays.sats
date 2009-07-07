@@ -24,7 +24,7 @@ sortdef inc = {i: int | i > 0} // for incX, incY, etc.
 (* ****** ****** *)
 
 // general vector // elt, size, delta
-absviewt@ype GEVEC (a:viewt@ype, n:int, d:int)
+absviewt@ype GEVEC (a:viewt@ype+, n:int, d:int)
 
 viewdef GEVEC_v
   (a:viewt@ype, n:int, d:int, l:addr) = GEVEC (a, n, d) @ l
@@ -200,7 +200,7 @@ dataprop sidedim_p (
 
 // elt, row, col, ord, lda
 abst@ype GEMAT
-  (a:viewt@ype, m:int, n:int, ord:order, lda:int)
+  (a:viewt@ype+, m:int, n:int, ord:order, lda:int)
 // end of [GEMAT]
 
 viewdef GEMAT_v
@@ -490,7 +490,7 @@ fun GEMAT_ptr_split2x2_tsz
 
 // elt, row/col, ord, ul
 abst@ype TRMAT // dimension: n x n
-  (a:viewt@ype, n:int, ord: order, ul: uplo, dg: diag, lda: int)
+  (a:viewt@ype+, n:int, ord: order, ul: uplo, dg: diag, lda: int)
 // end of [TRMAT]
 
 viewdef TRMAT_v
@@ -520,7 +520,7 @@ prfun TRMAT_of_GEMAT
 
 // elt, row/col, ord, ul
 abst@ype SYMAT // dimension: n x n
-  (a:viewt@ype, n:int, ord: order, ul: uplo, lda: int)
+  (a:viewt@ype+, n:int, ord: order, ul: uplo, lda: int)
 // end of [SYMAT]
 
 viewdef SYMAT_v
@@ -548,7 +548,7 @@ prfun SYMAT_of_GEMAT
 
 // elt, row/col, ord, ul
 abst@ype HEMAT // dimension: n x n
-  (a:viewt@ype, n:int, ord: order, ul: uplo, lda: int)
+  (a:viewt@ype+, n:int, ord: order, ul: uplo, lda: int)
 // end of [HEMAT]
 
 viewdef HEMAT_v
@@ -598,7 +598,7 @@ prfun HEMAT_of_GEMAT
 
 // elt, row, col, ord, lower-bandwidth, upper-bandwidth
 abst@ype GBMAT // dimension: m x n, lower-bandwidth: kl, upper-bandwidth: ku
-  (a:viewt@ype, m:int, n:int, ord: order, kl: int, ku: int, lda: int)
+  (a:viewt@ype+, m:int, n:int, ord: order, kl: int, ku: int, lda: int)
 // end of [GBMAT]
 
 viewdef GBMAT_v
@@ -614,7 +614,7 @@ viewdef GBMAT_v
 
 // elt, row/col, ord, ul, diag, bandwidth
 abst@ype TBMAT // dimension: n x n, bandwidth: k
-  (a:viewt@ype, n:int, ord: order, ul: uplo, dg: diag, k: int, lda: int)
+  (a:viewt@ype+, n:int, ord: order, ul: uplo, dg: diag, k: int, lda: int)
 // end of [TBMAT]
 
 viewdef TBMAT_v
@@ -629,7 +629,7 @@ viewdef TBMAT_v
 
 // elt, row/col, ord, ul, diag
 abst@ype TPMAT // dimension: n x n
-  (a:viewt@ype, n:int, ord: order, ul: uplo, dg: diag)
+  (a:viewt@ype+, n:int, ord: order, ul: uplo, dg: diag)
 // end of [TPMAT]
 
 viewdef TPMAT_v
@@ -658,7 +658,7 @@ prfun TPMAT_of_GEVEC
 
 // elt, row/col, ord, ul, diag
 abst@ype SPMAT // dimension: n x n
-  (a:viewt@ype, n:int, ord: order, ul: uplo)
+  (a:viewt@ype+, n:int, ord: order, ul: uplo)
 // end of [SPMAT]
 
 viewdef SPMAT_v
@@ -674,7 +674,7 @@ viewdef SPMAT_v
 
 // elt, row/col, ord, ul, diag
 abst@ype HPMAT // dimension: n x n
-  (a:viewt@ype, n:int, ord: order, ul: uplo)
+  (a:viewt@ype+, n:int, ord: order, ul: uplo)
 // end of [HPMAT]
 
 viewdef HPMAT_v
