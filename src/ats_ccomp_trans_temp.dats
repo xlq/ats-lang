@@ -431,7 +431,7 @@ implement ccomp_exp_template_cst
   val () = begin
     prerr "ccomp_exp_tmpcst: hit0 = "; prerr hit0; prerr_newline ();
     prerr "ccomp_exp_tmpcst: fullname = "; prerr fullname; prerr_newline ();
-  end
+  end // end of [val]
 *)
   val ovp = tmpnamtbl_find (fullname)
 in
@@ -443,10 +443,12 @@ in
           $Deb.debug_prerrf (": %s: ccomp_exp_template_cst", @(THISFILENAME));
           prerr ": the template definition for [";
           prerr d2c;
-          prerr "] is unavailable.";
+          prerr "] is unavailable at [";
+          prerr fullname;
+          prerr "].";
           prerr_newline ();
           $Err.abort {tmpdef_t} ()
-        end
+        end // end of [None_vt]
       ) : tmpdef_t
       val level0 = d2var_current_level_get ()
       val () = d2var_current_level_set (0)
@@ -454,7 +456,7 @@ in
       val level0 = d2var_current_level_set (level0)
     in
       vp // return value
-    end // end of [None_vt]
+    end (* end of [None_vt] *)
   | ~Some_vt vp => vp
 end // end of [ccomp_exp_template_cst]
 
@@ -480,10 +482,12 @@ in
           $Deb.debug_prerrf (": %s: ccomp_exp_template_var", @(THISFILENAME));
           prerr ": the template definition for [";
           prerr d2v;
-          prerr "] is unavailable.";
+          prerr "] is unavailable at [";
+          prerr fullname;
+          prerr "].";
           prerr_newline ();
           $Err.abort {tmpdef_t} ()
-        end
+        end // end of [None_vt]
       ) : tmpdef_t
       val d2v_lev = d2var_lev_get (d2v)
       val level0 = d2var_current_level_get ()
@@ -491,14 +495,14 @@ in
       val () = begin
         prerr "ccomp_exp_tmpvar: d2v_lev = "; prerr d2v_lev; prerr_newline ();
         prerr "ccomp_exp_tmpvar: level0 = "; prerr level0; prerr_newline ();
-      end
+      end // end of [val]
 *)
       val () = d2var_current_level_set (d2v_lev)
       val vp = ccomp_tmpdef (loc0, res, hit0, TMPvar d2v, hitss, fullname, tmpdef)
       val () = d2var_current_level_set (level0)
     in
       vp // return value
-    end // end of [None_vt]
+    end (* end of [None_vt] *)
   | ~Some_vt vp => vp
 end // end of [ccomp_exp_template_var]
 
