@@ -413,7 +413,7 @@ viewtypedef GEMAT_ptr_split2x1_res_t (
 ) // end of [GEMAT_ptr_split2x1_res_t]
 
 fun{a:viewt@ype} GEMAT_ptr_split2x1 {m,n:nat}
-  {i,j:nat | i <= m} {ord:order} {lda:pos} {l0:addr} (
+  {i:nat | i <= m} {ord:order} {lda:pos} {l0:addr} (
     pf_mat: GEMAT_v (a, m, n, ord, lda, l0)
   | p_mat: ptr l0
   , ord: ORDER ord
