@@ -21,7 +21,7 @@ staload "libats/SATS/genarrays.sats"
 
 implement{a} GEVEC_ptr_takeout (pf_vec | p_vec, d, i) =
   GEVEC_ptr_takeout_tsz {a} (pf_vec | p_vec, d, i, sizeof<a>)
-// end of [GEVEC_ptr_split]
+// end of [GEVEC_ptr_takeout]
 
 (* ****** ****** *)
 

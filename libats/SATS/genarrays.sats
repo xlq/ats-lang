@@ -84,7 +84,10 @@ fun{a:viewt@ype} GEVEC_ptr_split
     pf: GEVEC_v (a, n, d, l0)
   | p_vec: ptr l0, d: int d, i: int i
   ) :<> [l:addr] (
-    GEVEC_v (a, i, d, l0), GEVEC_v (a, n-i, d, l) | ptr l
+    GEVEC_v (a, i, d, l0)
+  , GEVEC_v (a, n-i, d, l)
+  , (GEVEC_v (a, i, d, l0), GEVEC_v (a, n-i, d, l)) -<prf> GEVEC_v (a, n, d, l0)
+  | ptr l
   )
 // end of [GEVEC_ptr_split]
 
@@ -93,7 +96,10 @@ fun GEVEC_ptr_split_tsz {a:viewt@ype}
     pf: GEVEC_v (a, n, d, l0)
   | p_vec: ptr l0, d: int d, i: int i, tsz: sizeof_t a
   ) :<> [l:addr] (
-    GEVEC_v (a, i, d, l0), GEVEC_v (a, n-i, d, l) | ptr l
+    GEVEC_v (a, i, d, l0)
+  , GEVEC_v (a, n-i, d, l)
+  , (GEVEC_v (a, i, d, l0), GEVEC_v (a, n-i, d, l)) -<prf> GEVEC_v (a, n, d, l0)
+  | ptr l
   ) = "atslib_GEVEC_ptr_split_tsz"
 // end of [GEVEC_ptr_split_tsz]
 
@@ -210,14 +216,14 @@ viewdef GEMAT_v
 
 (* ****** ****** *)
 
-prfun GEMAT_trans
+prfun GEMAT_v_trans
   {a:viewt@ype} {ord1:order}
   {m,n:nat} {lda:pos} {l:addr} (
     pf_mat: !GEMAT_v (a, m, n, ord1, lda, l) >>
              GEMAT_v (a, n, m, ord2, lda, l)
     // end of [pf_mat]
   ) :<> #[ord2:order] tranord_p (ord1, ord2)
-// end of [GEMAT_trans]
+// end of [GEMAT_v_trans]
 
 (* ****** ****** *)
 
