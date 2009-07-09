@@ -120,25 +120,25 @@ overload [] with fmatrix_ptr_set_elt_at
 
 (* ****** ****** *)
 
-prfun GEVEC_of_fmatrix
+prfun GEVEC_v_of_fmatrix_v
   {a:viewt@ype} {m,n:nat} {mn:nat} {l:addr} (
     pf_mul: MUL (m, n, mn), pf_mat: fmatrix_v (a, m, n, l)
   ) :<> (
     GEVEC_v (a, mn, 1, l)
   , GEVEC_v (a, mn, 1, l) -<prf> fmatrix_v (a, m, n, l)
   )
-// end of [GEVEC_of_fmatrix]
+// end of [GEVEC_v_of_fmatrix_v]
 
 (* ****** ****** *)
 
-prfun GEMAT_of_fmatrix
+prfun GEMAT_v_of_fmatrix_v
   {a:viewt@ype} {m,n:nat} {l:addr} (
     pf_mat: fmatrix_v (a, m, n, l)
   ) :<> (
     GEMAT_v (a, m, n, col, m, l)
   , GEMAT_v (a, m, n, col, m, l) -> fmatrix_v (a, m, n, l)
   )
-// end of [GEMAT_of_fmatrix]
+// end of [GEMAT_v_of_fmatrix_v]
 
 (* ****** ****** *)
 

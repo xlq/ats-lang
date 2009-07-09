@@ -152,7 +152,7 @@ fmatrix_ptr_foreach_fun_tsz__main
   if ni > 0 then let
     val (pf1_mat, pf2_mat, fpf | p1, p2) =
       GEMAT_ptr_split1x2_tsz {a} (pf_mat | p, ORDERcol, m, 1, tsz)
-    prval (pf1_arr, fpf1_mat) = array_of_GEMAT_col (pf1_mat)
+    prval (pf1_arr, fpf1_mat) = array_v_of_GEMAT_v_col (pf1_mat)
     val () = array_ptr_foreach_fun_tsz__main
       {a} {v} (pf | !p1, f, size1_of_int1 m, tsz, env) where {
     } // end of [val]
@@ -164,7 +164,7 @@ fmatrix_ptr_foreach_fun_tsz__main
   end // end of [if]
 in
   if m > 0 then let
-    prval (pf_mat, fpf) = GEMAT_of_fmatrix {a} (view@ M)
+    prval (pf_mat, fpf) = GEMAT_v_of_fmatrix_v {a} (view@ M)
     val () = loop (pf_mat, pf | &M, f, m, n, tsz, env)
     prval () = view@ M := fpf (pf_mat)
   in

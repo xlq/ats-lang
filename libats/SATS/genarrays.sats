@@ -32,26 +32,26 @@ viewdef GEVEC_v
 
 (* ****** ****** *)
 
-prfun GEVEC_uncons
+prfun GEVEC_v_uncons
   {a:viewt@ype}
   {n:pos} {d:pos} {l:addr}
   (pf: GEVEC_v (a, n, d, l))
   :<prf> (
     a @ l, a @ l -<lin,prf> GEVEC_v (a, n, d, l)
   )
-// end of [GEVEC_uncons]
+// end of [GEVEC_v_uncons]
 
 (* ****** ****** *)
 
-prfun array_of_GEVEC
+prfun array_v_of_GEVEC_v
   {a:viewt@ype} {n:nat} {l:addr}
   (pf: GEVEC_v (a, n, 1, l)):<prf> array_v (a, n, l)
-// end [array_of_GEVEC]
+// end [array_v_of_GEVEC_v]
 
-prfun GEVEC_of_array
+prfun GEVEC_v_of_array_v
   {a:viewt@ype} {n:nat} {l:addr}
   (pf: array_v (a, n, l)):<prf> GEVEC_v (a, n, 1, l)
-// end [array_of_GEVEC]
+// end [array_v_of_GEVEC_v]
 
 (* ****** ****** *)
 
@@ -236,7 +236,7 @@ fun MATVECINC_get
 
 (* ****** ****** *)
 
-prfun GEMAT_uncons_row
+prfun GEMAT_v_uncons_row
   {a:viewt@ype} {m:pos;n:nat}
   {ord:order} {ld:pos} {l:addr}
   (pf: GEMAT_v (a, m, n, ord, ld, l))
@@ -247,7 +247,7 @@ prfun GEMAT_uncons_row
   )
 // end of [GEMAT_uncons_col]
 
-prfun GEMAT_uncons_col
+prfun GEMAT_v_uncons_col
   {a:viewt@ype} {m:nat;n:pos}
   {ord:order} {ld:pos} {l:addr}
   (pf: GEMAT_v (a, m, n, ord, ld, l))
@@ -256,31 +256,31 @@ prfun GEMAT_uncons_col
   , GEVEC_v (a, m, d, l)
   , GEVEC_v (a, m, d, l) -<lin,prf> GEMAT_v (a, m, n, ord, ld, l)
   )
-// end of [GEMAT_uncons_col]
+// end of [GEMAT_v_uncons_col]
 
 (* ****** ****** *)
 
-prfun array_of_GEMAT_row
+prfun array_v_of_GEMAT_v_row
   {a:viewt@ype} {n:nat} {ld:pos} {l:addr}
   (pf: GEMAT_v (a, 1, n, row, ld, l))
   :<prf> (
     array_v (a, n, l), 
     array_v (a, n, l) -<prf> GEMAT_v (a, 1, n, row, ld, l)
   )
-// end [array_of_GEMAT_row]
+// end [array_v_of_GEMAT_v_row]
 
-prfun array_of_GEMAT_col
+prfun array_v_of_GEMAT_v_col
   {a:viewt@ype} {m:nat} {ld:pos} {l:addr}
   (pf: GEMAT_v (a, m, 1, col, ld, l))
   :<prf> (
     array_v (a, m, l), 
     array_v (a, m, l) -<prf> GEMAT_v (a, m, 1, col, ld, l)
   )
-// end [array_of_GEMAT_col]
+// end [array_v_of_GEMAT_v_col]
 
 (* ****** ****** *)
 
-prfun GEVEC_of_GEMAT_row
+prfun GEVEC_v_of_GEMAT_v_row
   {a:viewt@ype} {ord:order}
   {n:nat} {ld:pos} {l:addr} (
     pf: GEMAT_v (a, 1, n, ord, ld, l)
@@ -290,9 +290,9 @@ prfun GEVEC_of_GEMAT_row
   , GEVEC_v (a, n, d, l)
   , GEVEC_v (a, n, d, l) -<prf> GEMAT_v (a, 1, n, ord, ld, l)
   )
-// end of [GEVEC_of_GEMAT_row]
+// end of [GEVEC_v_of_GEMAT_v_row]
 
-prfun GEVEC_of_GEMAT_col
+prfun GEVEC_v_of_GEMAT_v_col
   {a:viewt@ype} {ord:order}
   {m:nat} {ld:pos} {l:addr} (
     pf: GEMAT_v (a, m, 1, ord, ld, l)
@@ -302,7 +302,7 @@ prfun GEVEC_of_GEMAT_col
   , GEVEC_v (a, m, d, l)
   , GEVEC_v (a, m, d, l) -<prf> GEMAT_v (a, m, 1, ord, ld, l)
   )
-// end of [GEVEC_of_GEMAT_col]
+// end of [GEVEC_v_of_GEMAT_v_col]
 
 (* ****** ****** *)
 
@@ -500,7 +500,7 @@ viewdef TRMAT_v
 
 (* ****** ****** *)
 
-prfun TRMAT_of_GEMAT
+prfun TRMAT_v_of_GEMAT_v
   {a:viewt@ype} {n:nat}
   {ord:order} {ul:uplo} {dg:diag}
   {lda:pos} {l:addr} (
@@ -510,7 +510,7 @@ prfun TRMAT_of_GEMAT
     TRMAT_v (a, n, ord, ul, dg, lda, l)
   , TRMAT_v (a, n, ord, ul, dg, lda, l) -<lin,prf> GEMAT_v (a, n, n, ord, lda, l)
   )
-// end of [TRMAT_of_GEMAT]
+// end of [TRMAT_v_of_GEMAT_v]
 
 (* ****** ****** *)
 
@@ -530,7 +530,7 @@ viewdef SYMAT_v
 
 (* ****** ****** *)
 
-prfun SYMAT_of_GEMAT
+prfun SYMAT_v_of_GEMAT_v
   {a:viewt@ype} {n:nat}
   {ord:order} {ul:uplo} {lda:pos} {l:addr} (
     pf: GEMAT_v (a, n, n, ord, lda, l), Uplo: UPLO ul
@@ -538,7 +538,7 @@ prfun SYMAT_of_GEMAT
     SYMAT_v (a, n, ord, ul, lda, l)
   , SYMAT_v (a, n, ord, ul, lda, l) -<lin,prf> GEMAT_v (a, n, n, ord, lda, l)
   )
-// end of [SYMAT_of_GEMAT]
+// end of [SYMAT_v_of_GEMAT_v]
 
 (* ****** ****** *)
 
@@ -564,23 +564,23 @@ dataprop realtyp_p (a:t@ype) =
 
 (* ****** ****** *)
 
-prfun HEMAT_of_SYMAT
+prfun HEMAT_v_of_SYMAT_v
   {a:t@ype} {n:nat}
   {ord:order} {ul:uplo} {lda:pos} {l:addr} (
     pf_typ: realtyp_p (a), pf_mat: SYMAT_v (a, n, ord, ul, lda, l)
   ) :<> HEMAT_v (a, n, ord, ul, lda, l)
-// end of [HEMAT_of_SYMAT]
+// end of [HEMAT_v_of_SYMAT_v]
 
-prfun SYMAT_of_HEMAT
+prfun SYMAT_v_of_HEMAT_v
   {a:t@ype} {n:nat}
   {ord:order} {ul:uplo} {lda:pos} {l:addr} (
     pf_typ: realtyp_p (a), pf_mat: HEMAT_v (a, n, ord, ul, lda, l)
   ) :<> SYMAT_v (a, n, ord, ul, lda, l)
-// end of [SYMAT_of_HEMAT]
+// end of [SYMAT_v_of_HEMAT_v]
 
 (* ****** ****** *)
 
-prfun HEMAT_of_GEMAT
+prfun HEMAT_v_of_GEMAT_v
   {a:viewt@ype} {n:nat}
   {ord:order} {ul:uplo} {lda:pos} {l:addr} (
     pf: GEMAT_v (a, n, n, ord, lda, l), Uplo: UPLO ul
@@ -588,7 +588,7 @@ prfun HEMAT_of_GEMAT
     HEMAT_v (a, n, ord, ul, lda, l)
   , HEMAT_v (a, n, ord, ul, lda, l) -<lin,prf> GEMAT_v (a, n, n, ord, lda, l)
   )
-// end of [HEMAT_of_GEMAT]
+// end of [HEMAT_v_of_GEMAT_v]
 
 (* ****** ****** *)
 
@@ -639,7 +639,7 @@ viewdef TPMAT_v
 
 (* ****** ****** *)
 
-prfun TPMAT_of_GEVEC
+prfun TPMAT_v_of_GEVEC_v
   {a:viewt@ype} {n,m:nat}
   {ord:order} {ul:uplo} {dg:diag}
   {lda:pos} {l:addr} (
@@ -648,7 +648,7 @@ prfun TPMAT_of_GEVEC
     TPMAT_v (a, n, ord, ul, dg, l)
   , TPMAT_v (a, n, ord, ul, dg, l) -<prf> GEVEC_v (a, m, 1, l)
   )
-// end of [TPMAT_of_GEVEC]
+// end of [TPMAT_v_of_GEVEC_v]
 
 (* ****** ****** *)
 
@@ -684,19 +684,19 @@ viewdef HPMAT_v
 
 (* ****** ****** *)
 
-prfun HPMAT_of_SPMAT
+prfun HPMAT_v_of_SPMAT_v
   {a:t@ype} {n:nat}
   {ord:order} {ul:uplo} {l:addr} (
     pf_typ: realtyp_p (a), pf_mat: SPMAT_v (a, n, ord, ul, l)
   ) :<> HPMAT_v (a, n, ord, ul, l)
-// end of [HPMAT_of_SPMAT]
+// end of [HPMAT_v_of_SPMAT_v]
 
-prfun SPMAT_of_HPMAT
+prfun SPMAT_v_of_HPMAT_v
   {a:t@ype} {n:nat}
   {ord:order} {ul:uplo} {l:addr} (
     pf_typ: realtyp_p (a), pf_mat: HPMAT_v (a, n, ord, ul, l)
   ) :<> SPMAT_v (a, n, ord, ul, l)
-// end of [SPMAT_of_HPMAT]
+// end of [SPMAT_v_of_HPMAT_v]
 
 (* ****** ****** *)
 
