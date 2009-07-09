@@ -55,7 +55,8 @@ compare_direntptr_direntptr (ats_ref_type p1, ats_ref_type p2) {
 %}
 
 extern fun compare_direntptr_direntptr
-  (p1: &direntptr_gc, p2: &direntptr_gc): int = "compare_direntptr_direntptr"
+  (p1: &direntptr_gc, p2: &direntptr_gc):<> int
+  = "compare_direntptr_direntptr"
 
 (* ****** ****** *)
 

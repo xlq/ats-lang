@@ -146,6 +146,7 @@ cleanall:: clean
 	rm -f kmp
 	rm -f listquicksort
 	rm -f longestline
+	rm -f montecarlo
 	rm -f passwdgen
 	rm -f pi_lazy
 	rm -f queens
