@@ -34,6 +34,11 @@ implement fmatrix_ptr_initialize_elt_tsz {a}
 (* ****** ****** *)
 
 // initialization is done column by colmun
+implement{a}
+  fmatrix_ptr_initialize_clo (pf | base, m, n, f) =
+  fmatrix_ptr_initialize_clo_tsz {a} (pf | base, m, n, f, sizeof<a>)
+// end of [implement]
+  
 implement // worth it???
   fmatrix_ptr_initialize_clo_tsz {a} {v} {m,n}
   (pf | base, m, n, f, tsz) = () where {

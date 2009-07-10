@@ -54,17 +54,32 @@ prfun fmatrix_v_of_array_v
 
 (* ****** ****** *)
 
+fun{a:t@ype}
+fmatrix_ptr_initialize_elt
+  {m,n:nat} {l:addr} (
+    base: &fmatrix (a?, m, n) >> fmatrix (a, m, n)
+  , m: int m, n: int n, x: &a
+  ) :<> void
+// end of [fmatrix_initialize_elt]
+
 fun
 fmatrix_ptr_initialize_elt_tsz
   {a:t@ype} {m,n:nat} {l:addr} (
-    base:
-      &fmatrix (a?, m, n) >> fmatrix (a, m, n)
-    // end of [base]
+    base: &fmatrix (a?, m, n) >> fmatrix (a, m, n)
   , m: int m, n: int n, x: &a, tsz: sizeof_t a
   ) :<> void
 // end of [fmatrix_initialize_elt_tsz]
 
 (* ****** ****** *)
+
+fun{a:viewt@ype} fmatrix_ptr_initialize_clo
+  {v:view} {m,n:nat} (
+    pf: !v 
+  | base: &fmatrix (a?, m, n) >> fmatrix (a, m, n)
+  , m: int m, n: int n
+  , f: &(!v | &(a?) >> a, natLt m, natLt n) -<clo> void
+  ) :<> void
+// end of [fmatrix_ptr_initialize_clo]
 
 fun fmatrix_ptr_initialize_clo_tsz
   {a:viewt@ype} {v:view} {m,n:nat} (

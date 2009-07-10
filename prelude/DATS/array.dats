@@ -385,7 +385,7 @@ implement array_ptr_foreach_fun_tsz
   viewtypedef fun0_t = (!v | &a) -<fun> void
   viewtypedef fun1_t = (!v | &a, !ptr) -<fun> void
   val f = __cast (f) where {
-    extern fun __cast (f: fun0_t):<> fun1_t
+    extern castfn __cast (f: fun0_t):<> fun1_t
   }
 in
   array_ptr_foreach_fun_tsz__main
@@ -430,7 +430,7 @@ implement array_ptr_iforeach_fun_tsz
   viewtypedef fun0_t = (!v | sizeLt n, &a) -<fun> void
   viewtypedef fun1_t = (!v | sizeLt n, &a, !ptr) -<fun> void
   val f = __cast (f) where {
-    extern fun __cast (f: fun0_t):<> fun1_t
+    extern castfn __cast (f: fun0_t):<> fun1_t
   }
 in
   array_ptr_iforeach_fun_tsz__main
