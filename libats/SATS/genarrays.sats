@@ -145,6 +145,22 @@ datasort transpose =
   | TPT
   | TPC
 
+(*
+
+dataprop
+transpose_NT (transpose) =
+  | TRANSPOSE_NT_N (TPN) of ()
+  | TRANSPOSE_NT_T (TPT) of ()
+// end of [transpose_NT]
+
+dataprop
+transpose_NC (transpose) =
+  | TRANSPOSE_NC_N (TPN) of ()
+  | TRANSPOSE_NC_C (TPC) of ()
+// end of [transpose_NC]
+
+*)
+
 datatype
 TRANSPOSE (transpose) =
   | TRANSPOSE_N (TPN) of ()
