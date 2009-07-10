@@ -142,7 +142,9 @@ prfun GEMAT_v_of_fmatrix_v
 
 (* ****** ****** *)
 
+//
 // loop proceeds column by column
+//
 fun fmatrix_ptr_foreach_fun_tsz__main
   {a:viewt@ype} {v:view} {vt:viewtype} {m,n:nat} (
     pf: !v

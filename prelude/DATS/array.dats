@@ -375,6 +375,31 @@ end // end of [array_exch]
 
 (* ****** ****** *)
 
+implement{a}
+  array_ptr_foreach_fun (pf_v | A, f, asz) =
+  array_ptr_foreach_fun_tsz {a} (pf_v | A, f, asz, sizeof<a>)
+// end of [implement]
+
+implement array_ptr_foreach_fun_tsz
+  {a} {v} {n} (pf_v | A, f, asz, tsz) = let
+  viewtypedef fun0_t = (!v | &a) -<fun> void
+  viewtypedef fun1_t = (!v | &a, !ptr) -<fun> void
+  val f = __cast (f) where {
+    extern fun __cast (f: fun0_t):<> fun1_t
+  }
+in
+  array_ptr_foreach_fun_tsz__main
+    {a} {v} {ptr} (pf_v | A, f, asz, tsz, null)
+  // end of [array_ptr_foreach_...]
+end // end of [array_ptr_foreach_fun_tsz]
+
+(* ****** ****** *)
+
+implement{a}
+  array_ptr_foreach_clo (pf_v | A, f, asz) =
+  array_ptr_foreach_clo_tsz {a} (pf_v | A, f, asz, sizeof<a>)
+// end of [implement]
+
 implement array_ptr_foreach_clo_tsz
   {a} {v} {n} (pf_v | A, f, asz, tsz) = let
   viewtypedef clo_t = (!v | &a) -<clo> void
@@ -394,6 +419,31 @@ in
 end // end of [array_ptr_foreach_clo_tsz]
 
 (* ****** ****** *)
+
+implement{a}
+  array_ptr_iforeach_fun (pf_v | A, f, asz) =
+  array_ptr_iforeach_fun_tsz {a} (pf_v | A, f, asz, sizeof<a>)
+// end of [implement]
+
+implement array_ptr_iforeach_fun_tsz
+  {a} {v} {n} (pf_v | A, f, asz, tsz) = let
+  viewtypedef fun0_t = (!v | sizeLt n, &a) -<fun> void
+  viewtypedef fun1_t = (!v | sizeLt n, &a, !ptr) -<fun> void
+  val f = __cast (f) where {
+    extern fun __cast (f: fun0_t):<> fun1_t
+  }
+in
+  array_ptr_iforeach_fun_tsz__main
+    {a} {v} {ptr} (pf_v | A, f, asz, tsz, null)
+  // end of [array_ptr_foreach_...]
+end // end of [array_ptr_foreach_fun_tsz]
+
+(* ****** ****** *)
+
+implement{a}
+  array_ptr_iforeach_clo (pf_v | A, f, asz) =
+  array_ptr_iforeach_clo_tsz {a} (pf_v | A, f, asz, sizeof<a>)
+// end of [implement]
 
 implement array_ptr_iforeach_clo_tsz
   {a} {v} {n} (pf_v | A, f, asz, tsz) = let

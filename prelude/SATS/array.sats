@@ -407,6 +407,33 @@ fun array_ptr_foreach_fun_tsz__main
   = "atspre_array_ptr_foreach_fun_tsz__main"
 // end of [fun]
 
+//
+
+fun{a:viewt@ype}
+  array_ptr_foreach_fun
+  {v:view} {n:nat} (
+    pf: !v
+  | base: &(@[a][n]), f: (!v | &a) -<fun> void, asz: size_t n
+  ) :<> void
+// end of [fun]
+
+fun array_ptr_foreach_fun_tsz
+  {a:viewt@ype} {v:view} {n:nat} (
+    pf: !v
+  | base: &(@[a][n]), f: (!v | &a) -<fun> void, asz: size_t n, tsz: sizeof_t a
+  ) :<> void
+// end of [fun]
+
+//
+
+fun{a:viewt@ype}
+  array_ptr_foreach_clo
+  {v:view} {n:nat} (
+    pf: !v
+  | base: &(@[a][n]), f: &(!v | &a) -<clo> void, asz: size_t n
+  ) :<> void
+// end of [fun]
+
 fun array_ptr_foreach_clo_tsz
   {a:viewt@ype} {v:view} {n:nat} (
     pf: !v
@@ -431,6 +458,35 @@ fun array_ptr_iforeach_fun_tsz__main
   , env: !vt
   ) :<> void
   = "atspre_array_ptr_iforeach_fun_tsz__main"
+
+//
+
+fun{a:viewt@ype}
+  array_ptr_iforeach_fun
+  {v:view} {n:nat} (
+    pf: !v
+  | base: &(@[a][n])
+  , f: (!v | sizeLt n, &a) -<fun> void, asz: size_t n
+  ) :<> void
+// end of [fun]
+
+fun array_ptr_iforeach_fun_tsz
+  {a:viewt@ype} {v:view} {n:nat} (
+    pf: !v
+  | base: &(@[a][n])
+  , f: (!v | sizeLt n, &a) -<fun> void, asz: size_t n, tsz: sizeof_t a
+  ) :<> void
+// end of [fun]
+
+//
+
+fun{a:viewt@ype} array_ptr_iforeach_clo
+  {v:view} {n:nat} (
+    pf: !v
+  | base: &(@[a][n])
+  , f: &(!v | sizeLt n, &a) -<clo> void, asz: size_t n
+  ) :<> void
+// end of [fun]
 
 fun array_ptr_iforeach_clo_tsz
   {a:viewt@ype} {v:view} {n:nat} (
