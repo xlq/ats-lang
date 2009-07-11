@@ -832,7 +832,7 @@ fun GEMAT_ptr_foreach_fun_tsz__main
   , tsz: sizeof_t a
   , env: !vt
   ) :<> void
-// end of [GEMAT_foreach_fun_tsz__main]
+// end of [GEMAT_ptr_foreach_fun_tsz__main]
 
 fun GEMAT_ptr_foreach_fun_tsz
   {a:viewt@ype} {v:view}
@@ -844,7 +844,7 @@ fun GEMAT_ptr_foreach_fun_tsz
   , m: int m, n: int n, ld: int ld
   , tsz: sizeof_t a
   ) :<> void
-// end of [GEMAT_foreach_fun_tsz]
+// end of [GEMAT_ptr_foreach_fun_tsz]
 
 fun GEMAT_ptr_foreach_clo_tsz
   {a:viewt@ype} {v:view}
@@ -856,7 +856,7 @@ fun GEMAT_ptr_foreach_clo_tsz
   , m: int m, n: int n, ld: int ld
   , tsz: sizeof_t a
   ) :<> void
-// end of [GEMAT_foreach_clo_tsz]
+// end of [GEMAT_ptr_foreach_clo_tsz]
 
 (* ****** ****** *)
 
@@ -871,7 +871,7 @@ fun GEMAT_ptr_iforeach_fun_tsz__main
   , tsz: sizeof_t a
   , env: !vt
   ) :<> void
-// end of [GEMAT_iforeach_fun_tsz__main]
+// end of [GEMAT_ptr_iforeach_fun_tsz__main]
 
 fun GEMAT_ptr_iforeach_fun_tsz
   {a:viewt@ype} {v:view}
@@ -883,7 +883,7 @@ fun GEMAT_ptr_iforeach_fun_tsz
   , m: int m, n: int n, ld: int ld
   , tsz: sizeof_t a
   ) :<> void
-// end of [GEMAT_iforeach_fun_tsz]
+// end of [GEMAT_ptr_iforeach_fun_tsz]
 
 fun GEMAT_ptr_iforeach_clo_tsz
   {a:viewt@ype} {v:view}
@@ -895,7 +895,7 @@ fun GEMAT_ptr_iforeach_clo_tsz
   , m: int m, n: int n, ld: int ld
   , tsz: sizeof_t a
   ) :<> void
-// end of [GEMAT_iforeach_clo_tsz]
+// end of [GEMAT_ptr_iforeach_clo_tsz]
 
 (* ****** ****** *)
 
