@@ -49,6 +49,64 @@ implement{a} GEVEC_ptr_set_elt_at (V, d, i, x) = () where {
 
 (* ****** ****** *)
 
+implement
+  GEVEC_ptr_foreach_fun_tsz__main
+    {a} {v} {vt} {n} {d}
+    (pf | base, f, vsz, inc, tsz, env) = let
+  fun loop {l:addr} {n:nat} .<n>. (
+      pf: !v
+    , pf_vec: !GEVEC_v (a, n, d, l)
+    | p: ptr l, n: int n, env: !vt
+    ) :<cloref> void =
+    if n > 0 then let
+      prval (pf_at, fpf_vec) = GEVEC_v_uncons (pf_vec)
+      val () = f (pf | !p, env)
+      prval () = pf_vec := fpf_vec (pf_at)
+      val (pf1_vec, pf2_vec, fpf_vec | p1) =
+        GEVEC_ptr_split_tsz (pf_vec | p, inc, 1, tsz)
+      val () = loop (pf, pf2_vec | p1, n-1, env)
+      prval () = pf_vec := fpf_vec (pf1_vec, pf2_vec)
+    in
+      // nothing
+    end // end of [if]
+  (* end of [loop] *)
+in
+  loop (pf, view@ base | &base, vsz, env)
+end // end of [GEVEC_ptr_foreach_fun_tsz__main]
+
+//
+
+implement GEVEC_ptr_foreach_fun_tsz
+  {a} {v} (pf | base, f, n, inc, tsz) = let
+  val f = coerce (f) where { extern castfn
+    coerce (f: (!v | &a) -<> void) :<> (!v | &a, !ptr) -<> void
+  } // end of [where]
+in
+  GEVEC_ptr_foreach_fun_tsz__main (pf | base, f, n, inc, tsz, null)
+end // end of [GEVEC_foreach_fun_tsz]
+
+//
+
+implement GEVEC_ptr_foreach_clo_tsz
+  {a} {v} (pf_v | base, f, vsz, inc, tsz) = let
+  stavar l_f: addr
+  val p_f: ptr l_f = &f
+  typedef clo_t = (!v | &a) -<clo> void
+  viewdef V = @(v, clo_t @ l_f)
+  fn app (pf: !V | x: &a, p_f: !ptr l_f):<> void = let
+    prval (pf1, pf2) = pf in !p_f (pf1 | x); pf := @(pf1, pf2)
+  end // end of [app]
+  prval pf = (pf_v, view@ f)
+  val () = GEVEC_ptr_foreach_fun_tsz__main
+    {a} {V} {ptr l_f} (pf | base, app, vsz, inc, tsz, p_f)
+  prval (pf1, pf2) = pf
+  prval () = (pf_v := pf1; view@ f := pf2)
+in
+  // empty
+end // end of [GEVEC_ptr_foreach_clo]
+
+(* ****** ****** *)
+
 implement MATVECINC_get (pf | x1, x2, ld) =
   case+ (x1, x2) of
   | (ORDERrow (), ORDERrow ()) => let
@@ -265,6 +323,77 @@ implement{a} GEMAT_ptr_split2x2
   (pf_mat | p_mat, ord, lda, i, j) =
   GEMAT_ptr_split2x2_tsz {a} (pf_mat | p_mat, ord, lda, i, j, sizeof<a>)
 // end of [GEMAT_ptr_split2x2]
+
+(* ****** ****** *)
+
+implement
+GEMAT_ptr_foreach_fun_tsz__main
+  {a} {v} {vt} {ord1,ord2} {m,n} {ld}
+  (pf | M, f, ord1, ord2, m, n, ld, tsz, env) = let
+  val tsz = sizeof<a>
+  fun loop_row {n > 0}
+    {mi:nat | mi <= m} {l:addr} .<mi>. (
+    pf: !v
+  , pf_mat: !GEMAT_v (a, mi, n, ord1, ld, l)
+  | p: ptr l
+  , mi: int mi
+  , env: !vt
+  ) :<cloref> void =
+  if mi > 0 then let
+    val (pf1_mat, pf2_mat, fpf | p1, p2) =
+      GEMAT_ptr_split2x1_tsz {a} (pf_mat | p, ord1, ld, 1, tsz)
+    prval (pf1_inc, pf1_vec, fpf1_mat) =
+      GEVEC_v_of_GEMAT_v_row (pf1_mat, ord1, ld)
+    val inc = MATVECINC_get (pf1_inc | ORDERrow, ord1, ld)
+    val () = GEVEC_ptr_foreach_fun_tsz__main
+      {a} {v} (pf | !p1, f, n, inc, tsz, env) where {
+    } // end of [val]
+    prval () = pf1_mat := fpf1_mat (pf1_vec)
+    val () = loop_row (pf, pf2_mat | p2, mi-1, env)
+    prval () = pf_mat := fpf (pf1_mat, pf2_mat)
+  in
+    // nothing
+  end // end of [if]
+  fun loop_col {m > 0}
+    {ni:nat | ni <= n} {l:addr} .<ni>. (
+    pf: !v
+  , pf_mat: !GEMAT_v (a, m, ni, ord1, ld, l)
+  | p: ptr l
+  , ni: int ni
+  , env: !vt
+  ) :<cloref> void =
+  if ni > 0 then let
+    val (pf1_mat, pf2_mat, fpf | p1, p2) =
+      GEMAT_ptr_split1x2_tsz {a} (pf_mat | p, ord1, ld, 1, tsz)
+    prval (pf1_inc, pf1_vec, fpf1_mat) =
+      GEVEC_v_of_GEMAT_v_col (pf1_mat, ord1, ld)
+    val inc = MATVECINC_get (pf1_inc | ORDERcol, ord1, ld)
+    val () = GEVEC_ptr_foreach_fun_tsz__main
+      {a} {v} (pf | !p1, f, m, inc, tsz, env) where {
+    } // end of [val]
+    prval () = pf1_mat := fpf1_mat (pf1_vec)
+    val () = loop_col (pf, pf2_mat | p2, ni-1, env)
+    prval () = pf_mat := fpf (pf1_mat, pf2_mat)
+  in
+    // nothing
+  end // end of [if]
+in
+  case+ ord2 of
+  | ORDERrow () => if n > 0 then let
+      val () = loop_row (pf, view@ M | &M, m, env)
+    in
+      // nothing
+    end else begin
+      // nothing
+    end // end of [ORDERcol]
+  | ORDERcol () => if m > 0 then let
+      val () = loop_col (pf, view@ M | &M, n, env)
+    in
+      // nothing
+    end else begin
+      // nothing
+    end // end of [ORDERcol]
+end (* end of [GEMAT_ptr_foreach_fun_tsz__main] *)
 
 (* ****** ****** *)
 

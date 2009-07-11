@@ -167,33 +167,35 @@ prfun GBMAT_v_of_fmatrix_v
 
 (* ****** ****** *)
 
-//
-// loop proceeds column by column
-//
 fun fmatrix_ptr_foreach_fun_tsz__main
-  {a:viewt@ype} {v:view} {vt:viewtype} {m,n:nat} (
+  {a:viewt@ype}
+  {v:view} {vt:viewtype}
+  {ord:order} {m,n:nat} (
     pf: !v
   | M: &fmatrix (a, m, n)
-  , f: (!v | &a, !vt) -<fun> void, m: int m, n: int n
+  , f: (!v | &a, !vt) -<fun> void
+  , ord: ORDER ord, m: int m, n: int n
   , tsz: sizeof_t a
   , env: !vt
   ) :<> void
 // end of [fmatrix_foreach_fun_tsz__main]
 
 fun fmatrix_ptr_foreach_fun_tsz
-  {a:viewt@ype} {v:view} {m,n:nat} (
+  {a:viewt@ype} {v:view} {ord:order} {m,n:nat} (
     pf: !v
   | M: &fmatrix (a, m, n)
-  , f: (!v | &a) -<fun> void, m: int m, n: int n
+  , f: (!v | &a) -<fun> void
+  , ord: ORDER ord, m: int m, n: int n
   , tsz: sizeof_t a
   ) :<> void
 // end of [fmatrix_foreach_fun_tsz]
 
 fun fmatrix_ptr_foreach_clo_tsz
-  {a:viewt@ype} {v:view} {m,n:nat} (
+  {a:viewt@ype} {v:view} {ord:order} {m,n:nat} (
     pf: !v
   | M: &fmatrix (a, m, n)
-  , f: &(!v | &a) -<clo> void, m: int m, n: int n
+  , f: &(!v | &a) -<clo> void
+  , ord: ORDER ord, m: int m, n: int n
   , tsz: sizeof_t a
   ) :<> void
 // end of [fmatrix_foreach_clo_tsz]

@@ -143,58 +143,32 @@ implement{a}
 // loop proceeds column by column
 implement
 fmatrix_ptr_foreach_fun_tsz__main
-  {a} {v} {vt} {m,n} (pf | M, f, m, n, tsz, env) = let
-  val tsz = sizeof<a>
-  fun loop {m:pos}
-    {ni:nat | ni <= n} {l:addr} .<ni>. (
-    pf_mat: !GEMAT_v (a, m, ni, col, m, l)
-  , pf: !v
-  | p: ptr l
-  , f: (!v | &a, !vt) -<fun> void, m: int m, ni: int ni
-  , tsz: sizeof_t a
-  , env: !vt
-  ) :<> void =
-  if ni > 0 then let
-    val (pf1_mat, pf2_mat, fpf | p1, p2) =
-      GEMAT_ptr_split1x2_tsz {a} (pf_mat | p, ORDERcol, m, 1, tsz)
-    prval (pf1_arr, fpf1_mat) = array_v_of_GEMAT_v_col (pf1_mat)
-    val () = array_ptr_foreach_fun_tsz__main
-      {a} {v} (pf | !p1, f, size1_of_int1 m, tsz, env) where {
-    } // end of [val]
-    prval () = pf1_mat := fpf1_mat (pf1_arr)
-    val () = loop (pf2_mat, pf | p2, f, m, ni-1, tsz, env)
-    prval () = pf_mat := fpf (pf1_mat, pf2_mat)
-  in
-    // nothing
-  end // end of [if]
+  {a} {v} {vt} {ord} {m,n}
+  (pf | M, f, ord, m, n, tsz, env) = if m > 0 then let
+  prval (pf_mat, fpf) = GEMAT_v_of_fmatrix_v {a} (view@ M)
+  val () = GEMAT_ptr_foreach_fun_tsz__main
+    (pf | M, f, ORDERcol, ord, m, n, m, tsz, env)
+  prval () = view@ M := fpf (pf_mat)
 in
-  if m > 0 then let
-    prval (pf_mat, fpf) = GEMAT_v_of_fmatrix_v {a} (view@ M)
-    val () = loop (pf_mat, pf | &M, f, m, n, tsz, env)
-    prval () = view@ M := fpf (pf_mat)
-  in
-    // nothing
-  end else begin
-    // nothing
-  end // end of [if]
+  // nothing
 end (* end of [fmatrix_ptr_foreach_fun_tsz__main] *)
 
 (* ****** ****** *)
 
 implement fmatrix_ptr_foreach_fun_tsz
-  {a} {v} (pf | M, f, m, n, tsz) = let
+  {a} {v} (pf | M, f, ord, m, n, tsz) = let
   val f = coerce (f) where { extern castfn
     coerce (f: (!v | &a) -<> void) :<> (!v | &a, !ptr) -<> void
   } // end of [where]
 in
-  fmatrix_ptr_foreach_fun_tsz__main (pf | M, f, m, n, tsz, null)
-end // end of [matrix_foreach_fun]
+  fmatrix_ptr_foreach_fun_tsz__main (pf | M, f, ord, m, n, tsz, null)
+end // end of [fmatrix_foreach_fun_tsz]
 
 (* ****** ****** *)
 
 implement
 fmatrix_ptr_foreach_clo_tsz
-  {a} {v} (pf_v | M, f, m, n, tsz) = let
+  {a} {v} (pf_v | M, f, ord, m, n, tsz) = let
   stavar l_f: addr
   val p_f: ptr l_f = &f
   typedef clo_t = (!v | &a) -<clo> void
@@ -204,12 +178,12 @@ fmatrix_ptr_foreach_clo_tsz
   end // end of [app]
   prval pf = (pf_v, view@ f)
   val () = fmatrix_ptr_foreach_fun_tsz__main
-    {a} {V} {ptr l_f} (pf | M, app, m, n, tsz, p_f)
+    {a} {V} {ptr l_f} (pf | M, app, ord, m, n, tsz, p_f)
   prval (pf1, pf2) = pf
   prval () = (pf_v := pf1; view@ f := pf2)
 in
   // empty
-end // end of [fmatrix_ptr_foreach_clo]
+end // end of [fmatrix_ptr_foreach_clo_tsz]
 
 (* ****** ****** *)
 
