@@ -101,7 +101,7 @@ fun{a:viewt@ype} fmatrix_ptr_takeout
     a @ l
   , a @ l -<lin,prf> fmatrix_v (a, m, n, l0)
   | ptr l
-  ) // end of [fmatrix_ptr_takeout]
+  )
 (* end of [fmatrix_ptr_takeout] *)
 
 fun fmatrix_ptr_takeout_tsz {a:viewt@ype}
