@@ -112,8 +112,7 @@ fun fmatrix_ptr_takeout_tsz {a:viewt@ype}
     a @ l
   , a @ l -<lin,prf> fmatrix_v (a, m, n, l0)
   | ptr l
-  ) // end of [fmatrix_ptr_takeout_tsz]
-    = "atslib_fmatrix_ptr_takeout_tsz"
+  ) = "atslib_fmatrix_ptr_takeout_tsz"
 (* end of [fmatrix_ptr_takeout_tsz] *)
 
 (* ****** ****** *)
@@ -151,9 +150,20 @@ prfun GEMAT_v_of_fmatrix_v
     pf_mat: fmatrix_v (a, m, n, l)
   ) :<> (
     GEMAT_v (a, m, n, col, m, l)
-  , GEMAT_v (a, m, n, col, m, l) -> fmatrix_v (a, m, n, l)
+  , GEMAT_v (a, m, n, col, m, l) -<prf> fmatrix_v (a, m, n, l)
   )
 // end of [GEMAT_v_of_fmatrix_v]
+
+(* ****** ****** *)
+
+prfun GBMAT_v_of_fmatrix_v
+  {a:viewt@ype} {m,n,k,kl,ku:nat| k == kl+ku+1} {l:addr} (
+    pf : fmatrix_v (a, k, n, l), m : int m, kl : int kl, ku : int ku
+  ) :<> (
+    GBMAT_v (a, m, n, col, kl, ku, k, l)
+  , GBMAT_v (a, m, n, col, kl, ku, k, l) -<prf> fmatrix_v (a, k, n, l)
+  )
+// end of [GEBAT_v_of_fmatrix_v]
 
 (* ****** ****** *)
 
@@ -186,7 +196,7 @@ fun fmatrix_ptr_foreach_clo_tsz
   , f: &(!v | &a) -<clo> void, m: int m, n: int n
   , tsz: sizeof_t a
   ) :<> void
-// end of [fmatrix_foreach_fun_tsz]
+// end of [fmatrix_foreach_clo_tsz]
 
 (* ****** ****** *)
 
