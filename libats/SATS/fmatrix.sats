@@ -202,4 +202,39 @@ fun fmatrix_ptr_foreach_clo_tsz
 
 (* ****** ****** *)
 
+fun fmatrix_ptr_iforeach_fun_tsz__main
+  {a:viewt@ype}
+  {v:view} {vt:viewtype}
+  {ord:order} {m,n:nat} (
+    pf: !v
+  | M: &fmatrix (a, m, n)
+  , f: (!v | natLt m, natLt n, &a, !vt) -<fun> void
+  , ord: ORDER ord, m: int m, n: int n
+  , tsz: sizeof_t a
+  , env: !vt
+  ) :<> void
+// end of [fmatrix_iforeach_fun_tsz__main]
+
+fun fmatrix_ptr_iforeach_fun_tsz
+  {a:viewt@ype} {v:view} {ord:order} {m,n:nat} (
+    pf: !v
+  | M: &fmatrix (a, m, n)
+  , f: (!v | natLt m, natLt n, &a) -<fun> void
+  , ord: ORDER ord, m: int m, n: int n
+  , tsz: sizeof_t a
+  ) :<> void
+// end of [fmatrix_iforeach_fun_tsz]
+
+fun fmatrix_ptr_iforeach_clo_tsz
+  {a:viewt@ype} {v:view} {ord:order} {m,n:nat} (
+    pf: !v
+  | M: &fmatrix (a, m, n)
+  , f: &(!v | natLt m, natLt n, &a) -<clo> void
+  , ord: ORDER ord, m: int m, n: int n
+  , tsz: sizeof_t a
+  ) :<> void
+// end of [fmatrix_iforeach_clo_tsz]
+
+(* ****** ****** *)
+
 (* end of [fmatrix.sats] *)

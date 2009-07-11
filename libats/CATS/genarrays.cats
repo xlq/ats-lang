@@ -18,6 +18,17 @@
 
 static inline
 ats_ptr_type
+atslib_GEVEC_ptr_takeout_tsz (
+  ats_ptr_type p_vec
+, ats_int_type d
+, ats_int_type i
+, ats_size_type tsz
+) {
+  return ((char*)p_vec) + i * (d * tsz) ;
+} /* end of [atslib_GEVEC_ptr_takeout_tsz] */
+
+static inline
+ats_ptr_type
 atslib_GEVEC_ptr_split_tsz (
   ats_ptr_type p_vec
 , ats_int_type d

@@ -146,6 +146,52 @@ fun GEVEC_ptr_foreach_clo_tsz
 
 (* ****** ****** *)
 
+fun GEVEC_ptr_iforeach_fun_tsz__main
+  {a:viewt@ype} {v:view} {vt:viewtype} {n:nat} {d:inc} (
+    pf: !v
+  | base: &GEVEC (a, n, d)
+  , f: (!v | natLt n, &a, !vt) -<> void
+  , vsz: int n
+  , inc: int d
+  , tsz: sizeof_t a
+  , env: !vt
+  ) :<> void
+  = "atslib_GEVEC_ptr_iforeach_fun_tsz__main"
+// end of [fun]
+
+fun GEVEC_ptr_iforeach_fun_tsz
+  {a:viewt@ype} {v:view} {n:nat} {d:inc} (
+    pf: !v
+  | base: &GEVEC (a, n, d)
+  , f: (!v | natLt n, &a) -<fun> void
+  , vsz: int n, inc: int d, tsz: sizeof_t a
+  ) :<> void
+// end of [fun]
+
+fun GEVEC_ptr_iforeach_clo_tsz__main
+  {a:viewt@ype} {v:view} {vt:viewtype} {n:nat} {d:inc} (
+    pf: !v
+  | base: &GEVEC (a, n, d)
+  , f: &(!v | natLt n, &a, !vt) -<clo> void
+  , vsz: int n
+  , inc: int d
+  , tsz: sizeof_t a
+  , env: !vt
+  ) :<> void
+  = "atslib_GEVEC_ptr_iforeach_clo_tsz__main"
+// end of [fun]
+
+fun GEVEC_ptr_iforeach_clo_tsz
+  {a:viewt@ype} {v:view} {n:nat} {d:inc} (
+    pf: !v
+  | base: &GEVEC (a, n, d)
+  , f: &(!v | natLt n, &a) -<clo> void
+  , vsz: int n, inc: int d, tsz: sizeof_t a
+  ) :<> void
+// end of [fun]
+
+(* ****** ****** *)
+
 datasort order =
   | row | col // row major / column major
 // end of [order]
@@ -252,7 +298,7 @@ dataprop sidedim_p (
 //
 
 // elt, row, col, ord, lda
-abst@ype GEMAT
+absviewt@ype GEMAT
   (a:viewt@ype+, m:int, n:int, ord:order, lda:int)
 // end of [GEMAT]
 
@@ -520,7 +566,7 @@ fun GEMAT_ptr_split2x2_tsz
 //
 
 // elt, row/col, ord, ul
-abst@ype TRMAT // dimension: n x n
+absviewt@ype TRMAT // dimension: n x n
   (a:viewt@ype+, n:int, ord: order, ul: uplo, dg: diag, lda: int)
 // end of [TRMAT]
 
@@ -550,7 +596,7 @@ prfun TRMAT_v_of_GEMAT_v
 //
 
 // elt, row/col, ord, ul
-abst@ype SYMAT // dimension: n x n
+absviewt@ype SYMAT // dimension: n x n
   (a:viewt@ype+, n:int, ord: order, ul: uplo, lda: int)
 // end of [SYMAT]
 
@@ -578,7 +624,7 @@ prfun SYMAT_v_of_GEMAT_v
 //
 
 // elt, row/col, ord, ul
-abst@ype HEMAT // dimension: n x n
+absviewt@ype HEMAT // dimension: n x n
   (a:viewt@ype+, n:int, ord: order, ul: uplo, lda: int)
 // end of [HEMAT]
 
@@ -628,7 +674,7 @@ prfun HEMAT_v_of_GEMAT_v
 //
 
 // elt, row, col, ord, lower-bandwidth, upper-bandwidth
-abst@ype GBMAT // dimension: m x n, lower-bandwidth: kl, upper-bandwidth: ku
+absviewt@ype GBMAT // dimension: m x n, lower-bandwidth: kl, upper-bandwidth: ku
   (a:viewt@ype+, m:int, n:int, ord: order, kl: int, ku: int, lda: int)
 // end of [GBMAT]
 
@@ -644,7 +690,7 @@ viewdef GBMAT_v
 //
 
 // elt, row/col, ord, ul, diag, bandwidth
-abst@ype TBMAT // dimension: n x n, bandwidth: k
+absviewt@ype TBMAT // dimension: n x n, bandwidth: k
   (a:viewt@ype+, n:int, ord: order, ul: uplo, dg: diag, k: int, lda: int)
 // end of [TBMAT]
 
@@ -659,7 +705,7 @@ viewdef TBMAT_v
 //
 
 // elt, row/col, ord, ul, diag
-abst@ype TPMAT // dimension: n x n
+absviewt@ype TPMAT // dimension: n x n
   (a:viewt@ype+, n:int, ord: order, ul: uplo, dg: diag)
 // end of [TPMAT]
 
@@ -684,11 +730,27 @@ prfun TPMAT_v_of_GEVEC_v
 (* ****** ****** *)
 
 //
+// Symmetric Band MATrix representation
+//
+
+// elt, row/col, ord, ul, band-width
+absviewt@ype SBMAT // dimension: n x n
+  (a:viewt@ype+, n:int, ord: order, ul: uplo, k:int, ld:int)
+// end of [SBMAT]
+
+viewdef SBMAT_v
+  (a:viewt@ype, n:int, ord: order, ul: uplo, k:int, ld:int, l: addr) =
+  SBMAT (a, n, ord, ul, k, ld) @ l
+// end of [SBMAT_v]
+
+(* ****** ****** *)
+
+//
 // Symmetric Packed MATrix representation
 //
 
 // elt, row/col, ord, ul, diag
-abst@ype SPMAT // dimension: n x n
+absviewt@ype SPMAT // dimension: n x n
   (a:viewt@ype+, n:int, ord: order, ul: uplo)
 // end of [SPMAT]
 
@@ -700,11 +762,41 @@ viewdef SPMAT_v
 (* ****** ****** *)
 
 //
+// Hermitian Band MATrix representation
+//
+
+// elt, row/col, ord, ul, band-width
+absviewt@ype HBMAT // dimension: n x n
+  (a:viewt@ype+, n:int, ord: order, ul: uplo, k:int, ld:int)
+// end of [HBMAT]
+
+viewdef HBMAT_v
+  (a:viewt@ype, n:int, ord: order, ul: uplo, k:int, ld:int, l: addr) =
+  HBMAT (a, n, ord, ul, k, ld) @ l
+// end of [HBMAT_v]
+
+prfun HBMAT_v_of_SBMAT_v
+  {a:t@ype} {n:nat}
+  {ord:order} {ul:uplo} {k:int} {ld:int} {l:addr} (
+    pf_typ: realtyp_p (a), pf_mat: SBMAT_v (a, n, ord, ul, k, ld, l)
+  ) :<> HBMAT_v (a, n, ord, ul, k, ld, l)
+// end of [HBMAT_v_of_SBMAT_v]
+
+prfun SBMAT_v_of_HBMAT_v
+  {a:t@ype} {n:nat}
+  {ord:order} {ul:uplo} {k:int} {ld:int} {l:addr} (
+    pf_typ: realtyp_p (a), pf_mat: HBMAT_v (a, n, ord, ul, k, ld, l)
+  ) :<> SBMAT_v (a, n, ord, ul, k, ld, l)
+// end of [SBMAT_v_of_HBMAT_v]
+
+(* ****** ****** *)
+
+//
 // Hermitian Packed MATrix representation
 //
 
 // elt, row/col, ord, ul, diag
-abst@ype HPMAT // dimension: n x n
+absviewt@ype HPMAT // dimension: n x n
   (a:viewt@ype+, n:int, ord: order, ul: uplo)
 // end of [HPMAT]
 
@@ -712,8 +804,6 @@ viewdef HPMAT_v
   (a:viewt@ype, n:int, ord: order, ul: uplo, l: addr) =
   HPMAT (a, n, ord, ul) @ l
 // end of [HPMAT_v]
-
-(* ****** ****** *)
 
 prfun HPMAT_v_of_SPMAT_v
   {a:t@ype} {n:nat}
@@ -767,6 +857,45 @@ fun GEMAT_ptr_foreach_clo_tsz
   , tsz: sizeof_t a
   ) :<> void
 // end of [GEMAT_foreach_clo_tsz]
+
+(* ****** ****** *)
+
+fun GEMAT_ptr_iforeach_fun_tsz__main
+  {a:viewt@ype} {v:view} {vt:viewtype}
+  {ord1,ord2:order} {m,n:nat} {ld:inc} (
+    pf: !v
+  | M: &GEMAT (a, m, n, ord1, ld)
+  , f: (!v | natLt m, natLt n, &a, !vt) -<fun> void
+  , ord1: ORDER ord1, ord2: ORDER ord2
+  , m: int m, n: int n, ld: int ld
+  , tsz: sizeof_t a
+  , env: !vt
+  ) :<> void
+// end of [GEMAT_iforeach_fun_tsz__main]
+
+fun GEMAT_ptr_iforeach_fun_tsz
+  {a:viewt@ype} {v:view}
+  {ord1,ord2:order} {m,n:nat} {ld:inc} (
+    pf: !v
+  | M: &GEMAT (a, m, n, ord1, ld)
+  , f: (!v | natLt m, natLt n, &a) -<fun> void
+  , ord1: ORDER ord1, ord2: ORDER ord2
+  , m: int m, n: int n, ld: int ld
+  , tsz: sizeof_t a
+  ) :<> void
+// end of [GEMAT_iforeach_fun_tsz]
+
+fun GEMAT_ptr_iforeach_clo_tsz
+  {a:viewt@ype} {v:view}
+  {ord1,ord2:order} {m,n:nat} {ld:inc} (
+    pf: !v
+  | M: &GEMAT (a, m, n, ord1, ld)
+  , f: &(!v | natLt m, natLt n, &a) -<clo> void
+  , ord1: ORDER ord1, ord2: ORDER ord2
+  , m: int m, n: int n, ld: int ld
+  , tsz: sizeof_t a
+  ) :<> void
+// end of [GEMAT_iforeach_clo_tsz]
 
 (* ****** ****** *)
 

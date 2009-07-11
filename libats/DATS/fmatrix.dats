@@ -109,15 +109,14 @@ implement // worth it???
 
 (* ****** ****** *)
 
-implement{a}
-  fmatrix_ptr_takeout (pf_mat | base, i, m, j) = begin
+implement{a} fmatrix_ptr_takeout
+  (pf_mat | base, i, m, j) = begin
   fmatrix_ptr_takeout_tsz {a} (pf_mat | base, i, m, j, sizeof<a>)
 end // end of [fmatrix_ptr_takeout]
 
 (* ****** ****** *)
 
-implement{a}
-  fmatrix_ptr_get_elt_at
+implement{a} fmatrix_ptr_get_elt_at
   (base, i, m, j) = x where {
   prval pf_mat = view@ base
   val (pf_elt, fpf_mat | p_elt) =
@@ -127,8 +126,7 @@ implement{a}
   prval () = view@ base := fpf_mat (pf_elt)
 } // end of [fmatrix_ptr_get_elt_at]
 
-implement{a}
-  fmatrix_ptr_set_elt_at
+implement{a} fmatrix_ptr_set_elt_at
   (base, i, m, j, x) = () where {
   prval pf_mat = view@ base
   val (pf_elt, fpf_mat | p_elt) =
@@ -141,8 +139,7 @@ implement{a}
 (* ****** ****** *)
 
 // loop proceeds column by column
-implement
-fmatrix_ptr_foreach_fun_tsz__main
+implement fmatrix_ptr_foreach_fun_tsz__main
   {a} {v} {vt} {ord} {m,n}
   (pf | M, f, ord, m, n, tsz, env) = if m > 0 then let
   prval (pf_mat, fpf) = GEMAT_v_of_fmatrix_v {a} (view@ M)
@@ -162,12 +159,11 @@ implement fmatrix_ptr_foreach_fun_tsz
   } // end of [where]
 in
   fmatrix_ptr_foreach_fun_tsz__main (pf | M, f, ord, m, n, tsz, null)
-end // end of [fmatrix_foreach_fun_tsz]
+end // end of [fmatrix_ptr_foreach_fun_tsz]
 
 (* ****** ****** *)
 
-implement
-fmatrix_ptr_foreach_clo_tsz
+implement fmatrix_ptr_foreach_clo_tsz
   {a} {v} (pf_v | M, f, ord, m, n, tsz) = let
   stavar l_f: addr
   val p_f: ptr l_f = &f
@@ -184,6 +180,46 @@ fmatrix_ptr_foreach_clo_tsz
 in
   // empty
 end // end of [fmatrix_ptr_foreach_clo_tsz]
+
+(* ****** ****** *)
+
+// loop proceeds column by column
+implement fmatrix_ptr_iforeach_fun_tsz__main
+  {a} {v} {vt} {ord} {m,n}
+  (pf | M, f, ord, m, n, tsz, env) = if m > 0 then let
+  prval (pf_mat, fpf) = GEMAT_v_of_fmatrix_v {a} (view@ M)
+  val () = GEMAT_ptr_iforeach_fun_tsz__main
+    (pf | M, f, ORDERcol, ord, m, n, m, tsz, env)
+  prval () = view@ M := fpf (pf_mat)
+in
+  // nothing
+end (* end of [fmatrix_ptr_iforeach_fun_tsz__main] *)
+
+(* ****** ****** *)
+
+implement fmatrix_ptr_iforeach_fun_tsz
+  {a} {v} {ord} {m,n}
+  (pf | M, f, ord, m, n, tsz) = if m > 0 then let
+  prval (pf_mat, fpf) = GEMAT_v_of_fmatrix_v {a} (view@ M)
+  val () = GEMAT_ptr_iforeach_fun_tsz
+    (pf | M, f, ORDERcol, ord, m, n, m, tsz)
+  prval () = view@ M := fpf (pf_mat)
+in
+  // nothing
+end (* end of [fmatrix_ptr_iforeach_fun_tsz] *)
+
+(* ****** ****** *)
+
+implement fmatrix_ptr_iforeach_clo_tsz
+  {a} {v} {ord} {m,n}
+  (pf | M, f, ord, m, n, tsz) = if m > 0 then let
+  prval (pf_mat, fpf) = GEMAT_v_of_fmatrix_v {a} (view@ M)
+  val () = GEMAT_ptr_iforeach_clo_tsz
+    (pf | M, f, ORDERcol, ord, m, n, m, tsz)
+  prval () = view@ M := fpf (pf_mat)
+in
+  // nothing
+end (* end of [fmatrix_ptr_iforeach_fun_tsz] *)
 
 (* ****** ****** *)
 
