@@ -11,8 +11,13 @@ ATSCC="$(ATSHOME)"/bin/atscc
 
 ######
 
+checkall:: twentyfour cleanall
+
+######
+
 twentyfour: twentyfour.dats rational.dats rational.sats
-	$(ATSCC) $(GCFLAG) -o twentyfour -O3 twentyfour.dats rational.dats rational.sats
+	$(ATSCC) $(GCFLAG) -o twentyfour -O3 twentyfour.dats rational.dats rational.sats && \
+        ./twentyfour
 
 ######
 
