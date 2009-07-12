@@ -206,4 +206,20 @@ is properly marked as a GC root (if needed)?
 
 ######
 
+Saturday: July 11, 2009 (HX)
+
+STATUS: no solution yet
+
+How to make sure the sizeof<a> does not get used in the following
+situation:
+
+fun f {a}
+  (...) = let
+  val tsz = sizeof<a> // currently this always equals sizeof<void>
+in
+  ...
+end // end of [fun]
+
+######
+
  ------------------ end of [BUGS.txt] -------------------
