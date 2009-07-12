@@ -717,10 +717,13 @@ viewdef TPMAT_v
 (* ****** ****** *)
 
 prfun TPMAT_v_of_GEVEC_v
-  {a:viewt@ype} {n,m:nat}
+  {a:viewt@ype} {m,n:nat}
   {ord:order} {ul:uplo} {dg:diag}
-  {lda:pos} {l:addr} (
-    pf_mul : MUL (n, n+1, 2*m), pf: GEVEC_v (a, m, 1, l)
+  {l:addr} (
+    pf_mul: MUL (n, n+1, m+m)
+  , pf_vec: GEVEC_v (a, m, 1, l)
+  , ord: ORDER (ord)
+  , ul: UPLO (ul), dg: DIAG (dg)
   ) :<> (
     TPMAT_v (a, n, ord, ul, dg, l)
   , TPMAT_v (a, n, ord, ul, dg, l) -<prf> GEVEC_v (a, m, 1, l)
