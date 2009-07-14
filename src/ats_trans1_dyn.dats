@@ -1169,13 +1169,13 @@ fun aux_item (d0e0: d0exp): d1expitm = let
       in
         $Fix.ITEMatm (d1exp_while (loc0, inv, d1e_test, d1e_body))
       end // end of [D0Ewhile]
-(*
+// (*
     | _ => begin
         prerr_loc_error1 d0e0.d0exp_loc;
         prerr ": d0exp_tr: not available yet"; prerr_newline ();
         $Err.abort {d1expitm} ()
       end // end of [_]
-*)
+// *)
 end // end of [aux_item]
 
 and aux_itemlst (d0e0: d0exp): d1expitmlst = let
@@ -1679,13 +1679,13 @@ implement d0ec_tr d0c0 = begin
     in
       i0nclude_tr (d0c0.d0ec_loc, stadyn, filename)
     end // end of [D0Cinclude]
-(*
+// (*
   | _ => begin
       prerr_loc_error1 d0c0.d0ec_loc;
       prerr ": d0ec_tr: not available yet.\n";
       $Err.abort {d1ec} ()
     end // end of [_]
-*)
+// *)
 end // end of [d0ec_tr]
 
 // [$Lst.list_map_fun] is tail-recursive!

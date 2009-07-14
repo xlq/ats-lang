@@ -71,7 +71,6 @@ staload "ats_syntax.sats"
 (* ****** ****** *)
 
 typedef loc_t = $Loc.location_t
-val location_none = $Loc.location_none
 val combine = $Loc.location_combine
 
 (* ****** ****** *)
@@ -398,7 +397,7 @@ implement prerr_s0rtq (q) = prerr_mac (fprint_s0rtq, q)
 (* ****** ****** *)
 
 implement s0rtq_none () = '{
-  s0rtq_loc= location_none, s0rtq_node= S0RTQnone ()
+  s0rtq_loc= $Loc.location_none, s0rtq_node= S0RTQnone ()
 }
 
 implement s0rtq_str (s) = '{
@@ -684,7 +683,7 @@ implement prerr_s0taq (q) = prerr_mac (fprint_s0taq, q)
 (* ****** ****** *)
 
 implement s0taq_none () = '{
-  s0taq_loc= location_none, s0taq_node= S0TAQnone ()
+  s0taq_loc= $Loc.location_none, s0taq_node= S0TAQnone ()
 }
 
 implement s0taq_fildot (fname) =
@@ -735,7 +734,7 @@ implement prerr_d0ynq (q) = prerr_mac (fprint_d0ynq, q)
 (* ****** ****** *)
 
 implement d0ynq_none () = '{
-  d0ynq_loc= location_none, d0ynq_node= D0YNQnone ()
+  d0ynq_loc= $Loc.location_none, d0ynq_node= D0YNQnone ()
 }
 
 implement d0ynq_fildot (fname) = '{
@@ -859,6 +858,32 @@ in '{
 
 (* ****** ****** *)
 
+// for handling template ids
+fn gtlt_t1mps0expseqseq_cons_loc (
+    loc0: loc_t, s0es: s0explst, ts0ess: t1mps0explstlst
+  ) : t1mps0explstlst = let
+  fun aux
+    (loc0: loc_t, s0e: s0exp, s0es: s0explst): loc_t =
+    case+ s0es of
+    | list_cons (s0e, s0es) => aux (loc0, s0e, s0es)
+    | list_nil () => combine (loc0, s0e.s0exp_loc)
+  // end of [aux]
+  val loc = (case+ s0es of
+    | list_cons (s0e, s0es) => aux (loc0, s0e, s0es)
+    | list_nil () => loc0
+  ) : loc_t // end of [val]
+in
+  T1MPS0EXPLSTLSTcons (loc, s0es, ts0ess)
+end // end of [gtlt_t1mps0expseqseq_cons_loc]
+
+implement gtlt_t1mps0expseqseq_nil () = T1MPS0EXPLSTLSTnil ()
+
+implement gtlt_t1mps0expseqseq_cons_tok (t, s0es, ts0ess) =
+  gtlt_t1mps0expseqseq_cons_loc (t.t0kn_loc, s0es, ts0ess)
+// end of [gtltt1mps0expseqseq_cons_tok]
+
+(* ****** ****** *)
+
 (* static expressions *)
 
 implement s0exp_ann (s0e, s0t) = let
@@ -971,6 +996,14 @@ in '{
   s0exp_loc= loc, s0exp_node= S0Estruct ls0es
 } end // end of [s0exp_struct]
 
+implement s0exp_tmpid (qid, arg, args, t_gt) = let
+  val loc = combine (qid.tmpqi0de_loc, t_gt.t0kn_loc)
+  val loc0 = $Loc.location_end_make loc
+  val args = gtlt_t1mps0expseqseq_cons_loc (loc0, arg, args) 
+in
+  '{ s0exp_loc= loc, s0exp_node= S0Etmpid (qid, args) }
+end // end of [s0exp_tmpid]
+
 implement s0exp_tyarr (t_beg, elt, ind) = let
   val loc = combine (t_beg.t0kn_loc, ind.s0arrind_loc)
 in '{
@@ -1039,31 +1072,6 @@ implement s0arrind_make_sing (s0es, t_rbracket) = '{
 implement s0arrind_make_cons (s0es, ind) = '{
   s0arrind_loc= ind.s0arrind_loc, s0arrind_ind= cons (s0es, ind.s0arrind_ind)
 } // end of [s0arrind_make_cons]
-
-(* ****** ****** *)
-
-implement gtlt_t1mps0expseqseq_nil () = T1MPS0EXPLSTLSTnil ()
-
-fn gtlt_t1mps0expseqseq_cons_loc (
-    loc0: loc_t, s0es: s0explst, ts0ess: t1mps0explstlst
-  ) : t1mps0explstlst = let
-  fun aux
-    (loc0: loc_t, s0e: s0exp, s0es: s0explst): loc_t =
-    case+ s0es of
-    | list_cons (s0e, s0es) => aux (loc0, s0e, s0es)
-    | list_nil () => combine (loc0, s0e.s0exp_loc)
-  // end of [aux]
-  val loc = (case+ s0es of
-    | list_cons (s0e, s0es) => aux (loc0, s0e, s0es)
-    | list_nil () => loc0
-  ) : loc_t // end of [val]
-in
-  T1MPS0EXPLSTLSTcons (loc, s0es, ts0ess)
-end // end of [gtlt_t1mps0expseqseq_cons_loc]
-
-implement gtlt_t1mps0expseqseq_cons_tok (t, s0es, ts0ess) =
-  gtlt_t1mps0expseqseq_cons_loc (t.t0kn_loc, s0es, ts0ess)
-// end of [gtltt1mps0expseqseq_cons_tok]
 
 (* ****** ****** *)
 
@@ -1349,6 +1357,30 @@ in '{
 
 implement e0xndeclst_nil () = list_nil ()
 implement e0xndeclst_cons (x, xs) = list_cons (x, xs)
+
+(* ****** ****** *)
+
+implement m0thdeclst_nil () = list_nil ()
+implement m0thdeclst_cons (x, xs) = list_cons (x, xs)
+
+implement m0thdec_make_mtd () = M0THDECmtd ()
+implement m0thdec_make_mtdimp () = M0THDECmtdimp ()
+
+implement m0thdec_make_val () = M0THDECval ()
+implement m0thdec_make_valimp () = M0THDECvalimp ()
+
+implement m0thdec_make_var () = M0THDECvar ()
+implement m0thdec_make_varimp () = M0THDECvarimp ()
+
+implement c0lassdec_make () = let
+  val fil = $Fil.the_filename_get ()
+in '{
+  c0lassdec_loc= $Loc.location_none
+, c0lassdec_fil= fil
+, c0lassdec_sym= $Sym.symbol_empty
+, c0lassdec_arg= None ()
+, c0lassdec_sup= nil ()
+} end // end of [c0lassdec_make]
 
 (* ****** ****** *)
 
@@ -1912,6 +1944,15 @@ end // end of [local]
 
 //
 
+implement d0exp_obj
+  (knd, t_beg, os0e, mtds, t_end) = let
+  val loc = combine (t_beg.t0kn_loc, t_end.t0kn_loc)
+in '{
+  d0exp_loc= loc, d0exp_node= D0Eobj (knd, os0e, mtds)
+} end // end of [d0exp_obj]
+
+//
+
 implement d0exp_opide (t_op, id) = let
   val loc = combine (t_op.t0kn_loc, id.i0de_loc)
 in '{
@@ -2062,11 +2103,11 @@ implement d0explst_nil () = nil ()
 implement d0explst_cons (x, xs) = cons (x, xs)
 implement d0explst_sing (x) = cons (x, nil ())
 
-implement labd0explst_nil () = LABD0EXPLSTnil ()
-implement labd0explst_cons (l, x, lxs) = LABD0EXPLSTcons (l, x, lxs)
-
 implement d0expopt_none () = None ()
 implement d0expopt_some (x) = Some (x)
+
+implement labd0explst_nil () = LABD0EXPLSTnil ()
+implement labd0explst_cons (l, x, lxs) = LABD0EXPLSTcons (l, x, lxs)
 
 implement d0explstopt_none () = None ()
 implement d0explstopt_some (xs) = Some (xs)
@@ -2535,6 +2576,22 @@ implement d0ec_saspdec (x) = '{
 
 (* ****** ****** *)
 
+implement d0ec_dcstdecs (k, arg, x0, xs) = let
+  fun aux_loc
+    (x0: d0cstdec, x: d0cstdec, xs: d0cstdeclst): loc_t =
+    case+ xs of
+    | cons (x, xs) => aux_loc (x0, x, xs)
+    | nil () => combine (x0.d0cstdec_loc, x.d0cstdec_loc)
+  // end of [aux_loc]
+  val loc = (case+ xs of
+    | cons (x, xs) => aux_loc (x0, x, xs) | nil () => x0.d0cstdec_loc
+  ) : loc_t
+in '{
+  d0ec_loc= loc, d0ec_node= D0Cdcstdecs (k, arg, x0, xs)
+} end // end of [d0ec_dcstdecs]
+
+(* ****** ****** *)
+
 implement d0ec_datdecs (dk, x0, xs, ys) = let
   fun aux1_loc
     (x0: d0atdec, x: d0atdec, xs: d0atdeclst): loc_t =
@@ -2575,19 +2632,21 @@ in '{
 
 (* ****** ****** *)
 
-implement d0ec_dcstdecs (k, arg, x0, xs) = let
-  fun aux_loc
-    (x0: d0cstdec, x: d0cstdec, xs: d0cstdeclst): loc_t =
-    case+ xs of
-    | cons (x, xs) => aux_loc (x0, x, xs)
-    | nil () => combine (x0.d0cstdec_loc, x.d0cstdec_loc)
-  // end of [aux_loc]
-  val loc = (case+ xs of
-    | cons (x, xs) => aux_loc (x0, x, xs) | nil () => x0.d0cstdec_loc
+implement d0ec_classdec
+  (t_class, arg, x, ys) = let
+  fun aux_loc (
+      loc: loc_t, y: s0expdef, ys: s0expdeflst
+    ) : loc_t = begin case+ ys of
+    | cons (y, ys) => aux_loc (loc, y, ys)
+    | nil () => combine (loc, y.s0expdef_loc)
+  end // end of [aux_loc]
+  val loc = t_class.t0kn_loc
+  val loc = (case+ ys of
+    | cons (y, ys) => aux_loc (loc, y, ys) | nil () => loc
   ) : loc_t
 in '{
-  d0ec_loc= loc, d0ec_node= D0Cdcstdecs (k, arg, x0, xs)
-} end // end of [d0ec_dcstdecs]
+  d0ec_loc= loc, d0ec_node= D0Cclassdec (arg, x, ys)
+} end // end of [d0ec_classdec]
 
 (* ****** ****** *)
 

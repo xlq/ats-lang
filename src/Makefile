@@ -173,7 +173,10 @@ LIBOBJS := -lgmp
 
 ######
 
-atsopt: $(GC_o) \
+#atsopt: \
+#  $(GC_o) \
+
+atsopt: \
   ats_main_dats.o \
   ats_lexer_lats_dats.o ats_lexer_sats.o \
   ats_grammar_yats.o \

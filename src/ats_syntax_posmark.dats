@@ -7,28 +7,27 @@
 (***********************************************************************)
 
 (*
- * ATS/Anairiats - Unleashing the Potential of Types!
- *
- * Copyright (C) 2002-2008 Hongwei Xi, Boston University
- *
- * All rights reserved
- *
- * ATS is free software;  you can  redistribute it and/or modify it under
- * the terms of  the GNU GENERAL PUBLIC LICENSE (GPL) as published by the
- * Free Software Foundation; either version 3, or (at  your  option)  any
- * later version.
- * 
- * ATS is distributed in the hope that it will be useful, but WITHOUT ANY
- * WARRANTY; without  even  the  implied  warranty  of MERCHANTABILITY or
- * FITNESS FOR A PARTICULAR PURPOSE.  See the  GNU General Public License
- * for more details.
- * 
- * You  should  have  received  a  copy of the GNU General Public License
- * along  with  ATS;  see the  file COPYING.  If not, please write to the
- * Free Software Foundation,  51 Franklin Street, Fifth Floor, Boston, MA
- * 02110-1301, USA.
- *
- *)
+** ATS/Anairiats - Unleashing the Potential of Types!
+**
+** Copyright (C) 2002-2008 Hongwei Xi, Boston University
+**
+** All rights reserved
+**
+** ATS is free software;  you can  redistribute it and/or modify it under
+** the terms of  the GNU GENERAL PUBLIC LICENSE (GPL) as published by the
+** Free Software Foundation; either version 3, or (at  your  option)  any
+** later version.
+** 
+** ATS is distributed in the hope that it will be useful, but WITHOUT ANY
+** WARRANTY; without  even  the  implied  warranty  of MERCHANTABILITY or
+** FITNESS FOR A PARTICULAR PURPOSE.  See the  GNU General Public License
+** for more details.
+** 
+** You  should  have  received  a  copy of the GNU General Public License
+** along  with  ATS;  see the  file COPYING.  If not, please write to the
+** Free Software Foundation,  51 Franklin Street, Fifth Floor, Boston, MA
+** 02110-1301, USA.
+*)
 
 (* ****** ****** *)
 
@@ -592,6 +591,13 @@ implement d0ec_posmark (d0c0) =
       s0expdef_posmark (d0c); s0expdeflst_posmark (d0cs)
     end // end of [D0Csexpdefs]
   | D0Csaspdec _ => staexploc_posmark (d0c0.d0ec_loc)
+  | D0Cdcstdecs (dk, s0qss, d0c, d0cs) => let
+      val isprf = dcstkind_is_proof dk
+      val () = if isprf then prfexploc_posmark (d0c0.d0ec_loc)
+      val () = s0qualstlst_posmark s0qss
+    in
+      d0cstdec_posmark d0c; d0cstdeclst_posmark d0cs
+    end // end of [D0Cdcstdecs]
   | D0Cdatdecs (dk, d0c1, d0cs1, d0cs2) => let
       val isprf = datakind_is_proof dk
       val () = if isprf then prfexploc_posmark (d0c0.d0ec_loc)
@@ -603,13 +609,7 @@ implement d0ec_posmark (d0c0) =
   | D0Cexndecs (d0c, d0cs) => begin
       e0xndec_posmark d0c; e0xndeclst_posmark d0cs
     end // end of [val]
-  | D0Cdcstdecs (dk, s0qss, d0c, d0cs) => let
-      val isprf = dcstkind_is_proof dk
-      val () = if isprf then prfexploc_posmark (d0c0.d0ec_loc)
-      val () = s0qualstlst_posmark s0qss
-    in
-      d0cstdec_posmark d0c; d0cstdeclst_posmark d0cs
-    end // end of [D0Cdcstdecs]
+  | D0Cclassdec _ => ()
   | D0Coverload _ => neuexploc_posmark (d0c0.d0ec_loc)
   | D0Cextype _ => staexploc_posmark (d0c0.d0ec_loc)
   | D0Cextval (_(*name*), d0e) => d0exp_posmark d0e
