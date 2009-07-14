@@ -96,7 +96,7 @@ fun fmatrix_ptr_initialize_clo_tsz
 fun{a:viewt@ype} fmatrix_ptr_takeout
   {m,n:int} {i,j:nat | i < m; j < n} {l0:addr} (
     pf_mat: fmatrix_v (a, m, n, l0)
-  | base: ptr l0, i: int i, m: int m, j: int j
+  | base: ptr l0, m: int m, i: int i, j: int j
   ) :<> [l:addr] (
     a @ l
   , a @ l -<lin,prf> fmatrix_v (a, m, n, l0)
@@ -107,7 +107,7 @@ fun{a:viewt@ype} fmatrix_ptr_takeout
 fun fmatrix_ptr_takeout_tsz {a:viewt@ype}
   {m,n:int} {i,j:nat | i < m; j < n} {l0:addr} (
     pf_mat: fmatrix_v (a, m, n, l0)
-  | base: ptr l0, i: int i, m: int m, j: int j, tsz: sizeof_t a
+  | base: ptr l0, m: int m, i: int i, j: int j, tsz: sizeof_t a
   ) :<> [l:addr] (
     a @ l
   , a @ l -<lin,prf> fmatrix_v (a, m, n, l0)
@@ -119,13 +119,13 @@ fun fmatrix_ptr_takeout_tsz {a:viewt@ype}
 
 fun{a:t@ype} fmatrix_ptr_get_elt_at
   {m,n:int} {i,j:nat | i < m; j < n} (
-    base: &fmatrix (a, m, n), i: int i, m: int m, j: int j
+    base: &fmatrix (a, m, n), m: int m, i: int i, j: int j
   ) :<> a
 (* end of [fmatrix_ptr_ptr_get_elt_at] *)
 
 fun{a:t@ype} fmatrix_ptr_set_elt_at
   {m,n:int} {i,j:nat | i < m; j < n} (
-    base: &fmatrix (a, m, n), i: int i, m: int m, j: int j, x: a
+    base: &fmatrix (a, m, n), m: int m, i: int i, j: int j, x: a
   ) :<> void
 (* end of [fmatrix_ptr_ptr_set_elt_at] *)
 

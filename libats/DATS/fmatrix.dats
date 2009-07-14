@@ -110,27 +110,27 @@ implement // worth it???
 (* ****** ****** *)
 
 implement{a} fmatrix_ptr_takeout
-  (pf_mat | base, i, m, j) = begin
-  fmatrix_ptr_takeout_tsz {a} (pf_mat | base, i, m, j, sizeof<a>)
+  (pf_mat | base, m, i, j) = begin
+  fmatrix_ptr_takeout_tsz {a} (pf_mat | base, m, i, j, sizeof<a>)
 end // end of [fmatrix_ptr_takeout]
 
 (* ****** ****** *)
 
 implement{a} fmatrix_ptr_get_elt_at
-  (base, i, m, j) = x where {
+  (base, m, i, j) = x where {
   prval pf_mat = view@ base
   val (pf_elt, fpf_mat | p_elt) =
-    fmatrix_ptr_takeout_tsz {a} (pf_mat | &base, i, m, j, sizeof<a>)
+    fmatrix_ptr_takeout_tsz {a} (pf_mat | &base, m, i, j, sizeof<a>)
   // end of [val]
   val x = !p_elt
   prval () = view@ base := fpf_mat (pf_elt)
 } // end of [fmatrix_ptr_get_elt_at]
 
 implement{a} fmatrix_ptr_set_elt_at
-  (base, i, m, j, x) = () where {
+  (base, m, i, j, x) = () where {
   prval pf_mat = view@ base
   val (pf_elt, fpf_mat | p_elt) =
-    fmatrix_ptr_takeout_tsz {a} (pf_mat | &base, i, m, j, sizeof<a>)
+    fmatrix_ptr_takeout_tsz {a} (pf_mat | &base, m, i, j, sizeof<a>)
   // end of [val]
   val () = !p_elt := x
   prval () = view@ base := fpf_mat (pf_elt)
