@@ -498,7 +498,9 @@ extern m0thdeclst_t m0thdeclst_nil(void) ;
 extern m0thdeclst_t m0thdeclst_cons(m0thdec_t, m0thdeclst_t) ;
 
 typedef ats_ptr_type c0lassdec_t ;
-extern c0lassdec_t c0lassdec_make () ; // to be FIXED!!!
+extern c0lassdec_t c0lassdec_make
+  (i0de_t, s0arglstlst_t, s0explst_t, m0thdeclst_t, t0kn_t) ;
+// end of [c0lassdec_t]
 
 /* ****** ****** */
 

@@ -137,6 +137,7 @@ implement dcstkind_is_proof (dk) = case+ dk of
   | DCSTKINDprfun () => true
   | DCSTKINDprval () => true
   | _ => false
+// end of [dcstkind_is_proof]
 
 (* ****** ****** *)
 
@@ -148,6 +149,7 @@ implement valkind_prval () = VALKINDprval ()
 implement valkind_is_proof vk = case+ vk of
   | VALKINDprval () => true
   | _ => false
+// end of [valkind_is_proof]
 
 (* ****** ****** *)
 
@@ -165,6 +167,7 @@ implement funkind_is_proof fk = case+ fk of
   | FUNKINDcastfn () => false
   | FUNKINDprfn () => true
   | FUNKINDprfun () => true
+// end of [funkind_is_proof]
 
 implement funkind_is_recursive fk = case+ fk of
   | FUNKINDfn () => false
@@ -173,9 +176,11 @@ implement funkind_is_recursive fk = case+ fk of
   | FUNKINDcastfn () => true
   | FUNKINDprfn () => false
   | FUNKINDprfun () => true
+// end of [funkind_is_recursive]
 
 implement funkind_is_tailrecur fk =
   case+ fk of FUNKINDfnstar () => true | _ => false
+// end of [funkind_is_tailrecur]
 
 (* ****** ****** *)
 
@@ -1363,23 +1368,81 @@ implement e0xndeclst_cons (x, xs) = list_cons (x, xs)
 implement m0thdeclst_nil () = list_nil ()
 implement m0thdeclst_cons (x, xs) = list_cons (x, xs)
 
-implement m0thdec_make_mtd () = M0THDECmtd ()
-implement m0thdec_make_mtdimp () = M0THDECmtdimp ()
+implement m0thdec_make_mtd
+  (t_beg, id, arg, eff, res, def) = let
+  val loc_beg = t_beg.t0kn_loc
+  val def1 = d0expopt_of_d0expopt_t (def)
+  val loc_end = (case+ def1 of
+    | Some d0e => d0e.d0exp_loc | None () => res.s0exp_loc
+  ) : loc_t
+  val loc = combine (loc_beg, loc_end)
+in
+  M0THDECmtd (loc, id.i0de_sym, arg, eff, res, def)
+end // end of [m0thdec_make_mtd]
 
-implement m0thdec_make_val () = M0THDECval ()
-implement m0thdec_make_valimp () = M0THDECvalimp ()
+implement m0thdec_make_mtdimp
+  (t_beg, id, arg, res, def) = let
+  val def1 = d0exp_of_d0exp_t (def)
+  val loc = combine (t_beg.t0kn_loc, def1.d0exp_loc)
+in
+  M0THDECmtdimp (loc, id.i0de_sym, arg, res, def)
+end // end of [m0thdec_make_mtdimp]
 
-implement m0thdec_make_var () = M0THDECvar ()
-implement m0thdec_make_varimp () = M0THDECvarimp ()
+implement m0thdec_make_val
+  (t_beg, id, res, def) = let
+  val loc_beg = t_beg.t0kn_loc
+  val def1 = d0expopt_of_d0expopt_t def
+  val loc_end = (case+ def1 of
+    | Some d0e => d0e.d0exp_loc | None () => res.s0exp_loc
+  ) : loc_t
+  val loc = combine (loc_beg, loc_end)
+in
+  M0THDECval (loc, id.i0de_sym, res, def)
+end // end of [m0thdec_make_val]
 
-implement c0lassdec_make () = let
+implement m0thdec_make_valimp
+  (t_beg, id, res, def) = let
+  val loc_beg = t_beg.t0kn_loc
+  val def1 = d0exp_of_d0exp_t def
+  val loc_end = def1.d0exp_loc
+  val loc = combine (loc_beg, loc_end)
+in
+  M0THDECvalimp (loc, id.i0de_sym, res, def)
+end // end of [m0thdec_make_valimp]
+
+implement m0thdec_make_var
+  (t_beg, id, res, def) = let
+  val loc_beg = t_beg.t0kn_loc
+  val def1 = d0expopt_of_d0expopt_t def
+  val loc_end = (case+ def1 of
+    | Some d0e => d0e.d0exp_loc | None () => res.s0exp_loc
+  ) : loc_t
+  val loc = combine (loc_beg, loc_end)
+in
+  M0THDECvar (loc, id.i0de_sym, res, def)
+end // end of [m0thdec_make_var]
+
+implement m0thdec_make_varimp
+  (t_beg, id, res, def) = let
+  val loc_beg = t_beg.t0kn_loc
+  val def1 = d0exp_of_d0exp_t def
+  val loc_end = def1.d0exp_loc
+  val loc = combine (loc_beg, loc_end)
+in
+  M0THDECvarimp (loc, id.i0de_sym, res, def)
+end // end of [m0thdec_make_varimp]
+
+implement c0lassdec_make
+  (id, arg, supclss, mtds, t_end) = let
+  val loc = combine (id.i0de_loc, t_end.t0kn_loc)
   val fil = $Fil.the_filename_get ()
 in '{
-  c0lassdec_loc= $Loc.location_none
+  c0lassdec_loc= loc
 , c0lassdec_fil= fil
-, c0lassdec_sym= $Sym.symbol_empty
-, c0lassdec_arg= None ()
-, c0lassdec_sup= nil ()
+, c0lassdec_sym= id.i0de_sym
+, c0lassdec_arg= arg
+, c0lassdec_sup= supclss
+, c0lassdec_mtd= mtds
 } end // end of [c0lassdec_make]
 
 (* ****** ****** *)
@@ -2634,16 +2697,15 @@ in '{
 
 implement d0ec_classdec
   (t_class, arg, x, ys) = let
-  fun aux_loc (
-      loc: loc_t, y: s0expdef, ys: s0expdeflst
-    ) : loc_t = begin case+ ys of
-    | cons (y, ys) => aux_loc (loc, y, ys)
-    | nil () => combine (loc, y.s0expdef_loc)
-  end // end of [aux_loc]
-  val loc = t_class.t0kn_loc
-  val loc = (case+ ys of
-    | cons (y, ys) => aux_loc (loc, y, ys) | nil () => loc
+  fun aux_loc
+    (y: s0expdef, ys: s0expdeflst): loc_t = case+ ys of
+    | cons (y, ys) => aux_loc (y, ys) | nil () => y.s0expdef_loc
+  // end of [aux_loc]
+  val loc_beg = t_class.t0kn_loc
+  val loc_end = (case+ ys of
+    | cons (y, ys) => aux_loc (y, ys) | nil () => x.c0lassdec_loc
   ) : loc_t
+  val loc = combine (loc_beg, loc_end)
 in '{
   d0ec_loc= loc, d0ec_node= D0Cclassdec (arg, x, ys)
 } end // end of [d0ec_classdec]

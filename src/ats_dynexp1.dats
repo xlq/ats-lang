@@ -7,28 +7,27 @@
 (***********************************************************************)
 
 (*
- * ATS/Anairiats - Unleashing the Potential of Types!
- *
- * Copyright (C) 2002-2008 Hongwei Xi, Boston University
- *
- * All rights reserved
- *
- * ATS is free software;  you can  redistribute it and/or modify it under
- * the terms of  the GNU GENERAL PUBLIC LICENSE (GPL) as published by the
- * Free Software Foundation; either version 3, or (at  your  option)  any
- * later version.
- * 
- * ATS is distributed in the hope that it will be useful, but WITHOUT ANY
- * WARRANTY; without  even  the  implied  warranty  of MERCHANTABILITY or
- * FITNESS FOR A PARTICULAR PURPOSE.  See the  GNU General Public License
- * for more details.
- * 
- * You  should  have  received  a  copy of the GNU General Public License
- * along  with  ATS;  see the  file COPYING.  If not, please write to the
- * Free Software Foundation,  51 Franklin Street, Fifth Floor, Boston, MA
- * 02110-1301, USA.
- *
- *)
+** ATS/Anairiats - Unleashing the Potential of Types!
+**
+** Copyright (C) 2002-2008 Hongwei Xi, Boston University
+**
+** All rights reserved
+**
+** ATS is free software;  you can  redistribute it and/or modify it under
+** the terms of  the GNU GENERAL PUBLIC LICENSE (GPL) as published by the
+** Free Software Foundation; either version 3, or (at  your  option)  any
+** later version.
+** 
+** ATS is distributed in the hope that it will be useful, but WITHOUT ANY
+** WARRANTY; without  even  the  implied  warranty  of MERCHANTABILITY or
+** FITNESS FOR A PARTICULAR PURPOSE.  See the  GNU General Public License
+** for more details.
+** 
+** You  should  have  received  a  copy of the GNU General Public License
+** along  with  ATS;  see the  file COPYING.  If not, please write to the
+** Free Software Foundation,  51 Franklin Street, Fifth Floor, Boston, MA
+** 02110-1301, USA.
+*)
 
 (* ****** ****** *)
 
@@ -382,6 +381,10 @@ implement d1exp_macsyn (loc, knd, d1e) = '{
   d1exp_loc= loc, d1exp_node= D1Emacsyn (knd, d1e)
 }
 
+implement d1exp_obj (loc, knd, s1e_cls, mtds) = '{
+  d1exp_loc= loc, d1exp_node= D1Eobj (knd, s1e_cls, mtds)
+} // end of [d1exp_obj]
+
 implement d1exp_ptrof (loc, d1e) = '{
   d1exp_loc= loc, d1exp_node= D1Eptrof d1e
 }
@@ -613,6 +616,12 @@ implement d1ec_exndecs (loc, d1cs_exndec) = '{
   d1ec_loc= loc, d1ec_node= D1Cexndecs (d1cs_exndec)
 }
 
+implement d1ec_classdec
+  (loc, s1qss, d1c_cls, d1cs_sexpdef) = '{
+  d1ec_loc= loc
+, d1ec_node= D1Cclassdec (s1qss, d1c_cls, d1cs_sexpdef)
+} // end of [d1ec_classdec]
+
 implement d1ec_dcstdecs (loc, dck, s1qss, d1cs_dcst) = '{
   d1ec_loc= loc, d1ec_node= D1Cdcstdecs (dck, s1qss, d1cs_dcst)
 }
@@ -725,6 +734,14 @@ implement s1aspdec_make (loc, qid, arg, res, def) = '{
 , s1aspdec_def= def
 } // end of [s1aspdec_make]
 
+implement d1cstdec_make (loc, fil, id, s1e, ext) = '{
+  d1cstdec_loc= loc
+, d1cstdec_fil= fil
+, d1cstdec_sym= id
+, d1cstdec_typ= s1e
+, d1cstdec_ext= ext
+} // end of [d1cstdec_make]
+
 implement d1atcon_make (loc, id, qua, npf, arg, ind) = '{
   d1atcon_loc= loc
 , d1atcon_sym= id
@@ -742,7 +759,7 @@ implement d1atdec_make (loc, fil, id, arg, con) = '{
 , d1atdec_con= con
 } // end of [d1atdec_make]
 
-implement e1xndec_make (loc,fil, id, qua, npf, arg) = '{
+implement e1xndec_make (loc, fil, id, qua, npf, arg) = '{
   e1xndec_loc= loc
 , e1xndec_fil= fil
 , e1xndec_sym= id
@@ -751,13 +768,15 @@ implement e1xndec_make (loc,fil, id, qua, npf, arg) = '{
 , e1xndec_arg= arg
 } // end of [e1xndec_make]
 
-implement d1cstdec_make (loc, fil, id, s1e, ext) = '{
-  d1cstdec_loc= loc
-, d1cstdec_fil= fil
-, d1cstdec_sym= id
-, d1cstdec_typ= s1e
-, d1cstdec_ext= ext
-} // end of [d1cstdec_make]
+implement c1lassdec_make
+  (loc, fil, id, arg, supclss, mtds) = '{
+  c1lassdec_loc= loc
+, c1lassdec_fil= fil  
+, c1lassdec_sym= id
+, c1lassdec_arg= arg
+, c1lassdec_sup= supclss
+, c1lassdec_mtd= mtds
+} // end of [c1lassdec_make]
 
 implement v1aldec_make (loc, p1t, d1e, ann) = '{
   v1aldec_loc= loc

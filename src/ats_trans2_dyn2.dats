@@ -1158,6 +1158,13 @@ implement d1ec_tr (d1c0) = begin
   | D1Cstaload (idopt, fil, loaded, d1cs) => begin
       s1taload_tr (d1c0.d1ec_loc, idopt, fil, loaded, d1cs)
     end // end of [D1Cstaload]
+// (*
+  | _ => begin
+      prerr_loc_error2 d1c0.d1ec_loc;
+      prerr ": d1ec_tr: not available yet.\n";
+      $Err.abort {d2ec} ()
+    end // end of [_]
+// *)
 end // end of [d1ec_tr]
 
 (* ****** ****** *)

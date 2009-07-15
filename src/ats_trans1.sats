@@ -7,28 +7,27 @@
 (***********************************************************************)
 
 (*
- * ATS/Anairiats - Unleashing the Potential of Types!
- *
- * Copyright (C) 2002-2008 Hongwei Xi, Boston University
- *
- * All rights reserved
- *
- * ATS is free software;  you can  redistribute it and/or modify it under
- * the terms of  the GNU GENERAL PUBLIC LICENSE (GPL) as published by the
- * Free Software Foundation; either version 3, or (at  your  option)  any
- * later version.
- * 
- * ATS is distributed in the hope that it will be useful, but WITHOUT ANY
- * WARRANTY; without  even  the  implied  warranty  of MERCHANTABILITY or
- * FITNESS FOR A PARTICULAR PURPOSE.  See the  GNU General Public License
- * for more details.
- * 
- * You  should  have  received  a  copy of the GNU General Public License
- * along  with  ATS;  see the  file COPYING.  If not, please write to the
- * Free Software Foundation,  51 Franklin Street, Fifth Floor, Boston, MA
- * 02110-1301, USA.
- *
- *)
+** ATS/Anairiats - Unleashing the Potential of Types!
+**
+** Copyright (C) 2002-2008 Hongwei Xi, Boston University
+**
+** All rights reserved
+**
+** ATS is free software;  you can  redistribute it and/or modify it under
+** the terms of  the GNU GENERAL PUBLIC LICENSE (GPL) as published by the
+** Free Software Foundation; either version 3, or (at  your  option)  any
+** later version.
+** 
+** ATS is distributed in the hope that it will be useful, but WITHOUT ANY
+** WARRANTY; without  even  the  implied  warranty  of MERCHANTABILITY or
+** FITNESS FOR A PARTICULAR PURPOSE.  See the  GNU General Public License
+** for more details.
+** 
+** You  should  have  received  a  copy of the GNU General Public License
+** along  with  ATS;  see the  file COPYING.  If not, please write to the
+** Free Software Foundation,  51 Franklin Street, Fifth Floor, Boston, MA
+** 02110-1301, USA.
+*)
 
 (* ****** ****** *)
 
@@ -42,6 +41,7 @@
 (* ****** ****** *)
 
 staload Loc = "ats_location.sats"
+staload Eff = "ats_effect.sats"
 staload Syn = "ats_syntax.sats"
 staload SEXP = "ats_staexp1.sats"
 staload DEXP = "ats_dynexp1.sats"
@@ -88,6 +88,18 @@ fun d0explstlst_tr (_: $Syn.d0explstlst): $DEXP.d1explstlst
 fun labd0explst_tr (_: $Syn.labd0explst): $DEXP.labd1explst
 fun d0expopt_tr (_: $Syn.d0expopt): $DEXP.d1expopt
 
+fun d0exp_lams_dyn_tr (
+    knd  : $Syn.lamkind
+  , oloc : Option $Loc.location_t
+  , ofc  : Option $Syn.funclo
+  , lin  : int
+  , args : $Syn.f0arglst
+  , res  : $Syn.s0expopt
+  , oefc : Option ($Eff.effcst)
+  , body : $Syn.d0exp
+  ) : $DEXP.d1exp
+// end of [d0exp_lams_dyn_tr]
+
 (* ****** ****** *)
 
 fun d0ec_fixity_tr
@@ -128,8 +140,14 @@ fun e0xndeclst_tr (ds: $Syn.e0xndeclst): $DEXP.e1xndeclst
 
 (* ****** ****** *)
 
+fun m0thdec_tr (mtd: $Syn.m0thdec): $DEXP.m1thdec
+fun m0thdeclst_tr (mtd: $Syn.m0thdeclst): $DEXP.m1thdeclst
+fun c0lassdec_tr (d: $Syn.c0lassdec): $DEXP.c1lassdec
+
 fun d0atsrtdec_tr (d: $Syn.d0atsrtdec): $DEXP.d1atsrtdec
 fun d0atsrtdeclst_tr (ds: $Syn.d0atsrtdeclst): $DEXP.d1atsrtdeclst
+
+(* ****** ****** *)
 
 fun d0ec_tr (_: $Syn.d0ec): $DEXP.d1ec
 fun d0eclst_tr (_: $Syn.d0eclst): $DEXP.d1eclst

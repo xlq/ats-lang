@@ -691,25 +691,30 @@ datatype s0exp_node =
       s0qualst
   | S0Eunion of (* union type *)
       (s0exp (*index*), labs0explst (*body*))
+// end of [s0exp_node]
 
 and s0rtext_node =
   | S0TEsrt of s0rt | S0TEsub of (i0de, s0rtext, s0exp, s0explst)
+// end of [s0rtext_node]
 
 and s0qua_node =
   | S0QUAprop of s0exp (* e.g., n >= i+j *)
   | S0QUAvars of (i0de, i0delst, s0rtext) (* e.g., a1,a2: type *)
+// end of [s0qua_node]
 
 and labs0explst =
   | LABS0EXPLSTnil
   | LABS0EXPLSTcons of (l0ab, s0exp, labs0explst)
+// end of [labs0explst]
 
 and t1mps0explstlst =
   | T1MPS0EXPLSTLSTnil
   | T1MPS0EXPLSTLSTcons of (loc_t, s0explst, t1mps0explstlst)
+// end of [t1mps0explstlst]
 
 where s0exp: type = '{
   s0exp_loc= loc_t, s0exp_node= s0exp_node
-}
+} // end of [s0exp]
 
 and s0explst: type = List s0exp
 and s0expopt: type = Option s0exp
@@ -1072,52 +1077,77 @@ fun e0xndeclst_cons (x: e0xndec, xs: e0xndeclst): e0xndeclst
 
 (* ****** ****** *)
 
+abstype f0arglst_t // = f0arglst
+
+abstype d0exp_t // = d0exp
+abstype d0expopt_t // = d0expopt
+
 datatype m0thdec =
-  | M0THDECmtd of ()
-  | M0THDECmtdimp of ()
-  | M0THDECval of ()
-  | M0THDECvalimp of ()
-  | M0THDECvar of ()
-  | M0THDECvarimp of ()
+  | M0THDECmtd of (
+      loc_t, sym_t, f0arglst_t, e0fftaglstopt, s0exp, d0expopt_t
+    ) // end of [M0THDECmtd]
+  | M0THDECmtdimp of (loc_t, sym_t, f0arglst_t, s0expopt, d0exp_t)
+  | M0THDECval of (loc_t, sym_t, s0exp, d0expopt_t)
+  | M0THDECvalimp of (loc_t, sym_t, s0expopt, d0exp_t)
+  | M0THDECvar of (loc_t, sym_t, s0exp, d0expopt_t)
+  | M0THDECvarimp of (loc_t, sym_t, s0expopt, d0exp_t)
 // end of [m0thdec]
   
+fun m0thdec_make_mtd (
+    _: t0kn, _: i0de, _: f0arglst_t
+  , _: e0fftaglstopt, res: s0exp, def: d0expopt_t
+  ) : m0thdec
+  = "m0thdec_make_mtd"
+
+fun m0thdec_make_mtdimp (
+    _: t0kn, _: i0de, _: f0arglst_t, _: s0expopt, _: d0exp_t
+  ) : m0thdec
+  = "m0thdec_make_mtdimp"
+
+fun m0thdec_make_val
+  (_: t0kn, _: i0de, res: s0exp, def: d0expopt_t): m0thdec
+  = "m0thdec_make_val"
+fun m0thdec_make_valimp
+  (_: t0kn, _: i0de, res: s0expopt, def: d0exp_t): m0thdec
+  = "m0thdec_make_valimp"
+
+fun m0thdec_make_var
+  (_: t0kn, _: i0de, res: s0exp, def: d0expopt_t): m0thdec
+  = "m0thdec_make_var"
+fun m0thdec_make_varimp
+  (_: t0kn, _: i0de, res: s0expopt, def: d0exp_t): m0thdec
+  = "m0thdec_make_varimp"
+
+(* ****** ****** *)
+
 typedef m0thdeclst = List m0thdec
 
 fun m0thdeclst_nil (): m0thdeclst = "m0thdeclst_nil"
 fun m0thdeclst_cons (x: m0thdec, xs: m0thdeclst): m0thdeclst
   = "m0thdeclst_cons"
 
-fun m0thdec_make_mtd (): m0thdec
-  = "m0thdec_make_mtd"
-fun m0thdec_make_mtdimp (): m0thdec
-  = "m0thdec_make_mtdimp"
-
-fun m0thdec_make_val (): m0thdec
-  = "m0thdec_make_val"
-fun m0thdec_make_valimp (): m0thdec
-  = "m0thdec_make_valimp"
-
-fun m0thdec_make_var (): m0thdec
-  = "m0thdec_make_var"
-fun m0thdec_make_varimp (): m0thdec
-  = "m0thdec_make_varimp"
+(* ****** ****** *)
 
 typedef c0lassdec = '{
   c0lassdec_loc= loc_t
 , c0lassdec_fil= filename_t
 , c0lassdec_sym= sym_t
-, c0lassdec_arg= s0expopt
+, c0lassdec_arg= s0arglstlst
 , c0lassdec_sup= s0explst
+, c0lassdec_mtd= m0thdeclst
 } // end of [c0lassdec]
 
-fun c0lassdec_make (): c0lassdec
+fun c0lassdec_make (
+    id: i0de, arg: s0arglstlst
+  , supclss: s0explst, mtds: m0thdeclst, t_end: t0kn
+  ) : c0lassdec
   = "c0lassdec_make"
 
 (* ****** ****** *)
 
 typedef p0arg = '{
   p0arg_loc= loc_t, p0arg_sym= sym_t, p0arg_ann= s0expopt
-}
+} // end of [p0arg]
 
 fun p0arg_make_none (_: i0de): p0arg = "p0arg_make_none"
 fun p0arg_make_some (_: i0de, _: s0exp): p0arg = "p0arg_make_some"
@@ -1556,12 +1586,12 @@ and d0ec_node =
   | D0Cstavars of (s0tavar, s0tavarlst)
   | D0Csexpdefs of (s0rtopt, s0expdef, s0expdeflst)
   | D0Csaspdec of s0aspdec
+  | D0Cdcstdecs of (* dyncst declaration *)
+      (dcstkind, s0qualstlst, d0cstdec, d0cstdeclst)
   | D0Cdatdecs of (datakind, d0atdec, d0atdeclst, s0expdeflst)
   | D0Cexndecs of (e0xndec, e0xndeclst)
   | D0Cclassdec of (* class declaration *)
       (s0qualstlst, c0lassdec, s0expdeflst)
-  | D0Cdcstdecs of (* dyncst declaration *)
-      (dcstkind, s0qualstlst, d0cstdec, d0cstdeclst)
   | D0Coverload of (* overloading *)
       (i0de, dqi0de)
   | D0Cextype of (string, s0exp) // type to be used in C
@@ -1740,6 +1770,17 @@ and d0eclst: type = List d0ec
 and guad0ec : type = '{
   guad0ec_loc= loc_t, guad0ec_node= guad0ec_node
 } 
+
+(* ****** ****** *)
+
+castfn f0arglst_t_of_f0arglst (x: f0arglst): f0arglst_t
+castfn f0arglst_of_f0arglst_t (x: f0arglst_t): f0arglst
+
+castfn d0exp_t_of_d0exp (x: d0exp): d0exp_t
+castfn d0exp_of_d0exp_t (x: d0exp_t): d0exp
+
+castfn d0expopt_t_of_d0expopt (x: d0expopt): d0expopt_t
+castfn d0expopt_of_d0expopt_t (x: d0expopt_t): d0expopt
 
 (* ****** ****** *)
 

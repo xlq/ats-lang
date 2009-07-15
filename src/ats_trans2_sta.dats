@@ -1452,6 +1452,13 @@ in
   | S1Eunion (s2e_ind, ls2es) => begin
       s1exp_union_tr_up (s1e0.s1exp_loc, s2e_ind, ls2es)
     end // end of [S1Eunion]
+// (*
+  | _ => begin
+      prerr_loc_error2 s1e0.s1exp_loc;
+      prerr ": s1exp_tr: not available yet.\n";
+      $Err.abort {s2exp} ()
+    end // end of [_]
+// *)
 end // end of [s1exp_tr_up]
 
 implement s1explst_tr_up (s1es) = $Lst.list_map_fun (s1es, s1exp_tr_up)
