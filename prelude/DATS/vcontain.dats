@@ -39,7 +39,10 @@
 
 (* ****** ****** *)
 
-staload "prelude/SATS/vcontain.sats"
+//
+// this is automatically included
+// staload "prelude/SATS/vcontain.sats"
+//
 
 (* ****** ****** *)
 
@@ -62,8 +65,8 @@ end // end of [vcontain_trans]
 
 (* ****** ****** *)
 
-implement vcontain_tuple_2_0 () = lam (pf) => @(pf.0, pf.1)
-implement vcontain_tuple_2_1 () = lam (pf) => @(pf.1, pf.0)
+implement vcontain_tup_2_0 () = lam (pf) => @(pf.0, pf.1)
+implement vcontain_tup_2_1 () = lam (pf) => @(pf.1, pf.0)
 
 (* ****** ****** *)
 

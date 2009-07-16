@@ -55,13 +55,16 @@ prfun vcontain_make {v1:view} {v2:view}
 (* ****** ****** *)
 
 prfun vcontain_refl {v:view} (): vcontain_p (v, v)
+
 prfun vcontain_trans {v1,v2,v3:view}
   (pf12: vcontain_p (v1, v2), pf23: vcontain_p (v2, v3)): vcontain_p (v1, v3)
+// end of [vcontain_trans]
 
 (* ****** ****** *)
 
-prfun vcontain_tuple_2_0 {v0,v1:view} (): vcontain_p (@(v0, v1), v0)
-prfun vcontain_tuple_2_1 {v0,v1:view} (): vcontain_p (@(v0, v1), v1)
+// implemented in [vcontain.dats]
+prfun vcontain_tup_2_0 {v0,v1:view} (): vcontain_p (@(v0, v1), v0)
+prfun vcontain_tup_2_1 {v0,v1:view} (): vcontain_p (@(v0, v1), v1)
 
 (* ****** ****** *)
 
