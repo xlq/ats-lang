@@ -133,7 +133,6 @@ fun hityp_extype (name: string): hityp
 fun hityp_fun (fc: $Syn.funclo, _arg: hityplst, _res: hityp): hityp
 fun hityp_refarg (refvar: int, _arg: hityp): hityp
 fun hityp_s2var (s2v: s2var_t): hityp
-fun hityp_s2varet (s2v: s2var_t): hityp
 
 fun hityp_tyarr (hit_elt: hityp, s2ess_dim: s2explstlst): hityp
 
@@ -145,6 +144,8 @@ fun hityp_tysum (name: string, d2c: d2con_t, _arg: hityplst): hityp
 fun hityp_tysumtemp (d2c: d2con_t, _arg: hityplst): hityp
 
 fun hityp_union (name: string, lhits: labhityplst): hityp
+
+fun hityp_varetize (hit: hityp): hityp
 
 (* ****** ****** *)
 

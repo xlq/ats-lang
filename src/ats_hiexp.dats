@@ -177,6 +177,16 @@ implement hityp_union (name, lhits) = '{
   hityp_name= HITNAM (0, name), hityp_node= HITunion lhits
 } // end of [hityp_union]
 
+implement hityp_varetize (hit) = let
+  val HITNAM (knd, name) = hit.hityp_name
+in
+  if name = VAR_TYPE_NAME then '{
+    hityp_name= hityp_name_varet, hityp_node= hit.hityp_node
+  } else hit
+end // end of [hityp_varetize]
+
+(* ****** ****** *)
+
 implement hityp_s2var (s2v) = begin
   if s2var_is_boxed s2v then begin
     '{ hityp_name= hityp_name_ptr, hityp_node= HITs2var s2v }
@@ -184,14 +194,6 @@ implement hityp_s2var (s2v) = begin
     '{ hityp_name= hityp_name_var, hityp_node= HITs2var s2v }
   end // end of [if]
 end (* end of [hityp_s2var] *)
-
-implement hityp_s2varet (s2v) = begin
-  if s2var_is_boxed s2v then begin
-    '{ hityp_name= hityp_name_ptr, hityp_node= HITs2var s2v }
-  end else begin
-    '{ hityp_name= hityp_name_varet, hityp_node= HITs2var s2v }
-  end // end of [if]
-end (* end of [hityp_s2varet] *)
 
 implement hityp_vararg = '{
   hityp_name= hityp_name_vararg, hityp_node= HITvararg ()

@@ -145,8 +145,7 @@ fn s2Var_tr
     end // end of [list_nil]
 end // end of [s2Var_tr]
 
-#define VAR_TYPE_NAME           "ats_var_type"
-#define VARET_TYPE_NAME         "ats_varet_type"
+(* ****** ****** *)
 
 implement s2exp_tr (deep, s2e0) = let
   val s2e0 = s2exp_whnf s2e0; val s2t0 = s2e0.s2exp_srt
@@ -199,11 +198,7 @@ in
       if deep > 0 then let
         val hits_arg = s2explst_arg_tr (npf, s2es_arg)
         val hit_res = s2exp_tr (0, s2e_res)
-        val HITNAM (knd, name) = hit_res.hityp_name
-        val hit_res = (if name = VAR_TYPE_NAME then '{
-            hityp_name= HITNAM (knd, VARET_TYPE_NAME), hityp_node= hit_res.hityp_node
-          } else hit_res
-        ) : hityp
+        val hit_res = hityp_varetize (hit_res)
 (*
         val HITNAM (_, name) = hit_res.hityp_name
         val () = (prerr "s2exp_tr: S2Efun: hit_res = "; prerr name; prerr_newline ())
