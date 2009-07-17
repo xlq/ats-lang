@@ -359,7 +359,8 @@ end // end of [the_s2expenv_add_datcontyp]
 
 (* ****** ****** *)
 
-fn the_s2expenv_namespace_find (id: sym_t): s2itemopt_vt = let
+fn the_s2expenv_namespace_find
+  (id: sym_t): s2itemopt_vt = let
   fn f (name: sym_t):<cloptr1> s2itemopt_vt = let
     val r_m: s2itemmapref = begin
       case+ $HT.hashtbl_search (the_s2itemmaptbl, name) of

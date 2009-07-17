@@ -7,28 +7,27 @@
 (***********************************************************************)
 
 (*
- * ATS/Anairiats - Unleashing the Potential of Types!
- *
- * Copyright (C) 2002-2008 Hongwei Xi, Boston University
- *
- * All rights reserved
- *
- * ATS is free software;  you can  redistribute it and/or modify it under
- * the terms of  the GNU GENERAL PUBLIC LICENSE (GPL) as published by the
- * Free Software Foundation; either version 3, or (at  your  option)  any
- * later version.
- * 
- * ATS is distributed in the hope that it will be useful, but WITHOUT ANY
- * WARRANTY; without  even  the  implied  warranty  of MERCHANTABILITY or
- * FITNESS FOR A PARTICULAR PURPOSE.  See the  GNU General Public License
- * for more details.
- * 
- * You  should  have  received  a  copy of the GNU General Public License
- * along  with  ATS;  see the  file COPYING.  If not, please write to the
- * Free Software Foundation,  51 Franklin Street, Fifth Floor, Boston, MA
- * 02110-1301, USA.
- *
- *)
+** ATS/Anairiats - Unleashing the Potential of Types!
+**
+** Copyright (C) 2002-2008 Hongwei Xi, Boston University
+**
+** All rights reserved
+**
+** ATS is free software;  you can  redistribute it and/or modify it under
+** the terms of  the GNU GENERAL PUBLIC LICENSE (GPL) as published by the
+** Free Software Foundation; either version 3, or (at  your  option)  any
+** later version.
+** 
+** ATS is distributed in the hope that it will be useful, but WITHOUT ANY
+** WARRANTY; without  even  the  implied  warranty  of MERCHANTABILITY or
+** FITNESS FOR A PARTICULAR PURPOSE.  See the  GNU General Public License
+** for more details.
+** 
+** You  should  have  received  a  copy of the GNU General Public License
+** along  with  ATS;  see the  file COPYING.  If not, please write to the
+** Free Software Foundation,  51 Franklin Street, Fifth Floor, Boston, MA
+** 02110-1301, USA.
+*)
 
 (* ****** ****** *)
 
@@ -994,6 +993,10 @@ implement s2aspdec_make (loc, s2c, def) = '{
   s2aspdec_loc= loc, s2aspdec_cst= s2c, s2aspdec_def= def
 }
 
+implement c2lassdec_make (loc, supclss, mtds) = '{
+  c2lassdec_loc= loc, c2lassdec_sup= supclss, c2lassdec_mtd= mtds
+}
+
 implement v2aldec_make (loc, p2t, def, ann) = '{
   v2aldec_loc= loc, v2aldec_pat= p2t, v2aldec_def= def, v2aldec_ann= ann
 }
@@ -1052,6 +1055,10 @@ implement d2ec_saspdec (loc, d2c) = '{
   d2ec_loc= loc, d2ec_node= D2Csaspdec d2c
 }
 
+implement d2ec_dcstdec (loc, dck, d2cs) = '{
+  d2ec_loc= loc, d2ec_node= D2Cdcstdec (dck, d2cs)
+}
+
 implement d2ec_datdec (loc, dtk, s2cs) = '{
   d2ec_loc= loc, d2ec_node= D2Cdatdec (dtk, s2cs)
 }
@@ -1060,8 +1067,8 @@ implement d2ec_exndec (loc, d2cs) = '{
   d2ec_loc= loc, d2ec_node= D2Cexndec (d2cs)
 }
 
-implement d2ec_dcstdec (loc, dck, d2cs) = '{
-  d2ec_loc= loc, d2ec_node= D2Cdcstdec (dck, d2cs)
+implement d2ec_classdec (loc, d2c) = '{
+  d2ec_loc= loc, d2ec_node= D2Cclassdec (d2c)
 }
 
 implement d2ec_overload (loc, id, qid) = '{

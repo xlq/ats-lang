@@ -7,33 +7,32 @@
 (***********************************************************************)
 
 (*
- * ATS/Anairiats - Unleashing the Potential of Types!
- *
- * Copyright (C) 2002-2008 Hongwei Xi, Boston University
- *
- * All rights reserved
- *
- * ATS is free software;  you can  redistribute it and/or modify it under
- * the terms of  the GNU GENERAL PUBLIC LICENSE (GPL) as published by the
- * Free Software Foundation; either version 3, or (at  your  option)  any
- * later version.
- * 
- * ATS is distributed in the hope that it will be useful, but WITHOUT ANY
- * WARRANTY; without  even  the  implied  warranty  of MERCHANTABILITY or
- * FITNESS FOR A PARTICULAR PURPOSE.  See the  GNU General Public License
- * for more details.
- * 
- * You  should  have  received  a  copy of the GNU General Public License
- * along  with  ATS;  see the  file COPYING.  If not, please write to the
- * Free Software Foundation,  51 Franklin Street, Fifth Floor, Boston, MA
- * 02110-1301, USA.
- *
- *)
+** ATS/Anairiats - Unleashing the Potential of Types!
+**
+** Copyright (C) 2002-2008 Hongwei Xi, Boston University
+**
+** All rights reserved
+**
+** ATS is free software;  you can  redistribute it and/or modify it under
+** the terms of  the GNU GENERAL PUBLIC LICENSE (GPL) as published by the
+** Free Software Foundation; either version 3, or (at  your  option)  any
+** later version.
+** 
+** ATS is distributed in the hope that it will be useful, but WITHOUT ANY
+** WARRANTY; without  even  the  implied  warranty  of MERCHANTABILITY or
+** FITNESS FOR A PARTICULAR PURPOSE.  See the  GNU General Public License
+** for more details.
+** 
+** You  should  have  received  a  copy of the GNU General Public License
+** along  with  ATS;  see the  file COPYING.  If not, please write to the
+** Free Software Foundation,  51 Franklin Street, Fifth Floor, Boston, MA
+** 02110-1301, USA.
+*)
 
 (* ****** ****** *)
 
-// Time: October 2007
 // Author: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
+// Time: October 2007
 
 (* ****** ****** *)
 
@@ -1357,17 +1356,29 @@ fun s2exp_subst_flag
     in
       if flag > flag0 then s2exp_sizeof s2e else s2e0
     end // end of [S2Esizeof]
+  | S2Etmpid (s2c, decarg) => let
+      val flag0 = flag
+      val decarg = s2explstlst_subst_flag (sub, decarg, flag)
+    in
+      if flag > flag0 then
+        s2exp_tmpid (s2e0.s2exp_srt, s2c, decarg)
+      else s2e0
+    end // end of [S2Etmpid]
   | S2Etop (knd, s2e) => let
       val flag0 = flag
       val s2e = s2exp_subst_flag (sub, s2e, flag)
     in
-      if flag > flag0 then s2exp_top_srt (s2e0.s2exp_srt, knd, s2e) else s2e0
+      if flag > flag0 then
+        s2exp_top_srt (s2e0.s2exp_srt, knd, s2e)
+      else s2e0
     end // end of [S2Etop]
   | S2Etup s2es => let
       val flag0 = flag
       val s2es = s2explst_subst_flag (sub, s2es, flag)
     in
-      if flag > flag0 then s2exp_tup_srt (s2e0.s2exp_srt, s2es) else s2e0
+      if flag > flag0 then
+        s2exp_tup_srt (s2e0.s2exp_srt, s2es)
+      else s2e0
     end // end of [S2Etup]
   | S2Etyarr (s2e_elt, s2ess_dim) => let
       val flag0 = flag
@@ -1693,6 +1704,7 @@ fun aux_s2exp (s2e0: s2exp, fvs: &s2varset_t): void =
   | S2Esel (s2e, _) => aux_s2exp (s2e, fvs)
   | S2Esize s2ze => aux_s2zexp (s2ze, fvs)
   | S2Esizeof s2e => aux_s2exp (s2e, fvs)
+  | S2Etmpid (s2c, decarg) => aux_s2explstlst (decarg, fvs)
   | S2Etop (_(*knd*), s2e) => aux_s2exp (s2e, fvs)
   | S2Etup s2es => aux_s2explst (s2es, fvs)
   | S2Etyarr (s2e_elt, s2ess_dim) => begin
@@ -1892,25 +1904,28 @@ fun aux_s2exp
   | S2Esel (s2e, _) => aux_s2exp (s2V0, s2e, ans, s2cs, s2vs)
   | S2Esize s2ze => aux_s2zexp (s2V0, s2ze, ans, s2cs, s2vs)
   | S2Esizeof s2e => aux_s2exp (s2V0, s2e, ans, s2cs, s2vs)
-  | S2Etop (_(*knd*), s2e) => aux_s2exp (s2V0, s2e, ans, s2cs, s2vs)
+  | S2Etmpid (s2c, decarg) => begin
+      aux_s2explstlst (s2V0, decarg, ans, s2cs, s2vs)
+    end // end of [S2Etmpid]
+  | S2Etop (_knd, s2e) => aux_s2exp (s2V0, s2e, ans, s2cs, s2vs)
   | S2Etup s2es => aux_s2explst (s2V0, s2es, ans, s2cs, s2vs)
   | S2Etyarr (s2e_elt, s2ess_dim) => begin
       aux_s2exp (s2V0, s2e_elt, ans, s2cs, s2vs);
       aux_s2explstlst (s2V0, s2ess_dim, ans, s2cs, s2vs)
     end // end of [S2Etyarr]
-  | S2Etyleq (_(*knd*), s2e1, s2e2) => begin
+  | S2Etyleq (_knd, s2e1, s2e2) => begin
       aux_s2exp (s2V0, s2e1, ans, s2cs, s2vs);
       aux_s2exp (s2V0, s2e2, ans, s2cs, s2vs)
     end // end of [S2Etyleq]
   | S2Etylst s2es => aux_s2explst (s2V0, s2es, ans, s2cs, s2vs)
-  | S2Etyrec (_(*knd*), _(*npf*), ls2es) => begin
+  | S2Etyrec (_knd, _npf, ls2es) => begin
       aux_labs2explst (s2V0, ls2es, ans, s2cs, s2vs)
     end // end of [S2Etyrec]
   | S2Euni (_, s2ps, s2e) => begin
       aux_s2explst (s2V0, s2ps, ans, s2cs, s2vs);
       aux_s2exp (s2V0, s2e, ans, s2cs, s2vs)
     end // end of [S2Euni]
-  | S2Eunion (_(*stamp*), s2e_ind, ls2es) => begin
+  | S2Eunion (_stamp, s2e_ind, ls2es) => begin
       aux_s2exp (s2V0, s2e_ind, ans, s2cs, s2vs);
       aux_labs2explst (s2V0, ls2es, ans, s2cs, s2vs)
     end // end of [S2Eunion]
@@ -1927,11 +1942,11 @@ and aux_s2explst
   (s2V0: s2Var_t, s2es: s2explst,
    ans: &int, s2cs: &s2cstlst, s2vs: &s2varlst): void =
   case+ s2es of
-  | s2e :: s2es => begin
+  | list_cons (s2e, s2es) => begin
       aux_s2exp (s2V0, s2e, ans, s2cs, s2vs);
       aux_s2explst (s2V0, s2es, ans, s2cs, s2vs)
-    end
-  | nil () => ()
+    end (* end of [list_cons] *)
+  | list_nil () => ()
 // end of [aux_s2explst]
 
 and aux_s2explstlst
@@ -1952,7 +1967,7 @@ and aux_labs2explst
   | LABS2EXPLSTcons (_(*lab*), s2e, ls2es) => begin
       aux_s2exp (s2V0, s2e, ans, s2cs, s2vs);
       aux_labs2explst (s2V0, ls2es, ans, s2cs, s2vs)
-    end
+    end // end of [LABS2EXPLSTcons]
   | LABS2EXPLSTnil () => ()
 // end of [aux_labs2explst]
 
@@ -1984,12 +1999,12 @@ and aux_s2lab
   | S2LAB0lab _ => ()
   | S2LAB0ind (s2ess(*ind*)) => begin
       aux_s2explstlst (s2V0, s2ess, ans, s2cs, s2vs)
-    end
+    end // end of [S2LAB0ind]
   | S2LAB1lab (_, s2e) => aux_s2exp (s2V0, s2e, ans, s2cs, s2vs)
   | S2LAB1ind (s2ess(*ind*), s2e(*elt*)) => begin
       aux_s2explstlst (s2V0, s2ess, ans, s2cs, s2vs);
       aux_s2exp (s2V0, s2e, ans, s2cs, s2vs)
-    end
+    end (* end of [S2LAB1ind] *)
 end // end of [aux_s2lab]
 
 and aux_s2var
@@ -2060,7 +2075,7 @@ and aux_labs2zexplst
   | LABS2ZEXPLSTcons (_(*lab*), s2ze, ls2zes) => begin
       aux_s2zexp (s2V0, s2ze, ans, s2cs, s2vs);
       aux_labs2zexplst (s2V0, ls2zes, ans, s2cs, s2vs)
-    end
+    end (* end of [LABS2ZEXPLSTcons] *)
   | LABS2ZEXPLSTnil () => ()
 // end of [aux_labs2zexplst]
 

@@ -430,21 +430,20 @@ end // end of [sp1at_tr_dn]
 
 implement s1exp_tr_dn_bool (s1e) = s1exp_tr_dn (s1e, s2rt_bool)
 
-fun s1explst_tr_dn_bool (s1es: s1explst): s2explst = begin
-  case+ s1es of
-  | s1e :: s1es => s1exp_tr_dn (s1e, s2rt_bool) :: s1explst_tr_dn_bool s1es
-  | nil () => nil ()
-end // end of [s2explst_tr_dn_bool]
+implement s1explst_tr_dn_bool (s1es) =
+  $Lst.list_map_fun (s1es, s1exp_tr_dn_bool)
+
+implement s1exp_tr_dn_class (s1e) = s1exp_tr_dn (s1e, s2rt_class)
+
+implement s1explst_tr_dn_class (s1es) =
+  $Lst.list_map_fun (s1es, s1exp_tr_dn_class)
 
 implement s1exp_tr_dn_int (s1e) = s1exp_tr_dn (s1e, s2rt_int)
 
-implement s1explst_tr_dn_int (s1es) = begin case+ s1es of
-  | s1e :: s1es => s1exp_tr_dn (s1e, s2rt_int) :: s1explst_tr_dn_int s1es
-  | nil () => nil ()
-end // end of [s1explst_tr_dn_int]
+implement s1explst_tr_dn_int (s1es) =
+  $Lst.list_map_fun (s1es, s1exp_tr_dn_int)
 
-fun s1explstlst_tr_dn_int (s1ess: s1explstlst): s2explstlst =
-  $Lst.list_map_fun (s1ess, s1explst_tr_dn_int)
+(* ****** ****** *)
 
 implement s1exp_tr_dn_prop (s1e) = s1exp_tr_dn (s1e, s2rt_prop)
 implement s1exp_tr_dn_type (s1e) = s1exp_tr_dn (s1e, s2rt_type)
@@ -1427,7 +1426,7 @@ in
     end // end of [S1Etrans]
   | S1Etyarr (s1e_elt, s1ess_dim) => let
       val s2e_elt = s1exp_tr_dn_viewt0ype s1e_elt
-      val s2ess_dim = s1explstlst_tr_dn_int s1ess_dim
+      val s2ess_dim = $Lst.list_map_fun (s1ess_dim, s1explst_tr_dn_int)
     in
       s2exp_tyarr (s2e_elt, s2ess_dim)
     end // end of [S1Etyarr]
@@ -2120,20 +2119,26 @@ implement d1atdeclst_tr
         | None () => None () 
       ) : Option (List @(symopt_t, s2rt, int))
       val s2vs = let
-        fun aux (xs: List @(symopt_t, s2rt, int)): s2varlst =
+        fun aux
+          (xs: List @(symopt_t, s2rt, int)): s2varlst =
           case+ xs of
-          | cons (x, xs) => begin case+ x.0 of
-            | Some id => cons (s2var_make_id_srt (id, x.1), aux xs)
-            | None () =>> aux xs
-            end
-          | nil () => nil ()
+          | list_cons (x, xs) => begin case+ x.0 of
+            | Some id => begin
+                list_cons (s2var_make_id_srt (id, x.1), aux xs)
+              end // end of [Some]
+            | None () => aux xs
+            end // end of [list_cons]
+          | list_nil () => list_nil ()
+        // end of [aux]
       in
         case+ argvar of Some xs => aux xs | None () => nil ()
       end : s2varlst
       val os2ts_arg = let
-        fun aux (xs: List @(symopt_t, s2rt, int))
-          : s2rtlst = case+ xs of
-          | cons (x, xs) => cons (x.1, aux xs) | nil () => nil ()
+        fun aux
+          (xs: List @(symopt_t, s2rt, int)): s2rtlst =
+          case+ xs of
+          | list_cons (x, xs) => list_cons (x.1, aux xs)
+          | list_nil () => list_nil ()
         // end of [aux]
       in
         case+ argvar of Some xs => Some (aux xs) | None () => None ()
@@ -2145,10 +2150,10 @@ implement d1atdeclst_tr
       the_s2expenv_add_scst s2c; res := cons (@(d1c, s2c, s2vs), res)
     end // end of [val]
 
-    fun auxlst (d1cs: d1atdeclst, res: &T):<cloptr1> void =
-      case+ d1cs of
-      | cons (d1c, d1cs) => (aux (d1c, res); auxlst (d1cs, res))
-      | nil () => ()
+    fun auxlst
+      (d1cs: d1atdeclst, res: &T):<cloptr1> void = case+ d1cs of
+      | list_cons (d1c, d1cs) => (aux (d1c, res); auxlst (d1cs, res))
+      | list_nil () => ()
     // end of [auxlst]
   in
     auxlst (d1cs_dat, res); res
@@ -2156,22 +2161,22 @@ implement d1atdeclst_tr
 
   val () = let
     fun aux (d1cs: s1expdeflst): void = begin case+ d1cs of
-      | cons (d1c, d1cs) => let
+      | list_cons (d1c, d1cs) => let
           val () = the_s2expenv_add_scst (s1expdef_tr (None (), d1c))
         in
           aux d1cs
         end // end of [cons]
-      | nil () => ()
+      | list_nil () => ()
     end // end of [aux]
   in
     aux (d1cs_def)
   end // end of [val]
 
   fun aux (xs: T): s2cstlst = begin case+ xs of
-    | cons (x, xs) => begin
+    | list_cons (x, xs) => begin
         d1atdec_tr (x.1, x.2, x.0); S2CSTLSTcons (x.1, aux xs)
       end // end of [cons]
-    | nil () => S2CSTLSTnil ()
+    | list_nil () => S2CSTLSTnil ()
   end // end of [aux]
 in
   aux (d1cs2cs2vslst)
@@ -2197,11 +2202,12 @@ in
   the_d2expenv_add_dcon d2c; d2c
 end // end of [e1xndec_tr]
 
-fun d2conlst_revapp (d2cs1: d2conlst, d2cs2: d2conlst)
-  : d2conlst = begin case+ d2cs1 of
+fun d2conlst_revapp
+  (d2cs1: d2conlst, d2cs2: d2conlst): d2conlst = begin
+  case+ d2cs1 of
   | D2CONLSTcons (d2c1, d2cs1) => begin
       d2conlst_revapp (d2cs1, D2CONLSTcons (d2c1, d2cs2))
-    end
+    end (* end of [D2CONLSTcons] *)
   | D2CONLSTnil () => d2cs2
 end // end of [d2conlst_revapp]
 

@@ -1243,6 +1243,13 @@ implement m0thdec_tr (mtd) = case+ mtd of
       val def = d0exp_lams_dyn_tr (
         lamknd, None(*oloc*), ofc, 0(*lin*), arg, Some res, oefc, def
       ) // end of [d0exp_lams_dyn_tr]
+// (*
+      val () = begin
+        prerr "m0thdec_tr: M0THDECmtd: sym = "; prerr sym; prerr_newline ();
+        prerr "m0thdec_tr: M0THDECmtd: defknd = "; prerr defknd; prerr_newline ();
+        prerr "m0thdec_tr: M0THDECmtd: def = "; prerr def; prerr_newline ()
+      end // end of [val]
+// *)
     in
       M1THDECmtd (loc, sym, defknd, def)
     end // end of [M0THDECmtd]      

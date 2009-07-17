@@ -769,14 +769,14 @@ in
       d3ec_staload (d2c0.d2ec_loc, fil, od3cs)
     end // end of [D2Cstaload]
   | D2Cdynload fil => d3ec_dynload (d2c0.d2ec_loc, fil)
-(*
+// (*
   | _ => begin
-      prerr d2c0.d2ec_loc;
+      $Loc.prerr_location d2c0.d2ec_loc;
       prerr ": d2ec_tr: not implemented yet.";
       prerr_newline ();
       $Err.abort {d3ec} ()
     end
-*)
+// *)
 end // end of [d2ec_tr]
 
 (* ****** ****** *)

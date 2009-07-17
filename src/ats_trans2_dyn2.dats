@@ -206,6 +206,17 @@ fn witht1ype_tr
 
 (* ****** ****** *)
 
+fn c1lassdec_tr
+  (decarg: s2qualst, d1c: c1lassdec): c2lassdec = let
+  val loc = d1c.c1lassdec_loc
+  val supclss = s1explst_tr_dn_class (d1c.c1lassdec_sup)
+  val mtds = list_nil ()
+in
+  c2lassdec_make (loc, supclss, mtds)
+end // end of [c1lassdec_tr]
+
+(* ****** ****** *)
+
 fn v1aldec_tr (d1c: v1aldec, p2t: p2at): v2aldec = let
   val loc = d1c.v1aldec_loc
   val def = d1exp_tr (d1c.v1aldec_def)
@@ -1066,6 +1077,14 @@ implement d1ec_tr (d1c0) = begin
   | D1Csaspdec (d1c) => begin
       d2ec_saspdec (d1c0.d1ec_loc, s1aspdec_tr d1c)
     end // end of [D1Csaspdec]
+  | D1Cdcstdecs (dck, decarg, d1cs) => let
+      val (pf_s2expenv | ()) = the_s2expenv_push ()
+      val s2vpss = s1qualstlst_tr (decarg)
+      val d2cs = d1cstdeclst_tr (dck, s2vpss, d1cs)
+      val () = the_s2expenv_pop (pf_s2expenv | (*none*))
+    in
+      d2ec_dcstdec (d1c0.d1ec_loc, dck, d2cs)
+    end // end of [D1Cdcstdecs]
   | D1Cdatdecs (dtk, d1cs_dat, d1cs_def) => let
       val s2cs = d1atdeclst_tr (dtk, d1cs_dat, d1cs_def)
     in
@@ -1076,14 +1095,22 @@ implement d1ec_tr (d1c0) = begin
     in
       d2ec_exndec (d1c0.d1ec_loc, d2cs)
     end // end of [D1Cexndecs]
-  | D1Cdcstdecs (dck, decarg, d1cs) => let
+  | D1Cclassdec (decarg, d1c_cls, d1cs_def) => let
       val (pf_s2expenv | ()) = the_s2expenv_push ()
+      val () = begin
+        case+ decarg of cons _ => template_level_inc () | nil _ => ()
+      end // end of [val]
       val s2vpss = s1qualstlst_tr (decarg)
-      val d2cs = d1cstdeclst_tr (dck, s2vpss, d1cs)
+      val () = s2qualst_tmplev_set (s2vpss, template_level_get ())
+      val level = d2var_current_level_get ()
+      val d2c_cls = c1lassdec_tr (s2vpss, d1c_cls)
       val () = the_s2expenv_pop (pf_s2expenv | (*none*))
+      val () = begin
+        case+ decarg of cons _ => template_level_dec () | nil _ => ()
+      end // end of [val]
     in
-      d2ec_dcstdec (d1c0.d1ec_loc, dck, d2cs)
-    end // end of [D1Cdcstdecs]
+      d2ec_classdec (d1c0.d1ec_loc, d2c_cls)
+    end // end of [D1Cfundecs]
   | D1Coverload (id, qid) => let
       val () = overload_tr_if (id, qid) in
       d2ec_overload (d1c0.d1ec_loc, id, qid)
@@ -1158,13 +1185,13 @@ implement d1ec_tr (d1c0) = begin
   | D1Cstaload (idopt, fil, loaded, d1cs) => begin
       s1taload_tr (d1c0.d1ec_loc, idopt, fil, loaded, d1cs)
     end // end of [D1Cstaload]
-// (*
+(*
   | _ => begin
       prerr_loc_error2 d1c0.d1ec_loc;
       prerr ": d1ec_tr: not available yet.\n";
       $Err.abort {d2ec} ()
     end // end of [_]
-// *)
+*)
 end // end of [d1ec_tr]
 
 (* ****** ****** *)
