@@ -109,7 +109,8 @@ fun exit {a:viewt@ype} (status: int):<!exn> a
   = "ats_exit"
 
 fun exit_main {a:viewt@ype}
-  {v_in:view} {v_out:view} (pf: v_in | status: int):<!exn> (v_out | a)
+  {v_in:view} {v_out:view}
+  (pf: !v_in >> v_out | status: int):<!exn> a
   = "ats_exit"
 
 fun exit_errmsg {a:viewt@ype} (status: int, msg: string):<!exnref> a

@@ -329,7 +329,7 @@ implement funlab_typ_arg_get (fl) = let
       prerr ": funlab_typ_arg_get: hit_fun = "; prerr_hityp hit_fun;
       prerr_newline ();
       $Err.abort {hityplst_t} ()
-    end
+    end (* end of [_] *)
 end // end of [funlab_typ_arg_get]
 
 implement funlab_typ_res_get (fl) = let
@@ -342,7 +342,7 @@ implement funlab_typ_res_get (fl) = let
       prerr ": funlab_typ_res_get: hit_fun = "; prerr_hityp hit_fun;
       prerr_newline ();
       $Err.abort {hityp_t} ()
-    end // end of [_]
+    end (* end of [_] *)
 end // end of [funlab_typ_res_get]
 
 implement funlab_funclo_get (fl) = let

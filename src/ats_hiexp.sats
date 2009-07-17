@@ -72,6 +72,7 @@ datatype hityp_node =
   | HITunion of (* union type *)
       labhityplst
   | HITvararg (* variable argument *)
+// end of [hityp_node]
 
 and labhityplst =
   | LABHITYPLSTcons of (lab_t, hityp, labhityplst)
@@ -119,7 +120,10 @@ val hityp_int : hityp
 val hityp_ptr : hityp
 val hityp_string : hityp
 val hityp_tysum_ptr : hityp
+(*
 val hityp_var : hityp
+val hityp_varet : hityp
+*)
 val hityp_vararg : hityp
 val hityp_void : hityp
 
@@ -129,6 +133,7 @@ fun hityp_extype (name: string): hityp
 fun hityp_fun (fc: $Syn.funclo, _arg: hityplst, _res: hityp): hityp
 fun hityp_refarg (refvar: int, _arg: hityp): hityp
 fun hityp_s2var (s2v: s2var_t): hityp
+fun hityp_s2varet (s2v: s2var_t): hityp
 
 fun hityp_tyarr (hit_elt: hityp, s2ess_dim: s2explstlst): hityp
 

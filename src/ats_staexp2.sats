@@ -593,6 +593,7 @@ overload compare with compare_s2var_s2var
 //
 
 fun s2var_is_boxed (s2v: s2var_t): bool
+fun s2var_is_unboxed (s2v: s2var_t): bool
 
 //
 

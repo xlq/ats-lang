@@ -92,14 +92,10 @@ fn s2exp_app_tr (
   ) : hityp = let
 (*
   val () = begin
-    prerr "s2exp_app_tr: s2t_app = "; prerr s2t_app; prerr_newline ()
-  end
-  val () = begin
-    prerr "s2exp_app_tr: s2e_fun = "; prerr s2e_fun; prerr_newline ()
-  end
-  val () = begin
-    prerr "s2exp_app_tr: s2es_arg = "; prerr s2es_arg; prerr_newline ()
-  end
+    prerr "s2exp_app_tr: s2t_app = "; prerr s2t_app; prerr_newline ();
+    prerr "s2exp_app_tr: s2e_fun = "; prerr s2e_fun; prerr_newline ();
+    prerr "s2exp_app_tr: s2es_arg = "; prerr s2es_arg; prerr_newline ();
+  end // end of [val]
 *)
 in
   case+ s2e_fun.s2exp_node of
@@ -109,20 +105,20 @@ in
       | Some (os2e) => begin case+ os2e of
         | Some s2e => begin case+ s2e.s2exp_node of
           | S2Elam (s2vs_arg, s2e_body) => let
-              val sub = aux (s2vs_arg, s2es_arg) where {
-                fun aux (s2vs: s2varlst, s2es: s2explst): stasub_t =
-                  case+ (s2vs, s2es) of
-                  | (cons (s2v, s2vs), cons (s2e, s2es)) =>
-                      stasub_add (aux (s2vs, s2es), s2v, s2e)
-                  | (nil _, nil _) => stasub_nil
-                  | (_, _) => begin
-                      prerr "Internal Error";
-                      $Deb.debug_prerrf (": %s", @(THISFILENAME));
-                      prerr ": s2exp_app_tr: S2Eapp: arity error";
-                      prerr_newline ();
-                      $Err.abort {stasub_t} ()
-                    end // end [_,_]
-              } // end of [where]
+              fun aux
+                (s2vs: s2varlst, s2es: s2explst): stasub_t =
+                case+ (s2vs, s2es) of
+                | (cons (s2v, s2vs), cons (s2e, s2es)) =>
+                    stasub_add (aux (s2vs, s2es), s2v, s2e)
+                | (nil _, nil _) => stasub_nil
+                | (_, _) => begin
+                    prerr "Internal Error";
+                    $Deb.debug_prerrf (": %s", @(THISFILENAME));
+                    prerr ": s2exp_app_tr: S2Eapp: arity error";
+                    prerr_newline ();
+                    $Err.abort {stasub_t} ()
+                  end // end [_,_]
+              val sub = aux (s2vs_arg, s2es_arg)
               val s2e_app = s2exp_subst (sub, s2e_body)
             in
               s2exp_tr (deep, s2e_app)
@@ -139,20 +135,25 @@ in
     end
 end // end of [s2exp_app_tr]
 
-fn s2Var_tr (deep: int, s2V: s2Var_t): hityp = begin
+fn s2Var_tr
+  (deep: int, s2V: s2Var_t): hityp = begin
   case+ s2Var_lbs_get s2V of
-  | cons (s2Vb, _) => s2exp_tr (deep, s2Varbound_val_get s2Vb)
-  | nil () => begin case+ s2Var_ubs_get s2V of
-    | cons (s2Vb, _) => s2exp_tr (deep, s2Varbound_val_get s2Vb)
-    | nil () => hityp_abs
-    end
+  | list_cons (s2Vb, _) => s2exp_tr (deep, s2Varbound_val_get s2Vb)
+  | list_nil () => begin case+ s2Var_ubs_get s2V of
+    | list_cons (s2Vb, _) => s2exp_tr (deep, s2Varbound_val_get s2Vb)
+    | list_nil () => hityp_abs
+    end // end of [list_nil]
 end // end of [s2Var_tr]
+
+#define VAR_TYPE_NAME           "ats_var_type"
+#define VARET_TYPE_NAME         "ats_varet_type"
 
 implement s2exp_tr (deep, s2e0) = let
   val s2e0 = s2exp_whnf s2e0; val s2t0 = s2e0.s2exp_srt
 (*
   val () = begin
-    prerr "s2exp_tr: s2e0 = "; prerr s2e0; prerr_newline ()
+    prerr "s2exp_tr: deep = "; prerr deep; prerr_newline ();
+    prerr "s2exp_tr: s2e0 = "; prerr s2e0; prerr_newline ();
   end // end of [val]
 *)
 in
@@ -190,7 +191,7 @@ in
         hityp_tysumtemp (d2c, hits_arg)
       end else begin
         hityp_ptr // deep = 0
-      end // end of [if]
+      end (* end of [if] *)
     end // end of [S2Edatcontyp]
   | S2Eexi (_(*s2vs*), _(*s2ps*), s2e) => s2exp_tr (deep, s2e)
   | S2Eextype name => hityp_extype name
@@ -198,6 +199,15 @@ in
       if deep > 0 then let
         val hits_arg = s2explst_arg_tr (npf, s2es_arg)
         val hit_res = s2exp_tr (0, s2e_res)
+        val HITNAM (knd, name) = hit_res.hityp_name
+        val hit_res = (if name = VAR_TYPE_NAME then '{
+            hityp_name= HITNAM (knd, VARET_TYPE_NAME), hityp_node= hit_res.hityp_node
+          } else hit_res
+        ) : hityp
+(*
+        val HITNAM (_, name) = hit_res.hityp_name
+        val () = (prerr "s2exp_tr: S2Efun: hit_res = "; prerr name; prerr_newline ())
+*)
       in
         hityp_fun (fc, hits_arg, hit_res)
       end else begin case+ fc of
@@ -207,7 +217,7 @@ in
           end else begin
             if knd > 0 then hityp_clo_ptr else hityp_clo_ref (*knd = -1*)
           end // end of [FUNCLOclo]
-      end // end of [if]
+      end (* end of [if] *)
     end // end of [S2Efun]
   | S2Elam (_(*s2vs*), s2e_body) => s2exp_tr (deep, s2e_body)
   | S2Emetfn (_(*stamp*), _(*met*), s2e) => s2exp_tr (deep, s2e)
@@ -274,21 +284,22 @@ fn s2explst_tr (s2es: s2explst): hityplst = begin
     (s2es, lam (s2e) =<1> s2exp_tr (0(*deep*), s2e))
 end // end of [s2explst_tr]
 
-implement s2explst_arg_tr (npf, s2es): hityplst = let
+implement s2explst_arg_tr
+  (npf, s2es): hityplst = let
   fun aux1 (s2es: s2explst): hityplst =
     case+ s2es of
-    | cons (s2e, s2es) => begin
+    | list_cons (s2e, s2es) => begin
         if s2exp_is_proof s2e then aux1 s2es
         else begin
-          cons (s2exp_tr (0, s2e), aux1 s2es)
-        end
-      end // end of [cons]
-    | nil () => nil ()
+          list_cons (s2exp_tr (0, s2e), aux1 s2es)
+        end // end of [if]
+      end (* end of [cons] *)
+    | list_nil () => list_nil ()
   // end of [aux1]
   fun aux2 (i: int, s2es: s2explst): hityplst =
     if i > 0 then begin case+ s2es of
-      | cons (_, s2es) => aux2 (i-1, s2es)
-      | nil () => nil () // deadcode
+      | list_cons (_, s2es) => aux2 (i-1, s2es)
+      | list_nil () => list_nil () // deadcode
     end else begin
       aux1 (s2es) // proof arguments have been dropped
     end // end of [if]
@@ -305,7 +316,8 @@ implement labs2explst_arg_tr (npf, ls2es) = let
           aux1 ls2es
         end else begin
           LABHITYPLSTcons (l, s2exp_tr (0, s2e), aux1 ls2es)
-        end
+        end // end of [if]
+      (* end of [LABS2EXPLSTcons] *)
     | LABS2EXPLSTnil () => LABHITYPLSTnil ()
   // end of [aux1]
   fun aux2 (i: int, ls2es: labs2explst): labhityplst =
@@ -335,8 +347,8 @@ fn p3atlst_arg_tr
         else begin
           if p3at_is_proof p3t then aux (0, p3ts)
           else cons (p3at_tr p3t, aux (0, p3ts))
-        end
-      // end of [list_cons]
+        end // end of [if]
+      (* end of [list_cons] *)
     | list_nil () => list_nil ()
 in
   aux (npf, p3ts)
