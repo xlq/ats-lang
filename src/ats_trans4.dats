@@ -198,7 +198,8 @@ in
       if deep > 0 then let
         val hits_arg = s2explst_arg_tr (npf, s2es_arg)
         val hit_res = s2exp_tr (0, s2e_res)
-        val hit_res = hityp_varetize (hit_res)
+        // [hityp_varetisze] turns ats_var_type 
+        val hit_res = hityp_varetize (hit_res) // into ats_varet_type if needed
 (*
         val HITNAM (_, name) = hit_res.hityp_name
         val () = (prerr "s2exp_tr: S2Efun: hit_res = "; prerr name; prerr_newline ())
