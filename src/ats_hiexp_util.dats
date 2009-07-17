@@ -84,7 +84,8 @@ implement hityp_is_void (hit0) = begin
     | _ when name = VAR_TYPE_NAME => true
     | _ when name = VOID_TYPE_NAME => true
     | _ => false
-    end
+    end (* end of [HITextype] *)
+  | HITs2var s2v when s2var_is_unboxed s2v => true // problematic?
   | HITtyrecsin hit => hityp_is_void hit
   | _ => false
 end // end of [hityp_is_void]
@@ -118,7 +119,7 @@ in
   case+ hit_fun.hityp_node of
   | HITfun (_(*fc*), arg, _(*res*)) => begin
       case+ arg of cons (hit, hits) => aux (hit, hits) | nil () => false
-    end
+    end // end of [HITfun]
   | _ => begin
       prerr "INTERNAL ERROR";
       $Deb.debug_prerrf (": %s", @(THISFILENAME));
@@ -558,16 +559,12 @@ fun hityp_normalize_flag
     in
       if flag > flag0 then hityp_tyrecsin hit else hit0
     end // end of [HITtyrecsin]
-  | HITs2var s2v => let
+  | HITs2var s2v => hit0_new where {
       val hit0_new = (
         case+ hityp_s2var_normalize (s2v) of
-        | ~Some_vt hit => hit | ~None_vt () => begin
-            if s2var_is_boxed s2v then hityp_ptr else hityp_var
-          end // end of [None_vt]
+        | ~Some_vt hit => (flag := flag + 1; hit) | ~None_vt () => hit0
       ) : hityp
-    in
-      flag := flag + 1; hit0_new
-    end // end of [HITs2var]
+    } // end of [HITs2var]
   | _ => hit0
 (*
   val () = begin

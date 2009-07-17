@@ -43,15 +43,28 @@
 /* ****** ****** */
 
 #include <inttypes.h>
-#include <stddef.h> /* size_t and ptrdiff_t */
-#include <unistd.h> /* ssize_t */
+
+// for both [size_t]
+#include <stddef.h> // and [ptrdiff_t]
+#include <unistd.h> // for [ssize_t]
 
 /* ****** ****** */
 
-typedef void ats_abs_type ;
+struct ats_struct_type ; /* of indefinite size */
+
+/* ****** ****** */
+
+typedef struct ats_struct_type ats_abs_type ;
 typedef void *ats_ptr_type ;
 typedef void *ats_ref_type ;
+
+#ifdef _ATS_GEIZELLA
 typedef void ats_var_type ;
+#else
+typedef struct ats_struct_type ats_var_type ;
+#endif
+typedef void ats_varet_type ;
+
 typedef void ats_void_type ;
 
 typedef struct{} ats_empty_type ;

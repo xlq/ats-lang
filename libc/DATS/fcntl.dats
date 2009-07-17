@@ -83,8 +83,8 @@ in
     prval close_v_succ () = pf_err in (*empty*)
   end else let
     prval close_v_fail pf_fd = pf_err
-    val (pf_out | ()) = exit_main {void} {..} {unit_v} (pf_fd | 1)
-    prval unit_v () = pf_out
+    val () = exit_main {void} {..} {unit_v} (pf_fd | 1)
+    prval unit_v () = pf_fd
   in
     // empty
   end // end of [if]

@@ -72,6 +72,7 @@ datatype hityp_node =
   | HITunion of (* union type *)
       labhityplst
   | HITvararg (* variable argument *)
+// end of [hityp_node]
 
 and labhityplst =
   | LABHITYPLSTcons of (lab_t, hityp, labhityplst)
@@ -119,7 +120,10 @@ val hityp_int : hityp
 val hityp_ptr : hityp
 val hityp_string : hityp
 val hityp_tysum_ptr : hityp
+(*
 val hityp_var : hityp
+val hityp_varet : hityp
+*)
 val hityp_vararg : hityp
 val hityp_void : hityp
 
@@ -140,6 +144,8 @@ fun hityp_tysum (name: string, d2c: d2con_t, _arg: hityplst): hityp
 fun hityp_tysumtemp (d2c: d2con_t, _arg: hityplst): hityp
 
 fun hityp_union (name: string, lhits: labhityplst): hityp
+
+fun hityp_varetize (hit: hityp): hityp
 
 (* ****** ****** *)
 

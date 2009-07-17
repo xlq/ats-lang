@@ -20,8 +20,8 @@ static inline
 ats_ptr_type
 atslib_fmatrix_ptr_takeout_tsz (
   ats_ptr_type base
-, ats_int_type i
 , ats_int_type m
+, ats_int_type i
 , ats_int_type j
 , ats_size_type tsz
 ) {

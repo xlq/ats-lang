@@ -54,24 +54,25 @@ staload "ats_hiexp.sats"
 
 (* ****** ****** *)
 
-#define ABS_TYPE_NAME     "ats_abs_type"
-#define BOOL_TYPE_NAME   "ats_bool_type"
-#define CHAR_TYPE_NAME   "ats_char_type"
+#define ABS_TYPE_NAME           "ats_abs_type"
+#define BOOL_TYPE_NAME          "ats_bool_type"
+#define CHAR_TYPE_NAME          "ats_char_type"
 #define CLO_TYPE_NAME           "ats_clo_type"
 #define CLO_PTR_TYPE_NAME       "ats_clo_ptr_type"
 #define CLO_REF_TYPE_NAME       "ats_clo_ref_type"
 #define DOUBLE_TYPE_NAME        "ats_double_type"
 #define FLOAT_TYPE_NAME         "ats_float_type"
-#define INT_TYPE_NAME     "ats_int_type"
-#define PTR_TYPE_NAME     "ats_ptr_type"
-#define REF_TYPE_NAME     "ats_ref_type"
+#define INT_TYPE_NAME           "ats_int_type"
+#define PTR_TYPE_NAME           "ats_ptr_type"
+#define REF_TYPE_NAME           "ats_ref_type"
 #define RECTEMP_TYPE_NAME       "ats_rectemp_type"
 // #define STRING_TYPE_NAME     "ats_string_type"
 #define STRING_TYPE_NAME        "ats_ptr_type"
 #define SUM_PTR_TYPE_NAME       "ats_sum_ptr_type"
 #define SUMTEMP_TYPE_NAME       "ats_sumtemp_type"
-#define VAR_TYPE_NAME     "ats_var_type"
-#define VOID_TYPE_NAME   "ats_void_type"
+#define VAR_TYPE_NAME           "ats_var_type"
+#define VARET_TYPE_NAME         "ats_varet_type"
+#define VOID_TYPE_NAME          "ats_void_type"
 
 (* ****** ****** *)
 
@@ -87,7 +88,10 @@ implement hityp_int = hityp_extype INT_TYPE_NAME
 implement hityp_ptr = hityp_extype PTR_TYPE_NAME
 implement hityp_string = hityp_extype STRING_TYPE_NAME
 implement hityp_tysum_ptr = hityp_extype SUM_PTR_TYPE_NAME
+(*
 implement hityp_var = hityp_extype VAR_TYPE_NAME
+implement hityp_varet = hityp_extype VARET_TYPE_NAME
+*)
 implement hityp_void = hityp_extype VOID_TYPE_NAME
 
 (* ****** ****** *)
@@ -95,6 +99,7 @@ implement hityp_void = hityp_extype VOID_TYPE_NAME
 val hityp_name_ptr: hityp_name = HITNAM (0, PTR_TYPE_NAME)
 val hityp_name_ref: hityp_name = HITNAM (0, REF_TYPE_NAME)
 val hityp_name_var: hityp_name = HITNAM (0, VAR_TYPE_NAME)
+val hityp_name_varet: hityp_name = HITNAM (0, VARET_TYPE_NAME)
 
 val hityp_name_tyrectemp_box: hityp_name =
   HITNAM (1(*box*), RECTEMP_TYPE_NAME)
@@ -172,13 +177,23 @@ implement hityp_union (name, lhits) = '{
   hityp_name= HITNAM (0, name), hityp_node= HITunion lhits
 } // end of [hityp_union]
 
+implement hityp_varetize (hit) = let
+  val HITNAM (knd, name) = hit.hityp_name
+in
+  if name = VAR_TYPE_NAME then '{
+    hityp_name= hityp_name_varet, hityp_node= hit.hityp_node
+  } else hit
+end // end of [hityp_varetize]
+
+(* ****** ****** *)
+
 implement hityp_s2var (s2v) = begin
   if s2var_is_boxed s2v then begin
     '{ hityp_name= hityp_name_ptr, hityp_node= HITs2var s2v }
   end else begin
     '{ hityp_name= hityp_name_var, hityp_node= HITs2var s2v }
-  end
-end // end of [hityp_var]
+  end // end of [if]
+end (* end of [hityp_s2var] *)
 
 implement hityp_vararg = '{
   hityp_name= hityp_name_vararg, hityp_node= HITvararg ()
@@ -186,40 +201,42 @@ implement hityp_vararg = '{
 
 (* ****** ****** *)
 
-implement hipat_ann (loc, hit, hip, hit_ann) = '{
+implement hipat_ann
+  (loc, hit, hip, hit_ann) = '{
   hipat_loc= loc
 , hipat_node= HIPann (hip, hit_ann)
 , hipat_typ= hit
 , hipat_asvar= D2VAROPTnone ()
-}
+} // end of [hipat_ann]
 
 implement hipat_any (loc, hit) = '{
   hipat_loc= loc
 , hipat_node= HIPany ()
 , hipat_typ= hit
 , hipat_asvar= D2VAROPTnone ()
-}
+} // end of [hipat_any]
 
-implement hipat_as (loc, hit, refknd, d2v, hip) = '{
+implement hipat_as
+  (loc, hit, refknd, d2v, hip) = '{
   hipat_loc= loc
 , hipat_node= HIPas (refknd, d2v, hip)
 , hipat_typ= hit
 , hipat_asvar= D2VAROPTnone ()
-}
+} // end of [hipat_as]
 
 implement hipat_bool (loc, hit, b) = '{
   hipat_loc= loc
 , hipat_node= HIPbool b
 , hipat_typ= hit
 , hipat_asvar= D2VAROPTnone ()
-}
+} // end of [hipat_bool]
 
 implement hipat_char (loc, hit, c) = '{
   hipat_loc= loc
 , hipat_node= HIPchar c
 , hipat_typ= hit
 , hipat_asvar= D2VAROPTnone ()
-}
+} // end of [hipat_char]
 
 implement hipat_con
   (loc, hit, freeknd, d2c, hips, hit_sum) = '{
@@ -241,16 +258,17 @@ implement hipat_empty (loc, hit) = '{
 , hipat_node= HIPempty ()
 , hipat_typ= hit
 , hipat_asvar= D2VAROPTnone ()
-}
+} // end of [hipat_empty]
 
 implement hipat_int (loc, hit, str, int) = '{
   hipat_loc= loc
 , hipat_node= HIPint (str, int)
 , hipat_typ= hit
 , hipat_asvar= D2VAROPTnone ()
-}
+} // end of [hipat_int]
 
-implement hipat_lst (loc, hit_lst, hips, hit_elt) = '{
+implement hipat_lst
+  (loc, hit_lst, hips, hit_elt) = '{
   hipat_loc= loc
 , hipat_node= HIPlst (hips, hit_elt)
 , hipat_typ= hit_lst
@@ -269,14 +287,14 @@ implement hipat_string (loc, hit, str) = '{
 , hipat_node= HIPstring str
 , hipat_typ= hit
 , hipat_asvar= D2VAROPTnone ()
-}
+} // end of [hipat_string]
 
 implement hipat_var (loc, hit, refknd, d2v) = '{
   hipat_loc= loc
 , hipat_node= HIPvar (refknd, d2v)
 , hipat_typ= hit
 , hipat_asvar= D2VAROPTnone ()
-}
+} // end of [hipat_var]
 
 (* ****** ****** *)
 
