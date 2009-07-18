@@ -353,7 +353,7 @@ end // end of [sp1at_argcheck]
 
 implement sp1at_tr_dn (sp1t, s2t_pat) = let
   val loc0 = sp1t.sp1at_loc
-  fn errmsg1
+  fn err1
     (q: s0taq, id: sym_t):<cloref1> sp2at = begin
     prerr_loc_error2 loc0;
     $Deb.debug_prerrf (": %s: sp1at_tr_dn", @(THISFILENAME));
@@ -362,8 +362,8 @@ implement sp1at_tr_dn (sp1t, s2t_pat) = let
     prerr "] does not refer to a constructor associated with the sort [";
     prerr s2t_pat; prerr_newline ();
     $Err.abort {sp2at} ()
-  end // end of [errmsg1]
-  fn errmsg2 
+  end // end of [err1]
+  fn err2 
     (q: s0taq, id: sym_t):<cloref1> sp2at = begin
     prerr_loc_error2 loc0;
     $Deb.debug_prerrf (": %s: sp1at_tr_dn", @(THISFILENAME));
@@ -372,8 +372,8 @@ implement sp1at_tr_dn (sp1t, s2t_pat) = let
     prerr "] does not refer to a static constructor.";
     prerr_newline ();
     $Err.abort {sp2at} ()
-  end // end of [errmsg2]
-  fn errmsg3
+  end // end of [err2]
+  fn err3
     (q: s0taq, id: sym_t):<cloref1> sp2at = begin
     prerr_loc_error2 loc0;
     $Deb.debug_prerrf (": %s: sp1at_tr_dn", @(THISFILENAME));
@@ -381,16 +381,18 @@ implement sp1at_tr_dn (sp1t, s2t_pat) = let
     $Syn.prerr_s0taq q; $Sym.prerr_symbol id; prerr "] is unrecognized.";
     prerr_newline ();
     $Err.abort {sp2at} ()
-  end // end of [errmsg3]
-  fn argcheck_errmsg (s2v: s2var_t):<cloref1> void = begin
+  end // end of [err3]
+  fn argcheck_err (s2v: s2var_t):<cloref1> void = begin
     $Loc.prerr_location loc0; prerr ": warning(2)";    
     prerr ": the static variable ["; prerr s2v; prerr "] occurs repeatedly.";
     prerr_newline ()
-  end // end of [argcheck_errmsg]
+  end // end of [argcheck_err]
 in
   case+ sp1t.sp1at_node of
   | SP1Tcon (q, id, s1as) => let
-    val ans = the_s2expenv_find_qua (q, id) in case+ ans of
+    val ans =
+      the_s2expenv_find_qua (q, id) in
+    case+ ans of
     | ~Some_vt s2i => begin case+ s2i of
       | S2ITEMcst s2cs => let
           var s2ts_arg: s2rtlst = list_nil ()
@@ -413,16 +415,16 @@ in
           | S2CSTLSTcons (s2c, _) => let
               val s2vs = sp1at_arg_tr_dn (loc0, q, id, s1as, s2ts_arg)
               val () = (case+ sp1at_argcheck (s2vs) of
-                | ~Some_vt s2v => argcheck_errmsg (s2v) | ~None_vt () => ()
+                | ~Some_vt s2v => argcheck_err (s2v) | ~None_vt () => ()
               ) : void // end of [val]
             in
               sp2at_con (loc0, s2c, s2vs)
             end // end of [S2CSTLSTcons]
-          | S2CSTLSTnil () => errmsg1 (q, id)
+          | S2CSTLSTnil () => err1 (q, id)
         end // end of [S2ITEMcst]
-      | _ => errmsg2 (q, id)
+      | _ => err2 (q, id)
       end // end of [Some_vt]
-    | ~None_vt () => errmsg3 (q, id)
+    | ~None_vt () => err3 (q, id)
   end // end of [SP1Tcon]
 end // end of [sp1at_tr_dn]
 
@@ -433,10 +435,10 @@ implement s1exp_tr_dn_bool (s1e) = s1exp_tr_dn (s1e, s2rt_bool)
 implement s1explst_tr_dn_bool (s1es) =
   $Lst.list_map_fun (s1es, s1exp_tr_dn_bool)
 
-implement s1exp_tr_dn_class (s1e) = s1exp_tr_dn (s1e, s2rt_class)
+implement s1exp_tr_dn_cls (s1e) = s1exp_tr_dn (s1e, s2rt_cls)
 
-implement s1explst_tr_dn_class (s1es) =
-  $Lst.list_map_fun (s1es, s1exp_tr_dn_class)
+implement s1explst_tr_dn_cls (s1es) =
+  $Lst.list_map_fun (s1es, s1exp_tr_dn_cls)
 
 implement s1exp_tr_dn_int (s1e) = s1exp_tr_dn (s1e, s2rt_int)
 
@@ -653,7 +655,7 @@ fun s1exp_qid_app_tr_up (
   | S2ITEMdatconptr d2c => s1exp_app_datconptr_tr_up (loc_app, d2c, s1ess)
   | S2ITEMdatcontyp d2c => s1exp_app_datcontyp_tr_up (loc_app, d2c, s1ess)
 (*
-  | S2ITEMfil _ -> s1exp_qid_app_tr_up_errmsg_fil loc_qid qid
+  | S2ITEMfil _ => s1exp_qid_app_tr_up_errmsg_fil loc_qid qid
 *)
   | _ => begin
       $Loc.prerr_location loc_qid;
@@ -680,7 +682,7 @@ fn s1exp_qid_tr_up
         in
           case+ s2t of
           | S2RTfun (nil (), _res) when s2rt_is_dat _res => begin
-              // note: a nullary constructor is automatically applied!
+              // a nullary constructor is automatically applied!!!
               s2exp_app_srt (_res, s2e_s2c, nil ())
             end // end of [S2RTfun]
           | _ => s2e_s2c
@@ -698,6 +700,7 @@ fn s1exp_qid_tr_up
       end // end of [S2ITEMvar]
     | _ => begin
         $Loc.prerr_location loc0;
+        prerr ": INTERNAL ERROR";
         prerr ": s1exp_qid_tr_up: s2i = "; prerr s2i; prerr_newline ();
         $Err.abort ()
       end // end of [_]
@@ -1073,7 +1076,7 @@ fun s1exp_app_unwind
             val s1e_new = s1exp_make_e1xp (s1e.s1exp_loc, e1xp)
           in
             s1exp_app_unwind (s1e_new, s1ess)
-          end
+          end (* end of [S2ITEMe1xp] *)
         | _ => s1e
         end // end of [Some_vt]
       | ~None_vt () => s1e
@@ -1085,11 +1088,9 @@ end // end of [s1exp_app_unwind]
 
 (* ****** ****** *)
 
-fun s2rtlst_of_s2varlst (s2vs: s2varlst): s2rtlst = begin
-  case+ s2vs of
-  | cons (s2v, s2vs) => cons (s2var_srt_get s2v, s2rtlst_of_s2varlst s2vs)
-  | nil () => nil ()
-end // end of [s2rtlst_of_s2varlst]
+fn s2rtlst_of_s2varlst
+  (s2vs: s2varlst): s2rtlst = $Lst.list_map_fun (s2vs, s2var_srt_get)
+// end of [s2rtlst_of_s2varlst]
 
 (* ****** ****** *)
 
@@ -1103,33 +1104,30 @@ fun aux01 (
   , prg: &int
   , res: labs2explst
   ) : labs2explst = begin case+ s1es of
-  | cons (s1e, s1es) => let
+  | list_cons (s1e, s1es) => let
       val lab = $Lab.label_make_int i
       val s2e = s1exp_tr_dn_impredicative s1e
       val s2t = s2e.s2exp_srt
       val () = if s2rt_is_linear s2t then (lin := lin+1)
       val () = begin
         if i >= npf then (if ~(s2rt_is_proof s2t) then (prg := prg+1))
-      end
+      end // end of [val]
     in
       LABS2EXPLSTcons (lab, s2e, aux01 (i+1, npf, s1es, lin, prg, res))
-    end
-  | nil () => res
+    end (* end of [list_cons] *)
+  | list_nil () => res
 end // end of [aux01]
 
 fun aux23 (
-    s2t: s2rt
-  , i: int
-  , s1es: s1explst
-  , res: labs2explst
+    s2t: s2rt, i: int, s1es: s1explst, res: labs2explst
   ) : labs2explst = begin case+ s1es of
-  | cons (s1e, s1es) => let
+  | list_cons (s1e, s1es) => let
       val lab = $Lab.label_make_int i
       val s2e = s1exp_tr_dn (s1e, s2t)
     in
       LABS2EXPLSTcons (lab, s2e, aux23 (s2t, i+1, s1es, res))
-    end
-  | nil () => res
+    end (* end of [list_cons] *)
+  | list_nil () => res
 end // end of [aux23]
 
 in // in of [local]
@@ -1154,13 +1152,13 @@ fn s1exp_tytup_tr_up
       val boxed = (if tupknd > 0 then 1 else 0): int
       val s2t_rec = begin
         s2rt_lin_prg_boxed_npf_labs2explst (lin, prg, boxed, 0, ls2es)
-      end
+      end (* end of [s2t_rec] *)
       val tyrecknd = (
         if boxed > 0 then TYRECKINDbox () else TYRECKINDflt0 ()
       ) : tyreckind
     in
       s2exp_tyrec_srt (s2t_rec, tyrecknd, 0(*npf*), ls2es)
-    end
+    end (* end of [_ when ...] *)
   | _ when 2 <= tupknd andalso tupknd <= 3 => let
       val s2t_elt: s2rt =
         if tupknd = 2 then s2rt_t0ype else s2rt_viewt0ype
@@ -1169,12 +1167,13 @@ fn s1exp_tytup_tr_up
         if tupknd = 2 then s2rt_type else s2rt_viewtype
     in
       s2exp_tyrec_srt (s2t_rec, TYRECKINDbox (), 0(*npf*), ls2es)
-    end
+    end (* end of [_ when ...] *)
   | _ => begin
       $Loc.prerr_location loc0;
-      prerr ": INTERNAL ERROR: s1exp_tr: S1Etytup"; prerr_newline ();
+      prerr ": INTERNAL ERROR";
+      prerr ": s1exp_tytup_tr_up"; prerr_newline ();
       $Err.abort {s2exp} ()
-    end
+    end (* end of [_] *)
 end // end of [s1exp_tytup_tr_up]
 
 fn s1exp_tytup2_tr_up
@@ -1258,6 +1257,70 @@ fn s1exp_struct_tr_up (loc0: loc_t, ls1es: labs1explst): s2exp = let
 in
   s2exp_tyrec_srt (s2t_rec, TYRECKINDflt1 stamp, 0(*npf*), ls2es)
 end // end of [s1exp_struct_tr_up]
+
+fn s1exp_tmpid_tr (
+    loc0: loc_t
+  , q: $Syn.d0ynq
+  , id: $Sym.symbol_t
+  ) : s2cst_t = s2c where {
+(*
+  val () = begin
+    $Loc.prerr_location loc0;
+    prerr ": s1exp_tmpid_tr: id = "; $Sym.prerr_symbol id; prerr_newline ()
+  end // end of [val]
+*)
+  fn err1
+    (loc: loc_t, q: s0taq, id: sym_t): s2cst_t = begin
+    prerr_loc_error2 loc;
+    $Deb.debug_prerrf (": %s: s1exp_tmpid_tr: err1", @(THISFILENAME));
+    prerr ": the static identifier [";
+    $Syn.prerr_s0taq q; $Sym.prerr_symbol id;
+    prerr "] does not refer to a static constant";
+    prerr_newline ();
+    $Err.abort {s2cst_t} ()
+  end // end of [err1]
+//
+  fn err2 (loc: loc_t, q: $Syn.s0taq, id: sym_t): s2cst_t = begin
+    prerr_loc_error2 loc;
+    $Deb.debug_prerrf (": %s: s1exp_tmpid_tr: err2", @(THISFILENAME));
+    prerr ": the identifier [";
+    $Syn.prerr_s0taq q; $Sym.prerr_symbol id;
+    prerr "] is unrecognized.";
+    prerr_newline ();
+    $Err.abort {s2cst_t} ()
+  end // end of [err2]
+//
+  val q_loc = q.d0ynq_loc
+  val q_node = (case+ q.d0ynq_node of
+    | $Syn.D0YNQnone () => $Syn.S0TAQnone ()
+    | $Syn.D0YNQfildot nam => $Syn.S0TAQfildot nam
+    | $Syn.D0YNQsymcolon sym => $Syn.S0TAQsymcolon sym
+    | $Syn.D0YNQsymdot sym => $Syn.S0TAQsymdot sym
+    | _ => begin
+        prerr_loc_error2 (q_loc);
+        $Deb.debug_prerrf (": %s: s1exp_tmpid_tr", @(THISFILENAME));
+        prerr ": the static qualifier ["; $Syn.prerr_d0ynq q; prerr "] is not supported.";
+        prerr_newline ();
+        $Err.abort {$Syn.s0taq_node} ()
+      end // end of [_]
+  ) : $Syn.s0taq_node // end of [val]
+  val q = $Syn.s0taq_make (q_loc, q_node)
+  val ans = the_s2expenv_find_qua (q, id)
+  val s2c = (case+ ans of
+    | ~Some_vt s2i => begin case+ s2i of
+      | S2ITEMcst s2cs => begin case+ s2cs of
+        | S2CSTLSTcons (s2c, _) => s2c where {
+//
+            val () = stacstuseloc_posmark (loc0, s2c)
+//
+          } // end of [S2CSTLSTcons]
+        | S2CSTLSTnil () => err1 (loc0, q, id)
+        end (* end of [S2ITEMcst] *)
+      | _ => $Err.abort {s2cst_t} ()
+      end // end of [Some_vt]
+    | ~None_vt () => err2 (loc0, q, id)
+  ) : s2cst_t
+} // end of [s1exp_tmpid_tr]
 
 fn s1exp_tyrec_tr_up
   (loc0: loc_t, recknd: int, ls1es: labs1explst): s2exp = begin
@@ -1357,7 +1420,7 @@ in
 (*
       val () = begin
         print "s1exp_tr_up: S1Eexi: s1e0 = "; print s1e0; print_newline ()
-      end
+      end // end of [val]
 *)
       val () = if knd = 0 then () else begin
         prerr_loc_error2 s1e0.s1exp_loc;
@@ -1417,6 +1480,14 @@ in
   | S1Estruct (ls1es) => begin
       s1exp_struct_tr_up (s1e0.s1exp_loc, ls1es)
     end // end of [S1Estruct]
+  | S1Etmpid (qid, ts1ess) => let
+      val loc_id = qid.tmpqi0de_loc
+      val q = qid.tmpqi0de_qua and id = qid.tmpqi0de_sym
+      val s2c = s1exp_tmpid_tr (loc_id, q, id)
+      val ts2ess = tmps1explstlst_tr_up ts1ess
+    in
+      s2exp_tmpid (s2rt_cls, s2c, ts2ess)
+    end // end of [D1Etmpid]
   | S1Etop (knd, s1e) => s1exp_top_tr_up (knd, s1e)
   | S1Etrans _ => begin
       prerr_loc_error2 s1e0.s1exp_loc;
@@ -1451,13 +1522,13 @@ in
   | S1Eunion (s2e_ind, ls2es) => begin
       s1exp_union_tr_up (s1e0.s1exp_loc, s2e_ind, ls2es)
     end // end of [S1Eunion]
-// (*
+(*
   | _ => begin
       prerr_loc_error2 s1e0.s1exp_loc;
       prerr ": s1exp_tr: not available yet.\n";
       $Err.abort {s2exp} ()
     end // end of [_]
-// *)
+*)
 end // end of [s1exp_tr_up]
 
 implement s1explst_tr_up (s1es) = $Lst.list_map_fun (s1es, s1exp_tr_up)
@@ -1759,11 +1830,11 @@ end // end of [d1atsrtdeclst_tr]
 
 (* ****** ****** *)
 
-fn s1expdef_s1aspdec_tr_main
-  (loc0: loc_t, s1ass: s1arglstlst, res: s2rtopt, body: s1exp)
-  : s2exp = let 
+fn s1expdef_s1aspdec_tr_main (
+    loc0: loc_t, s1ass: s1arglstlst, res: s2rtopt, body: s1exp
+  ) : s2exp = let 
   val (pf_s2expenv | ()) = the_s2expenv_push ()
-  val s2vss: s2varlstlst = s1arglstlst_var_tr s1ass
+  val s2vss = (s1arglstlst_var_tr s1ass): s2varlstlst
   val body = case+ res of
     | Some s2t => s1exp_tr_dn (body, s2t) | _ => s1exp_tr_up body
   val () = the_s2expenv_pop (pf_s2expenv | (*none*))
@@ -1784,7 +1855,7 @@ end // end of [s1expdef_s1aspdec_tr_main]
 
 (* ****** ****** *)
 
-fn s1expdef_tr (res: s2rtopt, d1c: s1expdef): s2cst_t = let
+implement s1expdef_tr (res, d1c) = let
   fn err (d1c: s1expdef): void = begin
     prerr_loc_error2 d1c.s1expdef_loc;
     $Deb.debug_prerrf (": %s: s1expdef_tr", @(THISFILENAME));
@@ -1801,6 +1872,7 @@ fn s1expdef_tr (res: s2rtopt, d1c: s1expdef): s2cst_t = let
         val s2t1 = s1rt_tr s1t; val () = case+ res of
           | Some s2t => if (s2t1 <= s2t) then () else err (d1c)
           | None () => ()
+        // end of [val]
       in
         Some s2t1
       end // end of [Some]
@@ -1808,6 +1880,7 @@ fn s1expdef_tr (res: s2rtopt, d1c: s1expdef): s2cst_t = let
   ) : s2rtopt
   val s2e = s1expdef_s1aspdec_tr_main
     (d1c.s1expdef_loc, d1c.s1expdef_arg, res, d1c.s1expdef_def)
+  // end of [val]
 in
   s2cst_make (
     d1c.s1expdef_sym // symbol
@@ -2110,6 +2183,7 @@ implement d1atdeclst_tr
   (datknd, d1cs_dat, d1cs_def) = let
   val s2t_res = s2rt_datakind datknd
   typedef T = List @(d1atdec, s2cst_t, s2varlst)
+//
   val d1cs2cs2vslst (* : T *) = let
     var res: T = nil ()
     fn aux (d1c: d1atdec, res: &T):<cloptr1> void = let
@@ -2149,7 +2223,6 @@ implement d1atdeclst_tr
     in
       the_s2expenv_add_scst s2c; res := cons (@(d1c, s2c, s2vs), res)
     end // end of [val]
-
     fun auxlst
       (d1cs: d1atdeclst, res: &T):<cloptr1> void = case+ d1cs of
       | list_cons (d1c, d1cs) => (aux (d1c, res); auxlst (d1cs, res))
@@ -2158,20 +2231,18 @@ implement d1atdeclst_tr
   in
     auxlst (d1cs_dat, res); res
   end : T // end of [d1cs2cs2vslst]
-
-  val () = let
-    fun aux (d1cs: s1expdeflst): void = begin case+ d1cs of
-      | list_cons (d1c, d1cs) => let
-          val () = the_s2expenv_add_scst (s1expdef_tr (None (), d1c))
-        in
-          aux d1cs
-        end // end of [cons]
+//
+  val () = aux (d1cs_def) where {
+    fun aux (d1cs: s1expdeflst)
+      : void = begin case+ d1cs of
+      | list_cons (d1c, d1cs) => aux (d1cs) where {
+          val s2c = s1expdef_tr (None (), d1c)
+          val () = the_s2expenv_add_scst (s2c)
+        } // end of [cons]
       | list_nil () => ()
-    end // end of [aux]
-  in
-    aux (d1cs_def)
-  end // end of [val]
-
+    end (* end of [aux] *)
+  } // end of [val]
+//
   fun aux (xs: T): s2cstlst = begin case+ xs of
     | list_cons (x, xs) => begin
         d1atdec_tr (x.1, x.2, x.0); S2CSTLSTcons (x.1, aux xs)

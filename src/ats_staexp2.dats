@@ -79,14 +79,14 @@ end // end of [eq_tyreckind_tyreckind]
 val s2tb_addr: s2rtbas = S2RTBASpre ($Sym.symbol_ADDR)
 val s2tb_bool: s2rtbas = S2RTBASpre ($Sym.symbol_BOOL)
 val s2tb_char: s2rtbas = S2RTBASpre ($Sym.symbol_CHAR)
-val s2tb_class: s2rtbas = S2RTBASpre ($Sym.symbol_CLASS)
+val s2tb_cls: s2rtbas = S2RTBASpre ($Sym.symbol_CLS)
 val s2tb_eff: s2rtbas = S2RTBASpre ($Sym.symbol_EFF)
 val s2tb_int: s2rtbas = S2RTBASpre ($Sym.symbol_INT)
 
 implement s2rt_addr = S2RTbas s2tb_addr
 implement s2rt_bool = S2RTbas s2tb_bool
 implement s2rt_char = S2RTbas s2tb_char
-implement s2rt_class = S2RTbas s2tb_class
+implement s2rt_cls = S2RTbas s2tb_cls
 implement s2rt_eff = S2RTbas s2tb_eff
 implement s2rt_int = S2RTbas s2tb_int
 

@@ -513,6 +513,10 @@ typedef s0taq = '{ s0taq_loc= loc_t, s0taq_node= s0taq_node }
 
 //
 
+fun s0taq_make (loc: loc_t, node: s0taq_node): s0taq
+
+//
+
 fun fprint_s0taq {m:file_mode}
   (pf: file_mode_lte (m, w) | out: &FILE m, _: s0taq): void
 overload fprint with fprint_s0taq
@@ -537,8 +541,12 @@ datatype d0ynq_node =
   | D0YNQsymcolon of sym_t
   | D0YNQsymdot of sym_t
   | D0YNQsymdot_symcolon of (sym_t, sym_t)
+// end of [d0ynq_node]
 
-typedef d0ynq = '{ d0ynq_loc= loc_t, d0ynq_node= d0ynq_node }
+typedef d0ynq = '{
+  d0ynq_loc= loc_t, d0ynq_node= d0ynq_node
+} // end of [d0ynq]
+
 typedef d0ynqopt = Option d0ynq
 
 //
@@ -599,12 +607,15 @@ fun arrqi0de_make_some (q: d0ynq, id: i0de): arrqi0de =
 
 typedef tmpqi0de = '{
   tmpqi0de_loc= loc_t, tmpqi0de_qua= d0ynq, tmpqi0de_sym= sym_t
-}
+} // end of [tmpqi0de]
 
 fun tmpqi0de_make_none (id: i0de): tmpqi0de =
   "tmpqi0de_make_none"
+// end of [tmpqi0de_make_none]
+
 fun tmpqi0de_make_some (q: d0ynq, id: i0de): tmpqi0de =
   "tmpqi0de_make_some"
+// end of [tmpqi0de_make_some]
 
 (* ****** ****** *)
 
@@ -634,13 +645,15 @@ fun s0arglstlst_cons_ide (id: i0de, xs: s0arglstlst): s0arglstlst
 
 datatype sp0at_node =
   | SP0Tcon of (sqi0de, s0arglst)
+// end of [sp0at_node]
 
 where sp0at: type = '{
   sp0at_loc= loc_t, sp0at_node= sp0at_node
-}
+} // end of [sp0at]
 
 fun sp0at_con
   (qid: sqi0de, xs: s0arglst, t_end: t0kn): sp0at = "sp0at_con"
+// end of [sp0at_con]
 
 (* ****** ****** *)
 

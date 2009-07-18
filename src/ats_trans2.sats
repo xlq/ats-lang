@@ -72,7 +72,7 @@ fun s1explst_tr_dn {n:nat}
   (s1es: list (s1exp, n), s2ts: list (s2rt, n)): list (s2exp, n)
 
 fun s1exp_tr_dn_bool (s1e: s1exp): s2exp
-fun s1exp_tr_dn_class (s1e: s1exp): s2exp
+fun s1exp_tr_dn_cls (s1e: s1exp): s2exp
 fun s1exp_tr_dn_int (s1e: s1exp): s2exp
 fun s1exp_tr_dn_prop (s1e: s1exp): s2exp
 fun s1exp_tr_dn_type (s1e: s1exp): s2exp
@@ -84,7 +84,7 @@ fun s1exp_tr_dn_impredicative (s1e: s1exp): s2exp
 fun s1expopt_tr_dn_impredicative (os1e: s1expopt): s2expopt
 
 fun s1explst_tr_dn_bool (s1es: s1explst): s2explst
-fun s1explst_tr_dn_class (s1es: s1explst): s2explst
+fun s1explst_tr_dn_cls (s1es: s1explst): s2explst
 fun s1explst_tr_dn_int (s1es: s1explst): s2explst
 
 // arg/res type translation
@@ -114,6 +114,7 @@ fun s1tavarlst_tr (ds: s1tavarlst): s2tavarlst
 
 fun d1atsrtdeclst_tr (ds: d1atsrtdeclst): void
 
+fun s1expdef_tr (res: s2rtopt, d1c: s1expdef): s2cst_t
 fun s1expdeflst_tr (res: s2rtopt, d1cs: s1expdeflst): void
 
 fun s1aspdec_tr (d1c: s1aspdec): s2aspdec

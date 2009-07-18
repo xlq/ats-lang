@@ -666,6 +666,10 @@ implement e0fftaglstopt_some (x) = Some (x)
 
 (* static qualifiers *)
 
+implement s0taq_make 
+  (loc, node) = '{ s0taq_loc= loc, s0taq_node= node }
+// end of [s0taq]
+
 implement fprint_s0taq (pf | out, q) = case+ q.s0taq_node of
   | S0TAQnone () => ()
   | S0TAQfildot fil => begin
@@ -677,10 +681,11 @@ implement fprint_s0taq (pf | out, q) = case+ q.s0taq_node of
     end
   | S0TAQsymcolon id => begin
       $Sym.fprint_symbol (pf | out, id); fprint1_char (pf | out, ':')
-    end
+    end // end of [S0TAQsymcolon]
   | S0TAQsymdot id => begin
       $Sym.fprint_symbol (pf | out, id); fprint1_char (pf | out, '.')
-    end
+    end // end of [S0TAQsymdot]
+// end of [fprint_s0taq]
 
 implement print_s0taq (q) = print_mac (fprint_s0taq, q)
 implement prerr_s0taq (q) = prerr_mac (fprint_s0taq, q)
@@ -689,20 +694,24 @@ implement prerr_s0taq (q) = prerr_mac (fprint_s0taq, q)
 
 implement s0taq_none () = '{
   s0taq_loc= $Loc.location_none, s0taq_node= S0TAQnone ()
-}
+} // end of [s0taq_node]
 
-implement s0taq_fildot (fname) =
-  '{ s0taq_loc= fname.s0tring_loc, s0taq_node= S0TAQfildot (fname.s0tring_val) }
+implement s0taq_fildot (fname) = '{
+  s0taq_loc= fname.s0tring_loc, s0taq_node= S0TAQfildot (fname.s0tring_val)
+} // end of [s0taq_fildot]
 
-implement s0taq_symcolon (id) =
-  '{ s0taq_loc= id.i0de_loc, s0taq_node= S0TAQsymcolon (id.i0de_sym) }
+implement s0taq_symcolon (id) = '{
+  s0taq_loc= id.i0de_loc, s0taq_node= S0TAQsymcolon (id.i0de_sym)
+} // end of [s0taq_symcolon]
 
-implement s0taq_symdot (id) =
-  '{ s0taq_loc= id.i0de_loc, s0taq_node= S0TAQsymdot (id.i0de_sym) }
+implement s0taq_symdot (id) = '{
+  s0taq_loc= id.i0de_loc, s0taq_node= S0TAQsymdot (id.i0de_sym)
+} // end of [s0taq_symdot]
 
 (* dynamic qualifiers *)
 
-implement fprint_d0ynq (pf | out, q) = case+ q.d0ynq_node of
+implement fprint_d0ynq
+  (pf | out, q) = case+ q.d0ynq_node of
   | D0YNQfildot fil => begin
       fprint1_char (pf | out, '$');
       fprint1_char (pf | out, '"');
@@ -732,6 +741,7 @@ implement fprint_d0ynq (pf | out, q) = case+ q.d0ynq_node of
       fprint1_char (pf | out, ':')
     end
   | D0YNQnone () => ()
+// end of [fprint_d0ynq]
 
 implement print_d0ynq (q) = print_mac (fprint_d0ynq, q)
 implement prerr_d0ynq (q) = prerr_mac (fprint_d0ynq, q)

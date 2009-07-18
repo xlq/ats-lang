@@ -206,13 +206,30 @@ fn witht1ype_tr
 
 (* ****** ****** *)
 
-fn c1lassdec_tr
-  (decarg: s2qualst, d1c: c1lassdec): c2lassdec = let
-  val loc = d1c.c1lassdec_loc
-  val supclss = s1explst_tr_dn_class (d1c.c1lassdec_sup)
+fn c1lassdec_tr (
+    decarg: s2qualst
+  , d1c_cls: c1lassdec
+  , d1cs_def: s1expdeflst
+  ) : c2lassdec = let
+  val loc = d1c_cls.c1lassdec_loc
+  val s2vss = s1arglstlst_var_tr (d1c_cls.c1lassdec_arg)
+  val s2c_cls = s2cst_make_cls (d1c_cls.c1lassdec_sym, loc, s2vss)
+//
+  val () = aux (d1cs_def) where {
+    fun aux (d1cs: s1expdeflst)
+      : void = begin case+ d1cs of
+      | list_cons (d1c, d1cs) => aux (d1cs) where {
+          val s2c = s1expdef_tr (None (), d1c)
+          val () = the_s2expenv_add_scst (s2c)
+        } // end of [cons]
+      | list_nil () => ()
+    end (* end of [aux] *)
+  } // end of [val]
+//
+  val supclss = s1explst_tr_dn_cls (d1c_cls.c1lassdec_sup)
   val mtds = list_nil ()
 in
-  c2lassdec_make (loc, supclss, mtds)
+  c2lassdec_make (loc, s2c_cls, supclss, mtds)
 end // end of [c1lassdec_tr]
 
 (* ****** ****** *)
@@ -1066,14 +1083,13 @@ implement d1ec_tr (d1c0) = begin
       s1tacstlst_tr d1cs; d2ec_none (d1c0.d1ec_loc)
     end // end of [D1Cstacsts]
   | D1Cstavars d1cs => let
-      val d2cs = s1tavarlst_tr d1cs
-    in
+      val d2cs = s1tavarlst_tr d1cs in
       d2ec_stavars (d1c0.d1ec_loc, d2cs)
     end // end of [D1Cstavars]
-  | D1Csexpdefs (os1t, d1cs) => begin
-      s1expdeflst_tr (s1rtopt_tr os1t, d1cs);
-      d2ec_none (d1c0.d1ec_loc)
-    end // end of [D1Csexpdefs]
+  | D1Csexpdefs (os1t, d1cs) => d2c where {
+      val () = s1expdeflst_tr (s1rtopt_tr os1t, d1cs)
+      val d2c = d2ec_none (d1c0.d1ec_loc)
+    } // end of [D1Csexpdefs]
   | D1Csaspdec (d1c) => begin
       d2ec_saspdec (d1c0.d1ec_loc, s1aspdec_tr d1c)
     end // end of [D1Csaspdec]
@@ -1091,8 +1107,7 @@ implement d1ec_tr (d1c0) = begin
       d2ec_datdec (d1c0.d1ec_loc, dtk, s2cs)
     end // end of [D1Cdatdecs]
   | D1Cexndecs (d1cs) => let
-      val d2cs = e1xndeclst_tr d1cs
-    in
+      val d2cs = e1xndeclst_tr d1cs in
       d2ec_exndec (d1c0.d1ec_loc, d2cs)
     end // end of [D1Cexndecs]
   | D1Cclassdec (decarg, d1c_cls, d1cs_def) => let
@@ -1102,12 +1117,12 @@ implement d1ec_tr (d1c0) = begin
       end // end of [val]
       val s2vpss = s1qualstlst_tr (decarg)
       val () = s2qualst_tmplev_set (s2vpss, template_level_get ())
-      val level = d2var_current_level_get ()
-      val d2c_cls = c1lassdec_tr (s2vpss, d1c_cls)
+      val d2c_cls = c1lassdec_tr (s2vpss, d1c_cls, d1cs_def)
       val () = the_s2expenv_pop (pf_s2expenv | (*none*))
       val () = begin
         case+ decarg of cons _ => template_level_dec () | nil _ => ()
       end // end of [val]
+      val () = the_s2expenv_add_scst (d2c_cls.c2lassdec_cst)
     in
       d2ec_classdec (d1c0.d1ec_loc, d2c_cls)
     end // end of [D1Cfundecs]

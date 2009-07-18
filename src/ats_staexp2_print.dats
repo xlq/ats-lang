@@ -378,7 +378,7 @@ in
     end // end of [S2Esizeof]
   | S2Etmpid (s2c, decarg) => begin
       prstr "S2Etmpid(";
-      fprint_s2explstlst (pf | out, decarg);
+      fprint_tmps2explstlst (pf | out, decarg);
       prstr ")"
     end // end of [S2Etmpid]
   | S2Etop (knd, s2e) => begin

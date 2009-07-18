@@ -929,6 +929,7 @@ implement trans2_env_initialize () = begin
   the_s2rtenv_add ($Sym.symbol_ADDR, S2TEsrt s2rt_addr);
   the_s2rtenv_add ($Sym.symbol_BOOL, S2TEsrt s2rt_bool);
   the_s2rtenv_add ($Sym.symbol_CHAR, S2TEsrt s2rt_char);
+  the_s2rtenv_add ($Sym.symbol_CLS, S2TEsrt s2rt_cls);
   the_s2rtenv_add ($Sym.symbol_EFF, S2TEsrt s2rt_eff);
   the_s2rtenv_add ($Sym.symbol_INT, S2TEsrt s2rt_int);
   the_s2rtenv_add ($Sym.symbol_PROP, S2TEsrt s2rt_prop);

@@ -993,17 +993,21 @@ implement s2aspdec_make (loc, s2c, def) = '{
   s2aspdec_loc= loc, s2aspdec_cst= s2c, s2aspdec_def= def
 }
 
-implement c2lassdec_make (loc, supclss, mtds) = '{
-  c2lassdec_loc= loc, c2lassdec_sup= supclss, c2lassdec_mtd= mtds
-}
+implement c2lassdec_make
+  (loc, s2c, supclss, mtds) = '{
+  c2lassdec_loc= loc
+, c2lassdec_cst= s2c
+, c2lassdec_sup= supclss
+, c2lassdec_mtd= mtds
+} // end of [c2lassdec_make]
 
 implement v2aldec_make (loc, p2t, def, ann) = '{
   v2aldec_loc= loc, v2aldec_pat= p2t, v2aldec_def= def, v2aldec_ann= ann
-}
+} // end of [v2aldec_make]
 
 implement f2undec_make (loc, d2v, def, ann) = '{
   f2undec_loc= loc, f2undec_var= d2v, f2undec_def= def, f2undec_ann= ann
-}
+} // end of [f2undec_make]
 
 implement v2ardec_make (loc, knd, d2v, s2v, typ, wth, ini) = '{
   v2ardec_loc= loc

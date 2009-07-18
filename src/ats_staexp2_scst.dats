@@ -334,14 +334,13 @@ in
   | None () => false
 end // end of [s2cst_is_singular]
 
-(* ****** ****** *)
-
 end // end of [local] (for assuming s2cst_t)
+
+(* ****** ****** *)
 
 implement s2cst_make_dat
   (id, loc, os2ts_arg, s2t_res, argvar) = let
-  val s2t = (
-    case+ os2ts_arg of
+  val s2t = (case+ os2ts_arg of
     | Some s2ts_arg => s2rt_fun (s2ts_arg, s2t_res)
     | None () => s2t_res
   ) : s2rt
@@ -355,10 +354,42 @@ in
   , false // isrec
   , false // isasp
   , None () // islst
-  , argvar // arguments
-  , None () // def
-  )
+  , argvar // argumnet variance
+  , None () // definition
+  ) // end of [s2cst_make]
 end // end of [s2cst_make_dat]
+
+(* ****** ****** *)
+
+implement s2cst_make_cls
+  (id, loc, s2vss) = let
+  val s2t = aux (s2vss, s2rt_cls) where {
+    fun aux (
+        s2vss: s2varlstlst, res: s2rt
+      ) : s2rt = begin case+ s2vss of
+      | list_cons (s2vs, s2vss) => let
+          val res = aux (s2vss, res)
+          val s2ts_arg = $Lst.list_map_fun (s2vs, s2var_srt_get)
+        in
+          s2rt_fun (s2ts_arg, res)
+        end // end of [list_cons]
+       | list_nil () => res
+    end // end of [aux]
+  } // end of [val]
+in
+  s2cst_make (
+    id // name
+  , loc // the location of declaration
+  , s2t // sort
+  , None () // isabs
+  , true // iscon
+  , false // isrec
+  , false // isasp
+  , None () // islst
+  , None () // argumnet variance
+  , None () // definition
+  ) // end of [s2cst_make]
+end // end of [s2cst_make_cls]
 
 (* ****** ****** *)
 

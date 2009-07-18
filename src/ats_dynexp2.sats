@@ -805,6 +805,7 @@ and m2thdeclst = List m2thdec
 
 and c2lassdec = '{
   c2lassdec_loc= loc_t
+, c2lassdec_cst= s2cst_t
 , c2lassdec_sup= s2explst
 , c2lassdec_mtd= m2thdeclst
 } // end of [c2lasdec]
@@ -1194,7 +1195,7 @@ fun s2aspdec_make (_: loc_t, s2c: s2cst_t, def: s2exp): s2aspdec
 (* ****** ****** *)
 
 fun c2lassdec_make
-  (_: loc_t, supclss: s2explst, mtds: m2thdeclst): c2lassdec
+  (_: loc_t, s2c: s2cst_t, supclss: s2explst, mtds: m2thdeclst): c2lassdec
 // end of [c2lassdec]
 
 (* ****** ****** *)

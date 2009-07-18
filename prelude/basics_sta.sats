@@ -428,7 +428,13 @@ abst@ype ptrdiff_int_t0ype (i:int) = $extype "ats_ptrdiff_type"
 
 (* ****** ****** *)
 
+abst@ype obj_cls_t0ype (c:cls) // for objects index by [c]
+
+(* ****** ****** *)
+
 abstype ptr_addr_type (addr)
+
+(* ****** ****** *)
 
 abstype string_int_type (int)
 abstype stropt_int_type (int)
@@ -555,6 +561,10 @@ stadef ssize_t = ssize_t0ype
 
 stadef ptrdiff_t = ptrdiff_int_t0ype
 stadef ptrdiff_t = ptrdiff_t0ype
+
+(* ****** ****** *)
+
+stadef obj = obj_cls_t0ype
 
 (* ****** ****** *)
 

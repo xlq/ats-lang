@@ -103,10 +103,10 @@ val symbol_TUP_TAIL : symbol_t
 
 val symbol_ADDR : symbol_t
 val symbol_BOOL : symbol_t
-val symbol_CLASS : symbol_t
 val symbol_CHAR : symbol_t
-val symbol_EXN : symbol_t
+val symbol_CLS : symbol_t
 val symbol_EFF : symbol_t
+val symbol_EXN : symbol_t
 val symbol_INT : symbol_t
 
 (* base impredicative sorts *)

@@ -242,7 +242,7 @@ and s2exp_node =
   | S2Esizeof of (* size of a type *)
       s2exp
   | S2Etmpid of (* instantiated class template *)
-      (s2cst_t, s2explstlst)
+      (s2cst_t, tmps2explstlst)
   | S2Etop of (* 0/1: topization/typization *)
       (int(*knd*), s2exp)
   | S2Etup of (* tuple *)
@@ -353,7 +353,7 @@ typedef s2qualst = List s2qua
 val s2rt_addr : s2rt
 val s2rt_bool : s2rt
 val s2rt_char : s2rt
-val s2rt_class : s2rt
+val s2rt_cls : s2rt
 val s2rt_eff : s2rt
 val s2rt_int : s2rt
 
@@ -501,6 +501,12 @@ fun s2cst_make_dat (
 , s2t_res: s2rt
 , argvar: Option (List @(symopt_t, s2rt, int))
 ) : s2cst_t
+
+fun s2cst_make_cls (
+  id: sym_t, loc: loc_t, s2vss: s2varlstlst
+) : s2cst_t
+
+(* ****** ****** *)
 
 fun s2cst_sym_get (_: s2cst_t): sym_t
 fun s2cst_loc_get (_: s2cst_t): loc_t
@@ -1074,7 +1080,7 @@ fun s2exp_size (s2ze: s2zexp): s2exp
 fun s2exp_sizeof (s2e: s2exp): s2exp
 
 fun s2exp_tmpid
-  (s2t: s2rt, s2c: s2cst_t, decarg: s2explstlst): s2exp
+  (s2t: s2rt, s2c: s2cst_t, decarg: tmps2explstlst): s2exp
 // end of [s2exp_tmpid]
 
 fun s2exp_top_srt (s2t: s2rt, knd: int, s2e: s2exp): s2exp
