@@ -94,6 +94,12 @@ datatype d2conlst =
   | D2CONLSTcons of (d2con_t, d2conlst) | D2CONLSTnil
 // end of [d2conlst]
 
+(* ****** ****** *)
+
+abstype c2lassdec_t // = c2lassdec (defined in ats_dynexp2.sats)
+
+(* ****** ****** *)
+
 datatype s2item =
   (* static items *)
   | S2ITEMcst of s2cstlst
@@ -526,6 +532,8 @@ fun s2cst_arilst_get (_: s2cst_t): List int // arity list
 fun s2cst_argvar_get (_: s2cst_t): Option (List @(symopt_t, s2rt, int))
 fun s2cst_conlst_get (_: s2cst_t): Option d2conlst
 fun s2cst_conlst_set (_: s2cst_t, _: Option d2conlst): void
+fun s2cst_clsdec_get (_: s2cst_t): Option c2lassdec_t
+fun s2cst_clsdec_set (_: s2cst_t, _: Option c2lassdec_t): void
 fun s2cst_def_get (_: s2cst_t): s2expopt
 fun s2cst_def_set (_: s2cst_t, _: s2expopt): void
 fun s2cst_sup_get (_: s2cst_t): s2cstopt

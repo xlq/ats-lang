@@ -749,6 +749,12 @@ implement d2exp_macsyn (loc, knd, d2e) = '{
 
 (* ****** ****** *)
 
+implement d2exp_mtd (loc, d2m) = '{
+  d2exp_loc= loc, d2exp_node= D2Emtd (d2m), d2exp_typ= None ()
+}
+
+(* ****** ****** *)
+
 implement d2exp_ptrof (loc, d2e) = '{
   d2exp_loc= loc, d2exp_node= D2Eptrof (d2e), d2exp_typ= None ()
 }

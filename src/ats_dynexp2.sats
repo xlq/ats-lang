@@ -230,6 +230,18 @@ overload prerr with prerr_d2mac
 
 (* ****** ****** *)
 
+fun fprint_d2mtd {m:file_mode}
+  (pf: file_mode_lte (m, w) | out: &FILE m, d2m: d2mtd_t): void
+overload fprint with fprint_d2mtd
+
+fun print_d2mtd (_: d2mtd_t): void
+fun prerr_d2mtd (_: d2mtd_t): void
+
+overload print with print_d2mtd
+overload prerr with prerr_d2mtd
+
+(* ****** ****** *)
+
 fun d2var_make (_: loc_t, id: sym_t): d2var_t
 fun d2var_make_any (_: loc_t): d2var_t // for wildcard pattern
 
@@ -635,6 +647,8 @@ and d2exp_node =
       d2mac_t
   | D2Emacsyn of (* macro encoding *)
       ($Syn.macsynkind, d2exp)
+  | D2Emtd of (* method invocation *)
+      d2mtd_t
   | D2Eptrof of (* taking the address of *)
       d2exp
   | D2Eraise of (* raised exception *)
@@ -1127,6 +1141,8 @@ fun d2exp_lst (_: loc_t, lin: int, elt: s2expopt, elts: d2explst): d2exp
 fun d2exp_mac (_: loc_t, d2m: d2mac_t): d2exp
 
 fun d2exp_macsyn (_: loc_t, knd: $Syn.macsynkind, _: d2exp): d2exp
+
+fun d2exp_mtd (_: loc_t, d2m: d2mtd_t): d2exp
 
 fun d2exp_ptrof (_: loc_t, _: d2exp): d2exp
 

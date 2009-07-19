@@ -83,4 +83,13 @@ end // end of [local]
 
 (* ****** ****** *)
 
+implement fprint_d2mtd (pf_out | out, d2m) = begin
+  $Sym.fprint_symbol (pf_out | out, d2mtd_sym_get d2m)
+end // end of [fprint_d2mtd]
+
+implement print_d2mtd (d2m) = print_mac (fprint_d2mtd, d2m)
+implement prerr_d2mtd (d2m) = prerr_mac (fprint_d2mtd, d2m)
+
+(* ****** ****** *)
+
 (* end of [ats_dynexp2_dmtd.dats] *)

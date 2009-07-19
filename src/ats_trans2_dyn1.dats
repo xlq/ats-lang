@@ -807,6 +807,7 @@ fn d1exp_qid_tr
       in
         d2exp_var (loc0, d2v)
       end // end of [D2ITEMmacvar]
+    | D2ITEMmtd d2m => d2exp_mtd (loc0, d2m)
     | D2ITEMsym d2is => let
         val d2s = d2sym_make (loc0, q, id, d2is)
       in
@@ -928,10 +929,18 @@ in
         d2exp_con (loc_dap, d2c, sarg, npf, darg)
       end // end of [D2ITEMcon]
     | D2ITEMcst d2c => let
+//
         val () = dyncstuseloc_posmark (loc_qid, d2c)
+//
         val d2e_fun = d2exp_cst (loc_qid, d2c) in
         d2exp_app_sta_dyn (loc_dap, loc_sap, d2e_fun, sarg, loc_arg, npf, darg)
       end // end of [D2ITEMcst]
+    | D2ITEMe1xp _ => begin
+        $Loc.prerr_location loc_qid;
+        prerr ": INTERNAL ERROR: d1exp_qid_app_dyn_tr: D2ITEMe1xp";
+        prerr_newline ();
+        $Err.abort {d2exp} ()
+      end // end of [D2ITEMe1xp]
     | D2ITEMmacdef d2m => let
         val knd = d2mac_kind_get d2m
         val () = macro_def_check (loc_qid, knd, id)
@@ -939,6 +948,18 @@ in
       in
         d2exp_app_sta_dyn (loc_dap, loc_sap, d2e_fun, sarg, loc_arg, npf, darg)
       end // end of [D2ITEMmacdef]
+    | D2ITEMmacvar _ => begin
+        prerr_loc_error2 loc_qid;
+        prerr ": the identifer refers to a macro argument variable";
+        prerr ", which cannot be applied.";
+        prerr_newline ();
+        $Err.abort {d2exp} ()
+      end // end of [D2ITEMmacvar]
+    | D2ITEMmtd d2m => let
+        val d2e_fun = d2exp_mtd (loc_qid, d2m)
+      in
+        d2exp_app_sta_dyn (loc_dap, loc_sap, d2e_fun, sarg, loc_arg, npf, darg)
+      end // end of [D2ITEMmtd]
     | D2ITEMsym d2is => let
         val d2s =
           d2sym_make (loc_qid, q, id, d2is)
@@ -950,19 +971,6 @@ in
         val d2e_fun = d2exp_var (loc_qid, d2v) in
         d2exp_app_sta_dyn (loc_dap, loc_sap, d2e_fun, sarg, loc_arg, npf, darg)
       end // end of [D2ITEMvar]
-    | D2ITEMmacvar _ => begin
-        prerr_loc_error2 loc_qid;
-        prerr ": the identifer refers to a macro argument variable";
-        prerr ", which cannot be applied.";
-        prerr_newline ();
-        $Err.abort {d2exp} ()
-      end // end of [D2ITEMmacvar]
-    | D2ITEMe1xp _ => begin
-        $Loc.prerr_location loc_qid;
-        prerr ": INTERNAL ERROR: d1exp_qid_app_dyn_tr: D2ITEMe1xp";
-        prerr_newline ();
-        $Err.abort {d2exp} ()
-      end // end of [D2ITEMe1xp]
     end (* end of [Some_vt] *)
   | ~None_vt () => begin
       prerr_loc_error2 loc_qid;

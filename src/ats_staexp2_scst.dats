@@ -31,8 +31,8 @@
 
 (* ****** ****** *)
 
-// Time: October 2007
 // Author: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
+// Time: October 2007
 
 (* ****** ****** *)
 
@@ -69,7 +69,8 @@ typedef s2cst_struct = struct { (* builtin or abstract *)
   // variance: -1: contravarint; 0: invariant; 1: covarint
 , s2cst_argvar= Option (List @(symopt_t, s2rt, int))
   // the associated dynamic constructors
-, s2cst_conlst= Option d2conlst
+, s2cst_conlst= Option (d2conlst)
+, s2cst_clsdec= Option (c2lassdec_t)
 , s2cst_def= s2expopt // definition
 , s2cst_sup= s2cstopt // parent if any
 , s2cst_sVarset= s2Varset_t // for occurrence checks
@@ -115,6 +116,7 @@ p->s2cst_decarg := list_nil ();
 p->s2cst_arilst := s2rt_arity_list s2t;
 p->s2cst_argvar := argvar;
 p->s2cst_conlst := None ();
+p->s2cst_clsdec := None ();
 p->s2cst_def := def;
 p->s2cst_sup := S2CSTOPTnone ();
 p->s2cst_sVarset := s2Varset_nil;
@@ -179,6 +181,12 @@ implement s2cst_conlst_get (s2c) =
 
 implement s2cst_conlst_set (s2c, od2cs) =
   let val (vbox pf | p) = s2c in p->s2cst_conlst := od2cs end
+
+implement s2cst_clsdec_get (s2c) =
+  let val (vbox pf | p) = s2c in p->s2cst_clsdec end
+
+implement s2cst_clsdec_set (s2c, od2c) =
+  let val (vbox pf | p) = s2c in p->s2cst_clsdec := od2c end
 
 implement s2cst_def_get (s2c) =
   let val (vbox pf | p) = s2c in p->s2cst_def end
@@ -284,24 +292,25 @@ end // end of [_compare_s2cst_s2cst]
 
 implement compare_s2cst_s2cst (s2c1, s2c2) =
   $effmask_all ( _compare_s2cst_s2cst (s2c1, s2c2) )
+// end of [compare_s2cst_s2cst]
 
 (* ****** ****** *)
 
-implement s2cst_is_abstract (s2c) = 
-  let val (vbox pf | p) = s2c in
-    case+ p->s2cst_isabs of Some _ => true | None _ => false
-  end
+implement s2cst_is_abstract (s2c) = let
+  val (vbox pf | p) = s2c in
+  case+ p->s2cst_isabs of Some _ => true | None _ => false
+end // end of [s2cst_is_abstract]
 
-implement s2cst_is_data (s2c) =
-  let val (vbox pf | p) = s2c in
-    case+ p->s2cst_isabs of Some _ => false | None _ => p->s2cst_iscon
-  end
+implement s2cst_is_data (s2c) = let
+  val (vbox pf | p) = s2c in
+  case+ p->s2cst_isabs of Some _ => false | None _ => p->s2cst_iscon
+end // end of [s2cst_is_data]
 
 implement s2cst_is_eqsup (s2c1, s2c2) = let
   fun aux (s2c1: s2cst_t, stamp2: stamp_t): bool = let
     val stamp1 = begin
       let val (vbox pf1 | p1) = s2c1 in p1->s2cst_stamp end
-    end
+    end // end of [val]
   in
     if $Stamp.eq_stamp_stamp (stamp1, stamp2) then true
     else let
@@ -309,11 +318,11 @@ implement s2cst_is_eqsup (s2c1, s2c2) = let
     in
       case+ sup of
       | S2CSTOPTsome s2c1 => aux (s2c1, stamp2) | S2CSTOPTnone () => false
-    end
-  end
+    end // end of [if]
+  end (* end of [aux] *)
   val stamp2 = begin
     let val (vbox pf2 | p2) = s2c2 in p2->s2cst_stamp end
-  end
+  end (* end of [val] *)
 in
   aux (s2c1, stamp2)
 end // end of [s2cst_is_eqsup]
