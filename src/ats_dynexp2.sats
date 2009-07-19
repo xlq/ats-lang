@@ -79,6 +79,7 @@ typedef valkind = $Syn.valkind
 
 abstype d2cst_t // boxed type
 abstype d2mac_abs_t (int(*curry arity*))// boxed type
+abstype d2mtd_t // boxed type
 abstype d2var_t // boxed type
 abstype d2varset_t // boxed type
 
@@ -112,17 +113,21 @@ datatype d2item =
   | D2ITEMe1xp of e1xp
   | D2ITEMmacdef of d2mac_t
   | D2ITEMmacvar of d2var_t
+  | D2ITEMmtd of d2mtd_t
   | D2ITEMsym of List d2item (* overloaded symbol *)
   | D2ITEMvar of d2var_t
+// end of [d2item]
 
 typedef d2itemlst = List d2item
 viewtypedef d2itemopt_vt = Option_vt d2item
+
+(* ****** ****** *)
 
 typedef d2sym = '{
   d2sym_loc= loc_t
 , d2sym_qua= $Syn.d0ynq, d2sym_sym= sym_t
 , d2sym_itm= d2itemlst
-}
+} // end of [d2sym]
 
 fun fprint_d2sym {m:file_mode}
   (pf: file_mode_lte (m, w) | out: &FILE m, d2s: d2sym): void
@@ -691,7 +696,7 @@ and m2thdec =
   | M2THDECval of
       (loc_t, sym_t, s2exp, d2expopt)
   | M2THDECvalimp of
-      (loc_t, sym_t, s2expopt, s2exp)
+      (loc_t, sym_t, s2expopt, d2exp)
   | M2THDECvar of
       (loc_t, sym_t, s2exp, d2expopt)
   | M2THDECvarimp of
@@ -883,6 +888,17 @@ fun d2mac_arglst_get {narg:nat} (_: d2mac_t narg): macarglst narg
 fun d2mac_def_get (_: d2mac_t): d2exp
 fun d2mac_def_set (_: d2mac_t, _: d2exp): void
 fun d2mac_stamp_get (_: d2mac_t): stamp_t
+
+(* ****** ****** *)
+
+datatype mtdkind =
+  | MTDKINDmtd | MTDKINDval | MTDKINDvar
+// end of [mtdkind]
+
+fun d2mtd_loc_get (_: d2mtd_t): loc_t
+fun d2mtd_sym_get (_: d2mtd_t): sym_t
+fun d2mtd_typ_get (_: d2mtd_t): s2exp
+fun d2mtd_stamp_get (_: d2mtd_t): stamp_t
 
 (* ****** ****** *)
 

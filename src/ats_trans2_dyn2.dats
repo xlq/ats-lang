@@ -206,6 +206,65 @@ fn witht1ype_tr
 
 (* ****** ****** *)
 
+(*
+
+and m2thdec =
+  | M2THDECmtd of // knd: undef/def: 0/1
+      (loc_t, sym_t, int(*knd*), d2exp)
+    // end of [M1THDECmtd]
+  | M2THDECmtdimp of (loc_t, sym_t, d2exp)
+  | M2THDECval of
+      (loc_t, sym_t, s2exp, d2expopt)
+  | M2THDECvalimp of
+      (loc_t, sym_t, s2expopt, s2exp)
+  | M2THDECvar of
+      (loc_t, sym_t, s2exp, d2expopt)
+  | M2THDECvarimp of
+      (loc_t, sym_t, s2expopt, d2exp)
+// end of [m0thdec]
+
+*)
+
+fn m1thdec_tr (mtd: m1thdec): m2thdec =
+  case+ mtd of
+  | M1THDECmtd (loc, sym, knd, def) => let
+      val def = d1exp_tr (def) in M2THDECmtd (loc, sym, knd, def)
+    end // end of [M1THDECmtd]
+  | M1THDECmtdimp (loc, sym, def) => let
+      val def = d1exp_tr (def) in M2THDECmtdimp (loc, sym, def)
+    end // end of [M1THDECmtdimp]
+  | M1THDECval (loc, sym, res, def) => let
+      val res = s1exp_tr_dn_impredicative res; val def = d1expopt_tr def
+    in
+      M2THDECval (loc, sym, res, def)
+    end // end of [M2THDECval]
+  | M1THDECvalimp (loc, sym, res, def) => let
+      val res = (case+ res of
+        | Some s2e => Some (s1exp_tr_dn_impredicative s2e) | None () => None ()
+      ) : s2expopt // end of [val]
+      val def = d1exp_tr def
+    in
+      M2THDECvalimp (loc, sym, res, def)
+    end // end of [M2THDECvalimp]
+  | M1THDECvar (loc, sym, res, def) => let
+      val res = s1exp_tr_dn_impredicative res; val def = d1expopt_tr def
+    in
+      M2THDECvar (loc, sym, res, def)
+    end // end of [M2THDECvar]
+  | M1THDECvarimp (loc, sym, res, def) => let
+      val res = (case+ res of
+        | Some s2e => Some (s1exp_tr_dn_impredicative s2e) | None () => None ()
+      ) : s2expopt // end of [var]
+      val def = d1exp_tr def
+    in
+      M2THDECvarimp (loc, sym, res, def)
+    end // end of [M2THDECvarimp]
+// end of [m1thdec_tr]
+  
+fn m1thdeclst_tr (mtds: m1thdeclst)
+  : m2thdeclst = $Lst.list_map_fun (mtds, m1thdec_tr)
+// end of [m1thdeclst_tr]
+
 fn c1lassdec_tr (
     decarg: s2qualst
   , d1c_cls: c1lassdec
@@ -226,8 +285,10 @@ fn c1lassdec_tr (
     end (* end of [aux] *)
   } // end of [val]
 //
-  val supclss = s1explst_tr_dn_cls (d1c_cls.c1lassdec_sup)
-  val mtds = list_nil ()
+  val supclss =
+    s1explst_tr_dn_cls (d1c_cls.c1lassdec_sup)
+  // end of [val]
+  val mtds = m1thdeclst_tr (d1c_cls.c1lassdec_mtd)
 in
   c2lassdec_make (loc, s2c_cls, supclss, mtds)
 end // end of [c1lassdec_tr]

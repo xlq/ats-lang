@@ -708,15 +708,20 @@ end // end of [the_d2expenv_namespace_find]
 
 implement the_d2expenv_find (id) = let
   val ans =
-    $SymEnv.symenv_search_all (the_d2expenv, id) in
+    $SymEnv.symenv_search_all (the_d2expenv, id)
+in
   case+ ans of
-  | Some_vt _ => begin
-      let val () = fold@ ans in ans end
+  | Some_vt _ => let
+      prval () = fold@ ans in ans
     end // end of [Some_vt]
   | ~None_vt _ => let
-      val ans =
-        the_d2expenv_namespace_find id in case+ ans of
-      | Some_vt _ => (fold@ ans; ans) | ~None_vt _ => begin
+      val ans = the_d2expenv_namespace_find id
+    in
+      case+ ans of
+      | Some_vt _ => let
+          prval () = fold@ ans in ans
+        end // end of [Some]
+      | ~None_vt _ => begin
           $SymEnv.symenv_pervasive_search (the_d2expenv, id)
         end // end of [None_vt]
     end // end of [None_vt]
