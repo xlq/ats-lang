@@ -200,6 +200,24 @@ overload [] with fmatrix_ptr_set_elt_at
 
 (* ****** ****** *)
 
+fun fmatrix_ptr_copy_tsz
+  {a:t@ype} {m,n:nat} (
+    A: &fmatrix(a, m, n)
+  , B: &fmatrix(a?, m, n) >> fmatrix(a, m, n)
+  , m: int m, n: int n
+  , tsz: sizeof_t a
+  ) : void
+// end of [fmatrix_ptr_copy_tsz]
+
+fun{a:t@ype} fmatrix_ptr_copy {m,n:nat} (
+    A: &fmatrix(a, m, n)
+  , B: &fmatrix(a?, m, n) >> fmatrix(a, m, n)
+  , m: int m, n: int n
+  ) : void
+// end of [fmatrix_ptr_copy]
+
+(* ****** ****** *)
+
 prfun GEVEC_v_of_fmatrix_v
   {a:viewt@ype} {m,n:nat} {mn:int} {l:addr} (
     pf_mul: MUL (m, n, mn), pf_mat: fmatrix_v (a, m, n, l)

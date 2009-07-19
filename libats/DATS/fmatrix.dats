@@ -198,6 +198,30 @@ implement{a} fmatrix_ptr_set_elt_at
 
 (* ****** ****** *)
 
+implement fmatrix_ptr_copy_tsz
+  {a} {m,n} (A, B, m, n, tsz) = let
+  val [mn:int] (pf_mn | mn) = m imul2 n
+  prval () = mul_nat_nat_nat (pf_mn)
+  prval (pf2_mn, pfA_arr) = array_v_of_fmatrix_v {a} {m,n} (view@ A)
+  prval (pf3_mn, pfB_arr) = array_v_of_fmatrix_v {a?} {m,n} (view@ B)
+  prval () = mul_isfun (pf_mn, pf2_mn)
+  prval () = mul_isfun (pf_mn, pf3_mn)
+  stavar lA: addr and lB: addr
+  prval pfA_arr = pfA_arr: array_v (a, mn, lA)
+  prval pfB_arr = pfB_arr: array_v (a?, mn, lB)
+  val () = array_ptr_copy_tsz {a} {mn} (A, B, size1_of_int1 mn, tsz)
+  prval () = view@ A := fmatrix_v_of_array_v {a} {m,n} {mn} (pf2_mn, pfA_arr)
+  prval () = view@ B := fmatrix_v_of_array_v {a} {m,n} {mn} (pf3_mn, pfB_arr)
+in
+  // nothing
+end // end of [fmatrix_ptr_copy_tsz]
+
+implement{a} fmatrix_ptr_copy (A, B, m, n) =
+  fmatrix_ptr_copy_tsz {a} (A, B, m, n, sizeof<a>)
+// end of [fmatrix_ptr_copy]
+
+(* ****** ****** *)
+
 // loop proceeds column by column
 implement fmatrix_ptr_foreach_fun_tsz__main
   {a} {v} {vt} {ord} {m,n}
