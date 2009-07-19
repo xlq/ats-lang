@@ -119,12 +119,12 @@ praxi free_gc_viewt0ype_addr_trans
 
 fun{a:viewt@ype}
   array_ptr_alloc {n:nat} (asz: size_t n):<>
-    [l:addr | l <> null] (free_gc_v (a, n, l), array_v (a?, n, l) | ptr l)
+    [l:agz] (free_gc_v (a, n, l), array_v (a?, n, l) | ptr l)
 // end of [fun]
 
 fun array_ptr_alloc_tsz
   {a:viewt@ype} {n:nat} (asz: size_t n, tsz: sizeof_t a):<>
-    [l:addr | l <> null] (free_gc_v (a, n, l), array_v (a?, n, l) | ptr l)
+    [l:agz] (free_gc_v (a, n, l), array_v (a?, n, l) | ptr l)
   = "atspre_array_ptr_alloc_tsz"
 // end of [fun]
 

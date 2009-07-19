@@ -1,3 +1,36 @@
+(***********************************************************************)
+(*                                                                     *)
+(*                         Applied Type System                         *)
+(*                                                                     *)
+(*                              Hongwei Xi                             *)
+(*                                                                     *)
+(***********************************************************************)
+
+(*
+** ATS - Unleashing the Potential of Types!
+**
+** Copyright (C) 2002-2009 Hongwei Xi, Boston University
+**
+** All rights reserved
+**
+** ATS is free software;  you can  redistribute it and/or modify it under
+** the  terms of the  GNU General Public License as published by the Free
+** Software Foundation; either version 2.1, or (at your option) any later
+** version.
+** 
+** ATS is distributed in the hope that it will be useful, but WITHOUT ANY
+** WARRANTY; without  even  the  implied  warranty  of MERCHANTABILITY or
+** FITNESS FOR A PARTICULAR PURPOSE.  See the  GNU General Public License
+** for more details.
+** 
+** You  should  have  received  a  copy of the GNU General Public License
+** along  with  ATS;  see  the  file  COPYING.  If not, write to the Free
+** Software Foundation, 51  Franklin  Street,  Fifth  Floor,  Boston,  MA
+** 02110-1301, USA.
+*)
+
+(* ****** ****** *)
+
 (*
 **
 ** An interface for ATS to interact with BLAS and LAPACK
@@ -16,6 +49,33 @@ staload "libats/SATS/genarrays.sats"
 (* ****** ****** *)
 
 staload "libats/SATS/fmatrix.sats"
+
+(* ****** ****** *)
+
+implement fmatrix_ptr_alloc_tsz {a} (m, n, tsz) = let
+  val (pf_mn | mn) = m imul2 n
+  prval () = mul_nat_nat_nat (pf_mn)
+  val mn_sz = size1_of_int1 mn
+  val (pf_gc, pf_arr | p_arr) = array_ptr_alloc_tsz {a} (mn_sz, tsz)
+  prval pf_fmat = fmatrix_v_of_array_v (pf_mn, pf_arr)
+in
+  (pf_gc, pf_mn, pf_fmat | p_arr)
+end // end of [fmatrix_ptr_alloc_tsz]
+
+implement{a} fmatrix_ptr_alloc (m, n) =
+  fmatrix_ptr_alloc_tsz {a} (m, n, sizeof<a>)
+// end of [fmatrix_ptr_alloc]
+
+(* ****** ****** *)
+
+implement fmatrix_ptr_free 
+  (pf_gc, pf_mn, pf_fmat | p) = let
+  prval (pf2_mn, pf_arr) = array_v_of_fmatrix_v (pf_fmat)
+  prval () = mul_isfun (pf2_mn, pf_mn)
+  val () = array_ptr_free (pf_gc, pf_arr | p)
+in
+  // nothing
+end // end of [fmatrix_ptr_free]
 
 (* ****** ****** *)
 

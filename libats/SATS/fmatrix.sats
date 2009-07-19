@@ -1,3 +1,36 @@
+(***********************************************************************)
+(*                                                                     *)
+(*                         Applied Type System                         *)
+(*                                                                     *)
+(*                              Hongwei Xi                             *)
+(*                                                                     *)
+(***********************************************************************)
+
+(*
+** ATS - Unleashing the Potential of Types!
+**
+** Copyright (C) 2002-2009 Hongwei Xi, Boston University
+**
+** All rights reserved
+**
+** ATS is free software;  you can  redistribute it and/or modify it under
+** the  terms of the  GNU General Public License as published by the Free
+** Software Foundation; either version 2.1, or (at your option) any later
+** version.
+** 
+** ATS is distributed in the hope that it will be useful, but WITHOUT ANY
+** WARRANTY; without  even  the  implied  warranty  of MERCHANTABILITY or
+** FITNESS FOR A PARTICULAR PURPOSE.  See the  GNU General Public License
+** for more details.
+** 
+** You  should  have  received  a  copy of the GNU General Public License
+** along  with  ATS;  see  the  file  COPYING.  If not, write to the Free
+** Software Foundation, 51  Franklin  Street,  Fifth  Floor,  Boston,  MA
+** 02110-1301, USA.
+*)
+
+(* ****** ****** *)
+
 (*
 **
 ** An interface for ATS to interact with BLAS and LAPACK
@@ -51,6 +84,39 @@ prfun fmatrix_v_of_array_v
   (pf_mul: MUL (m, n, mn), pf_arr: array_v (a, mn, l))
   :<> fmatrix_v (a, m, n, l)
 // end of [fmatrix_v_of_array_v]
+
+(* ****** ****** *)
+
+fun fmatrix_ptr_alloc_tsz {a:viewt@ype}
+  {m,n:nat} (m: int m, n: int n, tsz: sizeof_t a)
+  :<> [mn:nat] [l:agz] (
+    free_gc_v (a, mn, l)
+  , MUL (m, n, mn)
+  , fmatrix_v (a?, m, n, l)
+  | ptr l
+  )
+// end of [fmarix_ptr_alloc_tsz]
+
+fun{a:viewt@ype}
+  fmatrix_ptr_alloc {m,n:nat} (m: int m, n: int n)
+  :<> [mn:nat] [l:agz] (
+    free_gc_v (a, mn, l)
+  , MUL (m, n, mn)
+  , fmatrix_v (a?, m, n, l)
+  | ptr l
+  )
+// end of [fmarix_ptr_alloc]
+
+(* ****** ****** *)
+
+fun fmatrix_ptr_free {a:viewt@ype}
+  {m,n,mn:nat} {l:addr} (
+    pf_gc: free_gc_v (a, mn, l)
+  , pf_mn: MUL (m, n, mn)
+  , pf_fmat: fmatrix_v (a?, m, n, l)
+  | l: ptr l
+  ) :<> void
+// end of [fmatrix_ptr_free]
 
 (* ****** ****** *)
 
@@ -135,7 +201,7 @@ overload [] with fmatrix_ptr_set_elt_at
 (* ****** ****** *)
 
 prfun GEVEC_v_of_fmatrix_v
-  {a:viewt@ype} {m,n:nat} {mn:nat} {l:addr} (
+  {a:viewt@ype} {m,n:nat} {mn:int} {l:addr} (
     pf_mul: MUL (m, n, mn), pf_mat: fmatrix_v (a, m, n, l)
   ) :<> (
     GEVEC_v (a, mn, 1, l)
