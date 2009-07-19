@@ -63,7 +63,7 @@ staload "libats/SATS/genarrays.sats"
 (* ****** ****** *)
 
 absviewt@ype
-  fmatrix_viewt0ype_int_int_viewt0ype (a:viewt@ype,row:int,col:int)
+  fmatrix_viewt0ype_int_int_viewt0ype (a:viewt@ype+,row:int,col:int)
 // [end of fmatrix_viewt0ype_int_int_viewt0ype]
 
 stadef fmatrix = fmatrix_viewt0ype_int_int_viewt0ype
@@ -114,7 +114,7 @@ fun fmatrix_ptr_free {a:viewt@ype}
     pf_gc: free_gc_v (a, mn, l)
   , pf_mn: MUL (m, n, mn)
   , pf_fmat: fmatrix_v (a?, m, n, l)
-  | l: ptr l
+  | p: ptr l
   ) :<> void
 // end of [fmatrix_ptr_free]
 
