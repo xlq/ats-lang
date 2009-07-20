@@ -774,8 +774,8 @@ implement c1lassdec_make
 , c1lassdec_fil= fil  
 , c1lassdec_sym= id
 , c1lassdec_arg= arg
-, c1lassdec_sup= supclss
-, c1lassdec_mtd= mtds
+, c1lassdec_suplst= supclss
+, c1lassdec_mtdlst= mtds
 } // end of [c1lassdec_make]
 
 implement v1aldec_make (loc, p1t, d1e, ann) = '{

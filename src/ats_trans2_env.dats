@@ -780,6 +780,10 @@ implement the_d2expenv_push () = let
   val () = $SymEnv.symenv_push (the_d2expenv) in (unit_v | ())
 end // end of [the_d2expenv_push]
 
+implement the_d2expenv_swap (r_map) =
+  $SymEnv.symenv_swap (the_d2expenv, r_map)
+// end of [the_d2expenv_swap]
+
 (* ****** ****** *)
 
 implement the_d2expenv_localjoin (pf1, pf2 | (*none*)) = let

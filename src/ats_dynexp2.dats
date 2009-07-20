@@ -1000,11 +1000,12 @@ implement s2aspdec_make (loc, s2c, def) = '{
 }
 
 implement c2lassdec_make
-  (loc, s2c, supclss, mtds) = '{
+  (loc, s2c, supclss, mtdlst, mtdmap) = '{
   c2lassdec_loc= loc
 , c2lassdec_cst= s2c
-, c2lassdec_sup= supclss
-, c2lassdec_mtd= mtds
+, c2lassdec_suplst= supclss
+, c2lassdec_mtdlst= mtdlst
+, c2lassdec_mtdmap= mtdmap
 } // end of [c2lassdec_make]
 
 implement v2aldec_make (loc, p2t, def, ann) = '{

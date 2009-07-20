@@ -135,8 +135,10 @@ fun the_d2expenv_find_qua (q: $Syn.d0ynq, id: sym_t): d2itemopt_vt
 
 fun the_d2expenv_pop (pf: d2expenv_token | (*none*)): void
 fun the_d2expenv_push (): (d2expenv_token | void)
+fun the_d2expenv_swap (r_map: $SymEnv.symmapref d2item): void
 fun the_d2expenv_localjoin
   (pf1: d2expenv_token, pf2: d2expenv_token | (*none*)): void
+// end of [the_d2expenv_localjoin]
 
 fun the_d2expenv_current_find (id: sym_t): d2itemopt_vt
 fun the_d2expenv_pervasive_find (id: sym_t): d2itemopt_vt

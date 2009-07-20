@@ -67,6 +67,31 @@ assume d2mtd_t =
 
 in // in of [local]
 
+implement d2mtd_make
+  (loc, name, knd, typ) = let
+
+val stamp = $Stamp.d2mac_stamp_make ()
+val (pf_gc, pf | p) =
+  ptr_alloc_tsz {d2mtd_struct} (sizeof<d2mtd_struct>)
+// end of [val]
+prval () = free_gc_elim {d2mtd_struct} (pf_gc)
+
+val () = begin
+p->d2mtd_loc := loc;
+p->d2mtd_sym := name;
+p->d2mtd_knd := knd;
+p->d2mtd_typ := typ;
+p->d2mtd_stamp := stamp;
+end // end of [val]
+
+val (pfbox | ()) = vbox_make_view_ptr (pf | p)
+
+in // in of [let]
+
+(pfbox | p)
+
+end // end of [d2mtd_make]
+
 implement d2mtd_loc_get (d2m) =
   let val (vbox pf | p) = d2m in p->d2mtd_loc end
 

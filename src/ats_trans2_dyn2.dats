@@ -42,6 +42,11 @@ staload Lst = "ats_list.sats"
 staload NS = "ats_namespace.sats"
 staload PM = "ats_posmark.sats"
 staload Sym = "ats_symbol.sats"
+
+staload SymEnv = "ats_symenv.sats"
+stadef symmap_t = $SymEnv.symmap_t 
+typedef symmapref (itm:t@ype) = $SymEnv.symmapref (itm)
+
 staload Syn = "ats_syntax.sats"
 
 (* ****** ****** *)
@@ -55,6 +60,16 @@ staload "ats_trans2_env.sats"
 (* ****** ****** *)
 
 staload "ats_trans2.sats"
+
+(* ****** ****** *)
+
+staload "ats_reference.sats"
+staload _(*anonymous*) = "ats_reference.dats"
+
+(* ****** ****** *)
+
+staload _(*anonymous*) = "ats_map_lin.dats"
+staload _(*anonymous*) = "ats_symenv.dats"
 
 (* ****** ****** *)
 
@@ -227,8 +242,8 @@ and m2thdec =
 
 fn m1thdec_tr (mtd: m1thdec): m2thdec =
   case+ mtd of
-  | M1THDECmtd (loc, sym, knd, def) => let
-      val def = d1exp_tr (def) in M2THDECmtd (loc, sym, knd, def)
+  | M1THDECmtd (loc, sym, _(*dummy*), def) => let
+      val def = d1expopt_tr (def) in M2THDECmtd (loc, sym, def)
     end // end of [M1THDECmtd]
   | M1THDECmtdimp (loc, sym, def) => let
       val def = d1exp_tr (def) in M2THDECmtdimp (loc, sym, def)
@@ -265,6 +280,8 @@ fn m1thdeclst_tr (mtds: m1thdeclst)
   : m2thdeclst = $Lst.list_map_fun (mtds, m1thdec_tr)
 // end of [m1thdeclst_tr]
 
+(* ****** ****** *)
+
 fn c1lassdec_tr (
     decarg: s2qualst
   , d1c_cls: c1lassdec
@@ -286,11 +303,54 @@ fn c1lassdec_tr (
   } // end of [val]
 //
   val supclss =
-    s1explst_tr_dn_cls (d1c_cls.c1lassdec_sup)
-  // end of [val]
-  val mtds = m1thdeclst_tr (d1c_cls.c1lassdec_mtd)
+    s1explst_tr_dn_cls (d1c_cls.c1lassdec_suplst)
+  (* end of [val] *)
+//
+  val mtdlst = d1c_cls.c1lassdec_mtdlst
+//
+  val mtdmap = ref_make_elt<res_t> (res) where {
+    typedef itm = d2item
+    viewtypedef res_t = symmap_t itm
+    var res: res_t = $SymEnv.symmap_make {itm} ()
+    fun aux (mtds: m1thdeclst, res: !res_t): void =
+      case+ mtds of
+      | list_cons (mtd, mtds) => aux (mtds, res) where {
+          val () = (case+ mtd of
+            | M1THDECmtd (loc, sym, def_dummy, def) => let
+                val def_dummy = d1exp_tr (def_dummy)
+                val mtd_typ = d2exp_typ_syn (def_dummy)
+                val d2m = d2mtd_make (loc, sym, MTDKINDmtd, mtd_typ)
+              in
+                $SymEnv.symmap_insert<itm> (res, sym, D2ITEMmtd d2m)
+              end // end of [M1THDECmtd]
+            | M1THDECval (loc, sym, typ, def) => let
+                val mtd_typ = s1exp_tr_dn_t0ype (typ)
+                val d2m = d2mtd_make (loc, sym, MTDKINDval, mtd_typ)
+              in
+                $SymEnv.symmap_insert<itm> (res, sym, D2ITEMmtd d2m)
+              end // end of [M1THDECval]
+            | M1THDECvar (loc, sym, typ, def) => let
+                val mtd_typ = s1exp_tr_dn_viewt0ype (typ)
+                val d2m = d2mtd_make (loc, sym, MTDKINDvar, mtd_typ)
+              in
+                $SymEnv.symmap_insert<itm> (res, sym, D2ITEMmtd d2m)
+              end // end of [M1THDECvar]
+            | _ => ()
+          ) : void
+        } // end of [list_cons]
+      | list_nil () => ()
+    // end of [aux]
+    val () = aux (mtdlst, res)
+  } // end of [val]
+//
+  val (pf_token | ()) = the_d2expenv_push ()
+  val () = the_d2expenv_swap (mtdmap)
+  val mtdlst = m1thdeclst_tr (mtdlst)
+  val () = the_d2expenv_swap (mtdmap)
+  val () = the_d2expenv_pop (pf_token | (*none*))
+//
 in
-  c2lassdec_make (loc, s2c_cls, supclss, mtds)
+  c2lassdec_make (loc, s2c_cls, supclss, mtdlst, mtdmap)
 end // end of [c1lassdec_tr]
 
 (* ****** ****** *)

@@ -238,8 +238,7 @@ fn f2undec_tr (d2c: f2undec): d3exp = let
   val () = trans3_env_push_sta ()
   val () = trans3_env_hypo_add_s2qualst (d2v_loc, d2v_decarg)
 
-  val d3e_def = (
-    case+ d2c.f2undec_ann of
+  val d3e_def = (case+ d2c.f2undec_ann of
     | Some s2e_ann => let
 (*
         val () = begin
@@ -249,7 +248,7 @@ fn f2undec_tr (d2c: f2undec): d3exp = let
 *)
       in
         d2exp_tr_dn (d2e_def, s2e_ann)
-      end
+      end // end of [Some]
     | None () => d2exp_tr_up d2e_def
   ) : d3exp
 
@@ -258,7 +257,7 @@ fn f2undec_tr (d2c: f2undec): d3exp = let
 (*
   val () = begin
     print "f2undec_tr: s2e_fun = "; print s2e_fun; print_newline ()
-  end
+  end // end of [val]
 *)
 (*
   val s2e_fun_gen = s2exp_generalize s2e_fun
@@ -278,7 +277,7 @@ fn f2undec_tr (d2c: f2undec): d3exp = let
 *)
 in
   d3e_def
-end
+end // end of [f2undec_tr]
 
 (* ****** ****** *)
 

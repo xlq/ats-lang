@@ -31,8 +31,8 @@
 
 (* ****** ****** *)
 
-// Time: November 2007
 // Author: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
+// Time: November 2007
 
 (* ****** ****** *)
 
@@ -40,40 +40,46 @@
 
 (* ****** ****** *)
 
-staload Eff = "ats_effect.sats"
 staload Fil = "ats_filename.sats"
-staload Loc = "ats_location.sats"
+typedef fil_t = $Fil.filename_t
+
 staload Lab = "ats_label.sats"
-staload IntInf = "ats_intinf.sats"
-staload SEXP1 = "ats_staexp1.sats" // for [e1xp]
-staload Stamp = "ats_stamp.sats"
-staload Sym = "ats_symbol.sats"
-staload Syn = "ats_syntax.sats"
-
-(* ****** ****** *)
-
-staload "ats_staexp2.sats"
-
-(* ****** ****** *)
-
-typedef e1xp = $SEXP1.e1xp
-typedef fil_t= $Fil.filename_t
-typedef intinf_t = $IntInf.intinf_t
 typedef lab_t = $Lab.label_t
+
+staload Loc = "ats_location.sats"
 typedef loc_t = $Loc.location_t
+
+staload IntInf = "ats_intinf.sats"
+typedef intinf_t = $IntInf.intinf_t
+
+staload SEXP1 = "ats_staexp1.sats" // for [e1xp]
+typedef e1xp = $SEXP1.e1xp
+
+staload Stamp = "ats_stamp.sats"
 typedef stamp_t = $Stamp.stamp_t
+
+staload Sym = "ats_symbol.sats"
 typedef sym_t = $Sym.symbol_t
 
+staload SymEnv = "ats_symenv.sats"
+stadef symmapref = $SymEnv.symmapref
+
+(* ****** ****** *)
+
+staload Syn = "ats_syntax.sats"
 typedef l0ab = $Syn.l0ab
 typedef d0ynq = $Syn.d0ynq
 typedef dqi0de = $Syn.dqi0de
 typedef sqi0de = $Syn.sqi0de
 typedef i0delstlst = $Syn.i0delstlst
-
 typedef dcstkind = $Syn.dcstkind
 typedef funkind = $Syn.funkind
 typedef intkind = $Syn.intkind
 typedef valkind = $Syn.valkind
+
+(* ****** ****** *)
+
+staload "ats_staexp2.sats"
 
 (* ****** ****** *)
 
@@ -703,8 +709,8 @@ and d2lab_node =
 // end of [d2lab_node]
 
 and m2thdec =
-  | M2THDECmtd of // knd: undef/def: 0/1
-      (loc_t, sym_t, int(*knd*), d2exp)
+  | M2THDECmtd of
+      (loc_t, sym_t, d2expopt(*def*))
     // end of [M1THDECmtd]
   | M2THDECmtdimp of (loc_t, sym_t, d2exp)
   | M2THDECval of
@@ -825,8 +831,9 @@ and m2thdeclst = List m2thdec
 and c2lassdec = '{
   c2lassdec_loc= loc_t
 , c2lassdec_cst= s2cst_t
-, c2lassdec_sup= s2explst
-, c2lassdec_mtd= m2thdeclst
+, c2lassdec_suplst= s2explst
+, c2lassdec_mtdlst= m2thdeclst
+, c2lassdec_mtdmap= symmapref (d2item)
 } // end of [c2lasdec]
 
 (* ****** ****** *)
@@ -890,9 +897,14 @@ datatype macarg =
 typedef macarglst (narg:int) = list (macarg, narg)
 typedef macarglst = [narg:nat] list (macarg, narg)
 
-fun d2mac_make {narg:nat}
-  (_: loc_t, name: sym_t, knd: int, args: macarglst narg, def: d2exp)
-  : d2mac_t narg
+fun d2mac_make {narg:nat} (
+    _: loc_t
+  , name: sym_t
+  , knd: int
+  , args: macarglst narg
+  , def: d2exp
+  ) : d2mac_t narg
+// end of [d2mac_make]
 
 fun d2mac_loc_get (_: d2mac_t): loc_t
 fun d2mac_sym_get (_: d2mac_t): sym_t
@@ -908,6 +920,10 @@ fun d2mac_stamp_get (_: d2mac_t): stamp_t
 datatype mtdkind =
   | MTDKINDmtd | MTDKINDval | MTDKINDvar
 // end of [mtdkind]
+
+fun d2mtd_make
+  (_: loc_t, name: sym_t, knd: mtdkind, typ: s2exp): d2mtd_t
+// end of [d2mtd_make]
 
 fun d2mtd_loc_get (_: d2mtd_t): loc_t
 fun d2mtd_sym_get (_: d2mtd_t): sym_t
@@ -1226,9 +1242,17 @@ fun s2aspdec_make (_: loc_t, s2c: s2cst_t, def: s2exp): s2aspdec
 
 (* ****** ****** *)
 
-fun c2lassdec_make
-  (_: loc_t, s2c: s2cst_t, supclss: s2explst, mtds: m2thdeclst): c2lassdec
+fun c2lassdec_make (
+    _: loc_t
+  , s2c: s2cst_t
+  , supclss: s2explst
+  , mtdlst: m2thdeclst
+  , mtdmap: symmapref d2item
+  ) : c2lassdec
 // end of [c2lassdec]
+
+castfn c2lassdec_of_c2lassdec_t (_: c2lassdec_t): c2lassdec
+castfn c2lassdec_t_of_c2lassdec (_: c2lassdec): c2lassdec_t
 
 (* ****** ****** *)
 
@@ -1308,6 +1332,15 @@ datatype l2val = // type for left-values
   | L2VALnone of d2exp (* non-left-values *)
 
 fun l2val_make_d2exp (d2e0: d2exp): l2val
+
+(* ****** ****** *)
+
+(*
+** implemented in [ats_trans3_exp_up.dats]
+*)
+fun p2at_typ_syn (_: p2at): s2exp
+fun p2atlst_typ_syn {n:nat} (_: p2atlst n): s2explst n
+fun d2exp_typ_syn (_: d2exp): s2exp
 
 (* ****** ****** *)
 

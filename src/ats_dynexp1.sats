@@ -394,7 +394,7 @@ and d1lab_node =
 
 and m1thdec =
   | M1THDECmtd of // knd: undef/def: 0/1
-      (loc_t, sym_t, int(*knd*), d1exp)
+      (loc_t, sym_t, d1exp(*dummy*), d1expopt(*def*))
     // end of [M1THDECmtd]
   | M1THDECmtdimp of (loc_t, sym_t, d1exp)
   | M1THDECval of
@@ -405,7 +405,7 @@ and m1thdec =
       (loc_t, sym_t, s1exp, d1expopt)
   | M1THDECvarimp of
       (loc_t, sym_t, s1expopt, d1exp)
-// end of [m0thdec]
+// end of [m1thdec]
   
 (* ****** ****** *)
 
@@ -426,13 +426,13 @@ and d1explstlst = List d1explst
 
 and d1lab = '{
   d1lab_loc= loc_t, d1lab_node= d1lab_node
-}
+} // end of [d1lab]
 
 (* ****** ****** *)
 
 and m1atch = '{
   m1atch_loc= loc_t, m1atch_exp= d1exp, m1atch_pat= p1atopt
-}
+} // end of [m1atch]
 
 and m1atchlst = List m1atch
 
@@ -445,7 +445,7 @@ and c1lau = '{
 , c1lau_seq= int
 , c1lau_neg= int
 , c1lau_exp= d1exp
-}
+} // end of [c1lau]
 
 and c1laulst = List c1lau
 
@@ -455,7 +455,7 @@ and sc1lau = '{
   sc1lau_loc= loc_t
 , sc1lau_pat= sp1at
 , sc1lau_exp= d1exp
-}
+} // end of [sc1lau]
 
 and sc1laulst = List sc1lau
 
@@ -465,13 +465,13 @@ and i1nvarg = '{
   i1nvarg_loc= loc_t
 , i1nvarg_sym= sym_t
 , i1nvarg_typ= s1expopt
-}
+} // end of [i1nvarg]
 
 and i1nvarglst = List i1nvarg
 
 and i1nvresstate = '{
  i1nvresstate_qua= s1qualst, i1nvresstate_arg= i1nvarglst
-}
+} // end of [i1nvresstate]
 
 and loopi1nv = '{
   loopi1nv_loc= loc_t
@@ -479,7 +479,7 @@ and loopi1nv = '{
 , loopi1nv_met= s1explstopt (* metric *)
 , loopi1nv_arg= i1nvarglst (* argument *)
 , loopi1nv_res= i1nvresstate (* result *)
-}
+} // end of [loopi1nv]
 
 (* ****** ****** *)
 
@@ -487,7 +487,7 @@ and s1rtdef = '{ // (extended) sort definition
   s1rtdef_loc= loc_t
 , s1rtdef_sym= sym_t
 , s1rtdef_def= s1rtext
-}
+} // end of [s1rtdef]
 
 and s1rtdeflst = List s1rtdef
 
@@ -497,7 +497,7 @@ and d1atsrtcon = '{
   d1atsrtcon_loc= loc_t
 , d1atsrtcon_sym= sym_t
 , d1atsrtcon_arg= s1rtlst
-}
+} // end of [d1atsrtcon]
 
 and d1atsrtconlst = List d1atsrtcon
 
@@ -505,7 +505,7 @@ and d1atsrtdec = '{
   d1atsrtdec_loc= loc_t
 , d1atsrtdec_sym= sym_t
 , d1atsrtdec_con= d1atsrtconlst
-}
+} // end of [d1atsrtdec]
 
 and d1atsrtdeclst = List d1atsrtdec
 
@@ -516,7 +516,7 @@ and s1tacon = '{ // static constructor declaration
 , s1tacon_sym= sym_t
 , s1tacon_arg= d1atarglstopt
 , s1tacon_def= s1expopt
-}
+} // end of [s1tacon]
 
 and s1taconlst = List s1tacon
 
@@ -525,7 +525,7 @@ and s1tacst = '{ // static constant declaration
 , s1tacst_sym= sym_t
 , s1tacst_arg= s1rtlstopt
 , s1tacst_res= s1rt
-}
+} // end of [s1tacst]
 
 and s1tacstlst = List s1tacst
 
@@ -533,7 +533,7 @@ and s1tavar = '{ // static variable declaration
   s1tavar_loc= loc_t
 , s1tavar_sym= sym_t
 , s1tavar_srt= s1rt
-}
+} // end of [s1tavar]
 
 and s1tavarlst = List s1tavar
 
@@ -545,7 +545,7 @@ and s1expdef = '{
 , s1expdef_arg= s1arglstlst
 , s1expdef_res= s1rtopt
 , s1expdef_def= s1exp
-}
+} // end of [s1expdef]
 
 and s1expdeflst = List s1expdef
 
@@ -555,7 +555,7 @@ and s1aspdec = '{
 , s1aspdec_arg= s1arglstlst
 , s1aspdec_res= s1rtopt
 , s1aspdec_def= s1exp
-}
+} // end of [s1aspdec]
 
 and s1aspdeclst = List s1aspdec
 
@@ -567,7 +567,7 @@ and d1cstdec = '{
 , d1cstdec_sym= sym_t
 , d1cstdec_typ= s1exp
 , d1cstdec_ext= Stropt
-}
+} // end of [d1cstdec]
 
 and d1cstdeclst = List d1cstdec
 
@@ -580,7 +580,7 @@ and d1atcon = '{
 , d1atcon_npf= int
 , d1atcon_arg= s1explst
 , d1atcon_ind= s1explstopt
-}
+} // end of [d1atcon]
 
 and d1atconlst = List d1atcon
 
@@ -590,7 +590,7 @@ and d1atdec = '{
 , d1atdec_sym= sym_t
 , d1atdec_arg= d1atarglstopt
 , d1atdec_con= d1atconlst
-}
+} // end of [d1atdec]
 
 and d1atdeclst = List d1atdec
 
@@ -603,7 +603,7 @@ and e1xndec = '{
 , e1xndec_qua= s1qualstlst
 , e1xndec_npf= int
 , e1xndec_arg= s1explst
-}
+} // end of [e1xndec]
 
 and e1xndeclst = List e1xndec
 
@@ -616,8 +616,8 @@ and c1lassdec = '{
 , c1lassdec_fil= fil_t
 , c1lassdec_sym= sym_t
 , c1lassdec_arg= s1arglstlst
-, c1lassdec_sup= s1explst
-, c1lassdec_mtd= m1thdeclst
+, c1lassdec_suplst= s1explst
+, c1lassdec_mtdlst= m1thdeclst
 } // end of [c1lassdec]
 
 (* ****** ****** *)

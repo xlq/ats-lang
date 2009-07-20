@@ -1224,9 +1224,7 @@ implement m0thdec_tr (mtd) = case+ mtd of
       (loc, sym, arg, eff, res, def) => let
       val def = d0expopt_of_d0expopt_t (def)
       val defknd = (case+ def of Some _ => 1 | None _ => 0): int
-      val def = (case+ def of
-        | Some d0e => d0e | None _ => d0exp_empty ($Loc.location_none)
-      ) : d0exp
+      val def_dummy = d0exp_empty (loc)
       val arg = f0arglst_of_f0arglst_t (arg)
       val lamknd = LAMKINDfix ()
 //
@@ -1240,18 +1238,25 @@ implement m0thdec_tr (mtd) = case+ mtd of
           end // end of [None]
       ) : @(Option funclo, efcopt)
 //
-      val def = d0exp_lams_dyn_tr (
-        lamknd, None(*oloc*), ofc, 0(*lin*), arg, Some res, oefc, def
+      val def_dummy = d0exp_lams_dyn_tr (
+        lamknd, None(*oloc*), ofc, 0(*lin*), arg, Some res, oefc, def_dummy
       ) // end of [d0exp_lams_dyn_tr]
+      val def = (case+ def of
+        | Some d0e => Some d1e where {
+            val d1e = d0exp_lams_dyn_tr
+              (lamknd, None(*oloc*), ofc, 0(*lin*), arg, Some res, oefc, d0e)
+          } // end of [Some]
+        | None () => None ()
+      ) : d1expopt
 // (*
       val () = begin
         prerr "m0thdec_tr: M0THDECmtd: sym = "; prerr sym; prerr_newline ();
         prerr "m0thdec_tr: M0THDECmtd: defknd = "; prerr defknd; prerr_newline ();
-        prerr "m0thdec_tr: M0THDECmtd: def = "; prerr def; prerr_newline ()
+        prerr "m0thdec_tr: M0THDECmtd: def_dummy = "; prerr def_dummy; prerr_newline ()
       end // end of [val]
 // *)
     in
-      M1THDECmtd (loc, sym, defknd, def)
+      M1THDECmtd (loc, sym, def_dummy, def)
     end // end of [M0THDECmtd]      
   | M0THDECmtdimp
       (loc, sym, arg, res, def) => let
@@ -1298,11 +1303,11 @@ implement m0thdeclst_tr (mtds) =
 
 implement c0lassdec_tr (d) = let
   val arg = s0arglstlst_tr (d.c0lassdec_arg)
-  val supclss = s0explst_tr (d.c0lassdec_sup)
-  val mtds = m0thdeclst_tr (d.c0lassdec_mtd)
+  val supclss = s0explst_tr (d.c0lassdec_suplst)
+  val mtdlst = m0thdeclst_tr (d.c0lassdec_mtdlst)
 in
   c1lassdec_make (
-    d.c0lassdec_loc, d.c0lassdec_fil, d.c0lassdec_sym, arg, supclss, mtds
+    d.c0lassdec_loc, d.c0lassdec_fil, d.c0lassdec_sym, arg, supclss, mtdlst
   ) // end of [c1lassdec_make]
 end // end of [c0lassdec_tr]
 

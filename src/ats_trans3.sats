@@ -58,9 +58,6 @@ fun d3explst_open_and_add (d3es: d3explst): void
 
 (* ****** ****** *)
 
-fun p2at_typ_syn (_: $DEXP2.p2at): $SEXP2.s2exp
-fun p2atlst_typ_syn {n:nat} (_: $DEXP2.p2atlst n): $SEXP2.s2explst n
-
 fun p2at_tr_dn (_: $DEXP2.p2at, _: $SEXP2.s2exp): p3at
 fun p2atlst_tr_dn {n:nat}
   (_: $DEXP2.p2atlst n, _: $SEXP2.s2explst n): p3atlst n
@@ -137,8 +134,6 @@ fun d3exp_lval_typ_set_pat (d3e0: d3exp, p3t: p3at): void
 fun d3exp_tr_dn (d3e: d3exp, s2e: $SEXP2.s2exp): void
 
 (* ****** ****** *)
-
-fun d2exp_typ_syn (_: $DEXP2.d2exp): $SEXP2.s2exp
 
 fun d2exp_tr_up (_: $DEXP2.d2exp): d3exp
 fun d2explst_tr_up {n:nat} (_: $DEXP2.d2explst n): d3explst n

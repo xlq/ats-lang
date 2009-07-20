@@ -1451,8 +1451,8 @@ in '{
 , c0lassdec_fil= fil
 , c0lassdec_sym= id.i0de_sym
 , c0lassdec_arg= arg
-, c0lassdec_sup= supclss
-, c0lassdec_mtd= mtds
+, c0lassdec_suplst= supclss
+, c0lassdec_mtdlst= mtds
 } end // end of [c0lassdec_make]
 
 (* ****** ****** *)

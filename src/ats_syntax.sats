@@ -1146,8 +1146,8 @@ typedef c0lassdec = '{
 , c0lassdec_fil= filename_t
 , c0lassdec_sym= sym_t
 , c0lassdec_arg= s0arglstlst
-, c0lassdec_sup= s0explst
-, c0lassdec_mtd= m0thdeclst
+, c0lassdec_suplst= s0explst
+, c0lassdec_mtdlst= m0thdeclst
 } // end of [c0lassdec]
 
 fun c0lassdec_make (
