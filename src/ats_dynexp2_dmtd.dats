@@ -53,6 +53,8 @@ typedef d2mtd_struct = struct {
   d2mtd_loc= loc_t
 , d2mtd_sym= sym_t
 , d2mtd_knd= mtdkind
+, d2mtd_decarg= s2qualst
+, d2mtd_sublst= List @(s2qualst, tmps2explstlst)
 , d2mtd_typ= s2exp
 , d2mtd_stamp= stamp_t // uniqueness stamp
 } // end of [d2mtd_struct]
@@ -68,7 +70,7 @@ assume d2mtd_t =
 in // in of [local]
 
 implement d2mtd_make
-  (loc, name, knd, typ) = let
+  (loc, name, knd, decarg, sublst, typ) = let
 
 val stamp = $Stamp.d2mac_stamp_make ()
 val (pf_gc, pf | p) =
@@ -80,6 +82,8 @@ val () = begin
 p->d2mtd_loc := loc;
 p->d2mtd_sym := name;
 p->d2mtd_knd := knd;
+p->d2mtd_decarg := decarg;
+p->d2mtd_sublst := sublst;
 p->d2mtd_typ := typ;
 p->d2mtd_stamp := stamp;
 end // end of [val]
@@ -97,6 +101,15 @@ implement d2mtd_loc_get (d2m) =
 
 implement d2mtd_sym_get (d2m) =
   let val (vbox pf | p) = d2m in p->d2mtd_sym end
+
+implement d2mtd_knd_get (d2m) =
+  let val (vbox pf | p) = d2m in p->d2mtd_knd end
+
+implement d2mtd_decarg_get (d2m) =
+  let val (vbox pf | p) = d2m in p->d2mtd_decarg end
+
+implement d2mtd_sublst_get (d2m) =
+  let val (vbox pf | p) = d2m in p->d2mtd_sublst end
 
 implement d2mtd_typ_get (d2m) =
   let val (vbox pf | p) = d2m in p->d2mtd_typ end

@@ -31,8 +31,8 @@
 
 (* ****** ****** *)
 
-// Time: November 2007
 // Author: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
+// Time: November 2007
 
 (* ****** ****** *)
 
@@ -378,6 +378,7 @@ fun s2exp_neq_int_int_bool (s2e1: s2exp, s2e2: s2exp): s2exp
 
 fun s2exp_btw_int_int_int_bool
   (lft: s2exp, mid: s2exp, rgt: s2exp): s2exp
+// end of [s2exp_btw_int_int_int_bool]
 
 (* ****** ****** *)
 
@@ -395,4 +396,4 @@ fun s2exp_lte_addr_addr_bool (s2e1: s2exp, s2e2: s2exp): s2exp
 
 (* ****** ****** *)
 
-(* end of [ats_stacst2.sats] *)
+(* end of [ats_stadyncst2.sats] *)

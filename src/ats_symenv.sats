@@ -78,6 +78,13 @@ fun{itm:t@ype} symmap_remove
 
 (* ****** ****** *)
 
+// list a map in pre-order
+fun{itm:t@ype}
+  symmap_list_inf (m: !symmap_t itm):<> List_vt @(sym_t, itm)
+// end of [fun]
+
+(* ****** ****** *)
+
 abstype
 symenv_t (itm: t@ype) // boxed type
 

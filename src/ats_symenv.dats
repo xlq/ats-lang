@@ -102,9 +102,15 @@ implement{itm} symmap_remove (m, k) = $Map.map_remove (m, k)
 
 (* ****** ****** *)
 
+implement{itm} symmap_list_inf (m) = $Map.map_list_inf<sym_t,itm> (m)
+
+(* ****** ****** *)
+
 implement symmap_make {itm} () =
   $Map.map_make {sym_t,itm} ($Sym.compare_symbol_symbol)
 // end of [symmap_make]
+
+(* ****** ****** *)
 
 fn{itm:t@ype} symmap_free (m: symmap itm):<> void = $Map.map_free m
 

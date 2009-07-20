@@ -576,15 +576,17 @@ implement s2exp_is_wth (s2e) = case+ s2e.s2exp_node of
 (* ****** ****** *)
 
 implement s2exp_head_get (s2e0) = let
-  fun aux (s2e: s2exp): s2exp =
-    case+ s2e.s2exp_node of S2Eapp (s2e, _) => aux s2e | _ => s2e
+  fun loop (s2e: s2exp): s2exp =
+    case+ s2e.s2exp_node of S2Eapp (s2e, _) => loop s2e | _ => s2e
+  // end of [loop]
 in
-  aux (s2exp_whnf s2e0)
+  loop (s2exp_whnf s2e0)
 end // end of [s2exp_head_get]
 
 (* ****** ****** *)
 
-fun lte_s2explst_s2rtlst (s2es: s2explst, s2ts: s2rtlst): bool =
+fun lte_s2explst_s2rtlst
+  (s2es: s2explst, s2ts: s2rtlst): bool =
   case+ (s2es, s2ts) of
   | (s2e :: s2es, s2t :: s2ts) => begin
 (*
@@ -593,11 +595,13 @@ fun lte_s2explst_s2rtlst (s2es: s2explst, s2ts: s2rtlst): bool =
       prerr "lte_s2explst_s2rtlst: s2e.s2exp_srt = ";
       prerr s2e.s2exp_srt; prerr_newline ();
 *)
-      if s2e.s2exp_srt <= s2t then lte_s2explst_s2rtlst (s2es, s2ts)
+      if s2e.s2exp_srt <= s2t then
+        lte_s2explst_s2rtlst (s2es, s2ts)
       else false
-    end
+    end // end of [::, ::]
   | (nil (), nil ()) => true
   | (_, _) => false
+// end of [lte_s2explst_s2rtlst]
 
 implement s2cst_select_s2explstlst (s2cs, s2ess) = let
   fun test (s2t_fun: s2rt, s2ess: s2explstlst): bool =
@@ -625,8 +629,8 @@ implement s2cst_select_s2explstlst (s2cs, s2ess) = let
           S2CSTLSTcons (s2c, filter (s2cs, s2ess))
         end else begin
           filter (s2cs, s2ess)
-        end
-      end
+        end (* end of [if] *)
+      end // end of [S2CSTLSTcons]
     | S2CSTLSTnil () => S2CSTLSTnil ()
 in
   filter (s2cs, s2ess)
@@ -643,7 +647,8 @@ implement s2rt_lin_prg_boxed (lin, prg, boxed) =
     if prg > 0 then
       if boxed > 0 then s2rt_type else s2rt_t0ype
     else s2rt_prop
-  end
+  end (* end of [if] *)
+// end of [s2rt_lin_prg_boxed]
 
 fn labs2explst_is_singleton
   (npf: int, ls2es: labs2explst): Option_vt s2exp = let
@@ -665,7 +670,7 @@ fn labs2explst_is_singleton
     | LABS2EXPLSTnil () => Some_vt s2e0
 in
   aux0 (npf, ls2es)
-end
+end (* end of [labs2explst_is_singleton] *)
 
 implement s2rt_lin_prg_boxed_npf_labs2explst
   (lin, prg, boxed, npf, ls2es) = let
@@ -705,7 +710,8 @@ implement s2exp_tyrec (recknd, npf, ls2es) = let
         aux01 (i+1, npf, ls2es, lin, prg)
       end
     | LABS2EXPLSTnil () => ()
-  val s2t_rec: s2rt = case+ recknd of
+  // end of [aux01]
+  val s2t_rec = (case+ recknd of
     | 0 => let
         val () = aux01 (0, npf, ls2es, lin, prg)
       in
@@ -723,7 +729,8 @@ implement s2exp_tyrec (recknd, npf, ls2es) = let
         prerr recknd;
         prerr_newline ();
         $Err.abort {s2rt} ()
-      end
+      end // end of [_]
+  ) : s2rt
 in
   s2exp_tyrec_srt (s2t_rec, tyrecknd, npf, ls2es)
 end // end of [s2exp_tyrec]
@@ -742,7 +749,7 @@ implement s2exp_union (isbox, stamp, s2i, ls2es) = let
         if i = 0 then Some_vt (s2e) else aux2 (ls2es, i-1)
     | LABS2EXPLSTnil () => None_vt ()
   var lin: int = 0
-  val () = case+ s2i.s2exp_node of
+  val () = (case+ s2i.s2exp_node of
     | S2Eint i => begin
        if i >= 0 then begin case+ aux2 (ls2es, i) of
           | ~Some_vt s2e => begin
@@ -752,12 +759,14 @@ implement s2exp_union (isbox, stamp, s2i, ls2es) = let
         end else (lin := 0)
       end // end of [S2Eint]
     | _ => aux1 (ls2es, lin)
-  val s2t_union =
+  ) : void
+  val s2t_union = (
     if lin > 0 then begin
       if isbox then s2rt_viewtype else s2rt_viewt0ype
     end else begin
       if isbox then s2rt_type else s2rt_t0ype
     end
+  ) : s2rt
 in
   s2exp_union_srt (s2t_union, stamp, s2i, ls2es)
 end // end of [s2exp_union]
@@ -781,7 +790,8 @@ implement s2kexp_make_s2exp (s2e0) = let
     | list_nil () => S2KEvar s2v0
   // end of [aux_s2var]
 
-  fun aux_s2exp (pol: int, s2vss: s2varlstlst, s2e0: s2exp)
+  fun aux_s2exp
+    (pol: int, s2vss: s2varlstlst, s2e0: s2exp)
     : s2kexp = let
     val s2e0 = s2exp_whnf s2e0 in case+ s2e0.s2exp_node of
       | S2Eapp (s2e, s2es) => let
@@ -832,6 +842,7 @@ implement s2kexp_make_s2exp (s2e0) = let
         list_cons (s2ke, aux_s2Varboundlst (pol, s2vss, s2Vbs))
       end // end of [list_cons]
     | list_nil () => list_nil ()
+  // end of [aux_s2Varboundlst]
 
   and aux_labs2explst
     (pol: int, s2vss: s2varlstlst, ls2es: labs2explst): labs2kexplst =
@@ -847,7 +858,7 @@ implement s2kexp_make_s2exp (s2e0) = let
         if s2exp_is_impredicative s2e then list_cons
           (aux_s2exp (pol, s2vss, s2e), aux_s2explst (pol, s2vss, s2es))
         else aux_s2explst (pol, s2vss, s2es)
-      end
+      end // end of [list_cons]
     | list_nil () => list_nil ()
   // end of [aux_s2explst_arg]
 
@@ -870,7 +881,7 @@ fun s2kexp_match_union_approx
       if s2kexp_match_approx (1, s2ke1, s2ke2, approx) then
         s2kexp_match_union_approx (s2kes1, s2ke2, approx)
       else false
-    end
+    end (* end of [list_cons] *)
   | list_nil () => true
 end // end of [s2kexp_match_union]
 

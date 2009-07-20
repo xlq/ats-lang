@@ -921,12 +921,21 @@ datatype mtdkind =
   | MTDKINDmtd | MTDKINDval | MTDKINDvar
 // end of [mtdkind]
 
-fun d2mtd_make
-  (_: loc_t, name: sym_t, knd: mtdkind, typ: s2exp): d2mtd_t
+fun d2mtd_make (
+    _: loc_t
+  , name: sym_t
+  , knd: mtdkind
+  , decarg: s2qualst
+  , sublst: List @(s2qualst, tmps2explstlst)
+  , typ: s2exp
+  ) : d2mtd_t
 // end of [d2mtd_make]
 
 fun d2mtd_loc_get (_: d2mtd_t): loc_t
 fun d2mtd_sym_get (_: d2mtd_t): sym_t
+fun d2mtd_knd_get (_: d2mtd_t): mtdkind
+fun d2mtd_decarg_get (_: d2mtd_t): s2qualst
+fun d2mtd_sublst_get (_: d2mtd_t): List @(s2qualst, tmps2explstlst)
 fun d2mtd_typ_get (_: d2mtd_t): s2exp
 fun d2mtd_stamp_get (_: d2mtd_t): stamp_t
 
