@@ -250,6 +250,9 @@ implement MATVECINC_get (pf | x1, x2, ld) =
 
 (* ****** ****** *)
 
+(*
+** The following function acts as a dummy for [GEMAT_ptr_takeout_tsz]
+*)
 extern fun
   GEMAT_ptr_takeout_tsz_dummy
   {a:viewt@ype} {m,n:nat}
@@ -311,6 +314,9 @@ end // end of [GEMAT_ptr_set_elt_at]
 
 (* ****** ****** *)
 
+(*
+** The following function acts as a dummy for [GEMAT_ptr_split1x2_tsz]
+*)
 extern fun
 GEMAT_ptr_split1x2_tsz_dummy
   {a:viewt@ype} {m,n:nat}
@@ -345,6 +351,9 @@ end // end of [GEMAT_ptr_split1x2_tsz_dummy]
 
 (* ****** ****** *)
 
+(*
+** The following function acts as a dummy for [GEMAT_ptr_split2x1_tsz]
+*)
 extern fun
 GEMAT_ptr_split2x1_tsz_dummy
   {a:viewt@ype} {m,n:nat}
@@ -379,6 +388,9 @@ end // end of [GEMAT_ptr_split1x2_tsz_dummy]
 
 (* ****** ****** *)
 
+(*
+** The following function acts as a dummy for [GEMAT_ptr_split2x2_tsz]
+*)
 extern fun
 GEMAT_ptr_split2x2_tsz_dummy
   {a:viewt@ype}
