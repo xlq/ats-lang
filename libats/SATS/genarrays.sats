@@ -476,6 +476,9 @@ fun{a:t@ype} GEMAT_ptr_set_elt_at
 
 (* ****** ****** *)
 
+(*
+** this is likely to be slightly more efficient than GEMAT_ptr_split2x1
+*)
 fun{a:viewt@ype} GEMAT_ptr_tail_row
   {m:pos;n:nat} {ord:order} {lda:pos} {l0:addr} (
     pf_mat: GEMAT_v (a, m, n, ord, lda, l0)
@@ -506,6 +509,9 @@ fun GEMAT_ptr_tail_row_tsz
 
 (* ****** ****** *)
 
+(*
+** this is likely to be slightly more efficient than GEMAT_ptr_split1x2
+*)
 fun{a:viewt@ype} GEMAT_ptr_tail_col
   {m:nat;n:pos} {ord:order} {lda:pos} {l0:addr} (
     pf_mat: GEMAT_v (a, m, n, ord, lda, l0)

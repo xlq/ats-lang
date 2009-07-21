@@ -85,6 +85,12 @@ end // end of [fmatrix_ptr_free]
 
 (* ****** ****** *)
 
+implement{a}
+  fmatrix_ptr_initialize_elt (base, m, n, x) = let
+  var x: a = x in
+  fmatrix_ptr_initialize_elt_tsz {a} (base, m, n, x, sizeof<a>)
+end // end of [fmatrix_ptr_initialize_elt]
+
 implement fmatrix_ptr_initialize_elt_tsz {a}
   (base, m, n, x, tsz) = () where {
   prval pf_mat = view@ base

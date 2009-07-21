@@ -124,7 +124,7 @@ fun{a:t@ype}
 fmatrix_ptr_initialize_elt
   {m,n:nat} {l:addr} (
     base: &fmatrix (a?, m, n) >> fmatrix (a, m, n)
-  , m: int m, n: int n, x: &a
+  , m: int m, n: int n, x: a
   ) :<> void
 // end of [fmatrix_initialize_elt]
 
