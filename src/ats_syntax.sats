@@ -1530,7 +1530,7 @@ datatype d0exp_node =
       moditemdec list
 *)
   | D0Eobj of ( // for objects
-      int(*objknd*), s0expopt(*objcls*), m0thdeclst
+      int(*objknd*), s0exp(*objcls*), m0thdeclst
     ) // end of [D0Eobj]
   | D0Eopide of sym_t (* for dynamic identifiers *)
 (*
@@ -1940,8 +1940,9 @@ fun d0exp_macsyn_encode_seq (t_beg: t0kn, _: d0explst, t_end: t0kn): d0exp
 //
 
 fun d0exp_obj
-  (knd: int, t_beg: t0kn, cls: s0expopt, _: m0thdeclst, t_end: t0kn): d0exp
+  (knd: int, t_beg: t0kn, cls: s0exp, _: m0thdeclst, t_end: t0kn): d0exp
   = "d0exp_obj"
+// end of [d0exp_obj]
 
 //
 

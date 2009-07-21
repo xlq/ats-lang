@@ -143,6 +143,7 @@ extern i0de_t i0de_make_lt (t0kn_t) ;
 extern i0de_t i0de_make_minusgt (t0kn_t) ;
 extern i0de_t i0de_make_minuslt (t0kn_t) ;
 extern i0de_t i0de_make_minusltgt (t0kn_t) ;
+extern i0de_t i0de_make_module (t0kn_t) ;
 extern i0de_t i0de_make_r0ead (t0kn_t) ;
 extern i0de_t i0de_make_tilda (t0kn_t) ;
 extern i0de_t i0de_make_t0ype (t0kn_t) ;
@@ -709,7 +710,7 @@ extern d0exp_t d0exp_macsyn_decode (t0kn_t, d0explst_t, t0kn_t) ;
 extern d0exp_t d0exp_macsyn_encode_seq (t0kn_t, d0explst_t, t0kn_t) ;
 
 extern d0exp_t d0exp_obj
-  (int/*knd*/, t0kn_t, s0expopt_t, m0thdeclst_t, t0kn_t) ;
+  (int/*knd*/, t0kn_t, s0exp_t, m0thdeclst_t, t0kn_t) ;
 
 extern d0exp_t d0exp_opide (t0kn_t, i0de_t) ;
 extern d0exp_t d0exp_ptrof (t0kn_t) ;
@@ -1596,7 +1597,7 @@ guad0ec_t guad0ec ;
 %type <s0elop> s0elop
 %type <s0exparg> s0exparg
 
-%type <s0expopt> objc0ls
+%type <s0exp> objc0ls
 
 %type <d0exp> d0exp
 %type <d0exp> atmd0exp
@@ -2598,8 +2599,7 @@ s0elop
 ;
 
 objc0ls
-  : /* empty */                         { $$ = s0expopt_none () ; }
-  | LPAREN s0exp RPAREN                 { $$ = s0expopt_some ($2) ; }
+  : LPAREN s0exp RPAREN                 { $$ = $2 ; }
 ;
 
 /* dynamic expressions */

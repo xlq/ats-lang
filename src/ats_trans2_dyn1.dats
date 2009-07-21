@@ -68,9 +68,17 @@ staload "ats_trans2.sats"
 
 staload _(*anonymous*) = "ats_array.dats"
 
+staload "ats_reference.sats"
+staload _(*anonymous*) = "ats_reference.dats"
+
 (* ****** ****** *)
 
-#define THISFILENAME "ats_trans2_dyn.dats"
+staload _(*anonymous*) = "ats_map_lin.dats"
+staload _(*anonymous*) = "ats_symenv.dats"
+
+(* ****** ****** *)
+
+#define THISFILENAME "ats_trans2_dyn1.dats"
 
 (* ****** ****** *)
 
@@ -1572,6 +1580,62 @@ in
 (*
   | D1Emod (m1ids) => d2exp_mod (loc, mid1_list_tr m1ids)
 *)
+  | D1Eobj (knd, objcls, mtdlst) => let
+      val objcls = s1exp_tr_dn_cls (objcls)
+      val s2e_head = s2exp_head_get (objcls)
+      var ts2ess: tmps2explstlst = TMPS2EXPLSTLSTnil ()
+      val s2c_cls = (case+ s2e_head.s2exp_node of
+        | S2Ecst s2c => s2c
+        | S2Etmpid (s2c, ts2ess1) => (ts2ess := ts2ess1; s2c)
+        | _ => let
+            val () = prerr "INTERNAL ERROR"
+            val () = (
+              prerr ": d1exp_tr: D1Eobj: s2e_head = "; prerr s2e_head
+            ) // end of [val]
+            val () = prerr_newline ()
+          in
+            $Err.abort {s2cst_t} ()
+          end // end of [_]
+      ) : s2cst_t
+      val ts2ess = ts2ess
+      val d2c_cls = d2c where {
+        val- Some d2c = s2cst_clsdec_get (s2c_cls)
+      } // end of [val]
+      val d2c_cls = c2lassdec_of_c2lassdec_t (d2c_cls)
+      val decarg = list_nil ()
+      typedef itm = d2item
+      fun loop (
+          kis: List_vt @(sym_t, itm), mtdmap: !mtdmap_t
+        ) :<cloref1> void = case+ kis of
+        | ~list_vt_cons (ki, kis) => let
+            val- D2ITEMmtd d2m1 = ki.1
+            val loc1 = d2mtd_loc_get (d2m1)
+            val sym1 = d2mtd_sym_get (d2m1)
+            val knd1 = d2mtd_knd_get (d2m1)
+            val decarg1 = d2mtd_decarg_get (d2m1)
+            val sublst1 = d2mtd_sublst_get (d2m1)
+            val sub = @(decarg1, ts2ess)
+            val sublst = list_cons (sub, sublst1)
+            val typ1 = d2mtd_typ_get (d2m1)
+            val d2m = d2mtd_make (loc1, sym1, knd1, decarg, sublst, typ1)
+            val () = $SymEnv.symmap_insert (mtdmap, ki.0, D2ITEMmtd d2m)
+          in
+            loop (kis, mtdmap)
+          end // end of [list_vt_cons]
+        | ~list_vt_nil () => ()
+      // end of [loop]
+      var mtdmap: mtdmap_t = $SymEnv.symmap_make {itm} ()
+      val () = loop (kis, mtdmap) where {
+        val kis = $SymEnv.symmap_list_inf (!p1) where {
+          val r_mtdmap1 = d2c_cls.c2lassdec_mtdmap
+          val (vbox pf1 | p1) = ref_get_view_ptr (r_mtdmap1)
+        } // end of [val]
+      } (* end of [val] *)
+      val r_mtdmap = ref_make_elt<mtdmap_t> (mtdmap)
+      val mtdlst = m1thdeclst_tr (r_mtdmap, mtdlst)
+    in
+      d2exp_obj (loc0, knd, s2c_cls, ts2ess, mtdlst)
+    end // end of [D1Eobj]
   | D1Eqid (q, id) => d1exp_qid_tr (loc0, q, id)
   | D1Eptrof d1e => d2exp_ptrof (loc0, d1exp_tr d1e)
   | D1Eraise (d1e) => begin

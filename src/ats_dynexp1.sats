@@ -336,7 +336,7 @@ and d1exp_node =
   | D1Emacsyn of (* macro syntax *)
       ($Syn.macsynkind, d1exp)
   | D1Eobj of ( // for objects
-      int(*objknd*), s1expopt(*objcls*), m1thdeclst
+      int(*objknd*), s1exp(*objcls*), m1thdeclst
     ) // end of [D1Eobj]
   | D1Eptrof of (* taking the address of *)
       d1exp
@@ -811,7 +811,7 @@ fun d1exp_lst (_: loc_t, lin: int, elt: s1expopt, elts: d1explst): d1exp
 fun d1exp_macsyn (_: loc_t, knd: $Syn.macsynkind, d1e: d1exp): d1exp
 
 fun d1exp_obj
-  (_: loc_t, knd: int(*lin*), cls: s1expopt, mtds: m1thdeclst): d1exp
+  (_: loc_t, knd: int(*lin*), cls: s1exp, mtds: m1thdeclst): d1exp
 // end of [d1exp_obj]
 
 fun d1exp_ptrof (_: loc_t, _: d1exp): d1exp

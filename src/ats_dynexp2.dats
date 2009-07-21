@@ -739,35 +739,44 @@ implement d2exp_lst (loc, lin, os2e_elt, d2es_elt) = '{
 
 implement d2exp_mac (loc, d2m) = '{
   d2exp_loc= loc, d2exp_node= D2Emac (d2m), d2exp_typ= None ()
-}
+} // end of [d2exp_mac]
 
 implement d2exp_macsyn (loc, knd, d2e) = '{
   d2exp_loc= loc
 , d2exp_node= D2Emacsyn (knd, d2e)
 , d2exp_typ= None ()
-}
+} // end of [d2exp_macsyn]
 
 (* ****** ****** *)
 
 implement d2exp_mtd (loc, d2m) = '{
   d2exp_loc= loc, d2exp_node= D2Emtd (d2m), d2exp_typ= None ()
-}
+} // end of [d2exp_mtd]
+
+(* ****** ****** *)
+
+implement d2exp_obj
+  (loc, knd, s2c, decarg, mtdlst) = '{
+  d2exp_loc= loc
+, d2exp_node= D2Eobj (knd, s2c, decarg, mtdlst)
+, d2exp_typ= None ()
+} // end of [d2exp_obj]
 
 (* ****** ****** *)
 
 implement d2exp_ptrof (loc, d2e) = '{
   d2exp_loc= loc, d2exp_node= D2Eptrof (d2e), d2exp_typ= None ()
-}
+} // end of [d2exp_ptrof]
 
 implement d2exp_raise (loc, d2e_exn) = '{
   d2exp_loc= loc, d2exp_node= D2Eraise (d2e_exn), d2exp_typ= None ()
-}
+} // end of [d2exp_raise]
 
 implement d2exp_rec (loc, recknd, npf, ld2es) = '{
   d2exp_loc= loc
 , d2exp_node= D2Erec (recknd, npf, ld2es)
 , d2exp_typ= None ()
-}
+} // end of [d2exp_rec]
 
 implement d2exp_scaseof (loc, inv, s2e, sc2ls) = '{
   d2exp_loc= loc
@@ -779,7 +788,7 @@ implement d2exp_sel (loc, d2e_root, d2ls_path) = '{
   d2exp_loc= loc
 , d2exp_node = D2Esel (d2e_root, d2ls_path)
 , d2exp_typ= None ()
-}
+} // end of [d2exp_sel]
 
 implement d2exp_sel_ptr (loc, d2e, d2l) = let
   val d2e_root = d2exp_deref (d2e.d2exp_loc, d2e)
@@ -791,7 +800,7 @@ in '{
 
 implement d2exp_seq (loc, d2es) = '{
   d2exp_loc= loc, d2exp_node= D2Eseq (d2es), d2exp_typ= None ()
-}
+} // end of [d2exp_seq]
 
 implement d2exp_sif
   (loc, inv, s2e_cond, d2e_then, d2e_else) = '{

@@ -647,14 +647,18 @@ and d2exp_node =
       (d2eclst, d2exp)
   | D2Eloopexn of (* break: 0 and continue: 1 *)
       int
-  | D2Elst of (* list expression *)
-      (int(*lin*), s2expopt (*element type*), d2explst (*elements*))
+  | D2Elst of ( // list expression
+      int(*lin*), s2expopt(*element type*), d2explst(*elements*)
+    ) // end of [D2Elst]
   | D2Emac of (* macro expression *)
       d2mac_t
   | D2Emacsyn of (* macro encoding *)
       ($Syn.macsynkind, d2exp)
   | D2Emtd of (* method invocation *)
       d2mtd_t
+  | D2Eobj of ( // dynamic object
+      int(*knd*), s2cst_t(*cls*), tmps2explstlst(*decarg*), m2thdeclst
+    ) // end of [D2Eobj]
   | D2Eptrof of (* taking the address of *)
       d2exp
   | D2Eraise of (* raised exception *)
@@ -710,13 +714,13 @@ and d2lab_node =
 
 and m2thdec =
   | M2THDECmtd of
-      (loc_t, sym_t, d2expopt(*def*))
+      (loc_t, sym_t, d2var_t(*self*), d2expopt(*def*))
     // end of [M1THDECmtd]
   | M2THDECval of
       (loc_t, sym_t, s2exp, d2expopt)
   | M2THDECvar of
       (loc_t, sym_t, s2exp, d2expopt)
-  | M2THDECimp of (loc_t, sym_t, d2exp)
+  | M2THDECimp of (loc_t, d2mtd_t, d2exp)
 // end of [m0thdec]
   
 where d2ec = '{
@@ -1166,6 +1170,15 @@ fun d2exp_macsyn (_: loc_t, knd: $Syn.macsynkind, _: d2exp): d2exp
 
 fun d2exp_mtd (_: loc_t, d2m: d2mtd_t): d2exp
 
+fun d2exp_obj (
+    _: loc_t
+  , knd: int
+  , s2c: s2cst_t
+  , ts2ess: tmps2explstlst
+  , mtdlst: m2thdeclst
+  ) : d2exp
+// end of [d2exp_obj]
+
 fun d2exp_ptrof (_: loc_t, _: d2exp): d2exp
 
 fun d2exp_raise (_: loc_t, _: d2exp): d2exp
@@ -1180,9 +1193,14 @@ fun d2exp_sel_ptr (_: loc_t, root: d2exp, lab: d2lab): d2exp
 
 fun d2exp_seq (_: loc_t, _: d2explst): d2exp
 
-fun d2exp_sif
-  (_: loc_t, res: i2nvresstate, _cond: s2exp, _then: d2exp, _else: d2exp)
-  : d2exp
+fun d2exp_sif (
+    _: loc_t
+  , res: i2nvresstate
+  , _cond: s2exp
+  , _then: d2exp
+  , _else: d2exp
+  ) : d2exp
+// end of [d2exp_sif]
 
 fun d2exp_spawn (_: loc_t, _: d2exp): d2exp
 

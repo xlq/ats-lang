@@ -121,6 +121,13 @@ val symbol_TYPES : symbol_t // type lists
 
 (* ****** ****** *)
 
+(* special variables for object-oriented programming *)
+
+val symbol_SELF : symbol_t
+val symbol_MYCLS : symbol_t
+
+(* ****** ****** *)
+
 // the prefix for function name generation
 val symbol_ATS_FUNCTION_NAME_PREFIX : symbol_t
 

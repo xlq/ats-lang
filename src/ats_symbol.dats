@@ -178,6 +178,13 @@ implement symbol_TYPES = symbol_make_string "types"
 
 (* ****** ****** *)
 
+(* special variables for OOP *)
+
+implement symbol_SELF = symbol_make_string "self"
+implement symbol_MYCLS = symbol_make_string "mycls"
+
+(* ****** ****** *)
+
 implement symbol_ATS_FUNCTION_NAME_PREFIX =
   symbol_make_string "ATS_FUNCTION_NAME_PREFIX"
 

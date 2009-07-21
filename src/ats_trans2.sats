@@ -130,6 +130,14 @@ fun d1atdeclst_tr
 
 fun e1xndeclst_tr (d1cs: e1xndeclst): d2conlst
 
+(* ****** ****** *)
+
+viewtypedef mtdmap_t = $SymEnv.symmap_t d2item
+
+fun m1thdeclst_tr
+  (r_map: ref (mtdmap_t), mtds: m1thdeclst): m2thdeclst
+// end of [m1thdeclst_tr]
+
 fun c1lassdec_tr (decarg: s2qualst, d1c: c1lassdec): c2lassdec
 
 (* ****** ****** *)

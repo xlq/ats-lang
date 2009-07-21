@@ -160,10 +160,12 @@ and s2kexp =
   | S2KEtyrec of (tyreckind, labs2kexplst)
   | S2KEunion of s2kexplst // union
   | S2KEvar of s2var_t
+// end of [s2kexp]
 
 and labs2kexplst =
   | LABS2KEXPLSTnil
   | LABS2KEXPLSTcons of (lab_t, s2kexp, labs2kexplst)
+// end of [labs2kexplst]
 
 and s2zexp =
   | S2ZEapp of (s2zexp, s2zexplst)
@@ -177,15 +179,18 @@ and s2zexp =
   | S2ZEunion of (stamp_t, labs2zexplst)
   | S2ZEvar of s2var_t
   | S2ZEword of int
+// end of [s2zexp]
 
 and labs2zexplst =
   | LABS2ZEXPLSTnil
   | LABS2ZEXPLSTcons of (lab_t, s2zexp, labs2zexplst)
+// end of [labs2zexplst]
 
 and s2eff =
   | S2EFFall
   | S2EFFnil
   | S2EFFset of ($Eff.effset_t, s2explst)
+// end of [s2eff]
 
 and s2lab = 
   | S2LAB0lab of lab_t
@@ -194,6 +199,7 @@ and s2lab =
       (lab_t, s2exp) (* record/union type *)
   | S2LAB1ind of (* array index *)
       (s2explstlst, s2exp(*element*))
+// en dof [s2lab]
 
 and s2exp_node =
   | S2Eapp of (* static application *)
@@ -300,7 +306,7 @@ and s2rtextopt_vt = Option_vt s2rtext
 
 and s2arg = '{
   s2arg_loc= loc_t, s2arg_sym= sym_t, s2arg_srt= s2rtopt
-}
+} // end of [s2arg]
 
 and s2arglst = List s2arg
 
@@ -317,7 +323,7 @@ and s2lablst_vt = List_vt s2lab
 
 and s2exp = '{
   s2exp_srt= s2rt, s2exp_node= s2exp_node
-}
+} // end of [s2exp]
 
 and s2explst (n:int) = list (s2exp, n)
 and s2explst = [n:nat] s2explst n
