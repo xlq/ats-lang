@@ -1000,8 +1000,9 @@ implement s2aspdec_make (loc, s2c, def) = '{
 }
 
 implement c2lassdec_make
-  (loc, s2c, supclss, mtdlst, mtdmap) = '{
+  (loc, knd, s2c, supclss, mtdlst, mtdmap) = '{
   c2lassdec_loc= loc
+, c2lassdec_knd= knd
 , c2lassdec_cst= s2c
 , c2lassdec_suplst= supclss
 , c2lassdec_mtdlst= mtdlst

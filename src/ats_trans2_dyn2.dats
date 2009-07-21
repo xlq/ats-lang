@@ -221,59 +221,24 @@ fn witht1ype_tr
 
 (* ****** ****** *)
 
-(*
-
-and m2thdec =
-  | M2THDECmtd of // knd: undef/def: 0/1
-      (loc_t, sym_t, int(*knd*), d2exp)
-    // end of [M1THDECmtd]
-  | M2THDECmtdimp of (loc_t, sym_t, d2exp)
-  | M2THDECval of
-      (loc_t, sym_t, s2exp, d2expopt)
-  | M2THDECvalimp of
-      (loc_t, sym_t, s2expopt, s2exp)
-  | M2THDECvar of
-      (loc_t, sym_t, s2exp, d2expopt)
-  | M2THDECvarimp of
-      (loc_t, sym_t, s2expopt, d2exp)
-// end of [m0thdec]
-
-*)
-
 fn m1thdec_tr (mtd: m1thdec): m2thdec =
   case+ mtd of
   | M1THDECmtd (loc, sym, _(*dummy*), def) => let
       val def = d1expopt_tr (def) in M2THDECmtd (loc, sym, def)
     end // end of [M1THDECmtd]
-  | M1THDECmtdimp (loc, sym, def) => let
-      val def = d1exp_tr (def) in M2THDECmtdimp (loc, sym, def)
-    end // end of [M1THDECmtdimp]
   | M1THDECval (loc, sym, res, def) => let
       val res = s1exp_tr_dn_impredicative res; val def = d1expopt_tr def
     in
       M2THDECval (loc, sym, res, def)
     end // end of [M2THDECval]
-  | M1THDECvalimp (loc, sym, res, def) => let
-      val res = (case+ res of
-        | Some s2e => Some (s1exp_tr_dn_impredicative s2e) | None () => None ()
-      ) : s2expopt // end of [val]
-      val def = d1exp_tr def
-    in
-      M2THDECvalimp (loc, sym, res, def)
-    end // end of [M2THDECvalimp]
   | M1THDECvar (loc, sym, res, def) => let
       val res = s1exp_tr_dn_impredicative res; val def = d1expopt_tr def
     in
       M2THDECvar (loc, sym, res, def)
     end // end of [M2THDECvar]
-  | M1THDECvarimp (loc, sym, res, def) => let
-      val res = (case+ res of
-        | Some s2e => Some (s1exp_tr_dn_impredicative s2e) | None () => None ()
-      ) : s2expopt // end of [var]
-      val def = d1exp_tr def
-    in
-      M2THDECvarimp (loc, sym, res, def)
-    end // end of [M2THDECvarimp]
+  | M1THDECimp (loc, sym, def) => let
+      val def = d1exp_tr def in M2THDECimp (loc, sym, def)
+    end // end of [M2THDECimp]
 // end of [m1thdec_tr]
   
 fn m1thdeclst_tr (mtds: m1thdeclst)
@@ -283,7 +248,8 @@ fn m1thdeclst_tr (mtds: m1thdeclst)
 (* ****** ****** *)
 
 fn c1lassdec_tr (
-    decarg: s2qualst
+    clsknd: int // mod/obj : 0/1
+  , decarg: s2qualst
   , d1c_cls: c1lassdec
   , d1cs_def: s1expdeflst
   ) : c2lassdec = d2c_cls where {
@@ -408,7 +374,7 @@ fn c1lassdec_tr (
             in
               $SymEnv.symmap_insert<itm> (mtdmap, sym, D2ITEMmtd d2m)
             end // end of [M1THDECvar]
-          | _ => ()
+          | M1THDECimp _ => ()
         ) : void
       in
         aux2 (decarg, mtds, mtdmap)
@@ -425,7 +391,7 @@ fn c1lassdec_tr (
   val () = the_d2expenv_pop (pf_token | (*none*))
 //
   val d2c_cls = c2lassdec_make
-    (loc, s2c_cls, supclss, mtdlst, r_mtdmap)
+    (loc, clsknd, s2c_cls, supclss, mtdlst, r_mtdmap)
   (* end of [val] *)
 //
   val d2c1_cls = c2lassdec_t_of_c2lassdec d2c_cls
@@ -1311,14 +1277,15 @@ implement d1ec_tr (d1c0) = begin
       val d2cs = e1xndeclst_tr d1cs in
       d2ec_exndec (d1c0.d1ec_loc, d2cs)
     end // end of [D1Cexndecs]
-  | D1Cclassdec (decarg, d1c_cls, d1cs_def) => let
+  | D1Cclassdec
+      (clsknd, decarg, d1c_cls, d1cs_def) => let
       val (pf_s2expenv | ()) = the_s2expenv_push ()
       val () = begin
         case+ decarg of cons _ => template_level_inc () | nil _ => ()
       end // end of [val]
       val s2vpss = s1qualstlst_tr (decarg)
       val () = s2qualst_tmplev_set (s2vpss, template_level_get ())
-      val d2c_cls = c1lassdec_tr (s2vpss, d1c_cls, d1cs_def)
+      val d2c_cls = c1lassdec_tr (clsknd, s2vpss, d1c_cls, d1cs_def)
       val () = the_s2expenv_pop (pf_s2expenv | (*none*))
       val () = begin
         case+ decarg of cons _ => template_level_dec () | nil _ => ()

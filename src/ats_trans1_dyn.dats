@@ -1222,9 +1222,8 @@ implement d0expopt_tr (od0e) = case+ od0e of
 implement m0thdec_tr (mtd) = case+ mtd of
   | M0THDECmtd
       (loc, sym, arg, eff, res, def) => let
-      val def = d0expopt_of_d0expopt_t (def)
-      val defknd = (case+ def of Some _ => 1 | None _ => 0): int
       val def_dummy = d0exp_empty (loc)
+      val def = d0expopt_of_d0expopt_t (def)
       val arg = f0arglst_of_f0arglst_t (arg)
       val lamknd = LAMKINDfix ()
 //
@@ -1251,48 +1250,34 @@ implement m0thdec_tr (mtd) = case+ mtd of
 // (*
       val () = begin
         prerr "m0thdec_tr: M0THDECmtd: sym = "; prerr sym; prerr_newline ();
-        prerr "m0thdec_tr: M0THDECmtd: defknd = "; prerr defknd; prerr_newline ();
         prerr "m0thdec_tr: M0THDECmtd: def_dummy = "; prerr def_dummy; prerr_newline ()
       end // end of [val]
 // *)
     in
       M1THDECmtd (loc, sym, def_dummy, def)
     end // end of [M0THDECmtd]      
-  | M0THDECmtdimp
-      (loc, sym, arg, res, def) => let
-      val def = d0exp_of_d0exp_t (def)
-      val arg = f0arglst_of_f0arglst_t (arg)
-      val lamknd = LAMKINDfix ()
-      val def = d0exp_lams_dyn_tr (lamknd
-        , None(*oloc*), None(*ofc*), 0(*lin*), arg, res, None(*oefc*), def
-      ) // end of [val]
-    in
-      M1THDECmtdimp (loc, sym, def)
-    end // end of [M0THDECmtdimp]
   | M0THDECval (loc, sym, res, def) => let
       val res = s0exp_tr res
       val def = d0expopt_of_d0expopt_t def; val def = d0expopt_tr def
     in
       M1THDECval (loc, sym, res, def)
     end // end of [M0THDECval]
-  | M0THDECvalimp (loc, sym, res, def) => let
-      val res = s0expopt_tr res
-      val def = d0exp_of_d0exp_t def; val def = d0exp_tr def
-    in
-      M1THDECvalimp (loc, sym, res, def)
-    end // end of [M0THDECvalimp]
   | M0THDECvar (loc, sym, res, def) => let
       val res = s0exp_tr res
       val def = d0expopt_of_d0expopt_t def; val def = d0expopt_tr def
     in
       M1THDECvar (loc, sym, res, def)
     end // end of [M0THDECvar]
-  | M0THDECvarimp (loc, sym, res, def) => let
-      val res = s0expopt_tr res
-      val def = d0exp_of_d0exp_t def; val def = d0exp_tr def
+  | M0THDECimp (loc, sym, arg, res, def) => let
+      val def = d0exp_of_d0exp_t (def)
+      val arg = f0arglst_of_f0arglst_t (arg)
+      val lamknd = LAMKINDfix ()
+      val def = d0exp_lams_dyn_tr (
+        lamknd, None(*oloc*), None(*ofc*), 0(*lin*), arg, res, None(*oefc*), def
+      ) // end of [d0exp_lams_dyn_tr]
     in
-      M1THDECvarimp (loc, sym, res, def)
-    end // end of [M0THDECvarimp]
+      M1THDECimp (loc, sym, def)
+    end // end of [M0THDECimp]
 // end of [m0thdec_tr]
 
 implement m0thdeclst_tr (mtds) =
@@ -1671,11 +1656,14 @@ implement d0ec_tr d0c0 = begin
     in
       d1ec_exndecs (d0c0.d0ec_loc, d1c :: d1cs)
     end // end of [D0Cexndecs]
-  | D0Cclassdec (s0qss, d0c1, d0cs2) => let
+  | D0Cclassdec (knd, s0qss, d0c1, d0cs2) => let
       val s1qss = s0qualstlst_tr (s0qss)
+      val knd = (case+ knd of
+        | CLSKINDmod _ => 0 | CLSKINDobj _ => 1
+      ) : int
       val d1c1 = c0lassdec_tr (d0c1) and d1cs2 = s0expdeflst_tr (d0cs2)
     in
-      d1ec_classdec (d0c0.d0ec_loc, s1qss, d1c1, d1cs2)
+      d1ec_classdec (d0c0.d0ec_loc, knd, s1qss, d1c1, d1cs2)
     end // end of [D0Cclassdec]
   | D0Coverload (id, qid) => begin
       d1ec_overload (d0c0.d0ec_loc, id, qid)

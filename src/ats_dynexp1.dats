@@ -617,9 +617,9 @@ implement d1ec_exndecs (loc, d1cs_exndec) = '{
 }
 
 implement d1ec_classdec
-  (loc, s1qss, d1c_cls, d1cs_sexpdef) = '{
+  (loc, clsknd, s1qss, d1c_cls, d1cs_sexpdef) = '{
   d1ec_loc= loc
-, d1ec_node= D1Cclassdec (s1qss, d1c_cls, d1cs_sexpdef)
+, d1ec_node= D1Cclassdec (clsknd, s1qss, d1c_cls, d1cs_sexpdef)
 } // end of [d1ec_classdec]
 
 implement d1ec_dcstdecs (loc, dck, s1qss, d1cs_dcst) = '{

@@ -68,8 +68,9 @@ typedef i0deopt = $Syn.i0deopt
 typedef i0delstlst = $Syn.i0delstlst
 
 typedef abskind = $Syn.abskind
-typedef datakind = $Syn.datakind
 typedef dcstkind = $Syn.dcstkind
+typedef datakind = $Syn.datakind
+typedef clskind = $Syn.clskind
 typedef funkind = $Syn.funkind
 typedef intkind = $Syn.intkind
 typedef valkind = $Syn.valkind
@@ -226,7 +227,7 @@ datatype d1ec_node =
   | D1Cexndecs of (* exception declaration *)
       e1xndeclst
   | D1Cclassdec of (* class declaration *)
-      (s1qualstlst, c1lassdec, s1expdeflst)
+      (int(*clsknd*), s1qualstlst, c1lassdec, s1expdeflst)
   | D1Coverload of (* overloading *)
       (i0de, dqi0de)
   | D1Cextype of (* external type *)
@@ -396,15 +397,11 @@ and m1thdec =
   | M1THDECmtd of // knd: undef/def: 0/1
       (loc_t, sym_t, d1exp(*dummy*), d1expopt(*def*))
     // end of [M1THDECmtd]
-  | M1THDECmtdimp of (loc_t, sym_t, d1exp)
   | M1THDECval of
       (loc_t, sym_t, s1exp, d1expopt)
-  | M1THDECvalimp of
-      (loc_t, sym_t, s1expopt, d1exp)
   | M1THDECvar of
       (loc_t, sym_t, s1exp, d1expopt)
-  | M1THDECvarimp of
-      (loc_t, sym_t, s1expopt, d1exp)
+  | M1THDECimp of (loc_t, sym_t, d1exp)
 // end of [m1thdec]
   
 (* ****** ****** *)
@@ -933,8 +930,13 @@ fun d1ec_datdecs
 
 fun d1ec_exndecs (_: loc_t, ds: e1xndeclst): d1ec
 
-fun d1ec_classdec
-  (_: loc_t, _: s1qualstlst, d_cls: c1lassdec, ds_def: s1expdeflst): d1ec
+fun d1ec_classdec (
+    _: loc_t
+  , knd: int // mod/obj : 0/1
+  , _: s1qualstlst
+  , _: c1lassdec
+  , _: s1expdeflst
+  ) : d1ec
 // end of [d1ec_classdec]
 
 fun d1ec_overload (_: loc_t, id: i0de, qid: dqi0de): d1ec

@@ -73,6 +73,14 @@ extern abskind_t abskind_view (void) ;
 extern abskind_t abskind_viewtype (void) ;
 extern abskind_t abskind_viewt0ype (void) ;
 
+typedef ats_ptr_type dcstkind_t ;
+extern dcstkind_t dcstkind_fun (void) ;
+extern dcstkind_t dcstkind_val (void) ;
+extern dcstkind_t dcstkind_castfn (void) ;
+extern dcstkind_t dcstkind_praxi (void) ;
+extern dcstkind_t dcstkind_prfun (void) ;
+extern dcstkind_t dcstkind_prval (void) ;
+
 typedef ats_ptr_type datakind_t ;
 extern datakind_t datakind_prop (void) ;
 extern datakind_t datakind_type (void) ;
@@ -86,13 +94,9 @@ extern stadefkind_t stadefkind_type (t0kn_t) ;
 extern stadefkind_t stadefkind_view (t0kn_t) ;
 extern stadefkind_t stadefkind_viewtype (t0kn_t) ;
 
-typedef ats_ptr_type dcstkind_t ;
-extern dcstkind_t dcstkind_fun (void) ;
-extern dcstkind_t dcstkind_val (void) ;
-extern dcstkind_t dcstkind_castfn (void) ;
-extern dcstkind_t dcstkind_praxi (void) ;
-extern dcstkind_t dcstkind_prfun (void) ;
-extern dcstkind_t dcstkind_prval (void) ;
+typedef ats_ptr_type clskind_t ;
+extern clskind_t clskind_mod (t0kn_t) ;
+extern clskind_t clskind_obj (t0kn_t) ;
 
 typedef ats_ptr_type valkind_t ;
 extern valkind_t valkind_val (void) ;
@@ -487,11 +491,9 @@ extern e0xndeclst_t e0xndeclst_cons (e0xndec_t, e0xndeclst_t) ;
 
 typedef ats_ptr_type m0thdec_t ;
 // extern m0thdec_t m0thdec_make_mtd // see below
-// extern m0thdec_t m0thdec_make_mtdimp // see below
 // extern m0thdec_t m0thdec_make_val // see below
-// extern m0thdec_t m0thdec_make_valimp // see below
 // extern m0thdec_t m0thdec_make_var // see below
-// extern m0thdec_t m0thdec_make_varimp // see below
+// extern m0thdec_t m0thdec_make_imp // see below
 
 typedef ats_ptr_type m0thdeclst_t ;
 extern m0thdeclst_t m0thdeclst_nil(void) ;
@@ -849,25 +851,17 @@ m0thdec_t m0thdec_make_mtd (
 ) ; // end of [m0thdec_make_mtd]
 
 extern
-m0thdec_t m0thdec_make_mtdimp
-  (t0kn_t, i0de_t, f0arglst_t, s0expopt_t, d0exp_t) ;
-// end of [m0thdec_make_mtdimp]
-
-extern
 m0thdec_t m0thdec_make_val (t0kn_t, i0de_t, s0exp_t, d0expopt_t) ;
 // end of [m0thdec_make_val]
-
-extern
-m0thdec_t m0thdec_make_valimp (t0kn_t, i0de_t, s0expopt_t, d0exp_t) ;
-// end of [m0thdec_make_valimp]
 
 extern
 m0thdec_t m0thdec_make_var (t0kn_t, i0de_t, s0exp_t, d0expopt_t) ;
 // end of [m0thdec_make_var]
 
 extern
-m0thdec_t m0thdec_make_varimp (t0kn_t, i0de_t, s0expopt_t, d0exp_t) ;
-// end of [m0thdec_make_varimp]
+m0thdec_t m0thdec_make_imp
+  (t0kn_t, i0de_t, f0arglst_t, s0expopt_t, d0exp_t) ;
+// end of [m0thdec_make_imp]
 
 /* ****** ****** */
 
@@ -896,7 +890,7 @@ extern d0ec_t d0ec_datdecs
   (datakind_t, d0atdec_t, d0atdeclst_t, s0explstopt_t) ;
 extern d0ec_t d0ec_exndecs (t0kn_t, e0xndec_t, e0xndeclst_t) ;
 extern d0ec_t d0ec_classdec
-  (t0kn_t, s0qualstlst_t, c0lassdec_t, s0explstopt_t) ;
+  (clskind_t, s0qualstlst_t, c0lassdec_t, s0explstopt_t) ;
 extern d0ec_t d0ec_dcstdecs
   (dcstkind_t, s0qualstlst_t, d0cstdec_t, d0cstdeclst_t) ;
 extern d0ec_t d0ec_overload (i0de_t, dqi0de_t) ;
@@ -953,9 +947,10 @@ t0kn_t t0kn ;
 //
 
 abskind_t abskind ;
+dcstkind_t dcstkind ;
 datakind_t datakind ;
 stadefkind_t stadefkind ;
-dcstkind_t dcstkind ;
+clskind_t clskind ;
 valkind_t valkind ;
 funkind_t funkind ;
 
@@ -1243,8 +1238,9 @@ guad0ec_t guad0ec ;
 %token <t0kn> LOCAL
 %token <t0kn> MACDEF MACRODEF
 %token <t0kn> METHOD METHODSTAR
-%token <t0kn> MTDIMP
+%token <t0kn> MODULE
 %token <t0kn> NONFIX
+%token <t0kn> OBJECT
 %token <t0kn> OF
 %token <t0kn> OP
 %token <t0kn> OVERLOAD
@@ -1277,9 +1273,9 @@ guad0ec_t guad0ec ;
 %token <t0kn> T0YPE
 %token <t0kn> T0YPEMINUS T0YPEPLUS
 %token <t0kn> UNION
-%token <t0kn> VAL VALIMP
+%token <t0kn> VAL
 %token <t0kn> VALMINUS VALPLUS
-%token <t0kn> VAR VARIMP
+%token <t0kn> VAR
 %token <t0kn> VIEWDEF
 %token <t0kn> VIEWMINUS VIEWPLUS
 %token <t0kn> VIEWTYPEDEF
@@ -1420,9 +1416,10 @@ guad0ec_t guad0ec ;
 /* ****** ****** */
 
 %type <abskind> abskind
+%type <dcstkind> dcstkind
 %type <datakind> datakind
 %type <stadefkind> stadefkind
-%type <dcstkind> dcstkind
+%type <clskind> clskind
 %type <valkind> valkind
 %type <funkind> funkind
 
@@ -1707,6 +1704,15 @@ abskind
   | ABSVIEWT0YPE                        { $$ = abskind_viewt0ype () ; }
 ;
 
+dcstkind
+  : FUN                                 { $$ = dcstkind_fun () ; }
+  | VAL                                 { $$ = dcstkind_val () ; }
+  | PRAXI                               { $$ = dcstkind_praxi () ; }
+  | PRFUN                               { $$ = dcstkind_prfun () ; }
+  | PRVAL                               { $$ = dcstkind_prval () ; }
+  | CASTFN                              { $$ = dcstkind_castfn () ; }
+;
+
 datakind
   : DATAPROP                            { $$ = datakind_prop () ; }
   | DATATYPE                            { $$ = datakind_type () ; }
@@ -1722,13 +1728,9 @@ stadefkind
   | VIEWTYPEDEF                         { $$ = stadefkind_viewtype ($1) ; }
 ;
 
-dcstkind
-  : FUN                                 { $$ = dcstkind_fun () ; }
-  | VAL                                 { $$ = dcstkind_val () ; }
-  | PRAXI                               { $$ = dcstkind_praxi () ; }
-  | PRFUN                               { $$ = dcstkind_prfun () ; }
-  | PRVAL                               { $$ = dcstkind_prval () ; }
-  | CASTFN                              { $$ = dcstkind_castfn () ; }
+clskind
+  : MODULE CLASS                        { $$ = clskind_mod ($1) ; }
+  | OBJECT CLASS                        { $$ = clskind_obj ($1) ; }
 ;
 
 valkind
@@ -2426,14 +2428,10 @@ m0thdef
 m0thdec
    : METHOD di0de f0arg1seq colonwith s0exp m0thdef
                                         { $$ = m0thdec_make_mtd($1, $2, $3, $4, $5, $6) ; }
-   | MTDIMP di0de f0arg2seq colons0expopt EQ d0exp
-                                        { $$ = m0thdec_make_mtdimp($1, $2, $3, $4, $6) ; }
    | VAL di0de COLON s0exp m0thdef      { $$ = m0thdec_make_val($1, $2, $4, $5) ; }
-   | VALIMP di0de colons0expopt EQ d0exp
-                                        { $$ = m0thdec_make_valimp($1, $2, $3, $5) ; }
    | VAR di0de COLON s0exp m0thdef      { $$ = m0thdec_make_var($1, $2, $4, $5) ; }
-   | VARIMP di0de colons0expopt EQ d0exp
-                                        { $$ = m0thdec_make_varimp($1, $2, $3, $5) ; }
+   | IMPLEMENT di0de f0arg2seq colons0expopt EQ d0exp
+                                        { $$ = m0thdec_make_imp($1, $2, $3, $4, $6) ; }
 ;
 
 m0thdecseq
@@ -3084,7 +3082,7 @@ d0ec
   | datakind d0atdec andd0atdecseq s0expdefseqopt
                                         { $$ = d0ec_datdecs($1, $2, $3, $4) ; }
   | EXCEPTION e0xndec ande0xndecseq     { $$ = d0ec_exndecs($1, $2, $3) ; } 
-  | CLASS d0ecargseq c0lassdec s0expdefseqopt
+  | clskind d0ecargseq c0lassdec s0expdefseqopt
                                         { $$ = d0ec_classdec($1, $2, $3, $4) ; }
   | OVERLOAD di0de WITH dqi0de          { $$ = d0ec_overload($2, $4) ; }
   | OVERLOAD LBRACKET RBRACKET WITH dqi0de

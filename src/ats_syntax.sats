@@ -63,38 +63,12 @@ datatype abskind =
   | ABSKINDprop | ABSKINDtype | ABSKINDt0ype
   | ABSKINDview | ABSKINDviewtype | ABSKINDviewt0ype
 
-fun abskind_prop (): abskind = "abskind_prop"
-fun abskind_type (): abskind = "abskind_type"
-fun abskind_t0ype (): abskind = "abskind_t0ype"
-fun abskind_view (): abskind = "abskind_view"
-fun abskind_viewtype (): abskind = "abskind_viewtype"
-fun abskind_viewt0ype (): abskind = "abskind_viewt0ype"
-
-datatype datakind =
-  | DATAKINDprop | DATAKINDtype | DATAKINDview | DATAKINDviewtype
-
-fun datakind_prop (): datakind = "datakind_prop"
-and datakind_type (): datakind = "datakind_type"
-and datakind_view (): datakind = "datakind_view"
-and datakind_viewtype (): datakind = "datakind_viewtype"
-
-fun datakind_is_proof (dtk: datakind): bool
-
-(* ****** ****** *)
-
-datatype stadefkind =
-  | STADEFKINDgeneric
-  | STADEFKINDprop of t0kn
-  | STADEFKINDtype of t0kn
-  | STADEFKINDview of t0kn
-  | STADEFKINDviewtype of t0kn
-// end of [stadefkind]
-
-fun stadefkind_generic (): stadefkind = "stadefkind_generic"
-and stadefkind_prop (_: t0kn): stadefkind = "stadefkind_prop"
-and stadefkind_type (_: t0kn): stadefkind = "stadefkind_type"
-and stadefkind_view (_: t0kn): stadefkind = "stadefkind_view"
-and stadefkind_viewtype (_: t0kn): stadefkind = "stadefkind_viewtype"
+fun abskind_prop ():<> abskind = "abskind_prop"
+fun abskind_type ():<> abskind = "abskind_type"
+fun abskind_t0ype ():<> abskind = "abskind_t0ype"
+fun abskind_view ():<> abskind = "abskind_view"
+fun abskind_viewtype ():<> abskind = "abskind_viewtype"
+fun abskind_viewt0ype ():<> abskind = "abskind_viewt0ype"
 
 (* ****** ****** *)
 
@@ -115,6 +89,45 @@ fun dcstkind_is_praxi (dck: dcstkind):<> bool
 fun dcstkind_is_prfun (dck: dcstkind):<> bool
 fun dcstkind_is_prval (dck: dcstkind):<> bool
 fun dcstkind_is_proof (dck: dcstkind):<> bool
+
+(* ****** ****** *)
+
+datatype datakind =
+  | DATAKINDprop | DATAKINDtype | DATAKINDview | DATAKINDviewtype
+
+fun datakind_prop ():<> datakind = "datakind_prop"
+and datakind_type ():<> datakind = "datakind_type"
+and datakind_view ():<> datakind = "datakind_view"
+and datakind_viewtype ():<> datakind = "datakind_viewtype"
+
+fun datakind_is_proof (dtk: datakind):<> bool
+
+(* ****** ****** *)
+
+datatype stadefkind =
+  | STADEFKINDgeneric
+  | STADEFKINDprop of t0kn
+  | STADEFKINDtype of t0kn
+  | STADEFKINDview of t0kn
+  | STADEFKINDviewtype of t0kn
+// end of [stadefkind]
+
+fun stadefkind_generic ():<> stadefkind = "stadefkind_generic"
+and stadefkind_prop (_: t0kn):<> stadefkind = "stadefkind_prop"
+and stadefkind_type (_: t0kn):<> stadefkind = "stadefkind_type"
+and stadefkind_view (_: t0kn):<> stadefkind = "stadefkind_view"
+and stadefkind_viewtype (_: t0kn):<> stadefkind = "stadefkind_viewtype"
+
+(* ****** ****** *)
+
+datatype clskind =
+  | CLSKINDmod of t0kn | CLSKINDobj of t0kn
+// end of [clskind]
+
+fun clskind_mod (_: t0kn):<> clskind = "clskind_mod"
+fun clskind_obj (_: t0kn):<> clskind = "clskind_obj"
+
+(* ****** ****** *)
 
 datatype valkind =
   | VALKINDval | VALKINDvalminus | VALKINDvalplus | VALKINDprval
@@ -1099,11 +1112,9 @@ datatype m0thdec =
   | M0THDECmtd of (
       loc_t, sym_t, f0arglst_t, e0fftaglstopt, s0exp, d0expopt_t
     ) // end of [M0THDECmtd]
-  | M0THDECmtdimp of (loc_t, sym_t, f0arglst_t, s0expopt, d0exp_t)
   | M0THDECval of (loc_t, sym_t, s0exp, d0expopt_t)
-  | M0THDECvalimp of (loc_t, sym_t, s0expopt, d0exp_t)
   | M0THDECvar of (loc_t, sym_t, s0exp, d0expopt_t)
-  | M0THDECvarimp of (loc_t, sym_t, s0expopt, d0exp_t)
+  | M0THDECimp of (loc_t, sym_t, f0arglst_t, s0expopt, d0exp_t) 
 // end of [m0thdec]
   
 fun m0thdec_make_mtd (
@@ -1112,24 +1123,18 @@ fun m0thdec_make_mtd (
   ) : m0thdec
   = "m0thdec_make_mtd"
 
-fun m0thdec_make_mtdimp (
-    _: t0kn, _: i0de, _: f0arglst_t, _: s0expopt, _: d0exp_t
-  ) : m0thdec
-  = "m0thdec_make_mtdimp"
-
 fun m0thdec_make_val
   (_: t0kn, _: i0de, res: s0exp, def: d0expopt_t): m0thdec
   = "m0thdec_make_val"
-fun m0thdec_make_valimp
-  (_: t0kn, _: i0de, res: s0expopt, def: d0exp_t): m0thdec
-  = "m0thdec_make_valimp"
 
 fun m0thdec_make_var
   (_: t0kn, _: i0de, res: s0exp, def: d0expopt_t): m0thdec
   = "m0thdec_make_var"
-fun m0thdec_make_varimp
-  (_: t0kn, _: i0de, res: s0expopt, def: d0exp_t): m0thdec
-  = "m0thdec_make_varimp"
+
+fun m0thdec_make_imp (
+    _: t0kn, _: i0de, arg: f0arglst_t, res: s0expopt, def: d0exp_t
+  ) : m0thdec
+  = "m0thdec_make_imp"
 
 (* ****** ****** *)
 
@@ -1604,7 +1609,7 @@ and d0ec_node =
   | D0Cdatdecs of (datakind, d0atdec, d0atdeclst, s0expdeflst)
   | D0Cexndecs of (e0xndec, e0xndeclst)
   | D0Cclassdec of (* class declaration *)
-      (s0qualstlst, c0lassdec, s0expdeflst)
+      (clskind, s0qualstlst, c0lassdec, s0expdeflst)
   | D0Coverload of (* overloading *)
       (i0de, dqi0de)
   | D0Cextype of (string, s0exp) // type to be used in C
@@ -2224,8 +2229,9 @@ fun d0ec_datdecs
 fun d0ec_exndecs (t: t0kn, d: e0xndec, ds: e0xndeclst): d0ec
   = "d0ec_exndecs"
 
-fun d0ec_classdec
-  (t: t0kn, arg: s0qualstlst, d_dec: c0lassdec, ds_def: s0expdeflst): d0ec
+fun d0ec_classdec (
+    knd: clskind, arg: s0qualstlst, d_dec: c0lassdec, ds_def: s0expdeflst
+  ) : d0ec
   = "d0ec_classdec"
 
 fun d0ec_dcstdecs

@@ -712,15 +712,11 @@ and m2thdec =
   | M2THDECmtd of
       (loc_t, sym_t, d2expopt(*def*))
     // end of [M1THDECmtd]
-  | M2THDECmtdimp of (loc_t, sym_t, d2exp)
   | M2THDECval of
       (loc_t, sym_t, s2exp, d2expopt)
-  | M2THDECvalimp of
-      (loc_t, sym_t, s2expopt, d2exp)
   | M2THDECvar of
       (loc_t, sym_t, s2exp, d2expopt)
-  | M2THDECvarimp of
-      (loc_t, sym_t, s2expopt, d2exp)
+  | M2THDECimp of (loc_t, sym_t, d2exp)
 // end of [m0thdec]
   
 where d2ec = '{
@@ -830,6 +826,7 @@ and m2thdeclst = List m2thdec
 
 and c2lassdec = '{
   c2lassdec_loc= loc_t
+, c2lassdec_knd= int // mod/obj: 0/1
 , c2lassdec_cst= s2cst_t
 , c2lassdec_suplst= s2explst
 , c2lassdec_mtdlst= m2thdeclst
@@ -1253,6 +1250,7 @@ fun s2aspdec_make (_: loc_t, s2c: s2cst_t, def: s2exp): s2aspdec
 
 fun c2lassdec_make (
     _: loc_t
+  , knd: int // mod/obj: 0/1
   , s2c: s2cst_t
   , supclss: s2explst
   , mtdlst: m2thdeclst

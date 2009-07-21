@@ -428,7 +428,13 @@ abst@ype ptrdiff_int_t0ype (i:int) = $extype "ats_ptrdiff_type"
 
 (* ****** ****** *)
 
-abst@ype obj_cls_t0ype (c:cls) // for objects index by [c]
+abst@ype
+obj_cls_t0ype (c:cls) // for objects index by [c]
+
+absviewt@ype
+obj_cls_viewt0ype (c:cls) // for linear objects index by [c]
+
+abstype objref_cls_type (c:cls)
 
 (* ****** ****** *)
 
@@ -565,6 +571,9 @@ stadef ptrdiff_t = ptrdiff_t0ype
 (* ****** ****** *)
 
 stadef obj = obj_cls_t0ype
+stadef obj_vt = obj_cls_viewt0ype
+
+stadef objref = objref_cls_type
 
 (* ****** ****** *)
 

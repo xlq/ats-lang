@@ -92,22 +92,6 @@ implement abskind_view () = ABSKINDview ()
 implement abskind_viewtype () = ABSKINDviewtype ()
 implement abskind_viewt0ype () = ABSKINDviewt0ype ()
 
-implement datakind_prop () = DATAKINDprop ()
-implement datakind_type () = DATAKINDtype ()
-implement datakind_view () = DATAKINDview ()
-implement datakind_viewtype () = DATAKINDviewtype ()
-
-implement datakind_is_proof dk = case+ dk of
-  | DATAKINDprop () => true
-  | DATAKINDview () => true
-  | _ => false
-
-implement stadefkind_generic () = STADEFKINDgeneric ()
-implement stadefkind_prop (t) = STADEFKINDprop (t)
-implement stadefkind_type (t) = STADEFKINDtype (t)
-implement stadefkind_view (t) = STADEFKINDview (t)
-implement stadefkind_viewtype (t) = STADEFKINDviewtype (t)
-
 (* ****** ****** *)
 
 implement dcstkind_fun () = DCSTKINDfun ()
@@ -138,6 +122,29 @@ implement dcstkind_is_proof (dk) = case+ dk of
   | DCSTKINDprval () => true
   | _ => false
 // end of [dcstkind_is_proof]
+
+(* ****** ****** *)
+
+implement datakind_prop () = DATAKINDprop ()
+implement datakind_type () = DATAKINDtype ()
+implement datakind_view () = DATAKINDview ()
+implement datakind_viewtype () = DATAKINDviewtype ()
+
+implement datakind_is_proof dk = case+ dk of
+  | DATAKINDprop () => true
+  | DATAKINDview () => true
+  | _ => false
+
+implement stadefkind_generic () = STADEFKINDgeneric ()
+implement stadefkind_prop (t) = STADEFKINDprop (t)
+implement stadefkind_type (t) = STADEFKINDtype (t)
+implement stadefkind_view (t) = STADEFKINDview (t)
+implement stadefkind_viewtype (t) = STADEFKINDviewtype (t)
+
+(* ****** ****** *)
+
+implement clskind_mod (t) = CLSKINDmod (t)
+implement clskind_obj (t) = CLSKINDobj (t)
 
 (* ****** ****** *)
 
@@ -1375,9 +1382,6 @@ implement e0xndeclst_cons (x, xs) = list_cons (x, xs)
 
 (* ****** ****** *)
 
-implement m0thdeclst_nil () = list_nil ()
-implement m0thdeclst_cons (x, xs) = list_cons (x, xs)
-
 implement m0thdec_make_mtd
   (t_beg, id, arg, eff, res, def) = let
   val loc_beg = t_beg.t0kn_loc
@@ -1389,14 +1393,6 @@ implement m0thdec_make_mtd
 in
   M0THDECmtd (loc, id.i0de_sym, arg, eff, res, def)
 end // end of [m0thdec_make_mtd]
-
-implement m0thdec_make_mtdimp
-  (t_beg, id, arg, res, def) = let
-  val def1 = d0exp_of_d0exp_t (def)
-  val loc = combine (t_beg.t0kn_loc, def1.d0exp_loc)
-in
-  M0THDECmtdimp (loc, id.i0de_sym, arg, res, def)
-end // end of [m0thdec_make_mtdimp]
 
 implement m0thdec_make_val
   (t_beg, id, res, def) = let
@@ -1410,16 +1406,6 @@ in
   M0THDECval (loc, id.i0de_sym, res, def)
 end // end of [m0thdec_make_val]
 
-implement m0thdec_make_valimp
-  (t_beg, id, res, def) = let
-  val loc_beg = t_beg.t0kn_loc
-  val def1 = d0exp_of_d0exp_t def
-  val loc_end = def1.d0exp_loc
-  val loc = combine (loc_beg, loc_end)
-in
-  M0THDECvalimp (loc, id.i0de_sym, res, def)
-end // end of [m0thdec_make_valimp]
-
 implement m0thdec_make_var
   (t_beg, id, res, def) = let
   val loc_beg = t_beg.t0kn_loc
@@ -1432,15 +1418,18 @@ in
   M0THDECvar (loc, id.i0de_sym, res, def)
 end // end of [m0thdec_make_var]
 
-implement m0thdec_make_varimp
-  (t_beg, id, res, def) = let
-  val loc_beg = t_beg.t0kn_loc
-  val def1 = d0exp_of_d0exp_t def
-  val loc_end = def1.d0exp_loc
-  val loc = combine (loc_beg, loc_end)
+implement m0thdec_make_imp
+  (t_beg, id, arg, res, def) = let
+  val def1 = d0exp_of_d0exp_t (def)
+  val loc = combine (t_beg.t0kn_loc, def1.d0exp_loc)
 in
-  M0THDECvarimp (loc, id.i0de_sym, res, def)
-end // end of [m0thdec_make_varimp]
+  M0THDECimp (loc, id.i0de_sym, arg, res, def)
+end // end of [m0thdec_make_imp]
+
+implement m0thdeclst_nil () = list_nil ()
+implement m0thdeclst_cons (x, xs) = list_cons (x, xs)
+
+(* ****** ****** *)
 
 implement c0lassdec_make
   (id, arg, supclss, mtds, t_end) = let
@@ -2706,18 +2695,20 @@ in '{
 (* ****** ****** *)
 
 implement d0ec_classdec
-  (t_class, arg, x, ys) = let
+  (knd, arg, x, ys) = let
   fun aux_loc
     (y: s0expdef, ys: s0expdeflst): loc_t = case+ ys of
     | cons (y, ys) => aux_loc (y, ys) | nil () => y.s0expdef_loc
   // end of [aux_loc]
-  val loc_beg = t_class.t0kn_loc
+  val loc_beg = (case+ knd of
+    | CLSKINDmod t => t.t0kn_loc | CLSKINDobj t => t.t0kn_loc
+  ) : loc_t
   val loc_end = (case+ ys of
     | cons (y, ys) => aux_loc (y, ys) | nil () => x.c0lassdec_loc
   ) : loc_t
   val loc = combine (loc_beg, loc_end)
 in '{
-  d0ec_loc= loc, d0ec_node= D0Cclassdec (arg, x, ys)
+  d0ec_loc= loc, d0ec_node= D0Cclassdec (knd, arg, x, ys)
 } end // end of [d0ec_classdec]
 
 (* ****** ****** *)
