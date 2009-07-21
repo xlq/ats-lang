@@ -476,6 +476,66 @@ fun{a:t@ype} GEMAT_ptr_set_elt_at
 
 (* ****** ****** *)
 
+fun{a:viewt@ype} GEMAT_ptr_tail_row
+  {m:pos;n:nat} {ord:order} {lda:pos} {l0:addr} (
+    pf_mat: GEMAT_v (a, m, n, ord, lda, l0)
+  | p_mat: ptr l0
+  , ord: ORDER ord
+  , lda: int lda
+  ) :<> [l:addr] (
+    GEMAT_v (a, m-1, n, ord, lda, l)
+  , GEMAT_v (a, m-1, n, ord, lda, l) -<lin,prf> GEMAT_v (a, m, n, ord, lda, l0)
+  | ptr l
+  )
+// end of [GEMAT_ptr_tail_row]
+
+fun GEMAT_ptr_tail_row_tsz
+  {a:viewt@ype} {m:pos;n:nat}
+  {ord:order} {lda:pos} {l0:addr} (
+    pf_mat: GEMAT_v (a, m, n, ord, lda, l0)
+  | p_mat: ptr l0
+  , ord: ORDER ord
+  , lda: int lda
+  , tsz: sizeof_t a
+  ) :<> [l:addr] (
+    GEMAT_v (a, m-1, n, ord, lda, l)
+  , GEMAT_v (a, m-1, n, ord, lda, l) -<lin,prf> GEMAT_v (a, m, n, ord, lda, l0)
+  | ptr l
+  ) = "atslib_GEMAT_ptr_tail_row_tsz"
+// end of [GEMAT_ptr_tail_row_tsz]
+
+(* ****** ****** *)
+
+fun{a:viewt@ype} GEMAT_ptr_tail_col
+  {m:nat;n:pos} {ord:order} {lda:pos} {l0:addr} (
+    pf_mat: GEMAT_v (a, m, n, ord, lda, l0)
+  | p_mat: ptr l0
+  , ord: ORDER ord
+  , lda: int lda
+  ) :<> [l:addr] (
+    GEMAT_v (a, m, n-1, ord, lda, l)
+  , GEMAT_v (a, m, n-1, ord, lda, l) -<lin,prf> GEMAT_v (a, m, n, ord, lda, l0)
+  | ptr l
+  )
+// end of [GEMAT_ptr_tail_col]
+
+fun GEMAT_ptr_tail_col_tsz
+  {a:viewt@ype} {m:nat;n:pos}
+  {ord:order} {lda:pos} {l0:addr} (
+    pf_mat: GEMAT_v (a, m, n, ord, lda, l0)
+  | p_mat: ptr l0
+  , ord: ORDER ord
+  , lda: int lda
+  , tsz: sizeof_t a
+  ) :<> [l:addr] (
+    GEMAT_v (a, m, n-1, ord, lda, l)
+  , GEMAT_v (a, m, n-1, ord, lda, l) -<lin,prf> GEMAT_v (a, m, n, ord, lda, l0)
+  | ptr l
+  ) = "atslib_GEMAT_ptr_tail_col_tsz"
+// end of [GEMAT_ptr_tail_col_tsz]
+
+(* ****** ****** *)
+
 viewtypedef GEMAT_ptr_split1x2_res_t (
   a:viewt@ype, m:int, n:int, j:int, ord:order, lda:int, l0:addr
 ) = [l1,l2:addr] @(
