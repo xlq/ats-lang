@@ -666,6 +666,12 @@ fun GEMAT_ptr_split2x2_tsz
 
 (* ****** ****** *)
 
+dataprop realtyp_p (a:t@ype) =
+  | REALTYPfloat (float) of () | REALTYPdouble (double) of ()
+// end of [TYPE_IS_REAL]
+
+(* ****** ****** *)
+
 //
 // TRiangular MATrix representation (part of GEMAT)
 //
@@ -679,8 +685,6 @@ viewdef TRMAT_v
   (a:viewt@ype, n:int, ord: order, ul: uplo, dg: diag, lda: int, l:addr) =
   TRMAT (a, n, ord, ul, dg, lda) @ l
 // end of [TRMAT_v]
-
-(* ****** ****** *)
 
 prfun TRMAT_v_of_GEMAT_v
   {a:viewt@ype} {n:nat}
@@ -710,8 +714,6 @@ viewdef SYMAT_v
   SYMAT (a, n, ord, ul, lda) @ l
 // end of [SYMAT_v]
 
-(* ****** ****** *)
-
 prfun SYMAT_v_of_GEMAT_v
   {a:viewt@ype} {n:nat}
   {ord:order} {ul:uplo} {lda:pos} {l:addr} (
@@ -738,14 +740,6 @@ viewdef HEMAT_v
   HEMAT (a, n, ord, ul, lda) @ l
 // end of [HEMAT_v]
 
-(* ****** ****** *)
-
-dataprop realtyp_p (a:t@ype) =
-  | REALTYPfloat (float) of () | REALTYPdouble (double) of ()
-// end of [TYPE_IS_REAL]
-
-(* ****** ****** *)
-
 prfun HEMAT_v_of_SYMAT_v
   {a:t@ype} {n:nat}
   {ord:order} {ul:uplo} {lda:pos} {l:addr} (
@@ -759,8 +753,6 @@ prfun SYMAT_v_of_HEMAT_v
     pf_typ: realtyp_p (a), pf_mat: HEMAT_v (a, n, ord, ul, lda, l)
   ) :<> SYMAT_v (a, n, ord, ul, lda, l)
 // end of [SYMAT_v_of_HEMAT_v]
-
-(* ****** ****** *)
 
 prfun HEMAT_v_of_GEMAT_v
   {a:viewt@ype} {n:nat}
@@ -833,8 +825,6 @@ viewdef TPMAT_v
   TPMAT (a, n, ord, ul, dg) @ l
 // end of [TPMAT_v]
 
-(* ****** ****** *)
-
 prfun TPMAT_v_of_GEVEC_v
   {a:viewt@ype} {m,n:nat}
   {ord:order} {ul:uplo} {dg:diag}
@@ -880,6 +870,19 @@ viewdef SPMAT_v
   (a:viewt@ype, n:int, ord: order, ul: uplo, l: addr) =
   SPMAT (a, n, ord, ul) @ l
 // end of [SPMAT_v]
+
+prfun SPMAT_v_of_GEVEC_v
+  {a:viewt@ype} {m,n:nat}
+  {ord:order} {ul:uplo}
+  {l:addr} (
+    pf_mul: MUL (n, n+1, m+m)
+  , pf_arr: GEVEC_v (a, m, 1, l)
+  , ord: ORDER (ord), ul: UPLO (ul)
+  ) :<> (
+    SPMAT_v (a, n, ord, ul, l)
+  , SPMAT_v (a, n, ord, ul, l) -<prf> GEVEC_v (a, m, 1, l)
+  )
+// end of [HPMAT_v_of_GEVEC_v]
 
 (* ****** ****** *)
 
