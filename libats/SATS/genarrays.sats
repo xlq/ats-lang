@@ -803,6 +803,20 @@ viewdef TBMAT_v
   (a:viewt@ype, n:int, ord: order, ul: uplo, dg: diag, k: int, lda: int, l: addr) =
   TBMAT (a, n, ord, ul, dg, k, lda) @ l
 
+prfun TBMAT_v_of_GEMAT_v
+  {a:viewt@ype} {n,k:nat}
+  {ul:uplo} {dg:diag} {l:addr} (
+    pf_gmat: GEMAT_v (a, 1+k, n, col, 1+k, l)
+  , ul: UPLO ul
+  , dg: DIAG dg
+  , k: int k
+  ) :<prf> (
+    TBMAT_v (a, n, col, ul, dg, k, 1+k, l)
+  , TBMAT_v (a, n, col, ul, dg, k, 1+k, l) -<prf> GEMAT_v (a, 1+k, n, col, 1+k, l)
+  )
+// end of [TBMAT_v_of_GEMAT_v]
+
+
 (* ****** ****** *)
 
 //
@@ -926,6 +940,19 @@ prfun SPMAT_v_of_HPMAT_v
     pf_typ: realtyp_p (a), pf_mat: HPMAT_v (a, n, ord, ul, l)
   ) :<> SPMAT_v (a, n, ord, ul, l)
 // end of [SPMAT_v_of_HPMAT_v]
+
+prfun HPMAT_v_of_GEVEC_v
+  {a:viewt@ype} {m,n:nat}
+  {ord:order} {ul:uplo}
+  {l:addr} (
+    pf_mul: MUL (n, n+1, m+m)
+  , pf_arr: GEVEC_v (a, m, 1, l)
+  , ord: ORDER (ord), ul: UPLO (ul)
+  ) :<> (
+    HPMAT_v (a, n, ord, ul, l)
+  , HPMAT_v (a, n, ord, ul, l) -<prf> GEVEC_v (a, m, 1, l)
+  )
+// end of [HPMAT_v_of_GEVEC_v]
 
 (* ****** ****** *)
 
