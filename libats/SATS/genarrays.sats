@@ -1,6 +1,39 @@
+(***********************************************************************)
+(*                                                                     *)
+(*                         Applied Type System                         *)
+(*                                                                     *)
+(*                              Hongwei Xi                             *)
+(*                                                                     *)
+(***********************************************************************)
+
+(*
+** ATS - Unleashing the Potential of Types!
+**
+** Copyright (C) 2002-2009 Hongwei Xi, Boston University
+**
+** All rights reserved
+**
+** ATS is free software;  you can  redistribute it and/or modify it under
+** the  terms of the  GNU General Public License as published by the Free
+** Software Foundation; either version 2.1, or (at your option) any later
+** version.
+** 
+** ATS is distributed in the hope that it will be useful, but WITHOUT ANY
+** WARRANTY; without  even  the  implied  warranty  of MERCHANTABILITY or
+** FITNESS FOR A PARTICULAR PURPOSE.  See the  GNU General Public License
+** for more details.
+** 
+** You  should  have  received  a  copy of the GNU General Public License
+** along  with  ATS;  see  the  file  COPYING.  If not, write to the Free
+** Software Foundation, 51  Franklin  Street,  Fifth  Floor,  Boston,  MA
+** 02110-1301, USA.
+*)
+
+(* ****** ****** *)
+
 (*
 **
-** An interface for ATS to interact with BLAS
+** Various kinds of (generic) arrays
 **
 ** Contributed by Hongwei Xi (hwxi AT cs DOT bu DOT edu)
 ** Contributed by Shivkumar Chandrasekaran (shiv AT ece DOT ucsb DOT edu)
@@ -8,6 +41,12 @@
 ** Time: Summer, 2009
 **
 *)
+
+(* ****** ****** *)
+
+//
+// License: LGPL 3.0 (available at http://www.gnu.org/licenses/lgpl.txt)
+//
 
 (* ****** ****** *)
 
@@ -437,6 +476,72 @@ fun{a:t@ype} GEMAT_ptr_set_elt_at
 
 (* ****** ****** *)
 
+(*
+** this is likely to be slightly more efficient than GEMAT_ptr_split2x1
+*)
+fun{a:viewt@ype} GEMAT_ptr_tail_row
+  {m:pos;n:nat} {ord:order} {lda:pos} {l0:addr} (
+    pf_mat: GEMAT_v (a, m, n, ord, lda, l0)
+  | p_mat: ptr l0
+  , ord: ORDER ord
+  , lda: int lda
+  ) :<> [l:addr] (
+    GEMAT_v (a, m-1, n, ord, lda, l)
+  , GEMAT_v (a, m-1, n, ord, lda, l) -<lin,prf> GEMAT_v (a, m, n, ord, lda, l0)
+  | ptr l
+  )
+// end of [GEMAT_ptr_tail_row]
+
+fun GEMAT_ptr_tail_row_tsz
+  {a:viewt@ype} {m:pos;n:nat}
+  {ord:order} {lda:pos} {l0:addr} (
+    pf_mat: GEMAT_v (a, m, n, ord, lda, l0)
+  | p_mat: ptr l0
+  , ord: ORDER ord
+  , lda: int lda
+  , tsz: sizeof_t a
+  ) :<> [l:addr] (
+    GEMAT_v (a, m-1, n, ord, lda, l)
+  , GEMAT_v (a, m-1, n, ord, lda, l) -<lin,prf> GEMAT_v (a, m, n, ord, lda, l0)
+  | ptr l
+  ) = "atslib_GEMAT_ptr_tail_row_tsz"
+// end of [GEMAT_ptr_tail_row_tsz]
+
+(* ****** ****** *)
+
+(*
+** this is likely to be slightly more efficient than GEMAT_ptr_split1x2
+*)
+fun{a:viewt@ype} GEMAT_ptr_tail_col
+  {m:nat;n:pos} {ord:order} {lda:pos} {l0:addr} (
+    pf_mat: GEMAT_v (a, m, n, ord, lda, l0)
+  | p_mat: ptr l0
+  , ord: ORDER ord
+  , lda: int lda
+  ) :<> [l:addr] (
+    GEMAT_v (a, m, n-1, ord, lda, l)
+  , GEMAT_v (a, m, n-1, ord, lda, l) -<lin,prf> GEMAT_v (a, m, n, ord, lda, l0)
+  | ptr l
+  )
+// end of [GEMAT_ptr_tail_col]
+
+fun GEMAT_ptr_tail_col_tsz
+  {a:viewt@ype} {m:nat;n:pos}
+  {ord:order} {lda:pos} {l0:addr} (
+    pf_mat: GEMAT_v (a, m, n, ord, lda, l0)
+  | p_mat: ptr l0
+  , ord: ORDER ord
+  , lda: int lda
+  , tsz: sizeof_t a
+  ) :<> [l:addr] (
+    GEMAT_v (a, m, n-1, ord, lda, l)
+  , GEMAT_v (a, m, n-1, ord, lda, l) -<lin,prf> GEMAT_v (a, m, n, ord, lda, l0)
+  | ptr l
+  ) = "atslib_GEMAT_ptr_tail_col_tsz"
+// end of [GEMAT_ptr_tail_col_tsz]
+
+(* ****** ****** *)
+
 viewtypedef GEMAT_ptr_split1x2_res_t (
   a:viewt@ype, m:int, n:int, j:int, ord:order, lda:int, l0:addr
 ) = [l1,l2:addr] @(
@@ -561,6 +666,12 @@ fun GEMAT_ptr_split2x2_tsz
 
 (* ****** ****** *)
 
+dataprop realtyp_p (a:t@ype) =
+  | REALTYPfloat (float) of () | REALTYPdouble (double) of ()
+// end of [TYPE_IS_REAL]
+
+(* ****** ****** *)
+
 //
 // TRiangular MATrix representation (part of GEMAT)
 //
@@ -574,8 +685,6 @@ viewdef TRMAT_v
   (a:viewt@ype, n:int, ord: order, ul: uplo, dg: diag, lda: int, l:addr) =
   TRMAT (a, n, ord, ul, dg, lda) @ l
 // end of [TRMAT_v]
-
-(* ****** ****** *)
 
 prfun TRMAT_v_of_GEMAT_v
   {a:viewt@ype} {n:nat}
@@ -605,8 +714,6 @@ viewdef SYMAT_v
   SYMAT (a, n, ord, ul, lda) @ l
 // end of [SYMAT_v]
 
-(* ****** ****** *)
-
 prfun SYMAT_v_of_GEMAT_v
   {a:viewt@ype} {n:nat}
   {ord:order} {ul:uplo} {lda:pos} {l:addr} (
@@ -633,14 +740,6 @@ viewdef HEMAT_v
   HEMAT (a, n, ord, ul, lda) @ l
 // end of [HEMAT_v]
 
-(* ****** ****** *)
-
-dataprop realtyp_p (a:t@ype) =
-  | REALTYPfloat (float) of () | REALTYPdouble (double) of ()
-// end of [TYPE_IS_REAL]
-
-(* ****** ****** *)
-
 prfun HEMAT_v_of_SYMAT_v
   {a:t@ype} {n:nat}
   {ord:order} {ul:uplo} {lda:pos} {l:addr} (
@@ -654,8 +753,6 @@ prfun SYMAT_v_of_HEMAT_v
     pf_typ: realtyp_p (a), pf_mat: HEMAT_v (a, n, ord, ul, lda, l)
   ) :<> SYMAT_v (a, n, ord, ul, lda, l)
 // end of [SYMAT_v_of_HEMAT_v]
-
-(* ****** ****** *)
 
 prfun HEMAT_v_of_GEMAT_v
   {a:viewt@ype} {n:nat}
@@ -698,6 +795,20 @@ viewdef TBMAT_v
   (a:viewt@ype, n:int, ord: order, ul: uplo, dg: diag, k: int, lda: int, l: addr) =
   TBMAT (a, n, ord, ul, dg, k, lda) @ l
 
+prfun TBMAT_v_of_GEMAT_v
+  {a:viewt@ype} {n,k:nat}
+  {ul:uplo} {dg:diag} {l:addr} (
+    pf_gmat: GEMAT_v (a, 1+k, n, col, 1+k, l)
+  , ul: UPLO ul
+  , dg: DIAG dg
+  , k: int k
+  ) :<prf> (
+    TBMAT_v (a, n, col, ul, dg, k, 1+k, l)
+  , TBMAT_v (a, n, col, ul, dg, k, 1+k, l) -<prf> GEMAT_v (a, 1+k, n, col, 1+k, l)
+  )
+// end of [TBMAT_v_of_GEMAT_v]
+
+
 (* ****** ****** *)
 
 //
@@ -713,8 +824,6 @@ viewdef TPMAT_v
   (a:viewt@ype, n:int, ord: order, ul: uplo, dg: diag, l: addr) =
   TPMAT (a, n, ord, ul, dg) @ l
 // end of [TPMAT_v]
-
-(* ****** ****** *)
 
 prfun TPMAT_v_of_GEVEC_v
   {a:viewt@ype} {m,n:nat}
@@ -761,6 +870,19 @@ viewdef SPMAT_v
   (a:viewt@ype, n:int, ord: order, ul: uplo, l: addr) =
   SPMAT (a, n, ord, ul) @ l
 // end of [SPMAT_v]
+
+prfun SPMAT_v_of_GEVEC_v
+  {a:viewt@ype} {m,n:nat}
+  {ord:order} {ul:uplo}
+  {l:addr} (
+    pf_mul: MUL (n, n+1, m+m)
+  , pf_arr: GEVEC_v (a, m, 1, l)
+  , ord: ORDER (ord), ul: UPLO (ul)
+  ) :<> (
+    SPMAT_v (a, n, ord, ul, l)
+  , SPMAT_v (a, n, ord, ul, l) -<prf> GEVEC_v (a, m, 1, l)
+  )
+// end of [HPMAT_v_of_GEVEC_v]
 
 (* ****** ****** *)
 
@@ -821,6 +943,19 @@ prfun SPMAT_v_of_HPMAT_v
     pf_typ: realtyp_p (a), pf_mat: HPMAT_v (a, n, ord, ul, l)
   ) :<> SPMAT_v (a, n, ord, ul, l)
 // end of [SPMAT_v_of_HPMAT_v]
+
+prfun HPMAT_v_of_GEVEC_v
+  {a:viewt@ype} {m,n:nat}
+  {ord:order} {ul:uplo}
+  {l:addr} (
+    pf_mul: MUL (n, n+1, m+m)
+  , pf_arr: GEVEC_v (a, m, 1, l)
+  , ord: ORDER (ord), ul: UPLO (ul)
+  ) :<> (
+    HPMAT_v (a, n, ord, ul, l)
+  , HPMAT_v (a, n, ord, ul, l) -<prf> GEVEC_v (a, m, 1, l)
+  )
+// end of [HPMAT_v_of_GEVEC_v]
 
 (* ****** ****** *)
 

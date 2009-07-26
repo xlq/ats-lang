@@ -1,6 +1,39 @@
+(***********************************************************************)
+(*                                                                     *)
+(*                         Applied Type System                         *)
+(*                                                                     *)
+(*                              Hongwei Xi                             *)
+(*                                                                     *)
+(***********************************************************************)
+
+(*
+** ATS - Unleashing the Potential of Types!
+**
+** Copyright (C) 2002-2009 Hongwei Xi, Boston University
+**
+** All rights reserved
+**
+** ATS is free software;  you can  redistribute it and/or modify it under
+** the  terms of the  GNU General Public License as published by the Free
+** Software Foundation; either version 2.1, or (at your option) any later
+** version.
+** 
+** ATS is distributed in the hope that it will be useful, but WITHOUT ANY
+** WARRANTY; without  even  the  implied  warranty  of MERCHANTABILITY or
+** FITNESS FOR A PARTICULAR PURPOSE.  See the  GNU General Public License
+** for more details.
+** 
+** You  should  have  received  a  copy of the GNU General Public License
+** along  with  ATS;  see  the  file  COPYING.  If not, write to the Free
+** Software Foundation, 51  Franklin  Street,  Fifth  Floor,  Boston,  MA
+** 02110-1301, USA.
+*)
+
+(* ****** ****** *)
+
 (*
 **
-** An interface for ATS to interact with BLAS
+** Various kinds of (generic) arrays
 **
 ** Contributed by Hongwei Xi (hwxi AT cs DOT bu DOT edu)
 ** Contributed by Shivkumar Chandrasekaran (shiv AT ece DOT ucsb DOT edu)
@@ -8,6 +41,8 @@
 ** Time: Summer, 2009
 **
 *)
+
+(* ****** ****** *)
 
 //
 // License: LGPL 3.0 (available at http://www.gnu.org/licenses/lgpl.txt)
@@ -215,6 +250,9 @@ implement MATVECINC_get (pf | x1, x2, ld) =
 
 (* ****** ****** *)
 
+(*
+** The following function acts as a dummy for [GEMAT_ptr_takeout_tsz]
+*)
 extern fun
   GEMAT_ptr_takeout_tsz_dummy
   {a:viewt@ype} {m,n:nat}
@@ -276,6 +314,79 @@ end // end of [GEMAT_ptr_set_elt_at]
 
 (* ****** ****** *)
 
+(*
+** The following function acts as a dummy for [GEMAT_ptr_tail_row_tsz]
+*)
+extern fun GEMAT_ptr_tail_row_tsz_dummy
+  {a:viewt@ype} {m:pos;n:nat}
+  {ord:order} {lda:pos} {l0:addr} (
+    pf_mat: unit_v // GEMAT_v (a, m, n, ord, lda, l0)
+  | p_mat: ptr l0
+  , ord: ORDER ord
+  , lda: int lda
+  , tsz: sizeof_t a
+  ) :<> [l:addr] (
+    unit_v // GEMAT_v (a, m-1, n, ord, lda, l)
+  , unit_v // GEMAT_v (a, m-1, n, ord, lda, l) -<lin,prf> GEMAT_v (a, m, n, ord, lda, l0)
+  | ptr l
+  ) = "atslib_GEMAT_ptr_tail_row_tsz"
+// end of [GEMAT_ptr_tail_row_tsz]
+
+implement GEMAT_ptr_tail_row_tsz_dummy
+  (pf_mat | p_mat, ord, lda, tsz) = let
+  prval unit_v () = pf_mat
+  val ofs = (case+ ord of
+    | ORDERrow () => size1_of_int1 lda * tsz | ORDERcol () => tsz
+  ) : size_t // end of [val]
+  val ofs = size1_of_size (ofs)
+in
+  (unit_v (), unit_v () | p_mat + ofs)
+end // end of [GEMAT_ptr_tail_row_tsz_dummy]
+
+implement{a} GEMAT_ptr_tail_row (pf_mat | p_mat, ord, lda) =
+  GEMAT_ptr_tail_row_tsz (pf_mat | p_mat, ord, lda, sizeof<a>)
+// end of [GEMAT_ptr_tail_row]
+
+(* ****** ****** *)
+
+(*
+** The following function acts as a dummy for [GEMAT_ptr_tail_col_tsz]
+*)
+extern fun GEMAT_ptr_tail_col_tsz_dummy
+  {a:viewt@ype} {m:pos;n:nat}
+  {ord:order} {lda:pos} {l0:addr} (
+    pf_mat: unit_v // GEMAT_v (a, m, n, ord, lda, l0)
+  | p_mat: ptr l0
+  , ord: ORDER ord
+  , lda: int lda
+  , tsz: sizeof_t a
+  ) :<> [l:addr] (
+    unit_v // GEMAT_v (a, m-1, n, ord, lda, l)
+  , unit_v // GEMAT_v (a, m-1, n, ord, lda, l) -<lin,prf> GEMAT_v (a, m, n, ord, lda, l0)
+  | ptr l
+  ) = "atslib_GEMAT_ptr_tail_col_tsz"
+// end of [GEMAT_ptr_tail_col_tsz]
+
+implement GEMAT_ptr_tail_col_tsz_dummy
+  (pf_mat | p_mat, ord, lda, tsz) = let
+  prval unit_v () = pf_mat
+  val ofs = (case+ ord of
+    | ORDERrow () => tsz | ORDERcol () => size1_of_int1 lda * tsz
+  ) : size_t // end of [val]
+  val ofs = size1_of_size (ofs)
+in
+  (unit_v (), unit_v () | p_mat + ofs)
+end // end of [GEMAT_ptr_tail_col_tsz_dummy]
+
+implement{a} GEMAT_ptr_tail_col (pf_mat | p_mat, ord, lda) =
+  GEMAT_ptr_tail_col_tsz (pf_mat | p_mat, ord, lda, sizeof<a>)
+// end of [GEMAT_ptr_tail_col]
+
+(* ****** ****** *)
+
+(*
+** The following function acts as a dummy for [GEMAT_ptr_split1x2_tsz]
+*)
 extern fun
 GEMAT_ptr_split1x2_tsz_dummy
   {a:viewt@ype} {m,n:nat}
@@ -310,6 +421,9 @@ end // end of [GEMAT_ptr_split1x2_tsz_dummy]
 
 (* ****** ****** *)
 
+(*
+** The following function acts as a dummy for [GEMAT_ptr_split2x1_tsz]
+*)
 extern fun
 GEMAT_ptr_split2x1_tsz_dummy
   {a:viewt@ype} {m,n:nat}
@@ -344,6 +458,9 @@ end // end of [GEMAT_ptr_split1x2_tsz_dummy]
 
 (* ****** ****** *)
 
+(*
+** The following function acts as a dummy for [GEMAT_ptr_split2x2_tsz]
+*)
 extern fun
 GEMAT_ptr_split2x2_tsz_dummy
   {a:viewt@ype}

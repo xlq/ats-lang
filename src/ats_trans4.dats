@@ -85,7 +85,8 @@ end // end of [local]
 (* ****** ****** *)
 
 fn s2exp_app_tr (
-    deep: int
+    loc0: loc_t
+  , deep: int
   , s2t_app: s2rt
   , s2e_fun: s2exp
   , s2es_arg: s2explst
@@ -112,8 +113,8 @@ in
                     stasub_add (aux (s2vs, s2es), s2v, s2e)
                 | (nil _, nil _) => stasub_nil
                 | (_, _) => begin
-                    prerr "Internal Error";
-                    $Deb.debug_prerrf (": %s", @(THISFILENAME));
+                    prerr "INTERNAL ERROR";
+                    $Deb.debug_prerrf (": [%s]", @(THISFILENAME));
                     prerr ": s2exp_app_tr: S2Eapp: arity error";
                     prerr_newline ();
                     $Err.abort {stasub_t} ()
@@ -121,7 +122,7 @@ in
               val sub = aux (s2vs_arg, s2es_arg)
               val s2e_app = s2exp_subst (sub, s2e_body)
             in
-              s2exp_tr (deep, s2e_app)
+              s2exp_tr (loc0, deep, s2e_app)
             end // end of [S2Elam]
           | _ => hityp_abs
           end // end of [Some]
@@ -129,54 +130,56 @@ in
         end // end of [case]
       | None () => hityp_abs
       end // end of [case]
-    end // end of [S2Ecst]
+    end (* end of [S2Ecst] *)
   | _ => begin
       if s2rt_is_boxed s2t_app then hityp_ptr else hityp_abs
-    end
+    end (* end of [_] *)
 end // end of [s2exp_app_tr]
 
 fn s2Var_tr
-  (deep: int, s2V: s2Var_t): hityp = begin
+  (loc0: loc_t, deep: int, s2V: s2Var_t): hityp = begin
   case+ s2Var_lbs_get s2V of
-  | list_cons (s2Vb, _) => s2exp_tr (deep, s2Varbound_val_get s2Vb)
+  | list_cons (s2Vb, _) => s2exp_tr (loc0, deep, s2Varbound_val_get s2Vb)
   | list_nil () => begin case+ s2Var_ubs_get s2V of
-    | list_cons (s2Vb, _) => s2exp_tr (deep, s2Varbound_val_get s2Vb)
+    | list_cons (s2Vb, _) => s2exp_tr (loc0, deep, s2Varbound_val_get s2Vb)
     | list_nil () => hityp_abs
     end // end of [list_nil]
 end // end of [s2Var_tr]
 
 (* ****** ****** *)
 
-implement s2exp_tr (deep, s2e0) = let
+implement s2exp_tr (loc0, deep, s2e0) = let
   val s2e0 = s2exp_whnf s2e0; val s2t0 = s2e0.s2exp_srt
 (*
   val () = begin
+    prerr "s2exp_tr: loc0 = "; $Loc.prerr_location loc; prerr_newline ();
     prerr "s2exp_tr: deep = "; prerr deep; prerr_newline ();
     prerr "s2exp_tr: s2e0 = "; prerr s2e0; prerr_newline ();
   end // end of [val]
 *)
+  fn err
+    (loc0: loc_t, s2t0: s2rt, s2e0: s2exp): hityp = begin
+    $Loc.prerr_location loc0; prerr ": error(4)";
+    $Deb.debug_prerrf (": [%s]: s2exp_tr", @(THISFILENAME));
+    prerr ": s2t0 = "; prerr s2t0;
+    prerr "; s2e0 = "; prerr s2e0;
+    prerr_newline ();
+    $Err.abort {hityp} ()
+  end // end of [err]
 in
   case+ s2e0.s2exp_node of
   | S2Eapp (s2e_fun, s2es_arg) => begin
-      s2exp_app_tr (deep, s2e0.s2exp_srt, s2e_fun, s2es_arg)
+      s2exp_app_tr (loc0, deep, s2e0.s2exp_srt, s2e_fun, s2es_arg)
     end // end of [S2Eapp]
-  | S2Ecrypt s2e => s2exp_tr (deep, s2e)
+  | S2Ecrypt s2e => s2exp_tr (loc0, deep, s2e)
   | S2Ecst s2c => begin case+ s2t0 of
     | _ when s2rt_is_boxed (s2t0) => hityp_ptr
     | _ => begin
       case+ s2cst_isabs_get s2c of
       | Some os2e => begin case+ os2e of
-        | Some s2e => s2exp_tr (deep, s2e) | None () => hityp_abs
+        | Some s2e => s2exp_tr (loc0, deep, s2e) | None () => hityp_abs
         end // end of [Some]
-      | None () => begin
-          prerr "Internal Error: [ats_trans4]: ";
-          prerr_newline ();
-          prerr "Internal Error: s2exp_tr: s2t0 = "; prerr s2t0;
-          prerr_newline ();
-          prerr "Internal Error: s2exp_tr: s2e0 = "; prerr s2e0;
-          prerr_newline ();
-          $Err.abort {hityp} ()
-        end // end of [None]
+      | None () => err (loc0, s2t0, s2e0)
       end (* end of [_] *)
     end // end of [S2Ecst]
   | S2Eclo (knd, s2exp) => begin
@@ -185,19 +188,20 @@ in
   | S2Edatconptr _ => hityp_ptr
   | S2Edatcontyp (d2c, s2es) => begin
       if deep > 0 then let
-        val npf = d2con_npf_get d2c; val hits_arg = s2explst_arg_tr (npf, s2es)
+        val npf = d2con_npf_get d2c
+        val hits_arg = s2explst_arg_tr (loc0, npf, s2es)
       in
         hityp_tysumtemp (d2c, hits_arg)
       end else begin
         hityp_ptr // deep = 0
       end (* end of [if] *)
     end // end of [S2Edatcontyp]
-  | S2Eexi (_(*s2vs*), _(*s2ps*), s2e) => s2exp_tr (deep, s2e)
+  | S2Eexi (_(*s2vs*), _(*s2ps*), s2e) => s2exp_tr (loc0, deep, s2e)
   | S2Eextype name => hityp_extype name
   | S2Efun (fc, _(*lin*), _(*s2fe*), npf, s2es_arg, s2e_res) => begin
       if deep > 0 then let
-        val hits_arg = s2explst_arg_tr (npf, s2es_arg)
-        val hit_res = s2exp_tr (0, s2e_res)
+        val hits_arg = s2explst_arg_tr (loc0, npf, s2es_arg)
+        val hit_res = s2exp_tr (loc0, 0, s2e_res)
         // [hityp_varetisze] turns ats_var_type 
         val hit_res = hityp_varetize (hit_res) // into ats_varet_type if needed
 (*
@@ -215,17 +219,17 @@ in
           end // end of [FUNCLOclo]
       end (* end of [if] *)
     end // end of [S2Efun]
-  | S2Elam (_(*s2vs*), s2e_body) => s2exp_tr (deep, s2e_body)
-  | S2Emetfn (_(*stamp*), _(*met*), s2e) => s2exp_tr (deep, s2e)
+  | S2Elam (_(*s2vs*), s2e_body) => s2exp_tr (loc0, deep, s2e_body)
+  | S2Emetfn (_(*stamp*), _(*met*), s2e) => s2exp_tr (loc0, deep, s2e)
   | S2Enamed (name, _) => let
       val name = $Sym.symbol_name name in hityp_extype name
     end // end of [S2Enamed]
   | S2Erefarg (refval, s2e_arg) => begin
-      hityp_refarg (refval, s2exp_tr (0, s2e_arg))
+      hityp_refarg (refval, s2exp_tr (loc0, 0, s2e_arg))
     end // end of [S2Erefarg]
-  | S2Etop (_(*knd*), s2e) => s2exp_tr (0, s2e)
+  | S2Etop (_(*knd*), s2e) => s2exp_tr (loc0, 0, s2e)
   | S2Etyarr (s2e_elt, s2ess_dim) => let
-      val hit_elt = s2exp_tr (0, s2e_elt)
+      val hit_elt = s2exp_tr (loc0, 0, s2e_elt)
     in
       hityp_tyarr (hit_elt, s2ess_dim)
     end // end of [S2Etyarr]
@@ -235,7 +239,7 @@ in
         prerr "s2exp_tr: S2Etyrec: s2e0 = "; prerr s2e0; prerr_newline ()
       end // end of [val]
 *)
-      val lhits = labs2explst_arg_tr (npf, ls2es)
+      val lhits = labs2explst_arg_tr (loc0, npf, ls2es)
       val hit0 = (case+ knd of
         | TYRECKINDbox () => begin
             if deep > 0 then hityp_tyrectemp (1(*box*), lhits) else hityp_ptr
@@ -253,7 +257,7 @@ in
     in
       hit0 
     end // end of [S2Etyrec]
-  | S2Euni (_(*s2vs*), _(*s2ps*), s2e) => s2exp_tr (deep, s2e)
+  | S2Euni (_(*s2vs*), _(*s2ps*), s2e) => s2exp_tr (loc0, deep, s2e)
 (*
   | S2Eunion (stamp, s2i, ls2es) => let
       val lhits = labs2explst_arg_tr (0, ls2es)
@@ -264,68 +268,85 @@ in
       hityp_union (name, lhits)
     end // end of [S2Eunion]
 *)
-  | S2EVar s2V => s2Var_tr (deep, s2V)
+  | S2EVar s2V => s2Var_tr (loc0, deep, s2V)
   | S2Evar s2v => hityp_s2var s2v
   | S2Evararg _ => hityp_vararg
-  | S2Ewth (s2e, _(*wths2es*)) => s2exp_tr (deep, s2e)
-  | _ => begin
-      prerr "Internal Error: [ats_trans4]";
-      prerr ": s2exp_tr: s2e0 = "; prerr s2e0; prerr_newline ();
-      $Err.abort {hityp} ()
-    end // end of [_]
+  | S2Ewth (s2e, _(*wths2es*)) => s2exp_tr (loc0, deep, s2e)
+  | _ => err (loc0, s2t0, s2e0)
 end // end of [s2exp_tr]
 
-fn s2explst_tr (s2es: s2explst): hityplst = begin
-  $Lst.list_map_fun {s2exp,hityp}
-    (s2es, lam (s2e) =<1> s2exp_tr (0(*deep*), s2e))
-end // end of [s2explst_tr]
+fun s2explst_tr
+  (loc0: loc_t, s2es: s2explst): hityplst =
+  case+ s2es of
+  | list_cons (s2e, s2es) => let
+      val hit = s2exp_tr (loc0, 0(*deep*), s2e)
+    in
+      list_cons (hit, s2explst_tr (loc0, s2es))
+    end // end of [list_cons]
+  | list_nil () => list_nil ()
+// end of [s2explst_tr]
+
+fun s2explstlst_tr
+  (loc0: loc_t, s2ess: s2explstlst): hityplstlst =
+  case+ s2ess of
+  | list_cons (s2es, s2ess) => let
+      val hits = s2explst_tr (loc0, s2es)
+    in
+      list_cons (hits, s2explstlst_tr (loc0, s2ess))
+    end // end of [list_cons]
+  | list_nil () => list_nil ()
+// end of [s2explstlst_tr]
 
 implement s2explst_arg_tr
-  (npf, s2es): hityplst = let
-  fun aux1 (s2es: s2explst): hityplst =
+  (loc0, npf, s2es) = let
+  fun aux1 (loc0: loc_t, s2es: s2explst): hityplst =
     case+ s2es of
     | list_cons (s2e, s2es) => begin
-        if s2exp_is_proof s2e then aux1 s2es
+        if s2exp_is_proof s2e then aux1 (loc0, s2es)
         else begin
-          list_cons (s2exp_tr (0, s2e), aux1 s2es)
+          list_cons (s2exp_tr (loc0, 0, s2e), aux1 (loc0, s2es))
         end // end of [if]
       end (* end of [cons] *)
     | list_nil () => list_nil ()
   // end of [aux1]
-  fun aux2 (i: int, s2es: s2explst): hityplst =
+  fun aux2
+    (loc0: loc_t, i: int, s2es: s2explst): hityplst =
     if i > 0 then begin case+ s2es of
-      | list_cons (_, s2es) => aux2 (i-1, s2es)
+      | list_cons (_, s2es) => aux2 (loc0, i-1, s2es)
       | list_nil () => list_nil () // deadcode
     end else begin
-      aux1 (s2es) // proof arguments have been dropped
+      aux1 (loc0, s2es) // proof arguments have been dropped
     end // end of [if]
   // end of [aux2]
 in
-  aux2 (npf, s2es)
+  aux2 (loc0, npf, s2es)
 end // end of [s2explst_arg_tr]
 
-implement labs2explst_arg_tr (npf, ls2es) = let
-  fun aux1 (ls2es: labs2explst): labhityplst =
+implement labs2explst_arg_tr
+  (loc0, npf, ls2es) = let
+  fun aux1
+    (loc0: loc_t, ls2es: labs2explst): labhityplst =
     case+ ls2es of
     | LABS2EXPLSTcons (l, s2e, ls2es) =>
         if s2exp_is_proof s2e then begin
-          aux1 ls2es
-        end else begin
-          LABHITYPLSTcons (l, s2exp_tr (0, s2e), aux1 ls2es)
+          aux1 (loc0, ls2es)
+        end else begin LABHITYPLSTcons
+          (l, s2exp_tr (loc0, 0, s2e), aux1 (loc0, ls2es))
         end // end of [if]
       (* end of [LABS2EXPLSTcons] *)
     | LABS2EXPLSTnil () => LABHITYPLSTnil ()
   // end of [aux1]
-  fun aux2 (i: int, ls2es: labs2explst): labhityplst =
+  fun aux2
+    (loc0: loc_t, i: int, ls2es: labs2explst): labhityplst =
     if i > 0 then begin case+ ls2es of
-      | LABS2EXPLSTcons (_, _, ls2es) => aux2 (i-1, ls2es)
+      | LABS2EXPLSTcons (_, _, ls2es) => aux2 (loc0, i-1, ls2es)
       | LABS2EXPLSTnil () => LABHITYPLSTnil () // deadcode
     end else begin
-      aux1 ls2es // proof arguments have been dropped
+      aux1 (loc0, ls2es) // proof arguments have been dropped
     end // end of [if]
   // end of [aux2]
 in
-  aux2 (npf, ls2es)
+  aux2 (loc0, npf, ls2es)
 end // end of [labs2explst_tr]
 
 (* ****** ****** *)
@@ -346,12 +367,14 @@ fn p3atlst_arg_tr
         end // end of [if]
       (* end of [list_cons] *)
     | list_nil () => list_nil ()
+  // end of [aux]
 in
   aux (npf, p3ts)
 end // end of [p3atlst_arg_tr]
 
 fn labp3atlst_arg_tr
-  (npf: int, lp3ts: labp3atlst): labhipatlst = let
+  (npf: int, lp3ts: labp3atlst)
+  : labhipatlst = aux (npf, lp3ts) where {
   fun aux (i: int, lp3ts: labp3atlst): labhipatlst =
     case+ lp3ts of
     | LABP3ATLSTcons (l, p3t, lp3ts) =>
@@ -364,15 +387,13 @@ fn labp3atlst_arg_tr
     | LABP3ATLSTdot () => LABHIPATLSTdot ()
     | LABP3ATLSTnil () => LABHIPATLSTnil ()
   // end of [aux]
-in
-  aux (npf, lp3ts)
-end // end of [labp3atlst_arg_tr]
+} // end of [labp3atlst_arg_tr]
 
 (* ****** ****** *)
 
 implement p3at_tr (p3t0): hipat = let
   val loc0 = p3t0.p3at_loc
-  val hit0 = s2exp_tr (0(*deep*), p3t0.p3at_typ)
+  val hit0 = s2exp_tr (loc0, 0(*deep*), p3t0.p3at_typ)
 (*
   val () = begin
     prerr "p3at_tr: p3t0 = "; prerr_p3at p3t0; prerr_newline ()
@@ -384,7 +405,7 @@ in
   case+ p3t0.p3at_node of
   | P3Tann (p3t, s2e_ann) => let
       val hip = p3at_tr p3t
-      val hit_ann = s2exp_tr (0(*deep*), s2e_ann)
+      val hit_ann = s2exp_tr (loc0, 0(*deep*), s2e_ann)
     in
       hipat_ann (loc0, hit0, hip, hit_ann)
     end // end of [P3Tann]
@@ -405,33 +426,35 @@ in
       case+ 0 of
       | _ when hipatlst_is_unused hips_arg =>
           hipat_con_any (loc0, hit0, freeknd, d2c)
+        // end of [_ when ...]
       | _ => let
           val hits_arg = hipatlst_typ_get (hips_arg)
 (*
           val () = begin
             prerr "p3at_tr: P3Tcon: hits_arg = "; prerr hits_arg; prerr_newline ()
+          end // end of [val]
 *)
           val hit_sum = hityp_tysumtemp (d2c, hits_arg)
 (*
           val () = begin
             prerr "p3at_tr: P3Tcon: hit_sum = "; prerr hit_sum; prerr_newline ()
-          end
+          end // end of [val]
 *)
         in
           hipat_con (loc0, hit0, freeknd, d2c, hips_arg, hit_sum)
-        end
+        end // end of [_]
     end // end of [P3Tcon]
   | P3Tempty () => hipat_empty (loc0, hit0)
   | P3Texist (_(*s2vs*), p3t) => p3at_tr p3t
   | P3Tint (str, int) => hipat_int (loc0, hit0, str, int)
   | P3Tlst (s2e_elt, p3ts_elt) => let
-      val hit_elt = s2exp_tr (0(*deep*), s2e_elt)
+      val hit_elt = s2exp_tr (loc0, 0(*deep*), s2e_elt)
       val hips_elt = p3atlst_tr p3ts_elt
     in
-      hipat_lst (loc0, hit0, hips_elt, hit_elt)
+      hipat_lst (loc0, hit0, hit_elt, hips_elt)
     end // end of [P3Tlst]
   | P3Trec (knd, npf, lp3ts) => let
-      val hit_rec = s2exp_tr (1(*deep*), p3t0.p3at_typ)
+      val hit_rec = s2exp_tr (loc0, 1(*deep*), p3t0.p3at_typ)
       val lhips = labp3atlst_arg_tr (npf, lp3ts)
     in
       hipat_rec (loc0, hit0, knd, lhips, hit_rec)
@@ -441,7 +464,8 @@ in
       hipat_var (loc0, hit0, refknd, d2v)
     end // end of [P3Tvar]
   | _ => begin
-      prerr "Internal Error: [ats_trans4]";
+      prerr "INTERNAL ERROR";
+      $Deb.debug_prerrf (": [%s]", @(THISFILENAME));
       prerr ": p3at_tr: p3t0 = "; prerr_p3at p3t0; prerr_newline ();
       $Err.abort {hipat} ()
     end // end of [_]
@@ -453,6 +477,7 @@ implement p3atlst_tr (p3ts) = $Lst.list_map_fun (p3ts, p3at_tr)
 
 fn hiexplst_typ_get (hies: hiexplst): hityplst =
   $Lst.list_map_fun {hiexp, hityp} (hies, lam hie =<> hie.hiexp_typ)
+// end of [hiexplst_typ_get]
 
 fn d3exp_is_proof (d3e: d3exp): bool = s2exp_is_proof (d3e.d3exp_typ)
 
@@ -500,7 +525,7 @@ implement d3explst_funarg_tr (isvararg, npf, d3es) = let
             prerr ": d3explst_funarg_tr: aux1: d3e = "; prerr_d3exp d3e;
             prerr_newline ();
             $Err.abort {hiexplst} ()
-          end
+          end (* end of [_] *)
         ) else let
           val hie = d3exp_tr d3e; val hies = list_vt_cons (hie, hies)
         in
@@ -570,7 +595,7 @@ fn d3exp_cst_tr
   | _ => hiexp_cst (loc0, hit0, d2c)
 end // end of [d3exp_cst_tr]
 
-//
+(* ****** ****** *)
 
 fn d3exp_seq_tr
   (loc0: loc_t, hit0: hityp, d3es: d3explst): hiexp = let
@@ -580,13 +605,14 @@ end // end of [d3exp_seq_tr]
 
 //
 
-and d3exp_tmpcst_tr
-  (loc0: loc_t, hit0: hityp, d2c: d2cst_t, s2ess: s2explstlst)
-  : hiexp = let
+fn d3exp_tmpcst_tr (
+    loc0: loc_t
+  , hit0: hityp, d2c: d2cst_t, s2ess: s2explstlst
+  ) : hiexp = let
   val sym = d2cst_sym_get d2c in case+ sym of
   | _ when sym = $Sym.symbol_SIZEOF => begin case+ s2ess of
     | cons (cons (s2e, nil ()), nil ()) => begin
-        hiexp_sizeof (loc0, hit0, s2exp_tr (0(*deep*), s2e))
+        hiexp_sizeof (loc0, hit0, s2exp_tr (loc0, 0(*deep*), s2e))
       end
     | _ => begin
         prerr "Internal Error: [ats_trans4]";
@@ -595,7 +621,7 @@ and d3exp_tmpcst_tr
       end (* end of [_] *)
     end // end of [_ when ...]
   | _ => let
-      val hitss = $Lst.list_map_fun (s2ess, s2explst_tr)
+      val hitss = s2explstlst_tr (loc0, s2ess)
 (*
       val () = begin
         prerr "d3exp_tmpcst_tr: hitss = "; prerr hitss; prerr_newline ()
@@ -608,28 +634,32 @@ end (* end of [d3exp_tmpcst_tr] *)
 
 fn d3exp_tmpvar_tr (
     loc0: loc_t
-  , hit0: hityp, d2v: d2var_t, s2ess: s2explstlst
+  , hit0: hityp
+  , d2v: d2var_t, s2ess: s2explstlst
   ) : hiexp = let
-  val hitss = $Lst.list_map_fun (s2ess, s2explst_tr) in
+  val hitss = s2explstlst_tr (loc0, s2ess)
+in
   hiexp_tmpvar (loc0, hit0, d2v, hitss)
 end // end of [d3exp_tmpvar_tr]
 
-//
+(* ****** ****** *)
 
-fn d3lab1_tr (d3l: d3lab1): hilab = begin
-  case+ d3l.d3lab1_node of
-  | D3LAB1lab (l, s2e_rec) => let
-      val hit_rec = s2exp_tr (1(*deep*), s2e_rec)
-    in
-      hilab_lab (d3l.d3lab1_loc, l, hit_rec)
-    end
-  | D3LAB1ind (d3ess, s2e_elt) => let
-      val hiess: hiexplstlst = $Lst.list_map_fun (d3ess, d3explst_tr)
-      val hit_elt = s2exp_tr (0(*deep*), s2e_elt)
-    in
-      hilab_ind (d3l.d3lab1_loc, hiess, hit_elt)
-    end
-end // end of [d3lab1_tr]
+fn d3lab1_tr (d3l: d3lab1): hilab = let
+   val loc0 = d3l.d3lab1_loc
+ in
+   case+ d3l.d3lab1_node of
+   | D3LAB1lab (l, s2e_rec) => let
+       val hit_rec = s2exp_tr (loc0, 1(*deep*), s2e_rec)
+     in
+       hilab_lab (loc0, l, hit_rec)
+     end // end of [D3LAB1lab]
+   | D3LAB1ind (d3ess, s2e_elt) => let
+       val hiess: hiexplstlst = $Lst.list_map_fun (d3ess, d3explst_tr)
+       val hit_elt = s2exp_tr (loc0, 0(*deep*), s2e_elt)
+     in
+       hilab_ind (loc0, hiess, hit_elt)
+     end // end of [D3LAB1ind]
+ end // end of [d3lab1_tr]
 
 fn d3lab1lst_tr (d3ls: d3lab1lst): hilablst =
   $Lst.list_map_fun (d3ls, d3lab1_tr)
@@ -658,13 +688,13 @@ fn c3lau_tr (c3l: c3lau): hiclau = let
 (*
   val () = begin
     prerr "cla3_tr: c3l = "; prerr c3l; prerr_newline ()
-  end
+  end // end of [val]
 *)
   val hips = p3atlst_tr c3l.c3lau_pat
 (*
   val () = begin
     prerr "cla3_tr: hips = "; prerr hips; prerr_newline ()
-  end
+  end // end of [val]
 *)
   val gua = m3atchlst_tr c3l.c3lau_gua
   val body = d3exp_tr c3l.c3lau_exp
@@ -721,8 +751,8 @@ in
   case+ d3e0.d3exp_node of
   | D3Eann_type (d3e, _) => d3exp_tr d3e
   | D3Eapp_dyn (d3e_fun, npf, d3es_arg) => let
-      val hit0 = s2exp_tr (0(*deep*), s2e0)
-      val hit_fun = s2exp_tr (1(*deep*), d3e_fun.d3exp_typ)
+      val hit0 = s2exp_tr (loc0, 0(*deep*), s2e0)
+      val hit_fun = s2exp_tr (loc0, 1(*deep*), d3e_fun.d3exp_typ)
       val hie_fun = d3exp_tr d3e_fun
       val isvararg = hityp_fun_is_vararg hit_fun
       val hies_arg = d3explst_funarg_tr (isvararg, npf, d3es_arg)
@@ -743,16 +773,16 @@ in
     end // end of [D3Eapp_dyn]
   | D3Eapp_sta d3e => d3exp_tr d3e
   | D3Earrinit (s2e_elt, od3e_asz, d3es_elt) => let
-      val hit0 = s2exp_tr (0(*deep*), s2e0)
-      val hit_elt = s2exp_tr (0(*deep*), s2e_elt)
+      val hit0 = s2exp_tr (loc0, 0(*deep*), s2e0)
+      val hit_elt = s2exp_tr (loc0, 0(*deep*), s2e_elt)
       val ohie_asz = d3expopt_tr od3e_asz
       val hies_elt = d3explst_tr d3es_elt
     in
       hiexp_arrinit (loc0, hit0, hit_elt, ohie_asz, hies_elt)
     end // end of [D3Earrinit]
   | D3Earrsize (s2e_elt, d3es_elt) => let
-      val hit0 = s2exp_tr (0(*deep*), s2e0)
-      val hit_elt = s2exp_tr (0(*deep*), s2e_elt)
+      val hit0 = s2exp_tr (loc0, 0(*deep*), s2e0)
+      val hit_elt = s2exp_tr (loc0, 0(*deep*), s2e_elt)
       val hies_elt = d3explst_tr d3es_elt
     in
       hiexp_arrsize (loc0, hit0, hit_elt, hies_elt)
@@ -780,7 +810,7 @@ in
       end // end of [if]
     end (* end of [D3Eassgn_var] *)
   | D3Ecaseof (knd, d3es, c3ls) => let
-      val hit0 = s2exp_tr (0(*deep*), s2e0)
+      val hit0 = s2exp_tr (loc0, 0(*deep*), s2e0)
       val hies = d3explst_tr d3es
 (*
       val () = begin
@@ -792,7 +822,7 @@ in
       hiexp_caseof_if (loc0, hit0, knd, hies, hicls)
     end // end of [D3Ecase]
   | D3Echar c => let
-      val hit0 = s2exp_tr (0(*deep*), s2e0)
+      val hit0 = s2exp_tr (loc0, 0(*deep*), s2e0)
     in
       hiexp_char (loc0, hit0, c)
     end // end of [D3Echar]
@@ -804,7 +834,7 @@ in
         prerr "d3exp_tr: d3es_arg = "; prerr d3es_arg; prerr_newline ()
       end
 *)
-      val hit0 = s2exp_tr (0(*deep*), s2e0)
+      val hit0 = s2exp_tr (loc0, 0(*deep*), s2e0)
       val hies_arg = d3explst_arg_tr (npf, d3es_arg)
 (*
       val () = begin
@@ -818,29 +848,29 @@ in
     end // end of [D2Econ]
   | D3Ecst d2c => let (* d2c is external as it is used *)
       val () = the_dyncstset_add_if (d2c)
-      val hit0 = s2exp_tr (0(*deep*), s2e0)
+      val hit0 = s2exp_tr (loc0, 0(*deep*), s2e0)
     in
       d3exp_cst_tr (loc0, hit0, d2c)
     end // end of [D3Ecst]
   | D3Ecrypt (_(*knd*), d3e) => d3exp_tr d3e
   | D3Edynload fil => let
-      val hit0 = s2exp_tr (0(*deep*), s2e0)
+      val hit0 = s2exp_tr (loc0, 0(*deep*), s2e0)
     in
       hiexp_dynload (loc0, hit0, fil)
     end // end of [D3Edynload]
   | D3Eeffmask (_, d3e) => d3exp_tr d3e
   | D3Eempty () => let
-      val hit0 = s2exp_tr (0(*deep*), s2e0)
+      val hit0 = s2exp_tr (loc0, 0(*deep*), s2e0)
     in
       hiexp_empty (loc0, hit0)
     end // end of [D3Eempty]
   | D3Eextval code => let
-      val hit0 = s2exp_tr (0(*deep*), s2e0)
+      val hit0 = s2exp_tr (loc0, 0(*deep*), s2e0)
     in
       hiexp_extval (loc0, hit0, code)
     end // end of [D3Eextval]
   | D3Efix (d2v_fun, d3e_body) => let
-      val hit0 = s2exp_tr (0(*deep*), s2e0)
+      val hit0 = s2exp_tr (loc0, 0(*deep*), s2e0)
       val hie_body = d3exp_tr d3e_body
       val () = // check for valueness of the body
         if hiexp_is_value hie_body then () else begin
@@ -854,27 +884,27 @@ in
       hiexp_fix (loc0, hit0, d2v_fun, hie_body)
     end // end of [D3Efix]
   | D3Efloat str => let
-      val hit0 = s2exp_tr (0(*deep*), s2e0)
+      val hit0 = s2exp_tr (loc0, 0(*deep*), s2e0)
     in
       hiexp_float (loc0, hit0, str)
     end // end of [D3Efloat]
   | D3Efloatsp str => let
-      val hit0 = s2exp_tr (0(*deep*), s2e0)
+      val hit0 = s2exp_tr (loc0, 0(*deep*), s2e0)
     in
       hiexp_floatsp (loc0, hit0, str)
     end // end of [D3Efloatsp]
   | D3Efoldat _ => let
-      val hit0 = s2exp_tr (0(*deep*), s2e0)
+      val hit0 = s2exp_tr (loc0, 0(*deep*), s2e0)
     in
       hiexp_empty (loc0, hit0)
     end // end of [D3Efoldat]
   | D3Efreeat d3e => let
-      val hit0 = s2exp_tr (0(*deep*), s2e0)
+      val hit0 = s2exp_tr (loc0, 0(*deep*), s2e0)
     in
       hiexp_freeat (loc0, hit0, d3exp_tr d3e)
     end // end of [D3Efreeat]
   | D3Eif (d3e_cond, d3e_then, d3e_else) => let
-      val hit0 = s2exp_tr (0(*deep*), s2e0)
+      val hit0 = s2exp_tr (loc0, 0(*deep*), s2e0)
       val hie_cond = d3exp_tr d3e_cond
       val hie_then = d3exp_tr d3e_then
       val hie_else = d3exp_tr d3e_else
@@ -882,24 +912,24 @@ in
       hiexp_if (loc0, hit0, hie_cond, hie_then, hie_else)
     end // end of [D3Eif]
   | D3Eint (str, int) => let
-      val hit0 = s2exp_tr (0(*deep*), s2e0)
+      val hit0 = s2exp_tr (loc0, 0(*deep*), s2e0)
     in
       hiexp_int (loc0, hit0, str, int)
     end // end of [D3Eint]
   | D3Eintsp (str, int) => let
-      val hit0 = s2exp_tr (0(*deep*), s2e0)
+      val hit0 = s2exp_tr (loc0, 0(*deep*), s2e0)
     in
       hiexp_intsp (loc0, hit0, str, int)
     end // end of [D3Eintsp]
   | D3Elam_dyn (lin, npf, p3ts_arg, d3e_body) => let
-      val hit_fun = s2exp_tr (1(*deep*), s2e0)
+      val hit_fun = s2exp_tr (loc0, 1(*deep*), s2e0)
       val hips_arg = p3atlst_arg_tr (npf, p3ts_arg)
       val hie_body = d3exp_tr d3e_body
     in
       hiexp_lam (loc0, hit_fun, hips_arg, hie_body)
     end // end of [D3Elam_dyn]
   | D3Elaminit_dyn (lin, npf, p3ts_arg, d3e_body) => let
-      val hit_fun = s2exp_tr (1(*deep*), s2e0)
+      val hit_fun = s2exp_tr (loc0, 1(*deep*), s2e0)
       val hips_arg = p3atlst_arg_tr (npf, p3ts_arg)
       val hie_body = d3exp_tr d3e_body
     in
@@ -919,23 +949,23 @@ in
     end // end of [D3Elam_sta]
   | D3Elam_met (_(*s2es_met*), d3e) => d3exp_tr d3e
   | D3Elazy_delay (d3e_eval) => let
-      val hit0 = s2exp_tr (0(*deep*), s2e0)
+      val hit0 = s2exp_tr (loc0, 0(*deep*), s2e0)
     in
       hiexp_lazy_delay (loc0, hit0, d3exp_tr d3e_eval)
     end // end of [D3Elazy_delay]
   | D3Elazy_vt_delay (d3e_eval, d3e_free) => let
-      val hit0 = s2exp_tr (0(*deep*), s2e0)
+      val hit0 = s2exp_tr (loc0, 0(*deep*), s2e0)
       val hie_eval = d3exp_tr d3e_eval and hie_free = d3exp_tr d3e_free
     in
       hiexp_lazy_vt_delay (loc0, hit0, hie_eval, hie_free)
     end // end of [D3Elazy_delay]
   | D3Elazy_force (lin, d3e_lazy) => let
-      val hit0 = s2exp_tr (0(*deep*), s2e0)
+      val hit0 = s2exp_tr (loc0, 0(*deep*), s2e0)
     in
       hiexp_lazy_force (loc0, hit0, lin, d3exp_tr d3e_lazy)
     end // end of [D3Elazy_force]
   | D3Elet (d3cs, d3e) => let
-      val hit0 = s2exp_tr (0(*deep*), s2e0)
+      val hit0 = s2exp_tr (loc0, 0(*deep*), s2e0)
       val hids = d3eclst_tr d3cs; val hie = d3exp_tr d3e
     in
       hiexp_let_simplify (loc0, hit0, hids, hie)
@@ -949,13 +979,13 @@ in
       hiexp_loop (loc0, hityp_void, init, test, post, body)
     end // end of [D3Eloop]
   | D3Eloopexn i => let
-      val hit0 = s2exp_tr (0(*deep*), s2e0)
+      val hit0 = s2exp_tr (loc0, 0(*deep*), s2e0)
     in
       hiexp_loopexn (loc0, hit0, i)
     end // end of [D3Eloopexn]
   | D3Elst (lin, s2e_elt, d3es_elt) => let
-      val hit0 = s2exp_tr (0(*deep*), s2e0)
-      val hit_elt = s2exp_tr (0(*deep*), s2e_elt)
+      val hit0 = s2exp_tr (loc0, 0(*deep*), s2e0)
+      val hit_elt = s2exp_tr (loc0, 0(*deep*), s2e_elt)
       val hies_elt = d3explst_tr d3es_elt
     in
       hiexp_lst (loc0, hit0, lin, hit_elt, hies_elt)
@@ -967,31 +997,31 @@ in
       $Err.abort {hiexp} ()
     end // end of [D3Emod]
   | D3Eptrof_ptr (d3e, d3ls) => let
-      val hit0 = s2exp_tr (0(*deep*), s2e0)
+      val hit0 = s2exp_tr (loc0, 0(*deep*), s2e0)
       val hie = d3exp_tr d3e; val hils = d3lab1lst_tr d3ls
     in
       hiexp_ptrof_ptr (loc0, hit0, hie, hils)
     end // end of [D3Eptrof_ptr]
   | D3Eptrof_var (d2v, d3ls) => let
-      val hit0 = s2exp_tr (0(*deep*), s2e0)
+      val hit0 = s2exp_tr (loc0, 0(*deep*), s2e0)
       val () = d2var_count_inc d2v; val hils = d3lab1lst_tr d3ls
     in
       hiexp_ptrof_var (loc0, hit0, d2v, hils)
     end // end of [D3Eptrof_var]
   | D3Eraise d3e_exn => let
-      val hit0 = s2exp_tr (0(*deep*), s2e0)
+      val hit0 = s2exp_tr (loc0, 0(*deep*), s2e0)
     in
       hiexp_raise (loc0, hit0, d3exp_tr d3e_exn)
     end // end of [D3Eraise]
   | D3Erec (knd, npf, ld3es) => let
-      val hit0 = s2exp_tr (0(*deep*), s2e0)
-      val hit_rec = s2exp_tr (1(*deep*), s2e0)
+      val hit0 = s2exp_tr (loc0, 0(*deep*), s2e0)
+      val hit_rec = s2exp_tr (loc0, 1(*deep*), s2e0)
       val lhies = labd3explst_arg_tr (npf, ld3es)
     in
       hiexp_rec (loc0, hit0, knd, hit_rec, lhies)
     end // end of [D3Erec]
   | D3Erefarg (refval, freeknd, d3e) => let
-      val hit0 = s2exp_tr (0(*deep*), s2e0)
+      val hit0 = s2exp_tr (loc0, 0(*deep*), s2e0)
       val hie = d3exp_tr d3e
     in
       hiexp_refarg (loc0, hit0, refval, freeknd, hie)
@@ -1003,28 +1033,28 @@ in
       $Err.abort {hiexp} ()
     end // end of [D3Escaseof]
   | D3Esel (d3e, d3ls) => let
-      val hit0 = s2exp_tr (0(*deep*), s2e0)
+      val hit0 = s2exp_tr (loc0, 0(*deep*), s2e0)
       val hie = d3exp_tr d3e
       val hils = d3lab1lst_tr d3ls
     in
       hiexp_sel (loc0, hit0, hie, hils)
     end // end of [D3Esel]
   | D3Esel_ptr (d3e_ptr, d3ls) => let
-      val hit0 = s2exp_tr (0(*deep*), s2e0)
+      val hit0 = s2exp_tr (loc0, 0(*deep*), s2e0)
       val hie_ptr = d3exp_tr d3e_ptr
       val hils = d3lab1lst_tr d3ls
     in
       hiexp_sel_ptr (loc0, hit0, hie_ptr, hils)
     end // end of [D3Esel_ptr]
   | D3Esel_var (d2v_ptr, d3ls) => let
-      val hit0 = s2exp_tr (0(*deep*), s2e0)
+      val hit0 = s2exp_tr (loc0, 0(*deep*), s2e0)
       val () = d2var_count_inc d2v_ptr
       val hils = d3lab1lst_tr d3ls
     in
       hiexp_sel_var (loc0, hit0, d2v_ptr, hils)
     end // end of [D3Esel_var]
   | D3Eseq d3es => let
-      val hit0 = s2exp_tr (0(*deep*), s2e0)
+      val hit0 = s2exp_tr (loc0, 0(*deep*), s2e0)
     in
       d3exp_seq_tr (loc0, hit0, d3es)
     end // end of [D3Eseq]
@@ -1035,40 +1065,40 @@ in
       hiexp_sif (loc0, hityp_void, hie_then, hie_else)
     end // end of [D3Esif]
   | D3Espawn (d3e) => let
-      val hit0 = s2exp_tr (0(*deep*), s2e0)
+      val hit0 = s2exp_tr (loc0, 0(*deep*), s2e0)
       val hie = d3exp_tr d3e
     in
       hiexp_spawn (loc0, hit0, hie)
     end // end of [D3Espawn]
   | D3Estring (str, len) => let
-      val hit0 = s2exp_tr (0(*deep*), s2e0)
+      val hit0 = s2exp_tr (loc0, 0(*deep*), s2e0)
     in
       hiexp_string (loc0, hit0, str, len)
     end // end of [D3Estring]
   | D3Estruct ld3es => let
-      val hit0 = s2exp_tr (0(*deep*), s2e0)
-      val hit_rec = s2exp_tr (1(*deep*), s2e0)
+      val hit0 = s2exp_tr (loc0, 0(*deep*), s2e0)
+      val hit_rec = s2exp_tr (loc0, 1(*deep*), s2e0)
       val lhies = labd3explst_arg_tr (0, ld3es)
     in
       hiexp_rec (loc0, hit0, 0(*@{}*), hit_rec, lhies)
     end // end of [D3Estruct]
   | D3Etmpcst (d2c, s2ess) => let
-      val hit_fun = s2exp_tr (1(*deep*), s2e0)
+      val hit_fun = s2exp_tr (loc0, 1(*deep*), s2e0)
     in
       d3exp_tmpcst_tr (loc0, hit_fun, d2c, s2ess)
     end // end of [D3Etmpcst]
   | D3Etmpvar (d2v, s2ess) => let
-      val hit_fun = s2exp_tr (1(*deep*), s2e0)
+      val hit_fun = s2exp_tr (loc0, 1(*deep*), s2e0)
     in
       d3exp_tmpvar_tr (loc0, hit_fun, d2v, s2ess)
     end // end of [D3Etmpvar]
   | D3Etop () => let
-      val hit0 = s2exp_tr (0(*deep*), s2e0)
+      val hit0 = s2exp_tr (loc0, 0(*deep*), s2e0)
     in
       hiexp_top (loc0, hit0)
     end // end of [D3Etop]
   | D3Etrywith (d3e, c3ls) => let
-      val hit0 = s2exp_tr (0(*deep*), s2e0)
+      val hit0 = s2exp_tr (loc0, 0(*deep*), s2e0)
       val hie = d3exp_tr d3e; val hicls = c3laulst_tr c3ls
     in
       hiexp_trywith (loc0, hit0, hie, hicls)
@@ -1081,7 +1111,7 @@ in
         prerr_newline ();
         $Err.abort {void} ()
       end // end of [val]
-      val hit0 = s2exp_tr (0(*deep*), s2e0)
+      val hit0 = s2exp_tr (loc0, 0(*deep*), s2e0)
     in
       d2var_count_inc d2v; hiexp_var (loc0, hit0, d2v)
     end // end of [D3Evar]
@@ -1100,7 +1130,7 @@ in
       $Err.abort {hiexp} ()
     end // end of [D3Eviewat_var]
   | D3Ewhere (d3e, d3cs) => let
-      val hit0 = s2exp_tr (0(*deep*), s2e0)
+      val hit0 = s2exp_tr (loc0, 0(*deep*), s2e0)
       val hids = d3eclst_tr d3cs; val hie = d3exp_tr d3e
     in
       hiexp_let_simplify (loc0, hit0, hids, hie)
@@ -1261,7 +1291,7 @@ in
       prerr ": d3exp_prf_tr: d3e0 = "; prerr_d3exp d3e0; prerr_newline ();
       $Err.abort {void} ()
     end // end of [_]
-end // end of [d3exp_prf_tr]
+end (* end of [d3exp_prf_tr] *)
 
 implement d3explst_prf_tr (d3es) = $Lst.list_foreach_fun (d3es, d3exp_prf_tr)
 
@@ -1271,12 +1301,12 @@ fn f3undec_tr (decarg: s2qualst, d3c: f3undec): hifundec = let
   val loc = d3c.f3undec_loc
   val d2v_fun = d3c.f3undec_var
   val hie_def = d3exp_tr d3c.f3undec_def
-  val () = begin case+ decarg of
+  val () = (case+ decarg of
     | list_cons _ => begin
         tmpvarmap_add (d2v_fun, decarg, hie_def) // template function
-      end
+      end // end of [list_cons]
     | list_nil () => ()
-  end // end of [val]
+  ) : void // end of [val]
 (*
   val () = begin
     prerr "f3undec_tr: d2v_fun = "; prerr d2v_fun; prerr_newline ();
@@ -1345,7 +1375,7 @@ fn i3mpdec_tr (d3c: i3mpdec): hiimpdec = let
   val d2c = d3c.i3mpdec_cst
   val decarg = d3c.i3mpdec_decarg
   val tmp = (case+ decarg of cons _ => 1 | nil _ => 0): int
-  val tmparg = $Lst.list_map_fun (d3c.i3mpdec_tmparg, s2explst_tr)
+  val tmparg = s2explstlst_tr (loc, d3c.i3mpdec_tmparg)
   val def = d3exp_tr d3c.i3mpdec_def
   val () = begin case+ 0 of
     | _ when d2cst_is_fun d2c => begin
@@ -1390,8 +1420,9 @@ implement d3eclst_tr (d3cs0) = res where {
           aux1 (d3cs, hid, res)
         end // end of [D3Csaspdec]
       | D3Cextype (name, s2e_def) => let
-          val hit_def = s2exp_tr (1(*deep*), s2e_def)
-          val hid = hidec_extype (d3c.d3ec_loc, name, hit_def)
+          val loc = d3c.d3ec_loc
+          val hit_def = s2exp_tr (loc, 1(*deep*), s2e_def)
+          val hid = hidec_extype (loc, name, hit_def)
         in
           aux1 (d3cs, hid, res)
         end // end of [D3Cextype]
@@ -1440,7 +1471,7 @@ implement d3eclst_tr (d3cs0) = res where {
         in
           aux1 (d3cs, hid, res)
         end // end of [D3Cimpdec]
-      | D3Cfundecs (decarg, knd, fundecs) => begin
+      | D3Cfundecs (decarg, knd, fundecs) => (
           if $Syn.funkind_is_proof knd then let
             val () = f3undeclst_prf_tr (fundecs) in aux0 (d3cs, res)
           end else let

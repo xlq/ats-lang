@@ -260,8 +260,9 @@ assume array_viewt0ype_int_type
 (*
 
 viewtypedef
-arraysize_viewt0ype_int_viewt0ype (a: viewt@ype, n:int) =
-  [l:addr | l <> null] (free_gc_v l, @[a][n] @ l | ptr l, int n)
+arraysize_viewt0ype_int_viewt0ype
+  (a: viewt@ype, n:int) = [l:addr] (free_gc_v l, @[a][n] @ l | ptr l, int n)
+// end of [arraysize_viewt0ype_int_viewt0ype]
 
 *)
 

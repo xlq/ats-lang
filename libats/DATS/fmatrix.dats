@@ -1,6 +1,39 @@
+(***********************************************************************)
+(*                                                                     *)
+(*                         Applied Type System                         *)
+(*                                                                     *)
+(*                              Hongwei Xi                             *)
+(*                                                                     *)
+(***********************************************************************)
+
+(*
+** ATS - Unleashing the Potential of Types!
+**
+** Copyright (C) 2002-2009 Hongwei Xi, Boston University
+**
+** All rights reserved
+**
+** ATS is free software;  you can  redistribute it and/or modify it under
+** the  terms of the  GNU General Public License as published by the Free
+** Software Foundation; either version 2.1, or (at your option) any later
+** version.
+** 
+** ATS is distributed in the hope that it will be useful, but WITHOUT ANY
+** WARRANTY; without  even  the  implied  warranty  of MERCHANTABILITY or
+** FITNESS FOR A PARTICULAR PURPOSE.  See the  GNU General Public License
+** for more details.
+** 
+** You  should  have  received  a  copy of the GNU General Public License
+** along  with  ATS;  see  the  file  COPYING.  If not, write to the Free
+** Software Foundation, 51  Franklin  Street,  Fifth  Floor,  Boston,  MA
+** 02110-1301, USA.
+*)
+
+(* ****** ****** *)
+
 (*
 **
-** An interface for ATS to interact with BLAS and LAPACK
+** Fortran matrices: column-major representation
 **
 ** Contributed by Hongwei Xi (hwxi AT cs DOT bu DOT edu)
 ** Contributed by Shivkumar Chandrasekaran (shiv AT ece DOT ucsb DOT edu)
@@ -11,6 +44,12 @@
 
 (* ****** ****** *)
 
+//
+// License: LGPL 3.0 (available at http://www.gnu.org/licenses/lgpl.txt)
+//
+
+(* ****** ****** *)
+
 staload "libats/SATS/genarrays.sats"
 
 (* ****** ****** *)
@@ -18,6 +57,39 @@ staload "libats/SATS/genarrays.sats"
 staload "libats/SATS/fmatrix.sats"
 
 (* ****** ****** *)
+
+implement fmatrix_ptr_alloc_tsz {a} (m, n, tsz) = let
+  val (pf_mn | mn) = m imul2 n
+  prval () = mul_nat_nat_nat (pf_mn)
+  val mn_sz = size1_of_int1 mn
+  val (pf_gc, pf_arr | p_arr) = array_ptr_alloc_tsz {a} (mn_sz, tsz)
+  prval pf_fmat = fmatrix_v_of_array_v (pf_mn, pf_arr)
+in
+  (pf_gc, pf_mn, pf_fmat | p_arr)
+end // end of [fmatrix_ptr_alloc_tsz]
+
+implement{a} fmatrix_ptr_alloc (m, n) =
+  fmatrix_ptr_alloc_tsz {a} (m, n, sizeof<a>)
+// end of [fmatrix_ptr_alloc]
+
+(* ****** ****** *)
+
+implement fmatrix_ptr_free 
+  (pf_gc, pf_mn, pf_fmat | p) = let
+  prval (pf2_mn, pf_arr) = array_v_of_fmatrix_v (pf_fmat)
+  prval () = mul_isfun (pf2_mn, pf_mn)
+  val () = array_ptr_free (pf_gc, pf_arr | p)
+in
+  // nothing
+end // end of [fmatrix_ptr_free]
+
+(* ****** ****** *)
+
+implement{a}
+  fmatrix_ptr_initialize_elt (base, m, n, x) = let
+  var x: a = x in
+  fmatrix_ptr_initialize_elt_tsz {a} (base, m, n, x, sizeof<a>)
+end // end of [fmatrix_ptr_initialize_elt]
 
 implement fmatrix_ptr_initialize_elt_tsz {a}
   (base, m, n, x, tsz) = () where {
@@ -135,6 +207,30 @@ implement{a} fmatrix_ptr_set_elt_at
   val () = !p_elt := x
   prval () = view@ base := fpf_mat (pf_elt)
 } // end of [fmatrix_ptr_set_elt_at]
+
+(* ****** ****** *)
+
+implement fmatrix_ptr_copy_tsz
+  {a} {m,n} (A, B, m, n, tsz) = let
+  val [mn:int] (pf_mn | mn) = m imul2 n
+  prval () = mul_nat_nat_nat (pf_mn)
+  prval (pf2_mn, pfA_arr) = array_v_of_fmatrix_v {a} {m,n} (view@ A)
+  prval (pf3_mn, pfB_arr) = array_v_of_fmatrix_v {a?} {m,n} (view@ B)
+  prval () = mul_isfun (pf_mn, pf2_mn)
+  prval () = mul_isfun (pf_mn, pf3_mn)
+  stavar lA: addr and lB: addr
+  prval pfA_arr = pfA_arr: array_v (a, mn, lA)
+  prval pfB_arr = pfB_arr: array_v (a?, mn, lB)
+  val () = array_ptr_copy_tsz {a} {mn} (A, B, size1_of_int1 mn, tsz)
+  prval () = view@ A := fmatrix_v_of_array_v {a} {m,n} {mn} (pf2_mn, pfA_arr)
+  prval () = view@ B := fmatrix_v_of_array_v {a} {m,n} {mn} (pf3_mn, pfB_arr)
+in
+  // nothing
+end // end of [fmatrix_ptr_copy_tsz]
+
+implement{a} fmatrix_ptr_copy (A, B, m, n) =
+  fmatrix_ptr_copy_tsz {a} (A, B, m, n, sizeof<a>)
+// end of [fmatrix_ptr_copy]
 
 (* ****** ****** *)
 

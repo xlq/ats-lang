@@ -261,7 +261,7 @@ in
   | (HIPfloat f1, HIPfloat f2) => (f1 = f2)
   | (HIPint (_, i1), HIPint (_, i2)) =>
       $IntInf.eq_intinf_intinf (i1, i2)
-  | (HIPlst (hips1, _), HIPlst (hips2, _)) =>
+  | (HIPlst (_, hips1), HIPlst (_, hips2)) =>
       hipatlst_test_int (hips1, hips2)
   | (HIPrec (_, lhips1, _), HIPrec (_, lhips2, _)) =>
       labhipatlst_test_int (lhips1, lhips2)
@@ -355,7 +355,7 @@ in
   | (HIPfloat f1, HIPfloat f2) => (f1 = f2)
   | (HIPint (_, i1), HIPint (_, i2)) =>
       $IntInf.eq_intinf_intinf (i1, i2)
-  | (HIPlst (hips1, _), HIPlst (hips2, _)) =>
+  | (HIPlst (_, hips1), HIPlst (_, hips2)) =>
       hipatlst_test_sub (hips1, hips2)
   | (HIPrec (_, lhips1, _), HIPrec (_, lhips2, _)) =>
       labhipatlst_test_sub (lhips1, lhips2)
