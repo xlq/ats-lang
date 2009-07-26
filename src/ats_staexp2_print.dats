@@ -453,7 +453,7 @@ in
             prstr "["); fprint_s2exp (pf | out, s2e); prstr "]")
           end
         | None () => ()
-      end
+      end // end of [val]
 *)
     in
       // empty

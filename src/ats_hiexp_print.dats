@@ -60,47 +60,47 @@ macdef fprint_label = $Lab.fprint_label
 (* ****** ****** *)
 
 implement fprint_hityp (pf | out, hit) = let
-  macdef strpr (s) = fprint1_string (pf | out, ,(s))
+  macdef prstr (s) = fprint1_string (pf | out, ,(s))
 in
   case+ hit.hityp_node of
   | HITextype name => begin
-      strpr "HITextype(";
+      prstr "HITextype(";
       fprint_string (pf | out, name);
-      strpr ")"
+      prstr ")"
     end // end of [HITextype]
   | HITfun (fc, hits_arg, hit_res) => begin
-      strpr "HITfun(";
+      prstr "HITfun(";
       $Syn.fprint_funclo (pf | out, fc);
-      strpr "; ";
+      prstr "; ";
       fprint_hityplst (pf | out, hits_arg);
-      strpr "; ";
+      prstr "; ";
       fprint_hityp (pf | out, hit_res);
-      strpr ")"
+      prstr ")"
     end // end of [HITfun]
   | HITrefarg (refval, hit) => begin
-      strpr "HITrefarg(";
+      prstr "HITrefarg(";
       fprint1_int (pf | out, refval);
-      strpr "; ";
+      prstr "; ";
       fprint_hityp (pf | out, hit);
-      strpr ")"
+      prstr ")"
     end // end of [HITrefarg]
   | HITtyrecsin hit => begin
-      strpr "HITtyrecsin(";
+      prstr "HITtyrecsin(";
       fprint_hityp (pf | out, hit);
-      strpr ")"
+      prstr ")"
     end // end of [HITtyrecsin]
   | HITtyrectemp (knd, lhits) => begin
       fprint1_string (pf | out, "HITtyrectemp(...)")
     end
   | HITtysumtemp (d2c, hits) => begin
-      strpr "HITsumtemp(";
+      prstr "HITsumtemp(";
       fprint_d2con (pf | out, d2c);
-      strpr "; ";
+      prstr "; ";
       fprint_hityplst (pf | out, hits);
-      strpr ")"
+      prstr ")"
     end // end of [HITtysumtemp]
   | HITs2var s2v => begin
-      strpr "HITs2var("; fprint_s2var (pf | out, s2v); strpr ")"
+      prstr "HITs2var("; fprint_s2var (pf | out, s2v); prstr ")"
     end
   | _ => let
       val HITNAM (knd, name) = hit.hityp_name
@@ -145,51 +145,51 @@ implement prerr_hityplst (hits) = prerr_mac (fprint_hityplst, hits)
 (* ****** ****** *)
 
 implement fprint_hipat (pf | out, hip0) = let
-  macdef strpr (s) = fprint1_string (pf | out, ,(s))
+  macdef prstr (s) = fprint1_string (pf | out, ,(s))
 in
   case+ hip0.hipat_node of
   | HIPann (hip, hit_ann) => begin
-      strpr "HIPann(";
+      prstr "HIPann(";
       fprint_hipat (pf | out, hip);
-      strpr "; ";
+      prstr "; ";
       fprint_hityp (pf | out, hit_ann);
-      strpr ")"
+      prstr ")"
     end // end of [HIPann]
   | HIPany () => begin
       fprint1_string (pf | out, "HIPany()")
     end
   | HIPas (knd, d2v, hip) => begin
-      strpr "HIPas(";
+      prstr "HIPas(";
       fprint1_int (pf | out, knd);
-      strpr "; ";
+      prstr "; ";
       fprint_d2var (pf | out, d2v);
-      strpr "; ";
+      prstr "; ";
       fprint_hipat (pf | out, hip);
-      strpr ")"
+      prstr ")"
     end // end of [HIPas]
   | HIPbool b => begin
-      strpr "HIPbool("; fprint1_bool (pf | out, b); strpr ")"
+      prstr "HIPbool("; fprint1_bool (pf | out, b); prstr ")"
     end // end of [HIPbool]
   | HIPchar c => begin
-      strpr "HIPchar("; fprint1_char (pf | out, c); strpr ")"
+      prstr "HIPchar("; fprint1_char (pf | out, c); prstr ")"
     end // end of [HIPchar]
   | HIPcon (freeknd, d2c, hips_arg, hit_sum) => begin
-      strpr "HIPcon(";
+      prstr "HIPcon(";
       fprint1_int (pf | out, freeknd);
-      strpr "; ";
+      prstr "; ";
       fprint_d2con (pf | out, d2c);
-      strpr "; ";
+      prstr "; ";
       fprint_hipatlst (pf | out, hips_arg);
-      strpr "; ";
+      prstr "; ";
       fprint_hityp (pf | out, hit_sum);
-      strpr ")"
+      prstr ")"
     end // end of [HIPcon]
   | HIPcon_any (freeknd, d2c) => begin
-      strpr "HIPcon_any(";
+      prstr "HIPcon_any(";
       fprint1_int (pf | out, freeknd);
-      strpr "; ";
+      prstr "; ";
       fprint_d2con (pf | out, d2c);
-      strpr ")"
+      prstr ")"
     end // end of [HIPcon_any]
   | HIPempty () => begin
       fprint1_string (pf | out, "HIPempty()");
@@ -198,31 +198,31 @@ in
       fprintf1_exn (pf | out, "HIPfloat(%s)", @(f))
     end
   | HIPint (str, int) => begin
-      strpr "HIPint(";
+      prstr "HIPint(";
       $IntInf.fprint_intinf (pf | out, int);
-      strpr ")"
+      prstr ")"
     end // end of [HIPint]
   | HIPlst (hit_elt, hips_elt) => begin
-      strpr "HIPlst(";
+      prstr "HIPlst(";
       fprint_hityp (pf | out, hit_elt);
-      strpr "; ";
+      prstr "; ";
       fprint_hipatlst (pf | out, hips_elt);
-      strpr ")"
+      prstr ")"
     end // end of [HIPlst]
   | HIPrec (knd, lhips, hit_rec) => begin
-      strpr "HIPrec(";
+      prstr "HIPrec(";
       fprint1_int (pf | out, knd);
-      strpr "; ";
+      prstr "; ";
       fprint_labhipatlst (pf | out, lhips);
-      strpr "; ";
+      prstr "; ";
       fprint_hityp (pf | out, hit_rec);
-      strpr ")"
+      prstr ")"
     end // end of [HIPrec]
   | HIPstring s => begin
-      strpr "HIPstring("; fprint1_string (pf | out, s); strpr ")"
+      prstr "HIPstring("; fprint1_string (pf | out, s); prstr ")"
     end // end of [HIPstring]
   | HIPvar (refknd, d2v) => begin
-      strpr "HIPvar("; fprint_d2var (pf | out, d2v); strpr ")"
+      prstr "HIPvar("; fprint_d2var (pf | out, d2v); prstr ")"
     end // end of [HIPvar]
 end // end of [fprint_hipat]
 
@@ -232,14 +232,17 @@ implement fprint_hipatlst {m} (pf | out, hips0) = let
     | list_cons (hip, hips) => begin
         if i > 0 then fprint1_string (pf | out, ", ");
         fprint_hipat (pf | out, hip); aux (out, i+1, hips)
-      end
+      end (* end of [list_cons] *)
     | list_nil () => ()
+  // end of [aux]
 in
   aux (out, 0, hips0)
 end // end of [fprint_hipatlst]
 
-implement fprint_labhipatlst {m} (pf | out, lhips0) = let
-  fun aux (out: &FILE m, i: int, lhips: labhipatlst): void =
+implement fprint_labhipatlst
+  {m} (pf | out, lhips0) = let
+  fun aux
+    (out: &FILE m, i: int, lhips: labhipatlst): void =
     case+ lhips of
     | LABHIPATLSTcons (l, hip, lhips) => begin
         if i > 0 then fprint1_string (pf | out, ", ");
@@ -253,6 +256,7 @@ implement fprint_labhipatlst {m} (pf | out, lhips0) = let
         fprint1_string (pf | out, "...")
       end
     | LABHIPATLSTnil () => ()
+  // end of [aux]
 in
   aux (out, 0, lhips0)
 end // end of [fprint_labhipatlst]
@@ -268,279 +272,279 @@ implement prerr_hipatlst (hips) = prerr_mac (fprint_hipatlst, hips)
 (* ****** ****** *)
 
 implement fprint_hiexp (pf | out, hie0) = let
-  macdef strpr (s) = fprint1_string (pf | out, ,(s))
+  macdef prstr (s) = fprint1_string (pf | out, ,(s))
 in
   case+ hie0.hiexp_node of
   | HIEapp (hit_fun, hie_fun, hies_arg) => begin
-      strpr "HIEapp(";
+      prstr "HIEapp(";
       fprint_hityp (pf | out, hit_fun);
-      strpr "; ";
+      prstr "; ";
       fprint_hiexp (pf | out, hie_fun);
-      strpr "; ";
+      prstr "; ";
       fprint_hiexplst (pf | out, hies_arg);
-      strpr ")"
+      prstr ")"
     end // end of [HIEapp]
   | HIEarrinit (hit_elt, ohie_asz, hies_elt) => begin
-      strpr "HIEarrinit(";
+      prstr "HIEarrinit(";
       fprint_hityp (pf | out, hit_elt);
-      strpr "; ";
+      prstr "; ";
       begin case+ ohie_asz of
       | Some hie => fprint_hiexp (pf | out, hie) | None () => ()
       end;
-      strpr "; ";
+      prstr "; ";
       fprint_hiexplst (pf | out, hies_elt);
-      strpr ")"
+      prstr ")"
     end // end of [HIEarrinit]
   | HIEarrsize (hit_elt, hies_elt) => begin
-      strpr "HIEarrsize(";
+      prstr "HIEarrsize(";
       fprint_hityp (pf | out, hit_elt);
-      strpr "; ";
+      prstr "; ";
       fprint_hiexplst (pf | out, hies_elt);
-      strpr ")"
+      prstr ")"
     end // end of [HIEarrsize]
   | HIEassgn_ptr (hie, hils, hie_val) => begin
-      strpr "HIEassgn_ptr(";
+      prstr "HIEassgn_ptr(";
       fprint_hiexp (pf | out, hie);
-      strpr "; ";
+      prstr "; ";
       fprint_hilablst (pf | out, hils);
-      strpr "; ";
+      prstr "; ";
       fprint_hiexp (pf | out, hie_val);
-      strpr ")"
+      prstr ")"
     end // end of [HIEassgn_ptr]
   | HIEassgn_var (d2v, hils, hie_val) => begin
-      strpr "HIEassgn_var(";
+      prstr "HIEassgn_var(";
       fprint_d2var (pf | out, d2v);
-      strpr "; ";
+      prstr "; ";
       fprint_hilablst (pf | out, hils);
-      strpr "; ";
+      prstr "; ";
       fprint_hiexp (pf | out, hie_val);
-      strpr ")"
+      prstr ")"
     end // end of [HIEassgn_var]
   | HIEbool b => begin
-      strpr "HIEbool("; fprint1_bool (pf | out, b); strpr ")"
+      prstr "HIEbool("; fprint1_bool (pf | out, b); prstr ")"
     end
   | HIEcaseof _ => begin
-      strpr "HIEcaseof("; fprint1_string (pf | out, "..."); strpr ")"
+      prstr "HIEcaseof("; fprint1_string (pf | out, "..."); prstr ")"
     end // end of [HIEcaseof]
   | HIEcastfn (d2c, hie) => begin
-      strpr "HIEcastfn(";
-      fprint_d2cst (pf | out, d2c); strpr "; "; fprint_hiexp (pf | out, hie);
-      strpr ")"
+      prstr "HIEcastfn(";
+      fprint_d2cst (pf | out, d2c); prstr "; "; fprint_hiexp (pf | out, hie);
+      prstr ")"
     end // end of [HIEcastfn]
   | HIEchar c => begin
-      strpr "HIEchar("; fprint1_char (pf | out, c); strpr ")"
+      prstr "HIEchar("; fprint1_char (pf | out, c); prstr ")"
     end // end of [HIEchar]
   | HIEcon (hit_sum, d2c, hies_arg) => begin
-      strpr "HIEcon(";
+      prstr "HIEcon(";
       fprint_hityp (pf | out, hit_sum);
-      strpr "; ";
+      prstr "; ";
       fprint_d2con (pf | out, d2c);
-      strpr "; ";
+      prstr "; ";
       fprint_hiexplst (pf | out, hies_arg);
-      strpr ")"
+      prstr ")"
     end // end of [HIEcon]
   | HIEcst d2c => begin
-      strpr "HIEcst("; fprint_d2cst (pf | out, d2c); strpr ")"
+      prstr "HIEcst("; fprint_d2cst (pf | out, d2c); prstr ")"
     end
   | HIEdynload fil => begin
-      strpr "HIEdynload(";
+      prstr "HIEdynload(";
       $Fil.fprint_filename (pf | out, fil);
-      strpr ")";
+      prstr ")";
     end
   | HIEempty () => begin
       fprint1_string (pf | out, "HIEempty()")
     end
   | HIEextval code => begin
-      strpr "HIEextval("; fprint1_string (pf | out, code); strpr ")"
+      prstr "HIEextval("; fprint1_string (pf | out, code); prstr ")"
     end
   | HIEfix (d2v_fun, hie_body) => begin
-      strpr "HIEfix(";
+      prstr "HIEfix(";
       fprint_d2var (pf | out, d2v_fun);
-      strpr "; ";
+      prstr "; ";
       fprint_hiexp (pf | out, hie_body);
-      strpr ")"
+      prstr ")"
     end // end of [HIEfix]
   | HIEfloat f(*string*) => begin
-      strpr "HIEfloat("; fprint1_string (pf | out, f); strpr ")"
+      prstr "HIEfloat("; fprint1_string (pf | out, f); prstr ")"
     end
   | HIEfloatsp f(*string*) => begin
-      strpr "HIEfloatsp("; fprint1_string (pf | out, f); strpr ")"
+      prstr "HIEfloatsp("; fprint1_string (pf | out, f); prstr ")"
     end
   | HIEfreeat hie => begin
-      strpr "HIEfreeat("; fprint_hiexp (pf | out, hie); strpr ")"
+      prstr "HIEfreeat("; fprint_hiexp (pf | out, hie); prstr ")"
     end
   | HIEif (hie_cond, hie_then, hie_else) => begin
-      strpr "HIEif(";
+      prstr "HIEif(";
       fprint_hiexp (pf | out, hie_cond);
-      strpr "; ";
+      prstr "; ";
       fprint_hiexp (pf | out, hie_then);
-      strpr "; ";
+      prstr "; ";
       fprint_hiexp (pf | out, hie_else);
-      strpr ")"
+      prstr ")"
     end // end of [HIEif]
   | HIEint (str, int) => begin
-      strpr "HIEint(";
+      prstr "HIEint(";
       $IntInf.fprint_intinf (pf | out, int);
-      strpr ")"
+      prstr ")"
     end // end of [HIEint]
   | HIEintsp (str, int) => begin
-      strpr "HIEintsp("; fprint1_string (pf | out, str); strpr ")"
+      prstr "HIEintsp("; fprint1_string (pf | out, str); prstr ")"
     end
   | HIElam (hips_arg, hie_body) => begin
-      strpr "HIElam(";
+      prstr "HIElam(";
       fprint_hipatlst (pf | out, hips_arg);
-      strpr "; ";
+      prstr "; ";
       fprint_hiexp (pf | out, hie_body);
-      strpr ")"
+      prstr ")"
     end // end of [HIElam]
   | HIElaminit (hips_arg, hie_body) => begin
-      strpr "HIElaminit(";
+      prstr "HIElaminit(";
       fprint_hipatlst (pf | out, hips_arg);
-      strpr "; ";
+      prstr "; ";
       fprint_hiexp (pf | out, hie_body);
-      strpr ")"
+      prstr ")"
     end // end of [HIElaminit]
   | HIElazy_delay (hie_eval) => begin
-      strpr "HIElazy_delay(";
+      prstr "HIElazy_delay(";
       fprint_hiexp (pf | out, hie_eval);
-      strpr ")"
+      prstr ")"
     end // end of [HIElazy_delay]
   | HIElazy_vt_delay (hie_eval, hie_free) => begin
-      strpr "HIElazy_delay(";
+      prstr "HIElazy_delay(";
       fprint_hiexp (pf | out, hie_eval);
-      strpr "; ";
+      prstr "; ";
       fprint_hiexp (pf | out, hie_free);
-      strpr ")"
+      prstr ")"
     end // end of [HIElazy_vt_delay]
   | HIElazy_force (lin, hie_lazy) => begin
-      strpr "HIElazy_force(";
+      prstr "HIElazy_force(";
       fprint_int (pf | out, lin);
-      strpr "; ";
+      prstr "; ";
       fprint_hiexp (pf | out, hie_lazy);
-      strpr ")"
+      prstr ")"
     end // end of [HIElazy_force]
   | HIElet (hids, hie) => begin
-      strpr "HIElet(";
+      prstr "HIElet(";
       fprint1_string (pf | out, "...");
-      strpr "; ";
+      prstr "; ";
       fprint_hiexp (pf | out, hie);
-      strpr ")"
+      prstr ")"
     end // end of [HIElet]
   | HIEloop (ohie_init, hie_test, ohie_post, hie_body) => begin
-      strpr "HIEloop(";
+      prstr "HIEloop(";
       begin case+ ohie_post of
         | None () => () | Some hie => fprint_hiexp (pf | out, hie)
       end;
-      strpr "; ";
+      prstr "; ";
       fprint_hiexp (pf | out, hie_test);
-      strpr "; ";
+      prstr "; ";
       begin case+ ohie_post of
         | None () => () | Some hie => fprint_hiexp (pf | out, hie)
       end;
-      strpr "; ";
+      prstr "; ";
       fprint_hiexp (pf | out, hie_body);
-      strpr ")"
+      prstr ")"
     end // end of [HIEloop]
   | HIEloopexn i => begin
-      strpr "HIEloopexn("; fprint1_int (pf | out, i); strpr ")"
+      prstr "HIEloopexn("; fprint1_int (pf | out, i); prstr ")"
     end // end of [HIEloopexn]
   | HIElst (lin, hit, hies) => begin
-      strpr "HIElst(";
+      prstr "HIElst(";
       fprint1_int (pf | out, lin);
-      strpr "; ";
+      prstr "; ";
       fprint_hityp (pf | out, hit);
-      strpr "; ";
+      prstr "; ";
       fprint_hiexplst (pf | out, hies);
-      strpr ")"
+      prstr ")"
     end // end of [HIElst]
   | HIEptrof_ptr (hie, hils) => begin
-      strpr "HIEptrof_ptr(";
+      prstr "HIEptrof_ptr(";
       fprint_hiexp (pf | out,  hie);
-      strpr "; ";
+      prstr "; ";
       fprint_hilablst (pf | out, hils);
-      strpr ")"
+      prstr ")"
     end // end of [HIEptrof_ptr]
   | HIEptrof_var (d2v, hils) => begin
-      strpr "HIEptrof_var(";
+      prstr "HIEptrof_var(";
       fprint_d2var (pf | out,  d2v);
-      strpr "; ";
+      prstr "; ";
       fprint_hilablst (pf | out, hils);
-      strpr ")"
+      prstr ")"
     end // end of [HIEptrof_var]
   | HIEraise (hie) => begin
-      strpr "HIEraise("; fprint_hiexp (pf | out, hie); strpr ")"
+      prstr "HIEraise("; fprint_hiexp (pf | out, hie); prstr ")"
     end // end of [HIEraise]
   | HIErec (knd, hit_rec, lhies) => begin
-      strpr "HIErec(";
+      prstr "HIErec(";
       fprint1_int (pf | out, knd);
-      strpr "; ";
+      prstr "; ";
       fprint_hityp (pf | out, hit_rec);
-      strpr "; ";
+      prstr "; ";
       fprint_labhiexplst (pf | out, lhies);
-      strpr ")"
+      prstr ")"
     end // end of [HIErec]
   | HIErefarg (refval, freeknd, hie_arg) => begin
-      strpr "HIErefarg(";
+      prstr "HIErefarg(";
       fprint1_int (pf | out, refval);
-      strpr "; ";
+      prstr "; ";
       fprint1_int (pf | out, freeknd);
-      strpr "; ";
+      prstr "; ";
       fprint_hiexp (pf | out, hie_arg);
-      strpr ")"
+      prstr ")"
     end // end of [HIErefarg]
   | HIEsel (hie, hils) => begin
-      strpr "HIEsel(";
+      prstr "HIEsel(";
       fprint_hiexp (pf | out,  hie);
-      strpr "; ";
+      prstr "; ";
       fprint_hilablst (pf | out, hils);
-      strpr ")"
+      prstr ")"
     end // end of [HIEsel]
   | HIEsel_ptr (hie, hils) => begin
-      strpr "HIEsel_ptr(";
+      prstr "HIEsel_ptr(";
       fprint_hiexp (pf | out,  hie);
-      strpr "; ";
+      prstr "; ";
       fprint_hilablst (pf | out, hils);
-      strpr ")"
+      prstr ")"
     end // end of [HIEsel_ptr]
   | HIEsel_var (d2v, hils) => begin
-      strpr "HIEsel_var(";
+      prstr "HIEsel_var(";
       fprint_d2var (pf | out,  d2v);
-      strpr "; ";
+      prstr "; ";
       fprint_hilablst (pf | out, hils);
-      strpr ")"
+      prstr ")"
     end // end of [HIEsel_var]
   | HIEseq (hies) => begin
-      strpr "HIEseq("; fprint_hiexplst (pf | out, hies); strpr ")"
+      prstr "HIEseq("; fprint_hiexplst (pf | out, hies); prstr ")"
     end // end of [HIEseq]
   | HIEsif (hie_then, hie_else) => begin
-      strpr "HIEsif(";
+      prstr "HIEsif(";
       fprint_hiexp (pf | out, hie_then);
-      strpr ", ";
+      prstr ", ";
       fprint_hiexp (pf | out, hie_else);      
-      strpr ")"
+      prstr ")"
     end // end of [HIEsif]
   | HIEsizeof (hit) => begin
-      strpr "HIEsizeof("; fprint_hityp (pf | out, hit); strpr ")"
+      prstr "HIEsizeof("; fprint_hityp (pf | out, hit); prstr ")"
     end // end of [HIEsizeof]
   | HIEspawn (hie) => begin
-      strpr "HIEspawn("; fprint_hiexp (pf | out,  hie); strpr ")"
+      prstr "HIEspawn("; fprint_hiexp (pf | out,  hie); prstr ")"
     end // end of [HIEspawn]
   | HIEstring (str, len) => begin
       fprint1_string (pf | out, "HIEstring(...)")
     end // end of [HIEstring]
   | HIEtmpcst (d2c, hitss) => begin
-      strpr "HIEtmpcst(";
+      prstr "HIEtmpcst(";
       fprint_d2cst (pf | out, d2c);
-      strpr "; ";
+      prstr "; ";
       fprint_hityplstlst (pf | out, hitss);
-      strpr ")"
+      prstr ")"
     end // end of [HIEtmpcst]
   | HIEtmpvar (d2v, hitss) => begin
-      strpr "HIEtmpvar(";
+      prstr "HIEtmpvar(";
       fprint_d2var (pf | out, d2v);
-      strpr "; ";
+      prstr "; ";
       fprint_hityplstlst (pf | out, hitss);
-      strpr ")"
+      prstr ")"
     end // end of [HIEtmpvar]
   | HIEtop () => begin
       fprint1_string (pf | out, "HIEtop()")
@@ -549,7 +553,7 @@ in
       fprint1_string (pf | out, "HIEtrywith(...)")
     end // end of [HIEtrywith]
   | HIEvar d2v => begin
-      strpr "HIEvar("; fprint_d2var (pf | out, d2v); strpr ")"
+      prstr "HIEvar("; fprint_d2var (pf | out, d2v); prstr ")"
     end // end of [HIEvar]
 end // end of [fprint_hiexp]
 
@@ -595,14 +599,14 @@ in
 end // end of [fprint_labhiexplst]
 
 implement fprint_hilab (pf | out, hil) = let
-  macdef strpr (s) = fprint1_string (pf | out, ,(s))
+  macdef prstr (s) = fprint1_string (pf | out, ,(s))
 in
   case+ hil.hilab_node of
   | HILlab (l, s2e_rec) => begin
-      strpr "HILlab("; fprint_label (pf | out, l); strpr ")"
+      prstr "HILlab("; fprint_label (pf | out, l); prstr ")"
     end // end of [HILlab]
   | HILind (hiess, s2e_elt) => begin
-      strpr "HILind("; fprint_hiexplstlst (pf | out, hiess); strpr ")"
+      prstr "HILind("; fprint_hiexplstlst (pf | out, hiess); prstr ")"
     end // end of [HILind]
 end // end of [fprint_hilab]
 

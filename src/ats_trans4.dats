@@ -275,6 +275,8 @@ in
   | _ => err (loc0, s2t0, s2e0)
 end // end of [s2exp_tr]
 
+(* ****** ****** *)
+
 fun s2explst_tr
   (loc0: loc_t, s2es: s2explst): hityplst =
   case+ s2es of
@@ -296,6 +298,8 @@ fun s2explstlst_tr
     end // end of [list_cons]
   | list_nil () => list_nil ()
 // end of [s2explstlst_tr]
+
+(* ****** ****** *)
 
 implement s2explst_arg_tr
   (loc0, npf, s2es) = let
@@ -353,12 +357,15 @@ end // end of [labs2explst_tr]
 
 fn hipatlst_typ_get (hips: hipatlst): hityplst =
   $Lst.list_map_fun {hipat, hityp} (hips, lam hip =<> hip.hipat_typ)
+// end of [hipatlst_typ_get]
 
 fn p3at_is_proof (p3t: p3at): bool = s2exp_is_proof (p3t.p3at_typ)
 
 fn p3atlst_arg_tr
-  (npf: int, p3ts: p3atlst): hipatlst = let
-  fun aux (i: int, p3ts: p3atlst): hipatlst = case+ p3ts of
+  (npf: int, p3ts: p3atlst)
+  : hipatlst = aux (npf, p3ts) where {
+  fun aux (i: int, p3ts: p3atlst): hipatlst =
+    case+ p3ts of
     | list_cons (p3t, p3ts) =>
         if i > 0 then aux (i-1, p3ts)
         else begin
@@ -368,9 +375,7 @@ fn p3atlst_arg_tr
       (* end of [list_cons] *)
     | list_nil () => list_nil ()
   // end of [aux]
-in
-  aux (npf, p3ts)
-end // end of [p3atlst_arg_tr]
+} // end of [p3atlst_arg_tr]
 
 fn labp3atlst_arg_tr
   (npf: int, lp3ts: labp3atlst)
@@ -1471,7 +1476,7 @@ implement d3eclst_tr (d3cs0) = res where {
         in
           aux1 (d3cs, hid, res)
         end // end of [D3Cimpdec]
-      | D3Cfundecs (decarg, knd, fundecs) => (
+      | D3Cfundecs (decarg, knd, fundecs) => begin
           if $Syn.funkind_is_proof knd then let
             val () = f3undeclst_prf_tr (fundecs) in aux0 (d3cs, res)
           end else let

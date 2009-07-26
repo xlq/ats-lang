@@ -668,7 +668,7 @@ in
       prstr ")"
     end // end of [D2Ewhere]
   | D2Ewhile (inv, test, body) => begin
-        prstr "D2Ewhile(";
+      prstr "D2Ewhile(";
       fprint1_string (pf | out, "...");
       prstr "; ";
       fprint_d2exp (pf | out, test);
@@ -683,11 +683,11 @@ end // end of [fprint_d2exp]
 implement fprint_d2explst {m} (pf | out, d2es) = let
   fun aux (out: &FILE m, i: int, d2es: d2explst)
     : void = begin case+ d2es of
-    | cons (d2e, d2es) => begin
+    | list_cons (d2e, d2es) => begin
         if (i > 0) then fprint1_string (pf | out, ", ");
         fprint_d2exp (pf | out, d2e); aux (out, i + 1, d2es)
       end
-    | nil () => ()
+    | list_nil () => ()
   end // end of [aux]
 in
   aux (out, 0, d2es)
@@ -750,7 +750,7 @@ in
   | D2LABlab lab => fprint_label (pf | out, lab)
   | D2LABind ind =>  begin
       prstr "["; fprint_d2explstlst (pf | out, ind); prstr "]"
-    end
+    end // end of [D2LABind]
 end // end of [fprint_d2lab]
 
 implement fprint_d2lablst {m} (pf | out, d2ls) = let

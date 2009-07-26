@@ -145,24 +145,24 @@ end // end of [icstrlst_free]
 (* ****** ****** *)
 
 implement fprint_icstr {m} {n} (pf_mod | out, ic, n) = let
-  macdef strpr (s) = fprint1_string (pf_mod | out, ,(s))
+  macdef prstr (s) = fprint1_string (pf_mod | out, ,(s))
 in
   case+ ic of
   | ICvec (knd, !ivp) => begin
-      strpr "ICvec("; strpr "knd=";
+      prstr "ICvec("; prstr "knd=";
       fprint1_int (pf_mod | out, knd);
-      strpr "; ";
+      prstr "; ";
       fprint_intvecptr (pf_mod | out, !ivp, n);
-      strpr ")";
+      prstr ")";
       fprint_newline (pf_mod | out);
       fold@ ic
     end // end of [ICvec]
   | ICveclst (knd, !ics) => begin
-      strpr "ICveclst("; strpr "knd=";
+      prstr "ICveclst("; prstr "knd=";
       fprint1_int (pf_mod | out, knd);
-      strpr "; ";
+      prstr "; ";
       fprint_icstrlst (pf_mod | out, !ics, n);
-      strpr ")";
+      prstr ")";
       fprint_newline (pf_mod | out);
       fold@ ic
     end // end of [ICveclst]
