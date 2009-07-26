@@ -1371,7 +1371,7 @@ end // end of [i3mpdec_tr]
 
 (* ****** ****** *)
 
-implement d3eclst_tr (d3cs0: d3eclst): hideclst = let
+implement d3eclst_tr (d3cs0) = let
   // [aux0] and [aux1] are mutually tail-recursive
   fn* aux0 (d3cs: d3eclst, res: &hideclst? >> hideclst)
     : void = begin case+ d3cs of
