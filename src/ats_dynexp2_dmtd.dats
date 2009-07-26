@@ -98,24 +98,31 @@ end // end of [d2mtd_make]
 
 implement d2mtd_loc_get (d2m) =
   let val (vbox pf | p) = d2m in p->d2mtd_loc end
+// end of [d2mtd_loc_get]
 
 implement d2mtd_sym_get (d2m) =
   let val (vbox pf | p) = d2m in p->d2mtd_sym end
+// end of [d2mtd_sym_get]
 
 implement d2mtd_knd_get (d2m) =
   let val (vbox pf | p) = d2m in p->d2mtd_knd end
+// end of [d2mtd_knd_get]
 
 implement d2mtd_decarg_get (d2m) =
   let val (vbox pf | p) = d2m in p->d2mtd_decarg end
+// end of [d2mtd_decarg_get]
 
 implement d2mtd_sublst_get (d2m) =
   let val (vbox pf | p) = d2m in p->d2mtd_sublst end
+// end of [d2mtd_sublst_get]
 
 implement d2mtd_typ_get (d2m) =
   let val (vbox pf | p) = d2m in p->d2mtd_typ end
+// end of [d2mtd_typ_get]
 
 implement d2mtd_stamp_get (d2m) =
   let val (vbox pf | p) = d2m in p->d2mtd_stamp end
+// end of [d2mtd_stamp_get]
 
 end // end of [local]
 

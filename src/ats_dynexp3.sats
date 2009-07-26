@@ -7,33 +7,32 @@
 (***********************************************************************)
 
 (*
- * ATS/Anairiats - Unleashing the Potential of Types!
- *
- * Copyright (C) 2002-2008 Hongwei Xi, Boston University
- *
- * All rights reserved
- *
- * ATS is free software;  you can  redistribute it and/or modify it under
- * the terms of  the GNU GENERAL PUBLIC LICENSE (GPL) as published by the
- * Free Software Foundation; either version 3, or (at  your  option)  any
- * later version.
- * 
- * ATS is distributed in the hope that it will be useful, but WITHOUT ANY
- * WARRANTY; without  even  the  implied  warranty  of MERCHANTABILITY or
- * FITNESS FOR A PARTICULAR PURPOSE.  See the  GNU General Public License
- * for more details.
- * 
- * You  should  have  received  a  copy of the GNU General Public License
- * along  with  ATS;  see the  file COPYING.  If not, please write to the
- * Free Software Foundation,  51 Franklin Street, Fifth Floor, Boston, MA
- * 02110-1301, USA.
- *
- *)
+** ATS/Anairiats - Unleashing the Potential of Types!
+**
+** Copyright (C) 2002-2008 Hongwei Xi, Boston University
+**
+** All rights reserved
+**
+** ATS is free software;  you can  redistribute it and/or modify it under
+** the terms of  the GNU GENERAL PUBLIC LICENSE (GPL) as published by the
+** Free Software Foundation; either version 3, or (at  your  option)  any
+** later version.
+** 
+** ATS is distributed in the hope that it will be useful, but WITHOUT ANY
+** WARRANTY; without  even  the  implied  warranty  of MERCHANTABILITY or
+** FITNESS FOR A PARTICULAR PURPOSE.  See the  GNU General Public License
+** for more details.
+** 
+** You  should  have  received  a  copy of the GNU General Public License
+** along  with  ATS;  see the  file COPYING.  If not, please write to the
+** Free Software Foundation,  51 Franklin Street, Fifth Floor, Boston, MA
+** 02110-1301, USA.
+*)
 
 (* ****** ****** *)
 
-// Time: December 2007
 // Author: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
+// Time: December 2007
 
 (* ****** ****** *)
 
@@ -156,11 +155,12 @@ datatype d3ec_node =
   | D3Cnone
   | D3Clist of d3eclst
   | D3Csaspdec of s2aspdec
+  | D3Cdcstdec of // dynamic constants
+      ($Syn.dcstkind, d2cstlst)
   | D3Cdatdec of // datatype declarations
       ($Syn.datakind, s2cstlst)
   | D3Cexndec of d2conlst
-  | D3Cdcstdec of // dynamic constants
-      ($Syn.dcstkind, d2cstlst)
+  | D3Cclassdec of c3lassdec
   | D3Cextype of // external type
       (string(*name*), s2exp(*def*))
   | D3Cextval of // external value
@@ -185,6 +185,7 @@ datatype d3ec_node =
       (fil_t, Option d3eclst)
   | D3Cdynload of (* dynamic load *)
       fil_t
+// end of [d3ec_node]
 
 and d3exp_node =
   | D3Eann_type of (* ascribed expression *)
@@ -303,15 +304,28 @@ and d3exp_node =
 and labd3explst =
   | LABD3EXPLSTnil
   | LABD3EXPLSTcons of (lab_t, d3exp, labd3explst)
+// end of [labd3explst]
 
 and d3lab0_node = D3LAB0lab of lab_t | D3LAB0ind of d3explstlst
 
 and d3lab1_node =
   D3LAB1lab of (lab_t, s2exp) | D3LAB1ind of (d3explstlst, s2exp)
+// end of [d3lab1_node]
 
+and m3thdec =
+  | M3THDECmtd of (
+      loc_t, sym_t, d2var_t(*self*), d3expopt(*def*)
+    ) // end of [M1THDECmtd]
+  | M3THDECval of
+      (loc_t, sym_t, s2exp, d3expopt)
+  | M3THDECvar of
+      (loc_t, sym_t, s2exp, d3expopt)
+  | M3THDECimp of (loc_t, d2mtd_t, d3exp)
+// end of [m3thdec]
+  
 where d3ec = '{
   d3ec_loc= loc_t, d3ec_node= d3ec_node
-}
+} // end of [d3ec]
 
 and d3eclst = List d3ec
 
@@ -320,7 +334,7 @@ and d3exp = '{
 , d3exp_eff= s2eff
 , d3exp_typ= s2exp
 , d3exp_node= d3exp_node
-}
+} // end of [d3exp]
 
 and d3explst (n:int) = list (d3exp, n)
 and d3explst = [n:nat] d3explst n
@@ -332,13 +346,13 @@ and d3explstopt = Option d3explst
 
 and d3lab0 = '{
   d3lab0_loc= loc_t, d3lab0_node= d3lab0_node
-}
+} // end of [d3lab0]
 
 and d3lab0lst = List d3lab0
 
 and d3lab1 = '{
   d3lab1_loc= loc_t, d3lab1_node= d3lab1_node
-}
+} // end of [d3lab1]
 
 and d3lab1lst = List d3lab1
 
@@ -346,7 +360,7 @@ and d3lab1lst = List d3lab1
 
 and m3atch = '{
   m3atch_loc= loc_t, m3atch_exp= d3exp, m3atch_pat= p3atopt
-}
+} // end of [m3atch]
 
 and m3atchlst = List m3atch
 
@@ -357,7 +371,7 @@ and c3lau (n:int) = '{ (* type for clauses *)
 , c3lau_seq= int // sequentiality
 , c3lau_neg= int // negativativy
 , c3lau_exp= d3exp // expression body
-}
+} // end of [c3lau]
 
 and c3lau = [n:nat] c3lau n
 
@@ -368,9 +382,18 @@ and sc3lau = '{ (* type for static clauses *)
   sc3lau_loc= loc_t
 , sc3lau_pat= sp2at // static pattern
 , sc3lau_exp= d3exp
-}
+} // end of [sc3lau]
 
 and sc3laulst = List sc3lau
+
+(* ****** ****** *)
+
+and m3thdeclst = List m3thdec
+
+and c3lassdec = '{
+  c3lassdec_loc= loc_t
+, c3lassdec_mtdlst= m3thdeclst
+} // end of [c3lassdec]
 
 (* ****** ****** *)
 
@@ -378,7 +401,7 @@ and v3aldec = '{
   v3aldec_loc= loc_t
 , v3aldec_pat= p3at
 , v3aldec_def= d3exp
-}
+} // end of [v3aldec]
 
 and v3aldeclst = List v3aldec
 
@@ -388,7 +411,7 @@ and f3undec = '{
   f3undec_loc= loc_t
 , f3undec_var= d2var_t
 , f3undec_def= d3exp
-}
+} // end of [f3undec]
 
 and f3undeclst = List f3undec
 
@@ -401,7 +424,7 @@ and v3ardec = '{
 , v3ardec_dvar_viw= d2var_t
 , v3ardec_typ= s2exp
 , v3ardec_ini= d3expopt
-}
+} // end of [v3ardec]
 
 and v3ardeclst = List v3ardec
 
@@ -412,7 +435,7 @@ and i3mpdec = '{
 , i3mpdec_cst= d2cst_t
 , i3mpdec_decarg= s2qualst, i3mpdec_tmparg= s2explstlst // one must be nil
 , i3mpdec_def= d3exp
-}
+} // end of [i3mpdec]
 
 (* ****** ****** *)
 
@@ -689,9 +712,10 @@ fun i3mpdec_make (
 fun d3ec_none (_: loc_t): d3ec
 fun d3ec_list (_: loc_t, _: d3eclst): d3ec
 fun d3ec_saspdec (_: loc_t, _: s2aspdec): d3ec
+fun d3ec_dcstdec (_: loc_t, k: $Syn.dcstkind, _: d2cstlst): d3ec
 fun d3ec_datdec (_: loc_t, k: $Syn.datakind, _: s2cstlst): d3ec
 fun d3ec_exndec (_: loc_t, _: d2conlst): d3ec
-fun d3ec_dcstdec (_: loc_t, k: $Syn.dcstkind, _: d2cstlst): d3ec
+fun d3ec_classdec (_: loc_t, _: c3lassdec): d3ec
 fun d3ec_extype (_: loc_t, name: string, def: s2exp): d3ec
 fun d3ec_extval (_: loc_t, name: string, def: d3exp): d3ec
 fun d3ec_extcode (_: loc_t, position: int, code: string): d3ec

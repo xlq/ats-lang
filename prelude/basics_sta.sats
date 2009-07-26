@@ -429,15 +429,16 @@ abst@ype ptrdiff_int_t0ype (i:int) = $extype "ats_ptrdiff_type"
 (* ****** ****** *)
 
 abstype
-objmod_cls_type (c:cls) // for modules index by [c]
+objmod_cls_type (c:cls) // for modules indexed by [c]
 
 abst@ype
-object_cls_t0ype (c:cls) // for objects index by [c]
+object_cls_t0ype (c:cls) // for objects indexed by [c]
 
 absviewt@ype
-object_cls_viewt0ype (c:cls) // for linear objects index by [c]
+object_cls_viewt0ype (c:cls) // for linear objects indexed by [c]
 
-abstype objref_cls_type (c:cls)
+abstype
+objref_cls_type (c:cls) // for references to objects indexed by [c]
 
 (* ****** ****** *)
 

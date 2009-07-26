@@ -713,15 +713,15 @@ and d2lab_node =
 // end of [d2lab_node]
 
 and m2thdec =
-  | M2THDECmtd of
-      (loc_t, sym_t, d2var_t(*self*), d2expopt(*def*))
-    // end of [M1THDECmtd]
+  | M2THDECmtd of (
+      loc_t, sym_t, d2var_t(*self*), d2expopt(*def*)
+    ) // end of [M1THDECmtd]
   | M2THDECval of
       (loc_t, sym_t, s2exp, d2expopt)
   | M2THDECvar of
       (loc_t, sym_t, s2exp, d2expopt)
   | M2THDECimp of (loc_t, d2mtd_t, d2exp)
-// end of [m0thdec]
+// end of [m2thdec]
   
 where d2ec = '{
   d2ec_loc= loc_t, d2ec_node= d2ec_node

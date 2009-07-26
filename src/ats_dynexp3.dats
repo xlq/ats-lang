@@ -857,6 +857,10 @@ implement d3ec_saspdec (loc, d2c) = '{
   d3ec_loc= loc, d3ec_node= D3Csaspdec (d2c)
 }
 
+implement d3ec_dcstdec (loc, dck, d3cs) = '{
+  d3ec_loc= loc, d3ec_node= D3Cdcstdec (dck, d3cs)
+}
+
 implement d3ec_datdec (loc, dck, s2cs) = '{
   d3ec_loc= loc, d3ec_node= D3Cdatdec (dck, s2cs)
 }
@@ -865,8 +869,8 @@ implement d3ec_exndec (loc, d2cs) = '{
   d3ec_loc= loc, d3ec_node= D3Cexndec (d2cs)
 }
 
-implement d3ec_dcstdec (loc, dck, d3cs) = '{
-  d3ec_loc= loc, d3ec_node= D3Cdcstdec (dck, d3cs)
+implement d3ec_classdec (loc, d2c) = '{
+  d3ec_loc= loc, d3ec_node= D3Cclassdec (d2c)
 }
 
 implement d3ec_extype (loc, name, s2e_def) = '{

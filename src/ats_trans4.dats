@@ -1371,11 +1371,13 @@ end // end of [i3mpdec_tr]
 
 (* ****** ****** *)
 
-implement d3eclst_tr (d3cs0: d3eclst): hideclst = let
-  // [aux0] and [aux1] are mutually tail-recursive
-  fn* aux0 (d3cs: d3eclst, res: &hideclst? >> hideclst)
-    : void = begin case+ d3cs of
-    | cons (d3c, d3cs) => begin case+ d3c.d3ec_node of
+implement d3eclst_tr (d3cs0) = res where {
+// [aux0] and [aux1] are mutually tail-recursive
+  fn* aux0 (
+      d3cs: d3eclst
+    , res: &hideclst? >> hideclst
+    ) : void = begin case+ d3cs of
+    | list_cons (d3c, d3cs) => begin case+ d3c.d3ec_node of
       | D3Cnone () => aux0 (d3cs, res)
       | D3Clist d3cs1 => let
           val hid = hidec_list (d3c.d3ec_loc, d3eclst_tr d3cs1)
@@ -1421,7 +1423,7 @@ implement d3eclst_tr (d3cs0: d3eclst): hideclst = let
         end // end of [D3Cdcstdec]
       | D3Cimpdec impdec => let
           val d2c = impdec.i3mpdec_cst
-          val hid = begin case+ 0 of
+          val hid = (case+ 0 of
             | _ when d2cst_is_proof d2c => let
                 val (pf_token | ()) = the_dyncstsetlst_push ()
                 val () = d3exp_prf_tr (impdec.i3mpdec_def)
@@ -1434,7 +1436,7 @@ implement d3eclst_tr (d3cs0: d3eclst): hideclst = let
             | _ (* nonproof implementation *) => let
                 val hid = i3mpdec_tr impdec in hidec_impdec (d3c.d3ec_loc, hid)
               end // end of [_]
-          end : hidec
+          ) : hidec // end of [val]
         in
           aux1 (d3cs, hid, res)
         end // end of [D3Cimpdec]
@@ -1447,18 +1449,18 @@ implement d3eclst_tr (d3cs0: d3eclst): hideclst = let
           in
             aux1 (d3cs, hid, res)
           end // end of [if]
-        end // end of [D3Cfundecs]
+        end (* end of [D3Cfundecs] *)
       | D3Cvaldecs (knd, valdecs) => begin
           if $Syn.valkind_is_proof knd then let
             val () = v3aldeclst_prf_tr (valdecs) in aux0 (d3cs, res)
           end else let
             val hid = begin
               hidec_valdecs (d3c.d3ec_loc, knd, v3aldeclst_tr valdecs)
-            end
+            end // end of [val]
           in
             aux1 (d3cs, hid, res)
           end // end of [if]
-        end // end of [D3Cvaldecs]
+        end (* end of [D3Cvaldecs] *)
       | D3Cvaldecs_par valdecs => let
           val hid = hidec_valdecs_par (d3c.d3ec_loc, v3aldeclst_tr valdecs)
         in
@@ -1498,28 +1500,36 @@ implement d3eclst_tr (d3cs0: d3eclst): hideclst = let
         in
           aux1 (d3cs, hid, res)
         end // end of [D3Cdynload]
-      end // end of [cons]
-    | nil () => (res := nil ())
+      | _ => let
+          val () = (res := list_nil ())
+        in
+          $Loc.prerr_location d3c.d3ec_loc;
+          prerr ": d2ec_tr: not available yet.\n";
+          $Err.abort {void} ()
+        end // end of [_]
+      end (* end of [list_cons] *)
+    | list_nil () => (res := list_nil ())
   end // end of [aux0]
-
+//
   and aux1 (
-      d3cs: d3eclst, hid: hidec, res: &hideclst? >> hideclst
+      d3cs: d3eclst
+    , hid: hidec
+    , res: &hideclst? >> hideclst
     ) : void = let
     val () = (res := cons {hidec} {0} (hid, ?))
     val+ cons (_, !res_nxt) = res
   in
     aux0 (d3cs, !res_nxt); fold@ res
   end // end of [aux1]
-
+//
   var res: hideclst // uninitialize
   val () = aux0 (d3cs0, res)
-in
-  res
-end // end of [d3eclst_tr]
+} // end of [d3eclst_tr]
 
 (* ****** ****** *)
 
-implement d3eclst_prf_tr (d3cs0: d3eclst): void = aux (d3cs0) where {
+implement d3eclst_prf_tr
+  (d3cs0) = aux (d3cs0) where {
   fun aux (d3cs: d3eclst): void = begin case+ d3cs of
     | list_cons (d3c, d3cs) => begin case+ d3c.d3ec_node of
       | D3Cnone () => aux (d3cs)

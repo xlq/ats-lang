@@ -75,6 +75,12 @@ fn caskind_of_valkind
   | $Syn.VALKINDprval () => 1
 end // end of [caskind_of_valkind]
 
+(* ****** ****** *)
+
+fn c2lassdec_tr (d2c: c2lassdec): c3lassdec = $Err.abort ()
+
+(* ****** ****** *)
+
 fn v2aldec_tr
   (valknd: $Syn.valkind, d2c: v2aldec): v3aldec = let
   val loc0 = d2c.v2aldec_loc
@@ -383,7 +389,7 @@ fn f2undeclst_tr
   } // end of [where]
 in
   aux_fin (d2cs, d3es_def)
-end
+end // end of [f2undeclst_tr]
 
 (* ****** ****** *)
 
@@ -660,13 +666,18 @@ in
     in
       d3ec_saspdec (d2c0.d2ec_loc, d2c)
     end // end of [D2Csaspec]
+  | D2Cdcstdec (dck, d2cs) => begin
+      d3ec_dcstdec (d2c0.d2ec_loc, dck, d2cs)
+    end // end of [D2Cdcstdec]
   | D2Cdatdec (knd, s2cs) => let
-      fun aux (sVs: s2Varset_t, s2cs: s2cstlst): void =
+      fun aux
+        (sVs: s2Varset_t, s2cs: s2cstlst): void =
         case+ s2cs of
         | S2CSTLSTcons (s2c, s2cs) => begin
             s2cst_sVarset_set (s2c, sVs); aux (sVs, s2cs)
-          end
+          end // end of [S2CSTLSTcons]
         | S2CSTLSTnil () => ()
+      // end of [aux]
       val () = aux (the_s2Varset_env_get (), s2cs)
     in
       d3ec_datdec (d2c0.d2ec_loc, knd, s2cs)
@@ -674,9 +685,10 @@ in
   | D2Cexndec (d2cs) => begin
       d3ec_exndec (d2c0.d2ec_loc, d2cs)
     end // end of [D2Cexndec]
-  | D2Cdcstdec (dck, d2cs) => begin
-      d3ec_dcstdec (d2c0.d2ec_loc, dck, d2cs)
-    end // end of [D2Cdcstdec]
+  | D2Cclassdec (d2c) => let
+      val d3c = c2lassdec_tr (d2c) in
+      d3ec_classdec (d2c0.d2ec_loc, d3c)
+    end // end of [D2Cclassdec]
   | D2Coverload _ => d3ec_none (d2c0.d2ec_loc)
   | D2Cextype (name, s2e_def) => let
 (*
@@ -768,15 +780,15 @@ in
       d3ec_staload (d2c0.d2ec_loc, fil, od3cs)
     end // end of [D2Cstaload]
   | D2Cdynload fil => d3ec_dynload (d2c0.d2ec_loc, fil)
-// (*
+(*
   | _ => begin
       $Loc.prerr_location d2c0.d2ec_loc;
       prerr ": d2ec_tr: not implemented yet.";
       prerr_newline ();
       $Err.abort {d3ec} ()
-    end
-// *)
-end // end of [d2ec_tr]
+    end // end of [_]
+*)
+end (* end of [d2ec_tr] *)
 
 (* ****** ****** *)
 
