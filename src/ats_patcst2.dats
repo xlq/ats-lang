@@ -189,7 +189,7 @@ in
 end // end of [fprint_intinfset]
 
 implement fprint_p2atcst (pf | out, p2tc) = let
-  macdef strpr (s) = fprint1_string (pf | out, ,(s))  
+  macdef prstr (s) = fprint1_string (pf | out, ,(s))  
 in
   case+ p2tc of
   | P2TCany () => fprint1_char (pf | out, '_')
@@ -201,17 +201,17 @@ in
   | P2TCchar c => fprintf1_exn (pf | out, "'%c'", @(c))
   | P2TCcon (d2c, p2tcs) => begin
       fprint_d2con (pf | out, d2c);
-      strpr "(";
+      prstr "(";
       fprint_p2atcstlst (pf | out, p2tcs);
-      strpr ")"
+      prstr ")"
     end // end of [P2TCcon]
   | P2TCempty () => fprint1_string (pf | out, "()")
   | P2TCfloat f(*string*) => fprint1_string (pf | out, f)
   | P2TCint int => $IntInf.fprint_intinf (pf | out, int)
   | P2TCintc ints => begin
-      strpr "[^";
+      prstr "[^";
       fprint_intinfset (pf | out, ints);
-      strpr "]"
+      prstr "]"
     end
   | P2TCrec (recknd, lp2tcs) => begin
       if recknd > 0 then begin
@@ -219,9 +219,9 @@ in
       end else begin
         fprint1_char (pf | out, '@')
       end;
-      strpr "{";
+      prstr "{";
       fprint_labp2atcstlst (pf | out, lp2tcs);
-      strpr "}"
+      prstr "}"
     end // end of [P2TCrec]
   | P2TCstring s => fprintf1_exn (pf | out, "\"%s\"", @(s))
 end // end of [fprint_p2atcst]

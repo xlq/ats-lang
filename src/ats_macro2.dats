@@ -91,26 +91,26 @@ val v2alue_bool_false = V2ALbool (false)
 fun fprint_v2alue {m:file_mode}
   (pf: file_mode_lte (m, w) | out: &FILE m, v2al: v2alue)
   : void = let
-  macdef strpr (s) = fprint1_string (pf | out, ,(s))
+  macdef prstr (s) = fprint1_string (pf | out, ,(s))
 in
   case+ v2al of
   | V2ALbool b => begin
-      strpr "V2ALbool("; fprint1_bool (pf | out, b); strpr ")"
+      prstr "V2ALbool("; fprint1_bool (pf | out, b); prstr ")"
     end // end of [V2ALbool]
   | V2ALchar (c) => begin
-      strpr "V2ALchar("; fprint1_char (pf | out, c); strpr ")"
+      prstr "V2ALchar("; fprint1_char (pf | out, c); prstr ")"
     end // end of [V2ALchar]
   | V2ALcode (d2e) => begin
-      strpr "V2ALcode("; fprint_d2exp (pf | out, d2e); strpr ")"
+      prstr "V2ALcode("; fprint_d2exp (pf | out, d2e); prstr ")"
     end // end of [V2ALcode]
   | V2ALfloat f(*string*) => begin
-      strpr "V2ALfloat("; fprint1_string (pf | out, f); strpr ")"
+      prstr "V2ALfloat("; fprint1_string (pf | out, f); prstr ")"
     end // end of [V2ALfloat]
   | V2ALint (i) => begin
-      strpr "V2ALint("; $IntInf.fprint_intinf (pf | out, i); strpr ")"
+      prstr "V2ALint("; $IntInf.fprint_intinf (pf | out, i); prstr ")"
     end // end of [V2ALint]
   | V2ALlst (vs) => begin
-      strpr "V2ALlst("; fprint_v2aluelst (pf | out, vs); strpr ")"
+      prstr "V2ALlst("; fprint_v2aluelst (pf | out, vs); prstr ")"
     end // end of [V2ALlst]
   | V2ALstring (str, len) => begin
       fprintf1_exn (pf | out, "V2ALstring(\"%s\", %i)", @(str, len))
