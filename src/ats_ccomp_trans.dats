@@ -2182,10 +2182,11 @@ fun ccomp_fundeclst_init {n:nat}
   : list_vt (funlab_t, n) = begin
   case+ fundecs of
   | list_cons (fundec, fundecs) => let
+      val loc = fundec.hifundec_loc
       val d2v = fundec.hifundec_var
       val () = d2var_lev_set (d2v, level)
       val s2e = d2var_mastyp_get_some (fundec.hifundec_loc, d2v)
-      val hit = hityp_normalize (s2exp_tr (1(*deep*), s2e))
+      val hit = hityp_normalize (s2exp_tr (loc, 1(*deep*), s2e))
       val fl = funlab_make_var_typ (d2v, hit)
       val vp = valprim_funclo_make (fl)
       val () = the_dynctx_add (d2v, vp)
@@ -2366,10 +2367,11 @@ fn ccomp_valdeclst_rec (
 fn ccomp_vardec_sta
   (res: &instrlst_vt, level: int, vardec: hivardec)
   : void = let
+  val loc = vardec.hivardec_loc
   val d2v = vardec.hivardec_ptr
   val () = d2var_lev_set (d2v, level)
   val s2e = d2var_typ_ptr_get d2v
-  val hit = s2exp_tr (0(*deep*), s2e)
+  val hit = s2exp_tr (loc, 0(*deep*), s2e)
   val tmp = tmpvar_make (hityp_normalize hit)
   val () = instr_add_vardec (res, tmp)
   val () = the_dynctx_add (d2v, valprim_tmp_ref tmp)
@@ -2381,9 +2383,10 @@ end // end of [ccomp_vardec_sta]
 fn ccomp_vardec_dyn
   (res: &instrlst_vt, level: int, vardec: hivardec)
   : void = let
+  val loc = vardec.hivardec_loc
   val d2v = vardec.hivardec_ptr
   val () = d2var_lev_set (d2v, level)
-  val hit_ptr = s2exp_tr (0(*deep*), s2e) where {
+  val hit_ptr = s2exp_tr (loc, 0(*deep*), s2e) where {
     // [s2e] must a pointer type
     val s2e = d2var_typ_get_some (d2var_loc_get d2v, d2v)
   } // end of [val]

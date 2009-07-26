@@ -202,11 +202,11 @@ in
       $IntInf.fprint_intinf (pf | out, int);
       strpr ")"
     end // end of [HIPint]
-  | HIPlst (hips_elt, hit_elt) => begin
+  | HIPlst (hit_elt, hips_elt) => begin
       strpr "HIPlst(";
-      fprint_hipatlst (pf | out, hips_elt);
-      strpr "; ";
       fprint_hityp (pf | out, hit_elt);
+      strpr "; ";
+      fprint_hipatlst (pf | out, hips_elt);
       strpr ")"
     end // end of [HIPlst]
   | HIPrec (knd, lhips, hit_rec) => begin

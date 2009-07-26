@@ -45,9 +45,17 @@ staload "ats_hiexp.sats"
 
 (* ****** ****** *)
 
-fun s2exp_tr (deep: int, s2e0: s2exp): hityp
-fun s2explst_arg_tr (npf: int, s2es: s2explst): hityplst
-fun labs2explst_arg_tr (npf: int, ls2es: labs2explst): labhityplst
+fun s2exp_tr
+  (loc: loc_t, deep: int, s2e0: s2exp): hityp
+// end of [s2exp_tr]
+
+fun s2explst_arg_tr
+  (loc: loc_t, npf: int, s2es: s2explst): hityplst
+// end of [s2explst_arg_tr]
+
+fun labs2explst_arg_tr
+  (loc: loc_t, npf: int, ls2es: labs2explst): labhityplst
+// end of [labs2explst_arg_tr]
 
 (* ****** ****** *)
 

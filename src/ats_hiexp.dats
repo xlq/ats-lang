@@ -268,9 +268,9 @@ implement hipat_int (loc, hit, str, int) = '{
 } // end of [hipat_int]
 
 implement hipat_lst
-  (loc, hit_lst, hips, hit_elt) = '{
+  (loc, hit_lst, hit_elt, hips) = '{
   hipat_loc= loc
-, hipat_node= HIPlst (hips, hit_elt)
+, hipat_node= HIPlst (hit_elt, hips)
 , hipat_typ= hit_lst
 , hipat_asvar= D2VAROPTnone ()
 } // end of [hipat_lst]
