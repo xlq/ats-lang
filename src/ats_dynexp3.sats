@@ -252,8 +252,8 @@ and d3exp_node =
       int
   | D3Elst of (* list expression *)
       (int(*lin*), s2exp (*element type*), d3explst (*elements*))
-  | D3Emod of (* module expression *)
-      d3eclst
+  | D3Emtd of (* method *)
+      d2mtd_t
   | D3Eptrof_ptr of (* address of a pointer selection *)
       (d3exp, d3lab1lst)
   | D3Eptrof_var of (* address of a variable selection *)
@@ -392,6 +392,7 @@ and m3thdeclst = List m3thdec
 
 and c3lassdec = '{
   c3lassdec_loc= loc_t
+, c3lassdec_cst= s2cst_t
 , c3lassdec_mtdlst= m3thdeclst
 } // end of [c3lassdec]
 
@@ -601,6 +602,8 @@ fun d3exp_loopexn (_: loc_t, knd: int): d3exp
 fun d3exp_lst
   (_: loc_t, _lst: s2exp, lin: int, elt: s2exp, elts: d3explst): d3exp
 
+fun d3exp_mtd (_: loc_t, s2e: s2exp, d2m: d2mtd_t): d3exp
+
 fun d3exp_ptrof_ptr
   (_: loc_t, _ptr: s2exp, _root: d3exp, d3ls: d3lab1lst): d3exp
 
@@ -687,6 +690,12 @@ fun c3lau_make {n:nat}
    exp: d3exp): c3lau n
 
 fun sc3lau_make (_: loc_t, sp2t: sp2at, exp: d3exp): sc3lau
+
+(* ****** ****** *)
+
+fun c3lassdec_make
+  (_: loc_t, s2c_cls: s2cst_t, mtds: m3thdeclst): c3lassdec
+// end of [c3lassdec_make]
 
 (* ****** ****** *)
 

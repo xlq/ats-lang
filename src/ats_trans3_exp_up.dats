@@ -2235,16 +2235,17 @@ val d3e0 = (case+ d2e0.d2exp_node of
             val s2t = if lin > 0 then s2rt_viewt0ype else s2rt_t0ype
           in
             s2exp_Var_make_srt (loc0, s2t)
-          end
+          end // end of [None]
       // end of [val]
       val n = $Lst.list_length d2es_elt
       val d3es_elt = d2explst_elt_tr_dn (d2es_elt, s2e_elt)
-      val s2e_lst: s2exp =
+      val s2e_lst = (
         if lin > 0 then begin
           s2exp_list_viewt0ype_int_viewtype (s2e_elt, n)
         end else begin
           s2exp_list_t0ype_int_type (s2e_elt, n)
         end
+      ) : s2exp // end of [val]
     in
       d3exp_lst (loc0, s2e_lst, lin, s2e_elt, d3es_elt)
     end // end of [D2Elst]
@@ -2287,6 +2288,9 @@ val d3e0 = (case+ d2e0.d2exp_node of
       end // end of [val]
 *)
     } // end of [D2Emacsyn]
+  | D2Emtd d2m => let
+      val s2e_mtd = d2mtd_typ_get d2m in d3exp_mtd (loc0, s2e_mtd, d2m)
+    end // end of [D2Emtd]
   | D2Eptrof d2e =>  d2exp_ptrof_tr_up (loc0, d2e)
   | D2Eraise d2e_exn => let
       val s2e_exn = s2exp_exception_viewtype ()

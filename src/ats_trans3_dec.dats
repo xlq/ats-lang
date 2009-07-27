@@ -77,7 +77,49 @@ end // end of [caskind_of_valkind]
 
 (* ****** ****** *)
 
-fn c2lassdec_tr (d2c: c2lassdec): c3lassdec = $Err.abort ()
+fun m2thdec_tr (mtd: m2thdec): m3thdec =
+  case+ mtd of
+  | M2THDECmtd (loc, sym, d2v_self, def) => let
+      val def = (case+ def of
+        | Some d2e => Some (d2exp_tr_up d2e) | None () => None ()
+      ) : d3expopt
+    in
+      M3THDECmtd (loc, sym, d2v_self, def)
+    end (* end of [M2THDECmtd] *)
+  | M2THDECval (loc, sym, res, def) => let
+      val def = (case+ def of
+        | Some d2e => Some (d2exp_tr_dn (d2e, res)) | None () => None ()
+      ) : d3expopt
+    in
+      M3THDECval (loc, sym, res, def)
+    end (* end of [M2THDECval] *)
+  | _ => begin
+      prerr "m2thdec_tr: not yet available"; prerr_newline ();
+      $Err.abort ()
+    end (* end of [_] *)
+// end of [m2thdec_tr]
+
+fun m2thdeclst_tr
+  (mtds: m2thdeclst): m3thdeclst =
+  case+ mtds of
+  | list_cons (mtd, mtds) => let
+      val mtd = m2thdec_tr mtd
+      val mtds = m2thdeclst_tr mtds in
+      list_cons (mtd, mtds)
+    end // end of [list_cons]
+  | list_nil () => list_nil ()
+// end of [m2thdeclst_tr]
+
+fn c2lassdec_tr
+  (d2c: c2lassdec): c3lassdec = let
+  val () = begin
+    $Loc.prerr_location d2c.c2lassdec_loc;
+    prerr ": c2lassdec_tr"; prerr_newline ()
+  end (* end of [val] *)
+  val mtds = m2thdeclst_tr (d2c.c2lassdec_mtdlst)
+in
+  $Err.abort ()
+end // end of [c2lassdec_tr]
 
 (* ****** ****** *)
 

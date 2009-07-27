@@ -55,7 +55,8 @@ typedef d2mtd_struct = struct {
 , d2mtd_knd= mtdkind
 , d2mtd_decarg= s2qualst
 , d2mtd_sublst= List @(s2qualst, tmps2explstlst)
-, d2mtd_typ= s2exp
+, d2mtd_subtyp= s2exp
+, d2mtd_typopt= s2expopt
 , d2mtd_stamp= stamp_t // uniqueness stamp
 } // end of [d2mtd_struct]
 
@@ -70,7 +71,7 @@ assume d2mtd_t =
 in // in of [local]
 
 implement d2mtd_make
-  (loc, name, knd, decarg, sublst, typ) = let
+  (loc, name, knd, decarg, sublst, subtyp) = let
 
 val stamp = $Stamp.d2mac_stamp_make ()
 val (pf_gc, pf | p) =
@@ -84,7 +85,8 @@ p->d2mtd_sym := name;
 p->d2mtd_knd := knd;
 p->d2mtd_decarg := decarg;
 p->d2mtd_sublst := sublst;
-p->d2mtd_typ := typ;
+p->d2mtd_subtyp := subtyp;
+p->d2mtd_typopt := None ();
 p->d2mtd_stamp := stamp;
 end // end of [val]
 
@@ -116,13 +118,69 @@ implement d2mtd_sublst_get (d2m) =
   let val (vbox pf | p) = d2m in p->d2mtd_sublst end
 // end of [d2mtd_sublst_get]
 
-implement d2mtd_typ_get (d2m) =
-  let val (vbox pf | p) = d2m in p->d2mtd_typ end
-// end of [d2mtd_typ_get]
+implement d2mtd_subtyp_get (d2m) =
+  let val (vbox pf | p) = d2m in p->d2mtd_subtyp end
+// end of [d2mtd_subtyp_get]
 
 implement d2mtd_stamp_get (d2m) =
   let val (vbox pf | p) = d2m in p->d2mtd_stamp end
 // end of [d2mtd_stamp_get]
+
+(* ****** ****** *)
+
+implement d2mtd_typ_get (d2m) = let
+  typedef sub_t = @(s2qualst, tmps2explstlst)
+  fun aux // caching if needed
+    (subs: List sub_t, res: s2exp): s2exp =
+    case+ subs of
+    | list_cons (sub, subs) => let
+        val res = aux (subs, res)
+        val stasub = let
+          fun stasubext (
+              stasub: stasub_t
+            , s2qss: s2qualst
+            , ts2ess: tmps2explstlst
+            ) : stasub_t =
+            case+ (s2qss, ts2ess) of
+            | (list_cons (s2qs, s2qss),
+               TMPS2EXPLSTLSTcons (_loc, s2es, ts2ess)) => let
+                val stasub = stasub_addlst (stasub, s2qs.0, s2es)
+              in
+                stasubext (stasub, s2qss, ts2ess)
+              end // end of [list_cons, TMPS2EXPLSTcons]
+            | (_, _) => stasub
+          // end of [stasubext]
+        in
+          stasubext (stasub_nil, sub.0, sub.1)
+        end (* end of [list_cons] *)
+      in
+        s2exp_subst (stasub, res)
+      end // end of [list_cons]
+    | list_nil () => res
+  // end of [aux]
+  val os2e = let
+    val (vbox pf | p) = d2m in p->d2mtd_typopt
+  end // end of [val]
+in
+  case+ os2e of
+  | Some s2e => s2e
+  | None () => let
+      val sublst = let
+        val (vbox pf | p) = d2m in p->d2mtd_sublst
+      end // end of [val]
+      val subtyp = let
+        val (vbox pf | p) = d2m in p->d2mtd_subtyp
+      end // end of [val]
+      val typ = aux (sublst, subtyp)
+      val () = let
+        val (vbox pf | p) = d2m in p->d2mtd_typopt := Some typ
+      end // end of [val]
+    in
+      typ
+    end (* end of [None] *)
+end (* end of [d2mtd_typ_get] *)
+
+(* ****** ****** *)
 
 end // end of [local]
 

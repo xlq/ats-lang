@@ -937,8 +937,12 @@ fun d2mtd_sym_get (_: d2mtd_t): sym_t
 fun d2mtd_knd_get (_: d2mtd_t): mtdkind
 fun d2mtd_decarg_get (_: d2mtd_t): s2qualst
 fun d2mtd_sublst_get (_: d2mtd_t): List @(s2qualst, tmps2explstlst)
-fun d2mtd_typ_get (_: d2mtd_t): s2exp
+fun d2mtd_subtyp_get (_: d2mtd_t): s2exp
 fun d2mtd_stamp_get (_: d2mtd_t): stamp_t
+
+(* ****** ****** *)
+
+fun d2mtd_typ_get (_: d2mtd_t): s2exp
 
 (* ****** ****** *)
 

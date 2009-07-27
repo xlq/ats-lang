@@ -1160,6 +1160,7 @@ abstype stasub_t // boxed type
 
 val stasub_nil : stasub_t
 fun stasub_add (_: stasub_t, _: s2var_t, _: s2exp): stasub_t
+fun stasub_addlst (_: stasub_t, _: s2varlst, _: s2explst): stasub_t
 
 fun stasub_domain_get (_: stasub_t): s2varlst
 fun stasub_codomain_get_whnf (_: stasub_t): s2explst

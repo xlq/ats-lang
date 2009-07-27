@@ -1106,8 +1106,20 @@ end // end of [s2qualst_reverse]
 typedef stasub = List @(s2var_t, s2exp)
 assume stasub_t = stasub
 
-implement stasub_nil = nil ()
+implement stasub_nil = list_nil ()
 implement stasub_add (sub, s2v, s2e) = @(s2v, s2e) :: sub
+implement stasub_addlst (sub, s2vs, s2es) = let
+  fun loop
+    (sub: stasub_t, s2vs: s2varlst, s2es: s2explst): stasub_t =
+    case+ (s2vs, s2es) of
+    | (list_cons (s2v, s2vs), list_cons (s2e, s2es)) => let
+        val sub = stasub_add (sub, s2v, s2e) in loop (sub, s2vs, s2es)
+      end // end of [list_cons, list_cons]
+    | (_, _) => sub
+  // end of [loop]
+in
+  loop (sub, s2vs, s2es)
+end // end of [stasub_addlst]
 
 implement stasub_domain_get (sub) = case+ sub of
   | list_cons (s2vs2e, sub) =>

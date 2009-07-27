@@ -584,7 +584,17 @@ in '{
 
 (* ****** ****** *)
 
-implement d3exp_ptrof_ptr (loc, s2e_ptr, d3e, d3ls) = let
+implement d3exp_mtd
+  (loc, s2e_mtd, d2m) = '{
+  d3exp_loc= loc
+, d3exp_eff= S2EFFnil (), d3exp_typ= s2e_mtd
+, d3exp_node= D3Emtd (d2m)  
+} // end of [d3exp_mtd]
+
+(* ****** ****** *)
+
+implement d3exp_ptrof_ptr
+  (loc, s2e_ptr, d3e, d3ls) = let
   val s2fe = d3lab1lst_eff_union (d3e.d3exp_eff, d3ls)
 in '{
   d3exp_loc= loc
@@ -592,7 +602,8 @@ in '{
 , d3exp_node= D3Eptrof_ptr (d3e, d3ls)
 } end // end of [d3exp_ptrof_ptr]
 
-implement d3exp_ptrof_var (loc, s2e_ptr, d2v, d3ls) = let
+implement d3exp_ptrof_var
+  (loc, s2e_ptr, d2v, d3ls) = let
   val s2fe = d3lab1lst_eff_union (S2EFFnil (), d3ls)
 in '{
   d3exp_loc= loc
@@ -811,6 +822,15 @@ implement c3lau_make (loc, p3ts, gua, seq, neg, d3e) = '{
 implement sc3lau_make (loc, sp2t, d3e) = '{
   sc3lau_loc= loc, sc3lau_pat= sp2t, sc3lau_exp= d3e
 } // end of [sc3lau_make]
+
+(* ****** ****** *)
+
+implement c3lassdec_make
+  (loc, s2c_cls, mtds) = '{
+  c3lassdec_loc= loc
+, c3lassdec_cst= s2c_cls
+, c3lassdec_mtdlst= mtds
+} // end of [c3lassdec_make]
 
 (* ****** ****** *)
 
