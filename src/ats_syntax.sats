@@ -129,6 +129,18 @@ fun clskind_obj (_: t0kn):<> clskind = "clskind_obj"
 
 (* ****** ****** *)
 
+datatype objkind =
+  | OBJKINDobj_t of t0kn | OBJKINDobj_vt of t0kn
+  | OBJKINDobjmod of t0kn | OBJKINDobjref of t0kn
+// end of [objkind]
+
+fun objkind_obj_t (_: t0kn):<> objkind = "objkind_obj_t"
+fun objkind_obj_vt (_: t0kn):<> objkind = "objkind_obj_vt"
+fun objkind_objmod (_: t0kn):<> objkind = "objkind_objmod"
+fun objkind_objref (_: t0kn):<> objkind = "objkind_objref"
+
+(* ****** ****** *)
+
 datatype valkind =
   | VALKINDval | VALKINDvalminus | VALKINDvalplus | VALKINDprval
 // end of [valkind]
@@ -1530,7 +1542,7 @@ datatype d0exp_node =
       moditemdec list
 *)
   | D0Eobj of ( // for objects
-      int(*objknd*), s0exp(*objcls*), m0thdeclst
+      objkind, s0exp(*objcls*), m0thdeclst
     ) // end of [D0Eobj]
   | D0Eopide of sym_t (* for dynamic identifiers *)
 (*
@@ -1939,8 +1951,7 @@ fun d0exp_macsyn_encode_seq (t_beg: t0kn, _: d0explst, t_end: t0kn): d0exp
 
 //
 
-fun d0exp_obj
-  (knd: int, t_beg: t0kn, cls: s0exp, _: m0thdeclst, t_end: t0kn): d0exp
+fun d0exp_obj (knd: objkind, cls: s0exp, _: m0thdeclst, t_end: t0kn): d0exp
   = "d0exp_obj"
 // end of [d0exp_obj]
 

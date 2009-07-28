@@ -77,7 +77,7 @@ end // end of [caskind_of_valkind]
 
 (* ****** ****** *)
 
-fun m2thdec_tr (mtd: m2thdec): m3thdec =
+fun m2thdec_tr (mtd: m2thdec): m3thdec = begin
   case+ mtd of
   | M2THDECmtd (loc, sym, d2v_self, def) => let
       val def = (case+ def of
@@ -93,11 +93,25 @@ fun m2thdec_tr (mtd: m2thdec): m3thdec =
     in
       M3THDECval (loc, sym, res, def)
     end (* end of [M2THDECval] *)
+  | M2THDECvar (loc, sym, res, def) => let
+      val def = (case+ def of
+        | Some d2e => Some (d2exp_tr_dn (d2e, res)) | None () => None ()
+      ) : d3expopt
+    in
+      M3THDECvar (loc, sym, res, def)
+    end (* end of [M2THDECvar] *)
+  | M2THDECimp (loc, d2m, def) => let
+      val s2e_mtd = d2mtd_typ_get d2m; val def = d2exp_tr_dn (def, s2e_mtd)
+    in
+      M3THDECimp (loc, d2m, def)
+    end (* end of [M2THDECimp] *)
+(*
   | _ => begin
       prerr "m2thdec_tr: not yet available"; prerr_newline ();
       $Err.abort ()
     end (* end of [_] *)
-// end of [m2thdec_tr]
+*)
+end // end of [m2thdec_tr]
 
 fun m2thdeclst_tr
   (mtds: m2thdeclst): m3thdeclst =
@@ -112,13 +126,11 @@ fun m2thdeclst_tr
 
 fn c2lassdec_tr
   (d2c: c2lassdec): c3lassdec = let
-  val () = begin
-    $Loc.prerr_location d2c.c2lassdec_loc;
-    prerr ": c2lassdec_tr"; prerr_newline ()
-  end (* end of [val] *)
+  val loc = d2c.c2lassdec_loc
+  val s2c_cls = d2c.c2lassdec_cst
   val mtds = m2thdeclst_tr (d2c.c2lassdec_mtdlst)
 in
-  $Err.abort ()
+  c3lassdec_make (loc, s2c_cls, mtds)
 end // end of [c2lassdec_tr]
 
 (* ****** ****** *)

@@ -296,6 +296,16 @@ stadef == = eq_addr_addr_bool
 sta neq_addr_addr_bool : (addr, addr) -> bool
 stadef <> = neq_addr_addr_bool
 
+(* ****** ****** *)
+
+(*
+** subclass relation
+*)
+sta lte_cls_cls_bool : (cls, cls) -> bool
+stadef <= = lte_cls_cls_bool
+
+(* ****** ****** *)
+
 (*
 
 // some built-in static constants for rationals
@@ -428,14 +438,14 @@ abst@ype ptrdiff_int_t0ype (i:int) = $extype "ats_ptrdiff_type"
 
 (* ****** ****** *)
 
-abstype
-objmod_cls_type (c:cls) // for modules indexed by [c]
-
 abst@ype
-object_cls_t0ype (c:cls) // for objects indexed by [c]
+obj_cls_t0ype (c:cls) // for objects indexed by [c]
 
 absviewt@ype
-object_cls_viewt0ype (c:cls) // for linear objects indexed by [c]
+obj_cls_viewt0ype (c:cls) // for linear objects indexed by [c]
+
+abstype
+objmod_cls_type (c:cls) // for modules indexed by [c]
 
 abstype
 objref_cls_type (c:cls) // for references to objects indexed by [c]
@@ -574,11 +584,10 @@ stadef ptrdiff_t = ptrdiff_t0ype
 
 (* ****** ****** *)
 
+stadef obj = obj_cls_t0ype
+stadef obj_vt = obj_cls_viewt0ype
+
 stadef objmod = objmod_cls_type
-
-stadef obj = object_cls_t0ype
-stadef obj_vt = object_cls_viewt0ype
-
 stadef objref = objref_cls_type
 
 (* ****** ****** *)
@@ -623,9 +632,9 @@ typedef natLte (n:int) = [i:int | 0 <= i; i <= n] int i
 typedef Pos = intGt 0
 typedef Neg = intLt 0
 
-typedef Ptr = [l:addr] ptr l
-
 typedef Sgn = [i:int | ~1 <= i; i <= 1] int i
+
+typedef Ptr = [l:addr] ptr l
 
 typedef String = [n:int | n >= 0] string n
 typedef Stropt = [n:int] stropt n

@@ -1197,36 +1197,36 @@ implement stasub_extend_sarglst_svarlst (loc0, sub, s2as, s2vs) = let
     | (list_nil _, list_cons _) => err3 (loc0)
 in
   aux (loc0, sub, nil (), s2as, s2vs)
-end // end of [stasub_extend_sarg]
+end (* end of [stasub_extend_sarg] *)
 
 (* ****** ****** *)
 
-fun s2var_subst (sub: stasub, s2v0: s2var_t): Option_vt s2exp =
+fun s2var_subst
+  (sub: stasub, s2v0: s2var_t): Option_vt s2exp = begin
   case+ sub of
   | s2vs2e :: sub => begin
       if s2v0 = s2vs2e.0 then Some_vt s2vs2e.1 else s2var_subst (sub, s2v0)
-    end
+    end // end of [::]
   | nil () => None_vt ()
-// end of [s2var_subst]
+end (* end of [s2var_subst] *)
 
-fun s2Var_subst (sub: stasub, s2V0: s2Var_t): Option_vt s2exp = begin
+fun s2Var_subst .<>.
+  (sub: stasub, s2V0: s2Var_t): Option_vt s2exp = begin
   case+ s2Var_link_get s2V0 of
   | Some s2e => Some_vt (s2exp_subst (sub, s2e))
-  | None () => let
-      val svs_new = aux (s2V0, sub) where {
-        fun aux (s2V0: s2Var_t, sub: stasub): void = case+ sub of
-          | s2vs2e :: sub => let
-              val s2v = s2vs2e.0; val sVs = s2var_sVarset_get s2v
-              val () = s2var_sVarset_set (s2v, s2Varset_add (sVs, s2V0))
-            in
-              aux (s2V0, sub)
-            end
-          | list_nil () => ()
-      } // end of [where]
-    in
-      None_vt ()
-    end
-end // end of [s2Var_subst]
+  | None () => None_vt () where {
+      fun aux (s2V0: s2Var_t, sub: stasub): void = case+ sub of
+        | s2vs2e :: sub => let
+            val s2v = s2vs2e.0; val sVs = s2var_sVarset_get s2v
+            val () = s2var_sVarset_set (s2v, s2Varset_add (sVs, s2V0))
+          in
+            aux (s2V0, sub)
+          end // end of [::]
+        | list_nil () => ()
+      // end of [aux]
+      val () = aux (s2V0, sub)
+    } // end of [None]
+end (* end of [s2Var_subst] *)
 
 (* ****** ****** *)
 

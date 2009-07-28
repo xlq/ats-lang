@@ -31,8 +31,8 @@
 
 (* ****** ****** *)
 
-// Time: October 2007
 // Author: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
+// Time: October 2007
 
 (* ****** ****** *)
 
@@ -71,6 +71,7 @@ typedef abskind = $Syn.abskind
 typedef dcstkind = $Syn.dcstkind
 typedef datakind = $Syn.datakind
 typedef clskind = $Syn.clskind
+typedef objkind = $Syn.objkind
 typedef funkind = $Syn.funkind
 typedef intkind = $Syn.intkind
 typedef valkind = $Syn.valkind
@@ -811,7 +812,7 @@ fun d1exp_lst (_: loc_t, lin: int, elt: s1expopt, elts: d1explst): d1exp
 fun d1exp_macsyn (_: loc_t, knd: $Syn.macsynkind, d1e: d1exp): d1exp
 
 fun d1exp_obj
-  (_: loc_t, knd: int(*lin*), cls: s1exp, mtds: m1thdeclst): d1exp
+  (_: loc_t, objknd: int, cls: s1exp, mtds: m1thdeclst): d1exp
 // end of [d1exp_obj]
 
 fun d1exp_ptrof (_: loc_t, _: d1exp): d1exp
@@ -932,7 +933,7 @@ fun d1ec_exndecs (_: loc_t, ds: e1xndeclst): d1ec
 
 fun d1ec_classdec (
     _: loc_t
-  , knd: int // mod/obj : 0/1
+  , clsknd: int // mod/obj : 0/1
   , _: s1qualstlst
   , _: c1lassdec
   , _: s1expdeflst

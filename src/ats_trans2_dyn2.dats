@@ -55,6 +55,7 @@ staload "ats_staexp1.sats"
 staload "ats_dynexp1.sats"
 staload "ats_staexp2.sats"
 staload "ats_dynexp2.sats"
+staload "ats_stadyncst2.sats"
 staload "ats_trans2_env.sats"
 
 (* ****** ****** *)
@@ -221,8 +222,9 @@ fn witht1ype_tr
 
 (* ****** ****** *)
 
-fn m1thdec_tr
-  (r_map: ref mtdmap_t, mtd: m1thdec): m2thdec =
+fn m1thdec_tr (
+    r_map: ref mtdmap_t, s2e_self: s2exp, mtd: m1thdec
+  ) : m2thdec =
   case+ mtd of
   | M1THDECmtd (loc, sym, _(*dummy*), def) => let
       val d2v_self = d2var_make (loc, $Sym.symbol_SELF)
@@ -241,6 +243,7 @@ fn m1thdec_tr
         | None () => None ()
       ) : d2expopt // end of [val]
 //
+      val () = d2var_typ_set (d2v_self, Some s2e_self)
     in
       M2THDECmtd (loc, sym, d2v_self, def)
     end // end of [M1THDECmtd]
@@ -272,9 +275,11 @@ fn m1thdec_tr
 // end of [m1thdec_tr]
   
 implement m1thdeclst_tr
-  (r_map, mtds) = case+ mtds of
-  | list_cons (mtd, mtds) => begin
-      list_cons (m1thdec_tr (r_map, mtd), m1thdeclst_tr (r_map, mtds))
+  (r_map, s2e_self, mtds) = case+ mtds of
+  | list_cons (mtd, mtds) => let
+      val mtd = m1thdec_tr (r_map, s2e_self, mtd)
+    in
+      list_cons (mtd, m1thdeclst_tr (r_map, s2e_self, mtds))
     end // end of [list_cons]
   | list_nil () => list_nil ()
 // end of [m1thdeclst_tr]
@@ -298,7 +303,7 @@ fn c1lassdec_tr (
   (* end of [val] *)
   val () = the_s2expenv_add_svar (s2v_mycls)
 //
-(*  val s2e_self = aux (s2v_mycls, s2vss) where {
+  val s2e_mycls = aux (s2v_mycls, s2vss) where {
     fun aux (s2v_fun: s2var_t, s2vss_arg: s2varlstlst): s2exp =
       case+ s2vss_arg of
       | list_cons (s2vs_arg, s2vss_arg) => let
@@ -310,7 +315,15 @@ fn c1lassdec_tr (
         end // end of [val]
       | list_nil () => s2exp_var (s2v_fun)
   } // end of [val]
-*)
+  val s2e_self = (
+    if clsknd > 0 then s2exp_obj_cls_t0ype s2e_mycls // object
+                  else s2exp_objmod_cls_type s2e_mycls // module
+  ) : s2exp // end of [val]
+// (*
+  val () = begin
+    prerr "c1lassdec_tr: s2e_self = "; prerr s2e_self; prerr_newline ()
+  end // end of [val
+// *)
 //
   val () = aux (d1cs_def) where {
     fun aux (d1cs: s1expdeflst): void = begin
@@ -434,7 +447,7 @@ fn c1lassdec_tr (
   val () = aux2 (decarg, mtdlst, mtdmap)
   val r_mtdmap = ref_make_elt<mtdmap_t> (mtdmap)
 //
-  val mtdlst = m1thdeclst_tr (r_mtdmap, mtdlst)
+  val mtdlst = m1thdeclst_tr (r_mtdmap, s2e_self, mtdlst)
 //
   val d2c_cls = c2lassdec_make
     (loc, clsknd, s2c_cls, supclss, mtdlst, r_mtdmap)

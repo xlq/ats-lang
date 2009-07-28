@@ -1540,7 +1540,10 @@ implement d3eclst_tr (d3cs0) = res where {
           val () = (res := list_nil ())
         in
           $Loc.prerr_location d3c.d3ec_loc;
-          prerr ": d2ec_tr: not available yet.\n";
+          prerr ": INTERNAL ERROR";
+          $Deb.debug_prerrf (": [%s]", @(THISFILENAME));
+          prerr ": d3eclst_tr: aux0: not available yet.";
+          prerr_newline ();
           $Err.abort {void} ()
         end // end of [_]
       end (* end of [list_cons] *)

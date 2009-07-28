@@ -98,6 +98,12 @@ typedef ats_ptr_type clskind_t ;
 extern clskind_t clskind_mod (t0kn_t) ;
 extern clskind_t clskind_obj (t0kn_t) ;
 
+typedef ats_ptr_type objkind_t ;
+extern objkind_t objkind_obj_t (t0kn_t) ;
+extern objkind_t objkind_obj_vt (t0kn_t) ;
+extern objkind_t objkind_objmod (t0kn_t) ;
+extern objkind_t objkind_objref (t0kn_t) ;
+
 typedef ats_ptr_type valkind_t ;
 extern valkind_t valkind_val (void) ;
 extern valkind_t valkind_valminus (void) ;
@@ -709,8 +715,7 @@ extern d0exp_t d0exp_macsyn_cross (t0kn_t, d0explst_t, t0kn_t) ;
 extern d0exp_t d0exp_macsyn_decode (t0kn_t, d0explst_t, t0kn_t) ;
 extern d0exp_t d0exp_macsyn_encode_seq (t0kn_t, d0explst_t, t0kn_t) ;
 
-extern d0exp_t d0exp_obj
-  (int/*knd*/, t0kn_t, s0exp_t, m0thdeclst_t, t0kn_t) ;
+extern d0exp_t d0exp_obj (objkind_t, s0exp_t, m0thdeclst_t, t0kn_t) ;
 
 extern d0exp_t d0exp_opide (t0kn_t, i0de_t) ;
 extern d0exp_t d0exp_ptrof (t0kn_t) ;
@@ -952,6 +957,7 @@ dcstkind_t dcstkind ;
 datakind_t datakind ;
 stadefkind_t stadefkind ;
 clskind_t clskind ;
+objkind_t objkind ;
 valkind_t valkind ;
 funkind_t funkind ;
 
@@ -1312,6 +1318,8 @@ guad0ec_t guad0ec ;
 %token <t0kn> DLRFOLD
 %token <t0kn> DLROBJ_T
 %token <t0kn> DLROBJ_VT
+%token <t0kn> DLROBJMOD
+%token <t0kn> DLROBJREF
 %token <t0kn> DLRRAISE
 %token <t0kn> DLRSPAWN
 %token <t0kn> DLRUNFOLD
@@ -1421,6 +1429,7 @@ guad0ec_t guad0ec ;
 %type <datakind> datakind
 %type <stadefkind> stadefkind
 %type <clskind> clskind
+%type <objkind> objkind
 %type <valkind> valkind
 %type <funkind> funkind
 
@@ -1732,6 +1741,13 @@ stadefkind
 clskind
   : MODULE CLASS                        { $$ = clskind_mod ($1) ; }
   | OBJECT CLASS                        { $$ = clskind_obj ($1) ; }
+;
+
+objkind
+  : DLROBJ_T                            { $$ = objkind_obj_t ($1) ; }
+  | DLROBJ_VT                           { $$ = objkind_obj_vt ($1) ; }
+  | DLROBJMOD                           { $$ = objkind_objmod ($1) ; }
+  | DLROBJREF                           { $$ = objkind_objref ($1) ; }
 ;
 
 valkind
@@ -2677,11 +2693,8 @@ atmd0exp
   | DLRREC_VT LBRACE labd0expseq RBRACE { $$ = d0exp_rec (3, $1, $3, $4) ; }
 
     /* dynamic objects */
-  | DLROBJ_T objc0ls LBRACE m0thdecseq RBRACE
-                                        { $$ = d0exp_obj (0, $1, $2, $4, $5) ; }
-  | DLROBJ_VT objc0ls LBRACE m0thdecseq RBRACE
-                                        { $$ = d0exp_obj (1, $1, $2, $4, $5) ; }
-
+  | objkind objc0ls LBRACE m0thdecseq RBRACE
+                                        { $$ = d0exp_obj ($1, $2, $4, $5) ; }
     /* external dynamic value */
   | DLREXTVAL LPAREN s0exp COMMA LITERAL_string RPAREN
                                         { $$ = d0exp_extval ($1, $3, $5, $6) ; }

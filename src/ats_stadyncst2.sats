@@ -67,6 +67,9 @@ val Double_long_t0ype : s2cstref_t
 val Float_t0ype : s2cstref_t
 val Int_t0ype : s2cstref_t
 val Int_int_t0ype : s2cstref_t
+val Obj_cls_t0ype : s2cstref_t
+val Objmod_cls_type : s2cstref_t
+val Objref_cls_type : s2cstref_t
 val Ptr_type : s2cstref_t
 val Ptr_addr_type : s2cstref_t
 val Ref_viewt0ype_type : s2cstref_t
@@ -263,7 +266,12 @@ fun s2exp_float_t0ype (): s2exp
 fun s2exp_int_t0ype (): s2exp
 fun s2exp_int_int_t0ype (i: int): s2exp
 fun s2exp_int_intinf_t0ype (i: intinf_t): s2exp
+fun s2exp_obj_cls_t0ype (cls: s2exp): s2exp
+fun s2exp_objmod_cls_type (cls: s2exp): s2exp
+fun s2exp_objref_cls_type (cls: s2exp): s2exp
 fun s2exp_ptr_type (): s2exp
+fun s2exp_ptr_addr_type (addr: s2exp): s2exp
+fun s2exp_ref_viewt0ype_type (elt: s2exp): s2exp
 fun s2exp_string_type (): s2exp
 fun s2exp_string_int_type (n: int): s2exp
 fun s2exp_void_t0ype (): s2exp
@@ -276,6 +284,11 @@ fun s2exp_uint_intinf_t0ype (i: intinf_t): s2exp
 fun un_s2exp_bool_bool_t0ype (s2e: s2exp): Option_vt (s2exp)
 fun un_s2exp_char_char_t0ype (s2e: s2exp): Option_vt (s2exp)
 fun un_s2exp_int_int_t0ype (s2e: s2exp): Option_vt (s2exp)
+fun un_s2exp_obj_cls_t0ype (s2e: s2exp): Option_vt (s2exp)
+fun un_s2exp_objmod_cls_type (s2e: s2exp): Option_vt (s2exp)
+fun un_s2exp_objref_cls_type (s2e: s2exp): Option_vt (s2exp)
+fun un_s2exp_ptr_addr_type (s2e: s2exp): Option_vt (s2exp(*addr*))
+fun un_s2exp_ref_viewt0ype_type (s2e: s2exp): Option_vt (s2exp(*elt*))
 fun un_s2exp_size_int_t0ype (s2e: s2exp): Option_vt (s2exp)
 fun un_s2exp_string_int_type (s2e: s2exp): Option_vt (s2exp)
 
@@ -315,14 +328,6 @@ fun un_s2exp_at_viewt0ype_addr_view
 fun s2exp_array_viewt0ype_int_type (elt: s2exp, sz: int): s2exp
 fun s2exp_array_viewt0ype_int_viewtype (elt: s2exp, sz: int): s2exp
 fun s2exp_arraysize_viewt0ype_int_viewt0ype (elt: s2exp, sz: int): s2exp
-
-(* ****** ****** *)
-
-fun s2exp_ptr_addr_type (addr: s2exp): s2exp
-fun s2exp_ref_viewt0ype_type (elt: s2exp): s2exp
-
-fun un_s2exp_ptr_addr_type (s2e: s2exp): Option_vt (s2exp(*addr*))
-fun un_s2exp_ref_viewt0ype_type (s2e: s2exp): Option_vt (s2exp(*elt*))
 
 (* ****** ****** *)
 

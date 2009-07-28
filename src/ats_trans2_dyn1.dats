@@ -1580,9 +1580,9 @@ in
 (*
   | D1Emod (m1ids) => d2exp_mod (loc, mid1_list_tr m1ids)
 *)
-  | D1Eobj (knd, objcls, mtdlst) => let
-      val objcls = s1exp_tr_dn_cls (objcls)
-      val s2e_head = s2exp_head_get (objcls)
+  | D1Eobj (objknd, objcls, mtdlst) => let
+      val s2e_cls = s1exp_tr_dn_cls (objcls)
+      val s2e_head = s2exp_head_get (s2e_cls)
       var ts2ess: tmps2explstlst = TMPS2EXPLSTLSTnil ()
       val s2c_cls = (case+ s2e_head.s2exp_node of
         | S2Ecst s2c => s2c
@@ -1602,6 +1602,31 @@ in
         val- Some d2c = s2cst_clsdec_get (s2c_cls)
       } // end of [val]
       val d2c_cls = c2lassdec_of_c2lassdec_t (d2c_cls)
+//
+      val clsknd = d2c_cls.c2lassdec_knd; val () = () where {
+        macdef OBJKINDobjmod = 3
+        val () = begin case- clsknd of
+        | 0 (*object*) => if objknd = OBJKINDobjmod then begin
+            prerr_loc_error2 (loc0);
+            prerr ": the class ["; prerr_s2cst s2c_cls;
+            prerr "] is required to be a object class but it is not.";
+            prerr_newline ();
+            $Err.abort ()         
+          end // end of [1]
+        | 1 (*module*) => if objknd <> OBJKINDobjmod then begin
+            prerr_loc_error2 (loc0);
+            prerr ": the class ["; prerr_s2cst s2c_cls;
+            prerr "] is required to be a module class but it is not.";
+            prerr_newline ();
+            $Err.abort ()         
+          end // end of [1]
+        end (* checking that clsknd/objknd is a matching pair *)
+      } // end of [val]
+      val s2e_self = (
+        if clsknd > 0 then s2exp_obj_cls_t0ype s2e_cls // object
+                      else s2exp_objmod_cls_type s2e_cls // module
+      ) : s2exp // end of [val]
+//
       val decarg = list_nil ()
       typedef itm = d2item
       fun loop (
@@ -1632,9 +1657,9 @@ in
         } // end of [val]
       } (* end of [val] *)
       val r_mtdmap = ref_make_elt<mtdmap_t> (mtdmap)
-      val mtdlst = m1thdeclst_tr (r_mtdmap, mtdlst)
+      val mtdlst = m1thdeclst_tr (r_mtdmap, s2e_self, mtdlst)
     in
-      d2exp_obj (loc0, knd, s2c_cls, ts2ess, mtdlst)
+      d2exp_obj (loc0, objknd, s2c_cls, ts2ess, mtdlst)
     end // end of [D1Eobj]
   | D1Eqid (q, id) => d1exp_qid_tr (loc0, q, id)
   | D1Eptrof d1e => d2exp_ptrof (loc0, d1exp_tr d1e)
