@@ -671,13 +671,14 @@ end // end of [fprint_d2exp]
 
 //
 
-implement fprint_d2explst {m} (pf | out, d2es) = let
+implement fprint_d2explst
+  {m} (pf | out, d2es) = let
   fun aux (out: &FILE m, i: int, d2es: d2explst)
     : void = begin case+ d2es of
     | list_cons (d2e, d2es) => begin
         if (i > 0) then fprint1_string (pf | out, ", ");
         fprint_d2exp (pf | out, d2e); aux (out, i + 1, d2es)
-      end
+      end (* end of [list_cons] *)
     | list_nil () => ()
   end // end of [aux]
 in
@@ -689,11 +690,11 @@ end // end of [fprint_d2explst]
 implement fprint_d2explstlst {m} (pf | out, d2ess) = let
   fun aux (out: &FILE m, i: int, d2ess: d2explstlst)
     : void = begin case+ d2ess of
-    | cons (d2es, d2ess) => begin
+    | list_cons (d2es, d2ess) => begin
         if (i > 0) then fprint1_string (pf | out, "; ");
         fprint_d2explst (pf | out, d2es); aux (out, i + 1, d2ess)
-      end
-    | nil () => ()
+      end (* end of [list_cons] *)
+    | list_nil () => ()
   end // end of [aux]
 in
   aux (out, 0, d2ess)
@@ -701,7 +702,8 @@ end // end of [fprint_d2explstlst]
 
 //
 
-implement fprint_labd2explst {m} (pf | out, ld2es) = let
+implement fprint_labd2explst
+  {m} (pf | out, ld2es) = let
   fun aux
     (out: &FILE m, i: int, ld2es: labd2explst): void = let
     macdef prstr (s) = fprint1_string (pf | out, ,(s))
@@ -711,7 +713,7 @@ implement fprint_labd2explst {m} (pf | out, ld2es) = let
         if i > 0 then prstr ", ";
         fprint_label (pf | out, l); prstr "= "; fprint_d2exp (pf | out, d2e);
         aux (out, i+1, ld2es)
-      end
+      end (* end of [LABD2EXPLSTcons] *)
     | LABD2EXPLSTnil () => ()
   end // end of [aux]
 in
@@ -744,13 +746,14 @@ in
     end // end of [D2LABind]
 end // end of [fprint_d2lab]
 
-implement fprint_d2lablst {m} (pf | out, d2ls) = let
+implement fprint_d2lablst
+  {m} (pf | out, d2ls) = let
   fun aux (out: &FILE m, i: int, d2ls: d2lablst): void =
     case+ d2ls of
-    | cons (d2l, d2ls) => begin
+    | list_cons (d2l, d2ls) => begin
         if (i > 0) then fprint1_string (pf | out, ", ");
         fprint_d2lab (pf | out, d2l); aux (out, i + 1, d2ls)
-      end
+      end (* end of [list_cons] *)
     | nil () => ()
   // end of [aux]
 in

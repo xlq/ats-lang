@@ -136,6 +136,22 @@ atslib_div_ccmplx_ccmplx
 /* ****** ****** */
 
 static inline
+ats_bool_type
+atslib_eq_ccmplx_ccmplx
+  (ats_fcomplex_type c1, ats_fcomplex_type c2) {
+  return (c1 == c2 ? ats_true_bool : ats_false_bool) ;
+} /* end of [atslib_eq_ccmplx_ccmplx] */
+
+static inline
+ats_bool_type
+atslib_neq_ccmplx_ccmplx
+  (ats_fcomplex_type c1, ats_fcomplex_type c2) {
+  return (c1 != c2 ? ats_true_bool : ats_false_bool) ;
+} /* end of [atslib_neq_ccmplx_ccmplx] */
+
+/* ****** ****** */
+
+static inline
 ats_float_type
 atslib_cabsf (ats_fcomplex_type c) { return cabsf(c) ; }
 
@@ -309,6 +325,22 @@ atslib_div_zcmplx_zcmplx
   (ats_dcomplex_type z1, ats_dcomplex_type z2) {
   return (z1 / z2) ;
 } /* end of [atslib_div_zcmplx_zcmplx] */
+
+/* ****** ****** */
+
+static inline
+ats_bool_type
+atslib_eq_zcmplx_zcmplx
+  (ats_dcomplex_type c1, ats_dcomplex_type c2) {
+  return (c1 == c2 ? ats_true_bool : ats_false_bool) ;
+} /* end of [atslib_eq_zcmplx_zcmplx] */
+
+static inline
+ats_bool_type
+atslib_neq_zcmplx_zcmplx
+  (ats_dcomplex_type c1, ats_dcomplex_type c2) {
+  return (c1 != c2 ? ats_true_bool : ats_false_bool) ;
+} /* end of [atslib_neq_zcmplx_zcmplx] */
 
 /* ****** ****** */
 
