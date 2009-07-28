@@ -31,8 +31,8 @@
 
 (* ****** ****** *)
 
-// Time: July 2007
 // Author: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
+// Time: July 2007
 
 (* ****** ****** *)
 
@@ -1799,7 +1799,7 @@ and d0eclst: type = List d0ec
 
 and guad0ec : type = '{
   guad0ec_loc= loc_t, guad0ec_node= guad0ec_node
-} 
+}  // end of [guad0ec]
 
 (* ****** ****** *)
 

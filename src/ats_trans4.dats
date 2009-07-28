@@ -766,14 +766,16 @@ in
       | HIEcst d2c when d2cst_is_castfn d2c => let
           val hie = case+ hies_arg of
           | list_cons (hie, list_nil ()) => hie | _ => begin
-              $Loc.prerr_location loc0; prerr ": Internal Error";
+              $Loc.prerr_location loc0;
+              prerr ": INTERNAL ERROR";
+              prerr ": [ats_trans4]: d3exp_tr";
               prerr ": a casting function must be applied to exactly one argument.";
               prerr_newline (); $Err.abort {hiexp} ()
             end // end of [list_cons]
           // end of [val]
         in
           hiexp_castfn (loc0, hit0, d2c, hie)
-        end // end of [HIEcst]
+        end // end of [HIEcst when ...]
       | _ => hiexp_app (loc0, hit0, hit_fun, hie_fun, hies_arg)
     end // end of [D3Eapp_dyn]
   | D3Eapp_sta d3e => d3exp_tr d3e

@@ -36,6 +36,14 @@
 
 (* ****** ****** *)
 
+%{^
+
+#include "ats_counter.cats" /* only needed for [ATS/Geizella] */
+
+%}
+
+(* ****** ****** *)
+
 staload Loc = "ats_location.sats"
 typedef loc_t = $Loc.location_t
 
