@@ -69,25 +69,30 @@ in
   case+ d2i of
   | D2ITEMcon d2cs => begin
       prstr "D2ITEMcon("; fprint_d2conlst (pf | out, d2cs); prstr ")"
-    end
+    end // end of [D2ITEMcon]
   | D2ITEMcst d2c => begin
       prstr "D2ITEMcst("; fprint_d2cst (pf | out, d2c); prstr ")"
-    end
+    end // end of [D2ITEMcst]
   | D2ITEMe1xp e1xp => begin
       prstr "D2ITEMe1xp("; fprint_e1xp (pf | out, e1xp); prstr ")"
-    end
+    end // end of [D2ITEMe1xp]
   | D2ITEMmacdef d2m => begin
       prstr "D2ITEMmacdef("; fprint_d2mac (pf | out, d2m); prstr ")"
-    end
+    end // end of [D2ITEMmacdef]
   | D2ITEMmacvar d2v => begin
       prstr "D2ITEMmacvar("; fprint_d2var (pf | out, d2v); prstr ")"
-    end
+    end // end of [D2ITEMmacvar]
+(*
+  | D2ITEMmtd d2m => begin
+      prstr "D2ITEMmtd("; fprint_d2mtd (pf | out, d2m); prstr ")"
+    end // end of [D2ITEMmtd]
+*)
   | D2ITEMsym d2is => begin
       fprint1_string (pf | out, "D2ITEMsym(...)")
-    end
+    end // end of [D2ITEMsym]
   | D2ITEMvar d2v => begin
       prstr "D2ITEMvar("; fprint_d2var (pf | out, d2v); prstr ")"
-    end
+    end // end of [D2ITEMvar]
 end // end of [fprint_d2item]
 
 implement print_d2item (d2i) = print_mac (fprint_d2item, d2i)
@@ -552,7 +557,7 @@ in
     end // end of [D2Elet]
   | D2Emac d2m => begin
       prstr "D2Emac("; fprint_d2mac (pf | out, d2m); prstr ")"
-    end
+    end // end of [D2Emac]
   | D2Emacsyn (knd, d2e) => let
       val () = case+ knd of
         | $Syn.MACSYNKINDcross () => fprint1_string (pf | out, "%(")
@@ -561,6 +566,16 @@ in
     in
       fprint_d2exp (pf | out, d2e); prstr ")"
     end // end of [D2Emacsyn]
+(*
+  | D2Emtd d2m => begin
+      prstr "D2Emtd("; fprint_d2mtd (pf | out, d2m); prstr ")"
+    end // end of [D2Emtd]
+*)
+(*
+  | D2Eobj (knd, s2c, decarg, mtdlst) => begin
+      prstr "D2Eobj("; fprint_s2cst (pf | out, s2c); prstr ")"
+    end // end of [D2Eobj]
+*)
   | D2Eptrof d2e => begin
       prstr "D2Eptrof("; fprint_d2exp (pf | out, d2e); prstr ")"
     end // end of [D2Eptrof]
@@ -671,14 +686,13 @@ end // end of [fprint_d2exp]
 
 //
 
-implement fprint_d2explst
-  {m} (pf | out, d2es) = let
+implement fprint_d2explst {m} (pf | out, d2es) = let
   fun aux (out: &FILE m, i: int, d2es: d2explst)
     : void = begin case+ d2es of
     | list_cons (d2e, d2es) => begin
         if (i > 0) then fprint1_string (pf | out, ", ");
         fprint_d2exp (pf | out, d2e); aux (out, i + 1, d2es)
-      end (* end of [list_cons] *)
+      end
     | list_nil () => ()
   end // end of [aux]
 in
@@ -690,11 +704,11 @@ end // end of [fprint_d2explst]
 implement fprint_d2explstlst {m} (pf | out, d2ess) = let
   fun aux (out: &FILE m, i: int, d2ess: d2explstlst)
     : void = begin case+ d2ess of
-    | list_cons (d2es, d2ess) => begin
+    | cons (d2es, d2ess) => begin
         if (i > 0) then fprint1_string (pf | out, "; ");
         fprint_d2explst (pf | out, d2es); aux (out, i + 1, d2ess)
-      end (* end of [list_cons] *)
-    | list_nil () => ()
+      end
+    | nil () => ()
   end // end of [aux]
 in
   aux (out, 0, d2ess)
@@ -702,8 +716,7 @@ end // end of [fprint_d2explstlst]
 
 //
 
-implement fprint_labd2explst
-  {m} (pf | out, ld2es) = let
+implement fprint_labd2explst {m} (pf | out, ld2es) = let
   fun aux
     (out: &FILE m, i: int, ld2es: labd2explst): void = let
     macdef prstr (s) = fprint1_string (pf | out, ,(s))
@@ -713,7 +726,7 @@ implement fprint_labd2explst
         if i > 0 then prstr ", ";
         fprint_label (pf | out, l); prstr "= "; fprint_d2exp (pf | out, d2e);
         aux (out, i+1, ld2es)
-      end (* end of [LABD2EXPLSTcons] *)
+      end
     | LABD2EXPLSTnil () => ()
   end // end of [aux]
 in
@@ -746,14 +759,13 @@ in
     end // end of [D2LABind]
 end // end of [fprint_d2lab]
 
-implement fprint_d2lablst
-  {m} (pf | out, d2ls) = let
+implement fprint_d2lablst {m} (pf | out, d2ls) = let
   fun aux (out: &FILE m, i: int, d2ls: d2lablst): void =
     case+ d2ls of
-    | list_cons (d2l, d2ls) => begin
+    | cons (d2l, d2ls) => begin
         if (i > 0) then fprint1_string (pf | out, ", ");
         fprint_d2lab (pf | out, d2l); aux (out, i + 1, d2ls)
-      end (* end of [list_cons] *)
+      end
     | nil () => ()
   // end of [aux]
 in

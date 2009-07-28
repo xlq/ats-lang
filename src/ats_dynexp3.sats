@@ -251,8 +251,6 @@ and d3exp_node =
       int
   | D3Elst of (* list expression *)
       (int(*lin*), s2exp (*element type*), d3explst (*elements*))
-  | D3Emod of (* module expression *)
-      d3eclst
   | D3Eptrof_ptr of (* address of a pointer selection *)
       (d3exp, d3lab1lst)
   | D3Eptrof_var of (* address of a variable selection *)

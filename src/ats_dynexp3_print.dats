@@ -385,9 +385,6 @@ in
       fprint_d3explst (pf | out, d3es);
       prstr ")"
     end // end of [D3Elst]
-  | D3Emod d3cs => begin
-      fprint1_string (pf | out, "D3Emod(...)")
-    end
   | D3Eptrof_ptr (d3e, d3ls) => begin
       prstr "D3Eptrof_ptr(";
       fprint_d3exp (pf | out, d3e);
