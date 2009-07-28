@@ -7,33 +7,32 @@
 (***********************************************************************)
 
 (*
- * ATS/Anairiats - Unleashing the Potential of Types!
- *
- * Copyright (C) 2002-2008 Hongwei Xi, Boston University
- *
- * All rights reserved
- *
- * ATS is free software;  you can  redistribute it and/or modify it under
- * the terms of  the GNU GENERAL PUBLIC LICENSE (GPL) as published by the
- * Free Software Foundation; either version 3, or (at  your  option)  any
- * later version.
- * 
- * ATS is distributed in the hope that it will be useful, but WITHOUT ANY
- * WARRANTY; without  even  the  implied  warranty  of MERCHANTABILITY or
- * FITNESS FOR A PARTICULAR PURPOSE.  See the  GNU General Public License
- * for more details.
- * 
- * You  should  have  received  a  copy of the GNU General Public License
- * along  with  ATS;  see the  file COPYING.  If not, please write to the
- * Free Software Foundation,  51 Franklin Street, Fifth Floor, Boston, MA
- * 02110-1301, USA.
- *
- *)
+** ATS/Anairiats - Unleashing the Potential of Types!
+**
+** Copyright (C) 2002-2008 Hongwei Xi, Boston University
+**
+** All rights reserved
+**
+** ATS is free software;  you can  redistribute it and/or modify it under
+** the terms of  the GNU GENERAL PUBLIC LICENSE (GPL) as published by the
+** Free Software Foundation; either version 3, or (at  your  option)  any
+** later version.
+** 
+** ATS is distributed in the hope that it will be useful, but WITHOUT ANY
+** WARRANTY; without  even  the  implied  warranty  of MERCHANTABILITY or
+** FITNESS FOR A PARTICULAR PURPOSE.  See the  GNU General Public License
+** for more details.
+** 
+** You  should  have  received  a  copy of the GNU General Public License
+** along  with  ATS;  see the  file COPYING.  If not, please write to the
+** Free Software Foundation,  51 Franklin Street, Fifth Floor, Boston, MA
+** 02110-1301, USA.
+*)
 
 (* ****** ****** *)
 
-// Time: October 2007
 // Author: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
+// Time: October 2007
 
 (* ****** ****** *)
 
@@ -65,11 +64,13 @@ typedef s2cst_struct = struct { (* builtin or abstract *)
 , s2cst_iscpy= s2cstopt // is a copy?
   // is list-like?
 , s2cst_islst= Option @(d2con_t (*nil*), d2con_t (*cons*))
+, s2cst_decarg= s2qualst // template arg
 , s2cst_arilst= List int // arity list
   // variance: -1: contravarint; 0: invariant; 1: covarint
 , s2cst_argvar= Option (List @(symopt_t, s2rt, int))
   // the associated dynamic constructors
-, s2cst_conlst= Option d2conlst
+, s2cst_conlst= Option (d2conlst)
+, s2cst_clsdec= Option (c2lassdec_t)
 , s2cst_def= s2expopt // definition
 , s2cst_sup= s2cstopt // parent if any
 , s2cst_sVarset= s2Varset_t // for occurrence checks
@@ -111,9 +112,11 @@ p->s2cst_isrec := isrec;
 p->s2cst_isasp := isasp;
 p->s2cst_iscpy := S2CSTOPTnone ();
 p->s2cst_islst := islst;
+p->s2cst_decarg := list_nil ();
 p->s2cst_arilst := s2rt_arity_list s2t;
 p->s2cst_argvar := argvar;
 p->s2cst_conlst := None ();
+p->s2cst_clsdec := None ();
 p->s2cst_def := def;
 p->s2cst_sup := S2CSTOPTnone ();
 p->s2cst_sVarset := s2Varset_nil;
@@ -123,7 +126,7 @@ end // end of [val]
 
 val (pfbox | ()) = vbox_make_view_ptr (pf | p)
 
-in
+in // in of [let]
 
 (pfbox | p)
 
@@ -178,6 +181,12 @@ implement s2cst_conlst_get (s2c) =
 
 implement s2cst_conlst_set (s2c, od2cs) =
   let val (vbox pf | p) = s2c in p->s2cst_conlst := od2cs end
+
+implement s2cst_clsdec_get (s2c) =
+  let val (vbox pf | p) = s2c in p->s2cst_clsdec end
+
+implement s2cst_clsdec_set (s2c, od2c) =
+  let val (vbox pf | p) = s2c in p->s2cst_clsdec := od2c end
 
 implement s2cst_def_get (s2c) =
   let val (vbox pf | p) = s2c in p->s2cst_def end
@@ -283,24 +292,25 @@ end // end of [_compare_s2cst_s2cst]
 
 implement compare_s2cst_s2cst (s2c1, s2c2) =
   $effmask_all ( _compare_s2cst_s2cst (s2c1, s2c2) )
+// end of [compare_s2cst_s2cst]
 
 (* ****** ****** *)
 
-implement s2cst_is_abstract (s2c) = 
-  let val (vbox pf | p) = s2c in
-    case+ p->s2cst_isabs of Some _ => true | None _ => false
-  end
+implement s2cst_is_abstract (s2c) = let
+  val (vbox pf | p) = s2c in
+  case+ p->s2cst_isabs of Some _ => true | None _ => false
+end // end of [s2cst_is_abstract]
 
-implement s2cst_is_data (s2c) =
-  let val (vbox pf | p) = s2c in
-    case+ p->s2cst_isabs of Some _ => false | None _ => p->s2cst_iscon
-  end
+implement s2cst_is_data (s2c) = let
+  val (vbox pf | p) = s2c in
+  case+ p->s2cst_isabs of Some _ => false | None _ => p->s2cst_iscon
+end // end of [s2cst_is_data]
 
 implement s2cst_is_eqsup (s2c1, s2c2) = let
   fun aux (s2c1: s2cst_t, stamp2: stamp_t): bool = let
     val stamp1 = begin
       let val (vbox pf1 | p1) = s2c1 in p1->s2cst_stamp end
-    end
+    end // end of [val]
   in
     if $Stamp.eq_stamp_stamp (stamp1, stamp2) then true
     else let
@@ -308,11 +318,11 @@ implement s2cst_is_eqsup (s2c1, s2c2) = let
     in
       case+ sup of
       | S2CSTOPTsome s2c1 => aux (s2c1, stamp2) | S2CSTOPTnone () => false
-    end
-  end
+    end // end of [if]
+  end (* end of [aux] *)
   val stamp2 = begin
     let val (vbox pf2 | p2) = s2c2 in p2->s2cst_stamp end
-  end
+  end (* end of [val] *)
 in
   aux (s2c1, stamp2)
 end // end of [s2cst_is_eqsup]
@@ -333,14 +343,13 @@ in
   | None () => false
 end // end of [s2cst_is_singular]
 
-(* ****** ****** *)
-
 end // end of [local] (for assuming s2cst_t)
+
+(* ****** ****** *)
 
 implement s2cst_make_dat
   (id, loc, os2ts_arg, s2t_res, argvar) = let
-  val s2t = (
-    case+ os2ts_arg of
+  val s2t = (case+ os2ts_arg of
     | Some s2ts_arg => s2rt_fun (s2ts_arg, s2t_res)
     | None () => s2t_res
   ) : s2rt
@@ -354,10 +363,42 @@ in
   , false // isrec
   , false // isasp
   , None () // islst
-  , argvar // arguments
-  , None () // def
-  )
+  , argvar // argumnet variance
+  , None () // definition
+  ) // end of [s2cst_make]
 end // end of [s2cst_make_dat]
+
+(* ****** ****** *)
+
+implement s2cst_make_cls
+  (id, loc, s2vss) = let
+  val s2t = aux (s2vss, s2rt_cls) where {
+    fun aux (
+        s2vss: s2varlstlst, res: s2rt
+      ) : s2rt = begin case+ s2vss of
+      | list_cons (s2vs, s2vss) => let
+          val res = aux (s2vss, res)
+          val s2ts_arg = $Lst.list_map_fun (s2vs, s2var_srt_get)
+        in
+          s2rt_fun (s2ts_arg, res)
+        end // end of [list_cons]
+       | list_nil () => res
+    end // end of [aux]
+  } // end of [val]
+in
+  s2cst_make (
+    id // name
+  , loc // the location of declaration
+  , s2t // sort
+  , None () // isabs
+  , true // iscon
+  , false // isrec
+  , false // isasp
+  , None () // islst
+  , None () // argumnet variance
+  , None () // definition
+  ) // end of [s2cst_make]
+end // end of [s2cst_make_cls]
 
 (* ****** ****** *)
 

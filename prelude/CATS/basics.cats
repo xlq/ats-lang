@@ -69,30 +69,31 @@ atspre_clo_coerce (ats_ptr_type p) { return p ; }
 /* ****** ****** */
 
 static inline
-ats_void_type
-atspre_cloptr_free (ats_ptr_type p) {
-  ATS_FREE (p) ; return ;
-} /* atspre_cloptr_free */
-
-static inline
 ats_ptr_type
-atspre_cloptr_get_view_ptr (ats_ptr_type p) {
-  return p ;
-} /* atspre_cloptr_get_view_ptr */
+atspre_cloptr_get_view_ptr (ats_ptr_type p) { return p ; }
 
 /* ****** ****** */
 
 static inline
 ats_void_type
-atspre_vbox_make_view_ptr (ats_ptr_type p) {
-  return ;
-} /* atspre_vbox_make_view_ptr */
+atspre_cloptr_free (ats_ptr_type p)
+  { ATS_FREE (p) ; return ; } // end of [atspre_cloptr_free]
+
+/* ****** ****** */
+
+static inline
+ats_ptr_type
+atspre_objmod_upcast (ats_ptr_type p) { return p ; }
+
+/* ****** ****** */
 
 static inline
 ats_void_type
-atspre_vbox_make_view_ptr_gc (ats_ptr_type p) {
-  return ;
-} /* atspre_vbox_make_view_ptr_gc */
+atspre_vbox_make_view_ptr (ats_ptr_type p) { return ; }
+
+static inline
+ats_void_type
+atspre_vbox_make_view_ptr_gc (ats_ptr_type p) { return ; }
 
 /* ****** ****** */
 

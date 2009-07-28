@@ -87,6 +87,7 @@ SOURCES := \
   ats_dynexp2.dats \
   ats_dynexp2_dcst.dats \
   ats_dynexp2_dmac.dats \
+  ats_dynexp2_dmtd.dats \
   ats_dynexp2_dvar.dats \
   ats_dynexp2_print.dats \
   ats_dynexp2_util.dats \
@@ -445,6 +446,9 @@ $(BOOTDIR)/ats_dynexp2_dcst_dats.c: ats_dynexp2_dcst.dats
 
 $(BOOTDIR)/ats_dynexp2_dmac_dats.c: ats_dynexp2_dmac.dats
 	$(ATSOPT) --output $@ -d ats_dynexp2_dmac.dats
+
+$(BOOTDIR)/ats_dynexp2_dmtd_dats.c: ats_dynexp2_dmtd.dats
+	$(ATSOPT) --output $@ -d ats_dynexp2_dmtd.dats
 
 $(BOOTDIR)/ats_dynexp2_dvar_dats.c: ats_dynexp2_dvar.dats
 	$(ATSOPT) --output $@ -d ats_dynexp2_dvar.dats

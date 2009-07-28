@@ -100,7 +100,7 @@ p->d2var_lev := ~1;
 p->d2var_lin := ~1;
 p->d2var_isfix := false;
 p->d2var_isprf := false;
-p->d2var_decarg := nil ();
+p->d2var_decarg := list_nil ();
 p->d2var_addr := None ();
 p->d2var_view := D2VAROPTnone ();
 p->d2var_fin := D2VARFINnone ();
@@ -386,14 +386,13 @@ in
 end
 
 implement d2var_ptr_viewat_make (d2v_ptr, od2v_view) = let
-  val loc = d2var_loc_get d2v_ptr
-  val sym = d2var_sym_get d2v_ptr
+  val loc = d2var_loc_get d2v_ptr and sym = d2var_sym_get d2v_ptr
   val d2v_view = (case+ od2v_view of
     | D2VAROPTsome d2v_view => d2v_view | D2VAROPTnone () => let
        val sym_view = $Sym.symbol_make_string ($Sym.symbol_name sym + ".view")
      in
        d2var_make (loc, sym_view)
-     end
+     end // end of [D2VAROPTnone]
   ) : d2var_t
   val () = d2var_lin_set (d2v_view, 0)
   val () = d2var_addr_set (d2v_view, d2var_addr_get d2v_ptr)

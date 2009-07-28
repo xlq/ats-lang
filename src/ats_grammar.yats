@@ -73,6 +73,14 @@ extern abskind_t abskind_view (void) ;
 extern abskind_t abskind_viewtype (void) ;
 extern abskind_t abskind_viewt0ype (void) ;
 
+typedef ats_ptr_type dcstkind_t ;
+extern dcstkind_t dcstkind_fun (void) ;
+extern dcstkind_t dcstkind_val (void) ;
+extern dcstkind_t dcstkind_castfn (void) ;
+extern dcstkind_t dcstkind_praxi (void) ;
+extern dcstkind_t dcstkind_prfun (void) ;
+extern dcstkind_t dcstkind_prval (void) ;
+
 typedef ats_ptr_type datakind_t ;
 extern datakind_t datakind_prop (void) ;
 extern datakind_t datakind_type (void) ;
@@ -86,13 +94,15 @@ extern stadefkind_t stadefkind_type (t0kn_t) ;
 extern stadefkind_t stadefkind_view (t0kn_t) ;
 extern stadefkind_t stadefkind_viewtype (t0kn_t) ;
 
-typedef ats_ptr_type dcstkind_t ;
-extern dcstkind_t dcstkind_fun (void) ;
-extern dcstkind_t dcstkind_val (void) ;
-extern dcstkind_t dcstkind_castfn (void) ;
-extern dcstkind_t dcstkind_praxi (void) ;
-extern dcstkind_t dcstkind_prfun (void) ;
-extern dcstkind_t dcstkind_prval (void) ;
+typedef ats_ptr_type clskind_t ;
+extern clskind_t clskind_mod (t0kn_t) ;
+extern clskind_t clskind_obj (t0kn_t) ;
+
+typedef ats_ptr_type objkind_t ;
+extern objkind_t objkind_obj_t (t0kn_t) ;
+extern objkind_t objkind_obj_vt (t0kn_t) ;
+extern objkind_t objkind_objmod (t0kn_t) ;
+extern objkind_t objkind_objref (t0kn_t) ;
 
 typedef ats_ptr_type valkind_t ;
 extern valkind_t valkind_val (void) ;
@@ -139,6 +149,7 @@ extern i0de_t i0de_make_lt (t0kn_t) ;
 extern i0de_t i0de_make_minusgt (t0kn_t) ;
 extern i0de_t i0de_make_minuslt (t0kn_t) ;
 extern i0de_t i0de_make_minusltgt (t0kn_t) ;
+extern i0de_t i0de_make_module (t0kn_t) ;
 extern i0de_t i0de_make_r0ead (t0kn_t) ;
 extern i0de_t i0de_make_tilda (t0kn_t) ;
 extern i0de_t i0de_make_t0ype (t0kn_t) ;
@@ -334,6 +345,7 @@ extern s0exp_t s0exp_named (i0de_t, s0exp_t) ;
 extern s0exp_t s0exp_opide (t0kn_t, i0de_t) ;
 extern s0exp_t s0exp_qid (s0taq_t, i0de_t) ;
 extern s0exp_t s0exp_struct (t0kn_t, labs0explst_t, t0kn_t) ;
+extern s0exp_t s0exp_tmpid (tmpqi0de_t, s0explst_t, t1mps0explstlst_t, t0kn_t) ;
 extern s0exp_t s0exp_tyarr (t0kn_t, s0exp_t, s0arrind_t) ;
 extern s0exp_t s0exp_tyrec (int, t0kn_t, labs0explst_t, t0kn_t) ;
 extern s0exp_t s0exp_tytup (int, t0kn_t, s0explst_t, t0kn_t) ;
@@ -483,6 +495,21 @@ extern e0xndec_t e0xndec_make (s0qualstlst_t, i0de_t, s0expopt_t) ;
 typedef ats_ptr_type e0xndeclst_t ;
 extern e0xndeclst_t e0xndeclst_nil (void) ;
 extern e0xndeclst_t e0xndeclst_cons (e0xndec_t, e0xndeclst_t) ;
+
+typedef ats_ptr_type m0thdec_t ;
+// extern m0thdec_t m0thdec_make_mtd // see below
+// extern m0thdec_t m0thdec_make_val // see below
+// extern m0thdec_t m0thdec_make_var // see below
+// extern m0thdec_t m0thdec_make_imp // see below
+
+typedef ats_ptr_type m0thdeclst_t ;
+extern m0thdeclst_t m0thdeclst_nil(void) ;
+extern m0thdeclst_t m0thdeclst_cons(m0thdec_t, m0thdeclst_t) ;
+
+typedef ats_ptr_type c0lassdec_t ;
+extern c0lassdec_t c0lassdec_make
+  (i0de_t, s0arglstlst_t, s0explst_t, m0thdeclst_t, t0kn_t) ;
+// end of [c0lassdec_t]
 
 /* ****** ****** */
 
@@ -688,6 +715,8 @@ extern d0exp_t d0exp_macsyn_cross (t0kn_t, d0explst_t, t0kn_t) ;
 extern d0exp_t d0exp_macsyn_decode (t0kn_t, d0explst_t, t0kn_t) ;
 extern d0exp_t d0exp_macsyn_encode_seq (t0kn_t, d0explst_t, t0kn_t) ;
 
+extern d0exp_t d0exp_obj (objkind_t, s0exp_t, m0thdeclst_t, t0kn_t) ;
+
 extern d0exp_t d0exp_opide (t0kn_t, i0de_t) ;
 extern d0exp_t d0exp_ptrof (t0kn_t) ;
 extern d0exp_t d0exp_qid (d0ynq_t, i0de_t) ;
@@ -712,6 +741,9 @@ extern d0exp_t d0exp_while (loophead_t, d0exp_t, d0exp_t) ;
 extern d0explst_t d0explst_nil (void) ;
 extern d0explst_t d0explst_cons (d0exp_t, d0explst_t) ;
 extern d0explst_t d0explst_sing (d0exp_t) ;
+
+extern d0expopt_t d0expopt_none (void) ;
+extern d0expopt_t d0expopt_some (d0exp_t) ;
 
 extern labd0explst_t labd0explst_nil (void) ;
 extern labd0explst_t labd0explst_cons (l0ab_t, d0exp_t, labd0explst_t) ;
@@ -810,7 +842,32 @@ extern m0acdeflst_t m0acdeflst_cons (m0acdef_t, m0acdeflst_t) ;
 
 /* ****** ****** */
 
-extern i0mpdec_t i0mpdec_make (impqi0de_t, f0arglst_t, s0expopt_t, d0exp_t) ;
+extern
+i0mpdec_t i0mpdec_make (
+  impqi0de_t, f0arglst_t, s0expopt_t, d0exp_t
+) ; // end of [i0mpdec_make]
+
+/* ****** ****** */
+
+// [m0thdec_t] is defined above
+
+extern
+m0thdec_t m0thdec_make_mtd (
+  t0kn_t, i0de_t, f0arglst_t, e0fftaglstopt_t, s0exp_t, d0expopt_t
+) ; // end of [m0thdec_make_mtd]
+
+extern
+m0thdec_t m0thdec_make_val (t0kn_t, i0de_t, s0exp_t, d0expopt_t) ;
+// end of [m0thdec_make_val]
+
+extern
+m0thdec_t m0thdec_make_var (t0kn_t, i0de_t, s0exp_t, d0expopt_t) ;
+// end of [m0thdec_make_var]
+
+extern
+m0thdec_t m0thdec_make_imp
+  (t0kn_t, i0de_t, f0arglst_t, s0expopt_t, d0exp_t) ;
+// end of [m0thdec_make_imp]
 
 /* ****** ****** */
 
@@ -838,6 +895,8 @@ extern d0ec_t d0ec_saspdec (s0aspdec_t) ;
 extern d0ec_t d0ec_datdecs
   (datakind_t, d0atdec_t, d0atdeclst_t, s0explstopt_t) ;
 extern d0ec_t d0ec_exndecs (t0kn_t, e0xndec_t, e0xndeclst_t) ;
+extern d0ec_t d0ec_classdec
+  (clskind_t, s0qualstlst_t, c0lassdec_t, s0explstopt_t) ;
 extern d0ec_t d0ec_dcstdecs
   (dcstkind_t, s0qualstlst_t, d0cstdec_t, d0cstdeclst_t) ;
 extern d0ec_t d0ec_overload (i0de_t, dqi0de_t) ;
@@ -894,9 +953,11 @@ t0kn_t t0kn ;
 //
 
 abskind_t abskind ;
+dcstkind_t dcstkind ;
 datakind_t datakind ;
 stadefkind_t stadefkind ;
-dcstkind_t dcstkind ;
+clskind_t clskind ;
+objkind_t objkind ;
 valkind_t valkind ;
 funkind_t funkind ;
 
@@ -1029,6 +1090,12 @@ d0atdeclst_t d0atdeclst ;
 
 e0xndec_t e0xndec ;
 e0xndeclst_t e0xndeclst ;
+
+s0explst_t s0upclss ;
+d0expopt_t m0thdef ;
+m0thdec_t m0thdec ;
+m0thdeclst_t m0thdeclst ;
+c0lassdec_t c0lassdec ;
 
 /* ****** ****** */
 
@@ -1178,6 +1245,7 @@ guad0ec_t guad0ec ;
 %token <t0kn> LOCAL
 %token <t0kn> MACDEF MACRODEF
 %token <t0kn> METHOD METHODSTAR
+%token <t0kn> MODULE
 %token <t0kn> NONFIX
 %token <t0kn> OBJECT
 %token <t0kn> OF
@@ -1203,6 +1271,7 @@ guad0ec_t guad0ec ;
 %token <t0kn> STALOAD
 %token <t0kn> STAVAR
 %token <t0kn> STRUCT
+%token <tokn> SUPER
 %token <t0kn> SYMELIM SYMINTR
 %token <t0kn> THEN
 %token <t0kn> TRY
@@ -1211,7 +1280,8 @@ guad0ec_t guad0ec ;
 %token <t0kn> T0YPE
 %token <t0kn> T0YPEMINUS T0YPEPLUS
 %token <t0kn> UNION
-%token <t0kn> VAL VALMINUS VALPLUS
+%token <t0kn> VAL
+%token <t0kn> VALMINUS VALPLUS
 %token <t0kn> VAR
 %token <t0kn> VIEWDEF
 %token <t0kn> VIEWMINUS VIEWPLUS
@@ -1228,13 +1298,13 @@ guad0ec_t guad0ec ;
 /* ****** ****** */
 
 %token <t0kn> DLRARRSZ
-%token <t0kn> DLRLSTT DLRLSTVT
-%token <t0kn> DLRRECT DLRRECVT
-%token <t0kn> DLRTUPT DLRTUPVT
+%token <t0kn> DLRLST_T DLRLST_VT
+%token <t0kn> DLRREC_T DLRREC_VT
+%token <t0kn> DLRTUP_T DLRTUP_VT
 
 %token <t0kn> DLRDECRYPT
 %token <t0kn> DLRDELAY
-%token <t0kn> DLRDELAYVT
+%token <t0kn> DLRDELAY_VT
 %token <t0kn> DLRDYNLOAD
 %token <t0kn> DLREFFMASK_ALL
 %token <t0kn> DLREFFMASK_EXN
@@ -1246,6 +1316,10 @@ guad0ec_t guad0ec ;
 %token <t0kn> DLREXTVAL
 %token <t0kn> DLREXTYPE
 %token <t0kn> DLRFOLD
+%token <t0kn> DLROBJ_T
+%token <t0kn> DLROBJ_VT
+%token <t0kn> DLROBJMOD
+%token <t0kn> DLROBJREF
 %token <t0kn> DLRRAISE
 %token <t0kn> DLRSPAWN
 %token <t0kn> DLRUNFOLD
@@ -1351,9 +1425,11 @@ guad0ec_t guad0ec ;
 /* ****** ****** */
 
 %type <abskind> abskind
+%type <dcstkind> dcstkind
 %type <datakind> datakind
 %type <stadefkind> stadefkind
-%type <dcstkind> dcstkind
+%type <clskind> clskind
+%type <objkind> objkind
 %type <valkind> valkind
 %type <funkind> funkind
 
@@ -1489,6 +1565,12 @@ guad0ec_t guad0ec ;
 %type <e0xndec> e0xndec
 %type <e0xndeclst> ande0xndecseq
 
+%type <s0upclss> s0upclss
+%type <m0thdef> m0thdef
+%type <m0thdec> m0thdec
+%type <m0thdeclst> m0thdecseq
+%type <c0lassdec> c0lassdec
+
 %type <p0arg> p0arg
 %type <p0arglst> p0argseq
 %type <p0arglst> commap0argseq
@@ -1523,6 +1605,8 @@ guad0ec_t guad0ec ;
 
 %type <s0elop> s0elop
 %type <s0exparg> s0exparg
+
+%type <s0exp> objc0ls
 
 %type <d0exp> d0exp
 %type <d0exp> atmd0exp
@@ -1630,6 +1714,15 @@ abskind
   | ABSVIEWT0YPE                        { $$ = abskind_viewt0ype () ; }
 ;
 
+dcstkind
+  : FUN                                 { $$ = dcstkind_fun () ; }
+  | VAL                                 { $$ = dcstkind_val () ; }
+  | PRAXI                               { $$ = dcstkind_praxi () ; }
+  | PRFUN                               { $$ = dcstkind_prfun () ; }
+  | PRVAL                               { $$ = dcstkind_prval () ; }
+  | CASTFN                              { $$ = dcstkind_castfn () ; }
+;
+
 datakind
   : DATAPROP                            { $$ = datakind_prop () ; }
   | DATATYPE                            { $$ = datakind_type () ; }
@@ -1645,13 +1738,16 @@ stadefkind
   | VIEWTYPEDEF                         { $$ = stadefkind_viewtype ($1) ; }
 ;
 
-dcstkind
-  : FUN                                 { $$ = dcstkind_fun () ; }
-  | VAL                                 { $$ = dcstkind_val () ; }
-  | PRAXI                               { $$ = dcstkind_praxi () ; }
-  | PRFUN                               { $$ = dcstkind_prfun () ; }
-  | PRVAL                               { $$ = dcstkind_prval () ; }
-  | CASTFN                              { $$ = dcstkind_castfn () ; }
+clskind
+  : MODULE CLASS                        { $$ = clskind_mod ($1) ; }
+  | OBJECT CLASS                        { $$ = clskind_obj ($1) ; }
+;
+
+objkind
+  : DLROBJ_T                            { $$ = objkind_obj_t ($1) ; }
+  | DLROBJ_VT                           { $$ = objkind_obj_vt ($1) ; }
+  | DLROBJMOD                           { $$ = objkind_objmod ($1) ; }
+  | DLROBJREF                           { $$ = objkind_objref ($1) ; }
 ;
 
 valkind
@@ -2036,6 +2132,8 @@ atms0exp /* atomic static expression */
   | si0de                               { $$ = s0exp_ide($1) ; }
   | OP si0de                            { $$ = s0exp_opide($1, $2) ; }
   | s0taq si0de                         { $$ = s0exp_qid($1, $2) ; }
+  | tmpqi0de t1mps0expseq gtlt_t1mps0expseqseq GT
+                                        { $$ = s0exp_tmpid ($1, $2, $3, $4) ; }
 /*
   | sqi0de HASHLBRACE labs0expseq RBRACE
                                         { $$ = s0exp_mod($1, $3, $4) ; }
@@ -2046,22 +2144,22 @@ atms0exp /* atomic static expression */
 
   | ATLPAREN s0expseq RPAREN            { $$ = s0exp_tytup(0, $1, $2, $3) ; }
   | QUOTELPAREN s0expseq RPAREN         { $$ = s0exp_tytup(1, $1, $2, $3) ; }
-  | DLRTUPT LPAREN s0expseq RPAREN      { $$ = s0exp_tytup(2, $1, $3, $4) ; }
-  | DLRTUPVT LPAREN s0expseq RPAREN     { $$ = s0exp_tytup(3, $1, $3, $4) ; }
+  | DLRTUP_T LPAREN s0expseq RPAREN     { $$ = s0exp_tytup(2, $1, $3, $4) ; }
+  | DLRTUP_VT LPAREN s0expseq RPAREN    { $$ = s0exp_tytup(3, $1, $3, $4) ; }
 
   | ATLPAREN s0expseq BAR s0expseq RPAREN
                                         { $$ = s0exp_tytup2(0, $1, $2, $4, $5) ; }
   | QUOTELPAREN s0expseq BAR s0expseq RPAREN
                                         { $$ = s0exp_tytup2(1, $1, $2, $4, $5) ; }
-  | DLRTUPT LPAREN s0expseq BAR s0expseq RPAREN
+  | DLRTUP_T LPAREN s0expseq BAR s0expseq RPAREN
                                         { $$ = s0exp_tytup2(2, $1, $3, $5, $6) ; }
-  | DLRTUPVT LPAREN s0expseq BAR s0expseq RPAREN
+  | DLRTUP_VT LPAREN s0expseq BAR s0expseq RPAREN
                                         { $$ = s0exp_tytup2(3, $1, $3, $5, $6) ; }
 
   | ATLBRACE labs0expseq RBRACE         { $$ = s0exp_tyrec(0, $1, $2, $3) ; }
   | QUOTELBRACE labs0expseq RBRACE      { $$ = s0exp_tyrec(1, $1, $2, $3) ; }
-  | DLRRECT LBRACE labs0expseq RBRACE   { $$ = s0exp_tyrec(2, $1, $3, $4) ; }
-  | DLRRECVT LBRACE labs0expseq RBRACE  { $$ = s0exp_tyrec(3, $1, $3, $4) ; }
+  | DLRREC_T LBRACE labs0expseq RBRACE  { $$ = s0exp_tyrec(2, $1, $3, $4) ; }
+  | DLRREC_VT LBRACE labs0expseq RBRACE { $$ = s0exp_tyrec(3, $1, $3, $4) ; }
 
   | ATLBRACKET s0exp RBRACKET LBRACKET s0arrind
                                         { $$ = s0exp_tyarr($1, $2, $5) ; }
@@ -2282,7 +2380,7 @@ conq0uaseq /* quantifiers */
 
 coni0ndopt /* type indexes are optional */
   : /* empty */                         { $$ = s0expopt_none() ; }
-  | LPAREN s0expseq RPAREN    { $$ = s0expopt_some(s0exp_list($1, $2, $3)) ; }
+  | LPAREN s0expseq RPAREN              { $$ = s0expopt_some(s0exp_list($1, $2, $3)) ; }
 ;
 
 cona0rgopt /* arguments are optional */
@@ -2332,6 +2430,35 @@ e0xndec
 ande0xndecseq
   : /* empty */                         { $$ = e0xndeclst_nil() ; }
   | AND e0xndec ande0xndecseq           { $$ = e0xndeclst_cons($2, $3) ; }
+;
+
+/* ****** ****** */
+
+s0upclss: SUPER COLON s0expseq          { $$ = $3 ; }
+;
+
+m0thdef
+   : /* empty */                        { $$ = d0expopt_none() ; }
+   | EQ d0exp                           { $$ = d0expopt_some($2) ; }
+;
+
+m0thdec
+   : METHOD di0de f0arg1seq colonwith s0exp m0thdef
+                                        { $$ = m0thdec_make_mtd($1, $2, $3, $4, $5, $6) ; }
+   | VAL di0de COLON s0exp m0thdef      { $$ = m0thdec_make_val($1, $2, $4, $5) ; }
+   | VAR di0de COLON s0exp m0thdef      { $$ = m0thdec_make_var($1, $2, $4, $5) ; }
+   | IMPLEMENT di0de f0arg2seq colons0expopt EQ d0exp
+                                        { $$ = m0thdec_make_imp($1, $2, $3, $4, $6) ; }
+;
+
+m0thdecseq
+  : /* empty */                         { $$ = m0thdeclst_nil() ; }
+  | m0thdec m0thdecseq                  { $$ = m0thdeclst_cons($1, $2) ; }
+;
+
+c0lassdec
+  : si0de s0argseqseq EQ LBRACE s0upclss m0thdecseq RBRACE
+                                        { $$ = c0lassdec_make($1, $2, $5, $6, $7) ; }
 ;
 
 /* ****** ****** */
@@ -2471,8 +2598,10 @@ f0arg1seq
 f0arg2
   : LBRACE s0argseq RBRACE              { $$ = f0arg_sta2($1, $2, $3) ; }
   | atmp0at                             { $$ = f0arg_dyn($1) ; }
+/*
   | DOTLT s0expseq GTDOT                { $$ = f0arg_met_some($1, $2, $3) ; }
   | DOTLTGTDOT                          { $$ = f0arg_met_none($1) ; }
+*/
 ;
 
 f0arg2seq
@@ -2483,6 +2612,10 @@ f0arg2seq
 s0elop
   : DOT                                 { $$ = s0elop_make (0, $1) ; }
   | MINUSGT                             { $$ = s0elop_make (1, $1) ; }
+;
+
+objc0ls
+  : LPAREN s0exp RPAREN                 { $$ = $2 ; }
 ;
 
 /* dynamic expressions */
@@ -2506,7 +2639,7 @@ atmd0exp
   | DLRDECRYPT                          { $$ = d0exp_crypt (-1, $1) ; }
   | DLRENCRYPT                          { $$ = d0exp_crypt ( 1, $1) ; }
   | DLRDELAY                            { $$ = d0exp_delay(0, $1) ; }
-  | DLRDELAYVT                          { $$ = d0exp_delay(1, $1) ; }
+  | DLRDELAY_VT                         { $$ = d0exp_delay(1, $1) ; }
   | DLRDYNLOAD                          { $$ = d0exp_dynload($1) ; }
   | DLREFFMASK_ALL                      { $$ = d0exp_effmask_all($1) ; }
   | DLREFFMASK_EXN                      { $$ = d0exp_effmask_exn($1) ; }
@@ -2530,9 +2663,9 @@ atmd0exp
   | LPAREN d0expcommaseq BAR d0expcommaseq RPAREN
                                         { $$ = d0exp_list2 ($1, $2, $4, $5) ; }
 
-  | DLRLSTT s0expelt LPAREN d0expcommaseq RPAREN
+  | DLRLST_T s0expelt LPAREN d0expcommaseq RPAREN
                                         { $$ = d0exp_lst (0, $1, $2, $4, $5) ; }
-  | DLRLSTVT s0expelt LPAREN d0expcommaseq RPAREN
+  | DLRLST_VT s0expelt LPAREN d0expcommaseq RPAREN
                                         { $$ = d0exp_lst (1, $1, $2, $4, $5) ; }
   | QUOTELBRACKET d0expcommaseq RBRACKET
                                         { $$ = d0exp_lst_quote ($1, $2, $3) ; }
@@ -2543,8 +2676,9 @@ atmd0exp
     /* dynamic tuples */
   | ATLPAREN d0expcommaseq RPAREN       { $$ = d0exp_tup (0, $1, $2, $3) ; }
   | QUOTELPAREN d0expcommaseq RPAREN    { $$ = d0exp_tup (1, $1, $2, $3) ; }
-  | DLRTUPT LPAREN d0expcommaseq RPAREN { $$ = d0exp_tup (2, $1, $3, $4) ; }
-  | DLRTUPVT LPAREN d0expcommaseq RPAREN
+  | DLRTUP_T LPAREN d0expcommaseq RPAREN
+                                        { $$ = d0exp_tup (2, $1, $3, $4) ; }
+  | DLRTUP_VT LPAREN d0expcommaseq RPAREN
                                         { $$ = d0exp_tup (3, $1, $3, $4) ; }
 
   | ATLPAREN d0expcommaseq BAR d0expcommaseq RPAREN
@@ -2555,14 +2689,18 @@ atmd0exp
     /* dynamic records */
   | ATLBRACE labd0expseq RBRACE         { $$ = d0exp_rec (0, $1, $2, $3) ; }
   | QUOTELBRACE labd0expseq RBRACE      { $$ = d0exp_rec (1, $1, $2, $3) ; }
-  | DLRRECT LBRACE labd0expseq RBRACE   { $$ = d0exp_rec (2, $1, $3, $4) ; }
-  | DLRRECVT LBRACE labd0expseq RBRACE  { $$ = d0exp_rec (3, $1, $3, $4) ; }
+  | DLRREC_T LBRACE labd0expseq RBRACE  { $$ = d0exp_rec (2, $1, $3, $4) ; }
+  | DLRREC_VT LBRACE labd0expseq RBRACE { $$ = d0exp_rec (3, $1, $3, $4) ; }
 
+    /* dynamic objects */
+  | objkind objc0ls LBRACE m0thdecseq RBRACE
+                                        { $$ = d0exp_obj ($1, $2, $4, $5) ; }
+    /* external dynamic value */
   | DLREXTVAL LPAREN s0exp COMMA LITERAL_string RPAREN
                                         { $$ = d0exp_extval ($1, $3, $5, $6) ; }
 
-  | PERCENTLPAREN d0exp RPAREN  { $$ = d0exp_macsyn_cross ($1, $2, $3) ; }
-  | COMMALPAREN d0exp RPAREN    { $$ = d0exp_macsyn_decode ($1, $2, $3) ; }
+  | PERCENTLPAREN d0exp RPAREN          { $$ = d0exp_macsyn_cross ($1, $2, $3) ; }
+  | COMMALPAREN d0exp RPAREN            { $$ = d0exp_macsyn_decode ($1, $2, $3) ; }
   | BACKQUOTELPAREN d0expsemiseq0 RPAREN
                                         { $$ = d0exp_macsyn_encode_seq ($1, $2, $3) ; }
 
@@ -2956,8 +3094,9 @@ d0ec
   | ASSUME s0aspdec                     { $$ = d0ec_saspdec($2) ; }
   | datakind d0atdec andd0atdecseq s0expdefseqopt
                                         { $$ = d0ec_datdecs($1, $2, $3, $4) ; }
-  | EXCEPTION e0xndec ande0xndecseq
-                                        { $$ = d0ec_exndecs($1, $2, $3) ; } 
+  | EXCEPTION e0xndec ande0xndecseq     { $$ = d0ec_exndecs($1, $2, $3) ; } 
+  | clskind d0ecargseq c0lassdec s0expdefseqopt
+                                        { $$ = d0ec_classdec($1, $2, $3, $4) ; }
   | OVERLOAD di0de WITH dqi0de          { $$ = d0ec_overload($2, $4) ; }
   | OVERLOAD LBRACKET RBRACKET WITH dqi0de
                                         { $$ = d0ec_overload_lrbrackets($2, $3, $5) ; }

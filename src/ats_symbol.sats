@@ -7,28 +7,27 @@
 (***********************************************************************)
 
 (*
- * ATS/Anairiats - Unleashing the Potential of Types!
- *
- * Copyright (C) 2002-2008 Hongwei Xi, Boston University
- *
- * All rights reserved
- *
- * ATS is free software;  you can  redistribute it and/or modify it under
- * the terms of  the GNU GENERAL PUBLIC LICENSE (GPL) as published by the
- * Free Software Foundation; either version 3, or (at  your  option)  any
- * later version.
- * 
- * ATS is distributed in the hope that it will be useful, but WITHOUT ANY
- * WARRANTY; without  even  the  implied  warranty  of MERCHANTABILITY or
- * FITNESS FOR A PARTICULAR PURPOSE.  See the  GNU General Public License
- * for more details.
- * 
- * You  should  have  received  a  copy of the GNU General Public License
- * along  with  ATS;  see the  file COPYING.  If not, please write to the
- * Free Software Foundation,  51 Franklin Street, Fifth Floor, Boston, MA
- * 02110-1301, USA.
- *
- *)
+** ATS/Anairiats - Unleashing the Potential of Types!
+**
+** Copyright (C) 2002-2008 Hongwei Xi, Boston University
+**
+** All rights reserved
+**
+** ATS is free software;  you can  redistribute it and/or modify it under
+** the terms of  the GNU GENERAL PUBLIC LICENSE (GPL) as published by the
+** Free Software Foundation; either version 3, or (at  your  option)  any
+** later version.
+** 
+** ATS is distributed in the hope that it will be useful, but WITHOUT ANY
+** WARRANTY; without  even  the  implied  warranty  of MERCHANTABILITY or
+** FITNESS FOR A PARTICULAR PURPOSE.  See the  GNU General Public License
+** for more details.
+** 
+** You  should  have  received  a  copy of the GNU General Public License
+** along  with  ATS;  see the  file COPYING.  If not, please write to the
+** Free Software Foundation,  51 Franklin Street, Fifth Floor, Boston, MA
+** 02110-1301, USA.
+*)
 
 (* ****** ****** *)
 
@@ -105,8 +104,9 @@ val symbol_TUP_TAIL : symbol_t
 val symbol_ADDR : symbol_t
 val symbol_BOOL : symbol_t
 val symbol_CHAR : symbol_t
-val symbol_EXN : symbol_t
+val symbol_CLS : symbol_t
 val symbol_EFF : symbol_t
+val symbol_EXN : symbol_t
 val symbol_INT : symbol_t
 
 (* base impredicative sorts *)
@@ -118,6 +118,13 @@ val symbol_VIEW : symbol_t
 val symbol_VIEWTYPE : symbol_t // viewtypes of one word size
 val symbol_VIEWT0YPE : symbol_t // viewtypes of unspecified size
 val symbol_TYPES : symbol_t // type lists
+
+(* ****** ****** *)
+
+(* special variables for object-oriented programming *)
+
+val symbol_SELF : symbol_t
+val symbol_MYCLS : symbol_t
 
 (* ****** ****** *)
 

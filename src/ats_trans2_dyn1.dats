@@ -68,9 +68,17 @@ staload "ats_trans2.sats"
 
 staload _(*anonymous*) = "ats_array.dats"
 
+staload "ats_reference.sats"
+staload _(*anonymous*) = "ats_reference.dats"
+
 (* ****** ****** *)
 
-#define THISFILENAME "ats_trans2_dyn.dats"
+staload _(*anonymous*) = "ats_map_lin.dats"
+staload _(*anonymous*) = "ats_symenv.dats"
+
+(* ****** ****** *)
+
+#define THISFILENAME "ats_trans2_dyn1.dats"
 
 (* ****** ****** *)
 
@@ -807,6 +815,7 @@ fn d1exp_qid_tr
       in
         d2exp_var (loc0, d2v)
       end // end of [D2ITEMmacvar]
+    | D2ITEMmtd d2m => d2exp_mtd (loc0, d2m)
     | D2ITEMsym d2is => let
         val d2s = d2sym_make (loc0, q, id, d2is)
       in
@@ -928,10 +937,18 @@ in
         d2exp_con (loc_dap, d2c, sarg, npf, darg)
       end // end of [D2ITEMcon]
     | D2ITEMcst d2c => let
+//
         val () = dyncstuseloc_posmark (loc_qid, d2c)
+//
         val d2e_fun = d2exp_cst (loc_qid, d2c) in
         d2exp_app_sta_dyn (loc_dap, loc_sap, d2e_fun, sarg, loc_arg, npf, darg)
       end // end of [D2ITEMcst]
+    | D2ITEMe1xp _ => begin
+        $Loc.prerr_location loc_qid;
+        prerr ": INTERNAL ERROR: d1exp_qid_app_dyn_tr: D2ITEMe1xp";
+        prerr_newline ();
+        $Err.abort {d2exp} ()
+      end // end of [D2ITEMe1xp]
     | D2ITEMmacdef d2m => let
         val knd = d2mac_kind_get d2m
         val () = macro_def_check (loc_qid, knd, id)
@@ -939,6 +956,18 @@ in
       in
         d2exp_app_sta_dyn (loc_dap, loc_sap, d2e_fun, sarg, loc_arg, npf, darg)
       end // end of [D2ITEMmacdef]
+    | D2ITEMmacvar _ => begin
+        prerr_loc_error2 loc_qid;
+        prerr ": the identifer refers to a macro argument variable";
+        prerr ", which cannot be applied.";
+        prerr_newline ();
+        $Err.abort {d2exp} ()
+      end // end of [D2ITEMmacvar]
+    | D2ITEMmtd d2m => let
+        val d2e_fun = d2exp_mtd (loc_qid, d2m)
+      in
+        d2exp_app_sta_dyn (loc_dap, loc_sap, d2e_fun, sarg, loc_arg, npf, darg)
+      end // end of [D2ITEMmtd]
     | D2ITEMsym d2is => let
         val d2s =
           d2sym_make (loc_qid, q, id, d2is)
@@ -950,19 +979,6 @@ in
         val d2e_fun = d2exp_var (loc_qid, d2v) in
         d2exp_app_sta_dyn (loc_dap, loc_sap, d2e_fun, sarg, loc_arg, npf, darg)
       end // end of [D2ITEMvar]
-    | D2ITEMmacvar _ => begin
-        prerr_loc_error2 loc_qid;
-        prerr ": the identifer refers to a macro argument variable";
-        prerr ", which cannot be applied.";
-        prerr_newline ();
-        $Err.abort {d2exp} ()
-      end // end of [D2ITEMmacvar]
-    | D2ITEMe1xp _ => begin
-        $Loc.prerr_location loc_qid;
-        prerr ": INTERNAL ERROR: d1exp_qid_app_dyn_tr: D2ITEMe1xp";
-        prerr_newline ();
-        $Err.abort {d2exp} ()
-      end // end of [D2ITEMe1xp]
     end (* end of [Some_vt] *)
   | ~None_vt () => begin
       prerr_loc_error2 loc_qid;
@@ -1564,6 +1580,87 @@ in
 (*
   | D1Emod (m1ids) => d2exp_mod (loc, mid1_list_tr m1ids)
 *)
+  | D1Eobj (objknd, objcls, mtdlst) => let
+      val s2e_cls = s1exp_tr_dn_cls (objcls)
+      val s2e_head = s2exp_head_get (s2e_cls)
+      var ts2ess: tmps2explstlst = TMPS2EXPLSTLSTnil ()
+      val s2c_cls = (case+ s2e_head.s2exp_node of
+        | S2Ecst s2c => s2c
+        | S2Etmpid (s2c, ts2ess1) => (ts2ess := ts2ess1; s2c)
+        | _ => let
+            val () = prerr "INTERNAL ERROR"
+            val () = (
+              prerr ": d1exp_tr: D1Eobj: s2e_head = "; prerr s2e_head
+            ) // end of [val]
+            val () = prerr_newline ()
+          in
+            $Err.abort {s2cst_t} ()
+          end // end of [_]
+      ) : s2cst_t
+      val ts2ess = ts2ess
+      val d2c_cls = d2c where {
+        val- Some d2c = s2cst_clsdec_get (s2c_cls)
+      } // end of [val]
+      val d2c_cls = c2lassdec_of_c2lassdec_t (d2c_cls)
+//
+      val clsknd = d2c_cls.c2lassdec_knd; val () = () where {
+        macdef OBJKINDobjmod = 3
+        val () = begin case- clsknd of
+        | 0 (*object*) => if objknd = OBJKINDobjmod then begin
+            prerr_loc_error2 (loc0);
+            prerr ": the class ["; prerr_s2cst s2c_cls;
+            prerr "] is required to be a object class but it is not.";
+            prerr_newline ();
+            $Err.abort ()         
+          end // end of [1]
+        | 1 (*module*) => if objknd <> OBJKINDobjmod then begin
+            prerr_loc_error2 (loc0);
+            prerr ": the class ["; prerr_s2cst s2c_cls;
+            prerr "] is required to be a module class but it is not.";
+            prerr_newline ();
+            $Err.abort ()         
+          end // end of [1]
+        end (* checking that clsknd/objknd is a matching pair *)
+      } // end of [val]
+      val s2e_self = (
+        if clsknd > 0 then s2exp_obj_cls_t0ype s2e_cls // object
+                      else s2exp_objmod_cls_type s2e_cls // module
+      ) : s2exp // end of [val]
+//
+      val decarg = list_nil ()
+      typedef itm = d2item
+      fun loop (
+          kis: List_vt @(sym_t, itm), mtdmap: !mtdmap_t
+        ) :<cloref1> void = case+ kis of
+        | ~list_vt_cons (ki, kis) => let
+            val- D2ITEMmtd d2m1 = ki.1
+            val loc1 = d2mtd_loc_get (d2m1)
+            val sym1 = d2mtd_sym_get (d2m1)
+            val knd1 = d2mtd_knd_get (d2m1)
+            val decarg1 = d2mtd_decarg_get (d2m1)
+            val sublst1 = d2mtd_sublst_get (d2m1)
+            val sub = @(decarg1, ts2ess)
+            val sublst = list_cons (sub, sublst1)
+            val typ1 = d2mtd_typ_get (d2m1)
+            val d2m = d2mtd_make (loc1, sym1, knd1, decarg, sublst, typ1)
+            val () = $SymEnv.symmap_insert (mtdmap, ki.0, D2ITEMmtd d2m)
+          in
+            loop (kis, mtdmap)
+          end // end of [list_vt_cons]
+        | ~list_vt_nil () => ()
+      // end of [loop]
+      var mtdmap: mtdmap_t = $SymEnv.symmap_make {itm} ()
+      val () = loop (kis, mtdmap) where {
+        val kis = $SymEnv.symmap_list_inf (!p1) where {
+          val r_mtdmap1 = d2c_cls.c2lassdec_mtdmap
+          val (vbox pf1 | p1) = ref_get_view_ptr (r_mtdmap1)
+        } // end of [val]
+      } (* end of [val] *)
+      val r_mtdmap = ref_make_elt<mtdmap_t> (mtdmap)
+      val mtdlst = m1thdeclst_tr (r_mtdmap, s2e_self, mtdlst)
+    in
+      d2exp_obj (loc0, objknd, s2c_cls, ts2ess, mtdlst)
+    end // end of [D1Eobj]
   | D1Eqid (q, id) => d1exp_qid_tr (loc0, q, id)
   | D1Eptrof d1e => d2exp_ptrof (loc0, d1exp_tr d1e)
   | D1Eraise (d1e) => begin

@@ -270,6 +270,10 @@ implement s1exp_struct (loc, ls1es) = '{
   s1exp_loc= loc, s1exp_node= S1Estruct (ls1es)
 }
 
+implement s1exp_tmpid (loc, qid, decarg) = '{
+  s1exp_loc= loc, s1exp_node= S1Etmpid (qid, decarg)
+}
+
 implement s1exp_top (loc, knd, s1e) = '{
   s1exp_loc= loc, s1exp_node= S1Etop (knd, s1e)
 }

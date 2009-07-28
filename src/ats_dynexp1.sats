@@ -7,33 +7,32 @@
 (***********************************************************************)
 
 (*
- * ATS/Anairiats - Unleashing the Potential of Types!
- *
- * Copyright (C) 2002-2008 Hongwei Xi, Boston University
- *
- * All rights reserved
- *
- * ATS is free software;  you can  redistribute it and/or modify it under
- * the terms of  the GNU GENERAL PUBLIC LICENSE (GPL) as published by the
- * Free Software Foundation; either version 3, or (at  your  option)  any
- * later version.
- * 
- * ATS is distributed in the hope that it will be useful, but WITHOUT ANY
- * WARRANTY; without  even  the  implied  warranty  of MERCHANTABILITY or
- * FITNESS FOR A PARTICULAR PURPOSE.  See the  GNU General Public License
- * for more details.
- * 
- * You  should  have  received  a  copy of the GNU General Public License
- * along  with  ATS;  see the  file COPYING.  If not, please write to the
- * Free Software Foundation,  51 Franklin Street, Fifth Floor, Boston, MA
- * 02110-1301, USA.
- *
- *)
+** ATS/Anairiats - Unleashing the Potential of Types!
+**
+** Copyright (C) 2002-2008 Hongwei Xi, Boston University
+**
+** All rights reserved
+**
+** ATS is free software;  you can  redistribute it and/or modify it under
+** the terms of  the GNU GENERAL PUBLIC LICENSE (GPL) as published by the
+** Free Software Foundation; either version 3, or (at  your  option)  any
+** later version.
+** 
+** ATS is distributed in the hope that it will be useful, but WITHOUT ANY
+** WARRANTY; without  even  the  implied  warranty  of MERCHANTABILITY or
+** FITNESS FOR A PARTICULAR PURPOSE.  See the  GNU General Public License
+** for more details.
+** 
+** You  should  have  received  a  copy of the GNU General Public License
+** along  with  ATS;  see the  file COPYING.  If not, please write to the
+** Free Software Foundation,  51 Franklin Street, Fifth Floor, Boston, MA
+** 02110-1301, USA.
+*)
 
 (* ****** ****** *)
 
-// Time: October 2007
 // Author: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
+// Time: October 2007
 
 (* ****** ****** *)
 
@@ -69,8 +68,10 @@ typedef i0deopt = $Syn.i0deopt
 typedef i0delstlst = $Syn.i0delstlst
 
 typedef abskind = $Syn.abskind
-typedef datakind = $Syn.datakind
 typedef dcstkind = $Syn.dcstkind
+typedef datakind = $Syn.datakind
+typedef clskind = $Syn.clskind
+typedef objkind = $Syn.objkind
 typedef funkind = $Syn.funkind
 typedef intkind = $Syn.intkind
 typedef valkind = $Syn.valkind
@@ -117,11 +118,13 @@ datatype p1at_node =
       s1vararg
   | P1Ttup of (* boxed/unboxed tuples *)
       (int (*tupknd*), int (*pfarity*), p1atlst)
+// end of [p1at_node]
 
 and labp1atlst =
   | LABP1ATLSTnil
   | LABP1ATLSTdot
   | LABP1ATLSTcons of (l0ab, p1at, labp1atlst)
+// end of [labp1atlst]
 
 where p1at = '{ p1at_loc= loc_t, p1at_node= p1at_node }
 
@@ -218,12 +221,14 @@ datatype d1ec_node =
       (s1rtopt, s1expdeflst)
   | D1Csaspdec of (* static assumption *)
       s1aspdec
+  | D1Cdcstdecs of (* dynamic constant *)
+      (dcstkind, s1qualstlst, d1cstdeclst)
   | D1Cdatdecs of (* datatype declaration *)
       (datakind, d1atdeclst, s1expdeflst)
   | D1Cexndecs of (* exception declaration *)
       e1xndeclst
-  | D1Cdcstdecs of (* dynamic constant *)
-      (dcstkind, s1qualstlst, d1cstdeclst)
+  | D1Cclassdec of (* class declaration *)
+      (int(*clsknd*), s1qualstlst, c1lassdec, s1expdeflst)
   | D1Coverload of (* overloading *)
       (i0de, dqi0de)
   | D1Cextype of (* external type *)
@@ -252,6 +257,7 @@ datatype d1ec_node =
       fil_t
   | D1Cstaload of (* static load *)
       (Option sym_t, fil_t, int (*loaded*), d1eclst)
+// end of [d1ec_node]
 
 and d1exp_node =
   | D1Eann_effc of (* ascribed with effects *)
@@ -330,6 +336,9 @@ and d1exp_node =
       (int (*lin*), s1expopt, d1explst)
   | D1Emacsyn of (* macro syntax *)
       ($Syn.macsynkind, d1exp)
+  | D1Eobj of ( // for objects
+      int(*objknd*), s1exp(*objcls*), m1thdeclst
+    ) // end of [D1Eobj]
   | D1Eptrof of (* taking the address of *)
       d1exp
   | D1Eqid of (* identifier: either a constructor or variable *)
@@ -375,19 +384,32 @@ and d1exp_node =
   | D1Eunfold of (* unfolding recursive type *)
       squal_opt_id * dexp1
 *)
+// end of [d1exp_node]
 
 and labd1explst =
   | LABD1EXPLSTnil | LABD1EXPLSTcons of (l0ab, d1exp, labd1explst)
+// end of [labd1explst]
 
 and d1lab_node =
-  | D1LABlab of lab_t
-  | D1LABind of d1explstlst
+  | D1LABlab of lab_t | D1LABind of d1explstlst
+// end of [d1lab_node]
 
+and m1thdec =
+  | M1THDECmtd of // knd: undef/def: 0/1
+      (loc_t, sym_t, d1exp(*dummy*), d1expopt(*def*))
+    // end of [M1THDECmtd]
+  | M1THDECval of
+      (loc_t, sym_t, s1exp, d1expopt)
+  | M1THDECvar of
+      (loc_t, sym_t, s1exp, d1expopt)
+  | M1THDECimp of (loc_t, sym_t, d1exp)
+// end of [m1thdec]
+  
 (* ****** ****** *)
 
 where d1ec = '{
   d1ec_loc= loc_t, d1ec_node= d1ec_node
-}
+} // end of [d1ec]
 
 and d1eclst = List d1ec
 
@@ -402,13 +424,13 @@ and d1explstlst = List d1explst
 
 and d1lab = '{
   d1lab_loc= loc_t, d1lab_node= d1lab_node
-}
+} // end of [d1lab]
 
 (* ****** ****** *)
 
 and m1atch = '{
   m1atch_loc= loc_t, m1atch_exp= d1exp, m1atch_pat= p1atopt
-}
+} // end of [m1atch]
 
 and m1atchlst = List m1atch
 
@@ -421,7 +443,7 @@ and c1lau = '{
 , c1lau_seq= int
 , c1lau_neg= int
 , c1lau_exp= d1exp
-}
+} // end of [c1lau]
 
 and c1laulst = List c1lau
 
@@ -431,7 +453,7 @@ and sc1lau = '{
   sc1lau_loc= loc_t
 , sc1lau_pat= sp1at
 , sc1lau_exp= d1exp
-}
+} // end of [sc1lau]
 
 and sc1laulst = List sc1lau
 
@@ -441,13 +463,13 @@ and i1nvarg = '{
   i1nvarg_loc= loc_t
 , i1nvarg_sym= sym_t
 , i1nvarg_typ= s1expopt
-}
+} // end of [i1nvarg]
 
 and i1nvarglst = List i1nvarg
 
 and i1nvresstate = '{
  i1nvresstate_qua= s1qualst, i1nvresstate_arg= i1nvarglst
-}
+} // end of [i1nvresstate]
 
 and loopi1nv = '{
   loopi1nv_loc= loc_t
@@ -455,7 +477,7 @@ and loopi1nv = '{
 , loopi1nv_met= s1explstopt (* metric *)
 , loopi1nv_arg= i1nvarglst (* argument *)
 , loopi1nv_res= i1nvresstate (* result *)
-}
+} // end of [loopi1nv]
 
 (* ****** ****** *)
 
@@ -463,7 +485,7 @@ and s1rtdef = '{ // (extended) sort definition
   s1rtdef_loc= loc_t
 , s1rtdef_sym= sym_t
 , s1rtdef_def= s1rtext
-}
+} // end of [s1rtdef]
 
 and s1rtdeflst = List s1rtdef
 
@@ -473,7 +495,7 @@ and d1atsrtcon = '{
   d1atsrtcon_loc= loc_t
 , d1atsrtcon_sym= sym_t
 , d1atsrtcon_arg= s1rtlst
-}
+} // end of [d1atsrtcon]
 
 and d1atsrtconlst = List d1atsrtcon
 
@@ -481,7 +503,7 @@ and d1atsrtdec = '{
   d1atsrtdec_loc= loc_t
 , d1atsrtdec_sym= sym_t
 , d1atsrtdec_con= d1atsrtconlst
-}
+} // end of [d1atsrtdec]
 
 and d1atsrtdeclst = List d1atsrtdec
 
@@ -492,7 +514,7 @@ and s1tacon = '{ // static constructor declaration
 , s1tacon_sym= sym_t
 , s1tacon_arg= d1atarglstopt
 , s1tacon_def= s1expopt
-}
+} // end of [s1tacon]
 
 and s1taconlst = List s1tacon
 
@@ -501,7 +523,7 @@ and s1tacst = '{ // static constant declaration
 , s1tacst_sym= sym_t
 , s1tacst_arg= s1rtlstopt
 , s1tacst_res= s1rt
-}
+} // end of [s1tacst]
 
 and s1tacstlst = List s1tacst
 
@@ -509,7 +531,7 @@ and s1tavar = '{ // static variable declaration
   s1tavar_loc= loc_t
 , s1tavar_sym= sym_t
 , s1tavar_srt= s1rt
-}
+} // end of [s1tavar]
 
 and s1tavarlst = List s1tavar
 
@@ -521,7 +543,7 @@ and s1expdef = '{
 , s1expdef_arg= s1arglstlst
 , s1expdef_res= s1rtopt
 , s1expdef_def= s1exp
-}
+} // end of [s1expdef]
 
 and s1expdeflst = List s1expdef
 
@@ -531,9 +553,21 @@ and s1aspdec = '{
 , s1aspdec_arg= s1arglstlst
 , s1aspdec_res= s1rtopt
 , s1aspdec_def= s1exp
-}
+} // end of [s1aspdec]
 
 and s1aspdeclst = List s1aspdec
+
+(* ****** ****** *)
+
+and d1cstdec = '{
+  d1cstdec_loc= loc_t
+, d1cstdec_fil= fil_t
+, d1cstdec_sym= sym_t
+, d1cstdec_typ= s1exp
+, d1cstdec_ext= Stropt
+} // end of [d1cstdec]
+
+and d1cstdeclst = List d1cstdec
 
 (* ****** ****** *)
 
@@ -544,7 +578,7 @@ and d1atcon = '{
 , d1atcon_npf= int
 , d1atcon_arg= s1explst
 , d1atcon_ind= s1explstopt
-}
+} // end of [d1atcon]
 
 and d1atconlst = List d1atcon
 
@@ -554,7 +588,7 @@ and d1atdec = '{
 , d1atdec_sym= sym_t
 , d1atdec_arg= d1atarglstopt
 , d1atdec_con= d1atconlst
-}
+} // end of [d1atdec]
 
 and d1atdeclst = List d1atdec
 
@@ -567,21 +601,22 @@ and e1xndec = '{
 , e1xndec_qua= s1qualstlst
 , e1xndec_npf= int
 , e1xndec_arg= s1explst
-}
+} // end of [e1xndec]
 
 and e1xndeclst = List e1xndec
 
 (* ****** ****** *)
 
-and d1cstdec = '{
-  d1cstdec_loc= loc_t
-, d1cstdec_fil= fil_t
-, d1cstdec_sym= sym_t
-, d1cstdec_typ= s1exp
-, d1cstdec_ext= Stropt
-}
+and m1thdeclst = List m1thdec
 
-and d1cstdeclst = List d1cstdec
+and c1lassdec = '{
+  c1lassdec_loc= loc_t
+, c1lassdec_fil= fil_t
+, c1lassdec_sym= sym_t
+, c1lassdec_arg= s1arglstlst
+, c1lassdec_suplst= s1explst
+, c1lassdec_mtdlst= m1thdeclst
+} // end of [c1lassdec]
 
 (* ****** ****** *)
 
@@ -590,7 +625,9 @@ and v1aldec = '{
 , v1aldec_pat= p1at
 , v1aldec_def= d1exp
 , v1aldec_ann= witht1ype
-}
+} // end of [v1aldec]
+
+(* ****** ****** *)
 
 and v1aldeclst = List v1aldec
 
@@ -600,7 +637,7 @@ and f1undec = '{
 , f1undec_sym_loc= loc_t
 , f1undec_def= d1exp
 , f1undec_ann= witht1ype
-}
+} // end of [f1undec]
 
 and f1undeclst = List f1undec
 
@@ -614,7 +651,7 @@ and v1ardec = '{
 , v1ardec_typ= s1expopt
 , v1ardec_wth= i0deopt
 , v1ardec_ini= d1expopt
-}
+} // end of [v1ardec]
 
 and v1ardeclst = List v1ardec
 
@@ -625,7 +662,7 @@ and m1acdef = '{
 , m1acdef_sym= sym_t
 , m1acdef_arg= $Syn.m0acarglst
 , m1acdef_def= d1exp
-}
+} // end of [m1acdef]
 
 and m1acdeflst = List m1acdef
 
@@ -636,7 +673,7 @@ and i1mpdec = '{
 , i1mpdec_qid= $Syn.impqi0de
 , i1mpdec_tmparg= s1explstlst
 , i1mpdec_def= d1exp
-}
+} // end of [i1mpdec]
 
 (* ****** ****** *)
 
@@ -774,6 +811,10 @@ fun d1exp_lst (_: loc_t, lin: int, elt: s1expopt, elts: d1explst): d1exp
 
 fun d1exp_macsyn (_: loc_t, knd: $Syn.macsynkind, d1e: d1exp): d1exp
 
+fun d1exp_obj
+  (_: loc_t, objknd: int, cls: s1exp, mtds: m1thdeclst): d1exp
+// end of [d1exp_obj]
+
 fun d1exp_ptrof (_: loc_t, _: d1exp): d1exp
 
 fun d1exp_qid (_: loc_t, q: d0ynq, id: sym_t): d1exp
@@ -880,13 +921,24 @@ fun d1ec_sexpdefs (_: loc_t, res: s1rtopt, ds: s1expdeflst): d1ec
 
 fun d1ec_saspdec (_: loc_t, d: s1aspdec): d1ec
 
+fun d1ec_dcstdecs
+  (_: loc_t, _: dcstkind, decarg: s1qualstlst, ds: d1cstdeclst): d1ec
+// end of [d1ec_dcstdecs]
+
 fun d1ec_datdecs
-  (_: loc_t, _: datakind, ds_dec: d1atdeclst, ds_def: s1expdeflst): d1ec
+  (_: loc_t, _: datakind, ds_dat: d1atdeclst, ds_def: s1expdeflst): d1ec
+// end of [d1ec_datdecs]
 
 fun d1ec_exndecs (_: loc_t, ds: e1xndeclst): d1ec
 
-fun d1ec_dcstdecs
-  (_: loc_t, _: dcstkind, decarg: s1qualstlst, ds: d1cstdeclst): d1ec
+fun d1ec_classdec (
+    _: loc_t
+  , clsknd: int // mod/obj : 0/1
+  , _: s1qualstlst
+  , _: c1lassdec
+  , _: s1expdeflst
+  ) : d1ec
+// end of [d1ec_classdec]
 
 fun d1ec_overload (_: loc_t, id: i0de, qid: dqi0de): d1ec
 
@@ -904,6 +956,7 @@ fun d1ec_valdecs_rec (_: loc_t, ds: v1aldeclst): d1ec
 
 fun d1ec_fundecs
   (_: loc_t, _: funkind, decarg: s1qualstlst, ds: f1undeclst): d1ec
+// end of [d1ec_fundecs]
 
 fun d1ec_vardecs (_: loc_t, ds: v1ardeclst): d1ec
 
@@ -917,22 +970,27 @@ fun d1ec_dynload (_: loc_t, _: fil_t): d1ec
 
 fun d1ec_staload
   (_: loc_t, id: Option sym_t, _: fil_t, loaded: int, _: d1eclst): d1ec
+// end of [d1ec_staload]
 
 (* ****** ****** *)
 
 fun d1atsrtcon_make
   (_: loc_t, id: sym_t, arg: s1rtlst): d1atsrtcon
+// end of [d1atsrtcon_make]
 
 fun d1atsrtdec_make
   (_: loc_t, id: sym_t, con: d1atsrtconlst): d1atsrtdec
+// end of [d1atsrtdec_make]
 
 fun s1rtdef_make (_: loc_t, id: sym_t, def: s1rtext): s1rtdef
 
 fun s1tacon_make
   (_: loc_t, id: sym_t, arg: d1atarglstopt, def: s1expopt): s1tacon
+// end of [s1tacon_make]
 
 fun s1tacst_make
   (_: loc_t, id: sym_t, arg: s1rtlstopt, res: s1rt): s1tacst
+// end of [s1tacst_make]
 
 fun s1tavar_make (_: loc_t, id: sym_t, s1t: s1rt): s1tavar
 
@@ -943,34 +1001,48 @@ fun s1expdef_make (
   , res: s1rtopt
   , def: s1exp
   ) : s1expdef
+// end of [s1expdef_make]
 
 fun s1aspdec_make
   (loc: loc_t, qid: sqi0de, arg: s1arglstlst, res: s1rtopt, def: s1exp)
   : s1aspdec
+// end of [s1aspdec_make]
+
+fun d1cstdec_make
+  (loc: loc_t, fil: fil_t, id: sym_t, typ: s1exp, ext: Stropt)
+  : d1cstdec
+// end of [d1cstdec_make]
 
 fun d1atcon_make
   (_: loc_t, id: sym_t,
    qua: s1qualstlst, npf: int, arg: s1explst, ind: s1explstopt)
   : d1atcon
+// end of [d1atcon_make]
 
 fun d1atdec_make
   (_: loc_t, fil: fil_t, id: sym_t, _: d1atarglstopt, _: d1atconlst)
   : d1atdec
+// end of [d1atdec_make]
 
 fun e1xndec_make
   (_: loc_t, fil: fil_t, id: sym_t, qua: s1qualstlst, npf: int, arg: s1explst)
   : e1xndec
+// end of [e1xndec_make]
 
-fun d1cstdec_make
-  (loc: loc_t, fil: fil_t, id: sym_t, typ: s1exp, ext: Stropt)
-  : d1cstdec
+fun c1lassdec_make (
+    loc: loc_t, fil: fil_t
+  , id: sym_t, arg: s1arglstlst, supclss: s1explst, mtds: m1thdeclst
+  ) : c1lassdec
+// end of [c1lassdec_make]
 
 fun v1aldec_make
   (_: loc_t, pat: p1at, def: d1exp, typ: witht1ype): v1aldec
+// end of [v1aldec_make]
 
 fun f1undec_make
   (_: loc_t, id: sym_t, loc_id: loc_t, def: d1exp, typ: witht1ype)
   : f1undec
+// end of [f1undec_make]
 
 fun v1ardec_make (
     _: loc_t
@@ -981,12 +1053,15 @@ fun v1ardec_make (
   , wth: i0deopt
   , def: d1expopt
   ) : v1ardec
+// end of [v1ardec_make]
 
 fun m1acdef_make
   (_: loc_t, id: sym_t, arg: $Syn.m0acarglst, def: d1exp): m1acdef
+// end of [m1acdef_make]
 
 fun i1mpdec_make
   (_: loc_t, qid: $Syn.impqi0de, _: s1explstlst, _: d1exp): i1mpdec
+// end of [i1mpdec_make]
 
 (* ****** ****** *)
 

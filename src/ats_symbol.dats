@@ -7,28 +7,27 @@
 (***********************************************************************)
 
 (*
- * ATS/Anairiats - Unleashing the Potential of Types!
- *
- * Copyright (C) 2002-2008 Hongwei Xi, Boston University
- *
- * All rights reserved
- *
- * ATS is free software;  you can  redistribute it and/or modify it under
- * the terms of  the GNU GENERAL PUBLIC LICENSE (GPL) as published by the
- * Free Software Foundation; either version 3, or (at  your  option)  any
- * later version.
- * 
- * ATS is distributed in the hope that it will be useful, but WITHOUT ANY
- * WARRANTY; without  even  the  implied  warranty  of MERCHANTABILITY or
- * FITNESS FOR A PARTICULAR PURPOSE.  See the  GNU General Public License
- * for more details.
- * 
- * You  should  have  received  a  copy of the GNU General Public License
- * along  with  ATS;  see the  file COPYING.  If not, please write to the
- * Free Software Foundation,  51 Franklin Street, Fifth Floor, Boston, MA
- * 02110-1301, USA.
- *
- *)
+** ATS/Anairiats - Unleashing the Potential of Types!
+**
+** Copyright (C) 2002-2008 Hongwei Xi, Boston University
+**
+** All rights reserved
+**
+** ATS is free software;  you can  redistribute it and/or modify it under
+** the terms of  the GNU GENERAL PUBLIC LICENSE (GPL) as published by the
+** Free Software Foundation; either version 3, or (at  your  option)  any
+** later version.
+** 
+** ATS is distributed in the hope that it will be useful, but WITHOUT ANY
+** WARRANTY; without  even  the  implied  warranty  of MERCHANTABILITY or
+** FITNESS FOR A PARTICULAR PURPOSE.  See the  GNU General Public License
+** for more details.
+** 
+** You  should  have  received  a  copy of the GNU General Public License
+** along  with  ATS;  see the  file COPYING.  If not, please write to the
+** Free Software Foundation,  51 Franklin Street, Fifth Floor, Boston, MA
+** 02110-1301, USA.
+*)
 
 (* ****** ****** *)
 
@@ -162,6 +161,7 @@ implement symbol_TUP_TAIL = symbol_make_string "tup_tail"
 implement symbol_ADDR = symbol_make_string "addr"
 implement symbol_BOOL = symbol_make_string "bool"
 implement symbol_CHAR = symbol_make_string "char"
+implement symbol_CLS = symbol_make_string "cls"
 implement symbol_EFF = symbol_make_string "eff"
 implement symbol_EXN = symbol_make_string "exn"
 implement symbol_INT = symbol_make_string "int"
@@ -175,6 +175,13 @@ implement symbol_VIEW = symbol_make_string "view"
 implement symbol_VIEWTYPE = symbol_make_string "viewtype"
 implement symbol_VIEWT0YPE = symbol_make_string "viewt@ype"
 implement symbol_TYPES = symbol_make_string "types"
+
+(* ****** ****** *)
+
+(* special variables for OOP *)
+
+implement symbol_SELF = symbol_make_string "self"
+implement symbol_MYCLS = symbol_make_string "mycls"
 
 (* ****** ****** *)
 

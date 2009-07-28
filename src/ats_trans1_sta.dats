@@ -40,6 +40,7 @@
 
 (* ****** ****** *)
 
+staload Deb = "ats_debug.sats"
 staload Eff = "ats_effect.sats"
 staload Err = "ats_error.sats"
 staload Fil = "ats_filename.sats"
@@ -59,6 +60,10 @@ staload "ats_e1xp_eval.sats"
 (* ****** ****** *)
 
 staload "ats_trans1.sats"
+
+(* ****** ****** *)
+
+#define THISFILENAME "ats_trans2_sta.dats"
 
 (* ****** ****** *)
 
@@ -685,8 +690,8 @@ implement s0exp_tr s0e0 = let
             s1exp_make_opr (s1e_imp, f)
           end // end of [Some_vt]
         | ~None_vt () => begin
-            prerr "Internal Error: ";
-            prerr "s0exp_tr: the fixity of -> is unavailable.";
+            prerr "INTERNAL ERROR";
+            prerr ": s0exp_tr: the fixity of -> is unavailable.";
             prerr_newline ();
             $Err.abort ()
           end // end of [None_vt]
@@ -727,6 +732,11 @@ implement s0exp_tr s0e0 = let
       in
         $Fix.ITEMatm (s1exp_struct (loc0, ls1es))
       end // end of [S0Estruct]
+    | S0Etmpid (qid, decarg) => let
+        val decarg = t1mps0explstlst_tr (decarg)
+      in
+        $Fix.ITEMatm (s1exp_tmpid (loc0, qid, decarg))
+      end // end of [S0Etmpid]
     | S0Etyarr (s0e_elt, s0ess_dim) => let
         val s1e_elt = s0exp_tr s0e_elt
         val s1ess_dim = s0explstlst_tr s0ess_dim
@@ -766,7 +776,8 @@ implement s0exp_tr s0e0 = let
       end // end of [S0Eunion]
     | _ => begin
         prerr_loc_error1 loc0;
-        prerr ": s0exp_tr: not available yet"; prerr_newline ();
+        $Deb.debug_prerrf (": %s: s0exp_tr", @(THISFILENAME));
+        prerr ": not available yet"; prerr_newline ();
         $Err.abort {s1expitm} ()
       end // end of [_]
   end // end of [aux_item]
@@ -954,24 +965,20 @@ end // end of [d0atdeclst_tr]
 (* ****** ****** *)
 
 implement e0xndec_tr (d) = let
-
-val qua = s0qualstlst_tr (d.e0xndec_qua)
-var npf_var: int = 0
-val arg = (
-  case+ d.e0xndec_arg of
-  | Some s0e => let
-      val s1e = s0exp_tr s0e
-    in
-      case+ s1e.s1exp_node of
-      | S1Elist (npf, s1es) => (npf_var := npf; s1es)
-      | _ => cons (s1e, nil ())
-    end
-  | None () => nil ()
-) : s1explst
-
+  val qua = s0qualstlst_tr (d.e0xndec_qua)
+  var npf_r: int = 0
+  val arg = (case+ d.e0xndec_arg of
+    | Some s0e => let
+        val s1e = s0exp_tr s0e in
+        case+ s1e.s1exp_node of
+        | S1Elist (npf, s1es) => (npf_r := npf; s1es)
+        | _ => cons (s1e, nil ())
+      end // end of [Some]
+    | None () => nil ()
+  ) : s1explst
 in
   e1xndec_make (
-    d.e0xndec_loc, d.e0xndec_fil, d.e0xndec_sym, qua, npf_var, arg
+    d.e0xndec_loc, d.e0xndec_fil, d.e0xndec_sym, qua, npf_r, arg
   ) // end of [e1xndec_make]
 end // end of [e0xndec_tr]
 

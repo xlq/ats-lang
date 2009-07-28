@@ -63,37 +63,12 @@ datatype abskind =
   | ABSKINDprop | ABSKINDtype | ABSKINDt0ype
   | ABSKINDview | ABSKINDviewtype | ABSKINDviewt0ype
 
-fun abskind_prop (): abskind = "abskind_prop"
-fun abskind_type (): abskind = "abskind_type"
-fun abskind_t0ype (): abskind = "abskind_t0ype"
-fun abskind_view (): abskind = "abskind_view"
-fun abskind_viewtype (): abskind = "abskind_viewtype"
-fun abskind_viewt0ype (): abskind = "abskind_viewt0ype"
-
-datatype datakind =
-  | DATAKINDprop | DATAKINDtype | DATAKINDview | DATAKINDviewtype
-
-fun datakind_prop (): datakind = "datakind_prop"
-and datakind_type (): datakind = "datakind_type"
-and datakind_view (): datakind = "datakind_view"
-and datakind_viewtype (): datakind = "datakind_viewtype"
-
-fun datakind_is_proof (dtk: datakind): bool
-
-(* ****** ****** *)
-
-datatype stadefkind =
-  | STADEFKINDgeneric
-  | STADEFKINDprop of t0kn
-  | STADEFKINDtype of t0kn
-  | STADEFKINDview of t0kn
-  | STADEFKINDviewtype of t0kn
-
-fun stadefkind_generic (): stadefkind = "stadefkind_generic"
-and stadefkind_prop (_: t0kn): stadefkind = "stadefkind_prop"
-and stadefkind_type (_: t0kn): stadefkind = "stadefkind_type"
-and stadefkind_view (_: t0kn): stadefkind = "stadefkind_view"
-and stadefkind_viewtype (_: t0kn): stadefkind = "stadefkind_viewtype"
+fun abskind_prop ():<> abskind = "abskind_prop"
+fun abskind_type ():<> abskind = "abskind_type"
+fun abskind_t0ype ():<> abskind = "abskind_t0ype"
+fun abskind_view ():<> abskind = "abskind_view"
+fun abskind_viewtype ():<> abskind = "abskind_viewtype"
+fun abskind_viewt0ype ():<> abskind = "abskind_viewt0ype"
 
 (* ****** ****** *)
 
@@ -115,8 +90,60 @@ fun dcstkind_is_prfun (dck: dcstkind):<> bool
 fun dcstkind_is_prval (dck: dcstkind):<> bool
 fun dcstkind_is_proof (dck: dcstkind):<> bool
 
+(* ****** ****** *)
+
+datatype datakind =
+  | DATAKINDprop | DATAKINDtype | DATAKINDview | DATAKINDviewtype
+
+fun datakind_prop ():<> datakind = "datakind_prop"
+and datakind_type ():<> datakind = "datakind_type"
+and datakind_view ():<> datakind = "datakind_view"
+and datakind_viewtype ():<> datakind = "datakind_viewtype"
+
+fun datakind_is_proof (dtk: datakind):<> bool
+
+(* ****** ****** *)
+
+datatype stadefkind =
+  | STADEFKINDgeneric
+  | STADEFKINDprop of t0kn
+  | STADEFKINDtype of t0kn
+  | STADEFKINDview of t0kn
+  | STADEFKINDviewtype of t0kn
+// end of [stadefkind]
+
+fun stadefkind_generic ():<> stadefkind = "stadefkind_generic"
+and stadefkind_prop (_: t0kn):<> stadefkind = "stadefkind_prop"
+and stadefkind_type (_: t0kn):<> stadefkind = "stadefkind_type"
+and stadefkind_view (_: t0kn):<> stadefkind = "stadefkind_view"
+and stadefkind_viewtype (_: t0kn):<> stadefkind = "stadefkind_viewtype"
+
+(* ****** ****** *)
+
+datatype clskind =
+  | CLSKINDmod of t0kn | CLSKINDobj of t0kn
+// end of [clskind]
+
+fun clskind_mod (_: t0kn):<> clskind = "clskind_mod"
+fun clskind_obj (_: t0kn):<> clskind = "clskind_obj"
+
+(* ****** ****** *)
+
+datatype objkind =
+  | OBJKINDobj_t of t0kn | OBJKINDobj_vt of t0kn
+  | OBJKINDobjmod of t0kn | OBJKINDobjref of t0kn
+// end of [objkind]
+
+fun objkind_obj_t (_: t0kn):<> objkind = "objkind_obj_t"
+fun objkind_obj_vt (_: t0kn):<> objkind = "objkind_obj_vt"
+fun objkind_objmod (_: t0kn):<> objkind = "objkind_objmod"
+fun objkind_objref (_: t0kn):<> objkind = "objkind_objref"
+
+(* ****** ****** *)
+
 datatype valkind =
   | VALKINDval | VALKINDvalminus | VALKINDvalplus | VALKINDprval
+// end of [valkind]
 
 fun valkind_val ():<> valkind = "valkind_val"
 fun valkind_valminus ():<> valkind = "valkind_valminus"
@@ -146,6 +173,7 @@ datatype macsynkind =
   | MACSYNKINDcross  // decode(lift(.))
   | MACSYNKINDdecode
   | MACSYNKINDencode
+// end of [macsynkind]
 
 (* ****** ****** *)
 
@@ -155,6 +183,7 @@ datatype lamkind =
   | LAMKINDllam of t0kn  
   | LAMKINDatllam of t0kn
   | LAMKINDfix of ()
+// end of [lamkind]
 
 fun lamkind_lam (t: t0kn): lamkind = "lamkind_lam"
 and lamkind_atlam (t: t0kn): lamkind = "lamkind_atlam"
@@ -165,6 +194,7 @@ and lamkind_atllam (t: t0kn): lamkind = "lamkind_atllam"
 
 datatype srpifkind =
   | SRPIFKINDif | SRPIFKINDifdef | SRPIFKINDifndef
+// end of [srpifkind]
 
 fun srpifkind_if (): srpifkind = "srpifkind_if"
 and srpifkind_ifdef (): srpifkind = "srpifkind_ifdef"
@@ -508,6 +538,10 @@ typedef s0taq = '{ s0taq_loc= loc_t, s0taq_node= s0taq_node }
 
 //
 
+fun s0taq_make (loc: loc_t, node: s0taq_node): s0taq
+
+//
+
 fun fprint_s0taq {m:file_mode}
   (pf: file_mode_lte (m, w) | out: &FILE m, _: s0taq): void
 overload fprint with fprint_s0taq
@@ -532,8 +566,12 @@ datatype d0ynq_node =
   | D0YNQsymcolon of sym_t
   | D0YNQsymdot of sym_t
   | D0YNQsymdot_symcolon of (sym_t, sym_t)
+// end of [d0ynq_node]
 
-typedef d0ynq = '{ d0ynq_loc= loc_t, d0ynq_node= d0ynq_node }
+typedef d0ynq = '{
+  d0ynq_loc= loc_t, d0ynq_node= d0ynq_node
+} // end of [d0ynq]
+
 typedef d0ynqopt = Option d0ynq
 
 //
@@ -594,12 +632,15 @@ fun arrqi0de_make_some (q: d0ynq, id: i0de): arrqi0de =
 
 typedef tmpqi0de = '{
   tmpqi0de_loc= loc_t, tmpqi0de_qua= d0ynq, tmpqi0de_sym= sym_t
-}
+} // end of [tmpqi0de]
 
 fun tmpqi0de_make_none (id: i0de): tmpqi0de =
   "tmpqi0de_make_none"
+// end of [tmpqi0de_make_none]
+
 fun tmpqi0de_make_some (q: d0ynq, id: i0de): tmpqi0de =
   "tmpqi0de_make_some"
+// end of [tmpqi0de_make_some]
 
 (* ****** ****** *)
 
@@ -629,13 +670,15 @@ fun s0arglstlst_cons_ide (id: i0de, xs: s0arglstlst): s0arglstlst
 
 datatype sp0at_node =
   | SP0Tcon of (sqi0de, s0arglst)
+// end of [sp0at_node]
 
 where sp0at: type = '{
   sp0at_loc= loc_t, sp0at_node= sp0at_node
-}
+} // end of [sp0at]
 
 fun sp0at_con
   (qid: sqi0de, xs: s0arglst, t_end: t0kn): sp0at = "sp0at_con"
+// end of [sp0at_con]
 
 (* ****** ****** *)
 
@@ -672,6 +715,8 @@ datatype s0exp_node =
       (s0taq, sym_t)
   | S0Estruct of (* struct type *)
       labs0explst 
+  | S0Etmpid of (* template id *)
+      (tmpqi0de, t1mps0explstlst)
   | S0Etyarr of (* array type *)
       (s0exp (*element*), s0explstlst (*dimension*))
   | S0Etyrec of (* record type *)
@@ -684,25 +729,30 @@ datatype s0exp_node =
       s0qualst
   | S0Eunion of (* union type *)
       (s0exp (*index*), labs0explst (*body*))
+// end of [s0exp_node]
 
 and s0rtext_node =
   | S0TEsrt of s0rt | S0TEsub of (i0de, s0rtext, s0exp, s0explst)
+// end of [s0rtext_node]
 
 and s0qua_node =
   | S0QUAprop of s0exp (* e.g., n >= i+j *)
   | S0QUAvars of (i0de, i0delst, s0rtext) (* e.g., a1,a2: type *)
+// end of [s0qua_node]
 
 and labs0explst =
   | LABS0EXPLSTnil
   | LABS0EXPLSTcons of (l0ab, s0exp, labs0explst)
+// end of [labs0explst]
 
 and t1mps0explstlst =
   | T1MPS0EXPLSTLSTnil
   | T1MPS0EXPLSTLSTcons of (loc_t, s0explst, t1mps0explstlst)
+// end of [t1mps0explstlst]
 
 where s0exp: type = '{
   s0exp_loc= loc_t, s0exp_node= s0exp_node
-}
+} // end of [s0exp]
 
 and s0explst: type = List s0exp
 and s0expopt: type = Option s0exp
@@ -774,6 +824,10 @@ fun s0exp_qid (q: s0taq, id: i0de): s0exp = "s0exp_qid"
 
 fun s0exp_struct (t_struct: t0kn, _: labs0explst, t_end: t0kn): s0exp
   = "s0exp_struct"
+
+fun s0exp_tmpid
+  (qid: tmpqi0de, arg: s0explst, args: t1mps0explstlst, t_gt: t0kn): s0exp
+  = "s0exp_tmpid"
 
 fun s0exp_tyarr (t_beg: t0kn, elt: s0exp, ind: s0arrind): s0exp
   = "s0exp_tyarr"
@@ -1047,7 +1101,7 @@ typedef e0xndec = '{
 , e0xndec_sym= sym_t
 , e0xndec_qua= s0qualstlst
 , e0xndec_arg= s0expopt
-}
+} // end of [e0xndec]
 
 fun e0xndec_make
   (qua: s0qualstlst, id: i0de, arg: s0expopt): e0xndec
@@ -1061,9 +1115,69 @@ fun e0xndeclst_cons (x: e0xndec, xs: e0xndeclst): e0xndeclst
 
 (* ****** ****** *)
 
+abstype f0arglst_t // = f0arglst
+
+abstype d0exp_t // = d0exp
+abstype d0expopt_t // = d0expopt
+
+datatype m0thdec =
+  | M0THDECmtd of (
+      loc_t, sym_t, f0arglst_t, e0fftaglstopt, s0exp, d0expopt_t
+    ) // end of [M0THDECmtd]
+  | M0THDECval of (loc_t, sym_t, s0exp, d0expopt_t)
+  | M0THDECvar of (loc_t, sym_t, s0exp, d0expopt_t)
+  | M0THDECimp of (loc_t, sym_t, f0arglst_t, s0expopt, d0exp_t) 
+// end of [m0thdec]
+  
+fun m0thdec_make_mtd (
+    _: t0kn, _: i0de, _: f0arglst_t
+  , _: e0fftaglstopt, res: s0exp, def: d0expopt_t
+  ) : m0thdec
+  = "m0thdec_make_mtd"
+
+fun m0thdec_make_val
+  (_: t0kn, _: i0de, res: s0exp, def: d0expopt_t): m0thdec
+  = "m0thdec_make_val"
+
+fun m0thdec_make_var
+  (_: t0kn, _: i0de, res: s0exp, def: d0expopt_t): m0thdec
+  = "m0thdec_make_var"
+
+fun m0thdec_make_imp (
+    _: t0kn, _: i0de, arg: f0arglst_t, res: s0expopt, def: d0exp_t
+  ) : m0thdec
+  = "m0thdec_make_imp"
+
+(* ****** ****** *)
+
+typedef m0thdeclst = List m0thdec
+
+fun m0thdeclst_nil (): m0thdeclst = "m0thdeclst_nil"
+fun m0thdeclst_cons (x: m0thdec, xs: m0thdeclst): m0thdeclst
+  = "m0thdeclst_cons"
+
+(* ****** ****** *)
+
+typedef c0lassdec = '{
+  c0lassdec_loc= loc_t
+, c0lassdec_fil= filename_t
+, c0lassdec_sym= sym_t
+, c0lassdec_arg= s0arglstlst
+, c0lassdec_suplst= s0explst
+, c0lassdec_mtdlst= m0thdeclst
+} // end of [c0lassdec]
+
+fun c0lassdec_make (
+    id: i0de, arg: s0arglstlst
+  , supclss: s0explst, mtds: m0thdeclst, t_end: t0kn
+  ) : c0lassdec
+  = "c0lassdec_make"
+
+(* ****** ****** *)
+
 typedef p0arg = '{
   p0arg_loc= loc_t, p0arg_sym= sym_t, p0arg_ann= s0expopt
-}
+} // end of [p0arg]
 
 fun p0arg_make_none (_: i0de): p0arg = "p0arg_make_none"
 fun p0arg_make_some (_: i0de, _: s0exp): p0arg = "p0arg_make_some"
@@ -1079,6 +1193,7 @@ datatype d0arg_node =
   | D0ARGsta of s0qualst
   | D0ARGdyn of p0arglst
   | D0ARGdyn2 of (p0arglst, p0arglst)
+// end of [d0arg_node]
 
 typedef d0arg = '{
   d0arg_loc= loc_t, d0arg_node= d0arg_node
@@ -1195,8 +1310,9 @@ datatype p0at_node =
 and labp0atlst =
   | LABP0ATLSTnil | LABP0ATLSTdot | LABP0ATLSTcons of (l0ab, p0at, labp0atlst)
 
-where p0at = '{ p0at_loc= loc_t, p0at_node= p0at_node }
-
+where p0at = '{
+   p0at_loc= loc_t, p0at_node= p0at_node
+} (* end of [p0at] *)
 and p0atlst: type = List p0at
 and p0atopt: type = Option p0at
 
@@ -1425,10 +1541,14 @@ datatype d0exp_node =
   | D0Emod of (* for modules *)
       moditemdec list
 *)
+  | D0Eobj of ( // for objects
+      objkind, s0exp(*objcls*), m0thdeclst
+    ) // end of [D0Eobj]
   | D0Eopide of sym_t (* for dynamic identifiers *)
 (*
-  | D0Eparse of (* parse string *)
+  | D0Eparse of ( // parse string
       id (* the name of parse fun *), string (* input *)
+    ) // end of [D0Eparse]
 *)
   | D0Eptrof (* taking the address of *)
   | D0Eqid of (* qualified dynamic identifiers *)
@@ -1496,9 +1616,12 @@ and d0ec_node =
   | D0Cstavars of (s0tavar, s0tavarlst)
   | D0Csexpdefs of (s0rtopt, s0expdef, s0expdeflst)
   | D0Csaspdec of s0aspdec
+  | D0Cdcstdecs of (* dyncst declaration *)
+      (dcstkind, s0qualstlst, d0cstdec, d0cstdeclst)
   | D0Cdatdecs of (datakind, d0atdec, d0atdeclst, s0expdeflst)
   | D0Cexndecs of (e0xndec, e0xndeclst)
-  | D0Cdcstdecs of (dcstkind, s0qualstlst, d0cstdec, d0cstdeclst)
+  | D0Cclassdec of (* class declaration *)
+      (clskind, s0qualstlst, c0lassdec, s0expdeflst)
   | D0Coverload of (* overloading *)
       (i0de, dqi0de)
   | D0Cextype of (string, s0exp) // type to be used in C
@@ -1523,11 +1646,13 @@ and d0ec_node =
   | D0Cstaload of (Option sym_t, string)
   | D0Clocal of (d0eclst, d0eclst)
   | D0Cguadec of (srpifkind, guad0ec)
+// end of [d0ec_node]
 
 and guad0ec_node =
   | GD0Cone of (e0xp, d0eclst)
   | GD0Ctwo of (e0xp, d0eclst, d0eclst)
   | GD0Ccons of (e0xp, d0eclst, srpifkind, guad0ec_node)
+// end of [guad0ec_node]
 
 where d0exp: type = (* type for declaration *)
   '{ d0exp_loc= loc_t, d0exp_node= d0exp_node }
@@ -1678,6 +1803,17 @@ and guad0ec : type = '{
 
 (* ****** ****** *)
 
+castfn f0arglst_t_of_f0arglst (x: f0arglst): f0arglst_t
+castfn f0arglst_of_f0arglst_t (x: f0arglst_t): f0arglst
+
+castfn d0exp_t_of_d0exp (x: d0exp): d0exp_t
+castfn d0exp_of_d0exp_t (x: d0exp_t): d0exp
+
+castfn d0expopt_t_of_d0expopt (x: d0expopt): d0expopt_t
+castfn d0expopt_of_d0expopt_t (x: d0expopt_t): d0expopt
+
+(* ****** ****** *)
+
 fun d0exp_ann (_: d0exp, _: s0exp): d0exp = "d0exp_ann"
 
 fun d0exp_apps (_fun: d0exp, _arg: d0explst): d0exp = "d0exp_apps"
@@ -1815,34 +1951,60 @@ fun d0exp_macsyn_encode_seq (t_beg: t0kn, _: d0explst, t_end: t0kn): d0exp
 
 //
 
+fun d0exp_obj (knd: objkind, cls: s0exp, _: m0thdeclst, t_end: t0kn): d0exp
+  = "d0exp_obj"
+// end of [d0exp_obj]
+
+//
+
 fun d0exp_opide (t_op: t0kn, id: i0de): d0exp = "d0exp_opide"
+
+//
 
 fun d0exp_ptrof (t_amp: t0kn): d0exp = "d0exp_ptrof"
 
+//
+
 fun d0exp_qid (d0q: d0ynq, id: i0de): d0exp = "d0exp_qid"
 
+//
+
 fun d0exp_raise (t_raise: t0kn, d0e: d0exp): d0exp = "d0exp_raise"
+
+//
 
 fun d0exp_rec
   (flat: int, t_beg: t0kn, ld0es: labd0explst, t_end: t0kn): d0exp
   = "d0exp_rec"
 
+//
+
 fun d0exp_scaseof
   (hd: casehead, s0e: s0exp, t_of: t0kn, sc0ls: sc0laulst): d0exp
   = "d0exp_scaseof"
 
+//
+
 fun d0exp_sel_lab (s: s0elop, l: l0ab): d0exp = "d0exp_sel_lab"
 fun d0exp_sel_ind (s: s0elop, ind: d0arrind): d0exp = "d0exp_sel_ind"
+
+//
 
 fun d0exp_seq (t_beg: t0kn, d0es: d0explst, t_end: t0kn): d0exp
   = "d0exp_seq"
 
+//
+
 fun d0exp_sexparg (t_beg: t0kn, s0a: s0exparg, t_end:t0kn): d0exp
   = "d0exp_sexparg"
+
+//
 
 fun d0exp_sif
   (hd: ifhead, s0e_cond: s0exp, d0e_then: d0exp, d0e_else: d0exp): d0exp
   = "d0exp_sif"
+
+//
 
 fun d0exp_spawn (t_spawn: t0kn): d0exp = "d0exp_spawn"
 
@@ -1879,6 +2041,9 @@ fun d0exp_while (hd: loophead, test: d0exp, body: d0exp): d0exp =
 fun d0explst_nil (): d0explst = "d0explst_nil"
 fun d0explst_cons (x: d0exp, xs: d0explst): d0explst = "d0explst_cons"
 fun d0explst_sing (x: d0exp): d0explst = "d0explst_sing"
+
+fun d0expopt_none (): d0expopt = "d0expopt_none"
+fun d0expopt_some (x: d0exp): d0expopt = "d0expopt_some"
 
 fun labd0explst_nil (): labd0explst = "labd0explst_nil"
 fun labd0explst_cons (l: l0ab, x: d0exp, xs: labd0explst): labd0explst
@@ -2075,6 +2240,11 @@ fun d0ec_datdecs
 
 fun d0ec_exndecs (t: t0kn, d: e0xndec, ds: e0xndeclst): d0ec
   = "d0ec_exndecs"
+
+fun d0ec_classdec (
+    knd: clskind, arg: s0qualstlst, d_dec: c0lassdec, ds_def: s0expdeflst
+  ) : d0ec
+  = "d0ec_classdec"
 
 fun d0ec_dcstdecs
   (k: dcstkind, qua: s0qualstlst, d: d0cstdec, ds: d0cstdeclst): d0ec

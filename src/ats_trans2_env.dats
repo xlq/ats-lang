@@ -359,7 +359,8 @@ end // end of [the_s2expenv_add_datcontyp]
 
 (* ****** ****** *)
 
-fn the_s2expenv_namespace_find (id: sym_t): s2itemopt_vt = let
+fn the_s2expenv_namespace_find
+  (id: sym_t): s2itemopt_vt = let
   fn f (name: sym_t):<cloptr1> s2itemopt_vt = let
     val r_m: s2itemmapref = begin
       case+ $HT.hashtbl_search (the_s2itemmaptbl, name) of
@@ -707,15 +708,20 @@ end // end of [the_d2expenv_namespace_find]
 
 implement the_d2expenv_find (id) = let
   val ans =
-    $SymEnv.symenv_search_all (the_d2expenv, id) in
+    $SymEnv.symenv_search_all (the_d2expenv, id)
+in
   case+ ans of
-  | Some_vt _ => begin
-      let val () = fold@ ans in ans end
+  | Some_vt _ => let
+      prval () = fold@ ans in ans
     end // end of [Some_vt]
   | ~None_vt _ => let
-      val ans =
-        the_d2expenv_namespace_find id in case+ ans of
-      | Some_vt _ => (fold@ ans; ans) | ~None_vt _ => begin
+      val ans = the_d2expenv_namespace_find id
+    in
+      case+ ans of
+      | Some_vt _ => let
+          prval () = fold@ ans in ans
+        end // end of [Some]
+      | ~None_vt _ => begin
           $SymEnv.symenv_pervasive_search (the_d2expenv, id)
         end // end of [None_vt]
     end // end of [None_vt]
@@ -773,6 +779,10 @@ end // end of [the_d2expenv_pop]
 implement the_d2expenv_push () = let
   val () = $SymEnv.symenv_push (the_d2expenv) in (unit_v | ())
 end // end of [the_d2expenv_push]
+
+implement the_d2expenv_swap (r_map) =
+  $SymEnv.symenv_swap (the_d2expenv, r_map)
+// end of [the_d2expenv_swap]
 
 (* ****** ****** *)
 
@@ -928,6 +938,7 @@ implement trans2_env_initialize () = begin
   the_s2rtenv_add ($Sym.symbol_ADDR, S2TEsrt s2rt_addr);
   the_s2rtenv_add ($Sym.symbol_BOOL, S2TEsrt s2rt_bool);
   the_s2rtenv_add ($Sym.symbol_CHAR, S2TEsrt s2rt_char);
+  the_s2rtenv_add ($Sym.symbol_CLS, S2TEsrt s2rt_cls);
   the_s2rtenv_add ($Sym.symbol_EFF, S2TEsrt s2rt_eff);
   the_s2rtenv_add ($Sym.symbol_INT, S2TEsrt s2rt_int);
   the_s2rtenv_add ($Sym.symbol_PROP, S2TEsrt s2rt_prop);

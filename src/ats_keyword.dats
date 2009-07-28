@@ -7,28 +7,27 @@
 (***********************************************************************)
 
 (*
- * ATS/Anairiats - Unleashing the Potential of Types!
- *
- * Copyright (C) 2002-2008 Hongwei Xi, Boston University
- *
- * All rights reserved
- *
- * ATS is free software;  you can  redistribute it and/or modify it under
- * the terms of  the GNU GENERAL PUBLIC LICENSE (GPL) as published by the
- * Free Software Foundation; either version 3, or (at  your  option)  any
- * later version.
- * 
- * ATS is distributed in the hope that it will be useful, but WITHOUT ANY
- * WARRANTY; without  even  the  implied  warranty  of MERCHANTABILITY or
- * FITNESS FOR A PARTICULAR PURPOSE.  See the  GNU General Public License
- * for more details.
- * 
- * You  should  have  received  a  copy of the GNU General Public License
- * along  with  ATS;  see the  file COPYING.  If not, please write to the
- * Free Software Foundation,  51 Franklin Street, Fifth Floor, Boston, MA
- * 02110-1301, USA.
- *
- *)
+** ATS/Anairiats - Unleashing the Potential of Types!
+**
+** Copyright (C) 2002-2008 Hongwei Xi, Boston University
+**
+** All rights reserved
+**
+** ATS is free software;  you can  redistribute it and/or modify it under
+** the terms of  the GNU GENERAL PUBLIC LICENSE (GPL) as published by the
+** Free Software Foundation; either version 3, or (at  your  option)  any
+** later version.
+** 
+** ATS is distributed in the hope that it will be useful, but WITHOUT ANY
+** WARRANTY; without  even  the  implied  warranty  of MERCHANTABILITY or
+** FITNESS FOR A PARTICULAR PURPOSE.  See the  GNU General Public License
+** for more details.
+** 
+** You  should  have  received  a  copy of the GNU General Public License
+** along  with  ATS;  see the  file COPYING.  If not, please write to the
+** Free Software Foundation,  51 Franklin Street, Fifth Floor, Boston, MA
+** 02110-1301, USA.
+*)
 
 (* ****** ****** *)
 
@@ -180,7 +179,9 @@ keyval_insert("local", LOCAL) ;
 keyval_insert("macdef", MACDEF) ;
 keyval_insert("macrodef", MACRODEF) ;
 keyval_insert("method", METHOD) ;
+keyval_insert("module", MODULE) ;
 keyval_insert("nonfix", NONFIX) ;
+keyval_insert("object", OBJECT) ;
 keyval_insert("overload", OVERLOAD) ;
 keyval_insert("par", PAR) ;
 keyval_insert("postfix", POSTFIX) ;
@@ -189,7 +190,6 @@ keyval_insert("prefix", PREFIX) ;
 keyval_insert("prfn", PRFN) ;
 keyval_insert("prfun", PRFUN) ;
 keyval_insert("prval", PRVAL) ;
-keyval_insert("object", OBJECT) ;
 keyval_insert("of", OF) ;
 keyval_insert("op", OP) ;
 keyval_insert("propdef", PROPDEF) ;
@@ -203,6 +203,7 @@ keyval_insert("staif", STAIF) ;
 keyval_insert("staload", STALOAD) ;
 keyval_insert("stavar", STAVAR) ;
 keyval_insert("struct", STRUCT) ;
+keyval_insert("super", SUPER) ;
 keyval_insert("symelim", SYMELIM) ;
 keyval_insert("symintr", SYMINTR) ;
 keyval_insert("then", THEN) ;
@@ -248,19 +249,24 @@ keyval_insert("$extval", DLREXTVAL) ;
 keyval_insert("$extype", DLREXTYPE) ;
 keyval_insert("$decrypt", DLRDECRYPT) ;
 keyval_insert("$delay", DLRDELAY) ;
-keyval_insert("$delay_vt", DLRDELAYVT) ;
+keyval_insert("$delay_vt", DLRDELAY_VT) ;
 keyval_insert("$dynload", DLRDYNLOAD) ;
 keyval_insert("$encrypt", DLRENCRYPT) ;
 keyval_insert("$fold", DLRFOLD) ;
-keyval_insert("$lst", DLRLSTT) ;
-keyval_insert("$lst_t", DLRLSTT) ;
-keyval_insert("$lst_vt", DLRLSTVT) ;
+keyval_insert("$lst", DLRLST_T) ;
+keyval_insert("$lst_t", DLRLST_T) ;
+keyval_insert("$lst_vt", DLRLST_VT) ;
+keyval_insert("$obj", DLROBJ_T) ;
+keyval_insert("$obj_t", DLROBJ_T) ;
+keyval_insert("$obj_vt", DLROBJ_VT) ;
+keyval_insert("$objmod", DLROBJMOD) ;
+keyval_insert("$objref", DLROBJREF) ;
 keyval_insert("$raise", DLRRAISE) ;
-keyval_insert("$rec_t", DLRRECT) ;
-keyval_insert("$rec_vt", DLRRECVT) ;
+keyval_insert("$rec_t", DLRREC_T) ;
+keyval_insert("$rec_vt", DLRREC_VT) ;
 keyval_insert("$spawn", DLRSPAWN) ;
-keyval_insert("$tup_t", DLRTUPT) ;
-keyval_insert("$tup_vt", DLRTUPVT) ;
+keyval_insert("$tup_t", DLRTUP_T) ;
+keyval_insert("$tup_vt", DLRTUP_VT) ;
 keyval_insert("$unfold", DLRUNFOLD) ;
 keyval_insert("$typeof", DLRTYPEOF) ;
 

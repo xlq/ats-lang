@@ -58,8 +58,10 @@ fun the_s2rtenv_find_qua (q: $Syn.s0rtq, id: sym_t): s2rtextopt_vt
 
 fun the_s2rtenv_pop (pf: s2rtenv_token | (*none*)): void
 fun the_s2rtenv_push (): (s2rtenv_token | void)
+
 fun the_s2rtenv_localjoin
   (pf1: s2rtenv_token, pf2: s2rtenv_token | (*none*)): void
+// end of [the_s2rtenv_localjoin]
 
 (* ****** ****** *)
 
@@ -78,8 +80,10 @@ fun the_s2expenv_find_qua (q: $Syn.s0taq, id: sym_t): s2itemopt_vt
 
 fun the_s2expenv_pop (pf: s2expenv_token | (*none*)): void
 fun the_s2expenv_push (): (s2expenv_token | void)
+
 fun the_s2expenv_localjoin
   (pf1: s2expenv_token, pf2: s2expenv_token | (*none*)): void
+// end of [the_s2expenv_localjoin]
 
 fun the_s2expenv_pervasive_find (id: sym_t): s2itemopt_vt
 
@@ -131,8 +135,10 @@ fun the_d2expenv_find_qua (q: $Syn.d0ynq, id: sym_t): d2itemopt_vt
 
 fun the_d2expenv_pop (pf: d2expenv_token | (*none*)): void
 fun the_d2expenv_push (): (d2expenv_token | void)
+fun the_d2expenv_swap (r_map: $SymEnv.symmapref d2item): void
 fun the_d2expenv_localjoin
   (pf1: d2expenv_token, pf2: d2expenv_token | (*none*)): void
+// end of [the_d2expenv_localjoin]
 
 fun the_d2expenv_current_find (id: sym_t): d2itemopt_vt
 fun the_d2expenv_pervasive_find (id: sym_t): d2itemopt_vt
@@ -155,8 +161,10 @@ fun d2eclst_namespace_find (_: sym_t): Option_vt (d2eclst)
 absview trans2_env_token
 fun trans2_env_pop (pf: trans2_env_token | (*none*)): void
 fun trans2_env_push (): (trans2_env_token | void)
+
 fun trans2_env_localjoin
   (pf1: trans2_env_token, pf2: trans2_env_token | (*none*)): void
+// end of [trans2_env_localjoin]
 
 fun trans2_env_save (): void
 fun trans2_env_restore (): void

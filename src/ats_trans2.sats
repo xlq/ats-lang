@@ -7,33 +7,32 @@
 (***********************************************************************)
 
 (*
- * ATS/Anairiats - Unleashing the Potential of Types!
- *
- * Copyright (C) 2002-2008 Hongwei Xi, Boston University
- *
- * All rights reserved
- *
- * ATS is free software;  you can  redistribute it and/or modify it under
- * the terms of  the GNU GENERAL PUBLIC LICENSE (GPL) as published by the
- * Free Software Foundation; either version 3, or (at  your  option)  any
- * later version.
- * 
- * ATS is distributed in the hope that it will be useful, but WITHOUT ANY
- * WARRANTY; without  even  the  implied  warranty  of MERCHANTABILITY or
- * FITNESS FOR A PARTICULAR PURPOSE.  See the  GNU General Public License
- * for more details.
- * 
- * You  should  have  received  a  copy of the GNU General Public License
- * along  with  ATS;  see the  file COPYING.  If not, please write to the
- * Free Software Foundation,  51 Franklin Street, Fifth Floor, Boston, MA
- * 02110-1301, USA.
- *
- *)
+** ATS/Anairiats - Unleashing the Potential of Types!
+**
+** Copyright (C) 2002-2008 Hongwei Xi, Boston University
+**
+** All rights reserved
+**
+** ATS is free software;  you can  redistribute it and/or modify it under
+** the terms of  the GNU GENERAL PUBLIC LICENSE (GPL) as published by the
+** Free Software Foundation; either version 3, or (at  your  option)  any
+** later version.
+** 
+** ATS is distributed in the hope that it will be useful, but WITHOUT ANY
+** WARRANTY; without  even  the  implied  warranty  of MERCHANTABILITY or
+** FITNESS FOR A PARTICULAR PURPOSE.  See the  GNU General Public License
+** for more details.
+** 
+** You  should  have  received  a  copy of the GNU General Public License
+** along  with  ATS;  see the  file COPYING.  If not, please write to the
+** Free Software Foundation,  51 Franklin Street, Fifth Floor, Boston, MA
+** 02110-1301, USA.
+*)
 
 (* ****** ****** *)
 
-// Time: November 2007
 // Author: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
+// Time: November 2007
 
 (* ****** ****** *)
 
@@ -73,8 +72,8 @@ fun s1explst_tr_dn {n:nat}
   (s1es: list (s1exp, n), s2ts: list (s2rt, n)): list (s2exp, n)
 
 fun s1exp_tr_dn_bool (s1e: s1exp): s2exp
+fun s1exp_tr_dn_cls (s1e: s1exp): s2exp
 fun s1exp_tr_dn_int (s1e: s1exp): s2exp
-fun s1explst_tr_dn_int (s1es: s1explst): s2explst
 fun s1exp_tr_dn_prop (s1e: s1exp): s2exp
 fun s1exp_tr_dn_type (s1e: s1exp): s2exp
 fun s1exp_tr_dn_t0ype (s1e: s1exp): s2exp
@@ -83,6 +82,10 @@ fun s1exp_tr_dn_viewtype (s1e: s1exp): s2exp
 fun s1exp_tr_dn_viewt0ype (s1e: s1exp): s2exp
 fun s1exp_tr_dn_impredicative (s1e: s1exp): s2exp
 fun s1expopt_tr_dn_impredicative (os1e: s1expopt): s2expopt
+
+fun s1explst_tr_dn_bool (s1es: s1explst): s2explst
+fun s1explst_tr_dn_cls (s1es: s1explst): s2explst
+fun s1explst_tr_dn_int (s1es: s1explst): s2explst
 
 // arg/res type translation
 fun s1exp_arg_tr_up (s1e: s1exp, _: &wths1explst): s2exp
@@ -111,18 +114,31 @@ fun s1tavarlst_tr (ds: s1tavarlst): s2tavarlst
 
 fun d1atsrtdeclst_tr (ds: d1atsrtdeclst): void
 
+fun s1expdef_tr (res: s2rtopt, d1c: s1expdef): s2cst_t
 fun s1expdeflst_tr (res: s2rtopt, d1cs: s1expdeflst): void
 
 fun s1aspdec_tr (d1c: s1aspdec): s2aspdec
 
+fun d1cstdeclst_tr
+  (dck: $Syn.dcstkind, decarg: s2qualst, d1cs: d1cstdeclst): d2cstlst
+// end of [d1cstdeclst_tr]
+
 fun d1atdeclst_tr
   (datknd: $Syn.datakind, d1cs_dat: d1atdeclst, d1cs_def: s1expdeflst)
   : s2cstlst
+// end of [d1atdeclst_tr]
 
 fun e1xndeclst_tr (d1cs: e1xndeclst): d2conlst
 
-fun d1cstdeclst_tr
-  (dck: $Syn.dcstkind, decarg: s2qualst, d1cs: d1cstdeclst): d2cstlst
+(* ****** ****** *)
+
+viewtypedef mtdmap_t = $SymEnv.symmap_t d2item
+
+fun m1thdeclst_tr
+  (r_map: ref (mtdmap_t), self: s2exp, mtds: m1thdeclst): m2thdeclst
+// end of [m1thdeclst_tr]
+
+fun c1lassdec_tr (decarg: s2qualst, d1c: c1lassdec): c2lassdec
 
 (* ****** ****** *)
 

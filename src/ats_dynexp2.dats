@@ -7,28 +7,27 @@
 (***********************************************************************)
 
 (*
- * ATS/Anairiats - Unleashing the Potential of Types!
- *
- * Copyright (C) 2002-2008 Hongwei Xi, Boston University
- *
- * All rights reserved
- *
- * ATS is free software;  you can  redistribute it and/or modify it under
- * the terms of  the GNU GENERAL PUBLIC LICENSE (GPL) as published by the
- * Free Software Foundation; either version 3, or (at  your  option)  any
- * later version.
- * 
- * ATS is distributed in the hope that it will be useful, but WITHOUT ANY
- * WARRANTY; without  even  the  implied  warranty  of MERCHANTABILITY or
- * FITNESS FOR A PARTICULAR PURPOSE.  See the  GNU General Public License
- * for more details.
- * 
- * You  should  have  received  a  copy of the GNU General Public License
- * along  with  ATS;  see the  file COPYING.  If not, please write to the
- * Free Software Foundation,  51 Franklin Street, Fifth Floor, Boston, MA
- * 02110-1301, USA.
- *
- *)
+** ATS/Anairiats - Unleashing the Potential of Types!
+**
+** Copyright (C) 2002-2008 Hongwei Xi, Boston University
+**
+** All rights reserved
+**
+** ATS is free software;  you can  redistribute it and/or modify it under
+** the terms of  the GNU GENERAL PUBLIC LICENSE (GPL) as published by the
+** Free Software Foundation; either version 3, or (at  your  option)  any
+** later version.
+** 
+** ATS is distributed in the hope that it will be useful, but WITHOUT ANY
+** WARRANTY; without  even  the  implied  warranty  of MERCHANTABILITY or
+** FITNESS FOR A PARTICULAR PURPOSE.  See the  GNU General Public License
+** for more details.
+** 
+** You  should  have  received  a  copy of the GNU General Public License
+** along  with  ATS;  see the  file COPYING.  If not, please write to the
+** Free Software Foundation,  51 Franklin Street, Fifth Floor, Boston, MA
+** 02110-1301, USA.
+*)
 
 (* ****** ****** *)
 
@@ -740,29 +739,44 @@ implement d2exp_lst (loc, lin, os2e_elt, d2es_elt) = '{
 
 implement d2exp_mac (loc, d2m) = '{
   d2exp_loc= loc, d2exp_node= D2Emac (d2m), d2exp_typ= None ()
-}
+} // end of [d2exp_mac]
 
 implement d2exp_macsyn (loc, knd, d2e) = '{
   d2exp_loc= loc
 , d2exp_node= D2Emacsyn (knd, d2e)
 , d2exp_typ= None ()
-}
+} // end of [d2exp_macsyn]
+
+(* ****** ****** *)
+
+implement d2exp_mtd (loc, d2m) = '{
+  d2exp_loc= loc, d2exp_node= D2Emtd (d2m), d2exp_typ= None ()
+} // end of [d2exp_mtd]
+
+(* ****** ****** *)
+
+implement d2exp_obj
+  (loc, knd, s2c, decarg, mtdlst) = '{
+  d2exp_loc= loc
+, d2exp_node= D2Eobj (knd, s2c, decarg, mtdlst)
+, d2exp_typ= None ()
+} // end of [d2exp_obj]
 
 (* ****** ****** *)
 
 implement d2exp_ptrof (loc, d2e) = '{
   d2exp_loc= loc, d2exp_node= D2Eptrof (d2e), d2exp_typ= None ()
-}
+} // end of [d2exp_ptrof]
 
 implement d2exp_raise (loc, d2e_exn) = '{
   d2exp_loc= loc, d2exp_node= D2Eraise (d2e_exn), d2exp_typ= None ()
-}
+} // end of [d2exp_raise]
 
 implement d2exp_rec (loc, recknd, npf, ld2es) = '{
   d2exp_loc= loc
 , d2exp_node= D2Erec (recknd, npf, ld2es)
 , d2exp_typ= None ()
-}
+} // end of [d2exp_rec]
 
 implement d2exp_scaseof (loc, inv, s2e, sc2ls) = '{
   d2exp_loc= loc
@@ -774,7 +788,7 @@ implement d2exp_sel (loc, d2e_root, d2ls_path) = '{
   d2exp_loc= loc
 , d2exp_node = D2Esel (d2e_root, d2ls_path)
 , d2exp_typ= None ()
-}
+} // end of [d2exp_sel]
 
 implement d2exp_sel_ptr (loc, d2e, d2l) = let
   val d2e_root = d2exp_deref (d2e.d2exp_loc, d2e)
@@ -786,7 +800,7 @@ in '{
 
 implement d2exp_seq (loc, d2es) = '{
   d2exp_loc= loc, d2exp_node= D2Eseq (d2es), d2exp_typ= None ()
-}
+} // end of [d2exp_seq]
 
 implement d2exp_sif
   (loc, inv, s2e_cond, d2e_then, d2e_else) = '{
@@ -994,13 +1008,23 @@ implement s2aspdec_make (loc, s2c, def) = '{
   s2aspdec_loc= loc, s2aspdec_cst= s2c, s2aspdec_def= def
 }
 
+implement c2lassdec_make
+  (loc, knd, s2c, supclss, mtdlst, mtdmap) = '{
+  c2lassdec_loc= loc
+, c2lassdec_knd= knd
+, c2lassdec_cst= s2c
+, c2lassdec_suplst= supclss
+, c2lassdec_mtdlst= mtdlst
+, c2lassdec_mtdmap= mtdmap
+} // end of [c2lassdec_make]
+
 implement v2aldec_make (loc, p2t, def, ann) = '{
   v2aldec_loc= loc, v2aldec_pat= p2t, v2aldec_def= def, v2aldec_ann= ann
-}
+} // end of [v2aldec_make]
 
 implement f2undec_make (loc, d2v, def, ann) = '{
   f2undec_loc= loc, f2undec_var= d2v, f2undec_def= def, f2undec_ann= ann
-}
+} // end of [f2undec_make]
 
 implement v2ardec_make (loc, knd, d2v, s2v, typ, wth, ini) = '{
   v2ardec_loc= loc
@@ -1052,6 +1076,10 @@ implement d2ec_saspdec (loc, d2c) = '{
   d2ec_loc= loc, d2ec_node= D2Csaspdec d2c
 }
 
+implement d2ec_dcstdec (loc, dck, d2cs) = '{
+  d2ec_loc= loc, d2ec_node= D2Cdcstdec (dck, d2cs)
+}
+
 implement d2ec_datdec (loc, dtk, s2cs) = '{
   d2ec_loc= loc, d2ec_node= D2Cdatdec (dtk, s2cs)
 }
@@ -1060,8 +1088,8 @@ implement d2ec_exndec (loc, d2cs) = '{
   d2ec_loc= loc, d2ec_node= D2Cexndec (d2cs)
 }
 
-implement d2ec_dcstdec (loc, dck, d2cs) = '{
-  d2ec_loc= loc, d2ec_node= D2Cdcstdec (dck, d2cs)
+implement d2ec_classdec (loc, d2c) = '{
+  d2ec_loc= loc, d2ec_node= D2Cclassdec (d2c)
 }
 
 implement d2ec_overload (loc, id, qid) = '{

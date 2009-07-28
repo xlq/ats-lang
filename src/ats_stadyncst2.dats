@@ -7,33 +7,32 @@
 (***********************************************************************)
 
 (*
- * ATS/Anairiats - Unleashing the Potential of Types!
- *
- * Copyright (C) 2002-2008 Hongwei Xi, Boston University
- *
- * All rights reserved
- *
- * ATS is free software;  you can  redistribute it and/or modify it under
- * the terms of  the GNU GENERAL PUBLIC LICENSE (GPL) as published by the
- * Free Software Foundation; either version 3, or (at  your  option)  any
- * later version.
- * 
- * ATS is distributed in the hope that it will be useful, but WITHOUT ANY
- * WARRANTY; without  even  the  implied  warranty  of MERCHANTABILITY or
- * FITNESS FOR A PARTICULAR PURPOSE.  See the  GNU General Public License
- * for more details.
- * 
- * You  should  have  received  a  copy of the GNU General Public License
- * along  with  ATS;  see the  file COPYING.  If not, please write to the
- * Free Software Foundation,  51 Franklin Street, Fifth Floor, Boston, MA
- * 02110-1301, USA.
- *
- *)
+** ATS/Anairiats - Unleashing the Potential of Types!
+**
+** Copyright (C) 2002-2008 Hongwei Xi, Boston University
+**
+** All rights reserved
+**
+** ATS is free software;  you can  redistribute it and/or modify it under
+** the terms of  the GNU GENERAL PUBLIC LICENSE (GPL) as published by the
+** Free Software Foundation; either version 3, or (at  your  option)  any
+** later version.
+** 
+** ATS is distributed in the hope that it will be useful, but WITHOUT ANY
+** WARRANTY; without  even  the  implied  warranty  of MERCHANTABILITY or
+** FITNESS FOR A PARTICULAR PURPOSE.  See the  GNU General Public License
+** for more details.
+** 
+** You  should  have  received  a  copy of the GNU General Public License
+** along  with  ATS;  see the  file COPYING.  If not, please write to the
+** Free Software Foundation,  51 Franklin Street, Fifth Floor, Boston, MA
+** 02110-1301, USA.
+*)
 
 (* ****** ****** *)
 
-// Time: November 2007
 // Author: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
+// Time: November 2007
 
 (* ****** ****** *)
 
@@ -108,19 +107,18 @@ in
           prerr id; prerr "] is not available.";
           prerr_newline ();
           $Err.abort {s2cst_t} ()
-        end
-    end
+        end // end of [None]
+    end (* end of [None] *)
 end // end of [s2cstref_cst_get]
 
-//
+(* ****** ****** *)
 
 implement s2cstref_exp_get (s2cref, os2es) = let
   val s2c = s2cstref_cst_get s2cref; val s2e = s2exp_cst s2c
 in
   case+ os2es of
   | ~Some_vt s2es => let
-      val s2t_res = (
-        case+ s2cst_srt_get s2c of
+      val s2t_res = (case+ s2cst_srt_get s2c of
         | S2RTfun (_, s2t_res) => s2t_res
         | _ => begin
             prerr "Internal Error: s2cstref_exp_get: s2c = ";
@@ -149,7 +147,7 @@ implement s2cstref_exp_unget (s2cref, s2e) = begin
   | _ => None_vt ()
 end // end of [s2cstref_exp_unget]
 
-//
+(* ****** ****** *)
 
 implement s2cstref_cst_equ (s2cref, s2c) =
   eq_s2cst_s2cst (s2cstref_cst_get s2cref, s2c)
@@ -178,6 +176,9 @@ implement Double_long_t0ype = s2cstref_make "double_long_t0ype"
 implement Float_t0ype = s2cstref_make "float_t0ype"
 implement Int_t0ype = s2cstref_make "int_t0ype"
 implement Int_int_t0ype = s2cstref_make "int_int_t0ype"
+implement Obj_cls_t0ype = s2cstref_make "obj_cls_t0ype"
+implement Objmod_cls_type = s2cstref_make "objmod_cls_type"
+implement Objref_cls_type = s2cstref_make "objref_cls_type"
 implement Ptr_type = s2cstref_make "ptr_type"
 implement Ptr_addr_type = s2cstref_make "ptr_addr_type"
 implement Ref_viewt0ype_type = s2cstref_make "ref_viewt0ype_type"
@@ -521,75 +522,96 @@ implement Ats_main_dummy = d2cstref_make "main_dummy"
 (* ****** ****** *)
 
 implement s2exp_bool (b): s2exp = let
-  val s2c: s2cst_t = begin
-    if b then s2cstref_cst_get (True_bool) else s2cstref_cst_get (False_bool)
-  end
+  val s2c = (
+    if b then s2cstref_cst_get (True_bool)
+         else s2cstref_cst_get (False_bool)
+  ) : s2cst_t
 in
   s2exp_cst (s2c)
-end
+end // end of [s2exp_bool]
 
-implement s2exp_bool_t0ype () =
-  let val s2c = s2cstref_cst_get (Bool_t0ype) in
-    s2exp_cst (s2c)
-  end
+implement s2exp_bool_t0ype () = let
+  val s2c = s2cstref_cst_get (Bool_t0ype) in s2exp_cst (s2c)
+end // end of [s2exp_bool_t0ype]
 
-implement s2exp_bool_bool_t0ype (b) =
-  let val s2c = s2cstref_cst_get (Bool_bool_t0ype) in
-    s2exp_cstapp (s2c, '[s2exp_bool b])
-  end
+implement s2exp_bool_bool_t0ype (b) = let
+  val s2c = s2cstref_cst_get (Bool_bool_t0ype) in
+  s2exp_cstapp (s2c, '[s2exp_bool b])
+end // end of [s2exp_bool_bool_t0ype]
 
-implement s2exp_char_t0ype () =
-  let val s2c = s2cstref_cst_get (Char_t0ype) in
-    s2exp_cst (s2c)
-  end
+implement s2exp_char_t0ype () = let
+  val s2c = s2cstref_cst_get (Char_t0ype) in s2exp_cst (s2c)
+end // end of [s2exp_char_t0ype]
 
-implement s2exp_char_char_t0ype (c) =
-  let val s2c = s2cstref_cst_get (Char_char_t0ype) in
-    s2exp_cstapp (s2c, '[s2exp_char c])
-  end
+implement s2exp_char_char_t0ype (c) = let
+  val s2c = s2cstref_cst_get (Char_char_t0ype) in
+  s2exp_cstapp (s2c, '[s2exp_char c])
+end // end of [s2exp_char_char_t0ype]
 
-implement s2exp_double_t0ype () =
-  let val s2c = s2cstref_cst_get (Double_t0ype) in
-    s2exp_cst (s2c)
-  end
+implement s2exp_double_t0ype () = let
+  val s2c = s2cstref_cst_get (Double_t0ype) in s2exp_cst (s2c)
+end // end of [s2exp_double_t0ype]
 
-implement s2exp_double_long_t0ype () =
-  let val s2c = s2cstref_cst_get (Double_long_t0ype) in
-    s2exp_cst (s2c)
-  end
+implement s2exp_double_long_t0ype () = let
+  val s2c = s2cstref_cst_get (Double_long_t0ype) in
+  s2exp_cst (s2c)
+end // end of [s2exp_double_long_t0ype]
 
-implement s2exp_float_t0ype () =
-  let val s2c = s2cstref_cst_get (Float_t0ype) in
-    s2exp_cst (s2c)
-  end
+implement s2exp_float_t0ype () = let
+  val s2c = s2cstref_cst_get (Float_t0ype) in s2exp_cst (s2c)
+end // end of [s2exp_float_t0ype]
 
-implement s2exp_int_t0ype () =
-  let val s2c = s2cstref_cst_get (Int_t0ype) in
-    s2exp_cst (s2c)
-  end
+implement s2exp_int_t0ype () = let
+  val s2c = s2cstref_cst_get (Int_t0ype) in s2exp_cst (s2c)
+end // end of [s2exp_int_t0ype]
 
-implement s2exp_int_int_t0ype (i) =
-  let val s2c = s2cstref_cst_get (Int_int_t0ype) in
-    s2exp_cstapp (s2c, '[s2exp_int i])
-  end
+implement s2exp_int_int_t0ype (i) = let
+  val s2c = s2cstref_cst_get (Int_int_t0ype) in
+  s2exp_cstapp (s2c, '[s2exp_int i])
+end // end of [s2exp_int_int_t0ype]
 
-implement s2exp_int_intinf_t0ype (i) =
-  let val s2c = s2cstref_cst_get (Int_int_t0ype) in
-    s2exp_cstapp (s2c, '[s2exp_intinf i])
-  end
+implement s2exp_int_intinf_t0ype (i) = let
+  val s2c = s2cstref_cst_get (Int_int_t0ype) in
+  s2exp_cstapp (s2c, '[s2exp_intinf i])
+end // end of [s2exp_int_intinf_t0ype]
 
-implement s2exp_string_type () =
-  let val s2c = s2cstref_cst_get (String_type) in
-    s2exp_cst (s2c)
-  end
+implement s2exp_obj_cls_t0ype (s2e_cls) = let
+  val s2c = s2cstref_cst_get (Obj_cls_t0ype) in
+  s2exp_app_srt (s2rt_t0ype, s2exp_cst s2c, '[s2e_cls])
+end // end of [s2exp_obj_cls_t0ype]
 
-implement s2exp_string_int_type (n) =
-  let val s2c = s2cstref_cst_get (String_int_type) in
-    s2exp_cstapp (s2c, '[s2exp_int n])
-  end
+implement s2exp_objmod_cls_type (s2e_cls) = let
+  val s2c = s2cstref_cst_get (Objmod_cls_type) in
+  s2exp_app_srt (s2rt_type, s2exp_cst s2c, '[s2e_cls])
+end // end of [s2exp_objmod_cls_type]
+
+implement s2exp_objref_cls_type (s2e_cls) = let
+  val s2c = s2cstref_cst_get (Objref_cls_type) in
+  s2exp_app_srt (s2rt_type, s2exp_cst s2c, '[s2e_cls])
+end // end of [s2exp_objref_cls_type]
+
+implement s2exp_ptr_type () = let
+  val s2c = s2cstref_cst_get (Ptr_type) in s2exp_cst (s2c)
+end // end of [s2exp_ptr_type]
+
+implement s2exp_ptr_addr_type (s2e_addr) = let
+  val s2c = s2cstref_cst_get (Ptr_addr_type)
+in
+  s2exp_app_srt (s2rt_type, s2exp_cst s2c, '[s2e_addr])
+end // end of [s2exp_ptr_addr_type]
+
+implement s2exp_string_type () = let
+  val s2c = s2cstref_cst_get (String_type) in s2exp_cst (s2c)
+end // end of [s2exp_string_type]
+
+implement s2exp_string_int_type (n) = let
+  val s2c = s2cstref_cst_get (String_int_type) in
+  s2exp_cstapp (s2c, '[s2exp_int n])
+end // end of [s2exp_string_int_type]
 
 implement s2exp_void_t0ype () =
   s2exp_cst (s2cstref_cst_get (Void_t0ype))
+// en dof [s2exp_void_t0ype]
 
 (* ****** ****** *)
 
@@ -644,6 +666,18 @@ implement un_s2exp_char_char_t0ype (s2e) =
 
 implement un_s2exp_int_int_t0ype (s2e) =
   un_s2exp_s2cstref_1 (s2e, Int_int_t0ype)
+
+implement un_s2exp_obj_cls_t0ype (s2e) =
+  un_s2exp_s2cstref_1 (s2e, Obj_cls_t0ype)
+
+implement un_s2exp_objmod_cls_type (s2e) =
+  un_s2exp_s2cstref_1 (s2e, Objmod_cls_type)
+
+implement un_s2exp_objref_cls_type (s2e) =
+  un_s2exp_s2cstref_1 (s2e, Objref_cls_type)
+
+implement un_s2exp_ref_viewt0ype_type (s2e) =
+  un_s2exp_s2cstref_1 (s2e, Ref_viewt0ype_type)
 
 implement un_s2exp_size_int_t0ype (s2e) =
   un_s2exp_s2cstref_1 (s2e, Size_int_t0ype)
@@ -723,6 +757,11 @@ end // end of [s2exp_ussint_t0ype]
 
 (* ****** ****** *)
 
+implement un_s2exp_ptr_addr_type (s2e) =
+  un_s2exp_s2cstref_1 (s2e, Ptr_addr_type)
+
+(* ****** ****** *)
+
 implement s2exp_bottom_t0ype_exi () =
   s2exp_cst (s2cstref_cst_get (Bottom_t0ype_exi))
 
@@ -774,28 +813,6 @@ implement s2exp_arraysize_viewt0ype_int_viewt0ype (s2e_elt, sz) = let
 in
   s2exp_app_srt (s2rt_viewt0ype, s2exp_cst s2c, '[s2e_elt, s2e_sz])
 end // end of [s2exp_arraysize_viewt0ype_int_viewt0ype]
-
-(* ****** ****** *)
-
-implement s2exp_ptr_type () = let
-  val s2c = s2cstref_cst_get (Ptr_type)
-in
-  s2exp_cst (s2c)
-end // end of [s2exp_ptr_type]
-
-implement s2exp_ptr_addr_type (s2e_addr) = let
-  val s2c = s2cstref_cst_get (Ptr_addr_type)
-in
-  s2exp_app_srt (s2rt_type, s2exp_cst s2c, '[s2e_addr])
-end // end of [s2exp_ptr_addr_type]
-
-implement un_s2exp_ptr_addr_type (s2e) =
-  un_s2exp_s2cstref_1 (s2e, Ptr_addr_type)
-
-(* ****** ****** *)
-
-implement un_s2exp_ref_viewt0ype_type (s2e) =
-  un_s2exp_s2cstref_1 (s2e, Ref_viewt0ype_type)
 
 (* ****** ****** *)
 

@@ -111,6 +111,7 @@ SOURCES := \
   ats_dynexp2.dats \
   ats_dynexp2_dcst.dats \
   ats_dynexp2_dmac.dats \
+  ats_dynexp2_dmtd.dats \
   ats_dynexp2_dvar.dats \
   ats_dynexp2_print.dats \
   ats_dynexp2_util.dats \
@@ -173,7 +174,10 @@ LIBOBJS := -lgmp
 
 ######
 
-atsopt: $(GC_o) \
+#atsopt: \
+#  $(GC_o) \
+
+atsopt: \
   ats_main_dats.o \
   ats_lexer_lats_dats.o ats_lexer_sats.o \
   ats_grammar_yats.o \
@@ -386,6 +390,9 @@ ats_dynexp2_dcst_dats.o: ats_dynexp2_dcst.dats
 
 ats_dynexp2_dmac_dats.o: ats_dynexp2_dmac.dats
 	$(ATSCC) $(ATSCCFLAG) -c ats_dynexp2_dmac.dats
+
+ats_dynexp2_dmtd_dats.o: ats_dynexp2_dmtd.dats
+	$(ATSCC) $(ATSCCFLAG) -c ats_dynexp2_dmtd.dats
 
 ats_dynexp2_dvar_dats.o: ats_dynexp2_dvar.dats
 	$(ATSCC) $(ATSCCFLAG) -c ats_dynexp2_dvar.dats

@@ -31,8 +31,8 @@
 
 (* ****** ****** *)
 
-// Time: October 2008
 // Author: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
+// Time: October 2008
 
 (* ****** ****** *)
 
@@ -94,8 +94,23 @@ end // end of [symmap_ref_list]
 
 (* ****** ****** *)
 
-fn symmap_make {itm:t@ype} ():<> symmap itm =
+implement{itm} symmap_insert
+  (m, k, i) = $Map.map_insert (m, k, i) 
+// end of [symmap_insert]
+
+implement{itm} symmap_remove (m, k) = $Map.map_remove (m, k)
+
+(* ****** ****** *)
+
+implement{itm} symmap_list_inf (m) = $Map.map_list_inf<sym_t,itm> (m)
+
+(* ****** ****** *)
+
+implement symmap_make {itm} () =
   $Map.map_make {sym_t,itm} ($Sym.compare_symbol_symbol)
+// end of [symmap_make]
+
+(* ****** ****** *)
 
 fn{itm:t@ype} symmap_free (m: symmap itm):<> void = $Map.map_free m
 
@@ -105,6 +120,8 @@ fun{itm:t@ype}
   | ~list_vt_cons (m, ms) => (symmap_free<itm> m; symmaplst_free<itm> ms)
   | ~list_vt_nil () => ()
 // end of [symmaplst_free]
+
+(* ****** ****** *)
 
 implement symenv_make {itm} () = '{
   map= ref_make_elt (symmap_make {itm} ())
@@ -205,7 +222,7 @@ implement{itm} symenv_pop (env) = let
     exit {symmap itm} (1)
   end // [abort]
 
-  val m = (let
+  val m = let
     val (pfbox | p_ms) = ref_get_view_ptr env.maplst
     prval vbox pf_ms = pfbox
   in
@@ -216,7 +233,7 @@ implement{itm} symenv_pop (env) = let
     | list_vt_nil () => begin
         fold@ (!p_ms); $effmask_ref (abort ())
       end // end of [list_vt_nil]
-  end) : symmap itm
+  end : symmap itm
 
   val (vbox pf_m | p_m) = ref_get_view_ptr env.map
 in
@@ -237,6 +254,15 @@ implement symenv_push {itm} (env) = let
 in
   !p_ms := list_vt_cons (m, !p_ms)
 end // end of [symenv_push]
+
+//
+
+implement symenv_swap
+  {itm} (env, r_m) = () where {
+  val (vbox pf1_m | p1_m) = ref_get_view_ptr env.map
+  viewtypedef elt = symmap_t itm
+  val () = $effmask_ref (ref_swap<elt> (r_m, !p1_m))
+} // end of [symenv_swap]
 
 (* ****** ****** *)
 

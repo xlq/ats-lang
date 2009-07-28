@@ -84,12 +84,21 @@ typedef s2Varboundlst = List s2Varbound_t
 
 datatype s2cstopt =
   | S2CSTOPTsome of s2cst_t | S2CSTOPTnone 
+// end of [s2cstopt]
 
 datatype s2cstlst =
   | S2CSTLSTcons of (s2cst_t, s2cstlst) | S2CSTLSTnil 
+// end of [s2cstlst]
 
 datatype d2conlst =
   | D2CONLSTcons of (d2con_t, d2conlst) | D2CONLSTnil
+// end of [d2conlst]
+
+(* ****** ****** *)
+
+abstype c2lassdec_t // = c2lassdec (defined in ats_dynexp2.sats)
+
+(* ****** ****** *)
 
 datatype s2item =
   (* static items *)
@@ -151,10 +160,12 @@ and s2kexp =
   | S2KEtyrec of (tyreckind, labs2kexplst)
   | S2KEunion of s2kexplst // union
   | S2KEvar of s2var_t
+// end of [s2kexp]
 
 and labs2kexplst =
   | LABS2KEXPLSTnil
   | LABS2KEXPLSTcons of (lab_t, s2kexp, labs2kexplst)
+// end of [labs2kexplst]
 
 and s2zexp =
   | S2ZEapp of (s2zexp, s2zexplst)
@@ -168,15 +179,18 @@ and s2zexp =
   | S2ZEunion of (stamp_t, labs2zexplst)
   | S2ZEvar of s2var_t
   | S2ZEword of int
+// end of [s2zexp]
 
 and labs2zexplst =
   | LABS2ZEXPLSTnil
   | LABS2ZEXPLSTcons of (lab_t, s2zexp, labs2zexplst)
+// end of [labs2zexplst]
 
 and s2eff =
   | S2EFFall
   | S2EFFnil
   | S2EFFset of ($Eff.effset_t, s2explst)
+// end of [s2eff]
 
 and s2lab = 
   | S2LAB0lab of lab_t
@@ -185,6 +199,7 @@ and s2lab =
       (lab_t, s2exp) (* record/union type *)
   | S2LAB1ind of (* array index *)
       (s2explstlst, s2exp(*element*))
+// en dof [s2lab]
 
 and s2exp_node =
   | S2Eapp of (* static application *)
@@ -238,6 +253,8 @@ and s2exp_node =
       s2zexp
   | S2Esizeof of (* size of a type *)
       s2exp
+  | S2Etmpid of (* instantiated class template *)
+      (s2cst_t, tmps2explstlst)
   | S2Etop of (* 0/1: topization/typization *)
       (int(*knd*), s2exp)
   | S2Etup of (* tuple *)
@@ -262,19 +279,23 @@ and s2exp_node =
       s2exp
   | S2Ewth of (* the result part of a function type *)
       (s2exp, wths2explst (* for restoration *))
+// end of [s2exp_node]
 
 and labs2explst =
   | LABS2EXPLSTnil
   | LABS2EXPLSTcons of (lab_t, s2exp, labs2explst)
+// end of [labs2explst]
 
 and tmps2explstlst =
   | TMPS2EXPLSTLSTnil
   | TMPS2EXPLSTLSTcons of (loc_t, s2explst, tmps2explstlst)
+// end of [tmps2explstlst]
 
 and wths2explst = // needed in [ats_trans2_sta.dats]
   | WTHS2EXPLSTnil
   | WTHS2EXPLSTcons_some of (int(*refval*), s2exp, wths2explst)
   | WTHS2EXPLSTcons_none of wths2explst
+// end of [wths2explst]
 
 where s2rtlst = List s2rt
 and s2rtopt = Option s2rt
@@ -285,7 +306,7 @@ and s2rtextopt_vt = Option_vt s2rtext
 
 and s2arg = '{
   s2arg_loc= loc_t, s2arg_sym= sym_t, s2arg_srt= s2rtopt
-}
+} // end of [s2arg]
 
 and s2arglst = List s2arg
 
@@ -302,7 +323,7 @@ and s2lablst_vt = List_vt s2lab
 
 and s2exp = '{
   s2exp_srt= s2rt, s2exp_node= s2exp_node
-}
+} // end of [s2exp]
 
 and s2explst (n:int) = list (s2exp, n)
 and s2explst = [n:nat] s2explst n
@@ -323,18 +344,28 @@ datatype s2exparg_node =
   | S2EXPARGone (* {..} *)
   | S2EXPARGall (* {...} *)
   | S2EXPARGseq of s2explst
+// end of [s2exparg_node]
 
 typedef s2exparg = '{
   s2exparg_loc= loc_t, s2exparg_node= s2exparg_node
-}
+} // end of [s2exparg]
 
 typedef s2exparglst = List s2exparg
+
+(* ****** ****** *)
+
+typedef s2qua =
+  @(s2varlst, s2explst)
+// end of [s2qua]
+
+typedef s2qualst = List s2qua
 
 (* ****** ****** *)
 
 val s2rt_addr : s2rt
 val s2rt_bool : s2rt
 val s2rt_char : s2rt
+val s2rt_cls : s2rt
 val s2rt_eff : s2rt
 val s2rt_int : s2rt
 
@@ -345,15 +376,17 @@ val s2rt_reg : s2rt
 
 *)
 
-val s2rt_prop: s2rt
-val s2rt_type: s2rt
-val s2rt_t0ype: s2rt
-val s2rt_view: s2rt
-val s2rt_viewtype: s2rt
-val s2rt_viewt0ype: s2rt
-val s2rt_types: s2rt
+val s2rt_prop : s2rt
+val s2rt_type : s2rt
+val s2rt_t0ype : s2rt
+val s2rt_view : s2rt
+val s2rt_viewtype : s2rt
+val s2rt_viewt0ype : s2rt
+val s2rt_types : s2rt
 
 (* ****** ****** *)
+
+fun s2rt_is_class (s2t: s2rt): bool
 
 fun s2rt_is_dat (s2r: s2rt): bool
 fun s2rt_is_int (s2t: s2rt): bool
@@ -392,6 +425,7 @@ fun s2rt_linearize (s2t: s2rt): s2rt
 // implemented in [ats_staexp2_util1.dats]
 fun s2rt_prf_lin_fc
   (loc0: loc_t, isprf: bool, islin: bool, fc: $Syn.funclo): s2rt
+// end of [s2rt_prf_lin_fc]
 
 (* ****** ****** *)
 
@@ -480,6 +514,12 @@ fun s2cst_make_dat (
 , argvar: Option (List @(symopt_t, s2rt, int))
 ) : s2cst_t
 
+fun s2cst_make_cls (
+  id: sym_t, loc: loc_t, s2vss: s2varlstlst
+) : s2cst_t
+
+(* ****** ****** *)
+
 fun s2cst_sym_get (_: s2cst_t): sym_t
 fun s2cst_loc_get (_: s2cst_t): loc_t
 fun s2cst_srt_get (_: s2cst_t): s2rt
@@ -492,10 +532,14 @@ fun s2cst_iscpy_get (_: s2cst_t): s2cstopt
 fun s2cst_iscpy_set (_: s2cst_t, _: s2cstopt): void
 fun s2cst_islst_get (_: s2cst_t): Option @(d2con_t, d2con_t)
 fun s2cst_islst_set (_: s2cst_t, _: Option @(d2con_t, d2con_t)): void
+fun s2cst_decarg_get (_: s2cst_t): s2qualst
+fun s2cst_decarg_set (_: s2cst_t, _: s2qualst): void
 fun s2cst_arilst_get (_: s2cst_t): List int // arity list
 fun s2cst_argvar_get (_: s2cst_t): Option (List @(symopt_t, s2rt, int))
 fun s2cst_conlst_get (_: s2cst_t): Option d2conlst
 fun s2cst_conlst_set (_: s2cst_t, _: Option d2conlst): void
+fun s2cst_clsdec_get (_: s2cst_t): Option c2lassdec_t
+fun s2cst_clsdec_set (_: s2cst_t, _: Option c2lassdec_t): void
 fun s2cst_def_get (_: s2cst_t): s2expopt
 fun s2cst_def_set (_: s2cst_t, _: s2expopt): void
 fun s2cst_sup_get (_: s2cst_t): s2cstopt
@@ -721,9 +765,6 @@ fun s2Varset_union (sVs1: s2Varset_t, sVs2: s2Varset_t): s2Varset_t
 fun s2Varset_ismem (sVs: s2Varset_t, s2V: s2Var_t): bool
 
 (* ****** ****** *)
-
-typedef s2qua = @(s2varlst, s2explst)
-typedef s2qualst = List s2qua
 
 fun s2qualst_reverse (xs: s2qualst): s2qualst
 
@@ -1051,6 +1092,11 @@ fun un_s2exp_refarg_arg (s2e: s2exp): s2exp
 fun s2exp_sel_srt (s2t: s2rt, s2e: s2exp, i: int): s2exp
 fun s2exp_size (s2ze: s2zexp): s2exp
 fun s2exp_sizeof (s2e: s2exp): s2exp
+
+fun s2exp_tmpid
+  (s2t: s2rt, s2c: s2cst_t, decarg: tmps2explstlst): s2exp
+// end of [s2exp_tmpid]
+
 fun s2exp_top_srt (s2t: s2rt, knd: int, s2e: s2exp): s2exp
 fun s2exp_tup_srt (s2t: s2rt, s2es: s2explst): s2exp
 fun s2exp_tyarr (elt: s2exp, dim: s2explstlst): s2exp
@@ -1085,6 +1131,7 @@ fun s2cst_select_s2explstlst (_: s2cstlst, _: s2explstlst): s2cstlst
 fun s2rt_lin_prg_boxed (lin: int, prg: int, boxed: int): s2rt
 fun s2rt_lin_prg_boxed_npf_labs2explst
   (lin: int, prg: int, boxed: int, npf: int, ls2es: labs2explst): s2rt
+// end of [s2rt_lin_prg_boxed_npf_labs2explst]
 
 (* ****** ****** *)
 
@@ -1092,13 +1139,18 @@ fun s2kexp_make_s2exp (s2e: s2exp): s2kexp
 
 fun s2kexp_match_approx
   (pol: int, _: s2kexp, _: s2kexp, approx: &int): bool
+
 fun s2kexplst_match_approx
   (pol: int, _: s2kexplst, _: s2kexplst, approx: &int): bool
+// end of [s2kexplst_match_approx]
+
 fun labs2kexplst_match_approx
   (pol: int, _: labs2kexplst, _: labs2kexplst, approx: &int): bool
+// end of [labs2kexplst_match_approx]
 
 fun s2kexp_match_fun_arg
   (s2ke_fun: s2kexp, s2kes_arg: s2kexplst): Option_vt @(s2kexp, int)
+// end of [s2kexp_match_fun_arg]
 
 (* ****** ****** *)
 
@@ -1108,6 +1160,7 @@ abstype stasub_t // boxed type
 
 val stasub_nil : stasub_t
 fun stasub_add (_: stasub_t, _: s2var_t, _: s2exp): stasub_t
+fun stasub_addlst (_: stasub_t, _: s2varlst, _: s2explst): stasub_t
 
 fun stasub_domain_get (_: stasub_t): s2varlst
 fun stasub_codomain_get_whnf (_: stasub_t): s2explst
@@ -1124,10 +1177,15 @@ fun s2expopt_subst (sub: stasub_t, os2e: s2expopt): s2expopt
 
 fun s2explstlst_subst (_: stasub_t, _: s2explstlst): s2explstlst
 
+(* ****** ****** *)
+
 fun s2exp_alpha 
   (s2v: s2var_t, s2v1: s2var_t, s2e: s2exp): s2exp
+// end of [s2exp_alpha]
+
 fun s2explst_alpha
   (s2v: s2var_t, s2v1: s2var_t, s2e: s2explst): s2explst
+// end of [s2explst_alpha]
 
 (* ****** ****** *)
 
@@ -1187,6 +1245,7 @@ fun s2explst_opnexi (s2es: s2explst): @(s2varlst, s2explst, s2explst)
 fun labs2explst_lab_get (_: labs2explst, l0: lab_t): s2expopt_vt
 fun labs2explst_lab_set
   (_: labs2explst, l0: lab_t, s2e0: s2exp): Option_vt labs2explst
+// end of [labs2explst_lab_set]
 
 //
 
@@ -1200,23 +1259,27 @@ fun s2exp_lab_get_restlin_cstr
 fun s2exp_slablst_get_restlin_cstr {n:nat}
   (loc0: loc_t, s2e0: s2exp, s2ls: list (s2lab, n), restlin: &int, cstr: &s2explst)
   : @(s2exp, list (s2lab, n))
+// end of [s2exp_slablst_get_restlin_cstr]
 
 //
 
 fun s2exp_lab_linget_cstr
-  (loc0: loc_t, s2e0: s2exp, l0: lab_t, cstr: &s2explst)
-  : s2exp(*result*)
+  (loc0: loc_t, s2e0: s2exp, l0: lab_t, cstr: &s2explst): s2exp(*result*)
+// end of [s2exp_lab_linget_cstr]
 
 fun s2exp_ind_linget_cstr
   (loc0: loc_t, s2e_arr: s2exp, s2ess_ind: s2explstlst, cstr: &s2explst)
   : s2exp(*element*)
+// end of [s2exp_ind_linget_cstr]
 
 fun s2exp_slab_linget_cstr
   (loc0: loc_t, s2e0: s2exp, s2l: s2lab, cstr: &s2explst)
   : @(s2exp(*result*), s2lab(*updated label*))
+// end of [s2exp_slab_linget_cstr]
 
 fun s2exp_lab_linset
   (loc0: loc_t, s2e0: s2exp, l0: lab_t, s2e_new: s2exp): s2exp
+// end of [s2exp_lab_linset]
 
 (* ****** ****** *)
 

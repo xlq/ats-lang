@@ -31,8 +31,8 @@
 
 (* ****** ****** *)
 
-// Time: December 2007
 // Author: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
+// Time: December 2007
 
 (* ****** ****** *)
 
@@ -230,15 +230,15 @@ implement d2exp_typ_syn (d2e0) = begin
     end // end of [D2Elaminit_dyn]
   | D2Elam_met (r_d2vs, s2es_met, d2e) => begin
     case+ !r_d2vs of
-    | cons _ => begin
+    | list_cons _ => begin
         s2exp_metfn (None (), s2es_met, d2exp_typ_syn d2e)
-      end // end of [cons]
-    | nil () => begin
+      end // end of [list_cons]
+    | list_nil () => begin
         prerr_loc_error3 d2e0.d2exp_loc;
         prerr ": illegal use of termination metric.";
         prerr_newline ();
         $Err.abort {s2exp} ()
-      end // end of [nil]
+      end (* end of [list_nil] *)
     end // end of [D2Elam_met]
   | D2Elam_sta (s2vs, s2ps, d2e) => begin
       s2exp_uni (s2vs, s2ps, d2exp_typ_syn d2e)
@@ -247,12 +247,10 @@ implement d2exp_typ_syn (d2e0) = begin
   | D2Estring (_(*str*), _(*len*)) => s2exp_string_type ()
   | D2Ewhere (d2e, _) => d2exp_typ_syn (d2e)
   | D2Ewhile _ => s2exp_void_t0ype ()
-  | _ => let
+  | _ => s2e where {
       val s2e = s2exp_Var_make_srt (d2e0.d2exp_loc, s2rt_t0ype)
       val () = d2exp_typ_set (d2e0, Some s2e)
-    in
-      s2e
-    end // end of [_]
+    } // end of [_]
 end // end of [d2exp_typ_syn]
 
 (* ****** ****** *)
@@ -261,7 +259,7 @@ implement d3exp_open_and_add (d3e) = let
   val s2e = s2exp_opnexi_and_add (d3e.d3exp_loc, d3e.d3exp_typ)
 in
   d3exp_typ_set (d3e, s2e)
-end
+end // end of [d3exp_open_and_add]
 
 implement d3explst_open_and_add (d3es) = begin
   case+ d3es of
@@ -273,7 +271,8 @@ end // end of [d3explst_open_and_add]
 
 (* ****** ****** *)
 
-fn pfarity_check_fun (loc_fun: loc_t, npf_fun: int, npf: int) =
+fn pfarity_check_fun
+  (loc_fun: loc_t, npf_fun: int, npf: int) =
   if npf_fun = npf then () else begin
     prerr_loc_error3 loc_fun;
     prerr ": the proof arity of the function is [";
@@ -283,7 +282,8 @@ fn pfarity_check_fun (loc_fun: loc_t, npf_fun: int, npf: int) =
     prerr "].";
     prerr_newline ();
     $Err.abort {void} ()
-end // end of [pfarity_check_fun]
+  end // end of [if]
+// end of [pfarity_check_fun]
 
 (* ****** ****** *)
 
@@ -292,22 +292,25 @@ fn d2lab_tr_up (d2l: d2lab): d3lab0 = case+ d2l.d2lab_node of
   | D2LABlab l => d3lab0_lab (d2l.d2lab_loc, l)
 // end of [d2lab_tr_up]
 
-fun d2lablst_tr_up (d2ls: d2lablst): d3lab0lst = case+ d2ls of
-  | cons (d2l, d2ls) => cons (d2lab_tr_up d2l, d2lablst_tr_up d2ls)
-  | nil () => nil ()
+fun d2lablst_tr_up
+  (d2ls: d2lablst): d3lab0lst = case+ d2ls of
+  | list_cons (d2l, d2ls) =>
+      list_cons (d2lab_tr_up d2l, d2lablst_tr_up d2ls)
+    // end of [list_cons]
+  | list_nil () => list_nil ()
 // end of [d2lablst_tr_up]
 
 fun s2lab0lst_of_d3lab0lst {n:nat} .<n>.
   (d3ls: list (d3lab0, n)): list (s2lab, n) = begin
   case+ d3ls of
-  | cons (d3l, d3ls) => let
+  | list_cons (d3l, d3ls) => let
       val s2l = case+ d3l.d3lab0_node of
         | D3LAB0ind (d3ess) => S2LAB0ind (d3explstlst_ind_get d3ess)
         | D3LAB0lab l => S2LAB0lab l
     in
-      cons (s2l, s2lab0lst_of_d3lab0lst d3ls)
+      list_cons (s2l, s2lab0lst_of_d3lab0lst d3ls)
     end // end of [cons]
-  | nil () => nil ()
+  | list_nil () => list_nil ()
 end // end of [s2lab0lst_of_d3lab0lst]
 
 (*
@@ -330,8 +333,8 @@ end // end of [s2lab2lst_of_d3lab1lst]
 fun d3lab1lst_of_d3lab0lst_s2lablst
   (d3ls: d3lab0lst, s2ls: s2lablst): d3lab1lst = begin
   case+ (d3ls, s2ls) of
-  | (cons (d3l, d3ls), cons (s2l, s2ls)) => let
-      val d3l_new = case+ d3l.d3lab0_node of
+  | (list_cons (d3l, d3ls), list_cons (s2l, s2ls)) => let
+      val d3l_new = (case+ d3l.d3lab0_node of
         | D3LAB0ind d3ess => begin case+ s2l of
           | S2LAB1ind (_, s2e_elt) => begin
               d3lab1_ind (d3l.d3lab0_loc, d3ess, s2e_elt)
@@ -351,10 +354,11 @@ fun d3lab1lst_of_d3lab0lst_s2lablst
               $Err.abort {d3lab1} ()
             end
           end
+      ) : d3lab1
     in
-      cons (d3l_new, d3lab1lst_of_d3lab0lst_s2lablst (d3ls, s2ls))
+      list_cons (d3l_new, d3lab1lst_of_d3lab0lst_s2lablst (d3ls, s2ls))
     end // end of [cons, cons]
-  | (nil (), nil ()) => nil ()
+  | (list_nil (), list_nil ()) => list_nil ()
   | (_, _) => begin
       prerr "Internal Error: d3lab1lst_of_d3lab0lst_s2lablst: length mismatch";
       prerr_newline ();
@@ -368,7 +372,7 @@ fn d3exp_clo_restore (d3e: d3exp): d3exp = let
   val loc = d3e.d3exp_loc
   val s2e_fun = d3e.d3exp_typ
   var fc0: $Syn.funclo = $Syn.FUNCLOfun ()
-  val s2e_fun_new: s2exp = case+ s2e_fun.s2exp_node of
+  val s2e_fun_new = (case+ s2e_fun.s2exp_node of
     | S2Efun (fc, lin, s2fe, npf, s2es_arg, s2e_res) => let
         val () = fc0 := fc in case+ lin of
         | _ when lin = 1 => s2exp_fun_srt
@@ -388,7 +392,8 @@ fn d3exp_clo_restore (d3e: d3exp): d3exp = let
         prerr s2e_fun;
         prerr_newline ();
         $Err.abort {s2exp} ()
-      end
+      end // end of [_]
+  ) : s2exp
   val refval = (case+ fc0 of
     | $Syn.FUNCLOclo knd => if knd = 0 then 1 else 0
     | $Syn.FUNCLOfun () => 0
@@ -409,9 +414,9 @@ fn d3exp_funclo_restore
   case+ fc of
   | $Syn.FUNCLOclo knd => begin // knd: 1/0/~1: ptr/clo/ref
       if knd >= CLO then d3exp_clo_restore d3e_fun else d3e_fun
-    end
+    end // end of [FUNCLOclo]
   | $Syn.FUNCLOfun () => d3e_fun
-end // end of [d3exp_funclo_restore]
+end (* end of [d3exp_funclo_restore] *)
 
 //
 
@@ -2230,16 +2235,17 @@ val d3e0 = (case+ d2e0.d2exp_node of
             val s2t = if lin > 0 then s2rt_viewt0ype else s2rt_t0ype
           in
             s2exp_Var_make_srt (loc0, s2t)
-          end
+          end // end of [None]
       // end of [val]
       val n = $Lst.list_length d2es_elt
       val d3es_elt = d2explst_elt_tr_dn (d2es_elt, s2e_elt)
-      val s2e_lst: s2exp =
+      val s2e_lst = (
         if lin > 0 then begin
           s2exp_list_viewt0ype_int_viewtype (s2e_elt, n)
         end else begin
           s2exp_list_t0ype_int_type (s2e_elt, n)
         end
+      ) : s2exp // end of [val]
     in
       d3exp_lst (loc0, s2e_lst, lin, s2e_elt, d3es_elt)
     end // end of [D2Elst]
@@ -2282,6 +2288,9 @@ val d3e0 = (case+ d2e0.d2exp_node of
       end // end of [val]
 *)
     } // end of [D2Emacsyn]
+  | D2Emtd d2m => let
+      val s2e_mtd = d2mtd_typ_get d2m in d3exp_mtd (loc0, s2e_mtd, d2m)
+    end // end of [D2Emtd]
   | D2Eptrof d2e =>  d2exp_ptrof_tr_up (loc0, d2e)
   | D2Eraise d2e_exn => let
       val s2e_exn = s2exp_exception_viewtype ()
