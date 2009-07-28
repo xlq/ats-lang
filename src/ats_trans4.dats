@@ -1536,6 +1536,7 @@ implement d3eclst_tr (d3cs0) = res where {
         in
           aux1 (d3cs, hid, res)
         end // end of [D3Cdynload]
+// (*
       | _ => let
           val () = (res := list_nil ())
         in
@@ -1546,6 +1547,7 @@ implement d3eclst_tr (d3cs0) = res where {
           prerr_newline ();
           $Err.abort {void} ()
         end // end of [_]
+// *)
       end (* end of [list_cons] *)
     | list_nil () => (res := list_nil ())
   end // end of [aux0]

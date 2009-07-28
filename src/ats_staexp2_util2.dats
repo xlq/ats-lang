@@ -892,7 +892,6 @@ in
   ($Lst.list_reverse s2vs_r, $Lst.list_reverse s2ps_r, s2es)
 end // end of [s2explst_opnexi]
 
-
 (* ****** ****** *)
 
 implement labs2explst_lab_get (ls2es, l0) = let
@@ -1060,7 +1059,7 @@ implement s2exp_slablst_get_restlin_cstr
     | cons (s2l, s2ls) => let
         val l = case+ s2l of
           | S2LAB0lab l => l
-          | S2LAB1lab (l, _) => l // should not happen!
+          | S2LAB1lab (l, _) => l // this should not happen!
           | _ => begin
               prerr loc0;
               prerr ": error(3)";

@@ -331,6 +331,7 @@ in
       fprint_labs1explst (pf | out, ls1es);
       prstr ")"
     end // end of [S1Estruct]
+// (*
   | S1Etmpid (qid, decarg) => begin
       prstr "S1Etmpid(";
       $Syn.fprint_d0ynq (pf | out, qid.tmpqi0de_qua);
@@ -339,6 +340,7 @@ in
       fprint_tmps1explstlst (pf | out, decarg);
       prstr ")"
     end // end of [S1Etmpid]
+// *)
   | S1Etop (knd, s1e) => begin
       prstr "S1Etop(";
       fprint1_int (pf | out, knd);
