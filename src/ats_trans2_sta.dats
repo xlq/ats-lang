@@ -1316,7 +1316,7 @@ fn s1exp_tmpid_tr (
           } // end of [S2CSTLSTcons]
         | S2CSTLSTnil () => err1 (loc0, q, id)
         end (* end of [S2ITEMcst] *)
-      | _ => $Err.abort {s2cst_t} ()
+      | _ => err1 (loc0, q, id)
       end // end of [Some_vt]
     | ~None_vt () => err2 (loc0, q, id)
   ) : s2cst_t
