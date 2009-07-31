@@ -574,14 +574,14 @@ end // end of [f1undeclst_tr]
 
 fn v1ardec_tr (d1c: v1ardec): v2ardec = let
   val knd = d1c.v1ardec_knd
-  val id = d1c.v1ardec_sym
-  val loc_id = d1c.v1ardec_sym_loc
-  val d2v_ptr = d2var_make (loc_id, id)
-  val s2v_ptr = s2var_make_id_srt (id, s2rt_addr)
+  val sym = d1c.v1ardec_sym
+  val loc_sym = d1c.v1ardec_sym_loc
+  val d2v_ptr = d2var_make (loc_sym, sym)
+  // [s2v_ptr] is introduced as a static variable of the
+  val s2v_ptr = s2var_make_id_srt (sym, s2rt_addr) // same name
   val os2e_ptr = Some (s2exp_var s2v_ptr)
   val () = d2var_addr_set (d2v_ptr, os2e_ptr)
-  val typ = (
-    case+ d1c.v1ardec_typ of
+  val typ = (case+ d1c.v1ardec_typ of
     | Some s1e => Some (s1exp_tr_dn_impredicative s1e)
     | None () => None ()
   ) : s2expopt
@@ -598,37 +598,36 @@ in
   v2ardec_make (d1c.v1ardec_loc, knd, d2v_ptr, s2v_ptr, typ, wth, ini)
 end // end of [v1ardec_tr]
 
-fn v1ardeclst_tr (d1cs: v1ardeclst): v2ardeclst = let
-  val d2cs = aux d1cs where {
-    fun aux (d1cs: v1ardeclst): v2ardeclst =
-      case+ d1cs of
-      | cons (d1c, d1cs) => cons (v1ardec_tr d1c, aux d1cs)
-      | nil () => nil ()
-  } // end of [where]
-  val () = aux d2cs where {
-    fun aux (d2cs: v2ardeclst): void =
-      case+ d2cs of
-      | cons (d2c, d2cs) => let
-          val () = the_s2expenv_add_svar (d2c.v2ardec_svar)
-          val () = the_d2expenv_add_dvar (d2c.v2ardec_dvar)
-          val () = case+ d2c.v2ardec_wth of
-            | D2VAROPTsome d2v => the_d2expenv_add_dvar d2v
-            | D2VAROPTnone () => ()
-          // end of [val]
-        in
-          aux d2cs
-        end // end of [cons]
-      | nil () => ()
-  } // end of [where]
-in
-  d2cs
-end // end of [v2ardeclst_tr]
+fn v1ardeclst_tr
+  (d1cs: v1ardeclst): v2ardeclst = d2cs where {
+  fun aux1 (
+      d1cs: v1ardeclst
+    ) : v2ardeclst = case+ d1cs of
+    | cons (d1c, d1cs) => cons (v1ardec_tr d1c, aux1 d1cs)
+    | nil () => nil ()
+  // end of [aux1]
+  val d2cs = aux1 d1cs
+  fun aux2 (
+      d2cs: v2ardeclst
+    ) : void = case+ d2cs of
+    | cons (d2c, d2cs) => aux2 d2cs where {
+        val () = the_s2expenv_add_svar (d2c.v2ardec_svar)
+        val () = the_d2expenv_add_dvar (d2c.v2ardec_dvar)
+        val () = (case+ d2c.v2ardec_wth of
+          | D2VAROPTsome d2v => the_d2expenv_add_dvar d2v
+          | D2VAROPTnone () => ()
+        ) : void // end of [val]
+      } // end of [cons]
+    | nil () => ()
+  // end of [aux2]
+  val () = aux2 d2cs
+} // end of [v2ardeclst_tr]
 
 (* ****** ****** *)
 
-fn s1arglst_bind_svarlst
-  (loc0: loc_t, s1as: s1arglst, s2vs: s2varlst, sub: &stasub_t)
-  : s2varlst = let
+fn s1arglst_bind_svarlst (
+    loc0: loc_t, s1as: s1arglst, s2vs: s2varlst, sub: &stasub_t
+  ) : s2varlst = let
   fun aux {n:nat} (
       s1as: list (s1arg, n)
     , s2vs: list (s2var_t, n)
@@ -637,16 +636,17 @@ fn s1arglst_bind_svarlst
     | cons (s1a, s1as) => let
         val+ cons (s2v, s2vs) = s2vs
         val s2v_new = s1arg_var_tr_srt (s1a, s2var_srt_get s2v)
-        val () =
-          if ~(s2var_srt_get s2v <= s2var_srt_get s2v_new) then begin
-            prerr_loc_error2 s1a.s1arg_loc;
-            $Deb.debug_prerrf (": %s: s1arglst_bind_svarlst", @(THISFILENAME));
-            prerr ": the ascribed sort for the static variable [";
-            prerr s1a.s1arg_sym;
-            prerr "] is incorrect.";
-            prerr_newline ();
-            $Err.abort {void} ()
-          end
+        val () = if
+          ~(s2var_srt_get s2v <= s2var_srt_get s2v_new) then begin
+          prerr_loc_error2 s1a.s1arg_loc;
+          $Deb.debug_prerrf
+            (": %s: s1arglst_bind_svarlst", @(THISFILENAME));
+          prerr ": the ascribed sort for the static variable [";
+          $Sym.prerr_symbol s1a.s1arg_sym;
+          prerr "] is incorrect.";
+          prerr_newline ();
+          $Err.abort {void} ()
+        end // end of [if]
         val s2e_new = s2exp_var (s2v_new)
         val () = sub := stasub_add (sub, s2v, s2e_new)
       in
@@ -669,9 +669,9 @@ end (* end of [s1arglst_bind_svarlst] *)
       
 (* ****** ****** *)
 
-fn s1explst_bind_svarlst
-  (loc0: loc_t, s1es: s1explst, s2vs: s2varlst, sub: &stasub_t)
-  : s2explst = let
+fn s1explst_bind_svarlst (
+    loc0: loc_t, s1es: s1explst, s2vs: s2varlst, sub: &stasub_t
+  ) : s2explst = let
   fun aux {n:nat} (
       s1es: list (s1exp, n)
     , s2vs: list (s2var_t, n)
@@ -710,19 +710,25 @@ end (* end of [s1explst_bind_svarlst] *)
 
 (* ****** ****** *)
 
-fun d1exp_tr_ann (d1e0: d1exp, s2e0: s2exp): d2exp = begin
-  case+ s2e0.s2exp_node of
+fun d1exp_tr_ann (
+    d1e0: d1exp, s2e0: s2exp
+  ) : d2exp = begin case+ s2e0.s2exp_node of
   | S2Euni (s2vs, s2ps, s2e) => begin
     case+ d1e0.d1exp_node of
     | D1Elam_sta_ana (loc_arg, arg, body) => let
         var sub: stasub_t = stasub_nil
-        val s2vs = s1arglst_bind_svarlst (loc_arg, arg, s2vs, sub)
+        val s2vs = s1arglst_bind_svarlst
+          (loc_arg, arg, s2vs, sub) // end of [val]
         val (pf_s2expenv | ()) = the_s2expenv_push ()
-        val () = the_s2expenv_add_svarlst s2vs
+        val () =
+          the_s2expenv_add_svarlst (s2vs)
+        // end of [val]
         val s2ps = s2explst_subst (sub, s2ps)
         val s2e = s2exp_subst (sub, s2e)
         val body = d1exp_tr_ann (body, s2e)
-        val () = the_s2expenv_pop (pf_s2expenv | (*none*))
+        val () =
+          the_s2expenv_pop (pf_s2expenv | (*none*))
+        // end of [val]
       in
         d2exp_lam_sta (d1e0.d1exp_loc, s2vs, s2ps, body)
       end // end of [D1Elam_sta_ana]
@@ -749,9 +755,9 @@ fun d1exp_tr_ann (d1e0: d1exp, s2e0: s2exp): d2exp = begin
         d2exp_laminit_dyn (d1e0.d1exp_loc, lin1, npf1, p2ts_arg, d2e_body)
       end // end of [D2Elam_dyn]
     | _ => d2exp_ann_type (d1e0.d1exp_loc, d1exp_tr d1e0, s2e0)
-    end // end of [S2Efun]
+    end (* end of [S2Efun] *)
   | _ => d2exp_ann_type (d1e0.d1exp_loc, d1exp_tr d1e0, s2e0)
-end // end of [d1exp_tr_ann]
+end (* end of [d1exp_tr_ann] *)
 
 and d1exp_arg_body_tr_ann (
     d1e0: d1exp
