@@ -567,8 +567,8 @@ in
   | D2Emtd d2m => begin
       prstr "D2Emtd("; fprint_d2mtd (pf | out, d2m); prstr ")"
     end // end of [D2Emtd]
-  | D2Eobj (knd, s2c, decarg, mtdlst) => begin
-      prstr "D2Eobj("; fprint_s2cst (pf | out, s2c); prstr ")"
+  | D2Eobj (knd, d2c_cls, s2e_cls, mtdlst) => begin
+      prstr "D2Eobj("; fprint_s2exp (pf | out, s2e_cls); prstr ")"
     end // end of [D2Eobj]
   | D2Eptrof d2e => begin
       prstr "D2Eptrof("; fprint_d2exp (pf | out, d2e); prstr ")"

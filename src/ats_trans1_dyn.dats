@@ -1031,7 +1031,7 @@ fun aux_item (d0e0: d0exp): d1expitm = let
     | D0Eobj (knd, cls, mtds) => let
         val knd = (case+ knd of
           | OBJKINDobj_t _ => 0 | OBJKINDobj_vt _ => 1
-          | OBJKINDobjmod _ => 2 | OBJKINDobjref _ => 3
+          | OBJKINDobjmod _ => 2 | OBJKINDobjref _ => ~1
         ) : int
         val cls = s0exp_tr cls
         val mtds = m0thdeclst_tr mtds
@@ -1251,12 +1251,12 @@ implement m0thdec_tr (mtd) = case+ mtd of
           } // end of [Some]
         | None () => None ()
       ) : d1expopt
-// (*
+(*
       val () = begin
         prerr "m0thdec_tr: M0THDECmtd: sym = "; prerr sym; prerr_newline ();
         prerr "m0thdec_tr: M0THDECmtd: def_dummy = "; prerr def_dummy; prerr_newline ()
       end // end of [val]
-// *)
+*)
     in
       M1THDECmtd (loc, sym, def_dummy, def)
     end // end of [M0THDECmtd]      

@@ -228,6 +228,11 @@ fun c2laulst_tr_dn {n:nat} (
 
 (* ****** ****** *)
 
+fun m2thdec_tr (mtd: $DEXP2.m2thdec): m3thdec
+fun m2thdeclst_tr (mtds: $DEXP2.m2thdeclst): m3thdeclst
+
+(* ****** ****** *)
+
 fun d2ec_tr (_: $DEXP2.d2ec): d3ec
 fun d2eclst_tr (_: $DEXP2.d2eclst): d3eclst
 fun c3str_final_get (): $TRENV3.c3str

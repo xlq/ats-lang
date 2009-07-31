@@ -1023,9 +1023,17 @@ fun fprint_tmps2explstlst {m:file_mode}
   (pf: file_mode_lte (m, w) | out: &FILE m, ts2ess: tmps2explstlst): void
 overload fprint with fprint_tmps2explstlst
 
+fun print_tmps2explstlst (ts2ess: tmps2explstlst): void
+fun prerr_tmps2explstlst (ts2ess: tmps2explstlst): void
+
+(* ****** ****** *)
+
 fun fprint_wths2explst {m:file_mode}
   (pf: file_mode_lte (m, w) | out: &FILE m, wths2es: wths2explst): void
 overload fprint with fprint_wths2explst
+
+fun print_wths2explst (wths2es: wths2explst): void
+fun prerr_wths2explst (wths2es: wths2explst): void
 
 (* ****** ****** *)
 
@@ -1167,9 +1175,14 @@ fun stasub_codomain_get_whnf (_: stasub_t): s2explst
 
 fun stasub_extend_svarlst
   (sub: stasub_t, s2vs: s2varlst): @(stasub_t, s2varlst)
+
 fun stasub_extend_sarglst_svarlst
   (loc0: loc_t, sub: stasub_t, s2as: s2arglst, s2vs: s2varlst)
   : @(stasub_t, s2varlst)
+
+fun stasub_extend_decarg_tmps2explstlst
+  (sub: stasub_t, decarg: s2qualst, ts2ess: tmps2explstlst): stasub_t
+// end of [stasub_extend_decarg_tmps2explstlst]
 
 fun s2exp_subst (sub: stasub_t, s2e: s2exp): s2exp
 fun s2explst_subst {n:nat} (sub: stasub_t, s2es: s2explst n): s2explst n
@@ -1250,6 +1263,15 @@ fun labs2explst_lab_set
 //
 
 fun labs2zexplst_lab_get (_: labs2zexplst, l0: lab_t): s2zexpopt_vt
+
+//
+
+(*
+** implemented in [ats_dynexp2_util.dats]
+*)
+fun s2exp_cls_lab_get
+  (loc0: loc_t, s2e_cls: s2exp, l0: lab_t): s2exp
+// end of [s2exp_cls_lab_get]
 
 //
 

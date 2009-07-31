@@ -548,45 +548,62 @@ end (* end of [fprint_labs2explst] *)
 
 (* ****** ****** *)
 
-implement fprint_tmps2explstlst {m} (pf | out, ts2ess) = let
-  fun aux (out: &FILE m, i: int, ts2ess: tmps2explstlst): void =
+implement fprint_tmps2explstlst {m}
+  (pf | out, ts2ess) = aux (out, ts2ess, 0) where {
+  fun aux (
+      out: &FILE m
+    , ts2ess: tmps2explstlst
+    , i: int
+    ) : void =
     case+ ts2ess of
-    | TMPS2EXPLSTLSTcons (_(*loc*), s2es, ts2ess) => begin
-        if i > 0 then fprint1_string (pf | out, "; ");
-        fprint_s2explst (pf | out, s2es); aux (out, i + 1, ts2ess)
-      end
+    | TMPS2EXPLSTLSTcons
+        (loc, s2es, ts2ess) => let
+        val () = if i > 0 then
+          fprint1_string (pf | out, "; ")
+        val () = fprint_s2explst (pf | out, s2es)
+      in
+         aux (out, ts2ess, i+1)
+      end // end of [TMPS2EXPLSTLSTcons]
     | TMPS2EXPLSTLSTnil () => ()
   // end of [aux]
-in
-  aux (out, 0, ts2ess)
-end // end of [fprint_s2explstlst]
+} // end of [fprint_s2explstlst]
 
-implement fprint_wths2explst {m} (pf | out, wths2es) = let
+implement print_tmps2explstlst (ts2ess) =
+  print_mac (fprint_tmps2explstlst, ts2ess)
+implement prerr_tmps2explstlst (ts2ess) =
+  prerr_mac (fprint_tmps2explstlst, ts2ess)
+
+(* ****** ****** *)
+
+implement fprint_wths2explst {m}
+  (pf | out, wths2es) = aux (out, wths2es, 0) where {
   fun aux (
       out: &FILE m, wths2es: wths2explst, i: int
     ) : void = let
     macdef prstr (s) = fprint1_string (pf | out, ,(s))
   in
     case+ wths2es of
-    | WTHS2EXPLSTcons_some (refval, s2e, wths2es) => let
+    | WTHS2EXPLSTcons_some
+        (refval, s2e, wths2es) =>
+        aux (out, wths2es, i+1) where {
         val () = if i > 0 then prstr "; "
         val () = begin
           prstr "Some("; fprint_s2exp (pf | out, s2e); prstr ")"
         end // end of [val]
-      in
-        aux (out, wths2es, i+1)
-      end // end of [WTHS2EXPLSTcons_some]
-    | WTHS2EXPLSTcons_none (wths2es) => let
+      } // end of [WTHS2EXPLSTcons_some]
+    | WTHS2EXPLSTcons_none
+        (wths2es) => aux (out, wths2es, i+1) where {
         val () = if i > 0 then prstr "; "
         val () = fprint1_string (pf | out, "None()")
-      in
-        aux (out, wths2es, i+1)
-      end // end of [STHS2EXPLSTcons_none]
+      } // end of [STHS2EXPLSTcons_none]
     | WTHS2EXPLSTnil () => ()
   end // end of [aux]
-in
-  aux (out, wths2es, 0)
-end (* end of [fprint_wths2explst] *)
+} (* end of [fprint_wths2explst] *)
+
+implement print_wths2explst (wths2es) =
+  print_mac (fprint_wths2explst, wths2es)
+implement prerr_wths2explst (wths2es) =
+  prerr_mac (fprint_wths2explst, wths2es)
 
 (* ****** ****** *)
 

@@ -1135,6 +1135,8 @@ implement stasub_codomain_get_whnf (sub) = case+ sub of
   | list_nil () => list_nil ()
 // end of [stasub_codomain_get_whnf]
 
+(* ****** ****** *)
+
 implement stasub_extend_svarlst (sub, s2vs) = let
   typedef T = s2varlst
   fun loop (sub: stasub, s2vs1: T, s2vs: T): @(stasub, s2varlst) =
@@ -1201,6 +1203,24 @@ end (* end of [stasub_extend_sarg] *)
 
 (* ****** ****** *)
 
+implement stasub_extend_decarg_tmps2explstlst
+  (sub, s2qss, ts2ess) = loop (sub, s2qss, ts2ess) where {
+  fun loop (
+      sub: stasub_t, s2qss: s2qualst, ts2ess: tmps2explstlst
+    ) : stasub_t =
+    case+ (s2qss, ts2ess) of
+    | (list_cons (s2qs, s2qss),
+       TMPS2EXPLSTLSTcons (_loc, s2es, ts2ess)) => let
+       val stasub = stasub_addlst (sub, s2qs.0, s2es)
+     in
+       loop (stasub, s2qss, ts2ess)
+     end // end of [list_cons, TMPS2EXPLSTcons]
+    | (_, _) => sub
+  // end of [loop]
+} // end of [stasub_extend_decarg_tmps2explstlts]
+
+(* ****** ****** *)
+
 fun s2var_subst
   (sub: stasub, s2v0: s2var_t): Option_vt s2exp = begin
   case+ sub of
@@ -1259,7 +1279,19 @@ fun s2exp_subst_flag
     in
       if flag > flag0 then s2exp_crypt (s2e) else s2e0
     end // end of [S2Ecrypt]
-  | S2Ecst _  => s2e0 // static constants contain no environment
+  | S2Ecst s2c  => let
+      val decarg = s2cst_decarg_get (s2c) in
+      case+ decarg of
+      | list_nil _ => s2e0 // [s2c] contains no environment
+      | list_cons _ => let // [s2c] is defined in a class declaration
+          val def = s2cst_def_get (s2c) in
+          case+ def of
+          | Some s2e => begin
+              flag := flag + 1; s2exp_subst_flag (sub, s2e, flag)
+            end // end of [Some]
+          | None () => s2e0
+        end // end of [list_cons]  
+    end // end of [S2Ecst]
   | S2Edatconptr (d2c, s2es) => let
       val flag0 = flag
       val s2es = s2explst_subst_flag (sub, s2es, flag)

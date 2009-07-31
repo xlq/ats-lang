@@ -657,7 +657,7 @@ and d2exp_node =
   | D2Emtd of (* method invocation *)
       d2mtd_t
   | D2Eobj of ( // dynamic object
-      int(*knd*), s2cst_t(*cls*), tmps2explstlst(*decarg*), m2thdeclst
+      int(*knd*), c2lassdec, s2exp(*cls*), m2thdeclst
     ) // end of [D2Eobj]
   | D2Eptrof of (* taking the address of *)
       d2exp
@@ -1177,8 +1177,7 @@ fun d2exp_mtd (_: loc_t, d2m: d2mtd_t): d2exp
 fun d2exp_obj (
     _: loc_t
   , knd: int
-  , s2c: s2cst_t
-  , ts2ess: tmps2explstlst
+  , d2c_cls: c2lassdec, s2e_cls: s2exp
   , mtdlst: m2thdeclst
   ) : d2exp
 // end of [d2exp_obj]

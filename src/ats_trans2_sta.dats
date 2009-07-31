@@ -1258,6 +1258,8 @@ in
   s2exp_tyrec_srt (s2t_rec, TYRECKINDflt1 stamp, 0(*npf*), ls2es)
 end // end of [s1exp_struct_tr_up]
 
+(* ****** ****** *)
+
 fn s1exp_tmpid_tr (
     loc0: loc_t
   , q: $Syn.d0ynq
@@ -1321,6 +1323,61 @@ fn s1exp_tmpid_tr (
     | ~None_vt () => err2 (loc0, q, id)
   ) : s2cst_t
 } // end of [s1exp_tmpid_tr]
+
+fn s1exp_tmpid_decarg_tr (
+    loc0: loc_t, s2c: s2cst_t, ts1ess: tmps1explstlst
+  ) : tmps2explstlst = let
+  fun aux1 (
+      s1es: s1explst, s2vs: s2varlst, err1: &int
+    ) : s2explst = case+ (s1es, s2vs) of
+    | (s1e :: s1es, s2v :: s2vs) => let
+        val s2e = s1exp_tr_dn (s1e, s2var_srt_get s2v)
+        val s2es = aux1 (s1es, s2vs, err1)
+      in
+        cons (s2e, s2es)
+      end // end of [val]
+    | (nil (), nil ()) => nil ()
+    | (cons _, nil _) => (err1 := err1 + 1; nil ())
+    | (nil _, cons _) => (err1 := err1 - 1; nil ())
+  // end of [aux1] 
+  fun aux2 (
+      ts1ess: tmps1explstlst, s1qss: s2qualst, err2: &int
+    ) : tmps2explstlst = case+ (ts1ess, s1qss) of
+    | (TMPS1EXPLSTLSTcons (loc, s1es, ts1ess), s1qs :: s1qss) => let
+        var err1: int = 0
+        val s2es = aux1 (s1es, s1qs.0, err1)
+        val () = if err1 <> 0 then begin
+          prerr_loc_error2 (loc);
+          if err1 > 0 then prerr ": less static arguments are expected.";
+          if err1 < 0 then prerr ": more static arguments are expected.";
+          prerr_newline ();
+          $Err.abort {void} ()
+        end // end of [val]
+        val ts2ess = aux2 (ts1ess, s1qss, err2)
+      in
+        TMPS2EXPLSTLSTcons (loc, s2es, ts2ess)
+      end // end of [val]
+    | (TMPS1EXPLSTLSTnil (), nil ()) => TMPS2EXPLSTLSTnil ()
+    | (TMPS1EXPLSTLSTcons _, nil ()) =>
+         (err2 := err2 + 1; TMPS2EXPLSTLSTnil ())
+    | (TMPS1EXPLSTLSTnil (), cons _) =>
+         (err2 := err2 - 1; TMPS2EXPLSTLSTnil ())
+  // end of [aux2]
+  var err2: int = 0
+  val ts2ess = aux2 (ts1ess, s2cst_decarg_get s2c, err2)
+  val () = if err2 <> 0 then begin
+    prerr_loc_error2 (loc0);
+    prerr ": the static constant ["; prerr_s2cst s2c;
+    if err2 > 0 then prerr "] is overly applied.";
+    if err2 < 0 then prerr "] is applied insufficiently.";
+    prerr_newline ();
+    $Err.abort {void} ()
+  end // end of [val]
+in
+  ts2ess  
+end (* end of [s1exp_tmpid_decarg_tr] *)
+
+(* ****** ****** *)
 
 fn s1exp_tyrec_tr_up
   (loc0: loc_t, recknd: int, ls1es: labs1explst): s2exp = begin
@@ -1484,9 +1541,12 @@ in
       val loc_id = qid.tmpqi0de_loc
       val q = qid.tmpqi0de_qua and id = qid.tmpqi0de_sym
       val s2c = s1exp_tmpid_tr (loc_id, q, id)
-      val ts2ess = tmps1explstlst_tr_up ts1ess
+      val ts2ess =
+        s1exp_tmpid_decarg_tr (s1e0.s1exp_loc, s2c, ts1ess)
+      // end of [ts2ess]
+      val s2t = s2cst_srt_get (s2c)
     in
-      s2exp_tmpid (s2rt_cls, s2c, ts2ess)
+      s2exp_tmpid (s2t, s2c, ts2ess)
     end // end of [D1Etmpid]
   | S1Etop (knd, s1e) => s1exp_top_tr_up (knd, s1e)
   | S1Etrans _ => begin
@@ -1534,11 +1594,18 @@ end // end of [s1exp_tr_up]
 implement s1explst_tr_up (s1es) = $Lst.list_map_fun (s1es, s1exp_tr_up)
 implement s1explstlst_tr_up (s1ess) = $Lst.list_map_fun (s1ess, s1explst_tr_up)
 
-implement tmps1explstlst_tr_up (ts1ess) = begin case+ ts1ess of
-  | TMPS1EXPLSTLSTnil () => TMPS2EXPLSTLSTnil ()
-  | TMPS1EXPLSTLSTcons (loc, s1es, ts1ess) => begin
-     TMPS2EXPLSTLSTcons (loc, s1explst_tr_up s1es, tmps1explstlst_tr_up ts1ess)
+(* ****** ****** *)
+
+implement tmps1explstlst_tr_up
+  (ts1ess) = begin case+ ts1ess of
+  | TMPS1EXPLSTLSTcons
+      (loc, s1es, ts1ess) => let
+      val s2e = s1explst_tr_up s1es
+      val ts2ess = tmps1explstlst_tr_up ts1ess
+    in
+      TMPS2EXPLSTLSTcons (loc, s2e, ts2ess)
     end // end of [TMPS1EXPLSTLSTcons]
+  | TMPS1EXPLSTLSTnil () => TMPS2EXPLSTLSTnil ()
 end // end of [tmps1explstlst_tr]
 
 (* ****** ****** *)
@@ -1866,8 +1933,7 @@ implement s1expdef_tr (res, d1c) = let
     prerr_newline ();
     $Err.abort {void} ()
   end // end of [err]
-  val res = (
-    case+ d1c.s1expdef_res of
+  val res = (case+ d1c.s1expdef_res of
     | Some s1t => let
         val s2t1 = s1rt_tr s1t; val () = case+ res of
           | Some s2t => if (s2t1 <= s2t) then () else err (d1c)

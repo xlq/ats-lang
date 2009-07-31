@@ -102,7 +102,8 @@ in
     in
       case+ os2c of
       | Some s2c => s2c | None () => begin
-          prerr "Internal Error: s2cstref_cst_get: ";
+          prerr "INTERNAL ERROR";
+          prerr ": [ats_stadyncst2]: s2cstref_cst_get: ";
           prerr "the pervasive static constant [";
           prerr id; prerr "] is not available.";
           prerr_newline ();
@@ -119,19 +120,20 @@ in
   case+ os2es of
   | ~Some_vt s2es => let
       val s2t_res = (case+ s2cst_srt_get s2c of
-        | S2RTfun (_, s2t_res) => s2t_res
-        | _ => begin
-            prerr "Internal Error: s2cstref_exp_get: s2c = ";
-            prerr s2c;
-            prerr_newline ();
-            $Err.abort {s2rt} ()
-          end // end of [_]
+      | S2RTfun (_, s2t_res) => s2t_res
+      | _ => begin
+          prerr "INTERNAL ERROR";
+          prerr ": [ats_stadyncst2]: s2cstref_exp_get: s2c = ";
+          prerr s2c;
+          prerr_newline ();
+          $Err.abort {s2rt} ()
+        end // end of [_]
       ) : s2rt // end of [val]
     in
       s2exp_app_srt (s2t_res, s2e, s2es)
-    end
+    end // end of [Some_vt]
   | ~None_vt () => s2e
-end // end of [s2cstref_exp_get]
+end (* end of [s2cstref_exp_get] *)
 
 implement s2cstref_exp_unget (s2cref, s2e) = begin
   case+ s2e.s2exp_node of
@@ -423,12 +425,13 @@ in
     in
       case+ od2c of
       | Some d2c => d2c | None () => begin
-          prerr "Internal Error: d2conref_con_get: ";
+          prerr "INTERNAL ERROR";
+          prerr ": [ats_stadyncst2]: d2conref_con_get: ";
           prerr "the pervasive dynamic constructor [";
           prerr id; prerr "] is not available.";
           prerr_newline ();
           $Err.abort {d2con_t} ()
-        end
+        end // end of [None]
     end // end of [None]
   | Some d2c => d2c
 end // end of [d2conref_con_get]
@@ -488,22 +491,21 @@ in
       val od2c = let
         val od2i = $TransEnv2.the_d2expenv_pervasive_find (id)
       in
-        begin case+ od2i of
+        case+ od2i of
         | ~Some_vt d2i => begin case+ d2i of
           | D2ITEMcst d2c => let
-              val (vbox pf | p) = r; val od2c = Some d2c
-            in
-              p->cst := od2c; od2c
-            end
+              val (vbox pf | p) = r
+              val od2c = Some d2c in p->cst := od2c; od2c
+            end (* end of [D2ITEMcst] *)
           | _ => None ()
           end // end of [Some_vt]
         | ~None_vt () => None ()
-        end : Option d2cst_t
-      end // end of [val]
+      end : Option d2cst_t // end of [val]
     in
       case+ od2c of
       | Some d2c => d2c | None () => begin
-          prerr "Internal Error: d2cstref_cst_get: ";
+          prerr "INTERNAL ERROR";
+          prerr ": [ats_stadyncst2]: d2cstref_cst_get: ";
           prerr "the pervasive dynamic constant [";
           prerr id; prerr "] is not available.";
           prerr_newline ();
@@ -511,7 +513,7 @@ in
         end // end of [None]
     end // end of [None]
   | Some d2c => d2c
-end // end of [d2cstref_cst_get]
+end (* end of [d2cstref_cst_get] *)
 
 end // end of [local]
 
@@ -521,10 +523,10 @@ implement Ats_main_dummy = d2cstref_make "main_dummy"
 
 (* ****** ****** *)
 
-implement s2exp_bool (b): s2exp = let
-  val s2c = (
-    if b then s2cstref_cst_get (True_bool)
-         else s2cstref_cst_get (False_bool)
+implement s2exp_bool (b) = let
+  val s2c = (if b
+    then s2cstref_cst_get (True_bool)
+    else s2cstref_cst_get (False_bool)
   ) : s2cst_t
 in
   s2exp_cst (s2c)
@@ -615,20 +617,50 @@ implement s2exp_void_t0ype () =
 
 (* ****** ****** *)
 
+fn s2exp_is_app_s2cstref
+  (s2e: s2exp, s2cref: s2cstref): bool =
+  case+ s2e.s2exp_node of
+  | S2Eapp (s2e_fun, s2es_arg) => begin
+    case+ s2e_fun.s2exp_node of
+    | S2Ecst (s2c) => begin
+        if s2cstref_cst_get (s2cref) = s2c then true else false
+      end // end of [S2Ecst]
+    | _ => false
+    end // end of [S2Eapp]
+  | _ => false
+// end of [s2exp_is_app_s2cstref]
+
+implement s2exp_is_obj_cls_t0ype (s2e) =
+  s2exp_is_app_s2cstref (s2e, Obj_cls_t0ype)
+// end of [s2exp_is_obj_cls_t0ype]
+
+implement s2exp_is_objmod_cls_type (s2e) =
+  s2exp_is_app_s2cstref (s2e, Objmod_cls_type)
+// end of [s2exp_is_objmod_cls_type]
+
+implement s2exp_is_objref_cls_type (s2e) =
+  s2exp_is_app_s2cstref (s2e, Objref_cls_type)
+// end of [s2exp_is_objref_cls_type]
+
+(* ****** ****** *)
+
 fn un_s2exp_s2cstref_1
   (s2e: s2exp, s2cref: s2cstref): Option_vt (s2exp) = begin
   case+ s2e.s2exp_node of
   | S2Eapp (s2e_fun, s2es_arg) => begin case+ s2e_fun.s2exp_node of
     | S2Ecst (s2c) => begin
-        if s2cstref_cst_get (s2cref) = s2c then
+        if s2cstref_cst_get (s2cref) = s2c then (
           case+ s2es_arg of
           | list_cons (s2e, list_nil ()) => Some_vt (s2e)
           | _ => begin
-              prerr "Internal Error: un_s2exp_s2cref: s2c = ";
+              prerr "INTERNAL ERROR";
+              prerr ": [ats_stadyncst2]: un_s2exp_s2cref: s2c = ";
               prerr s2c; prerr_newline ();
               $Err.abort {Option_vt s2exp} ()
             end // end of [_]
-        else None_vt ()
+        ) else (
+          None_vt ()
+        ) // en dof [if]
       end // end of [S2Ecst]
     | _ => None_vt ()
     end // end of [S2Eapp]
@@ -644,8 +676,10 @@ fn un_s2exp_s2cstref_2
           case+ s2es_arg of
           | list_cons (s2e1, list_cons (s2e2, list_nil ())) =>
               Some_vt @(s2e1, s2e2)
+            // end of [list_cons (list_cons (list_nil))]
           | _ => begin
-              prerr "Internal Error: un_s2exp_s2cref: s2c = ";
+              prerr "INTERNAL ERROR";
+              prerr ": [ats_stadyncst2]: un_s2exp_s2cref: s2c = ";
               prerr s2c; prerr_newline ();
               $Err.abort {Option_vt @(s2exp, s2exp)} ()
             end // end of [_]

@@ -138,29 +138,25 @@ implement d2mtd_stamp_get (d2m) =
 
 implement d2mtd_typ_get (d2m) = let
   typedef sub_t = @(s2qualst, tmps2explstlst)
+(*
+  val () = begin
+    prerr "d2mtd_typ_get: d2m = "; prerr_d2mtd d2m; prerr_newline ()
+  end // end of [val]
+*)
   fun aux // caching if needed
     (subs: List sub_t, res: s2exp): s2exp =
     case+ subs of
     | list_cons (sub, subs) => let
+(*
+        val () = begin
+          prerr "d2mtd_typ_get: aux: s2qss = "; prerr_s2qualst sub.0; prerr_newline ();
+          prerr "d2mtd_typ_get: aux: ts2ess = "; prerr_tmps2explstlst sub.1; prerr_newline ();
+        end // end of [val]
+*)
         val res = aux (subs, res)
-        val stasub = let
-          fun stasubext (
-              stasub: stasub_t
-            , s2qss: s2qualst
-            , ts2ess: tmps2explstlst
-            ) : stasub_t =
-            case+ (s2qss, ts2ess) of
-            | (list_cons (s2qs, s2qss),
-               TMPS2EXPLSTLSTcons (_loc, s2es, ts2ess)) => let
-                val stasub = stasub_addlst (stasub, s2qs.0, s2es)
-              in
-                stasubext (stasub, s2qss, ts2ess)
-              end // end of [list_cons, TMPS2EXPLSTcons]
-            | (_, _) => stasub
-          // end of [stasubext]
-        in
-          stasubext (stasub_nil, sub.0, sub.1)
-        end (* end of [list_cons] *)
+        val stasub =
+          stasub_extend_decarg_tmps2explstlst (stasub_nil, sub.0, sub.1)
+        // end of [val]
       in
         s2exp_subst (stasub, res)
       end // end of [list_cons]

@@ -103,16 +103,20 @@ in
   | _ => s2e0
 end (* end of [s2exp_link_remove_flag] *)
 
-implement s2exp_link_remove (s2e0) = begin
-  let var flag: int = 0 in s2exp_link_remove_flag (s2e0, flag) end
+implement s2exp_link_remove (s2e0) = let
+  var flag: int = 0 in s2exp_link_remove_flag (s2e0, flag)
 end // end of [s2exp_link_remove]
 
 (* ****** ****** *)
 
 fun labs2explst_readize
-  (_v: s2exp, ls2es: labs2explst): labs2explst = begin case+ ls2es of
-  | LABS2EXPLSTcons (l, s2e, ls2es) => begin
-      LABS2EXPLSTcons (l, s2exp_readize (_v, s2e), labs2explst_readize (_v, ls2es))
+  (_v: s2exp, ls2es: labs2explst)
+  : labs2explst = begin case+ ls2es of
+  | LABS2EXPLSTcons (l, s2e, ls2es) => let
+      val s2e = s2exp_readize (_v, s2e)
+      val ls2es = labs2explst_readize (_v, ls2es)
+    in
+      LABS2EXPLSTcons (l, s2e, ls2es)
     end // end of [LABS2EXPLSTcons]
   | LABS2EXPLSTnil () => LABS2EXPLSTnil ()
 end // end of [labs2explst_readize]
@@ -139,11 +143,11 @@ in
   end // end of [if]
 end (* end of [s2exp_readize] *)
 
-implement s2expopt_readize (_v, os2e) = begin case+ os2e of
-  | Some s2e => begin
-      if s2exp_is_linear s2e then Some (s2exp_readize (_v, s2e))
-      else os2e
-    end // end of [Some]
+implement s2expopt_readize (_v, os2e) = begin
+  case+ os2e of
+  | Some s2e => if s2exp_is_linear s2e
+      then Some (s2exp_readize (_v, s2e)) else os2e
+    // end of [Some]
   | None () => os2e
 end (* end of [s2expopt_readize] *)
 
@@ -208,7 +212,17 @@ implement s2exp_topize_1 (s2e) = s2exp_topize (1(*knd*), s2e)
 
 fun s2exp_whnf_flag
   (s2e0: s2exp, flag: &int): s2exp = let
+(*
+  val () = begin
+    prerr "s2exp_whnf_flag(0): s2e0 = "; prerr s2e0; prerr_newline ()
+  end // end of [val]
+*)
   val s2e0 = s2exp_link_remove_flag (s2e0, flag)
+(*
+  val () = begin
+    prerr "s2exp_whnf_flag(1): s2e0 = "; prerr s2e0; prerr_newline ()
+  end // end of [val]
+*)
 in
   case+ s2e0.s2exp_node of
   | S2Eapp (s2e_fun, s2es_arg) => let
@@ -1002,7 +1016,7 @@ implement s2exp_lab_get_restlin_cstr
   fn err2 {a:viewt@ype} (loc0: loc_t, s2e0: s2exp): a = begin
     prerr loc0;
     prerr ": error(3)";
-    $Deb.debug_prerrf (": %s: s2exp_lab_get_restlin_cstr", @(THISFILENAME));
+    $Deb.debug_prerrf (": [%s]: s2exp_lab_get_restlin_cstr", @(THISFILENAME));
     prerr ": the type [";
     prerr s2e0;
     prerr "] is expected to be a record or union but it is not.";
@@ -1041,6 +1055,11 @@ in
     in
       cstr := cons (s2p, cstr); s2e
     end // end of [S2Eunion]
+  | _ when s2exp_is_objmod_cls_type s2e0 => let
+      val- S2Eapp (_, list_cons (s2e_cls, _)) = s2e0.s2exp_node
+    in
+      s2exp_cls_lab_get (loc0, s2e_cls, l0)
+    end // end of [_ when objmod ...]
   | _ => err2 {s2exp} (loc0, s2e0)
 end (* end of [s2exp_lab_get_restlin_cstr] *)
 

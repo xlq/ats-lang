@@ -388,6 +388,9 @@ in
   | D3Emtd d2m => begin
       prstr "D3Emtd("; fprint_d2mtd (pf | out, d2m); prstr ")"
     end // end of [D3Emtd]
+  | D3Eobj _ => begin
+      prstr "D3Eobj("; fprint_string (pf | out, "..."); prstr ")"
+    end // end of [D3Eobj]
   | D3Eptrof_ptr (d3e, d3ls) => begin
       prstr "D3Eptrof_ptr(";
       fprint_d3exp (pf | out, d3e);

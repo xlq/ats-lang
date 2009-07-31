@@ -77,7 +77,7 @@ end // end of [caskind_of_valkind]
 
 (* ****** ****** *)
 
-fun m2thdec_tr (mtd: m2thdec): m3thdec = begin
+implement m2thdec_tr (mtd) = begin
   case+ mtd of
   | M2THDECmtd (loc, sym, d2v_self, def) => let
       val def = (case+ def of
@@ -101,7 +101,13 @@ fun m2thdec_tr (mtd: m2thdec): m3thdec = begin
       M3THDECvar (loc, sym, res, def)
     end (* end of [M2THDECvar] *)
   | M2THDECimp (loc, d2m, def) => let
-      val s2e_mtd = d2mtd_typ_get d2m; val def = d2exp_tr_dn (def, s2e_mtd)
+      val s2e_mtd = d2mtd_typ_get d2m
+(*
+      val () = begin
+        prerr "m2thdec_tr: M2THDECimp: s2e_mtd = "; prerr s2e_mtd; print_newline ()
+      end // end of [val]
+*)
+      val def = d2exp_tr_dn (def, s2e_mtd)
     in
       M3THDECimp (loc, d2m, def)
     end (* end of [M2THDECimp] *)
@@ -113,16 +119,11 @@ fun m2thdec_tr (mtd: m2thdec): m3thdec = begin
 *)
 end // end of [m2thdec_tr]
 
-fun m2thdeclst_tr
-  (mtds: m2thdeclst): m3thdeclst =
-  case+ mtds of
-  | list_cons (mtd, mtds) => let
-      val mtd = m2thdec_tr mtd
-      val mtds = m2thdeclst_tr mtds in
-      list_cons (mtd, mtds)
-    end // end of [list_cons]
-  | list_nil () => list_nil ()
+implement m2thdeclst_tr (mtds) =
+  $Lst.list_map_fun (mtds, m2thdec_tr)
 // end of [m2thdeclst_tr]
+
+(* ****** ****** *)
 
 fn c2lassdec_tr
   (d2c: c2lassdec): c3lassdec = let

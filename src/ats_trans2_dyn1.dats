@@ -1604,16 +1604,16 @@ in
       val d2c_cls = c2lassdec_of_c2lassdec_t (d2c_cls)
 //
       val clsknd = d2c_cls.c2lassdec_knd; val () = () where {
-        macdef OBJKINDobjmod = 3
+        macdef OBJKINDobjmod = 2
         val () = begin case- clsknd of
-        | 0 (*object*) => if objknd = OBJKINDobjmod then begin
+        | 0 (*module*) => if objknd <> OBJKINDobjmod then begin
             prerr_loc_error2 (loc0);
             prerr ": the class ["; prerr_s2cst s2c_cls;
             prerr "] is required to be a object class but it is not.";
             prerr_newline ();
             $Err.abort ()         
           end // end of [1]
-        | 1 (*module*) => if objknd <> OBJKINDobjmod then begin
+        | 1 (*object*) => if objknd = OBJKINDobjmod then begin
             prerr_loc_error2 (loc0);
             prerr ": the class ["; prerr_s2cst s2c_cls;
             prerr "] is required to be a module class but it is not.";
@@ -1627,7 +1627,6 @@ in
                       else s2exp_objmod_cls_type s2e_cls // module
       ) : s2exp // end of [val]
 //
-      val decarg = list_nil ()
       typedef itm = d2item
       fun loop (
           kis: List_vt @(sym_t, itm), mtdmap: !mtdmap_t
@@ -1641,8 +1640,20 @@ in
             val sublst1 = d2mtd_sublst_get (d2m1)
             val sub = @(decarg1, ts2ess)
             val sublst = list_cons (sub, sublst1)
-            val typ1 = d2mtd_typ_get (d2m1)
-            val d2m = d2mtd_make (loc1, sym1, knd1, decarg, sublst, typ1)
+            val subtyp1 = d2mtd_subtyp_get (d2m1)
+(*
+            val () = begin
+              prerr "d1exp_tr: D1Eobj: loop: sym1 = ";
+              $Sym.prerr_symbol sym1; prerr_newline ();
+              prerr "d1exp_tr: D1Eobj: loop: d2carg1 = ";
+              prerr_s2qualst decarg1; prerr_newline ();
+              prerr "d1exp_tr: D1Eobj: loop: ts2ess = ";
+              prerr_tmps2explstlst ts2ess; prerr_newline ();
+            end // end of [val]
+*)
+            val d2m = d2mtd_make
+              (loc1, sym1, knd1, list_nil (*decarg*), sublst, subtyp1)
+            // end of [val]
             val () = $SymEnv.symmap_insert (mtdmap, ki.0, D2ITEMmtd d2m)
           in
             loop (kis, mtdmap)
@@ -1659,7 +1670,7 @@ in
       val r_mtdmap = ref_make_elt<mtdmap_t> (mtdmap)
       val mtdlst = m1thdeclst_tr (r_mtdmap, s2e_self, mtdlst)
     in
-      d2exp_obj (loc0, objknd, s2c_cls, ts2ess, mtdlst)
+      d2exp_obj (loc0, objknd, d2c_cls, s2e_cls, mtdlst)
     end // end of [D1Eobj]
   | D1Eqid (q, id) => d1exp_qid_tr (loc0, q, id)
   | D1Eptrof d1e => d2exp_ptrof (loc0, d1exp_tr d1e)

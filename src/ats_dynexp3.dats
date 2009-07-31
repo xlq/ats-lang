@@ -593,6 +593,15 @@ implement d3exp_mtd
 
 (* ****** ****** *)
 
+implement d3exp_obj
+  (loc, s2e_obj, knd, d2c_cls, s2e_cls, mtds) = '{
+  d3exp_loc= loc
+, d3exp_eff= S2EFFnil (), d3exp_typ= s2e_obj
+, d3exp_node= D3Eobj (knd, d2c_cls, s2e_cls, mtds)
+} // end of [d3exp_obj]
+
+(* ****** ****** *)
+
 implement d3exp_ptrof_ptr
   (loc, s2e_ptr, d3e, d3ls) = let
   val s2fe = d3lab1lst_eff_union (d3e.d3exp_eff, d3ls)

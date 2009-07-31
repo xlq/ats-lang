@@ -1026,9 +1026,10 @@ in '{
 } end // end of [s0exp_struct]
 
 implement s0exp_tmpid (qid, arg, args, t_gt) = let
-  val loc = combine (qid.tmpqi0de_loc, t_gt.t0kn_loc)
-  val loc0 = $Loc.location_end_make loc
-  val args = gtlt_t1mps0expseqseq_cons_loc (loc0, arg, args) 
+  val loc_qid = qid.tmpqi0de_loc
+  val loc_qid_end = $Loc.location_end_make loc_qid
+  val loc = combine (loc_qid, t_gt.t0kn_loc)
+  val args = gtlt_t1mps0expseqseq_cons_loc (loc_qid_end, arg, args) 
 in
   '{ s0exp_loc= loc, s0exp_node= S0Etmpid (qid, args) }
 end // end of [s0exp_tmpid]
@@ -1113,8 +1114,8 @@ implement impqi0de_make_none (qid) = '{
 
 implement impqi0de_make_some (qid, arg, args, t_gt) = let
   val loc_qid = qid.tmpqi0de_loc
-  val loc = combine (loc_qid, t_gt.t0kn_loc)
   val loc_qid_end = $Loc.location_end_make loc_qid
+  val loc = combine (loc_qid, t_gt.t0kn_loc)
   val args = gtlt_t1mps0expseqseq_cons_loc (loc_qid_end, arg, args)
 in '{
   impqi0de_loc= loc
@@ -2113,9 +2114,10 @@ implement d0exp_string (s) = '{
 } // end of [d0exp_string]
 
 implement d0exp_tmpid (qid, arg, args, t_gt) = let
-  val loc = combine (qid.tmpqi0de_loc, t_gt.t0kn_loc)
-  val loc0 = $Loc.location_end_make loc
-  val args = gtlt_t1mps0expseqseq_cons_loc (loc0, arg, args) 
+  val loc_qid = qid.tmpqi0de_loc
+  val loc_qid_end = $Loc.location_end_make loc_qid
+  val loc = combine (loc_qid, t_gt.t0kn_loc)
+  val args = gtlt_t1mps0expseqseq_cons_loc (loc_qid_end, arg, args) 
 in
   '{ d0exp_loc= loc, d0exp_node= D0Etmpid (qid, args) }
 end // end of [d0exp_tmpid]

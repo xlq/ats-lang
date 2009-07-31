@@ -254,6 +254,8 @@ and d3exp_node =
       (int(*lin*), s2exp (*element type*), d3explst (*elements*))
   | D3Emtd of (* method *)
       d2mtd_t
+  | D3Eobj of // dynamic modules or objects
+      (int(*kind*), c2lassdec, s2exp, m3thdeclst)
   | D3Eptrof_ptr of (* address of a pointer selection *)
       (d3exp, d3lab1lst)
   | D3Eptrof_var of (* address of a variable selection *)
@@ -603,6 +605,15 @@ fun d3exp_lst
   (_: loc_t, _lst: s2exp, lin: int, elt: s2exp, elts: d3explst): d3exp
 
 fun d3exp_mtd (_: loc_t, s2e: s2exp, d2m: d2mtd_t): d3exp
+
+fun d3exp_obj (
+    _: loc_t
+  , s2e_obj: s2exp
+  , knd: int
+  , d2c_cls: c2lassdec, s2e_cls: s2exp
+  , mtdlst: m3thdeclst
+  ) : d3exp
+// end of [d3exp_obj]
 
 fun d3exp_ptrof_ptr
   (_: loc_t, _ptr: s2exp, _root: d3exp, d3ls: d3lab1lst): d3exp

@@ -319,17 +319,21 @@ fn c1lassdec_tr (
     if clsknd > 0 then s2exp_obj_cls_t0ype s2e_mycls // object
                   else s2exp_objmod_cls_type s2e_mycls // module
   ) : s2exp // end of [val]
-// (*
+(*
   val () = begin
     prerr "c1lassdec_tr: s2e_self = "; prerr s2e_self; prerr_newline ()
   end // end of [val
-// *)
+*)
 //
-  val () = aux (d1cs_def) where {
-    fun aux (d1cs: s1expdeflst): void = begin
+  val () = aux (decarg, d1cs_def) where {
+    fun aux (
+        decarg: s2qualst, d1cs: s1expdeflst
+      ) : void = begin
       case+ d1cs of
-      | list_cons (d1c, d1cs) => aux (d1cs) where {
+      | list_cons (d1c, d1cs) =>
+          aux (decarg, d1cs) where {
           val s2c = s1expdef_tr (None (), d1c)
+          val () = s2cst_decarg_set (s2c, decarg)
           val () = the_s2expenv_add_scst (s2c)
         } // end of [cons]
       | list_nil () => ()
@@ -1350,6 +1354,8 @@ implement d1ec_tr (d1c0) = begin
         case+ decarg of cons _ => template_level_dec () | nil _ => ()
       end // end of [val]
       val () = the_s2expenv_add_scst (d2c_cls.c2lassdec_cst)
+      val s2c_cls = d2c_cls.c2lassdec_cst
+      val () = s2cst_decarg_set (s2c_cls, s2vpss)
     in
       d2ec_classdec (d1c0.d1ec_loc, d2c_cls)
     end // end of [D1Cfundecs]

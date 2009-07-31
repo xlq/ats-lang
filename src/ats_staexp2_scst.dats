@@ -170,6 +170,14 @@ implement s2cst_islst_get (s2c) =
 implement s2cst_islst_set (s2c, islst) =
   let val (vbox pf | p) = s2c in p->s2cst_islst := islst end
 
+implement s2cst_decarg_get (s2c) =
+  let val (vbox pf | p) = s2c in p->s2cst_decarg end
+// end of [s2cst_decarg_get]
+
+implement s2cst_decarg_set (s2c, s2qss) =
+  let val (vbox pf | p) = s2c in p->s2cst_decarg := s2qss end
+// end of [s2cst_decarg_set]
+
 implement s2cst_arilst_get (s2c) =
   let val (vbox pf | p) = s2c in p->s2cst_arilst end
 

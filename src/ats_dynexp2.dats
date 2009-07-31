@@ -756,9 +756,9 @@ implement d2exp_mtd (loc, d2m) = '{
 (* ****** ****** *)
 
 implement d2exp_obj
-  (loc, knd, s2c, decarg, mtdlst) = '{
+  (loc, knd, d2c_cls, s2e_cls, mtdlst) = '{
   d2exp_loc= loc
-, d2exp_node= D2Eobj (knd, s2c, decarg, mtdlst)
+, d2exp_node= D2Eobj (knd, d2c_cls, s2e_cls, mtdlst)
 , d2exp_typ= None ()
 } // end of [d2exp_obj]
 

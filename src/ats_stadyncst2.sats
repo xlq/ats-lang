@@ -266,9 +266,16 @@ fun s2exp_float_t0ype (): s2exp
 fun s2exp_int_t0ype (): s2exp
 fun s2exp_int_int_t0ype (i: int): s2exp
 fun s2exp_int_intinf_t0ype (i: intinf_t): s2exp
+
 fun s2exp_obj_cls_t0ype (cls: s2exp): s2exp
+fun s2exp_is_obj_cls_t0ype (cls: s2exp): bool
+
 fun s2exp_objmod_cls_type (cls: s2exp): s2exp
+fun s2exp_is_objmod_cls_type (cls: s2exp): bool
+
 fun s2exp_objref_cls_type (cls: s2exp): s2exp
+fun s2exp_is_objref_cls_type (cls: s2exp): bool
+
 fun s2exp_ptr_type (): s2exp
 fun s2exp_ptr_addr_type (addr: s2exp): s2exp
 fun s2exp_ref_viewt0ype_type (elt: s2exp): s2exp

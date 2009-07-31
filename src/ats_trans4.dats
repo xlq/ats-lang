@@ -1003,6 +1003,9 @@ in
       prerr_newline ();
       $Err.abort {hiexp} ()
     end // end of [D3Emtd]
+(*
+  | D3Eobj _ =>
+*)
   | D3Eptrof_ptr (d3e, d3ls) => let
       val hit0 = s2exp_tr (loc0, 0(*deep*), s2e0)
       val hie = d3exp_tr d3e; val hils = d3lab1lst_tr d3ls
@@ -1142,6 +1145,10 @@ in
     in
       hiexp_let_simplify (loc0, hit0, hids, hie)
     end // end of [D3Ewhere]
+  | _ => begin
+      prerr "d3exp_tr: not yet implemented: d3e0 = "; prerr d3e0; prerr_newline ();
+      $Err.abort {hiexp} ()
+    end // end of [_]
 end // end of [d3exp_tr]
 
 implement d3explst_tr (d3es) = $Lst.list_map_fun (d3es, d3exp_tr)

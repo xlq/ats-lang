@@ -2291,6 +2291,20 @@ val d3e0 = (case+ d2e0.d2exp_node of
   | D2Emtd d2m => let
       val s2e_mtd = d2mtd_typ_get d2m in d3exp_mtd (loc0, s2e_mtd, d2m)
     end // end of [D2Emtd]
+  | D2Eobj
+      (knd, d2c_cls, s2e_cls, m2tds) => let
+      val s2e_obj = case+ knd of 
+(*
+        | OBJKINDobj_t => s2exp_obj_cls_t0ype (s2e_cls)
+        | OBJKINDobj_vt => s2exp_obj_cls_t0ype (s2e_cls)
+        | OBJKINDobjref => s2exp_objref_cls_type (s2e_cls)
+*)
+        | _ (*OBJKINDobjmod*) => s2exp_objref_cls_type (s2e_cls)
+      // end of [val]
+      val m3tds = m2thdeclst_tr (m2tds)
+    in
+      d3exp_obj (loc0, s2e_obj, knd, d2c_cls, s2e_cls, m3tds)
+    end // end of [D2Eobj]
   | D2Eptrof d2e =>  d2exp_ptrof_tr_up (loc0, d2e)
   | D2Eraise d2e_exn => let
       val s2e_exn = s2exp_exception_viewtype ()
