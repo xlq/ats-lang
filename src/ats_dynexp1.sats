@@ -933,7 +933,7 @@ fun d1ec_exndecs (_: loc_t, ds: e1xndeclst): d1ec
 
 fun d1ec_classdec (
     _: loc_t
-  , clsknd: int // mod/obj : 0/1
+  , clsknd: int // obj/mod : 0/1
   , _: s1qualstlst
   , _: c1lassdec
   , _: s1expdeflst

@@ -260,7 +260,6 @@ keyval_insert("$obj", DLROBJ_T) ;
 keyval_insert("$obj_t", DLROBJ_T) ;
 keyval_insert("$obj_vt", DLROBJ_VT) ;
 keyval_insert("$objmod", DLROBJMOD) ;
-keyval_insert("$objref", DLROBJREF) ;
 keyval_insert("$raise", DLRRAISE) ;
 keyval_insert("$rec_t", DLRREC_T) ;
 keyval_insert("$rec_vt", DLRREC_VT) ;

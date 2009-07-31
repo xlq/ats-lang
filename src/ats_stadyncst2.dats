@@ -178,9 +178,8 @@ implement Double_long_t0ype = s2cstref_make "double_long_t0ype"
 implement Float_t0ype = s2cstref_make "float_t0ype"
 implement Int_t0ype = s2cstref_make "int_t0ype"
 implement Int_int_t0ype = s2cstref_make "int_int_t0ype"
-implement Obj_cls_t0ype = s2cstref_make "obj_cls_t0ype"
+implement Obj_cls_viewt0ype = s2cstref_make "obj_cls_viewt0ype"
 implement Objmod_cls_type = s2cstref_make "objmod_cls_type"
-implement Objref_cls_type = s2cstref_make "objref_cls_type"
 implement Ptr_type = s2cstref_make "ptr_type"
 implement Ptr_addr_type = s2cstref_make "ptr_addr_type"
 implement Ref_viewt0ype_type = s2cstref_make "ref_viewt0ype_type"
@@ -577,9 +576,16 @@ implement s2exp_int_intinf_t0ype (i) = let
   s2exp_cstapp (s2c, '[s2exp_intinf i])
 end // end of [s2exp_int_intinf_t0ype]
 
+//
+
 implement s2exp_obj_cls_t0ype (s2e_cls) = let
-  val s2c = s2cstref_cst_get (Obj_cls_t0ype) in
+  val s2c = s2cstref_cst_get (Obj_cls_viewt0ype) in
   s2exp_app_srt (s2rt_t0ype, s2exp_cst s2c, '[s2e_cls])
+end // end of [s2exp_obj_cls_t0ype]
+
+implement s2exp_obj_cls_viewt0ype (s2e_cls) = let
+  val s2c = s2cstref_cst_get (Obj_cls_viewt0ype) in
+  s2exp_app_srt (s2rt_viewt0ype, s2exp_cst s2c, '[s2e_cls])
 end // end of [s2exp_obj_cls_t0ype]
 
 implement s2exp_objmod_cls_type (s2e_cls) = let
@@ -587,10 +593,7 @@ implement s2exp_objmod_cls_type (s2e_cls) = let
   s2exp_app_srt (s2rt_type, s2exp_cst s2c, '[s2e_cls])
 end // end of [s2exp_objmod_cls_type]
 
-implement s2exp_objref_cls_type (s2e_cls) = let
-  val s2c = s2cstref_cst_get (Objref_cls_type) in
-  s2exp_app_srt (s2rt_type, s2exp_cst s2c, '[s2e_cls])
-end // end of [s2exp_objref_cls_type]
+//
 
 implement s2exp_ptr_type () = let
   val s2c = s2cstref_cst_get (Ptr_type) in s2exp_cst (s2c)
@@ -630,17 +633,13 @@ fn s2exp_is_app_s2cstref
   | _ => false
 // end of [s2exp_is_app_s2cstref]
 
-implement s2exp_is_obj_cls_t0ype (s2e) =
-  s2exp_is_app_s2cstref (s2e, Obj_cls_t0ype)
-// end of [s2exp_is_obj_cls_t0ype]
+implement s2exp_is_obj_cls_viewt0ype (s2e) =
+  s2exp_is_app_s2cstref (s2e, Obj_cls_viewt0ype)
+// end of [s2exp_is_obj_cls_viewt0ype]
 
 implement s2exp_is_objmod_cls_type (s2e) =
   s2exp_is_app_s2cstref (s2e, Objmod_cls_type)
 // end of [s2exp_is_objmod_cls_type]
-
-implement s2exp_is_objref_cls_type (s2e) =
-  s2exp_is_app_s2cstref (s2e, Objref_cls_type)
-// end of [s2exp_is_objref_cls_type]
 
 (* ****** ****** *)
 
@@ -701,14 +700,11 @@ implement un_s2exp_char_char_t0ype (s2e) =
 implement un_s2exp_int_int_t0ype (s2e) =
   un_s2exp_s2cstref_1 (s2e, Int_int_t0ype)
 
-implement un_s2exp_obj_cls_t0ype (s2e) =
-  un_s2exp_s2cstref_1 (s2e, Obj_cls_t0ype)
+implement un_s2exp_obj_cls_viewt0ype (s2e) =
+  un_s2exp_s2cstref_1 (s2e, Obj_cls_viewt0ype)
 
 implement un_s2exp_objmod_cls_type (s2e) =
   un_s2exp_s2cstref_1 (s2e, Objmod_cls_type)
-
-implement un_s2exp_objref_cls_type (s2e) =
-  un_s2exp_s2cstref_1 (s2e, Objref_cls_type)
 
 implement un_s2exp_ref_viewt0ype_type (s2e) =
   un_s2exp_s2cstref_1 (s2e, Ref_viewt0ype_type)

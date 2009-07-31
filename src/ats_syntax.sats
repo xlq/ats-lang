@@ -130,14 +130,14 @@ fun clskind_obj (_: t0kn):<> clskind = "clskind_obj"
 (* ****** ****** *)
 
 datatype objkind =
-  | OBJKINDobj_t of t0kn | OBJKINDobj_vt of t0kn
-  | OBJKINDobjmod of t0kn | OBJKINDobjref of t0kn
+  | OBJKINDobj_t of t0kn
+  | OBJKINDobj_vt of t0kn
+  | OBJKINDobjmod of t0kn
 // end of [objkind]
 
 fun objkind_obj_t (_: t0kn):<> objkind = "objkind_obj_t"
 fun objkind_obj_vt (_: t0kn):<> objkind = "objkind_obj_vt"
 fun objkind_objmod (_: t0kn):<> objkind = "objkind_objmod"
-fun objkind_objref (_: t0kn):<> objkind = "objkind_objref"
 
 (* ****** ****** *)
 

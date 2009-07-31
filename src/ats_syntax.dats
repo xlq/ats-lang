@@ -151,7 +151,6 @@ implement clskind_obj (t) = CLSKINDobj (t)
 implement objkind_obj_t (t) = OBJKINDobj_t (t)
 implement objkind_obj_vt (t) = OBJKINDobj_vt (t)
 implement objkind_objmod (t) = OBJKINDobjmod (t)
-implement objkind_objref (t) = OBJKINDobjref (t)
 
 (* ****** ****** *)
 
@@ -2017,8 +2016,9 @@ end // end of [local]
 implement d0exp_obj
   (knd, os0e, mtds, t_end) = let
   val t_beg = (case+ knd of
-    | OBJKINDobj_t tok => tok | OBJKINDobj_vt tok => tok
-    | OBJKINDobjmod tok => tok | OBJKINDobjref tok => tok
+    | OBJKINDobj_t tok => tok
+    | OBJKINDobj_vt tok => tok
+    | OBJKINDobjmod tok => tok
   ) : t0kn
   val loc = combine (t_beg.t0kn_loc, t_end.t0kn_loc)
 in '{

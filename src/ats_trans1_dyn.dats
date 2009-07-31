@@ -1015,9 +1015,7 @@ fun aux_item (d0e0: d0exp): d1expitm = let
       in
         $Fix.ITEMatm (d1exp_list2 (loc0, s1es1, s1es2))
       end // end of [D0Elist2]
-    | D0Eloopexn (i (*break/continue*)) => begin
-        $Fix.ITEMatm (d1exp_loopexn (loc0, i))
-      end
+    | D0Eloopexn (i(*brk/cont*)) => $Fix.ITEMatm (d1exp_loopexn (loc0, i))
     | D0Elst (lin, os0e_elt, d0es_elt) => let
         val os1e_elt = s0expopt_tr os0e_elt
         val d1es_elt = d0explst_tr d0es_elt
@@ -1027,11 +1025,11 @@ fun aux_item (d0e0: d0exp): d1expitm = let
       end // end of [D0Elst]
     | D0Emacsyn (knd, d0e) => begin
         $Fix.ITEMatm (d1exp_macsyn (loc0, knd, d0exp_tr d0e))
-      end
+      end // end of [D0Emacsyn]
     | D0Eobj (knd, cls, mtds) => let
         val knd = (case+ knd of
           | OBJKINDobj_t _ => 0 | OBJKINDobj_vt _ => 1
-          | OBJKINDobjmod _ => 2 | OBJKINDobjref _ => ~1
+          | OBJKINDobjmod _ => ~1
         ) : int
         val cls = s0exp_tr cls
         val mtds = m0thdeclst_tr mtds
@@ -1041,10 +1039,11 @@ fun aux_item (d0e0: d0exp): d1expitm = let
       end // end of [D0Eobj]
     | D0Eopide id => $Fix.ITEMatm (d1exp_ide (loc0, id))
     | D0Eptrof () => let
-        fn f (d1e: d1exp):<cloref1> d1expitm =
-          let val loc0 = $Loc.location_combine (loc0, d1e.d1exp_loc) in
-            $Fix.ITEMatm (d1exp_ptrof (loc0, d1e))
-          end
+        fn f (d1e: d1exp):<cloref1> d1expitm = let
+          val loc0 = $Loc.location_combine (loc0, d1e.d1exp_loc)
+        in
+          $Fix.ITEMatm (d1exp_ptrof (loc0, d1e))
+        end (* end of [f] *)
       in
         $Fix.ITEMopr ($Fix.OPERpre ($Fix.ptrof_prec_dyn, f))
       end // end of [D0Eptrof]
@@ -1662,9 +1661,9 @@ implement d0ec_tr d0c0 = begin
     end // end of [D0Cexndecs]
   | D0Cclassdec (knd, s0qss, d0c1, d0cs2) => let
       val s1qss = s0qualstlst_tr (s0qss)
-      val knd = (case+ knd of
-        | CLSKINDmod _ => 0 | CLSKINDobj _ => 1
-      ) : int
+      val knd =
+        (case+ knd of CLSKINDobj _ => 0 | CLSKINDmod _ => 1): int
+      // end of [val]
       val d1c1 = c0lassdec_tr (d0c1) and d1cs2 = s0expdeflst_tr (d0cs2)
     in
       d1ec_classdec (d0c0.d0ec_loc, knd, s1qss, d1c1, d1cs2)

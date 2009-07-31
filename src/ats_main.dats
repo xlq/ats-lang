@@ -311,6 +311,7 @@ fn prelude_load (ATSHOME: string): void = let
   val () = pervasive_load (ATSHOME, "prelude/SATS/file.sats")
   val () = pervasive_load (ATSHOME, "prelude/SATS/float.sats")
   val () = pervasive_load (ATSHOME, "prelude/SATS/integer.sats")
+  val () = pervasive_load (ATSHOME, "prelude/SATS/integer_fixed.sats")
   val () = pervasive_load (ATSHOME, "prelude/SATS/integer_ptr.sats")
   val () = pervasive_load (ATSHOME, "prelude/SATS/lazy.sats")
   val () = pervasive_load (ATSHOME, "prelude/SATS/lazy_vt.sats")

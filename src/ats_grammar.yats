@@ -102,7 +102,6 @@ typedef ats_ptr_type objkind_t ;
 extern objkind_t objkind_obj_t (t0kn_t) ;
 extern objkind_t objkind_obj_vt (t0kn_t) ;
 extern objkind_t objkind_objmod (t0kn_t) ;
-extern objkind_t objkind_objref (t0kn_t) ;
 
 typedef ats_ptr_type valkind_t ;
 extern valkind_t valkind_val (void) ;
@@ -1319,7 +1318,6 @@ guad0ec_t guad0ec ;
 %token <t0kn> DLROBJ_T
 %token <t0kn> DLROBJ_VT
 %token <t0kn> DLROBJMOD
-%token <t0kn> DLROBJREF
 %token <t0kn> DLRRAISE
 %token <t0kn> DLRSPAWN
 %token <t0kn> DLRUNFOLD
@@ -1747,7 +1745,6 @@ objkind
   : DLROBJ_T                            { $$ = objkind_obj_t ($1) ; }
   | DLROBJ_VT                           { $$ = objkind_obj_vt ($1) ; }
   | DLROBJMOD                           { $$ = objkind_objmod ($1) ; }
-  | DLROBJREF                           { $$ = objkind_objref ($1) ; }
 ;
 
 valkind

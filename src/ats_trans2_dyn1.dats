@@ -1604,19 +1604,21 @@ in
       val d2c_cls = c2lassdec_of_c2lassdec_t (d2c_cls)
 //
       val clsknd = d2c_cls.c2lassdec_knd; val () = () where {
-        macdef OBJKINDobjmod = 2
+(*
+        #define OBJ_T 0; #define OBJ_VT 1; #define OBJMOD ~1
+*)
         val () = begin case- clsknd of
-        | 0 (*module*) => if objknd <> OBJKINDobjmod then begin
-            prerr_loc_error2 (loc0);
-            prerr ": the class ["; prerr_s2cst s2c_cls;
-            prerr "] is required to be a object class but it is not.";
-            prerr_newline ();
-            $Err.abort ()         
-          end // end of [1]
-        | 1 (*object*) => if objknd = OBJKINDobjmod then begin
+        | 0 (*object*) => if objknd < 0 then begin
             prerr_loc_error2 (loc0);
             prerr ": the class ["; prerr_s2cst s2c_cls;
             prerr "] is required to be a module class but it is not.";
+            prerr_newline ();
+            $Err.abort ()         
+          end // end of [1]
+        | 1 (*module*) => if objknd >= 0 then begin
+            prerr_loc_error2 (loc0);
+            prerr ": the class ["; prerr_s2cst s2c_cls;
+            prerr "] is required to be a object class but it is not.";
             prerr_newline ();
             $Err.abort ()         
           end // end of [1]

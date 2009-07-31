@@ -7,33 +7,32 @@
 (***********************************************************************)
 
 (*
- * ATS/Anairiats - Unleashing the Potential of Types!
- *
- * Copyright (C) 2002-2008 Hongwei Xi, Boston University
- *
- * All rights reserved
- *
- * ATS is free software;  you can  redistribute it and/or modify it under
- * the terms of the GNU LESSER GENERAL PUBLIC LICENSE as published by the
- * Free Software Foundation; either version 2.1, or (at your option)  any
- * later version.
- * 
- * ATS is distributed in the hope that it will be useful, but WITHOUT ANY
- * WARRANTY; without  even  the  implied  warranty  of MERCHANTABILITY or
- * FITNESS FOR A PARTICULAR PURPOSE.  See the  GNU General Public License
- * for more details.
- * 
- * You  should  have  received  a  copy of the GNU General Public License
- * along  with  ATS;  see  the  file  COPYING.  If not, write to the Free
- * Software Foundation, 51  Franklin  Street,  Fifth  Floor,  Boston,  MA
- * 02110-1301, USA.
- *
- *)
+** ATS/Anairiats - Unleashing the Potential of Types!
+**
+** Copyright (C) 2002-2008 Hongwei Xi, Boston University
+**
+** All rights reserved
+**
+** ATS is free software;  you can  redistribute it and/or modify it under
+** the terms of the GNU LESSER GENERAL PUBLIC LICENSE as published by the
+** Free Software Foundation; either version 2.1, or (at your option)  any
+** later version.
+** 
+** ATS is distributed in the hope that it will be useful, but WITHOUT ANY
+** WARRANTY; without  even  the  implied  warranty  of MERCHANTABILITY or
+** FITNESS FOR A PARTICULAR PURPOSE.  See the  GNU General Public License
+** for more details.
+** 
+** You  should  have  received  a  copy of the GNU General Public License
+** along  with  ATS;  see  the  file  COPYING.  If not, write to the Free
+** Software Foundation, 51  Franklin  Street,  Fifth  Floor,  Boston,  MA
+** 02110-1301, USA.
+*)
 
 (* ****** ****** *)
 
-// July, 2007
 // Author: Hongwei Xi (* hwxi AT cs DOT bu DOT edu *)
+// July, 2007
 
 (* ****** ****** *)
 
@@ -49,6 +48,8 @@ staload _(*anonymous*) = "ats_reference.dats"
 #define ATS_DYNLOADFLAG 0 // no dynamic loading
 
 (* ****** ****** *)
+
+typedef int16 = int16_t0ype // sized integer of size 16bit
 
 dataviewtype tblopt =
   | {n:nat} {l:addr}
@@ -83,7 +84,7 @@ in
   case+ !p_tblopt of
   | ~tblopt_some (pf | p, n) => begin
       table_ptr_free {int16} (pf | p); !p_tblopt := tblopt_none ()
-    end
+    end (* end of [tblopt_some] *)
   | tblopt_none () => fold@ (!p_tblopt)
 end // end of [tbloptref_free]
   
@@ -129,8 +130,7 @@ implement accept_table_get (r_tblopt, nstate) = let
         err := (1: int); fold@ (!p_tblopt)
       end // end of [tblopt_none]
     | tblopt_some (!pf | p, n) => let
-        val nstate = int1_of_int nstate
-      in
+        val nstate = int1_of_int nstate in
         if nstate < 0 then begin
           err := (2: int); fold@ (!p_tblopt)
         end else if nstate >= n then begin
@@ -139,7 +139,7 @@ implement accept_table_get (r_tblopt, nstate) = let
           prval pf_v = !pf
         in
           ans := int_of_int16 (!p.[nstate]); !pf := pf_v; fold@ (!p_tblopt)
-        end
+        end (* end of [if] *)
       end // end of [tblopt_some]
   end // end of [val]
 in
@@ -148,7 +148,7 @@ in
   | 2 => exit_errmsg (1, "lexing: accept_table_get: state number is illegal\n")
   | 3 => exit_errmsg (1, "lexing: accept_table_get: state number is illegal\n")
   | _ => ans
-end // end of [accept_table_get]
+end (* end of [accept_table_get] *)
 
 (* ****** ****** *)
 
@@ -180,9 +180,6 @@ implement transition_table_get (r_tblopt, nstate, c) = let
     val (vbox pf_tblopt | p_tblopt) = ref_get_view_ptr r_tblopt
   in
     case+ !p_tblopt of
-    | tblopt_none () => begin
-        err := (1: int); fold@ (!p_tblopt)
-      end // end of [tblopt_none]
     | tblopt_some (!pf | p, n) => let
 (*
         Note that [int_of_schar] rather than [int_of_char] is used.
@@ -195,11 +192,9 @@ implement transition_table_get (r_tblopt, nstate, c) = let
         val i = int1_of_int ((nstate - 1) * NUMBER_OF_CHARS + c1)
 (*
         val () = $effmask_all begin
-          printf ("transition_table_get: nstate = %i\n", @(nstate))
-        end
-        val () = $effmask_all begin
-          printf ("transition_table_get: n = %i and i = %i\n", @(n,i))
-        end
+          printf ("transition_table_get: nstate = %i\n", @(nstate));
+          printf ("transition_table_get: n = %i and i = %i\n", @(n,i));
+        end // end of [val]
 *)
       in
         if i < 0 then begin
@@ -207,12 +202,14 @@ implement transition_table_get (r_tblopt, nstate, c) = let
         end else if i >= n then begin
           err := (3: int); fold@ (!p_tblopt)
         end else let
-          prval pf_v = !pf
-        in
+          prval pf_v = !pf in
           ans := int_of_int16 (!p.[i]); !pf := pf_v; fold@ (!p_tblopt)
-        end // end of [if]
+        end (* end of [if] *)
       end // end of [tblopt_some]
-  end // end of [val]
+    | tblopt_none () => begin
+        err := (1: int); fold@ (!p_tblopt)
+      end // end of [tblopt_none]
+  end (* end of [val] *)
 
 (*
   val () = begin
@@ -226,7 +223,7 @@ in
   | 2 => exit_errmsg (1, "lexing: transition_table_get: state number is illegal\n")
   | 3 => exit_errmsg (1, "lexing: transition_table_get: state number is illegal\n")
   | _ => ans
-end // end of [transition_table_get]
+end (* end of [transition_table_get] *)
 
 (* ****** ****** *)
 
