@@ -750,6 +750,7 @@ datatype // t@ype+: covariant
 list_t0ype_int_type (a:t@ype+, int) =
   | {n:int | n >= 0}
       list_cons (a, n+1) of (a, list_t0ype_int_type (a, n))
+    // end of [list_cons]
   | list_nil (a, 0)
 // end of [datatype]
 
@@ -757,7 +758,7 @@ stadef list = list_t0ype_int_type
 typedef List (a:t@ype) = [n:int | n >= 0] list (a, n)
 
 // [option_t0ype_bool_type] is covariant
-datatype  // t@ype+: covariant
+datatype // t@ype+: covariant
 option_t0ype_bool_type (a:t@ype+, bool) =
   | None (a, false) | Some (a, true) of a
 // end of [datatype]
@@ -790,15 +791,26 @@ viewtypedef Option_vt (a:viewt@ype) = [b:bool] option_vt (a, b)
 
 // some useful props and views
 
-dataview option_view_bool_view (a:view+, bool) =
-  | None_v (a, false) | Some_v (a, true) of a
+dataprop unit_p = unit_p of ()
+dataview unit_v = unit_v of ()
+
+//
+
+dataview
+option_view_bool_view (a:view+, bool) =
+  | Some_v (a, true) of a | None_v (a, false)
+// end of [option_view_bool_view]
 
 stadef option_v = option_view_bool_view
 
 //
 
-dataprop unit_p = unit_p of ()
-dataview unit_v = unit_v of ()
+dataview
+disj_view_view_int_view (v0: view, v1: view, int) =
+  | InsLeft_v (v0, v1, 0) of v0 | InsRight_v (v0, v1, 1) of v1
+// end of [dataview or_view_view_int_view]
+
+stadef disj_v = disj_view_view_int_view
 
 //
 
@@ -817,7 +829,8 @@ stadef crypt = crypt_viewt0ype_viewt0ype
 abstype lazy_t0ype_type (t@ype+) // boxed type
 stadef lazy = lazy_t0ype_type
 
-// [lazy_vt VT] : supspended computation with a linear value of viewtype VT
+// [lazy_vt VT] :
+//   supspended computation with a linear value of viewtype VT
 absviewtype lazy_viewt0ype_viewtype (viewt@ype+) // boxed linear type
 stadef lazy_vt = lazy_viewt0ype_viewtype
 
@@ -832,6 +845,7 @@ where stream (a:t@ype) = lazy (stream_con a)
 // lazy linear streams
 dataviewtype stream_vt_con (a:viewt@ype+) =
   | stream_vt_nil (a) | stream_vt_cons (a) of (a, stream_vt a)
+// end of [stream_vt_con]
 
 where stream_vt (a:viewt@ype) = lazy_vt (stream_vt_con a)
 

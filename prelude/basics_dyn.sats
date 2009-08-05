@@ -107,53 +107,56 @@ val true : bool (true) and false : bool (false)
 
 fun exit {a:viewt@ype} (status: int):<!exn> a
   = "ats_exit"
+// end of [exit]
 
 fun exit_main {a:viewt@ype}
   {v_in:view} {v_out:view}
   (pf: !v_in >> v_out | status: int):<!exn> a
   = "ats_exit"
+// end of [exit_main]
 
-fun exit_errmsg {a:viewt@ype} (status: int, msg: string):<!exnref> a
+fun exit_errmsg {a:viewt@ype}
+  (status: int, msg: string):<!exnref> a
   = "ats_exit_errmsg"
+// end of [exit_errmsg]
 
 fun exit_prerrf {a:viewt@ype} {ts:types}
   (status: int, fmt: printf_c ts, args: ts):<!exnref> a
   = "atspre_exit_prerrf"
+// end of [exit_prerrf]
 
 (* ****** ****** *)
 
 fun assert_bool (assertion: bool):<!exn> void
   = "atspre_assert"
+overload assert with assert_bool
 
 fun assert_bool1 {b:bool} (assertion: bool b):<!exn> [b] void
   = "atspre_assert"
-
-overload assert with assert_bool
 overload assert with assert_bool1
+
+//
 
 fun assert_errmsg_bool
   (assertion: bool, msg: string):<!exnref> void
   = "atspre_assert_errmsg"
+overload assert_errmsg with assert_errmsg_bool
 
 fun assert_errmsg_bool1 {b:bool}
   (assertion: bool b, msg: string):<!exnref> [b] void
   = "atspre_assert_errmsg"
+overload assert_errmsg with assert_errmsg_bool1
 
 //
 
 fun assert_errmsg_bool_string1
   (assertion: bool, msg: String):<!exnref> void
   = "atspre_assert_errmsg"
+overload assert_errmsg with assert_errmsg_bool_string1
 
 fun assert_errmsg_bool1_string1 {b:bool}
   (assertion: bool b, msg: String):<!exnref> [b] void
   = "atspre_assert_errmsg"
-
-//
-
-overload assert_errmsg with assert_errmsg_bool
-overload assert_errmsg with assert_errmsg_bool1
-overload assert_errmsg with assert_errmsg_bool_string1
 overload assert_errmsg with assert_errmsg_bool1_string1
 
 (* ****** ****** *)
