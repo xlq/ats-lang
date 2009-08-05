@@ -375,29 +375,24 @@ stadef vbox = vbox_view_prop
 
 (*
 
-abst@ype value_t0ype_int_t0ype
-  (a:t@ype+, i:int) = union (i) { value= a }
-stadef value = value_t0ype_int_t0ype
-typedef Value (a:t@ype) =
-  [i:int | 0 <= i; i <= 1] value (a, i)
-
-//
-
-absviewt@ype value_viewt0ype_int_viewt0ype
+absviewt@ype opt_viewt0ype_int_viewt0ype
   (a:viewt@ype+, i:int) = union (i) { value= a }
-stadef value_vt = value_viewt0ype_int_viewt0ype
-viewtypedef Value_vt (a:viewt@ype) =
-  [i:int | 0 <= i; i <= 1] value_vt (a, i)
+stadef opt = value_viewt0ype_int_viewt0ype
 
 *)
+
+absviewt@ype
+  opt_viewt0ype_int_viewt0ype (a:viewt@ype+, tag:int) = a
+// end of [absviewt@ype]
+
+stadef opt = opt_viewt0ype_int_viewt0ype
 
 (* ****** ****** *)
 
 (*
 
-// not yet supported and may never be supported
-
-datasort stamp = (* abstract *)
+// this not yet supported and it may never
+datasort stamp = (* abstract *) // be supported
 
 // sta vfrac : (stamp, view, rat) -> view
 absview vfrac (stamp, view, rat)

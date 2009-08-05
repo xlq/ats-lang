@@ -256,26 +256,11 @@ fun vbox_make_view_ptr
 
 (* ****** ****** *)
 
-(*
+praxi opt_some {a:viewt@ype} (x: !(a) >> opt (a, 1)):<prf> void
+praxi opt_unsome {a:viewt@ype} (x: !opt (a, 1) >> a):<prf> void
 
-val{a:t@ype} value_none : value (a, 0)
-  = "atspre_value_none"
-
-fun{a:t@ype} value_some (x: a):<> value (a, 1)
-  = "atspre_value_some"
-
-fun{a:t@ype} value_unsome (x: value (a, 1)):<> a
-  = "atspre_value_unsome"
-
-// the following functions are only available for special types
-
-fun{a:t@ype} value_is_none {i:two} (x: value (a, i)):<> bool (i == 0)
-  = "atspre_value_is_none"
-
-fun{a:t@ype} value_is_some {i:two} (x: value (a, i)):<> bool (i == 1)
-  = "atspre_value_is_some"
-
-*)
+praxi opt_none {a:viewt@ype} (x: !(a?) >> opt (a, 0)):<prf> void
+praxi opt_unnone {a:viewt@ype} (x: !opt (a, 0) >> a?):<prf> void
 
 (* ****** ****** *)
 

@@ -281,8 +281,7 @@ end // end of [local] (for assuming d2var_t)
 
 implement d2var_typ_get_some (loc0, d2v) = begin
   case+ d2var_typ_get d2v of
-  | Some s2e => s2e
-  | None () => begin
+  | Some s2e => s2e | None () => begin
       $Loc.prerr_location loc0;
       prerr ": error(3)";
       prerr ": there is no type for the dynamic variable [";
@@ -290,13 +289,12 @@ implement d2var_typ_get_some (loc0, d2v) = begin
       prerr "].";
       prerr_newline ();
       $Err.abort {s2exp} ()
-    end
+    end // end of [None]
 end // end of [d2var_typ_get_some]
 
 implement d2var_mastyp_get_some (loc0, d2v) = begin
   case+ d2var_mastyp_get d2v of
-  | Some s2e => s2e
-  | None () => begin
+  | Some s2e => s2e | None () => begin
       $Loc.prerr_location loc0;
       prerr ": error(3)";
       prerr ": there is no master type for the dynamic variable [";
@@ -304,13 +302,12 @@ implement d2var_mastyp_get_some (loc0, d2v) = begin
       prerr "].";
       prerr_newline ();
       $Err.abort {s2exp} ()
-    end
+    end // end of [None]
 end // end of [d2var_mastyp_get_some]
 
 implement d2var_addr_get_some (loc0, d2v) = begin
   case+ d2var_addr_get d2v of
-  | Some s2e => s2e
-  | None () => begin
+  | Some s2e => s2e | None () => begin
       $Loc.prerr_location loc0;
       prerr ": Internal Error: d2var_addr_get_some: ";
       prerr ": there is no address for the dynamic variable [";
@@ -318,7 +315,7 @@ implement d2var_addr_get_some (loc0, d2v) = begin
       prerr "].";
       prerr_newline ();
       $Err.abort {s2exp} ()
-    end
+    end // end of [None]
 end // end of [d2var_addr_get_some]
 
 implement d2var_view_get_some (loc0, d2v) = begin
@@ -332,13 +329,20 @@ implement d2var_view_get_some (loc0, d2v) = begin
       prerr "].";
       prerr_newline ();
       $Err.abort {d2var_t} ()
-    end
+    end // end of [D2VAROPTnone]
 end // end of [d2var_addr_get_some]
 
 (* ****** ****** *)
 
-implement fprint_d2var (pf_out | out, d2v) = begin
-  $Sym.fprint_symbol (pf_out | out, d2var_sym_get d2v)
+implement fprint_d2var (pf_out | out, d2v) = let
+  val () = $Sym.fprint_symbol (pf_out | out, d2var_sym_get d2v)
+(*
+  val () = fprint_string (pf_out | out, "(")
+  val () = $Stamp.fprint_stamp (pf_out | out, d2var_stamp_get d2v)
+  val () = fprint_string (pf_out | out, ")")
+*)
+in
+  // nothing
 end // end of [fprint_d2var]
 
 implement fprint_d2varlst {m} (pf | out, d2vs) = let
@@ -347,8 +351,9 @@ implement fprint_d2varlst {m} (pf | out, d2vs) = let
     | cons (d2v, d2vs) => begin
         if i > 0 then fprint1_string (pf | out, ", ");
         fprint_d2var (pf | out, d2v); aux (out, i+1, d2vs)
-      end
+      end // end of [cons]
     | nil () => ()
+  // end of [aux]
 in
   aux (out, 0, d2vs)
 end // end of [fprint_d2varlst]

@@ -227,6 +227,15 @@ prfun GEVEC_v_of_fmatrix_v
   )
 // end of [GEVEC_v_of_fmatrix_v]
 
+prfun fmatrix_v_of_GEVEC_v_of
+  {a:viewt@ype} {m,n:nat} {mn:int} {l:addr} (
+    pf_mul: MUL (m, n, mn), pf_mat: GEVEC_v (a, mn, 1, l)
+  ) :<> (
+    fmatrix_v (a, m, n, l)
+  , fmatrix_v (a, m, n, l) -<prf> GEVEC_v (a, mn, 1, l)
+  )
+// end of [GEVEC_v_of_fmatrix_v]
+
 (* ****** ****** *)
 
 prfun GEMAT_v_of_fmatrix_v
@@ -237,6 +246,16 @@ prfun GEMAT_v_of_fmatrix_v
   , GEMAT_v (a, m, n, col, m, l) -<prf> fmatrix_v (a, m, n, l)
   )
 // end of [GEMAT_v_of_fmatrix_v]
+
+prfun fmatrix_v_of_GEMAT_v_of
+  {a:viewt@ype} {m,n:nat} {l:addr} (
+    pf_mat: GEMAT_v (a, m, n, col, m, l)
+  ) :<> (
+    fmatrix_v (a, m, n, l)
+  , fmatrix_v (a, m, n, l) -<prf> GEMAT_v (a, m, n, col, m, l)
+  )
+// end of [GEMAT_v_of_fmatrix_v]
+
 
 (* ****** ****** *)
 

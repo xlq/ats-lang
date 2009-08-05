@@ -857,15 +857,18 @@ end // end of [p2at_rec_tr_dn]
 
 (* ****** ****** *)
 
-fn p2at_var_tr_dn
-  (p2t0: p2at, refknd: int, d2v: d2var_t, s2e0: s2exp): p3at = let
+fn p2at_var_tr_dn (
+    p2t0: p2at
+  , refknd: int
+  , d2v: d2var_t
+  , s2e0: s2exp
+  ) : p3at = let
   val loc0 = p2t0.p2at_loc
   val s2e0 = s2exp_whnf s2e0
   val () = d2var_mastyp_set (d2v, Some s2e0)
-  val () = // linearity status
-    if s2exp_is_linear s2e0 then begin
-      d2var_lin_set (d2v, 0); d2var_fin_set (d2v, D2VARFINnone ())
-    end
+  val () = if s2exp_is_linear s2e0 then ( // linear var
+    d2var_lin_set (d2v, 0); d2var_fin_set (d2v, D2VARFINnone ())
+  ) // end of [val]
 (*
   val () = begin
     prerr "p2at_var_tr_dn: d2v = "; prerr d2v; prerr_newline ();
@@ -880,7 +883,7 @@ fn p2at_var_tr_dn
   val () = begin
     prerr "p2at_tr_var_dn: d2v = "; prerr d2v; prerr_newline ();
     prerr "p2at_tr_var_dn: s2e = "; prerr s2e; prerr_newline ();
-  end
+  end // end of [val]
 *)
 in
   p3t0
@@ -891,7 +894,7 @@ end // end of [p2at_var_tr_dn]
 fn p2at_vbox_tr_dn
   (loc0: loc_t, d2v: d2var_t, s2e0: s2exp): p3at = let
   val s2e0 = s2exp_whnf s2e0
-  val s2e0 = case+ s2e0.s2exp_node of
+  val s2e0 = (case+ s2e0.s2exp_node of
     | S2EVar s2V => let
         val s2e = s2exp_Var_make_srt (loc0, s2rt_view)
         val s2e_vbox = s2exp_vbox_view_prop (s2e)
@@ -900,6 +903,7 @@ fn p2at_vbox_tr_dn
         s2e_vbox
       end
     | _ => s2e0
+  ) : s2exp
 in
   case+ un_s2exp_vbox_view_prop (s2e0) of
   | ~Some_vt s2e_v => let
@@ -913,14 +917,14 @@ in
       val p3t0 = p3at_vbox (loc0, s2e0, d2v)
     in
       p3t0
-    end
+    end // end of [Some_vt]
   | ~None_vt () => begin
       prerr loc0; prerr ": error(3)";
       prerr ": a [vbox] pattern is assgined the type [";
       prerr s2e0; prerr "] that is not a [vbox] prop.";
       prerr_newline ();
       $Err.abort {p3at} ()
-    end
+    end // end of [None_vt]
 end // end of [p2at_vbox_tr_dn]
 
 (* ****** ****** *)
@@ -949,10 +953,9 @@ in
       val s2e_d2v: s2exp = case+ p3t.p3at_typ_lft of
         | None () => s2exp_topize_1 p3t.p3at_typ (* problematic? *)
         | Some s2e => s2e 
-      val () = // checking for linearity
-        if s2exp_is_linear s2e_d2v then begin
-          d2var_lin_set (d2v, 0); d2var_fin_set (d2v, D2VARFINnone ())
-        end
+      val () = if s2exp_is_linear s2e_d2v then ( // linear var
+        d2var_lin_set (d2v, 0); d2var_fin_set (d2v, D2VARFINnone ())
+      ) : void // end of [val]
       val () = d2var_typ_set (d2v, Some s2e_d2v)
     in
       p3at_as (loc0, s2e0, refknd, d2v, p3t)
@@ -1001,10 +1004,12 @@ in
           p3at_int (loc0, s2e_int, s, i)
         end // end of [_]
     end // end of [P2Tint]
-  | P2Tlst (p2ts) => p2at_lst_tr_dn (loc0, p2ts, s2e0)
-  | P2Trec (recknd, npf, lp2ts) => begin
+  | P2Tlst (p2ts) =>
+      p2at_lst_tr_dn (loc0, p2ts, s2e0)
+    // end of [P2Tlst]
+  | P2Trec (recknd, npf, lp2ts) =>
       p2at_rec_tr_dn (p2t0, recknd, npf, lp2ts, s2e0)
-    end // end of [P2Trec]
+    // end of [P2Trec]
   | P2Tstring str => let
       val s2e0 = s2exp_opnexi_and_add (loc0, s2e0)
     in

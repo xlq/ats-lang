@@ -424,10 +424,12 @@ fun d3explst_arg_restore
   (d3es: d3explst, wths2es: wths2explst): d3explst = begin
   case+ wths2es of
   | WTHS2EXPLSTcons_some (refval, s2e_res, wths2es) => let
+(*
       val () = assert_errmsg_bool1 (
-        $Lst.list_is_cons d3es, "Interal Error: ats_trans3_exp: d3explst_arg_restore"
+        $Lst.list_is_cons d3es, "INTERAL ERROR: ats_trans3_exp: d3explst_arg_restore"
       ) // end of assert_errmsg
-      val+ list_cons (d3e, d3es) = d3es
+*)
+      val- list_cons (d3e, d3es) = d3es
       val loc = d3e.d3exp_loc
       val s2e_res = s2exp_opnexi_and_add (loc, s2e_res)
 (*
@@ -443,10 +445,12 @@ fun d3explst_arg_restore
       list_cons (d3e, d3explst_arg_restore (d3es, wths2es))
     end // end of [WTHS2EXPLSTcons_some]
   | WTHS2EXPLSTcons_none wths2es => let
+(*
       val () = assert_errmsg_bool1 (
-        $Lst.list_is_cons d3es, "Interal Error: ats_trans3_exp: d3explst_arg_restore"
+        $Lst.list_is_cons d3es, "INTERAL ERROR: ats_trans3_exp: d3explst_arg_restore"
       ) // end of assert_errmsg
-      val+ list_cons (d3e, d3es) = d3es
+*)
+      val- list_cons (d3e, d3es) = d3es
     in
       list_cons (d3e, d3explst_arg_restore (d3es, wths2es))
     end // end of [WTHS2EXPLSTcons_none]
@@ -461,8 +465,9 @@ typedef d23explst = List d23exp
 fun d23explst_tr_up (d23es: d23explst): d3explst = begin
   case+ d23es of
   | cons (d23e, d23es) => let
-      val d3e: d3exp = case+ d23e of
+      val d3e = (case+ d23e of
         | D23Ed2exp d2e => d2exp_tr_up d2e | D23Ed3exp d3e => d3e
+      ) : d3exp
     in
       cons (d3e, d23explst_tr_up d23es)
     end
@@ -478,53 +483,53 @@ fn d23explst_tr_dn {n:nat}
     | cons (d23e, d23es) => let
         val+ cons (s2e, s2es) = s2es
         val s2e = un_s2exp_refarg_arg s2e
-        val d3e = case+ d23e of
+        val d3e = (case+ d23e of
           | D23Ed2exp d2e => d2exp_tr_dn (d2e, s2e)
           | D23Ed3exp d3e => (d3exp_tr_dn (d3e, s2e); d3e)
+        ) : d3exp
       in
         cons (d3e, aux (d23es, s2es))
-      end
+      end // end of [cons]
     | nil () => nil ()
-    end // end of [aux]
+    end (* end of [aux] *)
   val [sgn:int] sgn = $Lst.list_length_compare (d23es, s2es)
-  val () = (
-    if sgn <> 0 then begin
-      prerr_loc_error3 loc0;
-      $Deb.debug_prerrf (": %s: d23explst_tr_dn", @(THISFILENAME));
-      if sgn > 0 then prerr ": arity mismatch: less arguments are needed.";
-      if sgn < 0 then prerr ": arity mismatch: more arguments are needed.";
-      prerr_newline ();
-      $Err.abort {void} ();
-      assert (sgn = 0) // deadcode
-    end else begin
-      () // [sgn = 0] holds!
-    end
-  ) : [sgn==0] void
+  val () = (if sgn <> 0 then begin
+    prerr_loc_error3 loc0;
+    $Deb.debug_prerrf (": %s: d23explst_tr_dn", @(THISFILENAME));
+    if sgn > 0 then prerr ": arity mismatch: less arguments are needed.";
+    if sgn < 0 then prerr ": arity mismatch: more arguments are needed.";
+    prerr_newline ();
+    $Err.abort {void} ();
+    assert (sgn = 0) // deadcode
+  end else begin
+    () // [sgn = 0] holds!
+  end) : [sgn==0] void // end of [val]
 in
   aux (d23es, s2es)
 end // end of [d23explst_tr_dn]
 
 fun d2explst_arg_tr_up (d2es: d2explst): d23explst = begin case+ d2es of
   | cons (d2e, d2es) => let
-      val d23e: d23exp = begin
+      val d23e = (
         if d2exp_is_varlamcst d2e then D23Ed2exp d2e else D23Ed3exp (d2exp_tr_up d2e)
-      end
+      ) : d23exp // end of [val]
     in
       cons (d23e, d2explst_arg_tr_up d2es)
-    end
+    end // end of [cons]
   | nil () => nil ()
 end // end of [d2explst_arg_tr_up]
 
 fun d23explst_open_and_add (d23es: d23explst): void = begin
   case+ d23es of
   | cons (d23e, d23es) => let
-      val () = case+ d23e of
+      val () = (case+ d23e of
         | D23Ed2exp d2e => () | D23Ed3exp d3e => d3exp_open_and_add d3e
+      ) : void // end of [val]
     in
       d23explst_open_and_add d23es
-    end
+    end // end of [cons]
   | nil () => ()
-end // end of [d23explst_open_and_add]
+end (* end of [d23explst_open_and_add] *)
 
 (* ****** ****** *)
 
@@ -1694,7 +1699,7 @@ fn d3exp_sel_tr_up
       var restlin: int = 0 and cstr: s2explst = nil ()
       val @(s2e_prj, s2ls) = begin
         s2exp_slablst_get_restlin_cstr (loc0, d3e.d3exp_typ, s2ls_nt, restlin, cstr)
-      end
+      end // end of [val]
       val () = if restlin > 0 then begin // restlin check
         prerr_loc_error3 loc0;
         prerr ": a linear component is abandoned by label selection.";
@@ -1705,20 +1710,25 @@ fn d3exp_sel_tr_up
       val d3ls = d3lab1lst_of_d3lab0lst_s2lablst (d3ls_nt, s2ls)
     in
       d3exp_sel (loc0, s2e_prj, d3e, d3ls)
-    end
+    end // end of [cons]
   | nil () => d3e
-end // end of [d3exp_tr_up]
+end (* end of [d3exp_sel_tr_up] *)
 
 fn d2exp_sel_tr_up
   (loc0: loc_t, d2e0: d2exp, d2ls: d2lablst): d3exp = let
 (*
   val () = begin
     prerr "d2exp_sel_tr_up: d2e0 = "; prerr d2e0; prerr_newline ()
-  end
+  end // end of [val]
 *)
 in
   case+ d2e0.d2exp_node of
   | D2Evar d2v when d2var_is_mutable d2v => let
+(*
+      val () = begin
+        prerr "d2exp_sel_tr_up: D2Evar(mut): d2v = "; prerr_d2var d2v; prerr_newline ()
+      end // end of [val]
+*)
       val d3ls_nt = d2lablst_tr_up d2ls
       val s2ls_nt = s2lab0lst_of_d3lab0lst d3ls_nt
       val s2e_addr = d2var_addr_get_some (loc0, d2v)
@@ -1726,23 +1736,28 @@ in
 (*
       val () = begin
         prerr "d2exp_sel_tr_up: s2e_elt = "; prerr s2e_elt; prerr_newline ()
-      end
+      end // end of [val]
       val [sgn:int] sgn = $Lst.list_length_compare (s2ls, s2ls_nt)
-      val (): [sgn==0] void =
-        if (sgn <> 0) then begin
-          prerr "Internal Error: d2exp_sel_tr_up: list length mismatch!";
-          prerr_newline ();
-          $Err.abort {void} ();
-          assert (sgn = 0) // deadcode
-        end else begin
-          () // [sgn = 0] holds!
-        end
+      val () = (if (sgn <> 0) then begin
+        prerr "INTERNAL ERROR";
+        prerr ": [ats_trans3_exp_up]: d2exp_sel_tr_up: list length mismatch!";
+        prerr_newline ();
+        $Err.abort {void} ();
+        assert (sgn = 0) // deadcode
+      end else begin
+        () // [sgn = 0] holds!
+      end) : [sgn==0] void // end of [val]
 *)
       val d3ls = d3lab1lst_of_d3lab0lst_s2lablst (d3ls_nt, s2ls)
     in
       d3exp_sel_var (loc0, s2e_elt, d2v, d3ls)
     end // end of [D2Evar when d2var_is_mutable]
   | D2Evar d2v when d2var_is_linear d2v => let
+(*
+      val () = begin
+        prerr "d2exp_sel_tr_up: D2Evar(lin): d2v = "; prerr_d2var d2v; prerr_newline ()
+      end // end of [val]
+*)
       val d3ls_nt = d2lablst_tr_up d2ls
       val s2ls_nt = s2lab0lst_of_d3lab0lst d3ls_nt
       val s2e_d2v = d2var_typ_get_some (loc0, d2v)

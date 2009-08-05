@@ -7,28 +7,27 @@
 (***********************************************************************)
 
 (*
- * ATS/Anairiats - Unleashing the Potential of Types!
- *
- * Copyright (C) 2002-2008 Hongwei Xi, Boston University
- *
- * All rights reserved
- *
- * ATS is free software;  you can  redistribute it and/or modify it under
- * the terms of  the GNU GENERAL PUBLIC LICENSE (GPL) as published by the
- * Free Software Foundation; either version 3, or (at  your  option)  any
- * later version.
- * 
- * ATS is distributed in the hope that it will be useful, but WITHOUT ANY
- * WARRANTY; without  even  the  implied  warranty  of MERCHANTABILITY or
- * FITNESS FOR A PARTICULAR PURPOSE.  See the  GNU General Public License
- * for more details.
- * 
- * You  should  have  received  a  copy of the GNU General Public License
- * along  with  ATS;  see the  file COPYING.  If not, please write to the
- * Free Software Foundation,  51 Franklin Street, Fifth Floor, Boston, MA
- * 02110-1301, USA.
- *
- *)
+** ATS/Anairiats - Unleashing the Potential of Types!
+**
+** Copyright (C) 2002-2008 Hongwei Xi, Boston University
+**
+** All rights reserved
+**
+** ATS is free software;  you can  redistribute it and/or modify it under
+** the terms of  the GNU GENERAL PUBLIC LICENSE (GPL) as published by the
+** Free Software Foundation; either version 3, or (at  your  option)  any
+** later version.
+** 
+** ATS is distributed in the hope that it will be useful, but WITHOUT ANY
+** WARRANTY; without  even  the  implied  warranty  of MERCHANTABILITY or
+** FITNESS FOR A PARTICULAR PURPOSE.  See the  GNU General Public License
+** for more details.
+** 
+** You  should  have  received  a  copy of the GNU General Public License
+** along  with  ATS;  see the  file COPYING.  If not, please write to the
+** Free Software Foundation,  51 Franklin Street, Fifth Floor, Boston, MA
+** 02110-1301, USA.
+*)
 
 (* ****** ****** *)
 
@@ -76,6 +75,7 @@ in
       fun aux (s2ls: s2lablst): void = case+ s2ls of
         | list_cons (s2l, s2ls) => (prerr "."; prerr s2l; aux s2ls)
         | list_nil () => ()
+      // end of [aux]
     in
       prerr loc0;
       prerr ": error(3)";
@@ -367,24 +367,23 @@ implement d3exp_lval_typ_set_arg (refval, d3e0, s2e_new) = let
       (if s2exp_is_linear (d3e0.d3exp_typ) then 1 else 0)
     else 1
   ) : int
-  val () = if flag > 0 then begin
-    d3exp_lval_typ_set (loc0, refval, d3e0, s2e_new, err)
-  end // end of [val]
-in
-  // if it cannot be returned, then it must be freed!
-  if err > 0 then begin case+ s2e_new of
-    | _ when s2exp_fun_is_freeptr s2e_new => 1 (*freeknd*)
-    | _ => begin
+  var freeknd: int = 0 // free the expression if it is set to 1
+  val () = d3exp_lval_typ_set (loc0, refval, d3e0, s2e_new, err)
+  val () = (if err > 0 then begin case+ s2e_new of
+    | _ when flag = 0 => ()
+    | _ when s2exp_fun_is_freeptr s2e_new => (freeknd := 1)
+      // end of [_ when ...]
+    | _ (*flag > 0*) => begin
         prerr loc0;
         prerr ": error(3)";
         prerr ": the dynamic expression needs to be a left-value but it is not.";
         prerr_newline ();
-        $Err.abort {int} ()
+        $Err.abort {void} ()
       end // end of [_]
-  end else begin
-    0 (*freeknd*)
-  end // end of [if]
-end // end of [d3exp_lval_typ_set_arg]
+  end) : void // end of [val]
+in
+  freeknd // a linear value must be freed (freeknd = 1) if it cannot be returned
+end (* end of [d3exp_lval_typ_set_arg] *)
 
 implement d3exp_lval_typ_set_pat (d3e0, p3t) = begin
   case+ p3t.p3at_typ_lft of

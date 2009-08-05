@@ -363,15 +363,26 @@ end // end of [s2lablst_is_prefix]
 
 (* ****** ****** *)
 
-fn d2var_fin_check (loc0: loc_t, d2v: d2var_t): void = begin
+fn d2var_fin_check
+  (loc0: loc_t, d2v: d2var_t): void = let
+(*
+  val () = begin
+    prerr "d2var_fin_check: d2v = "; prerr_d2var d2v; prerr_newline ()
+  end // end of [val]
+  val os2e = d2var_typ_get (d2v)
+  val () = case+ os2e of
+    | Some _ => (prerr "d2var_fin_check: os2e = Some _"; prerr_newline ())
+    | None _ => (prerr "d2var_fin_check: os2e = None _"; prerr_newline ())
+*)
+in
   case+ d2var_typ_get (d2v) of 
   | Some s2e => begin case+ d2var_fin_get (d2v) of 
     | D2VARFINsome s2e0 => let
 (*
         val () = begin
-          prerr "d2var_fin_check: aucCK: d2v = "; prerr d2v; prerr_newline ();
-          prerr "d2var_fin_check: auxCK: s2e = "; prerr s2e; prerr_newline ();
-          prerr "d2var_fin_check: auxCK: s2e0 = "; prerr s2e0; prerr_newline ();
+          prerr "d2var_fin_check: D2VARFINsome: d2v = "; prerr d2v; prerr_newline ();
+          prerr "d2var_fin_check: D2VARFINsome: s2e = "; prerr s2e; prerr_newline ();
+          prerr "d2var_fin_check: D2VARFINsome: s2e0 = "; prerr s2e0; prerr_newline ();
         end // end of [val]
 *)
         val () = trans3_env_push_sta ()
@@ -391,21 +402,20 @@ fn d2var_fin_check (loc0: loc_t, d2v: d2var_t): void = begin
       end // end of [D2VARFINvbox]
     | D2VARFINdone () => () // handled by [funarg_varfin_check]
     | D2VARFINnone () => let
-        val () = 
-          if s2exp_is_linear s2e then begin
-            prerr loc0;
-            prerr ": error(3)";
-            prerr ": the linear dynamic variable [";
-            prerr d2v;
-            prerr "] needs to be consumed but it is preserved with the type [";
-            prerr s2e;
-            prerr "] instead.";
-            prerr_newline ();
-            $Err.abort {void} ()
-          end // end of [if]
+        val () = if s2exp_is_linear s2e then begin
+          prerr loc0;
+          prerr ": error(3)";
+          prerr ": the linear dynamic variable [";
+          prerr d2v;
+          prerr "] needs to be consumed but it is preserved with the type [";
+          prerr s2e;
+          prerr "] instead.";
+          prerr_newline ();
+          $Err.abort {void} ()
+        end // end of [if]
       in
         if d2var_lin_get d2v >= 0 then d2var_typ_set (d2v, None ())
-      end // end of [D2VARFINnone]
+      end (* end of [D2VARFINnone] *)
     end // end of [Some]
   | None () => begin case+ d2var_fin_get (d2v) of
     | D2VARFINdone () => () // handled by [funarg_varfin_check]
@@ -417,9 +427,9 @@ fn d2var_fin_check (loc0: loc_t, d2v: d2var_t): void = begin
         prerr "] needs to be preserved but it is consumed instead.";
         prerr_newline ();
         $Err.abort {void} ()
-      end
+      end (* end of [_] *)
     end // end of [None]
-end // end of [d2var_fin_check]
+end (* end of [d2var_fin_check] *)
 
 (* ****** ****** *)
 
@@ -1325,8 +1335,19 @@ implement funarg_varfin_check (loc0) = let
 *)
   fn auxvar
     (loc0: loc_t, d2v: d2var_t): void = let
-    val d2v: d2var_t = case+ d2var_view_get d2v of
+(*
+    val () = begin
+      prerr "funarg_varfin_check: auxvar: d2v (bef) = "; prerr_d2var d2v; prerr_newline ()
+    end // end of [val]
+*)
+    val d2v = (case+ d2var_view_get d2v of
       | D2VAROPTsome d2v => d2v | D2VAROPTnone () => d2v
+    ) : d2var_t
+(*
+    val () = begin
+      prerr "funarg_varfin_check: auxvar: d2v (aft) = "; prerr_d2var d2v; prerr_newline ()
+    end // end of [val]
+*)
     val () = d2var_fin_check (loc0, d2v)
   in
     d2var_fin_set (d2v, D2VARFINdone ()) // done!
@@ -1336,11 +1357,11 @@ implement funarg_varfin_check (loc0) = let
     (loc0: loc_t, p3ts: p3atlst): void = begin
     case+ p3ts of
     | list_cons (p3t, p3ts) => let
-        val () = begin case+ p3t.p3at_node of
-          | P3Tvar (_, d2v) => auxvar (loc0, d2v)
-          | P3Tas (_, d2v, _) => auxvar (loc0, d2v)
+        val () = (case+ p3t.p3at_node of
+          | P3Tvar (_(*refknd*), d2v) => auxvar (loc0, d2v)
+          | P3Tas (_(*refknd*), d2v, _(*p3at*)) => auxvar (loc0, d2v)
           | _ => ()
-        end // end of [val]
+        ) : void // end of [val]
       in
         auxpatlst (loc0, p3ts)
       end // end of [list_cons]
@@ -1348,14 +1369,14 @@ implement funarg_varfin_check (loc0) = let
   end // end of [auxpatlst]
 in
   case+ the_lamloop_env_arg_get loc0 of
-  | ~Some_vt p3ts => auxpatlst (loc0, p3ts)
-  | ~None_vt () => begin
+  | ~Some_vt p3ts => auxpatlst (loc0, p3ts) | ~None_vt () => begin
       prerr loc0;
-      prerr ": INTERNAL ERROR: funarg_varfin_check: no argument(s).";
+      prerr ": INTERNAL ERROR";
+      prerr ": [ats_trans3_env]: funarg_varfin_check: no argument(s).";
       prerr_newline ();
       $Err.abort {void} ()
     end // end of [None_vt]
-end // end of [funarg_varfin_check]
+end (* end of [funarg_varfin_check] *)
 
 (* ****** ****** *)
 
@@ -1365,16 +1386,24 @@ implement s2exp_wth_instantiate (loc0, s2e0) = let
     prerr "s2exp_wth_instantiate: s2e0 = "; prerr s2e0; prerr_newline ()
   end // end of [val]
 *)
-  fn aux (loc0: loc_t, refval: int, p3t: p3at, s2e: s2exp): void = let
-    val d2v: d2var_t = case+ p3t.p3at_node of
-      | P3Tas (_, d2v, _) => d2v | P3Tvar (_, d2v) => d2v
+  fn aux (
+      loc0: loc_t
+    , refval: int
+    , p3t: p3at
+    , s2e: s2exp
+    ) : void = let
+    val d2v = (case+ p3t.p3at_node of
+      | P3Tvar (_(*refknd*), d2v) => d2v
+      | P3Tas (_(*refknd*), d2v, _(*p2at*)) => d2v
       | _ => begin
           prerr loc0;
-          prerr ": INTERNAL ERROR: s2exp_wth_instantiate: aux: p3t = ";
+          prerr ": INTERNAL ERROR";
+          prerr ": [ats_trans3_env]: s2exp_wth_instantiate: aux: p3t = ";
           prerr p3t;
           prerr_newline ();
           $Err.abort {d2var_t} ()
         end // end of [_]
+    ) : d2var_t // end of [val]
 (*
     val () = begin
       prerr "s2exp_wth_instantiate: aux: refval = "; prerr refval; prerr_newline ();
@@ -1405,10 +1434,12 @@ implement s2exp_wth_instantiate (loc0, s2e0) = let
         auxlst (loc0, p3ts, wths2es)     
       end // end of [WTHS2EXPLSTcons_some]
     | WTHS2EXPLSTcons_none (wths2es) => let
+(*
         val () = assert_errmsg_bool1 (
           $Lst.list_is_cons p3ts, "INTERNAL ERROR: s2exp_wth_instantiate"
         ) // end of [assert_errmsg]
-        val+ list_cons (p3t, p3ts) = p3ts
+*)
+        val- list_cons (p3t, p3ts) = p3ts
       in
         auxlst (loc0, p3ts, wths2es)
       end // end of [WTHS2EXPLSTcons_none]
@@ -1421,7 +1452,8 @@ in
         case+ the_lamloop_env_arg_get (loc0) of
         | ~Some_vt p3ts => p3ts | ~None_vt () => begin
             prerr loc0;
-            prerr ": INTERNAL ERROR: s2exp_wth_instantiate";
+            prerr ": INTERNAL ERROR";
+            prerr ": [ats_trans3_env]: s2exp_wth_instantiate";
             prerr_newline ();
             $Err.abort {p3atlst} ()
           end // end of [None_vt]
