@@ -50,21 +50,35 @@ staload "libats/SATS/freelst.sats"
 
 (* ****** ****** *)
 
-implement{a} freelst_cons
+%{^
+
+ats_ptr_type atslib_freeitm_nxt_get
+  (ats_ptr_type x) { return *((ats_ptr_type*)x) ; }
+/* end of [freeitm_nxt_get] */
+
+ats_void_type atslib_freeitm_nxt_set
+  (ats_ptr_type x, ats_ptr_type p) { *((ats_ptr_type*)x) = p ; return  ; }
+/* end of [freeitm_nxt_set] */
+
+%}
+
+(* ****** ****** *)
+
+implement freelst_cons {a}
   {l_at,l} (pf_at, pf | p_at, p) = let
 //
 extern prfun freeitm_of (pf: !a? @ l_at >> freeitm_t a @ l_at): void
 //
   prval () = freeitm_of (pf_at)
-  val () = freeitm_nxt_set<a> (!p_at, p)
+  val () = freeitm_nxt_set {a} (!p_at, p)
   prval () = pf := freelst_v_cons {a} (pf_at, pf)
 in
   // nothing
 end // end of [freelst_cons]
 
-implement{a} freelst_uncons {l} (pf | p) = let
+implement freelst_uncons {a} {l} (pf | p) = let
   prval (pf1, pf2) = freelst_v_uncons {a} (pf)
-  val p1 = freeitm_nxt_get<a> (!p); prval () = pf := pf2
+  val p1 = freeitm_nxt_get {a} (!p); prval () = pf := pf2
 //
 extern prfun of_freeitm (pf: !freeitm_t a @ l >> a? @ l): void
 //
@@ -76,7 +90,12 @@ end // end of [freelst_uncons]
 (* ****** ****** *)
 
 implement{a} freelst_add_bytes
-  {l} {n} {l_arr} (pf, pf_arr | p, p_arr, n) = let
+  (pf, pf_arr | p, p_arr, n) =
+  freelst_add_bytes_tsz (pf, pf_arr | p, p_arr, n, sizeof<a>)
+// end of [freelst_add_bytes]
+
+implement freelst_add_bytes_tsz {a}
+  {l} {n} {l_arr} (pf, pf_arr | p, p_arr, n, tsz) = let
 //
 extern prfun freeitm_of_bytes
   {l0:addr} (pf: b0ytes (sizeof a) @ l0): freeitm_t a @ l0
@@ -85,13 +104,13 @@ extern prfun bytes_v_split {n,i:nat | i <= n}
   {l:addr} (pf: b0ytes n @ l):<prf> @(b0ytes i @ l, b0ytes (n-i) @ (l+i))
 //
 in
-  if n >= sizeof<a> then let
+  if n >= tsz then let
     prval (pf1, pf2_arr) = bytes_v_split {n,sizeof a} (pf_arr)
     prval pf1 = freeitm_of_bytes (pf1)
-    val () = freeitm_nxt_set<a> (!p_arr, p)
+    val () = freeitm_nxt_set {a} (!p_arr, p)
     prval () = pf := freelst_v_cons (pf1, pf)
   in
-    freelst_add_bytes (pf, pf2_arr | p_arr, p_arr + sizeof<a>, n - sizeof<a>)
+    freelst_add_bytes_tsz (pf, pf2_arr | p_arr, p_arr + tsz, n - tsz, tsz)
   end else let
 //
     prval () = __leak (pf_arr) where { extern prfun __leak {v:view} (pf: v): void }
@@ -99,7 +118,7 @@ in
   in
     p // loop exits
   end // end of [if]
-end (* end of [freelst_add_bytes] *)
+end (* end of [freelst_add_bytes_tsz] *)
 
 (* ****** ****** *)
 

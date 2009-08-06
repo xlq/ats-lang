@@ -42,17 +42,22 @@
 
 (* ****** ****** *)
 
+sortdef itm = {a:viewt@ype | sizeof a >= sizeof ptr}
+
+(* ****** ****** *)
+
 abst@ype freeitm_t (a:viewt@ype, l:addr)
 typedef freeitm_t (a:viewt@ype) = [l:addr] freeitm_t (a, l)
 
-fun{a:viewt@ype}
-  freeitm_nxt_get {l:addr} (x: &freeitm_t (a, l)):<> ptr l // x
-// end of [extern]
+(* ****** ****** *)
 
-fun{a:viewt@ype}
-  freeitm_nxt_set {l1,l2:addr}
+fun freeitm_nxt_get {a:itm}
+  {l:addr} (x: &freeitm_t (a, l)):<> ptr l // x
+  = "atslib_freeitm_nxt_get"
+
+fun freeitm_nxt_set {a:itm} {l1,l2:addr}
   (x: &freeitm_t (a, l1) >> freeitm_t (a, l2), p: ptr l2):<> void // x := p
-// end of [extern]
+  = "atslib_freeitm_nxt_set"
 
 (* ****** ****** *)
 
@@ -71,27 +76,34 @@ prfun freelst_v_uncons {a:viewt@ype} {l0:addr | l0 <> null}
 
 (* ****** ****** *)
 
-fun{a:viewt@ype} freelst_cons
-  {l_at,l:addr} (
+fun freelst_cons
+  {a:itm} {l_at,l:addr} (
     pf_at: a? @ l_at, pf: !freelst_v (a, l) >> freelst_v (a, l_at)
   | p_at: ptr l_at, p: ptr l
   ) :<> void
 // end of [freelst_cons]
 
-fun{a:viewt@ype} freelst_uncons 
-  {l:addr | l <> null} (
+fun freelst_uncons 
+  {a:itm} {l:addr | l <> null} (
     pf: !freelst_v (a, l) >> freelst_v (a, l_nxt) | p: ptr l)
   :<> #[l_nxt:addr] (a? @ l | ptr l_nxt)
 // end of [freelst_uncons]
 
 (* ****** ****** *)
 
-fun{a:viewt@ype} freelst_add_bytes
+fun{a:itm} freelst_add_bytes
   {l:addr} {n:nat} {l_arr:addr} (
     pf: !freelst_v (a, l) >> freelst_v (a, l), pf_arr: b0ytes n @ l_arr
   | p: ptr l, p_arr: ptr l_arr, n: size_t n
   ) :<> #[l:addr] ptr l
 // end of [freelst_add_bytes]
+
+fun freelst_add_bytes_tsz
+  {a:itm} {l:addr} {n:nat} {l_arr:addr} (
+    pf: !freelst_v (a, l) >> freelst_v (a, l), pf_arr: b0ytes n @ l_arr
+  | p: ptr l, p_arr: ptr l_arr, n: size_t n, tsz: sizeof_t a
+  ) :<> #[l:addr] ptr l
+// end of [freelst_add_bytes_tsz]
 
 (* ****** ****** *)
 
