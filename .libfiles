@@ -86,6 +86,10 @@ prelude/DATS/slseg.dats
 libats/SATS/fmatrix.sats
 libats/DATS/fmatrix.dats
 
+/* FREE LIST implementation */
+libats/SATS/freelst.sats
+libats/DATS/freelst.dats
+
 /* generic arrays of various dimensions */
 libats/SATS/genarrays.sats
 libats/DATS/genarrays.dats
