@@ -31,7 +31,14 @@
 
 (* ****** ****** *)
 
-(* author: Hongwei Xi (hwxi AT cs DOT bu DOT edu) *)
+// Author: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
+// Time: Summer, 2009
+
+(* ****** ****** *)
+
+//
+// SML Basis Library: Bool (http://www.standardml.org/Basis/bool.html)
+//
 
 (* ****** ****** *)
 

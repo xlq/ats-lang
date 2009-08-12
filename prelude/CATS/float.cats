@@ -410,7 +410,7 @@ atspre_sub_double_int
 static inline
 ats_double_type
 atspre_sub_int_double
-  (const ats_double_type i1, const ats_int_type f2) {
+  (const ats_int_type i1, const ats_double_type f2) {
   return (i1 - f2) ;
 }
 

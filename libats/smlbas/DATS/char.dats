@@ -38,6 +38,12 @@
 
 (* ****** ****** *)
 
+//
+// SML Basis Library: Char (http://www.standardml.org/Basis/char.html)
+//
+
+(* ****** ****** *)
+
 staload "libats/smlbas/SATS/general.sats"
 
 (* ****** ****** *)

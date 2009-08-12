@@ -39,7 +39,7 @@
 (* ****** ****** *)
 
 //
-// SML Basis Library: Array (http://www.standardml.org/Basis/bool.html)
+// SML Basis Library: Bool (http://www.standardml.org/Basis/bool.html)
 //
 
 (* ****** ****** *)

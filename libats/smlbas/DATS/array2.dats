@@ -38,6 +38,12 @@
 
 (* ****** ****** *)
 
+//
+// SML Basis Library: Array2 (http://www.standardml.org/Basis/array2.html)
+//
+
+(* ****** ****** *)
+
 staload "libats/smlbas/SATS/general.sats"
 
 (* ****** ****** *)

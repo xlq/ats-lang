@@ -39,7 +39,7 @@
 (* ****** ****** *)
 
 //
-// SML Basis Library: Array (http://www.standardml.org/Basis/real.html)
+// SML Basis Library: Time (http://www.standardml.org/Basis/time.html)
 //
 
 (* ****** ****** *)

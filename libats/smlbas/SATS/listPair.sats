@@ -39,7 +39,7 @@
 (* ****** ****** *)
 
 //
-// SML Basis Library: Array (http://www.standardml.org/Basis/list-pair.html)
+// SML Basis Library: ListPair (http://www.standardml.org/Basis/list-pair.html)
 //
 
 (* ****** ****** *)

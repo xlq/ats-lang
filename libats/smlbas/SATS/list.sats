@@ -39,7 +39,7 @@
 (* ****** ****** *)
 
 //
-// SML Basis Library: Array (http://www.standardml.org/Basis/list.html)
+// SML Basis Library: List (http://www.standardml.org/Basis/list.html)
 //
 
 (* ****** ****** *)

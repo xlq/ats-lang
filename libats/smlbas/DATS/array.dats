@@ -38,6 +38,12 @@
 
 (* ****** ****** *)
 
+//
+// SML Basis Library: Array (http://www.standardml.org/Basis/array.html)
+//
+
+(* ****** ****** *)
+
 staload "libats/smlbas/SATS/general.sats"
 
 (* ****** ****** *)

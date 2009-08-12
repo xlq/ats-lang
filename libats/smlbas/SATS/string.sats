@@ -39,7 +39,7 @@
 (* ****** ****** *)
 
 //
-// SML Basis Library: Array (http://www.standardml.org/Basis/string.html)
+// SML Basis Library: String (http://www.standardml.org/Basis/string.html)
 //
 
 (* ****** ****** *)

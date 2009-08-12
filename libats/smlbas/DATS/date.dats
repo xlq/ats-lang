@@ -39,7 +39,7 @@
 (* ****** ****** *)
 
 //
-// SML Basis Library: Array (http://www.standardml.org/Basis/date.html)
+// SML Basis Library: Date (http://www.standardml.org/Basis/date.html)
 //
 
 (* ****** ****** *)
