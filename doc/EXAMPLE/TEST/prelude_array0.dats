@@ -1,6 +1,11 @@
+(*
+** some testing code for functions declared in
+** prelude/SATS/array0.sats
+*)
+
 //
-// some testing code for functions declared in
-// prelude/SATS/array.sats
+// Author: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
+// Time: Spring, 2009
 //
 
 (* ****** ****** *)
@@ -52,5 +57,3 @@ end // end of [main]
 (* ****** ****** *)
 
 (* end of [prelude_array0.dats] *)
-
-

@@ -35,6 +35,18 @@
 
 (* ****** ****** *)
 
+(* 
+** Note that the functions declared in this file are for supporting list
+** processing in ML-like manner. Many more functions are available in the
+** following file:
+**
+** $ATSHOME/libats/smlbas/SATS/list.sats
+**
+** that are implemented for the same purpose.
+*)
+
+(* ****** ****** *)
+
 #include "prelude/params.hats"
 
 (* ****** ****** *)
@@ -49,15 +61,25 @@
 
 // [list0_t0ype_type] is co-variant
 datatype list0_t0ype_type (a: t@ype+) =
-  | list0_cons (a) of (a, list0_t0ype_type a) | list0_nil (a)
+  | list0_cons (a) of (a, list0_t0ype_type a) | list0_nil (a) of ()
+// end of [list0_t0ype_type]
 
 stadef list0 = list0_t0ype_type
+
+(* ****** ****** *)
+
+// for forming singleton lists
+// macdef list0_sing (x) = list0_cons (,(x), list0_nil ())
 
 (* ****** ****** *)
 
 // a casting function implemented in [prelude/CATS/list.cats]
 castfn list0_of_list1 {a:t@ype} (xs: List a):<> list0 a
   = "atspre_list0_of_list1"
+
+// a casting function implemented in [prelude/CATS/list.cats]
+castfn list0_of_list_vt {a:t@ype} (xs: List_vt a):<> list0 a
+  = "atspre_list0_of_list_vt"
 
 // a casting function implemented in [prelude/DATS/list.cats]
 castfn list1_of_list0 {a:t@ype} (xs: list0 a):<> List a
@@ -74,8 +96,25 @@ overload + with list0_append
 
 (* ****** ****** *)
 
+fun{a:t@ype} list0_concat (xs: list0 (list0 a)):<> list0 a
+
+(* ****** ****** *)
+
 fun{a:t@ype} list0_exists_fun (xs: list0 a, f: a -<fun1> bool): bool
 fun{a:t@ype} list0_exists_cloref (xs: list0 a, f: a -<cloref1> bool): bool
+
+(* ****** ****** *)
+
+fun{a:t@ype} list0_filter_fun (xs: list0 a, pred: a -<fun1> bool): list0 a
+fun{a:t@ype} list0_filter_cloref (xs: list0 a, pred: a -<cloref1> bool): list0 a
+
+(* ****** ****** *)
+
+fun{init,a:t@ype} list0_fold_left {f:eff}
+  (f: (init, a) -<cloref,f> init, ini: init, xs: list0 a):<f> init
+
+fun{a,sink:t@ype} list0_fold_right {f:eff}
+  (f: (a, sink) -<cloref,f> sink, xs: list0 a, snk: sink):<f> sink
 
 (* ****** ****** *)
 
@@ -100,9 +139,10 @@ fun{a:t@ype} list0_length (xs: list0 a):<> int
 fun{a,b:t@ype} list0_map_fun (xs: list0 a, f: a -<fun1> b): list0 b
 fun{a,b:t@ype} list0_map_cloref (xs: list0 a, f: a -<cloref1> b): list0 b
 
+(* ****** ****** *)
+
 fun{a1,a2,b:t@ype} list0_map2_fun
   (xs1: list0 a1, xs2: list0 a2, f: (a1, a2) -<fun1> b): list0 b
-
 fun{a1,a2,b:t@ype} list0_map2_cloref
   (xs1: list0 a1, xs2: list0 a2, f: (a1, a2) -<cloref1> b): list0 b
 
@@ -119,6 +159,11 @@ fun{a:t@ype} list0_reverse_append (xs: list0 a, ys: list0 a): list0 a
 (* ****** ****** *)
 
 fun{a:t@ype} list0_tail_exn (xs: list0 a): list0 a
+
+(* ****** ****** *)
+
+fun{a:t@ype} list0_take_exn (xs: list0 a, n: int): list0 a
+fun{a:t@ype} list0_drop_exn (xs: list0 a, n: int): list0 a
 
 (* ****** ****** *)
 

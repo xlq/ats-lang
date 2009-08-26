@@ -7,33 +7,32 @@
 (***********************************************************************)
 
 (*
- * ATS/Anairiats - Unleashing the Potential of Types!
- *
- * Copyright (C) 2002-2008 Hongwei Xi, Boston University
- *
- * All rights reserved
- *
- * ATS is free software;  you can  redistribute it and/or modify it under
- * the terms of  the GNU GENERAL PUBLIC LICENSE (GPL) as published by the
- * Free Software Foundation; either version 3, or (at  your  option)  any
- * later version.
- * 
- * ATS is distributed in the hope that it will be useful, but WITHOUT ANY
- * WARRANTY; without  even  the  implied  warranty  of MERCHANTABILITY or
- * FITNESS FOR A PARTICULAR PURPOSE.  See the  GNU General Public License
- * for more details.
- * 
- * You  should  have  received  a  copy of the GNU General Public License
- * along  with  ATS;  see the  file COPYING.  If not, please write to the
- * Free Software Foundation,  51 Franklin Street, Fifth Floor, Boston, MA
- * 02110-1301, USA.
- *
- *)
+** ATS/Anairiats - Unleashing the Potential of Types!
+**
+** Copyright (C) 2002-2008 Hongwei Xi, Boston University
+**
+** All rights reserved
+**
+** ATS is free software;  you can  redistribute it and/or modify it under
+** the terms of  the GNU GENERAL PUBLIC LICENSE (GPL) as published by the
+** Free Software Foundation; either version 3, or (at  your  option)  any
+** later version.
+** 
+** ATS is distributed in the hope that it will be useful, but WITHOUT ANY
+** WARRANTY; without  even  the  implied  warranty  of MERCHANTABILITY or
+** FITNESS FOR A PARTICULAR PURPOSE.  See the  GNU General Public License
+** for more details.
+** 
+** You  should  have  received  a  copy of the GNU General Public License
+** along  with  ATS;  see the  file COPYING.  If not, please write to the
+** Free Software Foundation,  51 Franklin Street, Fifth Floor, Boston, MA
+** 02110-1301, USA.
+*)
 
 (* ****** ****** *)
 
-// Time: February 2008
 // Author: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
+// Time: February 2008
 
 (* ****** ****** *)
 
@@ -146,24 +145,24 @@ end // end of [icstrlst_free]
 (* ****** ****** *)
 
 implement fprint_icstr {m} {n} (pf_mod | out, ic, n) = let
-  macdef strpr (s) = fprint1_string (pf_mod | out, ,(s))
+  macdef prstr (s) = fprint1_string (pf_mod | out, ,(s))
 in
   case+ ic of
   | ICvec (knd, !ivp) => begin
-      strpr "ICvec("; strpr "knd=";
+      prstr "ICvec("; prstr "knd=";
       fprint1_int (pf_mod | out, knd);
-      strpr "; ";
+      prstr "; ";
       fprint_intvecptr (pf_mod | out, !ivp, n);
-      strpr ")";
+      prstr ")";
       fprint_newline (pf_mod | out);
       fold@ ic
     end // end of [ICvec]
   | ICveclst (knd, !ics) => begin
-      strpr "ICveclst("; strpr "knd=";
+      prstr "ICveclst("; prstr "knd=";
       fprint1_int (pf_mod | out, knd);
-      strpr "; ";
+      prstr "; ";
       fprint_icstrlst (pf_mod | out, !ics, n);
-      strpr ")";
+      prstr ")";
       fprint_newline (pf_mod | out);
       fold@ ic
     end // end of [ICveclst]

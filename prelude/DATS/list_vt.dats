@@ -165,6 +165,16 @@ implement{a} list_vt_length (xs0) = loop (xs0, 0) where {
 
 (* ****** ****** *)
 
+implement{a} list_vt_make_elt (x0, n) = let
+  fun loop {i,j:nat} .<i>.
+    (x0: a, i: int i, res: list_vt (a, j)):<> list_vt (a, i+j) =
+    if i > 0 then loop (x0, i-1, list_vt_cons (x0, res)) else res
+in
+  loop (x0, n, list_vt_nil)
+end // end of [list_make_elt]
+
+(* ****** ****** *)
+
 implement{a} list_vt_append (xs0, ys0) = let
   var xs0 = xs0
   fun{a:viewt@ype} loop {m,n:nat} .<m>.
@@ -327,7 +337,7 @@ implement{a} list_vt_quicksort {n} (xs, cmp) = let
   } // end of [val]
   val asz = size1_of_int1 (list_vt_length xs)
   val (pf_gc, pf_arr | p_arr) = array_ptr_alloc_tsz {a1} (asz, sizeof<a1>)
-  val () = array_ptr_initialize_lst<a1> (!p_arr, asz, __cast xs) where {
+  val () = array_ptr_initialize_lst<a1> (!p_arr, __cast xs) where {
     extern castfn __cast
       (xs: !list_vt (a1, n) >> list_vt (a1?, n)):<> list (a1, n) // good hacking :)  
   } // end of [val]

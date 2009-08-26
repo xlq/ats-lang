@@ -1,6 +1,11 @@
+(*
+** some testing code for functions declared in
+** prelude/SATS/array.sats
+*)
+
 //
-// some testing code for functions declared in
-// prelude/SATS/array.sats
+// Author: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
+// Time: Spring, 2009
 //
 
 (* ****** ****** *)
@@ -22,7 +27,7 @@ implement main (argc, argv) = let
     prval pf = unit_v ()
     // testing [array_iforeach_fun]
     val () = print "A (0-9) = "
-    val () = array_iforeach_fun {unit_v} (pf | f, A, asz) where {
+    val () = array_iforeach_fun {unit_v} (pf | A, f, asz) where {
       fn f (
           pf: !unit_v | i: sizeLt asz, x: &int
         ) :<> void = $effmask_all let
@@ -32,7 +37,7 @@ implement main (argc, argv) = let
     val () = print_newline ()
     // testing [array_iforeach_clo]
     val () = print "A (0-9) = "
-    val () = array_iforeach_clo {unit_v} (pf | !p_f, A, asz) where {
+    val () = array_iforeach_clo {unit_v} (pf | A, !p_f, asz) where {
       var !p_f = @lam
         (pf: !unit_v | i: sizeLt asz, x: &int): void =<clo>
         $effmask_all (

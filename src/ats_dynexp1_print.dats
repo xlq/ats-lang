@@ -63,110 +63,110 @@ macdef fprint_label = $Lab.fprint_label
 (* ****** ****** *)
 
 implement fprint_p1at (pf | out, p1t) = let
-  macdef strpr (s) = fprint1_string (pf | out, ,(s))
+  macdef prstr (s) = fprint1_string (pf | out, ,(s))
 in
   case+ p1t.p1at_node of
   | P1Tann (p1t, s1e) => begin
-      strpr "P1Tann(";
+      prstr "P1Tann(";
       fprint_p1at (pf | out, p1t);
-      strpr "; ";
+      prstr "; ";
       fprint_s1exp (pf | out, s1e);
-      strpr ")"
+      prstr ")"
     end // end of [P1Tann]
   | P1Tany () => fprint1_string (pf | out, "P1Tany()")
   | P1Tanys () => fprint1_string (pf | out, "P1Tanys()")
   | P1Tapp_sta (p1t, s1as) => begin
-      strpr "P1Tapp_sta(";
+      prstr "P1Tapp_sta(";
       fprint_p1at (pf | out, p1t);
-      strpr "; ";
+      prstr "; ";
       fprint1_string (pf | out, "...");
-      strpr ")"
+      prstr ")"
     end
   | P1Tapp_dyn (p1t, _(*loc_arg*), npf, p1ts) => begin
-      strpr "P1Tapp_dyn(";
+      prstr "P1Tapp_dyn(";
       fprint_p1at (pf | out, p1t);
-      strpr "; ";
+      prstr "; ";
       fprint1_int (pf | out, npf);
-      strpr "; ";
+      prstr "; ";
       fprint_p1atlst (pf | out, p1ts);
-      strpr ")"
+      prstr ")"
     end // end of [P1Tapp_dyn]
   | P1Tas (id, p1t) => begin
-      strpr "P1Tas(";
+      prstr "P1Tas(";
       $Sym.fprint_symbol (pf | out, id.i0de_sym);
-      strpr "; ";
+      prstr "; ";
       fprint_p1at (pf | out, p1t);
-      strpr ")"
+      prstr ")"
     end // end of [P1Tas]
   | P1Tchar c => begin
-      strpr "P1Tchar("; fprint1_char (pf | out, c); strpr ")"
+      prstr "P1Tchar("; fprint1_char (pf | out, c); prstr ")"
     end
   | P1Tempty () => begin
       fprint1_string (pf | out, "P1Tempty()")
     end
   | P1Texist (s1vs, p1t) => begin
-      strpr "P1Texist(";
+      prstr "P1Texist(";
       fprint1_string (pf | out, "...");
-      strpr "; ";
+      prstr "; ";
       fprint_p1at (pf | out, p1t);
-      strpr ")"
+      prstr ")"
     end // end of [P1Texist]
   | P1Tfloat f(*string*) => begin
-      strpr "P1Tfloat("; fprint1_string (pf | out, f); strpr ")"
+      prstr "P1Tfloat("; fprint1_string (pf | out, f); prstr ")"
     end // end of [P1Tfloat]
   | P1Tfree p1t => begin
-      strpr "P1Tfree("; fprint_p1at (pf | out, p1t); strpr ")"
+      prstr "P1Tfree("; fprint_p1at (pf | out, p1t); prstr ")"
     end // end of [P1Tfree]
   | P1Tint i(*string*) => begin
-      strpr "P1Tint("; fprint1_string (pf | out, i); strpr ")"
+      prstr "P1Tint("; fprint1_string (pf | out, i); prstr ")"
     end
   | P1Tlist (npf, p1ts) => begin
-      strpr "P1Tlist(";
+      prstr "P1Tlist(";
       fprint1_int (pf | out, npf);
-      strpr "; ";
+      prstr "; ";
       fprint_p1atlst (pf | out, p1ts);
-      strpr ")"
+      prstr ")"
     end // end of [P1Tlist]
   | P1Tlst p1ts => begin
-      strpr "P1Tlst("; fprint_p1atlst (pf | out, p1ts); strpr ")"
+      prstr "P1Tlst("; fprint_p1atlst (pf | out, p1ts); prstr ")"
     end // end of [P1Tlst]
   | P1Tqid (d0q, id) => begin
       $Syn.fprint_d0ynq (pf | out, d0q);
       $Sym.fprint_symbol (pf | out, id)
     end // end of [P1Tqid]
   | P1Trec (rk, lp1ts) => begin
-      strpr "P1Trec(";
+      prstr "P1Trec(";
       fprint1_int (pf | out, rk);
-      strpr "; ";
+      prstr "; ";
       fprint_labp1atlst (pf | out, lp1ts);
-      strpr ")"
+      prstr ")"
     end // end of [P1Trec]
   | P1Tref (id) => begin
-      strpr "P1Tref(";
+      prstr "P1Tref(";
       $Sym.fprint_symbol (pf | out, id.i0de_sym);
-      strpr ")"
+      prstr ")"
     end // end of [P1Tref]
   | P1Trefas (id, p1t) => begin
-      strpr "P1Tref(";
+      prstr "P1Tref(";
       $Sym.fprint_symbol (pf | out, id.i0de_sym);
-      strpr "; ";
+      prstr "; ";
       fprint_p1at (pf | out, p1t);
-      strpr ")"
+      prstr ")"
     end // end of [P1Trefas]
   | P1Tstring s => begin
-      strpr "P1Tstring(\""; fprint1_string (pf | out, s); strpr "\")"
+      prstr "P1Tstring(\""; fprint1_string (pf | out, s); prstr "\")"
     end // end of [P1Tstring]
   | P1Tsvararg s1a => begin
-      strpr "P1Tsvararg("; fprint1_string (pf | out, "..."); strpr ")"
+      prstr "P1Tsvararg("; fprint1_string (pf | out, "..."); prstr ")"
     end // end of [P1Tsvararg]
   | P1Ttup (tupknd, npf, p1ts) => begin
-      strpr "P1Ttup(";
+      prstr "P1Ttup(";
       fprint1_int (pf | out, tupknd);
-      strpr "; ";
+      prstr "; ";
       fprint1_int (pf | out, npf);
-      strpr "; ";
+      prstr "; ";
       fprint_p1atlst (pf | out, p1ts);
-      strpr ")"
+      prstr ")"
     end // end of [P1Ttup]
 (*
   | _ => begin
@@ -194,18 +194,18 @@ end // end of [fprint_p1atlst]
 
 implement fprint_labp1atlst {m} (pf | out, lp1ts0) = let
   fun aux (out: &FILE m, i: int, lp1ts: labp1atlst): void = let
-    macdef strpr (s) = fprint1_string (pf | out, ,(s))
+    macdef prstr (s) = fprint1_string (pf | out, ,(s))
   in
     case+ lp1ts of
     | LABP1ATLSTcons (l, p1t, lp1ts) => begin
-        if i > 0 then strpr ", ";
-        fprint_label (pf | out, l.l0ab_lab); strpr "= ";
+        if i > 0 then prstr ", ";
+        fprint_label (pf | out, l.l0ab_lab); prstr "= ";
         fprint_p1at (pf | out, p1t);
         aux (out, i+1, lp1ts)
       end
     | LABP1ATLSTnil () => ()
     | LABP1ATLSTdot () => begin
-        if i > 0 then strpr ", "; fprint1_string (pf | out, "...")
+        if i > 0 then prstr ", "; fprint1_string (pf | out, "...")
       end // end of [LABP1ATLSTdot]
   end // end of [aux]
 in
@@ -220,253 +220,256 @@ implement prerr_p1at (p1t) = prerr_mac (fprint_p1at, p1t)
 (* ****** ****** *)
 
 implement fprint_d1exp (pf | out, d1e0) = let
-  macdef strpr (s) = fprint1_string (pf | out, ,(s))
+  macdef prstr (s) = fprint1_string (pf | out, ,(s))
 in
   case+ d1e0.d1exp_node of
   | D1Eann_effc (d1e, efc) => begin
-      strpr "D1Eann_effc(";
+      prstr "D1Eann_effc(";
       fprint_d1exp (pf | out, d1e);
-      strpr "; ";
+      prstr "; ";
       $Eff.fprint_effcst (pf | out, efc);
-      strpr ")"
+      prstr ")"
     end
   | D1Eann_funclo (d1e, fc) => begin
-      strpr "D1Eann_funclo(";
+      prstr "D1Eann_funclo(";
       fprint_d1exp (pf | out, d1e);
-      strpr "; ";
+      prstr "; ";
       $Syn.fprint_funclo (pf | out, fc);
-      strpr ")"
+      prstr ")"
     end
   | D1Eann_type (d1e, s1e) => begin
-      strpr "D1Eann_type(";
+      prstr "D1Eann_type(";
       fprint_d1exp (pf | out, d1e);
-      strpr "; ";
+      prstr "; ";
       fprint_s1exp (pf | out, s1e);
-      strpr ")"
+      prstr ")"
     end
   | D1Eapp_dyn (d1e, _(*loc_arg*), npf, d1es) => begin
-      strpr "D1Eapp_dyn(";
+      prstr "D1Eapp_dyn(";
       fprint_d1exp (pf | out, d1e);
-      strpr "; ";
+      prstr "; ";
       fprint1_int (pf | out, npf );
-      strpr "; ";
+      prstr "; ";
       fprint_d1explst (pf | out, d1es);
-      strpr ")"
+      prstr ")"
     end
   | D1Eapp_sta (d1e, s1as) => begin
-      strpr "D1Eapp_sta(";
+      prstr "D1Eapp_sta(";
       fprint_d1exp (pf | out, d1e);
-      strpr "; ";
+      prstr "; ";
       fprint1_string (pf | out, "...");
-      strpr ")"
+      prstr ")"
     end
   | D1Earrinit (s1e, od1e_asz, d1es_elt) => begin
-      strpr "D1Earrinit(";
+      prstr "D1Earrinit(";
       fprint_s1exp (pf | out, s1e);
-      strpr "; ";
+      prstr "; ";
       begin case+ od1e_asz of
       | Some d1e => fprint_d1exp (pf | out, d1e) | None () => ()
       end;
-      strpr "; ";      
+      prstr "; ";      
       fprint_d1explst (pf | out, d1es_elt);
-      strpr ")"
+      prstr ")"
     end // end of [D1Earrinit]
   | D1Earrsize (os1e_elt, d1es_elt) => begin
-      strpr "D1Earrsize(";
+      prstr "D1Earrsize(";
       begin case+ os1e_elt of
       | Some s1e => fprint_s1exp (pf | out, s1e) | None () => ()
       end;
-      strpr "; ";
+      prstr "; ";
       fprint_d1explst (pf | out, d1es_elt);
-      strpr ")"
+      prstr ")"
     end // end of [D1Earrsize]
   | D1Earrsub (d1e_arr, _(*loc_ind*), d1ess_ind) => begin
-      strpr "D1Earrsub(";
+      prstr "D1Earrsub(";
       fprint_d1exp (pf | out, d1e_arr);
-      strpr "; ";
+      prstr "; ";
       fprint_d1explstlst (pf | out, d1ess_ind);
-      strpr ")"
+      prstr ")"
     end // end of [D1Earrsub]
   | D1Ecaseof _ => begin
-      strpr "D1Ecaseof("; fprint1_string (pf | out, "..."); strpr ")"
+      prstr "D1Ecaseof("; fprint1_string (pf | out, "..."); prstr ")"
     end
   | D1Echar c => begin
-      strpr "D1Echar("; fprint1_char (pf | out, c); strpr ")"
+      prstr "D1Echar("; fprint1_char (pf | out, c); prstr ")"
     end
   | D1Ecrypt (knd, d1e) => begin
-      strpr "D1Ecrypt(";
+      prstr "D1Ecrypt(";
       fprint1_int (pf | out, knd);
-      strpr "; ";
+      prstr "; ";
       fprint_d1exp (pf | out, d1e);
-      strpr ")"
+      prstr ")"
     end
   | D1Edynload (fil) => begin
-      strpr "D1Edynload(";
+      prstr "D1Edynload(";
       $Fil.fprint_filename (pf | out, fil);
-      strpr ")"
+      prstr ")"
     end
   | D1Eeffmask (effs, d1e) => begin
-      strpr "D1Eeffmask(";
+      prstr "D1Eeffmask(";
       $Eff.fprint_effectlst (pf | out, effs);
-      strpr "; ";
+      prstr "; ";
       fprint_d1exp (pf | out, d1e);
-      strpr ")"
+      prstr ")"
     end
   | D1Eempty () => begin
-      strpr "D1Eempty()";
+      prstr "D1Eempty()";
     end
   | D1Eexist (s1a, d1e) => begin
-      strpr "D1Eexist(";
+      prstr "D1Eexist(";
       fprint1_string (pf | out, "...");
-      strpr "; ";
+      prstr "; ";
       fprint_d1exp (pf | out, d1e);
-      strpr ")"
+      prstr ")"
     end // end of [D1Eexist]
   | D1Eextval (s1e, code) => begin
       fprint_s1exp (pf | out, s1e);
-      strpr "; ";
-      strpr "\"";
+      prstr "; ";
+      prstr "\"";
       fprint1_string (pf | out, code);
-      strpr "\"";
-      strpr ")"
+      prstr "\"";
+      prstr ")"
     end // end of [D1Eextval]
   | D1Efix (id_fun, d1e_body) => begin
-      strpr "D1Efix(";
+      prstr "D1Efix(";
       $Syn.fprint_i0de (pf | out, id_fun);
-      strpr "; ";
+      prstr "; ";
       fprint_d1exp (pf | out, d1e_body);
-      strpr ")"
+      prstr ")"
     end // end of [D1Efix]
   | D1Efloat f(*string*) => begin
-      strpr "D1Efloat("; fprint1_string (pf | out, f); strpr ")"
+      prstr "D1Efloat("; fprint1_string (pf | out, f); prstr ")"
     end
   | D1Efloatsp f(*string*) => begin
-      strpr "D1Efloatsp("; fprint1_string (pf | out, f); strpr ")"
+      prstr "D1Efloatsp("; fprint1_string (pf | out, f); prstr ")"
     end
   | D1Efoldat (_(*s1as*), d1e) => begin
-      strpr "D1Efoldat(";
+      prstr "D1Efoldat(";
       fprint1_string (pf | out, "...");
-      strpr "; ";
+      prstr "; ";
       fprint_d1exp (pf | out, d1e);
-      strpr ")"
+      prstr ")"
     end // end of [D1Efoldat]
   | D1Efor (inv, ini, test, post, body) => begin
       fprint1_string (pf | out, "...");
-      strpr "; ";
+      prstr "; ";
       fprint_d1exp (pf | out, ini);
-      strpr "; ";
+      prstr "; ";
       fprint_d1exp (pf | out, test);
-      strpr "; ";
+      prstr "; ";
       fprint_d1exp (pf | out, post);
-      strpr "; ";
+      prstr "; ";
       fprint_d1exp (pf | out, body);
     end // end of [D1Efor]
   | D1Efreeat (_(*s1as*), d1e) => begin
-      strpr "D1Efreeat(";
+      prstr "D1Efreeat(";
       fprint1_string (pf | out, "...");
-      strpr "; ";
+      prstr "; ";
       fprint_d1exp (pf | out, d1e);
-      strpr ")"
+      prstr ")"
     end // end of [D1Efreeat]
   | D1Eif (_(*inv*), d1e_cond, d1e_then, od1e_else) => begin
-      strpr "D1Eif(";
+      prstr "D1Eif(";
       fprint1_string (pf | out, "...");
-      strpr "; ";
+      prstr "; ";
       fprint_d1exp (pf | out, d1e_cond);
-      strpr "; ";
+      prstr "; ";
       fprint_d1exp (pf | out, d1e_then);
       begin case+ od1e_else of
         | Some d1e_else => begin
-            strpr "; "; fprint_d1exp (pf | out, d1e_else)
+            prstr "; "; fprint_d1exp (pf | out, d1e_else)
           end
         | None () => ()
       end;
-      strpr ")"
+      prstr ")"
     end // end of [D1Eif]
   | D1Eint i(*string*) => begin
-      strpr "D1Eint("; fprint1_string (pf | out, i); strpr ")"
+      prstr "D1Eint("; fprint1_string (pf | out, i); prstr ")"
     end
   | D1Eintsp i(*string*) => begin
-      strpr "D1Eintsp("; fprint1_string (pf | out, i); strpr ")"
+      prstr "D1Eintsp("; fprint1_string (pf | out, i); prstr ")"
     end
   | D1Elam_dyn (lin, p1t, d1e) => begin
-      strpr "D1Elam_dyn(";
+      prstr "D1Elam_dyn(";
       fprint1_int (pf | out, lin);
-      strpr "; ";
+      prstr "; ";
       fprint_p1at (pf | out, p1t);
-      strpr "; ";
+      prstr "; ";
       fprint_d1exp (pf | out, d1e);
-      strpr ")"
+      prstr ")"
     end // end of [D1Elam_dyn]
   | D1Elaminit_dyn (lin, p1t, d1e) => begin
-      strpr "D1Elaminit_dyn(";
+      prstr "D1Elaminit_dyn(";
       fprint1_int (pf | out, lin);
-      strpr "; ";
+      prstr "; ";
       fprint_p1at (pf | out, p1t);
-      strpr "; ";
+      prstr "; ";
       fprint_d1exp (pf | out, d1e);
-      strpr ")"
+      prstr ")"
     end // end of [D1Elaminit_dyn]
   | D1Elam_met (_, s1es, d1e) => begin
-      strpr "D1Elam_met(";
+      prstr "D1Elam_met(";
       fprint_s1explst (pf | out, s1es);
-      strpr "; ";
+      prstr "; ";
       fprint_d1exp (pf | out, d1e);
-      strpr ")"
+      prstr ")"
     end // end of [D1Elam_met]
   | D1Elam_sta_ana (_, s1as, d1e) => begin
-      strpr "D1Elam_sta_ana(";
+      prstr "D1Elam_sta_ana(";
       fprint1_string (pf | out, "...");
-      strpr "; ";
+      prstr "; ";
       fprint_d1exp (pf | out, d1e);
-      strpr ")";
+      prstr ")";
     end // end of [D1Elam_sta_ana]
   | D1Elam_sta_syn (_, s1qs, d1e) => begin
-      strpr "D1Elam_sta_syn(";
+      prstr "D1Elam_sta_syn(";
       fprint1_string (pf | out, "...");
-      strpr "; ";
+      prstr "; ";
       fprint_d1exp (pf | out, d1e);
-      strpr ")";
+      prstr ")";
     end // end of [D1Elam_sta_syn]
   | D1Elazy_delay (lin, d1e) => begin
-      strpr "D1Elazy_delay(";
+      prstr "D1Elazy_delay(";
       fprint1_int (pf | out, lin);
-      strpr "; ";
+      prstr "; ";
       fprint_d1exp (pf | out, d1e);
-      strpr ")"
+      prstr ")"
     end // end of [D1Elazy_delay]
   | D1Elet (d1cs, d1e) => begin
-      strpr "D1Elet(";
+      prstr "D1Elet(";
       fprint1_string (pf | out, "...");
-      strpr "; ";
+      prstr "; ";
       fprint_d1exp (pf | out, d1e);
-      strpr ")"
+      prstr ")"
     end // end of [D1Elet]
+  | D1Eobj _ => begin
+      prstr "D1Eobj("; fprint_string (pf | out, "..."); prstr ")"
+    end // end of [D1Eobj]
   | D1Eptrof d1e => begin
-      strpr "D1Eptrof("; fprint_d1exp (pf | out, d1e); strpr ")"
+      prstr "D1Eptrof("; fprint_d1exp (pf | out, d1e); prstr ")"
     end
   | D1Elist (npf, d1es) => begin
-      strpr "D1Elist(";
+      prstr "D1Elist(";
       fprint1_int (pf | out, npf);
-      strpr "; ";
+      prstr "; ";
       fprint_d1explst (pf | out, d1es);
-      strpr ")"
+      prstr ")"
     end // end of [D1Elist]
   | D1Eloopexn i => begin
-      strpr "D1Eloopexn("; fprint1_int (pf | out, i); strpr ")"
+      prstr "D1Eloopexn("; fprint1_int (pf | out, i); prstr ")"
     end // end of [D1Eloopexn]
   | D1Elst (lin, os1e, d1es) => begin
-      strpr "D1Elst(";
+      prstr "D1Elst(";
       fprint1_int (pf | out, lin);
-      strpr "; ";
+      prstr "; ";
       begin case+ os1e of
         | Some s1e => begin
-            fprint_s1exp (pf | out, s1e); strpr "; "
+            fprint_s1exp (pf | out, s1e); prstr "; "
           end
         | None () => ()
       end;
       fprint_d1explst (pf | out, d1es);
-      strpr ")"
+      prstr ")"
     end // end of [D1Elst]
   | D1Emacsyn (knd, d1e) => let
       val () = case+ knd of
@@ -474,103 +477,103 @@ in
         | $Syn.MACSYNKINDdecode () => fprint1_string (pf | out, ",(")
         | $Syn.MACSYNKINDencode () => fprint1_string (pf | out, "`(")
     in
-      fprint_d1exp (pf | out, d1e); strpr ")"
+      fprint_d1exp (pf | out, d1e); prstr ")"
     end // end of [D1Emacsyn]
   | D1Eqid (q, id) => begin
       $Syn.fprint_d0ynq (pf | out, q); $Sym.fprint_symbol (pf | out, id)
     end // end of [D1Eqid]
   | D1Eraise (d1e) => begin
-      strpr "D1Eraise("; fprint_d1exp (pf | out, d1e); strpr ")"
+      prstr "D1Eraise("; fprint_d1exp (pf | out, d1e); prstr ")"
     end // end of [D1Eraise]
   | D1Erec (recknd, ld1es) => begin
-      strpr "D1Erec(";
+      prstr "D1Erec(";
       fprint1_int (pf | out, recknd);
-      strpr "; ";
+      prstr "; ";
       fprint1_string (pf | out, "...");
-      strpr ")"
+      prstr ")"
     end // end of [D1Erec]
   | D1Escaseof _ => begin
-      strpr "D1Escaseof("; fprint1_string (pf | out, "..."); strpr ")"
+      prstr "D1Escaseof("; fprint1_string (pf | out, "..."); prstr ")"
     end // end of [D1Escaseof]
   | D1Esel (knd, d1e, d1l) => begin
-      strpr "D1Esel(";
+      prstr "D1Esel(";
       fprint1_int (pf | out, knd);
-      strpr "; ";
+      prstr "; ";
       fprint_d1exp (pf | out, d1e);
-      strpr "; ";
+      prstr "; ";
       fprint_d1lab (pf | out, d1l);
-      strpr ")"
+      prstr ")"
     end // end of [D1Esel]
   | D1Eseq d1es => begin
-      strpr "D1Eseq("; fprint_d1explst (pf | out, d1es); strpr ")"
+      prstr "D1Eseq("; fprint_d1explst (pf | out, d1es); prstr ")"
     end // end of [D1Eseq]
   | D1Esexparg s1a => begin
-      strpr "D1Esexparg("; fprint1_string (pf | out, "..."); strpr ")"
+      prstr "D1Esexparg("; fprint1_string (pf | out, "..."); prstr ")"
     end // end of [D1Esexparg]
   | D1Esif (_(*inv*), s1e_cond, d1e_then, d1e_else) => begin
-      strpr "D1Esif(";
+      prstr "D1Esif(";
       fprint1_string (pf | out, "...");
-      strpr "; ";
+      prstr "; ";
       fprint_s1exp (pf | out, s1e_cond);
-      strpr "; ";
+      prstr "; ";
       fprint_d1exp (pf | out, d1e_then);
-      strpr "; ";
+      prstr "; ";
       fprint_d1exp (pf | out, d1e_else);
-      strpr ")"
+      prstr ")"
     end // end of [D1Esif]
   | D1Espawn d1e => begin
-      strpr "D1Espawn("; fprint_d1exp (pf | out, d1e); strpr ")"
+      prstr "D1Espawn("; fprint_d1exp (pf | out, d1e); prstr ")"
     end // end of [D1Espawn]
   | D1Estring (str, len) => begin
       fprintf1_exn (pf | out, "D1Estring(\"%s\", %i)", @(str, len))
     end // end of [D1Estring]
   | D1Estruct (ld1es) => begin
-      strpr "D1Estruct(";
+      prstr "D1Estruct(";
       fprint_labd1explst (pf | out, ld1es);
-      strpr ")"
+      prstr ")"
     end // end of [D1Estruct]
   | D1Etmpid (qid, ts1ess) => begin
-      strpr "D1Etmpid(";
+      prstr "D1Etmpid(";
       $Syn.fprint_d0ynq (pf | out, qid.tmpqi0de_qua);
       $Sym.fprint_symbol (pf | out, qid.tmpqi0de_sym);
-      strpr "; ";
+      prstr "; ";
       fprint_tmps1explstlst (pf | out, ts1ess);
-      strpr ")"
+      prstr ")"
     end // end of [D1Etmpid]
   | D1Etop () => begin
       fprint1_string (pf | out, "D1Etop()")
     end
   | D1Etrywith (_(*r1es*), d1e, c1ls) => begin
-      strpr "D1Etrywith(";
+      prstr "D1Etrywith(";
       fprint_d1exp (pf | out, d1e);
-      strpr "; ";
+      prstr "; ";
       fprint1_string (pf | out, "...");
-      strpr ")"
+      prstr ")"
     end // end of [D1Etrywith]
   | D1Etup (tupknd, npf, d1es) => begin
-      strpr "D1Etup(";
+      prstr "D1Etup(";
       fprint1_int (pf | out, tupknd);
-      strpr "; ";
+      prstr "; ";
       fprint1_int (pf | out, npf);
-      strpr "; ";
+      prstr "; ";
       fprint_d1explst (pf | out, d1es);
-      strpr ")"
+      prstr ")"
     end // end of [D1Etup]
   | D1Eviewat (d1e) => begin
-      strpr "D1Eviewat("; fprint_d1exp (pf | out, d1e); strpr ")"
+      prstr "D1Eviewat("; fprint_d1exp (pf | out, d1e); prstr ")"
     end
   | D1Ewhere (d1e, d1cs) => begin
-      strpr "D1Ewhere(";
+      prstr "D1Ewhere(";
       fprint_d1exp (pf | out, d1e);
-      strpr "; ";
+      prstr "; ";
       fprint1_string (pf | out, "...");
-      strpr ")"
+      prstr ")"
     end // end of [D1Ewhere]
   | D1Ewhile (inv, test, body) => begin
       fprint1_string (pf | out, "...");
-      strpr "; ";
+      prstr "; ";
       fprint_d1exp (pf | out, test);
-      strpr "; ";
+      prstr "; ";
       fprint_d1exp (pf | out, body);
     end // end of [D1Ewhile]
 (*
@@ -615,12 +618,12 @@ end // end of [fprint_d1explstlst]
 
 implement fprint_labd1explst {m} (pf | out, ld1es0) = let
   fun aux (out: &FILE m, i: int, ld1es: labd1explst): void = let
-    macdef strpr (s) = fprint1_string (pf | out, ,(s))
+    macdef prstr (s) = fprint1_string (pf | out, ,(s))
   in
     case+ ld1es of
     | LABD1EXPLSTcons (l, d1e, ld1es) => begin
-        if i > 0 then strpr ", ";
-        fprint_label (pf | out, l.l0ab_lab); strpr "= ";
+        if i > 0 then prstr ", ";
+        fprint_label (pf | out, l.l0ab_lab); prstr "= ";
         fprint_d1exp (pf | out, d1e);
         aux (out, i+1, ld1es)
       end
@@ -638,12 +641,12 @@ implement prerr_d1exp (d1e) = prerr_mac (fprint_d1exp, d1e)
 (* ****** ****** *)
 
 implement fprint_d1lab (pf | out, d1l) = let
-  macdef strpr (s) = fprint1_string (pf | out, ,(s))
+  macdef prstr (s) = fprint1_string (pf | out, ,(s))
 in
   case+ d1l.d1lab_node of
   | D1LABlab lab => fprint_label (pf | out, lab)
   | D1LABind ind => begin
-      strpr "["; fprint_d1explstlst (pf | out, ind); strpr "]"
+      prstr "["; fprint_d1explstlst (pf | out, ind); prstr "]"
     end // end of [D1LABind]
 end // end of [fprint_d1lab]
 

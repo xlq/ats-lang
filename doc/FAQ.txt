@@ -117,4 +117,10 @@ A. In the first case, the type of [e] must be synthesized and this type is
 
 ------
 
+Q. What is the symbol for "not equal"?
+
+A. The symbol "<>" is used for "not equal".
+
+------
+
 ###### end of [FAQ.txt] ######

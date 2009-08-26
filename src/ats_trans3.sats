@@ -7,28 +7,27 @@
 (***********************************************************************)
 
 (*
- * ATS/Anairiats - Unleashing the Potential of Types!
- *
- * Copyright (C) 2002-2008 Hongwei Xi, Boston University
- *
- * All rights reserved
- *
- * ATS is free software;  you can  redistribute it and/or modify it under
- * the terms of  the GNU GENERAL PUBLIC LICENSE (GPL) as published by the
- * Free Software Foundation; either version 3, or (at  your  option)  any
- * later version.
- * 
- * ATS is distributed in the hope that it will be useful, but WITHOUT ANY
- * WARRANTY; without  even  the  implied  warranty  of MERCHANTABILITY or
- * FITNESS FOR A PARTICULAR PURPOSE.  See the  GNU General Public License
- * for more details.
- * 
- * You  should  have  received  a  copy of the GNU General Public License
- * along  with  ATS;  see the  file COPYING.  If not, please write to the
- * Free Software Foundation,  51 Franklin Street, Fifth Floor, Boston, MA
- * 02110-1301, USA.
- *
- *)
+** ATS/Anairiats - Unleashing the Potential of Types!
+**
+** Copyright (C) 2002-2008 Hongwei Xi, Boston University
+**
+** All rights reserved
+**
+** ATS is free software;  you can  redistribute it and/or modify it under
+** the terms of  the GNU GENERAL PUBLIC LICENSE (GPL) as published by the
+** Free Software Foundation; either version 3, or (at  your  option)  any
+** later version.
+** 
+** ATS is distributed in the hope that it will be useful, but WITHOUT ANY
+** WARRANTY; without  even  the  implied  warranty  of MERCHANTABILITY or
+** FITNESS FOR A PARTICULAR PURPOSE.  See the  GNU General Public License
+** for more details.
+** 
+** You  should  have  received  a  copy of the GNU General Public License
+** along  with  ATS;  see the  file COPYING.  If not, please write to the
+** Free Software Foundation,  51 Franklin Street, Fifth Floor, Boston, MA
+** 02110-1301, USA.
+*)
 
 (* ****** ****** *)
 
@@ -58,9 +57,6 @@ fun d3exp_open_and_add (d3e: d3exp): void
 fun d3explst_open_and_add (d3es: d3explst): void
 
 (* ****** ****** *)
-
-fun p2at_typ_syn (_: $DEXP2.p2at): $SEXP2.s2exp
-fun p2atlst_typ_syn {n:nat} (_: $DEXP2.p2atlst n): $SEXP2.s2explst n
 
 fun p2at_tr_dn (_: $DEXP2.p2at, _: $SEXP2.s2exp): p3at
 fun p2atlst_tr_dn {n:nat}
@@ -138,8 +134,6 @@ fun d3exp_lval_typ_set_pat (d3e0: d3exp, p3t: p3at): void
 fun d3exp_tr_dn (d3e: d3exp, s2e: $SEXP2.s2exp): void
 
 (* ****** ****** *)
-
-fun d2exp_typ_syn (_: $DEXP2.d2exp): $SEXP2.s2exp
 
 fun d2exp_tr_up (_: $DEXP2.d2exp): d3exp
 fun d2explst_tr_up {n:nat} (_: $DEXP2.d2explst n): d3explst n
@@ -231,6 +225,11 @@ fun c2laulst_tr_dn {n:nat} (
   , s2es_pat: $SEXP2.s2explst n
   , s2e0: $SEXP2.s2exp
   ) : c3laulst n
+
+(* ****** ****** *)
+
+fun m2thdec_tr (mtd: $DEXP2.m2thdec): m3thdec
+fun m2thdeclst_tr (mtds: $DEXP2.m2thdeclst): m3thdeclst
 
 (* ****** ****** *)
 

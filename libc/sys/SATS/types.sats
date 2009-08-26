@@ -49,14 +49,28 @@ abst@ype clock_t = $extype "ats_clock_type" // for CLOCKS_PER_SEC
 
 abst@ype clockid_t = $extype "ats_clockid_type" // for clock ID type
 
+(* ****** ****** *)
+
 abst@ype dev_t = $extype "ats_dev_type" // for device IDs
+
+fun eq_dev_dev (x1: dev_t, x2: dev_t): bool = "atslib_eq_dev_dev"
+overload = with eq_dev_dev
+
+(* ****** ****** *)
 
 abst@ype fsblkcnt_t = $extype "ats_fsblkcnt_type" // file system block counts
 abst@ype fsfilcnt_t = $extype "ats_fsfilcnt_type" // file system file counts
 
 abst@ype gid_t = $extype "ats_gid_type" // for group IDs
 
+(* ****** ****** *)
+
 abst@ype ino_t = $extype "ats_ino_type" // for file serial numbers
+
+fun eq_ino_ino (x1: ino_t, x2: ino_t): bool = "atslib_eq_ino_ino"
+overload = with eq_ino_ino
+
+(* ****** ****** *)
 
 abst@ype key_t = $extype "ats_key_type" // for XSI interprocess communication
 
@@ -74,7 +88,17 @@ abst@ype nlink_t = $extype "ats_nlink_type" // number of hard links to a file
 
 (* ****** ****** *)
 
+abst@ype whence_t = $extype "ats_int_type"
+
+macdef SEEK_SET = $extval (whence_t, "SEEK_SET")
+macdef SEEK_CUR = $extval (whence_t, "SEEK_CUR")
+macdef SEEK_END = $extval (whence_t, "SEEK_END")
+
+(* ****** ****** *)
+
 abst@ype off_t = $extype "ats_off_type" // file size in bytes
+
+fun off_of_lint (li: lint):<> off_t = "atslib_off_of_lint"
 fun lint_of_off (off: off_t):<> lint = "atslib_lint_of_off"
 
 (* ****** ****** *)
@@ -82,6 +106,7 @@ fun lint_of_off (off: off_t):<> lint = "atslib_lint_of_off"
 // for process IDs // a signed integer type
 abst@ype pid_t = $extype "ats_pid_type"
 fun int_of_pid (pid: pid_t):<> int = "atslib_int_of_pid"
+fun lint_of_pid (pid: pid_t):<> lint = "atslib_lint_of_pid"
 
 (* ****** ****** *)
 

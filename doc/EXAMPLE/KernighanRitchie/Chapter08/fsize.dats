@@ -38,10 +38,10 @@ end // end of [main]
 (* ****** ****** *)
 
 implement fsize (name) = let
-  var stbuf: stat with pf0 // uninitialized
+  var stbuf: stat_t with pf0 // uninitialized
   val (pf1 | err) = stat_err (pf0 | name, &stbuf)
 in
-  if :(pf0: stat? @ stbuf) => err >= 0 then let
+  if :(pf0: stat_t? @ stbuf) => err >= 0 then let
     prval stat_v_succ (pf2) = pf1
     val mode = stat_st_mode_get (stbuf)
   in
@@ -63,10 +63,10 @@ end // end of [fsize]
 
 (* ****** ****** *)
 
-extern fun dirent_is_self (dp: &dirent):<> bool
+extern fun dirent_is_self (dp: &dirent_t):<> bool
   = "atslib_dirent_is_self"
 
-extern fun dirent_is_parent (dp: &dirent):<> bool
+extern fun dirent_is_parent (dp: &dirent_t):<> bool
   = "atslib_dirent_is_parent"
 
 %{^
@@ -121,7 +121,7 @@ in
             val direntnameopt =
               direntnameopt_make (buf, dirname, !p_ent) where {
               extern fun direntnameopt_make (
-                buf: &buf_t, dir: string, ent: &dirent
+                buf: &buf_t, dir: string, ent: &dirent_t
               ) :<> Stropt = "direntnameopt_make" 
             }
             val () = begin

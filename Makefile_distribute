@@ -34,6 +34,7 @@
 ######
 
 GCC=gcc
+RANLIB=ranlib
 
 PWD=$(shell pwd)
 ifdef ATSHOME
@@ -78,12 +79,15 @@ bootstrap1/Makefile:
       | cat - .bootstrap_makefile > bootstrap1/Makefile
 
 ###### w/o GC ######
+
 atsopt1: bootstrap1/Makefile; cd bootstrap1; make atsopt; mv atsopt "$(ATSHOME)"/bin
 
 ###### with GC ######
+
 atsopt1_gc: bootstrap1/Makefile; cd bootstrap1; make atsopt_gc; mv atsopt "$(ATSHOME)"/bin
 
 ###### some toplevel commands ######
+
 bin/atscc bin/atslib:
 	cd utils/scripts; make atscc; mv atscc "$(ATSHOME)"/bin
 	cd utils/scripts; make atslib; mv atslib "$(ATSHOME)"/bin
@@ -93,9 +97,17 @@ bin/atscc bin/atslib:
 
 # [gcc -E] for preprocessing
 .libfiles_local: ; $(GCC) -E -P -x c .libfiles -o .libfiles_local
-libfiles: .libfiles_local; "$(ATSHOME)"/bin/atslib --libats
+libfiles: .libfiles_local
+	# for libats
+	"$(ATSHOME)"/bin/atslib $(ATS_TERMINATION_CHECK) -O2 --libats
+	$(RANLIB) "$(ATSHOME)"/ccomp/lib/libats.a
+
+	# for libats_smlbas
+	"$(ATSHOME)"/bin/atslib $(ATS_TERMINATION_CHECK) -O2 --libats_smlbas
+	$(RANLIB) "$(ATSHOME)"/ccomp/lib/libats_smlbas.a
 
 ###### a lexer for ATS ######
+
 bin/atslex:
 	cd utils/atslex; make atslex; mv atslex "$(ATSHOME)"/bin
 	cd utils/atslex; make clean

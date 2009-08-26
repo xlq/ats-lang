@@ -7,28 +7,27 @@
 (***********************************************************************)
 
 (*
- * ATS - Unleashing the Potential of Types!
- *
- * Copyright (C) 2002-2008 Hongwei Xi, Boston University
- *
- * All rights reserved
- *
- * ATS is free software;  you can  redistribute it and/or modify it under
- * the terms of the GNU LESSER GENERAL PUBLIC LICENSE as published by the
- * Free Software Foundation; either version 2.1, or (at your option)  any
- * later version.
- * 
- * ATS is distributed in the hope that it will be useful, but WITHOUT ANY
- * WARRANTY; without  even  the  implied  warranty  of MERCHANTABILITY or
- * FITNESS FOR A PARTICULAR PURPOSE.  See the  GNU General Public License
- * for more details.
- * 
- * You  should  have  received  a  copy of the GNU General Public License
- * along  with  ATS;  see the  file COPYING.  If not, please write to the
- * Free Software Foundation,  51 Franklin Street, Fifth Floor, Boston, MA
- * 02110-1301, USA.
- *
- *)
+** ATS - Unleashing the Potential of Types!
+**
+** Copyright (C) 2002-2008 Hongwei Xi, Boston University
+**
+** All rights reserved
+**
+** ATS is free software;  you can  redistribute it and/or modify it under
+** the terms of the GNU LESSER GENERAL PUBLIC LICENSE as published by the
+** Free Software Foundation; either version 2.1, or (at your option)  any
+** later version.
+** 
+** ATS is distributed in the hope that it will be useful, but WITHOUT ANY
+** WARRANTY; without  even  the  implied  warranty  of MERCHANTABILITY or
+** FITNESS FOR A PARTICULAR PURPOSE.  See the  GNU General Public License
+** for more details.
+** 
+** You  should  have  received  a  copy of the GNU General Public License
+** along  with  ATS;  see the  file COPYING.  If not, please write to the
+** Free Software Foundation,  51 Franklin Street, Fifth Floor, Boston, MA
+** 02110-1301, USA.
+*)
 
 (* ****** ****** *)
 
@@ -67,12 +66,12 @@ fun gc_init (): void = "ats_gc_init"
 // the following functions are implemented in ats_memory.h"
 
 fun malloc_ngc {n:nat} (n: size_t n)
-  :<> [l:addr] (free_ngc_v (n, l), b0ytes n @ l | ptr l)
+  :<> [l:agz] (free_ngc_v (n, l), b0ytes n @ l | ptr l)
   = "ats_malloc_ngc"
 
 fun calloc_ngc {a:viewt@ype} {n:nat}
   (n: size_t n, tsz: sizeof_t a)
-  :<> [l:addr] (free_ngc_v (a?, n, l), @[a?][n] @ l | ptr l)
+  :<> [l:agz] (free_ngc_v (a?, n, l), @[a?][n] @ l | ptr l)
   = "ats_calloc_ngc"
 
 fun free_ngc {n:nat} {l:addr}
@@ -82,7 +81,7 @@ fun free_ngc {n:nat} {l:addr}
 fun realloc_ngc {n0,n:nat} {l0:addr} (
     _: free_ngc_v (n0, l0), _: b0ytes n0 @ l0
   | _: ptr l0, _: size_t n
-  ) :<> [l:addr] (free_ngc_v (n, l), b0ytes n @ l | ptr l)
+  ) :<> [l:agz] (free_ngc_v (n, l), b0ytes n @ l | ptr l)
   = "ats_realloc_ngc"
 
 (* ****** ****** *)
@@ -102,12 +101,12 @@ fun gc_chunk_count_limit_max_set (n: int): void
 (* ****** ****** *)
 
 fun malloc_gc {n:nat}
-  (n: size_t n):<> [l:addr] (free_gc_v (n, l), b0ytes n @ l | ptr l)
+  (n: size_t n):<> [l:agz] (free_gc_v (n, l), b0ytes n @ l | ptr l)
   = "ats_malloc_gc"
 
 fun calloc_gc {a:viewt@ype} {n:nat}
   (n: size_t n, tsz: sizeof_t a)
-  :<> [l:addr] (free_gc_v (n, l), @[a?][n] @ l | ptr l)
+  :<> [l:agz] (free_gc_v (n, l), @[a?][n] @ l | ptr l)
   = "ats_calloc_gc"
 
 fun free_gc {n:nat} {l:addr}
@@ -117,7 +116,7 @@ fun free_gc {n:nat} {l:addr}
 fun realloc_gc {n0,n:nat} {l0:addr} (
     _: free_gc_v (n0, l0), _: b0ytes n0 @ l0
   | _: ptr l0, _: size_t n
-  ) :<> [l:addr] (free_gc_v (n, l), b0ytes n @ l | ptr l)
+  ) :<> [l:agz] (free_gc_v (n, l), b0ytes n @ l | ptr l)
   = "ats_realloc_gc"
 
 (* ****** ****** *)

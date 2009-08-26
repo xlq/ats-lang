@@ -37,7 +37,7 @@ DESTDIR =
 
 # Default target.
 
-all:
+all: config.h
 	@$(MAKE) -f Makefile_maintainer $@
 
 # NOTE(liulk): integration with autoconf.
@@ -45,8 +45,11 @@ all:
 -include config.mk
 
 config.h config.mk: config.h.in config.mk.in configure
-	./configure
-	@exec $(MAKE) $@	# rerunning make
+	test -x config.status && config.status || ./configure
+
+Makefile: ;
+configure.ac: ;
+config.mk.in: ;
 
 configure: configure.ac
 	aclocal
@@ -59,7 +62,7 @@ config.h.in: configure.ac
 # NOTE(liulk): installation to prefix
 
 .PHONY: install
-install:
+install: config.h all
 	# recursively install all files in the list except .svn control files.
 	for d in ccomp/runtime doc libats libc prelude; do \
 	  cd $(abs_top_srcdir) && \

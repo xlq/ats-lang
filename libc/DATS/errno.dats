@@ -28,7 +28,6 @@
 ** along  with  ATS;  see the  file COPYING.  If not, please write to the
 ** Free Software Foundation,  51 Franklin Street, Fifth Floor, Boston, MA
 ** 02110-1301, USA.
-**
 *)
 
 (* ****** ****** *)
@@ -37,4 +36,8 @@
 
 (* ****** ****** *)
 
-(* end of [error.dats] *)
+// it is empty so far
+
+(* ****** ****** *)
+
+(* end of [errno.dats] *)

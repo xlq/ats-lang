@@ -1,7 +1,10 @@
-//
+(*
 // some testing code for functions declared in
-// prelude/SATS/list.sats
-//
+// prelude/SATS/list_vt.sats
+*)
+
+// Author: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
+// Time: Spring, 2009
 
 (* ****** ****** *)
 

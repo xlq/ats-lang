@@ -15,11 +15,11 @@ checkall: compall cleanall
 compall: AutoDiff coin_flip \
      curve fft hamming_lazy \
      GaussElim GarsiaWachs \
-     hanoi kmp \
+     hanoi kmp montecarlo \
      queens queens_appel queens_lazy_vt \
      longestline passwdgen pi_lazy \
-     sieve sieve_lazy strmat sumup \
-     tetrix wc
+     sieve sieve_lazy sieve_lazy_vt \
+     strmat sumup tetrix wc
 
 # automatic differentiation
 AutoDiff: AutoDiff.dats
@@ -56,6 +56,9 @@ hanoi: hanoi.dats; $(ATSCC) -o hanoi hanoi.dats
 
 # Knuth-Morris-Pratt string search
 kmp: kmp.dats; $(ATSCC) -o kmp kmp.dats
+
+montecarlo: montecarlo.dats
+	$(ATSCC) -O2 -o montecarlo montecarlo.dats -lm -lats_smlbas
 
 # An example of linear lazy evaluation
 longestline: longestline.dats
@@ -143,6 +146,7 @@ cleanall:: clean
 	rm -f kmp
 	rm -f listquicksort
 	rm -f longestline
+	rm -f montecarlo
 	rm -f passwdgen
 	rm -f pi_lazy
 	rm -f queens

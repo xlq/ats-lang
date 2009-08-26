@@ -7,33 +7,32 @@
 (***********************************************************************)
 
 (*
- * ATS/Anairiats - Unleashing the Potential of Types!
- *
- * Copyright (C) 2002-2008 Hongwei Xi, Boston University
- *
- * All rights reserved
- *
- * ATS is free software;  you can  redistribute it and/or modify it under
- * the terms of  the GNU GENERAL PUBLIC LICENSE (GPL) as published by the
- * Free Software Foundation; either version 3, or (at  your  option)  any
- * later version.
- * 
- * ATS is distributed in the hope that it will be useful, but WITHOUT ANY
- * WARRANTY; without  even  the  implied  warranty  of MERCHANTABILITY or
- * FITNESS FOR A PARTICULAR PURPOSE.  See the  GNU General Public License
- * for more details.
- * 
- * You  should  have  received  a  copy of the GNU General Public License
- * along  with  ATS;  see the  file COPYING.  If not, please write to the
- * Free Software Foundation,  51 Franklin Street, Fifth Floor, Boston, MA
- * 02110-1301, USA.
- *
- *)
+** ATS/Anairiats - Unleashing the Potential of Types!
+**
+** Copyright (C) 2002-2008 Hongwei Xi, Boston University
+**
+** All rights reserved
+**
+** ATS is free software;  you can  redistribute it and/or modify it under
+** the terms of  the GNU GENERAL PUBLIC LICENSE (GPL) as published by the
+** Free Software Foundation; either version 3, or (at  your  option)  any
+** later version.
+** 
+** ATS is distributed in the hope that it will be useful, but WITHOUT ANY
+** WARRANTY; without  even  the  implied  warranty  of MERCHANTABILITY or
+** FITNESS FOR A PARTICULAR PURPOSE.  See the  GNU General Public License
+** for more details.
+** 
+** You  should  have  received  a  copy of the GNU General Public License
+** along  with  ATS;  see the  file COPYING.  If not, please write to the
+** Free Software Foundation,  51 Franklin Street, Fifth Floor, Boston, MA
+** 02110-1301, USA.
+*)
 
 (* ****** ****** *)
 
-// Time: April 2008
 // Author: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
+// Time: April 2008
 
 (* ****** ****** *)
 
@@ -59,8 +58,11 @@ staload Syn = "ats_syntax.sats"
 
 staload "ats_staexp2.sats"
 staload "ats_dynexp2.sats"
+
+(* ****** ****** *)
+
 staload SDC = "ats_stadyncst2.sats"
-staload TransEnv2 = "ats_trans2_env.sats"
+staload TR2Env = "ats_trans2_env.sats"
 
 (* ****** ****** *)
 
@@ -126,6 +128,7 @@ fn emit_include_cats {m:file_mode}
   val () = fprint1_string (pf | out, "#include \"prelude/CATS/char.cats\"\n")
   val () = fprint1_string (pf | out, "#include \"prelude/CATS/float.cats\"\n")
   val () = fprint1_string (pf | out, "#include \"prelude/CATS/integer.cats\"\n")
+  val () = fprint1_string (pf | out, "#include \"prelude/CATS/integer_fixed.cats\"\n")
   val () = fprint1_string (pf | out, "#include \"prelude/CATS/integer_ptr.cats\"\n")
   val () = fprint1_string (pf | out, "#include \"prelude/CATS/lazy.cats\"\n")
   val () = fprint1_string (pf | out, "#include \"prelude/CATS/lazy_vt.cats\"\n")
@@ -684,33 +687,38 @@ end // end of [emit_extvallst_markroot]
 
 (* ****** ****** *)
 
-fun emit_stafile_extcode {m:file_mode}
-  (pf: file_mode_lte (m, w) | out: &FILE m, fil: fil_t)
-  : void = let
+fun emit_stafile_extcode {m:file_mode} (
+    pf: file_mode_lte (m, w) | out: &FILE m, fil: fil_t
+  ) : void = let
   val fil_sym = $Fil.filename_full_sym (fil)
-  val od2cs = $TransEnv2.d2eclst_namespace_find (fil_sym)
+  val od2cs = $TR2Env.d2eclst_namespace_find (fil_sym)
   val d2cs = (case+ od2cs of
     | ~Some_vt (d2cs) => d2cs | ~None_vt () => begin
-        prerr "Internal Error: emit_instr_staload_file: fil = ";
+        prerr "INTERNAL ERROR";
+        prerr ": [ats_ccomp_main]: emit_instr_staload_file: fil = ";
         $Fil.prerr_filename fil;
         prerr_newline ();
         $Err.abort {d2eclst} ()
-      end
+      end // end of [None_vt]
   ) : d2eclst
-  fun aux (out: &FILE m, d2cs: d2eclst): void = begin case+ d2cs of
-    | list_cons (d2c, d2cs) => let val () = case+ d2c.d2ec_node of
-        | D2Cextcode (pos, code) => begin
-            if (pos >= 0) then () else fprint1_string (pf | out, code)
-          end
-        | D2Cstaload (fil, _(*od2cs*)) => begin
-            emit_stafile_extcode (pf | out, fil)
-          end
-        | _ => ()
+  fun aux
+    (out: &FILE m, d2cs: d2eclst): void =
+    case+ d2cs of
+    | list_cons (d2c, d2cs) => let
+        val () = (case+ d2c.d2ec_node of
+          | D2Cextcode (pos, code) => begin
+              if (pos >= 0) then () else fprint1_string (pf | out, code)
+            end // end of [D2Cextcode]
+          | D2Cstaload (fil, _(*od2cs*)) => begin
+              emit_stafile_extcode (pf | out, fil)
+            end // end of [D2Cstaload]
+          | _ => ()
+        ) : void // end of [val]
       in
         aux (out, d2cs)
       end // end of [list_cons]
     | list_nil () => ()
-  end // end of [aux]
+  // end of [aux]
 in
   aux (out, d2cs)
 end // end of [emit_stafile_extcode]
@@ -723,9 +731,9 @@ fun emit_stafilelst_extcode {m:file_mode}
      val () = emit_stafilelst_extcode (pf | out, !fils_rest)
    in
      fold@ fils
-   end
+   end // end of [STAFILELSTcons]
   | STAFILELSTnil () => fold@ fils
-end // end of [emit_stafilelst_extcode]
+end (* end of [emit_stafilelst_extcode] *)
 
 (* ****** ****** *)
 
@@ -733,7 +741,7 @@ fn emit_staload {m:file_mode} (
     pf: file_mode_lte (m, w) | out: &FILE m, fil: fil_t
   , stafils: stafilelst, s2cs: !datcstlst, d2cs: !exnconlst
   ) : void = let
-
+//
   fun aux_staload_dec (out: &FILE m, fils: !stafilelst)
     : void = begin case+ fils of
     | STAFILELSTcons (fil, !fils_rest) => let
@@ -747,7 +755,7 @@ fn emit_staload {m:file_mode} (
       end
     | STAFILELSTnil () => fold@ fils
   end // end of [ats_staload_dec]
-
+//
   fun aux_staload_app (out: &FILE m, fils: !stafilelst)
     : void = begin case+ fils of
     | STAFILELSTcons (fil, !fils_rest) => let
@@ -759,7 +767,7 @@ fn emit_staload {m:file_mode} (
       end
     | STAFILELSTnil () => fold@ fils
   end // end of [ats_staload_app]
-
+//
   fun aux_staload_datcstlst
     (out: &FILE m, s2cs: !datcstlst): int = let
     fun aux_conlst (out: &FILE m, d2cs: d2conlst)
@@ -792,7 +800,7 @@ fn emit_staload {m:file_mode} (
   in
     aux (out, 0, s2cs)
   end // end of [aux_staload_datcstlst]
-
+//
   fun aux_staload_exnconlst
     (out: &FILE m, d2cs: !exnconlst): int = let
     fun aux (out: &FILE m, i: int, d2cs: !exnconlst): int = begin
@@ -820,11 +828,11 @@ fn emit_staload {m:file_mode} (
   in
     aux (out, 0, d2cs)
   end // end of [aux_staload_exnconlst]
-  
+//  
   val () = fprint1_string (pf | out, "#ifndef _ATS_STALOADFUN_NONE\n\n")
-
+//
   val () = aux_staload_dec (out, stafils)
-
+//
   val () = fprint1_string (pf | out, "static int ")
   val () = emit_filename (pf | out, fil)
   val () = fprint1_string (pf | out, "__staload_flag = 0 ;\n\n")
@@ -836,14 +844,14 @@ fn emit_staload {m:file_mode} (
   val () = fprint1_string (pf | out, "__staload_flag) return ;\n")
   val () = emit_filename (pf | out, fil)
   val () = fprint1_string (pf | out, "__staload_flag = 1 ;\n")
-
+//
   val () = aux_staload_app (out, stafils)
-
+//
   val () = stafilelst_free (stafils)
-
+//
   val _(*int*) = aux_staload_datcstlst (out, s2cs)
   val _(*int*) = aux_staload_exnconlst (out, d2cs)
-
+//
   val () = fprint1_string (pf | out, "return ;\n")
   val () = fprint1_string (pf | out, "} /* staload function */\n\n")
   val () = fprint1_string (pf | out, "#endif // [_ATS_STALOADFUN_NONE]\n\n")
@@ -862,7 +870,7 @@ fn emit_dynload {m:file_mode} (
   , tmps: !tmpvarmap_vt
   , exts: !extvallst
   ) : void = let
-
+//
   // code for dynamic loading
   val dynfils = the_dynfilelst_get ()
   val () = aux_dynload_dec (out, dynfils) where {
@@ -883,9 +891,9 @@ fn emit_dynload {m:file_mode} (
     // end of [aux_dynload_dec]
   } // end of [where]
   val () = dynfilelst_free (dynfils)
-
+//
   val () = fprint1_string (pf | out, "#ifndef _ATS_DYNLOADFUN_NONE\n\n")
-
+//
   val () = let
     val () = if dynloadflag = 0 then fprint1_string (pf | out, "// ")
     val () = fprint1_string (pf | out, "extern int\n")
@@ -895,11 +903,11 @@ fn emit_dynload {m:file_mode} (
   in
     // empty
   end // end of [val]
-
+//
   val () = fprint1_string (pf | out, "ats_void_type\n")
   val () = emit_filename (pf | out, fil)
   val () = fprint1_string (pf | out, "__dynload () {\n")
-
+//
   val () = let
     val () =
       if dynloadflag = 0 then fprint1_string (pf | out, "// ")
@@ -908,11 +916,11 @@ fn emit_dynload {m:file_mode} (
   in
     // empty
   end // end of [val]
-
+//
   // code for static loading
   val () = emit_filename (pf | out, fil)
   val () = fprint1_string (pf | out, "__staload () ;\n")
-
+//
   // code for termination checking
   val () = fprint1_string (pf | out, "#ifdef _ATS_TERMINATION_CHECK\n")
   stavar l_out: addr; val p_out: ptr l_out = &out
@@ -934,7 +942,7 @@ fn emit_dynload {m:file_mode} (
     end // end of [f]
   } // end of [where]
   val () = fprint1_string (pf | out, "#endif /* _ATS_TERMINATION_CHECK */\n")
-
+//
   // code marking GC roots
   val () = fprint1_string
     (pf | out, "\n/* marking static variables for GC */\n")
@@ -942,15 +950,15 @@ fn emit_dynload {m:file_mode} (
   val () = fprint1_string
     (pf | out, "\n/* marking external values for GC */\n")
   val _(*n*) = emit_extvallst_markroot (pf | out, exts)
-
+//
   val () = fprint1_string
     (pf | out, "\n/* code for dynamic loading */\n")
   val () = emit_instrlst_vt (pf | out, res)
-
+//
   val () = fprint1_string (pf | out, "return ;\n")
   val () = fprint1_string (pf | out, "} /* dynload function */\n\n")
   val () = fprint1_string (pf | out, "#endif // [_ATS_DYNLOADFUN_NONE]\n\n")
-
+//
   // this is used for explicit dynamic loading
   val () = let
     val name = $Glo.ats_dynloadfuname_get () in case+ 0 of
@@ -964,7 +972,7 @@ fn emit_dynload {m:file_mode} (
       end // end of [_ when ...]
     | _ => ()
   end // end of [val]
-
+//
 in
   // empty
 end // end of [emit_dynload]

@@ -46,4 +46,4 @@ fun fixity_resolve {a:type}
 
 (* ****** ****** *)
 
-(* end of [tiger_main.dats] *)
+(* end of [fixity.sats] *)

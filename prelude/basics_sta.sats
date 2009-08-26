@@ -296,6 +296,16 @@ stadef == = eq_addr_addr_bool
 sta neq_addr_addr_bool : (addr, addr) -> bool
 stadef <> = neq_addr_addr_bool
 
+(* ****** ****** *)
+
+(*
+** subclass relation
+*)
+sta lte_cls_cls_bool : (cls, cls) -> bool
+stadef <= = lte_cls_cls_bool
+
+(* ****** ****** *)
+
 (*
 
 // some built-in static constants for rationals
@@ -365,29 +375,24 @@ stadef vbox = vbox_view_prop
 
 (*
 
-abst@ype value_t0ype_int_t0ype
-  (a:t@ype+, i:int) = union (i) { value= a }
-stadef value = value_t0ype_int_t0ype
-typedef Value (a:t@ype) =
-  [i:int | 0 <= i; i <= 1] value (a, i)
-
-//
-
-absviewt@ype value_viewt0ype_int_viewt0ype
+absviewt@ype opt_viewt0ype_int_viewt0ype
   (a:viewt@ype+, i:int) = union (i) { value= a }
-stadef value_vt = value_viewt0ype_int_viewt0ype
-viewtypedef Value_vt (a:viewt@ype) =
-  [i:int | 0 <= i; i <= 1] value_vt (a, i)
+stadef opt = value_viewt0ype_int_viewt0ype
 
 *)
+
+absviewt@ype
+  opt_viewt0ype_int_viewt0ype (a:viewt@ype+, tag:int) = a
+// end of [absviewt@ype]
+
+stadef opt = opt_viewt0ype_int_viewt0ype
 
 (* ****** ****** *)
 
 (*
 
-// not yet supported and may never be supported
-
-datasort stamp = (* abstract *)
+// this not yet supported and it may never
+datasort stamp = (* abstract *) // be supported
 
 // sta vfrac : (stamp, view, rat) -> view
 absview vfrac (stamp, view, rat)
@@ -428,7 +433,17 @@ abst@ype ptrdiff_int_t0ype (i:int) = $extype "ats_ptrdiff_type"
 
 (* ****** ****** *)
 
+absviewt@ype
+obj_cls_viewt0ype (c:cls) // for linear objects indexed by [c]
+
+abstype
+objmod_cls_type (c:cls) // for modules indexed by [c]
+
+(* ****** ****** *)
+
 abstype ptr_addr_type (addr)
+
+(* ****** ****** *)
 
 abstype string_int_type (int)
 abstype stropt_int_type (int)
@@ -493,8 +508,8 @@ stadef ndiv_r = ndiv_int_int_int_bool
 
 stadef div_int_int_int_bool (x: int, y: int, q: int) =
   (x >= 0 && y > 0 && ndiv_int_int_int_bool (x, y, q)) ||
-  (x >= 0 && y < 0 && ndiv_int_int_int_bool (x, ~y, q)) ||
-  (x <= 0 && y > 0 && ndiv_int_int_int_bool (~x, y, q)) ||
+  (x >= 0 && y < 0 && ndiv_int_int_int_bool (x, ~y, ~q)) ||
+  (x <= 0 && y > 0 && ndiv_int_int_int_bool (~x, y, ~q)) ||
   (x <= 0 && y < 0 && ndiv_int_int_int_bool (~x, ~y, q))
 
 stadef div_r = div_int_int_int_bool
@@ -558,6 +573,11 @@ stadef ptrdiff_t = ptrdiff_t0ype
 
 (* ****** ****** *)
 
+stadef obj = obj_cls_viewt0ype
+stadef objmod = objmod_cls_type
+
+(* ****** ****** *)
+
 stadef ptr = ptr_addr_type
 stadef ptr = ptr_type
 
@@ -598,9 +618,9 @@ typedef natLte (n:int) = [i:int | 0 <= i; i <= n] int i
 typedef Pos = intGt 0
 typedef Neg = intLt 0
 
-typedef Ptr = [l:addr] ptr l
-
 typedef Sgn = [i:int | ~1 <= i; i <= 1] int i
+
+typedef Ptr = [l:addr] ptr l
 
 typedef String = [n:int | n >= 0] string n
 typedef Stropt = [n:int] stropt n
@@ -725,15 +745,18 @@ datatype // t@ype+: covariant
 list_t0ype_int_type (a:t@ype+, int) =
   | {n:int | n >= 0}
       list_cons (a, n+1) of (a, list_t0ype_int_type (a, n))
+    // end of [list_cons]
   | list_nil (a, 0)
+// end of [datatype]
 
 stadef list = list_t0ype_int_type
 typedef List (a:t@ype) = [n:int | n >= 0] list (a, n)
 
 // [option_t0ype_bool_type] is covariant
-datatype  // t@ype+: covariant
+datatype // t@ype+: covariant
 option_t0ype_bool_type (a:t@ype+, bool) =
   | None (a, false) | Some (a, true) of a
+// end of [datatype]
 
 stadef option = option_t0ype_bool_type
 typedef Option (a:t@ype) = [b:bool] option (a, b)
@@ -763,15 +786,26 @@ viewtypedef Option_vt (a:viewt@ype) = [b:bool] option_vt (a, b)
 
 // some useful props and views
 
-dataview option_view_bool_view (a:view+, bool) =
-  | None_v (a, false) | Some_v (a, true) of a
+dataprop unit_p = unit_p of ()
+dataview unit_v = unit_v of ()
+
+//
+
+dataview
+option_view_bool_view (a:view+, bool) =
+  | Some_v (a, true) of a | None_v (a, false)
+// end of [option_view_bool_view]
 
 stadef option_v = option_view_bool_view
 
 //
 
-dataprop unit_p = unit_p of ()
-dataview unit_v = unit_v of ()
+dataview
+disj_view_view_int_view (v0: view, v1: view, int) =
+  | InsLeft_v (v0, v1, 0) of v0 | InsRight_v (v0, v1, 1) of v1
+// end of [dataview or_view_view_int_view]
+
+stadef disj_v = disj_view_view_int_view
 
 //
 
@@ -790,7 +824,8 @@ stadef crypt = crypt_viewt0ype_viewt0ype
 abstype lazy_t0ype_type (t@ype+) // boxed type
 stadef lazy = lazy_t0ype_type
 
-// [lazy_vt VT] : supspended computation with a linear value of viewtype VT
+// [lazy_vt VT] :
+//   supspended computation with a linear value of viewtype VT
 absviewtype lazy_viewt0ype_viewtype (viewt@ype+) // boxed linear type
 stadef lazy_vt = lazy_viewt0ype_viewtype
 
@@ -805,6 +840,7 @@ where stream (a:t@ype) = lazy (stream_con a)
 // lazy linear streams
 dataviewtype stream_vt_con (a:viewt@ype+) =
   | stream_vt_nil (a) | stream_vt_cons (a) of (a, stream_vt a)
+// end of [stream_vt_con]
 
 where stream_vt (a:viewt@ype) = lazy_vt (stream_vt_con a)
 

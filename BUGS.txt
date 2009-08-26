@@ -206,4 +206,24 @@ is properly marked as a GC root (if needed)?
 
 ######
 
+Saturday: July 11, 2009 (HX)
+
+STATUS: FIXED on July 16, 2009 (HX)
+
+Now [ats_struct_type] is added in $ATSHOME/ccomp/runtime/types.h; it is
+defined to be an incomplete struct type; both ats_abs_type and ats_var_type
+are now defined to be [struct ats_struct_type]. This fixes the reported bug.
+
+How to make sure the sizeof<a> does not get used in the following
+situation:
+
+fun f {a}
+  (...) = let
+  val tsz = sizeof<a> // currently this always equals sizeof<void>
+in
+  ...
+end // end of [fun]
+
+######
+
  ------------------ end of [BUGS.txt] -------------------

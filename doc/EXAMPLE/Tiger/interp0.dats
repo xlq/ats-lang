@@ -194,6 +194,7 @@ fun interp0Exp_CallExp
           @lam (e: exp): value =<clo1> interp0Exp (env0, e)
         // end of [var]
         val vs = list_map_clo<exp,value> (es, !p_interp0)
+        val vs = list_of_list_vt (vs)
       in
         f_pre (vs)
       end // end of [VFVALpre]
@@ -535,6 +536,7 @@ fn interp0Fundec
 *)
   val arg = list_map_fun<fieldtyp,sym>
     (fd.fundec_arglst, lam (x) =<fun> x.fieldtyp_lab)
+  val arg = list_of_list_vt (arg) 
   val vfval = VFVALfun (r_env, arg, fd.fundec_body)
 in
   !r_env := env_insert (!r_env, fd.fundec_name, vfval)

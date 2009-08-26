@@ -119,6 +119,7 @@ dynload "ats_dynexp2.dats"
 dynload "ats_dynexp2_print.dats"
 dynload "ats_dynexp2_dcst.dats"
 dynload "ats_dynexp2_dmac.dats"
+dynload "ats_dynexp2_dmtd.dats"
 dynload "ats_dynexp2_dvar.dats"
 dynload "ats_dynexp2_util.dats"
 dynload "ats_trans2_env.dats"
@@ -237,7 +238,7 @@ fn atsopt_usage (cmd: string): void = begin
 end // end of [atsopt_usage]
 
 fn atsopt_version (): void = begin
-  print "ATS/Anairiats version 0.1.5"; print_newline ()
+  print "ATS/Anairiats version 0.1.6"; print_newline ()
 end // end of [atsopt_version]
 
 (* ****** ****** *)
@@ -310,6 +311,7 @@ fn prelude_load (ATSHOME: string): void = let
   val () = pervasive_load (ATSHOME, "prelude/SATS/file.sats")
   val () = pervasive_load (ATSHOME, "prelude/SATS/float.sats")
   val () = pervasive_load (ATSHOME, "prelude/SATS/integer.sats")
+  val () = pervasive_load (ATSHOME, "prelude/SATS/integer_fixed.sats")
   val () = pervasive_load (ATSHOME, "prelude/SATS/integer_ptr.sats")
   val () = pervasive_load (ATSHOME, "prelude/SATS/lazy.sats")
   val () = pervasive_load (ATSHOME, "prelude/SATS/lazy_vt.sats")
@@ -327,7 +329,9 @@ fn prelude_load (ATSHOME: string): void = let
   val () = pervasive_load (ATSHOME, "prelude/SATS/list0.sats")
   val () = pervasive_load (ATSHOME, "prelude/SATS/list_vt.sats")
   val () = pervasive_load (ATSHOME, "prelude/SATS/matrix.sats")
+  val () = pervasive_load (ATSHOME, "prelude/SATS/matrix0.sats")
   val () = pervasive_load (ATSHOME, "prelude/SATS/option.sats")
+  val () = pervasive_load (ATSHOME, "prelude/SATS/option0.sats")
   val () = pervasive_load (ATSHOME, "prelude/SATS/slseg.sats")
 
 (*
@@ -414,10 +418,16 @@ fn do_parse_filename (
   end // end of [val]
 //
   val () = if param.posmark > 0 then $PM.posmark_enable ()
+//
   var d0cs: $Syn.d0eclst = list_nil ()
   val () = $Fil.the_filenamelst_push filename
   val () = d0cs := $Par.parse_from_filename (flag, filename)
   val () = $Fil.the_filenamelst_pop ()
+//
+  val () = if debug_flag > 0 then begin
+    prerrf ("The file [%s] is successfully parsed!\n", @(basename))
+  end // end of [if]
+//
   val () = if param.posmark > 0 then let
     val () = $Syn.d0eclst_posmark d0cs in $PM.posmark_disable ()
   end // end of [val]

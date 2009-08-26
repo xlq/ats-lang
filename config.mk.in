@@ -3,7 +3,6 @@ PACKAGE_TARNAME=@PACKAGE_TARNAME@
 PACKAGE_VERSION=@PACKAGE_VERSION@
 abs_top_srcdir=@abs_top_srcdir@
 prefix=@prefix@
-srcdir=@srcdir@
 
 CFLAGS=@CFLAGS@
 CPPFLAGS=@CPPFLAGS@

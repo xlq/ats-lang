@@ -206,7 +206,7 @@ implement{a} list_append {i,j} (xs, ys) = let
     (xs: list (a, n1), ys: list (a, n2), res: &(List a)? >> list (a, n1+n2))
     :<> void = begin case+ xs of
     | x :: xs => let
-        val () = (res := cons {a} {0} (x, ?)); val cons (_, !p) = res
+        val () = (res := cons {a} {0} (x, ?)); val+ cons (_, !p) = res
       in
         loop (xs, ys, !p); fold@ res
       end
@@ -229,6 +229,22 @@ in
 end
 
 *)
+
+implement{a} list_append_vt {i,j} (xs, ys) = let
+  var res: List_vt a // uninitialized
+  fun loop {n1,n2:nat} .<n1>.
+    (xs: list (a, n1), ys: list_vt (a, n2), res: &(List_vt a)? >> list_vt (a, n1+n2))
+    :<> void = begin case+ xs of
+    | x :: xs => let
+        val () = (res := list_vt_cons {a} {0} (x, ?)); val+ list_vt_cons (_, !p) = res
+      in
+        loop (xs, ys, !p); fold@ res
+      end
+    | nil () => (res := ys)
+  end // end of [loop]
+in
+  loop (xs, ys, res); res
+end // end of [list_append_vt]
 
 (* ****** ****** *)
 
@@ -304,16 +320,23 @@ in
   case+ xss of xs :: xss => aux (xs, xss) | nil () => nil ()
 end // end of [list_concat]
 
-//
+(* ****** ****** *)
 
-implement{a} list_drop (xs, i) = let
+implement{a} list_drop (xs, i) = loop (xs, i) where {
   fun loop {n,i:nat | i <= n} .<i>.
     (xs: list (a, n), i: int i):<> list (a, n-i) =
-    if i > 0 then let val _ :: xs = xs in loop (xs, i-1) end
+    if i > 0 then let val+ _ :: xs = xs in loop (xs, i-1) end
     else xs
-in
-  loop (xs, i)
-end // end of [list_drop]
+} // end of [list_drop]
+
+implement{a} list_drop_exn (xs, i) = loop (xs, i) where {
+  fun loop {n,i:nat} .<i>.
+    (xs: list (a, n), i: int i):<> [i <= n] list (a, n-i) =
+    if i > 0 then begin case+ xs of
+      | list_cons (_, xs) => loop (xs, i-1)
+      | list_nil () => $raise ListSubscriptException ()
+    end else xs
+} // end of [list_drop_exn]
 
 (* ****** ****** *)
 
@@ -599,15 +622,15 @@ macrodef list_fold_left_mac (list_fold_left, f, res, xs) = `(
 
 *)
 
-implement{sink,a} list_fold_left__main
+implement{init,a} list_fold_left__main
   {v} {vt} {f:eff} (pf | f, res, xs, env) = let
   fun loop {n:nat} .<n>. (
       pf: !v
-    | f: (!v | sink, a, !vt) -<fun,f> sink
-    , res: sink
+    | f: (!v | init, a, !vt) -<fun,f> init
+    , res: init
     , xs: list (a, n)
     , env: !vt
-  ) :<f> sink = case+ xs of
+  ) :<f> init = case+ xs of
     | x :: xs => let
         val res = f (pf | res, x, env) in loop (pf | f, res, xs, env)
       end // end of [::]
@@ -617,9 +640,9 @@ in
   loop (pf | f, res, xs, env)
 end // end of [list_fold_left__main]
 
-implement{sink,a} list_fold_left_fun {f:eff} (f, res, xs) = let
+implement{init,a} list_fold_left_fun {f:eff} (f, res, xs) = let
   val f = coerce (f) where {
-    extern castfn coerce (f: (sink, a) -<f> sink):<> (!unit_v | sink, a, !Ptr) -<f> sink
+    extern castfn coerce (f: (init, a) -<f> init):<> (!unit_v | init, a, !Ptr) -<f> init
   } // end of [where]
   prval pf = unit_v ()
   val ans = list_fold_left__main (pf | f, res, xs, null)
@@ -628,33 +651,33 @@ in
   ans
 end // end of [list_fold_left_fun]
 
-implement{sink,a} list_fold_left_clo {f:eff} (f, res, xs) = let
-  viewtypedef clo_t = (sink, a) -<clo,f> sink
+implement{init,a} list_fold_left_clo {f:eff} (f, res, xs) = let
+  viewtypedef clo_t = (init, a) -<clo,f> init
   stavar l_f: addr; val p_f: ptr l_f = &f
   viewdef V = clo_t @ l_f
-  fn app (pf: !V | res: sink, x: a, p_f: !ptr l_f):<f> sink = !p_f (res, x)
+  fn app (pf: !V | res: init, x: a, p_f: !ptr l_f):<f> init = !p_f (res, x)
   prval pf = view@ f
-  val ans = list_fold_left__main<sink,a> {V} {ptr l_f} (pf | app, res, xs, p_f)
+  val ans = list_fold_left__main<init,a> {V} {ptr l_f} (pf | app, res, xs, p_f)
   prval () = view@ f := pf
 in
   ans
 end // end of [list_fold_left_clo]
 
-implement{sink,a} list_fold_left_cloptr {f:eff} (f, res, xs) = let
-  viewtypedef cloptr_t = (sink, a) -<cloptr,f> sink
-  fn app (pf: !unit_v | res: sink, x: a, f: !cloptr_t):<f> sink = f (res, x)
+implement{init,a} list_fold_left_cloptr {f:eff} (f, res, xs) = let
+  viewtypedef cloptr_t = (init, a) -<cloptr,f> init
+  fn app (pf: !unit_v | res: init, x: a, f: !cloptr_t):<f> init = f (res, x)
   prval pf = unit_v ()
-  val ans = list_fold_left__main<sink,a> {unit_v} {cloptr_t} (pf | app, res, xs, f)
+  val ans = list_fold_left__main<init,a> {unit_v} {cloptr_t} (pf | app, res, xs, f)
   prval unit_v () = pf
 in
   ans
 end // end of [list_fold_left_cloptr]
 
-implement{sink,a} list_fold_left_cloref {f:eff} (f, res, xs) = let
-  typedef cloref_t = (sink, a) -<cloref,f> sink
-  fn app (pf: !unit_v | res: sink, x: a, f: !cloref_t):<f> sink = f (res, x)
+implement{init,a} list_fold_left_cloref {f:eff} (f, res, xs) = let
+  typedef cloref_t = (init, a) -<cloref,f> init
+  fn app (pf: !unit_v | res: init, x: a, f: !cloref_t):<f> init = f (res, x)
   prval pf = unit_v ()
-  val ans = list_fold_left__main<sink,a> {unit_v} {cloref_t} (pf | app, res, xs, f)
+  val ans = list_fold_left__main<init,a> {unit_v} {cloref_t} (pf | app, res, xs, f)
   prval unit_v () = pf
 in
   ans
@@ -662,16 +685,16 @@ end // end of [list_fold_left_cloref]
 
 (* ****** ****** *)
 
-implement{sink,a1,a2} list_fold2_left__main
+implement{init,a1,a2} list_fold2_left__main
   {v} {vt} {n} {f:eff} (pf | f, res, xs1, xs2, env) = let
   fun loop {n:nat} .<n>. (
       pf: !v
-    | f: !(!v | sink, a1, a2, !vt) -<fun,f> sink
-    , res: sink
+    | f: !(!v | init, a1, a2, !vt) -<fun,f> init
+    , res: init
     , xs1: list (a1, n)
     , xs2: list (a2, n)
     , env: !vt
-    ) :<f> sink = case+ xs1 of
+    ) :<f> init = case+ xs1 of
     | x1 :: xs1 => let
         val+ x2 :: xs2 = xs2; val res = f (pf | res, x1, x2, env)
       in
@@ -683,21 +706,21 @@ in
   loop (pf | f, res, xs1, xs2, env)
 end // end of [list_fold2_left__main]
 
-implement{sink,a1,a2} list_fold2_left_cloptr {n} {f:eff} (f, res, xs1, xs2) = let
-  viewtypedef cloptr_t = (sink, a1, a2) -<cloptr,f> sink
-  fn app (pf: !unit_v | res: sink, x1: a1, x2: a2, f: !cloptr_t):<f> sink = f (res, x1, x2)
+implement{init,a1,a2} list_fold2_left_cloptr {n} {f:eff} (f, res, xs1, xs2) = let
+  viewtypedef cloptr_t = (init, a1, a2) -<cloptr,f> init
+  fn app (pf: !unit_v | res: init, x1: a1, x2: a2, f: !cloptr_t):<f> init = f (res, x1, x2)
   prval pf = unit_v ()
-  val ans = list_fold2_left__main<sink,a1,a2> {unit_v} {cloptr_t} (pf | app, res, xs1, xs2, f)
+  val ans = list_fold2_left__main<init,a1,a2> {unit_v} {cloptr_t} (pf | app, res, xs1, xs2, f)
   prval unit_v () = pf
 in
   ans
 end // end of [list_fold2_left_cloptr]
 
-implement{sink,a1,a2} list_fold2_left_cloref {n} {f:eff} (f, res, xs1, xs2) = let
-  typedef cloref_t = (sink, a1, a2) -<cloref,f> sink
-  fn app (pf: !unit_v | res: sink, x1: a1, x2: a2, f: !cloref_t):<f> sink = f (res, x1, x2)
+implement{init,a1,a2} list_fold2_left_cloref {n} {f:eff} (f, res, xs1, xs2) = let
+  typedef cloref_t = (init, a1, a2) -<cloref,f> init
+  fn app (pf: !unit_v | res: init, x1: a1, x2: a2, f: !cloref_t):<f> init = f (res, x1, x2)
   prval pf = unit_v ()
-  val ans = list_fold2_left__main<sink,a1,a2> {unit_v} {cloref_t} (pf | app, res, xs1, xs2, f)
+  val ans = list_fold2_left__main<init,a1,a2> {unit_v} {cloref_t} (pf | app, res, xs1, xs2, f)
   prval unit_v () = pf
 in
   ans
@@ -1269,16 +1292,6 @@ end // end of [list_length]
 
 (* ****** ****** *)
 
-implement{a} list_make_elt (x, n) = let
-  fun loop {i,j:nat} .<i>.
-    (i: int i, res: list (a, j)):<> list (a, i+j) =
-    if i > 0 then loop (i-1, x :: res) else res
-in
-  loop (n, nil)
-end // end of [list_make_elt]
-
-(* ****** ****** *)
-
 implement{a,b} list_map__main
   {v} {vt} {n} {f:eff} (pf | xs, f, env) = let
   typedef fun_t = (!v | a, !vt) -<fun,f> b
@@ -1286,18 +1299,18 @@ implement{a,b} list_map__main
       pf: !v
     | xs: list (a, n)
     , f: fun_t
-    , res: &(List b)? >> list (b, n)
+    , res: &(List_vt b)? >> list_vt (b, n)
     , env: !vt
     ) :<f> void = begin case+ xs of
     | x :: xs => let
         val y = f (pf | x, env)
-        val+ () = (res := cons {b} {0} (y, ?)); val+ cons (_, !p) = res
+        val+ () = (res := list_vt_cons {b} {0} (y, ?)); val+ list_vt_cons (_, !p) = res
       in
         loop (pf | xs, f, !p, env); fold@ res
       end // end of [::]
-    | nil () => (res := nil ())
+    | nil () => (res := list_vt_nil ())
   end // end of [loop]
-  var res: List b // uninitialized
+  var res: List_vt b // uninitialized
 in
   loop (pf | xs, f, res, env); res
 end // end of [list_map__main]
@@ -1349,23 +1362,23 @@ end // end of [list_map_cloref]
 
 implement{a1,a2,b} list_map2__main
   {v:view} {vt:viewtype} {n} {f:eff} (pf | xs, ys, f, env) = let
-  var res: List b // uninitialized
+  var res: List_vt b? // uninitialized
   fun loop {n:nat} .<n>. (
       pf: !v
     | xs: list (a1, n)
     , ys: list (a2, n)
     , f: (!v | a1, a2, !vt) -<fun,f> b
-    , res: &(List b)? >> list (b, n)
+    , res: &(List_vt b)? >> list_vt (b, n)
     , env: !vt
   ) :<f> void = begin case+ (xs, ys) of
     | (x :: xs, y :: ys) => let
         val z = f (pf | x, y, env)
-        val+ () = (res := cons {b} {0} (z, ?))
-        val+ cons (_, !p) = res
+        val+ () = (res := list_vt_cons {b} {0} (z, ?))
+        val+ list_vt_cons (_, !p_res1) = res
       in
-        loop (pf | xs, ys, f, !p, env); fold@ res
+        loop (pf | xs, ys, f, !p_res1, env); fold@ res
       end
-    | (nil (), nil ()) => (res := nil ())
+    | (nil (), nil ()) => (res := list_vt_nil ())
   end // end of [loop]
 in
   loop (pf | xs, ys, f, res, env); res
@@ -1428,7 +1441,19 @@ in
   loop (xs, ys)
 end // end of [list_reverse_append]
 
-implement{a} list_reverse xs = list_reverse_append (xs, nil ())
+(* ****** ****** *)
+
+implement{a} list_reverse (xs) =
+  list_reverse_append_vt<a> (xs, list_vt_nil ())
+// end of [list_reverse]
+
+implement{a} list_reverse_append_vt (xs, ys) = let
+  fun loop {n1,n2:nat} .<n1>.
+    (xs: list (a, n1), ys: list_vt (a, n2)):<> list_vt (a, n1+n2) =
+    case+ xs of x :: xs => loop (xs, list_vt_cons (x, ys)) | nil () => ys
+in
+  loop (xs, ys)
+end (* end of [list_reverse] *)
 
 (* ****** ****** *)
 
@@ -1475,18 +1500,18 @@ end // end of [local]
 (* ****** ****** *)
 
 implement{a} list_split_at {n,i} (xs, i) = let
-  var fsts: List a // uninitialized
+  var fsts: List_vt a? // uninitialized
   fun loop {j:nat | j <= i} .<i-j>.
-    (xs: list (a, n-j), ij: int (i-j), fsts: &(List a)? >> list (a, i-j))
+    (xs: list (a, n-j), ij: int (i-j), fsts: &(List_vt a)? >> list_vt (a, i-j))
     :<> list (a, n-i) =
     if ij > 0 then let
       val+ x :: xs = xs
-      val () = (fsts := cons {a} {0} (x, ?)); val+ cons (_, !p) = fsts
+      val () = (fsts := list_vt_cons {a} {0} (x, ?)); val+ list_vt_cons (_, !p) = fsts
       val snds = loop {j+1} (xs, ij - 1, !p)
     in
       fold@ fsts; snds
     end else begin
-      fsts := nil (); xs
+      fsts := list_vt_nil (); xs
     end
   val snds = loop {0} (xs, i, fsts)
 in
@@ -1502,70 +1527,101 @@ implement{a} list_tail_exn (xs) = case+ xs of
 (* ****** ****** *)
 
 implement{a} list_take (xs, i) = let
-  var res: List a // uninitialized
+  var res: List_vt a // uninitialized
   fun loop {n,i:nat | i <= n} .<i>.
-    (xs: list (a, n), i: int i, res: &(List a)? >> list (a, i)):<> void =
+    (xs: list (a, n), i: int i, res: &(List_vt a)? >> list_vt (a, i)):<> void =
     if i > 0 then let
       val x :: xs = xs
-      val () = (res := cons {a} {0} (x, ?))
-      val+ cons (_, !p) = res
+      val () = (res := list_vt_cons {a} {0} (x, ?))
+      val+ list_vt_cons (_, !p) = res
     in
       loop (xs, i-1, !p); fold@ res
     end else begin
-      res := nil ()
-   end
+      res := list_vt_nil ()
+    end (* end of [loop] *)
+  // end of [loop]
 in
   loop (xs, i, res); res
 end // end of [list_take]
 
+implement{a} list_take_exn {n,i} (xs, i) = let
+  fun loop {n,i:nat} .<i>.
+    (xs: list (a, n), i: int i, res: &List_vt a? >> list_vt (a, j))
+    :<> #[j:nat | (i <= n && i == j) || (n < i && n == j)] bool (n < i)  =
+    if i > 0 then begin case+ xs of
+      | list_cons (x, xs) =>
+          (fold@ res; ans) where {
+          val () = res := list_vt_cons {a} {0} (x, ?)
+          val+ list_vt_cons (_, !p_res1) = res
+          val ans = loop (xs, i-1, !p_res1)
+        } // end of [list_cons]
+      | list_nil () => (res := list_vt_nil (); true(*err*))
+    end else begin
+      res := list_vt_nil (); false(*err*)
+    end (* end of [if] *)
+  // end of [loop]    
+  var res: List_vt a? // uninitialized
+  val err = loop {n,i} (xs, i, res)
+in
+  if err then let
+    val () = list_vt_free res in $raise ListSubscriptException ()
+  end else begin
+    res // i <= n && length (res) == i
+  end (* end of [if] *)
+end (* end of [list_take_exn] *)
+
 (* ****** ****** *)
 
 implement{a,b} list_zip (xs, ys) = let
-  typedef ab = '(a, b)
-  var res: List ab // uninitialized
+  typedef ab = @(a, b)
+  var res: List_vt ab // uninitialized
   fun loop {i:nat} .<i>.
-    (xs: list (a, i), ys: list (b, i), res: &(List ab)? >> list (ab, i)):<> void =
+    (xs: list (a, i), ys: list (b, i), res: &(List_vt ab)? >> list_vt (ab, i)):<> void =
     case+ (xs, ys) of
     | (x :: xs, y :: ys) => let
-        val () = (res := cons {ab} {0} ('(x, y), ?)); val+ cons (_, !p) = res
+        val () = (res := list_vt_cons {ab} {0} (@(x, y), ?)); val+ list_vt_cons (_, !p) = res
       in
         loop (xs, ys, !p); fold@ res
       end
-    | (nil (), nil ()) => (res := nil ())
+    | (nil (), nil ()) => (res := list_vt_nil ())
 in
   loop (xs, ys, res); res
 end // end of [list_zip]
 
 (* ****** ****** *)
 
-implement{a,b,c} list_zipwith_fun {n} {f:eff} (xs, ys, f) =
-  list_map2_fun<a,b,c> (xs, ys, f)
+implement{a1,a2,b} list_zipwth_fun
+  (xs, ys, f) = list_map2_fun<a1,a2,b> (xs, ys, f)
+// end of [list_zipwth_fun]
 
-implement{a,b,c} list_zipwith_clo {n} {f:eff} (xs, ys, f) =
-  list_map2_clo<a,b,c> (xs, ys, f)
+implement{a1,a2,b} list_zipwth_clo
+  (xs, ys, f) = list_map2_clo<a1,a2,b> (xs, ys, f)
+// end of [list_zipwth_clo]
 
-implement{a,b,c} list_zipwith_cloptr {n} {f:eff} (xs, ys, f) =
-  list_map2_cloptr<a,b,c> (xs, ys, f)
+implement{a1,a2,b} list_zipwth_cloptr
+  (xs, ys, f) = list_map2_cloptr<a1,a2,b> (xs, ys, f)
+// end of [list_zipwth_cloptr]
 
-implement{a,b,c} list_zipwith_cloref {n} {f:eff} (xs, ys, f) =
-  list_map2_cloref<a,b,c> (xs, ys, f)
+implement{a1,a2,b} list_zipwth_cloref
+  (xs, ys, f) = list_map2_cloref<a1,a2,b> (xs, ys, f)
+// end of [list_zipwth_cloref]
 
 (* ****** ****** *)
 
 implement{a1,a2} list_unzip xys = let
-  var res1: List a1 and res2: List a2 // uninitialized
+  var res1: List_vt a1 and res2: List_vt a2 // uninitialized
   fun loop {n:nat} .<n>. (
-      xys: list ('(a1, a2), n)
-    , res1: &(List a1)? >> list (a1, n)
-    , res2: &(List a2)? >> list (a2, n)
+      xys: list (@(a1, a2), n)
+    , res1: &(List_vt a1)? >> list_vt (a1, n)
+    , res2: &(List_vt a2)? >> list_vt (a2, n)
   ) :<> void = begin case+ xys of
     | xy :: xys => let
-        val () = (res1 := cons {a1} {0} (xy.0, ?)); val+ cons (_, !p1) = res1
-        val () = (res2 := cons {a2} {0} (xy.1, ?)); val+ cons (_, !p2) = res2
+        val () = (res1 := list_vt_cons {a1} {0} (xy.0, ?)); val+ list_vt_cons (_, !p1) = res1
+        val () = (res2 := list_vt_cons {a2} {0} (xy.1, ?)); val+ list_vt_cons (_, !p2) = res2
       in
         loop (xys, !p1, !p2); fold@ res1; fold@ res2
       end
-    | nil () => (res1 := nil (); res2 := nil ())
+    | nil () => (res1 := list_vt_nil (); res2 := list_vt_nil ())
   end // end of [loop]
 in
   loop (xys, res1, res2); (res1, res2)

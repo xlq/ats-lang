@@ -1,6 +1,11 @@
+(*
+** some testing code for functions declared in
+** libats/SATS/iterint.sats
+*)
+
 //
-// some testing code for functions declared in
-// libats/SATS/iterint.sats
+// Author: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
+// Time: Spring, 2009
 //
 
 (* ****** ****** *)
@@ -9,7 +14,7 @@ staload "libats/SATS/iterint.sats"
 
 (* ****** ****** *)
 
-fn sum {n:nat} (n: int n): Nat = let
+fn sum {n:nat} (n: int n): Nat = res where {
   stadef n1 = n + 1
   var res: Nat = 0
   viewdef v = Nat @ res
@@ -17,9 +22,7 @@ fn sum {n:nat} (n: int n): Nat = let
     (pf: !v | i: natLt n1): void =<clo> res := res + i
   // end of [var]
   val () = foreach_clo {v} {n1} (view@ res | n + 1, !p_f)
-in
-  res
-end // end of [sum]
+} // end of [sum]
 
 (* ****** ****** *)
 

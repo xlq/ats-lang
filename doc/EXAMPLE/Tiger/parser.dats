@@ -24,12 +24,12 @@ staload "fixity.sats"
 
 (* ****** ****** *)
 
-staload "parcomb.sats" ;
-staload _(*anonymous*) = "parcomb.dats" ;
+staload "PARCOMB/parcomb.sats" ;
+staload _(*anonymous*) = "PARCOMB/parcomb.dats" ;
 
 (* ****** ****** *)
 
-staload _(*anonymous*) = "prelude/SATS/file.sats"
+staload _(*anonymous*) = "prelude/SATS/file.sats" // for [stdio.cats]?
 
 staload _(*anonymous*) = "prelude/DATS/array.dats"
 staload _(*anonymous*) = "prelude/DATS/list.dats"
@@ -360,11 +360,11 @@ rec lp_exp: LP exp = $delay ( // ordering is significant!
 
 and lp_explst: LP explst = $delay (
   repeat0_sep_parser<exp,token> (!lp_exp, COMMA)
-) // end of [p_explst]
+) // end of [lp_explst]
 
 and lp_expseq: LP explst = $delay (
   repeat0_sep_parser<exp,token> (!lp_exp, SEMICOLON)
-) // end of [p_expseq]
+) // end of [lp_expseq]
 
 (* ****** ****** *)
 

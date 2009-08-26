@@ -7,28 +7,27 @@
 (***********************************************************************)
 
 (*
- * ATS - Unleashing the Potential of Types!
- *
- * Copyright (C) 2002-2008 Hongwei Xi, Boston University
- *
- * All rights reserved
- *
- * ATS is free software;  you can  redistribute it and/or modify it under
- * the terms of the GNU LESSER GENERAL PUBLIC LICENSE as published by the
- * Free Software Foundation; either version 2.1, or (at your option)  any
- * later version.
- * 
- * ATS is distributed in the hope that it will be useful, but WITHOUT ANY
- * WARRANTY; without  even  the  implied  warranty  of MERCHANTABILITY or
- * FITNESS FOR A PARTICULAR PURPOSE.  See the  GNU General Public License
- * for more details.
- * 
- * You  should  have  received  a  copy of the GNU General Public License
- * along  with  ATS;  see the  file COPYING.  If not, please write to the
- * Free Software Foundation,  51 Franklin Street, Fifth Floor, Boston, MA
- * 02110-1301, USA.
- *
- *)
+** ATS - Unleashing the Potential of Types!
+**
+** Copyright (C) 2002-2008 Hongwei Xi, Boston University
+**
+** All rights reserved
+**
+** ATS is free software;  you can  redistribute it and/or modify it under
+** the terms of the GNU LESSER GENERAL PUBLIC LICENSE as published by the
+** Free Software Foundation; either version 2.1, or (at your option)  any
+** later version.
+** 
+** ATS is distributed in the hope that it will be useful, but WITHOUT ANY
+** WARRANTY; without  even  the  implied  warranty  of MERCHANTABILITY or
+** FITNESS FOR A PARTICULAR PURPOSE.  See the  GNU General Public License
+** for more details.
+** 
+** You  should  have  received  a  copy of the GNU General Public License
+** along  with  ATS;  see the  file COPYING.  If not, please write to the
+** Free Software Foundation,  51 Franklin Street, Fifth Floor, Boston, MA
+** 02110-1301, USA.
+*)
 
 (* ****** ****** *)
 
@@ -54,31 +53,22 @@
 
 //
 
-fun int_of_char (c: char):<> int
-  = "atspre_int_of_char"
+fun int_of_char (c: char):<> int = "atspre_int_of_char"
 overload int_of with int_of_char
 
-fun int_of_schar (c: schar):<> int
-  = "atspre_int_of_schar"
+fun int_of_schar (c: schar):<> int = "atspre_int_of_schar"
 overload int_of with int_of_schar
 
-fun int_of_uchar (c: uchar):<> int
-  = "atspre_int_of_uchar"
+fun int_of_uchar (c: uchar):<> int = "atspre_int_of_uchar"
 overload int_of with int_of_uchar
 
 //
 
-fun int_of_double (d: double):<> int
-  = "atspre_int_of_double"
-overload int_of with int_of_double
-
 // This function is based on [atoi] in [stdlib.h]
-fun int_of_string (s: string):<> int
-  = "atspre_int_of_string"
+fun int_of_string (s: string):<> int = "atspre_int_of_string"
 overload int_of with int_of_string
 
-fun int_of_uint (u: uint):<> int
-  = "atspre_int_of_uint"
+fun int_of_uint (u: uint):<> int  = "atspre_int_of_uint"
 overload int_of with int_of_uint
 
 // arithmetic functions and comparison functions
@@ -642,10 +632,13 @@ fun uhalf {i:nat} (i: uint i):<> uint (i/2)
 
 typedef lint = int_long_t0ype
 
-// Note that the following coersion is automatic
 fun lint_of_int (i: int):<> lint
   = "atspre_lint_of_int"
 overload lint_of with lint_of_int
+
+fun int_of_lint (li: lint):<> int
+  = "atspre_int_of_lint"
+overload int_of with int_of_lint
 
 // This function is based on [atol] in [stdlib.h]
 fun lint_of_string (s: string):<> lint
@@ -774,15 +767,21 @@ typedef ulint = uint_long_t0ype
 fun ulint_of_int (i: int):<> ulint = "atspre_ulint_of_int"
 overload ulint_of with ulint_of_int
 
+//
+
 fun ulint_of_uint (u: uint):<> ulint = "atspre_ulint_of_uint"
 overload ulint_of with ulint_of_uint
+
+fun uint_of_ulint (ul: ulint):<> uint = "atspre_uint_of_ulint"
+overload uint_of with uint_of_ulint
+
+//
 
 fun ulint_of_lint (li: lint):<> ulint = "atspre_ulint_of_lint"
 overload ulint_of with ulint_of_lint
 
-//
-
-fun uint_of_ulint (ul: ulint):<> uint = "atspre_uint_of_ulint"
+fun lint_of_ulint (ul: ulint):<> lint = "atspre_lint_of_ulint"
+overload lint_of with lint_of_ulint
 
 // arithmetic functions and comparison functions
 
@@ -1137,482 +1136,6 @@ fun tostring_ullint (i: ullint):<> string
   = "atspre_tostring_ullint"
 
 overload tostring with tostring_ullint
-
-(* ****** ****** *)
-
-// signed integers with fixed length
-
-(* ****** ****** *)
-
-typedef int8 = int8_t0ype
-
-symintr int8_of
-
-fun int8_of_int (i: int):<> int8
-  = "atspre_int8_of_int"
-overload int8_of with int8_of_int
-
-fun int_of_int8 (i: int8):<> int
-  = "atspre_int_of_int8"
-
-// ------ ------
-
-fun abs_int8 (i: int8):<> int8
-  = "atspre_abs_int8"
-overload abs with abs_int8
-
-fun neg_int8 (i: int8):<> int8
-  = "atspre_neg_int8"
-overload ~ with neg_int8
-
-fun succ_int8 (i: int8):<> int8
-  = "atspre_succ_int8"
-
-and pred_int8 (i: int8):<> int8
-  = "atspre_pred_int8"
-
-overload succ with succ_int8
-overload pred with pred_int8
-
-fun add_int8_int8 (i: int8, j: int8):<> int8
- = "atspre_add_int8_int8"
-
-and sub_int8_int8 (i: int8, j: int8):<> int8
-  = "atspre_sub_int8_int8"
-
-and mul_int8_int8 (i: int8, j: int8):<> int8
-  = "atspre_mul_int8_int8"
-
-and div_int8_int8 (i: int8, j: int8):<> int8
-  = "atspre_div_int8_int8"
-
-and mod_int8_int8 (i: int8, j: int8):<> int8
-  = "atspre_mod_int8_int8"
-
-overload + with add_int8_int8
-overload - with sub_int8_int8
-overload * with mul_int8_int8
-overload / with div_int8_int8
-overload mod with mod_int8_int8 
-
-fun lt_int8_int8 (i: int8, j: int8):<> bool
-  = "atspre_lt_int8_int8"
-
-and lte_int8_int8 (i: int8, j: int8):<> bool
-  = "atspre_lte_int8_int8"
-
-fun gt_int8_int8 (i: int8, j: int8):<> bool
-  = "atspre_gt_int8_int8"
-
-and gte_int8_int8 (i: int8, j: int8):<> bool
-  = "atspre_gte_int8_int8"
-
-fun eq_int8_int8 (i: int8, j: int8):<> bool
-  = "atspre_eq_int8_int8"
-
-and neq_int8_int8 (i: int8, j: int8):<> bool
-  = "atspre_neq_int8_int8"
-
-overload < with lt_int8_int8
-overload <= with lte_int8_int8
-overload > with gt_int8_int8
-overload >= with gte_int8_int8
-overload = with eq_int8_int8
-overload <> with neq_int8_int8
-
-fun max_int8_int8 (i: int8, j: int8):<> int8
-  = "atspre_max_int8_int8"
-
-and min_int8_int8 (i: int8, j: int8):<> int8
-  = "atspre_min_int8_int8"
-
-overload max with max_int8_int8
-overload min with min_int8_int8
-
-(* ****** ****** *)
-
-symintr fprint_int8
-
-fun fprint0_int8 (out: FILEref, x: int8):<!exnref> void
-  = "atspre_fprint_int8"
-
-fun fprint1_int8 {m:file_mode}
-  (pf: file_mode_lte (m, w) | out: &FILE m, x: int8):<!exnref> void
-  = "atspre_fprint_int8"
-
-overload fprint_int8 with fprint0_int8
-overload fprint_int8 with fprint1_int8
-overload fprint with fprint_int8
-
-(* ****** ****** *)
-
-fun print_int8 (i: int8):<!ref> void
-  = "atspre_print_int8"
-
-and prerr_int8 (i: int8):<!ref> void
-  = "atspre_prerr_int8"
-
-overload print with print_int8
-overload prerr with prerr_int8
-
-(* ****** ****** *)
-
-typedef int16 = int16_t0ype
-
-symintr int16_of
-
-fun int16_of_int (i: int):<> int16
-  = "atspre_int16_of_int"
-overload int16_of with int16_of_int
-
-fun int_of_int16 (i: int16):<> int
-  = "atspre_int_of_int16"
-
-// ------ ------
-
-fun abs_int16 (i: int16):<> int16
-  = "atspre_abs_int16"
-overload abs with abs_int16
-
-fun neg_int16 (i: int16):<> int16
-  = "atspre_neg_int16"
-overload ~ with neg_int16
-
-fun succ_int16 (i: int16):<> int16
-  = "atspre_succ_int16"
-
-and pred_int16 (i: int16):<> int16
-  = "atspre_pred_int16" 
-
-overload succ with succ_int16
-overload pred with pred_int16
-
-fun add_int16_int16 (i: int16, j: int16):<> int16
-  = "atspre_add_int16_int16"
-
-and sub_int16_int16 (i: int16, j: int16):<> int16
-  = "atspre_sub_int16_int16"
-
-and mul_int16_int16 (i: int16, j: int16):<> int16
-  = "atspre_mul_int16_int16"
-
-and div_int16_int16 (i: int16, j: int16):<> int16
-  = "atspre_div_int16_int16"
-
-and mod_int16_int16 (i: int16, j: int16):<> int16
-  = "atspre_mod_int16_int16"
-
-overload + with add_int16_int16
-overload - with sub_int16_int16
-overload * with mul_int16_int16
-overload / with div_int16_int16
-overload mod with mod_int16_int16
-
-fun lt_int16_int16 (i: int16, j: int16):<> bool
-  = "atspre_lt_int16_int16"
-
-and lte_int16_int16 (i: int16, j: int16):<> bool
-  = "atspre_lte_int16_int16"
-
-fun gt_int16_int16 (i: int16, j: int16):<> bool
-  = "atspre_gt_int16_int16"
-
-and gte_int16_int16 (i: int16, j: int16):<> bool
-  = "atspre_gte_int16_int16"
-
-fun eq_int16_int16 (i: int16, j: int16):<> bool
-  = "atspre_eq_int16_int16"
-
-and neq_int16_int16 (i: int16, j: int16):<> bool
-  = "atspre_neq_int16_int16"
-
-overload < with lt_int16_int16
-overload <= with lte_int16_int16
-overload > with gt_int16_int16
-overload >= with gte_int16_int16
-overload = with eq_int16_int16
-overload <> with neq_int16_int16
-
-fun max_int16_int16 (i: int16, j: int16):<> int16
-  = "atspre_max_int16_int16"
-
-and min_int16_int16 (i: int16, j: int16):<> int16
-  = "atspre_min_int16_int16"
-
-overload max with max_int16_int16
-overload min with min_int16_int16
-
-(* ****** ****** *)
-
-symintr fprint_int16
-
-fun fprint0_int16 (out: FILEref, x: int16):<!exnref> void
-  = "atspre_fprint_int16"
-
-fun fprint1_int16 {m:file_mode}
-  (pf: file_mode_lte (m, w) | out: &FILE m, x: int16):<!exnref> void
-  = "atspre_fprint_int16"
-
-overload fprint_int16 with fprint0_int16
-overload fprint_int16 with fprint1_int16
-overload fprint with fprint_int16
-
-(* ****** ****** *)
-
-fun print_int16 (i: int16):<!ref> void
-  = "atspre_print_int16"
-
-and prerr_int16 (i: int16):<!ref> void
-  = "atspre_prerr_int16"
-
-overload print with print_int16
-overload prerr with prerr_int16
-
-(* ****** ****** *)
-
-typedef int32 = int32_t0ype
-
-symintr int32_of
-
-fun int32_of_int (i: int):<> int32
-  = "atspre_int32_of_int"
-overload int32_of with int32_of_int
-
-fun int_of_int32 (i: int32):<> int
-  = "atspre_int_of_int32"
-
-// ------ ------
-
-fun abs_int32 (i: int32):<> int32
-  = "atspre_abs_int32"
-overload abs with abs_int32
-
-fun neg_int32 (i: int32):<> int32
-  = "atspre_neg_int32"
-overload ~ with neg_int32
-
-fun succ_int32 (i: int32):<> int32
-  = "atspre_succ_int32"
-
-and pred_int32 (i: int32):<> int32
-  = "atspre_pred_int32"
-
-overload succ with succ_int32
-overload pred with pred_int32
-
-fun add_int32_int32 (i: int32, j: int32):<> int32
-  = "atspre_add_int32_int32"
-
-and sub_int32_int32 (i: int32, j: int32):<> int32
-  = "atspre_sub_int32_int32"
-
-and mul_int32_int32 (i: int32, j: int32):<> int32
-  = "atspre_mul_int32_int32"
-
-and div_int32_int32 (i: int32, j: int32):<> int32
-  = "atspre_div_int32_int32"
-
-and mod_int32_int32 (i: int32, j: int32):<> int32
-  = "atspre_mod_int32_int32"
-
-overload + with add_int32_int32
-overload - with sub_int32_int32
-overload * with mul_int32_int32
-overload / with div_int32_int32
-overload mod with mod_int32_int32
-
-fun lt_int32_int32 (i: int32, j: int32):<> bool
-  = "atspre_lt_int32_int32"
-and lte_int32_int32 (i: int32, j: int32):<> bool
-  = "atspre_lte_int32_int32"
-fun gt_int32_int32 (i: int32, j: int32):<> bool
-  = "atspre_gt_int32_int32"
-and gte_int32_int32 (i: int32, j: int32):<> bool
- = "atspre_gte_int32_int32"
-
-fun eq_int32_int32 (i: int32, j: int32):<> bool
-  = "atspre_eq_int32_int32"
-
-and neq_int32_int32 (i: int32, j: int32):<> bool
-  = "atspre_neq_int32_int32"
-
-overload < with lt_int32_int32
-overload <= with lte_int32_int32
-overload > with gt_int32_int32
-overload >= with gte_int32_int32
-overload = with eq_int32_int32
-overload <> with neq_int32_int32
-
-fun compare_int32_int32 (i1: int32, i2: int32):<> Sgn
-  = "atspre_compare_int32_int32"
-overload compare with compare_int32_int32
-
-fun max_int32_int32 (i: int32, j: int32):<> int32
-  = "atspre_max_int32_int32"
-
-and min_int32_int32 (i: int32, j: int32):<> int32
-  = "atspre_min_int32_int32"
-
-overload max with max_int32_int32
-overload min with min_int32_int32
-
-(* ****** ****** *)
-
-symintr fprint_int32
-
-fun fprint0_int32 (out: FILEref, x: int32):<!exnref> void
-  = "atspre_fprint_int32"
-
-fun fprint1_int32 {m:file_mode}
-  (pf: file_mode_lte (m, w) | out: &FILE m, x: int32):<!exnref> void
-  = "atspre_fprint_int32"
-
-overload fprint_int32 with fprint0_int32
-overload fprint_int32 with fprint1_int32
-overload fprint with fprint_int32
-
-(* ****** ****** *)
-
-fun print_int32 (i: int32):<!ref> void
-  = "atspre_print_int32"
-
-and prerr_int32 (i: int32):<!ref> void
-  = "atspre_prerr_int32"
-
-overload print with print_int32
-overload prerr with prerr_int32
-
-// stringization
-
-fun tostring_int32 (i: int32):<> string
-  = "atspre_tostring_int32"
-
-overload tostring with tostring_int32
-
-(* ****** ****** *)
-
-typedef int64 = int64_t0ype
-
-symintr int64_of
-
-fun int64_of_int (i: int):<> int64
-  = "atspre_int64_of_int"
-overload int64_of with int64_of_int
-
-fun int_of_int64 (i: int64):<> int
-  = "atspre_int_of_int64"
-
-// ------ ------
-
-fun abs_int64 (i: int64):<> int64
-  = "atspre_abs_int64"
-overload abs with abs_int64
-
-fun neg_int64 (i: int64):<> int64
-  = "atspre_neg_int64"
-overload ~ with neg_int64
-
-fun succ_int64 (i: int64):<> int64
-  = "atspre_succ_int64"
-
-and pred_int64 (i: int64):<> int64
-  = "atspre_pred_int64"
-
-overload succ with succ_int64
-overload pred with pred_int64
-
-fun add_int64_int64 (i: int64, j: int64):<> int64
-  = "atspre_add_int64_int64"
-
-and sub_int64_int64 (i: int64, j: int64):<> int64
-  = "atspre_sub_int64_int64"
-
-and mul_int64_int64 (i: int64, j: int64):<> int64
-  = "atspre_mul_int64_int64"
-
-and div_int64_int64 (i: int64, j: int64):<> int64
-  = "atspre_div_int64_int64"
-
-and mod_int64_int64 (i: int64, j: int64):<> int64
-  = "atspre_mod_int64_int64"
-
-overload + with add_int64_int64
-overload - with sub_int64_int64
-overload * with mul_int64_int64
-overload / with div_int64_int64
-overload mod with mod_int64_int64
-
-fun lt_int64_int64 (i: int64, j: int64):<> bool
-  = "atspre_lt_int64_int64"
-
-and lte_int64_int64 (i: int64, j: int64):<> bool
-  = "atspre_lte_int64_int64"
-
-fun gt_int64_int64 (i: int64, j: int64):<> bool
-  = "atspre_gt_int64_int64"
-
-and gte_int64_int64 (i: int64, j: int64):<> bool
-  = "atspre_gte_int64_int64"
-
-fun eq_int64_int64 (i: int64, j: int64):<> bool
-  = "atspre_eq_int64_int64"
-
-and neq_int64_int64 (i: int64, j: int64):<> bool
-  = "atspre_neq_int64_int64"
-
-overload < with lt_int64_int64
-overload <= with lte_int64_int64
-overload > with gt_int64_int64
-overload >= with gte_int64_int64
-overload = with eq_int64_int64
-overload <> with neq_int64_int64
-
-fun compare_int64_int64 (i1: int64, i2: int64):<> Sgn
-  = "atspre_compare_int64_int64"
-overload compare with compare_int64_int64
-
-fun max_int64_int64 (i: int64, j: int64):<> int64
-  = "atspre_max_int64_int64"
-and min_int64_int64 (i: int64, j: int64):<> int64
-  = "atspre_min_int64_int64"
-
-overload max with max_int64_int64
-overload min with min_int64_int64
-
-(* ****** ****** *)
-
-symintr fprint_int64
-
-fun fprint0_int64 (out: FILEref, x: int64):<!exnref> void
-  = "atspre_fprint_int64"
-
-fun fprint1_int64 {m:file_mode}
-  (pf: file_mode_lte (m, w) | out: &FILE m, x: int64):<!exnref> void
-  = "atspre_fprint_int64"
-
-overload fprint_int64 with fprint0_int64
-overload fprint_int64 with fprint1_int64
-overload fprint with fprint_int64
-
-(* ****** ****** *)
-
-fun print_int64 (i: int64):<!ref> void
-  = "atspre_print_int64"
-
-and prerr_int64 (i: int64):<!ref> void
-  = "atspre_prerr_int64"
-
-overload print with print_int64
-overload prerr with prerr_int64
-
-(* ****** ****** *)
-
-// stringization
-
-fun tostring_int64 (i: int64):<> string
-  = "atspre_tostring_int64"
-
-overload tostring with tostring_int64
 
 (* ****** ****** *)
 

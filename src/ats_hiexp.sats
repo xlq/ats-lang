@@ -72,6 +72,7 @@ datatype hityp_node =
   | HITunion of (* union type *)
       labhityplst
   | HITvararg (* variable argument *)
+// end of [hityp_node]
 
 and labhityplst =
   | LABHITYPLSTcons of (lab_t, hityp, labhityplst)
@@ -119,7 +120,10 @@ val hityp_int : hityp
 val hityp_ptr : hityp
 val hityp_string : hityp
 val hityp_tysum_ptr : hityp
+(*
 val hityp_var : hityp
+val hityp_varet : hityp
+*)
 val hityp_vararg : hityp
 val hityp_void : hityp
 
@@ -140,6 +144,8 @@ fun hityp_tysum (name: string, d2c: d2con_t, _arg: hityplst): hityp
 fun hityp_tysumtemp (d2c: d2con_t, _arg: hityplst): hityp
 
 fun hityp_union (name: string, lhits: labhityplst): hityp
+
+fun hityp_varetize (hit: hityp): hityp
 
 (* ****** ****** *)
 
@@ -179,13 +185,14 @@ datatype hipat_node =
   | HIPint of (* integer pattern *)
       (string, intinf_t)
   | HIPlst of (* list pattern *)
-      (hipatlst, hityp(*element*))
+      (hityp(*element*), hipatlst)
   | HIPrec of (* record pattern *)
       (int (*knd*), labhipatlst, hityp(*rec*))
   | HIPstring of (* string pattern *)
       string 
   | HIPvar of (* variable pattern *)
       (int(*refknd*), d2var_t)
+// end of [hipat_node]
 
 and labhipatlst =
   | LABHIPATLSTcons of (lab_t, hipat, labhipatlst)
@@ -237,7 +244,7 @@ fun hipat_con_any (_: loc_t, _: hityp, freeknd: int, _: d2con_t): hipat
 
 fun hipat_empty (_: loc_t, _: hityp): hipat
 fun hipat_int (_: loc_t, _: hityp, str: string, int: intinf_t): hipat
-fun hipat_lst (_: loc_t, _lst: hityp, _: hipatlst, _elt: hityp): hipat
+fun hipat_lst (_: loc_t, _lst: hityp, _elt: hityp, _: hipatlst): hipat
 
 fun hipat_rec
   (_: loc_t, _: hityp, knd: int, _: labhipatlst, _rec: hityp): hipat

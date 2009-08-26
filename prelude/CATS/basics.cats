@@ -7,26 +7,25 @@
 /************************************************************************/
 
 /*
- * ATS - Unleashing the Potential of Types!
- *
- * Copyright (C) 2002-2008 Hongwei Xi.
- *
- * ATS is free software;  you can  redistribute it and/or modify it under
- * the terms of the GNU LESSER GENERAL PUBLIC LICENSE as published by the
- * Free Software Foundation; either version 2.1, or (at your option)  any
- * later version.
- * 
- * ATS is distributed in the hope that it will be useful, but WITHOUT ANY
- * WARRANTY; without  even  the  implied  warranty  of MERCHANTABILITY or
- * FITNESS FOR A PARTICULAR PURPOSE.  See the  GNU General Public License
- * for more details.
- * 
- * You  should  have  received  a  copy of the GNU General Public License
- * along  with  ATS;  see the  file COPYING.  If not, please write to the
- * Free Software Foundation,  51 Franklin Street, Fifth Floor, Boston, MA
- * 02110-1301, USA.
- *
- */
+** ATS - Unleashing the Potential of Types!
+**
+** Copyright (C) 2002-2008 Hongwei Xi.
+**
+** ATS is free software;  you can  redistribute it and/or modify it under
+** the terms of the GNU LESSER GENERAL PUBLIC LICENSE as published by the
+** Free Software Foundation; either version 2.1, or (at your option)  any
+** later version.
+** 
+** ATS is distributed in the hope that it will be useful, but WITHOUT ANY
+** WARRANTY; without  even  the  implied  warranty  of MERCHANTABILITY or
+** FITNESS FOR A PARTICULAR PURPOSE.  See the  GNU General Public License
+** for more details.
+** 
+** You  should  have  received  a  copy of the GNU General Public License
+** along  with  ATS;  see the  file COPYING.  If not, please write to the
+** Free Software Foundation,  51 Franklin Street, Fifth Floor, Boston, MA
+** 02110-1301, USA.
+*/
 
 /* ****** ****** */
 
@@ -70,30 +69,31 @@ atspre_clo_coerce (ats_ptr_type p) { return p ; }
 /* ****** ****** */
 
 static inline
-ats_void_type
-atspre_cloptr_free (ats_ptr_type p) {
-  ATS_FREE (p) ; return ;
-} /* atspre_cloptr_free */
-
-static inline
 ats_ptr_type
-atspre_cloptr_get_view_ptr (ats_ptr_type p) {
-  return p ;
-} /* atspre_cloptr_get_view_ptr */
+atspre_cloptr_get_view_ptr (ats_ptr_type p) { return p ; }
 
 /* ****** ****** */
 
 static inline
 ats_void_type
-atspre_vbox_make_view_ptr (ats_ptr_type p) {
-  return ;
-} /* atspre_vbox_make_view_ptr */
+atspre_cloptr_free (ats_ptr_type p)
+  { ATS_FREE (p) ; return ; } // end of [atspre_cloptr_free]
+
+/* ****** ****** */
+
+static inline
+ats_ptr_type
+atspre_objmod_upcast (ats_ptr_type p) { return p ; }
+
+/* ****** ****** */
 
 static inline
 ats_void_type
-atspre_vbox_make_view_ptr_gc (ats_ptr_type p) {
-  return ;
-} /* atspre_vbox_make_view_ptr_gc */
+atspre_vbox_make_view_ptr (ats_ptr_type p) { return ; }
+
+static inline
+ats_void_type
+atspre_vbox_make_view_ptr_gc (ats_ptr_type p) { return ; }
 
 /* ****** ****** */
 

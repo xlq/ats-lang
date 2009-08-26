@@ -7,33 +7,32 @@
 (***********************************************************************)
 
 (*
- * ATS/Anairiats - Unleashing the Potential of Types!
- *
- * Copyright (C) 2002-2008 Hongwei Xi, Boston University
- *
- * All rights reserved
- *
- * ATS is free software;  you can  redistribute it and/or modify it under
- * the terms of  the GNU GENERAL PUBLIC LICENSE (GPL) as published by the
- * Free Software Foundation; either version 3, or (at  your  option)  any
- * later version.
- * 
- * ATS is distributed in the hope that it will be useful, but WITHOUT ANY
- * WARRANTY; without  even  the  implied  warranty  of MERCHANTABILITY or
- * FITNESS FOR A PARTICULAR PURPOSE.  See the  GNU General Public License
- * for more details.
- * 
- * You  should  have  received  a  copy of the GNU General Public License
- * along  with  ATS;  see the  file COPYING.  If not, please write to the
- * Free Software Foundation,  51 Franklin Street, Fifth Floor, Boston, MA
- * 02110-1301, USA.
- *
- *)
+** ATS/Anairiats - Unleashing the Potential of Types!
+**
+** Copyright (C) 2002-2008 Hongwei Xi, Boston University
+**
+** All rights reserved
+**
+** ATS is free software;  you can  redistribute it and/or modify it under
+** the terms of  the GNU GENERAL PUBLIC LICENSE (GPL) as published by the
+** Free Software Foundation; either version 3, or (at  your  option)  any
+** later version.
+** 
+** ATS is distributed in the hope that it will be useful, but WITHOUT ANY
+** WARRANTY; without  even  the  implied  warranty  of MERCHANTABILITY or
+** FITNESS FOR A PARTICULAR PURPOSE.  See the  GNU General Public License
+** for more details.
+** 
+** You  should  have  received  a  copy of the GNU General Public License
+** along  with  ATS;  see the  file COPYING.  If not, please write to the
+** Free Software Foundation,  51 Franklin Street, Fifth Floor, Boston, MA
+** 02110-1301, USA.
+*)
 
 (* ****** ****** *)
 
-// Time: November 2007
 // Author: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
+// Time: November 2007
 
 (* ****** ****** *)
 
@@ -41,36 +40,38 @@
 
 (* ****** ****** *)
 
-staload Eff = "ats_effect.sats"
 staload Fil = "ats_filename.sats"
-staload Loc = "ats_location.sats"
+typedef fil_t = $Fil.filename_t
+
 staload Lab = "ats_label.sats"
-staload IntInf = "ats_intinf.sats"
-staload SEXP1 = "ats_staexp1.sats" // for [e1xp]
-staload Stamp = "ats_stamp.sats"
-staload Sym = "ats_symbol.sats"
-staload Syn = "ats_syntax.sats"
-
-(* ****** ****** *)
-
-staload "ats_staexp2.sats"
-
-(* ****** ****** *)
-
-typedef e1xp = $SEXP1.e1xp
-typedef fil_t= $Fil.filename_t
-typedef intinf_t = $IntInf.intinf_t
 typedef lab_t = $Lab.label_t
+
+staload Loc = "ats_location.sats"
 typedef loc_t = $Loc.location_t
+
+staload IntInf = "ats_intinf.sats"
+typedef intinf_t = $IntInf.intinf_t
+
+staload SEXP1 = "ats_staexp1.sats" // for [e1xp]
+typedef e1xp = $SEXP1.e1xp
+
+staload Stamp = "ats_stamp.sats"
 typedef stamp_t = $Stamp.stamp_t
+
+staload Sym = "ats_symbol.sats"
 typedef sym_t = $Sym.symbol_t
 
+staload SymEnv = "ats_symenv.sats"
+stadef symmapref = $SymEnv.symmapref
+
+(* ****** ****** *)
+
+staload Syn = "ats_syntax.sats"
 typedef l0ab = $Syn.l0ab
 typedef d0ynq = $Syn.d0ynq
 typedef dqi0de = $Syn.dqi0de
 typedef sqi0de = $Syn.sqi0de
 typedef i0delstlst = $Syn.i0delstlst
-
 typedef dcstkind = $Syn.dcstkind
 typedef funkind = $Syn.funkind
 typedef intkind = $Syn.intkind
@@ -78,8 +79,13 @@ typedef valkind = $Syn.valkind
 
 (* ****** ****** *)
 
+staload "ats_staexp2.sats"
+
+(* ****** ****** *)
+
 abstype d2cst_t // boxed type
 abstype d2mac_abs_t (int(*curry arity*))// boxed type
+abstype d2mtd_t // boxed type
 abstype d2var_t // boxed type
 abstype d2varset_t // boxed type
 
@@ -113,17 +119,21 @@ datatype d2item =
   | D2ITEMe1xp of e1xp
   | D2ITEMmacdef of d2mac_t
   | D2ITEMmacvar of d2var_t
+  | D2ITEMmtd of d2mtd_t
   | D2ITEMsym of List d2item (* overloaded symbol *)
   | D2ITEMvar of d2var_t
+// end of [d2item]
 
 typedef d2itemlst = List d2item
 viewtypedef d2itemopt_vt = Option_vt d2item
+
+(* ****** ****** *)
 
 typedef d2sym = '{
   d2sym_loc= loc_t
 , d2sym_qua= $Syn.d0ynq, d2sym_sym= sym_t
 , d2sym_itm= d2itemlst
-}
+} // end of [d2sym]
 
 fun fprint_d2sym {m:file_mode}
   (pf: file_mode_lte (m, w) | out: &FILE m, d2s: d2sym): void
@@ -223,6 +233,18 @@ fun prerr_d2mac (_: d2mac_t): void
 
 overload print with print_d2mac
 overload prerr with prerr_d2mac
+
+(* ****** ****** *)
+
+fun fprint_d2mtd {m:file_mode}
+  (pf: file_mode_lte (m, w) | out: &FILE m, d2m: d2mtd_t): void
+overload fprint with fprint_d2mtd
+
+fun print_d2mtd (_: d2mtd_t): void
+fun prerr_d2mtd (_: d2mtd_t): void
+
+overload print with print_d2mtd
+overload prerr with prerr_d2mtd
 
 (* ****** ****** *)
 
@@ -520,9 +542,10 @@ datatype d2ec_node =
       $Syn.i0delst
   | D2Cstavars of s2tavarlst
   | D2Csaspdec of s2aspdec
+  | D2Cdcstdec of ($Syn.dcstkind, d2cstlst)
   | D2Cdatdec of ($Syn.datakind, s2cstlst)
   | D2Cexndec of d2conlst
-  | D2Cdcstdec of ($Syn.dcstkind, d2cstlst)
+  | D2Cclassdec of c2lassdec
   | D2Coverload of (* overloading *) // for temporary use
       ($Syn.i0de, $Syn.dqi0de)
   | D2Cextype of // external type
@@ -549,6 +572,7 @@ datatype d2ec_node =
       fil_t
   | D2Cstaload of (* static load *)
       (fil_t, Option d2eclst)
+// end of [d2ec_node]
 
 and d2exp_node =
   | D2Eann_funclo of (* ascribed with funclo kind *)
@@ -623,12 +647,18 @@ and d2exp_node =
       (d2eclst, d2exp)
   | D2Eloopexn of (* break: 0 and continue: 1 *)
       int
-  | D2Elst of (* list expression *)
-      (int(*lin*), s2expopt (*element type*), d2explst (*elements*))
+  | D2Elst of ( // list expression
+      int(*lin*), s2expopt(*element type*), d2explst(*elements*)
+    ) // end of [D2Elst]
   | D2Emac of (* macro expression *)
       d2mac_t
   | D2Emacsyn of (* macro encoding *)
       ($Syn.macsynkind, d2exp)
+  | D2Emtd of (* method invocation *)
+      d2mtd_t
+  | D2Eobj of ( // dynamic object
+      int(*knd*), c2lassdec, s2exp(*cls*), m2thdeclst
+    ) // end of [D2Eobj]
   | D2Eptrof of (* taking the address of *)
       d2exp
   | D2Eraise of (* raised exception *)
@@ -665,28 +695,43 @@ and d2exp_node =
       (d2exp, d2eclst)
   | D2Ewhile of (* while-loop *)
       (loopi2nv, d2exp(*test*), d2exp(*body*))
+// end of [d2exp_node]
 
 and d2exparg =
   | D2EXPARGsta of s2exparglst
   | D2EXPARGdyn of (loc_t(*arg*), int (*pfarity*), d2explst)
+// end of [d2exparg]
 
 and labd2explst =
   | LABD2EXPLSTnil
   | LABD2EXPLSTcons of (lab_t, d2exp, labd2explst)
+// end of [labd2explst]
 
 and d2lab_node =
   | D2LABlab of lab_t
   | D2LABind of d2explstlst
+// end of [d2lab_node]
 
+and m2thdec =
+  | M2THDECmtd of (
+      loc_t, sym_t, d2var_t(*self*), d2expopt(*def*)
+    ) // end of [M1THDECmtd]
+  | M2THDECval of
+      (loc_t, sym_t, s2exp, d2expopt)
+  | M2THDECvar of
+      (loc_t, sym_t, s2exp, d2expopt)
+  | M2THDECimp of (loc_t, d2mtd_t, d2exp)
+// end of [m2thdec]
+  
 where d2ec = '{
   d2ec_loc= loc_t, d2ec_node= d2ec_node
-}
+} // end of [d2ec]
 
 and d2eclst = List d2ec
 
 and d2exp = '{
   d2exp_loc= loc_t, d2exp_node= d2exp_node, d2exp_typ= s2expopt
-}
+} // end of [d2exp]
 
 and d2explst (n:int) = list (d2exp, n)
 and d2explst = [n:nat] d2explst n
@@ -702,7 +747,7 @@ and d2exparglst = List d2exparg
 
 and d2lab = '{
   d2lab_loc= loc_t, d2lab_node= d2lab_node
-}
+} // end of [d2lab]
 
 and d2lablst = List d2lab
 
@@ -711,7 +756,7 @@ and d2lablst = List d2lab
 and i2nvarg = '{
   i2nvarg_var= d2var_t
 , i2nvarg_typ= s2expopt
-}
+} // end of [i2nvarg]
 
 and i2nvarglst = List i2nvarg
 
@@ -720,7 +765,7 @@ and i2nvresstate = '{
 , i2nvresstate_gua= s2explst
 , i2nvresstate_arg= i2nvarglst
 , i2nvresstate_met= s2explstopt
-}
+} // end of [i2nvresstate]
 
 and loopi2nv = '{
   loopi2nv_loc= loc_t
@@ -729,13 +774,13 @@ and loopi2nv = '{
 , loopi2nv_met= s2explstopt (* metric *)
 , loopi2nv_arg= i2nvarglst (* argument *)
 , loopi2nv_res= i2nvresstate (* result *)
-}
+} // end of [loopi2nv]
 
 (* ****** ****** *)
 
 and m2atch = '{
   m2atch_loc= loc_t, m2atch_exp= d2exp, m2atch_pat= p2atopt
-}
+} // en dof [m2atch]
 
 and m2atchlst = List m2atch
 
@@ -767,14 +812,30 @@ and sc2laulst = List (sc2lau)
 (* ****** ****** *)
 
 and s2tavar = '{
-  s2tavar_loc= loc_t, s2tavar_var= s2var_t
-}
+  s2tavar_loc= loc_t
+, s2tavar_var= s2var_t
+} // end of [s2tavar]
 
 and s2tavarlst = List s2tavar
 
 and s2aspdec = '{
-  s2aspdec_loc= loc_t, s2aspdec_cst= s2cst_t, s2aspdec_def= s2exp
-}
+  s2aspdec_loc= loc_t
+, s2aspdec_cst= s2cst_t
+, s2aspdec_def= s2exp
+} // end of [s2aspdec]
+
+(* ****** ****** *)
+
+and m2thdeclst = List m2thdec
+
+and c2lassdec = '{
+  c2lassdec_loc= loc_t
+, c2lassdec_knd= int // mod/obj: 0/1
+, c2lassdec_cst= s2cst_t
+, c2lassdec_suplst= s2explst
+, c2lassdec_mtdlst= m2thdeclst
+, c2lassdec_mtdmap= symmapref (d2item)
+} // end of [c2lasdec]
 
 (* ****** ****** *)
 
@@ -783,7 +844,7 @@ and v2aldec = '{
 , v2aldec_pat= p2at
 , v2aldec_def= d2exp
 , v2aldec_ann= s2expopt
-}
+} // end of [v2aldec]
 
 and v2aldeclst = List v2aldec
 
@@ -794,7 +855,7 @@ and f2undec = '{
 , f2undec_var= d2var_t
 , f2undec_def= d2exp
 , f2undec_ann= s2expopt
-}
+} // end of [f2undec]
 
 and f2undeclst = List f2undec
 
@@ -821,7 +882,7 @@ and i2mpdec = '{
 , i2mpdec_decarg= s2qualst
 , i2mpdec_tmparg= s2explstlst, i2mpdec_tmpgua= s2explstlst
 , i2mpdec_def= d2exp
-}
+} // end of [i2mpdec]
 
 (* ****** ****** *)
 
@@ -832,13 +893,19 @@ fun d2cst_def_set (_: d2cst_t, def: d2expopt): void
 
 datatype macarg =
   MACARGone of d2var_t | {n:nat} MACARGlst of (int n, d2varlst n)
+// end of [macarg]
 
 typedef macarglst (narg:int) = list (macarg, narg)
 typedef macarglst = [narg:nat] list (macarg, narg)
 
-fun d2mac_make {narg:nat}
-  (_: loc_t, name: sym_t, knd: int, args: macarglst narg, def: d2exp)
-  : d2mac_t narg
+fun d2mac_make {narg:nat} (
+    _: loc_t
+  , name: sym_t
+  , knd: int
+  , args: macarglst narg
+  , def: d2exp
+  ) : d2mac_t narg
+// end of [d2mac_make]
 
 fun d2mac_loc_get (_: d2mac_t): loc_t
 fun d2mac_sym_get (_: d2mac_t): sym_t
@@ -848,6 +915,34 @@ fun d2mac_arglst_get {narg:nat} (_: d2mac_t narg): macarglst narg
 fun d2mac_def_get (_: d2mac_t): d2exp
 fun d2mac_def_set (_: d2mac_t, _: d2exp): void
 fun d2mac_stamp_get (_: d2mac_t): stamp_t
+
+(* ****** ****** *)
+
+datatype mtdkind =
+  | MTDKINDmtd | MTDKINDval | MTDKINDvar
+// end of [mtdkind]
+
+fun d2mtd_make (
+    _: loc_t
+  , name: sym_t
+  , knd: mtdkind
+  , decarg: s2qualst
+  , sublst: List @(s2qualst, tmps2explstlst)
+  , typ: s2exp
+  ) : d2mtd_t
+// end of [d2mtd_make]
+
+fun d2mtd_loc_get (_: d2mtd_t): loc_t
+fun d2mtd_sym_get (_: d2mtd_t): sym_t
+fun d2mtd_knd_get (_: d2mtd_t): mtdkind
+fun d2mtd_decarg_get (_: d2mtd_t): s2qualst
+fun d2mtd_sublst_get (_: d2mtd_t): List @(s2qualst, tmps2explstlst)
+fun d2mtd_subtyp_get (_: d2mtd_t): s2exp
+fun d2mtd_stamp_get (_: d2mtd_t): stamp_t
+
+(* ****** ****** *)
+
+fun d2mtd_typ_get (_: d2mtd_t): s2exp
 
 (* ****** ****** *)
 
@@ -1077,6 +1172,16 @@ fun d2exp_mac (_: loc_t, d2m: d2mac_t): d2exp
 
 fun d2exp_macsyn (_: loc_t, knd: $Syn.macsynkind, _: d2exp): d2exp
 
+fun d2exp_mtd (_: loc_t, d2m: d2mtd_t): d2exp
+
+fun d2exp_obj (
+    _: loc_t
+  , knd: int
+  , d2c_cls: c2lassdec, s2e_cls: s2exp
+  , mtdlst: m2thdeclst
+  ) : d2exp
+// end of [d2exp_obj]
+
 fun d2exp_ptrof (_: loc_t, _: d2exp): d2exp
 
 fun d2exp_raise (_: loc_t, _: d2exp): d2exp
@@ -1091,9 +1196,14 @@ fun d2exp_sel_ptr (_: loc_t, root: d2exp, lab: d2lab): d2exp
 
 fun d2exp_seq (_: loc_t, _: d2explst): d2exp
 
-fun d2exp_sif
-  (_: loc_t, res: i2nvresstate, _cond: s2exp, _then: d2exp, _else: d2exp)
-  : d2exp
+fun d2exp_sif (
+    _: loc_t
+  , res: i2nvresstate
+  , _cond: s2exp
+  , _then: d2exp
+  , _else: d2exp
+  ) : d2exp
+// end of [d2exp_sif]
 
 fun d2exp_spawn (_: loc_t, _: d2exp): d2exp
 
@@ -1155,10 +1265,35 @@ fun sc2lau_make (_: loc_t, sp2t: sp2at, exp: d2exp): sc2lau
 (* ****** ****** *)
 
 fun s2tavar_make (_: loc_t, s2v: s2var_t): s2tavar
-
 fun s2aspdec_make (_: loc_t, s2c: s2cst_t, def: s2exp): s2aspdec
-fun v2aldec_make (_: loc_t, _: p2at, def: d2exp, ann: s2expopt): v2aldec
-fun f2undec_make (_: loc_t, _: d2var_t, def: d2exp, ann: s2expopt): f2undec
+
+(* ****** ****** *)
+
+fun c2lassdec_make (
+    _: loc_t
+  , knd: int // mod/obj: 0/1
+  , s2c: s2cst_t
+  , supclss: s2explst
+  , mtdlst: m2thdeclst
+  , mtdmap: symmapref d2item
+  ) : c2lassdec
+// end of [c2lassdec]
+
+castfn c2lassdec_of_c2lassdec_t (_: c2lassdec_t): c2lassdec
+castfn c2lassdec_t_of_c2lassdec (_: c2lassdec): c2lassdec_t
+
+(* ****** ****** *)
+
+fun v2aldec_make
+  (_: loc_t, _: p2at, def: d2exp, ann: s2expopt): v2aldec
+// end of [v2aldec_make]
+
+fun f2undec_make
+  (_: loc_t, _: d2var_t, def: d2exp, ann: s2expopt): f2undec
+// end of [f2undec_make]
+
+(* ****** ****** *)
+
 fun v2ardec_make (
     _: loc_t
   , knd: int
@@ -1187,8 +1322,9 @@ fun d2ec_symintr (_: loc_t, ids: $Syn.i0delst): d2ec
 fun d2ec_symelim (_: loc_t, ids: $Syn.i0delst): d2ec
 fun d2ec_stavars (_: loc_t, ds: s2tavarlst): d2ec
 fun d2ec_saspdec (_: loc_t, d: s2aspdec): d2ec
-fun d2ec_datdec (_: loc_t, k: $Syn.datakind, ds: s2cstlst): d2ec
 fun d2ec_dcstdec (_: loc_t, _: $Syn.dcstkind, ds: d2cstlst): d2ec
+fun d2ec_datdec (_: loc_t, k: $Syn.datakind, ds: s2cstlst): d2ec
+fun d2ec_classdec (_: loc_t, d: c2lassdec): d2ec
 fun d2ec_overload (_: loc_t, id: $Syn.i0de, qid: $Syn.dqi0de): d2ec
 fun d2ec_exndec (_: loc_t, con: d2conlst): d2ec
 fun d2ec_extype (_: loc_t, name: string, def: s2exp): d2ec
@@ -1224,6 +1360,15 @@ datatype l2val = // type for left-values
   | L2VALnone of d2exp (* non-left-values *)
 
 fun l2val_make_d2exp (d2e0: d2exp): l2val
+
+(* ****** ****** *)
+
+(*
+** implemented in [ats_trans3_exp_up.dats]
+*)
+fun p2at_typ_syn (_: p2at): s2exp
+fun p2atlst_typ_syn {n:nat} (_: p2atlst n): s2explst n
+fun d2exp_typ_syn (_: d2exp): s2exp
 
 (* ****** ****** *)
 

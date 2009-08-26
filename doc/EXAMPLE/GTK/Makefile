@@ -4,7 +4,9 @@
 #
 #
 
-all:: HelloWorld menu sudoku
+checkall:: compall cleanall
+
+compall:: HelloWorld menu sudoku
 
 # A warm-up example
 HelloWorld: HelloWorld.dats

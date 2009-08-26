@@ -482,7 +482,7 @@ implement ccomp_patck_rec
   end // end of [auxlst]
 in
   auxlst (res, lhips)
-end // end of [ccomp_patck_rec]
+end (* end of [ccomp_patck_rec] *)
 
 implement ccomp_patck_sum
   (res, vp_sum, d2c, hips_arg, hit_sum, fail) = let
@@ -499,9 +499,8 @@ implement ccomp_patck_sum
               val d2v = d2var_make_any (hip.hipat_loc)
               val () = hipat_asvar_set (hip, D2VAROPTsome d2v)
             } // end of [D2VAROPTnone]
-          | D2VAROPTsome d2v => d2v // may happen in template compialtion
+          | D2VAROPTsome d2v => d2v // may happen in template compilation
         ) : d2var_t
-        val () = hipat_asvar_set (hip, D2VAROPTsome d2v)
         val hit = hityp_normalize (hip.hipat_typ)
         val tmp = tmpvar_make (hit)
         val () = instr_add_selcon (res, tmp, vp_sum, hit_sum, i)
@@ -520,7 +519,7 @@ implement ccomp_patck_sum
   end // end of [auxlst]
 in
   auxlst (res, hips_arg, 0)
-end // end of [ccomp_patck_sum]
+end (* end of [ccomp_patck_sum] *)
 
 (* ****** ****** *)
 
@@ -589,7 +588,7 @@ in
   | HIPvar _ => ()
   | _ => begin
       prerr "INTERNAL ERROR";
-      prerr ": ccomp_patck: not implemented yet: hip0 = ";
+      prerr ": [ats_ccomp_trans]: ccomp_patck: not implemented yet: hip0 = ";
       prerr_hipat hip0; prerr_newline ();
       $Err.abort {void} ()
     end // end of [_]
@@ -640,7 +639,14 @@ fn ccomp_match_sum (
   , hips_arg: hipatlst
   , hit_sum: hityp_t
   ) : void = let
-
+(*
+  val () = begin
+    prerr "ccomp_match_sum: level = "; prerr level; prerr_newline ();
+    prerr "ccomp_match_sum: vp_sum = "; prerr vp_sum; prerr_newline ();
+    prerr "ccomp_match_sum: d2c = "; prerr_d2con d2c; prerr_newline ();
+    prerr "ccomp_match_sum: hips_arg = "; prerr_hipatlst hips_arg; prerr_newline ();
+  end // end [val]
+*)
   fun aux_var (
       res: &instrlst_vt
     , level: int
@@ -649,6 +655,12 @@ fn ccomp_match_sum (
     , refknd: int
     , d2v: d2var_t
     ) :<cloptr1> void = let
+(*
+    val () = begin
+      prerr "ccomp_match_sum: aux_var: hip0 = "; prerr_hipat hip0 ; prerr_newline ();
+      prerr "ccomp_match_sum: aux_var: d2v = "; prerr_d2var d2v ; prerr_newline ();
+    end // end of [val]
+*)
     val () = d2var_lev_set (d2v, level)
   in
     case+ 0 of
@@ -671,51 +683,73 @@ fn ccomp_match_sum (
       in
         // empty
       end // end of [_]
-  end // end of [aux_var]
+  end (* end of [aux_var] *)
 
   fun aux_pat
     (res: &instrlst_vt, level: int, i: int, hip0: hipat)
-    :<cloptr1> void = begin case+ hip0.hipat_node of
+    :<cloptr1> void = let
+(*
+    val () = begin
+      prerr "ccomp_match_sum: aux_pat: hip0 = "; prerr_hipat hip0 ; prerr_newline ();
+    end // end of [val]
+*)
+  in
+    case+ hip0.hipat_node of
     | HIPann (hip, _(*hit_ann*)) => aux_pat (res, level, i, hip)
     | HIPany () => ()
-    | HIPas (refknd, d2v, hip) => begin
-        aux_var (res, level, i, hip0, refknd, d2v); aux_pat (res, level, i, hip)
+    | HIPas (refknd, d2v, hip) => let
+        val () = aux_var (res, level, i, hip0, refknd, d2v)
+        val vp0 = the_dynctx_find d2v
+        val vp = begin case+ 0 of
+          | _ when refknd > 0 => let
+              val hit = hityp_normalize (hip0.hipat_typ)
+              val tmp = tmpvar_make (hit)
+              val () = instr_add_load_ptr (res, tmp, vp0)
+            in
+              valprim_tmp (tmp)
+            end // end of [_ when refknd > 0]
+          | _ => vp0
+        end : valprim // end of [val]
+      in
+        ccomp_match (res, level, vp, hip)
       end // end of [HIPas]
     | HIPvar (refknd, d2v) => aux_var (res, level, i, hip0, refknd, d2v)
-    | _ => ccomp_match (res, level, vp, hip0) where {
+    | _ => let
         val vp = (case+ hip0.hipat_asvar of
           | D2VAROPTsome d2v => the_dynctx_find d2v
           | D2VAROPTnone () => begin
               prerr "INTERNAL ERROR";
-              prerr ": ccomp_match_sum: aux: hip0 = "; prerr_hipat hip0; prerr_newline ();
+              prerr ": [ats_ccomp_trans]: ccomp_match_sum: aux_pat: hip0 = ";
+              prerr_hipat hip0; prerr_newline ();
               $Err.abort {valprim} ()
             end // end of [D2VAROPTnone]
-        ) : valprim
-      } // end of [_]
+        ) : valprim // end of [val]
+      in  
+        ccomp_match (res, level, vp, hip0)
+      end // end of [_]
   end (* end of [aux_pat] *)
 
   fun auxlst_pat
     (res: &instrlst_vt, level: int, i: int, hips: hipatlst)
     :<cloptr1> void = begin case+ hips of
-    | list_cons (hip, hips) => let
+    | list_cons (hip, hips) => () where {
         val () = aux_pat (res, level, i, hip)
-      in
-        auxlst_pat (res, level, i+1, hips)
-      end // end of [list_cons]
+        val () = auxlst_pat (res, level, i+1, hips)
+      } // end of [list_cons]
     | list_nil () => ()
   end (* end of [auxlst_pat] *)
 in
   auxlst_pat (res, level, 0, hips_arg)
-end // end of [ccomp_match_sum]
+end (* end of [ccomp_match_sum] *)
 
 (* ****** ****** *)
 
 implement ccomp_match (res, level, vp0, hip0) = let
 (*
   val () = begin
-    prerr "ccomp_match: level = "; prerr level; prerr_newline ()
-    prerr "ccomp_match: vp0 = "; prerr vp0; prerr_newline ()
-    prerr "ccomp_match: hip0 = "; prerr hip0; prerr_newline ()
+    prerr "ccomp_match: level = "; prerr level; prerr_newline ();
+    prerr "ccomp_match: vp0 = "; prerr vp0; prerr_newline ();
+    prerr "ccomp_match: hip0 = "; prerr_hipat hip0; prerr_newline ();
   end // end [val]
 *)
   fun aux_var (
@@ -724,6 +758,12 @@ implement ccomp_match (res, level, vp0, hip0) = let
     , vp0: valprim
     , d2v: d2var_t
     ) : void = let
+(*
+    val () = begin
+      prerr "ccomp_match: aux_var: vp0 = "; prerr vp0; prerr_newline ();
+      prerr "ccomp_match: aux_var: d2v = "; prerr d2v; prerr_newline ();
+    end // end of [val]
+*)
     val () = d2var_lev_set (d2v, level)
   in
     case+ d2v of
@@ -766,6 +806,7 @@ in
       val hit_sum = hityp_normalize (hit_sum)
       val () = ccomp_match_sum
         (res, level, vp0, freeknd, d2c, hips_arg, hit_sum)
+      // end of [val]
     in
       if freeknd < 0 then the_valprimlst_free_add vp0
     end // end of [HIPcon]
@@ -785,10 +826,11 @@ in
   | _ => begin
       $Loc.prerr_location hip0.hipat_loc;
       prerr ": INTERNAL ERROR";
-      prerr ": ccomp_match: hip0 = "; prerr_hipat hip0; prerr_newline ();
+      prerr ": [ats_ccomp_trans]: ccomp_match: hip0 = "; prerr_hipat hip0;
+      prerr_newline ();
       $Err.abort {void} ()
     end // end of [_]
-end // end of [ccomp_match]
+end (* end of [ccomp_match] *)
 
 (* ****** ****** *)
 
@@ -1156,8 +1198,8 @@ fn ccomp_exp_refarg (
         ccomp_exp_ptrof_var (res, d2v_mut, hils)
     | _ => begin
         $Loc.prerr_location (hie.hiexp_loc);
-        prerr ": Internal Error";
-        prerr ": ccomp_exp_refarg: hie = ";
+        prerr ": INTERNAL ERROR";
+        prerr ": [ats_ccomp_trans]: ccomp_exp_refarg: hie = ";
         prerr_hiexp hie; prerr_newline ();
         $Err.abort {valprim} ()
       end // end of [_]
@@ -2011,7 +2053,7 @@ in
   | HIEraise hie_exn => let
       val vp_exn = ccomp_exp (res, hie_exn)
     in
-      instr_add_raise (res, vp_exn)
+      instr_add_raise (res, tmp_res, vp_exn)
     end // end of [HIEraise]
   | HIErec (recknd, hit_rec, lhies) => let
       val hit_rec = hityp_normalize (hit_rec)
@@ -2072,7 +2114,7 @@ in
   | _ => begin
       $Loc.prerr_location (hie0.hiexp_loc);
       prerr ": INTERNAL ERROR";
-      prerr ": ccomp_exp_tmpvar: not implemented: hie0 = ";
+      prerr ": [ats_ccomp_trans]: ccomp_exp_tmpvar: not implemented: hie0 = ";
       prerr_hiexp hie0; prerr_newline ();
       $Err.abort {void} ()
     end // end of [_]
@@ -2143,10 +2185,11 @@ fun ccomp_fundeclst_init {n:nat}
   : list_vt (funlab_t, n) = begin
   case+ fundecs of
   | list_cons (fundec, fundecs) => let
+      val loc = fundec.hifundec_loc
       val d2v = fundec.hifundec_var
       val () = d2var_lev_set (d2v, level)
       val s2e = d2var_mastyp_get_some (fundec.hifundec_loc, d2v)
-      val hit = hityp_normalize (s2exp_tr (1(*deep*), s2e))
+      val hit = hityp_normalize (s2exp_tr (loc, 1(*deep*), s2e))
       val fl = funlab_make_var_typ (d2v, hit)
       val vp = valprim_funclo_make (fl)
       val () = the_dynctx_add (d2v, vp)
@@ -2201,8 +2244,8 @@ fn ccomp_fntdeclst_main {n:nat} (
         end // end of [HIElam]
       | _ => begin
           prerr "INTERNAL ERROR";
-          prerr ": ccomp_fntdeclst_main; aux_ccomp: hie_def = "; prerr_hiexp hie_def;
-          prerr_newline ();
+          prerr ": [ats_ccomp_trans]: ccomp_fntdeclst_main; aux_ccomp: hie_def = ";
+          prerr_hiexp hie_def; prerr_newline ();
           $Err.abort {funentry_t} ()
         end // end of [_]
     end // end of [aux_ccomp]
@@ -2244,8 +2287,8 @@ fun ccomp_fundeclst_main {n:nat} (
           end // end of [HIElam]
         | _ => begin
             prerr "INTERNAL ERROR";
-            prerr ": ccomp_fundeclst_main: hie_def = "; prerr_hiexp hie_def;
-            prerr_newline ();
+            prerr ": [ats_ccomp_trans]: ccomp_fundeclst_main: hie_def = ";
+            prerr_hiexp hie_def; prerr_newline ();
             $Err.abort {void} ();
           end
       end // end of [val]
@@ -2327,10 +2370,11 @@ fn ccomp_valdeclst_rec (
 fn ccomp_vardec_sta
   (res: &instrlst_vt, level: int, vardec: hivardec)
   : void = let
+  val loc = vardec.hivardec_loc
   val d2v = vardec.hivardec_ptr
   val () = d2var_lev_set (d2v, level)
   val s2e = d2var_typ_ptr_get d2v
-  val hit = s2exp_tr (0(*deep*), s2e)
+  val hit = s2exp_tr (loc, 0(*deep*), s2e)
   val tmp = tmpvar_make (hityp_normalize hit)
   val () = instr_add_vardec (res, tmp)
   val () = the_dynctx_add (d2v, valprim_tmp_ref tmp)
@@ -2342,9 +2386,10 @@ end // end of [ccomp_vardec_sta]
 fn ccomp_vardec_dyn
   (res: &instrlst_vt, level: int, vardec: hivardec)
   : void = let
+  val loc = vardec.hivardec_loc
   val d2v = vardec.hivardec_ptr
   val () = d2var_lev_set (d2v, level)
-  val hit_ptr = s2exp_tr (0(*deep*), s2e) where {
+  val hit_ptr = s2exp_tr (loc, 0(*deep*), s2e) where {
     // [s2e] must a pointer type
     val s2e = d2var_typ_get_some (d2var_loc_get d2v, d2v)
   } // end of [val]
@@ -2382,7 +2427,7 @@ in
     end // end of [HIElaminit]
   | _ => begin
       prerr "INTERNAL ERROR";
-      prerr ": ccomp_vardec_dyn: unsupported initialization form";
+      prerr ": [ats_ccomp_trans]: ccomp_vardec_dyn: unsupported initialization form";
       prerr ": hie_ini = "; prerr_hiexp hie_ini; prerr_newline ();
       $Err.abort {void} ()
     end // end of [_]

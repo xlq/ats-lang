@@ -7,28 +7,27 @@
 (***********************************************************************)
 
 (*
- * ATS - Unleashing the Potential of Types!
- *
- * Copyright (C) 2002-2008 Hongwei Xi, Boston University
- *
- * All rights reserved
- *
- * ATS is free software;  you can  redistribute it and/or modify it under
- * the terms of the GNU LESSER GENERAL PUBLIC LICENSE as published by the
- * Free Software Foundation; either version 2.1, or (at your option)  any
- * later version.
- * 
- * ATS is distributed in the hope that it will be useful, but WITHOUT ANY
- * WARRANTY; without  even  the  implied  warranty  of MERCHANTABILITY or
- * FITNESS FOR A PARTICULAR PURPOSE.  See the  GNU General Public License
- * for more details.
- * 
- * You  should  have  received  a  copy of the GNU General Public License
- * along  with  ATS;  see the  file COPYING.  If not, please write to the
- * Free Software Foundation,  51 Franklin Street, Fifth Floor, Boston, MA
- * 02110-1301, USA.
- *
- *)
+** ATS - Unleashing the Potential of Types!
+**
+** Copyright (C) 2002-2008 Hongwei Xi, Boston University
+**
+** All rights reserved
+**
+** ATS is free software;  you can  redistribute it and/or modify it under
+** the terms of the GNU LESSER GENERAL PUBLIC LICENSE as published by the
+** Free Software Foundation; either version 2.1, or (at your option)  any
+** later version.
+** 
+** ATS is distributed in the hope that it will be useful, but WITHOUT ANY
+** WARRANTY; without  even  the  implied  warranty  of MERCHANTABILITY or
+** FITNESS FOR A PARTICULAR PURPOSE.  See the  GNU General Public License
+** for more details.
+** 
+** You  should  have  received  a  copy of the GNU General Public License
+** along  with  ATS;  see the  file COPYING.  If not, please write to the
+** Free Software Foundation,  51 Franklin Street, Fifth Floor, Boston, MA
+** 02110-1301, USA.
+*)
 
 (* ****** ****** *)
 
@@ -73,8 +72,6 @@ fun char_of_int1
   = "atspre_char_of_int"
 // end of [char_of_int1]
 
-//
-
 fun char_of_uint (u: uint):<> char
   = "atspre_char_of_uint"
 
@@ -85,10 +82,47 @@ fun char_of_uint1
 
 (* ****** ****** *)
 
+fun schar_of_int (i: int):<> schar
+  = "atspre_char_of_int"
+
+fun schar_of_int1
+  {i: nat | i <= UCHAR_MAX} (i: int i):<> schar
+  = "atspre_char_of_int"
+// end of [schar_of_int1]
+
+fun schar_of_uint (u: uint):<> schar
+  = "atspre_char_of_uint"
+
+fun schar_of_uint1
+  {i: nat | i <= UCHAR_MAX} (u: uint i):<> schar
+  = "atspre_char_of_uint"
+// end of [schar_of_uint1]
+
+(* ****** ****** *)
+
+fun uchar_of_int (i: int):<> uchar
+  = "atspre_char_of_int"
+
+fun uchar_of_int1
+  {i: nat | i <= UCHAR_MAX} (i: int i):<> uchar
+  = "atspre_char_of_int"
+// end of [uchar_of_int1]
+
+fun uchar_of_uint (u: uint):<> uchar
+  = "atspre_char_of_uint"
+
+fun uchar_of_uint1
+  {i: nat | i <= UCHAR_MAX} (u: uint i):<> uchar
+  = "atspre_char_of_uint"
+// end of [uchar_of_uint1]
+
+(* ****** ****** *)
+
 // also declared in [integer.sats]
 fun int_of_char (c: char):<> int
   = "atspre_int_of_char"
 
+// also declared in [integer.sats]
 fun int1_of_char (c: char)
   :<> [i:int | CHAR_MIN <= i; i <= CHAR_MAX] int i
   = "atspre_int_of_char"
@@ -97,6 +131,7 @@ fun int1_of_char (c: char)
 // also declared in [integer.sats]
 fun int_of_uchar (c: uchar):<> int = "atspre_int_of_uchar"
 
+// also declared in [integer.sats]
 fun int1_of_uchar (c: uchar)
   :<> [i:nat | i <= UCHAR_MAX] int i = "atspre_int_of_uchar"
 // end of [int1_of_uchar]

@@ -7,33 +7,32 @@
 (***********************************************************************)
 
 (*
- * ATS/Anairiats - Unleashing the Potential of Types!
- *
- * Copyright (C) 2002-2008 Hongwei Xi, Boston University
- *
- * All rights reserved
- *
- * ATS is free software;  you can  redistribute it and/or modify it under
- * the terms of  the GNU GENERAL PUBLIC LICENSE (GPL) as published by the
- * Free Software Foundation; either version 3, or (at  your  option)  any
- * later version.
- * 
- * ATS is distributed in the hope that it will be useful, but WITHOUT ANY
- * WARRANTY; without  even  the  implied  warranty  of MERCHANTABILITY or
- * FITNESS FOR A PARTICULAR PURPOSE.  See the  GNU General Public License
- * for more details.
- * 
- * You  should  have  received  a  copy of the GNU General Public License
- * along  with  ATS;  see the  file COPYING.  If not, please write to the
- * Free Software Foundation,  51 Franklin Street, Fifth Floor, Boston, MA
- * 02110-1301, USA.
- *
- *)
+** ATS/Anairiats - Unleashing the Potential of Types!
+**
+** Copyright (C) 2002-2008 Hongwei Xi, Boston University
+**
+** All rights reserved
+**
+** ATS is free software;  you can  redistribute it and/or modify it under
+** the terms of  the GNU GENERAL PUBLIC LICENSE (GPL) as published by the
+** Free Software Foundation; either version 3, or (at  your  option)  any
+** later version.
+** 
+** ATS is distributed in the hope that it will be useful, but WITHOUT ANY
+** WARRANTY; without  even  the  implied  warranty  of MERCHANTABILITY or
+** FITNESS FOR A PARTICULAR PURPOSE.  See the  GNU General Public License
+** for more details.
+** 
+** You  should  have  received  a  copy of the GNU General Public License
+** along  with  ATS;  see the  file COPYING.  If not, please write to the
+** Free Software Foundation,  51 Franklin Street, Fifth Floor, Boston, MA
+** 02110-1301, USA.
+*)
 
 (* ****** ****** *)
 
-// Time: November 2007
 // Author: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
+// Time: November 2007
 
 (* ****** ****** *)
 
@@ -68,6 +67,8 @@ val Double_long_t0ype : s2cstref_t
 val Float_t0ype : s2cstref_t
 val Int_t0ype : s2cstref_t
 val Int_int_t0ype : s2cstref_t
+val Obj_cls_viewt0ype : s2cstref_t
+val Objmod_cls_type : s2cstref_t
 val Ptr_type : s2cstref_t
 val Ptr_addr_type : s2cstref_t
 val Ref_viewt0ype_type : s2cstref_t
@@ -264,7 +265,17 @@ fun s2exp_float_t0ype (): s2exp
 fun s2exp_int_t0ype (): s2exp
 fun s2exp_int_int_t0ype (i: int): s2exp
 fun s2exp_int_intinf_t0ype (i: intinf_t): s2exp
+
+fun s2exp_obj_cls_t0ype (cls: s2exp): s2exp
+fun s2exp_obj_cls_viewt0ype (cls: s2exp): s2exp
+fun s2exp_is_obj_cls_viewt0ype (cls: s2exp): bool
+
+fun s2exp_objmod_cls_type (cls: s2exp): s2exp
+fun s2exp_is_objmod_cls_type (cls: s2exp): bool
+
 fun s2exp_ptr_type (): s2exp
+fun s2exp_ptr_addr_type (addr: s2exp): s2exp
+fun s2exp_ref_viewt0ype_type (elt: s2exp): s2exp
 fun s2exp_string_type (): s2exp
 fun s2exp_string_int_type (n: int): s2exp
 fun s2exp_void_t0ype (): s2exp
@@ -277,6 +288,10 @@ fun s2exp_uint_intinf_t0ype (i: intinf_t): s2exp
 fun un_s2exp_bool_bool_t0ype (s2e: s2exp): Option_vt (s2exp)
 fun un_s2exp_char_char_t0ype (s2e: s2exp): Option_vt (s2exp)
 fun un_s2exp_int_int_t0ype (s2e: s2exp): Option_vt (s2exp)
+fun un_s2exp_obj_cls_viewt0ype (s2e: s2exp): Option_vt (s2exp)
+fun un_s2exp_objmod_cls_type (s2e: s2exp): Option_vt (s2exp)
+fun un_s2exp_ptr_addr_type (s2e: s2exp): Option_vt (s2exp(*addr*))
+fun un_s2exp_ref_viewt0ype_type (s2e: s2exp): Option_vt (s2exp(*elt*))
 fun un_s2exp_size_int_t0ype (s2e: s2exp): Option_vt (s2exp)
 fun un_s2exp_string_int_type (s2e: s2exp): Option_vt (s2exp)
 
@@ -316,14 +331,6 @@ fun un_s2exp_at_viewt0ype_addr_view
 fun s2exp_array_viewt0ype_int_type (elt: s2exp, sz: int): s2exp
 fun s2exp_array_viewt0ype_int_viewtype (elt: s2exp, sz: int): s2exp
 fun s2exp_arraysize_viewt0ype_int_viewt0ype (elt: s2exp, sz: int): s2exp
-
-(* ****** ****** *)
-
-fun s2exp_ptr_addr_type (addr: s2exp): s2exp
-fun s2exp_ref_viewt0ype_type (elt: s2exp): s2exp
-
-fun un_s2exp_ptr_addr_type (s2e: s2exp): Option_vt (s2exp(*addr*))
-fun un_s2exp_ref_viewt0ype_type (s2e: s2exp): Option_vt (s2exp(*elt*))
 
 (* ****** ****** *)
 
@@ -379,6 +386,7 @@ fun s2exp_neq_int_int_bool (s2e1: s2exp, s2e2: s2exp): s2exp
 
 fun s2exp_btw_int_int_int_bool
   (lft: s2exp, mid: s2exp, rgt: s2exp): s2exp
+// end of [s2exp_btw_int_int_int_bool]
 
 (* ****** ****** *)
 
@@ -396,4 +404,4 @@ fun s2exp_lte_addr_addr_bool (s2e1: s2exp, s2e2: s2exp): s2exp
 
 (* ****** ****** *)
 
-(* end of [ats_stacst2.sats] *)
+(* end of [ats_stadyncst2.sats] *)

@@ -72,6 +72,20 @@ end // end of [lazy_force_crypt]
 
 (* ****** ****** *)
 
+fun{a:t@ype} stream_filter_fun_con
+  (xs: stream a, p: a -<fun1,~ref> bool)
+  :<1,~ref> stream_con a = begin case+ !xs of
+  | stream_cons (x, xs) => begin
+      if p x then stream_cons (x, stream_filter_fun<a> (xs, p))
+      else stream_filter_fun_con (xs, p)
+    end // end of [stream_cons]
+  | stream_nil () => stream_nil ()
+end // end of [stream_filter_fun_con]
+
+implement{a} stream_filter_fun (xs, p) =
+  $delay (stream_filter_fun_con<a> (xs, p))
+// end of [stream_filter_fun]
+  
 fun{a:t@ype} stream_filter_cloref_con
   (xs: stream a, p: a -<cloref1,~ref> bool)
   :<1,~ref> stream_con a = begin case+ !xs of
@@ -82,80 +96,65 @@ fun{a:t@ype} stream_filter_cloref_con
   | stream_nil () => stream_nil ()
 end // end of [stream_filter_cloref_con]
 
-implement{a} stream_filter_fun (xs, p) =
-  $delay (stream_filter_cloref_con<a> (xs, lam x => p x))
-  
 implement{a} stream_filter_cloref (xs, p) =
   $delay (stream_filter_cloref_con<a> (xs, p))
+// end of [stream_filter_cloref]
 
 (* ****** ****** *)
 
-fun{a,b:t@ype} stream_map_cloref_con
-  (xs: stream a, f: a -<cloref1,~ref> b)
-  :<1,~ref> stream_con b = begin
+implement{a,b} stream_map_fun (xs, f) = $delay (begin
   case+ !xs of
-  | stream_cons (x, xs) => f x :: $delay (stream_map_cloref_con (xs, f))
-  | stream_nil () => stream_nil ()
-end // end of [stream_map_con]
+  | x :: xs => cons (f x, stream_map_fun<a,b> (xs, f)) | nil () => nil ()
+end : stream_con b) // end of [stream_map_fun]
 
-implement{a,b} stream_map_fun (xs, f) =
-  $delay (stream_map_cloref_con<a,b> (xs, lam x => f x))
-
-implement{a,b} stream_map_cloref (xs, f) =
-  $delay (stream_map_cloref_con<a,b> (xs, f))
+implement{a,b} stream_map_cloref (xs, f) = $delay (begin
+  case+ !xs of
+  | x :: xs => cons (f x, stream_map_cloref<a,b> (xs, f)) | nil () => nil ()
+end : stream_con b) // end of [stream_map_cloref]
 
 (* ****** ****** *)
 
-fun{a1,a2,b:t@ype} stream_map2_cloref_con (
-    xs1: stream a1
-  , xs2: stream a2
-  , f: (a1, a2) -<cloref1,~ref> b
-  ) :<1,~ref> stream_con b = begin case+ !xs1 of
+implement{a1,a2,b} stream_map2_fun (xs1, xs2, f) = $delay (begin
+  case+ !xs1 of
   | x1 :: xs1 => begin case+ !xs2 of
-    | x2 :: xs2 => begin
-        f (x1, x2) :: $delay (stream_map2_cloref_con<a1,a2,b> (xs1, xs2, f))
-      end
+    | x2 :: xs2 => f (x1, x2) :: stream_map2_fun<a1,a2,b> (xs1, xs2, f)
     | nil () => nil ()
     end // end of [::]
   | nil () => nil ()
-end // end of [stream_map2_con]
+end : stream_con b) // end of [stream_map2_fun]
 
-implement{a1,a2,b} stream_map2_fun (xs1, xs2, f) = $delay (
-  stream_map2_cloref_con<a1,a2,b> (xs1, xs2, lam (x1, x2) => f (x1, x2))
-) // end of [stream_map2_fun]
-
-implement{a1,a2,b} stream_map2_cloref (xs1, xs2, f) =
-  $delay (stream_map2_cloref_con<a1,a2,b> (xs1, xs2, f))
+implement{a1,a2,b} stream_map2_cloref (xs1, xs2, f) = $delay (begin
+  case+ !xs1 of
+  | x1 :: xs1 => begin case+ !xs2 of
+    | x2 :: xs2 => f (x1, x2) :: stream_map2_cloref<a1,a2,b> (xs1, xs2, f)
+    | nil () => nil ()
+    end // end of [::]
+  | nil () => nil ()
+end : stream_con b) // end of [stream_map2_cloref]
 
 (* ****** ****** *)
 
-fun{a:t@ype} stream_merge_ord_con (
-    xs10: stream a
-  , xs20: stream a
-  , lte: (a, a) -<cloref1,~ref> bool
-  ) :<1,~ref> stream_con a = begin
+implement{a} stream_merge_ord
+  (xs10, xs20, lte) = $delay (begin
   case+ !xs10 of
   | x1 :: xs1 => begin case+ !xs20 of
     | x2 :: xs2 => begin
         if lte (x1, x2) then begin
           x1 :: stream_merge_ord (xs1, xs20, lte)
         end else begin
-          x2 :: $delay (stream_merge_ord_con (xs10, xs2, lte))
+          x2 :: stream_merge_ord (xs10, xs2, lte)
         end // end of [if]
-      end // end of [::]
+      end (* end of [::] *)
     | nil () => x1 :: xs1
-    end // end of [::]
+    end (* end of [::] *)
   | nil () => !xs20
-end // end of [stream_merge_ord_con]
-
-implement{a} stream_merge_ord (xs10, xs20, lte) =
-  $delay (stream_merge_ord_con (xs10, xs20, lte))
+end : stream_con a) // end of [stream_merge_ord]
 
 (* ****** ****** *)
 
 implement{a} stream_nth (xs, n) = begin case+ !xs of
   | x :: xs => if n = 0 then x else stream_nth<a> (xs, n-1)
-  | nil () => $raise (SubscriptException)
+  | nil () => $raise StreamSubscriptException ()
 end // end of [stream_nth]
 
 (* ****** ****** *)

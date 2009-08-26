@@ -359,6 +359,10 @@ end // end of [stmlst_label_find]
 
 (* ****** ****** *)
 
+#define l2l list_of_list_vt
+
+(* ****** ****** *)
+
 #define FRAMESIZE 256 // it is fixed for simplicity
 
 extern fun interp1Exp (env: tmpmap, exp: $TR.exp): v1al
@@ -429,7 +433,7 @@ in
           var env_new = tmpmap_empty () // so no need for saving [env]!
           val () = loop (env_new, fars, vs_arg) where {
             val fars = $F.theFunargReglst
-            val vs_arg = list_reverse (vs_arg_rev)
+            val vs_arg = l2l (list_reverse vs_arg_rev)
             fun loop // passing some arguments in registers
               (env: &tmpmap, fars: List temp, vs: List v1al): void =
               case+ (fars, vs) of
@@ -450,8 +454,8 @@ in
         in
           tmpmap_search (env_new, $F.RV) // fetch the return value
         end // end of [F1UNcod]
-      | V2ALpre f_pre => begin
-          let val vs_arg = list_reverse vs_arg_rev in f_pre vs_arg end
+      | V2ALpre f_pre => let
+          val vs_arg = l2l (list_reverse vs_arg_rev) in f_pre vs_arg
         end // end of [V2ALpre]
       | V2ALstr str => V1ALstr str
     end // end of [EXPcall]

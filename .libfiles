@@ -6,11 +6,12 @@
 /*                                                                     */
 /***********************************************************************/
 
-//
-//
-// This file is to be preprocessed to generate .libfiles, which is needed
-// by [atslib -all] for building libats.a
-//
+/*
+**
+** This file is to be preprocessed to generate .libfiles_local, which is
+** needed by [atslib -all] for building libats.a
+**
+*/
 
 /* ****** ****** */
 
@@ -63,9 +64,16 @@ prelude/DATS/list0.dats
 
 prelude/SATS/matrix.sats
 prelude/DATS/matrix.dats
+prelude/SATS/matrix0.sats
+prelude/DATS/matrix0.dats
 
 prelude/SATS/option.sats
 prelude/DATS/option.dats
+/*
+prelude/SATS/option_vt.sats
+prelude/DATS/option_vt.dats
+*/
+prelude/SATS/option0.sats
 
 /* linked lists */
 
@@ -73,6 +81,18 @@ prelude/SATS/slseg.sats
 prelude/DATS/slseg.dats
 
 /* libats files */
+
+/* FORTRAN matrix: column-major */
+libats/SATS/fmatrix.sats
+libats/DATS/fmatrix.dats
+
+/* FREE LIST implementation */
+libats/SATS/freelst.sats
+libats/DATS/freelst.dats
+
+/* generic arrays of various dimensions */
+libats/SATS/genarrays.sats
+libats/DATS/genarrays.dats
 
 #ifdef HAVE_GMP_H
 libats/SATS/intinf.sats
@@ -89,7 +109,7 @@ libats/DATS/regexp.dats
 
 /* libc files */
 
-// libc/SATS/complex.sats
+libc/SATS/complex.sats
 // libc/DATS/complex.dats
 
 libc/SATS/dirent.sats

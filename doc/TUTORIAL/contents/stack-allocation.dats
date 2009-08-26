@@ -37,10 +37,10 @@ fn print_month_names () = let
     "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
   )
   var !p_clo with pf_clo = @lam // this closure is allocated in the stack frame
-    (pf: !unit_v | i: sizeLt 12, x: &string): void =<clo1> (if i > 0 then print ", "; print x)
+    (pf: !unit_v | i: sizeLt 12, x: &string): void =<clo> $effmask_all (if i > 0 then print ", "; print x)
   // end of [var]
   prval pf = unit_v ()
-  val () = array_ptr_iforeach_clo_tsz {string} {unit_v} (pf | !p_clo, !p_arr, 12, sizeof<string>)
+  val () = array_ptr_iforeach_clo_tsz {string} {unit_v} (pf | !p_arr, !p_clo, 12, sizeof<string>)
   prval unit_v () = pf
   val () = print_newline ()
 in

@@ -7,28 +7,27 @@
 (***********************************************************************)
 
 (*
- * ATS/Anairiats - Unleashing the Potential of Types!
- *
- * Copyright (C) 2002-2008 Hongwei Xi, Boston University
- *
- * All rights reserved
- *
- * ATS is free software;  you can  redistribute it and/or modify it under
- * the terms of  the GNU GENERAL PUBLIC LICENSE (GPL) as published by the
- * Free Software Foundation; either version 3, or (at  your  option)  any
- * later version.
- * 
- * ATS is distributed in the hope that it will be useful, but WITHOUT ANY
- * WARRANTY; without  even  the  implied  warranty  of MERCHANTABILITY or
- * FITNESS FOR A PARTICULAR PURPOSE.  See the  GNU General Public License
- * for more details.
- * 
- * You  should  have  received  a  copy of the GNU General Public License
- * along  with  ATS;  see the  file COPYING.  If not, please write to the
- * Free Software Foundation,  51 Franklin Street, Fifth Floor, Boston, MA
- * 02110-1301, USA.
- *
- *)
+** ATS/Anairiats - Unleashing the Potential of Types!
+**
+** Copyright (C) 2002-2008 Hongwei Xi, Boston University
+**
+** All rights reserved
+**
+** ATS is free software;  you can  redistribute it and/or modify it under
+** the terms of  the GNU GENERAL PUBLIC LICENSE (GPL) as published by the
+** Free Software Foundation; either version 3, or (at  your  option)  any
+** later version.
+** 
+** ATS is distributed in the hope that it will be useful, but WITHOUT ANY
+** WARRANTY; without  even  the  implied  warranty  of MERCHANTABILITY or
+** FITNESS FOR A PARTICULAR PURPOSE.  See the  GNU General Public License
+** for more details.
+** 
+** You  should  have  received  a  copy of the GNU General Public License
+** along  with  ATS;  see the  file COPYING.  If not, please write to the
+** Free Software Foundation,  51 Franklin Street, Fifth Floor, Boston, MA
+** 02110-1301, USA.
+*)
 
 (* ****** ****** *)
 
@@ -85,7 +84,8 @@ implement hityp_is_void (hit0) = begin
     | _ when name = VAR_TYPE_NAME => true
     | _ when name = VOID_TYPE_NAME => true
     | _ => false
-    end
+    end (* end of [HITextype] *)
+  | HITs2var s2v when s2var_is_unboxed s2v => true // problematic?
   | HITtyrecsin hit => hityp_is_void hit
   | _ => false
 end // end of [hityp_is_void]
@@ -119,7 +119,7 @@ in
   case+ hit_fun.hityp_node of
   | HITfun (_(*fc*), arg, _(*res*)) => begin
       case+ arg of cons (hit, hits) => aux (hit, hits) | nil () => false
-    end
+    end // end of [HITfun]
   | _ => begin
       prerr "INTERNAL ERROR";
       $Deb.debug_prerrf (": %s", @(THISFILENAME));
@@ -170,10 +170,10 @@ implement hiexp_seq_simplify
     | cons (hie, hies) => let
         val () = begin
           if not (hiexp_is_empty hie) then res := list_vt_cons (hie, res)
-        end
+        end // end of [val]
       in
         aux (res, hies)
-      end
+      end (* end of [cons] *)
     | nil () => ()
   end // end of [aux]
   var res: hiexplst_vt = list_vt_nil ()
@@ -195,7 +195,7 @@ fun hiexplst_is_value (hies: hiexplst): bool = begin
   case+ hies of
   | cons (hie, hies) => begin
       if hiexp_is_value hie then hiexplst_is_value hies else false
-    end
+    end (* end of [cons] *)
   | nil () => true
 end // end of [hiexplst_is_value]
 
@@ -203,7 +203,7 @@ fun labhiexplst_is_value (lhies: labhiexplst): bool = begin
   case+ lhies of
   | LABHIEXPLSTcons (_, hie, lhies) => begin
       if hiexp_is_value hie then labhiexplst_is_value lhies else false
-    end
+    end (* end of [LABHIEXPLSTcons] *)
   | LABHIEXPLSTnil () => true
 end // end of [labhiexplst_is_value]
 
@@ -226,7 +226,7 @@ implement hiexp_is_value (hie0) = begin
   | HIEtmpvar _ => true
   | HIEvar d2v => begin
       if d2var_isfix_get d2v then false else true
-    end
+    end // end of [HIEvar]
   | _ => false
 end // end of [hiexp_is_value]
 
@@ -237,9 +237,9 @@ fn hiclau_is_bool_fst (hicl: hiclau)
   | cons (hip, nil ()) => begin case+ hip.hipat_node of
     | HIPbool b => begin case+ hicl.hiclau_gua of
       | cons _ => None_vt () | nil _ => Some_vt @(b, hicl.hiclau_exp)
-      end
+      end (* end of [HIPbool] *)
     | _ => None_vt ()
-    end
+    end (* end of [cons (_, nil)] *)
   | _ => None_vt ()
 end // end of [hiclau_is_bool_fst]
 
@@ -247,7 +247,7 @@ fn hiclau_is_bool_snd (hicl: hiclau): Option_vt hiexp = begin
   case+ hicl.hiclau_pat of
   | cons (hip, nil ()) => begin case+ hicl.hiclau_gua of
     | cons _ => None_vt () | nil _ => Some_vt (hicl.hiclau_exp)
-    end
+    end (* end of [cons] *)
   | _ => None_vt ()
 end // end of [hiclau_is_bool_snd]
 
@@ -559,16 +559,12 @@ fun hityp_normalize_flag
     in
       if flag > flag0 then hityp_tyrecsin hit else hit0
     end // end of [HITtyrecsin]
-  | HITs2var s2v => let
+  | HITs2var s2v => hit0_new where {
       val hit0_new = (
         case+ hityp_s2var_normalize (s2v) of
-        | ~Some_vt hit => hit | ~None_vt () => begin
-            if s2var_is_boxed s2v then hityp_ptr else hityp_var
-          end // end of [None_vt]
+        | ~Some_vt hit => (flag := flag + 1; hit) | ~None_vt () => hit0
       ) : hityp
-    in
-      flag := flag + 1; hit0_new
-    end // end of [HITs2var]
+    } // end of [HITs2var]
   | _ => hit0
 (*
   val () = begin

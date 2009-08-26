@@ -44,6 +44,7 @@
 /* ****** ****** */
 
 #include "ats_types.h"
+#include "ats_memory.h"
 
 /* ****** ****** */
 
@@ -95,11 +96,7 @@ ats_exn_ptr_type DivisionByZeroException = &DivisionByZeroExceptionCon ;
 /* ****** ****** */
 
 ats_exn_type
-NotFoundExceptionCon = { 40, "NotFoundException" } ;
-ats_exn_ptr_type NotFoundException = &NotFoundExceptionCon ;
-
-ats_exn_type
-SubscriptExceptionCon = { 50, "SubscriptException" } ;
+SubscriptExceptionCon = { 40, "SubscriptException" } ;
 ats_exn_ptr_type SubscriptException = &SubscriptExceptionCon ;
 
 /* ****** ****** */

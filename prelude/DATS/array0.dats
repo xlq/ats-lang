@@ -64,19 +64,12 @@ implement array0_get_arraysize_ref (A) = A
 
 implement{a} array0_make_elt (asz, x0) = let
   val [n:int] asz = size1_of_size asz
+  val tsz = sizeof<a>
+  val (pf_gc, pf_arr | p_arr) = array_ptr_alloc_tsz {a} (asz, tsz)
+  var ini: a = x0
+  val () = array_ptr_initialize_elt_tsz {a} (!p_arr, asz, ini, tsz)
 in
-  case+ 0 of
-  | _ when asz >= 0 => let
-      val tsz = sizeof<a>
-      val (pf_gc, pf_arr | p_arr) = array_ptr_alloc_tsz {a} (asz, tsz)
-      var ini: a = x0
-      val () = array_ptr_initialize_elt_tsz {a} (!p_arr, asz, ini, tsz)
-    in
-      array0_make_arraysize {a} {n} @(pf_gc, pf_arr | p_arr, asz)
-    end // end of [_ when ...]
-  | _ => $effmask_all begin // this is a form of ultimate failure
-      exit_errmsg (1, "Exit: [array0_make]: negative array size\n")
-    end // end of [_]
+  array0_make_arraysize {a} {n} @(pf_gc, pf_arr | p_arr, asz)
 end // end of [array0_make_elt]
 
 (* ****** ****** *)

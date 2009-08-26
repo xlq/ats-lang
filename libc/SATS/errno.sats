@@ -28,7 +28,6 @@
 ** along  with  ATS;  see the  file COPYING.  If not, please write to the
 ** Free Software Foundation,  51 Franklin Street, Fifth Floor, Boston, MA
 ** 02110-1301, USA.
-**
 *)
 
 (* ****** ****** *)
@@ -127,6 +126,10 @@ macdef EXDEV = $extval (errno_t, "EXDEV")
 (* ****** ****** *)
 
 fun errno_get (): errno_t = "atslib_errno_get"
+fun errno_set (n: errno_t): void = "atslib_errno_set"
+fun errno_reset (): void = "atslib_errno_reset"
+
+(* ****** ****** *)
 
 fun eq_errno_errno (n1: errno_t, n2: errno_t): bool
   = "atslib_eq_errno_errno"

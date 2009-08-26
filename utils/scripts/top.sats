@@ -31,9 +31,10 @@
 
 (* ****** ****** *)
 
-// Time: Summer 2007
-
-(* Author: Hongwei Xi (hwxi AT cs DOT bu DOT edu) *)
+//
+// Author: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
+// Time: Summer, 2007
+//
 
 (* ****** ****** *)
 
@@ -135,9 +136,15 @@ fun ar_r_err (libfile: string, objfile: string): int
 
 fun ccomp_gcc_ar_libfile (param: Strlst, infile: string, libfile: string): void
 
+// for building the main ATS library 
 fun libats_make (param: Strlst): void
 fun libats_mt_make (param: Strlst): void
-fun libatslex_make (param: Strlst): void
+
+// for building the sml basis library
+fun libats_smlbas_make (param: Strlst): void
+
+// for building the atslex library
+fun libats_lex_make (param: Strlst): void
 
 (* ****** ****** *)
 

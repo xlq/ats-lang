@@ -31,8 +31,8 @@
 
 (* ****** ****** *)
 
-// Time: November 2007
 // Author: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
+// Time: November 2007
 
 (* ****** ****** *)
 
@@ -42,6 +42,11 @@ staload Lst = "ats_list.sats"
 staload NS = "ats_namespace.sats"
 staload PM = "ats_posmark.sats"
 staload Sym = "ats_symbol.sats"
+
+staload SymEnv = "ats_symenv.sats"
+stadef symmap_t = $SymEnv.symmap_t 
+typedef symmapref (itm:t@ype) = $SymEnv.symmapref (itm)
+
 staload Syn = "ats_syntax.sats"
 
 (* ****** ****** *)
@@ -50,11 +55,22 @@ staload "ats_staexp1.sats"
 staload "ats_dynexp1.sats"
 staload "ats_staexp2.sats"
 staload "ats_dynexp2.sats"
+staload "ats_stadyncst2.sats"
 staload "ats_trans2_env.sats"
 
 (* ****** ****** *)
 
 staload "ats_trans2.sats"
+
+(* ****** ****** *)
+
+staload "ats_reference.sats"
+staload _(*anonymous*) = "ats_reference.dats"
+
+(* ****** ****** *)
+
+staload _(*anonymous*) = "ats_map_lin.dats"
+staload _(*anonymous*) = "ats_symenv.dats"
 
 (* ****** ****** *)
 
@@ -206,6 +222,248 @@ fn witht1ype_tr
 
 (* ****** ****** *)
 
+fn m1thdec_tr (
+    r_map: ref mtdmap_t, s2e_self: s2exp, mtd: m1thdec
+  ) : m2thdec =
+  case+ mtd of
+  | M1THDECmtd (loc, sym, _(*dummy*), def) => let
+      val d2v_self = d2var_make (loc, $Sym.symbol_SELF)
+//
+      val def = (case+ def of
+        | Some d1e => Some d2e where {
+            val (pf1_token | ()) = the_d2expenv_push ()
+            val () = the_d2expenv_swap (r_map)
+            val (pf2_token | ()) = the_d2expenv_push ()
+            val () = the_d2expenv_add_dvar (d2v_self)
+            val d2e = d1exp_tr (d1e)
+            val () = the_d2expenv_pop (pf2_token | (*none*))
+            val () = the_d2expenv_swap (r_map)
+            val () = the_d2expenv_pop (pf1_token | (*none*))
+          } // end of [Some]
+        | None () => None ()
+      ) : d2expopt // end of [val]
+//
+      val () = d2var_typ_set (d2v_self, Some s2e_self)
+    in
+      M2THDECmtd (loc, sym, d2v_self, def)
+    end // end of [M1THDECmtd]
+  | M1THDECval (loc, sym, res, def) => let
+      val res = s1exp_tr_dn_impredicative res; val def = d1expopt_tr def
+    in
+      M2THDECval (loc, sym, res, def)
+    end // end of [M2THDECval]
+  | M1THDECvar (loc, sym, res, def) => let
+      val res = s1exp_tr_dn_impredicative res; val def = d1expopt_tr def
+    in
+      M2THDECvar (loc, sym, res, def)
+    end // end of [M2THDECvar]
+  | M1THDECimp (loc, sym, def) => let
+      val ans = $SymEnv.symmap_ref_search<d2item> (r_map, sym)
+      val d2m = (case+ ans of
+        | ~Some_vt d2i => let
+            val- D2ITEMmtd d2m = d2i in d2m
+          end // end of [Some_vt]
+        | ~None_vt () => begin
+            prerr_loc_error2 (loc);
+            prerr ": the dynamic identifier ["; prerr sym; prerr "] is unrecognized.";
+            prerr_newline ();
+            $Err.abort {d2mtd_t} ()
+          end (* end of [None_vt] *)
+      ) : d2mtd_t // end of [val]
+      val def = d1exp_tr def in M2THDECimp (loc, d2m, def)
+    end // end of [M2THDECimp]
+// end of [m1thdec_tr]
+  
+implement m1thdeclst_tr
+  (r_map, s2e_self, mtds) = case+ mtds of
+  | list_cons (mtd, mtds) => let
+      val mtd = m1thdec_tr (r_map, s2e_self, mtd)
+    in
+      list_cons (mtd, m1thdeclst_tr (r_map, s2e_self, mtds))
+    end // end of [list_cons]
+  | list_nil () => list_nil ()
+// end of [m1thdeclst_tr]
+
+(* ****** ****** *)
+
+fn c1lassdec_tr (
+    clsknd: int // mod/obj : 0/1
+  , decarg: s2qualst
+  , d1c_cls: c1lassdec
+  , d1cs_def: s1expdeflst
+  ) : c2lassdec = d2c_cls where {
+  val loc = d1c_cls.c1lassdec_loc
+  val s2vss = s1arglstlst_var_tr (d1c_cls.c1lassdec_arg)
+  val s2c_cls =
+    s2cst_make_cls (d1c_cls.c1lassdec_sym, loc, s2vss)
+  (* end of [val] *)
+//
+  val s2v_mycls =
+    s2var_make_id_srt ($Sym.symbol_MYCLS, s2cst_srt_get s2c_cls)
+  (* end of [val] *)
+  val () = the_s2expenv_add_svar (s2v_mycls)
+//
+  val s2e_mycls = aux (s2v_mycls, s2vss) where {
+    fun aux (s2v_fun: s2var_t, s2vss_arg: s2varlstlst): s2exp =
+      case+ s2vss_arg of
+      | list_cons (s2vs_arg, s2vss_arg) => let
+          val+ s2e_fun = aux (s2v_fun, s2vss_arg)
+          val- S2RTfun (_, s2t_res) = s2e_fun.s2exp_srt
+          val+ s2es_arg = $Lst.list_map_fun (s2vs_arg, s2exp_var)
+        in
+          s2exp_app_srt (s2t_res, s2e_fun, s2es_arg)
+        end // end of [val]
+      | list_nil () => s2exp_var (s2v_fun)
+  } // end of [val]
+  val s2e_self = (
+    if clsknd > 0 then s2exp_obj_cls_t0ype s2e_mycls // object
+                  else s2exp_objmod_cls_type s2e_mycls // module
+  ) : s2exp // end of [val]
+(*
+  val () = begin
+    prerr "c1lassdec_tr: s2e_self = "; prerr s2e_self; prerr_newline ()
+  end // end of [val
+*)
+//
+  val () = aux (decarg, d1cs_def) where {
+    fun aux (
+        decarg: s2qualst, d1cs: s1expdeflst
+      ) : void = begin
+      case+ d1cs of
+      | list_cons (d1c, d1cs) =>
+          aux (decarg, d1cs) where {
+          val s2c = s1expdef_tr (None (), d1c)
+          val () = s2cst_decarg_set (s2c, decarg)
+          val () = the_s2expenv_add_scst (s2c)
+        } // end of [cons]
+      | list_nil () => ()
+    end (* end of [aux] *)
+  } // end of [val]
+//
+  val supclss =
+    s1explst_tr_dn_cls (d1c_cls.c1lassdec_suplst)
+  (* end of [val] *)
+//
+  val mtdlst = d1c_cls.c1lassdec_mtdlst
+//
+  typedef itm = d2item
+  var mtdmap: mtdmap_t = $SymEnv.symmap_make {itm} ()
+  fun aux0 (
+      decarg: s2qualst
+    , s2c: s2cst_t, ts2ess: tmps2explstlst
+    , mtdmap: !mtdmap_t
+  ) : void = let
+    val d2c_cls = d2c where {
+      val- Some d2c = s2cst_clsdec_get (s2c)
+    } // end of [val]
+    val d2c_cls = c2lassdec_of_c2lassdec_t (d2c_cls)
+    val kis = $SymEnv.symmap_list_inf (!p1) where {
+      val r_mtdmap1 = d2c_cls.c2lassdec_mtdmap
+      val (vbox pf1 | p1) = ref_get_view_ptr (r_mtdmap1)
+    } // end of [val]
+    fun loop (
+        kis: List_vt @(sym_t, itm), mtdmap: !mtdmap_t
+      ) :<cloref1> void = case+ kis of
+      | ~list_vt_cons (ki, kis) => let
+          val- D2ITEMmtd d2m1 = ki.1
+          val loc1 = d2mtd_loc_get (d2m1)
+          val sym1 = d2mtd_sym_get (d2m1)
+          val knd1 = d2mtd_knd_get (d2m1)
+          val decarg1 = d2mtd_decarg_get (d2m1)
+          val sublst1 = d2mtd_sublst_get (d2m1)
+          val sub = @(decarg1, ts2ess)
+          val sublst = list_cons (sub, sublst1)
+          val typ1 = d2mtd_typ_get (d2m1)
+          val d2m = d2mtd_make (loc1, sym1, knd1, decarg, sublst, typ1)
+          val () = $SymEnv.symmap_insert (mtdmap, ki.0, D2ITEMmtd d2m)
+        in
+          loop (kis, mtdmap)
+        end // end of [list_vt_cons]
+      | ~list_vt_nil () => ()
+    // end of [loop]
+  in
+    loop (kis, mtdmap)    
+  end // end of [aux0]
+  fun aux1 (
+      decarg: s2qualst
+    , supclss: s2explst
+    , mtdmap: !mtdmap_t
+    ) : void = begin case+ supclss of
+    | list_cons (supcls, supclss) => let
+        val s2e_head = s2exp_head_get (supcls)
+        var ts2ess: tmps2explstlst = TMPS2EXPLSTLSTnil ()
+        val s2c = (case+ s2e_head.s2exp_node of
+          | S2Ecst s2c => s2c
+          | S2Etmpid (s2c, ts2ess1) => (ts2ess := ts2ess1; s2c)
+          | _ => let
+              val () = prerr "INTERNAL ERROR"
+              val () = (
+                prerr ": c1lassdec_tr: aux1: s2e_head = "; prerr s2e_head
+              ) // end of [val]
+              val () = prerr_newline ()
+            in
+              $Err.abort {s2cst_t} ()
+            end // end of [_]
+        ) : s2cst_t
+        val () = aux0 (decarg, s2c, ts2ess, mtdmap)
+      in
+        aux1 (decarg, supclss, mtdmap)
+      end // end of [list_cons]
+    | list_nil () => ()
+  end // end of [aux1]
+  val () = aux1 (decarg, supclss, mtdmap)
+  fun aux2 (
+      decarg: s2qualst
+    , mtds: m1thdeclst
+    , mtdmap: !mtdmap_t
+    ) : void = begin case+ mtds of
+    | list_cons (mtd, mtds) => let
+        val () = (case+ mtd of
+          | M1THDECmtd (loc, sym, def_dummy, def) => let
+              val def_dummy = d1exp_tr (def_dummy)
+              val mtd_typ = d2exp_typ_syn (def_dummy)
+              val d2m = d2mtd_make
+                (loc, sym, MTDKINDmtd, decarg, list_nil, mtd_typ)
+            in
+              $SymEnv.symmap_insert<itm> (mtdmap, sym, D2ITEMmtd d2m)
+            end // end of [M1THDECmtd]
+          | M1THDECval (loc, sym, typ, def) => let
+              val mtd_typ = s1exp_tr_dn_t0ype (typ)
+              val d2m = d2mtd_make
+                (loc, sym, MTDKINDval, decarg, list_nil, mtd_typ)
+            in
+              $SymEnv.symmap_insert<itm> (mtdmap, sym, D2ITEMmtd d2m)
+            end // end of [M1THDECval]
+          | M1THDECvar (loc, sym, typ, def) => let
+              val mtd_typ = s1exp_tr_dn_viewt0ype (typ)
+              val d2m = d2mtd_make
+                (loc, sym, MTDKINDvar, decarg, list_nil, mtd_typ)
+            in
+              $SymEnv.symmap_insert<itm> (mtdmap, sym, D2ITEMmtd d2m)
+            end // end of [M1THDECvar]
+          | M1THDECimp _ => ()
+        ) : void
+      in
+        aux2 (decarg, mtds, mtdmap)
+      end // end of [list_cons]
+    | list_nil () => ()
+  end // end of [aux2]
+  val () = aux2 (decarg, mtdlst, mtdmap)
+  val r_mtdmap = ref_make_elt<mtdmap_t> (mtdmap)
+//
+  val mtdlst = m1thdeclst_tr (r_mtdmap, s2e_self, mtdlst)
+//
+  val d2c_cls = c2lassdec_make
+    (loc, clsknd, s2c_cls, supclss, mtdlst, r_mtdmap)
+  (* end of [val] *)
+//
+  val d2c1_cls = c2lassdec_t_of_c2lassdec d2c_cls
+  val () = s2cst_clsdec_set (s2c_cls, Some d2c1_cls)
+//
+} // end of [c1lassdec_tr]
+
+(* ****** ****** *)
+
 fn v1aldec_tr (d1c: v1aldec, p2t: p2at): v2aldec = let
   val loc = d1c.v1aldec_loc
   val def = d1exp_tr (d1c.v1aldec_def)
@@ -316,14 +574,14 @@ end // end of [f1undeclst_tr]
 
 fn v1ardec_tr (d1c: v1ardec): v2ardec = let
   val knd = d1c.v1ardec_knd
-  val id = d1c.v1ardec_sym
-  val loc_id = d1c.v1ardec_sym_loc
-  val d2v_ptr = d2var_make (loc_id, id)
-  val s2v_ptr = s2var_make_id_srt (id, s2rt_addr)
+  val sym = d1c.v1ardec_sym
+  val loc_sym = d1c.v1ardec_sym_loc
+  val d2v_ptr = d2var_make (loc_sym, sym)
+  // [s2v_ptr] is introduced as a static variable of the
+  val s2v_ptr = s2var_make_id_srt (sym, s2rt_addr) // same name
   val os2e_ptr = Some (s2exp_var s2v_ptr)
   val () = d2var_addr_set (d2v_ptr, os2e_ptr)
-  val typ = (
-    case+ d1c.v1ardec_typ of
+  val typ = (case+ d1c.v1ardec_typ of
     | Some s1e => Some (s1exp_tr_dn_impredicative s1e)
     | None () => None ()
   ) : s2expopt
@@ -340,37 +598,36 @@ in
   v2ardec_make (d1c.v1ardec_loc, knd, d2v_ptr, s2v_ptr, typ, wth, ini)
 end // end of [v1ardec_tr]
 
-fn v1ardeclst_tr (d1cs: v1ardeclst): v2ardeclst = let
-  val d2cs = aux d1cs where {
-    fun aux (d1cs: v1ardeclst): v2ardeclst =
-      case+ d1cs of
-      | cons (d1c, d1cs) => cons (v1ardec_tr d1c, aux d1cs)
-      | nil () => nil ()
-  } // end of [where]
-  val () = aux d2cs where {
-    fun aux (d2cs: v2ardeclst): void =
-      case+ d2cs of
-      | cons (d2c, d2cs) => let
-          val () = the_s2expenv_add_svar (d2c.v2ardec_svar)
-          val () = the_d2expenv_add_dvar (d2c.v2ardec_dvar)
-          val () = case+ d2c.v2ardec_wth of
-            | D2VAROPTsome d2v => the_d2expenv_add_dvar d2v
-            | D2VAROPTnone () => ()
-          // end of [val]
-        in
-          aux d2cs
-        end // end of [cons]
-      | nil () => ()
-  } // end of [where]
-in
-  d2cs
-end // end of [v2ardeclst_tr]
+fn v1ardeclst_tr
+  (d1cs: v1ardeclst): v2ardeclst = d2cs where {
+  fun aux1 (
+      d1cs: v1ardeclst
+    ) : v2ardeclst = case+ d1cs of
+    | cons (d1c, d1cs) => cons (v1ardec_tr d1c, aux1 d1cs)
+    | nil () => nil ()
+  // end of [aux1]
+  val d2cs = aux1 d1cs
+  fun aux2 (
+      d2cs: v2ardeclst
+    ) : void = case+ d2cs of
+    | cons (d2c, d2cs) => aux2 d2cs where {
+        val () = the_s2expenv_add_svar (d2c.v2ardec_svar)
+        val () = the_d2expenv_add_dvar (d2c.v2ardec_dvar)
+        val () = (case+ d2c.v2ardec_wth of
+          | D2VAROPTsome d2v => the_d2expenv_add_dvar d2v
+          | D2VAROPTnone () => ()
+        ) : void // end of [val]
+      } // end of [cons]
+    | nil () => ()
+  // end of [aux2]
+  val () = aux2 d2cs
+} // end of [v2ardeclst_tr]
 
 (* ****** ****** *)
 
-fn s1arglst_bind_svarlst
-  (loc0: loc_t, s1as: s1arglst, s2vs: s2varlst, sub: &stasub_t)
-  : s2varlst = let
+fn s1arglst_bind_svarlst (
+    loc0: loc_t, s1as: s1arglst, s2vs: s2varlst, sub: &stasub_t
+  ) : s2varlst = let
   fun aux {n:nat} (
       s1as: list (s1arg, n)
     , s2vs: list (s2var_t, n)
@@ -379,16 +636,17 @@ fn s1arglst_bind_svarlst
     | cons (s1a, s1as) => let
         val+ cons (s2v, s2vs) = s2vs
         val s2v_new = s1arg_var_tr_srt (s1a, s2var_srt_get s2v)
-        val () =
-          if ~(s2var_srt_get s2v <= s2var_srt_get s2v_new) then begin
-            prerr_loc_error2 s1a.s1arg_loc;
-            $Deb.debug_prerrf (": %s: s1arglst_bind_svarlst", @(THISFILENAME));
-            prerr ": the ascribed sort for the static variable [";
-            prerr s1a.s1arg_sym;
-            prerr "] is incorrect.";
-            prerr_newline ();
-            $Err.abort {void} ()
-          end
+        val () = if
+          ~(s2var_srt_get s2v <= s2var_srt_get s2v_new) then begin
+          prerr_loc_error2 s1a.s1arg_loc;
+          $Deb.debug_prerrf
+            (": %s: s1arglst_bind_svarlst", @(THISFILENAME));
+          prerr ": the ascribed sort for the static variable [";
+          $Sym.prerr_symbol s1a.s1arg_sym;
+          prerr "] is incorrect.";
+          prerr_newline ();
+          $Err.abort {void} ()
+        end // end of [if]
         val s2e_new = s2exp_var (s2v_new)
         val () = sub := stasub_add (sub, s2v, s2e_new)
       in
@@ -411,9 +669,9 @@ end (* end of [s1arglst_bind_svarlst] *)
       
 (* ****** ****** *)
 
-fn s1explst_bind_svarlst
-  (loc0: loc_t, s1es: s1explst, s2vs: s2varlst, sub: &stasub_t)
-  : s2explst = let
+fn s1explst_bind_svarlst (
+    loc0: loc_t, s1es: s1explst, s2vs: s2varlst, sub: &stasub_t
+  ) : s2explst = let
   fun aux {n:nat} (
       s1es: list (s1exp, n)
     , s2vs: list (s2var_t, n)
@@ -452,19 +710,25 @@ end (* end of [s1explst_bind_svarlst] *)
 
 (* ****** ****** *)
 
-fun d1exp_tr_ann (d1e0: d1exp, s2e0: s2exp): d2exp = begin
-  case+ s2e0.s2exp_node of
+fun d1exp_tr_ann (
+    d1e0: d1exp, s2e0: s2exp
+  ) : d2exp = begin case+ s2e0.s2exp_node of
   | S2Euni (s2vs, s2ps, s2e) => begin
     case+ d1e0.d1exp_node of
     | D1Elam_sta_ana (loc_arg, arg, body) => let
         var sub: stasub_t = stasub_nil
-        val s2vs = s1arglst_bind_svarlst (loc_arg, arg, s2vs, sub)
+        val s2vs = s1arglst_bind_svarlst
+          (loc_arg, arg, s2vs, sub) // end of [val]
         val (pf_s2expenv | ()) = the_s2expenv_push ()
-        val () = the_s2expenv_add_svarlst s2vs
+        val () =
+          the_s2expenv_add_svarlst (s2vs)
+        // end of [val]
         val s2ps = s2explst_subst (sub, s2ps)
         val s2e = s2exp_subst (sub, s2e)
         val body = d1exp_tr_ann (body, s2e)
-        val () = the_s2expenv_pop (pf_s2expenv | (*none*))
+        val () =
+          the_s2expenv_pop (pf_s2expenv | (*none*))
+        // end of [val]
       in
         d2exp_lam_sta (d1e0.d1exp_loc, s2vs, s2ps, body)
       end // end of [D1Elam_sta_ana]
@@ -491,9 +755,9 @@ fun d1exp_tr_ann (d1e0: d1exp, s2e0: s2exp): d2exp = begin
         d2exp_laminit_dyn (d1e0.d1exp_loc, lin1, npf1, p2ts_arg, d2e_body)
       end // end of [D2Elam_dyn]
     | _ => d2exp_ann_type (d1e0.d1exp_loc, d1exp_tr d1e0, s2e0)
-    end // end of [S2Efun]
+    end (* end of [S2Efun] *)
   | _ => d2exp_ann_type (d1e0.d1exp_loc, d1exp_tr d1e0, s2e0)
-end // end of [d1exp_tr_ann]
+end (* end of [d1exp_tr_ann] *)
 
 and d1exp_arg_body_tr_ann (
     d1e0: d1exp
@@ -897,7 +1161,7 @@ fn i1mpdec_tr
       | (nil (), nil ()) => begin
           prerr_loc_error2 loc0;
           prerr ": the dynamic constant [";
-          prerr d2c; prerr "] requires a template implemenation";
+          prerr d2c; prerr "] requires a template implementation";
           prerr_newline ();
           $Err.abort {void} ()
         end // end of [nil, nil]
@@ -1055,27 +1319,16 @@ implement d1ec_tr (d1c0) = begin
       s1tacstlst_tr d1cs; d2ec_none (d1c0.d1ec_loc)
     end // end of [D1Cstacsts]
   | D1Cstavars d1cs => let
-      val d2cs = s1tavarlst_tr d1cs
-    in
+      val d2cs = s1tavarlst_tr d1cs in
       d2ec_stavars (d1c0.d1ec_loc, d2cs)
     end // end of [D1Cstavars]
-  | D1Csexpdefs (os1t, d1cs) => begin
-      s1expdeflst_tr (s1rtopt_tr os1t, d1cs);
-      d2ec_none (d1c0.d1ec_loc)
-    end // end of [D1Csexpdefs]
+  | D1Csexpdefs (os1t, d1cs) => d2c where {
+      val () = s1expdeflst_tr (s1rtopt_tr os1t, d1cs)
+      val d2c = d2ec_none (d1c0.d1ec_loc)
+    } // end of [D1Csexpdefs]
   | D1Csaspdec (d1c) => begin
       d2ec_saspdec (d1c0.d1ec_loc, s1aspdec_tr d1c)
     end // end of [D1Csaspdec]
-  | D1Cdatdecs (dtk, d1cs_dat, d1cs_def) => let
-      val s2cs = d1atdeclst_tr (dtk, d1cs_dat, d1cs_def)
-    in
-      d2ec_datdec (d1c0.d1ec_loc, dtk, s2cs)
-    end // end of [D1Cdatdecs]
-  | D1Cexndecs (d1cs) => let
-      val d2cs = e1xndeclst_tr d1cs
-    in
-      d2ec_exndec (d1c0.d1ec_loc, d2cs)
-    end // end of [D1Cexndecs]
   | D1Cdcstdecs (dck, decarg, d1cs) => let
       val (pf_s2expenv | ()) = the_s2expenv_push ()
       val s2vpss = s1qualstlst_tr (decarg)
@@ -1084,6 +1337,34 @@ implement d1ec_tr (d1c0) = begin
     in
       d2ec_dcstdec (d1c0.d1ec_loc, dck, d2cs)
     end // end of [D1Cdcstdecs]
+  | D1Cdatdecs (dtk, d1cs_dat, d1cs_def) => let
+      val s2cs = d1atdeclst_tr (dtk, d1cs_dat, d1cs_def)
+    in
+      d2ec_datdec (d1c0.d1ec_loc, dtk, s2cs)
+    end // end of [D1Cdatdecs]
+  | D1Cexndecs (d1cs) => let
+      val d2cs = e1xndeclst_tr d1cs in
+      d2ec_exndec (d1c0.d1ec_loc, d2cs)
+    end // end of [D1Cexndecs]
+  | D1Cclassdec
+      (clsknd, decarg, d1c_cls, d1cs_def) => let
+      val (pf_s2expenv | ()) = the_s2expenv_push ()
+      val () = begin
+        case+ decarg of cons _ => template_level_inc () | nil _ => ()
+      end // end of [val]
+      val s2vpss = s1qualstlst_tr (decarg)
+      val () = s2qualst_tmplev_set (s2vpss, template_level_get ())
+      val d2c_cls = c1lassdec_tr (clsknd, s2vpss, d1c_cls, d1cs_def)
+      val () = the_s2expenv_pop (pf_s2expenv | (*none*))
+      val () = begin
+        case+ decarg of cons _ => template_level_dec () | nil _ => ()
+      end // end of [val]
+      val () = the_s2expenv_add_scst (d2c_cls.c2lassdec_cst)
+      val s2c_cls = d2c_cls.c2lassdec_cst
+      val () = s2cst_decarg_set (s2c_cls, s2vpss)
+    in
+      d2ec_classdec (d1c0.d1ec_loc, d2c_cls)
+    end // end of [D1Cfundecs]
   | D1Coverload (id, qid) => let
       val () = overload_tr_if (id, qid) in
       d2ec_overload (d1c0.d1ec_loc, id, qid)
@@ -1158,6 +1439,13 @@ implement d1ec_tr (d1c0) = begin
   | D1Cstaload (idopt, fil, loaded, d1cs) => begin
       s1taload_tr (d1c0.d1ec_loc, idopt, fil, loaded, d1cs)
     end // end of [D1Cstaload]
+(*
+  | _ => begin
+      prerr_loc_error2 d1c0.d1ec_loc;
+      prerr ": d1ec_tr: not available yet.\n";
+      $Err.abort {d2ec} ()
+    end // end of [_]
+*)
 end // end of [d1ec_tr]
 
 (* ****** ****** *)

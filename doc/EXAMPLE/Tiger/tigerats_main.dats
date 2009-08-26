@@ -32,6 +32,7 @@ staload "regalloc.sats"
 (* ****** ****** *)
 
 staload _(*anonymous*) = "prelude/DATS/list.dats"
+staload _(*anonymous*) = "prelude/DATS/list_vt.dats"
 
 (* ****** ****** *)
 
@@ -322,11 +323,11 @@ implement main (argc, argv) = let
   datatype f1rag =
     | F1RAGproc of ($F.frame_t, $TR.stmlst) | F1RAGstring of ($TL.label_t, string)
   // end of [f1rag]
-  typedef f1raglst = List f1rag
+  viewtypedef f1raglst_vt = List_vt f1rag
 
-  val theF1raglst = loop (theFraglst, list_nil) where {
-    fun loop (xs: $F.fraglst, res: f1raglst): f1raglst = case+ xs of
-      | list_cons (x, xs) => let
+  val theF1raglst = loop (theFraglst, list_vt_nil) where {
+    fun loop (xs: $F.fraglst_vt, res: f1raglst_vt): f1raglst_vt = case+ xs of
+      | ~list_vt_cons (x, xs) => let
           val f1rag = case+ x of
           | $F.FRAGproc (frm, stm) => let
 (*
@@ -358,9 +359,9 @@ implement main (argc, argv) = let
               F1RAGstring (lab, str)
             end // end of [val]
         in
-          loop (xs, list_cons (f1rag, res))
+          loop (xs, list_vt_cons (f1rag, res))
         end // end of [list_cons]
-      | list_nil () => list_reverse (res)
+      | ~list_vt_nil () => list_vt_reverse res
     // end of [loop]
   } // end of [val]
 
@@ -373,8 +374,8 @@ implement main (argc, argv) = let
 *)
 //
   val () = loop (theF1raglst) where {
-    fun loop (xs: f1raglst): void = case+ xs of
-      | list_cons (x, xs) => let
+    fun loop (xs: f1raglst_vt): void = case+ xs of
+      | ~list_vt_cons (x, xs) => let
           val () = case+ x of
             | F1RAGproc (frm, stms) => let
 (*
@@ -394,7 +395,7 @@ implement main (argc, argv) = let
         in
           loop (xs)
         end // end of [list_cons]
-      | list_nil () => ()
+      | ~list_vt_nil () => ()
     // end of [loop]
   } // end of [val]
 //

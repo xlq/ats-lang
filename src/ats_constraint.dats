@@ -7,28 +7,27 @@
 (***********************************************************************)
 
 (*
- * ATS/Anairiats - Unleashing the Potential of Types!
- *
- * Copyright (C) 2002-2008 Hongwei Xi, Boston University
- *
- * All rights reserved
- *
- * ATS is free software;  you can  redistribute it and/or modify it under
- * the terms of  the GNU GENERAL PUBLIC LICENSE (GPL) as published by the
- * Free Software Foundation; either version 3, or (at  your  option)  any
- * later version.
- * 
- * ATS is distributed in the hope that it will be useful, but WITHOUT ANY
- * WARRANTY; without  even  the  implied  warranty  of MERCHANTABILITY or
- * FITNESS FOR A PARTICULAR PURPOSE.  See the  GNU General Public License
- * for more details.
- * 
- * You  should  have  received  a  copy of the GNU General Public License
- * along  with  ATS;  see the  file COPYING.  If not, please write to the
- * Free Software Foundation,  51 Franklin Street, Fifth Floor, Boston, MA
- * 02110-1301, USA.
- *
- *)
+** ATS/Anairiats - Unleashing the Potential of Types!
+**
+** Copyright (C) 2002-2008 Hongwei Xi, Boston University
+**
+** All rights reserved
+**
+** ATS is free software;  you can  redistribute it and/or modify it under
+** the terms of  the GNU GENERAL PUBLIC LICENSE (GPL) as published by the
+** Free Software Foundation; either version 3, or (at  your  option)  any
+** later version.
+** 
+** ATS is distributed in the hope that it will be useful, but WITHOUT ANY
+** WARRANTY; without  even  the  implied  warranty  of MERCHANTABILITY or
+** FITNESS FOR A PARTICULAR PURPOSE.  See the  GNU General Public License
+** for more details.
+** 
+** You  should  have  received  a  copy of the GNU General Public License
+** along  with  ATS;  see the  file COPYING.  If not, please write to the
+** Free Software Foundation,  51 Franklin Street, Fifth Floor, Boston, MA
+** 02110-1301, USA.
+*)
 
 (* ****** ****** *)
 
@@ -69,6 +68,11 @@ staload "ats_solver_fm.sats"
 staload "ats_constraint.sats"
 
 (* ****** ****** *)
+
+overload ~ with $IntInf.neg_intinf
+overload + with $IntInf.add_intinf_intinf
+overload - with $IntInf.sub_intinf_intinf
+overload * with $IntInf.mul_intinf_intinf
 
 overload < with $IntInf.lt_intinf_int
 overload <= with $IntInf.lte_intinf_int
@@ -240,7 +244,13 @@ implement s3iexp_int (i) = S3IEint i
 implement s3iexp_intinf (i) = S3IEintinf i
 implement s3iexp_var (s2v) = S3IEvar s2v
 
-implement s3iexp_ineg (s3ie) = S3IEineg s3ie
+implement s3iexp_ineg (s3ie) = begin
+  case+ s3ie of
+  | S3IEint i => S3IEint (~i)
+  | S3IEintinf i => S3IEintinf (~i)
+  | S3IEineg s3ie => s3ie
+  | _ => S3IEineg s3ie
+end // end of [s3iexp]
 
 implement s3iexp_iadd (s3ie1, s3ie2) = begin
   case+ (s3ie1, s3ie2) of
@@ -252,6 +262,7 @@ implement s3iexp_iadd (s3ie1, s3ie2) = begin
   // avoid it: potential arithmetic overflow/underflow
   | (S3IEint i1, S3IEint i2) => S3IEint (i1 + i2)
 *)
+  | (S3IEintinf i1, S3IEintinf i2) => S3IEintinf (i1 + i2)
   | (_, _) => S3IEiadd (s3ie1, s3ie2)
 end // end of [s3iexp_iadd]
 
@@ -265,6 +276,7 @@ implement s3iexp_isub (s3ie1, s3ie2) = begin
   // avoid it: potential arithmetic overflow/underflow
   | (S3IEint i1, S3IEint i2) => S3IEint (i1 - i2)
 *)
+  | (S3IEintinf i1, S3IEintinf i2) => S3IEintinf (i1 - i2)
   | (_, _) => S3IEisub (s3ie1, s3ie2)
 end // end of [s3iexp_isub]
 
@@ -278,6 +290,7 @@ implement s3iexp_imul (s3ie1, s3ie2) = begin
   | (S3IEintinf i, _) when i = 1 => s3ie2
   | (_, S3IEintinf i) when i = 0 => s3ie2 // 0
   | (_, S3IEintinf i) when i = 1 => s3ie1
+  | (S3IEintinf i1, S3IEintinf i2) => S3IEintinf (i1 * i2)
   | (_, _) => S3IEimul (s3ie1, s3ie2)
 end // end of [s3iexp_imul]
 
@@ -307,16 +320,17 @@ fn s2cfdeflst_pop (fds0: &s2cfdeflst_vt): void = let
         val () = case+ os3be of ~Some_vt _ => () | ~None_vt () => ()
       in
         aux (fds)
-      end
+      end (* end of [S2CFDEFLSTcons] *)
     | ~S2CFDEFLSTmark (fds) => fds
     | ~S2CFDEFLSTnil () => S2CFDEFLSTnil ()
+  // end of [aux]  
 in
   fds0 := aux (fds0)
-end
+end (* end of [s2cfdeflst_pop] *)
 
 fn s2cfdeflst_push (fds0: &s2cfdeflst_vt): void = begin
   fds0 := S2CFDEFLSTmark (fds0)
-end
+end // end of [s2cfdeflst_push]
 
 fun s2cfdeflst_find
   (fds0: &s2cfdeflst_vt, s2c0: s2cst_t, s2es0: s2explst)
@@ -352,7 +366,7 @@ fn s2cfdeflst_add
     prerr "s2cfdeflst_add: s2c = "; prerr s2c; prerr_newline ();
     prerr "s2cfdeflst_add: s2es = "; prerr s2es; prerr_newline ();
     prerr "s2cfdeflst_add: s2v = "; prerr s2v; prerr_newline ();
-  end
+  end // end of [val]
 *)
   val s2e_s2c = s2exp_cst s2c
   val s2e_s2v = s2exp_var s2v
@@ -382,6 +396,7 @@ extern
 fun s3aexp_make_s2cst_s2explst
   (s2c: s2cst_t, s2es: s2explst, s2cs: &s2cstlst, fds: &s2cfdeflst_vt)
   : s3aexpopt_vt
+// end of [fun s3aexp_make_s2cst_s2explst]
 
 implement s3aexp_make_s2cst_s2explst (s2c, s2es, s2cs, fds) = let
   fn errmsg (s2c: s2cst_t): s3aexpopt_vt = begin
@@ -435,6 +450,7 @@ extern
 fun s3bexp_make_s2cst_s2explst
   (s2c: s2cst_t, s2es: s2explst, s2cs: &s2cstlst, fds: &s2cfdeflst_vt)
   : s3bexpopt_vt
+// end of [fun s3bexp_make_s2cst_s2explst]
 
 // a large but simple function
 implement s3bexp_make_s2cst_s2explst (s2c, s2es, s2cs, fds) = let
@@ -768,7 +784,7 @@ in
       val () = begin
         prerr "s3bexp_make_s2cst_s2explst: s2c = "; prerr s2c; prerr_newline ();
         prerr "s3bexp_make_s2cst_s2explst: s2es = "; prerr s2es; prerr_newline ();
-      end
+      end // end of [val]
 *)
     in
       None_vt ()
@@ -781,6 +797,7 @@ extern
 fun s3iexp_make_s2cst_s2explst
   (s2c: s2cst_t, s2es: s2explst, s2cs: &s2cstlst, fds: &s2cfdeflst_vt)
   : s3iexpopt_vt
+// end of [fun s3iexp_make_s2cst_s2explst]
 
 implement s3iexp_make_s2cst_s2explst (s2c, s2es, s2cs, fds) = let
   fn errmsg (s2c: s2cst_t): s3iexpopt_vt = begin
@@ -916,11 +933,11 @@ in
       val () = begin
         prerr "s3iexp_make_s2cst_s2explst: s2c = "; prerr s2c; prerr_newline ();
         prerr "s3iexp_make_s2cst_s2explst: s2es = "; prerr s2es; prerr_newline ();
-      end
+      end // end of [val]
 *)
     in
       None_vt ()
-    end
+    end // en dof [_]
 end // end of [s3iexp_make_s2cst_s2explst]
 
 (* ****** ****** *)
@@ -1037,7 +1054,7 @@ fun s2exp_synlt (s2e1: s2exp, s2e2: s2exp): bool = let
   val () = begin
     prerr "s2exp_synlt: s2e1 = "; prerr s2e1; prerr_newline ();
     prerr "s2exp_synlt: s2e2 = "; prerr s2e2; prerr_newline ();
-  end
+  end // end of [val]
 *)
 in
   case+ s2e2.s2exp_node of
@@ -1114,7 +1131,7 @@ implement s3bexp_make_s2exp (s2e0, s2cs, fds) = let
 (*
   val () = begin
     prerr "s3bexp_make_s2exp: s2e0 = "; prerr s2e0; prerr_newline ()
-  end
+  end // end of [val]
 *)
 in
   case+ s2e0.s2exp_node of
@@ -1378,40 +1395,40 @@ in
     end // end of [S3IEint]
   | S3IEintinf (i) => begin
       let val i0 = $FM.i0nt_of_intinf i in ivp->[0] := ivp->[0] + coef * i0 end
-    end
+    end // end of [S3IEintinf]
   | S3IEineg (s3ie) => begin
       s3iexp_intvec_update_err (pf_arr | loc0, cim, vim, ivp, n, ~coef, s3ie, errno);
-    end
+    end // end of [S3IEineg]
   | S3IEiadd (s3ie1, s3ie2) => begin
       s3iexp_intvec_update_err (pf_arr | loc0, cim, vim, ivp, n, coef, s3ie1, errno);
       s3iexp_intvec_update_err (pf_arr | loc0, cim, vim, ivp, n, coef, s3ie2, errno);
-    end
+    end // end of [S3IEiadd]
   | S3IEisub (s3ie1, s3ie2) => begin
       s3iexp_intvec_update_err (pf_arr | loc0, cim, vim, ivp, n, coef, s3ie1, errno);
       s3iexp_intvec_update_err (pf_arr | loc0, cim, vim, ivp, n, ~coef, s3ie2, errno);
-    end
+    end // end of [S3IEisub]
   | S3IEimul (s3ie1, s3ie2) => begin case+ s3ie1 of
     | S3IEint i1 => let
         val coef = coef * $FM.i0nt_of_int (i1)
       in
         s3iexp_intvec_update_err (pf_arr | loc0, cim, vim, ivp, n, coef, s3ie2, errno)
-      end
+      end // end of [S3IEint]
     | S3IEintinf i1 => let
         val coef = coef * $FM.i0nt_of_intinf (i1)
       in
         s3iexp_intvec_update_err (pf_arr | loc0, cim, vim, ivp, n, coef, s3ie2, errno)
-      end
+      end // end of [S3IEintinf]
     | _ => begin case+ s3ie2 of
       | S3IEint i2 => let
           val coef = coef * $FM.i0nt_of_int (i2)
         in
           s3iexp_intvec_update_err (pf_arr | loc0, cim, vim, ivp, n, coef, s3ie1, errno)
-        end
+        end // end of [S3IEint]
       | S3IEintinf i2 => let
           val coef = coef * $FM.i0nt_of_intinf (i2)
         in
           s3iexp_intvec_update_err (pf_arr | loc0, cim, vim, ivp, n, coef, s3ie1, errno)
-        end
+        end // end of [S3IEintinf]
       | _ => begin
           prerr "Internal Error: s3iexp_intvec_update_err: nonlinear term: s3ie0 = ";
           prerr s3ie0;

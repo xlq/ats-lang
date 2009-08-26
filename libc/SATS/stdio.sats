@@ -7,28 +7,27 @@
 (***********************************************************************)
 
 (*
- * ATS - Unleashing the Potential of Types!
- *
- * Copyright (C) 2002-2008 Hongwei Xi, Boston University
- *
- * All rights reserved
- *
- * ATS is free software;  you can  redistribute it and/or modify it under
- * the  terms of the  GNU General Public License as published by the Free
- * Software Foundation; either version 2.1, or (at your option) any later
- * version.
- * 
- * ATS is distributed in the hope that it will be useful, but WITHOUT ANY
- * WARRANTY; without  even  the  implied  warranty  of MERCHANTABILITY or
- * FITNESS FOR A PARTICULAR PURPOSE.  See the  GNU General Public License
- * for more details.
- * 
- * You  should  have  received  a  copy of the GNU General Public License
- * along  with  ATS;  see the  file COPYING.  If not, please write to the
- * Free Software Foundation,  51 Franklin Street, Fifth Floor, Boston, MA
- * 02110-1301, USA.
- *
- *)
+** ATS - Unleashing the Potential of Types!
+**
+** Copyright (C) 2002-2008 Hongwei Xi, Boston University
+**
+** All rights reserved
+**
+** ATS is free software;  you can  redistribute it and/or modify it under
+** the  terms of the  GNU General Public License as published by the Free
+** Software Foundation; either version 2.1, or (at your option) any later
+** version.
+** 
+** ATS is distributed in the hope that it will be useful, but WITHOUT ANY
+** WARRANTY; without  even  the  implied  warranty  of MERCHANTABILITY or
+** FITNESS FOR A PARTICULAR PURPOSE.  See the  GNU General Public License
+** for more details.
+** 
+** You  should  have  received  a  copy of the GNU General Public License
+** along  with  ATS;  see the  file COPYING.  If not, please write to the
+** Free Software Foundation,  51 Franklin Street, Fifth Floor, Boston, MA
+** 02110-1301, USA.
+*)
 
 (* ****** ****** *)
 
@@ -44,9 +43,10 @@
 
 (* ****** ****** *)
 
-// typedef lint = int_long_t0ype
+staload TYPES = "libc/sys/SATS/types.sats"
+typedef whence_t = $TYPES.whence_t
 
-//
+(* ****** ****** *)
 
 sortdef fm = file_mode
 
@@ -550,10 +550,10 @@ it returns -1.
 *)
 
 fun fseek0_err
-  (f: FILEref, offset: lint, whence: int):<> int
+  (f: FILEref, offset: lint, whence: whence_t):<> int
   = "atslib_fseek0_err"
 
-fun fseek1_err {m:fm} (f: &FILE m, offset: lint, whence: int):<> int
+fun fseek1_err {m:fm} (f: &FILE m, offset: lint, whence: whence_t):<> int
   = "atslib_fseek1_err"
 
 symintr fseek_err
@@ -563,10 +563,10 @@ overload fseek_err with fseek1_err
 //
 
 fun fseek0_exn
-  (f: FILEref, offset: lint, whence: int):<!exn> void
+  (f: FILEref, offset: lint, whence: whence_t):<!exn> void
   = "atslib_fseek_exn"
 
-fun fseek1_exn {m:fm} (f: &FILE m, offset: lint, whence: int):<!exn> void
+fun fseek1_exn {m:fm} (f: &FILE m, offset: lint, whence: whence_t):<!exn> void
   = "atslib_fseek_exn"
 
 symintr fseek_exn

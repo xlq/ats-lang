@@ -70,6 +70,7 @@ datatype frag =
 // end of [frag]
 
 typedef fraglst = List frag
+viewtypedef fraglst_vt = List_vt frag
 
 fun frame_theFraglst_get (): fraglst
 fun frame_theFraglst_add (frag: frag): void

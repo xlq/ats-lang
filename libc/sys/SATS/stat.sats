@@ -47,14 +47,20 @@ staload "libc/sys/SATS/types.sats"
 
 (* ****** ****** *)
 
-abst@ype stat = $extype "ats_stat_type"
+abst@ype stat_t = $extype "ats_stat_type"
 
 (* ****** ****** *)
 
-fun stat_st_mode_get (stbuf: &stat):<> mode_t
+fun stat_st_dev_get (stbuf: &stat_t):<> dev_t
+  = "atslib_stat_st_dev_get"
+
+fun stat_st_ino_get (stbuf: &stat_t):<> ino_t
+  = "atslib_stat_st_ino_get"
+
+fun stat_st_mode_get (stbuf: &stat_t):<> mode_t
   = "atslib_stat_st_mode_get"
 
-fun stat_st_size_get (stbuf: &stat):<> off_t
+fun stat_st_size_get (stbuf: &stat_t):<> off_t
   = "atslib_stat_st_size_get"
 
 (* ****** ****** *)
@@ -117,22 +123,32 @@ overload mkdir_exn with mkdir_string_exn
 (* ****** ****** *)
 
 dataview stat_v (l:addr, int) =
-  | stat_v_fail (l, ~1) of stat? @ l
-  | stat_v_succ (l,  0) of stat  @ l
- 
-symintr stat_err
-symintr stat_exn
+  | stat_v_fail (l, ~1) of stat_t? @ l
+  | stat_v_succ (l,  0) of stat_t  @ l
 
-fun stat_string_err {l:addr} (
-    pf_buf: stat? @ l | name: string, p_buf: ptr l
+//
+ 
+fun stat_err {l:addr} (
+    pf_buf: stat_t? @ l | name: string, p_buf: ptr l
   ) : [i:int] (stat_v (l, i) | int i)
   = "atslib_stat_err"
 
-fun stat_string_exn (name: string, buf: &stat? >> stat): void
+fun stat_exn (name: string, buf: &stat_t? >> stat_t): void
   = "atslib_stat_exn"
 
-overload stat_err with stat_string_err
-overload stat_exn with stat_string_exn
+//
+
+fun lstat_err {l:addr} (
+    pf_buf: stat_t? @ l | name: string, p_buf: ptr l
+  ) : [i:int] (stat_v (l, i) | int i)
+  = "atslib_lstat_err"
+
+fun lstat_exn (name: string, buf: &stat_t? >> stat_t): void
+  = "atslib_lstat_exn"
+
+(* ****** ****** *)
+
+fun umask (mask_new: mode_t): mode_t(*mask_old*) = "atslib_umask"
 
 (* ****** ****** *)
 

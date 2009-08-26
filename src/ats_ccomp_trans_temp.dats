@@ -31,8 +31,8 @@
 
 (* ****** ****** *)
 
-// Time: May 2008
 // Author: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
+// Time: May 2008
 
 (* ****** ****** *)
 
@@ -256,6 +256,7 @@ end // end of [template_name_make]
 
 datatype tmpcstvar =
   | TMPcst of d2cst_t | TMPvar of d2var_t
+// end of [tmpcstvar]
 
 fn fprint_tmpcstvar {m:file_mode}
   (pf: file_mode_lte (m, w) | out: &FILE m, tcv: tmpcstvar)
@@ -333,9 +334,9 @@ local
 
 typedef tmpnamtbl = $HT.hashtbl_t (string, valprim)
 
-val the_tmpnamtbl: tmpnamtbl = begin
+val the_tmpnamtbl = begin
   $HT.hashtbl_str_make_hint {valprim} (TMPNAMETBL_SIZE_HINT)
-end
+end : tmpnamtbl // end of [the_tmpnamtbl]
 
 in // in of [local]
 
@@ -348,11 +349,12 @@ in
       prerr fullname;
       prerr_newline ();
       $Err.abort {void} ()
-    end
+    end // end of [Some_vt]
 end // end of [tmpnamtbl_add]
 
 implement tmpnamtbl_find (fullname) =
   $HT.hashtbl_search (the_tmpnamtbl, fullname)
+// end of [tmpnamtbl_find]
 
 end // end of [local]
 
@@ -367,7 +369,7 @@ implement ccomp_tmpdef
   val tmparg = tmpdef_arg_get tmpdef
   val () = template_arg_match (loc0, tcv, tmparg, hitss)
   val () = tmpnamtbl_add (fullname, vp_funclo)
-  (* ****** ****** *)
+  (* ****** vvvvvv vvvvvv ****** *)
   val (pf_tailcallst_mark | ()) = the_tailcallst_mark ()
   val () = the_tailcallst_add (fl, list_nil ())
   val _(*funentry_t*) = let
@@ -385,10 +387,10 @@ implement ccomp_tmpdef
         prerr_hiexp hie; prerr "]";
         prerr_newline ();
         $Err.abort {funentry_t} ()
-      end
-   end // end of [val]
+      end // end of [_]
+   end (* end of [val] *)
   val () = the_tailcallst_unmark (pf_tailcallst_mark | (*none*))
-  (* ****** ****** *)
+  (* ****** ^^^^^^ ^^^^^^ ****** *)
   val () = the_stactx_pop (pf_stactx_token | (*none*))
   val () = the_dynctx_pop (pf_dynctx_token | (*none*))
 in
@@ -405,7 +407,7 @@ implement template_cst_name_make (d2c, hitss) = let
     in
       tostringf (
         "%s$%s", @($Sym.symbol_name sym, $Stamp.tostring_stamp stamp)
-      )
+      ) // end of [tostringf]
     end // end of [if]
   ) : string
 in
@@ -416,7 +418,7 @@ implement template_var_name_make (d2v, hitss) = let
   val sym = d2var_sym_get d2v and stamp = d2var_stamp_get d2v
   val basename = tostringf (
     "%s$%s", @($Sym.symbol_name sym, $Stamp.tostring_stamp stamp)
-  )
+  ) // end of [tostringf]
 in
   template_name_make (basename, hitss)
 end // end of [template_var_name_make]
@@ -431,7 +433,7 @@ implement ccomp_exp_template_cst
   val () = begin
     prerr "ccomp_exp_tmpcst: hit0 = "; prerr hit0; prerr_newline ();
     prerr "ccomp_exp_tmpcst: fullname = "; prerr fullname; prerr_newline ();
-  end
+  end // end of [val]
 *)
   val ovp = tmpnamtbl_find (fullname)
 in
@@ -443,10 +445,12 @@ in
           $Deb.debug_prerrf (": %s: ccomp_exp_template_cst", @(THISFILENAME));
           prerr ": the template definition for [";
           prerr d2c;
-          prerr "] is unavailable.";
+          prerr "] is unavailable at [";
+          prerr fullname;
+          prerr "].";
           prerr_newline ();
           $Err.abort {tmpdef_t} ()
-        end
+        end // end of [None_vt]
       ) : tmpdef_t
       val level0 = d2var_current_level_get ()
       val () = d2var_current_level_set (0)
@@ -454,7 +458,7 @@ in
       val level0 = d2var_current_level_set (level0)
     in
       vp // return value
-    end // end of [None_vt]
+    end (* end of [None_vt] *)
   | ~Some_vt vp => vp
 end // end of [ccomp_exp_template_cst]
 
@@ -468,7 +472,7 @@ implement ccomp_exp_template_var
   val () = begin
     prerr "ccomp_exp_tmpvar: hit0 = "; prerr hit0; prerr_newline ();
     prerr "ccomp_exp_tmpvar: fullname = "; prerr fullname; prerr_newline ();
-  end
+  end // end of [val]
 *)
   val ovp = tmpnamtbl_find (fullname)
 in
@@ -480,10 +484,12 @@ in
           $Deb.debug_prerrf (": %s: ccomp_exp_template_var", @(THISFILENAME));
           prerr ": the template definition for [";
           prerr d2v;
-          prerr "] is unavailable.";
+          prerr "] is unavailable at [";
+          prerr fullname;
+          prerr "].";
           prerr_newline ();
           $Err.abort {tmpdef_t} ()
-        end
+        end // end of [None_vt]
       ) : tmpdef_t
       val d2v_lev = d2var_lev_get (d2v)
       val level0 = d2var_current_level_get ()
@@ -491,14 +497,14 @@ in
       val () = begin
         prerr "ccomp_exp_tmpvar: d2v_lev = "; prerr d2v_lev; prerr_newline ();
         prerr "ccomp_exp_tmpvar: level0 = "; prerr level0; prerr_newline ();
-      end
+      end // end of [val]
 *)
       val () = d2var_current_level_set (d2v_lev)
       val vp = ccomp_tmpdef (loc0, res, hit0, TMPvar d2v, hitss, fullname, tmpdef)
       val () = d2var_current_level_set (level0)
     in
       vp // return value
-    end // end of [None_vt]
+    end (* end of [None_vt] *)
   | ~Some_vt vp => vp
 end // end of [ccomp_exp_template_var]
 

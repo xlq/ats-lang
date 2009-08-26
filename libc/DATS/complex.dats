@@ -7,28 +7,27 @@
 (***********************************************************************)
 
 (*
- * ATS - Unleashing the Potential of Types!
- *
- * Copyright (C) 2002-2008 Hongwei Xi, Boston University
- *
- * All rights reserved
- *
- * ATS is free software;  you can  redistribute it and/or modify it under
- * the  terms of the  GNU General Public License as published by the Free
- * Software Foundation; either version 2.1, or (at your option) any later
- * version.
- * 
- * ATS is distributed in the hope that it will be useful, but WITHOUT ANY
- * WARRANTY; without  even  the  implied  warranty  of MERCHANTABILITY or
- * FITNESS FOR A PARTICULAR PURPOSE.  See the  GNU General Public License
- * for more details.
- * 
- * You  should  have  received  a  copy of the GNU General Public License
- * along  with  ATS;  see the  file COPYING.  If not, please write to the
- * Free Software Foundation,  51 Franklin Street, Fifth Floor, Boston, MA
- * 02110-1301, USA.
- *
- *)
+** ATS - Unleashing the Potential of Types!
+**
+** Copyright (C) 2002-2008 Hongwei Xi, Boston University
+**
+** All rights reserved
+**
+** ATS is free software;  you can  redistribute it and/or modify it under
+** the  terms of the  GNU General Public License as published by the Free
+** Software Foundation; either version 2.1, or (at your option) any later
+** version.
+** 
+** ATS is distributed in the hope that it will be useful, but WITHOUT ANY
+** WARRANTY; without  even  the  implied  warranty  of MERCHANTABILITY or
+** FITNESS FOR A PARTICULAR PURPOSE.  See the  GNU General Public License
+** for more details.
+** 
+** You  should  have  received  a  copy of the GNU General Public License
+** along  with  ATS;  see the  file COPYING.  If not, please write to the
+** Free Software Foundation,  51 Franklin Street, Fifth Floor, Boston, MA
+** 02110-1301, USA.
+*)
 
 (* ****** ****** *)
 
@@ -36,16 +35,42 @@
 
 (* ****** ****** *)
 
-%{
+staload "libc/SATS/complex.sats"
+
+(* ****** ****** *)
+
+%{^
 
 #include "libc/CATS/complex.cats"
 
-ats_complex_type ats_complex_imag_unit = _Complex_I ;
+// ccmplx = ats_fcomplex_type
+// zcmplx = ats_dcomplex_type
+
+ats_fcomplex_type
+atslib_ccmplx_imag_unit = _Complex_I ;
+
+ats_dcomplex_type
+atslib_zcmplx_imag_unit = _Complex_I ;
 
 // print function
 
 ats_void_type
-ats_fprint_complex(ats_ptr_type out, ats_complex_type z) {
+atslib_fprint_ccmplx
+  (ats_ptr_type out, ats_fcomplex_type c) {
+  int n ;
+  float c_i = cimagf(c) ;
+
+  if (c_i >= 0.0) {
+    n = fprintf((FILE *)out, "%f+i*%f", crealf(c), c_i) ;
+  } else {
+    n = fprintf((FILE *)out, "%f-i*%f", crealf(c), -c_i) ;
+  }
+  return ;
+} // end of [ats_fprint_ccmplx]
+
+ats_void_type
+atslib_fprint_zcmplx
+  (ats_ptr_type out, ats_dcomplex_type z) {
   int n ;
   double z_i = cimag(z) ;
 
@@ -54,16 +79,28 @@ ats_fprint_complex(ats_ptr_type out, ats_complex_type z) {
   } else {
     n = fprintf((FILE *)out, "%f-i*%f", creal(z), -z_i) ;
   }
-  if (n < 0) {
-    ats_exit_errmsg(n, "Exit: [fprint_complex] failed.\n") ;
-  }
-
   return ;
-}
+} // end of [ats_fprint_zcmplx]
 
 %}
 
-//// implemented in complex.cats
+(* ****** ****** *)
+
+implement print_ccmplx (c) = print_mac (fprint_ccmplx, c)
+implement prerr_ccmplx (c) = prerr_mac (fprint_ccmplx, c)
+
+implement print_zcmplx (z) = print_mac (fprint_zcmplx, z)
+implement prerr_zcmplx (z) = prerr_mac (fprint_zcmplx, z)
+
+(* ****** ****** *)
+
+(* end of [complex.dats] *)
+
+////
+
+(* ****** ****** *)
+
+// implemented in complex.cats
 
 staload M = "math.sats"
 staload "complex.sats"
@@ -177,5 +214,3 @@ implement pow_complex_complex (z1, z2) =
   exp_complex (mul_complex_complex (z2,  log_complex z1))
 
 (* ****** ****** *)
-
-// end of complex.dats

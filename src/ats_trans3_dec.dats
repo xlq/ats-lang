@@ -7,33 +7,32 @@
 (***********************************************************************)
 
 (*
- * ATS/Anairiats - Unleashing the Potential of Types!
- *
- * Copyright (C) 2002-2008 Hongwei Xi, Boston University
- *
- * All rights reserved
- *
- * ATS is free software;  you can  redistribute it and/or modify it under
- * the terms of  the GNU GENERAL PUBLIC LICENSE (GPL) as published by the
- * Free Software Foundation; either version 3, or (at  your  option)  any
- * later version.
- * 
- * ATS is distributed in the hope that it will be useful, but WITHOUT ANY
- * WARRANTY; without  even  the  implied  warranty  of MERCHANTABILITY or
- * FITNESS FOR A PARTICULAR PURPOSE.  See the  GNU General Public License
- * for more details.
- * 
- * You  should  have  received  a  copy of the GNU General Public License
- * along  with  ATS;  see the  file COPYING.  If not, please write to the
- * Free Software Foundation,  51 Franklin Street, Fifth Floor, Boston, MA
- * 02110-1301, USA.
- *
- *)
+** ATS/Anairiats - Unleashing the Potential of Types!
+**
+** Copyright (C) 2002-2008 Hongwei Xi, Boston University
+**
+** All rights reserved
+**
+** ATS is free software;  you can  redistribute it and/or modify it under
+** the terms of  the GNU GENERAL PUBLIC LICENSE (GPL) as published by the
+** Free Software Foundation; either version 3, or (at  your  option)  any
+** later version.
+** 
+** ATS is distributed in the hope that it will be useful, but WITHOUT ANY
+** WARRANTY; without  even  the  implied  warranty  of MERCHANTABILITY or
+** FITNESS FOR A PARTICULAR PURPOSE.  See the  GNU General Public License
+** for more details.
+** 
+** You  should  have  received  a  copy of the GNU General Public License
+** along  with  ATS;  see the  file COPYING.  If not, please write to the
+** Free Software Foundation,  51 Franklin Street, Fifth Floor, Boston, MA
+** 02110-1301, USA.
+*)
 
 (* ****** ****** *)
 
-// Time: December 2007
 // Author: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
+// Time: December 2007
 
 (* ****** ****** *)
 
@@ -75,6 +74,67 @@ fn caskind_of_valkind
   | $Syn.VALKINDvalplus () => 1
   | $Syn.VALKINDprval () => 1
 end // end of [caskind_of_valkind]
+
+(* ****** ****** *)
+
+implement m2thdec_tr (mtd) = begin
+  case+ mtd of
+  | M2THDECmtd (loc, sym, d2v_self, def) => let
+      val def = (case+ def of
+        | Some d2e => Some (d2exp_tr_up d2e) | None () => None ()
+      ) : d3expopt
+    in
+      M3THDECmtd (loc, sym, d2v_self, def)
+    end (* end of [M2THDECmtd] *)
+  | M2THDECval (loc, sym, res, def) => let
+      val def = (case+ def of
+        | Some d2e => Some (d2exp_tr_dn (d2e, res)) | None () => None ()
+      ) : d3expopt
+    in
+      M3THDECval (loc, sym, res, def)
+    end (* end of [M2THDECval] *)
+  | M2THDECvar (loc, sym, res, def) => let
+      val def = (case+ def of
+        | Some d2e => Some (d2exp_tr_dn (d2e, res)) | None () => None ()
+      ) : d3expopt
+    in
+      M3THDECvar (loc, sym, res, def)
+    end (* end of [M2THDECvar] *)
+  | M2THDECimp (loc, d2m, def) => let
+      val s2e_mtd = d2mtd_typ_get d2m
+(*
+      val () = begin
+        prerr "m2thdec_tr: M2THDECimp: s2e_mtd = "; prerr s2e_mtd; print_newline ()
+      end // end of [val]
+*)
+      val def = d2exp_tr_dn (def, s2e_mtd)
+    in
+      M3THDECimp (loc, d2m, def)
+    end (* end of [M2THDECimp] *)
+(*
+  | _ => begin
+      prerr "m2thdec_tr: not yet available"; prerr_newline ();
+      $Err.abort ()
+    end (* end of [_] *)
+*)
+end // end of [m2thdec_tr]
+
+implement m2thdeclst_tr (mtds) =
+  $Lst.list_map_fun (mtds, m2thdec_tr)
+// end of [m2thdeclst_tr]
+
+(* ****** ****** *)
+
+fn c2lassdec_tr
+  (d2c: c2lassdec): c3lassdec = let
+  val loc = d2c.c2lassdec_loc
+  val s2c_cls = d2c.c2lassdec_cst
+  val mtds = m2thdeclst_tr (d2c.c2lassdec_mtdlst)
+in
+  c3lassdec_make (loc, s2c_cls, mtds)
+end // end of [c2lassdec_tr]
+
+(* ****** ****** *)
 
 fn v2aldec_tr
   (valknd: $Syn.valkind, d2c: v2aldec): v3aldec = let
@@ -239,8 +299,7 @@ fn f2undec_tr (d2c: f2undec): d3exp = let
   val () = trans3_env_push_sta ()
   val () = trans3_env_hypo_add_s2qualst (d2v_loc, d2v_decarg)
 
-  val d3e_def = (
-    case+ d2c.f2undec_ann of
+  val d3e_def = (case+ d2c.f2undec_ann of
     | Some s2e_ann => let
 (*
         val () = begin
@@ -250,7 +309,7 @@ fn f2undec_tr (d2c: f2undec): d3exp = let
 *)
       in
         d2exp_tr_dn (d2e_def, s2e_ann)
-      end
+      end // end of [Some]
     | None () => d2exp_tr_up d2e_def
   ) : d3exp
 
@@ -259,7 +318,7 @@ fn f2undec_tr (d2c: f2undec): d3exp = let
 (*
   val () = begin
     print "f2undec_tr: s2e_fun = "; print s2e_fun; print_newline ()
-  end
+  end // end of [val]
 *)
 (*
   val s2e_fun_gen = s2exp_generalize s2e_fun
@@ -279,7 +338,7 @@ fn f2undec_tr (d2c: f2undec): d3exp = let
 *)
 in
   d3e_def
-end
+end // end of [f2undec_tr]
 
 (* ****** ****** *)
 
@@ -385,7 +444,7 @@ fn f2undeclst_tr
   } // end of [where]
 in
   aux_fin (d2cs, d3es_def)
-end
+end // end of [f2undeclst_tr]
 
 (* ****** ****** *)
 
@@ -662,13 +721,18 @@ in
     in
       d3ec_saspdec (d2c0.d2ec_loc, d2c)
     end // end of [D2Csaspec]
+  | D2Cdcstdec (dck, d2cs) => begin
+      d3ec_dcstdec (d2c0.d2ec_loc, dck, d2cs)
+    end // end of [D2Cdcstdec]
   | D2Cdatdec (knd, s2cs) => let
-      fun aux (sVs: s2Varset_t, s2cs: s2cstlst): void =
+      fun aux
+        (sVs: s2Varset_t, s2cs: s2cstlst): void =
         case+ s2cs of
         | S2CSTLSTcons (s2c, s2cs) => begin
             s2cst_sVarset_set (s2c, sVs); aux (sVs, s2cs)
-          end
+          end // end of [S2CSTLSTcons]
         | S2CSTLSTnil () => ()
+      // end of [aux]
       val () = aux (the_s2Varset_env_get (), s2cs)
     in
       d3ec_datdec (d2c0.d2ec_loc, knd, s2cs)
@@ -676,9 +740,10 @@ in
   | D2Cexndec (d2cs) => begin
       d3ec_exndec (d2c0.d2ec_loc, d2cs)
     end // end of [D2Cexndec]
-  | D2Cdcstdec (dck, d2cs) => begin
-      d3ec_dcstdec (d2c0.d2ec_loc, dck, d2cs)
-    end // end of [D2Cdcstdec]
+  | D2Cclassdec (d2c) => let
+      val d3c = c2lassdec_tr (d2c) in
+      d3ec_classdec (d2c0.d2ec_loc, d3c)
+    end // end of [D2Cclassdec]
   | D2Coverload _ => d3ec_none (d2c0.d2ec_loc)
   | D2Cextype (name, s2e_def) => let
 (*
@@ -772,13 +837,13 @@ in
   | D2Cdynload fil => d3ec_dynload (d2c0.d2ec_loc, fil)
 (*
   | _ => begin
-      prerr d2c0.d2ec_loc;
+      $Loc.prerr_location d2c0.d2ec_loc;
       prerr ": d2ec_tr: not implemented yet.";
       prerr_newline ();
       $Err.abort {d3ec} ()
-    end
+    end // end of [_]
 *)
-end // end of [d2ec_tr]
+end (* end of [d2ec_tr] *)
 
 (* ****** ****** *)
 

@@ -178,6 +178,12 @@ implement linearize (s0) = aux (doStm s0, list_nil ()) where {
 
 staload _(*anonymous*) = "prelude/DATS/list.dats"
 
+(* ****** ****** *)
+
+#define l2l list_of_list_vt
+
+(* ****** ****** *)
+
 fn block_make
   (lab: label, ss: stmlst, s: stm): block = '{
   block_lab= lab, block_init= ss, block_last= s
@@ -193,7 +199,7 @@ implement blocklst_gen (ss0) = let
           val lab = $TL.label_make_new () in f2 (ss0, lab, list_nil (), blks)
         end // end of [_]
       end (* end of [list_cons] *)
-    | list_nil () => list_reverse (blks)
+    | list_nil () => l2l (list_reverse blks)
   end // end of [f1]
   
   and f2 (
@@ -204,21 +210,21 @@ implement blocklst_gen (ss0) = let
     ) :<cloref1> blocklst = begin case+ ss0 of
     | list_cons (s, ss) => begin case+ s of
       | STMjump _ => let
-          val res_rev = list_reverse res
+          val res_rev = l2l (list_reverse res)
           val blk = block_make (lab, res_rev, s)
           val blks = list_cons (blk, blks)
         in
           f1 (ss, blks)
         end // end of [STMjump]
       | STMcjump _ => let
-          val res_rev = list_reverse res
+          val res_rev = l2l (list_reverse res)
           val blk = block_make (lab, res_rev, s)
           val blks = list_cons (blk, blks)
         in
           f1 (ss, blks)
         end // end of [STMcjump]
       | STMlabel lab1 => let
-          val res_rev = list_reverse res
+          val res_rev = l2l (list_reverse res)
           val stm_jump = STMjump (EXPname lab1, '[lab1])
           val blk = block_make (lab, res_rev, stm_jump)          
           val blks = list_cons (blk, blks)
@@ -228,12 +234,12 @@ implement blocklst_gen (ss0) = let
       | _ => f2 (ss, lab, list_cons (s, res), blks)
       end (* end of [list_cons] *)
     | list_nil () => let
-        val res_rev = list_reverse res
+        val res_rev = l2l (list_reverse res)
         val stm_jump = STMjump (EXPname lab_done, '[lab_done])
         val blk = block_make (lab, res_rev, stm_jump)
         val blks = list_cons (blk, blks)
       in
-        list_reverse (blks)
+        l2l (list_reverse blks)
       end // end of [list_nil]
   end // end of [f2]
 in

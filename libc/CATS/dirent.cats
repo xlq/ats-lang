@@ -54,6 +54,14 @@ typedef struct dirent ats_dirent_type ;
 /* ****** ****** */
 
 static inline
+ats_ptr_type
+atslib_dirent_d_name_get
+  (ats_ptr_type dir) { return ((ats_dirent_type*)dir)->d_name ; }
+// end of [atslib_dirent_d_name_get]
+
+/* ****** ****** */
+
+static inline
 ats_int_type
 atslib_closedir_err (ats_ptr_type dir) {
   return closedir (dir) ;

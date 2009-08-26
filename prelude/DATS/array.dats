@@ -114,53 +114,44 @@ end // end of [array_ptr_initialize_elt]
 
 (* ****** ****** *)
 
-implement{a} array_ptr_initialize_lst (A0, n0, xs0) = let
-
-fun aux {n:nat} {l:addr} .<n>.
-  (pf: array_v (a?, n, l) | p: ptr l, n: size_t n, xs: list (a, n))
-  :<> (array_v (a, n, l) | void) =
-  if n > 0 then let
-    prval (pf1, pf2) = array_v_uncons {a?} (pf)
-    val+ list_cons (x, xs) = xs
-    val () = !p := x
-    val (pf2 | ans) = aux (pf2 | p+sizeof<a>, n-1, xs)
-  in
-    (array_v_cons {a} (pf1, pf2) | ans)
-  end else let
-    prval () = array_v_unnil {a?} pf
-  in
-    (array_v_nil {a} () | ())
-  end
-
-val (pf | ()) = aux (view@ A0 | &A0, n0, xs0)
-
+implement{a} array_ptr_initialize_lst (A0, xs0) = let
+  fun aux {n:nat} {l:addr} .<n>. (
+      pf: array_v (a?, n, l) | p: ptr l, xs: list (a, n)
+    ) :<> (array_v (a, n, l) | void) = begin case+ xs of
+    | list_cons (x, xs) => let
+        prval (pf1, pf2) = array_v_uncons {a?} (pf)
+        val () = !p := x
+        val (pf2 | ans) = aux (pf2 | p+sizeof<a>, xs)
+      in
+        (array_v_cons {a} (pf1, pf2) | ans)
+      end // end of [list_cons]
+    | list_nil () => let
+        prval () = array_v_unnil {a?} (pf) in (array_v_nil {a} () | ())
+      end // end of [list_nil]  
+  end // end of [aux]
+  val (pf | ()) = aux (view@ A0 | &A0, xs0)
 in
   view@ A0 := pf
 end // end of [array_ptr_initialize_lst]
 
 //
 
-implement{a} array_ptr_initialize_lst_vt (A0, n0, xs0) = let
-
-fun aux {n:nat} {l:addr} .<n>.
-  (pf: array_v (a?, n, l) | p: ptr l, n: size_t n, xs: list_vt (a, n))
-  :<> (array_v (a, n, l) | void) =
-  if n > 0 then let
-    prval (pf1, pf2) = array_v_uncons {a?} (pf)
-    val+ ~list_vt_cons (x, xs) = xs
-    val () = !p := x
-    val (pf2 | ans) = aux (pf2 | p+sizeof<a>, n-1, xs)
-  in
-    (array_v_cons {a} (pf1, pf2) | ans)
-  end else let
-    prval () = array_v_unnil {a?} pf
-    val+ ~list_vt_nil () = xs
-  in
-    (array_v_nil {a} () | ())
-  end
-
-val (pf | ()) = aux (view@ A0 | &A0, n0, xs0)
-
+implement{a} array_ptr_initialize_lst_vt (A0, xs0) = let
+  fun aux {n:nat} {l:addr} .<n>. (
+      pf: array_v (a?, n, l) | p: ptr l, xs: list_vt (a, n)
+    ) :<> (array_v (a, n, l) | void) = begin case+ xs of
+    | ~list_vt_cons (x, xs) => let
+        prval (pf1, pf2) = array_v_uncons {a?} (pf)
+        val () = !p := x
+        val (pf2 | ans) = aux (pf2 | p+sizeof<a>, xs)
+      in
+        (array_v_cons {a} (pf1, pf2) | ans)
+      end
+    | ~list_vt_nil () => let
+        prval () = array_v_unnil {a?} (pf) in (array_v_nil {a} () | ())
+      end
+  end // end of [aux]
+  val (pf | ()) = aux (view@ A0 | &A0, xs0)
 in
   view@ A0 := pf
 end // end of [array_ptr_initialize_lst_vt]
@@ -168,16 +159,14 @@ end // end of [array_ptr_initialize_lst_vt]
 (* ****** ****** *)
 
 implement array_ptr_initialize_fun_tsz
-  {a} {n} {f} (base, asz, f, tsz) = let
-  typedef funptr_t = (&(a?) >> a, sizeLt n) -<f> void
-  typedef funptr1_t = (!unit_v | &(a?) >> a, sizeLt n, !Ptr) -<f> void
+  {a} {v} {n} (pf | base, asz, f, tsz) = let
+  typedef funptr_t = (!v | &(a?) >> a, sizeLt n) -<> void
+  typedef funptr1_t = (!v | &(a?) >> a, sizeLt n, !ptr) -<> void
   val f1 = coerce (f) where {
     extern castfn coerce (f: funptr_t):<> funptr1_t
   }
-  prval pf = unit_v ()
   val () = array_ptr_initialize_fun_tsz__main
-    {a} {unit_v} {Ptr} (pf | base, asz, f1, tsz, null)
-  prval unit_v () = pf
+    {a} {v} {ptr} (pf | base, asz, f1, tsz, null)
 in
   // empty
 end // end of [array_ptr_initialize_fun_tsz]
@@ -185,17 +174,15 @@ end // end of [array_ptr_initialize_fun_tsz]
 (* ****** ****** *)
 
 implement array_ptr_initialize_clo_tsz
-  {a} {n} {f} (base, asz, f, tsz) = let
+  {a} {v} {n} (pf | base, asz, f, tsz) = let
   val p_f = &f; prval pf_f = view@ f
-  viewtypedef clo_t = (&(a?) >> a, sizeLt n) -<clo,f> void
-  viewtypedef clo1_t = (!unit_v | &(a?) >> a, sizeLt n, !Ptr) -<clo,f> void
+  viewtypedef clo_t = (!v | &(a?) >> a, sizeLt n) -<clo> void
+  viewtypedef clo1_t = (!v | &(a?) >> a, sizeLt n, !Ptr) -<clo> void
   prval pf1_f = coerce (pf_f) where {
     extern praxi coerce {l:addr} (pf: clo_t @ l): clo1_t @ l
   } // end of [prval]
-  prval pf = unit_v ()
   val () = array_ptr_initialize_clo_tsz__main
-    {a} {unit_v} {Ptr} (pf | base, asz, !p_f, tsz, null)
-  prval unit_v () = pf
+    {a} {v} {Ptr} (pf | base, asz, !p_f, tsz, null)
   prval pf_f = coerce (pf1_f) where {
     extern praxi coerce {l:addr} (pf: clo1_t @ l): clo_t @ l
   } // end of [prval]
@@ -207,16 +194,17 @@ end // end of [array_ptr_initialize_clo_tsz]
 (* ****** ****** *)
 
 implement array_ptr_clear_clo_tsz
-  {a} {n} {f} (base, asz, f, tsz) = let
+  {a} {v} {n} (pf | base, asz, f, tsz) = let
   fun clear {n:nat} {l:addr} .<n>. (
+      pf: !v,
       pf_arr: !array_v (a, n, l) >> array_v (a?, n, l)
     | p_arr: ptr l, n: size_t n
-    , f: &(&a >> a?) -<clo,f> void, tsz: sizeof_t a
-    ) :<f> void =
+    , f: &(!v | &a >> a?) -<clo> void, tsz: sizeof_t a
+    ) :<> void =
     if n > 0 then let
       prval (pf1_at, pf2_arr) = array_v_uncons {a} (pf_arr)
-      val () = f (!p_arr)
-      val () = clear (pf2_arr | p_arr + tsz, n-1, f, tsz)
+      val () = f (pf | !p_arr)
+      val () = clear (pf, pf2_arr | p_arr + tsz, n-1, f, tsz)
     in
       pf_arr := array_v_cons {a?} (pf1_at, pf2_arr)
     end else let
@@ -226,13 +214,19 @@ implement array_ptr_clear_clo_tsz
     end // end of [if]
   // end of [clear]
 in
-  clear (view@ base | &base, asz, f, tsz)
+  clear (pf, view@ base | &base, asz, f, tsz)
 end // end of [array_ptr_clear_clo_tsz]
 
 (* ****** ****** *)
 
+implement{a} array_ptr_split (pf | A, i) =
+  array_ptr_split_tsz {a} (pf | A, i, sizeof<a>)
+// end of [array_ptr_split]
+
+(* ****** ****** *)
+
 implement{a} array_ptr_takeout (pf | A, i) =
-  array_ptr_takeout_tsz {a} (pf | A, i, sizeof<a> )
+  array_ptr_takeout_tsz {a} (pf | A, i, sizeof<a>)
 // end of [array_ptr_takeout]
 
 (* ****** ****** *)
@@ -266,8 +260,9 @@ assume array_viewt0ype_int_type
 (*
 
 viewtypedef
-arraysize_viewt0ype_int_viewt0ype (a: viewt@ype, n:int) =
-  [l:addr | l <> null] (free_gc_v l, @[a][n] @ l | ptr l, int n)
+arraysize_viewt0ype_int_viewt0ype
+  (a: viewt@ype, n:int) = [l:addr] (free_gc_v l, @[a][n] @ l | ptr l, int n)
+// end of [arraysize_viewt0ype_int_viewt0ype]
 
 *)
 
@@ -276,27 +271,52 @@ implement array_make_arraysize {a} {n} (arrsz) = let
   val (pfbox | ()) = vbox_make_view_ptr (arrsz.1 | arrsz.2)
 in
   @{ data= arrsz.2, view= pfbox }
-end // end of [array]
+end // end of [array_make_arraysize]
 
 //
 
 implement{a} array_make_elt (asz, x) = let
   val (pf_gc, pf_arr | p_arr) = array_ptr_alloc_tsz {a} (asz, sizeof<a>)
-  prval () = free_gc_elim {a} (pf_gc) // return the certificate
+  prval () = free_gc_elim {a} (pf_gc) // return the certificate to GC
   val () = array_ptr_initialize_elt<a> (!p_arr, asz, x)
   val (pfbox | ()) = vbox_make_view_ptr (pf_arr | p_arr)
 in
   @{ data= p_arr, view= pfbox }
 end // end of [array_make_elt]
 
-implement array_make_clo_tsz {a} (asz, f, tsz) = let
+implement{a} array_make_lst (asz, xs) = let
+  val (pf_gc, pf_arr | p_arr) = array_ptr_alloc_tsz {a} (asz, sizeof<a>)
+  prval () = free_gc_elim {a} (pf_gc) // return the certificate to GC
+  val () = array_ptr_initialize_lst<a> (!p_arr, xs)
+  val (pfbox | ()) = vbox_make_view_ptr (pf_arr | p_arr)
+in
+  @{ data= p_arr, view= pfbox }
+end // end of [array_make_lst]
+
+implement array_make_clo_tsz {a} (pf | asz, f, tsz) = let
   val (pf_gc, pf_arr | p_arr) = array_ptr_alloc_tsz {a} (asz, tsz)
-  prval () = free_gc_elim {a} (pf_gc) // return the certificate
-  val () = array_ptr_initialize_clo_tsz {a} (!p_arr, asz, f, tsz)
+  prval () = free_gc_elim {a} (pf_gc) // return the certificate to GC
+  val () = array_ptr_initialize_clo_tsz {a} (pf | !p_arr, asz, f, tsz)
   val (pfbox | ()) = vbox_make_view_ptr (pf_arr | p_arr)
 in
   @{ data= p_arr, view= pfbox }
 end // end of [array_make_clo_tsz]
+
+implement array_make_cloref_tsz {a} {n} (asz, f, tsz) = let
+  val (pf_gc, pf_arr | p_arr) = array_ptr_alloc_tsz {a} (asz, tsz)
+  prval () = free_gc_elim {a} (pf_gc) // return the certificate to GC
+  prval pf = unit_v ()
+  typedef cloref_t = (&(a?) >> a, sizeLt n) -<cloref1> void
+  val () = array_ptr_initialize_fun_tsz__main
+    {a} {unit_v} {cloref_t} (pf | !p_arr, asz, app, tsz, f) where {
+    val app = lam
+      (pf: !unit_v | x: &(a?) >> a, i: sizeLt n, f: !cloref_t): void =<fun> $effmask_all (f (x, i))
+  } // end of [val]  
+  prval unit_v () = pf
+  val (pfbox | ()) = vbox_make_view_ptr (pf_arr | p_arr)
+in
+  @{ data= p_arr, view= pfbox }
+end // end of [array_make_cloref_tsz]
 
 (* ****** ****** *)
 
@@ -356,18 +376,43 @@ end // end of [array_exch]
 
 (* ****** ****** *)
 
+implement{a}
+  array_ptr_foreach_fun (pf_v | A, f, asz) =
+  array_ptr_foreach_fun_tsz {a} (pf_v | A, f, asz, sizeof<a>)
+// end of [implement]
+
+implement array_ptr_foreach_fun_tsz
+  {a} {v} {n} (pf_v | A, f, asz, tsz) = let
+  viewtypedef fun0_t = (!v | &a) -<fun> void
+  viewtypedef fun1_t = (!v | &a, !ptr) -<fun> void
+  val f = __cast (f) where {
+    extern castfn __cast (f: fun0_t):<> fun1_t
+  }
+in
+  array_ptr_foreach_fun_tsz__main
+    {a} {v} {ptr} (pf_v | A, f, asz, tsz, null)
+  // end of [array_ptr_foreach_...]
+end // end of [array_ptr_foreach_fun_tsz]
+
+(* ****** ****** *)
+
+implement{a}
+  array_ptr_foreach_clo (pf_v | A, f, asz) =
+  array_ptr_foreach_clo_tsz {a} (pf_v | A, f, asz, sizeof<a>)
+// end of [implement]
+
 implement array_ptr_foreach_clo_tsz
-  {a} {v} {n} {f} (pf_v | f, A, asz, tsz) = let
-  viewtypedef clo_t = (!v | &a) -<clo,f> void
+  {a} {v} {n} (pf_v | A, f, asz, tsz) = let
+  viewtypedef clo_t = (!v | &a) -<clo> void
   stavar l_f: addr
   val p_f: ptr l_f = &f
   viewdef V = @(v, clo_t @ l_f)
-  fn app (pf: !V | x: &a, p_f: !ptr l_f):<f> void = let
+  fn app (pf: !V | x: &a, p_f: !ptr l_f):<> void = let
     prval (pf1, pf2) = pf; val () = !p_f (pf1 | x) in pf := (pf1, pf2)
   end // end of [app]
   prval pf = (pf_v, view@ f)
   val () = array_ptr_foreach_fun_tsz__main
-    {a} {V} {ptr l_f} (pf | app, A, asz, tsz, p_f)
+    {a} {V} {ptr l_f} (pf | A, app, asz, tsz, p_f)
   prval (pf1, pf2) = pf
   prval () = (pf_v := pf1; view@ f := pf2)
 in
@@ -376,18 +421,43 @@ end // end of [array_ptr_foreach_clo_tsz]
 
 (* ****** ****** *)
 
+implement{a}
+  array_ptr_iforeach_fun (pf_v | A, f, asz) =
+  array_ptr_iforeach_fun_tsz {a} (pf_v | A, f, asz, sizeof<a>)
+// end of [implement]
+
+implement array_ptr_iforeach_fun_tsz
+  {a} {v} {n} (pf_v | A, f, asz, tsz) = let
+  viewtypedef fun0_t = (!v | sizeLt n, &a) -<fun> void
+  viewtypedef fun1_t = (!v | sizeLt n, &a, !ptr) -<fun> void
+  val f = __cast (f) where {
+    extern castfn __cast (f: fun0_t):<> fun1_t
+  }
+in
+  array_ptr_iforeach_fun_tsz__main
+    {a} {v} {ptr} (pf_v | A, f, asz, tsz, null)
+  // end of [array_ptr_foreach_...]
+end // end of [array_ptr_foreach_fun_tsz]
+
+(* ****** ****** *)
+
+implement{a}
+  array_ptr_iforeach_clo (pf_v | A, f, asz) =
+  array_ptr_iforeach_clo_tsz {a} (pf_v | A, f, asz, sizeof<a>)
+// end of [implement]
+
 implement array_ptr_iforeach_clo_tsz
-  {a} {v} {n} {f} (pf_v | f, A, asz, tsz) = let
-  viewtypedef clo_t = (!v | sizeLt n, &a) -<clo,f> void
+  {a} {v} {n} (pf_v | A, f, asz, tsz) = let
+  viewtypedef clo_t = (!v | sizeLt n, &a) -<clo> void
   stavar l_f: addr
   val p_f: ptr l_f = &f
   viewdef V = @(v, clo_t @ l_f)
-  fn app (pf: !V | i: sizeLt n, x: &a, p_f: !ptr l_f):<f> void = let
+  fn app (pf: !V | i: sizeLt n, x: &a, p_f: !ptr l_f):<> void = let
     prval (pf1, pf2) = pf; val () = !p_f (pf1 | i, x) in pf := (pf1, pf2)
   end // end of [app]
   prval pf = (pf_v, view@ f)
   val () = array_ptr_iforeach_fun_tsz__main
-    {a} {V} {ptr l_f} (pf | app, A, asz, tsz, p_f)
+    {a} {V} {ptr l_f} (pf | A, app, asz, tsz, p_f)
   prval (pf1, pf2) = pf
   prval () = (pf_v := pf1; view@ f := pf2)
 in
@@ -397,11 +467,11 @@ end // end of [array_ptr_iforeach_clo_tsz]
 (* ****** ****** *)
 
 implement{a} array_foreach__main
-  {v} {vt} {n} (pf | f, A, asz, env) = let
+  {v} {vt} {n} (pf | A, f, asz, env) = let
   typedef fun_t = (!v | &a, !vt) -<> void
   fun loop {i:nat | i <= n} .<n-i>. (
       pf: !v
-    | f: fun_t, A: array (a, n), n: size_t n, i: size_t i, env: !vt
+    | A: array (a, n), f: fun_t, n: size_t n, i: size_t i, env: !vt
     ) :<!ref> void =
     if i < n then let
       val () = () where {
@@ -411,24 +481,24 @@ implement{a} array_foreach__main
         prval () = pf_arr := fpf2 (pf1)
       } // end of [val]
     in
-      loop (pf | f, A, n, i+1, env)
+      loop (pf | A, f, n, i+1, env)
     end // end of [if]
   // end of [loop]
 in
-  loop (pf | f, A, asz, 0, env)
+  loop (pf | A, f, asz, 0, env)
 end // end of [array_foreach__main]
 
 implement{a} array_foreach_fun
-  {v} {n} (pf | f, A, asz) = let
+  {v} {n} (pf | A, f, asz) = let
   val f = coerce (f) where { extern castfn
     coerce (f: (!v | &a) -<> void):<> (!v | &a, !ptr) -<> void
   } // end of [where]
 in
-  array_foreach__main (pf | f, A, asz, null)
+  array_foreach__main (pf | A, f, asz, null)
 end // end of [array_foreach_fun]
 
 implement{a} array_foreach_clo
-  {v} {n} (pf_v | f, A, asz) = let
+  {v} {n} (pf_v | A, f, asz) = let
   stavar l_f: addr
   typedef clo_t = (!v | &a) -<clo> void
   val p_f: ptr l_f = &f
@@ -437,18 +507,20 @@ implement{a} array_foreach_clo
     prval (pf1, pf2) = pf in !p_f (pf1 | x); pf := (pf1, pf2)
   end // end of [app]
   prval pf = (pf_v, view@ f)
-  val () = array_foreach__main<a> {V} {ptr l_f} (pf | app, A, asz, p_f)
+  val () = array_foreach__main<a> {V} {ptr l_f} (pf | A, app, asz, p_f)
   prval (pf1, pf2) = pf
   prval () = (pf_v := pf1; view@ f := pf2)
 in
   // empty
 end // end of [array_foreach_clo]
 
-implement{a} array_foreach_cloref
-  {v} {n} (pf | f, A, asz) = let
-  viewtypedef cloref_t = (!v | &a) -<cloref> void
-  fn app (pf: !v | x: &a, f: !cloref_t):<> void = f (pf | x)
-  val () = array_foreach__main<a> {v} {cloref_t} (pf | app, A, asz, f)
+implement{a}
+  array_foreach_cloref {n} (A, f, asz) = let
+  viewtypedef cloref_t = (&a) -<cloref1> void
+  fn app (pf: !unit_v | x: &a, f: !cloref_t):<> void = $effmask_all (f x)
+  prval pf = unit_v ()
+  val () = array_foreach__main<a> {unit_v} {cloref_t} (pf | A, app, asz, f)
+  prval unit_v () = pf
 in
   // empty
 end // end of [array_foreach_cloref]
@@ -456,11 +528,11 @@ end // end of [array_foreach_cloref]
 (* ****** ****** *)
 
 implement{a} array_iforeach__main
-  {v} {vt} {n} (pf | f, A, asz, env) = let
+  {v} {vt} {n} (pf | A, f, asz, env) = let
   viewtypedef fun_t = (!v | sizeLt n, &a, !vt) -<fun> void
   fun loop {i:nat | i <= n} .<n-i>. (
       pf: !v
-    | f: fun_t, A: array (a, n), n: size_t n, i: size_t i, env: !vt
+    | A: array (a, n), f: fun_t, n: size_t n, i: size_t i, env: !vt
     ) :<!ref> void =
     if i < n then let
       val () = () where {
@@ -470,25 +542,25 @@ implement{a} array_iforeach__main
         prval () = pf_arr := fpf2 (pf1)
       } // end of [val]
     in
-      loop (pf | f, A, n, i+1, env)
+      loop (pf | A, f, n, i+1, env)
     end // end of [if]
   // end of [loop]
-  val () = loop (pf | f, A, asz, 0, env)
+  val () = loop (pf | A, f, asz, 0, env)
 in
   // empty
 end // end of [array_iforeach__main]
 
 implement{a} array_iforeach_fun
-  {v} {n} (pf | f, A, asz) = let
+  {v} {n} (pf | A, f, asz) = let
   val f = coerce (f) where { extern castfn
     coerce (f: (!v | sizeLt n, &a) -<> void):<> (!v | sizeLt n, &a, !ptr) -<> void
   } // end of [where]
 in
-  array_iforeach__main (pf | f, A, asz, null)
+  array_iforeach__main (pf | A, f, asz, null)
 end // end of [array_foreach_fun]
 
 implement{a} array_iforeach_clo
-  {v} {n} (pf_v | f, A, asz) = let
+  {v} {n} (pf_v | A, f, asz) = let
   stavar l_f: addr
   typedef clo_t = (!v | sizeLt n, &a) -<clo> void
   val p_f: ptr l_f = &f
@@ -497,18 +569,20 @@ implement{a} array_iforeach_clo
     prval (pf1, pf2) = pf in !p_f (pf1 | i, x); pf := (pf1, pf2)
   end // end of [app]
   prval pf = (pf_v, view@ f)
-  val () = array_iforeach__main<a> {V} {ptr l_f} (pf | app, A, asz, p_f)
+  val () = array_iforeach__main<a> {V} {ptr l_f} (pf | A, app, asz, p_f)
   prval (pf1, pf2) = pf
   prval () = (pf_v := pf1; view@ f := pf2)
 in
   // empty
 end // end of [array_iforeach_clo]
 
-implement{a} array_iforeach_cloref
-  {v} {n} (pf | f, A, asz) = let
-  viewtypedef cloref_t = (!v | sizeLt n, &a) -<cloref> void
-  fn app (pf: !v | i: sizeLt n, x: &a, f: !cloref_t):<> void = f (pf | i, x)
-  val () = array_iforeach__main<a> {v} {cloref_t} (pf | app, A, asz, f)
+implement{a}
+  array_iforeach_cloref {n} (A, f, asz) = let
+  viewtypedef cloref_t = (sizeLt n, &a) -<cloref> void
+  fn app (pf: !unit_v | i: sizeLt n, x: &a, f: !cloref_t):<> void = f (i, x)
+  prval pf = unit_v ()
+  val () = array_iforeach__main<a> {unit_v} {cloref_t} (pf | A, app, asz, f)
+  prval unit_v () = pf
 in
   // empty
 end // end of [array_iforeach_cloref]
@@ -597,12 +671,12 @@ atspre_array_ptr_initialize_clo_tsz__main (
 
 ats_void_type
 atspre_array_ptr_foreach_fun_tsz__main (
-   ats_ptr_type f
- , ats_ptr_type A
- , ats_size_type asz
- , ats_size_type tsz
- , ats_ptr_type env
- ) {
+  ats_ptr_type A
+, ats_ptr_type f
+, ats_size_type asz
+, ats_size_type tsz
+, ats_ptr_type env
+) {
   int i = 0;
   ats_ptr_type p = A ;
   while (i < asz) {
@@ -615,12 +689,12 @@ atspre_array_ptr_foreach_fun_tsz__main (
 
 ats_void_type
 atspre_array_ptr_iforeach_fun_tsz__main (
-   ats_ptr_type f
- , ats_ptr_type A
- , ats_size_type asz
- , ats_size_type tsz
- , ats_ptr_type env
- ) {
+  ats_ptr_type A
+, ats_ptr_type f
+, ats_size_type asz
+, ats_size_type tsz
+, ats_ptr_type env
+) {
   int i = 0;
   ats_ptr_type p = A ;
   while (i < asz) {

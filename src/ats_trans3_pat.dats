@@ -7,28 +7,27 @@
 (***********************************************************************)
 
 (*
- * ATS/Anairiats - Unleashing the Potential of Types!
- *
- * Copyright (C) 2002-2008 Hongwei Xi, Boston University
- *
- * All rights reserved
- *
- * ATS is free software;  you can  redistribute it and/or modify it under
- * the terms of  the GNU GENERAL PUBLIC LICENSE (GPL) as published by the
- * Free Software Foundation; either version 3, or (at  your  option)  any
- * later version.
- * 
- * ATS is distributed in the hope that it will be useful, but WITHOUT ANY
- * WARRANTY; without  even  the  implied  warranty  of MERCHANTABILITY or
- * FITNESS FOR A PARTICULAR PURPOSE.  See the  GNU General Public License
- * for more details.
- * 
- * You  should  have  received  a  copy of the GNU General Public License
- * along  with  ATS;  see the  file COPYING.  If not, please write to the
- * Free Software Foundation,  51 Franklin Street, Fifth Floor, Boston, MA
- * 02110-1301, USA.
- *
- *)
+** ATS/Anairiats - Unleashing the Potential of Types!
+**
+** Copyright (C) 2002-2008 Hongwei Xi, Boston University
+**
+** All rights reserved
+**
+** ATS is free software;  you can  redistribute it and/or modify it under
+** the terms of  the GNU GENERAL PUBLIC LICENSE (GPL) as published by the
+** Free Software Foundation; either version 3, or (at  your  option)  any
+** later version.
+** 
+** ATS is distributed in the hope that it will be useful, but WITHOUT ANY
+** WARRANTY; without  even  the  implied  warranty  of MERCHANTABILITY or
+** FITNESS FOR A PARTICULAR PURPOSE.  See the  GNU General Public License
+** for more details.
+** 
+** You  should  have  received  a  copy of the GNU General Public License
+** along  with  ATS;  see the  file COPYING.  If not, please write to the
+** Free Software Foundation,  51 Franklin Street, Fifth Floor, Boston, MA
+** 02110-1301, USA.
+*)
 
 (* ****** ****** *)
 
@@ -68,12 +67,6 @@ staload "ats_trans3.sats"
 
 (* ****** ****** *)
 
-#define nil list_nil
-#define cons list_cons
-#define :: list_cons
-
-(* ****** ****** *)
-
 overload = with $Lab.eq_label_label
 overload prerr with $Loc.prerr_location
 
@@ -97,10 +90,10 @@ end // end of [p3at_readize]
 
 and p3atlst_readize
  (s2e_v: s2exp, p3ts: p3atlst): void = begin case+ p3ts of
-  | cons (p3t, p3ts) => begin
+  | list_cons (p3t, p3ts) => begin
       p3at_readize (s2e_v, p3t); p3atlst_readize (s2e_v, p3ts)
-    end
-  | nil () => ()
+    end (* end of [list_cons] *)
+  | list_nil () => ()
 end // end of [p3atlst_readize]
 
 and labp3atlst_readize
@@ -108,7 +101,7 @@ and labp3atlst_readize
   case+ lp3ts of
   | LABP3ATLSTcons (_, p3t, lp3ts) => begin
       p3at_readize (s2e_v, p3t); labp3atlst_readize (s2e_v, lp3ts)
-    end
+    end (* end of [LABP3ATLSTcons] *)
   | _ => ()
 end // end of [labp3atlst_readize]
 
@@ -125,7 +118,7 @@ fun labp2atlst_typ_syn (loc0: loc_t, lp2ts: labp2atlst): labs2explst =
       prerr ": type synthesis cannot be done for a partial record pattern.";
       prerr_newline ();
       $Err.abort {labs2explst} ()
-    end
+    end (* end of [LABP2ATLSTdot] *)
 // end of [labp2atlst_typ_syn]
 
 implement p2at_typ_syn (p2t0) = let
@@ -240,22 +233,21 @@ in
   | S2Eapp (s2e_fun, s2es_arg) when
       s2cstref_exp_equ (Bool_bool_t0ype, s2e_fun) => let
       val s2e_arg = case+ s2es_arg of
-        | cons (s2e, _) => s2e | nil _ => begin
+        | list_cons (s2e, _) => s2e | list_nil _ => begin
             prerr loc0;
-            prerr ": Internal Error: p2at_bool_tr_dn";
-            prerr_newline ();
+            prerr ": INTERNAL ERROR: p2at_bool_tr_dn"; prerr_newline ();
             $Err.abort {s2exp} ()
-          end
+          end (* end of [list_nil] *)
       val () = trans3_env_hypo_add_eqeq (loc0, s2exp_bool b, s2e_arg)
     in
       p3at_bool (loc0, s2exp_bool_bool_t0ype b, b)
-    end
+    end (* end of [S2Eapp] *)
   | _ => let
       val s2e_bool = s2exp_bool_t0ype ()
       val () = $SOL.s2exp_tyleq_solve (loc0, s2e0, s2e_bool)
     in
       p3at_bool (loc0, s2e_bool, b)
-    end
+    end (* end of [_] *)
 end // end of [p2at_bool_tr_dn]
 
 (* ****** ****** *)
@@ -268,23 +260,22 @@ in
   | S2Eapp (s2e_fun, s2es_arg) when
       s2cstref_exp_equ (Char_char_t0ype, s2e_fun) => let
       val s2e_arg = case+ s2es_arg of
-        | cons (s2e, _) => s2e
-        | nil _ => begin
+        | list_cons (s2e, _) => s2e | list_nil _ => begin
             prerr loc0;
-            prerr ": Internal Error: p2at_tr_dn: P2Tchar";
+            prerr ": INTERNAL ERROR: p2at_tr_dn: P2Tchar";
             prerr_newline ();
             $Err.abort {s2exp} ()
-          end
+          end (* end of [list_nil] *)
        val () = trans3_env_hypo_add_eqeq (loc0, s2exp_char c, s2e_arg)
     in
       p3at_char (loc0, s2exp_char_char_t0ype c, c)
-    end
+    end (* end of [S2Eapp] *)
   | _ => let
       val s2e_char = s2exp_char_t0ype ()
       val () = $SOL.s2exp_tyleq_solve (loc0, s2e0, s2e_char)
     in
       p3at_char (loc0, s2e_char, c)
-    end
+    end (* end of [_] *)
 end // end of [p2at_char_tr_dn]
 
 (* ****** ****** *)
@@ -294,38 +285,38 @@ fn s2cst_closure_make_predicative
   (loc0: loc_t, s2c: s2cst_t): s2exp = let
   val s2t_s2c = s2cst_srt_get s2c in case+ un_s2rt_fun s2t_s2c of
   | ~Some_vt (argres) (* @(s2rtlst, s2rt) *) => let
-      var s2vs: s2varlst = nil () and s2es: s2explst = nil ()
+      var s2vs: s2varlst = list_nil () and s2es: s2explst = list_nil ()
       val () = loop (loc0, argres.0, s2vs, s2es) where {
         fun loop (
           loc0: loc_t, s2ts: s2rtlst, s2vs: &s2varlst, s2es: &s2explst
           ) : void = begin case+ s2ts of
-          | cons (s2t, s2ts) => let
+          | list_cons (s2t, s2ts) => let
               val () =
                 if s2rt_is_impredicative_fun s2t then let
                   val s2e = s2exp_Var_make_srt (loc0, s2t)
                 in
-                  s2es := cons (s2e, s2es);
+                  s2es := list_cons (s2e, s2es);
                 end else let
                   val s2v = s2var_make_srt s2t; val s2e = s2exp_var s2v
                 in
-                  s2vs := cons (s2v, s2vs); s2es := cons (s2e, s2es);
-                end
+                  s2vs := list_cons (s2v, s2vs); s2es := list_cons (s2e, s2es)
+                end (* end of [if] *)
             in
               loop (loc0, s2ts, s2vs, s2es)
-            end
-          | nil () => ()
+            end (* end of [list_cons] *)
+          | list_nil () => ()
           end // end of [loop]
         } // end of [where]
       val () = begin
         s2vs := $Lst.list_reverse s2vs; s2es := $Lst.list_reverse s2es
-      end
+      end // end of [val]
     in
-      s2exp_exi (s2vs, nil (), s2exp_cstapp (s2c, s2es))
-    end
+      s2exp_exi (s2vs, list_nil (), s2exp_cstapp (s2c, s2es))
+    end (* end of [Some_vt] *)
   | ~None_vt () => s2exp_cst s2c
 end // end of [s2cst_closure_make_predicative]
 
-//
+(* ****** ****** *)
 
 // [freeknd]: 0: nonlinear; 1: preserve; ~1: free
 fn p3at_con_free_update
@@ -335,7 +326,7 @@ fn p3at_con_free_update
     prerr "p3at_con_free_update: p3t0 = "; prerr p3t0; prerr_newline ();
     prerr "p3at_con_free_update: freeknd = "; prerr freeknd; prerr_newline ();
     prerr "p3at_con_free_update: d2c = "; prerr d2c; prerr_newline ();
-  end
+  end // end of [val]
 *)
   fun aux_var
     (d2v_ptr: d2var_t, s2e: s2exp): @(d2var_t, s2exp) = let
@@ -358,7 +349,7 @@ fn p3at_con_free_update
   in
     (d2v_view, s2e_addr)
   end // end of [aux_var]
-  fn aux_pat (p3t: p3at):<cloptr1> s2exp = let
+  fn aux_pat (p3t: p3at):<cloref1> s2exp = let
     val d2v_ptr = case+ p3t.p3at_node of
       | P3Tany (d2v) => let
           val os2e = (case+ p3t.p3at_typ_lft of
@@ -367,7 +358,7 @@ fn p3at_con_free_update
           ) : s2expopt
         in
           d2var_typ_set (d2v, os2e); d2v
-        end
+        end (* end of [P3Tany] *)
       | P3Tvar (refknd, d2v) when refknd > 0 => d2v
       | P3Tas (refknd, d2v, p3t_as) when refknd > 0 => d2v
       | _ => let
@@ -378,11 +369,12 @@ fn p3at_con_free_update
           ) : s2expopt
         in
           d2var_typ_set (d2v, os2e); d2v
-        end
+        end (* end of [_] *)
+    // end of [val]    
 (*
     val () = begin
       prerr "p3at_con_free_update: aux_pat: d2v_ptr = "; prerr d2v_ptr; prerr_newline ()
-    end
+    end // end of [val]
 *)
     val s2e = d2var_typ_get_some (p3t.p3at_loc, d2v_ptr)
     val (d2v_view, s2e_addr) = aux_var (d2v_ptr, s2e)
@@ -404,18 +396,18 @@ fn p3at_con_free_update
     s2e_addr
   end // end of [aux_pat]
   val s2es_addr = aux_patlst (p3ts) where {
-    fun aux_patlst (p3ts: p3atlst):<cloptr1> s2explst =
+    fun aux_patlst (p3ts: p3atlst):<cloref1> s2explst =
       case+ p3ts of
-      | cons (p3t, p3ts) => cons (aux_pat p3t, aux_patlst p3ts)
-      | nil () => nil ()
+      | list_cons (p3t, p3ts) => list_cons (aux_pat p3t, aux_patlst p3ts)
+      | list_nil () => list_nil ()
   } // end of [aux_p3atlst]
 in
-  if freeknd > 0 then begin
+  if freeknd > 0 then (
     p3at_typ_lft_set (p3t0, Some (s2exp_datconptr (d2c, s2es_addr)))
-  end
-end // end of [p3at_free_con_update]
+  ) // end of [if]
+end // end of [p3at_con_free_update]
 
-//
+(* ****** ****** *)
 
 datatype p2atcontrup =
   {n:nat} P2ATCONTRUPcon of (list (p2at, n), list (s2exp, n), s2exp)
@@ -426,17 +418,17 @@ fn p2at_con_tr_up
   : p2atcontrup = let
   val () = aux s2vpss where {
   fun aux (s2vpss: s2qualst): void = case+ s2vpss of
-    | cons (s2vps, s2vpss) => begin
+    | list_cons (s2vps, s2vpss) => begin
         trans3_env_add_svarlst s2vps.0; aux s2vpss
-      end
-    | nil () => ()
+      end // end of [list_cons]
+    | list_nil () => ()
   } // end [where]
   val () = aux (loc0, s2vpss) where {
   fun aux (loc0: loc_t, s2vpss: s2qualst): void = case+ s2vpss of
-    | cons (s2vps, s2vpss) => begin
+    | list_cons (s2vps, s2vpss) => begin
         trans3_env_hypo_add_proplst (loc0, s2vps.1); aux (loc0, s2vpss)
-      end
-    | nil () => ()
+      end (* end of [list_cons] *)
+    | list_nil () => ()
   } // end [where]
 in
   case+ s2e_con.s2exp_node of
@@ -469,7 +461,7 @@ end // end of [p2at_con_tr_up]
 
 fn p2at_con_tr_dn (
     loc0: loc_t
-  , freeknd: int
+  , freeknd: int // [freeknd]: 0: nonlinear; 1: preserve; ~1: free
   , d2c: d2con_t
   , s2vpss: s2qualst
   , s2e_con: s2exp
@@ -484,7 +476,7 @@ fn p2at_con_tr_dn (
         val s2e_s2c: s2exp = s2cst_closure_make_predicative (loc0, s2c)
       in
         s2Var_link_set (s2V, Some s2e_s2c); s2e_s2c
-      end // end of [S2EVar]
+      end (* end of [S2EVar] *)
     | _ => s2e0
   ) : s2exp // end of [val]
   var s2e0: s2exp = s2exp_opnexi_and_add (loc0, s2e0)
@@ -493,7 +485,7 @@ fn p2at_con_tr_dn (
   val os2e_v = (case+ os2es2e of
     | ~Some_vt s2es2e => begin
         isread := true; s2e0 := s2es2e.1; Some_vt s2es2e.0
-      end
+      end (* end of [Some_vt] *)
     | ~None_vt () => None_vt ()
   ) : s2expopt_vt
   val err_os2e_v = (case+ os2e_v of
@@ -504,18 +496,20 @@ fn p2at_con_tr_dn (
         ) : s2expopt_vt
       in
         fold@ os2e_v; ans
-      end
+      end (* end of [Some_vt] *)
     | None_vt () => (fold@ os2e_v; None_vt ())
   ) : s2expopt_vt
   val () = case+ err_os2e_v of
     | ~Some_vt s2e_v => begin
         prerr loc0; prerr ": error(3)";
+        $Deb.debug_prerrf (": %s: p2at_con_tr_dn", @(THISFILENAME));
         prerr ": a proof of the view [";
         prerr s2e_v; prerr "] is not avaible for reading.";
         prerr_newline ();
         $Err.abort {void} ()
-      end
+      end (* end of [Some_vt] *)
     | ~None_vt () => ()
+  // end of [val]
   val s2e_head = s2exp_head_get s2e0
   var flag: int = ~1 and freeknd: int = freeknd
   var s2es_arg_var: s2explst = list_nil ()
@@ -525,22 +519,23 @@ fn p2at_con_tr_dn (
         if d2c = d2c1 then (flag := 1; s2es_arg_var := s2es)
       end // end of [S2Edatcontyp]
     | _ => ()
-  val () =
-    if flag < 0 then begin
-      prerr loc0; prerr ": error(3)";
-      prerr ": the constructor pattern is assigned the type [";
-      prerr s2e0;
-      prerr "] but it should not be.";
-      prerr_newline ();
-      $Err.abort {void} ()
-    end // end of [if]
+  // end of [val]
+  val () = if flag < 0 then begin
+    prerr loc0; prerr ": error(3)";
+    $Deb.debug_prerrf (": %s: p2at_con_tr_dn", @(THISFILENAME));
+    prerr ": the constructor pattern is assigned the type [";
+    prerr s2e0;
+    prerr "] but it should not be.";
+    prerr_newline ();
+    $Err.abort {void} ()
+  end // end of [val]
   val flag_vwtp: int =
     if isread then 0 else begin
       if flag > 0 then 1 else d2con_vwtp_get d2c
     end // end of [if]
   val () = // checking for legality of destruction 
     if freeknd > 0 then begin
-      if flag_vwtp > 0 then () else (freeknd := 0)
+      (if flag_vwtp > 0 then () else freeknd := 0)
     end else begin // [freeknd < 0]
       if flag_vwtp > 0 then () else begin
         prerr loc0; prerr ": error(3)";
@@ -551,40 +546,62 @@ fn p2at_con_tr_dn (
         prerr_newline ();
         $Err.abort {void} ()
       end // end of [if]
-    end // end of [if]
-  val p3t0 = (
-    if flag = 0 then let // s2e0 = S2Ecst (...)
+    end (* end of [if] *)
+  // end of [val]
+  val p3t0 = (case+ 0 of
+  | _  when flag = 0 => let // s2e0 = S2Ecst (...)
       val+ P2ATCONTRUPcon (p2ts, s2es_arg, s2e_res) =
         p2at_con_tr_up (loc0, d2c, s2vpss, s2e_con, npf, p2ts)
       val () = $SOL.s2exp_hypo_equal_solve (loc0, s2e_res, s2e0)
       val s2es_arg = s2explst_nfapp s2es_arg // this is important for erasure!
       val p3ts = p2atlst_tr_dn (p2ts, s2es_arg)
       val p3t0 = p3at_con (loc0, s2e0, freeknd, d2c, npf, p3ts)
-      val () = begin
-        if freeknd <> 0 then p3at_con_free_update (p3t0, freeknd, d2c, p3ts)
+      val () = begin case+ 0 of
+        | _ when freeknd = 0 => () where {
+            fun aux (p3ts: p3atlst, err: &int)
+              :<cloref1> void = begin case+ p3ts of
+              | list_cons (p3t, p3ts) => aux (p3ts, err) where {
+                  val () = case+ p3t.p3at_node of
+                    | P3Tvar (refknd, _)    => if refknd > 0 then err := err + 1
+                    | P3Tas  (refknd, _, _) => if refknd > 0 then err := err + 1
+                    | _ => ()
+                  // end of [val]
+                } // end of [list_cons]
+              | list_nil () => ()
+            end // end of [aux]
+            var err: int = 0; val () = aux (p3ts, err)
+            val () = if err > 0 then begin
+              prerr loc0; prerr ": error(3)";
+              $Deb.debug_prerrf (": %s: p2at_con_tr_dn", @(THISFILENAME));
+              prerr ": the constructor ["; prerr d2c;
+              prerr "] is not allowed to have a reference argument.";
+              prerr_newline ();
+              $Err.abort {void} ()
+            end // end of [val]
+          } // end of [_ when freeknd = 0]
+        | _ (*freeknd <> 0*) => p3at_con_free_update (p3t0, freeknd, d2c, p3ts)
       end // end of [val]
     in
-      p3t0
-    end else let // s2e0 = S2Edatuni (...)
+      p3t0 // the returned constructor pattern
+    end (* end of [_ when flag = 0] *)
+  | _ (*flag<>0*) => let // s2e0 = S2Edatuni (...)
       val s2es_arg = (s2es_arg_var: s2explst)
       val [sgn:int] sgn = $Lst.list_length_compare (p2ts, s2es_arg)
-      val () = (
-        if sgn <> 0 then begin
-          prerr loc0;
-          prerrf (": Internal Error: p2at_con_tr_dn: sgn = %i", @(sgn));
-          prerr_newline ();
-          $Err.abort {void} ();
-          assert (sgn = 0) // deadcode
-        end else begin
-          () // [sgn = 0] holds!
-        end
-      ) : [sgn==0] void
+      val () = (if sgn <> 0 then begin
+        prerr loc0; prerr (": INTERNAL ERROR");
+        prerrf (": p2at_con_tr_dn: sgn = %i", @(sgn));
+        prerr_newline ();
+        $Err.abort {void} ();
+        assert (sgn = 0) // deadcode
+      end else begin
+        () // [sgn = 0] holds!
+      end) : [sgn==0] void
       val p3ts = p2atlst_tr_dn (p2ts, s2es_arg)
       val p3t0 = p3at_con (loc0, s2e0, freeknd, d2c, npf, p3ts)
       val () = p3at_con_free_update (p3t0, freeknd, d2c, p3ts)
     in
-      p3t0
-    end // end of [if]
+      p3t0 // the returned constructor pattern
+    end (* end of [_ when flag <> 0] *)
   ) : p3at // end of [val]
   val () = begin case+ os2e_v of
     | ~Some_vt s2e_v => p3at_readize (s2e_v, p3t0) | ~None_vt () => ()
@@ -603,9 +620,9 @@ in
   case+ s2e0.s2exp_node of
   | S2Eexi (s2vs, s2ps, s2e) => let
       val sub = aux (s2vs, s2vs0) where {
-        fun aux (s2vs: s2varlst, s2vs0: s2varlst):<cloptr1> stasub_t =
+        fun aux (s2vs: s2varlst, s2vs0: s2varlst):<cloref1> stasub_t =
           case+ (s2vs, s2vs0) of
-          | (cons (s2v, s2vs), cons (s2v0, s2vs0)) => let
+          | (list_cons (s2v, s2vs), list_cons (s2v0, s2vs0)) => let
               val s2t = s2var_srt_get s2v and s2t0 = s2var_srt_get s2v0
             in
               if s2t0 <= s2t then
@@ -621,28 +638,28 @@ in
                 prerr "].";
                 prerr_newline ();
                 $Err.abort {stasub_t} ()
-              end
-            end
-          | (nil (), nil ()) => stasub_nil
-          | (cons _, nil _) => begin
+              end // end of [if]
+            end (* end of [list_cons, list_cons] *)
+          | (list_nil (), list_nil ()) => stasub_nil
+          | (list_cons _, list_nil _) => begin
               prerr loc0; prerr "error(3)";
               prerr ": the existentially quantified pattern needs less bound variables.";
               prerr_newline ();
               $Err.abort {stasub_t} ()
-            end
-          | (nil _, cons _) => begin
+            end (* end of [list_cons, list_nil] *)
+          | (list_nil _, list_cons _) => begin
               prerr loc0; prerr "error(3)";
               prerr ": the existentially quantified pattern needs more bound variables.";
               prerr_newline ();
               $Err.abort {stasub_t} ()
-            end
+            end (* end of [list_nil, list_cons] *)
       } // end of [where]
       val () = trans3_env_add_svarlst s2vs0
       val () = trans3_env_hypo_add_proplst (loc0, s2explst_subst (sub, s2ps))
       val p3t = p2at_tr_dn (p2t, s2exp_subst (sub, s2e))
     in
       p3at_exist (loc0, s2e0, s2vs0, p3t)
-    end
+    end (* end of [S2Eexist] *)
   | _ => begin
       prerr loc0; prerr ": error(3)";
       prerr ": the pattern is given the type [";
@@ -650,17 +667,18 @@ in
       prerr "] but an existentially quantified type is expected.";
       prerr_newline ();
       $Err.abort {p3at} ()
-    end
+    end (* end of [_] *)
 end // end of [p2at_exist_tr_dn]
 
 (* ****** ****** *)
 
 fun p2atlst_elt_tr_dn (p2ts: p2atlst, s2e: s2exp): p3atlst =
   case+ p2ts of
-  | cons (p2t, p2ts) => begin
-      cons (p2at_tr_dn (p2t, s2e), p2atlst_elt_tr_dn (p2ts, s2e))
-    end
-  | nil () => nil ()
+  | list_cons (p2t, p2ts) => begin
+      list_cons (p2at_tr_dn (p2t, s2e), p2atlst_elt_tr_dn (p2ts, s2e))
+    end // end of [list_cons]
+  | list_nil () => list_nil ()
+// end of [p2atlst_elt_tr_dn]
 
 fn p2at_lst_tr_dn (loc0: loc_t, p2ts: p2atlst, s2e0: s2exp): p3at = let
   val s2e_lst = s2exp_opnexi_and_add (loc0, s2e0)
@@ -839,15 +857,18 @@ end // end of [p2at_rec_tr_dn]
 
 (* ****** ****** *)
 
-fn p2at_var_tr_dn
-  (p2t0: p2at, refknd: int, d2v: d2var_t, s2e0: s2exp): p3at = let
+fn p2at_var_tr_dn (
+    p2t0: p2at
+  , refknd: int
+  , d2v: d2var_t
+  , s2e0: s2exp
+  ) : p3at = let
   val loc0 = p2t0.p2at_loc
   val s2e0 = s2exp_whnf s2e0
   val () = d2var_mastyp_set (d2v, Some s2e0)
-  val () = // linearity status
-    if s2exp_is_linear s2e0 then begin
-      d2var_lin_set (d2v, 0); d2var_fin_set (d2v, D2VARFINnone ())
-    end
+  val () = if s2exp_is_linear s2e0 then ( // linear var
+    d2var_lin_set (d2v, 0); d2var_fin_set (d2v, D2VARFINnone ())
+  ) // end of [val]
 (*
   val () = begin
     prerr "p2at_var_tr_dn: d2v = "; prerr d2v; prerr_newline ();
@@ -862,7 +883,7 @@ fn p2at_var_tr_dn
   val () = begin
     prerr "p2at_tr_var_dn: d2v = "; prerr d2v; prerr_newline ();
     prerr "p2at_tr_var_dn: s2e = "; prerr s2e; prerr_newline ();
-  end
+  end // end of [val]
 *)
 in
   p3t0
@@ -873,7 +894,7 @@ end // end of [p2at_var_tr_dn]
 fn p2at_vbox_tr_dn
   (loc0: loc_t, d2v: d2var_t, s2e0: s2exp): p3at = let
   val s2e0 = s2exp_whnf s2e0
-  val s2e0 = case+ s2e0.s2exp_node of
+  val s2e0 = (case+ s2e0.s2exp_node of
     | S2EVar s2V => let
         val s2e = s2exp_Var_make_srt (loc0, s2rt_view)
         val s2e_vbox = s2exp_vbox_view_prop (s2e)
@@ -882,6 +903,7 @@ fn p2at_vbox_tr_dn
         s2e_vbox
       end
     | _ => s2e0
+  ) : s2exp
 in
   case+ un_s2exp_vbox_view_prop (s2e0) of
   | ~Some_vt s2e_v => let
@@ -895,14 +917,14 @@ in
       val p3t0 = p3at_vbox (loc0, s2e0, d2v)
     in
       p3t0
-    end
+    end // end of [Some_vt]
   | ~None_vt () => begin
       prerr loc0; prerr ": error(3)";
       prerr ": a [vbox] pattern is assgined the type [";
       prerr s2e0; prerr "] that is not a [vbox] prop.";
       prerr_newline ();
       $Err.abort {p3at} ()
-    end
+    end // end of [None_vt]
 end // end of [p2at_vbox_tr_dn]
 
 (* ****** ****** *)
@@ -931,10 +953,9 @@ in
       val s2e_d2v: s2exp = case+ p3t.p3at_typ_lft of
         | None () => s2exp_topize_1 p3t.p3at_typ (* problematic? *)
         | Some s2e => s2e 
-      val () = // checking for linearity
-        if s2exp_is_linear s2e_d2v then begin
-          d2var_lin_set (d2v, 0); d2var_fin_set (d2v, D2VARFINnone ())
-        end
+      val () = if s2exp_is_linear s2e_d2v then ( // linear var
+        d2var_lin_set (d2v, 0); d2var_fin_set (d2v, D2VARFINnone ())
+      ) : void // end of [val]
       val () = d2var_typ_set (d2v, Some s2e_d2v)
     in
       p3at_as (loc0, s2e0, refknd, d2v, p3t)
@@ -966,12 +987,12 @@ in
       | S2Eapp (s2e_fun, s2es_arg) when
           s2cstref_exp_equ (Int_int_t0ype, s2e_fun) => let
           val s2e_arg = case+ s2es_arg of
-            | cons (s2e, _) => s2e | nil () => begin
+            | list_cons (s2e, _) => s2e | list_nil () => begin
                 prerr loc0;
                 prerr ": Internal Error: p2at_tr_dn: P2Tint";
                 prerr_newline ();
                 $Err.abort {s2exp} ()
-              end // end of [nil]
+              end (* end of [list_nil] *)
           val () = trans3_env_hypo_add_eqeq (loc0, s2exp_intinf i, s2e_arg)
         in
           p3at_int (loc0, s2exp_int_intinf_t0ype i, s, i)
@@ -983,10 +1004,12 @@ in
           p3at_int (loc0, s2e_int, s, i)
         end // end of [_]
     end // end of [P2Tint]
-  | P2Tlst (p2ts) => p2at_lst_tr_dn (loc0, p2ts, s2e0)
-  | P2Trec (recknd, npf, lp2ts) => begin
+  | P2Tlst (p2ts) =>
+      p2at_lst_tr_dn (loc0, p2ts, s2e0)
+    // end of [P2Tlst]
+  | P2Trec (recknd, npf, lp2ts) =>
       p2at_rec_tr_dn (p2t0, recknd, npf, lp2ts, s2e0)
-    end // end of [P2Trec]
+    // end of [P2Trec]
   | P2Tstring str => let
       val s2e0 = s2exp_opnexi_and_add (loc0, s2e0)
     in
@@ -994,13 +1017,12 @@ in
       | S2Eapp (s2e_fun, s2es_arg) when
           s2cstref_exp_equ (String_int_type, s2e_fun) => let
           val s2e_arg = case+ s2es_arg of
-            | cons (s2e, _) => s2e
-            | nil _ => begin
+            | list_cons (s2e, _) => s2e | list_nil _ => begin
                 prerr loc0;
                 prerr ": Internal Error: p2at_tr_dn: P2Tstring";
                 prerr_newline ();
                 $Err.abort {s2exp} ()
-              end // end of [nil]
+              end // end of [list_nil]
           val n = string0_length str
           val n = size1_of_size (n); val n = int1_of_size1 (n)
           val () = trans3_env_hypo_add_eqeq (loc0, s2e_arg, s2exp_int n)
@@ -1022,9 +1044,8 @@ in
       p2at_vbox_tr_dn (loc0, d2v, s2e0)
     end // end of [P2Tvbox]
   | _ => begin
-      prerr loc0;
-      prerr ": p2at_tr_dn: not implemented yet: p2t0 = ";
-      prerr p2t0;
+      prerr loc0; prerr ": INTERNAL ERROR";
+      prerr ": p2at_tr_dn: not implemented yet: p2t0 = "; prerr p2t0;
       prerr_newline ();
       $Err.abort {p3at} ()
     end // end of [_]
@@ -1033,32 +1054,26 @@ end // end of [p2at_tr_dn]
 (* ****** ****** *)
 
 implement p2atlst_tr_dn (p2ts, s2es) = begin case+ p2ts of
-  | cons (p2t, p2ts) => let
-      val+ cons (s2e, s2es) = s2es
-    in
-      cons (p2at_tr_dn (p2t, s2e), p2atlst_tr_dn (p2ts, s2es))
-    end
-  | nil () => nil ()
+  | list_cons (p2t, p2ts) => let
+      val+ list_cons (s2e, s2es) = s2es in
+      list_cons (p2at_tr_dn (p2t, s2e), p2atlst_tr_dn (p2ts, s2es))
+    end (* end of [list_cons] *)
+  | list_nil () => list_nil ()
 end // end of [p2atlst_tr_dn]
 
 (* ****** ****** *)
 
 implement p2at_arg_tr_up (p2t0) = begin
   case+ p2t0.p2at_node of
-  | P2Tann (p2t, s2e) => begin
-      p2at_arg_tr_dn (p2t, s2e)
-    end // end of [P2Tann]
+  | P2Tann (p2t, s2e) => p2at_arg_tr_dn (p2t, s2e)
   | _ => begin case+ p2t0.p2at_typ of
-    | Some s2e => p2at_tr_dn (p2t0, s2e)
-    | None () => begin
-        prerr p2t0.p2at_loc;
-        prerr ": Internal Error: p2at_arg_tr_up: p2t0 = ";
-        prerr p2t0;
-        prerr_newline ();
+    | Some s2e => p2at_tr_dn (p2t0, s2e) | None () => begin
+        prerr p2t0.p2at_loc; prerr ": INTERNAL ERROR";
+        prerr ": p2at_arg_tr_up: p2t0 = "; prerr p2t0; prerr_newline ();
         $Err.abort {p3at} ()
-      end
-    end // end of [_]
-end // end of [p2at_arg_tr_up]
+      end // end of [None] 
+    end (* end of [_] *)
+end (* end of [p2at_arg_tr_up] *)
 
 implement p2at_arg_tr_dn (p2t0, s2e0) = let
   val s2e0 = s2exp_whnf s2e0 in case+ s2e0.s2exp_node of
@@ -1067,7 +1082,7 @@ implement p2at_arg_tr_dn (p2t0, s2e0) = let
         val () = begin
           prerr "p2at_arg_tr_dn: p2t0 = "; prerr p2t0; prerr_newline ();
           prerr "p2at_arg_tr_dn: s2e_arg = "; prerr s2e_arg; prerr_newline ();
-        end
+        end // end of [val]
 *)
       in
         case+ p2t0.p2at_node of
@@ -1077,8 +1092,8 @@ implement p2at_arg_tr_dn (p2t0, s2e0) = let
               val () = d2var_mastyp_set (d2v, Some s2e_arg)
             in
               p3at_typ_set (p3t0, s2e0); p3t0
-            end // end of [true]
-          | _ (* refval = 1 *) => let // call-by-reference
+            end // end of [refval = 0]
+          | _ (*refval = 1*) => let // call-by-reference
               val loc0 = p2t0.p2at_loc
               val s2e_arg_opn = s2exp_opnexi_and_add (loc0, s2e_arg)
               val s2v_addr = s2var_make_id_srt (d2var_sym_get d2v, s2rt_addr)
@@ -1087,7 +1102,7 @@ implement p2at_arg_tr_dn (p2t0, s2e0) = let
               val () = d2var_addr_set (d2v, Some s2e_addr)
               val () = trans3_env_hypo_add_prop (loc0, s2p) where {
                 val s2p = s2exp_gt_addr_addr_bool (s2e_addr, s2exp_null_addr ())
-              } // end of [where]
+              } // end of [val]
               val d2v_view = d2var_ptr_viewat_make_none (d2v)
               val () = d2var_view_set (d2v, D2VAROPTsome d2v_view) // [d2v] is mutable
               val () = the_d2varset_env_add (d2v_view)
@@ -1095,27 +1110,25 @@ implement p2at_arg_tr_dn (p2t0, s2e0) = let
               val () = d2var_mastyp_set (d2v_view, Some s2e_arg_at)
               val () = d2var_typ_set (d2v_view, Some s2e_at) where {
                 val s2e_at = s2exp_at_viewt0ype_addr_view (s2e_arg_opn, s2e_addr)
-              } // end of [where]
+              } // end of [val]
             in
               p3at_var (loc0, s2e0, refknd, d2v)
-            end // end of [false]
-          end // end of [P2Tvar]
+            end // end of [refval = 1]
+          end (* end of [P2Tvar] *)
         | P2Tas (refknd(*=0*), d2v, p2t) => begin case+ refval of
           | _ when refval = 0 => let // call-by-value
               val loc0 = p2t0.p2at_loc;
               val p3t = p2at_tr_dn (p2t, s2e_arg)
               val () = d2var_mastyp_set (d2v, Some s2e_arg)
-              val () = d2var_typ_set (d2v, os2e) where {
-                val os2e = (
-                  case+ p3t.p3at_typ_lft of
-                  | None () => Some (s2exp_topize_1 p3t.p3at_typ)
-                  | os2e => os2e
+              val () = d2var_typ_set (d2v, os2e) where { val os2e = (
+                case+ p3t.p3at_typ_lft of
+                | None () => Some (s2exp_topize_1 p3t.p3at_typ) | os2e (*Some*) => os2e
                 ) : s2expopt
               } // end of [where]
             in
               p3at_as (loc0, s2e0, refknd, d2v, p3t)
-            end // end of [true]
-          | _ (* refval = 1 *) => let // call-by-reference
+            end // end of [_ when refvar = 0]
+          | _ (*refval = 1*) => let // call-by-reference
               val loc0 = p2t0.p2at_loc;
               val p3t = p2at_tr_dn (p2t, s2e_arg)
               val s2v_addr = s2var_make_id_srt (d2var_sym_get d2v, s2rt_addr)
@@ -1134,58 +1147,61 @@ implement p2at_arg_tr_dn (p2t0, s2e0) = let
                 val s2e = case+ p3t.p3at_typ_lft of
                   | Some s2e => s2e | None () => s2exp_topize_1 p3t.p3at_typ
                 val s2e_at = s2exp_at_viewt0ype_addr_view (s2e, s2e_addr)
-              } // end of [where]
+              } // end of [val]
             in
               p3at_as (loc0, s2e0, refknd, d2v, p3t)
-            end // end of [false]
-          end
+            end // end of [_ when refval = 1]
+          end (* end of [P2Tas] *)
         | _ => begin
             prerr p2t0.p2at_loc; prerr ": error(3)";
             prerr ": the pattern is expected to be a variable but it is not.";
             prerr_newline ();
             $Err.abort {p3at} ()
-          end
+          end (* end of [_] *)
       end // end of [S2Erefarg]
     | _ => p2at_tr_dn (p2t0, s2e0)
-end // end of [p2at_arg_tr_dn]
+end (* end of [p2at_arg_tr_dn] *)
 
 fn p2at_proofize (p2t: p2at) = let
   fun aux (d2vs: d2varlst): void = case+ d2vs of
-    | cons (d2v, d2vs) => (d2var_isprf_set (d2v, true); aux d2vs)
-    | nil () => ()
+    | list_cons (d2v, d2vs) => (d2var_isprf_set (d2v, true); aux d2vs)
+    | list_nil () => ()
+  // end of [aux]  
 in
   aux (d2varlst_of_d2varlstord p2t.p2at_dvs)
-end // end of [p2at_proofize]
+end (* end of [p2at_proofize] *)
 
 implement p2atlst_arg_tr_up (npf, p2ts) = let
   fun aux {n:nat} .<n>.
     (i: int, p2ts: p2atlst n): p3atlst n =
     case+ p2ts of
-    | cons (p2t, p2ts) => let
+    | list_cons (p2t, p2ts) => let
         val () = if i > 0 then p2at_proofize p2t
       in
-        cons (p2at_arg_tr_up p2t, aux (i-1, p2ts))
+        list_cons (p2at_arg_tr_up p2t, aux (i-1, p2ts))
       end
-    | nil () => nil ()
+    | list_nil () => list_nil ()
+  // end of [aux]
 in
   aux (npf, p2ts)
-end // end of [p2atlst_arg_tr_up]
+end (* end of [p2atlst_arg_tr_up] *)
 
 implement p2atlst_arg_tr_dn (npf, p2ts, s2es) = let
   fun aux {n:nat} .<n>.
     (i: int, p2ts: p2atlst n, s2es: s2explst n): p3atlst n =
     case+ p2ts of
-    | cons (p2t, p2ts) => let
-        val+ cons (s2e, s2es) = s2es
+    | list_cons (p2t, p2ts) => let
+        val+ list_cons (s2e, s2es) = s2es
         val () = if i > 0 then p2at_proofize p2t 
         val p3t = p2at_arg_tr_dn (p2t, s2e)
       in
-        cons (p3t, aux (i-1, p2ts, s2es))
+        list_cons (p3t, aux (i-1, p2ts, s2es))
       end
-    | nil () => nil ()
+    | list_nil () => list_nil ()
+  // end of [aux]  
 in
   aux (npf, p2ts, s2es)
-end // end of [p2atlst_arg_tr_dn]
+end (* end of [p2atlst_arg_tr_dn] *)
 
 (* ****** ****** *)
 

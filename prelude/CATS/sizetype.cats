@@ -7,26 +7,25 @@
 /************************************************************************/
 
 /*
- * ATS - Unleashing the Potential of Types!
- *
- * Copyright (C) 2002-2009 Hongwei Xi.
- *
- * ATS is free software;  you can  redistribute it and/or modify it under
- * the terms of the GNU LESSER GENERAL PUBLIC LICENSE as published by the
- * Free Software Foundation; either version 2.1, or (at your option)  any
- * later version.
- * 
- * ATS is distributed in the hope that it will be useful, but WITHOUT ANY
- * WARRANTY; without  even  the  implied  warranty  of MERCHANTABILITY or
- * FITNESS FOR A PARTICULAR PURPOSE.  See the  GNU General Public License
- * for more details.
- * 
- * You  should  have  received  a  copy of the GNU General Public License
- * along  with  ATS;  see the  file COPYING.  If not, please write to the
- * Free Software Foundation,  51 Franklin Street, Fifth Floor, Boston, MA
- * 02110-1301, USA.
- *
- */
+** ATS - Unleashing the Potential of Types!
+**
+** Copyright (C) 2002-2009 Hongwei Xi.
+**
+** ATS is free software;  you can  redistribute it and/or modify it under
+** the terms of the GNU LESSER GENERAL PUBLIC LICENSE as published by the
+** Free Software Foundation; either version 2.1, or (at your option)  any
+** later version.
+** 
+** ATS is distributed in the hope that it will be useful, but WITHOUT ANY
+** WARRANTY; without  even  the  implied  warranty  of MERCHANTABILITY or
+** FITNESS FOR A PARTICULAR PURPOSE.  See the  GNU General Public License
+** for more details.
+** 
+** You  should  have  received  a  copy of the GNU General Public License
+** along  with  ATS;  see the  file COPYING.  If not, please write to the
+** Free Software Foundation,  51 Franklin Street, Fifth Floor, Boston, MA
+** 02110-1301, USA.
+*/
 
 /* ****** ****** */
 
@@ -60,6 +59,7 @@
 #define atspre_sub_size_size atspre_sub_size1_size1
 #define atspre_mul_size_size atspre_mul_size1_size1
 #define atspre_div_size_size atspre_div_size1_size1
+#define atspre_mod_size_size atspre_mod_size1_size1
 
 #define atspre_lt_size_size atspre_lt_size1_size1
 #define atspre_lte_size_size atspre_lte_size1_size1
@@ -75,7 +75,8 @@ static inline
 ats_int_type
 atspre_int1_of_size1 (ats_size_type sz) {
   if (INT_MAX < sz) {
-    fprintf (stderr, "[ats_int_of_size(%lu)] failed\n", sz) ; exit (1) ;
+    fprintf (stderr, "[ats_int_of_size(%lu)] failed\n", (ats_ulint_type)sz) ;
+    exit (1) ;
   } /* end of [if] */
   return ((ats_int_type)sz) ;
 } /* end of [atspre_int1_of_size1] */
@@ -106,7 +107,7 @@ static inline
 ats_void_type
 atspre_fprint_size (ats_ptr_type out, ats_size_type sz) {
   int n ;
-  n = fprintf ((FILE*)out, "%lu", sz) ;
+  n = fprintf ((FILE*)out, "%lu", (ats_ulint_type)sz) ;
   if (n < 0) {
     ats_exit_errmsg (n, "exit(ATS): [fprint_size] failed.\n") ;
   } /* end of [if] */
@@ -176,11 +177,21 @@ atspre_mul_size1_size1 (ats_size_type sz1, ats_size_type sz2) {
 #define atspre_mul1_size1_size1 atspre_mul_size1_size1
 #define atspre_mul2_size1_size1 atspre_mul_size1_size1
 
+// ------ ------
+
+static inline
+ats_size_type
+atspre_div_size1_int1 (ats_size_type sz1, ats_int_type i2) {
+  return (sz1 / i2) ;
+} /* end of [atspre_div_size1_int1] */
+
 static inline
 ats_size_type
 atspre_div_size1_size1 (ats_size_type sz1, ats_size_type sz2) {
   return (sz1 / sz2) ;
 } /* end of [atspre_div_size1_size1] */
+
+// ------ ------
 
 static inline
 ats_size_type
@@ -209,7 +220,7 @@ atspre_lt_int1_size1
 static inline
 ats_bool_type
 atspre_lt_size1_int1
-  (ats_int_type sz1, ats_size_type i2) {
+  (ats_size_type sz1, ats_int_type i2) {
   return (sz1 < i2 ? ats_true_bool : ats_false_bool) ;
 } /* end of [atspre_lt_size1_int1] */
 
@@ -310,7 +321,8 @@ static inline
 ats_int_type
 atspre_int1_of_ssize1 (ats_ssize_type ssz) {
   if (INT_MAX < ssz || ssz < INT_MIN) {
-    fprintf (stderr, "[ats_int1_of_ssize1(%li)] failed\n", ssz) ; exit (1) ;
+    fprintf (stderr, "[ats_int1_of_ssize1(%li)] failed\n", (ats_lint_type)ssz) ;
+    exit (1) ;
   } /* end of [if] */
   return (ats_int_type)ssz ;
 } /* end of [atspre_int1_of_ssize1] */
@@ -324,7 +336,8 @@ static inline
 ats_ssize_type atspre_ssize1_of_size1 (ats_size_type sz) {
   ats_ssize_type ssz = sz ;
   if (ssz < 0) {
-    fprintf (stderr, "[ats_ssize1_of_size1(%lu)] failed\n", sz) ; exit (1) ;
+    fprintf (stderr, "[ats_ssize1_of_size1(%lu)] failed\n", (ats_ulint_type)sz) ;
+    exit (1) ;
   } /* end of [if] */
   return ssz ;
 } /* end of [atspre_ssize1_of_size1] */
@@ -337,7 +350,7 @@ static inline
 ats_void_type
 atspre_fprint_ssize (ats_ptr_type out, ats_ssize_type ssz) {
   int n ;
-  n = fprintf ((FILE*)out, "%li", ssz) ;
+  n = fprintf ((FILE*)out, "%li", (ats_lint_type)ssz) ;
   if (n < 0) {
     ats_exit_errmsg (n, "exit(ATS): [fprint_ssize] failed.\n") ;
   } /* end of [if] */

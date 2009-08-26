@@ -59,7 +59,7 @@ fun sieve_con (ns: stream_vt Nat2):<1,~ref> stream_vt_con (Nat2) = let
      end
 *)
      val ns = !p_ns
-     val () = (!p_ns := sieve (stream_vt_filter_cloptr<Nat2> (ns, lam x => x nmod n > 0)))
+     val () = (!p_ns := sieve (stream_vt_filter_cloptr<Nat2> (ns, lam x => x nmod1 n > 0)))
   in
      fold@ ns_con; ns_con
   end
@@ -77,10 +77,11 @@ fn prime (n: Nat): Nat = stream_vt_nth (primes (), n)
 implement main (argc, argv) = begin
 
 //printf ("prime 1000 = %i\n", @(prime 1000)) ; // 7927
+printf ("prime 5000 = %i\n", @(prime 5000)) ; // 48619
 //printf ("prime 10000 = %i\n", @(prime 10000)) ; // 104743
 //printf ("prime 20000 = %i\n", @(prime 20000)) ; // 224743
 //printf ("prime 30000 = %i\n", @(prime 30000)) ; // = 350381 (2 min.)
-printf ("prime 50000 = %i\n", @(prime 50000)) ; // = 611957 (6 min.)
+//printf ("prime 50000 = %i\n", @(prime 50000)) ; // = 611957 (6 min.)
 end // end of [main]
 
 (* ****** ****** *)

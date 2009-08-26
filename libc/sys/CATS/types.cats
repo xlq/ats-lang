@@ -7,26 +7,25 @@
 /************************************************************************/
 
 /*
- * ATS - Unleashing the Power of Types!
- *
- * Copyright (C) 2002-2008 Hongwei Xi.
- *
- * ATS is  free software;  you can redistribute it and/or modify it under
- * the  terms of the  GNU General Public License as published by the Free
- * Software Foundation; either version 2.1, or (at your option) any later
- * version.
- * 
- * ATS is distributed in the hope that it will be useful, but WITHOUT ANY
- * WARRANTY; without  even  the  implied  warranty  of MERCHANTABILITY or
- * FITNESS FOR A PARTICULAR PURPOSE.  See the  GNU General Public License
- * for more details.
- * 
- * You  should  have  received  a  copy of the GNU General Public License
- * along  with  ATS;  see the  file COPYING.  If not, please write to the
- * Free Software Foundation,  51 Franklin Street, Fifth Floor, Boston, MA
- * 02110-1301, USA.
- *
- */
+** ATS - Unleashing the Power of Types!
+**
+** Copyright (C) 2002-2008 Hongwei Xi.
+**
+** ATS is  free software;  you can redistribute it and/or modify it under
+** the  terms of the  GNU General Public License as published by the Free
+** Software Foundation; either version 2.1, or (at your option) any later
+** version.
+** 
+** ATS is distributed in the hope that it will be useful, but WITHOUT ANY
+** WARRANTY; without  even  the  implied  warranty  of MERCHANTABILITY or
+** FITNESS FOR A PARTICULAR PURPOSE.  See the  GNU General Public License
+** for more details.
+** 
+** You  should  have  received  a  copy of the GNU General Public License
+** along  with  ATS;  see the  file COPYING.  If not, please write to the
+** Free Software Foundation,  51 Franklin Street, Fifth Floor, Boston, MA
+** 02110-1301, USA.
+*/
 
 /* ****** ****** */
 
@@ -52,7 +51,17 @@ typedef clock_t ats_clock_type ; // for CLOCKS_PER_SEC
 // not supported on Mac OSX ?
 // typedef clockid_t ats_clockid_type ; // for clock ID type
 
+/* ****** ****** */
+
 typedef dev_t ats_dev_type ; // for device IDs
+
+static inline
+ats_bool_type
+atslib_eq_dev_dev (dev_t x1, dev_t x2) {
+  return (x1 == x2 ? ats_true_bool : ats_false_bool) ;
+}
+
+/* ****** ****** */
 
 typedef fsblkcnt_t ats_fsblkcnt_type ; // file system block counts
 
@@ -60,7 +69,17 @@ typedef fsfilcnt_t ats_fsfilcnt_type ; // file system file counts
 
 typedef gid_t ats_gid_type ; // for group IDs
 
+/* ****** ****** */
+
 typedef ino_t ats_ino_type ; // for file serial numbers
+
+static inline
+ats_bool_type
+atslib_eq_ino_ino (ino_t x1, ino_t x2) {
+  return (x1 == x2 ? ats_true_bool : ats_false_bool) ;
+}
+
+/* ****** ****** */
 
 typedef key_t ats_key_type ; // for XSI interprocess communication
 
@@ -87,6 +106,11 @@ ats_lint_type atslib_lint_of_off (ats_off_type off) {
   return off ;
 }
 
+static inline
+ats_off_type atslib_off_of_lint (ats_lint_type li) {
+  return li ;
+}
+
 /* ****** ****** */
 
 typedef pid_t ats_pid_type ; // for process IDs // signed integer type
@@ -94,6 +118,10 @@ typedef pid_t ats_pid_type ; // for process IDs // signed integer type
 static inline
 ats_int_type atslib_int_of_pid (ats_pid_type p) { return p ; }
 /* end of [atslib_int_of_pid] */
+
+static inline
+ats_lint_type atslib_lint_of_pid (ats_pid_type p) { return p ; }
+/* end of [atslib_lint_of_pid] */
 
 /* ****** ****** */
 

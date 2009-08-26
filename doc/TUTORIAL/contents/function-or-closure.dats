@@ -21,7 +21,7 @@ fn add (x: int): int -<cloref1> int =
 
 fn test_qsort () = let
   fun pr_loop {n,i:nat | i <= n} .<n-i>.
-    (A: &(@[int][n]), n: int n, i: int i): void =
+    (A: &(@[int][n]), n: size_t n, i: size_t i): void =
     if i < n then begin
       if i > 0 then print ", "; print A.[i]; pr_loop (A, n, i+1)
     end // end of [if]

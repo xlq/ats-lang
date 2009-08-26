@@ -43,7 +43,13 @@
 
 /* ****** ****** */
 
-// it is still empty!
+static inline
+ats_ptr_type
+atspre_option0_of_option1 (ats_ptr_type x) { return x ; }
+
+static inline
+ats_ptr_type
+atspre_option1_of_option0 (ats_ptr_type x) { return x ; }
 
 /* ****** ****** */
 

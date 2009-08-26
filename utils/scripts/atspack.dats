@@ -31,9 +31,10 @@
 
 (* ****** ****** *)
 
-// Time: Summer 2008
-
-(* Author: Hongwei Xi (hwxi AT cs DOT bu DOT edu) *)
+//
+// Author: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
+// Time: Summer, 2008
+//
 
 (* ****** ****** *)
 
@@ -691,6 +692,13 @@ fn libats_dir_copy () = let
   val SRCROOTlibats = SRCROOT + "libats/"
   val DSTROOTlibats = DSTROOT + "libats/"
   val () = lib_dir_copy (SRCROOTlibats, DSTROOTlibats)
+  // the code for sml basis library lexer is in [libats/smlbas]
+  val SRCROOTlibats_smlbas = SRCROOTlibats + "smlbas/"
+  val DSTROOTlibats_smlbas = DSTROOTlibats + "smlbas/"
+  val () = lib_dir_copy (SRCROOTlibats_smlbas, DSTROOTlibats_smlbas)
+  val () = fcopy_exn (
+    SRCROOTlibats_smlbas + ".libfiles", DSTROOTlibats_smlbas + ".libfiles"
+  ) (* end of [val] *)
   // the code for ATS lexer is in [libats/lex]
   val SRCROOTlibatslex = SRCROOTlibats + "lex/"
   val DSTROOTlibatslex = DSTROOTlibats + "lex/"

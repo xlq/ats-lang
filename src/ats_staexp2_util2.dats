@@ -7,33 +7,32 @@
 (***********************************************************************)
 
 (*
- * ATS/Anairiats - Unleashing the Potential of Types!
- *
- * Copyright (C) 2002-2008 Hongwei Xi, Boston University
- *
- * All rights reserved
- *
- * ATS is free software;  you can  redistribute it and/or modify it under
- * the terms of  the GNU GENERAL PUBLIC LICENSE (GPL) as published by the
- * Free Software Foundation; either version 3, or (at  your  option)  any
- * later version.
- * 
- * ATS is distributed in the hope that it will be useful, but WITHOUT ANY
- * WARRANTY; without  even  the  implied  warranty  of MERCHANTABILITY or
- * FITNESS FOR A PARTICULAR PURPOSE.  See the  GNU General Public License
- * for more details.
- * 
- * You  should  have  received  a  copy of the GNU General Public License
- * along  with  ATS;  see the  file COPYING.  If not, please write to the
- * Free Software Foundation,  51 Franklin Street, Fifth Floor, Boston, MA
- * 02110-1301, USA.
- *
- *)
+** ATS/Anairiats - Unleashing the Potential of Types!
+**
+** Copyright (C) 2002-2008 Hongwei Xi, Boston University
+**
+** All rights reserved
+**
+** ATS is free software;  you can  redistribute it and/or modify it under
+** the terms of  the GNU GENERAL PUBLIC LICENSE (GPL) as published by the
+** Free Software Foundation; either version 3, or (at  your  option)  any
+** later version.
+** 
+** ATS is distributed in the hope that it will be useful, but WITHOUT ANY
+** WARRANTY; without  even  the  implied  warranty  of MERCHANTABILITY or
+** FITNESS FOR A PARTICULAR PURPOSE.  See the  GNU General Public License
+** for more details.
+** 
+** You  should  have  received  a  copy of the GNU General Public License
+** along  with  ATS;  see the  file COPYING.  If not, please write to the
+** Free Software Foundation,  51 Franklin Street, Fifth Floor, Boston, MA
+** 02110-1301, USA.
+*)
 
 (* ****** ****** *)
 
-// Time: October 2007
 // Author: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
+// Time: October 2007
 
 (* ****** ****** *)
 
@@ -46,6 +45,7 @@
 
 (* ****** ****** *)
 
+staload Deb = "ats_debug.sats"
 staload Err = "ats_error.sats"
 staload IntInf = "ats_intinf.sats"
 staload Lst = "ats_list.sats"
@@ -55,6 +55,10 @@ staload Lst = "ats_list.sats"
 staload "ats_staexp2.sats"
 staload "ats_stadyncst2.sats"
 staload "ats_trans3_env.sats"
+
+(* ****** ****** *)
+
+#define THISFILENAME "ats_staexp2_util2.dats"
 
 (* ****** ****** *)
 
@@ -71,7 +75,8 @@ overload prerr with $Loc.prerr_location
 
 (* ****** ****** *)
 
-fun s2exp_link_remove_flag (s2e0: s2exp, flag: &int): s2exp = let
+fun s2exp_link_remove_flag
+  (s2e0: s2exp, flag: &int): s2exp = let
 (*
   val () = begin
     prerr "s2exp_link_remove_flag: s2e0 = "; prerr s2e0; prerr_newline ()
@@ -84,9 +89,9 @@ in
       else begin case+ s2cst_def_get s2c of
         | Some s2e => begin
             flag := flag + 1; s2exp_link_remove_flag (s2e, flag)
-          end
+          end // end of [Some]
         | None () => s2e0
-      end // end of [if]
+      end (* end of [if] *)
     end // end of [S2Ecst]
     // the link of s2V should not be updated!!!
   | S2EVar s2V => begin case+ s2Var_link_get (s2V) of
@@ -96,18 +101,22 @@ in
     | None () => s2e0
     end // end of [S2EVar]
   | _ => s2e0
-end // end of [s2exp_link_remove_flag]
+end (* end of [s2exp_link_remove_flag] *)
 
-implement s2exp_link_remove (s2e0) = begin
-  let var flag: int = 0 in s2exp_link_remove_flag (s2e0, flag) end
+implement s2exp_link_remove (s2e0) = let
+  var flag: int = 0 in s2exp_link_remove_flag (s2e0, flag)
 end // end of [s2exp_link_remove]
 
 (* ****** ****** *)
 
 fun labs2explst_readize
-  (_v: s2exp, ls2es: labs2explst): labs2explst = begin case+ ls2es of
-  | LABS2EXPLSTcons (l, s2e, ls2es) => begin
-      LABS2EXPLSTcons (l, s2exp_readize (_v, s2e), labs2explst_readize (_v, ls2es))
+  (_v: s2exp, ls2es: labs2explst)
+  : labs2explst = begin case+ ls2es of
+  | LABS2EXPLSTcons (l, s2e, ls2es) => let
+      val s2e = s2exp_readize (_v, s2e)
+      val ls2es = labs2explst_readize (_v, ls2es)
+    in
+      LABS2EXPLSTcons (l, s2e, ls2es)
     end // end of [LABS2EXPLSTcons]
   | LABS2EXPLSTnil () => LABS2EXPLSTnil ()
 end // end of [labs2explst_readize]
@@ -116,8 +125,7 @@ implement s2exp_readize (_v, s2e) = let
   val s2t_s2e = s2e.s2exp_srt
 in
   if s2rt_is_linear s2t_s2e then let
-    val s2t = s2rt_readize s2t_s2e
-  in
+    val s2t = s2rt_readize s2t_s2e in
     case+ s2e.s2exp_node of
     | S2Etyrec (knd, npf, ls2es) => let
         val ls2es = labs2explst_readize (_v, ls2es)
@@ -131,17 +139,17 @@ in
       end // end of [S2Eunion]
     | _ => s2exp_read_srt (s2t, _v, s2e)
   end else begin
-    s2e // [r@ead] is identity on nonlinear types
+    s2e (* [r@ead] is identity on nonlinear types *)
   end // end of [if]
-end // end of [s2exp_readize]
+end (* end of [s2exp_readize] *)
 
-implement s2expopt_readize (_v, os2e) = begin case+ os2e of
-  | Some s2e => begin
-      if s2exp_is_linear s2e then Some (s2exp_readize (_v, s2e))
-      else os2e
-    end // end of [Some]
+implement s2expopt_readize (_v, os2e) = begin
+  case+ os2e of
+  | Some s2e => if s2exp_is_linear s2e
+      then Some (s2exp_readize (_v, s2e)) else os2e
+    // end of [Some]
   | None () => os2e
-end // end of [s2expopt_readize]
+end (* end of [s2expopt_readize] *)
 
 (* ****** ****** *)
 
@@ -154,15 +162,15 @@ fun labs2explst_topize
       LABS2EXPLSTcons (l, s2e, labs2explst_topize (knd, ls2es))
     end // end of [LABS2EXPLSTcons]
   | LABS2EXPLSTnil () => LABS2EXPLSTnil ()
-end // end of [labs2explst_topize]
+end (* end of [labs2explst_topize] *)
 
 implement s2exp_topize (knd, s2e) = let
   val s2t = s2e.s2exp_srt
-  val isdone: bool = begin
+  val isdone = (
     if knd > 0 (*typization*) then
-      if s2rt_is_linear s2t then false else true
+      (if s2rt_is_linear s2t then false else true)
     else false
-  end // end of [val]
+  ) : bool // end of [val]
   val s2e = s2exp_whnf s2e
 in
   if isdone then begin 
@@ -195,7 +203,7 @@ in
       end // end of [S2Eunion]
     | _ => s2exp_top_srt (s2t_new, knd, s2e)
   end // end of [if]
-end // end of [s2exp_topize]
+end (* end of [s2exp_topize] *)
 
 implement s2exp_topize_0 (s2e) = s2exp_topize (0(*knd*), s2e)
 implement s2exp_topize_1 (s2e) = s2exp_topize (1(*knd*), s2e)
@@ -204,7 +212,17 @@ implement s2exp_topize_1 (s2e) = s2exp_topize (1(*knd*), s2e)
 
 fun s2exp_whnf_flag
   (s2e0: s2exp, flag: &int): s2exp = let
+(*
+  val () = begin
+    prerr "s2exp_whnf_flag(0): s2e0 = "; prerr s2e0; prerr_newline ()
+  end // end of [val]
+*)
   val s2e0 = s2exp_link_remove_flag (s2e0, flag)
+(*
+  val () = begin
+    prerr "s2exp_whnf_flag(1): s2e0 = "; prerr s2e0; prerr_newline ()
+  end // end of [val]
+*)
 in
   case+ s2e0.s2exp_node of
   | S2Eapp (s2e_fun, s2es_arg) => let
@@ -212,28 +230,31 @@ in
     in
       case+ s2e_fun.s2exp_node of
       | S2Elam (s2vs_arg, s2e_body) => let
-          fun aux (s2vs: s2varlst, s2es: s2explst): stasub_t =
+          fun aux
+            (s2vs: s2varlst, s2es: s2explst): stasub_t =
             case+ (s2vs, s2es) of
-            | (cons (s2v, s2vs), cons (s2e, s2es)) =>
+            | (s2v :: s2vs, s2e :: s2es) =>
                 stasub_add (aux (s2vs, s2es), s2v, s2e)
             | (nil _, nil _) => stasub_nil
             | (_, _) => begin
-                prerr "Internal Error: s2exp_whnf: S2Eapp: arity error";
+                prerr "INTERNAL ERROR";
+                prerr ": [ats_staexp2_util2]: s2exp_whnf_flag: S2Eapp: arity error";
                 prerr_newline ();
                 $Err.abort {stasub_t} ()
               end // end of [_, _]
+          // end of [aux]
           val sub = aux (s2vs_arg, s2es_arg)
           val () = flag := flag + 1
         in
           s2exp_whnf_flag (s2exp_subst (sub, s2e_body), flag)
         end // end of [S2Elam]
-      | _ => begin
-          if flag > flag0 then begin
+      | _ => if flag > flag0
+          then begin
             s2exp_app_srt (s2e0.s2exp_srt, s2e_fun, s2es_arg)
           end else begin
-            s2e0 // there is no change
-          end // end of [if]
-        end // end of [_]
+            s2e0 (* there is no change *)
+          end (* end of [if] *)
+        // end of [_]
     end // end of [S2Eapp]
   | S2Eclo (knd, s2e) => let
       val flag0 = flag; val s2e = s2exp_whnf_flag (s2e, flag)
@@ -247,14 +268,14 @@ in
               if lin > 0 then s2rt_viewt0ype else s2rt_t0ype
             else begin
               s2e0.s2exp_srt
-            end
+            end // end o [if]
           ) : s2rt
         in
           s2exp_fun_srt (s2t1, fc1, lin, s2fe, npf, s2es_arg, s2e_res)
         end // end of [S2Efun]
-      | _ => begin
-          if flag > flag0 then s2exp_clo_srt (s2e.s2exp_srt, knd, s2e) else s2e0
-        end // end of [_]
+      | _ => if flag > flag0
+          then s2exp_clo_srt (s2e.s2exp_srt, knd, s2e) else s2e0
+        // end of [_]
     end // end of [S2Eclo]
   | S2Ecrypt (s2e) => let
       val flag0 = flag; val s2e = s2exp_whnf_flag (s2e, flag)
@@ -262,10 +283,10 @@ in
       case+ s2e.s2exp_node of
       | S2Eexi (s2vs, s2ps, s2e_scope) => begin
           flag := flag + 1; s2exp_exi (s2vs, s2ps, s2exp_crypt s2e_scope)
-        end
+        end // end of [S2Eexi]
       | S2Euni (s2vs, s2ps, s2e_scope) => begin
           flag := flag + 1; s2exp_uni (s2vs, s2ps, s2exp_crypt s2e_scope)
-        end
+        end // end of [S2Euni]
       | _ => s2e0
     end // end of [S2Ecrypt]
   | S2Eread (_v, s2e) => let
@@ -276,15 +297,15 @@ in
           val ls2es = labs2explst_readize (_v, ls2es)
         in
           flag := flag + 1; s2exp_tyrec_srt (s2e0.s2exp_srt, knd, npf, ls2es)
-        end
+        end // end of [S2Etyrec]
       | S2Eunion (stamp, s2i, ls2es) => let
           val ls2es = labs2explst_readize (_v, ls2es)
         in
           flag := flag + 1; s2exp_union_srt (s2e0.s2exp_srt, stamp, s2i, ls2es)
-        end
-      | _ => begin
-          if flag > flag0 then s2exp_read_srt (s2e0.s2exp_srt, _v, s2e) else s2e0
-        end
+        end // end of [S2Eunion]
+      | _ => if flag > flag0
+          then s2exp_read_srt (s2e0.s2exp_srt, _v, s2e) else s2e0
+        // end of [_]
     end // end of [S2Eread]
   | S2Esel (s2e_tup, ind) => let
       val flag0 = flag; val s2e_tup = s2exp_whnf s2e_tup
@@ -295,18 +316,23 @@ in
             case+ s2es of
             | cons (s2e, s2es) => (if n > 0 then aux (s2es, n-1) else s2e)
             | nil () => begin
-                prerr "Internal Error: s2exp_whnf: S2Etup: subscript error";
+                prerr "INTERNAL ERROR";
+                prerr ": [ats_staexp2_util2]: s2exp_whnf: S2Etup: subscript error";
                 prerr_newline ();
                 $Err.abort {s2exp} ()
-              end
+              end // end of [nil]
+          // end of [aux]
+          val s2e_elt = aux (s2es, ind)
         in
-          flag := flag + 1; s2exp_whnf_flag (aux (s2es, ind), flag)
-        end
-      | _ => begin
-          if flag > flag0 then begin
+          flag := flag + 1; s2exp_whnf_flag (s2e_elt, flag)
+        end // end of [S2Etup]
+      | _ => if flag > flag0
+          then begin
             s2exp_sel_srt (s2e0.s2exp_srt, s2e_tup, ind)
-          end else s2e0 // there is no change
-        end
+          end else begin
+            s2e0 // there is no change
+          end // end of [if]
+        // end of [_]
     end // end of [S2Esel]
   | S2Esizeof s2e => let
       val () = flag := flag + 1; val s2ze = s2zexp_make_s2exp s2e
@@ -332,7 +358,7 @@ in
         | TYRECKINDbox () => begin
             if flag > flag0 then s2exp_top_srt (s2e0.s2exp_srt, knd, s2e)
             else s2e0
-          end
+          end // end of [TYRECKINDbox]
         | _ (* flat record *) => let
             val ls2es = labs2explst_topize (knd, ls2es)
           in
@@ -355,11 +381,11 @@ in
           if cond then begin
             flag := flag + 1; s2exp_whnf_flag (s2e, flag)
           end else begin
-            if flag > flag0 then
-              s2exp_top_srt (s2e0.s2exp_srt, knd, s2e)
-            else s2e0
+            if flag > flag0
+              then s2exp_top_srt (s2e0.s2exp_srt, knd, s2e) else s2e0
+            // end of [if]
           end // end of [if]
-        end // end of [_]
+        end (* end of [_] *)
     end // end of [S2Etop]
   | S2Evar s2v => begin case+ the_s2varbindmap_find s2v of
     | ~Some_vt s2e => (flag := flag + 1; s2exp_whnf_flag (s2e, flag))
@@ -387,6 +413,7 @@ end // end of [s2exp_whnf]
 
 implement s2explst_whnf (s2es) =
   $Lst.list_map_fun (s2es, s2exp_whnf)
+// end of [s2explst_whnf]
 
 (* ****** ****** *)
 
@@ -394,7 +421,7 @@ local
 
 assume s2exp_whnf_t = s2exp
 
-in
+in // end of [local]
 
 implement s2exp_of_s2exp_whnf (s2e) = s2e
 implement s2exp_whnf_of_s2exp (s2e) = s2e
@@ -447,14 +474,14 @@ end // end of [s2exp_nfapp_flag]
 and s2explst_nfapp_flag {n:nat}
   (s2es0: s2explst n, flag: &int): s2explst n =
   case+ s2es0 of
-  | list_cons (s2e, s2es) => let
+  | cons (s2e, s2es) => let
       val flag0 = flag
       val s2e = s2exp_nfapp_flag (s2e, flag)
       val s2es = s2explst_nfapp_flag (s2es, flag)
     in
-      if flag > flag0 then list_cons (s2e, s2es) else s2es0
-    end // end of [list_cons]
-  | list_nil () => list_nil ()
+      if flag > flag0 then cons (s2e, s2es) else s2es0
+    end // end of [cons]
+  | nil () => nil ()
 // end of [s2explst_nfapp_flag]
 
 and labs2explst_nfapp_flag
@@ -755,10 +782,12 @@ implement s2exp_projlst (s2e, s2ls) = begin case+ s2ls of
 end // end of [s2exp_projlst]
 
 implement s2exp_addr_normalize (s2e0) = let
-  fun aux (s2e0: s2exp, s2ls: s2lablst): @(s2exp, s2lablst) =
+  fun aux
+    (s2e0: s2exp, s2ls: s2lablst): @(s2exp, s2lablst) =
     case+ s2e0.s2exp_node of
     | S2Eproj (s2e0, s2l) => aux (s2e0, cons (s2l, s2ls))
     | _ => (s2e0, s2ls)
+  // end of [aux]
 in
   aux (s2e0, nil ())
 end // end of [s2exp_addr_normalize]
@@ -781,29 +810,31 @@ fun s2exp_prenexing
               else s2e0
             end
           | _ => begin
-              prerr "Internal Error: s2exp_prenexing: At_viewt0ype_addr_view";
+              prerr "INTERNAL ERROR";
+              prerr ": [ats_staexp2_util2] : s2exp_prenexing: At_viewt0ype_addr_view";
               prerr_newline ();
               $Err.abort {s2exp} ()
             end
-        else s2e0
-      end
+        else s2e0 // end of [if]
+      end // end of [S2Eapp]
     | S2Eexi (s2vs, s2ps, s2e_body) => begin
         if isexi then
           s2exp_prenexing_main (isexi, s2vs, s2ps, s2e_body, s2vs_r, s2ps_r, flag)
-        else s2e0
-      end
+        else s2e0 // end of [if]
+      end // end of [S2Eexi]
     | S2Etyrec (knd, npf, ls2es) => let
         val flag0 = flag
         val ls2es = labs2explst_prenexing (isexi, ls2es, s2vs_r, s2ps_r, flag)
       in
         if flag > flag0 then
           s2exp_tyrec_srt (s2e0.s2exp_srt, knd, npf, ls2es)
-        else s2e0
-      end
+        else s2e0 // end of [if]
+      end // end of [S2Etyrec]
     | S2Euni (s2vs, s2ps, s2e_body) => begin
         if isexi then s2e0 else
           s2exp_prenexing_main (isexi, s2vs, s2ps, s2e_body, s2vs_r, s2ps_r, flag)
-      end
+        // end of [if]
+      end // end of [S2Euni]
     | _ => s2e0
 end // end of [s2exp_prenexing]
 
@@ -819,7 +850,7 @@ and s2exp_prenexing_main
   val s2e_body = s2exp_prenexing (isexi, s2e_body, s2vs_r, s2ps_r, flag)
 in
   s2e_body
-end
+end // end of [s2exp_prenexing_main]
 
 and s2explst_prenexing
   (isexi: bool, s2es0: s2explst,
@@ -845,7 +876,7 @@ and labs2explst_prenexing
       val ls2es = labs2explst_prenexing (isexi, ls2es, s2vs_r, s2ps_r, flag)
     in
       if flag > flag0 then LABS2EXPLSTcons (l, s2e, ls2es) else ls2es0
-    end
+    end // end of [LABS2EXPLSTcons]
   | LABS2EXPLSTnil () => LABS2EXPLSTnil ()
 end // end of [labs2explst_prenexing]
 
@@ -857,7 +888,7 @@ implement s2exp_absuni (s2e) = let
   val s2e = s2exp_prenexing (false, s2e, s2vs_r, s2ps_r, flag)
 in
   ($Lst.list_reverse s2vs_r, $Lst.list_reverse s2ps_r, s2e)
-end
+end // end of [s2exp_absuni]
 
 implement s2exp_opnexi (s2e) = let
   var flag: int = 0
@@ -865,7 +896,7 @@ implement s2exp_opnexi (s2e) = let
   val s2e = s2exp_prenexing (true, s2e, s2vs_r, s2ps_r, flag)
 in
   ($Lst.list_reverse s2vs_r, $Lst.list_reverse s2ps_r, s2e)
-end
+end // end of [s2exp_opnexi]
 
 implement s2explst_opnexi (s2es) = let
   var flag: int = 0
@@ -873,25 +904,26 @@ implement s2explst_opnexi (s2es) = let
   val s2es = s2explst_prenexing (true, s2es, s2vs_r, s2ps_r, flag)
 in
   ($Lst.list_reverse s2vs_r, $Lst.list_reverse s2ps_r, s2es)
-end
-
+end // end of [s2explst_opnexi]
 
 (* ****** ****** *)
 
 implement labs2explst_lab_get (ls2es, l0) = let
-  fun aux_get (ls2es: labs2explst):<cloptr1> s2expopt_vt =
+  fun aux_get (ls2es: labs2explst):<cloref1> s2expopt_vt =
     case+ ls2es of
     | LABS2EXPLSTcons (l, s2e, ls2es) => begin
         if l0 = l then Some_vt s2e else aux_get ls2es
-      end
+      end // end of [LABS2EXPLSTcons]
     | LABS2EXPLSTnil () => None_vt ()
+  // end of [aux_get]
 in
   aux_get ls2es
 end // end of [labs2explst_lab_get]
 
 implement labs2explst_lab_set (ls2es, l0, s2e0) = let
-  fun aux_set (ls2es: labs2explst, s2e0: s2exp)
-    :<cloptr1> Option_vt labs2explst = begin
+  fun aux_set
+    (ls2es: labs2explst, s2e0: s2exp)
+    :<cloref1> Option_vt labs2explst = begin
     case+ ls2es of
     | LABS2EXPLSTcons (l, s2e, ls2es) => begin
         if l0 = l then begin
@@ -899,8 +931,8 @@ implement labs2explst_lab_set (ls2es, l0, s2e0) = let
         end else begin case+ aux_set (ls2es, s2e0) of
         | ~Some_vt ls2es => Some_vt (LABS2EXPLSTcons (l, s2e, ls2es))
         | ~None_vt () => None_vt ()
-        end
-      end
+        end // end of [if]
+      end (* end of [LABS2EXPLSTcons] *)
     | LABS2EXPLSTnil () => None_vt ()
   end // end of [aux_set]
 in
@@ -910,12 +942,14 @@ end // end of [labs2explst_lab_set]
 (* ****** ****** *)
 
 implement labs2zexplst_lab_get (ls2zes, l0) = let
-  fun aux_get (ls2zes: labs2zexplst):<cloptr1> s2zexpopt_vt =
+  fun aux_get
+    (ls2zes: labs2zexplst):<cloref1> s2zexpopt_vt =
     case+ ls2zes of
     | LABS2ZEXPLSTcons (l, s2ze, ls2zes) => begin
         if l0 = l then Some_vt s2ze else aux_get ls2zes
-      end
+      end // end of [LABS2ZEXPLSTcons]
     | LABS2ZEXPLSTnil () => None_vt ()
+  // end of [aux_get]
 in
   aux_get ls2zes
 end // end of [labs2zexplst_lab_get]
@@ -926,7 +960,8 @@ fn labs2explst_lab_get_ind
   (ls2es: labs2explst, l0: lab_t, i: &(int?) >> int)
   : s2expopt_vt = let
   fun aux_get
-    (i: &int, ls2es: labs2explst):<cloptr1> s2expopt_vt = begin
+    (i: &int, ls2es: labs2explst)
+    :<cloref1> s2expopt_vt = begin
     case+ ls2es of
     | LABS2EXPLSTcons (l, s2e, ls2es) => begin
         if l0 = l then Some_vt s2e else (i := i+1; aux_get (i, ls2es))
@@ -942,18 +977,19 @@ end // end of [labs2explst_lab_get_ind]
 fn labs2explst_lab_set_ind
   (ls2es: labs2explst, l0: lab_t, s2e0: s2exp, i: &(int?) >> int)
   : Option_vt (labs2explst) = let
-  fun aux_set (ls2es: labs2explst, s2e0: s2exp, i: &int)
-    :<cloptr1> Option_vt labs2explst = begin case+ ls2es of
+  fun aux_set
+    (ls2es: labs2explst, s2e0: s2exp, i: &int)
+    :<cloref1> Option_vt labs2explst = begin case+ ls2es of
     | LABS2EXPLSTcons (l, s2e, ls2es) => begin
         if l0 = l then begin
           Some_vt (LABS2EXPLSTcons (l0, s2e0, ls2es))
         end else begin case+ aux_set (ls2es, s2e0, i) of
-        | ~Some_vt ls2es => begin
-            i := i + 1; Some_vt (LABS2EXPLSTcons (l, s2e, ls2es))
-          end
-        | ~None_vt () => None_vt ()
-        end
-      end
+          | ~Some_vt ls2es => begin
+              i := i + 1; Some_vt (LABS2EXPLSTcons (l, s2e, ls2es))
+            end
+          | ~None_vt () => None_vt ()
+        end // end of [if]
+      end (* end of [LABS2EXPLSTcons] *)
     | LABS2EXPLSTnil () => (i := ~1; None_vt ())
   end // end of [aux_set]
   val () = (i := 0)
@@ -980,6 +1016,7 @@ implement s2exp_lab_get_restlin_cstr
   fn err2 {a:viewt@ype} (loc0: loc_t, s2e0: s2exp): a = begin
     prerr loc0;
     prerr ": error(3)";
+    $Deb.debug_prerrf (": [%s]: s2exp_lab_get_restlin_cstr", @(THISFILENAME));
     prerr ": the type [";
     prerr s2e0;
     prerr "] is expected to be a record or union but it is not.";
@@ -990,14 +1027,14 @@ implement s2exp_lab_get_restlin_cstr
     (i: int, ls2es: labs2explst, restlin: &int): void =
     case+ ls2es of
     | LABS2EXPLSTcons (l, s2e, ls2es) => let
-        val () =
-          if i <> 0 then begin
-            (if s2exp_is_linear s2e then restlin := restlin + 1)
-          end
+        val () = if i <> 0 then begin
+          (if s2exp_is_linear s2e then restlin := restlin + 1)
+        end // end of [val]
       in
         aux_restlin (i-1, ls2es, restlin)
-      end
+      end // end of [LABS2EXPLSTcons]
     | LABS2EXPLSTnil () => ()
+  // end of [aux_restlin]
 in
   case+ s2e0.s2exp_node of
   | S2Etyrec (_(*knd*), _(*npf*), ls2es) => let
@@ -1007,7 +1044,7 @@ in
       case+ os2e of
       | ~Some_vt s2e => (aux_restlin (i, ls2es, restlin); s2e)
       | ~None_vt () => err1 (loc0, s2e0, l0)
-    end
+    end // end of [S2Etyrec]
   | S2Eunion (_(*stamp*), s2i, ls2es) => let
       var i: int (* uninitialized *)
       val os2e = labs2explst_lab_get_ind (ls2es, l0, i)
@@ -1017,9 +1054,14 @@ in
       val s2p = s2exp_eqeq (s2i, s2exp_int i)
     in
       cstr := cons (s2p, cstr); s2e
-    end
+    end // end of [S2Eunion]
+  | _ when s2exp_is_objmod_cls_type s2e0 => let
+      val- S2Eapp (_, list_cons (s2e_cls, _)) = s2e0.s2exp_node
+    in
+      s2exp_cls_lab_get (loc0, s2e_cls, l0)
+    end // end of [_ when objmod ...]
   | _ => err2 {s2exp} (loc0, s2e0)
-end // end of [s2exp_lab_get_restlin_cstr]
+end (* end of [s2exp_lab_get_restlin_cstr] *)
 
 (* ****** ****** *)
 
@@ -1031,22 +1073,22 @@ implement s2exp_slablst_get_restlin_cstr
     , restlin: &int
     , cstr: &s2explst
     , s2ls_vt: list_vt (s2lab, j)
-    ) :<cloptr1> @(s2exp, list (s2lab, i+j)) = begin
+    ) :<cloref1> @(s2exp, list (s2lab, i+j)) = begin
     case+ s2ls of
     | cons (s2l, s2ls) => let
         val l = case+ s2l of
           | S2LAB0lab l => l
-          | S2LAB1lab (l, _) => l // should not happen!
+          | S2LAB1lab (l, _) => l // this should not happen!
           | _ => begin
               prerr loc0;
               prerr ": error(3)";
               prerr ": the use of array subscription is not supported.";
               prerr_newline ();
               $Err.abort {lab_t} ()
-            end
+            end (* end of [_] *)
         val s2e0_prj = begin
           s2exp_lab_get_restlin_cstr (loc0, s2e0, l, restlin, cstr)
-        end
+        end // end of [val]
         val s2ls_vt = list_vt_cons (S2LAB1lab (l, s2e0), s2ls_vt)
       in
         aux (s2e0_prj, s2ls, restlin, cstr, s2ls_vt)
@@ -1054,27 +1096,32 @@ implement s2exp_slablst_get_restlin_cstr
     | nil () => @(s2e0, $Lst.list_vt_reverse_list s2ls_vt)
     end // end of [aux]
 in
-  aux (s2e0, s2ls, restlin, cstr, list_vt_nil ())
-end // end of [s2exp_slablst_get_restlin_cstr]
+  aux (s2e0, s2ls, restlin, cstr, list_vt_nil)
+end (* end of [s2exp_slablst_get_restlin_cstr] *)
 
 (* ****** ****** *)
 
 fn s2exp_is_int_0 (s2e: s2exp): bool =
   case+ s2e.s2exp_node of S2Eint i => i = 0 | _ => false
+// end of [s2exp_is_int]
 
 fn un_s2exp_int (s2e: s2exp): Option_vt int =
   case+ s2e.s2exp_node of S2Eint i => Some_vt i | _ => None_vt ()
+// end of [un_s2exp_int]
 
-fun labs2explst_nth_get (ls2es: labs2explst, i: int): @(lab_t, s2exp) =
+fun labs2explst_nth_get
+  (ls2es: labs2explst, i: int): @(lab_t, s2exp) = begin
   case+ ls2es of
   | LABS2EXPLSTcons (l, s2e, ls2es) => begin
       if i > 0 then labs2explst_nth_get (ls2es, i-1) else @(l, s2e)
-    end
+    end // end of [LABS2EXPLSTcons]
   | LABS2EXPLSTnil () => begin
-      prerr "labs2explst_nth_get: Internal Error: i = "; prerr i;
+      prerr "INTERNAL ERROR";
+      prerr ": [ats_staexp2_util2] : labs2explst_nth_get: i = "; prerr i;
       prerr_newline ();
       $Err.abort ()
-    end
+    end // end of [LABS2EXPLSTnil]
+end (* end of [labs2explst_nth_get] *)
 
 fun labs2explst_nth_set
   (ls2es: labs2explst, i: int, s2e0: s2exp): labs2explst = begin
@@ -1084,52 +1131,81 @@ fun labs2explst_nth_set
         LABS2EXPLSTcons (l, s2e, labs2explst_nth_set (ls2es, i-1, s2e0))
       end else begin
         LABS2EXPLSTcons (l, s2e0, ls2es)
-      end
-    end
+      end // end of [if]
+    end (* end of [LABS2EXPLSTcons] *)
   | LABS2EXPLSTnil () => begin
-      prerr "labs2explst_nth_set: Internal Error: i = "; prerr i;
+      prerr "INTERNAL ERROR";
+      prerr ": [ats_staexp2_util2]: labs2explst_nth_set: i = "; prerr i;
       prerr_newline ();
       $Err.abort ()
-    end
-end // end of [labs2explst_nth_set]
-
-fn array_ind_dim_check_err (
-    s2ess_ind: s2explstlst, s2ess_dim: s2explstlst, cstr: &s2explst, err: &int
-  ) : void = let
-  fun auxlst
-    (s2es_ind: s2explst, s2es_dim: s2explst, cstr: &s2explst, err: &int)
-    : void =
-    if err > 0 then () else begin case+ (s2es_ind, s2es_dim) of
-    | (nil _, nil _) => ()
-    | (cons (s2e_ind, s2es_ind), cons (s2e_dim, s2es_dim)) => let
-        val s2p = s2exp_btw_int_int_int_bool (s2exp_int_0, s2e_ind, s2e_dim)
-        val () = cstr := cons (s2p, cstr)
-      in
-        auxlst (s2es_ind, s2es_dim, cstr, err)
-      end
-    | (_, _) => (err := 1)
-    end // end of [if]
-  fun auxlstlst
-    (s2ess_ind: s2explstlst, s2ess_dim: s2explstlst, cstr: &s2explst, err: &int)
-    : void =
-    if err > 0 then () else begin case+ (s2ess_ind, s2ess_dim) of
-    | (nil _, nil _) => ()
-    | (cons (s2es_ind, s2ess_ind), cons (s2es_dim, s2ess_dim)) => let
-        val () = auxlst (s2es_ind, s2es_dim, cstr, err)
-      in
-        auxlstlst (s2ess_ind, s2ess_dim, cstr, err)
-      end
-    | (_, _) => (err := 1)
-    end // end of [if]
-in
-  auxlstlst (s2ess_ind, s2ess_dim, cstr, err)
-end // end of [s2explstlst_btw_int_int_int_bool_err]
+    end (* end of [LABS2EXPLSTnil] *)
+end (* end of [labs2explst_nth_set] *)
 
 (* ****** ****** *)
 
-// [s2e0] is assumed to have been normalized
-implement s2exp_lab_linget_cstr (loc0, s2e0, l0, cstr) = let
-  fn label_not_found_errmsg ():<cloptr1> s2exp = begin
+fn array_ind_dim_check_err (
+    s2ess_ind: s2explstlst
+  , s2ess_dim: s2explstlst
+  , cstr: &s2explst, err: &int
+  ) : void = auxlstlst
+  (s2ess_ind, s2ess_dim, cstr, err) where {
+  fun auxlst (
+      s2es_ind: s2explst
+    , s2es_dim: s2explst
+    , cstr: &s2explst, err: &int
+    ) : void =
+    if err > 0 then ()
+    else begin case+ (s2es_ind, s2es_dim) of
+      | (cons (s2e_ind, s2es_ind),
+         cons (s2e_dim, s2es_dim)) => let
+          val s2p =
+            s2exp_btw_int_int_int_bool (s2exp_int_0, s2e_ind, s2e_dim)
+          // end of [val]
+          val () = cstr := cons (s2p, cstr)
+        in
+          auxlst (s2es_ind, s2es_dim, cstr, err)
+        end // end of [cons, cons]
+      | (nil _, nil _) => ()
+      | (_, _) => (err := 1)
+    end // end of [if]
+  // end of [auxlst]
+  fun auxlstlst (
+      s2ess_ind: s2explstlst
+    , s2ess_dim: s2explstlst
+    , cstr: &s2explst, err: &int
+    ) : void =
+    if err > 0 then ()
+    else begin case+ (s2ess_ind, s2ess_dim) of
+      | (cons (s2es_ind, s2ess_ind),
+         cons (s2es_dim, s2ess_dim)) => let
+          val () = auxlst (s2es_ind, s2es_dim, cstr, err)
+        in
+          auxlstlst (s2ess_ind, s2ess_dim, cstr, err)
+        end // end of [cons, cons]
+      | (nil _, nil _) => ()
+      | (_, _) => (err := 1)
+    end // end of [if]
+  // end of [auxlstlst]
+} // end of [array_ind_dim_check_err]
+
+(* ****** ****** *)
+
+implement // [s2e0] must be normalized!
+  s2exp_lab_linget_cstr (loc0, s2e0, l0, cstr) = let
+//
+  fn linear_abandonment_errmsg
+    (loc0: loc_t, l0: lab_t): void = begin
+    prerr loc0;
+    prerr ": error(3)";
+    prerr ": the linear union component with the label [";
+    prerr l0;
+    prerr "] is abandoned";
+    prerr_newline ();
+    $Err.abort {void} ()
+  end // end of [linear_abandonment_errmsg]
+//
+  fn label_notfound_errmsg
+    (loc0: loc_t, s2e0: s2exp, l0: lab_t): s2exp = begin
     prerr loc0;
     prerr ": error(3)";
     prerr ": the lable [";
@@ -1138,77 +1214,77 @@ implement s2exp_lab_linget_cstr (loc0, s2e0, l0, cstr) = let
     prerr s2e0;
     prerr_newline ();
     $Err.abort {s2exp} ()
-  end
+  end // end of [label_notfound_errmsg]
 in
   case+ s2e0.s2exp_node of
-  | S2Etyrec (knd, npf, ls2es) => begin
-    case+ labs2explst_lab_get (ls2es, l0) of
-      | ~Some_vt s2e => s2e | ~None_vt () => label_not_found_errmsg ()
+  | S2Etyrec (knd, npf, ls2es) => let
+      val ans = labs2explst_lab_get (ls2es, l0) in
+      case+ ans of
+      | ~None_vt () => label_notfound_errmsg (loc0, s2e0, l0)
+      | ~Some_vt s2e => s2e
     end // end of [S2Etyrec]
-  | S2Eunion (stamp, s2i, ls2es) => let
-      var i: int; var isint: int = 0
-      val s2e =
-        case+ labs2explst_lab_get_ind (ls2es, l0, i) of
-        | ~Some_vt s2e => begin case+ un_s2exp_int s2i of
-          | ~Some_vt i0 when i0 = i => (isint := 1; s2e)
-          | ~Some_vt i0 when i0 >= 0 => let
-              val ls2e = labs2explst_nth_get (ls2es, i0)
-              val () = // linearity checking
-                if s2exp_is_linear (ls2e.1) then begin
-                  prerr loc0;
-                  prerr ": error(3)";
-                  prerr ": the linear union component with the label [";
-                  prerr l0;
-                  prerr "] is abandoned";
-                  prerr_newline ();
-                  $Err.abort {void} ()
-                end
-            in
-              isint := 1; s2exp_topize (0(*knd*), s2e)
-            end
-          | ~Some_vt i0 (* i0 = ~1 *) => begin
-              isint := 1; s2exp_topize (0(*knd*), s2e)
-            end
-          | ~None_vt () => s2e
-          end // end of [Some_vt]
-        | ~None_vt () => label_not_found_errmsg ()
-      val () =
-        if isint = 0 then let
-          val s2i_new = s2exp_int i; val s2p = s2exp_eqeq (s2i, s2i_new)
-        in
-          cstr := cons (s2p, cstr)
-        end
-    in
-      s2e
-    end // end of [S2Eunion]
+  | S2Eunion (stamp, s2i, ls2es) => s2e_res where {
+      var i: int
+      var isint: int = 0 and s2e_res: s2exp (* ? *)
+      val ans = labs2explst_lab_get_ind (ls2es, l0, i)
+      val () = (case+ ans of
+        | ~Some_vt s2e => begin
+          case+ un_s2exp_int s2i of
+          | ~Some_vt i0 => begin case+ 0 of
+            | _ when i0 = i => (isint := 1; s2e_res := s2e)
+            | _ when i0 >= 0 => let
+                val ls2e = labs2explst_nth_get (ls2es, i0)
+                val ((*linarity checking*)) = if
+                  s2exp_is_linear (ls2e.1) then linear_abandonment_errmsg (loc0, l0)
+                // end of [val]
+              in
+                isint := 1; s2e_res := s2exp_topize (0(*knd*), s2e)
+              end // end of [Some_vt when ...]
+            | _ (* i0 = ~1 *) => begin
+                isint := 1; s2e_res := s2exp_topize (0(*knd*), s2e)
+              end // end of [_]
+            end (* end of [Some_vt] *)
+          | ~None_vt () => s2e_res := s2e
+          end (* end of [Some_vt] *)
+        | ~None_vt () => begin
+            s2e_res := label_notfound_errmsg (loc0, s2e0, l0)
+          end // end of [None_vt]
+      ) : void // end of [val]
+      val () = if isint = 0 then let
+        val s2i_new = s2exp_int i; val s2p = s2exp_eqeq (s2i, s2i_new)
+      in
+        cstr := cons (s2p, cstr)
+      end // end of [val]
+    } // end of [S2Eunion]
   | _ => begin
       prerr loc0;
       prerr ": error(3)";
+      $Deb.debug_prerrf (": %s: s2exp_lab_linget_cstr", @(THISFILENAME));
       prerr ": the type [";
       prerr s2e0;
       prerr "] is expected to be a record or union but it is not.";
       prerr_newline ();
       $Err.abort ()
-    end
-end // end of [s2exp_lab_linget_cstr]
+    end // end of [_]
+end (* end of [s2exp_lab_linget_cstr] *)
 
-// [s2e0] is assumed to have been normalized
-implement s2exp_ind_linget_cstr (loc0, s2e0, s2ess_ind, cstr) = begin
+// [s2e0] must be normalized!
+implement s2exp_ind_linget_cstr
+  (loc0, s2e0, s2ess_ind, cstr) = begin
   case+ s2e0.s2exp_node of
   | S2Etyarr (s2e_elt, s2ess_dim) => let
       var err: int = 0
       val () = array_ind_dim_check_err (s2ess_ind, s2ess_dim, cstr, err)
-      val () =
-        if err > 0 then begin
-          prerr loc0;
-          prerr ": error(3)";
-          prerr ": array index/dimension mismatch.";
-          prerr_newline ();
-          $Err.abort {void} ()
-        end
+      val () = if err > 0 then begin
+        prerr loc0;
+        prerr ": error(3)";
+        prerr ": array index/dimension mismatch.";
+        prerr_newline ();
+        $Err.abort {void} ()
+      end // end of [val]
     in
       s2e_elt
-    end
+    end // end of [S2Etyarr]
   | _ => begin
       prerr loc0;
       prerr ": error(3)";
@@ -1217,31 +1293,32 @@ implement s2exp_ind_linget_cstr (loc0, s2e0, s2ess_ind, cstr) = begin
       prerr "] is expected to be an array but it is not.";
       prerr_newline ();
       $Err.abort ()
-    end
-end // end of [s2exp_ind_linget_cstr]
+    end // end of [_]
+end (* end of [s2exp_ind_linget_cstr] *)
 
 (* ****** ****** *)
 
 // [s2e0] is assumed to have been normalized
-implement s2exp_slab_linget_cstr (loc0, s2e0, s2l, cstr) = begin
-  case+ s2l of
+implement s2exp_slab_linget_cstr
+  (loc0, s2e0, s2l, cstr) = begin case+ s2l of
   | S2LAB0lab l => let
       val s2e_prj = s2exp_lab_linget_cstr (loc0, s2e0, l, cstr)
     in
       @(s2e_prj, S2LAB1lab (l, s2e0))
-    end
+    end // end of [S2LAB0lab]
   | S2LAB0ind (s2ess_ind) => let
       val s2e_elt = s2exp_ind_linget_cstr (loc0, s2e0, s2ess_ind, cstr)
     in
       @(s2e_elt, S2LAB1ind (s2ess_ind, s2e_elt))
-    end
+    end // end of [S2LAB0ind]
   | _ => begin
       prerr loc0;
-      prerr ": Internal Error: s2exp_select_slab_get: S2LAB1lab or S2LAB1ind";
+      prerr ": INTERNAL ERROR";
+      prerr ": s2exp_select_slab_get: S2LAB1lab or S2LAB1ind";
       prerr_newline ();
       $Err.abort ()
-    end
-end // end of [s2exp_slab_linget_cstr]
+    end // end of [_]
+end (* end of [s2exp_slab_linget_cstr] *)
 
 (* ****** ****** *)
 
@@ -1249,7 +1326,7 @@ end // end of [s2exp_slab_linget_cstr]
 implement s2exp_lab_linset (loc0, s2e0, l0, s2e_new) = let
   fn err {a:type} (loc0: loc_t): a = begin
     prerr loc0;
-    prerr ": Internal Error: s2exp_slab_set";
+    prerr ": INTERNAL ERROR"; prerr ": s2exp_slab_set";
     prerr_newline ();
     $Err.abort {a} ()
   end // end of [err]
@@ -1261,16 +1338,16 @@ in
       | TYRECKINDflt0 () => s2exp_tyrec (0, npf, ls2es)
       | _ => begin
           s2exp_tyrec_srt (s2e0.s2exp_srt, knd, npf, ls2es)
-        end
+        end (* end of [_] *)
       end // end of [Some_vt]
     | ~None_vt () => err (loc0)
     end // end of [S2Etyrec]
   | S2Eunion (stamp, s2i, ls2es) => let
       val s2t0 = s2e0.s2exp_srt
       val isbox = s2rt_is_boxed s2t0
-      val istop = begin
-        case+ s2e_new.s2exp_node of | S2Etop _ => true | _ => false
-      end
+      val istop = (
+        case+ s2e_new.s2exp_node of S2Etop _ => true | _ => false
+      ) : bool // end of [val]
     in
       if istop then let
         val s2i = s2exp_int (~1)
@@ -1292,77 +1369,76 @@ in
           end
       in
         s2exp_union_srt (s2t0, stamp, s2i, ls2es)
-      end
-    end
+      end (* end of [if] *)
+    end // end of [S2Eunion]
   | _ => err (loc0)
-end // end of [s2exp_lab_linset]
+end (* end of [s2exp_lab_linset] *)
 
 (* ****** ****** *)
 
 implement s2exp_slablst_lintry_cstr (loc0, s2e0, s2ls, cstr) = let
-  fun aux {n:nat}
-    (loc0: loc_t, s2e0: s2exp, s2ls: list (s2lab, n), cstr: &s2explst)
-    : list (s2lab, n) = begin case+ s2ls of
+  fun aux {n:nat} (
+      loc0: loc_t, s2e0: s2exp, s2ls: list (s2lab, n), cstr: &s2explst
+    ) : list (s2lab, n) = begin case+ s2ls of
     | cons (s2l, s2ls) => let
         val s2e0 = s2exp_whnf s2e0
         val (s2e1, s2l) = s2exp_slab_linget_cstr (loc0, s2e0, s2l, cstr)
         val s2ls = aux (loc0, s2e1, s2ls, cstr)
       in
         cons (s2l, s2ls)
-      end
+      end // end of [cons]
     | nil () => nil ()
-  end // end of [aux]
+  end (* end of [aux] *)
 in
   aux (loc0, s2e0, s2ls, cstr)
-end // end of [s2exp_slablst_lintry_cstr]
+end (* end of [s2exp_slablst_lintry_cstr] *)
+
+(* ****** ****** *)
 
 implement s2exp_slablst_linget_cstr (loc0, s2e0, s2ls, cstr) = let
-  fun aux {n:nat}
-    (loc0: loc_t, s2e0: s2exp, s2ls: list (s2lab, n), cstr: &s2explst)
-    : (s2exp, s2expopt_vt, list (s2lab, n)) = begin case+ s2ls of
+  fun aux {n:nat} (
+      loc0: loc_t
+    , s2e0: s2exp
+    , s2ls: list (s2lab, n)
+    , cstr: &s2explst
+    ) : (s2exp, s2expopt_vt, list (s2lab, n)) = begin case+ s2ls of
     | cons (s2l, s2ls) => let
         val s2e0 = s2exp_whnf s2e0
         val (s2e1, s2l) = s2exp_slab_linget_cstr (loc0, s2e0, s2l, cstr)
         val (s2e_prj, os2e1, s2ls) = aux (loc0, s2e1, s2ls, cstr)
-        val os2e0 = (
-          case+ os2e1 of
+        val os2e0 = (case+ os2e1 of
           | ~Some_vt s2e1 => begin case+ s2l of
-            | S2LAB1lab (l, _) => begin
-                Some_vt (s2exp_lab_linset (loc0, s2e0, l, s2e1))
-              end
-            | S2LAB1ind (_, s2e_elt) => let
-                val s2p = s2exp_tyleq (1(*knd*), s2e1, s2e_elt)
-              in
-                cstr := cons (s2p, cstr); None_vt ()
-              end
+            | S2LAB1lab (l, _) => Some_vt (s2exp_lab_linset (loc0, s2e0, l, s2e1))
+            | S2LAB1ind (_, s2e_elt) => None_vt () where {
+                val () = cstr := cons (s2exp_tyleq (1(*knd*), s2e1, s2e_elt), cstr)
+              } // end of [S2LAB1ind]
             | _ => begin
                 prerr loc0;
-                prerr "Internal Error: s2exp_slablst_linget_cstr: aux";
+                prerr ": INTERNAL ERROR"; prerr ": s2exp_slablst_linget_cstr: aux";
                 prerr_newline ();
                 $Err.abort {s2expopt_vt} ()
-              end
-            end // end of [Some_vt]
+              end // end of [_]
+            end (* end of [Some_vt] *)
           | ~None_vt () => None_vt ()
         ) : s2expopt_vt
       in
         (s2e_prj, os2e0, cons (s2l, s2ls))
-      end
+      end // end of [cons]
     | nil () => let
-        val os2e0 = (
-          if s2exp_is_linear s2e0 then Some_vt (s2exp_topize (1(*knd*), s2e0))
-          else None_vt ()
+        val os2e0 = (if s2exp_is_linear s2e0
+          then Some_vt (s2exp_topize (1(*knd*), s2e0)) else None_vt ()
         ) : s2expopt_vt
       in
         (s2e0, os2e0, nil ())
-      end
+      end // end of [nil]
   end // end of [aux]
   val (s2e_prj, os2e0, s2ls) = aux (loc0, s2e0, s2ls, cstr)
-  val s2e0 = (
-    case+ os2e0 of ~Some_vt s2e0 => s2e0 | ~None_vt () => s2e0
-  ) : s2exp
+  val s2e0 = (case+ os2e0 of ~Some_vt s2e0 => s2e0 | ~None_vt () => s2e0): s2exp
 in
   (s2e_prj, s2e0, s2ls)
 end // end of [s2exp_slablst_linget_cstr]
+
+(* ****** ****** *)
 
 implement s2exp_slablst_linset_cstr
   (loc0, s2e0, s2ls, s2e_new, cstr) = let
@@ -1381,32 +1457,30 @@ implement s2exp_slablst_linset_cstr
           case+ os2e1 of
           | ~Some_vt s2e1 => begin case+ s2l of
             | S2LAB1lab (l, _) => Some_vt (s2exp_lab_linset (loc0, s2e0, l, s2e1))
-            | S2LAB1ind (_, s2e_elt) => let
-                val s2p = s2exp_tyleq (1(*knd*), s2e1, s2e_elt)
-              in
-                cstr := cons (s2p, cstr); None_vt ()
-              end
+            | S2LAB1ind (_, s2e_elt) => None_vt () where {
+                val () = cstr := cons (s2exp_tyleq (1(*knd*), s2e1, s2e_elt), cstr)
+              } // end of [S2LAB1ind]
             | _ => begin
                 prerr loc0;
-                prerr "Internal Error: s2exp_slablst_linset_cstr: aux";
+                prerr ": INTERNAL ERROR"; prerr ": s2exp_slablst_linset_cstr: aux";
                 prerr_newline ();
                 $Err.abort {s2expopt_vt} ()
-              end
+              end (* end of [_] *)
             end // end of [Some_vt]
           | ~None_vt () => None_vt ()
         ) : s2expopt_vt
       in
         (s2e_old, os2e0, cons (s2l, s2ls))
-      end
+      end // end of [cons]
     | nil () => (s2e0, Some_vt s2e_new, nil ())
-  end // end of [aux]
+  end (* end of [aux] *)
   val (s2e_old, os2e0, s2ls) = aux (loc0, s2e0, s2ls, s2e_new, cstr)
-  val s2e0 = (
-    case+ os2e0 of ~Some_vt s2e0 => s2e0 | ~None_vt () => s2e0
-  ) : s2exp
+  val s2e0 = (case+ os2e0 of ~Some_vt s2e0 => s2e0 | ~None_vt () => s2e0): s2exp
 in
   (s2e_old, s2e0, s2ls)
 end // end of [s2exp_slablst_linset_cstr]
+
+(* ****** ****** *)
 
 implement s2exp_slablst_lindel_cstr (loc0, s2e0, s2ls, cstr) = let
   fun aux {n:nat} (
@@ -1424,7 +1498,7 @@ implement s2exp_slablst_lindel_cstr (loc0, s2e0, s2ls, cstr) = let
               prerr ": array subscription is not supported (for view extraction).";
               prerr_newline ();
               $Err.abort {void} ()
-            end
+            end // end of [S2LAB0ind]
           | _ => ()
         val s2e0 = s2exp_whnf s2e0
         val (s2e1, s2l) = s2exp_slab_linget_cstr (loc0, s2e0, s2l, cstr)
@@ -1434,19 +1508,19 @@ implement s2exp_slablst_lindel_cstr (loc0, s2e0, s2ls, cstr) = let
           | S2LAB1lab (l, _) => s2exp_lab_linset (loc0, s2e0, l, s2e1)
           | _ => begin
               prerr loc0;
-              prerr "Internal Error: s2exp_slablst_linset_cstr: aux";
+              prerr ": INTERNAL ERROR"; prerr ": s2exp_slablst_linset_cstr: aux";
               prerr_newline ();
               $Err.abort {s2exp} ()
-            end
+            end // end of [_]
         ) : s2exp
       in
         (s2e_out, s2e0, cons (s2l, s2ls))
-      end
+      end // end of [cons]
     | nil () => (s2e0, s2exp_out s2e0, nil ())
-  end // end of [aux]
+  end (* end of [aux] *)
 in
   aux (loc0, s2e0, s2ls, cstr)
-end // end of [s2exp_slablst_lindel_cstr]
+end (* end of [s2exp_slablst_lindel_cstr] *)
 
 (* ****** ****** *)
 

@@ -334,8 +334,6 @@ datatype patck =
 
 typedef patcklst = List patck
 
-//
-
 fun fprint_patck {m:file_mode}
   (pf: file_mode_lte (m, w) | out: &FILE m, _: patck): void
 overload fprint with fprint_patck
@@ -450,7 +448,7 @@ datatype instr =
 
   | INSTRpatck of (valprim, patck, kont) // pattern check
   
-  | INSTRraise of valprim // raising an exception
+  | INSTRraise of (tmpvar_t(*uninitialized*), valprim) // raising an exception
 
   | INSTRselect of // label selection
       (tmpvar_t, valprim, offsetlst)
@@ -582,6 +580,9 @@ fun instr_add_dynload_file (res: &instrlst_vt, fil: fil_t): void
 
 //
 
+fun instr_add_load_ptr
+  (res: &instrlst_vt, tmp: tmpvar_t, vp: valprim): void
+
 fun instr_add_load_ptr_offs
   (res: &instrlst_vt, tmp: tmpvar_t, vp: valprim, offs: offsetlst): void
 
@@ -648,7 +649,9 @@ fun instr_add_move_val
 
 //
 
-fun instr_add_raise (res: &instrlst_vt, vp_exn: valprim): void
+fun instr_add_raise
+  (res: &instrlst_vt, tmp_res: tmpvar_t, vp_exn: valprim): void
+// end of [instr_add_raise]
 
 //
 

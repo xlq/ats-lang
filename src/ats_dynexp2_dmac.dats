@@ -7,33 +7,32 @@
 (***********************************************************************)
 
 (*
- * ATS/Anairiats - Unleashing the Potential of Types!
- *
- * Copyright (C) 2002-2008 Hongwei Xi, Boston University
- *
- * All rights reserved
- *
- * ATS is free software;  you can  redistribute it and/or modify it under
- * the terms of  the GNU GENERAL PUBLIC LICENSE (GPL) as published by the
- * Free Software Foundation; either version 3, or (at  your  option)  any
- * later version.
- * 
- * ATS is distributed in the hope that it will be useful, but WITHOUT ANY
- * WARRANTY; without  even  the  implied  warranty  of MERCHANTABILITY or
- * FITNESS FOR A PARTICULAR PURPOSE.  See the  GNU General Public License
- * for more details.
- * 
- * You  should  have  received  a  copy of the GNU General Public License
- * along  with  ATS;  see the  file COPYING.  If not, please write to the
- * Free Software Foundation,  51 Franklin Street, Fifth Floor, Boston, MA
- * 02110-1301, USA.
- *
- *)
+** ATS/Anairiats - Unleashing the Potential of Types!
+**
+** Copyright (C) 2002-2008 Hongwei Xi, Boston University
+**
+** All rights reserved
+**
+** ATS is free software;  you can  redistribute it and/or modify it under
+** the terms of  the GNU GENERAL PUBLIC LICENSE (GPL) as published by the
+** Free Software Foundation; either version 3, or (at  your  option)  any
+** later version.
+** 
+** ATS is distributed in the hope that it will be useful, but WITHOUT ANY
+** WARRANTY; without  even  the  implied  warranty  of MERCHANTABILITY or
+** FITNESS FOR A PARTICULAR PURPOSE.  See the  GNU General Public License
+** for more details.
+** 
+** You  should  have  received  a  copy of the GNU General Public License
+** along  with  ATS;  see the  file COPYING.  If not, please write to the
+** Free Software Foundation,  51 Franklin Street, Fifth Floor, Boston, MA
+** 02110-1301, USA.
+*)
 
 (* ****** ****** *)
 
-// Time: November 2007
 // Author: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
+// Time: November 2007
 
 (* ****** ****** *)
 
@@ -70,12 +69,15 @@ typedef d2mac_struct (narg:int) = struct {
 , d2mac_arglst= list (macarg, narg) // argument
 , d2mac_def= d2exp // definition
 , d2mac_stamp= stamp_t // uniqueness stamp
-}
+} // end of [d2mac_struct]
+
+(* ****** ****** *)
 
 local
 
 assume d2mac_abs_t (narg:int) =
   [l:addr] (vbox (d2mac_struct narg @ l) | ptr l)
+// end of [assume]
 
 in // in of [local]
 
@@ -90,6 +92,7 @@ val narg = aux args where {
 val stamp = $Stamp.d2mac_stamp_make ()
 val (pf_gc, pf | p) =
   ptr_alloc_tsz {d2mac_struct narg} (sizeof<d2mac_struct narg>)
+// end of [val]
 prval () = free_gc_elim {d2mac_struct narg} (pf_gc)
 
 val () = begin
@@ -104,7 +107,7 @@ end // end of [val]
 
 val (pfbox | ()) = vbox_make_view_ptr (pf | p)
 
-in
+in // in of [let]
 
 (pfbox | p)
 

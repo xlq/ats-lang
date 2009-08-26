@@ -51,6 +51,18 @@ typedef struct stat ats_stat_type ;
 /* ****** ****** */
 
 static inline
+ats_dev_type
+atslib_stat_st_dev_get (ats_ptr_type buf) {
+  return ((ats_stat_type*)buf)->st_dev ;
+}
+
+static inline
+ats_ino_type
+atslib_stat_st_ino_get (ats_ptr_type buf) {
+  return ((ats_stat_type*)buf)->st_ino ;
+}
+
+static inline
 ats_mode_type
 atslib_stat_st_mode_get (ats_ptr_type buf) {
   return ((ats_stat_type*)buf)->st_mode ;
@@ -137,7 +149,9 @@ atslib_mkdir_exn (ats_ptr_type path, ats_mode_type mode) {
 
 static inline
 ats_int_type
-atslib_stat_err (ats_ptr_type name, ats_ptr_type buf) {
+atslib_stat_err (
+  ats_ptr_type name, ats_ptr_type buf
+) {
   return stat ((char*)name, (ats_stat_type*)buf) ;
 } /* end of [atslib_stat_err] */
 
@@ -150,6 +164,33 @@ atslib_stat_exn (ats_ptr_type name, ats_ptr_type buf) {
   }
   return ;
 } /* end of [atslib_stat_exn] */
+
+/* ****** ****** */
+
+static inline
+ats_int_type
+atslib_lstat_err (
+  ats_ptr_type name, ats_ptr_type buf
+) {
+  return lstat ((char*)name, (ats_stat_type*)buf) ;
+} /* end of [atslib_lstat_err] */
+
+static inline
+ats_void_type
+atslib_lstat_exn (ats_ptr_type name, ats_ptr_type buf) {
+  int err ;
+  err = lstat ((char*)name, (ats_stat_type*)buf) ; if (err < 0) {
+    perror ("lstat"); ats_exit_errmsg (1, "exit(ATS): [lstat] failed.\n") ;
+  }
+  return ;
+} /* end of [atslib_lstat_exn] */
+
+/* ****** ****** */
+
+static inline
+ats_mode_type atslib_umask (ats_mode_type mask_new) {
+  return umask (mask_new) ; /* the original mask is returned */
+} /* end of [atslib_umask] */
 
 /* ****** ****** */
 

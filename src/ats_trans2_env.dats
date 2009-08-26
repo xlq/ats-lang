@@ -7,33 +7,32 @@
 (***********************************************************************)
 
 (*
- * ATS/Anairiats - Unleashing the Potential of Types!
- *
- * Copyright (C) 2002-2008 Hongwei Xi, Boston University
- *
- * All rights reserved
- *
- * ATS is free software;  you can  redistribute it and/or modify it under
- * the terms of  the GNU GENERAL PUBLIC LICENSE (GPL) as published by the
- * Free Software Foundation; either version 3, or (at  your  option)  any
- * later version.
- * 
- * ATS is distributed in the hope that it will be useful, but WITHOUT ANY
- * WARRANTY; without  even  the  implied  warranty  of MERCHANTABILITY or
- * FITNESS FOR A PARTICULAR PURPOSE.  See the  GNU General Public License
- * for more details.
- * 
- * You  should  have  received  a  copy of the GNU General Public License
- * along  with  ATS;  see the  file COPYING.  If not, please write to the
- * Free Software Foundation,  51 Franklin Street, Fifth Floor, Boston, MA
- * 02110-1301, USA.
- *
- *)
+** ATS/Anairiats - Unleashing the Potential of Types!
+**
+** Copyright (C) 2002-2008 Hongwei Xi, Boston University
+**
+** All rights reserved
+**
+** ATS is free software;  you can  redistribute it and/or modify it under
+** the terms of  the GNU GENERAL PUBLIC LICENSE (GPL) as published by the
+** Free Software Foundation; either version 3, or (at  your  option)  any
+** later version.
+** 
+** ATS is distributed in the hope that it will be useful, but WITHOUT ANY
+** WARRANTY; without  even  the  implied  warranty  of MERCHANTABILITY or
+** FITNESS FOR A PARTICULAR PURPOSE.  See the  GNU General Public License
+** for more details.
+** 
+** You  should  have  received  a  copy of the GNU General Public License
+** along  with  ATS;  see the  file COPYING.  If not, please write to the
+** Free Software Foundation,  51 Franklin Street, Fifth Floor, Boston, MA
+** 02110-1301, USA.
+*)
 
 (* ****** ****** *)
 
-// Time: October 2007
 // Author: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
+// Time: October 2007
 
 (* ****** ****** *)
 
@@ -269,7 +268,7 @@ in
       $Sym.prerr_symbol id;
       prerr_newline ();
       $Err.abort {void} ()
-    end
+    end // end of [Some_vt]
   | ~None_vt _ => ()  
 end // end of [the_s2rtenv_namespace_add_topenv]
 
@@ -304,17 +303,16 @@ implement the_s2expenv_add_scst (s2c) = let
     print "s2expenv_add_scst: s2c = "; print s2c; print_newline ()
   end
   val () = begin
-    print "s2expenv_add_scst: s2c_s2t = ";
-    print (s2cst_srt_get s2c);
+    print "s2expenv_add_scst: s2c_s2t = "; print (s2cst_srt_get s2c);
     print_newline ()
-  end
+  end // end of [val]
 *)
   val id = s2cst_sym_get s2c
   val s2cs = (
     case+ the_s2expenv_find (id) of
     | ~Some_vt s2i => begin case+ s2i of
       | S2ITEMcst s2cs => s2cs | _ => S2CSTLSTnil ()
-      end
+      end // end of [Some_vt]
     | ~None_vt () => S2CSTLSTnil ()
   ) : s2cstlst
   val ans = $SymEnv.symenv_remove_fst (the_s2expenv, id)
@@ -335,7 +333,7 @@ implement the_s2expenv_add_svarlst (s2vs) = begin
   case+ s2vs of
   | cons (s2v, s2vs) => begin
       the_s2expenv_add_svar s2v; the_s2expenv_add_svarlst s2vs
-    end
+    end // end of [cons]
   | nil () => ()
 end // end of [the_s2expenv_add_svarlst]
 
@@ -361,7 +359,8 @@ end // end of [the_s2expenv_add_datcontyp]
 
 (* ****** ****** *)
 
-fn the_s2expenv_namespace_find (id: sym_t): s2itemopt_vt = let
+fn the_s2expenv_namespace_find
+  (id: sym_t): s2itemopt_vt = let
   fn f (name: sym_t):<cloptr1> s2itemopt_vt = let
     val r_m: s2itemmapref = begin
       case+ $HT.hashtbl_search (the_s2itemmaptbl, name) of
@@ -709,15 +708,20 @@ end // end of [the_d2expenv_namespace_find]
 
 implement the_d2expenv_find (id) = let
   val ans =
-    $SymEnv.symenv_search_all (the_d2expenv, id) in
+    $SymEnv.symenv_search_all (the_d2expenv, id)
+in
   case+ ans of
-  | Some_vt _ => begin
-      let val () = fold@ ans in ans end
+  | Some_vt _ => let
+      prval () = fold@ ans in ans
     end // end of [Some_vt]
   | ~None_vt _ => let
-      val ans =
-        the_d2expenv_namespace_find id in case+ ans of
-      | Some_vt _ => (fold@ ans; ans) | ~None_vt _ => begin
+      val ans = the_d2expenv_namespace_find id
+    in
+      case+ ans of
+      | Some_vt _ => let
+          prval () = fold@ ans in ans
+        end // end of [Some]
+      | ~None_vt _ => begin
           $SymEnv.symenv_pervasive_search (the_d2expenv, id)
         end // end of [None_vt]
     end // end of [None_vt]
@@ -775,6 +779,10 @@ end // end of [the_d2expenv_pop]
 implement the_d2expenv_push () = let
   val () = $SymEnv.symenv_push (the_d2expenv) in (unit_v | ())
 end // end of [the_d2expenv_push]
+
+implement the_d2expenv_swap (r_map) =
+  $SymEnv.symenv_swap (the_d2expenv, r_map)
+// end of [the_d2expenv_swap]
 
 (* ****** ****** *)
 
@@ -899,7 +907,6 @@ in
   // empty
 end // end of [trans2_env_localjoin]
 
-
 implement trans2_env_save () = () where {
   val () = $NS.the_namespace_save ()
   val () = the_s2rtenv_save ()
@@ -931,6 +938,7 @@ implement trans2_env_initialize () = begin
   the_s2rtenv_add ($Sym.symbol_ADDR, S2TEsrt s2rt_addr);
   the_s2rtenv_add ($Sym.symbol_BOOL, S2TEsrt s2rt_bool);
   the_s2rtenv_add ($Sym.symbol_CHAR, S2TEsrt s2rt_char);
+  the_s2rtenv_add ($Sym.symbol_CLS, S2TEsrt s2rt_cls);
   the_s2rtenv_add ($Sym.symbol_EFF, S2TEsrt s2rt_eff);
   the_s2rtenv_add ($Sym.symbol_INT, S2TEsrt s2rt_int);
   the_s2rtenv_add ($Sym.symbol_PROP, S2TEsrt s2rt_prop);

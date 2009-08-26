@@ -28,11 +28,13 @@ typedef digit = [i:nat | i < 10] int (i)
 // digits: array (digit, 10)
 val digits = array $arrsz {digit} (0, 1, 2, 3, 4, 5, 6, 7, 8, 9)
 
+val pf = unit_v ()
 val digits =
-  array_make_clo_tsz {digit} (10, !p_f, sizeof<digit>) where {
+  array_make_clo_tsz {digit} {unit_v} (pf | 10, !p_f, sizeof<digit>) where {
   var !p_f = @lam
-    (x: &digit? >> digit, i: sizeLt 10): void =<clo> x := int1_of_size1 (i)
+    (pf: !unit_v | x: &digit? >> digit, i: sizeLt 10): void =<clo> x := int1_of_size1 (i)
 } // end of [val]
+val unit_v () = pf
 
 fn array_square {n:nat}
   (A: array (double, n), sz: int n): void = loop (0) where {
@@ -56,7 +58,7 @@ end // end of [prarr]
 
 // persistent matrices
 
-val mat_10_10 = matrix_make_arraysize {Int} (10, 10) $arrsz (
+val mat_10_10 = matrix (10, 10) $arrsz (
    0,  1,  2,  3,  4,  5,  6,  7,  8,  9
 , 10, 11, 12, 13, 14, 15, 16, 17, 18, 19
 , 20, 21, 22, 23, 24, 25, 26, 27, 28, 29
@@ -67,7 +69,7 @@ val mat_10_10 = matrix_make_arraysize {Int} (10, 10) $arrsz (
 , 70, 71, 72, 73, 74, 75, 76, 77, 78, 79
 , 80, 81, 82, 83, 84, 85, 86, 87, 88, 89
 , 90, 91, 92, 93, 94, 99, 96, 97, 98, 99
-) // end of [val]
+) : matrix (Int, 10, 10) // end of [val]
 
 // template function for transposing a square matrix
 

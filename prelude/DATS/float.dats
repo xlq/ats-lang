@@ -39,6 +39,10 @@
 
 (* ****** ****** *)
 
+//
+// The following kind of code duplication should really be avoided!
+//
+
 implement pow_float_int1 (x, n) = let
   typedef T = float
   fun loop {n:nat} .<n>. (x: T, n: int n, res: T):<> T = begin

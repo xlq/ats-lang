@@ -7,26 +7,25 @@
 /************************************************************************/
 
 /*
- * ATS - Unleashing the Power of Types!
- *
- * Copyright (C) 2002-2008 Hongwei Xi.
- *
- * ATS is free software;  you can  redistribute it and/or modify it under
- * the terms of the GNU LESSER GENERAL PUBLIC LICENSE as published by the
- * Free Software Foundation; either version 2.1, or (at your option)  any
- * later version.
- * 
- * ATS is distributed in the hope that it will be useful, but WITHOUT ANY
- * WARRANTY; without  even  the  implied  warranty  of MERCHANTABILITY or
- * FITNESS FOR A PARTICULAR PURPOSE.  See the  GNU General Public License
- * for more details.
- * 
- * You  should  have  received  a  copy of the GNU General Public License
- * along  with  ATS;  see the  file COPYING.  If not, please write to the
- * Free Software Foundation,  51 Franklin Street, Fifth Floor, Boston, MA
- * 02110-1301, USA.
- *
- */
+** ATS - Unleashing the Power of Types!
+**
+** Copyright (C) 2002-2008 Hongwei Xi.
+**
+** ATS is free software;  you can  redistribute it and/or modify it under
+** the terms of the GNU LESSER GENERAL PUBLIC LICENSE as published by the
+** Free Software Foundation; either version 2.1, or (at your option)  any
+** later version.
+** 
+** ATS is distributed in the hope that it will be useful, but WITHOUT ANY
+** WARRANTY; without  even  the  implied  warranty  of MERCHANTABILITY or
+** FITNESS FOR A PARTICULAR PURPOSE.  See the  GNU General Public License
+** for more details.
+** 
+** You  should  have  received  a  copy of the GNU General Public License
+** along  with  ATS;  see the  file COPYING.  If not, please write to the
+** Free Software Foundation,  51 Franklin Street, Fifth Floor, Boston, MA
+** 02110-1301, USA.
+*/
 
 /* ****** ****** */
 
@@ -44,15 +43,29 @@
 /* ****** ****** */
 
 #include <inttypes.h>
-#include <stddef.h> /* size_t and ptrdiff_t */
-#include <unistd.h> /* ssize_t */
+
+// for both [size_t]
+#include <stddef.h> // and [ptrdiff_t]
+#include <unistd.h> // for [ssize_t]
 
 /* ****** ****** */
 
-typedef void ats_abs_type ;
+struct ats_struct_type ; /* of indefinite size */
+
+/* ****** ****** */
+
+typedef struct ats_struct_type ats_abs_type ;
+
 typedef void *ats_ptr_type ;
 typedef void *ats_ref_type ;
-typedef void ats_var_type ;
+
+#ifdef _ATS_GEIZELLA
+typedef void ats_var_type ; // for ATS/Geizella
+#else
+typedef struct ats_struct_type ats_var_type ;
+#endif
+typedef void ats_varet_type ;
+
 typedef void ats_void_type ;
 
 typedef struct{} ats_empty_type ;

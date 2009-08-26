@@ -7,28 +7,27 @@
 (***********************************************************************)
 
 (*
- * ATS/Anairiats - Unleashing the Potential of Types!
- *
- * Copyright (C) 2002-2008 Hongwei Xi, Boston University
- *
- * All rights reserved
- *
- * ATS is free software;  you can  redistribute it and/or modify it under
- * the terms of  the GNU GENERAL PUBLIC LICENSE (GPL) as published by the
- * Free Software Foundation; either version 3, or (at  your  option)  any
- * later version.
- * 
- * ATS is distributed in the hope that it will be useful, but WITHOUT ANY
- * WARRANTY; without  even  the  implied  warranty  of MERCHANTABILITY or
- * FITNESS FOR A PARTICULAR PURPOSE.  See the  GNU General Public License
- * for more details.
- * 
- * You  should  have  received  a  copy of the GNU General Public License
- * along  with  ATS;  see the  file COPYING.  If not, please write to the
- * Free Software Foundation,  51 Franklin Street, Fifth Floor, Boston, MA
- * 02110-1301, USA.
- *
- *)
+** ATS/Anairiats - Unleashing the Potential of Types!
+**
+** Copyright (C) 2002-2008 Hongwei Xi, Boston University
+**
+** All rights reserved
+**
+** ATS is free software;  you can  redistribute it and/or modify it under
+** the terms of  the GNU GENERAL PUBLIC LICENSE (GPL) as published by the
+** Free Software Foundation; either version 3, or (at  your  option)  any
+** later version.
+** 
+** ATS is distributed in the hope that it will be useful, but WITHOUT ANY
+** WARRANTY; without  even  the  implied  warranty  of MERCHANTABILITY or
+** FITNESS FOR A PARTICULAR PURPOSE.  See the  GNU General Public License
+** for more details.
+** 
+** You  should  have  received  a  copy of the GNU General Public License
+** along  with  ATS;  see the  file COPYING.  If not, please write to the
+** Free Software Foundation,  51 Franklin Street, Fifth Floor, Boston, MA
+** 02110-1301, USA.
+*)
 
 (* ****** ****** *)
 
@@ -101,7 +100,7 @@ p->d2var_lev := ~1;
 p->d2var_lin := ~1;
 p->d2var_isfix := false;
 p->d2var_isprf := false;
-p->d2var_decarg := nil ();
+p->d2var_decarg := list_nil ();
 p->d2var_addr := None ();
 p->d2var_view := D2VAROPTnone ();
 p->d2var_fin := D2VARFINnone ();
@@ -196,15 +195,16 @@ implement d2var_mastyp_set (d2v, os2e) =
 
 implement d2var_count_get (d2v) =
   let val (vbox pf | p) = d2v in p->d2var_count end
+// end of [d2var_count_get]
 
 implement d2var_count_inc (d2v) = let
-  val (vbox pf | p) = d2v; val n = p->d2var_count
-in
+  val (vbox pf | p) = d2v; val n = p->d2var_count in
   p->d2var_count := n + 1
-end
+end (* end of [d2var_count_inc] *)
 
 implement d2var_stamp_get (d2v) =
   let val (vbox pf | p) = d2v in p->d2var_stamp end
+// end of [d2var_stamp_get]
 
 (* ****** ****** *)
 
@@ -281,8 +281,7 @@ end // end of [local] (for assuming d2var_t)
 
 implement d2var_typ_get_some (loc0, d2v) = begin
   case+ d2var_typ_get d2v of
-  | Some s2e => s2e
-  | None () => begin
+  | Some s2e => s2e | None () => begin
       $Loc.prerr_location loc0;
       prerr ": error(3)";
       prerr ": there is no type for the dynamic variable [";
@@ -290,13 +289,12 @@ implement d2var_typ_get_some (loc0, d2v) = begin
       prerr "].";
       prerr_newline ();
       $Err.abort {s2exp} ()
-    end
+    end // end of [None]
 end // end of [d2var_typ_get_some]
 
 implement d2var_mastyp_get_some (loc0, d2v) = begin
   case+ d2var_mastyp_get d2v of
-  | Some s2e => s2e
-  | None () => begin
+  | Some s2e => s2e | None () => begin
       $Loc.prerr_location loc0;
       prerr ": error(3)";
       prerr ": there is no master type for the dynamic variable [";
@@ -304,13 +302,12 @@ implement d2var_mastyp_get_some (loc0, d2v) = begin
       prerr "].";
       prerr_newline ();
       $Err.abort {s2exp} ()
-    end
+    end // end of [None]
 end // end of [d2var_mastyp_get_some]
 
 implement d2var_addr_get_some (loc0, d2v) = begin
   case+ d2var_addr_get d2v of
-  | Some s2e => s2e
-  | None () => begin
+  | Some s2e => s2e | None () => begin
       $Loc.prerr_location loc0;
       prerr ": Internal Error: d2var_addr_get_some: ";
       prerr ": there is no address for the dynamic variable [";
@@ -318,7 +315,7 @@ implement d2var_addr_get_some (loc0, d2v) = begin
       prerr "].";
       prerr_newline ();
       $Err.abort {s2exp} ()
-    end
+    end // end of [None]
 end // end of [d2var_addr_get_some]
 
 implement d2var_view_get_some (loc0, d2v) = begin
@@ -332,13 +329,20 @@ implement d2var_view_get_some (loc0, d2v) = begin
       prerr "].";
       prerr_newline ();
       $Err.abort {d2var_t} ()
-    end
+    end // end of [D2VAROPTnone]
 end // end of [d2var_addr_get_some]
 
 (* ****** ****** *)
 
-implement fprint_d2var (pf_out | out, d2v) = begin
-  $Sym.fprint_symbol (pf_out | out, d2var_sym_get d2v)
+implement fprint_d2var (pf_out | out, d2v) = let
+  val () = $Sym.fprint_symbol (pf_out | out, d2var_sym_get d2v)
+(*
+  val () = fprint_string (pf_out | out, "(")
+  val () = $Stamp.fprint_stamp (pf_out | out, d2var_stamp_get d2v)
+  val () = fprint_string (pf_out | out, ")")
+*)
+in
+  // nothing
 end // end of [fprint_d2var]
 
 implement fprint_d2varlst {m} (pf | out, d2vs) = let
@@ -347,8 +351,9 @@ implement fprint_d2varlst {m} (pf | out, d2vs) = let
     | cons (d2v, d2vs) => begin
         if i > 0 then fprint1_string (pf | out, ", ");
         fprint_d2var (pf | out, d2v); aux (out, i+1, d2vs)
-      end
+      end // end of [cons]
     | nil () => ()
+  // end of [aux]
 in
   aux (out, 0, d2vs)
 end // end of [fprint_d2varlst]
@@ -386,14 +391,13 @@ in
 end
 
 implement d2var_ptr_viewat_make (d2v_ptr, od2v_view) = let
-  val loc = d2var_loc_get d2v_ptr
-  val sym = d2var_sym_get d2v_ptr
+  val loc = d2var_loc_get d2v_ptr and sym = d2var_sym_get d2v_ptr
   val d2v_view = (case+ od2v_view of
     | D2VAROPTsome d2v_view => d2v_view | D2VAROPTnone () => let
        val sym_view = $Sym.symbol_make_string ($Sym.symbol_name sym + ".view")
      in
        d2var_make (loc, sym_view)
-     end
+     end // end of [D2VAROPTnone]
   ) : d2var_t
   val () = d2var_lin_set (d2v_view, 0)
   val () = d2var_addr_set (d2v_view, d2var_addr_get d2v_ptr)

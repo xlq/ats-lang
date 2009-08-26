@@ -1,6 +1,11 @@
+(*
+** some testing code for functions declared in
+** prelude/SATS/string.sats
+*)
+
 //
-// some testing code for functions declared in
-// prelude/SATS/string.sats
+// Author: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
+// Time: Spring, 2009
 //
 
 (* ****** ****** *)

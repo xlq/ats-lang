@@ -7,28 +7,27 @@
 (***********************************************************************)
 
 (*
- * ATS - Unleashing the Potential of Types!
- *
- * Copyright (C) 2002-2008 Hongwei Xi, Boston University
- *
- * All rights reserved
- *
- * ATS is free software;  you can  redistribute it and/or modify it under
- * the terms of the GNU LESSER GENERAL PUBLIC LICENSE as published by the
- * Free Software Foundation; either version 2.1, or (at your option)  any
- * later version.
- * 
- * ATS is distributed in the hope that it will be useful, but WITHOUT ANY
- * WARRANTY; without  even  the  implied  warranty  of MERCHANTABILITY or
- * FITNESS FOR A PARTICULAR PURPOSE.  See the  GNU General Public License
- * for more details.
- * 
- * You  should  have  received  a  copy of the GNU General Public License
- * along  with  ATS;  see the  file COPYING.  If not, please write to the
- * Free Software Foundation,  51 Franklin Street, Fifth Floor, Boston, MA
- * 02110-1301, USA.
- *
- *)
+** ATS - Unleashing the Potential of Types!
+**
+** Copyright (C) 2002-2008 Hongwei Xi, Boston University
+**
+** All rights reserved
+**
+** ATS is free software;  you can  redistribute it and/or modify it under
+** the terms of the GNU LESSER GENERAL PUBLIC LICENSE as published by the
+** Free Software Foundation; either version 2.1, or (at your option)  any
+** later version.
+** 
+** ATS is distributed in the hope that it will be useful, but WITHOUT ANY
+** WARRANTY; without  even  the  implied  warranty  of MERCHANTABILITY or
+** FITNESS FOR A PARTICULAR PURPOSE.  See the  GNU General Public License
+** for more details.
+** 
+** You  should  have  received  a  copy of the GNU General Public License
+** along  with  ATS;  see the  file COPYING.  If not, please write to the
+** Free Software Foundation,  51 Franklin Street, Fifth Floor, Boston, MA
+** 02110-1301, USA.
+*)
 
 (* ****** ****** *)
 
@@ -64,6 +63,8 @@ fun int_of_size (sz: size_t):<> int
 fun size_of_int1 {i:nat} (i: int i):<> size_t
   = "atspre_size_of_int1"
 
+(* ****** ****** *)
+
 fun add_size_size (sz1: size_t, sz2: size_t):<> size_t
   = "atspre_add_size_size"
 overload + with add_size_size
@@ -79,6 +80,12 @@ overload * with mul_size_size
 fun div_size_size (sz1: size_t, sz2: size_t):<> size_t
   = "atspre_div_size_size"
 overload / with div_size_size
+
+fun mod_size_size (sz1: size_t, sz2: size_t):<> size_t
+  = "atspre_mod_size_size"
+overload mod with mod_size_size
+
+(* ****** ****** *)
 
 fun lt_size_size (sz1: size_t, sz2: size_t):<> bool
   = "atspre_lt_size_size"
@@ -103,6 +110,32 @@ overload = with eq_size_size
 fun neq_size_size (sz1: size_t, sz2: size_t):<> bool
   = "atspre_neq_size_size"
 overload <> with neq_size_size
+
+(* ****** ****** *)
+
+// bit operations
+
+fun land_size_size (sz1: size_t, sz2: size_t):<> size_t
+  = "atspre_land_size_size"
+
+fun lor_size_size (sz1: size_t, sz2: size_t):<> size_t
+  = "atspre_lor_size_size"
+
+fun lxor_size_size (sz1: size_t, sz2: size_t):<> size_t
+  = "atspre_lxor_size_size"
+
+overload land with land_size_size
+overload lor with lor_size_size
+overload lxor with lxor_size_size
+
+fun lsl_size_int1 (sz: size_t, n: Nat):<> size_t
+  = "atspre_lsl_size_int1"
+
+and lsr_size_int1 (sz: size_t, n: Nat):<> size_t
+  = "atspre_lsr_size_int1"
+
+overload << with lsl_size_int1
+overload >> with lsr_size_int1
 
 (* ****** ****** *)
 
@@ -207,6 +240,18 @@ fun mul2_size1_size1
   :<> [p:int] (MUL (i, j, p) | size_t p)
   = "atspre_mul2_size1_size1"
 overload szmul2 with mul2_size1_size1
+
+// ------ ------
+
+fun div_size1_int1 {i,j:int | j <> 0}
+  (i: size_t i, j: int j):<> size_t (i/j)
+  = "atspre_div_size1_int1"
+overload / with div_size1_int1
+
+fun div_size1_size1 {i,j:int | j <> 0}
+  (i: size_t i, j: size_t j):<> size_t (i/j)
+  = "atspre_div_size1_size1"
+overload / with div_size1_size1
 
 // ------ ------
 

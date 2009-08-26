@@ -7,28 +7,27 @@
 (***********************************************************************)
 
 (*
- * ATS/Anairiats - Unleashing the Potential of Types!
- *
- * Copyright (C) 2002-2008 Hongwei Xi, Boston University
- *
- * All rights reserved
- *
- * ATS is free software;  you can  redistribute it and/or modify it under
- * the terms of  the GNU GENERAL PUBLIC LICENSE (GPL) as published by the
- * Free Software Foundation; either version 3, or (at  your  option)  any
- * later version.
- * 
- * ATS is distributed in the hope that it will be useful, but WITHOUT ANY
- * WARRANTY; without  even  the  implied  warranty  of MERCHANTABILITY or
- * FITNESS FOR A PARTICULAR PURPOSE.  See the  GNU General Public License
- * for more details.
- * 
- * You  should  have  received  a  copy of the GNU General Public License
- * along  with  ATS;  see the  file COPYING.  If not, please write to the
- * Free Software Foundation,  51 Franklin Street, Fifth Floor, Boston, MA
- * 02110-1301, USA.
- *
- *)
+** ATS/Anairiats - Unleashing the Potential of Types!
+**
+** Copyright (C) 2002-2008 Hongwei Xi, Boston University
+**
+** All rights reserved
+**
+** ATS is free software;  you can  redistribute it and/or modify it under
+** the terms of  the GNU GENERAL PUBLIC LICENSE (GPL) as published by the
+** Free Software Foundation; either version 3, or (at  your  option)  any
+** later version.
+** 
+** ATS is distributed in the hope that it will be useful, but WITHOUT ANY
+** WARRANTY; without  even  the  implied  warranty  of MERCHANTABILITY or
+** FITNESS FOR A PARTICULAR PURPOSE.  See the  GNU General Public License
+** for more details.
+** 
+** You  should  have  received  a  copy of the GNU General Public License
+** along  with  ATS;  see the  file COPYING.  If not, please write to the
+** Free Software Foundation,  51 Franklin Street, Fifth Floor, Boston, MA
+** 02110-1301, USA.
+*)
 
 (* ****** ****** *)
 
@@ -152,28 +151,30 @@ implement s2varlstord_add (s2vs0, s2v0) = begin
         cons (s2v0, s2vs0)
       end else begin
         cons (s2v, s2varlstord_add (s2vs, s2v0))
-      end
-    end
+      end // end of [if]
+    end (* end of [cons] *)
   | nil () => cons (s2v0, nil ()) 
-end // end of [s2varlstord_add]
+end (* end of [s2varlstord_add] *)
 
 implement s2varlstord_addlst (s2vs0, s2vs) = begin
   case+ s2vs of
   | cons (s2v, s2vs) => begin
       s2varlstord_addlst (s2varlstord_add (s2vs0, s2v), s2vs)
-    end
+    end // end of [cons]
   | nil () => s2vs0
-end // end of [s2varlstord_addlst]
+end (* end of [s2varlstord_addlst] *)
 
-implement d2varlstord_add (d2vs0, d2v0) = case+ d2vs0 of
+implement d2varlstord_add (d2vs0, d2v0) = begin
+  case+ d2vs0 of
   | cons (d2v, d2vs) => begin
       if d2var_sym_lte (d2v0, d2v) then begin
         cons (d2v0, d2vs0)
       end else begin
         cons (d2v, d2varlstord_add (d2vs, d2v0))
-      end
-    end
+      end // end of [if]
+    end (* end of [cons] *)
   | nil () => cons (d2v0, nil ())
+end (* end of [d2varlstord_add] *)
 
 implement s2varlstord_union (s2vs10, s2vs20) = begin
   case+ s2vs10 of
@@ -183,10 +184,10 @@ implement s2varlstord_union (s2vs10, s2vs20) = begin
           cons (s2v1, s2varlstord_union (s2vs1, s2vs20))
         end else begin
           cons (s2v2, s2varlstord_union (s2vs10, s2vs2))
-        end
-      end
+        end // end of [if]
+      end (* end of [::] *)
     | nil () => s2vs10
-    end
+    end (* end of [::] *)
   | nil () => s2vs20
 end // end of [s2varlstord_union]
 
@@ -198,34 +199,36 @@ implement d2varlstord_union (d2vs10, d2vs20) = begin
           cons (d2v1, d2varlstord_union (d2vs1, d2vs20))
         end else begin
           cons (d2v2, d2varlstord_union (d2vs10, d2vs2))
-        end
-      end
+        end // end of [if]
+      end (* end of [::] *)
     | nil () => d2vs10
-    end
+    end (* end of [::] *)
   | nil () => d2vs20
 end // end of [d2varlstord_union]
 
 (* ****** ****** *)
 
 implement s2varlstord_linearity_test (loc, s2vs) = let
-  fun aux
-    (loc: loc_t, s2v0: s2var_t, s2vs: s2varlst, err: int): int =
+  fun aux (
+      loc: loc_t, s2v0: s2var_t, s2vs: s2varlst, err: int
+    ) : int =
     case+ s2vs of
     | cons (s2v, s2vs) => begin
         if s2var_sym_lt (s2v0, s2v) then begin
           aux (loc, s2v, s2vs, err)
         end else begin
           s2var_errmsg (loc, s2v0); aux (loc, s2v, s2vs, err+1)
-        end
-      end
+        end // end of [if]
+      end (* end of [cons] *)
     | nil () => err
+  // end of [aux]
 in
   case+ s2vs of
   | cons (s2v, s2vs) => begin
       if aux (loc, s2v, s2vs, 0) > 0 then $Err.abort {void} ()
-    end
+    end // end of [cons]
   | nil () => ()
-end // end of [s2varlstord_linearity_test]
+end (* end of [s2varlstord_linearity_test] *)
 
 implement d2varlstord_linearity_test (loc, d2vs) = let
   fun aux
@@ -236,16 +239,17 @@ implement d2varlstord_linearity_test (loc, d2vs) = let
           aux (loc, d2v, d2vs, err)
         end else begin
           d2var_errmsg (loc, d2v0); aux (loc, d2v, d2vs, err+1)
-        end
-      end
+        end // end of [if]
+      end (* end of [cons] *)
     | nil () => err
+  // end of [aux]
 in
   case+ d2vs of
   | cons (d2v, d2vs) => begin
       if aux (loc, d2v, d2vs, 0) > 0 then $Err.abort {void} ()
-    end
+    end // end of [cons]
   | nil () => ()
-end // end of [d2varlstord_linearity_test]
+end (* end of [d2varlstord_linearity_test] *)
 
 end // end of [local]
 
@@ -256,8 +260,9 @@ implement p2atlst_svs_union (p2ts) = let
     case+ p2ts of
     | cons (p2t, p2ts) => begin
         loop (p2ts, s2varlstord_union (ans, p2t.p2at_svs))
-      end
+      end // end of [cons]
     | nil () => ans
+  // end of [loop]
 in
   loop (p2ts, s2varlstord_nil)
 end // end of [p2atlst_svs_union]
@@ -267,8 +272,9 @@ implement p2atlst_dvs_union (p2ts) = let
     case+ p2ts of
     | cons (p2t, p2ts) => begin
         loop (p2ts, d2varlstord_union (ans, p2t.p2at_dvs))
-      end
+      end // end of [cons]
     | nil () => ans
+  // end of [loop]
 in
   loop (p2ts, d2varlstord_nil)
 end // end of [p2atlst_dvs_union]
@@ -280,8 +286,9 @@ implement labp2atlst_svs_union (lp2ts) = let
     case+ lp2ts of
     | LABP2ATLSTcons (l, p2t, lp2ts) => begin
         loop (lp2ts, s2varlstord_union (ans, p2t.p2at_svs))
-      end
+      end // end of [LABP2ATLSTcons]
     | _ => ans
+  // end of [loop]
 in
   loop (lp2ts, s2varlstord_nil)
 end // end of [labp2atlst_svs_union]
@@ -291,8 +298,9 @@ implement labp2atlst_dvs_union (lp2ts) = let
     case+ lp2ts of
     | LABP2ATLSTcons (l, p2t, lp2ts) => begin
         loop (lp2ts, d2varlstord_union (ans, p2t.p2at_dvs))
-      end
+      end // end of [LABP2ATLSTcons]
     | _ => ans
+  // end of [loop]
 in
   loop (lp2ts, d2varlstord_nil)
 end // end of [labp2atlst_dvs_union]
@@ -347,7 +355,7 @@ implement p2at_con (loc, refknd, d2c, qua, res, npf, p2ts_arg) = let
       case+ s2vpss of
       | cons (s2vps, s2vpss) => begin
           loop (s2vpss, s2varlstord_addlst (svs, s2vps.0))
-        end
+        end // end of [cons]
       | nil () => svs
   } // end of [where]
   val dvs = p2atlst_dvs_union (p2ts_arg)
@@ -442,7 +450,7 @@ implement p2at_tup (loc, tupknd, npf, p2ts) = let
           val l = $Lab.label_make_int i
         in
           LABP2ATLSTcons (l, p2t, aux (i+1, p2ts))
-        end
+        end // end of [::]
       | nil () => LABP2ATLSTnil ()    
   } // end of [where]
 in '{
@@ -500,19 +508,19 @@ implement d2exp_apps (loc, d2e_fun, d2as_arg) = '{
 implement d2exp_app_sta (loc0, d2e_fun, s2as) = begin
   case+ s2as of
   | cons _ => let
-      val node: d2exp_node =
-        case+ d2e_fun.d2exp_node of
+      val node = (case+ d2e_fun.d2exp_node of
         | D2Eapps (d2e_fun, d2as) => let
             val d2as = $Lst.list_extend (d2as, D2EXPARGsta s2as)
           in
             D2Eapps (d2e_fun, d2as)
           end
         | _ => D2Eapps (d2e_fun, cons (D2EXPARGsta s2as, nil ()))
+      ) : d2exp_node
     in
       '{ d2exp_loc= loc0, d2exp_node= node, d2exp_typ= None () }
-    end
+    end // end of [cons]
   | nil _ => d2e_fun
-end // end of [d2exp_app_sta]
+end (* end of [d2exp_app_sta] *)
 
 implement d2exp_app_dyn
   (loc0, d2e_fun, loc_arg, npf, darg) = let
@@ -524,6 +532,7 @@ implement d2exp_app_dyn
         D2Eapps (d2e_fun, d2as)
       end
     | _ => D2Eapps (d2e_fun, cons (d2a, nil ()))
+  // end of [val]
 in
   '{ d2exp_loc= loc0, d2exp_node= node, d2exp_typ= None () }
 end // end of [d2exp_app_dyn]
@@ -740,29 +749,44 @@ implement d2exp_lst (loc, lin, os2e_elt, d2es_elt) = '{
 
 implement d2exp_mac (loc, d2m) = '{
   d2exp_loc= loc, d2exp_node= D2Emac (d2m), d2exp_typ= None ()
-}
+} // end of [d2exp_mac]
 
 implement d2exp_macsyn (loc, knd, d2e) = '{
   d2exp_loc= loc
 , d2exp_node= D2Emacsyn (knd, d2e)
 , d2exp_typ= None ()
-}
+} // end of [d2exp_macsyn]
+
+(* ****** ****** *)
+
+implement d2exp_mtd (loc, d2m) = '{
+  d2exp_loc= loc, d2exp_node= D2Emtd (d2m), d2exp_typ= None ()
+} // end of [d2exp_mtd]
+
+(* ****** ****** *)
+
+implement d2exp_obj
+  (loc, knd, d2c_cls, s2e_cls, mtdlst) = '{
+  d2exp_loc= loc
+, d2exp_node= D2Eobj (knd, d2c_cls, s2e_cls, mtdlst)
+, d2exp_typ= None ()
+} // end of [d2exp_obj]
 
 (* ****** ****** *)
 
 implement d2exp_ptrof (loc, d2e) = '{
   d2exp_loc= loc, d2exp_node= D2Eptrof (d2e), d2exp_typ= None ()
-}
+} // end of [d2exp_ptrof]
 
 implement d2exp_raise (loc, d2e_exn) = '{
   d2exp_loc= loc, d2exp_node= D2Eraise (d2e_exn), d2exp_typ= None ()
-}
+} // end of [d2exp_raise]
 
 implement d2exp_rec (loc, recknd, npf, ld2es) = '{
   d2exp_loc= loc
 , d2exp_node= D2Erec (recknd, npf, ld2es)
 , d2exp_typ= None ()
-}
+} // end of [d2exp_rec]
 
 implement d2exp_scaseof (loc, inv, s2e, sc2ls) = '{
   d2exp_loc= loc
@@ -774,7 +798,7 @@ implement d2exp_sel (loc, d2e_root, d2ls_path) = '{
   d2exp_loc= loc
 , d2exp_node = D2Esel (d2e_root, d2ls_path)
 , d2exp_typ= None ()
-}
+} // end of [d2exp_sel]
 
 implement d2exp_sel_ptr (loc, d2e, d2l) = let
   val d2e_root = d2exp_deref (d2e.d2exp_loc, d2e)
@@ -786,7 +810,7 @@ in '{
 
 implement d2exp_seq (loc, d2es) = '{
   d2exp_loc= loc, d2exp_node= D2Eseq (d2es), d2exp_typ= None ()
-}
+} // end of [d2exp_seq]
 
 implement d2exp_sif
   (loc, inv, s2e_cond, d2e_then, d2e_else) = '{
@@ -851,14 +875,15 @@ implement d2exp_while (loc, inv, d2e_test, d2e_body) = '{
 
 (* ****** ****** *)
 
-implement d2exp_tup (loc, tupknd, npf, d2es) = let
+implement d2exp_tup
+  (loc, tupknd, npf, d2es) = let
   fun aux (i: int, d2es: d2explst): labd2explst =
     case+ d2es of
     | list_cons (d2e, d2es) => let
         val l = $Lab.label_make_int i
       in
         LABD2EXPLSTcons (l, d2e, aux (i+1, d2es))
-      end
+      end // end of [list_cons]
     | list_nil () => LABD2EXPLSTnil ()
   val ld2es = aux (0, d2es)
 in '{
@@ -921,8 +946,7 @@ fn i2nvarg_update (arg: i2nvarg): i2nvarg = let
 in
   case+ d2var_view_get d2v of
   | D2VAROPTsome d2v_view => let
-      val s2e_addr = (
-        case+ d2var_addr_get d2v of
+      val s2e_addr = (case+ d2var_addr_get d2v of
         | Some s2e_addr => s2e_addr
         | None => begin
             prerr "Internal Error: i2nvresstate_tr: no address: d2v = ";
@@ -931,16 +955,15 @@ in
             $Err.abort {s2exp} ()
           end
       ) : s2exp
-      val os2e_at = (
-        case+ arg.i2nvarg_typ of
+      val os2e_at = (case+ arg.i2nvarg_typ of
         | Some s2e => Some (s2exp_at_viewt0ype_addr_view (s2e, s2e_addr))
         | None () => None ()
       ) : s2expopt
     in
       i2nvarg_make (d2v_view, os2e_at)
-    end
+    end // end of [D2VAROPTsome]
   | D2VAROPTnone () => arg
-end // end of [i2nvarg_update]
+end (* end of [i2nvarg_update] *)
 
 in
 
@@ -994,13 +1017,23 @@ implement s2aspdec_make (loc, s2c, def) = '{
   s2aspdec_loc= loc, s2aspdec_cst= s2c, s2aspdec_def= def
 }
 
+implement c2lassdec_make
+  (loc, knd, s2c, supclss, mtdlst, mtdmap) = '{
+  c2lassdec_loc= loc
+, c2lassdec_knd= knd
+, c2lassdec_cst= s2c
+, c2lassdec_suplst= supclss
+, c2lassdec_mtdlst= mtdlst
+, c2lassdec_mtdmap= mtdmap
+} // end of [c2lassdec_make]
+
 implement v2aldec_make (loc, p2t, def, ann) = '{
   v2aldec_loc= loc, v2aldec_pat= p2t, v2aldec_def= def, v2aldec_ann= ann
-}
+} // end of [v2aldec_make]
 
 implement f2undec_make (loc, d2v, def, ann) = '{
   f2undec_loc= loc, f2undec_var= d2v, f2undec_def= def, f2undec_ann= ann
-}
+} // end of [f2undec_make]
 
 implement v2ardec_make (loc, knd, d2v, s2v, typ, wth, ini) = '{
   v2ardec_loc= loc
@@ -1052,6 +1085,10 @@ implement d2ec_saspdec (loc, d2c) = '{
   d2ec_loc= loc, d2ec_node= D2Csaspdec d2c
 }
 
+implement d2ec_dcstdec (loc, dck, d2cs) = '{
+  d2ec_loc= loc, d2ec_node= D2Cdcstdec (dck, d2cs)
+}
+
 implement d2ec_datdec (loc, dtk, s2cs) = '{
   d2ec_loc= loc, d2ec_node= D2Cdatdec (dtk, s2cs)
 }
@@ -1060,8 +1097,8 @@ implement d2ec_exndec (loc, d2cs) = '{
   d2ec_loc= loc, d2ec_node= D2Cexndec (d2cs)
 }
 
-implement d2ec_dcstdec (loc, dck, d2cs) = '{
-  d2ec_loc= loc, d2ec_node= D2Cdcstdec (dck, d2cs)
+implement d2ec_classdec (loc, d2c) = '{
+  d2ec_loc= loc, d2ec_node= D2Cclassdec (d2c)
 }
 
 implement d2ec_overload (loc, id, qid) = '{
@@ -1118,7 +1155,7 @@ implement d2ec_staload (loc, fil, od2cs) = '{
 
 (* ****** ****** *)
 
-implement l2val_make_d2exp (d2e0) =
+implement l2val_make_d2exp (d2e0) = begin
   case+ d2e0.d2exp_node of
   | D2Earrsub (d2s_brackets, d2e_arr, loc_ind, d2ess_ind) => let
       val isptr = d2exp_var_cst_is_ptr d2e_arr
@@ -1141,6 +1178,7 @@ implement l2val_make_d2exp (d2e0) =
   | D2Evar d2v when d2var_is_linear d2v => L2VALvar_lin (d2v, nil ())
   | D2Evar d2v when d2var_is_mutable d2v => L2VALvar_mut (d2v, nil ())
   | _ => L2VALnone (d2e0)
+end // end of [l2val_make_d2exp]
 
 (* ****** ****** *)
 

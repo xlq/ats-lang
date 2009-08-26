@@ -1,6 +1,11 @@
+(*
+** some testing code for functions declared in
+** prelude/SATS/matrix.sats
+*)
+
 //
-// some testing code for functions declared in
-// prelude/SATS/matrix.sats
+// Author: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
+// Time: Spring, 2009
 //
 
 (* ****** ****** *)
@@ -19,11 +24,11 @@ implement main (argc, argv) = let
     #define row 2
     #define col 5
     val M = matrix_make_arraysize {int}
-      (row, col) ($arrsz (0, 1, 2, 3, 4, 5, 6, 7, 8, 9))
+      (row, col, $arrsz (0, 1, 2, 3, 4, 5, 6, 7, 8, 9))
     prval pf = unit_v ()
     // testing [matrix_iforeach_fun]
     val () = print "M (0-9) =\n"
-    val () = matrix_iforeach_fun {unit_v} (pf | f, M, row, col) where {
+    val () = matrix_iforeach_fun {unit_v} (pf | M, f, row, col) where {
       fn f (
           pf: !unit_v | i: sizeLt row, j: sizeLt col, x: &int
         ) :<> void = $effmask_all let
@@ -34,7 +39,7 @@ implement main (argc, argv) = let
     val () = print_newline ()
     // testing [matrix_iforeach_clo]
     val () = print "M (0-9) =\n"
-    val () = matrix_iforeach_clo {unit_v} (pf | !p_f, M, row, col) where {
+    val () = matrix_iforeach_clo {unit_v} (pf | M, !p_f, row, col) where {
       var !p_f = @lam
         (pf: !unit_v | i: sizeLt row, j: sizeLt col, x: &int): void =<clo>
         $effmask_all (let

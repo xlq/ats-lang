@@ -90,7 +90,6 @@ praxi eqsize_char_uchar (): [sizeof char == sizeof uchar] void
 
 val AssertionException : exn = "AssertionException"
 val DivisionByZeroException : exn = "DivisionByZeroException"
-val NotFoundException : exn = "NotFoundException"
 val OverflowException : exn = "OverflowException"
 val SubscriptException : exn = "SubscriptException"
 
@@ -108,52 +107,56 @@ val true : bool (true) and false : bool (false)
 
 fun exit {a:viewt@ype} (status: int):<!exn> a
   = "ats_exit"
+// end of [exit]
 
 fun exit_main {a:viewt@ype}
-  {v_in:view} {v_out:view} (pf: v_in | status: int):<!exn> (v_out | a)
+  {v_in:view} {v_out:view}
+  (pf: !v_in >> v_out | status: int):<!exn> a
   = "ats_exit"
+// end of [exit_main]
 
-fun exit_errmsg {a:viewt@ype} (status: int, msg: string):<!exnref> a
+fun exit_errmsg {a:viewt@ype}
+  (status: int, msg: string):<!exnref> a
   = "ats_exit_errmsg"
+// end of [exit_errmsg]
 
 fun exit_prerrf {a:viewt@ype} {ts:types}
   (status: int, fmt: printf_c ts, args: ts):<!exnref> a
   = "atspre_exit_prerrf"
+// end of [exit_prerrf]
 
 (* ****** ****** *)
 
 fun assert_bool (assertion: bool):<!exn> void
   = "atspre_assert"
+overload assert with assert_bool
 
 fun assert_bool1 {b:bool} (assertion: bool b):<!exn> [b] void
   = "atspre_assert"
-
-overload assert with assert_bool
 overload assert with assert_bool1
+
+//
 
 fun assert_errmsg_bool
   (assertion: bool, msg: string):<!exnref> void
   = "atspre_assert_errmsg"
+overload assert_errmsg with assert_errmsg_bool
 
 fun assert_errmsg_bool1 {b:bool}
   (assertion: bool b, msg: string):<!exnref> [b] void
   = "atspre_assert_errmsg"
+overload assert_errmsg with assert_errmsg_bool1
 
 //
 
 fun assert_errmsg_bool_string1
   (assertion: bool, msg: String):<!exnref> void
   = "atspre_assert_errmsg"
+overload assert_errmsg with assert_errmsg_bool_string1
 
 fun assert_errmsg_bool1_string1 {b:bool}
   (assertion: bool b, msg: String):<!exnref> [b] void
   = "atspre_assert_errmsg"
-
-//
-
-overload assert_errmsg with assert_errmsg_bool
-overload assert_errmsg with assert_errmsg_bool1
-overload assert_errmsg with assert_errmsg_bool_string1
 overload assert_errmsg with assert_errmsg_bool1_string1
 
 (* ****** ****** *)
@@ -215,23 +218,31 @@ overload free_gc_elim with free_gc_t0ype_int_addr_elim
 // implemented in [basics.cats]
 
 castfn cloptr_get_view_ptr {a:viewt@ype}
-  (f: cloptr a):<> [l:addr] (free_gc_v l, clo a @ l | ptr l)
+  (x: cloptr a):<> [l:addr] (free_gc_v l, clo a @ l | ptr l)
   = "atspre_cloptr_get_view_ptr"
 
-castfn cloptr_make_view_ptr {a:viewt@ype}
-  {l:addr} (pf_gc: free_gc_v l, pf_at: clo a @ l | p: ptr l):<> cloptr a
+castfn cloptr_make_view_ptr {a:viewt@ype} {l:addr}
+  (pf_gc: free_gc_v l, pf_at: clo a @ l | p: ptr l):<> cloptr a
   = "atspre_cloptr_make_view_ptr"
 
 castfn cloref_get_view_ptr {a:t@ype}
-  (f: cloref a):<> [l:addr] (vbox (clo a @ l) | ptr l)
+  (x: cloref a):<> [l:addr] (vbox (clo a @ l) | ptr l)
   = "atspre_cloref_get_view_ptr"
 
 castfn cloref_make_view_ptr {a:t@ype}
   {l:addr} (pf: vbox (clo a @ l) | p: ptr l):<> cloref a
   = "atspre_cloref_make_view_ptr"
   
-fun cloptr_free {a:t@ype} (_: cloptr a):<> void
+fun cloptr_free {a:t@ype} (x: cloptr a):<> void
   = "atspre_cloptr_free"
+
+(* ****** ****** *)
+
+// implemented in [basic.cats]
+
+castfn objmod_upcast
+  {c1,c2:cls | c1 <= c2} (x: objmod c1):<> objmod c2
+  = "atspre_objmod_upcast"
 
 (* ****** ****** *)
 
@@ -245,26 +256,11 @@ fun vbox_make_view_ptr
 
 (* ****** ****** *)
 
-(*
+praxi opt_some {a:viewt@ype} (x: !(a) >> opt (a, 1)):<prf> void
+praxi opt_unsome {a:viewt@ype} (x: !opt (a, 1) >> a):<prf> void
 
-val{a:t@ype} value_none : value (a, 0)
-  = "atspre_value_none"
-
-fun{a:t@ype} value_some (x: a):<> value (a, 1)
-  = "atspre_value_some"
-
-fun{a:t@ype} value_unsome (x: value (a, 1)):<> a
-  = "atspre_value_unsome"
-
-// the following functions are only available for special types
-
-fun{a:t@ype} value_is_none {i:two} (x: value (a, i)):<> bool (i == 0)
-  = "atspre_value_is_none"
-
-fun{a:t@ype} value_is_some {i:two} (x: value (a, i)):<> bool (i == 1)
-  = "atspre_value_is_some"
-
-*)
+praxi opt_none {a:viewt@ype} (x: !(a?) >> opt (a, 0)):<prf> void
+praxi opt_unnone {a:viewt@ype} (x: !opt (a, 0) >> a?):<prf> void
 
 (* ****** ****** *)
 
@@ -289,6 +285,8 @@ and vtfrac_unsplit {vt:viewtype} {r1,r2:rat} {s:stamp}
   (_: vtfrac (s, vt, r1), vtfrac (s, vt, r2)):<> vtfrac (s, vt, r1+r2)
 
 *)
+
+(* ****** ****** *)
 
 abstype file_mode (file_mode) // string type
 

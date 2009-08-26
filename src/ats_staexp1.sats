@@ -253,6 +253,8 @@ datatype s1exp_node =
       (s1exp(*view*), s1exp(*viewtype*))
   | S1Estruct of (* struct type *)
       labs1explst
+  | S1Etmpid of (* template id *)
+      ($Syn.tmpqi0de, tmps1explstlst)
   | S1Etop of (*0/1: topization/typization *)
       (int(*knd*), s1exp)
   | S1Etrans of (* view or viewtype transform *)
@@ -269,18 +271,22 @@ datatype s1exp_node =
       (s1qualst, s1exp)
   | S1Eunion of (* union type *)
       (s1exp (*index*), labs1explst)
+// end of [s1exp_node]
 
 and labs1explst =
   | LABS1EXPLSTnil | LABS1EXPLSTcons of (lab_t, s1exp, labs1explst)
+// end of [labs1explst]
 
 and tmps1explstlst =
   | TMPS1EXPLSTLSTnil
   | TMPS1EXPLSTLSTcons of (loc_t, s1explst, tmps1explstlst)
+// end of [tmps1explstlst]
 
 and wths1explst = // needed in [ats_trans2_sta.dats]
   | WTHS1EXPLSTnil
   | WTHS1EXPLSTcons_some of (int(*refval*), s1exp, wths1explst)
   | WTHS1EXPLSTcons_none of wths1explst
+// end of [wths1explst]
 
 and s1rtext_node =
   | S1TEsrt of s1rt
@@ -289,13 +295,15 @@ and s1rtext_node =
   | S1TElam of (s1arglst, s1rtext)
   | S1TEapp of (s1rtext, s1explst)
 *)
+// end of [s1rtext_node]
 
 and s1qua_node =
   | S1Qprop of s1exp | S1Qvars of (i0delst, s1rtext)
+// end of [s1qua_node]
 
 where s1exp : type = '{
   s1exp_loc= loc_t, s1exp_node= s1exp_node
-}
+} // end of [s1exp]
 
 and s1explst = List s1exp
 and s1expopt = Option s1exp
@@ -304,11 +312,11 @@ and s1explstopt = Option s1explst
 
 and s1rtext = '{ (* type for extended sorts *)
   s1rtext_loc= loc_t, s1rtext_node= s1rtext_node
-}
+} // end of [s1rtext]
 
 and s1qua = '{
   s1qua_loc= loc_t, s1qua_node= s1qua_node
-}
+} // end of [s1qua]
 
 and s1qualst = List s1qua
 and s1qualstlst = List s1qualst
@@ -397,7 +405,11 @@ fun s1exp_imp
   (_: loc_t, fc: funclo, lin: int, prf: int, _: efcopt): s1exp
 fun s1exp_int (_: loc_t, int: string): s1exp
 fun s1exp_invar (_: loc_t, refval: int, arg: s1exp): s1exp
-fun s1exp_lam (_: loc_t, arg: s1arglst, res: s1rtopt, body: s1exp): s1exp
+
+fun s1exp_lam
+  (_: loc_t, arg: s1arglst, res: s1rtopt, body: s1exp): s1exp
+// end of [s1exp_lam]
+
 fun s1exp_list (_: loc_t, _: s1explst): s1exp
 fun s1exp_list2 (_: loc_t, _1: s1explst, _2: s1explst): s1exp
 fun s1exp_mod (_: loc_t, q: s0taq, id: sym_t, _: labs1explst): s1exp
@@ -405,6 +417,11 @@ fun s1exp_named (_: loc_t, name: sym_t, s1e: s1exp): s1exp
 fun s1exp_qid (_: loc_t, q: s0taq, id: sym_t): s1exp
 fun s1exp_read (_: loc_t, s1e: s1exp(*list*)): s1exp
 fun s1exp_struct (_: loc_t, _: labs1explst): s1exp
+
+fun s1exp_tmpid
+  (_: loc_t, qid: $Syn.tmpqi0de, decarg: tmps1explstlst): s1exp
+// end of [s1exp_tmpid]
+
 fun s1exp_top (_: loc_t, knd: int, arg: s1exp): s1exp
 fun s1exp_trans (_: loc_t, arg1: s1exp, arg2: s1exp): s1exp
 fun s1exp_tyarr (_: loc_t, elt: s1exp, dim: s1explstlst): s1exp

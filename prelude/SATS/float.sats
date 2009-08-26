@@ -51,6 +51,11 @@
 
 (* ****** ****** *)
 
+typedef lint = int_long_t0ype
+typedef llint = int_long_long_t0ype
+
+(* ****** ****** *)
+
 abst@ype float_t0ype = $extype "ats_float_type"
 stadef float = float_t0ype
 
@@ -63,13 +68,39 @@ stadef ldouble = double_long_t0ype
 
 (* ****** ****** *)
 
+fun int_of_float (f: float):<> int
+  = "atspre_int_of_float"
+overload int_of with int_of_float
+
+fun lint_of_float (f: float):<> lint
+  = "atspre_lint_of_float"
+overload lint_of with lint_of_float
+
+fun llint_of_float (f: float):<> llint
+  = "atspre_llint_of_float"
+overload llint_of with llint_of_float
+
+//
+
 fun float_of_int (i: int):<> float
   = "atspre_float_of_int"
 overload float_of with float_of_int
 
+fun float_of_lint (li: lint):<> float
+  = "atspre_float_of_lint"
+overload float_of with float_of_lint
+
+fun float_of_llint (lli: llint):<> float
+  = "atspre_float_of_llint"
+overload float_of with float_of_llint
+
+//
+
 fun float_of_double (d: double):<> float
   = "atspre_float_of_double"
 overload float_of with float_of_double
+
+//
 
 fun float_of_string (s: string):<> float
   = "atspre_float_of_string"
@@ -198,9 +229,33 @@ overload tostring with tostring_float
 
 (* ****** ****** *)
 
+fun int_of_double (d: double):<> int
+  = "atspre_int_of_double"
+overload int_of with int_of_double
+
+fun lint_of_double (d: double):<> lint
+  = "atspre_lint_of_double"
+overload lint_of with lint_of_double
+
+fun llint_of_double (d: double):<> llint
+  = "atspre_llint_of_double"
+overload llint_of with llint_of_double
+
+//
+
 fun double_of_int (i: int):<> double
   = "atspre_double_of_int"
 overload double_of with double_of_int
+
+fun double_of_lint (li: lint):<> double
+  = "atspre_double_of_lint"
+overload double_of with double_of_lint
+
+fun double_of_llint (lli: llint):<> double
+  = "atspre_double_of_llint"
+overload double_of with double_of_llint
+
+//
 
 fun double_of_float (f: float):<> double
   = "atspre_double_of_float"
@@ -225,30 +280,53 @@ and pred_double (d: double):<> double = "atspre_pred_double"
 overload succ with succ_double
 overload pred with pred_double
 
+//
+
 fun add_double_double (d1: double, d2: double):<> double
   = "atspre_add_double_double"
-and sub_double_double (d1: double, d2: double):<> double
-  = "atspre_sub_double_double"
+and add_double_int (d1: double, i2: int):<> double
+  = "atspre_add_double_int"
+and add_int_double (i1: int, d2: double):<> double
+  = "atspre_add_int_double"
+overload + with add_double_double
+overload + with add_double_int
+overload + with add_int_double
 
-and mul_double_double (d1: double, d2: double):<> double
+fun sub_double_double (d1: double, d2: double):<> double
+  = "atspre_sub_double_double"
+and sub_double_int (d1: double, i2: int):<> double
+  = "atspre_sub_double_int"
+and sub_int_double (i1: int, d2: double):<> double
+  = "atspre_sub_int_double"
+overload - with sub_double_double
+overload - with sub_double_int
+overload - with sub_int_double
+
+//
+
+fun mul_double_double (d1: double, d2: double):<> double
   = "atspre_mul_double_double"
+and mul_double_int (d1: double, i2: int):<> double
+  = "atspre_mul_double_int"
 and mul_int_double (i1: int, d2: double):<> double
   = "atspre_mul_int_double"
+overload * with mul_double_double
+overload * with mul_double_int
+overload * with mul_int_double
 
-and div_double_double (d1: double, d2: double):<> double
+//
+
+fun div_double_double (d1: double, d2: double):<> double
   = "atspre_div_double_double"
 and div_double_int (f1: double, i2: int):<> double
   = "atspre_div_double_int"
-
-
-overload + with add_double_double
-overload - with sub_double_double
-
-overload * with mul_double_double
-overload * with mul_int_double
-
+and div_int_double (i1: int, d2: double):<> double
+  = "atspre_div_int_double"
 overload / with div_double_double
 overload / with div_double_int
+overload / with div_int_double
+
+//
 
 fun lt_double_double (d1: double, d2: double):<> bool
   = "atspre_lt_double_double"
@@ -334,14 +412,43 @@ overload tostring with tostring_double
 
 (* ****** ****** *)
 
+fun int_of_ldouble (ld: ldouble):<> int
+  = "atspre_int_of_ldouble"
+overload int_of with int_of_ldouble
+
+fun lint_of_ldouble (ld: ldouble):<> lint
+  = "atspre_lint_of_ldouble"
+overload lint_of with lint_of_ldouble
+
+fun llint_of_ldouble (ld: ldouble):<> llint
+  = "atspre_llint_of_ldouble"
+overload llint_of with llint_of_ldouble
+
+//
+
 fun ldouble_of_int (i: int):<> ldouble
   = "atspre_ldouble_of_int"
+overload ldouble_of with ldouble_of_int
+
+fun ldouble_of_lint (li: lint):<> ldouble
+  = "atspre_ldouble_of_lint"
+overload ldouble_of with ldouble_of_lint
+
+fun ldouble_of_llint (lli: llint):<> ldouble
+  = "atspre_ldouble_of_llint"
+overload ldouble_of with ldouble_of_llint
+
+//
+
+fun ldouble_of_float (f: float):<> ldouble
+  = "atspre_ldouble_of_float"
+overload ldouble_of with ldouble_of_float
 
 fun ldouble_of_double (d: double):<> ldouble
   = "atspre_ldouble_of_double"
-
-overload ldouble_of with ldouble_of_int
 overload ldouble_of with ldouble_of_double
+
+//
 
 fun abs_ldouble (ld: ldouble):<> ldouble
   = "atspre_abs_ldouble"
