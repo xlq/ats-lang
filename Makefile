@@ -45,7 +45,7 @@ all: config.h
 
 -include config.mk
 
-config.h config.mk ats-env.sh: \
+config.h ats-env.sh: \
   config.h.in config.mk.in ats-env.sh.in configure
 	test -x config.status && config.status || ./configure
 
@@ -53,6 +53,9 @@ Makefile: ;
 configure.ac: ;
 config.mk.in: ;
 ats-env.sh.in: ;
+
+config.mk:
+	touch $@
 
 configure: configure.ac
 	aclocal
@@ -65,7 +68,7 @@ config.h.in: configure.ac
 # NOTE(liulk): installation to prefix
 
 .PHONY: install
-install: config.h all
+install: config.h
 	# recursively install all files in the list except .svn control files.
 	for d in ccomp/runtime doc libats libc prelude; do \
 	  cd $(abs_top_srcdir) && \
@@ -98,7 +101,7 @@ install: config.h all
 	
 	for f in bin/*; do \
 	  cd $(DESTDIR)$(bindir) && \
-	  ln -s ats-env.sh `basename $$f` && \
+	  ln -sf ats-env.sh `basename $$f` && \
 	  echo $(bindir)/`basename $$f` '->' ats-env.sh; \
 	done
 
