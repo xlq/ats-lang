@@ -37,6 +37,7 @@ DESTDIR =
 
 # Default target.
 
+.PHONY: all
 all: config.h
 	@$(MAKE) -f Makefile_maintainer $@
 
@@ -44,12 +45,14 @@ all: config.h
 
 -include config.mk
 
-config.h config.mk: config.h.in config.mk.in configure
+config.h config.mk ats-env.sh: \
+  config.h.in config.mk.in ats-env.sh.in configure
 	test -x config.status && config.status || ./configure
 
 Makefile: ;
 configure.ac: ;
 config.mk.in: ;
+ats-env.sh.in: ;
 
 configure: configure.ac
 	aclocal
@@ -84,6 +87,19 @@ install: config.h all
 	  cd $(abs_top_srcdir) && \
 	  $(INSTALL) -m 755 -D $$f $(DESTDIR)$(ATSHOME)/$$f && \
 	  echo $$f; \
+	done
+
+	# install wrapper scripts and symbolic links.
+	for f in ats-env.sh; do \
+	  cd $(abs_top_srcdir) && \
+	  $(INSTALL) -m 755 -D $$f $(DESTDIR)$(bindir)/$$f && \
+	  echo $$f; \
+	done
+	
+	for f in bin/*; do \
+	  cd $(DESTDIR)$(bindir) && \
+	  ln -s ats-env.sh `basename $$f` && \
+	  echo $(bindir)/`basename $$f` '->' ats-env.sh; \
 	done
 
 # NOTE(liulk): once most major functions of Makefile_maintainer is

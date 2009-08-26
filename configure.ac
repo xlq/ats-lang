@@ -50,6 +50,7 @@ AC_INIT([ATS/Anairiats], [0.1.5], [hwxi@cs.bu.edu])
 AC_CONFIG_SRCDIR([config.h.in])
 AC_CONFIG_HEADER([config.h])
 AC_CONFIG_FILES([config.mk])
+AC_CONFIG_FILES([ats-env.sh])
 
 AM_INIT_AUTOMAKE
 
