@@ -500,11 +500,11 @@ fun dirent_name_get_all
   val () = asz := size1_of_int1 (n)
   val [l:addr] (pf_gc, pf_arr | p_arr) =
     array_ptr_alloc<Strlin> (asz)
-  val () = array_ptr_initialize_lst_vt<Strlin> (!p_arr, asz, ents)
+  val () = array_ptr_initialize_lst_vt<Strlin> (!p_arr, ents)
   val () = $STDLIB.qsort {Strlin} {n}
      (!p_arr, asz, sizeof<Strlin>, cmp) where {
-     extern castfn __cast (x: !Strlin): string; val cmp = lam 
-       (x1: &Strlin, x2: &Strlin): Sgn =<fun1> compare_string_string (__cast x1, __cast x2)
+     extern castfn __cast (x: !Strlin):<> string; val cmp = lam 
+       (x1: &Strlin, x2: &Strlin): Sgn =<fun> compare_string_string (__cast x1, __cast x2)
   } // end of [val]  
 in
   #[n | #[l | (pf_gc, pf_arr | p_arr)]]
@@ -532,7 +532,7 @@ in
       | "." => 1 | ".." => 1 | _ => ft where {
           val str = string1_of_string (str)
           val parent = string1_of_string (parent)
-          val fil = string1_append__ptr (parent, str)
+          val fil = string1_append__bufptr (parent, str)
           val (pf_gc, pf_fil | p_fil) = fil
           val ft = filename_type (name) where {
             extern castfn __cast (p: ptr): string; val name = __cast p_fil
