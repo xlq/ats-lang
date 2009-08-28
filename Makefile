@@ -29,217 +29,86 @@
 
 #
 # Author: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
+# Author: Likai Liu (liulk AT cs DOT bu DOT edu)
 #
 
 ######
 
-MAKE=make
+DESTDIR =
 
-######
+# Default target.
 
-GCC=gcc
-RANLIB=ranlib
+.PHONY: all
+all: config.h
+	@$(MAKE) ATSHOMERELOC=$(ATSHOMERELOC) -f Makefile_maintainer $@
 
-PWD=$(shell pwd)
-ifdef ATSHOME
-  ATSHOMEDEF=1
-else
-  ATSHOMEDEF=0
-  export ATSHOME=$(PWD)
-endif
+# NOTE(liulk): integration with autoconf.
 
-######
+-include config.mk
 
-all: \
-  atscheck \
-  config.h \
-  atsopt0 \
-  bootstrapping \
-  atsopt1 \
-  bin/atscc \
-  bin/atslib \
-  libfiles \
-  bin/atspack \
-  bin/atslex \
-  ccomp/runtime/GCATS/gc.o \
-  atsopt1_gc
-	echo "ATS/Anairiats has been built up successfully!"
-	echo "The value of ATSHOME for this build is \"$(ATSHOME)\"."
+config.h ats-env.sh: \
+  config.h.in config.mk.in ats-env.sh.in configure
+	test -x config.status && config.status || ./configure
 
-###### system configuration ######
+Makefile: ;
+configure.ac: ;
+config.mk.in: ;
+ats-env.sh.in: ;
 
-atscheck:
-	echo "$(ATSHOME)" > .ATSHOME
-ifeq ($(ATSHOMEDEF),1)
-	/bin/bash -r ./ATSHOME_check.sh
-endif
-ifdef ATSHOMERELOC
-	echo "$(ATSHOMERELOC)" > .ATSHOMERELOC
-endif
+config.mk:
+	touch $@
 
-config.h: configure ; ./configure
+configure: configure.ac
+	aclocal
+	automake --add-missing --foreign || true
+	autoconf
 
-###### bootstrap/Makefile ######
+config.h.in: configure.ac
+	autoheader
 
-bootstrap0/Makefile:
-	cp config.h bootstrap0/config.h
-	$(GCC) -E -D_BOOTSTRAP0 -x c .bootstrap_header \
-      | cat - .bootstrap_makefile > bootstrap0/Makefile
+# NOTE(liulk): installation to prefix
 
-bootstrap1/Makefile:
-	$(GCC) -E -D_BOOTSTRAP1 -x c .bootstrap_header \
-      | cat - .bootstrap_makefile > bootstrap1/Makefile
+.PHONY: install
+install: config.h
+	# recursively install all files in the list except .svn control files.
+	for d in ccomp/runtime doc libats libc prelude; do \
+	  cd $(abs_top_srcdir) && \
+	  $(INSTALL) -d $(DESTDIR)$(ATSHOME)/$$d && \
+	  find $$d -name .svn -prune -o \
+            -exec $(INSTALL) -m 644 -D \{} $(DESTDIR)$(ATSHOME)/\{} \; \
+	    -print; \
+	done
 
-###### w/o GC ######
+	# install specific files in the list as regular files.
+	for f in COPYING INSTALL *.txt ccomp/lib/*.a config.h; do \
+	  cd $(abs_top_srcdir) && \
+	  $(INSTALL) -m 644 -D $$f $(DESTDIR)$(ATSHOME)/$$f && \
+	  echo $$f; \
+	done
 
-atsopt0: bootstrap0/Makefile; cd bootstrap0; $(MAKE) atsopt
+	# install specific files in the list as executables.
+	for f in bin/*; do \
+	  cd $(abs_top_srcdir) && \
+	  $(INSTALL) -m 755 -D $$f $(DESTDIR)$(ATSHOME)/$$f && \
+	  echo $$f; \
+	done
 
-###### bootstrapping ######
+	# install wrapper scripts and symbolic links.
+	for f in ats-env.sh; do \
+	  cd $(abs_top_srcdir) && \
+	  $(INSTALL) -m 755 -D $$f $(DESTDIR)$(bindir)/$$f && \
+	  echo $$f; \
+	done
 
-bootstrapping: ; cd src; $(MAKE) -f Makefile_bootstrap all
+	for f in bin/*; do \
+	  cd $(DESTDIR)$(bindir) && \
+	  ln -sf ats-env.sh `basename $$f` && \
+	  echo $(bindir)/`basename $$f` '->' ats-env.sh; \
+	done
 
-###### w/o GC ######
-
-atsopt1: bootstrap1/Makefile; cd bootstrap1; $(MAKE) atsopt; mv atsopt "$(ATSHOME)"/bin
-
-###### with GC ######
-
-atsopt1_gc: bootstrap1/Makefile; cd bootstrap1; $(MAKE) atsopt_gc; mv atsopt "$(ATSHOME)"/bin
-
-###### some toplevel commands ######
-
-bin/atscc bin/atslib:
-	cd utils/scripts; $(MAKE) atscc; mv atscc "$(ATSHOME)"/bin
-	cd utils/scripts; $(MAKE) atslib; mv atslib "$(ATSHOME)"/bin
-	cd utils/scripts; $(MAKE) clean
-
-bin/atspack:
-	cd utils/scripts; $(MAKE) atspack; mv atspack "$(ATSHOME)"/bin
-
-###### library ######
-
-ATS_TERMINATION_CHECK=
-# ATS_TERMINATION_CHECK=-D_ATS_TERMINATION_CHECK # it should be turned on from time to time
-
-# [GCC -E] for preprocessing
-.libfiles_local: ; $(GCC) -E -P -x c .libfiles -o .libfiles_local
-libfiles: .libfiles_local
-	# for libats
-	"$(ATSHOME)"/bin/atslib $(ATS_TERMINATION_CHECK) -O2 --libats
-	$(RANLIB) "$(ATSHOME)"/ccomp/lib/libats.a
-
-	# for libats_lex
-	"$(ATSHOME)"/bin/atslib $(ATS_TERMINATION_CHECK) -O2 --libats_lex
-	$(RANLIB) "$(ATSHOME)"/ccomp/lib/libats_lex.a
-
-	# for libats_smlbas
-	"$(ATSHOME)"/bin/atslib $(ATS_TERMINATION_CHECK) -O2 --libats_smlbas
-	$(RANLIB) "$(ATSHOME)"/ccomp/lib/libats_smlbas.a
-
-###### a lexer for ATS ######
-
-bin/atslex:
-	cd utils/atslex; $(MAKE) atslex; mv atslex "$(ATSHOME)"/bin
-	cd utils/atslex; $(MAKE) clean
-
-###### GC runtime ######
-
-ccomp/runtime/GCATS/gc.o:
-	cd ccomp/runtime/GCATS; $(MAKE) gc.o; $(MAKE) clean
-
-######
-
-package::
-	bin/atspack --source
-
-precompiled::
-	/bin/bash -r ./ATSHOMERELOC_check.sh
-	bin/atspack --precompiled
-	rm -fr usr/share/atshome
-	mv ats-lang-anairiats-* usr/share/atshome
-	tar -zvcf ats-lang-anairiats-precompiled.tar.gz \
-          --exclude=usr/.svn --exclude=usr/bin/.svn --exclude=usr/share/.svn usr/
-
-######
-
-srclines:
-	cd src; make lines
-
-liblines:
-	wc -l prelude/*/*.?ats prelude/*/*/*.?ats  libc/*/*.?ats libc/*/*/*.?ats libats/*/*.?ats libats/*/*/*.?ats 
-
-######
-
-clean::
-	rm -f bootstrap0/*.o
-	rm -f bootstrap1/*.o
-	rm -f bootstrap1/Makefile
-	cd utils/scripts; $(MAKE) clean
-	cd utils/atslex; $(MAKE) clean
-	cd ccomp/runtime/GCATS; $(MAKE) clean
-
-cleanall:: clean
-	rm -f config.h
-	rm -f .libfiles_local
-	rm -f bin/atsopt bin/atscc bin/atslib bin/atslex bin/atspack
-	rm -f ccomp/lib/libats.a
-	rm -f ccomp/lib/libats_lex.a
-	rm -f ccomp/lib/output/*
-	cd ccomp/runtime/GCATS; $(MAKE) cleanall
-	rm -f .*~ *~ */*~ */*/*~ */*/*/*~ */*/*/*/*~
-
-######
-
-# The inclusion of [ats_grammar_yats.c] and [ats_grammar_yats.h]
-# obviates the need for [yacc] or [byacc]
-tar:: cleanall
-	rm -rf ATS/*
-	cp COPYING ATS
-	cp INSTALL ATS
-	cp Makefile ATS
-	cp Makefile_chmod ATS
-	cp .libfiles ATS
-	cp configure.ac configure config.h.in ATS
-	mkdir ATS/bin
-	mkdir ATS/bootstrap
-	cp bootstrap/Makefile ATS/bootstrap
-	cp bootstrap/*.h ATS/bootstrap
-	cp bootstrap/*.cats ATS/bootstrap
-	cp bootstrap/*_?ats.c ATS/bootstrap
-	mkdir ATS/ccomp
-	mkdir ATS/ccomp/runtime
-	cp -r ccomp/runtime/*.{c,h} ATS/ccomp/runtime
-	mkdir ATS/ccomp/runtime/GCATS
-	cp -r ccomp/runtime/GCATS/gc.h ATS/ccomp/runtime/GCATS
-	cp -r ccomp/runtime/GCATS/*.?ats ATS/ccomp/runtime/GCATS
-	cp -r ccomp/runtime/GCATS/Makefile ATS/ccomp/runtime/GCATS
-	cp -r ccomp/runtime/GCATS/README ATS/ccomp/runtime/GCATS
-	cp -r ccomp/runtime/GCATS/BUGS.txt ATS/ccomp/runtime/GCATS
-	mkdir ATS/ccomp/lib
-	mkdir ATS/ccomp/lib/output
-	cp -r prelude libc libats ATS
-	cp -r utils ATS
-	mkdir ATS/src
-	cp src/Makefile ATS/src
-	cp src/Makefile_bootstrap ATS/src
-	cp src/Makefile_typecheck ATS/src
-	cp src/*.?ats ATS/src
-	cp src/ats_grammar_yats.h ATS/src
-	cp src/ats_grammar_yats.c ATS/src
-	mkdir ATS/doc
-	cp doc/ATS.css doc/ATS.html ATS/doc
-	cp doc/FAQ.txt ATS/doc
-	cp -r doc/BOOK ATS/doc
-	cp -r doc/EXAMPLE ATS/doc
-	cp -r doc/IMPLEMENTATION ATS/doc
-	cp -r doc/LIBRARY ATS/doc
-	cp -r doc/TUTORIAL ATS/doc
-	tar -zvcf ATS.tgz ATS/
-	mv ATS.tgz ATS
-	cp ATS/ATS.tgz /home/fac2/hwxi/public_html/ATS/Anairiats.tgz
-
-######
+# NOTE(liulk): once most major functions of Makefile_maintainer is
+# superceded, remove the following code.
 #
-# end of [Makefile]
-#
-######
+%: force
+	@exec $(MAKE) -f Makefile_maintainer $@
+force: ;

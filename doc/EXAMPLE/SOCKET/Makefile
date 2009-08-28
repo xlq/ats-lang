@@ -44,6 +44,7 @@ clean::
 	rm -f a.out *_dats.c *_dats.o *~
 
 cleanall: clean
+	rm -f *_?ats.html
 	rm -f daytime_tcpserver
 	rm -f daytime_tcpclient
 	rm -f echo_tcpserver

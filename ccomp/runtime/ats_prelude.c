@@ -33,6 +33,8 @@
 
 /* ****** ****** */
 
+#include "config.h"
+
 #include <stdio.h>
 
 #ifdef _ATS_MULTITHREAD
@@ -139,15 +141,17 @@ ats_funarg_match_failure_handle (char *loc) {
 */
 
 #ifdef _ATS_GC // default GC for ATS
-#include "GCATS/gc.h"
+#include "ats_prelude_gcats.c"
 #elif _ATS_GCATS // special GC for ATS
-#include "GCATS/gc.h"
-#elif _ATS_GCATS0 // special GC for ATS
-#include "GCATS0/gc.h"
+#include "ats_prelude_gcats.c"
+/*
+#elif _ATS_GCATS0 // special GC for ATS // no longer in use
+#include "ats_prelude_gcats0.c"
+*/
 #elif _ATS_GCBDW // Boehm-Demers-Weise conservative GC for C/C++
-#include "GCBDW/gc.h"
+#include "ats_prelude_gcbdw.c"
 #else // no GC for ATS in this case
-#include <NGC/gc.h>
+#include "ats_prelude_ngc.c"
 #endif // end of [ifdef]
 
 /* ****** ****** */
@@ -167,11 +171,13 @@ extern int gc_pthread_create_cloptr (
 ) ;
 #endif
 
-#ifdef _ATS_gc
+/*
+#ifdef _ATS_gc // a GC for ATS written by Rick Lavoie // no longer in use
 extern int gc_pthread_create_cloptr (
   ats_clo_ptr_type cloptr, pthread_t *pid_r, int detached, int linclo
 ) ;
 #endif
+*/
 
 ats_void_type
 ats_pthread_create_detached_cloptr (ats_ptr_type thunk) {
@@ -187,17 +193,23 @@ ats_pthread_create_detached_cloptr (ats_ptr_type thunk) {
     stderr, "[ats_pthread_create_detached_cloptr] is called.\n"
   ) ;
   */
-  ret = gc_pthread_create_cloptr
-    (thunk, NULL/*pid_r*/, 1/*detached*/, 1/*lin*/) ;
-#elif _ATS_GCATS0
+  ret = gc_pthread_create_cloptr (thunk, NULL/*pid_r*/, 1/*detached*/, 1/*lin*/) ;
+
+/*
+#elif _ATS_GCATS0 // a GC no longer in use
   fprintf (
     stderr, "There is no support for pthreads under this GC (GCATS0).\n"
   ) ;
   exit (1) ;
-#elif _ATS_gc
+*/
+
+/*
+#elif _ATS_gc // a GC for ATS written by Rick Lavoie // no longer in use
   int ret ;
   ret = gc_create_pthread_cloptr
     (thunk, NULL/*arg*/, NULL/*pid_r*/, 1/*detached*/) ;
+*/
+
 #else
   pthread_t pid ; int ret ;
   ret = pthread_create (&pid, NULL, ats_pthread_app, thunk) ;
@@ -217,19 +229,26 @@ ats_void_type ats_pthread_exit () {
   exit (1) ;
 #elif _ATS_GCATS
   pthread_exit (NULL) ;
-#elif _ATS_GCATS0
+
+/*
+#elif _ATS_GCATS0 // a special GC for ATS // no longer in use
   fprintf (stderr, "There is no support for pthreads under this GC(GCATS0).\n");
   exit (1) ;
-#elif _ATS_gc
+*/
+
+/*
+#elif _ATS_gc // a GC for ATS written by Rick Lavoie // no longer in use
   pthread_exit (NULL) ;
+*/
+
 #else
   pthread_exit (NULL) ;
 #endif
   return ;
 } // end of [ats_pthread_exit]
 
-/* ****** ****** */
-
 #endif /* [ifdef _ATS_MULTITHREAD] */
+
+/* ****** ****** */
 
 /* end of [ats_prelude.c] */

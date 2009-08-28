@@ -79,9 +79,10 @@ implement server_loop {fd_s} (pf_sock_s | fd_s) = let
         val () = socket_close_exn (pf_sock_s | fd_s)
         val () = server_action (pf_sock_c | fd_c)
         val () = socket_close_exn (pf_sock_c | fd_c)
-        val (pf_out | ()) = exit_main {void}
-          {unit_v} {socket_v (fd_s, listen)} (unit_v () | 0)
-        prval () = pf_sock_s := pf_out
+        prval pf_io = unit_v ()
+        val () = exit_main {void}
+          {unit_v} {socket_v (fd_s, listen)} (pf_io | 0)
+        prval () = pf_sock_s := pf_io
       in
         // empty
       end // end of [child]

@@ -2,8 +2,8 @@
 ## Makefile for [twentyfour.dats]
 ##
 
-#GCFLAG=-D_ATS_gc
-#GCFLAG=-D_ATS_gcats
+#GCFLAG=-D_ATS_gc // no longer in use
+#GCFLAG=-D_ATS_gcats // no longer in use
 GCFLAG=-D_ATS_GCATS
 #GCFLAG=-D_ATS_GCBDW
 

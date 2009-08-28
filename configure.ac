@@ -46,10 +46,16 @@ dnl = checks for library functions
 dnl = checks for system services
 dnl = AC_CONFIG_FILES([file...])
 
-AC_INIT([ATS/Anairiats], [version-0.1.4], [hwxi@cs.bu.edu])
-
+AC_INIT([ATS/Anairiats], [0.1.5], [hwxi@cs.bu.edu])
 AC_CONFIG_SRCDIR([config.h.in])
-AC_CONFIG_HEADERS([config.h], [], [])
+AC_CONFIG_HEADER([config.h])
+AC_CONFIG_FILES([config.mk])
+AC_CONFIG_FILES([ats-env.sh])
+
+AM_INIT_AUTOMAKE
+
+AC_PROG_CC
+PKG_PROG_PKG_CONFIG
 
 dnl = check for [gmp.h pcre.h]
 AC_CHECK_HEADERS(gmp.h pcre.h)
@@ -61,6 +67,14 @@ AC_CHECK_SIZEOF(void*)
 
 dnl = check for some functions
 AC_CHECK_FUNCS(posix_memalign memalign)
+
+AH_TEMPLATE([HAVE_BDWGC],
+	    [Informs us the availability of Boehm-Demers-Weiser
+	     garbage collection installed on the system.])
+PKG_CHECK_MODULES([BDWGC], [bdw-gc >= 7.1], [AC_DEFINE(HAVE_BDWGC)], [true])
+
+CFLAGS="$CFLAGS $BDWGC_CFLAGS"
+LDFLAGS="$LDFLAGS $BDWGC_LDFLAGS"
 
 AC_OUTPUT
 

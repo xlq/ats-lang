@@ -36,12 +36,16 @@
 
 /* ****** ****** */
 
-#ifndef _ATS_GCBDW_GC_H
-#define _ATS_GCBDW_GC_H
+#ifndef _ATS_GCBDW_H
+#define _ATS_GCBDW_H
 
 /* ****** ****** */
 
-#include "GCBDW/include/gc/gc.h" // interface file for [bdwgc]
+#ifdef HAVE_BDWGC	// from config.h
+#include <gc/gc.h> // interface file for [bdwgc]
+#else
+#error "bdw-gc >= 7.1 must be installed first."
+#endif
 
 /* ****** ****** */
 
@@ -134,6 +138,6 @@ ats_realloc_ngc (
 
 /* ****** ****** */
 
-#endif /* _ATS_GCBDW_GC_H */
+#endif /* _ATS_GCBDW_H */
 
 /* end of [gc.h] */
