@@ -27,7 +27,7 @@ assume symbol_t = '{
 
 val the_symtbl =
   $H.hashtbl_make<string, symbol_t> (hash, eqfn) where {
-  val hash = lam (x: string): uint =<cloref> string_hash_33 (x)
+  val hash = lam (x: string): ulint =<cloref> string_hash_33 (x)
   val eqfn = lam (x1: string, x2: string): bool =<cloref> (x1 = x2)
 } // end of [val]
 

@@ -431,7 +431,7 @@ staload H = "LIB/hashtable.dats"
 
 typedef key = $TL.temp_t and itm = string
 
-val _hash_temp = lam (tmp: key): uint =<cloref> $TL.hash_temp (tmp)
+val _hash_temp = lam (tmp: key): ulint =<cloref> $TL.hash_temp (tmp)
 
 val _eq_temp = lam
   (tmp1: key, tmp2: key): bool =<cloref> $TL.eq_temp_temp (tmp1, tmp2)

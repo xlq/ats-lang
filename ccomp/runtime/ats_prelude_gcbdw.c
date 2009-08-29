@@ -41,10 +41,10 @@
 
 /* ****** ****** */
 
-#ifdef HAVE_BDWGC	// from config.h
-#include <gc/gc.h> // interface file for [bdwgc]
+#ifdef HAVE_GCBDW  // from config.h
+#include <gc/gc.h> // interface file for [Boehm-Demers-Weiser GC]
 #else
-#error "bdw-gc >= 7.1 must be installed first."
+#error "Boehm-Demers-Weiser GC version 7.1 or later must be installed first."
 #endif
 
 /* ****** ****** */

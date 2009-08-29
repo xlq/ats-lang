@@ -309,16 +309,16 @@ end // end of [local]
 
 // a commonly used simple hash function
 
-ats_uint_type
+ats_ulint_type
 atspre_string_hash_33 (ats_ptr_type s0) {
   unsigned int hash_val ; unsigned char *s; int c;
-  hash_val = 31415926U ;
+  hash_val = 31415926UL ;
 
   s = (unsigned char*)s0 ;
   while (1) {
     c = *s ;
-    if (!c) return hash_val ;
-    hash_val = ((hash_val << 5) + hash_val) + c ;
+    if (!c) return hash_val ; // the end of string is reached
+    hash_val = ((hash_val << 5) + hash_val) + c ; // hash_val = 33 * hash_val + c
     s += 1 ;
   }
 } /* atspre_string_hash_33 */

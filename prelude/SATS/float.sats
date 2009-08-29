@@ -94,6 +94,10 @@ fun float_of_llint (lli: llint):<> float
   = "atspre_float_of_llint"
 overload float_of with float_of_llint
 
+fun float_of_size (sz: size_t):<> float
+  = "atspre_float_of_size"
+overload float_of with float_of_size
+
 //
 
 fun float_of_double (d: double):<> float
@@ -254,6 +258,10 @@ overload double_of with double_of_lint
 fun double_of_llint (lli: llint):<> double
   = "atspre_double_of_llint"
 overload double_of with double_of_llint
+
+fun double_of_size (sz: size_t):<> double
+  = "atspre_double_of_size"
+overload double_of with double_of_size
 
 //
 

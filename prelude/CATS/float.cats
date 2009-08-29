@@ -87,6 +87,12 @@ atspre_float_of_llint (const ats_llint_type lli) {
   return (ats_float_type)lli ;
 }
 
+static inline
+ats_float_type
+atspre_float_of_size (const ats_size_type sz) {
+  return (ats_float_type)sz ;
+}
+
 //
 
 static inline
@@ -326,6 +332,12 @@ static inline
 ats_double_type
 atspre_double_of_llint (const ats_llint_type lli) {
   return (ats_double_type)lli ;
+}
+
+static inline
+ats_double_type
+atspre_double_of_size (const ats_size_type sz) {
+  return (ats_double_type)sz ;
 }
 
 //

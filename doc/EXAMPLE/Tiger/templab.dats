@@ -215,7 +215,7 @@ implement tiger_neq_string_string = label_make_name ("tiger_neq_string_string")
 ats_uint_type
 tigerats_hash_temp (ats_int64_type tmp) {
   uint64_t utmp = tmp ;
-  uint hashval = 31415926U ;
+  ats_ulint_type hashval = 31415926UL ;
   while (utmp) {
     hashval = (hashval << 5) + hashval ;
     hashval += (utmp & 0xFF) ; utmp >>= 8 ;

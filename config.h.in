@@ -2,7 +2,7 @@
 
 /* Informs us the availability of Boehm-Demers-Weiser garbage collection
    installed on the system. */
-#undef HAVE_BDWGC
+#undef HAVE_GCBDW
 
 /* Define to 1 if you have the <GL/glut.h> header file. */
 #undef HAVE_GL_GLUT_H

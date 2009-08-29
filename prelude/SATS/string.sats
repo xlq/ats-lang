@@ -628,7 +628,7 @@ fun string_toupper__bufptr {n:nat} {l:addr}
 (* ****** ****** *)
 
 // h = (h << 5) + h + c
-fun string_hash_33 (str: string):<> uInt = "atspre_string_hash_33"
+fun string_hash_33 (str: string):<> ulint = "atspre_string_hash_33"
 
 (* ****** ****** *)
 

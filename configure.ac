@@ -29,6 +29,7 @@ dnl =
 
 dnl =
 dnl = Author: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
+dnl = Author: Likai Liu (liulk AT cs DOT bu DOT edu)
 dnl =
 
 dnl = beg of [configure.ac]
@@ -46,7 +47,7 @@ dnl = checks for library functions
 dnl = checks for system services
 dnl = AC_CONFIG_FILES([file...])
 
-AC_INIT([ATS/Anairiats], [0.1.5], [hwxi@cs.bu.edu])
+AC_INIT([ATS/Anairiats], [0.1.6], [hwxi@cs.bu.edu])
 AC_CONFIG_SRCDIR([config.h.in])
 AC_CONFIG_HEADER([config.h])
 AC_CONFIG_FILES([config.mk])
@@ -68,13 +69,13 @@ AC_CHECK_SIZEOF(void*)
 dnl = check for some functions
 AC_CHECK_FUNCS(posix_memalign memalign)
 
-AH_TEMPLATE([HAVE_BDWGC],
+AH_TEMPLATE([HAVE_GCBDW],
 	    [Informs us the availability of Boehm-Demers-Weiser
 	     garbage collection installed on the system.])
-PKG_CHECK_MODULES([BDWGC], [bdw-gc >= 7.1], [AC_DEFINE(HAVE_BDWGC)], [true])
+PKG_CHECK_MODULES([GCBDW], [Boehm-Demers-Weiser GC >= 7.1], [AC_DEFINE(HAVE_GCBDW)], [true])
 
-CFLAGS="$CFLAGS $BDWGC_CFLAGS"
-LDFLAGS="$LDFLAGS $BDWGC_LDFLAGS"
+CFLAGS="$CFLAGS $GCBDW_CFLAGS"
+LDFLAGS="$LDFLAGS $GCBDW_LDFLAGS"
 
 AC_OUTPUT
 

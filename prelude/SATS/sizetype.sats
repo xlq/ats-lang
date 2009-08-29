@@ -169,7 +169,7 @@ overload prerr with prerr_size
 
 (* ****** ****** *)
 
-fun size1_of_size (i: size_t):<> [i:nat] size_t i
+castfn size1_of_size (i: size_t):<> [i:nat] size_t i
   = "atspre_size1_of_size"
 
 (* ****** ****** *)

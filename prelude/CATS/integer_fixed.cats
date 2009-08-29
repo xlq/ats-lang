@@ -33,8 +33,8 @@
 
 /* ****** ****** */
 
-#ifndef ATS_PRELUDE_INTEGER_CATS
-#define ATS_PRELUDE_INTEGER_CATS
+#ifndef ATS_PRELUDE_INTEGER_FIXED_CATS
+#define ATS_PRELUDE_INTEGER_FIXED_CATS
 
 /* ****** ****** */
 
@@ -1310,6 +1310,6 @@ atspre_prerr_uint64 (ats_uint64_type i) {
 
 /* ****** ****** */
 
-#endif /* ATS_PRELUDE_INTEGER_CATS */
+#endif /* ATS_PRELUDE_INTEGER_FIXED_CATS */
 
-/* end of [integer.cats] */
+/* end of [integer_fixed.cats] */

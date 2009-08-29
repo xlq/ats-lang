@@ -39,7 +39,7 @@ fun eq_temp_temp (_: temp_t, _: temp_t):<> bool
 fun compare_temp_temp (_: temp_t, _: temp_t):<> Sgn
 overload compare with compare_temp_temp
 
-fun hash_temp (_: temp_t):<> uint = "tigerats_hash_temp"
+fun hash_temp (_: temp_t):<> ulint = "tigerats_hash_temp"
 
 (* ****** ****** *)
 

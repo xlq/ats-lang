@@ -634,6 +634,10 @@ typedef sizeof_t (a:viewt@ype) =
 
 typedef sizeLt (n: int) = [i:int | 0 <= i; i < n] size_t (i)
 typedef sizeLte (n: int) = [i:int | 0 <= i; i <= n] size_t (i)
+
+typedef sizeGt (n: int) = [i:int | i > n] size_t (i)
+typedef sizeGte (n: int) = [i:int | i >= n] size_t (i)
+
 typedef sizeBtw (lb:int, ub:int) = [i: int | lb <= i; i < ub] size_t i
 
 typedef ssizeBtw (lb:int, ub:int) = [i: int | lb <= i; i < ub] ssize_t i

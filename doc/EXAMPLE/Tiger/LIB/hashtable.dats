@@ -18,7 +18,7 @@
 
 (* ****** ****** *)
 
-typedef hash (key: t@ype) = (key) -<cloref> uint
+typedef hash (key: t@ype) = (key) -<cloref> ulint
 typedef eq (key: t@ype) = (key, key) -<cloref> bool
 
 abstype hashtbl_t (key:t@ype, itm:viewt@ype+)
@@ -33,23 +33,23 @@ implement{key} equal_key_key (x1, x2, eq) = eq (x1, x2)
 (* ****** ****** *)
 
 extern fun{key:t@ype}
-  hash_key (x: key, hash: hash key):<> uint
+  hash_key (x: key, hash: hash key):<> ulint
 
 implement{key} hash_key (x, hash) = hash (x)
 
 (* ****** ****** *)
 
 extern fun hashtbl_size
-  {key:t@ype;itm:viewt@ype} (tbl: hashtbl_t (key, itm)): Nat
+  {key:t@ype;itm:viewt@ype} (tbl: hashtbl_t (key, itm)): size_t
 
 extern fun hashtbl_total
-  {key:t@ype;itm:viewt@ype} (tbl: hashtbl_t (key, itm)): Nat
+  {key:t@ype;itm:viewt@ype} (tbl: hashtbl_t (key, itm)): size_t
 
 extern fun{key:t@ype;itm:viewt@ype}
   hashtbl_make (hash: hash key, eq: eq key): hashtbl_t (key, itm)
 
 extern fun{key:t@ype;itm:viewt@ype}
-  hashtbl_make_hint (hash: hash key, eq: eq key, hint: Nat): hashtbl_t (key, itm)
+  hashtbl_make_hint (hash: hash key, eq: eq key, hint: size_t): hashtbl_t (key, itm)
 
 extern fun{key:t@ype;itm:t@ype}
   hashtbl_search (tbl: hashtbl_t (key, itm), k0: key): Option_vt itm
@@ -260,12 +260,19 @@ end // end of [hashtbl_ptr_remove_off]
 
 (* ****** ****** *)
 
+#define i2sz size1_of_int1
+#define sz1mod mod1_size1_size1
+
+extern castfn size1_of_ulint (x: ulint):<> [i:nat] size_t i
+
+(* ****** ****** *)
+
 fun{key:t@ype;itm:viewt@ype}
   hashtbl_ptr_insert_chain
   {sz:pos;tot,n:nat} {l_beg,l_end:addr} .<n>. (
     pf: !hashtbl_v (key, itm, sz, tot, l_beg, l_end)
           >> hashtbl_v (key, itm, sz, tot+n, l_beg, l_end)
-  | sz: int sz
+  | sz: size_t sz
   , p_beg: ptr l_beg
   , kis: chain (key, itm, n)
   , hash: hash key
@@ -274,8 +281,8 @@ fun{key:t@ype;itm:viewt@ype}
       // insertion must be done in the reverse order!
       val () = hashtbl_ptr_insert_chain (pf | sz, p_beg, kis, hash)
       val h = hash_key (k, hash)
-      val h = uint1_of_uint (h)
-      val [off:int] off = h mod sz; val off = size1_of_int1 off
+      val h = size1_of_ulint (h)
+      val [off:int] off = sz1mod (h, sz)
       val (pf1, pf2 | p_mid) =
         hashtbl_split<> {..} {sz,off,tot+n-1} (pf | p_beg, off)
       prval hashtbl_v_cons (pf21, pf22) = pf2
@@ -298,7 +305,7 @@ fun{key:t@ype;itm:viewt@ype}
           >> hashtbl_v (key, itm, sz1, 0(*tot*), l1_beg, l1_end)
   , pf2: !hashtbl_v (key, itm, sz2, tot2, l2_beg, l2_end)
           >> hashtbl_v (key, itm, sz2, tot1+tot2, l2_beg, l2_end)
-  | sz1: int sz1, sz2: int sz2, p1_beg: ptr l1_beg, p2_beg: ptr l2_beg
+  | sz1: size_t sz1, sz2: size_t sz2, p1_beg: ptr l1_beg, p2_beg: ptr l2_beg
   , hash: hash key
   ) :<> void = begin
   if sz1 > 0 then let
@@ -324,7 +331,7 @@ fun{key:t@ype;itm:t@ype}
     {sz:nat;tot:nat} {l_beg,l_end:addr} .<sz>. (
     pf: !hashtbl_v (key, itm, sz, tot, l_beg, l_end)
           >> hashtbl_v (key, itm, sz, 0(*tot*), l_beg, l_end)
-  | sz: int sz, p_beg: ptr l_beg
+  | sz: size_t sz, p_beg: ptr l_beg
   ) :<> void = begin
   if sz > 0 then let
     prval hashtbl_v_cons (pf1, pf2) = pf
@@ -343,7 +350,7 @@ end // end of [hashtbl_ptr_clear]
 (* ****** ****** *)
 
 extern fun hashtbl_ptr_make
-  {key:t@ype;itm:viewt@ype} {sz:pos} (sz: int sz)
+  {key:t@ype;itm:viewt@ype} {sz:pos} (sz: size_t sz)
   :<> [l_beg,l_end:addr] @(
     free_gc_v l_beg
   , hashtbl_v (key, itm, sz, 0(*tot*), l_beg, l_end)
@@ -365,7 +372,7 @@ fun{key:t@ype;itm:viewt@ype}
   hashtbl_ptr_foreach_clo {v:view}
     {sz,tot:nat} {l_beg,l_end:addr} {f:eff} .<sz>. (
     pf: !v, pf_tbl: !hashtbl_v (key, itm, sz, tot, l_beg, l_end)
-  | sz: int sz, p_beg: ptr l_beg, f: &(!v | key, &itm) -<clo,f> void
+  | sz: size_t sz, p_beg: ptr l_beg, f: &(!v | key, &itm) -<clo,f> void
   ) :<f> void = begin
   if sz > 0 then let
     prval hashtbl_v_cons (pf1_tbl, pf2_tbl) = pf_tbl
@@ -386,7 +393,7 @@ dataviewtype hashtbl_vt (key:t@ype,itm:viewt@ype) =
     hashtbl_vt_some (key, itm) of (
       free_gc_v (l_beg)
     , hashtbl_v (key, itm, sz, tot, l_beg, l_end)
-    | int sz, int tot, ptr l_beg, hash key, eq key
+    | size_t sz, size_t tot, ptr l_beg, hash key, eq key
     ) // end of [hashtbl_vt_some]
   | hashtbl_vt_none (key, itm) of ()
 
@@ -423,8 +430,7 @@ in
   case+ !p_tbl of
   | hashtbl_vt_some (_, !pf | sz, _, p_beg, hash, eq) => let
       val h = hash_key (k0, hash)
-      val h = uint1_of_uint (h)
-      val off = h mod sz; val off = size1_of_int1 off
+      val h = size1_of_ulint (h); val off = sz1mod (h, sz)
       val ans = hashtbl_ptr_search_off (!pf | p_beg, k0, eq, off)
     in
       fold@ !p_tbl; ans
@@ -434,10 +440,9 @@ end // end of [hashtbl_search]
 
 (* ****** ****** *)
 
-fn{key:t@ype;itm:viewt@ype}
-  hashtbl_resize {sz_new:pos} (
-    tbl: hashtbl_t (key, itm), sz_new: int sz_new
-  ) : void = let
+fn{key:t@ype;itm:viewt@ype} hashtbl_resize
+  {sz_new:pos}(tbl: hashtbl_t (key, itm), sz_new: size_t sz_new)
+  : void = let
   val (vbox pf_tbl | p_tbl) = ref_get_view_ptr (tbl)
 in
   case+ !p_tbl of
@@ -462,6 +467,7 @@ end // end of [hashtbl_resize]
 fn{key:t@ype;itm:viewt@ype}
   hashtbl_resize_double (tbl: hashtbl_t (key, itm)): void = let
   val sz = hashtbl_size (tbl)
+  val sz = size1_of_size (sz) // casting: no op
 in
   if sz > 0 then hashtbl_resize (tbl, sz + sz) else ()
 end // end of [hashtbl_resize_double]
@@ -469,6 +475,7 @@ end // end of [hashtbl_resize_double]
 fn{key:t@ype;itm:viewt@ype}
   hashtbl_resize_half (tbl: hashtbl_t (key, itm)): void = let
   val sz = hashtbl_size (tbl)
+  val sz = size1_of_size (sz) // casting: no op
 in
   if sz >= 2 then hashtbl_resize (tbl, sz / 2) else ()
 end // end of [hashtbl_resize_half]
@@ -483,10 +490,9 @@ implement{key,itm} hashtbl_insert_err (tbl, k, i) = let
     case+ !p_tbl of
     | hashtbl_vt_some (_, !pf | sz, !tot, p_beg, hash, eq) => let
         val tot1 = !tot + 1
-        val () = ratio := double_of_int (tot1) / sz
+        val () = ratio := double_of_size tot1 / double_of_size sz
         val h = hash_key (k, hash)
-        val h = uint1_of_uint (h)
-        val off = h mod sz; val off = size1_of_int1 off
+        val h = size1_of_ulint (h); val off = sz1mod (h, sz)
         val () = hashtbl_ptr_insert_off<key,itm> (!pf | p_beg, k, i, off)
       in
         !tot := !tot + 1; fold@ !p_tbl; None_vt ()
@@ -510,13 +516,12 @@ implement{key,itm} hashtbl_remove_err (tbl, k0) = let
     case+ !p_tbl of
     | hashtbl_vt_some (_, !pf | sz, !tot, p_beg, hash, eq) => let
         val h = hash_key (k0, hash)
-        val h = uint1_of_uint (h)
-        val off = h mod sz; val off = size1_of_int1 (off)
+        val h = size1_of_ulint (h); val off = sz1mod (h, sz)
         val ans = hashtbl_ptr_remove_off<key,itm> (!pf | p_beg, k0, eq, off)
         val () = case+ ans of
           | Some_vt _ => let
               val tot1 = !tot - 1
-              val () = ratio := double_of_int (tot1) / sz
+              val () = ratio := double_of_size tot1 / double_of_size sz
             in
               fold@ ans; !tot := tot1; fold@ !p_tbl
             end // end of [Some_vt]
@@ -545,7 +550,10 @@ implement{key,itm} hashtbl_make
 // end of [hashtbl_make]
 
 implement{key,itm} hashtbl_make_hint (hash, eq, hint) = let
-  val sz = (if hint > 0 then hint else HASHTABLE_SIZE_HINT): Pos
+  val hint = size1_of_size hint
+  val sz = (
+    if hint > 0 then hint else i2sz HASHTABLE_SIZE_HINT
+  ) : sizeGt 0
   val (pf_gc, pf | p_beg) = hashtbl_ptr_make (sz)
   val tbl = hashtbl_vt_some (pf_gc, pf | sz, 0, p_beg, hash, eq)
 in
@@ -558,11 +566,8 @@ implement{key,itm} hashtbl_clear (tbl) = let
   val (vbox pf_tbl | p_tbl) = ref_get_view_ptr (tbl)
 in
   case+ !p_tbl of
-  | hashtbl_vt_some
-      (!pf_gc, !pf | sz, !tot, p_beg, _, _) => let
-      val () = hashtbl_ptr_clear (!pf | sz, p_beg)
-    in
-      !tot := 0; fold@ !p_tbl
+  | hashtbl_vt_some (!pf_gc, !pf | sz, !tot, p_beg, _, _) => let
+      val () = hashtbl_ptr_clear (!pf | sz, p_beg) in !tot := i2sz 0; fold@ !p_tbl
     end // end of [hashtbl_vt_some]
   | hashtbl_vt_none () => fold@ !p_tbl
 end // end of [hashtbl_clear]
@@ -641,7 +646,7 @@ end // end of [hashtbl_foreach_cloref]
 
 // static inline
 ats_ptr_type
-hashtbl_ptr_make (ats_int_type sz) {
+hashtbl_ptr_make (ats_size_type sz) {
   ats_ptr_type p ;
   /* zeroing the allocated memory is mandatory! */
   p = ATS_CALLOC(sz, sizeof(chain0)) ;
