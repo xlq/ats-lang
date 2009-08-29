@@ -531,7 +531,7 @@ fun string_toupper {n:nat} (s: string n):<> string n
 (* ****** ****** *)
 
 // h = (h << 5) + h + c
-fun string_hash_33 (s: string):<> uInt = "atspre_string_hash_33"
+fun string_hash_33 (s: string):<> ulint = "atspre_string_hash_33"
 
 (* ****** ****** *)
 

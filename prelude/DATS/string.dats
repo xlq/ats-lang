@@ -311,8 +311,8 @@ end // end of [local]
 
 ats_ulint_type
 atspre_string_hash_33 (ats_ptr_type s0) {
-  unsigned int hash_val ; unsigned char *s; int c;
-  hash_val = 31415926UL ;
+  unsigned long int hash_val ; unsigned char *s; int c;
+  hash_val = 31415926535898UL ;
 
   s = (unsigned char*)s0 ;
   while (1) {

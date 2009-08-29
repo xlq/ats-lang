@@ -7,33 +7,32 @@
 (***********************************************************************)
 
 (*
- * ATS/Anairiats - Unleashing the Potential of Types!
- *
- * Copyright (C) 2002-2008 Hongwei Xi, Boston University
- *
- * All rights reserved
- *
- * ATS is free software;  you can  redistribute it and/or modify it under
- * the terms of  the GNU GENERAL PUBLIC LICENSE (GPL) as published by the
- * Free Software Foundation; either version 3, or (at  your  option)  any
- * later version.
- * 
- * ATS is distributed in the hope that it will be useful, but WITHOUT ANY
- * WARRANTY; without  even  the  implied  warranty  of MERCHANTABILITY or
- * FITNESS FOR A PARTICULAR PURPOSE.  See the  GNU General Public License
- * for more details.
- * 
- * You  should  have  received  a  copy of the GNU General Public License
- * along  with  ATS;  see the  file COPYING.  If not, please write to the
- * Free Software Foundation,  51 Franklin Street, Fifth Floor, Boston, MA
- * 02110-1301, USA.
- *
- *)
+** ATS/Anairiats - Unleashing the Potential of Types!
+**
+** Copyright (C) 2002-2008 Hongwei Xi, Boston University
+**
+** All rights reserved
+**
+** ATS is free software;  you can  redistribute it and/or modify it under
+** the terms of  the GNU GENERAL PUBLIC LICENSE (GPL) as published by the
+** Free Software Foundation; either version 3, or (at  your  option)  any
+** later version.
+** 
+** ATS is distributed in the hope that it will be useful, but WITHOUT ANY
+** WARRANTY; without  even  the  implied  warranty  of MERCHANTABILITY or
+** FITNESS FOR A PARTICULAR PURPOSE.  See the  GNU General Public License
+** for more details.
+** 
+** You  should  have  received  a  copy of the GNU General Public License
+** along  with  ATS;  see the  file COPYING.  If not, please write to the
+** Free Software Foundation,  51 Franklin Street, Fifth Floor, Boston, MA
+** 02110-1301, USA.
+*)
 
 (* ****** ****** *)
 
-// Time: July 2007
 // Author: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
+// Time: July 2007
 
 (* ****** ****** *)
 
@@ -112,6 +111,7 @@ fun symtbl_search_probe {sz,i:nat | i < sz} {l:addr}
 implement symtbl_search (tbl, name) = let
 
 val hash_val = string_hash_33 name
+val hash_val = uint_of_ulint (hash_val)
 (*
 val () = printf ("symtbl_search: name = %s\n", @(name))
 val () = printf ("symtbl_search: hash_val = %u\n", @(hash_val))
@@ -123,9 +123,9 @@ in
 
 symtbl_search_probe (p_tbl->view.1 | p_tbl->ptr, p_tbl->size, i, name)
 
-end
+end // end of [symtbl_search]
 
-//
+(* ****** ****** *)
 
 fun symtbl_insert_probe {sz,i:nat | i < sz} {l:addr}
   (pf: !array_v(tblent, sz, l) | p: ptr l, sz: int sz, i: int i, sym: symbol_t)
@@ -149,19 +149,21 @@ fun symtbl_resize_move {sz,i:nat | i <= sz} {l,l_new:addr}
    p: ptr l, p_new: ptr l_new, sz: int sz, i: int i)
   :<!ntm> void = begin
   if i < sz then let
-    val () = case+ p[i] of
+    val () = (case+ p[i] of
       | Some sym => let
           val sz2 = sz + sz
           val hash_val = string_hash_33 (symbol_name sym)
+          val hash_val = uint_of_ulint (hash_val)
           val i = hash_val uimod sz2
         in
           symtbl_insert_probe (pf_new | p_new, sz2, i, sym);
         end // end of [Some]
      | None () => ()
+   ) : void // end of [val]
   in
      symtbl_resize_move (pf, pf_new | p, p_new, sz, i+1)
   end // end of [if]
-end // end of [symtbl_resize_move]
+end (* end of [symtbl_resize_move] *)
 
 fun symtbl_resize
   (tbl: symtbl_t):<!ntm,!ref> void = let
@@ -202,6 +204,7 @@ implement symtbl_insert (tbl, name, sym) = let
 
 val () = symtbl_resize_if (tbl)
 val hash_val = string_hash_33 name
+val hash_val = uint_of_ulint (hash_val)
 (*
 val () = printf ("symtbl_insert: name = %s\n", @(name))
 val () = printf ("symtbl_insert: hash_val = %u\n", @(hash_val))

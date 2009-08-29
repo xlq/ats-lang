@@ -169,24 +169,29 @@ overload prerr with prerr_size
 
 (* ****** ****** *)
 
-castfn size1_of_size (i: size_t):<> [i:nat] size_t i
-  = "atspre_size1_of_size"
+castfn size1_of_size
+  (i: size_t):<> [i:nat] size_t i // = "atspre_size1_of_size"
+// end of [size1_of_size]
 
 (* ****** ****** *)
 
 fun int1_of_size1 {i:nat} (sz: size_t i):<> int i
   = "atspre_int1_of_size1"
+// end of [int1_of_size1]
 
 // ------ ------
 
 fun size1_of_int1 {i:nat} (i: int i):<> size_t i
   = "atspre_size1_of_int1"
+// end of [size1_of_int1]
 
 fun size1_of_ssize1 {i:nat} (_: ssize_t i):<> size_t i
   = "atspre_size1_of_ssize1"
+// end of [size1_of_ssize1]
 
 fun size1_of_ptrdiff1 {i:nat} (_: ptrdiff_t i):<> size_t i
   = "atspre_size1_of_ptrdiff1"
+// end of [size1_of_ptrdiff1]
 
 (* ****** ****** *)
 

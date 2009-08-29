@@ -99,13 +99,11 @@ end // end of [stringlst_concat]
 
 // a commonly used simple hash function
 
-ats_uint_type
+ats_ulint_type
 atspre_string_hash_33 (ats_ptr_type s0) {
-  unsigned int hash_val ; unsigned char *s; int c;
-  hash_val = 314159 ;
-
-  s = (unsigned char*)s0 ;
-  while (1) {
+  unsigned long int hash_val ; unsigned char *s; int c;
+  hash_val = 31415926535898UL ;
+  s = (unsigned char*)s0 ; while (1) {
     c = *s ;
     if (!c) return hash_val ;
     hash_val = ((hash_val << 5) + hash_val) + c ;

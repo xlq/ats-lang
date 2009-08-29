@@ -996,7 +996,9 @@ fn s2zexp_make_s2cst (s2c: s2cst_t): s2zexp = S2ZEcst s2c
 implement s2zexp_make_s2exp (s2e0) = let
   fun aux_s2exp (s2vss: s2varlstlst, s2e0: s2exp): s2zexp = let
     val s2e0 = s2exp_whnf s2e0 in case+ s2e0.s2exp_node of
-      | S2Eapp (s2e_fun, _) => aux_s2exp (s2vss, s2e_fun)
+      | S2Eapp (s2e_fun, s2es_arg) =>
+          aux_s2exp_app (s2vss, s2e0.s2exp_srt, s2e_fun, s2es_arg)
+        // end of [S2Eapp]
       | S2Ecst s2c => s2zexp_make_s2cst (s2cst_root_get s2c)
       | S2Eclo (knd, _) => if knd <> 0 then S2ZEword 1 else S2ZEbot ()
       | S2Edatconptr (d2c, _) => s2zexp_make_s2cst (d2con_scst_get d2c)
@@ -1026,6 +1028,33 @@ implement s2zexp_make_s2exp (s2e0) = let
       | S2EVar s2V => aux_s2Var (s2vss, s2V)
       | _ => S2ZEbot ()
   end // end of [aux_s2exp]
+
+  and aux_s2exp_app ( // [s2e_fun] is normalized
+      s2vss: s2varlstlst, s2t: s2rt, s2e_fun: s2exp, s2es_arg: s2explst
+    ) : s2zexp =
+    case+ 0 of
+    | _ when s2rt_is_boxed s2t =>
+        aux_s2exp (s2vss, s2e_fun) // should it be replaced with S2ZEWORD (1)
+      // end of [_ when ...] // boxed type
+    | _ => begin
+      case+ s2e_fun.s2exp_node of
+      | S2Ecst s2c => begin case+ s2c of
+        | _ when (s2cstref_cst_get Opt_viewt0ype_int_viewt0ype = s2c) =>
+            let val- list_cons (s2e, _) = s2es_arg in aux_s2exp (s2vss, s2e) end
+          // s2c equal opt_viewt0ype_int_viewt0ype
+        | _ => s2zexp_make_s2cst (s2cst_root_get s2c) // incorrect for certain constructors
+        end (* end of [S2Ecst] *)
+      | _ => S2ZEbot () (* ??? *)
+     end (* end of [_] *)
+  // end of [aux_s2exp_app]
+  
+  and aux_s2explst
+    (s2vss: s2varlstlst, s2es: s2explst): s2zexplst = case+ s2es of
+    | list_cons (s2e, s2es) => let
+        val s2ze = aux_s2exp (s2vss, s2e) in list_cons (s2ze, aux_s2explst (s2vss, s2es))
+      end // end of [S2EXPLSTcons]
+    | list_nil () => list_nil ()
+  // end of [aux_s2explst]
 
   and aux_labs2explst (s2vss: s2varlstlst, ls2es: labs2explst)
     : labs2zexplst = case+ ls2es of

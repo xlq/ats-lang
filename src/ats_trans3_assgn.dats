@@ -7,33 +7,32 @@
 (***********************************************************************)
 
 (*
- * ATS/Anairiats - Unleashing the Potential of Types!
- *
- * Copyright (C) 2002-2008 Hongwei Xi, Boston University
- *
- * All rights reserved
- *
- * ATS is free software;  you can  redistribute it and/or modify it under
- * the terms of  the GNU GENERAL PUBLIC LICENSE (GPL) as published by the
- * Free Software Foundation; either version 3, or (at  your  option)  any
- * later version.
- * 
- * ATS is distributed in the hope that it will be useful, but WITHOUT ANY
- * WARRANTY; without  even  the  implied  warranty  of MERCHANTABILITY or
- * FITNESS FOR A PARTICULAR PURPOSE.  See the  GNU General Public License
- * for more details.
- * 
- * You  should  have  received  a  copy of the GNU General Public License
- * along  with  ATS;  see the  file COPYING.  If not, please write to the
- * Free Software Foundation,  51 Franklin Street, Fifth Floor, Boston, MA
- * 02110-1301, USA.
- *
- *)
+** ATS/Anairiats - Unleashing the Potential of Types!
+**
+** Copyright (C) 2002-2008 Hongwei Xi, Boston University
+**
+** All rights reserved
+**
+** ATS is free software;  you can  redistribute it and/or modify it under
+** the terms of  the GNU GENERAL PUBLIC LICENSE (GPL) as published by the
+** Free Software Foundation; either version 3, or (at  your  option)  any
+** later version.
+** 
+** ATS is distributed in the hope that it will be useful, but WITHOUT ANY
+** WARRANTY; without  even  the  implied  warranty  of MERCHANTABILITY or
+** FITNESS FOR A PARTICULAR PURPOSE.  See the  GNU General Public License
+** for more details.
+** 
+** You  should  have  received  a  copy of the GNU General Public License
+** along  with  ATS;  see the  file COPYING.  If not, please write to the
+** Free Software Foundation,  51 Franklin Street, Fifth Floor, Boston, MA
+** 02110-1301, USA.
+*)
 
 (* ****** ****** *)
 
-// Time: January 2008
 // Author: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
+// Time: January 2008
 
 (* ****** ****** *)
 
@@ -62,7 +61,8 @@ overload prerr with $Loc.prerr_location
 
 (* ****** ****** *)
 
-implement s2exp_addr_slablst_assgn (loc0, s2e0, s2ls0, s2e_new) = let
+implement s2exp_addr_slablst_assgn
+  (loc0, s2e0, s2ls0, s2e_new) = let
   val @(s2r0, s2ls0_ft) = s2exp_addr_normalize s2e0
   val s2ls0 = $Lst.list_append (s2ls0_ft, s2ls0)
 in
@@ -81,7 +81,7 @@ in
         print "s2exp_addr_slablst_assgn: d2v_view = "; print d2v_view; print_newline ();
         print "s2exp_addr_slablst_assgn: s2e_vt = "; print s2e_vt; print_newline ();
         print "s2exp_addr_slablst_assgn: s2e_addr = "; print s2e_addr; print_newline ();
-      end
+      end // end of [val]
 *)
       val s2ls0_bk = s2lablst_trim_s2lablst_s2lablst (s2ls0_ft, s2ls_ft, s2ls_bk)
       var err: int = 0
@@ -134,21 +134,22 @@ implement d2var_lin_slablst_assgn (loc0, d2v, s2ls, s2e_new) = let
     print "d2var_lin_slablst_assgn: d2v = "; print d2v; print_newline ()
   end // end of [val]
 *)
-  val s2e0: s2exp = case+ d2var_typ_get d2v of
+  val s2e0 = (case+ d2var_typ_get d2v of
     | Some s2e => s2e | None () => s2exp_void_t0ype ()
+  ) : s2exp // end of [val]
 (*
   val () = begin
     print "d2var_lin_slablst_assgn: s2e0 = "; print s2e0; print_newline ()
-  end
+  end // end of [val]
 *)
   var cstr: s2explst = list_nil ()
   val (s2e_old, s2e0, s2ls) = begin
     s2exp_slablst_linset_cstr (loc0, s2e0, s2ls, s2e_new, cstr)
-  end
+  end // end of [val]
 (*
   val () = begin
     print "d2var_lin_slablst_assgn: s2e0 = "; print s2e0; print_newline ()
-  end
+  end // end of [val]
 *)
   val () = trans3_env_add_proplst (loc0, cstr)
   val () = if s2exp_is_linear s2e_old then begin // linearity checking
@@ -162,12 +163,13 @@ implement d2var_lin_slablst_assgn (loc0, d2v, s2ls, s2e_new) = let
   end // end of [val]
 in
   d2var_lin_inc (d2v); d2var_typ_set (d2v, Some s2e0); s2ls
-end // d2var_lin_slablst_assgn
+end // end of [d2var_lin_slablst_assgn]
 
 (* ****** ****** *)
 
-implement d2var_mut_slablst_assgn (loc0, d2v, s2ls, s2e_new) = let
-  val s2e_addr = case+ d2var_addr_get d2v of
+implement d2var_mut_slablst_assgn
+  (loc0, d2v, s2ls, s2e_new) = let
+  val s2e_addr = (case+ d2var_addr_get d2v of
     | Some s2e => s2e
     | None () => begin
         prerr loc0;
@@ -177,7 +179,7 @@ implement d2var_mut_slablst_assgn (loc0, d2v, s2ls, s2e_new) = let
         prerr_newline ();
         $Err.abort {s2exp} ()
       end // end of [None]
-  // end of [val]
+  ) : s2exp // end of [val]
 in
   s2exp_addr_slablst_assgn (loc0, s2e_addr, s2ls, s2e_new)
 end // end of [d2var_mut_slablst_assgn]
