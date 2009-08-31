@@ -692,12 +692,13 @@ fn emit_valprim_select_varptr {m:file_mode} (
           emit_select_lab_ptr (pf | out, lab)
         end // end of [_ when ...]
       | _ when hityp_t_is_tyrecsin hit_rec => let
-(*
-          val () = fprint1_string (pf | out, "(")
-          val () = emit_hityp (pf | out, hit_rec)
-          val () = if knd > 0 then fprint1_char (pf | out, '*')
-          val () = fprint1_string (pf | out, ")")
-*)
+          val () = if knd > 0 then let
+            val () = fprint1_string (pf | out, "*(")
+            val () = emit_hityp (pf | out, hit_rec)
+            val () = fprint1_string (pf | out, "*)")
+          in
+            // nothing
+          end // end of [val]
         in
           emit_valprim (pf | out, vp_root)
         end // end of [_ when ...]
@@ -717,9 +718,9 @@ fn emit_valprim_select_varptr {m:file_mode} (
           val () = fprint1_string (pf | out, ")")
         in
           case+ 0 of
-          | _ when knd > 0 => begin
-              emit_select_lab_ptr (pf | out, lab) // ptr
-            end
+          | _ when knd > 0 =>
+              emit_select_lab_ptr (pf | out, lab)
+            // end of [ptr]
           | _ => emit_select_lab (pf | out, lab) // var
         end // end of [_]
     end // end [OFFSETlab]
