@@ -40,7 +40,7 @@ DESTDIR =
 
 .PHONY: all
 all: config.h
-	@$(MAKE) ATSHOMERELOC=$(ATSHOMERELOC) -f Makefile_maintainer $@
+	@$(MAKE) ATSHOMERELOC=$(ATSHOMERELOC) -f Makefile_main $@
 
 # NOTE(liulk): integration with autoconf.
 
@@ -106,9 +106,9 @@ install: config.h
 	  echo $(bindir)/`basename $$f` '->' ats_env.sh; \
 	done
 
-# NOTE(liulk): once most major functions of Makefile_maintainer is
+# NOTE(liulk): once most major functions of Makefile_main is
 # superceded, remove the following code.
 #
 %: force
-	@exec $(MAKE) -f Makefile_maintainer $@
+	@exec $(MAKE) -f Makefile_main $@
 force: ;

@@ -810,20 +810,19 @@ implement atspack_source_code () = let
   end // end of [cpx]
   val () = cp "INSTALL"
   val () = cp "VERSION.txt"
-  val () = cp2 "Makefile_distribute" "Makefile"
+  val () = cp2 "Makefile" "Makefile"
+  val () = cp2 "Makefile_dist_main" "Makefile_main"
 //
   val () = cp "ATSHOME_check.sh"
   val () = cp "ATSHOMERELOC_check.sh"
 //
   val () = cp "ats_env.sh.in"
 //
-  val () = cp "config.h.in"
   val () = cp "config.mk.in"
+  // val () = cp "config.h.in" // automatically generated
 //
-  val () = cp "install-sh"
-//
-  val () = cpx "configure"
   val () = cp "configure.ac"
+  // val () = cpx "configure" // it is automatically generated
 //
   val () = cp ".libfiles"
   val () = cp ".bootstrap_header"
