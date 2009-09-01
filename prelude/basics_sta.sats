@@ -141,8 +141,13 @@ abst@ype strbuf_t0ype // a type of variable size
 
 (* ****** ****** *)
 
-abst@ype void_t0ype = $extype "ats_void_type" // sizeof (void) = 1
-abst@ype empty_t0ype = $extype "ats_empty_type" // sizeof (empty) = 0
+abst@ype void_t0ype =
+  $extype "ats_void_type" // sizeof (void) = 1
+// end of [void_t0ype]
+
+abst@ype empty_t0ype =
+  $extype "ats_empty_type" // sizeof (empty) = 0
+// end of [empty_t0ype]
 
 (* ****** ****** *)
 
@@ -382,10 +387,14 @@ stadef opt = value_viewt0ype_int_viewt0ype
 *)
 
 absviewt@ype
-  opt_viewt0ype_int_viewt0ype (a:viewt@ype+, tag:int) = a
+  opt_viewt0ype_int_viewt0ype (a:viewt@ype+, opt:int) = a
 // end of [absviewt@ype]
 
-stadef opt = opt_viewt0ype_int_viewt0ype
+absviewt@ype
+  opt_viewt0ype_bool_viewt0ype (a:viewt@ype+, opt:bool) = a
+// end of [absviewt@ype]
+
+stadef opt = opt_viewt0ype_bool_viewt0ype
 
 (* ****** ****** *)
 
@@ -420,16 +429,17 @@ matrix_viewt0ype_int_int_type (elt:viewt@ype, nrow:int, ncol:int)
 
 (* ****** ****** *)
 
-abst@ype bool_bool_t0ype (bool) = $extype "ats_bool_type"
+abst@ype bool_bool_t0ype (bool) = bool_t0ype
 
-abst@ype char_char_t0ype (char) = $extype "ats_char_type"
+abst@ype char_char_t0ype (char) = char_t0ype
 
-abst@ype int_int_t0ype (int) = $extype "ats_int_type"
-abst@ype uint_int_t0ype (int) = $extype "ats_uint_type"
+abst@ype int_int_t0ype (int) = int_t0ype
+abst@ype uint_int_t0ype (int) = uint_t0ype
 
-abst@ype size_int_t0ype (i:int) = $extype "ats_size_type"
-abst@ype ssize_int_t0ype (i:int) = $extype "ats_ssize_type"
-abst@ype ptrdiff_int_t0ype (i:int) = $extype "ats_ptrdiff_type"
+abst@ype size_int_t0ype (i:int) = size_t0ype
+abst@ype ssize_int_t0ype (i:int) = ssize_t0ype
+
+abst@ype ptrdiff_int_t0ype (i:int) = ptrdiff_t0ype
 
 (* ****** ****** *)
 

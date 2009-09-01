@@ -1,6 +1,6 @@
 (*
 // print out the longest line in a file; this example demonstrates
-// a case of linear lazy evaluation
+// an interesting example of linear lazy evaluation
 *)
 
 //

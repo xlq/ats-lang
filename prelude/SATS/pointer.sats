@@ -71,6 +71,8 @@ and ppred {l:addr} (p: ptr l):<> ptr (l - 1)
 overload succ with psucc
 overload pred with ppred
 
+(* ****** ****** *)
+
 fun padd {l:addr} {i:int} (p: ptr l, i: size_t i):<> ptr (l + i)
   = "atspre_padd"
 
@@ -109,6 +111,14 @@ and pneq {l1,l2:addr} (p1: ptr l1, p2: ptr l2):<> bool (l1 <> l2)
 
 overload = with peq
 overload <> with pneq
+
+(* ****** ****** *)
+
+fun compare_ptr_ptr
+  (p1: ptr, p2: ptr):<> Sgn = "atspre_compare_ptr_ptr"
+overload compare with compare_ptr_ptr
+
+(* ****** ****** *)
 
 // print functions for pointers
 

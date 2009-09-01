@@ -210,7 +210,7 @@ and s2exp_node =
   | S2Ecst of (* static constant *)
       s2cst_t
   | S2Edatconptr of (* unfolded datatype *)
-      (d2con_t, s2explst) (* constructor and addresses of arguments *)
+      (d2con_t, s2explst) (* constructor and addrs of arguments *)
   | S2Edatcontyp of (* unfolded datatype *)
       (d2con_t, s2explst) (* constructor and types of arguments *)
   | S2Eeff of (* effects *)

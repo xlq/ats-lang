@@ -159,23 +159,27 @@ fun lt_bool1_bool1 {b1,b2:bool}
 and lte_bool1_bool1 {b1,b2:bool}
   (b1: bool b1, b2: bool b2):<> bool (~b1 || b2)
   = "atspre_lte_bool1_bool1"
-and gt_bool1_bool1 {b1,b2:bool}
+
+overload < with lt_bool1_bool1
+overload <= with lte_bool1_bool1
+
+fun gt_bool1_bool1 {b1,b2:bool}
   (b1: bool b1, b2: bool b2):<> bool (b1 && ~b2)
   = "atspre_gt_bool1_bool1"
 and gte_bool1_bool1 {b1,b2:bool}
   (b1: bool b1, b2: bool b2):<> bool (b1 || ~b2)
   = "atspre_gte_bool1_bool1"
-and eq_bool1_bool1 {b1,b2:bool}
+
+overload > with gt_bool1_bool1
+overload >= with gte_bool1_bool1
+
+fun eq_bool1_bool1 {b1,b2:bool}
   (b1: bool b1, b2: bool b2):<> bool (b1 == b2)
   = "atspre_eq_bool1_bool1"
 and neq_bool1_bool1 {b1,b2:bool}
   (b1: bool b1, b2: bool b2):<> bool (b1 <> b2)
   = "atspre_neq_bool1_bool1"
 
-overload = with lt_bool1_bool1
-overload <> with lte_bool1_bool1
-overload = with gt_bool1_bool1
-overload <> with gte_bool1_bool1
 overload = with eq_bool1_bool1
 overload <> with neq_bool1_bool1
 

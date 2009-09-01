@@ -1336,18 +1336,20 @@ fn d2exp_foldat_freeat_tr_up
         prerr ": Internal Error: d2exp_foldat_freeat_tr_up: no view at [";
         prerr s2e_addr; prerr "]."; prerr_newline ();
         $Err.abort {s2exp} ()
-      end
+      end // end of [None_vt]
+  // end of [aux]
   fun auxlst (loc0: loc_t, s2es_addr: s2explst): s2explst =
     case+ s2es_addr of
     | cons (s2e_addr, s2es_addr) =>
         cons (aux (loc0, s2e_addr), auxlst (loc0, s2es_addr))
     | nil () => nil ()
+  // end of [auxlst]
   val d3e = d2exp_tr_up d2e
   val () = d3exp_open_and_add d3e
   val s2e = d3e.d3exp_typ
   var s2es_addr: s2explst = nil ()
-  val d2c = case+ s2e.s2exp_node of
-    | S2Edatconptr (d2c, s2es) => (s2es_addr := s2es; d2c)
+  val d2c = (case+ s2e.s2exp_node of
+    | S2Edatconptr (d2c, s2es) => (s2es_addr := s2es; d2c) // *_unfold
     | _ => begin
         prerr_loc_error3 d2e.d2exp_loc;
         if isfold then begin
@@ -1359,38 +1361,38 @@ fn d2exp_foldat_freeat_tr_up
         prerr_newline ();
         $Err.abort {d2con_t} ()
       end // end of [_]
+  ) : d2con_t // end of [val]
   val s2es_arg = auxlst (loc0, s2es_addr)
   val s2e_d2c = d2con_typ_get (d2c)
   val s2e_d2c = s2exp_uni_instantiate_sexparglst (loc0, s2e_d2c, s2as)
   val s2e_d2c = s2exp_uni_instantiate_all (loc0, s2e_d2c)
   var err: int = 0
-  val () = case+ s2e_d2c.s2exp_node of
+  val () = (case+ s2e_d2c.s2exp_node of
     | S2Efun (_, _, _, _, s2es_fun_arg, s2e_fun_res) => let
         val s2es_fun_arg = (
           if isfold then s2es_fun_arg else begin
             $Lst.list_map_fun (s2es_fun_arg, s2exp_topize_0)
-          end
+          end // end of [if]
         ) : s2explst
         val () = begin
           $SOL.s2explst_tyleq_solve_err (loc0, s2es_arg, s2es_fun_arg, err)
         end // end of [val]
 (*
-        val () = // debugging information
-          if isfold then begin
-            prerr "d2exp_foldat_tr_up: s2es_fun_arg = ";
-            prerr s2es_fun_arg;
-            prerr_newline ();
-            prerr "d2exp_foldat_tr_up: s2es_arg = ";
-            prerr s2es_arg;
-            prerr_newline ();
-          end else begin
-            prerr "d2exp_freeat_tr_up: s2es_fun_arg = ";
-            prerr s2es_fun_arg;
-            prerr_newline ();
-            prerr "d2exp_freeat_tr_up: s2es_arg = ";
-            prerr s2es_arg;
-            prerr_newline ();
-          end
+        val () = if isfold then begin // debugging
+          prerr "d2exp_foldat_tr_up: s2es_fun_arg = ";
+          prerr s2es_fun_arg;
+          prerr_newline ();
+          prerr "d2exp_foldat_tr_up: s2es_arg = ";
+          prerr s2es_arg;
+          prerr_newline ();
+        end else begin
+          prerr "d2exp_freeat_tr_up: s2es_fun_arg = ";
+          prerr s2es_fun_arg;
+          prerr_newline ();
+          prerr "d2exp_freeat_tr_up: s2es_arg = ";
+          prerr s2es_arg;
+          prerr_newline ();
+        end // end of [if]
 *)
         val () = // error checking
           if err > 0 then begin
@@ -1415,24 +1417,30 @@ fn d2exp_foldat_freeat_tr_up
             prerr_newline ();
             $Err.abort {void} ()
           end // end of [if]
-        end // end of [if]
+        end (* end of [if] *)
       end // end of [S2Efun]
     | _ => begin
         prerr loc0;
-        prerr ": Internal Error: d2exp_foldat_freeat_tr_up";
-        prerr ": not function type: s2e_d2c = ";
-        prerr s2e_d2c; prerr "]."; prerr_newline ();
+        prerr ": INTERNAL ERROR";
+        prerr ": d2exp_foldat_freeat_tr_up";
+        prerr ": not a function type: s2e_d2c = ["; prerr s2e_d2c; prerr "]";
+        prerr_newline ();
         $Err.abort {void} ()
       end // end of [_]
+  ) : void // end of [val]
 in
   if isfold then d3exp_foldat (loc0, d3e) else d3exp_freeat (loc0, d3e)
 end // end of [d2exp_foldat_freeat_tr_up]
 
-fn d2exp_foldat_tr_up (loc0: loc_t, s2as: s2exparglst, d2e: d2exp): d3exp =
+fn d2exp_foldat_tr_up
+  (loc0: loc_t, s2as: s2exparglst, d2e: d2exp): d3exp =
   d2exp_foldat_freeat_tr_up (loc0, true(*isfold*), s2as, d2e)
+// end of [d2exp_foldat_tr_up]
 
-fn d2exp_freeat_tr_up (loc0: loc_t, s2as: s2exparglst, d2e: d2exp): d3exp =
+fn d2exp_freeat_tr_up
+  (loc0: loc_t, s2as: s2exparglst, d2e: d2exp): d3exp =
   d2exp_foldat_freeat_tr_up (loc0, false(*isfold*), s2as, d2e)
+// end of [d2exp_freeat_tr_up]
 
 (* ****** ****** *)
 

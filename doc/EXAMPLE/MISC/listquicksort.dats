@@ -1,3 +1,4 @@
+(*
 //
 // A verified implementation of quicksort on lists
 //
@@ -9,6 +10,7 @@
 // How to compile:
 //   atscc -o listquicksort listquicksort.dats
 //
+*)
 
 (*
 

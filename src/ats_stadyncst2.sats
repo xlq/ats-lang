@@ -69,7 +69,7 @@ val Int_t0ype : s2cstref_t
 val Int_int_t0ype : s2cstref_t
 val Obj_cls_viewt0ype : s2cstref_t
 val Objmod_cls_type : s2cstref_t
-val Opt_viewt0ype_int_viewt0ype : s2cstref_t
+val Opt_viewt0ype_bool_viewt0ype : s2cstref_t
 val Ptr_type : s2cstref_t
 val Ptr_addr_type : s2cstref_t
 val Ref_viewt0ype_type : s2cstref_t

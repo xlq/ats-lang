@@ -256,11 +256,11 @@ fun vbox_make_view_ptr
 
 (* ****** ****** *)
 
-praxi opt_some {a:viewt@ype} (x: !(a) >> opt (a, 1)):<prf> void
-praxi opt_unsome {a:viewt@ype} (x: !opt (a, 1) >> a):<prf> void
+praxi opt_some {a:viewt@ype} (x: !(a) >> opt (a, true)):<prf> void
+praxi opt_unsome {a:viewt@ype} (x: !opt (a, true) >> a):<prf> void
 
-praxi opt_none {a:viewt@ype} (x: !(a?) >> opt (a, 0)):<prf> void
-praxi opt_unnone {a:viewt@ype} (x: !opt (a, 0) >> a?):<prf> void
+praxi opt_none {a:viewt@ype} (x: !(a?) >> opt (a, false)):<prf> void
+praxi opt_unnone {a:viewt@ype} (x: !opt (a, false) >> a?):<prf> void
 
 (* ****** ****** *)
 

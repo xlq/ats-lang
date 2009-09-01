@@ -7,26 +7,25 @@
 /************************************************************************/
 
 /*
- * ATS - Unleashing the Potential of Types!
- *
- * Copyright (C) 2002-2008 Hongwei Xi.
- *
- * ATS is free software;  you can  redistribute it and/or modify it under
- * the terms of the GNU LESSER GENERAL PUBLIC LICENSE as published by the
- * Free Software Foundation; either version 2.1, or (at your option)  any
- * later version.
- * 
- * ATS is distributed in the hope that it will be useful, but WITHOUT ANY
- * WARRANTY; without  even  the  implied  warranty  of MERCHANTABILITY or
- * FITNESS FOR A PARTICULAR PURPOSE.  See the  GNU General Public License
- * for more details.
- * 
- * You  should  have  received  a  copy of the GNU General Public License
- * along  with  ATS;  see the  file COPYING.  If not, please write to the
- * Free Software Foundation,  51 Franklin Street, Fifth Floor, Boston, MA
- * 02110-1301, USA.
- *
- */
+** ATS - Unleashing the Potential of Types!
+**
+** Copyright (C) 2002-2008 Hongwei Xi.
+**
+** ATS is free software;  you can  redistribute it and/or modify it under
+** the terms of the GNU LESSER GENERAL PUBLIC LICENSE as published by the
+** Free Software Foundation; either version 2.1, or (at your option)  any
+** later version.
+** 
+** ATS is distributed in the hope that it will be useful, but WITHOUT ANY
+** WARRANTY; without  even  the  implied  warranty  of MERCHANTABILITY or
+** FITNESS FOR A PARTICULAR PURPOSE.  See the  GNU General Public License
+** for more details.
+** 
+** You  should  have  received  a  copy of the GNU General Public License
+** along  with  ATS;  see the  file COPYING.  If not, please write to the
+** Free Software Foundation,  51 Franklin Street, Fifth Floor, Boston, MA
+** 02110-1301, USA.
+*/
 
 /* ****** ****** */
 
@@ -136,15 +135,29 @@ atspre_pneq (const ats_ptr_type p1, const ats_ptr_type p2) {
   return (p1 != p2) ;
 }
 
+static inline
+ats_int_type
+atspre_compare_ptr_ptr (
+  const ats_ptr_type p1, const ats_ptr_type p2
+) {
+  if (p1 < p2) return (-1) ;
+  else if (p1 > p2) return ( 1) ;
+  else return (0) ;  
+} /* end of [atspre_compare_ptr_ptr] */
+
+/* ****** ****** */
+
 // print functions
 
 static inline
 ats_void_type
-atspre_fprint_ptr (const ats_ptr_type out, const ats_ptr_type p) {
+atspre_fprint_ptr (
+  const ats_ptr_type out, const ats_ptr_type p
+) {
   int n = fprintf ((FILE *)out, "%p", p) ;
   if (n < 0) {
     ats_exit_errmsg (n, "Exit: [fprint_pointer] failed.\n") ;
-  }
+  } /* end of [if] */
   return ;
 }
 
