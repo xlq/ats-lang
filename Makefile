@@ -46,14 +46,14 @@ all: config.h
 
 -include config.mk
 
-config.h ats-env.sh: \
-  config.h.in config.mk.in ats-env.sh.in configure
+config.h ats_env.sh: \
+  config.h.in config.mk.in ats_env.sh.in configure
 	test -x config.status && config.status || ./configure
 
 Makefile: ;
 configure.ac: ;
 config.mk.in: ;
-ats-env.sh.in: ;
+ats_env.sh.in: ;
 
 config.mk:
 	touch $@
@@ -94,7 +94,7 @@ install: config.h
 	done
 
 	# install wrapper scripts and symbolic links.
-	for f in ats-env.sh; do \
+	for f in ats_env.sh; do \
 	  cd $(abs_top_srcdir) && \
 	  $(INSTALL) -m 755 -D $$f $(DESTDIR)$(bindir)/$$f && \
 	  echo $$f; \
@@ -102,8 +102,8 @@ install: config.h
 
 	for f in bin/*; do \
 	  cd $(DESTDIR)$(bindir) && \
-	  ln -sf ats-env.sh `basename $$f` && \
-	  echo $(bindir)/`basename $$f` '->' ats-env.sh; \
+	  ln -sf ats_env.sh `basename $$f` && \
+	  echo $(bindir)/`basename $$f` '->' ats_env.sh; \
 	done
 
 # NOTE(liulk): once most major functions of Makefile_maintainer is
