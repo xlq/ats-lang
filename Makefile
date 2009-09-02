@@ -73,23 +73,23 @@ install: config.h
 	# recursively install all files in the list except .svn control files.
 	for d in ccomp/runtime doc libats libc prelude; do \
 	  cd $(abs_top_srcdir) && \
-	  $(INSTALL) -d $(DESTDIR)$(ATSHOME)/$$d && \
+	  $(INSTALL) -d $(DESTDIR)$(ATSNEWHOME)/$$d && \
 	  find $$d -name .svn -prune -o \
-            -exec $(INSTALL) -m 644 -D \{} $(DESTDIR)$(ATSHOME)/\{} \; \
+            -exec $(INSTALL) -m 644 -D \{} $(DESTDIR)$(ATSNEWHOME)/\{} \; \
 	    -print; \
 	done
 
 	# install specific files in the list as regular files.
 	for f in COPYING INSTALL *.txt ccomp/lib/*.a config.h; do \
 	  cd $(abs_top_srcdir) && \
-	  $(INSTALL) -m 644 -D $$f $(DESTDIR)$(ATSHOME)/$$f && \
+	  $(INSTALL) -m 644 -D $$f $(DESTDIR)$(ATSNEWHOME)/$$f && \
 	  echo $$f; \
 	done
 
 	# install specific files in the list as executables.
 	for f in bin/*; do \
 	  cd $(abs_top_srcdir) && \
-	  $(INSTALL) -m 755 -D $$f $(DESTDIR)$(ATSHOME)/$$f && \
+	  $(INSTALL) -m 755 -D $$f $(DESTDIR)$(ATSNEWHOME)/$$f && \
 	  echo $$f; \
 	done
 
