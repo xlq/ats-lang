@@ -2460,26 +2460,19 @@ end // end of [emit_funentry_prototype]
 
 (* ****** ****** *)
 
-implement emit_mainfun (pf | out, fil) = let
+implement emit_mainfun (pf | out, fil) = () where {
   val () = fprint1_string (pf | out, "int main (int argc, char *argv[]) {\n")
-
+//
   val () = fprint1_string (pf | out, "ATS_GC_INIT() ;\n")
-
+//
   val () = fprint1_string (pf | out, "mainats_prelude() ;\n")
+  val () = emit_filename (pf | out, fil); val () = fprint1_string (pf | out, "__dynload() ;\n")
+  val () = fprint1_string (pf | out, "mainats((ats_int_type)argc, (ats_ptr_type)argv) ;\n")
 //
-  val () = fprint1_string (pf | out, "\n#ifndef _ATS_DYNLOADFUN_NONE\n")
-  val () = emit_filename (pf | out, fil)
-  val () = fprint1_string (pf | out, "__dynload () ;\n")
-  val () = fprint1_string (pf | out, "#endif\n\n")
-//
-  val () = fprint1_string (pf | out, "mainats ((ats_int_type)argc, (ats_ptr_type)argv) ;\n")
-
   val () = fprint1_string (pf | out, "return (0) ;\n")
-
+//
   val () = fprint1_string (pf | out, "} /* end of main */\n")
-in
-  // empty
-end // end of [emit_mainfun]
+} // end of [emit_mainfun]
 
 (* ****** ****** *)
 

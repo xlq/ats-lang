@@ -190,7 +190,7 @@ implement symbol_ATS_FUNCTION_NAME_PREFIX =
 
 implement symbol_ATS_DYNLOADFLAG = symbol_make_string "ATS_DYNLOADFLAG"
 
-implement symbol_ATS_DYNLOADFUNAME = symbol_make_string "ATS_DYNLOADFUNAME"
+implement symbol_ATS_DYNLOADFUN_NAME = symbol_make_string "ATS_DYNLOADFUN_NAME"
 
 (* ****** ****** *)
 

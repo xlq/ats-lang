@@ -1829,25 +1829,27 @@ implement finalize () = () where {
     end // end of [aux_dynloadflag]
   } // end of [where]
 
-  val () = aux_dynloadfuname () where {
-    fun aux_dynloadfuname (): void = begin
-    case+ the_e1xpenv_find ($Sym.symbol_ATS_DYNLOADFUNAME) of
-    | ~Some_vt e1xp => let
-        val v1al = e1xp_eval (e1xp) in case+ v1al of
-        | V1ALstring s => let
-            val s = string1_of_string s
-          in
-            $Glo.ats_dynloadfuname_set (stropt_some s)
-          end // end of [V1ALstring]
-        | _ => begin
-            prerr_loc_error1 e1xp.e1xp_loc;
-            prerr ": a string definition is required for [ATS_DYNLOADFUNAME]";
-            prerr_newline ();
-            $Err.abort {void} ()
-          end // end of [_]
-      end // end of [Some_vt]
-    | ~None_vt () => () // use the default value
-    end // end of [aux_dynloadfuname]
+  val () = aux_dynloadfun_name () where {
+    fun aux_dynloadfun_name (): void = let
+      val ans = the_e1xpenv_find ($Sym.symbol_ATS_DYNLOADFUN_NAME)
+    in
+      case+ ans of
+      | ~Some_vt e1xp => let
+          val v1al = e1xp_eval (e1xp) in case+ v1al of
+          | V1ALstring s => let
+              val s = string1_of_string s
+            in
+              $Glo.ats_dynloadfun_name_set (stropt_some s)
+            end // end of [V1ALstring]
+          | _ => begin
+              prerr_loc_error1 e1xp.e1xp_loc;
+              prerr ": a string definition is required for [ATS_DYNLOADFUN_NAME]";
+              prerr_newline ();
+              $Err.abort {void} ()
+            end // end of [_]
+        end // end of [Some_vt]
+      | ~None_vt () => () // use the default value
+    end // end of [aux_dynloadfun_name]
   } // end of [where]
 } // end of [finalize]
 

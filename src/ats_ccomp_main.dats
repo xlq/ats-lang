@@ -829,7 +829,7 @@ fn emit_staload {m:file_mode} (
     aux (out, 0, d2cs)
   end // end of [aux_staload_exnconlst]
 //  
-  val () = fprint1_string (pf | out, "#ifndef _ATS_STALOADFUN_NONE\n\n")
+  val () = fprint1_string (pf | out, "#ifndef _ATS_STALOADFUN_NONE\n")
 //
   val () = aux_staload_dec (out, stafils)
 //
@@ -853,8 +853,8 @@ fn emit_staload {m:file_mode} (
   val _(*int*) = aux_staload_exnconlst (out, d2cs)
 //
   val () = fprint1_string (pf | out, "return ;\n")
-  val () = fprint1_string (pf | out, "} /* staload function */\n\n")
-  val () = fprint1_string (pf | out, "#endif // [_ATS_STALOADFUN_NONE]\n\n")
+  val () = fprint1_string (pf | out, "} /* staload function */\n")
+  val () = fprint1_string (pf | out, "#endif /* [_ATS_STALOADFUN_NONE] */\n\n")
 in
   // empty
 end // end of [emit_staload]
@@ -892,12 +892,18 @@ fn emit_dynload {m:file_mode} (
   } // end of [where]
   val () = dynfilelst_free (dynfils)
 //
-  val () = fprint1_string (pf | out, "#ifndef _ATS_DYNLOADFUN_NONE\n\n")
+  val () = fprint1_string
+    (pf | out, "// (external) dynload flag declaration\n")
+  // end of [val]
 //
   val () = let
-    val () = if dynloadflag = 0 then fprint1_string (pf | out, "// ")
+    val () =
+      if dynloadflag = 0 then fprint1_string (pf | out, "// ")
+    // end of [val]
     val () = fprint1_string (pf | out, "extern int\n")
-    val () = if dynloadflag = 0 then fprint1_string (pf | out, "// ")
+    val () =
+      if dynloadflag = 0 then fprint1_string (pf | out, "// ")
+    // end of [val]
     val () = emit_filename (pf | out, fil)
     val () = fprint1_string (pf | out, "__dynload_flag ;\n\n")
   in
@@ -956,12 +962,13 @@ fn emit_dynload {m:file_mode} (
   val () = emit_instrlst_vt (pf | out, res)
 //
   val () = fprint1_string (pf | out, "return ;\n")
-  val () = fprint1_string (pf | out, "} /* dynload function */\n\n")
-  val () = fprint1_string (pf | out, "#endif // [_ATS_DYNLOADFUN_NONE]\n\n")
+  val () = fprint1_string (pf | out, "} /* end of [dynload function] */\n\n")
 //
   // this is used for explicit dynamic loading
   val () = let
-    val name = $Glo.ats_dynloadfuname_get () in case+ 0 of
+    val name = $Glo.ats_dynloadfun_name_get () // ATS_DYNLOADFUN_NAME
+  in
+    case+ 0 of
     | _ when stropt_is_some name => let
         val name = stropt_unsome name
         val () = fprintf1_exn (pf | out, "ats_void_type %s () {\n", @(name))

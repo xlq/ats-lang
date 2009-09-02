@@ -135,7 +135,7 @@ val symbol_ATS_FUNCTION_NAME_PREFIX : symbol_t
 val symbol_ATS_DYNLOADFLAG : symbol_t
 
 // the name of the dynamic loading function
-val symbol_ATS_DYNLOADFUNAME : symbol_t
+val symbol_ATS_DYNLOADFUN_NAME : symbol_t
 
 (* ****** ****** *)
 

@@ -31,8 +31,8 @@
 
 (* ****** ****** *)
 
-// Time: June 2008
 // Author: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
+// Time: June 2008
 
 (* ****** ****** *)
 
@@ -249,7 +249,7 @@ dynload "gc_manops.dats"
 
 #define ATS_DYNLOADFLAG 0 // disabling implicit dynamic loading and
 // using explicit dynamic loading instead
-#define ATS_DYNLOADFUNAME "gc_init" // name for the dynload function
+#define ATS_DYNLOADFUN_NAME "gc_init" // name for the dynload function
 
 val () = let // initialization
   val dir = gc_stack_dir_get ()
