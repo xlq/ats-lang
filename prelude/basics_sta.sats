@@ -387,10 +387,6 @@ stadef opt = value_viewt0ype_int_viewt0ype
 *)
 
 absviewt@ype
-  opt_viewt0ype_int_viewt0ype (a:viewt@ype+, opt:int) = a
-// end of [absviewt@ype]
-
-absviewt@ype
   opt_viewt0ype_bool_viewt0ype (a:viewt@ype+, opt:bool) = a
 // end of [absviewt@ype]
 

@@ -1036,14 +1036,13 @@ implement s2zexp_make_s2exp (s2e0) = let
     | _ when s2rt_is_boxed s2t =>
         aux_s2exp (s2vss, s2e_fun) // should it be replaced with S2ZEWORD (1) ?
       // end of [_ when ...] // boxed type
-    | _ => begin
-      case+ s2e_fun.s2exp_node of
+    | _ => begin case+ s2e_fun.s2exp_node of
       | S2Ecst s2c => let
           val isabs = s2cst_isabs_get (s2c) in case+ isabs of
-          | Some (Some s2e_fun) => let
-              val s2e = s2exp_app_srt (s2t, s2e_fun, s2es_arg) in aux_s2exp (s2vss, s2e)
-            end // end of [Some (Some _)]
-          | _ => s2zexp_make_s2cst (s2cst_root_get s2c) // incorrect for certain constructors
+            | Some (Some s2e_fun) => let
+                val s2e = s2exp_app_srt (s2t, s2e_fun, s2es_arg) in aux_s2exp (s2vss, s2e)
+              end // end of [Some (Some _)]
+            | _ => s2zexp_make_s2cst (s2cst_root_get s2c) // incorrect for certain constructors
         end (* end of [S2Ecst] *)
       | _ => S2ZEbot () (* ??? *)
      end (* end of [_] *)
