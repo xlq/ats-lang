@@ -48,7 +48,7 @@ all: config.h
 
 config.h ats_env.sh: \
   config.h.in config.mk.in ats_env.sh.in configure
-	test -x config.status && config.status || ./configure
+	test -x config.status && ./config.status || ./configure
 
 Makefile: ;
 configure.ac: ;

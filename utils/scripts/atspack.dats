@@ -572,13 +572,24 @@ fn doc_dir_copy () = let
     SRCROOTdoc_EXAMPLE_TEST + ,(name), DSTROOTdoc_EXAMPLE_TEST + ,(name)
   )
   val () = cp "Makefile"
-  val () = cp "prelude_list.dats"
+  val () = cp "prelude_array.dats"
+  val () = cp "prelude_array0.dats"
+  val () = cp "prelude_list.dats"  
   val () = cp "prelude_list_vt.dats"
+  val () = cp "prelude_matrix.dats"
+  val () = cp "prelude_matrix0.dats"
   val () = cp "prelude_string.dats"
   val () = cp "libc_dirent.dats"
+  val () = cp "libc_stdlib.dats"
   val () = cp "libats_intinf.dats"
   val () = cp "libats_iterint.dats"
   val () = cp "libats_regexp.dats"
+  val () = cp "libats_smlbas_array.dats"
+  val () = cp "libats_smlbas_array2.dats"
+  val () = cp "libats_smlbas_char.dats"
+  val () = cp "libats_smlbas_list.dats"
+  val () = cp "libats_smlbas_string.dats"
+  val () = cp "libats_smlbas_time.dats"
 //
   val SRCROOTdoc_EXAMPLE_KernighanRitchie =
     SRCROOTdoc_EXAMPLE + "KernighanRitchie/"
@@ -819,10 +830,10 @@ implement atspack_source_code () = let
   val () = cp "ats_env.sh.in"
 //
   val () = cp "config.mk.in"
-  // val () = cp "config.h.in" // automatically generated
+  val () = cp "config.h.in" // in case [autoheader] is not available
 //
   val () = cp "configure.ac"
-  // val () = cpx "configure" // it is automatically generated
+  val () = cpx "configure"  // in case [autoconf] is not available ...
 //
   val () = cp ".libfiles"
   val () = cp ".bootstrap_header"
