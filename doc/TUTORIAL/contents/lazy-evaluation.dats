@@ -45,7 +45,7 @@ fn nprime {n: pos} (n: int n): N2 = stream_nth (primes, n-1)
 
 (* ****** ****** *)
 
-val one = int64_of 1
+val one = int64_of_int 1
 
 val // the following values are defined mutually recursively
 rec fibs_1: stream int64 = $delay (one :: fibs_2) // fib1, fib2, ...

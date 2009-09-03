@@ -1,11 +1,15 @@
 #!/bin/bash
 
+#
+# Author: Likai Liu (likai AT cs DOT bu DOT edu)
+#
+
 PACKAGE_TARNAME=@PACKAGE_TARNAME@
 PACKAGE_VERSION=@PACKAGE_VERSION@
 prefix=@prefix@
 
 export ATSHOME="${prefix}/share/${PACKAGE_TARNAME}-${PACKAGE_VERSION}"
-export ATSHOMERELOC='ATS'
+export ATSHOMERELOC="ATS-$(PACKAGE_VERSION)"
 
 if [ ! -d "$ATSHOME" ]; then
   echo "ATS must be installed at '$ATSHOME'"
@@ -25,3 +29,6 @@ case $prog in
     ;;
 esac
 
+#
+# end of [ats_env.sh.in]
+#

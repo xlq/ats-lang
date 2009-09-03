@@ -57,7 +57,7 @@ in '{ // record creation
 
 implement main (argc, argv) = let
   val cnt = counter_make ()
-  val x = int64_of (1024 * 1024); val xx = x * x // 2 ^ 40
+  val x = int64_of_int (1024 * 1024); val xx = x * x // 2 ^ 40
 in
   print "cnt.get () = "; print (cnt.get ()); print_newline ();
   cnt.set (xx) ;
