@@ -515,6 +515,8 @@ fn doc_dir_copy () = let
   val () = cp "fact2.dats"
   val () = cp "fact3.dats"
   val () = cp "fibs.dats"
+  val () = cp "revarr.dats"
+  val () = cp "revstr.dats"
 //
   val SRCROOTdoc_EXAMPLE_MISC = SRCROOTdoc_EXAMPLE + "MISC/"
   val DSTROOTdoc_EXAMPLE_MISC = DSTROOTdoc_EXAMPLE + "MISC/"

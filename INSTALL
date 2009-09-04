@@ -58,11 +58,11 @@ the directory "FOO/ATS".
 
 Step 2: Please execute the following command
 
-./configure --prefix=BAR
+./configure --prefix=DESTDIR
 
-where BAR is the name of the directory where ATS is to be installed.
+where DESTDIR is the name of the directory where ATS is to be installed.
 
-If the argument [--prefix=BAR] is missing, then the default directory
+If the argument [--prefix=DESTDIR] is missing, then the default directory
 for installing ATS is "/usr/local".
 
 You can now go into the directory "FOO/ATS" and execute
@@ -74,9 +74,19 @@ This generates executables "atscc" and "atsopt" in the directory
 and a library file "libats.a" in the directory "FOO/ATS/CCOMP/lib", which
 you need for linking.
 
-Step 3: Lastly, you can install ATS by executing
+Step 3: You can install ATS by executing
 
 make install
+
+This step is optional as you can also keep ATS in the place where it is
+compiled.
+
+Lastly, please make sure that the environment variable ATSHOME is set to
+the name of the directory in which ATS is installed, and the environment
+variable ATSHOMERELOC is set to ATS-x.x.x, where x.x.x is the verison
+number of ATS package. This should probably be done by a shell script.
+Note that the values of ATSHOME and ATSHOMERELOC can be found in the files
+"FOO/ATS/.ATSHOME" and "FOO/ATS/.ATSHOMERELOC", respectively.
 
 ------------------------------------------------------------------------
 

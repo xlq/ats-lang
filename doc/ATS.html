@@ -227,47 +227,41 @@ instance, can be done by executing the following command line:
 All the files and directories extracted from the tarball are now in the
 directory "FOO/ATS".
 
-<LI><H4>Step 2:</H4> Please set the shell environment variable ATSHOME to be
-"FOO/ATS" (not "FOO/ATS/"). For instance, this can be done by executing the
-following command line in BASH:
+<LI><H4>Step 2:</H4>
+Please execute the following command
 
-<pre>ATSHOME=FOO/ATS; export ATSHOME</pre>
+./configure --prefix=DESTDIR
 
-or the following command line in CSH/TCSH:
+where DESTDIR is the name of the directory where ATS is to be installed.
 
-<pre>setenv ATSHOME FOO/ATS</pre>
+If the argument [--prefix=DESTDIR] is missing, then the default directory
+for installing ATS is "/usr/local".
 
-You may want to put this command in a file (e.g., .bashrc or .cshrc) that
-is executed each time when a shell is started.
-<P>
-Also, you need to set the environment variable ATSHOMERELOC to
-"/usr/share/atshome" (or whatever value you prefer) if you intend to change
-the value of ATSHOME later.  For instance, this is often needed if you want
-to build a precompiled package of ATS for distribution.
-
-<LI><H4>Step 3:</H4> You can now go into the directory "FOO/ATS" and execute
+You can now go into the directory "FOO/ATS" and execute
 
 <pre>make all</pre>
 
 This generates executables "atscc" and "atsopt" in the directory
-"FOO/ATS/bin", which are the commands for compiling ATS programs.  Also,
-this generates a library file "libats.a" in the directory
-"FOO/ATS/ccomp/lib".
+"FOO/ATS/bin", which is the command you need for compiling ATS programs,
+and a library file "libats.a" in the directory "FOO/ATS/CCOMP/lib", which
+you need for linking.
 
-<LI><H4>Step 4</H4> Lastly, you need to create symbolic links for "atscc"
-and "atsopt" in a directory (e.g., "/usr/bin" if you have root access) that
-is on your execution path, or you may simply put the directory
-"FOO/ATS/bin" on your execution path. The latter can be done in BASH as
-follows:
+<LI><H4>Step 3:</H4>
+You can install ATS by executing
 
-<pre>PATH=${PATH}:${ATSHOME}/bin; export PATH</pre>
+<pre>make install</pre>
 
-or in CSH/TCSH as follows:
+This step is optional as you can also keep ATS in the place where it is
+compiled.
+<P>
 
-<pre>setenv PATH ${PATH}:${ATSHOME}/bin</pre>
-
-If you do so, please consider putting this command in a file (e.g., .bashrc or
-.cshrc) that is executed each time when a shell is started.
+Lastly, please make sure that the environment variable ATSHOME is set to
+the name of the directory in which ATS is installed, and the environment
+variable ATSHOMERELOC is set to ATS-x.x.x, where x.x.x is the verison
+number of ATS package. This should probably be done by a shell script.
+Note that the values of ATSHOME and ATSHOMERELOC can be found in the files
+"FOO/ATS/.ATSHOME" and "FOO/ATS/.ATSHOMERELOC", respectively.
+<P>
 
 </MENU>
 
