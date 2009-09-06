@@ -773,9 +773,9 @@ fn emit_staload {m:file_mode} (
     fun aux_conlst (out: &FILE m, d2cs: d2conlst)
       : void = begin case+ d2cs of
       | D2CONLSTcons (d2c, d2cs) => let
-          val () = begin
+          val () = begin // only needed for a constructor with no arguments!
             if d2con_arity_real_get d2c > 0 then fprint1_string (pf | out, "// ")
-          end
+          end // end of [val]
           val () = emit_d2con (pf | out, d2c);
           val tag = d2con_tag_get d2c
           val () = fprintf1_exn (pf | out, ".tag = %i ;\n", @(tag))
@@ -828,9 +828,10 @@ fn emit_staload {m:file_mode} (
   in
     aux (out, 0, d2cs)
   end // end of [aux_staload_exnconlst]
-//  
+(*  
+  // *_staload function should always be defined!
   val () = fprint1_string (pf | out, "#ifndef _ATS_STALOADFUN_NONE\n")
-//
+*)
   val () = aux_staload_dec (out, stafils)
 //
   val () = fprint1_string (pf | out, "static int ")
@@ -854,7 +855,9 @@ fn emit_staload {m:file_mode} (
 //
   val () = fprint1_string (pf | out, "return ;\n")
   val () = fprint1_string (pf | out, "} /* staload function */\n")
+(*
   val () = fprint1_string (pf | out, "#endif /* [_ATS_STALOADFUN_NONE] */\n\n")
+*)
 in
   // empty
 end // end of [emit_staload]

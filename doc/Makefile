@@ -38,8 +38,8 @@ changelog::
 
 ######
 
-manual_system::
-	scp DOCUMENTATION/manual_system.html \
-          ats-hwxi@web.sourceforge.net:/home/groups/a/at/ats-lang/htdocs/DOCUMENTATION/manual_system.html
+sysprog::
+	scp BOOK/sysprog.html \
+          ats-hwxi@web.sourceforge.net:/home/groups/a/at/ats-lang/htdocs/DOCUMENTATION/sysprog.html
 
 ###### end of [Makefile] ######
