@@ -1013,14 +1013,15 @@ end // end of [emit_extypelst_free]
 fn emit_extcodelst {m:file_mode} (
     pf: file_mode_lte (m, w)
   | out: &FILE m
-  , pos0: int
+  , pos0: int (* top(0), mid(1), bot(2) *)
   , xs0: &extcodelst
   ) : int = let
 
-  fn test (pos0: int, pos: int): bool =
-    if pos0 = 0 then (pos = 0) else begin
-      if pos0 = 1 then (pos = 1) else true
-    end
+  fn test (pos0: int, pos: int): bool = case+ 0 of
+    | _ when pos0 = 0 => pos <= 0 (* pos = ~1 or pos = 0 *)
+    | _ when pos0 = 1 => pos = 1
+    | _ => true // pos = 2
+  // end of [test]
 
   fun aux_main (
       out: &FILE m
@@ -1109,13 +1110,11 @@ implement ccomp_main {m}
   val () = if flag > 0 then emit_include_cats (pf | out)
 
   val stafils = the_stafilelst_get ()
-  val () = let
+  val () = () where {
     val () = fprint1_string
       (pf | out, "/* prologue from statically loaded files */\n")
     val () = emit_stafilelst_extcode (pf | out, stafils)
-  in
-    // empty
-  end
+  } // end of [val]
 
   var extcodes = the_extcodelst_get ()
   val () = fprint1_string (pf | out, "/* external codes at top */\n")
