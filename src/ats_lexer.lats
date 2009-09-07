@@ -752,7 +752,7 @@ ats_bool_type
 ats_lexer_literal_int_check
   (ats_ptr_type s0, ats_ptr_type err) {
   char c, *s = s0 ;
-
+//
   c = *s ;
   if (c != '0') return ats_true_bool ;
   ++s ; c = *s ;
@@ -764,6 +764,7 @@ ats_lexer_literal_int_check
     } // end of [if]
     ++s ; c = *s ;
   }
+//
   return ats_true_bool ;
 } /* end of [ats_lexer_literal_int_check] */
 
@@ -773,7 +774,11 @@ extern fun process_literal_int_check (_: string, err: &char): bool
   = "ats_lexer_literal_int_check"
 
 fn process_literal_int (): void = let
-  val str = lexeme_string (); val loc = location_get ()
+  val str = lexeme_string ()
+(*
+  val () = prerrf ("process_literal_int: str = %s\n", @(str))
+*)
+  val loc = location_get ()
   var err: char = '\000'; val () =
     if process_literal_int_check (str, err) then () else begin
       prerr loc;

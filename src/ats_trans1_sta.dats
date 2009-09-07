@@ -201,7 +201,7 @@ implement e0xp_tr e0 = let
           let val e = e1xp_ide (loc, id) in e1xp_make_opr (e, f) end
         end
       | ~None_vt () => $Fix.ITEMatm (e1xp_ide (loc, id))
-      end
+      end (* end of [E0XPide] *)
     | E0XPint (int: string) => $Fix.ITEMatm (e1xp_int (loc, int))
     | E0XPlist (es) => $Fix.ITEMatm (e1xp_list (loc, e0xplst_tr es))
     | E0XPstring (str, len) => $Fix.ITEMatm (e1xp_string (loc, str, len))

@@ -137,12 +137,74 @@ end // end of [e1xp_eval_opr_errmsg]
 
 (* ****** ****** *)
 
+//
+// it is assumed that [s] represents a valid integer
+//
+fun e1xp_eval_int (s: string) = let
+(*
+  val () = begin
+    prerr "e1xp_eval_int s = "; prerr s; prerr_newline ()
+  end // end of [val]
+*)
+  val [n:int] s = string1_of_string (s) // no-op casting
+  fun loop1 {i:nat | i <= n} .<n-i>.
+    (sgn: int, s: string n, i: size_t i): int =
+    if string_isnot_at_end (s, i) then let
+      val c0 = s[i]
+    in
+      if c0 <> '0' then begin
+        sgn * loop2 (10(*base*), s, i+1, c0 - '0') // s = [1-9]...
+      end else begin
+        if string_isnot_at_end (s, i+1) then let
+          val c1 = s[i+1]
+        in
+          if char_isdigit (c1) then
+            sgn * loop2 (8(*base*), s, i+2, c1 - '0') // s = 0...
+          else
+            sgn * loop2 (16(*base*), s, i+2, 0) // s = 0x... or s = 0X...
+          // end of [if]
+        end else begin
+          0 // s = 0
+        end // end of [if]
+      end // end of [if]
+    end else begin
+      0 // empty string
+    end // end of [if]
+  // end of [loop1]
+
+  and loop2 {i:nat | i <= n} .<n-i>. (
+      base: int, s: string n, i: size_t i, res: int
+    ) : int =
+    if string_isnot_at_end (s, i) then let
+      val c = s[i]; val d = begin
+        if char_isdigit c then c - '0' else
+          10 + (if char_isupper c then c - 'A' else c - 'a' : int)
+        // end of [if]
+      end : int
+    in
+      loop2 (base, s, i+1, res * base + d)
+    end else begin
+      res (* loop2 returns *)
+    end // end of [if]
+  // end of [loop2]
+in
+  if string_isnot_at_end (s, 0) then let
+    val c0 = s[0]
+  in
+    if c0 <> '~' then loop1 (1(*sgn*), s, 0) else loop1 (~1(*sgn*), s, 1)
+  end else begin
+    0 // empty string represents 0
+  end // end of [if]
+end (* end of [e1xp_eval_int] *)
+
+(* ****** ****** *)
+
 fun e1xp_eval_appid
   (loc: loc_t, id: sym_t, es: e1xplst): v1al = let
 (*
   val () = begin
-    print "e1xp_eval_appid: id = "; print id; print_newline ()
-  end
+    prerr "e1xp_eval_appid: id = "; prerr id; print_newline ()
+  end // end of [val]
 *)
 in
   if id = $Sym.symbol_DEFINED then begin case+ es of
@@ -476,7 +538,7 @@ in
     end // end of [E1XPapp]
   | E1XPchar c => V1ALchar c
   | E1XPfloat f(*string*) => V1ALfloat (double_of f)
-  | E1XPint i => V1ALint (int_of i)
+  | E1XPint (int: string) => V1ALint (e1xp_eval_int int)
   | E1XPide id => begin case+ the_e1xpenv_find id of
     | ~Some_vt e => e1xp_eval e
     | ~None_vt () => e1xp_eval_errmsg_id (e0.e1xp_loc, id)

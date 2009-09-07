@@ -1581,8 +1581,9 @@ implement d0ec_tr d0c0 = begin
     end // end of [D0Cnonfix]
   | D0Csymintr ids => d1ec_symintr (d0c0.d0ec_loc, ids)
   | D0Ce0xpdef (id, def) => let
-      val def: e1xp = case+ def of
+      val def = (case+ def of
         | Some e0xp => e0xp_tr e0xp | None () => e1xp_none ()
+      ) : e1xp // end of [val]
     in
       the_e1xpenv_add (id, def); d1ec_e1xpdef (d0c0.d0ec_loc, id, def)
     end // end of [D0Ce0xpdef]
@@ -1590,18 +1591,17 @@ implement d0ec_tr d0c0 = begin
       val e1xp = e0xp_tr e0xp
 (*
       val () = begin
-        print "d0ec_tr: D0Ce0xpact: e1xp = ";
-        print e1xp;
-        print_newline ()
-      end
+        prerr "d0ec_tr: D0Ce0xpact: e1xp = "; prerr e1xp; prerr_newline ()
+      end // end of [val]
 *)
       val v1al = e1xp_eval e1xp
-      val () = case+ actkind of
+      val () = (case+ actkind of
         | E0XPACTassert () =>
             do_e0xpact_assert (e0xp.e0xp_loc, v1al)
         | E0XPACTerror () =>
             do_e0xpact_error (e0xp.e0xp_loc, v1al)
         | E0XPACTprint () => do_e0xpact_prerr v1al
+      ) : void // end of [val]
     in
       d1ec_none (d0c0.d0ec_loc)
     end // end of [D0Ce0xpact]
