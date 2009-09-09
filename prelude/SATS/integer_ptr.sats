@@ -165,10 +165,15 @@ typedef uintptr = uintptr_type
 
 symintr uintptr_of
 
-fun uintptr_of_int (i: int):<> uintptr
-  = "atspre_uintptr_of_int"
+fun uintptr_of_uint (i: uint):<> uintptr
+  = "atspre_uintptr_of_uint"
+overload uintptr_of with uintptr_of_uint
 
-overload uintptr_of with uintptr_of_int
+castfn ptr_of_uintptr (u: uintptr): ptr // = "atspre_ptr_of_uintptr"
+castfn uintptr_of_ptr (p: ptr): uintptr // = "atspre_uintptr_of_ptr"
+overload uintptr_of with uintptr_of_ptr
+
+(* ****** ****** *)
 
 // arithmetic functions and comparison functions
 

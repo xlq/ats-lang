@@ -192,8 +192,8 @@ atspre_prerr_intptr (ats_intptr_type i) {
 
 static inline
 ats_uintptr_type
-atspre_uintptr_of_int (ats_int_type i) {
-  return (ats_uintptr_type)(uintptr_t)i ;
+atspre_uintptr_of_uint (ats_uint_type u) {
+  return (ats_uintptr_type)(uintptr_t)u ;
 }
 
 // ------ ------

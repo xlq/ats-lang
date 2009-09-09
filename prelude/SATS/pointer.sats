@@ -51,6 +51,14 @@
 
 (* ****** ****** *)
 
+(*
+// declared in [integer_ptr.sats]
+castfn ptr_of_uintptr (u: uintptr): ptr // = "atspre_ptr_of_uintptr"
+castfn uintptr_of_ptr (p: ptr): uintptr // = "atspre_uintptr_of_ptr"
+*)
+
+(* ****** ****** *)
+
 val null : ptr null = "atspre_null_ptr"
 
 fun ptr_is_null {l:addr} (p: ptr l):<> bool (l == null)
