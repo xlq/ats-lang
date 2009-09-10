@@ -70,11 +70,10 @@ this is done as follows:
 sortdef nat = {a: int | a >= 0 }
 \end{verbatim}
 where {\it sortdef} is a keyword in ATS for introducing a sort definition.
-It is important to not confuse sorts with subsets. The latter can only used
-to classify quantified static variables.  For instance, the following type
-(written in the concrete syntax)
-can be assigned to a function that tests whether two given natural numbers
-are equal:
+It is important to not confuse sorts with subset sorts. The latter can only
+used to classify quantified static variables.  For instance, the following
+type (written in the concrete syntax) can be assigned to a function that
+tests whether two given natural numbers are equal:
 \begin{verbatim}
 {i,j:nat} (int (i), int (j)) -> bool (i == j)
 \end{verbatim}

@@ -170,6 +170,12 @@ atspre_sub_size1_int1 (ats_size_type sz1, ats_int_type i2) {
 
 static inline
 ats_size_type
+atspre_mul_int1_size1 (ats_int_type i1, ats_size_type sz2) {
+  return (i1 * sz2) ;
+}
+
+static inline
+ats_size_type
 atspre_mul_size1_size1 (ats_size_type sz1, ats_size_type sz2) {
   return (sz1 * sz2) ;
 }

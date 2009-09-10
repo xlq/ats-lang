@@ -228,6 +228,11 @@ overload - with sub_size1_int1
 
 // ------ ------
 
+fun mul_int1_size1
+  {i,j:nat} (i: int i, j: size_t j):<> size_t (i*j)
+  = "atspre_mul_int1_size1"
+overload * with mul_int1_size1
+
 fun mul_size1_size1
   {i,j:nat} (i: size_t i, j: size_t j):<> size_t (i*j)
   = "atspre_mul_size1_size1"
