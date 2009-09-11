@@ -453,7 +453,7 @@ in
         val os2e = s2Var_link_get s2V in case+ os2e of
         | Some s2e => begin
             prstr "["); fprint_s2exp (pf | out, s2e); prstr "]")
-          end
+          end (* end of [Some] *)
         | None () => ()
       end // end of [val]
 *)

@@ -115,6 +115,8 @@ dynload "ats_staexp2_svVar.dats"
 dynload "ats_staexp2_dcon.dats"
 dynload "ats_staexp2_util1.dats"
 dynload "ats_staexp2_util2.dats"
+dynload "ats_staexp2_pprint.dats"
+
 dynload "ats_dynexp2.dats"
 dynload "ats_dynexp2_print.dats"
 dynload "ats_dynexp2_dcst.dats"

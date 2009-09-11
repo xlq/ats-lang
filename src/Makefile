@@ -102,11 +102,12 @@ SOURCES := \
   ats_e1xp_eval.sats ats_e1xp_eval.dats \
   ats_trans1.sats ats_trans1_sta.dats ats_trans1_dyn.dats \
   ats_staexp2.sats ats_staexp2.dats \
+  ats_staexp2_print.dats \
   ats_staexp2_scst.dats \
   ats_staexp2_svVar.dats \
   ats_staexp2_dcon.dats \
-  ats_staexp2_print.dats \
   ats_staexp2_util1.dats ats_staexp2_util2.dats \
+  ats_staexp2_pprint.sats ats_staexp2_pprint.dats \
   ats_dynexp2.sats \
   ats_dynexp2.dats \
   ats_dynexp2_dcst.dats \
@@ -305,50 +306,72 @@ ats_namespace_sats.o: ats_namespace.sats
 ats_namespace_dats.o: ats_namespace.dats
 	$(ATSCC) $(ATSCCFLAG) -c ats_namespace.dats
 
-ats_parser_sats.o: ats_parser.sats; $(ATSCC) $(ATSCCFLAG) -c ats_parser.sats
-ats_parser_dats.o: ats_parser.dats; $(ATSCC) $(ATSCCFLAG) -c ats_parser.dats
+ats_parser_sats.o: ats_parser.sats
+	$(ATSCC) $(ATSCCFLAG) -c ats_parser.sats
+ats_parser_dats.o: ats_parser.dats
+	$(ATSCC) $(ATSCCFLAG) -c ats_parser.dats
 
-ats_posmark_sats.o: ats_posmark.sats; $(ATSCC) $(ATSCCFLAG) -c ats_posmark.sats
-ats_posmark_dats.o: ats_posmark.dats; $(ATSCC) $(ATSCCFLAG) -c ats_posmark.dats
+ats_posmark_sats.o: ats_posmark.sats
+	$(ATSCC) $(ATSCCFLAG) -c ats_posmark.sats
+ats_posmark_dats.o: ats_posmark.dats
+	$(ATSCC) $(ATSCCFLAG) -c ats_posmark.dats
 
-ats_stamp_sats.o: ats_stamp.sats; $(ATSCC) $(ATSCCFLAG) -c ats_stamp.sats
-ats_stamp_dats.o: ats_stamp.dats; $(ATSCC) $(ATSCCFLAG) -c ats_stamp.dats
+ats_stamp_sats.o: ats_stamp.sats
+	$(ATSCC) $(ATSCCFLAG) -c ats_stamp.sats
+ats_stamp_dats.o: ats_stamp.dats
+	$(ATSCC) $(ATSCCFLAG) -c ats_stamp.dats
 
-ats_symbol_sats.o: ats_symbol.sats; $(ATSCC) $(ATSCCFLAG) -c ats_symbol.sats
-ats_symbol_dats.o: ats_symbol.dats; $(ATSCC) $(ATSCCFLAG) -c ats_symbol.dats
+ats_symbol_sats.o: ats_symbol.sats
+	$(ATSCC) $(ATSCCFLAG) -c ats_symbol.sats
+ats_symbol_dats.o: ats_symbol.dats
+	$(ATSCC) $(ATSCCFLAG) -c ats_symbol.dats
 
-ats_symtbl_sats.o: ats_symtbl.sats; $(ATSCC) $(ATSCCFLAG) -c ats_symtbl.sats
-ats_symtbl_dats.o: ats_symtbl.dats; $(ATSCC) $(ATSCCFLAG) -c ats_symtbl.dats
+ats_symtbl_sats.o: ats_symtbl.sats
+	$(ATSCC) $(ATSCCFLAG) -c ats_symtbl.sats
+ats_symtbl_dats.o: ats_symtbl.dats
+	$(ATSCC) $(ATSCCFLAG) -c ats_symtbl.dats
 
-ats_symenv_sats.o: ats_symenv.sats; $(ATSCC) $(ATSCCFLAG) -c ats_symenv.sats
-ats_symenv_dats.o: ats_symenv.dats; $(ATSCC) $(ATSCCFLAG) -c ats_symenv.dats
+ats_symenv_sats.o: ats_symenv.sats
+	$(ATSCC) $(ATSCCFLAG) -c ats_symenv.sats
+ats_symenv_dats.o: ats_symenv.dats
+	$(ATSCC) $(ATSCCFLAG) -c ats_symenv.dats
 
 ats_list_sats.o: ats_list.sats; $(ATSCC) $(ATSCCFLAG) -c ats_list.sats
 ats_list_dats.o: ats_list.dats; $(ATSCC) $(ATSCCFLAG) -c ats_list.dats
 
-ats_map_lin_sats.o: ats_map_lin.sats; $(ATSCC) $(ATSCCFLAG) -c ats_map_lin.sats
-ats_map_lin_dats.o: ats_map_lin.dats; $(ATSCC) $(ATSCCFLAG) -c ats_map_lin.dats
+ats_map_lin_sats.o: ats_map_lin.sats
+	$(ATSCC) $(ATSCCFLAG) -c ats_map_lin.sats
+ats_map_lin_dats.o: ats_map_lin.dats
+	$(ATSCC) $(ATSCCFLAG) -c ats_map_lin.dats
 
 ats_reference_sats.o: ats_reference.sats
 	$(ATSCC) $(ATSCCFLAG) -c ats_reference.sats
 ats_reference_dats.o: ats_reference.dats
 	$(ATSCC) $(ATSCCFLAG) -c ats_reference.dats
 
-ats_set_fun_sats.o: ats_set_fun.sats; $(ATSCC) $(ATSCCFLAG) -c ats_set_fun.sats
-ats_set_fun_dats.o: ats_set_fun.dats; $(ATSCC) $(ATSCCFLAG) -c ats_set_fun.dats
+ats_set_fun_sats.o: ats_set_fun.sats
+	$(ATSCC) $(ATSCCFLAG) -c ats_set_fun.sats
+ats_set_fun_dats.o: ats_set_fun.dats
+	$(ATSCC) $(ATSCCFLAG) -c ats_set_fun.dats
 
-ats_syntax_sats.o: ats_syntax.sats; $(ATSCC) $(ATSCCFLAG) -c ats_syntax.sats
-ats_syntax_dats.o: ats_syntax.dats; $(ATSCC) $(ATSCCFLAG) -c ats_syntax.dats
+ats_syntax_sats.o: ats_syntax.sats
+	$(ATSCC) $(ATSCCFLAG) -c ats_syntax.sats
+ats_syntax_dats.o: ats_syntax.dats
+	$(ATSCC) $(ATSCCFLAG) -c ats_syntax.dats
 ats_syntax_posmark_dats.o: ats_syntax_posmark.dats
 	$(ATSCC) $(ATSCCFLAG) -c ats_syntax_posmark.dats
 
-ats_staexp1_sats.o: ats_staexp1.sats; $(ATSCC) $(ATSCCFLAG) -c ats_staexp1.sats
-ats_staexp1_dats.o: ats_staexp1.dats; $(ATSCC) $(ATSCCFLAG) -c ats_staexp1.dats
+ats_staexp1_sats.o: ats_staexp1.sats
+	$(ATSCC) $(ATSCCFLAG) -c ats_staexp1.sats
+ats_staexp1_dats.o: ats_staexp1.dats
+	$(ATSCC) $(ATSCCFLAG) -c ats_staexp1.dats
 ats_staexp1_print_dats.o: ats_staexp1_print.dats
 	$(ATSCC) $(ATSCCFLAG) -c ats_staexp1_print.dats
 
-ats_dynexp1_sats.o: ats_dynexp1.sats; $(ATSCC) $(ATSCCFLAG) -c ats_dynexp1.sats
-ats_dynexp1_dats.o: ats_dynexp1.dats; $(ATSCC) $(ATSCCFLAG) -c ats_dynexp1.dats
+ats_dynexp1_sats.o: ats_dynexp1.sats
+	$(ATSCC) $(ATSCCFLAG) -c ats_dynexp1.sats
+ats_dynexp1_dats.o: ats_dynexp1.dats
+	$(ATSCC) $(ATSCCFLAG) -c ats_dynexp1.dats
 ats_dynexp1_print_dats.o: ats_dynexp1_print.dats
 	$(ATSCC) $(ATSCCFLAG) -c ats_dynexp1_print.dats
 
@@ -357,13 +380,21 @@ ats_trans1_env_sats.o: ats_trans1_env.sats
 ats_trans1_env_dats.o: ats_trans1_env.dats
 	$(ATSCC) $(ATSCCFLAG) -c ats_trans1_env.dats
 
-ats_trans1_sats.o: ats_trans1.sats; $(ATSCC) $(ATSCCFLAG) -c ats_trans1.sats
+ats_trans1_sats.o: ats_trans1.sats
+	$(ATSCC) $(ATSCCFLAG) -c ats_trans1.sats
 ats_trans1_sta_dats.o: ats_trans1_sta.dats
 	$(ATSCC) $(ATSCCFLAG) -c ats_trans1_sta.dats
 ats_trans1_dyn_dats.o: ats_trans1_dyn.dats
 	$(ATSCC) $(ATSCCFLAG) -c ats_trans1_dyn.dats
 
-ats_staexp2_sats.o: ats_staexp2.sats; $(ATSCC) $(ATSCCFLAG) -c ats_staexp2.sats
+ats_staexp2_sats.o: ats_staexp2.sats
+	$(ATSCC) $(ATSCCFLAG) -c ats_staexp2.sats
+
+ats_staexp2_dats.o: ats_staexp2.dats
+	$(ATSCC) $(ATSCCFLAG) -c ats_staexp2.dats
+
+ats_staexp2_print_dats.o: ats_staexp2_print.dats
+	$(ATSCC) $(ATSCCFLAG) -c ats_staexp2_print.dats
 
 ats_staexp2_scst_dats.o: ats_staexp2_scst.dats
 	$(ATSCC) $(ATSCCFLAG) -c ats_staexp2_scst.dats
@@ -374,16 +405,18 @@ ats_staexp2_svVar_dats.o: ats_staexp2_svVar.dats
 ats_staexp2_dcon_dats.o: ats_staexp2_dcon.dats
 	$(ATSCC) $(ATSCCFLAG) -c ats_staexp2_dcon.dats
 
-ats_staexp2_dats.o: ats_staexp2.dats; $(ATSCC) $(ATSCCFLAG) -c ats_staexp2.dats
-ats_staexp2_print_dats.o: ats_staexp2_print.dats
-	$(ATSCC) $(ATSCCFLAG) -c ats_staexp2_print.dats
-
 ats_staexp2_util1_dats.o: ats_staexp2_util1.dats
 	$(ATSCC) $(ATSCCFLAG) -c ats_staexp2_util1.dats
 ats_staexp2_util2_dats.o: ats_staexp2_util2.dats
 	$(ATSCC) $(ATSCCFLAG) -c ats_staexp2_util2.dats
 
-ats_dynexp2_sats.o: ats_dynexp2.sats; $(ATSCC) $(ATSCCFLAG) -c ats_dynexp2.sats
+ats_staexp2_pprint_sats.o: ats_staexp2_pprint.sats
+	$(ATSCC) $(ATSCCFLAG) -c ats_staexp2_pprint.sats
+ats_staexp2_pprint_dats.o: ats_staexp2_pprint.dats
+	$(ATSCC) $(ATSCCFLAG) -c ats_staexp2_pprint.dats
+
+ats_dynexp2_sats.o: ats_dynexp2.sats
+	$(ATSCC) $(ATSCCFLAG) -c ats_dynexp2.sats
 
 ats_dynexp2_dcst_dats.o: ats_dynexp2_dcst.dats
 	$(ATSCC) $(ATSCCFLAG) -c ats_dynexp2_dcst.dats
@@ -397,7 +430,8 @@ ats_dynexp2_dmtd_dats.o: ats_dynexp2_dmtd.dats
 ats_dynexp2_dvar_dats.o: ats_dynexp2_dvar.dats
 	$(ATSCC) $(ATSCCFLAG) -c ats_dynexp2_dvar.dats
 
-ats_dynexp2_dats.o: ats_dynexp2.dats; $(ATSCC) $(ATSCCFLAG) -c ats_dynexp2.dats
+ats_dynexp2_dats.o: ats_dynexp2.dats
+	$(ATSCC) $(ATSCCFLAG) -c ats_dynexp2.dats
 ats_dynexp2_print_dats.o: ats_dynexp2_print.dats
 	$(ATSCC) $(ATSCCFLAG) -c ats_dynexp2_print.dats
 
@@ -428,8 +462,10 @@ ats_macro2_sats.o: ats_macro2.sats
 ats_macro2_dats.o: ats_macro2.dats
 	$(ATSCC) $(ATSCCFLAG) -c ats_macro2.dats
 
-ats_patcst2_sats.o: ats_patcst2.sats; $(ATSCC) $(ATSCCFLAG) -c ats_patcst2.sats
-ats_patcst2_dats.o: ats_patcst2.dats; $(ATSCC) $(ATSCCFLAG) -c ats_patcst2.dats
+ats_patcst2_sats.o: ats_patcst2.sats
+	$(ATSCC) $(ATSCCFLAG) -c ats_patcst2.sats
+ats_patcst2_dats.o: ats_patcst2.dats
+	$(ATSCC) $(ATSCCFLAG) -c ats_patcst2.dats
 
 ats_string_parse_sats.o: ats_string_parse.sats
 	$(ATSCC) $(ATSCCFLAG) -c ats_string_parse.sats
@@ -469,13 +505,16 @@ ats_trans3_env_dats.o: ats_trans3_env.dats
 ats_trans3_env_print_dats.o: ats_trans3_env_print.dats
 	$(ATSCC) $(ATSCCFLAG) -c ats_trans3_env_print.dats
 
-ats_dynexp3_sats.o: ats_dynexp3.sats; $(ATSCC) $(ATSCCFLAG) -c ats_dynexp3.sats
+ats_dynexp3_sats.o: ats_dynexp3.sats
+	$(ATSCC) $(ATSCCFLAG) -c ats_dynexp3.sats
 
-ats_dynexp3_dats.o: ats_dynexp3.dats; $(ATSCC) $(ATSCCFLAG) -c ats_dynexp3.dats
+ats_dynexp3_dats.o: ats_dynexp3.dats
+	$(ATSCC) $(ATSCCFLAG) -c ats_dynexp3.dats
 ats_dynexp3_print_dats.o: ats_dynexp3_print.dats
 	$(ATSCC) $(ATSCCFLAG) -c ats_dynexp3_print.dats
 
-ats_trans3_sats.o: ats_trans3.sats; $(ATSCC) $(ATSCCFLAG) -c ats_trans3.sats
+ats_trans3_sats.o: ats_trans3.sats
+	$(ATSCC) $(ATSCCFLAG) -c ats_trans3.sats
 
 ats_trans3_pat_dats.o: ats_trans3_pat.dats
 	$(ATSCC) $(ATSCCFLAG) -c ats_trans3_pat.dats

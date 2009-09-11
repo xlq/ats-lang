@@ -247,7 +247,7 @@ prfun GEMAT_v_of_fmatrix_v
   )
 // end of [GEMAT_v_of_fmatrix_v]
 
-prfun fmatrix_v_of_GEMAT_v_of
+prfun fmatrix_v_of_GEMAT_v
   {a:viewt@ype} {m,n:nat} {l:addr} (
     pf_mat: GEMAT_v (a, m, n, col, m, l)
   ) :<> (

@@ -319,6 +319,22 @@ atspre_neq_size1_int1
 
 /* ****** ****** */
 
+static inline
+ats_size_type
+atspre_max_size1_size1
+  (ats_size_type sz1, ats_size_type sz2) {
+  return (sz1 >= sz2 ? sz1 : sz2) ;
+} /* end of [atspre_max_size1_size1] */
+
+static inline
+ats_size_type
+atspre_min_size1_size1
+  (ats_size_type sz1, ats_size_type sz2) {
+  return (sz1 <= sz2 ? sz1 : sz2) ;
+} /* end of [atspre_min_size1_size1] */
+
+/* ****** ****** */
+
 // signed size type
 
 /* ****** ****** */

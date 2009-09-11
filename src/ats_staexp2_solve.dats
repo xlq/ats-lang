@@ -52,6 +52,7 @@ staload Syn = "ats_syntax.sats"
 (* ****** ****** *)
 
 staload "ats_staexp2.sats"
+staload "ats_staexp2_pprint.sats"
 staload "ats_stadyncst2.sats"
 staload "ats_trans3_env.sats"
 
@@ -216,8 +217,8 @@ in
     prerr ": error(3)";
     $Deb.debug_prerrf (": %s: s2exp_equal_solve", @(THISFILENAME));
     prerr ": mismatch of static terms:\n";
-    prerr "The needed term is: "; prerr (s2exp_whnf s2e20); prerr_newline ();
-    prerr "The actual term is: "; prerr (s2exp_whnf s2e10); prerr_newline ();
+    prerr "The needed term is: "; pprerr_s2exp (s2exp_whnf s2e20); prerr_newline ();
+    prerr "The actual term is: "; pprerr_s2exp (s2exp_whnf s2e10); prerr_newline ();
     $Err.abort {void} ()
   end // end of [if]
 end // end of [s2exp_equal_solve]
@@ -954,7 +955,7 @@ in
     prerr "The actual type is: "; prerr (s2exp_whnf s2e10); prerr_newline ();
     $Err.abort {void} ()
   end // end of [if]
-end // end of [s2exp_tyleq_solve]
+end (* end of [s2exp_tyleq_solve] *)
 
 implement s2explst_arg_tyleq_solve (loc0, s2es10, s2es20) = let
   fun aux {n:nat}
