@@ -118,7 +118,7 @@ fun GEVEC_ptr_takeout_tsz
 
 (* ****** ****** *)
 
-fun{a1,a2:viewt@ype | sizeof a1 == sizeof a2}
+fun{a1:viewt@ype}
   GEVEC_ptr_split
   {n,i:nat | i <= n} {d:inc} {l0:addr} (
     pf: GEVEC_v (a1, n, d, l0)
@@ -126,20 +126,21 @@ fun{a1,a2:viewt@ype | sizeof a1 == sizeof a2}
   ) :<> [l:addr] (
     GEVEC_v (a1, i, d, l0)
   , GEVEC_v (a1, n-i, d, l)
-  , (GEVEC_v (a2, i, d, l0), GEVEC_v (a2, n-i, d, l)) -<prf> GEVEC_v (a2, n, d, l0)
+  , {a2:viewt@ype | sizeof a1 == sizeof a2}
+      (GEVEC_v (a2, i, d, l0), GEVEC_v (a2, n-i, d, l)) -<prf> GEVEC_v (a2, n, d, l0)
   | ptr l
   )
 // end of [GEVEC_ptr_split]
 
-fun GEVEC_ptr_split_tsz
-  {a1,a2:viewt@ype | sizeof a1 == sizeof a2}
+fun GEVEC_ptr_split_tsz {a1:viewt@ype}
   {n,i:nat | i <= n} {d:inc} {l0:addr} (
     pf: GEVEC_v (a1, n, d, l0)
   | p_vec: ptr l0, d: int d, i: int i, tsz: sizeof_t a1
   ) :<> [l:addr] (
     GEVEC_v (a1, i, d, l0)
   , GEVEC_v (a1, n-i, d, l)
-  , (GEVEC_v (a2, i, d, l0), GEVEC_v (a2, n-i, d, l)) -<prf> GEVEC_v (a2, n, d, l0)
+  , {a2:viewt@ype | sizeof a1 == sizeof a2}
+      (GEVEC_v (a2, i, d, l0), GEVEC_v (a2, n-i, d, l)) -<prf> GEVEC_v (a2, n, d, l0)
   | ptr l
   ) = "atslib_GEVEC_ptr_split_tsz"
 // end of [GEVEC_ptr_split_tsz]
@@ -401,24 +402,27 @@ prfun GEMAT_v_uncons_col
 (* ****** ****** *)
 
 prfun GEVEC_v_of_GEMAT_v_row
-  {a1,a2:viewt@ype | sizeof a1 == sizeof a2}
-  {ord:order} {n:nat} {ld:pos} {l:addr} (
+  {a1:viewt@ype} {ord:order} {n:nat} {ld:pos} {l:addr} (
     pf: GEMAT_v (a1, 1, n, ord, ld, l), ord: ORDER ord, ld: int ld
   ) :<> [d:inc] (
     MATVECINC (row, ord, ld, d)
   , GEVEC_v (a1, n, d, l)
-  , GEVEC_v (a2, n, d, l) -<prf> GEMAT_v (a2, 1, n, ord, ld, l)
+  , {a2:viewt@ype | sizeof a1 == sizeof a2}
+      GEVEC_v (a2, n, d, l) -<prf> GEMAT_v (a2, 1, n, ord, ld, l)
+    (* fpf *)
   )
 // end of [GEVEC_v_of_GEMAT_v_row]
 
 prfun GEVEC_v_of_GEMAT_v_col
-  {a1,a2:viewt@ype | sizeof a1 == sizeof a2}
+  {a1:viewt@ype}
   {ord:order} {m:nat} {ld:pos} {l:addr} (
     pf: GEMAT_v (a1, m, 1, ord, ld, l), ord: ORDER ord, ld: int ld
   ) :<> [d:inc] (
     MATVECINC (col, ord, ld, d)
   , GEVEC_v (a1, m, d, l)
-  , GEVEC_v (a2, m, d, l) -<prf> GEMAT_v (a2, m, 1, ord, ld, l)
+  , {a2:viewt@ype | sizeof a1 == sizeof a2}
+      GEVEC_v (a2, m, d, l) -<prf> GEMAT_v (a2, m, 1, ord, ld, l)
+    (* fpf *)
   )
 // end of [GEVEC_v_of_GEMAT_v_col]
 
@@ -545,96 +549,77 @@ fun GEMAT_ptr_tail_col_tsz
 (* ****** ****** *)
 
 viewtypedef GEMAT_ptr_split1x2_res_t (
-  a1:viewt@ype, a2:viewt@ype, m:int, n:int, j:int, ord:order, lda:int, l0:addr
+  a1:viewt@ype, m:int, n:int, j:int, ord:order, lda:int, l0:addr
 ) = [l1,l2:addr] @(
   GEMAT_v (a1, m, j, ord, lda, l1)  
 , GEMAT_v (a1, m, n-j, ord, lda, l2)
-, (GEMAT_v (a2, m, j, ord, lda, l1),
-   GEMAT_v (a2, m, n-j, ord, lda, l2)
-  ) -<prf>
+, {a2:viewt@ype | sizeof a1 == sizeof a2}
+    (GEMAT_v (a2, m, j, ord, lda, l1), GEMAT_v (a2, m, n-j, ord, lda, l2)) -<prf>
     GEMAT_v (a2, m, n, ord, lda, l0)
   // [fpf]
 | ptr l1 // l1 should equal l0
 , ptr l2
 ) // end of [GEMAT_ptr_split1x2_res_t]
 
-fun{a1,a2:viewt@ype | sizeof a1 == sizeof a2}
-  GEMAT_ptr_split1x2 {m,n:nat}
-  {j:nat | j <= n} {ord:order} {lda:pos} {l0:addr} (
-    pf_mat: GEMAT_v (a1, m, n, ord, lda, l0)
-  | p_mat: ptr l0
-  , ord: ORDER ord
-  , lda: int lda
-  , j: int j
-  ) :<> GEMAT_ptr_split1x2_res_t (a1, a2, m, n, j, ord, lda, l0)
-// end of [GEMAT_ptr_split1x2]
-
-fun GEMAT_ptr_split1x2_tsz
-  {a1,a2:viewt@ype | sizeof a1 == sizeof a2}
+fun{a1:viewt@ype} GEMAT_ptr_split1x2
   {m,n:nat} {j:nat | j <= n} {ord:order} {lda:pos} {l0:addr} (
     pf_mat: GEMAT_v (a1, m, n, ord, lda, l0)
-  | p_mat: ptr l0
-  , ord: ORDER ord
-  , lda: int lda
-  , j: int j
-  , tsz: sizeof_t a1
-  ) :<> GEMAT_ptr_split1x2_res_t (a1, a2, m, n, j, ord, lda, l0)
+  | p_mat: ptr l0, ord: ORDER ord, lda: int lda, j: int j
+  ) :<> GEMAT_ptr_split1x2_res_t (a1, m, n, j, ord, lda, l0)
+// end of [GEMAT_ptr_split1x2]
+
+fun GEMAT_ptr_split1x2_tsz {a1:viewt@ype}
+  {m,n:nat} {j:nat | j <= n} {ord:order} {lda:pos} {l0:addr} (
+    pf_mat: GEMAT_v (a1, m, n, ord, lda, l0)
+  | p_mat: ptr l0, ord: ORDER ord, lda: int lda, j: int j, tsz: sizeof_t a1
+  ) :<> GEMAT_ptr_split1x2_res_t (a1, m, n, j, ord, lda, l0)
     = "atslib_GEMAT_ptr_split1x2_tsz"
 (* end of [GEMAT_ptr_split1x2_tsz] *)
 
 (* ****** ****** *)
 
 viewtypedef GEMAT_ptr_split2x1_res_t (
-  a1:viewt@ype, a2:viewt@ype, m:int, n:int, i:int, ord:order, lda:int, l0:addr
+  a1:viewt@ype, m:int, n:int, i:int, ord:order, lda:int, l0:addr
 ) = [l1,l2:addr] @(
   GEMAT_v (a1, i, n, ord, lda, l1)  
 , GEMAT_v (a1, m-i, n, ord, lda, l2)
-, (GEMAT_v (a2, i, n, ord, lda, l1),
-   GEMAT_v (a2, m-i, n, ord, lda, l2)
-  ) -<prf>
+, {a2:viewt@ype | sizeof a1 == sizeof a2}
+    (GEMAT_v (a2, i, n, ord, lda, l1), GEMAT_v (a2, m-i, n, ord, lda, l2)) -<prf>
     GEMAT_v (a2, m, n, ord, lda, l0)
   // [fpf]
 | ptr l1 // l1 should equal l0
 , ptr l2
 ) // end of [GEMAT_ptr_split2x1_res_t]
 
-fun{a1,a2:viewt@ype | sizeof a1 == sizeof a2}
-  GEMAT_ptr_split2x1 {m,n:nat}
-  {i:nat | i <= m} {ord:order} {lda:pos} {l0:addr} (
-    pf_mat: GEMAT_v (a1, m, n, ord, lda, l0)
-  | p_mat: ptr l0
-  , ord: ORDER ord
-  , lda: int lda
-  , i: int i
-  ) :<> GEMAT_ptr_split2x1_res_t (a1, a2, m, n, i, ord, lda, l0)
-// end of [GEMAT_ptr_split2x1]
-
-fun GEMAT_ptr_split2x1_tsz
-  {a1,a2:viewt@ype | sizeof a1 == sizeof a2}
+fun{a1:viewt@ype} GEMAT_ptr_split2x1
   {m,n:nat} {i:nat | i <= m} {ord:order} {lda:pos} {l0:addr} (
     pf_mat: GEMAT_v (a1, m, n, ord, lda, l0)
-  | p_mat: ptr l0
-  , ord: ORDER ord
-  , lda: int lda
-  , i: int i
-  , tsz: sizeof_t a1
-  ) :<> GEMAT_ptr_split2x1_res_t (a1, a2, m, n, i, ord, lda, l0)
+  | p_mat: ptr l0, ord: ORDER ord, lda: int lda, i: int i
+  ) :<> GEMAT_ptr_split2x1_res_t (a1, m, n, i, ord, lda, l0)
+// end of [GEMAT_ptr_split2x1]
+
+fun GEMAT_ptr_split2x1_tsz {a1:viewt@ype}
+  {m,n:nat} {i:nat | i <= m} {ord:order} {lda:pos} {l0:addr} (
+    pf_mat: GEMAT_v (a1, m, n, ord, lda, l0)
+  | p_mat: ptr l0, ord: ORDER ord, lda: int lda, i: int i, tsz: sizeof_t a1
+  ) :<> GEMAT_ptr_split2x1_res_t (a1, m, n, i, ord, lda, l0)
     = "atslib_GEMAT_ptr_split2x1_tsz"
 (* end of [GEMAT_ptr_split2x1_tsz] *)
 
 (* ****** ****** *)
 
 viewtypedef GEMAT_ptr_split2x2_res_t (
-  a1:viewt@ype, a2:viewt@ype, m:int, n:int, i:int, j:int, ord:order, lda:int, l0:addr
+  a1:viewt@ype, m:int, n:int, i:int, j:int, ord:order, lda:int, l0:addr
 ) = [l11,l12,l21,l22:addr] @(
   GEMAT_v (a1, i, j, ord, lda, l11)  
 , GEMAT_v (a1, i, n-j, ord, lda, l12)
 , GEMAT_v (a1, m-i, j, ord, lda, l21)
 , GEMAT_v (a1, m-i, n-j, ord, lda, l22)
-, (GEMAT_v (a2, i, j, ord, lda, l11),
-   GEMAT_v (a2, i, n-j, ord, lda, l12),
-   GEMAT_v (a2, m-i, j, ord, lda, l21),
-   GEMAT_v (a2, m-i, n-j, ord, lda, l22)
+, {a2:viewt@ype | sizeof a1 == sizeof a2} (
+    GEMAT_v (a2, i, j, ord, lda, l11)
+  , GEMAT_v (a2, i, n-j, ord, lda, l12)
+  , GEMAT_v (a2, m-i, j, ord, lda, l21)
+  , GEMAT_v (a2, m-i, n-j, ord, lda, l22)
   ) -<prf>
     GEMAT_v (a2, m, n, ord, lda, l0)
   // [fpf]
@@ -644,27 +629,19 @@ viewtypedef GEMAT_ptr_split2x2_res_t (
 , ptr l22
 ) // end of [GEMAT_ptr_split2x2_res_t]
 
-fun{a1,a2:viewt@ype | sizeof a1 == sizeof a2}
+fun{a1:viewt@ype}
   GEMAT_ptr_split2x2
   {m,n:nat} {i,j:nat | i <= m; j <= n} {ord:order} {lda:pos} {l0:addr} (
     pf_mat: GEMAT_v (a1, m, n, ord, lda, l0)
-  | p_mat: ptr l0
-  , ord: ORDER ord
-  , lda: int lda
-  , i: int i, j: int j
-  ) :<> GEMAT_ptr_split2x2_res_t (a1, a2, m, n, i, j, ord, lda, l0)
+  | p_mat: ptr l0, ord: ORDER ord, lda: int lda, i: int i, j: int j
+  ) :<> GEMAT_ptr_split2x2_res_t (a1, m, n, i, j, ord, lda, l0)
 // end of [GEMAT_ptr_split2x2]
 
-fun GEMAT_ptr_split2x2_tsz
-  {a1,a2:viewt@ype | sizeof a1 == sizeof a2}
+fun GEMAT_ptr_split2x2_tsz {a1:viewt@ype}
   {m,n:nat} {i,j:nat | i <= m; j <= n} {ord:order} {lda:pos} {l0:addr} (
     pf_mat: GEMAT_v (a1, m, n, ord, lda, l0)
-  | p_mat: ptr l0
-  , ord: ORDER ord
-  , lda: int lda
-  , i: int i, j: int j
-  , tsz: sizeof_t a1
-  ) :<> GEMAT_ptr_split2x2_res_t (a1, a2, m, n, i, j, ord, lda, l0)
+  | p_mat: ptr l0, ord: ORDER ord, lda: int lda, i: int i, j: int j, tsz: sizeof_t a1
+  ) :<> GEMAT_ptr_split2x2_res_t (a1, m, n, i, j, ord, lda, l0)
   = "atslib_GEMAT_ptr_split2x2_tsz"
 // end of [GEMAT_ptr_split2x2_tsz]
 

@@ -60,8 +60,8 @@ implement{a} GEVEC_ptr_takeout (pf_vec | p_vec, d, i) =
 
 (* ****** ****** *)
 
-implement{a1,a2} GEVEC_ptr_split (pf_vec | p_vec, d, i) =
-  GEVEC_ptr_split_tsz {a1,a2} (pf_vec | p_vec, d, i, sizeof<a1>)
+implement{a1} GEVEC_ptr_split (pf_vec | p_vec, d, i) =
+  GEVEC_ptr_split_tsz {a1} (pf_vec | p_vec, d, i, sizeof<a1>)
 // end of [GEVEC_ptr_split]
 
 (* ****** ****** *)
@@ -516,19 +516,19 @@ end // end of [GEMAT_ptr_split2x2_tsz_dummy]
 
 (* ****** ****** *)
 
-implement{a1,a2} GEMAT_ptr_split1x2
+implement{a1} GEMAT_ptr_split1x2
   (pf_mat | p_mat, ord, lda, j) =
-  GEMAT_ptr_split1x2_tsz {a1,a2} (pf_mat | p_mat, ord, lda, j, sizeof<a1>)
+  GEMAT_ptr_split1x2_tsz {a1} (pf_mat | p_mat, ord, lda, j, sizeof<a1>)
 // end of [GEMAT_ptr_split1x2]
 
-implement{a1,a2} GEMAT_ptr_split2x1
+implement{a1} GEMAT_ptr_split2x1
   (pf_mat | p_mat, ord, lda, i) =
-  GEMAT_ptr_split2x1_tsz {a1,a2} (pf_mat | p_mat, ord, lda, i, sizeof<a1>)
+  GEMAT_ptr_split2x1_tsz {a1} (pf_mat | p_mat, ord, lda, i, sizeof<a1>)
 // end of [GEMAT_ptr_split2x1]
 
-implement{a1,a2} GEMAT_ptr_split2x2
+implement{a1} GEMAT_ptr_split2x2
   (pf_mat | p_mat, ord, lda, i, j) =
-  GEMAT_ptr_split2x2_tsz {a1,a2} (pf_mat | p_mat, ord, lda, i, j, sizeof<a1>)
+  GEMAT_ptr_split2x2_tsz {a1} (pf_mat | p_mat, ord, lda, i, j, sizeof<a1>)
 // end of [GEMAT_ptr_split2x2]
 
 (* ****** ****** *)
@@ -547,7 +547,7 @@ GEMAT_ptr_foreach_fun_tsz__main
   ) :<cloref> void =
   if mi > 0 then let
     val (pf1_mat, pf2_mat, fpf | p1, p2) =
-      GEMAT_ptr_split2x1_tsz {a,a} (pf_mat | p, ord1, ld, 1, tsz)
+      GEMAT_ptr_split2x1_tsz {a} (pf_mat | p, ord1, ld, 1, tsz)
     prval (pf1_inc, pf1_vec, fpf1_mat) =
       GEVEC_v_of_GEMAT_v_row (pf1_mat, ord1, ld)
     val inc = MATVECINC_get (pf1_inc | ORDERrow, ord1, ld)
@@ -569,7 +569,7 @@ GEMAT_ptr_foreach_fun_tsz__main
   ) :<cloref> void =
   if ni > 0 then let
     val (pf1_mat, pf2_mat, fpf | p1, p2) =
-      GEMAT_ptr_split1x2_tsz {a,a} (pf_mat | p, ord1, ld, 1, tsz)
+      GEMAT_ptr_split1x2_tsz {a} (pf_mat | p, ord1, ld, 1, tsz)
     prval (pf1_inc, pf1_vec, fpf1_mat) =
       GEVEC_v_of_GEMAT_v_col (pf1_mat, ord1, ld)
     val inc = MATVECINC_get (pf1_inc | ORDERcol, ord1, ld)
@@ -648,7 +648,7 @@ GEMAT_ptr_iforeach_fun_tsz__main
   ) :<cloref> void =
   if mi > 0 then let
     val (pf1_mat, pf2_mat, fpf | p1, p2) =
-      GEMAT_ptr_split2x1_tsz {a,a} (pf_mat | p, ord1, ld, 1, tsz)
+      GEMAT_ptr_split2x1_tsz {a} (pf_mat | p, ord1, ld, 1, tsz)
     prval (pf1_inc, pf1_vec, fpf1_mat) =
       GEVEC_v_of_GEMAT_v_row (pf1_mat, ord1, ld)
     val inc = MATVECINC_get (pf1_inc | ORDERrow, ord1, ld)
@@ -675,7 +675,7 @@ GEMAT_ptr_iforeach_fun_tsz__main
   ) :<cloref> void =
   if nj > 0 then let
     val (pf1_mat, pf2_mat, fpf | p1, p2) =
-      GEMAT_ptr_split1x2_tsz {a,a} (pf_mat | p, ord1, ld, 1, tsz)
+      GEMAT_ptr_split1x2_tsz {a} (pf_mat | p, ord1, ld, 1, tsz)
     prval (pf1_inc, pf1_vec, fpf1_mat) =
       GEVEC_v_of_GEMAT_v_col (pf1_mat, ord1, ld)
     val inc = MATVECINC_get (pf1_inc | ORDERcol, ord1, ld)

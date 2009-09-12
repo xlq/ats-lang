@@ -107,10 +107,10 @@ SOURCES := \
   ats_e1xp_eval.sats ats_e1xp_eval.dats \
   ats_trans1.sats ats_trans1_sta.dats ats_trans1_dyn.dats \
   ats_staexp2.sats ats_staexp2.dats \
+  ats_staexp2_print.dats \
   ats_staexp2_scst.dats \
   ats_staexp2_svVar.dats \
   ats_staexp2_dcon.dats \
-  ats_staexp2_print.dats \
   ats_staexp2_util1.dats ats_staexp2_util2.dats \
   ats_dynexp2.sats \
   ats_dynexp2.dats \
@@ -474,6 +474,11 @@ ats_staexp2_util1_dats.o: ats_staexp2_util1_dats.c
 	$(CC) $(CCFLAG) -c ats_staexp2_util1_dats.c
 ats_staexp2_util2_dats.o: ats_staexp2_util2_dats.c
 	$(CC) $(CCFLAG) -c ats_staexp2_util2_dats.c
+
+ats_staexp2_pprint_sats.o: ats_staexp2_pprint_sats.c
+	$(CC) $(CCFLAG) -c ats_staexp2_pprint_sats.c
+ats_staexp2_pprint_dats.o: ats_staexp2_pprint_dats.c
+	$(CC) $(CCFLAG) -c ats_staexp2_pprint_dats.c
 
 ats_dynexp2_sats.o: ats_dynexp2_sats.c
 	$(CC) $(CCFLAG) -c ats_dynexp2_sats.c

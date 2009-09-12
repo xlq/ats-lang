@@ -435,7 +435,7 @@ $(BOOTDIR)/ats_staexp2_util2_dats.c: ats_staexp2_util2.dats
 	$(ATSOPT) --output $@ -d ats_staexp2_util2.dats
 
 $(BOOTDIR)/ats_staexp2_pprint_sats.c: ats_staexp2_pprint.sats
-	$(ATSOPT) --output $@ -s ats_staexp2_pprint.dats
+	$(ATSOPT) --output $@ -s ats_staexp2_pprint.sats
 $(BOOTDIR)/ats_staexp2_pprint_dats.c: ats_staexp2_pprint.dats
 	$(ATSOPT) --output $@ -d ats_staexp2_pprint.dats
 
