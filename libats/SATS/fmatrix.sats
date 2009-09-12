@@ -225,7 +225,7 @@ prfun GEVEC_v_of_fmatrix_v
     GEVEC_v (a1, mn, 1, l)
   , {a2:viewt@ype | sizeof a1 == sizeof a2}
       GEVEC_v (a2, mn, 1, l) -<prf> fmatrix_v (a2, m, n, l)
-    // fpf
+    // [fpf: for going back]
   )
 // end of [GEVEC_v_of_fmatrix_v]
 
@@ -250,7 +250,7 @@ prfun GEMAT_v_of_fmatrix_v
     GEMAT_v (a1, m, n, col, m, l)
   , {a2:viewt@ype | sizeof a1 == sizeof a2}
       GEMAT_v (a2, m, n, col, m, l) -<prf> fmatrix_v (a2, m, n, l)
-    // fpf
+    // [fpf: for going back]
   )
 // end of [GEMAT_v_of_fmatrix_v]
 

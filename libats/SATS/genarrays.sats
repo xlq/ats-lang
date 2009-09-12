@@ -118,6 +118,10 @@ fun GEVEC_ptr_takeout_tsz
 
 (* ****** ****** *)
 
+stadef tszeq
+  (a1:viewt@ype, a2:viewt@ype) = (sizeof a1 == sizeof a2)
+// end of [tszeq]
+
 fun{a1:viewt@ype}
   GEVEC_ptr_split
   {n,i:nat | i <= n} {d:inc} {l0:addr} (
@@ -126,7 +130,7 @@ fun{a1:viewt@ype}
   ) :<> [l:addr] (
     GEVEC_v (a1, i, d, l0)
   , GEVEC_v (a1, n-i, d, l)
-  , {a2:viewt@ype | sizeof a1 == sizeof a2}
+  , {a2:viewt@ype | a1 \tszeq a2}
       (GEVEC_v (a2, i, d, l0), GEVEC_v (a2, n-i, d, l)) -<prf> GEVEC_v (a2, n, d, l0)
   | ptr l
   )
@@ -139,7 +143,7 @@ fun GEVEC_ptr_split_tsz {a1:viewt@ype}
   ) :<> [l:addr] (
     GEVEC_v (a1, i, d, l0)
   , GEVEC_v (a1, n-i, d, l)
-  , {a2:viewt@ype | sizeof a1 == sizeof a2}
+  , {a2:viewt@ype | a1 \tszeq a2}
       (GEVEC_v (a2, i, d, l0), GEVEC_v (a2, n-i, d, l)) -<prf> GEVEC_v (a2, n, d, l0)
   | ptr l
   ) = "atslib_GEVEC_ptr_split_tsz"
@@ -407,9 +411,9 @@ prfun GEVEC_v_of_GEMAT_v_row
   ) :<> [d:inc] (
     MATVECINC (row, ord, ld, d)
   , GEVEC_v (a1, n, d, l)
-  , {a2:viewt@ype | sizeof a1 == sizeof a2}
+  , {a2:viewt@ype | a1 \tszeq a2}
       GEVEC_v (a2, n, d, l) -<prf> GEMAT_v (a2, 1, n, ord, ld, l)
-    (* fpf *)
+  // [fpf: for unsplitting]
   )
 // end of [GEVEC_v_of_GEMAT_v_row]
 
@@ -420,9 +424,9 @@ prfun GEVEC_v_of_GEMAT_v_col
   ) :<> [d:inc] (
     MATVECINC (col, ord, ld, d)
   , GEVEC_v (a1, m, d, l)
-  , {a2:viewt@ype | sizeof a1 == sizeof a2}
+  , {a2:viewt@ype | a1 \tszeq a2}
       GEVEC_v (a2, m, d, l) -<prf> GEMAT_v (a2, m, 1, ord, ld, l)
-    (* fpf *)
+  // [fpf: for unsplitting]
   )
 // end of [GEVEC_v_of_GEMAT_v_col]
 
@@ -553,10 +557,10 @@ viewtypedef GEMAT_ptr_split1x2_res_t (
 ) = [l1,l2:addr] @(
   GEMAT_v (a1, m, j, ord, lda, l1)  
 , GEMAT_v (a1, m, n-j, ord, lda, l2)
-, {a2:viewt@ype | sizeof a1 == sizeof a2}
+, {a2:viewt@ype | a1 \tszeq a2}
     (GEMAT_v (a2, m, j, ord, lda, l1), GEMAT_v (a2, m, n-j, ord, lda, l2)) -<prf>
     GEMAT_v (a2, m, n, ord, lda, l0)
-  // [fpf]
+  // [fpf: for unsplitting]
 | ptr l1 // l1 should equal l0
 , ptr l2
 ) // end of [GEMAT_ptr_split1x2_res_t]
@@ -583,10 +587,12 @@ viewtypedef GEMAT_ptr_split2x1_res_t (
 ) = [l1,l2:addr] @(
   GEMAT_v (a1, i, n, ord, lda, l1)  
 , GEMAT_v (a1, m-i, n, ord, lda, l2)
-, {a2:viewt@ype | sizeof a1 == sizeof a2}
-    (GEMAT_v (a2, i, n, ord, lda, l1), GEMAT_v (a2, m-i, n, ord, lda, l2)) -<prf>
+, {a2:viewt@ype | a1 \tszeq a2} (
+    GEMAT_v (a2, i, n, ord, lda, l1)
+  , GEMAT_v (a2, m-i, n, ord, lda, l2)
+  ) -<prf>
     GEMAT_v (a2, m, n, ord, lda, l0)
-  // [fpf]
+  // [fpf: for unsplitting]
 | ptr l1 // l1 should equal l0
 , ptr l2
 ) // end of [GEMAT_ptr_split2x1_res_t]
@@ -615,14 +621,14 @@ viewtypedef GEMAT_ptr_split2x2_res_t (
 , GEMAT_v (a1, i, n-j, ord, lda, l12)
 , GEMAT_v (a1, m-i, j, ord, lda, l21)
 , GEMAT_v (a1, m-i, n-j, ord, lda, l22)
-, {a2:viewt@ype | sizeof a1 == sizeof a2} (
+, {a2:viewt@ype | tszeq(a1,a2)} (
     GEMAT_v (a2, i, j, ord, lda, l11)
   , GEMAT_v (a2, i, n-j, ord, lda, l12)
   , GEMAT_v (a2, m-i, j, ord, lda, l21)
   , GEMAT_v (a2, m-i, n-j, ord, lda, l22)
   ) -<prf>
     GEMAT_v (a2, m, n, ord, lda, l0)
-  // [fpf]
+  // [fpf: for unsplitting]
 | ptr l11 // l11 should equal l0
 , ptr l12
 , ptr l21
