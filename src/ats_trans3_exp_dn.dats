@@ -431,13 +431,13 @@ in
     | S2Ecst s2c => begin case+ s2c of
       | _ when s2cstref_cst_equ (String_int_type, s2c) => let
           val s2i = (case+ s2es_arg of
-            | list_cons (s2e, _) => s2e
-            | _ => begin
-                prerr "Internal Error: d2exp_string_tr_dn: String_int_type";
+            | list_cons (s2e, _) => s2e | _ => begin
+                prerr "INTERNAL ERROR";
+                prerr ": d2exp_string_tr_dn: String_int_type";
                 prerr_newline ();
                 $Err.abort {s2exp} ()
-              end
-          ) : s2exp
+              end // end of [_]
+          ) : s2exp // end of [val]
           val n = string0_length (str)
           val n = size1_of_size (n); val n = int1_of_size1 (n)
           val () = $SOL.s2exp_equal_solve (loc0, s2exp_int n, s2i)
@@ -445,22 +445,21 @@ in
           d3exp_string (loc0, s2e0, str, len)
         end // [String_int_type]
       | _ when s2cstref_cst_equ (Printf_c_types_type, s2c) => let
-          val s2e_arg = case+ s2es_arg of
-            | list_cons (s2e, _) => s2e
-            | _ => begin
-                prerr "Internal Error: d2exp_string_tr_dn: Printf_c_types_type";
+          val s2e_arg = (case+ s2es_arg of
+            | list_cons (s2e, _) => s2e | list_nil () => begin
+                prerr "INTERNAL ERROR";
+                prerr ": d2exp_string_tr_dn: Printf_c_types_type";
                 prerr_newline ();
                 $Err.abort {s2exp} ()
-              end
-          val fats = (
-            case+ printf_c_string_parse (str) of
+              end // end of [list_nil]
+          ) : s2exp // end of [val]
+          val fats = (case+ printf_c_string_parse (str) of
             | ~Some_vt (fats) => fats | ~None_vt () => begin
                 prerr loc0; prerr ": error(3)";
-                prerr ": the c-format string is invalid.";
-                prerr_newline ();
+                prerr ": the c-format string is invalid."; prerr_newline ();
                 $Err.abort ()
-              end
-          ) : printf_c_argtypes
+              end // end of [None_vt]
+          ) : printf_c_argtypes // end of [val]
           val s2e_fats = s2exp_make_printf_c_argtypes fats
 (*
           val () = begin

@@ -102,7 +102,7 @@ end // end of [stringlst_concat]
 ats_ulint_type
 atspre_string_hash_33 (ats_ptr_type s0) {
   unsigned long int hash_val ; unsigned char *s; int c;
-  hash_val = 31415926535898UL ;
+  hash_val = 31415926UL ; // randomly chosen
   s = (unsigned char*)s0 ; while (1) {
     c = *s ;
     if (!c) return hash_val ;

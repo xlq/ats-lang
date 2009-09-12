@@ -46,6 +46,7 @@
 
 staload Deb = "ats_debug.sats"
 staload Err = "ats_error.sats"
+staload Loc = "ats_location.sats"
 staload Lst = "ats_list.sats"
 staload Syn = "ats_syntax.sats"
 
@@ -80,10 +81,45 @@ overload prerr with $Loc.prerr_location
 
 (* ****** ****** *)
 
-implement funclo_equal_solve (loc, fc1, fc2) =
+fn prerr_loc_error3 (loc: loc_t): void =
+  ($Loc.prerr_location loc; prerr ": error(3)")
+// end of [prerr_loc_error3]
+
+(* ****** ****** *)
+
+typedef loc_t = $Loc.location_t
+
+datatype staerr =
+  | STAERR_tyleq of (loc_t, s2exp, s2exp)
+  | STAERR_funclo_equal of (loc_t, int(*funclo*), int(*funclo*))
+// end of [datatype]
+
+local
+
+viewtypedef staerrlst_vt = List_vt (staerr)
+var the_staerrlst: staerrlst_vt = list_vt_nil ()
+
+val p_the_staerrlst =
+  &the_staerrlst // end of [val]
+val (pfbox_the_staerrlst | ()) =
+  vbox_make_view_ptr {staerrlst_vt} (view@ (the_staerrlst) | p_the_staerrlst)
+// end of [val]
+
+in
+
+fun staerrlst_add (x: staerr): void = let
+  prval vbox pf = pfbox_the_staerrlst
+in
+  !p_the_staerrlst := list_vt_cons (x, !p_the_staerrlst)
+end // end of [staerrlst_add]
+
+end // end of [local]
+
+(* ****** ****** *)
+
+implement funclo_equal_solve (loc0, fc1, fc2) =
   if fc1 = fc2 then () else begin
-    prerr loc;
-    prerr ": error(3)";
+    prerr_loc_error3 (loc0);
     prerr ": function/closure mismatch.";
     prerr_newline ();
     $Err.abort {void} ()
@@ -142,8 +178,7 @@ implement s2exp_out_void_solve (loc0, s2e) = let
     | _ => (err := 1)
 in
   if err > 0 then begin
-    prerr loc0;
-    prerr ": error(3)";
+    prerr_loc_error3 (loc0);
     prerr ": the type ["; prerr s2e; prerr "] is expected to be empty.";
     prerr_newline ();
     $Err.abort {void} ()
@@ -154,8 +189,7 @@ implement s2exp_out_void_solve_at (loc0, s2e_at) = begin
   case+ un_s2exp_at_viewt0ype_addr_view s2e_at of
   | ~Some_vt s2ts2a => s2exp_out_void_solve (loc0, s2ts2a.0)
   | ~None_vt () => begin
-      prerr loc0;
-      prerr ": error(3)";
+      prerr_loc_error3 (loc0);
       prerr ": the type ["; prerr s2e_at; prerr "] is expected to be an @-view.";
       prerr_newline ();
       $Err.abort {void} ()
@@ -213,8 +247,7 @@ implement s2exp_equal_solve (loc0, s2e10, s2e20) = let
   val () = s2exp_equal_solve_err (loc0, s2e10, s2e20, err)
 in
   if err > 0 then begin
-    prerr loc0;
-    prerr ": error(3)";
+    prerr_loc_error3 (loc0);
     $Deb.debug_prerrf (": %s: s2exp_equal_solve", @(THISFILENAME));
     prerr ": mismatch of static terms:\n";
     prerr "The needed term is: "; pprerr_s2exp (s2exp_whnf s2e20); prerr_newline ();
@@ -314,7 +347,7 @@ in
 end // end of [s2exp_equal_solve_err]
 
 implement s2explst_equal_solve_err (loc0, s2es10, s2es20, err) = let
-  fun aux (s2es1: s2explst, s2es2: s2explst, err: &int):<cloptr1> void =
+  fun aux (s2es1: s2explst, s2es2: s2explst, err: &int):<cloref1> void =
     case+ (s2es1, s2es2) of
     | (s2e1 :: s2es1, s2e2 :: s2es2) => begin
         s2exp_equal_solve_err (loc0, s2e1, s2e2, err);
@@ -329,8 +362,12 @@ in
 end // end of [s2explst_equal_solve_err]
 
 implement labs2explst_equal_solve_err (loc0, ls2es10, ls2es20, err) = let
-  fun aux (ls2es1: labs2explst, ls2es2: labs2explst, err: &int)
-    :<cloptr1> void = begin case+ (ls2es1, ls2es2) of
+  fun aux (
+      ls2es1: labs2explst
+    , ls2es2: labs2explst
+    , err: &int
+    ) :<cloref1> void = begin
+    case+ (ls2es1, ls2es2) of
     | (LABS2EXPLSTcons (l1, s2e1, ls2es1),
        LABS2EXPLSTcons (l2, s2e2, ls2es2)) => begin
         label_equal_solve_err (loc0, l1, l2, err);
@@ -347,8 +384,12 @@ end // end of [labs2explst_equal_solve_err]
 
 implement wths2explst_equal_solve_err
   (loc0, wths2es10, wths2es20, err) = let
-  fun aux (wths2es1: wths2explst, wths2es2: wths2explst, err: &int)
-    :<cloptr1> void = begin case+ (wths2es1, wths2es2) of
+  fun aux (
+      wths2es1: wths2explst
+    , wths2es2: wths2explst
+    , err: &int
+    ) :<cloref1> void = begin
+    case+ (wths2es1, wths2es2) of
     | (WTHS2EXPLSTcons_some (refval1, s2e1, wths2es1),
        WTHS2EXPLSTcons_some (refval2, s2e2, wths2es2)) => begin
 (*
@@ -370,34 +411,38 @@ end // end of [wths2explst_equal_solve_err]
 
 implement s2explstlst_equal_solve_err
   (loc0, s2ess10, s2ess20, err) = let
-  fun aux
-   (loc0: loc_t, s2ess1: s2explstlst, s2ess2: s2explstlst, err: &int)
-   : void = begin case+ (s2ess1, s2ess2) of
-    | (cons (s2es1, s2ess1), cons (s2es2, s2ess2)) => begin
-        s2explst_equal_solve_err (loc0, s2es1, s2es2, err);
-        aux (loc0, s2ess1, s2ess2, err)
+  fun aux (
+      s2ess1: s2explstlst, s2ess2: s2explstlst, err: &int
+    ) :<cloref1> void = begin case+ (s2ess1, s2ess2) of
+    | (cons (s2es1, s2ess1), cons (s2es2, s2ess2)) => let
+        val () = s2explst_equal_solve_err (loc0, s2es1, s2es2, err)
+      in
+        aux (s2ess1, s2ess2, err)
       end // end of [cons, cons]
     | (nil (), nil ()) => ()
     | (_, _) => (err := err + 1)
   end // end of [aux]
 in
-  aux (loc0, s2ess10, s2ess20, err)
+  aux (s2ess10, s2ess20, err)
 end // end of [s2explstlst_equal_solve_err]
 
 (* ****** ****** *)
 
-implement s2exp_size_equal_solve_err (loc0, s2e10, s2e20, err) = let
+implement
+  s2exp_size_equal_solve_err
+    (loc0, s2e10, s2e20, err) = let
   val s2ze10 = s2zexp_make_s2exp s2e10
   and s2ze20 = s2zexp_make_s2exp s2e20
 in
   if s2zexp_syneq (s2ze10, s2ze20) then () else begin
     err := err + 1
   end // end of [if]
-end // end of [s2exp_size_equal_solve_err]
+end (* end of [s2exp_size_equal_solve_err] *)
 
 (* ****** ****** *)
 
-implement s2exp_tyleq_solve_err (loc0, s2e10, s2e20, err) = let
+implement
+  s2exp_tyleq_solve_err (loc0, s2e10, s2e20, err) = let
   val s2e10 = s2exp_whnf s2e10 and s2e20 = s2exp_whnf s2e20
 (*
   val () = begin
@@ -435,11 +480,11 @@ in
             s2exp_tyleq_solve_err (loc0, s2e1, s2e2, err)
           end else begin
             err := err + 1
-          end
+          end // end of [if]
       | _ => begin
           err := err + 1 
-        end
-      end // end of [knd2 = 1]
+        end (* end of [_] *)
+      end (* end of [knd2 = 1] *)
     end // end of [_, S2Etop]
   | (S2Euni _, _) => let
       val () = trans3_env_push_sta ()
@@ -476,7 +521,9 @@ in
   | (S2Eapp (s2e1_fun, s2es1_arg), s2en20) => begin
     case+ s2en20 of
     | S2Eapp (s2e2_fun, s2es2_arg) => begin
-      case+ (s2e1_fun.s2exp_node, s2e2_fun.s2exp_node) of
+      case+ (
+        s2e1_fun.s2exp_node, s2e2_fun.s2exp_node
+      ) of
       | (S2Ecst s2c1_fun, S2Ecst s2c2_fun) => begin
           if s2cst_is_eqsup (s2c1_fun, s2c2_fun) then begin
             case+ s2cst_argvar_get s2c1_fun of
@@ -490,12 +537,12 @@ in
           end else begin
             err := err + 1
           end // end of [if]
-        end // [(S2Ecst, S2Ecst)]
+        end (* [(S2Ecst, S2Ecst)] *)
       | (_, _) => begin (* sound but incomplete! *)
           s2exp_equal_solve_err (loc0, s2e1_fun, s2e2_fun, err);
           s2explst_equal_solve_err (loc0, s2es1_arg, s2es2_arg, err)
-        end // end of [_, _]
-      end // end of [case]
+        end (* end of [_, _] *)
+      end // end of [S2Eapp]
     | S2Ecst s2c2 => begin case+ s2e1_fun.s2exp_node of
       | S2Ecst s2c1_fun => begin
           if s2cst_is_eqsup (s2c1_fun, s2c2) then () else (err := err + 1)
@@ -534,7 +581,9 @@ in
     end // end of [S2Edatconptr, _]
   | (S2Efun (fc1, lin1, s2fe1, npf1, s2es1_arg, s2e1_res), s2en20) => begin
     case+ s2en20 of
-    | S2Efun (fc2, lin2, s2fe2, npf2, s2es2_arg, s2e2_res) => begin
+    | S2Efun (
+        fc2, lin2, s2fe2, npf2, s2es2_arg, s2e2_res
+      ) => begin
         funclo_equal_solve_err (loc0, fc1, fc2, err);
         linearity_equal_solve_err (loc0, lin1, lin2, err);
         pfarity_equal_solve_err (loc0, npf1, npf2, err);
@@ -546,11 +595,12 @@ in
         val () = case+ fc1 of
           | $Syn.FUNCLOclo knd1 => begin
               clokind_equal_solve_err (loc0, knd1, knd2, err)
-            end
+            end // end of [FUNCLOclo]
           | _ => (err := err + 1)
         val s2t1: s2rt = if lin1 > 0 then s2rt_viewtype else s2rt_type
         val s2e1_fun = s2exp_fun_srt
           (s2t1, $Syn.FUNCLOfun (), lin1, s2fe1, npf1, s2es1_arg, s2e1_res)
+        // end of [val]
       in
         s2exp_tyleq_solve_err (loc0, s2e1_fun, s2e2_fun, err)
       end // end of [S2Eclo]
@@ -561,14 +611,14 @@ in
     | S2Eread (_v2, s2e2) => begin
         s2exp_tyleq_solve_err (loc0, _v2, _v1, err);
         s2exp_tyleq_solve_err (loc0, s2e1, s2e2, err)
-      end
+      end // end of [S2Eread]
     | _ => (err := err + 1)
     end // end of [S2Eread, _]
   | (S2Erefarg (refval1, s2e1), s2en20) => begin case+ s2en20 of
     | S2Erefarg (refval2, s2e2) => begin
         refval_equal_solve_err (loc0, refval1, refval2, err);
         s2exp_tyleq_solve_err (loc0, s2e1, s2e2, err)
-      end
+      end // end of [S2Erefarg]
     | _ => (err := err + 1)
     end // end of [S2Erefarg, _]
   | (S2Etyarr (s2e1_elt, s2ess1_dim), s2en20) => begin
@@ -576,13 +626,13 @@ in
     | S2Etyarr (s2e2_elt, s2ess2_dim) => begin
         s2exp_tyleq_solve_err (loc0, s2e1_elt, s2e2_elt, err);
         s2explstlst_equal_solve_err (loc0, s2ess1_dim, s2ess2_dim, err)
-      end
+      end // end of [S2Etyarr]
     | _ => (err := err + 1)
     end // end of [S2Etyarr, _]
   | (S2Etylst s2es1, s2en20) => begin case+ s2en20 of
     | S2Etylst s2es2 => begin
         s2explst_tyleq_solve_err (loc0, s2es1, s2es2, err)
-      end
+      end // end of [S2Etylst]
     | _ => (err := err + 1)
     end // end of [S2Etylst, _]
   | (S2Etyrec (knd1, npf1, ls2es1), s2en20) => begin case+ s2en20 of
@@ -724,8 +774,7 @@ implement s2eff_leq_solve (loc0, s2fe1, s2fe2) = let
   val () = s2eff_leq_solve_err (loc0, s2fe1, s2fe2, err)
 in
   if err > 0 then begin
-    prerr loc0;
-    prerr ": error(3)";
+    prerr_loc_error3 (loc0);
     prerr ": the computed effects [";
     prerr s2fe1;
     prerr "] does not match the expected effects [";
@@ -834,8 +883,7 @@ in
         s2exp_tyleq_solve_lbs_err (loc0, s2Var_lbs_get s2V1, s2e2, err);
         s2exp_tyleq_solve_ubs_err (loc0, s2e2, s2Var_ubs_get s2V1, err);
       end else begin
-        prerr loc0;
-        prerr ": error(3)";
+        prerr_loc_error3 (loc0);
         $Deb.debug_prerrf (": %s: s2exp_equal_solve_Var_err", @(THISFILENAME));
         prerr ": sort mismatch: the sort of [";
         prerr s2V1;
@@ -873,8 +921,7 @@ in
       val s2t1 = s2Var_srt_get (s2V1)
       val s2t2 = s2e2.s2exp_srt
       val () = if s2t2 <= s2t1 then () else begin
-        prerr loc0;
-        prerr ": error(3)";
+        prerr_loc_error3 (loc0);
         $Deb.debug_prerrf (": %s: s2exp_equal_solve_Var_err", @(THISFILENAME));
         prerr ": sort mismatch: the sort of [s2V(";
         prerr s2V1;
@@ -913,8 +960,7 @@ in
       val s2t1 = s2e1.s2exp_srt
       val s2t2 = s2Var_srt_get (s2V2)
       val () = if s2t1 <= s2t2 then () else begin
-        prerr loc0;
-        prerr ": error(3)";
+        prerr_loc_error3 (loc0);
         $Deb.debug_prerrf (": %s: s2exp_equal_solve_Var_err", @(THISFILENAME));
         prerr ": sort mismatch: the sort of [s2V(";
         prerr s2V2;
@@ -947,12 +993,11 @@ implement s2exp_tyleq_solve (loc0, s2e10, s2e20) = let
   val () = s2exp_tyleq_solve_err (loc0, s2e10, s2e20, err)
 in
   if err > 0 then begin
-    prerr loc0;
-    prerr ": error(3)";
+    prerr_loc_error3 (loc0);
     $Deb.debug_prerrf (": %s: s2exp_tyleq_solve", @(THISFILENAME));
     prerr ": type mismatch:\n";
-    prerr "The needed type is: "; prerr (s2exp_whnf s2e20); prerr_newline ();
-    prerr "The actual type is: "; prerr (s2exp_whnf s2e10); prerr_newline ();
+    prerr "The needed type is: "; pprerr_s2exp (s2exp_whnf s2e20); prerr_newline ();
+    prerr "The actual type is: "; pprerr_s2exp (s2exp_whnf s2e10); prerr_newline ();
     $Err.abort {void} ()
   end // end of [if]
 end (* end of [s2exp_tyleq_solve] *)
@@ -971,8 +1016,7 @@ implement s2explst_arg_tyleq_solve (loc0, s2es10, s2es20) = let
   val [sgn:int] sgn = $Lst.list_length_compare (s2es10, s2es20)
   val () = (
     if (sgn <> 0) then begin
-      prerr loc0;
-      prerr ": error(3)";
+      prerr_loc_error3 (loc0);
       $Deb.debug_prerrf (": %s: s2exp_arg_tyleq_solve", @(THISFILENAME));
       if sgn > 0 then prerr ": this function call needs more arguments.";
       if sgn < 0 then prerr ": this function call needs less arguments.";

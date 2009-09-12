@@ -1308,18 +1308,22 @@ fun s2exp_lab_linset
 fun s2exp_slablst_lintry_cstr {n:nat}
   (loc0: loc_t, s2e0: s2exp, s2ls: list (s2lab, n), cstr: &s2explst)
   : list (s2lab, n)
+// end of ...
 
 fun s2exp_slablst_linget_cstr {n:nat}
   (loc0: loc_t, s2e0: s2exp, s2ls: list (s2lab, n), cstr: &s2explst)
   : @(s2exp(*part*), s2exp(*whole*), list (s2lab, n))
+// end of ...
 
 fun s2exp_slablst_linset_cstr {n:nat}
   (loc0: loc_t, s2e0: s2exp, s2ls: list (s2lab, n), s2e_new: s2exp, cstr: &s2explst)
   : @(s2exp(*part*), s2exp(*whole*), list (s2lab, n))
+// end of ...
 
 fun s2exp_slablst_lindel_cstr {n:nat}
   (loc0: loc_t, s2e0: s2exp, s2ls: list (s2lab, n), cstr: &s2explst)
   : @(s2exp(*part*), s2exp(*whole*), list (s2lab, n))
+// end of ...
 
 (* ****** ****** *)
 

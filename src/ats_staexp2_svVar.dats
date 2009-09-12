@@ -573,6 +573,7 @@ assume s2Varset_t = $Set.set_t (s2Var_t)
 
 fn cmp (s2V1: s2Var_t, s2V2: s2Var_t):<> Sgn =
   $effmask_all (compare_s2Var_s2Var (s2V1, s2V2))
+// end of [cmp]
 
 in // in of [local]
 
