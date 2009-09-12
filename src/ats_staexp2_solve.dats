@@ -46,9 +46,14 @@
 
 staload Deb = "ats_debug.sats"
 staload Err = "ats_error.sats"
+
 staload Loc = "ats_location.sats"
+typedef loc_t = $Loc.location_t
+
 staload Lst = "ats_list.sats"
+
 staload Syn = "ats_syntax.sats"
+typedef funclo = $Syn.funclo
 
 (* ****** ****** *)
 
@@ -87,16 +92,15 @@ fn prerr_loc_error3 (loc: loc_t): void =
 
 (* ****** ****** *)
 
-typedef loc_t = $Loc.location_t
-
 datatype staerr =
-  | STAERR_tyleq of (loc_t, s2exp, s2exp)
-  | STAERR_funclo_equal of (loc_t, int(*funclo*), int(*funclo*))
+  | STAERR_s2exp_tyleq of (loc_t, s2exp, s2exp)
+  | STAERR_funclo_equal of (loc_t, funclo, funclo)
 // end of [datatype]
+
+viewtypedef staerrlst_vt = List_vt (staerr)
 
 local
 
-viewtypedef staerrlst_vt = List_vt (staerr)
 var the_staerrlst: staerrlst_vt = list_vt_nil ()
 
 val p_the_staerrlst =
@@ -107,28 +111,73 @@ val (pfbox_the_staerrlst | ()) =
 
 in
 
-fun staerrlst_add (x: staerr): void = let
+fn the_staerrlst_add
+  (x: staerr): void = let
   prval vbox pf = pfbox_the_staerrlst
 in
   !p_the_staerrlst := list_vt_cons (x, !p_the_staerrlst)
-end // end of [staerrlst_add]
+end // end of [the_staerrlst_add]
+
+fn the_staerrlst_get
+  (): staerrlst_vt = let
+  prval vbox pf = pfbox_the_staerrlst
+  val xs = !p_the_staerrlst
+  val () = !p_the_staerrlst := list_vt_nil ()
+in
+  xs
+end // end of [the_staerrlst_get]
 
 end // end of [local]
+
+fn prerr_staerr_funclo_equal
+  (loc: loc_t, fc1: funclo, fc2: funclo): void = begin
+  prerr_loc_error3 (loc);
+  prerr ": function/closure mismatch."; prerr_newline ();
+end // end of ...
+
+fn prerr_staerr_s2exp_tyleq
+  (loc: loc_t, s2e1: s2exp, s2e2: s2exp): void = begin
+  prerr_loc_error3 (loc);
+  prerr ": type mismatch:\n";
+  prerr "The needed type is: "; pprerr_s2exp (s2exp_whnf s2e2); prerr_newline ();
+  prerr "The actual type is: "; pprerr_s2exp (s2exp_whnf s2e1); prerr_newline ();
+end // end of [prerr_Staerr_s2exp_tyleq]
+
+fn prerr_the_staerrlst () = let
+  fun loop (xs: staerrlst_vt): void = case+ xs of
+    | ~list_vt_cons (x, xs) => let
+        val () = case+ x of
+          | STAERR_funclo_equal (loc, fc1, fc2) => prerr_staerr_funclo_equal (loc, fc1, fc2)
+          | STAERR_s2exp_tyleq (loc, s2e1, s2e2) => prerr_staerr_s2exp_tyleq (loc, s2e1, s2e2)
+      in
+        loop (xs)
+      end // end of [list_vt_cons]
+    | ~list_vt_nil () => ()
+  // end of [loop]
+in
+  loop (the_staerrlst_get ())
+end // end of [prerr_the_staerrlst]
 
 (* ****** ****** *)
 
 implement funclo_equal_solve (loc0, fc1, fc2) =
-  if fc1 = fc2 then () else begin
-    prerr_loc_error3 (loc0);
-    prerr ": function/closure mismatch.";
-    prerr_newline ();
+  if fc1 = fc2 then () else let
+    val () = prerr_staerr_funclo_equal (loc0, fc1, fc2)
+  in
     $Err.abort {void} ()
   end // end of [if]
 // end of [funclo_equal_solve]
 
-implement funclo_equal_solve_err (loc, fc1, fc2, err) =
-  if fc1 = fc2 then () else (err := err + 1)
+implement funclo_equal_solve_err (loc0, fc1, fc2, err) =
+  if fc1 = fc2 then () else let
+    val () = err := err + 1
+    val () = the_staerrlst_add (STAERR_funclo_equal (loc0, fc1, fc2))
+  in
+    // nothing
+  end // end of [if]
 // end of [funclo_equal_solve_err]
+
+(* ****** ****** *)
 
 implement clokind_equal_solve_err (loc, knd1, knd2, err) =
   if knd1 = knd2 then () else (err := err + 1)
@@ -164,18 +213,20 @@ implement s2exp_out_void_solve (loc0, s2e) = let
   var err: int = 0
   val s2e = s2exp_whnf s2e
   val () = case+ s2e.s2exp_node of
-    | S2Ecst s2c => begin
-        if s2cstref_cst_equ (Void_t0ype, s2c) then () else err := 1
-      end // end of [S2Ecst]
+    | S2Ecst s2c =>
+        if s2cstref_cst_equ (Void_t0ype, s2c) then () else err := err + 1
+      // end of [S2Ecst]
     | S2Eout _ => ()
-    | S2Etyrec (_(*knd*), _(*npf*), ls2es) => aux (loc0, ls2es) where {
-        fun aux (loc0: loc_t, ls2es: labs2explst): void = case+ ls2es of
-          | LABS2EXPLSTcons (_, s2e, ls2es) => begin
-              s2exp_out_void_solve (loc0, s2e); aux (loc0, ls2es)
+    | S2Etyrec (_knd, _npf, ls2es) => loop (loc0, ls2es) where {
+        fun loop
+          (loc0: loc_t, ls2es: labs2explst): void = case+ ls2es of
+          | LABS2EXPLSTcons (_, s2e, ls2es) => let
+              val () = s2exp_out_void_solve (loc0, s2e) in loop (loc0, ls2es)
             end // end of [LABS2EXPLSTcons]
           | LABS2EXPLSTnil () => ()
       } // end of [where] // end of [S2Etyrec]
-    | _ => (err := 1)
+    | _ => (err := err + 1)
+  // end of [val]
 in
   if err > 0 then begin
     prerr_loc_error3 (loc0);
@@ -223,9 +274,11 @@ in
   if coneq then aux_solve (loc0, s2e1, s2e2, err) else (err := err + 1)
 end // end of [s2exp_equal_solve_abscon_err]
 
-fn s2exp_equal_solve_appvar_err
-  (loc0: loc_t, s2e1: s2exp, s2e2: s2exp, err: &int)
-  : void = let
+fn s2exp_equal_solve_appvar_err (
+    loc0: loc_t
+  , s2e1: s2exp, s2e2: s2exp
+  , err: &int
+  ) : void = aux (loc0, s2e1, s2e2, err) where {
   fun aux
     (loc0: loc_t, s2e1: s2exp, s2e2: s2exp, err: &int)
     : void = begin
@@ -233,12 +286,10 @@ fn s2exp_equal_solve_appvar_err
     | (S2Eapp (s2e11, s2es12), S2Eapp (s2e21, s2es22)) => begin
         aux (loc0, s2e11, s2e21, err);
         s2explst_equal_solve_err (loc0, s2es12, s2es22, err)
-      end
+      end // end of [S2Eapp, S2Eapp]
     | (_, _) => ()
   end // end of [aux]
-in
-  aux (loc0, s2e1, s2e2, err)
-end // end of [s2exp_equal_solve_appvar_err]
+} // end of [s2exp_equal_solve_appvar_err]
 
 (* ****** ****** *)
 
@@ -443,6 +494,7 @@ end (* end of [s2exp_size_equal_solve_err] *)
 
 implement
   s2exp_tyleq_solve_err (loc0, s2e10, s2e20, err) = let
+  val err0 = err
   val s2e10 = s2exp_whnf s2e10 and s2e20 = s2exp_whnf s2e20
 (*
   val () = begin
@@ -451,8 +503,7 @@ implement
     prerr "s2exp_tyleq_solve_err: err = "; prerr err; prerr_newline ();
   end // end of [val]
 *)
-in
-  case+ (s2e10.s2exp_node, s2e20.s2exp_node) of
+  val () = case+ (s2e10.s2exp_node, s2e20.s2exp_node) of
   | (S2EVar s2V1, S2EVar s2V2) when eq_s2Var_s2Var (s2V1, s2V2) => ()
   | (S2EVar s2V1, _) => begin
       s2exp_tyleq_solve_Var_l_err (loc0, s2V1, s2e10, s2e20, err)
@@ -583,14 +634,14 @@ in
     case+ s2en20 of
     | S2Efun (
         fc2, lin2, s2fe2, npf2, s2es2_arg, s2e2_res
-      ) => begin
-        funclo_equal_solve_err (loc0, fc1, fc2, err);
-        linearity_equal_solve_err (loc0, lin1, lin2, err);
-        pfarity_equal_solve_err (loc0, npf1, npf2, err);
-        s2eff_leq_solve_err (loc0, s2fe1, s2fe2, err);
-        s2explst_tyleq_solve_err (loc0, s2es2_arg, s2es1_arg, err);
-        s2exp_tyleq_solve_err (loc0, s2e1_res, s2e2_res, err);
-      end // end of [S2Efun]
+      ) => () where {
+        val () = funclo_equal_solve_err (loc0, fc1, fc2, err)
+        val () = linearity_equal_solve_err (loc0, lin1, lin2, err)
+        val () = pfarity_equal_solve_err (loc0, npf1, npf2, err)
+        val () = s2eff_leq_solve_err (loc0, s2fe1, s2fe2, err)
+        val () = s2explst_tyleq_solve_err (loc0, s2es2_arg, s2es1_arg, err)
+        val () = s2exp_tyleq_solve_err (loc0, s2e1_res, s2e2_res, err)
+      } // end of [S2Efun]
     | S2Eclo (knd2, s2e2_fun) => let
         val () = case+ fc1 of
           | $Syn.FUNCLOclo knd1 => begin
@@ -623,10 +674,10 @@ in
     end // end of [S2Erefarg, _]
   | (S2Etyarr (s2e1_elt, s2ess1_dim), s2en20) => begin
     case+ s2en20 of
-    | S2Etyarr (s2e2_elt, s2ess2_dim) => begin
-        s2exp_tyleq_solve_err (loc0, s2e1_elt, s2e2_elt, err);
-        s2explstlst_equal_solve_err (loc0, s2ess1_dim, s2ess2_dim, err)
-      end // end of [S2Etyarr]
+    | S2Etyarr (s2e2_elt, s2ess2_dim) => () where {
+        val () = s2exp_tyleq_solve_err (loc0, s2e1_elt, s2e2_elt, err)
+        val () = s2explstlst_equal_solve_err (loc0, s2ess1_dim, s2ess2_dim, err)
+      } // end of [S2Etyarr]
     | _ => (err := err + 1)
     end // end of [S2Etyarr, _]
   | (S2Etylst s2es1, s2en20) => begin case+ s2en20 of
@@ -635,54 +686,65 @@ in
       end // end of [S2Etylst]
     | _ => (err := err + 1)
     end // end of [S2Etylst, _]
-  | (S2Etyrec (knd1, npf1, ls2es1), s2en20) => begin case+ s2en20 of
-    | S2Etyrec (knd2, npf2, ls2es2) => begin
+  | (S2Etyrec (knd1, npf1, ls2es1), s2en20) => begin
+    case+ s2en20 of
+    | S2Etyrec (knd2, npf2, ls2es2) => () where {
 (*
-        prerr "ls2es1 = "; prerr ls2es1; prerr_newline ();
-        prerr "ls2es2 = "; prerr ls2es2; prerr_newline ();
+        val () = begin
+          prerr "ls2es1 = "; prerr ls2es1; prerr_newline ();
+          prerr "ls2es2 = "; prerr ls2es2; prerr_newline ();
+        end // end of [val]
 *)
-        tyreckind_equal_solve_err (loc0, knd1, knd2, err);
-        pfarity_equal_solve_err (loc0, npf1, npf2, err);
-        labs2explst_tyleq_solve_err (loc0, ls2es1, ls2es2, err)
-      end // end of [S2Etyrec]
+        val () = tyreckind_equal_solve_err (loc0, knd1, knd2, err)
+        val () = pfarity_equal_solve_err (loc0, npf1, npf2, err)
+        val () = labs2explst_tyleq_solve_err (loc0, ls2es1, ls2es2, err)
+      } // end of [S2Etyrec]
     | S2Evararg s2e2 => let
         val s2e1 = s2exp_tylst (aux ls2es1) where {
           fun aux (ls2es: labs2explst): s2explst = case+ ls2es of
             | LABS2EXPLSTcons (_, s2e, ls2es) => list_cons (s2e, aux ls2es)
             | LABS2EXPLSTnil () => list_nil ()
+          // end of [aux]
         } // end of [where]
+        val () = tyreckind_equal_solve_err (loc0, knd1, TYRECKINDflt0, err)
+        val () = pfarity_equal_solve_err (loc0, npf1, 0, err)
       in
-        tyreckind_equal_solve_err (loc0, knd1, TYRECKINDflt0, err);
-        pfarity_equal_solve_err (loc0, npf1, 0, err);
         s2exp_tyleq_solve_err (loc0, s2e1, s2e2, err)
       end // end of [S2Evararg]
     | _ => (err := err + 1)
     end // end of [S2Etyrec, _]
   | (S2Eunion (s1, s2i1, ls2es1), s2en20) => begin case+ s2en20 of
-    | S2Eunion (s2, s2i2, ls2es2) => begin
-        stamp_equal_solve_err (loc0, s1, s2, err);
-        s2exp_equal_solve_err (loc0, s2i1, s2i2, err); // indexes must equal
+    | S2Eunion (s2, s2i2, ls2es2) => let
+        val () = stamp_equal_solve_err (loc0, s1, s2, err)
+        val () = s2exp_equal_solve_err (loc0, s2i1, s2i2, err) // indexes must equal
+      in
         labs2explst_tyleq_solve_err (loc0, ls2es1, ls2es2, err)
-      end
+      end // end of [S2Eunion]
     | _ => (err := err + 1)
     end // end of [S2Eunion, _]
   | (S2Evar s2v1, s2en20) => begin case+ s2en20 of
-    | S2Evar s2v2 => begin
+    | S2Evar s2v2 =>
         if s2v1 = s2v2 then () else (err := err + 1)
-      end
+      // end of [S2Evar]
     | _ => (err := err + 1)
     end // end of [S2Evar, _]
-  | (S2Ewth (s2e1, wths2es1), s2en20) => begin case+ s2en20 of
-    | S2Ewth (s2e2, wths2es2) => begin
-        s2exp_tyleq_solve_err (loc0, s2e1, s2e2, err);
-        wths2explst_tyleq_solve_err (loc0, wths2es1, wths2es2, err);
-      end
+  | (S2Ewth (s2e1, wths2es1), s2en20) => begin
+    case+ s2en20 of
+    | S2Ewth (s2e2, wths2es2) => () where {
+        val () = s2exp_tyleq_solve_err (loc0, s2e1, s2e2, err)
+        val () = wths2explst_tyleq_solve_err (loc0, wths2es1, wths2es2, err)
+      } // end of [S2Ewth]
     | _ => (err := err + 1)
     end // end of [S2Ewth, _]
   | (_, _) when s2exp_syneq (s2e10, s2e20) => ()
   | (_, _) => begin
       err := err + 1
     end // end of [_, _]
+  val () = if err > err0 then
+    the_staerrlst_add (STAERR_s2exp_tyleq (loc0, s2e10, s2e20))
+  // end of [val]
+in
+  // nothing
 end // end of [s2exp_tyleq_solve_err]
 
 implement s2explst_tyleq_solve_err (loc0, s2es10, s2es20, err) = let
@@ -992,13 +1054,8 @@ implement s2exp_tyleq_solve (loc0, s2e10, s2e20) = let
   var err: int = 0
   val () = s2exp_tyleq_solve_err (loc0, s2e10, s2e20, err)
 in
-  if err > 0 then begin
-    prerr_loc_error3 (loc0);
-    $Deb.debug_prerrf (": %s: s2exp_tyleq_solve", @(THISFILENAME));
-    prerr ": type mismatch:\n";
-    prerr "The needed type is: "; pprerr_s2exp (s2exp_whnf s2e20); prerr_newline ();
-    prerr "The actual type is: "; pprerr_s2exp (s2exp_whnf s2e10); prerr_newline ();
-    $Err.abort {void} ()
+  if err > 0 then let
+    val () = prerr_the_staerrlst () in $Err.abort {void} ()
   end // end of [if]
 end (* end of [s2exp_tyleq_solve] *)
 
