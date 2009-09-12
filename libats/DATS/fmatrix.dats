@@ -238,7 +238,7 @@ implement{a} fmatrix_ptr_copy (A, B, m, n) =
 implement fmatrix_ptr_foreach_fun_tsz__main
   {a} {v} {vt} {ord} {m,n}
   (pf | M, f, ord, m, n, tsz, env) = if m > 0 then let
-  prval (pf_mat, fpf) = GEMAT_v_of_fmatrix_v {a} (view@ M)
+  prval (pf_mat, fpf) = GEMAT_v_of_fmatrix_v {a,a} (view@ M)
   val () = GEMAT_ptr_foreach_fun_tsz__main
     (pf | M, f, ORDERcol, ord, m, n, m, tsz, env)
   prval () = view@ M := fpf (pf_mat)
@@ -283,7 +283,7 @@ end // end of [fmatrix_ptr_foreach_clo_tsz]
 implement fmatrix_ptr_iforeach_fun_tsz__main
   {a} {v} {vt} {ord} {m,n}
   (pf | M, f, ord, m, n, tsz, env) = if m > 0 then let
-  prval (pf_mat, fpf) = GEMAT_v_of_fmatrix_v {a} (view@ M)
+  prval (pf_mat, fpf) = GEMAT_v_of_fmatrix_v {a,a} (view@ M)
   val () = GEMAT_ptr_iforeach_fun_tsz__main
     (pf | M, f, ORDERcol, ord, m, n, m, tsz, env)
   prval () = view@ M := fpf (pf_mat)
@@ -296,7 +296,7 @@ end (* end of [fmatrix_ptr_iforeach_fun_tsz__main] *)
 implement fmatrix_ptr_iforeach_fun_tsz
   {a} {v} {ord} {m,n}
   (pf | M, f, ord, m, n, tsz) = if m > 0 then let
-  prval (pf_mat, fpf) = GEMAT_v_of_fmatrix_v {a} (view@ M)
+  prval (pf_mat, fpf) = GEMAT_v_of_fmatrix_v {a,a} (view@ M)
   val () = GEMAT_ptr_iforeach_fun_tsz
     (pf | M, f, ORDERcol, ord, m, n, m, tsz)
   prval () = view@ M := fpf (pf_mat)
@@ -309,7 +309,7 @@ end (* end of [fmatrix_ptr_iforeach_fun_tsz] *)
 implement fmatrix_ptr_iforeach_clo_tsz
   {a} {v} {ord} {m,n}
   (pf | M, f, ord, m, n, tsz) = if m > 0 then let
-  prval (pf_mat, fpf) = GEMAT_v_of_fmatrix_v {a} (view@ M)
+  prval (pf_mat, fpf) = GEMAT_v_of_fmatrix_v {a,a} (view@ M)
   val () = GEMAT_ptr_iforeach_clo_tsz
     (pf | M, f, ORDERcol, ord, m, n, m, tsz)
   prval () = view@ M := fpf (pf_mat)

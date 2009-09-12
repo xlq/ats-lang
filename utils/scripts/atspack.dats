@@ -839,6 +839,9 @@ implement atspack_source_code () = let
 //
   val () = cp "configure.ac"
   val () = cpx "configure"  // in case [autoconf] is not available ...
+(*
+  val () = cpx "install-sh"; val () = cpx "missing"
+*)
 //
   val () = cp ".libfiles"
   val () = cp ".bootstrap_header"

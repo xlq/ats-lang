@@ -219,14 +219,17 @@ fun{a:t@ype} fmatrix_ptr_copy {m,n:nat} (
 (* ****** ****** *)
 
 prfun GEVEC_v_of_fmatrix_v
-  {a:viewt@ype} {m,n:nat} {mn:int} {l:addr} (
-    pf_mul: MUL (m, n, mn), pf_mat: fmatrix_v (a, m, n, l)
+  {a1,a2:viewt@ype | sizeof a1 == sizeof a2}
+  {m,n:nat} {mn:int} {l:addr} (
+    pf_mul: MUL (m, n, mn), pf_mat: fmatrix_v (a1, m, n, l)
   ) :<> (
-    GEVEC_v (a, mn, 1, l)
-  , GEVEC_v (a, mn, 1, l) -<prf> fmatrix_v (a, m, n, l)
+    GEVEC_v (a1, mn, 1, l)
+  , GEVEC_v (a2, mn, 1, l) -<prf> fmatrix_v (a2, m, n, l)
   )
 // end of [GEVEC_v_of_fmatrix_v]
 
+(*
+// this kind of destroys the genericity of GEVEC
 prfun fmatrix_v_of_GEVEC_v_of
   {a:viewt@ype} {m,n:nat} {mn:int} {l:addr} (
     pf_mul: MUL (m, n, mn), pf_mat: GEVEC_v (a, mn, 1, l)
@@ -235,18 +238,22 @@ prfun fmatrix_v_of_GEVEC_v_of
   , fmatrix_v (a, m, n, l) -<prf> GEVEC_v (a, mn, 1, l)
   )
 // end of [GEVEC_v_of_fmatrix_v]
+*)
 
 (* ****** ****** *)
 
 prfun GEMAT_v_of_fmatrix_v
-  {a:viewt@ype} {m,n:nat} {l:addr} (
-    pf_mat: fmatrix_v (a, m, n, l)
+  {a1,a2:viewt@ype | sizeof a1 == sizeof a2}
+  {m,n:nat} {l:addr} (
+    pf_mat: fmatrix_v (a1, m, n, l)
   ) :<> (
-    GEMAT_v (a, m, n, col, m, l)
-  , GEMAT_v (a, m, n, col, m, l) -<prf> fmatrix_v (a, m, n, l)
+    GEMAT_v (a1, m, n, col, m, l)
+  , GEMAT_v (a2, m, n, col, m, l) -<prf> fmatrix_v (a2, m, n, l)
   )
 // end of [GEMAT_v_of_fmatrix_v]
 
+(*
+// this kind of destroys the genericity of GEMAT
 prfun fmatrix_v_of_GEMAT_v
   {a:viewt@ype} {m,n:nat} {l:addr} (
     pf_mat: GEMAT_v (a, m, n, col, m, l)
@@ -255,7 +262,7 @@ prfun fmatrix_v_of_GEMAT_v
   , fmatrix_v (a, m, n, l) -<prf> GEMAT_v (a, m, n, col, m, l)
   )
 // end of [GEMAT_v_of_fmatrix_v]
-
+*)
 
 (* ****** ****** *)
 
