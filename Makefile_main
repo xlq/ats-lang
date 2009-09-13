@@ -129,6 +129,14 @@ libfiles: .libfiles_local
 	# for libats_smlbas
 	"$(ATSHOME)"/bin/atslib $(ATS_TERMINATION_CHECK) -O2 --libats_smlbas
 
+lib32files: .libfiles_local
+	# for libats
+	"$(ATSHOME)"/bin/atslib $(ATS_TERMINATION_CHECK) -m32 -O2 --libats
+	# for libats_lex
+	"$(ATSHOME)"/bin/atslib $(ATS_TERMINATION_CHECK) -m32 -O2 --libats_lex
+	# for libats_smlbas
+	"$(ATSHOME)"/bin/atslib $(ATS_TERMINATION_CHECK) -m32 -O2 --libats_smlbas
+
 lib64files: .libfiles_local
 	# for libats
 	"$(ATSHOME)"/bin/atslib $(ATS_TERMINATION_CHECK) -m64 -O2 --libats

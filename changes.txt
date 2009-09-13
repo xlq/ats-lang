@@ -1,5 +1,17 @@
 ########################################################################
 
+ats-lang-anairiats-0.1.6:
+
+1. Support for OOP is under development. So far, typechecking is done.
+
+2. Type error message reporting is made more informative. This is ongoing.
+
+3. Adding $ATSHOME/ccomp/lib64 for storing libfiles for 64-bit machines.
+
+4. Makefiles are re-designed by Likai Liu.
+
+########################################################################
+
 ats-lang-anariats-0.1.5:
 
 1. A character whose ascii code is greater than 127 is treated as the null
