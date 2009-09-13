@@ -409,23 +409,25 @@ end // end of [bootscrap_dir_copy]
 
 (* ****** ****** *)
 
-fn ccomp_lib_dir_copy (knd: packnd): void = let
+fn ccomp_lib_dir_copy
+  (wsz: size_t, knd: packnd): void = let
+  val wsz = size1_of_size (wsz) // no-op casting
   val () = mkdir_exn (DSTROOTccomp_lib, DIRmode)
-  val () = if (packnd_is_precompiled knd) then fcopy_exn
+  val () = mkdir_exn (DSTROOTccomp_lib64, DIRmode)
+  val () = if
+    (packnd_is_precompiled knd) then let
+    val () = if (wsz = 4(*bytes*)) then fcopy_exn
       (SRCROOTccomp_lib + "libats.a", DSTROOTccomp_lib + "libats.a")
-  // end of [val]
+    // end of [val]
+    val () = if (wsz = 8(*bytes*)) then fcopy_exn
+      (SRCROOTccomp_lib64 + "libats.a", DSTROOTccomp_lib64 + "libats.a")
+    // end of [val]
+  in
+    // nothing
+  end // end of [val]
   val () = mkdir_exn (DSTROOTccomp_lib_output, DIRmode)
   val () = fcopy_exn // keeping the directory from being removed
      (SRCROOTccomp_lib_output + ".keeper", DSTROOTccomp_lib_output + ".keeper")
-  // end of [val]
-in
-  // empty
-end // end of [ccomp_lib_dir_copy]
-
-fn ccomp_lib64_dir_copy (knd: packnd): void = let
-  val () = mkdir_exn (DSTROOTccomp_lib64, DIRmode)
-  val () = if (packnd_is_precompiled knd) then fcopy_exn
-      (SRCROOTccomp_lib64 + "libats.a", DSTROOTccomp_lib64 + "libats.a")
   // end of [val]
   val () = mkdir_exn (DSTROOTccomp_lib64_output, DIRmode)
   val () = fcopy_exn // keeping the directory from being removed
@@ -433,7 +435,7 @@ fn ccomp_lib64_dir_copy (knd: packnd): void = let
   // end of [val]
 in
   // empty
-end // end of [ccomp_lib64_dir_copy]
+end // end of [ccomp_lib_dir_copy]
 
 (* ****** ****** *)
 
@@ -504,13 +506,7 @@ end // end of [ccomp_runtime_dir_copy]
 fn ccomp_dir_copy (knd: packnd): void = let
   val () = mkdir_exn (DSTROOTccomp, DIRmode)
   val () = let
-    val wsz = wordsize_target_get ()
-    val wsz = size1_of_size (wsz)
-  in
-    case+ 0 of
-    | _ when wsz = 4(*bytes*) => ccomp_lib_dir_copy (knd)
-    | _ when wsz = 8(*bytes*) => ccomp_lib64_dir_copy (knd)
-    | _ => ccomp_lib_dir_copy (knd)
+    val wsz = wordsize_target_get () in ccomp_lib_dir_copy (wsz, knd)
   end // end of [val]
   val () = ccomp_runtime_dir_copy (knd)
 in
