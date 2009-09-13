@@ -89,6 +89,16 @@ extern fun flag_is_IATSdir (s: string): bool = "flag_is_IATSdir"
 
 (* ****** ****** *)
 
+fn flag_is_m32 (flag: string): bool =
+  case+ flag of | "-m32" => true | _ => false
+// end of [flag_is_m32]
+
+fn flag_is_m64 (flag: string): bool =
+  case+ flag of | "-m64" => true | _ => false
+// end of [flag_is_m64]
+
+(* ****** ****** *)
+
 fn flag_is_compile_only (flag: string):<fun0> Bool =
   case+ flag of "-cc" => true | "--compile" => true | _ => false
 
@@ -251,7 +261,7 @@ fn* aux {i:nat | i <= n} ( // .<n-i,0>.
     val param_c = strlst_reverse param_c
     val ats_prelude_c = runtime_global + "ats_prelude.c"
     val param_c = ats_prelude_c :: param_c
-    val _Latslib_global = "-L" + atslib_global
+    val _Latslib_global = "-L" + atslib_global ()
     val param_c = _Latslib_global :: param_c
     val _Iruntime_global = "-I" + runtime_global
     val param_c = _Iruntime_global :: param_c
@@ -283,6 +293,16 @@ and aux_flag {i:nat | i < n} // .<n-i-1,1>.
     end
   | _ when flag_is_version flag => let
       val () = atscc_version ()
+    in
+      aux (pf | param_ats, flag :: param_c, i+1)
+    end
+  | _ when flag_is_m32 flag => let
+      val () = wordsize_target_set (4(*bytes*))
+    in
+      aux (pf | param_ats, flag :: param_c, i+1)
+    end
+  | _ when flag_is_m64 flag => let
+      val () = wordsize_target_set (8(*bytes*))
     in
       aux (pf | param_ats, flag :: param_c, i+1)
     end

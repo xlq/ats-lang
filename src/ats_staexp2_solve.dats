@@ -94,6 +94,7 @@ fn prerr_loc_error3 (loc: loc_t): void =
 
 datatype staerr =
   | STAERR_s2exp_tyleq of (loc_t, s2exp, s2exp)
+  | STAERR_s2exp_equal of (loc_t, s2exp, s2exp)
   | STAERR_funclo_equal of (loc_t, funclo, funclo)
 // end of [datatype]
 
@@ -138,17 +139,29 @@ end // end of ...
 fn prerr_staerr_s2exp_tyleq
   (loc: loc_t, s2e1: s2exp, s2e2: s2exp): void = begin
   prerr_loc_error3 (loc);
-  prerr ": type mismatch:\n";
-  prerr "The needed type is: "; pprerr_s2exp (s2exp_whnf s2e2); prerr_newline ();
-  prerr "The actual type is: "; pprerr_s2exp (s2exp_whnf s2e1); prerr_newline ();
-end // end of [prerr_Staerr_s2exp_tyleq]
+  $Deb.debug_prerrf (": %s: s2exp_tyleq_solve", @(THISFILENAME));
+  prerr ": mismatch of static term (tyleq):\n";
+  prerr "The needed term is: "; pprerr_s2exp s2e2; prerr_newline ();
+  prerr "The actual term is: "; pprerr_s2exp s2e1; prerr_newline ();
+end // end of [prerr_staerr_s2exp_tyleq]
+
+fn prerr_staerr_s2exp_equal
+  (loc: loc_t, s2e1: s2exp, s2e2: s2exp): void = begin
+  prerr_loc_error3 (loc);
+  $Deb.debug_prerrf (": %s: s2exp_equal_solve", @(THISFILENAME));
+  prerr ": mismatch of static terms (equal):\n";
+  prerr "The needed term is: "; pprerr_s2exp s2e2; prerr_newline ();
+  prerr "The actual term is: "; pprerr_s2exp s2e1; prerr_newline ();
+end // end of [prerr_staerr_s2exp_equal]
 
 fn prerr_the_staerrlst () = let
   fun loop (xs: staerrlst_vt): void = case+ xs of
     | ~list_vt_cons (x, xs) => let
         val () = case+ x of
-          | STAERR_funclo_equal (loc, fc1, fc2) => prerr_staerr_funclo_equal (loc, fc1, fc2)
-          | STAERR_s2exp_tyleq (loc, s2e1, s2e2) => prerr_staerr_s2exp_tyleq (loc, s2e1, s2e2)
+        | STAERR_funclo_equal (loc, fc1, fc2) => prerr_staerr_funclo_equal (loc, fc1, fc2)
+        | STAERR_s2exp_equal (loc, s2e1, s2e2) => prerr_staerr_s2exp_equal (loc, s2e1, s2e2)
+        | STAERR_s2exp_tyleq (loc, s2e1, s2e2) => prerr_staerr_s2exp_tyleq (loc, s2e1, s2e2)
+        // end of [case] // end of [val]
       in
         loop (xs)
       end // end of [list_vt_cons]
@@ -249,25 +262,32 @@ end // end of [s2exp_out_void_solve_at]
 
 (* ****** ****** *)
 
-fn s2exp_equal_solve_abscon_err
-  (loc0: loc_t, s2e1: s2exp, s2e2: s2exp, err: &int): void = let
-  fun aux_solve
-    (loc0: loc_t, s2e1: s2exp, s2e2: s2exp, err: &int)
-    : void = begin
+fn s2exp_equal_solve_abscon_err (
+    loc0: loc_t
+  , s2e1: s2exp, s2e2: s2exp, err: &int
+  ) : void = let
+  fun aux_solve ( // nontailrec
+      loc0: loc_t
+    , s2e1: s2exp, s2e2: s2exp, err: &int
+    ) : void = begin
     case+ (s2e1.s2exp_node, s2e2.s2exp_node) of
-    | (S2Eapp (s2e11, s2es12), S2Eapp (s2e21, s2es22)) => begin
-        aux_solve (loc0, s2e11, s2e21, err);
-        s2explst_equal_solve_err (loc0, s2es12, s2es22, err)
+    | (S2Eapp (s2e11, s2es12), S2Eapp (s2e21, s2es22)) => let
+        val () = aux_solve (loc0, s2e11, s2e21, err)
+        val () = s2explst_equal_solve_err (loc0, s2es12, s2es22, err)
+      in
+        // nothing
       end // end of [S2Eapp, S2Eapp]
     | (_, _) => ()
   end // end of [aux_solve]
 
-  fun aux_check (s2e1: s2exp, s2e2: s2exp): bool =
+  fun aux_check ( // tailrec
+      s2e1: s2exp, s2e2: s2exp
+    ) : bool = begin
     case+ (s2e1.s2exp_node, s2e2.s2exp_node) of
     | (S2Ecst s2c1, S2Ecst s2c2) => eq_s2cst_s2cst (s2c1, s2c2)
     | (S2Eapp (s2e1, _), S2Eapp (s2e2, _)) => aux_check (s2e1, s2e2)
     | (_, _ ) => false
-  // end of [aux_check]
+  end // end of [aux_check]
 
   val coneq = aux_check (s2e1, s2e2)
 in
@@ -276,8 +296,7 @@ end // end of [s2exp_equal_solve_abscon_err]
 
 fn s2exp_equal_solve_appvar_err (
     loc0: loc_t
-  , s2e1: s2exp, s2e2: s2exp
-  , err: &int
+  , s2e1: s2exp, s2e2: s2exp, err: &int
   ) : void = aux (loc0, s2e1, s2e2, err) where {
   fun aux
     (loc0: loc_t, s2e1: s2exp, s2e2: s2exp, err: &int)
@@ -297,17 +316,13 @@ implement s2exp_equal_solve (loc0, s2e10, s2e20) = let
   var err: int = 0
   val () = s2exp_equal_solve_err (loc0, s2e10, s2e20, err)
 in
-  if err > 0 then begin
-    prerr_loc_error3 (loc0);
-    $Deb.debug_prerrf (": %s: s2exp_equal_solve", @(THISFILENAME));
-    prerr ": mismatch of static terms:\n";
-    prerr "The needed term is: "; pprerr_s2exp (s2exp_whnf s2e20); prerr_newline ();
-    prerr "The actual term is: "; pprerr_s2exp (s2exp_whnf s2e10); prerr_newline ();
-    $Err.abort {void} ()
+  if err > 0 then let
+    val () = prerr_the_staerrlst () in $Err.abort {void} ()
   end // end of [if]
-end // end of [s2exp_equal_solve]
+end (* end of [s2exp_equal_solve] *)
 
 implement s2exp_equal_solve_err (loc0, s2e10, s2e20, err) = let
+  val err0 = err
   val s2e10 = s2exp_whnf s2e10 and s2e20 = s2exp_whnf s2e20
 (*
   val () = begin
@@ -316,8 +331,8 @@ implement s2exp_equal_solve_err (loc0, s2e10, s2e20, err) = let
     prerr "s2exp_equal_solve_err: err = "; prerr err; prerr_newline ();
   end // end of [val]
 *)
-in
-  case+ (s2e10.s2exp_node, s2e20.s2exp_node) of
+//
+  val () = case+ (s2e10.s2exp_node, s2e20.s2exp_node) of
   | (S2EVar s2V1, _) => begin
       s2exp_equal_solve_Var_err (loc0, s2V1, s2e10, s2e20, err)
     end // end of [S2EVar, _]
@@ -395,10 +410,19 @@ in
     end // end of [_, _ when ...]
   | (_, _) when s2exp_syneq (s2e10, s2e20) => ()
   | (_, _) => trans3_env_add_eqeq (loc0, s2e10, s2e20)
+// end of [case]  // end of [val]
+  val () = if err > err0 then
+    the_staerrlst_add (STAERR_s2exp_equal (loc0, s2e10, s2e20))
+  // end of [val]
+in
+  // nothing
 end // end of [s2exp_equal_solve_err]
 
-implement s2explst_equal_solve_err (loc0, s2es10, s2es20, err) = let
-  fun aux (s2es1: s2explst, s2es2: s2explst, err: &int):<cloref1> void =
+implement s2explst_equal_solve_err
+  (loc0, s2es10, s2es20, err) = let
+  fun aux ( // tail-recursive
+      s2es1: s2explst, s2es2: s2explst, err: &int
+    ) :<cloref1> void =
     case+ (s2es1, s2es2) of
     | (s2e1 :: s2es1, s2e2 :: s2es2) => begin
         s2exp_equal_solve_err (loc0, s2e1, s2e2, err);
@@ -503,6 +527,7 @@ implement
     prerr "s2exp_tyleq_solve_err: err = "; prerr err; prerr_newline ();
   end // end of [val]
 *)
+//
   val () = case+ (s2e10.s2exp_node, s2e20.s2exp_node) of
   | (S2EVar s2V1, S2EVar s2V2) when eq_s2Var_s2Var (s2V1, s2V2) => ()
   | (S2EVar s2V1, _) => begin
@@ -740,6 +765,7 @@ implement
   | (_, _) => begin
       err := err + 1
     end // end of [_, _]
+// end of [case]  // end of [val]
   val () = if err > err0 then
     the_staerrlst_add (STAERR_s2exp_tyleq (loc0, s2e10, s2e20))
   // end of [val]

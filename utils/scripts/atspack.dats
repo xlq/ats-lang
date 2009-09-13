@@ -60,8 +60,12 @@ staload "libc/SATS/stdlib.sats"
 
 staload "libc/SATS/dirent.sats"
 
-staload "libc/sys/SATS/stat.sats"
-staload "libc/sys/SATS/types.sats"
+staload STAT = "libc/sys/SATS/stat.sats"
+macdef chmod_exn = $STAT.chmod_exn
+macdef mkdir_exn = $STAT.mkdir_exn
+
+staload TYPES = "libc/sys/SATS/types.sats"
+typedef mode_t = $TYPES.mode_t
 
 (* ****** ****** *)
 
@@ -189,7 +193,7 @@ end // end of [fcopy_exn]
 (* ****** ****** *)
 
 val DIRmode: mode_t = begin
-  S_IRWXU // lor S_IRGRP lor S_IXGRP lor S_IROTH lor S_IXOTH
+  $STAT.S_IRWXU // lor S_IRGRP lor S_IXGRP lor S_IROTH lor S_IXOTH
 end // end of [DIRmode]
 
 (* ****** ****** *)
@@ -227,9 +231,13 @@ val DSTROOTccomp = DSTROOT + "ccomp/"
 
 val SRCROOTccomp_lib = SRCROOTccomp + "lib/"
 val DSTROOTccomp_lib = DSTROOTccomp + "lib/"
-
 val SRCROOTccomp_lib_output = SRCROOTccomp_lib + "output/"
 val DSTROOTccomp_lib_output = DSTROOTccomp_lib + "output/"
+
+val SRCROOTccomp_lib64 = SRCROOTccomp + "lib64/"
+val DSTROOTccomp_lib64 = DSTROOTccomp + "lib64/"
+val SRCROOTccomp_lib64_output = SRCROOTccomp_lib64 + "output/"
+val DSTROOTccomp_lib64_output = DSTROOTccomp_lib64 + "output/"
 
 val SRCROOTccomp_runtime = SRCROOTccomp + "runtime/"
 val DSTROOTccomp_runtime = DSTROOTccomp + "runtime/"
@@ -245,6 +253,23 @@ val DSTROOTccomp_runtime_GCATS = DSTROOTccomp_runtime + "GCATS/"
 (*
 val SRCROOTsrc = SRCROOT + "src/"; val DSTROOTsrc = DSTROOT + "src/"
 *)
+
+(* ****** ****** *)
+
+val the_wordsize = sizeof<ptr> : size_t
+
+var the_wordsize_target: size_t = the_wordsize
+val (pfbox_the_wordsize_target | ()) = begin
+  vbox_make_view_ptr {size_t} (view@ the_wordsize_target | &the_wordsize_target)
+end // end of [val]
+
+fn wordsize_target_get (): size_t = let
+  prval vbox pf = pfbox_the_wordsize_target in the_wordsize_target
+end // end of [wordsize_target_get]
+
+fn wordsize_target_set (sz: size_t): void = let
+  prval vbox pf = pfbox_the_wordsize_target in the_wordsize_target := sz
+end // end of [wordsize_target_get]
 
 (* ****** ****** *)
 
@@ -273,7 +298,7 @@ fn bin_dir_copy (knd: packnd): void = let
     val src_name = SRCROOTbin + ,(name)
     val dst_name = DSTROOTbin + ,(name)
     val () = fcopy_exn (src_name, dst_name)
-    val () = chmod_exn (dst_name, S_IRWXU)
+    val () = chmod_exn (dst_name, $STAT.S_IRWXU)
   in
     // empty
   end // end of [cpx]
@@ -386,16 +411,29 @@ end // end of [bootscrap_dir_copy]
 
 fn ccomp_lib_dir_copy (knd: packnd): void = let
   val () = mkdir_exn (DSTROOTccomp_lib, DIRmode)
-  val () = begin
-    if (packnd_is_precompiled knd) then fcopy_exn
+  val () = if (packnd_is_precompiled knd) then fcopy_exn
       (SRCROOTccomp_lib + "libats.a", DSTROOTccomp_lib + "libats.a")
-  end // end of [val]
+  // end of [val]
   val () = mkdir_exn (DSTROOTccomp_lib_output, DIRmode)
   val () = fcopy_exn // keeping the directory from being removed
      (SRCROOTccomp_lib_output + ".keeper", DSTROOTccomp_lib_output + ".keeper")
+  // end of [val]
 in
   // empty
 end // end of [ccomp_lib_dir_copy]
+
+fn ccomp_lib64_dir_copy (knd: packnd): void = let
+  val () = mkdir_exn (DSTROOTccomp_lib64, DIRmode)
+  val () = if (packnd_is_precompiled knd) then fcopy_exn
+      (SRCROOTccomp_lib64 + "libats.a", DSTROOTccomp_lib64 + "libats.a")
+  // end of [val]
+  val () = mkdir_exn (DSTROOTccomp_lib64_output, DIRmode)
+  val () = fcopy_exn // keeping the directory from being removed
+     (SRCROOTccomp_lib64_output + ".keeper", DSTROOTccomp_lib64_output + ".keeper")
+  // end of [val]
+in
+  // empty
+end // end of [ccomp_lib64_dir_copy]
 
 (* ****** ****** *)
 
@@ -465,7 +503,15 @@ end // end of [ccomp_runtime_dir_copy]
 
 fn ccomp_dir_copy (knd: packnd): void = let
   val () = mkdir_exn (DSTROOTccomp, DIRmode)
-  val () = ccomp_lib_dir_copy (knd)
+  val () = let
+    val wsz = wordsize_target_get ()
+    val wsz = size1_of_size (wsz)
+  in
+    case+ 0 of
+    | _ when wsz = 4(*bytes*) => ccomp_lib_dir_copy (knd)
+    | _ when wsz = 8(*bytes*) => ccomp_lib64_dir_copy (knd)
+    | _ => ccomp_lib_dir_copy (knd)
+  end // end of [val]
   val () = ccomp_runtime_dir_copy (knd)
 in
   // empty
@@ -820,7 +866,7 @@ implement atspack_source_code () = let
     val src_name = SRCROOT + ,(name)
     val dst_name = DSTROOT + ,(name)
     val () = fcopy_exn (src_name, dst_name)
-    val () = chmod_exn (dst_name, S_IRWXU)
+    val () = chmod_exn (dst_name, $STAT.S_IRWXU)
   in
     // empty
   end // end of [cpx]
@@ -895,28 +941,44 @@ end // end of [atspack_precompiled]
 
 (* ****** ****** *)
 
+fn atspack_help
+  (cmd: string): void = () where {
+  val () = printf ("%s [flag] [kind]\n", @(cmd))
+  val () = printf ("  where flag is -m32 or -m64, and [kind] is --source or --precompiled.\n", @())
+} // end of [atspack_help]
+
+(* ****** ****** *)
+
 implement main (argc, argv) = let
-  var knd: packnd = PACKNDsource; val () = begin case+ argc of
-  | _ when argc >= 2 => let
-      val argv1 = argv.[1] in case+ argv1 of
-      | _ when (argv1 = "--precompiled") => knd := PACKNDprecompiled ()
-      | _ when (argv1 = "--source") => ()
-      | _ => let
-          val cmd = argv.[0]
-        in
-          prerr "["; prerr argv.[0]; prerr "]";
-          prerr ": Unrecognized flag: "; prerr argv1;
-          prerr_newline ();
-          exit {void} (1)
-        end // end of [_]
-    end // end of [argc >= 2]
-  | _ => ()
-  end // end of [val]
+  fun loop {n,i:nat | i <= n} .<n-i>. (
+      argc: int n, argv: &(@[string][n]), i: int i, cnt: &int
+    ) : void =
+    if i < argc then let
+      val x = argv.[i]
+      val () = case+ 0 of
+        | _ when x = "--source" => (
+            cnt := cnt+1; atspack_source_code ()
+          )
+        | _ when x = "--precompiled" => (
+            cnt := cnt+1; atspack_precompiled ()
+          )
+        | _ when x = "-m32" => wordsize_target_set (4(*bytes*))
+        | _ when x = "-m64" => wordsize_target_set (8(*bytes*))
+        | _ when x = "--help" => atspack_help (argv.[0])
+        | _ => let
+            val () = prerrf ("[%s]: unrecognized flag: %s\n", @(argv.[0], x))
+          in
+            // nothing
+          end // end of [_]
+     in
+       loop (argc, argv, i+1, cnt)
+     end
+  // end of [loop]
+  var cnt: int = 0
+  val () = loop (argc, argv, 1, cnt)
+  val () = if cnt = 0 then atspack_help (argv.[0])
 in
-  case+ 0 of
-  | _ when (packnd_is_source knd) => atspack_source_code ()
-  | _ when (packnd_is_precompiled knd) => atspack_precompiled ()
-  | _ => ()
+  // nothing
 end // end of [main]
 
 (* ****** ****** *)

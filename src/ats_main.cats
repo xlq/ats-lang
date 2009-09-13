@@ -139,6 +139,9 @@ char *ats_main_ATSHOMERELOC = NULL ; // no need for marking as a root
 ats_void_type
 ats_main_ATSHOMERELOC_set () {
   ats_main_ATSHOMERELOC = getenv ("ATSHOMERELOC") ; // this value cannot be GCed
+/*
+  fprintf (stderr, "ats_main_ATSHOMERELOC_set: ATSHOMERELOC = %s\n", ats_main_ATSHOMERELOC) ;
+*/
   return ;
 }
 

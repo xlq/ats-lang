@@ -124,15 +124,18 @@ ATS_TERMINATION_CHECK=
 libfiles: .libfiles_local
 	# for libats
 	"$(ATSHOME)"/bin/atslib $(ATS_TERMINATION_CHECK) -O2 --libats
-	$(RANLIB) "$(ATSHOME)"/ccomp/lib/libats.a
-
 	# for libats_lex
 	"$(ATSHOME)"/bin/atslib $(ATS_TERMINATION_CHECK) -O2 --libats_lex
-	$(RANLIB) "$(ATSHOME)"/ccomp/lib/libats_lex.a
-
 	# for libats_smlbas
 	"$(ATSHOME)"/bin/atslib $(ATS_TERMINATION_CHECK) -O2 --libats_smlbas
-	$(RANLIB) "$(ATSHOME)"/ccomp/lib/libats_smlbas.a
+
+lib64files: .libfiles_local
+	# for libats
+	"$(ATSHOME)"/bin/atslib $(ATS_TERMINATION_CHECK) -m64 -O2 --libats
+	# for libats_lex
+	"$(ATSHOME)"/bin/atslib $(ATS_TERMINATION_CHECK) -m64 -O2 --libats_lex
+	# for libats_smlbas
+	"$(ATSHOME)"/bin/atslib $(ATS_TERMINATION_CHECK) -m64 -O2 --libats_smlbas
 
 ###### a lexer for ATS ######
 
@@ -182,7 +185,12 @@ cleanall:: clean
 	rm -f bin/atsopt bin/atscc bin/atslib bin/atslex bin/atspack
 	rm -f ccomp/lib/libats.a
 	rm -f ccomp/lib/libats_lex.a
+	rm -f ccomp/lib/libats_smlbas.a
 	rm -f ccomp/lib/output/*
+	rm -f ccomp/lib64/libats.a
+	rm -f ccomp/lib64/libats_lex.a
+	rm -f ccomp/lib64/libats_smlbas.a
+	rm -f ccomp/lib64/output/*
 	cd ccomp/runtime/GCATS; $(MAKE) cleanall
 	find . -name .svn -prune -o -name \*~ -exec rm \{} \;
 
@@ -215,6 +223,8 @@ tar:: cleanall
 	cp -r ccomp/runtime/GCATS/BUGS.txt ATS/ccomp/runtime/GCATS
 	mkdir ATS/ccomp/lib
 	mkdir ATS/ccomp/lib/output
+	mkdir ATS/ccomp/lib64
+	mkdir ATS/ccomp/lib64/output
 	cp -r prelude libc libats ATS
 	cp -r utils ATS
 	cp -r third_party ATS

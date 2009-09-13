@@ -112,6 +112,7 @@ SOURCES := \
   ats_staexp2_svVar.dats \
   ats_staexp2_dcon.dats \
   ats_staexp2_util1.dats ats_staexp2_util2.dats \
+  ats_staexp2_pprint.sats ats_staexp2_pprint.dats \
   ats_dynexp2.sats \
   ats_dynexp2.dats \
   ats_dynexp2_dcst.dats \

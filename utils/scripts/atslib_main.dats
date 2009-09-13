@@ -90,10 +90,20 @@ implement main {n} (argc, argv) = let
         | "--libats" => libats_make (param_rev)
         | "--libats_smlbas" => libats_smlbas_make (param_rev)
         | "--libats_lex" => libats_lex_make (param_rev)
+        | "-m32" => let
+            val () = wordsize_target_set (4(*bytes*)) // 32-bit target machine
+          in
+            param_rev := STRLSTcons (arg, param_rev)
+          end // end of [m64]
+        | "-m64" => let
+            val () = wordsize_target_set (8(*bytes*)) // 64-bit target machine
+          in
+            param_rev := STRLSTcons (arg, param_rev)
+          end // end of [m64]
         | _ => if arg[0] = '-' then begin
             param_rev := STRLSTcons (arg, param_rev)
           end else begin
-            ccomp_gcc_ar_libfile (param_rev, arg, libats_global)
+            ccomp_gcc_ar_libfile (param_rev, arg, libats_global ())
           end // end of [_]
       end // end of [val]
     in

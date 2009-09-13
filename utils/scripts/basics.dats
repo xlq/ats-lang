@@ -65,18 +65,45 @@ end
 
 (* ****** ****** *)
 
+val the_wordsize: size_t = sizeof<ptr>
+
+var the_wordsize_target : size_t = the_wordsize
+val (pfbox_the_wordsize_target | ()) = begin
+  vbox_make_view_ptr {size_t} (view@ the_wordsize_target | &the_wordsize_target)
+end // end of [val]
+
+implement wordsize_target_get () = let
+  prval vbox pf = pfbox_the_wordsize_target in the_wordsize_target
+end // end of [wordsize_target_get]
+
+implement wordsize_target_set (sz) = let
+  prval vbox pf = pfbox_the_wordsize_target in the_wordsize_target := sz
+end // end of [wordsize_target_get]
+
+(* ****** ****** *)
+
 implement atsopt_local = "bin/atsopt"
 implement precats_local = "prelude/CATS/"
 implement runtime_local = "ccomp/runtime/"
 
-implement atslib_local = "ccomp/lib/"
+implement atslib_local () = let
+  val wsz = wordsize_target_get ()
+  val wsz = size1_of_size (wsz) // no-op casting
+in
+  case+ 0 of
+  | _ when (wsz = 4(*bytes*)) => "ccomp/lib/"
+  | _ when (wsz = 8(*bytes*)) => "ccomp/lib64/"
+  | _ => "ccomp/lib/"
+end // end of [atslib_local]
 
-implement atslib_output_local = "ccomp/lib/output/"
+implement atslib_output_local () = atslib_local () + "output/"
 
-implement libats_local = "ccomp/lib/libats.a"
+implement libats_local () = atslib_local () + "libats.a"
 
+(*
 // multithreaded
 implement libats_mt_local = "ccomp/lib/libats_mt.a"
+*)
 
 (* ****** ****** *)
 
@@ -183,10 +210,13 @@ implement atsopt_global = ATSHOME_dir_append atsopt_local
 implement precats_global = ATSHOME_dir_append precats_local
 implement runtime_global = ATSHOME_dir_append runtime_local
 
-implement atslib_global = ATSHOME_dir_append atslib_local
-implement atslib_output_global = ATSHOME_dir_append atslib_output_local
-implement libats_global = ATSHOME_dir_append libats_local
-implement libats_mt_global = ATSHOME_dir_append libats_mt_local
+implement atslib_global () = ATSHOME_dir_append (atslib_local ())
+implement atslib_output_global () = ATSHOME_dir_append (atslib_output_local ())
+
+implement libats_global () = ATSHOME_dir_append (libats_local ())
+(*
+implement libats_mt_global () = ATSHOME_dir_append (libats_mt_local ())
+*)
 
 (* ****** ****** *)
 

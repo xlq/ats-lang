@@ -96,29 +96,17 @@ fun S_ISSOCK (m: mode_t): bool = "atslib_S_ISSOCK"
 
 (* ****** ****** *)
 
-symintr chmod_err
-symintr chmod_exn
-
-fun chmod_string_err (path: string, mode: mode_t): int
+fun chmod_err (path: string, mode: mode_t): int
   = "atslib_chmod_err"
-fun chmod_string_exn (path: string, mode: mode_t): void
+fun chmod_exn (path: string, mode: mode_t): void
   = "atslib_chmod_exn"
-
-overload chmod_err with chmod_string_err
-overload chmod_exn with chmod_string_exn
 
 (* ****** ****** *)
 
-symintr mkdir_err
-symintr mkdir_exn
-
-fun mkdir_string_err (path: string, mode: mode_t): int
+fun mkdir_err (path: string, mode: mode_t): int
   = "atslib_mkdir_err"
-fun mkdir_string_exn (path: string, mode: mode_t): void
+fun mkdir_exn (path: string, mode: mode_t): void
   = "atslib_mkdir_exn"
-
-overload mkdir_err with mkdir_string_err
-overload mkdir_exn with mkdir_string_exn
 
 (* ****** ****** *)
 

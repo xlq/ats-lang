@@ -38,6 +38,11 @@
 
 (* ****** ****** *)
 
+fun wordsize_target_get (): size_t
+fun wordsize_target_set (sz: size_t): void
+
+(* ****** ****** *)
+
 val ATSHOME_dir : String = "ATSHOME_dir"
 val ATSCCOMP_gcc : String = "ATSCCOMP_gcc"
 
@@ -50,17 +55,23 @@ and precats_global : String = "precats_global"
 val runtime_local : String = "runtime_local"
 and runtime_global : String = "runtime_global"
 
-val atslib_local : String = "atslib_local"
-and atslib_global : String = "atslib_global"
+(* ****** ****** *)
 
-val atslib_output_local : String = "atslib_output_local"
-and atslib_output_global : String = "atslib_output_global"
+fun atslib_local (): String = "atslib_local"
+fun atslib_output_local (): String = "atslib_output_local"
 
-val libats_local : String = "libats_local"
-and libats_global : String = "libats_global"
+fun atslib_global (): String = "atslib_global"
+fun atslib_output_global (): String = "atslib_output_global"
 
-val libats_mt_local : String = "libats_mt_local"
-and libats_mt_global : String = "libats_mt_global"
+(* ****** ****** *)
+
+fun libats_local (): String = "libats_local"
+fun libats_global (): String = "libats_global"
+
+(*
+fun libats_mt_local (): String = "libats_mt_local"
+fun libats_mt_global (): String = "libats_mt_global"
+*)
 
 (* ****** ****** *)
 
@@ -132,7 +143,7 @@ fun atscc_version (): void
 (* ****** ****** *)
 
 fun gcc_libfile_err (param: Strlst, infile: string, outfile: string): int
-fun ar_r_err (libfile: string, objfile: string): int
+fun ar_rs_err (libfile: string, objfile: string): int
 
 fun ccomp_gcc_ar_libfile (param: Strlst, infile: string, libfile: string): void
 

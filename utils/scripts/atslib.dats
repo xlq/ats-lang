@@ -59,13 +59,13 @@ end // end of [gcc_libfile_err]
 
 (* ****** ****** *)
 
-extern fun ar_r_exec (libfile: string, objfile: string): void
-  = "ar_r_exec"
+extern fun ar_rs_exec (libfile: string, objfile: string): void
+  = "ar_rs_exec"
 
 // archive with replacement
-implement ar_r_err (libfile, objfile) = begin
-  fork_exec_and_wait_cloptr_exn (lam () => ar_r_exec (libfile, objfile))
-end // end of [ar_r_err]
+implement ar_rs_err (libfile, objfile) = begin
+  fork_exec_and_wait_cloptr_exn (lam () => ar_rs_exec (libfile, objfile))
+end // end of [ar_rs_err]
 
 (* ****** ****** *)
 
@@ -101,7 +101,7 @@ implement ccomp_gcc_ar_libfile (param_rev, infile, libfile) = let
     else infile
   ) : string
   val outbase = string_trans (infull, char_identifize)
-  val outfile = atslib_output_global + outbase
+  val outfile = atslib_output_global () + outbase
   val outfile_c = outfile + ".c"
   val status = ccomp_file_to_file_err
     (flag_stadyn, STRLSTnil(*param_ats*), infile, outfile_c)
@@ -114,7 +114,7 @@ implement ccomp_gcc_ar_libfile (param_rev, infile, libfile) = let
   val () = if (status <> 0) then begin exit_prerrf {void}
     (status, "Exit: [ccomp_gcc_ar_libfile(%s)] failed: gcc\n", @(infile))
   end // end of [val]
-  val status = ar_r_err (libfile, outfile_o)
+  val status = ar_rs_err (libfile, outfile_o)
   val () = if (status <> 0) then begin exit_prerrf {void}
     (status, "Exit: [ccomp_gcc_ar_libfile(%s)] failed: ar\n", @(infile))
   end // end of [val]
@@ -156,8 +156,8 @@ end // end of [library_make_loop]
 implement libats_make (param_rev) = let
    val libfiles_local = ATSHOME_dir_append ".libfiles_local"
    val (pf_file | p_file) = fopen_exn (libfiles_local, file_mode_r)
+   val () = library_make_loop (param_rev, !p_file, ATSHOME_dir, libats_global ())
 in
-   library_make_loop (param_rev, !p_file, ATSHOME_dir, libats_global);
    fclose_exn (pf_file | p_file)
 end // end of [libats_make]
 
@@ -165,11 +165,10 @@ end // end of [libats_make]
 
 (* ****** ****** *)
 
-val libats_lex_local = "ccomp/lib/libats_lex.a"
-val libats_lex_global = ATSHOME_dir_append libats_lex_local
-
 implement libats_lex_make (param_rev) = let
   val dir = ATSHOME_dir_append "libats/lex/"
+  val libats_lex_local = atslib_local () + "libats_lex.a"
+  val libats_lex_global = ATSHOME_dir_append (libats_lex_local)
 in
   ccomp_gcc_ar_libfile (param_rev, dir + "lexing.sats", libats_lex_global) ;
   ccomp_gcc_ar_libfile (param_rev, dir + "lexing.dats", libats_lex_global) ;
@@ -178,12 +177,11 @@ end // end of [libats_lex_make]
 
 (* ****** ****** *)
 
-val libats_smlbas_local = "ccomp/lib/libats_smlbas.a"
-val libats_smlbas_global = ATSHOME_dir_append libats_smlbas_local
-
 implement libats_smlbas_make (param_rev) = () where {
    val smlbas_libfiles = ATSHOME_dir_append "libats/smlbas/.libfiles"
    val (pf_file | p_file) = fopen_exn (smlbas_libfiles, file_mode_r)
+   val libats_smlbas_local = atslib_local () + "libats_smlbas.a"
+   val libats_smlbas_global = ATSHOME_dir_append (libats_smlbas_local)
    val () = library_make_loop (param_rev, !p_file, ATSHOME_dir, libats_smlbas_global);
    val () = fclose_exn (pf_file | p_file)
 } // end of [libats_smlbas_make]
@@ -257,11 +255,11 @@ gcc_libfile_exec (
 }
 
 ats_void_type
-ar_r_exec (ats_string_type lib, ats_string_type output_o) {
+ar_rs_exec (ats_string_type lib, ats_string_type output_o) {
 // /*
-  fprintf (stderr, "ar -r %s %s\n", lib, output_o) ;
+  fprintf (stderr, "ar -rs %s %s\n", lib, output_o) ;
 // */
-  execlp("ar", "ar", "-r", lib, output_o, (char*)0) ;
+  execlp("ar", "ar", "-rs", lib, output_o, (char*)0) ;
   return ;
 }
 
