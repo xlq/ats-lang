@@ -98,9 +98,7 @@ bin/atscc bin/atslib:
 # [gcc -E] for preprocessing
 .libfiles_local: ; $(GCC) -E -P -x c .libfiles -o .libfiles_local
 libfiles: .libfiles_local
-	# for libats
 	"$(ATSHOME)"/bin/atslib $(ATS_TERMINATION_CHECK) -O2 --libats
-	# for libats_smlbas
 	"$(ATSHOME)"/bin/atslib $(ATS_TERMINATION_CHECK) -O2 --libats_smlbas
 
 ###### a lexer for ATS ######

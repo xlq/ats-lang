@@ -338,9 +338,7 @@ static inline
 ats_void_type
 atspre_fprint_uint8 (ats_ptr_type out, ats_uint8_type i) {
   int n = fprintf ((FILE*)out, "%hhu", i) ;
-  if (n < 0) {
-    ats_exit_errmsg (n, "Exit: [fprint_uint8] failed.\n") ;
-  }
+  if (n < 0) ats_exit_errmsg (n, "Exit: [fprint_uint8] failed.\n") ;
   return ;
 }
 
@@ -649,10 +647,8 @@ atspre_min_uint16_uint16 (ats_uint16_type i1, ats_uint16_type i2) {
 static inline
 ats_void_type
 atspre_fprint_uint16 (ats_ptr_type out, ats_uint16_type i) {
-  int n = fprintf ((FILE*)out, "%hhu", i) ;
-  if (n < 0) {
-    ats_exit_errmsg (n, "Exit: [fprint_uint16] failed.\n") ;
-  }
+  int n = fprintf ((FILE*)out, "%hu", i) ;
+  if (n < 0) ats_exit_errmsg (n, "Exit: [fprint_uint16] failed.\n") ;
   return ;
 }
 
@@ -968,10 +964,8 @@ atspre_min_uint32_uint32 (ats_uint32_type i1, ats_uint32_type i2) {
 static inline
 ats_void_type
 atspre_fprint_uint32 (ats_ptr_type out, ats_uint32_type i) {
-  int n = fprintf ((FILE*)out, "%hhu", i) ;
-  if (n < 0) {
-    ats_exit_errmsg (n, "Exit: [fprint_uint32] failed.\n") ;
-  }
+  int n = fprintf ((FILE*)out, "%lu", i) ;
+  if (n < 0) ats_exit_errmsg (n, "Exit: [fprint_uint32] failed.\n") ;
   return ;
 }
 
@@ -1283,10 +1277,8 @@ atspre_min_uint64_uint64 (ats_uint64_type i1, ats_uint64_type i2) {
 static inline
 ats_void_type
 atspre_fprint_uint64 (ats_ptr_type out, ats_uint64_type i) {
-  int n = fprintf ((FILE*)out, "%hhu", i) ;
-  if (n < 0) {
-    ats_exit_errmsg (n, "Exit: [fprint_uint64] failed.\n") ;
-  }
+  int n = fprintf ((FILE*)out, "%llu", i) ;
+  if (n < 0) ats_exit_errmsg (n, "Exit: [fprint_uint64] failed.\n") ;
   return ;
 }
 
