@@ -38,9 +38,11 @@ DESTDIR =
 
 # Default target.
 
+export ATSHOMERELOC
+
 .PHONY: all
 all: config.h
-	@$(MAKE) ATSHOMERELOC=$(ATSHOMERELOC) -f Makefile_main $@
+	@$(MAKE) -f Makefile_main $@
 
 # NOTE(liulk): integration with autoconf.
 
