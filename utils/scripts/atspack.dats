@@ -416,12 +416,22 @@ fn ccomp_lib_dir_copy
   val () = mkdir_exn (DSTROOTccomp_lib64, DIRmode)
   val () = if
     (packnd_is_precompiled knd) then let
-    val () = if (wsz = 4(*bytes*)) then fcopy_exn
-      (SRCROOTccomp_lib + "libats.a", DSTROOTccomp_lib + "libats.a")
-    // end of [val]
-    val () = if (wsz = 8(*bytes*)) then fcopy_exn
-      (SRCROOTccomp_lib64 + "libats.a", DSTROOTccomp_lib64 + "libats.a")
-    // end of [val]
+    val () = if (wsz = 4(*bytes*)) then let
+      val () = fcopy_exn
+        (SRCROOTccomp_lib + "libats.a", DSTROOTccomp_lib + "libats.a")
+      val () = fcopy_exn
+        (SRCROOTccomp_lib + "libats_smlbas.a", DSTROOTccomp_lib + "libats_smlbas.a")
+    in
+      // nothing
+    end // end of [val]
+    val () = if (wsz = 8(*bytes*)) then let
+      val () = fcopy_exn
+        (SRCROOTccomp_lib64 + "libats.a", DSTROOTccomp_lib64 + "libats.a")
+      val () = fcopy_exn
+        (SRCROOTccomp_lib64 + "libats_smlbas.a", DSTROOTccomp_lib64 + "libats_smlbas.a")
+    in
+      // nothing
+    end // end of [val]
   in
     // nothing
   end // end of [val]
@@ -937,11 +947,11 @@ end // end of [atspack_precompiled]
 
 (* ****** ****** *)
 
-fn atspack_help
+fn do_usage
   (cmd: string): void = () where {
   val () = printf ("%s [flag] [kind]\n", @(cmd))
   val () = printf ("  where flag is -m32 or -m64, and [kind] is --source or --precompiled.\n", @())
-} // end of [atspack_help]
+} // end of [do_usage]
 
 (* ****** ****** *)
 
@@ -960,19 +970,19 @@ implement main (argc, argv) = let
           )
         | _ when x = "-m32" => wordsize_target_set (4(*bytes*))
         | _ when x = "-m64" => wordsize_target_set (8(*bytes*))
-        | _ when x = "--help" => atspack_help (argv.[0])
+        | _ when x = "--help" => do_usage (argv.[0])
         | _ => let
             val () = prerrf ("[%s]: unrecognized flag: %s\n", @(argv.[0], x))
           in
             // nothing
           end // end of [_]
      in
-       loop (argc, argv, i+1, cnt)
-     end
+       if cnt = 0 then loop (argc, argv, i+1, cnt)
+     end // end of [if]
   // end of [loop]
   var cnt: int = 0
   val () = loop (argc, argv, 1, cnt)
-  val () = if cnt = 0 then atspack_help (argv.[0])
+  val () = if cnt = 0 then do_usage (argv.[0])
 in
   // nothing
 end // end of [main]

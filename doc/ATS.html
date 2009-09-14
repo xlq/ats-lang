@@ -46,7 +46,7 @@
 <LI> <A href="#acknowledgments">Acknowledgments</A>
 
 <LI> <A href="#download_and_installation">Download and Installation</A>:
-The current <B>stable</B> release is <a href="http://sourceforge.net/projects/ats-lang/download">ats-lang-anairiats-0.1.5</a> (1.4MB)
+The current <B>stable</B> release is <a href="http://sourceforge.net/projects/ats-lang/download">ats-lang-anairiats-0.1.6</a> (1.6MB)
 
 <LI> <A href="#simple_ats_programs">Some Simple ATS Programs</A>
 </MENU>
@@ -193,16 +193,18 @@ Please first download a compressed tarball containing a precompiled release of
 ATS from the following site that suits your platform:<P> <CENTER> <a
 href="http://sourceforge.net/projects/ats-lang/download">http://sourceforge.net/projects/ats-lang/download</a>
 </CENTER>
+Let "x.x.x" be the version number of the downloaded ATS package.
 <P>
 
 (<B>METHOD 1</B>) You can untar the tarball in the root directory "/" and
-then set the shell environment variable ATSHOME to "/usr/share/atshome".
-This method most likely requires root access.
+then set the shell environment variables ATSHOME and ATSHOMERELOC to
+"/usr/share/atshome" and "ATS-x.x.x", respectively. This method most likely
+requires root access.
 <P>
 (<B>METHOD 2</B>) You can untar the tarball in the directory "/tmp", and
 then move the directory "/tmp/usr/share/atshome" into a directory of your
 choice, say, "FOO", and then set the environment variables ATSHOME and
-ATSHOMERELOC to "FOO/atshome" and "/usr/share/atshome", repectively. In
+ATSHOMERELOC to "FOO/atshome" and "ATS-x.x.x", repectively. In
 addition, you need to put "$ATSHOME/bin" on your execution path or create
 symbolic links to the executables $ATSHOME/bin/atscc and
 $ATSHOME/bin/atsopt in a directory that is already on your execution path.

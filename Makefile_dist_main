@@ -100,11 +100,8 @@ bin/atscc bin/atslib:
 libfiles: .libfiles_local
 	# for libats
 	"$(ATSHOME)"/bin/atslib $(ATS_TERMINATION_CHECK) -O2 --libats
-	$(RANLIB) "$(ATSHOME)"/ccomp/lib/libats.a
-
 	# for libats_smlbas
 	"$(ATSHOME)"/bin/atslib $(ATS_TERMINATION_CHECK) -O2 --libats_smlbas
-	$(RANLIB) "$(ATSHOME)"/ccomp/lib/libats_smlbas.a
 
 ###### a lexer for ATS ######
 

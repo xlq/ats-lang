@@ -58,7 +58,7 @@ fn do_usage (cmd: string): void = begin
   printf ("  1. %s <flags> --libats (* generating [libats.a] *)\n", @(cmd));
   printf ("  2. %s <flags> --libats_smlbas (* generating [libats_smlbas.a] *)\n", @(cmd));
   printf ("  3. %s <flags> --libats_lex (* generating [libats_lex.a] *)\n", @(cmd));
-  printf ("  4. %s <flags> [infile] (* compiling and archiving a single file *) \n", @(cmd));
+  printf ("  4. %s <flags> <infile> (* compiling <infile> and archiving it into [libats.a] *) \n", @(cmd));
 end // end of [do_usage]
 
 (* ****** ****** *)
@@ -102,8 +102,12 @@ implement main {n} (argc, argv) = let
           end // end of [m64]
         | _ => if arg[0] = '-' then begin
             param_rev := STRLSTcons (arg, param_rev)
-          end else begin
-            ccomp_gcc_ar_libfile (param_rev, arg, libats_global ())
+          end else let
+            val libats_global = libats_global ()
+            val () = ccomp_gcc_ar_libfile (param_rev, arg, libats_global)
+            val () = ar_s_exn (libats_global) // this is equivalent to [ranlib]
+          in
+            // empty
           end // end of [_]
       end // end of [val]
     in

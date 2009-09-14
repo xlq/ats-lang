@@ -12,6 +12,10 @@
 
 ######
 
+ATSCC=$(ATSHOME)/bin/atscc
+
+######
+
 checkall: compall cleanall
 
 ######
@@ -24,14 +28,14 @@ compall: \
 ######
 
 testlock: AUP_2_4_3.dats
-	atscc -o testlock AUP_2_4_3.dats
+	$(ATSCC) -o testlock AUP_2_4_3.dats
 
 backward2: AUP_2_14_0.dats
-	atscc -o backward2 AUP_2_14_0.dats \
+	$(ATSCC) -o backward2 AUP_2_14_0.dats \
      && ./backward2 "AUP_2_14_0.dats"
 
 getcwdx: AUP_3_6_4.dats
-	atscc -o getcwdx AUP_3_6_4.dats \
+	$(ATSCC) -o getcwdx AUP_3_6_4.dats \
      && ./getcwdx
 
 ######

@@ -47,6 +47,29 @@ staload "top.sats"
 
 (* ****** ****** *)
 
+extern fun ar_r_exec (libfile: string, objfile: string): void
+  = "ar_r_exec"
+
+// archive with replacement
+fn ar_r_err (libfile: string, objfile: string): int = begin
+  fork_exec_and_wait_cloptr_exn (lam () => ar_r_exec (libfile, objfile))
+end // end of [ar_r_err]
+
+// this is equivalent to [ranlib]
+extern fun ar_s_exec (libfile: string): void = "ar_s_exec"
+
+implement ar_s_exn (libfile) = let
+  val status =
+    fork_exec_and_wait_cloptr_exn (lam () => ar_s_exec (libfile))
+  // end of [val]
+in
+  if (status <> 0) then
+    exit_prerrf {void} (status, "Exit: [ar_s(%s)] failed\n", @(libfile))
+  // end of [if]
+end // end of [ar_s_exn]
+
+(* ****** ****** *)
+
 extern fun gcc_libfile_exec
   (param_rev: Strlst, infile: string, outfile: string): void
   = "gcc_libfile_exec"
@@ -56,16 +79,6 @@ implement gcc_libfile_err (param_rev, infile, outfile) = let
 in
   fork_exec_and_wait_cloptr_exn (cmd)
 end // end of [gcc_libfile_err]
-
-(* ****** ****** *)
-
-extern fun ar_rs_exec (libfile: string, objfile: string): void
-  = "ar_rs_exec"
-
-// archive with replacement
-implement ar_rs_err (libfile, objfile) = begin
-  fork_exec_and_wait_cloptr_exn (lam () => ar_rs_exec (libfile, objfile))
-end // end of [ar_rs_err]
 
 (* ****** ****** *)
 
@@ -114,7 +127,7 @@ implement ccomp_gcc_ar_libfile (param_rev, infile, libfile) = let
   val () = if (status <> 0) then begin exit_prerrf {void}
     (status, "Exit: [ccomp_gcc_ar_libfile(%s)] failed: gcc\n", @(infile))
   end // end of [val]
-  val status = ar_rs_err (libfile, outfile_o)
+  val status = ar_r_err (libfile, outfile_o)
   val () = if (status <> 0) then begin exit_prerrf {void}
     (status, "Exit: [ccomp_gcc_ar_libfile(%s)] failed: ar\n", @(infile))
   end // end of [val]
@@ -154,11 +167,14 @@ end // end of [library_make_loop]
 (* ****** ****** *)
 
 implement libats_make (param_rev) = let
-   val libfiles_local = ATSHOME_dir_append ".libfiles_local"
-   val (pf_file | p_file) = fopen_exn (libfiles_local, file_mode_r)
-   val () = library_make_loop (param_rev, !p_file, ATSHOME_dir, libats_global ())
+  val libfiles_local = ATSHOME_dir_append ".libfiles_local"
+  val libats_global = libats_global ()
+  val (pf_file | p_file) = fopen_exn (libfiles_local, file_mode_r)
+  val () = library_make_loop (param_rev, !p_file, ATSHOME_dir, libats_global)
+  val () = fclose_exn (pf_file | p_file)
+  val () = ar_s_exn (libats_global)
 in
-   fclose_exn (pf_file | p_file)
+  // nothing
 end // end of [libats_make]
 
 // implement libats_mt_make () = library_make (libats_mt_global)
@@ -173,17 +189,19 @@ in
   ccomp_gcc_ar_libfile (param_rev, dir + "lexing.sats", libats_lex_global) ;
   ccomp_gcc_ar_libfile (param_rev, dir + "lexing.dats", libats_lex_global) ;
   ccomp_gcc_ar_libfile (param_rev, dir + "tables.dats", libats_lex_global) ;
+  ar_s_exn (libats_lex_global) ;
 end // end of [libats_lex_make]
 
 (* ****** ****** *)
 
 implement libats_smlbas_make (param_rev) = () where {
-   val smlbas_libfiles = ATSHOME_dir_append "libats/smlbas/.libfiles"
-   val (pf_file | p_file) = fopen_exn (smlbas_libfiles, file_mode_r)
-   val libats_smlbas_local = atslib_local () + "libats_smlbas.a"
-   val libats_smlbas_global = ATSHOME_dir_append (libats_smlbas_local)
-   val () = library_make_loop (param_rev, !p_file, ATSHOME_dir, libats_smlbas_global);
-   val () = fclose_exn (pf_file | p_file)
+  val smlbas_libfiles = ATSHOME_dir_append "libats/smlbas/.libfiles"
+  val (pf_file | p_file) = fopen_exn (smlbas_libfiles, file_mode_r)
+  val libats_smlbas_local = atslib_local () + "libats_smlbas.a"
+  val libats_smlbas_global = ATSHOME_dir_append (libats_smlbas_local)
+  val () = library_make_loop (param_rev, !p_file, ATSHOME_dir, libats_smlbas_global)
+  val () = fclose_exn (pf_file | p_file)
+  val () = ar_s_exn (libats_smlbas_global)
 } // end of [libats_smlbas_make]
 
 (* ****** ****** *)
@@ -255,11 +273,20 @@ gcc_libfile_exec (
 }
 
 ats_void_type
-ar_rs_exec (ats_string_type lib, ats_string_type output_o) {
+ar_r_exec (ats_string_type lib, ats_string_type output_o) {
 // /*
-  fprintf (stderr, "ar -rs %s %s\n", lib, output_o) ;
+  fprintf (stderr, "ar -r %s %s\n", lib, output_o) ;
 // */
-  execlp("ar", "ar", "-rs", lib, output_o, (char*)0) ;
+  execlp("ar", "ar", "-r", lib, output_o, (char*)0) ;
+  return ;
+}
+
+ats_void_type
+ar_s_exec (ats_string_type lib) {
+// /*
+  fprintf (stderr, "ar -s %s\n", lib) ;
+// */
+  execlp("ar", "ar", "-s", lib, (char*)0) ;
   return ;
 }
 

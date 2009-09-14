@@ -142,9 +142,8 @@ fun atscc_version (): void
 
 (* ****** ****** *)
 
+fun ar_s_exn (libfile: string): void
 fun gcc_libfile_err (param: Strlst, infile: string, outfile: string): int
-fun ar_rs_err (libfile: string, objfile: string): int
-
 fun ccomp_gcc_ar_libfile (param: Strlst, infile: string, libfile: string): void
 
 // for building the main ATS library 
