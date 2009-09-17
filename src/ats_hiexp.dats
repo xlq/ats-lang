@@ -122,10 +122,14 @@ implement hityp_fun (fc, hits_arg, hit_res) = '{
   hityp_name= hityp_name_ptr, hityp_node= HITfun (fc, hits_arg, hit_res)
 } // end of [hityp_fun]
 
-implement hityp_refarg (refval, hit_arg) = '{
-  hityp_name= hityp_name_ref
+implement hityp_refarg (refval, hit_arg) = let
+  val name = (
+    if refval > 0 then hityp_name_ref else hit_arg.hityp_name
+  ) : hityp_name
+in '{
+  hityp_name= name
 , hityp_node= HITrefarg (refval, hit_arg)
-} // end of [hityp_refarg]
+} end // end of [hityp_refarg]
 
 //
 

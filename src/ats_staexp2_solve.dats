@@ -140,7 +140,7 @@ fn prerr_staerr_s2exp_tyleq
   (loc: loc_t, s2e1: s2exp, s2e2: s2exp): void = begin
   prerr_loc_error3 (loc);
   $Deb.debug_prerrf (": %s: s2exp_tyleq_solve", @(THISFILENAME));
-  prerr ": mismatch of static term (tyleq):\n";
+  prerr ": mismatch of static terms (tyleq):\n";
   prerr "The needed term is: "; pprerr_s2exp s2e2; prerr_newline ();
   prerr "The actual term is: "; pprerr_s2exp s2e1; prerr_newline ();
 end // end of [prerr_staerr_s2exp_tyleq]

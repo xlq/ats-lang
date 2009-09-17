@@ -67,7 +67,7 @@ prfun mul_istot {m,n:int} ():<prf> [p:int] MUL (m, n, p)
 (* ****** ****** *)
 
 prfun mul_nat_nat_nat :
-  {m,n:nat} {p:int} MUL (m, n, p) -<prf> [p>= 0] void
+  {m,n:nat} {p:int} MUL (m, n, p) -<prf> [p >= 0] void
 
 prfun mul_negate {m,n:int} {p:int} (pf: MUL (m, n, p)):<prf> MUL (~m, n, ~p)
 

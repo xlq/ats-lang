@@ -1613,8 +1613,8 @@ end // end of [tmps1explstlst_tr]
 implement s1exp_tr_dn (s1e0, s2t0) = begin
   case+ s1e0.s1exp_node of
   | S1Eextype name => begin
-      if s2t0 <= s2rt_viewt0ype then
-        s2exp_extype_srt (s2t0, name)
+      if s2rt_is_impredicative s2t0 then
+        s2exp_extype_srt (s2t0, name) // [s2t0] can even be a view!
       else begin
         prerr_loc_error2 s1e0.s1exp_loc;
         $Deb.debug_prerrf (": %s: s1exp_tr_dn", @(THISFILENAME));
@@ -1623,7 +1623,7 @@ implement s1exp_tr_dn (s1e0, s2t0) = begin
         prerr "].";
         prerr_newline ();
         $Err.abort ()
-      end // end of [if]
+      end (* end of [if] *)
     end // end of [S1Eextype]
   | _ => let
       val s2e0 = s1exp_tr_up (s1e0)
@@ -1639,9 +1639,9 @@ implement s1exp_tr_dn (s1e0, s2t0) = begin
         prerr "].";
         prerr_newline ();
         $Err.abort ()
-      end // end of [if]
+      end (* end of [if] *)
     end // end of [_]
-end // end of [s1exp_tr_dn]
+end (* end of [s1exp_tr_dn] *)
 
 implement s1explst_tr_dn (s1es, s2ts) = begin
   case+ s1es of
