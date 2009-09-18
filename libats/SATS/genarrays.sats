@@ -71,12 +71,19 @@ viewdef GEVEC_v
 
 (* ****** ****** *)
 
+prfun GEVEC_v_cons
+  {a:viewt@ype}
+  {n:pos} {d:pos} {l:addr} {ofs:int} (
+    pf_mul: MUL (d, sizeof a, ofs), pf_at: a @ l, pf_vec: GEVEC_v (a, n-1, d, l+ofs)
+  ) :<prf> GEVEC_v (a, n, d, l)
+// end of [GEVEC_v_uncons]
+
 prfun GEVEC_v_uncons
   {a:viewt@ype}
-  {n:pos} {d:pos} {l:addr}
-  (pf: GEVEC_v (a, n, d, l))
-  :<prf> (
-    a @ l, a @ l -<lin,prf> GEVEC_v (a, n, d, l)
+  {n:pos} {d:pos} {l:addr} {ofs:int} (
+    pf_mul: MUL (d, sizeof a, ofs), pf_vec: GEVEC_v (a, n, d, l)
+  ) :<prf> (
+    a @ l, GEVEC_v (a, n-1, d, l+ofs)
   )
 // end of [GEVEC_v_uncons]
 

@@ -88,19 +88,18 @@ implement
   GEVEC_ptr_foreach_fun_tsz__main
     {a} {v} {vt} {n} {d}
     (pf | base, f, vsz, inc, tsz, env) = let
+  val inc = size1_of_int1 (inc)
   fun loop {l:addr} {n:nat} .<n>. (
       pf: !v
     , pf_vec: !GEVEC_v (a, n, d, l)
     | p: ptr l, n: int n, env: !vt
     ) :<cloref> void =
     if n > 0 then let
-      prval (pf_at, fpf_vec) = GEVEC_v_uncons (pf_vec)
+      val (pf_mul | ofs) = mul2_size1_size1 (inc, tsz)
+      prval (pf_at, pf1_vec) = GEVEC_v_uncons {a} (pf_mul, pf_vec)
       val () = f (pf | !p, env)
-      prval () = pf_vec := fpf_vec (pf_at)
-      val (pf1_vec, pf2_vec, fpf_vec | p1) =
-        GEVEC_ptr_split_tsz (pf_vec | p, inc, 1, tsz)
-      val () = loop (pf, pf2_vec | p1, n-1, env)
-      prval () = pf_vec := fpf_vec (pf1_vec, pf2_vec)
+      val () = loop (pf, pf1_vec | p+ofs, n-1, env)
+      prval () = pf_vec := GEVEC_v_cons {a} (pf_mul, pf_at, pf1_vec)
     in
       // nothing
     end // end of [if]
@@ -108,8 +107,6 @@ implement
 in
   loop (pf, view@ base | &base, vsz, env)
 end // end of [GEVEC_ptr_foreach_fun_tsz__main]
-
-//
 
 implement GEVEC_ptr_foreach_fun_tsz
   {a} {v} (pf | base, f, n, inc, tsz) = let
@@ -146,6 +143,7 @@ implement
   GEVEC_ptr_iforeach_fun_tsz__main
     {a} {v} {vt} {n} {d}
     (pf | base, f, vsz, inc, tsz, env) = let
+  val inc = size1_of_int1 (inc)
   fun loop {l:addr}
     {ni:nat | ni <= n} .<ni>. (
       pf: !v
@@ -153,13 +151,11 @@ implement
     | p: ptr l, ni: int ni, env: !vt
     ) :<cloref> void =
     if ni > 0 then let
-      prval (pf_at, fpf_vec) = GEVEC_v_uncons (pf_vec)
+      val (pf_mul | ofs) = mul2_size1_size1 (inc, tsz)
+      prval (pf_at, pf1_vec) = GEVEC_v_uncons {a} (pf_mul, pf_vec)
       val () = f (pf | vsz - ni, !p, env)
-      prval () = pf_vec := fpf_vec (pf_at)
-      val (pf1_vec, pf2_vec, fpf_vec | p1) =
-        GEVEC_ptr_split_tsz (pf_vec | p, inc, 1, tsz)
-      val () = loop (pf, pf2_vec | p1, ni-1, env)
-      prval () = pf_vec := fpf_vec (pf1_vec, pf2_vec)
+      val () = loop (pf, pf1_vec | p+ofs, ni-1, env)
+      prval () = pf_vec := GEVEC_v_cons {a} (pf_mul, pf_at, pf1_vec)
     in
       // nothing
     end // end of [if]
@@ -187,6 +183,7 @@ implement
   GEVEC_ptr_iforeach_clo_tsz__main
     {a} {v} {vt} {n} {d}
     (pf | base, f, vsz, inc, tsz, env) = let
+  val inc = size1_of_int1 (inc)
   fun loop {l:addr}
     {ni:nat | ni <= n} .<ni>. (
       pf: !v
@@ -196,13 +193,11 @@ implement
     , ni: int ni, env: !vt
     ) :<cloref> void =
     if ni > 0 then let
-      prval (pf_at, fpf_vec) = GEVEC_v_uncons (pf_vec)
+      val (pf_mul | ofs) = mul2_size1_size1 (inc, tsz)
+      prval (pf_at, pf1_vec) = GEVEC_v_uncons {a} (pf_mul, pf_vec)
       val () = f (pf | vsz - ni, !p, env)
-      prval () = pf_vec := fpf_vec (pf_at)
-      val (pf1_vec, pf2_vec, fpf_vec | p1) =
-        GEVEC_ptr_split_tsz (pf_vec | p, inc, 1, tsz)
-      val () = loop (pf, pf2_vec | p1, f, ni-1, env)
-      prval () = pf_vec := fpf_vec (pf1_vec, pf2_vec)
+      val () = loop (pf, pf1_vec | p+ofs, f, ni-1, env)
+      prval () = pf_vec := GEVEC_v_cons {a} (pf_mul, pf_at, pf1_vec)
     in
       // nothing
     end // end of [if]
