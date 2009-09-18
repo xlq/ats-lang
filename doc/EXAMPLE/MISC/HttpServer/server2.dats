@@ -29,6 +29,7 @@
 
 staload "libc/SATS/dirent.sats"
 staload "libc/SATS/stdio.sats"
+staload "libc/SATS/printf.sats"
 staload STDLIB = "libc/SATS/stdlib.sats"
 staload "libc/SATS/string.sats"
 staload "libc/SATS/time.sats"

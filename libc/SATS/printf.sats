@@ -35,55 +35,44 @@
 
 (* ****** ****** *)
 
+// HX: note that there is also a [printf.sats] in $ATSHOME/prelude/SATS
+
+(* ****** ****** *)
+
 %{#
 
-#include "libc/CATS/stdarg.cats"
+#include "libc/CATS/printf.cats"
 
 %}
 
 (* ****** ****** *)
 
 (*
-// this is declared in $ATSHOME/prelude/basics_sta.sats
-absviewt@ype va_list (ts: types) = $extype "ats_va_list_viewtype"
-*)
 
-absviewt@ype va_list1 (t: t@ype, ts: types) = va_list (ts)
-
-(* ****** ****** *)
-
-typedef va_arg_type (t:t@ype) =
-  {ts:types} (&va_list1 (t, ts) >> va_list ts) -<> t
-// ...
-
-fun{t:t@ype} va_arg : va_arg_type (t)
-
-fun va_arg_int : va_arg_type (int) = "atslib_va_arg_int"
-fun va_arg_ptr : va_arg_type (ptr) = "atslib_va_arg_ptr"
-
-fun va_arg_bool : va_arg_type (bool) = "atslib_va_arg_bool"
-fun va_arg_char : va_arg_type (char) = "atslib_va_arg_char"
-
-fun va_arg_string
-  : va_arg_type (string) = "atslib_va_arg_ptr"
-// end of ...
-
-(* ****** ****** *)
-
-(*
-
-fun va_start ... // this one is built-in
+// it is correct but too detailed!
+fun snprintf {ts:types} {m1,m2:nat | m2 <= m1} {l:addr} (
+    pf: &b0ytes m1 @ l >> strbuf (m1, n1) @ l
+  | p: ptr l, m2: size_t m2, fmt: printf_c ts, arg: ts)
+  : #[n1,n2:nat | (m2 > n2 && n1 == n2) || (n2 >= m2 && n1+1 == m2)] int n2
+  = "atspre_snprintf"
 
 *)
 
-fun va_end (ap: &va_list >> va_list?):<> void = "atslib_va_end"
+fun snprintf {ts:types}
+  {m1,m2:nat | m2 <= m1} {l:addr} (
+    pf: ! @[byte?][m1] @ l >> strbuf (m1, n1) @ l
+  | p: ptr l, m2: size_t m2, fmt: printf_c ts, arg: ts
+  ) :<> #[n1:nat | n1 < m2] [n2:nat] int n2
+  = "atslib_snprintf"
+
+fun vsnprintf {ts:types}
+  {m1,m2:nat | m2 <= m1} {l:addr} (
+    pf: ! @[byte?][m1] @ l >> strbuf (m1, n1) @ l
+  | p: ptr l, m2: size_t m2
+  , fmt: printf_c ts, arg: &va_list (ts) >> va_list
+  ) :<> #[n1:nat | n1 < m2] [n2:nat] int n2
+  = "atslib_vsnprintf"
 
 (* ****** ****** *)
 
-fun va_copy {ts:types}
-  (dst: &va_list? >> va_list ts, src: va_list ts):<> void
-  = "atslib_va_copy"
-
-(* ****** ****** *)
-
-(* end of [stdarg.sats] *)
+(* end of [printf.sats] *)

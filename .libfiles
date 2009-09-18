@@ -128,6 +128,9 @@ libc/DATS/gmp.dats
 libc/SATS/math.sats
 libc/DATS/math.dats
 
+libc/SATS/printf.sats
+libc/DATS/printf.dats
+
 libc/SATS/random.sats
 libc/DATS/random.dats
 

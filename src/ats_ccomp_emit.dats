@@ -75,6 +75,12 @@ staload _(*anonymous*) = "ats_reference.dats"
 
 (* ****** ****** *)
 
+fn prerr_loc_errorccomp (loc: loc_t): void =
+  ($Loc.prerr_location loc; prerr ": error(ccomp)")
+// end of [prerr_loc_errorccomp]
+
+(* ****** ****** *)
+
 extern fun emit_identifier {m:file_mode}
   (pf: file_mode_lte (m, w) | out: &FILE m, name: string): void
   = "ats_ccomp_emit_identifier"
@@ -1838,28 +1844,29 @@ extern fun emit_funarg {m:file_mode}
   (pf: file_mode_lte (m, w) | out: &FILE m, hits: hityplst_t): void
 
 implement emit_funarg {m} (pf | out, hits) = let
-  fun aux (out: &FILE m, i: int, hits: hityplst): void = begin
+  fun loop (out: &FILE m, i: int, hits: hityplst): void =
     case+ hits of
     | list_cons (hit, hits) => let
         val () = if i > 0 then fprint1_string (pf | out, ", ")
         val () = _emit_hityp (pf | out, hit)
-        val () = // variarity needs to be properly handled
+        val () = // variadacity needs to be properly handled
           if hityp_is_vararg hit then () else begin
             fprint1_string (pf | out, " arg"); fprint1_int (pf | out, i)
           end // end of [if]
       in
-        aux (out, i + 1, hits)
-      end
+        loop (out, i + 1, hits)
+      end (* end of [list_cons] *)
     | list_nil () => ()
-  end // end of [aux]
+  // end of [loop]
 in
-  aux (out, 0, hityplst_decode hits)
+  loop (out, 0, hityplst_decode hits)
 end // end of [emit_funarg]
 
 (* ****** ****** *)
 
 extern fun emit_funenvarg {m:file_mode}
   (pf: file_mode_lte (m, w) | out: &FILE m, vtps: vartypset): int
+// end of ...
 
 local
 
@@ -1911,9 +1918,9 @@ fn funentry_env_err
   : void = let
   val d2vs = vartypset_d2varlst_make (vtps)
   val n = $Lst.list_vt_length__boxed (d2vs)
-  val () = if n > 0 then begin
-    $Loc.prerr_location loc; prerr ": error(ccomp)"
-  end // end of [val]
+  val () =
+    if n > 0 then prerr_loc_errorccomp loc else ()
+  // end of [val]
   val () = if n > 1 then begin
     prerr ": the dynamic variables ["
   end else begin
@@ -2173,14 +2180,13 @@ fn _emit_closure_clofun {m:file_mode} {l:addr} (
       (pf_mod | !p_l, "_closure_type*)cloptr)->closure_env_%i", @(i))
   in
     pf := @(pf_fil, pf_int); fold@ env
-  end
+  end // end of [f_end]
 
-  // function body
-  val is_void = hityp_t_is_void (hit_res)
+  val is_void = hityp_t_is_void (hit_res) // function body
 
   val () = begin
     if is_void then () else fprint1_string (pf_mod | !p_l, "return ")
-  end
+  end // end of [val]
 
   val () = emit_funlab (pf_mod | !p_l, fl)
   val () = fprint1_string (pf_mod | !p_l, " (")
@@ -2200,12 +2206,13 @@ fn _emit_closure_clofun {m:file_mode} {l:addr} (
 
   val hits_arg = hityplst_decode (hits_arg)
   val () = emit_arglst (!p_l, 0, hits_arg) where {
-    fun emit_arglst (out: &FILE m, i: int, hits: hityplst)
+    fun emit_arglst // tailrec
+      (out: &FILE m, i: int, hits: hityplst)
       : void = begin case+ hits of
       | list_cons (hit, hits) => let
           val () = begin
             if i > 0 then fprint1_string (pf_mod | out, ", ")
-          end
+          end // end of [val]
           val () = fprintf1_exn (pf_mod | out, "arg%i", @(i))
         in
           emit_arglst (out, i+1, hits)
@@ -2244,6 +2251,20 @@ end // end of [local]
 
 (* ****** ****** *)
 
+fn hityplst_nvararg_get
+  (hits: hityplst_t): int = let
+  val hits = hityplst_decode hits in
+  case+ hits of
+  | list_cons (hit, hits) => loop (0, hit, hits) where {
+      fun loop (n: int, hit: hityp, hits: hityplst): int =
+        case+ hits of
+        | list_cons (hit, hits) => loop (n+1, hit, hits)
+        | list_nil () => if hityp_is_vararg hit then n else ~1
+      // end of [loop]
+    } // end of [list_cons]
+  | list_nil () => ~1
+end // end of [hityplst_nvararg_get]
+
 implement emit_funentry (pf | out, entry) = let
   val fl = funentry_lab_get (entry)
 (*
@@ -2253,6 +2274,7 @@ implement emit_funentry (pf | out, entry) = let
 *)
   val fc = funlab_funclo_get (fl)
   val hits_arg = funlab_typ_arg_get (fl)
+  val nvararg = hityplst_nvararg_get (hits_arg)
   val hit_res = funlab_typ_res_get (fl)
   val vtps_all = funentry_vtps_get_all (entry)
 (*
@@ -2282,7 +2304,7 @@ implement emit_funentry (pf | out, entry) = let
   val () = fprint1_string (pf | out, "// ")
   val () = $Loc.fprint_location (pf | out, loc_entry)
   val () = fprint1_string (pf | out, "\n*/\n")
-#endif
+#endif // end of ...
 
   // function head
   val () = begin
@@ -2325,7 +2347,29 @@ implement emit_funentry (pf | out, entry) = let
   val () = begin
     if istailjoin then emit_tailjoinlst (pf | out, tjs)
   end // end of [val]
-
+//
+  val () = if nvararg >= 0 then let
+    val () = if nvararg = 0 then begin
+      prerr_loc_errorccomp loc_entry;
+      prerr ": a variadic function must have at least one argument (in front of  ...)";
+      prerr_newline ();
+      $Err.abort {void} ()
+    end // end of [val]
+    val () = if istailjoin then begin
+      prerr_loc_errorccomp loc_entry;
+      prerr ": variadic functions cannot be joined."; prerr_newline ();
+      $Err.abort {void} ()
+    end // end of [val]
+    val () = fprintf1_exn
+      (pf | out, "ATSlocal (va_list, arg%i) ;\n", @(nvararg))
+    // end of [val]
+    val () = fprintf1_exn
+      (pf | out, "va_start(arg%i, arg%i) ;\n\n", @(nvararg, nvararg-1))
+    // end of [val]
+  in
+    // nothing
+  end // end of [val]
+//
   // function body
   val () = emit_instrlst (pf | out, funentry_body_get entry)
 

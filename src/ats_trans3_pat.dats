@@ -1144,8 +1144,9 @@ implement p2at_arg_tr_dn (p2t0, s2e0) = let
               val s2e_arg_at = s2exp_at_viewt0ype_addr_view (s2e_arg, s2e_addr)
               val () = d2var_mastyp_set (d2v_view, Some s2e_arg_at)
               val () = d2var_typ_set (d2v_view, Some s2e_at) where {
-                val s2e = case+ p3t.p3at_typ_lft of
+                val s2e = (case+ p3t.p3at_typ_lft of
                   | Some s2e => s2e | None () => s2exp_topize_1 p3t.p3at_typ
+                ) : s2exp // end of [val]
                 val s2e_at = s2exp_at_viewt0ype_addr_view (s2e, s2e_addr)
               } // end of [val]
             in
@@ -1159,27 +1160,62 @@ implement p2at_arg_tr_dn (p2t0, s2e0) = let
             $Err.abort {p3at} ()
           end (* end of [_] *)
       end // end of [S2Erefarg]
+    | S2Evararg s2e_arg => let // va_start ...
+(*
+**      this special argument is to be set as a pointer to a value of
+**      of the type [va_list] (stdarg.h)
+*)
+      in
+        case+ p2t0.p2at_node of
+        | P2Tvar (refknd(*=0*), d2v) => let
+            val loc0 = p2t0.p2at_loc
+            val s2e_valst0 = s2exp_va_list_viewt0ype ()
+            val s2e_valst1 = s2exp_va_list_types_viewt0ype (s2e_arg)
+            val s2v_addr = s2var_make_id_srt (d2var_sym_get d2v, s2rt_addr)
+            val s2e_addr = s2exp_var s2v_addr
+            val () = trans3_env_add_svar s2v_addr
+            val () = d2var_addr_set (d2v, Some s2e_addr)
+            val d2v_view = d2var_ptr_viewat_make_none (d2v)
+            val () = d2var_view_set (d2v, D2VAROPTsome d2v_view) // [d2v] is mutable
+            val () = the_d2varset_env_add (d2v_view)
+            val s2e_valst0_at = s2exp_at_viewt0ype_addr_view (s2e_valst0, s2e_addr)
+            val () = d2var_mastyp_set (d2v_view, Some s2e_valst0_at)
+            val s2e_valst1_at = s2exp_at_viewt0ype_addr_view (s2e_valst1, s2e_addr)
+            val () = d2var_typ_set (d2v_view, Some s2e_valst1_at)
+            // note that [va_end] is to be done explicitly!!!
+            val () = d2var_fin_set (d2v_view, D2VARFINsome s2e_valst0_top_at) where {
+              val s2e_valst0_top = s2exp_topize_0 (s2e_valst0)
+              val s2e_valst0_top_at = s2exp_at_viewt0ype_addr_view (s2e_valst0_top, s2e_addr)
+            } // end of [val]
+          in
+            p3at_var (loc0, s2e0, refknd, d2v)
+          end // end of [refval = 1]
+        | _ => begin
+            prerr p2t0.p2at_loc; prerr ": error(3)";
+            prerr ": the pattern is expected to be a variable but it is not.";
+            prerr_newline ();
+            $Err.abort {p3at} ()
+          end (* end of [_] *)
+      end // end of [S2Evararg]
     | _ => p2at_tr_dn (p2t0, s2e0)
 end (* end of [p2at_arg_tr_dn] *)
 
 fn p2at_proofize (p2t: p2at) = let
-  fun aux (d2vs: d2varlst): void = case+ d2vs of
-    | list_cons (d2v, d2vs) => (d2var_isprf_set (d2v, true); aux d2vs)
+  fun loop (d2vs: d2varlst): void = case+ d2vs of
+    | list_cons (d2v, d2vs) => (d2var_isprf_set (d2v, true); loop d2vs)
     | list_nil () => ()
-  // end of [aux]  
+  // end of [loop]  
 in
-  aux (d2varlst_of_d2varlstord p2t.p2at_dvs)
+  loop (d2varlst_of_d2varlstord p2t.p2at_dvs)
 end (* end of [p2at_proofize] *)
 
 implement p2atlst_arg_tr_up (npf, p2ts) = let
-  fun aux {n:nat} .<n>.
-    (i: int, p2ts: p2atlst n): p3atlst n =
-    case+ p2ts of
+  fun aux {n:nat} .<n>. // nontailrec
+    (i: int, p2ts: p2atlst n): p3atlst n = case+ p2ts of
     | list_cons (p2t, p2ts) => let
-        val () = if i > 0 then p2at_proofize p2t
-      in
-        list_cons (p2at_arg_tr_up p2t, aux (i-1, p2ts))
-      end
+        val () = (if i > 0 then p2at_proofize p2t) in
+        list_cons (p2at_arg_tr_up p2t, aux (i - 1, p2ts))
+      end // end of [list_cons]
     | list_nil () => list_nil ()
   // end of [aux]
 in
@@ -1196,7 +1232,7 @@ implement p2atlst_arg_tr_dn (npf, p2ts, s2es) = let
         val p3t = p2at_arg_tr_dn (p2t, s2e)
       in
         list_cons (p3t, aux (i-1, p2ts, s2es))
-      end
+      end // end of [list_cons]
     | list_nil () => list_nil ()
   // end of [aux]  
 in

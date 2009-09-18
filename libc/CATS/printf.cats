@@ -33,55 +33,47 @@
 
 /* ****** ****** */
 
-#ifndef ATS_LIBC_STDARG_CATS
-#define ATS_LIBC_STDARG_CATS
+#ifndef ATS_LIBC_PRINTF_CATS
+#define ATS_LIBC_PRINTF_CATS
 
 /* ****** ****** */
 
 #include <stdarg.h>
+#include <stdio.h>
 
 /* ****** ****** */
-
-static inline
-ats_bool_type
-atslib_va_arg_bool (ats_ref_type ap)
-  { return va_arg(*(va_list*)ap, ats_int_type) ; }
-// end of ...
-
-static inline
-ats_char_type // note the need for alignment
-atslib_va_arg_char (ats_ref_type ap)
-  { return va_arg(*(va_list*)ap, ats_int_type) ; }
-// end of ...
 
 static inline
 ats_int_type
-atslib_va_arg_int (ats_ref_type ap)
-  { return va_arg(*(va_list*)ap, ats_int_type) ; }
-// end of ...
+atslib_snprintf (
+  ats_ptr_type buf
+, ats_size_type sz
+, ats_ptr_type fmt
+, ...
+) {
+  int ntot ;
+  va_list ap ;
+  va_start(ap, fmt) ;
+  ntot = vsnprintf (buf, sz, (char*)fmt, ap) ;
+  va_end(ap) ;
+  return ntot ;
+} /* end of [atslib_snprintf] */
 
 static inline
-ats_ptr_type
-atslib_va_arg_ptr (ats_ref_type ap)
-  { return va_arg(*(va_list*)ap, ats_ptr_type) ; }
-// end of ...
+ats_int_type
+atslib_vsnprintf (
+  ats_ptr_type buf
+, ats_size_type sz
+, ats_ptr_type fmt
+, ats_ref_type arg
+) {
+  int n ; va_list ap ;
+  n = vsnprintf (buf, sz, (char*)fmt, *(va_list*)arg) ;
+  return n ;
+} /* end of [atslib_vsnprintf] */
 
 /* ****** ****** */
 
-static inline
-ats_void_type
-atslib_va_end (ats_ref_type ap) { va_end(*(va_list*)ap) ; return ; }
+#endif /* ATS_LIBC_PRINTF_CATS */
 
-/* ****** ****** */
-
-static inline
-ats_void_type
-atslib_va_copy (ats_ref_type dst, va_list src) {
-  va_copy(*(va_list*)dst, src) ; return ; // do dst and src share?
-} // end of [atslib_va_copy]
-
-/* ****** ****** */
-
-#endif /* ATS_LIBC_STDARG_CATS */
-
-/* end of [stdarg.cats] */
+/* end of [printf.cats] */

@@ -143,19 +143,4 @@ atspre_tostringf (ats_ptr_type fmt, ...) {
 
 (* ****** ****** *)
 
-%{
-
-ats_int_type
-atspre_snprintf (
-  ats_ptr_type buf, ats_size_type sz, ats_ptr_type fmt, ...
-) {
-  int n ; va_list ap ;
-  va_start(ap, fmt) ; n = vsnprintf (buf, sz, (char*)fmt, ap) ; va_end(ap) ;
-  return n ;
-} /* end of [atspre_snprintf] */
-
-%}
-
-(* ****** ****** *)
-
 (* end of [printf.dats] *)

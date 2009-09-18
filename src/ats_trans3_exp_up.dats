@@ -114,7 +114,7 @@ ats_ptr_type ats_trans3_intkind_eval (ats_ptr_type s0) {
   if (nL == 0 && nU == 0) return INTKINDint ; /* deadcode */
   if (nL == 1 && nU == 0) return INTKINDlint ; /* long */
   if (nL == 0 && nU == 1) return INTKINDuint ; /* unsigned */
-  if (nL == 1 && nU == 1) return INTKINDulint ; /* unsigned */
+  if (nL == 1 && nU == 1) return INTKINDulint ; /* unsigned long */
   return INTKINDnone ;
 }
 
@@ -149,6 +149,7 @@ fn s2eff_of_d2exp (d2e0: d2exp): s2eff =
   | D2Elaminit_dyn _ => S2EFFnil ()
   | D2Elam_sta _ => S2EFFnil ()
   | _ => S2EFFall ()
+// end of [s2eff_of_d2exp]
 
 fn d2exp_s2eff_of_d2exp
   (d2e0: d2exp, s2fe0: &(s2eff?) >> s2eff): d2exp =
@@ -158,6 +159,7 @@ fn d2exp_s2eff_of_d2exp
   | D2Elaminit_dyn _ => (s2fe0 := S2EFFnil (); d2e0)
   | D2Elam_sta _ => (s2fe0 := S2EFFnil (); d2e0)
   | _ => (s2fe0 := S2EFFall (); d2e0)
+// end of [d2exp_s2eff_of_d2exp]
 
 (* ****** ****** *)
 
@@ -261,13 +263,12 @@ in
   d3exp_typ_set (d3e, s2e)
 end // end of [d3exp_open_and_add]
 
-implement d3explst_open_and_add (d3es) = begin
-  case+ d3es of
-  | cons (d3e, d3es) => begin
+implement d3explst_open_and_add (d3es) = case+ d3es of
+  | list_cons (d3e, d3es) => begin
       d3exp_open_and_add d3e; d3explst_open_and_add d3es 
-    end
-  | nil () => ()
-end // end of [d3explst_open_and_add]
+    end // end of [list_cons]
+  | list_nil () => ()
+// end of [d3explst_open_and_add]
 
 (* ****** ****** *)
 
@@ -318,14 +319,14 @@ end // end of [s2lab0lst_of_d3lab0lst]
 fun s2lab1lst_of_d3lab1lst {n:nat} .<n>.
   (d3ls: list (d3lab1, n)): list (s2lab, n) = begin
   case+ d3ls of
-  | cons (d3l, d3ls) => let
+  | list_cons (d3l, d3ls) => let
       val s2l = case+ d3l.d3lab1_node of
         | D3LAB1ind (d3ess, s2e) => S2LAB1ind (d3explstlst_ind_get d3ess, s2e)
         | D3LAB1lab (l, s2e) => S2LAB1lab (l, s2e)
     in
-      cons (s2l, s2lab1lst_of_d3lab1lst d3ls)
+      list_cons (s2l, s2lab1lst_of_d3lab1lst d3ls)
     end // end of [cons]
-  | nil () => nil ()
+  | list_nil () => list_nil ()
 end // end of [s2lab2lst_of_d3lab1lst]
 
 *)
@@ -338,29 +339,30 @@ fun d3lab1lst_of_d3lab0lst_s2lablst
         | D3LAB0ind d3ess => begin case+ s2l of
           | S2LAB1ind (_, s2e_elt) => begin
               d3lab1_ind (d3l.d3lab0_loc, d3ess, s2e_elt)
-            end
+            end // end of [S2LAB1ind]
           | _ => begin
-              prerr "Internal Error: d3lab1lst_of_d3lab0lst_s2lablst: D3LAB0ind";
+              prerr "INTERNAL ERROR: d3lab1lst_of_d3lab0lst_s2lablst: D3LAB0ind";
               prerr_newline ();
               $Err.abort {d3lab1} ()
-            end
-          end
+            end // end of [_]
+          end (* end of [D3LAB0ind] *)
         | D3LAB0lab l => begin case+ s2l of
           | S2LAB1lab (l, s2e) => d3lab1_lab (d3l.d3lab0_loc, l, s2e)
           | _ => begin
-              prerr "Internal Error";
+              prerr "INTERNAL ERROR";
               prerr ": d3lab1lst_of_d3lab0lst_s2lablst: D3LAB0lab: s2l = ";
               prerr s2l; prerr_newline ();
               $Err.abort {d3lab1} ()
-            end
-          end
+            end // end of [_]
+          end (* end of [D3LAB0lab] *)
       ) : d3lab1
     in
       list_cons (d3l_new, d3lab1lst_of_d3lab0lst_s2lablst (d3ls, s2ls))
     end // end of [cons, cons]
   | (list_nil (), list_nil ()) => list_nil ()
   | (_, _) => begin
-      prerr "Internal Error: d3lab1lst_of_d3lab0lst_s2lablst: length mismatch";
+      prerr "INTERNAL ERROR";
+      prerr ": d3lab1lst_of_d3lab0lst_s2lablst: length mismatch";
       prerr_newline ();
       $Err.abort ()
     end // end of [_, _]
@@ -1509,6 +1511,7 @@ fn d2exp_arg_body_tr_up (
   val s2t_fun = s2rt_prf_lin_fc (loc0, isprf, lin > 0, fc)
   val s2e_fun =
     s2exp_fun_srt (s2t_fun, fc, lin, s2fe, npf, s2es_arg, s2e_res)
+  // end of [val]
 (*
   val () = begin
     prerr "d2exp_tr_up: D2Elam: s2e_fun = "; prerr s2e_fun; prerr_newline ()
@@ -2154,16 +2157,16 @@ val d3e0 = (case+ d2e0.d2exp_node of
       d3exp_int (loc0, s2e, str, int)
     end // end of [D2Eint]
   | D2Eintsp (str, int) => let
-      val s2e = case+ intkind_eval (str) of
+      val s2e = (case+ intkind_eval (str) of
         | $Syn.INTKINDlint () => s2exp_lint_t0ype ()
         | $Syn.INTKINDuint () => s2exp_uint_intinf_t0ype (int)
         | $Syn.INTKINDulint () => s2exp_ulint_t0ype ()
         | _ => begin
-            prerr loc0;
-            prerr "Internal Error: d2exp_tr: D2Eintsp";
-            prerr_newline ();
+            prerr loc0; prerr ": INTERNAL ERROR";
+            prerr ": d2exp_tr: D2Eintsp"; prerr_newline ();
             $Err.abort {s2exp} ()
-          end
+          end // end of [_]
+      ) : s2exp // end of [val]
     in
       d3exp_intsp (loc0, s2e, str, int)
     end // end of [D2Eintsp]
@@ -2172,6 +2175,7 @@ val d3e0 = (case+ d2e0.d2exp_node of
       val fc0: $Syn.funclo = $Syn.FUNCLOfun () // default
       val @(s2e_fun, p3ts_arg, d3e_body) =
         d2exp_arg_body_tr_up (loc0, fc0, lin, npf, p2ts_arg, d2e_body)
+      // end of [val]
     in
       d3exp_lam_dyn (loc0, s2e_fun, lin, npf, p3ts_arg, d3e_body)
     end // end of [D2Elam_dyn]
@@ -2182,7 +2186,7 @@ val d3e0 = (case+ d2e0.d2exp_node of
         d2exp_arg_body_tr_up (loc0, fc0, lin, npf, p2ts_arg, d2e_body)
     in
       d3exp_laminit_dyn (loc0, s2e_fun, lin, npf, p3ts_arg, d3e_body)
-    end // end of [D2Elam_dyn]
+    end // end of [D2Elaminit_dyn]
   | D2Elam_met (r_d2vs, s2es_met, d2e_body) => let
       val () = metric_nat_check (loc0, s2es_met)
       val (pf_metric | ()) = metric_env_push (!r_d2vs, s2es_met)

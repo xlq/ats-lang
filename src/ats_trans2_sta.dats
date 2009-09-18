@@ -774,7 +774,7 @@ implement s1exp_arg_tr_up (s1e0, wths1es) = begin
   | S1Einvar (refval, s1e) => let
       val () = begin
         wths1es := WTHS1EXPLSTcons_some (refval, s1e, wths1es)
-      end
+      end // end of [val]
     in
       s1exp_invar_tr_up (refval, s1e)
     end // end of [S1Einvar]
@@ -782,7 +782,7 @@ implement s1exp_arg_tr_up (s1e0, wths1es) = begin
     | S1Einvar (refval, s1e_arg) => let
         val () = begin
           wths1es := WTHS1EXPLSTcons_some (refval, s1e2, wths1es)
-        end
+        end // end of [val]
       in
         s1exp_invar_tr_up (refval, s1e_arg)
       end // end of [S1Einvar]
@@ -907,7 +907,7 @@ fn s1exp_arrow_tr_up // arrow is a special type constructor
         in
           case+ 0 of
           | _ when types > 0 => begin case+ s1es of
-            | nil () => cons (s2exp_vararg s2e, nil ()) | _ => begin
+            | nil () => cons (s2exp_vararg s2e, nil ()) | cons _ => begin
                 prerr_loc_error2 s1e.s1exp_loc;
                 $Deb.debug_prerrf (": %s: s1exp_arrow_tr_up", @(THISFILENAME));
                 prerr ": this static expression must be the last argument.";

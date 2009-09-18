@@ -292,6 +292,14 @@ implement Printf_c_types_type =
 
 (* ****** ****** *)
 
+implement Va_list_viewt0ype =
+  s2cstref_make "va_list_viewt0ype"
+
+implement Va_list_types_viewt0ype =
+  s2cstref_make "va_list_types_viewt0ype"
+
+(* ****** ****** *)
+
 implement Vbox_view_prop =
   s2cstref_make "vbox_view_prop"
 
@@ -896,6 +904,18 @@ end // end of [s2exp_printf_c_types_type]
 
 (* ****** ****** *)
 
+implement s2exp_va_list_viewt0ype () = let
+  val s2c = s2cstref_cst_get (Va_list_viewt0ype) in s2exp_cst s2c
+end // end of [s2exp_va_list_viewt0ype]
+
+implement s2exp_va_list_types_viewt0ype (s2e) = let
+  val s2c = s2cstref_cst_get (Va_list_types_viewt0ype)
+in
+  s2exp_app_srt (s2rt_viewt0ype, s2exp_cst s2c, '[s2e])
+end // end of [s2exp_va_list_types_viewt0ype]
+
+(* ****** ****** *)
+
 implement s2exp_vbox_view_prop (s2e) = let
   val s2c = s2cstref_cst_get (Vbox_view_prop)
 in
@@ -904,6 +924,7 @@ end // end of [s2exp_vbox_view_prop]
 
 implement un_s2exp_vbox_view_prop (s2e) =
   un_s2exp_s2cstref_1 (s2e, Vbox_view_prop)
+// end of ...
 
 (* ****** ****** *)
 

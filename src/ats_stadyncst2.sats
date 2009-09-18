@@ -141,6 +141,8 @@ val Lazy_viewt0ype_viewtype : s2cstref_t
 (* ****** ****** *)
 
 val Printf_c_types_type : s2cstref_t
+val Va_list_viewt0ype : s2cstref_t // variadicity
+val Va_list_types_viewt0ype : s2cstref_t // variadicity
 
 (* ****** ****** *)
 
@@ -362,6 +364,9 @@ fun un_s2exp_lazy_viewt0ype_viewtype (_: s2exp): Option_vt (s2exp(*elt*))
 (* ****** ****** *)
 
 fun s2exp_printf_c_types_type (_: s2exp): s2exp
+
+fun s2exp_va_list_viewt0ype (): s2exp
+fun s2exp_va_list_types_viewt0ype (_: s2exp): s2exp
 
 (* ****** ****** *)
 

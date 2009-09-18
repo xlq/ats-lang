@@ -716,8 +716,22 @@ stadef cloref = cloref_t0ype_type
 (* ****** ****** *)
 
 // for print-format strings
-abstype printf_c_types_type (types) // boxed type
+abstype printf_c_types_type (types) // boxed type: string
 stadef printf_c = printf_c_types_type
+
+(* ****** ****** *)
+
+// for handling variadic functions
+
+absviewt@ype
+va_list_viewt0ype = $extype "ats_va_list_viewtype"
+
+absviewt@ype
+va_list_types_viewt0ype (types) = va_list_viewt0ype
+
+(* this order is significant! *)
+stadef va_list = va_list_types_viewt0ype
+stadef va_list = va_list_viewt0ype
 
 (* ****** ****** *)
 
@@ -725,6 +739,7 @@ datasort file_mode =
   | file_mode_r (* read *)
   | file_mode_w (* write *)
   | file_mode_rw (* read and write *)
+// end of [file_mode]
 
 stadef r = file_mode_r ()
 stadef w = file_mode_w ()

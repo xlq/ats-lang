@@ -31,8 +31,8 @@
 
 (* ****** ****** *)
 
-// Time: December 2007
 // Author: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
+// Time: December 2007
 
 (* ****** ****** *)
 
@@ -200,7 +200,7 @@ implement the_s2varbindmap_add (s2v, s2e) = let
     prerr "the_s2varbindmap_add: s2v = "; prerr s2v; prerr_newline ();
     prerr "the_s2varbindmap_add: s2e = "; prerr s2e; prerr_newline ();
     prerr "the_s2varbindmap_add: stamp = "; $Stamp.prerr_stamp stamp; prerr_newline ();
-  end
+  end // end of [val]
 *)
   val () = let
     val (vbox pf | p) = ref_get_view_ptr (the_s2varbindmap)
@@ -226,7 +226,7 @@ implement the_s2varbindmap_find (s2v) = let
 (*
   val () = begin
     prerr "the_s2varbindmap_find: s2v = "; prerr s2v; prerr_newline ()
-  end
+  end // end of [val]
 *)
   val stamp = s2var_stamp_get (s2v)
   val (vbox pf | p) = ref_get_view_ptr (the_s2varbindmap)
@@ -537,7 +537,7 @@ implement the_d2varset_env_pop_let (pf | (*none*)) = let
           !the_ld2vs := ld2vs; !the_ld2vsitems := ld2vsitems
         end
       | _ => (err := 1)
-      end
+      end // end of [list_cons]
     | list_nil () => (err := 1)
 in
   if err > 0 then begin
@@ -599,7 +599,7 @@ implement the_d2varset_env_d2var_is_llam_local (d2v) = let
       | LD2VSITEMset dvs => begin
           if d2varset_ismem (dvs, d2v) then true else aux (itms, d2v)
         end
-      end
+      end // end of [list_cons]
     | list_nil () => begin
         prerr "INTERNAL ERROR: d2var_is_llam_local: aux: d2v = ";
         prerr d2v;
@@ -619,7 +619,7 @@ implement the_d2varset_env_d2var_is_llam_local (d2v) = let
     prerr "d2var_is_llam_local: ans = ";
     prerr (ans);
     prerr_newline ()
-  end
+  end // end of [val]
 *)
 in
   if ans then true else aux (!the_ld2vsitems, d2v)
