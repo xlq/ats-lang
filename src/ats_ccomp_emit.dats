@@ -2355,11 +2355,14 @@ implement emit_funentry (pf | out, entry) = let
       prerr_newline ();
       $Err.abort {void} ()
     end // end of [val]
+(*
+    // this check needs to be done earlier!!!
     val () = if istailjoin then begin
       prerr_loc_errorccomp loc_entry;
       prerr ": variadic functions cannot be joined."; prerr_newline ();
       $Err.abort {void} ()
     end // end of [val]
+*)
     val () = fprintf1_exn
       (pf | out, "ATSlocal (va_list, arg%i) ;\n", @(nvararg))
     // end of [val]

@@ -43,6 +43,10 @@
 
 /* ****** ****** */
 
+#if (0)
+//
+// [snprintf] is now implemented in $ATSHOME/libc/DATS/printf.dats
+//
 static inline
 ats_int_type
 atslib_snprintf (
@@ -58,6 +62,7 @@ atslib_snprintf (
   va_end(ap) ;
   return ntot ;
 } /* end of [atslib_snprintf] */
+#endif
 
 static inline
 ats_int_type

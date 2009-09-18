@@ -136,6 +136,9 @@ libc/DATS/random.dats
 
 libc/SATS/signal.sats
 
+libc/SATS/stdarg.sats
+libc/SATS/stdarg.dats
+
 libc/SATS/stdio.sats
 
 libc/SATS/stdlib.sats
