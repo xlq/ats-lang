@@ -76,7 +76,7 @@ prfun GEVEC_v_cons
   {n:pos} {d:pos} {l:addr} {ofs:int} (
     pf_mul: MUL (d, sizeof a, ofs), pf_at: a @ l, pf_vec: GEVEC_v (a, n-1, d, l+ofs)
   ) :<prf> GEVEC_v (a, n, d, l)
-// end of [GEVEC_v_uncons]
+// end of [GEVEC_v_cons]
 
 prfun GEVEC_v_uncons
   {a:viewt@ype}
