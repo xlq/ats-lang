@@ -84,6 +84,36 @@ implement{a} GEVEC_ptr_set_elt_at (V, d, i, x) = () where {
 
 (* ****** ****** *)
 
+// X <- alpha, ..., alpha
+implement{a} GEVEC_ptr_initialize_elt
+  {m} {incX} (m, X, incX, alpha) = let
+  val incX = size1_of_int1 (incX)
+  fun loop {n:nat} {lX:addr} .<n>. (
+      pf_vec: !GEVEC_v (a?, n, incX, lX) >> GEVEC_v (a, n, incX, lX)
+    | n: int n
+    , pX: ptr lX
+    ) :<cloref> void =
+    if n > 0 then let
+      val (pf_mul | ofs) = mul2_size1_size1 (incX, sizeof<a>)
+      prval (pf_at, pf1_vec) = GEVEC_v_uncons {a?} (pf_mul, pf_vec)
+      val () = !pX := alpha
+      val () = loop (pf1_vec | n-1, pX + ofs)
+      prval () = pf_vec := GEVEC_v_cons {a} (pf_mul, pf_at, pf1_vec)
+    in
+      // nothing
+    end else let
+      prval () = GEVEC_v_unnil (pf_vec)
+      prval () = pf_vec := GEVEC_v_nil {a} {incX} {lX} ()
+    in
+      // nothing
+    end // end of [if]
+  // end of [loop
+in
+   loop (view@ X | m, &X)
+end // end of [GEVEC_init]
+
+(* ****** ****** *)
+
 implement
   GEVEC_ptr_foreach_fun_tsz__main
     {a} {v} {vt} {n} {d}

@@ -176,6 +176,14 @@ fun{a:t@ype} GEVEC_ptr_set_elt_at {n:nat}
 
 (* ****** ****** *)
 
+fun{a:t@ype} GEVEC_ptr_initialize_elt {m:nat} {incX:inc} (
+    m: int m
+  , X: &GEVEC (a?, m, incX) >> GEVEC (a, m, incX), incX: int incX
+  , alpha: a
+  ) :<> void
+
+(* ****** ****** *)
+
 fun GEVEC_ptr_foreach_fun_tsz__main
   {a:viewt@ype} {v:view} {vt:viewtype} {n:nat} {d:inc} (
     pf: !v

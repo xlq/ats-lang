@@ -7,33 +7,32 @@
 (***********************************************************************)
 
 (*
- * ATS/Anairiats - Unleashing the Potential of Types!
- *
- * Copyright (C) 2002-2008 Hongwei Xi, Boston University
- *
- * All rights reserved
- *
- * ATS is free software;  you can  redistribute it and/or modify it under
- * the terms of  the GNU GENERAL PUBLIC LICENSE (GPL) as published by the
- * Free Software Foundation; either version 3, or (at  your  option)  any
- * later version.
- * 
- * ATS is distributed in the hope that it will be useful, but WITHOUT ANY
- * WARRANTY; without  even  the  implied  warranty  of MERCHANTABILITY or
- * FITNESS FOR A PARTICULAR PURPOSE.  See the  GNU General Public License
- * for more details.
- * 
- * You  should  have  received  a  copy of the GNU General Public License
- * along  with  ATS;  see the  file COPYING.  If not, please write to the
- * Free Software Foundation,  51 Franklin Street, Fifth Floor, Boston, MA
- * 02110-1301, USA.
- *
- *)
+** ATS/Anairiats - Unleashing the Potential of Types!
+**
+** Copyright (C) 2002-2008 Hongwei Xi, Boston University
+**
+** All rights reserved
+**
+** ATS is free software;  you can  redistribute it and/or modify it under
+** the terms of  the GNU GENERAL PUBLIC LICENSE (GPL) as published by the
+** Free Software Foundation; either version 3, or (at  your  option)  any
+** later version.
+** 
+** ATS is distributed in the hope that it will be useful, but WITHOUT ANY
+** WARRANTY; without  even  the  implied  warranty  of MERCHANTABILITY or
+** FITNESS FOR A PARTICULAR PURPOSE.  See the  GNU General Public License
+** for more details.
+** 
+** You  should  have  received  a  copy of the GNU General Public License
+** along  with  ATS;  see the  file COPYING.  If not, please write to the
+** Free Software Foundation,  51 Franklin Street, Fifth Floor, Boston, MA
+** 02110-1301, USA.
+*)
 
 (* ****** ****** *)
 
-// Time: July 2007
 // Author: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
+// Time: July 2007
 
 (* ****** ****** *)
 
@@ -49,7 +48,15 @@
 
 (* ****** ****** *)
 
+staload Loc = "ats_location.sats"
+
+(* ****** ****** *)
+
 staload Sym = "ats_symbol.sats"
+overload = with $Sym.eq_symbol_symbol
+overload <> with $Sym.neq_symbol_symbol
+
+// dynload "ats_symbol.dats" // this file needs to be loaded first!!!
 
 (* ****** ****** *)
 
@@ -88,7 +95,7 @@ end // end of [local]
 
 (* ****** ****** *)
 
-#define THIS_FILE "ats_filename.dats"
+#define THISFILENAME "ats_filename.dats"
 
 implement filename_is_relative (name) = let
   val name = string1_of_string name
@@ -101,21 +108,24 @@ end // [filename_is_relative]
 %{^
 
 static inline
-ats_bool_type ats_filename_is_exist (ats_ptr_type name) {
+ats_bool_type
+ats_filename_is_exist (ats_ptr_type name) {
   struct stat st ;
-  return stat ((char *)name, &st) ? ats_false_bool : ats_true_bool ;
-}
+  return stat ((char*)name, &st) ? ats_false_bool : ats_true_bool ;
+} /* end of [ats_filename_is_exist] */
 
 %}
 
 %{$
 
 ats_ptr_type
-ats_filename_append (ats_ptr_type dir, ats_ptr_type bas)
-{
+ats_filename_append (
+  ats_ptr_type dir, ats_ptr_type bas
+) {
   int n1, n2, n ; char *dirbas ;
 
-  n1 = strlen ((char *)dir) ; n2 = strlen ((char *)bas) ;
+  n1 = strlen ((char *)dir) ;
+  n2 = strlen ((char *)bas) ;
   n = n1 + n2 ;
   if (n1 > 0 && ((char *)dir)[n1-1] != dirsep) n += 1 ;
   dirbas = ATS_MALLOC (n + 1) ;
@@ -125,7 +135,7 @@ ats_filename_append (ats_ptr_type dir, ats_ptr_type bas)
   dirbas[n] = '\000' ;
 
   return dirbas ;
-}
+} /* end of [ats_filename_append] */
 
 %}
 
@@ -133,44 +143,51 @@ ats_filename_append (ats_ptr_type dir, ats_ptr_type bas)
 
 typedef filename = '{
   filename_full= string, filename_full_sym= $Sym.symbol_t
-}
+} // end of [filename]
 
 assume filename_t = filename
 
 (* ****** ****** *)
 
 implement filename_none = '{
-  filename_full= ""
+  filename_full= "(none)"
 , filename_full_sym= $Sym.symbol_empty
-}
+} // end of [filename_none]
 
 implement filename_stdin = '{
   filename_full= "stdin"
 , filename_full_sym= $Sym.symbol_STDIN
-}
+} // end of [filename_stdin]
 
 (* ****** ****** *)
 
 implement lt_filename_filename
   (x1, x2) = x1.filename_full < x2.filename_full
+// end of [lt_filename_filename]
 
 implement lte_filename_filename
   (x1, x2) = x1.filename_full <= x2.filename_full
+// end of [lte_filename_filename]
 
 implement gt_filename_filename
   (x1, x2) = x1.filename_full > x2.filename_full
+// end of [gt_filename_filename]
 
 implement gte_filename_filename
   (x1, x2) = x1.filename_full >= x2.filename_full
+// end of [gte_filename_filename]
 
-implement eq_filename_filename
-  (x1, x2) = x1.filename_full = x2.filename_full
+implement eq_filename_filename // symbol comparison
+  (x1, x2) = x1.filename_full_sym = x2.filename_full_sym
+// end of [eq_filename_filename]
 
-implement neq_filename_filename
-  (x1, x2) = x1.filename_full <> x2.filename_full
+implement neq_filename_filename // symbol comparison
+  (x1, x2) = x1.filename_full_sym <> x2.filename_full_sym
+// end of [neq_filename_filename]
 
 implement compare_filename_filename (x1, x2) =
   compare (x1.filename_full, x2.filename_full)
+// end of [compare_filename_filename]
 
 (* ****** ****** *)
 
@@ -237,19 +254,20 @@ fn filename_normalize (s0: string): string = let
             dirs_process (npre - 1, dirs, res)
           end else begin
             dirs_process (0, dirs, list_cons (dir, res))
-          end
-        end
-      end
+          end (* end of [if] *)
+        end (* end of [if] *)
+      end // end of [list_cons]
     | list_nil () => aux (npre, res) where {
         fun aux (npre: Nat, res: List string): List string =
           if npre > 0 then aux (npre - 1, list_cons (predir, res))
           else res
-      } // end of [where]
-
+      } // end of [list_nil]
+//
   var dirs: List string = list_nil ()
   val () = loop1 (s0, n0, 0, dirs)
   val () = dirs := dirs_process (0, dirs, list_nil ())
   val fullname = stringlst_concat (dirs)
+//
 in
   fullname
 end // end of [filename_normalize]
@@ -273,9 +291,8 @@ implement the_pathlst_pop () = begin
   case+ !the_pathlst of
   | list_cons (_, ps) => !the_pathlst := ps
   | list_nil () => begin
-      prerr "Internal Error: ";
-      prerr THIS_FILE;
-      prerr ": [pathlst_pop]: [the_pathlst] is empty";
+      prerr "INTERNAL ERROR";
+      prerrf (": %s: [pathlst_pop]: [the_pathlst] is empty.", @(THISFILENAME));
       prerr_newline ();
       exit (1)
     end
@@ -289,11 +306,9 @@ implement the_pathlst_push (dirname) = let
   val dirname_full = filename_normalize (dirname_full)
 (*
   val () = begin
-    prerr "the_pathlst_push: dirname = "; prerr dirname; prerr_newline ()
-  end
-  val () = begin
-    prerr "the_pathlst_push: dirname_full = "; prerr dirname_full; prerr_newline ()
-  end
+    prerr "the_pathlst_push: dirname = "; prerr dirname; prerr_newline ();
+    prerr "the_pathlst_push: dirname_full = "; prerr dirname_full; prerr_newline ();
+  end // end of [val]
 *)
 in
   !the_pathlst := list_cons (dirname_full, !the_pathlst)
@@ -304,15 +319,13 @@ end // end of [the_pathlst_push]
 fun the_prepathlst_get (): pathlst = !the_prepathlst
 
 implement the_prepathlst_push (dirname) = let
-  val () =
-    if filename_is_relative dirname then begin
-      prerr "Internal Error: ";
-      prerr THIS_FILE;
-      prerr ": [the_prepathlst_push]: ";
-      prerr "the directory name ["; prerr dirname; prerr "] is not absolute.";
-      prerr_newline ();
-      exit {void} (1)
-    end
+  val () = if filename_is_relative dirname then begin
+    prerr "INTERNAL ERROR";
+    prerrf (": %s: [the_prepathlst_push]", @(THISFILENAME));
+    prerr ": the directory name ["; prerr dirname; prerr "] is not absolute.";
+    prerr_newline ();
+    exit {void} (1)
+  end // end of [val]
 in
   !the_prepathlst := list_cons (dirname, !the_prepathlst)
 end // end of [the_prepathlst_push]
@@ -336,25 +349,64 @@ fn the_filenamelst_reset (): void = !the_filenamelst := list_nil ()
 implement the_filename_get (): filename = !the_filename
 
 val the_filenamelst_pop_err = lam () =<fun1> begin
-  prerr "Internal Error: ";
-  prerr THIS_FILE;
-  prerr ": [the_filenamelst_pop]: [the_filenamelst] is empty";
+  prerr "INTERNAL ERROR";
+  prerrf (": %s: [the_filenamelst_pop]: [the_filenamelst] is empty.", @(THISFILENAME));
   prerr_newline ();
   exit (1)
 end // end of [the_filenamelst_pop_err]
 
-implement the_filenamelst_pop (): void = begin
+implement the_filenamelst_pop () = begin
   case+ !the_filenamelst of
   | list_cons (f, fs) => begin
       !the_filename := f; !the_filenamelst := fs
-    end
+    end // end of [list_cons]
   | list_nil () => the_filenamelst_pop_err ()
 end // end of [the_filenamelst_pop]
 
-implement the_filenamelst_push (f: filename): void = begin
-  !the_filenamelst := list_cons (!the_filename, !the_filenamelst);
-  !the_filename := f;
+implement the_filenamelst_push (f0) = let
+  val fs = list_cons (!the_filename, !the_filenamelst)
+in
+  !the_filenamelst := fs; !the_filename := f0;
 end // end of [the_filenamelst_push]
+
+implement the_filenamelst_push_xit (loc0, f0) = let
+(*
+  val () = begin
+    prerr "the_filenamelst_push: f0 = "; prerr f0; prerr_newline ()
+  end // end of [val]
+*)
+  val loc0 = __cast loc0 where {
+    extern castfn __cast (x: location_t): $Loc.location_t
+  } // end of [val]
+  val fs = list_cons (!the_filename, !the_filenamelst)
+  val isexi = loop1 (fs, f0) where {
+    fun loop1 (fs: filenamelst, f0: filename): bool =
+      case+ fs of
+      | list_cons (f, fs) => if f = f0 then true else loop1 (fs, f0)
+      | list_nil () => false
+    // end of [loop1]
+  } // end of [val isexi]
+  val () = if isexi then let
+    val () = $Loc. prerr_location loc0
+    val () = prerr (": error(0)")
+    val () = prerr (": loading or including the file [");
+    val () = prerr_filename (f0)
+    val () = prerr ("] generates a looping trace that is given as follows:\n")
+    val () = loop2 (fs, f0) where {
+      fun loop2 (fs: filenamelst, f0: filename): void =
+        case+ fs of
+        | list_cons (f, fs) => let
+            val () = prerr_filename f in if (f <> f0) then loop2 (fs, f0)
+          end // end of [list_cons]
+        | list_nil () => ()
+    } // end of [val]
+    val () = prerr_newline ()
+  in
+    exit (1) // compilation aborts
+  end // end of [val]
+in
+  !the_filenamelst := fs; !the_filename := f0;
+end // end of [the_filenamelst_push_xit]
 
 end // end of [local]
 

@@ -44,7 +44,7 @@ staload "libats_lex_lexing.sats"
 
 (* ****** ****** *)
 
-staload "ats_filename.sats"
+staload Fil = "ats_filename.sats"
 
 (* ****** ****** *)
 
@@ -53,7 +53,7 @@ staload "ats_location.sats"
 (* ****** ****** *)
 
 typedef location = '{
-  filename= filename_t // file name
+  filename= $Fil.filename_t // file name
 , begpos_line= int
 , begpos_loff= int
 , begpos_toff= lint // beginning char position
@@ -67,7 +67,7 @@ assume location_t = location
 (* ****** ****** *)
 
 implement location_none = '{
-  filename= filename_none
+  filename= $Fil.filename_none
 , begpos_line= ~1
 , begpos_loff= ~1
 , begpos_toff= ~1L
@@ -163,7 +163,7 @@ end // end of [lte_location_location]
 (* ****** ****** *)
 
 implement fprint_location (pf | out, loc) = begin
-  fprint_filename (pf | out, loc.filename);
+  $Fil.fprint_filename (pf | out, loc.filename);
   fprint1_string (pf | out, ": ");
   fprint1_lint (pf | out, loc.begpos_toff+1L);
   fprint1_string (pf | out, "(line=");

@@ -1450,32 +1450,39 @@ end // end of [guad0ec_tr]
 
 (* ****** ****** *)
 
-fn i0nclude_tr
-  (loc: loc_t, stadyn: int, filename: fil_t): d1ec = let
-  val () = $Fil.the_filenamelst_push filename
+fn the_filenamelst_push_xit
+  (loc0: loc_t, filename: fil_t): void = let
+  extern castfn __cast (x: $Loc.location_t): $Fil.location_t
+in
+ $Fil.the_filenamelst_push_xit (__cast loc0, filename)
+end // end of [the_filenamelst_push_xit]
+
+(* ****** ****** *)
+    
+fn i0nclude_tr (
+  loc0: loc_t, stadyn: int, filename: fil_t
+  ) : d1ec = let
+  val () =
+    the_filenamelst_push_xit (loc0, filename)
+  // end of [val]
   val fullname = $Fil.filename_full filename
 (*
   val () = begin
-    print "Including ["; print fullname; print "] starts.";
-    print_newline ()
-  end
+    print "Including ["; print fullname; print "] starts."; print_newline ()
+  end // end of [val]
 *)
-
   val flag = $PM.posmark_pause_get ()
   val d0cs = $Par.parse_from_filename (stadyn, filename)
   val () = $PM.posmark_resume_set (flag)
 (*
   val () = begin
-    print "Including ["; print fullname; print "] finishes.";
-    print_newline ()
-  end
+    print "Including ["; print fullname; print "] finishes."; print_newline ()
+  end // end of [val]
 *)
-  val () = $Fil.the_filenamelst_pop ()
-
   val d1cs = d0eclst_tr d0cs
-
+  val () = $Fil.the_filenamelst_pop () // a loop is to be reported if it occurs
 in
-  d1ec_include (loc, d1cs)
+  d1ec_include (loc0, d1cs)
 end // end of [i0nclude_tr]
 
 (* ****** ****** *)
@@ -1513,9 +1520,7 @@ ats_trans1_string_suffix_is_dats (ats_ptr_type s0) {
 (* ****** ****** *)
 
 fn s0taload_tr (
-    loc: loc_t
-  , idopt: Option sym_t
-  , fil: fil_t
+    loc0: loc_t, idopt: Option sym_t, fil: fil_t
   ) : d1ec = let
   val fullname = $Fil.filename_full fil
   val od1cs = staload_file_search fullname
@@ -1531,10 +1536,10 @@ fn s0taload_tr (
         d1cs
       end // end of [Some_vt]
     | ~None_vt () => d1cs where {
-        val () = $Fil.the_filenamelst_push fil
+        val () = the_filenamelst_push_xit (loc0, fil)
         val flag = (
           if string_suffix_is_dats fullname then 1(*dyn*) else 0(*sta*)
-        ) : int
+        ) : int // end of [val]
         val pmstropt = $PM.posmark_xref_testnot_if (fullname)
         val isposmark = stropt_is_some pmstropt
         val () = if isposmark then begin
@@ -1546,7 +1551,6 @@ fn s0taload_tr (
           val () = $PM. posmark_file_make_htm (fullname, pmstropt) in
           $PM.posmark_disable (); $PM.posmark_pop ()
         end // end of [val]
-        val () = $Fil.the_filenamelst_pop ()
 (*
         val () = begin
           printf ("Translating [%s] begins.", @(fullname));
@@ -1562,11 +1566,12 @@ fn s0taload_tr (
           print_newline ()
         end // end of [val]
 *)
+        val () = $Fil.the_filenamelst_pop () // a loop is to be reported if it occurs
         val () = staload_file_insert (fullname, d1cs)
       } // end of [None_vt]
-  ) : d1eclst
+  ) : d1eclst // end of [val]
 in
-  d1ec_staload (loc, idopt, fil, 0(*loaded*), d1cs)
+  d1ec_staload (loc0, idopt, fil, 0(*loaded*), d1cs)
 end // end of [s0taload_tr]
 
 (* ****** ****** *)

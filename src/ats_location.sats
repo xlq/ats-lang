@@ -44,7 +44,7 @@ staload "libats_lex_lexing.sats"
 
 (* ****** ****** *)
 
-staload "ats_filename.sats"
+staload Fil = "ats_filename.sats"
 
 (* ****** ****** *)
 
@@ -57,7 +57,7 @@ val location_none : location_t (* nonexistent location *)
 //
 
 fun location_make
-  (f: filename_t, p1: position_t, p2: position_t):<> location_t
+  (f: $Fil.filename_t, p1: position_t, p2: position_t):<> location_t
   = "ats_location_make"
 
 fun location_end_make (loc: location_t):<> location_t
@@ -66,7 +66,7 @@ fun location_combine (_1: location_t, _2: location_t):<> location_t
 
 //
 
-fun location_filename_get (p: location_t): filename_t
+fun location_filename_get (p: location_t): $Fil.filename_t
 
 typedef lint = int_long_t0ype
 fun location_begpos_toff (p: location_t): lint
