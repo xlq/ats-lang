@@ -71,16 +71,24 @@ viewdef GEVEC_v
 
 (* ****** ****** *)
 
+prfun GEVEC_v_nil
+  {a:viewt@ype} {d:inc} {l:addr} ():<prf> GEVEC_v (a, 0, d, l)
+// end of [GEVEC_v_nil]
+
+prfun GEVEC_v_unnil
+  {a:viewt@ype} {d:inc} {l:addr} (pf: GEVEC_v (a, 0, d, l)):<prf> void
+// end of [GEVEC_v_unnil]
+
 prfun GEVEC_v_cons
   {a:viewt@ype}
-  {n:pos} {d:pos} {l:addr} {ofs:int} (
+  {n:pos} {d:inc} {l:addr} {ofs:int} (
     pf_mul: MUL (d, sizeof a, ofs), pf_at: a @ l, pf_vec: GEVEC_v (a, n-1, d, l+ofs)
   ) :<prf> GEVEC_v (a, n, d, l)
 // end of [GEVEC_v_cons]
 
 prfun GEVEC_v_uncons
   {a:viewt@ype}
-  {n:pos} {d:pos} {l:addr} {ofs:int} (
+  {n:pos} {d:inc} {l:addr} {ofs:int} (
     pf_mul: MUL (d, sizeof a, ofs), pf_vec: GEVEC_v (a, n, d, l)
   ) :<prf> (
     a @ l, GEVEC_v (a, n-1, d, l+ofs)
@@ -374,10 +382,10 @@ prfun GEMAT_v_trans
 (* ****** ****** *)
 
 dataprop MATVECINC (order, order, int, int) =
-  | {ld:pos} MATVECINCrowrow (row, row, ld, 1)
-  | {ld:pos} MATVECINCrowcol (row, col, ld, ld)
-  | {ld:pos} MATVECINCcolrow (col, row, ld, ld)
-  | {ld:pos} MATVECINCcolcol (col, col, ld, 1)
+  | {ld:inc} MATVECINCrowrow (row, row, ld, 1)
+  | {ld:inc} MATVECINCrowcol (row, col, ld, ld)
+  | {ld:inc} MATVECINCcolrow (col, row, ld, ld)
+  | {ld:inc} MATVECINCcolcol (col, col, ld, 1)
 
 // implemented in [genarrays.dats]
 fun MATVECINC_get
@@ -390,7 +398,7 @@ fun MATVECINC_get
 
 prfun GEMAT_v_uncons_row
   {a:viewt@ype} {m:pos;n:nat}
-  {ord:order} {ld:pos} {l:addr}
+  {ord:order} {ld:inc} {l:addr}
   (pf: GEMAT_v (a, m, n, ord, ld, l))
   :<prf> [d: inc] (
     MATVECINC (row, ord, ld, d)
@@ -401,7 +409,7 @@ prfun GEMAT_v_uncons_row
 
 prfun GEMAT_v_uncons_col
   {a:viewt@ype} {m:nat;n:pos}
-  {ord:order} {ld:pos} {l:addr}
+  {ord:order} {ld:inc} {l:addr}
   (pf: GEMAT_v (a, m, n, ord, ld, l))
   :<prf> [d: inc] (
     MATVECINC (col, ord, ld, d)
@@ -413,7 +421,7 @@ prfun GEMAT_v_uncons_col
 (* ****** ****** *)
 
 prfun GEVEC_v_of_GEMAT_v_row
-  {a1:viewt@ype} {ord:order} {n:nat} {ld:pos} {l:addr} (
+  {a1:viewt@ype} {ord:order} {n:nat} {ld:inc} {l:addr} (
     pf: GEMAT_v (a1, 1, n, ord, ld, l), ord: ORDER ord, ld: int ld
   ) :<> [d:inc] (
     MATVECINC (row, ord, ld, d)
@@ -426,7 +434,7 @@ prfun GEVEC_v_of_GEMAT_v_row
 
 prfun GEVEC_v_of_GEMAT_v_col
   {a1:viewt@ype}
-  {ord:order} {m:nat} {ld:pos} {l:addr} (
+  {ord:order} {m:nat} {ld:inc} {l:addr} (
     pf: GEMAT_v (a1, m, 1, ord, ld, l), ord: ORDER ord, ld: int ld
   ) :<> [d:inc] (
     MATVECINC (col, ord, ld, d)

@@ -47,7 +47,7 @@ dnl = checks for library functions
 dnl = checks for system services
 dnl = AC_CONFIG_FILES([file...])
 
-AC_INIT([ATS/Anairiats], [0.1.6], [hwxi@cs.bu.edu])
+AC_INIT([ATS/Anairiats], [0.2.0], [hwxi@cs.bu.edu])
 AC_CONFIG_SRCDIR([config.h.in])
 AC_CONFIG_HEADER([config.h])
 AC_CONFIG_FILES([config.mk])

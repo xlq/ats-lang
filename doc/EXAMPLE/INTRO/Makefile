@@ -10,50 +10,55 @@ checkall: compall cleanall
 
 ######
 
+ATSCC=$(ATSHOME)/bin/atscc
+ATSOPT=$(ATSHOME)/bin/atsopt
+
+######
+
 compall: \
   HelloWorld f91 fact1 fact2 fact3 fibs revarr revstr
 
 HelloWorld: HelloWorld.dats
 	rm -f HelloWorld
-	atscc -o HelloWorld HelloWorld.dats && ./HelloWorld
+	$(ATSCC) -o HelloWorld HelloWorld.dats && ./HelloWorld
 
 f91: f91.dats
 	rm -f f91
-	atscc -o f91 f91.dats && ./f91 0
+	$(ATSCC) -o f91 f91.dats && ./f91 0
 
 fact1: fact1.dats
-	atscc -o fact1 fact1.dats && ./fact1 10
+	$(ATSCC) -o fact1 fact1.dats && ./fact1 10
 
 fact2: fact2.dats
-	atscc -o fact2 fact2.dats && ./fact2 10
+	$(ATSCC) -o fact2 fact2.dats && ./fact2 10
 
 fact3: fact3.dats
-	atscc -o fact3 fact3.dats -lats -lgmp && ./fact3 100
+	$(ATSCC) -o fact3 fact3.dats -lats -lgmp && ./fact3 100
 
 fact_in_c: fact_in_c.dats
-	atscc -o fact_in_c fact_in_c.dats && ./fact_in_c 10
+	$(ATSCC) -o fact_in_c fact_in_c.dats && ./fact_in_c 10
 
 fibs: fibs.dats
-	atscc -o fibs fibs.dats -lats -lgmp && ./fibs 40
+	$(ATSCC) -o fibs fibs.dats -lats -lgmp && ./fibs 40
 
 revarr: revarr.dats
-	atscc -o revarr revarr.dats && ./revarr
+	$(ATSCC) -o revarr revarr.dats && ./revarr
 
 revstr: revstr.dats
-	atscc -o revstr revstr.dats && ./revstr "abcdefghijklmnopqrstuvwxyz"
+	$(ATSCC) -o revstr revstr.dats && ./revstr "abcdefghijklmnopqrstuvwxyz"
 
 ######
 
 html::
-	atsopt --posmark_html -d HelloWorld.dats > HelloWorld_dats.html
-	atsopt --posmark_html -d f91.dats > f91_dats.html
-	atsopt --posmark_html -d fact1.dats > fact1_dats.html
-	atsopt --posmark_html -d fact2.dats > fact2_dats.html
-	atsopt --posmark_html -d fact3.dats > fact3_dats.html
-	atsopt --posmark_html -d fact_in_c.dats > fact_in_c_dats.html
-	atsopt --posmark_html -d fibs.dats > fibs_dats.html
-	atsopt --posmark_html -d revarr.dats > revarr_dats.html
-	atsopt --posmark_html -d revstr.dats > revstr_dats.html
+	$(ATSOPT) --posmark_html -d HelloWorld.dats > HelloWorld_dats.html
+	$(ATSOPT) --posmark_html -d f91.dats > f91_dats.html
+	$(ATSOPT) --posmark_html -d fact1.dats > fact1_dats.html
+	$(ATSOPT) --posmark_html -d fact2.dats > fact2_dats.html
+	$(ATSOPT) --posmark_html -d fact3.dats > fact3_dats.html
+	$(ATSOPT) --posmark_html -d fact_in_c.dats > fact_in_c_dats.html
+	$(ATSOPT) --posmark_html -d fibs.dats > fibs_dats.html
+	$(ATSOPT) --posmark_html -d revarr.dats > revarr_dats.html
+	$(ATSOPT) --posmark_html -d revstr.dats > revstr_dats.html
 
 ######
 
