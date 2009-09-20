@@ -84,20 +84,20 @@ implement{a} GEVEC_ptr_set_elt_at (V, d, i, x) = () where {
 
 (* ****** ****** *)
 
-// X <- alpha, ..., alpha
-implement{a} GEVEC_ptr_initialize_elt
-  {m} {incX} (m, X, incX, alpha) = let
+// X <- alpha
+implement{a}
+  GEVEC_ptr_initialize_elt
+    {m} {incX} (X, m, incX, alpha) = let
   val incX = size1_of_int1 (incX)
   val (pf_mul | ofs) = mul2_size1_size1 (incX, sizeof<a>)
   fun loop {n:nat} {lX:addr} .<n>. (
       pf_vec: !GEVEC_v (a?, n, incX, lX) >> GEVEC_v (a, n, incX, lX)
-    | n: int n
-    , pX: ptr lX
+    | pX: ptr lX, n: int n
     ) :<cloref> void =
     if n > 0 then let
       prval (pf_at, pf1_vec) = GEVEC_v_uncons {a?} (pf_mul, pf_vec)
       val () = !pX := alpha
-      val () = loop (pf1_vec | n-1, pX + ofs)
+      val () = loop (pf1_vec | pX + ofs, n-1)
       prval () = pf_vec := GEVEC_v_cons {a} (pf_mul, pf_at, pf1_vec)
     in
       // nothing
@@ -107,9 +107,9 @@ implement{a} GEVEC_ptr_initialize_elt
     in
       // nothing
     end // end of [if]
-  // end of [loop
+  // end of [loop]
 in
-   loop (view@ X | m, &X)
+   loop (view@ X | &X, m)
 end // end of [GEVEC_ptr_initialize_elt]
 
 (* ****** ****** *)
@@ -565,8 +565,7 @@ implement{a}
   fun loop_row {k:nat} {lx:addr} .<k>. (
       pf_gmat: !GEMAT_v (a?, k, n, row, ld, lx)
                  >> GEMAT_v (a, k, n, row, ld, lx)
-    | k: int k
-    , pX: ptr lx
+    | pX: ptr lx, k: int k
     ) :<cloref> void =
     if k > 0 then let
       val (pfX1_gmat, pfX2_gmat, fpf_gmat | pX1, pX2) =
@@ -574,9 +573,9 @@ implement{a}
       prval (pf2_inc, pfX1_gvec, fpfX1_gmat) =
         GEVEC_v_of_GEMAT_v_row (pfX1_gmat, ORDERrow, ld)
       prval MATVECINCrowrow () = pf2_inc
-      val () = GEVEC_ptr_initialize_elt<a> (n, !pX1, 1(*incX*), alpha)
+      val () = GEVEC_ptr_initialize_elt<a> (!pX1, n, 1(*incX*), alpha)
       prval () = pfX1_gmat := fpfX1_gmat (pfX1_gvec)
-      val () = loop_row (pfX2_gmat | k-1, pX2)
+      val () = loop_row (pfX2_gmat | pX2, k-1)
       prval () = pf_gmat := fpf_gmat {a} (pfX1_gmat, pfX2_gmat)
     in
       // nothing
@@ -590,8 +589,7 @@ implement{a}
   fun loop_col {k:nat} {lx:addr} .<k>. (
       pf_gmat: !GEMAT_v (a?, m, k, col, ld, lx)
                  >> GEMAT_v (a, m, k, col, ld, lx)
-    | k: int k
-    , pX: ptr lx
+    | pX: ptr lx, k: int k
     ) :<cloref> void =
     if k > 0 then let
       val (pfX1_gmat, pfX2_gmat, fpf_gmat | pX1, pX2) =
@@ -599,9 +597,9 @@ implement{a}
       prval (pf2_inc, pfX1_gvec, fpfX1_gmat) =
         GEVEC_v_of_GEMAT_v_col (pfX1_gmat, ORDERcol, ld)
       prval MATVECINCcolcol () = pf2_inc
-      val () = GEVEC_ptr_initialize_elt<a> (m, !pX1, 1(*incX*), alpha)
+      val () = GEVEC_ptr_initialize_elt<a> (!pX1, m, 1(*incX*), alpha)
       prval () = pfX1_gmat := fpfX1_gmat (pfX1_gvec)
-      val () = loop_col (pfX2_gmat | k-1, pX2)
+      val () = loop_col (pfX2_gmat | pX2, k-1)
       prval () = pf_gmat := fpf_gmat {a} (pfX1_gmat, pfX2_gmat)
     in
       // nothing
@@ -614,8 +612,8 @@ implement{a}
   // end of [loop_col]
 in
    case+ ord of
-   | ORDERrow () => loop_row (view@ X | m, &X)
-   | ORDERcol () => loop_col (view@ X | n, &X)
+   | ORDERrow () => loop_row (view@ X | &X, m)
+   | ORDERcol () => loop_col (view@ X | &X, n)
 end // end of [GEMAT_ptr_initialize_elt]
 
 (* ****** ****** *)
