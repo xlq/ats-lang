@@ -110,7 +110,7 @@ implement{a} GEVEC_ptr_initialize_elt
   // end of [loop
 in
    loop (view@ X | m, &X)
-end // end of [GEVEC_init]
+end // end of [GEVEC_ptr_initialize_elt]
 
 (* ****** ****** *)
 
@@ -555,6 +555,42 @@ implement{a1} GEMAT_ptr_split2x2
   (pf_mat | p_mat, ord, lda, i, j) =
   GEMAT_ptr_split2x2_tsz {a1} (pf_mat | p_mat, ord, lda, i, j, sizeof<a1>)
 // end of [GEMAT_ptr_split2x2]
+
+(* ****** ****** *)
+
+// X <- alpha
+implement{a}
+  GEMAT_col_ptr_initialize_elt
+    {m,n} {ldx} (m, n, X, ldx, alpha) = let
+  prval pf_inc = MATVECINCcolcol {ldx} ()
+  fun loop {k:nat} {lx:addr} .<k>. (
+      pf_gmat: !GEMAT_v (a?, m, k, col, ldx, lx)
+                 >> GEMAT_v (a, m, k, col, ldx, lx)
+    | k: int k
+    , pX: ptr lx
+    ) :<cloref> void =
+    if k > 0 then let
+      val (pfX1_gmat, pfX2_gmat, fpf_gmat | pX1, pX2) =
+        GEMAT_ptr_split1x2<a?> (pf_gmat | pX, ORDERcol, ldx, 1)
+      prval (pf2_inc, pfX1_gvec, fpfX1_gmat) =
+        GEVEC_v_of_GEMAT_v_col (pfX1_gmat, ORDERcol, ldx)
+      prval MATVECINCcolcol () = pf2_inc
+      val () = GEVEC_ptr_initialize_elt<a> (m, !pX1, 1(*incX*), alpha)
+      prval () = pfX1_gmat := fpfX1_gmat (pfX1_gvec)
+      val () = loop (pfX2_gmat | k-1, pX2)
+      prval () = pf_gmat := fpf_gmat {a} (pfX1_gmat, pfX2_gmat)
+    in
+      // nothing
+    end else let
+      prval () = GEMAT_v_col_unnil (pf_gmat)
+      prval () = pf_gmat := GEMAT_v_col_nil {a} {m} {col} {ldx} {lx} ()
+    in
+      // nothing
+    end // end of [if]
+  // end of [loop]
+in
+   loop (view@ X | n, &X)
+end // end of [GEMAT_ptr_initialize_elt]
 
 (* ****** ****** *)
 
