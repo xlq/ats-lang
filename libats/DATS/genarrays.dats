@@ -315,7 +315,7 @@ end // end of [GEMAT_ptr_takeout_tsz_dummy]
 
 implement{a} GEMAT_ptr_takeout (pf_mat | p, ord, lda, i, j) =
   GEMAT_ptr_takeout_tsz {a} (pf_mat | p, ord, lda, i, j, sizeof<a>)
-// end of [GEMAT_takeout]
+// end of [GEMAT_ptr_takeout]
 
 implement{a} GEMAT_ptr_get_elt_at (A, ord, lda, i, j) = let
   val (pf, fpf | p) =
@@ -559,15 +559,14 @@ implement{a1} GEMAT_ptr_split2x2
 (* ****** ****** *)
 
 // X <- alpha
-implement{a}
-  GEMAT_ptr_initialize_elt
-    {ord} {m,n} {ld} (X, ord, m, n, ld, alpha) = let
-  fun loop_row {k:nat} {lx:addr} .<k>. (
-      pf_gmat: !GEMAT_v (a?, k, n, row, ld, lx)
-                 >> GEMAT_v (a, k, n, row, ld, lx)
-    | pX: ptr lx, k: int k
+implement{a} GEMAT_ptr_initialize_elt
+  {ord} {m,n} {ld} (X, ord, m, n, ld, alpha) = let
+  fun loop_row {m,n:nat} {lx:addr} .<m>. (
+      pf_gmat: !GEMAT_v (a?, m, n, row, ld, lx)
+                 >> GEMAT_v (a, m, n, row, ld, lx)
+    | pX: ptr lx, m: int m, n: int n
     ) :<cloref> void =
-    if k > 0 then let
+    if m > 0 then let
       val (pfX1_gmat, pfX2_gmat, fpf_gmat | pX1, pX2) =
         GEMAT_ptr_split2x1<a?> (pf_gmat | pX, ORDERrow, ld, 1)
       prval (pf2_inc, pfX1_gvec, fpfX1_gmat) =
@@ -575,7 +574,7 @@ implement{a}
       prval MATVECINCrowrow () = pf2_inc
       val () = GEVEC_ptr_initialize_elt<a> (!pX1, n, 1(*incX*), alpha)
       prval () = pfX1_gmat := fpfX1_gmat (pfX1_gvec)
-      val () = loop_row (pfX2_gmat | pX2, k-1)
+      val () = loop_row (pfX2_gmat | pX2, m-1, n)
       prval () = pf_gmat := fpf_gmat {a} (pfX1_gmat, pfX2_gmat)
     in
       // nothing
@@ -586,34 +585,18 @@ implement{a}
       // nothing
     end // end of [if]
   // end of [loop_row]
-  fun loop_col {k:nat} {lx:addr} .<k>. (
-      pf_gmat: !GEMAT_v (a?, m, k, col, ld, lx)
-                 >> GEMAT_v (a, m, k, col, ld, lx)
-    | pX: ptr lx, k: int k
-    ) :<cloref> void =
-    if k > 0 then let
-      val (pfX1_gmat, pfX2_gmat, fpf_gmat | pX1, pX2) =
-        GEMAT_ptr_split1x2<a?> (pf_gmat | pX, ORDERcol, ld, 1)
-      prval (pf2_inc, pfX1_gvec, fpfX1_gmat) =
-        GEVEC_v_of_GEMAT_v_col (pfX1_gmat, ORDERcol, ld)
-      prval MATVECINCcolcol () = pf2_inc
-      val () = GEVEC_ptr_initialize_elt<a> (!pX1, m, 1(*incX*), alpha)
-      prval () = pfX1_gmat := fpfX1_gmat (pfX1_gvec)
-      val () = loop_col (pfX2_gmat | pX2, k-1)
-      prval () = pf_gmat := fpf_gmat {a} (pfX1_gmat, pfX2_gmat)
-    in
-      // nothing
-    end else let
-      prval () = GEMAT_v_col_unnil (pf_gmat)
-      prval () = pf_gmat := GEMAT_v_col_nil {a} {m} {col} {ld} {lx} ()
-    in
-      // nothing
-    end // end of [if]
-  // end of [loop_col]
 in
    case+ ord of
-   | ORDERrow () => loop_row (view@ X | &X, m)
-   | ORDERcol () => loop_col (view@ X | &X, n)
+   | ORDERrow () => loop_row (view@ X | &X, m, n)
+   | ORDERcol () => let
+       prval TRANORDcolrow () =
+         GEMAT_v_trans {a?} {col} (view@ X)
+       // end of [prval]
+       val () = loop_row (view@ X | &X, n, m)
+       prval TRANORDrowcol () = GEMAT_v_trans {a} {row} (view@ X)
+     in
+       // nothing
+     end // end of [ORDERcol]
 end // end of [GEMAT_ptr_initialize_elt]
 
 (* ****** ****** *)
