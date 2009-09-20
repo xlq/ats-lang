@@ -51,6 +51,14 @@
 
 (* ****** ****** *)
 
+fun eq_ptr_ptr (p1: ptr, p2: ptr):<> bool = "atspre_peq"
+and neq_ptr_ptr (p1: ptr, p2: ptr):<> bool = "atspre_pneq"
+
+overload = with eq_ptr_ptr
+overload <> with neq_ptr_ptr
+
+(* ****** ****** *)
+
 (*
 // declared in [integer_ptr.sats]
 castfn ptr_of_uintptr (u: uintptr): ptr // = "atspre_ptr_of_uintptr"
