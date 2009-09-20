@@ -560,36 +560,62 @@ implement{a1} GEMAT_ptr_split2x2
 
 // X <- alpha
 implement{a}
-  GEMAT_col_ptr_initialize_elt
-    {m,n} {ldx} (m, n, X, ldx, alpha) = let
-  prval pf_inc = MATVECINCcolcol {ldx} ()
-  fun loop {k:nat} {lx:addr} .<k>. (
-      pf_gmat: !GEMAT_v (a?, m, k, col, ldx, lx)
-                 >> GEMAT_v (a, m, k, col, ldx, lx)
+  GEMAT_ptr_initialize_elt
+    {ord} {m,n} {ld} (X, ord, m, n, ld, alpha) = let
+  fun loop_row {k:nat} {lx:addr} .<k>. (
+      pf_gmat: !GEMAT_v (a?, k, n, row, ld, lx)
+                 >> GEMAT_v (a, k, n, row, ld, lx)
     | k: int k
     , pX: ptr lx
     ) :<cloref> void =
     if k > 0 then let
       val (pfX1_gmat, pfX2_gmat, fpf_gmat | pX1, pX2) =
-        GEMAT_ptr_split1x2<a?> (pf_gmat | pX, ORDERcol, ldx, 1)
+        GEMAT_ptr_split2x1<a?> (pf_gmat | pX, ORDERrow, ld, 1)
       prval (pf2_inc, pfX1_gvec, fpfX1_gmat) =
-        GEVEC_v_of_GEMAT_v_col (pfX1_gmat, ORDERcol, ldx)
+        GEVEC_v_of_GEMAT_v_row (pfX1_gmat, ORDERrow, ld)
+      prval MATVECINCrowrow () = pf2_inc
+      val () = GEVEC_ptr_initialize_elt<a> (n, !pX1, 1(*incX*), alpha)
+      prval () = pfX1_gmat := fpfX1_gmat (pfX1_gvec)
+      val () = loop_row (pfX2_gmat | k-1, pX2)
+      prval () = pf_gmat := fpf_gmat {a} (pfX1_gmat, pfX2_gmat)
+    in
+      // nothing
+    end else let
+      prval () = GEMAT_v_row_unnil (pf_gmat)
+      prval () = pf_gmat := GEMAT_v_row_nil {a} {n} {row} {ld} {lx} ()
+    in
+      // nothing
+    end // end of [if]
+  // end of [loop_row]
+  fun loop_col {k:nat} {lx:addr} .<k>. (
+      pf_gmat: !GEMAT_v (a?, m, k, col, ld, lx)
+                 >> GEMAT_v (a, m, k, col, ld, lx)
+    | k: int k
+    , pX: ptr lx
+    ) :<cloref> void =
+    if k > 0 then let
+      val (pfX1_gmat, pfX2_gmat, fpf_gmat | pX1, pX2) =
+        GEMAT_ptr_split1x2<a?> (pf_gmat | pX, ORDERcol, ld, 1)
+      prval (pf2_inc, pfX1_gvec, fpfX1_gmat) =
+        GEVEC_v_of_GEMAT_v_col (pfX1_gmat, ORDERcol, ld)
       prval MATVECINCcolcol () = pf2_inc
       val () = GEVEC_ptr_initialize_elt<a> (m, !pX1, 1(*incX*), alpha)
       prval () = pfX1_gmat := fpfX1_gmat (pfX1_gvec)
-      val () = loop (pfX2_gmat | k-1, pX2)
+      val () = loop_col (pfX2_gmat | k-1, pX2)
       prval () = pf_gmat := fpf_gmat {a} (pfX1_gmat, pfX2_gmat)
     in
       // nothing
     end else let
       prval () = GEMAT_v_col_unnil (pf_gmat)
-      prval () = pf_gmat := GEMAT_v_col_nil {a} {m} {col} {ldx} {lx} ()
+      prval () = pf_gmat := GEMAT_v_col_nil {a} {m} {col} {ld} {lx} ()
     in
       // nothing
     end // end of [if]
-  // end of [loop]
+  // end of [loop_col]
 in
-   loop (view@ X | n, &X)
+   case+ ord of
+   | ORDERrow () => loop_row (view@ X | m, &X)
+   | ORDERcol () => loop_col (view@ X | n, &X)
 end // end of [GEMAT_ptr_initialize_elt]
 
 (* ****** ****** *)
