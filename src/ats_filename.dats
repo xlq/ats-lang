@@ -56,6 +56,7 @@ staload Sym = "ats_symbol.sats"
 overload = with $Sym.eq_symbol_symbol
 overload <> with $Sym.neq_symbol_symbol
 
+// HX: this is now handled in [ats_main.dats] 
 // dynload "ats_symbol.dats" // this file needs to be loaded first!!!
 
 (* ****** ****** *)

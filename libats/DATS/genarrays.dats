@@ -88,13 +88,13 @@ implement{a} GEVEC_ptr_set_elt_at (V, d, i, x) = () where {
 implement{a} GEVEC_ptr_initialize_elt
   {m} {incX} (m, X, incX, alpha) = let
   val incX = size1_of_int1 (incX)
+  val (pf_mul | ofs) = mul2_size1_size1 (incX, sizeof<a>)
   fun loop {n:nat} {lX:addr} .<n>. (
       pf_vec: !GEVEC_v (a?, n, incX, lX) >> GEVEC_v (a, n, incX, lX)
     | n: int n
     , pX: ptr lX
     ) :<cloref> void =
     if n > 0 then let
-      val (pf_mul | ofs) = mul2_size1_size1 (incX, sizeof<a>)
       prval (pf_at, pf1_vec) = GEVEC_v_uncons {a?} (pf_mul, pf_vec)
       val () = !pX := alpha
       val () = loop (pf1_vec | n-1, pX + ofs)
@@ -119,13 +119,13 @@ implement
     {a} {v} {vt} {n} {d}
     (pf | base, f, vsz, inc, tsz, env) = let
   val inc = size1_of_int1 (inc)
+  val (pf_mul | ofs) = mul2_size1_size1 (inc, tsz)
   fun loop {l:addr} {n:nat} .<n>. (
       pf: !v
     , pf_vec: !GEVEC_v (a, n, d, l)
     | p: ptr l, n: int n, env: !vt
     ) :<cloref> void =
     if n > 0 then let
-      val (pf_mul | ofs) = mul2_size1_size1 (inc, tsz)
       prval (pf_at, pf1_vec) = GEVEC_v_uncons {a} (pf_mul, pf_vec)
       val () = f (pf | !p, env)
       val () = loop (pf, pf1_vec | p+ofs, n-1, env)
@@ -174,6 +174,7 @@ implement
     {a} {v} {vt} {n} {d}
     (pf | base, f, vsz, inc, tsz, env) = let
   val inc = size1_of_int1 (inc)
+  val (pf_mul | ofs) = mul2_size1_size1 (inc, tsz)
   fun loop {l:addr}
     {ni:nat | ni <= n} .<ni>. (
       pf: !v
@@ -181,7 +182,6 @@ implement
     | p: ptr l, ni: int ni, env: !vt
     ) :<cloref> void =
     if ni > 0 then let
-      val (pf_mul | ofs) = mul2_size1_size1 (inc, tsz)
       prval (pf_at, pf1_vec) = GEVEC_v_uncons {a} (pf_mul, pf_vec)
       val () = f (pf | vsz - ni, !p, env)
       val () = loop (pf, pf1_vec | p+ofs, ni-1, env)
@@ -214,6 +214,7 @@ implement
     {a} {v} {vt} {n} {d}
     (pf | base, f, vsz, inc, tsz, env) = let
   val inc = size1_of_int1 (inc)
+  val (pf_mul | ofs) = mul2_size1_size1 (inc, tsz)
   fun loop {l:addr}
     {ni:nat | ni <= n} .<ni>. (
       pf: !v
@@ -223,7 +224,6 @@ implement
     , ni: int ni, env: !vt
     ) :<cloref> void =
     if ni > 0 then let
-      val (pf_mul | ofs) = mul2_size1_size1 (inc, tsz)
       prval (pf_at, pf1_vec) = GEVEC_v_uncons {a} (pf_mul, pf_vec)
       val () = f (pf | vsz - ni, !p, env)
       val () = loop (pf, pf1_vec | p+ofs, f, ni-1, env)

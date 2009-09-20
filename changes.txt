@@ -5,6 +5,9 @@ ats-lang-anairiats-0.2.0
 1. Adding support for implementing variadic functions in ATS.
    Please see the files: $ATSHOME/libc/?ATS/stdarg.?ats
 
+2. Adding a check to detect looping caused by recursive staloading
+   and/or including
+
 ########################################################################
 
 ats-lang-anairiats-0.1.6:
