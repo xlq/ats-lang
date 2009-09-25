@@ -51,6 +51,18 @@
 
 (* ****** ****** *)
 
+fun lt_ptr_ptr (p1: ptr, p2: ptr):<> bool = "atspre_plt"
+and lte_ptr_ptr (p1: ptr, p2: ptr):<> bool = "atspre_plte"
+
+overload < with lt_ptr_ptr
+overload <= with lte_ptr_ptr
+
+fun gt_ptr_ptr (p1: ptr, p2: ptr):<> bool = "atspre_pgt"
+and gte_ptr_ptr (p1: ptr, p2: ptr):<> bool = "atspre_pgte"
+
+overload > with gt_ptr_ptr
+overload >= with gte_ptr_ptr
+
 fun eq_ptr_ptr (p1: ptr, p2: ptr):<> bool = "atspre_peq"
 and neq_ptr_ptr (p1: ptr, p2: ptr):<> bool = "atspre_pneq"
 
@@ -177,7 +189,8 @@ fun ptr_free {a:viewt@ype} {l:addr}
 
 // template
 fun{a:t@ype} ptr_get_t_main {v:view} {l:addr}
-  (pf1: !v, pf2: vcontain_p (v, a @ l) | p: ptr l):<> a
+  (pf1: !v, pf2: vsubr_p (a @ l, v) | p: ptr l):<> a
+// end of ..
 
 // implemented in [prelude/DATS/pointer.dats]
 fun{a:t@ype} ptr_get_t {l:addr} (pf: !a @ l | p: ptr l):<> a
@@ -189,10 +202,10 @@ fun{a:t@ype} ptr_set_t {l:addr}
 (* ****** ****** *)
 
 // template
-fun{a:t@ype} ptr_move_t_main {v:view} {l1,l2:addr}
-  (pf1: !v, pf2: vcontain_p (v, a @ l1), pf3: !(a?) @ l2 >> a @ l2 |
-   p1: ptr l1, p2: ptr l2)
-  :<> void
+fun{a:t@ype} ptr_move_t_main {v:view} {l1,l2:addr} (
+    pf1: !v, pf2: vsubr_p (a @ l1, v), pf3: !(a?) @ l2 >> a @ l2
+  | p1: ptr l1, p2: ptr l2
+  ) :<> void
 
 // implemented in [prelude/DATS/pointer.dats]
 fun{a:t@ype} ptr_move_t {l1,l2:addr}

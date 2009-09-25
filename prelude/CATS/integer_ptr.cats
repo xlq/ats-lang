@@ -191,6 +191,12 @@ atspre_prerr_intptr (ats_intptr_type i) {
 // uintptr_t: unsigned integers of one word size
 
 static inline
+ats_uint_type
+atspre_uint_of_uintptr (ats_uintptr_type u) {
+  return (ats_uint_type)(uintptr_t)u ;
+}
+
+static inline
 ats_uintptr_type
 atspre_uintptr_of_uint (ats_uint_type u) {
   return (ats_uintptr_type)(uintptr_t)u ;

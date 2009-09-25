@@ -39,8 +39,8 @@
 
 (* ****** ****** *)
 
-// declared in [prelude/SATS/vcontain.sats]
-implement strbuf_vcontain_lemma0 () = vcontain_refl ()
+// declared in [prelude/SATS/string.sats]
+implement strbuf_vsubr_lemma0 () = vsubr_refl ()
 
 (* ****** ****** *)
 
@@ -312,7 +312,7 @@ end // end of [local]
 ats_ulint_type
 atspre_string_hash_33 (ats_ptr_type s0) {
   unsigned long int hash_val ; unsigned char *s; int c;
-  hash_val = 31415926535898UL ;
+  hash_val = 3141593UL ;
 
   s = (unsigned char*)s0 ;
   while (1) {

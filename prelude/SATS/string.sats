@@ -70,8 +70,11 @@ viewdef strbuf_v
 
 viewdef strbuf_v (l:addr) = [m,n:nat] strbuf (m, n) @ l
 
-prfun strbuf_vcontain_lemma0
-  {m,n:nat} {l:addr} (): strbuf_v l <= strbuf_v (m, n, l)
+(* ****** ****** *)
+
+prfun strbuf_vsubr_lemma0 // implemneted in [string.dats]
+  {m,n:nat} {l:addr} (): vsubr_p (strbuf_v l, strbuf_v (m, n, l))
+// end of ...
 
 (* ****** ****** *)
 
@@ -177,7 +180,7 @@ fun lt_string_string (s1: string, s2: string):<> bool
 overload < with lt_string_string
 
 fun lt_string_string__main {v:view} {l1,l2:addr} (
-    pf: !v, pf1: strbuf_v l1 <= v, pf2: strbuf_v l2 <= v
+    pf: !v, pf1: vsubr_p (strbuf_v l1, v), pf2: vsubr_p (strbuf_v l2, v)
   | p1: ptr l1, p2: ptr l2
   ) :<> bool
   = "atspre_lt_string_string"
@@ -189,7 +192,7 @@ fun lte_string_string (s1: string, s2: string):<> bool
 overload <= with lte_string_string
 
 fun lte_string_string__main {v:view} {l1,l2:addr} (
-    pf: !v, pf1: strbuf_v l1 <= v, pf2: strbuf_v l2 <= v
+    pf: !v, pf1: vsubr_p (strbuf_v l1, v), pf2: vsubr_p (strbuf_v l2, v)
   | p1: ptr l1, p2: ptr l2
   ) :<> bool
   = "atspre_lte_string_string"
@@ -201,7 +204,7 @@ fun gt_string_string (s1: string, s2: string):<> bool
 overload > with gt_string_string
 
 fun gt_string_string__main {v:view} {l1,l2:addr} (
-    pf: !v, pf1: strbuf_v l1 <= v, pf2: strbuf_v l2 <= v
+    pf: !v, pf1: vsubr_p (strbuf_v l1, v), pf2: vsubr_p (strbuf_v l2, v)
   | p1: ptr l1, p2: ptr l2
   ) :<> bool
   = "atspre_gt_string_string"
@@ -213,7 +216,7 @@ fun gte_string_string (s1: string, s2: string):<> bool
 overload >= with gte_string_string
 
 fun gte_string_string__main {v:view} {l1,l2:addr} (
-    pf: !v, pf1: strbuf_v l1 <= v, pf2: strbuf_v l2 <= v
+    pf: !v, pf1: vsubr_p (strbuf_v l1, v), pf2: vsubr_p (strbuf_v l2, v)
   | p1: ptr l1, p2: ptr l2
   ) :<> bool
   = "atspre_gte_string_string"
@@ -225,7 +228,7 @@ fun eq_string_string (s1: string, s2: string):<> bool
 overload = with eq_string_string
 
 fun eq_string_string__main {v:view} {l1,l2:addr} (
-    pf: !v, pf1: strbuf_v l1 <= v, pf2: strbuf_v l2 <= v
+    pf: !v, pf1: vsubr_p (strbuf_v l1, v), pf2: vsubr_p (strbuf_v l2, v)
   | p1: ptr l1, p2: ptr l2
   ) :<> bool
   = "atspre_eq_string_string"
@@ -237,7 +240,7 @@ fun neq_string_string (s1: string, s2: string):<> bool
 overload <> with neq_string_string
 
 fun neq_string_string__main {v:view} {l1,l2:addr} (
-    pf: !v, pf1: strbuf_v l1 <= v, pf2: strbuf_v l2 <= v
+    pf: !v, pf1: vsubr_p (strbuf_v l1, v), pf2: vsubr_p (strbuf_v l2, v)
   | p1: ptr l1, p2: ptr l2
   ) :<> bool
   = "atspre_neq_string_string"
@@ -249,7 +252,7 @@ fun compare_string_string (s1: string, s2: string):<> Sgn
 overload compare with compare_string_string
 
 fun compare_string_string__main {v:view} {l1,l2:addr} (
-    pf: !v, pf1: strbuf_v l1 <= v, pf2: strbuf_v l2 <= v
+    pf: !v, pf1: vsubr_p (strbuf_v l1, v), pf2: vsubr_p (strbuf_v l2, v)
   | p1: ptr l1, p2: ptr l2
   ) :<> Sgn
   = "atspre_compare_string_string"
@@ -270,7 +273,7 @@ overload fprint_string with fprint1_string
 overload fprint with fprint_string
 
 fun fprint1_string__main {v:view} {l:addr}
-  (pf: !v, fpf: strbuf_v l <= v | out: FILEref, p: ptr l):<!exnref> void
+  (pf: !v, fpf: vsubr_p (strbuf_v l, v) | out: FILEref, p: ptr l):<!exnref> void
   = "atspre_fprint_string"
 
 (* ****** ****** *)
@@ -428,7 +431,7 @@ fun string_make_substring__bufptr
 fun string_make_substring__main {v:view}
   {m,n:int} {st,ln:nat | st+ln <= n} {l:addr} (
     pf: !v
-  , pf_con: strbuf_v (m, n, l) <= v
+  , pf_con: vsubr_p (strbuf_v (m, n, l), v)
   | p: ptr l, st: size_t st, ln: size_t ln
   ) :<> [m:nat] [l:addr] strbufptr_gc (m, ln, l)
   = "atspre_string_make_substring"
@@ -450,11 +453,11 @@ fun string1_append__bufptr {i,j:nat}
   :<> [m:nat] [l:addr] strbufptr_gc (m, i+j, l)
   = "atspre_string_append"
 
-fun string1_append__main
-  {v:view} {m1,i:nat} {m2,j:nat} {l1,l2:addr} (
+fun string1_append__main {v:view}
+  {m1,i:nat} {m2,j:nat} {l1,l2:addr} (
     pf: !v
-  , pf1: strbuf (m1,i) <= v
-  , pf2: strbuf (m2,j) <= v
+  , pf1: vsubr_p (strbuf_v (m1, i, l1), v)
+  , pf2: vsubr_p (strbuf_v (m2, j, l2), v)
   | p1: ptr l1, p2: ptr l2
   ) :<> [m:nat] [l:addr] strbufptr_gc (m, i+j, l)
   = "atspre_string_append"

@@ -49,41 +49,54 @@
 
 (* ****** ****** *)
 
-absprop vcontain_p (v1:view-, v2:view+)
+prfun vsubr_intr {v1,v2:view}
+  (fpf: v2 -<prf> [v:view] (v1, v)): vsubr_p (v1, v2)
+// implemented in [vsubrw.dats]
 
-prfun vcontain_make {v1:view} {v2:view}
- (fpf: v1 -<prf> [v:view] @(v2, v)): vcontain_p (v1, v2)
+prfun vsubr_elim {v1,v2:view}
+  (pf: vsubr_p (v1, v2)):<> v2 -<prf> [v:view] (v1, v)
+// implemented in [vsubrw.dats]
 
-(* ****** ****** *)
+prfun vsubr_refl {v:view} (): vsubr_p (v, v)
 
-prfun vcontain_refl {v:view} (): vcontain_p (v, v)
-
-prfun vcontain_trans {v1,v2,v3:view}
-  (pf12: vcontain_p (v1, v2), pf23: vcontain_p (v2, v3)): vcontain_p (v1, v3)
+prfun vsubr_trans {v1,v2,v3:view}
+  (pf12: vsubr_p (v1, v2), pf23: vsubr_p (v2, v3)): vsubr_p (v1, v3)
 // end of [vcontain_trans]
 
+prfun vsubr_of_vsubw {v1,v2:view} (pf: vsubw_p (v1, v2)): vsubr_p (v1, v2)
+
+prfun vsubr_tup_2_0 {v0,v1:view} (): vsubr_p (v0, @(v0, v1))
+prfun vsubr_tup_2_1 {v0,v1:view} (): vsubr_p (v1, @(v0, v1))
+
 (* ****** ****** *)
 
-// implemented in [vcontain.dats]
-prfun vcontain_tup_2_0 {v0,v1:view} (): vcontain_p (@(v0, v1), v0)
-prfun vcontain_tup_2_1 {v0,v1:view} (): vcontain_p (@(v0, v1), v1)
+prfun vsubw_intr {v1,v2:view}
+  (fpf: v2 -<prf> (v1, v1 -<lin,prf> v2)): vsubw_p (v1, v2)
+// implemented in [vsubrw.dats]
+
+prfun vsubw_elim {v1,v2:view}
+  (pf: vsubw_p (v1, v2)):<> v2 -<prf> (v1, v1 -<lin,prf> v2)
+// implemented in [vsubrw.dats]
+
+prfun vsubw_tup_2_0 {v0,v1:view} (): vsubw_p (v0, @(v0, v1))
+prfun vsubw_tup_2_1 {v0,v1:view} (): vsubw_p (v1, @(v0, v1))
 
 (* ****** ****** *)
 
-prval vcontain_array_elt :
+prval vsubw_array_elt :
   {a:viewtype} {n,i:nat | i < n} {l:addr} {ofs:int}
-  MUL (i, sizeof a, ofs) -<> vcontain_p (@[a][n] @ l, a @ l + ofs)
+  MUL (i, sizeof a, ofs) -<> vsubw_p (a @ l + ofs, @[a][n] @ l)
 
-prval vcontain_array_subarray :
+prval vsubw_array_subarray :
   {a:viewtype} {n,i,len:nat | i+len <= n} {l:addr} {ofs:int}
-  MUL (i, sizeof a, ofs) -<> vcontain_p (@[a][n] @ l, @[a][len] @ l + ofs)
+  MUL (i, sizeof a, ofs) -<> vsubw_p (@[a][len] @ l + ofs, @[a][n] @ l)
 
 (* ****** ****** *)
 
 #if VERBOSE_PRELUDE #then
 
-#print "Loading [vcontain.dats] starts!\n"
+#print "Loading [vsubrw.dats] starts!\n"
 
 #endif
 
-(* end of [vcontain.sats] *)
+(* end of [vsubrw.sats] *)

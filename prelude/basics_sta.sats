@@ -822,6 +822,7 @@ option_view_bool_view (a:view+, bool) =
 // end of [option_view_bool_view]
 
 stadef option_v = option_view_bool_view
+viewdef ptropt_v (a:viewt@ype, l:addr) = option_v (a @ l, l <> null)
 
 //
 
@@ -834,9 +835,12 @@ stadef disj_v = disj_view_view_int_view
 
 //
 
-absprop vcontain_p (v1:view-, v2: view+)
-stadef >= (v1:view, v2:view) = vcontain_p (v1, v2)
-stadef <= (v1:view, v2:view) = vcontain_p (v2, v1)
+// subview relation that only allows *reading*
+absprop vsubr_p (v1:view+, v2: view-) // v2 -<prf> [v:iew] @(v1, v)
+stadef <= (v1:view, v2:view) = vsubr_p (v1, v2)
+
+// subview relation that allows *reading* and *writing*
+absprop vsubw_p (v1:view, v2: view) // v2 -<prf> @(v1, v1 -<lin,prf> v2)
 
 (* ****** ****** *)
 

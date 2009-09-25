@@ -317,7 +317,7 @@ fn prelude_load (ATSHOME: string): void = let
   // these are all the .sats files in $ATSHOME/prelude
 
   val () = pervasive_load (ATSHOME, "prelude/SATS/arith.sats")
-  val () = pervasive_load (ATSHOME, "prelude/SATS/vcontain.sats")
+  val () = pervasive_load (ATSHOME, "prelude/SATS/vsubrw.sats")
 
   val () = pervasive_load (ATSHOME, "prelude/SATS/bool.sats")
   val () = pervasive_load (ATSHOME, "prelude/SATS/byte.sats")

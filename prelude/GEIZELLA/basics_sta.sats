@@ -740,8 +740,12 @@ dataview unit_v = unit_v
 
 //
 
-dataprop vcontain_p (v1:view, v2:view) =
-  vcontain_p (v1, v2) of (v1 -<prf> [v:view] @(v2, v))
+// subview relation that only allows *reading*
+absprop vsubr_p (v1:view+, v2: view-) // v2 -<prf> [v:iew] @(v1, v)
+stadef <= (v1:view, v2:view) = vsubr_p (v1, v2)
+
+// subview relation that allows *reading* and *writing*
+absprop vsubw_p (v1:view, v2: view) // v2 -<prf> @(v1, v1 -<lin,prf> v2)
 
 (* ****** ****** *)
 
