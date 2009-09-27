@@ -599,8 +599,8 @@ stadef stropt = stropt_int_type
 
 (* ****** ****** *)
 
-stadef void = void_t0ype
-stadef empty = empty_t0ype
+stadef void = void_t0ype // sizeof(void) = 1
+stadef empty = empty_t0ype // sizeof(empty) = 0
 
 (* ****** ****** *)
 

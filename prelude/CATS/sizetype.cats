@@ -49,6 +49,7 @@
 
 #define atspre_int_of_size atspre_int1_of_size1
 #define atspre_size_of_int1 atspre_size1_of_int1
+#define atspre_size_of_uint1 atspre_size1_of_uint1
 #define atspre_size_of_ssize atspre_size1_of_ssize1
 
 #define atspre_int_of_ssize atspre_int1_of_ssize1
@@ -90,6 +91,10 @@ atspre_size1_of_size (ats_size_type sz) { return sz ; }
 static inline
 ats_size_type
 atspre_size1_of_int1 (ats_int_type i) { return (ats_size_type)i ; }
+
+static inline
+ats_size_type
+atspre_size1_of_uint1 (ats_uint_type u) { return (ats_size_type)u ; }
 
 static inline
 ats_size_type

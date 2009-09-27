@@ -51,6 +51,14 @@
 
 (* ****** ****** *)
 
+fun add_ptr_size
+  (p: ptr, sz: size_t):<> ptr = "atspre_padd"
+overload + with add_ptr_size
+
+fun sub_ptr_size
+  (p: ptr, sz: size_t):<> ptr = "atspre_psub"
+overload - with sub_ptr_size
+
 fun lt_ptr_ptr (p1: ptr, p2: ptr):<> bool = "atspre_plt"
 and lte_ptr_ptr (p1: ptr, p2: ptr):<> bool = "atspre_plte"
 

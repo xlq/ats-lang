@@ -425,11 +425,12 @@ fun iadd {i,j:int} (i: int i, j: int j):<> int (i+j)
 and isub {i,j:int} (i: int i, j: int j):<> int (i-j)
   = "atspre_isub"
 
-and imul {i,j:int} (i: int i, j: int j):<> int (i*j)
+and imul {i,j:int}
+  (i: int i, j: int j):<> int (i*j) // [j] must be a constant!
   = "atspre_imul"
 
 and idiv {i,j:int | j <> 0}
-  (i: int i, j: int j):<> int (i/j)
+  (i: int i, j: int j):<> int (i/j) // [j] must be a constant!
   = "atspre_idiv"
 
 and igcd {i,j:int}
@@ -462,61 +463,53 @@ fun igcd2 {i,j:int}
 //
 
 fun nmul (i: Nat, j: Nat):<> Nat = "atspre_nmul"
+and ndiv (i: Nat, j: Pos):<> Nat = "atspre_ndiv"
 
-and ndiv {j:int | j > 0} (i: Nat, j: int j):<> Nat
-  = "atspre_ndiv"
-
-and nmod {i,j:int | i >= 0; j > 0}
-  (i: int i, j: int j):<> [q,r:int | 0 <= r; r < j; i == q*j + r] int r
+fun nmod {i,j:int | i >= 0; j > 0} // [j] must be a constant!
+  (i: int i, j: int j) :<> [q,r:int | 0 <= r; r < j; i == q*j + r] int r
   = "atspre_nmod"
 
-fun nmod1 {i,j:int | i >= 0; j > 0}
-  (i: int i, j: int j):<> [r:nat | r < j] int r
+fun nmod1 {i,j:int | i >= 0; j > 0} (i: int i, j: int j):<> natLt j
   = "atspre_nmod1"
 
-overload mod with nmod
+fun nmod2 {i,j:int | i >= 0; j > 0}
+  (i: int i, j: int j):<> [q,r:int | 0 <= r; r < j] (MUL (q, j, i-r) | int r)
+  = "atspre_nmod1"
 
 (* ****** ****** *)
 
 fun ilt {i,j:int} (i: int i, j: int j):<> bool (i < j)
   = "atspre_ilt"
-
 and ilte {i,j:int} (i: int i, j: int j):<> bool (i <= j)
   = "atspre_ilte"
+overload < with ilt
+overload <= with ilte
 
 fun igt {i,j:int} (i: int i, j: int j):<> bool (i > j)
   = "atspre_igt"
-
 and igte {i,j:int} (i: int i, j: int j):<> bool (i >= j)
   = "atspre_igte"
+overload > with igt
+overload >= with igte
 
 fun ieq {i,j:int} (i: int i, j: int j):<> bool (i == j)
   = "atspre_ieq"
-
 and ineq {i,j:int} (i: int i, j: int j):<> bool (i <> j)
   = "atspre_ineq"
-
-overload < with ilt
-overload <= with ilte
-overload > with igt
-overload >= with igte
 overload = with ieq
 overload <> with ineq
 
 fun icompare {i,j:int}
   (i: int i, j: int j):<> [k:int | sgn_r (i-j, k)] int k
   = "atspre_icompare"
-
 overload compare with icompare
 
 fun imax {i,j:int}
   (i: int i, j: int j):<> [k:int | max_r (i, j, k)] int k
   = "atspre_imax"
-
 and imin {i,j:int}
   (i: int i, j: int j):<> [k:int | min_r (i, j, k)] int k
   = "atspre_imin"
-
 overload max with imax
 overload min with imin
 

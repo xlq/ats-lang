@@ -63,6 +63,9 @@ fun int_of_size (sz: size_t):<> int
 fun size_of_int1 {i:nat} (i: int i):<> size_t
   = "atspre_size_of_int1"
 
+fun size_of_uint1 {i:nat} (u: uint i):<> size_t
+  = "atspre_size_of_uint1"
+
 (* ****** ****** *)
 
 fun add_size_size (sz1: size_t, sz2: size_t):<> size_t
@@ -184,6 +187,10 @@ fun int1_of_size1 {i:nat} (sz: size_t i):<> int i
 fun size1_of_int1 {i:nat} (i: int i):<> size_t i
   = "atspre_size1_of_int1"
 // end of [size1_of_int1]
+
+fun size1_of_uint1 {i:nat} (u: uint i):<> size_t i
+  = "atspre_size1_of_uint1"
+// end of [size1_of_uint1]
 
 fun size1_of_ssize1 {i:nat} (_: ssize_t i):<> size_t i
   = "atspre_size1_of_ssize1"

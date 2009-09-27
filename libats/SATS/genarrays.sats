@@ -698,7 +698,8 @@ fun GEMAT_ptr_split2x2_tsz {a1:viewt@ype}
 (* ****** ****** *)
 
 fun{a:t@ype}
-  GEMAT_ptr_initialize_elt {ord:order} {m,n:nat} {ld:inc} (
+  GEMAT_ptr_initialize_elt
+  {ord:order} {m,n:nat} {ld:inc} (
     X: &GEMAT (a?, m, n, ord, ld) >> GEMAT (a, m, n, ord, ld)
   , ord: ORDER ord, m: int m, n: int n, ld: int ld
   , alpha: a
