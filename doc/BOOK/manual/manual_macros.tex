@@ -124,7 +124,7 @@ where ${\it fmac\_body}$ refers to some dynamic expression, then one may
 essentially think that a macro definition in long form is defined as
 follows:
 \begin{verbatim}
-macrodef fmac_long (x) = `(fmac\_body) // please note the backquote
+macrodef fmac_long (x) = `(fmac_body) // please note the backquote
 \end{verbatim}
 and each occurrence of ${\it fmac}({\it arg})$ is automatically rewritten
 into $,({\it fmac\_long}(`({\it arg})))$, where ${\it arg}$ refers to a

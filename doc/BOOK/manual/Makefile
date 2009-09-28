@@ -17,13 +17,6 @@ manual_main.ps: \
   manual_main.tex
 	latex manual_main.tex; dvips -t letter -o manual_main.ps manual_main.dvi
 
-#manual_main.pdf: \
-#    manual_preface.tex \
-#    manual_introduction.tex \
-#    manual_basics.tex \
-#    manual_main.tex
-#	pdflatex manual_main.tex
-
 manual_main.pdf: manual_main.ps; ps2pdf manual_main.ps
 
 copy: manual_main.ps manual_main.pdf
