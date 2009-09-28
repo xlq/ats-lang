@@ -698,13 +698,55 @@ fun GEMAT_ptr_split2x2_tsz {a1:viewt@ype}
 (* ****** ****** *)
 
 fun{a:t@ype}
+  GEMAT_row_ptr_allocfree
+  {m,n:pos} (m: int m, n: int n)
+  : [l:addr] (
+    GEMAT (a?, m, n, row, n) @ l
+  | ptr l
+  , (GEMAT (a?, m, n, row, n) @ l | ptr l) -<lin> void
+  )
+// end of [GEMAT_row_ptr_allocfree]
+
+fun GEMAT_row_ptr_allocfree_tsz {a:t@ype}
+  {m,n:pos} (m: int m, n: int n, tsz: sizeof_t a)
+  : [l:addr] (
+    GEMAT (a?, m, n, row, n) @ l
+  | ptr l
+  , (GEMAT (a?, m, n, row, n) @ l | ptr l) -<lin> void
+  )
+// end of [GEMAT_row_ptr_allocfree_tsz]
+
+(* ****** ****** *)
+
+fun{a:t@ype}
+  GEMAT_col_ptr_allocfree
+  {m,n:pos} (m: int m, n: int n)
+  : [l:addr] (
+    GEMAT (a?, m, n, col, m) @ l
+  | ptr l
+  , (GEMAT (a?, m, n, col, m) @ l | ptr l) -<lin> void
+  )
+// end of [GEMAT_col_ptr_allocfree]
+
+fun GEMAT_col_ptr_allocfree_tsz {a:t@ype}
+  {m,n:pos} (m: int m, n: int n, tsz: sizeof_t a)
+  : [l:addr] (
+    GEMAT (a?, m, n, col, m) @ l
+  | ptr l
+  , (GEMAT (a?, m, n, col, m) @ l | ptr l) -<lin> void
+  )
+// end of [GEMAT_col_ptr_allocfree_tsz]
+
+(* ****** ****** *)
+
+fun{a:t@ype}
   GEMAT_ptr_initialize_elt
   {ord:order} {m,n:nat} {ld:inc} (
     X: &GEMAT (a?, m, n, ord, ld) >> GEMAT (a, m, n, ord, ld)
   , ord: ORDER ord, m: int m, n: int n, ld: int ld
   , alpha: a
   ) :<> void
-// end of [GEMAT_col_ptr_initialize_elt]
+// end of [GEMAT_ptr_initialize_elt]
 
 (* ****** ****** *)
 

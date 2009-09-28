@@ -50,6 +50,7 @@
 
 (* ****** ****** *)
 
+staload "libats/SATS/fmatrix.sats"
 staload "libats/SATS/genarrays.sats"
 
 (* ****** ****** *)
@@ -555,6 +556,54 @@ implement{a1} GEMAT_ptr_split2x2
   (pf_mat | p_mat, ord, lda, i, j) =
   GEMAT_ptr_split2x2_tsz {a1} (pf_mat | p_mat, ord, lda, i, j, sizeof<a1>)
 // end of [GEMAT_ptr_split2x2]
+
+(* ****** ****** *)
+
+implement
+  GEMAT_row_ptr_allocfree_tsz
+  {a} {m,n} (m, n, tsz) = let
+  val [nm:int] [l:addr] (pf_gc, pf_nm, pf_fmat | p) =
+    fmatrix_ptr_alloc_tsz {a} (n, m, tsz)
+  prval () = mul_nat_nat_nat (pf_nm)
+  prval (pf_gmat, fpf_fmat) = GEMAT_v_of_fmatrix_v (pf_fmat)
+  prval TRANORDcolrow () = GEMAT_v_trans (pf_gmat)
+  val free = lam (
+    pf_gmat: GEMAT (a?, m, n, row, n) @ l | p: ptr l
+  ) : void =<fun,lin> let
+    prval TRANORDrowcol () = GEMAT_v_trans (pf_gmat) in
+    fmatrix_ptr_free {a} (pf_gc, pf_nm, fpf_fmat {a?} (pf_gmat) | p)
+  end // end of [val]
+in
+  (pf_gmat | p, free)
+end // end of [GEMAT_ptr_allocfree_tsz]
+
+implement{a}
+  GEMAT_row_ptr_allocfree (m, n) = 
+  GEMAT_row_ptr_allocfree_tsz {a} (m, n, sizeof<a>)
+// end of ...
+
+(* ****** ****** *)
+
+implement
+  GEMAT_col_ptr_allocfree_tsz
+  {a} {m,n} (m, n, tsz) = let
+  val [mn:int] [l:addr] (pf_gc, pf_mn, pf_fmat | p) =
+    fmatrix_ptr_alloc_tsz {a} (m, n, tsz)
+  prval () = mul_nat_nat_nat (pf_mn)
+  prval (pf_gmat, fpf_fmat) = GEMAT_v_of_fmatrix_v (pf_fmat)
+  val free = lam (
+    pf_gmat: GEMAT (a?, m, n, col, m) @ l | p: ptr l
+  ) : void =<fun,lin>
+    fmatrix_ptr_free {a} (pf_gc, pf_mn, fpf_fmat {a?} (pf_gmat) | p)
+  // end of [val]
+in
+  (pf_gmat | p, free)
+end // end of [GEMAT_col_ptr_allocfree_tsz]
+
+implement{a}
+  GEMAT_col_ptr_allocfree (m, n) = 
+  GEMAT_col_ptr_allocfree_tsz {a} (m, n, sizeof<a>)
+// end of ...
 
 (* ****** ****** *)
 
