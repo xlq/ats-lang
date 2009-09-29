@@ -39,6 +39,13 @@
 
 (* ****** ****** *)
 
+(*
+** prfun verify_constraint {p:bool | p} (): [p] void // verify and add
+*)
+implement verify_constraint () = ()
+
+(* ****** ****** *)
+
 // file_mode_lte_r_r : declared in basic_dyn.ats
 implement file_mode_lte_r_r = file_mode_lte_refl {r} ()
 

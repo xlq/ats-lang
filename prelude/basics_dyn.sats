@@ -88,6 +88,11 @@ praxi eqsize_char_uchar (): [sizeof char == sizeof uchar] void
 
 (* ****** ****** *)
 
+// this proof function is mostly for debugging a proof
+prfun verify_constraint {p:bool | p} (): [p] void // verify and add
+
+(* ****** ****** *)
+
 val AssertionException : exn = "AssertionException"
 val DivisionByZeroException : exn = "DivisionByZeroException"
 val OverflowException : exn = "OverflowException"
