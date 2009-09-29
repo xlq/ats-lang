@@ -75,37 +75,38 @@ install: config.h
 	# recursively install all files in the list except .svn control files.
 	for d in ccomp/runtime doc libats libc prelude; do \
 	  cd $(abs_top_srcdir) && \
-	  $(INSTALL) -d $(DESTDIR)$(ATSNEWHOME)/$$d && \
-	  find $$d -name .svn -prune -o \
+	  $(INSTALL) -d $(DESTDIR)$(ATSNEWHOME)/"$$d" && \
+	  find "$$d" -name .svn -prune -o \
             -exec $(INSTALL) -m 644 -D \{} $(DESTDIR)$(ATSNEWHOME)/\{} \; \
 	    -print; \
 	done
 
 	# install specific files in the list as regular files.
-	for f in COPYING INSTALL *.txt ccomp/lib/*.a config.h; do \
+	for f in COPYING INSTALL *.txt ccomp/{lib,lib64}/*.a config.h; do \
+	  [ -f "$$f" ] || continue; \
 	  cd $(abs_top_srcdir) && \
-	  $(INSTALL) -m 644 -D $$f $(DESTDIR)$(ATSNEWHOME)/$$f && \
-	  echo $$f; \
+	  $(INSTALL) -m 644 -D "$$f" $(DESTDIR)$(ATSNEWHOME)/"$$f" && \
+	  echo "$$f"; \
 	done
 
 	# install specific files in the list as executables.
 	for f in bin/*; do \
 	  cd $(abs_top_srcdir) && \
-	  $(INSTALL) -m 755 -D $$f $(DESTDIR)$(ATSNEWHOME)/$$f && \
-	  echo $$f; \
+	  $(INSTALL) -m 755 -D "$$f" $(DESTDIR)$(ATSNEWHOME)/"$$f" && \
+	  echo "$$f"; \
 	done
 
 	# install wrapper scripts and symbolic links.
 	for f in ats_env.sh; do \
 	  cd $(abs_top_srcdir) && \
-	  $(INSTALL) -m 755 -D $$f $(DESTDIR)$(bindir)/$$f && \
-	  echo $$f; \
+	  $(INSTALL) -m 755 -D "$$f" $(DESTDIR)$(bindir)/"$$f" && \
+	  echo "$$f"; \
 	done
 
 	for f in bin/*; do \
 	  cd $(DESTDIR)$(bindir) && \
-	  ln -sf ats_env.sh `basename $$f` && \
-	  echo $(bindir)/`basename $$f` '->' ats_env.sh; \
+	  ln -sf ats_env.sh `basename "$$f"` && \
+	  echo $(bindir)/`basename "$$f"` '->' ats_env.sh; \
 	done
 
 # NOTE(liulk): once most major functions of Makefile_main is
