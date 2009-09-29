@@ -110,8 +110,9 @@ typedef efcopt = Option efc
 
 local // defining [d0cstdec_tr]
 
-fun aux1 (xs: p0arglst): s1explst = begin case+ xs of
-  | cons (x, xs) => begin case+ x.p0arg_ann of
+fun aux1 (xs: p0arglst): s1explst = begin
+  case+ xs of
+  | list_cons (x, xs) => begin case+ x.p0arg_ann of
     | Some s0e => begin
         let val s1e = s0exp_tr s0e in s1e :: aux1 xs end
       end // end of [Some]
@@ -121,8 +122,8 @@ fun aux1 (xs: p0arglst): s1explst = begin case+ xs of
         prerr_newline ();
         $Err.abort ()
       end // end of [None]
-  end
-  | nil () => nil ()
+    end (* end of [cons] *)
+  | list_nil () => list_nil ()
 end // end of [aux1]
 
 fun aux2
@@ -136,7 +137,7 @@ fun aux2
         val s1e_res: s1exp = aux2 (fc, lin, prf, oefc, fst+1, lst, xs, s1e_res)
         val loc_res = s1e_res.s1exp_loc
         val loc = $Loc.location_combine (loc_x, loc_res)
-        val fc = if fst > 0 then FUNCLOcloptr else fc
+        val fc = (if fst > 0 then FUNCLOcloptr else fc): funclo
         val imp = (
           if lst > 0 then begin
             s1exp_imp (loc_res, fc, 0, 0, None ())
@@ -583,7 +584,7 @@ implement d0exp_lams_dyn_tr
     , args: f0arglst
     , d1e_body: d1exp
     , flag: int
-    ) :<cloptr1> d1exp = begin case+ args of
+    ) :<cloref1> d1exp = begin case+ args of
     | arg :: args => let
         val loc_arg = arg.f0arg_loc
         val d1e_body = aux (lamknd, args, d1e_body, flag1) where {
@@ -592,11 +593,11 @@ implement d0exp_lams_dyn_tr
           ) : int
         } // end of [where]
         val loc_body = d1e_body.d1exp_loc
-        val loc = case+ oloc of
+        val loc = (case+ oloc of
           | Some loc => loc | None () => begin
               $Loc.location_combine (loc_arg, loc_body)
             end // end of [None]
-        // end of [val]
+        ) : loc_t // end of [val]
       in
         case+ arg.f0arg_node of
         | F0ARGsta1 s0qs => begin
@@ -622,6 +623,9 @@ implement d0exp_lams_dyn_tr
         | F0ARGdyn p0t (* flag > 0 *) => let
             val p1t = p0at_tr p0t
             val d1e_body = // linear closure
+(*
+** funcloknd is set to FUNCLOcloptr if no annotation is available
+*)
               d1exp_ann_funclo_opt (loc_body, d1e_body, FUNCLOcloptr)
             // end of [val]
           in
@@ -984,14 +988,15 @@ fun aux_item (d0e0: d0exp): d1expitm = let
           | Some tags => let
               val fc = $Syn.FUNCLOfun () // default is [function]
               val (fc, lin, prf, efc) = $Eff.e0fftaglst_tr (fc, tags)
-              val lin = if lin0 > 0 then 1 else lin
+              val lin = (if lin0 > 0 then 1 else lin): int
             in
               (Some fc, lin, Some efc)
-            end
+            end // end of [Some]
           | None () => (None (), lin0, None ())
         ) : (Option funclo, int, efcopt)
         val d1e_lam = d0exp_lams_dyn_tr
           (lamknd, Some loc0, ofc, lin, args, res, oefc, body)
+        // end of [val]
       in
         $Fix.ITEMatm (d1e_lam)
       end // end of [D0Elam]
