@@ -60,7 +60,7 @@ ats_env.sh.in: ;
 config.mk:
 	touch $@
 
-configure: configure.ac
+configure: configure.ac config.h.in
 	aclocal
 	automake --add-missing --foreign || true
 	autoconf
@@ -82,7 +82,9 @@ install: config.h
 	done
 
 	# install specific files in the list as regular files.
-	for f in COPYING INSTALL *.txt ccomp/{lib,lib64}/*.a config.h; do \
+	for f in \
+	    COPYING INSTALL *.txt ccomp/lib/*.a ccomp/lib64/*.a config.h; \
+	do \
 	  [ -f "$$f" ] || continue; \
 	  cd $(abs_top_srcdir) && \
 	  $(INSTALL) -m 644 -D "$$f" $(DESTDIR)$(ATSNEWHOME)/"$$f" && \
