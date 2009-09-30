@@ -88,8 +88,21 @@ praxi eqsize_char_uchar (): [sizeof char == sizeof uchar] void
 
 (* ****** ****** *)
 
-// this proof function is mostly for debugging a proof
-prfun verify_constraint {p:bool | p} (): [p] void // verify and add
+(*
+**
+** The proof function [verify_constraint] is mostly used for
+** debugging proofs, and it is equivalent to the follow line:
+**
+** prval _ = (): [p] void
+**
+** Note that the followine line puts [p] into the assumption
+** store after verification is done:
+**
+** prval () = (): [p] void 
+**
+*)
+
+prfun verify_constraint {p:bool | p} (): void 
 
 (* ****** ****** *)
 

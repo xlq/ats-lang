@@ -66,6 +66,7 @@ prfun lemma1 {p:nat} {x:int} .<p>.
     prval MUL1ind pf21' = pf2'
     prval MUL1ind pf22' = pf21'
     prval [x41:int] pf_1 = lemma1 {p-1} {x-8*p+4} (pf22')
+    // prval () = verify_constraint {x-8*p+4==4*x41} ()
     prval pf_2 = MUL1ind (pf_1)
     prval pf_3 = lemma_commute (pf_2)
     prval pf_4 = MUL1ind (pf_3)
@@ -75,7 +76,8 @@ prfun lemma1 {p:nat} {x:int} .<p>.
     prval MUL1bas () = pf
   in
     #[0 | pf]
-  end
+  end // end of [sif]
+// end of [lemma1]
 
 // [x <= 0 || x >= 1] is an example of manual splitting!
 // p * p = x + x implies p = 2 * p2 for some p2
@@ -102,7 +104,15 @@ prfun lemma2 {p:nat} {x:int} .<p>.
     prval MUL1bas () = pf
   in
     #[0 | ()]
-  end
+  end // end of [sif]
+
+
+(*
+
+(q/p) * (q/p) = 2 => contradiction
+if p * p = x and q * q = 2x, then x = 0
+
+*)
 
 // (p * p = x and q * q = x + x) implies x = 0
 prfun lemma_main {p,q:nat} {x:int} .<p>.
