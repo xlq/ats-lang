@@ -137,6 +137,23 @@ fun array_ptr_free {a:viewt@ype} {n:int} {l:addr}
 
 (* ****** ****** *)
 
+(*
+** [array_ptr_allocfree] does not save much; if one does not want to deal with the
+** view [free_gc_v] directly, then please use it.
+*)
+
+fun{a:viewt@ype}
+  array_ptr_allocfree {n:nat} (asz: size_t n):<>
+    [l:agz] (array_v (a?, n, l) | ptr l, (array_v (a?, n, l) | ptr l) -<lin> void)
+// end of [fun]
+
+fun array_ptr_allocfree_tsz
+  {a:viewt@ype} {n:nat} (asz: size_t n, tsz: sizeof_t a):<>
+    [l:agz] (array_v (a?, n, l) | ptr l, (array_v (a?, n, l) | ptr l) -<lin> void)
+// end of [fun]
+
+(* ****** ****** *)
+
 fun{a:t@ype} array_ptr_initialize_elt {n:nat}
   (base: &(@[a?][n]) >> @[a][n], asz: size_t n, ini: a):<> void
 // end of [fun]

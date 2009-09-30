@@ -58,6 +58,10 @@ staload "libats/SATS/fmatrix.sats"
 
 (* ****** ****** *)
 
+implement{a} fmatrix_ptr_alloc (m, n) =
+  fmatrix_ptr_alloc_tsz {a} (m, n, sizeof<a>)
+// end of [fmatrix_ptr_alloc]
+
 implement fmatrix_ptr_alloc_tsz {a} (m, n, tsz) = let
   val (pf_mn | mn) = m imul2 n
   prval () = mul_nat_nat_nat (pf_mn)
@@ -68,20 +72,39 @@ in
   (pf_gc, pf_mn, pf_fmat | p_arr)
 end // end of [fmatrix_ptr_alloc_tsz]
 
-implement{a} fmatrix_ptr_alloc (m, n) =
-  fmatrix_ptr_alloc_tsz {a} (m, n, sizeof<a>)
-// end of [fmatrix_ptr_alloc]
-
 (* ****** ****** *)
 
 implement fmatrix_ptr_free 
-  (pf_gc, pf_mn, pf_fmat | p) = let
+  (pf_gc, pf_mn, pf_fmat | p_fmat) = let
   prval (pf2_mn, pf_arr) = array_v_of_fmatrix_v (pf_fmat)
   prval () = mul_isfun (pf2_mn, pf_mn)
-  val () = array_ptr_free (pf_gc, pf_arr | p)
+  val () = array_ptr_free (pf_gc, pf_arr | p_fmat)
 in
   // nothing
 end // end of [fmatrix_ptr_free]
+
+(* ****** ****** *)
+
+implement{a} fmatrix_ptr_allocfree (m, n) =
+  fmatrix_ptr_allocfree_tsz {a} (m, n, sizeof<a>)
+// end of [fmatrix_ptr_allocfree]
+
+implement fmatrix_ptr_allocfree_tsz {a} (m, n, tsz) = let
+  val (pf_mn | mn) = m imul2 n
+  prval () = mul_nat_nat_nat (pf_mn)
+  val mn_sz = size1_of_int1 mn
+  val [l:addr] (pf_gc, pf_arr | p_arr) = array_ptr_alloc_tsz {a} (mn_sz, tsz)
+  prval pf_fmat = fmatrix_v_of_array_v (pf_mn, pf_arr)
+in #[l | (
+  pf_fmat
+| p_arr
+, lam (pf_fmat | p_arr) =<lin> let
+    prval (pf2_mn, pf_arr) = array_v_of_fmatrix_v (pf_fmat)
+    prval () = mul_isfun (pf2_mn, pf_mn)
+  in
+    array_ptr_free (pf_gc, pf_arr | p_arr)
+  end
+) ] end // end of [fmatrix_ptr_allocfree_tsz]
 
 (* ****** ****** *)
 

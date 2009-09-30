@@ -21,6 +21,7 @@ all: ATS \
      ITPT \
      KolmogorovTrans \
      mini-ML \
+     pigeonhole \
      STLC-foas \
      STLC-hoas \
      STLC-SN-foas \
@@ -29,9 +30,11 @@ all: ATS \
 ######
 
 ATSCC="$(ATSHOME)"/bin/atscc
-ATSCCFLAG=--typecheck
+ATSOPT=$(ATSHOME)/bin/atsopt
 
 ######
+
+ATSCCFLAG=--typecheck
 
 ATS: ; $(ATSCC) $(ATSCCFLAG) ATS.dats
 BinaryTree: ; $(ATSCC) $(ATSCCFLAG) BinaryTree.dats
@@ -45,6 +48,7 @@ irrationality-of-sqrt2: ; $(ATSCC) $(ATSCCFLAG) irrationality-of-sqrt2.dats
 ITPT: ; $(ATSCC) $(ATSCCFLAG) ITPT.dats
 KolmogorovTrans: ; $(ATSCC) $(ATSCCFLAG) KolmogorovTrans.dats
 mini-ML: ; $(ATSCC) $(ATSCCFLAG) mini-ML.dats
+pigeonhole: ; $(ATSCC) $(ATSCCFLAG) pigeonhole.dats
 STLC-foas: ; $(ATSCC) $(ATSCCFLAG) STLC-foas.dats
 STLC-hoas: ; $(ATSCC) $(ATSCCFLAG) STLC-hoas.dats
 STLC-SN-foas: ; $(ATSCC) $(ATSCCFLAG) STLC-SN-foas.dats
@@ -65,6 +69,7 @@ typecheck::
 	$(ATSCC) $(ATSCCFLAG) ITPT.dats
 	$(ATSCC) $(ATSCCFLAG) KolmogorovTrans.dats
 	$(ATSCC) $(ATSCCFLAG) mini-ML.dats
+	$(ATSCC) $(ATSCCFLAG) pigeonhole.dats
 	$(ATSCC) $(ATSCCFLAG) STLC-foas.dats
 #	$(ATSCC) $(ATSCCFLAG) STLC-hoas.dats
 	$(ATSCC) $(ATSCCFLAG) STLC-SN-foas.dats
@@ -72,26 +77,26 @@ typecheck::
 
 ######
 
-ATSOPT=$(ATSHOME)/bin/atsopt
-POSMARK=--posmark_html_only
+POSMARK=--posmark_html
 
 posmark::
 #	$(ATSOPT) $(POSMARK) -d ATS.dats
-	$(ATSOPT) $(POSMARK) -d BinaryTree.dats
-#	$(ATSOPT) $(POSMARK) -d CallByValue.dats
-	$(ATSOPT) $(POSMARK) -d ClosureConv.dats
-	$(ATSOPT) $(POSMARK) -d CPS.dats
-#	$(ATSOPT) $(POSMARK) -d CutElimIL.dats
-	$(ATSOPT) $(POSMARK) -d CutElimILL.dats
-	$(ATSOPT) $(POSMARK) -d HilbertCalculus.dats
-	$(ATSOPT) $(POSMARK) -d irrationality-of-sqrt2.dats
-	$(ATSOPT) $(POSMARK) -d ITPT.dats
-	$(ATSOPT) $(POSMARK) -d KolmogorovTrans.dats
-	$(ATSOPT) $(POSMARK) -d mini-ML.dats
-	$(ATSOPT) $(POSMARK) -d STLC-foas.dats
-#	$(ATSOPT) $(POSMARK) -d STLC-hoas.dats
-	$(ATSOPT) $(POSMARK) -d STLC-SN-foas.dats
-	$(ATSOPT) $(POSMARK) -d STLC-SN-hoas.dats
+	$(ATSOPT) $(POSMARK) -d BinaryTree.dats > BinaryTree_dats.html
+#	$(ATSOPT) $(POSMARK) -d CallByValue.dats > CallByValue_dats.html
+	$(ATSOPT) $(POSMARK) -d ClosureConv.dats > ClosureConv_dats.html
+	$(ATSOPT) $(POSMARK) -d CPS.dats > CPS_dats.html
+#	$(ATSOPT) $(POSMARK) -d CutElimIL.dats > CutElimIL_dats.html
+	$(ATSOPT) $(POSMARK) -d CutElimILL.dats > CutElimILL_dats.html
+	$(ATSOPT) $(POSMARK) -d HilbertCalculus.dats > HilbertCalculus_dats.html
+	$(ATSOPT) $(POSMARK) -d irrationality-of-sqrt2.dats > irrationality-of-sqrt2_dats.html
+	$(ATSOPT) $(POSMARK) -d ITPT.dats > ITPT_dats.html
+	$(ATSOPT) $(POSMARK) -d KolmogorovTrans.dats > KolmogorovTrans_dats.html
+	$(ATSOPT) $(POSMARK) -d mini-ML.dats > mini-ML_dats.html
+	$(ATSOPT) $(POSMARK) -d pigeonhole.dats > pigeonhole_dats.html
+	$(ATSOPT) $(POSMARK) -d STLC-foas.dats > STLC-foas_dats.html
+#	$(ATSOPT) $(POSMARK) -d STLC-hoas.dats > STLC-hoas_dats.html
+	$(ATSOPT) $(POSMARK) -d STLC-SN-foas.dats > STLC-SN-foas_dats.html
+	$(ATSOPT) $(POSMARK) -d STLC-SN-hoas.dats > STLC-SN-hoas_dats.html
 
 ######
 
@@ -108,6 +113,7 @@ update::
 	cp ITPT.dats $(DIR)
 	cp KolmogorovTrans.dats $(DIR)
 	cp mini-ML.dats $(DIR)
+	cp pigeonhole.dats $(DIR)
 	cp STLC-foas.dats $(DIR)
 	cp STLC-hoas.dats $(DIR)
 	cp STLC-SN-foas.dats $(DIR)

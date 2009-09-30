@@ -84,8 +84,20 @@ end // end of [array_ptr_xch_elt_at__intsz]
 
 (* ****** ****** *)
 
-implement{a} array_ptr_alloc (n) =
-  array_ptr_alloc_tsz {a} (n, sizeof<a>)
+implement{a} array_ptr_alloc (asz) =
+  array_ptr_alloc_tsz {a} (asz, sizeof<a>)
+
+(* ****** ****** *)
+
+implement{a} array_ptr_allocfree (asz) =
+  array_ptr_allocfree_tsz {a} (asz, sizeof<a>)
+
+implement array_ptr_allocfree_tsz {a} (asz, tsz) = let
+  val [l:addr] (pf_gc, pf_arr | p_arr) = array_ptr_alloc_tsz {a} (asz, tsz)
+in #[l | (
+  pf_arr
+| p_arr, lam (pf_arr | p_arr) =<lin> array_ptr_free {a} (pf_gc, pf_arr | p_arr)
+) ] end // end of [array_ptr_allocfree_tsz]
 
 (* ****** ****** *)
 

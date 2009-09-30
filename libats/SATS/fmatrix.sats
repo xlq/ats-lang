@@ -87,16 +87,6 @@ prfun fmatrix_v_of_array_v
 
 (* ****** ****** *)
 
-fun fmatrix_ptr_alloc_tsz {a:viewt@ype}
-  {m,n:nat} (m: int m, n: int n, tsz: sizeof_t a)
-  :<> [mn:nat] [l:agz] (
-    free_gc_v (a, mn, l)
-  , MUL (m, n, mn)
-  , fmatrix_v (a?, m, n, l)
-  | ptr l
-  )
-// end of [fmarix_ptr_alloc_tsz]
-
 fun{a:viewt@ype}
   fmatrix_ptr_alloc {m,n:nat} (m: int m, n: int n)
   :<> [mn:nat] [l:agz] (
@@ -106,6 +96,16 @@ fun{a:viewt@ype}
   | ptr l
   )
 // end of [fmarix_ptr_alloc]
+
+fun fmatrix_ptr_alloc_tsz {a:viewt@ype}
+  {m,n:nat} (m: int m, n: int n, tsz: sizeof_t a)
+  :<> [mn:nat] [l:agz] (
+    free_gc_v (a, mn, l)
+  , MUL (m, n, mn)
+  , fmatrix_v (a?, m, n, l)
+  | ptr l
+  )
+// end of [fmarix_ptr_alloc_tsz]
 
 (* ****** ****** *)
 
@@ -117,6 +117,24 @@ fun fmatrix_ptr_free {a:viewt@ype}
   | p: ptr l
   ) :<> void
 // end of [fmatrix_ptr_free]
+
+(* ****** ****** *)
+
+fun{a:viewt@ype}
+  fmatrix_ptr_allocfree {m,n:nat} (m: int m, n: int n)
+  :<> [l:agz] (
+    fmatrix_v (a?, m, n, l)
+  | ptr l, (fmatrix_v (a?, m, n, l) | ptr l) -<lin> void
+  )
+// end of [fmarix_ptr_allocfree]
+
+fun fmatrix_ptr_allocfree_tsz
+  {a:viewt@ype} {m,n:nat} (m: int m, n: int n, tsz: sizeof_t a)
+  :<> [l:agz] (
+    fmatrix_v (a?, m, n, l)
+  | ptr l, (fmatrix_v (a?, m, n, l) | ptr l) -<lin> void
+  )
+// end of [fmarix_ptr_allocfree_tsz]
 
 (* ****** ****** *)
 
