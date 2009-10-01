@@ -416,9 +416,7 @@ fun array_ptr_foreach_fun_tsz__main
   {a:viewt@ype} {v:view} {vt:viewtype} {n:nat} (
     pf: !v
   | base: &(@[a][n])
-  , f: (!v | &a, !vt) -<> void
-  , asz: size_t n
-  , tsz: sizeof_t a
+  , f: (!v | &a, !vt) -<> void, asz: size_t n, tsz: sizeof_t a
   , env: !vt
   ) :<> void
   = "atspre_array_ptr_foreach_fun_tsz__main"
@@ -426,16 +424,13 @@ fun array_ptr_foreach_fun_tsz__main
 
 //
 
-fun{a:viewt@ype}
-  array_ptr_foreach_fun
-  {v:view} {n:nat} (
+fun{a:viewt@ype} array_ptr_foreach_fun {v:view} {n:nat} (
     pf: !v
   | base: &(@[a][n]), f: (!v | &a) -<fun> void, asz: size_t n
   ) :<> void
 // end of [fun]
 
-fun array_ptr_foreach_fun_tsz
-  {a:viewt@ype} {v:view} {n:nat} (
+fun array_ptr_foreach_fun_tsz {a:viewt@ype} {v:view} {n:nat} (
     pf: !v
   | base: &(@[a][n]), f: (!v | &a) -<fun> void, asz: size_t n, tsz: sizeof_t a
   ) :<> void
