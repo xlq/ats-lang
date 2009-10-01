@@ -55,6 +55,7 @@
 (* ****** ****** *)
 
 staload "libats/SATS/genarrays.sats"
+staload _(*anonymous*) = "libats/DATS/genarrays.dats"
 
 (* ****** ****** *)
 
@@ -112,7 +113,8 @@ implement{a}
   prval () = mul_nat_nat_nat (pf_mn2)
   prval () = mul_isfun (pf_mn1, pf_mn2)
   val mn = size1_of_int1 (mn)
-  val () = array_ptr_initialize_elt<a> (base, mn, x)
+  var x: a = x
+  val () = array_ptr_initialize_elt_tsz {a} (base, mn, x, sizeof<a>)
   prval () = view@ base := fmatrix_v_of_array_v (pf_mn1, pf_arr) 
 } // end of [fmatrix_ptr_initialize]
 
@@ -162,7 +164,7 @@ implement{a} // worth it???
     prval pf1_mul = mul_add_const {~1} (pf_mul)
     prval () = mul_nat_nat_nat (pf1_mul)
     val [l1:addr] (pf1_arr, pf2_arr, fpf_arr | p1) =
-      array_ptr_split<a?> (pf_arr | p, m_sz)
+      array_ptr_split_tsz {a?} (pf_arr | p, m_sz, sizeof<a>)
     val () = loop_one (pf1_arr, pf | p, f, m, n-nj)
     val () = loop_all (pf1_mul, pf2_arr, pf | p1, f, nj-1)
     propdef fpf_p (a:viewt@ype) =
