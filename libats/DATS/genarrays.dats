@@ -342,7 +342,7 @@ implement{a} GEMAT_ptr_tail_row
   {m,n} {ord} {lda} {l0} (pf_mat | ord, p_mat, lda) = let
   viewdef V0 = GEMAT_v (a, m, n, ord, lda, l0)
   val ofs = (case+ ord of
-    | ORDERrow () => size1_of_int1 lda * sizeof<a> | ORDERcol () => sizeof<a>
+    | ORDERrow () => lda * sizeof<a> | ORDERcol () => sizeof<a>
   ) : size_t // end of [val]
   val [ofs:int] ofs = size1_of_size (ofs)
   stadef l = l0 + ofs
@@ -360,7 +360,7 @@ implement{a} GEMAT_ptr_tail_col
   {m,n} {ord} {lda} {l0} (pf_mat | ord, p_mat, lda) = let
   viewdef V0 = GEMAT_v (a, m, n, ord, lda, l0)
   val ofs = (case+ ord of
-    | ORDERrow () => sizeof<a> | ORDERcol () => size1_of_int1 lda * sizeof<a>
+    | ORDERrow () => sizeof<a> | ORDERcol () => lda * sizeof<a>
   ) : size_t // end of [val]
   val [ofs:int] ofs = size1_of_size (ofs)
   stadef l = l0 + ofs
@@ -405,7 +405,7 @@ implement
   ) : size_t // end of [val]
   val ofs = size1_of_size (ofs)
 in
-  (unit_v, unit_v, unit_p | p_mat, p_mat + ofs * tsz)
+  (unit_v, unit_v, unit_p | p_mat, p_mat + ofs)
 end // end of [GEMAT_ptr_split1x2_tsz_dummy]
 
 (* ****** ****** *)
@@ -437,7 +437,7 @@ implement
   (pf_mat | ord, p_mat, lda, i, tsz) = let
   prval unit_v () = pf_mat
   val ofs = (case ord of
-    | ORDERrow () => i  \iszmul (lda * tsz) | ORDERcol () => i \iszmul tsz
+    | ORDERrow () => i \iszmul (lda * tsz) | ORDERcol () => i \iszmul tsz
   ) : size_t // end of [val]
   val ofs = size1_of_size (ofs)
 in
@@ -487,14 +487,14 @@ implement
 in
   case+ ord of
   | ORDERrow () => let
-      val i_tmp = size1_of_size (j * tsz)
+      val i_tmp = size1_of_size (j * tsz) // no-op casting
       val p_tmp = p_mat + size1_of_size ((i * lda) * tsz)
     in @(
       unit_v, unit_v, unit_v, unit_v, unit_p
     | p_mat, p_mat + i_tmp, p_tmp, p_tmp + i_tmp
     ) end // end of [ORDERrow]
   | ORDERcol () => let
-      val i_tmp = size1_of_size (i * tsz)
+      val i_tmp = size1_of_size (i * tsz) // no-op casting
       val p_tmp = p_mat + size1_of_size ((j * lda) * tsz)
     in @(
       unit_v, unit_v, unit_v, unit_v, unit_p
