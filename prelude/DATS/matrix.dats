@@ -137,10 +137,10 @@ implement matrix_make_fun_tsz__main
   viewtypedef fun_t =
     (!v | &(a?) >> a, sizeLt m, natLt n, !vt) -<> void
   var !p_f1 = @lam
-    (pf: !v | x: &(a?) >> a, i: sizeLt mn, env: !vt): void =<clo> let
+    (pf: !v | i: sizeLt mn, x: &(a?) >> a, env: !vt): void =<clo> let
     val d = natdiv (pf_mul | i, n) and r = i szmod1 n
   in
-    f (pf | x, d, r, env)
+    f (pf | d, r, x, env)
   end // end of [f1]
   val () = begin
     array_ptr_initialize_clo_tsz__main {a} {v} {vt} (pf | !p_arr, mn, !p_f1, tsz, env)
@@ -157,14 +157,14 @@ implement matrix_make_clo_tsz
   {a} {v} {m,n} (pf1 | m, n, f, tsz) = M where {
   stavar l_f: addr
   val p_f: ptr l_f = &f
-  typedef clo_t = (!v | &(a?) >> a, sizeLt m, sizeLt n) -<clo> void
+  typedef clo_t = (!v | sizeLt m, sizeLt n, &(a?) >> a) -<clo> void
   viewdef V = (v, clo_t @ l_f)
   fn app (
       pf: !V
-    | x: &(a?) >> a, i: sizeLt m, j: sizeLt n, p_f: !ptr l_f
+    | i: sizeLt m, j: sizeLt n, x: &(a?) >> a, p_f: !ptr l_f
     ) :<> void = let
     prval (pf1, pf2) = pf
-    val () = !p_f (pf1 | x, i, j)
+    val () = !p_f (pf1 | i, j, x)
     prval () = pf := (pf1, pf2)
   in
     // nothing

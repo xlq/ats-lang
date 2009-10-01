@@ -50,6 +50,10 @@
 
 (* ****** ****** *)
 
+#define ATS_DYNLOADFLAG 0 // no need for dynamic loading
+
+(* ****** ****** *)
+
 staload "libats/SATS/genarrays.sats"
 
 (* ****** ****** *)
@@ -263,7 +267,7 @@ implement fmatrix_ptr_foreach_fun_tsz__main
   (pf | M, f, ord, m, n, tsz, env) = if m > 0 then let
   prval (pf_mat, fpf) = GEMAT_v_of_fmatrix_v {a} (view@ M)
   val () = GEMAT_ptr_foreach_fun_tsz__main
-    (pf | M, f, ORDERcol, ord, m, n, m, tsz, env)
+    (pf | ORDERcol, M, f, ord, m, n, m, tsz, env)
   prval () = view@ M := fpf (pf_mat)
 in
   // nothing
@@ -308,7 +312,7 @@ implement fmatrix_ptr_iforeach_fun_tsz__main
   (pf | M, f, ord, m, n, tsz, env) = if m > 0 then let
   prval (pf_mat, fpf) = GEMAT_v_of_fmatrix_v {a} (view@ M)
   val () = GEMAT_ptr_iforeach_fun_tsz__main
-    (pf | M, f, ORDERcol, ord, m, n, m, tsz, env)
+    (pf | ORDERcol, M, f, ord, m, n, m, tsz, env)
   prval () = view@ M := fpf (pf_mat)
 in
   // nothing
@@ -321,7 +325,7 @@ implement fmatrix_ptr_iforeach_fun_tsz
   (pf | M, f, ord, m, n, tsz) = if m > 0 then let
   prval (pf_mat, fpf) = GEMAT_v_of_fmatrix_v {a} (view@ M)
   val () = GEMAT_ptr_iforeach_fun_tsz
-    (pf | M, f, ORDERcol, ord, m, n, m, tsz)
+    (pf | ORDERcol, M, f, ord, m, n, m, tsz)
   prval () = view@ M := fpf (pf_mat)
 in
   // nothing
@@ -334,7 +338,7 @@ implement fmatrix_ptr_iforeach_clo_tsz
   (pf | M, f, ord, m, n, tsz) = if m > 0 then let
   prval (pf_mat, fpf) = GEMAT_v_of_fmatrix_v {a} (view@ M)
   val () = GEMAT_ptr_iforeach_clo_tsz
-    (pf | M, f, ORDERcol, ord, m, n, m, tsz)
+    (pf | ORDERcol, M, f, ord, m, n, m, tsz)
   prval () = view@ M := fpf (pf_mat)
 in
   // nothing

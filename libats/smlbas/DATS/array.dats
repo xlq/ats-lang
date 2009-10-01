@@ -78,7 +78,7 @@ end // end of [fromList]
 implement{a} tabulate (asz, f) = let
   val [n:int] asz = size1_of_size (asz)
   val (pf_gc, pf_arr | p_arr) = array_ptr_alloc_tsz {a} (asz, sizeof<a>)
-  var !p_clo = @lam (pf: !unit_v | x: &(a?) >> a, i: sizeLt n): void =<clo> (x := $effmask_all (f i))
+  var !p_clo = @lam (pf: !unit_v | i: sizeLt n, x: &(a?) >> a): void =<clo> (x := $effmask_all (f i))
   prval pf = unit_v ()
   val () = array_ptr_initialize_clo_tsz {a} {unit_v} {n} (pf | !p_arr, asz, !p_clo, sizeof<a>)
   prval unit_v () = pf

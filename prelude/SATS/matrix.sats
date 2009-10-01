@@ -102,7 +102,7 @@ fun matrix_make_fun_tsz__main
   {a:viewt@ype} {v:view} {vt:viewtype} {m,n:pos} (
     pf: !v
   | row: size_t m, col: size_t n
-  , f: (!v | &(a?) >> a, sizeLt m, sizeLt n, !vt) -<> void
+  , f: (!v | sizeLt m, sizeLt n, &(a?) >> a, !vt) -<> void
   , tsz: sizeof_t a
   , env: !vt
   ) :<> matrix (a, m, n)
@@ -111,7 +111,7 @@ fun matrix_make_clo_tsz
   {a:viewt@ype} {v:view} {m,n:pos} (
     pf: !v
   | row: size_t m, col: size_t n
-  , f: &(!v | &(a?) >> a, sizeLt m, sizeLt n) -<clo> void
+  , f: &(!v | sizeLt m, sizeLt n, &(a?) >> a) -<clo> void
   , tsz: sizeof_t a
   ) :<> matrix (a, m, n)
 

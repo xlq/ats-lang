@@ -285,8 +285,8 @@ extern fun
   {i,j:nat | i < m; j < n}
   {ord:order} {lda:pos} {l0:addr} (
     pf_mat: unit_v // GEMAT_v (a, m, n, ord, lda, l0)
-  | p_mat: ptr l0
-  , ord: ORDER ord
+  | ord: ORDER ord
+  , p_mat: ptr l0
   , lda: int lda
   , i: int i, j: int j
   , tsz: sizeof_t a
@@ -298,14 +298,13 @@ extern fun
 // end of [GEMAT_ptr_takeout_tsz_dummy]
 
 implement GEMAT_ptr_takeout_tsz_dummy
-  (pf_mat | p_mat, ord, lda, i, j, tsz) = let
+  (pf_mat | ord, p_mat, lda, i, j, tsz) = let
   prval unit_v () = pf_mat
   val i = size_of_int1 i
   val lda = size_of_int1 lda
   val j = size_of_int1 j
   val ofs = (case+ ord of
-    | ORDERrow () => (i * lda) + j
-    | ORDERcol () => i + (j * lda)
+    | ORDERrow () => (i * lda) + j | ORDERcol () => i + (j * lda)
   ) : size_t
   val ofs = size1_of_size (ofs)
 in
@@ -314,13 +313,13 @@ end // end of [GEMAT_ptr_takeout_tsz_dummy]
 
 (* ****** ****** *)
 
-implement{a} GEMAT_ptr_takeout (pf_mat | p, ord, lda, i, j) =
-  GEMAT_ptr_takeout_tsz {a} (pf_mat | p, ord, lda, i, j, sizeof<a>)
+implement{a} GEMAT_ptr_takeout (pf_mat | ord, p, lda, i, j) =
+  GEMAT_ptr_takeout_tsz {a} (pf_mat | ord, p, lda, i, j, sizeof<a>)
 // end of [GEMAT_ptr_takeout]
 
-implement{a} GEMAT_ptr_get_elt_at (A, ord, lda, i, j) = let
+implement{a} GEMAT_ptr_get_elt_at (ord, A, lda, i, j) = let
   val (pf, fpf | p) =
-    GEMAT_ptr_takeout_tsz {a} (view@ A | &A, ord, lda, i, j, sizeof<a>)
+    GEMAT_ptr_takeout_tsz {a} (view@ A | ord, &A, lda, i, j, sizeof<a>)
   // end of [val]  
   val x = !p
   prval () = view@ A := fpf (pf)
@@ -328,9 +327,9 @@ in
   x // the return value
 end // end of [GEMAT_ptr_get_elt_at]
 
-implement{a} GEMAT_ptr_set_elt_at (A, ord, lda, i, j, x) = let
+implement{a} GEMAT_ptr_set_elt_at (ord, A, lda, i, j, x) = let
   val (pf, fpf | p) =
-    GEMAT_ptr_takeout_tsz {a} (view@ A | &A, ord, lda, i, j, sizeof<a>)
+    GEMAT_ptr_takeout_tsz {a} (view@ A | ord, &A, lda, i, j, sizeof<a>)
   // end of [val]  
   val () = !p := x
   prval () = view@ A := fpf (pf)
@@ -347,8 +346,8 @@ extern fun GEMAT_ptr_tail_row_tsz_dummy
   {a:viewt@ype} {m:pos;n:nat}
   {ord:order} {lda:pos} {l0:addr} (
     pf_mat: unit_v // GEMAT_v (a, m, n, ord, lda, l0)
-  | p_mat: ptr l0
-  , ord: ORDER ord
+  | ord: ORDER ord
+  , p_mat: ptr l0
   , lda: int lda
   , tsz: sizeof_t a
   ) :<> [l:addr] (
@@ -359,7 +358,7 @@ extern fun GEMAT_ptr_tail_row_tsz_dummy
 // end of [GEMAT_ptr_tail_row_tsz]
 
 implement GEMAT_ptr_tail_row_tsz_dummy
-  (pf_mat | p_mat, ord, lda, tsz) = let
+  (pf_mat | ord, p_mat, lda, tsz) = let
   prval unit_v () = pf_mat
   val ofs = (case+ ord of
     | ORDERrow () => size1_of_int1 lda * tsz | ORDERcol () => tsz
@@ -369,8 +368,8 @@ in
   (unit_v (), unit_v () | p_mat + ofs)
 end // end of [GEMAT_ptr_tail_row_tsz_dummy]
 
-implement{a} GEMAT_ptr_tail_row (pf_mat | p_mat, ord, lda) =
-  GEMAT_ptr_tail_row_tsz (pf_mat | p_mat, ord, lda, sizeof<a>)
+implement{a} GEMAT_ptr_tail_row (pf_mat | ord, p_mat, lda) =
+  GEMAT_ptr_tail_row_tsz (pf_mat | ord, p_mat, lda, sizeof<a>)
 // end of [GEMAT_ptr_tail_row]
 
 (* ****** ****** *)
@@ -382,8 +381,8 @@ extern fun GEMAT_ptr_tail_col_tsz_dummy
   {a:viewt@ype} {m:pos;n:nat}
   {ord:order} {lda:pos} {l0:addr} (
     pf_mat: unit_v // GEMAT_v (a, m, n, ord, lda, l0)
-  | p_mat: ptr l0
-  , ord: ORDER ord
+  | ord: ORDER ord
+  , p_mat: ptr l0
   , lda: int lda
   , tsz: sizeof_t a
   ) :<> [l:addr] (
@@ -394,7 +393,7 @@ extern fun GEMAT_ptr_tail_col_tsz_dummy
 // end of [GEMAT_ptr_tail_col_tsz]
 
 implement GEMAT_ptr_tail_col_tsz_dummy
-  (pf_mat | p_mat, ord, lda, tsz) = let
+  (pf_mat | ord, p_mat, lda, tsz) = let
   prval unit_v () = pf_mat
   val ofs = (case+ ord of
     | ORDERrow () => tsz | ORDERcol () => size1_of_int1 lda * tsz
@@ -404,8 +403,8 @@ in
   (unit_v (), unit_v () | p_mat + ofs)
 end // end of [GEMAT_ptr_tail_col_tsz_dummy]
 
-implement{a} GEMAT_ptr_tail_col (pf_mat | p_mat, ord, lda) =
-  GEMAT_ptr_tail_col_tsz (pf_mat | p_mat, ord, lda, sizeof<a>)
+implement{a} GEMAT_ptr_tail_col (pf_mat | ord, p_mat, lda) =
+  GEMAT_ptr_tail_col_tsz (pf_mat | ord, p_mat, lda, sizeof<a>)
 // end of [GEMAT_ptr_tail_col]
 
 (* ****** ****** *)
@@ -418,8 +417,8 @@ GEMAT_ptr_split1x2_tsz_dummy
   {a:viewt@ype} {m,n:nat}
   {j:nat | j <= n} {ord:order} {lda:pos} {l0:addr} (
     pf_mat: unit_v // GEMAT_v (a, m, n, ord, lda, l0)
-  | p_mat: ptr l0
-  , ord: ORDER ord
+  | ord: ORDER ord
+  , p_mat: ptr l0
   , lda: int lda
   , j: int j
   , tsz: sizeof_t a
@@ -434,7 +433,7 @@ GEMAT_ptr_split1x2_tsz_dummy
 
 implement
   GEMAT_ptr_split1x2_tsz_dummy
-  (pf_mat | p_mat, ord, lda, j, tsz) = let
+  (pf_mat | ord, p_mat, lda, j, tsz) = let
   prval unit_v () = pf_mat
   val j = size1_of_int1 (j)
   val ofs = (case ord of
@@ -455,8 +454,8 @@ GEMAT_ptr_split2x1_tsz_dummy
   {a:viewt@ype} {m,n:nat}
   {i:nat | i <= m} {ord:order} {lda:pos} {l0:addr} (
     pf_mat: unit_v // GEMAT_v (a, m, n, ord, lda, l0)
-  | p_mat: ptr l0
-  , ord: ORDER ord
+  | ord: ORDER ord
+  , p_mat: ptr l0
   , lda: int lda
   , i: int i
   , tsz: sizeof_t a
@@ -471,7 +470,7 @@ GEMAT_ptr_split2x1_tsz_dummy
 
 implement
   GEMAT_ptr_split2x1_tsz_dummy
-  (pf_mat | p_mat, ord, lda, i, tsz) = let
+  (pf_mat | ord, p_mat, lda, i, tsz) = let
   prval unit_v () = pf_mat
   val i = size1_of_int1 (i)
   val ofs = (case ord of
@@ -493,8 +492,8 @@ GEMAT_ptr_split2x2_tsz_dummy
   {m,n:nat} {i,j:nat | i <= m; j <= n}
   {ord:order} {lda:pos} {l0:addr} (
     pf_mat: unit_v // GEMAT_v (a, m, n, ord, lda, l0)
-  | p_mat: ptr l0
-  , ord: ORDER ord
+  | ord: ORDER ord
+  , p_mat: ptr l0
   , lda: int lda
   , i: int i, j: int j
   , tsz: sizeof_t a
@@ -517,7 +516,7 @@ GEMAT_ptr_split2x2_tsz_dummy
 
 implement
   GEMAT_ptr_split2x2_tsz_dummy (
-    pf_mat | p_mat , ord, lda, i, j, tsz
+    pf_mat | ord, p_mat, lda, i, j, tsz
   ) = let
   prval unit_v () = pf_mat
   val i = size_of_int1 i and j = size_of_int1 j
@@ -543,18 +542,18 @@ end // end of [GEMAT_ptr_split2x2_tsz_dummy]
 (* ****** ****** *)
 
 implement{a1} GEMAT_ptr_split1x2
-  (pf_mat | p_mat, ord, lda, j) =
-  GEMAT_ptr_split1x2_tsz {a1} (pf_mat | p_mat, ord, lda, j, sizeof<a1>)
+  (pf_mat | ord, p_mat, lda, j) =
+  GEMAT_ptr_split1x2_tsz {a1} (pf_mat | ord, p_mat, lda, j, sizeof<a1>)
 // end of [GEMAT_ptr_split1x2]
 
 implement{a1} GEMAT_ptr_split2x1
-  (pf_mat | p_mat, ord, lda, i) =
-  GEMAT_ptr_split2x1_tsz {a1} (pf_mat | p_mat, ord, lda, i, sizeof<a1>)
+  (pf_mat | ord, p_mat, lda, i) =
+  GEMAT_ptr_split2x1_tsz {a1} (pf_mat | ord, p_mat, lda, i, sizeof<a1>)
 // end of [GEMAT_ptr_split2x1]
 
 implement{a1} GEMAT_ptr_split2x2
-  (pf_mat | p_mat, ord, lda, i, j) =
-  GEMAT_ptr_split2x2_tsz {a1} (pf_mat | p_mat, ord, lda, i, j, sizeof<a1>)
+  (pf_mat | ord, p_mat, lda, i, j) =
+  GEMAT_ptr_split2x2_tsz {a1} (pf_mat | ord, p_mat, lda, i, j, sizeof<a1>)
 // end of [GEMAT_ptr_split2x2]
 
 (* ****** ****** *)
@@ -609,7 +608,7 @@ implement{a}
 
 // X <- alpha
 implement{a} GEMAT_ptr_initialize_elt
-  {ord} {m,n} {ld} (X, ord, m, n, ld, alpha) = let
+  {ord} {m,n} {ld} (ord, X, m, n, ld, alpha) = let
   fun loop_row {m,n:nat} {lx:addr} .<m>. (
       pf_gmat: !GEMAT_v (a?, m, n, row, ld, lx)
                  >> GEMAT_v (a, m, n, row, ld, lx)
@@ -617,7 +616,7 @@ implement{a} GEMAT_ptr_initialize_elt
     ) :<cloref> void =
     if m > 0 then let
       val (pfX1_gmat, pfX2_gmat, fpf_gmat | pX1, pX2) =
-        GEMAT_ptr_split2x1<a?> (pf_gmat | pX, ORDERrow, ld, 1)
+        GEMAT_ptr_split2x1<a?> (pf_gmat | ORDERrow, pX, ld, 1)
       prval (pf2_inc, pfX1_gvec, fpfX1_gmat) =
         GEVEC_v_of_GEMAT_v_row (pfX1_gmat, ORDERrow, ld)
       prval MATVECINCrowrow () = pf2_inc
@@ -650,10 +649,21 @@ end // end of [GEMAT_ptr_initialize_elt]
 
 (* ****** ****** *)
 
+implement{a} GEMAT_ptr_initialize_fun
+  {v} {ord} {m,n} {ld} (pf | ord, X, m, n, ld, f) = () where {
+  val _(*ptr*) = __cast (X) where {
+    extern castfn __cast
+      (X: &GEMAT (a?, m, n, ord, ld) >> GEMAT (a, m, n, ord, ld)):<> ptr
+  } // end of [val]
+  val () = GEMAT_ptr_iforeach_fun_tsz {a} (pf | ord, X, f, ord, m, n, ld, sizeof<a>)
+} // end of [GEMAT_ptr_initialize_fun]
+
+(* ****** ****** *)
+
 implement
 GEMAT_ptr_foreach_fun_tsz__main
   {a} {v} {vt} {ord1,ord2} {m,n} {ld}
-  (pf | M, f, ord1, ord2, m, n, ld, tsz, env) = let
+  (pf | ord1, M, f, ord2, m, n, ld, tsz, env) = let
   fun loop_row {n > 0}
     {mi:nat | mi <= m} {l:addr} .<mi>. (
     pf: !v
@@ -664,7 +674,7 @@ GEMAT_ptr_foreach_fun_tsz__main
   ) :<cloref> void =
   if mi > 0 then let
     val (pf1_mat, pf2_mat, fpf | p1, p2) =
-      GEMAT_ptr_split2x1_tsz {a} (pf_mat | p, ord1, ld, 1, tsz)
+      GEMAT_ptr_split2x1_tsz {a} (pf_mat | ord1, p, ld, 1, tsz)
     prval (pf1_inc, pf1_vec, fpf1_mat) =
       GEVEC_v_of_GEMAT_v_row (pf1_mat, ord1, ld)
     val inc = MATVECINC_get (pf1_inc | ORDERrow, ord1, ld)
@@ -686,7 +696,7 @@ GEMAT_ptr_foreach_fun_tsz__main
   ) :<cloref> void =
   if ni > 0 then let
     val (pf1_mat, pf2_mat, fpf | p1, p2) =
-      GEMAT_ptr_split1x2_tsz {a} (pf_mat | p, ord1, ld, 1, tsz)
+      GEMAT_ptr_split1x2_tsz {a} (pf_mat | ord1, p, ld, 1, tsz)
     prval (pf1_inc, pf1_vec, fpf1_mat) =
       GEVEC_v_of_GEMAT_v_col (pf1_mat, ord1, ld)
     val inc = MATVECINC_get (pf1_inc | ORDERcol, ord1, ld)
@@ -720,19 +730,19 @@ end (* end of [GEMAT_ptr_foreach_fun_tsz__main] *)
 
 implement GEMAT_ptr_foreach_fun_tsz
   {a} {v} {ord1,ord2} {m,n}
-  (pf | base, f, ord1, ord2, m, n, ld, tsz) = let
+  (pf | ord1, base, f, ord2, m, n, ld, tsz) = let
   val f = coerce (f) where {
     extern castfn coerce
       (f: (!v | &a) -<> void):<> (!v | &a, !ptr) -<> void
   } // end of [where]
 in
   GEMAT_ptr_foreach_fun_tsz__main
-    (pf | base, f, ord1, ord2, m, n, ld, tsz, null)
+    (pf | ord1, base, f, ord2, m, n, ld, tsz, null)
 end // end of [GEMAT_ptr_foreach_fun_tsz]
 
 implement GEMAT_ptr_foreach_clo_tsz
   {a} {v} {ord1,ord2} {m,n}
-  (pf_v | M, f, ord1, ord2, m, n, ld, tsz) = let
+  (pf_v | ord1, M, f, ord2, m, n, ld, tsz) = let
   viewtypedef clo_t = (!v | &a) -<clo> void
   stavar l_f: addr
   val p_f: ptr l_f = &f
@@ -742,7 +752,7 @@ implement GEMAT_ptr_foreach_clo_tsz
   end // end of [app]
   prval pf = (pf_v, view@ f)
   val () = GEMAT_ptr_foreach_fun_tsz__main
-    {a} {V} {ptr l_f} (pf | M, app, ord1, ord2, m, n, ld, tsz, p_f)
+    {a} {V} {ptr l_f} (pf | ord1, M, app, ord2, m, n, ld, tsz, p_f)
   prval (pf1, pf2) = pf
   prval () = (pf_v := pf1; view@ f := pf2)
 in
@@ -754,7 +764,7 @@ end // end of [GEMAT_ptr_foreach_clo_tsz]
 implement
 GEMAT_ptr_iforeach_fun_tsz__main
   {a} {v} {vt} {ord1,ord2} {m,n} {ld}
-  (pf | M, f, ord1, ord2, m, n, ld, tsz, env) = let
+  (pf | ord1, M, f, ord2, m, n, ld, tsz, env) = let
   fun loop_row {n > 0}
     {mi:nat | mi <= m} {l:addr} .<mi>. (
     pf: !v
@@ -765,7 +775,7 @@ GEMAT_ptr_iforeach_fun_tsz__main
   ) :<cloref> void =
   if mi > 0 then let
     val (pf1_mat, pf2_mat, fpf | p1, p2) =
-      GEMAT_ptr_split2x1_tsz {a} (pf_mat | p, ord1, ld, 1, tsz)
+      GEMAT_ptr_split2x1_tsz {a} (pf_mat | ord1, p, ld, 1, tsz)
     prval (pf1_inc, pf1_vec, fpf1_mat) =
       GEVEC_v_of_GEMAT_v_row (pf1_mat, ord1, ld)
     val inc = MATVECINC_get (pf1_inc | ORDERrow, ord1, ld)
@@ -792,7 +802,7 @@ GEMAT_ptr_iforeach_fun_tsz__main
   ) :<cloref> void =
   if nj > 0 then let
     val (pf1_mat, pf2_mat, fpf | p1, p2) =
-      GEMAT_ptr_split1x2_tsz {a} (pf_mat | p, ord1, ld, 1, tsz)
+      GEMAT_ptr_split1x2_tsz {a} (pf_mat | ord1, p, ld, 1, tsz)
     prval (pf1_inc, pf1_vec, fpf1_mat) =
       GEVEC_v_of_GEMAT_v_col (pf1_mat, ord1, ld)
     val inc = MATVECINC_get (pf1_inc | ORDERcol, ord1, ld)
@@ -831,7 +841,7 @@ end (* end of [GEMAT_ptr_iforeach_fun_tsz__main] *)
 
 implement GEMAT_ptr_iforeach_fun_tsz
   {a} {v} {ord1,ord2} {m,n}
-  (pf | base, f, ord1, ord2, m, n, ld, tsz) = let
+  (pf | ord1, base, f, ord2, m, n, ld, tsz) = let
   val f = coerce (f) where {
     extern castfn coerce
       (f: (!v | natLt m, natLt n, &a) -<> void)
@@ -839,14 +849,14 @@ implement GEMAT_ptr_iforeach_fun_tsz
   } // end of [where]
 in
   GEMAT_ptr_iforeach_fun_tsz__main
-    (pf | base, f, ord1, ord2, m, n, ld, tsz, null)
+    (pf | ord1, base, f, ord2, m, n, ld, tsz, null)
 end // end of [GEMAT_ptr_iforeach_fun_tsz]
 
 (* ****** ****** *)
 
 implement GEMAT_ptr_iforeach_clo_tsz
   {a} {v} {ord1,ord2} {m,n}
-  (pf_v | M, f, ord1, ord2, m, n, ld, tsz) = let
+  (pf_v | ord1, M, f, ord2, m, n, ld, tsz) = let
   viewtypedef clo_t = (!v | natLt m, natLt n, &a) -<clo> void
   stavar l_f: addr
   val p_f: ptr l_f = &f
@@ -859,7 +869,7 @@ implement GEMAT_ptr_iforeach_clo_tsz
   end // end of [app]
   prval pf = (pf_v, view@ f)
   val () = GEMAT_ptr_iforeach_fun_tsz__main
-    {a} {V} {ptr l_f} (pf | M, app, ord1, ord2, m, n, ld, tsz, p_f)
+    {a} {V} {ptr l_f} (pf | ord1, M, app, ord2, m, n, ld, tsz, p_f)
   prval (pf1, pf2) = pf
   prval () = (pf_v := pf1; view@ f := pf2)
 in

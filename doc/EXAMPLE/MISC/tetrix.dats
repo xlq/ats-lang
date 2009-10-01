@@ -508,13 +508,13 @@ in
             (shapeObj_undisplay S; S.ypos := S.ypos-1; shapeObj_display S)
         end
       | 'i' => let
-          val r = (S.rot + 3) mod 4
+          val r = (S.rot + 3) nmod 4
         in
           if move_test (S.shape, r, S.xpos, S.ypos) then
             (shapeObj_undisplay S; S.rot := r; shapeObj_display S)
         end
       | 'k' => let
-          val r = (S.rot + 1) mod 4
+          val r = (S.rot + 1) nmod 4
         in
           if move_test (S.shape, r, S.xpos, S.ypos) then
             (shapeObj_undisplay S; S.rot := r; shapeObj_display S)

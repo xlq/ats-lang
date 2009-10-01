@@ -32,7 +32,7 @@ prval pf = unit_v ()
 val digits =
   array_make_clo_tsz {digit} {unit_v} (pf | 10, !p_f, sizeof<digit>) where {
   var !p_f = @lam
-    (pf: !unit_v | x: &digit? >> digit, i: sizeLt 10): void =<clo> x := int1_of_size1 (i)
+    (pf: !unit_v | i: sizeLt 10, x: &digit? >> digit): void =<clo> x := int1_of_size1 (i)
 } // end of [val]
 prval unit_v () = pf
 

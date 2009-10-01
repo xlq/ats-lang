@@ -182,7 +182,7 @@ fun array_ptr_initialize_fun_tsz__main
     pf: !v
   | base: &(@[a?][n]) >> @[a][n]
   , asz: size_t n
-  , f: (!v | &(a?) >> a, sizeLt n, !vt) -<> void
+  , f: (!v | sizeLt n, &(a?) >> a, !vt) -<> void
   , tsz: sizeof_t a
   , env: !vt
   ) :<> void
@@ -195,7 +195,7 @@ fun array_ptr_initialize_fun_tsz
     pf: !v
   | base: &(@[a?][n]) >> @[a][n]
   , asz: size_t n
-  , f: (!v | &(a?) >> a, sizeLt n) -<> void
+  , f: (!v | sizeLt n, &(a?) >> a) -<> void
   , tsz: sizeof_t a
   ) :<> void
   = "atspre_array_ptr_initialize_fun_tsz"
@@ -209,7 +209,7 @@ fun array_ptr_initialize_clo_tsz__main
     pf: !v
   | base: &(@[a?][n]) >> @[a][n]
   , asz: size_t n
-  , f: &(!v | &(a?) >> a, sizeLt n, !vt) -<clo> void
+  , f: &(!v | sizeLt n, &(a?) >> a, !vt) -<clo> void
   , tsz: sizeof_t a
   , env: !vt
   ) :<> void
@@ -222,7 +222,7 @@ fun array_ptr_initialize_clo_tsz
     pf: !v 
   | base: &(@[a?][n]) >> @[a][n]
   , asz: size_t n
-  , f: &(!v | &(a?) >> a, sizeLt n) -<clo> void
+  , f: &(!v | sizeLt n, &(a?) >> a) -<clo> void
   , tsz: sizeof_t a
   ) :<> void
   = "atspre_array_ptr_initialize_clo_tsz"
@@ -565,7 +565,7 @@ fun array_make_clo_tsz
   {a:viewt@ype} {v:view} {n:nat} (
     pf: !v
   | asz: size_t n
-  , f: &(!v | &(a?) >> a, sizeLt n) -<clo> void
+  , f: &(!v | sizeLt n, &(a?) >> a) -<clo> void
   , tsz: sizeof_t a
   ) :<> array (a, n)
 // end of [array_make_clo_tsz]
@@ -573,7 +573,7 @@ fun array_make_clo_tsz
 fun array_make_cloref_tsz
   {a:viewt@ype} {n:nat} (
     asz: size_t n
-  , f: (&(a?) >> a, sizeLt n) -<cloref1> void
+  , f: (sizeLt n, &(a?) >> a) -<cloref1> void
   , tsz: sizeof_t a
   ) :<fun1> array (a, n)
 // end of [array_make_cloref_tsz]

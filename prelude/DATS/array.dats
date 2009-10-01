@@ -172,8 +172,8 @@ end // end of [array_ptr_initialize_lst_vt]
 
 implement array_ptr_initialize_fun_tsz
   {a} {v} {n} (pf | base, asz, f, tsz) = let
-  typedef funptr_t = (!v | &(a?) >> a, sizeLt n) -<> void
-  typedef funptr1_t = (!v | &(a?) >> a, sizeLt n, !ptr) -<> void
+  typedef funptr_t = (!v | sizeLt n, &(a?) >> a) -<> void
+  typedef funptr1_t = (!v | sizeLt n, &(a?) >> a, !ptr) -<> void
   val f1 = coerce (f) where {
     extern castfn coerce (f: funptr_t):<> funptr1_t
   }
@@ -188,8 +188,8 @@ end // end of [array_ptr_initialize_fun_tsz]
 implement array_ptr_initialize_clo_tsz
   {a} {v} {n} (pf | base, asz, f, tsz) = let
   val p_f = &f; prval pf_f = view@ f
-  viewtypedef clo_t = (!v | &(a?) >> a, sizeLt n) -<clo> void
-  viewtypedef clo1_t = (!v | &(a?) >> a, sizeLt n, !Ptr) -<clo> void
+  viewtypedef clo_t = (!v | sizeLt n, &(a?) >> a) -<clo> void
+  viewtypedef clo1_t = (!v | sizeLt n, &(a?) >> a, !Ptr) -<clo> void
   prval pf1_f = coerce (pf_f) where {
     extern praxi coerce {l:addr} (pf: clo_t @ l): clo1_t @ l
   } // end of [prval]
@@ -318,11 +318,11 @@ implement array_make_cloref_tsz {a} {n} (asz, f, tsz) = let
   val (pf_gc, pf_arr | p_arr) = array_ptr_alloc_tsz {a} (asz, tsz)
   prval () = free_gc_elim {a} (pf_gc) // return the certificate to GC
   prval pf = unit_v ()
-  typedef cloref_t = (&(a?) >> a, sizeLt n) -<cloref1> void
+  typedef cloref_t = (sizeLt n, &(a?) >> a) -<cloref1> void
   val () = array_ptr_initialize_fun_tsz__main
     {a} {unit_v} {cloref_t} (pf | !p_arr, asz, app, tsz, f) where {
     val app = lam
-      (pf: !unit_v | x: &(a?) >> a, i: sizeLt n, f: !cloref_t): void =<fun> $effmask_all (f (x, i))
+      (pf: !unit_v | i: sizeLt n, x: &(a?) >> a, f: !cloref_t): void =<fun> $effmask_all (f (i, x))
   } // end of [val]  
   prval unit_v () = pf
   val (pfbox | ()) = vbox_make_view_ptr (pf_arr | p_arr)
@@ -654,7 +654,7 @@ atspre_array_ptr_initialize_fun_tsz__main (
   int i = 0;
   ats_ptr_type p = A ;
   while (i < asz) {
-    ((ats_void_type (*)(ats_ptr_type, ats_size_type, ats_ptr_type))f)(p, i, env) ;
+    ((ats_void_type (*)(ats_size_type, ats_ptr_type, ats_ptr_type))f)(i, p, env) ;
     p = (ats_ptr_type)(((byte*)p) + tsz) ;
     ++i ;
   }
@@ -672,7 +672,7 @@ atspre_array_ptr_initialize_clo_tsz__main (
   int i = 0;
   ats_ptr_type p = A ;
   while (i < asz) {
-    ((ats_void_type (*)(ats_clo_ptr_type, ats_ptr_type, ats_size_type, ats_ptr_type))ats_closure_fun(f))(f, p, i, env) ;
+    ((ats_void_type (*)(ats_clo_ptr_type, ats_size_type, ats_ptr_type, ats_ptr_type))ats_closure_fun(f))(f, i, p, env) ;
     p = (ats_ptr_type)(((byte*)p) + tsz) ;
     ++i ;
   }
