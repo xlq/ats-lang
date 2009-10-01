@@ -368,7 +368,7 @@ extern fun tblent_array_fold {a:viewt@ype} {sz: nat} {l:addr}
 %{
 
 ats_void_type tblent_array_fold
-  (ats_ptr_type p, ats_int_type sz, ats_ptr_type f, ats_ptr_type res) {
+  (ats_ptr_type p, ats_int_type sz, ats_clo_ptr_type f, ats_ptr_type res) {
 
   int i ; tblent_t *ent ;
 
