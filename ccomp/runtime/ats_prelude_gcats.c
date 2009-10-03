@@ -36,8 +36,8 @@
 
 /* ****** ****** */
 
-#ifndef _ATS_GCATS_H
-#define _ATS_GCATS_H
+#ifndef ATSRUNTIME_GCATS_C
+#define ATSRUNTIME_GCATS_C
 
 /* ****** ****** */
 
@@ -223,6 +223,6 @@ ats_realloc_ngc (const ats_ptr_type p, ats_size_type bsz) {
 
 /* ****** ****** */
 
-#endif /* _ATS_GCATS_H */
+#endif /* ATSRUNTIME_GCATS_C */
 
-/* end of [gc.h] */
+/* end of [ats_prelude_gcats.c] */

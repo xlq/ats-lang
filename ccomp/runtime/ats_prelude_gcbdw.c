@@ -36,8 +36,8 @@
 
 /* ****** ****** */
 
-#ifndef _ATS_GCBDW_H
-#define _ATS_GCBDW_H
+#ifndef ATSRUNTIME_GCBDW_C
+#define ATSRUNTIME_GCBDW_C
 
 /* ****** ****** */
 
@@ -138,6 +138,6 @@ ats_realloc_ngc (
 
 /* ****** ****** */
 
-#endif /* _ATS_GCBDW_H */
+#endif /* ATSRUNTIME_GCBDW_C */
 
-/* end of [gc.h] */
+/* end of [ats_prelude_gcbdw.c] */
