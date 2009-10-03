@@ -151,7 +151,16 @@ in @{
   data= p_arr, view= pf_mat_box
 } end // end of [matrix_make_fun_tsz__main]
 
-(* ****** ****** *)
+implement matrix_make_fun_tsz
+  {a} {v} {m,n} (pf | m, n, f, tsz) = let
+  typedef fun_t = (!v | sizeLt m, sizeLt n, &(a?) >> a) -<fun> void
+  typedef fun1_t = (!v | sizeLt m, sizeLt n, &(a?) >> a, !ptr) -<fun> void
+  val f = coerce (f) where {
+    extern castfn coerce (f: fun_t):<> fun1_t
+  }
+in
+ matrix_make_fun_tsz__main {a} {v} (pf | m, n, f, tsz, null)
+end // end of [matrix_make_fun_tsz]
 
 implement matrix_make_clo_tsz
   {a} {v} {m,n} (pf1 | m, n, f, tsz) = M where {
@@ -172,7 +181,7 @@ implement matrix_make_clo_tsz
   prval pf = (pf1, view@ f)
   val M = matrix_make_fun_tsz__main {a} {V} {ptr l_f} (pf | m, n, app, tsz, p_f)
   prval () = (pf1 := pf.0; view@ f := pf.1)
-} // end of [matrix_make_clo_tsz]  
+} // end of [matrix_make_clo_tsz]
 
 (* ****** ****** *)
 

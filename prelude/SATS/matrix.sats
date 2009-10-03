@@ -89,7 +89,7 @@ fun matrix_make_arraysize__main {a:viewt@ype} {m,n,mn:int}
   :<> matrix (a, m, n)
   = "atspre_matrix_make_arraysize__main"
 
-macdef matrix (m, n) arrsz = matrix_make_arraysize (,(m), ,(n), ,(arrsz))
+macdef matrix (m, n) asz = matrix_make_arraysize (,(m), ,(n), ,(asz))
 
 (* ****** ****** *)
 
@@ -105,6 +105,14 @@ fun matrix_make_fun_tsz__main
   , f: (!v | sizeLt m, sizeLt n, &(a?) >> a, !vt) -<> void
   , tsz: sizeof_t a
   , env: !vt
+  ) :<> matrix (a, m, n)
+
+fun matrix_make_fun_tsz
+  {a:viewt@ype} {v:view} {m,n:pos} (
+    pf: !v
+  | row: size_t m, col: size_t n
+  , f: (!v | sizeLt m, sizeLt n, &(a?) >> a) -<fun> void
+  , tsz: sizeof_t a
   ) :<> matrix (a, m, n)
 
 fun matrix_make_clo_tsz
@@ -141,6 +149,9 @@ overload [] with matrix_set_elt_at__intsz
 // these functions are just as easy to be implemented on the spot (HX)
 //
 
+(*
+// implemented in ATS (prelude/DATS/matrix.dats)
+*)
 fun{a:viewt@ype}
   matrix_foreach_fun__main
   {v:view} {vt:viewtype} {m,n:nat} (
@@ -176,6 +187,9 @@ fun{a:viewt@ype}
 // these functions are just as easy to be implemented on the spot (HX)
 //
 
+(*
+// implemented in ATS (prelude/DATS/matrix.dats)
+*)
 fun{a:viewt@ype}
   matrix_iforeach_fun__main
   {v:view} {vt:viewtype} {m,n:nat} (

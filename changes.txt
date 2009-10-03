@@ -8,6 +8,8 @@ ats-lang-anairiats-0.2.0
 2. Adding a check to detect looping caused by recursive staloading
    and/or including
 
+3. Overhauling [prelude/SATS/array.sats]
+
 ########################################################################
 
 ats-lang-anairiats-0.1.6:
