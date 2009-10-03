@@ -59,30 +59,30 @@
 
 /* ****** ****** */
 
-#include "gc.cats"
+#include "gcats1.cats"
 
-#include "gc_top_dats.c"
+#include "gcats1_top_dats.c"
 
-#include "gc_misc_dats.c"
+#include "gcats1_misc_dats.c"
 
-#include "gc_freeitmlst_dats.c"
+#include "gcats1_freeitmlst_dats.c"
 
-#include "gc_chunk_dats.c"
+#include "gcats1_chunk_dats.c"
 
-#include "gc_globalentry_dats.c"
+#include "gcats1_globalentry_dats.c"
 
 #ifdef _ATS_MULTITHREAD
-#include "gc_multithread_dats.c"
+#include "gcats1_multithread_dats.c"
 #endif
 
-#include "gc_marking_dats.c"
+#include "gcats1_marking_dats.c"
 
-#include "gc_collecting_dats.c"
+#include "gcats1_collecting_dats.c"
 
-#include "gc_autops_dats.c"
+#include "gcats1_autops_dats.c"
 
-#include "gc_manops_dats.c"
+#include "gcats1_manops_dats.c"
 
 /* ****** ****** */
 
-/* end of [gc_all.cats] */
+/* end of [gcats1_all.cats] */

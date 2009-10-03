@@ -234,4 +234,4 @@ __define ATS_GC_RUNTIME_CHECK 0 // 1
 
 /* ****** ****** */
 
-/* end of [gc_master.hats] */
+/* end of [gcats1_master.hats] */

@@ -42,7 +42,7 @@
 
 %{^
 
-#include "gc.cats"
+#include "gcats1.cats"
 
 int the_chunk_count = 0 ;
 // a soft threshold that can be extended
@@ -131,11 +131,11 @@ ats_int_type the_markstatck_overflow = 0 ;
 
 (* ****** ****** *)
 
-#include "gc.hats"
+#include "gcats1.hats"
 
 (* ****** ****** *)
 
-staload "gc.sats"
+staload "gcats1.sats"
 
 (* ****** ****** *)
 
@@ -233,17 +233,17 @@ end // end of [gc_prerr_stats]
 
 (* ****** ****** *)
 
-dynload "gc_misc.dats"
-dynload "gc_freeitmlst.dats"
-dynload "gc_chunk.dats"
-dynload "gc_globalentry.dats"
+dynload "gcats1_misc.dats"
+dynload "gcats1_freeitmlst.dats"
+dynload "gcats1_chunk.dats"
+dynload "gcats1_globalentry.dats"
 #ifdef _ATS_MULTITHREAD
-dynload "gc_multithread.dats"
+dynload "gcats1_multithread.dats"
 #endif
-dynload "gc_marking.dats"
-dynload "gc_collecting.dats"
-dynload "gc_autops.dats"
-dynload "gc_manops.dats"
+dynload "gcats1_marking.dats"
+dynload "gcats1_collecting.dats"
+dynload "gcats1_autops.dats"
+dynload "gcats1_manops.dats"
 
 (* ****** ****** *)
 
@@ -304,4 +304,4 @@ ats_void_type gc_markroot_bsz
 
 (* ****** ****** *)
 
-(* end of [gc_top.dats] *)
+(* end of [gcats1_top.dats] *)

@@ -42,17 +42,17 @@
 
 %{^
 
-#include "gc.cats"
+#include "gcats1.cats"
 
 %}
 
 (* ****** ****** *)
 
-#include "gc.hats"
+#include "gcats1.hats"
 
 (* ****** ****** *)
 
-staload "gc.sats"
+staload "gcats1.sats"
 
 (* ****** ****** *)
 

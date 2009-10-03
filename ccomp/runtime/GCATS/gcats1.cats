@@ -41,7 +41,7 @@
 
 /* ****** ****** */
 
-#include "gc.hats"
+#include "gcats1.hats"
 
 /* ****** ****** */
 
@@ -958,4 +958,4 @@ the_sweeplst_array_insert_at
 
 #endif /* __ATS_GC_CATS */
 
-/* end of [gc.cats] */
+/* end of [gcats1.cats] */

@@ -36,7 +36,7 @@
 
 (* ****** ****** *)
 
-#include "gc.hats"
+#include "gcats1.hats"
 
 (* ****** ****** *)
 
@@ -58,7 +58,7 @@ fun freeitmlst2ptr (x: freeitmlst0): ptr = "freeitmlst2ptr"
 (* ****** ****** *)
 
 //
-// implemented in [gc_misc.dats]
+// implemented in [gcats1_misc.dats]
 //
 
 fun gc_stack_dir_get (): int = "gc_stack_dir_get"
@@ -500,10 +500,10 @@ fun gc_overflow_mark_the_topsegtbl (): void = "gc_overflow_mark_the_topsegtbl"
 fun gc_mark_the_stack (): void = "gc_mark_the_stack"
 fun gc_mark_the_globalentrylst (): void = "gc_mark_the_globalentrylst"
 
-// implemented in [gc_multithread.dats]
+// implemented in [gcats1_multithread.dats]
 fun gc_mark_the_threadinfolst (): void = "gc_mark_the_threadinfolst"
 
-// implemented in [gc_manops.dats]
+// implemented in [gcats1_manops.dats]
 fun gc_mark_the_manmemlst (): void = "gc_mark_the_manmemlst"
 
 //
