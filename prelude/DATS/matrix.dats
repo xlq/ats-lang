@@ -113,12 +113,12 @@ in @{
 
 extern fun natdiv {m,n:pos; mn,i:nat | i < mn}
   (pf: MUL (m, n, mn) | i: size_t i, n: size_t n):<> [d:nat | d < m] size_t d
-  = "ats_matrix_natdiv"
+  = "atspre_matrix_natdiv"
 
 %{^
 
 static inline
-ats_size_type ats_matrix_natdiv (ats_size_type i, ats_size_type n) {
+ats_size_type atspre_matrix_natdiv (ats_size_type i, ats_size_type n) {
   return (i / n) ;
 }
 
@@ -159,7 +159,7 @@ implement matrix_make_fun_tsz
     extern castfn coerce (f: fun_t):<> fun1_t
   }
 in
- matrix_make_fun_tsz__main {a} {v} (pf | m, n, f, tsz, null)
+  matrix_make_fun_tsz__main {a} {v} (pf | m, n, f, tsz, null)
 end // end of [matrix_make_fun_tsz]
 
 implement matrix_make_clo_tsz
@@ -249,8 +249,10 @@ implement matrix_ptr_takeout_tsz
   prval () = lemma_for_matrix_subscripting (pf_mul_mn, pf_mul_i_n)
   val [l:addr] (pf1, fpf2 | p_ofs) =
     array_ptr_takeout_tsz {a} (pf_arr | base, i_n + j, tsz)
+  // end of [val]
   prval fpf2 =
     llam (pf1: a @ l) =<prf> matrix_v_of_array_v (pf_mul_mn, fpf2 pf1)
+  // end of [prval]
 in
   (pf1, fpf2 | p_ofs)
 end // end of [val]
@@ -314,8 +316,7 @@ matrix_foreach_clo {v} {m,n} (pf_v | M, f, m, n) = let
     prval (pf1, pf2) = pf in !p_f (pf1 | x); pf := @(pf1, pf2)
   end // end of [app]
   prval pf = (pf_v, view@ f)
-  val () = matrix_foreach_fun__main<a>
-    {V} {ptr l_f} (pf | M, app, m, n, p_f)
+  val () = matrix_foreach_fun__main<a> {V} {ptr l_f} (pf | M, app, m, n, p_f)
   prval (pf1, pf2) = pf
   prval () = (pf_v := pf1; view@ f := pf2)
 in
@@ -376,7 +377,7 @@ implement{a} matrix_iforeach_fun
   } // end of [where]
 in
   matrix_iforeach_fun__main (pf | M, f, m, n, null)
-end // end of [matrix_foreach_fun]
+end // end of [matrix_iforeach_fun]
 
 implement{a} matrix_iforeach_clo
   {v} {m,n} (pf_v | M, f, m, n) = let
@@ -398,7 +399,7 @@ implement{a} matrix_iforeach_clo
   prval () = (pf_v := pf1; view@ f := pf2)
 in
   // empty
-end // end of [matrix_iforeach_cloptr]
+end // end of [matrix_iforeach_clo]
 
 implement{a}
   matrix_iforeach_cloref {m,n} (M, f, m, n) = let
