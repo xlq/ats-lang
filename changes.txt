@@ -10,6 +10,8 @@ ats-lang-anairiats-0.2.0
 
 3. Overhauling [prelude/SATS/array.sats]
 
+4. Adding support for special constants $FILENAME and $LOCATION.
+
 ########################################################################
 
 ats-lang-anairiats-0.1.6:

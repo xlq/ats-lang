@@ -223,21 +223,6 @@ keyval_insert("withtype", WITHTYPE) ;
 keyval_insert("withview", WITHVIEW) ;
 keyval_insert("withviewtype", WITHVIEWTYPE) ;
 
-keyval_insert("#assert", SRPASSERT) ;
-keyval_insert("#define", SRPDEFINE) ;
-keyval_insert("#elif", SRPELIF) ;
-keyval_insert("#elifdef", SRPELIFDEF) ;
-keyval_insert("#elifndef", SRPELIFNDEF) ;
-keyval_insert("#else", SRPELSE) ;
-keyval_insert("#endif", SRPENDIF) ;
-keyval_insert("#error", SRPERROR) ;
-keyval_insert("#if", SRPIF) ;
-keyval_insert("#ifdef", SRPIFDEF) ;
-keyval_insert("#ifndef", SRPIFNDEF) ;
-keyval_insert("#include", SRPINCLUDE) ;
-keyval_insert("#then", SRPTHEN) ;
-keyval_insert("#print", SRPPRINT) ;
-
 keyval_insert("$arrsz", DLRARRSZ) ;
 keyval_insert("$effmask_all", DLREFFMASK_ALL) ;
 keyval_insert("$effmask_exn", DLREFFMASK_EXN) ;
@@ -269,10 +254,25 @@ keyval_insert("$tup_vt", DLRTUP_VT) ;
 keyval_insert("$typeof", DLRTYPEOF) ;
 keyval_insert("$unfold", DLRUNFOLD) ;
 
-keyval_insert("$FILENAME", DLRFILENAME) ;
-keyval_insert("$LOCATION", DLRLOCATION) ;
-keyval_insert("$CHARCOUNT", DLRCHARCOUNT) ;
-keyval_insert("$LINECOUNT", DLRLINECOUNT) ;
+keyval_insert("#assert", SRPASSERT) ;
+keyval_insert("#define", SRPDEFINE) ;
+keyval_insert("#elif", SRPELIF) ;
+keyval_insert("#elifdef", SRPELIFDEF) ;
+keyval_insert("#elifndef", SRPELIFNDEF) ;
+keyval_insert("#else", SRPELSE) ;
+keyval_insert("#endif", SRPENDIF) ;
+keyval_insert("#error", SRPERROR) ;
+keyval_insert("#if", SRPIF) ;
+keyval_insert("#ifdef", SRPIFDEF) ;
+keyval_insert("#ifndef", SRPIFNDEF) ;
+keyval_insert("#include", SRPINCLUDE) ;
+keyval_insert("#then", SRPTHEN) ;
+keyval_insert("#print", SRPPRINT) ;
+
+keyval_insert("#FILENAME", SRPFILENAME) ;
+keyval_insert("#LOCATION", SRPLOCATION) ;
+keyval_insert("#CHARCOUNT", SRPCHARCOUNT) ;
+keyval_insert("#LINECOUNT", SRPLINECOUNT) ;
 
 keyval_insert("fold@", FOLDAT) ;
 keyval_insert("free@", FREEAT) ;
