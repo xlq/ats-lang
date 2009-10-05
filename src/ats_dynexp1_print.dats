@@ -293,6 +293,9 @@ in
   | D1Echar c => begin
       prstr "D1Echar("; fprint1_char (pf | out, c); prstr ")"
     end
+  | D1Ecstsp _ => begin
+      prstr "D1Ecstsp("; fprint1_string (pf | out, "..."); prstr ")"
+    end
   | D1Ecrypt (knd, d1e) => begin
       prstr "D1Ecrypt(";
       fprint1_int (pf | out, knd);

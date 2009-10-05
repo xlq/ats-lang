@@ -826,6 +826,21 @@ implement emit_valprim (pf | out, vp) = begin
       end // end of [_ when ...]
     | _ => emit_d2cst (pf | out, d2c)
     end // end of [VPcst]
+  | VPcstsp (loc, cst) => begin case+ cst of
+    | $Syn.CSTSPfilename () => let
+        val fil = $Loc.location_filename_get (loc)
+        val name = $Fil.filename_full fil; val len = string_length (name)
+      in
+        emit_valprim_string (pf | out, name, len)
+      end (* end of [CSTSPfilename] *)
+    | $Syn.CSTSPlocation () => let
+        val () = fprint1_string (pf | out, "\"")
+        val () = $Loc.fprint_location (pf | out, loc) 
+        val () = fprint1_string (pf | out, "\"")
+      in
+        // nothing
+      end (* end of [CSTSPlocation] *)
+    end // end of [VPcstsp]
   | VPenv vtp => let
       val d2v = vartyp_var_get vtp
       val ind = varindmap_find_some (d2v)

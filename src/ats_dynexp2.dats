@@ -586,6 +586,10 @@ implement d2exp_char (loc, chr) = '{
   d2exp_loc= loc, d2exp_node= D2Echar chr, d2exp_typ= None ()
 }
 
+implement d2exp_cstsp (loc, cst) = '{
+  d2exp_loc= loc, d2exp_node= D2Ecstsp cst, d2exp_typ= None ()
+}
+
 implement d2exp_con (loc, d2c, s2as_arg, npf, d2es_arg) = '{
   d2exp_loc= loc
 , d2exp_node= D2Econ (d2c, s2as_arg, npf, d2es_arg)

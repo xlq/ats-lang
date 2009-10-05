@@ -266,8 +266,13 @@ keyval_insert("$rec_vt", DLRREC_VT) ;
 keyval_insert("$spawn", DLRSPAWN) ;
 keyval_insert("$tup_t", DLRTUP_T) ;
 keyval_insert("$tup_vt", DLRTUP_VT) ;
-keyval_insert("$unfold", DLRUNFOLD) ;
 keyval_insert("$typeof", DLRTYPEOF) ;
+keyval_insert("$unfold", DLRUNFOLD) ;
+
+keyval_insert("$FILENAME", DLRFILENAME) ;
+keyval_insert("$LOCATION", DLRLOCATION) ;
+keyval_insert("$CHARCOUNT", DLRCHARCOUNT) ;
+keyval_insert("$LINECOUNT", DLRLINECOUNT) ;
 
 keyval_insert("fold@", FOLDAT) ;
 keyval_insert("free@", FREEAT) ;

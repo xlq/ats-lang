@@ -207,8 +207,8 @@ and d3exp_node =
   | D3Echar of char (* dynamic character *)
   | D3Econ of (* dynamic constructor *)
       (d2con_t, int(*npf*), d3explst)
-  | D3Ecst of (* dynamic constant *)
-      d2cst_t
+  | D3Ecst of d2cst_t // dynamic constant
+  | D3Ecstsp of $Syn.cstsp // special dynamic constant
   | D3Ecrypt of (* cryption *)
       (int, d3exp) (* 1/-1: encrypt/decrypt *)
   | D3Edynload of (* dynamic loading *)
@@ -535,10 +535,12 @@ fun d3exp_char (_: loc_t, _: s2exp, _: char): d3exp
 fun d3exp_caseof {n:nat}
   (_: loc_t, _: s2exp, casknd: int, _: d3explst n, _: c3laulst n): d3exp
 
-fun d3exp_cst (_: loc_t, d2c: d2cst_t): d3exp
-
 fun d3exp_con
   (_: loc_t, _: s2exp, _fun: d2con_t, npf: int, _arg: d3explst): d3exp
+// end of [d3exp_con]
+
+fun d3exp_cst (_: loc_t, d2c: d2cst_t): d3exp
+fun d3exp_cstsp (_: loc_t, _: s2exp, cst: $Syn.cstsp): d3exp
 
 fun d3exp_crypt (_: loc_t, _: s2exp, knd: int, _: d3exp): d3exp
 
@@ -559,6 +561,7 @@ fun d3exp_extval (_: loc_t, _: s2exp, code: string): d3exp
 
 fun d3exp_if
   (_: loc_t, _: s2exp, _cond: d3exp, _then: d3exp, _else: d3exp): d3exp
+// end of [d3exp_if]
 
 fun d3exp_int (_: loc_t, _: s2exp, str: string, int: intinf_t): d3exp
 fun d3exp_intsp (_: loc_t, _: s2exp, str: string, int: intinf_t): d3exp

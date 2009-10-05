@@ -405,7 +405,10 @@ in
     end // end of [D2Econ]
   | D2Ecst d2c => begin
       prstr "D2Ecst("; fprint_d2cst (pf | out, d2c); prstr ")"
-    end // en dof [D2Ecst]
+    end // end of [D2Ecst]
+  | D2Ecstsp _ => begin
+      prstr "D2Ecstsp("; fprint1_string (pf | out, "..."); prstr ")"
+    end // end of [D2Ecstsp]
   | D2Ecrypt (knd, d2e) => begin
       prstr "D2Ecrypt(";
       fprint1_int (pf | out, knd);

@@ -278,8 +278,8 @@ and d1exp_node =
       (d1exp, loc_t(*ind*), d1explstlst)
   | D1Ecaseof of (* dynamic caseof-expression *)
       (int(*kind*), i1nvresstate, d1explst, c1laulst)
-  | D1Echar of (* dynamic character *)
-      char
+  | D1Echar of char // dynamic character
+  | D1Ecstsp of $Syn.cstsp // special constants
   | D1Ecrypt of (* cryption *)
       (int, d1exp) (* 1/-1: encrypt/decrypt *)
   | D1Edynload of (* dynamic loading *)
@@ -739,6 +739,8 @@ fun d1exp_caseof
   : d1exp
 
 fun d1exp_char (_: loc_t, c: char): d1exp
+
+fun d1exp_cstsp (_: loc_t, _: $Syn.cstsp): d1exp
 
 fun d1exp_crypt (_: loc_t, knd: int, _: d1exp): d1exp
 

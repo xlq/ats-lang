@@ -1349,6 +1349,11 @@ in
         valprim_cst (d2c, hit0)
       end // end of [_]
     end // end of [HIEcst]
+  | HIEcstsp cst => let
+      val loc0 = hie0.hiexp_loc; val hit0 = hityp_normalize (hie0.hiexp_typ)
+    in
+      valprim_cstsp (loc0, cst, hit0)
+    end // end of [HIEcstsp]
   | HIEdynload fil => let
       val () = instr_add_dynload_file (res, fil)
     in

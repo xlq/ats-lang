@@ -249,6 +249,10 @@ implement d1exp_char (loc, chr) = '{
   d1exp_loc= loc, d1exp_node= D1Echar chr
 }
 
+implement d1exp_cstsp (loc, cst) = '{
+  d1exp_loc= loc, d1exp_node= D1Ecstsp cst
+}
+
 implement d1exp_crypt (loc, knd, d1e) = '{
   d1exp_loc= loc, d1exp_node= D1Ecrypt (knd, d1e)
 }

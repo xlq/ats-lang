@@ -362,6 +362,10 @@ implement hiexp_cst (loc, hit, d2c) = '{
   hiexp_loc= loc, hiexp_node= HIEcst d2c, hiexp_typ= hit
 }
 
+implement hiexp_cstsp (loc, hit, cst) = '{
+  hiexp_loc= loc, hiexp_node= HIEcstsp cst, hiexp_typ= hit
+}
+
 implement hiexp_dynload (loc, hit, fil) = '{
   hiexp_loc= loc, hiexp_node= HIEdynload fil, hiexp_typ= hit
 }

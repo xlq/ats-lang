@@ -208,6 +208,12 @@ and srpifkindtok_ifndef (t: t0kn): srpifkindtok = "srpifkindtok_ifndef"
 
 (* ****** ****** *)
 
+datatype cstsp = // special constant
+  | CSTSPfilename
+  | CSTSPlocation
+
+(* ****** ****** *)
+
 typedef i0de = '{
   i0de_loc= loc_t, i0de_sym= sym_t
 }
@@ -1471,6 +1477,8 @@ fun witht0ype_type (_: s0exp): witht0ype = "witht0ype_type"
 fun witht0ype_view (_: s0exp): witht0ype = "witht0ype_view"
 fun witht0ype_viewtype (_: s0exp): witht0ype = "witht0ype_viewtype"
 
+(* ****** ****** *)
+
 datatype d0exp_node =
   | D0Eann of (* ascribed dynamic expressions *)
       (d0exp, s0exp)
@@ -1486,6 +1494,7 @@ datatype d0exp_node =
       (casehead, d0exp, c0laulst)
   | D0Echar of (* dynamic characters *)
       char
+  | D0Ecstsp of cstsp // for special constants
   | D0Ecrypt of (* cryption *)
       int (* 1/-1 : encryptn/decrypt *)
   | D0Edelay of (* lazy evaluation *)
@@ -2035,6 +2044,11 @@ fun d0exp_where (d0e: d0exp, d0cs: d0eclst, t_end: t0kn): d0exp
 
 fun d0exp_while (hd: loophead, test: d0exp, body: d0exp): d0exp =
   "d0exp_while"
+
+//
+
+fun d0exp_FILENAME (tok: t0kn): d0exp = "d0exp_FILENAME"
+fun d0exp_LOCATION (tok: t0kn): d0exp = "d0exp_LOCATION"
 
 //
 

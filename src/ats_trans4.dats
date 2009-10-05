@@ -859,6 +859,11 @@ in
     in
       d3exp_cst_tr (loc0, hit0, d2c)
     end // end of [D3Ecst]
+  | D3Ecstsp cst => let
+      val hit0 = s2exp_tr (loc0, 0(*deep*), s2e0)
+    in
+      hiexp_cstsp (loc0, hit0, cst)
+    end // end of [D3Ecstsp]
   | D3Ecrypt (_(*knd*), d3e) => d3exp_tr d3e
   | D3Edynload fil => let
       val hit0 = s2exp_tr (loc0, 0(*deep*), s2e0)

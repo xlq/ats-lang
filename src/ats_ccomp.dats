@@ -425,6 +425,10 @@ implement valprim_cst (d2c, hit) = '{
   valprim_node= VPcst (d2c), valprim_typ= hit
 }
 
+implement valprim_cstsp (loc, cst, hit) = '{
+  valprim_node= VPcstsp (loc, cst), valprim_typ= hit
+}
+
 implement valprim_env (vt, hit) = '{
   valprim_node= VPenv vt, valprim_typ= hit
 }

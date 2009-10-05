@@ -130,67 +130,64 @@ in
   | VPcst (d2c) => begin
       prstr "VPcst("; fprint_d2cst (pf | out, d2c); prstr ")"
     end // end of [VPcst]
+  | VPcstsp _ => begin
+      prstr "VPcstsp("; fprint1_string (pf | out, "..."); prstr ")"
+    end // end of [VPcstsp]
   | VPenv vtp => begin
       prstr "VPenv("; fprint_vartyp (pf | out, vtp); prstr ")"
-    end
+    end // end of [VPenv]
   | VPext code => begin
       fprintf1_exn (pf | out, "VPext(\"%s\")", @(code));
-    end 
+    end // end of [VPext]
   | VPfloat f(*string*) => begin
       fprintf1_exn (pf | out, "VPfloat(%s)", @(f))
-    end
+    end // end of [VPfloat]
   | VPfun fl => begin
-      prstr "VPfun(";
-      fprint_funlab (pf | out, fl);
-      prstr ")"
-    end
+      prstr "VPfun("; fprint_funlab (pf | out, fl); prstr ")"
+    end // end of [VPfun]
   | VPint (int) => begin
-      prstr "VPint(";
-      $IntInf.fprint_intinf (pf | out, int);
-      prstr ")"
-    end
+      prstr "VPint("; $IntInf.fprint_intinf (pf | out, int); prstr ")"
+    end // end of [VPint]
   | VPintsp (str, int) => begin
       fprintf1_exn (pf | out, "VPintsp(%s)", @(str))
-    end
+    end // end of [VPintsp]
   | VPptrof vp => begin
-      prstr "VPptrof(";
-      fprint_valprim (pf | out, vp);
-      prstr ")"
-    end
+      prstr "VPptrof("; fprint_valprim (pf | out, vp); prstr ")"
+    end // end of [VPptrof]
   | VPptrof_ptr_offs (vp, offs) => begin
       prstr "VPptrof_ptr_offs(";
       fprint_valprim (pf | out, vp);
       prstr "; ";
       fprint_offsetlst (pf | out, offs);
       prstr ")"
-    end
+    end // end of [VPptrof_ptr_offs]
   | VPptrof_var_offs (vp, offs) => begin
       prstr "VPptrof_var_offs(";
       fprint_valprim (pf | out, vp);
       prstr "; ";
       fprint_offsetlst (pf | out, offs);
       prstr ")"
-    end
+    end // end of [VPptrof_var_offs]
   | VPsizeof hit => begin
       prstr "VPsizeof(";
       fprint_hityp (pf | out, hityp_decode hit);
       prstr ")"
-    end
+    end // end of [VPsizeof]
   | VPstring (str, len) => begin
       fprint1_string (pf | out, "VPstring(...)")
-    end
+    end // end of [VPstring]
   | VPtmp tmp => begin
       prstr "VPtmp("; fprint_tmpvar (pf | out, tmp); prstr ")"
-    end
+    end // end of [VPtmp]
   | VPtmp_ref tmp => begin
       prstr "VPtmp_ref("; fprint_tmpvar (pf | out, tmp); prstr ")"
-    end
+    end // end of [VPtmp_ref]
   | VPtop () => begin
       fprint1_string (pf | out, "VPtop()")
-    end
+    end // end of [VPtop]
   | VPvoid () => begin
       fprint1_string (pf | out, "VPvoid()")
-    end
+    end // end of [VPvoid]
 (*
   | _ => begin
       fprint1_string (pf | out, "fprint_valprim: not yet implemented.");

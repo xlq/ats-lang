@@ -203,6 +203,7 @@ datatype valprim_node =
   | VPchar of char
   | VPclo of (int(*knd*), funlab_t, envmap_t)
   | VPcst of d2cst_t
+  | VPcstsp of (loc_t, $Syn.cstsp) // special dynamic constant
   | VPenv of vartyp_t
   | VPext of string
   | VPfloat of string
@@ -287,7 +288,10 @@ fun valprim_arg_ref (i: int, hit: hityp_t): valprim
 fun valprim_bool (b: bool): valprim
 fun valprim_char (c: char): valprim
 fun valprim_clo (knd: int, fl: funlab_t, map: envmap_t): valprim
+
 fun valprim_cst (d2c: d2cst_t, hit: hityp_t): valprim
+fun valprim_cstsp (loc: loc_t, cst: $Syn.cstsp, hit: hityp_t): valprim
+
 fun valprim_env (vtp: vartyp_t, hit: hityp_t): valprim
 fun valprim_ext (code: string, hit: hityp_t): valprim
 fun valprim_float (f: string): valprim

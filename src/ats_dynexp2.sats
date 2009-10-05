@@ -593,12 +593,11 @@ and d2exp_node =
   | {n:nat} D2Ecaseof of ( // dynamic caseof-expression
       int(*kind*), i2nvresstate, int n, d2explst n, c2laulst n
     ) // end of [D2Ecaseof]
-  | D2Echar of (* dynamic character *)
-      char
+  | D2Echar of char // dynamic character
   | D2Econ of (* dynamic constructor *)
       (d2con_t, s2exparglst, int (*pfarity*), d2explst)
-  | D2Ecst of (* dynamic constant *)
-      d2cst_t
+  | D2Ecst of d2cst_t // dynamic constant
+  | D2Ecstsp of $Syn.cstsp // special dynamic constant
   | D2Ecrypt of (* cryption *)
       (int, d2exp) (* 1/-1: encrypt/decrypt *)
   | D2Ederef of (* left-value derefence *)
@@ -1094,6 +1093,7 @@ fun d2exp_arrsub
 (* ****** ****** *)
 
 fun d2exp_assgn (_: loc_t, _lval: d2exp, _val: d2exp): d2exp
+
 fun d2exp_char (_: loc_t, _: char): d2exp
 
 fun d2exp_caseof {n:nat}
@@ -1108,6 +1108,8 @@ fun d2exp_con
   : d2exp
 
 fun d2exp_cst (_: loc_t, d2c: d2cst_t): d2exp
+fun d2exp_cstsp (_: loc_t, _: $Syn.cstsp): d2exp
+
 fun d2exp_crypt (_: loc_t, knd: int, _: d2exp): d2exp
 fun d2exp_deref (_: loc_t, _: d2exp): d2exp
 fun d2exp_dynload (_: loc_t, _: fil_t): d2exp

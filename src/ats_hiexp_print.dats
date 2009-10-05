@@ -345,7 +345,10 @@ in
     end // end of [HIEcon]
   | HIEcst d2c => begin
       prstr "HIEcst("; fprint_d2cst (pf | out, d2c); prstr ")"
-    end
+    end // end of [HiEcst]
+  | HIEcstsp cst => begin
+      prstr "HIEcstsp("; fprint1_string (pf | out, "..."); prstr ")"
+    end // end of [HiEcstsp]
   | HIEdynload fil => begin
       prstr "HIEdynload(";
       $Fil.fprint_filename (pf | out, fil);

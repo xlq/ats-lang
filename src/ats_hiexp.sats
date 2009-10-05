@@ -326,8 +326,8 @@ and hiexp_node =
       char
   | HIEcon of (* constructor *)
       (hityp, d2con_t, hiexplst)
-  | HIEcst of (* dynamic constant *)
-      d2cst_t
+  | HIEcst of d2cst_t // dynamic constant
+  | HIEcstsp of $Syn.cstsp // special dynamic constant
   | HIEdynload of (* dynamic loading *)
       fil_t (* filename *)
   | HIEempty (* no operation *)
@@ -339,8 +339,7 @@ and hiexp_node =
       string
   | HIEfloatsp of (* specified floating point *)
       string
-  | HIEfreeat of (* memory deallocation *)
-      hiexp
+  | HIEfreeat of hiexp // memory deallocation
   | HIEif of (* conditional *)
       (hiexp, hiexp, hiexp)
   | HIEint of (* integer constant *)
@@ -578,6 +577,7 @@ fun hiexp_con
   : hiexp
 
 fun hiexp_cst (_: loc_t, _: hityp, d2c: d2cst_t): hiexp
+fun hiexp_cstsp (_: loc_t, _: hityp, cst: $Syn.cstsp): hiexp
 
 fun hiexp_dynload (_: loc_t, _: hityp, _: fil_t): hiexp
 
@@ -607,9 +607,11 @@ fun hiexp_intsp
 
 fun hiexp_lam
   (_: loc_t, _: hityp, _arg: hipatlst, _body: hiexp): hiexp
+// end of [hiexp_lam]
 
 fun hiexp_laminit
   (_: loc_t, _: hityp, _arg: hipatlst, _body: hiexp): hiexp
+// end of [hiexp_laminit]
 
 (* ****** ****** *)
 

@@ -238,7 +238,10 @@ in
     end // end of [D3Econ]
   | D3Ecst d2c => begin
       prstr "D3Ecst("; fprint_d2cst (pf | out, d2c); prstr ")"
-    end
+    end // end of [D3Ecst]
+  | D3Ecstsp _ => begin
+      prstr "D3Ecstsp("; fprint1_string (pf | out, "..."); prstr ")"
+    end // end of [D3Ecstsp]
   | D3Ecrypt (knd, d3e) => begin
       prstr "D3Ecrypt(";
       fprint1_int (pf | out, knd);

@@ -198,9 +198,16 @@ in
   s2e_fun
 end // end of [d2exp_arg_body_typ_syn]
 
+fn d2exp_cstsp_typ_syn
+  (cst: $Syn.cstsp): s2exp = case+ cst of
+  | $Syn.CSTSPfilename () => s2exp_string_type ()
+  | $Syn.CSTSPlocation () => s2exp_string_type ()
+// end of [d2exp_cstsp_typ_syn]
+
 fn d2exp_seq_typ_syn (d2es: d2explst): s2exp = let
   fun aux (d2e: d2exp, d2es: d2explst): s2exp = case+ d2es of
     | cons (d2e, d2es) => aux (d2e, d2es) | nil () => d2exp_typ_syn d2e
+  // end of [aux]
 in
   case+ d2es of
   | cons (d2e, d2es) => aux (d2e, d2es) | nil () => s2exp_void_t0ype ()
@@ -214,6 +221,7 @@ implement d2exp_typ_syn (d2e0) = begin
   | D2Eassgn _ => s2exp_void_t0ype ()
   | D2Echar _ => s2exp_char_t0ype ()
   | D2Ecst d2c => d2cst_typ_get d2c
+  | D2Ecstsp cst => d2exp_cstsp_typ_syn (cst)
   | D2Eeffmask (_, d2e) => d2exp_typ_syn (d2e)
   | D2Eempty () => s2exp_void_t0ype ()
   | D2Efix (_, d2e) => d2exp_typ_syn (d2e)
@@ -759,7 +767,8 @@ fn prerr_xyz_root (xyz: xyz_t): void = prerr_mac (fprint_xyz_root, xyz)
 
 (* ****** ****** *)
 
-fn d2exp_item_tr_up (loc0: loc_t, d2i: d2item): d3exp = begin
+fn d2exp_item_tr_up
+  (loc0: loc_t, d2i: d2item): d3exp = begin
   case+ d2i of
   | D2ITEMcst d2c => d2exp_cst_tr_up (loc0, d2c)
   | D2ITEMvar d2v => d2exp_var_tr_up (loc0, d2v)
@@ -2107,6 +2116,9 @@ val d3e0 = (case+ d2e0.d2exp_node of
     end // end of [D2Econ]
   | D2Ecrypt (knd, d2e) => d2exp_crypt_tr_up (loc0, knd, d2e)
   | D2Ecst d2c => d2exp_cst_tr_up (loc0, d2c)
+  | D2Ecstsp cst => let
+      val s2e = d2exp_cstsp_typ_syn (cst) in d3exp_cstsp (loc0, s2e, cst)
+    end // end of [D2Ecstsp]
   | D2Ederef d2e => d2exp_deref_tr_up (loc0, d2e, nil ())
   | D2Edynload fil => d3exp_dynload (loc0, fil)
   | D2Eeffmask (effs, d2e) => let
@@ -2126,19 +2138,18 @@ val d3e0 = (case+ d2e0.d2exp_node of
     end // end of [D2Efor]
   | D2Efreeat (s2as, d2e_at) => d2exp_freeat_tr_up (loc0, s2as, d2e_at)
   | D2Eif (res, d2e_cond, d2e_then, od2e_else) => let
-      val s2e_if: s2exp = case+ od2e_else of
+      val s2e_if = (case+ od2e_else of
         | Some _ => s2exp_Var_make_srt (loc0, s2rt_t0ype)
         | None () => s2exp_void_t0ype ()
+      ) : s2exp // end of [val]
     in
       d2exp_if_tr_dn (loc0, res, d2e_cond, d2e_then, od2e_else, s2e_if)
     end // end of [D2Eif]
   | D2Efloat (str) => let
-      val s2e = s2exp_double_t0ype ()
-    in
-      d3exp_float (loc0, s2e, str)
+      val s2e = s2exp_double_t0ype () in d3exp_float (loc0, s2e, str)
     end // end of [D2Efloat]
   | D2Efloatsp (str) => let
-      val s2e = case+ floatkind_eval (str) of
+      val s2e = (case+ floatkind_eval (str) of
         | $Syn.FLOATKINDfloat () => s2exp_float_t0ype ()
         | $Syn.FLOATKINDdouble () => s2exp_double_t0ype ()
         | $Syn.FLOATKINDdouble_long () => s2exp_double_long_t0ype ()
@@ -2148,6 +2159,7 @@ val d3e0 = (case+ d2e0.d2exp_node of
             prerr_newline ();
             $Err.abort {s2exp} ()
           end
+      ) : s2exp // end of [val]
     in
       d3exp_floatsp (loc0, s2e, str)
     end // end of [D2Efloatsp]

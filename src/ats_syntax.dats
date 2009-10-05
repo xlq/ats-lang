@@ -2172,7 +2172,21 @@ in '{
   d0exp_loc= loc, d0exp_node= D0Ewhile (inv, loc_inv, test, body)
 } end // end of [d0exp_while]
 
-//
+// ------ ------
+
+(*
+** for special constants
+*)
+
+implement d0exp_FILENAME (tok) = '{
+  d0exp_loc= tok.t0kn_loc, d0exp_node= D0Ecstsp CSTSPfilename
+}
+
+implement d0exp_LOCATION (tok) = '{
+  d0exp_loc= tok.t0kn_loc, d0exp_node= D0Ecstsp CSTSPlocation
+}
+
+(* ****** ****** *)
 
 implement d0explst_nil () = nil ()
 implement d0explst_cons (x, xs) = cons (x, xs)
@@ -2187,7 +2201,7 @@ implement labd0explst_cons (l, x, lxs) = LABD0EXPLSTcons (l, x, lxs)
 implement d0explstopt_none () = None ()
 implement d0explstopt_some (xs) = Some (xs)
 
-//
+// ------ ------
 
 implement d0arrind_make_sing (d0es, t_rbracket) = '{
   d0arrind_loc= t_rbracket.t0kn_loc, d0arrind_ind= cons (d0es, nil ())
@@ -2197,7 +2211,7 @@ implement d0arrind_make_cons (d0es, ind) = '{
   d0arrind_loc= ind.d0arrind_loc, d0arrind_ind= cons (d0es, ind.d0arrind_ind)
 } // end of [d0arrind_make_cons]
 
-//
+// ------ ------
 
 implement initestpost_make
   (t1, d0es_ini, t2, d0es_test, t3, d0es_post, t4) = let
@@ -2208,7 +2222,7 @@ in
   '(d0e_ini, d0e_test, d0e_post)
 end // end of [initestpost_make]
 
-//
+// ------ ------
 
 implement m0atch_make_none (d0e) = '{
   m0atch_loc= d0e.d0exp_loc, m0atch_exp= d0e, m0atch_pat= p0atopt_none ()
@@ -2220,12 +2234,12 @@ in '{
   m0atch_loc= d0e.d0exp_loc, m0atch_exp= d0e, m0atch_pat= p0atopt_some p0t
 } end // end of [m0atch_make_some]
 
-//
+// ------ ------
 
 implement m0atchlst_nil () = nil ()
 implement m0atchlst_cons (x, xs) = cons (x, xs)
 
-//
+// ------ ------
 
 implement guap0at_make_none (p0t) = '{
   guap0at_loc= p0t.p0at_loc, guap0at_pat= p0t, guap0at_gua= m0atchlst_nil ()
@@ -2247,7 +2261,7 @@ in '{
   guap0at_loc= p0t.p0at_loc, guap0at_pat= p0t, guap0at_gua= m0ats
 } end // end of [guap0at_make_some]
 
-//
+// ------ ------
 
 implement ifhead_make
   (t_if, inv) = '{ ifhead_tok= t_if, ifhead_inv= inv }
@@ -2271,7 +2285,7 @@ implement tryhead_make (t_try) = '{
   tryhead_tok= t_try, tryhead_inv= i0nvresstate_none ()
 } // end of [tryhead_make]
 
-//
+// ------ ------
 
 implement c0lau_make (gp0t, seq, neg, body) = let
   val loc = combine (gp0t.guap0at_loc, body.d0exp_loc)
@@ -2286,7 +2300,7 @@ in '{
 implement c0laulst_nil () = nil ()
 implement c0laulst_cons (x, xs) = cons (x, xs)
 
-//
+// ------ ------
 
 implement sc0lau_make (sp0t, d0e) = let
   val loc = combine (sp0t.sp0at_loc, d0e.d0exp_loc)

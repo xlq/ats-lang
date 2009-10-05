@@ -1402,6 +1402,7 @@ in
       d1exp_arrsub_tr (loc0, d1e_arr, loc_ind, d1ess_ind)
     end // end of [D1Earrsub]
   | D1Echar chr => d2exp_char (loc0, chr)
+  | D1Ecstsp cst => d2exp_cstsp (loc0, cst)
   | D1Ecaseof (knd, r1es, d1es, c1ls) => let
       val r2es = i1nvresstate_tr r1es
       val d2es = d1explst_tr d1es

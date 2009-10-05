@@ -737,6 +737,9 @@ extern d0exp_t d0exp_viewat (t0kn_t) ;
 extern d0exp_t d0exp_where (d0exp_t, d0eclst_t, t0kn_t) ;
 extern d0exp_t d0exp_while (loophead_t, d0exp_t, d0exp_t) ;
 
+extern d0exp_t d0exp_FILENAME (t0kn_t) ; // a special string constant
+extern d0exp_t d0exp_LOCATION (t0kn_t) ; // a special string constant
+
 extern d0explst_t d0explst_nil (void) ;
 extern d0explst_t d0explst_cons (d0exp_t, d0explst_t) ;
 extern d0explst_t d0explst_sing (d0exp_t) ;
@@ -1322,6 +1325,11 @@ guad0ec_t guad0ec ;
 %token <t0kn> DLRSPAWN
 %token <t0kn> DLRUNFOLD
 %token <t0kn> DLRTYPEOF
+
+%token <t0kn> DLRFILENAME
+%token <t0kn> DLRLOCATION
+%token <t0kn> DLRCHARCOUNT
+%token <t0kn> DLRLINECOUNT
 
 %token <t0kn> SRPASSERT
 %token <t0kn> SRPDEFINE
@@ -2624,6 +2632,8 @@ atmd0exp
   | LITERAL_int                         { $$ = d0exp_int($1) ; }
   | LITERAL_intsp                       { $$ = d0exp_intsp($1) ; }
   | LITERAL_string                      { $$ = d0exp_string($1) ; }
+  | DLRFILENAME                         { $$ = d0exp_FILENAME($1) ; }
+  | DLRLOCATION                         { $$ = d0exp_LOCATION($1) ; }
   | di0de                               { $$ = d0exp_ide($1) ; }
   | OP di0de                            { $$ = d0exp_opide($1, $2) ; }
   | d0ynq i0de                          { $$ = d0exp_qid($1, $2) ; }
