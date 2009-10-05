@@ -150,11 +150,8 @@ overload fprint with fprint_intptr
 
 (* ****** ****** *)
 
-fun print_intptr (i: intptr):<!ref> void
-  = "atspre_print_intptr"
-
-and prerr_intptr (i: intptr):<!ref> void
-  = "atspre_prerr_intptr"
+fun print_intptr (i: intptr):<!ref> void = "atspre_print_intptr"
+and prerr_intptr (i: intptr):<!ref> void = "atspre_prerr_intptr"
 
 overload print with print_intptr
 overload prerr with prerr_intptr
@@ -173,7 +170,6 @@ fun uintptr_of_uint (u: uint):<> uintptr
 overload uintptr_of with uintptr_of_uint
 
 castfn ptr_of_uintptr (u: uintptr):<> ptr // = "atspre_ptr_of_uintptr"
-
 castfn uintptr_of_ptr (p: ptr):<> uintptr // = "atspre_uintptr_of_ptr"
 overload uintptr_of with uintptr_of_ptr
 

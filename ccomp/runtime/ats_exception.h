@@ -108,8 +108,8 @@ ats_exception_frame_type *the_ats_exception_stack ;
 
 /* ****** ****** */
 
-/* WARNING:
-**   DO NOT USE THE FOLLOWING MACROS:
+/*
+** WARNING: DO NOT USE THE FOLLOWING MACROS:
 */
 
 #define ATS_TRYWITH_TRY(tmp_exn) \

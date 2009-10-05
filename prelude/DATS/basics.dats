@@ -65,7 +65,7 @@ ats_void_type // external
 ats_exit_errmsg
   (const ats_int_type status, const ats_ptr_type errmsg)
 {
-  fprintf(stderr, "%s", (char *)errmsg) ; exit(status) ;
+  fprintf(stderr, "%s", (char*)errmsg) ; exit(status) ;
   return ; // deadcode
 }
 
@@ -80,20 +80,20 @@ ats_exit_errmsg
 ats_void_type
 atspre_assert (const ats_bool_type assertion) {
   if (!assertion) {
-    ats_exit_errmsg (1, "[Exit: atspre_assert] failed\n") ;
+    fprintf (stderr, "exit(ATS): [assert] failed\n") ; exit(1) ;
   }
   return ;
-}
+} /* end of [atspre_assert] */
 
 ats_void_type
-atspre_assert_errmsg
-  (const ats_bool_type assertion, const ats_ptr_type errmsg) {
+atspre_assert_errmsg (
+  const ats_bool_type assertion, const ats_ptr_type errmsg
+) {
   if (!assertion) {
-    fprintf (stderr, "%s", (char *)errmsg) ;
-    ats_exit_errmsg (1, "[Exit: atspre_assert_errmsg] failed\n") ;
+    fprintf (stderr, "exit(ATS): %s\n", (char*)errmsg) ; exit(1) ;
   }
   return ;
-}
+} /* end of [atspre_assert_errmsg] */
 
 %}
 

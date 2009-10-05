@@ -613,4 +613,4 @@ fun gc_prerr_stats (): void = "gc_prerr_stats"
 
 (* ****** ****** *)
 
-(* end of [gc.sats] *)
+(* end of [gcats1.sats] *)
