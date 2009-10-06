@@ -239,8 +239,8 @@ in
   | D3Ecst d2c => begin
       prstr "D3Ecst("; fprint_d2cst (pf | out, d2c); prstr ")"
     end // end of [D3Ecst]
-  | D3Ecstsp _ => begin
-      prstr "D3Ecstsp("; fprint1_string (pf | out, "..."); prstr ")"
+  | D3Ecstsp cst => begin
+      prstr "D3Ecstsp("; $Syn.fprint_cstsp (pf | out, cst); prstr ")"
     end // end of [D3Ecstsp]
   | D3Ecrypt (knd, d3e) => begin
       prstr "D3Ecrypt(";

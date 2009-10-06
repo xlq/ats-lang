@@ -216,6 +216,10 @@ datatype cstsp = // special constants
   | CSTSPlinecount of int
 *)
 
+fun fprint_cstsp {m:file_mode}
+  (pf: file_mode_lte (m, w) | out: &FILE m, _: cstsp): void
+overload fprint with fprint_cstsp
+
 (* ****** ****** *)
 
 typedef i0de = '{

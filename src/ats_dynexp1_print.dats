@@ -289,13 +289,13 @@ in
     end // end of [D1Earrsub]
   | D1Ecaseof _ => begin
       prstr "D1Ecaseof("; fprint1_string (pf | out, "..."); prstr ")"
-    end
+    end // end of [D1Ecaseof]
   | D1Echar c => begin
       prstr "D1Echar("; fprint1_char (pf | out, c); prstr ")"
-    end
-  | D1Ecstsp _ => begin
-      prstr "D1Ecstsp("; fprint1_string (pf | out, "..."); prstr ")"
-    end
+    end // end of [D1Ecst]
+  | D1Ecstsp cst => begin
+      prstr "D1Ecstsp("; $Syn.fprint_cstsp (pf | out, cst); prstr ")"
+    end // end of [D1Ecstsp]
   | D1Ecrypt (knd, d1e) => begin
       prstr "D1Ecrypt(";
       fprint1_int (pf | out, knd);

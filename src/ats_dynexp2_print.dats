@@ -406,8 +406,8 @@ in
   | D2Ecst d2c => begin
       prstr "D2Ecst("; fprint_d2cst (pf | out, d2c); prstr ")"
     end // end of [D2Ecst]
-  | D2Ecstsp _ => begin
-      prstr "D2Ecstsp("; fprint1_string (pf | out, "..."); prstr ")"
+  | D2Ecstsp cst => begin
+      prstr "D2Ecstsp("; $Syn.fprint_cstsp (pf | out, cst); prstr ")"
     end // end of [D2Ecstsp]
   | D2Ecrypt (knd, d2e) => begin
       prstr "D2Ecrypt(";

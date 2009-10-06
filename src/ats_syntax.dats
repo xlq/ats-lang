@@ -210,6 +210,13 @@ implement srpifkindtok_ifndef (t) = SRPIFKINDTOK (SRPIFKINDifndef (), t)
 
 (* ****** ****** *)
 
+implement fprint_cstsp (pf | out, cst) = case+ cst of
+  | CSTSPfilename () => fprint1_string (pf | out, "#FILENAME")
+  | CSTSPlocation () => fprint1_string (pf | out, "#LOCATION")
+// end of [fprint_cstsp]
+
+(* ****** ****** *)
+
 implement t0kn_make (loc) = @{ t0kn_loc= loc }
 
 (* ****** ****** *)
