@@ -208,15 +208,19 @@ and srpifkindtok_ifndef (t: t0kn): srpifkindtok = "srpifkindtok_ifndef"
 
 (* ****** ****** *)
 
-datatype cstsp = // special constant
-  | CSTSPfilename
-  | CSTSPlocation
+datatype cstsp = // special constants
+  | CSTSPfilename (* the filename where #FILENAME appears *)
+  | CSTSPlocation (* the location where #LOCATION appears *)
+(*
+  | CSTSPcharcount of int
+  | CSTSPlinecount of int
+*)
 
 (* ****** ****** *)
 
 typedef i0de = '{
   i0de_loc= loc_t, i0de_sym= sym_t
-}
+} // end of [i0de]
 
 typedef i0delst = List i0de
 typedef i0delstlst = List i0delst
@@ -235,11 +239,11 @@ overload fprint with fprint_i0delst
 
 typedef c0har = '{
   c0har_loc= loc_t, c0har_val= char
-}
+} // end of [c0har]
 
 typedef e0xtcode = '{
   e0xtcode_loc= loc_t, e0xtcode_pos= int, e0xtcode_cod= string
-}
+} // end of [e0xtcode]
 
 typedef f0loat = '{
   f0loat_loc= loc_t, f0loat_val= string
@@ -2042,8 +2046,8 @@ fun d0exp_viewat (t_viewat: t0kn): d0exp = "d0exp_viewat"
 fun d0exp_where (d0e: d0exp, d0cs: d0eclst, t_end: t0kn): d0exp
   = "d0exp_where"
 
-fun d0exp_while (hd: loophead, test: d0exp, body: d0exp): d0exp =
-  "d0exp_while"
+fun d0exp_while (hd: loophead, test: d0exp, body: d0exp): d0exp
+  = "d0exp_while"
 
 //
 
