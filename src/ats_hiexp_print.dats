@@ -347,7 +347,7 @@ in
       prstr "HIEcst("; fprint_d2cst (pf | out, d2c); prstr ")"
     end // end of [HiEcst]
   | HIEcstsp cst => begin
-      prstr "HIEcstsp("; fprint1_string (pf | out, "..."); prstr ")"
+      prstr "HIEcstsp("; $Syn.fprint_cstsp (pf | out, cst); prstr ")"
     end // end of [HiEcstsp]
   | HIEdynload fil => begin
       prstr "HIEdynload(";
