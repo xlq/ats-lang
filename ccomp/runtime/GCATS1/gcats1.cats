@@ -699,7 +699,8 @@ ats_void_type the_topsegtbl_set_32
 extern botsegtbllst the_topsegtbl[TOPSEG_HASHTABLESIZE] ;
 
 static inline
-ats_ptr_type the_topsegtbl_get_64 (ats_uintptr1_type ofs) {
+ats_ptr_type
+the_topsegtbl_get_64 (ats_uintptr1_type ofs) {
   botsegtbllst tbls = the_topsegtbl[ofs % TOPSEG_HASHTABLESIZE] ;
   while (tbls) { 
     if (tbls->key == ofs) break ; tbls = tbls->hash_next ;
@@ -708,9 +709,16 @@ ats_ptr_type the_topsegtbl_get_64 (ats_uintptr1_type ofs) {
 }
 
 static inline
-ats_void_type the_topsegtbl_set_64
+ats_void_type
+the_topsegtbl_set_64
   (ats_uintptr1_type ofs, ats_ptr_type tbls) {
   the_topsegtbl[ofs % TOPSEG_HASHTABLESIZE] = tbls ; return ;
+}
+
+static inline
+ats_ptr_type
+the_topsegtbl_getfst_64 (ats_uintptr1_type ofs) {
+  return the_topsegtbl[ofs % TOPSEG_HASHTABLESIZE] ;
 }
 
 #endif // end of [__WORDSIZE == 64]

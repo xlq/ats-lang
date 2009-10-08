@@ -143,12 +143,23 @@ extern fun the_topsegtbl_set_64 {i:nat}
   (pf: PTR_TOPSEG_GET_p i | ofs: uintptr i, tbls: botsegtbllst1): void
   = "the_topsegtbl_set_64"
 
+extern fun the_topsegtbl_getfst_64 {i:nat}
+  (pf: PTR_TOPSEG_GET_p i | ofs: uintptr i): botsegtbllst0
+  = "the_topsegtbl_getfst_64"
+
 implement the_topsegtbl_get (pf | ofs) = the_topsegtbl_get_64 (pf | ofs)
 
 implement the_topsegtbl_get_some (pf | ofs) = let
   val tbls = the_topsegtbl_get_64 (pf | ofs)
 in
   if botsegtbllst_is_nil tbls then let
+(*
+** HX (October 8, 2009):
+** because the following line was missing, a bug was introduced;
+** this bug was so myserious as it rarely manifested itself; that was
+** basically no way to fix it by solely relying on a tool like GDB
+*)
+    val tbls = the_topsegtbl_getfst_64 (pf | ofs) // this line was missing
     val tbls = botsegtbl_make_64 (pf | ofs, tbls)
     val () = the_topsegtbl_set_64 (pf | ofs, tbls)
   in
