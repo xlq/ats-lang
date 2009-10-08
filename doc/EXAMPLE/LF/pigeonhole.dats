@@ -1,4 +1,5 @@
 (*
+**
 ** A proof of the pigeonhole principle in ATS
 **
 **
@@ -7,9 +8,22 @@
 **
 *)
 
+(*
+
+What is encoded and proven in ATS is the following formulation of
+pigeonhole principle:
+
+Let P be a relation on pairs of integers and m and n be two naturnal
+numbers satisfying m > n and n >= 1. If there exists a natural number
+j < n for each given naturnal number i < m such that P (i, j) holds,
+then there exists i1, i2 and j satisfying 0 <= i1 < i2 < m and j < n
+such that both P (i1, j) and P (i2, j) hold.
+
+*)
+
 sortdef int2rel = (int, int) -> prop // for binary relations on integers
 
-fun pigeonhole
+prfun pigeonhole
   {P: int2rel} {m,n:nat | m > n; n >= 1} .<m>. (
     fpf: {i:nat | i < m} () -> [j:nat | j < n] P (i, j)
   ) : [i1,i2,j:nat | i1 < i2; i2 < m] (P (i1, j), P (i2, j)) = sif n >= 2 then let

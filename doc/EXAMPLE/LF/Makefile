@@ -22,6 +22,7 @@ all: ATS \
      KolmogorovTrans \
      mini-ML \
      pigeonhole \
+     infprime \
      STLC-foas \
      STLC-hoas \
      STLC-SN-foas \
@@ -49,6 +50,7 @@ ITPT: ; $(ATSCC) $(ATSCCFLAG) ITPT.dats
 KolmogorovTrans: ; $(ATSCC) $(ATSCCFLAG) KolmogorovTrans.dats
 mini-ML: ; $(ATSCC) $(ATSCCFLAG) mini-ML.dats
 pigeonhole: ; $(ATSCC) $(ATSCCFLAG) pigeonhole.dats
+infprime: ; $(ATSCC) $(ATSCCFLAG) infprime.dats
 STLC-foas: ; $(ATSCC) $(ATSCCFLAG) STLC-foas.dats
 STLC-hoas: ; $(ATSCC) $(ATSCCFLAG) STLC-hoas.dats
 STLC-SN-foas: ; $(ATSCC) $(ATSCCFLAG) STLC-SN-foas.dats
@@ -70,6 +72,7 @@ typecheck::
 	$(ATSCC) $(ATSCCFLAG) KolmogorovTrans.dats
 	$(ATSCC) $(ATSCCFLAG) mini-ML.dats
 	$(ATSCC) $(ATSCCFLAG) pigeonhole.dats
+	$(ATSCC) $(ATSCCFLAG) infprime.dats
 	$(ATSCC) $(ATSCCFLAG) STLC-foas.dats
 #	$(ATSCC) $(ATSCCFLAG) STLC-hoas.dats
 	$(ATSCC) $(ATSCCFLAG) STLC-SN-foas.dats
@@ -93,6 +96,7 @@ posmark::
 	$(ATSOPT) $(POSMARK) -d KolmogorovTrans.dats > KolmogorovTrans_dats.html
 	$(ATSOPT) $(POSMARK) -d mini-ML.dats > mini-ML_dats.html
 	$(ATSOPT) $(POSMARK) -d pigeonhole.dats > pigeonhole_dats.html
+	$(ATSOPT) $(POSMARK) -d infprime.dats > infprime_dats.html
 	$(ATSOPT) $(POSMARK) -d STLC-foas.dats > STLC-foas_dats.html
 #	$(ATSOPT) $(POSMARK) -d STLC-hoas.dats > STLC-hoas_dats.html
 	$(ATSOPT) $(POSMARK) -d STLC-SN-foas.dats > STLC-SN-foas_dats.html
@@ -114,6 +118,7 @@ update::
 	cp KolmogorovTrans.dats $(DIR)
 	cp mini-ML.dats $(DIR)
 	cp pigeonhole.dats $(DIR)
+	cp infprime.dats $(DIR)
 	cp STLC-foas.dats $(DIR)
 	cp STLC-hoas.dats $(DIR)
 	cp STLC-SN-foas.dats $(DIR)

@@ -138,6 +138,19 @@ that is, digits from \texttt{0} to \texttt{7}.
 strings: the syntax for strings is a sequence of characters inside a pair
 of quotes. For instance, \verb`"Hello, world!\n"` is a string, where
 \verb`\n` is an escape sequence representing the newline character.
+
+\item
+special constants:
+\begin{itemize}
+\item 
+An occurrence of the keyword \texttt{\#FILENAME} refers
+to a string that represents the name of the file in which this occurrence
+appears.
+\item
+An occurrence of the keyword \texttt{\#LOCATION} refers to a string that
+represents the location of this occurrence.
+\end{itemize}
+
 \end{itemize}
 
 \subsection{Fixity}
@@ -442,6 +455,7 @@ fn exp_derivate (e0: exp, x0: string): exp = let
     | EXPpow (e, n) => begin
         EXPmul (EXPcst (double_of_int n), EXPmul (EXPpow (e, n-1), aux e))
       end
+  // end of [aux]
 in
   aux (e0)
 end // end of [exp_derivate]

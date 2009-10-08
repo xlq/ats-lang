@@ -164,7 +164,7 @@ in
   | list_cons (_, list_cons (ns, nss)) => begin
       !the_namelst := $Lst.list_append (!the_namelst, ns);
       !the_namelstlst := nss
-    end
+    end // end of [list_cons]
   | _ => err () // nil or singleton
 end // end of [the_namespace_localjoin]
 

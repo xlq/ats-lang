@@ -16,6 +16,10 @@ example::
 	scp EXAMPLE/example.html \
           ats-hwxi@web.sourceforge.net:/home/groups/a/at/ats-lang/htdocs/EXAMPLE/example.html
 
+example_new::
+	scp EXAMPLE/example_new.html \
+          ats-hwxi@web.sourceforge.net:/home/groups/a/at/ats-lang/htdocs/EXAMPLE/example_new.html
+
 implementation::
 	scp IMPLEMENTATION/implementation.html \
           ats-hwxi@web.sourceforge.net:/home/groups/a/at/ats-lang/htdocs/IMPLEMENTATION/implementation.html
