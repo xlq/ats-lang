@@ -1019,7 +1019,7 @@ fun loop
         end
       | S2TEsub (s2v1, s2t1, s2ps1) => let
           fun aux1 (s2ps1: s2explst, s2v: s2var_t, s2ps: &s2explst)
-            :<cloptr1> void = case+ s2ps1 of
+            :<cloref1> void = case+ s2ps1 of
             | cons (s2p1, s2ps1) => let
                 val s2p = s2exp_alpha (s2v1, s2v, s2p1)
               in
@@ -1027,7 +1027,7 @@ fun loop
               end
             | nil () => ()
           fun aux2 (ids: i0delst, s2vs: &s2varlst, s2ps: &s2explst)
-            :<cloptr1> void = case+ ids of
+            :<cloref1> void = case+ ids of
             | cons (id, ids) => let
                 val s2v = s2var_make_id_srt (id.i0de_sym, s2t1)
               in
@@ -2152,7 +2152,7 @@ fn d1atcon_tr (
         if islin then s2rt_viewt0ype else s2rt_t0ype
       end // end of [if]
     ) : s2rt
-    fun aux (i: int, s1es: s1explst):<cloptr1> s2explst = begin
+    fun aux (i: int, s1es: s1explst):<cloref1> s2explst = begin
       case+ s1es of
       | cons (s1e, s1es) => let
           val s2t = (if i < npf then s2t_pfarg else s2t_arg): s2rt
@@ -2252,7 +2252,7 @@ implement d1atdeclst_tr
 //
   val d1cs2cs2vslst (* : T *) = let
     var res: T = nil ()
-    fn aux (d1c: d1atdec, res: &T):<cloptr1> void = let
+    fn aux (d1c: d1atdec, res: &T):<cloref1> void = let
       val argvar = (
         case+ d1c.d1atdec_arg of
         | Some d1as => Some (d1atarglst_tr d1as)
@@ -2290,7 +2290,7 @@ implement d1atdeclst_tr
       the_s2expenv_add_scst s2c; res := cons (@(d1c, s2c, s2vs), res)
     end // end of [val]
     fun auxlst
-      (d1cs: d1atdeclst, res: &T):<cloptr1> void = case+ d1cs of
+      (d1cs: d1atdeclst, res: &T):<cloref1> void = case+ d1cs of
       | list_cons (d1c, d1cs) => (aux (d1c, res); auxlst (d1cs, res))
       | list_nil () => ()
     // end of [auxlst]

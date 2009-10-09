@@ -152,7 +152,7 @@ implement s2exp_tr (loc0, deep, s2e0) = let
   val s2e0 = s2exp_whnf s2e0; val s2t0 = s2e0.s2exp_srt
 (*
   val () = begin
-    prerr "s2exp_tr: loc0 = "; $Loc.prerr_location loc; prerr_newline ();
+    prerr "s2exp_tr: loc0 = "; $Loc.prerr_location loc0; prerr_newline ();
     prerr "s2exp_tr: deep = "; prerr deep; prerr_newline ();
     prerr "s2exp_tr: s2e0 = "; prerr s2e0; prerr_newline ();
   end // end of [val]
@@ -179,7 +179,7 @@ in
       | Some os2e => begin case+ os2e of
         | Some s2e => s2exp_tr (loc0, deep, s2e) | None () => hityp_abs
         end // end of [Some]
-      | None () => err (loc0, s2t0, s2e0)
+      | None () => hityp_abs // err (loc0, s2t0, s2e0)
       end (* end of [_] *)
     end // end of [S2Ecst]
   | S2Eclo (knd, s2exp) => begin
@@ -1306,7 +1306,7 @@ in
       // empty
     end // end of [D3Ewhere]
   | _ => begin
-      $Loc.prerr_location d3e0.d3exp_loc; prerr ": Internal Error";
+      $Loc.prerr_location d3e0.d3exp_loc; prerr ": INTERNAL ERROR";
       prerr ": d3exp_prf_tr: d3e0 = "; prerr_d3exp d3e0; prerr_newline ();
       $Err.abort {void} ()
     end // end of [_]
@@ -1610,7 +1610,7 @@ implement d3eclst_prf_tr
       | D3Cstaload _ => aux d3cs
       | D3Cdynload _ => aux d3cs
       | _ => begin
-          $Loc.prerr_location d3c.d3ec_loc; prerr ": Internal Error";
+          $Loc.prerr_location d3c.d3ec_loc; prerr ": INTERNAL ERROR";
           prerr ": d3explst_prf_tr: illegal proof declaration"; prerr_newline ();
           $Err.abort {void} ()
         end // end of [_]

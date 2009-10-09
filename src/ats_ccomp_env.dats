@@ -658,8 +658,9 @@ fn dyncstset_add_if
 
 in // in of [local]
 
-implement dyncstset_foreach_main (pf | d2cs, f, env) =
-  $Set.set_foreach_main (pf | d2cs, f, env)
+implement dyncstset_foreach_main
+  (pf | d2cs, f, env) = $Set.set_foreach_main (pf | d2cs, f, env)
+// end of [dyncstset_foreach_main]
 
 implement the_dyncstset_get () = !the_dyncstset
 

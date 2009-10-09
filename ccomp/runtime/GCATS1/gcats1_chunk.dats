@@ -384,14 +384,15 @@ ats_ptr_type gc_ptr_is_valid
   if (!chks) return (chunklst)0 ;
 
   ofs_chkseg = PTR_CHKSEG_GET (ptr) ;
-/*
-  fprintf (stderr, "gc_ptr_is_valid: 5: ofs_chkseg = %li\n", ofs_chkseg) ;
-*/
   itemwsz = chks->itemwsz ;
 /*
+  fprintf (stderr, "gc_ptr_is_valid: 5: ofs_chkseg = %li\n", ofs_chkseg) ;
   fprintf (stderr, "gc_ptr_is_valid: 6: itemwsz = %i\n", itemwsz) ;
 */
 
+/*
+** for a large chunk (itemwsz_log = -1), ofs_chkseg == 0
+*/
   if (ofs_chkseg % itemwsz) return (chunklst)0 ;
 
   *((int*)ofs_r) = (ofs_chkseg / itemwsz) ;
