@@ -551,7 +551,7 @@ implement s2exp_is_abscon (s2e) = begin
   case+ s2e.s2exp_node of
   | S2Ecst s2c => begin
       if s2cst_is_abstract s2c then true else s2cst_iscon_get s2c
-    end
+    end // end of [S2Ecst]
   | S2Eapp (s2e, _) => s2exp_is_abscon s2e
   | _ => false
 end // end  of [s2exp_is_abscon]
@@ -562,6 +562,7 @@ implement s2exp_is_non_fun (s2e) = case+ s2e.s2exp_node of
   | S2Eexi (_, _, s2e) => s2exp_is_non_fun s2e
   | S2Euni (_, _, s2e) => s2exp_is_non_fun s2e
   | _ => true
+// end of [s2exp_is_non_fun]
 
 implement s2exp_is_non_tyrec (s2e) = case+ s2e.s2exp_node of
   | S2Etyrec _ => false
@@ -569,9 +570,11 @@ implement s2exp_is_non_tyrec (s2e) = case+ s2e.s2exp_node of
   | S2Eexi (_, _, s2e) => s2exp_is_non_tyrec s2e
   | S2Euni (_, _, s2e) => s2exp_is_non_tyrec s2e
   | _ => true
+// end of [s2exp_is_non_tyrec]
 
 implement s2exp_is_wth (s2e) = case+ s2e.s2exp_node of
   | S2Eexi (_, _, s2e) => s2exp_is_wth s2e | S2Ewth _ => true | _ => false
+// end of [s2exp_is_wth]
 
 (* ****** ****** *)
 

@@ -7,28 +7,27 @@
 (***********************************************************************)
 
 (*
- * ATS/Anairiats - Unleashing the Potential of Types!
- *
- * Copyright (C) 2002-2008 Hongwei Xi, Boston University
- *
- * All rights reserved
- *
- * ATS is free software;  you can  redistribute it and/or modify it under
- * the terms of  the GNU GENERAL PUBLIC LICENSE (GPL) as published by the
- * Free Software Foundation; either version 3, or (at  your  option)  any
- * later version.
- * 
- * ATS is distributed in the hope that it will be useful, but WITHOUT ANY
- * WARRANTY; without  even  the  implied  warranty  of MERCHANTABILITY or
- * FITNESS FOR A PARTICULAR PURPOSE.  See the  GNU General Public License
- * for more details.
- * 
- * You  should  have  received  a  copy of the GNU General Public License
- * along  with  ATS;  see the  file COPYING.  If not, please write to the
- * Free Software Foundation,  51 Franklin Street, Fifth Floor, Boston, MA
- * 02110-1301, USA.
- *
- *)
+** ATS/Anairiats - Unleashing the Potential of Types!
+**
+** Copyright (C) 2002-2008 Hongwei Xi, Boston University
+**
+** All rights reserved
+**
+** ATS is free software;  you can  redistribute it and/or modify it under
+** the terms of  the GNU GENERAL PUBLIC LICENSE (GPL) as published by the
+** Free Software Foundation; either version 3, or (at  your  option)  any
+** later version.
+** 
+** ATS is distributed in the hope that it will be useful, but WITHOUT ANY
+** WARRANTY; without  even  the  implied  warranty  of MERCHANTABILITY or
+** FITNESS FOR A PARTICULAR PURPOSE.  See the  GNU General Public License
+** for more details.
+** 
+** You  should  have  received  a  copy of the GNU General Public License
+** along  with  ATS;  see the  file COPYING.  If not, please write to the
+** Free Software Foundation,  51 Franklin Street, Fifth Floor, Boston, MA
+** 02110-1301, USA.
+*)
 
 (* ****** ****** *)
 
@@ -78,18 +77,20 @@ extern typedef "ats_effect_t" = effect
 macdef EFFexn = 1 // exception
 macdef EFFntm = 2 // nontermination
 macdef EFFref = 3 // reference
+// macdef EFFwrt = 4 // not supported
 
 implement effect_exn = EFFexn
 implement effect_ntm = EFFntm
 implement effect_ref = EFFref
+// implement effect_wrt = EFFwrt // not supported
 implement effectlst_all = '[ EFFexn, EFFntm, EFFref ]
 
-implement eq_effect_effect (eff1: effect, eff2: effect): bool =
-  eq_int_int (eff1, eff2)
+implement eq_effect_effect
+  (eff1, eff2) = eq_int_int (eff1, eff2)
+// end of [eq_effect_effect]
 
-//
-
-implement fprint_effect (pf | out, eff) = begin
+implement fprint_effect
+  (pf | out, eff) = begin
   if eq_int_int (eff, EFFexn) then
     fprint1_string (pf | out, "exn")
   else if eq_int_int (eff, EFFntm) then
@@ -100,7 +101,7 @@ implement fprint_effect (pf | out, eff) = begin
     fprint1_string (pf | out, "eff(");
     fprint1_int (pf | out, eff);
     fprint1_string (pf | out, ")")
-  end
+  end (* end of [if] *)
 end // end of [fprint_effect]
 
 implement fprint_effectlst {m} (pf | out, effs) = let
@@ -111,6 +112,7 @@ implement fprint_effectlst {m} (pf | out, effs) = let
         fprint_effect (pf | out, eff); aux (i+1, out, effs)
       end
     | list_nil () => ()
+  // end of [aux]
 in
   aux (0, out, effs)
 end // end of [fprint_effectlst]
@@ -130,9 +132,10 @@ extern typedef "ats_effset_t" = effset
 macdef effset_exn = 0x1 // exception
 macdef effset_ntm = 0x2 // nontermination
 macdef effset_ref = 0x4 // reference
+macdef effset_wrt = 0x8 // write effect (* program *)
 
 implement effset_all = uint_of ((1 << MAX_EFFECT_NUMBER) - 1)
-implement effset_nil = uint_of_int 0
+implement effset_nil = uint_of_int 0 // 0U
 
 implement eq_effset_effset (efs1, efs2) = eq_uint_uint (efs1, efs2)
 
@@ -149,9 +152,9 @@ implement eq_effset_effset (efs1, efs2) = eq_uint_uint (efs1, efs2)
 #endif
 
 ats_void_type
-ats_effect_fprint_effset (ats_ptr_type out, ats_effset_t effs) {
+ats_effect_fprint_effset
+(ats_ptr_type out, ats_effset_t effs) {
   int i, n ;
-
   i = 1 ; n = 0 ;
   while (i <= MAX_EFFECT_NUMBER) {
     if (effs & 0x1) {
@@ -160,9 +163,8 @@ ats_effect_fprint_effset (ats_ptr_type out, ats_effset_t effs) {
     }
     ++i ; effs >>= 1 ;
   }
-
   return ;
-}
+} /* end of [ats_effect_fprint_effset] */
 
 %}
 
@@ -294,8 +296,10 @@ fn name_is_ref (name:string): bool =
 fn name_is_term (name: string): bool =
   name = "term"
 
-fn name_is_write (name: string): bool =
+(*
+fn name_is_wrt (name: string): bool =
   if name = "wrt" then true else name = "write"
+*)
 
 (* ****** ****** *)
 
@@ -334,30 +338,35 @@ fun loop (
               efs := effset_del (efs, EFFexn)
             else
               efs := effset_add (efs, EFFexn)
+            // end of [if]
           end // end of [_ when ...]
         | _ when name_is_exnref name => begin
             if isneg > 0 then
               efs := effset_del (effset_del (efs, EFFexn), EFFref)
             else
               efs := effset_add (effset_add (efs, EFFexn), EFFref)
+            // end of [if]
           end // end of [_ when ...]
         | _ when name_is_ntm name => begin
             if isneg > 0 then
               efs := effset_del (efs, EFFntm)
             else
               efs := effset_add (efs, EFFntm)
+            // end of [if]
           end // end of [_ when ...]
         | _ when name_is_term name => begin
             if isneg > 0 then
               efs := effset_add (efs, EFFntm)
             else
               efs := effset_del (efs, EFFntm)
+            // end of [if]
           end // end of [_ when ...]
         | _ when name_is_ref name => begin
             if isneg > 0 then
               efs := effset_del (efs, EFFref)
             else
               efs := effset_add (efs, EFFref)
+            // end of [if]
           end // end of [_ when ...]
         | _ => loop_err (tag.e0fftag_loc, name)
         end // end of [E0FFTAGcst]

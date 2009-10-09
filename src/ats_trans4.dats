@@ -179,7 +179,7 @@ in
       | Some os2e => begin case+ os2e of
         | Some s2e => s2exp_tr (loc0, deep, s2e) | None () => hityp_abs
         end // end of [Some]
-      | None () => hityp_abs // err (loc0, s2t0, s2e0)
+      | None () => hityp_abs // HX: this is not appropriate: err (loc0, s2t0, s2e0)
       end (* end of [_] *)
     end // end of [S2Ecst]
   | S2Eclo (knd, s2exp) => begin
