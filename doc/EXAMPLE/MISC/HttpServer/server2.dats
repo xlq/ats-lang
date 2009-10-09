@@ -662,8 +662,10 @@ implement main_loop_get {fd} {m,n}
       | 1 => directory_send (pf_conn | fd, name)
       | _ => msg404_send (pf_conn | fd)
     end  else begin
-      directory_send (pf_conn | fd, "./") // list the entries of
-      // the current directory
+      // the current directory is protected:
+      msg404_send (pf_conn | fd)
+      // the current directory is not protected:
+      // directory_send (pf_conn | fd, "./") // list the entries of
     end // end of [if]
   // end of [val]
 in
