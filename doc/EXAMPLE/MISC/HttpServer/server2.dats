@@ -636,6 +636,8 @@ end (* end of [directory_send] *)
 
 (* ****** ****** *)
 
+#define CWD_PROTECT 1
+
 extern fun main_loop_get {fd:int} {m,n:nat} {l_buf:addr} (
     pf_conn: !socket_v (fd, conn), pf_buf: !bytes BUFSZ @ l_buf
   | fd: int fd, buf: ptr l_buf, msg: &strbuf (m,n) >> strbuf (m, n1), n: size_t n
@@ -661,11 +663,16 @@ implement main_loop_get {fd} {m,n}
       | 0 => file_send (pf_conn | fd, name)
       | 1 => directory_send (pf_conn | fd, name)
       | _ => msg404_send (pf_conn | fd)
-    end  else begin
+    end  else let
+#ifdef CWD_PROTECT #then
       // the current directory is protected:
-      msg404_send (pf_conn | fd)
+      val () = msg404_send (pf_conn | fd)
+#else
       // the current directory is not protected:
-      // directory_send (pf_conn | fd, "./") // list the entries of
+      val () = directory_send (pf_conn | fd, "./") // list the entries of
+#endif // end of [#if CWD_PROTECT]
+    in
+      // nothing
     end // end of [if]
   // end of [val]
 in
