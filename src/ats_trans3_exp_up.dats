@@ -2476,12 +2476,10 @@ end // end of [d2exp_cst_tr_up]
 fn d2exp_var_mut_tr_up (loc0: loc_t, d2v: d2var_t): d3exp = let
 (*
   val () = begin
-    prerr "d2exp_var_mut_tr_up: d2v = "; prerr d2v; prerr_newline ()
-  end
-  val () = begin
+    prerr "d2exp_var_mut_tr_up: d2v = "; prerr d2v; prerr_newline ();
     prerr "d2exp_var_mut_tr_up: d2varset = ";
     the_d2varset_env_prerr_ld2vs (); prerr_newline ()
-  end
+  end // end of [val]
 *)
   val s2e_addr = d2var_addr_get_some (loc0, d2v)
   val (s2e, _(*nil*)) = s2exp_addr_slablst_deref (loc0, s2e_addr, nil ())
@@ -2494,15 +2492,11 @@ fn d2exp_var_nonmut_tr_up (loc0: loc_t, d2v: d2var_t): d3exp = let
   val s2e_d2v = d2var_typ_get_some (loc0, d2v)
 (*
   val () = begin
-    prerr "d2exp_var_nonmut_tr_up: d2v = "; prerr d2v; prerr_newline ()
-  end
-  val () = begin
-    prerr "d2exp_var_nonmut_tr_up: lin_d2v = "; prerr lin_d2v; prerr_newline ()
-  end
-  val () = begin
+    prerr "d2exp_var_nonmut_tr_up: d2v = "; prerr d2v; prerr_newline ();
+    prerr "d2exp_var_nonmut_tr_up: lin_d2v = "; prerr lin_d2v; prerr_newline ();
     prerr "d2exp_var_nonmut_tr_up: d2varset = ";
-    the_d2varset_env_prerr_ld2vs (); prerr_newline ()
-  end
+    the_d2varset_env_prerr_ld2vs (); prerr_newline ();
+  end // end of [val]
 *)
   val () = if lin_d2v >= 0 then let
     val is_llam_local = the_d2varset_env_d2var_is_llam_local d2v
@@ -2516,8 +2510,8 @@ fn d2exp_var_nonmut_tr_up (loc0: loc_t, d2v: d2var_t): d3exp = let
       prerr "] is expected to be local but it is not.";
       prerr_newline ();
       $Err.abort {void} ()
-    end // end of [begin]
-  end // end of [val]
+    end // end of [if]
+  end (* end of [val] *)
 in
   case+ d2var_decarg_get d2v of
   | nil () => d3exp_var (loc0, s2e_d2v, d2v)

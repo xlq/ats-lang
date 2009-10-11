@@ -560,4 +560,18 @@ end // end of [e1xp_eval_if]
 
 (* ****** ****** *)
 
+implement e1xp_make_v1al (loc, v) =
+  case+ v of
+  | V1ALchar c => e1xp_char (loc, c)
+  | V1ALfloat f =>
+      let val s = tostring_double f in e1xp_float (loc, s) end
+    // end of [V1ALfloat]
+  | V1ALint i => let val s = tostring_int i in e1xp_int (loc, s) end
+  | V1ALstring s => let
+      val n = int_of_size (string_length s) in e1xp_string (loc, s, n)
+    end // end of [V1ALstring]
+// end of [e1xp_make_v1al]
+
+(* ****** ****** *)
+
 (* end of [ats_e1xp_eval.dats] *)

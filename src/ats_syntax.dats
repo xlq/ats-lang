@@ -381,6 +381,12 @@ implement e0xp_app (e1, e2) =
 implement e0xp_char c =
   '{ e0xp_loc= c.c0har_loc, e0xp_node= E0XPchar c.c0har_val }
 
+implement e0xp_eval (t_beg, e, t_end) = let
+  val loc = combine (t_beg.t0kn_loc, t_end.t0kn_loc)
+in '{
+  e0xp_loc= loc, e0xp_node= E0XPeval e
+} end // end of [e0xp_eval]
+
 implement e0xp_float f =
   '{ e0xp_loc= f.f0loat_loc, e0xp_node= E0XPfloat f.f0loat_val }
 
@@ -390,10 +396,11 @@ implement e0xp_ide id =
 implement e0xp_int i =
   '{ e0xp_loc= i.i0nt_loc, e0xp_node= E0XPint i.i0nt_val }
 
-implement e0xp_list (t_beg, es, t_end) =
-  let val loc = combine (t_beg.t0kn_loc, t_end.t0kn_loc) in
-    '{ e0xp_loc= loc, e0xp_node= E0XPlist es }
-  end
+implement e0xp_list (t_beg, es, t_end) = let
+  val loc = combine (t_beg.t0kn_loc, t_end.t0kn_loc)
+in '{
+  e0xp_loc= loc, e0xp_node= E0XPlist es
+} end // end of [e0xp_list]
 
 implement e0xp_string s = '{
   e0xp_loc= s.s0tring_loc

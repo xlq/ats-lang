@@ -65,17 +65,19 @@ datatype e1xp_node =
   | E1XPlist of e1xplst
   | E1XPnone
   | E1XPstring of (string, int(*length*))
+// end of [e1xp_node]
 
-where e1xp: type = '{ e1xp_loc= loc_t, e1xp_node= e1xp_node }
+where e1xp: type = '{
+  e1xp_loc= loc_t, e1xp_node= e1xp_node
+}
 and e1xplst: type = List e1xp
 
 fun fprint_e1xp {m:file_mode}
   (pf: file_mode_lte (m, w) | out: &FILE m, _: e1xp): void
-
-and fprint_e1xplst {m:file_mode}
-  (pf: file_mode_lte (m, w) | out: &FILE m, _: e1xplst): void
-
 overload fprint with fprint_e1xp
+
+fun fprint_e1xplst {m:file_mode}
+  (pf: file_mode_lte (m, w) | out: &FILE m, _: e1xplst): void
 overload fprint with fprint_e1xplst
 
 fun print_e1xp (_: e1xp): void
@@ -110,6 +112,7 @@ datatype v1al =
   | V1ALfloat of double
   | V1ALint of int
   | V1ALstring of string
+// end of [v1al]
 
 val v1al_true : v1al and v1al_false : v1al
 
@@ -120,6 +123,7 @@ datatype s1rt_node =
   | S1RTlist of s1rtlst
   | S1RTqid of (s0rtq, sym_t)
   | S1RTtup of s1rtlst
+// end of [s1rt_node]
 
 where s1rt: type = '{
   s1rt_loc= loc_t, s1rt_node= s1rt_node
@@ -132,7 +136,7 @@ and s1rtlstopt: type = Option s1rtlst
 
 typedef s1rtpol = '{
   s1rtpol_loc= loc_t, s1rtpol_srt= s1rt, s1rtpol_pol= int
-}
+} // end of [s1rtpol]
 
 (* ****** ****** *)
 

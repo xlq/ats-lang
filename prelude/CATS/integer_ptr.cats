@@ -89,10 +89,26 @@ atspre_pred_intptr (ats_intptr_type i) {
   return (ats_intptr_type)((intptr_t)i - 1) ;
 }
 
+//
+
+static inline
+ats_intptr_type
+atspre_add_intptr_int (ats_intptr_type i1, ats_int_type i2) {
+  return (ats_intptr_type)((intptr_t)i1 + (ats_int_type)i2) ;
+}
+
 static inline
 ats_intptr_type
 atspre_add_intptr_intptr (ats_intptr_type i1, ats_intptr_type i2) {
   return (ats_intptr_type)((intptr_t)i1 + (intptr_t)i2) ;
+}
+
+//
+
+static inline
+ats_intptr_type
+atspre_sub_intptr_int (ats_intptr_type i1, ats_int_type i2) {
+  return (ats_intptr_type)((intptr_t)i1 - (ats_int_type)i2) ;
 }
 
 static inline
@@ -101,10 +117,26 @@ atspre_sub_intptr_intptr (ats_intptr_type i1, ats_intptr_type i2) {
   return (ats_intptr_type)((intptr_t)i1 - (intptr_t)i2) ;
 }
 
+//
+
+static inline
+ats_intptr_type
+atspre_mul_intptr_int (ats_intptr_type i1, ats_int_type i2) {
+  return (ats_intptr_type)((intptr_t)i1 * (ats_int_type)i2) ;
+}
+
 static inline
 ats_intptr_type
 atspre_mul_intptr_intptr (ats_intptr_type i1, ats_intptr_type i2) {
   return (ats_intptr_type)((intptr_t)i1 * (intptr_t)i2) ;
+}
+
+//
+
+static inline
+ats_intptr_type
+atspre_div_intptr_int (ats_intptr_type i1, ats_int_type i2) {
+  return (ats_intptr_type)((intptr_t)i1 / (ats_int_type)i2) ;
 }
 
 static inline
@@ -113,11 +145,23 @@ atspre_div_intptr_intptr (ats_intptr_type i1, ats_intptr_type i2) {
   return (ats_intptr_type)((intptr_t)i1 / (intptr_t)i2) ;
 }
 
+//
+
+static inline
+ats_intptr_type
+atspre_mod_intptr_int (ats_intptr_type i1, ats_int_type i2) {
+  return (ats_intptr_type)((intptr_t)i1 % (ats_int_type)i2) ;
+}
+
 static inline
 ats_intptr_type
 atspre_mod_intptr_intptr (ats_intptr_type i1, ats_intptr_type i2) {
   return (ats_intptr_type)((intptr_t)i1 % (intptr_t)i2) ;
 }
+
+/* ****** ****** */
+
+// comparison operations
 
 static inline
 ats_bool_type
@@ -205,6 +249,20 @@ atspre_uintptr_of_uint (ats_uint_type u) {
 // ------ ------
 
 static inline
+ats_ulint_type
+atspre_ulint_of_uintptr (ats_uintptr_type u) {
+  return (ats_ulint_type)(uintptr_t)u ;
+}
+
+static inline
+ats_uintptr_type
+atspre_uintptr_of_ulint (ats_ulint_type u) {
+  return (ats_uintptr_type)(uintptr_t)u ;
+}
+
+// ------ ------
+
+static inline
 ats_uintptr_type
 atspre_succ_uintptr (ats_uintptr_type i) {
   return (ats_uintptr_type)((uintptr_t)i + 1) ;
@@ -216,10 +274,26 @@ atspre_pred_uintptr (ats_uintptr_type i) {
   return (ats_uintptr_type)((uintptr_t)i - 1) ;
 }
 
+//
+
+static inline
+ats_uintptr_type
+atspre_add_uintptr_uint (ats_uintptr_type i1, ats_uint_type i2) {
+  return (ats_uintptr_type)((uintptr_t)i1 + (ats_uint_type)i2) ;
+}
+
 static inline
 ats_uintptr_type
 atspre_add_uintptr_uintptr (ats_uintptr_type i1, ats_uintptr_type i2) {
   return (ats_uintptr_type)((uintptr_t)i1 + (uintptr_t)i2) ;
+}
+
+//
+
+static inline
+ats_uintptr_type
+atspre_sub_uintptr_uint (ats_uintptr_type i1, ats_uint_type i2) {
+  return (ats_uintptr_type)((uintptr_t)i1 - (ats_uint_type)i2) ;
 }
 
 static inline
@@ -228,10 +302,26 @@ atspre_sub_uintptr_uintptr (ats_uintptr_type i1, ats_uintptr_type i2) {
   return (ats_uintptr_type)((uintptr_t)i1 - (uintptr_t)i2) ;
 }
 
+//
+
+static inline
+ats_uintptr_type
+atspre_mul_uintptr_uint (ats_uintptr_type i1, ats_uint_type i2) {
+  return (ats_uintptr_type)((uintptr_t)i1 * (ats_uint_type)i2) ;
+}
+
 static inline
 ats_uintptr_type
 atspre_mul_uintptr_uintptr (ats_uintptr_type i1, ats_uintptr_type i2) {
   return (ats_uintptr_type)((uintptr_t)i1 * (uintptr_t)i2) ;
+}
+
+//
+
+static inline
+ats_uintptr_type
+atspre_div_uintptr_uint (ats_uintptr_type i1, ats_uint_type i2) {
+  return (ats_uintptr_type)((uintptr_t)i1 / (ats_uint_type)i2) ;
 }
 
 static inline
@@ -240,11 +330,21 @@ atspre_div_uintptr_uintptr (ats_uintptr_type i1, ats_uintptr_type i2) {
   return (ats_uintptr_type)((uintptr_t)i1 / (uintptr_t)i2) ;
 }
 
+//
+
+static inline
+ats_uintptr_type
+atspre_mod_uintptr_uint (ats_uintptr_type i1, ats_uint_type i2) {
+  return (ats_uintptr_type)((uintptr_t)i1 % (ats_uint_type)i2) ;
+}
+
 static inline
 ats_uintptr_type
 atspre_mod_uintptr_uintptr (ats_uintptr_type i1, ats_uintptr_type i2) {
   return (ats_uintptr_type)((uintptr_t)i1 % (uintptr_t)i2) ;
 }
+
+// comparison operations on uintpr
 
 static inline
 ats_bool_type

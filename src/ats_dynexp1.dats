@@ -179,7 +179,7 @@ implement p1at_make_e1xp (loc, e0) = let
   fun aux (e0: e1xp):<cloptr1> p1at = case+ e0.e1xp_node of
     | E1XPapp (e1, loc_arg, es2) => begin
         p1at_app_dyn (loc, aux e1, loc_arg, 0(*npf*), auxlst es2)
-      end
+      end // end of [E1XPapp]
     | E1XPchar chr => p1at_char (loc, chr)
     | E1XPfloat str => p1at_float (loc, str)
     | E1XPide id => p1at_qid (loc, d0ynq_none, id)
@@ -187,9 +187,11 @@ implement p1at_make_e1xp (loc, e0) = let
     | E1XPlist es => p1at_list (loc, auxlst es)
     | E1XPnone () => p1at_empty (loc)
     | E1XPstring (str, _(*len*)) => p1at_string (loc, str)
+  // end of [aux]
 
   and auxlst (es0: e1xplst):<cloptr1> p1atlst = case+ es0 of
     | cons (e, es) => cons (aux e, auxlst es) | nil () => nil ()
+  // end of [auxlst]
 in
   aux (e0)
 end // end of [p1at_make_e1xp]
@@ -491,9 +493,12 @@ implement d1exp_make_e1xp (loc, e0) = let
     | E1XPlist es => d1exp_list (loc, auxlst es)
     | E1XPnone () => d1exp_empty (loc)
     | E1XPstring (str, len) => d1exp_string (loc, str, len)
+  // end of [aux]
 
-  and auxlst (es0: e1xplst):<cloptr1> d1explst = case+ es0 of
+  and auxlst (es0: e1xplst)
+    :<cloptr1> d1explst = case+ es0 of
     | cons (e, es) => cons (aux e, auxlst es) | nil () => nil ()
+  // end of [auxlst]
 in
   aux (e0)
 end // end of [d1exp_make_e1xp]

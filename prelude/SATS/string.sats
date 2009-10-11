@@ -654,8 +654,8 @@ fun stropt_is_some {i:int} (stropt: stropt i):<> bool (i >= 0)
 
 absviewtype stropt_gc (m:int, n:int)
 
-// extval (ats_ptr_type, "0")
-val stropt_gc_none : stropt_gc (0,0) = "atspre_stropt_none"
+castfn stropt_gc_none
+  (_: ptr null): stropt_gc (0,0)
 
 castfn stropt_gc_unnone
   {n:int} (x: stropt_gc (0, n)):<> ptr (null)

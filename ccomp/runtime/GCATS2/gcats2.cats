@@ -1,0 +1,226 @@
+/***********************************************************************/
+/*                                                                     */
+/*                        Applied Type System                          */
+/*                                                                     */
+/*                             Hongwei Xi                              */
+/*                                                                     */
+/***********************************************************************/
+
+/*
+** ATS/Anairiats - Unleashing the Power of Types!
+**
+** Copyright (C) 2002-2009 Hongwei Xi.
+**
+** All rights reserved
+**
+** ATS is free software;  you can  redistribute it and/or modify it under
+** the terms of  the GNU GENERAL PUBLIC LICENSE (GPL) as published by the
+** Free Software Foundation; either version 3, or (at  your  option)  any
+** later version.
+** 
+** ATS is distributed in the hope that it will be useful, but WITHOUT ANY
+** WARRANTY; without  even  the  implied  warranty  of MERCHANTABILITY or
+** FITNESS FOR A PARTICULAR PURPOSE.  See the  GNU General Public License
+** for more details.
+** 
+** You  should  have  received  a  copy of the GNU General Public License
+** along  with  ATS;  see the  file COPYING.  If not, please write to the
+** Free Software Foundation,  51 Franklin Street, Fifth Floor, Boston, MA
+** 02110-1301, USA.
+*/
+
+/* ****** ****** */
+
+// Author: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
+// October 2009
+
+/* ****** ****** */
+
+#include "ats_types.h"
+#include "ats_basics.h"
+
+/* ****** ****** */
+
+#ifndef ATS_RUNTIME_GCATS2_CATS
+#define ATS_RUNTIME_GCATS2_CATS
+
+/* ****** ****** */
+
+#include <stdio.h>
+#include <string.h>
+
+/* ****** ****** */
+
+#include "gcats2_c.h"
+
+/* ****** ****** */
+
+typedef unsigned char byte ;
+typedef ats_ptr_type topseg_t ;
+typedef ats_ptr_type freeitmlst_vt ;
+
+/* ****** ****** */
+
+//
+// external malloc/free functions for GCATS2
+//
+
+static inline
+ats_ptr_type
+gcats2_malloc_ext (ats_int_type bsz) {
+  void *p ;
+// /*
+  fprintf(stderr, "gcats2_malloc_ext: bsz = %i\n", bsz) ;
+// */
+  p = malloc(bsz) ;
+  if (p == (void*)0) {
+    fprintf(stderr, "exit(ATS/GC): external memory is unavailable.\n"); exit(1);
+  } /* end of [if] */
+  return p ;
+} /* end of [gcats2_malloc_ext] */
+
+static inline
+ats_ptr_type
+gcats2_free_ext (ats_ptr_type ptr) { free(ptr); return ; }
+
+/* ****** ****** */
+
+static inline
+topseg_t
+PTR_TOPSEG_GET (ats_ptr_type p) {
+  uintptr_t u = (uintptr_t)p ;
+  return (void*)(u >> (PTR_BOTCHKSEG_SIZE + NBYTE_PER_WORD_LOG)) ;
+} /* end of [PTR_TOPSEG_GET] */
+
+static inline
+ats_int_type
+PTR_BOTSEG_GET (ats_ptr_type p) {
+  uintptr_t u = (uintptr_t)p ;
+  return (u >> (PTR_CHKSEG_SIZE + NBYTE_PER_WORD_LOG)) & BOTSEG_TABLESIZE_MASK ;
+} /* end of [PTR_BOTSEG_GET] */
+
+static inline
+ats_int_type
+PTR_CHKSEG_GET (ats_ptr_type p) {
+  uintptr_t u = (uintptr_t)p ;
+  return (u >> NBYTE_PER_WORD_LOG) & CHKSEG_TABLESIZE_MASK ;
+} /* end of [PTR_CHKSEG_GET] */
+
+#if (__WORDSIZE == 64)
+static inline
+topseg_t
+PTR_TOPSEGHASH_GET (ats_ptr_type p) {
+  uintptr_t u = (uintptr_t)p ;
+  return (void*)((u >> (PTR_BOTCHKSEG_SIZE + NBYTE_PER_WORD_LOG)) & TOPSEG_HASHTABLESIZE_MASK) ;
+} /* end of [PTR_TOPSEGHASH_GET] */
+#endif // end of ...
+
+/* ****** ****** */
+
+#define NMARKBIT_PER_CHUNK \
+   ((CHUNK_WORDSIZE + NBIT_PER_BYTE - 1) / NBIT_PER_BYTE)
+
+typedef
+struct chunk_struct {
+  // the word size of each free item: it must be positive
+  int chunk_itmwsz;
+
+  // itmwsz = 2^itmwsz_log if itmwsz_log >= 0
+  // if [itmwsz_log = -1], then the chunk is large (> CHUNK_WORDSIZE)
+  int chunk_itmwsz_log ;
+
+  int chunk_itmtot ; // the total number of freeitms
+  int chunk_mrkcnt ; // the count of marked freeitms
+
+  freeitmlst_vt chunk_data ; // pointer to the data // multiple of pagesize
+
+  // bits for marking // 1 bit for 1 item (>= 1 word)
+  byte chunk_mrkbits[NMARKBIT_PER_CHUNK] ;
+} chunk_vt ;
+
+typedef chunk_vt *chunkptr_vt ;
+typedef chunk_vt *chunklst_vt ;
+
+/* ****** ****** */
+
+static inline
+ats_ptr_type gcats2_chunkptr_null () { return (void*)0 ; }
+
+/* ****** ****** */
+
+typedef
+struct botsegtbl_struct {
+#if (__WORDSIZE == 64)
+  uintptr_t key ; struct botsegtbl_struct *hashnxt ;
+#endif
+  chunklst_vt headers[BOTSEG_TABLESIZE] ;
+} botsegtbl_vt ;
+
+typedef botsegtbl_vt *botsegtblptr_vt ;
+
+/* ****** ****** */
+
+#if (__WORDSIZE == 32)
+
+extern botsegtbl_vt *the_topsegtbl[TOPSEG_TABLESIZE] ;
+
+static inline
+ats_ptr_type
+gcats2_the_topsegtbl_takeout (topseg_t ofs) {
+  return &the_topsegtbl[(uintptr_t)ofs] ; // 0 <= ofs < TOPSEG_TABLESIZE
+} // end of ...
+
+#endif // end of [__WORDSIZE == 32]
+
+#if (__WORDSIZE == 64)
+
+extern botsegtbl_vt *the_topsegtbl[TOPSEG_HASHTABLESIZE] ;
+
+static inline
+ats_ptr_type
+gcats2_the_topsegtbl_takeout (topseg_t ofs) {
+  return &the_topsegtbl[((uintptr_t)ofs) & TOPSEG_HASHTABLESIZE_MASK] ;
+} // end of ...
+
+#endif // end of [__WORDSIZE == 64]
+
+/* ****** ****** */
+
+#if (__WORDSIZE == 32)
+
+static inline
+ats_ptr_type // &chunkptr
+gcats2_botsegtblptr1_takeout ( // used in [ptr_is_valid]
+  ats_ptr_type p_botsegtbl // p_botsegtbl != 0
+, topseg_t ofs_topseg, int ofs_botseg // [ofs_topseg]: not used
+) {
+  return &(((botsegtbl_vt*)p_botsegtbl)->headers)[ofs_botseg] ;
+} /* end of [botsegtblptr_get] */
+
+#endif // end of [__WORDSIZE == 32]
+
+#if (__WORDSIZE == 64)
+
+static inline
+ats_ptr_type // &chunkptr
+gcats2_botsegtblptr1_takeout ( // used in [ptr_is_valid]
+  ats_ptr_type p_botsegtbl // p_botsegtbl != 0
+, topseg_t ofs_topseg, int ofs_botseg // [ofs_topseg]: used
+) {
+  botsegtbl_vt *p = p_botsegtbl ;
+  do {
+    if (p->key == (uintptr_t)ofs_topseg) return &(p->headers)[ofs_botseg] ;
+    p = p->hashnxt ;
+  } while (p) ;
+  return (chunkptr_vt*)0 ;
+} /* end of [botsegtblptr_get] */
+
+#endif // end of [__WORDSIZE == 64]
+
+/* ****** ****** */
+
+#endif /* end of [ATS_RUNTIME_GCATS2_CATS] */
+
+/* ****** ****** */
+
+/* end of [gcats2.cats] */

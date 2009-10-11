@@ -106,10 +106,12 @@ prfun verify_constraint {p:bool | p} (): void
 
 (* ****** ****** *)
 
+(*
 val AssertionException : exn = "AssertionException"
 val DivisionByZeroException : exn = "DivisionByZeroException"
 val OverflowException : exn = "OverflowException"
 val SubscriptException : exn = "SubscriptException"
+*)
 
 (* ****** ****** *)
 

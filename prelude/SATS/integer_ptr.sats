@@ -79,58 +79,94 @@ and pred_intptr (i: intptr):<> intptr
 overload succ with succ_intptr
 overload pred with pred_intptr
 
+//
+
+fun add_intptr_int (i: intptr, j: int):<> intptr
+  = "atspre_add_intptr_int"
+overload + with add_intptr_int
+
 fun add_intptr_intptr (i: intptr, j: intptr):<> intptr
   = "atspre_add_intptr_intptr"
-
-and sub_intptr_intptr (i: intptr, j: intptr):<> intptr
-  = "atspre_sub_intptr_intptr"
-
-and mul_intptr_intptr (i: intptr, j: intptr):<> intptr
-  = "atspre_mul_intptr_intptr"
-
-and div_intptr_intptr (i: intptr, j: intptr):<> intptr
-  = "atspre_div_intptr_intptr"
-
-and mod_intptr_intptr (i: intptr, j: intptr):<> intptr
-  = "atspre_mod_intptr_intptr"
-
 overload + with add_intptr_intptr
+
+//
+
+fun sub_intptr_int (i: intptr, j: int):<> intptr
+  = "atspre_sub_intptr_int"
+overload - with sub_intptr_int
+
+fun sub_intptr_intptr (i: intptr, j: intptr):<> intptr
+  = "atspre_sub_intptr_intptr"
 overload - with sub_intptr_intptr
+
+//
+
+fun mul_intptr_int (i: intptr, j: int):<> intptr
+  = "atspre_mul_intptr_int"
+overload * with mul_intptr_int
+
+fun mul_intptr_intptr (i: intptr, j: intptr):<> intptr
+  = "atspre_mul_intptr_intptr"
 overload * with mul_intptr_intptr
+
+//
+
+fun div_intptr_int (i: intptr, j: int):<> intptr
+  = "atspre_div_intptr_int"
+overload / with div_intptr_int
+
+fun div_intptr_intptr (i: intptr, j: intptr):<> intptr
+  = "atspre_div_intptr_intptr"
 overload / with div_intptr_intptr
+
+//
+
+fun mod_intptr_int (i: intptr, j: int):<> intptr
+  = "atspre_mod_intptr_int"
+overload mod with mod_intptr_int
+
+fun mod_intptr_intptr (i: intptr, j: intptr):<> intptr
+  = "atspre_mod_intptr_intptr"
 overload mod with mod_intptr_intptr
+
+//
 
 fun lt_intptr_intptr (i: intptr, j: intptr):<> bool
   = "atspre_lt_intptr_intptr"
+overload < with lt_intptr_intptr
 
-and lte_intptr_intptr (i: intptr, j: intptr):<> bool
+fun lte_intptr_intptr (i: intptr, j: intptr):<> bool
   = "atspre_lte_intptr_intptr"
+overload <= with lte_intptr_intptr
+
+//
 
 fun gt_intptr_intptr (i: intptr, j: intptr):<> bool
   = "atspre_gt_intptr_intptr"
+overload > with gt_intptr_intptr
 
-and gte_intptr_intptr (i: intptr, j: intptr):<> bool
+fun gte_intptr_intptr (i: intptr, j: intptr):<> bool
   = "atspre_gte_intptr_intptr"
+overload >= with gte_intptr_intptr
+
+//
 
 fun eq_intptr_intptr (i: intptr, j: intptr):<> bool
   = "atspre_eq_intptr_intptr"
-
-and neq_intptr_intptr (i: intptr, j: intptr):<> bool
-  = "atspre_neq_intptr_intptr"
-
-overload < with lt_intptr_intptr
-overload <= with lte_intptr_intptr
-overload > with gt_intptr_intptr
-overload >= with gte_intptr_intptr
 overload = with eq_intptr_intptr
+
+fun neq_intptr_intptr (i: intptr, j: intptr):<> bool
+  = "atspre_neq_intptr_intptr"
 overload <> with neq_intptr_intptr
+
+//
 
 fun max_intptr_intptr (i: intptr, j: intptr):<> intptr
   = "atspre_max_intptr_intptr"
-and min_intptr_intptr (i: intptr, j: intptr):<> intptr
-  = "atspre_min_intptr_intptr"
-
 overload max with max_intptr_intptr
+
+fun min_intptr_intptr (i: intptr, j: intptr):<> intptr
+  = "atspre_min_intptr_intptr"
 overload min with min_intptr_intptr
 
 (* ****** ****** *)
@@ -162,12 +198,25 @@ typedef uintptr = uintptr_type
 
 symintr uintptr_of
 
+//
+
 fun uint_of_uintptr (u: uintptr):<> uint
   = "atspre_uint_of_uintptr"
 
 fun uintptr_of_uint (u: uint):<> uintptr
   = "atspre_uintptr_of_uint"
 overload uintptr_of with uintptr_of_uint
+
+//
+
+fun ulint_of_uintptr (u: uintptr):<> ulint
+  = "atspre_ulint_of_uintptr"
+
+fun uintptr_of_ulint (u: ulint):<> uintptr
+  = "atspre_uintptr_of_ulint"
+overload uintptr_of with uintptr_of_ulint
+
+//
 
 castfn ptr_of_uintptr (u: uintptr):<> ptr // = "atspre_ptr_of_uintptr"
 castfn uintptr_of_ptr (p: ptr):<> uintptr // = "atspre_uintptr_of_ptr"
@@ -186,26 +235,57 @@ and pred_uintptr (u: uintptr):<> uintptr
 overload succ with succ_uintptr
 overload pred with pred_uintptr
 
+//
+
+fun add_uintptr_uint (i: uintptr, j: uint):<> uintptr
+  = "atspre_add_uintptr_uint"
+overload + with add_uintptr_uint
+
 fun add_uintptr_uintptr (i: uintptr, j: uintptr):<> uintptr
   = "atspre_add_uintptr_uintptr"
-
-and sub_uintptr_uintptr (i: uintptr, j: uintptr):<> uintptr
-  = "atspre_sub_uintptr_uintptr"
-
-and mul_uintptr_uintptr (i: uintptr, j: uintptr):<> uintptr
-  = "atspre_mul_uintptr_uintptr"
-
-and div_uintptr_uintptr (i: uintptr, j: uintptr):<> uintptr
-  = "atspre_div_uintptr_uintptr"
-
-and mod_uintptr_uintptr (i: uintptr, j: uintptr):<> uintptr
-  = "atspre_mod_uintptr_uintptr"
-
 overload + with add_uintptr_uintptr
+
+//
+
+fun sub_uintptr_uint (i: uintptr, j: uint):<> uintptr
+  = "atspre_sub_uintptr_uint"
+overload - with sub_uintptr_uint
+
+fun sub_uintptr_uintptr (i: uintptr, j: uintptr):<> uintptr
+  = "atspre_sub_uintptr_uintptr"
 overload - with sub_uintptr_uintptr
+
+//
+
+fun mul_uintptr_uint (i: uintptr, j: uint):<> uintptr
+  = "atspre_mul_uintptr_uint"
+overload * with mul_uintptr_uint
+
+fun mul_uintptr_uintptr (i: uintptr, j: uintptr):<> uintptr
+  = "atspre_mul_uintptr_uintptr"
 overload * with mul_uintptr_uintptr
+
+//
+
+fun div_uintptr_uint (i: uintptr, j: uint):<> uintptr
+  = "atspre_div_uintptr_uint"
+overload / with div_uintptr_uint
+
+fun div_uintptr_uintptr (i: uintptr, j: uintptr):<> uintptr
+  = "atspre_div_uintptr_uintptr"
 overload / with div_uintptr_uintptr
+
+//
+
+fun mod_uintptr_uint (i: uintptr, j: uint):<> uintptr
+  = "atspre_mod_uintptr_uint"
+overload mod with mod_uintptr_uint
+
+fun mod_uintptr_uintptr (i: uintptr, j: uintptr):<> uintptr
+  = "atspre_mod_uintptr_uintptr"
 overload mod with mod_uintptr_uintptr
+
+// comparision operations on uintptr
 
 fun lt_uintptr_uintptr (i: uintptr, j: uintptr):<> bool
   = "atspre_lt_uintptr_uintptr"

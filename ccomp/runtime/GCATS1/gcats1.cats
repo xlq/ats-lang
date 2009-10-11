@@ -632,11 +632,11 @@ ats_int_type PTR_CHKSEG_GET (ats_ptr_type p) {
 //
 
 typedef struct botsegtbl_struct {
-  chunklst headers[BOTSEG_TABLESIZE] ;
 #if (__WORDSIZE == 64)
   uintptr_t key ;
   struct botsegtbl_struct *hash_next ;
 #endif
+  chunklst headers[BOTSEG_TABLESIZE] ;
 } botsegtbl ;
 
 typedef botsegtbl *botsegtbllst ;

@@ -345,11 +345,13 @@ typedef effectlst = List effect_t
 datatype e0xp_node =
   | E0XPapp of (e0xp, e0xp)
   | E0XPchar of char
+  | E0XPeval of e0xp
   | E0XPfloat of string
   | E0XPide of sym_t
   | E0XPint of string
   | E0XPlist of e0xplst
   | E0XPstring of (string, int(*length*))
+// end of [e0xp_node]
 
 where e0xp: type = '{
   e0xp_loc= loc_t, e0xp_node= e0xp_node
@@ -370,6 +372,10 @@ fun e0xpopt_some (x: e0xp): e0xpopt = "e0xpopt_some"
 
 fun e0xp_app (_fun: e0xp, _arg: e0xp): e0xp = "e0xp_app"
 fun e0xp_char (_: c0har): e0xp = "e0xp_char"
+
+fun e0xp_eval (t_beg: t0kn, e: e0xp, t_end: t0kn): e0xp
+  = "e0xp_eval"
+
 fun e0xp_float (_: f0loat): e0xp = "e0xp_float"
 fun e0xp_ide (_: i0de): e0xp = "e0xp_ide"
 fun e0xp_int (_: i0nt): e0xp = "e0xp_int"

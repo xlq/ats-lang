@@ -909,6 +909,42 @@ atspre_min_ulint_ulint (ats_ulint_type i1, ats_ulint_type i2) {
   return (i1 <= i2 ? i1 : i2) ;
 }
 
+// bitwise operations
+
+static inline
+ats_ulint_type
+atspre_lnot_ulint (ats_ulint_type x) { return (~x) ; }
+
+static inline
+ats_ulint_type
+atspre_land_ulint_ulint (ats_ulint_type x, ats_ulint_type y) {
+  return (x & y) ;
+}
+
+static inline
+ats_ulint_type
+atspre_lor_ulint_ulint (ats_ulint_type x, ats_ulint_type y) {
+  return (x | y) ;
+}
+
+static inline
+ats_ulint_type
+atspre_lxor_ulint_ulint (ats_ulint_type x, ats_ulint_type y) {
+  return (x ^ y) ;
+}
+
+static inline
+ats_ulint_type
+atspre_lsl_ulint_int1 (ats_ulint_type i, ats_int_type n) {
+  return i << n ;
+}
+
+static inline
+ats_ulint_type
+atspre_lsr_ulint_int1 (ats_ulint_type i, ats_int_type n) {
+  return i >> n ;
+}
+
 // print functions
 
 static inline

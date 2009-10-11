@@ -156,7 +156,7 @@ in
 (*
 ** HX (October 8, 2009):
 ** because the following line was missing, a bug was introduced;
-** this bug was so myserious as it rarely manifested itself; that was
+** this bug was so myserious as it rarely manifested itself; there was
 ** basically no way to fix it by solely relying on a tool like GDB
 *)
     val tbls = the_topsegtbl_getfst_64 (pf | ofs) // this line was missing

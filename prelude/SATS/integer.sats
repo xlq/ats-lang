@@ -234,6 +234,10 @@ fun uint_of_int
   (i: int):<> uint = "atspre_uint_of_int"
 overload uint_of with uint_of_int
 
+fun uint_of_int1
+  {i:nat} (i: int i):<> uint = "atspre_uint_of_int"
+overload uint_of with uint_of_int1
+
 fun uint_of_double (d: double):<> uint
   = "atspre_uint_of_double"
 overload uint_of with uint_of_double
@@ -845,6 +849,36 @@ and min_ulint_ulint (i: ulint, j: ulint):<> ulint
 
 overload max with max_ulint_ulint
 overload min with min_ulint_ulint
+
+(* ****** ****** *)
+
+// bit operations
+
+fun lnot_ulint (u: ulint):<> ulint
+  = "atspre_lnot_ulint" (* bitwise *)
+overload ~ with lnot_ulint
+
+fun land_ulint_ulint (u1: ulint, u2: ulint):<> ulint
+  = "atspre_land_ulint_ulint"
+
+fun lor_ulint_ulint (u1: ulint, u2: ulint):<> ulint
+  = "atspre_lor_ulint_ulint"
+
+fun lxor_ulint_ulint (u1: ulint, u2: ulint):<> ulint
+  = "atspre_lxor_ulint_ulint"
+
+overload land with land_ulint_ulint
+overload lor with lor_ulint_ulint
+overload lxor with lxor_ulint_ulint
+
+fun lsl_ulint_int1 (u: ulint, n: Nat):<> ulint
+  = "atspre_lsl_ulint_int1"
+
+and lsr_ulint_int1 (u: ulint, n: Nat):<> ulint
+  = "atspre_lsr_ulint_int1"
+
+overload << with lsl_ulint_int1
+overload >> with lsr_ulint_int1
 
 (* ****** ****** *)
 

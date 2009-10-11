@@ -138,14 +138,16 @@ end // end of [s2exp_arity_list]
 
 (* ****** ****** *)
 
-fn d1cstdec_tr
-  (dck: $Syn.dcstkind, s2vpslst: s2qualst, d1c: d1cstdec): d2cst_t = let
+fn d1cstdec_tr (
+    dck: $Syn.dcstkind, s2vpslst: s2qualst, d1c: d1cstdec
+  ) : d2cst_t = let
   val loc = d1c.d1cstdec_loc
   val fil = d1c.d1cstdec_fil
   val id = d1c.d1cstdec_sym
-  var s2e_cst: s2exp =
-    if $Syn.dcstkind_is_proof dck then s1exp_tr_dn_view d1c.d1cstdec_typ
-    else s1exp_tr_dn_viewt0ype d1c.d1cstdec_typ
+  var s2e_cst = ( // it must be a prop or a t@ye; it cannot be linear
+    if $Syn.dcstkind_is_proof dck then s1exp_tr_dn_prop d1c.d1cstdec_typ
+                                  else s1exp_tr_dn_t0ype d1c.d1cstdec_typ
+  ) : s2exp // end of [var]
   val arilst = s2exp_arity_list s2e_cst
   val ext = d1c.d1cstdec_ext
   val d2c = d2cst_make (loc, fil, id, dck, s2vpslst, arilst, s2e_cst, ext)
@@ -159,7 +161,7 @@ implement d1cstdeclst_tr (dck, s2vpslst, d1cs) = begin
       val d2c = d1cstdec_tr (dck, s2vpslst, d1c)
     in
       cons (d2c, d1cstdeclst_tr (dck, s2vpslst, d1cs))
-    end
+    end // end of [cons]
   | nil () => nil ()
 end // end of [d1cstdeclst_tr]
 
@@ -820,7 +822,7 @@ fn d1exp_qid_tr
         val d2s = d2sym_make (loc0, q, id, d2is)
       in
         d2exp_sym (loc0, d2s)
-      end // end of [D2ITEMmacsym]
+      end // end of [D2ITEMsym]
     | D2ITEMvar d2v => d2exp_var (loc0, d2v)
     end // end of [Some_vt]
   | ~None_vt () => begin

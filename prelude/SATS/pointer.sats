@@ -87,6 +87,10 @@ castfn uintptr_of_ptr (p: ptr): uintptr // = "atspre_uintptr_of_ptr"
 
 (* ****** ****** *)
 
+castfn ptr1_of_ptr (p: ptr): [l:addr] ptr l
+
+(* ****** ****** *)
+
 val null : ptr null = "atspre_null_ptr"
 
 fun ptr_is_null {l:addr} (p: ptr l):<> bool (l == null)
@@ -206,6 +210,7 @@ fun{a:t@ype} ptr_get_t {l:addr} (pf: !a @ l | p: ptr l):<> a
 // implemented in [prelude/DATS/pointer.dats]
 fun{a:t@ype} ptr_set_t {l:addr}
   (pf: !(a?) @ l >> a @ l | p: ptr l, x: a):<> void
+// end of ...
 
 (* ****** ****** *)
 
@@ -218,6 +223,7 @@ fun{a:t@ype} ptr_move_t_main {v:view} {l1,l2:addr} (
 // implemented in [prelude/DATS/pointer.dats]
 fun{a:t@ype} ptr_move_t {l1,l2:addr}
   (pf1: !a @ l1, pf2: !(a?) @ l2 >> a @ l2 | p1: ptr l1, p2: ptr l2):<> void
+// end of ...
 
 // implemented in [prelude/CATS/pointer.cats]
 fun ptr_move_t_tsz {a:t@ype} {l1,l2:addr} (

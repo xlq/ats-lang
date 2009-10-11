@@ -31,8 +31,8 @@
 
 (* ****** ****** *)
 
-// Time: August 2007
 // Author: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
+// Time: August 2007
 
 (* ****** ****** *)
 
@@ -194,6 +194,13 @@ implement e0xp_tr e0 = let
         $Fix.ITEMatm (e0_new)
       end
     | E0XPchar (c: char) => $Fix.ITEMatm (e1xp_char (loc, c))
+    | E0XPeval (e: e0xp) => let
+        val e = e0xp_tr (e)
+        val v = e1xp_eval (e)
+        val e = e1xp_make_v1al (loc, v)
+      in
+        $Fix.ITEMatm (e)
+      end // end of [E0XPeval]
     | E0XPfloat (f: string) => $Fix.ITEMatm (e1xp_float (loc, f))
     | E0XPide id when id = $Sym.symbol_BACKSLASH => e1xpitm_backslash
     | E0XPide id => begin case+ the_fxtyenv_find id of

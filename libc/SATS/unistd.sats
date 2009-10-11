@@ -147,6 +147,10 @@ fun usleep (n: natLte MILLION (* microseconds *)): void
 
 (* ****** ****** *)
 
+fun getpagesize ():<> int = "atslib_getpagesize"
+
+(* ****** ****** *)
+
 fun getpid (): pid_t = "atslib_getpid"
 fun getppid (): pid_t = "atslib_getppid"
 

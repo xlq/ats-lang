@@ -189,6 +189,7 @@ typedef ats_ptr_type e0xpopt_t ;
 
 extern e0xp_t e0xp_app (e0xp_t, e0xp_t) ;
 extern e0xp_t e0xp_char (c0har_t) ;
+extern e0xp_t e0xp_eval (t0kn_t, e0xp_t, t0kn_t) ;
 extern e0xp_t e0xp_float (f0loat_t) ;
 extern e0xp_t e0xp_ide (i0de_t) ;
 extern e0xp_t e0xp_int (i0nt_t) ;
@@ -1857,6 +1858,7 @@ atme0xp /* atomic generic expression */
   | LITERAL_string                      { $$ = e0xp_string($1) ; }
   | i0de                                { $$ = e0xp_ide($1) ; }
   | LPAREN e0xpseq RPAREN               { $$ = e0xp_list($1, $2, $3) ; }
+  | PERCENTLPAREN e0xp RPAREN           { $$ = e0xp_eval($1, $2, $3) ; }
 ;
 
 atme0xpseq /* atomic generic expression sequence */

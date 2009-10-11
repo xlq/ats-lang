@@ -87,6 +87,12 @@ atslib_usleep (ats_int_type n) { usleep (n) ; return ; }
 /* ****** ****** */
 
 static inline
+ats_int_type
+atslib_getpagesize () { return getpagesize () ; }
+
+/* ****** ****** */
+
+static inline
 ats_pid_type
 atslib_getpid () { return getpid () ; }
 
