@@ -560,7 +560,7 @@ end // end of [e1xp_eval_if]
 
 (* ****** ****** *)
 
-implement e1xp_make_v1al (loc, v) =
+implement e1xp_make_v1al (loc, v) = // turning a value into an expr
   case+ v of
   | V1ALchar c => e1xp_char (loc, c)
   | V1ALfloat f =>
