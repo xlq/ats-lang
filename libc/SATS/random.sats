@@ -42,7 +42,6 @@
 %{#
 
 #include "libc/CATS/random.cats"
-#include "libc/CATS/time.cats"
 
 %}
 
@@ -52,7 +51,11 @@
 
 // a seeding function
 fun srand48 (li: lint): void = "atslib_srand48"
+
+// using epoch time for the seed
 fun srand48_with_time (): void = "atslib_srand48_with_time"
+// using microsecond for the seed
+fun srand48_with_gettimeofday (): void = "atslib_srand48_with_gettimeofday"
 
 (* ****** ****** *)
 

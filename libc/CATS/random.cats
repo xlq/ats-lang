@@ -40,6 +40,7 @@
 
 #include <stdlib.h>
 #include <time.h>
+#include <sys/time.h>
 
 #include "ats_types.h"
 
@@ -51,15 +52,28 @@ typedef struct drand48_data ats_drand48_data_type ;
 
 static inline
 ats_void_type
-atslib_srand48 (ats_lint_type seed) {
-  srand48 ((long int)seed) ;
-  return ;
+atslib_srand48
+(ats_lint_type seed) {
+  srand48 ((long int)seed) ; return ;
 }
 
 static inline
 ats_void_type
 atslib_srand48_with_time () {
-  srand48 ((long int)(time ((time_t*)0))) ;
+  srand48 ((long int)(time ((time_t*)0))) ; return ;
+}
+
+static inline
+ats_void_type
+atslib_srand48_with_gettimeofday () {
+  int err ; struct timeval tv ;
+  err = gettimeofday (&tv, (struct timezone*)0) ;
+/*
+  if (err != 0) {
+    fprintf (stderr, "atslib_srand48_with_gettimeofday: err = %i\n", err) ; exit (1) ;
+  } // end of [if]
+*/
+  srand48 ((long int)(tv.tv_sec * 1000000 + tv.tv_usec)) ;
   return ;
 }
 
@@ -109,9 +123,17 @@ atslib_mrand48_r (ats_ref_type buf, ats_ref_type res) {
 
 /* ****** ****** */
 
+/*
 static inline
 ats_int_type // [n] is assumed to be positive!
 atslib_randint (ats_int_type n) { return (lrand48 () % n) ; }
+*/
+
+static inline
+ats_int_type // [n] is assumed to be positive!
+atslib_randint (ats_int_type n) { // much better than the previous one
+  int r = n * drand48 () ; return (r < n) ? r : 0 ;
+}
 
 /* ****** ****** */
 
