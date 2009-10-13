@@ -66,7 +66,7 @@ assume states_t = [n:nat] states n
 
 (* ****** ****** *)
 
-implement states_nil = STSnil ()
+implement states_nil () = STSnil ()
 
 implement states_free (sts): void = let
   fun free {s:nat} .<s>. (sts: states s): void = case+ sts of

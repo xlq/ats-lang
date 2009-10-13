@@ -188,7 +188,7 @@ fun foreach_intset {v:view}
 
 // implemented in [states.dats]
 
-val states_nil: states_t
+fun states_nil (): states_t
 
 fun states_free (sts: states_t): void
 

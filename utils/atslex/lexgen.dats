@@ -786,7 +786,7 @@ val (pf_csi_gc, pf_csi | A_csi) = array_of_CSIlst (x0.lst, npos)
 val (pf_pos_gc, pf_pos | A_pos) = followpos (npos, root_regex1)
 
 var nst_r = (0: int)
-var sts = states_nil
+var sts = states_nil ()
 
 // state 0 is special: it is the error state
 val _ = states_insert (sts, 0, intset_nil)
