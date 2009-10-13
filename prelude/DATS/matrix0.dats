@@ -112,9 +112,9 @@ in
       prval () = p->2 := pf_data
     in
       x // return value
-    end else begin
+    end else // out-of-col
       $raise MatrixSubscriptException ()
-    end (* end of [if] *)
+    // end of [if]
   ) else (
     $raise MatrixSubscriptException () // out-of-row
   ) // end of [if]
@@ -136,9 +136,9 @@ in
       prval () = p->2 := pf_data
     in
       // nothing
-    end else begin
+    end else // out-of-col
       $raise MatrixSubscriptException ()
-    end (* end of [if] *)
+    // end of [if]
   ) else (
     $raise MatrixSubscriptException () // out-of-row
   ) // end of [if]
@@ -149,29 +149,29 @@ end (* end of [matrix0_set_elt_at] *)
 implement{a}
   matrix0_get_elt_at__intsz (A, i, j) = let
   val i = int1_of_int i and j = int1_of_int j in
-  if i >= 0 then begin
-    if j >= 0 then begin
+  if i >= 0 then (
+    if j >= 0 then (
       matrix0_get_elt_at<a> (A, i2sz i, i2sz j)
-    end else begin
+    ) else (
       $raise MatrixSubscriptException ()
-    end (* end of [if] *)
-  end else begin
+    ) // end of [if]
+  ) else (
     $raise MatrixSubscriptException () // out-of-row
-  end // end of [if]
+  ) // end of [if]
 end (* end of [matrix0_get_elt_at__intsz] *)
 
 implement{a}
   matrix0_set_elt_at__intsz (A, i, j, x) = let
   val i = int1_of_int i and j = int1_of_int j in
-  if i >= 0 then begin
-    if j >= 0 then begin
+  if i >= 0 then (
+    if j >= 0 then (
       matrix0_set_elt_at<a> (A, i2sz i, i2sz j, x)
-    end else begin
+    ) else (
       $raise MatrixSubscriptException ()
-    end (* end of [if] *)
-  end else begin
+    ) // end of [if]
+  ) else (
     $raise MatrixSubscriptException () // out-of-row
-  end // end of [if]
+  ) // end of [if]
 end (* end of [matrix0_set_elt_at__intsz] *)
 
 (* ****** ****** *)
