@@ -94,7 +94,7 @@ in
   in
     x // return value
   end else begin
-    $raise SubscriptException
+    $raise ArraySubscriptException ()
   end // end of [if]
 end (* end of [array0_get_elt_at] *)
 
@@ -110,7 +110,7 @@ in
   in
     () // return no value
   end else begin
-    $raise SubscriptException
+    $raise ArraySubscriptException ()
   end // end of [if]
 end (* end of [array0_set_elt_at] *)
 
@@ -122,7 +122,7 @@ in
   if i >= 0 then begin
     array0_get_elt_at<a> (A, i2sz i)
   end else begin
-    $raise SubscriptException
+    $raise ArraySubscriptException ()
   end // end of [if]
 end (* end of [array0_get_elt_at__intsz] *)
   
@@ -132,7 +132,7 @@ in
   if i >= 0 then begin
     array0_set_elt_at<a> (A, i2sz i, x)
   end else begin
-    $raise SubscriptException
+    $raise ArraySubscriptException ()
   end // end of [if]
 end (* end of [array0_set_elt_at__intsz] *)
   

@@ -55,10 +55,12 @@ implement list_length_is_nonnegative (xs) =
 
 // this is a casting function
 implement list_of_list_vt {a} (xs) = aux (xs) where {
-  castfn aux {n:nat} .<n>. (xs: list_vt (a, n)):<> list (a, n) =
+  castfn aux {n:nat} .<n>.
+    (xs: list_vt (a, n)):<> list (a, n) =
     case+ xs of
     | ~list_vt_cons (x, xs) => list_cons (x, aux xs)
     | ~list_vt_nil () => list_nil ()
+  // end of [aux]
 } // end of [list_of_list_vt]
 
 (* ****** ****** *)

@@ -57,6 +57,10 @@ prfun matrix_v_of_array_v {a:viewt@ype} {m,n:int} {mn:int} {l:addr}
 
 (* ****** ****** *)
 
+exception MatrixSubscriptException of ()
+
+(* ****** ****** *)
+
 fun matrix_ptr_takeout_tsz {a:viewt@ype}
   {m,n:int} {i,j:nat | i < m; j < n} {l0:addr} (
     pf_mat: matrix_v (a, m, n, l0)

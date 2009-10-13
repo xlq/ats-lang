@@ -60,7 +60,7 @@ prfun list_length_is_nonnegative
 
 (* ****** ****** *)
 
-exception ListSubscriptException
+exception ListSubscriptException of ()
 
 (* ****** ****** *)
 

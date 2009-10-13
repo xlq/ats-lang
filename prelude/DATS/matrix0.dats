@@ -113,10 +113,10 @@ in
     in
       x // return value
     end else begin
-      $raise SubscriptException
+      $raise MatrixSubscriptException ()
     end (* end of [if] *)
   ) else (
-    $raise SubscriptException
+    $raise MatrixSubscriptException () // out-of-row
   ) // end of [if]
 end (* end of [matrix0_get_elt_at] *)
 
@@ -137,10 +137,10 @@ in
     in
       // nothing
     end else begin
-      $raise SubscriptException
+      $raise MatrixSubscriptException ()
     end (* end of [if] *)
   ) else (
-    $raise SubscriptException
+    $raise MatrixSubscriptException () // out-of-row
   ) // end of [if]
 end (* end of [matrix0_set_elt_at] *)
 
@@ -153,10 +153,10 @@ implement{a}
     if j >= 0 then begin
       matrix0_get_elt_at<a> (A, i2sz i, i2sz j)
     end else begin
-      $raise SubscriptException
+      $raise MatrixSubscriptException ()
     end (* end of [if] *)
   end else begin
-    $raise SubscriptException
+    $raise MatrixSubscriptException () // out-of-row
   end // end of [if]
 end (* end of [matrix0_get_elt_at__intsz] *)
 
@@ -167,10 +167,10 @@ implement{a}
     if j >= 0 then begin
       matrix0_set_elt_at<a> (A, i2sz i, i2sz j, x)
     end else begin
-      $raise SubscriptException
+      $raise MatrixSubscriptException ()
     end (* end of [if] *)
   end else begin
-    $raise SubscriptException
+    $raise MatrixSubscriptException () // out-of-row
   end // end of [if]
 end (* end of [matrix0_set_elt_at__intsz] *)
 

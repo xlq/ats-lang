@@ -47,6 +47,10 @@
 
 (* ****** ****** *)
 
+exception ArraySubscriptException of ()
+
+(* ****** ****** *)
+
 fun{a:t@ype} array_ptr_get_elt_at
   {n:nat} {i:nat | i < n} (A: &(@[a][n]), i: size_t i):<> a
 
