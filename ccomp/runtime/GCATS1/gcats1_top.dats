@@ -284,7 +284,10 @@ end // end of [gc_init]
 
 %{$
 
-extern ats_ptr_type the_globalentrylst ;
+ats_ptr_type
+  the_globalentrylst = (ats_ptr_type)0 ; // GLOBALENTRYLSTnil
+// end of ...
+
 extern void globalentrylst_insert
   (ats_ref_type ents, ats_ptr_type ptr, ats_int_type wsz) ;
 

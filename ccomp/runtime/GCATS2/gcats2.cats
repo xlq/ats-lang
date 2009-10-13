@@ -49,6 +49,8 @@
 #include <stdio.h>
 #include <string.h>
 
+#include <sys/mman.h> // for mmap
+
 /* ****** ****** */
 
 #include "gcats2_c.h"
@@ -57,7 +59,12 @@
 
 typedef unsigned char byte ;
 typedef ats_ptr_type topseg_t ;
+
+typedef ats_ptr_type freeitmptr_vt ;
 typedef ats_ptr_type freeitmlst_vt ;
+
+typedef ats_ptr_type freepageptr_vt ;
+typedef ats_ptr_type freepagelst_vt ;
 
 /* ****** ****** */
 
@@ -69,9 +76,9 @@ static inline
 ats_ptr_type
 gcats2_malloc_ext (ats_int_type bsz) {
   void *p ;
-// /*
+/*
   fprintf(stderr, "gcats2_malloc_ext: bsz = %i\n", bsz) ;
-// */
+*/
   p = malloc(bsz) ;
   if (p == (void*)0) {
     fprintf(stderr, "exit(ATS/GC): external memory is unavailable.\n"); exit(1);
@@ -123,19 +130,18 @@ PTR_TOPSEGHASH_GET (ats_ptr_type p) {
 typedef
 struct chunk_struct {
   // the word size of each free item: it must be positive
-  int chunk_itmwsz;
-
+  int itmwsz;
   // itmwsz = 2^itmwsz_log if itmwsz_log >= 0
   // if [itmwsz_log = -1], then the chunk is large (> CHUNK_WORDSIZE)
-  int chunk_itmwsz_log ;
+  int itmwsz_log ;
 
-  int chunk_itmtot ; // the total number of freeitms
-  int chunk_mrkcnt ; // the count of marked freeitms
+  int itmtot ; // the total number of freeitms
+  int mrkcnt ; // the count of marked freeitms
 
-  freeitmlst_vt chunk_data ; // pointer to the data // multiple of pagesize
+  freepageptr_vt chunk_data ; // pointer to the data // multiple of pagesize
 
   // bits for marking // 1 bit for 1 item (>= 1 word)
-  byte chunk_mrkbits[NMARKBIT_PER_CHUNK] ;
+  byte mrkbits[NMARKBIT_PER_CHUNK] ;
 } chunk_vt ;
 
 typedef chunk_vt *chunkptr_vt ;
@@ -144,7 +150,37 @@ typedef chunk_vt *chunklst_vt ;
 /* ****** ****** */
 
 static inline
-ats_ptr_type gcats2_chunkptr_null () { return (void*)0 ; }
+ats_ptr_type
+gcats2_chunk_make_null () { return (void*)0 ; }
+
+static inline
+ats_void_type
+gcats2_chunk_free_null (ats_ptr_type p) { return ; }
+
+/* ****** ****** */
+
+static inline
+ats_ptr_type
+gcats2_chunk_data_get
+  (ats_ptr_type p_chunk) { return ((chunk_vt*)p_chunk)->chunk_data ; }
+// end of ...
+
+static inline
+ats_void_type
+gcats2_chunk_mrkbits_clear
+  (ats_ptr_type p_chunk) {
+  int itmtot ; // total number of items
+  int nmrkbit ; // number of bytes for mark bits
+  itmtot = ((chunk_vt*)p_chunk)->itmtot ;
+  nmrkbit = (itmtot + NBIT_PER_BYTE_MASK) >> NBIT_PER_BYTE_LOG ;
+// /*
+  fprintf(stderr, "gcats2_chunk_mrkbits_clear: itmtot = %i\n", itmtot) ;
+  fprintf(stderr, "gcats2_chunk_mrkbits_clear: nmrkbit = %i\n", nmrkbit) ;
+// */
+  memset(((chunk_vt*)p_chunk)->mrkbits, 0, nmrkbit) ;
+  ((chunk_vt*)p_chunk)->mrkcnt = 0 ;
+  return ;
+} /* end of [gcats2_chunk_mrkbits_clear] */
 
 /* ****** ****** */
 

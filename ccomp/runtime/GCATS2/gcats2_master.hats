@@ -86,7 +86,7 @@ __ATS(#define GCATS2_ATS_HATS)
 __define NBIT_PER_BYTE 8
 __define NBIT_PER_BYTE_LOG 3
 __ATS(#assert (NBIT_PER_BYTE == 1 << NBIT_PER_BYTE_LOG))
-__define NBIT_PER_MASK (NBIT_PER_BYTE - 1)
+__define NBIT_PER_BYTE_MASK (NBIT_PER_BYTE - 1)
 
 /* ****** ****** */
 
@@ -105,6 +105,10 @@ __if (__WORDSIZE != 64) // #then
 __error "__WORDSIZE is neither 32 nor 64!\n"
 __endif
 __endif
+
+/* ****** ****** */
+
+__define __PAGESIZE 4096
 
 /* ****** ****** */
 
@@ -197,6 +201,7 @@ __define CHUNK_BYTESIZE_LOG (CHUNK_WORDSIZE_LOG + NBYTE_PER_WORD_LOG)
 __define CHUNK_BYTESIZE (1 << CHUNK_BYTESIZE_LOG)
 __define CHUNK_BYTESIZE_MASK (CHUNK_BYTESIZE - 1)
 __ATS(#print "CHUNK_BYTESIZE = "; #print CHUNK_BYTESIZE; #print "\n")
+__ATS(#assert (CHUNK_BYTESIZE == __PAGESIZE))
 
 /* ****** ****** */
 

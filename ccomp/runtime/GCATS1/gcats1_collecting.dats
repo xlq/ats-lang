@@ -199,15 +199,17 @@ end // end of [gc_freeitmlst_generate]
 ats_void_type gc_sweeplst_build_chunk (ats_ptr_type chks) {
   int i, j ; freeitmlst *pi, *pij ;
   int itemwsz_log, itemtot, markcnt ;
+  int freecnt ;
 
   markcnt = chunklst_markcnt_get (chks) ;
 /*
   fprintf (stderr, "gc_sweeplst_build_chunk: markcnt = %i\n", markcnt) ;
 */
 #ifdef _ATS_MULTITHREAD
-  if (chunklst_freecnt_get (chks) > 0) {
-    fprintf (stderr, "gc_sweeplst_build_chunk: freecnt = ") ;
-    fprintf (stderr, "%i\n", chunklst_freecnt_get (chks)) ;
+  // this logic is problematic!
+  freecnt = chunklst_freecnt_get (chks) ;
+  if (freecnt > 0) {
+    fprintf (stderr, "gc_sweeplst_build_chunk: freecnt = %i\n", freecnt) ;
     return ;
   }
 #endif

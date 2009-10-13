@@ -37,25 +37,33 @@
 ## ###### ###### ##
 
 GCC=gcc
-ATSCC=$(ATSHOME)/bin/atscc -m64
+ATSCC=$(ATSHOME)/bin/atscc -O3
+ATSCCFLAGS= # -m64
 
 ######
 
 test: gcats2_c.h gcats2_ats.hats
-	$(ATSCC) -o test gcats2_test.dats gcats2.sats gcats2_top.dats gcats2_chunk.dats
+	$(ATSCC) $(ATSCCFLAGS) -o test gcats2_test.dats \
+          gcats2.sats gcats2_top.dats gcats2_chunk.dats gcats2_pointer.dats \
+      && ./test
 
 ######
 
 gcats2_c.h: gcats2_master.hats
-	$(GCC) -E -P -D_CHEADER -x c gcats2_master.hats -o gcats2_c.h
+	$(GCC) -E -P -D_CHEADER -o $@ -x c gcats2_master.hats
 
 gcats2_ats.hats: gcats2_master.hats
-	$(GCC) -E -P -D_ATSHEADER -x c gcats2_master.hats -o gcats2_ats.hats
+	$(GCC) -E -P -D_ATSHEADER -o $@ -x c gcats2_master.hats
 
 ######
 
-gcats2_pointer_dats.o: gcats2_pointer.dats gcats2_c.h gcats2_ats.hats
-	$(ATSCC) -c gcats2_pointer.dats
+gcats2_chunk_dats.o: \
+  gcats2_c.h gcats2_ats.hats gcats2_chunk.dats 
+	$(ATSCC) $(ATSCCFLAGS) -o $@  -c gcats2_chunk.dats
+
+gcats2_pointer_dats.o: \
+  gcats2_c.h gcats2_ats.hats gcats2_pointer.dats 
+	$(ATSCC) $(ATSCCFLAGS) -o $@ -c gcats2_pointer.dats
 
 ######
 
@@ -65,6 +73,6 @@ clean::
 	rm -f *~ *_?ats.c *_?ats.o
 
 cleanall: clean
-	rm -f *.o
+	rm -f *.o test
 
 ###### end of [Makefile] ######

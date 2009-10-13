@@ -69,18 +69,7 @@ dataviewtype globalentrylst =
   | {u:int | ~1 <= u; u < GLOBALENTRYPAGESIZE} {l:addr}
       GLOBALENTRYLSTcons of (entrypage_v l | ptr l, int u, globalentrylst)
   | GLOBALENTRYLSTnil
-
-//
-
-local
-
-extern val the_globalentrylst: globalentrylst = "the_globalentrylst"
-
-in // in of [local]
-
-implement the_globalentrylst = GLOBALENTRYLSTnil ()
-
-end // end of [local]
+// end of [globalentrylst]
 
 //
 

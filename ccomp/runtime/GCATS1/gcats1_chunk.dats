@@ -418,7 +418,7 @@ ats_ptr_type chunklst_create
   int i, err ;
   int chunk_bsz, data_ofs ;
   int itemtot, nmarkbit ;
-  freeitmlst data, data_next ;
+  freeitmlst data ;
   chunklst chks ;
 /*
   fprintf (stderr, "chunklst_create: itemwsz_log = %i\n", itemwsz_log) ;

@@ -74,17 +74,71 @@ fun PTR_TOPSEGHASH_GET (p: ptr):<> [i:nat] topseg i
 
 (* ****** ****** *)
 
+//
+// freepages are not deallocated
+//
+
+absview the_chunkpagelst_v
+abst@ype freepage // = freeitm (CHUNK_WORDSIZE)
+
+fun the_chunkpagelst_insert {l:addr} // inserting one page
+  (pf: !the_chunkpagelst_v, pf_page: freepage @ l | p: ptr l):<> void
+  = "gcats2_the_chunkpagelst_insert" // implemented in C
+// end of [...]
+
+fun the_chunkpagelst_remove // taking out one page
+  (pf: !the_chunkpagelst_v | (*none*)):<> [l:anz] (freepage @ l | ptr l)
+  = "gcats2_the_chunkpagelst_remove" // implemented in ATS
+// end of [...]
+
+fun the_chunkpagelst_remove_opt // taking out one page
+  (pf: !the_chunkpagelst_v | (*none*)):<> [l:addr] (ptropt_v (freepage, l) | ptr l)
+  = "gcats2_the_chunkpagelst_remove_opt" // implemented in C
+// end of [...]
+
+// on success, [n] is returned; on failure
+fun the_chunkpagelst_replenish {n:pos} // [-1] is returned
+  (pf: !the_chunkpagelst_v | n: int n):<> int // adding n pages for some n >= 1
+  = "gcats2_the_chunkpagelst_replenish" // implemented in C via mmap
+// end of [...]
+
+(* ****** ****** *)
+
 abst@ype chunk_vt // = $extype "chunk_vt"
+
+fun chunk_data_get (chk: &chunk_vt):<> ptr = "gcats2_chunk_data_get"
+fun chunk_mrkbits_clear (chk: &chunk_vt):<> void = "gcats2_chunk_mrkbits_clear"
+
 absviewtype chunkptr_vt (l: addr) // boxed type
-
-// implemented in [gcats2.cats]
-
-fun chunkptr_null ():<> chunkptr_vt null = "gcats2_chunkptr_null"
+castfn ptr_of_chunkptr {l:addr} (p: !chunkptr_vt l):<> ptr l
 
 castfn chunkptr_fold
-  {l:addr} (pf: chunk_vt @ l | p: !ptr l >> chunkptr_vt l):<> void
+  {l:addr} (pf: chunk_vt @ l | p: !ptr l >> chunkptr_vt l):<> ptr l
 castfn chunkptr_unfold
-  {l:addr | l <> null} (p: !chunkptr_vt l >> ptr l):<> (chunk_vt @ l | void)
+  {l:addr | l <> null} (p: !chunkptr_vt l >> ptr l):<> (chunk_vt @ l | ptr l)
+
+// implemented in [gcats2_chunk.dats]
+fun chunk_make_norm {i:nat} (
+    pf: !the_chunkpagelst_v | itmwsz: int, itmwsz_log: int i
+  ) :<> [l:anz] chunkptr_vt l
+  = "gcats2_chunk_make_norm"
+
+// implemented in [gcats2_chunk.dats]
+fun chunk_free_norm {l:anz}
+  (pf: !the_chunkpagelst_v | p_chunk: chunkptr_vt l):<> void
+  = "gcats2_chunk_free_norm"
+
+// implemented in [gcats2_chunk.dats]
+fun chunk_make_large (itmwsz: int):<> [l:anz] chunkptr_vt l
+  = "gcats2_chunk_make_large"
+
+// implemented in [gcats2_chunk.dats]
+fun chunk_free_large {l:anz} (p_chunk: chunkptr_vt l):<> void
+  = "gcats2_chunk_free_large"
+
+// implemented in [gcats2.cats]
+fun chunk_make_null ():<> chunkptr_vt null = "gcats2_chunk_make_null"
+fun chunk_free_null (p: chunkptr_vt null):<> void = "gcats2_chunk_free_null"
 
 (* ****** ****** *)
 
@@ -105,6 +159,9 @@ viewtypedef botsegtblptr_vt = [l:addr] botsegtblptr_vt (l)
 
 castfn botsegtblptr_free_null (_: botsegtblptr_vt null): ptr
 
+fun the_nbotsegtbl_alloc_get ():<> lint // for gathering statistics
+  = "gcats2_the_nbotsegtbl_alloc_get"
+
 (* ****** ****** *)
 
 fun the_topsegtbl_takeout {i:nat} (
@@ -118,14 +175,14 @@ fun the_topsegtbl_takeout {i:nat} (
 ** this function may call [malloc_ext] to allocate a new botsegtbl; if so, the
 ** new botsegtbl is always added at the beginning
 *)
-fun the_topsegtbl_insert_chunkptr
-  {l:addr | l <> null} (pf: !the_topsegtbl_v | p_chunk: chunkptr_vt l):<> void
+fun the_topsegtbl_insert_chunkptr // succ/fail: 0/1
+  {l:addr | l <> null} (pf: !the_topsegtbl_v | p_chunk: chunkptr_vt l):<> int(*err*)
   = "gcats2_the_topsegtbl_insert_chunkptr"
 // end of ...
 
 (*
-** if this function fails to remove the chunkptr; it would be an irrecoverable
-** error otherwise
+** if this function fails to remove the chunkptr, it would be an irrecoverable error
+** note that [ptr==p_chunk->chunk_data] where [p_chunk] is to be removed
 *)
 fun the_topsegtbl_remove_chunkptr
   (pf: !the_topsegtbl_v | ptr: ptr):<> [l:addr] chunkptr_vt l // notfound: l = null
@@ -134,33 +191,26 @@ fun the_topsegtbl_remove_chunkptr
 
 (* ****** ****** *)
 
-fun ptr_is_valid ( // implemented in C in [gcats2_point.dats]
+fun ptr_isvalid ( // implemented in C in [gcats2_point.dats]
     pf: the_topsegtbl_v | ptr: ptr, nitm: &int? >> opt (int, l <> null)
   ) :<> #[l:addr] (
-    chunkptr_vt l -<prf> the_topsegtbl_v, chunkptr_vt l
-  ) = "gcats2_ptr_is_valid"
-// end of [ptr_is_valid]
+    chunkptr_vt l -<prf> the_topsegtbl_v | chunkptr_vt l
+  ) = "gcats2_ptr_isvalid"
+// end of [ptr_isvalid]
 
 (* ****** ****** *)
 
-//
-// freepages are not deallocated
-//
+// implemented in C in [gcats2_chunk.dats]
+fun the_topsegtbl_foreach_chunkptr
+  {v:view} {vt:viewtype} (
+    pf1: !the_topsegtbl_v, pf2: !v
+  | f: {l:anz} (!v | !chunkptr_vt l, !vt) -<fun> void, env: !vt
+  ) :<> void
+  = "gcats2_the_topsegtbl_foreach_chunkptr"
+// end of ...
 
-absview the_chunkpagelst_v
-abst@ype freepage // = freeitm (CHUNK_WORDSIZE)
-
-fun the_chunkpagelst_insert {l:addr} // inserting one page
-  (pf: !the_chunkpagelst_v, pf_page: freepage @ l | p: ptr l):<> void
-// end of [...]
-
-fun the_chunkpagelst_remove // taking out one page
-  (pf: !the_chunkpagelst_v | (*none*)):<> [l:addr] (ptropt_v (freepage, l) | ptr l)
-// end of [...]
-
-fun the_chunkpagelst_replenish
-  (pf: !the_chunkpagelst_v | (*none*)):<> void // adding N pages for some N >= 1
-// end of [...]
+// implemented in ATS in [gcats2_chunk.dats]
+fun the_topsegtbl_clear_mrkbits (pf: !the_topsegtbl_v | (*none*)):<> void
 
 (* ****** ****** *)
 
