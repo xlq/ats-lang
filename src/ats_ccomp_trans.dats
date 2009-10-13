@@ -1395,9 +1395,9 @@ in
   | HIEptrof_var (d2v_mut, hils) => begin
       ccomp_exp_ptrof_var (res, d2v_mut, hils)
     end // end of [HIEptrof_var]
-  | HIErefarg (refval, _(*freeknd*), hie) => begin
-      ccomp_exp_refarg (res, refval, hie)
-    end // end of [HIErefarg]
+  | HIErefarg
+      (refval, _(*freeknd*), hie) => ccomp_exp_refarg (res, refval, hie)
+    // end of [HIErefarg]
   | HIEseq hies => ccomp_exp_seq (res, hies)
   | HIEsizeof hit => begin
       valprim_sizeof (hityp_normalize hit)
@@ -1588,9 +1588,9 @@ fn ccomp_exp_app_tmpvar (
   , hies_arg: hiexplst
   , tmp_res: tmpvar_t
   ) : void = let
-
+//
   var vps_free: valprimlst_vt = list_vt_nil {valprim} ()
-
+//
   val vp_fun = (
     case+ hie_fun.hiexp_node of
     | HIErefarg
@@ -2065,15 +2065,19 @@ in
     in
       case+ lhies of
       | LABHIEXPLSTcons (l, hie, LABHIEXPLSTnil ())
-          when hityp_t_is_tyrecsin hit_rec => begin
-          ccomp_exp_tmpvar (res, hie, tmp_res)
-        end
+          when hityp_t_is_tyrecsin hit_rec => ccomp_exp_tmpvar (res, hie, tmp_res)
+        // end of [LABHIEXPLSTcons (_, LABHIEXPLSTnil ())
       | _ => let
-          val lvps = ccomp_labexplst (res, lhies)
-        in
+          val lvps = ccomp_labexplst (res, lhies) in
           instr_add_move_rec (res, tmp_res, recknd, hit_rec, lvps)
-        end
+        end // end of [_]
     end // end of [HIErec]
+  | HIErefarg
+      (refval, _(*freeknd*), hie) => let
+      val vp_refarg = ccomp_exp_refarg (res, refval, hie)
+    in
+      instr_add_move_val (res, tmp_res, vp_refarg)
+    end // end of [HIErefarg]
   | HIEsel (hie, hils) => let
       val vp = ccomp_exp (res, hie)
       val offs = ccomp_hilablst (res, hils)
@@ -2095,7 +2099,7 @@ in
   | HIEseq (hies) => ccomp_exp_seq_tmpvar (res, hies, tmp_res)      
   | HIEstring (str, len) => begin
       instr_add_move_val (res, tmp_res, valprim_string (str, len))
-    end
+    end // end of [HIEstring]
   | HIEtop () => let
       val hit0 = hityp_normalize (hie0.hiexp_typ)
     in
