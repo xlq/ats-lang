@@ -134,6 +134,7 @@ __define NBYTE_PER_WORD_MASK (NBYTE_PER_WORD - 1)
 
 /* ****** ****** */
 
+__define GCATS2_TEST 1 // a flag for testing
 __define GCATS2_DEBUG 1 // a flag for debugging
 
 /* ****** ****** */
@@ -217,6 +218,17 @@ __ATS(#print "MAX_CLICK_WORDSIZE = "; #print MAX_CLICK_WORDSIZE; #print "\n")
 **   [ 2^0 | 2^1 | ... | 2^MAX_CLICK_WORDSIZE_LOG]
 */
 __define FREEITMLST_ARRAYSIZE (MAX_CLICK_WORDSIZE_LOG + 1)
+
+/* ****** ****** */
+
+__define MARKSTACK_PAGESIZE 4000
+__define MARKSTACK_CUTOFF (CHUNK_WORDSIZE / 4)
+__define CHUNK_SWEEP_CUTOFF 0.75 // 75%
+__ATS(#assert (0.0 <= CHUNK_SWEEP_CUTOFF))
+__ATS(#assert (CHUNK_SWEEP_CUTOFF <= 1.0))
+__define CHUNK_LIMIT_EXTEND_CUTOFF 0.75 // 75%
+__ATS(#assert (0.0 <= CHUNK_LIMIT_EXTEND_CUTOFF))
+__ATS(#assert (CHUNK_LIMIT_EXTEND_CUTOFF <= 1.0))
 
 /* ****** ****** */
 

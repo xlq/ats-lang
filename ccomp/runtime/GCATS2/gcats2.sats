@@ -46,7 +46,30 @@
 
 (* ****** ****** *)
 
-abst@ype freeitm (wsz:int) (* size unit: word *)
+abst@ype freeitm_t // size_t(freeitm) >= 1
+absviewtype freeitmlst_vt (l:addr) // boxed type
+
+// implemented in [gcats2_freeitmlst]
+fun freeitmlst_length {l:addr} (xs: !freeitmlst_vt l):<> int
+  = "gcats2_freeitmlst_length" // implemented in ATS
+// end of [freeitmlst_length]
+
+fun freeitmlst_is_nil {l:addr} (xs: !freeitmlst_vt l):<> bool (l==null)
+  = "gcats2_freeitmlst_isnil"
+fun freeitmlst_is_cons {l:addr} (xs: !freeitmlst_vt l):<> bool (l <> null)
+  = "gcats2_freeitmlst_iscons"
+
+fun freeitmlst_cons {l1,l2:addr}
+  (pf: freeitm_t @ l1 | x: ptr l1, xs: freeitmlst_vt l2): freeitmlst_vt l1
+  = "gcats2_freeitmlst_cons"
+// end of [freeitmlst_cons]
+
+fun freeitmlst_uncons {l:anz}
+  (xs: &freeitmlst_vt l >> freeitmlst_vt l_new):<> #[l_new:addr] (freeitm_t @ l | ptr l)
+  = "gcats2_freeitmlst_uncons"
+// end of [freeitmlst_uncons]
+
+castfn freeitmlst_free_null (xs: freeitmlst_vt null):<> ptr null
 
 (* ****** ****** *)
 
@@ -80,6 +103,10 @@ fun PTR_TOPSEGHASH_GET (p: ptr):<> [i:nat] topseg i
 
 absview the_chunkpagelst_v
 abst@ype freepage // = freeitm (CHUNK_WORDSIZE)
+
+fun the_chunkpagelst_length
+  (pf: !the_chunkpagelst_v | (*none*)):<> int
+  = "gcats2_the_chunkpagelst_length" // implemented in C
 
 fun the_chunkpagelst_insert {l:addr} // inserting one page
   (pf: !the_chunkpagelst_v, pf_page: freepage @ l | p: ptr l):<> void
@@ -211,6 +238,40 @@ fun the_topsegtbl_foreach_chunkptr
 
 // implemented in ATS in [gcats2_chunk.dats]
 fun the_topsegtbl_clear_mrkbits (pf: !the_topsegtbl_v | (*none*)):<> void
+
+(* ****** ****** *)
+
+absview the_markstackpagelst_v
+
+// implemented in [gcats2_marking.dats]
+fun the_markstackpagelst_length
+  (pf: !the_markstackpagelst_v | (*none*)):<> int // > 0
+  = "gcats2_the_markstackpagelst_length" // implemented in C
+// end of ...
+
+// implemented in [gcats2_marking.dats]
+fun the_markstackpagelst_pop (
+    pf: !the_markstackpagelst_v | p: &ptr? >> ptr, wsz: &size_t? >> size_t
+  ) :<> void
+  = "gcats2_the_markstackpagelst_pop" // implemented in C
+// end of ...
+
+// implemented in [gcats2_marking.dats]
+fun the_markstackpagelst_push
+  (pf: !the_markstackpagelst_v | p: ptr, wsz: size_t, overflow: &int):<> void
+  = "gcats2_the_markstackpagelst_push" // implemented in C
+// end of ...
+
+// implemented in [gcats2_marking.dats]
+fun the_markstackpagelst_extend {n:nat}
+  (pf: !the_markstackpagelst_v | n: int n):<> void
+  = "gcats2_the_markstackpagelst_extend" // implemented in C
+// end of ...
+
+fun ptr_mark
+  (pf1: !the_topsegtbl_v, pf2: !the_markstackpagelst_v | ptr: ptr):<> int
+  = "gcats2_ptr_mark"
+// end of ...
 
 (* ****** ****** *)
 

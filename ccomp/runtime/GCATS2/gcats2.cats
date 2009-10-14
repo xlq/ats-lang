@@ -93,6 +93,46 @@ gcats2_free_ext (ats_ptr_type ptr) { free(ptr); return ; }
 /* ****** ****** */
 
 static inline
+ats_bool_type
+gcats2_freeitmlst_isnil (ats_ptr_type xs) {
+  return (xs == (freeitmlst_vt*)0 ? ats_true_bool : ats_false_bool) ;
+}
+
+static inline
+ats_bool_type
+gcats2_freeitmlst_iscons (ats_ptr_type xs) {
+  return (xs != (freeitmlst_vt*)0 ? ats_true_bool : ats_false_bool) ;
+}
+
+/*
+fun freeitmlst_cons {l1,l2:addr}
+  (pf: freeitm_t @ l1 | x: ptr l1, xs: freeitmlst_vt l2): freeitmlst_vt l1
+// end of [freeitmlst_cons]
+*/
+
+static inline
+ats_ptr_type
+gcats2_freeitmlst_cons
+  (ats_ptr_type x, ats_ptr_type xs) { *(freeitmlst_vt*)x = xs ; return x ; }
+// end of [gcats2_freeitmlst_cons]
+
+/*
+fun freeitmlst_uncons {l:anz}
+  (xs: &freeitmlst_vt l >> freeitmlst_vt l_new):<> #[l_new:addr] (freeitm_t @ l | ptr l)
+// end of [freeitmlst_uncons]
+*/
+
+static inline
+ats_ptr_type
+gcats2_freeitmlst_uncons
+  (ats_ptr_type r_xs) {
+  freeitmlst_vt x = *(freeitmlst_vt*)r_xs ; *(freeitmlst_vt*)r_xs = *(freeitmlst_vt*)x ;
+  return x ;
+} // end of [gcats2_freeitmlst_uncons]
+
+/* ****** ****** */
+
+static inline
 topseg_t
 PTR_TOPSEG_GET (ats_ptr_type p) {
   uintptr_t u = (uintptr_t)p ;
@@ -173,10 +213,10 @@ gcats2_chunk_mrkbits_clear
   int nmrkbit ; // number of bytes for mark bits
   itmtot = ((chunk_vt*)p_chunk)->itmtot ;
   nmrkbit = (itmtot + NBIT_PER_BYTE_MASK) >> NBIT_PER_BYTE_LOG ;
-// /*
+/*
   fprintf(stderr, "gcats2_chunk_mrkbits_clear: itmtot = %i\n", itmtot) ;
   fprintf(stderr, "gcats2_chunk_mrkbits_clear: nmrkbit = %i\n", nmrkbit) ;
-// */
+*/
   memset(((chunk_vt*)p_chunk)->mrkbits, 0, nmrkbit) ;
   ((chunk_vt*)p_chunk)->mrkcnt = 0 ;
   return ;
@@ -187,7 +227,7 @@ gcats2_chunk_mrkbits_clear
 typedef
 struct botsegtbl_struct {
 #if (__WORDSIZE == 64)
-  uintptr_t key ; struct botsegtbl_struct *hashnxt ;
+  uintptr_t hashkey ; struct botsegtbl_struct *hashnext ;
 #endif
   chunklst_vt headers[BOTSEG_TABLESIZE] ;
 } botsegtbl_vt ;
@@ -245,13 +285,48 @@ gcats2_botsegtblptr1_takeout ( // used in [ptr_is_valid]
 ) {
   botsegtbl_vt *p = p_botsegtbl ;
   do {
-    if (p->key == (uintptr_t)ofs_topseg) return &(p->headers)[ofs_botseg] ;
-    p = p->hashnxt ;
+    if (p->hashkey == (uintptr_t)ofs_topseg) return &(p->headers)[ofs_botseg] ;
+    p = p->hashnext ;
   } while (p) ;
   return (chunkptr_vt*)0 ;
 } /* end of [botsegtblptr_get] */
 
 #endif // end of [__WORDSIZE == 64]
+
+/* ****** ****** */
+
+static inline
+ats_int_type
+MARK_GET (ats_ptr_type x, ats_int_type i) { return
+  (((byte*)x)[i >> NBIT_PER_BYTE_LOG] >> (i & NBIT_PER_BYTE_MASK)) & 0x1 ;
+} /* end of [MARK_GET] */
+
+static inline
+ats_void_type
+MARK_SET (ats_ptr_type x, ats_int_type i) {
+  ((byte*)x)[i >> NBIT_PER_BYTE_LOG] |= (0x1 << (i & NBIT_PER_BYTE_MASK)) ;
+  return ;
+} /* end of [MARK_SET] */
+
+static inline
+ats_int_type
+MARK_GETSET (ats_ptr_type x, ats_int_type i) {
+  byte* p_bits ; int bit ;
+  p_bits = &((byte*)x)[i >> NBIT_PER_BYTE_LOG] ;
+  bit = (*p_bits >> (i & NBIT_PER_BYTE_MASK)) & 0x1 ;
+  if (bit) {
+    return 1 ;
+  } else {
+    *p_bits != (0x1 << (i & NBIT_PER_BYTE_MASK)) ; return 0 ;
+  } // end of [if]
+} /* end of [MARK_GETSET] */
+
+static inline
+ats_bool_type
+MARK_CLEAR (ats_ptr_type x, ats_int_type i) {
+  ((byte*)x)[i >> NBIT_PER_BYTE_LOG] &= ~(0x1 << (i & NBIT_PER_BYTE_MASK)) ;
+  return ;
+} /* end of [MARK_SET] */
 
 /* ****** ****** */
 

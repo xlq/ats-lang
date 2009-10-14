@@ -75,7 +75,7 @@ implement PTR_BOTSEG_GET (p) = let
   val () = __assert () where {
     extern prfun __assert (): [0 <= i; i < BOTSEG_TABLESIZE] void
   } // end of [val]
-#endif // end of [#if (GCATS2_DEBUG > 0)]
+#endif // end of [GCATS2_DEBUG > 0]
 in
   i // ...
 end // end of [PTR_BOTSEG_GET]
@@ -102,7 +102,7 @@ implement PTR_CHKSEG_GET (p) = let
   val () = __assert () where {
     extern prfun __assert (): [0 <= i; i < CHKSEG_TABLESIZE] void
   } // end of [val]
-#endif // end of [#if (GCATS2_DEBUG > 0)]
+#endif // end of [GCATS2_DEBUG > 0]
 in
   i // ...
 end // end of [PTR_CHKSEG_GET]

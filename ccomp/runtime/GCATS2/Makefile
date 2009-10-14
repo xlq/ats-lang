@@ -44,7 +44,12 @@ ATSCCFLAGS= # -m64
 
 test: gcats2_c.h gcats2_ats.hats
 	$(ATSCC) $(ATSCCFLAGS) -o test gcats2_test.dats \
-          gcats2.sats gcats2_top.dats gcats2_chunk.dats gcats2_pointer.dats \
+          gcats2.sats \
+          gcats2_top.dats \
+          gcats2_freeitmlst.dats \
+          gcats2_chunk.dats \
+          gcats2_pointer.dats \
+          gcats2_marking.dats \
       && ./test
 
 ######
@@ -57,6 +62,10 @@ gcats2_ats.hats: gcats2_master.hats
 
 ######
 
+gcats2_freeitmlst_dats.o: \
+  gcats2_c.h gcats2_ats.hats gcats2_freeitmlst.dats 
+	$(ATSCC) $(ATSCCFLAGS) -o $@  -c gcats2_freeitmlst.dats
+
 gcats2_chunk_dats.o: \
   gcats2_c.h gcats2_ats.hats gcats2_chunk.dats 
 	$(ATSCC) $(ATSCCFLAGS) -o $@  -c gcats2_chunk.dats
@@ -64,6 +73,10 @@ gcats2_chunk_dats.o: \
 gcats2_pointer_dats.o: \
   gcats2_c.h gcats2_ats.hats gcats2_pointer.dats 
 	$(ATSCC) $(ATSCCFLAGS) -o $@ -c gcats2_pointer.dats
+
+gcats2_marking_dats.o: \
+  gcats2_c.h gcats2_ats.hats gcats2_marking.dats 
+	$(ATSCC) $(ATSCCFLAGS) -o $@  -c gcats2_marking.dats
 
 ######
 

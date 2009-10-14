@@ -116,11 +116,9 @@ end // end of [globalentrylst_insert]
 implement globalentrylst_extend_insert (pf | ents, p, wsz) = let
 (*
   val () = begin
-    prerr "globalentrylst_extend_insert: p = "; prerr p; prerr_newline ()
-  end
-  val () = begin
+    prerr "globalentrylst_extend_insert: p = "; prerr p; prerr_newline ();
     prerr "globalentrylst_extend_insert: wsz = "; prerr wsz; prerr_newline ()
-  end
+  end // end of [val]
 *)
   val (pf_arr | p_arr) = entrypage_alloc () where {
     extern fun entrypage_alloc (): [l:addr] (entrypage_v l | ptr l)

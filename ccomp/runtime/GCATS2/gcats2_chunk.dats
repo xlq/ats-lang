@@ -93,6 +93,14 @@ end // end of [the_topsegtbl_clear_mrkbits]
 
 static freepagelst_vt the_chunkpagelst = (freepagelst_vt)0 ;
 
+extern // implemented in [gcats2_freeitmlst.dats]
+ats_int_type gcats2_freeitmlst_length (ats_ptr_type) ;
+
+ats_int_type
+gcats2_the_chunkpagelst_length () {
+  return gcats2_freeitmlst_length (the_chunkpagelst) ;
+}
+
 /*
 fun the_chunkpagelst_insert {l:addr} // inserting one page
   (pf: !the_chunkpagelst_v, pf_page: freepage @ l | p: ptr l):<> void
@@ -236,8 +244,8 @@ gcats2_the_topsegtbl_insert_chunkptr
     the_nbotsegtbl_alloc += 1 ;
     memset(p_botsegtbl, 0, sizeof(botsegtbl_vt)) ;
 #if (__WORDSIZE == 64)
-     p_botsegtbl->key =(uintptr_t)ofs_topseg ; p_botsegtbl->hashnxt = (botsegtblptr_vt)0 ;
-#endif // end of [#if (__WORDSIZE == 64)]
+     p_botsegtbl->hashkey =(uintptr_t)ofs_topseg ; p_botsegtbl->hashnext = (botsegtblptr_vt)0 ;
+#endif // end of [__WORDSIZE == 64]
 /*
     fprintf (stderr, "gcats2_the_topsegtbl_insert_chunkptr: the_nbotsegtbl_alloc = %i\n", the_nbotsegtbl_alloc) ;
 */
@@ -252,7 +260,7 @@ gcats2_the_topsegtbl_insert_chunkptr
       gcats2_malloc_ext(sizeof(botsegtbl_vt)) ;
     the_nbotsegtbl_alloc += 1 ;
     memset(p_botsegtbl, 0, sizeof(botsegtbl_vt)) ;
-    p_botsegtbl->key = (uintptr_t)ofs_topseg ; p_botsegtbl->hashnxt = *r_p_botsegtbl ;
+    p_botsegtbl->hashkey = (uintptr_t)ofs_topseg ; p_botsegtbl->hashnext = *r_p_botsegtbl ;
 /*
     fprintf(stderr, "gcats2_the_topsegtbl_insert_chunkptr: the_nbotsegtbl_alloc = %i\n", the_nbotsegtbl_alloc) ;
 */
@@ -260,7 +268,7 @@ gcats2_the_topsegtbl_insert_chunkptr
     (p_botsegtbl->headers)[ofs_botseg] = p_chunk ;
     return 0 ;
   } // end of [if]
-#endif // end of [#if (__WORDSIZE == 64)]
+#endif // end of [__WORDSIZE == 64]
 //
 #if (GCATS2_DEBUG > 0)
   if (*r_p_chunk != (chunkptr_vt)0) {
@@ -271,7 +279,7 @@ gcats2_the_topsegtbl_insert_chunkptr
 */
     return 1 ;
   } // end of [if]
-#endif // end of [#if (GCATS2_DEBUG > 0)]
+#endif // end of [GCATS2_DEBUG > 0]
 //
   *r_p_chunk = p_chunk ; return 0 ;
 } /* end of [gcats2_the_topsegtbl_insert_chunkptr] */
@@ -300,7 +308,7 @@ gcats2_the_topsegtbl_remove_chunkptr
     fprintf(stderr, "exit(ATS/GC): gcats2_the_topsegtbl_remove_chunkptr: p_chunk = %p\n", p_chunk) ;
     exit(1) ;
   } // end of [if]
-#endif // end of [#if (GCATS2_DEBUG > 0)]
+#endif // end of [GCATS2_DEBUG > 0]
   return p_chunk ;
 } /* end of ... */
 
@@ -337,7 +345,7 @@ gcats2_the_topsegtbl_foreach_chunkptr
         p_chunk = p_botsegtbl->headers[j] ;
         if (p_chunk) ((ats_void_type (*)(ats_ptr_type, ats_ptr_type))f)(p_chunk, env) ;
       } // end of [for]
-      p_botsegtbl = p_botsegtbl->hashnxt ;
+      p_botsegtbl = p_botsegtbl->hashnext ;
     } // end of [while]
   } // end of [for]
 #endif // end of ...
