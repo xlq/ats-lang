@@ -223,19 +223,28 @@ gcats2_ptr_mark
 } /* end of [gcats2_ptr_mark] */
 
 ats_int_type
+gcats2_ptrsize_mark
+  (ats_ptr_type ptr, ats_size_type wsz) {
+  int i ;
+  int overflow = 0 ;
+  for (i = 0 ; i < wsz ; i += 1)
+    overflow += gcats2_ptr_mark ((freeitmptr_vt*)ptr++) ;
+  // end of [for]
+  return overflow ;
+} // end of [gcats2_ptrsize_mark]
+
+ats_int_type
 gcats2_chunk_mark
   (ats_ptr_type p_chunk) {
-  int i, j ; freeitmptr_vt *pi, *pij ;
+  int i, j ; freeitmptr_vt *pi ;
   int itmwsz, itmtot ;
   int overflow = 0 ;
   itmwsz = ((chunk_vt*)p_chunk)->itmwsz ;
   itmtot = ((chunk_vt*)p_chunk)->itmtot ;
   pi = (freeitmptr_vt*)p_chunk ;
   for (i = 0; i < itmtot; i += 1, pi += itmwsz) {
-    if (MARK_GET(((chunk_vt*)p_chunk)->mrkbits, i)) { // the freeitm is reachable!
-      for (j = 0, pij = pi; j < itmwsz; j += 1, pij += 1) {
-        overflow += gcats2_ptr_mark (pij) ;
-      } // end of [for]
+    if (MARK_GET(((chunk_vt*)p_chunk)->mrkbits, i)) {
+      overflow += gcats2_ptrsize_mark(pi, itmwsz) ; // the freeitm is reachable!
     } // end of [if]
   } // end of [for]
   return overflow ;

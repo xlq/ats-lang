@@ -7,26 +7,25 @@
 /************************************************************************/
 
 /*
- * ATS - Unleashing the Potential of Types!
- *
- * Copyright (C) 2002-2008 Hongwei Xi.
- *
- * ATS is  free software;  you can redistribute it and/or modify it under
- * the  terms of the  GNU General Public License as published by the Free
- * Software Foundation; either version 2.1, or (at your option) any later
- * version.
- * 
- * ATS is distributed in the hope that it will be useful, but WITHOUT ANY
- * WARRANTY; without  even  the  implied  warranty  of MERCHANTABILITY or
- * FITNESS FOR A PARTICULAR PURPOSE.  See the  GNU General Public License
- * for more details.
- * 
- * You  should  have  received  a  copy of the GNU General Public License
- * along  with  ATS;  see the  file COPYING.  If not, please write to the
- * Free Software Foundation,  51 Franklin Street, Fifth Floor, Boston, MA
- * 02110-1301, USA.
- *
- */
+** ATS - Unleashing the Potential of Types!
+**
+** Copyright (C) 2002-2008 Hongwei Xi.
+**
+** ATS is  free software;  you can redistribute it and/or modify it under
+** the  terms of the  GNU General Public License as published by the Free
+** Software Foundation; either version 2.1, or (at your option) any later
+** version.
+** 
+** ATS is distributed in the hope that it will be useful, but WITHOUT ANY
+** WARRANTY; without  even  the  implied  warranty  of MERCHANTABILITY or
+** FITNESS FOR A PARTICULAR PURPOSE.  See the  GNU General Public License
+** for more details.
+** 
+** You  should  have  received  a  copy of the GNU General Public License
+** along  with  ATS;  see the  file COPYING.  If not, please write to the
+** Free Software Foundation,  51 Franklin Street, Fifth Floor, Boston, MA
+** 02110-1301, USA.
+*/
 
 /* ****** ****** */
 
@@ -564,14 +563,14 @@ atslib_mpz_tdiv_q_ulint_2 (ats_mpz_ptr_type x, ats_ulint_type d) {
   mpz_tdiv_q_ui ((mpz_ptr)x, (mpz_ptr)x, d) ; return ;
 }
 
-// add/mul and submul compibination
+// addmul and submul compibination
 
 static inline
 ats_void_type
 atslib_mpz_addmul_mpz_3 (
   ats_mpz_ptr_type x, ats_mpz_ptr_type y, ats_mpz_ptr_type z
 ) {
-  mpz_addmul_mpz ((mpz_ptr)x, (mpz_ptr)y, (mpz_ptr)z) ; return ;
+  mpz_addmul ((mpz_ptr)x, (mpz_ptr)y, (mpz_ptr)z) ; return ;
 } /* end of [atslib_mpz_addmul_mpz_3] */
 
 static inline
@@ -587,7 +586,7 @@ ats_void_type
 atslib_mpz_submul_mpz_3 (
   ats_mpz_ptr_type x, ats_mpz_ptr_type y, ats_mpz_ptr_type z
 ) {
-  mpz_submul_mpz ((mpz_ptr)x, (mpz_ptr)y, (mpz_ptr)z) ; return ;
+  mpz_submul ((mpz_ptr)x, (mpz_ptr)y, (mpz_ptr)z) ; return ;
 } /* end of [atslib_mpz_submul_uint_3] */
 
 static inline

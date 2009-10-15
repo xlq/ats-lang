@@ -243,9 +243,8 @@ fun the_topsegtbl_clear_mrkbits (pf: !the_topsegtbl_v | (*none*)):<> void
 
 absview the_globalrts_v
 
-fun the_globalrts_insert (
-    pf: !the_globalrts_v | ptr: ptr, wsz: size_t
-  ) :<> void
+fun the_globalrts_insert
+  (pf: !the_globalrts_v | ptr: ptr, wsz: size_t):<> void
   = "gcats2_the_globalrts_insert" // implemented in C
 // end of ...
 
@@ -284,6 +283,12 @@ fun ptr_mark (
     pf1: !the_topsegtbl_v, pf2: !the_markstack_v | ptr: ptr
   ) :<> int(*overflow*)
   = "gcats2_ptr_mark"
+// end of ...
+
+fun ptrsize_mark (
+    pf1: !the_topsegtbl_v, pf2: !the_markstack_v | ptr: ptr, wsz: size_t
+  ) :<> int(*overflow*)
+  = "gcats2_ptrsize_mark"
 // end of ...
 
 fun chunk_mark (

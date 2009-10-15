@@ -78,24 +78,21 @@ atslib_fclose_exn(ats_ptr_type fil) {
 static inline
 ats_void_type
 atslib_fclose_stdin() {
-  atspre_stdin_view_get() ;
-  atslib_fclose(stdin) ;
+  atspre_stdin_view_get() ; atslib_fclose_err(stdin) ;
   return ;
 }
 
 static inline
 ats_void_type
 atslib_fclose_stdout() {
-  atspre_stdout_view_get() ;
-  atslib_fclose(stdout) ;
+  atspre_stdout_view_get() ; atslib_fclose_err(stdout) ;
   return ;
 }
 
 static inline
 ats_void_type
 atslib_fclose_stderr() {
-  atspre_stderr_view_get() ;
-  atslib_fclose(stderr) ;
+  atspre_stderr_view_get() ; atslib_fclose_err(stderr) ;
   return ;
 }
 
@@ -360,8 +357,11 @@ ats_int_type atslib_fseek_err
 } /* atslib_fseek_err */
 
 static inline
-ats_int_type atslib_fseek_exn
-  (ats_ptr_type fil, ats_lint_type offset, ats_int_type whence) {
+ats_void_type atslib_fseek_exn (
+  ats_ptr_type fil
+, ats_lint_type offset
+, ats_int_type whence
+) {
   int err ;
   err = fseek ((FILE*)fil, offset, whence) ;
   if (err < 0) {
@@ -369,7 +369,7 @@ ats_int_type atslib_fseek_exn
     ats_exit_errmsg (1, "exit(ATS): [fseek] failed\n") ;
   }
   return ;
-} /* atslib_fseek_exn */
+} /* end of [atslib_fseek_exn] */
 
 /* --------------------------------------- */
 
@@ -409,9 +409,12 @@ atslib_fwrite_byte
 
 static inline
 ats_void_type
-atslib_fwrite_byte_exn
-  (ats_ptr_type buf0, ats_size_type ntotal, ats_ptr_type fil) {
-  char *buf = (char*) buf0 ; size_t nwritten ; size_t i ;
+atslib_fwrite_byte_exn (
+  ats_ptr_type buf0
+, ats_size_type ntotal
+, ats_ptr_type fil
+) {
+  char *buf = (char*) buf0 ; size_t nwritten ;
   nwritten = fwrite((void*)buf, 1, ntotal, (FILE*)fil) ;
   if (nwritten < ntotal) {
     perror ("fwrite") ;
@@ -478,7 +481,7 @@ atslib_remove_err (ats_ptr_type path) {
 }
 
 static inline
-ats_int_type
+ats_void_type
 atslib_remove_exn (ats_ptr_type path) {
   int err = remove((char*)path) ;
   if (err < 0) {
