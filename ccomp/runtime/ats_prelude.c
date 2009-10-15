@@ -145,7 +145,7 @@ ats_funarg_match_failure_handle (char *loc) {
 #include "ats_prelude_gcats.c"
 #elif _ATS_GCBDW // Boehm-Demers-Weise conservative GC for C/C++
 #include "ats_prelude_gcbdw.c"
-#else // NGC is the default
+#else // _ATS_NGC is the default
 #include "ats_prelude_ngc.c"
 #endif // end of [ifdef]
 
@@ -168,16 +168,19 @@ extern int gc_pthread_create_cloptr (
 
 ats_void_type
 ats_pthread_create_detached_cloptr (ats_ptr_type thunk) {
-#ifdef _ATS_GC
-  fprintf (stderr, "There is no support for pthreads under this GC (GC).\n") ;
-  exit (1) ;
+#if _ATS_NGC
+  pthread_t pid ; int ret ;
+  ret = pthread_create (&pid, NULL, ats_pthread_app, thunk) ;
 #elif _ATS_GCATS
   int ret ;
 /*
   fprintf (stderr, "[ats_pthread_create_detached_cloptr] is called.\n") ;
 */
   ret = gc_pthread_create_cloptr (thunk, NULL/*pid_r*/, 1/*detached*/, 1/*lin*/) ;
-#else
+#elif _ATS_GCBDW
+  fprintf (stderr, "There is no support for pthreads under this GC (GCBDW).\n") ;
+  exit (1) ;
+#else // _ATS_NGC is the default
   pthread_t pid ; int ret ;
   ret = pthread_create (&pid, NULL, ats_pthread_app, thunk) ;
 #endif
