@@ -112,8 +112,21 @@
 
 /* ****** ****** */
 
-/* [mainats_prelude] is called in the function [main] */
+/*
+** [mainats_prelude] is called in the function [main]
+** it is implemented in [$ATSHOME/prelude/ats_main_prelude.dats]
+** where it is given the name [main_prelude].
+*/
 extern void mainats_prelude () ;
+
+/* ****** ****** */
+
+/*
+** functions for handling match failures
+** the implementation is given in [ats_prelude.c]
+*/
+extern void ats_caseof_failure_handle (char *loc) ;
+extern void ats_funarg_match_failure_handle (char *loc) ;
 
 /* ****** ****** */
 

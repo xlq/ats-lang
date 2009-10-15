@@ -66,6 +66,8 @@ typedef ats_ptr_type freeitmlst_vt ;
 typedef ats_ptr_type freepageptr_vt ;
 typedef ats_ptr_type freepagelst_vt ;
 
+typedef struct { void *ptr ; size_t wsz ; } ptrsize_t ;
+
 /* ****** ****** */
 
 //

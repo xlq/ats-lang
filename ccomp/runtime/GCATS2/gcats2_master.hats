@@ -232,6 +232,11 @@ __ATS(#assert (CHUNK_LIMIT_EXTEND_CUTOFF <= 1.0))
 
 /* ****** ****** */
 
+__define GLOBALRTS_PAGESIZE 100 // more or less chosen arbitrarily
+__ATS(#assert (GLOBALRTS_PAGESIZE >= 1))
+
+/* ****** ****** */
+
 __C(#endif) // end of [#ifndef GCATS2_C_H]
 __ATS(#endif) // end of [#ifndef GCATS2_ATS_HATS]
 

@@ -111,10 +111,13 @@ int ats_exception_con_tag = 1000 ; // reserved for special use
 extern void exit (int status) ; // declared in [stdlib.h]
 
 ats_void_type
-ats_uncaught_exception_handle (const ats_exn_ptr_type exn) {
+ats_uncaught_exception_handle
+  (const ats_exn_ptr_type exn) {
   fprintf (stderr, "Uncaught exception: %s(%d)\n", exn->name, exn->tag) ;
   exit(1) ;
 } /* end of [ats_uncaught_exception_handle] */
+
+/* ****** ****** */
 
 /*
 ** functions for handling match failures
@@ -122,35 +125,27 @@ ats_uncaught_exception_handle (const ats_exn_ptr_type exn) {
 
 ats_void_type
 ats_caseof_failure_handle (char *loc) {
-  fprintf (stderr, "Exit: %s: match failure.\n", loc) ;
-  exit(1) ;
+  fprintf (stderr, "Exit: %s: match failure.\n", loc) ; exit(1) ;
 } /* end of [ats_caseof_failure_handle] */
 
 ats_void_type
 ats_funarg_match_failure_handle (char *loc) {
-  fprintf (stderr, "Exit: %s: funarg match failure.\n", loc) ;
-  exit(1) ;
+  fprintf (stderr, "Exit: %s: funarg match failure.\n", loc) ; exit(1) ;
 } /* end of [ats_funarg_match_failure_handle] */
 
 /* ****** ****** */
 
 /*
-**
 **functions for memory allocation and deallocation
-**
 */
 
-#ifdef _ATS_GC // default GC for ATS
-#include "ats_prelude_gcats.c"
+#ifdef _ATS_NGC // no GC
+#include "ats_prelude_ngc.c"
 #elif _ATS_GCATS // special GC for ATS
 #include "ats_prelude_gcats.c"
-/*
-#elif _ATS_GCATS0 // special GC for ATS // no longer in use
-#include "ats_prelude_gcats0.c"
-*/
 #elif _ATS_GCBDW // Boehm-Demers-Weise conservative GC for C/C++
 #include "ats_prelude_gcbdw.c"
-#else // no GC for ATS in this case
+#else // NGC is the default
 #include "ats_prelude_ngc.c"
 #endif // end of [ifdef]
 
@@ -161,7 +156,7 @@ ats_funarg_match_failure_handle (char *loc) {
 static
 ats_ptr_type ats_pthread_app (ats_ptr_type f) {
   ((void (*)(ats_ptr_type))((ats_clo_ptr_type)f)->closure_fun)(f) ;
-  ATS_FREE (f) ; // this is a linear application
+  ATS_FREE (f) ; // this is a linear application; it must be freed to avoid leak
   return (ats_ptr_type)0 ;
 }
 
@@ -171,52 +166,22 @@ extern int gc_pthread_create_cloptr (
 ) ;
 #endif
 
-/*
-#ifdef _ATS_gc // a GC for ATS written by Rick Lavoie // no longer in use
-extern int gc_pthread_create_cloptr (
-  ats_clo_ptr_type cloptr, pthread_t *pid_r, int detached, int linclo
-) ;
-#endif
-*/
-
 ats_void_type
 ats_pthread_create_detached_cloptr (ats_ptr_type thunk) {
 #ifdef _ATS_GC
-  fprintf (
-    stderr, "There is no support for pthreads under this GC (GC).\n"
-  ) ;
+  fprintf (stderr, "There is no support for pthreads under this GC (GC).\n") ;
   exit (1) ;
 #elif _ATS_GCATS
   int ret ;
-  /*
-  fprintf (
-    stderr, "[ats_pthread_create_detached_cloptr] is called.\n"
-  ) ;
-  */
+/*
+  fprintf (stderr, "[ats_pthread_create_detached_cloptr] is called.\n") ;
+*/
   ret = gc_pthread_create_cloptr (thunk, NULL/*pid_r*/, 1/*detached*/, 1/*lin*/) ;
-
-/*
-#elif _ATS_GCATS0 // a GC no longer in use
-  fprintf (
-    stderr, "There is no support for pthreads under this GC (GCATS0).\n"
-  ) ;
-  exit (1) ;
-*/
-
-/*
-#elif _ATS_gc // a GC for ATS written by Rick Lavoie // no longer in use
-  int ret ;
-  ret = gc_create_pthread_cloptr
-    (thunk, NULL/*arg*/, NULL/*pid_r*/, 1/*detached*/) ;
-*/
-
 #else
   pthread_t pid ; int ret ;
   ret = pthread_create (&pid, NULL, ats_pthread_app, thunk) ;
 #endif
-  if (ret != 0) {
-    perror ("ats_pthread_create_detached_clo: ") ; exit(1) ;
-  }
+  if (ret != 0) { perror ("ats_pthread_create_detached_clo: ") ; exit(1) ; }
   return ;
 } /* end of [ats_pthread_create_detach] */
 
@@ -224,23 +189,8 @@ ats_pthread_create_detached_cloptr (ats_ptr_type thunk) {
 
 static inline
 ats_void_type ats_pthread_exit () {
-#ifdef _ATS_GC
-  fprintf (stderr, "There is no support for pthreads under this GC.\n");
-  exit (1) ;
-#elif _ATS_GCATS
-  pthread_exit (NULL) ;
-
-/*
-#elif _ATS_GCATS0 // a special GC for ATS // no longer in use
-  fprintf (stderr, "There is no support for pthreads under this GC(GCATS0).\n");
-  exit (1) ;
-*/
-
-/*
-#elif _ATS_gc // a GC for ATS written by Rick Lavoie // no longer in use
-  pthread_exit (NULL) ;
-*/
-
+#ifdef _ATS_GCATS
+  pthread_exit (NULL) ; // this is clearly problematic!!!
 #else
   pthread_exit (NULL) ;
 #endif

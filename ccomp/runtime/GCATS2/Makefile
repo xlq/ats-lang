@@ -74,6 +74,10 @@ gcats2_pointer_dats.o: \
   gcats2_c.h gcats2_ats.hats gcats2_pointer.dats 
 	$(ATSCC) $(ATSCCFLAGS) -o $@ -c gcats2_pointer.dats
 
+gcats2_globalrts_dats.o: \
+  gcats2_c.h gcats2_ats.hats gcats2_globalrts.dats 
+	$(ATSCC) $(ATSCCFLAGS) -o $@  -c gcats2_globalrts.dats
+
 gcats2_marking_dats.o: \
   gcats2_c.h gcats2_ats.hats gcats2_marking.dats 
 	$(ATSCC) $(ATSCCFLAGS) -o $@  -c gcats2_marking.dats

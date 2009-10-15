@@ -241,37 +241,55 @@ fun the_topsegtbl_clear_mrkbits (pf: !the_topsegtbl_v | (*none*)):<> void
 
 (* ****** ****** *)
 
-absview the_markstackpagelst_v
+absview the_globalrts_v
+
+fun the_globalrts_insert (
+    pf: !the_globalrts_v | ptr: ptr, wsz: size_t
+  ) :<> void
+  = "gcats2_the_globalrts_insert" // implemented in C
+// end of ...
+
+(* ****** ****** *)
+
+absview the_markstack_v
 
 // implemented in [gcats2_marking.dats]
 fun the_markstackpagelst_length
-  (pf: !the_markstackpagelst_v | (*none*)):<> int // > 0
+  (pf: !the_markstack_v | (*none*)):<> int // > 0
   = "gcats2_the_markstackpagelst_length" // implemented in C
 // end of ...
 
 // implemented in [gcats2_marking.dats]
 fun the_markstackpagelst_pop (
-    pf: !the_markstackpagelst_v | p: &ptr? >> ptr, wsz: &size_t? >> size_t
+    pf: !the_markstack_v | p: &ptr? >> ptr, wsz: &size_t? >> size_t
   ) :<> void
   = "gcats2_the_markstackpagelst_pop" // implemented in C
 // end of ...
 
 // implemented in [gcats2_marking.dats]
 fun the_markstackpagelst_push
-  (pf: !the_markstackpagelst_v | p: ptr, wsz: size_t, overflow: &int):<> void
+  (pf: !the_markstack_v | p: ptr, wsz: size_t, overflow: &int):<> void
   = "gcats2_the_markstackpagelst_push" // implemented in C
 // end of ...
 
 // implemented in [gcats2_marking.dats]
 fun the_markstackpagelst_extend {n:nat}
-  (pf: !the_markstackpagelst_v | n: int n):<> void
+  (pf: !the_markstack_v | n: int n):<> void
   = "gcats2_the_markstackpagelst_extend" // implemented in C
 // end of ...
 
-fun ptr_mark
-  (pf1: !the_topsegtbl_v, pf2: !the_markstackpagelst_v | ptr: ptr):<> int
+(* ****** ****** *)
+
+fun ptr_mark (
+    pf1: !the_topsegtbl_v, pf2: !the_markstack_v | ptr: ptr
+  ) :<> int(*overflow*)
   = "gcats2_ptr_mark"
 // end of ...
+
+fun chunk_mark (
+    pf1: !the_topsegtbl_v, pf2: !the_markstack_v | chk: &chunk_vt
+  ) :<> int(*overflow*)
+  = "gcats2_chunk_mark"
 
 (* ****** ****** *)
 

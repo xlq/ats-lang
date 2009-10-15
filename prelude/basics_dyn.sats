@@ -195,6 +195,7 @@ prval main_dummy (): void
 // it is implemented in "$ATSHOME/ats_main_prelude.dats"
 //
 
+// note that the difference in names
 fun main_prelude (): void = "mainats_prelude"
 
 (* ****** ****** *)

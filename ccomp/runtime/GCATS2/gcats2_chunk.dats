@@ -244,7 +244,7 @@ gcats2_the_topsegtbl_insert_chunkptr
     the_nbotsegtbl_alloc += 1 ;
     memset(p_botsegtbl, 0, sizeof(botsegtbl_vt)) ;
 #if (__WORDSIZE == 64)
-     p_botsegtbl->hashkey =(uintptr_t)ofs_topseg ; p_botsegtbl->hashnext = (botsegtblptr_vt)0 ;
+     p_botsegtbl->hashkey = (uintptr_t)ofs_topseg ; p_botsegtbl->hashnext = (botsegtblptr_vt)0 ;
 #endif // end of [__WORDSIZE == 64]
 /*
     fprintf (stderr, "gcats2_the_topsegtbl_insert_chunkptr: the_nbotsegtbl_alloc = %i\n", the_nbotsegtbl_alloc) ;

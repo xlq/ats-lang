@@ -273,9 +273,9 @@ implement main (argc, argv) = () where {
   } // end of [prval]
 //
   prval (
-    pf_the_markstackpagelst, fpf_the_markstackpagelst
-  ) = pf_the_markstackpagelst_gen () where { extern prfun
-    pf_the_markstackpagelst_gen (): (the_markstackpagelst_v, the_markstackpagelst_v -<prf> void)
+    pf_the_markstack, fpf_the_markstack
+  ) = pf_the_markstack_gen () where { extern prfun
+    pf_the_markstack_gen (): (the_markstack_v, the_markstack_v -<prf> void)
   } // end of [prval]
 //
   val () = ptr_topbotchk_test ()
@@ -290,20 +290,20 @@ implement main (argc, argv) = () where {
   val () = (print "[ptr_isvalid_test] is done successfully."; print_newline ())
 //
   val nmarkstackpage =
-    the_markstackpagelst_length (pf_the_markstackpagelst | (*none*))
+    the_markstackpagelst_length (pf_the_markstack | (*none*))
   val () = (print "nmarkstackpage(bef) = "; print nmarkstackpage; print_newline ())
-  val () = the_markstackpagelst_extend (pf_the_markstackpagelst | 5)
+  val () = the_markstackpagelst_extend (pf_the_markstack | 5)
   val nmarkstackpage =
-    the_markstackpagelst_length (pf_the_markstackpagelst | (*none*))
+    the_markstackpagelst_length (pf_the_markstack | (*none*))
   val () = (print "nmarkstackpage(aft1) = "; print nmarkstackpage; print_newline ())
-  val () = the_markstackpagelst_extend (pf_the_markstackpagelst | 7)
+  val () = the_markstackpagelst_extend (pf_the_markstack | 7)
   val nmarkstackpage =
-    the_markstackpagelst_length (pf_the_markstackpagelst | (*none*))
+    the_markstackpagelst_length (pf_the_markstack | (*none*))
   val () = (print "nmarkstackpage(aft2) = "; print nmarkstackpage; print_newline ())
 //
   prval () = fpf_the_topsegtbl (pf_the_topsegtbl)
   prval () = fpf_the_chunkpagelst (pf_the_chunkpagelst)
-  prval () = fpf_the_markstackpagelst (pf_the_markstackpagelst)
+  prval () = fpf_the_markstack (pf_the_markstack)
 } // end of [main]
 
 (* ****** ****** *)
