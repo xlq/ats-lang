@@ -27,7 +27,7 @@ implement rat_make_int_int (m, n) =
   else if n < 0 then
     let val r = gcd (m, n) in @{ numer= ~m/r, denom= ~n/r } end
   else begin
-    $raise DivisionByZeroException
+    $raise DivisionByZeroException ()
   end // end of [if]
 // end of [rat_make_int_int]
 

@@ -7,7 +7,7 @@
 GCFLAG=-D_ATS_GCATS
 #GCFLAG=-D_ATS_GCBDW
 
-ATSCC="$(ATSHOME)"/bin/atscc
+ATSCC="$(ATSHOME)"/bin/atscc -Wall
 
 ######
 

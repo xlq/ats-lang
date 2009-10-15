@@ -26,6 +26,10 @@ val rat_denominator : rat_t -<> int_t
 
 (* ****** ****** *)
 
+exception DivisionByZeroException of ()
+
+(* ****** ****** *)
+
 val abs_rat : rat_t -<> rat_t
 overload abs with abs_rat
 
