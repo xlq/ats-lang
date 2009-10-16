@@ -87,7 +87,7 @@ fun poslst_free (ps: poslst): void = case+ ps of
 // end of [poslst_free]
 
 extern fun keyword_search (name: string): token_t
-  = "keyword_search"
+  = "ats_keyword_search" // implemented in C in [ats_keyword.dats]
 
 //
 

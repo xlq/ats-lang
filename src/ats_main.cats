@@ -57,7 +57,7 @@ ats_main_is_posmark_xref_prefix (ats_ptr_type s0) {
     ln = n2 - n1 ;
     if (ln > 0) {
       if (s[n2-1] == '/') { ln -= 1 ; }
-      flag = ATS_MALLOC (ln + 2) ;
+      flag = (char*)ATS_MALLOC(ln + 2) ;
       strncpy (flag, &s[n1], ln) ;
       flag[ln] = '/' ; flag[ln+1] = '\000' ;
     } else {
@@ -66,7 +66,7 @@ ats_main_is_posmark_xref_prefix (ats_ptr_type s0) {
 /*
     fprintf (stderr, "ats_main_is_posmark_xref_prefix: flag = %s\n", flag) ;
 */
-    ats_posmark_xref_flag_set (flag) ;
+    ats_posmark_xref_flag_set ((ats_ptr_type)flag) ;
   } // end of [if]
   return (cmp == 0 ? ats_true_bool : ats_false_bool) ;
 } /* end of [ats_main_is_posmark_xref_prefix] */
@@ -108,9 +108,9 @@ ats_main_IATS_extract (ats_ptr_type s0) {
   int n ; char* s ;
   n = strlen ((char*)s0) ;
   n -= 5 ; if (n <= 0) return (ats_ptr_type)0 ;
-  s = ATS_MALLOC (n + 1) ;
+  s = (char*)ATS_MALLOC(n + 1) ;
   memcpy (s, (char*)s0 + 5, n) ; s[n] = '\0' ;
-  return s ;
+  return (ats_ptr_type)s ;
 } /* end of [ats_main_IATS_extract] */
 
 /* ****** ****** */
@@ -128,7 +128,7 @@ ats_main_ATSHOME_getenv_exn () {
    exit (1) ;
  }
  ats_main_ATSHOME = value0 ; ats_main_ATSHOME_length = strlen (value0) ;
- return value0 ;
+ return (ats_ptr_type)value0 ;
 } /* end of [ats_main_ATSHOME_getenv_exn] */
 
 /* ****** ****** */

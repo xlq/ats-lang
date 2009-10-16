@@ -43,7 +43,7 @@
 staload LEX = "ats_lexer.sats"
 
 fun keyword_search (name: string): Option ($LEX.token_t)
-  = "keyword_search"
+  = "ats_keyword_search"
 
 (* ****** ****** *)
 

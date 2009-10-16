@@ -770,13 +770,15 @@ extern fun emit_valprim_string {m:file_mode}
 
 %{$
 
-ats_void_type ats_ccomp_emit_valprim_string 
-  (ats_ptr_type out, ats_ptr_type str, ats_size_type len) {
-  char *s, c; int i;
-
+ats_void_type
+ats_ccomp_emit_valprim_string (
+  ats_ptr_type out, ats_ptr_type str, ats_size_type len
+) {
+  char *s = str; int i; char c;
+//
+  fputs ("(ats_ptr_type)", (FILE*)out);
   fputc ('"', (FILE*)out);
-
-  s = (char*)str ;
+//
   for (i = 0; i < len; i += 1, s += 1) {
     c = *s;
     switch (c) {
@@ -792,12 +794,13 @@ ats_void_type ats_ccomp_emit_valprim_string
       }
     } // end of [switch]
   } // end of [for]
-
+//
   fputc ('"', (FILE*)out);
-
+//
+  return ;
 } // end of [ats_ccomp_emit_valprim_string]
 
-%}
+%} // end of [%{$]
 
 (* ****** ****** *)
 
@@ -1040,7 +1043,7 @@ implement emit_patck
       fprint1_string (pf | out, " ; }")
     end // end of [PATCKint]
   | PATCKstring str => begin
-      fprint1_string (pf | out, "if (strcmp(");
+      fprint1_string (pf | out, "if (__strcmpats(");
       emit_valprim (pf | out, vp);
       fprint1_string (pf | out, ", ");
       emit_valprim_string (pf | out, str, string0_length str);
@@ -1051,7 +1054,7 @@ implement emit_patck
 (*
   | _ => begin
       prerr "INTERNAL ERROR";
-      prerr ": emit_patck: not implemented yet";
+      prerr ": ats_ccomp_emit: emit_patck: not implemented yet";
       prerr_newline ();
       $Err.abort {void} ()
     end // end of [_]
