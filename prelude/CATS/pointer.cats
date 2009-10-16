@@ -68,32 +68,38 @@ atspre_ptr_is_not_null (ats_ptr_type p) {
 static inline
 ats_ptr_type
 atspre_psucc (const ats_ptr_type p) {
-  return ((ats_byte_type*)p) + 1 ;
+  return (ats_ptr_type)((ats_byte_type*)p + 1) ;
 }
 
 static inline
 ats_ptr_type
 atspre_ppred (const ats_ptr_type p) {
-  return ((ats_byte_type*)p) - 1 ;
+  return (ats_ptr_type)((ats_byte_type*)p - 1) ;
 }
 
 /* ****** ****** */
 
 static inline
 ats_ptr_type
-atspre_padd (const ats_ptr_type p, const ats_size_type n) {
-  return ((ats_byte_type*)p) + n ;
+atspre_padd (
+  const ats_ptr_type p, const ats_size_type n
+) {
+  return (ats_ptr_type)((ats_byte_type*)p + n) ;
 }
 
 static inline
 ats_ptr_type
-atspre_psub (const ats_ptr_type p, const ats_size_type n) {
-  return ((ats_byte_type*)p) - n ;
+atspre_psub (
+  const ats_ptr_type p, const ats_size_type n
+) {
+  return (ats_ptr_type)((ats_byte_type*)p - n) ;
 }
 
 static inline
 ats_ptrdiff_type
-atspre_pdiff (const ats_ptr_type p1, const ats_ptr_type p2) {
+atspre_pdiff (
+  const ats_ptr_type p1, const ats_ptr_type p2
+) {
   return ((ats_byte_type*)p1 - (ats_byte_type*)p2) ;
 }
 
@@ -156,7 +162,7 @@ atspre_fprint_ptr (
 ) {
   int n = fprintf ((FILE *)out, "%p", p) ;
   if (n < 0) {
-    ats_exit_errmsg (n, "Exit: [fprint_pointer] failed.\n") ;
+    ats_exit_errmsg (n, (ats_ptr_type)"exit(ATS): [fprint_pointer] failed.\n") ;
   } /* end of [if] */
   return ;
 }
@@ -165,7 +171,7 @@ static inline
 ats_void_type
 atspre_print_ptr(const ats_ptr_type p) {
   atspre_stdout_view_get() ;
-  fprintf (stdout, "%p", p) ;
+  atspre_fprint_ptr ((ats_ptr_type)stdout, p) ;
   atspre_stdout_view_set() ;
   return ;
 }
@@ -174,7 +180,7 @@ static inline
 ats_void_type
 atspre_prerr_ptr(const ats_ptr_type p) {
   atspre_stderr_view_get() ;
-  fprintf (stderr, "%p", p) ;
+  atspre_fprint_ptr ((ats_ptr_type)stderr, p) ;
   atspre_stderr_view_set() ;
   return ;
 }
@@ -183,16 +189,14 @@ atspre_prerr_ptr(const ats_ptr_type p) {
 
 static inline
 ats_ptr_type
-atspre_ptr_alloc_tsz(const ats_size_type tsz) {
-  ats_ptr_type p ;
-  p = ATS_MALLOC(tsz) ; return p ;
+atspre_ptr_alloc_tsz
+  (const ats_size_type tsz) {
+  ats_ptr_type p ; p = ATS_MALLOC(tsz) ; return (ats_ptr_type)p ;
 }
 
 static inline
 ats_void_type
-atspre_ptr_free(const ats_ptr_type ptr) {
-  ATS_FREE(ptr) ; return ;
-}
+atspre_ptr_free(const ats_ptr_type ptr) { ATS_FREE(ptr) ; return ; }
 
 /* ****** ****** */
 
@@ -200,10 +204,13 @@ atspre_ptr_free(const ats_ptr_type ptr) {
 
 static inline
 ats_void_type
-atspre_ptr_move_tsz
-  (ats_ptr_type p1, ats_ptr_type p2, ats_size_type tsz) {
-  memcpy (p2, p1, tsz) ; return ;
-}
+atspre_ptr_move_tsz (
+  ats_ptr_type p1
+, ats_ptr_type p2
+, ats_size_type tsz
+) {
+  memcpy ((void*)p2, (void*)p1, tsz) ; return ;
+} // end of ...
 
 /* ****** ****** */
 

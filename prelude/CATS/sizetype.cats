@@ -114,7 +114,7 @@ atspre_fprint_size (ats_ptr_type out, ats_size_type sz) {
   int n ;
   n = fprintf ((FILE*)out, "%lu", (ats_ulint_type)sz) ;
   if (n < 0) {
-    ats_exit_errmsg (n, "exit(ATS): [fprint_size] failed.\n") ;
+    ats_exit_errmsg (n, (ats_ptr_type)"exit(ATS): [fprint_size] failed.\n") ;
   } /* end of [if] */
   return ;
 } /* end of [atspre_fprint_size] */
@@ -122,14 +122,18 @@ atspre_fprint_size (ats_ptr_type out, ats_size_type sz) {
 static inline
 ats_void_type
 atspre_print_size (ats_size_type sz) {
-  atspre_stdout_view_get () ; atspre_fprint_size (stdout, sz) ; atspre_stdout_view_set () ;
+  atspre_stdout_view_get () ;
+  atspre_fprint_size ((ats_ptr_type)stdout, sz) ;
+  atspre_stdout_view_set () ;
   return ;
 }
 
 static inline
 ats_void_type
 atspre_prerr_size (ats_size_type sz) {
-  atspre_stderr_view_get () ; atspre_fprint_size (stderr, sz) ; atspre_stderr_view_set () ;
+  atspre_stderr_view_get () ;
+  atspre_fprint_size ((ats_ptr_type)stderr, sz) ;
+  atspre_stderr_view_set () ;
   return ;
 }
 
@@ -379,7 +383,7 @@ atspre_fprint_ssize (ats_ptr_type out, ats_ssize_type ssz) {
   int n ;
   n = fprintf ((FILE*)out, "%li", (ats_lint_type)ssz) ;
   if (n < 0) {
-    ats_exit_errmsg (n, "exit(ATS): [fprint_ssize] failed.\n") ;
+    ats_exit_errmsg (n, (ats_ptr_type)"exit(ATS): [fprint_ssize] failed.\n") ;
   } /* end of [if] */
   return ;
 } /* end of [atspre_fprint_ssize] */
@@ -387,14 +391,18 @@ atspre_fprint_ssize (ats_ptr_type out, ats_ssize_type ssz) {
 static inline
 ats_void_type
 atspre_print_ssize (ats_ssize_type ssz) {
-  atspre_stdout_view_get () ; atspre_fprint_ssize (stdout, ssz) ; atspre_stdout_view_set () ;
+  atspre_stdout_view_get () ;
+  atspre_fprint_ssize ((ats_ptr_type)stdout, ssz) ;
+  atspre_stdout_view_set () ;
   return ;
 }
 
 static inline
 ats_void_type
 atspre_prerr_ssize (ats_size_type ssz) {
-  atspre_stderr_view_get () ; atspre_fprint_ssize (stderr, ssz) ; atspre_stderr_view_set () ;
+  atspre_stderr_view_get () ;
+  atspre_fprint_ssize ((ats_ptr_type)stderr, ssz) ;
+  atspre_stderr_view_set () ;
   return ;
 }
 

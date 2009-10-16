@@ -207,7 +207,7 @@ atspre_fprint_intptr (ats_ptr_type out, ats_intptr_type i) {
   int n ;
   n = fprintf ((FILE*)out, "%lli", (ats_llint_type)(intptr_t)i) ;
   if (n < 0) {
-    ats_exit_errmsg (n, "Exit: [fprint_intptr] failed.\n") ;
+    ats_exit_errmsg (n, (ats_ptr_type)"exit(ATS): [fprint_intptr] failed.\n") ;
   }
   return ;
 }
@@ -216,7 +216,7 @@ static inline
 ats_void_type
 atspre_print_intptr (ats_intptr_type i) {
   atspre_stdout_view_get () ;
-  atspre_fprint_intptr (stdout, i) ;
+  atspre_fprint_intptr ((ats_ptr_type)stdout, i) ;
   atspre_stdout_view_set () ;
   return ;
 }
@@ -225,7 +225,7 @@ static inline
 ats_void_type
 atspre_prerr_intptr (ats_intptr_type i) {
   atspre_stderr_view_get () ;
-  atspre_fprint_intptr (stderr, i) ;
+  atspre_fprint_intptr ((ats_ptr_type)stderr, i) ;
   atspre_stderr_view_set () ;
   return ;
 }
@@ -434,7 +434,7 @@ atspre_fprint_uintptr (ats_ptr_type out, ats_uintptr_type u) {
   int n ;
   n = fprintf ((FILE*)out, "%llu", (ats_ullint_type)(uintptr_t)u) ;
   if (n < 0) {
-    ats_exit_errmsg (n, "Exit: [fprint_uintptr] failed.\n") ;
+    ats_exit_errmsg (n, (ats_ptr_type)"exit(ATS): [fprint_uintptr] failed.\n") ;
   }
   return ;
 }
@@ -443,7 +443,7 @@ static inline
 ats_void_type
 atspre_print_uintptr (ats_uintptr_type u) {
   atspre_stdout_view_get () ;
-  atspre_fprint_uintptr (stdout, u) ;
+  atspre_fprint_uintptr ((ats_ptr_type)stdout, u) ;
   atspre_stdout_view_set () ;
   return ;
 }
@@ -452,7 +452,7 @@ static inline
 ats_void_type
 atspre_prerr_uintptr (ats_uintptr_type u) {
   atspre_stderr_view_get () ;
-  atspre_fprint_uintptr (stderr, u) ;
+  atspre_fprint_uintptr ((ats_ptr_type)stderr, u) ;
   atspre_stderr_view_set () ;
   return ;
 }
@@ -461,4 +461,4 @@ atspre_prerr_uintptr (ats_uintptr_type u) {
 
 #endif /* ATS_PRELUDE_INTEGER_PTR_CATS */
 
-/* end of [integer.cats] */
+/* end of [integer_ptr.cats] */

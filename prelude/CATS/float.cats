@@ -265,7 +265,7 @@ atspre_fprint_float (
 ) {
   int n = fprintf ((FILE *)out, "%f", f) ;
   if (n < 0) {
-    ats_exit_errmsg (n, "Exit: [fprint_float] failed.\n") ;
+    ats_exit_errmsg (n, (ats_ptr_type)"exit(ATS): [fprint_float] failed.\n") ;
   }
   return ;
 } /* end of [atspre_fprint_float] */
@@ -274,7 +274,7 @@ static inline
 ats_void_type
 atspre_print_float (const ats_float_type f) {
   atspre_stdout_view_get () ;
-  atspre_fprint_float (stdout, f) ;
+  atspre_fprint_float ((ats_ptr_type)stdout, f) ;
   atspre_stdout_view_set () ;
   return ;
 }
@@ -283,7 +283,7 @@ static inline
 ats_void_type
 atspre_prerr_float (const ats_float_type f) {
   atspre_stderr_view_get () ;
-  atspre_fprint_float (stderr, f) ;
+  atspre_fprint_float ((ats_ptr_type)stderr, f) ;
   atspre_stderr_view_set () ;
   return ;
 }
@@ -292,8 +292,9 @@ atspre_prerr_float (const ats_float_type f) {
 
 static inline
 ats_ptr_type
-atspre_tostring_float (const ats_float_type f) {
-  return atspre_tostringf ("%f", f) ;
+atspre_tostring_float
+  (const ats_float_type f) {
+  return atspre_tostringf ((ats_ptr_type)"%f", f) ;
 }
 
 /* ****** ****** */
@@ -557,7 +558,7 @@ atspre_fprint_double
   (const ats_ptr_type out, const ats_double_type f) {
   int n = fprintf ((FILE *)out, "%f", f) ;
   if (n < 0) {
-    ats_exit_errmsg (n, "Exit: [fprint_double] failed.\n") ;
+    ats_exit_errmsg (n, (ats_ptr_type)"exit(ATS): [fprint_double] failed.\n") ;
   }
   return ;
 } /* end of [atspre_fprint_double] */
@@ -566,7 +567,7 @@ static inline
 ats_void_type
 atspre_print_double (const ats_double_type f) {
   atspre_stdout_view_get () ;
-  atspre_fprint_double (stdout, f) ;
+  atspre_fprint_double ((ats_ptr_type)stdout, f) ;
   atspre_stdout_view_set () ;
   return ;
 }
@@ -575,7 +576,7 @@ static inline
 ats_void_type
 atspre_prerr_double (const ats_double_type f) {
   atspre_stderr_view_get () ;
-  atspre_fprint_double (stderr, f) ;
+  atspre_fprint_double ((ats_ptr_type)stderr, f) ;
   atspre_stderr_view_set () ;
   return ;
 }
@@ -584,8 +585,9 @@ atspre_prerr_double (const ats_double_type f) {
 
 static inline
 ats_ptr_type
-atspre_tostring_double (const ats_double_type f) {
-  return atspre_tostringf ("%f", f) ;
+atspre_tostring_double
+  (const ats_double_type f) {
+  return atspre_tostringf ((ats_ptr_type)"%f", f) ;
 }
 
 /* ****** ****** */
@@ -796,8 +798,8 @@ ats_void_type
 atspre_fprint_ldouble
   (const ats_ptr_type out, const ats_ldouble_type f) {
   int n = fprintf ((FILE *)out, "%Lf", f) ;
-  if (n < 0) {
-    ats_exit_errmsg (n, "Exit: [fprint_ldouble] failed.\n") ;
+  if (n < 0) { ats_exit_errmsg
+    (n, (ats_ptr_type)"exit(ATS): [fprint_ldouble] failed.\n") ;
   }
   return ;
 } /* end of [atspre_fprint_ldouble] */
@@ -806,7 +808,7 @@ static inline
 ats_void_type
 atspre_print_ldouble (const ats_ldouble_type f) {
   atspre_stdout_view_get () ;
-  atspre_fprint_ldouble (stdout, f) ;
+  atspre_fprint_ldouble ((ats_ptr_type)stdout, f) ;
   atspre_stdout_view_set () ;
   return ;
 }
@@ -815,7 +817,7 @@ static inline
 ats_void_type
 atspre_prerr_ldouble (const ats_ldouble_type f) {
   atspre_stderr_view_get () ;
-  atspre_fprint_ldouble (stderr, f) ;
+  atspre_fprint_ldouble ((ats_ptr_type)stderr, f) ;
   atspre_stderr_view_set () ;
   return ;
 }
@@ -825,7 +827,7 @@ atspre_prerr_ldouble (const ats_ldouble_type f) {
 static inline
 ats_ptr_type
 atspre_tostring_ldouble (const ats_ldouble_type f) {
-  return atspre_tostringf ("%Lf", f) ;
+  return atspre_tostringf ((ats_ptr_type)"%Lf", f) ;
 }
 
 /* ****** ****** */

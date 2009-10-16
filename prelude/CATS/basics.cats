@@ -117,11 +117,11 @@ ats_ptr_type
 atspre_stdin_get(void) {
 #ifdef _ATS_RUNTIME_CHECK
   if (!ats_stdin_view_lock) {
-    ats_exit_errmsg (1, "[exit(ATS): stdin_get] failed\n") ;
+    ats_exit_errmsg (1, "exit(ATS): [stdin_get] failed\n") ;
   }
 #endif
   ats_stdin_view_lock = 0 ;
-  return stdin;
+  return (ats_ptr_type)stdin;
 }
 
 static inline
@@ -129,7 +129,7 @@ ats_void_type
 atspre_stdin_view_get(void) {
 #ifdef _ATS_RUNTIME_CHECK
   if (!ats_stdin_view_lock) {
-    ats_exit_errmsg (1, "[exit(ATS): stdin_view_get] failed\n") ;
+    ats_exit_errmsg (1, "exit(ATS): [stdin_view_get] failed\n") ;
   }
 #endif
   ats_stdin_view_lock = 0 ;
@@ -141,7 +141,7 @@ ats_void_type
 atspre_stdin_view_set(void) {
 #ifdef _ATS_RUNTIME_CHECK
   if (ats_stdin_view_lock) {
-    ats_exit_errmsg (1, "[exit(ATS): stdin_view_set] failed\n") ;
+    ats_exit_errmsg (1, "exit(ATS): [stdin_view_set] failed\n") ;
   }
 #endif
   ats_stdin_view_lock = 1 ;
@@ -176,11 +176,11 @@ ats_ptr_type
 atspre_stdout_get(void) {
 #ifdef _ATS_RUNTIME_CHECK
   if (!ats_stdout_view_lock) {
-    ats_exit_errmsg (1, "[exit(ATS): stdout_get] failed\n") ;
+    ats_exit_errmsg (1, "exit(ATS): [stdout_get] failed\n") ;
   }
 #endif
   ats_stdout_view_lock = 0 ;
-  return stdout ;
+  return (ats_ptr_type)stdout ;
 }
 
 static inline
@@ -188,7 +188,7 @@ ats_void_type
 atspre_stdout_view_get(void) {
 #ifdef _ATS_RUNTIME_CHECK
   if (!ats_stdout_view_lock) {
-    ats_exit_errmsg (1, "[exit(ATS): stdout_view_get] failed\n") ;
+    ats_exit_errmsg (1, "exit(ATS): [stdout_view_get] failed\n") ;
   }
 #endif
   ats_stdout_view_lock = 0 ;
@@ -200,7 +200,7 @@ ats_void_type
 atspre_stdout_view_set(void) {
 #ifdef _ATS_RUNTIME_CHECK
   if (ats_stdout_view_lock) {
-    ats_exit_errmsg (1, "[exit(ATS): stdout_view_set] failed\n") ;
+    ats_exit_errmsg (1, "exit(ATS): [stdout_view_set] failed\n") ;
   }
 #endif
   ats_stdout_view_lock = 1 ;
@@ -235,11 +235,11 @@ ats_ptr_type
 atspre_stderr_get(void) {
 #ifdef _ATS_RUNTIME_CHECK
   if (!ats_stderr_view_lock) {
-    ats_exit_errmsg (1, "[exit(ATS): stderr_get] failed\n") ;
+    ats_exit_errmsg (1, "exit(ATS): [stderr_get] failed\n") ;
   }
 #endif
   ats_stderr_view_lock = 0 ;
-  return stderr ;
+  return (ats_ptr_type)stderr ;
 }
 
 static inline
@@ -247,7 +247,7 @@ ats_void_type
 atspre_stderr_view_get(void) {
 #ifdef _ATS_RUNTIME_CHECK
   if (!ats_stderr_view_lock) {
-    ats_exit_errmsg (1, "[exit(ATS): stderr_view_get] failed\n") ;
+    ats_exit_errmsg (1, "exit(ATS): [stderr_view_get] failed\n") ;
   }
 #endif
   ats_stderr_view_lock = 0 ;
@@ -259,7 +259,7 @@ ats_void_type
 atspre_stderr_view_set(void) {
 #ifdef _ATS_RUNTIME_CHECK
   if (ats_stderr_view_lock) {
-    ats_exit_errmsg (1, "[exit(ATS): stderr_view_set] failed\n") ;
+    ats_exit_errmsg (1, (ats_ptr_type)"exit(ATS): [stderr_view_set] failed\n") ;
   }
 #endif
   ats_stderr_view_lock = 1 ;
@@ -292,16 +292,10 @@ atspre_stderr_view_set_opt(void) {
 static inline
 ats_void_type
 atspre_fprint_newline(const ats_ptr_type out) {
-  int n ;
-  n = fprintf((FILE *)out, "\n") ;
-  if (n < 0) {
-    ats_exit_errmsg
-      (n, "exit(ATS): [fprint_newline: fprintf] failed.\n") ;
-  }
-  n = fflush((FILE *)out) ;
-  if (n < 0) {
-    ats_exit_errmsg
-      (n, "exit(ATS): [fprint_newline: fflush] failed.\n") ;
+  int n1, n2 ;
+  n1 = fprintf((FILE *)out, "\n") ; n2 = fflush((FILE *)out) ;
+  if (n1 + n2 < 0) { ats_exit_errmsg
+    (1, (ats_ptr_type)"exit(ATS): [fprint_newline] failed.\n") ;
   }
   return ;
 }
@@ -310,7 +304,7 @@ static inline
 ats_void_type
 atspre_print_newline(void) {
   atspre_stdout_view_get() ;
-  atspre_fprint_newline(stdout) ;
+  atspre_fprint_newline((ats_ptr_type)stdout) ;
   atspre_stdout_view_set() ;
   return ;
 }
@@ -319,7 +313,7 @@ static inline
 ats_void_type
 atspre_prerr_newline(void) {
   atspre_stderr_view_get() ;
-  atspre_fprint_newline(stderr) ;
+  atspre_fprint_newline((ats_ptr_type)stderr) ;
   atspre_stderr_view_set() ;
   return ;
 }

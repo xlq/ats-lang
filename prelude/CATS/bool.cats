@@ -7,26 +7,25 @@
 /************************************************************************/
 
 /*
- * ATS - Unleashing the Potential of Types!
- *
- * Copyright (C) 2002-2008 Hongwei Xi.
- *
- * ATS is free software;  you can  redistribute it and/or modify it under
- * the terms of the GNU LESSER GENERAL PUBLIC LICENSE as published by the
- * Free Software Foundation; either version 2.1, or (at your option)  any
- * later version.
- * 
- * ATS is distributed in the hope that it will be useful, but WITHOUT ANY
- * WARRANTY; without  even  the  implied  warranty  of MERCHANTABILITY or
- * FITNESS FOR A PARTICULAR PURPOSE.  See the  GNU General Public License
- * for more details.
- * 
- * You  should  have  received  a  copy of the GNU General Public License
- * along  with  ATS;  see the  file COPYING.  If not, please write to the
- * Free Software Foundation,  51 Franklin Street, Fifth Floor, Boston, MA
- * 02110-1301, USA.
- *
- */
+** ATS - Unleashing the Potential of Types!
+**
+** Copyright (C) 2002-2008 Hongwei Xi.
+**
+** ATS is free software;  you can  redistribute it and/or modify it under
+** the terms of the GNU LESSER GENERAL PUBLIC LICENSE as published by the
+** Free Software Foundation; either version 2.1, or (at your option)  any
+** later version.
+** 
+** ATS is distributed in the hope that it will be useful, but WITHOUT ANY
+** WARRANTY; without  even  the  implied  warranty  of MERCHANTABILITY or
+** FITNESS FOR A PARTICULAR PURPOSE.  See the  GNU General Public License
+** for more details.
+** 
+** You  should  have  received  a  copy of the GNU General Public License
+** along  with  ATS;  see the  file COPYING.  If not, please write to the
+** Free Software Foundation,  51 Franklin Street, Fifth Floor, Boston, MA
+** 02110-1301, USA.
+*/
 
 /* ****** ****** */
 
@@ -130,7 +129,7 @@ atspre_fprint_bool (const ats_ptr_type out, const ats_bool_type b) {
   }
 
   if (n < 0) {
-    ats_exit_errmsg(n, "Exit: [fprint_bool] failed.\n") ;
+    ats_exit_errmsg(n, (ats_ptr_type)"Exit: [fprint_bool] failed.\n") ;
   }
 
   return ;
@@ -140,7 +139,7 @@ static inline
 ats_void_type
 atspre_print_bool(const ats_bool_type b) {
   atspre_stdout_view_get() ;
-  atspre_fprint_bool (stdout, b) ;
+  atspre_fprint_bool ((ats_ptr_type)stdout, b) ;
   atspre_stdout_view_set() ;
   return ;
 }
@@ -149,7 +148,7 @@ static inline
 ats_void_type
 atspre_prerr_bool(const ats_bool_type b) {
   atspre_stderr_view_get() ;
-  atspre_fprint_bool (stderr, b) ;
+  atspre_fprint_bool ((ats_ptr_type)stderr, b) ;
   atspre_stderr_view_set() ;
   return ;
 }
@@ -159,7 +158,7 @@ atspre_prerr_bool(const ats_bool_type b) {
 static inline
 ats_ptr_type
 atspre_tostring_bool(const ats_bool_type b) {
-  return (b ? "true" : "false") ;
+  return (b ? (ats_ptr_type)"true" : (ats_ptr_type)"false") ;
 }
 
 /* ****** ****** */

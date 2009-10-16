@@ -196,10 +196,12 @@ atspre_lsr_byte_int1(ats_byte_type b, ats_int_type n) {
 
 static inline
 ats_void_type
-atspre_fprint_byte (const ats_ptr_type out, const ats_byte_type b) {
+atspre_fprint_byte (
+  const ats_ptr_type out, const ats_byte_type b
+) {
   int n = fputc (b, (FILE *)out) ;
   if (n < 0) {
-    ats_exit_errmsg (n, "Exit: [fprint_byte] failed.\n") ;
+    ats_exit_errmsg (n, (ats_ptr_type)"Exit: [fprint_byte] failed.\n") ;
   }
   return ;
 }
@@ -208,7 +210,7 @@ static inline
 ats_void_type
 atspre_print_byte(const ats_byte_type c) {
   atspre_stdout_view_get () ;
-  atspre_fprint_byte(stdout, c) ;
+  atspre_fprint_byte((ats_ptr_type)stdout, c) ;
   atspre_stdout_view_set () ;
   return ;
 }
@@ -217,7 +219,7 @@ static inline
 ats_void_type
 atspre_prerr_byte(const ats_byte_type c) {
   atspre_stderr_view_get () ;
-  atspre_fprint_byte(stderr, c) ;
+  atspre_fprint_byte((ats_ptr_type)stderr, c) ;
   atspre_stderr_view_set () ;
   return ;
 }

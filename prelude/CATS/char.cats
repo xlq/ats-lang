@@ -7,26 +7,25 @@
 /************************************************************************/
 
 /*
- * ATS - Unleashing the Potential of Types!
- *
- * Copyright (C) 2002-2008 Hongwei Xi.
- *
- * ATS is free software;  you can  redistribute it and/or modify it under
- * the terms of the GNU LESSER GENERAL PUBLIC LICENSE as published by the
- * Free Software Foundation; either version 2.1, or (at your option)  any
- * later version.
- * 
- * ATS is distributed in the hope that it will be useful, but WITHOUT ANY
- * WARRANTY; without  even  the  implied  warranty  of MERCHANTABILITY or
- * FITNESS FOR A PARTICULAR PURPOSE.  See the  GNU General Public License
- * for more details.
- * 
- * You  should  have  received  a  copy of the GNU General Public License
- * along  with  ATS;  see the  file COPYING.  If not, please write to the
- * Free Software Foundation,  51 Franklin Street, Fifth Floor, Boston, MA
- * 02110-1301, USA.
- *
- */
+** ATS - Unleashing the Potential of Types!
+**
+** Copyright (C) 2002-2008 Hongwei Xi.
+**
+** ATS is free software;  you can  redistribute it and/or modify it under
+** the terms of the GNU LESSER GENERAL PUBLIC LICENSE as published by the
+** Free Software Foundation; either version 2.1, or (at your option)  any
+** later version.
+** 
+** ATS is distributed in the hope that it will be useful, but WITHOUT ANY
+** WARRANTY; without  even  the  implied  warranty  of MERCHANTABILITY or
+** FITNESS FOR A PARTICULAR PURPOSE.  See the  GNU General Public License
+** for more details.
+** 
+** You  should  have  received  a  copy of the GNU General Public License
+** along  with  ATS;  see the  file COPYING.  If not, please write to the
+** Free Software Foundation,  51 Franklin Street, Fifth Floor, Boston, MA
+** 02110-1301, USA.
+*/
 
 /* ****** ****** */
 
@@ -159,7 +158,7 @@ ats_void_type
 atspre_fprint_char (const ats_ptr_type out, const ats_char_type c) {
   int n = fputc ((unsigned char)c, (FILE *)out) ;
   if (n < 0) {
-    ats_exit_errmsg (n, "Exit: [fprint_char] failed.\n") ;
+    ats_exit_errmsg (n, (ats_ptr_type)"Exit: [fprint_char] failed.\n") ;
   }
   return ;
 }
@@ -168,7 +167,7 @@ static inline
 ats_void_type
 atspre_print_char (const ats_char_type c) {
   atspre_stdout_view_get () ;
-  atspre_fprint_char(stdout, c) ;
+  atspre_fprint_char((ats_ptr_type)stdout, c) ;
   atspre_stdout_view_set () ;
   return ;
 }
@@ -177,7 +176,7 @@ static inline
 ats_void_type
 atspre_prerr_char (const ats_char_type c) {
   atspre_stderr_view_get () ;
-  atspre_fprint_char(stderr, c) ;
+  atspre_fprint_char((ats_ptr_type)stderr, c) ;
   atspre_stderr_view_set () ;
   return ;
 }
@@ -188,104 +187,79 @@ static inline
 ats_ptr_type
 atspre_tostring_char (const ats_char_type c) {
   char *p ;
-  p = (char *)ATS_MALLOC(2) ;
-  *p = (char)c ; *(p+1) = '\000' ;
-  return p ;
+  p = (char *)ATS_MALLOC(2) ; *p = (char)c ; *(p+1) = '\000' ;
+  return (ats_ptr_type)p ;
 }
 
 /* ****** ****** */
 
 static inline
 ats_bool_type
-atspre_char_isalnum (const ats_char_type c) {
- return isalnum ((unsigned char)c) ;
-} /* end of [atspre_char_isalnum] */
+atspre_char_isalnum (ats_char_type c) { return isalnum(c) ; }
 
 static inline
 ats_bool_type
-atspre_char_isalpha (const ats_char_type c) {
- return isalpha ((unsigned char)c) ;
-} /* end of [atspre_char_isalpha] */
+atspre_char_isalpha (ats_char_type c) { return isalpha(c) ; }
 
 static inline
 ats_bool_type
-atspre_char_isascii (const ats_char_type c) {
- return isascii ((unsigned char)c) ;
-} /* end of [atspre_char_isascii] */
+atspre_char_isascii (ats_char_type c) { return isascii(c) ; }
+
+/* ****** ****** */
+
+extern int isblank (int c) ;
 
 static inline
 ats_bool_type
-atspre_char_isblank (const ats_char_type c) {
- return isblank ((unsigned char)c) ;
-} /* end of [atspre_char_isblank] */
+atspre_char_isblank (ats_char_type c) { return isblank(c) ; }
+
+/* ****** ****** */
 
 static inline
 ats_bool_type
-atspre_char_iscntrl (const ats_char_type c) {
- return iscntrl ((unsigned char)c) ;
-} /* end of [atspre_char_iscntrl] */
+atspre_char_iscntrl (ats_char_type c) { return iscntrl(c) ; }
 
 static inline
 ats_bool_type
-atspre_char_isdigit (const ats_char_type c) {
- return isdigit ((unsigned char)c) ;
-} /* end of [atspre_char_isdigit] */
+atspre_char_isdigit (ats_char_type c) { return isdigit(c) ; }
 
 static inline
 ats_bool_type
-atspre_char_isgraph (const ats_char_type c) {
- return isgraph ((unsigned char)c) ;
-} /* end of [atspre_char_isgraph] */
+atspre_char_isgraph (ats_char_type c) { return isgraph(c) ; }
 
 static inline
 ats_bool_type
-atspre_char_islower (const ats_char_type c) {
- return islower ((unsigned char)c) ;
-} /* end of [atspre_char_islower] */
+atspre_char_islower (ats_char_type c) { return islower(c) ; }
 
 static inline
 ats_bool_type
-atspre_char_isprint (const ats_char_type c) {
- return isprint ((unsigned char)c) ;
-} /* end of [atspre_char_isprint] */
+atspre_char_isprint (ats_char_type c) { return isprint(c) ; }
 
 static inline
 ats_bool_type
-atspre_char_ispunct (const ats_char_type c) {
- return ispunct ((unsigned char)c) ;
-} /* end of [atspre_char_ispunct] */
+atspre_char_ispunct (ats_char_type c) { return ispunct(c) ; }
 
 static inline
 ats_bool_type
-atspre_char_isspace (const ats_char_type c) {
- return isspace ((unsigned char)c) ;
-} /* end of [atspre_char_isspace] */
+atspre_char_isspace (ats_char_type c) { return isspace(c) ; }
 
 static inline
 ats_bool_type
-atspre_char_isupper (const ats_char_type c) {
- return isupper ((unsigned char)c) ;
-} /* end of [atspre_char_isupper] */
+atspre_char_isupper (ats_char_type c) { return isupper(c) ; }
 
 static inline
 ats_bool_type
-atspre_char_isxdigit (const ats_char_type c) {
- return isxdigit ((unsigned char)c) ;
-} /* end of [atspre_char_isxdigit] */
+atspre_char_isxdigit (ats_char_type c) { return isxdigit(c) ; }
 
 /* ****** ****** */
 
 static inline
 ats_char_type
-atspre_char_tolower (const ats_char_type c) {
-  return tolower ((unsigned char)c) ;
-} /* end of [atspre_char_tolower] */
+atspre_char_tolower (ats_char_type c) { return tolower(c) ; }
 
 static inline
 ats_char_type
-atspre_char_toupper (const ats_char_type c) {
-  return toupper ((unsigned char)c) ;
-} /* end of [atspre_char_toupper] */
+atspre_char_toupper (ats_char_type c) { return toupper(c) ; }
 
 /* ****** ****** */
 

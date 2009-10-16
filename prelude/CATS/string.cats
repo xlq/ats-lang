@@ -161,7 +161,7 @@ atspre_fprint_string
   (const ats_ptr_type out, const ats_ptr_type s) {
   int n = fprintf ((FILE *)out, "%s", (char*)s) ;
   if (n < 0) { ats_exit_errmsg
-    (n, "exit(ATS): [fprint_string] failed.\n") ;
+    (n, (ats_ptr_type)"exit(ATS): [fprint_string] failed.\n") ;
   } // end of [if]
   return ;
 } /* end of [atspre_fprint_string] */
@@ -170,7 +170,7 @@ static inline
 ats_void_type
 atspre_print_string (const ats_ptr_type s) {
   atspre_stdout_view_get() ;
-  atspre_fprint_string(stdout, s) ;
+  atspre_fprint_string((ats_ptr_type)stdout, s) ;
   atspre_stdout_view_set() ;
   return ;
 } /* end of [atspre_print_string] */
@@ -179,7 +179,7 @@ static inline
 ats_void_type
 atspre_prerr_string (const ats_ptr_type s) {
   atspre_stderr_view_get() ;
-  atspre_fprint_string(stderr, s) ;
+  atspre_fprint_string((ats_ptr_type)stderr, s) ;
   atspre_stderr_view_set() ;
   return ;
 } /* end of [atspre_prerr_string] */
@@ -249,10 +249,10 @@ atspre_string_append
   int n1, n2 ; char *des ;
   n1 = strlen((char*)s1) ;
   n2 = strlen((char*)s2) ;
-  des = ATS_MALLOC(n1+n2+1) ;
+  des = (char*)ATS_MALLOC(n1+n2+1) ;
   des[n1+n2] = '\000' ;
   memcpy(des, s1, n1) ; memcpy (des+n1, s2, n2) ;
-  return des ;
+  return (ats_ptr_type)des ;
 } /* end of [atspre_string_append] */
 
 /* ****** ****** */

@@ -80,7 +80,7 @@ atspre_array_ptr_split_tsz (
 , ats_size_type offset
 , ats_size_type tsz
 ) {
-  return ((char*)base) + offset * tsz ;
+  return (ats_ptr_type)((char*)base + offset * tsz) ;
 } /* end of [atspre_array_ptr_split_tsz] */
 
 /* ****** ****** */
@@ -92,7 +92,7 @@ atspre_array_ptr_takeout_tsz (
 , ats_size_type offset
 , ats_size_type tsz
 ) {
-  return ((char*)base) + offset * tsz ;
+  return (ats_ptr_type)((char*)base + offset * tsz) ;
 } /* end of [atspre_array_ptr_takeout_tsz] */
 
 /* ****** ****** */
