@@ -74,6 +74,11 @@
 
 /* ****** ****** */
 
+// needed for handling [PATCKstring]
+#define __strcmpats(s1, s2) strcmp((char*)(s1), (char*)(s2))
+
+/* ****** ****** */
+
 /* closure function selection */
 #define ats_closure_fun(f) ((ats_clo_ptr_type)f)->closure_fun
 

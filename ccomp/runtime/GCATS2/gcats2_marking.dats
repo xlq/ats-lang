@@ -40,6 +40,54 @@ staload "gcats2.sats"
 
 (* ****** ****** *)
 
+implement the_topsegtbl_mark
+  (pf1, pf2 | (*none*)) = let
+  var overflow: int = 0
+  viewdef V = (the_markstack_v, int @ overflow)
+  viewtypedef VT = ptr overflow
+  val f = lam {l:anz} (
+      pf1: !the_topsegtbl_v, pf2: !V | p_chunk: !chunkptr_vt l, env: !VT
+    ) : void =<fun> let
+    val (pf_chunk | p) = chunkptr_unfold (p_chunk)
+    prval pf21 = pf2.1
+    val () = !env := !env + chunk_mark (pf1, pf2.0 | !p)
+    prval () = pf2.1 := pf21
+    val _(*ptr*) = chunkptr_fold (pf_chunk | p_chunk)
+  in
+    // nothing
+  end
+  prval pf3 = (pf2, view@ overflow)
+  val () = the_topsegtbl_foreach_chunkptr {V} {VT} (pf1, pf3 | f, &overflow)
+  prval () = (pf2 := pf3.0; view@ overflow := pf3.1)
+in
+  overflow
+end // end of [the_topsegtbl_mark]
+
+(* ****** ****** *)
+
+(*
+** fun the_GCmain_mark (pf: !the_GCmain_v | (*none*)):<> int(*overflow*)
+*)
+implement the_GCmain_mark
+  (pf_all | (*none*)) = let
+  var overflow: int = 0
+//
+  prval (pf_out, fpf_all) = the_globalrts_v_takeout (pf_all)
+  val () = overflow := overflow + the_globalrts_mark (pf_out | (*none*))
+  prval () = pf_all := fpf_all (pf_out)
+//
+  prval (pf_out, fpf_all) = the_manmemlst_v_takeout (pf_all)
+  val () = overflow := overflow + the_manmemlst_mark (pf_out | (*none*))
+  prval () = pf_all := fpf_all (pf_out)
+//
+  val () = overflow := overflow + mystack_mark ()
+//
+in
+  overflow
+end // end of [the_GCmain_mark]
+
+(* ****** ****** *)
+
 %{^
 
 typedef
@@ -223,8 +271,9 @@ gcats2_ptr_mark
 } /* end of [gcats2_ptr_mark] */
 
 ats_int_type
-gcats2_ptrsize_mark
-  (ats_ptr_type ptr, ats_size_type wsz) {
+gcats2_ptrsize_mark (
+  ats_ptr_type ptr, ats_size_type wsz
+) {
   int i ;
   int overflow = 0 ;
   for (i = 0 ; i < wsz ; i += 1)
@@ -234,8 +283,9 @@ gcats2_ptrsize_mark
 } // end of [gcats2_ptrsize_mark]
 
 ats_int_type
-gcats2_chunk_mark
-  (ats_ptr_type p_chunk) {
+gcats2_chunk_mark (
+  ats_ptr_type p_chunk
+) {
   int i, j ; freeitmptr_vt *pi ;
   int itmwsz, itmtot ;
   int overflow = 0 ;
@@ -249,6 +299,42 @@ gcats2_chunk_mark
   } // end of [for]
   return overflow ;
 } /* end of [gcats2_chunk_mark] */
+
+%} // end of [%{^]
+
+(* ****** ****** *)
+
+%{^
+
+extern
+ats_int_type gcats2_mystackdir_get () ;
+
+extern
+ats_ptr_type gcats2_mystackbeg_get () ;
+
+ats_int_type
+gcats2_mystack_mark (
+  // there is no argument for this function
+) {
+  void *dir ; // make sure that [dir] is word-aligned!
+  int overflow = 0 ; freeitmptr_vt *_fr, *_to ;
+
+  dir = (void*)gcats2_mystackdir_get () ;
+  if ((int)dir > 0) {
+    _fr = (freeitmptr_vt*)gcats2_mystackbeg_get () ;
+    _to = (freeitmptr_vt*)(&dir) - 1 ; // excluding [dir]
+  } else {
+    _to = (freeitmptr_vt*)gcats2_mystackbeg_get () ;
+    _fr = (freeitmptr_vt*)(&dir) + 1 ; // excluding [dir]
+  } // end of [if]
+// /*
+  fprintf (stderr, "gcats2_mystack_mark: _fr = %p(%u)\n", _fr, _fr) ;
+  fprintf (stderr, "gcats2_mystack_mark: _to = %p(%u)\n", _to, _to) ;
+  fprintf (stderr, "gcats2_mystack_mark: _to - _fr = %i\n", _to - _fr) ;
+// */
+  while (_fr <= _to) { overflow += gcats2_ptr_mark (*_fr) ; _fr += 1 ; }
+  return overflow ;
+} /* end of [gc_mark_mystack] */
 
 %} // end of [%{^]
 

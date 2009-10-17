@@ -59,6 +59,11 @@ typedef struct ats_struct_type ats_abs_type ;
 typedef void *ats_ptr_type ;
 typedef void *ats_ref_type ;
 
+/*
+typedef struct ats_struct_type *ats_ptr_type ;
+typedef struct ats_struct_type *ats_ref_type ;
+*/
+
 #ifdef _ATS_GEIZELLA
 typedef void ats_var_type ; // for ATS/Geizella
 #else

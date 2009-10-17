@@ -53,12 +53,16 @@ struct globalrtspage_struct {
 
 typedef globalrtspage_vt *globalrtspagelst_vt ;
 
-globalrtspage_vt the_globalrtspage_fst = { 0 } ;
+/* ****** ****** */
+
+globalrtspage_vt the_globalrtspage_fst = {0} ;
 
 globalrtspagelst_vt // it should never be NULL!
 the_globalrtspagelst_cur = &the_globalrtspage_fst ;
 
 int the_globalrtsposition = 0 ; // the_globalrtsposition : natLt (GLOBALRTS_PAGESIZE)
+
+/* ****** ****** */
 
 /*
 fun the_globalrts_insert
@@ -82,8 +86,15 @@ gcats2_the_globalrts_insert (
   return ;
 } // end of [gcats2_the_globalrts_insert]
 
+/* ****** ****** */
+
+extern
+ats_int_type gcats2_ptrsize_mark (ats_ptr_type ptr, ats_size_type wsz) ;
+
 ats_int_type
-gcats2_the_globalrts_mark () {
+gcats2_the_globalrts_mark (
+  // there is no argument for this function
+) {
   int i, j ;
   globalrtspage_vt *p_page ; ptrsize_t *p_entry ;
   freeitmptr_vt *ptr ; size_t wsz ;
@@ -104,6 +115,8 @@ gcats2_the_globalrts_mark () {
   } // end of [for]
   return overflow ;
 } // gcats2_the_globalrts_mark
+
+/* ****** ****** */
 
 %} // end of [%{^]
 

@@ -38,7 +38,7 @@
 
 GCC=gcc
 ATSCC=$(ATSHOME)/bin/atscc -O3
-ATSCCFLAGS= # -m64
+ATSCCFLAGS= -D_ATS_MULTITHREAD # -m64
 
 ######
 
@@ -46,10 +46,14 @@ test: gcats2_c.h gcats2_ats.hats
 	$(ATSCC) $(ATSCCFLAGS) -o test gcats2_test.dats \
           gcats2.sats \
           gcats2_top.dats \
+          gcats2_misc.dats \
           gcats2_freeitmlst.dats \
           gcats2_chunk.dats \
           gcats2_pointer.dats \
+          gcats2_globalrts.dats \
+          gcats2_manmem.dats \
           gcats2_marking.dats \
+          -lpthread \
       && ./test
 
 ######
@@ -61,6 +65,10 @@ gcats2_ats.hats: gcats2_master.hats
 	$(GCC) -E -P -D_ATSHEADER -o $@ -x c gcats2_master.hats
 
 ######
+
+gcats2_misc_dats.o: \
+  gcats2_c.h gcats2_ats.hats gcats2_misc.dats 
+	$(ATSCC) $(ATSCCFLAGS) -o $@  -c gcats2_misc.dats
 
 gcats2_freeitmlst_dats.o: \
   gcats2_c.h gcats2_ats.hats gcats2_freeitmlst.dats 
@@ -77,6 +85,10 @@ gcats2_pointer_dats.o: \
 gcats2_globalrts_dats.o: \
   gcats2_c.h gcats2_ats.hats gcats2_globalrts.dats 
 	$(ATSCC) $(ATSCCFLAGS) -o $@  -c gcats2_globalrts.dats
+
+gcats2_manmem_dats.o: \
+  gcats2_c.h gcats2_ats.hats gcats2_manmem.dats 
+	$(ATSCC) $(ATSCCFLAGS) -o $@  -c gcats2_manmem.dats
 
 gcats2_marking_dats.o: \
   gcats2_c.h gcats2_ats.hats gcats2_marking.dats 

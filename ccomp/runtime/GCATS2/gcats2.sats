@@ -46,6 +46,12 @@
 
 (* ****** ****** *)
 
+fun mystackdir_get (): int = "gcats2_mystackdir_get"
+fun mystackbeg_set (dir: int): void = "gcats2_mystackbeg_set"
+fun mystackbeg_get (): ptr = "gcats2_mystackbeg_get"
+
+(* ****** ****** *)
+
 abst@ype freeitm_t // size_t(freeitm) >= 1
 absviewtype freeitmlst_vt (l:addr) // boxed type
 
@@ -231,7 +237,7 @@ fun ptr_isvalid ( // implemented in C in [gcats2_point.dats]
 fun the_topsegtbl_foreach_chunkptr
   {v:view} {vt:viewtype} (
     pf1: !the_topsegtbl_v, pf2: !v
-  | f: {l:anz} (!v | !chunkptr_vt l, !vt) -<fun> void, env: !vt
+  | f: {l:anz} (!the_topsegtbl_v, !v | !chunkptr_vt l, !vt) -<fun> void, env: !vt
   ) :<> void
   = "gcats2_the_topsegtbl_foreach_chunkptr"
 // end of ...
@@ -243,9 +249,42 @@ fun the_topsegtbl_clear_mrkbits (pf: !the_topsegtbl_v | (*none*)):<> void
 
 absview the_globalrts_v
 
-fun the_globalrts_insert
-  (pf: !the_globalrts_v | ptr: ptr, wsz: size_t):<> void
+fun the_globalrts_insert (
+    pf: !the_globalrts_v | ptr: ptr, wsz: size_t
+  ) :<> void
   = "gcats2_the_globalrts_insert" // implemented in C
+// end of ...
+
+(* ****** ****** *)
+
+abst@ype manmem_vt // unboxed type
+fun manmem_data_get (itm: &manmem_vt):<> ptr = "gcats2_manmem_data_get"
+
+fun manmem_make // bsz: number of bytes
+  (bsz: size_t):<> [l:addr] (manmem_vt @ l | ptr l)
+  = "gcats2_manmem_make"
+// end of ...
+
+fun manmem_free {l:addr}
+  (pf: manmem_vt @ l | p: ptr l):<> void
+  = "gcats2_manmem_free"
+// end of ...
+
+absview the_manmemlst_v
+
+fun the_manmemlst_length
+  (pf: !the_manmemlst_v | (*none*)):<> int
+  = "gcats2_the_manmemlst_length" // mostly for gathering some statistic info
+// end of ...
+
+fun the_manmemlst_insert {l:addr}
+  (pf: !the_manmemlst_v, pf2: manmem_vt @ l | p: ptr l):<> void
+  = "gcats2_the_manmemlst_insert"
+// end of ...
+
+fun the_manmemlst_remove // [p] must be in the_manmemlst!
+  (pf: !the_manmemlst_v | p: ptr):<> [l:addr] (manmem_vt @ l | ptr l)
+  = "gcats2_the_manmemlst_remove"
 // end of ...
 
 (* ****** ****** *)
@@ -279,22 +318,68 @@ fun the_markstackpagelst_extend {n:nat}
 
 (* ****** ****** *)
 
+// implemented in [gcats2_marking]
 fun ptr_mark (
     pf1: !the_topsegtbl_v, pf2: !the_markstack_v | ptr: ptr
   ) :<> int(*overflow*)
   = "gcats2_ptr_mark"
 // end of ...
 
+// implemented in [gcats2_marking]
 fun ptrsize_mark (
     pf1: !the_topsegtbl_v, pf2: !the_markstack_v | ptr: ptr, wsz: size_t
   ) :<> int(*overflow*)
   = "gcats2_ptrsize_mark"
 // end of ...
 
+// implemented in [gcats2_marking]
 fun chunk_mark (
     pf1: !the_topsegtbl_v, pf2: !the_markstack_v | chk: &chunk_vt
   ) :<> int(*overflow*)
   = "gcats2_chunk_mark"
+
+// implemented in [gcats2_marking]
+fun mystack_mark () :<> int(*overflow*) = "gcats2_mystack_mark"
+
+(* ****** ****** *)
+
+// implemented in [gcats2_mark.dats]
+fun the_topsegtbl_mark
+  (pf1: !the_topsegtbl_v, pf2: !the_markstack_v | (*none*)):<> int(*overflow*)
+// end of ...
+
+// implemented in [gcats2_globalrts.dats]
+fun the_globalrts_mark
+  (pf: !the_globalrts_v | (*none*)) :<> int(*overflow*)
+  = "gcats2_the_globalrts_mark"
+
+// implemented in [gcats2_manmem.dats]
+fun the_manmemlst_mark
+  (pf: !the_manmemlst_v | (*none*)) :<> int(*overflow*)
+  = "gcats2_the_manmemlst_mark"
+
+(* ****** ****** *)
+
+// this view contains contains
+absview the_GCmain_v // the resources for performing GC
+
+prfun the_topsegtbl_v_takeout (pf: the_GCmain_v)
+  : (the_topsegtbl_v, the_topsegtbl_v -<lin,prf> the_GCmain_v)
+// end of [the_topsegtbl_v_takeout]
+
+prfun the_globalrts_v_takeout (pf: the_GCmain_v)
+  : (the_globalrts_v, the_globalrts_v -<lin,prf> the_GCmain_v)
+// end of [the_globalrts_v_takeout]
+
+prfun the_manmemlst_v_takeout (pf: the_GCmain_v)
+  : (the_manmemlst_v, the_manmemlst_v -<lin,prf> the_GCmain_v)
+// end of [the_manmemlst_v_takeout]
+
+prfun the_markstack_v_takeout (pf: the_GCmain_v)
+  : (the_markstack_v, the_markstack_v -<lin,prf> the_GCmain_v)
+// end of [the_markstack_v_takeout]
+
+fun the_GCmain_mark (pf: !the_GCmain_v | (*none*)):<> int(*overflow*)
 
 (* ****** ****** *)
 

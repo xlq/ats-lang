@@ -76,7 +76,7 @@ typedef struct { void *ptr ; size_t wsz ; } ptrsize_t ;
 
 static inline
 ats_ptr_type
-gcats2_malloc_ext (ats_int_type bsz) {
+gcats2_malloc_ext (ats_size_type bsz) {
   void *p ;
 /*
   fprintf(stderr, "gcats2_malloc_ext: bsz = %i\n", bsz) ;

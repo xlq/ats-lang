@@ -77,17 +77,19 @@ you need for linking.
 Step 3:
 
 Please make sure that ATSHOME is set to "FOO/ATS", and ATSHOMERELOC is set
-to ATS-x.x.x, where x.x.x is the verison number of ATS package. This should
-probably be done by a shell script.  Note that the values of ATSHOME and
-ATSHOMERELOC can be found in the files "FOO/ATS/.ATSHOME" and
-"FOO/ATS/.ATSHOMERELOC", respectively.
+to "ATS-x.x.x", where x.x.x is the verison number of ATS package. This
+should probably be done by a shell script.
 
 Step 4: Optionally, you can install ATS by executing
 
 make install
 
 If you do so, please set ATSHOME to $DESTDIR/share/ats-anairiats-x.x.x,
-which the name of the directory where ATS is installed.
+which is the name of the directory where ATS is installed. The environment
+variable ATSHOMERELOC is still set to "ATS-x.x.x".
+
+Note that the values of ATSHOME and ATSHOMERELOC can also be found in the
+files "FOO/ATS/.ATSHOME" and "FOO/ATS/.ATSHOMERELOC", respectively.
 
 ------------------------------------------------------------------------
 

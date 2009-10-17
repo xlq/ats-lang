@@ -73,7 +73,7 @@ implement the_topsegtbl_clear_mrkbits
   (pf_tbl | (*none*)) = let
   prval pf = unit_v ()
   val f = lam {l:anz} (
-      pf: !unit_v | p_chunk: !chunkptr_vt l, env: !ptr
+      pf_tbl: !the_topsegtbl_v, pf: !unit_v | p_chunk: !chunkptr_vt l, env: !ptr
     ) : void =<fun> let
     val (pf_chunk | p) = chunkptr_unfold (p_chunk)
     val () = chunk_mrkbits_clear (!p)

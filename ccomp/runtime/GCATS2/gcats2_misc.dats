@@ -32,65 +32,56 @@
 (* ****** ****** *)
 
 // Author: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
-// Time: June 2008
+// Time: October 2009
+
+(* ****** ****** *)
+
+staload "gcats2.sats"
 
 (* ****** ****** *)
 
 %{^
 
-#include <unistd.h>
-
-#include "gcats1.cats"
-
-%}
-
-(* ****** ****** *)
-
-staload "gcats1.sats"
-
-(* ****** ****** *)
-
-%{^
-
-static int the_stack_direction = 0 ;
+static int the_mystackdir = 0 ;
 
 // dir=1/-1 : upward/downward
-static ats_int_type volatile
-gc_stack_dir_get_main (unsigned int *some_ptr) {
-  unsigned int some_int ;
-  if (&some_int > some_ptr) return 1 ; else return -1 ;
+static
+ats_int_type volatile // no inline!
+gcats2_mystackdir_get_main (
+  void *some_arg // a stack pointer obtained previously
+) {
+  void *some_ptr ;
+  if ((void*)&some_ptr > some_arg) return 1 ; else return -1 ;
   return 0 ; /* deadcode */
-}
+} /* end of [gcats2_mystackdir_get_main] */
 
-ats_int_type gc_stack_dir_get () {
-  unsigned int some_int ;
-  if (!the_stack_direction) { // uninitialized
-    the_stack_direction = gc_stack_dir_get_main (&some_int) ;
+ats_int_type
+gcats2_mystackdir_get () {
+  void *some_ptr ;
+  if (!the_mystackdir) { // uninitialized
+    the_mystackdir = gcats2_mystackdir_get_main (&some_ptr) ;
   }
-  return the_stack_direction ;
-}
+  return the_mystackdir ;
+} /* end of [gcats2_mystackdir_get] */
 
 /* ****** ****** */
 
-#ifdef _ATS_MULTITHREAD
-static __thread
-ats_ptr_type the_stack_beg = (ats_ptr_type)0 ;
-#else /* single thread */
 static
-ats_ptr_type the_stack_beg = (ats_ptr_type)0 ;
+#ifdef _ATS_MULTITHREAD
+__thread // thread-local storage
 #endif
+ats_ptr_type the_mystackbeg = (ats_ptr_type)0 ;
 
-ats_void_type gc_stack_beg_set (ats_int_type dir) {
+ats_void_type
+gcats2_mystackbeg_set (
+  ats_int_type dir // dir = gcats2_mystackdir_get
+) {
   long int pagesize, pagemask ; uintptr_t beg ;
 
-  if (the_stack_beg) return ; // already set
+  if (the_mystackbeg) return ; // [the_mystackbeg] is already set
 
   // pagesize must be a power of 2
-  pagesize = sysconf(_SC_PAGESIZE) ; // system configuration
-/*
-  fprintf(stderr, "get_stack_beg_set: pagesize = %li\n", pagesize) ;
-  fprintf(stderr, "get_stack_beg_set: &pagesize = %p\n", &pagesize) ;
-*/
+  pagesize = sysconf(_SC_PAGESIZE) ; // system configuration // usually 4096
   pagemask = ~(pagesize - 1) ; // 1...10...0
 
   if (dir > 0) {
@@ -99,28 +90,33 @@ ats_void_type gc_stack_beg_set (ats_int_type dir) {
   } else {
     beg = (uintptr_t)(&pagesize) + pagesize ;
     beg &= pagemask ;
-    beg -= sizeof(freeitmlst) ;
+    beg -= sizeof(freeitmptr_vt) ;
   }
-
-  the_stack_beg = (ats_ptr_type)beg ;
-
+  the_mystackbeg = (ats_ptr_type)beg ;
+// /*
+  fprintf(stderr, "gcats2_mystackbeg_set: dir = %i\n", dir) ;
+  fprintf(stderr, "gcats2_mystackbeg_set: pagesize = %li\n", pagesize) ;
+  fprintf(stderr, "gcats2_mystackbeg_set: &pagesize = %p\n", &pagesize) ;
+  fprintf(stderr, "gcats2_mystackbeg_set: beg = %p\n", (void*)beg) ;
+// */
   return ;
-}
+} /* end of [gcats2_mystackbeg_set] */
 
 ats_ptr_type
-gc_stack_beg_get (
+gcats2_mystackbeg_get (
   // there is no argument for this function
 ) {
-  if (!the_stack_beg) {
-    fprintf (stderr, "GC Fatal Error: [gc_stack_beg_get]") ;
-    fprintf (stderr, ": [the_stack_beg] is not yet set.\n") ;
-    exit (1) ;
-  }
-  return the_stack_beg ;
-}
+  if (!the_mystackbeg) { fprintf (stderr,
+      "INTERNAL ERROR(ATS/GC): [gcats2_mystackbeg_get]: the_mystackbeg is not yet set.\n"
+    ) ; exit (1) ;
+  } // end of [if]
+  return the_mystackbeg ;
+} /* end of [gcats2_mystackbeg_get] */
 
-%}
+/* ****** ****** */
+
+%} // end of [%{^]
 
 (* ****** ****** *)
 
-(* end of [gcats1_misc.dats] *)
+(* end of [gcats2_misc.dats] *)

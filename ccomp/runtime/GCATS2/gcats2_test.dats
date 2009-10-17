@@ -49,6 +49,10 @@ staload UNISTD = "libc/SATS/unistd.sats"
 
 (* ****** ****** *)
 
+staload _(*anonymous*) = "prelude/DATS/list_vt.dats"
+
+(* ****** ****** *)
+
 fn ptr_randgen (): ptr = let
   fun loop {n:nat} .<n>.
     (n: int n, u: ulint):<!ref> ulint =
@@ -119,7 +123,7 @@ fn nchunktot_get
   var n: int = 0
   viewdef v = int @ n; viewtypedef vt = ptr n
   fn f {l:anz}
-    (pf: !v | p_chunk: !chunkptr_vt l, p_n: !vt):<> void = let
+    (pf_tbl: !the_topsegtbl_v, pf: !v | p_chunk: !chunkptr_vt l, p_n: !vt):<> void = let
     val p = ptr_of_chunkptr (p_chunk)
   in
     !p_n := !p_n + 1
@@ -242,10 +246,66 @@ fn ptr_isvalid_test (
 
 (* ****** ****** *)
 
+fn the_manmemlst_test
+  (pf: !the_manmemlst_v | (*none*)): void = let
+  #define N 100
+  val () = (
+    printf ("[the_manmemlst_test]: start: N = %i\n", @(N))
+  ) // end of [val]
+  val ptrs = loop (pf | N, list_vt_nil) where {
+    fun loop {i:nat} .<i>. (
+        pf: !the_manmemlst_v | i: int i, res: List_vt ptr
+      ) : List_vt ptr =
+      if i > 0 then let
+        val bsz = size_of_int1 (i)
+        val (pf_mm | p_mm) = manmem_make (bsz)
+        val ptr = manmem_data_get (!p_mm)
+        val () = the_manmemlst_insert (pf, pf_mm | p_mm)
+      in
+        loop (pf | i-1, list_vt_cons (ptr, res))
+      end else
+        res // loop exits
+      // end of [if]
+    // end of [loop]
+  } // end of [val]
+  val nmanmemlst = the_manmemlst_length (pf | (*none*))
+  val () = begin
+    print "the_manmemlst_test: nmanmemlst = "; print nmanmemlst; print_newline ()
+  end
+  val () = assert_errmsg (nmanmemlst = N, #LOCATION)
+  val ptrs = list_vt_reverse (ptrs)
+  val () = loop (pf | ptrs) where {
+    fun loop (
+        pf: !the_manmemlst_v | ptrs: List_vt ptr
+      ) : void =
+      case+ ptrs of
+      | ~list_vt_cons (ptr, ptrs) => let
+           val (pf_mm | p_mm) = the_manmemlst_remove (pf | ptr)
+           val () = manmem_free (pf_mm | p_mm)
+         in
+           loop (pf | ptrs)
+         end // end of [list_vt_cons]
+      | ~list_vt_nil () => ()
+    // end of [loop]
+  } // end of [val]
+  val nmanmemlst = the_manmemlst_length (pf | (*none*))
+  val () = begin
+    print "the_manmemlst_test: nmanmemlst = "; print nmanmemlst; print_newline ()
+  end
+  val () = assert_errmsg (nmanmemlst = 0, #LOCATION)
+in
+  // nothing
+end // end of [the_manmemlst_test]
+
+(* ****** ****** *)
+
 dynload "gcats2_top.dats"
+dynload "gcats2_misc.dats"
 dynload "gcats2_freeitmlst.dats"
 dynload "gcats2_chunk.dats"
 dynload "gcats2_pointer.dats"
+dynload "gcats2_globalrts.dats"
+dynload "gcats2_manmem.dats"
 dynload "gcats2_marking.dats"
 
 (* ****** ****** *)
@@ -273,10 +333,26 @@ implement main (argc, argv) = () where {
   } // end of [prval]
 //
   prval (
+    pf_the_globalrts, fpf_the_globalrts
+  ) = pf_the_globalrts_gen () where { extern prfun
+    pf_the_globalrts_gen (): (the_globalrts_v, the_globalrts_v -<prf> void)
+  } // end of [prval]
+//
+  prval (
+    pf_the_manmemlst, fpf_the_manmemlst
+  ) = pf_the_manmemlst_gen () where { extern prfun
+    pf_the_manmemlst_gen (): (the_manmemlst_v, the_manmemlst_v -<prf> void)
+  } // end of [prval]
+//
+  prval (
     pf_the_markstack, fpf_the_markstack
   ) = pf_the_markstack_gen () where { extern prfun
     pf_the_markstack_gen (): (the_markstack_v, the_markstack_v -<prf> void)
   } // end of [prval]
+//
+  val _(*overflow*) = the_globalrts_mark (pf_the_globalrts | (*none*))
+  val () = mystackbeg_set (dir) where { val dir = mystackdir_get () }
+  val _(*overflow*) = mystack_mark ()
 //
   val () = ptr_topbotchk_test ()
   val () = (print "[ptr_topbotchk_test] is done successfully."; print_newline ())
@@ -288,6 +364,9 @@ implement main (argc, argv) = () where {
   val () = ptr_isvalid_test
     (pf_the_topsegtbl, pf_the_chunkpagelst | (*none*))
   val () = (print "[ptr_isvalid_test] is done successfully."; print_newline ())
+//
+  val () = the_manmemlst_test (pf_the_manmemlst | (*none*))
+  val () = (print "[the_manmemlst_test] is done successfully."; print_newline ())
 //
   val nmarkstackpage =
     the_markstackpagelst_length (pf_the_markstack | (*none*))
@@ -303,6 +382,8 @@ implement main (argc, argv) = () where {
 //
   prval () = fpf_the_topsegtbl (pf_the_topsegtbl)
   prval () = fpf_the_chunkpagelst (pf_the_chunkpagelst)
+  prval () = fpf_the_globalrts (pf_the_globalrts)
+  prval () = fpf_the_manmemlst (pf_the_manmemlst)
   prval () = fpf_the_markstack (pf_the_markstack)
 } // end of [main]
 
