@@ -59,7 +59,7 @@ atspre_ptr_is_null (ats_ptr_type p) {
 
 static inline
 ats_bool_type
-atspre_ptr_is_not_null (ats_ptr_type p) {
+atspre_ptr_isnot_null (ats_ptr_type p) {
   return (p != (ats_ptr_type)0 ? ats_true_bool : ats_false_bool) ;
 }
 
