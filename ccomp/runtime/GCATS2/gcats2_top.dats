@@ -68,15 +68,26 @@ gcats2_the_topsegtbl_initialize () {
 
 #endif // end of [__WORDSIZE == 64]
 
-%}
+%} // end of [%{^]
 
 (* ****** ****** *)
 
-%{
+%{^
+
+// this is the total number
+size_t the_totwsz = 0 ; // of words in use
 
 freeitmlst_vt the_chunkpagelst = (freeitmlst_vt*)0 ;
 
-%}
+// FREEITMLST_ARRAYSIZE = MAX_CLICK_WORDSIZE_LOG + 1
+chunklst_vt the_sweeplstarr[FREEITMLST_ARRAYSIZE] = {0} ;
+
+#ifdef _ATS_MULTITHREAD
+__thread
+#endif // end of [_ATS_MULTITHREAD]
+freeitmlst_vt the_freeitmlstarr[FREEITMLST_ARRAYSIZE] = {0} ;
+
+%} // end of [%{^]
 
 (* ****** ****** *)
 

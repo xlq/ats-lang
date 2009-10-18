@@ -134,65 +134,85 @@ fn nchunktot_get
 (* ****** ****** *)
 
 fn the_topsegtbl_insert_remove_test (
-    pf1: !the_topsegtbl_v
-  , pf2: !the_chunkpagelst_v
+    pf1: !the_totwsz_v
+  , pf2: !the_topsegtbl_v
+  , pf3: !the_chunkpagelst_v
   | (*none*)
   ) : void = () where {
-  #define N 1024
-  #define ITMWSZ 1024; #define ITMWSZ_LOG 10
+  #define N 10
+  #define ITMWSZ 32
+  #define ITMWSZ_LOG 5
+  #define ITMTOT %(CHUNK_WORDSIZE / ITMWSZ)
   val () = (
     printf ("[the_topsegtbl_insert_remove_test]: start: N = %i\n", @(N))
   ) // end of [val]
   viewtypedef ptrlst = List_vt ptr
   val ptrs = loop
-    (pf1, pf2 | N, list_vt_nil ()) where {
+    (pf1, pf2, pf3 | N, list_vt_nil ()) where {
     fun loop {n:nat} (
-        pf1: !the_topsegtbl_v
-      , pf2: !the_chunkpagelst_v
+        pf1: !the_totwsz_v
+      , pf2: !the_topsegtbl_v
+      , pf3: !the_chunkpagelst_v
       | n: int n, ptrs: ptrlst
       ) : ptrlst =
       if n > 0 then let
-        val p_chunk = chunk_make_norm (pf2 | ITMWSZ, ITMWSZ_LOG)
+        val p_chunk = chunk_make_norm (pf1, pf3 | ITMWSZ, ITMWSZ_LOG)
         val (pf_chunk | p) = chunkptr_unfold (p_chunk)
         val p_chunk_data = chunk_data_get (!p)
+// (*
+        val xs = freeitmlst_make_null (null)
+        val xs = chunk_add_freeitmlst (!p, xs)
+        val nxs = freeitmlst_length (xs)
+        val _(*ptr*) = __cast xs where {
+          extern castfn __cast {l:addr} (xs: freeitmlst_vt l):<> ptr l
+        } // end of [val]
+        val () = begin
+          print "the_topsegtbl_insert_remove_test: loop: nxs = "; print nxs; print_newline ()
+        end
+        val () = assert_errmsg (nxs = ITMTOT, #LOCATION)
+// *)
         val _(*ptr*) = chunkptr_fold (pf_chunk | p_chunk)
-        val err = the_topsegtbl_insert_chunkptr (pf1 | p_chunk)
+        val err = the_topsegtbl_insert_chunkptr (pf2 | p_chunk)
         val () = assert_errmsg (err = 0, #LOCATION)
       in
-        loop (pf1, pf2 | n-1, list_vt_cons (p_chunk_data, ptrs))
+        loop (pf1, pf2, pf3 | n-1, list_vt_cons (p_chunk_data, ptrs))
       end else
         ptrs // loop exits
       // end of [if]
     // end of [loop]
   } // end of [val ptrs]
-  val () = the_topsegtbl_clear_mrkbits (pf1 | (*none*))
-  val nchunk = nchunktot_get (pf1 | (*none*))
+  val () = the_topsegtbl_clear_mrkbits (pf2 | (*none*))
+  val nchunk = nchunktot_get (pf2 | (*none*))
   val () = (print "nchunk = "; print nchunk; print_newline ())
-  val () = loop (pf1, pf2 | ptrs) where {
+  val () = loop (pf1, pf2, pf3 | ptrs) where {
     fun loop (
-        pf1: !the_topsegtbl_v
-      , pf2: !the_chunkpagelst_v
+        pf1: !the_totwsz_v
+      , pf2: !the_topsegtbl_v
+      , pf3: !the_chunkpagelst_v
       | ptrs: ptrlst
       ) : void =
       case+ ptrs of
       | ~list_vt_cons (ptr, ptrs) => let
-          val p_chunk = the_topsegtbl_remove_chunkptr (pf1 | ptr)
+          val p_chunk = the_topsegtbl_remove_chunkptr (pf2 | ptr)
           val () = assert_errmsg (ptr_of_chunkptr p_chunk <> null, #LOCATION)
-          val () = chunk_free_norm (pf2 | p_chunk)
+          val () = chunk_free_norm (pf1, pf3 | p_chunk)
         in
-          loop (pf1, pf2 | ptrs)
+          loop (pf1, pf2, pf3 | ptrs)
         end // end of [list_vt_cons]
       | ~list_vt_nil () => ()
     // end of [loop]
   } // end of [val ()]
-  val nchunk = nchunktot_get (pf1 | (*none*))
+  val nchunk = nchunktot_get (pf2 | (*none*))
   val () = (print "nchunk = "; print nchunk; print_newline ())
 } // end of [the_topsegtbl_insert_remove_test]
 
 (* ****** ****** *)
 
 fn ptr_isvalid_test (
-    pf1: !the_topsegtbl_v, pf2: !the_chunkpagelst_v | (*none*)
+    pf1: !the_totwsz_v
+  , pf2: !the_topsegtbl_v
+  , pf3: !the_chunkpagelst_v
+  | (*none*)
   ) : void = () where {
   #define ITMWSZ 4
   #define ITMWSZ_LOG 2
@@ -200,46 +220,46 @@ fn ptr_isvalid_test (
   val () = (
     printf ("[ptr_isvalid_test]: start\n", @())
   ) // end of [val]
-  val nchunkpage_bef = the_chunkpagelst_length (pf2 | (*none*))
+  val nchunkpage_bef = the_chunkpagelst_length (pf3 | (*none*))
   val () = (print "nchunkpage(bef) = "; print nchunkpage_bef; print_newline ())
-  val p0_chunk = chunk_make_norm (pf2 | ITMWSZ, ITMWSZ_LOG)
-  val nchunkpage_aft = the_chunkpagelst_length (pf2 | (*none*))
+  val p0_chunk = chunk_make_norm (pf1, pf3 | ITMWSZ, ITMWSZ_LOG)
+  val nchunkpage_aft = the_chunkpagelst_length (pf3 | (*none*))
   val () = (print "nchunkpage(aft) = "; print nchunkpage_aft; print_newline ())
   val () = assert_errmsg (nchunkpage_bef = nchunkpage_aft + 1, #LOCATION)
   val (pf0_chunk | p0) = chunkptr_unfold (p0_chunk)
   val ptr0 = chunk_data_get (!p0)
   val _(*p0*) = chunkptr_fold (pf0_chunk | p0_chunk)
-  val err = the_topsegtbl_insert_chunkptr (pf1 | p0_chunk)
+  val err = the_topsegtbl_insert_chunkptr (pf2 | p0_chunk)
   var nitm : int // uninitialized
 //
   // this one is valid
-  val (fpf1 | p0_chunk) = ptr_isvalid (pf1 | ptr0, nitm)
+  val (fpf2 | p0_chunk) = ptr_isvalid (pf2 | ptr0, nitm)
   val p0_chunk_1 =  ptr_of_chunkptr (p0_chunk)
-  prval () = pf1 := fpf1 (p0_chunk)
+  prval () = pf2 := fpf2 (p0_chunk)
   val () = assert_errmsg (p0_chunk_1 <> null, #LOCATION)
   prval () = opt_unsome (nitm)
 //
   // this one is not valid
   val ptr1 = ptr_of_uintptr (uintptr_of_ptr ptr0 + uint_of_int (ITMBSZ / 2))
-  val (fpf1 | p0_chunk) = ptr_isvalid (pf1 | ptr1, nitm)
+  val (fpf2 | p0_chunk) = ptr_isvalid (pf2 | ptr1, nitm)
   val p0_chunk_1 =  ptr_of_chunkptr (p0_chunk)
-  prval () = pf1 := fpf1 (p0_chunk)
+  prval () = pf2 := fpf2 (p0_chunk)
   val () = assert_errmsg (p0_chunk_1 = null, #LOCATION)
   prval () = opt_unnone (nitm)
 //
   // this one is valid
   val ptr2 = ptr_of_uintptr (uintptr_of_ptr ptr0 + uint_of_int (ITMBSZ * 7))
-  val (fpf1 | p0_chunk) = ptr_isvalid (pf1 | ptr2, nitm)
+  val (fpf2 | p0_chunk) = ptr_isvalid (pf2 | ptr2, nitm)
   val p0_chunk_1 =  ptr_of_chunkptr (p0_chunk)
-  prval () = pf1 := fpf1 (p0_chunk)
+  prval () = pf2 := fpf2 (p0_chunk)
   val () = assert_errmsg (p0_chunk_1 <> null, #LOCATION)
   prval () = opt_unsome (nitm)
 //
   // this one is not valid
   val ptr2 = ptr_randgen ()
-  val (fpf1 | p0_chunk) = ptr_isvalid (pf1 | ptr2, nitm)
+  val (fpf2 | p0_chunk) = ptr_isvalid (pf2 | ptr2, nitm)
   val p0_chunk_1 =  ptr_of_chunkptr (p0_chunk)
-  prval () = pf1 := fpf1 (p0_chunk)
+  prval () = pf2 := fpf2 (p0_chunk)
   val () = assert_errmsg (p0_chunk_1 = null, #LOCATION)
   prval () = opt_unnone (nitm)
 } // end of [ptr_isvalid_test]
@@ -307,6 +327,7 @@ dynload "gcats2_pointer.dats"
 dynload "gcats2_globalrts.dats"
 dynload "gcats2_manmem.dats"
 dynload "gcats2_marking.dats"
+dynload "gcats2_collecting.dats"
 
 (* ****** ****** *)
 
@@ -316,6 +337,12 @@ implement main (argc, argv) = () where {
   val () = printf ("pagesize = %i\n", @(pagesz))
 //
   val () = $RAND.srand48_with_gettimeofday ()
+//
+  prval (
+    pf_the_totwsz, fpf_the_totwsz
+  ) = pf_the_totwsz_gen () where { extern prfun
+    pf_the_totwsz_gen (): (the_totwsz_v, the_totwsz_v -<prf> void)
+  } // end of [prval]
 //
   prval (
     pf_the_topsegtbl, fpf_the_topsegtbl
@@ -350,19 +377,15 @@ implement main (argc, argv) = () where {
     pf_the_markstack_gen (): (the_markstack_v, the_markstack_v -<prf> void)
   } // end of [prval]
 //
-  val _(*overflow*) = the_globalrts_mark (pf_the_globalrts | (*none*))
-  val () = mystackbeg_set (dir) where { val dir = mystackdir_get () }
-  val _(*overflow*) = mystack_mark ()
-//
   val () = ptr_topbotchk_test ()
   val () = (print "[ptr_topbotchk_test] is done successfully."; print_newline ())
 //
   val () = the_topsegtbl_insert_remove_test
-    (pf_the_topsegtbl, pf_the_chunkpagelst | (*none*))
+    (pf_the_totwsz, pf_the_topsegtbl, pf_the_chunkpagelst | (*none*))
   val () = (print "[the_topsegtbl_insert_remove_test] is done successfully."; print_newline ())
 //
   val () = ptr_isvalid_test
-    (pf_the_topsegtbl, pf_the_chunkpagelst | (*none*))
+    (pf_the_totwsz, pf_the_topsegtbl, pf_the_chunkpagelst | (*none*))
   val () = (print "[ptr_isvalid_test] is done successfully."; print_newline ())
 //
   val () = the_manmemlst_test (pf_the_manmemlst | (*none*))
@@ -380,11 +403,25 @@ implement main (argc, argv) = () where {
     the_markstackpagelst_length (pf_the_markstack | (*none*))
   val () = (print "nmarkstackpage(aft2) = "; print nmarkstackpage; print_newline ())
 //
+  prval () = fpf_the_totwsz (pf_the_totwsz)
   prval () = fpf_the_topsegtbl (pf_the_topsegtbl)
   prval () = fpf_the_chunkpagelst (pf_the_chunkpagelst)
   prval () = fpf_the_globalrts (pf_the_globalrts)
   prval () = fpf_the_manmemlst (pf_the_manmemlst)
   prval () = fpf_the_markstack (pf_the_markstack)
+//
+  prval (
+    pf_the_GCmain, fpf_the_GCmain
+  ) = pf_the_GCmain_gen () where { extern prfun
+    pf_the_GCmain_gen (): (the_GCmain_v, the_GCmain_v -<prf> void)
+  } // end of [prval]
+//
+  val _(*overflow*) =
+    the_globalrts_mark (pf_the_GCmain | (*none*))
+  val () = mystackbeg_set (dir) where { val dir = mystackdir_get () }
+  val _(*overflow*) = mystack_mark ()
+//
+  prval () = fpf_the_GCmain (pf_the_GCmain)
 } // end of [main]
 
 (* ****** ****** *)

@@ -95,9 +95,8 @@ ats_int_type
 gcats2_the_globalrts_mark (
   // there is no argument for this function
 ) {
-  int i, j ;
+  int i ;
   globalrtspage_vt *p_page ; ptrsize_t *p_entry ;
-  freeitmptr_vt *ptr ; size_t wsz ;
   int overflow = 0 ;
 //
   p_page = &the_globalrtspage_fst ;

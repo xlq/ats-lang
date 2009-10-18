@@ -89,7 +89,7 @@ gcats2_malloc_ext (ats_size_type bsz) {
 } /* end of [gcats2_malloc_ext] */
 
 static inline
-ats_ptr_type
+ats_void_type
 gcats2_free_ext (ats_ptr_type ptr) { free(ptr); return ; }
 
 /* ****** ****** */
@@ -166,6 +166,10 @@ PTR_TOPSEGHASH_GET (ats_ptr_type p) {
 
 /* ****** ****** */
 
+extern size_t the_totwsz ; // declared in [gcats2_top.dats]
+
+/* ****** ****** */
+
 #define NMARKBIT_PER_CHUNK \
    ((CHUNK_WORDSIZE + NBIT_PER_BYTE - 1) / NBIT_PER_BYTE)
 
@@ -179,6 +183,8 @@ struct chunk_struct {
 
   int itmtot ; // the total number of freeitms
   int mrkcnt ; // the count of marked freeitms
+
+  struct chunk_struct *sweepnxt ; // the next swept chunk
 
   freepageptr_vt chunk_data ; // pointer to the data // multiple of pagesize
 
@@ -268,7 +274,7 @@ gcats2_the_topsegtbl_takeout (topseg_t ofs) {
 
 static inline
 ats_ptr_type // &chunkptr
-gcats2_botsegtblptr1_takeout ( // used in [ptr_is_valid]
+gcats2_botsegtblptr1_takeout ( // used in [ptr_isvalid]
   ats_ptr_type p_botsegtbl // p_botsegtbl != 0
 , topseg_t ofs_topseg, int ofs_botseg // [ofs_topseg]: not used
 ) {
@@ -281,7 +287,7 @@ gcats2_botsegtblptr1_takeout ( // used in [ptr_is_valid]
 
 static inline
 ats_ptr_type // &chunkptr
-gcats2_botsegtblptr1_takeout ( // used in [ptr_is_valid]
+gcats2_botsegtblptr1_takeout ( // used in [ptr_isvalid]
   ats_ptr_type p_botsegtbl // p_botsegtbl != 0
 , topseg_t ofs_topseg, int ofs_botseg // [ofs_topseg]: used
 ) {
@@ -319,16 +325,28 @@ MARK_GETSET (ats_ptr_type x, ats_int_type i) {
   if (bit) {
     return 1 ;
   } else {
-    *p_bits != (0x1 << (i & NBIT_PER_BYTE_MASK)) ; return 0 ;
+    *p_bits |= (0x1 << (i & NBIT_PER_BYTE_MASK)) ; return 0 ;
   } // end of [if]
 } /* end of [MARK_GETSET] */
 
 static inline
-ats_bool_type
+ats_void_type
 MARK_CLEAR (ats_ptr_type x, ats_int_type i) {
   ((byte*)x)[i >> NBIT_PER_BYTE_LOG] &= ~(0x1 << (i & NBIT_PER_BYTE_MASK)) ;
   return ;
 } /* end of [MARK_SET] */
+
+/* ****** ****** */
+
+extern ats_ptr_type
+gcats2_ptr_isvalid (ats_ptr_type ptr, ats_ref_type r_ofs_chkseg) ;
+
+extern ats_ptr_type
+gcats2_chunk_make_norm (ats_int_type itmwsz, ats_int_type itmwsz_log) ;
+
+extern ats_void_type gcats2_chunk_free_norm (ats_ptr_type p_chunk) ;
+
+extern ats_void_type gcats2_chunk_free_large (ats_ptr_type p_chunk) ;
 
 /* ****** ****** */
 

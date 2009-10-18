@@ -41,7 +41,7 @@ staload "gcats2.sats"
 (* ****** ****** *)
 
 implement the_topsegtbl_mark
-  (pf1, pf2 | (*none*)) = let
+  (pf_gc | (*none*)) = let
   var overflow: int = 0
   viewdef V = (the_markstack_v, int @ overflow)
   viewtypedef VT = ptr overflow
@@ -56,9 +56,15 @@ implement the_topsegtbl_mark
   in
     // nothing
   end
-  prval pf3 = (pf2, view@ overflow)
-  val () = the_topsegtbl_foreach_chunkptr {V} {VT} (pf1, pf3 | f, &overflow)
-  prval () = (pf2 := pf3.0; view@ overflow := pf3.1)
+  viewdef tbl_v = the_topsegtbl_v and stk_v = the_markstack_v
+  prval (pf_tbl, pf_stk, fpf_gc) = __takeout (pf_gc) where {
+    extern prfun __takeout
+      (pf: the_GCmain_v):<prf> (tbl_v, stk_v, (tbl_v, stk_v) -<lin,prf> the_GCmain_v)
+  } // end of [prval
+  prval pf3 = (pf_stk, view@ overflow)
+  val () = the_topsegtbl_foreach_chunkptr {V} {VT} (pf_tbl, pf3 | f, &overflow)
+  prval () = (pf_stk := pf3.0; view@ overflow := pf3.1)
+  prval () = pf_gc := fpf_gc (pf_tbl, pf_stk)
 in
   overflow
 end // end of [the_topsegtbl_mark]
@@ -66,24 +72,25 @@ end // end of [the_topsegtbl_mark]
 (* ****** ****** *)
 
 (*
-** fun the_GCmain_mark (pf: !the_GCmain_v | (*none*)):<> int(*overflow*)
+** fun the_GCmain_mark (pf_gc: !the_GCmain_v | (*none*)):<> int(*overflow*)
 *)
 implement the_GCmain_mark
-  (pf_all | (*none*)) = let
+  (pf_gc | (*none*)) = let
   var overflow: int = 0
 //
-  prval (pf_out, fpf_all) = the_globalrts_v_takeout (pf_all)
-  val () = overflow := overflow + the_globalrts_mark (pf_out | (*none*))
-  prval () = pf_all := fpf_all (pf_out)
+  val () = overflow := overflow + the_globalrts_mark (pf_gc | (*none*))
 //
-  prval (pf_out, fpf_all) = the_manmemlst_v_takeout (pf_all)
-  val () = overflow := overflow + the_manmemlst_mark (pf_out | (*none*))
-  prval () = pf_all := fpf_all (pf_out)
+  val () = overflow := overflow + the_manmemlst_mark (pf_gc | (*none*))
 //
   val () = overflow := overflow + mystack_mark ()
 //
+  val overflowed = overflow
+  val () = $effmask_ntm (
+    while (overflow > 0) (overflow := the_topsegtbl_mark (pf_gc | (*none*)))
+  ) // end of [val]
+//
 in
-  overflow
+  overflowed
 end // end of [the_GCmain_mark]
 
 (* ****** ****** *)
@@ -125,7 +132,7 @@ gcats2_the_markstackpagelst_length () {
 ats_void_type
 gcats2_the_markstackpagelst_pop
   (ats_ref_type r_ptr, ats_ref_type r_wsz) {
-  int i ; ptrsize_t *p_entry ;
+  ptrsize_t *p_entry ;
   if (the_markstackposition > 0)
     the_markstackposition -= 1 ;
   else {
@@ -142,7 +149,7 @@ gcats2_the_markstackpagelst_pop
   return ;
 } /* end of [gcats2_the_markstackpagelst_pop] */
 
-ats_int_type
+ats_void_type
 gcats2_the_markstackpagelst_push (
   ats_ptr_type ptr, ats_size_type wsz, ats_ref_type r_overflow
 ) {
@@ -205,9 +212,31 @@ gcats2_the_markstackpagelst_extend
 
 %{^
 
-extern
-ats_ptr_type
-gcats2_ptr_isvalid (ats_ptr_type ptr, ats_ref_type r_ofs_chkseg) ;
+ats_void_type
+gcats2_freeitmlst_mark (
+  ats_ptr_type xs // xs: freeitmlst_vt
+) {
+  int ofs_chkseg ; chunk_vt *p_chunk ;
+  while (xs) {
+    p_chunk =
+      (chunkptr_vt)gcats2_ptr_isvalid(xs, &ofs_chkseg) ;
+#if (GCATS2_DEBUG > 0)
+  if (!p_chunk) {
+    fprintf (stderr, "exit(ATS/GC): gcats2_freeitmlst_mark: invalid: xs = %p\n", xs) ;
+    exit(1) ;
+  } // end of [if]
+#endif // end of [GCATS2_DEBUG > 0]
+    if (p_chunk) MARK_SET(p_chunk->mrkbits, ofs_chkseg) ;
+    xs = *(freeitmlst_vt*)xs ;
+  } // end of [while]
+  return ;
+} // end of [gcats2_freeitmlst_mark]
+
+%} // end of [%{^]
+
+(* ****** ****** *)
+
+%{^
 
 ats_int_type
 gcats2_ptr_mark
@@ -286,7 +315,7 @@ ats_int_type
 gcats2_chunk_mark (
   ats_ptr_type p_chunk
 ) {
-  int i, j ; freeitmptr_vt *pi ;
+  int i ; freeitmptr_vt *pi ;
   int itmwsz, itmtot ;
   int overflow = 0 ;
   itmwsz = ((chunk_vt*)p_chunk)->itmwsz ;
@@ -328,8 +357,8 @@ gcats2_mystack_mark (
     _fr = (freeitmptr_vt*)(&dir) + 1 ; // excluding [dir]
   } // end of [if]
 // /*
-  fprintf (stderr, "gcats2_mystack_mark: _fr = %p(%u)\n", _fr, _fr) ;
-  fprintf (stderr, "gcats2_mystack_mark: _to = %p(%u)\n", _to, _to) ;
+  fprintf (stderr, "gcats2_mystack_mark: _fr = %p\n", _fr) ;
+  fprintf (stderr, "gcats2_mystack_mark: _to = %p\n", _to) ;
   fprintf (stderr, "gcats2_mystack_mark: _to - _fr = %i\n", _to - _fr) ;
 // */
   while (_fr <= _to) { overflow += gcats2_ptr_mark (*_fr) ; _fr += 1 ; }

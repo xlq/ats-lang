@@ -46,7 +46,7 @@ static int the_mystackdir = 0 ;
 
 // dir=1/-1 : upward/downward
 static
-ats_int_type volatile // no inline!
+ats_int_type // volatile // no inline!
 gcats2_mystackdir_get_main (
   void *some_arg // a stack pointer obtained previously
 ) {

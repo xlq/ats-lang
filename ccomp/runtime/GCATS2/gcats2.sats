@@ -75,6 +75,7 @@ fun freeitmlst_uncons {l:anz}
   = "gcats2_freeitmlst_uncons"
 // end of [freeitmlst_uncons]
 
+castfn freeitmlst_make_null (p: ptr null):<> freeitmlst_vt null
 castfn freeitmlst_free_null (xs: freeitmlst_vt null):<> ptr null
 
 (* ****** ****** *)
@@ -100,6 +101,10 @@ fun PTR_CHKSEG_GET (p: ptr):<> natLt (CHKSEG_TABLESIZE)
 fun PTR_TOPSEGHASH_GET (p: ptr):<> [i:nat] topseg i
   = "PTR_TOPSEGHASH_GET"
 #endif // end of [#if (__WORDSIZE == 64)]
+
+(* ****** ****** *)
+
+absview the_totwsz_v
 
 (* ****** ****** *)
 
@@ -152,26 +157,37 @@ castfn chunkptr_unfold
 
 // implemented in [gcats2_chunk.dats]
 fun chunk_make_norm {i:nat} (
-    pf: !the_chunkpagelst_v | itmwsz: int, itmwsz_log: int i
+    pf1: !the_totwsz_v
+  , pf2: !the_chunkpagelst_v
+  | itmwsz: int, itmwsz_log: int i
   ) :<> [l:anz] chunkptr_vt l
   = "gcats2_chunk_make_norm"
 
 // implemented in [gcats2_chunk.dats]
-fun chunk_free_norm {l:anz}
-  (pf: !the_chunkpagelst_v | p_chunk: chunkptr_vt l):<> void
+fun chunk_free_norm {l:anz} (
+    pf1: !the_totwsz_v, pf2: !the_chunkpagelst_v | p_chunk: chunkptr_vt l
+  ) :<> void
   = "gcats2_chunk_free_norm"
 
 // implemented in [gcats2_chunk.dats]
-fun chunk_make_large (itmwsz: int):<> [l:anz] chunkptr_vt l
+fun chunk_make_large
+  (pf: !the_totwsz_v | itmwsz: size_t):<> [l:anz] chunkptr_vt l
   = "gcats2_chunk_make_large"
 
 // implemented in [gcats2_chunk.dats]
-fun chunk_free_large {l:anz} (p_chunk: chunkptr_vt l):<> void
+fun chunk_free_large {l:anz}
+  (pf: !the_totwsz_v | p_chunk: chunkptr_vt l):<> void
   = "gcats2_chunk_free_large"
 
 // implemented in [gcats2.cats]
 fun chunk_make_null ():<> chunkptr_vt null = "gcats2_chunk_make_null"
 fun chunk_free_null (p: chunkptr_vt null):<> void = "gcats2_chunk_free_null"
+
+// implemented in [gcats2_chunk.dats]
+fun chunk_add_freeitmlst {l:addr}
+  (chk: &chunk_vt, xs: freeitmlst_vt l):<> [l:addr] freeitmlst_vt l
+  = "gcats2_chunk_add_freeitmlst"
+// end of ...
 
 (* ****** ****** *)
 
@@ -236,7 +252,7 @@ fun ptr_isvalid ( // implemented in C in [gcats2_point.dats]
 // implemented in C in [gcats2_chunk.dats]
 fun the_topsegtbl_foreach_chunkptr
   {v:view} {vt:viewtype} (
-    pf1: !the_topsegtbl_v, pf2: !v
+    pf1: !the_topsegtbl_v, pf2: !v // or assuming [the_topsegtbl_v <= v]
   | f: {l:anz} (!the_topsegtbl_v, !v | !chunkptr_vt l, !vt) -<fun> void, env: !vt
   ) :<> void
   = "gcats2_the_topsegtbl_foreach_chunkptr"
@@ -319,6 +335,12 @@ fun the_markstackpagelst_extend {n:nat}
 (* ****** ****** *)
 
 // implemented in [gcats2_marking]
+fun freeitmlst_mark {l:addr}
+  (pf: !the_topsegtbl_v | xs: !freeitmlst_vt l):<> void
+  = "gcats2_freeitmlst_mark"
+// end of ...
+
+// implemented in [gcats2_marking]
 fun ptr_mark (
     pf1: !the_topsegtbl_v, pf2: !the_markstack_v | ptr: ptr
   ) :<> int(*overflow*)
@@ -337,32 +359,17 @@ fun chunk_mark (
     pf1: !the_topsegtbl_v, pf2: !the_markstack_v | chk: &chunk_vt
   ) :<> int(*overflow*)
   = "gcats2_chunk_mark"
-
-// implemented in [gcats2_marking]
-fun mystack_mark () :<> int(*overflow*) = "gcats2_mystack_mark"
-
-(* ****** ****** *)
-
-// implemented in [gcats2_mark.dats]
-fun the_topsegtbl_mark
-  (pf1: !the_topsegtbl_v, pf2: !the_markstack_v | (*none*)):<> int(*overflow*)
 // end of ...
 
-// implemented in [gcats2_globalrts.dats]
-fun the_globalrts_mark
-  (pf: !the_globalrts_v | (*none*)) :<> int(*overflow*)
-  = "gcats2_the_globalrts_mark"
-
-// implemented in [gcats2_manmem.dats]
-fun the_manmemlst_mark
-  (pf: !the_manmemlst_v | (*none*)) :<> int(*overflow*)
-  = "gcats2_the_manmemlst_mark"
+// implemented in [gcats2_marking]
+fun mystack_mark ():<> int(*overflow*) = "gcats2_mystack_mark"
 
 (* ****** ****** *)
 
 // this view contains contains
 absview the_GCmain_v // the resources for performing GC
 
+(*
 prfun the_topsegtbl_v_takeout (pf: the_GCmain_v)
   : (the_topsegtbl_v, the_topsegtbl_v -<lin,prf> the_GCmain_v)
 // end of [the_topsegtbl_v_takeout]
@@ -378,8 +385,38 @@ prfun the_manmemlst_v_takeout (pf: the_GCmain_v)
 prfun the_markstack_v_takeout (pf: the_GCmain_v)
   : (the_markstack_v, the_markstack_v -<lin,prf> the_GCmain_v)
 // end of [the_markstack_v_takeout]
+*)
 
-fun the_GCmain_mark (pf: !the_GCmain_v | (*none*)):<> int(*overflow*)
+// implemented in [gcats2_mark.dats]
+fun the_topsegtbl_mark
+  (pf1: !the_GCmain_v | (*none*)):<> int(*overflow*)
+// end of ...
+
+// implemented in [gcats2_globalrts.dats]
+fun the_globalrts_mark
+  (pf: !the_GCmain_v | (*none*)) :<> int(*overflow*)
+  = "gcats2_the_globalrts_mark"
+
+// implemented in [gcats2_manmem.dats]
+fun the_manmemlst_mark
+  (pf: !the_GCmain_v | (*none*)) :<> int(*overflow*)
+  = "gcats2_the_manmemlst_mark"
+
+// implemented in [gcats2_marking.dats]
+fun the_GCmain_mark // [overflowed] determines if [markstack] needs
+  (pf: !the_GCmain_v | (*none*)):<> int(*overflowed*) // to be extended
+
+(* ****** ****** *)
+
+absview the_sweeplstarr_v
+
+// implemented in [gcats2_collecting.dats]
+fun chunk_sweeplst_build (pf: !the_sweeplstarr_v | chk: &chunk_vt):<> void
+  = "gcats2_chunk_sweeplst_build"
+
+// implemented in [gcats2_collecting.dats]
+fun the_topsegtbl_sweeplst_build
+  (pf_tbl: !the_topsegtbl_v, pf_arr: !the_sweeplstarr_v | (*none*)):<> void
 
 (* ****** ****** *)
 

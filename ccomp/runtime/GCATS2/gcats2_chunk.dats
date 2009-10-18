@@ -91,7 +91,41 @@ end // end of [the_topsegtbl_clear_mrkbits]
 
 %{^
 
-static freepagelst_vt the_chunkpagelst = (freepagelst_vt)0 ;
+ats_ptr_type
+gcats2_chunk_add_freeitmlst (
+  ats_ptr_type p_chunk, ats_ptr_type xs // p_chunk != NULL
+) {
+  int i, itmwsz, itmtot ;
+  freeitmptr_vt *p_data ; byte *mrkbits ;
+
+  itmwsz = ((chunk_vt*)p_chunk)->itmwsz ;
+  itmtot = ((chunk_vt*)p_chunk)->itmtot ;
+  p_data = ((chunk_vt*)p_chunk)->chunk_data ;
+//
+  if (((chunk_vt*)p_chunk)->mrkcnt == 0) { // fast threading
+    for (i = 0 ; i < itmtot ; i += 1) {
+      *p_data = (freeitmlst_vt)xs ; xs = p_data ; p_data += itmwsz ;
+    } // end of [for]
+    return xs ;
+  } // end of [if]
+//
+  mrkbits = ((chunk_vt*)p_chunk)->mrkbits ;
+  for (i = 0 ; i < itmtot ; i += 1) {
+    // add if not marked
+    if (!MARK_GET(mrkbits, i)) { *p_data = (freeitmlst_vt)xs ; xs = p_data ; }
+    p_data += itmwsz ;
+  } // end of [for]
+  return xs ;
+} // end of [gcats2_chunk_threading]
+
+%} // end of [%{^]
+
+(* ****** ****** *)
+
+%{^
+
+static
+freepagelst_vt the_chunkpagelst = (freepagelst_vt)0 ;
 
 extern // implemented in [gcats2_freeitmlst.dats]
 ats_int_type gcats2_freeitmlst_length (ats_ptr_type) ;
@@ -180,8 +214,8 @@ gcats2_chunk_make_norm (
   p_chunk = (chunkptr_vt)gcats2_malloc_ext(sizeof(chunk_vt)) ;
   p_freepage = (freepageptr_vt)gcats2_the_chunkpagelst_remove() ;
 //
-  p_chunk->itmwsz = itmwsz ;
   p_chunk->itmwsz_log = itmwsz_log ;
+  p_chunk->itmwsz = itmwsz ;
   p_chunk->itmtot = itmtot ;
 //
   p_chunk->mrkcnt = 0 ; // for fast threading!
@@ -189,8 +223,12 @@ gcats2_chunk_make_norm (
 //
   p_chunk->chunk_data = p_freepage ;
 /*
-  fprintf (stderr, "chunklst_create: p_chunk = %p(%i)\n", p_chunk, p_chunk) ;
+  fprintf (stderr, "chunk_make_norm: p_chunk = %p\n", p_chunk) ;
 */
+  the_totwsz += CHUNK_WORDSIZE ;
+#if (GCATS2_TEST > 0)
+  fprintf (stderr, "chunk_make_norm: the_totwsz = %lu\n", (ats_ulint_type)the_totwsz) ;
+#endif
   return p_chunk ;
 } /* end of [gcats2_chunk_make_norm] */
 
@@ -200,19 +238,80 @@ fun chunk_free_norm {l:anz}
 */
 ats_void_type
 gcats2_chunk_free_norm
-  (ats_ptr_type p_chunk) { // p_chunk <> null)
+  (ats_ptr_type p_chunk) { // p_chunk != NULL
 #if (GCATS2_DEBUG > 0)
   if (((chunk_vt*)p_chunk)->itmwsz_log < 0) {
     fprintf(stderr, "gcats2_chunk_free_norm: the chunk to be freed is large.\n") ;
     exit(1) ;
   } // end of [if]
 #endif
+  the_totwsz -= CHUNK_WORDSIZE ;
+#if (GCATS2_TEST > 0)
+  fprintf (stderr, "chunk_free_norm: the_totwsz = %lu\n", (ats_ulint_type)the_totwsz) ;
+#endif
   gcats2_the_chunkpagelst_insert(((chunk_vt*)p_chunk)->chunk_data) ;
   gcats2_free_ext(p_chunk) ;
   return ;
 } /* end of [gcats2_chunk_free_norm] */
 
-%}
+%} // end of [%{^]
+
+(* ****** ****** *)
+
+%{
+
+ats_ptr_type
+gcats2_chunk_make_large (
+  ats_size_type itmwsz // itmwsz > CHUNK_WORDSIZE
+) {
+  chunkptr_vt p_chunk ; freepageptr_vt p_freepage ;
+#if (GCATS2_DEBUG > 0)
+  if (itmwsz <= CHUNK_WORDSIZE) {
+    fprintf(stderr, "gcats2_chunk_make_large: itmwsz = %i\n", itmwsz) ;
+    exit(1) ;
+  } // end of [if]
+#endif
+  p_chunk = (chunkptr_vt)gcats2_malloc_ext(sizeof(chunk_vt)) ;
+  p_freepage =
+    (freepageptr_vt)gcats2_malloc_ext(itmwsz << NBYTE_PER_WORD_LOG) ;
+  // [p_freepage] can only be freed by [gcats2_free_ext]
+//
+  p_chunk->itmwsz_log = -1 ;
+  p_chunk->itmwsz = itmwsz ;
+  p_chunk->itmtot = 1 ;
+//
+  p_chunk->mrkcnt = 0 ; // for fast threading!
+  memset(p_chunk->mrkbits, 0, NMARKBIT_PER_CHUNK) ;
+//
+  p_chunk->chunk_data = p_freepage ;
+/*
+  fprintf (stderr, "chunklst_make_large: p_chunk = %p\n", p_chunk) ;
+*/
+  the_totwsz += itmwsz ;
+#if (GCATS2_TEST > 0)
+  fprintf (stderr, "chunk_make_large: the_totwsz = %lu\n", (ats_ulint_type)the_totwsz) ;
+#endif
+  return p_chunk ;
+} /* end of [gcats2_chunk_make_large] */
+
+ats_void_type
+gcats2_chunk_free_large
+  (ats_ptr_type p_chunk) { // p_chunk != NULL
+#if (GCATS2_DEBUG > 0)
+  if (((chunk_vt*)p_chunk)->itmwsz_log >= 0) {
+    fprintf(stderr, "gcats2_chunk_free_large: the chunk to be freed is normal.\n") ;
+    exit(1) ;
+  } // end of [if]
+#endif
+  the_totwsz -= ((chunk_vt*)p_chunk)->itmwsz ;
+#if (GCATS2_TEST > 0)
+  fprintf (stderr, "chunk_free_large: the_totwsz = %lu\n", (ats_ulint_type)the_totwsz) ;
+#endif
+  gcats2_free_ext(((chunk_vt*)p_chunk)->chunk_data) ; gcats2_free_ext(p_chunk) ;
+  return ;
+} /* end of [gcats2_chunk_free_large] */
+
+%} // end of [%{^]
 
 (* ****** ****** *)
 
@@ -247,7 +346,9 @@ gcats2_the_topsegtbl_insert_chunkptr
      p_botsegtbl->hashkey = (uintptr_t)ofs_topseg ; p_botsegtbl->hashnext = (botsegtblptr_vt)0 ;
 #endif // end of [__WORDSIZE == 64]
 /*
-    fprintf (stderr, "gcats2_the_topsegtbl_insert_chunkptr: the_nbotsegtbl_alloc = %i\n", the_nbotsegtbl_alloc) ;
+    fprintf(stderr,
+      "gcats2_the_topsegtbl_insert_chunkptr: the_nbotsegtbl_alloc = %i\n", the_nbotsegtbl_alloc
+    ) ;
 */
     *r_p_botsegtbl = p_botsegtbl ;
   } // end of [if]
@@ -262,7 +363,9 @@ gcats2_the_topsegtbl_insert_chunkptr
     memset(p_botsegtbl, 0, sizeof(botsegtbl_vt)) ;
     p_botsegtbl->hashkey = (uintptr_t)ofs_topseg ; p_botsegtbl->hashnext = *r_p_botsegtbl ;
 /*
-    fprintf(stderr, "gcats2_the_topsegtbl_insert_chunkptr: the_nbotsegtbl_alloc = %i\n", the_nbotsegtbl_alloc) ;
+    fprintf(stderr,
+      "gcats2_the_topsegtbl_insert_chunkptr: the_nbotsegtbl_alloc = %i\n", the_nbotsegtbl_alloc
+    ) ;
 */
     *r_p_botsegtbl = p_botsegtbl ;
     (p_botsegtbl->headers)[ofs_botseg] = p_chunk ;
@@ -273,8 +376,12 @@ gcats2_the_topsegtbl_insert_chunkptr
 #if (GCATS2_DEBUG > 0)
   if (*r_p_chunk != (chunkptr_vt)0) {
 /*
-    fprintf(stderr, "exit(ATS/GC): gcats2_the_topsegtbl_insert_chunkptr: p_chunk = %p\n", p_chunk) ;
-    fprintf(stderr, "exit(ATS/GC): gcats2_the_topsegtbl_insert_chunkptr: *r_p_chunk = %p\n", *r_p_chunk) ;
+    fprintf(stderr,
+      "exit(ATS/GC): gcats2_the_topsegtbl_insert_chunkptr: p_chunk = %p\n", p_chunk
+    ) ;
+    fprintf(stderr,
+      "exit(ATS/GC): gcats2_the_topsegtbl_insert_chunkptr: *r_p_chunk = %p\n", *r_p_chunk
+    ) ;
     exit(1) ;
 */
     return 1 ;
@@ -353,7 +460,7 @@ gcats2_the_topsegtbl_foreach_chunkptr
   return ;
 } /* end of [gcats2_the_topsegtbl_foreach_chunkptr] */
 
-%} // end of [ %{^ ]
+%} // end of [%{^]
 
 (* ****** ****** *)
 
