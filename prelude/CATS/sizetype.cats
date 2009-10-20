@@ -106,6 +106,20 @@ atspre_size1_of_ptrdiff1 (ats_ptrdiff_type x) { return (ats_size_type)x ; }
 
 /* ****** ****** */
 
+static inline
+ats_size_type
+atspre_lsl_size_int1 (ats_size_type sz, ats_int_type n) {
+  return (sz << n) ;
+}
+
+static inline
+ats_size_type
+atspre_lsr_size_int1 (ats_size_type sz, ats_int_type n) {
+  return (sz >> n) ;
+}
+
+/* ****** ****** */
+
 // print functions
 
 static inline
@@ -352,8 +366,9 @@ static inline
 ats_int_type
 atspre_int1_of_ssize1 (ats_ssize_type ssz) {
   if (INT_MAX < ssz || ssz < INT_MIN) {
-    fprintf (stderr, "[ats_int1_of_ssize1(%li)] failed\n", (ats_lint_type)ssz) ;
-    exit (1) ;
+    fprintf (stderr,
+      "exit(ATS): [ats_int1_of_ssize1(%li)] failed\n", (ats_lint_type)ssz
+    ) ; exit (1) ;
   } /* end of [if] */
   return (ats_int_type)ssz ;
 } /* end of [atspre_int1_of_ssize1] */
@@ -367,8 +382,9 @@ static inline
 ats_ssize_type atspre_ssize1_of_size1 (ats_size_type sz) {
   ats_ssize_type ssz = sz ;
   if (ssz < 0) {
-    fprintf (stderr, "[ats_ssize1_of_size1(%lu)] failed\n", (ats_ulint_type)sz) ;
-    exit (1) ;
+    fprintf (stderr,
+      "exit(ATS): [ats_ssize1_of_size1(%lu)] failed\n", (ats_ulint_type)sz
+    ) ; exit (1) ;
   } /* end of [if] */
   return ssz ;
 } /* end of [atspre_ssize1_of_size1] */

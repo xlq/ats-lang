@@ -48,6 +48,7 @@
 
 /* ****** ****** */
 
+// implemented in [prelude/DATS/basics.dats]
 extern void ats_exit_errmsg (int err, char *msg) ;
 
 /* ****** ****** */

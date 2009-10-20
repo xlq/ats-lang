@@ -188,7 +188,7 @@ extern freeitmlst_vt the_freeitmlstarr[FREEITMLST_ARRAYSIZE] ;
 /* ****** ****** */
 
 #define NMARKBIT_PER_CHUNK \
-   ((CHUNK_WORDSIZE + NBIT_PER_BYTE - 1) / NBIT_PER_BYTE)
+   ((CHUNK_WORDSIZE + NBIT_PER_BYTE_MASK) / NBIT_PER_BYTE)
 
 typedef
 struct chunk_struct {

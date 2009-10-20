@@ -50,6 +50,16 @@ typedef FILE ats_FILE_viewtype ;
 
 /* --------------------------------------- */
 
+// implemented in [prelude/DATS/basics.dats]
+extern ats_void_type
+ats_exit_errmsg(ats_int_type n, ats_ptr_type msg) ;
+
+// implemented in [prelude/CATS/printf.cats]
+extern ats_void_type
+atspre_exit_prerrf(ats_int_type code, ats_ptr_type fmt, ...) ;
+
+/* --------------------------------------- */
+
 static inline
 ats_void_type
 atslib_clearerr(ats_ptr_type fil) {
@@ -70,7 +80,7 @@ atslib_fclose_exn(ats_ptr_type fil) {
   int err = fclose((FILE*)fil) ;
   if (err < 0) {
     perror ("fclose") ;
-    ats_exit_errmsg (1, "exit(ATS): [fclose] failed\n") ;
+    ats_exit_errmsg (1, (ats_ptr_type)"exit(ATS): [fclose] failed\n") ;
   } // end of [if]
   return ;
 }
@@ -78,21 +88,21 @@ atslib_fclose_exn(ats_ptr_type fil) {
 static inline
 ats_void_type
 atslib_fclose_stdin() {
-  atspre_stdin_view_get() ; atslib_fclose_err(stdin) ;
+  atspre_stdin_view_get() ; atslib_fclose_exn(stdin) ;
   return ;
 }
 
 static inline
 ats_void_type
 atslib_fclose_stdout() {
-  atspre_stdout_view_get() ; atslib_fclose_err(stdout) ;
+  atspre_stdout_view_get() ; atslib_fclose_exn(stdout) ;
   return ;
 }
 
 static inline
 ats_void_type
 atslib_fclose_stderr() {
-  atspre_stderr_view_get() ; atslib_fclose_err(stderr) ;
+  atspre_stderr_view_get() ; atslib_fclose_exn(stderr) ;
   return ;
 }
 
@@ -100,13 +110,17 @@ atslib_fclose_stderr() {
 
 static inline
 ats_int_type
-atslib_feof (ats_ptr_type fil) {
+atslib_feof (
+  ats_ptr_type fil
+) {
   return feof((FILE*)fil) ;
 }
 
 static inline
 ats_int_type
-atslib_ferror(ats_ptr_type fil) {
+atslib_ferror(
+  ats_ptr_type fil
+) {
   return ferror((FILE*)fil) ;
 }
 
@@ -114,17 +128,21 @@ atslib_ferror(ats_ptr_type fil) {
 
 static inline
 ats_int_type
-atslib_fflush_err(ats_ptr_type fil) {
+atslib_fflush_err(
+  ats_ptr_type fil
+) {
   return fflush((FILE*)fil) ;
 }
 
 static inline
 ats_void_type
-atslib_fflush_exn (ats_ptr_type fil) {
+atslib_fflush_exn(
+  ats_ptr_type fil
+) {
   int err = fflush((FILE*)fil) ;
   if (err < 0) {
     perror ("fflush") ;
-    ats_exit_errmsg (1, "exit(ATS): [fflush] failed\n") ;
+    ats_exit_errmsg (1, (ats_ptr_type)"exit(ATS): [fflush] failed\n") ;
   } // end of [if]
   return ;
 } /* end of [atslib_fflush_exn] */
@@ -156,15 +174,21 @@ atslib_getchar () {
 
 static inline
 ats_ptr_type
-atslib_fgets_err
-  (ats_ptr_type buf, ats_int_type n, ats_ptr_type fil) {
+atslib_fgets_err (
+  ats_ptr_type buf
+, ats_int_type n
+, ats_ptr_type fil
+) {
   return fgets((char*)buf, (int)n, (FILE*)fil) ;
 }
 
 static inline
 ats_void_type
-atslib_fgets_exn
-  (ats_ptr_type buf, ats_int_type n, ats_ptr_type fil) {
+atslib_fgets_exn (
+  ats_ptr_type buf
+, ats_int_type n
+, ats_ptr_type fil
+) {
   ats_ptr_type p ;
   p = fgets((char*)buf, (int)n, (FILE*)fil) ;
   if (!p) {
@@ -172,7 +196,7 @@ atslib_fgets_exn
       *(char*)buf = '\000' ; // EOF is reached
     } else {
       perror ("fgets") ;
-      ats_exit_errmsg(1, "exit(ATS): [fgets] failed\n") ;
+      ats_exit_errmsg(1, (ats_ptr_type)"exit(ATS): [fgets] failed\n") ;
     } // end of [if]
   } /* end of [if] */
   return ;  
@@ -188,15 +212,17 @@ atslib_fileno(ats_ptr_type fil) { return fileno((FILE*)fil) ; }
 
 static inline
 ats_ptr_type
-atslib_fopen_err
-  (ats_ptr_type name, ats_ptr_type mode) {
+atslib_fopen_err (
+  ats_ptr_type name, ats_ptr_type mode
+) {
   return fopen((char*)name, (char*)mode) ;
 }
 
 static inline
 ats_ptr_type
-atslib_fopen_exn
-  (ats_ptr_type name, ats_ptr_type mode) {
+atslib_fopen_exn (
+  ats_ptr_type name, ats_ptr_type mode
+) {
   FILE *fil = fopen((char*)name, (char*)mode) ;
   if (!fil) {
     perror ("fopen") ; atspre_exit_prerrf (
@@ -210,15 +236,17 @@ atslib_fopen_exn
 
 static inline
 ats_int_type
-atslib_fputc_err
-  (ats_char_type c, ats_ptr_type fil) {
+atslib_fputc_err (
+  ats_char_type c, ats_ptr_type fil
+) {
   return fputc((unsigned char)c, (FILE*)fil) ;
 }
 
 static inline
 ats_void_type
-atslib_fputc_exn
-  (ats_char_type c, ats_ptr_type fil) {
+atslib_fputc_exn (
+  ats_char_type c, ats_ptr_type fil
+) {
   int n = fputc((unsigned char)c, (FILE*)fil) ;
   if (n < 0) {
     perror ("fputc") ;
@@ -231,13 +259,17 @@ atslib_fputc_exn
 
 static inline
 ats_int_type
-atslib_fputs_err(ats_ptr_type s, ats_ptr_type fil) {
+atslib_fputs_err(
+  ats_ptr_type s, ats_ptr_type fil
+) {
   return fputs ((char*)s, (FILE*)fil) ;
 }
 
 static inline
 ats_void_type
-atslib_fputs_exn(ats_ptr_type s, ats_ptr_type fil) {
+atslib_fputs_exn(
+  ats_ptr_type s, ats_ptr_type fil
+) {
   int n = fputs ((char*)s, (FILE*)fil) ;
   if (n < 0) {
     perror ("fputs") ;
@@ -250,28 +282,38 @@ atslib_fputs_exn(ats_ptr_type s, ats_ptr_type fil) {
 
 static inline
 ats_size_type
-atslib_fread
-  (ats_ptr_type buf, ats_size_type sz, ats_size_type n, ats_ptr_type fil)
+atslib_fread (
+  ats_ptr_type buf
+, ats_size_type sz
+, ats_size_type n
+, ats_ptr_type fil
+)
 {
   return fread ((void*)buf, sz, n, (FILE*)fil) ;
 }
 
 static inline
 ats_size_type
-atslib_fread_byte
-  (ats_ptr_type buf, ats_size_type n, ats_ptr_type fil) {
+atslib_fread_byte (
+  ats_ptr_type buf
+, ats_size_type n
+, ats_ptr_type fil
+) {
   return fread ((void*)buf, 1, n, (FILE*)fil) ;
 }
 
 static inline
 ats_void_type
-atslib_fread_byte_exn
-  (ats_ptr_type buf, ats_size_type ntotal, ats_ptr_type fil) {
+atslib_fread_byte_exn (
+  ats_ptr_type buf
+, ats_size_type ntotal
+, ats_ptr_type fil
+) {
   int nread ;
   nread = fread ((void*)buf, 1, ntotal, (FILE*)fil) ;
   if (nread < ntotal) {
     perror ("fread") ;
-    ats_exit_errmsg (1, "exit(ATS): [fread] failed\n") ;
+    ats_exit_errmsg (1, (ats_ptr_type)"exit(ATS): [fread] failed\n") ;
   }
   return ;
 }
@@ -280,15 +322,21 @@ atslib_fread_byte_exn
 
 static inline
 ats_ptr_type
-atslib_freopen_err
-  (ats_ptr_type name, ats_ptr_type mode, ats_ptr_type fil) {
+atslib_freopen_err (
+  ats_ptr_type name
+, ats_ptr_type mode
+, ats_ptr_type fil
+) {
   return freopen(name, mode, (FILE*)fil) ;
 }
 
 static inline
 ats_void_type
-atslib_freopen_exn
-  (ats_ptr_type name, ats_ptr_type mode, ats_ptr_type fil) {
+atslib_freopen_exn(
+  ats_ptr_type name
+, ats_ptr_type mode
+, ats_ptr_type fil
+) {
   FILE *fil_new = freopen(name, mode, (FILE*)fil) ;
   if (!fil_new) {
     perror ("freopen") ; atspre_exit_prerrf (
@@ -351,13 +399,18 @@ atslib_freopen_stderr
 /* --------------------------------------- */
 
 static inline
-ats_int_type atslib_fseek_err
-  (ats_ptr_type fil, ats_lint_type offset, ats_int_type whence) {
+ats_int_type
+atslib_fseek_err (
+  ats_ptr_type fil
+, ats_lint_type offset
+, ats_int_type whence
+) {
   return fseek ((FILE*)fil, offset, whence) ;
 } /* atslib_fseek_err */
 
 static inline
-ats_void_type atslib_fseek_exn (
+ats_void_type
+atslib_fseek_exn (
   ats_ptr_type fil
 , ats_lint_type offset
 , ats_int_type whence
@@ -366,7 +419,7 @@ ats_void_type atslib_fseek_exn (
   err = fseek ((FILE*)fil, offset, whence) ;
   if (err < 0) {
     perror ("fseek") ;
-    ats_exit_errmsg (1, "exit(ATS): [fseek] failed\n") ;
+    ats_exit_errmsg (1, (ats_ptr_type)"exit(ATS): [fseek] failed\n") ;
   }
   return ;
 } /* end of [atslib_fseek_exn] */
@@ -375,17 +428,21 @@ ats_void_type atslib_fseek_exn (
 
 static inline
 ats_lint_type
-atslib_ftell_err
-  (ats_ptr_type fil) { return ftell((FILE*)fil) ; }
+atslib_ftell_err(
+  ats_ptr_type fil
+) {
+  return ftell((FILE*)fil) ;
+}
 
 static inline
 ats_lint_type
-atslib_ftell_exn
-  (ats_ptr_type fil) {
+atslib_ftell_exn(
+  ats_ptr_type fil
+) {
   long int ret = ftell((FILE*)fil) ;
   if (ret < 0) {
     perror ("ftell") ;
-    ats_exit_errmsg (1, "exit(ATS): [ftell] failed\n") ;
+    ats_exit_errmsg (1, (ats_ptr_type)"exit(ATS): [ftell] failed\n") ;
   }
   return ret ;
 }
@@ -395,15 +452,21 @@ atslib_ftell_exn
 static inline
 ats_size_type
 atslib_fwrite (
-  ats_ptr_type buf, ats_size_type sz, ats_size_type n, ats_ptr_type fil
+  ats_ptr_type buf
+, ats_size_type sz
+, ats_size_type n
+, ats_ptr_type fil
 ) {
   return fwrite((void*)buf, sz, n, (FILE*)fil) ;
 } /* atslib_fwrite */
 
 static inline
 ats_size_type
-atslib_fwrite_byte
-  (ats_ptr_type buf, ats_size_type n, ats_ptr_type fil) {
+atslib_fwrite_byte (
+  ats_ptr_type buf
+, ats_size_type n
+, ats_ptr_type fil
+) {
   return fwrite((void*)buf, 1, n, (FILE*)fil) ;
 } /* atslib_fwrite_byte */
 
@@ -418,7 +481,7 @@ atslib_fwrite_byte_exn (
   nwritten = fwrite((void*)buf, 1, ntotal, (FILE*)fil) ;
   if (nwritten < ntotal) {
     perror ("fwrite") ;
-    ats_exit_errmsg (1, "exit(ATS): [fwrite] failed\n") ; 
+    ats_exit_errmsg (1, (ats_ptr_type)"exit(ATS): [fwrite] failed\n") ; 
   }
   return ;
 } /* end of [atslib_fwrite_all_byte] */
@@ -427,7 +490,9 @@ atslib_fwrite_byte_exn (
 
 static inline
 ats_void_type
-atslib_perror(ats_ptr_type msg) {
+atslib_perror(
+  ats_ptr_type msg
+) {
   atspre_stderr_view_get () ;
   perror ((char*)msg) ;
   atspre_stderr_view_set () ;
@@ -438,7 +503,9 @@ atslib_perror(ats_ptr_type msg) {
 
 static inline
 ats_int_type
-atslib_putchar (ats_char_type c) {
+atslib_putchar(
+  ats_char_type c
+) {
   int i ;
   atspre_stdout_view_get () ;
   i = putchar((unsigned char)c) ;
@@ -450,7 +517,9 @@ atslib_putchar (ats_char_type c) {
 
 static inline
 ats_int_type
-atslib_puts_err (ats_ptr_type str) {
+atslib_puts_err(
+  ats_ptr_type str
+) {
   int err ;
   atspre_stdout_view_get () ;
   err = puts ((char*)str) ;
@@ -460,14 +529,16 @@ atslib_puts_err (ats_ptr_type str) {
 
 static inline
 ats_void_type
-atslib_puts_exn (ats_ptr_type str) {
+atslib_puts_exn(
+  ats_ptr_type str
+) {
   int err ;
   atspre_stdout_view_get () ;
   err = puts ((char*)str) ;
   atspre_stdout_view_set () ;
   if (err < 0) {
     perror ("puts") ;
-    ats_exit_errmsg (1, "exit(ATS): [remove] failed\n") ;
+    ats_exit_errmsg (1, (ats_ptr_type)"exit(ATS): [remove] failed\n") ;
   } /* end of [if] */
   return ;
 } /* end of [atslib_puts_exn] */
@@ -476,17 +547,21 @@ atslib_puts_exn (ats_ptr_type str) {
 
 static inline
 ats_int_type
-atslib_remove_err (ats_ptr_type path) {
+atslib_remove_err (
+  ats_ptr_type path
+) {
   return remove((char*)path) ;
 }
 
 static inline
 ats_void_type
-atslib_remove_exn (ats_ptr_type path) {
+atslib_remove_exn(
+  ats_ptr_type path
+) {
   int err = remove((char*)path) ;
   if (err < 0) {
     perror ("remove") ;
-    ats_exit_errmsg (1, "exit(ATS): [remove] failed\n") ;
+    ats_exit_errmsg (1, (ats_ptr_type)"exit(ATS): [remove] failed\n") ;
   }
   return ;
 }
@@ -495,19 +570,21 @@ atslib_remove_exn (ats_ptr_type path) {
 
 static inline
 ats_int_type
-atslib_rename_err
-  (ats_ptr_type oldpath, ats_ptr_type newpath) {
+atslib_rename_err (
+  ats_ptr_type oldpath, ats_ptr_type newpath
+) {
   return rename((char*)oldpath, (char*)newpath) ;
 }
 
 static inline
 ats_void_type
-atslib_rename_exn
-  (ats_ptr_type oldpath, ats_ptr_type newpath) {
+atslib_rename_exn (
+  ats_ptr_type oldpath, ats_ptr_type newpath
+) {
   int err = rename((char*)oldpath, (char*)newpath) ;
   if (err < 0) {
     perror ("rename") ;
-    ats_exit_errmsg (1, "exit: [rename] failed\n") ;   
+    ats_exit_errmsg (1, (ats_ptr_type)"exit(ATS): [rename] failed\n") ;   
   }
   return ;
 }
@@ -516,7 +593,9 @@ atslib_rename_exn
 
 static inline
 ats_void_type
-atslib_rewind (ats_ptr_type fil) {
+atslib_rewind (
+  ats_ptr_type fil
+) {
   rewind((FILE*)fil) ; return ;
 }
 
@@ -532,7 +611,7 @@ atslib_tmpfile_exn () {
   FILE* fil =  tmpfile() ;
   if (!fil) {
     perror ("tmpfile") ;
-    ats_exit_errmsg (1, "exit(ATS): [tmpfile] failed\n") ;
+    ats_exit_errmsg (1, (ats_ptr_type)"exit(ATS): [tmpfile] failed\n") ;
   }
   return fil ;
 } /* end of [atslib_tmpfile_exn] */
@@ -541,19 +620,21 @@ atslib_tmpfile_exn () {
 
 static inline
 ats_int_type
-atslib_ungetc_err
-  (ats_char_type c, ats_ptr_type fil) {
+atslib_ungetc_err (
+  ats_char_type c, ats_ptr_type fil
+) {
   return ungetc((unsigned char)c, (FILE*)fil) ;
 }
 
 static inline
 ats_void_type
-atslib_ungetc_exn
-  (ats_char_type c, ats_ptr_type fil) {
+atslib_ungetc_exn (
+  ats_char_type c, ats_ptr_type fil
+) {
   int err = ungetc((unsigned char)c, (FILE*)fil) ;
   if (err < 0) {
     perror ("ungetc") ;
-    ats_exit_errmsg (1, "exit(ATS): [ungetc] failed\n") ;
+    ats_exit_errmsg (1, (ats_ptr_type)"exit(ATS): [ungetc] failed\n") ;
   }
   return ;
 } /* end of [atslib_ungetc_exn] */

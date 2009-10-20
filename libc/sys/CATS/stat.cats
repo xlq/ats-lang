@@ -38,6 +38,7 @@
 
 #include <sys/types.h>
 #include <sys/stat.h>
+#include <stdio.h> // for [perror]
 
 /* ****** ****** */
 
@@ -47,6 +48,12 @@
 
 // [struct stat] is declared in <bits/stat.h>
 typedef struct stat ats_stat_type ;
+
+/* ****** ****** */
+
+// implemented in [prelude/DATS/basics.dats]
+extern ats_void_type
+ats_exit_errmsg(ats_int_type n, ats_ptr_type msg) ;
 
 /* ****** ****** */
 

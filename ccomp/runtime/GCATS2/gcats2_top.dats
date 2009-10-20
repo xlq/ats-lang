@@ -112,7 +112,7 @@ gcats2_the_sweeplstarr_get_chunk (
 /* ****** ****** */
 
 #ifdef _ATS_MULTITHREAD
-__thread
+__thread // thread-local storage
 #endif // end of [_ATS_MULTITHREAD]
 freeitmlst_vt the_freeitmlstarr[FREEITMLST_ARRAYSIZE] = {0} ;
 

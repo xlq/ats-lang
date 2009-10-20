@@ -1706,8 +1706,8 @@ guad0ec_t guad0ec ;
 %%
 
 main
-  : ISSTATIC d0ecseq_sta TOKEN_eof      { $$ = $2 ; return ; }
-  | ISDYNAMIC d0ecseq_dyn TOKEN_eof     { $$ = $2 ; return ; }
+  : ISSTATIC d0ecseq_sta TOKEN_eof      { $$ = $2 ; return 0 ; }
+  | ISDYNAMIC d0ecseq_dyn TOKEN_eof     { $$ = $2 ; return 0 ; }
 ;
 
 /* ****** ****** */
@@ -3262,7 +3262,8 @@ void yyerror (char *s) {
   return ;
 } /* end of [yyerror] */
 
-ats_ptr_type yyparse_main (ats_int_type tok0) {
+ats_ptr_type
+yyparse_main (ats_int_type tok0) {
 
   // must take care of garbage collection
 

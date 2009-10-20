@@ -158,12 +158,13 @@ gcats2_autmem_free (
   int itmwsz_log ;
   chunk_vt *p_chunk ;
   freeitmlst_vt *p_itmlst ;
-
+//
   p_chunk = (chunk_vt*)gcats2_ptr_isvalid(p_itm, &ofs_chkseg) ;
-
+//
 #if (GCATS2_DEBUG > 0)
   if (!p_chunk) {
-    fprintf(stderr, "gcats2_autmem_free: p_itm = %p\n", p_itm) ;
+    fprintf(stderr, "INTERNAL ERROR") ;
+    fprintf(stderr, ": exit(ATS/GC): gcats2_autmem_free: p_itm = %p\n", p_itm) ;
     exit(1) ;
   } // end of [if]
 #endif // end of [GCATS2_DEBUG]

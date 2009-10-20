@@ -40,6 +40,7 @@
 
 #include <errno.h>
 #include <sys/types.h>
+#include <sys/wait.h> // for [wait]
 #include <unistd.h>
 
 /* ****** ****** */
@@ -49,11 +50,16 @@
 
 /* ****** ****** */
 
+// implemented in [prelude/DATS/basics.dats]
+extern ats_void_type
+ats_exit_errmsg(ats_int_type n, ats_ptr_type msg) ;
+
+/* ****** ****** */
+
 static inline
 ats_pid_type atslib_fork_exn () {
   pid_t pid ;
   pid = fork () ;
-
   if (pid < 0) {
     ats_exit_errmsg (errno, "Exit: [fork] failed.\n") ;
   }
@@ -64,15 +70,13 @@ ats_pid_type atslib_fork_exn () {
 
 static inline
 ats_pid_type
-atslib_wait_with_status (ats_ptr_type p) {
-  return wait ((int *)p) ;
-}
+atslib_wait_with_status
+  (ats_ptr_type p) { return wait((int*)p) ; }
+/* end of ... */
 
 static inline
 ats_pid_type
-atslib_wait_without_status () {
-  return wait ((int *)0) ;
-}
+atslib_wait_without_status () { return wait((int*)0) ; }
 
 /* ****** ****** */
 

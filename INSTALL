@@ -127,7 +127,7 @@ svn co \
   FOO/bootstrap0
 
 After this is done, please go into the directory "FOO" and execute the
-command 'autoconf' and then do 'make all'.
+command 'aclocal' and then 'autoconf' and then do 'make all'.
 
 ######
 

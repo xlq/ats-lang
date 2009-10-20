@@ -62,14 +62,14 @@ ats_void_type // external
 ats_exit(const ats_int_type status) { exit(status) ; return ; }
 
 ats_void_type // external
-ats_exit_errmsg
-  (const ats_int_type status, const ats_ptr_type errmsg)
-{
+ats_exit_errmsg (
+  const ats_int_type status, const ats_ptr_type errmsg
+) {
   fprintf(stderr, "%s", (char*)errmsg) ; exit(status) ;
   return ; // deadcode
-}
+} /* end of [ats_exit_errmsg] */
 
-%}
+%} // end of [%{]
 
 (* ****** ****** *)
 
@@ -78,7 +78,9 @@ ats_exit_errmsg
 /* functions for asserts */
 
 ats_void_type
-atspre_assert (const ats_bool_type assertion) {
+atspre_assert (
+  const ats_bool_type assertion
+) {
   if (!assertion) {
     fprintf (stderr, "exit(ATS): [assert] failed\n") ; exit(1) ;
   }
@@ -95,7 +97,7 @@ atspre_assert_errmsg (
   return ;
 } /* end of [atspre_assert_errmsg] */
 
-%}
+%} // end of [%{]
 
 (* ****** ****** *)
 

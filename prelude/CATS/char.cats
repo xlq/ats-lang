@@ -207,7 +207,9 @@ atspre_char_isascii (ats_char_type c) { return isascii(c) ; }
 
 /* ****** ****** */
 
-extern int isblank (int c) ;
+#ifndef isblank
+extern int isblank(int c) ; // declared in ctype.h
+#endif
 
 static inline
 ats_bool_type

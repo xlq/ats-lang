@@ -74,7 +74,7 @@ ats_void_type atspre_assert_prerrf
   return ;
 } /* end of [atspre_assert_prerrf] */
 
-%}
+%} // end of [%{]
 
 (* ****** ****** *)
 

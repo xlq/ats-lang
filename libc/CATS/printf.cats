@@ -72,7 +72,7 @@ atslib_vsnprintf (
 , ats_ptr_type fmt
 , ats_ref_type arg
 ) {
-  int n ; va_list ap ;
+  int n ;
   n = vsnprintf (buf, sz, (char*)fmt, *(va_list*)arg) ;
   return n ;
 } /* end of [atslib_vsnprintf] */

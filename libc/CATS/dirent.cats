@@ -41,6 +41,7 @@
 #include <errno.h>
 #include <sys/types.h>
 #include <dirent.h>
+#include <stdio.h> // for [perror]
 
 /* ****** ****** */
 
@@ -50,6 +51,16 @@
 
 typedef DIR ats_DIR_type ;
 typedef struct dirent ats_dirent_type ;
+
+/* ****** ****** */
+
+// implemented in [prelude/DATS/basics.dats]
+extern ats_void_type
+ats_exit_errmsg(ats_int_type n, ats_ptr_type msg) ;
+
+// implemented in [prelude/CATS/printf.cats]
+extern ats_void_type
+atspre_exit_prerrf(ats_int_type code, ats_ptr_type fmt, ...) ;
 
 /* ****** ****** */
 

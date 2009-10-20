@@ -47,6 +47,12 @@
 
 /* ****** ****** */
 
+// implemented in [prelude/CATS/printf.cats]
+extern ats_void_type
+atspre_exit_prerrf(ats_int_type code, ats_ptr_type fmt, ...) ;
+
+/* ****** ****** */
+
 static inline
 ats_double_type
 atslib_atof(const ats_ptr_type s) { return atof(s) ; }
@@ -74,7 +80,7 @@ ats_ptr_type
 atslib_getenv_exn (const ats_ptr_type name) {
   char *res = getenv(name) ;
   if (!name) {
-    atspre_exit_prerrf (1, "Exit: [getenv(%s)] failed.\n", name) ;
+    atspre_exit_prerrf (1, "exit(ATS): [getenv(%s)] failed.\n", name) ;
   }
   return res ;
 } /* end of [atslib_getenv_exn] */
@@ -95,7 +101,7 @@ atslib_setenv_exn
   int ret = setenv((char*)name, (char*)value, (int)overwrite) ;
   if (ret != 0) {
     perror ("setenv"); atspre_exit_prerrf (
-      1, "Exit: [setenv(%s, %s, %i)] failed.\n", name, value, overwrite
+      1, "exit(ATS): [setenv(%s, %s, %i)] failed.\n", name, value, overwrite
     ) ; // end of [atspre_exit_prerrf]
   } /* end of [if] */
   return ;
@@ -114,7 +120,7 @@ ats_void_type
 atslib_atexit_exn (ats_ptr_type fcn) {
   int err ;
   err = atexit ((void(*)(void))fcn) ;
-  if (err != 0) atspre_exit_prerrf (1, "Exit: [atexit] failed.\n") ;
+  if (err != 0) atspre_exit_prerrf (1, "exit(ATS): [atexit] failed.\n") ;
   return ;
 } /* end of [atslib_atexit_exn] */
 
