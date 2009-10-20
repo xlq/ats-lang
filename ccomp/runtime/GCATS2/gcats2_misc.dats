@@ -36,6 +36,10 @@
 
 (* ****** ****** *)
 
+#define ATS_FUNCTION_NAME_PREFIX "gcats2_misc_"
+
+(* ****** ****** *)
+
 staload "gcats2.sats"
 
 (* ****** ****** *)

@@ -36,6 +36,10 @@
 
 (* ****** ****** *)
 
+#define ATS_FUNCTION_NAME_PREFIX "gcats2_marking_"
+
+(* ****** ****** *)
+
 staload "gcats2.sats"
 
 (* ****** ****** *)
@@ -59,7 +63,7 @@ implement the_topsegtbl_mark
   viewdef tbl_v = the_topsegtbl_v and stk_v = the_markstack_v
   prval (pf_tbl, pf_stk, fpf_gc) = __takeout (pf_gc) where {
     extern prfun __takeout
-      (pf: the_GCmain_v):<prf> (tbl_v, stk_v, (tbl_v, stk_v) -<lin,prf> the_GCmain_v)
+      (pf: the_gcmain_v):<prf> (tbl_v, stk_v, (tbl_v, stk_v) -<lin,prf> the_gcmain_v)
   } // end of [prval
   prval pf3 = (pf_stk, view@ overflow)
   val () = the_topsegtbl_foreach_chunkptr {V} {VT} (pf_tbl, pf3 | f, &overflow)
@@ -72,9 +76,9 @@ end // end of [the_topsegtbl_mark]
 (* ****** ****** *)
 
 (*
-** fun the_GCmain_mark (pf_gc: !the_GCmain_v | (*none*)):<> int(*overflow*)
+** fun the_gcmain_mark (pf_gc: !the_gcmain_v | (*none*)):<> int(*overflow*)
 *)
-implement the_GCmain_mark
+implement the_gcmain_mark
   (pf_gc | (*none*)) = let
   var overflow: int = 0
 //
@@ -91,7 +95,7 @@ implement the_GCmain_mark
 //
 in
   overflowed
-end // end of [the_GCmain_mark]
+end // end of [the_gcmain_mark]
 
 (* ****** ****** *)
 
@@ -218,19 +222,71 @@ gcats2_freeitmlst_mark (
 ) {
   int ofs_chkseg ; chunk_vt *p_chunk ;
   while (xs) {
-    p_chunk =
-      (chunkptr_vt)gcats2_ptr_isvalid(xs, &ofs_chkseg) ;
+    p_chunk = (chunkptr_vt)gcats2_ptr_isvalid(xs, &ofs_chkseg) ;
 #if (GCATS2_DEBUG > 0)
   if (!p_chunk) {
     fprintf (stderr, "exit(ATS/GC): gcats2_freeitmlst_mark: invalid: xs = %p\n", xs) ;
     exit(1) ;
   } // end of [if]
 #endif // end of [GCATS2_DEBUG > 0]
-    if (p_chunk) MARK_SET(p_chunk->mrkbits, ofs_chkseg) ;
+    if (p_chunk) MARKBIT_SET(p_chunk->mrkbits, ofs_chkseg) ;
     xs = *(freeitmlst_vt*)xs ;
   } // end of [while]
   return ;
 } // end of [gcats2_freeitmlst_mark]
+
+ats_void_type
+gcats2_the_freeitmlstarr_mark (
+  // there is no argument for this function
+) {
+  int i ;
+  for (i = 0; i < FREEITMLST_ARRAYSIZE; i+= 1)
+    gcats2_freeitmlst_mark (the_freeitmlstarr[i]) ;
+  // end of [for]
+  return ;
+} // end of [gcats2_the_freeitmlstarr_mark]
+
+%} // end of [%{^]
+
+(* ****** ****** *)
+
+%{^
+
+ats_void_type
+gcats2_freeitmlst_unmark (
+  ats_ptr_type xs // xs: freeitmlst_vt
+) {
+  int ofs_chkseg ; chunk_vt *p_chunk ;
+  while (xs) {
+    p_chunk = (chunkptr_vt)gcats2_ptr_isvalid(xs, &ofs_chkseg) ;
+#if (GCATS2_DEBUG > 0)
+  if (!p_chunk) {
+    fprintf(stderr,
+      "exit(ATS/GC): gcats2_freeitmlst_unmark: invalid: xs = %p\n", xs
+    ) ; exit(1) ;
+  } // end of [if]
+#endif // end of [GCATS2_DEBUG > 0]
+    if (p_chunk) MARKBIT_CLEAR(p_chunk->mrkbits, ofs_chkseg) ;
+    xs = *(freeitmlst_vt*)xs ;
+  } // end of [while]
+  return ;
+} // end of [gcats2_freeitmlst_unmark]
+
+ats_void_type
+gcats2_the_freeitmlstarr_unmark (
+  // there is no argument for this function
+) {
+  int i ;
+  for (i = 0; i < FREEITMLST_ARRAYSIZE; i+= 1) {
+/*
+** any gain from doing this is probably minimal: it can happen only if
+** some data is treated as valid pointers
+*/
+    // gcats2_freeitmlst_unmark(the_freeitmlstarr[i]) ; // not worth doing
+    the_freeitmlstarr[i] = (freeitmlst_vt)0 ;
+  } // end of [for]
+  return ;
+} // end of [gcats2_the_freeitmlstarr_unmark]
 
 %} // end of [%{^]
 
@@ -252,20 +308,26 @@ gcats2_ptr_mark
   overflow = 0 ;
   p_chunk = (chunkptr_vt)gcats2_ptr_isvalid(ptr, &ofs_chkseg) ;
 /*
-  fprintf (stderr, "gcats2_ptr_mark(1): p_chunk = %p\n", chks) ;
+  fprintf (stderr, "gcats2_ptr_mark(1): p_chunk = %p\n", p_chunk) ;
 */
   if (!p_chunk) return overflow ; // [ptr] is invalid
+/*
+  fprintf (stderr, "gcats2_ptr_mark(2): chunk =\n") ;
+  gcats2_fprint_chunk (stderr, p_chunk) ;
+  fprintf (stderr, "gcats2_ptr_mark(2): ofs_chkseg = %i\n", ofs_chkseg) ;
+*/
   // [ptr] is already marked:
-  if (MARK_GETSET(p_chunk->mrkbits, ofs_chkseg)) return overflow ;
+  if (MARKBIT_GETSET(p_chunk->mrkbits, ofs_chkseg)) return overflow ; 
   p_chunk->mrkcnt += 1 ; // newly marked
   itmwsz = p_chunk->itmwsz ;
 
   // pushing a sentinel first
   gcats2_the_markstackpagelst_push((freeitmptr_vt*)0, 0, &overflow) ;
+
   while (ptr) { // ptr != NULL
 /*
-    fprintf (stderr, "gcats2_ptr_mark: ptr = %p\n", ptr) ;
-    fprintf (stderr, "gcats2_ptr_mark: itwsz = %i\n", itmwsz);
+    fprintf (stderr, "gcats2_ptr_mark(3): ptr = %p\n", ptr) ;
+    fprintf (stderr, "gcats2_ptr_mark(3): itmwsz = %i\n", itmwsz) ;
 */
     if (itmwsz > MARKSTACK_CUTOFF) {
       gcats2_the_markstackpagelst_push(
@@ -279,17 +341,17 @@ gcats2_ptr_mark
     for (i = 0; i < itmwsz; i += 1, ptr_i += 1) {
       ptr_cand = *ptr_i ;
 /*
-      fprintf (stderr, "gcats2_ptr_mark: ptr_i = %p\n", ptr_i) ;
-      fprintf (stderr, "gcats2_ptr_mark: ptr_cand = %p\n", ptr_cand) ;
+      fprintf (stderr, "gcats2_ptr_mark(4): ptr_i = %p\n", ptr_i) ;
+      fprintf (stderr, "gcats2_ptr_mark(4): ptr_cand = %p\n", ptr_cand) ;
 */
       p_chunk = (chunkptr_vt)gcats2_ptr_isvalid(ptr_cand, &ofs_chkseg) ;
       if (!p_chunk) continue ; // [ptr_cand] is invalid
-      if (MARK_GETSET(p_chunk->mrkbits, ofs_chkseg)) continue ; // already marked
+      if (MARKBIT_GETSET(p_chunk->mrkbits, ofs_chkseg)) continue ; // already marked
       p_chunk->mrkcnt += 1 ; // newly marked
       if (found1st) { // this is *not* the first one
         gcats2_the_markstackpagelst_push(ptr_cand, p_chunk->itmwsz, &overflow) ;
       } else { // this is the first one; save a push and pop
-        found1st = 1 ; *(freeitmptr_vt*)ptr = ptr_cand ; itmwsz = p_chunk->itmwsz ;
+        found1st = 1 ; ptr = ptr_cand ; itmwsz = p_chunk->itmwsz ;
       } // end of [if]
     } // end of [for]
     if (!found1st)  // no child for [ptr]; so [ptr] and [itmwsz]
@@ -305,8 +367,11 @@ gcats2_ptrsize_mark (
 ) {
   int i ;
   int overflow = 0 ;
+/*
+  fprintf(stderr, "gcats2_ptrsize_mark: ptr = %p and wsz = %i\n", ptr, wsz) ;
+*/
   for (i = 0 ; i < wsz ; i += 1)
-    overflow += gcats2_ptr_mark ((freeitmptr_vt*)ptr++) ;
+    overflow += gcats2_ptr_mark (*((freeitmptr_vt*)ptr++)) ;
   // end of [for]
   return overflow ;
 } // end of [gcats2_ptrsize_mark]
@@ -322,7 +387,7 @@ gcats2_chunk_mark (
   itmtot = ((chunk_vt*)p_chunk)->itmtot ;
   pi = (freeitmptr_vt*)p_chunk ;
   for (i = 0; i < itmtot; i += 1, pi += itmwsz) {
-    if (MARK_GET(((chunk_vt*)p_chunk)->mrkbits, i)) {
+    if (MARKBIT_GET(((chunk_vt*)p_chunk)->mrkbits, i)) {
       overflow += gcats2_ptrsize_mark(pi, itmwsz) ; // the freeitm is reachable!
     } // end of [if]
   } // end of [for]

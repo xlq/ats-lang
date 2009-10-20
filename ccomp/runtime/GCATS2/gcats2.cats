@@ -49,7 +49,8 @@
 #include <stdio.h>
 #include <string.h>
 
-#include <sys/mman.h> // for mmap
+#include <setjmp.h> // for [setjmp] in gcmain_run
+#include <sys/mman.h> // for [mmap] in chunkpagelst_replenish
 
 /* ****** ****** */
 
@@ -166,7 +167,23 @@ PTR_TOPSEGHASH_GET (ats_ptr_type p) {
 
 /* ****** ****** */
 
-extern size_t the_totwsz ; // declared in [gcats2_top.dats]
+/*
+** declared in [gcats2_top.dats]
+*/
+
+extern size_t the_totwsz ;
+extern size_t the_totwsz_limit ;
+extern size_t the_totwsz_limit_max ;
+
+static inline
+ats_bool_type
+gcats2_the_totwsz_limit_is_reached () { return
+  (the_totwsz >= the_totwsz_limit) ? ats_true_bool : ats_false_bool ;
+} /* end of [the_totwsz_limit_is_reached] */
+
+/* ****** ****** */
+
+extern freeitmlst_vt the_freeitmlstarr[FREEITMLST_ARRAYSIZE] ;
 
 /* ****** ****** */
 
@@ -180,30 +197,20 @@ struct chunk_struct {
   // itmwsz = 2^itmwsz_log if itmwsz_log >= 0
   // if [itmwsz_log = -1], then the chunk is large (> CHUNK_WORDSIZE)
   int itmwsz_log ;
-
+//
   int itmtot ; // the total number of freeitms
   int mrkcnt ; // the count of marked freeitms
-
-  struct chunk_struct *sweepnxt ; // the next swept chunk
-
+//
   freepageptr_vt chunk_data ; // pointer to the data // multiple of pagesize
-
+//
+  struct chunk_struct *sweepnxt ; // the next swept chunk
+//
   // bits for marking // 1 bit for 1 item (>= 1 word)
   byte mrkbits[NMARKBIT_PER_CHUNK] ;
 } chunk_vt ;
 
 typedef chunk_vt *chunkptr_vt ;
 typedef chunk_vt *chunklst_vt ;
-
-/* ****** ****** */
-
-static inline
-ats_ptr_type
-gcats2_chunk_make_null () { return (void*)0 ; }
-
-static inline
-ats_void_type
-gcats2_chunk_free_null (ats_ptr_type p) { return ; }
 
 /* ****** ****** */
 
@@ -305,20 +312,20 @@ gcats2_botsegtblptr1_takeout ( // used in [ptr_isvalid]
 
 static inline
 ats_int_type
-MARK_GET (ats_ptr_type x, ats_int_type i) { return
+MARKBIT_GET (ats_ptr_type x, ats_int_type i) { return
   (((byte*)x)[i >> NBIT_PER_BYTE_LOG] >> (i & NBIT_PER_BYTE_MASK)) & 0x1 ;
-} /* end of [MARK_GET] */
+} /* end of [MARKBIT_GET] */
 
 static inline
 ats_void_type
-MARK_SET (ats_ptr_type x, ats_int_type i) {
+MARKBIT_SET (ats_ptr_type x, ats_int_type i) {
   ((byte*)x)[i >> NBIT_PER_BYTE_LOG] |= (0x1 << (i & NBIT_PER_BYTE_MASK)) ;
   return ;
-} /* end of [MARK_SET] */
+} /* end of [MARKBIT_SET] */
 
 static inline
 ats_int_type
-MARK_GETSET (ats_ptr_type x, ats_int_type i) {
+MARKBIT_GETSET (ats_ptr_type x, ats_int_type i) {
   byte* p_bits ; int bit ;
   p_bits = &((byte*)x)[i >> NBIT_PER_BYTE_LOG] ;
   bit = (*p_bits >> (i & NBIT_PER_BYTE_MASK)) & 0x1 ;
@@ -327,26 +334,50 @@ MARK_GETSET (ats_ptr_type x, ats_int_type i) {
   } else {
     *p_bits |= (0x1 << (i & NBIT_PER_BYTE_MASK)) ; return 0 ;
   } // end of [if]
-} /* end of [MARK_GETSET] */
+} /* end of [MARKBIT_GETSET] */
 
 static inline
 ats_void_type
-MARK_CLEAR (ats_ptr_type x, ats_int_type i) {
+MARKBIT_CLEAR (ats_ptr_type x, ats_int_type i) {
   ((byte*)x)[i >> NBIT_PER_BYTE_LOG] &= ~(0x1 << (i & NBIT_PER_BYTE_MASK)) ;
   return ;
-} /* end of [MARK_SET] */
+} /* end of [MARKBIT_CLEAR] */
 
 /* ****** ****** */
 
 extern ats_ptr_type
-gcats2_ptr_isvalid (ats_ptr_type ptr, ats_ref_type r_ofs_chkseg) ;
+gcats2_ptr_isvalid
+  (ats_ptr_type ptr, ats_ref_type r_ofs_chkseg) ;
+// end of ...
 
 extern ats_ptr_type
-gcats2_chunk_make_norm (ats_int_type itmwsz, ats_int_type itmwsz_log) ;
+gcats2_chunk_make_norm
+  (ats_int_type itmwsz, ats_int_type itmwsz_log) ;
+// end of ...
 
-extern ats_void_type gcats2_chunk_free_norm (ats_ptr_type p_chunk) ;
+extern ats_void_type
+gcats2_chunk_free_norm (ats_ptr_type p_chunk) ;
 
-extern ats_void_type gcats2_chunk_free_large (ats_ptr_type p_chunk) ;
+extern ats_void_type
+gcats2_chunk_free_large (ats_ptr_type p_chunk) ;
+
+extern ats_int_type
+gcats2_the_markstackpagelst_length () ;
+
+extern ats_void_type
+gcats2_the_markstackpagelst_extend (ats_int_type n) ;
+
+extern ats_void_type
+gcats2_the_topsegtbl_clear_mrkbits () ;
+
+extern ats_int_type/*overflowed*/
+gcats2_the_gcmain_mark () ; // it is called in [gcmain_run]
+
+extern ats_void_type
+gcats2_the_freeitmlstarr_unmark () ; // it is called in [gcmain_run]
+
+extern ats_void_type
+gcats2_the_topsegtbl_sweeplst_build () ; // it is called in [gcmain_run]
 
 /* ****** ****** */
 

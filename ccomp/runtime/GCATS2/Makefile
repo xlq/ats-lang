@@ -37,8 +37,8 @@
 ## ###### ###### ##
 
 GCC=gcc
-ATSCC=$(ATSHOME)/bin/atscc -Wall # -O3
-ATSCCFLAGS= -D_ATS_MULTITHREAD # -m64
+ATSCC=$(ATSHOME)/bin/atscc -g -O3
+ATSCCFLAGS= # -D_ATS_MULTITHREAD # -m64
 
 ######
 
@@ -51,9 +51,10 @@ test: gcats2_c.h gcats2_ats.hats
           gcats2_chunk.dats \
           gcats2_pointer.dats \
           gcats2_globalrts.dats \
-          gcats2_manmem.dats \
           gcats2_marking.dats \
           gcats2_collecting.dats \
+          gcats2_autmem.dats \
+          gcats2_manmem.dats \
           -lpthread \
       && ./test \
       && rm -f ./test
@@ -92,10 +93,6 @@ gcats2_globalrts_dats.o: \
   gcats2_c.h gcats2_ats.hats gcats2_globalrts.dats 
 	$(ATSCC) $(ATSCCFLAGS) -o $@  -c gcats2_globalrts.dats
 
-gcats2_manmem_dats.o: \
-  gcats2_c.h gcats2_ats.hats gcats2_manmem.dats 
-	$(ATSCC) $(ATSCCFLAGS) -o $@  -c gcats2_manmem.dats
-
 gcats2_marking_dats.o: \
   gcats2_c.h gcats2_ats.hats gcats2_marking.dats 
 	$(ATSCC) $(ATSCCFLAGS) -o $@  -c gcats2_marking.dats
@@ -103,6 +100,14 @@ gcats2_marking_dats.o: \
 gcats2_collecting_dats.o: \
   gcats2_c.h gcats2_ats.hats gcats2_collecting.dats 
 	$(ATSCC) $(ATSCCFLAGS) -o $@  -c gcats2_collecting.dats
+
+gcats2_autmem_dats.o: \
+  gcats2_c.h gcats2_ats.hats gcats2_autmem.dats 
+	$(ATSCC) $(ATSCCFLAGS) -o $@  -c gcats2_autmem.dats
+
+gcats2_manmem_dats.o: \
+  gcats2_c.h gcats2_ats.hats gcats2_manmem.dats 
+	$(ATSCC) $(ATSCCFLAGS) -o $@  -c gcats2_manmem.dats
 
 ######
 

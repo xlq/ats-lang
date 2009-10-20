@@ -36,6 +36,10 @@
 
 (* ****** ****** *)
 
+#define ATS_FUNCTION_NAME_PREFIX "gcats2_manmem_"
+
+(* ****** ****** *)
+
 staload "gcats2.sats"
 
 (* ****** ****** *)
@@ -140,7 +144,8 @@ ats_int_type
 gcats2_the_manmemlst_mark (
   // there is no argument for this function
 ) {
-  manmemlst_vt p ; int overflow = 0 ;
+  manmemlst_vt p ; int overflow ;
+  p = the_manmemlst ; overflow = 0 ;
   while (p) {
     overflow += gcats2_ptrsize_mark(p->manmem_data, p->manmem_wsz) ; p = p->next ;
   } // end of [while]

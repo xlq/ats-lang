@@ -36,6 +36,10 @@
 
 (* ****** ****** *)
 
+#define ATS_FUNCTION_NAME_PREFIX "gcats2_freeitmlst_"
+
+(* ****** ****** *)
+
 staload "gcats2.sats"
 
 (* ****** ****** *)

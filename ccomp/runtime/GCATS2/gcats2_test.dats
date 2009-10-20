@@ -159,18 +159,6 @@ fn the_topsegtbl_insert_remove_test (
         val p_chunk = chunk_make_norm (pf1, pf3 | ITMWSZ, ITMWSZ_LOG)
         val (pf_chunk | p) = chunkptr_unfold (p_chunk)
         val p_chunk_data = chunk_data_get (!p)
-// (*
-        val xs = freeitmlst_make_null (null)
-        val xs = chunk_add_freeitmlst (!p, xs)
-        val nxs = freeitmlst_length (xs)
-        val _(*ptr*) = __cast xs where {
-          extern castfn __cast {l:addr} (xs: freeitmlst_vt l):<> ptr l
-        } // end of [val]
-        val () = begin
-          print "the_topsegtbl_insert_remove_test: loop: nxs = "; print nxs; print_newline ()
-        end
-        val () = assert_errmsg (nxs = ITMTOT, #LOCATION)
-// *)
         val _(*ptr*) = chunkptr_fold (pf_chunk | p_chunk)
         val err = the_topsegtbl_insert_chunkptr (pf2 | p_chunk)
         val () = assert_errmsg (err = 0, #LOCATION)
@@ -325,11 +313,14 @@ dynload "gcats2_freeitmlst.dats"
 dynload "gcats2_chunk.dats"
 dynload "gcats2_pointer.dats"
 dynload "gcats2_globalrts.dats"
-dynload "gcats2_manmem.dats"
 dynload "gcats2_marking.dats"
 dynload "gcats2_collecting.dats"
+dynload "gcats2_autmem.dats"
+dynload "gcats2_manmem.dats"
 
 (* ****** ****** *)
+
+#if (0) #then
 
 implement main (argc, argv) = () where {
 //
@@ -411,18 +402,135 @@ implement main (argc, argv) = () where {
   prval () = fpf_the_markstack (pf_the_markstack)
 //
   prval (
-    pf_the_GCmain, fpf_the_GCmain
-  ) = pf_the_GCmain_gen () where { extern prfun
-    pf_the_GCmain_gen (): (the_GCmain_v, the_GCmain_v -<prf> void)
+    pf_the_gcmain, fpf_the_gcmain
+  ) = pf_the_gcmain_gen () where { extern prfun
+    pf_the_gcmain_gen (): (the_gcmain_v, the_gcmain_v -<prf> void)
   } // end of [prval]
 //
   val _(*overflow*) =
-    the_globalrts_mark (pf_the_GCmain | (*none*))
+    the_globalrts_mark (pf_the_gcmain | (*none*))
   val () = mystackbeg_set (dir) where { val dir = mystackdir_get () }
   val _(*overflow*) = mystack_mark ()
 //
-  prval () = fpf_the_GCmain (pf_the_GCmain)
+  val () = gcmain_run (pf_the_gcmain | (*none*))
+//
+  prval () = fpf_the_gcmain (pf_the_gcmain)
 } // end of [main]
+
+#endif // end of [#if (0)]
+
+(* ****** ****** *)
+
+staload _ = "prelude/DATS/reference.dats"
+
+(* ****** ****** *)
+
+extern fun the_globalrts_insert
+  (p: ptr, sz: size_t): void = "gcats2_the_globalrts_insert"
+
+val r_ptr0 = ref<ptr> (null)
+and r_ptr1 = ref<ptr> (null)
+
+val () = let
+  val (_ | p) = ref_get_view_ptr (r_ptr0)
+  val () = the_globalrts_insert (p, 1)
+  val (_ | p) = ref_get_view_ptr (r_ptr1)
+  val () = the_globalrts_insert (p, 1)
+in
+  // nothing
+end // end of [val]
+
+extern fun __ptr_cons
+  (p: ptr, x1: ptr, x2: ptr): ptr = "__ptr_cons"
+extern fun __ptr_car (p: ptr): ptr = "__ptr_car"
+extern fun __ptr_cdr (p: ptr): ptr = "__ptr_cdr"
+
+implement main () = () where {
+  // var ptr : ptr //uninitialized
+  var ptr1 = autmem_calloc_bsz (NBYTE_PER_WORD, 128)
+  val () = printf ("ptr1 = %p\n", @(ptr1))
+  var ptr2 = autmem_calloc_bsz (NBYTE_PER_WORD, 256)
+  val () = printf ("ptr2 = %p\n", @(ptr2))
+  var ptr3 = autmem_calloc_bsz (NBYTE_PER_WORD, 256)
+  val () = printf ("ptr3 = %p\n", @(ptr3))
+  var ptr4 = autmem_calloc_bsz (NBYTE_PER_WORD, 256)
+  val () = printf ("ptr4 = %p\n", @(ptr4))
+  var ptr5 = autmem_calloc_bsz (NBYTE_PER_WORD, 128)
+  val () = printf ("ptr5 = %p\n", @(ptr5))
+  var ptr6 = autmem_calloc_bsz (NBYTE_PER_WORD, 128)
+  val () = printf ("ptr6 = %p\n", @(ptr6))
+(*
+  var ptr7 = autmem_calloc_bsz (NBYTE_PER_WORD, 128)
+  val () = printf ("ptr7 = %p\n", @(ptr7))
+  var ptr8 = autmem_calloc_bsz (NBYTE_PER_WORD, 128)
+  val () = printf ("ptr8 = %p\n", @(ptr8))
+*)
+  #define N 100
+  local
+    fun loop {n:nat} (eo: int, n: int n, res: ptr): ptr =
+      if n > 0 then begin
+        if (n mod 2 = eo) then let
+          val p = autmem_calloc_bsz (NBYTE_PER_WORD, 32)
+        in
+          loop (eo, n-1, __ptr_cons (p, null, res))
+        end else loop (eo, n-1, res)
+      end else
+        res // loop exits
+      // end of [loop]
+  in
+    val () = !r_ptr0 := loop (0, N, null)
+    val () = __free (!r_ptr0) where {
+      fun __free (p: ptr): void =
+        if p <> null then let
+          val p1 = __ptr_cdr p in autmem_free p; __free p1
+        end else
+          () // exit
+        // end of [if]
+    } // end of [val]
+    val () = !r_ptr1 := loop (1, N+30, null)
+  end // end of [local]
+//
+  val () = fprint (stdout_ref, "the_topsegtbl =\n")
+  val () = fprint_the_topsegtbl (stdout_ref)
+//
+  val () = mystackbeg_set (dir) where { val dir = mystackdir_get () }
+  val (pf_the_gcmain | ()) = the_gcmain_v_acquire ()
+  val () = gcmain_run (pf_the_gcmain | (*none*))
+  val () = the_gcmain_v_release (pf_the_gcmain | (*none*))
+//
+  val () = fprint (stdout_ref, "the_topsegtbl =\n")
+  val () = fprint_the_topsegtbl (stdout_ref)
+//
+  val () = printf ("ptr1 = %p\n", @(ptr1))
+  val () = printf ("ptr2 = %p\n", @(ptr2))
+  val () = printf ("ptr3 = %p\n", @(ptr3))
+  val () = printf ("ptr6 = %p\n", @(ptr6))
+//
+} // end of [main]
+
+(* ****** ****** *)
+
+%{$
+
+ats_ptr_type
+__ptr_cons
+  (ats_ptr_type p, ats_ptr_type x1, ats_ptr_type x2) {
+  ((ats_ptr_type*)p)[0] = x1; ((ats_ptr_type*)p)[1] = x2; return p ;
+} // end of ...
+
+ats_ptr_type
+__ptr_car
+  (ats_ptr_type p) {
+  return ((ats_ptr_type*)p)[0] ;
+} // end of ...
+
+ats_ptr_type
+__ptr_cdr
+  (ats_ptr_type p) {
+  return ((ats_ptr_type*)p)[1] ;
+} // end of ...
+
+%}
 
 (* ****** ****** *)
 

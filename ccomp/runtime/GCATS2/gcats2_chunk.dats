@@ -40,6 +40,10 @@
 
 (* ****** ****** *)
 
+#define ATS_FUNCTION_NAME_PREFIX "gcats2_chunk_"
+
+(* ****** ****** *)
+
 staload "gcats2.sats"
 
 (* ****** ****** *)
@@ -91,32 +95,90 @@ end // end of [the_topsegtbl_clear_mrkbits]
 
 %{^
 
-ats_ptr_type
-gcats2_chunk_add_freeitmlst (
-  ats_ptr_type p_chunk, ats_ptr_type xs // p_chunk != NULL
+ats_void_type
+gcats2_fprint_chunk (
+  ats_ptr_type out, ats_ptr_type p_chunk
+) {
+  int i, itmtot ;
+  if (!p_chunk) {
+    fprintf((FILE*)out, "(chunknil)\n") ;
+  }
+  fprintf((FILE*)out, "itmwsz = %i\n", ((chunk_vt*)p_chunk)->itmwsz) ;
+  fprintf((FILE*)out, "itmwsz_log = %i\n", ((chunk_vt*)p_chunk)->itmwsz_log) ;
+  itmtot = ((chunk_vt*)p_chunk)->itmtot ;
+  fprintf((FILE*)out, "itmtot = %i\n", itmtot) ;
+  fprintf((FILE*)out, "mrkcnt = %i\n", ((chunk_vt*)p_chunk)->mrkcnt) ;
+  fprintf((FILE*)out, "chunk_data = %p\n", ((chunk_vt*)p_chunk)->chunk_data) ;
+
+  fprintf((FILE*)out, "mrkbits = ") ; 
+  for (i = 0; i < itmtot; i += 1) {
+    fprintf((FILE*)out, "%i", MARKBIT_GET(((chunk_vt*)p_chunk)->mrkbits, i)) ;
+  }
+  fprintf((FILE*)out, "\n") ; 
+  fprintf((FILE*)out, "##### end of a chunk #######\n") ;
+  return ;
+} /* end of [gcats2_fprint_chunk] */
+
+ats_void_type
+gcats2_fprint_the_topsegtbl
+  (ats_ptr_type out) {
+  int i, j ;
+  botsegtblptr_vt p_botsegtbl ;
+  chunkptr_vt p_chunk ;
+
+#if (__WORDSIZE == 32)
+  for (i = 0; i < TOPSEG_TABLESIZE; i += 1) {
+    p_botsegtbl = the_topsegtbl[i] ;
+    if (p_botsegtbl) {
+      for (j = 0; j < BOTSEG_TABLESIZE; j += 1) {
+        p_chunk = p_botsegtbl->headers[j] ;
+        if (p_chunk) gcats2_fprint_chunk (out, p_chunk) ;
+      } // end of [for]
+      fprintf((FILE*)out, "##### end of a botsegtbl #######\n") ;
+    } // end of [if]
+  } // end of [for]
+#endif // end of ...
+
+  return ;
+} // end of [gcats2_fprint_the_topsegtbl]
+
+%} // end of [%{^]
+
+(* ****** ****** *)
+
+%{^
+
+ats_void_type
+gcats2_the_freeitmlstarr_add_chunk (
+  ats_ptr_type p_chunk // p_chunk != NULL
+, ats_int_type itmwsz_log // itmwsz_log < FREEITMLST_ARRAYSIZE
 ) {
   int i, itmwsz, itmtot ;
   freeitmptr_vt *p_data ; byte *mrkbits ;
+  freeitmlst_vt xs ;
 
   itmwsz = ((chunk_vt*)p_chunk)->itmwsz ;
   itmtot = ((chunk_vt*)p_chunk)->itmtot ;
   p_data = ((chunk_vt*)p_chunk)->chunk_data ;
 //
+  xs = the_freeitmlstarr[itmwsz_log] ;
+//
   if (((chunk_vt*)p_chunk)->mrkcnt == 0) { // fast threading
     for (i = 0 ; i < itmtot ; i += 1) {
       *p_data = (freeitmlst_vt)xs ; xs = p_data ; p_data += itmwsz ;
     } // end of [for]
-    return xs ;
+    the_freeitmlstarr[itmwsz_log] = xs ; return ;
   } // end of [if]
 //
   mrkbits = ((chunk_vt*)p_chunk)->mrkbits ;
   for (i = 0 ; i < itmtot ; i += 1) {
     // add if not marked
-    if (!MARK_GET(mrkbits, i)) { *p_data = (freeitmlst_vt)xs ; xs = p_data ; }
+    if (!MARKBIT_GET(mrkbits, i)) { *p_data = (freeitmlst_vt)xs ; xs = p_data ; }
     p_data += itmwsz ;
   } // end of [for]
-  return xs ;
-} // end of [gcats2_chunk_threading]
+//
+  the_freeitmlstarr[itmwsz_log] = xs ; return ;
+} // end of [gcats2_the_freeitmlstarr_add_chunk]
 
 %} // end of [%{^]
 

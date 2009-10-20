@@ -70,13 +70,23 @@ fun freeitmlst_cons {l1,l2:addr}
   = "gcats2_freeitmlst_cons"
 // end of [freeitmlst_cons]
 
-fun freeitmlst_uncons {l:anz}
-  (xs: &freeitmlst_vt l >> freeitmlst_vt l_new):<> #[l_new:addr] (freeitm_t @ l | ptr l)
+fun freeitmlst_uncons {l:anz} (
+    xs: &freeitmlst_vt l >> freeitmlst_vt l_new
+  ) :<> #[l_new:addr] (freeitm_t @ l | ptr l)
   = "gcats2_freeitmlst_uncons"
 // end of [freeitmlst_uncons]
 
 castfn freeitmlst_make_null (p: ptr null):<> freeitmlst_vt null
 castfn freeitmlst_free_null (xs: freeitmlst_vt null):<> ptr null
+
+(* ****** ****** *)
+
+absviewtype freeitmptr_vt // boxed type
+
+// implemented in C in [gcats2_top.dats]
+fun the_freeitmlstarr_get_freeitm (itmwsz_log: int):<> ptr
+  = "gcats2_the_freeitmlstarr_get_freeitm"
+// end of ...
 
 (* ****** ****** *)
 
@@ -109,7 +119,7 @@ absview the_totwsz_v
 (* ****** ****** *)
 
 //
-// freepages are not deallocated
+// a freepages is not deallocated; it is added to the_chunkpagelst
 //
 
 absview the_chunkpagelst_v
@@ -148,12 +158,21 @@ fun chunk_data_get (chk: &chunk_vt):<> ptr = "gcats2_chunk_data_get"
 fun chunk_mrkbits_clear (chk: &chunk_vt):<> void = "gcats2_chunk_mrkbits_clear"
 
 absviewtype chunkptr_vt (l: addr) // boxed type
+
+fun chunkptr_is_null {l:addr} (p: !chunkptr_vt l):<> bool (l == null)
+  = "atspre_ptr_is_null"
+fun chunkptr_isnot_null {l:addr} (p: !chunkptr_vt l):<> bool (l <> null)
+  = "atspre_ptr_isnot_null"
+
 castfn ptr_of_chunkptr {l:addr} (p: !chunkptr_vt l):<> ptr l
 
 castfn chunkptr_fold
   {l:addr} (pf: chunk_vt @ l | p: !ptr l >> chunkptr_vt l):<> ptr l
 castfn chunkptr_unfold
   {l:addr | l <> null} (p: !chunkptr_vt l >> ptr l):<> (chunk_vt @ l | ptr l)
+
+fun fprint_chunk {l:addr} (out: FILEref, p_chunk: !chunkptr_vt l): void
+  = "gcats2_fprint_chunk"
 
 // implemented in [gcats2_chunk.dats]
 fun chunk_make_norm {i:nat} (
@@ -180,14 +199,24 @@ fun chunk_free_large {l:anz}
   = "gcats2_chunk_free_large"
 
 // implemented in [gcats2.cats]
-fun chunk_make_null ():<> chunkptr_vt null = "gcats2_chunk_make_null"
-fun chunk_free_null (p: chunkptr_vt null):<> void = "gcats2_chunk_free_null"
+castfn chunk_make_null (p: ptr null):<> chunkptr_vt null
+castfn chunk_free_null (p: chunkptr_vt null):<> ptr null
 
 // implemented in [gcats2_chunk.dats]
-fun chunk_add_freeitmlst {l:addr}
-  (chk: &chunk_vt, xs: freeitmlst_vt l):<> [l:addr] freeitmlst_vt l
-  = "gcats2_chunk_add_freeitmlst"
+fun the_freeitmlstarr_add_chunk {l:anz} // chunk is consumed
+  {i:nat | i < FREEITMLST_ARRAYSIZE} (p_chunk: chunkptr_vt l, itmwsz_log: int i):<> void
+  = "gcats2_the_freeitmlstarr_add_chunk"
 // end of ...
+
+(* ****** ****** *)
+
+absview the_sweeplstarr_v
+
+// implemented in C in [gcats2_top.dats]
+fun the_sweeplstarr_get_chunk
+  {i:nat | i < FREEITMLST_ARRAYSIZE}
+  (pf: !the_sweeplstarr_v | itmwsz_log: int i):<> [l:addr] chunkptr_vt l
+  = "gcats2_the_sweeplstarr_get_chunk"
 
 (* ****** ****** *)
 
@@ -249,6 +278,9 @@ fun ptr_isvalid ( // implemented in C in [gcats2_point.dats]
 
 (* ****** ****** *)
 
+fun fprint_the_topsegtbl (out: FILEref): void
+  = "gcats2_fprint_the_topsegtbl"
+
 // implemented in C in [gcats2_chunk.dats]
 fun the_topsegtbl_foreach_chunkptr
   {v:view} {vt:viewtype} (
@@ -260,6 +292,7 @@ fun the_topsegtbl_foreach_chunkptr
 
 // implemented in ATS in [gcats2_chunk.dats]
 fun the_topsegtbl_clear_mrkbits (pf: !the_topsegtbl_v | (*none*)):<> void
+  = "gcats2_the_topsegtbl_clear_mrkbits"
 
 (* ****** ****** *)
 
@@ -367,56 +400,93 @@ fun mystack_mark ():<> int(*overflow*) = "gcats2_mystack_mark"
 (* ****** ****** *)
 
 // this view contains contains
-absview the_GCmain_v // the resources for performing GC
+absview the_gcmain_v // the resources for performing GC
 
-(*
-prfun the_topsegtbl_v_takeout (pf: the_GCmain_v)
-  : (the_topsegtbl_v, the_topsegtbl_v -<lin,prf> the_GCmain_v)
-// end of [the_topsegtbl_v_takeout]
-
-prfun the_globalrts_v_takeout (pf: the_GCmain_v)
-  : (the_globalrts_v, the_globalrts_v -<lin,prf> the_GCmain_v)
-// end of [the_globalrts_v_takeout]
-
-prfun the_manmemlst_v_takeout (pf: the_GCmain_v)
-  : (the_manmemlst_v, the_manmemlst_v -<lin,prf> the_GCmain_v)
-// end of [the_manmemlst_v_takeout]
-
-prfun the_markstack_v_takeout (pf: the_GCmain_v)
-  : (the_markstack_v, the_markstack_v -<lin,prf> the_GCmain_v)
-// end of [the_markstack_v_takeout]
-*)
-
-// implemented in [gcats2_mark.dats]
-fun the_topsegtbl_mark
-  (pf1: !the_GCmain_v | (*none*)):<> int(*overflow*)
-// end of ...
-
-// implemented in [gcats2_globalrts.dats]
-fun the_globalrts_mark
-  (pf: !the_GCmain_v | (*none*)) :<> int(*overflow*)
-  = "gcats2_the_globalrts_mark"
-
-// implemented in [gcats2_manmem.dats]
-fun the_manmemlst_mark
-  (pf: !the_GCmain_v | (*none*)) :<> int(*overflow*)
-  = "gcats2_the_manmemlst_mark"
-
-// implemented in [gcats2_marking.dats]
-fun the_GCmain_mark // [overflowed] determines if [markstack] needs
-  (pf: !the_GCmain_v | (*none*)):<> int(*overflowed*) // to be extended
+fun the_gcmain_v_acquire ():<> (the_gcmain_v | void)
+  = "gcats2_the_gcmain_v_acquire"
+fun the_gcmain_v_release (pf: the_gcmain_v | (*none*)):<> void
+  = "gcats2_the_gcmain_v_release"
 
 (* ****** ****** *)
 
-absview the_sweeplstarr_v
+(*
+prfun the_totwsz_v_takeout (pf: the_gcmain_v)
+  : (the_totwsz_v, the_totwsz_v -<lin,prf> the_gcmain_v)
+// end of [the_totwsz_v_takeout]
 
-// implemented in [gcats2_collecting.dats]
-fun chunk_sweeplst_build (pf: !the_sweeplstarr_v | chk: &chunk_vt):<> void
-  = "gcats2_chunk_sweeplst_build"
+prfun the_chunkpagelst_v_takeout (pf: the_gcmain_v)
+  : (the_chunkpagelst_v, the_chunkpagelst_v -<lin,prf> the_gcmain_v)
+// end of [the_chunkpagelst_v_takeout]
 
-// implemented in [gcats2_collecting.dats]
-fun the_topsegtbl_sweeplst_build
-  (pf_tbl: !the_topsegtbl_v, pf_arr: !the_sweeplstarr_v | (*none*)):<> void
+prfun the_sweeplstarr_v_takeout (pf: the_gcmain_v)
+  : (the_sweeplstarr_v, the_sweeplstarr_v -<lin,prf> the_gcmain_v)
+// end of [the_sweeplstarr_v_takeout]
+
+prfun the_topsegtbl_v_takeout (pf: the_gcmain_v)
+  : (the_topsegtbl_v, the_topsegtbl_v -<lin,prf> the_gcmain_v)
+// end of [the_topsegtbl_v_takeout]
+
+prfun the_globalrts_v_takeout (pf: the_gcmain_v)
+  : (the_globalrts_v, the_globalrts_v -<lin,prf> the_gcmain_v)
+// end of [the_globalrts_v_takeout]
+
+prfun the_manmemlst_v_takeout (pf: the_gcmain_v)
+  : (the_manmemlst_v, the_manmemlst_v -<lin,prf> the_gcmain_v)
+// end of [the_manmemlst_v_takeout]
+
+prfun the_markstack_v_takeout (pf: the_gcmain_v)
+  : (the_markstack_v, the_markstack_v -<lin,prf> the_gcmain_v)
+// end of [the_markstack_v_takeout]
+*)
+
+// implemented in ATS in [gcats2_mark.dats]
+fun the_topsegtbl_mark
+  (pf1: !the_gcmain_v | (*none*)):<> int(*overflow*)
+// end of ...
+
+// implemented in C in [gcats2_globalrts.dats]
+fun the_globalrts_mark
+  (pf: !the_gcmain_v | (*none*)) :<> int(*overflow*)
+  = "gcats2_the_globalrts_mark"
+
+// implemented in C in [gcats2_manmem.dats]
+fun the_manmemlst_mark
+  (pf: !the_gcmain_v | (*none*)) :<> int(*overflow*)
+  = "gcats2_the_manmemlst_mark"
+
+// implemented in ATS in [gcats2_marking.dats]
+fun the_gcmain_mark // [overflowed] determines if [markstack] needs
+  (pf: !the_gcmain_v | (*none*)):<> int(*overflowed*) // to be extended
+  = "gcats2_the_gcmain_mark"
+
+(* ****** ****** *)
+
+// implemented in ATS in [gcats2_collecting.dats]
+fun the_topsegtbl_sweeplst_build (
+    pf_tbl: !the_topsegtbl_v, pf_arr: !the_sweeplstarr_v, pf_lst: !the_chunkpagelst_v
+  | (*none*)
+  ) :<> void
+  = "gcats2_the_topsegtbl_sweeplst_build"
+
+(* ****** ****** *)
+
+// implemented in C in [gcats2_collecting.dats]
+fun gcmain_run (pf: !the_gcmain_v | (*none*)):<> void = "gcats2_gcmain_run"
+
+(* ****** ****** *)
+
+// implemented in ATS in [gcats2_collecting.dats]
+fun the_freeitmlstarr_replenish {i:nat | i < FREEITMLST_ARRAYSIZE}
+  (itmwsz_log: int i):<> void // GC may be triggered by a call to this function
+  = "gcats2_the_freeitmlstarr_replenish"
+
+(* ****** ****** *)
+
+fun autmem_malloc_bsz {bsz:pos} (bsz: size_t bsz):<> ptr
+fun autmem_malloc_wsz {bsz:pos} (wsz: size_t bsz):<> ptr
+fun autmem_calloc_bsz {n:pos;bsz:pos} (n: size_t n, bsz: size_t bsz):<> ptr
+
+fun autmem_free (p_itm: ptr): void = "gcats2_autmem_free"
 
 (* ****** ****** *)
 

@@ -36,6 +36,10 @@
 
 (* ****** ****** *)
 
+#define ATS_FUNCTION_NAME_PREFIX "gcats2_pointer_"
+
+(* ****** ****** *)
+
 staload "gcats2.sats"
 
 (* ****** ****** *)
@@ -122,21 +126,24 @@ gcats2_ptr_isvalid (
   chunkptr_vt p_chunk, *r_p_chunk ;
 
   if (!ptr) return (chunkptr_vt)0 ; // [ptr] is null
+/*
   fprintf (stderr, "gcats2_ptr_isvalid(0): ptr = %p\n", ptr) ;
-
+*/
   if ((uintptr_t)ptr & NBYTE_PER_WORD_MASK)
     return (chunkptr_vt)0 ; // [ptr] is not word-aligned
   // end of [if]
+/*
   fprintf (stderr, "gcats2_ptr_isvalid(1): ptr = %p\n", ptr) ;
-
+*/
   ofs_topseg = PTR_TOPSEG_GET(ptr) ;
   p_botsegtbl = // pf_botsegtbl, fpf_topsegtbl
     *(botsegtblptr_vt*)(gcats2_the_topsegtbl_takeout(ofs_topseg)) ;
   if (!p_botsegtbl)
     return (chunkptr_vt)0 ; // botsegtbl for [ptr] is not allocated
   // end of [if]
+/*
   fprintf (stderr, "gcats2_ptr_isvalid(2): ptr = %p\n", ptr) ;
-
+*/
   ofs_botseg = PTR_BOTSEG_GET(ptr) ;
   r_p_chunk = (chunkptr_vt*)
     gcats2_botsegtblptr1_takeout(p_botsegtbl, ofs_topseg, ofs_botseg) ;
@@ -144,8 +151,9 @@ gcats2_ptr_isvalid (
   if (!r_p_chunk) return (chunkptr_vt)0 ; // chunk not allocated
   p_chunk = *r_p_chunk ; // pf_chunk, fpf_botsegtbl    
   if (!p_chunk) return (chunkptr_vt)0 ; // chunk for [ptr] is not allocated
+/*
   fprintf (stderr, "gcats2_ptr_isvalid(3): ptr = %p\n", ptr) ;
-
+*/
   ofs_chkseg = PTR_CHKSEG_GET(ptr) ;
   itmwsz = p_chunk->itmwsz ;
 /*
@@ -154,8 +162,9 @@ gcats2_ptr_isvalid (
 ** (that is, allocated)
 */
   if (ofs_chkseg % itmwsz) return (chunkptr_vt)0 ; // not item-aligned
+/*
   fprintf (stderr, "gcats2_ptr_isvalid(4): ptr = %p\n", ptr) ;
-
+*/
   *(int*)r_nitm = ofs_chkseg / itmwsz ; // the item number in the chunk
   return p_chunk ; // pf_chunk, fpf_topsegtbl o fpf_botsegtbl
 } /* end of [gcats2_ptr_isvalid] */
