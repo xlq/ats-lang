@@ -138,9 +138,10 @@ ats_array_ptr_alloc_tsz (ats_int_type n, ats_size_type tsz) {
   return ATS_MALLOC (n * tsz) ;
 }
 
+ats_void_type
 ats_array_ptr_free (ats_ptr_type base) { ATS_FREE (base); return ; }
 
-%}
+%} // end of [%{$]
 
 (* ****** ****** *)
 

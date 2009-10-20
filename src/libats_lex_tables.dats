@@ -230,7 +230,10 @@ end (* end of [transition_table_get] *)
 %{
 
 #define NBITS_PER_BYTE 8
-#define NUMBER_OF_CHARS ((1 << NBITS_PER_BYTE - 1) + 1)
+/*
+** NUMBER_OF_CHARS = 128 + 1
+*/
+#define NUMBER_OF_CHARS ((1 << (NBITS_PER_BYTE - 1)) + 1)
 
 ats_ptr_type
 __accept_table_make_fun
@@ -266,7 +269,7 @@ __accept_table_make_fun
 
 ats_ptr_type
 __transition_table_make_fun (ats_int_type n, ats_ptr_type s0) {
-  int i, j, c, sz;
+  int i, j, sz;
   ats_int16_type *p0, *p ; ats_uchar_type *s ;
   ats_ptr_type res ;
 

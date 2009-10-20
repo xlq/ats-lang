@@ -45,6 +45,7 @@ extern ats_void_type
 ats_posmark_xref_flag_set (ats_ptr_type flag) ;
 
 static inline
+ats_bool_type
 ats_main_is_posmark_xref_prefix (ats_ptr_type s0) {
   int cmp, n1, n2, ln ; char *s, *flag ;
   static char* POSMARK_XREF = "--posmark_xref" ;
