@@ -39,7 +39,7 @@
 
 #ifdef _ATS_MULTITHREAD
 #include <pthread.h>
-#endif
+#endif // end of [_ATS_MULTITHREAD]
 
 /* ****** ****** */
 
@@ -53,6 +53,9 @@ extern void ats_exit_errmsg (int err, char *msg) ;
 
 /* ****** ****** */
 
+/*
+** sizeof(ats_empty_type) == 0
+*/
 ats_empty_type ats_empty_value ;
 
 /* ****** ****** */
@@ -70,11 +73,9 @@ int ats_stderr_view_lock = 1 ;
 */
 
 #ifdef _ATS_MULTITHREAD
-__thread
+__thread // thread-local storage
+#endif // end of [_ATS_MULTITHREAD]
 ats_ptr_type *the_ats_exception_stack = NULL ;
-#else /* single thread */
-ats_ptr_type *the_ats_exception_stack = NULL ;
-#endif
 
 /* ****** ****** */
 
@@ -94,8 +95,6 @@ ats_exn_type
 DivisionByZeroExceptionCon = { 30, "DivisionByZeroException" } ;
 ats_exn_ptr_type DivisionByZeroException = &DivisionByZeroExceptionCon ;
 
-/* ****** ****** */
-
 ats_exn_type
 SubscriptExceptionCon = { 40, "SubscriptException" } ;
 ats_exn_ptr_type SubscriptException = &SubscriptExceptionCon ;
@@ -114,8 +113,9 @@ extern void exit (int status) ; // declared in [stdlib.h]
 ats_void_type
 ats_uncaught_exception_handle
   (const ats_exn_ptr_type exn) {
-  fprintf (stderr, "Uncaught exception: %s(%d)\n", exn->name, exn->tag) ;
+  fprintf(stderr, "exit(ATS): uncaught exception: %s(%d)\n", exn->name, exn->tag) ;
   exit(1) ;
+  return ; // deadcode
 } /* end of [ats_uncaught_exception_handle] */
 
 /* ****** ****** */
@@ -126,12 +126,12 @@ ats_uncaught_exception_handle
 
 ats_void_type
 ats_caseof_failure_handle (char *loc) {
-  fprintf (stderr, "Exit: %s: match failure.\n", loc) ; exit(1) ;
+  fprintf (stderr, "exit(ATS): %s: match failure.\n", loc) ; exit(1) ;
 } /* end of [ats_caseof_failure_handle] */
 
 ats_void_type
 ats_funarg_match_failure_handle (char *loc) {
-  fprintf (stderr, "Exit: %s: funarg match failure.\n", loc) ; exit(1) ;
+  fprintf (stderr, "exit(ATS): %s: funarg match failure.\n", loc) ; exit(1) ;
 } /* end of [ats_funarg_match_failure_handle] */
 
 /* ****** ****** */
@@ -162,14 +162,15 @@ ats_ptr_type ats_pthread_app (ats_ptr_type f) {
 }
 
 #ifdef _ATS_GCATS
-extern int gc_pthread_create_cloptr (
+extern
+int gc_pthread_create_cloptr (
   ats_clo_ptr_type cloptr, pthread_t *pid_r, int detached, int linclo
 ) ;
-#endif
+#endif // end of [_ATS_GCATS]
 
 ats_void_type
 ats_pthread_create_detached_cloptr (ats_ptr_type thunk) {
-#if _ATS_NGC
+#ifdef _ATS_NGC
   pthread_t pid ; int ret ;
   ret = pthread_create (&pid, NULL, ats_pthread_app, thunk) ;
 #elif _ATS_GCATS
@@ -179,7 +180,7 @@ ats_pthread_create_detached_cloptr (ats_ptr_type thunk) {
 */
   ret = gc_pthread_create_cloptr (thunk, NULL/*pid_r*/, 1/*detached*/, 1/*lin*/) ;
 #elif _ATS_GCBDW
-  fprintf (stderr, "There is no support for pthreads under this GC (GCBDW).\n") ;
+  fprintf (stderr, "exit(ATS): there is no support for pthreads under GCBDW.\n") ;
   exit (1) ;
 #else // _ATS_NGC is the default
   pthread_t pid ; int ret ;
