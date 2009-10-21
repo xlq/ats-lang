@@ -121,7 +121,8 @@ gcats2_ptr_isvalid (
   ats_ptr_type ptr, ats_ptr_type r_nitm
 ) {
   topseg_t ofs_topseg ;
-  int ofs_botseg, ofs_chkseg, itmwsz ;
+  int ofs_botseg, ofs_chkseg ;
+  size_t itmwsz ;
   botsegtblptr_vt p_botsegtbl ;
   chunkptr_vt p_chunk, *r_p_chunk ;
 
@@ -151,21 +152,24 @@ gcats2_ptr_isvalid (
   if (!r_p_chunk) return (chunkptr_vt)0 ; // chunk not allocated
   p_chunk = *r_p_chunk ; // pf_chunk, fpf_botsegtbl    
   if (!p_chunk) return (chunkptr_vt)0 ; // chunk for [ptr] is not allocated
+  ofs_chkseg = PTR_CHKSEG_GET(ptr) ; itmwsz = p_chunk->itmwsz ;
 /*
   fprintf (stderr, "gcats2_ptr_isvalid(3): ptr = %p\n", ptr) ;
+  fprintf (stderr, "gcats2_ptr_isvalid(3): p_chunk = %p\n", p_chunk) ;
+  fprintf (stderr, "gcats2_ptr_isvalid(3): ofs_chkseg = %i\n", ofs_chkseg) ;
+  fprintf (stderr, "gcats2_ptr_isvalid(3): itmwsz = %lu\n", itmwsz) ;
 */
-  ofs_chkseg = PTR_CHKSEG_GET(ptr) ;
-  itmwsz = p_chunk->itmwsz ;
 /*
 ** as a large chunk is (assumed to be) page-aligned,
 ** [ofs_chkseg] must be a multiple of itmwsz if [ptr] is valid
 ** (that is, allocated)
 */
   if (ofs_chkseg % itmwsz) return (chunkptr_vt)0 ; // not item-aligned
+  *(int*)r_nitm = ofs_chkseg / itmwsz ; // the item number in the chunk
 /*
   fprintf (stderr, "gcats2_ptr_isvalid(4): ptr = %p\n", ptr) ;
+  fprintf (stderr, "gcats2_ptr_isvalid(4): *r_nitm = %i\n", *(int*)r_nitm) ;
 */
-  *(int*)r_nitm = ofs_chkseg / itmwsz ; // the item number in the chunk
   return p_chunk ; // pf_chunk, fpf_topsegtbl o fpf_botsegtbl
 } /* end of [gcats2_ptr_isvalid] */
 

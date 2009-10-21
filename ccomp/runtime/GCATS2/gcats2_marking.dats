@@ -220,16 +220,16 @@ ats_void_type
 gcats2_freeitmlst_mark (
   ats_ptr_type xs // xs: freeitmlst_vt
 ) {
-  int ofs_chkseg ; chunk_vt *p_chunk ;
+  int ofs_nitm ; chunk_vt *p_chunk ;
   while (xs) {
-    p_chunk = (chunkptr_vt)gcats2_ptr_isvalid(xs, &ofs_chkseg) ;
+    p_chunk = (chunkptr_vt)gcats2_ptr_isvalid(xs, &ofs_nitm) ;
 #if (GCATS2_DEBUG > 0)
   if (!p_chunk) {
     fprintf (stderr, "exit(ATS/GC): gcats2_freeitmlst_mark: invalid: xs = %p\n", xs) ;
     exit(1) ;
   } // end of [if]
 #endif // end of [GCATS2_DEBUG > 0]
-    if (p_chunk) MARKBIT_SET(p_chunk->mrkbits, ofs_chkseg) ;
+    if (p_chunk) MARKBIT_SET(p_chunk->mrkbits, ofs_nitm) ;
     xs = *(freeitmlst_vt*)xs ;
   } // end of [while]
   return ;
@@ -256,9 +256,9 @@ ats_void_type
 gcats2_freeitmlst_unmark (
   ats_ptr_type xs // xs: freeitmlst_vt
 ) {
-  int ofs_chkseg ; chunk_vt *p_chunk ;
+  int ofs_nitm ; chunk_vt *p_chunk ;
   while (xs) {
-    p_chunk = (chunkptr_vt)gcats2_ptr_isvalid(xs, &ofs_chkseg) ;
+    p_chunk = (chunkptr_vt)gcats2_ptr_isvalid(xs, &ofs_nitm) ;
 #if (GCATS2_DEBUG > 0)
   if (!p_chunk) {
     fprintf(stderr,
@@ -266,7 +266,7 @@ gcats2_freeitmlst_unmark (
     ) ; exit(1) ;
   } // end of [if]
 #endif // end of [GCATS2_DEBUG > 0]
-    if (p_chunk) MARKBIT_CLEAR(p_chunk->mrkbits, ofs_chkseg) ;
+    if (p_chunk) MARKBIT_CLEAR(p_chunk->mrkbits, ofs_nitm) ;
     xs = *(freeitmlst_vt*)xs ;
   } // end of [while]
   return ;
@@ -294,11 +294,15 @@ gcats2_the_freeitmlstarr_unmark (
 
 %{^
 
+extern
+ats_void_type
+gcats2_fprint_chunk (ats_ptr_type, ats_ptr_type) ;
+  
 ats_int_type
 gcats2_ptr_mark
   (ats_ptr_type ptr) { // freeitmptr_vt *ptr
   chunkptr_vt p_chunk ;
-  int itmwsz, ofs_chkseg ;
+  size_t itmwsz ; int ofs_nitm ;
   int i ; freeitmptr_vt *ptr_i ;
   freeitmptr_vt ptr_cand ;
   int overflow, found1st ;
@@ -306,18 +310,18 @@ gcats2_ptr_mark
   fprintf (stderr, "gcats2_ptr_mark(0): ptr = %p\n", ptr) ;
 */
   overflow = 0 ;
-  p_chunk = (chunkptr_vt)gcats2_ptr_isvalid(ptr, &ofs_chkseg) ;
+  p_chunk = (chunkptr_vt)gcats2_ptr_isvalid(ptr, &ofs_nitm) ;
 /*
   fprintf (stderr, "gcats2_ptr_mark(1): p_chunk = %p\n", p_chunk) ;
 */
   if (!p_chunk) return overflow ; // [ptr] is invalid
 /*
   fprintf (stderr, "gcats2_ptr_mark(2): chunk =\n") ;
-  gcats2_fprint_chunk (stderr, p_chunk) ;
-  fprintf (stderr, "gcats2_ptr_mark(2): ofs_chkseg = %i\n", ofs_chkseg) ;
+  gcats2_fprint_chunk ((FILE*)stderr, p_chunk) ;
+  fprintf (stderr, "gcats2_ptr_mark(2): ofs_nitm = %i\n", ofs_nitm) ;
 */
   // [ptr] is already marked:
-  if (MARKBIT_GETSET(p_chunk->mrkbits, ofs_chkseg)) return overflow ; 
+  if (MARKBIT_GETSET(p_chunk->mrkbits, ofs_nitm)) return overflow ; 
   p_chunk->mrkcnt += 1 ; // newly marked
   itmwsz = p_chunk->itmwsz ;
 
@@ -327,7 +331,7 @@ gcats2_ptr_mark
   while (ptr) { // ptr != NULL
 /*
     fprintf (stderr, "gcats2_ptr_mark(3): ptr = %p\n", ptr) ;
-    fprintf (stderr, "gcats2_ptr_mark(3): itmwsz = %i\n", itmwsz) ;
+    fprintf (stderr, "gcats2_ptr_mark(3): itmwsz = %lu\n", itmwsz) ;
 */
     if (itmwsz > MARKSTACK_CUTOFF) {
       gcats2_the_markstackpagelst_push(
@@ -344,9 +348,9 @@ gcats2_ptr_mark
       fprintf (stderr, "gcats2_ptr_mark(4): ptr_i = %p\n", ptr_i) ;
       fprintf (stderr, "gcats2_ptr_mark(4): ptr_cand = %p\n", ptr_cand) ;
 */
-      p_chunk = (chunkptr_vt)gcats2_ptr_isvalid(ptr_cand, &ofs_chkseg) ;
+      p_chunk = (chunkptr_vt)gcats2_ptr_isvalid(ptr_cand, &ofs_nitm) ;
       if (!p_chunk) continue ; // [ptr_cand] is invalid
-      if (MARKBIT_GETSET(p_chunk->mrkbits, ofs_chkseg)) continue ; // already marked
+      if (MARKBIT_GETSET(p_chunk->mrkbits, ofs_nitm)) continue ; // already marked
       p_chunk->mrkcnt += 1 ; // newly marked
       if (found1st) { // this is *not* the first one
         gcats2_the_markstackpagelst_push(ptr_cand, p_chunk->itmwsz, &overflow) ;
@@ -381,7 +385,7 @@ gcats2_chunk_mark (
   ats_ptr_type p_chunk
 ) {
   int i ; freeitmptr_vt *pi ;
-  int itmwsz, itmtot ;
+  size_t itmwsz ; int itmtot ;
   int overflow = 0 ;
   itmwsz = ((chunk_vt*)p_chunk)->itmwsz ;
   itmtot = ((chunk_vt*)p_chunk)->itmtot ;
@@ -406,27 +410,32 @@ ats_int_type gcats2_mystackdir_get () ;
 extern
 ats_ptr_type gcats2_mystackbeg_get () ;
 
+freeitmptr_vt **_fr_addr ;
+
 ats_int_type
 gcats2_mystack_mark (
   // there is no argument for this function
 ) {
-  void *dir ; // make sure that [dir] is word-aligned!
+  intptr_t dir ; // [dir] must be word-aligned!
   int overflow = 0 ; freeitmptr_vt *_fr, *_to ;
-
-  dir = (void*)gcats2_mystackdir_get () ;
-  if ((int)dir > 0) {
+  dir = gcats2_mystackdir_get () ;
+/*
+  fprintf (stderr, "gcats2_mystack_mark: dir = %i\n", dir) ;
+  fprintf (stderr, "gcats2_mystack_mark: &dir = %p\n", &dir) ;
+*/
+  if (dir > 0) {
     _fr = (freeitmptr_vt*)gcats2_mystackbeg_get () ;
-    _to = (freeitmptr_vt*)(&dir) - 1 ; // excluding [dir]
+    _to = (freeitmptr_vt*)&dir ; _to -= 1 ; // excluding [dir]
   } else {
     _to = (freeitmptr_vt*)gcats2_mystackbeg_get () ;
-    _fr = (freeitmptr_vt*)(&dir) + 1 ; // excluding [dir]
+    _fr = (freeitmptr_vt*)&dir ; _fr += 1 ; // excluding [dir]
   } // end of [if]
-// /*
+/*
   fprintf (stderr, "gcats2_mystack_mark: _fr = %p\n", _fr) ;
   fprintf (stderr, "gcats2_mystack_mark: _to = %p\n", _to) ;
-  fprintf (stderr, "gcats2_mystack_mark: _to - _fr = %i\n", _to - _fr) ;
-// */
-  while (_fr <= _to) { overflow += gcats2_ptr_mark (*_fr) ; _fr += 1 ; }
+  fprintf (stderr, "gcats2_mystack_mark: _to - _fr = %li\n", _to - _fr) ;
+*/
+  while (_fr <= _to) overflow += gcats2_ptr_mark (*_fr++) ;
   return overflow ;
 } /* end of [gc_mark_mystack] */
 

@@ -340,9 +340,6 @@ implement main (argc, argv) = () where {
   ) = pf_the_topsegtbl_gen () where { extern prfun
     pf_the_topsegtbl_gen (): (the_topsegtbl_v, the_topsegtbl_v -<prf> void)
   } // end of [prval]
-(*
-  val () = the_topsegtbl_initialize (pf_the_topsegtbl | (*none*))
-*)
 //
   prval (
     pf_the_chunkpagelst, fpf_the_chunkpagelst
@@ -428,6 +425,8 @@ staload _ = "prelude/DATS/reference.dats"
 extern fun the_globalrts_insert
   (p: ptr, sz: size_t): void = "gcats2_the_globalrts_insert"
 
+val r_ptr = ref<ptr> (null)
+
 val r_ptr0 = ref<ptr> (null)
 and r_ptr1 = ref<ptr> (null)
 
@@ -446,7 +445,8 @@ extern fun __ptr_car (p: ptr): ptr = "__ptr_car"
 extern fun __ptr_cdr (p: ptr): ptr = "__ptr_cdr"
 
 implement main () = () where {
-  // var ptr : ptr //uninitialized
+  val () = gcmain_initialize ()
+  // var ptr : ptr // uninitialized
   var ptr1 = autmem_calloc_bsz (NBYTE_PER_WORD, 128)
   val () = printf ("ptr1 = %p\n", @(ptr1))
   var ptr2 = autmem_calloc_bsz (NBYTE_PER_WORD, 256)
@@ -478,22 +478,13 @@ implement main () = () where {
         res // loop exits
       // end of [loop]
   in
-    val () = !r_ptr0 := loop (0, N, null)
-    val () = __free (!r_ptr0) where {
-      fun __free (p: ptr): void =
-        if p <> null then let
-          val p1 = __ptr_cdr p in autmem_free p; __free p1
-        end else
-          () // exit
-        // end of [if]
-    } // end of [val]
-    val () = !r_ptr1 := loop (1, N+30, null)
+    val () = !r_ptr := loop (0, N, null)
+    val () = !r_ptr1 := loop (1, N, null)
   end // end of [local]
 //
   val () = fprint (stdout_ref, "the_topsegtbl =\n")
   val () = fprint_the_topsegtbl (stdout_ref)
 //
-  val () = mystackbeg_set (dir) where { val dir = mystackdir_get () }
   val (pf_the_gcmain | ()) = the_gcmain_v_acquire ()
   val () = gcmain_run (pf_the_gcmain | (*none*))
   val () = the_gcmain_v_release (pf_the_gcmain | (*none*))

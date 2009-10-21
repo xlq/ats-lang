@@ -46,9 +46,9 @@
 
 (* ****** ****** *)
 
-fun mystackdir_get (): int = "gcats2_mystackdir_get"
-fun mystackbeg_set (dir: int): void = "gcats2_mystackbeg_set"
-fun mystackbeg_get (): ptr = "gcats2_mystackbeg_get"
+fun mystackdir_get ():<> int = "gcats2_mystackdir_get"
+fun mystackbeg_set (dir: int):<> void = "gcats2_mystackbeg_set"
+fun mystackbeg_get ():<> ptr = "gcats2_mystackbeg_get"
 
 (* ****** ****** *)
 
@@ -178,7 +178,7 @@ fun fprint_chunk {l:addr} (out: FILEref, p_chunk: !chunkptr_vt l): void
 fun chunk_make_norm {i:nat} (
     pf1: !the_totwsz_v
   , pf2: !the_chunkpagelst_v
-  | itmwsz: int, itmwsz_log: int i
+  | itmwsz: size_t, itmwsz_log: int i
   ) :<> [l:anz] chunkptr_vt l
   = "gcats2_chunk_make_norm"
 
@@ -409,7 +409,6 @@ fun the_gcmain_v_release (pf: the_gcmain_v | (*none*)):<> void
 
 (* ****** ****** *)
 
-(*
 prfun the_totwsz_v_takeout (pf: the_gcmain_v)
   : (the_totwsz_v, the_totwsz_v -<lin,prf> the_gcmain_v)
 // end of [the_totwsz_v_takeout]
@@ -437,7 +436,6 @@ prfun the_manmemlst_v_takeout (pf: the_gcmain_v)
 prfun the_markstack_v_takeout (pf: the_gcmain_v)
   : (the_markstack_v, the_markstack_v -<lin,prf> the_gcmain_v)
 // end of [the_markstack_v_takeout]
-*)
 
 // implemented in ATS in [gcats2_mark.dats]
 fun the_topsegtbl_mark
@@ -482,11 +480,24 @@ fun the_freeitmlstarr_replenish {i:nat | i < FREEITMLST_ARRAYSIZE}
 
 (* ****** ****** *)
 
+fun gcmain_initialize ():<> void
+
+(* ****** ****** *)
+
 fun autmem_malloc_bsz {bsz:pos} (bsz: size_t bsz):<> ptr
 fun autmem_malloc_wsz {bsz:pos} (wsz: size_t bsz):<> ptr
+
 fun autmem_calloc_bsz {n:pos;bsz:pos} (n: size_t n, bsz: size_t bsz):<> ptr
 
-fun autmem_free (p_itm: ptr): void = "gcats2_autmem_free"
+fun autmem_free (
+    pf: !the_topsegtbl_v | p_itm: ptr
+  ) :<> void = "gcats2_autmem_free"
+
+fun autmem_realloc_bsz {n:nat} (
+    pf: !the_topsegtbl_v | p_itm: ptr, bsz_new: size_t n
+  ) :<> ptr // equivalent to autmem_free if [n = 0]
+  = "gcats2_autmem_realloc_bsz"
+// end of ...
 
 (* ****** ****** *)
 

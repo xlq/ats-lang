@@ -48,10 +48,9 @@ staload "gcats2.sats"
 
 typedef
 struct manmem_struct {
-  int itmwsz ;
+  size_t manmem_wsz ;
   struct manmem_struct *prev ;
   struct manmem_struct *next ;
-  size_t manmem_wsz ;
   void *manmem_data[0] ; // this is done for alignment concern!
 } manmem_vt ;
 

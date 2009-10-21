@@ -144,7 +144,7 @@ in
   | _ => let // [itmwsz_log = -1] // large chunk
       val () = $effmask_all (assert_errmsg (false, #LOCATION)) in null
     end // end of [_]
-end // end of [gc_aut_malloc_wsz]
+end // end of [autmem_malloc_wsz]
 
 (* ****** ****** *)
 
@@ -154,12 +154,11 @@ ats_void_type
 gcats2_autmem_free (
   ats_ptr_type p_itm // [p_itm] is assumed to be valid
 ) {
-  int ofs_chkseg ;
   int itmwsz_log ;
-  chunk_vt *p_chunk ;
+  chunk_vt *p_chunk ; int ofs_nitm ;
   freeitmlst_vt *p_itmlst ;
 //
-  p_chunk = (chunk_vt*)gcats2_ptr_isvalid(p_itm, &ofs_chkseg) ;
+  p_chunk = (chunk_vt*)gcats2_ptr_isvalid(p_itm, &ofs_nitm) ;
 //
 #if (GCATS2_DEBUG > 0)
   if (!p_chunk) {

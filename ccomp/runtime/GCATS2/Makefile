@@ -37,8 +37,9 @@
 ## ###### ###### ##
 
 GCC=gcc
-ATSCC=$(ATSHOME)/bin/atscc -g -O3
-ATSCCFLAGS= # -D_ATS_MULTITHREAD # -m64
+ATSCC=$(ATSHOME)/bin/atscc
+ATSCCFLAGS= -g -O2 # -D_ATS_MULTITHREAD # -m64
+#ATSCCFLAGS= -m64
 
 ######
 
@@ -55,7 +56,6 @@ test: gcats2_c.h gcats2_ats.hats
           gcats2_collecting.dats \
           gcats2_autmem.dats \
           gcats2_manmem.dats \
-          -lpthread \
       && ./test \
       && rm -f ./test
 

@@ -77,51 +77,70 @@ end // end of [the_topsegtbl_sweeplst_build]
 (* ****** ****** *)
 
 extern
-fun the_totwsz_limit_is_reached (pf: !the_gcmain_v | (*none*)):<> bool
+fun the_totwsz_limit_is_reached // the function checks if
+  (pf: !the_gcmain_v | (*none*)):<> bool // the_totwsz >= the_totwsz_limt
   = "gcats2_the_totwsz_limit_is_reached"
 
 implement the_freeitmlstarr_replenish (itmwsz_log) = let
   val (pf_the_gcmain | ()) = the_gcmain_v_acquire ()
-  prval (
-    pf_the_sweeplstarr, fpf_the_gcmain
-  ) = __takeout (pf_the_gcmain) where {
-    extern prfun __takeout (pf: the_gcmain_v)
-      : (the_sweeplstarr_v, the_sweeplstarr_v -<lin,prf> the_gcmain_v)
-  } // end of [prval]
-  val p_chunk = the_sweeplstarr_get_chunk (pf_the_sweeplstarr | itmwsz_log)
-  prval () = pf_the_gcmain := fpf_the_gcmain (pf_the_sweeplstarr)
+  prval (pf, fpf) = the_sweeplstarr_v_takeout (pf_the_gcmain)
+  val p_chunk = the_sweeplstarr_get_chunk (pf | itmwsz_log)
+  prval () = pf_the_gcmain := fpf (pf)
 in
   if chunkptr_is_null (p_chunk) then let
     val _(*ptr*) = chunk_free_null (p_chunk) // no-op casting
     val limit_is_reached = the_totwsz_limit_is_reached (pf_the_gcmain | (*none*))
   in
     if limit_is_reached then let
+// (*
+      val () = $effmask_all let
+        val () = fprint (stdout_ref, "gc_main starts: the_topsegtbl =\n")
+        val () = fprint_the_topsegtbl (stdout_ref)
+      in
+        // nothing
+      end // end of [val]
+// *)
+      val () = gcmain_run (pf_the_gcmain | (*none*))
+// (*
+      val () = $effmask_all let
+        val () = fprint (stdout_ref, "gc_main finishes: the_topsegtbl =\n")
+        val () = fprint_the_topsegtbl (stdout_ref)
+      in
+        // nothing
+      end // end of [val]
+// *)
+      prval (pf, fpf) =
+        the_sweeplstarr_v_takeout (pf_the_gcmain)
+      val p_chunk = the_sweeplstarr_get_chunk (pf | itmwsz_log)
+      prval () = pf_the_gcmain := fpf (pf)
       val () = the_gcmain_v_release (pf_the_gcmain | (*none*))
     in
-      // nothing
+      if chunkptr_is_null (p_chunk) then let
+        val _ = chunk_free_null (p_chunk) // no-op casting
+      in
+        // no memory is available after GC
+      end else
+        the_freeitmlstarr_add_chunk (p_chunk, itmwsz_log)
+      // end of [if]
     end else let
+      // totwsz_limit is not reached // a new chunkpage can be obtained
       viewdef V1 = the_totwsz_v
       viewdef V2 = the_chunkpagelst_v
       prval (
-        pf1, pf2, fpf_the_gcmain
+        pf1, pf2, fpf
       ) = __takeout (pf_the_gcmain) where {
         extern prfun __takeout
           (pf: the_gcmain_v): (V1, V2, (V1, V2) -<lin,prf> the_gcmain_v)
       } // end of [prval]
-      val itmwsz = 1 << itmwsz_log
+      val itmwsz = size_of_uint (1U << itmwsz_log)
       val [l_chunk:addr] p_chunk = chunk_make_norm (pf1, pf2 | itmwsz, itmwsz_log)
-      prval () = pf_the_gcmain := fpf_the_gcmain (pf1, pf2)
-      viewdef V1 = the_topsegtbl_v
-      prval (
-        pf1, fpf_the_gcmain
-      ) = __takeout (pf_the_gcmain) where {
-        extern prfun __takeout (pf: the_gcmain_v): (V1, V1 -<lin,prf> the_gcmain_v)        
-      }
+      prval () = pf_the_gcmain := fpf (pf1, pf2)
       val p1_chunk = __cast (p_chunk) where {
         extern castfn __cast (p_chunk: !chunkptr_vt l_chunk):<> chunkptr_vt l_chunk
       }
-      val _(*err*) = the_topsegtbl_insert_chunkptr (pf1 | p_chunk)
-      prval () = pf_the_gcmain := fpf_the_gcmain (pf1)
+      prval (pf, fpf) = the_topsegtbl_v_takeout (pf_the_gcmain)
+      val _(*err*) = the_topsegtbl_insert_chunkptr (pf | p_chunk)
+      prval () = pf_the_gcmain := fpf (pf)
       val () = the_gcmain_v_release (pf_the_gcmain | (*none*))
     in
       the_freeitmlstarr_add_chunk (p1_chunk, itmwsz_log)

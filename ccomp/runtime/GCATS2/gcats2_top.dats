@@ -44,6 +44,20 @@ staload "gcats2.sats"
 
 (* ****** ****** *)
 
+// this is the initialization function for the GC
+implement gcmain_initialize () = () where {
+  val () = mystackbeg_set (dir) where { val dir = mystackdir_get () }
+  val () = () where {
+    prval (pf, fpf) = __takeout () where {
+      extern prfun __takeout (): (the_topsegtbl_v, the_topsegtbl_v -<lin> void)
+    } // end of [prval]
+    val () = the_topsegtbl_initialize (pf | (*none*))
+    prval () = fpf (pf)
+  } // end of [val]
+} // end of [gcmain_initialize]
+
+(* ****** ****** *)
+
 %{^
 
 #if (__WORDSIZE == 32)
@@ -80,7 +94,7 @@ gcats2_the_topsegtbl_initialize () {
 
 // this is the total number
 size_t the_totwsz = 0 ; // of words in use
-size_t the_totwsz_limit = 100 * 1024 ;
+size_t the_totwsz_limit = 6 * 1024 ;
 size_t the_totwsz_limit_max = 0 ;
 
 freeitmlst_vt the_chunkpagelst = (freeitmlst_vt*)0 ;

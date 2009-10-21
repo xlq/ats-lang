@@ -139,6 +139,20 @@ gcats2_fprint_the_topsegtbl
   } // end of [for]
 #endif // end of ...
 
+#if (__WORDSIZE == 64)
+  for (i = 0; i < TOPSEG_HASHTABLESIZE; i += 1) {
+    p_botsegtbl = the_topsegtbl[i] ;
+    while (p_botsegtbl) {
+      for (j = 0; j < BOTSEG_TABLESIZE; j += 1) {
+        p_chunk = p_botsegtbl->headers[j] ;
+        if (p_chunk) gcats2_fprint_chunk (out, p_chunk) ;
+      } // end of [for]
+      fprintf((FILE*)out, "##### end of a botsegtbl #######\n") ;
+      p_botsegtbl = p_botsegtbl->hashnext ;
+    } // end of [while]
+  } // end of [for]
+#endif // end of ...
+
   return ;
 } // end of [gcats2_fprint_the_topsegtbl]
 
@@ -259,7 +273,7 @@ gcats2_the_chunkpagelst_replenish
 
 ats_ptr_type
 gcats2_chunk_make_norm (
-  ats_int_type itmwsz
+  ats_size_type itmwsz
 , ats_int_type itmwsz_log
 ) {
   int itmtot ;
@@ -267,7 +281,7 @@ gcats2_chunk_make_norm (
   chunkptr_vt p_chunk ;
 #if (GCATS2_DEBUG > 0)
   if (itmwsz != (1 << itmwsz_log)) {
-    fprintf(stderr, "gcats2_chunk_make_norm: itmwsz = %i\n", itmwsz) ;
+    fprintf(stderr, "gcats2_chunk_make_norm: itmwsz = %lu\n", itmwsz) ;
     fprintf(stderr, "gcats2_chunk_make_norm: itmwsz_log = %i\n", itmwsz_log) ;
     exit(1) ;
   } // end of [if]
@@ -276,17 +290,17 @@ gcats2_chunk_make_norm (
   p_chunk = (chunkptr_vt)gcats2_malloc_ext(sizeof(chunk_vt)) ;
   p_freepage = (freepageptr_vt)gcats2_the_chunkpagelst_remove() ;
 //
-  p_chunk->itmwsz_log = itmwsz_log ;
   p_chunk->itmwsz = itmwsz ;
+  p_chunk->itmwsz_log = itmwsz_log ;
   p_chunk->itmtot = itmtot ;
 //
   p_chunk->mrkcnt = 0 ; // for fast threading!
   memset(p_chunk->mrkbits, 0, NMARKBIT_PER_CHUNK) ;
 //
   p_chunk->chunk_data = p_freepage ;
-/*
+// /*
   fprintf (stderr, "chunk_make_norm: p_chunk = %p\n", p_chunk) ;
-*/
+// */
   the_totwsz += CHUNK_WORDSIZE ;
 #if (GCATS2_TEST > 0)
   fprintf (stderr, "chunk_make_norm: the_totwsz = %lu\n", (ats_ulint_type)the_totwsz) ;
@@ -338,8 +352,8 @@ gcats2_chunk_make_large (
     (freepageptr_vt)gcats2_malloc_ext(itmwsz << NBYTE_PER_WORD_LOG) ;
   // [p_freepage] can only be freed by [gcats2_free_ext]
 //
-  p_chunk->itmwsz_log = -1 ;
   p_chunk->itmwsz = itmwsz ;
+  p_chunk->itmwsz_log = -1 ; // indicating being large
   p_chunk->itmtot = 1 ;
 //
   p_chunk->mrkcnt = 0 ; // for fast threading!

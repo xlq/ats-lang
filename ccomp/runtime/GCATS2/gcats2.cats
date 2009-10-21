@@ -193,7 +193,7 @@ extern freeitmlst_vt the_freeitmlstarr[FREEITMLST_ARRAYSIZE] ;
 typedef
 struct chunk_struct {
   // the word size of each free item: it must be positive
-  int itmwsz;
+  size_t itmwsz ; // it can be large!
   // itmwsz = 2^itmwsz_log if itmwsz_log >= 0
   // if [itmwsz_log = -1], then the chunk is large (> CHUNK_WORDSIZE)
   int itmwsz_log ;
@@ -347,12 +347,12 @@ MARKBIT_CLEAR (ats_ptr_type x, ats_int_type i) {
 
 extern ats_ptr_type
 gcats2_ptr_isvalid
-  (ats_ptr_type ptr, ats_ref_type r_ofs_chkseg) ;
+  (ats_ptr_type ptr, ats_ref_type r_nitm) ;
 // end of ...
 
 extern ats_ptr_type
 gcats2_chunk_make_norm
-  (ats_int_type itmwsz, ats_int_type itmwsz_log) ;
+  (ats_size_type itmwsz, ats_int_type itmwsz_log) ;
 // end of ...
 
 extern ats_void_type
