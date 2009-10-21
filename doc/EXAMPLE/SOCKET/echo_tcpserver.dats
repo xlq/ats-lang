@@ -2,8 +2,8 @@
 **
 ** An introductory example to UNIX socket programming in ATS
 **
-** The following code implements a client socket for sending a line to
-** a server that echos it back.
+** The following code implements a server socket for echoing back
+** each line it receives from a client.
 **
 ** Author: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
 ** Time: November, 2008
@@ -99,7 +99,9 @@ end // end of [server_loop]
 
 static
 ats_void_type
-sig_chld (signum_t signum) {
+sig_chld (
+  signum_t signum
+) {
   pid_t pid ; int stat ;
 
   while (1) {
@@ -114,7 +116,7 @@ sig_chld (signum_t signum) {
   return ;
 } /* sig_chld */
 
-%}
+%} // end of [%{^]
 
 (* ****** ****** *)
 

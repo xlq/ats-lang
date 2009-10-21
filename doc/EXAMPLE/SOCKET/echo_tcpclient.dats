@@ -95,7 +95,7 @@ implement main (argc, argv) = let
   val () = client_loop (pf_sock | sockfd)
   val () = socket_close_exn (pf_sock | sockfd)
 in
-  exit (0)
+  exit (0) // normal exit
 end // end of [main]
 
 (* ****** ****** *)

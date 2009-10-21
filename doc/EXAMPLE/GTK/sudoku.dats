@@ -18,9 +18,16 @@
  *
  *)
 
+(* ****** ****** *)
+
+// HX: please do not "prettify" the code; please keep it as it is (10/20/2009)
+
+(* ****** ****** *)
+
 %{^
 
 #include "prelude/CATS/array.cats"
+#include "libc/sys/CATS/types.cats"
 #include "libc/CATS/random.cats"
 #include "libc/CATS/unistd.cats"
 
