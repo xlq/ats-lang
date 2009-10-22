@@ -846,14 +846,14 @@ in
 (*
       val () = begin
         prerr "d3exp_tr: hies_arg = "; prerr hies_arg; prerr_newline ()
-      end
+      end // end of [val]
 *)
       val hits_arg = hiexplst_typ_get hies_arg
       val hit_sum = hityp_tysumtemp (d2c, hits_arg)
     in
       hiexp_con (loc0, hit0, hit_sum, d2c, hies_arg)
     end // end of [D2Econ]
-  | D3Ecst d2c => let (* d2c is external as it is used *)
+  | D3Ecst d2c => let (* d2c is external *)
       val () = the_dyncstset_add_if (d2c)
       val hit0 = s2exp_tr (loc0, 0(*deep*), s2e0)
     in
@@ -1466,8 +1466,8 @@ implement d3eclst_tr (d3cs0) = res where {
         in
           aux1 (d3cs, hid, res)
         end // end of [D3Cexndec]
-      | D3Cdcstdec (knd, d3cs1) => let
-          val hid = hidec_dcstdec (d3c.d3ec_loc, knd, d3cs1)
+      | D3Cdcstdec (knd, d2cs) => let
+          val hid = hidec_dcstdec (d3c.d3ec_loc, knd, d2cs)
         in
           aux1 (d3cs, hid, res)
         end // end of [D3Cdcstdec]
@@ -1504,9 +1504,9 @@ implement d3eclst_tr (d3cs0) = res where {
           if $Syn.valkind_is_proof knd then let
             val () = v3aldeclst_prf_tr (valdecs) in aux0 (d3cs, res)
           end else let
-            val hid = begin
+            val hid =
               hidec_valdecs (d3c.d3ec_loc, knd, v3aldeclst_tr valdecs)
-            end // end of [val]
+            // end of [val]
           in
             aux1 (d3cs, hid, res)
           end // end of [if]

@@ -117,6 +117,7 @@ val hityp_clo_ref : hityp
 val hityp_double : hityp
 val hityp_float : hityp
 val hityp_int : hityp
+val hityp_proof : hityp
 val hityp_ptr : hityp
 val hityp_string : hityp
 val hityp_tysum_ptr : hityp

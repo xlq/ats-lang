@@ -63,6 +63,7 @@ staload "ats_hiexp.sats"
 #define DOUBLE_TYPE_NAME        "ats_double_type"
 #define FLOAT_TYPE_NAME         "ats_float_type"
 #define INT_TYPE_NAME           "ats_int_type"
+#define PROOF_TYPE_NAME         "ats_proof_type"
 #define PTR_TYPE_NAME           "ats_ptr_type"
 #define REF_TYPE_NAME           "ats_ref_type"
 #define RECTEMP_TYPE_NAME       "ats_rectemp_type"
@@ -85,6 +86,7 @@ implement hityp_clo_ref = hityp_extype CLO_REF_TYPE_NAME
 implement hityp_double = hityp_extype DOUBLE_TYPE_NAME
 implement hityp_float = hityp_extype FLOAT_TYPE_NAME
 implement hityp_int = hityp_extype INT_TYPE_NAME
+implement hityp_proof = hityp_extype PROOF_TYPE_NAME
 implement hityp_ptr = hityp_extype PTR_TYPE_NAME
 implement hityp_string = hityp_extype STRING_TYPE_NAME
 implement hityp_tysum_ptr = hityp_extype SUM_PTR_TYPE_NAME

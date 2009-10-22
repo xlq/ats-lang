@@ -635,7 +635,9 @@ val the_dyncstsetlst = ref_make_elt<dyncstsetlst> (list_vt_nil ())
 fn dyncstset_add
   (d2cset_ref: ref dyncstset, d2c: d2cst_t): void = let
   val loc0 = d2cst_loc_get d2c
-  val hit0 = s2exp_tr (loc0, 1(*deep*), d2cst_typ_get d2c)
+  val hit0 = (if d2cst_is_proof (d2c)
+    then hityp_proof else s2exp_tr (loc0, 1(*deep*), d2cst_typ_get d2c)
+  ) : hityp
   val hit0 = hityp_normalize hit0
   val () = d2cst_hityp_set (d2c, Some hit0)
   val d2cset = !d2cset_ref
