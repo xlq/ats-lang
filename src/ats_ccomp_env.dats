@@ -127,7 +127,7 @@ end // end of [compare_typkey_typkey]
 
 local
 
-val the_typdef_base = ref_make_elt<string> ("ats_anairiats")
+val the_typdef_base = ref_make_elt<string> ("anairiats")
 val the_typdef_count = ref_make_elt<int> (0)
 
 in // in of [local]
