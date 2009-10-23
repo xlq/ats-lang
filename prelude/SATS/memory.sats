@@ -43,7 +43,7 @@
 
 #print "Loading [memory.sats] starts!\n"
 
-#endif
+#endif // end of [VERBOSE_PRELUDE]
 
 (* ****** ****** *)
 
@@ -59,42 +59,51 @@ prfun array_v_of_byte_v
 
 (* ****** ****** *)
 
+//
+// the following declared functions are implemented in [ats_prelude_gcats.c]
+//
+
+(* ****** ****** *)
+
 fun gc_init (): void = "ats_gc_init"
 
 (* ****** ****** *)
 
-// the following functions are implemented in ats_memory.h"
+fun gc_memlim_get_word (): size_t =
+  "ats_gc_memlim_get_word"
+fun gc_memlim_get_word_set (wsz: size_t): void =
+  "ats_gc_memlim_set_word"
 
-fun malloc_ngc {n:nat} (n: size_t n)
-  :<> [l:agz] (free_ngc_v (n, l), b0ytes n @ l | ptr l)
-  = "ats_malloc_ngc"
-
-fun calloc_ngc {a:viewt@ype} {n:nat}
-  (n: size_t n, tsz: sizeof_t a)
-  :<> [l:agz] (free_ngc_v (a?, n, l), @[a?][n] @ l | ptr l)
-  = "ats_calloc_ngc"
-
-fun free_ngc {n:nat} {l:addr}
-  (_: free_ngc_v (n, l), _: b0ytes n @ l | p: ptr l):<> void
-  = "ats_free_ngc"
-
-fun realloc_ngc {n0,n:nat} {l0:addr} (
-    _: free_ngc_v (n0, l0), _: b0ytes n0 @ l0
-  | _: ptr l0, _: size_t n
-  ) :<> [l:agz] (free_ngc_v (n, l), b0ytes n @ l | ptr l)
-  = "ats_realloc_ngc"
+fun gc_memlim_get_page (): size_t =
+  "ats_gc_memlim_get_page"
+fun gc_memlim_get_page_set (wsz: size_t): void =
+  "ats_gc_memlim_set_page"
 
 (* ****** ****** *)
 
+fun gc_max_memlim_get_word (): size_t =
+  "ats_gc_max_memlim_get_word"
+fun gc_max_memlim_get_word_set (wsz: size_t): void =
+  "ats_gc_max_memlim_set_word"
+
+fun gc_max_memlim_get_page (): size_t =
+  "ats_gc_max_memlim_get_page"
+fun gc_max_memlim_get_page_set (wsz: size_t): void =
+  "ats_gc_max_memlim_set_page"
+
+(* ****** ****** *)
+
+// deprecated (HX: 2009-10-21)
 fun gc_chunk_count_limit_get (): int
   = "ats_gc_chunk_count_limit_get"
-
 fun gc_chunk_count_limit_set (n: int): void
   = "ats_gc_chunk_count_limit_set"
 
+(* ****** ****** *)
+
+// deprecated (HX: 2009-10-21)
 fun gc_chunk_count_limit_max_get (): int
   = "ats_gc_chunk_count_limit_max_get"
-
 fun gc_chunk_count_limit_max_set (n: int): void
   = "ats_gc_chunk_count_limit_max_set"
 
@@ -121,10 +130,31 @@ fun realloc_gc {n0,n:nat} {l0:addr} (
 
 (* ****** ****** *)
 
+fun malloc_ngc {n:nat} (n: size_t n)
+  :<> [l:agz] (free_ngc_v (n, l), b0ytes n @ l | ptr l)
+  = "ats_malloc_ngc"
+
+fun calloc_ngc {a:viewt@ype} {n:nat}
+  (n: size_t n, tsz: sizeof_t a)
+  :<> [l:agz] (free_ngc_v (a?, n, l), @[a?][n] @ l | ptr l)
+  = "ats_calloc_ngc"
+
+fun free_ngc {n:nat} {l:addr}
+  (_: free_ngc_v (n, l), _: b0ytes n @ l | p: ptr l):<> void
+  = "ats_free_ngc"
+
+fun realloc_ngc {n0,n:nat} {l0:addr} (
+    _: free_ngc_v (n0, l0), _: b0ytes n0 @ l0
+  | _: ptr l0, _: size_t n
+  ) :<> [l:agz] (free_ngc_v (n, l), b0ytes n @ l | ptr l)
+  = "ats_realloc_ngc"
+
+(* ****** ****** *)
+
 #if VERBOSE_PRELUDE #then
 
 #print "Loading [memory.sats] finishes!\n"
 
-#endif
+#endif // end of [VERBOSE_PRELUDE]
 
 (* end of [memory.sats] *)

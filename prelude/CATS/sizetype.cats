@@ -49,7 +49,7 @@
 
 #define atspre_int_of_size atspre_int1_of_size1
 #define atspre_size_of_int1 atspre_size1_of_int1
-#define atspre_size_of_uint1 atspre_size1_of_uint1
+#define atspre_size_of_uint atspre_size1_of_uint1
 #define atspre_size_of_ssize atspre_size1_of_ssize1
 
 #define atspre_int_of_ssize atspre_int1_of_ssize1

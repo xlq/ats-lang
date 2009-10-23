@@ -60,11 +60,11 @@
 fun int_of_size (sz: size_t):<> int
   = "atspre_int_of_size"
 
+fun size_of_uint (u: uint):<> size_t
+  = "atspre_size_of_uint"
+
 fun size_of_int1 {i:nat} (i: int i):<> size_t
   = "atspre_size_of_int1"
-
-fun size_of_uint1 {i:nat} (u: uint i):<> size_t
-  = "atspre_size_of_uint1"
 
 (* ****** ****** *)
 
