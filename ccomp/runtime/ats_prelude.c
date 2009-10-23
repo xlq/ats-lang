@@ -144,6 +144,8 @@ ats_funarg_match_failure_handle (char *loc) {
 #include "ats_prelude_ngc.c"
 #elif _ATS_GCATS // special GC for ATS
 #include "ats_prelude_gcats.c"
+#elif _ATS_GCATS2 // special GC for ATS
+#include "ats_prelude_gcats2.c"
 #elif _ATS_GCBDW // Boehm-Demers-Weise conservative GC for C/C++
 #include "ats_prelude_gcbdw.c"
 #else // _ATS_NGC is the default

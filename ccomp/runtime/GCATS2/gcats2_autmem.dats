@@ -42,7 +42,7 @@
 
 (* ****** ****** *)
 
-#define ATS_FUNCTION_NAME_PREFIX "gcats2_autmem_"
+#define ATSCCOMP_NAMESPACE "gcats2_autmem_"
 
 (* ****** ****** *)
 
@@ -174,7 +174,8 @@ gcats2_autmem_free (
     p_itmlst = &the_freeitmlstarr[itmwsz_log] ;
     *(freeitmlst_vt*)p_itm = *p_itmlst ; *p_itmlst = (freeitmlst_vt)p_itm ;
   } else { // itmwsz_log = -1 // itmtot = 1
-    // the_gcmain_v needs to be acquired in order to free the item immediately
+    gcats2_free_ext (p_chunk->chunk_data) ;
+    gcats2_the_topsegtbl_remove_chunkptr (p_chunk) ;
   } // end of [if]
 //
   return ;

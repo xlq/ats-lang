@@ -265,8 +265,8 @@ fn the_manmemlst_test
         pf: !the_manmemlst_v | i: int i, res: List_vt ptr
       ) : List_vt ptr =
       if i > 0 then let
-        val bsz = size_of_int1 (i)
-        val (pf_mm | p_mm) = manmem_make (bsz)
+        val bsz = size1_of_int1 (i)
+        val (pf_mm | p_mm) = manmem_create (bsz)
         val ptr = manmem_data_get (!p_mm)
         val () = the_manmemlst_insert (pf, pf_mm | p_mm)
       in
@@ -289,7 +289,7 @@ fn the_manmemlst_test
       case+ ptrs of
       | ~list_vt_cons (ptr, ptrs) => let
            val (pf_mm | p_mm) = the_manmemlst_remove (pf | ptr)
-           val () = manmem_free (pf_mm | p_mm)
+           val () = manmem_destroy (pf_mm | p_mm)
          in
            loop (pf | ptrs)
          end // end of [list_vt_cons]
@@ -485,9 +485,9 @@ implement main () = () where {
   val () = fprint (stdout_ref, "the_topsegtbl =\n")
   val () = fprint_the_topsegtbl (stdout_ref)
 //
-  val (pf_the_gcmain | ()) = the_gcmain_v_acquire ()
+  val (pf_the_gcmain | ()) = the_gcmain_lock_acquire ()
   val () = gcmain_run (pf_the_gcmain | (*none*))
-  val () = the_gcmain_v_release (pf_the_gcmain | (*none*))
+  val () = the_gcmain_lock_release (pf_the_gcmain | (*none*))
 //
   val () = fprint (stdout_ref, "the_topsegtbl =\n")
   val () = fprint_the_topsegtbl (stdout_ref)

@@ -118,6 +118,61 @@ absview the_totwsz_v
 
 (* ****** ****** *)
 
+absview the_globalrts_v
+
+// implemented in [gcats2_globalrts.dats]
+fun the_globalrts_insert ( // it is called before [gcmain_initialize]
+    pf: !the_globalrts_v | ptr: ptr, wsz: size_t
+  ) :<> void
+  = "gcats2_the_globalrts_insert" // implemented in C
+// end of ...
+
+(* ****** ****** *)
+
+abst@ype manmem_vt // unboxed type
+fun manmem_data_get
+  (itm: &manmem_vt):<> ptr = "gcats2_manmem_data_get"
+// end of ...
+
+fun manmem_create // it is needed for [manmem_malloc]
+  {n:pos} (bsz: size_t n):<> [l:addr] (manmem_vt @ l | ptr l)
+  = "gcats2_manmem_create"
+// end of ...
+
+fun manmem_destroy {l:addr} // it is needed for [manmem_free]
+  (pf: manmem_vt @ l | p: ptr l):<> void = "gcats2_manmem_destroy"
+// end of ...
+
+(* ****** ****** *)
+
+absview the_manmemlst_v
+
+fun the_manmemlst_lock_initialize
+  (pf: !the_manmemlst_v | (*none*)):<> void
+  = "gcats2_the_manmemlst_lock_initialize"
+
+fun the_manmemlst_lock_acquire ():<> (the_manmemlst_v | void)
+  = "gcats2_the_manmemlst_lock_acquire"
+fun the_manmemlst_lock_release (pf: the_manmemlst_v | (*none*)):<> void
+  = "gcats2_the_manmemlst_lock_release"
+
+fun the_manmemlst_length
+  (pf: !the_manmemlst_v | (*none*)):<> int
+  = "gcats2_the_manmemlst_length" // mostly for gathering some statistic info
+// end of ...
+
+fun the_manmemlst_insert {l:addr}
+  (pf1: !the_manmemlst_v, pf2: manmem_vt @ l | p_mem: ptr l):<> void
+  = "gcats2_the_manmemlst_insert"
+// end of ...
+
+fun the_manmemlst_remove // [p] must be in the_manmemlst!
+  (pf: !the_manmemlst_v | p_data: ptr):<> [l:addr] (manmem_vt @ l | ptr l)
+  = "gcats2_the_manmemlst_remove"
+// end of ...
+
+(* ****** ****** *)
+
 //
 // a freepages is not deallocated; it is added to the_chunkpagelst
 //
@@ -235,7 +290,7 @@ absviewt@ype botsegtbl_vt = $extype "botsegtbl_vt"
 absviewtype botsegtblptr_vt (l:addr) // this is a boxed type
 viewtypedef botsegtblptr_vt = [l:addr] botsegtblptr_vt (l)
 
-castfn botsegtblptr_free_null (_: botsegtblptr_vt null): ptr
+castfn botsegtblptr_free_null (_: botsegtblptr_vt null): ptr null
 
 fun the_nbotsegtbl_alloc_get ():<> lint // for gathering statistics
   = "gcats2_the_nbotsegtbl_alloc_get"
@@ -293,48 +348,6 @@ fun the_topsegtbl_foreach_chunkptr
 // implemented in ATS in [gcats2_chunk.dats]
 fun the_topsegtbl_clear_mrkbits (pf: !the_topsegtbl_v | (*none*)):<> void
   = "gcats2_the_topsegtbl_clear_mrkbits"
-
-(* ****** ****** *)
-
-absview the_globalrts_v
-
-fun the_globalrts_insert (
-    pf: !the_globalrts_v | ptr: ptr, wsz: size_t
-  ) :<> void
-  = "gcats2_the_globalrts_insert" // implemented in C
-// end of ...
-
-(* ****** ****** *)
-
-abst@ype manmem_vt // unboxed type
-fun manmem_data_get (itm: &manmem_vt):<> ptr = "gcats2_manmem_data_get"
-
-fun manmem_make // bsz: number of bytes
-  (bsz: size_t):<> [l:addr] (manmem_vt @ l | ptr l)
-  = "gcats2_manmem_make"
-// end of ...
-
-fun manmem_free {l:addr}
-  (pf: manmem_vt @ l | p: ptr l):<> void
-  = "gcats2_manmem_free"
-// end of ...
-
-absview the_manmemlst_v
-
-fun the_manmemlst_length
-  (pf: !the_manmemlst_v | (*none*)):<> int
-  = "gcats2_the_manmemlst_length" // mostly for gathering some statistic info
-// end of ...
-
-fun the_manmemlst_insert {l:addr}
-  (pf: !the_manmemlst_v, pf2: manmem_vt @ l | p: ptr l):<> void
-  = "gcats2_the_manmemlst_insert"
-// end of ...
-
-fun the_manmemlst_remove // [p] must be in the_manmemlst!
-  (pf: !the_manmemlst_v | p: ptr):<> [l:addr] (manmem_vt @ l | ptr l)
-  = "gcats2_the_manmemlst_remove"
-// end of ...
 
 (* ****** ****** *)
 
@@ -402,10 +415,10 @@ fun mystack_mark ():<> int(*overflow*) = "gcats2_mystack_mark"
 // this view contains contains
 absview the_gcmain_v // the resources for performing GC
 
-fun the_gcmain_v_acquire ():<> (the_gcmain_v | void)
-  = "gcats2_the_gcmain_v_acquire"
-fun the_gcmain_v_release (pf: the_gcmain_v | (*none*)):<> void
-  = "gcats2_the_gcmain_v_release"
+fun the_gcmain_lock_acquire ():<> (the_gcmain_v | void)
+  = "gcats2_the_gcmain_lock_acquire"
+fun the_gcmain_lock_release (pf: the_gcmain_v | (*none*)):<> void
+  = "gcats2_the_gcmain_lock_release"
 
 (* ****** ****** *)
 
@@ -428,10 +441,6 @@ prfun the_topsegtbl_v_takeout (pf: the_gcmain_v)
 prfun the_globalrts_v_takeout (pf: the_gcmain_v)
   : (the_globalrts_v, the_globalrts_v -<lin,prf> the_gcmain_v)
 // end of [the_globalrts_v_takeout]
-
-prfun the_manmemlst_v_takeout (pf: the_gcmain_v)
-  : (the_manmemlst_v, the_manmemlst_v -<lin,prf> the_gcmain_v)
-// end of [the_manmemlst_v_takeout]
 
 prfun the_markstack_v_takeout (pf: the_gcmain_v)
   : (the_markstack_v, the_markstack_v -<lin,prf> the_gcmain_v)
@@ -481,6 +490,11 @@ fun the_freeitmlstarr_replenish {i:nat | i < FREEITMLST_ARRAYSIZE}
 (* ****** ****** *)
 
 fun gcmain_initialize ():<> void
+
+(* ****** ****** *)
+
+fun manmem_malloc_bsz {bsz:pos} (bsz: size_t bsz):<> ptr
+fun manmem_free (p: ptr):<> void
 
 (* ****** ****** *)
 

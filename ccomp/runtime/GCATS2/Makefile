@@ -37,9 +37,58 @@
 ## ###### ###### ##
 
 GCC=gcc
+GCCFLAGS= -O2
 ATSCC=$(ATSHOME)/bin/atscc
 ATSCCFLAGS= -g -O2 # -D_ATS_MULTITHREAD # -m64
 #ATSCCFLAGS= -m64
+
+######
+
+gc.o: \
+  gcats2_c.h \
+  gcats2_ats.hats \
+  gcats2_top_dats.c \
+  gcats2_misc_dats.c \
+  gcats2_freeitmlst_dats.c \
+  gcats2_chunk_dats.c \
+  gcats2_pointer_dats.c \
+  gcats2_globalrts_dats.c \
+  gcats2_marking_dats.c \
+  gcats2_collecting_dats.c \
+  gcats2_autmem_dats.c \
+  gcats2_manmem_dats.c
+	$(ATSCC) -O2 -c -o gc.o -x c gcats2_all.cats
+
+######
+
+gcats2_c.h: gcats2_master.hats
+	$(GCC) -E -P -D_CHEADER -o $@ -x c gcats2_master.hats
+
+gcats2_ats.hats: gcats2_master.hats
+	$(GCC) -E -P -D_ATSHEADER -o $@ -x c gcats2_master.hats
+
+######
+
+gcats2_top_dats.c: \
+  gcats2_top.dats; $(ATSCC) -cc gcats2_top.dats
+gcats2_misc_dats.c: \
+  gcats2_misc.dats; $(ATSCC) -cc gcats2_misc.dats 
+gcats2_freeitmlst_dats.c: \
+  gcats2_freeitmlst.dats; $(ATSCC) -cc gcats2_freeitmlst.dats 
+gcats2_chunk_dats.c: \
+  gcats2_chunk.dats; $(ATSCC) -cc gcats2_chunk.dats 
+gcats2_pointer_dats.c: \
+  gcats2_pointer.dats; $(ATSCC) -cc gcats2_pointer.dats 
+gcats2_globalrts_dats.c: \
+  gcats2_globalrts.dats; $(ATSCC) -cc gcats2_globalrts.dats 
+gcats2_marking_dats.c: \
+  gcats2_marking.dats; $(ATSCC) -cc gcats2_marking.dats 
+gcats2_collecting_dats.c: \
+  gcats2_collecting.dats; $(ATSCC) -cc gcats2_collecting.dats 
+gcats2_autmem_dats.c: \
+  gcats2_autmem.dats; $(ATSCC) -cc gcats2_autmem.dats 
+gcats2_manmem_dats.c: \
+  gcats2_manmem.dats; $(ATSCC) -cc gcats2_manmem.dats 
 
 ######
 
@@ -56,58 +105,9 @@ test: gcats2_c.h gcats2_ats.hats
           gcats2_collecting.dats \
           gcats2_autmem.dats \
           gcats2_manmem.dats \
+          -lpthread \
       && ./test \
       && rm -f ./test
-
-######
-
-gcats2_c.h: gcats2_master.hats
-	$(GCC) -E -P -D_CHEADER -o $@ -x c gcats2_master.hats
-
-gcats2_ats.hats: gcats2_master.hats
-	$(GCC) -E -P -D_ATSHEADER -o $@ -x c gcats2_master.hats
-
-######
-
-gcats2_top_dats.o: \
-  gcats2_c.h gcats2_ats.hats gcats2_top.dats 
-	$(ATSCC) $(ATSCCFLAGS) -o $@  -c gcats2_top.dats
-
-gcats2_misc_dats.o: \
-  gcats2_c.h gcats2_ats.hats gcats2_misc.dats 
-	$(ATSCC) $(ATSCCFLAGS) -o $@  -c gcats2_misc.dats
-
-gcats2_freeitmlst_dats.o: \
-  gcats2_c.h gcats2_ats.hats gcats2_freeitmlst.dats 
-	$(ATSCC) $(ATSCCFLAGS) -o $@  -c gcats2_freeitmlst.dats
-
-gcats2_chunk_dats.o: \
-  gcats2_c.h gcats2_ats.hats gcats2_chunk.dats 
-	$(ATSCC) $(ATSCCFLAGS) -o $@  -c gcats2_chunk.dats
-
-gcats2_pointer_dats.o: \
-  gcats2_c.h gcats2_ats.hats gcats2_pointer.dats 
-	$(ATSCC) $(ATSCCFLAGS) -o $@ -c gcats2_pointer.dats
-
-gcats2_globalrts_dats.o: \
-  gcats2_c.h gcats2_ats.hats gcats2_globalrts.dats 
-	$(ATSCC) $(ATSCCFLAGS) -o $@  -c gcats2_globalrts.dats
-
-gcats2_marking_dats.o: \
-  gcats2_c.h gcats2_ats.hats gcats2_marking.dats 
-	$(ATSCC) $(ATSCCFLAGS) -o $@  -c gcats2_marking.dats
-
-gcats2_collecting_dats.o: \
-  gcats2_c.h gcats2_ats.hats gcats2_collecting.dats 
-	$(ATSCC) $(ATSCCFLAGS) -o $@  -c gcats2_collecting.dats
-
-gcats2_autmem_dats.o: \
-  gcats2_c.h gcats2_ats.hats gcats2_autmem.dats 
-	$(ATSCC) $(ATSCCFLAGS) -o $@  -c gcats2_autmem.dats
-
-gcats2_manmem_dats.o: \
-  gcats2_c.h gcats2_ats.hats gcats2_manmem.dats 
-	$(ATSCC) $(ATSCCFLAGS) -o $@  -c gcats2_manmem.dats
 
 ######
 

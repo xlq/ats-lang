@@ -36,7 +36,7 @@
 
 (* ****** ****** *)
 
-#define ATS_FUNCTION_NAME_PREFIX "gcats2_globalrts_"
+#define ATSCCOMP_NAMESPACE "gcats2_globalrts_"
 
 (* ****** ****** *)
 

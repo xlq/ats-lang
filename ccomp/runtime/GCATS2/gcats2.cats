@@ -52,6 +52,10 @@
 #include <setjmp.h> // for [setjmp] in gcmain_run
 #include <sys/mman.h> // for [mmap] in chunkpagelst_replenish
 
+#ifdef _ATS_MULTITHREAD
+#include <pthread.h>
+#endif
+
 /* ****** ****** */
 
 #include "gcats2_c.h"
@@ -167,8 +171,25 @@ PTR_TOPSEGHASH_GET (ats_ptr_type p) {
 
 /* ****** ****** */
 
+typedef
+struct manmem_struct {
+  size_t manmem_wsz ;
+  struct manmem_struct *prev ;
+  struct manmem_struct *next ;
+  void *manmem_data[0] ; // this is done for alignment concern!
+} manmem_vt ;
+
+typedef manmem_vt *manmemlst_vt ;
+
 /*
-** declared in [gcats2_top.dats]
+**  implemented in [gcats2_top.dats]
+*/
+extern manmemlst_vt the_manmemlst ;
+
+/* ****** ****** */
+
+/*
+** implemented in [gcats2_top.dats]
 */
 
 extern size_t the_totwsz ;
@@ -183,7 +204,14 @@ gcats2_the_totwsz_limit_is_reached () { return
 
 /* ****** ****** */
 
-extern freeitmlst_vt the_freeitmlstarr[FREEITMLST_ARRAYSIZE] ;
+/*
+** implemented in [gcats2_top.dats]
+*/
+extern
+#ifdef _ATS_MULTITHREAD
+__thread // thread-local storage
+#endif // end of [_ATS_MULTITHREAD]
+freeitmlst_vt the_freeitmlstarr[FREEITMLST_ARRAYSIZE] ;
 
 /* ****** ****** */
 
@@ -342,6 +370,70 @@ MARKBIT_CLEAR (ats_ptr_type x, ats_int_type i) {
   ((byte*)x)[i >> NBIT_PER_BYTE_LOG] &= ~(0x1 << (i & NBIT_PER_BYTE_MASK)) ;
   return ;
 } /* end of [MARKBIT_CLEAR] */
+
+/* ****** ****** */
+
+extern pthread_spinlock_t the_manmemlst_lock ;
+
+static inline
+ats_void_type
+gcats2_the_manmemlst_lock_acquire () {
+#ifdef _ATS_MULTITHREAD
+  int err ;
+  err = pthread_spin_lock (&the_manmemlst_lock) ;
+  if (err != 0) {
+    fprintf(stderr, "exit(ATS/GC): [the_manmemlst_lock_acquire] failed.\n") ; exit(1) ;
+  } // end of [if]
+#endif // end of [_ATS_MULTITHREAD]
+  return ;
+} /* end of [gcats2_the_manmemlst_lock_acquire] */
+
+static inline
+ats_void_type
+gcats2_the_manmemlst_lock_release () {
+#ifdef _ATS_MULTITHREAD
+  int err ;
+  err = pthread_spin_lock (&the_manmemlst_lock) ;
+  if (err != 0) {
+    fprintf(stderr, "exit(ATS/GC): [the_manmemlst_lock_release] failed.\n") ; exit(1) ;
+  } // end of [if]
+#endif // end of [_ATS_MULTITHREAD]
+  return ;
+} /* end of [gcats2_the_manmemlst_lock_release] */
+
+/* ****** ****** */
+
+#ifdef _ATS_MULTITHREAD
+extern pthread_mutex_t the_gcmain_lock ;
+#endif // end of [_ATS_MULTITHREAD]
+
+static inline
+ats_void_type
+gcats2_the_gcmain_lock_acquire () {
+#ifdef _ATS_MULTITHREAD
+  int err ;
+  err = pthread_mutex_lock (&the_gcmain_lock) ;
+  if (err != 0) {
+    fprintf(stderr, "exit(ATS/GC): [the_gcmain_lock_acquire]: failed.\n") ;
+    exit(1) ;
+  }
+#endif // end of [_ATS_MULTITHREAD]
+  return ;
+} /* end of [gcats2_the_gcmain_lock_acquire] */
+
+static inline
+ats_void_type
+gcats2_the_gcmain_lock_release () {
+#ifdef _ATS_MULTITHREAD
+  int err ;
+  err = pthread_mutex_unlock (&the_gcmain_lock) ;
+  if (err != 0) {
+    fprintf(stderr, "exit(ATS/GC): [the_gcmain_lock_release]: failed.\n") ;
+    exit(1) ;
+  }
+#endif // end of [_ATS_MULTITHREAD]
+  return ;
+} /* end of [gcats2_the_gcmain_lock_release] */
 
 /* ****** ****** */
 

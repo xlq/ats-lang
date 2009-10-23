@@ -36,7 +36,7 @@
 
 (* ****** ****** *)
 
-#define ATS_FUNCTION_NAME_PREFIX "gcats2_manmem_"
+#define ATSCCOMP_NAMESPACE "gcats2_manmem_"
 
 (* ****** ****** *)
 
@@ -44,23 +44,27 @@ staload "gcats2.sats"
 
 (* ****** ****** *)
 
+implement manmem_malloc_bsz (bsz) = let
+  val (pf_mem | p_mem) = manmem_create (bsz)
+  val p_data = manmem_data_get (!p_mem)
+  val (pf_lst | ()) = the_manmemlst_lock_acquire ()
+  val () = the_manmemlst_insert (pf_lst, pf_mem | p_mem)
+  val () = the_manmemlst_lock_release (pf_lst | (*none*))
+in
+  p_data
+end // end of [manmem_malloc_bsz]
+
+implement manmem_free (p_data) = let
+  val (pf_lst | ()) = the_manmemlst_lock_acquire ()
+  val (pf_mem | p_mem) = the_manmemlst_remove (pf_lst | p_data)
+  val () = the_manmemlst_lock_release (pf_lst | (*none*))
+in
+  manmem_destroy (pf_mem | p_mem)
+end // end of [manmem_free]
+
+(* ****** ****** *)
+
 %{^
-
-typedef
-struct manmem_struct {
-  size_t manmem_wsz ;
-  struct manmem_struct *prev ;
-  struct manmem_struct *next ;
-  void *manmem_data[0] ; // this is done for alignment concern!
-} manmem_vt ;
-
-typedef manmem_vt *manmemlst_vt ;
-
-/* ****** ****** */
-
-manmemlst_vt the_manmemlst = (manmemlst_vt)0 ;
-
-/* ****** ****** */
 
 ats_ptr_type
 gcats2_manmem_data_get (
@@ -72,7 +76,7 @@ gcats2_manmem_data_get (
 /* ****** ****** */
 
 ats_ptr_type
-gcats2_manmem_make (
+gcats2_manmem_create (
   ats_size_type bsz
 ) {
   manmem_vt *p_manmem ;
@@ -82,14 +86,14 @@ gcats2_manmem_make (
   p_manmem = gcats2_malloc_ext(sizeof(manmem_vt) + bsz) ;
   p_manmem->manmem_wsz = wsz ;
   return (ats_ptr_type)p_manmem ;
-} /* end of [gcats2_manmem_make] */
+} /* end of [gcats2_manmem_create] */
 
 ats_void_type
-gcats2_manmem_free (
+gcats2_manmem_destroy (
   ats_ptr_type p_manmem
 ) {
   gcats2_free_ext(p_manmem) ; return ;
-} /* end of [gcats2_manmem_free] */
+} /* end of [gcats2_manmem_destroy] */
 
 /* ****** ****** */
 
@@ -106,13 +110,13 @@ gcats2_the_manmemlst_length (
 
 ats_void_type
 gcats2_the_manmemlst_insert (
-  ats_ptr_type p_manmem // [p_manmem] != NULL
+  ats_ptr_type p_mem // [p_mem] != NULL
 ) {
   // inserted as the head of the_manmemlst
-  ((manmemlst_vt)p_manmem)->prev = (manmemlst_vt)0 ;
-  ((manmemlst_vt)p_manmem)->next = the_manmemlst ;
-  if (the_manmemlst) the_manmemlst->prev = p_manmem ;
-  the_manmemlst = p_manmem ;
+  ((manmemlst_vt)p_mem)->prev = (manmemlst_vt)0 ;
+  ((manmemlst_vt)p_mem)->next = the_manmemlst ;
+  if (the_manmemlst) the_manmemlst->prev = p_mem ;
+  the_manmemlst = p_mem ;
   return ;
 } /* end of [gcats2_the_manmemlst_insert] */
 

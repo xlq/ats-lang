@@ -40,7 +40,7 @@
 
 (* ****** ****** *)
 
-#define ATS_FUNCTION_NAME_PREFIX "gcats2_chunk_"
+#define ATSCCOMP_NAMESPACE "gcats2_chunk_"
 
 (* ****** ****** *)
 
@@ -200,8 +200,8 @@ gcats2_the_freeitmlstarr_add_chunk (
 
 %{^
 
-static
-freepagelst_vt the_chunkpagelst = (freepagelst_vt)0 ;
+// implemented in [gcats2_top.dats]
+extern freepagelst_vt the_chunkpagelst ;
 
 extern // implemented in [gcats2_freeitmlst.dats]
 ats_int_type gcats2_freeitmlst_length (ats_ptr_type) ;
@@ -276,7 +276,7 @@ gcats2_chunk_make_norm (
   ats_size_type itmwsz
 , ats_int_type itmwsz_log
 ) {
-  int itmtot ;
+  int itmtot, nbyte ;
   freepageptr_vt p_freepage ;
   chunkptr_vt p_chunk ;
 #if (GCATS2_DEBUG > 0)
@@ -293,18 +293,19 @@ gcats2_chunk_make_norm (
   p_chunk->itmwsz = itmwsz ;
   p_chunk->itmwsz_log = itmwsz_log ;
   p_chunk->itmtot = itmtot ;
+  nbyte = (itmtot + NBIT_PER_BYTE_MASK) >> NBIT_PER_BYTE_LOG ;
 //
   p_chunk->mrkcnt = 0 ; // for fast threading!
-  memset(p_chunk->mrkbits, 0, NMARKBIT_PER_CHUNK) ;
+  memset(p_chunk->mrkbits, 0, nbyte) ;
 //
   p_chunk->chunk_data = p_freepage ;
-// /*
-  fprintf (stderr, "chunk_make_norm: p_chunk = %p\n", p_chunk) ;
-// */
+/*
+  fprintf(stderr, "chunk_make_norm: p_chunk = %p\n", p_chunk) ;
+*/
   the_totwsz += CHUNK_WORDSIZE ;
 #if (GCATS2_TEST > 0)
-  fprintf (stderr, "chunk_make_norm: the_totwsz = %lu\n", (ats_ulint_type)the_totwsz) ;
-#endif
+  fprintf(stderr, "chunk_make_norm: the_totwsz = %lu\n", (ats_ulint_type)the_totwsz) ;
+#endif // end of [GCATS2_TEST > 0]
   return p_chunk ;
 } /* end of [gcats2_chunk_make_norm] */
 
@@ -323,8 +324,8 @@ gcats2_chunk_free_norm
 #endif
   the_totwsz -= CHUNK_WORDSIZE ;
 #if (GCATS2_TEST > 0)
-  fprintf (stderr, "chunk_free_norm: the_totwsz = %lu\n", (ats_ulint_type)the_totwsz) ;
-#endif
+  fprintf(stderr, "chunk_free_norm: the_totwsz = %lu\n", (ats_ulint_type)the_totwsz) ;
+#endif // end of [GCATS2_TEST > 0]
   gcats2_the_chunkpagelst_insert(((chunk_vt*)p_chunk)->chunk_data) ;
   gcats2_free_ext(p_chunk) ;
   return ;
@@ -346,7 +347,7 @@ gcats2_chunk_make_large (
     fprintf(stderr, "gcats2_chunk_make_large: itmwsz = %i\n", itmwsz) ;
     exit(1) ;
   } // end of [if]
-#endif
+#endif // end of [GCATS2_DEBUG > 0]
   p_chunk = (chunkptr_vt)gcats2_malloc_ext(sizeof(chunk_vt)) ;
   p_freepage =
     (freepageptr_vt)gcats2_malloc_ext(itmwsz << NBYTE_PER_WORD_LOG) ;
@@ -357,16 +358,16 @@ gcats2_chunk_make_large (
   p_chunk->itmtot = 1 ;
 //
   p_chunk->mrkcnt = 0 ; // for fast threading!
-  memset(p_chunk->mrkbits, 0, NMARKBIT_PER_CHUNK) ;
+  MARKBIT_CLEAR (p_chunk->mrkbits, 1) ; // only 1 bit is needed
 //
   p_chunk->chunk_data = p_freepage ;
 /*
-  fprintf (stderr, "chunklst_make_large: p_chunk = %p\n", p_chunk) ;
+  fprintf(stderr, "chunklst_make_large: p_chunk = %p\n", p_chunk) ;
 */
   the_totwsz += itmwsz ;
 #if (GCATS2_TEST > 0)
-  fprintf (stderr, "chunk_make_large: the_totwsz = %lu\n", (ats_ulint_type)the_totwsz) ;
-#endif
+  fprintf(stderr, "chunk_make_large: the_totwsz = %lu\n", (ats_ulint_type)the_totwsz) ;
+#endif // end of [GCATS2 > 0]
   return p_chunk ;
 } /* end of [gcats2_chunk_make_large] */
 
@@ -381,8 +382,8 @@ gcats2_chunk_free_large
 #endif
   the_totwsz -= ((chunk_vt*)p_chunk)->itmwsz ;
 #if (GCATS2_TEST > 0)
-  fprintf (stderr, "chunk_free_large: the_totwsz = %lu\n", (ats_ulint_type)the_totwsz) ;
-#endif
+  fprintf(stderr, "chunk_free_large: the_totwsz = %lu\n", (ats_ulint_type)the_totwsz) ;
+#endif // end of [GCATS2_TEST > 0]
   gcats2_free_ext(((chunk_vt*)p_chunk)->chunk_data) ; gcats2_free_ext(p_chunk) ;
   return ;
 } /* end of [gcats2_chunk_free_large] */

@@ -31,7 +31,7 @@ in
   | ~(x :: xs) => begin
       if i = 0 then (~xs; x) else stream_vt_nth (xs, i-1)
     end // end of [::]
-  | ~nil () => $raise SubscriptException
+  | ~nil () => $raise StreamSubscriptException ()
 end // end of [stream_vt_nth]
 
 (* ****** ****** *)

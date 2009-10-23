@@ -36,7 +36,7 @@
 
 (* ****** ****** *)
 
-#define ATS_FUNCTION_NAME_PREFIX "gcats2_collecting_"
+#define ATSCCOMP_NAMESPACE "gcats2_collecting_"
 
 (* ****** ****** *)
 
@@ -81,8 +81,9 @@ fun the_totwsz_limit_is_reached // the function checks if
   (pf: !the_gcmain_v | (*none*)):<> bool // the_totwsz >= the_totwsz_limt
   = "gcats2_the_totwsz_limit_is_reached"
 
-implement the_freeitmlstarr_replenish (itmwsz_log) = let
-  val (pf_the_gcmain | ()) = the_gcmain_v_acquire ()
+implement the_freeitmlstarr_replenish
+  (itmwsz_log) = let // [itmwsz_log >= 0] is assumed
+  val (pf_the_gcmain | ()) = the_gcmain_lock_acquire ()
   prval (pf, fpf) = the_sweeplstarr_v_takeout (pf_the_gcmain)
   val p_chunk = the_sweeplstarr_get_chunk (pf | itmwsz_log)
   prval () = pf_the_gcmain := fpf (pf)
@@ -113,7 +114,7 @@ in
         the_sweeplstarr_v_takeout (pf_the_gcmain)
       val p_chunk = the_sweeplstarr_get_chunk (pf | itmwsz_log)
       prval () = pf_the_gcmain := fpf (pf)
-      val () = the_gcmain_v_release (pf_the_gcmain | (*none*))
+      val () = the_gcmain_lock_release (pf_the_gcmain | (*none*))
     in
       if chunkptr_is_null (p_chunk) then let
         val _ = chunk_free_null (p_chunk) // no-op casting
@@ -141,12 +142,12 @@ in
       prval (pf, fpf) = the_topsegtbl_v_takeout (pf_the_gcmain)
       val _(*err*) = the_topsegtbl_insert_chunkptr (pf | p_chunk)
       prval () = pf_the_gcmain := fpf (pf)
-      val () = the_gcmain_v_release (pf_the_gcmain | (*none*))
+      val () = the_gcmain_lock_release (pf_the_gcmain | (*none*))
     in
       the_freeitmlstarr_add_chunk (p1_chunk, itmwsz_log)
     end // end of [if]
   end else let // p_chunk <> null
-    val () = the_gcmain_v_release (pf_the_gcmain | (*none*))
+    val () = the_gcmain_lock_release (pf_the_gcmain | (*none*))
   in
     the_freeitmlstarr_add_chunk (p_chunk, itmwsz_log)
   end // end of [if]
@@ -215,7 +216,7 @@ gcats2_gcmain_run (
   int overflowed ; int nmarkstackpage ;
   jmp_buf reg_save ; // register contents are potential GC roots
 #ifdef _ATS_MULTITHREAD
-  threadinfolst infolst ; int nother ;
+  // threadinfolst infolst ; int nother ;
 #endif // end of [_ATS_MULTITHREAD]
 //
   nmarkstackpage = // this is just an estimate
@@ -227,7 +228,7 @@ gcats2_gcmain_run (
   if (nmarkstackpage > 0) gcats2_the_markstackpagelst_extend (nmarkstackpage) ;
 //
 #ifdef _ATS_MULTITHREAD
-  stop all of the other running threads
+  // stop all of the other running threads
 #endif // end of [_ATS_MULTITHREAD]
 //
   gcats2_the_topsegtbl_clear_mrkbits () ;

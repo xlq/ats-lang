@@ -36,7 +36,7 @@
 
 (* ****** ****** *)
 
-#define ATS_FUNCTION_NAME_PREFIX "gcats2_marking_"
+#define ATSCCOMP_NAMESPACE "gcats2_marking_"
 
 (* ****** ****** *)
 
@@ -110,7 +110,7 @@ struct markstackpage_struct {
 
 typedef markstackpage_vt *markstackpagelst_vt ;
 
-markstackpage_vt the_markstackpage_fst = { 0 } ;
+markstackpage_vt the_markstackpage_fst = {0} ;
 
 markstackpagelst_vt // it should never be NULL!
 the_markstackpagelst_cur = &the_markstackpage_fst ;

@@ -36,7 +36,7 @@
 
 (* ****** ****** *)
 
-#define ATS_FUNCTION_NAME_PREFIX "gcats2_top_"
+#define ATSCCOMP_NAMESPACE "gcats2_top_"
 
 (* ****** ****** *)
 
@@ -47,9 +47,20 @@ staload "gcats2.sats"
 // this is the initialization function for the GC
 implement gcmain_initialize () = () where {
   val () = mystackbeg_set (dir) where { val dir = mystackdir_get () }
+#ifdef _ATS_MULTITHREAD
   val () = () where {
+    viewdef V = the_manmemlst_v
     prval (pf, fpf) = __takeout () where {
-      extern prfun __takeout (): (the_topsegtbl_v, the_topsegtbl_v -<lin> void)
+      extern prfun __takeout (): (V, V -<lin> void)
+    } // end of [prval]
+    val () = the_manmemlst_lock_initialize (pf | (*none*))
+    prval () = fpf (pf)
+  } // end of [val]
+#endif // end of [_ATS_MULTITHREAD]
+  val () = () where {
+    viewdef V = the_topsegtbl_v
+    prval (pf, fpf) = __takeout () where {
+      extern prfun __takeout (): (V, V -<lin> void)
     } // end of [prval]
     val () = the_topsegtbl_initialize (pf | (*none*))
     prval () = fpf (pf)
@@ -101,6 +112,26 @@ freeitmlst_vt the_chunkpagelst = (freeitmlst_vt*)0 ;
 
 /* ****** ****** */
 
+manmemlst_vt the_manmemlst = (manmemlst_vt)0 ;
+
+#ifdef _ATS_MULTITHREAD
+
+pthread_spinlock_t the_manmemlst_lock ;
+
+ats_void_type
+gcats2_the_manmemlst_lock_initialize () {
+  int err ;
+  err = pthread_spin_init (&the_manmemlst_lock, PTHREAD_PROCESS_PRIVATE) ;
+  if (err != 0) {
+    fprintf(stderr, "exit(ATS/GC): [the_manmemlst_lock_initialize] failed.\n") ; exit(1) ;
+  } // end of [if]
+  return ;
+} /* end of [gcats2_the_manmemlst_lock_initialize] */
+
+#endif // end of [_ATS_MULTITHREAD]
+
+/* ****** ****** */
+
 // FREEITMLST_ARRAYSIZE = MAX_CLICK_WORDSIZE_LOG + 1
 chunklst_vt the_sweeplstarr[FREEITMLST_ARRAYSIZE] = {0} ;
 
@@ -149,17 +180,17 @@ gcats2_the_freeitmlstarr_get_freeitm (
   return p_freeitm ;
 } // end of [the_freeitmlstarr_get_freeitm]
 
-%} // end of [%{^]
+/* ****** ****** */
 
-(* ****** ****** *)
+#ifdef _ATS_MULTITHREAD
 
-%{^
+pthread_mutex_t
+the_gcmain_lock = PTHREAD_MUTEX_INITIALIZER ;
 
-ats_void_type
-gcats2_the_gcmain_v_acquire () { return ; }
+pthread_mutex_t
+the_threadinfolst_lock = PTHREAD_MUTEX_INITIALIZER ;
 
-ats_void_type
-gcats2_the_gcmain_v_release () { return ; }
+#endif // end of [_ATS_MULTITHREAD]
 
 %} // end of [%{^]
 

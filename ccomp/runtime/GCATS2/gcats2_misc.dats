@@ -36,7 +36,7 @@
 
 (* ****** ****** *)
 
-#define ATS_FUNCTION_NAME_PREFIX "gcats2_misc_"
+#define ATSCCOMP_NAMESPACE "gcats2_misc_"
 
 (* ****** ****** *)
 
