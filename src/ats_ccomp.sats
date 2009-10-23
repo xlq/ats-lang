@@ -182,6 +182,7 @@ fun tmpvarlst_make (hit: hityplst_t): tmpvarlst
 //
 
 fun tmpvar_ret_get (tmp: tmpvar_t): int
+fun tmpvar_top_get (tmp: tmpvar_t): int // 0/1: local/top(static)
 fun tmpvar_root_get (tmp: tmpvar_t): tmpvaropt
 fun tmpvar_stamp_get (tmp: tmpvar_t): stamp_t
 fun tmpvar_typ_get (tmp: tmpvar_t): hityp_t

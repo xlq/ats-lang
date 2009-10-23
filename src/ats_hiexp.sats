@@ -161,7 +161,7 @@ fun hityp_is_tyrecsin (hit: hityp): bool
 
 (* ****** ****** *)
 
-abstype tmpvar_t // boxed type
+abstype tmpvar_t // implemented in [ats_ccomp.dats]
 typedef tmpvarlst = List (tmpvar_t)
 datatype tmpvaropt = TMPVAROPTsome of tmpvar_t | TMPVAROPTnone
 

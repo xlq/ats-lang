@@ -100,8 +100,9 @@ local
 typedef tmpvar = '{
   tmpvar_typ= hityp_t
 , tmpvar_ret= int (* return status *)
+, tmpvar_top= int (* 0/1 : local/top(static) *)
 , tmpvar_root= tmpvaropt
-, tmpvar_stamp= stamp_t (* uniquicity *)
+, tmpvar_stamp= stamp_t (* uniquity *)
 } // end of [tmpvar]
 
 assume tmpvar_t = tmpvar
@@ -132,6 +133,7 @@ implement tmpvar_make (hit) = let
   val stamp = $Stamp.tmpvar_stamp_make () in '{
   tmpvar_typ= hit
 , tmpvar_ret= 0
+, tmpvar_top= 0 (*local*)
 , tmpvar_root= TMPVAROPTnone ()
 , tmpvar_stamp= stamp
 } end // end of [tmpvar_make]
@@ -171,6 +173,7 @@ end // end of [tmpvarlst_make]
 //
 
 implement tmpvar_ret_get (tmp) = tmp.tmpvar_ret
+implement tmpvar_top_get (tmp) = tmp.tmpvar_top
 implement tmpvar_root_get (tmp) = tmp.tmpvar_root
 implement tmpvar_stamp_get (tmp) = tmp.tmpvar_stamp
 implement tmpvar_typ_get (tmp) = tmp.tmpvar_typ
@@ -752,6 +755,12 @@ ats_void_type
 ats_ccomp_tmpvar_ret_set
   (ats_ptr_type tmp, ats_int_type ret) {
   ((tmpvar_t)tmp)->atslab_tmpvar_ret = ret ; return ;
+}
+
+ats_void_type
+ats_ccomp_tmpvar_top_set
+  (ats_ptr_type tmp, ats_int_type top) {
+  ((tmpvar_t)tmp)->atslab_tmpvar_top = top ; return ;
 }
 
 ats_void_type

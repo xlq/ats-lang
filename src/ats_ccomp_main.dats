@@ -644,7 +644,7 @@ fun instrlst_vt_tmpvarmap_gen
   var m = tmpvarmap_nil ()
 in
   aux (m, inss0); m
-end // end of [instrlst_tmpvarmap_add]
+end // end of [instrlst_vt_tmpvarmap_gen]
 
 (* ****** ****** *)
 

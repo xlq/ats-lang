@@ -98,6 +98,11 @@ fn _emit_tmpvarmap_dec {m:file_mode} {l:addr} (
   fn f (pf: !V | tmp: tmpvar_t, _: int, env: !VT): void = let
     prval @(pf_fil, pf_int) = pf
     val+ ENVcon (p_l, p_i, knd)= env
+//
+    extern fun tmpvar_top_set
+      (tmp: tmpvar_t, top: int): void = "ats_ccomp_tmpvar_top_set"
+    val () = if knd = 1 then tmpvar_top_set (tmp, 1) // static tmpvar
+//
     val () = (!p_i := !p_i + 1)
   in
     case+ 0 of

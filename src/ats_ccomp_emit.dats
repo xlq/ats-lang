@@ -235,7 +235,19 @@ implement emit_tmplabint (pf | out, tl, i) = begin
 end // end of [emit_tmplabint]
 
 implement emit_tmpvar (pf | out, tmp) = let
-  val () = fprint1_string (pf | out, "tmp") in
+  val knd = tmpvar_top_get (tmp)
+  val () = case+ 0 of
+    | _ when knd = 1(*top(static)*) => let
+        val prfx = $Glo.atsccomp_namespace_get ()
+        val () = if stropt_is_some prfx then let
+          val prfx = stropt_unsome prfx in fprint1_string (pf | out, prfx)
+        end
+      in
+         fprint1_string (pf | out, "tmp")
+      end // end of [knd = 1]
+    | _ => fprint1_string (pf | out, "tmp")
+  // end of [val]
+in
   $Stamp.fprint_stamp (pf | out, tmpvar_stamp_get tmp)
 end // end of [emit_tmpvar]
 
