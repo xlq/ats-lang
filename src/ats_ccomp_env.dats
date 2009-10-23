@@ -290,7 +290,8 @@ implement typdefmap_find (tk) = let
   end // end of [val]
 in
   case+ oname of
-  | ~Some_vt name => name | ~None_vt () => let
+  | ~Some_vt name => name
+  | ~None_vt () => let
       val name = (case+ tk of
         | TYPKEYrec _ => typdefmap_add_rec (tk)
         | TYPKEYsum _ => typdefmap_add_sum (tk)
@@ -299,7 +300,7 @@ in
       val () = typdeflst_add (tk, name)
     in
       name
-    end
+    end // end of [None]
 end // end of [typdefmap_find]
 
 end // end of [local]
@@ -366,7 +367,9 @@ end // end of [local]
 
 local
 
-val the_exnconlst = ref_make_elt<exnconlst> (EXNCONLSTnil ())
+val the_exnconlst =
+  ref_make_elt<exnconlst> (EXNCONLSTnil ())
+// end of [val]
 
 fn exnconlst_reverse
   (xs: exnconlst): exnconlst = let
@@ -413,7 +416,7 @@ implement the_exnconlst_get () = let
     val d2cs = !p
   in
     !p := EXNCONLSTnil (); d2cs
-  end
+  end // end of [val]
 in
   exnconlst_reverse (d2cs)
 end // end of [the_exnconlst_get]
@@ -426,13 +429,13 @@ local
 
 viewtypedef vartypsetlst = List_vt (vartypset)
 
-val the_vartypset = begin
+val the_vartypset =
   ref_make_elt<vartypset> ($Set.set_nil)
-end
+// end of [val]
 
-val the_vartypsetlst = begin
+val the_vartypsetlst =
   ref_make_elt<vartypsetlst> (list_vt_nil ())
-end
+// end of [val]
 
 in // in of [local]
 
@@ -446,15 +449,14 @@ implement the_vartypset_pop () = let
     case+ !p of
     | ~list_vt_cons (x, xs) => begin
         $effmask_ref (!the_vartypset := x); !p := (xs: vartypsetlst)
-      end
+      end // end of [list_vt_cons]
     | list_vt_nil () => (fold@ (!p); err := 1)
-  end
-  val () = // error reporting
-    if err > 0 then begin
-      prerr "Internal Error: ats_ccomp_env: the_vartypset_pop";
-      prerr_newline ();
-      $Err.abort {void} ()
-    end
+  end // end of [val]
+  val () = if err > 0 then begin // error reporting
+    prerr "Internal Error: ats_ccomp_env: the_vartypset_pop";
+    prerr_newline ();
+    $Err.abort {void} ()
+  end // end of [if]
 in
   x0
 end // end of [the_vartypset_pop]
@@ -466,7 +468,7 @@ implement the_vartypset_push () = let
     prval vbox pf = pfbox
   in
     !p := list_vt_cons (vts, !p);
-  end
+  end // end of [val]
 in
   !the_vartypset := $Set.set_nil
 end // end of [the_vartypset_push]
@@ -487,7 +489,7 @@ implement vartypset_d2varlst_make (vtps) = let
   fn f (pf: !V | vtp: vartyp_t, env: !VT)
     :<> void = begin
     !env := list_vt_cons (vartyp_var_get vtp, !env)
-  end
+  end // end of [fn]
   val () = vartypset_foreach_main {V} {VT} (view@ d2vs | vtps, f, &d2vs)
 in
   $Lst.list_vt_reverse (d2vs)
@@ -500,23 +502,29 @@ implement vartypset_union (vtps1, vtps2) =
 
 //
 
-implement vartypset_foreach_main (pf | vtps, f, env) =
-  $Set.set_foreach_main (pf | vtps, f, env)
+implement vartypset_foreach_main
+  (pf | vtps, f, env) = $Set.set_foreach_main (pf | vtps, f, env)
+// end of [vartypset_foreach_main]
 
-implement vartypset_foreach_cloptr (vtps, f) =
-  $Set.set_foreach_cloptr (vtps, f)
+implement vartypset_foreach_cloptr
+  (vtps, f) = $Set.set_foreach_cloptr (vtps, f)
+// end of [vartypset_foreach_cloptr]
 
 //
 
 implement print_vartypset (vtps) = let
   var i: int = 0
-  fn f (pf: !int @ i | vtp: vartyp_t, p: !ptr i): void =
+  fn f (
+      pf: !int @ i
+    | vtp: vartyp_t, p: !ptr i
+    ) : void =
     let val i = !p; val () = !p := i + 1 in
       if i > 0 then print (", "); print_vartyp vtp
     end
+  // end of [fn f]
   val () = begin
     vartypset_foreach_main {int @ i} {ptr i} (view@ i | vtps, f, &i)
-  end
+  end // end of [val]
 in
   // empty
 end // end of [print_vartypset]
@@ -529,7 +537,7 @@ implement prerr_vartypset (vtps) = let
     end
   val () = begin
     vartypset_foreach_main {int @ i} {ptr i} (view@ i | vtps, f, &i)
-  end
+  end // end of [val]
 in
   // empty
 end // end of [prerr_vartypset]
@@ -557,7 +565,7 @@ implement the_funlabset_pop () = let
         $effmask_ref (!the_funlabset := x); !p := (xs: funlabsetlst)
       end // end of [list_vt_cons]
     | list_vt_nil () => (fold@ (!p); err := 1)
-  end
+  end // end of [val]
   val () = if err > 0 then begin // error reporting
     prerr "Internal Error: ats_ccomp_env: the_funlabset_pop";
     prerr_newline ();
@@ -582,7 +590,7 @@ end // end of [the_funlabset_push]
 implement the_funlabset_add (fl) = let
   val _new = begin
     $Set.set_insert<funlab_t> (!the_funlabset, fl, compare_funlab_funlab)
-  end
+  end // end of [val]
 in
   !the_funlabset := _new
 end // end of [the_funlabset_add]
@@ -593,6 +601,7 @@ end // end of [the_funlabset_mem]
 
 implement funlabset_foreach_main
   (pf | fls, f, env) = $Set.set_foreach_main (pf | fls, f, env)
+// end of [funlabset_foreach_main]
 
 implement funlabset_foreach_cloptr (fls, f) = $Set.set_foreach_cloptr (fls, f)
 
@@ -606,7 +615,7 @@ implement print_funlabset (fls) = let
     end
   val () = begin
     funlabset_foreach_main {int @ i} {ptr i} (view@ i | fls, f, &i)
-  end
+  end // end of [val]
 in
   // empty
 end // end of [print_funlabset]
@@ -617,9 +626,10 @@ implement prerr_funlabset (fls) = let
     let val i = !p; val () = !p := i + 1 in
       if i > 0 then prerr (", "); prerr_funlab fl
     end
+  // end of [fn f]
   val () = begin
     funlabset_foreach_main {int @ i} {ptr i} (view@ i | fls, f, &i)
-  end
+  end // end of [val]
 in
   // empty
 end // end of [prerr_funlabset]
@@ -635,8 +645,9 @@ val the_dynconset = ref_make_elt<dynconset> ($Set.set_nil)
 
 in // in of [local]
 
-implement dynconset_foreach_main (pf | d2cs, f, env) =
-  $Set.set_foreach_main (pf | d2cs, f, env)
+implement dynconset_foreach_main
+  (pf | d2cs, f, env) = $Set.set_foreach_main (pf | d2cs, f, env)
+// end of [dynconset_foreach_main]
 
 implement the_dynconset_add (d2c) = let
   val _new = $Set.set_insert<d2con_t> (!the_dynconset, d2c, compare_d2con_d2con)
@@ -806,7 +817,7 @@ implement the_extvallst_get () = let
     val res = !p
   in
     !p := EXTVALLSTnil (); res
-  end
+  end // end of [val]
 in
   extvallst_reverse (res)
 end // end of [the_extvallst_get]
@@ -855,7 +866,7 @@ implement the_extcodelst_get () = let
     val res = !p
   in
     !p := EXTCODELSTnil (); res
-  end
+  end // end of [res]
 in
   extcodelst_reverse (res)
 end // end of [the_extcodelst_get]
@@ -873,6 +884,7 @@ local
 
 val the_stafilelst =
   ref_make_elt<stafilelst> (STAFILELSTnil ())
+// end of [val]
 
 fn stafilelst_reverse
   (xs: stafilelst): stafilelst = let
@@ -882,7 +894,7 @@ fn stafilelst_reverse
         val xs1_v = !xs1; val () = (!xs1 := ys; fold@ (xs))
       in
         aux (xs1_v, xs)
-      end
+      end // end of [STAFILELSTcons]
     | ~STAFILELSTnil () => ys
   end // end of [aux]
 in
@@ -899,12 +911,10 @@ in
 end // end of [the_stafilelst_add]
 
 implement the_stafilelst_get () = let
-  val res = let
+  val res = res where {
     val (vbox pf | p) = ref_get_view_ptr (the_stafilelst)
     val res = !p; val () = !p := STAFILELSTnil ()
-  in
-    res
-  end // end of [val]
+  } // end of [val]
 in
   stafilelst_reverse (res)
 end // end of [the_stafilelst_get]
