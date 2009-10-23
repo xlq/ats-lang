@@ -195,7 +195,7 @@ end // end of [emit_d2cst]
 fn emit_funlab_prefix {m:file_mode}
   (pf: file_mode_lte (m, w) | out: &FILE m)
   : void = let
-  val prfx = $Glo.ats_function_name_prefix_get ()
+  val prfx = $Glo.atsccomp_namespace_get ()
 in
   if stropt_is_some prfx then let
     val prfx = stropt_unsome prfx in fprint1_string (pf | out, prfx)

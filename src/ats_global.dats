@@ -42,87 +42,98 @@
 
 val () = ats_global_initialize () where {
   extern fun ats_global_initialize (): void = "ats_global_initialize"
-}
+} // end of [val]
 
 (* ****** ****** *)
 
 %{$
 
-static ats_int_type the_ats_dynloadflag = 0 ;
+static
+ats_int_type the_ats_dynloadflag = 0 ;
 
 ats_int_type
-ats_global_ats_dynloadflag_get () {
-  return the_ats_dynloadflag ;
-}
+ats_global_ats_dynloadflag_get
+  () { return the_ats_dynloadflag ; }
+// end of [ats_global_ats_dynloadflag_get]
 
 ats_void_type
-ats_global_ats_dynloadflag_set (ats_int_type flag) {
+ats_global_ats_dynloadflag_set
+  (ats_int_type flag) {
   the_ats_dynloadflag = flag ; return ;
-}
+} // end of [ats_global_ats_dynloadflag_set]
 
 /* ****** ****** */
 
-static ats_ptr_type the_ats_dynloadfun_name = (ats_ptr_type)0 ;
+static
+ats_ptr_type the_ats_dynloadfun_name = (ats_ptr_type)0 ;
 
 ats_ptr_type
-ats_global_ats_dynloadfun_name_get () { return the_ats_dynloadfun_name ; }
+ats_global_ats_dynloadfun_name_get
+  () { return the_ats_dynloadfun_name ; }
+// end of ...
 
 ats_void_type
-ats_global_ats_dynloadfun_name_set (ats_ptr_type name) {
+ats_global_ats_dynloadfun_name_set
+  (ats_ptr_type name) {
   the_ats_dynloadfun_name = name ; return ;
-}
+} // end of [ats_global_ats_dynloadfun_name_set]
 
-%}
+%} // end of [%{$]
 
 (* ****** ****** *)
 
 
 %{$
 
-static ats_ptr_type
-the_ats_function_name_prefix = (ats_ptr_type)0 ;
+static
+ats_ptr_type
+the_atsccomp_namespace = (ats_ptr_type)0 ;
 
 ats_ptr_type
-ats_global_ats_function_name_prefix_get () {
-  return the_ats_function_name_prefix ;
-}
+ats_global_atsccomp_namespace_get
+  () { return the_atsccomp_namespace ; }
+// end of [ats_global_atsccomp_namespace_get]
 
 ats_void_type
-ats_global_ats_function_name_prefix_set (ats_ptr_type prfx) {
-  the_ats_function_name_prefix = prfx ; return ;
-}
+ats_global_atsccomp_namespace_set
+  (ats_ptr_type prfx) {
+  the_atsccomp_namespace = prfx ; return ;
+} // end of [ats_global_atsccomp_namespace_set]
 
-%}
+%} // end of [%{$]
 
 (* ****** ****** *)
 
 %{$
 
-static ats_int_type the_ats_depgenflag = 0 ;
+static
+ats_int_type the_ats_depgenflag = 0 ;
 
 ats_int_type
-ats_global_ats_depgenflag_get () {
-  return the_ats_depgenflag ;
-}
+ats_global_ats_depgenflag_get
+  () { return the_ats_depgenflag ; }
+// end of ...
 
 ats_void_type
-ats_global_ats_depgenflag_set (ats_int_type flag) {
+ats_global_ats_depgenflag_set
+  (ats_int_type flag) {
   the_ats_depgenflag = flag ; return ;
-}
+} // end of ...
 
-%}
+%} // end of [%{$]
 
 (* ****** ****** *)
 
 %{$
 
-ats_void_type ats_global_initialize () {
+ats_void_type
+ats_global_initialize () {
+  ATS_GC_MARKROOT (&the_atsccomp_namespace, sizeof(ats_ptr_type)) ;
   ATS_GC_MARKROOT (&the_ats_dynloadfun_name, sizeof(ats_ptr_type)) ;
-  ATS_GC_MARKROOT (&the_ats_function_name_prefix, sizeof(ats_ptr_type)) ;
   return ;
-}
+} // end of [ats_global_initialize]
 
-%}
+%} // end of [%{$]
 
 (* ****** ****** *)
 

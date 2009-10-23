@@ -40,11 +40,13 @@
 
 (* ****** ****** *)
 
-fun ats_function_name_prefix_get (): Stropt
-  = "ats_global_ats_function_name_prefix_get"
+fun atsccomp_namespace_get
+  (): Stropt = "ats_global_atsccomp_namespace_get"
+// end of ...
 
-fun ats_function_name_prefix_set (prfx: Stropt): void
-  = "ats_global_ats_function_name_prefix_set"
+fun atsccomp_namespace_set
+  (prfx: Stropt): void = "ats_global_atsccomp_namespace_set"
+// end of ...
 
 (* ****** ****** *)
 
