@@ -40,6 +40,10 @@
 
 (* ****** ****** *)
 
+#define ATSCCOMP_NAMESPACE "gcats1_top_"
+
+(* ****** ****** *)
+
 %{^
 
 #include "gcats1.cats"

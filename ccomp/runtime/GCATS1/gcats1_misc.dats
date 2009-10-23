@@ -50,6 +50,10 @@ staload "gcats1.sats"
 
 (* ****** ****** *)
 
+#define ATSCCOMP_NAMESPACE "gcats1_misc_"
+
+(* ****** ****** *)
+
 %{^
 
 static int the_stack_direction = 0 ;

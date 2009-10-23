@@ -50,7 +50,7 @@ staload "gcats1.sats"
 
 (* ****** ****** *)
 
-#define ATS_FUNCTION_NAME_PREFIX "gcats1_freeitmlst_"
+#define ATSCCOMP_NAMESPACE "gcats1_freeitmlst_"
 
 (* ****** ****** *)
 

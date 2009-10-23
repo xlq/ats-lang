@@ -56,7 +56,7 @@ staload "gcats1.sats"
 
 (* ****** ****** *)
 
-#define ATS_FUNCTION_NAME_PREFIX "gcats1_marking_"
+#define ATSCCOMP_NAMESPACE "gcats1_marking_"
 
 (* ****** ****** *)
 

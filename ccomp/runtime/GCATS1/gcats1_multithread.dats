@@ -125,7 +125,7 @@ staload "gcats1.sats"
 
 (* ****** ****** *)
 
-#define ATS_FUNCTION_NAME_PREFIX "gcats1_multithread_"
+#define ATSCCOMP_NAMESPACE "gcats1_multithread_"
 
 (* ****** ****** *)
 
