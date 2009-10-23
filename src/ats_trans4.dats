@@ -74,16 +74,6 @@ overload = with $Sym.eq_symbol_symbol
 
 (* ****** ****** *)
 
-local
-  #define STRING_EMPTY ""
-  val the_typedef_cnt: ref int = ref_make_elt<int> (0)
-  val the_typedef_base: ref string = ref_make_elt<string> (STRING_EMPTY)
-in
-  fn typedef_base_set (base: string): void = (!the_typedef_base := base)
-end // end of [local]
-
-(* ****** ****** *)
-
 fn s2exp_app_tr (
     loc0: loc_t
   , deep: int

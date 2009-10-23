@@ -38,6 +38,7 @@
 
 staload Deb = "ats_debug.sats"
 staload Err = "ats_error.sats"
+staload Glo = "ats_global.sats"
 staload Lst = "ats_list.sats"
 staload Map = "ats_map_lin.sats"
 staload Set = "ats_set_fun.sats"
@@ -214,7 +215,16 @@ extern fun typdefmap_add_uni (tk: typkey): string
 implement typdefmap_add_rec (tk) = let
   val base = typdef_base_get ()
   val n = typdef_count_get_and_inc ()
-  val name_rec = tostringf ("%s_rec_%i", @(base, n))
+  val name_rec = let
+    val prfx = $Glo.atsccomp_namespace_get ()
+  in
+    if stropt_is_some prfx then let
+      val prfx = stropt_unsome prfx in
+      tostringf ("%s%s_rec_%i", @(prfx, base, n))
+    end else
+      tostringf ("%s_rec_%i", @(base, n))    
+    // end of [if]
+  end // end of [val]
   val () = let
     val (pfbox | p) = ref_get_view_ptr (the_typdefmap)
     prval vbox pf = pfbox
@@ -228,7 +238,16 @@ end // end of [typdefmap_add_rec]
 implement typdefmap_add_sum (tk) = let
   val base = typdef_base_get ()
   val n = typdef_count_get_and_inc ()
-  val name_sum = tostringf ("%s_sum_%i", @(base, n))
+  val name_sum = let
+    val prfx = $Glo.atsccomp_namespace_get ()
+  in
+    if stropt_is_some prfx then let
+      val prfx = stropt_unsome prfx in
+      tostringf ("%s%s_sum_%i", @(prfx, base, n))
+    end else
+      tostringf ("%s_sum_%i", @(base, n))    
+    // end of [if]
+  end // end of [val]
   val () = let
     val (pfbox | p) = ref_get_view_ptr (the_typdefmap)
     prval vbox pf = pfbox
@@ -242,7 +261,16 @@ end // end of [typdefmap_add_sum]
 implement typdefmap_add_uni (tk) = let
   val base = typdef_base_get ()
   val n = typdef_count_get_and_inc ()
-  val name_uni = tostringf ("%s_uni_%i", @(base, n))
+  val name_uni = let // union
+    val prfx = $Glo.atsccomp_namespace_get ()
+  in
+    if stropt_is_some prfx then let
+      val prfx = stropt_unsome prfx in
+      tostringf ("%s%s_uni_%i", @(prfx, base, n))
+    end else
+      tostringf ("%s_uni_%i", @(base, n))    
+    // end of [if]
+  end // end of [val]
   val () = let
     val (pfbox | p) = ref_get_view_ptr (the_typdefmap)
     prval vbox pf = pfbox

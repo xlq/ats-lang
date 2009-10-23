@@ -241,7 +241,7 @@ implement emit_tmpvar (pf | out, tmp) = let
         val prfx = $Glo.atsccomp_namespace_get ()
         val () = if stropt_is_some prfx then let
           val prfx = stropt_unsome prfx in fprint1_string (pf | out, prfx)
-        end
+        end // end of [val]
       in
          fprint1_string (pf | out, "tmp")
       end // end of [knd = 1]
