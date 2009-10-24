@@ -334,30 +334,31 @@ fun aux_item (p0t0: p0at): p1atitm = let
         val p1t_ann = p1at_ann (loc, p1t, s1e)
       in
         $Fix.ITEMatm p1t_ann
-      end
+      end // end of [P0Tann]
     | P0Tapp _ => let 
         val p1t = $Fix.fixity_resolve
           (loc, p1atitm_app, aux_itemlst p0t0)
       in
         $Fix.ITEMatm p1t
-      end
+      end // end of [P0Tapp]
     | P0Tas (id, p0t) => begin
         $Fix.ITEMatm (p1at_as (loc, id, p0at_tr p0t))
       end
     | P0Tchar c(*char*) => $Fix.ITEMatm (p1at_char (loc, c))
     | P0Texist (s0as) => let
         val s1as = s0arglst_tr s0as
-        fn f (body: p1at):<cloref1> p1atitm =
-          let val loc = $Loc.location_combine (loc, body.p1at_loc) in
-            $Fix.ITEMatm (p1at_exist (loc, s1as, body))
-          end
+        fn f (body: p1at):<cloref1> p1atitm = let
+          val loc = $Loc.location_combine (loc, body.p1at_loc)
+        in
+          $Fix.ITEMatm (p1at_exist (loc, s1as, body))
+        end // end of [fn]
       in
         $Fix.ITEMopr ($Fix.OPERpre ($Fix.exist_prec_dyn, f))
-      end
+      end // end of [P0Texist]
     | P0Tfloat f(*string*) => $Fix.ITEMatm (p1at_float (loc, f))
     | P0Tfree (p0t) => begin
         $Fix.ITEMatm (p1at_free (loc, p0at_tr p0t))
-      end
+      end // end of [P0Tfree]
     | P0Tide id when id = $Sym.symbol_UNDERSCORE => begin
         $Fix.ITEMatm (p1at_anys loc)
       end
@@ -416,7 +417,7 @@ fun aux_item (p0t0: p0at): p1atitm = let
         val p1ts2 = p0atlst_tr p0ts2
       in
         $Fix.ITEMatm (p1at_tup2 (loc, tupknd, p1ts1, p1ts2))
-      end
+      end // end of [P0Ttup2]
 (*
     | _ => begin
         prerr_loc_error1 p0t0.p0at_loc;
@@ -433,14 +434,15 @@ and aux_itemlst (p0t0: p0at): p1atitmlst = let
         val res = aux_item p0t2 :: res in aux (res, p0t1)
       end // end of [P0Tapp]
     | _ => aux_item p0t0 :: res
+  // end of [aux]
 in
   aux (nil (), p0t0)
 end // end of [aux_itemlst]
 
 in
   case+ aux_item p0t0 of
-    | $Fix.ITEMatm p1t => p1t
-    | $Fix.ITEMopr _ => p0at_tr_errmsg_opr p0t0.p0at_loc
+  | $Fix.ITEMatm p1t => p1t
+  | $Fix.ITEMopr _ => p0at_tr_errmsg_opr p0t0.p0at_loc
 end // end of [p0at_tr]
 
 implement p0atlst_tr p0ts = $Lst.list_map_fun (p0ts, p0at_tr)
@@ -451,6 +453,7 @@ implement labp0atlst_tr (lp0ts) = case+ lp0ts of
     end
   | LABP0ATLSTnil () => LABP1ATLSTnil ()
   | LABP0ATLSTdot () => LABP1ATLSTdot ()
+// end of [labp0atlst_tr]
 
 (* ****** ****** *)
 

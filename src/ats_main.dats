@@ -606,17 +606,16 @@ end // end of [do_trans1234]
 %{^
 
 #if _ATS_BOOTSTRAP
-
 ats_void_type mainats_prelude () { return ; }
+#endif // end of [_ATS_BOOTSTRAP]
 
-#endif
-
-%}
+%} // end of [%{^]
 
 (* ****** ****** *)
 
 extern fun is_posmark_xref_prefix
   (s: string): bool = "ats_main_is_posmark_xref_prefix"
+// end of ...
 
 extern fun IATS_wait_set (): void = "ats_main_IATS_wait_set"
 extern fun IATS_wait_is_set (): bool = "ats_main_IATS_wait_is_set"
