@@ -44,9 +44,11 @@ staload "gcats2.sats"
 
 (* ****** ****** *)
 
-// this is the initialization function for the GC
-implement gcmain_initialize () = () where {
-  val () = mystackbeg_set (dir) where { val dir = mystackdir_get () }
+(*
+** initialization for GC
+*)
+implement gcmain_initialize () = let
+  val () = mystackbeg_set (mystackdir_get ())
 #ifdef _ATS_MULTITHREAD
   val () = () where {
     viewdef V = the_manmemlst_v
@@ -65,7 +67,16 @@ implement gcmain_initialize () = () where {
     val () = the_topsegtbl_initialize (pf | (*none*))
     prval () = fpf (pf)
   } // end of [val]
-} // end of [gcmain_initialize]
+#ifdef _ATS_MULTITHREAD
+  val () = the_gcsleep_semaphore_initialize () where {
+    extern fun the_gcsleep_semaphore_initialize ():<> void
+      = "gcats2_the_gcsleep_semaphore_initialize" // done in C
+    // end of [the_gcsleep_semaphore_initialize]
+  } // end of [val]
+#endif // end of [_ATS_MULTITHREAD]
+in
+  // nothing
+end // end of [gcmain_initialize]
 
 (* ****** ****** *)
 
@@ -184,11 +195,30 @@ gcats2_the_freeitmlstarr_get_freeitm (
 
 #ifdef _ATS_MULTITHREAD
 
-pthread_mutex_t
-the_gcmain_lock = PTHREAD_MUTEX_INITIALIZER ;
+sem_t the_gcsleep_semaphore ;
+
+ats_void_type
+gcats2_the_gcsleep_semaphore_initialize () {
+  int err ;
+  err = sem_init(&the_gcsleep_semaphore, 0/*pshared*/, 0/*init*/);
+  if (err != 0) {
+    perror("sem_init") ;
+    fprintf(stderr, "exit(ATS/GC): [the_gcsleep_semaphore_initialize] failed.\n") ;
+  } // end of [if]
+  return ;
+} /* end of [gcats2_the_gcsleep_semaphore_initialize] */
 
 pthread_mutex_t
 the_threadinfolst_lock = PTHREAD_MUTEX_INITIALIZER ;
+
+#endif // end of [_ATS_MULTITHREAD]
+
+/* ****** ****** */
+
+#ifdef _ATS_MULTITHREAD
+
+pthread_mutex_t
+the_gcmain_lock = PTHREAD_MUTEX_INITIALIZER ;
 
 #endif // end of [_ATS_MULTITHREAD]
 

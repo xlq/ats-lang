@@ -39,25 +39,34 @@
 GCC=gcc
 GCCFLAGS= -O2
 ATSCC=$(ATSHOME)/bin/atscc
-ATSCCFLAGS= -g -O2 # -D_ATS_MULTITHREAD # -m64
-#ATSCCFLAGS= -m64
+ATSCCFLAGS= -g -O2 # -m64
+
+######
+
+SOURCES := \
+  gcats2_top.dats \
+  gcats2_misc.dats \
+  gcats2_freeitmlst.dats \
+  gcats2_chunk.dats \
+  gcats2_pointer.dats \
+  gcats2_globalrts.dats \
+  gcats2_marking.dats \
+  gcats2_collecting.dats \
+  gcats2_autmem.dats \
+  gcats2_manmem.dats \
+
+TARGETS := $(patsubst %.dats, %_dats.c, $(SOURCES))
+TARGETS_mt := $(TARGETS) gcats2_multithread_dats.c
 
 ######
 
 gc.o: \
-  gcats2_c.h \
-  gcats2_ats.hats \
-  gcats2_top_dats.c \
-  gcats2_misc_dats.c \
-  gcats2_freeitmlst_dats.c \
-  gcats2_chunk_dats.c \
-  gcats2_pointer_dats.c \
-  gcats2_globalrts_dats.c \
-  gcats2_marking_dats.c \
-  gcats2_collecting_dats.c \
-  gcats2_autmem_dats.c \
-  gcats2_manmem_dats.c
-	$(ATSCC) -O2 -c -o gc.o -x c gcats2_all.cats
+  gcats2_c.h gcats2_ats.hats $(TARGETS)
+	$(ATSCC) $(ATSCCFLAGS) -c -o gc.o -x c gcats2_all.cats
+
+gc_mt.o: \
+  gcats2_c.h gcats2_ats.hats $(TARGETS_mt)
+	$(ATSCC) $(ATSCCFLAGS) -D_ATS_MULTITHREAD -c -o gc.o -x c gcats2_all.cats
 
 ######
 
@@ -89,6 +98,9 @@ gcats2_autmem_dats.c: \
   gcats2_autmem.dats; $(ATSCC) -cc gcats2_autmem.dats 
 gcats2_manmem_dats.c: \
   gcats2_manmem.dats; $(ATSCC) -cc gcats2_manmem.dats 
+
+gcats2_multithread_dats.c: \
+  gcats2_multithread.dats; $(ATSCC) -cc gcats2_multithread.dats 
 
 ######
 

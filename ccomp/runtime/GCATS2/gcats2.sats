@@ -412,8 +412,17 @@ fun mystack_mark ():<> int(*overflow*) = "gcats2_mystack_mark"
 
 (* ****** ****** *)
 
-// this view contains contains
-absview the_gcmain_v // the resources for performing GC
+absview the_threadinfolst_v
+
+fun the_threadinfolst_lock_acquire ():<> (the_threadinfolst_v | void)
+  = "gcats2_the_threadinfolst_lock_acquire"
+fun the_threadinfolst_lock_release (pf: the_threadinfolst_v | (*none*)):<> void
+  = "gcats2_the_threadinfolst_lock_release"
+
+(* ****** ****** *)
+
+// this view contains contains the
+absview the_gcmain_v // resources needed for performing GC
 
 fun the_gcmain_lock_acquire ():<> (the_gcmain_v | void)
   = "gcats2_the_gcmain_lock_acquire"

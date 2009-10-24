@@ -168,31 +168,31 @@ gcats2_chunk_sweeplst_build (
   int itmwsz_log, itmtot, mrkcnt ;
   mrkcnt = ((chunk_vt*)p_chunk)->mrkcnt ;
 // /*
-  fprintf (stderr, "chunk_sweeplst_build: mrkcnt = %i\n", mrkcnt) ;
+  fprintf(stderr, "chunk_sweeplst_build: mrkcnt = %i\n", mrkcnt) ;
 // */
   if (mrkcnt == 0) { // no freeitms in the chunk are used
     itmwsz_log = ((chunk_vt*)p_chunk)->itmwsz_log ;
 //
-    gcats2_the_topsegtbl_remove_chunkptr (((chunk_vt*)p_chunk)->chunk_data) ;
+    gcats2_the_topsegtbl_remove_chunkptr(((chunk_vt*)p_chunk)->chunk_data) ;
 //
     if (itmwsz_log >= 0) { // normal chunk
-      gcats2_chunk_free_norm (p_chunk) ; // need for the_chunkpagelst_v
+      gcats2_chunk_free_norm(p_chunk) ; // need for the_chunkpagelst_v
     } else { // large chunk // to be freed by gcats2_free_ext
-      gcats2_chunk_free_large (p_chunk) ; // no need for the_chunkpagelst_v
+      gcats2_chunk_free_large(p_chunk) ; // no need for the_chunkpagelst_v
     } // end of [if]
     return ;
   } // end of [if]
 
   itmtot = ((chunk_vt*)p_chunk)->itmtot ;
 // /*
-  fprintf (stderr, "chunk_sweeplst_build: itmtot = %i\n", itmtot) ;
+  fprintf(stderr, "chunk_sweeplst_build: itmtot = %i\n", itmtot) ;
 // */
   if (mrkcnt > itmtot * CHUNK_SWEEP_CUTOFF)
     return ; // too many free items are still in use
 //
   itmwsz_log = ((chunk_vt*)p_chunk)->itmwsz_log ;
 // /*
-  fprintf (stderr, "chunk_sweeplst_build: itmwsz_log = %i\n", itmwsz_log) ;
+  fprintf(stderr, "chunk_sweeplst_build: itmwsz_log = %i\n", itmwsz_log) ;
 // */
  p_chunklst = &the_sweeplstarr[itmwsz_log] ;
  ((chunk_vt*)p_chunk)->sweepnxt = *p_chunklst ; *p_chunklst = (chunklst_vt)p_chunk ;
@@ -221,30 +221,34 @@ gcats2_gcmain_run (
 //
   nmarkstackpage = // this is just an estimate
     the_totwsz / (MARKSTACK_PAGESIZE * NCHUNK_PER_MARKSTACKPAGE) ;
-  nmarkstackpage -= gcats2_the_markstackpagelst_length () ;
+  nmarkstackpage -= gcats2_the_markstackpagelst_length() ;
 // /*
-  fprintf (stderr, "gcats2_gcmain_run: nmarkstackpage = %i\n", nmarkstackpage) ;
+  fprintf(stderr, "gcats2_gcmain_run: nmarkstackpage = %i\n", nmarkstackpage) ;
 // */
-  if (nmarkstackpage > 0) gcats2_the_markstackpagelst_extend (nmarkstackpage) ;
+  if (nmarkstackpage > 0) gcats2_the_markstackpagelst_extend(nmarkstackpage) ;
 //
 #ifdef _ATS_MULTITHREAD
-  // stop all of the other running threads
+  gcats2_the_threadinfolst_lock_acquire() ; gcats2_the_threadinfolst_suspend() ;
 #endif // end of [_ATS_MULTITHREAD]
 //
-  gcats2_the_topsegtbl_clear_mrkbits () ;
+  gcats2_the_topsegtbl_clear_mrkbits() ;
 //
-  setjmp (reg_save) ; // push registers onto the stack
+  setjmp(reg_save) ; // push registers onto the stack
   asm volatile ("": : :"memory") ; // prevent potential optimization ;
 //
-  overflowed = gcats2_the_gcmain_mark () ;
+  overflowed = gcats2_the_gcmain_mark() ;
+//
+#ifdef _ATS_MULTITHREAD
+  gcats2_the_threadinfolst_restart() ; gcats2_the_threadinflst_lock_release () ;
+#endif // end of [_ATS_MULTITHREAD]
 //
   if (overflowed > 0) {
-    gcats2_the_markstackpagelst_extend (NMARKSTACKPAGE_OVERFLOW_EXTEND) ;
+    gcats2_the_markstackpagelst_extend(NMARKSTACKPAGE_OVERFLOW_EXTEND) ;
   } // end of [if]
 //
-  gcats2_the_freeitmlstarr_unmark () ; // this clears up the_freeitmlstarr
+  gcats2_the_freeitmlstarr_unmark() ; // this clears up the_freeitmlstarr
 //
-  gcats2_the_topsegtbl_sweeplst_build () ;
+  gcats2_the_topsegtbl_sweeplst_build() ;
 //
   if (the_totwsz_limit_max > 0) {
     // [the_totwsz_limit_max==0] means infinite

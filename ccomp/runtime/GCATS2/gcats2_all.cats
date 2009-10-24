@@ -73,7 +73,7 @@
 
 #ifdef _ATS_MULTITHREAD
 #include "gcats2_multithread_dats.c"
-#endif
+#endif // end of [_ATS_MULTITHREAD]
 
 #include "gcats2_marking_dats.c"
 

@@ -54,7 +54,10 @@
 
 #ifdef _ATS_MULTITHREAD
 #include <pthread.h>
-#endif
+// for counting the number of threads
+#include <semaphore.h> // being put into sleep
+#include <signal.h>
+#endif // end of [_ATS_MULTITHREAD]
 
 /* ****** ****** */
 
@@ -404,6 +407,40 @@ gcats2_the_manmemlst_lock_release () {
 /* ****** ****** */
 
 #ifdef _ATS_MULTITHREAD
+extern pthread_mutex_t the_threadinfolst_lock ;
+#endif // end of [_ATS_MULTITHREAD]
+
+static inline
+ats_void_type
+gcats2_the_threadinfolst_lock_acquire () {
+#ifdef _ATS_MULTITHREAD
+  int err ;
+  err = pthread_mutex_lock (&the_threadinfolst_lock) ;
+  if (err != 0) {
+    fprintf(stderr, "exit(ATS/GC): [the_threadinfolst_lock_acquire]: failed.\n") ;
+    exit(1) ;
+  }
+#endif // end of [_ATS_MULTITHREAD]
+  return ;
+} /* end of [gcats2_the_threadinfolst_lock_acquire] */
+
+static inline
+ats_void_type
+gcats2_the_threadinfolst_lock_release () {
+#ifdef _ATS_MULTITHREAD
+  int err ;
+  err = pthread_mutex_unlock (&the_threadinfolst_lock) ;
+  if (err != 0) {
+    fprintf(stderr, "exit(ATS/GC): [the_threadinfolst_lock_release]: failed.\n") ;
+    exit(1) ;
+  }
+#endif // end of [_ATS_MULTITHREAD]
+  return ;
+} /* end of [gcats2_the_threadinfolst_lock_release] */
+
+/* ****** ****** */
+
+#ifdef _ATS_MULTITHREAD
 extern pthread_mutex_t the_gcmain_lock ;
 #endif // end of [_ATS_MULTITHREAD]
 
@@ -470,6 +507,11 @@ gcats2_the_freeitmlstarr_unmark () ; // it is called in [gcmain_run]
 
 extern ats_void_type
 gcats2_the_topsegtbl_sweeplst_build () ; // it is called in [gcmain_run]
+
+extern ats_void_type gcats2_the_threadinfolst_lock_acquire() ;
+extern ats_void_type gcats2_the_threadinfolst_lock_release() ;
+
+extern ats_void_type gcats2_the_threadinfolst_suspend() ;
 
 /* ****** ****** */
 
