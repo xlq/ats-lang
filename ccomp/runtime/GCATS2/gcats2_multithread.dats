@@ -36,6 +36,10 @@
 
 (* ****** ****** *)
 
+#include "gcats2_ats.hats"
+
+(* ****** ****** *)
+
 #define ATSCCOMP_NAMESPACE "gcats2_multithread_"
 
 (* ****** ****** *)
@@ -86,6 +90,13 @@ gcats2_fprint_the_threadinfoslf_pid
 
 /* ****** ****** */
 
+/*
+** implemented in [gcats2_top.dats]
+*/
+extern sem_t the_gcsleep_semaphore ;
+
+/* ****** ****** */
+
 // [signum] needs to be word-aligned
 void SIGUSR1_handle (intptr_t signum) {
   jmp_buf reg_save ;
@@ -102,12 +113,29 @@ void SIGUSR1_handle (intptr_t signum) {
   return ;
 } /* end of [SIGUSR1_handle] */
 
-/* ****** ****** */
+void
+gcats2_signal_initialize () {
+  int err = 0 ;
+  struct sigaction action ;
+//
+  action.sa_handler = &SIGUSR1_handle ;
+  sigemptyset (&action.sa_mask) ;
+  action.sa_flags = SA_RESTART ;
+  err = sigaction(SIGUSR1, &action, NULL) ;
+  if (err < 0) {
+    perror("sigaction") ;
+    fprintf(stderr, "exit(ATS/GC): [gcats2_signal_initialize]: failed.\n") ;
+    exit(1);
+  } // end of [if]
+//
+#if (GCATS2_DEBUG > 0)
+  fprintf(stdout, "[gcats2_signal_initialize] is done successfully.\n") ;
+#endif // end of [GCATS2_DEBUG > 0]
+//
+  return ;
+} /* end of [gcats2_signal_initialize] */
 
-/*
-** implemented in [gcats2_top.dats]
-*/
-extern sem_t the_gcsleep_semaphore ;
+/* ****** ****** */
 
 ats_void_type
 gcats2_the_threadinfolst_suspend () {
@@ -129,13 +157,18 @@ gcats2_the_threadinfolst_suspend () {
 
 ats_void_type
 gcats2_the_threadinfolst_restart () {
-  pthread_cond_wait (&the_nsuspended_iszero, &the_threadinfolst_lock) ;
+  if (the_nsuspended) { // wait only if there is another thread
+    pthread_cond_wait (&the_nsuspended_iszero, &the_threadinfolst_lock) ;
+  } // end of [if]
   return ;
 } /* end of [gcats2_the_threadinfolst_restart] */
 
 /* ****** ****** */
 
-ats_void_type
+extern
+ats_ptr_type gcats2_mystackbeg_get () ;
+
+void
 gcats2_threadinfo_insert () {
   the_threadinfoslf.pid = pthread_self() ;
 /*
@@ -154,11 +187,11 @@ gcats2_threadinfo_insert () {
   return ;
 } /* end of [gcats2_threadinfo_insert] */
 
-ats_void_type
+void
 gcats2_threadinfo_remove () {
   threadinfolst_vt _prev, _next ;
 //
-  the_threadinfolst_lock_acquire () ;
+  gcats2_the_threadinfolst_lock_acquire () ;
 //
   _prev = the_threadinfoslf.prev ;
   _next = the_threadinfoslf.next ;
@@ -171,7 +204,7 @@ gcats2_threadinfo_remove () {
     the_threadinfolst = _next ;
   }
 //
-  the_threadinfolst_lock_release () ;
+  gcats2_the_threadinfolst_lock_release () ;
 //
   return ;
 } /* end of [gcats2_threadinfo_remove] */
@@ -213,14 +246,14 @@ gcats2_threadinfo_mark (
 } // end of [gcats2_threadinfo_mark]
 
 ats_void_type
-gc_mark_the_threadinfolst () {
+gcats2_mark_the_threadinfolst () {
   threadinfo_vt *p_info = the_threadinfolst ;
   while (p_info) {
     if (p_info != &the_threadinfoslf) gcats2_threadinfo_mark(p_info) ;
     p_info = p_info->next ;
   } // end of [while]
   return ;
-} /* end of [gc_mark_the_threadinfolst] */
+} /* end of [gcats2_mark_the_threadinfolst] */
 
 /* ****** ****** */
 
@@ -249,7 +282,7 @@ gcats2_pthread_stubfun (void *data0) {
   // fprintf (stderr, "gcats2_pthread_stubfun(bef): call to [start_routine]\n") ;
   ret = start_routine(arg) ;
   // fprintf (stderr, "gcats2_pthread_stubfun(aft): call to [start_routine]\n") ;
-  if (linclo) gc_autmem_free (arg) ; // a linear closure is freed
+  if (linclo) gcats2_autmem_free (arg) ; // a linear closure is freed
   pthread_cleanup_pop(1) ; // [1] means pop and execute
 //
   return ret ;
@@ -276,7 +309,7 @@ gcats2_pthread_create_cloptr (
     ret = pthread_create(&pid, 0/*attr*/, &gcats2_pthread_stubfun, data) ;
   } // end of [if]
 
-  if (ret) gcatsc2_autmem_free (data) ; if (r_pid) *r_pid = pid ;
+  if (ret) gcats2_autmem_free (data) ; if (r_pid) *r_pid = pid ;
   return ret ;
 } /* end of [gcats2_pthread_create_cloptr] */
 
@@ -284,4 +317,4 @@ gcats2_pthread_create_cloptr (
 
 /* ****** ****** */
 
-(* end of [gc_multithread.dats] *)
+(* end of [gcats2_multithread.dats] *)

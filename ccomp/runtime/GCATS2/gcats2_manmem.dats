@@ -36,6 +36,10 @@
 
 (* ****** ****** *)
 
+#include "gcats2_ats.hats"
+
+(* ****** ****** *)
+
 #define ATSCCOMP_NAMESPACE "gcats2_manmem_"
 
 (* ****** ****** *)
@@ -149,9 +153,15 @@ gcats2_the_manmemlst_mark (
 ) {
   manmemlst_vt p ; int overflow ;
   p = the_manmemlst ; overflow = 0 ;
+// /*
+  fprintf(stderr, "gcats2_the_manmemlst_mark: starts\n") ;
+// */
   while (p) {
     overflow += gcats2_ptrsize_mark(p->manmem_data, p->manmem_wsz) ; p = p->next ;
   } // end of [while]
+// /*
+  fprintf(stderr, "gcats2_the_manmemlst_mark: finishes\n") ;
+// */
   return overflow ;
 } /* end of [gcats2_the_manmemlst_mark] */
 

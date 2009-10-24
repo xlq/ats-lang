@@ -36,15 +36,15 @@
 
 (* ****** ****** *)
 
+#include "gcats2_ats.hats"
+
+(* ****** ****** *)
+
 #define ATSCCOMP_NAMESPACE "gcats2_pointer_"
 
 (* ****** ****** *)
 
 staload "gcats2.sats"
-
-(* ****** ****** *)
-
-#include "gcats2_ats.hats"
 
 (* ****** ****** *)
 

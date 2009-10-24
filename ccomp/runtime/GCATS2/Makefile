@@ -105,7 +105,7 @@ gcats2_multithread_dats.c: \
 ######
 
 test: gcats2_c.h gcats2_ats.hats
-	$(ATSCC) $(ATSCCFLAGS) -o test gcats2_test.dats \
+	$(ATSCC) -D_ATS_MULTITHREAD $(ATSCCFLAGS) -o test gcats2_test.dats \
           gcats2.sats \
           gcats2_top.dats \
           gcats2_misc.dats \
@@ -117,6 +117,7 @@ test: gcats2_c.h gcats2_ats.hats
           gcats2_collecting.dats \
           gcats2_autmem.dats \
           gcats2_manmem.dats \
+          gcats2_multithread.dats \
           -lpthread \
       && ./test \
       && rm -f ./test

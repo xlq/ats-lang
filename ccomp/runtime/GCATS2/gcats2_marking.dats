@@ -36,6 +36,10 @@
 
 (* ****** ****** *)
 
+#include "gcats2_ats.hats"
+
+(* ****** ****** *)
+
 #define ATSCCOMP_NAMESPACE "gcats2_marking_"
 
 (* ****** ****** *)
@@ -435,7 +439,13 @@ gcats2_mystack_mark (
   fprintf (stderr, "gcats2_mystack_mark: _to = %p\n", _to) ;
   fprintf (stderr, "gcats2_mystack_mark: _to - _fr = %li\n", _to - _fr) ;
 */
+// /*
+  fprintf(stderr, "gcats2_mystack_mark: starts\n") ;
+// */
   while (_fr <= _to) overflow += gcats2_ptr_mark (*_fr++) ;
+// /*
+  fprintf(stderr, "gcats2_mystack_mark: finishes\n") ;
+// */
   return overflow ;
 } /* end of [gc_mark_mystack] */
 

@@ -36,6 +36,10 @@
 
 (* ****** ****** *)
 
+#include "gcats2_ats.hats"
+
+(* ****** ****** *)
+
 #define ATSCCOMP_NAMESPACE "gcats2_collecting_"
 
 (* ****** ****** *)
@@ -239,7 +243,7 @@ gcats2_gcmain_run (
   overflowed = gcats2_the_gcmain_mark() ;
 //
 #ifdef _ATS_MULTITHREAD
-  gcats2_the_threadinfolst_restart() ; gcats2_the_threadinflst_lock_release () ;
+  gcats2_the_threadinfolst_restart() ; gcats2_the_threadinfolst_lock_release () ;
 #endif // end of [_ATS_MULTITHREAD]
 //
   if (overflowed > 0) {

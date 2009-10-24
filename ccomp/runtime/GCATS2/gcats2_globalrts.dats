@@ -36,6 +36,10 @@
 
 (* ****** ****** *)
 
+#include "gcats2_ats.hats"
+
+(* ****** ****** *)
+
 #define ATSCCOMP_NAMESPACE "gcats2_globalrts_"
 
 (* ****** ****** *)
@@ -106,7 +110,7 @@ gcats2_the_globalrts_mark (
   globalrtspage_vt *p_page ; ptrsize_t *p_entry ;
   int overflow = 0 ;
 // /*
-  fprintf(stderr, "gcats2_the_globalrts_mark\n") ;
+  fprintf(stderr, "gcats2_the_globalrts_mark: starts\n") ;
 // */
   p_page = &the_globalrtspage_fst ;
   while (p_page != the_globalrtspagelst_cur) {
@@ -122,6 +126,9 @@ gcats2_the_globalrts_mark (
   for (i = 0; i < the_globalrtsposition; i += 1) {
     overflow += gcats2_ptrsize_mark(p_entry->ptr, p_entry->wsz) ; p_entry += 1 ;
   } // end of [for]
+// /*
+  fprintf(stderr, "gcats2_the_globalrts_mark: finishes\n") ;
+// */
   return overflow ;
 } // gcats2_the_globalrts_mark
 

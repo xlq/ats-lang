@@ -508,9 +508,11 @@ fun manmem_free (p: ptr):<> void
 (* ****** ****** *)
 
 fun autmem_malloc_bsz {bsz:pos} (bsz: size_t bsz):<> ptr
+  = "gcats2_autmem_malloc_bsz"
 fun autmem_malloc_wsz {bsz:pos} (wsz: size_t bsz):<> ptr
 
 fun autmem_calloc_bsz {n:pos;bsz:pos} (n: size_t n, bsz: size_t bsz):<> ptr
+  = "gcats2_autmem_calloc_bsz"
 
 fun autmem_free (
     pf: !the_topsegtbl_v | p_itm: ptr

@@ -40,6 +40,10 @@
 
 (* ****** ****** *)
 
+#include "gcats2_ats.hats"
+
+(* ****** ****** *)
+
 staload "gcats2.sats"
 
 (* ****** ****** *)
@@ -72,6 +76,9 @@ implement gcmain_initialize () = let
     extern fun the_gcsleep_semaphore_initialize ():<> void
       = "gcats2_the_gcsleep_semaphore_initialize" // done in C
     // end of [the_gcsleep_semaphore_initialize]
+  } // end of [val]
+  val () = signal_initialize () where {
+    extern fun signal_initialize ():<> void = "gcats2_signal_initialize"
   } // end of [val]
 #endif // end of [_ATS_MULTITHREAD]
 in

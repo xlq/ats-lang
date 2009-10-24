@@ -244,6 +244,10 @@ __ATS(#assert (GLOBALRTS_PAGESIZE >= 1))
 
 /* ****** ****** */
 
+__define _ATS_MULTITHREAD 1
+
+/* ****** ****** */
+
 __C(#endif) // end of [#ifndef GCATS2_C_H]
 __ATS(#endif) // end of [#ifndef GCATS2_ATS_HATS]
 
