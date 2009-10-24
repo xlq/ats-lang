@@ -47,6 +47,8 @@
 
 #include <setjmp.h>
 #include <unistd.h>
+#include <string.h> // for [memset]
+#include <stdio.h>
 
 //
 
@@ -531,7 +533,8 @@ the_chunk_count_limit_is_reached_within (ats_int_type n) { return
 /* ****** ****** */
 
 static inline
-ats_void_type gc_markbits_clear_chunk (ats_ptr_type chks) {
+ats_void_type
+gc_markbits_clear_chunk (ats_ptr_type chks) {
   int itemtot ; // total number of items
   int nmarkbit ; // number of bytes for mark bits
   itemtot = ((chunklst)chks)->itemtot ;

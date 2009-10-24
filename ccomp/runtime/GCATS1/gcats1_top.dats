@@ -44,9 +44,11 @@
 
 (* ****** ****** *)
 
-%{^
+staload "gcats1.sats"
 
-#include "gcats1.cats"
+(* ****** ****** *)
+
+%{^
 
 int the_chunk_count = 0 ;
 // a soft threshold that can be extended

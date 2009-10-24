@@ -36,9 +36,11 @@
 
 (* ****** ****** *)
 
-%{^
+staload "gcats1.sats"
 
-#include "gcats1.cats"
+(* ****** ****** *)
+
+%{^
 
 /* ****** ****** */
 
@@ -365,4 +367,4 @@ int gc_pthread_create_cloptr (
 
 (* ****** ****** *)
 
-(* end of [gc_multithread.dats] *)
+(* end of [gcats1_multithread.dats] *)

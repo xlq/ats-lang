@@ -36,13 +36,7 @@
 
 (* ****** ****** *)
 
-%{^
-
-#include <unistd.h>
-
-#include "gcats1.cats"
-
-%}
+#include "gcats1.hats"
 
 (* ****** ****** *)
 

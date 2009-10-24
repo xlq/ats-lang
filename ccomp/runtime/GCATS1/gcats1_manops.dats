@@ -39,7 +39,6 @@
 %{^
 
 #include <stddef.h> // for [offsetof]
-#include "gcats1.cats"
 
 %}
 

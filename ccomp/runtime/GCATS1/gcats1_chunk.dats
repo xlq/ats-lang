@@ -73,8 +73,6 @@ int gcats_memalign (
   return err ;
 } /* end of [gcats_memalign] */
 
-#include "gcats1.cats"
-
 %}
 
 #include "gcats1.hats"
