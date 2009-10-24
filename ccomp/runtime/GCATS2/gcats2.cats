@@ -502,6 +502,9 @@ gcats2_the_topsegtbl_clear_mrkbits () ;
 extern ats_int_type/*overflowed*/
 gcats2_the_gcmain_mark () ; // it is called in [gcmain_run]
 
+ats_void_type
+gcats2_freeitmlst_mark (ats_ptr_type xs) ;
+
 extern ats_void_type
 gcats2_the_freeitmlstarr_unmark () ; // it is called in [gcmain_run]
 
@@ -512,6 +515,13 @@ extern ats_void_type gcats2_the_threadinfolst_lock_acquire() ;
 extern ats_void_type gcats2_the_threadinfolst_lock_release() ;
 
 extern ats_void_type gcats2_the_threadinfolst_suspend() ;
+
+/* ****** ****** */
+
+extern ats_ptr_type
+gcats2_autmem_malloc_bsz (ats_size_type bsz) ;
+
+extern ats_void_type gcats2_autmem_free (ats_ptr_type p_itm) ;
 
 /* ****** ****** */
 
