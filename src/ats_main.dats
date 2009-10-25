@@ -218,10 +218,11 @@ fn getenv_exn
   val stropt = getenv_opt name in
   if stropt_is_some stropt then
     string1_of_string (stropt_unsome stropt)
-  else begin
-    prerr "The environment variable [";
-    prerr name;
-    prerr "] is undefined!\n" ;
+  else let
+    val () = prerrf
+      ("The environment variable [%s] is undefined!\n", @(name))
+    // end of [val]
+  in
     exit (1)
   end // end of [if]
 end (* end of [getenv_exn] *)
@@ -234,6 +235,7 @@ fn atsopt_usage (cmd: string): void = begin
   print "  --static filenames (for statically loading (many) <filenames>)\n";
   print "  -d filenames (for dynamically loading (many) <filenames>)\n";
   print "  --dynamic filenames (for dynamically loading (many) <filenames>)\n";
+  print "  --pervasive filenames (for pervasively loading (many) <filenames>)\n";
   print "  -o filename (output into <filename>)\n";
   print "  --output filename (output into <filename>)\n";
   print "  -dep (for generating dependency lists)\n";
@@ -290,7 +292,7 @@ fn pervasive_load
 (*
   val () = begin
     print "pervasive_load: parse: after: fullname = "; print fullname; print_newline ()
-  end
+  end // end of [val]
 *)
   val () = $Fil.the_filenamelst_pop ()
   val d1cs = $Trans1.d0eclst_tr d0cs
@@ -361,14 +363,19 @@ end // end of [prelude_load]
 (* ****** ****** *)
 
 datatype comkind =
-  | COMKINDnone
-  | COMKINDinput of int (* 0: static; 1: dynamic; 2: dynamic and main *)
-  | COMKINDoutput
+  | COMKINDnone of ()
+  | COMKINDinput of int (* 0: static; 1: dynamic *)
+  | COMKINDpervasive of () // for pervasively loading static files
+  | COMKINDoutput of ()
 // end of [comkind]
 
 fn comkind_is_input (knd: comkind): bool =
   case+ knd of COMKINDinput _ => true | _ => false
 // end of [comkind_is_input]
+
+fn comkind_is_pervasive (knd: comkind): bool =
+  case+ knd of COMKINDpervasive _ => true | _ => false
+// end of [comkind_is_pervasive]
 
 fn comkind_is_output (knd: comkind): bool =
   case+ knd of COMKINDoutput _ => true | _ => false
@@ -491,7 +498,9 @@ end // end of [local]
 (* ****** ****** *)
 
 fn do_trans12 (
-    param: param_t, basename: string, d0cs: $Syn.d0eclst
+    param: param_t
+  , basename: string
+  , d0cs: $Syn.d0eclst
   ) : $DEXP2.d2eclst = let
   val debug_flag = $Deb.debug_flag_get ()
 
@@ -519,7 +528,9 @@ in
 end // end of [do_trans12]
 
 fn do_trans123 (
-    param: param_t, basename: string, d0cs: $Syn.d0eclst
+    param: param_t
+  , basename: string
+  , d0cs: $Syn.d0eclst
   ) : $DEXP3.d3eclst = let
   val d2cs = do_trans12 (param, basename, d0cs)
   val d3cs = $Trans3.d2eclst_tr d2cs
@@ -553,7 +564,10 @@ in
 end // end of [do_trans123]
 
 fn do_trans1234 (
-    param: param_t, flag: int, basename: string, d0cs: $Syn.d0eclst
+    param: param_t
+  , flag: int
+  , basename: string
+  , d0cs: $Syn.d0eclst
   ) : void = let
   val d3cs = do_trans123 (param, basename, d0cs)
   val hids = $Trans4.d3eclst_tr (d3cs)
@@ -708,6 +722,9 @@ fun loop {i:nat | i <= n} .<i>. (
           | "--dynamic" => begin
               param.comkind := COMKINDinput 1; param.wait := 1
             end // end of ["--dynamic"]
+          | "--pervasive" => begin
+              param.comkind := COMKINDpervasive () // no wait
+            end // end of ["--pervasive"]
           | "--output" => begin
               param.comkind := COMKINDoutput ()
             end // end of ["--output"]
@@ -771,6 +788,18 @@ fun loop {i:nat | i <= n} .<i>. (
             end // end of [_ when ...]
           | _ => do_trans1234 (param, flag, basename, d0cs)
         end // end of [val]
+      in
+        loop (ATSHOME, argv, param, arglst)
+      end // end of [_ when ...]
+    | _ when
+        comkind_is_pervasive (param.comkind) => let
+        val () = if param.prelude = 0 then
+          (param.prelude := 1; prelude_load ATSHOME)
+        // end of [val]
+        val COMARGkey (_(*n*), basename) = arg
+        val d0cs = do_parse_filename (0(*static*), param, basename)
+        val d1cs = $Trans1.d0eclst_tr d0cs
+        val d2cs = $Trans2.d1eclst_tr d1cs
       in
         loop (ATSHOME, argv, param, arglst)
       end // end of [_ when ...]

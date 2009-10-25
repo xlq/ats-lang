@@ -2467,17 +2467,16 @@ implement emit_funentry_prototype {m} (pf | out, entry) = let
 
   fn aux_function
     (out: &FILE m):<cloptr1> void = let
-    val () = fprint1_string (pf | out, "static ")
+    val () = fprint1_string (pf | out, "static\n")
     val () = emit_hityp (pf | out, hit_res)
     val () = fprint1_char (pf | out, ' ')
     val () = emit_funlab (pf | out, fl)
     val () = fprint1_string (pf | out, " (")
     val n = emit_funenvarg (pf | out, vtps_all)
-    val () = // comma separation if needed
-      if n > 0 then begin case+ 0 of
-        | _ when hityplst_is_cons hits_arg => fprint1_string (pf | out, ", ")
-        | _ => ()
-      end
+    val () = if n > 0 then begin case+ 0 of // comma separation if needed
+      | _ when hityplst_is_cons hits_arg => fprint1_string (pf | out, ", ")
+      | _ => ()
+    end // end of [val]
     val () = emit_funarg (pf | out, hits_arg)
     val () = fprint1_string (pf | out, ") ;\n")
   in
@@ -2485,7 +2484,8 @@ implement emit_funentry_prototype {m} (pf | out, entry) = let
   end // end of [aux_function]
 
   fn aux_closure_make (out: &FILE m):<cloptr1> void = let
-    val () = fprint1_string (pf | out, "static ats_clo_ptr_type ")
+    val () = fprint1_string (pf | out, "static\n")
+    val () = fprint1_string (pf | out, "ats_clo_ptr_type ")
     val () = emit_funlab (pf | out, fl)
     val () = fprint1_string (pf | out, "_closure_make (")
     val _(*int*) = emit_funenvarg (pf | out, vtps_all)
@@ -2495,7 +2495,7 @@ implement emit_funentry_prototype {m} (pf | out, entry) = let
   end // end of [aux_closure_make]
 
   fn aux_closure_clofun (out: &FILE m):<cloptr1> void = let
-    val () = fprint1_string (pf | out, "static ")
+    val () = fprint1_string (pf | out, "static\n")
     val () = emit_hityp (pf | out, hit_res)
     val () = fprint1_char (pf | out, ' ')
     val () = emit_funlab (pf | out, fl)

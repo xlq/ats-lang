@@ -450,7 +450,7 @@ fn emit_d2cst_dec {m:file_mode} // for a non-proof constant
      fprint1_string (pf | out, "ats_clo_ptr_type, ");
      emit_d2cst (pf | out, d2c);
      fprint1_string (pf | out, ") ;\n");
-     fprint1_string (pf | out, "extern ");
+     fprint1_string (pf | out, "extern\n");
      emit_hityp (pf | out, hit_res);
      fprint1_char (pf | out, ' ');
      emit_d2cst (pf | out, d2c);
@@ -464,7 +464,7 @@ fn emit_d2cst_dec {m:file_mode} // for a non-proof constant
   in
     case+ 0 of
     | _ when d2cst_is_fun d2c => begin
-        fprint1_string (pf | out, "extern ");
+        fprint1_string (pf | out, "extern\n");
         emit_hityp (pf | out, hit_res);
         fprint1_char (pf | out, ' ');
         emit_d2cst (pf | out, d2c);
@@ -478,7 +478,7 @@ fn emit_d2cst_dec {m:file_mode} // for a non-proof constant
          fprint1_string (pf | out, "ats_fun_ptr_type, ");
          emit_d2cst (pf | out, d2c);
          fprint1_string (pf | out, ") ;\n");
-         fprint1_string (pf | out, "extern ");
+         fprint1_string (pf | out, "extern\n");
          emit_hityp (pf | out, hit_res);
          fprint1_char (pf | out, ' ');
          emit_d2cst (pf | out, d2c);
@@ -510,7 +510,7 @@ fn emit_d2cst_dec_trmck {m:file_mode} // for terminating constants
   (pf: file_mode_lte (m, w)| out: &FILE m, d2c: d2cst_t): void = let
   val hit0 = d2cst_hityp_get_some (d2c); val hit1 = hityp_decode (hit0)
   macdef f_isprf_mac () = begin
-    fprint1_string (pf | out, "extern ");
+    fprint1_string (pf | out, "extern\n");
     emit_hityp (pf | out, hityp_t_void);
     fprint1_char (pf | out, ' ');
     emit_d2cst (pf | out, d2c);
@@ -747,8 +747,8 @@ fn emit_staload {m:file_mode} (
   fun aux_staload_dec (out: &FILE m, fils: !stafilelst)
     : void = begin case+ fils of
     | STAFILELSTcons (fil, !fils_rest) => let
-        val () = fprint1_string (pf | out, "extern ats_void_type")
-        val () = fprint1_char (pf | out, '\n')
+        val () = fprint1_string (pf | out, "extern\n")
+        val () = fprint1_string (pf | out, "ats_void_type ")
         val () = emit_filename (pf | out, fil)
         val () = fprint1_string (pf | out, "__staload (void) ;\n")
         val () = aux_staload_dec (out, !fils_rest)
@@ -839,7 +839,7 @@ fn emit_staload {m:file_mode} (
   val () = fprint1_string (pf | out, "static int ")
   val () = emit_filename (pf | out, fil)
   val () = fprint1_string (pf | out, "__staload_flag = 0 ;\n\n")
-  val () = fprint1_string (pf | out, "ats_void_type ")
+  val () = fprint1_string (pf | out, "ats_void_type\n")
   val () = emit_filename (pf | out, fil)
   val () = fprint1_string (pf | out, "__staload () {\n")
   val () = fprint1_string (pf | out, "if (");
@@ -885,7 +885,8 @@ fn emit_dynload {m:file_mode} (
           val () = fprint1_string (pf | out, "int ")
           val () = emit_filename (pf | out, fil)
           val () = fprint1_string (pf | out, "__dynload_flag = 0 ;\n")
-          val () = fprint1_string (pf | out, "extern ats_void_type\n")
+          val () = fprint1_string (pf | out, "extern\n")
+          val () = fprint1_string (pf | out, "ats_void_type ")
           val () = emit_filename (pf | out, fil)
           val () = fprint1_string (pf | out, "__dynload (void) ;\n")
           val () = aux_dynload_dec (out, !fils_rest)
@@ -902,13 +903,10 @@ fn emit_dynload {m:file_mode} (
   // end of [val]
 //
   val () = let
-    val () =
-      if dynloadflag = 0 then fprint1_string (pf | out, "// ")
-    // end of [val]
-    val () = fprint1_string (pf | out, "extern int\n")
-    val () =
-      if dynloadflag = 0 then fprint1_string (pf | out, "// ")
-    // end of [val]
+    val () = if dynloadflag = 0 then fprint1_string (pf | out, "// ")
+    val () = fprint1_string (pf | out, "extern\n")
+    val () = if dynloadflag = 0 then fprint1_string (pf | out, "// ")
+    val () = fprint1_string (pf | out, "int ")
     val () = emit_filename (pf | out, fil)
     val () = fprint1_string (pf | out, "__dynload_flag ;\n\n")
   in
@@ -1290,11 +1288,11 @@ implement ccomp_main {m}
   val () = fprint1_string (pf | out, "/* external codes at bot */\n")
   val n = emit_extcodelst (pf | out, 2(*bot*), extcodes)
   val () = if n > 0 then fprint1_char (pf | out, '\n')
-
+//
   val () = datcstlst_free (datcsts)
   val () = exnconlst_free (exncons)
   val () = extcodelst_free (extcodes)
-
+//
 in
   // empty
 end // end of [ccomp_main]
