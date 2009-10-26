@@ -87,10 +87,10 @@ ats_ptr_type
 gcats2_malloc_ext (ats_size_type bsz) {
   void *p ;
 /*
-  fprintf(stderr, "gcats2_malloc_ext: bsz = %i\n", bsz) ;
+  fprintf(stderr, "gcats2_malloc_ext: bsz = %lu\n", bsz) ;
 */
   p = malloc(bsz) ;
-  if (p == (void*)0) {
+  if (!p) {
     fprintf(stderr, "exit(ATS/GC): external memory is unavailable.\n"); exit(1);
   } /* end of [if] */
   return p ;
@@ -99,6 +99,23 @@ gcats2_malloc_ext (ats_size_type bsz) {
 static inline
 ats_void_type
 gcats2_free_ext (ats_ptr_type ptr) { free(ptr); return ; }
+
+static inline
+ats_ptr_type
+gcats2_realloc_ext (
+  ats_ptr_type p, ats_size_type bsz
+) {
+  void *p_new ;
+/*
+  fprintf(stderr, "gcats2_realloc_ext: p = %p\n", p) ;
+  fprintf(stderr, "gcats2_realloc_ext: bsz = %lu\n", bsz) ;
+*/
+  p_new = realloc(p, bsz) ;
+  if (!p_new) {
+    fprintf(stderr, "exit(ATS/GC): external memory is unavailable.\n"); exit(1);
+  } /* end of [if] */
+  return p_new ;
+} /* end of [gcats2_realloc_ext] */
 
 /* ****** ****** */
 

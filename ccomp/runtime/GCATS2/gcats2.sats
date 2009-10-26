@@ -151,6 +151,11 @@ fun manmem_destroy {l:addr} // it is needed for [manmem_free]
   (pf: manmem_vt @ l | p: ptr l):<> void = "gcats2_manmem_destroy"
 // end of ...
 
+fun manmem_recreate // it is needed for [manmem_realloc]
+  {n:pos} (p: ptr, bsz: size_t n):<> [l:addr] (manmem_vt @ l | ptr l)
+  = "gcats2_manmem_recreate"
+// end of ...
+
 (* ****** ****** *)
 
 absview the_manmemlst_v
@@ -518,19 +523,11 @@ fun the_freeitmlstarr_replenish {i:nat | i < FREEITMLST_ARRAYSIZE}
 
 (* ****** ****** *)
 
-fun manmem_malloc_bsz {bsz:pos} (bsz: size_t bsz):<> ptr
-  = "gcats2_manmem_malloc_bsz"
-
-fun manmem_free (p: ptr):<> void
-  = "gcats2_manmem_free"
-
-(* ****** ****** *)
-
 fun autmem_malloc_bsz {bsz:pos} (bsz: size_t bsz):<> ptr
   = "gcats2_autmem_malloc_bsz"
 fun autmem_malloc_wsz {bsz:pos} (wsz: size_t bsz):<> ptr
 
-fun autmem_calloc_bsz {n:pos;bsz:pos} (n: size_t n, bsz: size_t bsz):<> ptr
+fun autmem_calloc_bsz {n,bsz:pos} (n: size_t n, bsz: size_t bsz):<> ptr
   = "gcats2_autmem_calloc_bsz"
 
 fun autmem_free (pf: !the_topsegtbl_v | p_itm: ptr):<> void
@@ -541,6 +538,20 @@ fun autmem_realloc_bsz {n:nat} (
   ) :<> ptr // equivalent to autmem_free if [n = 0]
   = "gcats2_autmem_realloc_bsz"
 // end of ...
+
+(* ****** ****** *)
+
+fun manmem_malloc_bsz {bsz:pos} (bsz: size_t bsz):<> ptr
+  = "gcats2_manmem_malloc_bsz"
+
+fun manmem_calloc_bsz {n,bsz:pos} (n: size_t n, bsz: size_t bsz):<> ptr
+  = "gcats2_manmem_calloc_bsz"
+
+fun manmem_free (p: ptr):<> void
+  = "gcats2_manmem_free"
+
+fun manmem_realloc_bsz {bsz:nat} (p: ptr, bsz: size_t bsz):<> ptr
+  = "gcats2_manmem_realloc_bsz"
 
 (* ****** ****** *)
 

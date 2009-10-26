@@ -194,6 +194,60 @@ gcats2_autmem_free (
   return ;
 } // end of [gcats2_autmem_free]
 
+ats_ptr_type
+gcats2_autmem_realloc_bsz (
+  ats_ptr_type p_itm, ats_size_type bsz // [p_itm] is assumed to be valid
+) {
+  size_t itmwsz, itmbsz ;
+  chunk_vt *p_chunk ; int itmwsz_log, ofs_nitm ;
+  freeitmptr_vt p_itm_new ;
+  freeitmlst_vt *p_itmlst ;
+//
+  p_chunk = (chunk_vt*)gcats2_ptr_isvalid(p_itm, &ofs_nitm) ;
+//
+#if (GCATS2_DEBUG > 0)
+  if (!p_chunk) {
+    fprintf(stderr, "INTERNAL ERROR") ;
+    fprintf(stderr, ": exit(ATS/GC): gcats2_autmem_free: p_itm = %p\n", p_itm) ;
+    exit(1) ;
+  } // end of [if]
+#endif // end of [GCATS2_DEBUG]
+//
+  itmwsz = ((chunk_vt*)p_chunk)->itmwsz ;
+  itmbsz = (itmwsz << NBYTE_PER_WORD_LOG) ;
+  itmwsz_log = ((chunk_vt*)p_chunk)->itmwsz_log ;
+//
+  if (itmwsz_log >= 0) {
+    if (itmbsz <= bsz && bsz < (1 << itmwsz_log)) return p_itm ;
+  } // end of [if]
+//
+  if (itmwsz_log >= 1) {
+    if ((1 << (itmwsz_log - 1)) < bsz && bsz <= itmbsz) return p_itm ;
+  } // end of [if]
+//
+  if (bsz) {
+    p_itm_new =
+      gcats2_autmem_malloc_bsz (bsz) ;
+    if (bsz <= itmbsz)
+      memcpy (p_itm_new, p_itm, bsz) ;
+    else
+      memcpy (p_itm_new, p_itm, itmbsz) ;
+    // end of [if]
+  } else {
+    p_itm_new = (freeitmptr_vt)0 ;
+  } // end of [if]
+//
+  if (itmwsz_log >= 0) {
+    p_itmlst = &the_freeitmlstarr[itmwsz_log] ;
+    *(freeitmlst_vt*)p_itm = *p_itmlst ; *p_itmlst = (freeitmlst_vt)p_itm ;
+  } else { // itmwsz_log = -1 // itmtot = 1
+    gcats2_free_ext (p_chunk->chunk_data) ;
+    gcats2_the_topsegtbl_remove_chunkptr (p_chunk) ;
+  } // end of [if]
+//
+  return p_itm_new ;
+} // end of [gcats2_autmem_realloc_bsz]
+
 %} // end of [%{$]
 
 (* ****** ****** *)
