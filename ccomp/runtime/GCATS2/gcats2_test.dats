@@ -308,6 +308,8 @@ end // end of [the_manmemlst_test]
 (* ****** ****** *)
 
 dynload "gcats2_top.dats"
+
+(*
 dynload "gcats2_misc.dats"
 dynload "gcats2_freeitmlst.dats"
 dynload "gcats2_chunk.dats"
@@ -318,6 +320,7 @@ dynload "gcats2_collecting.dats"
 dynload "gcats2_autmem.dats"
 dynload "gcats2_manmem.dats"
 dynload "gcats2_multithread.dats"
+*)
 
 (* ****** ****** *)
 
@@ -446,11 +449,9 @@ extern fun __ptr_car (p: ptr): ptr = "__ptr_car"
 extern fun __ptr_cdr (p: ptr): ptr = "__ptr_cdr"
 
 implement main () = () where {
-  val () = gcmain_initialize ()
-  val () = begin
-    print "[gcmain_initialize] is done"; print_newline ()
-  end
-  // var ptr : ptr // uninitialized
+  val () = initialize () where {
+    extern fun initialize ():<> void = "gcats2_initialize"
+  } // end of [val]
   var ptr1 = autmem_calloc_bsz (NBYTE_PER_WORD, 128)
   val () = printf ("ptr1 = %p\n", @(ptr1))
   var ptr2 = autmem_calloc_bsz (NBYTE_PER_WORD, 256)

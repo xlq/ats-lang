@@ -62,26 +62,22 @@
 #include "gcats2.cats"
 
 #include "gcats2_top_dats.c"
-
 #include "gcats2_misc_dats.c"
-
 #include "gcats2_freeitmlst_dats.c"
-
 #include "gcats2_chunk_dats.c"
-
+#include "gcats2_pointer_dats.c"
 #include "gcats2_globalrts_dats.c"
 
-#ifdef _ATS_MULTITHREAD
+#include "gcats2_marking_dats.c"
+#include "gcats2_collecting_dats.c"
+#include "gcats2_autmem_dats.c"
+#include "gcats2_manmem_dats.c"
+
+#if (_ATS_MULTITHREAD)
 #include "gcats2_multithread_dats.c"
 #endif // end of [_ATS_MULTITHREAD]
 
-#include "gcats2_marking_dats.c"
-
-#include "gcats2_collecting_dats.c"
-
-#include "gcats2_autmem_dats.c"
-
-#include "gcats2_manmem_dats.c"
+#include "gcats2_sats.c"
 
 /* ****** ****** */
 

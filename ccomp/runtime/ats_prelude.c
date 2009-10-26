@@ -111,10 +111,12 @@ int ats_exception_con_tag = 1000 ; // reserved for special use
 extern void exit (int status) ; // declared in [stdlib.h]
 
 ats_void_type
-ats_uncaught_exception_handle
-  (const ats_exn_ptr_type exn) {
-  fprintf(stderr, "exit(ATS): uncaught exception: %s(%d)\n", exn->name, exn->tag) ;
-  exit(1) ;
+ats_uncaught_exception_handle (
+  const ats_exn_ptr_type exn
+) {
+  fprintf(stderr,
+    "exit(ATS): uncaught exception: %s(%d)\n", exn->name, exn->tag
+  ) ; exit(1) ;
   return ; // deadcode
 } /* end of [ats_uncaught_exception_handle] */
 
@@ -125,13 +127,21 @@ ats_uncaught_exception_handle
 */
 
 ats_void_type
-ats_caseof_failure_handle (char *loc) {
-  fprintf (stderr, "exit(ATS): %s: match failure.\n", loc) ; exit(1) ;
+ats_caseof_failure_handle (
+  const ats_ptr_type loc // location of the failure
+) {
+  fprintf(stderr, "exit(ATS): %s: match failure.\n", (char*)loc) ; exit(1) ;
+  return ; // deadcode
 } /* end of [ats_caseof_failure_handle] */
 
 ats_void_type
-ats_funarg_match_failure_handle (char *loc) {
-  fprintf (stderr, "exit(ATS): %s: funarg match failure.\n", loc) ; exit(1) ;
+ats_funarg_match_failure_handle (
+  const ats_ptr_type loc // location of the failure
+) {
+  fprintf(
+    stderr, "exit(ATS): %s: funarg match failure.\n", (char*)loc
+  ) ; exit(1) ;
+  return ; // deadcode
 } /* end of [ats_funarg_match_failure_handle] */
 
 /* ****** ****** */
@@ -156,16 +166,15 @@ ats_funarg_match_failure_handle (char *loc) {
 
 #ifdef _ATS_MULTITHREAD
 
-static
-ats_ptr_type ats_pthread_app (ats_ptr_type f) {
+static ats_ptr_type
+ats_pthread_app (ats_ptr_type f) {
   ((void (*)(ats_ptr_type))((ats_clo_ptr_type)f)->closure_fun)(f) ;
   ATS_FREE (f) ; // this is a linear application; it must be freed to avoid leak
   return (ats_ptr_type)0 ;
-}
+} // end of [ats_pthread_app]
 
 #ifdef _ATS_GCATS
-extern
-int gc_pthread_create_cloptr (
+extern int gc_pthread_create_cloptr (
   ats_clo_ptr_type cloptr, pthread_t *pid_r, int detached, int linclo
 ) ;
 #endif // end of [_ATS_GCATS]

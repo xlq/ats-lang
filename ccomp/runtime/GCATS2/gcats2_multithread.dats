@@ -36,7 +36,7 @@
 
 (* ****** ****** *)
 
-#include "gcats2_ats.hats"
+// #include "gcats2_ats.hats"
 
 (* ****** ****** *)
 
@@ -98,12 +98,13 @@ extern sem_t the_gcsleep_semaphore ;
 /* ****** ****** */
 
 // [signum] needs to be word-aligned
-void SIGUSR1_handle (intptr_t signum) {
+void SIGUSR1_handle (int signum) {
+  void *some_ptr ;
   jmp_buf reg_save ;
   setjmp(reg_save) ;
   asm volatile ("": : :"memory") ;
   sem_post(&the_gcsleep_semaphore) ;
-  the_threadinfoslf.stackend = &signum ;
+  the_threadinfoslf.stackend = &some_ptr ;
   gcats2_the_threadinfolst_lock_acquire() ;
   the_nsuspended -= 1 ;
   // so [stackend==0] indicates that a thread is not suspended
@@ -129,7 +130,7 @@ gcats2_signal_initialize () {
   } // end of [if]
 //
 #if (GCATS2_DEBUG > 0)
-  fprintf(stdout, "[gcats2_signal_initialize] is done successfully.\n") ;
+  fprintf(stderr, "[gcats2_signal_initialize] is done successfully.\n") ;
 #endif // end of [GCATS2_DEBUG > 0]
 //
   return ;
@@ -211,11 +212,13 @@ gcats2_threadinfo_remove () {
 
 /* ****** ****** */
 
-ats_void_type
+ats_int_type
 gcats2_threadinfo_mark (
   threadinfo_vt *p_info
 ) {
-  int i, dir ; freeitmlst_vt *freeitmlstarr, *_fr, *_to ;
+  int i, dir ;
+  freeitmlst_vt *freeitmlstarr, *_fr, *_to ;
+  int overflow = 0 ;
 
   /* scanning the thread freeitmlst array */
 
@@ -240,20 +243,29 @@ gcats2_threadinfo_mark (
     _to = p_info->stackbeg ; _fr = p_info->stackend + 1 ;
   } // end of [if]
 //
-  while (_fr <= _to) { gcats2_ptr_mark (*_fr++) ; }
+  while (_fr <= _to) { overflow += gcats2_ptr_mark (*_fr++) ; }
 //
-  return ;
+  return overflow ;
 } // end of [gcats2_threadinfo_mark]
 
-ats_void_type
-gcats2_mark_the_threadinfolst () {
+ats_int_type
+gcats2_the_threadinfolst_mark () {
+  int overflow = 0 ;
   threadinfo_vt *p_info = the_threadinfolst ;
+// /*
+  fprintf(stderr, "gcats2_the_threadinfolst_mark: starts\n") ;
+// */
   while (p_info) {
-    if (p_info != &the_threadinfoslf) gcats2_threadinfo_mark(p_info) ;
+    if (p_info != &the_threadinfoslf) {
+      overflow += gcats2_threadinfo_mark(p_info) ;
+    } // end of [if]
     p_info = p_info->next ;
   } // end of [while]
-  return ;
-} /* end of [gcats2_mark_the_threadinfolst] */
+// /*
+  fprintf(stderr, "gcats2_the_threadinfolst_mark: finishes: overflow = %i\n", overflow) ;
+// */
+  return overflow ;
+} /* end of [gcats2_the_threadinfolst_mark] */
 
 /* ****** ****** */
 

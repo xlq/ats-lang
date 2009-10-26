@@ -36,7 +36,7 @@
 
 (* ****** ****** *)
 
-#include "gcats2_ats.hats"
+// #include "gcats2_ats.hats"
 
 (* ****** ****** *)
 
@@ -75,9 +75,9 @@ gcats2_mystackdir_get () {
 /* ****** ****** */
 
 static
-#ifdef _ATS_MULTITHREAD
+#if (_ATS_MULTITHREAD)
 __thread // thread-local storage
-#endif
+#endif // end of ...
 ats_ptr_type the_mystackbeg = (ats_ptr_type)0 ;
 
 ats_void_type

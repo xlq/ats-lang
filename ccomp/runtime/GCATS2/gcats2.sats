@@ -79,10 +79,18 @@ fun freeitmlst_uncons {l:anz} (
 castfn freeitmlst_make_null (p: ptr null):<> freeitmlst_vt null
 castfn freeitmlst_free_null (xs: freeitmlst_vt null):<> ptr null
 
+fun fprint_freeitmlst {l:addr} (xs: !freeitmlst_vt l): int
+  = "gcats2_fprint_freeitmlst" // implemented in C in [gcats2_freeitmlst]
+// end of [fprint_freeitmlst]
+
 (* ****** ****** *)
 
 absviewtype freeitmptr_vt // boxed type
 
+fun fprint_the_freeitmlstarr
+  (out: FILEref): void = "gcats2_fprint_the_freeitmlstarr"
+// end of ...
+  
 // implemented in C in [gcats2_top.dats]
 fun the_freeitmlstarr_get_freeitm (itmwsz_log: int):<> ptr
   = "gcats2_the_freeitmlstarr_get_freeitm"
@@ -266,6 +274,11 @@ fun the_freeitmlstarr_add_chunk {l:anz} // chunk is consumed
 (* ****** ****** *)
 
 absview the_sweeplstarr_v
+
+// implemented in C in [gcats2_top.dats]
+fun the_sweeplstarr_clear
+  (pf: !the_sweeplstarr_v | (*none*)):<> void
+  = "gcats2_the_sweeplstarr_clear"
 
 // implemented in C in [gcats2_top.dats]
 fun the_sweeplstarr_get_chunk
@@ -470,16 +483,23 @@ fun the_manmemlst_mark
   (pf: !the_gcmain_v | (*none*)) :<> int(*overflow*)
   = "gcats2_the_manmemlst_mark"
 
+// implemented in C in [gcats2_multithread.dats]
+fun the_threadinfolst_mark
+  (pf: !the_threadinfolst_v | (*none*)) :<> int(*overflow*)
+  = "gcats2_the_threadinfolst_mark"
+
 // implemented in ATS in [gcats2_marking.dats]
-fun the_gcmain_mark // [overflowed] determines if [markstack] needs
-  (pf: !the_gcmain_v | (*none*)):<> int(*overflowed*) // to be extended
+fun the_gcmain_mark ( // [overflowed] determines if [markstack] needs
+    pf_gc: !the_gcmain_v, pf_lst: !the_threadinfolst_v | (*none*)
+  ) :<> int(*overflowed*) // to be extended
   = "gcats2_the_gcmain_mark"
 
 (* ****** ****** *)
 
 // implemented in ATS in [gcats2_collecting.dats]
 fun the_topsegtbl_sweeplst_build (
-    pf_tbl: !the_topsegtbl_v, pf_arr: !the_sweeplstarr_v, pf_lst: !the_chunkpagelst_v
+    pf_tbl: !the_topsegtbl_v
+  , pf_arr: !the_sweeplstarr_v, pf_lst: !the_chunkpagelst_v
   | (*none*)
   ) :<> void
   = "gcats2_the_topsegtbl_sweeplst_build"
@@ -493,17 +513,16 @@ fun gcmain_run (pf: !the_gcmain_v | (*none*)):<> void = "gcats2_gcmain_run"
 
 // implemented in ATS in [gcats2_collecting.dats]
 fun the_freeitmlstarr_replenish {i:nat | i < FREEITMLST_ARRAYSIZE}
-  (itmwsz_log: int i):<> void // GC may be triggered by a call to this function
+  (pf: !the_gcmain_v | itmwsz_log: int i):<> void // GC may be triggered
   = "gcats2_the_freeitmlstarr_replenish"
 
 (* ****** ****** *)
 
-fun gcmain_initialize ():<> void
-
-(* ****** ****** *)
-
 fun manmem_malloc_bsz {bsz:pos} (bsz: size_t bsz):<> ptr
+  = "gcats2_manmem_malloc_bsz"
+
 fun manmem_free (p: ptr):<> void
+  = "gcats2_manmem_free"
 
 (* ****** ****** *)
 
@@ -514,9 +533,8 @@ fun autmem_malloc_wsz {bsz:pos} (wsz: size_t bsz):<> ptr
 fun autmem_calloc_bsz {n:pos;bsz:pos} (n: size_t n, bsz: size_t bsz):<> ptr
   = "gcats2_autmem_calloc_bsz"
 
-fun autmem_free (
-    pf: !the_topsegtbl_v | p_itm: ptr
-  ) :<> void = "gcats2_autmem_free"
+fun autmem_free (pf: !the_topsegtbl_v | p_itm: ptr):<> void
+  = "gcats2_autmem_free"
 
 fun autmem_realloc_bsz {n:nat} (
     pf: !the_topsegtbl_v | p_itm: ptr, bsz_new: size_t n

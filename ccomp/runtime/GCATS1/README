@@ -1,6 +1,6 @@
 #
 #
-# Some history on the garbage collection in ATS
+# some history on garbage collection in ATS
 #
 #
 
@@ -21,4 +21,4 @@ This GC was coded and tested and then put into practical use in just a
 period of two weeks (June 20 - July 4). This fast development yields some
 strong evidence in support of making use of ATS in systems programming.
 
-# end of [README]
+###### end of [README] #####

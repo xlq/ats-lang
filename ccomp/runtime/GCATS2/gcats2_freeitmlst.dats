@@ -36,7 +36,7 @@
 
 (* ****** ****** *)
 
-#include "gcats2_ats.hats"
+// #include "gcats2_ats.hats"
 
 (* ****** ****** *)
 
@@ -69,6 +69,23 @@ implement freeitmlst_length {l} (xs0) = n where {
   val n = $effmask_ntm (loop (xs, 0))
   val _(*null*) = freeitmlst_free_null (xs)
 } // end of [freeitmlst_length]
+
+(* ****** ****** *)
+
+%{
+
+ats_void_type
+gcats2_fprint_freeitmlst
+  (ats_ptr_type out, ats_ptr_type xs) {
+  int i = 0 ;
+  while (xs) {
+    if  (i > 0) fprintf((FILE*)out, ", ") ;
+    fprintf((FILE*)out, "%p", xs) ; i += 1 ; xs = *(ats_ptr_type*)xs ;
+  } // end of [while]
+  return ;
+} // end of [gcats2_fprint_freeitmlst]
+
+%} // end of [%{]
 
 (* ****** ****** *)
 

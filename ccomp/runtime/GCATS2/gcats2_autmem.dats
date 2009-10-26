@@ -42,11 +42,11 @@
 
 (* ****** ****** *)
 
-#define ATSCCOMP_NAMESPACE "gcats2_autmem_"
+// #include "gcats2_ats.hats"
 
 (* ****** ****** *)
 
-#include "gcats2_ats.hats"
+#define ATSCCOMP_NAMESPACE "gcats2_autmem_"
 
 (* ****** ****** *)
 
@@ -103,7 +103,7 @@ end // end of [autmem_calloc_bsz]
 
 implement autmem_malloc_wsz (wsz) = let
 (*
-  val () = begin
+  val () = $effmask_all begin
     prerr "autmem_malloc_wsz: wsz = "; prerr wsz; prerr_newline ()
   end // end of [val]
 *)
@@ -114,6 +114,11 @@ implement autmem_malloc_wsz (wsz) = let
     if wsz > MAX_CLICK_WORDSIZE then ~1 else log2_ceil (wsz)
   ) : int
   val [i:int] itmwsz_log = int1_of_int (itmwsz_log)
+(*
+  val () = $effmask_all begin
+    prerr "autmem_malloc_wsz: itmwsz_log = "; prerr itmwsz_log; prerr_newline ()
+  end // end of [val]
+*)
   prval () = __assert () where {
     extern prfun __assert (): [~1 <= i; i < FREEITMLST_ARRAYSIZE] void
   }
@@ -123,7 +128,15 @@ in
       var p_itm: ptr =
         the_freeitmlstarr_get_freeitm (itmwsz_log)
       val () = if (p_itm = null) then let
-        val () = the_freeitmlstarr_replenish (itmwsz_log) // GC may be triggered
+        val (pf_the_gcmain | ()) = the_gcmain_lock_acquire ()
+(*
+        val () = $effmask_all (fprint_the_freeitmlstarr (stderr_ref))
+*)
+        val () = the_freeitmlstarr_replenish (pf_the_gcmain | itmwsz_log) // GC may be triggered
+(*
+        val () = $effmask_all (fprint_the_freeitmlstarr (stderr_ref))
+*)
+        val () = the_gcmain_lock_release (pf_the_gcmain | (*none*))
         val () = p_itm := the_freeitmlstarr_get_freeitm (itmwsz_log)
         val () = $effmask_all (
           if (p_itm = null) then let

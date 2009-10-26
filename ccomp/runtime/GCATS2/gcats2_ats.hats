@@ -94,5 +94,6 @@
  #assert (TOTWSZ_LIMIT_EXTEND_CUTOFF <= 1.0)
  #define GLOBALRTS_PAGESIZE 100
  #assert (GLOBALRTS_PAGESIZE >= 1)
+ #define _ATS_MULTITHREAD 0
 
  #endif

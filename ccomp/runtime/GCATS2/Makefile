@@ -40,10 +40,12 @@ GCC=gcc
 GCCFLAGS= -O2
 ATSCC=$(ATSHOME)/bin/atscc
 ATSCCFLAGS= -g -O2 # -m64
+ATSOPT=$(ATSHOME)/bin/atsopt
 
 ######
 
 SOURCES := \
+  gcats2.sats \
   gcats2_top.dats \
   gcats2_misc.dats \
   gcats2_freeitmlst.dats \
@@ -55,72 +57,79 @@ SOURCES := \
   gcats2_autmem.dats \
   gcats2_manmem.dats \
 
-TARGETS := $(patsubst %.dats, %_dats.c, $(SOURCES))
+TARGETS := $(patsubst %.sats, %_sats.c, $(SOURCES))
+TARGETS := $(patsubst %.dats, %_dats.c, $(TARGETS))
 TARGETS_mt := $(TARGETS) gcats2_multithread_dats.c
 
 ######
 
 gc.o: \
-  gcats2_c.h gcats2_ats.hats $(TARGETS)
+  gcats2_hats $(TARGETS)
 	$(ATSCC) $(ATSCCFLAGS) -c -o gc.o -x c gcats2_all.cats
 
 gc_mt.o: \
-  gcats2_c.h gcats2_ats.hats $(TARGETS_mt)
-	$(ATSCC) $(ATSCCFLAGS) -D_ATS_MULTITHREAD -c -o gc.o -x c gcats2_all.cats
+  gcats2_mt_hats $(TARGETS_mt)
+	$(ATSCC) $(ATSCCFLAGS) -D_ATS_MULTITHREAD -c -o gc_mt.o -x c gcats2_all.cats
 
 ######
 
-gcats2_c.h: gcats2_master.hats
-	$(GCC) -E -P -D_CHEADER -o $@ -x c gcats2_master.hats
+gcats2_hats: gcats2_master.hats
+	$(GCC) -E -P -D_CHEADER -o gcats2_c.h -x c gcats2_master.hats
+	$(GCC) -E -P -D_ATSHEADER -o gcats2_ats.hats -x c gcats2_master.hats
 
-gcats2_ats.hats: gcats2_master.hats
-	$(GCC) -E -P -D_ATSHEADER -o $@ -x c gcats2_master.hats
-
-######
-
-gcats2_top_dats.c: \
-  gcats2_top.dats; $(ATSCC) -cc gcats2_top.dats
-gcats2_misc_dats.c: \
-  gcats2_misc.dats; $(ATSCC) -cc gcats2_misc.dats 
-gcats2_freeitmlst_dats.c: \
-  gcats2_freeitmlst.dats; $(ATSCC) -cc gcats2_freeitmlst.dats 
-gcats2_chunk_dats.c: \
-  gcats2_chunk.dats; $(ATSCC) -cc gcats2_chunk.dats 
-gcats2_pointer_dats.c: \
-  gcats2_pointer.dats; $(ATSCC) -cc gcats2_pointer.dats 
-gcats2_globalrts_dats.c: \
-  gcats2_globalrts.dats; $(ATSCC) -cc gcats2_globalrts.dats 
-gcats2_marking_dats.c: \
-  gcats2_marking.dats; $(ATSCC) -cc gcats2_marking.dats 
-gcats2_collecting_dats.c: \
-  gcats2_collecting.dats; $(ATSCC) -cc gcats2_collecting.dats 
-gcats2_autmem_dats.c: \
-  gcats2_autmem.dats; $(ATSCC) -cc gcats2_autmem.dats 
-gcats2_manmem_dats.c: \
-  gcats2_manmem.dats; $(ATSCC) -cc gcats2_manmem.dats 
-
-gcats2_multithread_dats.c: \
-  gcats2_multithread.dats; $(ATSCC) -cc gcats2_multithread.dats 
+gcats2_mt_hats: gcats2_master.hats
+	$(GCC) -E -P \
+          -D_ATS_MULTITHREAD -D_CHEADER  -o gcats2_c.h -x c gcats2_master.hats
+	$(GCC) -E -P \
+          -D_ATS_MULTITHREAD -D_ATSHEADER -o gcats2_ats.hats -x c gcats2_master.hats
 
 ######
 
-test: gcats2_c.h gcats2_ats.hats
-	$(ATSCC) -D_ATS_MULTITHREAD $(ATSCCFLAGS) -o test gcats2_test.dats \
-          gcats2.sats \
-          gcats2_top.dats \
-          gcats2_misc.dats \
-          gcats2_freeitmlst.dats \
-          gcats2_chunk.dats \
-          gcats2_pointer.dats \
-          gcats2_globalrts.dats \
-          gcats2_marking.dats \
-          gcats2_collecting.dats \
-          gcats2_autmem.dats \
-          gcats2_manmem.dats \
-          gcats2_multithread.dats \
-          -lpthread \
+gcats2_sats.c: gcats2.sats
+	$(ATSOPT) -o $@ --static gcats2.sats
+
+gcats2_top_dats.c: gcats2_top.dats
+	$(ATSOPT) --pervasive gcats2_ats.hats -o $@ --dynamic gcats2_top.dats
+
+gcats2_misc_dats.c: gcats2_misc.dats
+	$(ATSOPT) --pervasive gcats2_ats.hats -o $@ --dynamic gcats2_misc.dats
+
+gcats2_freeitmlst_dats.c: gcats2_freeitmlst.dats
+	$(ATSOPT) --pervasive gcats2_ats.hats -o $@ --dynamic gcats2_freeitmlst.dats
+
+gcats2_chunk_dats.c: gcats2_chunk.dats
+	$(ATSOPT) --pervasive gcats2_ats.hats -o $@ --dynamic gcats2_chunk.dats
+
+gcats2_pointer_dats.c: gcats2_pointer.dats
+	$(ATSOPT) --pervasive gcats2_ats.hats -o $@ --dynamic gcats2_pointer.dats
+
+gcats2_globalrts_dats.c: gcats2_globalrts.dats
+	$(ATSOPT) --pervasive gcats2_ats.hats -o $@ --dynamic gcats2_globalrts.dats
+
+gcats2_marking_dats.c: gcats2_marking.dats
+	$(ATSOPT) --pervasive gcats2_ats.hats -o $@ --dynamic gcats2_marking.dats
+
+gcats2_collecting_dats.c: gcats2_collecting.dats
+	$(ATSOPT) --pervasive gcats2_ats.hats -o $@ --dynamic gcats2_collecting.dats
+
+gcats2_autmem_dats.c: gcats2_autmem.dats
+	$(ATSOPT) --pervasive gcats2_ats.hats -o $@ --dynamic gcats2_autmem.dats
+
+gcats2_manmem_dats.c: gcats2_manmem.dats
+	$(ATSOPT) --pervasive gcats2_ats.hats -o $@ --dynamic gcats2_manmem.dats
+
+gcats2_multithread_dats.c: gcats2_multithread.dats
+	$(ATSOPT) --pervasive gcats2_ats.hats -o $@ --dynamic gcats2_multithread.dats
+
+######
+
+test: gcats2_hats gcats2_test_dats.c $(TARGETS)
+	$(ATSCC) $(ATSCCFLAGS) -o test gcats2_test_dats.c $(TARGETS) \
       && ./test \
       && rm -f ./test
+
+gcats2_test_dats.c: gcats2_test.dats
+	$(ATSOPT) --pervasive gcats2_ats.hats -o $@ --dynamic gcats2_test.dats
 
 ######
 

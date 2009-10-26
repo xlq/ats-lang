@@ -36,11 +36,11 @@
 
 (* ****** ****** *)
 
-#define ATSCCOMP_NAMESPACE "gcats2_top_"
+// #include "gcats2_ats.hats"
 
 (* ****** ****** *)
 
-#include "gcats2_ats.hats"
+#define ATSCCOMP_NAMESPACE "gcats2_top_"
 
 (* ****** ****** *)
 
@@ -48,12 +48,28 @@ staload "gcats2.sats"
 
 (* ****** ****** *)
 
+dynload "gcats2_misc.dats"
+dynload "gcats2_freeitmlst.dats"
+dynload "gcats2_chunk.dats"
+dynload "gcats2_pointer.dats"
+dynload "gcats2_globalrts.dats"
+dynload "gcats2_marking.dats"
+dynload "gcats2_collecting.dats"
+dynload "gcats2_autmem.dats"
+dynload "gcats2_manmem.dats"
+
+#if (_ATS_MULTITHREAD)
+dynload "gcats2_multithread.dats"
+#endif // end of [_ATS_MULTITHREAD]
+
+(* ****** ****** *)
+
 (*
 ** initialization for GC
 *)
-implement gcmain_initialize () = let
+val () = let
   val () = mystackbeg_set (mystackdir_get ())
-#ifdef _ATS_MULTITHREAD
+#if (_ATS_MULTITHREAD)
   val () = () where {
     viewdef V = the_manmemlst_v
     prval (pf, fpf) = __takeout () where {
@@ -71,7 +87,7 @@ implement gcmain_initialize () = let
     val () = the_topsegtbl_initialize (pf | (*none*))
     prval () = fpf (pf)
   } // end of [val]
-#ifdef _ATS_MULTITHREAD
+#if (_ATS_MULTITHREAD)
   val () = the_gcsleep_semaphore_initialize () where {
     extern fun the_gcsleep_semaphore_initialize ():<> void
       = "gcats2_the_gcsleep_semaphore_initialize" // done in C
@@ -84,6 +100,10 @@ implement gcmain_initialize () = let
 in
   // nothing
 end // end of [gcmain_initialize]
+
+// disabling implicit dynamic loading
+#define ATS_DYNLOADFLAG 0 // and using explicit dynamic loading instead
+#define ATS_DYNLOADFUN_NAME "gcats2_initialize" // name for the dynload function
 
 (* ****** ****** *)
 
@@ -123,7 +143,7 @@ gcats2_the_topsegtbl_initialize () {
 
 // this is the total number
 size_t the_totwsz = 0 ; // of words in use
-size_t the_totwsz_limit = 6 * 1024 ;
+size_t the_totwsz_limit = 1024 ;
 size_t the_totwsz_limit_max = 0 ;
 
 freeitmlst_vt the_chunkpagelst = (freeitmlst_vt*)0 ;
@@ -132,7 +152,7 @@ freeitmlst_vt the_chunkpagelst = (freeitmlst_vt*)0 ;
 
 manmemlst_vt the_manmemlst = (manmemlst_vt)0 ;
 
-#ifdef _ATS_MULTITHREAD
+#if (_ATS_MULTITHREAD)
 
 pthread_spinlock_t the_manmemlst_lock ;
 
@@ -152,6 +172,19 @@ gcats2_the_manmemlst_lock_initialize () {
 
 // FREEITMLST_ARRAYSIZE = MAX_CLICK_WORDSIZE_LOG + 1
 chunklst_vt the_sweeplstarr[FREEITMLST_ARRAYSIZE] = {0} ;
+
+ats_void_type
+gcats2_the_sweeplstarr_clear (
+  // [the_topsegtbl_sweeplst_build] must call this function
+) {
+  int i ;
+  for (
+    i = 0; i < FREEITMLST_ARRAYSIZE; ++i
+  ) {
+    the_sweeplstarr[i] = (chunklst_vt)0 ;
+  } // end of [for]
+  return ;
+} /* end of [gcats2_the_sweeplstarr_clear] */
 
 ats_ptr_type
 gcats2_the_sweeplstarr_get_chunk (
@@ -174,10 +207,25 @@ gcats2_the_sweeplstarr_get_chunk (
 
 /* ****** ****** */
 
-#ifdef _ATS_MULTITHREAD
+#if (_ATS_MULTITHREAD)
 __thread // thread-local storage
 #endif // end of [_ATS_MULTITHREAD]
 freeitmlst_vt the_freeitmlstarr[FREEITMLST_ARRAYSIZE] = {0} ;
+
+ats_void_type
+gcats2_fprint_the_freeitmlstarr (
+  ats_ptr_type out
+) {
+  int i ; freeitmlst_vt xs ; int nxs ;
+  for (i = 0; i < FREEITMLST_ARRAYSIZE ; i += 1) {
+    xs = the_freeitmlstarr[i] ;
+    nxs = gcats2_freeitmlst_length (xs) ;
+    fprintf((FILE*)out, "the_freeitmlstarr[%2d] (%i) = ", i, nxs) ;
+    gcats2_fprint_freeitmlst (out, xs) ;
+    fprintf((FILE*)out, "\n") ;
+  }
+  return ;
+} /* end of [gcats2_fprint_the_freeitmlstarr] */
 
 ats_ptr_type
 gcats2_the_freeitmlstarr_get_freeitm (
@@ -200,7 +248,7 @@ gcats2_the_freeitmlstarr_get_freeitm (
 
 /* ****** ****** */
 
-#ifdef _ATS_MULTITHREAD
+#if (_ATS_MULTITHREAD)
 
 sem_t the_gcsleep_semaphore ;
 
@@ -222,7 +270,7 @@ the_threadinfolst_lock = PTHREAD_MUTEX_INITIALIZER ;
 
 /* ****** ****** */
 
-#ifdef _ATS_MULTITHREAD
+#if (_ATS_MULTITHREAD)
 
 pthread_mutex_t
 the_gcmain_lock = PTHREAD_MUTEX_INITIALIZER ;

@@ -36,7 +36,7 @@
 
 (* ****** ****** *)
 
-#include "gcats2_ats.hats"
+// #include "gcats2_ats.hats"
 
 (* ****** ****** *)
 
@@ -101,7 +101,7 @@ gcats2_fprint_chunk (
 ) {
   int i, itmtot ;
   if (!p_chunk) {
-    fprintf((FILE*)out, "(chunknil)\n") ;
+    fprintf((FILE*)out, "(chunknil)\n") ; return ;
   }
   fprintf((FILE*)out, "itmwsz = %i\n", ((chunk_vt*)p_chunk)->itmwsz) ;
   fprintf((FILE*)out, "itmwsz_log = %i\n", ((chunk_vt*)p_chunk)->itmwsz_log) ;
@@ -170,11 +170,16 @@ gcats2_the_freeitmlstarr_add_chunk (
   int i, itmwsz, itmtot ;
   freeitmptr_vt *p_data ; byte *mrkbits ;
   freeitmlst_vt xs ;
-
+//
   itmwsz = ((chunk_vt*)p_chunk)->itmwsz ;
   itmtot = ((chunk_vt*)p_chunk)->itmtot ;
   p_data = ((chunk_vt*)p_chunk)->chunk_data ;
-//
+/*
+  fprintf(stderr, "gcats2_the_freeitmlstarr_add_chunk: itmwsz = %i\n", itmwsz) ;
+  fprintf(stderr, "gcats2_the_freeitmlstarr_add_chunk: itmwsz_log = %i\n", itmwsz_log) ;
+  fprintf(stderr, "gcats2_the_freeitmlstarr_add_chunk: itmtot = %i\n", itmtot) ;
+  fprintf(stderr, "gcats2_the_freeitmlstarr_add_chunk: p_data = %p\n", p_data) ;
+*/
   xs = the_freeitmlstarr[itmwsz_log] ;
 //
   if (((chunk_vt*)p_chunk)->mrkcnt == 0) { // fast threading
@@ -255,9 +260,9 @@ gcats2_the_chunkpagelst_replenish
   , 0 // offset is ignored
   ) ; // end of [mmap]
   if (p0 == MAP_FAILED) { perror ("mmap") ; return -1 ; }
-// /*
+/*
   fprintf(stderr, "gcats2_the_chunkpagelst_replenish: mmap: p0 = %p\n", p0) ;
-// */  
+*/  
   gcats2_the_chunkpagelst_insert(p0) ; n = n0 - 1; // n0 > 0
   while (n > 0) {
     p0 += CHUNK_BYTESIZE ; gcats2_the_chunkpagelst_insert(p0) ; n -= 1 ;
@@ -299,12 +304,13 @@ gcats2_chunk_make_norm (
   memset(p_chunk->mrkbits, 0, nbyte) ;
 //
   p_chunk->chunk_data = p_freepage ;
+  p_chunk->sweepnxt = (chunklst_vt)0 ;
 /*
-  fprintf(stderr, "chunk_make_norm: p_chunk = %p\n", p_chunk) ;
+  fprintf(stderr, "chunk_make_norm: p_chunk =\n") ; gcats2_fprint_chunk(stderr, p_chunk) ;
 */
   the_totwsz += CHUNK_WORDSIZE ;
 #if (GCATS2_TEST > 0)
-  fprintf(stderr, "chunk_make_norm: the_totwsz = %lu\n", (ats_ulint_type)the_totwsz) ;
+  // fprintf(stderr, "chunk_make_norm: the_totwsz = %lu\n", (ats_ulint_type)the_totwsz) ;
 #endif // end of [GCATS2_TEST > 0]
   return p_chunk ;
 } /* end of [gcats2_chunk_make_norm] */
@@ -324,7 +330,7 @@ gcats2_chunk_free_norm
 #endif
   the_totwsz -= CHUNK_WORDSIZE ;
 #if (GCATS2_TEST > 0)
-  fprintf(stderr, "chunk_free_norm: the_totwsz = %lu\n", (ats_ulint_type)the_totwsz) ;
+  // fprintf(stderr, "chunk_free_norm: the_totwsz = %lu\n", (ats_ulint_type)the_totwsz) ;
 #endif // end of [GCATS2_TEST > 0]
   gcats2_the_chunkpagelst_insert(((chunk_vt*)p_chunk)->chunk_data) ;
   gcats2_free_ext(p_chunk) ;
@@ -361,6 +367,7 @@ gcats2_chunk_make_large (
   MARKBIT_CLEAR (p_chunk->mrkbits, 1) ; // only 1 bit is needed
 //
   p_chunk->chunk_data = p_freepage ;
+  p_chunk->sweepnxt = (chunklst_vt)0 ;
 /*
   fprintf(stderr, "chunklst_make_large: p_chunk = %p\n", p_chunk) ;
 */

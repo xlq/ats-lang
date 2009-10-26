@@ -36,7 +36,7 @@
 
 (* ****** ****** *)
 
-#include "gcats2_ats.hats"
+// #include "gcats2_ats.hats"
 
 (* ****** ****** *)
 
@@ -80,15 +80,21 @@ end // end of [the_topsegtbl_mark]
 (* ****** ****** *)
 
 (*
-** fun the_gcmain_mark (pf_gc: !the_gcmain_v | (*none*)):<> int(*overflow*)
+fun the_gcmain_mark (
+    pf_gc: !the_gcmain_v, pf_lst: !the_threadinfolst_v | (*none*)
+  ) :<> int(*overflow*)
 *)
 implement the_gcmain_mark
-  (pf_gc | (*none*)) = let
+  (pf_gc, pf_lst | (*none*)) = let
   var overflow: int = 0
 //
   val () = overflow := overflow + the_globalrts_mark (pf_gc | (*none*))
 //
   val () = overflow := overflow + the_manmemlst_mark (pf_gc | (*none*))
+//
+#if (_ATS_MULTITHREAD)
+  val () = overflow := overflow + the_threadinfolst_mark (pf_lst | (*none*))
+#endif // end of ...
 //
   val () = overflow := overflow + mystack_mark ()
 //
@@ -165,7 +171,10 @@ gcats2_the_markstackpagelst_push (
   if (the_markstackposition == MARKSTACK_PAGESIZE) {
     *(ats_int_type*)r_overflow += 1 ; return ; // overflow happens!
   }
+//
   p_entry = &(the_markstackpagelst_cur->entries[the_markstackposition]) ;
+  p_entry->ptr = ptr ; p_entry->wsz = wsz ;
+//
   the_markstackposition += 1 ;
   if (the_markstackposition == MARKSTACK_PAGESIZE) {
     if (the_markstackpagelst_cur->next) {
@@ -174,7 +183,6 @@ gcats2_the_markstackpagelst_push (
       // the markstack is all used up and overflow is imminent!
     } // end of [if]
   } // end of [if]
-  p_entry->ptr = ptr ; p_entry->wsz = wsz ;
   return ;
 } /* end of [gcats2_the_markstackpagelst_push] */
 
@@ -281,7 +289,7 @@ gcats2_the_freeitmlstarr_unmark (
   // there is no argument for this function
 ) {
   int i ;
-  for (i = 0; i < FREEITMLST_ARRAYSIZE; i+= 1) {
+  for (i = 0; i < FREEITMLST_ARRAYSIZE; i += 1) {
 /*
 ** any gain from doing this is probably minimal: it can happen only if
 ** some data is treated as valid pointers
@@ -345,13 +353,15 @@ gcats2_ptr_mark
     } // end of [if]
     
     // push all the valid pointers onto the markstack
-    found1st = 0 ; ptr_i = (freeitmptr_vt*)ptr ;
-    for (i = 0; i < itmwsz; i += 1, ptr_i += 1) {
+    found1st = 0 ;
+    i = itmwsz ; ptr_i = (freeitmptr_vt*)ptr ;
+    while (i > 0) {
       ptr_cand = *ptr_i ;
 /*
       fprintf (stderr, "gcats2_ptr_mark(4): ptr_i = %p\n", ptr_i) ;
       fprintf (stderr, "gcats2_ptr_mark(4): ptr_cand = %p\n", ptr_cand) ;
 */
+      i -= 1 ; ptr_i += 1 ;
       p_chunk = (chunkptr_vt)gcats2_ptr_isvalid(ptr_cand, &ofs_nitm) ;
       if (!p_chunk) continue ; // [ptr_cand] is invalid
       if (MARKBIT_GETSET(p_chunk->mrkbits, ofs_nitm)) continue ; // already marked
@@ -361,7 +371,7 @@ gcats2_ptr_mark
       } else { // this is the first one; save a push and pop
         found1st = 1 ; ptr = ptr_cand ; itmwsz = p_chunk->itmwsz ;
       } // end of [if]
-    } // end of [for]
+    } // end of [while]
     if (!found1st)  // no child for [ptr]; so [ptr] and [itmwsz]
       gcats2_the_markstackpagelst_pop(&ptr, &itmwsz) ; // need to be updated
     // end of [if]
@@ -421,7 +431,9 @@ gcats2_mystack_mark (
   // there is no argument for this function
 ) {
   intptr_t dir ; // [dir] must be word-aligned!
-  int overflow = 0 ; freeitmptr_vt *_fr, *_to ;
+  freeitmptr_vt *_fr, *_to ;
+  int overflow = 0 ;
+
   dir = gcats2_mystackdir_get () ;
 /*
   fprintf (stderr, "gcats2_mystack_mark: dir = %i\n", dir) ;

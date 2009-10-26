@@ -52,7 +52,7 @@
 #include <setjmp.h> // for [setjmp] in gcmain_run
 #include <sys/mman.h> // for [mmap] in chunkpagelst_replenish
 
-#ifdef _ATS_MULTITHREAD
+#if (_ATS_MULTITHREAD)
 #include <pthread.h>
 // for counting the number of threads
 #include <semaphore.h> // being put into sleep
@@ -140,6 +140,12 @@ gcats2_freeitmlst_uncons
   return x ;
 } // end of [gcats2_freeitmlst_uncons]
 
+extern
+ats_int_type gcats2_freeitmlst_length (ats_ptr_type xs) ;
+
+extern ats_void_type
+gcats2_fprint_freeitmlst (ats_ptr_type out, ats_ptr_type xs) ;
+
 /* ****** ****** */
 
 static inline
@@ -211,7 +217,7 @@ gcats2_the_totwsz_limit_is_reached () { return
 ** implemented in [gcats2_top.dats]
 */
 extern
-#ifdef _ATS_MULTITHREAD
+#if (_ATS_MULTITHREAD)
 __thread // thread-local storage
 #endif // end of [_ATS_MULTITHREAD]
 freeitmlst_vt the_freeitmlstarr[FREEITMLST_ARRAYSIZE] ;
@@ -381,7 +387,7 @@ extern pthread_spinlock_t the_manmemlst_lock ;
 static inline
 ats_void_type
 gcats2_the_manmemlst_lock_acquire () {
-#ifdef _ATS_MULTITHREAD
+#if (_ATS_MULTITHREAD)
   int err ;
   err = pthread_spin_lock (&the_manmemlst_lock) ;
   if (err != 0) {
@@ -394,7 +400,7 @@ gcats2_the_manmemlst_lock_acquire () {
 static inline
 ats_void_type
 gcats2_the_manmemlst_lock_release () {
-#ifdef _ATS_MULTITHREAD
+#if (_ATS_MULTITHREAD)
   int err ;
   err = pthread_spin_lock (&the_manmemlst_lock) ;
   if (err != 0) {
@@ -406,20 +412,20 @@ gcats2_the_manmemlst_lock_release () {
 
 /* ****** ****** */
 
-#ifdef _ATS_MULTITHREAD
+#if (_ATS_MULTITHREAD)
 extern pthread_mutex_t the_threadinfolst_lock ;
 #endif // end of [_ATS_MULTITHREAD]
 
 static inline
 ats_void_type
 gcats2_the_threadinfolst_lock_acquire () {
-#ifdef _ATS_MULTITHREAD
+#if (_ATS_MULTITHREAD)
   int err ;
   err = pthread_mutex_lock (&the_threadinfolst_lock) ;
   if (err != 0) {
     fprintf(stderr, "exit(ATS/GC): [the_threadinfolst_lock_acquire]: failed.\n") ;
     exit(1) ;
-  }
+  } // end of [if]
 #endif // end of [_ATS_MULTITHREAD]
   return ;
 } /* end of [gcats2_the_threadinfolst_lock_acquire] */
@@ -427,33 +433,33 @@ gcats2_the_threadinfolst_lock_acquire () {
 static inline
 ats_void_type
 gcats2_the_threadinfolst_lock_release () {
-#ifdef _ATS_MULTITHREAD
+#if (_ATS_MULTITHREAD)
   int err ;
   err = pthread_mutex_unlock (&the_threadinfolst_lock) ;
   if (err != 0) {
     fprintf(stderr, "exit(ATS/GC): [the_threadinfolst_lock_release]: failed.\n") ;
     exit(1) ;
-  }
+  } // end of [if]
 #endif // end of [_ATS_MULTITHREAD]
   return ;
 } /* end of [gcats2_the_threadinfolst_lock_release] */
 
 /* ****** ****** */
 
-#ifdef _ATS_MULTITHREAD
+#if (_ATS_MULTITHREAD)
 extern pthread_mutex_t the_gcmain_lock ;
 #endif // end of [_ATS_MULTITHREAD]
 
 static inline
 ats_void_type
 gcats2_the_gcmain_lock_acquire () {
-#ifdef _ATS_MULTITHREAD
+#if (_ATS_MULTITHREAD)
   int err ;
   err = pthread_mutex_lock (&the_gcmain_lock) ;
   if (err != 0) {
     fprintf(stderr, "exit(ATS/GC): [the_gcmain_lock_acquire]: failed.\n") ;
     exit(1) ;
-  }
+  } // end of [if]
 #endif // end of [_ATS_MULTITHREAD]
   return ;
 } /* end of [gcats2_the_gcmain_lock_acquire] */
@@ -461,7 +467,7 @@ gcats2_the_gcmain_lock_acquire () {
 static inline
 ats_void_type
 gcats2_the_gcmain_lock_release () {
-#ifdef _ATS_MULTITHREAD
+#if (_ATS_MULTITHREAD)
   int err ;
   err = pthread_mutex_unlock (&the_gcmain_lock) ;
   if (err != 0) {

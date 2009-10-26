@@ -36,7 +36,7 @@
 
 (* ****** ****** *)
 
-#include "gcats2_ats.hats"
+// #include "gcats2_ats.hats"
 
 (* ****** ****** *)
 
@@ -83,9 +83,10 @@ gcats2_the_globalrts_insert (
   ats_ptr_type ptr, ats_size_type wsz
 ) {
   ptrsize_t *p_entry ;
-// /*
-  fprintf(stderr, "gcats2_the_globalrts_insert: ptr = %p and wsz = %i\n", ptr, wsz) ;
-// */
+/*
+  fprintf(stderr, "gcats2_the_globalrts_insert: ptr = %p\n", ptr) ;
+  fprintf(stderr, "gcats2_the_globalrts_insert: wsz = %lu\n", wsz) ;
+*/
   p_entry = &(the_globalrtspagelst_cur->entries[the_globalrtsposition]) ;
   the_globalrtsposition += 1 ;
   p_entry->ptr = ptr ; p_entry->wsz = wsz ;
@@ -124,10 +125,14 @@ gcats2_the_globalrts_mark (
 // last page is not full in general
   p_entry = &(p_page->entries[0]) ;
   for (i = 0; i < the_globalrtsposition; i += 1) {
+/*
+    fprintf(stderr, "gcats2_the_globalrts_mark: ptr = %p\n", p_entry->ptr) ;
+    fprintf(stderr, "gcats2_the_globalrts_mark: wsz = %lu\n", p_entry->wsz) ;
+*/
     overflow += gcats2_ptrsize_mark(p_entry->ptr, p_entry->wsz) ; p_entry += 1 ;
   } // end of [for]
 // /*
-  fprintf(stderr, "gcats2_the_globalrts_mark: finishes\n") ;
+  fprintf(stderr, "gcats2_the_globalrts_mark: finishes: overflow = %i\n", overflow) ;
 // */
   return overflow ;
 } // gcats2_the_globalrts_mark

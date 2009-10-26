@@ -36,7 +36,7 @@
 
 (* ****** ****** *)
 
-#include "gcats2_ats.hats"
+// #include "gcats2_ats.hats"
 
 (* ****** ****** *)
 
@@ -57,6 +57,9 @@ fun the_topsegtbl_sweeplst_build (
 *)
 implement the_topsegtbl_sweeplst_build
   (pf_tbl, pf_arr, pf_lst | (*none*)) = let
+//
+  val () = the_sweeplstarr_clear (pf_arr | (*none*))
+//
   viewdef tbl_v = the_topsegtbl_v
   viewdef arrlst_v = (the_sweeplstarr_v, the_chunkpagelst_v)
   extern fun chunk_sweeplst_build
@@ -86,10 +89,14 @@ fun the_totwsz_limit_is_reached // the function checks if
   = "gcats2_the_totwsz_limit_is_reached"
 
 implement the_freeitmlstarr_replenish
-  (itmwsz_log) = let // [itmwsz_log >= 0] is assumed
-  val (pf_the_gcmain | ()) = the_gcmain_lock_acquire ()
+  (pf_the_gcmain | itmwsz_log) = let // [itmwsz_log >= 0] is assumed
   prval (pf, fpf) = the_sweeplstarr_v_takeout (pf_the_gcmain)
   val p_chunk = the_sweeplstarr_get_chunk (pf | itmwsz_log)
+(*
+  val () = $effmask_all begin
+    prerr("the_freeitmlstarr_replenish: p_chunk =\n"); fprint_chunk(stderr_ref, p_chunk)
+  end // end of [val]
+*)
   prval () = pf_the_gcmain := fpf (pf)
 in
   if chunkptr_is_null (p_chunk) then let
@@ -97,36 +104,25 @@ in
     val limit_is_reached = the_totwsz_limit_is_reached (pf_the_gcmain | (*none*))
   in
     if limit_is_reached then let
-// (*
+(*
       val () = $effmask_all let
-        val () = fprint (stdout_ref, "gc_main starts: the_topsegtbl =\n")
-        val () = fprint_the_topsegtbl (stdout_ref)
+        val () = fprint (stderr_ref, "gc_main starts: the_topsegtbl =\n")
+        val () = fprint_the_topsegtbl (stderr_ref)
       in
         // nothing
       end // end of [val]
-// *)
+*)
       val () = gcmain_run (pf_the_gcmain | (*none*))
-// (*
+(*
       val () = $effmask_all let
-        val () = fprint (stdout_ref, "gc_main finishes: the_topsegtbl =\n")
-        val () = fprint_the_topsegtbl (stdout_ref)
+        val () = fprint (stderr_ref, "gc_main finishes: the_topsegtbl =\n")
+        val () = fprint_the_topsegtbl (stderr_ref)
       in
         // nothing
       end // end of [val]
-// *)
-      prval (pf, fpf) =
-        the_sweeplstarr_v_takeout (pf_the_gcmain)
-      val p_chunk = the_sweeplstarr_get_chunk (pf | itmwsz_log)
-      prval () = pf_the_gcmain := fpf (pf)
-      val () = the_gcmain_lock_release (pf_the_gcmain | (*none*))
+*)
     in
-      if chunkptr_is_null (p_chunk) then let
-        val _ = chunk_free_null (p_chunk) // no-op casting
-      in
-        // no memory is available after GC
-      end else
-        the_freeitmlstarr_add_chunk (p_chunk, itmwsz_log)
-      // end of [if]
+      the_freeitmlstarr_replenish (pf_the_gcmain | itmwsz_log)
     end else let
       // totwsz_limit is not reached // a new chunkpage can be obtained
       viewdef V1 = the_totwsz_v
@@ -146,14 +142,11 @@ in
       prval (pf, fpf) = the_topsegtbl_v_takeout (pf_the_gcmain)
       val _(*err*) = the_topsegtbl_insert_chunkptr (pf | p_chunk)
       prval () = pf_the_gcmain := fpf (pf)
-      val () = the_gcmain_lock_release (pf_the_gcmain | (*none*))
     in
-      the_freeitmlstarr_add_chunk (p1_chunk, itmwsz_log)
+      the_freeitmlstarr_add_chunk (p1_chunk, itmwsz_log) // new chunk is allocated
     end // end of [if]
-  end else let // p_chunk <> null
-    val () = the_gcmain_lock_release (pf_the_gcmain | (*none*))
-  in
-    the_freeitmlstarr_add_chunk (p_chunk, itmwsz_log)
+  end else begin// p_chunk <> null
+    the_freeitmlstarr_add_chunk (p_chunk, itmwsz_log) // chunk is immediately available
   end // end of [if]
 end // end of [the_freeitmlstarr_replenish]
 
@@ -171,9 +164,9 @@ gcats2_chunk_sweeplst_build (
   chunklst_vt *p_chunklst ;
   int itmwsz_log, itmtot, mrkcnt ;
   mrkcnt = ((chunk_vt*)p_chunk)->mrkcnt ;
-// /*
+/*
   fprintf(stderr, "chunk_sweeplst_build: mrkcnt = %i\n", mrkcnt) ;
-// */
+*/
   if (mrkcnt == 0) { // no freeitms in the chunk are used
     itmwsz_log = ((chunk_vt*)p_chunk)->itmwsz_log ;
 //
@@ -188,16 +181,16 @@ gcats2_chunk_sweeplst_build (
   } // end of [if]
 
   itmtot = ((chunk_vt*)p_chunk)->itmtot ;
-// /*
+/*
   fprintf(stderr, "chunk_sweeplst_build: itmtot = %i\n", itmtot) ;
-// */
+*/
   if (mrkcnt > itmtot * CHUNK_SWEEP_CUTOFF)
     return ; // too many free items are still in use
 //
   itmwsz_log = ((chunk_vt*)p_chunk)->itmwsz_log ;
-// /*
+/*
   fprintf(stderr, "chunk_sweeplst_build: itmwsz_log = %i\n", itmwsz_log) ;
-// */
+*/
  p_chunklst = &the_sweeplstarr[itmwsz_log] ;
  ((chunk_vt*)p_chunk)->sweepnxt = *p_chunklst ; *p_chunklst = (chunklst_vt)p_chunk ;
  return ;
@@ -213,25 +206,28 @@ gcats2_chunk_sweeplst_build (
 fun gcmain_run (pf: !the_gcmain_v | (*none*)):<> void = "gcats2_gcmain_run"
 */
 
+extern
+void gcats2_the_threadinfolst_restart() ;
+
 ats_void_type
 gcats2_gcmain_run (
   // a proof of [the_gcmain_v] is needed
 ) {
   int overflowed ; int nmarkstackpage ;
   jmp_buf reg_save ; // register contents are potential GC roots
-#ifdef _ATS_MULTITHREAD
+#if (_ATS_MULTITHREAD)
   // threadinfolst infolst ; int nother ;
 #endif // end of [_ATS_MULTITHREAD]
 //
   nmarkstackpage = // this is just an estimate
     the_totwsz / (MARKSTACK_PAGESIZE * NCHUNK_PER_MARKSTACKPAGE) ;
   nmarkstackpage -= gcats2_the_markstackpagelst_length() ;
-// /*
+/*
   fprintf(stderr, "gcats2_gcmain_run: nmarkstackpage = %i\n", nmarkstackpage) ;
-// */
+*/
   if (nmarkstackpage > 0) gcats2_the_markstackpagelst_extend(nmarkstackpage) ;
 //
-#ifdef _ATS_MULTITHREAD
+#if (_ATS_MULTITHREAD)
   gcats2_the_threadinfolst_lock_acquire() ; gcats2_the_threadinfolst_suspend() ;
 #endif // end of [_ATS_MULTITHREAD]
 //
@@ -240,9 +236,10 @@ gcats2_gcmain_run (
   setjmp(reg_save) ; // push registers onto the stack
   asm volatile ("": : :"memory") ; // prevent potential optimization ;
 //
-  overflowed = gcats2_the_gcmain_mark() ;
+  // both the_gcmain_v and the_threadinfolst_v
+  overflowed = gcats2_the_gcmain_mark() ; // are held at this point
 //
-#ifdef _ATS_MULTITHREAD
+#if (_ATS_MULTITHREAD)
   gcats2_the_threadinfolst_restart() ; gcats2_the_threadinfolst_lock_release () ;
 #endif // end of [_ATS_MULTITHREAD]
 //

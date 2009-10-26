@@ -244,7 +244,12 @@ __ATS(#assert (GLOBALRTS_PAGESIZE >= 1))
 
 /* ****** ****** */
 
+#ifndef _ATS_MULTITHREAD
+__define _ATS_MULTITHREAD 0
+#else
+#undef _ATS_MULTITHREAD
 __define _ATS_MULTITHREAD 1
+#endif // end of [_ATS_MULTITHREAD]
 
 /* ****** ****** */
 
