@@ -178,7 +178,7 @@ gcats2_chunk_sweeplst_build (
 //
     if (itmwsz_log >= 0) { // normal chunk
       gcats2_chunk_free_norm(p_chunk) ; // need for the_chunkpagelst_v
-    } else { // large chunk // to be freed by gcats2_free_ext
+    } else { // large chunk // to be freed by gcats2_munmap_ext
       gcats2_chunk_free_large(p_chunk) ; // no need for the_chunkpagelst_v
     } // end of [if]
     return ;

@@ -251,15 +251,7 @@ ats_int_type
 gcats2_the_chunkpagelst_replenish
   (ats_int_type n0) {
   int n ; char *p0 ;
-  p0 = (char*)mmap(
-    (void*)0 // start
-  , n0 * CHUNK_BYTESIZE
-  , (PROT_READ | PROT_WRITE)
-  , (MAP_PRIVATE | MAP_ANONYMOUS)
-  , 0 // fd is ignored
-  , 0 // offset is ignored
-  ) ; // end of [mmap]
-  if (p0 == MAP_FAILED) { perror ("mmap") ; return -1 ; }
+  p0 = (char*)gcats2_mmap_ext(n0 * CHUNK_BYTESIZE) ;
 /*
   fprintf(stderr, "gcats2_the_chunkpagelst_replenish: mmap: p0 = %p\n", p0) ;
 */  
@@ -347,6 +339,7 @@ ats_ptr_type
 gcats2_chunk_make_large (
   ats_size_type itmwsz // itmwsz > CHUNK_WORDSIZE
 ) {
+  size_t nchunk ;
   chunkptr_vt p_chunk ; freepageptr_vt p_freepage ;
 #if (GCATS2_DEBUG > 0)
   if (itmwsz <= CHUNK_WORDSIZE) {
@@ -354,12 +347,11 @@ gcats2_chunk_make_large (
     exit(1) ;
   } // end of [if]
 #endif // end of [GCATS2_DEBUG > 0]
+  nchunk = (itmwsz + CHUNK_WORDSIZE_MASK) >> CHUNK_WORDSIZE_LOG ;
   p_chunk = (chunkptr_vt)gcats2_malloc_ext(sizeof(chunk_vt)) ;
-  p_freepage =
-    (freepageptr_vt)gcats2_malloc_ext(itmwsz << NBYTE_PER_WORD_LOG) ;
-  // [p_freepage] can only be freed by [gcats2_free_ext]
+  p_freepage = (char*)gcats2_mmap_ext(nchunk * CHUNK_BYTESIZE) ;
 //
-  p_chunk->itmwsz = itmwsz ;
+  p_chunk->itmwsz = nchunk * CHUNK_WORDSIZE ;
   p_chunk->itmwsz_log = -1 ; // indicating being large
   p_chunk->itmtot = 1 ;
 //
@@ -368,11 +360,12 @@ gcats2_chunk_make_large (
 //
   p_chunk->chunk_data = p_freepage ;
   p_chunk->sweepnxt = (chunklst_vt)0 ;
-/*
-  fprintf(stderr, "chunklst_make_large: p_chunk = %p\n", p_chunk) ;
-*/
   the_totwsz += itmwsz ;
 #if (GCATS2_TEST > 0)
+/*
+  fprintf(stderr, "chunk_make_large: p_chunk(%p) =\n", p_chunk) ;
+  gcats2_fprint_chunk(stderr, p_chunk) ;
+*/
   fprintf(stderr, "chunk_make_large: the_totwsz = %lu\n", (ats_ulint_type)the_totwsz) ;
 #endif // end of [GCATS2 > 0]
   return p_chunk ;
@@ -389,9 +382,16 @@ gcats2_chunk_free_large
 #endif
   the_totwsz -= ((chunk_vt*)p_chunk)->itmwsz ;
 #if (GCATS2_TEST > 0)
+/*  
+  fprintf(stderr, "chunk_free_large: p_chunk(%p) =\n", p_chunk) ;
+  gcats2_fprint_chunk(stderr, p_chunk) ;
+*/
   fprintf(stderr, "chunk_free_large: the_totwsz = %lu\n", (ats_ulint_type)the_totwsz) ;
 #endif // end of [GCATS2_TEST > 0]
-  gcats2_free_ext(((chunk_vt*)p_chunk)->chunk_data) ; gcats2_free_ext(p_chunk) ;
+  gcats2_munmap_ext(
+    ((chunk_vt*)p_chunk)->chunk_data, (((chunk_vt*)p_chunk)->itmwsz) << NBYTE_PER_WORD_LOG
+  ) ;
+  gcats2_free_ext(p_chunk) ;
   return ;
 } /* end of [gcats2_chunk_free_large] */
 

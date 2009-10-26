@@ -319,13 +319,10 @@ gcats2_ptr_mark
   freeitmptr_vt ptr_cand ;
   int overflow, found1st ;
 /*
-  fprintf (stderr, "gcats2_ptr_mark(0): ptr = %p\n", ptr) ;
+  fprintf (stderr, "gcats2_ptr_mark(1): ptr = %p\n", ptr) ;
 */
   overflow = 0 ;
   p_chunk = (chunkptr_vt)gcats2_ptr_isvalid(ptr, &ofs_nitm) ;
-/*
-  fprintf (stderr, "gcats2_ptr_mark(1): p_chunk = %p\n", p_chunk) ;
-*/
   if (!p_chunk) return overflow ; // [ptr] is invalid
 /*
   fprintf (stderr, "gcats2_ptr_mark(2): chunk =\n") ;
@@ -364,6 +361,10 @@ gcats2_ptr_mark
       i -= 1 ; ptr_i += 1 ;
       p_chunk = (chunkptr_vt)gcats2_ptr_isvalid(ptr_cand, &ofs_nitm) ;
       if (!p_chunk) continue ; // [ptr_cand] is invalid
+/*
+      fprintf(stderr, "gcats2_ptr_mark(5): p_chunk = %p\n", p_chunk) ;
+      fprintf(stderr, "gcats2_ptr_mark(5): ofs_nitm = %i\n", ofs_nitm) ;
+*/
       if (MARKBIT_GETSET(p_chunk->mrkbits, ofs_nitm)) continue ; // already marked
       p_chunk->mrkcnt += 1 ; // newly marked
       if (found1st) { // this is *not* the first one

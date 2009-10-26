@@ -110,9 +110,9 @@ gcats2_the_globalrts_mark (
   int i ;
   globalrtspage_vt *p_page ; ptrsize_t *p_entry ;
   int overflow = 0 ;
-// /*
+/*
   fprintf(stderr, "gcats2_the_globalrts_mark: starts\n") ;
-// */
+*/
   p_page = &the_globalrtspage_fst ;
   while (p_page != the_globalrtspagelst_cur) {
     p_entry = &(p_page->entries[0]) ;
@@ -131,9 +131,9 @@ gcats2_the_globalrts_mark (
 */
     overflow += gcats2_ptrsize_mark(p_entry->ptr, p_entry->wsz) ; p_entry += 1 ;
   } // end of [for]
-// /*
+/*
   fprintf(stderr, "gcats2_the_globalrts_mark: finishes: overflow = %i\n", overflow) ;
-// */
+*/
   return overflow ;
 } // gcats2_the_globalrts_mark
 

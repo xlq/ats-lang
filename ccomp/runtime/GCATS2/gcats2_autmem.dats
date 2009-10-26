@@ -155,7 +155,32 @@ in
       p_itm // [p_itm] <> null
     end // end of [_ when ...]
   | _ => let // [itmwsz_log = -1] // large chunk
-      val () = $effmask_all (assert_errmsg (false, #LOCATION)) in null
+(*
+      val () = $effmask_all begin
+        prerr ("autmem_malloc_wsz: wsz = "); prerr wsz; prerr_newline ()
+      end // end of [val]
+*)
+      val (pf_the_gcmain | ()) = the_gcmain_lock_acquire ()
+      prval (pf, fpf) = the_totwsz_v_takeout (pf_the_gcmain)
+      val p_chunk = chunk_make_large (pf | wsz)
+      val (pf_chunk | p) = chunkptr_unfold p_chunk
+      val p_data = chunk_data_get (!p)
+      val _(*ptr*) = chunkptr_fold (pf_chunk | p_chunk)
+      prval () = pf_the_gcmain := fpf (pf)
+      prval (pf, fpf) = the_topsegtbl_v_takeout (pf_the_gcmain)
+      val _(*err*) = the_topsegtbl_insert_chunkptr (pf | p_chunk)
+      prval () = pf_the_gcmain := fpf (pf)
+      val () = the_gcmain_lock_release (pf_the_gcmain | (*none*))
+(*
+      val () = $effmask_all begin
+        prerr ("autmem_malloc_wsz: p_chunk = "); prerr p; prerr_newline ()
+      end // end of [val]
+      val () = $effmask_all begin
+        prerr ("autmem_malloc_wsz: p_data = "); prerr p_data; prerr_newline ()
+      end // end of [val]
+*)
+    in
+      p_data
     end // end of [_]
 end // end of [autmem_malloc_wsz]
 
@@ -187,8 +212,8 @@ gcats2_autmem_free (
     p_itmlst = &the_freeitmlstarr[itmwsz_log] ;
     *(freeitmlst_vt*)p_itm = *p_itmlst ; *p_itmlst = (freeitmlst_vt)p_itm ;
   } else { // itmwsz_log = -1 // itmtot = 1
-    gcats2_free_ext (p_chunk->chunk_data) ;
-    gcats2_the_topsegtbl_remove_chunkptr (p_chunk) ;
+    gcats2_the_topsegtbl_remove_chunkptr(p_chunk->chunk_data) ;
+    gcats2_chunk_free_large(p_chunk) ; // [gcats2_munmap_ext] is called
   } // end of [if]
 //
   return ;
@@ -218,11 +243,7 @@ gcats2_autmem_realloc_bsz (
   itmwsz_log = ((chunk_vt*)p_chunk)->itmwsz_log ;
 //
   if (itmwsz_log >= 0) {
-    if (itmbsz <= bsz && bsz < (1 << itmwsz_log)) return p_itm ;
-  } // end of [if]
-//
-  if (itmwsz_log >= 1) {
-    if ((1 << (itmwsz_log - 1)) < bsz && bsz <= itmbsz) return p_itm ;
+    if (bsz <= itmbsz && itmbsz / 2 < bsz) return p_itm ;
   } // end of [if]
 //
   if (bsz) {
@@ -236,13 +257,16 @@ gcats2_autmem_realloc_bsz (
   } else {
     p_itm_new = (freeitmptr_vt)0 ;
   } // end of [if]
-//
+/*
+  fprintf(stderr, "gcats2_autmem_realloc_bsz: bsz = %lu\n", bsz) ;
+  fprintf(stderr, "gcats2_autmem_realloc_bsz: itmbsz = %lu\n", itmbsz) ;
+*/
   if (itmwsz_log >= 0) {
     p_itmlst = &the_freeitmlstarr[itmwsz_log] ;
     *(freeitmlst_vt*)p_itm = *p_itmlst ; *p_itmlst = (freeitmlst_vt)p_itm ;
   } else { // itmwsz_log = -1 // itmtot = 1
-    gcats2_free_ext (p_chunk->chunk_data) ;
-    gcats2_the_topsegtbl_remove_chunkptr (p_chunk) ;
+    gcats2_the_topsegtbl_remove_chunkptr(p_chunk->chunk_data) ;
+    gcats2_chunk_free_large(p_chunk) ; // [gcats2_munmap_ext] is called
   } // end of [if]
 //
   return p_itm_new ;

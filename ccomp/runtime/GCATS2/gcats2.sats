@@ -138,22 +138,9 @@ fun the_globalrts_insert ( // it is called before [gcmain_initialize]
 (* ****** ****** *)
 
 abst@ype manmem_vt // unboxed type
+
 fun manmem_data_get
   (itm: &manmem_vt):<> ptr = "gcats2_manmem_data_get"
-// end of ...
-
-fun manmem_create // it is needed for [manmem_malloc]
-  {n:pos} (bsz: size_t n):<> [l:addr] (manmem_vt @ l | ptr l)
-  = "gcats2_manmem_create"
-// end of ...
-
-fun manmem_destroy {l:addr} // it is needed for [manmem_free]
-  (pf: manmem_vt @ l | p: ptr l):<> void = "gcats2_manmem_destroy"
-// end of ...
-
-fun manmem_recreate // it is needed for [manmem_realloc]
-  {n:pos} (p: ptr, bsz: size_t n):<> [l:addr] (manmem_vt @ l | ptr l)
-  = "gcats2_manmem_recreate"
 // end of ...
 
 (* ****** ****** *)

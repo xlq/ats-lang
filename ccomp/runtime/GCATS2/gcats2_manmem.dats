@@ -49,7 +49,12 @@ staload "gcats2.sats"
 (* ****** ****** *)
 
 implement manmem_malloc_bsz (bsz) = let
-  val (pf_mem | p_mem) = manmem_create (bsz)
+  val (pf_mem | p_mem) =
+    manmem_create (bsz) where {
+    extern fun manmem_create {n:pos}
+      (bsz: size_t n):<> [l:addr] (manmem_vt @ l | ptr l)
+      = "gcats2_manmem_create"
+  } // end of [val]
   val p_data = manmem_data_get (!p_mem)
   val (pf_lst | ()) = the_manmemlst_lock_acquire ()
   val () = the_manmemlst_insert (pf_lst, pf_mem | p_mem)
@@ -74,18 +79,28 @@ implement manmem_free (p_data) = let
   val (pf_lst | ()) = the_manmemlst_lock_acquire ()
   val (pf_mem | p_mem) = the_manmemlst_remove (pf_lst | p_data)
   val () = the_manmemlst_lock_release (pf_lst | (*none*))
+  val () = manmem_destroy (pf_mem | p_mem) where {
+    extern fun manmem_destroy {l:addr} (pf: manmem_vt @ l | p: ptr l):<> void
+      = "gcats2_manmem_destroy"
+  } // end fo [val]
 in
-  manmem_destroy (pf_mem | p_mem)
+  // nothing
 end // end of [manmem_free]
 
 implement manmem_realloc_bsz
   (p_data, bsz) = let val bsz = size1_of_size (bsz)
 in
   if bsz > 0 then let
-    val (pf_mem | p_mem) = manmem_recreate (p_data, bsz)
-    val p_data = manmem_data_get (!p_mem)
     val (pf_lst | ()) = the_manmemlst_lock_acquire ()
-    val () = the_manmemlst_insert (pf_lst, pf_mem | p_mem)
+    val (pf_mem | p_mem) = the_manmemlst_remove (pf_lst | p_data)
+    val p_mem_new = manmem_recreate (pf_mem | p_mem, bsz) where {
+      extern fun manmem_recreate {n:pos} {l:addr}
+        (pf: !manmem_vt @ l >> manmem_vt @ l_new | p: ptr l, bsz: size_t n)
+        :<> #[l_new:addr] ptr l_new
+        = "gcats2_manmem_recreate"
+    } // end of [val]
+    val p_data = manmem_data_get (!p_mem_new)
+    val () = the_manmemlst_insert (pf_lst, pf_mem | p_mem_new)
     val () = the_manmemlst_lock_release (pf_lst | (*none*))
   in
     p_data
@@ -111,7 +126,7 @@ ats_ptr_type
 gcats2_manmem_create (
   ats_size_type bsz
 ) {
-  manmem_vt *p_manmem ; size_t wsz ;
+  manmem_vt *p_manmem ;
   p_manmem = gcats2_malloc_ext(sizeof(manmem_vt) + bsz) ;
   p_manmem->manmem_wsz = (bsz + NBYTE_PER_WORD_MASK) >> NBYTE_PER_WORD_LOG ;
   return (ats_ptr_type)p_manmem ;
@@ -126,15 +141,11 @@ gcats2_manmem_destroy (
 
 ats_ptr_type
 gcats2_manmem_recreate (
-  ats_ptr_type p_data, ats_size_type bsz
+  ats_ptr_type p_manmem, ats_size_type bsz
 ) {
-  manmem_vt *p_manmem ; size_t wsz ;
-  p_manmem =
-    (manmem_vt*)((char*)p_data - sizeof(manmem_vt)) ;
-  p_manmem =
-    gcats2_realloc_ext(p_manmem, sizeof(manmem_vt) + bsz) ;
-  p_manmem->manmem_wsz = (bsz + NBYTE_PER_WORD_MASK) >> NBYTE_PER_WORD_LOG ;
-  return (ats_ptr_type)p_manmem ;
+  p_manmem = gcats2_realloc_ext(p_manmem, sizeof(manmem_vt) + bsz) ;
+  ((manmem_vt*)p_manmem)->manmem_wsz = (bsz + NBYTE_PER_WORD_MASK) >> NBYTE_PER_WORD_LOG ;
+  return p_manmem ;
 } /* end of [gcats2_manmem_create] */
 
 /* ****** ****** */

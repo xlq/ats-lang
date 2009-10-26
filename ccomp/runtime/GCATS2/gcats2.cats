@@ -48,6 +48,7 @@
 
 #include <stdio.h>
 #include <string.h>
+#include <stdlib.h>
 
 #include <setjmp.h> // for [setjmp] in gcmain_run
 #include <sys/mman.h> // for [mmap] in chunkpagelst_replenish
@@ -91,7 +92,9 @@ gcats2_malloc_ext (ats_size_type bsz) {
 */
   p = malloc(bsz) ;
   if (!p) {
-    fprintf(stderr, "exit(ATS/GC): external memory is unavailable.\n"); exit(1);
+    perror("malloc") ;
+    fprintf(stderr, "exit(ATS/GC): external memory is unavailable.\n") ;
+    exit(1) ;
   } /* end of [if] */
   return p ;
 } /* end of [gcats2_malloc_ext] */
@@ -112,10 +115,51 @@ gcats2_realloc_ext (
 */
   p_new = realloc(p, bsz) ;
   if (!p_new) {
-    fprintf(stderr, "exit(ATS/GC): external memory is unavailable.\n"); exit(1);
+    perror("realloc") ;
+    fprintf(stderr, "exit(ATS/GC): external memory is unavailable.\n") ;
+    exit(1) ;
   } /* end of [if] */
   return p_new ;
 } /* end of [gcats2_realloc_ext] */
+
+/* ****** ****** */
+
+static inline
+ats_ptr_type
+gcats2_mmap_ext (
+  ats_size_type bsz
+) {
+  ats_ptr_type p ;
+  p = mmap(
+    (void*)0 // start
+  , bsz
+  , (PROT_READ | PROT_WRITE)
+  , (MAP_PRIVATE | MAP_ANONYMOUS)
+  , 0 // fd is ignored
+  , 0 // offset is ignored
+  ) ; // end of [mmap]
+  if (p == MAP_FAILED) {
+    perror("mmap") ;
+    fprintf(stderr, "exit(ATS/GC): [gcats2_mmap_ext]: failed.\n") ;
+    exit(1) ;
+  } // end of [if]
+  return p ;
+} /* end of [gcats2_mmap_ext] */
+
+static inline
+ats_void_type
+gcats2_munmap_ext (
+  ats_ptr_type p, ats_size_type bsz
+) {
+  int err ;
+  err = munmap(p, bsz) ;
+  if (err) {
+    perror("munmap") ;
+    fprintf(stderr, "exit(ATS/GC): [gcats2_munmap_ext]: failed.\n") ;
+    exit(1) ;
+  } // end of [if]
+  return ;
+} /* end of [gcats2_munmap_ext] */
 
 /* ****** ****** */
 
