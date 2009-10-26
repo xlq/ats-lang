@@ -58,6 +58,10 @@ fun the_topsegtbl_sweeplst_build (
 implement the_topsegtbl_sweeplst_build
   (pf_tbl, pf_arr, pf_lst | (*none*)) = let
 //
+(*  
+** HX-2009-10-25: I encountered a highly intriguing bug due to my forgetting
+**   to clear [the_sweeplstarr]; it cost me one full afternoon to track it down
+*)
   val () = the_sweeplstarr_clear (pf_arr | (*none*))
 //
   viewdef tbl_v = the_topsegtbl_v
