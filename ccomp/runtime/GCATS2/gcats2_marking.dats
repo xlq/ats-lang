@@ -99,6 +99,9 @@ implement the_gcmain_mark
   val () = overflow := overflow + mystack_mark ()
 //
   val overflowed = overflow
+  val () = if (overflowed > 0) then $effmask_ref
+    (prerr ("warning(ATS/GC): markstack overflow happened!\n")) // end of [if]
+  // end of [val]
   val () = $effmask_ntm (
     while (overflow > 0) (overflow := the_topsegtbl_mark (pf_gc | (*none*)))
   ) // end of [val]
@@ -389,8 +392,12 @@ gcats2_ptrsize_mark (
 /*
   fprintf(stderr, "gcats2_ptrsize_mark: ptr = %p and wsz = %i\n", ptr, wsz) ;
 */
-  for (i = 0 ; i < wsz ; i += 1)
+  for (i = 0 ; i < wsz ; i += 1) {
+/*
+    fprintf(stderr, "gcats2_ptrsize_mark: for: ptr = %p\n", ptr) ;
+*/
     overflow += gcats2_ptr_mark (*((freeitmptr_vt*)ptr++)) ;
+  }
   // end of [for]
   return overflow ;
 } // end of [gcats2_ptrsize_mark]
@@ -404,7 +411,7 @@ gcats2_chunk_mark (
   int overflow = 0 ;
   itmwsz = ((chunk_vt*)p_chunk)->itmwsz ;
   itmtot = ((chunk_vt*)p_chunk)->itmtot ;
-  pi = (freeitmptr_vt*)p_chunk ;
+  pi = (freeitmptr_vt*)((chunk_vt*)p_chunk)->chunk_data ;
   for (i = 0; i < itmtot; i += 1, pi += itmwsz) {
     if (MARKBIT_GET(((chunk_vt*)p_chunk)->mrkbits, i)) {
       overflow += gcats2_ptrsize_mark(pi, itmwsz) ; // the freeitm is reachable!

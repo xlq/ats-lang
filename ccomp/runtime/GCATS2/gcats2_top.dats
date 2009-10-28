@@ -142,7 +142,7 @@ gcats2_the_topsegtbl_initialize () {
 %{^
 
 // this is the total number
-size_t the_totwsz = 0 ; // of words in use
+size_t the_totwsz = 0 ;
 size_t the_totwsz_limit = 1024 ;
 size_t the_totwsz_limit_max = 0 ;
 

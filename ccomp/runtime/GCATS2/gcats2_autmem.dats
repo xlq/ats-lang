@@ -162,7 +162,8 @@ in
 *)
       val (pf_the_gcmain | ()) = the_gcmain_lock_acquire ()
       prval (pf, fpf) = the_totwsz_v_takeout (pf_the_gcmain)
-      val p_chunk = chunk_make_large (pf | wsz)
+      val p_chunk = chunk_make_large (wsz)
+      val () = the_totwsz_add_wsz (pf | wsz)
       val (pf_chunk | p) = chunkptr_unfold p_chunk
       val p_data = chunk_data_get (!p)
       val _(*ptr*) = chunkptr_fold (pf_chunk | p_chunk)
@@ -205,13 +206,17 @@ gcats2_autmem_free (
     exit(1) ;
   } // end of [if]
 #endif // end of [GCATS2_DEBUG]
-//
   itmwsz_log = ((chunk_vt*)p_chunk)->itmwsz_log ;
-//  
+/*
+    fprintf(stderr, "gcats2_autmem_free: the_totwsz = %lu\n", the_totwsz) ;
+    fprintf(stderr, "gcats2_autmem_free: p_chunk->itmwsz = %lu\n", p_chunk->itmwsz) ;
+    fprintf(stderr, "gcats2_autmem_free: itmwsz_log = %i\n", itmwsz_log) ;
+*/
   if (itmwsz_log >= 0) {
     p_itmlst = &the_freeitmlstarr[itmwsz_log] ;
     *(freeitmlst_vt*)p_itm = *p_itmlst ; *p_itmlst = (freeitmlst_vt)p_itm ;
   } else { // itmwsz_log = -1 // itmtot = 1
+    the_totwsz -= p_chunk->itmwsz ;
     gcats2_the_topsegtbl_remove_chunkptr(p_chunk->chunk_data) ;
     gcats2_chunk_free_large(p_chunk) ; // [gcats2_munmap_ext] is called
   } // end of [if]
@@ -260,11 +265,13 @@ gcats2_autmem_realloc_bsz (
 /*
   fprintf(stderr, "gcats2_autmem_realloc_bsz: bsz = %lu\n", bsz) ;
   fprintf(stderr, "gcats2_autmem_realloc_bsz: itmbsz = %lu\n", itmbsz) ;
+  fprintf(stderr, "gcats2_autmem_realloc_bsz: itmwsz_log = %i\n", itmwsz_log) ;
 */
   if (itmwsz_log >= 0) {
     p_itmlst = &the_freeitmlstarr[itmwsz_log] ;
     *(freeitmlst_vt*)p_itm = *p_itmlst ; *p_itmlst = (freeitmlst_vt)p_itm ;
   } else { // itmwsz_log = -1 // itmtot = 1
+    the_totwsz -= p_chunk->itmwsz ;
     gcats2_the_topsegtbl_remove_chunkptr(p_chunk->chunk_data) ;
     gcats2_chunk_free_large(p_chunk) ; // [gcats2_munmap_ext] is called
   } // end of [if]

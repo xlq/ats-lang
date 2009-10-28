@@ -231,33 +231,40 @@ fun fprint_chunk {l:addr} (out: FILEref, p_chunk: !chunkptr_vt l): void
 
 // implemented in [gcats2_chunk.dats]
 fun chunk_make_norm {i:nat} (
-    pf1: !the_totwsz_v
-  , pf2: !the_chunkpagelst_v
-  | itmwsz: size_t, itmwsz_log: int i
+    pf: !the_chunkpagelst_v | itmwsz: size_t, itmwsz_log: int i
   ) :<> [l:anz] chunkptr_vt l
   = "gcats2_chunk_make_norm"
 
 // implemented in [gcats2_chunk.dats]
 fun chunk_free_norm {l:anz} (
-    pf1: !the_totwsz_v, pf2: !the_chunkpagelst_v | p_chunk: chunkptr_vt l
+    pf: !the_chunkpagelst_v | p_chunk: chunkptr_vt l
   ) :<> void
   = "gcats2_chunk_free_norm"
 
 // implemented in [gcats2_chunk.dats]
-fun chunk_make_large
-  (pf: !the_totwsz_v | itmwsz: size_t):<> [l:anz] chunkptr_vt l
+fun chunk_make_large (itmwsz: size_t):<> [l:anz] chunkptr_vt l
   = "gcats2_chunk_make_large"
 
 // implemented in [gcats2_chunk.dats]
-fun chunk_free_large {l:anz}
-  (pf: !the_totwsz_v | p_chunk: chunkptr_vt l):<> void
+fun chunk_free_large {l:anz} (p_chunk: chunkptr_vt l):<> void
   = "gcats2_chunk_free_large"
 
 // implemented in [gcats2.cats]
 castfn chunk_make_null (p: ptr null):<> chunkptr_vt null
 castfn chunk_free_null (p: chunkptr_vt null):<> ptr null
 
+(* ****** ****** *)
+
 // implemented in [gcats2_chunk.dats]
+
+fun the_totwsz_add_wsz {l:addr}
+  (pf: !the_totwsz_v | wsz: size_t):<> void
+  = "gcats2_the_totwsz_add_wsz"
+
+fun the_totwsz_add_chunk {l:addr}
+  (pf: !the_totwsz_v | p_chunk: !chunkptr_vt l, itmwsz_log: int):<> void
+  = "gcats2_the_totwsz_add_chunk"
+
 fun the_freeitmlstarr_add_chunk {l:anz} // chunk is consumed
   {i:nat | i < FREEITMLST_ARRAYSIZE} (p_chunk: chunkptr_vt l, itmwsz_log: int i):<> void
   = "gcats2_the_freeitmlstarr_add_chunk"
@@ -491,7 +498,7 @@ fun the_gcmain_mark ( // [overflowed] determines if [markstack] needs
 // implemented in ATS in [gcats2_collecting.dats]
 fun the_topsegtbl_sweeplst_build (
     pf_tbl: !the_topsegtbl_v
-  , pf_arr: !the_sweeplstarr_v, pf_lst: !the_chunkpagelst_v
+  , pf_arr: !the_sweeplstarr_v, pf_lst: !the_chunkpagelst_v, pf_tot: !the_totwsz_v
   | (*none*)
   ) :<> void
   = "gcats2_the_topsegtbl_sweeplst_build"

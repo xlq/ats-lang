@@ -50,13 +50,14 @@ staload "gcats2.sats"
 
 (*
 fun the_topsegtbl_sweeplst_build (
-    pf_tbl: !the_topsegtbl_v, pf_arr: !the_sweeplstarr_v, pf_lst: the_chunkpagelst_v
+    pf_tbl: !the_topsegtbl_v
+  , pf_arr: !the_sweeplstarr_v, pf_lst: the_chunkpagelst_v, pf_tot: !the_totwsz_v
   | (*none*)
   ) :<> void
 // end of [the_topsegtbl_sweeplst_build]
 *)
 implement the_topsegtbl_sweeplst_build
-  (pf_tbl, pf_arr, pf_lst | (*none*)) = let
+  (pf_tbl, pf_arr, pf_lst, pf_tot | (*none*)) = let
 //
 (*  
 ** HX-2009-10-25: I encountered a highly intriguing bug due to my forgetting
@@ -65,12 +66,13 @@ implement the_topsegtbl_sweeplst_build
   val () = the_sweeplstarr_clear (pf_arr | (*none*))
 //
   viewdef tbl_v = the_topsegtbl_v
-  viewdef arrlst_v = (the_sweeplstarr_v, the_chunkpagelst_v)
+  viewdef V =
+    (the_sweeplstarr_v, the_chunkpagelst_v, the_totwsz_v)
   extern fun chunk_sweeplst_build
-    (pf1: !tbl_v, pf2: !arrlst_v | chk: &chunk_vt):<> void
+    (pf1: !tbl_v, pf2: !V | chk: &chunk_vt):<> void
     = "gcats2_chunk_sweeplst_build"
   val f = lam {l:anz} (
-      pf1: !tbl_v, pf2: !arrlst_v | p_chunk: !chunkptr_vt l, env: !ptr
+      pf1: !tbl_v, pf2: !V | p_chunk: !chunkptr_vt l, env: !ptr
     ) : void =<fun> let
     val (pf_chunk | p) = chunkptr_unfold (p_chunk)
     val () = chunk_sweeplst_build (pf1, pf2 | !p)
@@ -78,9 +80,9 @@ implement the_topsegtbl_sweeplst_build
   in
     // nothing
   end // end of [val f]
-  prval pf_arrlst = (pf_arr, pf_lst)
-  val () = the_topsegtbl_foreach_chunkptr {arrlst_v} {ptr} (pf_tbl, pf_arrlst | f, null)
-  prval () = pf_arr := pf_arrlst.0 and () = pf_lst := pf_arrlst.1
+  prval pf = (pf_arr, pf_lst, pf_tot)
+  val () = the_topsegtbl_foreach_chunkptr {V} {ptr} (pf_tbl, pf | f, null)
+  prval () = pf_arr := pf.0 and () = pf_lst := pf.1 and () = pf_tot := pf.2
 in
   // nothing
 end // end of [the_topsegtbl_sweeplst_build]
@@ -89,11 +91,16 @@ end // end of [the_topsegtbl_sweeplst_build]
 
 extern
 fun the_totwsz_limit_is_reached // the function checks if
-  (pf: !the_gcmain_v | (*none*)):<> bool // the_totwsz >= the_totwsz_limt
+  (pf: !the_gcmain_v | (*none*)):<> bool // the_totwsz >= the_totwsz_limit
   = "gcats2_the_totwsz_limit_is_reached"
 
 implement the_freeitmlstarr_replenish
   (pf_the_gcmain | itmwsz_log) = let // [itmwsz_log >= 0] is assumed
+(*
+  val () = $effmask_all begin
+    prerrf("the_freeitmlstarr_replenish: itmwsz_log = %i\n", @(itmwsz_log));
+  end // end of [val]
+*)
   prval (pf, fpf) = the_sweeplstarr_v_takeout (pf_the_gcmain)
   val p_chunk = the_sweeplstarr_get_chunk (pf | itmwsz_log)
 (*
@@ -129,27 +136,30 @@ in
       the_freeitmlstarr_replenish (pf_the_gcmain | itmwsz_log)
     end else let
       // totwsz_limit is not reached // a new chunkpage can be obtained
-      viewdef V1 = the_totwsz_v
-      viewdef V2 = the_chunkpagelst_v
-      prval (
-        pf1, pf2, fpf
-      ) = __takeout (pf_the_gcmain) where {
-        extern prfun __takeout
-          (pf: the_gcmain_v): (V1, V2, (V1, V2) -<lin,prf> the_gcmain_v)
-      } // end of [prval]
+      prval (pf, fpf) = the_chunkpagelst_v_takeout (pf_the_gcmain)
       val itmwsz = size_of_uint (1U << itmwsz_log)
-      val [l_chunk:addr] p_chunk = chunk_make_norm (pf1, pf2 | itmwsz, itmwsz_log)
-      prval () = pf_the_gcmain := fpf (pf1, pf2)
+      val [l_chunk:addr] p_chunk = chunk_make_norm (pf | itmwsz, itmwsz_log)
+      prval () = pf_the_gcmain := fpf (pf)
+//
       val p1_chunk = __cast (p_chunk) where {
         extern castfn __cast (p_chunk: !chunkptr_vt l_chunk):<> chunkptr_vt l_chunk
       }
       prval (pf, fpf) = the_topsegtbl_v_takeout (pf_the_gcmain)
       val _(*err*) = the_topsegtbl_insert_chunkptr (pf | p_chunk)
       prval () = pf_the_gcmain := fpf (pf)
+//
+      prval (pf, fpf) = the_totwsz_v_takeout (pf_the_gcmain)
+      val () = the_totwsz_add_wsz (pf | CHUNK_WORDSIZE)
+      prval () = pf_the_gcmain := fpf (pf)
+//
     in
       the_freeitmlstarr_add_chunk (p1_chunk, itmwsz_log) // new chunk is allocated
     end // end of [if]
-  end else begin// p_chunk <> null
+  end else let // p_chunk <> null
+    prval (pf, fpf) = the_totwsz_v_takeout (pf_the_gcmain)
+    val () = the_totwsz_add_chunk (pf | p_chunk, itmwsz_log) // update [the_totwsz]
+    prval () = pf_the_gcmain := fpf (pf)
+  in
     the_freeitmlstarr_add_chunk (p_chunk, itmwsz_log) // chunk is immediately available
   end // end of [if]
 end // end of [the_freeitmlstarr_replenish]
@@ -167,10 +177,11 @@ gcats2_chunk_sweeplst_build (
 ) {
   chunklst_vt *p_chunklst ;
   int itmwsz_log, itmtot, mrkcnt ;
-  mrkcnt = ((chunk_vt*)p_chunk)->mrkcnt ;
 /*
-  fprintf(stderr, "chunk_sweeplst_build: mrkcnt = %i\n", mrkcnt) ;
+  fprintf(stderr, "chunk_sweeplst_build: p_chunk(%p)=\n", p_chunk);
+  gcats2_fprint_chunk(stderr, p_chunk);
 */
+  mrkcnt = ((chunk_vt*)p_chunk)->mrkcnt ;
   if (mrkcnt == 0) { // no freeitms in the chunk are used
     itmwsz_log = ((chunk_vt*)p_chunk)->itmwsz_log ;
 //
@@ -181,23 +192,26 @@ gcats2_chunk_sweeplst_build (
     } else { // large chunk // to be freed by gcats2_munmap_ext
       gcats2_chunk_free_large(p_chunk) ; // no need for the_chunkpagelst_v
     } // end of [if]
+//
     return ;
   } // end of [if]
-
+//
+  the_totwsz += mrkcnt * ((chunk_vt*)p_chunk)->itmwsz ;
+//
   itmtot = ((chunk_vt*)p_chunk)->itmtot ;
 /*
   fprintf(stderr, "chunk_sweeplst_build: itmtot = %i\n", itmtot) ;
 */
   if (mrkcnt > itmtot * CHUNK_SWEEP_CUTOFF)
     return ; // too many free items are still in use
-//
-  itmwsz_log = ((chunk_vt*)p_chunk)->itmwsz_log ;
 /*
-  fprintf(stderr, "chunk_sweeplst_build: itmwsz_log = %i\n", itmwsz_log) ;
+  fprintf(stderr, "chunk_sweeplst_build: itmtot = %i\n", itmtot) ;
+  fprintf(stderr, "chunk_sweeplst_build: mrkcnt = %i\n", mrkcnt) ;
 */
- p_chunklst = &the_sweeplstarr[itmwsz_log] ;
- ((chunk_vt*)p_chunk)->sweepnxt = *p_chunklst ; *p_chunklst = (chunklst_vt)p_chunk ;
- return ;
+  itmwsz_log = ((chunk_vt*)p_chunk)->itmwsz_log ;
+  p_chunklst = &the_sweeplstarr[itmwsz_log] ;
+  ((chunk_vt*)p_chunk)->sweepnxt = *p_chunklst ; *p_chunklst = (chunklst_vt)p_chunk ;
+  return ;
 } // end of [gcats2_chunk_sweeplst_build]
 
 %} // end of [%{^]
@@ -219,6 +233,7 @@ gcats2_gcmain_run (
 ) {
   int overflowed ; int nmarkstackpage ;
   jmp_buf reg_save ; // register contents are potential GC roots
+  size_t totwsz ;
 #if (_ATS_MULTITHREAD)
   // threadinfolst infolst ; int nother ;
 #endif // end of [_ATS_MULTITHREAD]
@@ -253,7 +268,18 @@ gcats2_gcmain_run (
 //
   gcats2_the_freeitmlstarr_unmark() ; // this clears up the_freeitmlstarr
 //
+  totwsz = the_totwsz ; the_totwsz = 0 ;
   gcats2_the_topsegtbl_sweeplst_build() ;
+//
+  fprintf(stderr,
+    "warning(ATS/GC): the number of words in use was (%lu).\n", totwsz
+  ) ; // end of [fprintf]
+  fprintf(stderr,
+    "warning(ATS/GC): the number of words in use after GC is (%lu).\n", the_totwsz
+  ) ; // end of [fprintf]
+  fprintf(stderr,
+    "warning(ATS/GC): the number of reclaimed words is (%lu).\n", totwsz - the_totwsz
+  ) ; // end of [fprintf]
 //
   if (the_totwsz_limit_max > 0) {
     // [the_totwsz_limit_max==0] means infinite

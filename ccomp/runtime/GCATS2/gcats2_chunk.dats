@@ -163,6 +163,24 @@ gcats2_fprint_the_topsegtbl
 %{^
 
 ats_void_type
+gcats2_the_totwsz_add_wsz (
+  ats_size_type wsz
+) {
+  the_totwsz += wsz ; return ;
+} // end of [gcats2_the_totwsz_add_wsz]
+
+ats_void_type
+gcats2_the_totwsz_add_chunk (
+  ats_ptr_type p_chunk, ats_int_type itmwsz_log // p_chunk != NULL
+) {
+  int itmtot, mrkcnt ;
+  itmtot = ((chunk_vt*)p_chunk)->itmtot ;
+  mrkcnt = ((chunk_vt*)p_chunk)->mrkcnt ;
+  the_totwsz += (itmtot - mrkcnt) << itmwsz_log ;
+  return ;
+} // end of [gcats2_the_totwsz_add_chunk]
+
+ats_void_type
 gcats2_the_freeitmlstarr_add_chunk (
   ats_ptr_type p_chunk // p_chunk != NULL
 , ats_int_type itmwsz_log // itmwsz_log < FREEITMLST_ARRAYSIZE
@@ -298,12 +316,9 @@ gcats2_chunk_make_norm (
   p_chunk->chunk_data = p_freepage ;
   p_chunk->sweepnxt = (chunklst_vt)0 ;
 /*
-  fprintf(stderr, "chunk_make_norm: p_chunk =\n") ; gcats2_fprint_chunk(stderr, p_chunk) ;
+  fprintf(stderr, "chunk_make_norm: p_chunk(%p) =\n", p_chunk) ;
+  gcats2_fprint_chunk(stderr, p_chunk) ;
 */
-  the_totwsz += CHUNK_WORDSIZE ;
-#if (GCATS2_TEST > 0)
-  // fprintf(stderr, "chunk_make_norm: the_totwsz = %lu\n", (ats_ulint_type)the_totwsz) ;
-#endif // end of [GCATS2_TEST > 0]
   return p_chunk ;
 } /* end of [gcats2_chunk_make_norm] */
 
@@ -320,11 +335,11 @@ gcats2_chunk_free_norm
     exit(1) ;
   } // end of [if]
 #endif
-  the_totwsz -= CHUNK_WORDSIZE ;
-#if (GCATS2_TEST > 0)
-  // fprintf(stderr, "chunk_free_norm: the_totwsz = %lu\n", (ats_ulint_type)the_totwsz) ;
-#endif // end of [GCATS2_TEST > 0]
   gcats2_the_chunkpagelst_insert(((chunk_vt*)p_chunk)->chunk_data) ;
+/*  
+  fprintf(stderr, "chunk_free_norm: p_chunk(%p) =\n", p_chunk) ;
+  gcats2_fprint_chunk(stderr, p_chunk) ;
+*/
   gcats2_free_ext(p_chunk) ;
   return ;
 } /* end of [gcats2_chunk_free_norm] */
@@ -348,6 +363,7 @@ gcats2_chunk_make_large (
   } // end of [if]
 #endif // end of [GCATS2_DEBUG > 0]
   nchunk = (itmwsz + CHUNK_WORDSIZE_MASK) >> CHUNK_WORDSIZE_LOG ;
+
   p_chunk = (chunkptr_vt)gcats2_malloc_ext(sizeof(chunk_vt)) ;
   p_freepage = (char*)gcats2_mmap_ext(nchunk * CHUNK_BYTESIZE) ;
 //
@@ -360,14 +376,10 @@ gcats2_chunk_make_large (
 //
   p_chunk->chunk_data = p_freepage ;
   p_chunk->sweepnxt = (chunklst_vt)0 ;
-  the_totwsz += itmwsz ;
-#if (GCATS2_TEST > 0)
 /*
   fprintf(stderr, "chunk_make_large: p_chunk(%p) =\n", p_chunk) ;
   gcats2_fprint_chunk(stderr, p_chunk) ;
 */
-  fprintf(stderr, "chunk_make_large: the_totwsz = %lu\n", (ats_ulint_type)the_totwsz) ;
-#endif // end of [GCATS2 > 0]
   return p_chunk ;
 } /* end of [gcats2_chunk_make_large] */
 
@@ -380,17 +392,13 @@ gcats2_chunk_free_large
     exit(1) ;
   } // end of [if]
 #endif
-  the_totwsz -= ((chunk_vt*)p_chunk)->itmwsz ;
-#if (GCATS2_TEST > 0)
+  gcats2_munmap_ext(
+    ((chunk_vt*)p_chunk)->chunk_data, (((chunk_vt*)p_chunk)->itmwsz) << NBYTE_PER_WORD_LOG
+  ) ;
 /*  
   fprintf(stderr, "chunk_free_large: p_chunk(%p) =\n", p_chunk) ;
   gcats2_fprint_chunk(stderr, p_chunk) ;
 */
-  fprintf(stderr, "chunk_free_large: the_totwsz = %lu\n", (ats_ulint_type)the_totwsz) ;
-#endif // end of [GCATS2_TEST > 0]
-  gcats2_munmap_ext(
-    ((chunk_vt*)p_chunk)->chunk_data, (((chunk_vt*)p_chunk)->itmwsz) << NBYTE_PER_WORD_LOG
-  ) ;
   gcats2_free_ext(p_chunk) ;
   return ;
 } /* end of [gcats2_chunk_free_large] */

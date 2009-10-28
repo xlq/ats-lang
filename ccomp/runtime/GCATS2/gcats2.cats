@@ -443,7 +443,9 @@ MARKBIT_CLEAR (ats_ptr_type x, ats_int_type i) {
 
 /* ****** ****** */
 
+#if (_ATS_MULTITHREAD)
 extern pthread_spinlock_t the_manmemlst_lock ;
+#endif
 
 static inline
 ats_void_type
