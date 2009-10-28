@@ -641,7 +641,9 @@ extern fun IATS_extract (s: string): Stropt = "ats_main_IATS_extract"
 (* ****** ****** *)
 
 implement main {n} (argc, argv) = let
+(*
 val () = gc_chunk_count_limit_max_set (~1) // [~1]: infinite
+*)
 
 (*
 val () = gc_chunk_count_limit_max_set (0) // for testing GC heavily

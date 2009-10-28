@@ -31,8 +31,8 @@
 
 (* ****** ****** *)
 
-// Time: August 2007
 // Author: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
+// Time: August 2007
 
 (* ****** ****** *)
 

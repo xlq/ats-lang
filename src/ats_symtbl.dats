@@ -36,12 +36,8 @@
 
 (* ****** ****** *)
 
-%{^
-
-#include "prelude/CATS/array.cats"
-
-%}
-
+staload "ats_array.sats"
+staload _(*anonymous*) = "ats_array.dats"
 
 (* ****** ****** *)
 
@@ -73,16 +69,25 @@ implement symtbl_make (sz) = let
   val (pf_tbl_gc, pf_tbl | p_tbl) =
     ptr_alloc_tsz {symtbl0} (sizeof<symtbl>)
   prval () = free_gc_elim {symtbl0} (pf_tbl_gc)
+(*
+  val () = (
+    prerr "symtbl_make: p_tbl = "; prerr p_tbl; prerr_newline ()
+  ) // end of [val]
+*)
   val asz = max (sz, 1)
-  val asz_sz = size1_of_int1 (asz)
   val tsz = sizeof<tblent>
   val (pf_arr_gc, pf_arr | p_arr) =
-    array_ptr_alloc_tsz {tblent} (asz_sz, tsz)
+    array_ptr_alloc_tsz {tblent} (asz, tsz)
   val () = begin
-    array_ptr_initialize_elt_tsz {tblent} (!p_arr, asz_sz, ini, tsz)
+    array_ptr_initialize_elt<tblent> (!p_arr, asz, ini)
   end where {
     var ini: tblent = None ()
   } // end of [val]
+(*
+  val () = (
+    prerr "symtbl_make: p_arr = "; prerr p_arr; prerr_newline ()
+  ) // end of [val]
+*)
   val () = begin
     p_tbl->ptr := p_arr;
     p_tbl->view := @(pf_arr_gc, pf_arr);
@@ -94,35 +99,38 @@ in
 end // end of [symtbl_make]
 
 // linear probing
-fun symtbl_search_probe {sz,i:nat | i < sz} {l:addr}
-  (pf: !array_v(tblent, sz, l) | p: ptr l, sz: int sz, i: int i, name: string)
-  :<!ntm> tblent =
-  let val ent = p[i] in case+ ent of
-    | Some (sym) => begin
-        if symbol_name sym = name then ent else let
-          val i = i + 1; val i = (if i < sz then i else 0): natLt sz
-        in
-          symtbl_search_probe (pf | p, sz, i, name)
-        end // end of [if]
-      end // end of [Some]
-    | None () => None ()     
-  end
+fun symtbl_search_probe
+  {sz,i:nat | i < sz} {l:addr} (
+    pf: !array_v(tblent, sz, l)
+  | p: ptr l, sz: int sz, i: int i, name: string
+  ) :<!ntm> tblent = let
+(*
+  val () = $effmask_all begin
+    prerr "symtbl_search_probe: p = "; prerr p; prerr_newline ()
+  end // end of [val]
+*)
+  val ent = p[i] in case+ ent of
+  | Some (sym) => begin
+      if symbol_name sym = name then ent else let
+        val i = i + 1; val i = (if i < sz then i else 0): natLt sz
+      in
+        symtbl_search_probe (pf | p, sz, i, name)
+      end // end of [if]
+    end // end of [Some]
+  | None () => None ()     
+end // end of [symtbl_search_probe]
 
 implement symtbl_search (tbl, name) = let
-
-val hash_val = string_hash_33 name
-val hash_val = uint_of_ulint (hash_val)
+  val hash_val = string_hash_33 name
+  val hash_val = uint_of_ulint (hash_val)
 (*
-val () = printf ("symtbl_search: name = %s\n", @(name))
-val () = printf ("symtbl_search: hash_val = %u\n", @(hash_val))
+  val () = printf ("symtbl_search: name = %s\n", @(name))
+  val () = printf ("symtbl_search: hash_val = %u\n", @(hash_val))
 *)
-val (vbox pf_tbl | p_tbl) = tbl
-val i = hash_val uimod p_tbl->size
-
+  val (vbox pf_tbl | p_tbl) = tbl
+  val i = hash_val uimod p_tbl->size
 in
-
-symtbl_search_probe (p_tbl->view.1 | p_tbl->ptr, p_tbl->size, i, name)
-
+  symtbl_search_probe (p_tbl->view.1 | p_tbl->ptr, p_tbl->size, i, name)
 end // end of [symtbl_search]
 
 (* ****** ****** *)
@@ -172,11 +180,10 @@ fun symtbl_resize
   prval (pf_arr_gc, pf_arr) = p_tbl->view
   val sz = p_tbl->size
   val sz2 = sz + sz; val tsz = sizeof<tblent>
-  val sz2_sz = size1_of_int1 sz2
   val (pf1_arr_gc, pf1_arr | p1_arr) =
-    array_ptr_alloc_tsz {tblent} (sz2_sz, tsz)
+    array_ptr_alloc_tsz {tblent} (sz2, tsz)
   val () = begin
-    array_ptr_initialize_elt_tsz {tblent} (!p1_arr, sz2_sz, ini, tsz)
+    array_ptr_initialize_elt<tblent> (!p1_arr, sz2, ini)
   end where {
     var ini: tblent = None ()
   } // end of [val]

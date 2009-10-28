@@ -40,8 +40,14 @@ staload "ats_array.sats"
 
 (* ****** ****** *)
 
+implement{a} array_ptr_alloc
+  (asz) = array_ptr_alloc_tsz {a} (asz, sizeof<a>)
+// end of ...
+
+(* ****** ****** *)
+
 implement{a}
-  array_ptr_initialize_elt (A0, n0, x0) = () where {
+  array_ptr_initialize_elt (A0, n0, x0) = let
   fun aux {n:nat} {l:addr} .<n>.
     (pf: array_v (a?, n, l) | p: ptr l, n: int n, x: a)
     :<> (array_v (a, n, l) | void) =
@@ -57,7 +63,9 @@ implement{a}
   prval pf = view@ A0
   val (pf | ()) = aux (pf | &A0, n0, x0)
   prval () = view@ A0 := pf
-} // end of [array_ptr_initialize_elt]
+in
+  // nothing
+end // end of [array_ptr_initialize_elt]
     
 (* ****** ****** *)
 
@@ -134,12 +142,17 @@ end // end of [array_ptr_make_lst_vt]
 %{$
 
 ats_ptr_type
-ats_array_ptr_alloc_tsz (ats_int_type n, ats_size_type tsz) {
-  return ATS_MALLOC (n * tsz) ;
-}
+ats_array_ptr_alloc_tsz (
+  ats_int_type n, ats_size_type tsz
+) {
+  size_t ntsz = n * tsz ;
+  return ATS_MALLOC(ntsz) ;
+} /* end of [ats_array_ptr_alloc_tsz] */
 
 ats_void_type
-ats_array_ptr_free (ats_ptr_type base) { ATS_FREE (base); return ; }
+ats_array_ptr_free
+  (ats_ptr_type base) { ATS_FREE(base); return ; }
+// end of [ats_array_ptr_free]
 
 %} // end of [%{$]
 

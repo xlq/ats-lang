@@ -36,8 +36,12 @@
 
 (* ****** ****** *)
 
+fun{a:viewt@ype} array_ptr_alloc {n:nat} (asz: int n):<>
+    [l:addr | l <> null] (free_gc_v (a, n, l), array_v (a?, n, l) | ptr l)
+  = "ats_array_ptr_alloc_tsz"
+
 fun array_ptr_alloc_tsz
-  {a:viewt@ype} {n:nat} (asz: int n, sz: sizeof_t a):<>
+  {a:viewt@ype} {n:nat} (asz: int n, tsz: sizeof_t a):<>
     [l:addr | l <> null] (free_gc_v (a, n, l), array_v (a?, n, l) | ptr l)
   = "ats_array_ptr_alloc_tsz"
 
@@ -50,9 +54,9 @@ fun array_ptr_free
 
 (* ****** ****** *)
 
-fun{a:t@ype} array_ptr_initialize_elt {n:nat} (
-    base: &(@[a?][n]) >> @[a][n], asz: int n, x: a
-  ) :<> void
+fun{a:t@ype} array_ptr_initialize_elt {n:nat}
+  (base: &(@[a?][n]) >> @[a][n], asz: int n, x: a):<> void
+// end of [array_ptr_initialize_elt]
 
 fun{a:t@ype} array_ptr_make_elt {n:nat} (asz: int n, x:a)
   :<> [l:addr | l <> null] (free_gc_v (a, n, l), array_v (a, n, l) | ptr l)

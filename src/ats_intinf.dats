@@ -31,8 +31,8 @@
 
 (* ****** ****** *)
 
-// Time: December 2007
 // Author: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
+// Time: December 2007
 
 (* ****** ****** *)
 
@@ -106,7 +106,7 @@ implement prerr_intinf (r) = prerr_mac (fprint_intinf, r)
 
 val () = intinf_initialize () where {
   extern fun intinf_initialize (): void = "ats_intinf_initialize"
-}
+} // end of [val]
 
 (* ****** ****** *)
 
@@ -120,7 +120,7 @@ ats_intinf_set_string (ats_mpz_ptr_type x, ats_ptr_type s0) {
   s = s0 ; c0 = s[0] ;
 
   if (c0 == '\000') {
-    atspre_exit_prerrf(1, "Exit: ats_intinf_set_str(%s)\n", s) ;
+    atspre_exit_prerrf(1, "exit(ATS): ats_intinf_set_str(%s)\n", s) ;
   }
 
   i = 0 ; base = 10 ;
@@ -145,7 +145,7 @@ ats_intinf_set_string (ats_mpz_ptr_type x, ats_ptr_type s0) {
   }
 
   if (err < 0) {
-    atspre_exit_prerrf(1, "Exit: atslib_mpz_init_set_str(%s)\n", s) ;
+    atspre_exit_prerrf(1, "exit(ATS): atslib_mpz_init_set_str(%s)\n", s) ;
   }
 
   // mpz_out_str(stdout, 10, (mpz_ptr)x) ; fprintf (stdout, "\n") ;
@@ -200,7 +200,7 @@ ats_void_type ats_intinf_initialize () {
   return ;
 }
 
-%}
+%} // end of [%{$]
 
 (* ****** ****** *)
 

@@ -448,10 +448,8 @@ implement do_e0xpact_prerr (v) = case+ v of
 
 (* ****** ****** *)
 
-
 implement s0tacon_tr (d) = let
-  val arg = (
-    case+ d.s0tacon_arg of
+  val arg = (case+ d.s0tacon_arg of
     | Some d0as => Some (d0atarglst_tr d0as) | None () => None ()
   ) : Option d1atarglst 
   val def = s0expopt_tr d.s0tacon_def
