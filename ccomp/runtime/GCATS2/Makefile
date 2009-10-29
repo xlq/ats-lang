@@ -37,10 +37,8 @@
 ## ###### ###### ##
 
 GCC=gcc
-#GCCFLAGS= -O2
-GCCFLAGS= -g
 ATSCC=$(ATSHOME)/bin/atscc
-ATSCCFLAGS= -g # -m64
+ATSCCFLAGS= -Wall -g # -m64
 ATSOPT=$(ATSHOME)/bin/atsopt
 
 ######

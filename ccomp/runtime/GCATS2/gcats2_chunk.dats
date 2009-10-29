@@ -210,7 +210,7 @@ gcats2_the_freeitmlstarr_add_chunk (
   mrkbits = ((chunk_vt*)p_chunk)->mrkbits ;
   for (i = 0 ; i < itmtot ; i += 1) {
     // add if not marked
-    if (!MARKBIT_GET(mrkbits, i)) { *p_data = (freeitmlst_vt)xs ; xs = p_data ; }
+    if (!MARKBIT_GET(mrkbits, i)) { *p_data = xs ; xs = (freeitmlst_vt)p_data ; }
     p_data += itmwsz ;
   } // end of [for]
 //
