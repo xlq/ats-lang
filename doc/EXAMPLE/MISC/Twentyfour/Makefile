@@ -7,7 +7,7 @@
 GCFLAG=-D_ATS_GCATS
 #GCFLAG=-D_ATS_GCBDW
 
-ATSCC="$(ATSHOME)"/bin/atscc -Wall
+ATSCC="$(ATSHOME)"/bin/atscc
 
 ######
 
@@ -16,9 +16,8 @@ checkall:: twentyfour cleanall
 ######
 
 twentyfour: twentyfour.dats rational.dats rational.sats
-	$(ATSCC) $(GCFLAG) -o twentyfour -O3 twentyfour.dats rational.dats rational.sats && \
-        ./twentyfour
-
+	$(ATSCC) -O2 $(GCFLAG) -o twentyfour twentyfour.dats rational.dats rational.sats -lm \
+     && ./twentyfour
 ######
 
 clean:: ; rm -f *_dats.c *_sats.c *~
