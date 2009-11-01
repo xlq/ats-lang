@@ -1175,7 +1175,7 @@ fn emit_move_con {m:file_mode} (
   ) : void = begin case+ vps of
   | list_cons _ => let
       val () = emit_valprim_tmpvar (pf | out, tmp)
-      val () = fprint1_string (pf | out, " = ATS_MALLOC (sizeof(")
+      val () = fprint1_string (pf | out, " = ATS_MALLOC(sizeof(")
       val () = emit_hityp_ptr (pf | out, hit_sum)
       val () = fprint1_string (pf | out, ")) ;")
       val () = (
@@ -1321,7 +1321,7 @@ fn emit_instr_arr_stack {m:file_mode} (
   val () = fprint1_string
     (pf | out, "/* array allocation on stack */\n")
   val () = emit_valprim_tmpvar (pf | out, tmp)
-  val () = fprint1_string (pf | out, " = ATS_ALLOCA2 (")
+  val () = fprint1_string (pf | out, " = ATS_ALLOCA2(")
   val () = emit_valprim (pf | out, vp_asz)
   val () = fprint1_string (pf | out, ", sizeof(")
   val () = emit_hityp (pf | out, hit_elt)
@@ -1460,7 +1460,7 @@ in
     end // end of [INSTRassgn_arr]
   | INSTRassgn_clo (vp_clo, fl, env) => begin
       emit_valprim (pf | out, vp_clo);
-      fprint1_string (pf  | out, " = ATS_ALLOCA1 (sizeof(");
+      fprint1_string (pf  | out, " = ATS_ALLOCA1(sizeof(");
       emit_funlab (pf | out, fl);
       fprint1_string (pf | out, "_closure_type)) ;\n");
       emit_valprim_clo_init (pf | out, 0(*unboxed*), vp_clo, fl, env);
@@ -1485,7 +1485,7 @@ in
       fprint1_string (pf | out, "\n} /* end of [if] */")
     end // end of [INSTRcond]
   | INSTRdefine_clo (d2c, fl) => begin
-      fprint1_string (pf | out, "ATS_GC_MARKROOT (&");
+      fprint1_string (pf | out, "ATS_GC_MARKROOT(&");
       emit_d2cst (pf | out, d2c);
       fprint1_string (pf | out, ", sizeof(ats_ptr_type)) ;\n");
       emit_d2cst (pf | out, d2c);
@@ -1500,7 +1500,7 @@ in
       fprint1_string (pf | out, " ;")
     end // end of [INSTRdefine_fun]
   | INSTRdefine_val (d2c, vp) => begin
-      fprint1_string (pf | out, "ATS_GC_MARKROOT (&");
+      fprint1_string (pf | out, "ATS_GC_MARKROOT(&");
       emit_d2cst (pf | out, d2c);
       fprint1_string (pf | out, ", sizeof(");
       emit_hityp (pf | out, vp.valprim_typ);
@@ -1511,7 +1511,7 @@ in
       fprint1_string (pf | out, " ;")
     end // end of [INSTRdefine_val]
   | INSTRextval (name, vp) => begin
-      fprint1_string (pf | out, "ATS_GC_MARKROOT (&");
+      fprint1_string (pf | out, "ATS_GC_MARKROOT(&");
       fprint1_string (pf | out, name);
       fprint1_string (pf | out, ", sizeof(");
       emit_hityp (pf | out, vp.valprim_typ);
@@ -1522,7 +1522,7 @@ in
       fprint1_string (pf | out, " ;")
     end // end of [INSTRextval]
   | INSTRfreeptr vp => begin
-      fprint1_string (pf | out, "ATS_FREE (");
+      fprint1_string (pf | out, "ATS_FREE(");
       emit_valprim (pf | out, vp);
       fprint1_string (pf | out, ") ;")
     end // end of [INSTRfreeptr]
@@ -1681,7 +1681,7 @@ in
       end // end of [aux]
     in
       emit_valprim_tmpvar (pf | out, tmp);
-      fprint1_string (pf | out, " = ATS_MALLOC (sizeof(");
+      fprint1_string (pf | out, " = ATS_MALLOC(sizeof(");
       emit_hityp_ptr (pf | out, hit_rec);
       fprint1_string (pf | out, ")) ;\n");
       aux (out, tmp, lvps)
@@ -2155,7 +2155,7 @@ fn _emit_closure_make {m:file_mode} {l:addr} (
   val () = fprint1_string (pf_mod | !p_l, ") {\n")
   val () = emit_funlab (pf_mod | !p_l, fl)
   val () = begin
-    fprint1_string (pf_mod | !p_l, "_closure_type *p_clo = ATS_MALLOC (sizeof(")
+    fprint1_string (pf_mod | !p_l, "_closure_type *p_clo = ATS_MALLOC(sizeof(")
   end // end of [val]
   val () = emit_funlab (pf_mod | !p_l, fl)
   val () = fprint1_string (pf_mod | !p_l, "_closure_type)) ;\n")

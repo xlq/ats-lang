@@ -641,9 +641,7 @@ extern fun IATS_extract (s: string): Stropt = "ats_main_IATS_extract"
 (* ****** ****** *)
 
 implement main {n} (argc, argv) = let
-(*
 val () = gc_chunk_count_limit_max_set (~1) // [~1]: infinite
-*)
 
 (*
 val () = gc_chunk_count_limit_max_set (0) // for testing GC heavily
@@ -651,11 +649,11 @@ val () = gc_chunk_count_limit_max_set (0) // for testing GC heavily
 
 val () = ATSHOMERELOC_set () where {
   extern fun ATSHOMERELOC_set (): void = "ats_main_ATSHOMERELOC_set"
-}
+} // end of [val]
 
 val ATSHOME = ATSHOME_getenv_exn () where {
   extern fun ATSHOME_getenv_exn (): string = "ats_main_ATSHOME_getenv_exn"
-}
+} // end of [val]
 
 val () = $Fil.the_prepathlst_push ATSHOME // for the run-time and lib
 val () = $TransEnv2.trans2_env_initialize ()
