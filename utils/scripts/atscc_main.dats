@@ -129,20 +129,15 @@ fn flag_is_version (flag: string):<fun0> Bool =
 
 (* ****** ****** *)
 
-fn flag_is_ATS_GC (flag: string): Bool = begin
-  case+ flag of "-D_ATS_GC" => true | _ => false
-end // end of [flag_is_ATS_GC]
-val is_ATS_GC: intref = intref_make 0
-
 fn flag_is_ATS_GCATS (flag: string): Bool = begin
   case+ flag of "-D_ATS_GCATS" => true | _ => false
 end // end of [flag_is_ATS_GCATS]
 val is_ATS_GCATS: intref = intref_make 0
 
-fn flag_is_ATS_GCATS0 (flag: string): Bool = begin
-  case+ flag of "-D_ATS_GCATS0" => true | _ => false
-end // end of [flag_is_ATS_GCATS0]
-val is_ATS_GCATS0: intref = intref_make 0
+fn flag_is_ATS_GCATS2 (flag: string): Bool = begin
+  case+ flag of "-D_ATS_GCATS2" => true | _ => false
+end // end of [flag_is_ATS_GCATS2]
+val is_ATS_GCATS2: intref = intref_make 0
 
 fn flag_is_ATS_GCBDW (flag: string): Bool = begin
   case+ flag of "-D_ATS_GCBDW" => true | _ => false
@@ -208,7 +203,6 @@ fn* aux {i:nat | i <= n} ( // .<n-i,0>.
     param_c
   end else let
     val param_c = (case+ 0 of
-      | _ when intref_get is_ATS_GC > 0 => "-lgc" :: param_c
       | _ when intref_get is_ATS_GCATS > 0 => let
           val is_mt = intref_get is_ATS_MULTITHREAD > 0
           val gcobj_local = (
@@ -218,9 +212,9 @@ fn* aux {i:nat | i <= n} ( // .<n-i,0>.
         in
           gcobj_global :: param_c
         end // end of [ATS_GCATS]
-      | _ when intref_get is_ATS_GCATS0 > 0 => let
-          val gc_o = runtime_global + "GCATS0/gc.o" in gc_o :: param_c
-        end // end of [ATS_GCATS0]
+      | _ when intref_get is_ATS_GCATS2 > 0 => let
+          val gc_o = runtime_global + "GCATS2/gc.o" in gc_o :: param_c
+        end // end of [ATS_GCATS2]
       | _ when intref_get is_ATS_GCBDW > 0 => let
 (*
           val () = begin
@@ -230,12 +224,13 @@ fn* aux {i:nat | i <= n} ( // .<n-i,0>.
 (*
           val is_mt = intref_get is_ATS_MULTITHREAD > 0
 *)
-#if ATS_PKGCONFIG == 1 #then
+// [ATS_PKGCONFIG] is declared in [prelude/params.hats]
+#if (ATS_PKGCONFIG == 1) #then
           #define :: STRLSTcons; #define nil STRLSTnil
           val arglst = "bdw-gc" :: "--libs" :: nil ()
           val toks = atscc_pkgconfig (arglst, 2) where {
-            extern fun atscc_pkgconfig
-              {n:nat} (arglst: strlst n, narg: int n): List_vt string = "atscc_pkgconfig"
+            extern fun atscc_pkgconfig {n:nat}
+              (arglst: strlst n, narg: int n): List_vt string = "atscc_pkgconfig"
           } // end of [val]
           val param_c = loop (param_c, toks) where {
             fun loop (param_c: Strlst, toks: List_vt string): Strlst =
@@ -244,12 +239,12 @@ fn* aux {i:nat | i <= n} ( // .<n-i,0>.
               | ~list_vt_nil () => param_c
             // end of [loop]
           } // end of [val param_c]
-#else
+#else // ATS_PKGCONFIG <> 1
           val gcobj_local_lib = "GCBDW/lib": string
           val gcobj_global_lib = runtime_global + gcobj_local_lib
           val param_c = ("-L" + gcobj_global_lib) :: param_c
           val param_c = "-lgc" :: param_c
-#endif
+#endif // end of [ATS_PKGCONFIG == 1]
         in
           param_c
         end // end of [ATS_GCBDW]
@@ -306,18 +301,13 @@ and aux_flag {i:nat | i < n} // .<n-i-1,1>.
     in
       aux (pf | param_ats, flag :: param_c, i+1)
     end
-  | _ when flag_is_ATS_GC flag => let
-      val () = intref_set (is_ATS_GC, 1)
-    in
-      aux (pf | param_ats, flag :: param_c, i+1)
-    end
   | _ when flag_is_ATS_GCATS flag => let
       val () = intref_set (is_ATS_GCATS, 1)
     in
       aux (pf | param_ats, flag :: param_c, i+1)
     end
-  | _ when flag_is_ATS_GCATS0 flag => let
-      val () = intref_set (is_ATS_GCATS0, 1)
+  | _ when flag_is_ATS_GCATS2 flag => let
+      val () = intref_set (is_ATS_GCATS2, 1)
     in
       aux (pf | param_ats, flag :: param_c, i+1)
     end
