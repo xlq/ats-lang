@@ -47,7 +47,7 @@
 
 #print "Loading [string.sats] starts!\n"
 
-#endif
+#endif // end of [VERBOSE_PRELUDE]
 
 (* ****** ****** *)
 
@@ -699,6 +699,6 @@ fun sprintf__bufptr {ts:types}
 
 #print "Loading [string.sats] finishes!\n"
 
-#endif
+#endif // end of [VERBOSE_PRELUDE]
 
 (* end of [string.sats] *)

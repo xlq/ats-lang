@@ -88,8 +88,8 @@ prval vsubw_array_elt :
   MUL (i, sizeof a, ofs) -<> vsubw_p (a @ l + ofs, @[a][n] @ l)
 
 prval vsubw_array_subarray :
-  {a:viewtype} {n,i,len:nat | i+len <= n} {l:addr} {ofs:int}
-  MUL (i, sizeof a, ofs) -<> vsubw_p (@[a][len] @ l + ofs, @[a][n] @ l)
+  {a:viewtype} {n0,i,n:nat | i+n <= n0} {l:addr} {ofs:int}
+  MUL (i, sizeof a, ofs) -<> vsubw_p (@[a][n] @ l + ofs, @[a][n0] @ l)
 
 (* ****** ****** *)
 
