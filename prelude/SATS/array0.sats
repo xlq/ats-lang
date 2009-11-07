@@ -75,6 +75,8 @@ fun{a:t@ype}
   array0_make_elt (asz: size_t, x: a):<> array0 a
 // end of [array0_make_elt]
 
+fun{a:t@ype} array0_make_lst (xs: list0 a):<> array0 a
+
 (* ****** ****** *)
 
 fun array0_size {a:t@ype} (A: array0 a):<!ref> size_t
@@ -113,6 +115,7 @@ fun{a:t@ype} array0_iforeach
 
 fun{a:t@ype} array0_tabulate
   (asz: size_t, f: size_t -<cloref> a):<> array0 a
+// end of [array0_tabulate]
 
 (* ****** ****** *)
 

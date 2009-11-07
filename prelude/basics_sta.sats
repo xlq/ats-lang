@@ -765,6 +765,17 @@ dataviewtype
 box_viewt0ype_viewtype (a:viewt@ype+) = box_vt (a) of a
 stadef box_vt = box_viewt0ype_viewtype
 
+//
+
+// [list0_t0ype_type] is co-variant
+datatype list0_t0ype_type (a: t@ype+) =
+  | list0_cons (a) of (a, list0_t0ype_type a) | list0_nil (a) of ()
+// end of [list0_t0ype_type]
+
+stadef list0 = list0_t0ype_type
+
+//
+
 // [list_t0ype_int_type] is covariant
 datatype // t@ype+: covariant
 list_t0ype_int_type (a:t@ype+, int) =
@@ -776,6 +787,8 @@ list_t0ype_int_type (a:t@ype+, int) =
 
 stadef list = list_t0ype_int_type
 typedef List (a:t@ype) = [n:int | n >= 0] list (a, n)
+
+//
 
 // [option_t0ype_bool_type] is covariant
 datatype // t@ype+: covariant

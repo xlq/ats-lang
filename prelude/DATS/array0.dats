@@ -74,6 +74,18 @@ end // end of [array0_make_elt]
 
 (* ****** ****** *)
 
+implement{a} array0_make_lst (xs) = let
+  val [n:int] xs = list1_of_list0 (xs)
+  val n = list_length (xs)
+  val asz = size1_of_int1 (n)
+  val (pf_gc, pf_arr | p_arr) = array_ptr_alloc_tsz {a} (asz, sizeof<a>)
+  val () = array_ptr_initialize_lst<a> (!p_arr, xs)
+in
+  array0_make_arraysize {a} {n} @(pf_gc, pf_arr | p_arr, asz)
+end // end of [array_make_lst]
+
+(* ****** ****** *)
+
 implement array0_size (A) = let
   val (vbox pf_arrsz | p_arrsz) = ref_get_view_ptr (A)
 in
@@ -163,8 +175,7 @@ implement{a} array0_iforeach (A, f) = let
   fun loop {n,i:nat | n0==n+i} {l:addr} .<n>. (
       pf: !array_v (a, n, l)
     | p: ptr l, n: size_t n, i: size_t i, f: (size_t, &a) -<cloref> void
-    )
-    :<> void =
+    ) :<> void =
     if n > 0 then let
       prval (pf1, pf2) = array_v_uncons {a} (pf)
       val () = f (i, !p)
@@ -201,7 +212,7 @@ implement{a} array0_tabulate (asz, f) = let
   val () = loop (pf_arr | p_arr, asz, 0, f)
 in
   array0_make_arraysize {a} {n0} @(pf_gc, pf_arr | p_arr, asz)
-end // end of [array0_make_elt]
+end // end of [array0_tabulate]
 
 (* ****** ****** *)
 
