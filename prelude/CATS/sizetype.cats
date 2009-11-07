@@ -79,7 +79,10 @@
 #define atspre_gte_size_int atspre_gte_size1_int1
 #define atspre_gte_size_size atspre_gte_size1_size1
 
+#define atspre_eq_size_int atspre_eq_size1_int1
 #define atspre_eq_size_size atspre_eq_size1_size1
+
+#define atspre_neq_size_int atspre_neq_size1_int1
 #define atspre_neq_size_size atspre_neq_size1_size1
 
 /* ****** ****** */

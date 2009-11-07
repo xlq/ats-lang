@@ -154,9 +154,19 @@ overload >= with gte_size_int
 
 //
 
+fun eq_size_int (sz1: size_t, i2: size_t):<> bool
+  = "atspre_eq_size_int"
+overload = with eq_size_int
+
 fun eq_size_size (sz1: size_t, sz2: size_t):<> bool
   = "atspre_eq_size_size"
 overload = with eq_size_size
+
+//
+
+fun neq_size_int (sz1: size_t, i2: size_t):<> bool
+  = "atspre_neq_size_int"
+overload <> with neq_size_int
 
 fun neq_size_size (sz1: size_t, sz2: size_t):<> bool
   = "atspre_neq_size_size"
