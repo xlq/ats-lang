@@ -68,21 +68,53 @@ fun size_of_int1 {i:nat} (i: int i):<> size_t
 
 (* ****** ****** *)
 
-fun add_size_size (sz1: size_t, sz2: size_t):<> size_t
+fun add_size_size
+  (sz1: size_t, sz2: size_t):<> size_t
   = "atspre_add_size_size"
 overload + with add_size_size
 
-fun sub_size_size (sz1: size_t, sz2: size_t):<> size_t
+fun add_size_int (sz1: size_t, i2: int):<> size_t
+  = "atspre_add_size_int"
+overload + with add_size_int
+
+//
+
+fun sub_size_size
+  (sz1: size_t, sz2: size_t):<> size_t
   = "atspre_sub_size_size"
 overload - with sub_size_size
 
-fun mul_size_size (sz1: size_t, sz2: size_t):<> size_t
+fun sub_size_int (sz1: size_t, i2: int):<> size_t
+  = "atspre_sub_size_int"
+overload - with sub_size_int
+
+//
+
+fun mul_size_size
+  (sz1: size_t, sz2: size_t):<> size_t
   = "atspre_mul_size_size"
 overload * with mul_size_size
 
-fun div_size_size (sz1: size_t, sz2: size_t):<> size_t
+fun mul_size_int (sz1: size_t, i2: int):<> size_t
+  = "atspre_mul_size_int"
+overload * with mul_size_int
+
+fun mul_int_size (i1: int, sz2: size_t):<> size_t
+  = "atspre_mul_int_size"
+overload * with mul_int_size
+
+//
+
+fun div_size_size
+  (sz1: size_t, sz2: size_t):<> size_t
   = "atspre_div_size_size"
 overload / with div_size_size
+
+fun div_size_int (sz1: size_t, i2: int):<> size_t
+  = "atspre_div_size_int"
+overload / with div_size_int
+
+//
 
 fun mod_size_size (sz1: size_t, sz2: size_t):<> size_t
   = "atspre_mod_size_size"
@@ -98,13 +130,29 @@ fun lte_size_size (sz1: size_t, sz2: size_t):<> bool
   = "atspre_lte_size_size"
 overload <= with lte_size_size
 
-fun gt_size_size (sz1: size_t, sz2: size_t):<> bool
+//
+
+fun gt_size_size
+  (sz1: size_t, sz2: size_t):<> bool
   = "atspre_gt_size_size"
 overload > with gt_size_size
 
-fun gte_size_size (sz1: size_t, sz2: size_t):<> bool
+fun gt_size_int (sz1: size_t, i2: int):<> bool
+  = "atspre_gt_size_int"
+overload > with gt_size_int
+
+//
+
+fun gte_size_size
+  (sz1: size_t, sz2: size_t):<> bool
   = "atspre_gte_size_size"
 overload >= with gte_size_size
+
+fun gte_size_int (sz1: size_t, i2: int):<> bool
+  = "atspre_gte_size_int"
+overload >= with gte_size_int
+
+//
 
 fun eq_size_size (sz1: size_t, sz2: size_t):<> bool
   = "atspre_eq_size_size"

@@ -101,6 +101,21 @@ overload [] with array0_set_elt_at__intsz
 
 (* ****** ****** *)
 
+fun{a:t@ype} array0_foreach
+  (A: array0 a, f: (&a) -<cloref> void):<!ref> void
+// end of [array0_foreach]
+
+fun{a:t@ype} array0_iforeach
+  (A: array0 a, f: (size_t, &a) -<cloref> void):<!ref> void
+// end of [array0_iforeach]
+
+(* ****** ****** *)
+
+fun{a:t@ype} array0_tabulate
+  (asz: size_t, f: size_t -<cloref> a):<> array0 a
+
+(* ****** ****** *)
+
 #if VERBOSE_PRELUDE #then
 
 #print "Loading [array0.sats] finishes!\n"

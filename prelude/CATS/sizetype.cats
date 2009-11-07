@@ -56,15 +56,27 @@
 #define atspre_ssize_of_int1 atspre_ssize1_of_int1
 #define atspre_ssize_of_size atspre_ssize1_of_size1
 
+#define atspre_add_size_int atspre_add_size1_int1
 #define atspre_add_size_size atspre_add_size1_size1
+
+#define atspre_sub_size_int atspre_sub_size1_int1
 #define atspre_sub_size_size atspre_sub_size1_size1
+
+#define atspre_mul_int_size atspre_mul_int1_size1
+#define atspre_mul_size_int atspre_mul_size1_int1
 #define atspre_mul_size_size atspre_mul_size1_size1
+
+#define atspre_div_size_int atspre_div_size1_int1
 #define atspre_div_size_size atspre_div_size1_size1
+
 #define atspre_mod_size_size atspre_mod_size1_size1
 
 #define atspre_lt_size_size atspre_lt_size1_size1
 #define atspre_lte_size_size atspre_lte_size1_size1
+
+#define atspre_gt_size_int atspre_gt_size1_int1
 #define atspre_gt_size_size atspre_gt_size1_size1
+#define atspre_gte_size_int atspre_gte_size1_int1
 #define atspre_gte_size_size atspre_gte_size1_size1
 
 #define atspre_eq_size_size atspre_eq_size1_size1
@@ -195,6 +207,12 @@ static inline
 ats_size_type
 atspre_mul_int1_size1 (ats_int_type i1, ats_size_type sz2) {
   return (i1 * sz2) ;
+}
+
+static inline
+ats_size_type
+atspre_mul_size1_int1 (ats_size_type sz1, ats_int_type i2) {
+  return (sz1 * i2) ;
 }
 
 static inline

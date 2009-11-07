@@ -138,6 +138,73 @@ end (* end of [array0_set_elt_at__intsz] *)
   
 (* ****** ****** *)
 
+implement{a} array0_foreach (A, f) = let
+  fun loop {n:nat} {l:addr} .<n>. (
+      pf: !array_v (a, n, l)
+    | p: ptr l, n: size_t n, f: (&a) -<cloref> void
+    ) :<> void =
+    if n > 0 then let
+      prval (pf1, pf2) = array_v_uncons {a} (pf)
+      val () = f (!p)
+      val () = loop (pf2 | p+sizeof<a>, n-1, f)
+    in
+      pf := array_v_cons {a} (pf1, pf2)
+    end // end of [if]
+  // end of [loop]
+  val (vbox pf_arrsz | p_arrsz) = ref_get_view_ptr (A)
+in
+  loop (p_arrsz->1 | p_arrsz->2, p_arrsz->3, f)
+end // end of [array0_foreach]
+
+implement{a} array0_iforeach (A, f) = let
+  val (vbox pf_arrsz | p_arrsz) = ref_get_view_ptr (A)
+  stavar n0: int
+  val n0: size_t n0 = p_arrsz->3
+  fun loop {n,i:nat | n0==n+i} {l:addr} .<n>. (
+      pf: !array_v (a, n, l)
+    | p: ptr l, n: size_t n, i: size_t i, f: (size_t, &a) -<cloref> void
+    )
+    :<> void =
+    if n > 0 then let
+      prval (pf1, pf2) = array_v_uncons {a} (pf)
+      val () = f (i, !p)
+      val () = loop {n-1,i+1} (pf2 | p+sizeof<a>, n-1, i+1, f)
+    in
+      pf := array_v_cons {a} (pf1, pf2)
+    end // end of [if]
+  // end of [loop]
+in
+  loop (p_arrsz->1 | p_arrsz->2, n0, 0, f)
+end // end of [array0_iforeach]
+
+(* ****** ****** *)
+
+implement{a} array0_tabulate (asz, f) = let
+  val [n0:int] asz = size1_of_size asz
+  val (pf_gc, pf_arr | p_arr) = array_ptr_alloc_tsz {a} (asz, sizeof<a>)
+  fun loop {n,i:nat | n0 == n+i} {l:addr} .<n>. (
+      pf: !array_v (a?, n, l) >> array_v (a, n, l)
+    | p: ptr l, n: size_t n, i: size_t i, f: size_t -<cloref> a
+    ) :<> void =
+    if n > 0 then let
+      prval (pf1, pf2) = array_v_uncons {a?} (pf)
+      val () = !p := f (i)
+      val () = loop (pf2 | p+sizeof<a>, n-1, i+1, f)
+    in
+      pf := array_v_cons {a} (pf1, pf2)
+    end else let
+      prval () = array_v_unnil {a?} (pf)
+    in
+      pf := array_v_nil {a} ()
+    end // end of [if]
+  // end of [loop]
+  val () = loop (pf_arr | p_arr, asz, 0, f)
+in
+  array0_make_arraysize {a} {n0} @(pf_gc, pf_arr | p_arr, asz)
+end // end of [array0_make_elt]
+
+(* ****** ****** *)
+
 // [array0.sats] is already loaded by a call to [pervasive_load]
 staload _(*anonymous*) = "prelude/SATS/array0.sats" // this forces that the static
 // loading function for [array0.sats] is to be called at run-time
