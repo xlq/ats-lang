@@ -771,10 +771,7 @@ stadef box_vt = box_viewt0ype_viewtype
 datatype list0_t0ype_type (a: t@ype+) =
   | list0_cons (a) of (a, list0_t0ype_type a) | list0_nil (a) of ()
 // end of [list0_t0ype_type]
-
 stadef list0 = list0_t0ype_type
-
-//
 
 // [list_t0ype_int_type] is covariant
 datatype // t@ype+: covariant
@@ -784,18 +781,21 @@ list_t0ype_int_type (a:t@ype+, int) =
     // end of [list_cons]
   | list_nil (a, 0)
 // end of [datatype]
-
 stadef list = list_t0ype_int_type
 typedef List (a:t@ype) = [n:int | n >= 0] list (a, n)
 
 //
+
+datatype option0_t0ype_type (a: t@ype) =
+  | option0_some (a) of (a) | option0_none (a) of ()
+// end of [datatype]
+stadef option0 = option0_t0ype_type
 
 // [option_t0ype_bool_type] is covariant
 datatype // t@ype+: covariant
 option_t0ype_bool_type (a:t@ype+, bool) =
   | None (a, false) | Some (a, true) of a
 // end of [datatype]
-
 stadef option = option_t0ype_bool_type
 typedef Option (a:t@ype) = [b:bool] option (a, b)
 

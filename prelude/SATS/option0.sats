@@ -47,12 +47,6 @@
 
 (* ****** ****** *)
 
-datatype option0 (a: t@ype) =
-  | option0_some (a) of (a) | option0_none (a) of ()
-// end of [val]  
-
-(* ****** ****** *)
-
 // a casting function implemented in [prelude/DATS/option.cats]
 castfn option0_of_option1 {a:t@ype} (xs: List a):<> option0 a
   = "atspre_option0_of_option1"
