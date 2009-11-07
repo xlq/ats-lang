@@ -99,6 +99,18 @@ overload [] with matrix0_set_elt_at__intsz
 
 (* ****** ****** *)
 
+// it is done row-by-row
+fun{a:t@ype} matrix0_foreach
+  (M: matrix0 a, f: (&a) -<cloref> void):<!ref> void
+// end of [matrix0_foreach]
+
+// it is done row-by-row
+fun{a:t@ype} matrix0_iforeach
+  (M: matrix0 a, f: (size_t, size_t, &a) -<cloref> void):<!ref> void
+// end of [matrix0_iforeach]
+
+(* ****** ****** *)
+
 #if VERBOSE_PRELUDE #then
 
 #print "Loading [matrix0.sats] finishes!\n"

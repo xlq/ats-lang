@@ -51,7 +51,8 @@ staload _(*anonymous*) = "prelude/DATS/reference.dats"
 
 (* ****** ****** *)
 
-assume matrix0_viewt0ype_type (a:viewt@ype) = ref [l:addr] [m,n:nat] [mn:int] (
+assume matrix0_viewt0ype_type
+  (a:viewt@ype) = ref [l:addr] [m,n:nat] [mn:int] (
   MUL (m, n, mn), free_gc_v (a, mn, l), @[a][mn] @ l | ptr l, size_t m, size_t n
 ) // end of [matrix0_viewt0ype_type]
 
@@ -173,6 +174,60 @@ implement{a}
     $raise MatrixSubscriptException () // out-of-row
   ) // end of [if]
 end (* end of [matrix0_set_elt_at__intsz] *)
+
+(* ****** ****** *)
+
+implement{a} matrix0_foreach (M, f) = let
+  fun loop {k:nat} {l:addr} .<k>. (
+      pf: !array_v (a, k, l)
+    | p: ptr l, k: size_t k, f: (&a) -<cloref> void
+    ) :<> void =
+    if k > 0 then let
+      prval (pf1, pf2) = array_v_uncons {a} (pf)
+      val () = f (!p)
+      val () = loop (pf2 | p+sizeof<a>, k-1, f)
+    in
+      pf := array_v_cons {a} (pf1, pf2)
+    end // end of [if]
+  // end of [loop]
+  val (vbox pf | p) = ref_get_view_ptr (M)
+  val m = p->4 and n = p->5
+  val (pf_mn | mn) = mul2_size1_size1 (m, n)
+  prval () = mul_nat_nat_nat (pf_mn)
+  prval () = mul_isfun (pf_mn, p->0)
+in
+  loop (p->2 | p->3, mn, f)
+end // end of [matrix0_foreach]
+
+(* ****** ****** *)
+
+implement{a} matrix0_iforeach (M, f) = let
+  fun loop {k:nat} {l:addr} .<k>. (
+      pf: !array_v (a, k, l)
+    | p: ptr l, k: size_t k
+    , i: size_t, n: size_t, j: size_t
+    , f: (size_t, size_t, &a) -<cloref> void
+    ) :<cloref> void =
+    if k > 0 then let
+      prval (pf1, pf2) = array_v_uncons {a} (pf)
+      val () = f (i, j, !p)
+      val j1 = j+1
+      val () = (if j1 < n
+        then loop (pf2 | p+sizeof<a>, k-1, i, n, j1, f)
+        else loop (pf2 | p+sizeof<a>, k-1, i+1, n, 0, f)
+      ) : void
+    in
+      pf := array_v_cons {a} (pf1, pf2)
+    end // end of [if]
+  // end of [loop]
+  val (vbox pf | p) = ref_get_view_ptr (M)
+  val m = p->4 and n = p->5
+  val (pf_mn | mn) = mul2_size1_size1 (m, n)
+  prval () = mul_nat_nat_nat (pf_mn)
+  prval () = mul_isfun (pf_mn, p->0)
+in
+  loop (p->2 | p->3, mn, 0, n, 0, f)
+end // end of [matrix0_iforeach]
 
 (* ****** ****** *)
 
