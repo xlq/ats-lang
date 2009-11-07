@@ -37,6 +37,7 @@ implement main () = let
       // nothing
     end // end of [val]
   } // end of [val]
+//
   val () = () where {
     val M = matrix0_make_elt<int> (row, col, 0)
     var i: int and j: int // uninitialized
@@ -60,6 +61,21 @@ implement main () = let
       // end of [loop2]
     } // end of [val]
   } (* end of [val] *)
+//
+  val () = matrix0_iforeach (M, f) where {
+    #define row1 2; #define col1 5
+    val (pf_mul | _(*asz*)) = op imul2 (row1, col1)
+    prval () = mul_elim (pf_mul)
+    val M = matrix0_make_arraysize {int} {row1,col1} {asz}
+      (pf_mul | row1, col1, $arrsz (0, 1, 2, 3, 4, 5, 6, 7, 8, 9))
+    val f = lam (i: size_t, j: size_t, x: &int)
+      : void =<cloref> let
+      val i = int_of_size i and j = int_of_size j
+    in
+      $effmask_all (printf ("M[%i,%i] = %i\n", @(i, j, x)))
+    end // end of [val]
+  } // end of [val]
+//
 in
   print "The run of [prelude_matrix0.dats] is done successfully!\n"
 end // end of [main]
