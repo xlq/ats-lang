@@ -327,7 +327,7 @@ val () = the_labmap_insert (
     val n = !the_heapptr
     val () = !the_heapptr := n+i_size
     val () = loop (v_init, n+i_size, n) where {
-      fun loop (v_init: v1al, ni_size, ni: int): void =
+      fun loop (v_init: v1al, ni_size: int, ni: int): void =
         if ni_size > ni then begin
           the_memory[ni] := v_init; loop (v_init, ni_size, ni+1)
         end // end of [if]
