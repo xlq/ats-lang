@@ -207,7 +207,7 @@ implement{a} matrix0_iforeach (M, f) = let
     | p: ptr l, k: size_t k
     , i: size_t, n: size_t, j: size_t
     , f: (size_t, size_t, &a) -<cloref> void
-    ) :<cloref> void =
+    ) :<> void =
     if k > 0 then let
       prval (pf1, pf2) = array_v_uncons {a} (pf)
       val () = f (i, j, !p)
@@ -228,6 +228,44 @@ implement{a} matrix0_iforeach (M, f) = let
 in
   loop (p->2 | p->3, mn, 0, n, 0, f)
 end // end of [matrix0_iforeach]
+
+(* ****** ****** *)
+
+implement{a} matrix0_tabulate (row, col, f) = let
+  val [m:int] m = size1_of_size row
+  val [n:int] n = size1_of_size col
+  val [mn:int] (pf_mn | mn) = mul2_size1_size1 (m, n)
+  prval () = mul_nat_nat_nat (pf_mn)
+  val (pf_gc, pf_arr | p_arr) = array_ptr_alloc_tsz {a} (mn, sizeof<a>)
+  fun loop {k:nat} {l:addr} .<k>. (
+      pf: !array_v (a?, k, l) >> array_v (a, k, l)
+    | p: ptr l, k: size_t k
+    , i: size_t, n: size_t n, j: size_t, f: (size_t, size_t) -<cloref> a
+    ) :<> void =
+    if k > 0 then let
+      prval (pf1, pf2) = array_v_uncons {a?} (pf)
+      val () = !p := f (i, j)
+      val j1 = j+1
+    in
+      if j1 < n then let
+        val () = loop (pf2 | p+sizeof<a>, k-1, i, n, j1, f)
+      in
+        pf := array_v_cons {a} (pf1, pf2)
+      end else let
+        val () = loop (pf2 | p+sizeof<a>, k-1, i+1, n, 0, f)
+      in
+        pf := array_v_cons {a} (pf1, pf2)
+      end // end of [if]
+    end else let
+      prval () = array_v_unnil {a?} (pf)
+    in
+      pf := array_v_nil {a} ()
+    end // end of [if]
+  // end of [loop]
+  val () = loop (pf_arr | p_arr, mn, 0, n, 0, f)
+in
+  matrix0_make_arraysize {a} {m,n} {mn} (pf_mn | m, n, @(pf_gc, pf_arr | p_arr, mn))
+end // end of [array0_tabulate]
 
 (* ****** ****** *)
 

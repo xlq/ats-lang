@@ -111,6 +111,13 @@ fun{a:t@ype} matrix0_iforeach
 
 (* ****** ****** *)
 
+// [row] and [col] are assume to be nonzero
+fun{a:t@ype} matrix0_tabulate // M[i,j] := f (i, j)
+  (row: size_t, col: size_t, f: (size_t, size_t) -<cloref> a):<> matrix0 a
+// end of [matrix0_tabulate]
+
+(* ****** ****** *)
+
 #if VERBOSE_PRELUDE #then
 
 #print "Loading [matrix0.sats] finishes!\n"
