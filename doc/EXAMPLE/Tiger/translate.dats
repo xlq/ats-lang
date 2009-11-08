@@ -880,6 +880,7 @@ fn transFundec1_fst
     // end of [aux]
   } // end of [val]
   val esclst = list_extend (esclst, true(*stalnk*))
+  val esclst = list_of_list_vt (esclst)
   var ofs0: int = 0
 #if MARCH  = "x86_32"
   val () = ofs0 := ofs0 + $F.WORDSIZE // [call] pushes EIP onto the stack

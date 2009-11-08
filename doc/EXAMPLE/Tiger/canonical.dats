@@ -299,8 +299,11 @@ in
           val ss = trace_gen (map, blk1) in
           list_cons (stm_lab, list_append (blk_init, ss))
         end // end of [Some_vt]
-      | ~None_vt () => begin
-          list_cons (stm_lab, list_extend (blk_init, blk_last))
+      | ~None_vt () => let
+          val blks = list_extend (blk_init, blk_last)
+          val blks = list_of_list_vt (blks)
+        in
+          list_cons (stm_lab, blks)
         end // end of [None_vt]
     end // end of [STMjump]
   | STMcjump (relop, e1, e2, tlab, flab) => let
@@ -321,8 +324,11 @@ in
           ) // end of [list_cons]
         end // end of [None_vt]
     end // end of [STMcjump]
-  | _ => begin
-      list_cons (stm_lab, list_extend (blk_init, blk_last))
+  | _ => let
+      val blks = list_extend (blk_init, blk_last)
+      val blks = list_of_list_vt (blks)
+    in
+      list_cons (stm_lab, blks)
     end // end of [_]
 end // end of [trace_gen]
 

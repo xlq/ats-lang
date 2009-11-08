@@ -51,7 +51,7 @@ printf ("prime 10000 = %i\n", @(prime_get 10000)) ; // = 104743
 
 printf ("prime 10000 = %i\n", @(prime_get 10000)) ; // = 104743
 
-end
+end // end of [main]
 
 (* ****** ****** *)
 

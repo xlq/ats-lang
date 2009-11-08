@@ -98,13 +98,17 @@ implement main (argc, argv) = let
   val () = () where {
     val () = print "filter (xs, evn) = "
     // for testing [list_filter]
-    val () = lstpr (list_filter_fun<int> (xs, lam x =<0> x mod 2 = 0))
+    val xs = list_filter_fun<int> (xs, lam x =<0> x mod 2 = 0)
+    val xs = list_of_list_vt (xs)
+    val () = lstpr (xs)
     val () = print_newline ()
   } // end of [val]
   val () = () where {
     val () = print "filter (xs, odd) = "
     // for testing [list_filter] again
-    val () = lstpr (list_filter_fun<int> (xs, lam x =<0> x mod 2 > 0))
+    val xs = list_filter_fun<int> (xs, lam x =<0> x mod 2 > 0)
+    val xs = list_of_list_vt (xs)
+    val () = lstpr (xs)
     val () = print_newline ()
   } // end of [val]
 //

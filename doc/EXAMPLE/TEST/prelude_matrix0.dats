@@ -62,7 +62,7 @@ implement main () = let
     } // end of [val]
   } (* end of [val] *)
 //
-  val () = matrix0_iforeach (M, f) where {
+  val () = () where {
     #define row1 2; #define col1 5
     val (pf_mul | _(*asz*)) = op imul2 (row1, col1)
     prval () = mul_elim (pf_mul)
@@ -74,6 +74,19 @@ implement main () = let
     in
       $effmask_all (printf ("M[%i,%i] = %i\n", @(i, j, x)))
     end // end of [val]
+    val () = matrix0_iforeach (M, f)
+  } // end of [val]
+//
+  val () = () where {
+    #define row 3; #define col 7
+    val M = matrix0_tabulate<int> (row, col, lam (i, j) => int_of_size ((i+1) * j))
+    val f = lam (i: size_t, j: size_t, x: &int)
+      : void =<cloref> let
+      val i = int_of_size i and j = int_of_size j
+    in
+      $effmask_all (printf ("M[%i,%i] = %i\n", @(i, j, x)))
+    end // end of [val]
+    val () = matrix0_iforeach (M, f)
   } // end of [val]
 //
 in

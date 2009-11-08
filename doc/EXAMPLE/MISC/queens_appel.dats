@@ -17,7 +17,10 @@ staload _(*anonymous*) = "prelude/DATS/reference.dats"
 
 (* ****** ****** *)
 
-val NSOL = ref_make_elt<Nat> (0)
+var NSOL: Nat = 0
+val (pfbox_NSOL | ()) =
+  vbox_make_view_ptr {Nat} (view@ NSOL | &NSOL)
+// end of [val]
 
 (* ****** ****** *)
 
@@ -61,8 +64,12 @@ end (* end of [printboard] *)
 (* ****** ****** *)
 
 fun _try (c: natLte N): void =
-  if (c = N) then begin
-    !NSOL := !NSOL + 1; printboard ()
+  if (c = N) then let
+    val () = let
+      prval vbox pf = pfbox_NSOL in NSOL := NSOL + 1
+    end // end of [val]
+  in
+    printboard ()
   end else let
     var r: natLte N // unitialized
     val () = for (r := 0; r < N; r := r+1) (
@@ -84,8 +91,12 @@ fun _try (c: natLte N): void =
 (* ****** ****** *)
 	
 implement main () = let
-  val () = _try (0) in printf
-    ("The total number of solutions is [%i].\n",@(!NSOL))
+  val () = _try (0)
+  val n = NSOL where {
+    prval vbox pf = pfbox_NSOL
+  }
+in
+  printf ("The total number of solutions is [%i].\n",@(n))
 end // end of [main]
 
 (* ****** ****** *)
