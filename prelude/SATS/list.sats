@@ -243,25 +243,26 @@ overload list_exists2 with list_exists2_cloref
 (* ****** ****** *)
 
 fun{a:t@ype} list_extend {n:nat}
-  (xs: list (a, n), y: a):<> list (a, n+1)
+  (xs: list (a, n), y: a):<> list_vt (a, n+1)
 
 (* ****** ****** *)
 
-fun{a:t@ype} list_filter__main {v:view} {vt:viewtype} {n:nat} {p:eff}
+fun{a:t@ype} list_filter__main
+  {v:view} {vt:viewtype} {n:nat} {p:eff}
   (pf: !v | xs: list (a, n), p: (!v | a, !vt) -<fun,p> bool, env: !vt)
-  :<p> [n':nat | n' <= n] list (a, n')
+  :<p> [n':nat | n' <= n] list_vt (a, n')
 
 fun{a:t@ype} list_filter_fun {n:nat} {p:eff}
-  (xs: list (a, n), p: a -<fun,p> bool):<p> [n':nat | n' <= n] list (a, n')
+  (xs: list (a, n), p: a -<fun,p> bool):<p> [n':nat | n' <= n] list_vt (a, n')
 
 fun{a:t@ype} list_filter_clo {n:nat} {p:eff}
-  (xs: list (a, n), p: &a -<clo,p> bool):<p> [n':nat | n' <= n] list (a, n')
+  (xs: list (a, n), p: &a -<clo,p> bool):<p> [n':nat | n' <= n] list_vt (a, n')
 
 fun{a:t@ype} list_filter_cloptr {n:nat} {p:eff}
-  (xs: list (a, n), p: !a -<cloptr,p> bool):<p> [n':nat | n' <= n] list (a, n')
+  (xs: list (a, n), p: !a -<cloptr,p> bool):<p> [n':nat | n' <= n] list_vt (a, n')
 
 fun{a:t@ype} list_filter_cloref {n:nat} {p:eff}
-  (xs: list (a, n), p: a -<cloref,p> bool):<p> [n':nat | n' <= n] list (a, n')
+  (xs: list (a, n), p: a -<cloref,p> bool):<p> [n':nat | n' <= n] list_vt (a, n')
 
 (* ****** ****** *)
 

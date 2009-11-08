@@ -154,7 +154,7 @@ overload >= with gte_size_int
 
 //
 
-fun eq_size_int (sz1: size_t, i2: size_t):<> bool
+fun eq_size_int (sz1: size_t, i2: int):<> bool
   = "atspre_eq_size_int"
 overload = with eq_size_int
 
@@ -164,7 +164,7 @@ overload = with eq_size_size
 
 //
 
-fun neq_size_int (sz1: size_t, i2: size_t):<> bool
+fun neq_size_int (sz1: size_t, i2: int):<> bool
   = "atspre_neq_size_int"
 overload <> with neq_size_int
 
@@ -215,10 +215,10 @@ overload fprint with fprint_size
 
 (* ****** ****** *)
 
-fun print_size (i: size_t):<!ref> void
+fun print_size (sz: size_t):<!ref> void
   = "atspre_print_size"
 
-and prerr_size (i: size_t):<!ref> void
+and prerr_size (sz: size_t):<!ref> void
   = "atspre_prerr_size"
 
 overload print with print_size
@@ -231,7 +231,7 @@ overload prerr with prerr_size
 (* ****** ****** *)
 
 castfn size1_of_size
-  (i: size_t):<> [i:nat] size_t i // = "atspre_size1_of_size"
+  (sz: size_t):<> [i:nat] size_t i // = "atspre_size1_of_size"
 // end of [size1_of_size]
 
 (* ****** ****** *)
@@ -339,11 +339,6 @@ overload szmod1 with mod1_size1_size1
 
 // ------ ------
 
-fun lt_size1_size1 {i,j:nat}
-  (i: size_t i, j: size_t j):<> bool (i < j)
-  = "atspre_lt_size1_size1"
-overload < with lt_size1_size1
-
 fun lt_int1_size1 {i,j:nat}
   (i: int i, j: size_t j):<> bool (i < j)
   = "atspre_lt_int1_size1"
@@ -354,12 +349,12 @@ fun lt_size1_int1 {i,j:nat}
   = "atspre_lt_size1_int1"
 overload < with lt_size1_int1
 
-// ------ ------
+fun lt_size1_size1 {i,j:nat}
+  (i: size_t i, j: size_t j):<> bool (i < j)
+  = "atspre_lt_size1_size1"
+overload < with lt_size1_size1
 
-fun lte_size1_size1 {i,j:nat}
-  (i: size_t i, j: size_t j):<> bool (i <= j)
-  = "atspre_lte_size1_size1"
-overload <= with lte_size1_size1
+// ------ ------
 
 fun lte_int1_size1 {i,j:nat}
   (i: int i, j: size_t j):<> bool (i < j)
@@ -371,53 +366,58 @@ fun lte_size1_int1 {i,j:nat}
   = "atspre_lte_size1_int1"
 overload <= with lte_size1_int1
 
-// ------ ------
+fun lte_size1_size1 {i,j:nat}
+  (i: size_t i, j: size_t j):<> bool (i <= j)
+  = "atspre_lte_size1_size1"
+overload <= with lte_size1_size1
 
-fun gt_size1_size1 {i,j:nat}
-  (i: size_t i, j: size_t j):<> bool (i > j)
-  = "atspre_gt_size1_size1"
-overload > with gt_size1_size1
+// ------ ------
 
 fun gt_size1_int1 {i,j:nat}
   (i: size_t i, j: int j):<> bool (i > j)
   = "atspre_gt_size1_int1"
 overload > with gt_size1_int1
 
-// ------ ------
+fun gt_size1_size1 {i,j:nat}
+  (i: size_t i, j: size_t j):<> bool (i > j)
+  = "atspre_gt_size1_size1"
+overload > with gt_size1_size1
 
-fun gte_size1_size1 {i,j:nat}
-  (i: size_t i, j: size_t j):<> bool (i >= j)
-  = "atspre_gte_size1_size1"
-overload >= with gte_size1_size1
+// ------ ------
 
 fun gte_size1_int1 {i,j:nat}
   (i: size_t i, j: int j):<> bool (i >= j)
   = "atspre_gte_size1_int1"
 overload >= with gte_size1_int1
 
-// ------ ------
+fun gte_size1_size1 {i,j:nat}
+  (i: size_t i, j: size_t j):<> bool (i >= j)
+  = "atspre_gte_size1_size1"
+overload >= with gte_size1_size1
 
-fun eq_size1_size1 {i,j:nat}
-  (i: size_t i, j: size_t j):<> bool (i == j)
-  = "atspre_eq_size1_size1"
-overload = with eq_size1_size1
+// ------ ------
 
 fun eq_size1_int1 {i,j:nat}
   (i: size_t i, j: int j):<> bool (i == j)
   = "atspre_eq_size1_int1"
 overload = with eq_size1_int1
 
-// ------ ------
+fun eq_size1_size1 {i,j:nat}
+  (i: size_t i, j: size_t j):<> bool (i == j)
+  = "atspre_eq_size1_size1"
+overload = with eq_size1_size1
 
-fun neq_size1_size1 {i,j:nat}
-  (i: size_t i, j: size_t j):<> bool (i <> j)
-  = "atspre_neq_size1_size1"
-overload <> with neq_size1_size1
+// ------ ------
 
 fun neq_size1_int1 {i,j:nat}
   (i: size_t i, j: int j):<> bool (i <> j)
   = "atspre_neq_size1_int1"
 overload <> with neq_size1_int1
+
+fun neq_size1_size1 {i,j:nat}
+  (i: size_t i, j: size_t j):<> bool (i <> j)
+  = "atspre_neq_size1_size1"
+overload <> with neq_size1_size1
 
 // ------ ------
 

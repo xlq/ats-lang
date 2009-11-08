@@ -467,16 +467,18 @@ end // end of [list_exists2_cloref]
 (* ****** ****** *)
 
 implement{a} list_extend (xs, y) = let
-  var res: List a // uninitialized
-  fun loop {n:nat} .<n>.
-    (xs: list (a, n), y: a, res: &(List a)? >> list (a, n+1))
-    :<> void = begin case+ xs of
+  var res: List_vt a // uninitialized
+  fun loop {n:nat} .<n>. (
+      xs: list (a, n), y: a
+    , res: &(List_vt a)? >> list_vt (a, n+1)
+    ) :<> void = begin
+    case+ xs of
     | x :: xs => let
-        val () = (res := cons {a} {0} (x, ?)); val cons (_, !p) = res
+        val () = (res := list_vt_cons {a} {0} (x, ?)); val list_vt_cons (_, !p) = res
       in
         loop (xs, y, !p); fold@ res
       end // end of [::]
-    | nil () => (res := cons (y, nil ()))
+    | nil () => (res := list_vt_cons (y, list_vt_nil ()))
   end // end of [loop]
 in
   loop (xs, y, res); res
@@ -490,22 +492,22 @@ implement{a} list_filter__main
       pf: !v
     | xs: list (a, n)
     , p: (!v | a, !vt) -<fun,p> bool
-    , res: &(List a)? >> list (a, n1)
+    , res: &(List_vt a)? >> list_vt (a, n1)
     , env: !vt
     ) :<p> #[n1:nat | n1 <= n] void = case+ xs of
     | x :: xs => begin
         if p (pf | x, env) then let
-          val () = res := cons {a} {0} (x, ?)
-          val+ cons (_, !p_res) = res
+          val () = res := list_vt_cons {a} {0} (x, ?)
+          val+ list_vt_cons (_, !p_res) = res
         in
           loop (pf | xs, p, !p_res, env); fold@ res
         end else begin
           loop (pf | xs, p, res, env)
         end // end of [if]
       end (* end of [::] *)
-    | nil () => (res := nil ())
+    | nil () => (res := list_vt_nil ())
   // end of [loop]
-  var res: List a // uninitialized
+  var res: List_vt a // uninitialized
   val () = loop (pf | xs, p, res, env)
 in
   res
