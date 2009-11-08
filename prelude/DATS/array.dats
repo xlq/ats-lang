@@ -357,6 +357,12 @@ in
   @{ data= p_arr, view= pfbox }
 end // end of [array_make_lst]
 
+(* ****** ****** *)
+
+implement{a} array_make_clo (pf | asz, f) =
+  array_make_clo_tsz {a} (pf | asz, f, sizeof<a>)
+// end of ...
+
 implement array_make_clo_tsz {a} (pf | asz, f, tsz) = let
   val (pf_gc, pf_arr | p_arr) = array_ptr_alloc_tsz {a} (asz, tsz)
   prval () = free_gc_elim {a} (pf_gc) // return the certificate to GC
@@ -365,6 +371,12 @@ implement array_make_clo_tsz {a} (pf | asz, f, tsz) = let
 in
   @{ data= p_arr, view= pfbox }
 end // end of [array_make_clo_tsz]
+
+(* ****** ****** *)
+
+implement{a} array_make_cloref
+  (asz, f) = array_make_cloref_tsz {a} (asz, f, sizeof<a>)
+// end of ...
 
 implement array_make_cloref_tsz {a} {n} (asz, f, tsz) = let
   val (pf_gc, pf_arr | p_arr) = array_ptr_alloc_tsz {a} (asz, tsz)
@@ -639,7 +651,7 @@ end // end of [array_foreach_clo]
 
 implement{a}
   array_foreach_cloref {n} (A, f, asz) = let
-  viewtypedef cloref_t = (&a) -<cloref1> void
+  viewtypedef cloref_t = (&a) -<cloref> void
   fn app (pf: !unit_v | x: &a, f: !cloref_t):<> void = $effmask_all (f x)
   prval pf = unit_v ()
   val () = array_foreach__main<a> {unit_v} {cloref_t} (pf | A, app, asz, f)

@@ -43,7 +43,7 @@
 
 #print "Loading [array.sats] starts!\n"
 
-#endif
+#endif // end of [VERBOSE_PRELUDE]
 
 (* ****** ****** *)
 
@@ -567,6 +567,20 @@ fun{a:viewt@ype} array_make_lst_vt {n:nat}
 
 (* ****** ****** *)
 
+(*
+** template
+*)
+fun{a:viewt@ype}
+  array_make_clo {v:view} {n:nat} (
+    pf: !v
+  | asz: size_t n
+  , f: &(!v | sizeLt n, &(a?) >> a) -<clo> void
+  ) :<> array (a, n)
+// end of [array_make_clo_tsz]
+
+(*
+** function
+*)
 fun array_make_clo_tsz
   {a:viewt@ype} {v:view} {n:nat} (
     pf: !v
@@ -576,12 +590,27 @@ fun array_make_clo_tsz
   ) :<> array (a, n)
 // end of [array_make_clo_tsz]
 
+(* ****** ****** *)
+
+(*
+** template
+*)
+fun{a:viewt@ype}
+  array_make_cloref {n:nat} (
+    asz: size_t n
+  , f: (sizeLt n, &(a?) >> a) -<cloref> void
+  ) :<fun> array (a, n)
+// end of [array_make_cloref_tsz]
+
+(*
+** function
+*)
 fun array_make_cloref_tsz
   {a:viewt@ype} {n:nat} (
     asz: size_t n
-  , f: (sizeLt n, &(a?) >> a) -<cloref1> void
+  , f: (sizeLt n, &(a?) >> a) -<cloref> void
   , tsz: sizeof_t a
-  ) :<fun1> array (a, n)
+  ) :<fun> array (a, n)
 // end of [array_make_cloref_tsz]
 
 (* ****** ****** *)
@@ -624,7 +653,7 @@ fun{a:viewt@ype} array_exch {n:nat}
 //
 
 (*
-// implemented in ATS (prelude/DATS/array.dats)
+** implemented in ATS (prelude/DATS/array.dats)
 *)
 fun{a:viewt@ype} array_foreach__main {v:view} {vt:viewtype} {n:nat} (
     pf: !v
@@ -644,8 +673,8 @@ fun{a:viewt@ype} array_foreach_clo {v:view} {n:nat} (
 // end of [array_foreach_clo]
 
 fun{a:viewt@ype} array_foreach_cloref {n:nat} (
-    A: array (a, n), f: (&a) -<cloref1> void, asz: size_t n
-  ) :<fun1> void
+    A: array (a, n), f: (&a) -<cloref> void, asz: size_t n
+  ) :<!ref> void
 // end of [array_foreach_cloref]
 
 (* ****** ****** *)
@@ -655,7 +684,7 @@ fun{a:viewt@ype} array_foreach_cloref {n:nat} (
 //
 
 (*
-// implemented in ATS (prelude/DATS/array.dats)
+** implemented in ATS (prelude/DATS/array.dats)
 *)
 fun{a:viewt@ype} array_iforeach__main {v:view} {vt:viewtype} {n:nat} (
     pf: !v
@@ -678,7 +707,7 @@ fun{a:viewt@ype} array_iforeach_clo {v:view} {n:nat} (
 
 fun{a:viewt@ype} array_iforeach_cloref {n:nat} (
     A: array (a, n), f: (sizeLt n, &a) -<cloref> void, asz: size_t n
-  ) :<fun1> void
+  ) :<!ref> void
 // end of [array_iforeach_cloref]
 
 (* ****** ****** *)
@@ -687,6 +716,6 @@ fun{a:viewt@ype} array_iforeach_cloref {n:nat} (
 
 #print "Loading [array.sats] finishes!\n"
 
-#endif
+#endif // end of [VERBOSE_PRELUDE]
 
 (* end of [array.sats] *)
