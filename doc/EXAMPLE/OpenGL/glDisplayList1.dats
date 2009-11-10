@@ -1,7 +1,16 @@
+(*
+**
+** A simple implementation of the tetrix game
+**
+** Author: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
+** Time: Summer, 2008
+**
+*)
+
+(* ****** ****** *)
+
 %{^
-
 extern ats_void_type mainats (ats_int_type argc, ats_ptr_type argv) ;
-
 %}
 
 (* ****** ****** *)

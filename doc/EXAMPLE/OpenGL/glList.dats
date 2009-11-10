@@ -1,3 +1,14 @@
+(*
+**
+** A simple implementation of the tetrix game
+**
+** Author: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
+** Time: Summer, 2008
+**
+*)
+
+(* ****** ****** *)
+
 abstype GLlistref
 
 extern fun glListRef_make (): GLlistref = "atslib_glListRef_make"

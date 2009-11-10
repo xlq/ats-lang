@@ -1,12 +1,23 @@
+(*
+**
+** A simple implementation of the tetrix game
+**
+** Author: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
+** Time: Summer, 2008
+**
+*)
+
 //
 // A simple example demonstrating the use of double buffering
 //
 
+(* ****** ****** *)
+
 %{^
-
 extern ats_void_type mainats (ats_int_type argc, ats_ptr_type argv) ;
-
 %}
+
+(* ****** ****** *)
 
 staload "libc/GL/SATS/gl.sats"
 staload "libc/GL/SATS/glut.sats"
