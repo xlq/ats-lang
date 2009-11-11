@@ -107,7 +107,8 @@ end // end of [sub]
 
 (* ****** ****** *)
 
-implement{a} copy ([n1:int] src, [n2:int] dst, di) = let
+implement{a} copy
+  ([n1:int] src, [n2:int] dst, di) = let
   val [di:int] di = size1_of_size (di)
   val asz1 = src.1 and asz2 = dst.1
   val _src = src.0 and _dst = dst.0

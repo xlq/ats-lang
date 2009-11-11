@@ -104,7 +104,7 @@ fun{a:t@ype} exists (f: a -<cloref1> bool, A: array a): bool
 (* ****** ****** *)
 
 // collate: lexicographic ordering
-// GREATER: > 0; EQUAL  : = 0; LESS   : < 0
+// GREATER: > 0; EQUAL: = 0; LESS: < 0
 fun{a:t@ype} collate (cmp: (a, a) -<cloref1> int, A1: array a, A2: array a): int
 
 (* ****** ****** *)

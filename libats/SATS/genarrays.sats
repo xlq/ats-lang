@@ -473,6 +473,7 @@ fun{a:t@ype} GEMAT_ptr_get_elt_at
   , lda: int lda
   , i: natLt m, j: natLt n
   ) :<> a
+  = "atslib_GEMAT_ptr_get_elt_at"
 // end of [GEMAT_ptr_get_elt_at]
 
 fun{a:t@ype} GEMAT_ptr_set_elt_at
@@ -483,6 +484,7 @@ fun{a:t@ype} GEMAT_ptr_set_elt_at
   , i: natLt m, j: natLt n
   , x: a
   ) :<> void 
+  = "atslib_GEMAT_ptr_set_elt_at"
 // end of [GEMAT_ptr_set_elt_at]
 
 (* ****** ****** *)
@@ -750,6 +752,124 @@ prfun TRMAT_v_of_GEMAT_v
   , TRMAT_v (a, n, ord, ul, dg, lda, l) -<lin,prf> GEMAT_v (a, n, n, ord, lda, l)
   )
 // end of [TRMAT_v_of_GEMAT_v]
+
+(* ****** ****** *)
+
+// UN: upper non-unit
+fun{a:t@ype} TRMAT_UN_ptr_get_elt_at
+   {m:nat} {i,j:nat | i <= j; j < m} {ord:order} {lda:inc} (
+     ord: ORDER ord
+   , A: &TRMAT (a, m, ord, upper, nonunit, lda)
+   , lda: int lda
+   , i: int i, j: int j
+   ) :<> a
+  = "atslib_GEMAT_ptr_get_elt_at"
+// end of [TRMAT_UN_ptr_get_elt_at]
+
+fun{a:t@ype} TRMAT_UN_ptr_set_elt_at
+   {m:nat} {i,j:nat | i <= j; j < m} {ord:order} {lda:inc} (
+     ord: ORDER ord
+   , A: &TRMAT (a, m, ord, upper, nonunit, lda)
+   , lda: int lda
+   , i: int i, j: int j
+   , x: a
+   ) :<> void
+  = "atslib_GEMAT_ptr_set_elt_at"
+// end of [TRMAT_UN_ptr_set_elt_at]
+
+// UU: upper unit
+fun{a:t@ype} TRMAT_UU_ptr_get_elt_at
+   {m:nat} {i,j:nat | i < j; j < m} {ord:order} {lda:inc} (
+     ord: ORDER ord
+   , A: &TRMAT (a, m, ord, upper, nonunit, lda)
+   , lda: int lda
+   , i: int i, j: int j
+   ) :<> a
+  = "atslib_GEMAT_ptr_get_elt_at"
+// end of [TRMAT_UU_ptr_get_elt_at]
+
+fun{a:t@ype} TRMAT_UU_ptr_set_elt_at
+   {m:nat} {i,j:nat | i < j; j < m} {ord:order} {lda:inc} (
+     ord: ORDER ord
+   , A: &TRMAT (a, m, ord, upper, nonunit, lda)
+   , lda: int lda
+   , i: int i, j: int j
+   , x: a
+   ) :<> void
+  = "atslib_GEMAT_ptr_set_elt_at"
+// end of [TRMAT_UU_ptr_set_elt_at]
+
+// LN: lower non-unit
+fun{a:t@ype} TRMAT_LN_ptr_get_elt_at
+   {m:nat} {i,j:nat | j <= i; i < m} {ord:order} {lda:inc} (
+     ord: ORDER ord
+   , A: &TRMAT (a, m, ord, upper, nonunit, lda)
+   , lda: int lda
+   , i: int i, j: int j
+   ) :<> a
+  = "atslib_GEMAT_ptr_get_elt_at"
+// end of [TRMAT_LN_ptr_get_elt_at]
+
+fun{a:t@ype} TRMAT_LN_ptr_set_elt_at
+   {m:nat} {i,j:nat | j <= i; i < m} {ord:order} {lda:inc} (
+     ord: ORDER ord
+   , A: &TRMAT (a, m, ord, upper, nonunit, lda)
+   , lda: int lda
+   , i: int i, j: int j
+   , x: a
+   ) :<> void
+  = "atslib_GEMAT_ptr_set_elt_at"
+// end of [TRMAT_LN_ptr_set_elt_at]
+
+// LU: lower unit
+fun{a:t@ype} TRMAT_LU_ptr_get_elt_at
+   {m:nat} {i,j:nat | j < i; i < m} {ord:order} {lda:inc} (
+     ord: ORDER ord
+   , A: &TRMAT (a, m, ord, upper, nonunit, lda)
+   , lda: int lda
+   , i: int i, j: int j
+   ) :<> a
+  = "atslib_GEMAT_ptr_get_elt_at"
+// end of [TRMAT_LU_ptr_get_elt_at]
+
+fun{a:t@ype} TRMAT_LU_ptr_set_elt_at
+   {m:nat} {i,j:nat | j < i; i < m} {ord:order} {lda:inc} (
+     ord: ORDER ord
+   , A: &TRMAT (a, m, ord, upper, nonunit, lda)
+   , lda: int lda
+   , i: int i, j: int j
+   , x: a
+   ) :<> void
+  = "atslib_GEMAT_ptr_set_elt_at"
+// end of [TRMAT_LU_ptr_set_elt_at]
+
+(* ****** ****** *)
+
+viewtypedef TRMAT_ptr_split2x2_res_t (
+  a1:viewt@ype, m:int, i:int, ord:order, ul:uplo, dg:diag, lda:int, l0:addr
+) = [lu,lo,ll:addr] @(
+  TRMAT_v (a1, i, ord, ul, dg, lda, lu)
+, GEMAT_v (a1, i, m-i, ord, lda, lo)
+, TRMAT_v (a1, m-i, ord, ul, dg, lda, ll)
+, {a2:viewt@ype | tszeq(a1,a2)} (
+    TRMAT_v (a2, i, ord, ul, dg, lda, lu)
+  , GEMAT_v (a2, i, m-i, ord, lda, lo)
+  , TRMAT_v (a2, m-i, ord, ul, dg, lda, ll)
+  ) -<prf>
+    TRMAT_v (a2, m, ord, ul, dg, lda, l0)
+  // [fpf: for unsplitting]
+| ptr lu // l11 should equal l0
+, ptr lo
+, ptr ll
+) // end of [TRMAT_ptr_split2x2_res_t]
+
+fun{a1:viewt@ype}
+  TRMAT_ptr_split2x2 {m:nat} {i:nat | i <= m}
+  {ord:order} {ul:uplo} {dg:diag} {lda:inc} {l0:addr} (
+    pf_mat: TRMAT_v (a1, m, ord, ul, dg, lda, l0)
+  | ord: ORDER ord, ul: UPLO ul, A: ptr l0, lda: int lda, i: int i
+  ) :<> TRMAT_ptr_split2x2_res_t (a1, m, i, ord, ul, dg, lda, l0)
+// end of [TRMAT_ptr_split2x2]
 
 (* ****** ****** *)
 

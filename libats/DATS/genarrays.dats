@@ -856,4 +856,82 @@ end // end of [GEMAT_ptr_iforeach_clo_tsz]
 
 (* ****** ****** *)
 
+//
+// TRiangular MATrix representation (part of GEMAT)
+//
+
+(* ****** ****** *)
+
+(*
+** The following function acts as a dummy for [TRMAT_ptr_split2x2_tsz]
+*)
+extern fun
+TRMAT_ptr_split2x2_tsz_dummy
+  {a:viewt@ype} {m:nat} {i:nat | i <= m}
+  {ord:order} {ul:uplo} {dg:diag} {lda:pos} {l0:addr} (
+    pf_mat: unit_v // TRMAT_v (a, m, ord, ul, dg, lda, l0)
+  | ord: ORDER ord
+  , ul: UPLO ul
+  , p_mat: ptr l0
+  , lda: int lda
+  , i: int i
+  , tsz: sizeof_t a
+  ) :<> @(
+    unit_v // TRMAT_v (a, i, ord, ul, dg, lda, lu)
+  , unit_v // GEMAT_v (a, i, m-i, ord, lda, lo)
+  , unit_v // TRMAT_v (a, m-i, ord, ul, dg, lda, ll)
+  , unit_p // (TRMAT_v (a, i, ord, ul, dg, lda, lu)
+           //  GEMAT_v (a, i, m-i, ord, lda, lo)
+           //  TRMAT_v (a, m-i, ord, ul, dg, lda, ll)
+           // ) -<prf> TRMAT_v (a2, m, ord, ul, dg, lda, l0)
+   | ptr // lu should equal l0
+   , ptr // lo
+   , ptr // ll
+   ) = "atslib_TRMAT_ptr_split2x2_tsz"
+// end of [TRMAT_ptr_split2x2_tsz]
+
+implement
+  TRMAT_ptr_split2x2_tsz_dummy (
+    pf_mat | ord, ul, p_mat, lda, i, tsz
+  ) = let
+  prval unit_v () = pf_mat
+  val i = size_of_int1 i
+  val lda = size_of_int1 lda
+in
+  case+ ord of
+  | ORDERrow () => let
+      val i_tmp = size1_of_size (i * tsz) // no-op casting
+      val p_tmp = p_mat + size1_of_size ((i * lda) * tsz)
+      val p_lo = (case+ ul of
+        | UPLOupper () => p_mat + i_tmp | UPLOlower () => p_tmp
+      ) : ptr
+    in @(
+      unit_v, unit_v, unit_v, unit_p | p_mat, p_lo, p_tmp + i_tmp
+    ) end // end of [ORDERrow]
+  | ORDERcol () => let
+      val i_tmp = size1_of_size (i * tsz) // no-op casting
+      val p_tmp = p_mat + size1_of_size ((i * lda) * tsz)
+      val p_lo = (case+ ul of
+        | UPLOupper () => p_tmp | UPLOlower () => p_mat + i_tmp 
+      ) : ptr
+    in @(
+      unit_v, unit_v, unit_v, unit_p | p_mat, p_lo, p_tmp + i_tmp
+    ) end // end of [ORDERcol]
+end // end of [TRMAT_ptr_split2x2_tsz_dummy]
+
+extern fun TRMAT_ptr_split2x2_tsz
+  {a1:viewt@ype} {m:nat} {i:nat | i <= m}
+  {ord:order} {ul:uplo} {dg:diag} {lda:inc} {l0:addr} (
+    pf_mat: TRMAT_v (a1, m, ord, ul, dg, lda, l0)
+  | ord: ORDER ord, ul: UPLO ul, A: ptr l0, lda: int lda, i: int i, tsz: sizeof_t a1
+  ) :<> TRMAT_ptr_split2x2_res_t (a1, m, i, ord, ul, dg, lda, l0)
+// end of [TRMAT_ptr_split2x2]
+
+implement{a1}
+  TRMAT_ptr_split2x2 (pf_mat | ord, ul, A, lda, i) =
+  TRMAT_ptr_split2x2_tsz (pf_mat | ord, ul, A, lda, i, sizeof<a1>)
+// end of [TRMAT_ptr_split2x2]
+
+(* ****** ****** *)
+
 (* end of [genarrays.dats] *)
