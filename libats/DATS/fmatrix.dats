@@ -64,10 +64,9 @@ staload "libats/SATS/fmatrix.sats"
 (* ****** ****** *)
 
 implement{a} fmatrix_ptr_alloc (m, n) = let
-  val (pf_mn | mn) = m imul2 n
+  val (pf_mn | mn) = mul2_size1_size1 (m, n)
   prval () = mul_nat_nat_nat (pf_mn)
-  val mn_sz = size1_of_int1 mn
-  val (pf_gc, pf_arr | p_arr) = array_ptr_alloc_tsz {a} (mn_sz, sizeof<a>)
+  val (pf_gc, pf_arr | p_arr) = array_ptr_alloc_tsz {a} (mn, sizeof<a>)
   prval pf_fmat = fmatrix_v_of_array_v (pf_mn, pf_arr)
 in
   (pf_gc, pf_mn, pf_fmat | p_arr)
@@ -87,10 +86,9 @@ end // end of [fmatrix_ptr_free]
 (* ****** ****** *)
 
 implement{a} fmatrix_ptr_allocfree (m, n) = let
-  val (pf_mn | mn) = m imul2 n
+  val (pf_mn | mn) = mul2_size1_size1 (m, n)
   prval () = mul_nat_nat_nat (pf_mn)
-  val mn_sz = size1_of_int1 mn
-  val [l:addr] (pf_gc, pf_arr | p_arr) = array_ptr_alloc_tsz {a} (mn_sz, sizeof<a>)
+  val [l:addr] (pf_gc, pf_arr | p_arr) = array_ptr_alloc_tsz {a} (mn, sizeof<a>)
   prval pf_fmat = fmatrix_v_of_array_v (pf_mn, pf_arr)
 in #[l | (
   pf_fmat
@@ -109,10 +107,9 @@ implement{a}
   fmatrix_ptr_initialize_elt (base, m, n, x) = () where {
   prval pf_mat = view@ base
   prval (pf_mn1, pf_arr) = array_v_of_fmatrix_v (pf_mat)
-  val (pf_mn2 | mn) = op imul2 (m, n)
+  val (pf_mn2 | mn) = mul2_size1_size1 (m, n)
   prval () = mul_nat_nat_nat (pf_mn2)
   prval () = mul_isfun (pf_mn1, pf_mn2)
-  val mn = size1_of_int1 (mn)
   var x: a = x
   val () = array_ptr_initialize_elt_tsz {a} (base, mn, x, sizeof<a>)
   prval () = view@ base := fmatrix_v_of_array_v (pf_mn1, pf_arr) 
@@ -126,16 +123,16 @@ implement{a} // worth it???
   {v} {m,n} (pf | base, m, n, f) = () where {
   prval pf_mat = view@ base
   prval (pf1_mn, pf_arr) = array_v_of_fmatrix_v (pf_mat)
-  val [mn:int] (pf2_mn | mn) = op imul2 (m, n)
+  val [mn:int] (pf2_mn | mn) = mul2_size1_size1 (m, n)
   prval () = mul_nat_nat_nat (pf2_mn)
   prval () = mul_isfun (pf1_mn, pf2_mn)
 //
-  typedef clo_t = (!v | &(a?) >> a, natLt m, natLt n) -<clo> void
+  typedef clo_t = (!v | &(a?) >> a, sizeLt m, sizeLt n) -<clo> void
 //
   fun loop_one {mi:nat | mi <= m} {l:addr} .<mi>. (
       pf_arr: !array_v (a?, mi, l) >> array_v (a, mi, l)
     , pf: !v
-    | p: ptr l, f: &clo_t, mi: int mi, j: natLt n
+    | p: ptr l, f: &clo_t, mi: size_t mi, j: sizeLt n
     ) :<cloref> void = if mi > 0 then let
     prval (pf1_elt, pf2_arr) = array_v_uncons {a?} (pf_arr)
     val () = f (pf | !p, m - mi, j)
@@ -150,7 +147,6 @@ implement{a} // worth it???
     // nothing
   end // end of [loop_one]
 //
-  val m_sz = size1_of_int1 m
   fun loop_all
     {nj:nat | nj <= n} {p:int} {l:addr} .<nj>. (
     pf_mul: MUL (nj, m, p)
@@ -158,13 +154,13 @@ implement{a} // worth it???
   , pf: !v
   | p: ptr l
   , f: &clo_t
-  , nj: int (nj)
+  , nj: size_t nj
   ) :<cloref> void = if nj > 0 then let
     prval () = mul_nat_nat_nat (pf_mul)
     prval pf1_mul = mul_add_const {~1} (pf_mul)
     prval () = mul_nat_nat_nat (pf1_mul)
     val [l1:addr] (pf1_arr, pf2_arr, fpf_arr | p1) =
-      array_ptr_split_tsz {a?} (pf_arr | p, m_sz, sizeof<a>)
+      array_ptr_split_tsz {a?} (pf_arr | p, m, sizeof<a>)
     val () = loop_one (pf1_arr, pf | p, f, m, n-nj)
     val () = loop_all (pf1_mul, pf2_arr, pf | p1, f, nj-1)
     propdef fpf_p (a:viewt@ype) =
@@ -197,7 +193,7 @@ extern // implemented in [libats/CATS/fmatrix.cats]
 fun fmatrix_ptr_takeout_tsz {a:viewt@ype}
   {m,n:int} {i,j:nat | i < m; j < n} {l0:addr} (
     pf_mat: fmatrix_v (a, m, n, l0)
-  | base: ptr l0, m: int m, i: int i, j: int j, tsz: sizeof_t a
+  | base: ptr l0, m: size_t m, i: size_t i, j: size_t j, tsz: sizeof_t a
   ) :<> [l:addr] (
     a @ l
   , a @ l -<lin,prf> fmatrix_v (a, m, n, l0)
@@ -235,8 +231,9 @@ end // end of [local]
 
 (* ****** ****** *)
 
-implement{a} fmatrix_ptr_copy {m,n} (A, B, m, n) = let
-  val [mn:int] (pf_mn | mn) = m imul2 n
+implement{a}
+  fmatrix_ptr_copy {m,n} (A, B, m, n) = let
+  val [mn:int] (pf_mn | mn) = mul2_size1_size1 (m, n)
   prval () = mul_nat_nat_nat (pf_mn)
   prval (pf2_mn, pfA_arr) = array_v_of_fmatrix_v {a} {m,n} (view@ A)
   prval (pf3_mn, pfB_arr) = array_v_of_fmatrix_v {a?} {m,n} (view@ B)
@@ -245,7 +242,7 @@ implement{a} fmatrix_ptr_copy {m,n} (A, B, m, n) = let
   stavar lA: addr and lB: addr
   prval pfA_arr = pfA_arr: array_v (a, mn, lA)
   prval pfB_arr = pfB_arr: array_v (a?, mn, lB)
-  val () = array_ptr_copy_tsz {a} {mn} (A, B, size1_of_int1 mn, sizeof<a>)
+  val () = array_ptr_copy_tsz {a} {mn} (A, B, mn, sizeof<a>)
   prval () = view@ A := fmatrix_v_of_array_v {a} {m,n} {mn} (pf2_mn, pfA_arr)
   prval () = view@ B := fmatrix_v_of_array_v {a} {m,n} {mn} (pf3_mn, pfB_arr)
 in

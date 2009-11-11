@@ -112,7 +112,7 @@ prfun GEVEC_v_of_array_v
 fun{a:viewt@ype} GEVEC_ptr_takeout
   {n:nat} {d:inc} {l0:addr} (
     pf: GEVEC_v (a, n, d, l0)
-  | p_vec: ptr l0, d: int d, i: natLt n
+  | p_vec: ptr l0, d: size_t d, i: sizeLt n
   ) :<> [l:addr] (
     a @ l
   , a @ l -<lin,prf> GEVEC_v (a, n, d, l0)
@@ -130,7 +130,7 @@ fun{a1:viewt@ype}
   GEVEC_ptr_split
   {n,i:nat | i <= n} {d:inc} {l0:addr} (
     pf: GEVEC_v (a1, n, d, l0)
-  | p_vec: ptr l0, d: int d, i: int i
+  | p_vec: ptr l0, d: size_t d, i: size_t i
   ) :<> [l:addr] (
     GEVEC_v (a1, i, d, l0)
   , GEVEC_v (a1, n-i, d, l)
@@ -143,11 +143,11 @@ fun{a1:viewt@ype}
 (* ****** ****** *)
 
 fun{a:t@ype} GEVEC_ptr_get_elt_at {n:nat}
-  {d:inc} (V: &GEVEC (a, n, d), d: int d, i: natLt n):<> a
+  {d:inc} (V: &GEVEC (a, n, d), d: size_t d, i: sizeLt n):<> a
 // end of [GEVEC_ptr_get_elt_at]
 
 fun{a:t@ype} GEVEC_ptr_set_elt_at {n:nat}
-  {d:inc} (V: &GEVEC (a, n, d), d: int d, i: natLt n, x: a):<> void
+  {d:inc} (V: &GEVEC (a, n, d), d: size_t d, i: sizeLt n, x: a):<> void
 // end of [GEVEC_ptr_set_elt_at]
 
 (* ****** ****** *)
@@ -155,8 +155,7 @@ fun{a:t@ype} GEVEC_ptr_set_elt_at {n:nat}
 fun{a:t@ype}
   GEVEC_ptr_initialize_elt {m:nat} {incX:inc} (
     X: &GEVEC (a?, m, incX) >> GEVEC (a, m, incX)
-  , m: int m
-  , incX: int incX
+  , m: size_t m, incX: size_t incX
   , alpha: a
   ) :<> void
 // end of [GEVEC_ptr_initialize_elt]
@@ -167,10 +166,7 @@ fun GEVEC_ptr_foreach_fun_tsz__main
   {a:viewt@ype} {v:view} {vt:viewtype} {n:nat} {d:inc} (
     pf: !v
   | base: &GEVEC (a, n, d)
-  , f: (!v | &a, !vt) -<> void
-  , vsz: int n
-  , inc: int d
-  , tsz: sizeof_t a
+  , f: (!v | &a, !vt) -<> void, vsz: size_t n, inc: size_t d, tsz: sizeof_t a
   , env: !vt
   ) :<> void
   = "atslib_GEVEC_ptr_foreach_fun_tsz__main"
@@ -180,7 +176,7 @@ fun{a:viewt@ype} GEVEC_ptr_foreach_fun
   {v:view} {n:nat} {d:inc} (
     pf: !v
   | base: &GEVEC (a, n, d)
-  , f: (!v | &a) -<fun> void, vsz: int n, inc: int d
+  , f: (!v | &a) -<fun> void, vsz: size_t n, inc: size_t d
   ) :<> void
 // end of [fun]
 
@@ -188,7 +184,7 @@ fun{a:viewt@ype} GEVEC_ptr_foreach_clo
   {v:view} {n:nat} {d:inc} (
     pf: !v
   | base: &GEVEC (a, n, d)
-  , f: &(!v | &a) -<clo> void, vsz: int n, inc: int d
+  , f: &(!v | &a) -<clo> void, vsz: size_t n, inc: size_t d
   ) :<> void
 // end of [fun]
 
@@ -198,9 +194,9 @@ fun GEVEC_ptr_iforeach_fun_tsz__main
   {a:viewt@ype} {v:view} {vt:viewtype} {n:nat} {d:inc} (
     pf: !v
   | base: &GEVEC (a, n, d)
-  , f: (!v | natLt n, &a, !vt) -<> void
-  , vsz: int n
-  , inc: int d
+  , f: (!v | sizeLt n, &a, !vt) -<> void
+  , vsz: size_t n
+  , inc: size_t d
   , tsz: sizeof_t a
   , env: !vt
   ) :<> void
@@ -211,7 +207,7 @@ fun{a:viewt@ype}
   GEVEC_ptr_iforeach_fun {v:view} {n:nat} {d:inc} (
     pf: !v
   | base: &GEVEC (a, n, d)
-  , f: (!v | natLt n, &a) -<fun> void, vsz: int n, inc: int d
+  , f: (!v | sizeLt n, &a) -<fun> void, vsz: size_t n, inc: size_t d
   ) :<> void
 // end of [fun]
 
@@ -219,9 +215,9 @@ fun GEVEC_ptr_iforeach_clo_tsz__main
   {a:viewt@ype} {v:view} {vt:viewtype} {n:nat} {d:inc} (
     pf: !v
   | base: &GEVEC (a, n, d)
-  , f: &(!v | natLt n, &a, !vt) -<clo> void
-  , vsz: int n
-  , inc: int d
+  , f: &(!v | sizeLt n, &a, !vt) -<clo> void
+  , vsz: size_t n
+  , inc: size_t d
   , tsz: sizeof_t a
   , env: !vt
   ) :<> void
@@ -232,7 +228,7 @@ fun{a:viewt@ype}
   GEVEC_ptr_iforeach_clo {v:view} {n:nat} {d:inc} (
     pf: !v
   | base: &GEVEC (a, n, d)
-  , f: &(!v | natLt n, &a) -<clo> void, vsz: int n, inc: int d
+  , f: &(!v | sizeLt n, &a) -<clo> void, vsz: size_t n, inc: size_t d
   ) :<> void
 // end of [fun]
 
@@ -376,8 +372,8 @@ dataprop MATVECINC (order, order, int, int) =
 fun MATVECINC_get
   {ord1,ord2:order} {ld:int} {d:inc} (
     pf: MATVECINC (ord1, ord2, ld, d)
-  | x1: ORDER ord1, x2: ORDER ord2, ld: int ld
-  ) :<> int d
+  | x1: ORDER ord1, x2: ORDER ord2, ld: size_t ld
+  ) :<> size_t d
 
 (* ****** ****** *)
 
@@ -425,7 +421,7 @@ prfun GEMAT_v_uncons_col
 
 prfun GEVEC_v_of_GEMAT_v_row
   {a1:viewt@ype} {ord:order} {n:nat} {ld:inc} {l:addr} (
-    pf: GEMAT_v (a1, 1, n, ord, ld, l), ord: ORDER ord, ld: int ld
+    pf: GEMAT_v (a1, 1, n, ord, ld, l), ord: ORDER ord, ld: size_t ld
   ) :<> [d:inc] (
     MATVECINC (row, ord, ld, d)
   , GEVEC_v (a1, n, d, l)
@@ -438,7 +434,7 @@ prfun GEVEC_v_of_GEMAT_v_row
 prfun GEVEC_v_of_GEMAT_v_col
   {a1:viewt@ype}
   {ord:order} {m:nat} {ld:inc} {l:addr} (
-    pf: GEMAT_v (a1, m, 1, ord, ld, l), ord: ORDER ord, ld: int ld
+    pf: GEMAT_v (a1, m, 1, ord, ld, l), ord: ORDER ord, ld: size_t ld
   ) :<> [d:inc] (
     MATVECINC (col, ord, ld, d)
   , GEVEC_v (a1, m, d, l)
@@ -455,8 +451,7 @@ fun{a:viewt@ype} GEMAT_ptr_takeout
     pf_mat: GEMAT_v (a, m, n, ord, lda, l0)
   | ord: ORDER ord
   , p_mat: ptr l0
-  , lda: int lda
-  , i: natLt m, j: natLt n
+  , lda: size_t lda, i: sizeLt m, j: sizeLt n
   ) :<> [l:addr] (
     a @ l
   , a @ l -<lin,prf> GEMAT_v (a, m, n, ord, lda, l0)
@@ -470,8 +465,8 @@ fun{a:t@ype} GEMAT_ptr_get_elt_at
   {m,n:nat} {ord:order} {lda:inc} (
     ord: ORDER ord
   , A: &GEMAT (a, m, n, ord, lda)
-  , lda: int lda
-  , i: natLt m, j: natLt n
+  , lda: size_t lda
+  , i: sizeLt m, j: sizeLt n
   ) :<> a
   = "atslib_GEMAT_ptr_get_elt_at"
 // end of [GEMAT_ptr_get_elt_at]
@@ -480,8 +475,7 @@ fun{a:t@ype} GEMAT_ptr_set_elt_at
   {m,n:nat} {ord:order} {lda:inc} (
     ord: ORDER ord
   , A: &GEMAT (a, m, n, ord, lda)
-  , lda: int lda
-  , i: natLt m, j: natLt n
+  , lda: size_t lda, i: sizeLt m, j: sizeLt n
   , x: a
   ) :<> void 
   = "atslib_GEMAT_ptr_set_elt_at"
@@ -497,7 +491,7 @@ fun{a:viewt@ype} GEMAT_ptr_tail_row
     pf_mat: GEMAT_v (a, m, n, ord, lda, l0)
   | ord: ORDER ord
   , p_mat: ptr l0
-  , lda: int lda
+  , lda: size_t lda
   ) :<> [l:addr] (
     GEMAT_v (a, m-1, n, ord, lda, l)
   , GEMAT_v (a, m-1, n, ord, lda, l) -<lin,prf> GEMAT_v (a, m, n, ord, lda, l0)
@@ -513,7 +507,7 @@ fun{a:viewt@ype} GEMAT_ptr_tail_col
     pf_mat: GEMAT_v (a, m, n, ord, lda, l0)
   | ord: ORDER ord
   , p_mat: ptr l0
-  , lda: int lda
+  , lda: size_t lda
   ) :<> [l:addr] (
     GEMAT_v (a, m, n-1, ord, lda, l)
   , GEMAT_v (a, m, n-1, ord, lda, l) -<lin,prf> GEMAT_v (a, m, n, ord, lda, l0)
@@ -539,7 +533,7 @@ viewtypedef GEMAT_ptr_split1x2_res_t (
 fun{a1:viewt@ype} GEMAT_ptr_split1x2
   {m,n:nat} {j:nat | j <= n} {ord:order} {lda:inc} {l0:addr} (
     pf_mat: GEMAT_v (a1, m, n, ord, lda, l0)
-  | ord: ORDER ord, p_mat: ptr l0, lda: int lda, j: int j
+  | ord: ORDER ord, p_mat: ptr l0, lda: size_t lda, j: size_t j
   ) :<> GEMAT_ptr_split1x2_res_t (a1, m, n, j, ord, lda, l0)
 // end of [GEMAT_ptr_split1x2]
 
@@ -563,7 +557,7 @@ viewtypedef GEMAT_ptr_split2x1_res_t (
 fun{a1:viewt@ype} GEMAT_ptr_split2x1
   {m,n:nat} {i:nat | i <= m} {ord:order} {lda:inc} {l0:addr} (
     pf_mat: GEMAT_v (a1, m, n, ord, lda, l0)
-  | ord: ORDER ord, p_mat: ptr l0, lda: int lda, i: int i
+  | ord: ORDER ord, p_mat: ptr l0, lda: size_t lda, i: size_t i
   ) :<> GEMAT_ptr_split2x1_res_t (a1, m, n, i, ord, lda, l0)
 // end of [GEMAT_ptr_split2x1]
 
@@ -594,7 +588,7 @@ fun{a1:viewt@ype}
   GEMAT_ptr_split2x2
   {m,n:nat} {i,j:nat | i <= m; j <= n} {ord:order} {lda:inc} {l0:addr} (
     pf_mat: GEMAT_v (a1, m, n, ord, lda, l0)
-  | ord: ORDER ord, p_mat: ptr l0, lda: int lda, i: int i, j: int j
+  | ord: ORDER ord, p_mat: ptr l0, lda: size_t lda, i: size_t i, j: size_t j
   ) :<> GEMAT_ptr_split2x2_res_t (a1, m, n, i, j, ord, lda, l0)
 // end of [GEMAT_ptr_split2x2]
 
@@ -602,7 +596,7 @@ fun{a1:viewt@ype}
 
 fun{a:t@ype}
   GEMAT_row_ptr_allocfree
-  {m,n:pos} (m: int m, n: int n)
+  {m,n:pos} (m: size_t m, n: size_t n)
   : [l:addr] (
     GEMAT (a?, m, n, row, n) @ l
   | ptr l
@@ -612,7 +606,7 @@ fun{a:t@ype}
 
 fun{a:t@ype}
   GEMAT_col_ptr_allocfree
-  {m,n:pos} (m: int m, n: int n)
+  {m,n:pos} (m: size_t m, n: size_t n)
   : [l:addr] (
     GEMAT (a?, m, n, col, m) @ l
   | ptr l
@@ -627,7 +621,7 @@ fun{a:t@ype}
   {ord:order} {m,n:nat} {ld:inc} (
     ord: ORDER ord
   , X: &GEMAT (a?, m, n, ord, ld) >> GEMAT (a, m, n, ord, ld)
-  , m: int m, n: int n, ld: int ld
+  , m: size_t m, n: size_t n, ld: size_t ld
   , alpha: a
   ) :<> void
 // end of [GEMAT_ptr_initialize_elt]
@@ -638,8 +632,8 @@ fun{a:t@ype}
     pf: !v
   | ord: ORDER ord
   , X: &GEMAT (a?, m, n, ord, ld) >> GEMAT (a, m, n, ord, ld)
-  , m: int m, n: int n, ld: int ld
-  , f: (!v | natLt m, natLt n, &(a?) >> a) -<> void
+  , m: size_t m, n: size_t n, ld: size_t ld
+  , f: (!v | sizeLt m, sizeLt n, &(a?) >> a) -<> void
   ) :<> void
 // end of [GEMAT_ptr_initialize_fun]
 
@@ -653,7 +647,7 @@ fun GEMAT_ptr_foreach_fun_tsz__main
   , M: &GEMAT (a, m, n, ord1, ld)
   , f: (!v | &a, !vt) -<fun> void
   , ord2: ORDER ord2
-  , m: int m, n: int n, ld: int ld
+  , m: size_t m, n: size_t n, ld: size_t ld
   , tsz: sizeof_t a
   , env: !vt
   ) :<> void
@@ -666,7 +660,7 @@ fun{a:viewt@ype} GEMAT_ptr_foreach_fun
   , M: &GEMAT (a, m, n, ord1, ld)
   , f: (!v | &a) -<fun> void
   , ord2: ORDER ord2
-  , m: int m, n: int n, ld: int ld
+  , m: size_t m, n: size_t n, ld: size_t ld
   ) :<> void
 // end of [GEMAT_ptr_foreach_fun]
 
@@ -677,7 +671,7 @@ fun{a:viewt@ype} GEMAT_ptr_foreach_clo
   , M: &GEMAT (a, m, n, ord1, ld)
   , f: &(!v | &a) -<clo> void
   , ord2: ORDER ord2
-  , m: int m, n: int n, ld: int ld
+  , m: size_t m, n: size_t n, ld: size_t ld
   ) :<> void
 // end of [GEMAT_ptr_foreach_clo]
 
@@ -689,9 +683,9 @@ fun GEMAT_ptr_iforeach_fun_tsz__main
     pf: !v
   | ord1: ORDER ord1
   , M: &GEMAT (a, m, n, ord1, ld)
-  , f: (!v | natLt m, natLt n, &a, !vt) -<fun> void
+  , f: (!v | sizeLt m, sizeLt n, &a, !vt) -<fun> void
   , ord2: ORDER ord2
-  , m: int m, n: int n, ld: int ld
+  , m: size_t m, n: size_t n, ld: size_t ld
   , tsz: sizeof_t a
   , env: !vt
   ) :<> void
@@ -702,9 +696,9 @@ fun{a:viewt@ype} GEMAT_ptr_iforeach_fun
     pf: !v
   | ord1: ORDER ord1
   , M: &GEMAT (a, m, n, ord1, ld)
-  , f: (!v | natLt m, natLt n, &a) -<fun> void
+  , f: (!v | sizeLt m, sizeLt n, &a) -<fun> void
   , ord2: ORDER ord2
-  , m: int m, n: int n, ld: int ld
+  , m: size_t m, n: size_t n, ld: size_t ld
   ) :<> void
 // end of [GEMAT_ptr_iforeach_fun]
 
@@ -713,9 +707,9 @@ fun{a:viewt@ype} GEMAT_ptr_iforeach_clo
     pf: !v
   | ord1: ORDER ord1
   , M: &GEMAT (a, m, n, ord1, ld)
-  , f: &(!v | natLt m, natLt n, &a) -<clo> void
+  , f: &(!v | sizeLt m, sizeLt n, &a) -<clo> void
   , ord2: ORDER ord2
-  , m: int m, n: int n, ld: int ld
+  , m: size_t m, n: size_t n, ld: size_t ld
   ) :<> void
 // end of [GEMAT_ptr_iforeach_clo]
 
@@ -760,8 +754,7 @@ fun{a:t@ype} TRMAT_UN_ptr_get_elt_at
    {m:nat} {i,j:nat | i <= j; j < m} {ord:order} {lda:inc} (
      ord: ORDER ord
    , A: &TRMAT (a, m, ord, upper, nonunit, lda)
-   , lda: int lda
-   , i: int i, j: int j
+   , lda: size_t lda, i: size_t i, j: size_t j
    ) :<> a
   = "atslib_GEMAT_ptr_get_elt_at"
 // end of [TRMAT_UN_ptr_get_elt_at]
@@ -770,8 +763,7 @@ fun{a:t@ype} TRMAT_UN_ptr_set_elt_at
    {m:nat} {i,j:nat | i <= j; j < m} {ord:order} {lda:inc} (
      ord: ORDER ord
    , A: &TRMAT (a, m, ord, upper, nonunit, lda)
-   , lda: int lda
-   , i: int i, j: int j
+   , lda: size_t lda, i: size_t i, j: size_t j
    , x: a
    ) :<> void
   = "atslib_GEMAT_ptr_set_elt_at"
@@ -782,8 +774,7 @@ fun{a:t@ype} TRMAT_UU_ptr_get_elt_at
    {m:nat} {i,j:nat | i < j; j < m} {ord:order} {lda:inc} (
      ord: ORDER ord
    , A: &TRMAT (a, m, ord, upper, nonunit, lda)
-   , lda: int lda
-   , i: int i, j: int j
+   , lda: size_t lda, i: size_t i, j: size_t j
    ) :<> a
   = "atslib_GEMAT_ptr_get_elt_at"
 // end of [TRMAT_UU_ptr_get_elt_at]
@@ -792,8 +783,7 @@ fun{a:t@ype} TRMAT_UU_ptr_set_elt_at
    {m:nat} {i,j:nat | i < j; j < m} {ord:order} {lda:inc} (
      ord: ORDER ord
    , A: &TRMAT (a, m, ord, upper, nonunit, lda)
-   , lda: int lda
-   , i: int i, j: int j
+   , lda: size_t lda, i: size_t i, j: size_t j
    , x: a
    ) :<> void
   = "atslib_GEMAT_ptr_set_elt_at"
@@ -804,8 +794,7 @@ fun{a:t@ype} TRMAT_LN_ptr_get_elt_at
    {m:nat} {i,j:nat | j <= i; i < m} {ord:order} {lda:inc} (
      ord: ORDER ord
    , A: &TRMAT (a, m, ord, upper, nonunit, lda)
-   , lda: int lda
-   , i: int i, j: int j
+   , lda: size_t lda, i: size_t i, j: size_t j
    ) :<> a
   = "atslib_GEMAT_ptr_get_elt_at"
 // end of [TRMAT_LN_ptr_get_elt_at]
@@ -814,8 +803,7 @@ fun{a:t@ype} TRMAT_LN_ptr_set_elt_at
    {m:nat} {i,j:nat | j <= i; i < m} {ord:order} {lda:inc} (
      ord: ORDER ord
    , A: &TRMAT (a, m, ord, upper, nonunit, lda)
-   , lda: int lda
-   , i: int i, j: int j
+   , lda: size_t lda, i: size_t i, j: size_t j
    , x: a
    ) :<> void
   = "atslib_GEMAT_ptr_set_elt_at"
@@ -826,8 +814,7 @@ fun{a:t@ype} TRMAT_LU_ptr_get_elt_at
    {m:nat} {i,j:nat | j < i; i < m} {ord:order} {lda:inc} (
      ord: ORDER ord
    , A: &TRMAT (a, m, ord, upper, nonunit, lda)
-   , lda: int lda
-   , i: int i, j: int j
+   , lda: size_t lda, i: size_t i, j: size_t j
    ) :<> a
   = "atslib_GEMAT_ptr_get_elt_at"
 // end of [TRMAT_LU_ptr_get_elt_at]
@@ -836,8 +823,7 @@ fun{a:t@ype} TRMAT_LU_ptr_set_elt_at
    {m:nat} {i,j:nat | j < i; i < m} {ord:order} {lda:inc} (
      ord: ORDER ord
    , A: &TRMAT (a, m, ord, upper, nonunit, lda)
-   , lda: int lda
-   , i: int i, j: int j
+   , lda: size_t lda, i: size_t i, j: size_t j
    , x: a
    ) :<> void
   = "atslib_GEMAT_ptr_set_elt_at"
@@ -867,7 +853,7 @@ fun{a1:viewt@ype}
   TRMAT_ptr_split2x2 {m:nat} {i:nat | i <= m}
   {ord:order} {ul:uplo} {dg:diag} {lda:inc} {l0:addr} (
     pf_mat: TRMAT_v (a1, m, ord, ul, dg, lda, l0)
-  | ord: ORDER ord, ul: UPLO ul, A: ptr l0, lda: int lda, i: int i
+  | ord: ORDER ord, ul: UPLO ul, A: ptr l0, lda: size_t lda, i: size_t i
   ) :<> TRMAT_ptr_split2x2_res_t (a1, m, i, ord, ul, dg, lda, l0)
 // end of [TRMAT_ptr_split2x2]
 
@@ -974,7 +960,7 @@ prfun TBMAT_v_of_GEMAT_v
     pf_gmat: GEMAT_v (a, 1+k, n, col, 1+k, l)
   , ul: UPLO ul
   , dg: DIAG dg
-  , k: int k
+  , k: size_t k
   ) :<prf> (
     TBMAT_v (a, n, col, ul, dg, k, 1+k, l)
   , TBMAT_v (a, n, col, ul, dg, k, 1+k, l) -<prf> GEMAT_v (a, 1+k, n, col, 1+k, l)
