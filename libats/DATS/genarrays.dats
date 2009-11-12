@@ -299,7 +299,7 @@ implement{a} GEMAT_ptr_takeout
   {m,n} {ord} {lda} {l0} (pf_mat | ord, p_mat, lda, i, j) = let
   viewdef V0 = GEMAT_v (a, m, n, ord, lda, l0)
   val ofs = (case+ ord of
-    | ORDERrow () => (i \szmul lda + j) * sizeof<a> | ORDERcol () => (i + j \szmul lda) * sizeof<a>
+    | ORDERrow () => ((i \szmul lda) + j) * sizeof<a> | ORDERcol () => (i + (j \szmul lda)) * sizeof<a>
   ) : size_t
   val [ofs:int] ofs = size1_of_size (ofs)
   stadef l = l0 + ofs
