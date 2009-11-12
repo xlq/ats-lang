@@ -40,7 +40,7 @@ ATSCC="$(ATSHOME)"/bin/atscc
 
 CC=gcc
 INCLUDES=-I"$(ATSHOME)" -I$(ATSRUNTIME)
-CCFLAGS=-O2
+CCFLAGS=-O2 -g
 
 ######
 

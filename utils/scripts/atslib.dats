@@ -108,11 +108,17 @@ implement ccomp_gcc_ar_libfile (param_rev, infile, libfile) = let
         )
     end // end of [if]
   ) : int
+  val () = begin
+    prerr "ccomp_gcc_ar_libfile: infile = "; prerr infile; prerr_newline ()
+  end
   val infull = (
     if filename_is_local infile then
       tostringf_size (64, "%s/%s", @(getcwd (), infile))
     else infile
   ) : string
+  val () = begin
+    prerr "ccomp_gcc_ar_libfile: infull = "; prerr infull; prerr_newline ()
+  end
   val outbase = string_trans (infull, char_identifize)
   val outfile = atslib_output_global () + outbase
   val outfile_c = outfile + ".c"

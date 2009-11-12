@@ -332,40 +332,46 @@ atspre_assert_prerrf
 //
 
 static // also defined in [prelude/DATS/printf.dats]
-ats_ptr_type __tostringf_size
-  (const ats_int_type guess, const ats_ptr_type fmt, va_list ap)
-{
-  int n, sz ; char *res ;
+ats_ptr_type
+__tostringf_size (
+  ats_int_type guess
+, const ats_ptr_type fmt
+, va_list ap0
+) {
+  int n, sz ; char *res ; va_list ap ;
 
   sz = guess ;
-  res = ats_malloc_gc (sz) ;
+
   while (1) {
-    n = vsnprintf (res, sz, (char *)fmt, ap) ;
+    va_copy (ap, ap0) ;
+    res = ATS_MALLOC(sz) ;
+    n = vsnprintf(res, sz, (char*)fmt, ap) ;
     if (n >= 0) {
-      if (n < sz) { return res ; }
-      sz = n+1 ; /* exact size */
-      ats_free_gc (res) ;
-      res = ats_malloc_gc (sz) ;
-      continue ;
-    }
-    return ((ats_ptr_type)0) ;
-  }
+      if (n < sz) return res ;
+      sz = n+1 ; ATS_FREE(res) ; continue ;
+    } else {
+      return ((ats_ptr_type)0) ;
+    } // end of [if]
+  } // end of [while]
+
+  return (ats_ptr_type)0 ; // deadcode  
+
 } // end of [__tostringf_size]
 
 //
 
 ats_ptr_type // also defined in [prelude/DATS/printf.dats]
-atspre_tostringf_size
-  (const ats_int_type guess, const ats_ptr_type fmt, ...)
-{
+atspre_tostringf_size (
+  ats_int_type guess, const ats_ptr_type fmt, ...
+) {
   char *res ;
   va_list ap ;
 
   va_start(ap, fmt);
-  res = (char *)__tostringf_size (guess, fmt, ap);
+  res = (char*)__tostringf_size (guess, fmt, ap);
   va_end(ap);
   if (!res) { ats_exit_errmsg
-    (1, "exit(ATS): [ats_tostringf_size] failed.\n") ;
+    (1, "exit(ATS): [atspre_tostringf_size] failed.\n") ;
   }
   return res ;
 } // end of [atspre_tostringf_size]
