@@ -150,13 +150,18 @@ fun{a:t@ype} GEVEC_ptr_set_elt_at {n:nat}
 
 (* ****** ****** *)
 
-fun{a:t@ype}
-  GEVEC_ptr_initialize_elt {m:nat} {incX:inc} (
-    X: &GEVEC (a?, m, incX) >> GEVEC (a, m, incX)
-  , m: size_t m, incX: size_t incX
-  , alpha: a
+fun{a:t@ype} GEVEC_ptr_initialize_elt {m:nat} {d:inc} (
+    X: &GEVEC (a?, m, d) >> GEVEC (a, m, d), m: size_t m, inc: size_t d, alpha: a
   ) :<> void
 // end of [GEVEC_ptr_initialize_elt]
+
+(* ****** ****** *)
+
+fun{a:t@ype} GEVEC_ptr_copy {m:nat} {d1,d2:inc} (
+    X: &GEVEC (a?, m, d1) >> GEVEC (a, m, d1), Y: &GEVEC (a, m, d2)
+  , m: size_t m, d1: size_t d1, d2: size_t d2
+  ) :<> void
+// end of [GEVEC_ptr_copy]
 
 (* ****** ****** *)
 
@@ -257,10 +262,7 @@ datatype DIAG (diag) = DIAGunit (unit) | DIAGnonunit (nonunit)
 
 (* ****** ****** *)
 
-datasort transpose =
-  | TPN
-  | TPT
-  | TPC
+datasort transpose = TPN | TPT | TPC
 
 (*
 

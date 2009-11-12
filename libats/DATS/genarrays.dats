@@ -137,6 +137,33 @@ end // end of [GEVEC_ptr_initialize_elt]
 
 (* ****** ****** *)
 
+implement{a} GEVEC_ptr_copy
+  {m} {d1,d2} (X, Y, m, d1, d2) = let
+  val (pf1_mul | ofs1) = mul2_size1_size1 (d1, sizeof<a>)
+  val (pf2_mul | ofs2) = mul2_size1_size1 (d2, sizeof<a>)
+  fun loop {i:nat | i <= m} {l1,l2:addr} .<m-i>. (
+      pf1: !GEVEC_v (a?, m-i, d1, l1) >> GEVEC_v (a, m-i, d1, l1)
+    , pf2: !GEVEC_v (a, m-i, d2, l2)
+    | p1: ptr l1, p2: ptr l2, i: size_t i
+    ) :<cloref> void =
+    if i < m then let
+      prval (pf11, pf12) = GEVEC_v_uncons {a?} (pf1_mul, pf1)
+      prval (pf21, pf22) = GEVEC_v_uncons {a} (pf2_mul, pf2)
+      val () = !p1 := !p2
+      val () = loop (pf12, pf22 | p1+ofs1, p2+ofs2, i+1)
+      prval () = pf1 := GEVEC_v_cons {a} (pf1_mul, pf11, pf12)
+      prval () = pf2 := GEVEC_v_cons {a} (pf2_mul, pf21, pf22)
+    in
+      // empty
+    end else let
+      prval () = GEVEC_v_unnil (pf1) in pf1 := GEVEC_v_nil {a} ()
+    end // end of [if]
+in
+  loop (view@ X, view@ Y | &X, &Y, 0)
+end // end of [GEVEC_ptr_copy]
+
+(* ****** ****** *)
+
 implement
   GEVEC_ptr_foreach_fun_tsz__main
     {a} {v} {vt} {n} {d}
