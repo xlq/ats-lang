@@ -773,7 +773,7 @@ fun{a:t@ype} TRMAT_UN_ptr_set_elt_at
 fun{a:t@ype} TRMAT_UU_ptr_get_elt_at
    {m:nat} {i,j:nat | i < j; j < m} {ord:order} {lda:inc} (
      ord: ORDER ord
-   , A: &TRMAT (a, m, ord, upper, nonunit, lda)
+   , A: &TRMAT (a, m, ord, upper, unit, lda)
    , lda: size_t lda, i: size_t i, j: size_t j
    ) :<> a
   = "atslib_GEMAT_ptr_get_elt_at"
@@ -782,7 +782,7 @@ fun{a:t@ype} TRMAT_UU_ptr_get_elt_at
 fun{a:t@ype} TRMAT_UU_ptr_set_elt_at
    {m:nat} {i,j:nat | i < j; j < m} {ord:order} {lda:inc} (
      ord: ORDER ord
-   , A: &TRMAT (a, m, ord, upper, nonunit, lda)
+   , A: &TRMAT (a, m, ord, upper, unit, lda)
    , lda: size_t lda, i: size_t i, j: size_t j
    , x: a
    ) :<> void
@@ -793,7 +793,7 @@ fun{a:t@ype} TRMAT_UU_ptr_set_elt_at
 fun{a:t@ype} TRMAT_LN_ptr_get_elt_at
    {m:nat} {i,j:nat | j <= i; i < m} {ord:order} {lda:inc} (
      ord: ORDER ord
-   , A: &TRMAT (a, m, ord, upper, nonunit, lda)
+   , A: &TRMAT (a, m, ord, lower, nonunit, lda)
    , lda: size_t lda, i: size_t i, j: size_t j
    ) :<> a
   = "atslib_GEMAT_ptr_get_elt_at"
@@ -802,7 +802,7 @@ fun{a:t@ype} TRMAT_LN_ptr_get_elt_at
 fun{a:t@ype} TRMAT_LN_ptr_set_elt_at
    {m:nat} {i,j:nat | j <= i; i < m} {ord:order} {lda:inc} (
      ord: ORDER ord
-   , A: &TRMAT (a, m, ord, upper, nonunit, lda)
+   , A: &TRMAT (a, m, ord, lower, nonunit, lda)
    , lda: size_t lda, i: size_t i, j: size_t j
    , x: a
    ) :<> void
@@ -813,7 +813,7 @@ fun{a:t@ype} TRMAT_LN_ptr_set_elt_at
 fun{a:t@ype} TRMAT_LU_ptr_get_elt_at
    {m:nat} {i,j:nat | j < i; i < m} {ord:order} {lda:inc} (
      ord: ORDER ord
-   , A: &TRMAT (a, m, ord, upper, nonunit, lda)
+   , A: &TRMAT (a, m, ord, lower, unit, lda)
    , lda: size_t lda, i: size_t i, j: size_t j
    ) :<> a
   = "atslib_GEMAT_ptr_get_elt_at"
@@ -822,7 +822,7 @@ fun{a:t@ype} TRMAT_LU_ptr_get_elt_at
 fun{a:t@ype} TRMAT_LU_ptr_set_elt_at
    {m:nat} {i,j:nat | j < i; i < m} {ord:order} {lda:inc} (
      ord: ORDER ord
-   , A: &TRMAT (a, m, ord, upper, nonunit, lda)
+   , A: &TRMAT (a, m, ord, lower, unit, lda)
    , lda: size_t lda, i: size_t i, j: size_t j
    , x: a
    ) :<> void
