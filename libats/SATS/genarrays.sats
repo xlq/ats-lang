@@ -51,9 +51,7 @@
 (* ****** ****** *)
 
 %{#
-
 #include "libats/CATS/genarrays.cats"
-
 %}
 
 (* ****** ****** *)
@@ -296,6 +294,13 @@ dataprop tranord_p (order, order) =
   | TRANORDrowcol (row, col) | TRANORDcolrow (col, row)
 // end of [tranord_p]
 
+(*
+** capturing the relation between transpose and uplo
+*)
+dataprop tranuplo_p (uplo, uplo) =
+  | TRANUPLOupperlower (upper, lower) | TRANUPLOlowerupper (lower, upper)
+// end of [transuplo_p]
+
 (* ****** ****** *)
 
 (*
@@ -352,10 +357,8 @@ viewdef GEMAT_v
 (* ****** ****** *)
 
 prfun GEMAT_v_trans
-  {a:viewt@ype} {ord1:order}
-  {m,n:nat} {lda:inc} {l:addr} (
-    pf_mat: !GEMAT_v (a, m, n, ord1, lda, l) >>
-             GEMAT_v (a, n, m, ord2, lda, l)
+  {a:viewt@ype} {ord1:order} {m,n:nat} {lda:inc} {l:addr} (
+    pf_mat: !GEMAT_v (a, m, n, ord1, lda, l) >> GEMAT_v (a, n, m, ord2, lda, l)
     // end of [pf_mat]
   ) :<> #[ord2:order] tranord_p (ord1, ord2)
 // end of [GEMAT_v_trans]
@@ -378,20 +381,18 @@ fun MATVECINC_get
 (* ****** ****** *)
 
 prfun GEMAT_v_row_nil {a:viewt@ype}
-  {n:nat} {ord:order} {ld:inc} {l:addr}
-  () :<prf> GEMAT_v (a, 0, n, ord, ld, l)
+  {n:nat} {ord:order} {ld:inc} {l:addr} () :<prf> GEMAT_v (a, 0, n, ord, ld, l)
 
 prfun GEMAT_v_row_unnil {a:viewt@ype}
   {n:nat} {ord:order} {ld:inc} {l:addr}
-  (pf: GEMAT_v (a, 0, n, ord, ld, l)) :<prf> void
+  (pf: GEMAT_v (a, 0, n, ord, ld, l)):<prf> void
 
 prfun GEMAT_v_col_nil {a:viewt@ype}
-  {m:nat} {ord:order} {ld:inc} {l:addr}
-  () :<prf> GEMAT_v (a, m, 0, ord, ld, l)
+  {m:nat} {ord:order} {ld:inc} {l:addr} () :<prf> GEMAT_v (a, m, 0, ord, ld, l)
 
 prfun GEMAT_v_col_unnil {a:viewt@ype}
   {m:nat} {ord:order} {ld:inc} {l:addr}
-  (pf: GEMAT_v (a, m, 0, ord, ld, l)) :<prf> void
+  (pf: GEMAT_v (a, m, 0, ord, ld, l)):<prf> void
 
 (* ****** ****** *)
 
@@ -734,6 +735,15 @@ viewdef TRMAT_v
   (a:viewt@ype, n:int, ord: order, ul: uplo, dg: diag, lda: int, l:addr) =
   TRMAT (a, n, ord, ul, dg, lda) @ l
 // end of [TRMAT_v]
+
+(* ****** ****** *)
+
+prfun TRMAT_v_trans
+  {a:viewt@ype} {m:nat}
+  {ord1:order} {ul1:uplo} {dg:diag} {lda:inc} {l:addr} (
+    pf_mat: !TRMAT_v (a, m, ord1, ul1, dg, lda, l) >> TRMAT_v (a, m, ord2, ul2, dg, lda, l)
+  ) :<> #[ord2:order; ul2:uplo] (tranord_p (ord1, ord2), tranuplo_p (ul1, ul2))
+// end of [TRMAT_v_trans]
 
 prfun TRMAT_v_of_GEMAT_v
   {a:viewt@ype} {n:nat}

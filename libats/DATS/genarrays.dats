@@ -55,15 +55,17 @@ staload "libats/SATS/genarrays.sats"
 
 (* ****** ****** *)
 
+infixl (imul) szmul
 #define szmul mul_size_size
+#define sz2sz size1_of_size
 
 (* ****** ****** *)
 
 implement{a} GEVEC_ptr_takeout
   {n} {d} {l0} (pf_vec | p_vec, d, i) = let
   viewdef V0 = GEVEC_v (a, n, d, l0)
-  val ofs = i \szmul (d \szmul sizeof<a>)
-  val [ofs:int] ofs = size1_of_size (ofs) // no-op casting
+  val ofs = (i * d) szmul sizeof<a>
+  val [ofs:int] ofs = sz2sz (ofs) // no-op casting
   stadef l = l0 + ofs
   prval (pf_at, fpf_vec) = __cast (pf_vec) where {
     extern prfun __cast (pf: V0): (a @ l, a @ l -<lin,prf> V0)
@@ -77,8 +79,8 @@ end // end of [GEVEC_ptr_takeout]
 implement{a1} GEVEC_ptr_split
   {n,i} {d} {l0} (pf_vec | p_vec, d, i) = let
   viewdef V0 (a: viewt@ype) = GEVEC_v (a, n, d, l0)
-  val ofs = i \szmul (d \szmul sizeof<a1>)
-  val [ofs:int] ofs = size1_of_size (ofs) // no-op casting
+  val ofs = (i * d) szmul sizeof<a1>
+  val [ofs:int] ofs = sz2sz (ofs) // no-op casting
   stadef l = l0 + ofs
   viewdef V1 (a: viewt@ype) = GEVEC_v (a, i, d, l0)
   viewdef V2 (a: viewt@ype) = GEVEC_v (a, n-i, d, l)
@@ -299,9 +301,10 @@ implement{a} GEMAT_ptr_takeout
   {m,n} {ord} {lda} {l0} (pf_mat | ord, p_mat, lda, i, j) = let
   viewdef V0 = GEMAT_v (a, m, n, ord, lda, l0)
   val ofs = (case+ ord of
-    | ORDERrow () => ((i \szmul lda) + j) * sizeof<a> | ORDERcol () => (i + (j \szmul lda)) * sizeof<a>
+    | ORDERrow () => (i szmul lda + j) * sizeof<a>
+    | ORDERcol () => (i + j szmul lda) * sizeof<a>
   ) : size_t
-  val [ofs:int] ofs = size1_of_size (ofs)
+  val [ofs:int] ofs = sz2sz (ofs)
   stadef l = l0 + ofs
   prval (pf_at, fpf_mat) = __cast (pf_mat) where {
     extern prfun __cast (pf: V0): (a @ l, a @ l -<lin,prf> V0)
@@ -336,7 +339,7 @@ implement{a} GEMAT_ptr_tail_row
   val ofs = (case+ ord of
     | ORDERrow () => lda * sizeof<a> | ORDERcol () => sizeof<a>
   ) : size_t // end of [val]
-  val [ofs:int] ofs = size1_of_size (ofs)
+  val [ofs:int] ofs = sz2sz (ofs)
   stadef l = l0 + ofs
   viewdef V1 = GEMAT_v (a, m-1, n, ord, lda, l)
   prval (pf1_mat, fpf_mat) = __cast (pf_mat) where {
@@ -354,7 +357,7 @@ implement{a} GEMAT_ptr_tail_col
   val ofs = (case+ ord of
     | ORDERrow () => sizeof<a> | ORDERcol () => lda * sizeof<a>
   ) : size_t // end of [val]
-  val [ofs:int] ofs = size1_of_size (ofs)
+  val [ofs:int] ofs = sz2sz (ofs)
   stadef l = l0 + ofs
   viewdef V1 = GEMAT_v (a, m, n-1, ord, lda, l)
   prval (pf1_mat, fpf_mat) = __cast (pf_mat) where {
@@ -393,9 +396,9 @@ implement
   (pf_mat | ord, p_mat, lda, j, tsz) = let
   prval unit_v () = pf_mat
   val ofs = (case ord of
-    | ORDERrow () => j \szmul tsz | ORDERcol () => j \szmul (lda * tsz)
+    | ORDERrow () => j szmul tsz | ORDERcol () => (j * lda) szmul tsz
   ) : size_t // end of [val]
-  val ofs = size1_of_size (ofs)
+  val ofs = sz2sz (ofs)
 in
   (unit_v, unit_v, unit_p | p_mat, p_mat + ofs)
 end // end of [GEMAT_ptr_split1x2_tsz_dummy]
@@ -429,9 +432,9 @@ implement
   (pf_mat | ord, p_mat, lda, i, tsz) = let
   prval unit_v () = pf_mat
   val ofs = (case ord of
-    | ORDERrow () => i \szmul (lda * tsz) | ORDERcol () => i \szmul tsz
+    | ORDERrow () => (i * lda) szmul tsz | ORDERcol () => i szmul tsz
   ) : size_t // end of [val]
-  val ofs = size1_of_size (ofs)
+  val ofs = sz2sz (ofs)
 in
   (unit_v, unit_v, unit_p | p_mat, p_mat + ofs)
 end // end of [GEMAT_ptr_split1x2_tsz_dummy]
@@ -476,15 +479,15 @@ implement
 in
   case+ ord of
   | ORDERrow () => let
-      val i_tmp = size1_of_size (j * tsz) // no-op casting
-      val p_tmp = p_mat + size1_of_size ((i \szmul lda) \szmul tsz)
+      val i_tmp = sz2sz (j * tsz) // no-op casting
+      val p_tmp = p_mat + sz2sz ((i * lda) szmul tsz)
     in @(
       unit_v, unit_v, unit_v, unit_v, unit_p
     | p_mat, p_mat + i_tmp, p_tmp, p_tmp + i_tmp
     ) end // end of [ORDERrow]
   | ORDERcol () => let
-      val i_tmp = size1_of_size (i * tsz) // no-op casting
-      val p_tmp = p_mat + size1_of_size ((j \szmul lda) \szmul tsz)
+      val i_tmp = sz2sz (i * tsz) // no-op casting
+      val p_tmp = p_mat + sz2sz ((j * lda) szmul tsz)
     in @(
       unit_v, unit_v, unit_v, unit_v, unit_p
     | p_mat, p_tmp, p_mat + i_tmp, p_tmp + i_tmp
@@ -886,8 +889,8 @@ implement
 in
   case+ ord of
   | ORDERrow () => let
-      val i_tmp = size1_of_size (i * tsz) // no-op casting
-      val p_tmp = p_mat + size1_of_size ((i \szmul lda) \szmul tsz)
+      val i_tmp = sz2sz (i * tsz) // no-op casting
+      val p_tmp = p_mat + sz2sz ((i * lda) szmul tsz)
       val p_lo = (case+ ul of
         | UPLOupper () => p_mat + i_tmp | UPLOlower () => p_tmp
       ) : ptr
@@ -895,8 +898,8 @@ in
       unit_v, unit_v, unit_v, unit_p | p_mat, p_lo, p_tmp + i_tmp
     ) end // end of [ORDERrow]
   | ORDERcol () => let
-      val i_tmp = size1_of_size (i * tsz) // no-op casting
-      val p_tmp = p_mat + size1_of_size ((i \szmul lda) \szmul tsz)
+      val i_tmp = sz2sz (i * tsz) // no-op casting
+      val p_tmp = p_mat + sz2sz ((i * lda) szmul tsz)
       val p_lo = (case+ ul of
         | UPLOupper () => p_tmp | UPLOlower () => p_mat + i_tmp 
       ) : ptr
