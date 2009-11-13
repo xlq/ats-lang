@@ -138,28 +138,28 @@ end // end of [GEVEC_ptr_initialize_elt]
 (* ****** ****** *)
 
 implement{a} GEVEC_ptr_copy
-  {m} {d1,d2} (X, Y, m, d1, d2) = let
+  {m} {d1,d2} (X1, X2, m, d1, d2) = let
   val (pf1_mul | ofs1) = mul2_size1_size1 (d1, sizeof<a>)
   val (pf2_mul | ofs2) = mul2_size1_size1 (d2, sizeof<a>)
-  fun loop {i:nat | i <= m} {l1,l2:addr} .<m-i>. (
-      pf1: !GEVEC_v (a?, m-i, d1, l1) >> GEVEC_v (a, m-i, d1, l1)
-    , pf2: !GEVEC_v (a, m-i, d2, l2)
-    | p1: ptr l1, p2: ptr l2, i: size_t i
+  fun loop {mi:nat | mi <= m} {l1,l2:addr} .<mi>. (
+      pf1: !GEVEC_v (a, mi, d1, l1)
+    , pf2: !GEVEC_v (a?, mi, d2, l2) >> GEVEC_v (a, mi, d2, l2)
+    | p1: ptr l1, p2: ptr l2, mi: size_t mi
     ) :<cloref> void =
-    if i < m then let
-      prval (pf11, pf12) = GEVEC_v_uncons {a?} (pf1_mul, pf1)
-      prval (pf21, pf22) = GEVEC_v_uncons {a} (pf2_mul, pf2)
-      val () = !p1 := !p2
-      val () = loop (pf12, pf22 | p1+ofs1, p2+ofs2, i+1)
+    if mi > 0 then let
+      prval (pf11, pf12) = GEVEC_v_uncons {a} (pf1_mul, pf1)
+      prval (pf21, pf22) = GEVEC_v_uncons {a?} (pf2_mul, pf2)
+      val () = !p2 := !p1
+      val () = loop (pf12, pf22 | p1+ofs1, p2+ofs2, mi-1)
       prval () = pf1 := GEVEC_v_cons {a} (pf1_mul, pf11, pf12)
       prval () = pf2 := GEVEC_v_cons {a} (pf2_mul, pf21, pf22)
     in
       // empty
     end else let
-      prval () = GEVEC_v_unnil (pf1) in pf1 := GEVEC_v_nil {a} ()
+      prval () = GEVEC_v_unnil (pf2) in pf2 := GEVEC_v_nil {a} ()
     end // end of [if]
 in
-  loop (view@ X, view@ Y | &X, &Y, 0)
+  loop (view@ X1, view@ X2 | &X1, &X2, m)
 end // end of [GEVEC_ptr_copy]
 
 (* ****** ****** *)
@@ -325,7 +325,7 @@ implement MATVECINC_get (pf | x1, x2, ld) =
 (* ****** ****** *)
 
 implement{a} GEMAT_ptr_takeout
-  {m,n} {ord} {lda} {l0} (pf_mat | ord, p_mat, lda, i, j) = let
+  {ord} {m, n} {lda} {l0} (pf_mat | ord, p_mat, lda, i, j) = let
   viewdef V0 = GEMAT_v (a, m, n, ord, lda, l0)
   val ofs = (case+ ord of
     | ORDERrow () => (i szmul lda + j) * sizeof<a>
@@ -361,7 +361,7 @@ end // end of [GEMAT_ptr_set_elt_at]
 (* ****** ****** *)
 
 implement{a} GEMAT_ptr_tail_row
-  {m,n} {ord} {lda} {l0} (pf_mat | ord, p_mat, lda) = let
+  {ord} {m,n} {lda} {l0} (pf_mat | ord, p_mat, lda) = let
   viewdef V0 = GEMAT_v (a, m, n, ord, lda, l0)
   val ofs = (case+ ord of
     | ORDERrow () => lda * sizeof<a> | ORDERcol () => sizeof<a>
@@ -379,7 +379,7 @@ end // end of [GEMAT_ptr_tail_row]
 (* ****** ****** *)
 
 implement{a} GEMAT_ptr_tail_col
-  {m,n} {ord} {lda} {l0} (pf_mat | ord, p_mat, lda) = let
+  {ord} {m,n} {lda} {l0} (pf_mat | ord, p_mat, lda) = let
   viewdef V0 = GEMAT_v (a, m, n, ord, lda, l0)
   val ofs = (case+ ord of
     | ORDERrow () => sizeof<a> | ORDERcol () => lda * sizeof<a>
@@ -615,7 +615,7 @@ implement{a} GEMAT_ptr_initialize_elt
       val (pfX1_gmat, pfX2_gmat, fpf_gmat | pX1, pX2) =
         GEMAT_ptr_split2x1<a?> (pf_gmat | ORDERrow, pX, ld, 1)
       prval (pf2_inc, pfX1_gvec, fpfX1_gmat) =
-        GEVEC_v_of_GEMAT_v_row (pfX1_gmat, ORDERrow, ld)
+        GEVEC_v_of_GEMAT_v_row (pfX1_gmat)
       prval MATVECINCrowrow () = pf2_inc
       val () = GEVEC_ptr_initialize_elt<a> (!pX1, n, 1(*incX*), alpha)
       prval () = pfX1_gmat := fpfX1_gmat (pfX1_gvec)
@@ -624,8 +624,8 @@ implement{a} GEMAT_ptr_initialize_elt
     in
       // nothing
     end else let
-      prval () = GEMAT_v_row_unnil (pf_gmat)
-      prval () = pf_gmat := GEMAT_v_row_nil {a} {n} {row} {ld} {lx} ()
+      prval () = GEMAT_v_unnil_row (pf_gmat)
+      prval () = pf_gmat := GEMAT_v_nil_row {a} {row} {n} {ld} {lx} ()
     in
       // nothing
     end // end of [if]
@@ -657,6 +657,57 @@ implement{a} GEMAT_ptr_initialize_fun
 
 (* ****** ****** *)
 
+implement{a} GEMAT_ptr_copy
+  (ord, M1, M2, m, n, ld1, ld2) =
+  GEMAT_ptr_copy_tsz (ord, M1, M2, m, n, ld1, ld2, sizeof<a>)
+// end of [GEMAT_ptr_copy]
+
+implement GEMAT_ptr_copy_tsz {a}
+  {ord} {m,n} {ld1,ld2} (ord, M1, M2, m, n, ld1, ld2, tsz) = let
+  fun loop_row {mi,n:nat} {l1,l2:addr} .<mi>. (
+      pf1: !GEMAT_v (a, mi, n, row, ld1, l1)
+    , pf2: !GEMAT_v (a?, mi, n, row, ld2, l2) >> GEMAT_v (a, mi, n, row, ld2, l2)
+    | p1: ptr l1, p2: ptr l2, mi: size_t mi, n: size_t n
+    ) :<cloref> void =
+    if mi > 0 then let
+      val (pf11, pf12, fpf1 | p11, p12) = GEMAT_ptr_split2x1<a> (pf1 | ORDERrow, p1, ld1, 1)
+      prval (pf1_inc, pf11, fpf11) = GEVEC_v_of_GEMAT_v_row {a} (pf11)
+      prval MATVECINCrowrow () = pf1_inc
+      prval pf11 = array_v_of_GEVEC_v {a} (pf11)
+      val (pf21, pf22, fpf2 | p21, p22) = GEMAT_ptr_split2x1<a?> (pf2 | ORDERrow, p2, ld2, 1)
+      prval (pf2_inc, pf21, fpf21) = GEVEC_v_of_GEMAT_v_row {a?} (pf21)
+      prval MATVECINCrowrow () = pf2_inc
+      prval pf21 = array_v_of_GEVEC_v {a?} (pf21)
+      val () = array_ptr_copy_tsz {a} (!p11, !p21, n, tsz)
+      prval pf11 = GEVEC_v_of_array_v {a} (pf11)
+      prval pf11 = fpf11 (pf11)
+      prval pf21 = GEVEC_v_of_array_v {a} (pf21)
+      prval pf21 = fpf21 (pf21)
+      val () = loop_row (pf12, pf22 | p12, p22, mi-1, n)
+      prval () = pf1 := fpf1 {a} (pf11, pf12)
+      prval () = pf2 := fpf2 {a} (pf21, pf22)
+    in
+      // nothing
+    end else let
+      prval () = GEMAT_v_unnil_row (pf2) in pf2 := GEMAT_v_nil_row {a} ()
+    end // end of [if]
+  // end of [loop_row]
+in
+  case+ ord of
+  | ORDERrow () => loop_row (view@ M1, view@ M2 | &M1, &M2, m, n)
+  | ORDERcol () => let
+      prval TRANORDcolrow () = GEMAT_v_trans {a} {col} (view@ M1)
+      prval TRANORDcolrow () = GEMAT_v_trans {a?} {col} (view@ M2)
+      val () = loop_row (view@ M1, view@ M2 | &M1, &M2, n, m)
+      prval TRANORDrowcol () = GEMAT_v_trans {a} {row} (view@ M1)
+      prval TRANORDrowcol () = GEMAT_v_trans {a} {row} (view@ M2)
+    in
+      // nothing
+    end // end of [ORDERcol]
+end // end of [GEMAT_ptr_copy_tsz]
+
+(* ****** ****** *)
+
 implement
 GEMAT_ptr_foreach_fun_tsz__main
   {a} {v} {vt} {ord1,ord2} {m,n} {ld}
@@ -673,7 +724,7 @@ GEMAT_ptr_foreach_fun_tsz__main
     val (pf1_mat, pf2_mat, fpf | p1, p2) =
       GEMAT_ptr_split2x1_tsz (pf_mat | ord1, p, ld, 1, tsz)
     prval (pf1_inc, pf1_vec, fpf1_mat) =
-      GEVEC_v_of_GEMAT_v_row (pf1_mat, ord1, ld)
+      GEVEC_v_of_GEMAT_v_row (pf1_mat)
     val inc = MATVECINC_get (pf1_inc | ORDERrow, ord1, ld)
     val () = GEVEC_ptr_foreach_fun_tsz__main
       {a} {v} (pf | !p1, f, n, inc, tsz, env) // end of [val]
@@ -695,7 +746,7 @@ GEMAT_ptr_foreach_fun_tsz__main
     val (pf1_mat, pf2_mat, fpf | p1, p2) =
       GEMAT_ptr_split1x2_tsz (pf_mat | ord1, p, ld, 1, tsz)
     prval (pf1_inc, pf1_vec, fpf1_mat) =
-      GEVEC_v_of_GEMAT_v_col (pf1_mat, ord1, ld)
+      GEVEC_v_of_GEMAT_v_col (pf1_mat)
     val inc = MATVECINC_get (pf1_inc | ORDERcol, ord1, ld)
     val () = GEVEC_ptr_foreach_fun_tsz__main
       {a} {v} (pf | !p1, f, m, inc, tsz, env) // end of [val]
@@ -774,7 +825,7 @@ GEMAT_ptr_iforeach_fun_tsz__main
     val (pf1_mat, pf2_mat, fpf | p1, p2) =
       GEMAT_ptr_split2x1_tsz (pf_mat | ord1, p, ld, 1, tsz)
     prval (pf1_inc, pf1_vec, fpf1_mat) =
-      GEVEC_v_of_GEMAT_v_row (pf1_mat, ord1, ld)
+      GEVEC_v_of_GEMAT_v_row (pf1_mat)
     val inc = MATVECINC_get (pf1_inc | ORDERrow, ord1, ld)
     val () = GEVEC_ptr_iforeach_clo_tsz__main
       {a} {v} (pf | !p1, !p_clo, n, inc, tsz, env) where {
@@ -801,7 +852,7 @@ GEMAT_ptr_iforeach_fun_tsz__main
     val (pf1_mat, pf2_mat, fpf | p1, p2) =
       GEMAT_ptr_split1x2_tsz (pf_mat | ord1, p, ld, 1, tsz)
     prval (pf1_inc, pf1_vec, fpf1_mat) =
-      GEVEC_v_of_GEMAT_v_col (pf1_mat, ord1, ld)
+      GEVEC_v_of_GEMAT_v_col (pf1_mat)
     val inc = MATVECINC_get (pf1_inc | ORDERcol, ord1, ld)
     val () = GEVEC_ptr_iforeach_clo_tsz__main
       {a} {v} (pf | !p1, !p_clo, m, inc, tsz, env) where {
