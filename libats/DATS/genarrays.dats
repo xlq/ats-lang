@@ -69,7 +69,7 @@ implement{a} GEVEC_ptr_takeout
   stadef l = l0 + ofs
   prval (pf_at, fpf_vec) = __cast (pf_vec) where {
     extern prfun __cast (pf: V0): (a @ l, a @ l -<lin,prf> V0)
-  }
+  } // end of [prval]
 in
   #[l | (pf_at, fpf_vec | p_vec + ofs) ]
 end // end of [GEVEC_ptr_takeout]
@@ -325,7 +325,8 @@ implement MATVECINC_get (pf | x1, x2, ld) =
 (* ****** ****** *)
 
 implement{a} GEMAT_ptr_takeout
-  {ord} {m, n} {lda} {l0} (pf_mat | ord, p_mat, lda, i, j) = let
+  {ord} {m, n} {lda} {l0}
+  (pf_mat | ord, p_mat, lda, i, j) = let
   viewdef V0 = GEMAT_v (a, m, n, ord, lda, l0)
   val ofs = (case+ ord of
     | ORDERrow () => (i szmul lda + j) * sizeof<a>
@@ -335,7 +336,7 @@ implement{a} GEMAT_ptr_takeout
   stadef l = l0 + ofs
   prval (pf_at, fpf_mat) = __cast (pf_mat) where {
     extern prfun __cast (pf: V0): (a @ l, a @ l -<lin,prf> V0)
-  }
+  } // end of [prval]
 in
   #[l | (pf_at, fpf_mat | p_mat + ofs) ]
 end // end of [GEMAT_ptr_takeout]
@@ -361,7 +362,8 @@ end // end of [GEMAT_ptr_set_elt_at]
 (* ****** ****** *)
 
 implement{a} GEMAT_ptr_tail_row
-  {ord} {m,n} {lda} {l0} (pf_mat | ord, p_mat, lda) = let
+  {ord} {m,n} {lda} {l0}
+  (pf_mat | ord, p_mat, lda) = let
   viewdef V0 = GEMAT_v (a, m, n, ord, lda, l0)
   val ofs = (case+ ord of
     | ORDERrow () => lda * sizeof<a> | ORDERcol () => sizeof<a>
@@ -371,7 +373,7 @@ implement{a} GEMAT_ptr_tail_row
   viewdef V1 = GEMAT_v (a, m-1, n, ord, lda, l)
   prval (pf1_mat, fpf_mat) = __cast (pf_mat) where {
     extern prfun __cast (pf: V0): (V1, V1 -<lin,prf> V0)
-  }
+  } // end of [prval]
 in
   #[l | (pf1_mat, fpf_mat | p_mat + ofs) ]
 end // end of [GEMAT_ptr_tail_row]
@@ -379,7 +381,8 @@ end // end of [GEMAT_ptr_tail_row]
 (* ****** ****** *)
 
 implement{a} GEMAT_ptr_tail_col
-  {ord} {m,n} {lda} {l0} (pf_mat | ord, p_mat, lda) = let
+  {ord} {m,n} {lda} {l0}
+  (pf_mat | ord, p_mat, lda) = let
   viewdef V0 = GEMAT_v (a, m, n, ord, lda, l0)
   val ofs = (case+ ord of
     | ORDERrow () => sizeof<a> | ORDERcol () => lda * sizeof<a>
@@ -389,176 +392,107 @@ implement{a} GEMAT_ptr_tail_col
   viewdef V1 = GEMAT_v (a, m, n-1, ord, lda, l)
   prval (pf1_mat, fpf_mat) = __cast (pf_mat) where {
     extern prfun __cast (pf: V0): (V1, V1 -<lin,prf> V0)
-  }
+  } // end of [prval]
 in
   #[l | (pf1_mat, fpf_mat | p_mat + ofs) ]
 end // end of [GEMAT_ptr_tail_col]
 
 (* ****** ****** *)
 
-(*
-** The following function acts as a dummy for [GEMAT_ptr_split1x2_tsz]
-*)
-extern fun
-GEMAT_ptr_split1x2_tsz_dummy
-  {a:viewt@ype} {m,n:nat}
-  {j:nat | j <= n} {ord:order} {lda:pos} {l0:addr} (
-    pf_mat: unit_v // GEMAT_v (a, m, n, ord, lda, l0)
-  | ord: ORDER ord
-  , p_mat: ptr l0
-  , lda: size_t lda
-  , j: size_t j
-  , tsz: sizeof_t a
-  ) :<> [l1,l2:addr] @(
-    unit_v // GEMAT_v (a, m, j, ord, lda, l1)  
-  , unit_v // GEMAT_v (a, m, n-j, ord, lda, l2)
-  , unit_p // (GEMAT_v (a, m, j, ord, lda, l1),
-           //  GEMAT_v (a, m, n-j, ord, lda, l2)
-           // ) -<prf> GEMAT_v (a, m, n, ord, lda, l0)
-  | ptr l1, ptr l2
-  ) = "atslib_GEMAT_ptr_split1x2_tsz"
+extern fun GEMAT_ptr_split1x2_tsz {a1:viewt@ype}
+  {ord:order} {m,n,j:nat | j <= n} {lda:inc} {l0:addr} (
+    pf_mat: GEMAT_v (a1, m, n, ord, lda, l0)
+  | ord: ORDER ord, p_mat: ptr l0, lda: size_t lda, j: size_t j, tsz: sizeof_t a1
+  ) :<> GEMAT_ptr_split1x2_res_t (a1, m, n, j, ord, lda, l0)
 
-implement
-  GEMAT_ptr_split1x2_tsz_dummy
+implement GEMAT_ptr_split1x2_tsz
+  {a1} {ord} {m,n,j} {lda} {l0}
   (pf_mat | ord, p_mat, lda, j, tsz) = let
-  prval unit_v () = pf_mat
   val ofs = (case ord of
     | ORDERrow () => j szmul tsz | ORDERcol () => (j * lda) szmul tsz
   ) : size_t // end of [val]
   val ofs = sz2sz (ofs)
+  val res = (unit_v, unit_v, unit_p | p_mat, p_mat + ofs)
+  extern castfn __cast {vt:viewt@ype}
+    (pf: GEMAT_v (a1, m, n, ord, lda, l0) | res: vt)
+    :<> GEMAT_ptr_split1x2_res_t (a1, m, n, j, ord, lda, l0)
+  // end of [__cast]
 in
-  (unit_v, unit_v, unit_p | p_mat, p_mat + ofs)
-end // end of [GEMAT_ptr_split1x2_tsz_dummy]
-
-(* ****** ****** *)
-
-(*
-** The following function acts as a dummy for [GEMAT_ptr_split2x1_tsz]
-*)
-extern fun
-GEMAT_ptr_split2x1_tsz_dummy
-  {a:viewt@ype} {m,n:nat}
-  {i:nat | i <= m} {ord:order} {lda:pos} {l0:addr} (
-    pf_mat: unit_v // GEMAT_v (a, m, n, ord, lda, l0)
-  | ord: ORDER ord
-  , p_mat: ptr l0
-  , lda: size_t lda
-  , i: size_t i
-  , tsz: sizeof_t a
-  ) :<> [l1,l2:addr] @(
-    unit_v // GEMAT_v (a, i, n, ord, lda, l1)  
-  , unit_v // GEMAT_v (a, m-i, n, ord, lda, l2)
-  , unit_p // (GEMAT_v (a, i, n, ord, lda, l1),
-           //  GEMAT_v (a, m-i, n, ord, lda, l2)
-           // ) -<prf> GEMAT_v (a, m, n, ord, lda, l0)
-  | ptr l1, ptr l2
-  ) = "atslib_GEMAT_ptr_split2x1_tsz"
-
-implement
-  GEMAT_ptr_split2x1_tsz_dummy
-  (pf_mat | ord, p_mat, lda, i, tsz) = let
-  prval unit_v () = pf_mat
-  val ofs = (case ord of
-    | ORDERrow () => (i * lda) szmul tsz | ORDERcol () => i szmul tsz
-  ) : size_t // end of [val]
-  val ofs = sz2sz (ofs)
-in
-  (unit_v, unit_v, unit_p | p_mat, p_mat + ofs)
-end // end of [GEMAT_ptr_split1x2_tsz_dummy]
-
-(* ****** ****** *)
-
-(*
-** The following function acts as a dummy for [GEMAT_ptr_split2x2_tsz]
-*)
-extern fun
-GEMAT_ptr_split2x2_tsz_dummy
-  {a:viewt@ype}
-  {m,n:nat} {i,j:nat | i <= m; j <= n}
-  {ord:order} {lda:pos} {l0:addr} (
-    pf_mat: unit_v // GEMAT_v (a, m, n, ord, lda, l0)
-  | ord: ORDER ord
-  , p_mat: ptr l0
-  , lda: size_t lda, i: size_t i, j: size_t j
-  , tsz: sizeof_t a
-  ) :<> [l11,l12,l21,l22:addr] @(
-    unit_v // GEMAT_v (a, i, j, ord, lda, l11)  
-  , unit_v // GEMAT_v (a, i, n-j, ord, lda, l12)
-  , unit_v // GEMAT_v (a, m-i, j, ord, lda, l21)
-  , unit_v // GEMAT_v (a, m-i, n-j, ord, lda, l22)
-  , unit_p // (GEMAT_v (a, i, j, ord, lda, l11),
-           //  GEMAT_v (a, i, n-j, ord, lda, l12),
-           //  GEMAT_v (a, m-i, j, ord, lda, l21),
-           //  GEMAT_v (a, m-i, n-j, ord, lda, l22)
-           // ) -<prf> GEMAT_v (a, m, n, ord, lda, l0)
-   | ptr l11 // l11 should equal l0
-   , ptr l12
-   , ptr l21
-   , ptr l22
-   ) = "atslib_GEMAT_ptr_split2x2_tsz"
-// end of [GEMAT_ptr_split2x2_tsz]
-
-implement
-  GEMAT_ptr_split2x2_tsz_dummy (
-    pf_mat | ord, p_mat, lda, i, j, tsz
-  ) = let
-  prval unit_v () = pf_mat
-in
-  case+ ord of
-  | ORDERrow () => let
-      val i_tmp = sz2sz (j * tsz) // no-op casting
-      val p_tmp = p_mat + sz2sz ((i * lda) szmul tsz)
-    in @(
-      unit_v, unit_v, unit_v, unit_v, unit_p
-    | p_mat, p_mat + i_tmp, p_tmp, p_tmp + i_tmp
-    ) end // end of [ORDERrow]
-  | ORDERcol () => let
-      val i_tmp = sz2sz (i * tsz) // no-op casting
-      val p_tmp = p_mat + sz2sz ((j * lda) szmul tsz)
-    in @(
-      unit_v, unit_v, unit_v, unit_v, unit_p
-    | p_mat, p_tmp, p_mat + i_tmp, p_tmp + i_tmp
-    ) end // end of [ORDERcol]
-end // end of [GEMAT_ptr_split2x2_tsz_dummy]
-
-(* ****** ****** *)
-
-extern
-fun GEMAT_ptr_split1x2_tsz {a1:viewt@ype}
-  {m,n:nat} {j:nat | j <= n} {ord:order} {lda:inc} {l0:addr} (
-    pf_mat: GEMAT_v (a1, m, n, ord, lda, l0)
-  | ord: ORDER ord, p_mat: ptr l0, lda: size_t lda, j: size_t j, tsz: sizeof_t a1
-  ) :<> GEMAT_ptr_split1x2_res_t (a1, m, n, j, ord, lda, l0)
-    = "atslib_GEMAT_ptr_split1x2_tsz"
-(* end of [GEMAT_ptr_split1x2_tsz] *)
-
-extern
-fun GEMAT_ptr_split2x1_tsz {a1:viewt@ype}
-  {m,n:nat} {i:nat | i <= m} {ord:order} {lda:inc} {l0:addr} (
-    pf_mat: GEMAT_v (a1, m, n, ord, lda, l0)
-  | ord: ORDER ord, p_mat: ptr l0, lda: size_t lda, i: size_t i, tsz: sizeof_t a1
-  ) :<> GEMAT_ptr_split2x1_res_t (a1, m, n, i, ord, lda, l0)
-    = "atslib_GEMAT_ptr_split2x1_tsz"
-(* end of [GEMAT_ptr_split2x1_tsz] *)
-
-extern
-fun GEMAT_ptr_split2x2_tsz {a1:viewt@ype}
-  {m,n:nat} {i,j:nat | i <= m; j <= n} {ord:order} {lda:inc} {l0:addr} (
-    pf_mat: GEMAT_v (a1, m, n, ord, lda, l0)
-  | ord: ORDER ord, p_mat: ptr l0, lda: size_t lda, i: size_t i, j: size_t j, tsz: sizeof_t a1
-  ) :<> GEMAT_ptr_split2x2_res_t (a1, m, n, i, j, ord, lda, l0)
-  = "atslib_GEMAT_ptr_split2x2_tsz"
-// end of [GEMAT_ptr_split2x2_tsz]
+  __cast (pf_mat | res)
+end // end of [GEMAT_ptr_split1x2_tsz]
 
 implement{a1} GEMAT_ptr_split1x2
   (pf_mat | ord, p_mat, lda, j) =
   GEMAT_ptr_split1x2_tsz {a1} (pf_mat | ord, p_mat, lda, j, sizeof<a1>)
 // end of [GEMAT_ptr_split1x2]
 
+(* ****** ****** *)
+
+extern
+fun GEMAT_ptr_split2x1_tsz {a1:viewt@ype}
+  {ord:order} {m,n,i:nat | i <= m} {lda:inc} {l0:addr} (
+    pf_mat: GEMAT_v (a1, m, n, ord, lda, l0)
+  | ord: ORDER ord, p_mat: ptr l0, lda: size_t lda, i: size_t i, tsz: sizeof_t a1
+  ) :<> GEMAT_ptr_split2x1_res_t (a1, m, n, i, ord, lda, l0)
+
+implement GEMAT_ptr_split2x1_tsz
+  {a1} {ord} {m,n,i} {lda} {l0}
+  (pf_mat | ord,p_mat, lda, i, tsz) = let
+  val ofs = (case ord of
+    | ORDERrow () => (i * lda) szmul tsz | ORDERcol () => i szmul tsz
+  ) : size_t // end of [val]
+  val ofs = sz2sz (ofs)
+  val res = (unit_v, unit_v, unit_p | p_mat, p_mat + ofs)
+  extern castfn __cast {vt:viewt@ype}
+    (pf: GEMAT_v (a1, m, n, ord, lda, l0) | res: vt)
+    :<> GEMAT_ptr_split2x1_res_t (a1, m, n, i, ord, lda, l0)
+  // end of [__cast]
+in
+  __cast (pf_mat | res)
+end // end of [GEMAT_ptr_split2x1_tsz]
+
 implement{a1} GEMAT_ptr_split2x1
   (pf_mat | ord, p_mat, lda, i) =
   GEMAT_ptr_split2x1_tsz {a1} (pf_mat | ord, p_mat, lda, i, sizeof<a1>)
 // end of [GEMAT_ptr_split2x1]
+
+(* ****** ****** *)
+
+extern
+fun GEMAT_ptr_split2x2_tsz {a1:viewt@ype}
+  {ord:order} {m,n,i,j:nat | i <= m; j <= n} {lda:inc} {l0:addr} (
+    pf_mat: GEMAT_v (a1, m, n, ord, lda, l0)
+  | ord: ORDER ord, p_mat: ptr l0, lda: size_t lda, i: size_t i, j: size_t j, tsz: sizeof_t a1
+  ) :<> GEMAT_ptr_split2x2_res_t (a1, m, n, i, j, ord, lda, l0)
+
+implement GEMAT_ptr_split2x2_tsz
+  {a1} {ord} {m,n,i,j} {lda} {l0}
+  (pf_mat | ord, p_mat, lda, i, j, tsz) = let
+  val res = (case+ ord of
+    | ORDERrow () => let
+        val i_tmp = sz2sz (j * tsz) // no-op casting
+        val p_tmp = p_mat + sz2sz ((i * lda) szmul tsz)
+      in @(
+        unit_v, unit_v, unit_v, unit_v, unit_p
+      | p_mat, p_mat + i_tmp, p_tmp, p_tmp + i_tmp
+      ) end // end of [ORDERrow]
+    | ORDERcol () => let
+        val i_tmp = sz2sz (i * tsz) // no-op casting
+        val p_tmp = p_mat + sz2sz ((j * lda) szmul tsz)
+      in @(
+        unit_v, unit_v, unit_v, unit_v, unit_p
+      | p_mat, p_tmp, p_mat + i_tmp, p_tmp + i_tmp
+      ) end // end of [ORDERcol]
+  ) : (
+    unit_v, unit_v, unit_v, unit_v, unit_p | ptr, ptr, ptr, ptr
+  ) // end of [val]
+   extern castfn __cast {vt:viewt@ype}
+     (pf: GEMAT_v (a1, m, n, ord, lda, l0) | res: vt)
+     :<> GEMAT_ptr_split2x2_res_t (a1, m, n, i, j, ord, lda, l0)
+  // end of [__cast]
+in
+  __cast (pf_mat | res)
+end // end of [GEMAT_ptr_split2x2_tsz]
 
 implement{a1} GEMAT_ptr_split2x2
   (pf_mat | ord, p_mat, lda, i, j) =
@@ -670,11 +604,11 @@ implement GEMAT_ptr_copy_tsz {a}
     | p1: ptr l1, p2: ptr l2, mi: size_t mi, n: size_t n
     ) :<cloref> void =
     if mi > 0 then let
-      val (pf11, pf12, fpf1 | p11, p12) = GEMAT_ptr_split2x1<a> (pf1 | ORDERrow, p1, ld1, 1)
+      val (pf11, pf12, fpf1 | p11, p12) = GEMAT_ptr_split2x1_tsz {a} (pf1 | ORDERrow, p1, ld1, 1, tsz)
       prval (pf1_inc, pf11, fpf11) = GEVEC_v_of_GEMAT_v_row {a} (pf11)
       prval MATVECINCrowrow () = pf1_inc
       prval pf11 = array_v_of_GEVEC_v {a} (pf11)
-      val (pf21, pf22, fpf2 | p21, p22) = GEMAT_ptr_split2x1<a?> (pf2 | ORDERrow, p2, ld2, 1)
+      val (pf21, pf22, fpf2 | p21, p22) = GEMAT_ptr_split2x1_tsz {a?} (pf2 | ORDERrow, p2, ld2, 1, tsz)
       prval (pf2_inc, pf21, fpf21) = GEVEC_v_of_GEMAT_v_row {a?} (pf21)
       prval MATVECINCrowrow () = pf2_inc
       prval pf21 = array_v_of_GEVEC_v {a?} (pf21)
@@ -694,7 +628,9 @@ implement GEMAT_ptr_copy_tsz {a}
   // end of [loop_row]
 in
   case+ ord of
-  | ORDERrow () => loop_row (view@ M1, view@ M2 | &M1, &M2, m, n)
+  | ORDERrow () =>
+      loop_row (view@ M1, view@ M2 | &M1, &M2, m, n)
+    // end of [ORDERrow]
   | ORDERcol () => let
       prval TRANORDcolrow () = GEMAT_v_trans {a} {col} (view@ M1)
       prval TRANORDcolrow () = GEMAT_v_trans {a?} {col} (view@ M2)
@@ -722,7 +658,7 @@ GEMAT_ptr_foreach_fun_tsz__main
   ) :<cloref> void =
   if mi > 0 then let
     val (pf1_mat, pf2_mat, fpf | p1, p2) =
-      GEMAT_ptr_split2x1_tsz (pf_mat | ord1, p, ld, 1, tsz)
+      GEMAT_ptr_split2x1_tsz {a} (pf_mat | ord1, p, ld, 1, tsz)
     prval (pf1_inc, pf1_vec, fpf1_mat) =
       GEVEC_v_of_GEMAT_v_row (pf1_mat)
     val inc = MATVECINC_get (pf1_inc | ORDERrow, ord1, ld)
@@ -823,7 +759,7 @@ GEMAT_ptr_iforeach_fun_tsz__main
   ) :<cloref> void =
   if mi > 0 then let
     val (pf1_mat, pf2_mat, fpf | p1, p2) =
-      GEMAT_ptr_split2x1_tsz (pf_mat | ord1, p, ld, 1, tsz)
+      GEMAT_ptr_split2x1_tsz {a} (pf_mat | ord1, p, ld, 1, tsz)
     prval (pf1_inc, pf1_vec, fpf1_mat) =
       GEVEC_v_of_GEMAT_v_row (pf1_mat)
     val inc = MATVECINC_get (pf1_inc | ORDERrow, ord1, ld)
@@ -932,72 +868,334 @@ end // end of [GEMAT_ptr_iforeach_clo_tsz]
 
 (* ****** ****** *)
 
-(*
-** The following function acts as a dummy for [TRMAT_ptr_split2x2_tsz]
-*)
-extern fun
-TRMAT_ptr_split2x2_tsz_dummy
-  {a:viewt@ype} {m:nat} {i:nat | i <= m}
-  {ord:order} {ul:uplo} {dg:diag} {lda:pos} {l0:addr} (
-    pf_mat: unit_v // TRMAT_v (a, m, ord, ul, dg, lda, l0)
-  | ord: ORDER ord
-  , ul: UPLO ul
-  , p_mat: ptr l0
-  , lda: size_t lda, i: size_t i
-  , tsz: sizeof_t a
-  ) :<> @(
-    unit_v // TRMAT_v (a, i, ord, ul, dg, lda, lu)
-  , unit_v // GEMAT_v (a, i, m-i, ord, lda, lo)
-  , unit_v // TRMAT_v (a, m-i, ord, ul, dg, lda, ll)
-  , unit_p // (TRMAT_v (a, i, ord, ul, dg, lda, lu)
-           //  GEMAT_v (a, i, m-i, ord, lda, lo)
-           //  TRMAT_v (a, m-i, ord, ul, dg, lda, ll)
-           // ) -<prf> TRMAT_v (a2, m, ord, ul, dg, lda, l0)
-   | ptr // lu should equal l0
-   , ptr // lo
-   , ptr // ll
-   ) = "atslib_TRMAT_ptr_split2x2_tsz"
-// end of [TRMAT_ptr_split2x2_tsz]
+local
 
-implement
-  TRMAT_ptr_split2x2_tsz_dummy (
-    pf_mat | ord, ul, p_mat, lda, i, tsz
-  ) = let
-  prval unit_v () = pf_mat
+fn{a:t@ype}
+  TRMAT_ptr_get_elt_at_dummy {ord:order} {l:addr} (
+    ord: ORDER ord, p_mat: ptr l, lda: size_t, i: size_t, j: size_t
+  ) :<> a = let
+  val ofs = (case+ ord of
+    | ORDERrow () => (i szmul lda + j) * sizeof<a>
+    | ORDERcol () => (i + j szmul lda) * sizeof<a>
+  ) : size_t
+  val [ofs:int] ofs = sz2sz (ofs)
+  prval (pf, fpf) = __lemma () where {
+    extern prfun __lemma (): (a @ l+ofs, a @ l+ofs -<lin> void)
+  } // end of [prval]
+  val x = !(p_mat + ofs)
+  prval () = fpf (pf)
 in
-  case+ ord of
-  | ORDERrow () => let
-      val i_tmp = sz2sz (i * tsz) // no-op casting
-      val p_tmp = p_mat + sz2sz ((i * lda) szmul tsz)
-      val p_lo = (case+ ul of
-        | UPLOupper () => p_mat + i_tmp | UPLOlower () => p_tmp
-      ) : ptr
-    in @(
-      unit_v, unit_v, unit_v, unit_p | p_mat, p_lo, p_tmp + i_tmp
-    ) end // end of [ORDERrow]
-  | ORDERcol () => let
-      val i_tmp = sz2sz (i * tsz) // no-op casting
-      val p_tmp = p_mat + sz2sz ((i * lda) szmul tsz)
-      val p_lo = (case+ ul of
-        | UPLOupper () => p_tmp | UPLOlower () => p_mat + i_tmp 
-      ) : ptr
-    in @(
-      unit_v, unit_v, unit_v, unit_p | p_mat, p_lo, p_tmp + i_tmp
-    ) end // end of [ORDERcol]
-end // end of [TRMAT_ptr_split2x2_tsz_dummy]
+  x
+end // end of [TRMAT_ptr_get_elt_at_dummy]
 
-extern fun TRMAT_ptr_split2x2_tsz
-  {a1:viewt@ype} {m:nat} {i:nat | i <= m}
-  {ord:order} {ul:uplo} {dg:diag} {lda:inc} {l0:addr} (
-    pf_mat: TRMAT_v (a1, m, ord, ul, dg, lda, l0)
-  | ord: ORDER ord, ul: UPLO ul, A: ptr l0, lda: size_t lda, i: size_t i, tsz: sizeof_t a1
-  ) :<> TRMAT_ptr_split2x2_res_t (a1, m, i, ord, ul, dg, lda, l0)
-// end of [TRMAT_ptr_split2x2]
+fn{a:t@ype}
+  TRMAT_ptr_set_elt_at_dummy {ord:order} {l:addr} (
+    ord: ORDER ord, p_mat: ptr l, lda: size_t, i: size_t, j: size_t, x: a
+  ) :<> void = let
+  val ofs = (case+ ord of
+    | ORDERrow () => (i szmul lda + j) * sizeof<a>
+    | ORDERcol () => (i + j szmul lda) * sizeof<a>
+  ) : size_t
+  val [ofs:int] ofs = sz2sz (ofs)
+  prval (pf, fpf) = __lemma () where {
+    extern prfun __lemma (): (a @ l+ofs, a @ l+ofs -<lin> void)
+  } // end of [prval]
+  val x = !(p_mat + ofs) := x
+  prval () = fpf (pf)
+in
+  // nothing
+end // end of [TRMAT_ptr_get_elt_at_dummy]
+
+in // in of [local]
+
+implement{a} TRMAT_UN_ptr_get_elt_at
+  (ord, A, lda, i, j) = TRMAT_ptr_get_elt_at_dummy<a> (ord, &A, lda, i, j)
+// end of [TRMAT_UN_ptr_get_elt_at]
+
+implement{a} TRMAT_UN_ptr_set_elt_at
+  (ord, A, lda, i, j, x) = TRMAT_ptr_set_elt_at_dummy<a> (ord, &A, lda, i, j, x)
+// end of [TRMAT_UN_ptr_set_elt_at]
+
+implement{a} TRMAT_UU_ptr_get_elt_at
+  (ord, A, lda, i, j) = TRMAT_ptr_get_elt_at_dummy<a> (ord, &A, lda, i, j)
+// end of [TRMAT_UU_ptr_get_elt_at]
+
+implement{a} TRMAT_UU_ptr_set_elt_at
+  (ord, A, lda, i, j, x) = TRMAT_ptr_set_elt_at_dummy<a> (ord, &A, lda, i, j, x)
+// end of [TRMAT_UU_ptr_set_elt_at]
+
+implement{a} TRMAT_LN_ptr_get_elt_at
+  (ord, A, lda, i, j) = TRMAT_ptr_get_elt_at_dummy<a> (ord, &A, lda, i, j)
+// end of [TRMAT_LN_ptr_get_elt_at]
+
+implement{a} TRMAT_LN_ptr_set_elt_at
+  (ord, A, lda, i, j, x) = TRMAT_ptr_set_elt_at_dummy<a> (ord, &A, lda, i, j, x)
+// end of [TRMAT_LN_ptr_set_elt_at]
+
+implement{a} TRMAT_LU_ptr_get_elt_at
+  (ord, A, lda, i, j) = TRMAT_ptr_get_elt_at_dummy<a> (ord, &A, lda, i, j)
+// end of [TRMAT_LU_ptr_get_elt_at]
+
+implement{a} TRMAT_LU_ptr_set_elt_at
+  (ord, A, lda, i, j, x) = TRMAT_ptr_set_elt_at_dummy<a> (ord, &A, lda, i, j, x)
+// end of [TRMAT_LU_ptr_set_elt_at]
+
+end // end of [local]
+
+(* ****** ****** *)
+
+extern fun TRMAT_U_ptr_split2x2_tsz
+  {a1:viewt@ype} 
+  {ord:order} {dg:diag} {m,i:nat | i <= m}
+  {lda:inc} {l0:addr} (
+    pf_mat: TRMAT_v (a1, m, ord, upper, dg, lda, l0)
+  | ord: ORDER ord, A: ptr l0, lda: size_t lda, i: size_t i, tsz: sizeof_t a1
+  ) :<> TRMAT_U_ptr_split2x2_res_t (a1, m, i, ord, dg, lda, l0)
+
+implement TRMAT_U_ptr_split2x2_tsz
+  {a1} {ord} {dg} {m,i} {lda} {l0}
+  (pf_mat | ord, p_mat, lda, i, tsz) = let
+  val res = (case+ ord of
+    | ORDERrow () => let
+        val i_tmp = sz2sz (i * tsz) // no-op casting
+        val p_tmp = p_mat + sz2sz ((i * lda) szmul tsz)
+      in @(
+        unit_v, unit_v, unit_v, unit_p | p_mat, p_mat + i_tmp, p_tmp + i_tmp
+      ) end // end of [ORDERrow]
+    | ORDERcol () => let
+        val i_tmp = sz2sz (i * tsz) // no-op casting
+        val p_tmp = p_mat + sz2sz ((i * lda) szmul tsz)
+      in @(
+        unit_v, unit_v, unit_v, unit_p | p_mat, p_tmp, p_tmp + i_tmp
+      ) end // end of [ORDERcol]
+  ) : (unit_v, unit_v, unit_v, unit_p | ptr, ptr, ptr)
+  extern castfn __cast {vt:viewt@ype}
+    (pf: TRMAT_v (a1, m, ord, upper, dg, lda, l0) | res: vt)
+    :<> TRMAT_U_ptr_split2x2_res_t (a1, m, i, ord, dg, lda, l0)
+  // end of [__cast]
+in
+  __cast (pf_mat | res)
+end // end of [TRMAT_U_ptr_split2x2_tsz]
 
 implement{a1}
-  TRMAT_ptr_split2x2 (pf_mat | ord, ul, A, lda, i) =
-  TRMAT_ptr_split2x2_tsz (pf_mat | ord, ul, A, lda, i, sizeof<a1>)
-// end of [TRMAT_ptr_split2x2]
+  TRMAT_U_ptr_split2x2 (pf_mat | ord, A, lda, i) =
+  TRMAT_U_ptr_split2x2_tsz (pf_mat | ord, A, lda, i, sizeof<a1>)
+// end of [TRMAT_U_ptr_split2x2]
+
+(* ****** ****** *)
+
+extern fun TRMAT_L_ptr_split2x2_tsz
+  {a1:viewt@ype}
+  {ord:order} {dg:diag} {m,i:nat | i <= m}
+  {lda:inc} {l0:addr} (
+    pf_mat: TRMAT_v (a1, m, ord, lower, dg, lda, l0)
+  | ord: ORDER ord, A: ptr l0, lda: size_t lda, i: size_t i, tsz: sizeof_t a1
+  ) :<> TRMAT_L_ptr_split2x2_res_t (a1, m, i, ord, dg, lda, l0)
+
+implement TRMAT_L_ptr_split2x2_tsz
+  {a1} {ord} {dg} {m,i} {lda} {l0}
+  (pf_mat | ord, p_mat, lda, i, tsz) = let
+  val res = (case ord of
+    | ORDERrow () => let
+        val i_tmp = sz2sz (i * tsz) // no-op casting
+        val p_tmp = p_mat + sz2sz ((i * lda) szmul tsz)
+      in @(
+        unit_v, unit_v, unit_v, unit_p | p_mat, p_tmp, p_tmp + i_tmp
+      ) end // end of [ORDERrow]
+    | ORDERcol () => let
+        val i_tmp = sz2sz (i * tsz) // no-op casting
+        val p_tmp = p_mat + sz2sz ((i * lda) szmul tsz)
+      in @(
+        unit_v, unit_v, unit_v, unit_p | p_mat, p_mat + i_tmp, p_tmp + i_tmp
+      ) end // end of [ORDERcol]
+  ) : (unit_v, unit_v, unit_v, unit_p | ptr, ptr, ptr)
+  extern castfn __cast {vt:viewt@ype}
+    (pf: TRMAT_v (a1, m, ord, lower, dg, lda, l0) | res: vt)
+    :<> TRMAT_L_ptr_split2x2_res_t (a1, m, i, ord, dg, lda, l0)
+  // end of [__cast]
+in
+  __cast (pf_mat | res)
+end // end of [TRMAT_L_ptr_split2x2_tsz]
+
+implement{a1}
+  TRMAT_L_ptr_split2x2 (pf_mat | ord, A, lda, i) =
+  TRMAT_L_ptr_split2x2_tsz (pf_mat | ord, A, lda, i, sizeof<a1>)
+// end of [TRMAT_L_ptr_split2x2]
+
+(* ****** ****** *)
+
+extern
+prfun TRMAT1x1_v_takeout_unit
+  {a1:viewt@ype}
+  {ord:order} {ul:uplo} {ld:inc} {l:addr} (
+    pf: TRMAT_v (a1, 1, ord, ul, unit, ld, l)
+  ) : (
+    {a2:viewt@ype | a1 \tszeq a2} () -<prf> TRMAT_v (a2, 1, ord, ul, unit, ld, l)
+  )
+// end of [TRMAT1x1_v_takeout_unit]
+
+extern
+prfun TRMAT1x1_v_takeout_nonunit
+  {a1:viewt@ype}
+  {ord:order} {ul:uplo} {ld:inc} {l:addr} (
+    pf: TRMAT_v (a1, 1, ord, ul, nonunit, ld, l)
+  ) : (
+    a1 @ l
+  , {a2:viewt@ype | a1 \tszeq a2} a2 @ l -<prf> TRMAT_v (a2, 1, ord, ul, nonunit, ld, l)
+  )
+// end of [TRMAT1x1_v_takeout_nonunit]
+
+(* ****** ****** *)
+
+implement{a} TRMAT_ptr_copy
+  (ord, ul, dg, M1, M2, m, ld1, ld2) =
+  TRMAT_ptr_copy_tsz (ord, ul, dg, M1, M2, m, ld1, ld2, sizeof<a>)
+// end of [TRMAT_ptr_copy]
+
+(*
+implement TRMAT_ptr_copy_tsz
+  {a} {ord} {ul} {dg} {m} {ld1,ld2}
+  (ord, ul, dg, M1, M2, m, ld1, ld2, tsz) = let
+  fun loop_row_upper_nonunit
+    {mi:nat} {l1,l2:addr} .<mi>. (
+      pf1: !TRMAT_v (a, mi, row, upper, nonunit, ld1, l1)
+    , pf2: !TRMAT_v (a?, mi, row, upper, nonunit, ld2, l2)
+         >> TRMAT_v (a, mi, row, upper, nonunit, ld2, l2)
+    | p1: ptr l1, p2: ptr l2, mi: size_t mi
+    ) :<cloref> void =
+    if mi > 0 then let
+      val (pf11, pf12, pf13, fpf1 | p11, p12, p13) = 
+        TRMAT_U_ptr_split2x2 (pf1 | ORDERrow, p1, ld1, 1)
+      val (pf21, pf22, pf23, fpf2 | p21, p22, p23) = 
+        TRMAT_U_ptr_split2x2 (pf2 | ORDERrow, p2, ld2, 1)
+//
+      prval (pf11, fpf11) = TRMAT1x1_v_takeout_nonunit {a} (pf11)
+      prval (pf21, fpf21) = TRMAT1x1_v_takeout_nonunit {a?} (pf21)
+      val () = !p21 := !p11
+      prval pf11 = fpf11 (pf11)
+      prval pf21 = fpf21 (pf21)
+//
+      prval (pf12_inc, pf12, fpf12) = GEVEC_v_of_GEMAT_v_row {a} (pf12)
+      prval MATVECINCrowrow () = pf12_inc
+      prval pf12 = array_v_of_GEVEC_v {a} (pf12)
+      prval (pf22_inc, pf22, fpf22) = GEVEC_v_of_GEMAT_v_row {a?} (pf22)
+      prval MATVECINCrowrow () = pf22_inc
+      prval pf22 = array_v_of_GEVEC_v {a?} (pf22)
+      val () = array_ptr_copy_tsz {a} (!p12, !p22, mi - 1, tsz)
+      prval pf12 = GEVEC_v_of_array_v {a} (pf12)
+      prval pf12 = fpf12 {a} (pf12)
+      prval pf22 = GEVEC_v_of_array_v {a} (pf22)
+      prval pf22 = fpf22 {a} (pf22)
+//
+      val () = loop_row_upper_nonunit (pf13, pf23 | p13, p23, mi - 1)
+//
+      prval () = pf1 := fpf1 {a} (pf11, pf12, pf13)
+      prval () = pf2 := fpf2 {a} (pf21, pf22, pf23)
+    in
+      // nothing
+    end else let
+      prval () = TRMAT_v_unnil (pf2) in pf2 := TRMAT_v_nil {a} ()
+    end // end of [if]
+  // end of [loop_row_upper_nonunit]
+
+  fun loop_row_lower_nonunit
+    {mi:nat} {l1,l2:addr} .<mi>. (
+      pf1: !TRMAT_v (a, mi, row, lower, nonunit, ld1, l1)
+    , pf2: !TRMAT_v (a?, mi, row, lower, nonunit, ld2, l2)
+         >> TRMAT_v (a, mi, row, lower, nonunit, ld2, l2)
+    | p1: ptr l1, p2: ptr l2, mi: size_t mi
+    ) :<cloref> void =
+    if mi > 0 then let
+      val (pf11, pf12, pf13, fpf1 | p11, p12, p13) = 
+        TRMAT_L_ptr_split2x2 (pf1 | ORDERrow, p1, ld1, mi-1)
+      val (pf21, pf22, pf23, fpf2 | p21, p22, p23) = 
+        TRMAT_L_ptr_split2x2 (pf2 | ORDERrow, p2, ld2, mi-1)
+//
+      prval (pf13, fpf13) = TRMAT1x1_v_takeout_nonunit {a} (pf13)
+      prval (pf23, fpf23) = TRMAT1x1_v_takeout_nonunit {a?} (pf23)
+      val () = !p23 := !p13
+      prval pf13 = fpf13 (pf13)
+      prval pf23 = fpf23 (pf23)
+//
+      prval (pf12_inc, pf12, fpf12) = GEVEC_v_of_GEMAT_v_row {a} (pf12)
+      prval MATVECINCrowrow () = pf12_inc
+      prval pf12 = array_v_of_GEVEC_v {a} (pf12)
+      prval (pf22_inc, pf22, fpf22) = GEVEC_v_of_GEMAT_v_row {a?} (pf22)
+      prval MATVECINCrowrow () = pf22_inc
+      prval pf22 = array_v_of_GEVEC_v {a?} (pf22)
+      val () = array_ptr_copy_tsz {a} (!p12, !p22, mi - 1, tsz)
+      prval pf12 = GEVEC_v_of_array_v {a} (pf12)
+      prval pf12 = fpf12 {a} (pf12)
+      prval pf22 = GEVEC_v_of_array_v {a} (pf22)
+      prval pf22 = fpf22 {a} (pf22)
+//
+      val () = loop_row_lower_nonunit (pf11, pf21 | p11, p21, mi - 1)
+//
+      prval () = pf1 := fpf1 {a} (pf11, pf12, pf13)
+      prval () = pf2 := fpf2 {a} (pf21, pf22, pf23)
+    in
+      // nothing
+    end else let
+      prval () = TRMAT_v_unnil (pf2) in pf2 := TRMAT_v_nil {a} ()
+    end // end of [if]
+  // end of [loop_row_upper_nonunit]
+in
+  case+ dg of
+  | DIAGnonunit () => begin case+ ord of
+    | ORDERrow () => begin case+ ul of
+      | UPLOupper () => loop_row_upper_nonunit (view@ M1, view@ M2 | &M1, &M2, m)
+      | UPLOlower () => loop_row_lower_nonunit (view@ M1, view@ M2 | &M1, &M2, m)
+      end // end of [ORDERrow]
+    | ORDERcol () => let
+        prval (pf1_order, pf1_uplo) = TRMAT_v_trans (view@ M1)
+        prval TRANORDcolrow () = pf1_order
+        prval (pf2_order, pf2_uplo) = TRMAT_v_trans (view@ M2)
+        prval TRANORDcolrow () = pf2_order
+      in
+        case+ ul of
+        | UPLOupper () => let
+            prval TRANUPLOupperlower () = pf1_uplo
+            prval TRANUPLOupperlower () = pf2_uplo
+            val () = loop_row_lower_nonunit (view@ M1, view@ M2 | &M1, &M2, m)
+            prval (pf1_order, pf1_uplo) = TRMAT_v_trans (view@ M1)
+            prval TRANORDrowcol () = pf1_order
+            prval TRANUPLOlowerupper () = pf1_uplo
+            prval (pf2_order, pf2_uplo) = TRMAT_v_trans (view@ M2)
+            prval TRANORDrowcol () = pf2_order
+            prval TRANUPLOlowerupper () = pf2_uplo
+          in
+            // nothing
+          end // end of [UPLOupper]
+        | UPLOlower () => let
+            prval TRANUPLOlowerupper () = pf1_uplo
+            prval TRANUPLOlowerupper () = pf2_uplo
+            val () = loop_row_upper_nonunit (view@ M1, view@ M2 | &M1, &M2, m)
+            prval (pf1_order, pf1_uplo) = TRMAT_v_trans (view@ M1)
+            prval TRANORDrowcol () = pf1_order
+            prval TRANUPLOupperlower () = pf1_uplo
+            prval (pf2_order, pf2_uplo) = TRMAT_v_trans (view@ M2)
+            prval TRANORDrowcol () = pf2_order
+            prval TRANUPLOupperlower () = pf2_uplo
+          in
+            // nothing
+          end
+      end // end of [ORDERcol]
+    end // end of [DIAGnonunit]
+  | DIAGunit () =>
+      if m > 0 then let
+        val (pf1, fpf1 | p1) = TRMAT_ptr_unit_nonunit<a> (view@ M1 | ord, &M1, ld1)
+        val (pf2, fpf2 | p2) = TRMAT_ptr_unit_nonunit<a?> (view@ M2 | ord, &M2, ld2)
+        val () = TRMAT_ptr_copy_tsz (ord, ul, DIAGnonunit, !p1, !p2, m-1, ld1, ld2, tsz)
+        prval () = view@ M1 := fpf1 {a} (pf1)
+        prval () = view@ M2 := fpf2 {a} (pf2)
+      in
+        // nothing
+      end else let
+        prval () = TRMAT_v_unnil (view@ M2) in view@ M2 := TRMAT_v_nil {a} ()
+      end // end of [if]
+   // end of [DIAGunit]
+end // end of [TRMAT_ptr_copy_tsz]
+*)
 
 (* ****** ****** *)
 

@@ -469,10 +469,8 @@ fun{a:t@ype} GEMAT_ptr_get_elt_at
   {ord:order} {m,n:nat} {lda:inc} (
     ord: ORDER ord
   , A: &GEMAT (a, m, n, ord, lda)
-  , lda: size_t lda
-  , i: sizeLt m, j: sizeLt n
+  , lda: size_t lda, i: sizeLt m, j: sizeLt n
   ) :<> a
-  = "atslib_GEMAT_ptr_get_elt_at"
 // end of [GEMAT_ptr_get_elt_at]
 
 fun{a:t@ype} GEMAT_ptr_set_elt_at
@@ -482,7 +480,6 @@ fun{a:t@ype} GEMAT_ptr_set_elt_at
   , lda: size_t lda, i: sizeLt m, j: sizeLt n
   , x: a
   ) :<> void 
-  = "atslib_GEMAT_ptr_set_elt_at"
 // end of [GEMAT_ptr_set_elt_at]
 
 (* ****** ****** *)
@@ -764,6 +761,15 @@ viewdef TRMAT_v
 
 (* ****** ****** *)
 
+prfun TRMAT_v_nil {a:viewt@ype} {ord:order}
+  {ul:uplo} {dg:diag} {ld:inc} {l:addr} ():<prf> TRMAT_v (a, 0, ord, ul, dg, ld, l)
+
+prfun TRMAT_v_unnil {a:viewt@ype}
+  {ord:order} {ul:uplo} {dg:diag} {ld:inc} {l:addr}
+  (pf: TRMAT_v (a, 0, ord, ul, dg, ld, l)):<prf> void
+
+(* ****** ****** *)
+
 prfun TRMAT_v_trans {a:viewt@ype}
   {ord1:order} {ul1:uplo} {dg:diag} {m:nat} {lda:inc} {l:addr} (
     pf_mat: !TRMAT_v (a, m, ord1, ul1, dg, lda, l) >> TRMAT_v (a, m, ord2, ul2, dg, lda, l)
@@ -789,7 +795,6 @@ fun{a:t@ype} TRMAT_UN_ptr_get_elt_at
    , A: &TRMAT (a, m, ord, upper, nonunit, lda)
    , lda: size_t lda, i: size_t i, j: size_t j
    ) :<> a
-  = "atslib_GEMAT_ptr_get_elt_at"
 // end of [TRMAT_UN_ptr_get_elt_at]
 
 fun{a:t@ype} TRMAT_UN_ptr_set_elt_at
@@ -799,7 +804,6 @@ fun{a:t@ype} TRMAT_UN_ptr_set_elt_at
    , lda: size_t lda, i: size_t i, j: size_t j
    , x: a
    ) :<> void
-  = "atslib_GEMAT_ptr_set_elt_at"
 // end of [TRMAT_UN_ptr_set_elt_at]
 
 // UU: upper unit
@@ -809,7 +813,6 @@ fun{a:t@ype} TRMAT_UU_ptr_get_elt_at
    , A: &TRMAT (a, m, ord, upper, unit, lda)
    , lda: size_t lda, i: size_t i, j: size_t j
    ) :<> a
-  = "atslib_GEMAT_ptr_get_elt_at"
 // end of [TRMAT_UU_ptr_get_elt_at]
 
 fun{a:t@ype} TRMAT_UU_ptr_set_elt_at
@@ -819,7 +822,6 @@ fun{a:t@ype} TRMAT_UU_ptr_set_elt_at
    , lda: size_t lda, i: size_t i, j: size_t j
    , x: a
    ) :<> void
-  = "atslib_GEMAT_ptr_set_elt_at"
 // end of [TRMAT_UU_ptr_set_elt_at]
 
 // LN: lower non-unit
@@ -829,7 +831,6 @@ fun{a:t@ype} TRMAT_LN_ptr_get_elt_at
    , A: &TRMAT (a, m, ord, lower, nonunit, lda)
    , lda: size_t lda, i: size_t i, j: size_t j
    ) :<> a
-  = "atslib_GEMAT_ptr_get_elt_at"
 // end of [TRMAT_LN_ptr_get_elt_at]
 
 fun{a:t@ype} TRMAT_LN_ptr_set_elt_at
@@ -839,7 +840,6 @@ fun{a:t@ype} TRMAT_LN_ptr_set_elt_at
    , lda: size_t lda, i: size_t i, j: size_t j
    , x: a
    ) :<> void
-  = "atslib_GEMAT_ptr_set_elt_at"
 // end of [TRMAT_LN_ptr_set_elt_at]
 
 // LU: lower unit
@@ -849,7 +849,6 @@ fun{a:t@ype} TRMAT_LU_ptr_get_elt_at
    , A: &TRMAT (a, m, ord, lower, unit, lda)
    , lda: size_t lda, i: size_t i, j: size_t j
    ) :<> a
-  = "atslib_GEMAT_ptr_get_elt_at"
 // end of [TRMAT_LU_ptr_get_elt_at]
 
 fun{a:t@ype} TRMAT_LU_ptr_set_elt_at
@@ -859,37 +858,86 @@ fun{a:t@ype} TRMAT_LU_ptr_set_elt_at
    , lda: size_t lda, i: size_t i, j: size_t j
    , x: a
    ) :<> void
-  = "atslib_GEMAT_ptr_set_elt_at"
 // end of [TRMAT_LU_ptr_set_elt_at]
 
 (* ****** ****** *)
 
-viewtypedef TRMAT_ptr_split2x2_res_t (
-  a1:viewt@ype, m:int, i:int, ord:order, ul:uplo, dg:diag, lda:int, l0:addr
+viewtypedef TRMAT_U_ptr_split2x2_res_t (
+  a1:viewt@ype, m:int, i:int, ord:order, dg:diag, lda:int, l0:addr
 ) = [lu,lo,ll:addr] @(
-  TRMAT_v (a1, i, ord, ul, dg, lda, lu)
+  TRMAT_v (a1, i, ord, upper, dg, lda, lu)
 , GEMAT_v (a1, i, m-i, ord, lda, lo)
-, TRMAT_v (a1, m-i, ord, ul, dg, lda, ll)
+, TRMAT_v (a1, m-i, ord, upper, dg, lda, ll)
 , {a2:viewt@ype | tszeq(a1,a2)} (
-    TRMAT_v (a2, i, ord, ul, dg, lda, lu)
+    TRMAT_v (a2, i, ord, upper, dg, lda, lu)
   , GEMAT_v (a2, i, m-i, ord, lda, lo)
-  , TRMAT_v (a2, m-i, ord, ul, dg, lda, ll)
+  , TRMAT_v (a2, m-i, ord, upper, dg, lda, ll)
   ) -<prf>
-    TRMAT_v (a2, m, ord, ul, dg, lda, l0)
+    TRMAT_v (a2, m, ord, upper, dg, lda, l0)
   // [fpf: for unsplitting]
 | ptr lu // l11 should equal l0
 , ptr lo
 , ptr ll
-) // end of [TRMAT_ptr_split2x2_res_t]
+) // end of [TRMAT_U_ptr_split2x2_res_t]
 
 fun{a1:viewt@ype}
-  TRMAT_ptr_split2x2
-  {ord:order} {ul:uplo} {dg:diag}
+  TRMAT_U_ptr_split2x2
+  {ord:order} {dg:diag}
   {m,i:nat | i <= m} {lda:inc} {l0:addr} (
-    pf_mat: TRMAT_v (a1, m, ord, ul, dg, lda, l0)
-  | ord: ORDER ord, ul: UPLO ul, A: ptr l0, lda: size_t lda, i: size_t i
-  ) :<> TRMAT_ptr_split2x2_res_t (a1, m, i, ord, ul, dg, lda, l0)
-// end of [TRMAT_ptr_split2x2]
+    pf_mat: TRMAT_v (a1, m, ord, upper, dg, lda, l0)
+  | ord: ORDER ord, A: ptr l0, lda: size_t lda, i: size_t i
+  ) :<> TRMAT_U_ptr_split2x2_res_t (a1, m, i, ord, dg, lda, l0)
+// end of [TRMAT_U_ptr_split2x2]
+
+viewtypedef TRMAT_L_ptr_split2x2_res_t (
+  a1:viewt@ype, m:int, i:int, ord:order, dg:diag, lda:int, l0:addr
+) = [lu,lo,ll:addr] @(
+  TRMAT_v (a1, i, ord, lower, dg, lda, lu)
+, GEMAT_v (a1, m-i, i, ord, lda, lo)
+, TRMAT_v (a1, m-i, ord, lower, dg, lda, ll)
+, {a2:viewt@ype | tszeq(a1,a2)} (
+    TRMAT_v (a2, i, ord, lower, dg, lda, lu)
+  , GEMAT_v (a2, m-i, i, ord, lda, lo)
+  , TRMAT_v (a2, m-i, ord, lower, dg, lda, ll)
+  ) -<prf>
+    TRMAT_v (a2, m, ord, lower, dg, lda, l0)
+  // [fpf: for unsplitting]
+| ptr lu // l11 should equal l0
+, ptr lo
+, ptr ll
+) // end of [TRMAT_L_ptr_split2x2_res_t]
+
+fun{a1:viewt@ype}
+  TRMAT_L_ptr_split2x2
+  {ord:order} {dg:diag}
+  {m,i:nat | i <= m} {lda:inc} {l0:addr} (
+    pf_mat: TRMAT_v (a1, m, ord, lower, dg, lda, l0)
+  | ord: ORDER ord, A: ptr l0, lda: size_t lda, i: size_t i
+  ) :<> TRMAT_L_ptr_split2x2_res_t (a1, m, i, ord, dg, lda, l0)
+// end of [TRMAT_L_ptr_split2x2]
+
+(* ****** ****** *)
+
+(*
+** M2 <- M1
+*)
+fun{a:t@ype} TRMAT_ptr_copy
+  {ord:order} {ul:uplo} {dg:diag} {m:nat} {ld1,ld2:inc} (
+    ord: ORDER ord, ul: UPLO ul, dg: DIAG dg
+  , M1: &TRMAT (a, m, ord, ul, dg, ld1)
+  , M2: &TRMAT (a?, m, ord, ul, dg, ld2) >> TRMAT (a, m, ord, ul, dg, ld2)
+  , m: size_t m, ld1: size_t ld1, ld2: size_t ld2
+  ) :<> void
+// end of [TRMAT_ptr_copy]
+
+fun TRMAT_ptr_copy_tsz {a:t@ype}
+  {ord:order} {ul:uplo} {dg:diag} {m:nat} {ld1,ld2:inc} (
+    ord: ORDER ord, ul: UPLO ul, dg: DIAG dg
+  , M1: &TRMAT (a, m, ord, ul, dg, ld1)
+  , M2: &TRMAT (a?, m, ord, ul, dg, ld2) >> TRMAT (a, m, ord, ul, dg, ld2)
+  , m: size_t m, ld1: size_t ld1, ld2: size_t ld2, tsz: sizeof_t a
+  ) :<> void
+// end of [TRMAT_ptr_copy_tsz]
 
 (* ****** ****** *)
 
