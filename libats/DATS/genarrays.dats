@@ -879,8 +879,8 @@ fn{a:t@ype}
     | ORDERcol () => (i + j szmul lda) * sizeof<a>
   ) : size_t
   val [ofs:int] ofs = sz2sz (ofs)
-  prval (pf, fpf) = __lemma () where {
-    extern prfun __lemma (): (a @ l+ofs, a @ l+ofs -<lin> void)
+  prval (pf, fpf) = __assert () where {
+    extern prfun __assert (): (a @ l+ofs, a @ l+ofs -<lin,prf> void)
   } // end of [prval]
   val x = !(p_mat + ofs)
   prval () = fpf (pf)
@@ -897,8 +897,8 @@ fn{a:t@ype}
     | ORDERcol () => (i + j szmul lda) * sizeof<a>
   ) : size_t
   val [ofs:int] ofs = sz2sz (ofs)
-  prval (pf, fpf) = __lemma () where {
-    extern prfun __lemma (): (a @ l+ofs, a @ l+ofs -<lin> void)
+  prval (pf, fpf) = __assert () where {
+    extern prfun __assert (): (a @ l+ofs, a @ l+ofs -<lin,prf> void)
   } // end of [prval]
   val x = !(p_mat + ofs) := x
   prval () = fpf (pf)
@@ -1024,35 +1024,98 @@ implement{a1}
 
 (* ****** ****** *)
 
-extern
-prfun TRMAT1x1_v_takeout_unit
-  {a1:viewt@ype}
-  {ord:order} {ul:uplo} {ld:inc} {l:addr} (
-    pf: TRMAT_v (a1, 1, ord, ul, unit, ld, l)
-  ) : (
-    {a2:viewt@ype | a1 \tszeq a2} () -<prf> TRMAT_v (a2, 1, ord, ul, unit, ld, l)
-  )
-// end of [TRMAT1x1_v_takeout_unit]
-
-extern
-prfun TRMAT1x1_v_takeout_nonunit
-  {a1:viewt@ype}
-  {ord:order} {ul:uplo} {ld:inc} {l:addr} (
-    pf: TRMAT_v (a1, 1, ord, ul, nonunit, ld, l)
-  ) : (
-    a1 @ l
-  , {a2:viewt@ype | a1 \tszeq a2} a2 @ l -<prf> TRMAT_v (a2, 1, ord, ul, nonunit, ld, l)
-  )
-// end of [TRMAT1x1_v_takeout_nonunit]
-
-(* ****** ****** *)
-
 implement{a} TRMAT_ptr_copy
-  (ord, ul, dg, M1, M2, m, ld1, ld2) =
-  TRMAT_ptr_copy_tsz (ord, ul, dg, M1, M2, m, ld1, ld2, sizeof<a>)
-// end of [TRMAT_ptr_copy]
+  {ord} {ul} {dg} {m} {ld1,ld2}
+  (ord, ul, dg, M1, M2, m, ld1, ld2) = let
+  fn loop_UN_row (
+      M1: &TRMAT (a, m, row, upper, nonunit, ld1), M2: &TRMAT (a, m, row, upper, nonunit, ld2)
+    ) :<cloref> void = let
+    val _0 = size1_of_int1 (0)
+    var i: size_t? // uninitialized
+    var j: size_t? // uninitialized
+  in
+    for* {i:nat | i <= m} .<m-i>. (i: size_t i) => (i := _0; i < m; i := i + 1) (
+      for* {j:nat | i <= j} .<m nsub j>. (i: size_t i, j: size_t j) => (j := i; j < m; j := j + 1)
+        TRMAT_UN_ptr_set_elt_at (ORDERrow, M2, ld2, i, j, TRMAT_UN_ptr_get_elt_at (ORDERrow, M1, ld1, i, j))
+      // end of [for]
+    ) // end of [for]
+  end
+  fn loop_UU_row (
+      M1: &TRMAT (a, m, row, upper, unit, ld1), M2: &TRMAT (a, m, row, upper, unit, ld2)
+    ) :<cloref> void = let
+    val _0 = size1_of_int1 (0)
+    var i: size_t? // uninitialized
+    var j: size_t? // uninitialized
+  in
+    for* {i:nat | i <= m} .<m-i>. (i: size_t i) => (i := _0; i < m; i := i + 1) (
+      for* {j:nat | i < j} .<m nsub j>. (i: size_t i, j: size_t j) => (j := i+1; j < m; j := j + 1)
+        TRMAT_UU_ptr_set_elt_at (ORDERrow, M2, ld2, i, j, TRMAT_UU_ptr_get_elt_at (ORDERrow, M1, ld1, i, j))
+      // end of [for]
+    ) // end of [for]
+  end
+  fn loop_LN_row (
+      M1: &TRMAT (a, m, row, lower, nonunit, ld1), M2: &TRMAT (a, m, row, lower, nonunit, ld2)
+    ) :<cloref> void = let
+    val _0 = size1_of_int1 (0)
+    var i: size_t? // uninitialized
+    var j: size_t? // uninitialized
+  in
+    for* {i:nat | i <= m} .<m-i>. (i: size_t i) => (i := _0; i < m; i := i+1) (
+      for* {j:nat | j <= i+1} .<i+1-j>. (i: size_t i, j: size_t j) => (j := _0; j <= i; j := j+1)
+        TRMAT_LN_ptr_set_elt_at (ORDERrow, M2, ld2, i, j, TRMAT_LN_ptr_get_elt_at (ORDERrow, M1, ld1, i, j))
+      // end of [for]
+    ) // end of [for]
+  end
+  fn loop_LU_row (
+      M1: &TRMAT (a, m, row, lower, unit, ld1), M2: &TRMAT (a, m, row, lower, unit, ld2)
+    ) :<cloref> void = let
+    val _0 = size1_of_int1 (0)
+    var i: size_t? // uninitialized
+    var j: size_t? // uninitialized
+  in
+    for* {i:nat | i <= m} .<m-i>. (i: size_t i) => (i := _0; i < m; i := i+1) (
+      for* {j:nat | j <= i} .<i-j>. (i: size_t i, j: size_t j) => (j := _0; j < i; j := j+1)
+        TRMAT_LU_ptr_set_elt_at (ORDERrow, M2, ld2, i, j, TRMAT_LU_ptr_get_elt_at (ORDERrow, M1, ld1, i, j))
+      // end of [for]
+    ) // end of [for]
+  end
+  prval () = __cast (view@ M2) where {
+    extern prfun __cast {l:addr}
+      (pf: !TRMAT_v (a?, m, ord, ul, dg, ld2, l) >> TRMAT_v (a, m, ord, ul, dg, ld2, l)): void
+  } // end of [prval]
+in
+  case+ ord of
+  | ORDERrow () => begin case+ ul of
+    | UPLOupper () => begin case+ dg of
+      | DIAGnonunit () => loop_UN_row (M1, M2) | DIAGunit () => loop_UU_row (M1, M2)
+      end // end of [UPLOupper]
+    | UPLOlower () => begin case+ dg of
+      | DIAGnonunit () => loop_LN_row (M1, M2) | DIAGunit () => loop_LU_row (M1, M2)
+      end // end of [UPLOlower]
+    end // end of [ORDERrow]
+  | ORDERcol () => let
+      prval pf1_order = TRMAT_v_trans (view@ M1)
+      prval TRANORDcolrow () = pf1_order
+      prval pf2_order = TRMAT_v_trans (view@ M2)
+      prval TRANORDcolrow () = pf2_order
+      val ul1 = (case+ ul of
+        | UPLOupper () => UPLOlower () | UPLOlower () => UPLOupper ()
+      ) : UPLO (1-ul)
+      val () = TRMAT_ptr_copy (ORDERrow, ul1, dg, M1, M2, m, ld1, ld2)
+      prval pf1_order = TRMAT_v_trans (view@ M1)
+      prval TRANORDrowcol () = pf1_order
+      prval pf2_order = TRMAT_v_trans (view@ M2)
+      prval TRANORDrowcol () = pf2_order
+    in
+      // nothing
+    end // end of [ORDERcol]
+end // end of [TRMAT_ptr_copy]
 
 (*
+//
+// this is probably the proper way to implement [TRMAT_ptr_copy_tsz]
+// but it seems too involved
+//
 implement TRMAT_ptr_copy_tsz
   {a} {ord} {ul} {dg} {m} {ld1,ld2}
   (ord, ul, dg, M1, M2, m, ld1, ld2, tsz) = let
@@ -1143,39 +1206,35 @@ in
   case+ dg of
   | DIAGnonunit () => begin case+ ord of
     | ORDERrow () => begin case+ ul of
-      | UPLOupper () => loop_row_upper_nonunit (view@ M1, view@ M2 | &M1, &M2, m)
-      | UPLOlower () => loop_row_lower_nonunit (view@ M1, view@ M2 | &M1, &M2, m)
+      | UPLOupper () =>
+          loop_row_upper_nonunit (view@ M1, view@ M2 | &M1, &M2, m)
+        // end of [UPLOupper]
+      | UPLOlower () =>
+          loop_row_lower_nonunit (view@ M1, view@ M2 | &M1, &M2, m)
+        // end of [UPLOlower]
       end // end of [ORDERrow]
     | ORDERcol () => let
-        prval (pf1_order, pf1_uplo) = TRMAT_v_trans (view@ M1)
+        prval pf1_order = TRMAT_v_trans (view@ M1)
         prval TRANORDcolrow () = pf1_order
-        prval (pf2_order, pf2_uplo) = TRMAT_v_trans (view@ M2)
+        prval pf2_order = TRMAT_v_trans (view@ M2)
         prval TRANORDcolrow () = pf2_order
       in
         case+ ul of
         | UPLOupper () => let
-            prval TRANUPLOupperlower () = pf1_uplo
-            prval TRANUPLOupperlower () = pf2_uplo
             val () = loop_row_lower_nonunit (view@ M1, view@ M2 | &M1, &M2, m)
-            prval (pf1_order, pf1_uplo) = TRMAT_v_trans (view@ M1)
+            prval pf1_order = TRMAT_v_trans (view@ M1)
             prval TRANORDrowcol () = pf1_order
-            prval TRANUPLOlowerupper () = pf1_uplo
-            prval (pf2_order, pf2_uplo) = TRMAT_v_trans (view@ M2)
+            prval pf2_order = TRMAT_v_trans (view@ M2)
             prval TRANORDrowcol () = pf2_order
-            prval TRANUPLOlowerupper () = pf2_uplo
           in
             // nothing
           end // end of [UPLOupper]
         | UPLOlower () => let
-            prval TRANUPLOlowerupper () = pf1_uplo
-            prval TRANUPLOlowerupper () = pf2_uplo
             val () = loop_row_upper_nonunit (view@ M1, view@ M2 | &M1, &M2, m)
-            prval (pf1_order, pf1_uplo) = TRMAT_v_trans (view@ M1)
+            prval pf1_order = TRMAT_v_trans (view@ M1)
             prval TRANORDrowcol () = pf1_order
-            prval TRANUPLOupperlower () = pf1_uplo
-            prval (pf2_order, pf2_uplo) = TRMAT_v_trans (view@ M2)
+            prval pf2_order = TRMAT_v_trans (view@ M2)
             prval TRANORDrowcol () = pf2_order
-            prval TRANUPLOupperlower () = pf2_uplo
           in
             // nothing
           end

@@ -247,9 +247,14 @@ datatype ORDER (order) =
 
 (* ****** ****** *)
 
+(*
 datasort uplo =
   | upper | lower // upper right / lower left
 // end of [uplo]
+*)
+
+sortdef uplo = int
+stadef upper = 1 and lower = 0
 
 datatype UPLO (uplo) =
   | UPLOupper (upper) of () | UPLOlower (lower) of ()
@@ -297,11 +302,14 @@ dataprop tranord_p (order, order) =
 // end of [tranord_p]
 
 (*
-** capturing the relation between transpose and uplo
-*)
+
+// capturing the relation between transpose and uplo
+
 dataprop tranuplo_p (uplo, uplo) =
   | TRANUPLOupperlower (upper, lower) | TRANUPLOlowerupper (lower, upper)
 // end of [transuplo_p]
+
+*)
 
 (* ****** ****** *)
 
@@ -770,10 +778,31 @@ prfun TRMAT_v_unnil {a:viewt@ype}
 
 (* ****** ****** *)
 
+prfun TRMAT1x1_v_takeout_unit
+  {a1:viewt@ype}
+  {ord:order} {ul:uplo} {ld:inc} {l:addr} (
+    pf: TRMAT_v (a1, 1, ord, ul, unit, ld, l)
+  ) : (
+    {a2:viewt@ype | a1 \tszeq a2} () -<prf> TRMAT_v (a2, 1, ord, ul, unit, ld, l)
+  )
+// end of [TRMAT1x1_v_takeout_unit]
+
+prfun TRMAT1x1_v_takeout_nonunit
+  {a1:viewt@ype}
+  {ord:order} {ul:uplo} {ld:inc} {l:addr} (
+    pf: TRMAT_v (a1, 1, ord, ul, nonunit, ld, l)
+  ) : (
+    a1 @ l
+  , {a2:viewt@ype | a1 \tszeq a2} a2 @ l -<prf> TRMAT_v (a2, 1, ord, ul, nonunit, ld, l)
+  )
+// end of [TRMAT1x1_v_takeout_nonunit]
+
+(* ****** ****** *)
+
 prfun TRMAT_v_trans {a:viewt@ype}
-  {ord1:order} {ul1:uplo} {dg:diag} {m:nat} {lda:inc} {l:addr} (
-    pf_mat: !TRMAT_v (a, m, ord1, ul1, dg, lda, l) >> TRMAT_v (a, m, ord2, ul2, dg, lda, l)
-  ) :<> #[ord2:order; ul2:uplo] (tranord_p (ord1, ord2), tranuplo_p (ul1, ul2))
+  {ord1:order} {ul:uplo} {dg:diag} {m:nat} {lda:inc} {l:addr} (
+    pf_mat: !TRMAT_v (a, m, ord1, ul, dg, lda, l) >> TRMAT_v (a, m, ord2, 1-ul, dg, lda, l)
+  ) :<> #[ord2:order] tranord_p (ord1, ord2)
 // end of [TRMAT_v_trans]
 
 prfun TRMAT_v_of_GEMAT_v {a:viewt@ype}
@@ -929,15 +958,6 @@ fun{a:t@ype} TRMAT_ptr_copy
   , m: size_t m, ld1: size_t ld1, ld2: size_t ld2
   ) :<> void
 // end of [TRMAT_ptr_copy]
-
-fun TRMAT_ptr_copy_tsz {a:t@ype}
-  {ord:order} {ul:uplo} {dg:diag} {m:nat} {ld1,ld2:inc} (
-    ord: ORDER ord, ul: UPLO ul, dg: DIAG dg
-  , M1: &TRMAT (a, m, ord, ul, dg, ld1)
-  , M2: &TRMAT (a?, m, ord, ul, dg, ld2) >> TRMAT (a, m, ord, ul, dg, ld2)
-  , m: size_t m, ld1: size_t ld1, ld2: size_t ld2, tsz: sizeof_t a
-  ) :<> void
-// end of [TRMAT_ptr_copy_tsz]
 
 (* ****** ****** *)
 
