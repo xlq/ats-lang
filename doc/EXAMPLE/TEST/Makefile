@@ -28,6 +28,7 @@ compall:: \
   libc_stdlib \
   libats_intinf \
   libats_iterint \
+  libats_genarrays \
   libats_regexp \
   libats_smlbas_array \
   libats_smlbas_array2 \
@@ -74,6 +75,9 @@ libats_intinf: libats_intinf.dats
 
 libats_iterint: libats_iterint.dats
 	$(ATSCC) -O2 -o libats_iterint libats_iterint.dats && ./libats_iterint
+
+libats_genarrays: libats_genarrays.dats
+	$(ATSCC) -O2 -o libats_genarrays libats_genarrays.dats -lpcre && ./libats_genarrays
 
 libats_regexp: libats_regexp.dats
 	$(ATSCC) -O2 -o libats_regexp libats_regexp.dats -lpcre && ./libats_regexp "12345789"

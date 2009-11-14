@@ -382,16 +382,6 @@ array\_set\_elt\_at}$ are given another implementation in
 Figure~\ref{figure:array_v_takeout.dats}, which makes use of ${\it
 array\_v\_takeout}$.
 
-\begin{figure}
-\input{DATS/list_vt_free.dats}
-\caption{A function template for freeing a given linear list}
-\label{figure:list_vt_free.dats}
-\end{figure}
-\begin{figure}
-\input{DATS/list_vt_length.dats}
-\caption{A function template for computing the length of a given linear list}
-\label{figure:list_vt_length.dats}
-\end{figure}
 \section{Dataviewtypes}
 A linear datatype (for classifying linear values) is referred to as a {\it
 dataviewtype} in ATS. As an example, ${\it list\_vt}$ is declared as a
@@ -412,6 +402,11 @@ Assume that $C$ is a constructor of arity $n$ that forms a value
 $C(v_1,\ldots,v_n)$ of some dataviewtype $T$ when applied to values
 $v_1,\ldots,v_n$ of types $T_1,\ldots,T_n$.
 
+\begin{figure}
+\input{DATS/list_vt_free.dats}
+\caption{A function template for freeing a given linear list}
+\label{figure:list_vt_free.dats}
+\end{figure}
 A pattern of the form $\sim\!\!C(x_1,\ldots, x_n)$ is referred to as a
 destruction pattern.  If a (linear) value $v$ of the form
 $C(v_1,\ldots,v_n)$ matches the pattern $\sim\!\!C(x_1,\ldots, x_n)$, then
@@ -420,6 +415,11 @@ storing $v$ is freed}. A typical case of using destruction patterns is
 shown in Figure~\ref{figure:list_vt_free.dats}, where a function template
 is implemented for freeing a given linear list.
 
+\begin{figure}
+\input{DATS/list_vt_length.dats}
+\caption{A function template for computing the length of a given linear list}
+\label{figure:list_vt_length.dats}
+\end{figure}
 We encounter a different situation when implementing a function for
 computing the length of a given linear list. Instead of freeing the given
 linear list, we need to preserve it (for later use). If a (linear) value
