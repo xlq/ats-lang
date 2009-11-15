@@ -604,11 +604,13 @@ implement GEMAT_ptr_copy_tsz {a}
     | p1: ptr l1, p2: ptr l2, mi: size_t mi, n: size_t n
     ) :<cloref> void =
     if mi > 0 then let
-      val (pf11, pf12, fpf1 | p11, p12) = GEMAT_ptr_split2x1_tsz {a} (pf1 | ORDERrow, p1, ld1, 1, tsz)
+      val (pf11, pf12, fpf1 | p11, p12) =
+        GEMAT_ptr_split2x1_tsz {a} (pf1 | ORDERrow, p1, ld1, 1, tsz)
       prval (pf1_inc, pf11, fpf11) = GEVEC_v_of_GEMAT_v_row {a} (pf11)
       prval MATVECINCrowrow () = pf1_inc
       prval pf11 = array_v_of_GEVEC_v {a} (pf11)
-      val (pf21, pf22, fpf2 | p21, p22) = GEMAT_ptr_split2x1_tsz {a?} (pf2 | ORDERrow, p2, ld2, 1, tsz)
+      val (pf21, pf22, fpf2 | p21, p22) =
+        GEMAT_ptr_split2x1_tsz {a?} (pf2 | ORDERrow, p2, ld2, 1, tsz)
       prval (pf2_inc, pf21, fpf21) = GEVEC_v_of_GEMAT_v_row {a?} (pf21)
       prval MATVECINCrowrow () = pf2_inc
       prval pf21 = array_v_of_GEVEC_v {a?} (pf21)

@@ -56,7 +56,7 @@
 
 (* ****** ****** *)
 
-sortdef inc = {i: int | i > 0} // for incX, incY, etc.
+sortdef inc = {i: int | i > 0} // for leading dimensions
 
 (* ****** ****** *)
 
@@ -834,6 +834,8 @@ fun{a:t@ype} TRMAT_UN_ptr_set_elt_at
    ) :<> void
 // end of [TRMAT_UN_ptr_set_elt_at]
 
+(* ****** ****** *)
+
 // UU: upper unit
 fun{a:t@ype} TRMAT_UU_ptr_get_elt_at
    {ord:order} {m,i,j:nat | i < j; j < m} {ld:inc} (
@@ -852,6 +854,8 @@ fun{a:t@ype} TRMAT_UU_ptr_set_elt_at
    ) :<> void
 // end of [TRMAT_UU_ptr_set_elt_at]
 
+(* ****** ****** *)
+
 // LN: lower non-unit
 fun{a:t@ype} TRMAT_LN_ptr_get_elt_at
    {ord:order} {m,i,j:nat | j <= i; i < m} {ld:inc} (
@@ -869,6 +873,8 @@ fun{a:t@ype} TRMAT_LN_ptr_set_elt_at
    , x: a
    ) :<> void
 // end of [TRMAT_LN_ptr_set_elt_at]
+
+(* ****** ****** *)
 
 // LU: lower unit
 fun{a:t@ype} TRMAT_LU_ptr_get_elt_at
