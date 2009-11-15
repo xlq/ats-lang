@@ -94,7 +94,7 @@ implement the_gcmain_mark
 //
 #if (_ATS_MULTITHREAD)
   val () = overflow := overflow + the_threadinfolst_mark (pf_lst | (*none*))
-#endif // end of ...
+#endif // end of [_ATS_MULTITHREAD]
 //
   val () = overflow := overflow + mystack_mark ()
 //

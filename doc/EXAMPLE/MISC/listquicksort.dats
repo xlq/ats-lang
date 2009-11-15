@@ -37,11 +37,11 @@ sortdef nats = nat
 datasort intlst = nil | cons of (int, intlst)
 
 dataprop MSET (intlst, int(*nats*)) = 
-  | {x:nat} {xs: intlst} {n:nats}
+  | {x:nat} {xs:intlst} {n:nats}
     MSETcons (cons (x, xs), x + n) of MSET (xs, n)
   | MSETnil (nil, 0)
   
-extern prfun MSET_total {xs:intlst} (): [n:nats] MSET (xs, n)
+extern prfun MSET_istot {xs:intlst} (): [n:nats] MSET (xs, n)
 
 (* ****** ****** *)
 
@@ -290,7 +290,7 @@ implement main () = let
   :: T 2.0 :: T 1.0 :: T 4.0 :: T 3.0 :: T 6.0 :: T 5.0
   :: T 2.0 :: T 1.0 :: T 4.0 :: T 3.0 :: T 6.0 :: T 5.0
   :: nil ()
-  val (_(*pf_set*), _(*pf_ord*) | xs_sorted) = quicksort (MSET_total () | xs)
+  val (_(*pf_set*), _(*pf_ord*) | xs_sorted) = quicksort (MSET_istot () | xs)
 in
   print "xs = "; print_list xs; print_newline ();
   print "xs_sorted = "; print_list xs_sorted; print_newline ();

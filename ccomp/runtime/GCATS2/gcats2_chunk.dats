@@ -284,7 +284,10 @@ gcats2_the_chunkpagelst_replenish
 
 (* ****** ****** *)
 
-%{
+%{^
+
+extern
+ats_ptr_type gcats2_the_chunkpagelst_remove () ;
 
 ats_ptr_type
 gcats2_chunk_make_norm (
@@ -348,7 +351,7 @@ gcats2_chunk_free_norm
 
 (* ****** ****** *)
 
-%{
+%{^
 
 ats_ptr_type
 gcats2_chunk_make_large (
@@ -523,7 +526,7 @@ gcats2_the_topsegtbl_foreach_chunkptr
   int i, j ;
   botsegtblptr_vt p_botsegtbl ;
   chunkptr_vt p_chunk ;
-
+//
 #if (__WORDSIZE == 32)
   for (i = 0; i < TOPSEG_TABLESIZE; i += 1) {
     p_botsegtbl = the_topsegtbl[i] ;
@@ -535,7 +538,7 @@ gcats2_the_topsegtbl_foreach_chunkptr
     } // end of [if]
   } // end of [for]
 #endif // end of ...
-
+//
 #if (__WORDSIZE == 64)
   for (i = 0; i < TOPSEG_HASHTABLESIZE; i += 1) {
     p_botsegtbl = the_topsegtbl[i] ;
@@ -548,7 +551,7 @@ gcats2_the_topsegtbl_foreach_chunkptr
     } // end of [while]
   } // end of [for]
 #endif // end of ...
-
+//
   return ;
 } /* end of [gcats2_the_topsegtbl_foreach_chunkptr] */
 

@@ -56,22 +56,28 @@ implement fprint_elt<T> (out, x) = fprintf (out, "%2i", @(x))
 
 implement main () = () where {
   #define X 10
-  #define Y 10
-  val (pf1_mat | p1, fp1) = GEMAT_row_ptr_allocfree<T> (X, Y)
+  val (pf1_mat | p1, fp1) = GEMAT_row_ptr_allocfree<T> (X, X)
 //
   prval pfunit = unit_v ()
   val () = GEMAT_ptr_initialize_fun<T> (
-    pfunit | ORDERrow, !p1, X, Y, X, lam (pfunit | i, j, x) => x := sz2i i - sz2i j
+    pfunit | ORDERrow, !p1, X, X, X, lam (pfunit | i, j, x) => x := sz2i i - sz2i j
   ) // end of [val]
   prval unit_v () = pfunit
-  val () = print ("M1=\n")
-  val () = GEMAT_fprint (stdout_ref, ORDERrow, !p1, X, Y, X)
+  val () = print ("M1 =\n")
+  val () = GEMAT_fprint (stdout_ref, ORDERrow, !p1, X, X, X)
   val () = print_newline ()
 //
-  val (pf2_mat | p2, fp2) = GEMAT_row_ptr_allocfree<T> (X, Y)
-  val () = GEMAT_ptr_initialize_elt<T> (ORDERrow, !p2, X, Y, X, 0)
-  val () = print ("M2=\n")
-  val () = GEMAT_fprint (stdout_ref, ORDERrow, !p2, X, Y, X)
+  val (pf2_mat | p2, fp2) = GEMAT_row_ptr_allocfree<T> (X, X)
+//
+  // for testing [GEMAT_ptr_copy]
+  val () = GEMAT_ptr_copy<T> (ORDERrow, !p1, !p2, X, X, X, X)
+  val () = print ("M2(=M1) =\n")
+  val () = GEMAT_fprint (stdout_ref, ORDERrow, !p2, X, X, X)
+  val () = print_newline ()
+//
+  val () = GEMAT_ptr_initialize_elt<T> (ORDERrow, !p2, X, X, X, 0)
+  val () = print ("M2 =\n")
+  val () = GEMAT_fprint (stdout_ref, ORDERrow, !p2, X, X, X)
   val () = print_newline ()
 //
   val ul = UPLOupper and dg = DIAGnonunit
@@ -88,12 +94,12 @@ implement main () = () where {
   prval () = pf1_mat := fpf1_mat (pf1_trm)
   prval () = pf2_mat := fpf2_mat (pf2_trm)
 //
-  val () = print ("M2=\n")
-  val () = GEMAT_fprint (stdout_ref, ORDERrow, !p2, X, Y, X)
+  val () = print ("M2(=M1) =\n")
+  val () = GEMAT_fprint (stdout_ref, ORDERrow, !p2, X, X, X)
   val () = print_newline ()
 //
-  val () = fp1 (pf1_mat | p1)
-  val () = fp2 (pf2_mat | p2)
+  val () = fp1 (pf1_mat | p1) // freeing M1
+  val () = fp2 (pf2_mat | p2) // freeing M2
 } // end of [main]
 
 (* ****** ****** *)

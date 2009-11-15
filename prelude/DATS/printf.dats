@@ -88,22 +88,21 @@ ats_ptr_type __tostringf_size
 {
   int n, sz ; char *res ; va_list ap ;
 
-  sz = guess ; res = ATS_MALLOC (sz) ;
+  sz = guess ;
 
   while (1) {
     va_copy (ap, ap0) ;
-
-    n = vsnprintf (res, sz, (char*)fmt, ap) ;
-
+    res = ATS_MALLOC(sz) ;
+    n = vsnprintf(res, sz, (char*)fmt, ap) ;
     if (n >= 0) {
       if (n < sz) return res ;
-      sz = n+1 ; /* exact size */
-      ATS_FREE (res) ; res = ATS_MALLOC (sz) ;
-      continue ;
-    } /* end of [if] */
-
-    return ((ats_ptr_type)0) ;
+      sz = n+1 ; ATS_FREE(res) ; continue ;
+    } else {
+      return ((ats_ptr_type)0) ;
+    } // end of [if]
   } // end of [while]
+
+  return (ats_ptr_type)0 ; // deadcode
 
 } /* end of [__tostringf_size] */
 

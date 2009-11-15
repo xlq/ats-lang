@@ -410,20 +410,26 @@ gcats2_botsegtblptr1_takeout ( // used in [ptr_isvalid]
 
 static inline
 ats_int_type
-MARKBIT_GET (ats_ptr_type x, ats_int_type i) { return
+MARKBIT_GET (
+  ats_ptr_type x, ats_int_type i
+) { return
   (((byte*)x)[i >> NBIT_PER_BYTE_LOG] >> (i & NBIT_PER_BYTE_MASK)) & 0x1 ;
 } /* end of [MARKBIT_GET] */
 
 static inline
 ats_void_type
-MARKBIT_SET (ats_ptr_type x, ats_int_type i) {
+MARKBIT_SET (
+  ats_ptr_type x, ats_int_type i
+) {
   ((byte*)x)[i >> NBIT_PER_BYTE_LOG] |= (0x1 << (i & NBIT_PER_BYTE_MASK)) ;
   return ;
 } /* end of [MARKBIT_SET] */
 
 static inline
 ats_int_type
-MARKBIT_GETSET (ats_ptr_type x, ats_int_type i) {
+MARKBIT_GETSET (
+  ats_ptr_type x, ats_int_type i
+) {
   byte* p_bits ; int bit ;
   p_bits = &((byte*)x)[i >> NBIT_PER_BYTE_LOG] ;
   bit = (*p_bits >> (i & NBIT_PER_BYTE_MASK)) & 0x1 ;
@@ -436,7 +442,9 @@ MARKBIT_GETSET (ats_ptr_type x, ats_int_type i) {
 
 static inline
 ats_void_type
-MARKBIT_CLEAR (ats_ptr_type x, ats_int_type i) {
+MARKBIT_CLEAR (
+  ats_ptr_type x, ats_int_type i
+) {
   ((byte*)x)[i >> NBIT_PER_BYTE_LOG] &= ~(0x1 << (i & NBIT_PER_BYTE_MASK)) ;
   return ;
 } /* end of [MARKBIT_CLEAR] */

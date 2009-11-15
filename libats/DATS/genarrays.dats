@@ -1118,7 +1118,8 @@ end // end of [TRMAT_ptr_copy]
 (*
 //
 // this is probably the proper way to implement [TRMAT_ptr_copy]
-// but it seems too involved
+// but it seems too involved; the code is kept mostly as an example
+// for future reference
 //
 implement{a} TRMAT_ptr_copy
   {ord} {ul} {dg} {m} {ld1,ld2}

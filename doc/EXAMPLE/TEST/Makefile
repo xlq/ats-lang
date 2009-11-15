@@ -26,9 +26,9 @@ compall:: \
   prelude_string \
   libc_dirent \
   libc_stdlib \
+  libats_genarrays \
   libats_intinf \
   libats_iterint \
-  libats_genarrays \
   libats_regexp \
   libats_smlbas_array \
   libats_smlbas_array2 \
@@ -70,14 +70,14 @@ libc_stdlib: libc_stdlib.dats
 
 ######
 
+libats_genarrays: libats_genarrays.dats
+	$(ATSCC) -O2 -o libats_genarrays libats_genarrays.dats && ./libats_genarrays
+
 libats_intinf: libats_intinf.dats
 	$(ATSCC) -O2 -o libats_intinf libats_intinf.dats -lgmp && ./libats_intinf 10
 
 libats_iterint: libats_iterint.dats
 	$(ATSCC) -O2 -o libats_iterint libats_iterint.dats && ./libats_iterint
-
-libats_genarrays: libats_genarrays.dats
-	$(ATSCC) -O2 -o libats_genarrays libats_genarrays.dats -lpcre && ./libats_genarrays
 
 libats_regexp: libats_regexp.dats
 	$(ATSCC) -O2 -o libats_regexp libats_regexp.dats -lpcre && ./libats_regexp "12345789"
@@ -118,6 +118,7 @@ cleanall: clean
 	rm -f prelude_string
 	rm -f libc_dirent
 	rm -f libc_stdlib
+	rm -f libats_genarrays
 	rm -f libats_intinf
 	rm -f libats_iterint
 	rm -f libats_regexp

@@ -392,34 +392,34 @@ fun the_markstackpagelst_extend {n:nat}
 
 (* ****** ****** *)
 
-// implemented in [gcats2_marking]
+// implemented in [gcats2_marking.dats]
 fun freeitmlst_mark {l:addr}
   (pf: !the_topsegtbl_v | xs: !freeitmlst_vt l):<> void
   = "gcats2_freeitmlst_mark"
 // end of ...
 
-// implemented in [gcats2_marking]
+// implemented in [gcats2_marking.dats]
 fun ptr_mark (
     pf1: !the_topsegtbl_v, pf2: !the_markstack_v | ptr: ptr
   ) :<> int(*overflow*)
   = "gcats2_ptr_mark"
 // end of ...
 
-// implemented in [gcats2_marking]
+// implemented in [gcats2_marking.dats]
 fun ptrsize_mark (
     pf1: !the_topsegtbl_v, pf2: !the_markstack_v | ptr: ptr, wsz: size_t
   ) :<> int(*overflow*)
   = "gcats2_ptrsize_mark"
 // end of ...
 
-// implemented in [gcats2_marking]
+// implemented in [gcats2_marking.dats]
 fun chunk_mark (
     pf1: !the_topsegtbl_v, pf2: !the_markstack_v | chk: &chunk_vt
   ) :<> int(*overflow*)
   = "gcats2_chunk_mark"
 // end of ...
 
-// implemented in [gcats2_marking]
+// implemented in [gcats2_marking.dats]
 fun mystack_mark ():<> int(*overflow*) = "gcats2_mystack_mark"
 
 (* ****** ****** *)

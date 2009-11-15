@@ -61,6 +61,7 @@ dataview slseg_v (a:viewt@ype+, addr, addr, int) =
       free_gc_v (@(a, ptr), l1), (a, ptr l2) @ l1, slseg_v (a, l2, l3, n)
     ) // end of [slseg_v_cons]
   | {l:addr} slseg_v_nil (a, l, l, 0)
+// end of [slseg_v]
 
 viewdef sllst_v (a: viewt@ype, l:addr, n:int) = slseg_v (a, l, null, n)
   

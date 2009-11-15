@@ -43,15 +43,26 @@
 
 #print "Loading [list.sats] starts!\n"
 
-#endif
+#endif // end of [VERBOSE_PRELUDE]
 
 (* ****** ****** *)
 
 %{#
-
 #include "prelude/CATS/list.cats"
-
 %}
+
+(* ****** ****** *)
+
+(*
+** Notes (HX-2009-11-8):
+**
+** if a function f returns a list, then usually the returned list is
+** a linear list; if needed, please call the function [list_of_list_vt]
+** to turn the linear list into a nonlnear one; as [list_of_list_vt] is
+** a cast function (castfn), there is no run-time cost associated with
+** calling it.
+**
+*)
 
 (* ****** ****** *)
 
@@ -335,7 +346,8 @@ fun{a,sink:t@ype} list_fold_right_cloref {f:eff}
 
 (* ****** ****** *)
 
-fun{a1,a2,sink:t@ype} list_fold2_right__main
+fun{a1,a2,sink:t@ype}
+  list_fold2_right__main
   {v:view} {vt:viewtype} {n:nat} {f:eff} (
     pf: !v
   | f: (!v | a1, a2, sink, !vt) -<fun,f> sink
@@ -344,6 +356,7 @@ fun{a1,a2,sink:t@ype} list_fold2_right__main
   , snk: sink
   , env: !vt
   ) :<f> sink
+// end of [list_fold2_right__main]
 
 (* ****** ****** *)
 
@@ -374,7 +387,8 @@ overload list_forall with list_forall_cloref
 
 (* ****** ****** *)
 
-fun{a1,a2:t@ype} list_forall2__main
+fun{a1,a2:t@ype}
+  list_forall2__main
   {v:view} {vt:viewtype} {n:nat} {p:eff} (
     pf: !v
   | xs1: list (a1, n)
@@ -382,6 +396,7 @@ fun{a1,a2:t@ype} list_forall2__main
   , p: (!v | a1, a2, !vt) -<fun,p> bool
   , env: !vt
   ) :<p> bool
+// end of [list_forall2__main]
 
 fun{a1,a2:t@ype} list_forall2_fun {n:nat} {p:eff}
   (xs: list (a1, n), ys: list (a2, n), p: (a1, a2) -<p> bool):<p> bool
@@ -426,7 +441,8 @@ fun{a:t@ype} list_foreach_cloref
 
 (* ****** ****** *)
 
-fun{a1,a2:t@ype} list_foreach2__main
+fun{a1,a2:t@ype}
+  list_foreach2__main
   {v:view} {vt:viewtype} {n:nat} {f:eff} (
     pf: !v
   | xs: list (a1, n)
@@ -434,6 +450,7 @@ fun{a1,a2:t@ype} list_foreach2__main
   , f: (!v | a1, a2, !vt) -<fun,f> void
   , env: !vt
   ) :<f> void
+// end of [list_foreach2__main]
 
 fun{a1,a2:t@ype} list_foreach2_fun {v:view} {n:nat} {f:eff} (
     pf: !v
@@ -481,13 +498,16 @@ fun{a:t@ype} list_iforeach_cloref {n:nat} {f:eff}
 
 (* ****** ****** *)
 
-fun{a1,a2:t@ype} list_iforeach2__main {v:view} {vt:viewtype} {n:nat} {f:eff} (
+fun{a1,a2:t@ype}
+  list_iforeach2__main
+  {v:view} {vt:viewtype} {n:nat} {f:eff} (
     pf: !v
   | xs: list (a1, n)
   , ys: list (a2, n)
   , f: (!v | natLt n, a1, a2, !vt) -<fun,f> void
   , env: !vt
   ) :<f> void
+// end of [list_iforeach2__main]
 
 fun{a1,a2:t@ype} list_iforeach2_fun {v:view} {n:nat} {f:eff} (
     pf: !v
@@ -582,7 +602,8 @@ overload list_map with list_map_cloref
 
 (* ****** ****** *)
 
-fun{a1,a2:t@ype;b:viewt@ype} list_map2__main
+fun{a1,a2:t@ype;b:viewt@ype}
+  list_map2__main
   {v:view} {vt:viewtype} {n:nat} {f:eff} (
     pf: !v
   | xs: list (a1, n)
@@ -590,6 +611,7 @@ fun{a1,a2:t@ype;b:viewt@ype} list_map2__main
   , f: (!v | a1, a2, !vt) -<fun,f> b
   , env: !vt
   ) :<f> list_vt (b, n)
+// end of [list_map2__main]
 
 fun{a1,a2:t@ype;b:viewt@ype} list_map2_fun {n:nat} {f:eff}
   (xs: list (a1, n), ys: list (a2, n), f: (a1, a2) -<fun,f> b):<f> list_vt (b, n)
@@ -704,6 +726,6 @@ fun{a:t@ype} list_quicksort {env:viewtype} {n:nat} {lte:eff}
 
 #print "Loading [list.sats] finishes!\n"
 
-#endif
+#endif // end of [VERBOSE_PRELUDE]
 
 (* end of [list.sats] *)
