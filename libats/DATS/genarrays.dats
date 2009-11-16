@@ -1124,24 +1124,38 @@ end // end of [TRMAT_ptr_copy]
 implement{a} TRMAT_ptr_copy
   {ord} {ul} {dg} {m} {ld1,ld2}
   (ord, ul, dg, M1, M2, m, ld1, ld2) = let
-  fun loop_row_upper_nonunit
+  fun loop_row_upper
     {mi:nat} {l1,l2:addr} .<mi>. (
-      pf1: !TRMAT_v (a, mi, row, upper, nonunit, ld1, l1)
-    , pf2: !TRMAT_v (a?, mi, row, upper, nonunit, ld2, l2)
-         >> TRMAT_v (a, mi, row, upper, nonunit, ld2, l2)
+      pf1: !TRMAT_v (a, mi, row, upper, dg, ld1, l1)
+    , pf2: !TRMAT_v (a?, mi, row, upper, dg, ld2, l2)
+         >> TRMAT_v (a, mi, row, upper, dg, ld2, l2)
     | p1: ptr l1, p2: ptr l2, mi: size_t mi
     ) :<cloref> void =
     if mi > 0 then let
       val (pf11, pf12, pf13, fpf1 | p11, p12, p13) = 
-        TRMAT_U_ptr_split2x2 (pf1 | ORDERrow, p1, ld1, 1)
+        TRMAT_U_ptr_split2x2<a> (pf1 | ORDERrow, p1, ld1, 1)
       val (pf21, pf22, pf23, fpf2 | p21, p22, p23) = 
-        TRMAT_U_ptr_split2x2 (pf2 | ORDERrow, p2, ld2, 1)
+        TRMAT_U_ptr_split2x2<a?> (pf2 | ORDERrow, p2, ld2, 1)
 //
-      prval (pf11, fpf11) = TRMAT1x1_v_takeout_nonunit {a} (pf11)
-      prval (pf21, fpf21) = TRMAT1x1_v_takeout_nonunit {a?} (pf21)
-      val () = !p21 := !p11
-      prval pf11 = fpf11 (pf11)
-      prval pf21 = fpf21 (pf21)
+      stavar l21 : addr
+      val () = (case+
+        : (pf21 : TRMAT_v (a, 1, row, upper, dg, ld2, l21)) => dg of
+        | DIAGunit () => let
+            prval fpf21 = TRMAT1x1_v_takeout_unit {a?} (pf21)
+            prval () = pf21 := fpf21 {a} ()
+          in
+            // unit
+          end // end of [DIAGunit]
+        | DIAGnonunit () => let
+            prval (pf110, fpf11) = TRMAT1x1_v_takeout_nonunit {a} (pf11)
+            prval (pf210, fpf21) = TRMAT1x1_v_takeout_nonunit {a?} (pf21)
+            val () = !p21 := !p11
+            prval () = pf11 := fpf11 (pf110)
+            prval () = pf21 := fpf21 (pf210)
+          in
+            // nothing
+          end // end of [DIAGnonunit]
+      ) : void 
 //
       prval (pf12_inc, pf12, fpf12) = GEVEC_v_of_GEMAT_v_row {a} (pf12)
       prval MATVECINCrowrow () = pf12_inc
@@ -1149,13 +1163,13 @@ implement{a} TRMAT_ptr_copy
       prval (pf22_inc, pf22, fpf22) = GEVEC_v_of_GEMAT_v_row {a?} (pf22)
       prval MATVECINCrowrow () = pf22_inc
       prval pf22 = array_v_of_GEVEC_v {a?} (pf22)
-      val () = array_ptr_copy<a> (!p12, !p22, mi - 1)
+      val () = array_ptr_copy_tsz {a} (!p12, !p22, mi-1, sizeof<a>)
       prval pf12 = GEVEC_v_of_array_v {a} (pf12)
       prval pf12 = fpf12 {a} (pf12)
       prval pf22 = GEVEC_v_of_array_v {a} (pf22)
       prval pf22 = fpf22 {a} (pf22)
 //
-      val () = loop_row_upper_nonunit (pf13, pf23 | p13, p23, mi - 1)
+      val () = loop_row_upper (pf13, pf23 | p13, p23, mi-1)
 //
       prval () = pf1 := fpf1 {a} (pf11, pf12, pf13)
       prval () = pf2 := fpf2 {a} (pf21, pf22, pf23)
@@ -1166,24 +1180,38 @@ implement{a} TRMAT_ptr_copy
     end // end of [if]
   // end of [loop_row_upper_nonunit]
 
-  fun loop_row_lower_nonunit
+  fun loop_row_lower
     {mi:nat} {l1,l2:addr} .<mi>. (
-      pf1: !TRMAT_v (a, mi, row, lower, nonunit, ld1, l1)
-    , pf2: !TRMAT_v (a?, mi, row, lower, nonunit, ld2, l2)
-         >> TRMAT_v (a, mi, row, lower, nonunit, ld2, l2)
+      pf1: !TRMAT_v (a, mi, row, lower, dg, ld1, l1)
+    , pf2: !TRMAT_v (a?, mi, row, lower, dg, ld2, l2)
+         >> TRMAT_v (a, mi, row, lower, dg, ld2, l2)
     | p1: ptr l1, p2: ptr l2, mi: size_t mi
     ) :<cloref> void =
     if mi > 0 then let
       val (pf11, pf12, pf13, fpf1 | p11, p12, p13) = 
-        TRMAT_L_ptr_split2x2 (pf1 | ORDERrow, p1, ld1, mi-1)
+        TRMAT_L_ptr_split2x2<a> (pf1 | ORDERrow, p1, ld1, mi-1)
       val (pf21, pf22, pf23, fpf2 | p21, p22, p23) = 
-        TRMAT_L_ptr_split2x2 (pf2 | ORDERrow, p2, ld2, mi-1)
+        TRMAT_L_ptr_split2x2<a?> (pf2 | ORDERrow, p2, ld2, mi-1)
 //
-      prval (pf13, fpf13) = TRMAT1x1_v_takeout_nonunit {a} (pf13)
-      prval (pf23, fpf23) = TRMAT1x1_v_takeout_nonunit {a?} (pf23)
-      val () = !p23 := !p13
-      prval pf13 = fpf13 (pf13)
-      prval pf23 = fpf23 (pf23)
+      stavar l23 : addr
+      val () = (case+
+        : (pf23 : TRMAT_v (a, 1, row, lower, dg, ld2, l23)) => dg of
+        | DIAGunit () => let
+            prval fpf23 = TRMAT1x1_v_takeout_unit {a?} (pf23)
+            prval () = pf23 := fpf23 {a} ()
+          in
+            // nothing
+          end // end of [DIAGunit]
+        | DIAGnonunit () => let
+            prval (pf130, fpf13) = TRMAT1x1_v_takeout_nonunit {a} (pf13)
+            prval (pf230, fpf23) = TRMAT1x1_v_takeout_nonunit {a?} (pf23)
+            val () = !p23 := !p13
+            prval () = pf13 := fpf13 (pf130)
+            prval () = pf23 := fpf23 (pf230)
+          in
+            // nothing
+          end // end of [DIAGnonunit]
+      ) : void
 //
       prval (pf12_inc, pf12, fpf12) = GEVEC_v_of_GEMAT_v_row {a} (pf12)
       prval MATVECINCrowrow () = pf12_inc
@@ -1191,13 +1219,13 @@ implement{a} TRMAT_ptr_copy
       prval (pf22_inc, pf22, fpf22) = GEVEC_v_of_GEMAT_v_row {a?} (pf22)
       prval MATVECINCrowrow () = pf22_inc
       prval pf22 = array_v_of_GEVEC_v {a?} (pf22)
-      val () = array_ptr_copy<a> (!p12, !p22, mi - 1)
+      val () = array_ptr_copy_tsz {a} (!p12, !p22, mi-1, sizeof<a>)
       prval pf12 = GEVEC_v_of_array_v {a} (pf12)
       prval pf12 = fpf12 {a} (pf12)
       prval pf22 = GEVEC_v_of_array_v {a} (pf22)
       prval pf22 = fpf22 {a} (pf22)
 //
-      val () = loop_row_lower_nonunit (pf11, pf21 | p11, p21, mi - 1)
+      val () = loop_row_lower (pf11, pf21 | p11, p21, mi-1)
 //
       prval () = pf1 := fpf1 {a} (pf11, pf12, pf13)
       prval () = pf2 := fpf2 {a} (pf21, pf22, pf23)
@@ -1208,56 +1236,41 @@ implement{a} TRMAT_ptr_copy
     end // end of [if]
   // end of [loop_row_upper_nonunit]
 in
-  case+ dg of
-  | DIAGnonunit () => begin case+ ord of
-    | ORDERrow () => begin case+ ul of
-      | UPLOupper () =>
-          loop_row_upper_nonunit (view@ M1, view@ M2 | &M1, &M2, m)
-        // end of [UPLOupper]
-      | UPLOlower () =>
-          loop_row_lower_nonunit (view@ M1, view@ M2 | &M1, &M2, m)
-        // end of [UPLOlower]
-      end // end of [ORDERrow]
-    | ORDERcol () => let
-        prval pf1_order = TRMAT_v_trans (view@ M1)
-        prval TRANORDcolrow () = pf1_order
-        prval pf2_order = TRMAT_v_trans (view@ M2)
-        prval TRANORDcolrow () = pf2_order
-      in
-        case+ ul of
-        | UPLOupper () => let
-            val () = loop_row_lower_nonunit (view@ M1, view@ M2 | &M1, &M2, m)
-            prval pf1_order = TRMAT_v_trans (view@ M1)
-            prval TRANORDrowcol () = pf1_order
-            prval pf2_order = TRMAT_v_trans (view@ M2)
-            prval TRANORDrowcol () = pf2_order
-          in
-            // nothing
-          end // end of [UPLOupper]
-        | UPLOlower () => let
-            val () = loop_row_upper_nonunit (view@ M1, view@ M2 | &M1, &M2, m)
-            prval pf1_order = TRMAT_v_trans (view@ M1)
-            prval TRANORDrowcol () = pf1_order
-            prval pf2_order = TRMAT_v_trans (view@ M2)
-            prval TRANORDrowcol () = pf2_order
-          in
-            // nothing
-          end
-      end // end of [ORDERcol]
-    end // end of [DIAGnonunit]
-  | DIAGunit () =>
-      if m > 0 then let
-        val (pf1, fpf1 | p1) = TRMAT_ptr_unit_nonunit<a> (view@ M1 | ord, &M1, ld1)
-        val (pf2, fpf2 | p2) = TRMAT_ptr_unit_nonunit<a?> (view@ M2 | ord, &M2, ld2)
-        val () = TRMAT_ptr_copy<a> (ord, ul, DIAGnonunit, !p1, !p2, m-1, ld1, ld2)
-        prval () = view@ M1 := fpf1 {a} (pf1)
-        prval () = view@ M2 := fpf2 {a} (pf2)
-      in
-        // nothing
-      end else let
-        prval () = TRMAT_v_unnil (view@ M2) in view@ M2 := TRMAT_v_nil {a} ()
-      end // end of [if]
-   // end of [DIAGunit]
+  case+ ord of
+  | ORDERrow () => begin case+ ul of
+    | UPLOupper () =>
+        loop_row_upper (view@ M1, view@ M2 | &M1, &M2, m)
+      // end of [UPLOupper]
+    | UPLOlower () =>
+        loop_row_lower (view@ M1, view@ M2 | &M1, &M2, m)
+      // end of [UPLOlower]
+    end // end of [ORDERrow]
+  | ORDERcol () => let
+      prval pf1_order = TRMAT_v_trans (view@ M1)
+      prval TRANORDcolrow () = pf1_order
+      prval pf2_order = TRMAT_v_trans (view@ M2)
+      prval TRANORDcolrow () = pf2_order
+    in
+      case+ ul of
+      | UPLOupper () => let
+          val () = loop_row_lower (view@ M1, view@ M2 | &M1, &M2, m)
+          prval pf1_order = TRMAT_v_trans (view@ M1)
+          prval TRANORDrowcol () = pf1_order
+          prval pf2_order = TRMAT_v_trans (view@ M2)
+          prval TRANORDrowcol () = pf2_order
+        in
+          // nothing
+        end // end of [UPLOupper]
+      | UPLOlower () => let
+          val () = loop_row_upper (view@ M1, view@ M2 | &M1, &M2, m)
+          prval pf1_order = TRMAT_v_trans (view@ M1)
+          prval TRANORDrowcol () = pf1_order
+          prval pf2_order = TRMAT_v_trans (view@ M2)
+          prval TRANORDrowcol () = pf2_order
+        in
+          // nothing
+        end
+    end // end of [ORDERcol]
 end // end of [TRMAT_ptr_copy]
 *)
 
