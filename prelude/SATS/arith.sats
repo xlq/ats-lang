@@ -43,7 +43,7 @@
 
 #print "Loading [arith.sats] starts!\n"
 
-#endif
+#endif // end of [VERBOSE_PRELUDE]
 
 (* ****** ****** *)
 
@@ -107,10 +107,25 @@ prfun gcd_commute {m,n:int} {r:int} (pf: GCD (m, n, r)):<prf> GCD (n, m, r)
 
 (* ****** ****** *)
 
+dataprop POW2 (int, int) =
+  | {n:nat} {p:nat} POW2ind (n+1, 2*p) of POW2 (n, p)
+  | POW2bas (0, 1)
+// end of [POW2]
+
+prfun POW2_istot {n:nat} (): [p:nat] POW2 (n, p)
+prfun POW2_isfun {n:nat} {p1,p2:int}
+  (pf1: POW2 (n, p1), pf2: POW2 (n, p2)): [p1==p2] void
+// end of [POW2_isfun]
+
+prfun POW2_monotone {n1,n2:nat | n1 <= n2} {p1,p2:int}
+  (pf1: POW2 (n1, p1), pf2: POW2 (n2, p2)): [p1 <= p2] void
+
+(* ****** ****** *)
+
 #if VERBOSE_PRELUDE #then
 
 #print "Loading [arith.sats] finishes!\n"
 
-#endif
+#endif // end of [VERBOSE_PRELUDE]
 
 (* end of [arith.sats] *)

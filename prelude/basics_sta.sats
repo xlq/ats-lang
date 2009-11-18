@@ -41,7 +41,7 @@
 
 #print "Loading [basic_sta.sats] starts!\n"
 
-#endif
+#endif // end of [VERBOSE_PRELUDE]
 
 (* ****** ****** *)
 
@@ -132,7 +132,7 @@ abst@ype ptrdiff_t0ype = $extype "ats_ptrdiff_type"
 
 (* ****** ****** *)
 
-abstype ptr_type
+abstype ptr_type // unindexed type for pointers
 
 (* ****** ****** *)
 
@@ -171,8 +171,12 @@ stadef * = mul_int_int_int
 sta div_int_int_int : (int, int) -> int (* division *)
 stadef / = div_int_int_int
 
+(*
 sta mod_int_int_int : (int, int) -> int (* modulo operation *)
 stadef mod = mod_int_int_int
+*)
+// [y] is required to be a constant
+stadef mod (x:int, y:int) = x - y * (x / y)
 
 sta abs_int_int : int -> int
 stadef abs = abs_int_int
@@ -507,7 +511,7 @@ stadef sgn_r = sgn_int_int_bool
 
 // division relation
 
-stadef ndiv_int_int_int_bool (x: int, y:int, q: int): bool =
+stadef ndiv_int_int_int_bool (x: int, y: int, q: int): bool =
   (q * y <= x && x < q * y + y)
 
 stadef ndiv_r = ndiv_int_int_int_bool
@@ -519,6 +523,8 @@ stadef div_int_int_int_bool (x: int, y: int, q: int) =
   (x <= 0 && y < 0 && ndiv_int_int_int_bool (~x, ~y, q))
 
 stadef div_r = div_int_int_int_bool
+
+// modulo relation // not handled yet
 
 (* ****** ****** *)
 
@@ -892,6 +898,6 @@ where stream_vt (a:viewt@ype) = lazy_vt (stream_vt_con a)
 
 #print "Loading [basic_sta.sats] finishes!\n"
 
-#endif
+#endif // end of [VERBOSE_PRELUDE]
 
 (* end of [basics_sta.sats] *)

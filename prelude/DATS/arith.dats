@@ -241,4 +241,37 @@ end // end of local
 
 (* ****** ****** *)
 
+implement POW2_istot {n} () = istot {n} () where {
+  prfun istot {n:nat} .<n>. (): [p:nat] POW2 (n, p) =
+    sif n > 0 then POW2ind (istot {n-1} ()) else POW2bas ()
+} // end of [pow2_istot]
+
+implement POW2_isfun
+  (pf1, pf2) = isfun (pf1, pf2) where {
+  prfun isfun {n:nat} {p1,p2:int} .<n>.
+    (pf1: POW2 (n, p1), pf2: POW2 (n, p2)): [p1==p2] void =
+    case+ pf1 of
+    | POW2ind pf1 => let
+        prval POW2ind pf2 = pf2 in isfun (pf1, pf2)
+      end // end of [POW2ind]
+    | POW2bas () => let
+        prval POW2bas () = pf2 in (* nothing *)
+      end // end of [POW2bas]
+  // end of [isfun]
+} // end of [POW2_isfun]
+
+implement POW2_monotone
+  (pf1, pf2) = lemma (pf1, pf2) where {
+  prfun lemma {n1,n2:nat | n1 <= n2} {p1,p2:int} .<n2>.
+    (pf1: POW2 (n1, p1), pf2: POW2 (n2, p2)): [p1 <= p2] void =
+    case+ pf2 of
+    | POW2ind (pf2) => begin case+ pf1 of
+      | POW2ind (pf1) => lemma (pf1, pf2) | POW2bas () => lemma (pf1, pf2)
+      end // end of [POW2ind]
+    | POW2bas () => let prval POW2bas () = pf1 in () end
+  // end of [lemma]
+} // end of [pow2_monotone_lemma]
+
+(* ****** ****** *)
+
 (* end of [arith.dats] *)

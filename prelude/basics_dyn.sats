@@ -43,7 +43,7 @@
 
 #print "Loading [basics_dyn.sats] starts!\n"
 
-#endif
+#endif // end of [VERBOSE_PRELUDE]
 
 (* ****** ****** *)
 
@@ -482,6 +482,6 @@ overload ~ with lazy_vt_free
 
 #print "Loading [basics_dyn.ats] finishes!\n"
 
-#endif
+#endif // end of [VERBOSE_PRELUDE]
 
 (* end of [basics_dyn.sats] *)
