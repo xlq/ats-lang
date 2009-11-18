@@ -31,8 +31,8 @@
 
 (* ****** ****** *)
 
-// Time: December 2007
 // Author: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
+// Time: December 2007
 
 (* ****** ****** *)
 
@@ -199,10 +199,10 @@ fun labp3atlst_typ_get (lp3ts: labp3atlst): labs2explst = begin
     end
   | LABP3ATLSTnil () => LABS2EXPLSTnil ()
   | LABP3ATLSTdot () => begin
-      prerr "Internal Error: labp2atlst_typ_get: LABP3ATLSTdot";
+      prerr "INTERNAL ERROR: labp2atlst_typ_get: LABP3ATLSTdot";
       prerr_newline ();
       $Err.abort {labs2explst} ()
-    end
+    end // end of [LABP3ATLSTdot]
 end // end of [labp3atlst_typ_get]
 
 (* ****** ****** *)
@@ -323,9 +323,9 @@ fn p3at_con_free_update
   (p3t0: p3at, freeknd: int, d2c: d2con_t, p3ts: p3atlst): void = let
 (*
   val () = begin
-    prerr "p3at_con_free_update: p3t0 = "; prerr p3t0; prerr_newline ();
-    prerr "p3at_con_free_update: freeknd = "; prerr freeknd; prerr_newline ();
-    prerr "p3at_con_free_update: d2c = "; prerr d2c; prerr_newline ();
+    print "p3at_con_free_update: p3t0 = "; print p3t0; print_newline ();
+    print "p3at_con_free_update: freeknd = "; print freeknd; print_newline ();
+    print "p3at_con_free_update: d2c = "; print d2c; print_newline ();
   end // end of [val]
 *)
   fun aux_var
@@ -350,7 +350,7 @@ fn p3at_con_free_update
     (d2v_view, s2e_addr)
   end // end of [aux_var]
   fn aux_pat (p3t: p3at):<cloref1> s2exp = let
-    val d2v_ptr = case+ p3t.p3at_node of
+    val d2v_ptr = (case+ p3t.p3at_node of
       | P3Tany (d2v) => let
           val os2e = (case+ p3t.p3at_typ_lft of
             | None () => Some (s2exp_topize_1 p3t.p3at_typ)
@@ -370,10 +370,10 @@ fn p3at_con_free_update
         in
           d2var_typ_set (d2v, os2e); d2v
         end (* end of [_] *)
-    // end of [val]    
+    ) : d2var_t // end of [val]    
 (*
     val () = begin
-      prerr "p3at_con_free_update: aux_pat: d2v_ptr = "; prerr d2v_ptr; prerr_newline ()
+      print "p3at_con_free_update: aux_pat: d2v_ptr = "; print d2v_ptr; print_newline ()
     end // end of [val]
 *)
     val s2e = d2var_typ_get_some (p3t.p3at_loc, d2v_ptr)
@@ -454,7 +454,7 @@ in
     end
   | _ => begin
       prerr loc0;
-      prerr ": Internal Error: p2at_con_tr_up"; prerr_newline ();
+      prerr ": INTERNAL ERROR: p2at_con_tr_up"; prerr_newline ();
       $Err.abort {p2atcontrup} ()
     end
 end // end of [p2at_con_tr_up]
@@ -561,11 +561,11 @@ fn p2at_con_tr_dn (
             fun aux (p3ts: p3atlst, err: &int)
               :<cloref1> void = begin case+ p3ts of
               | list_cons (p3t, p3ts) => aux (p3ts, err) where {
-                  val () = case+ p3t.p3at_node of
-                    | P3Tvar (refknd, _)    => if refknd > 0 then err := err + 1
-                    | P3Tas  (refknd, _, _) => if refknd > 0 then err := err + 1
+                  val () = (case+ p3t.p3at_node of
+                    | P3Tvar (refknd, _) => if refknd > 0 then err := err + 1
+                    | P3Tas (refknd, _, _) => if refknd > 0 then err := err + 1
                     | _ => ()
-                  // end of [val]
+                  ) : void // end of [val]
                 } // end of [list_cons]
               | list_nil () => ()
             end // end of [aux]
@@ -817,8 +817,8 @@ fn p2at_rec_tr_dn
              prerr loc0; prerr ": error(3)";
              prerr ": the pattern cannot be assigned a type of the sort ["; prerr s2t_s2V; prerr "].";
              prerr_newline ();
-             $Err.abort {void} ()                        
-          end // end of [if/
+             $Err.abort {void} ()
+          end // end of [if]
       in
         s2Var_link_set (s2V, Some s2e_rec); s2e_rec
       end
@@ -833,7 +833,7 @@ in
             prerr ": the flat record pattern cannot be assigned a boxed type.";
             prerr_newline ();
             $Err.abort {void} ()
-          end
+          end // end of [0, TYRECKINDbox]
         | (0, _) => ()
         | (_, TYRECKINDbox _) => () // recknd > 0
         | (_, _) => begin // recknd > 0 and tyrecknd is flat
@@ -841,7 +841,7 @@ in
             prerr ": the boxed record pattern cannot be assigned a flat type.";
             prerr_newline ();
             $Err.abort {void} ()              
-          end
+          end // end of [_, _]
       val () = pfarity_check (loc0, npf1, npf2)
       val lp3ts = labp2atlst_tr_dn (loc0, lp2ts, ls2es)
     in
@@ -852,7 +852,7 @@ in
       prerr ": the record pattern is given a type that is not for records.";
       prerr_newline ();
       $Err.abort {p3at} ()
-    end
+    end // end of [_]
 end // end of [p2at_rec_tr_dn]
 
 (* ****** ****** *)
@@ -871,18 +871,18 @@ fn p2at_var_tr_dn (
   ) // end of [val]
 (*
   val () = begin
-    prerr "p2at_var_tr_dn: d2v = "; prerr d2v; prerr_newline ();
-    prerr "p2at_var_tr_dn: s2e0 = "; prerr s2e0; prerr_newline ();
-    prerr "p2at_var_tr_dn: s2t0 = "; prerr s2e0.s2exp_srt; prerr_newline ();
-  end
+    print "p2at_var_tr_dn: d2v = "; print d2v; print_newline ();
+    print "p2at_var_tr_dn: s2e0 = "; print s2e0; print_newline ();
+    print "p2at_var_tr_dn: s2t0 = "; print s2e0.s2exp_srt; print_newline ();
+  end // end of [val]
 *)
   val s2e = s2exp_opnexi_and_add (loc0, s2e0)
   val () = d2var_typ_set (d2v, Some s2e)
   val p3t0 = p3at_var (loc0, s2e0, refknd, d2v)
 (*
   val () = begin
-    prerr "p2at_tr_var_dn: d2v = "; prerr d2v; prerr_newline ();
-    prerr "p2at_tr_var_dn: s2e = "; prerr s2e; prerr_newline ();
+    print "p2at_tr_var_dn: d2v = "; print d2v; print_newline ();
+    print "p2at_tr_var_dn: s2e = "; print s2e; print_newline ();
   end // end of [val]
 *)
 in
@@ -933,8 +933,8 @@ implement p2at_tr_dn (p2t0, s2e0) = let
   val loc0 = p2t0.p2at_loc
 (*
   val () = begin
-    prerr "p2at_tr_dn: p2t0 = "; prerr p2t0; prerr_newline ();
-    prerr "p2at_tr_dn: s2e0 = "; prerr s2e0; prerr_newline ();
+    print "p2at_tr_dn: p2t0 = "; print p2t0; print_newline ();
+    print "p2at_tr_dn: s2e0 = "; print s2e0; print_newline ();
   end // end of [val]
 *)
 in
@@ -989,7 +989,7 @@ in
           val s2e_arg = case+ s2es_arg of
             | list_cons (s2e, _) => s2e | list_nil () => begin
                 prerr loc0;
-                prerr ": Internal Error: p2at_tr_dn: P2Tint";
+                prerr ": INTERNAL ERROR: p2at_tr_dn: P2Tint";
                 prerr_newline ();
                 $Err.abort {s2exp} ()
               end (* end of [list_nil] *)
@@ -1019,7 +1019,7 @@ in
           val s2e_arg = case+ s2es_arg of
             | list_cons (s2e, _) => s2e | list_nil _ => begin
                 prerr loc0;
-                prerr ": Internal Error: p2at_tr_dn: P2Tstring";
+                prerr ": INTERNAL ERROR: p2at_tr_dn: P2Tstring";
                 prerr_newline ();
                 $Err.abort {s2exp} ()
               end // end of [list_nil]
@@ -1063,11 +1063,18 @@ end // end of [p2atlst_tr_dn]
 
 (* ****** ****** *)
 
-implement p2at_arg_tr_up (p2t0) = begin
+implement p2at_arg_tr_up (p2t0) = let
+(*
+   val () = begin
+     print "p2at_arg_tr_up: p2t0 = "; print p2t0; print_newline ();
+   end // end of [val]
+*)
+in
   case+ p2t0.p2at_node of
   | P2Tann (p2t, s2e) => p2at_arg_tr_dn (p2t, s2e)
   | _ => begin case+ p2t0.p2at_typ of
-    | Some s2e => p2at_tr_dn (p2t0, s2e) | None () => begin
+    | Some s2e => p2at_tr_dn (p2t0, s2e)
+    | None () => begin
         prerr p2t0.p2at_loc; prerr ": INTERNAL ERROR";
         prerr ": p2at_arg_tr_up: p2t0 = "; prerr p2t0; prerr_newline ();
         $Err.abort {p3at} ()
@@ -1077,16 +1084,27 @@ end (* end of [p2at_arg_tr_up] *)
 
 implement p2at_arg_tr_dn (p2t0, s2e0) = let
   val s2e0 = s2exp_whnf s2e0 in case+ s2e0.s2exp_node of
-    | S2Erefarg (refval, s2e_arg) => let
+  | S2Erefarg (refval, s2e_arg) => let
 (*
-        val () = begin
-          prerr "p2at_arg_tr_dn: p2t0 = "; prerr p2t0; prerr_newline ();
-          prerr "p2at_arg_tr_dn: s2e_arg = "; prerr s2e_arg; prerr_newline ();
-        end // end of [val]
+      val () = begin
+        print "p2at_arg_tr_dn: p2t0 = "; print p2t0; print_newline ();
+        print "p2at_arg_tr_dn: s2e_arg = "; print s2e_arg; print_newline ();
+      end // end of [val]
 *)
-      in
-        case+ p2t0.p2at_node of
-        | P2Tvar (refknd(*=0*), d2v) => begin case+ refval of
+      fn refknd_check (p2t0: p2at, refknd: int): void =
+        if refknd > 0 then begin
+          prerr p2t0.p2at_loc;
+          prerr ": error(3): misuse of refvar pattern."; prerr_newline ();
+          $Err.abort {void} ()
+        end // end of [if]
+    in
+      case+ p2t0.p2at_node of
+      | P2Tvar (refknd(*=0*), d2v) => let
+(*
+          val () = refknd_check (p2t0, refknd) // is there a need?
+*)
+        in
+          case+ refval of
           | _ when refval = 0 => let // call-by-value
               val p3t0 = p2at_var_tr_dn (p2t0, refknd, d2v, s2e_arg)
               val () = d2var_mastyp_set (d2v, Some s2e_arg)
@@ -1115,7 +1133,12 @@ implement p2at_arg_tr_dn (p2t0, s2e0) = let
               p3at_var (loc0, s2e0, refknd, d2v)
             end // end of [refval = 1]
           end (* end of [P2Tvar] *)
-        | P2Tas (refknd(*=0*), d2v, p2t) => begin case+ refval of
+      | P2Tas (refknd(*=0*), d2v, p2t) => let
+(*
+          val () = refknd_check (p2t0, refknd) // is there a need?
+*)
+        in
+          case+ refval of
           | _ when refval = 0 => let // call-by-value
               val loc0 = p2t0.p2at_loc;
               val p3t = p2at_tr_dn (p2t, s2e_arg)
@@ -1153,51 +1176,51 @@ implement p2at_arg_tr_dn (p2t0, s2e0) = let
               p3at_as (loc0, s2e0, refknd, d2v, p3t)
             end // end of [_ when refval = 1]
           end (* end of [P2Tas] *)
-        | _ => begin
-            prerr p2t0.p2at_loc; prerr ": error(3)";
-            prerr ": the pattern is expected to be a variable but it is not.";
-            prerr_newline ();
-            $Err.abort {p3at} ()
-          end (* end of [_] *)
-      end // end of [S2Erefarg]
-    | S2Evararg s2e_arg => let // va_start ...
+      | _ => begin
+          prerr p2t0.p2at_loc; prerr ": error(3)";
+          prerr ": the pattern is expected to be a variable but it is not.";
+          prerr_newline ();
+          $Err.abort {p3at} ()
+        end (* end of [_] *)
+    end // end of [S2Erefarg]
+  | S2Evararg s2e_arg => let // va_start ...
 (*
-**      this special argument is to be set as a pointer to a value of
-**      of the type [va_list] (stdarg.h)
+**    this special argument is to be set as a pointer to a value of
+**    of the type [va_list] (stdarg.h)
 *)
-      in
-        case+ p2t0.p2at_node of
-        | P2Tvar (refknd(*=0*), d2v) => let
-            val loc0 = p2t0.p2at_loc
-            val s2e_valst0 = s2exp_va_list_viewt0ype ()
-            val s2e_valst1 = s2exp_va_list_types_viewt0ype (s2e_arg)
-            val s2v_addr = s2var_make_id_srt (d2var_sym_get d2v, s2rt_addr)
-            val s2e_addr = s2exp_var s2v_addr
-            val () = trans3_env_add_svar s2v_addr
-            val () = d2var_addr_set (d2v, Some s2e_addr)
-            val d2v_view = d2var_ptr_viewat_make_none (d2v)
-            val () = d2var_view_set (d2v, D2VAROPTsome d2v_view) // [d2v] is mutable
-            val () = the_d2varset_env_add (d2v_view)
-            val s2e_valst0_at = s2exp_at_viewt0ype_addr_view (s2e_valst0, s2e_addr)
-            val () = d2var_mastyp_set (d2v_view, Some s2e_valst0_at)
-            val s2e_valst1_at = s2exp_at_viewt0ype_addr_view (s2e_valst1, s2e_addr)
-            val () = d2var_typ_set (d2v_view, Some s2e_valst1_at)
-            // note that [va_end] is to be done explicitly!!!
-            val () = d2var_fin_set (d2v_view, D2VARFINsome s2e_valst0_top_at) where {
-              val s2e_valst0_top = s2exp_topize_0 (s2e_valst0)
-              val s2e_valst0_top_at = s2exp_at_viewt0ype_addr_view (s2e_valst0_top, s2e_addr)
-            } // end of [val]
-          in
-            p3at_var (loc0, s2e0, refknd, d2v)
-          end // end of [refval = 1]
-        | _ => begin
-            prerr p2t0.p2at_loc; prerr ": error(3)";
-            prerr ": the pattern is expected to be a variable but it is not.";
-            prerr_newline ();
-            $Err.abort {p3at} ()
-          end (* end of [_] *)
-      end // end of [S2Evararg]
-    | _ => p2at_tr_dn (p2t0, s2e0)
+    in
+      case+ p2t0.p2at_node of
+      | P2Tvar (refknd(*=0*), d2v) => let
+          val loc0 = p2t0.p2at_loc
+          val s2e_valst0 = s2exp_va_list_viewt0ype ()
+          val s2e_valst1 = s2exp_va_list_types_viewt0ype (s2e_arg)
+          val s2v_addr = s2var_make_id_srt (d2var_sym_get d2v, s2rt_addr)
+          val s2e_addr = s2exp_var s2v_addr
+          val () = trans3_env_add_svar s2v_addr
+          val () = d2var_addr_set (d2v, Some s2e_addr)
+          val d2v_view = d2var_ptr_viewat_make_none (d2v)
+          val () = d2var_view_set (d2v, D2VAROPTsome d2v_view) // [d2v] is mutable
+          val () = the_d2varset_env_add (d2v_view)
+          val s2e_valst0_at = s2exp_at_viewt0ype_addr_view (s2e_valst0, s2e_addr)
+          val () = d2var_mastyp_set (d2v_view, Some s2e_valst0_at)
+          val s2e_valst1_at = s2exp_at_viewt0ype_addr_view (s2e_valst1, s2e_addr)
+          val () = d2var_typ_set (d2v_view, Some s2e_valst1_at)
+          // note that [va_end] is to be done explicitly!!!
+          val () = d2var_fin_set (d2v_view, D2VARFINsome s2e_valst0_top_at) where {
+            val s2e_valst0_top = s2exp_topize_0 (s2e_valst0)
+            val s2e_valst0_top_at = s2exp_at_viewt0ype_addr_view (s2e_valst0_top, s2e_addr)
+          } // end of [val]
+        in
+          p3at_var (loc0, s2e0, refknd, d2v)
+        end // end of [refval = 1]
+      | _ => begin
+          prerr p2t0.p2at_loc; prerr ": error(3)";
+          prerr ": the pattern is expected to be a variable but it is not.";
+          prerr_newline ();
+          $Err.abort {p3at} ()
+        end (* end of [_] *)
+    end // end of [S2Evararg]
+  | _ => p2at_tr_dn (p2t0, s2e0)
 end (* end of [p2at_arg_tr_dn] *)
 
 fn p2at_proofize (p2t: p2at) = let
