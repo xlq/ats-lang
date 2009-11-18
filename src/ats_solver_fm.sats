@@ -168,7 +168,7 @@ fun fprint_intvecptr {m:file_mode} {n:nat} (
 dataviewtype icstr (int) =
   | {n:pos} {l:addr} (* knd: eq/neq: 1/~1; lt/gte: 2/~2 *)
     ICvec (n) of (int(*knd*), intvecptr_t n)
-  | {n:pos} {s:nat} (* knd: conj/disj: 1/~1 *)
+  | {n:pos} {s:nat} (* knd: conj/disj: 0/1 *)
     ICveclst (n) of (int(*knd*), icstrlst (n, s))
 
 where icstrlst (n:int, s: int) = list_vt (icstr n, s)

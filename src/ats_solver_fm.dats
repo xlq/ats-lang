@@ -716,7 +716,7 @@ implement intveclst_solve {n} (vecs, n) = let
 (*
   val () = begin
     print "intveclst_solve: vecs =\n"; print_intveclst (vecs, n); print_newline ();
-  end
+  end // end of [val]
 *)
   var vecs: intveclst n = vecs
   val ans = aux_solve (vecs, n)
@@ -815,7 +815,7 @@ fun print_intveclst1 {n:pos}
 in
   fprint_intveclst1 (file_mode_lte_w_w | !ptr_stdout, v1ecs, n);
   stdout_view_set (pf_stdout | (*none*))
-end
+end // end of [print_intveclst1]
 
 (* ****** ****** *)
 
@@ -1060,7 +1060,7 @@ fun aux_main {s:nat} (
   val ans = aux_main (0(*stamp*), v1ecs, v1ecs_eq, n, ics)
 in
   intveclst1_free v1ecs_eq; intveclst1_free v1ecs; ans
-end
+end // end of [icstrlst_solve]
 
 (* ****** ****** *)
 
