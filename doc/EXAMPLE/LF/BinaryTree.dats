@@ -45,29 +45,9 @@ prfun btht_isfun {t:bt} {n1,n2:nat} .<t>.
 
 (* ****** ****** *)
 
-dataprop POW2 (int, int) =
-  | POW2bas (0, 1) | {p,n:nat} POW2ind (p+1, n+n) of POW2 (p, n)
-
-(* ****** ****** *)
-
-prfun pow2_istot {p:nat} .<p>. (): [n:nat] POW2 (p, n) =
-  sif p > 0 then POW2ind (pow2_istot {p-1} ()) else POW2bas ()
-// end of [pow2_istot]
-
-prfun pow2_monotone_lemma
-  {p1,p2:nat | p1 <= p2} {n1,n2:nat} .<p2>.
-  (pf1: POW2 (p1, n1), pf2: POW2 (p2, n2)): [n1 <= n2] void =
-  case+ pf2 of
-  | POW2ind (pf2) => begin case+ pf1 of
-    | POW2ind (pf1) => pow2_monotone_lemma (pf1, pf2)
-    | POW2bas () => pow2_monotone_lemma (pf1, pf2)
-    end // end of [POW2ind]
-  | POW2bas () => begin
-      let prval POW2bas () = pf1 in () end
-    end // end of [POW2bas]
-// end of [pow2_monotone_lemma]
-
-(* ****** ****** *)
+//
+// POW2 is declared in $ATSHOME/prelude/SATS/arith.sats
+//
 
 prfun bintree_SZ_HT_lemma {t:bt} {s,n,p:nat} .<t>.
   (pf1: btsz (t, s), pf2: btht (t, n), pf3: POW2 (n, p)): [s < p] void =
@@ -77,11 +57,11 @@ prfun bintree_SZ_HT_lemma {t:bt} {s,n,p:nat} .<t>.
     end // end of [btsz_E]
   | btsz_B (pf11, pf12) => let
       prval btht_B (pf21, pf22) = pf2; prval POW2ind (pf30) = pf3
-      prval pf30_1 = pow2_istot ()
-      prval () = pow2_monotone_lemma (pf30_1, pf30)
+      prval pf30_1 = POW2_istot ()
+      prval () = POW2_monotone (pf30_1, pf30)
       prval () = bintree_SZ_HT_lemma (pf11, pf21, pf30_1)
-      prval pf30_2 = pow2_istot ()
-      prval () = pow2_monotone_lemma (pf30_2, pf30)
+      prval pf30_2 = POW2_istot ()
+      prval () = POW2_monotone (pf30_2, pf30)
       prval () = bintree_SZ_HT_lemma (pf12, pf22, pf30_2)
     in
       // empty
@@ -98,11 +78,11 @@ prfun bintree_SZ_SP_lemma {t:bt} {s,n,p:nat} .<t>.
     end // end of [btsz_E]
   | btsz_B (pf11, pf12) => let
       prval btsp_B (pf21, pf22) = pf2; prval POW2ind (pf30) = pf3
-      prval pf30_1 = pow2_istot ()
-      prval () = pow2_monotone_lemma (pf30, pf30_1)
+      prval pf30_1 = POW2_istot ()
+      prval () = POW2_monotone (pf30, pf30_1)
       prval () = bintree_SZ_SP_lemma (pf11, pf21, pf30_1)
-      prval pf30_2 = pow2_istot ()
-      prval () = pow2_monotone_lemma (pf30, pf30_2)
+      prval pf30_2 = POW2_istot ()
+      prval () = POW2_monotone (pf30, pf30_2)
       prval () = bintree_SZ_SP_lemma (pf12, pf22, pf30_2)
     in
       // empty
@@ -115,6 +95,7 @@ dataprop isAVL (bt) =
   | {t1,t2:bt} {n1,n2:nat | n1 <= n2+1; n2 <= n1+1}
     isAVL_B (B (t1, t2)) of (isAVL t1, isAVL t2, btht (t1, n1), btht (t2, n2))
   | isAVL_E (E ())
+// end of [isAVL]
 
 (* ****** ****** *)
 
