@@ -93,7 +93,7 @@ fn extract_digit (
   , pf_accum: !v_accum
   , pf_tmp1: !v_tmp1, pf_tmp2: !v_tmp2
   | (*none*)
-  ) : int = let
+  ) :<> int = let
   val sgn = mpz_cmp (numer, accum)
 in
   case+ 0 of
@@ -104,7 +104,7 @@ in
       val () = mpz_add (tmp1, accum)
       val () = mpz_fdiv_qr (tmp1, tmp2, &tmp1, denom) where {
         extern fun mpz_fdiv_qr
-          (_: &mpz_vt, _: &mpz_vt, _: ptr, _: &mpz_vt): void = "atslib_mpz_fdiv_qr"
+          (_: &mpz_vt, _: &mpz_vt, _: ptr, _: &mpz_vt):<> void = "atslib_mpz_fdiv_qr"
       } // end of [val]
       val () = mpz_add (tmp2, numer)
     in
@@ -120,10 +120,7 @@ fn next_term (
   , pf_accum: !v_accum
   , pf_tmp1: !v_tmp1, pf_tmp2: !v_tmp2
   | k: uint
-  ) : void = let
-(*
-  val () = (print "next_term: k = "; print k; print_newline ())
-*)
+  ) :<> void = let
   val y2 = 2U * k + 1U
   val () = mpz_mul_2exp (tmp1, numer, 1)
   val () = mpz_add (accum, tmp1)
@@ -141,7 +138,7 @@ fn eliminate_digit (
   , pf_denom: !v_denom
   , pf_accum: !v_accum
   | d: uint
-  ) : void = () where {
+  ) :<> void = () where {
   val () = begin
     mpz_submul (accum, denom, d); mpz_mul (accum, 10); mpz_mul (numer, 10)
   end // end of [val]
@@ -157,28 +154,24 @@ fn pidigits (
   , pf_accum: !v_accum
   , pf_tmp1: !v_tmp1, pf_tmp2: !v_tmp2
   | n: int
-  ) : void = () where {
-  var d: int?
+  ) :<!ntm> void = () where {
+  var d: int = ~1 // not needed at run-time
   var i: int = 0 and k: uint = 0U and m: int?
   val () = while (true) let
-    val () = d := ~1
-    val () = while* (d: int) => (d = ~1) let
+    val () = while (true) let
       val () = k := k+1U
       val () = next_term
         (pf_numer, pf_denom, pf_accum, pf_tmp1, pf_tmp2 | k)
       val () = d := extract_digit
         (pf_numer, pf_denom, pf_accum, pf_tmp1, pf_tmp2 | (*none*))
     in
-      // nothing
+      if d <> ~1 then break
     end // end of [while]
     val _ = fputc_err (char_of_int (0x30(*'0'*) + d), stdout_ref)
-    val () = i := i+1;
-    val () = m := i mod 10;
-    val () = if (m = 0) then fprintf (stdout_ref, "\t:%d\n", @(i));
-    val () = if (i >= n) then break;
-(*
-    val () = (print "numer = "; print numer; print_newline ())
-*)
+    val () = i := i+1
+    val () = m := i mod 10
+    val () = if (m = 0) then $effmask_all (fprintf (stdout_ref, "\t:%d\n", @(i)))
+    val () = if (i >= n) then break
     val () = eliminate_digit (pf_numer, pf_denom, pf_accum | uint_of_int d);
   in
     // nothing
@@ -191,7 +184,7 @@ implement main (argc, argv) = let
   val n = (if argc > 1 then int_of_string (argv.[1]) else 27): int
   prval vbox pf_all = pfbox_all
 in
-  $effmask_ref (pidigits (pf_all.0, pf_all.1, pf_all.2, pf_all.3, pf_all.4 | n))
+  pidigits (pf_all.0, pf_all.1, pf_all.2, pf_all.3, pf_all.4 | n)
 end // end of [main]
 
 (* ****** ****** *)
