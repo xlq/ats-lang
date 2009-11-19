@@ -9,7 +9,7 @@ all: \
   k-nucleotide k-nucleotide2 \
   mandelbrot \
   n-body n-body2 \
-  pidigits pidigits2 \
+  pidigits pidigits2 pidigits3 \
   regex-dna regex-dna2 \
   reverse-complement reverse-complement2 \
   spectral-norm thread-ring \
@@ -104,6 +104,9 @@ pidigits: pidigits.dats
 pidigits2: pidigits2.dats
 	$(ATSCC) -O3 -fomit-frame-pointer pidigits2.dats -o pidigits2 -lgmp
 
+pidigits3: pidigits3.dats
+	$(ATSCC) -O3 -fomit-frame-pointer pidigits3.dats -o pidigits3 -lgmp
+
 regex-dna: regex-dna.dats
 	$(ATSCC) -D_ATS_GCATS -O3 -fomit-frame-pointer regex-dna.dats -o regex-dna -lpcre
 
@@ -171,6 +174,7 @@ cleanall: clean
 	rm -f n-body2
 	rm -f pidigits
 	rm -f pidigits2
+	rm -f pidigits3
 	rm -f regex-dna
 	rm -f regex-dna_smp
 	rm -f regex-dna2
