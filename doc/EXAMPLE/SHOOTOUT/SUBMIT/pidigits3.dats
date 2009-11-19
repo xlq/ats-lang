@@ -51,12 +51,14 @@ prval pfbox_all =
 (* ****** ****** *)
 
 extern
-fun mpz_mul_2exp (_: &mpz_vt, _: &mpz_vt, _: int): void
-  = "atslib_mpz_mul_2exp"
+fun mpz_mul_2exp (
+    _: &mpz_vt, _: &mpz_vt, _: int
+  ) :<> void = "atslib_mpz_mul_2exp"
 
 extern
-fun mpz_fdiv_qr (_: &mpz_vt, _: &mpz_vt, _: &mpz_vt, _: &mpz_vt): void
-  = "atslib_mpz_fdiv_qr"
+fun mpz_fdiv_qr (
+    _: &mpz_vt, _: &mpz_vt, _: &mpz_vt, _: &mpz_vt
+  ) :<> void = "atslib_mpz_fdiv_qr"
 
 %{^
 
@@ -89,8 +91,7 @@ fn extract_digit (
     pf_numer: !v_numer
   , pf_denom: !v_denom
   , pf_accum: !v_accum
-  , pf_tmp1: !v_tmp1
-  , pf_tmp2: !v_tmp2
+  , pf_tmp1: !v_tmp1, pf_tmp2: !v_tmp2
   | (*none*)
   ) : int = let
   val sgn = mpz_cmp (numer, accum)
@@ -101,18 +102,15 @@ in
       val () = mpz_mul_2exp (tmp1, numer, 1)
       val () = mpz_add (tmp1, numer)
       val () = mpz_add (tmp1, accum)
-      val [l:addr] (pf_tmp11 | p_tmp11) = __cast (tmp1) where {
-        extern castfn __cast (_: &mpz_vt):<> [l:addr] (mpz_vt @ l | ptr l)
-      }
-      val () = mpz_fdiv_qr (tmp1, tmp2, !p_tmp11, denom)
-      prval _ = __absorb (pf_tmp11) where {
-        extern prfun __absorb (pf: mpz_vt @ l): void
-      }
+      val () = mpz_fdiv_qr (tmp1, tmp2, &tmp1, denom) where {
+        extern fun mpz_fdiv_qr
+          (_: &mpz_vt, _: &mpz_vt, _: ptr, _: &mpz_vt): void = "atslib_mpz_fdiv_qr"
+      } // end of [val]
       val () = mpz_add (tmp2, numer)
     in
       if mpz_cmp (tmp2, denom) >= 0 then ~1 else mpz_get_int (tmp1)
     end // end of [_]
-end // end of [extract]
+end // end of [extract_digit]
 
 (* ****** ****** *)
 
@@ -120,8 +118,7 @@ fn next_term (
     pf_numer: !v_numer
   , pf_denom: !v_denom
   , pf_accum: !v_accum
-  , pf_tmp1: !v_tmp1
-  , pf_tmp2: !v_tmp2
+  , pf_tmp1: !v_tmp1, pf_tmp2: !v_tmp2
   | k: uint
   ) : void = let
 (*
@@ -158,20 +155,23 @@ fn pidigits (
     pf_numer: !v_numer
   , pf_denom: !v_denom
   , pf_accum: !v_accum
-  , pf_tmp1: !v_tmp1
-  , pf_tmp2: !v_tmp2
+  , pf_tmp1: !v_tmp1, pf_tmp2: !v_tmp2
   | n: int
   ) : void = () where {
   var d: int?
   var i: int = 0 and k: uint = 0U and m: int?
   val () = while (true) let
     val () = d := ~1
-    val () = while* (d: int) => (d = ~1) begin
-      k := k+1U;
-      next_term (pf_numer, pf_denom, pf_accum, pf_tmp1, pf_tmp2 | k);
-      d := extract_digit (pf_numer, pf_denom, pf_accum, pf_tmp1, pf_tmp2 | (*none*));
+    val () = while* (d: int) => (d = ~1) let
+      val () = k := k+1U
+      val () = next_term
+        (pf_numer, pf_denom, pf_accum, pf_tmp1, pf_tmp2 | k)
+      val () = d := extract_digit
+        (pf_numer, pf_denom, pf_accum, pf_tmp1, pf_tmp2 | (*none*))
+    in
+      // nothing
     end // end of [while]
-    val _ = fputc0_err (char_of_int (int_of '0' + d), stdout_ref)
+    val _ = fputc_err (char_of_int (0x30(*'0'*) + d), stdout_ref)
     val () = i := i+1;
     val () = m := i mod 10;
     val () = if (m = 0) then fprintf (stdout_ref, "\t:%d\n", @(i));
