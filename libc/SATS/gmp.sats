@@ -7,29 +7,28 @@
 (***********************************************************************)
 
 (*
- *
- * ATS - Unleashing the Potential of Types!
- *
- * Copyright (C) 2002-2008 Hongwei Xi, Boston University
- *
- * All rights reserved
- *
- * ATS is free software;  you can  redistribute it and/or modify it under
- * the  terms of the  GNU General Public License as published by the Free
- * Software Foundation; either version 2.1, or (at your option) any later
- * version.
- * 
- * ATS is distributed in the hope that it will be useful, but WITHOUT ANY
- * WARRANTY; without  even  the  implied  warranty  of MERCHANTABILITY or
- * FITNESS FOR A PARTICULAR PURPOSE.  See the  GNU General Public License
- * for more details.
- * 
- * You  should  have  received  a  copy of the GNU General Public License
- * along  with  ATS;  see the  file COPYING.  If not, please write to the
- * Free Software Foundation,  51 Franklin Street, Fifth Floor, Boston, MA
- * 02110-1301, USA.
- *
- *)
+**
+** ATS - Unleashing the Potential of Types!
+**
+** Copyright (C) 2002-2008 Hongwei Xi, Boston University
+**
+** All rights reserved
+**
+** ATS is free software;  you can  redistribute it and/or modify it under
+** the  terms of the  GNU General Public License as published by the Free
+** Software Foundation; either version 2.1, or (at your option) any later
+** version.
+** 
+** ATS is distributed in the hope that it will be useful, but WITHOUT ANY
+** WARRANTY; without  even  the  implied  warranty  of MERCHANTABILITY or
+** FITNESS FOR A PARTICULAR PURPOSE.  See the  GNU General Public License
+** for more details.
+** 
+** You  should  have  received  a  copy of the GNU General Public License
+** along  with  ATS;  see the  file COPYING.  If not, please write to the
+** Free Software Foundation,  51 Franklin Street, Fifth Floor, Boston, MA
+** 02110-1301, USA.
+*)
 
 (* ****** ****** *)
 
@@ -425,6 +424,24 @@ overload mpz_mul with mpz_mul_mpz_1
 
 (* ****** ****** *)
 
+(*
+** Function: mpz_mul_2exp
+** Input: arg1, arg2
+** Output: res
+** Return: void
+** Description: Set res so that res = arg1 * (2 ^ arg2)
+** Remarks: The same object can be passed for both res and arg1.
+** Others:
+**   It's up to an application to call functions like mpz_mul_2exp when appropriate.
+**   General purpose functions like mpz_mul make no attempt to identify powers of two
+**   or other special forms.
+*)
+fun mpz_mul_2exp
+  (res: &mpz_vt, arg1: &mpz_vt, arg2: int):<> void
+  = "atslib_mpz_mul_2exp"
+
+(* ****** ****** *)
+
 // division
 
 symintr mpz_tdiv_q
@@ -450,6 +467,28 @@ fun mpz_tdiv_q_ulint_2 (q: &mpz_vt, d: ulint):<> void
 
 overload mpz_tdiv_q with mpz_tdiv_q_mpz_2
 overload mpz_tdiv_q with mpz_tdiv_q_ulint_2
+
+//
+
+(*
+** Function: mpz_fdiv_qr
+** Input: dividend, divisor
+** Output: quot, rem
+** Return: void
+** Description:
+**   Set quot and rem so that dividend = quot * divisor + rem
+**   Rounds quot down towards negative infinity, and rem will
+**   have the same sign as divisor, and 0 <= |rem| < |divisor|.
+**   The f stands for "floor". e.g. 5 = (-2) * (-3) + (-1); -5 = 1 * (-3) + (-2)
+** Remarks:
+**   The same object cannot be passed for both quot and rem, or the result will be
+**   unpredictable. No other constraints on the pass of other arguments, e.g. the same
+**   object can be passed to both quot and dividend.
+*)
+fun mpz_fdiv_qr (
+    quot: &mpz_vt, rem: &mpz_vt, dividend: &mpz_vt, divisor: &mpz_vt
+  ) :<> void
+  = "atslib_mpz_fdiv_qr"
 
 (* ****** ****** *)
 
@@ -512,10 +551,16 @@ fun mpz_sgn (x: &mpz_vt):<> Sgn = "atslib_mpz_sgn"
 
 (* ****** ****** *)
 
-fun fprint_mpz {m:file_mode}
+fun fprint0_mpz {m:file_mode}
+  (out: FILEref, x: &mpz_vt):<!exnref> void
+  = "atslib_fprint_mpz"
+
+fun fprint1_mpz {m:file_mode}
   (pf: file_mode_lte (m, w) | out: &FILE m, x: &mpz_vt):<!exnref> void
   = "atslib_fprint_mpz"
-overload fprint with fprint_mpz
+
+overload fprint with fprint0_mpz
+overload fprint with fprint1_mpz
 
 fun print_mpz (x: &mpz_vt) :<!ref> void
   = "atslib_print_mpz"

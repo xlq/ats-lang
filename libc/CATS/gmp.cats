@@ -535,6 +535,18 @@ atslib_mpz_mul_mpz_1 (ats_mpz_ptr_type x) {
   mpz_mul ((mpz_ptr)x, (mpz_ptr)x, (mpz_ptr)x) ; return ;
 }
 
+//
+
+static inline
+ats_void_type
+atslib_mpz_mul_2exp ( // x = y * 2^n
+  ats_mpz_ptr_type x, ats_mpz_ptr_type y, ats_int_type n
+) {
+  mpz_mul_2exp((mpz_ptr)x, (mpz_ptr)y, n) ; return ;
+} // end of [atslib_mpz_mul_2exp]
+
+/* ****** ****** */
+
 // division
 
 static inline
@@ -562,6 +574,21 @@ ats_void_type
 atslib_mpz_tdiv_q_ulint_2 (ats_mpz_ptr_type x, ats_ulint_type d) {
   mpz_tdiv_q_ui ((mpz_ptr)x, (mpz_ptr)x, d) ; return ;
 }
+
+//
+
+static inline
+ats_void_type
+atslib_mpz_fdiv_qr ( // (q,r) := x / y
+  ats_mpz_ptr_type q
+, ats_mpz_ptr_type r
+, ats_mpz_ptr_type x
+, ats_mpz_ptr_type y
+) {
+  mpz_fdiv_qr((mpz_ptr)q, (mpz_ptr)r, (mpz_ptr)x, (mpz_ptr)y) ; return ;
+} // end of [atslib_mpz_fdiv_qr]
+
+/* ****** ****** */
 
 // addmul and submul compibination
 
