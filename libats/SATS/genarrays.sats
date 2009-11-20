@@ -605,7 +605,7 @@ fun{a1:viewt@ype}
 
 fun{a:t@ype}
   GEMAT_row_ptr_allocfree
-  {m,n:pos} (m: size_t m, n: size_t n)
+  {m:nat;n:pos} (m: size_t m, n: size_t n)
   : [l:addr] (
     GEMAT (a?, m, n, row, n) @ l
   | ptr l
@@ -615,7 +615,7 @@ fun{a:t@ype}
 
 fun{a:t@ype}
   GEMAT_col_ptr_allocfree
-  {m,n:pos} (m: size_t m, n: size_t n)
+  {m:pos;n:nat} (m: size_t m, n: size_t n)
   : [l:addr] (
     GEMAT (a?, m, n, col, m) @ l
   | ptr l
