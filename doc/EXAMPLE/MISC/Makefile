@@ -15,7 +15,8 @@ checkall: compall cleanall
 compall: AutoDiff coin_flip \
      curve fft hamming_lazy \
      GaussElim GarsiaWachs \
-     hanoi kmp montecarlo \
+     hanoi kmp listquicksort \
+     longestline montecarlo \
      queens queens_appel queens_lazy_vt \
      longestline passwdgen pi_lazy \
      sieve sieve_lazy sieve_lazy_vt \
@@ -60,9 +61,20 @@ kmp: kmp.dats; $(ATSCC) -o kmp kmp.dats
 montecarlo: montecarlo.dats
 	$(ATSCC) -O2 -o montecarlo montecarlo.dats -lm -lats_smlbas
 
+listquicksort: listquicksort.dats
+	$(ATSCC) -o listquicksort listquicksort.dats
+
 # An example of linear lazy evaluation
 longestline: longestline.dats
 	$(ATSCC) -o longestline longestline.dats
+
+# generating a password randomly
+passwdgen: passwdgen.dats; $(ATSCC) -O3 -o passwdgen passwdgen.dats
+
+Peano: Peano.dats; $(ATSCC) -o Peano Peano.dats
+
+# Euler's transform in lazy style
+pi_lazy: pi_lazy.dats; $(ATSCC) -o pi_lazy pi_lazy.dats
 
 # the n-queen problem
 queens: queens.dats; $(ATSCC) -o queens queens.dats
@@ -72,12 +84,6 @@ queens_appel: queens_appel.dats
 
 queens_lazy_vt: queens_lazy_vt.dats
 	$(ATSCC) -O3 -o queens_lazy_vt queens_lazy_vt.dats -D_ATS_GCATS
-
-# generating a password randomly
-passwdgen: passwdgen.dats; $(ATSCC) -O3 -o passwdgen passwdgen.dats
-
-# Euler's transform in lazy style
-pi_lazy: pi_lazy.dats; $(ATSCC) -o pi_lazy pi_lazy.dats
 
 # Erathosthene's sieve
 sieve: sieve.dats; $(ATSCC) -o sieve sieve.dats
@@ -148,6 +154,7 @@ cleanall:: clean
 	rm -f longestline
 	rm -f montecarlo
 	rm -f passwdgen
+	rm -f Peano
 	rm -f pi_lazy
 	rm -f queens
 	rm -f queens_appel

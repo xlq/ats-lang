@@ -1,3 +1,7 @@
+//
+// An example of combining ATS code with C code
+//
+
 extern fun fibonacci (n: Nat): Nat = "fibonacci"
 
 %{
@@ -31,3 +35,8 @@ implement main (argc, argv) =
   end else begin
     fibonacci_usage argv.[0]; exit {void} (1)
   end
+// end of [main]
+
+(* ****** ****** *)
+
+(* end of [ATS-and-C.dats] *)

@@ -256,13 +256,11 @@ assume T (n:int) = double
 
 in
 
-implement lte_elt_elt (x, y) = let
-  prval () = trustme () where {
-    extern prfun trustme ():<> [false] void // yes, trustme :)
-  }
+implement lte_elt_elt {x,y} (x, y) = let
+  extern castfn __cast (_: bool):<> bool (x <= y)
 in
-  bool1_of_bool (lte_double_double (x, y))
-end
+  __cast (lte_double_double (x, y))
+end // end of [lte_elt_elt]
 
 fn print_list (xs: list): void = let
   fun aux (xs: list, i: int): void = begin case+ xs of
@@ -275,9 +273,9 @@ in
   aux (xs, 0)
 end // end of [print_list]
 
-fn T (f: double): [x:pos] T (x) = #[1 | f]
+castfn T .<>. (f: double):<> [x:pos] T (x) = #[1 | f]
 
-end
+end // end of [local]
 
 (* ****** ****** *)
 
@@ -293,6 +291,7 @@ implement main () = let
   val (_(*pf_set*), _(*pf_ord*) | xs_sorted) = quicksort (MSET_istot () | xs)
 in
   print "xs = "; print_list xs; print_newline ();
+  // is there any doubt :)
   print "xs_sorted = "; print_list xs_sorted; print_newline ();
 end // end of [main]
 

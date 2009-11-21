@@ -71,7 +71,7 @@ case) correspond to the first and the second clauses in the above
 specification, respectively. 
 
 Given integers <i>n</i> and <i>r</i>, the
-prop <i>FACT(n, i)</i> is inhabited if and only if the factorial of <i>n</i>
+prop <i>FACT(n, r)</i> is inhabited if and only if the factorial of <i>n</i>
 equals <i>r</i>. Clearly, if a <em>terminating</em> function
 can be assgined the following type:
 
@@ -99,8 +99,8 @@ When applied to a natural number <i>n</i>, <i>fact1</i> is guaranteed to
 return a pair <i>(pf, r)</i>, where <i>pf</i> is a proof stating that the
 factorial of <i>n</i> is <i>r</i>.  A crucial property of ATS is the
 irrelevance of proofs to program evaluation: The dynamic semantics of a
-program cannot be altered by the erasure of proofs in it.  So proofs are
-all erased after compilation and thus are not constructed at run-time.
+program cannot be altered by erasing the proofs in it.  So proofs are all
+erased after compilation and thus are not constructed at run-time.
 <P>
 
 This example clearly gives some impression of code duplication as the
@@ -169,7 +169,8 @@ In practice, programming with theorem proving is commonly employed to
 capture program invariants that would otherwise not be possible in ATS.
 For instance, aided by programming with theorem proving, we can program a
 complex data structure like doubly-linked list or doubly-linked tree while
-having no fear of misusing pointers.
+having no fear of misusing pointers. This is considered a great strength of
+ATS.
 
 <HR SIZE=1 ALIGN=LEFT><P>
 The code used for illustration is available <a href="programming-with-theorem-proving.dats">here</a>.

@@ -75,7 +75,7 @@ implement main () = () where {
   val () = GEMAT_fprint (stdout_ref, ORDERrow, !p2, X, X, X)
   val () = print_newline ()
 //
-  val () = GEMAT_ptr_initialize_elt<T> (ORDERrow, !p2, X, X, X, 0)
+  val () = GEMAT_ptr_initialize_elt<T> (ORDERrow, !p2, X, X, X, 10)
   val () = print ("M2 =\n")
   val () = GEMAT_fprint (stdout_ref, ORDERrow, !p2, X, X, X)
   val () = print_newline ()

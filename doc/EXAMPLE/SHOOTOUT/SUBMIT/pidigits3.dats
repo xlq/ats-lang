@@ -3,9 +3,10 @@
 ** http://shootout.alioth.debian.org/
 **
 ** contributed by Hongwei Xi (hwxi AT cs DOT bu DOT edu)
+** contributed by Zhiqiang Ren (aren AT cs DOT bu DOT edu)
 **
 ** This code is a direct translation from a C submission by
-** Sean Bartell, which is based on the Scheme PLT #4 version
+** Bonzini, Bartell and Mellor
 **
 ** compilation command:
 **   atscc -O3 -fomit-frame-pointer pidigits3.dats -o pidigits3 -lgmp
@@ -53,18 +54,20 @@ prval pfbox_all =
 extern
 fun mpz_mul_2exp (
     _: &mpz_vt, _: &mpz_vt, _: int
-  ) :<> void = "atslib_mpz_mul_2exp"
+  ) :<> void = "__mpz_mul_2exp"
 
 extern
 fun mpz_fdiv_qr (
     _: &mpz_vt, _: &mpz_vt, _: &mpz_vt, _: &mpz_vt
-  ) :<> void = "atslib_mpz_fdiv_qr"
+  ) :<> void = "__mpz_fdiv_qr"
 
 %{^
 
+// for backward compatibility
+
 static inline
 ats_void_type
-atslib_mpz_mul_2exp (
+__mpz_mul_2exp (
   ats_mpz_ptr_type x
 , ats_mpz_ptr_type y
 , ats_int_type n
@@ -74,14 +77,14 @@ atslib_mpz_mul_2exp (
 
 static inline
 ats_void_type
-atslib_mpz_fdiv_qr (
-  ats_mpz_ptr_type x
+__mpz_fdiv_qr (
+  ats_mpz_ptr_type q
+, ats_mpz_ptr_type r
+, ats_mpz_ptr_type x
 , ats_mpz_ptr_type y
-, ats_mpz_ptr_type u
-, ats_mpz_ptr_type v
 ) {
-  mpz_fdiv_qr((mpz_ptr)x, (mpz_ptr)y, (mpz_ptr)u, (mpz_ptr)v) ; return ;
-} // end of [atslib_mpz_fdiv_qr]
+  mpz_fdiv_qr((mpz_ptr)q, (mpz_ptr)r, (mpz_ptr)x, (mpz_ptr)y) ; return ;
+} // end of [__mpz_fdiv_qr]
 
 %} // end of [%{^]
 
@@ -104,7 +107,7 @@ in
       val () = mpz_add (tmp1, accum)
       val () = mpz_fdiv_qr (tmp1, tmp2, &tmp1, denom) where {
         extern fun mpz_fdiv_qr
-          (_: &mpz_vt, _: &mpz_vt, _: ptr, _: &mpz_vt):<> void = "atslib_mpz_fdiv_qr"
+          (_: &mpz_vt, _: &mpz_vt, _: ptr, _: &mpz_vt):<> void = "__mpz_fdiv_qr"
       } // end of [val]
       val () = mpz_add (tmp2, numer)
     in

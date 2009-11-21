@@ -73,6 +73,7 @@ In order to bootstrap ATS/Anairiats, one needs to first check out the
 following svn directory and name it as some local directory, say, "FOO":
 <PRE>svn co https://ats-lang.svn.sourceforge.net/svnroot/ats-lang/trunk FOO</PRE>
 
+<!--
 Then one needs to check out another svn directory and name it as
 the local directory "FOO/bootstrap0":
 <PRE>svn co https://ats-lang.svn.sourceforge.net/svnroot/ats-lang/bootstrap/tags/anairiats-x.x.x \
@@ -87,6 +88,10 @@ available for bootstrapping, which currently is "0.1.5". It also works
 
 After this is done, please go into the directory "FOO" and execute the
 command 'autoconf' and then do 'make all'.
+-->
+
+Then please go into the directory "FOO" and execute the command 'aclocal'
+and then the command 'autoconf' and then do 'make all'.
 <P>
 
 <B>Bootstrapping via ocaml</B>&nbsp;
@@ -106,7 +111,7 @@ available for bootstrapping, which currently is "0.1.3".  It also works
   FOO/bootstrap0</PRE>
 
 After this is done, please go into the directory "FOO" and execute the
-command 'autoconf' and then do 'make all'.
+command 'aclocal' and then the command 'autoconf' and then do 'make all'.
 <P>
 
 </MENU>

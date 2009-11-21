@@ -44,6 +44,7 @@ tutorial_all:
           programming-with-theorem-proving.html \
           casting-functions.html \
           stack-allocation.html \
+          looping.html \
 
 	scp $(OUTPUT)/tutorial_all.html \
           ats-hwxi,ats-lang@web.sourceforge.net:htdocs/TUTORIAL/contents/
@@ -87,6 +88,8 @@ ones::
 	$(FPROC) -one programming-with-theorem-proving.html
 	$(FPROC) -one casting-functions.html
 	$(FPROC) -one stack-allocation.html
+	$(FPROC) -one statetypes.html
+	$(FPROC) -one looping.html
 	scp $(OUTPUT)/*.html \
           ats-hwxi,ats-lang@web.sourceforge.net:htdocs/TUTORIAL/contents/
 
@@ -272,6 +275,16 @@ stack-allocation::
 	scp $(OUTPUT)/stack-allocation.html \
           ats-hwxi,ats-lang@web.sourceforge.net:htdocs/TUTORIAL/contents/
 
+statetypes::
+	$(FPROC) -one statetypes.html
+	scp $(OUTPUT)/statetypes.html \
+          ats-hwxi,ats-lang@web.sourceforge.net:htdocs/TUTORIAL/contents/
+
+looping::
+	$(FPROC) -one looping.html
+	scp $(OUTPUT)/looping.html \
+          ats-hwxi,ats-lang@web.sourceforge.net:htdocs/TUTORIAL/contents/
+
 ######
 
 typecheck::
@@ -300,6 +313,7 @@ typecheck::
 	atscc  programming-with-theorem-proving.dats
 	atscc  -tc casting-functions.dats
 	atscc  stack-allocation.dats
+	atscc  -tc looping.dats
 
 ######
 
@@ -308,4 +322,4 @@ clean::
 
 cleanall: clean; rm -f *_?ats.html
 
-######
+###### end of [Makefile] ######

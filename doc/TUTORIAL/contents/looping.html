@@ -1,0 +1,64 @@
+<!-- beg of [looping.html] -->
+
+<H2><A id="looping" name="looping">Looping Constructs</A></H2>
+
+<HR SIZE=1 ALIGN=LEFT><P>
+
+In ATS, there are also constructs for forming for-loops and while-loops
+directly. While it is tempting for someone familiar with imperative
+programming to implement loops with these constructs (instead of using
+tail-recursion), it should be emphasized that the amount of effort involved
+in constructing loop invariants (if needed) often makes this style of
+programming difficult for beginners and, sometimes, for experts as well.
+
+<H4>Simple Loops</H4>
+
+The following code givens an implementation of the factorial function,
+where a <EM>while-loop</EM> is constructed:
+
+<PRE><span class="dynexp"><span class="keyword">fn</span> fact <span class="keyword">(</span>n<span class="keyword">:</span> <span class="staexp">int</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">int</span> <span class="keyword">=</span> <span class="keyword">let</span>
+  <span class="keyword">var</span> x<span class="keyword">:</span> <span class="staexp">int</span> <span class="keyword">=</span> n
+  <span class="keyword">var</span> res<span class="keyword">:</span> <span class="staexp">int</span> <span class="keyword">=</span> 1 <span class="comment">// initialized
+</span>  <span class="keyword">val</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">while</span> <span class="keyword">(</span>x <span class="keyword">&gt;</span> 0<span class="keyword">)</span> <span class="keyword">(</span>res := res * x<span class="keyword">;</span> x := x - 1<span class="keyword">)</span>
+<span class="keyword">in</span>
+  res <span class="comment">// res = n!
+</span><span class="keyword">end</span> <span class="comment">// end of [fact]
+</span></span></PRE>
+
+The syntax for a while-expression is given as follows:
+
+<PRE><u>while</u> $test $body</PRE>
+
+where <i>$test</i> is an expression of the type <i>bool</i> and
+<i>$body</i> is an expression of the type <i>void</i>. Usually,
+<i>$body</i> consists of a sequence of expressions of the type <i>void</i>.
+<P>
+
+In the following, another implementation of the factorial function is given,
+where a <EM>for-loop</EM> is constructed:
+
+<PRE><span class="dynexp"><span class="keyword">fn</span> fact <span class="keyword">(</span>n<span class="keyword">:</span> <span class="staexp">int</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">int</span> <span class="keyword">=</span> <span class="keyword">let</span>
+  <span class="keyword">var</span> x<span class="keyword">:</span> <span class="staexp">int</span>
+  <span class="keyword">var</span> res<span class="keyword">:</span> <span class="staexp">int</span> <span class="keyword">=</span> 1 <span class="comment">// initialized
+</span>  <span class="keyword">val</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">for</span> <span class="keyword">(</span>x := 1 <span class="keyword">;</span> x &lt;= n <span class="keyword">;</span> x := x+1<span class="keyword">)</span> res := res * x
+<span class="keyword">in</span>
+  res <span class="comment">// res = n!
+</span><span class="keyword">end</span> <span class="comment">// end of [fact]
+</span></span></span></PRE>
+
+The syntax for a for-expression is given as follows:
+
+<PRE><u>for</u> ($init ; $test ; $post) $body</PRE>
+where
+<i>$init</i> is an expression of the type <i>void</i>,
+<i>$test</i> is an expression of the type <i>bool</i>,
+<i>$post</i> is an expression of the type <i>void</i>, and
+<i>$body</i> is an expression of the type <i>void</i>. Usually,
+<i>$body</i> consists of a sequence of expressions of the type <i>void</i>.
+
+<H4>Loops with Annotated Invariants</H4>
+
+<HR SIZE=1 ALIGN=LEFT><P>
+The code used for illustration is available <a href="looping.dats">here</a>.
+
+<!-- end of [looping.html] -->
