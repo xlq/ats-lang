@@ -316,60 +316,35 @@ end // end of [bin]
 
 (* ****** ****** *)
 
-fun name_is_c (name: string): bool = let
-  val name = string1_of_string name
-  val n = string_length (name)
+fun name_is_suffix (
+  name: string, sfx: string
+  ) : bool = let
+  val [n1:int] name = string1_of_string name
+  val n1 = string1_length (name)
+  val [n2:int] sfx = string1_of_string sfx
+  val n2 = string1_length (sfx)
 in
-  if (n >= 2) then
-    if (name[n-2] <> '.') then false
-    else if name[n-1] <> 'c' then false
-    else true
-  else false
-end // end of [name_is_c]
+  if n1 >= n2 then let
+    val d = n1 - n2
+    var i: natLte n2 = 0
+    var res: bool = true
+    val () = while (i < n2)
+      if name[d+i] = sfx[i] then i := i+1 else (res := false; break)
+    // end of [val]
+  in
+    res
+  end else
+    false // [sfx] cannot be the suffix of [name
+  // end of [if]
+end // end of [name_is_suffix]
 
-fun name_is_cats (name: string): bool = let
-  val name = string1_of_string name
-  val n = string_length (name)
-in
-  if (n >= 5) then
-    if (name[n-5] <> '.') then false
-    else if name[n-4] <> 'c' then false
-    else if name[n-3] <> 'a' then false
-    else if name[n-2] <> 't' then false
-    else if name[n-1] <> 's' then false
-    else true
-  else false
-end // end of [name_is_cats]
+fn name_is_c (name: string): bool = name_is_suffix (name, ".c")
+fn name_is_cats (name: string): bool = name_is_suffix (name, ".cats")
+fn name_is_dats (name: string): bool = name_is_suffix (name, ".dats")
+fn name_is_hats (name: string): bool = name_is_suffix (name, ".hats")
+fn name_is_sats (name: string): bool = name_is_suffix (name, ".sats")
 
-fun name_is_dats (name: string): bool = let
-  val name = string1_of_string name
-  val n = string_length (name)
-in
-  if (n >= 5) then
-    if (name[n-5] <> '.') then false
-    else if name[n-4] <> 'd' then false
-    else if name[n-3] <> 'a' then false
-    else if name[n-2] <> 't' then false
-    else if name[n-1] <> 's' then false
-    else true
-  else false
-end // end of [name_is_dats]
-
-fun name_is_sats (name: string): bool = let
-  val name = string1_of_string name
-  val n = string_length (name)
-in
-  if (n >= 5) then
-    if (name[n-5] <> '.') then false
-    else if name[n-4] <> 's' then false
-    else if name[n-3] <> 'a' then false
-    else if name[n-2] <> 't' then false
-    else if name[n-1] <> 's' then false
-    else true
-  else false
-end // end of [name_is_sats]
-
-fun name_is_xats (name: string): bool = let
+fn name_is_xats (name: string): bool = let
   val name = string1_of_string name
   val n = string_length (name)
 in
@@ -380,7 +355,7 @@ in
     else if name[n-1] <> 's' then false
     else true
   else false
-end // end of [name_is_cats]
+end // end of [name_is_xats]
 
 (* ****** ****** *)
 
@@ -691,24 +666,48 @@ end // end of [doc_dir_copy]
 
 (* ****** ****** *)
 
+fn file_isexi (name: string): bool = let
+  var buf: $STAT.stat_t
+  val (pf | err) = $STAT.stat_err (view@ buf | name, &buf)
+in
+  if (err = 0) then let
+    prval $STAT.stat_v_succ pf = pf; val () = view@ buf := pf
+  in
+    true
+  end else let
+    prval $STAT.stat_v_fail pf = pf; val () = view@ buf := pf
+  in
+    false
+  end // end of [if]
+end // end of [file_isexi]
+
 fn lib_dir_copy
   (srclibname: string, dstlibname: string): void = let
   val srclibname = string1_of_string srclibname
   and dstlibname = string1_of_string dstlibname
   val () = mkdir_exn (dstlibname, DIRmode)
-
+//
   val srclibname_CATS = srclibname + "CATS/"
   val dstlibname_CATS = dstlibname + "CATS/"
   val () = mkdir_exn (dstlibname_CATS, DIRmode)
   val () = dir_copy
     (srclibname_CATS, dstlibname_CATS, name_is_cats)
-
+//
   val srclibname_DATS = srclibname + "DATS/"
   val dstlibname_DATS = dstlibname + "DATS/"
   val () = mkdir_exn (dstlibname_DATS, DIRmode)
   val () = dir_copy
     (srclibname_DATS, dstlibname_DATS, name_is_dats)
-
+//
+  val srclibname_HATS = srclibname + "HATS/"
+  val () = if
+    file_isexi (srclibname_HATS) then let
+    val dstlibname_HATS = dstlibname + "HATS/"
+    val () = mkdir_exn (dstlibname_HATS, DIRmode)
+  in
+    dir_copy (srclibname_HATS, dstlibname_HATS, name_is_hats)
+  end // end of [val]
+//
   val srclibname_SATS = srclibname + "SATS/"
   val dstlibname_SATS = dstlibname + "SATS/"
   val () = mkdir_exn (dstlibname_SATS, DIRmode)
