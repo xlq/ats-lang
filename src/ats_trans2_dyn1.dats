@@ -357,7 +357,9 @@ fn p1at_qid_app_dyn_tr (
   , p1ts: p1atlst
   ) : p2at = let
 
-  fn err1 (loc_id: loc_t, q: $Syn.d0ynq, id: sym_t): d2conlst = begin
+  fn err1 (
+      loc_id: loc_t, q: $Syn.d0ynq, id: sym_t
+    ) : d2conlst = begin
     prerr_loc_error2 loc_id;
     $Deb.debug_prerrf (": %s: p1at_qid_app_dyn_tr", @(THISFILENAME));
     prerr ": the dynamic identifier [";
@@ -367,7 +369,9 @@ fn p1at_qid_app_dyn_tr (
     $Err.abort {d2conlst} ()     
   end // end of [err1]
 
-  fn err2 (loc_id: loc_t, q: $Syn.d0ynq, id: sym_t): d2conlst = begin
+  fn err2 (
+      loc_id: loc_t, q: $Syn.d0ynq, id: sym_t
+    ) : d2conlst = begin
     prerr_loc_error2 loc_id;
     $Deb.debug_prerrf (": %s: p1at_qid_app_dyn_tr", @(THISFILENAME));
     prerr ": unrecognized dynamic constructor [";

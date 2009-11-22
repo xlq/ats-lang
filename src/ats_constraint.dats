@@ -379,16 +379,16 @@ end // end of [s2cfdeflst_add]
 
 fn s2cfdeflst_replace
   (s2t: s2rt, s2c: s2cst_t, s2es: s2explst,
-   s2cs: &s2cstlst, fds: &s2cfdeflst_vt): s2var_t = begin
+   s2cs: &s2cstlst, fds: &s2cfdeflst_vt): s2var_t =
   case+ s2cfdeflst_find (fds, s2c, s2es) of
   | ~None_vt () => let
       val s2v = s2var_make_srt (s2t)
       val () = s2cfdeflst_add (s2c, s2es, s2v, s2cs, fds)
     in
       s2v
-    end
+    end // end of [None_vt]
   | ~Some_vt s2v => s2v
-end // end of [s2cfdeflst_replace]
+// end of [s2cfdeflst_replace]
 
 (* ****** ****** *)
 

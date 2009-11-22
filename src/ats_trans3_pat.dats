@@ -182,7 +182,7 @@ fn pfarity_check (loc0: loc_t, npf1: int, npf2: int): void =
   if npf1 <> npf2 then begin
     prerr loc0; prerr ": error(3)";
     $Deb.debug_prerrf (": %s", @(THISFILENAME));
-    prerr ": pfarity_check: pfarity mismatch.";
+    prerr ": pfarity_check: pfarity mismatch";
     if npf1 < npf2 then prerr ": more proof components are needed.";
     if npf1 > npf2 then prerr ": less proof components are needed.";
     prerr_newline ();
@@ -432,7 +432,9 @@ fn p2at_con_tr_up
   } // end [where]
 in
   case+ s2e_con.s2exp_node of
-  | S2Efun (_(*fc*), _(*lin*), _(*s2fe*), npf_con, s2es_arg, s2e_res) => let
+  | S2Efun (
+      _fc, _lin, _s2fe, npf_con, s2es_arg, s2e_res
+    ) => let
       val () = pfarity_check (loc0, npf, npf_con)
       stavar np2ts: int and ns2es: int
       val np2ts: int np2ts = $Lst.list_length p2ts
@@ -451,12 +453,12 @@ in
       ) : [np2ts==ns2es] void
     in
       P2ATCONTRUPcon (p2ts, s2es_arg, s2e_res)
-    end
+    end // end of [S2Efun]
   | _ => begin
       prerr loc0;
       prerr ": INTERNAL ERROR: p2at_con_tr_up"; prerr_newline ();
       $Err.abort {p2atcontrup} ()
-    end
+    end // end of [_]
 end // end of [p2at_con_tr_up]
 
 fn p2at_con_tr_dn (
