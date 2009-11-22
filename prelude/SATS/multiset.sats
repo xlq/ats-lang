@@ -48,8 +48,20 @@
 (* ****** ****** *)
 
 datasort elt = // abstract // positive integer
+
+sta lt_elt_elt_bool : (elt, elt) -> bool
 sta lte_elt_elt_bool : (elt, elt) -> bool
+sta gt_elt_elt_bool : (elt, elt) -> bool
+sta gte_elt_elt_bool : (elt, elt) -> bool
+stadef < = lt_elt_elt_bool
 stadef <= = lte_elt_elt_bool
+stadef > = gt_elt_elt_bool
+stadef >= = gte_elt_elt_bool
+
+(*
+sta elt_first : elt // elt_first = 1
+praxi elt_first_lemma {x: elt} (): [elt_first <= x] void
+*)
 
 (* ****** ****** *)
 
@@ -97,10 +109,10 @@ prfun ELTMSETSZ_isfun {xs:eltmset} {n1,n2:nat}
 absprop ELTMSETLB (elt, eltmset)
 absprop ELTMSETUB (eltmset, elt)
 
-prfun ELTMSETLB_trans
+prfun ELTMSETLB_monotone
   {l1,l2:elt | l1 <= l2} {xs:eltmset} (pf: ELTMSETLB (l2, xs)): ELTMSETLB (l1, xs)
 
-prfun ELTMSETUB_trans
+prfun ELTMSETUB_monotone
   {u1,u2:elt | u1 <= u2} {xs:eltmset} (pf: ELTMSETUB (xs, u1)): ELTMSETUB (xs, u2)
 
 (* ****** ****** *)

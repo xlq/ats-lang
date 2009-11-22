@@ -112,13 +112,20 @@ dataprop POW2 (int, int) =
   | POW2bas (0, 1)
 // end of [POW2]
 
+// proven in [arith.dats]
 prfun POW2_istot {n:nat} (): [p:nat] POW2 (n, p)
 prfun POW2_isfun {n:nat} {p1,p2:int}
   (pf1: POW2 (n, p1), pf2: POW2 (n, p2)): [p1==p2] void
 // end of [POW2_isfun]
 
+// proven in [arith.dats]
 prfun POW2_monotone {n1,n2:nat | n1 <= n2} {p1,p2:int}
   (pf1: POW2 (n1, p1), pf2: POW2 (n2, p2)): [p1 <= p2] void
+
+// proven in [arith.dats]
+prfun POW2_mul {n1,n2:nat | n1 <= n2} {p1,p2:nat} {p:int}
+  (pf1: POW2 (n1, p1), pf2: POW2 (n2, p2), pf3: MUL (p1, p2, p))
+  : POW2 (n1+n2, p)
 
 (* ****** ****** *)
 

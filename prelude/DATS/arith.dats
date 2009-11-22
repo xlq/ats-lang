@@ -186,7 +186,9 @@ end // end of [mul_associate]
 
 (* ****** ****** *)
 
-(* greatest common divisors *)
+(*
+** the greatest-common-divisor function
+*)
 
 local
 
@@ -241,6 +243,10 @@ end // end of local
 
 (* ****** ****** *)
 
+(*
+** the power-of-2 function
+*)
+
 implement POW2_istot {n} () = istot {n} () where {
   prfun istot {n:nat} .<n>. (): [p:nat] POW2 (n, p) =
     sif n > 0 then POW2ind (istot {n-1} ()) else POW2bas ()
@@ -271,6 +277,24 @@ implement POW2_monotone
     | POW2bas () => let prval POW2bas () = pf1 in () end
   // end of [lemma]
 } // end of [pow2_monotone_lemma]
+
+implement POW2_mul (pf1, pf2, pf3) = let
+  prfun lemma {n1,n2:nat} {p1,p2:nat} {p:int} .<n2>. (
+      pf1: POW2 (n1, p1), pf2: POW2 (n2, p2), pf3: MUL (p1, p2, p)
+    ) : [p>=0] POW2 (n1+n2, p) = case+ pf2 of
+    | POW2ind {n21} {p21} (pf21) => let // n2 = n21+1; p2 = p21 + p21
+        prval pf31 = mul_istot {p1,p21} ()
+        prval pf32 = mul_distribute (pf31, pf31)
+        prval () = mul_isfun (pf3, pf32)
+        prval pf1_res = lemma (pf1, pf21, pf31)
+      in
+        POW2ind pf1_res
+      end // end of [POW2ind]
+    | POW2bas () => let prval () = mul_elim (pf3) in pf1 end
+  // end of [lemma]
+in
+  lemma (pf1, pf2, pf3)
+end // end of [POW2_mul]
 
 (* ****** ****** *)
 

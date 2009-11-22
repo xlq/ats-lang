@@ -293,7 +293,7 @@ atspre_lte_int1_size1
 static inline
 ats_bool_type
 atspre_lte_size1_int1
-  (ats_int_type sz1, ats_size_type i2) {
+  (ats_size_type sz1, ats_int_type i2) {
   return (sz1 <= i2 ? ats_true_bool : ats_false_bool) ;
 } /* end of [atspre_lte_size1_int1] */
 
