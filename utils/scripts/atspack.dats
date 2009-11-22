@@ -671,11 +671,11 @@ fn file_isexi (name: string): bool = let
   val (pf | err) = $STAT.stat_err (view@ buf | name, &buf)
 in
   if (err = 0) then let
-    prval $STAT.stat_v_succ pf = pf; val () = view@ buf := pf
+    prval $STAT.stat_v_succ pf = pf; prval () = view@ buf := pf
   in
     true
   end else let
-    prval $STAT.stat_v_fail pf = pf; val () = view@ buf := pf
+    prval $STAT.stat_v_fail pf = pf; prval () = view@ buf := pf
   in
     false
   end // end of [if]
@@ -687,11 +687,11 @@ fn lib_dir_copy
   and dstlibname = string1_of_string dstlibname
   val () = mkdir_exn (dstlibname, DIRmode)
 //
-  val srclibname_CATS = srclibname + "CATS/"
-  val dstlibname_CATS = dstlibname + "CATS/"
-  val () = mkdir_exn (dstlibname_CATS, DIRmode)
+  val srclibname_SATS = srclibname + "SATS/"
+  val dstlibname_SATS = dstlibname + "SATS/"
+  val () = mkdir_exn (dstlibname_SATS, DIRmode)
   val () = dir_copy
-    (srclibname_CATS, dstlibname_CATS, name_is_cats)
+    (srclibname_SATS, dstlibname_SATS, name_is_sats)
 //
   val srclibname_DATS = srclibname + "DATS/"
   val dstlibname_DATS = dstlibname + "DATS/"
@@ -699,6 +699,17 @@ fn lib_dir_copy
   val () = dir_copy
     (srclibname_DATS, dstlibname_DATS, name_is_dats)
 //
+  // CATS is optional
+  val srclibname_CATS = srclibname + "CATS/"
+  val () = if
+    file_isexi (srclibname_CATS) then let
+    val dstlibname_CATS = dstlibname + "CATS/"
+    val () = mkdir_exn (dstlibname_CATS, DIRmode)
+  in
+    dir_copy (srclibname_CATS, dstlibname_CATS, name_is_cats)
+  end // end of [val]
+//
+  // HATS is optional
   val srclibname_HATS = srclibname + "HATS/"
   val () = if
     file_isexi (srclibname_HATS) then let
@@ -707,12 +718,6 @@ fn lib_dir_copy
   in
     dir_copy (srclibname_HATS, dstlibname_HATS, name_is_hats)
   end // end of [val]
-//
-  val srclibname_SATS = srclibname + "SATS/"
-  val dstlibname_SATS = dstlibname + "SATS/"
-  val () = mkdir_exn (dstlibname_SATS, DIRmode)
-  val () = dir_copy
-    (srclibname_SATS, dstlibname_SATS, name_is_sats)
 in
   // empty
 end // end of [lib_dir_copy]
@@ -743,22 +748,26 @@ fn libc_dir_copy () = let
   val SRCROOTlibc = SRCROOT + "libc/"
   val DSTROOTlibc = DSTROOT + "libc/"
   val () = lib_dir_copy (SRCROOTlibc, DSTROOTlibc)
-
+//
   val SRCROOTlibc_sys = SRCROOTlibc + "sys/"
   val DSTROOTlibc_sys = DSTROOTlibc + "sys/"
   val () = lib_dir_copy (SRCROOTlibc_sys, DSTROOTlibc_sys)
-
+//
   val SRCROOTlibc_arpa = SRCROOTlibc + "arpa/"
   val DSTROOTlibc_arpa = DSTROOTlibc + "arpa/"
   val () = lib_dir_copy (SRCROOTlibc_arpa, DSTROOTlibc_arpa)
-
+//
   val SRCROOTlibc_netinet = SRCROOTlibc + "netinet/"
   val DSTROOTlibc_netinet = DSTROOTlibc + "netinet/"
   val () = lib_dir_copy (SRCROOTlibc_netinet, DSTROOTlibc_netinet)
-
+//
   val SRCROOTlibc_GL = SRCROOTlibc + "GL/"
-  val DSTROOTlibc_GL = DSTROOTlibc + "GL/"
-  val () = lib_dir_copy (SRCROOTlibc_GL, DSTROOTlibc_GL)
+  val () = if
+    file_isexi (SRCROOTlibc_GL) then let
+    val DSTROOTlibc_GL = DSTROOTlibc + "GL/"
+  in
+    lib_dir_copy (SRCROOTlibc_GL, DSTROOTlibc_GL)
+  end // end of [val]
 in
   prerr "The [libc] directory is successfully copied.";
   prerr_newline ()
