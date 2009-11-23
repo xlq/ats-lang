@@ -221,9 +221,16 @@ in
       fprint_d3exp (pf | out, d3e_val);
       prstr ")"
     end // end of [D3Eassgn_var]
+  | D3Ebool b => begin
+      if b then
+        fprint_string (pf | out, "D3Ebool(true)")
+      else
+        fprint_string (pf | out, "D3Ebool(false)")
+      // end of [if]
+    end // end of [D3Ebool]
   | D3Ecaseof (knd, d3es, c3ls) => begin
       fprint1_string (pf | out, "D3Ecaseof(...)")
-    end
+    end // end of [D3Ecaseof]
   | D3Echar chr => begin
       prstr "D3Echar("; fprint1_char (pf | out, chr); prstr ")"
     end

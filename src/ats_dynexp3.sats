@@ -202,6 +202,7 @@ and d3exp_node =
       (d3exp, d3lab1lst, d3exp)
   | D3Eassgn_var of (* assignment to a variable *)
       (d2var_t, d3lab1lst, d3exp)
+  | D3Ebool of bool (* boolean values *)
   | {n:nat} D3Ecaseof of (* dynamic caseof-expression *)
       (int(*kind*), d3explst n, c3laulst n)
   | D3Echar of char (* dynamic character *)
@@ -530,10 +531,12 @@ fun d3exp_assgn_ptr
 fun d3exp_assgn_var
   (_: loc_t, d2v: d2var_t, d3ls: d3lab1lst, d3e: d3exp): d3exp
 
-fun d3exp_char (_: loc_t, _: s2exp, _: char): d3exp
+fun d3exp_bool (_: loc_t, _: s2exp, _: bool): d3exp
 
 fun d3exp_caseof {n:nat}
   (_: loc_t, _: s2exp, casknd: int, _: d3explst n, _: c3laulst n): d3exp
+
+fun d3exp_char (_: loc_t, _: s2exp, _: char): d3exp
 
 fun d3exp_con
   (_: loc_t, _: s2exp, _fun: d2con_t, npf: int, _arg: d3explst): d3exp

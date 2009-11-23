@@ -806,6 +806,11 @@ in
         hiexp_assgn_var (loc0, hityp_void, d2v_ptr, hils, hie_val)
       end // end of [if]
     end (* end of [D3Eassgn_var] *)
+  | D3Ebool b => let
+      val hit0 = s2exp_tr (loc0, 0(*deep*), s2e0)
+    in
+      hiexp_bool (loc0, hit0, b)
+    end // end of [D3Echar]
   | D3Ecaseof (knd, d3es, c3ls) => let
       val hit0 = s2exp_tr (loc0, 0(*deep*), s2e0)
       val hies = d3explst_tr d3es

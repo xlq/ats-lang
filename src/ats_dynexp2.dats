@@ -575,6 +575,10 @@ implement d2exp_assgn (loc, d2e_lval, d2e_val) = '{
 , d2exp_typ= None ()
 }
 
+implement d2exp_bool (loc, b(*bool*)) = '{
+  d2exp_loc= loc, d2exp_node= D2Ebool b, d2exp_typ= None ()
+}
+
 implement d2exp_caseof
   (loc, casknd, inv, n, d2es, c2ls) = '{
   d2exp_loc= loc

@@ -225,8 +225,9 @@ end // end of [p2at_any_tr_dn]
 
 (* ****** ****** *)
 
-fn p2at_bool_tr_dn
-  (loc0: loc_t, b: bool, s2e0: s2exp): p3at = let
+fn p2at_bool_tr_dn (
+    loc0: loc_t, b: bool, s2e0: s2exp
+  ) : p3at = let
   val s2e0 = s2exp_opnexi_and_add (loc0, s2e0)
 in
   case+ s2e0.s2exp_node of

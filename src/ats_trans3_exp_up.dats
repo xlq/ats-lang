@@ -187,6 +187,7 @@ fn d2exp_arg_body_typ_syn (
   val s2t_fun: s2rt = s2rt_prf_lin_fc (loc0, isprf, islin, fc)
   val s2e_fun = s2exp_fun_srt
     (s2t_fun, fc, lin, s2fe, npf, s2es_arg, s2e_res)
+  // end of [val]
 (*
   val () = begin
     prerr "d2exp_arg_body_typ_syn: s2e_fun = ";
@@ -2101,15 +2102,16 @@ val d3e0 = (case+ d2e0.d2exp_node of
       end // end of [if]
     end // end of [D2Earrsub]
   | D2Eassgn (d2e_l, d2e_r) => d2exp_assgn_tr_up (loc0, d2e_l, d2e_r)
+  | D2Ebool b => let
+      val s2e = s2exp_bool_bool_t0ype b in d3exp_bool (loc0, s2e, b)
+    end // end of [D2Ebool]
   | D2Ecaseof (casknd, res, n, d2es, c2ls) => let
       val s2e_cas = s2exp_Var_make_srt (loc0, s2rt_t0ype)
     in
       d2exp_caseof_tr_dn (loc0, casknd, res, n, d2es, c2ls, s2e_cas)
     end // end of [D2Ecaseof]
   | D2Echar c(*char*) => let
-      val s2e = s2exp_char_char_t0ype c
-    in
-      d3exp_char (loc0, s2e, c)
+      val s2e = s2exp_char_char_t0ype c in d3exp_char (loc0, s2e, c)
     end // end of [D2Echar]
   | D2Econ (d2c, s2as, npf, d2es) => begin
       d2exp_con_tr_up (loc0, d2c, s2as, npf, d2es)
@@ -2131,11 +2133,11 @@ val d3e0 = (case+ d2e0.d2exp_node of
   | D2Eempty () => d3exp_empty (loc0, s2exp_void_t0ype ())
   | D2Eextval (s2e, code) => d3exp_extval (loc0, s2e, code)
   | D2Efoldat (s2as, d2e_at) => d2exp_foldat_tr_up (loc0, s2as, d2e_at)
-  | D2Efor (lpi2nv, d2e_init, d2e_test, d2e_post, d2e_body) => begin
-      d2exp_loop_tr_up (
-        loc0, lpi2nv, Some d2e_init, d2e_test, Some d2e_post, d2e_body
-      ) // end of [d2exp_loop_tr_up]
-    end // end of [D2Efor]
+  | D2Efor (
+      lpi2nv, d2e_init, d2e_test, d2e_post, d2e_body
+    ) => d2exp_loop_tr_up (
+      loc0, lpi2nv, Some d2e_init, d2e_test, Some d2e_post, d2e_body
+    ) // end of [D2Efor]
   | D2Efreeat (s2as, d2e_at) => d2exp_freeat_tr_up (loc0, s2as, d2e_at)
   | D2Eif (res, d2e_cond, d2e_then, od2e_else) => let
       val s2e_if = (case+ od2e_else of

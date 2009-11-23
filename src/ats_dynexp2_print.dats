@@ -390,6 +390,13 @@ in
       fprint_d2exp (pf | out, d2e_val);
       prstr ")"
     end // end of [D2Eassgn]
+  | D2Ebool b => begin
+      if b then
+        fprint_string (pf | out, "D2Ebool(true)")
+      else
+        fprint_string (pf | out, "D2Ebool(false)")
+      // end of [if]
+    end // end of [D3Ebool]
   | D2Ecaseof _ => begin
       prstr "D2Ecaseof("; fprint1_string (pf | out, "..."); prstr ")"
     end // end of [D2Ecaseof]

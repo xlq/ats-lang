@@ -321,19 +321,22 @@ implement prerr_d2cstlst (d2cs) = prerr_mac (fprint_d2cstlst, d2cs)
 
 (* ****** ****** *)
 
+//
 // [d2cst_hityp_set] is declared in [ats_hiexp.sats]
+//
 
 extern typedef "d2cst_struct" = d2cst_struct
 
 %{$
 
 ats_void_type
-ats_dynexp2_d2cst_hityp_set (ats_ptr_type d2c, ats_ptr_type ohit)
-{
+ats_dynexp2_d2cst_hityp_set (
+  ats_ptr_type d2c, ats_ptr_type ohit
+) {
   ((d2cst_struct*)d2c)->atslab_d2cst_hityp = ohit ; return ;
-}
+} /* end of [ats_dynexp2_d2cst_hityp_set] */
 
-%}
+%} // end of [%{$]
 
 (* ****** ****** *)
 

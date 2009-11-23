@@ -365,7 +365,17 @@ in '{
 
 //
 
-implement d3exp_caseof (loc, s2e_case, casknd, d3es, c3ls) = let
+implement d3exp_bool
+  (loc, s2e, b(*bool*)) = '{
+  d3exp_loc= loc
+, d3exp_eff= S2EFFnil (), d3exp_typ= s2e
+, d3exp_node= D3Ebool b
+} // end of [d3exp_bool]
+
+//
+
+implement d3exp_caseof
+  (loc, s2e_case, casknd, d3es, c3ls) = let
   val s2fe = S2EFFnil ()
   val s2fe = d3explst_eff_union (s2fe, d3es)
   val s2fe = c3laulst_eff_union (s2fe, c3ls)
@@ -375,11 +385,12 @@ in '{
 , d3exp_node= D3Ecaseof (casknd, d3es, c3ls)
 } end // end of [d3exp_caseof]
 
-implement d3exp_char (loc, s2e, c(*char*)) =  '{
+implement d3exp_char
+  (loc, s2e, c(*char*)) = '{
   d3exp_loc= loc
 , d3exp_eff= S2EFFnil (), d3exp_typ= s2e
 , d3exp_node= D3Echar c
-}
+} // end of [d3exp_char]
 
 implement d3exp_con (loc, s2e, d2c, npf, d3es_arg) = let
   val isuni = aux d3es_arg where {

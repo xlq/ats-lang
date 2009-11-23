@@ -590,6 +590,7 @@ and d2exp_node =
       (d2sym (*[] overloading*), d2exp, loc_t(*ind*), d2explstlst)
   | D2Eassgn of (* assignment *)
       (d2exp(*left*), d2exp(*right*))
+  | D2Ebool of bool (* boolean values *)
   | {n:nat} D2Ecaseof of ( // dynamic caseof-expression
       int(*kind*), i2nvresstate, int n, d2explst n, c2laulst n
     ) // end of [D2Ecaseof]
@@ -1094,7 +1095,7 @@ fun d2exp_arrsub
 
 fun d2exp_assgn (_: loc_t, _lval: d2exp, _val: d2exp): d2exp
 
-fun d2exp_char (_: loc_t, _: char): d2exp
+fun d2exp_bool (_: loc_t, _: bool): d2exp
 
 fun d2exp_caseof {n:nat}
   (_: loc_t,
@@ -1102,6 +1103,8 @@ fun d2exp_caseof {n:nat}
    res: i2nvresstate,
    n: int n, d2es: d2explst n,
    c2ls: c2laulst n): d2exp
+
+fun d2exp_char (_: loc_t, _: char): d2exp
 
 fun d2exp_con
   (_: loc_t, d2c: d2con_t, sarg: s2exparglst, npf: int, darg: d2explst)

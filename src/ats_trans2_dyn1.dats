@@ -1448,7 +1448,9 @@ in
       val ini = d1exp_tr ini
       val (pf_s2expenv | ()) = the_s2expenv_push ()
       val inv = loopi1nv_tr inv
-      val test = d1exp_tr test
+      val test = (case+ test.d1exp_node of
+        | D1Eempty () => d2exp_bool (loc0, true) | _ => d1exp_tr test
+      ) : d2exp // end of [val]
       val post = d1exp_tr post
       val body = d1exp_tr body
       val () = the_s2expenv_pop (pf_s2expenv | (*none*))
