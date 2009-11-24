@@ -51,9 +51,7 @@
 (* ****** ****** *)
 
 %{#
-
 #include "libats/CATS/fmatrix.cats"
-
 %}
 
 (* ****** ****** *)
@@ -185,7 +183,7 @@ prfun GEVEC_v_of_fmatrix_v
     pf_mul: MUL (m, n, mn), pf_mat: fmatrix_v (a1, m, n, l)
   ) :<> (
     GEVEC_v (a1, mn, 1, l)
-  , {a2:viewt@ype | sizeof a1 == sizeof a2}
+  , {a2:viewt@ype | a1 \tszeq a2}
       GEVEC_v (a2, mn, 1, l) -<prf> fmatrix_v (a2, m, n, l)
     // [fpf: for going back]
   )
@@ -210,7 +208,7 @@ prfun GEMAT_v_of_fmatrix_v
     pf_mat: fmatrix_v (a1, m, n, l)
   ) :<> (
     GEMAT_v (a1, m, n, col, m, l)
-  , {a2:viewt@ype | sizeof a1 == sizeof a2}
+  , {a2:viewt@ype | a1 \tszeq a2}
       GEMAT_v (a2, m, n, col, m, l) -<prf> fmatrix_v (a2, m, n, l)
     // [fpf: for going back]
   )

@@ -635,8 +635,8 @@ fun{a:t@ype}
   ) :<> void
 // end of [GEMAT_ptr_initialize_elt]
 
-fun{a:t@ype}
-  GEMAT_ptr_initialize_fun
+// based on [GEMAT_ptr_iforeach_fun]
+fun{a:t@ype} GEMAT_ptr_initialize_fun
   {v:view} {ord:order} {m,n:nat} {ld:inc} (
     pf: !v
   | ord: ORDER ord
@@ -645,6 +645,17 @@ fun{a:t@ype}
   , f: (!v | sizeLt m, sizeLt n, &(a?) >> a) -<> void
   ) :<> void
 // end of [GEMAT_ptr_initialize_fun]
+
+// based on [GEMAT_ptr_iforeach_clo]
+fun{a:t@ype} GEMAT_ptr_initialize_clo
+  {v:view} {ord:order} {m,n:nat} {ld:inc} (
+    pf: !v
+  | ord: ORDER ord
+  , M: &GEMAT (a?, m, n, ord, ld) >> GEMAT (a, m, n, ord, ld)
+  , m: size_t m, n: size_t n, ld: size_t ld
+  , f: &(!v | sizeLt m, sizeLt n, &(a?) >> a) -<clo> void
+  ) :<> void
+// end of [GEMAT_ptr_initialize_clo]
 
 (* ****** ****** *)
 

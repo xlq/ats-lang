@@ -50,6 +50,10 @@
 
 (* ****** ****** *)
 
+#define ATS_DYNLOADFLAG 0 // no need for dynamic loading
+
+(* ****** ****** *)
+
 staload "libats/SATS/fmatrix.sats"
 staload "libats/SATS/genarrays.sats"
 
@@ -588,6 +592,24 @@ implement{a} GEMAT_ptr_initialize_fun
   } // end of [val]
   val () = GEMAT_ptr_iforeach_fun<a> (pf | ord, X, f, ord, m, n, ld)
 } // end of [GEMAT_ptr_initialize_fun]
+
+implement{a} GEMAT_ptr_initialize_clo
+  {v} {ord} {m,n} {ld} (pf | ord, X, m, n, ld, f) = () where {
+  typedef clotype0 =
+    (!v | sizeLt m, sizeLt n, &(a?) >> a) -<clo> void
+  typedef clotype1 = (!v | sizeLt m, sizeLt n, &a) -<clo> void
+  val _(*ptr*) = __cast (f) where {
+    extern castfn __cast (f: &clotype0 >> clotype1) :<> ptr
+  }
+  val _(*ptr*) = __cast (X) where {
+    extern castfn __cast
+      (X: &GEMAT (a?, m, n, ord, ld) >> GEMAT (a, m, n, ord, ld)):<> ptr
+  } // end of [val]
+  val () = GEMAT_ptr_iforeach_clo<a> (pf | ord, X, f, ord, m, n, ld)
+  val _(*ptr*) = __cast (f) where {
+    extern castfn __cast (f: &clotype1 >> clotype0) :<> ptr
+  }
+} // end of [GEMAT_ptr_initialize_clo]
 
 (* ****** ****** *)
 
