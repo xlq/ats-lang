@@ -1420,19 +1420,17 @@ in
       end // end of [S3IEintinf]
     | _ => begin case+ s3ie2 of
       | S3IEint i2 => let
-          val coef = coef * $FM.i0nt_of_int (i2)
-        in
+          val coef = coef * $FM.i0nt_of_int (i2) in
           s3iexp_intvec_update_err (pf_arr | loc0, cim, vim, ivp, n, coef, s3ie1, errno)
         end // end of [S3IEint]
       | S3IEintinf i2 => let
-          val coef = coef * $FM.i0nt_of_intinf (i2)
-        in
+          val coef = coef * $FM.i0nt_of_intinf (i2) in
           s3iexp_intvec_update_err (pf_arr | loc0, cim, vim, ivp, n, coef, s3ie1, errno)
         end // end of [S3IEintinf]
       | _ => begin
-          prerr "INTERNAL ERROR: s3iexp_intvec_update_err: nonlinear term: s3ie0 = ";
-          prerr s3ie0;
-          prerr_newline ();
+          $Loc.prerr_location loc0; prerr ": error(3)";
+          prerr ": it is not allowed to have a nonlinear term appear in a constraint: [";
+          prerr s3ie0; prerr "]"; prerr_newline ();
           $Err.abort {void} ()
         end // end of [_]
       end (* end of [_] *)
