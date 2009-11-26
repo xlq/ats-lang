@@ -111,9 +111,11 @@ absprop ELTMSETUB (eltmset, elt)
 
 prfun ELTMSETLB_monotone
   {l1,l2:elt | l1 <= l2} {xs:eltmset} (pf: ELTMSETLB (l2, xs)): ELTMSETLB (l1, xs)
+// end of [ELTMSETLB_monotone]
 
 prfun ELTMSETUB_monotone
   {u1,u2:elt | u1 <= u2} {xs:eltmset} (pf: ELTMSETUB (xs, u1)): ELTMSETUB (xs, u2)
+// end of [ELTMSETUB_monotone]
 
 (* ****** ****** *)
 

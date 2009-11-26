@@ -247,54 +247,54 @@ end // end of local
 ** the power-of-2 function
 *)
 
-implement POW2_istot {n} () = istot {n} () where {
-  prfun istot {n:nat} .<n>. (): [p:nat] POW2 (n, p) =
-    sif n > 0 then POW2ind (istot {n-1} ()) else POW2bas ()
+implement EXP2_istot {n} () = istot {n} () where {
+  prfun istot {n:nat} .<n>. (): [p:nat] EXP2 (n, p) =
+    sif n > 0 then EXP2ind (istot {n-1} ()) else EXP2bas ()
 } // end of [pow2_istot]
 
-implement POW2_isfun
+implement EXP2_isfun
   (pf1, pf2) = isfun (pf1, pf2) where {
   prfun isfun {n:nat} {p1,p2:int} .<n>.
-    (pf1: POW2 (n, p1), pf2: POW2 (n, p2)): [p1==p2] void =
+    (pf1: EXP2 (n, p1), pf2: EXP2 (n, p2)): [p1==p2] void =
     case+ pf1 of
-    | POW2ind pf1 => let
-        prval POW2ind pf2 = pf2 in isfun (pf1, pf2)
-      end // end of [POW2ind]
-    | POW2bas () => let
-        prval POW2bas () = pf2 in (* nothing *)
-      end // end of [POW2bas]
+    | EXP2ind pf1 => let
+        prval EXP2ind pf2 = pf2 in isfun (pf1, pf2)
+      end // end of [EXP2ind]
+    | EXP2bas () => let
+        prval EXP2bas () = pf2 in (* nothing *)
+      end // end of [EXP2bas]
   // end of [isfun]
-} // end of [POW2_isfun]
+} // end of [EXP2_isfun]
 
-implement POW2_monotone
+implement EXP2_monotone
   (pf1, pf2) = lemma (pf1, pf2) where {
   prfun lemma {n1,n2:nat | n1 <= n2} {p1,p2:int} .<n2>.
-    (pf1: POW2 (n1, p1), pf2: POW2 (n2, p2)): [p1 <= p2] void =
+    (pf1: EXP2 (n1, p1), pf2: EXP2 (n2, p2)): [p1 <= p2] void =
     case+ pf2 of
-    | POW2ind (pf2) => begin case+ pf1 of
-      | POW2ind (pf1) => lemma (pf1, pf2) | POW2bas () => lemma (pf1, pf2)
-      end // end of [POW2ind]
-    | POW2bas () => let prval POW2bas () = pf1 in () end
+    | EXP2ind (pf2) => begin case+ pf1 of
+      | EXP2ind (pf1) => lemma (pf1, pf2) | EXP2bas () => lemma (pf1, pf2)
+      end // end of [EXP2ind]
+    | EXP2bas () => let prval EXP2bas () = pf1 in () end
   // end of [lemma]
 } // end of [pow2_monotone_lemma]
 
-implement POW2_mul (pf1, pf2, pf3) = let
+implement EXP2_mul (pf1, pf2, pf3) = let
   prfun lemma {n1,n2:nat} {p1,p2:nat} {p:int} .<n2>. (
-      pf1: POW2 (n1, p1), pf2: POW2 (n2, p2), pf3: MUL (p1, p2, p)
-    ) : [p>=0] POW2 (n1+n2, p) = case+ pf2 of
-    | POW2ind {n21} {p21} (pf21) => let // n2 = n21+1; p2 = p21 + p21
+      pf1: EXP2 (n1, p1), pf2: EXP2 (n2, p2), pf3: MUL (p1, p2, p)
+    ) : [p>=0] EXP2 (n1+n2, p) = case+ pf2 of
+    | EXP2ind {n21} {p21} (pf21) => let // n2 = n21+1; p2 = p21 + p21
         prval pf31 = mul_istot {p1,p21} ()
         prval pf32 = mul_distribute (pf31, pf31)
         prval () = mul_isfun (pf3, pf32)
         prval pf1_res = lemma (pf1, pf21, pf31)
       in
-        POW2ind pf1_res
-      end // end of [POW2ind]
-    | POW2bas () => let prval () = mul_elim (pf3) in pf1 end
+        EXP2ind pf1_res
+      end // end of [EXP2ind]
+    | EXP2bas () => let prval () = mul_elim (pf3) in pf1 end
   // end of [lemma]
 in
   lemma (pf1, pf2, pf3)
-end // end of [POW2_mul]
+end // end of [EXP2_mul]
 
 (* ****** ****** *)
 

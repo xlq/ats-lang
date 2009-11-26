@@ -57,6 +57,14 @@ dataprop MUL (int, int, int) =
 praxi mul_make : {m,n:int} () -<prf> MUL (m, n, m*n)
 praxi mul_elim : {m,n:int} {p:int} MUL (m, n, p) -<prf> [p == m*n] void
 
+praxi mul_add_const {i:int}
+  {m,n:int} {p:int} (pf: MUL (m, n, p)):<prf> MUL (m+i, n, p+i*n)
+// end of [mul_add_const]
+
+praxi mul_expand_linear {a,b:int} {c,d:int} // a,b,c,d: constants!
+  {m,n:int} {p:int} (pf: MUL (m, n, p)):<prf> MUL (a*m+b, c*n+d, a*c*p+a*d*m+b*c*n+b*d)
+// end of [mul_expand_linear]
+
 (* ****** ****** *)
 
 prfun mul_isfun {m,n:int} {p1,p2:int}
@@ -83,10 +91,6 @@ prfun mul_associate {x,y,z:int} {xy,yz,xy_z,x_yz:int} (
   , pf4: MUL (x, yz, x_yz)
   ) :<prf> [xy_z==x_yz] void
 
-praxi mul_add_const {i:int}
-  {m,n:int} {p:int} (pf: MUL (m, n, p)):<prf> MUL (m+i, n, p+i*n)
-// end of [mul_add_const]
-
 (* ****** ****** *)
 
 dataprop GCD (int, int, int) =
@@ -107,25 +111,25 @@ prfun gcd_commute {m,n:int} {r:int} (pf: GCD (m, n, r)):<prf> GCD (n, m, r)
 
 (* ****** ****** *)
 
-dataprop POW2 (int, int) =
-  | {n:nat} {p:nat} POW2ind (n+1, 2*p) of POW2 (n, p)
-  | POW2bas (0, 1)
-// end of [POW2]
+dataprop EXP2 (int, int) =
+  | {n:nat} {p:nat} EXP2ind (n+1, 2*p) of EXP2 (n, p)
+  | EXP2bas (0, 1)
+// end of [EXP2]
 
 // proven in [arith.dats]
-prfun POW2_istot {n:nat} (): [p:nat] POW2 (n, p)
-prfun POW2_isfun {n:nat} {p1,p2:int}
-  (pf1: POW2 (n, p1), pf2: POW2 (n, p2)): [p1==p2] void
-// end of [POW2_isfun]
+prfun EXP2_istot {n:nat} (): [p:nat] EXP2 (n, p)
+prfun EXP2_isfun {n:nat} {p1,p2:int}
+  (pf1: EXP2 (n, p1), pf2: EXP2 (n, p2)): [p1==p2] void
+// end of [EXP2_isfun]
 
 // proven in [arith.dats]
-prfun POW2_monotone {n1,n2:nat | n1 <= n2} {p1,p2:int}
-  (pf1: POW2 (n1, p1), pf2: POW2 (n2, p2)): [p1 <= p2] void
+prfun EXP2_monotone {n1,n2:nat | n1 <= n2} {p1,p2:int}
+  (pf1: EXP2 (n1, p1), pf2: EXP2 (n2, p2)): [p1 <= p2] void
 
 // proven in [arith.dats]
-prfun POW2_mul {n1,n2:nat | n1 <= n2} {p1,p2:nat} {p:int}
-  (pf1: POW2 (n1, p1), pf2: POW2 (n2, p2), pf3: MUL (p1, p2, p))
-  : POW2 (n1+n2, p)
+prfun EXP2_mul {n1,n2:nat | n1 <= n2} {p1,p2:nat} {p:int}
+  (pf1: EXP2 (n1, p1), pf2: EXP2 (n2, p2), pf3: MUL (p1, p2, p))
+  : EXP2 (n1+n2, p)
 
 (* ****** ****** *)
 
