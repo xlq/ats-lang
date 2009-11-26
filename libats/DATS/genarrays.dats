@@ -595,9 +595,13 @@ implement{a} GEMAT_ptr_initialize_fun
 
 implement{a} GEMAT_ptr_initialize_clo
   {v} {ord} {m,n} {ld} (pf | ord, X, m, n, ld, f) = () where {
+//
   typedef clotype0 =
     (!v | sizeLt m, sizeLt n, &(a?) >> a) -<clo> void
   typedef clotype1 = (!v | sizeLt m, sizeLt n, &a) -<clo> void
+//
+// a shortcut worth taking? probably.
+//
   val _(*ptr*) = __cast (f) where {
     extern castfn __cast (f: &clotype0 >> clotype1) :<> ptr
   }
