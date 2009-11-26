@@ -346,7 +346,7 @@ fun s2cfdeflst_find
         val ans = s2cfdeflst_find (!fds, s2c0, s2es0)
       in
         fold@ fds0; ans
-      end
+      end (* end of [if] *)
     end // end of [S2CFDEFLSTcons]
   | S2CFDEFLSTmark (!fds) => let
       val ans = s2cfdeflst_find (!fds, s2c0, s2es0)
