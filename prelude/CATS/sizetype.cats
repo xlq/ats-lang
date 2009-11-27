@@ -49,12 +49,10 @@
 
 #define atspre_int_of_size atspre_int1_of_size1
 #define atspre_size_of_int1 atspre_size1_of_int1
+#define atspre_uint_of_size atspre_uint1_of_size1
 #define atspre_size_of_uint atspre_size1_of_uint1
-#define atspre_size_of_ssize atspre_size1_of_ssize1
-
 #define atspre_int_of_ssize atspre_int1_of_ssize1
-#define atspre_ssize_of_int1 atspre_ssize1_of_int1
-#define atspre_ssize_of_size atspre_ssize1_of_size1
+#define atspre_ssize_of_int atspre_ssize1_of_int1
 
 #define atspre_add_size_int atspre_add_size1_int1
 #define atspre_add_size_size atspre_add_size1_size1
@@ -87,6 +85,10 @@
 
 /* ****** ****** */
 
+// size type // unsigned
+
+/* ****** ****** */
+
 static inline
 ats_int_type
 atspre_int1_of_size1 (ats_size_type sz) {
@@ -97,11 +99,17 @@ atspre_int1_of_size1 (ats_size_type sz) {
   return ((ats_int_type)sz) ;
 } /* end of [atspre_int1_of_size1] */
 
-/* ****** ****** */
-
 static inline
-ats_size_type
-atspre_size1_of_size (ats_size_type sz) { return sz ; }
+ats_uint_type
+atspre_uint1_of_size1 (ats_size_type sz) {
+  if (UINT_MAX < sz) {
+    fprintf (stderr, "[ats_uint_of_size(%lu)] failed\n", (ats_ulint_type)sz) ;
+    exit (1) ;
+  } /* end of [if] */
+  return ((ats_uint_type)sz) ;
+} /* end of [atspre_uint1_of_size1] */
+
+/* ****** ****** */
 
 static inline
 ats_size_type
@@ -110,10 +118,6 @@ atspre_size1_of_int1 (ats_int_type i) { return (ats_size_type)i ; }
 static inline
 ats_size_type
 atspre_size1_of_uint1 (ats_uint_type u) { return (ats_size_type)u ; }
-
-static inline
-ats_size_type
-atspre_size1_of_ssize1 (ats_ssize_type ssz) { return (ats_size_type)ssz ; }
 
 static inline
 ats_size_type
@@ -398,17 +402,6 @@ static inline
 ats_ssize_type atspre_ssize1_of_int1 (ats_int_type i) {
   return (ats_ssize_type)i ;
 }
-
-static inline
-ats_ssize_type atspre_ssize1_of_size1 (ats_size_type sz) {
-  ats_ssize_type ssz = sz ;
-  if (ssz < 0) {
-    fprintf (stderr,
-      "exit(ATS): [ats_ssize1_of_size1(%lu)] failed\n", (ats_ulint_type)sz
-    ) ; exit (1) ;
-  } /* end of [if] */
-  return ssz ;
-} /* end of [atspre_ssize1_of_size1] */
 
 /* ****** ****** */
 

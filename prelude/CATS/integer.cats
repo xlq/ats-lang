@@ -79,18 +79,9 @@ atspre_int_of_uchar (ats_uchar_type c) {
 
 static inline
 ats_int_type
-atspre_int_of_int (ats_int_type i) { return i ; }
-
-static inline
-ats_int_type
-atspre_int_of_string (ats_ptr_type s)
-{
-  return atoi((char*)s) ;
-} /* end of [atspre_int_of_string] */
-
-static inline
-ats_int_type
-atspre_int_of_uint (ats_uint_type u) { return u ; }
+atspre_int_of_string
+  (ats_ptr_type s) { return atoi((char*)s) ; }
+/* end of [atspre_int_of_string] */
 
 //
 
@@ -334,12 +325,6 @@ atspre_uint_of_uchar (ats_uchar_type c) {
 
 static inline
 ats_uint_type
-atspre_uint_of_int (ats_int_type i) {
-  return i ;
-}
-
-static inline
-ats_uint_type
 atspre_uint_of_double (ats_double_type d) {
   return (ats_uint_type)d ;
 }
@@ -528,7 +513,6 @@ atspre_tostring_uint (
 
 /* ****** ****** */
 
-#define atspre_int1_of_int atspre_int_of_int
 #define atspre_int1_of_string atspre_int_of_string
 
 #define atspre_iabs atspre_abs_int
@@ -574,16 +558,6 @@ atspre_nhalf (ats_int_type n) { return (n >> 1) ; }
 
 /* ****** ****** */
 
-static inline
-ats_uint_type
-atspre_uint1_of_int (ats_int_type i) { return i ; }
-
-static inline
-ats_uint_type
-atspre_uint1_of_uint (ats_uint_type u) { return u ; }
-
-//
-
 #define atspre_uadd atspre_add_uint_uint
 #define atspre_usub atspre_sub_uint_uint
 #define atspre_umul atspre_mul_uint_uint
@@ -594,9 +568,11 @@ atspre_uint1_of_uint (ats_uint_type u) { return u ; }
 
 static inline
 ats_int_type
-atspre_uimod(ats_uint_type u1, ats_int_type i2) {
+atspre_uimod (
+  ats_uint_type u1, ats_int_type i2
+) {
   return (u1 % ((ats_uint_type)i2)) ;
-}
+} /* end of [atspre_uimod] */
 
 #define atspre_ult atspre_lt_uint_uint
 #define atspre_ulte atspre_lte_uint_uint

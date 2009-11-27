@@ -51,7 +51,10 @@
 
 (* ****** ****** *)
 
-//
+castfn int_of_uint (u: uint):<> int
+overload int_of with int_of_uint
+
+(* ****** ****** *)
 
 fun int_of_char (c: char):<> int = "atspre_int_of_char"
 overload int_of with int_of_char
@@ -62,14 +65,9 @@ overload int_of with int_of_schar
 fun int_of_uchar (c: uchar):<> int = "atspre_int_of_uchar"
 overload int_of with int_of_uchar
 
-//
-
 // This function is based on [atoi] in [stdlib.h]
 fun int_of_string (s: string):<> int = "atspre_int_of_string"
 overload int_of with int_of_string
-
-fun int_of_uint (u: uint):<> int  = "atspre_int_of_uint"
-overload int_of with int_of_uint
 
 // arithmetic functions and comparison functions
 
@@ -226,17 +224,14 @@ overload tostring with tostring_int
 
 (* ****** ****** *)
 
-fun uint_of_char
-  (c: char):<> uint = "atspre_uint_of_char"
-overload uint_of with uint_of_char
-
-fun uint_of_int
-  (i: int):<> uint = "atspre_uint_of_int"
+castfn uint_of_int (i: int):<> uint
 overload uint_of with uint_of_int
 
-fun uint_of_int1
-  {i:nat} (i: int i):<> uint = "atspre_uint_of_int"
-overload uint_of with uint_of_int1
+(* ****** ****** *)
+
+fun uint_of_char (c: char):<> uint
+  = "atspre_uint_of_char"
+overload uint_of with uint_of_char
 
 fun uint_of_double (d: double):<> uint
   = "atspre_uint_of_double"
@@ -245,11 +240,12 @@ overload uint_of with uint_of_double
 // arithmetic functions and comparison functions
 
 fun succ_uint (u: uint):<> uint = "atspre_succ_uint"
-
 and pred_uint (u: uint):<> uint = "atspre_pred_uint"
 
 overload succ with succ_uint
 overload pred with pred_uint
+
+//
 
 fun add_uint_uint (u1: uint, u2: uint):<> uint
   = "atspre_add_uint_uint"
@@ -396,10 +392,12 @@ overload tostring with tostring_uint
 
 (* ****** ****** *)
 
-// Note that the following coersion is automatic
-fun int1_of_int (i: int):<> [i:int] int i
-  = "atspre_int1_of_int"
+castfn int1_of_int (i: int):<> [i:int] int i
+castfn int1_of_uint1 {i:nat} (i: uint i):<> int i
 overload int1_of with int1_of_int
+overload int1_of with int1_of_uint1
+
+//
 
 fun int1_of_string (s: string):<> [i:int] int i
   = "atspre_int1_of_string"
@@ -534,16 +532,15 @@ fun nhalf {n:nat} (n: int n):<> [q:nat | ndiv_r (n, 2, q)] int q
 
 (* ****** ****** *)
 
-fun uint1_of_int (i: int):<> [i:nat] uint i
-  = "atspre_uint1_of_int"
+castfn uint1_of_uint (i: uint):<> [i:nat] uint i
+
+castfn uint1_of_int (i: int):<> [i:nat] uint i
+castfn uint1_of_int1 {i:nat} (i: int i):<> uint i
+
 overload uint1_of with uint1_of_int
+overload uint1_of with uint1_of_int1
 
-fun uint1_of_int1 {i:nat} (i: int i):<> uint i
-  = "atspre_uint1_of_int1"
-
-fun uint1_of_uint (i: uint):<> [i:nat] uint i
-  = "atspre_uint1_of_uint"
-overload uint1_of with uint1_of_uint
+(* ****** ****** *)
 
 // arithmetic functions and comparison functions
 

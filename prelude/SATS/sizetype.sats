@@ -55,16 +55,21 @@
 
 (* ****** ****** *)
 
-// unindexed size type
+// size type // unindexed
 
 fun int_of_size (sz: size_t):<> int
   = "atspre_int_of_size"
 
+fun size_of_int1 {i:nat} (i: int i):<> size_t
+  = "atspre_size_of_int1"
+
+fun uint_of_size (sz: size_t):<> uint
+  = "atspre_uint_of_size"
+
 fun size_of_uint (u: uint):<> size_t
   = "atspre_size_of_uint"
 
-fun size_of_int1 {i:nat} (i: int i):<> size_t
-  = "atspre_size_of_int1"
+castfn size_of_ssize (sz: ssize_t):<> size_t
 
 (* ****** ****** *)
 
@@ -230,15 +235,18 @@ overload prerr with prerr_size
 
 (* ****** ****** *)
 
-castfn size1_of_size
-  (sz: size_t):<> [i:nat] size_t i // = "atspre_size1_of_size"
-// end of [size1_of_size]
+castfn size1_of_size (sz: size_t):<> [i:nat] size_t i
+castfn size1_of_ssize1 {i:nat} (sz: ssize_t i):<> size_t i
 
 (* ****** ****** *)
 
 fun int1_of_size1 {i:nat} (sz: size_t i):<> int i
   = "atspre_int1_of_size1"
 // end of [int1_of_size1]
+
+fun uint1_of_size1 {i:nat} (sz: size_t i):<> uint i
+  = "atspre_uint1_of_size1"
+// end of [uint1_of_size1]
 
 // ------ ------
 
@@ -433,7 +441,28 @@ overload min with min_size1_size1
 
 (* ****** ****** *)
 
+// signed size type // unindexed
+
+(* ****** ****** *)
+
+castfn ssize_of_size (sz: size_t):<> ssize_t
+
+(* ****** ****** *)
+
+fun int_of_ssize (sz: ssize_t):<> int
+  = "atspre_int_of_ssize"
+
+fun ssize_of_int (i: int):<> ssize_t
+  = "atspre_ssize_of_int"
+
+(* ****** ****** *)
+
 // signed indexed size type
+
+(* ****** ****** *)
+
+castfn ssize1_of_ssize (sz: ssize_t): [i:int] ssize_t i
+castfn ssize1_of_size1 {i:nat} (sz: size_t i):<> ssize_t i
 
 (* ****** ****** *)
 
@@ -442,9 +471,6 @@ fun int1_of_ssize1 {i:int} (sz: ssize_t i):<> int i
 
 fun ssize1_of_int1 {i:int} (i: int i):<> ssize_t i
   = "atspre_ssize1_of_int1"
-
-fun ssize1_of_size1 {i:nat} (sz: size_t i):<> ssize_t i
-  = "atspre_ssize1_of_size1"
 
 (* ****** ****** *)
 
