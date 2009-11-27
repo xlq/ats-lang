@@ -258,10 +258,6 @@ fun size1_of_uint1 {i:nat} (u: uint i):<> size_t i
   = "atspre_size1_of_uint1"
 // end of [size1_of_uint1]
 
-fun size1_of_ssize1 {i:nat} (_: ssize_t i):<> size_t i
-  = "atspre_size1_of_ssize1"
-// end of [size1_of_ssize1]
-
 fun size1_of_ptrdiff1 {i:nat} (_: ptrdiff_t i):<> size_t i
   = "atspre_size1_of_ptrdiff1"
 // end of [size1_of_ptrdiff1]

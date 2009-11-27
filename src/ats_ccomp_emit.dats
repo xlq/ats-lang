@@ -837,10 +837,10 @@ implement emit_valprim (pf | out, vp0) = begin
       emit_valprim_arg_ref (pf | out, ind, vp0.valprim_typ)
     end // end of [VParg_ref]
   | VPbool b => emit_valprim_bool (pf | out, b)
-  | VPcastfn (_d2c, vp) => begin
+  | VPcastfn (_d2c, vp_arg) => begin
       fprint1_string (pf | out, "ats_castfn_mac(");
       emit_hityp (pf | out, vp0.valprim_typ);
-      fprint1_string (pf | out, ", "); emit_valprim (pf | out, vp);
+      fprint1_string (pf | out, ", "); emit_valprim (pf | out, vp_arg);
       fprint1_string (pf | out, ")")
     end // end of [VPcast]
   | VPchar c => emit_valprim_char (pf | out, c)

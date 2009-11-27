@@ -313,16 +313,6 @@ end // end of [reshape]
 
 (* ****** ****** *)
 
-%{^
-
-ats_char_type char_of_uchar (ats_uchar_type c) { return c ; }
-
-%}
-
-extern fun char_of_uchar (c: uchar): char = "char_of_uchar"
-
-//
-
 extern fun keyboard
   (key: uchar, x: int, y: int): void = "keyboard"
 
@@ -330,8 +320,7 @@ implement keyboard (key, x, y) = let
   val key = char_of_uchar (key)
 in
   case+ 0 of
-  | _ when (key = '\033') => exit (0)
-  | _ => ()
+  | _ when (key = '\033') => exit (0) | _ => ()
 end // end of [keyboard]
 
 (* ****** ****** *)

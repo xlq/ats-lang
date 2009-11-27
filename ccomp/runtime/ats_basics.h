@@ -84,6 +84,11 @@
 
 /* ****** ****** */
 
+/* handling castfn */
+#define ats_castfn_mac(hit, vp) ((hit)vp)
+
+/* ****** ****** */
+
 /* while loop: deprecated!!! */
 #define ats_while_beg_mac(clab) while(ats_true_bool) { clab:
 #define ats_while_end_mac(blab, clab) goto clab ; blab: break ; }

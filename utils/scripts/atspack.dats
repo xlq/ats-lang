@@ -104,11 +104,9 @@ in
   if stropt_is_some stropt then
     string1_of_string (stropt_unsome stropt)
   else begin
-    prerr "The environment variable [";
-    prerr name;
-    prerr "] is undefined!\n" ;
+    prerr "The environment variable ["; prerr name; prerr "] is undefined!\n" ;
     exit (1)
-  end
+  end (* end of [if] *)
 end // end of [getenv_exn]
 
 val ATSHOME = let
@@ -119,7 +117,7 @@ val ATSHOME = let
 *)
 in
   str // return value
-end
+end // end of [val]
 
 val SRCROOT = ATSHOME + "/"
 
@@ -141,7 +139,7 @@ fn ATSPACKAGE_VERSION_get (): string = let
   val () = begin
     prerr "ATSPACKAGE_VERSION_get: version = "; prerr version;
     prerr_newline ()
-  end
+  end // end of [val]
 *)
 in
   version
@@ -157,14 +155,14 @@ end // end of [DSTROOT]
 
 #define BUFSZ 8192
 
-// there are certainly faster ways to copy files, but this code offers
+// there are certainly faster ways to copy files, but this code gives
 // an opportunity to test ATS :)
 fn fcopy_exn (src: string, dst: string): void = let
 (*
   val () = begin
     prerr "fopen_exn: src = "; prerr src; prerr_newline ();
     prerr "fopen_exn: dst = "; prerr dst; prerr_newline ();
-  end
+  end // end of [val]
 *)
   val (pf_src | p_src) = fopen_exn (src, file_mode_r)
   val (pf_dst | p_dst) = fopen_exn (dst, file_mode_w)

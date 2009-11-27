@@ -46,22 +46,22 @@ prfun btht_isfun {t:bt} {n1,n2:nat} .<t>.
 (* ****** ****** *)
 
 //
-// POW2 is declared in $ATSHOME/prelude/SATS/arith.sats
+// EXP2 is declared in $ATSHOME/prelude/SATS/arith.sats
 //
 
 prfun bintree_SZ_HT_lemma {t:bt} {s,n,p:nat} .<t>.
-  (pf1: btsz (t, s), pf2: btht (t, n), pf3: POW2 (n, p)): [s < p] void =
+  (pf1: btsz (t, s), pf2: btht (t, n), pf3: EXP2 (n, p)): [s < p] void =
   case+ pf1 of
   | btsz_E () => let
-      prval btht_E () = pf2; prval POW2bas () = pf3 in ()
+      prval btht_E () = pf2; prval EXP2bas () = pf3 in ()
     end // end of [btsz_E]
   | btsz_B (pf11, pf12) => let
-      prval btht_B (pf21, pf22) = pf2; prval POW2ind (pf30) = pf3
-      prval pf30_1 = POW2_istot ()
-      prval () = POW2_monotone (pf30_1, pf30)
+      prval btht_B (pf21, pf22) = pf2; prval EXP2ind (pf30) = pf3
+      prval pf30_1 = EXP2_istot ()
+      prval () = EXP2_monotone (pf30_1, pf30)
       prval () = bintree_SZ_HT_lemma (pf11, pf21, pf30_1)
-      prval pf30_2 = POW2_istot ()
-      prval () = POW2_monotone (pf30_2, pf30)
+      prval pf30_2 = EXP2_istot ()
+      prval () = EXP2_monotone (pf30_2, pf30)
       prval () = bintree_SZ_HT_lemma (pf12, pf22, pf30_2)
     in
       // empty
@@ -71,18 +71,18 @@ prfun bintree_SZ_HT_lemma {t:bt} {s,n,p:nat} .<t>.
 (* ****** ****** *)
 
 prfun bintree_SZ_SP_lemma {t:bt} {s,n,p:nat} .<t>.
-  (pf1: btsz (t, s), pf2: btsp (t, n), pf3: POW2 (n, p)): [p <= s+1] void =
+  (pf1: btsz (t, s), pf2: btsp (t, n), pf3: EXP2 (n, p)): [p <= s+1] void =
   case+ pf1 of
   | btsz_E () => let
-      prval btsp_E () = pf2; prval POW2bas () = pf3 in ()
+      prval btsp_E () = pf2; prval EXP2bas () = pf3 in ()
     end // end of [btsz_E]
   | btsz_B (pf11, pf12) => let
-      prval btsp_B (pf21, pf22) = pf2; prval POW2ind (pf30) = pf3
-      prval pf30_1 = POW2_istot ()
-      prval () = POW2_monotone (pf30, pf30_1)
+      prval btsp_B (pf21, pf22) = pf2; prval EXP2ind (pf30) = pf3
+      prval pf30_1 = EXP2_istot ()
+      prval () = EXP2_monotone (pf30, pf30_1)
       prval () = bintree_SZ_SP_lemma (pf11, pf21, pf30_1)
-      prval pf30_2 = POW2_istot ()
-      prval () = POW2_monotone (pf30, pf30_2)
+      prval pf30_2 = EXP2_istot ()
+      prval () = EXP2_monotone (pf30, pf30_2)
       prval () = bintree_SZ_SP_lemma (pf12, pf22, pf30_2)
     in
       // empty

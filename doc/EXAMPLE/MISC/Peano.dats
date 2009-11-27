@@ -34,6 +34,19 @@ overload + with add_NAT_NAT
 (* ****** ****** *)
 
 // tail-recursive
+fun sub_NAT_NAT {m,n:nat} .<m>.
+  (m: NAT m, n: NAT n):<> NAT (m nsub n) = case+ m of
+  | NATzero () => NATzero ()
+  | NATsucc m1 => begin case+ n of
+    | NATzero () => m | NATsucc n1 => sub_NAT_NAT (m1, n1)
+    end // end of [NATsucc]
+// end of [sub_NAT_NAT]
+
+overload - with sub_NAT_NAT
+
+(* ****** ****** *)
+
+// tail-recursive
 fun mul_NAT_NAT {m,n:nat} .<m>.
   (m: NAT m, n: NAT n):<> [mn:nat] (MUL (m, n, mn) | NAT mn) = let
   fun loop {m:nat} {mn:int} {r:nat} .<m>.
@@ -92,6 +105,10 @@ implement main () = let
   val add_m_n = _m + _n
   val () = (
     printf ("%i + %i = %i\n", @(m, n, toint_NAT add_m_n))
+  )
+  val sub_m_n = _m - _n
+  val () = (
+    printf ("%i - %i = %i\n", @(m, n, toint_NAT sub_m_n))
   )
   val (pf_mn | mul_m_n) = _m * _n
   val () = (
