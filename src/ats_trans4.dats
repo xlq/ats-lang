@@ -517,6 +517,7 @@ implement d3explst_funarg_tr (isvararg, npf, d3es) = let
           | _ => begin
             $Lst.list_vt_free__boxed (hies);
             prerr "INTERNAL ERROR";
+            $Deb.debug_prerrf (": [%s]", @(THISFILENAME));
             prerr ": d3explst_funarg_tr: aux1: d3e = "; prerr_d3exp d3e;
             prerr_newline ();
             $Err.abort {hiexplst} ()
@@ -611,6 +612,7 @@ fn d3exp_tmpcst_tr (
       end
     | _ => begin
         prerr "INTERNAL ERROR";
+        $Deb.debug_prerrf (": [%s]", @(THISFILENAME));
         prerr ": d3exp_tmpcst_tr: sizeof"; prerr_newline ();
         $Err.abort {hiexp} ()
       end (* end of [_] *)
@@ -761,7 +763,9 @@ in
 *)
           val hie = (case+ hies_arg of
             | list_cons (hie, list_nil ()) => hie | _ => begin
-                $Loc.prerr_location loc0; prerr ": INTERNAL ERROR";
+                $Loc.prerr_location loc0;
+                prerr ": INTERNAL ERROR";
+                $Deb.debug_prerrf (": [%s]", @(THISFILENAME));
                 prerr ": d3exp_tr: a casting function must be applied to exactly one argument.";
                 prerr_newline (); $Err.abort {hiexp} ()
               end // end of [list_cons]
@@ -820,7 +824,7 @@ in
 (*
       val () = begin
         print "d3exp_tr: D2Ecase: c3ls = "; print c3ls; print_newline ()
-      end
+      end // end of [val]
 *)
       val hicls = c3laulst_tr c3ls
     in
@@ -1304,7 +1308,9 @@ in
       // empty
     end // end of [D3Ewhere]
   | _ => begin
-      $Loc.prerr_location d3e0.d3exp_loc; prerr ": INTERNAL ERROR";
+      $Loc.prerr_location d3e0.d3exp_loc;
+      prerr ": INTERNAL ERROR";
+      $Deb.debug_prerrf (": [%s]", @(THISFILENAME));
       prerr ": d3exp_prf_tr: d3e0 = "; prerr_d3exp d3e0; prerr_newline ();
       $Err.abort {void} ()
     end // end of [_]
@@ -1608,7 +1614,9 @@ implement d3eclst_prf_tr
       | D3Cstaload _ => aux d3cs
       | D3Cdynload _ => aux d3cs
       | _ => begin
-          $Loc.prerr_location d3c.d3ec_loc; prerr ": INTERNAL ERROR";
+          $Loc.prerr_location d3c.d3ec_loc;
+          prerr ": INTERNAL ERROR";
+          $Deb.debug_prerrf (": [%s]", @(THISFILENAME));
           prerr ": d3explst_prf_tr: illegal proof declaration"; prerr_newline ();
           $Err.abort {void} ()
         end // end of [_]
