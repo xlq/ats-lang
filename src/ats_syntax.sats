@@ -90,6 +90,8 @@ fun dcstkind_is_prfun (dck: dcstkind):<> bool
 fun dcstkind_is_prval (dck: dcstkind):<> bool
 fun dcstkind_is_proof (dck: dcstkind):<> bool
 
+fun fprint_dcstkind (out: FILEref, knd: dcstkind): void
+
 (* ****** ****** *)
 
 datatype datakind =

@@ -387,6 +387,7 @@ end // end of [local]
 implement valprim_is_const (vp) = begin
   case+ vp.valprim_node of
   | VPbool _ => true
+  | VPcastfn (_d2c, vp) => valprim_is_const (vp)
   | VPchar _ => true
   | VPcst _ => true
   | VPfloat _ => true
@@ -395,7 +396,7 @@ implement valprim_is_const (vp) = begin
   | VPsizeof _ => true
   | VPstring _ => true
   | VPtop _ => true
-  | VPvoid _ =>true
+  | VPvoid _ => true
   | _ => false
 end (* end of [valprim_is_const] *)
 
@@ -418,6 +419,10 @@ implement valprim_arg_ref (n, hit) = '{
 
 implement valprim_bool (b) = '{
   valprim_node= VPbool b, valprim_typ= hityp_encode (hityp_bool)
+}
+
+implement valprim_castfn (d2c, vp, hit) = '{
+  valprim_node= VPcastfn (d2c, vp), valprim_typ= hit
 }
 
 implement valprim_char (c) = '{

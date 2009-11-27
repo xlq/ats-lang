@@ -115,6 +115,11 @@ in
   | VPbool b => begin
       prstr "VPbool("; fprint1_bool (pf | out, b); prstr ")"
     end // end of [VPbool]
+  | VPcastfn (d2c, vp) => begin
+      prstr "VPcast(";
+      fprint_d2cst (pf | out, d2c); prstr ", "; fprint_valprim (pf | out, vp);
+      prstr ")"
+    end // end of [VPcast]
   | VPchar c => begin
       prstr "VPchar("; fprint1_char (pf | out, c); prstr ")"
     end // end of [VPchar]

@@ -75,6 +75,8 @@ val Ptr_addr_type : s2cstref_t
 val Ref_viewt0ype_type : s2cstref_t
 val Size_t0ype : s2cstref_t
 val Size_int_t0ype : s2cstref_t
+val Ssize_t0ype : s2cstref_t
+val Ssize_int_t0ype : s2cstref_t
 val Strbuf_t0ype : s2cstref_t
 val Strbuf_int_int_t0ype : s2cstref_t
 val String_type : s2cstref_t

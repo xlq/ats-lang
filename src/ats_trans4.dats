@@ -83,9 +83,9 @@ fn s2exp_app_tr (
   ) : hityp = let
 (*
   val () = begin
-    prerr "s2exp_app_tr: s2t_app = "; prerr s2t_app; prerr_newline ();
-    prerr "s2exp_app_tr: s2e_fun = "; prerr s2e_fun; prerr_newline ();
-    prerr "s2exp_app_tr: s2es_arg = "; prerr s2es_arg; prerr_newline ();
+    print "s2exp_app_tr: s2t_app = "; print s2t_app; print_newline ();
+    print "s2exp_app_tr: s2e_fun = "; print s2e_fun; print_newline ();
+    print "s2exp_app_tr: s2es_arg = "; print s2es_arg; print_newline ();
   end // end of [val]
 *)
 in
@@ -142,9 +142,9 @@ implement s2exp_tr (loc0, deep, s2e0) = let
   val s2e0 = s2exp_whnf s2e0; val s2t0 = s2e0.s2exp_srt
 (*
   val () = begin
-    prerr "s2exp_tr: loc0 = "; $Loc.prerr_location loc0; prerr_newline ();
-    prerr "s2exp_tr: deep = "; prerr deep; prerr_newline ();
-    prerr "s2exp_tr: s2e0 = "; prerr s2e0; prerr_newline ();
+    print "s2exp_tr: loc0 = "; $Loc.print_location loc0; print_newline ();
+    print "s2exp_tr: deep = "; print deep; print_newline ();
+    print "s2exp_tr: s2e0 = "; print s2e0; print_newline ();
   end // end of [val]
 *)
   fn err
@@ -196,7 +196,7 @@ in
         val hit_res = hityp_varetize (hit_res) // into ats_varet_type if needed
 (*
         val HITNAM (_, name) = hit_res.hityp_name
-        val () = (prerr "s2exp_tr: S2Efun: hit_res = "; prerr name; prerr_newline ())
+        val () = (print "s2exp_tr: S2Efun: hit_res = "; print name; print_newline ())
 *)
       in
         hityp_fun (fc, hits_arg, hit_res)
@@ -226,7 +226,7 @@ in
   | S2Etyrec (knd, npf, ls2es) => let
 (*
       val () = begin
-        prerr "s2exp_tr: S2Etyrec: s2e0 = "; prerr s2e0; prerr_newline ()
+        print "s2exp_tr: S2Etyrec: s2e0 = "; print s2e0; print_newline ()
       end // end of [val]
 *)
       val lhits = labs2explst_arg_tr (loc0, npf, ls2es)
@@ -241,7 +241,7 @@ in
       ) : hityp
 (*
       val () = begin
-        prerr "s2exp_tr: S2Etyrec: hit0 = "; prerr hit0; prerr_newline ()
+        print "s2exp_tr: S2Etyrec: hit0 = "; print hit0; print_newline ()
       end // end of [val]
 *)
     in
@@ -391,9 +391,9 @@ implement p3at_tr (p3t0): hipat = let
   val hit0 = s2exp_tr (loc0, 0(*deep*), p3t0.p3at_typ)
 (*
   val () = begin
-    prerr "p3at_tr: p3t0 = "; prerr_p3at p3t0; prerr_newline ()
-    prerr "p3at_tr: p3t0.p3at_typ = "; prerr_s2exp p3t0.p3at_typ; prerr_newline ();
-    prerr "p3at_tr: hit0 = "; prerr_hityp hit0; prerr_newline ();
+    print "p3at_tr: p3t0 = "; print_p3at p3t0; print_newline ()
+    print "p3at_tr: p3t0.p3at_typ = "; print_s2exp p3t0.p3at_typ; print_newline ();
+    print "p3at_tr: hit0 = "; print_hityp hit0; print_newline ();
   end // end of [val]
 *)
 in
@@ -426,13 +426,13 @@ in
           val hits_arg = hipatlst_typ_get (hips_arg)
 (*
           val () = begin
-            prerr "p3at_tr: P3Tcon: hits_arg = "; prerr hits_arg; prerr_newline ()
+            print "p3at_tr: P3Tcon: hits_arg = "; print hits_arg; print_newline ()
           end // end of [val]
 *)
           val hit_sum = hityp_tysumtemp (d2c, hits_arg)
 (*
           val () = begin
-            prerr "p3at_tr: P3Tcon: hit_sum = "; prerr hit_sum; prerr_newline ()
+            print "p3at_tr: P3Tcon: hit_sum = "; print hit_sum; print_newline ()
           end // end of [val]
 *)
         in
@@ -516,7 +516,7 @@ implement d3explst_funarg_tr (isvararg, npf, d3es) = let
           | D3Erec (_, _, ld3es) => aux0 (hies, ld3es)
           | _ => begin
             $Lst.list_vt_free__boxed (hies);
-            prerr "Internal Error: [ats_trans4]";
+            prerr "INTERNAL ERROR";
             prerr ": d3explst_funarg_tr: aux1: d3e = "; prerr_d3exp d3e;
             prerr_newline ();
             $Err.abort {hiexplst} ()
@@ -610,7 +610,7 @@ fn d3exp_tmpcst_tr (
         hiexp_sizeof (loc0, hit0, s2exp_tr (loc0, 0(*deep*), s2e))
       end
     | _ => begin
-        prerr "Internal Error: [ats_trans4]";
+        prerr "INTERNAL ERROR";
         prerr ": d3exp_tmpcst_tr: sizeof"; prerr_newline ();
         $Err.abort {hiexp} ()
       end (* end of [_] *)
@@ -619,7 +619,7 @@ fn d3exp_tmpcst_tr (
       val hitss = s2explstlst_tr (loc0, s2ess)
 (*
       val () = begin
-        prerr "d3exp_tmpcst_tr: hitss = "; prerr hitss; prerr_newline ()
+        print "d3exp_tmpcst_tr: hitss = "; print hitss; print_newline ()
       end // end of [val]
 *)
     in
@@ -682,13 +682,13 @@ fn c3lau_tr (c3l: c3lau): hiclau = let
   val loc0 = c3l.c3lau_loc
 (*
   val () = begin
-    prerr "cla3_tr: c3l = "; prerr c3l; prerr_newline ()
+    print "cla3_tr: c3l = "; print c3l; print_newline ()
   end // end of [val]
 *)
   val hips = p3atlst_tr c3l.c3lau_pat
 (*
   val () = begin
-    prerr "cla3_tr: hips = "; prerr hips; prerr_newline ()
+    print "cla3_tr: hips = "; print hips; print_newline ()
   end // end of [val]
 *)
   val gua = m3atchlst_tr c3l.c3lau_gua
@@ -738,8 +738,8 @@ implement d3exp_tr (d3e0) = let
   val s2e0 = d3e0.d3exp_typ
 (*
   val () = begin
-    prerr "d3exp_tr: s2e0 = " prerr s2e0; prerr_newline ();
-    prerr "d3exp_tr: d3e0 = " prerr d3e0; prerr_newline ();
+    print "d3exp_tr: s2e0 = "; print_s2exp s2e0; print_newline ();
+    print "d3exp_tr: d3e0 = "; print_d3exp d3e0; print_newline ();
   end // end of [val]
 *)
 in
@@ -754,15 +754,18 @@ in
     in
       case+ hie_fun.hiexp_node of
       | HIEcst d2c when d2cst_is_castfn d2c => let
-          val hie = case+ hies_arg of
-          | list_cons (hie, list_nil ()) => hie | _ => begin
-              $Loc.prerr_location loc0;
-              prerr ": INTERNAL ERROR";
-              prerr ": [ats_trans4]: d3exp_tr";
-              prerr ": a casting function must be applied to exactly one argument.";
-              prerr_newline (); $Err.abort {hiexp} ()
-            end // end of [list_cons]
-          // end of [val]
+(*
+          val () = begin
+            print "d3exp_tr: D3Eapp_dyn: castfn: d2c = "; print_d2cst d2c; print_newline ()
+          end // end of [val]
+*)
+          val hie = (case+ hies_arg of
+            | list_cons (hie, list_nil ()) => hie | _ => begin
+                $Loc.prerr_location loc0; prerr ": INTERNAL ERROR";
+                prerr ": d3exp_tr: a casting function must be applied to exactly one argument.";
+                prerr_newline (); $Err.abort {hiexp} ()
+              end // end of [list_cons]
+          ) : hiexp // end of [val]
         in
           hiexp_castfn (loc0, hit0, d2c, hie)
         end // end of [HIEcst when ...]
@@ -816,7 +819,7 @@ in
       val hies = d3explst_tr d3es
 (*
       val () = begin
-        prerr "d3exp_tr: D2Ecase: c3ls = "; prerr c3ls; prerr_newline ()
+        print "d3exp_tr: D2Ecase: c3ls = "; print c3ls; print_newline ()
       end
 *)
       val hicls = c3laulst_tr c3ls
@@ -831,16 +834,16 @@ in
   | D3Econ (d2c, npf, d3es_arg) => let
 (*
       val () = begin
-        prerr "d3exp_tr: d2c = "; prerr d2c; prerr_newline ();
-        prerr "d3exp_tr: npf = "; prerr npf; prerr_newline ();
-        prerr "d3exp_tr: d3es_arg = "; prerr d3es_arg; prerr_newline ()
+        print "d3exp_tr: d2c = "; print d2c; print_newline ();
+        print "d3exp_tr: npf = "; print npf; print_newline ();
+        print "d3exp_tr: d3es_arg = "; print d3es_arg; print_newline ()
       end
 *)
       val hit0 = s2exp_tr (loc0, 0(*deep*), s2e0)
       val hies_arg = d3explst_arg_tr (npf, d3es_arg)
 (*
       val () = begin
-        prerr "d3exp_tr: hies_arg = "; prerr hies_arg; prerr_newline ()
+        print "d3exp_tr: hies_arg = "; print hies_arg; print_newline ()
       end // end of [val]
 *)
       val hits_arg = hiexplst_typ_get hies_arg
@@ -1176,7 +1179,7 @@ end // end of [c3laulst_prf_tr]
 implement d3exp_prf_tr (d3e0) = let
 (*
   val () = begin
-    prerr "d3exp_prf_tr: d3e0 = " prerr d3e0; prerr_newline ();
+    print "d3exp_prf_tr: d3e0 = " print d3e0; print_newline ();
   end // end of [val]
 *)
 in
@@ -1323,8 +1326,8 @@ fn f3undec_tr (decarg: s2qualst, d3c: f3undec): hifundec = let
   ) : void // end of [val]
 (*
   val () = begin
-    prerr "f3undec_tr: d2v_fun = "; prerr d2v_fun; prerr_newline ();
-    prerr "f3undec_tr: hie_def = "; prerr hie_def; prerr_newline ();
+    print "f3undec_tr: d2v_fun = "; print d2v_fun; print_newline ();
+    print "f3undec_tr: hie_def = "; print hie_def; print_newline ();
   end // end of [val]
 *)
 in

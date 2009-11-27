@@ -201,6 +201,7 @@ datatype valprim_node =
   | VParg of int
   | VParg_ref of int (* call-by-reference *)
   | VPbool of bool
+  | VPcastfn of (d2cst_t, valprim)
   | VPchar of char
   | VPclo of (int(*knd*), funlab_t, envmap_t)
   | VPcst of d2cst_t
@@ -286,7 +287,13 @@ fun valprim_is_mutable (vp: valprim): bool
 
 fun valprim_arg (i: int, hit: hityp_t): valprim
 fun valprim_arg_ref (i: int, hit: hityp_t): valprim
+
 fun valprim_bool (b: bool): valprim
+
+fun valprim_castfn
+  (d2c: d2cst_t, vp: valprim, hit: hityp_t): valprim
+// end of [valprim_castfn]
+
 fun valprim_char (c: char): valprim
 fun valprim_clo (knd: int, fl: funlab_t, map: envmap_t): valprim
 

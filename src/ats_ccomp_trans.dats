@@ -1312,8 +1312,8 @@ end // end of [ccomp_exp_loop]
 implement ccomp_exp (res, hie0) = let
 (*
   val () = begin
-    prerr "ccomp_exp: hie0 = "; prerr hie0; prerr_newline ();
-    prerr "ccomp_exp: hit0 = "; prerr hie0.hiexp_typ; prerr_newline ();
+    prerr "ccomp_exp: hie0 = "; prerr_hiexp hie0; prerr_newline ();
+    prerr "ccomp_exp: hit0 = "; prerr_hityp hie0.hiexp_typ; prerr_newline ();
   end // end of [val]
 *)
 in
@@ -1329,7 +1329,12 @@ in
       valprim_void ()
     end // end of [HIEassgn_var]
   | HIEbool b => valprim_bool b
-  | HIEcastfn (d2c, hie) => ccomp_exp (res, hie) // casting expression
+  | HIEcastfn (d2c, hie) => let
+      val vp = ccomp_exp (res, hie)
+      val hit0 = hityp_normalize (hie0.hiexp_typ)
+    in
+      valprim_castfn (d2c, vp, hit0)
+    end // end of [HIEcastfn]
   | HIEchar c => valprim_char c
   | HIEcst d2c => begin case+ 0 of
     | _ when d2cst_is_proof d2c => begin
@@ -1931,7 +1936,9 @@ in
   | HIEassgn_var (d2v_mut, hils, hie_val) =>
       ccomp_exp_assgn_var (res, d2v_mut, hils, hie_val)
   | HIEbool b => instr_add_move_val (res, tmp_res, valprim_bool b)
-  | HIEcastfn (d2c, hie) => ccomp_exp_tmpvar (res, hie, tmp_res)
+  | HIEcastfn _ => begin
+      instr_add_move_val (res, tmp_res, ccomp_exp (res, hie0))
+    end // end of [HIEcastfn]
   | HIEchar c => instr_add_move_val (res, tmp_res, valprim_char c)
   | HIEcaseof (knd, hies, hicls) => let
       val level = d2var_current_level_get ()
@@ -1942,7 +1949,7 @@ in
       val (pf_mark | ()) = the_dynctx_mark ()
       val branchlst = begin
         ccomp_hiclaulst (level, vps, hicls, tmp_res, fail)
-      end
+      end // end of [val]
       val () = the_dynctx_unmark (pf_mark | (*none*))
     in
       instr_add_switch (res, branchlst)

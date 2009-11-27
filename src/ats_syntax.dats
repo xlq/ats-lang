@@ -123,6 +123,15 @@ implement dcstkind_is_proof (dk) = case+ dk of
   | _ => false
 // end of [dcstkind_is_proof]
 
+implement fprint_dcstkind (out, dk) = case+ dk of
+  | DCSTKINDfun () => fprint_string (out, "DCSTKINDfun")
+  | DCSTKINDval () => fprint_string (out, "DCSTKINDval")
+  | DCSTKINDcastfn () => fprint_string (out, "DCSTKINDcastfn")
+  | DCSTKINDpraxi () => fprint_string (out, "DCSTKINDpraxi")
+  | DCSTKINDprfun () => fprint_string (out, "DCSTKINDprfun")
+  | DCSTKINDprval () => fprint_string (out, "DCSTKINDprval")
+// end of [fprint_dcstkind]
+
 (* ****** ****** *)
 
 implement datakind_prop () = DATAKINDprop ()

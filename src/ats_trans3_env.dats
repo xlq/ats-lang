@@ -1871,6 +1871,11 @@ implement trans3_env_initialize () = let
   } // end of [where]
 
   val () = s2cst_sup_set (s2c1, S2CSTOPTsome s2c0) where {
+    val s2c0 = s2cstref_cst_get (Ssize_t0ype)
+    val s2c1 = s2cstref_cst_get (Ssize_int_t0ype)
+  } // end of [where]
+
+  val () = s2cst_sup_set (s2c1, S2CSTOPTsome s2c0) where {
     val s2c0 = s2cstref_cst_get (Ptr_type)
     val s2c1 = s2cstref_cst_get (Ptr_addr_type)
   } // end of [where]

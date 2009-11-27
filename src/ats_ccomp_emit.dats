@@ -830,13 +830,19 @@ implement emit_valprim_tmpvar
 
 (* ****** ****** *)
 
-implement emit_valprim (pf | out, vp) = begin
-  case+ vp.valprim_node of
+implement emit_valprim (pf | out, vp0) = begin
+  case+ vp0.valprim_node of
   | VParg ind => emit_valprim_arg (pf | out, ind)
   | VParg_ref ind => begin
-      emit_valprim_arg_ref (pf | out, ind, vp.valprim_typ)
+      emit_valprim_arg_ref (pf | out, ind, vp0.valprim_typ)
     end // end of [VParg_ref]
   | VPbool b => emit_valprim_bool (pf | out, b)
+  | VPcastfn (_d2c, vp) => begin
+      fprint1_string (pf | out, "ats_castfn_mac(");
+      emit_hityp (pf | out, vp0.valprim_typ);
+      fprint1_string (pf | out, ", "); emit_valprim (pf | out, vp);
+      fprint1_string (pf | out, ")")
+    end // end of [VPcast]
   | VPchar c => emit_valprim_char (pf | out, c)
   | VPclo (knd, fl, env) => emit_valprim_clo_make (pf | out, knd, fl, env)
   | VPcst d2c => begin case+ 0 of
@@ -910,7 +916,7 @@ implement emit_valprim (pf | out, vp) = begin
 (*
   | _ => begin
       prerr "INTERNAL ERROR";
-      prerr ": emit_valprim: vp = "; prerr vp; prerr_newline ();
+      prerr ": emit_valprim: vp0 = "; prerr vp0; prerr_newline ();
       $Err.abort {void} ()
     end // end of [_]
 *)
