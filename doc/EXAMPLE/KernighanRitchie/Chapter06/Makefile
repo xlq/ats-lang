@@ -3,6 +3,7 @@ all: \
 
 ######
 
+ATSCC=$(ATSHOME)/bin/atscc
 ATSOPT=$(ATSHOME)/bin/atsopt
 
 ######
@@ -13,7 +14,7 @@ html::
 ######
 
 getword: getword.dats
-	atscc -o getword getword.dats
+	$(ATSCC) -o getword getword.dats
 
 ######
 

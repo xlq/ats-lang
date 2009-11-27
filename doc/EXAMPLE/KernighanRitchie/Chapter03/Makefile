@@ -5,6 +5,7 @@ all: \
 
 ######
 
+ATSCC=$(ATSHOME)/bin/atscc
 ATSOPT=$(ATSHOME)/bin/atsopt
 
 ######
@@ -17,13 +18,13 @@ html::
 ######
 
 atoi: atoi.dats
-	atscc -o atoi atoi.dats
+	$(ATSCC) -o atoi atoi.dats
 
 reverse: reverse.dats
-	atscc -o reverse reverse.dats
+	$(ATSCC) -o reverse reverse.dats
 
 itoa: itoa.dats
-	atscc -o itoa itoa.dats
+	$(ATSCC) -o itoa itoa.dats
 
 ######
 

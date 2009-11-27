@@ -3,6 +3,7 @@ all: \
 
 ######
 
+ATSCC=$(ATSHOME)/bin/atscc
 ATSOPT=$(ATSHOME)/bin/atsopt
 
 ######
@@ -13,7 +14,7 @@ html::
 ######
 
 fsize: fsize.dats
-	atscc -o fsize fsize.dats
+	$(ATSCC) -o fsize fsize.dats
 
 ######
 

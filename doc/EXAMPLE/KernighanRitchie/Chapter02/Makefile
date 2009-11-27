@@ -4,6 +4,7 @@ all: \
 
 ######
 
+ATSCC=$(ATSHOME)/bin/atscc
 ATSOPT=$(ATSHOME)/bin/atsopt
 
 ######
@@ -15,10 +16,10 @@ html::
 ######
 
 strlen: strlen.dats
-	atscc -o strlen strlen.dats
+	$(ATSCC) -o strlen strlen.dats
 
 rand: rand.dats
-	atscc -o rand rand.dats
+	$(ATSCC) -o rand rand.dats
 
 ######
 

@@ -9,6 +9,7 @@ all: \
 
 ######
 
+ATSCC=$(ATSHOME)/bin/atscc
 ATSOPT=$(ATSHOME)/bin/atsopt
 
 ######
@@ -25,25 +26,25 @@ html::
 ######
 
 getint: getint.dats
-	atscc -o getint getint.dats
+	$(ATSCC) -o getint getint.dats
 
 strlen: strlen.dats
-	atscc -o strlen strlen.dats
+	$(ATSCC) -o strlen strlen.dats
 
 strcpy: strcpy.dats
-	atscc -o strcpy strcpy.dats
+	$(ATSCC) -o strcpy strcpy.dats
 
 strcmp: strcmp.dats
-	atscc -o strcmp strcmp.dats
+	$(ATSCC) -o strcmp strcmp.dats
 
 strcmp_alt: strcmp_alt.dats
-	atscc -o strcmp_alt strcmp_alt.dats
+	$(ATSCC) -o strcmp_alt strcmp_alt.dats
 
 month_name: month_name.dats
-	atscc -o month_name month_name.dats
+	$(ATSCC) -o month_name month_name.dats
 
 month_day: month_day.dats
-	atscc -o month_day month_day.dats
+	$(ATSCC) -o month_day month_day.dats
 
 ######
 

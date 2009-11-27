@@ -5,6 +5,7 @@ all: \
 
 ######
 
+ATSCC=$(ATSHOME)/bin/atscc
 ATSOPT=$(ATSHOME)/bin/atsopt
 
 ######
@@ -17,13 +18,13 @@ html::
 ######
 
 atof: atof.dats
-	atscc -o atof atof.dats
+	$(ATSCC) -o atof atof.dats
 
 printd: printd.dats
-	atscc -o printd printd.dats
+	$(ATSCC) -o printd printd.dats
 
 qsort: qsort.dats
-	atscc -o qsort qsort.dats
+	$(ATSCC) -o qsort qsort.dats
 
 ######
 

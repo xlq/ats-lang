@@ -5,6 +5,7 @@ all: \
 
 ######
 
+ATSCC=$(ATSHOME)/bin/atscc
 ATSOPT=$(ATSHOME)/bin/atsopt
 
 ######
@@ -17,13 +18,13 @@ html::
 ######
 
 lower: lower.dats
-	atscc -o lower lower.dats
+	$(ATSCC) -o lower lower.dats
 
 fgets: fgets.dats
-	atscc -o fgets fgets.dats
+	$(ATSCC) -o fgets fgets.dats
 
 filecopy: filecopy.dats
-	atscc -o filecopy filecopy.dats
+	$(ATSCC) -o filecopy filecopy.dats
 
 ######
 

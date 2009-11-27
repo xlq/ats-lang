@@ -12,6 +12,7 @@ all: \
 
 ######
 
+ATSCC=$(ATSHOME)/bin/atscc
 ATSOPT=$(ATSHOME)/bin/atsopt
 
 ######
@@ -31,34 +32,34 @@ html::
 ######
 
 hello: hello.dats
-	atscc -o hello hello.dats
+	$(ATSCC) -o hello hello.dats
 
 fahrenheit_celsius: fahrenheit_celsius.dats
-	atscc -o fahrenheit_celsius fahrenheit_celsius.dats
+	$(ATSCC) -o fahrenheit_celsius fahrenheit_celsius.dats
 
 echo: echo.dats
-	atscc -o echo echo.dats
+	$(ATSCC) -o echo echo.dats
 
 charcnt: charcnt.dats
-	atscc -o charcnt charcnt.dats
+	$(ATSCC) -o charcnt charcnt.dats
 
 linecnt: linecnt.dats
-	atscc -o linecnt linecnt.dats
+	$(ATSCC) -o linecnt linecnt.dats
 
 wc: wc.dats
-	atscc -o wc wc.dats
+	$(ATSCC) -o wc wc.dats
 
 dsocnt: digit_space_other_cnt.dats
-	atscc -o dsocnt digit_space_other_cnt.dats
+	$(ATSCC) -o dsocnt digit_space_other_cnt.dats
 
 power: power.dats
-	atscc -o power power.dats
+	$(ATSCC) -o power power.dats
 
 longest_line: longest_line.dats
-	atscc -o longest_line longest_line.dats
+	$(ATSCC) -o longest_line longest_line.dats
 
 longest_line_alt: longest_line_alt.dats
-	atscc -o longest_line_alt longest_line_alt.dats
+	$(ATSCC) -o longest_line_alt longest_line_alt.dats
 
 ######
 

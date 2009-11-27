@@ -15,8 +15,9 @@ checkall: compall cleanall
 compall: AutoDiff coin_flip \
      curve fft hamming_lazy \
      GaussElim GarsiaWachs \
-     hanoi kmp listquicksort \
+     hanoi kmp \
      longestline montecarlo \
+     quicksort_list \
      queens queens_appel queens_lazy_vt \
      longestline passwdgen pi_lazy \
      sieve sieve_lazy sieve_lazy_vt \
@@ -61,9 +62,6 @@ kmp: kmp.dats; $(ATSCC) -o kmp kmp.dats
 montecarlo: montecarlo.dats
 	$(ATSCC) -O2 -o montecarlo montecarlo.dats -lm -lats_smlbas
 
-listquicksort: listquicksort.dats
-	$(ATSCC) -o listquicksort listquicksort.dats
-
 # An example of linear lazy evaluation
 longestline: longestline.dats
 	$(ATSCC) -o longestline longestline.dats
@@ -75,6 +73,9 @@ Peano: Peano.dats; $(ATSCC) -o Peano Peano.dats
 
 # Euler's transform in lazy style
 pi_lazy: pi_lazy.dats; $(ATSCC) -o pi_lazy pi_lazy.dats
+
+quicksort_list: quicksort_list.dats
+	$(ATSCC) -o quicksort_list quicksort_list.dats
 
 # the n-queen problem
 queens: queens.dats; $(ATSCC) -o queens queens.dats
@@ -119,10 +120,10 @@ html::
 	atsopt --posmark_html -d GarsiaWachs.dats > GarsiaWachs_dats.html
 	atsopt --posmark_html -d hanoi.dats > hanoi_dats.html
 	atsopt --posmark_html -d kmp.dats > kmp_dats.html
-	atsopt --posmark_html -d listquicksort.dats > listquicksort_dats.html
 	atsopt --posmark_html -d longestline.dats > longestline_dats.html
 	atsopt --posmark_html -d passwdgen.dats > passwdgen_dats.html
 	atsopt --posmark_html -d pi_lazy.dats > pi_lazy_dats.html
+	atsopt --posmark_html -d quicksort_list.dats > quicksort_list_dats.html
 	atsopt --posmark_html -d queens.dats > queens_dats.html
 	atsopt --posmark_html -d queens_appel.dats > queens_appel_dats.html
 	atsopt --posmark_html -d queens_lazy_vt.dats > queens_lazy_vt_dats.html
@@ -150,12 +151,12 @@ cleanall:: clean
 	rm -f hamming_lazy
 	rm -f hanoi
 	rm -f kmp
-	rm -f listquicksort
 	rm -f longestline
 	rm -f montecarlo
 	rm -f passwdgen
 	rm -f Peano
 	rm -f pi_lazy
+	rm -f quicksort_list
 	rm -f queens
 	rm -f queens_appel
 	rm -f queens_lazy_vt
