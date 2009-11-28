@@ -175,7 +175,8 @@ fn the_dynctx_del (d2v: d2var_t): void = let
 in
   case+ ans of
   | ~Some_vt _ => () | ~None_vt () => begin
-      prerr "Internal Error: the_dynctx_del: d2v = ";
+      prerr "INTERNAL ERROR";
+      prerr ": [ats_ccomp_trans]: the_dynctx_del: d2v = ";
       prerr d2v; prerr_newline ();
       $Err.abort {void} ()
     end // end of [None_vt]
@@ -188,7 +189,8 @@ implement the_dynctx_unmark (pf_mark | (*none*)) = let
         (the_dynctx_del (d2v); aux (vms))
     | ~DYNMARKLSTmark (vms) => vms
     | ~DYNMARKLSTnil () => begin
-        prerr "Internal Error: the_dynctx_unmark: aux";
+        prerr "INTERNAL ERROR";
+        prerr ": [ats_ccomp_trans]: the_dynctx_unmark: aux";
         prerr_newline ();
         $Err.abort {dynmarklst} ()
       end // end of [DYNMARKLSTnil]
@@ -233,7 +235,8 @@ in
   case+ ans of
   | ~Some_vt vp => vp | ~None_vt () => begin
       $Loc.prerr_location (d2var_loc_get d2v);
-      prerr ": Internal Error: ats_ccomp_trans: the_dynctx_find: d2v = ";
+      prerr ": INTERNAL ERROR";
+      prerr ": [ats_ccomp_trans]: the_dynctx_find: d2v = ";
       prerr d2v; prerr_newline ();
       $Err.abort {valprim} ()
     end // end of [None_vt]
@@ -255,7 +258,7 @@ implement the_dynctx_pop (pf_push | (*none*)) = let
       end // end of [list_vt_nil]
   end : dynctx // end of [val]
   val () = if err > 0 then begin // error checking
-    prerr "Internal Error; ats-ccomp_trans: the_dynctx_pop";
+    prerr "INTERNAL ERROR: ats-ccomp_trans: the_dynctx_pop";
     prerr_newline ();
     $Err.abort {void} ()
   end // end of [val]
@@ -448,7 +451,7 @@ extern fun ccomp_patck_sum (
 implement ccomp_patck_rec
   (res, vp_rec, lhips, hit_rec, fail) = let
   fun aux (res: &instrlst_vt, l: lab_t, hip: hipat)
-    :<cloptr1> void = begin case+ hip.hipat_node of
+    :<cloref1> void = begin case+ hip.hipat_node of
     | HIPann (hip, _(*ann*)) => aux (res, l, hip)
     | HIPany _ => ()
     | HIPas (_(*knd*), _(*d2v*), hip) => aux (res, l, hip)
@@ -475,7 +478,7 @@ implement ccomp_patck_rec
       end // end of [_]
   end // end of [aux]
   fun auxlst (res: &instrlst_vt, lhips: labhipatlst)
-    :<cloptr1> void = begin case+ lhips of
+    :<cloref1> void = begin case+ lhips of
     | LABHIPATLSTcons (l, hip, lhips) =>
         (aux (res, l, hip); auxlst (res, lhips))
     | _ => () // [LABHIPATLSTdot] and [LABHIPATLSTnil]
@@ -487,7 +490,7 @@ end (* end of [ccomp_patck_rec] *)
 implement ccomp_patck_sum
   (res, vp_sum, d2c, hips_arg, hit_sum, fail) = let
   fun aux (res: &instrlst_vt, hip: hipat, i: int)
-    :<cloptr1> void = begin case+ hip.hipat_node of
+    :<cloref1> void = begin case+ hip.hipat_node of
     | HIPann (hip, _(*ann*)) => aux (res, hip, i)
     | HIPany _ => ()
     | HIPas (_(*knd*), _(*d2v*), hip) => aux (res, hip, i)
@@ -512,7 +515,7 @@ implement ccomp_patck_sum
   end // end of [aux]
   fun auxlst
     (res: &instrlst_vt, hips: hipatlst, i: int)
-    :<cloptr1> void = begin case+ hips of
+    :<cloref1> void = begin case+ hips of
     | list_cons (hip, hips) =>
         (aux (res, hip, i); auxlst (res, hips, i+1))
     | list_nil () => ()
@@ -526,12 +529,10 @@ end (* end of [ccomp_patck_sum] *)
 implement ccomp_patck (res, vp0, hip0, fail) = let
 (*
   val () = begin
-    prerr "ccomp_patck: vp0 = "; prerr vp0; prerr_newline ()
-    prerr "ccomp_patck: vp0.typ = "; prerr vp0.valprim_typ; prerr_newline ()
-  end // end of [val]
-  val () = begin
-    prerr "ccomp_patck: hip0 = "; prerr hip0; prerr_newline ()
-    prerr "ccomp_patck: hip0.typ = "; prerr hip0.hipat_typ; prerr_newline ()
+    print "ccomp_patck: vp0 = "; print vp0; print_newline ();
+    print "ccomp_patck: vp0.typ = "; print vp0.valprim_typ; print_newline ();
+    print "ccomp_patck: hip0 = "; print hip0; print_newline ();
+    print "ccomp_patck: hip0.typ = "; print hip0.hipat_typ; print_newline ();
   end // end of [val]
 *)
 in
@@ -550,7 +551,7 @@ in
   | HIPcon (_(*freeknd*), d2c, hips_arg, hit_sum) => let
 (*
       val () = begin
-        prerr "ccomp_patck: HIPcon: hit_sum = "; prerr hit_sum; prerr_newline ()
+        print "ccomp_patck: HIPcon: hit_sum = "; print hit_sum; print_newline ()
       end // end of [val]
 *)
       val () = the_dynconset_add d2c
@@ -606,7 +607,7 @@ fn ccomp_match_rec (
   fun aux (
       res: &instrlst_vt
     , lhips: labhipatlst
-    ) :<cloptr1> void = begin case+ lhips of
+    ) :<cloref1> void = begin case+ lhips of
     | LABHIPATLSTcons (l, hip, lhips) => let
         val vp = (
           case+ hip.hipat_asvar of
@@ -641,10 +642,10 @@ fn ccomp_match_sum (
   ) : void = let
 (*
   val () = begin
-    prerr "ccomp_match_sum: level = "; prerr level; prerr_newline ();
-    prerr "ccomp_match_sum: vp_sum = "; prerr vp_sum; prerr_newline ();
-    prerr "ccomp_match_sum: d2c = "; prerr_d2con d2c; prerr_newline ();
-    prerr "ccomp_match_sum: hips_arg = "; prerr_hipatlst hips_arg; prerr_newline ();
+    print "ccomp_match_sum: level = "; print level; print_newline ();
+    print "ccomp_match_sum: vp_sum = "; print vp_sum; print_newline ();
+    print "ccomp_match_sum: d2c = "; print_d2con d2c; print_newline ();
+    print "ccomp_match_sum: hips_arg = "; print_hipatlst hips_arg; print_newline ();
   end // end [val]
 *)
   fun aux_var (
@@ -654,11 +655,11 @@ fn ccomp_match_sum (
     , hip0: hipat
     , refknd: int
     , d2v: d2var_t
-    ) :<cloptr1> void = let
+    ) :<cloref1> void = let
 (*
     val () = begin
-      prerr "ccomp_match_sum: aux_var: hip0 = "; prerr_hipat hip0 ; prerr_newline ();
-      prerr "ccomp_match_sum: aux_var: d2v = "; prerr_d2var d2v ; prerr_newline ();
+      print "ccomp_match_sum: aux_var: hip0 = "; print_hipat hip0 ; print_newline ();
+      print "ccomp_match_sum: aux_var: d2v = "; print_d2var d2v ; print_newline ();
     end // end of [val]
 *)
     val () = d2var_lev_set (d2v, level)
@@ -687,10 +688,10 @@ fn ccomp_match_sum (
 
   fun aux_pat
     (res: &instrlst_vt, level: int, i: int, hip0: hipat)
-    :<cloptr1> void = let
+    :<cloref1> void = let
 (*
     val () = begin
-      prerr "ccomp_match_sum: aux_pat: hip0 = "; prerr_hipat hip0 ; prerr_newline ();
+      print "ccomp_match_sum: aux_pat: hip0 = "; print_hipat hip0 ; print_newline ();
     end // end of [val]
 *)
   in
@@ -731,7 +732,7 @@ fn ccomp_match_sum (
 
   fun auxlst_pat
     (res: &instrlst_vt, level: int, i: int, hips: hipatlst)
-    :<cloptr1> void = begin case+ hips of
+    :<cloref1> void = begin case+ hips of
     | list_cons (hip, hips) => () where {
         val () = aux_pat (res, level, i, hip)
         val () = auxlst_pat (res, level, i+1, hips)
@@ -747,9 +748,9 @@ end (* end of [ccomp_match_sum] *)
 implement ccomp_match (res, level, vp0, hip0) = let
 (*
   val () = begin
-    prerr "ccomp_match: level = "; prerr level; prerr_newline ();
-    prerr "ccomp_match: vp0 = "; prerr vp0; prerr_newline ();
-    prerr "ccomp_match: hip0 = "; prerr_hipat hip0; prerr_newline ();
+    print "ccomp_match: level = "; print level; print_newline ();
+    print "ccomp_match: vp0 = "; print vp0; print_newline ();
+    print "ccomp_match: hip0 = "; print_hipat hip0; print_newline ();
   end // end [val]
 *)
   fun aux_var (
@@ -760,8 +761,8 @@ implement ccomp_match (res, level, vp0, hip0) = let
     ) : void = let
 (*
     val () = begin
-      prerr "ccomp_match: aux_var: vp0 = "; prerr vp0; prerr_newline ();
-      prerr "ccomp_match: aux_var: d2v = "; prerr d2v; prerr_newline ();
+      print "ccomp_match: aux_var: vp0 = "; print vp0; print_newline ();
+      print "ccomp_match: aux_var: d2v = "; print d2v; print_newline ();
     end // end of [val]
 *)
     val () = d2var_lev_set (d2v, level)
@@ -982,8 +983,8 @@ fn ccomp_funarg (
         val hit = hip.hipat_typ
 (*
         val () = begin
-          prerr "ccomp_funarg: aux_patck: hip = "; prerr hip; prerr_newline ();
-          prerr "ccomp_funarg: aux_patck: hit = "; prerr hit; prerr_newline ();
+          print "ccomp_funarg: aux_patck: hip = "; print hip; print_newline ();
+          print "ccomp_funarg: aux_patck: hit = "; print hit; print_newline ();
         end // end of [val]
 *)
         val vp = funarg_valprim_make (i, hit)
@@ -1017,7 +1018,7 @@ implement ccomp_exp_arg_body_funlab
   (loc_fun, prolog, hips_arg, hie_body, fl) = let
 (*
   val () = begin
-    prerr "ccomp_exp_arg_body_funlab: fl = "; prerr_funlab fl; prerr_newline ()
+    print "ccomp_exp_arg_body_funlab: fl = "; print_funlab fl; print_newline ()
   end // end of [val]
 *)
   var res: instrlst_vt = list_vt_nil ()
@@ -1066,12 +1067,8 @@ implement ccomp_exp_arg_body_funlab
   val res = $Lst.list_vt_reverse_list (res)
 (*
   val () = begin
-    prerr "ccomp_exp_arg_body_funlab: fls = "; prerr_funlabset fls; prerr_newline ()
-  end // end of [val]
-*)
-(*
-  val () = begin
-    prerr "ccomp_exp_arg_body_funlab: body = "; prerr_instrlst res; prerr_newline ()
+    print "ccomp_exp_arg_body_funlab: fls = "; print_funlabset fls; print_newline ();
+    print "ccomp_exp_arg_body_funlab: body = "; print_instrlst res; print_newline ();
   end // end of [val]
 *)
   val entry = begin
@@ -1134,8 +1131,8 @@ fn ccomp_exp_ptrof_ptr
   : valprim = let
 (*
   val () = begin
-    prerr "ccomp_exp_ptrof_ptr: hie_ptr = "; prerr_hiexp hie_ptr;
-    prerr_newline ()
+    print "ccomp_exp_ptrof_ptr: hie_ptr = "; print_hiexp hie_ptr;
+    print_newline ()
   end // end of [val]
 *)
   val vp_ptr = ccomp_exp (res, hie_ptr)
@@ -1155,11 +1152,9 @@ fn ccomp_exp_ptrof_var
     val level = d2var_current_level_get ()
 (*
     val () = begin
-      prerr "ccomp_exp_ptrof_var: lev_d2v = "; prerr lev_d2v; prerr_newline ()
-    end
-    val () = begin
-      prerr "ccomp_exp_ptrof_var: level = "; prerr level; prerr_newline ()
-    end
+      printf ("ccomp_exp_ptrof_var: lev_d2v = %i\n", @(lev_d2v));
+      print "ccomp_exp_ptrof_var: level = "; print level; print_newline ();
+    end // end of [val]
 *)
   in
     case+ 0 of
@@ -1233,9 +1228,9 @@ implement ccomp_exp_var (d2v) = let
   val level = d2var_current_level_get ()
 (*
   val () = begin
-    prerr "ccomp_exp_var: d2v = "; prerr d2v; prerr_newline ()
-    prerr "ccomp_exp_var: d2v_lev = "; prerr d2v_lev; prerr_newline ()
-    prerr "ccomp_exp_var: level = "; prerr level; prerr_newline ()
+    print "ccomp_exp_var: d2v = "; print d2v; print_newline ();
+    print "ccomp_exp_var: d2v_lev = "; print d2v_lev; print_newline ();
+    print "ccomp_exp_var: level = "; print level; print_newline ();
   end // end of [val]
 *)
   val () = case+ 0 of
@@ -1312,8 +1307,8 @@ end // end of [ccomp_exp_loop]
 implement ccomp_exp (res, hie0) = let
 (*
   val () = begin
-    prerr "ccomp_exp: hie0 = "; prerr_hiexp hie0; prerr_newline ();
-    prerr "ccomp_exp: hit0 = "; prerr_hityp hie0.hiexp_typ; prerr_newline ();
+    print "ccomp_exp: hie0 = "; print_hiexp hie0; print_newline ();
+    print "ccomp_exp: hit0 = "; print_hityp hie0.hiexp_typ; print_newline ();
   end // end of [val]
 *)
 in
@@ -1443,15 +1438,15 @@ in
       val hit0 = hityp_normalize (hie0.hiexp_typ)
 (*
       val () = begin
-        prerr "ccomp_exp: hit0 = "; prerr hit0; prerr_newline ();
-        prerr "ccomp_exp: hie0 = "; prerr hie0; prerr_newline ();
-      end
+        print "ccomp_exp: hit0 = "; print hit0; print_newline ();
+        print "ccomp_exp: hie0 = "; print hie0; print_newline ();
+      end // end of [val]
 *)
       val tmp_res = tmpvar_make (hit0)
 (*
       val () = begin
-        prerr "ccomp_exp: tmp_res = "; prerr tmp_res; prerr_newline ();
-      end
+        print "ccomp_exp: tmp_res = "; print tmp_res; print_newline ();
+      end // end of [val]
 *)
       val () = ccomp_exp_tmpvar (res, hie0, tmp_res)
     in
@@ -1611,7 +1606,7 @@ fn ccomp_exp_app_tmpvar (
   ) : valprim
 (*
   val () = begin
-    prerr "ccomp_exp_app_tmpvar: vp_fun = "; prerr vp_fun; prerr_newline ()
+    print "ccomp_exp_app_tmpvar: vp_fun = "; print vp_fun; print_newline ()
   end // end of [val]
 *)
   val vps_arg = ccomp_explst (res, hies_arg) where {
@@ -1643,7 +1638,7 @@ fn ccomp_exp_app_tmpvar (
     | ~Some_vt (fl) => let
 (*
         val () = begin
-          prerr "ccomp_exp_app_tmpvar: fl = "; prerr fl; prerr_newline ()
+          print "ccomp_exp_app_tmpvar: fl = "; print fl; print_newline ()
         end // end of [val]
 *)
         val () = case+ vps_free of
@@ -1655,7 +1650,7 @@ fn ccomp_exp_app_tmpvar (
         // end of [val]
 (*
         val () = begin
-          prerr "ccomp_exp_app_tmpvar: istail = "; prerr istail; prerr_newline ()
+          print "ccomp_exp_app_tmpvar: istail = "; print istail; print_newline ()
         end // end of [val]
 *)
         val () =
@@ -1669,7 +1664,7 @@ fn ccomp_exp_app_tmpvar (
         // end of [val]
 (*
         val () = begin
-          prerr "ccomp_exp_app_tmpvar: istail = "; prerr istail; prerr_newline ()
+          print "ccomp_exp_app_tmpvar: istail = "; print istail; print_newline ()
         end // end of [val]
 *)
       in
@@ -1909,13 +1904,9 @@ end // end of [ccomp_exp_seq_tmpvar]
 implement ccomp_exp_tmpvar (res, hie0, tmp_res) = let
 (*
   val () = begin
-    prerr "ccomp_exp_tmpvar: hie0 = "; prerr hie0; prerr_newline ()
-  end // end of [val]
-  val () = begin
-    prerr "ccomp_exp_tmpvar: hit0 = "; prerr hie0.hiexp_typ; prerr_newline ()
-  end // end of [val]
-  val () = begin
-    prerr "ccomp_exp_tmpvar: tmp_res = "; prerr tmp_res; prerr_newline ()
+    print "ccomp_exp_tmpvar: hie0 = "; print hie0; print_newline ();
+    print "ccomp_exp_tmpvar: hit0 = "; print hie0.hiexp_typ; print_newline ();
+    print "ccomp_exp_tmpvar: tmp_res = "; print tmp_res; print_newline ();
   end // end of [val]
 *)
 in
@@ -1957,8 +1948,8 @@ in
   | HIEcon (hit_sum, d2c, hies_arg) => let
 (*
       val () = begin
-        prerr "ccomp_exp_tmpvar: HIEcon: hit_sum = "; prerr hit_sum;
-        prerr_newline ()
+        print "ccomp_exp_tmpvar: HIEcon: hit_sum = "; print hit_sum;
+        print_newline ()
       end // end of [val]
 *)
       val () = if (d2con_is_proof d2c) then begin
@@ -2171,7 +2162,8 @@ fn d2var_typ_ptr_get
     case+ d2var_view_get d2v of
     | D2VAROPTsome d2v_view => d2v_view
     | D2VAROPTnone () => begin
-        prerr "Internal Error: d2var_typ_ptr_get: d2v = ";
+        prerr "INTERNAL ERROR";
+        prerr ": [ats_ccomp_trans]: d2var_typ_ptr_get: d2v = ";
         prerr d2v; prerr_newline ();
         $Err.abort {d2var_t} ()
       end // end of [D2VAROPTnone]
@@ -2179,7 +2171,8 @@ fn d2var_typ_ptr_get
   val s2e_view = (
     case+ d2var_mastyp_get (d2v_view) of
     | Some s2e_view => s2e_view | None () => begin
-        prerr "Internal Error: d2var_typ_ptr_get: d2v_view = ";
+        prerr "INTERNAL ERROR";
+        prerr ": [ats_ccomp_trans]: d2var_typ_ptr_get: d2v_view = ";
         prerr d2v_view; prerr_newline ();
         $Err.abort {s2exp} ()
       end // end of [None]
@@ -2187,7 +2180,8 @@ fn d2var_typ_ptr_get
   val s2e_elt = (
     case+ un_s2exp_at_viewt0ype_addr_view (s2e_view) of
     | ~Some_vt (s2es2e) => s2es2e.0 | ~None_vt () => begin
-      prerr "Internal Error: d2var_typ_ptr_get: s2e_view = ";
+      prerr "INTERNAL ERROR";
+      prerr ": [ats_ccomp_trans]: d2var_typ_ptr_get: s2e_view = ";
       prerr s2e_view; prerr_newline ();
       $Err.abort {s2exp} ()
     end // end of [None_vt]
@@ -2227,13 +2221,15 @@ fn ccomp_fntdeclst_main {n:nat} (
     fn aux_push (fl: funlab_t): void = let
 (*
       val () = begin
-        prerr "ccomp_fntdeclst_main: aux_push: fl = "; prerr_funlab fl; prerr_newline ()
+        print "ccomp_fntdeclst_main: aux_push: fl = "; print_funlab fl;
+        print_newline ()
       end // end of [val]
 *)
       val tmps = tmpvarlst_make (funlab_typ_arg_get fl)
 (*
       val () = begin
-        prerr "ccomp_fntdeclst_main: aux_push: tmps = "; prerr_tmpvarlst tmps; prerr_newline ()
+        print "ccomp_fntdeclst_main: aux_push: tmps = "; print_tmpvarlst tmps;
+        print_newline ()
       end // end of [val]
 *)
       val () = funlab_tailjoined_set (fl, tmps)
@@ -2323,7 +2319,7 @@ fn ccomp_valdeclst (
   , valdecs: hivaldeclst
   ) : void = let
   fun aux (res: &instrlst_vt, valdecs: hivaldeclst)
-    :<cloptr1> void = begin case+ valdecs of
+    :<cloref1> void = begin case+ valdecs of
     | list_cons (valdec, valdecs) => let
         val vp = ccomp_exp (res, valdec.hivaldec_def)
         val hip = valdec.hivaldec_pat
@@ -2415,7 +2411,8 @@ fn ccomp_vardec_dyn
   val hie_ini = (case+ vardec.hivardec_ini of
     | Some hie => hie | None => begin
         $Loc.prerr_location (vardec.hivardec_loc);
-        prerr ": Internal Error: ccomp_vardec_dyn: no initialization.";
+        prerr ": INTERNAL ERROR";
+        prerr ": [ats_ccomp_trans]: ccomp_vardec_dyn: no initialization.";
         prerr_newline (); $Err.abort {hiexp} ()
       end // end of [None]
   ) : hiexp
@@ -2465,9 +2462,10 @@ fn ccomp_vardeclst (
   , level: int
   , vardecs: hivardeclst
   ) : void = let
-  fun aux
-    (res: &instrlst_vt, vardecs: hivardeclst):<cloptr1> void =
-    case+ vardecs of
+  fun aux (
+      res: &instrlst_vt
+    , vardecs: hivardeclst
+    ) :<cloref1> void = case+ vardecs of
     | list_cons (vardec, vardecs) => let
         val () = ccomp_vardec (res, level, vardec) in aux (res, vardecs)
       end // end of [list_cons]
@@ -2493,7 +2491,7 @@ fn ccomp_impdec
         val fc = funlab_funclo_get (fl)
 (*
         val () = begin
-          prerr "ccomp_impdec: aux: fl = "; prerr fl; prerr_newline ()
+          print "ccomp_impdec: aux: fl = "; print fl; print_newline ()
         end // end of [val]
 *)
         val vp_lam = valprim_funclo_make (fl)
@@ -2544,7 +2542,7 @@ fn ccomp_impdec
   val d2c = impdec.hiimpdec_cst // [d2c] must not be a proof cst!
 (*
   val () = begin
-    prerr "ccomp_impdec: d2c = "; prerr d2c; prerr_newline ()
+    print "ccomp_impdec: d2c = "; print d2c; print_newline ()
   end // end of [val]
 *)
 in
@@ -2565,7 +2563,7 @@ fn ccomp_impdec_trmck
   (loc: loc_t, d2c: d2cst_t, d2cs: dyncstset_t): void = let
 (*
   val () = begin
-    prerr "ccomp_impdec_trmck: d2c = "; prerr d2c; prerr_newline ()
+    print "ccomp_impdec_trmck: d2c = "; print d2c; print_newline ()
   end // end of [val]
 *)
   val fl = funlab_make_cst_trmck (d2c)
@@ -2606,7 +2604,7 @@ end // end of [ccomp_impdec_trmck]
 
 implement ccomp_dec (res, hid0) = let
 (*
-  val () = (prerr "ccomp_dec: enter"; prerr_newline ())
+  val () = (print "ccomp_dec: enter"; print_newline ())
 *)
 in
   case+ hid0.hidec_node of
