@@ -770,7 +770,7 @@ ats_ccomp_tmpvar_root_set
   ((tmpvar_t)tmp)->atslab_tmpvar_root = root ; return ;
 }
 
-%}
+%} // end of [%{$]
 
 (* ****** ****** *)
 

@@ -31,8 +31,8 @@
 
 (* ****** ****** *)
 
-// Time: April 2008
 // Author: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
+// Time: April 2008
 
 (* ****** ****** *)
 
@@ -67,7 +67,7 @@ staload _(*anonymous*) = "ats_set_fun.dats"
 
 (* ****** ****** *)
 
-#define THISFILENAME "ats_ccomp_env.dats"
+fn prerr_interror () = prerr "INTERNAL ERROR (ats_ccomp_env)"
 
 (* ****** ****** *)
 
@@ -453,8 +453,7 @@ implement the_vartypset_pop () = let
     | list_vt_nil () => (fold@ (!p); err := 1)
   end // end of [val]
   val () = if err > 0 then begin // error reporting
-    prerr "Internal Error: ats_ccomp_env: the_vartypset_pop";
-    prerr_newline ();
+    prerr_interror (); prerr ": the_vartypset_pop"; prerr_newline ();
     $Err.abort {void} ()
   end // end of [if]
 in
@@ -529,6 +528,8 @@ in
   // empty
 end // end of [print_vartypset]
 
+(*
+// not used
 implement prerr_vartypset (vtps) = let
   var i: int = 0
   fn f (pf: !int @ i | vtp: vartyp_t, p: !ptr i): void =
@@ -541,6 +542,7 @@ implement prerr_vartypset (vtps) = let
 in
   // empty
 end // end of [prerr_vartypset]
+*)
 
 (* ****** ****** *)
 
@@ -567,8 +569,7 @@ implement the_funlabset_pop () = let
     | list_vt_nil () => (fold@ (!p); err := 1)
   end // end of [val]
   val () = if err > 0 then begin // error reporting
-    prerr "Internal Error: ats_ccomp_env: the_funlabset_pop";
-    prerr_newline ();
+    prerr_interror (); prerr ": the_funlabset_pop"; prerr_newline ();
     $Err.abort {void} ()
   end // end of [val]
 in
@@ -620,6 +621,8 @@ in
   // empty
 end // end of [print_funlabset]
 
+(*
+// not used
 implement prerr_funlabset (fls) = let
   var i: int = 0
   fn f (pf: !int @ i | fl: funlab_t, p: !ptr i): void =
@@ -633,6 +636,7 @@ implement prerr_funlabset (fls) = let
 in
   // empty
 end // end of [prerr_funlabset]
+*)
 
 (* ****** ****** *)
 
@@ -744,9 +748,7 @@ implement the_dyncstsetlst_pop () = let
     | list_vt_nil () => (fold@ (!p); err := 1)
   end // end of [val]
   val () = if (err > 0) then begin
-    prerr "Internal Error";
-    $Deb.debug_prerrf (": %s", @(THISFILENAME));
-    prerr ": the_dyncstsetlst_pop: the_dyncstsetlst is empty";
+    prerr_interror (); prerr ": the_dyncstsetlst_pop"; prerr_newline ();
     $Err.abort {void} ()
   end // end of [val]
 in
@@ -979,7 +981,8 @@ implement funlab_pop (pf | (*none*)) = let
   end // end of [val]
 in
   if err > 0 then begin
-    prerr "Internal Error: ats_ccomp_env: funlab_pop"; prerr_newline ()
+    prerr_interror (); prerr ": funlab_pop"; prerr_newline ();
+    $Err.abort {void} ()
   end // end of [if]
 end // end of [funlab_pop]
 
@@ -992,10 +995,9 @@ end // end of [funlab_push]
 
 implement funlab_top () = let
   fn err (): funlab_t = begin
-    prerr "Internal Error: ats_ccomp_env: [funlab_top]";
-    prerr_newline ();
+    prerr_interror (); prerr ": funlab_top"; prerr_newline ();
     $Err.abort {funlab_t} ()
-  end
+  end // end of [err]
   val (vbox pf | p) = ref_get_view_ptr (the_funlablst)
 in
   case+ !p of
@@ -1084,9 +1086,9 @@ fn funentry_labset_get_all
     val level = funentry_lev_get (entry)
 (*
     val () = begin
-      prerr "funentry_labset_get_all: aux: fl = "; prerr fl; prerr_newline ();
-      prerr "funentry_labset_get_all: aux: level = "; prerr level; prerr_newline ();
-    end
+      print "funentry_labset_get_all: aux: fl = "; print fl; print_newline ();
+      print "funentry_labset_get_all: aux: level = "; print level; print_newline ();
+    end // end of [val]
 *)
   in
     case+ 0 of
@@ -1103,7 +1105,7 @@ fn funentry_labset_get_all
   val fls0 = funentry_labset_get entry0
 (*
   val () = begin
-    prerr "funentry_labset_get_all: fls0 = "; prerr_funlabset fls0; prerr_newline ()
+    print "funentry_labset_get_all: fls0 = "; print_funlabset fls0; print_newline ()
   end // end of [val]
 *)
   val () = funlabset_foreach_cloptr (fls0, aux)
@@ -1119,8 +1121,8 @@ implement funentry_vtps_get_all (entry0) = let
 (*
   val fl0 = funentry_lab_get entry0
   val () = begin
-    prerr "funentry_vtps_get_all: entry0 = "; prerr fl0; prerr_newline ()
-  end
+    print "funentry_vtps_get_all: entry0 = "; print fl0; print_newline ()
+  end // end of [val]
 *)
   val vtps_flag = funentry_vtps_flag_get (entry0)
   var vtps_all: vartypset = funentry_vtps_get (entry0)
@@ -1152,8 +1154,8 @@ implement funentry_vtps_get_all (entry0) = let
       val fls = funentry_labset_get_all (entry0)
 (*
       val () = begin
-        prerr "funentry_vtps_get_all: fls = "; prerr_funlabset fls; prerr_newline ()        
-      end
+        print "funentry_vtps_get_all: fls = "; print_funlabset fls; print_newline ()        
+      end // end of [val]
 *)
       val env = ENVcon (&vtps_all, level0)
       val () = begin
@@ -1167,8 +1169,8 @@ implement funentry_vtps_get_all (entry0) = let
     end
 (*
   val () = begin
-    prerr "funentry_vtps_get_all: vtps_all = "; prerr_vartypset vtps_all; prerr_newline ()
-  end
+    print "funentry_vtps_get_all: vtps_all = "; print_vartypset vtps_all; print_newline ()
+  end // end of [val]
 *)
 in
   vtps_all
@@ -1202,12 +1204,10 @@ end // end of [varindmap_find]
 implement varindmap_find_some (d2v) = begin
   case+ varindmap_find d2v of
   | ~Some_vt ind => ind | ~None_vt () => begin
-      prerr "Internal Error";
-      prerr ": ats_ccomp_env: varindmap_find: d2v = ";
-      prerr_d2var d2v;
-      prerr_newline ();
+      prerr_interror ();
+      prerr ": varindmap_find: d2v = "; prerr_d2var d2v; prerr_newline ();
       $Err.abort {int} ()
-    end
+    end // end of [None_vt]
 end // end of [varindmap_find_some]
 
 implement funentry_varindmap_reset () = let
@@ -1255,7 +1255,7 @@ in // in of [local]
 implement funentry_lablst_add (fl) = let
 (*
   val () = begin
-    prerr "funentry_lablst_add: fl = "; prerr fl; prerr_newline ()
+    print "funentry_lablst_add: fl = "; print fl; print_newline ()
   end // end of [val]
 *)
   val (pfbox | p) = ref_get_view_ptr (the_funlablst)
@@ -1271,7 +1271,7 @@ implement funentry_lablst_get () = let
     val res = !p
   in
     !p := list_vt_nil (); res
-  end
+  end // end of [val]
 in
   $Lst.list_vt_reverse (res)
 end // end of [funentry_lablst_get]
@@ -1286,10 +1286,12 @@ dataviewtype loopexnlablst =
   | LOOPEXNLABLSTcons of (
       tmplab_t(*init*), tmplab_t(*fini*), tmplab_t(*cont*), loopexnlablst
     )
-  | LOOPEXNLABLSTnil
+  | LOOPEXNLABLSTnil of ()
+// end of [loopexnlablst]
 
 val the_loopexnlablst =
   ref_make_elt<loopexnlablst> (LOOPEXNLABLSTnil ())
+// end of [the_loopexnlablst]
 
 in
 
@@ -1309,21 +1311,19 @@ implement loopexnlablst_pop () = let
     case+ !p of
     | ~LOOPEXNLABLSTcons (_, _, _, tls) => (!p := tls)
     | LOOPEXNLABLSTnil () => (fold@ (!p); err := 1)
-  end
+  end // end of [val]
 in
   if err > 0 then begin
-    prerr "Internal Error: ats_ccomp_env: loopexnlablst_pop";
-    prerr_newline ();
+    prerr_interror (); prerr ": loopexnlablst_pop"; prerr_newline ();
     $Err.abort {void} ()
-  end
+  end // end of [if]
 end // end of [loopexnlablst_pop]
 
 implement loopexnlablst_get (i) = let
   fn tmplab_gen (): tmplab_t = begin
-    prerr "Internal Error: ats_ccomp_env: loopexnlablst_get";
-    prerr_newline ();
+    prerr_interror (); prerr ": loopexnlablst_get"; prerr_newline ();
     $Err.abort {tmplab_t} ()
-  end
+  end // end of [tmplab_gen]
   val (pfbox | p) = ref_get_view_ptr (the_loopexnlablst)
   prval vbox pf = pfbox
 in
@@ -1359,7 +1359,7 @@ ats_ccomp_env_funentry_tailjoin_set
   ((funentry_t)entry)->atslab_funentry_tailjoin = tjs ; return ;
 }
 
-%}
+%} // end of [%{$]
 
 (* ****** ****** *)
 

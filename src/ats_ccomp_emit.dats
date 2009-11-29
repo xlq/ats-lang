@@ -75,6 +75,10 @@ staload _(*anonymous*) = "ats_reference.dats"
 
 (* ****** ****** *)
 
+fn prerr_interror () =
+  prerr "INTERNAL ERROR (ats_ccomp_emit)"
+// end of [prerr_interror]
+
 fn prerr_loc_errorccomp (loc: loc_t): void =
   ($Loc.prerr_location loc; prerr ": error(ccomp)")
 // end of [prerr_loc_errorccomp]
@@ -88,7 +92,9 @@ extern fun emit_identifier {m:file_mode}
 %{$
 
 ats_void_type
-ats_ccomp_emit_identifier (ats_ptr_type out, ats_ptr_type name) {
+ats_ccomp_emit_identifier (
+  ats_ptr_type out, ats_ptr_type name
+) {
   char c, *s ;
   s = name ;
   while (c = *s++) {
@@ -129,8 +135,12 @@ implement emit_label (pf | out, l) = $Lab.fprint_label (pf | out, l)
 
 (*
 
+//
+// not working properly on special chars
+//
 implement emit_filename (pf | out, fil) =
   emit_identifier (pf | out, $Fil.filename_full fil)
+// end of [emit_filename]
 
 *)
 
@@ -358,23 +368,21 @@ val the_funarglstlst = ref_make_elt<valprimlstlst_vt> (list_vt_nil ())
 in
 
 fn funarglst_find (i: int): Option_vt (valprim) = let
-  fun aux (vps: valprimlst, i: int): valprim = begin
-    case+ vps of
-    | list_cons (vp, vps) => if i > 0 then aux (vps, i-1) else vp
+  fun loop (vps: valprimlst, i: int): valprim = case+ vps of
+    | list_cons (vp, vps) => if i > 0 then loop (vps, i-1) else vp
     | list_nil () => valprim_void () // deadcode
-  end // end of [aux]
+  // end of [loop]
 in
-  if !the_level > 0 then Some_vt (aux (!the_funarglst, i)) else None_vt ()
+  if !the_level > 0 then Some_vt (loop (!the_funarglst, i)) else None_vt ()
 end // end of [funarglst_find]
 
 fn funarglst_pop (): void = let
   val n = !the_level
-  val () = // run-time checking
-    if n > 0 then (!the_level := n - 1) else begin
-      prerr "INTERNAL ERROR";
-      prerr ": [ats_ccomp_emit]: funarglst_pop: 1";
-      prerr_newline ()
-    end
+  // run-time checking
+  val () = if n > 0 then (!the_level := n-1) else begin
+    prerr_interror (); prerr ": funarglst_pop: n = 0"; prerr_newline ();
+    $Err.abort {void} ()
+  end // end of [if]
   var vps0: valprimlst = list_nil ()
   val () = let
     val (vbox pf | p) = ref_get_view_ptr (the_funarglstlst)
@@ -382,7 +390,7 @@ fn funarglst_pop (): void = let
     case+ !p of
     | ~list_vt_cons (vps, vpss) => begin
         !p := (vpss: valprimlstlst_vt); vps0 := vps
-      end
+      end // end of [list_vt_cons]
     | list_vt_nil () => fold@ (!p)
   end // end of [val]
 in
@@ -545,9 +553,8 @@ fn emit_valprim_ptrof {m:file_mode}
       // empty
     end // end of [VPtmp]
   | _ => begin
-      prerr "INTERNAL ERROR";
-      prerr ": [ats_ccomp_emit]: emit_valprim_ptrof: vp = ";
-      prerr_valprim vp; prerr_newline ();
+      prerr_interror ();
+      prerr ": emit_valprim_ptrof: vp = "; prerr_valprim vp; prerr_newline ();
       $Err.abort {void} ()
     end // end of [_]
 end // end of [emit_valprim_ptrof]
@@ -757,9 +764,8 @@ in
       // empty
     end // end of [list_cons]
   | list_nil () => begin
-      prerr "INTERNAL ERROR";
-      prerr ": [ats_ccomp_emit]: emit_valprim_select_varptr: vp_root = ";
-      prerr vp_root; prerr_newline ();
+      prerr_interror ();
+      prerr ": emit_valprim_select_varptr: vp_root = "; prerr vp_root; prerr_newline ();
       $Err.abort {void} ()
     end // end of [list_nil]
 end // end of [emit_valprim_select_varptr]
@@ -915,8 +921,8 @@ implement emit_valprim (pf | out, vp0) = begin
   | VPvoid () => fprint1_string (pf | out, "?void") // for debugging
 (*
   | _ => begin
-      prerr "INTERNAL ERROR";
-      prerr ": [ats_ccomp_emit]: emit_valprim: vp0 = "; prerr vp0; prerr_newline ();
+      prerr_interror ();
+      prerr ": emit_valprim: vp0 = "; prerr vp0; prerr_newline ();
       $Err.abort {void} ()
     end // end of [_]
 *)
@@ -1075,9 +1081,8 @@ implement emit_patck
     end // end of [PATCKstr]
 (*
   | _ => begin
-      prerr "INTERNAL ERROR";
-      prerr ": [ats_ccomp_emit]: emit_patck: not implemented yet";
-      prerr_newline ();
+      prerr_interror ();
+      prerr ": emit_patck: not implemented yet"; prerr_newline ();
       $Err.abort {void} ()
     end // end of [_]
 *)
@@ -1132,11 +1137,9 @@ implement emit_cloenv {m}
        | _ => emit_valprim (pf | out, vp)
       end // end of [Some_vt]
     | ~None_vt () => begin
-        prerr "INTERNAL ERROR";
-        prerr ": [ats_ccomp_emit]: emit_cloenv: the dynamic variable [";
-        prerr d2v;
-        prerr "] is not bound to a value.";
-        prerr_newline ()
+        prerr_interror ();
+        prerr ": emit_cloenv: None_vt: d2v = "; prerr d2v; prerr_newline ();
+        $Err.abort {void} ()
       end // end of [None_vt]
   end // end of [envmap]
 
@@ -1432,9 +1435,8 @@ in
         end // end of [$Syn.FUNCLOfun]
       end // end of [HITfun]
     | _ => begin
-        prerr "INTERNAL ERROR";
-        prerr ": [ats_ccomp_emit]: emit_instr_call: hit_fun = "; prerr_hityp hit_fun;
-        prerr_newline ();
+        prerr_interror ();
+        prerr ": emit_instr_call: hit_fun = "; prerr_hityp hit_fun; prerr_newline ();
         $Err.abort {void} ()
       end // end of [_]
     end (* end of [_(*variadic function*)] *)
@@ -1856,8 +1858,8 @@ in
       fprint1_string (pf | out, " ; */")
     end // end of [INSTRvardec]
   | _ => begin
-      prerr "INTERNAL ERROR";
-      prerr ": [ats_ccomp_emit]: emit_instr: ins = "; prerr ins; prerr_newline ();
+      prerr_interror ();
+      prerr ": emit_instr: ins = "; prerr ins; prerr_newline ();
       $Err.abort {void} ()
     end // end of [_]
 end // end of [emit_instr]
@@ -2322,12 +2324,12 @@ implement emit_funentry (pf | out, entry) = let
   end // end of [val]
 *)
   val loc_entry = funentry_loc_get entry
-  val () = begin case+ fc of
+  val () = (case+ fc of
     | $Syn.FUNCLOfun () => begin
         funentry_env_err (loc_entry, fl, vtps_all)
       end // end of [FUNCLOfun]
     | $Syn.FUNCLOclo _ => ()
-  end
+  ) : void // end of [val]
 (*
   val () = begin
     print "emit_funentry: after [funentry_env_err]"; print_newline ()
@@ -2389,7 +2391,7 @@ implement emit_funentry (pf | out, entry) = let
   val () = if nvararg >= 0 then let
     val () = if nvararg = 0 then begin
       prerr_loc_errorccomp loc_entry;
-      prerr ": a variadic function must have at least one argument (in front of  ...)";
+      prerr ": a variadic function must have at least one argument (in front of ...)";
       prerr_newline ();
       $Err.abort {void} ()
     end // end of [val]
