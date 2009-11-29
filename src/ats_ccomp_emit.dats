@@ -372,7 +372,7 @@ fn funarglst_pop (): void = let
   val () = // run-time checking
     if n > 0 then (!the_level := n - 1) else begin
       prerr "INTERNAL ERROR";
-      prerr ": ats_ccomp_emit: funarglst_pop: 1";
+      prerr ": [ats_ccomp_emit]: funarglst_pop: 1";
       prerr_newline ()
     end
   var vps0: valprimlst = list_nil ()
@@ -546,7 +546,7 @@ fn emit_valprim_ptrof {m:file_mode}
     end // end of [VPtmp]
   | _ => begin
       prerr "INTERNAL ERROR";
-      prerr ": ats_ccomp_emit: emit_valprim_ptrof: vp = ";
+      prerr ": [ats_ccomp_emit]: emit_valprim_ptrof: vp = ";
       prerr_valprim vp; prerr_newline ();
       $Err.abort {void} ()
     end // end of [_]
@@ -758,7 +758,7 @@ in
     end // end of [list_cons]
   | list_nil () => begin
       prerr "INTERNAL ERROR";
-      prerr ": ats_ccomp_emit: emit_valprim_select_varptr: vp_root = ";
+      prerr ": [ats_ccomp_emit]: emit_valprim_select_varptr: vp_root = ";
       prerr vp_root; prerr_newline ();
       $Err.abort {void} ()
     end // end of [list_nil]
@@ -916,7 +916,7 @@ implement emit_valprim (pf | out, vp0) = begin
 (*
   | _ => begin
       prerr "INTERNAL ERROR";
-      prerr ": emit_valprim: vp0 = "; prerr vp0; prerr_newline ();
+      prerr ": [ats_ccomp_emit]: emit_valprim: vp0 = "; prerr vp0; prerr_newline ();
       $Err.abort {void} ()
     end // end of [_]
 *)
@@ -1076,7 +1076,7 @@ implement emit_patck
 (*
   | _ => begin
       prerr "INTERNAL ERROR";
-      prerr ": ats_ccomp_emit: emit_patck: not implemented yet";
+      prerr ": [ats_ccomp_emit]: emit_patck: not implemented yet";
       prerr_newline ();
       $Err.abort {void} ()
     end // end of [_]
@@ -1133,8 +1133,7 @@ implement emit_cloenv {m}
       end // end of [Some_vt]
     | ~None_vt () => begin
         prerr "INTERNAL ERROR";
-        prerr ": ats_ccomp_emit: emit_cloenv";
-        prerr ": the dynamic variable [";
+        prerr ": [ats_ccomp_emit]: emit_cloenv: the dynamic variable [";
         prerr d2v;
         prerr "] is not bound to a value.";
         prerr_newline ()
@@ -1434,7 +1433,7 @@ in
       end // end of [HITfun]
     | _ => begin
         prerr "INTERNAL ERROR";
-        prerr ": emit_instr_call: hit_fun = "; prerr_hityp hit_fun;
+        prerr ": [ats_ccomp_emit]: emit_instr_call: hit_fun = "; prerr_hityp hit_fun;
         prerr_newline ();
         $Err.abort {void} ()
       end // end of [_]
@@ -1858,7 +1857,7 @@ in
     end // end of [INSTRvardec]
   | _ => begin
       prerr "INTERNAL ERROR";
-      prerr ": emit_instr: ins = "; prerr ins; prerr_newline ();
+      prerr ": [ats_ccomp_emit]: emit_instr: ins = "; prerr ins; prerr_newline ();
       $Err.abort {void} ()
     end // end of [_]
 end // end of [emit_instr]
@@ -2309,7 +2308,7 @@ implement emit_funentry (pf | out, entry) = let
   val fl = funentry_lab_get (entry)
 (*
   val () = begin
-    prerr "emit_funentry: fl = "; prerr_funlab fl; prerr_newline ()
+    print "emit_funentry: fl = "; print_funlab fl; print_newline ()
   end // end of [val]
 *)
   val fc = funlab_funclo_get (fl)
@@ -2319,8 +2318,7 @@ implement emit_funentry (pf | out, entry) = let
   val vtps_all = funentry_vtps_get_all (entry)
 (*
   val () = begin
-    prerr "emit_funentry: vtps_all = "; prerr_vartypset vtps_all;
-    prerr_newline ()
+    print "emit_funentry: vtps_all = "; print_vartypset vtps_all; print_newline ()
   end // end of [val]
 *)
   val loc_entry = funentry_loc_get entry
@@ -2332,7 +2330,7 @@ implement emit_funentry (pf | out, entry) = let
   end
 (*
   val () = begin
-    prerr "emit_funentry: after [funentry_env_err]"; prerr_newline ()
+    print "emit_funentry: after [funentry_env_err]"; print_newline ()
   end // end of [val]
 *)
   val tmp_ret = funentry_ret_get (entry)

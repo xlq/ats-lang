@@ -31,8 +31,8 @@
 
 (* ****** ****** *)
 
-// Time: March 2008
 // Author: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
+// Time: March 2008
 
 (* ****** ****** *)
 
@@ -107,6 +107,7 @@ fun funlab_make_nam_typ (name: string, hit: hityp_t): funlab_t
 
 fun funlab_make_cst_typ
   (d2c: d2cst_t, tmparg: hityplstlst, hit: hityp_t): funlab_t
+// end of [funlab_make_cst_typ]
 
 fun funlab_make_var_typ (d2v: d2var_t, hit: hityp_t): funlab_t
 
@@ -155,15 +156,11 @@ overload prerr with prerr_tmpvar
 
 fun fprint_tmpvarlst {m:file_mode}
    (pf: file_mode_lte (m, w) | out: &FILE m, tmps: tmpvarlst): void
-overload fprint with fprint_tmpvarlst
 
 fun print_tmpvarlst (tmps: tmpvarlst): void
 fun prerr_tmpvarlst (tmps: tmpvarlst): void
 
-overload print with print_tmpvarlst
-overload prerr with prerr_tmpvarlst
-
-//
+(* ****** ****** *)
 
 fun eq_tmpvar_tmpvar (tmp1: tmpvar_t, tmp2: tmpvar_t): bool
 overload = with eq_tmpvar_tmpvar
@@ -256,7 +253,7 @@ fun fprint_valprimlst {m:file_mode}
 fun fprint_labvalprimlst {m:file_mode}
    (pf: file_mode_lte (m, w) | out: &FILE m, lvps: labvalprimlst): void
 
-//
+(* ****** ****** *)
 
 fun fprint_offset {m:file_mode}
    (pf: file_mode_lte (m, w) | out: &FILE m, off: offset): void
@@ -264,7 +261,7 @@ fun fprint_offset {m:file_mode}
 fun fprint_offsetlst {m:file_mode}
    (pf: file_mode_lte (m, w) | out: &FILE m, offs: offsetlst): void
 
-//
+(* ****** ****** *)
 
 fun print_valprim (vp: valprim): void
 fun prerr_valprim (vp: valprim): void
@@ -690,9 +687,12 @@ fun instr_add_switch (res: &instrlst_vt, brs: branchlst): void
 
 fun instr_add_tmplabint (res: &instrlst_vt, tl: tmplab_t, i: int): void
 
-fun instr_add_trywith
-  (res: &instrlst_vt, res_try: instrlst, tmp_exn: tmpvar_t, brs: branchlst)
-  : void
+fun instr_add_trywith (
+    res: &instrlst_vt
+  , res_try: instrlst
+  , tmp_exn: tmpvar_t
+  , brs: branchlst
+  ) : void
 
 fun instr_add_vardec (res: &instrlst_vt, tmp: tmpvar_t): void
 

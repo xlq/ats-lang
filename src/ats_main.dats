@@ -422,7 +422,7 @@ fn do_parse_filename (
       extern fun getcwd (): String = "atslib_getcwd"
     } // end of [val]
   in
-    prerr "cwd = "; prerr cwd; prerr_newline ()
+    print "cwd = "; print cwd; print_newline ()
   end // end of [if]
   val filename = (case+ $Fil.filenameopt_make basename of
     | ~Some_vt filename => filename | ~None_vt () => begin
@@ -446,7 +446,7 @@ fn do_parse_filename (
   val () = $Fil.the_filenamelst_pop ()
 //
   val () = if debug_flag > 0 then begin
-    prerrf ("The file [%s] is successfully parsed!\n", @(basename))
+    printf ("The file [%s] is successfully parsed!\n", @(basename))
   end // end of [if]
 //
   val () = if param.posmark > 0 then let
@@ -508,20 +508,20 @@ fn do_trans12 (
   val d1cs = $Trans1.d0eclst_tr d0cs
   val () = $Trans1.finalize ()
   val () = if debug_flag > 0 then begin
-    prerr "The 1st translation (fixity) of [";
-    prerr basename;
-    prerr "] is successfully completed!";
-    prerr_newline ()
+    print "The 1st translation (fixity) of [";
+    print basename;
+    print "] is successfully completed!";
+    print_newline ()
   end // end of [if]
 
   val () = if param.posmark_html = 2 then $PM.posmark_enable ()
   val d2cs = $Trans2.d1eclst_tr d1cs
   val () = if param.posmark_html = 2 then $PM.posmark_disable ()
   val () = if debug_flag > 0 then begin
-    prerr "The 2nd translation (binding) of [";
-    prerr basename;
-    prerr "] is successfully completed!";
-    prerr_newline ()
+    print "The 2nd translation (binding) of [";
+    print basename;
+    print "] is successfully completed!";
+    print_newline ()
   end // end of [if]
 in
   d2cs
@@ -541,9 +541,9 @@ fn do_trans123 (
   } // end of [val]
 //
 (*
-  val () = prerr_the_s3itemlst () where {
-    extern fun prerr_the_s3itemlst ()
-      : void = "ats_trans3_env_prerr_the_s3itemlst"
+  val () = print_the_s3itemlst () where {
+    extern fun print_the_s3itemlst ()
+      : void = "ats_trans3_env_print_the_s3itemlst"
   } // end of [val]
 *)
   // is this some sort of bug???
@@ -554,10 +554,10 @@ fn do_trans123 (
 //
   val debug_flag = $Deb.debug_flag_get ()
   val () = if debug_flag > 0 then begin
-    prerr "The 3rd translation (typechecking) of [";
-    prerr basename;
-    prerr "] is successfully completed!";
-    prerr_newline ()
+    print "The 3rd translation (typechecking) of [";
+    print basename;
+    print "] is successfully completed!";
+    print_newline ()
   end // end of [if]
 in
   d3cs
@@ -573,10 +573,10 @@ fn do_trans1234 (
   val hids = $Trans4.d3eclst_tr (d3cs)
   val debug_flag = $Deb.debug_flag_get ()
   val () = if debug_flag > 0 then begin
-    prerr "The 4th translation (proof erasure) of [";
-    prerr basename;
-    prerr "] is successfully completed!";
-    prerr_newline ()
+    print "The 4th translation (proof erasure) of [";
+    print basename;
+    print "] is successfully completed!";
+    print_newline ()
   end // end of [if]
   val infil = input_filename_get ()
   val outname = output_filename_get ()
@@ -595,10 +595,10 @@ in
       , @(outname)
       ) // end of [fprintf]
       val () = if debug_flag > 0 then begin
-        prerr "The 5th translation (code emission) of [";
-        prerr basename;
-        prerr "] is successfully completed!";
-        prerr_newline ()
+        print "The 5th translation (code emission) of [";
+        print basename;
+        print "] is successfully completed!";
+        print_newline ()
       end // end of [if]
     in
       fclose_exn (pf_out | p_out)
@@ -765,9 +765,9 @@ fun loop {i:nat | i <= n} .<i>. (
               val () = $PM.posmark_file_make_htm (basename, outname)
               val () = $PM.posmark_disable ()
             in
-              prerr "The syntax marking of [";
-              prerr basename; prerr "] is successfully completed!";
-              prerr_newline ()
+              print "The syntax marking of [";
+              print basename; print "] is successfully completed!";
+              print_newline ()
             end // end of [_]
           | _ when param.posmark_html = 2 => let
               val _(*d2cs*) = do_trans12 (param, basename, d0cs)
@@ -775,16 +775,16 @@ fun loop {i:nat | i <= n} .<i>. (
               val () = $PM.posmark_file_make_htm (basename, outname)
               val () = $PM.posmark_disable ()
             in
-              prerr "The syntax cross referencing for [";
-              prerr basename; prerr "] is successfully completed!";
-              prerr_newline ()              
+              print "The syntax cross referencing for [";
+              print basename; print "] is successfully completed!";
+              print_newline ()              
             end // end of [_ when ...]
           | _ when $Glo.ats_depgenflag_get () > 0 => ()
           | _ when param.typecheck_only > 0 => let
               val _(*d3cs*) = do_trans123 (param, basename, d0cs)
             in
-              prerrf ("The file [%s] is successfully typechecked!", @(basename));
-              prerr_newline ()
+              printf ("The file [%s] is successfully typechecked!", @(basename));
+              print_newline ()
             end // end of [_ when ...]
           | _ => do_trans1234 (param, flag, basename, d0cs)
         end // end of [val]
@@ -830,8 +830,8 @@ fun loop {i:nat | i <= n} .<i>. (
           | _ when param.typecheck_only > 0 => let
               val _(*d3cs*) = do_trans123 (param, "stdin", d0cs)
             in
-              prerr ("The typechecking is successfully completed!");
-              prerr_newline ()
+              print ("The typechecking is successfully completed!");
+              print_newline ()
             end // end of [_ when ...]
           | _ => do_trans1234 (param, flag, "stdin", d0cs)
         end // end of [val]

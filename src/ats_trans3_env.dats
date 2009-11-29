@@ -197,9 +197,9 @@ implement the_s2varbindmap_add (s2v, s2e) = let
   val stamp = s2var_stamp_get (s2v)
 (*
   val () = begin
-    prerr "the_s2varbindmap_add: s2v = "; prerr s2v; prerr_newline ();
-    prerr "the_s2varbindmap_add: s2e = "; prerr s2e; prerr_newline ();
-    prerr "the_s2varbindmap_add: stamp = "; $Stamp.prerr_stamp stamp; prerr_newline ();
+    print "the_s2varbindmap_add: s2v = "; print s2v; print_newline ();
+    print "the_s2varbindmap_add: s2e = "; print s2e; print_newline ();
+    print "the_s2varbindmap_add: stamp = "; $Stamp.print_stamp stamp; print_newline ();
   end // end of [val]
 *)
   val () = let
@@ -225,7 +225,7 @@ end // end of [the_s2varbindmap_add]
 implement the_s2varbindmap_find (s2v) = let
 (*
   val () = begin
-    prerr "the_s2varbindmap_find: s2v = "; prerr s2v; prerr_newline ()
+    print "the_s2varbindmap_find: s2v = "; print s2v; print_newline ()
   end // end of [val]
 *)
   val stamp = s2var_stamp_get (s2v)
@@ -237,7 +237,7 @@ end // end of [the_s2varbindmap_find]
 implement the_s2varbindmap_pop () = let
 (*
   val () = begin
-    prerr "the_s2varbindmap_pop: the_s2varbindmap =\n"; prerr_the_s2varbindmap ()
+    print "the_s2varbindmap_pop: the_s2varbindmap =\n"; print_the_s2varbindmap ()
   end // end of [val]
 *)
   fun aux {n:nat} {l:addr} .<n>.
@@ -268,7 +268,7 @@ in
     end // end of [list_cons]
   | list_nil () => begin
       prerr "INTERNAL ERROR";
-      prerr ": the_s2varbindmap_pop: [s2varbind_svs_lst] is empty.";
+      prerr ": [ats_trans3_env]: the_s2varbindmap_pop: [s2varbind_svs_lst] is empty.";
       prerr_newline ();
       $Err.abort {void} ()
     end // end of [list_nil]
@@ -321,8 +321,7 @@ implement the_s2Varset_env_pop () = let
   end
 in
   if err > 0 then begin
-    prerr "INTERNAL ERROR: the_s2Varset_env_pop";
-    prerr_newline ();
+    prerr "INTERNAL ERROR: the_s2Varset_env_pop"; prerr_newline ();
     $Err.abort {void} ()
   end
 end // end of [the_s2Varset_env_pop]
@@ -367,12 +366,12 @@ fn d2var_fin_check
   (loc0: loc_t, d2v: d2var_t): void = let
 (*
   val () = begin
-    prerr "d2var_fin_check: d2v = "; prerr_d2var d2v; prerr_newline ()
+    print "d2var_fin_check: d2v = "; print_d2var d2v; print_newline ()
   end // end of [val]
   val os2e = d2var_typ_get (d2v)
   val () = case+ os2e of
-    | Some _ => (prerr "d2var_fin_check: os2e = Some _"; prerr_newline ())
-    | None _ => (prerr "d2var_fin_check: os2e = None _"; prerr_newline ())
+    | Some _ => (print "d2var_fin_check: os2e = Some _"; print_newline ())
+    | None _ => (print "d2var_fin_check: os2e = None _"; print_newline ())
 *)
 in
   case+ d2var_typ_get (d2v) of 
@@ -380,9 +379,9 @@ in
     | D2VARFINsome s2e0 => let
 (*
         val () = begin
-          prerr "d2var_fin_check: D2VARFINsome: d2v = "; prerr d2v; prerr_newline ();
-          prerr "d2var_fin_check: D2VARFINsome: s2e = "; prerr s2e; prerr_newline ();
-          prerr "d2var_fin_check: D2VARFINsome: s2e0 = "; prerr s2e0; prerr_newline ();
+          print "d2var_fin_check: D2VARFINsome: d2v = "; print d2v; print_newline ();
+          print "d2var_fin_check: D2VARFINsome: s2e = "; print s2e; print_newline ();
+          print "d2var_fin_check: D2VARFINsome: s2e0 = "; print s2e0; print_newline ();
         end // end of [val]
 *)
         val () = trans3_env_push_sta ()
@@ -472,18 +471,19 @@ implement the_d2varset_env_add_p2atlst (p2ts) = case+ p2ts of
 
 //
 
-implement the_d2varset_env_prerr_ld2vs () = prerr (!the_ld2vs)
 implement the_d2varset_env_print_ld2vs () = print (!the_ld2vs)
+implement the_d2varset_env_prerr_ld2vs () = prerr (!the_ld2vs)
 
 fn the_d2varset_env_get_llam_ld2vs
   (loc0: loc_t): d2varlst = begin case+ !the_ld2vsitems of
   | list_cons (LD2VSITEMllam r, _) => !r
   | _ => begin
       prerr loc0;
-      prerr ": INTERNAL ERROR: the_d2varset_env_get_llam_ld2vs";
+      prerr ": INTERNAL ERROR";
+      prerr ": [ats_trans3_env]: the_d2varset_env_get_llam_ld2vs";
       prerr_newline ();
       $Err.abort {d2varlst} ()
-    end
+    end // end of [_]
 end // end of [the_d2varset_env_get_llam_ld2vs]
 
 //
@@ -510,8 +510,8 @@ implement the_d2varset_env_pop_lam (pf | (*none*)) = let
     | list_nil () => (err := 1)
 in
   if err > 0 then begin
-    prerr "INTERNAL ERROR: the_d2varset_env_pop_lam";
-    prerr_newline ();
+    prerr "INTERNAL ERROR";
+    prerr ": [ats_trans3_env]: the_d2varset_env_pop_lam"; prerr_newline ();
     $Err.abort {void} ()
   end
 end // end of [the_d2varset_env_pop_lam]
@@ -541,10 +541,10 @@ implement the_d2varset_env_pop_let (pf | (*none*)) = let
     | list_nil () => (err := 1)
 in
   if err > 0 then begin
-    prerr "INTERNAL ERROR: the_d2varset_env_pop_let";
-    prerr_newline ();
+    prerr "INTERNAL ERROR";
+    prerr ": [ats_trans3_env]: the_d2varset_env_pop_let"; prerr_newline ();
     $Err.abort {void} ()
-  end
+  end // end of [if]
 end // end of [the_d2varset_env_pop_let]
 
 implement the_d2varset_env_push_let () = begin
@@ -577,9 +577,9 @@ implement the_d2varset_env_d2var_is_lam_local (d2v) = let
         end
       end
     | list_nil () => begin
-        prerr "INTERNAL ERROR: d2var_is_lam_local: aux: d2v = ";
-        prerr d2v;
-        prerr_newline ();
+        prerr "INTERNAL ERROR";
+        prerr ": [ats_trans3_env]: d2var_is_lam_local: aux: d2v = ";
+        prerr d2v; prerr_newline ();
         $Err.abort {bool} ()
       end
   end // end of [aux]
@@ -601,24 +601,24 @@ implement the_d2varset_env_d2var_is_llam_local (d2v) = let
         end
       end // end of [list_cons]
     | list_nil () => begin
-        prerr "INTERNAL ERROR: d2var_is_llam_local: aux: d2v = ";
-        prerr d2v;
-        prerr_newline ();
+        prerr "INTERNAL ERROR";
+        prerr ": [ats_trans3_env]: d2var_is_llam_local: aux: d2v = ";
+        prerr d2v; prerr_newline ();
         $Err.abort {bool} ()
       end
   end // end of [aux]
   val ans: bool = d2varset_ismem (!the_ld2vs, d2v)
 (*
   val () = begin
-    prerr "d2var_is_llam_local: the_ld2vs = ";
-    prerr (!the_ld2vs);
-    prerr_newline ();
-    prerr "d2var_is_llam_local: d2v = ";
-    prerr (d2v);
-    prerr_newline ();
-    prerr "d2var_is_llam_local: ans = ";
-    prerr (ans);
-    prerr_newline ()
+    print "d2var_is_llam_local: the_ld2vs = ";
+    print (!the_ld2vs);
+    print_newline ();
+    print "d2var_is_llam_local: d2v = ";
+    print (d2v);
+    print_newline ();
+    print "d2var_is_llam_local: ans = ";
+    print (ans);
+    print_newline ()
   end // end of [val]
 *)
 in
@@ -630,7 +630,7 @@ end // end of [the_d2varset_env_d2var_is_llam_local]
 implement the_d2varset_env_check (loc0) = let
 (*
   val () = begin
-    prerr "the_d2varset_env_check: enter"; prerr_newline ()
+    print "the_d2varset_env_check: enter"; print_newline ()
   end // end of [val]
 *)
 in
@@ -948,7 +948,7 @@ end // end of [trans3_env_add_tyleq]
 implement trans3_env_hypo_add_prop (loc, s2p) = let
 (*
   val () = begin
-    prerr "trans3_env_hypo_add_prop: s2p = "; prerr s2p; prerr_newline ()
+    print "trans3_env_hypo_add_prop: s2p = "; print s2p; print_newline ()
   end // end of [val]
 *)
   val h3p = h3ypo_prop (loc, s2p)
@@ -969,8 +969,8 @@ end // end of [trans3_env_hypo_add_proplst]
 implement trans3_env_hypo_add_bind (loc, s2v1, s2e2) = let
 (*
   val () = begin
-    prerr "trans3_env_hypo_add_bind: s2v1 = "; prerr s2v1; prerr_newline ();
-    prerr "trans3_env_hypo_add_bind: s2e2 = "; prerr s2e2; prerr_newline ();
+    print "trans3_env_hypo_add_bind: s2v1 = "; print s2v1; print_newline ();
+    print "trans3_env_hypo_add_bind: s2e2 = "; print s2e2; print_newline ();
   end // end of [val]
 *)
   val os2e1 = the_s2varbindmap_find (s2v1)
@@ -989,8 +989,8 @@ end // end of [trans3_env_hypo_add_bind]
 implement trans3_env_hypo_add_eqeq (loc, s2e1, s2e2) = let
 (*
   val () = begin
-    prerr "trans3_env_hypo_add_eqeq: s2e1 = "; prerr s2e1; prerr_newline ();
-    prerr "trans3_env_hypo_add_eqeq: s2e2 = "; prerr s2e2; prerr_newline ();
+    print "trans3_env_hypo_add_eqeq: s2e1 = "; print s2e1; print_newline ();
+    print "trans3_env_hypo_add_eqeq: s2e2 = "; print s2e2; print_newline ();
   end // end of [val]
 *)
   val h3p = h3ypo_eqeq (loc, s2e1, s2e2)
@@ -1018,18 +1018,18 @@ end // end of [trans3_env_hypo_add_p2atcstlstlst]
 
 (* ****** ****** *)
 
-extern fun prerr_the_s3itemlst (): void
-  = "ats_trans3_env_prerr_the_s3itemlst"
+extern fun print_the_s3itemlst (): void
+  = "ats_trans3_env_print_the_s3itemlst"
+
+implement print_the_s3itemlst () = let
+  val (vbox pf | p) = ref_get_view_ptr the_s3itemlst
+in
+  $effmask_ref (print_s3itemlst_vt !p)
+end // end of [print_the_s3itemlst]
 
 extern fun prerr_the_s3itemlstlst (): void
   = "ats_trans3_env_prerr_the_s3itemlstlst"
   
-implement prerr_the_s3itemlst () = let
-  val (vbox pf | p) = ref_get_view_ptr the_s3itemlst
-in
-  $effmask_ref (prerr_s3itemlst_vt !p)
-end // end of [prerr_the_s3itemlst]
-
 implement prerr_the_s3itemlstlst () = let
   val (vbox pf | ps) = ref_get_view_ptr the_s3itemlstlst
 in
@@ -1053,8 +1053,8 @@ end // end of [free_the_s3itemlst]
 implement trans3_env_pop_sta () = let
 (*
   val () = $effmask_ref begin
-    prerr "trans3_env_pop_sta: the_s3itemlst = "; prerr_the_s3itemlst (); prerr_newline ();
-    prerr "trans3_env_pop_sta: the_s3itemlstlst = "; prerr_the_s3itemlstlst (); prerr_newline ();
+    print "trans3_env_pop_sta: the_s3itemlst = "; print_the_s3itemlst (); print_newline ();
+    print "trans3_env_pop_sta: the_s3itemlstlst = "; print_the_s3itemlstlst (); print_newline ();
   end // end of [val]
 *)
   val () = the_s2varbindmap_pop ()
@@ -1071,7 +1071,7 @@ implement trans3_env_pop_sta () = let
   end) : s3itemlst_vt
   val () = if err > 0 then begin
     prerr "INTERNAL ERROR";
-    prerr ": trans3_env_pop_sta: [the_s3itemlstlst] is empty.";
+    prerr ": [ats_trans3_env]: trans3_env_pop_sta: [the_s3itemlstlst] is empty.";
     prerr_newline ();
     $Err.abort {void} ()
   end // end of [val]
@@ -1086,7 +1086,7 @@ implement trans3_env_pop_sta_and_add (loc, cstrknd) = let
   val c3t = c3str_itmlst (loc, cstrknd, $Lst.list_vt_reverse_list s3is0)
 (*
   val () = begin
-    prerr "trans3_env_pop_sta_and_add: c3t = "; prerr c3t; prerr_newline ()
+    print "trans3_env_pop_sta_and_add: c3t = "; print c3t; print_newline ()
   end // end of [val]
 *)
   val (vbox pf | p) = ref_get_view_ptr the_s3itemlst
@@ -1106,8 +1106,8 @@ end // end of [trans3_env_pop_sta_and_free]
 implement trans3_env_push_sta () = let
 (*
   val () = begin
-    prerr "trans3_env_push_sta: the_s3itemlst = "; prerr_the_s3itemlst (); prerr_newline ();
-    prerr "trans3_env_push_sta: the_s3itemlstlst = "; prerr_the_s3itemlstlst (); prerr_newline ();
+    print "trans3_env_push_sta: the_s3itemlst = "; print_the_s3itemlst (); print_newline ();
+    print "trans3_env_push_sta: the_s3itemlstlst = "; print_the_s3itemlstlst (); print_newline ();
   end // end of [val]
 *)
   var s3is0: s3itemlst_vt? // uninitialized
@@ -1141,14 +1141,14 @@ end // end of [s2exp_Var_make_srt]
 implement s2exp_Var_make_var (loc, s2v) = let
 (*
   val () = begin
-    prerr "s2exp_Var_make_var: s2v = "; prerr s2v; prerr_newline ()
+    print "s2exp_Var_make_var: s2v = "; print s2v; print_newline ()
   end // end of [val]
 *)
   val s2V = s2Var_make_var (loc, s2v)
   val () = s2Var_sVarset_set (s2V, the_s2Varset_env_get_prev ())
 (*
   val () = begin
-    prerr "s2exp_Var_make_var: s2V = "; prerr s2V; prerr_newline ()
+    print "s2exp_Var_make_var: s2V = "; print s2V; print_newline ()
   end // end of [val]
 *)
 in
@@ -1160,8 +1160,8 @@ end // end of [s2exp_Var_make_var]
 implement s2qua_instantiate_and_add (loc0, s2vs, s2ps) = let
 (*
   val () = begin
-    prerr "s2qua_instantiate_and_add: s2vs = "; prerr s2vs; prerr_newline ();
-    prerr "s2qua_instantiate_and_add: s2ps = "; prerr s2ps; prerr_newline ();
+    print "s2qua_instantiate_and_add: s2vs = "; print s2vs; print_newline ();
+    print "s2qua_instantiate_and_add: s2ps = "; print s2ps; print_newline ();
   end // end of [val]
 *)
   val sub = aux (loc0, s2vs) where {
@@ -1170,7 +1170,7 @@ implement s2qua_instantiate_and_add (loc0, s2vs, s2ps) = let
       | list_cons (s2v, s2vs) => let
 (*
           val () = begin
-            prerr "s2qua_instantiate_and_add: aux: s2v = "; prerr s2v; prerr_newline ()
+            print "s2qua_instantiate_and_add: aux: s2v = "; print s2v; print_newline ()
           end
 *)
           val s2e = s2exp_Var_make_var (loc0, s2v)
@@ -1182,7 +1182,7 @@ implement s2qua_instantiate_and_add (loc0, s2vs, s2ps) = let
   val s2ps_new = s2explst_subst (sub, s2ps)
 (*
   val () = begin
-    prerr "s2qua_instantiate_and_add: s2ps_new = "; prerr s2ps_new; prerr_newline ()
+    print "s2qua_instantiate_and_add: s2ps_new = "; print s2ps_new; print_newline ()
   end // end of [val]
 *)
 in
@@ -1330,14 +1330,14 @@ implement s2exp_exi_instantiate_sexparg (loc0, s2e0, s2a) =
 implement funarg_varfin_check (loc0) = let
 (*
   val () = begin
-    $Loc.prerr_location loc0; prerr ": funarg_varfin_check"; prerr_newline ()
+    $Loc.print_location loc0; print ": funarg_varfin_check"; print_newline ()
   end // end of [val]
 *)
   fn auxvar
     (loc0: loc_t, d2v: d2var_t): void = let
 (*
     val () = begin
-      prerr "funarg_varfin_check: auxvar: d2v (bef) = "; prerr_d2var d2v; prerr_newline ()
+      print "funarg_varfin_check: auxvar: d2v (bef) = "; print_d2var d2v; print_newline ()
     end // end of [val]
 *)
     val d2v = (case+ d2var_view_get d2v of
@@ -1345,7 +1345,7 @@ implement funarg_varfin_check (loc0) = let
     ) : d2var_t
 (*
     val () = begin
-      prerr "funarg_varfin_check: auxvar: d2v (aft) = "; prerr_d2var d2v; prerr_newline ()
+      print "funarg_varfin_check: auxvar: d2v (aft) = "; print_d2var d2v; print_newline ()
     end // end of [val]
 *)
     val () = d2var_fin_check (loc0, d2v)
@@ -1383,7 +1383,7 @@ end (* end of [funarg_varfin_check] *)
 implement s2exp_wth_instantiate (loc0, s2e0) = let
 (*
   val () = begin
-    prerr "s2exp_wth_instantiate: s2e0 = "; prerr s2e0; prerr_newline ()
+    print "s2exp_wth_instantiate: s2e0 = "; print s2e0; print_newline ()
   end // end of [val]
 *)
   fn aux (
@@ -1406,9 +1406,9 @@ implement s2exp_wth_instantiate (loc0, s2e0) = let
     ) : d2var_t // end of [val]
 (*
     val () = begin
-      prerr "s2exp_wth_instantiate: aux: refval = "; prerr refval; prerr_newline ();
-      prerr "s2exp_wth_instantiate: aux: d2v = "; prerr d2v; prerr_newline ();
-      prerr "s2exp_wth_instantiate: aux: s2e = "; prerr s2e; prerr_newline ();
+      print "s2exp_wth_instantiate: aux: refval = "; print refval; print_newline ();
+      print "s2exp_wth_instantiate: aux: d2v = "; print d2v; print_newline ();
+      print "s2exp_wth_instantiate: aux: s2e = "; print s2e; print_newline ();
     end // end of [val]
 *)
   in
@@ -1594,19 +1594,18 @@ end // end of [s2exp_template_instantiate]
 implement s2exp_absuni_and_add (loc0, s2e0) = let
 (*
   val () = begin
-    prerr "s2exp_absuni_and_add: before: s2e0 = "; prerr s2e0;
-    prerr_newline ()
+    print "s2exp_absuni_and_add: before: s2e0 = "; print s2e0; print_newline ()
   end // end of [val]
 *)
   val s2vss2pss2e = s2exp_absuni s2e0
 (*
   val () = begin
-    prerr "s2exp_absuni_and_add: after: s2vs = "; prerr s2vss2pss2e.0;
-    prerr_newline ()
+    print "s2exp_absuni_and_add: after: s2vs = "; print s2vss2pss2e.0;
+    print_newline ()
   end // end of [val]
   val () = begin
-    prerr "s2exp_absuni_and_add: before: s2e = "; prerr s2vss2pss2e.2;
-    prerr_newline ()
+    print "s2exp_absuni_and_add: before: s2e = "; print s2vss2pss2e.2;
+    print_newline ()
   end // end of [val]
 *)
   val () = trans3_env_add_svarlst (s2vss2pss2e.0)
@@ -1618,19 +1617,19 @@ end // end of [s2exp_absuni_and_add]
 implement s2exp_opnexi_and_add (loc0, s2e0) = let
 (*
   val () = begin
-    prerr "s2exp_opnexi_and_add: before: s2e0 = "; prerr s2e0;
-    prerr_newline ()
+    print "s2exp_opnexi_and_add: before: s2e0 = "; print s2e0;
+    print_newline ()
   end // end of [val]
 *)
   val s2vss2pss2e = s2exp_opnexi s2e0
 (*
   val () = begin
-    prerr "s2exp_opnexi_and_add: after: s2vs = "; prerr s2vss2pss2e.0;
-    prerr_newline ()
+    print "s2exp_opnexi_and_add: after: s2vs = "; print s2vss2pss2e.0;
+    print_newline ()
   end // end of [val]
   val () = begin
-    prerr "s2exp_opnexi_and_add: after: s2e = "; prerr s2vss2pss2e.2;
-    prerr_newline ()
+    print "s2exp_opnexi_and_add: after: s2e = "; print s2vss2pss2e.2;
+    print_newline ()
   end // end of [val]
 *)
   val () = trans3_env_add_svarlst (s2vss2pss2e.0)
@@ -1682,20 +1681,21 @@ implement trans3_env_hypo_add_p2atcst (loc0, p2tc, s2e0) =
             case+ s2e_d2c.s2exp_node of
             | S2Efun (_, _, _, _, s2es, s2e) => @(s2es, s2e)
             | _ => begin
-                prerr "INTERNAL ERROR: tran3_env_hypo_add_p2atcst: P2TCcon";
+                prerr "INTERNAL ERROR";
+                prerr ": [ats_trans3_env]: tran3_env_hypo_add_p2atcst: P2TCcon";
                 prerr_newline ();
                 $Err.abort {@(s2explst, s2exp)} ()
-              end
+              end // end of [_]
           ) : @(s2explst, s2exp)
 (*
           val () = begin
-            prerr "trans3_env_hypo_add_p2atcst: s2vpss_d2c = "; prerr_s2qualst s2vpss_d2c; prerr_newline ()
+            print "trans3_env_hypo_add_p2atcst: s2vpss_d2c = "; print_s2qualst s2vpss_d2c; print_newline ()
           end // end of [val]
           val () = begin
-            prerr "trans3_env_hypo_add_p2atcst: s2es_arg_res = "; prerr_s2explst s2es_fun_arg; prerr_newline ()
+            print "trans3_env_hypo_add_p2atcst: s2es_arg_res = "; print_s2explst s2es_fun_arg; print_newline ()
           end // end of [val]
           val () = begin
-            prerr "trans3_env_hypo_add_p2atcst: s2e_fun_res = "; prerr_s2exp s2e_fun_res; prerr_newline ()
+            print "trans3_env_hypo_add_p2atcst: s2e_fun_res = "; print_s2exp s2e_fun_res; print_newline ()
           end // end of [val]
 *)
           val () = aux (loc0, s2vpss_d2c) where {

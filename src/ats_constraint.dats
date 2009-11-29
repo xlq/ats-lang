@@ -31,8 +31,8 @@
 
 (* ****** ****** *)
 
-// Time: February 2008
 // Author: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
+// Time: February 2008
 
 (* ****** ****** *)
 
@@ -41,10 +41,8 @@
 (* ****** ****** *)
 
 %{^
-
 #include "ats_counter.cats" /* only needed for [ATS/Geizella] */
 #include "ats_solver_fm.cats"
-
 %}
 
 (* ****** ****** *)
@@ -174,7 +172,8 @@ implement s3bexp_iexp (knd, s3ie) = begin case+ s3ie of
     | ~1(*neq*) => if i <> 0 then s3bexp_true else s3bexp_false
     | ~2(*lt*) => if i < 0 then s3bexp_true else s3bexp_false
     | _ => begin
-        prerr "INTERNAL ERROR: s3bexp_iexp: knd = "; prerr knd; prerr_newline ();
+        prerr "INTERNAL ERROR";
+        prerr ": [ats_constraint]: s3bexp_iexp: knd = "; prerr knd; prerr_newline ();
         $Err.abort {s3bexp} ()
       end // end of [_]
     end // end of [S3IEint]
@@ -184,7 +183,8 @@ implement s3bexp_iexp (knd, s3ie) = begin case+ s3ie of
     | ~1(*neq*) => if i <> 0 then s3bexp_true else s3bexp_false
     | ~2(*lt*) => if i < 0 then s3bexp_true else s3bexp_false
     | _ => begin
-        prerr "INTERNAL ERROR: s3bexp_iexp: knd = "; prerr knd; prerr_newline ();
+        prerr "INTERNAL ERROR";
+        prerr ": [ats_constraint]: s3bexp_iexp: knd = "; prerr knd; prerr_newline ();
         $Err.abort {s3bexp} ()
       end // end of [_]
     end // end of [S2IEintinf]
@@ -400,7 +400,8 @@ fun s3aexp_make_s2cst_s2explst
 
 implement s3aexp_make_s2cst_s2explst (s2c, s2es, s2cs, fds) = let
   fn errmsg (s2c: s2cst_t): s3aexpopt_vt = begin
-    prerr "INTERNAL ERROR: s3aexp_make_s2cst_s2explst: Add_addr_int_addr";
+    prerr "INTERNAL ERROR";
+    prerr ": [ats_constraint]: s3aexp_make_s2cst_s2explst: Add_addr_int_addr";
     prerr_newline ();
     $Err.abort {s3aexpopt_vt} ()
   end // end of [errmsg]
@@ -455,7 +456,8 @@ fun s3bexp_make_s2cst_s2explst
 // a large but simple function
 implement s3bexp_make_s2cst_s2explst (s2c, s2es, s2cs, fds) = let
   fn errmsg (s2c: s2cst_t): s3bexpopt_vt = begin
-    prerr "INTERNAL ERROR: s3bexp_make_s2cst_s2explst: "; prerr s2c;
+    prerr "INTERNAL ERROR";
+    prerr ": [ats_constraint]: s3bexp_make_s2cst_s2explst: "; prerr s2c;
     prerr_newline ();
     $Err.abort {s3bexpopt_vt} ()
   end // end of [_]
@@ -801,7 +803,8 @@ fun s3iexp_make_s2cst_s2explst
 
 implement s3iexp_make_s2cst_s2explst (s2c, s2es, s2cs, fds) = let
   fn errmsg (s2c: s2cst_t): s3iexpopt_vt = begin
-    prerr "INTERNAL ERROR: s3iexp_make_s2cst_s2explst: Neg_int_int";
+    prerr "INTERNAL ERROR";
+    prerr ": [ats_constraint]: s3iexp_make_s2cst_s2explst: Neg_int_int";
     prerr_newline ();
     $Err.abort {s3iexpopt_vt} ()
   end // end of [errmsg]
@@ -1202,7 +1205,7 @@ in
   | _ => let // an expression that cannot be handled
       val () = begin
         prerr "warning(3): s3iexp_make_s2exp: s2e0 = "; prerr s2e0; prerr_newline ();
-      end
+      end // end of [val]
     in
       None_vt ()
     end // end of [_]
@@ -1240,8 +1243,8 @@ fn s2cst_index_find {n:pos}
 in
   case+ $Map.map_search (m, stamp) of
   | ~Some_vt (i) => if i < n then i else begin
-      $Loc.prerr_location loc0;
-      prerr ": Internal Error: s2cst_index_find: the static constant [";
+      $Loc.prerr_location loc0; prerr ": INTERNAL ERROR";
+      prerr ": [ats_constraint]: s2cst_index_find: the static constant [";
       prerr_s2cst s2c;
       prerr "] is associated with an index that is out-of-range.";
       prerr_newline ();
@@ -1249,7 +1252,8 @@ in
     end // end of [Some_vt]
   | ~None_vt () => begin
       $Loc.prerr_location loc0;
-      prerr ": Internal Error: s2cst_index_find: the static constant [";
+      prerr ": INTERNAL ERROR";
+      prerr ": [ats_constraint]: s2cst_index_find: the static constant [";
       prerr_s2cst s2c;
       prerr "] is not associated with any index.";
       prerr_newline ();
@@ -1267,16 +1271,16 @@ fn s2var_index_find {n:pos}
 in
   case+ $Map.map_search (m, stamp) of
   | ~Some_vt (i) => if i < n then i else begin
-      $Loc.prerr_location loc0;
-      prerr ": Internal Error: s2var_index_find: the static constant [";
+      $Loc.prerr_location loc0; prerr ": INTERNAL ERROR";
+      prerr ": [ats_constraint]: s2var_index_find: the static constant [";
       prerr_s2var s2v;
       prerr "] is associated with an index that is out-of-range.";
       prerr_newline ();
       $Err.abort {intBtw (1, n)} ()
     end // end of [Some_vt]
   | ~None_vt () => begin
-      $Loc.prerr_location loc0;
-      prerr ": Internal Error: s2var_index_find: the static constant [";
+      $Loc.prerr_location loc0; prerr ": INTERNAL ERROR";
+      prerr ": [ats_constraint]: s2var_index_find: the static constant [";
       prerr_s2var s2v;
       prerr "] is not associated with any index.";
       prerr_newline ();
@@ -1361,7 +1365,8 @@ in
       s3iexp_intvec_update_err (pf_arr | loc0, cim, vim, ivp, n, coef, s3ie2, errno);
     end // end of [S3AEpadd]
   | S3AEexp _ => begin
-      prerr "INTERNAL ERROR: s3aexp_intvec_update_err: unsupported term: s3ae0 = ";
+      prerr "INTERNAL ERROR";
+      prerr ": [ats_constraint]: s3aexp_intvec_update_err: unsupported term: s3ae0 = ";
       prerr s3ae0;
       prerr_newline ();
       $Err.abort {void} ()
@@ -1440,7 +1445,8 @@ in
       s3aexp_intvec_update_err (pf_arr | loc0, cim, vim, ivp, n, ~coef, s3ae2, errno);
     end // end of [S3IEpdiff]
   | S3IEexp _ => begin
-      prerr "INTERNAL ERROR: s3iexp_intvec_update_err: unsupported term: s3ie0 = ";
+      prerr "INTERNAL ERROR";
+      prerr ": [ats_constraint]: s3iexp_intvec_update_err: unsupported term: s3ie0 = ";
       prerr s3ie0;
       prerr_newline ();
       $Err.abort {void} ()
@@ -1510,7 +1516,8 @@ in
       $FM.ICvec (knd, $FM.intvecptr_make_view_ptr (pf_gc, pf_arr | ivp))
     end // end of [S3BEiexp]
   | S3BEexp _ => begin
-      prerr "INTERNAL ERROR: s3bexp_intvec_make_err: unsupported term: s3be0 = ";
+      prerr "INTERNAL ERROR";
+      prerr ": [ats_constraint]: s3bexp_intvec_make_err: unsupported term: s3be0 = ";
       prerr s3be0;
       prerr_newline ();
       $Err.abort ()

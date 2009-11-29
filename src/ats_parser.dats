@@ -74,7 +74,7 @@ fn flag_is_dyn (flag: int): bool = (flag > 0)
 implement parse_from_filename (flag, filename) = let
 (*
   val () = begin
-    prerr "parse_from_filename: "; $Fil.prerr_filename filename; prerr_newline ()
+    print "parse_from_filename: "; $Fil.print_filename filename; print_newline ()
   end // end of [val]
 *)
   val fullname = $Fil.filename_full filename

@@ -150,10 +150,10 @@ fn d2exp_s2eff_opt_of_d2exp
 implement d3exp_tr_dn (d3e, s2e) = let
 (*
   val () = begin
-    prerr "d3exp_tr_dn: d3e.d3exp_typ = "; prerr d3e.d3exp_typ; prerr_newline ()
+    print "d3exp_tr_dn: d3e.d3exp_typ = "; print d3e.d3exp_typ; print_newline ()
   end
   val () = begin
-    prerr "d3exp_tr_dn: s2e = "; prerr s2e; prerr_newline ()
+    print "d3exp_tr_dn: s2e = "; print s2e; print_newline ()
   end
 *)
 in
@@ -294,7 +294,8 @@ in
           val s2i = (case+ s2es_arg of
             | list_cons (s2e, _) => s2e
             | _ => begin
-                prerr "Internal Error: d2exp_int_tr_dn: Int_int_t0ype";
+                prerr "INTERNAL ERROR";
+                prerr ": [ats_trans3_exp_dn]: d2exp_int_tr_dn: Int_int_t0ype";
                 prerr_newline ();
                 $Err.abort {s2exp} ()
               end // end of [_]
@@ -308,7 +309,8 @@ in
           val s2i = (case+ s2es_arg of
             | list_cons (s2e, _) => s2e
             | _ => begin
-                prerr "Internal Error: d2exp_int_tr_dn: Int_int_t0ype";
+                prerr "INTERNAL ERROR";
+                prerr ": [ats_trans3_exp_dn]: d2exp_int_tr_dn: Int_int_t0ype";
                 prerr_newline ();
                 $Err.abort {s2exp} ()
               end // end of [_]
@@ -433,7 +435,7 @@ in
           val s2i = (case+ s2es_arg of
             | list_cons (s2e, _) => s2e | _ => begin
                 prerr "INTERNAL ERROR";
-                prerr ": d2exp_string_tr_dn: String_int_type";
+                prerr ": [ats_trans3_exp_dn]: d2exp_string_tr_dn: String_int_type";
                 prerr_newline ();
                 $Err.abort {s2exp} ()
               end // end of [_]
@@ -448,7 +450,7 @@ in
           val s2e_arg = (case+ s2es_arg of
             | list_cons (s2e, _) => s2e | list_nil () => begin
                 prerr "INTERNAL ERROR";
-                prerr ": d2exp_string_tr_dn: Printf_c_types_type";
+                prerr ": [ats_trans3_exp_dn]: d2exp_string_tr_dn: Printf_c_types_type";
                 prerr_newline ();
                 $Err.abort {s2exp} ()
               end // end of [list_nil]
@@ -463,10 +465,10 @@ in
           val s2e_fats = s2exp_make_printf_c_argtypes fats
 (*
           val () = begin
-            prerr "d2exp_string_tr_dn: s2e_arg = "; prerr s2e_arg;
-            prerr_newline ();
-            prerr "d2exp_string_tr_dn: s2e_fats = "; prerr s2e_fats;
-            prerr_newline ();
+            print "d2exp_string_tr_dn: s2e_arg = "; print s2e_arg;
+            print_newline ();
+            print "d2exp_string_tr_dn: s2e_fats = "; print s2e_fats;
+            print_newline ();
           end (* end of [val] *)
 *)
           (* printf_c_types_type is contravariant! *)
@@ -492,8 +494,8 @@ end // end of [d2exp_string_tr_dn]
 implement d2exp_tr_dn (d2e0, s2e0) = let
 (*
 val () = begin
-  prerr "d2exp_tr_dn: d2e0 = "; prerr d2e0; prerr_newline ()
-  prerr "d2exp_tr_dn: s2e0 = "; prerr s2e0; prerr_newline ()
+  print "d2exp_tr_dn: d2e0 = "; print d2e0; print_newline ()
+  print "d2exp_tr_dn: s2e0 = "; print s2e0; print_newline ()
 end
 *)
 val loc0 = d2e0.d2exp_loc
@@ -529,11 +531,9 @@ val d3e0 = case+ d2e0.d2exp_node of
   | D2Elam_dyn (lin, npf, p2ts_arg, d2e_body) => let
 (*
       val () = begin
-        prerr "d2exp_tr_dn: D2Elam_dyn: p2ts_arg = ";
-        prerr p2at_arg; prerr_newline ();
-        prerr "d2exp_tr_dn: D2Elam_dyn: d2e_body = ";
-        prerr d2e_body; prerr_newline ();
-      end
+        print "d2exp_tr_dn: D2Elam_dyn: p2ts_arg = "; print p2at_arg; print_newline ();
+        print "d2exp_tr_dn: D2Elam_dyn: d2e_body = "; print d2e_body; print_newline ();
+      end // end of [val]
 *)
       val s2e0 = s2exp_whnf s2e0
     in
@@ -551,7 +551,7 @@ val d3e0 = case+ d2e0.d2exp_node of
                 prerr " nonlinear function is given a linear type .";
               prerr_newline ();
               $Err.abort {void} ()
-            end
+            end // end of [if]
           val () = // pfarity check
             if npf <> npf_fun then begin
               prerr loc0;
@@ -561,7 +561,7 @@ val d3e0 = case+ d2e0.d2exp_node of
               if npf < npf_fun then prerr " more proof arguments.";
               prerr_newline ();
               $Err.abort {void} ()
-            end
+            end // end of [if]
           val () = trans3_env_push_sta ()
           var ofc: funcloopt_vt
           val d2e_body = d2exp_funclo_opt_of_d2exp (d2e_body, ofc)
@@ -598,7 +598,7 @@ val d3e0 = case+ d2e0.d2exp_node of
           val p2tcss = p2atcstlst_complement (p2atcstlst_of_p2atlst p2ts_arg)
 (*
           val () = begin
-            prerr "d2exp_tr_dn: D2Elam_dyn: p2tcss = "; prerr p2tcss; prerr_newline ()
+            print "d2exp_tr_dn: D2Elam_dyn: p2tcss = "; print p2tcss; print_newline ()
           end
 *)
           val cmplt = (
@@ -829,18 +829,17 @@ in
       val s2e_arg = case+ s2es_arg of
         | cons (s2e, _) => s2e
         | nil _ => begin
-            prerr loc0;
-            prerr ": Internal Error: assert_bool_tr_dn";
-            prerr_newline ();
+            prerr loc0; prerr ": INTERNAL ERROR";
+            prerr ": [ats_trans3_exp_dn]: assert_bool_tr_dn"; prerr_newline ();
             $Err.abort {s2exp} ()
-          end
+          end // end of [nil]
       // end of [s2e_arg]
     in
       trans3_env_hypo_add_eqeq (loc0, s2exp_bool b, s2e_arg)
-    end
+    end // end of [S2Eapp]
   | _ => begin
       $SOL.s2exp_tyleq_solve (loc0, s2e0, s2exp_bool_t0ype ())
-    end
+    end // end of [_]
 end // end of [assert_bool_tr_dn]
 
 (* ****** ****** *)
@@ -872,9 +871,9 @@ implement c2lau_tr_dn
   val p2ts = c2l.c2lau_pat
 (*
   val () = begin
-    prerr "c2lau_tr_dn: p2ts = "; prerr p2ts; prerr_newline ();
-    prerr "c2lau_tr_dn: s2es_pat = "; prerr s2es_pat; prerr_newline ();
-    prerr "c2lau_tr_dn: s2e0 = "; prerr s2e0; prerr_newline ();
+    print "c2lau_tr_dn: p2ts = "; print p2ts; print_newline ();
+    print "c2lau_tr_dn: s2es_pat = "; print s2es_pat; print_newline ();
+    print "c2lau_tr_dn: s2e0 = "; print s2e0; print_newline ();
   end
 *)
   val () = trans3_env_push_sta ()
@@ -971,7 +970,7 @@ fun c2laulst2_tr_dn {n:nat}
   : c3laulst n = let
 (*
   val () = begin
-    prerr "c2laulst2_tr_dn: s2es_pat = "; prerr s2es_pat; prerr_newline ();
+    print "c2laulst2_tr_dn: s2es_pat = "; print s2es_pat; print_newline ();
   end // end of [val]
 *)
   var p2tcss: p2atcstlstlst n = c2lau_pat_complement c2l
@@ -1014,8 +1013,8 @@ and c2laulst2_rest_tr_dn {n,ni:nat}
         val p2tcs0 = p2atcstlst_of_p2atlst p2ts
 (*
         val () = begin
-          prerr "c2laulst2_rest_tr_dn: p2tcs0 = "; prerr p2tcs0; prerr_newline ();
-          prerr "c2laulst2_rest_tr_dn: p2tcss0 = "; prerr p2tcss0; prerr_newline ();
+          print "c2laulst2_rest_tr_dn: p2tcs0 = "; print p2tcs0; print_newline ();
+          print "c2laulst2_rest_tr_dn: p2tcss0 = "; print p2tcss0; print_newline ();
         end (* end of [val] *)
 *)
         val p2tcss1 = aux (p2tcss0, list_vt_nil ()) where {
@@ -1034,7 +1033,7 @@ and c2laulst2_rest_tr_dn {n,ni:nat}
         } // end of [where]
 (*
         val () = begin
-          prerr "c2laulst2_rest_tr_dn: p2tcss1 = "; prerr p2tcss1; prerr_newline ();
+          print "c2laulst2_rest_tr_dn: p2tcss1 = "; print p2tcss1; print_newline ();
         end // end of [val]
 *)
         val () = case+ p2tcss1 of
@@ -1063,7 +1062,7 @@ and c2laulst2_rest_tr_dn {n,ni:nat}
         // end of [val]
 (*
         val () = begin
-          prerr "c2laulst_rest_tr_dn: p2tcss0 = "; prerr p2tcss0; prerr_newline ();
+          print "c2laulst_rest_tr_dn: p2tcss0 = "; print p2tcss0; print_newline ();
         end // end of [val]
 *)
         val () = stbefitemlst_restore_lin_typ (sbis)
@@ -1078,7 +1077,7 @@ and c2laulst2_rest_tr_dn {n,ni:nat}
   val c3ls_rst  = aux_main (list_vt_nil (), p2tcss0, c2ls_rst)
 (*
   val () = begin
-    prerr "c2laulst2_rest_tr_dn: p2tcss0 = "; prerr p2tcss0; prerr_newline ();
+    print "c2laulst2_rest_tr_dn: p2tcss0 = "; print p2tcss0; print_newline ();
   end // end of [val]
 *)
 in

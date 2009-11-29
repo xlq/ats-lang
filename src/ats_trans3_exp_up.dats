@@ -171,9 +171,8 @@ fn d2exp_arg_body_typ_syn (
   ) : s2exp = let
 (*
   val () = begin
-    prerr "d2exp_arg_body_typ_syn: d2e_body = ";
-    prerr d2e_body;
-    prerr_newline ()
+    print "d2exp_arg_body_typ_syn: d2e_body = "; print d2e_body;
+    print_newline ()
   end // end of [val]
 *)
   val loc0 = d2e0.d2exp_loc
@@ -190,9 +189,8 @@ fn d2exp_arg_body_typ_syn (
   // end of [val]
 (*
   val () = begin
-    prerr "d2exp_arg_body_typ_syn: s2e_fun = ";
-    prerr s2e_fun;
-    prerr_newline ()
+    print "d2exp_arg_body_typ_syn: s2e_fun = "; print s2e_fun;
+    print_newline ()
   end // end of [val]
 *)
 in
@@ -350,7 +348,8 @@ fun d3lab1lst_of_d3lab0lst_s2lablst
               d3lab1_ind (d3l.d3lab0_loc, d3ess, s2e_elt)
             end // end of [S2LAB1ind]
           | _ => begin
-              prerr "INTERNAL ERROR: d3lab1lst_of_d3lab0lst_s2lablst: D3LAB0ind";
+              prerr "INTERNAL ERROR";
+              prerr ": [ats_trans3_exp_up]: d3lab1lst_of_d3lab0lst_s2lablst: D3LAB0ind";
               prerr_newline ();
               $Err.abort {d3lab1} ()
             end // end of [_]
@@ -359,7 +358,7 @@ fun d3lab1lst_of_d3lab0lst_s2lablst
           | S2LAB1lab (l, s2e) => d3lab1_lab (d3l.d3lab0_loc, l, s2e)
           | _ => begin
               prerr "INTERNAL ERROR";
-              prerr ": d3lab1lst_of_d3lab0lst_s2lablst: D3LAB0lab: s2l = ";
+              prerr ": [ats_trans3_exp_up]: d3lab1lst_of_d3lab0lst_s2lablst: D3LAB0lab: s2l = ";
               prerr s2l; prerr_newline ();
               $Err.abort {d3lab1} ()
             end // end of [_]
@@ -371,7 +370,7 @@ fun d3lab1lst_of_d3lab0lst_s2lablst
   | (list_nil (), list_nil ()) => list_nil ()
   | (_, _) => begin
       prerr "INTERNAL ERROR";
-      prerr ": d3lab1lst_of_d3lab0lst_s2lablst: length mismatch";
+      prerr ": [ats_trans3_exp_up]: d3lab1lst_of_d3lab0lst_s2lablst: length mismatch";
       prerr_newline ();
       $Err.abort ()
     end // end of [_, _]
@@ -398,10 +397,9 @@ fn d3exp_clo_restore (d3e: d3exp): d3exp = let
       end // end of [S2Efun]
     | _ => begin
         prerr loc;
-        prerr ": Internal Error";
-        prerr ": d3exp_clo_restore: not a function type: s2e_fun = ";
-        prerr s2e_fun;
-        prerr_newline ();
+        prerr ": INTERNAL ERROR";
+        prerr ": [ats_trans3_exp_up]: d3exp_clo_restore: not a function type: s2e_fun = ";
+        prerr s2e_fun; prerr_newline ();
         $Err.abort {s2exp} ()
       end // end of [_]
   ) : s2exp
@@ -445,9 +443,9 @@ fun d3explst_arg_restore
       val s2e_res = s2exp_opnexi_and_add (loc, s2e_res)
 (*
       val () = begin
-        prerr "d3explst_arg_restore: d3e = "; prerr d3e; prerr_newline ();
-        prerr "d3explst_arg_restore: d3e.typ = "; prerr d3e.d3exp_typ; prerr_newline ();
-        prerr "d3explst_arg_restore: s2e_res = "; prerr s2e_res; prerr_newline ();
+        print "d3explst_arg_restore: d3e = "; print d3e; print_newline ();
+        print "d3explst_arg_restore: d3e.typ = "; print d3e.d3exp_typ; print_newline ();
+        print "d3explst_arg_restore: s2e_res = "; print s2e_res; print_newline ();
       end // end of [val]
 *)
       val freeknd = d3exp_lval_typ_set_arg (refval, d3e, s2e_res)
@@ -549,9 +547,8 @@ fn d23exp_app_tr_up
   : d3exp = let
 (*
   val () = begin
-    prerr "d23exp_app_tr_up: d3e_fun.d3exp_typ = ";
-    prerr d3e_fun.d3exp_typ;
-    prerr_newline ()
+    print "d23exp_app_tr_up: d3e_fun.d3exp_typ = "; print d3e_fun.d3exp_typ;
+    print_newline ()
   end
 *)
   val loc_fun = d3e_fun.d3exp_loc
@@ -559,7 +556,7 @@ fn d23exp_app_tr_up
   val () = d3exp_typ_set (d3e_fun, s2e_fun)
 (*
   val () = begin
-    prerr "d23exp_app_tr_up: s2e_fun = "; prerr s2e_fun; prerr_newline ()
+    print "d23exp_app_tr_up: s2e_fun = "; print s2e_fun; print_newline ()
   end
 *)
 in
@@ -569,12 +566,10 @@ in
     ) => let
 (*
       val () = begin
-        prerr "d23exp_app_tr_up: s2fe_fun = "; prerr s2fe_fun; prerr_newline ()
-      end
-      val () = begin
-        prerrf ("d23exp_app_tr_up: npf = %i and npf_fun = %i", @(npf, npf_fun));
-        prerr_newline ()
-      end
+        print "d23exp_app_tr_up: s2fe_fun = "; print s2fe_fun; print_newline ();
+        printf ("d23exp_app_tr_up: npf = %i and npf_fun = %i", @(npf, npf_fun));
+        print_newline ()
+      end // end of [val]
 *)
       val loc_app = $Loc.location_combine (loc_fun, loc_arg)
       val () = pfarity_check_fun (loc_fun, npf_fun, npf)
@@ -797,7 +792,7 @@ in
   | list_cons (xyz, xyzs) => let
 (*
       val () = begin
-        prerr "aux_filter: xyz = "; prerr_xyz xyz; prerr_newline ()
+        print "aux_filter: xyz = "; print_xyz xyz; print_newline ()
       end // end of [val]
 *)
     in
@@ -807,7 +802,7 @@ in
           val xyz_new = @(xyz.0, s2keapprox.0, approx)
 (*
           val () = begin
-            prerr "aux_filter: xyz_new = "; prerr_xyz xyz_new; prerr_newline ()
+            print "aux_filter: xyz_new = "; print_xyz xyz_new; print_newline ()
           end
 *)
         in
@@ -844,14 +839,12 @@ fun aux1
         val () = d3exp_typ_set (d3e_fun, s2e_fun)
 (*
         val () = begin
-          prerr "d2exp_apps_sym_tr_up: aux1: s2e_fun = ";
-          prerr s2e_fun;
-          prerr_newline ()
+          print "d2exp_apps_sym_tr_up: aux1: s2e_fun = "; print s2e_fun;
+          print_newline ()
         end // end of [val]
         val () = begin
-          prerr "d2exp_apps_sym_tr_up: aux1: s2es_arg = ";
-          prerr s2es_arg;
-          prerr_newline ()
+          print "d2exp_apps_sym_tr_up: aux1: s2es_arg = "; print s2es_arg;
+          print_newline ()
         end // end of [val]
 *)
       in
@@ -950,8 +943,8 @@ in
             val d3es = d23explst_tr_up (d2explst_arg_tr_up d2es)
 (*
             val () = begin
-              prerr "d2exp_apps_sym_tr_up: aux2: s2es = ";
-              prerr (d3explst_typ_get d3es); prerr_newline ()
+              print "d2exp_apps_sym_tr_up: aux2: s2es = ";
+              print (d3explst_typ_get d3es); print_newline ()
             end
 *)
             val d3a = D3EXPARGdyn (loc_arg, npf, d3es)
@@ -997,14 +990,12 @@ fn d2exp_apps_sym_tr_up
   (loc0: loc_t, d2s: d2sym, d2as: d2exparglst): d3exp = let
 (*
   val () = begin
-    prerr "d2exp_apps_sym_tr_up: d2s = ";
-    prerr d2s;
-    prerr_newline ()
+    print "d2exp_apps_sym_tr_up: d2s = "; print d2s;
+    print_newline ()
   end // end of [val]
   val () = begin
-    prerr "d2exp_apps_sym_tr_up: d2s.d2sym_itm = ";
-    prerr d2s.d2sym_itm;
-    prerr_newline ()
+    print "d2exp_apps_sym_tr_up: d2s.d2sym_itm = "; print d2s.d2sym_itm;
+    print_newline ()
   end // end of [val]
 *)
   val xyzs =
@@ -1071,7 +1062,7 @@ in
   | L2VALptr (d2e0, d2ls) => let
 (*
       val () = begin
-        prerr "d2exp_assgn_tr_up: L2VALptr: d2e0 = "; prerr d2e0; prerr_newline ()
+        print "d2exp_assgn_tr_up: L2VALptr: d2e0 = "; print d2e0; print_newline ()
       end
 *)
       val d3e0 = d2exp_tr_up d2e0
@@ -1079,7 +1070,7 @@ in
       val s2e0 = d3e0.d3exp_typ
 (*
       val () = begin
-        prerr "d2exp_assgn_tr_up: L2VALptr: s2e0 = "; prerr s2e0; prerr_newline ()
+        print "d2exp_assgn_tr_up: L2VALptr: s2e0 = "; print s2e0; print_newline ()
       end
 *)
     in
@@ -1093,12 +1084,12 @@ in
           val s2ls = s2exp_addr_slablst_assgn (loc0, s2e_addr, s2ls_nt, s2e_r)
 (*
           val sgn = $Lst.list_length_compare (s2ls, s2ls_nt)
-          val () =
-            if (sgn <> 0) then begin
-              prerr "Internal Error: d2exp_assgn_tr_up: list length mismatch!";
-              prerr_newline ();
-              $Err.abort {void} ()
-            end
+          val () = if (sgn <> 0) then begin
+            prerr "INTERNAL ERROR";
+            prerr ": [ats_trans3_exp_up]: d2exp_assgn_tr_up: list length mismatch!";
+            prerr_newline ();
+            $Err.abort {void} ()
+          end // end of [val]
 *)
           val d3ls = d3lab1lst_of_d3lab0lst_s2lablst (d3ls_nt, s2ls)
         in
@@ -1205,7 +1196,7 @@ fn d2exp_deref_tr_up
   (loc0: loc_t, d2e0: d2exp, d2ls: d2lablst): d3exp = let
 (*
   val () = begin
-    prerr "d2exp_deref_tr_up: d2e0 = "; prerr d2e0; prerr_newline ();
+    print "d2exp_deref_tr_up: d2e0 = "; print d2e0; print_newline ();
   end
 *)
   val d3e0 = d2exp_tr_up d2e0
@@ -1213,7 +1204,7 @@ fn d2exp_deref_tr_up
   val s2e0 = d3e0.d3exp_typ
 (*
   val () = begin
-    prerr "d2exp_deref_tr_up: s2e0 = "; prerr s2e0; prerr_newline ();
+    print "d2exp_deref_tr_up: s2e0 = "; print s2e0; print_newline ();
   end // end of [val]
 *)
 in
@@ -1224,12 +1215,13 @@ in
       val (s2e_elt, s2ls) = s2exp_addr_slablst_deref (loc0, s2e_addr, s2ls_nt)
 (*
       val () = begin
-        prerr "d2exp_deref_tr_up: s2e_elt = "; prerr s2e_elt; prerr_newline ()
+        print "d2exp_deref_tr_up: s2e_elt = "; print s2e_elt; print_newline ()
       end
       val [sgn:int] sgn = $Lst.list_length_compare (s2ls, s2ls_nt)
       val () [sgn==0] void =
         if (sgn <> 0) then begin
-          prerr "Internal Error: d2exp_deref_tr_up: list length mismatch!";
+          prerr "INTERNAL ERROR";
+          prerr ": [ats_trans3_exp_up]: d2exp_deref_tr_up: list length mismatch!";
           prerr_newline ();
           $Err.abort {void} ();
           assert (sgn = 0) // deadcode
@@ -1298,7 +1290,7 @@ in
       prerr "] indicates that it should not be.";
       prerr_newline ();
       $Err.abort {d3exp} ()
-    end
+    end // end of [_]
 end // end [d2exp_con_tr_up]
 
 (* ****** ****** *)
@@ -1391,19 +1383,19 @@ fn d2exp_foldat_freeat_tr_up
         end // end of [val]
 (*
         val () = if isfold then begin // debugging
-          prerr "d2exp_foldat_tr_up: s2es_fun_arg = ";
-          prerr s2es_fun_arg;
-          prerr_newline ();
-          prerr "d2exp_foldat_tr_up: s2es_arg = ";
-          prerr s2es_arg;
-          prerr_newline ();
+          print "d2exp_foldat_tr_up: s2es_fun_arg = ";
+          print s2es_fun_arg;
+          print_newline ();
+          print "d2exp_foldat_tr_up: s2es_arg = ";
+          print s2es_arg;
+          print_newline ();
         end else begin
-          prerr "d2exp_freeat_tr_up: s2es_fun_arg = ";
-          prerr s2es_fun_arg;
-          prerr_newline ();
-          prerr "d2exp_freeat_tr_up: s2es_arg = ";
-          prerr s2es_arg;
-          prerr_newline ();
+          print "d2exp_freeat_tr_up: s2es_fun_arg = ";
+          print s2es_fun_arg;
+          print_newline ();
+          print "d2exp_freeat_tr_up: s2es_arg = ";
+          print s2es_arg;
+          print_newline ();
         end // end of [if]
 *)
         val () = // error checking
@@ -1464,10 +1456,8 @@ fn d2exp_arg_body_tr_up (
   ) : @(s2exp, p3atlst, d3exp) = let
 (*
   val () = begin
-    prerr "d2exp_arg_body_tr_up: p2ts_arg = ";
-    prerr p2ts_arg; prerr_newline ();
-    prerr "d2exp_arg_body_tr_up: d2e_body = ";
-    prerr d2e_body; prerr_newline ();
+    print "d2exp_arg_body_tr_up: p2ts_arg = "; print p2ts_arg; print_newline ();
+    print "d2exp_arg_body_tr_up: d2e_body = "; print d2e_body; print_newline ();
   end // end of [val]
 *)
   val () = trans3_env_push_sta ()
@@ -1479,15 +1469,15 @@ fn d2exp_arg_body_tr_up (
   val (pf_d2varset | ()) = the_d2varset_env_push_lam (lin)
 (*
   val () = begin
-    prerr "d2exp_tr_up: D2Elam_dyn: d2varset = ";
-    the_d2varset_env_prerr_ld2vs; prerr_newline ()
+    print "d2exp_tr_up: D2Elam_dyn: d2varset = ";
+    the_d2varset_env_print_ld2vs; print_newline ()
   end // end of [val]
 *)
   val () = the_d2varset_env_add_p2atlst p2ts_arg
 (*
   val () = begin
-    prerr "d2exp_tr_up: D2Elam_dyn: d2varset = ";
-    the_d2varset_env_prerr_ld2vs; prerr_newline ()
+    print "d2exp_tr_up: D2Elam_dyn: d2varset = ";
+    the_d2varset_env_print_ld2vs; print_newline ()
   end // end of [val]
 *)
   val s2es_arg = p2atlst_typ_syn p2ts_arg
@@ -1496,7 +1486,7 @@ fn d2exp_arg_body_tr_up (
   val p2tcss = p2atcstlst_complement (p2atcstlst_of_p2atlst p2ts_arg)
 (*
   val () = begin
-    prerr "d2exp_tr_up: D2Elam_dyn: p2tcss = "; prerr p2tcss; prerr_newline ()
+    print "d2exp_tr_up: D2Elam_dyn: p2tcss = "; print p2tcss; print_newline ()
   end // end of [val]
 *)
   val cmplt = (
@@ -1524,7 +1514,7 @@ fn d2exp_arg_body_tr_up (
   // end of [val]
 (*
   val () = begin
-    prerr "d2exp_tr_up: D2Elam: s2e_fun = "; prerr s2e_fun; prerr_newline ()
+    print "d2exp_tr_up: D2Elam: s2e_fun = "; print s2e_fun; print_newline ()
   end // end of [val]
 *)
 in
@@ -1540,7 +1530,8 @@ fn d2exp_lazy_delay_tr_up
   val () = if s2exp_is_linear s2e_eval then begin // linearity checking
     prerr_loc_error3 loc0;
     prerr ": the keyword [$delay_vt] is needed to form a linear lazy value.";
-    prerr_newline ()
+    prerr_newline ();
+    $Err.abort {void} ()
   end // end of [val]
   val s2e_lazy = s2exp_lazy_t0ype_type s2e_eval
 in
@@ -1687,7 +1678,7 @@ fn d2exp_rec_tr_up
   : d3exp = let
 (*
   val () = begin
-    prerr "labd2explst_tr_up: ld2es = "; prerr ld2es; prerr_newline ()
+    print "labd2explst_tr_up: ld2es = "; print ld2es; print_newline ()
   end
 *)
   fun aux (ld2es: labd2explst): labd3explst =
@@ -1699,7 +1690,7 @@ fn d2exp_rec_tr_up
   val ld3es = aux ld2es
 (*
   val () = begin
-    prerr "labd2explst_tr_up: ls2es = "; prerr ls2es; prerr_newline ()
+    print "labd2explst_tr_up: ls2es = "; print ls2es; print_newline ()
   end
 *)
   val () = if recknd = 2 then labd3explst_nonlin_check (ld3es)
@@ -1739,7 +1730,7 @@ fn d2exp_sel_tr_up
   (loc0: loc_t, d2e0: d2exp, d2ls: d2lablst): d3exp = let
 (*
   val () = begin
-    prerr "d2exp_sel_tr_up: d2e0 = "; prerr d2e0; prerr_newline ()
+    print "d2exp_sel_tr_up: d2e0 = "; print d2e0; print_newline ()
   end // end of [val]
 *)
 in
@@ -1747,7 +1738,7 @@ in
   | D2Evar d2v when d2var_is_mutable d2v => let
 (*
       val () = begin
-        prerr "d2exp_sel_tr_up: D2Evar(mut): d2v = "; prerr_d2var d2v; prerr_newline ()
+        print "d2exp_sel_tr_up: D2Evar(mut): d2v = "; print_d2var d2v; print_newline ()
       end // end of [val]
 *)
       val d3ls_nt = d2lablst_tr_up d2ls
@@ -1756,7 +1747,7 @@ in
       val (s2e_elt, s2ls) = s2exp_addr_slablst_deref (loc0, s2e_addr, s2ls_nt)
 (*
       val () = begin
-        prerr "d2exp_sel_tr_up: s2e_elt = "; prerr s2e_elt; prerr_newline ()
+        print "d2exp_sel_tr_up: s2e_elt = "; print s2e_elt; print_newline ()
       end // end of [val]
       val [sgn:int] sgn = $Lst.list_length_compare (s2ls, s2ls_nt)
       val () = (if (sgn <> 0) then begin
@@ -1776,7 +1767,7 @@ in
   | D2Evar d2v when d2var_is_linear d2v => let
 (*
       val () = begin
-        prerr "d2exp_sel_tr_up: D2Evar(lin): d2v = "; prerr_d2var d2v; prerr_newline ()
+        print "d2exp_sel_tr_up: D2Evar(lin): d2v = "; print_d2var d2v; print_newline ()
       end // end of [val]
 *)
       val d3ls_nt = d2lablst_tr_up d2ls
@@ -2038,7 +2029,7 @@ fun d2explst_elt_tr_dn (d2es: d2explst, s2e: s2exp): d3explst =
 implement d2exp_tr_up (d2e0) = let
 (*
 val () = begin
-  prerr "d2exp_tr_up: d2e0 = "; prerr d2e0; prerr_newline ()
+  print "d2exp_tr_up: d2e0 = "; print d2e0; print_newline ()
 end
 *)
 extern fun floatkind_eval
@@ -2294,15 +2285,15 @@ val d3e0 = (case+ d2e0.d2exp_node of
       val d2as = list_nil () // no arguments for [d2m]
 (*
       val () = begin
-        prerr "d2exp_tr_up: D2Emac: loc0 = ";
-        $Loc.prerr_location loc0; prerr_newline ()
+        print "d2exp_tr_up: D2Emac: loc0 = ";
+        $Loc.print_location loc0; print_newline ()
       end // end of [val]
 *)
       val d2e0 = $Mac.macro_eval_app_short (loc0, d2m, d2as)
 (*
       val () = begin
-        prerr "d2exp_tr_up: D2Emac: d2e0.d2exp_loc = ";
-        $Loc.prerr_location d2e0.d2exp_loc; prerr_newline ()
+        print "d2exp_tr_up: D2Emac: d2e0.d2exp_loc = ";
+        $Loc.print_location d2e0.d2exp_loc; print_newline ()
       end // end of [val]
 *)
     in
@@ -2311,7 +2302,7 @@ val d3e0 = (case+ d2e0.d2exp_node of
   | D2Emacsyn (knd, d2e) => d2exp_tr_up d2e_mac where {
 (*
       val () = begin
-        prerr "d2exp_tr_up: D2Emacsyn: d2e = "; prerr d2e; prerr_newline ()
+        print "d2exp_tr_up: D2Emacsyn: d2e = "; print d2e; print_newline ()
       end // end of [val]
 *)
       val d2e_mac = case+ knd of
@@ -2325,7 +2316,7 @@ val d3e0 = (case+ d2e0.d2exp_node of
           end // end of [MACSYNKINDencode]
 (*
       val () = begin
-        prerr "d2exp_tr_up: D2Emacsyn: d2e_mac = "; prerr d2e_mac; prerr_newline ()
+        print "d2exp_tr_up: D2Emacsyn: d2e_mac = "; print d2e_mac; print_newline ()
       end // end of [val]
 *)
     } // end of [D2Emacsyn]
@@ -2428,11 +2419,11 @@ val d3e0 = (case+ d2e0.d2exp_node of
 ) : d3exp // end of [val]
 (*
 val () = begin
-  prerr "d2exp_tr_up: d3e0 = "; prerr d3e0; prerr_newline ()
+  print "d2exp_tr_up: d3e0 = "; print d3e0; print_newline ()
 end
 val s2e0 = d3e0.d3exp_type
 val () = begin
-  prerr "d2exp_tr_up: s2e0 = "; prerr s2e0; prerr_newline ()
+  print "d2exp_tr_up: s2e0 = "; print s2e0; print_newline ()
 end
 *)
 
@@ -2478,9 +2469,9 @@ end // end of [d2exp_cst_tr_up]
 fn d2exp_var_mut_tr_up (loc0: loc_t, d2v: d2var_t): d3exp = let
 (*
   val () = begin
-    prerr "d2exp_var_mut_tr_up: d2v = "; prerr d2v; prerr_newline ();
-    prerr "d2exp_var_mut_tr_up: d2varset = ";
-    the_d2varset_env_prerr_ld2vs (); prerr_newline ()
+    print "d2exp_var_mut_tr_up: d2v = "; print d2v; print_newline ();
+    print "d2exp_var_mut_tr_up: d2varset = ";
+    the_d2varset_env_print_ld2vs (); print_newline ()
   end // end of [val]
 *)
   val s2e_addr = d2var_addr_get_some (loc0, d2v)
@@ -2494,10 +2485,10 @@ fn d2exp_var_nonmut_tr_up (loc0: loc_t, d2v: d2var_t): d3exp = let
   val s2e_d2v = d2var_typ_get_some (loc0, d2v)
 (*
   val () = begin
-    prerr "d2exp_var_nonmut_tr_up: d2v = "; prerr d2v; prerr_newline ();
-    prerr "d2exp_var_nonmut_tr_up: lin_d2v = "; prerr lin_d2v; prerr_newline ();
-    prerr "d2exp_var_nonmut_tr_up: d2varset = ";
-    the_d2varset_env_prerr_ld2vs (); prerr_newline ();
+    print "d2exp_var_nonmut_tr_up: d2v = "; print d2v; print_newline ();
+    print "d2exp_var_nonmut_tr_up: lin_d2v = "; print lin_d2v; print_newline ();
+    print "d2exp_var_nonmut_tr_up: d2varset = ";
+    the_d2varset_env_print_ld2vs (); print_newline ();
   end // end of [val]
 *)
   val () = if lin_d2v >= 0 then let

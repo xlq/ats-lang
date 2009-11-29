@@ -145,8 +145,7 @@ ats_ptr_type
 ats_array_ptr_alloc_tsz (
   ats_int_type n, ats_size_type tsz
 ) {
-  size_t ntsz = n * tsz ;
-  return ATS_MALLOC(ntsz) ;
+  return ATS_MALLOC(n * tsz) ; // uninitialized
 } /* end of [ats_array_ptr_alloc_tsz] */
 
 ats_void_type

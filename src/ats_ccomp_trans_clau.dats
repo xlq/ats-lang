@@ -236,8 +236,8 @@ extern fun labhipatlst_test_int
 implement hipat_test_int (hip1, hip2) = let
 (*
   val () = begin
-    prerr "hipat_test_int: hip1 = "; prerr hip1; prerr_newline ();
-    prerr "hipat_test_int: hip2 = "; prerr hip2; prerr_newline ();
+    print "hipat_test_int: hip1 = "; print hip1; print_newline ();
+    print "hipat_test_int: hip2 = "; print hip2; print_newline ();
   end // end of [val]
 *)
 in
@@ -331,8 +331,8 @@ end // end of [hipatlst_is_any]
 implement hipat_test_sub (hip1, hip2) = let
 (*
   val () = begin
-    prerr "hipat_test_sub: hip1 = "; prerr hip1; prerr_newline ();
-    prerr "hipat_test_sub: hip2 = "; prerr hip2; prerr_newline ();
+    print "hipat_test_sub: hip1 = "; print hip1; print_newline ();
+    print "hipat_test_sub: hip2 = "; print hip2; print_newline ();
   end // end of [val]
 *)
 in

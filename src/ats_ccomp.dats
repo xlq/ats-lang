@@ -63,11 +63,11 @@ staload "ats_ccomp_env.sats"
 
 (* ****** ****** *)
 
-#define THISFILENAME "ats_ccomp.dats"
+typedef stamp_t = $Stamp.stamp_t
 
 (* ****** ****** *)
-
-typedef stamp_t = $Stamp.stamp_t
+  
+fn prerr_interror () = prerr "INTERNAL ERROR (ats_ccomp)"
 
 (* ****** ****** *)
 
@@ -152,8 +152,7 @@ extern fun tmpvar_root_set (tmp: tmpvar, otmp: tmpvaropt): void
   = "ats_ccomp_tmpvar_root_set"
 
 implement tmpvar_make_root (tmp) = let
-  val otmp = (
-    case+ tmp.tmpvar_root of
+  val otmp = (case+ tmp.tmpvar_root of
     | TMPVAROPTnone () => TMPVAROPTsome tmp | otmp => otmp
   ) : tmpvaropt
   val () = tmpvar_root_set (tmp, otmp)
@@ -278,7 +277,7 @@ implement funlab_make_cst_typ (d2c, tmparg, hit) = let
   ) : string
 (*
   val () = begin
-    prerr "funlab_make_cst_type: name = "; prerr name; prerr_newline ()
+    print "funlab_make_cst_type: name = "; print name; print_newline ()
   end // end of [val]
 *)
   val level = d2var_current_level_get ()
@@ -328,7 +327,7 @@ implement funlab_typ_arg_get (fl) = let
   | HITfun (_(*fc*), hits_arg, _(*hit_res*)) =>
       hityplst_encode (hits_arg)
   | _ => begin
-      prerr "INTERNAL ERROR";
+      prerr_interror ();
       prerr ": funlab_typ_arg_get: hit_fun = "; prerr_hityp hit_fun;
       prerr_newline ();
       $Err.abort {hityplst_t} ()
@@ -341,7 +340,7 @@ implement funlab_typ_res_get (fl) = let
   | HITfun (_(*fc*), _(*hits_arg*), hit_res) =>
       hityp_encode (hit_res)
   | _ => begin
-      prerr "INTERNAL ERROR";
+      prerr_interror ();
       prerr ": funlab_typ_res_get: hit_fun = "; prerr_hityp hit_fun;
       prerr_newline ();
       $Err.abort {hityp_t} ()
@@ -353,7 +352,7 @@ implement funlab_funclo_get (fl) = let
   case+ hit_fun.hityp_node of
   | HITfun (funclo, _(*hits_arg*), _(*hit_res*)) => funclo
   | _ => begin
-      prerr "INTERNAL ERROR";
+      prerr_interror ();
       prerr ": funlab_funclo_get: hit_fun = "; prerr_hityp hit_fun;
       prerr_newline ();
       $Err.abort {$Syn.funclo} ()
@@ -369,11 +368,8 @@ implement funlab_entry_get (fl) = fl.funlab_entry
 implement funlab_entry_get_some (fl) = begin
   case+ fl.funlab_entry of
   | Some entry => entry | None () => begin
-      prerr "Internal Error";
-      $Deb.debug_prerrf (": %s", @(THISFILENAME));
-      prerr ": funlab_entry_get_some";
-      prerr ": no entry assocated with ["; prerr_funlab fl; prerr "]";
-      prerr_newline ();
+      prerr_interror ();
+      prerr ": funlab_entry_get_some: fl = "; prerr_funlab fl; prerr_newline ();
       $Err.abort {funentry_t} ()
     end // end of [None]
 end (* end of [funlab_entry_get_some] *)
@@ -659,8 +655,8 @@ implement instr_add_move_rec
     | _ when recknd = 0 => INSTRmove_rec_flt (tmp_res, hit_rec, lvps)
     | _ when recknd > 0 => INSTRmove_rec_box (tmp_res, hit_rec, lvps)
     | _ => begin
-        prerr "Internal Error: instr_add_move_rec: recknd = ";
-        prerr recknd; prerr_newline ();
+        prerr_interror ();
+        prerr ": instr_add_move_rec: recknd = "; prerr recknd; prerr_newline ();
         $Err.abort {instr} ()
       end // end of [_]
     ) : instr
