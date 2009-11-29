@@ -258,7 +258,8 @@ implement the_dynctx_pop (pf_push | (*none*)) = let
       end // end of [list_vt_nil]
   end : dynctx // end of [val]
   val () = if err > 0 then begin // error checking
-    prerr "INTERNAL ERROR: ats-ccomp_trans: the_dynctx_pop";
+    prerr "INTERNAL ERROR";
+    prerr ": [ats_ccomp_trans]: the_dynctx_pop";
     prerr_newline ();
     $Err.abort {void} ()
   end // end of [val]
@@ -962,7 +963,7 @@ fn funarg_valprim_make
     in
       if refval > 0 then valprim_arg_ref (n, hit)
       else valprim_arg (n, hit)
-    end
+    end // end of [HITrefarg]
   | _ => valprim_arg (n, hityp_normalize hit0)
 end // end of [funarg_valprim_make]
 
@@ -2698,7 +2699,7 @@ implement ccomp_declst (res, hids) = case+ hids of
       ccomp_dec (res, hid); ccomp_declst (res, hids)
     end // end of [list_cons]
   | list_nil () => ()
-(* end of [ccomp_dec] *)
+(* end of [ccomp_declst] *)
 
 (* ****** ****** *)
 

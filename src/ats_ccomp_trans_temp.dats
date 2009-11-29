@@ -52,6 +52,7 @@ staload CS = "ats_charlst.sats"
 staload Deb = "ats_debug.sats"
 staload Err = "ats_error.sats"
 staload HT = "ats_hashtbl.sats"
+staload Loc = "ats_location.sats"
 staload Lst = "ats_list.sats"
 staload Map = "ats_map_lin.sats"
 staload Stamp = "ats_stamp.sats"
@@ -84,7 +85,7 @@ staload _(*anonymois*) = "ats_map_lin.dats"
 absviewtype stactx_vt
 absview stactx_token_v
 
-extern fun prerr_the_stactx (): void
+extern fun print_the_stactx (): void
 
 extern fun the_stactx_add (s2v: s2var_t, hit: hityp_t): void
 extern fun the_stactx_free ():<> void // free the (toplevel) stactx
@@ -109,16 +110,16 @@ val the_stactxlst = ref_make_elt<stactxlst> (list_vt_nil ())
 
 in // in of [local]
 
-implement prerr_the_stactx () = let
+implement print_the_stactx () = let
   val kis = $Map.map_list_inf (!p) where {
     val (vbox pf | p) = ref_get_view_ptr (the_stactx)
   } // end of [val]
   fun loop (kis: List_vt @(s2var_t, hityp_t)): void = case+ kis of
     | ~list_vt_cons (ki, kis) => let
-        val () = prerr_s2var (ki.0)
-        val () = prerr_string " -> "
-        val () = prerr_hityp_t (ki.1)
-        val () = prerr_newline ()
+        val () = print_s2var (ki.0)
+        val () = print_string " -> "
+        val () = print_hityp_t (ki.1)
+        val () = print_newline ()
       in
         loop (kis)
       end // end of [list_vt_cons]
@@ -126,7 +127,7 @@ implement prerr_the_stactx () = let
   // end of [loop]
 in
   loop (kis)
-end // end of [prerr_the_stactx]
+end // end of [print_the_stactx]
 
 implement the_stactx_add (s2v, hit) = let
   val (vbox pf | p) = ref_get_view_ptr (the_stactx)
@@ -170,12 +171,11 @@ implement the_stactx_pop (pf | (*none*)) = let
   in
     stactx
   end // end of [val]
-  val () = // error checking
-    if err > 0 then begin
-      prerr "Internal Error: ats_ccomp_trans_temp: the_stactx_pop";
-      prerr_newline ();
-      $Err.abort {void} ()
-    end
+  val () = if err > 0 then begin // error checking
+    prerr "INTERNAL ERROR";
+    prerr ": [ats_ccomp_trans_temp]: the_stactx_pop"; prerr_newline ();
+    $Err.abort {void} ()
+  end // end of [val]
   val stactx = let
     val (vbox pf | p) = ref_get_view_ptr (the_stactx)
     val () = $Map.map_free (!p)
@@ -193,8 +193,8 @@ end // end of [local]
 // declared in [ats_hiexp.sats]
 implement hityp_s2var_normalize (s2v) = let
 (*
-  val () = prerr "hityp_s2var_normalize: the_stactx =\n"
-  val () = prerr_the_stactx ()
+  val () = print "hityp_s2var_normalize: the_stactx =\n"
+  val () = print_the_stactx ()
 *)
 in
   the_stactx_find (s2v)
@@ -299,8 +299,7 @@ fn template_arg_match (
       end
     | (list_nil (), list_nil ()) => ()
     | (_, _) => begin
-        $Loc.prerr_location loc0;
-        prerr ": error(ccomp)";
+        $Loc.prerr_location loc0; prerr ": error(ccomp)";
         prerr ": template argument mismatch for ["; prerr_tmpcstvar tcv; prerr "].";
         prerr_newline ();
         $Err.abort {void} ()
@@ -315,12 +314,11 @@ fn template_arg_match (
       end
     | (list_nil (), list_nil ()) => ()
     | (_, _) => begin
-        $Loc.prerr_location loc0;
-        prerr ": error(ccomp)";
+        $Loc.prerr_location loc0; prerr ": error(ccomp)";
         prerr ": template argument mismatch for ["; prerr_tmpcstvar tcv; prerr "].";
         prerr_newline ();
         $Err.abort {void} ()
-      end
+      end // end of [_, _]
   end // end of [auxlstlst]
 in
   auxlstlst (tmparg, hityplstlst_decode hitss)
@@ -345,9 +343,9 @@ implement tmpnamtbl_add (fullname, vp_funclo) = let
 in
   case+ ans of
   | ~None_vt () => () | ~Some_vt _(*valprim*) => begin
-      prerr "Internal Error: tmpnamtbl_add: fullname = ";
-      prerr fullname;
-      prerr_newline ();
+      prerr "INTERNAL ERROR";
+      prerr ": [ats_ccomp_trans_temp]: tmpnamtbl_add: fullname = ";
+      prerr fullname; prerr_newline ();
       $Err.abort {void} ()
     end // end of [Some_vt]
 end // end of [tmpnamtbl_add]
@@ -383,9 +381,8 @@ implement ccomp_tmpdef
     | _ => begin
         $Loc.prerr_location loc_fun;
         prerr ": INTERNAL ERROR";
-        prerr ": ccomp_tmpdef: not a lambda-expression: [";
-        prerr_hiexp hie; prerr "]";
-        prerr_newline ();
+        prerr ": [ats_ccomp_trans_temp]: ccomp_tmpdef: not a lambda-expression: [";
+        prerr_hiexp hie; prerr "]"; prerr_newline ();
         $Err.abort {funentry_t} ()
       end // end of [_]
    end (* end of [val] *)
@@ -431,8 +428,8 @@ implement ccomp_exp_template_cst
   val fullname = template_cst_name_make (d2c, hitss)
 (*
   val () = begin
-    prerr "ccomp_exp_tmpcst: hit0 = "; prerr hit0; prerr_newline ();
-    prerr "ccomp_exp_tmpcst: fullname = "; prerr fullname; prerr_newline ();
+    print "ccomp_exp_tmpcst: hit0 = "; print hit0; print_newline ();
+    print "ccomp_exp_tmpcst: fullname = "; print fullname; print_newline ();
   end // end of [val]
 *)
   val ovp = tmpnamtbl_find (fullname)
@@ -442,6 +439,7 @@ in
       val tmpdef = (case+ tmpcstmap_find d2c of
       | ~Some_vt tmpdef => tmpdef | ~None_vt () => begin
           $Loc.prerr_location loc0;
+          prerr ": INTERNAL ERROR";
           $Deb.debug_prerrf (": %s: ccomp_exp_template_cst", @(THISFILENAME));
           prerr ": the template definition for [";
           prerr d2c;
@@ -470,8 +468,8 @@ implement ccomp_exp_template_var
   val fullname = template_var_name_make (d2v, hitss)
 (*
   val () = begin
-    prerr "ccomp_exp_tmpvar: hit0 = "; prerr hit0; prerr_newline ();
-    prerr "ccomp_exp_tmpvar: fullname = "; prerr fullname; prerr_newline ();
+    print "ccomp_exp_tmpvar: hit0 = "; print hit0; print_newline ();
+    print "ccomp_exp_tmpvar: fullname = "; print fullname; print_newline ();
   end // end of [val]
 *)
   val ovp = tmpnamtbl_find (fullname)
@@ -495,8 +493,8 @@ in
       val level0 = d2var_current_level_get ()
 (*
       val () = begin
-        prerr "ccomp_exp_tmpvar: d2v_lev = "; prerr d2v_lev; prerr_newline ();
-        prerr "ccomp_exp_tmpvar: level0 = "; prerr level0; prerr_newline ();
+        print "ccomp_exp_tmpvar: d2v_lev = "; print d2v_lev; print_newline ();
+        print "ccomp_exp_tmpvar: level0 = "; print level0; print_newline ();
       end // end of [val]
 *)
       val () = d2var_current_level_set (d2v_lev)

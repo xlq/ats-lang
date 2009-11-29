@@ -88,7 +88,8 @@ end // end of [bsearch]
 (* ****** ****** *)
 
 (*
-fn bsearch {n:nat} ( // for-loop version
+// this one implements the standard
+fn bsearch {n:nat} ( // binary search algorithm
     A: &(@[double][n]), n: int n, key: double
   ) :<> int = let
   var l: int and u: int; var res: int = ~1

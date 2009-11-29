@@ -158,7 +158,7 @@ The annotated invariant for the for-loop follows the keyword <u>for*</u>,
 and it is separated from the rest of the loop by the symbol <i>=&gt;</i>.
 This invariant consists of two parts, separated by the colon symbol
 (<i>:</i>).  The part before the colon symbol essentially means that there is a
-natural number <i>i</i> satisfying <i>i &lt;=n+1</i> such that the variable
+natural number <i>i</i> satisfying <i>i &lt;= n+1</i> such that the variable
 <i>x</i> is of the type <i>int(i)</i> at the entry point of the for-loop,
 that is, at the point immediately after the loop initialization and before
 the loop test.  There is also a termination metric in this part whose
@@ -167,8 +167,8 @@ means that the variable <i>x</i> is of the type <i>int(n+1)</i> at the exit
 point of the loop.
 <P>
 
-Annotating loops with invariants correctly can be difficult. If complex
-loop invariants are needed, we recommend that the programmer avoid
+Annotating loops with invariants correctly can be difficult, sometimes. If
+complex loop invariants are needed, we recommend that the programmer avoid
 constructing loops directly. Instead, the programmer can implement
 tail-recursive functions in place of loops.
 <P>

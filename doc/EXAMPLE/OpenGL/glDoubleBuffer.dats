@@ -78,12 +78,14 @@ end // end of [reshape]
 
 extern fun mouse
   (button: int, state: int, x: int, y: int): void = "mouse"
+// end of [mouse]
 
-implement mouse (button, state, x, y) = begin case+ 0 of
+implement mouse (button, state, x, y) = begin
+  case+ 0 of
   | _ when (button = GLUT_LEFT_BUTTON) => begin
       if (state = GLUT_DOWN) then glutIdleFunc (spinDisplay)
     end
-  | _ when (button = GLUT_MIDDLE_BUTTON) => begin
+  | _ when (button = GLUT_RIGHT_BUTTON) => begin
       if (state = GLUT_DOWN) then glutIdleFuncNull ()
     end
   | _ => ()
@@ -109,15 +111,14 @@ implement main_dummy () = ()
 
 ats_void_type mainats
   (ats_int_type argc, ats_ptr_type argv) {
-
   glutInit ((int*)&argc, (char**)argv) ;
   glutInitDisplayMode (GLUT_DOUBLE | GLUT_RGB) ;
   glutInitWindowSize (500, 500) ;
   glutInitWindowPosition (100, 100) ;
   glutCreateWindow(((char**)argv)[0]) ;
   main_work () ;
-  return ; /* deadcode */
-}
+  return ; /* deadcode as [main_work] never returns */
+} /* end of [mainats] */
 
 %}
 
