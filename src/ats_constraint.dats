@@ -81,6 +81,13 @@ overload <> with $IntInf.neq_intinf_int
 
 (* ****** ****** *)
 
+fn prerr_interror () = prerr "INTERNAL ERROR (ats_constraint)"
+fn prerr_interror_loc (loc: loc_t) = begin
+  $Loc.prerr_location loc; prerr ": INTERNAL ERROR (ats_constraint)"
+end // end of [prerr_interror_loc]
+
+(* ****** ****** *)
+
 implement s3aexp_null = S3AEnull ()
 
 implement s3aexp_cst (s2c) = S3AEcst (s2c)
@@ -90,7 +97,7 @@ implement s3aexp_padd (s3ae1, s3ie2) = begin
   case+ s3ae1 of
   | S3AEpadd (s3ae11, s3ie12) => begin
       s3aexp_padd (s3ae11, s3iexp_iadd (s3ie12, s3ie2))
-    end
+    end // end of [S3AEpadd]
   | _ => S3AEpadd (s3ae1, s3ie2)
 end // end of [s3aexp_padd]
 
@@ -98,7 +105,7 @@ implement s3aexp_psub (s3ae1, s3ie2) = begin
   case+ s3ae1 of
   | S3AEpadd (s3ae11, s3ie12) => begin
       s3aexp_padd (s3ae11, s3iexp_isub (s3ie12, s3ie2))
-    end
+    end // end of [S3AEpadd]
   | _ => S3AEpadd (s3ae1, s3iexp_ineg s3ie2)
 end // end of [s3aexp_psub]
 
@@ -120,6 +127,7 @@ implement s3bexp_bneg (s3be0) = case+ s3be0 of
   | S3BEbneg s3be => s3be
   | S3BEiexp (knd, s3ie) => S3BEiexp (~knd, s3ie)
   | _ => S3BEbneg s3be0
+// end of [s3bexp_bneg]
 
 implement s3bexp_beq (s3be1, s3be2) = begin case+ s3be1 of
   | S3BEbool b1 => if b1 then s3be2 else s3bexp_bneg s3be2
@@ -130,7 +138,7 @@ implement s3bexp_beq (s3be1, s3be2) = begin case+ s3be1 of
       in
         S3BEbadd (S3BEbmul (s3be1, s3be2), S3BEbmul (_s3be1, _s3be2))
       end
-    end
+    end // end of [_]
 end // end of [s3bexp_beq]
 
 implement s3bexp_bneq (s3be1, s3be2) = begin case+ s3be1 of
@@ -142,7 +150,7 @@ implement s3bexp_bneq (s3be1, s3be2) = begin case+ s3be1 of
       in
         S3BEbadd (S3BEbmul (s3be1, _s3be2), S3BEbmul (_s3be1, s3be2))
       end
-    end
+    end // end of [_]
 end // end of [s3bexp_beq]
 
 //
@@ -152,7 +160,7 @@ implement s3bexp_badd (s3be1, s3be2) = begin case+ s3be1 of
   | _ => begin case+ s3be2 of
     | S3BEbool b2 => if b2 then s3bexp_true else s3be1
     | _ => S3BEbadd (s3be1, s3be2)
-    end
+    end // end of [_]
 end // end of [s3bexp_badd]
 
 implement s3bexp_bmul (s3be1, s3be2) = begin case+ s3be1 of
@@ -160,7 +168,7 @@ implement s3bexp_bmul (s3be1, s3be2) = begin case+ s3be1 of
   | _ => begin case+ s3be2 of
     | S3BEbool b2 => if b2 then s3be1 else s3bexp_false
     | _ => S3BEbmul (s3be1, s3be2)
-    end
+    end // end of [_]
 end // end of [s3bexp_bmul]
 
 //
@@ -172,8 +180,8 @@ implement s3bexp_iexp (knd, s3ie) = begin case+ s3ie of
     | ~1(*neq*) => if i <> 0 then s3bexp_true else s3bexp_false
     | ~2(*lt*) => if i < 0 then s3bexp_true else s3bexp_false
     | _ => begin
-        prerr "INTERNAL ERROR";
-        prerr ": [ats_constraint]: s3bexp_iexp: knd = "; prerr knd; prerr_newline ();
+        prerr_interror ();
+        prerr ": s3bexp_iexp: knd = "; prerr knd; prerr_newline ();
         $Err.abort {s3bexp} ()
       end // end of [_]
     end // end of [S3IEint]
@@ -183,8 +191,8 @@ implement s3bexp_iexp (knd, s3ie) = begin case+ s3ie of
     | ~1(*neq*) => if i <> 0 then s3bexp_true else s3bexp_false
     | ~2(*lt*) => if i < 0 then s3bexp_true else s3bexp_false
     | _ => begin
-        prerr "INTERNAL ERROR";
-        prerr ": [ats_constraint]: s3bexp_iexp: knd = "; prerr knd; prerr_newline ();
+        prerr_interror ();
+        prerr ": s3bexp_iexp: knd = "; prerr knd; prerr_newline ();
         $Err.abort {s3bexp} ()
       end // end of [_]
     end // end of [S2IEintinf]
@@ -400,9 +408,8 @@ fun s3aexp_make_s2cst_s2explst
 
 implement s3aexp_make_s2cst_s2explst (s2c, s2es, s2cs, fds) = let
   fn errmsg (s2c: s2cst_t): s3aexpopt_vt = begin
-    prerr "INTERNAL ERROR";
-    prerr ": [ats_constraint]: s3aexp_make_s2cst_s2explst: Add_addr_int_addr";
-    prerr_newline ();
+    prerr_interror ();
+    prerr ": s3aexp_make_s2cst_s2explst: s2c = "; prerr s2c; prerr_newline ();
     $Err.abort {s3aexpopt_vt} ()
   end // end of [errmsg]
 in
@@ -456,9 +463,8 @@ fun s3bexp_make_s2cst_s2explst
 // a large but simple function
 implement s3bexp_make_s2cst_s2explst (s2c, s2es, s2cs, fds) = let
   fn errmsg (s2c: s2cst_t): s3bexpopt_vt = begin
-    prerr "INTERNAL ERROR";
-    prerr ": [ats_constraint]: s3bexp_make_s2cst_s2explst: "; prerr s2c;
-    prerr_newline ();
+    prerr_interror ();
+    prerr ": s3bexp_make_s2cst_s2explst: s2c = "; prerr s2c; prerr_newline ();
     $Err.abort {s3bexpopt_vt} ()
   end // end of [_]
 in
@@ -803,9 +809,8 @@ fun s3iexp_make_s2cst_s2explst
 
 implement s3iexp_make_s2cst_s2explst (s2c, s2es, s2cs, fds) = let
   fn errmsg (s2c: s2cst_t): s3iexpopt_vt = begin
-    prerr "INTERNAL ERROR";
-    prerr ": [ats_constraint]: s3iexp_make_s2cst_s2explst: Neg_int_int";
-    prerr_newline ();
+    prerr_interror ();
+    prerr ": s3iexp_make_s2cst_s2explst: s2c = "; prerr s2c; prerr_newline ();
     $Err.abort {s3iexpopt_vt} ()
   end // end of [errmsg]
 in
@@ -1243,17 +1248,16 @@ fn s2cst_index_find {n:pos}
 in
   case+ $Map.map_search (m, stamp) of
   | ~Some_vt (i) => if i < n then i else begin
-      $Loc.prerr_location loc0; prerr ": INTERNAL ERROR";
-      prerr ": [ats_constraint]: s2cst_index_find: the static constant [";
+      prerr_interror_loc (loc0);
+      prerr ": s2cst_index_find: the static constant [";
       prerr_s2cst s2c;
       prerr "] is associated with an index that is out-of-range.";
       prerr_newline ();
       $Err.abort {intBtw (1, n)} ()
     end // end of [Some_vt]
   | ~None_vt () => begin
-      $Loc.prerr_location loc0;
-      prerr ": INTERNAL ERROR";
-      prerr ": [ats_constraint]: s2cst_index_find: the static constant [";
+      prerr_interror_loc (loc0);
+      prerr ": s2cst_index_find: the static constant [";
       prerr_s2cst s2c;
       prerr "] is not associated with any index.";
       prerr_newline ();
@@ -1271,16 +1275,16 @@ fn s2var_index_find {n:pos}
 in
   case+ $Map.map_search (m, stamp) of
   | ~Some_vt (i) => if i < n then i else begin
-      $Loc.prerr_location loc0; prerr ": INTERNAL ERROR";
-      prerr ": [ats_constraint]: s2var_index_find: the static constant [";
+      prerr_interror_loc (loc0);
+      prerr ": s2var_index_find: the static constant [";
       prerr_s2var s2v;
       prerr "] is associated with an index that is out-of-range.";
       prerr_newline ();
       $Err.abort {intBtw (1, n)} ()
     end // end of [Some_vt]
   | ~None_vt () => begin
-      $Loc.prerr_location loc0; prerr ": INTERNAL ERROR";
-      prerr ": [ats_constraint]: s2var_index_find: the static constant [";
+      prerr_interror_loc (loc0);
+      prerr ": s2var_index_find: the static constant [";
       prerr_s2var s2v;
       prerr "] is not associated with any index.";
       prerr_newline ();
@@ -1365,9 +1369,8 @@ in
       s3iexp_intvec_update_err (pf_arr | loc0, cim, vim, ivp, n, coef, s3ie2, errno);
     end // end of [S3AEpadd]
   | S3AEexp _ => begin
-      prerr "INTERNAL ERROR";
-      prerr ": [ats_constraint]: s3aexp_intvec_update_err: unsupported term: s3ae0 = ";
-      prerr s3ae0;
+      prerr_interror ();
+      prerr ": s3aexp_intvec_update_err: unsupported term: s3ae0 = "; prerr s3ae0;
       prerr_newline ();
       $Err.abort {void} ()
     end // end of [S3IEexp]
@@ -1445,9 +1448,8 @@ in
       s3aexp_intvec_update_err (pf_arr | loc0, cim, vim, ivp, n, ~coef, s3ae2, errno);
     end // end of [S3IEpdiff]
   | S3IEexp _ => begin
-      prerr "INTERNAL ERROR";
-      prerr ": [ats_constraint]: s3iexp_intvec_update_err: unsupported term: s3ie0 = ";
-      prerr s3ie0;
+      prerr_interror ();
+      prerr ": s3iexp_intvec_update_err: unsupported term: s3ie0 = "; prerr s3ie0;
       prerr_newline ();
       $Err.abort {void} ()
     end // end of [S3IEexp]
@@ -1516,9 +1518,8 @@ in
       $FM.ICvec (knd, $FM.intvecptr_make_view_ptr (pf_gc, pf_arr | ivp))
     end // end of [S3BEiexp]
   | S3BEexp _ => begin
-      prerr "INTERNAL ERROR";
-      prerr ": [ats_constraint]: s3bexp_intvec_make_err: unsupported term: s3be0 = ";
-      prerr s3be0;
+      prerr_interror ();
+      prerr ": s3bexp_intvec_make_err: unsupported term: s3be0 = "; prerr s3be0;
       prerr_newline ();
       $Err.abort ()
     end // end of [S3BEexp]

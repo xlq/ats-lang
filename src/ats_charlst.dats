@@ -97,6 +97,9 @@ implement charlst_uncons (cs) =
 
 %{^
 
+extern
+ats_char_type ats_charlst_uncons (ats_ref_type) ;
+
 ats_ptr_type
 string_make_charlst_rev_int (
   ats_ptr_type cs, const ats_int_type n

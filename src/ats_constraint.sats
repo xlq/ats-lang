@@ -31,8 +31,8 @@
 
 (* ****** ****** *)
 
-// Time: February 2008
 // Author: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
+// Time: February 2008
 
 (* ****** ****** *)
 
@@ -55,6 +55,7 @@ datatype s3aexp = (* static address expression *)
   | S3AEnull (* the null address *)
   | S3AEpadd of (* pointer arithmetic *)
       (s3aexp, s3iexp)
+// end of [s3aexp]
 
 and s3bexp = (* static boolean expression *)
   | S3BEcst of s2cst_t (* abstract constant *)
@@ -66,6 +67,7 @@ and s3bexp = (* static boolean expression *)
   | S3BEbneg of s3bexp
   // gte/lt : 2/~2; eq/neq: 1/~1
   | S3BEiexp of (int(*knd*), s3iexp)
+// end of [s3bexp]
 
 and s3iexp = (* static integer expression *)
   | S3IEcst of s2cst_t (* abstract constant *)
@@ -78,6 +80,7 @@ and s3iexp = (* static integer expression *)
   | S3IEisub of (s3iexp, s3iexp)
   | S3IEimul of (s3iexp, s3iexp)
   | S3IEpdiff of (s3aexp, s3aexp)
+// end of [s3iexp]
 
 viewtypedef s3aexpopt_vt = Option_vt s3aexp
 
@@ -200,9 +203,10 @@ fun s3iexp_pdiff (s3ae1: s3aexp, s3ae2: s3aexp): s3iexp
 dataviewtype s2cfdeflst_vt =
   | S2CFDEFLSTcons of (
       s2cst_t(*scf*), s2explst(*arg*), s2var_t(*res*), s3bexpopt_vt(*rel*), s2cfdeflst_vt
-    )
+    ) // end of [S2CFDEFLSTcons]
   | S2CFDEFLSTmark of s2cfdeflst_vt
   | S2CFDEFLSTnil
+// end of [s2cfdeflst_vt]
 
 fun s3aexp_make_s2exp
   (s2e: s2exp, s2cs: &s2cstlst, fds: &s2cfdeflst_vt): s3aexpopt_vt
@@ -221,4 +225,4 @@ fun c3str_solve (c3t: c3str): void
 
 (* ****** ****** *)
 
-(* end of [ats_constraint.dats] *)
+(* end of [ats_constraint.sats] *)
