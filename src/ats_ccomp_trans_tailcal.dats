@@ -7,33 +7,32 @@
 (***********************************************************************)
 
 (*
- * ATS/Anairiats - Unleashing the Potential of Types!
- *
- * Copyright (C) 2002-2008 Hongwei Xi, Boston University
- *
- * All rights reserved
- *
- * ATS is free software;  you can  redistribute it and/or modify it under
- * the terms of  the GNU GENERAL PUBLIC LICENSE (GPL) as published by the
- * Free Software Foundation; either version 3, or (at  your  option)  any
- * later version.
- * 
- * ATS is distributed in the hope that it will be useful, but WITHOUT ANY
- * WARRANTY; without  even  the  implied  warranty  of MERCHANTABILITY or
- * FITNESS FOR A PARTICULAR PURPOSE.  See the  GNU General Public License
- * for more details.
- * 
- * You  should  have  received  a  copy of the GNU General Public License
- * along  with  ATS;  see the  file COPYING.  If not, please write to the
- * Free Software Foundation,  51 Franklin Street, Fifth Floor, Boston, MA
- * 02110-1301, USA.
- *
- *)
+** ATS/Anairiats - Unleashing the Potential of Types!
+**
+** Copyright (C) 2002-2008 Hongwei Xi, Boston University
+**
+** All rights reserved
+**
+** ATS is free software;  you can  redistribute it and/or modify it under
+** the terms of  the GNU GENERAL PUBLIC LICENSE (GPL) as published by the
+** Free Software Foundation; either version 3, or (at  your  option)  any
+** later version.
+** 
+** ATS is distributed in the hope that it will be useful, but WITHOUT ANY
+** WARRANTY; without  even  the  implied  warranty  of MERCHANTABILITY or
+** FITNESS FOR A PARTICULAR PURPOSE.  See the  GNU General Public License
+** for more details.
+** 
+** You  should  have  received  a  copy of the GNU General Public License
+** along  with  ATS;  see the  file COPYING.  If not, please write to the
+** Free Software Foundation,  51 Franklin Street, Fifth Floor, Boston, MA
+** 02110-1301, USA.
+*)
 
 (* ****** ****** *)
 
-// Time: June 2008
 // Author: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
+// Time: June 2008
 
 (* ****** ****** *)
 
@@ -56,7 +55,12 @@ staload _(*anonymous*) = "ats_reference.dats"
 
 (* ****** ****** *)
 
-fn tailjoin_name_make (f0: funentry_t, fs: funentrylst): string = let
+fn prerr_interror () = prerr "INTERNAL ERROR (ats_ccomp_trans_tailcal)"
+
+(* ****** ****** *)
+
+fn tailjoin_name_make
+  (f0: funentry_t, fs: funentrylst): string = let
   viewtypedef T = $CS.Charlst_vt
   fun aux_char (cs: &T, c: char): void = (cs := $CS.CHARLSTcons (c, cs))
 
@@ -105,8 +109,8 @@ fn tailjoin_retyp_check // retyp: return type
             prerr ": the return type of this function is inconsistent.";
             prerr_newline ();
             $Err.abort {void} ()
-          end
-      end
+          end // end of [_]
+      end // end of [list_cons]
     | list_nil () => ()
   end // end of [aux]
   val HITNAM (knd0, name0) = hityp_t_name_get (hit0)
@@ -204,7 +208,7 @@ end // end of [tailjoin_funentrylst_update]
 implement ccomp_tailjoin_funentrylst (loc_all, fs0) = let
   val @(f0, fs) = (case+ fs0 of
     | list_cons (f0, fs) => @(f0, fs) | list_nil () => begin
-        prerr "INTERNAL ERROR";
+        prerr_interror ();
         prerr ": tailjoin_funentrylst: empty funentrylst"; prerr_newline ();
         $Err.abort ()
       end // end of [list_nil]
@@ -276,8 +280,8 @@ in // in of [local]
 implement the_tailcallst_add (fl, tmps) = let
 (*
   val () = begin
-    prerr "the_tailcallst_add: fl = "; prerr fl; prerr_newline ()
-  end
+    print "the_tailcallst_add: fl = "; print_funlab fl; prerr_newline ()
+  end // end of [val]
 *)
   val (vbox pf | p) = ref_get_view_ptr (the_tailcallst)
 in
@@ -351,7 +355,7 @@ fn emit_tailjoin_case {m:file_mode} (
           val () = fprint1_string (pf | out, ") ;\n")
         in
           aux (out, tmps)
-        end
+        end // end of [list_cons]
       | list_nil () => ()
     end // end of [aux]
   }
@@ -360,7 +364,7 @@ fn emit_tailjoin_case {m:file_mode} (
     fprint1_string (pf | out, "goto __ats_lab_");
     emit_funlab (pf | out, fl);
     fprint1_string (pf | out, " ;\n\n")
-  end
+  end // end of [val]
 in
   // empty
 end // end of [emit_tailjoin_case]

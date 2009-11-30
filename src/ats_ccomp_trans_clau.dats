@@ -31,8 +31,8 @@
 
 (* ****** ****** *)
 
-// Time: May 2008
 // Author: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
+// Time: May 2008
 
 (* ****** ****** *)
 
@@ -413,7 +413,7 @@ fun hipatlst_prefix_test_int
           if hipat_test_int (hip1, hip2) then
             hipatlst_prefix_test_int (i-1, hips1, hips2)
           else false
-        end
+        end // end of [list_cons]
       | list_nil () => true
       end // end of [list_cons]
     // this clause should never be chosen:
@@ -503,7 +503,7 @@ fun aux_tmpmov
     | (LABHIPATLSTcons (_(*l1*), hip1, lhips1),
        LABHIPATLSTcons (_(*l2*), hip2, lhips2)) => begin
         auxpat (hip1, hip2, res); auxlabpatlst (lhips1, lhips2, res)
-      end
+      end // end of [LABHIPATLSTcons, LABHIPATLSTcons]
     | (_, _) => ()       
   end // end of [auxlabpatlst]
 
@@ -519,7 +519,7 @@ fun aux_tmpmov
           val () = auxpat (hip1, hip2, res)
         in
           auxpatlst_prefix (i-1, hips1, hips2, res)
-        end
+        end // end of [list_cons, list_cons]
       | (_, _) => ()
       end // end of [_ when i > 0]
     | _ => ()
@@ -532,7 +532,7 @@ fun aux_tmpmov
       case+ xs of
       | TMPMOVLSTcons (tmp1, tmp2, xs) => begin
           auxrev (xs, TMPMOVLSTcons (tmp1, tmp2, ys))
-        end
+        end // end of [TMPMOVLSTcons]
       | TMPMOVLSTnil () => ys
   } // end [where]
 in
@@ -570,7 +570,7 @@ fun matpnt_kont_set_all
         ) :<cloptr1> int = begin case+ mpts of
         | list_cons (mpt, mpts) => begin
             aux (i, hips0, mpt); auxlst (i+1, hips0, mpts)
-          end
+          end // end of [list_cons]
         | list_nil () => i
       end // end of [auxlst]
 
@@ -580,7 +580,7 @@ fun matpnt_kont_set_all
         , ompt: matpntopt
         ) :<cloptr1> void = begin case+ ompt of
         | Some mpt => aux (i, hips0, mpt) | None () => ()
-      end
+      end // end of [auxopt]
 
       val () = auxopt (i, hips0, ompt) where {
         val hips0 = hicl.hiclau_pat; val i = auxlst (0, hips0, mpts)
@@ -628,16 +628,16 @@ ats_ccomp_matpnt_kont_set
   (ats_ptr_type mpt, ats_ptr_type kont) {
   ((matpnt_t)mpt)->atslab_matpnt_kont = kont ;
   return ;
-}
+} // end of [ats_ccomp_matpnt_kont_set]
 
 ats_void_type
 ats_ccomp_matpnt_tmpmovlst_set
   (ats_ptr_type mpt, ats_ptr_type tmpmovlst) {
   ((matpnt_t)mpt)->atslab_matpnt_tmpmovlst = tmpmovlst ;
   return ;
-}
+} // end of [ats_ccomp_matpnt_tmpmovlst_set]
 
-%}
+%} // end of [%{$]
 
 (* ****** ****** *)
 

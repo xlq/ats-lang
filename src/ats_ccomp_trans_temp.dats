@@ -37,9 +37,7 @@
 (* ****** ****** *)
 
 %{^
-
 #include "ats_counter.cats" /* only needed for [ATS/Geizella] */
-
 %}
 
 (* ****** ****** *)
@@ -92,6 +90,13 @@ extern fun the_stactx_free ():<> void // free the (toplevel) stactx
 extern fun the_stactx_find (s2v: s2var_t): Option_vt (hityp_t)
 extern fun the_stactx_push (): @(stactx_token_v | void)
 extern fun the_stactx_pop (pf: stactx_token_v | (*none*)): void
+
+(* ****** ****** *)
+
+fn prerr_interror () = prerr "INTERNAL ERROR (ats_ccomp_trans_temp)"
+fn prerr_interror_loc (loc: loc_t) = begin
+  $Loc.prerr_location loc; prerr ": INTERNAL ERROR (ats_ccomp_trans_temp)"
+end // end of [prerr_interror_loc]
 
 (* ****** ****** *)
 
@@ -172,8 +177,7 @@ implement the_stactx_pop (pf | (*none*)) = let
     stactx
   end // end of [val]
   val () = if err > 0 then begin // error checking
-    prerr "INTERNAL ERROR";
-    prerr ": [ats_ccomp_trans_temp]: the_stactx_pop"; prerr_newline ();
+    prerr_interror (); prerr ": the_stactx_pop"; prerr_newline ();
     $Err.abort {void} ()
   end // end of [val]
   val stactx = let
@@ -343,9 +347,8 @@ implement tmpnamtbl_add (fullname, vp_funclo) = let
 in
   case+ ans of
   | ~None_vt () => () | ~Some_vt _(*valprim*) => begin
-      prerr "INTERNAL ERROR";
-      prerr ": [ats_ccomp_trans_temp]: tmpnamtbl_add: fullname = ";
-      prerr fullname; prerr_newline ();
+      prerr_interror ();
+      prerr ": tmpnamtbl_add: fullname = "; prerr fullname; prerr_newline ();
       $Err.abort {void} ()
     end // end of [Some_vt]
 end // end of [tmpnamtbl_add]
@@ -379,10 +382,8 @@ implement ccomp_tmpdef
         ccomp_exp_arg_body_funlab (loc_fun, prolog, hips_arg, hie_body, fl)
       end // end of [HIElam]
     | _ => begin
-        $Loc.prerr_location loc_fun;
-        prerr ": INTERNAL ERROR";
-        prerr ": [ats_ccomp_trans_temp]: ccomp_tmpdef: not a lambda-expression: [";
-        prerr_hiexp hie; prerr "]"; prerr_newline ();
+        prerr_interror_loc (loc_fun);
+        prerr ": ccomp_tmpdef: hie = "; prerr_hiexp hie; prerr_newline ();
         $Err.abort {funentry_t} ()
       end // end of [_]
    end (* end of [val] *)
@@ -438,8 +439,7 @@ in
   | ~None_vt () => let
       val tmpdef = (case+ tmpcstmap_find d2c of
       | ~Some_vt tmpdef => tmpdef | ~None_vt () => begin
-          $Loc.prerr_location loc0;
-          prerr ": INTERNAL ERROR";
+          $Loc.prerr_location loc0; prerr ": error(ccomp)";
           $Deb.debug_prerrf (": %s: ccomp_exp_template_cst", @(THISFILENAME));
           prerr ": the template definition for [";
           prerr d2c;
@@ -478,7 +478,7 @@ in
   | ~None_vt () => let
       val tmpdef = (case+ tmpvarmap_find d2v of
       | ~Some_vt tmpdef => tmpdef | ~None_vt () => begin
-          $Loc.prerr_location loc0;
+          $Loc.prerr_location loc0; prerr ": error(ccomp)";
           $Deb.debug_prerrf (": %s: ccomp_exp_template_var", @(THISFILENAME));
           prerr ": the template definition for [";
           prerr d2v;
