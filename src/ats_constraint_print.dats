@@ -71,7 +71,7 @@ in
     end // end of [S3AEpadd]
   | S3AEnull => begin
       fprint1_string (pf | out, "S3AEnull()")
-    end
+    end // end of [S3AEnull]
 end // end of [fprint_s3aexp]
 
 (* ****** ****** *)
@@ -119,14 +119,15 @@ in
     end // end of [S3BEiexp]
 end // end of [fprint_s3bexp]
 
-implement fprint_s3bexplst {m} (pf | out, s3bes) = let
+implement fprint_s3bexplst
+  {m} (pf | out, s3bes) = let
   fun aux (out: &FILE m, i: int, s3bes: s3bexplst)
     : void = begin case+ s3bes of
     | list_cons (s3be, s3bes) => begin
         if i > 0 then fprint1_string (pf | out, ", ");
         fprint_s3bexp (pf | out, s3be); aux (out, i+1, s3bes)
-      end
-    | list_nil () => ()
+      end // end of [list_cons]
+    | list_nil () => () // end of [list_nil]
   end // end [aux]
 in
   aux (out, 0, s3bes)
@@ -157,7 +158,7 @@ in
     end // end of [S2IEintinf]
   | S3IEineg (s3ie) => begin
       prstr "S3IEineg("; fprint_s3iexp (pf | out, s3ie); prstr ")"
-    end
+    end // end of [S3IEineg]
   | S3IEiadd (s3ie1, s3ie2) => begin
       prstr "S3IEiadd(";
       fprint_s3iexp (pf | out, s3ie1);

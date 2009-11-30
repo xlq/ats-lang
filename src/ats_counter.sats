@@ -31,8 +31,8 @@
 
 (* ****** ****** *)
 
-// Time: July 2007
 // Author: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
+// Time: July 2007
 
 (* ****** ****** *)
 
@@ -41,10 +41,8 @@
 (* ****** ****** *)
 
 %{#
-
 #include "ats_counter.cats"
-
-%}
+%} // end of [%{#]
 
 (* ****** ****** *)
 
@@ -125,4 +123,3 @@ fun tostring_prefix (pre: string, cnt: count_t): string
 (* ****** ****** *)
 
 (* end of [ats_counter.sats] *)
-

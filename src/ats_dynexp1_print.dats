@@ -81,7 +81,7 @@ in
       prstr "; ";
       fprint1_string (pf | out, "...");
       prstr ")"
-    end
+    end // end of [P1Tapp_sta]
   | P1Tapp_dyn (p1t, _(*loc_arg*), npf, p1ts) => begin
       prstr "P1Tapp_dyn(";
       fprint_p1at (pf | out, p1t);
@@ -170,24 +170,24 @@ in
     end // end of [P1Ttup]
 (*
   | _ => begin
-      prerr "Internal Error: ";
-      prerr "[fprint_p1at]: the pattern at [";
-      prerr p1t.p1at_loc;
-      prerr "] is not supported yet";
+      $Loc.prerr_location p1t.p1at_loc;
+      prerr "INTERNAL ERROR (ats_dynexp1_print)";
+      prerr ": fprint_p1at: the pattern is not supported yet";
       prerr_newline ();
       exit (1)
-    end
+    end // end of [_]
 *)
 end // end of [fprint_p1at]
 
 implement fprint_p1atlst {m} (pf | out, p1ts0) = let
   fun aux (out: &FILE m, i: int, p1ts: p1atlst): void =
     case+ p1ts of
-    | cons (p1t, p1ts) => begin
+    | list_cons (p1t, p1ts) => begin
         if i > 0 then fprint1_string (pf | out, ", "); 
         fprint_p1at (pf | out, p1t); aux (out, i+1, p1ts)
-      end
-    | nil () => ()
+      end // end of [list_cons]
+    | list_nil () => () // end of [list_nil]
+  // end of [aux]
 in
   aux (out, 0, p1ts0)
 end // end of [fprint_p1atlst]
@@ -229,21 +229,21 @@ in
       prstr "; ";
       $Eff.fprint_effcst (pf | out, efc);
       prstr ")"
-    end
+    end // end of [D1Eann_effc]
   | D1Eann_funclo (d1e, fc) => begin
       prstr "D1Eann_funclo(";
       fprint_d1exp (pf | out, d1e);
       prstr "; ";
       $Syn.fprint_funclo (pf | out, fc);
       prstr ")"
-    end
+    end // end of [D1Eann_funclo]
   | D1Eann_type (d1e, s1e) => begin
       prstr "D1Eann_type(";
       fprint_d1exp (pf | out, d1e);
       prstr "; ";
       fprint_s1exp (pf | out, s1e);
       prstr ")"
-    end
+    end // end of [D1Eann_type]
   | D1Eapp_dyn (d1e, _(*loc_arg*), npf, d1es) => begin
       prstr "D1Eapp_dyn(";
       fprint_d1exp (pf | out, d1e);
@@ -252,14 +252,14 @@ in
       prstr "; ";
       fprint_d1explst (pf | out, d1es);
       prstr ")"
-    end
+    end // end of [D1Eapp_dyn]
   | D1Eapp_sta (d1e, s1as) => begin
       prstr "D1Eapp_sta(";
       fprint_d1exp (pf | out, d1e);
       prstr "; ";
       fprint1_string (pf | out, "...");
       prstr ")"
-    end
+    end // end of [D1Eapp_sta]
   | D1Earrinit (s1e, od1e_asz, d1es_elt) => begin
       prstr "D1Earrinit(";
       fprint_s1exp (pf | out, s1e);
@@ -302,22 +302,22 @@ in
       prstr "; ";
       fprint_d1exp (pf | out, d1e);
       prstr ")"
-    end
+    end // end of [D1Ecrypt]
   | D1Edynload (fil) => begin
       prstr "D1Edynload(";
       $Fil.fprint_filename (pf | out, fil);
       prstr ")"
-    end
+    end // end of [D1Edynload]
   | D1Eeffmask (effs, d1e) => begin
       prstr "D1Eeffmask(";
       $Eff.fprint_effectlst (pf | out, effs);
       prstr "; ";
       fprint_d1exp (pf | out, d1e);
       prstr ")"
-    end
+    end // end of [D1Eeffmask]
   | D1Eempty () => begin
       prstr "D1Eempty()";
-    end
+    end // end of [D1Eempty]
   | D1Eexist (s1a, d1e) => begin
       prstr "D1Eexist(";
       fprint1_string (pf | out, "...");
@@ -342,10 +342,10 @@ in
     end // end of [D1Efix]
   | D1Efloat f(*string*) => begin
       prstr "D1Efloat("; fprint1_string (pf | out, f); prstr ")"
-    end
+    end // end of [D1Efloat]
   | D1Efloatsp f(*string*) => begin
       prstr "D1Efloatsp("; fprint1_string (pf | out, f); prstr ")"
-    end
+    end // end of [D1Efloatsp]
   | D1Efoldat (_(*s1as*), d1e) => begin
       prstr "D1Efoldat(";
       fprint1_string (pf | out, "...");
@@ -388,10 +388,10 @@ in
     end // end of [D1Eif]
   | D1Eint i(*string*) => begin
       prstr "D1Eint("; fprint1_string (pf | out, i); prstr ")"
-    end
+    end // end of [D1Eint]
   | D1Eintsp i(*string*) => begin
       prstr "D1Eintsp("; fprint1_string (pf | out, i); prstr ")"
-    end
+    end // end of [D1Eintsp]
   | D1Elam_dyn (lin, p1t, d1e) => begin
       prstr "D1Elam_dyn(";
       fprint1_int (pf | out, lin);
@@ -450,7 +450,7 @@ in
     end // end of [D1Eobj]
   | D1Eptrof d1e => begin
       prstr "D1Eptrof("; fprint_d1exp (pf | out, d1e); prstr ")"
-    end
+    end // end of [D1Eptrof]
   | D1Elist (npf, d1es) => begin
       prstr "D1Elist(";
       fprint1_int (pf | out, npf);
@@ -475,10 +475,11 @@ in
       prstr ")"
     end // end of [D1Elst]
   | D1Emacsyn (knd, d1e) => let
-      val () = case+ knd of
+      val () = (case+ knd of
         | $Syn.MACSYNKINDcross () => fprint1_string (pf | out, "%(")
         | $Syn.MACSYNKINDdecode () => fprint1_string (pf | out, ",(")
         | $Syn.MACSYNKINDencode () => fprint1_string (pf | out, "`(")
+      ) : void // end of [val]
     in
       fprint_d1exp (pf | out, d1e); prstr ")"
     end // end of [D1Emacsyn]
@@ -545,7 +546,7 @@ in
     end // end of [D1Etmpid]
   | D1Etop () => begin
       fprint1_string (pf | out, "D1Etop()")
-    end
+    end // end of [D1Etop]
   | D1Etrywith (_(*r1es*), d1e, c1ls) => begin
       prstr "D1Etrywith(";
       fprint_d1exp (pf | out, d1e);
@@ -564,7 +565,7 @@ in
     end // end of [D1Etup]
   | D1Eviewat (d1e) => begin
       prstr "D1Eviewat("; fprint_d1exp (pf | out, d1e); prstr ")"
-    end
+    end // end of [D1Eviewat]
   | D1Ewhere (d1e, d1cs) => begin
       prstr "D1Ewhere(";
       fprint_d1exp (pf | out, d1e);
@@ -581,9 +582,11 @@ in
     end // end of [D1Ewhile]
 (*
   | _ => begin
+      $Loc.prerr_location d1e0.d1exp_loc;
+      prerr "INTERNAL ERROR (ats_dynexp1_print)";
       prerr "fprint_d1exp: not yet available"; prerr_newline ();
       exit {void} (1)
-    end
+    end // end of [_]
 *)
 end // end of [fprint_d1exp]
 
@@ -592,12 +595,13 @@ end // end of [fprint_d1exp]
 implement fprint_d1explst {m} (pf | out, d1es0) = let
   fun aux (out: &FILE m, i: int, d1es: d1explst): void =
     case+ d1es of
-    | cons (d1e, d1es) => let
+    | list_cons (d1e, d1es) => let
         val () = if i > 0 then fprint1_string (pf | out, ", ")
       in
         fprint_d1exp (pf | out, d1e); aux (out, i+1, d1es)
-      end // end of [cons]
-    | nil () => ()
+      end // end of [list_cons]
+    | list_nil () => () // end of [list_nil]
+  // end of [aux]
 in
   aux (out, 0, d1es0)
 end // end of [fprint_d1explst]
@@ -607,12 +611,13 @@ end // end of [fprint_d1explst]
 implement fprint_d1explstlst {m} (pf | out, d1ess0) = let
   fun aux (out: &FILE m, i: int, d1ess: d1explstlst): void =
     case+ d1ess of
-    | cons (d1es, d1ess) => let
+    | list_cons (d1es, d1ess) => let
         val () = if i > 0 then fprint1_string (pf | out, "; ")
       in
         fprint_d1explst (pf | out, d1es); aux (out, i+1, d1ess)
-      end // end of [cons]
-    | nil () => ()
+      end // end of [list_cons]
+    | list_nil () => () // end of [list_nil]
+  // end of [aux]
 in
   aux (out, 0, d1ess0)
 end // end of [fprint_d1explstlst]
@@ -629,7 +634,7 @@ implement fprint_labd1explst {m} (pf | out, ld1es0) = let
         fprint_label (pf | out, l.l0ab_lab); prstr "= ";
         fprint_d1exp (pf | out, d1e);
         aux (out, i+1, ld1es)
-      end
+      end // end of [LABD1EXPLSTcons]
     | LABD1EXPLSTnil () => ()
   end // end of [aux]
 in

@@ -31,12 +31,14 @@
 
 /* ****** ****** */
 
-// July 2007
 // Author: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
+// July 2007
 
 /* ****** ****** */
 
-/* ats_counter: a simple counter implementation */
+/*
+** ats_counter: a simple counter implementation
+*/
 
 /* ****** ****** */
 

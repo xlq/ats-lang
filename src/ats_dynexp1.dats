@@ -31,8 +31,8 @@
 
 (* ****** ****** *)
 
-// Time: October 2007
 // Author: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
+// Time: October 2007
 
 (* ****** ****** *)
 
@@ -125,6 +125,7 @@ implement p1at_list (loc, p1ts) = case+ p1ts of
   | _ => '{
       p1at_loc= loc, p1at_node= P1Tlist (0, p1ts)
     }
+// end of [p1at_list]
 
 implement p1at_list2 (loc, p1ts1, p1ts2) = let
   val npf = $Lst.list_length p1ts1
@@ -609,7 +610,8 @@ implement d1ec_stavars (loc, d1cs_stavar) = '{
   d1ec_loc= loc, d1ec_node= D1Cstavars (d1cs_stavar)
 }
 
-implement d1ec_sexpdefs (loc, os1t, d1cs_sexpdef) = '{
+implement d1ec_sexpdefs
+  (loc, os1t, d1cs_sexpdef) = '{
   d1ec_loc= loc, d1ec_node= D1Csexpdefs (os1t, d1cs_sexpdef)
 }
 
@@ -617,7 +619,8 @@ implement d1ec_saspdec (loc, d1c) = '{
   d1ec_loc= loc, d1ec_node= D1Csaspdec d1c
 }
 
-implement d1ec_datdecs (loc, dk, d1cs_datdec, d1cs_sexpdef) = '{
+implement d1ec_datdecs
+  (loc, dk, d1cs_datdec, d1cs_sexpdef) = '{
   d1ec_loc= loc, d1ec_node= D1Cdatdecs (dk, d1cs_datdec, d1cs_sexpdef)
 }
 
