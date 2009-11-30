@@ -7,33 +7,32 @@
 /***********************************************************************/
 
 /*
- * ATS/Anairiats - Unleashing the Potential of Types!
- *
- * Copyright (C) 2002-2008 Hongwei Xi.
- *
- * All rights reserved
- *
- * ATS is free software;  you can  redistribute it and/or modify it under
- * the terms of  the GNU GENERAL PUBLIC LICENSE (GPL) as published by the
- * Free Software Foundation; either version 3, or (at  your  option)  any
- * later version.
- * 
- * ATS is distributed in the hope that it will be useful, but WITHOUT ANY
- * WARRANTY; without  even  the  implied  warranty  of MERCHANTABILITY or
- * FITNESS FOR A PARTICULAR PURPOSE.  See the  GNU General Public License
- * for more details.
- * 
- * You  should  have  received  a  copy of the GNU General Public License
- * along  with  ATS;  see the  file COPYING.  If not, please write to the
- * Free Software Foundation,  51 Franklin Street, Fifth Floor, Boston, MA
- * 02110-1301, USA.
- *
- */
+** ATS/Anairiats - Unleashing the Potential of Types!
+**
+** Copyright (C) 2002-2008 Hongwei Xi.
+**
+** All rights reserved
+**
+** ATS is free software;  you can  redistribute it and/or modify it under
+** the terms of  the GNU GENERAL PUBLIC LICENSE (GPL) as published by the
+** Free Software Foundation; either version 3, or (at  your  option)  any
+** later version.
+** 
+** ATS is distributed in the hope that it will be useful, but WITHOUT ANY
+** WARRANTY; without  even  the  implied  warranty  of MERCHANTABILITY or
+** FITNESS FOR A PARTICULAR PURPOSE.  See the  GNU General Public License
+** for more details.
+** 
+** You  should  have  received  a  copy of the GNU General Public License
+** along  with  ATS;  see the  file COPYING.  If not, please write to the
+** Free Software Foundation,  51 Franklin Street, Fifth Floor, Boston, MA
+** 02110-1301, USA.
+*/
 
 /* ****** ****** */
 
-// August 2008
 // Author: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
+// August 2008
 
 /* ****** ****** */
 
@@ -85,12 +84,14 @@ void mpz_init_set_si (mpz_ptr x, lint y) {
 }
 
 static inline
-int mpz_init_set_str(mpz_ptr x, char *nptr, int base) {
+int mpz_init_set_str (
+  mpz_ptr x, char *nptr, int base
+) {
   char *endptr ;
   *x = strtoll (nptr, &endptr, base) ;
   if (!endptr) return (-1) ;
   return 0 ;
-}
+} // end of [mpz_init_set_str]
 
 /* ****** ****** */
 
@@ -148,15 +149,19 @@ void mp_set_memory_functions () { return ; }
 
 static inline
 ats_void_type
-atslib_mpz_init_set_int (ats_mpz_ptr_type x, ats_int_type y) {
+atslib_mpz_init_set_int (
+  ats_mpz_ptr_type x, ats_int_type y
+) {
   mpz_init_set_si((mpz_ptr)x, y) ; return ;
-}
+} // end of [atslib_mpz_init_set_int]
 
 static inline
 ats_void_type
-atslib_fprint_mpz(ats_ptr_type file, const ats_mpz_ptr_type x) {
+atslib_fprint_mpz (
+  ats_ptr_type file, const ats_mpz_ptr_type x
+) {
   fprintf ((FILE*)file, "%lld", *(mpz_ptr)x) ; return ;
-}
+} // end of [atslib_fprint_mpz]
 
 /* ****** ****** */
 

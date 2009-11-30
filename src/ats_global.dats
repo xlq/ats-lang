@@ -137,4 +137,4 @@ ats_global_initialize () {
 
 (* ****** ****** *)
 
-(* end of [ats_counter.dats] *)
+(* end of [ats_global.dats] *)

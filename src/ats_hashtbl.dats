@@ -49,6 +49,7 @@ dataviewtype chain (key:t@ype,item:viewt@ype+,int) =
   | {n:nat}
     CHAINcons (key, item, n+1) of (key, item, chain (key, item, n))
   | CHAINnil (key, item, 0)
+// end of [chain]
 
 viewtypedef Chain (key: t@ype, item: viewt@ype) = [n:nat] chain (key, item, n)
 
@@ -67,15 +68,16 @@ fun{key:t@ype;item:t@ype} chain_search {n:nat} .<n>.
         let val ans = Some_vt i in (fold@ xs0; ans) end
       end else begin
         let val ans = chain_search (!xs, k0, eq) in (fold@ xs0; ans) end
-      end
+      end // end of [if]
     end // end of [cons]
-  | nil () => (fold@ xs0; None_vt ())
+  | nil () => (fold@ xs0; None_vt ()) // end of [nil]
 end // end of [chain_search]
 
 fn{key:t@ype;item:viewt@ype} chain_insert {n:nat}
   (xs: &chain (key, item, n) >> chain (key, item, n+1), k: key, i: item)
   :<> void =
   xs := cons (k, i, xs)
+// end of [chain_insert]
 
 fun{key:t@ype;item:viewt@ype} chain_remove {n:nat} {l:addr} .<n>.
   (pf: chain (key, item, n) @ l | p0: ptr l, k0: key, eq: (key, key) -<fun> bool)
@@ -92,7 +94,7 @@ fun{key:t@ype;item:viewt@ype} chain_remove {n:nat} {l:addr} .<n>.
       in
         fold@ {key,item} (!p0); (view@ (!p0) | ans)
       end
-    end
+    end // end of [cons]
   | nil () => (fold@ (!p0); (view@ (!p0) | None_vt ()))
 end // end of [chain_remove]
 
@@ -157,13 +159,15 @@ end // end of [table_chain_get]
 (* ****** ****** *)
 
 viewtypedef
-hashtbl_struct (key:t@ype, item:viewt@ype, sz:int) = @{
+hashtbl_struct (
+  key:t@ype, item:viewt@ype, sz:int
+) = @{
   hash= key -<fun> uint
 , eq= (key, key) -<fun> bool
 , size= int sz
 , nitm= int
 , table= table (key, item, sz)
-}
+} // end of [hashtbl_struct]
 
 stadef HT = hashtbl_struct
 
@@ -188,8 +192,8 @@ fun{key:t@ype;item:viewt@ype}
   | ~cons (k, i, kis) => begin
       ht_insert<key,item> {sz} (ht, k, i); 
       ht_insert_chain (ht, kis)
-    end
-  | ~nil () => ()
+    end // end of [cons]
+  | ~nil () => () // end of [nil]
 end // end of [ht_insert_chain]
 
 fn{key:t@ype;item:viewt@ype} ht_remove {sz:pos}
@@ -197,9 +201,10 @@ fn{key:t@ype;item:viewt@ype} ht_remove {sz:pos}
   val off = op uimod (ht.hash k, ht.size)
   val off_sz = size1_of_int1 (off)
   val ans = table_remove<key,item> (ht.table, off_sz, k, ht.eq)
-  val () = case+ ans of
+  val () = (case+ ans of
     | Some_vt !i => (fold@ ans; ht.nitm := ht.nitm - 1)
     | None_vt () => fold@ ans
+  ) : void // end of [val]
 in
   ans
 end // end of [ht_remove]
@@ -225,9 +230,10 @@ extern typedef "chain" =
 
 %{$
 
-ats_ptr_type ats_htp_make
-  (ats_ptr_type hash, ats_ptr_type eq, ats_int_type sz)
-{
+ats_ptr_type
+ats_htp_make (
+  ats_ptr_type hash, ats_ptr_type eq, ats_int_type sz
+) {
   int n ;
   hashtbl_struct *htp ;
   htp = ATS_MALLOC (sizeof(hashtbl_struct) + sz * sizeof(chain)) ;
@@ -235,17 +241,20 @@ ats_ptr_type ats_htp_make
   htp->atslab_hash = hash ;
   htp->atslab_eq = eq ;
   htp->atslab_size = sz ;
-
+//
   for (n = 0 ; n < sz ; ++n) { htp->atslab_table[n] = CHAINnil ; }
-  
+//  
   return htp ;
-}
+} // end of [ats_htp_make]
 
-ats_void_type __ats_htp_free (ats_ptr_type htp) {
+ats_void_type
+__ats_htp_free (
+  ats_ptr_type htp
+) {
   ATS_FREE (htp) ; return ;
-}
+} // end of [__ats_htp_free]
 
-%}
+%} // end of [%{$]
 
 (* ****** ****** *)
 
@@ -291,6 +300,7 @@ end // end of [htp_resize]
 
 viewtypedef hashtbl_ptr (key:t@ype,item:viewt@ype) =
   [sz:pos] [l:addr] (option_v (HT (key, item, sz) @ l, l <> null) | ptr l)
+// end of [hashtbl_ptr]
 
 assume hashtbl_t (key:t@ype,item:viewt@ype) = ref (hashtbl_ptr (key, item))
 
@@ -328,7 +338,7 @@ in
     !htpp := (pf_htp_opt | null)
   end else begin
     !htpp := (pf_htp_opt | htp)
-  end
+  end // end of [if]
 end // end of [hashtbl_clear]
 
 (* ****** ****** *)
@@ -348,7 +358,7 @@ in
     val () = !htpp := (pf_htp_opt | htp)
   in
     None_vt ()
-  end
+  end // end of [if]
 end // end of [hashtbl_search]
 
 (* ****** ****** *)
@@ -379,7 +389,7 @@ in
     end
   end else begin
     (!htpp := (pf_htp_opt | htp); Some_vt i)
-  end
+  end // end of [if]
 end // end of [hashtbl_insert]
 
 implement{key,item} hashtbl_remove (hashtbl, k) = let
@@ -397,7 +407,7 @@ in
     val () = !htpp := (pf_htp_opt | htp)
   in
     None_vt ()
-  end
+  end // end of [if]
 end // end of [hashtbl_remove]
 
 (* ****** ****** *)

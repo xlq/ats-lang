@@ -72,22 +72,22 @@ implement fprint_fxty
   case+ fxty of
   | FXTYnon () => begin
       fprint1_string (pf | out, "FXTYnon()")
-    end
+    end // end of [FXTYnon]
   | FXTYinf (p, a) => begin
       fprint1_string (pf | out, "FXTYinf(");
       fprint1_int (pf | out, p);
       fprint1_string (pf | out, ")")
-    end
+    end // end of [FXTYinf]
   | FXTYpre (p) => begin
       fprint1_string (pf | out, "FXTYpre(");
       fprint1_int (pf | out, p);
       fprint1_string (pf | out, ")")
-    end
+    end // end of [FXTYpre]
   | FXTYpos (p) => begin
       fprint1_string (pf | out, "FXTYpos(");
       fprint1_int (pf | out, p);
       fprint1_string (pf | out, ")")
-    end
+    end // end of [FXTYpos]
 end // end of [fprint_fxty]
 
 implement print_fxty (fxty) = print_mac (fprint_fxty, fxty)
@@ -243,7 +243,8 @@ end // end of [oper_precedence]
 #define nil list_nil
 #define :: list_cons
 
-implement fixity_resolve {a:type} (loc0, app, xs) = let
+implement fixity_resolve
+  {a:type} (loc0, app, xs) = let
 
 fn err (loc: $Loc.location_t): a = begin
   $Loc.prerr_location loc; prerr ": error(1)";
