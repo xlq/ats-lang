@@ -75,18 +75,20 @@ datatype p3at_node =
       (int(*refknd*), d2var_t)
   | P3Tvbox of // vbox pattern
       d2var_t
+// end of [p3at_node]
 
 and labp3atlst = 
   | LABP3ATLSTnil
   | LABP3ATLSTdot
   | LABP3ATLSTcons of (lab_t, p3at, labp3atlst)
+// end of [labp3atlst]
 
 where p3at = '{
   p3at_loc= loc_t
 , p3at_node= p3at_node
 , p3at_typ= s2exp
 , p3at_typ_lft= s2expopt
-}
+} // end of [p3at]
 
 and p3atlst (n:int) = list (p3at, n)
 and p3atlst = [n:nat] p3atlst n
@@ -129,6 +131,7 @@ fun p3at_char (_: loc_t, _: s2exp, _: char): p3at
 
 fun p3at_con
   (_: loc_t, _: s2exp, freeknd: int, _: d2con_t, npf: int, arg: p3atlst): p3at
+// end of [p3at_con]
 
 fun p3at_empty (_: loc_t, _: s2exp): p3at
 fun p3at_exist (_: loc_t, _: s2exp, _: s2varlst, _: p3at): p3at
@@ -139,6 +142,7 @@ fun p3at_lst (_: loc_t, lst: s2exp, elt: s2exp, _: p3atlst): p3at
 
 fun p3at_rec
   (_: loc_t, _: s2exp, reckind: int, npf: int, _: labp3atlst): p3at
+// end of [p3at_rec]
 
 fun p3at_string (_: loc_t, _: s2exp, str: string): p3at
 fun p3at_var (_: loc_t, _: s2exp, refknd: int, _: d2var_t): p3at
@@ -535,6 +539,7 @@ fun d3exp_bool (_: loc_t, _: s2exp, _: bool): d3exp
 
 fun d3exp_caseof {n:nat}
   (_: loc_t, _: s2exp, casknd: int, _: d3explst n, _: c3laulst n): d3exp
+// end of [d3exp_caseof]
 
 fun d3exp_char (_: loc_t, _: s2exp, _: char): d3exp
 
@@ -602,6 +607,7 @@ fun d3exp_let (_: loc_t, _: d3eclst, _: d3exp): d3exp
 
 fun d3exp_loop
   (_: loc_t, init: d3expopt, test: d3exp, post: d3expopt, body: d3exp): d3exp
+// end of [d3exp_loop]
 
 fun d3exp_loopexn (_: loc_t, knd: int): d3exp
 

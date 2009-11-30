@@ -140,7 +140,7 @@ implement d2mtd_typ_get (d2m) = let
   typedef sub_t = @(s2qualst, tmps2explstlst)
 (*
   val () = begin
-    prerr "d2mtd_typ_get: d2m = "; prerr_d2mtd d2m; prerr_newline ()
+    print "d2mtd_typ_get: d2m = "; print_d2mtd d2m; print_newline ()
   end // end of [val]
 *)
   fun aux // caching if needed
@@ -149,8 +149,8 @@ implement d2mtd_typ_get (d2m) = let
     | list_cons (sub, subs) => let
 (*
         val () = begin
-          prerr "d2mtd_typ_get: aux: s2qss = "; prerr_s2qualst sub.0; prerr_newline ();
-          prerr "d2mtd_typ_get: aux: ts2ess = "; prerr_tmps2explstlst sub.1; prerr_newline ();
+          print "d2mtd_typ_get: aux: s2qss = "; print_s2qualst sub.0; print_newline ();
+          print "d2mtd_typ_get: aux: ts2ess = "; print_tmps2explstlst sub.1; print_newline ();
         end // end of [val]
 *)
         val res = aux (subs, res)

@@ -164,7 +164,7 @@ fn _lt_d2cst_d2cst
     let val (vbox pf2 | p2) = d2c2 in p2->d2cst_stamp end
 in
   $Stamp.lt_stamp_stamp (stamp1, stamp2)
-end
+end // end of [_lt_d2cst_d2cst]
 
 implement lt_d2cst_d2cst (d2c1, d2c2) =
   $effmask_all ( _lt_d2cst_d2cst (d2c1, d2c2) )
@@ -179,7 +179,7 @@ fn _lte_d2cst_d2cst
     let val (vbox pf2 | p2) = d2c2 in p2->d2cst_stamp end
 in
   $Stamp.lte_stamp_stamp (stamp1, stamp2)
-end
+end // end of [_lte_d2cst_d2cst]
 
 implement lte_d2cst_d2cst (d2c1, d2c2) =
   $effmask_all ( _lte_d2cst_d2cst (d2c1, d2c2) )
@@ -190,11 +190,13 @@ fn _eq_d2cst_d2cst
   (d2c1: d2cst_t, d2c2: d2cst_t): bool = let
   val stamp1 =
     let val (vbox pf1 | p1) = d2c1 in p1->d2cst_stamp end
+  // end of [val]
   val stamp2 =
     let val (vbox pf2 | p2) = d2c2 in p2->d2cst_stamp end
+  // end of [val]
 in
   $Stamp.eq_stamp_stamp (stamp1, stamp2)
-end
+end // end of [_eq_d2cst_d2cst]
 
 implement eq_d2cst_d2cst (d2c1, d2c2) =
   $effmask_all ( _eq_d2cst_d2cst (d2c1, d2c2) )
@@ -205,11 +207,13 @@ fn _neq_d2cst_d2cst
   (d2c1: d2cst_t, d2c2: d2cst_t): bool = let
   val stamp1 =
     let val (vbox pf1 | p1) = d2c1 in p1->d2cst_stamp end
+  // end of [val]
   val stamp2 =
     let val (vbox pf2 | p2) = d2c2 in p2->d2cst_stamp end
+  // end of [val]
 in
   $Stamp.neq_stamp_stamp (stamp1, stamp2)
-end
+end // end of [_neq_d2cst_d2cst]
 
 implement neq_d2cst_d2cst (d2c1, d2c2) =
   $effmask_all ( _neq_d2cst_d2cst (d2c1, d2c2) )
@@ -220,11 +224,13 @@ fn _compare_d2cst_d2cst
   (d2c1: d2cst_t, d2c2: d2cst_t): Sgn = let
   val stamp1 =
     let val (vbox pf1 | p1) = d2c1 in p1->d2cst_stamp end
+  // end of [val]
   val stamp2 =
     let val (vbox pf2 | p2) = d2c2 in p2->d2cst_stamp end
+  // end of [val]
 in
   $Stamp.compare_stamp_stamp (stamp1, stamp2)
-end
+end // end of [_compare_d2cst_d2cst]
 
 implement compare_d2cst_d2cst (d2c1, d2c2) =
   $effmask_all ( _compare_d2cst_d2cst (d2c1, d2c2) )

@@ -31,8 +31,8 @@
 
 (* ****** ****** *)
 
-// Time: February 2008
 // Author: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
+// Time: February 2008
 
 (* ****** ****** *)
 
@@ -168,7 +168,8 @@ implement d2exp_var_cst_is_ptr (d2e) = begin
     end // end of [D2Ecst]
   | _ => begin
       $Loc.prerr_location d2e.d2exp_loc;
-      prerr ": INTERNAL ERROR: d2exp_var_cst_is_ptr"; prerr_newline ();
+      prerr ": INTERNAL ERROR";
+      prerr ": d2exp_var_cst_is_ptr: d2e = "; prerr d2e; prerr_newline ();
       $Err.abort {bool} ()
     end // end of [_]
 end // end of [d2exp_var_cst_is_ptr]

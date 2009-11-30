@@ -31,15 +31,13 @@
 
 (* ****** ****** *)
 
-// Time: November 2007
 // Author: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
+// Time: November 2007
 
 (* ****** ****** *)
 
 %{^
-
 #include "ats_counter.cats" /* only needed for [ATS/Geizella] */
-
 %}
 
 (* ****** ****** *)
@@ -429,13 +427,13 @@ fn fprint_d2varset_ptr {m:file_mode} {l:addr} (
   | p: ptr l
   , dvs: d2varset_t
   ) : void = let
-
+//
   typedef ptrint = (ptr l, int)
-
+//
   var pi: ptrint; val () = pi.0 := p; val () = pi.1 := 0
-
+//
   viewdef V = @(FILE m @ l, ptrint @ pi)
-
+//
   fn pr (pf: !V | d2v: d2var_t, pi: !ptr pi): void = let
     prval pf_out = pf.0
     prval pf_at = pf.1; val p = pi->0; val i = pi->1
@@ -445,15 +443,13 @@ fn fprint_d2varset_ptr {m:file_mode} {l:addr} (
     fprint_d2var (pf_mod | !p, d2v);
     pf.0 := pf_out; pf.1 := pf_at;
   end // end of [pr]
-
+//
   prval pf = (pf_out, view@ pi)
-
+//
   val () = $Set.set_foreach_main {V} {ptr pi} (pf | dvs, pr, &pi)
-
+//
 in // in of [let]
-
   pf_out := pf.0; view@ pi := pf.1
-
 end // end of [fprint_d2varset_ptr]
 
 in // in of [local]

@@ -31,8 +31,8 @@
 
 (* ****** ****** *)
 
-// Time: January 2008
 // Author: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
+// Time: January 2008
 
 (* ****** ****** *)
 
@@ -67,10 +67,10 @@ in
       prstr "; ";
       fprint_s2exp (pf | out, s2e);
       prstr ")"
-    end
+    end // end of [P3Tann]
   | P3Tany d2v => begin
       prstr "P3Tany("; fprint_d2var (pf | out, d2v); prstr ")"
-    end
+    end // end of [P3Tany]
   | P3Tas (refknd, d2v, p3t) => begin
       prstr "P3Tas(";
       if (refknd > 0) then prstr "!";
@@ -81,10 +81,10 @@ in
     end // end of [P3Tas]
   | P3Tbool b => begin
       prstr "P3Tbool("; fprint1_bool (pf | out, b); prstr ")"
-    end
+    end // end of [P3Tbool]
   | P3Tchar c => begin
       prstr "P3Tchar("; fprint1_char (pf | out, c); prstr ")"
-    end
+    end // end of [P2Tchar]
   | P3Tcon (refknd, d2c, npf, p3ts) => begin
       prstr "P3Tcon(";
       fprint1_int (pf | out, refknd);
@@ -98,7 +98,7 @@ in
     end // end of [P3Tcon]
   | P3Tempty () => begin
       fprint1_string (pf | out, "P3Tempty()")
-    end
+    end // end of [P3Tempty]
   | P3Texist (s2vs, p3t) => begin
       prstr "P3Texist(";
       fprint_s2varlst (pf | out, s2vs);
@@ -108,10 +108,10 @@ in
     end // end of [P3Texist]
   | P3Tfloat str => begin
       fprintf1_exn (pf | out, "P3Tfloat(%s)", @(str))
-    end
+    end // end of [P3Tfloat]
   | P3Tint (str, int) => begin
       fprintf1_exn (pf | out, "P3Tint(%s)", @(str))
-    end
+    end // end of [P2Tint]
   | P3Tlst (s2e, p3ts) => begin
       prstr "P3Tlst(";
       fprint_s2exp (pf | out, s2e);
@@ -136,9 +136,10 @@ in
     end
 (*
   | _ => begin
-      prstr "fprint_p3at: not implemented yet"; fprint_newline (pf | out);
+      prstr "INTERNAL ERROR";
+      prstr ": fprint_p3at: not implemented yet"; fprint_newline (pf | out);
       exit (1)
-    end
+    end // end of [_]
 *)
 end // end of [fprint_p3at]
 
@@ -148,8 +149,8 @@ implement fprint_p3atlst {m} (pf | out, p3ts) = let
     | cons (p3t, p3ts) => begin
         if (i > 0) then fprint1_string (pf | out, ", ");
         fprint_p3at (pf | out, p3t); aux (out, i + 1, p3ts)
-      end
-    | nil () => ()
+      end // end of [cons]
+    | nil () => () // end of [nil]
   end // end of [aux]
 in
   aux (out, 0, p3ts)
@@ -172,7 +173,7 @@ in
       prstr "; ";
       fprint_s2exp (pf | out, s2e);
       prstr ")"
-    end
+    end // end of [D3Eann_type]
   | D3Eapp_dyn (d3e_fun, npf, d3es_arg) => begin
       prstr "D3Eapp_dyn(";
       fprint_d3exp (pf | out, d3e_fun);
@@ -181,10 +182,10 @@ in
       prstr "; ";
       fprint_d3explst (pf | out, d3es_arg);
       prstr ")"
-    end
+    end // end of [D3Eapp_dyn]
   | D3Eapp_sta d3e => begin
       prstr "D3Eapp_sta("; fprint_d3exp (pf | out, d3e); prstr ")"
-    end
+    end // end of [D3Eapp_sta]
   | D3Earrinit (s2e_elt, od3e_asz, d3es_elt) => begin
       prstr "D3Earrinit(";
       fprint_s2exp (pf | out, s2e_elt);
@@ -233,7 +234,7 @@ in
     end // end of [D3Ecaseof]
   | D3Echar chr => begin
       prstr "D3Echar("; fprint1_char (pf | out, chr); prstr ")"
-    end
+    end // end of [D3Echar]
   | D3Econ (d2c, npf, d3es) => begin
       prstr "D3Econ(";
       fprint_d2con (pf | out, d2c);
@@ -260,20 +261,20 @@ in
       prstr "D3Edynload(";
       $Fil.fprint_filename (pf | out, fil);
       prstr ")"
-    end
+    end // end of [D3Edynload]
   | D3Eeffmask (effs, d3e) => begin
       prstr "D3Eeffmask(";
       $Eff.fprint_effectlst (pf | out, effs);
       prstr "; ";
       fprint_d3exp (pf | out, d3e);
       prstr ")"
-    end
+    end // end of [D3Eeffmask]
   | D3Eempty () => begin
       fprint1_string (pf | out, "D3Eempty()")
-    end
+    end // end of [D3Eempty]
   | D3Eextval (str) => begin
       fprintf1_exn (pf | out, "D3Eextval(\"%s\")", @(str))
-    end
+    end // end of [D3Eextval]
   | D3Efix (d2v, d3e) => begin
       prstr "D3Efix(";
       fprint_d2var (pf | out, d2v);
@@ -283,16 +284,16 @@ in
     end // end of [D3Efix]
   | D3Efloat (str) => begin
       fprintf1_exn (pf | out, "D3Efloat(%s)", @(str))
-    end
+    end // end of [D3Efloat]
   | D3Efloatsp (str) => begin
       fprintf1_exn (pf | out, "D3Efloatsp(%s)", @(str))
-    end
+    end // end of [D3Efloatsp]
   | D3Efoldat d3e => begin
       prstr "D3Efoldat("; fprint_d3exp (pf | out, d3e); prstr ")"
-    end
+    end // end of [D3Efoldat]
   | D3Efreeat d3e => begin
       prstr "D3Efreeat("; fprint_d3exp (pf | out, d3e); prstr ")"
-    end
+    end // end of [D3Efreeat]
   | D3Eif (d3e_cond, d3e_then, d3e_else) => begin
       prstr "D3Eif(";
       fprint_d3exp (pf | out, d3e_cond);
@@ -304,10 +305,10 @@ in
     end // end of [D3Eif]
   | D3Eint (str, _(*intinf*)) => begin
       fprintf1_exn (pf | out, "D3Eint(%s)", @(str))
-    end
+    end // end of [D3Eint]
   | D3Eintsp (str, _(*intinf*)) => begin
       fprintf1_exn (pf | out, "D3Eintsp(%s)", @(str))
-    end
+    end // end of [D3Eintsp]
   | D3Elam_dyn (lin, npf, p3ts, d3e) => begin
       prstr "D3Elam_dyn(";
       fprint1_int (pf | out, lin);
@@ -387,7 +388,7 @@ in
     end // end of [D3Eloop]
   | D3Eloopexn i => begin
       fprintf1_exn (pf | out, "D3Eloopexn(%i)", @(i))
-    end
+    end // end of [D3Eloopexn]
   | D3Elst (lin, s2e, d3es) => begin
       prstr "D3Elst(";
       fprint_s2exp (pf | out, s2e);
@@ -462,7 +463,7 @@ in
     end // end of [D3Esel_var]
   | D3Eseq d3es => begin
       prstr "D3Eseq("; fprint_d3explst (pf | out, d3es); prstr ")"
-    end
+    end // end of [D3Eseq]
   | D3Esif (s2e_cond, d3e_then, d3e_else) => begin
       prstr "D3Esif(";
       fprint_s2exp (pf | out, s2e_cond);
@@ -538,7 +539,7 @@ in
 (*
   | _ => begin
       fprint1_string (pf | out, "[...]")
-    end
+    end // end of [val]
 *)
 end // end of [fprint_d3exp]
 
@@ -548,8 +549,8 @@ implement fprint_d3explst {m} (pf | out, d3es) = let
     | cons (d3e, d3es) => begin
         if (i > 0) then fprint1_string (pf | out, ", ");
         fprint_d3exp (pf | out, d3e); aux (out, i + 1, d3es)
-      end
-    | nil () => ()
+      end // end of [cons]
+    | nil () => () // end of [nil]
   end // end of [aux]
 in
   aux (out, 0, d3es)
@@ -561,8 +562,8 @@ implement fprint_d3explstlst {m} (pf | out, d3ess) = let
     | cons (d3es, d3ess) => begin
         if (i > 0) then fprint1_string (pf | out, ", ");
         fprint_d3explst (pf | out, d3es); aux (out, i + 1, d3ess)
-      end
-    | nil () => ()
+      end // end of [cons]
+    | nil () => () // end of [nil]
   end // end of [aux]
 in
   aux (out, 0, d3ess)
@@ -577,8 +578,8 @@ implement fprint_labd3explst {m} (pf | out, ld3es0) = let
         if i > 0 then prstr ", ";
         fprint_label (pf | out, l); prstr "= ";
         fprint_d3exp (pf | out, d3e); aux (out, i+1, ld3es)
-      end
-    | LABD3EXPLSTnil () => ()
+      end // end of [LABD3EXPLSTcons]
+    | LABD3EXPLSTnil () => () // end of [LABD3EXPLSTnil]
     end // end of [aux]
 in
   aux (out, 0, ld3es0)
@@ -610,8 +611,8 @@ implement fprint_d3lab1lst {m} (pf | out, d3ls) = let
     | cons (d3l, d3ls) => begin
         if (i > 0) then fprint1_string (pf | out, ", ");
         fprint_d3lab1 (pf | out, d3l); aux (out, i + 1, d3ls)
-      end
-    | nil () => ()
+      end // end of [cons]
+    | nil () => () // end of [nil]
   end // end of [aux]
 in
   aux (out, 0, d3ls)

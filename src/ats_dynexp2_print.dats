@@ -56,7 +56,7 @@ macdef fprint_symbol = $Sym.fprint_symbol
 implement fprint_d2sym (pf | out, d2s) = begin
   $Syn.fprint_d0ynq (pf | out, d2s.d2sym_qua);
   fprint_symbol (pf | out, d2s.d2sym_sym)
-end
+end // end of [fprint_d2sym]
 
 implement print_d2sym (d2s) = print_mac (fprint_d2sym, d2s)
 implement prerr_d2sym (d2s) = prerr_mac (fprint_d2sym, d2s)
@@ -125,7 +125,7 @@ in
       prstr "; ";
       fprint_s2exp (pf | out, s2e);
       prstr ")"
-    end
+    end // end of [P2Tann]
   | P2Tany () => fprint1_string (pf | out, "P2Tany()")
   | P2Tas (refknd, d2v, p2t) => begin
       prstr "P2Tas(";
@@ -137,10 +137,10 @@ in
     end // end of [P2Tas]
   | P2Tbool b => begin
       prstr "P2Tbool("; fprint1_bool (pf | out, b); prstr ")"
-    end
+    end // end of [P2Tbool]
   | P2Tchar c => begin
       prstr "P2Tchar("; fprint1_char (pf | out, c); prstr ")"
-    end
+    end // end of [P2Tchar]
   | P2Tcon (freeknd, d2c, s2qs, s2e, npf, p2ts) => begin
       prstr "P2Tcon(";
       if (freeknd < 0) then prstr "~";
@@ -148,23 +148,23 @@ in
       prstr "; ";
       fprint_p2atlst (pf | out, p2ts);
       prstr ")"
-    end
+    end // end of [P2Tcon]
   | P2Tempty () => begin
       fprint1_string (pf | out, "P2Tempty()")
-    end
+    end // end of [P2Tempty]
   | P2Texist (s2vs, p2t) => begin
       prstr "P2Texist(";
       fprint1_string (pf | out, "...");
       prstr "; ";
       fprint_p2at (pf | out, p2t);
       prstr ")"
-    end
+    end // end of [P2Texist]
   | P2Tfloat f(*string*) => begin
       prstr "P2Tfloat("; fprint1_string (pf | out, f); prstr ")"
-    end
+    end // end of [P2Tfloat]
   | P2Tint (str, _(*intinf*)) => begin
       prstr "P2Tint("; fprint1_string (pf | out, str); prstr ")"
-    end
+    end // end of [P2Tint]
   | P2Tlist (npf, p2ts) => begin
       prstr "P2Tlist(";
       fprint1_int (pf | out, npf);
@@ -174,7 +174,7 @@ in
     end // end of [P2Tlist]
   | P2Tlst p2ts => begin
       prstr "P2Tlst("; fprint_p2atlst (pf | out, p2ts); prstr ")"
-    end
+    end // end of [P2Tlst]
   | P2Trec (recknd, npf, lp2ts) => begin
       prstr "P2Trec(";
       fprint1_int (pf | out, recknd);
@@ -198,13 +198,12 @@ in
     end // end of [P2Tvbox]
 (*
   | _ => begin
-      prerr "Internal Error: ";
-      prerr "[fprint_p2at]: the pattern at [";
-      prerr p2t.p2at_loc;
-      prerr "] is not supported yet";
+      prerr "INTERNAL ERROR";
+      prerr ": fprint_p2at: the pattern at [";
+      prerr p2t.p2at_loc; prerr "] is not supported.";
       prerr_newline ();
       exit (1)
-    end
+    end // end of [_]
 *)
 end // end of [fprint_p2at]
 
@@ -214,8 +213,8 @@ implement fprint_p2atlst {m} (pf | out, p2ts) = let
     | cons (p2t, p2ts) => begin
         if i > 0 then fprint1_string (pf | out, ", ");
         fprint_p2at (pf | out, p2t); aux (out, i+1, p2ts)
-      end
-    | nil () => ()
+      end // end of [cons]
+    | nil () => () // end of [nil]
 in
   aux (out, 0, p2ts)
 end // end of [fprint_p2atlst]
@@ -229,11 +228,11 @@ implement fprint_labp2atlst {m} (pf | out, lp2ts) = let
         if i > 0 then prstr ", ";
         fprint_label (pf | out, l); prstr "= "; fprint_p2at (pf | out, p2t);
         aux (out, i+1, lp2ts)
-      end
+      end // end of [LABP2ATLSTcons]
     | LABP2ATLSTnil () => ()
     | LABP2ATLSTdot () => begin
         if i > 0 then prstr ", "; fprint1_string (pf | out, "...")
-      end
+      end // end of [LABP2ATLSTdot]
   end // end of [aux]
 in
   aux (out, 0, lp2ts)
@@ -255,7 +254,7 @@ implement fprint_i2nvarg (pf | out, i2nv) = let
   val () = fprint_s2expopt (pf | out, i2nv.i2nvarg_typ)
 in
   // empty
-end
+end // end of [fprint_i2nvarg]
 
 implement fprint_i2nvarglst {m} (pf | out, args) = let
   fun aux (out: &FILE m, i: int, args: i2nvarglst): void =
@@ -263,8 +262,8 @@ implement fprint_i2nvarglst {m} (pf | out, args) = let
     | cons (arg, args) => begin
         if (i > 0) then fprint1_string (pf | out, ", ");
         fprint_i2nvarg (pf | out, arg); aux (out, i + 1, args)
-      end
-    | nil () => ()
+      end // end of [cons]
+    | nil () => () // end of [nil]
   // end of [aux]
 in
   aux (out, 0, args)
@@ -296,10 +295,10 @@ implement fprint_d2exparg (pf | out, d2a) = begin
   case+ d2a of
   | D2EXPARGsta s2as => begin
       fprint_s2exparglst (pf | out, s2as)
-    end
+    end // end of [D2EXPARGsta]
   | D2EXPARGdyn (_(*loc_arg*), _(*npf*), d2es) => begin
       fprint_d2explst (pf | out, d2es)
-    end
+    end // end of [D2EXPARGdyn]
 end // end of [fprint_d2exparg]
 
 implement print_d2exparg (arg) = print_mac (fprint_d2exparg, arg)
@@ -311,8 +310,8 @@ implement fprint_d2exparglst {m} (pf | out, d2as) = let
     | cons (d2a, d2as) => begin
         if (i > 0) then fprint1_string (pf | out, "; ");
         fprint_d2exparg (pf | out, d2a); aux (out, i+1, d2as)
-      end
-    | nil () => ()
+      end // end of [cons]
+    | nil () => () // end of [nil]
 in
   aux (out, 0, d2as)
 end // end of [fprint_d2exparglst]
@@ -511,13 +510,13 @@ in
         | None () => ()
       end;
       prstr ")"
-    end
+    end // end of [D2Eif]
   | D2Eint (str, int) => begin
       prstr "D2Eint("; fprint1_string (pf | out, str); prstr ")"
-    end
+    end // end of [D2Eint]
   | D2Eintsp (str, int) => begin
       prstr "D2Eintsp("; fprint1_string (pf | out, str); prstr ")"
-    end
+    end // end of [D2Eintsp]
   | D2Elam_dyn (lin, npf, p2ts, d2e) => begin
       prstr "D2Elam_dyn(";
       fprint1_int (pf | out, lin);
@@ -696,8 +695,8 @@ implement fprint_d2explst {m} (pf | out, d2es) = let
     | list_cons (d2e, d2es) => begin
         if (i > 0) then fprint1_string (pf | out, ", ");
         fprint_d2exp (pf | out, d2e); aux (out, i + 1, d2es)
-      end
-    | list_nil () => ()
+      end // end of [list_cons]
+    | list_nil () => () // end of [list_nil]
   end // end of [aux]
 in
   aux (out, 0, d2es)
@@ -711,8 +710,8 @@ implement fprint_d2explstlst {m} (pf | out, d2ess) = let
     | cons (d2es, d2ess) => begin
         if (i > 0) then fprint1_string (pf | out, "; ");
         fprint_d2explst (pf | out, d2es); aux (out, i + 1, d2ess)
-      end
-    | nil () => ()
+      end // end of [cons]
+    | nil () => () // end of [nil]
   end // end of [aux]
 in
   aux (out, 0, d2ess)
@@ -730,8 +729,8 @@ implement fprint_labd2explst {m} (pf | out, ld2es) = let
         if i > 0 then prstr ", ";
         fprint_label (pf | out, l); prstr "= "; fprint_d2exp (pf | out, d2e);
         aux (out, i+1, ld2es)
-      end
-    | LABD2EXPLSTnil () => ()
+      end // end of [LABD2EXPLSTcons]
+    | LABD2EXPLSTnil () => () // end of [LABD2EXPLSTnil]
   end // end of [aux]
 in
   aux (out, 0, ld2es)
@@ -769,8 +768,8 @@ implement fprint_d2lablst {m} (pf | out, d2ls) = let
     | cons (d2l, d2ls) => begin
         if (i > 0) then fprint1_string (pf | out, ", ");
         fprint_d2lab (pf | out, d2l); aux (out, i + 1, d2ls)
-      end
-    | nil () => ()
+      end // end of [cons]
+    | nil () => () // end of [nil]
   // end of [aux]
 in
   aux (out, 0, d2ls)

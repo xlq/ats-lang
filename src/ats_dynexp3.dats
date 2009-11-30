@@ -63,26 +63,29 @@ overload prerr with $Loc.prerr_location
 
 (* ****** ****** *)
 
-implement p3at_ann (loc, s2e, p3t, s2e_ann) = '{
+implement p3at_ann
+  (loc, s2e, p3t, s2e_ann) = '{
   p3at_loc= loc
 , p3at_node= P3Tann (p3t, s2e_ann)
 , p3at_typ= s2e
 , p3at_typ_lft= None ()
-}
+} // end of [p3at_ann]
 
-implement p3at_any (loc, s2e, d2v) = '{
+implement p3at_any
+  (loc, s2e, d2v) = '{
   p3at_loc= loc
 , p3at_node= P3Tany d2v
 , p3at_typ= s2e
 , p3at_typ_lft= None ()
-}
+} // end of [p3at_any]
 
-implement p3at_as (loc, s2e, refknd, d2v, p3t) = '{
+implement p3at_as
+  (loc, s2e, refknd, d2v, p3t) = '{
   p3at_loc= loc
 , p3at_node= P3Tas (refknd, d2v, p3t)
 , p3at_typ= s2e
 , p3at_typ_lft= None ()
-}
+} // end of [p3at_as]
 
 implement p3at_bool (loc, s2e, b) = '{
   p3at_loc= loc
@@ -98,12 +101,13 @@ implement p3at_char (loc, s2e, chr) = '{
 , p3at_typ_lft= None ()
 }
 
-implement p3at_con (loc, s2e, freeknd, d2c, npf, p3ts_arg) = '{
+implement p3at_con
+  (loc, s2e, freeknd, d2c, npf, p3ts_arg) = '{
   p3at_loc= loc
 , p3at_node= P3Tcon (freeknd, d2c, npf, p3ts_arg)
 , p3at_typ= s2e
 , p3at_typ_lft= None ()
-}
+} // end of [p3at_con]
 
 implement p3at_empty (loc, s2e) = '{
   p3at_loc= loc
@@ -112,61 +116,69 @@ implement p3at_empty (loc, s2e) = '{
 , p3at_typ_lft= None ()
 }
 
-implement p3at_exist (loc, s2e, s2vs, p3t) = '{
+implement p3at_exist
+  (loc, s2e, s2vs, p3t) = '{
   p3at_loc= loc
 , p3at_node= P3Texist (s2vs, p3t)
 , p3at_typ= s2e
 , p3at_typ_lft= None ()
-}
+} // end of [p3at_exist]
 
-implement p3at_float (loc, s2e, f(*string*)) = '{
+implement p3at_float
+  (loc, s2e, f(*string*)) = '{
   p3at_loc= loc
 , p3at_node= P3Tfloat f
 , p3at_typ= s2e
 , p3at_typ_lft= None ()
-}
+} // end of [p3at_float]
 
-implement p3at_int (loc, s2e, str, int(*intinf*)) = '{
+implement p3at_int
+  (loc, s2e, str, int(*intinf*)) = '{
   p3at_loc= loc
 , p3at_node= P3Tint (str, int)
 , p3at_typ= s2e
 , p3at_typ_lft= None ()
-}
+} // end of [p3at_int]
 
-implement p3at_lst (loc, s2e_elt, s2e_lst, p3ts) = '{
+implement p3at_lst
+  (loc, s2e_elt, s2e_lst, p3ts) = '{
   p3at_loc= loc
 , p3at_node= P3Tlst (s2e_elt, p3ts)
 , p3at_typ= s2e_lst
 , p3at_typ_lft= None ()
-}
+} // end of [p3at_lst]
 
-implement p3at_rec (loc, s2e, knd, npf, lp3ts) = '{
+implement p3at_rec
+  (loc, s2e, knd, npf, lp3ts) = '{
   p3at_loc= loc
 , p3at_node= P3Trec (knd, npf, lp3ts)
 , p3at_typ= s2e
 , p3at_typ_lft= None ()
-}
+} // end of [p3at_rec]
 
-implement p3at_string (loc, s2e, str) = '{
+implement p3at_string
+  (loc, s2e, str) = '{
   p3at_loc= loc
 , p3at_node= P3Tstring str
 , p3at_typ= s2e
 , p3at_typ_lft= None ()
-}
+} // end of [p3at_string]
 
-implement p3at_var (loc, s2e, refknd, d2v) = '{
+implement p3at_var
+  (loc, s2e, refknd, d2v) = '{
   p3at_loc= loc
 , p3at_node= P3Tvar (refknd, d2v)
 , p3at_typ= s2e
 , p3at_typ_lft= None ()
-}
+} // end of [p3at_var]
 
-implement p3at_vbox (loc, s2e, d2v) = '{
+implement p3at_vbox
+  (loc, s2e, d2v) = '{
   p3at_loc= loc
 , p3at_node= P3Tvbox (d2v)
 , p3at_typ= s2e
 , p3at_typ_lft= None ()
-}
+} // end of [p3at_vbox]
 
 (* ****** ****** *)
 
@@ -175,18 +187,18 @@ extern typedef "p3at_t" = p3at
 %{$
 
 ats_void_type
-ats_dynexp3_p3at_typ_set (ats_ptr_type p3t, ats_ptr_type s2e)
-{
+ats_dynexp3_p3at_typ_set (
+  ats_ptr_type p3t, ats_ptr_type s2e) {
   ((p3at_t)p3t)->atslab_p3at_typ = s2e ; return ;
 }
 
 ats_void_type
-ats_dynexp3_p3at_typ_lft_set (ats_ptr_type p3t, ats_ptr_type os2e)
-{
+ats_dynexp3_p3at_typ_lft_set (
+  ats_ptr_type p3t, ats_ptr_type os2e) {
   ((p3at_t)p3t)->atslab_p3at_typ_lft = os2e ; return ;
 }
 
-%}
+%} // end of [%{$]
 
 (* ****** ****** *)
 
@@ -202,82 +214,84 @@ fun d3explst_eff_union (s2fe: s2eff, d3es: d3explst): s2eff =
   case+ d3es of
   | cons (d3e, d3es) => begin
       d3explst_eff_union (d3exp_eff_union (s2fe, d3e), d3es)
-    end
-  | nil () => s2fe
+    end // end of [cons]
+  | nil () => s2fe // end of [nil]
 // end of [d3explst_eff_union]
 
 fun d3explstlst_eff_union (s2fe: s2eff, d3ess: d3explstlst): s2eff =
   case+ d3ess of
   | cons (d3es, d3ess) => begin
       d3explstlst_eff_union (d3explst_eff_union (s2fe, d3es), d3ess)
-    end
-  | nil () => s2fe
+    end // end of [cons]
+  | nil () => s2fe // end of [nil]
 // end of [d3explstlst_eff_union]
 
 fun labd3explst_eff_union (s2fe: s2eff, ld3es: labd3explst): s2eff =
   case+ ld3es of
   | LABD3EXPLSTcons (_(*lab*), d3e, ld3es) => begin
       labd3explst_eff_union (d3exp_eff_union (s2fe, d3e), ld3es)
-    end
-  | LABD3EXPLSTnil () => s2fe
+    end // end of [LABD3EXPLSTcons]
+  | LABD3EXPLSTnil () => s2fe // end of [LABD3EXPLSTnil]
 // end of [labd3explst_eff_union]
 
 fn d3lab1_eff_union (s2fe: s2eff, d3l: d3lab1): s2eff =
   case+ d3l.d3lab1_node of
   | D3LAB1ind (d3ess, _) => d3explstlst_eff_union (s2fe, d3ess)
   | D3LAB1lab _ => s2fe
+// end of [d3lab1_eff_union]
 
 fun d3lab1lst_eff_union (s2fe: s2eff, d3ls: d3lab1lst): s2eff =
   case+ d3ls of
   | cons (d3l, d3ls) => begin
       d3lab1lst_eff_union (d3lab1_eff_union (s2fe, d3l), d3ls)
-    end
-  | nil () => s2fe
+    end // end of [cons]
+  | nil () => s2fe // end of [nil]
+// end of [d3lab1lst_eff_union]
 
 fun c3laulst_eff_union (s2fe: s2eff, c3ls: c3laulst): s2eff =
   case+ c3ls of
   | cons (c3l, c3ls) => begin
       c3laulst_eff_union (d3exp_eff_union (s2fe, c3l.c3lau_exp), c3ls)
-    end
-  | nil () => s2fe
+    end // end of [cons]
+  | nil () => s2fe // end of [nil]
 // end of [c3laulst_eff_union]
 
 fun sc3laulst_eff_union (s2fe: s2eff, sc3ls: sc3laulst): s2eff =
   case+ sc3ls of
   | cons (sc3l, sc3ls) => begin
       sc3laulst_eff_union (d3exp_eff_union (s2fe, sc3l.sc3lau_exp), sc3ls)
-    end
-  | nil () => s2fe
+    end // end of [cons]
+  | nil () => s2fe // end of [nil]
 // end of [sc3laulst_eff_union]
 
 fun v3aldeclst_eff_union (s2fe: s2eff, d3cs: v3aldeclst): s2eff =
   case+ d3cs of
   | cons (d3c, d3cs) => begin
       v3aldeclst_eff_union (d3exp_eff_union (s2fe, d3c.v3aldec_def), d3cs)
-    end
-  | nil () => s2fe
+    end // end of [cons]
+  | nil () => s2fe // end of [nil]
 // end of [v3aldeclst_eff_union]
 
 fun v3ardeclst_eff_union (s2fe: s2eff, d3cs: v3ardeclst): s2eff =
   case+ d3cs of
   | cons (d3c, d3cs) => begin case+ d3c.v3ardec_ini of
-      | Some d3e => begin
-          v3ardeclst_eff_union (d3exp_eff_union (s2fe, d3e), d3cs)
-        end
-      | None () => v3ardeclst_eff_union (s2fe, d3cs)
-    end
-  | nil () => s2fe
+    | Some d3e => begin
+        v3ardeclst_eff_union (d3exp_eff_union (s2fe, d3e), d3cs)
+      end // end of [Some]
+    | None () => v3ardeclst_eff_union (s2fe, d3cs)
+    end // end of [cons]
+  | nil () => s2fe // end of [nil]
 // end of [v3ardeclst_eff_union]
 
 fun d3ec_eff_union (s2fe: s2eff, d3c: d3ec): s2eff = begin
   case+ d3c.d3ec_node of
   | D3Cextval (_(*name*), d3e_def) => begin
       s2eff_union_s2eff (s2fe, d3e_def.d3exp_eff)
-    end
+    end // end of [D3Cextval]
   | D3Cextcode _ => S2EFFall ()
   | D3Cvaldecs (valknd, d3cs) => begin case+ valknd of
       | $Syn.VALKINDprval () => s2fe | _ => v3aldeclst_eff_union (s2fe, d3cs)
-    end
+    end // end of [D3Cvaldecs]
   | D3Cvardecs (d3cs) => v3ardeclst_eff_union (s2fe, d3cs)
   | D3Cimpdec (d3c) => d3exp_eff_union (s2fe, d3c.i3mpdec_def)
   | D3Clocal (d3cs_head, d3cs_body) => let
@@ -285,16 +299,16 @@ fun d3ec_eff_union (s2fe: s2eff, d3c: d3ec): s2eff = begin
       val s2fe = d3eclst_eff_union (s2fe, d3cs_body)
     in
       s2fe
-    end
-  | _ => s2fe
+    end // end of [D3Clocal]
+  | _ => s2fe // end of [_]
 end // end of [d3ec_eff_union]
 
 and d3eclst_eff_union
   (s2fe: s2eff, d3cs: d3eclst): s2eff = begin case+ d3cs of
   | cons (d3c, d3cs) => begin
       d3eclst_eff_union (d3ec_eff_union (s2fe, d3c), d3cs)
-    end
-  | nil () => s2fe
+    end // end of [cons]
+  | nil () => s2fe // end of [nil]
 end // end of [d3eclst_eff_union]
 
 (* ****** ****** *)
@@ -354,7 +368,8 @@ in '{
 , d3exp_node= D3Eassgn_ptr (d3e_ptr, d3ls, d3e_val)
 } end // end of [d3exp_assgn_ptr]
 
-implement d3exp_assgn_var (loc, d2v, d3ls, d3e) = let
+implement d3exp_assgn_var
+  (loc, d2v, d3ls, d3e) = let
   val s2fe = d3lab1lst_eff_union (S2EFFnil (), d3ls)
   val s2fe = d3exp_eff_union (s2fe, d3e)
 in '{
@@ -976,12 +991,13 @@ extern typedef "d3exp_t" = d3exp
 %{$
 
 ats_void_type
-ats_dynexp3_d3exp_typ_set (ats_ptr_type d3e, ats_ptr_type s2e)
-{
+ats_dynexp3_d3exp_typ_set (
+  ats_ptr_type d3e, ats_ptr_type s2e
+) {
   ((d3exp_t)d3e)->atslab_d3exp_typ = s2e ; return ;
-}
+} // end of [ats_dynexp3_d3exp_typ_set]
 
-%}
+%} // end of [%{$]
 
 (* ****** ****** *)
 
@@ -993,7 +1009,7 @@ end // end of [d3explst_typ_get]
 implement labd3explst_typ_get (ld3es) = begin case+ ld3es of
   | LABD3EXPLSTcons (l, d3e, ld3es) => begin
       LABS2EXPLSTcons (l, d3e.d3exp_typ, labd3explst_typ_get ld3es)
-    end
+    end // end of [LABD3EXPLSTcons]
   | LABD3EXPLSTnil () => LABS2EXPLSTnil ()
 end // end of [labd3explst_typ_get]
 
