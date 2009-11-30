@@ -91,7 +91,7 @@ val the_nonterm_index = ref_make_elt<int> (TERM_INDEX_MAX1)
 
 val the_symtbl =
   $H.hashtbl_make<string, symbol_t> (hash, eq) where {
-  fn hash (x: string):<cloref> uint = string_hash_33 (x)
+  fn hash (x: string):<cloref> uint = uint_of_ulint (string_hash_33 x)
   fn eq (x1: string, x2: string):<cloref> bool = (x1 = x2)
 } // end of [val]
 

@@ -7,28 +7,27 @@
 (***********************************************************************)
 
 (*
- * ATS - Unleashing the Power of Types!
- *
- * Copyright (C) 2002-2009 Hongwei Xi, Boston University
- *
- * All rights reserved
- *
- * ATS is free software;  you can  redistribute it and/or modify it under
- * the terms of the GNU LESSER GENERAL PUBLIC LICENSE as published by the
- * Free Software Foundation; either version 2.1, or (at your option)  any
- * later version.
- * 
- * ATS is distributed in the hope that it will be useful, but WITHOUT ANY
- * WARRANTY; without  even  the  implied  warranty  of MERCHANTABILITY or
- * FITNESS FOR A PARTICULAR PURPOSE.  See the  GNU General Public License
- * for more details.
- * 
- * You  should  have  received  a  copy of the GNU General Public License
- * along  with  ATS;  see the  file COPYING.  If not, please write to the
- * Free Software Foundation,  51 Franklin Street, Fifth Floor, Boston, MA
- * 02110-1301, USA.
- *
- *)
+** ATS - Unleashing the Power of Types!
+**
+** Copyright (C) 2002-2009 Hongwei Xi, Boston University
+**
+** All rights reserved
+**
+** ATS is free software;  you can  redistribute it and/or modify it under
+** the terms of the GNU LESSER GENERAL PUBLIC LICENSE as published by the
+** Free Software Foundation; either version 2.1, or (at your option)  any
+** later version.
+** 
+** ATS is distributed in the hope that it will be useful, but WITHOUT ANY
+** WARRANTY; without  even  the  implied  warranty  of MERCHANTABILITY or
+** FITNESS FOR A PARTICULAR PURPOSE.  See the  GNU General Public License
+** for more details.
+** 
+** You  should  have  received  a  copy of the GNU General Public License
+** along  with  ATS;  see the  file COPYING.  If not, please write to the
+** Free Software Foundation,  51 Franklin Street, Fifth Floor, Boston, MA
+** 02110-1301, USA.
+*)
 
 (* ****** ****** *)
 
@@ -419,15 +418,17 @@ end // end of [parse_ruleopt]
 
 (* ****** ****** *)
 
-fn prerulerhs_process
-  (nrhs: int, rhs: prerulerhs): $Gra.rulerhs_t = let
+fn prerulerhs_process (
+    nrhs: int, rhs: prerulerhs
+  ) : $Gra.rulerhs_t = let
   val xs = rhs.0 and prec = rhs.1 and ext = rhs.2
   val nsym = list_vt_length<token> (xs)
+  val asz = size1_of_int1 nsym // array size
   val symarr = array_make_arraysize {T}
-    @(pf_gc, pf_arr | p_arr, nsym) where {
+    @(pf_gc, pf_arr | p_arr, asz) where {
     typedef T = symbol
     val (pf_gc, pf_arr | p_arr) =
-      array_ptr_alloc<T> (size1_of_int1 nsym)
+      array_ptr_alloc<T> (asz) // end of [val]
     val () = loop (pf_arr | p_arr, xs) where {
       fun loop {n:nat} {l:addr} (
           pf: !array_v (T?, n, l) >> array_v (T, n, l)

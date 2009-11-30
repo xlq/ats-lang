@@ -27,7 +27,6 @@
 ** along  with  ATS;  see  the  file  COPYING.  If not, write to the Free
 ** Software Foundation, 51  Franklin  Street,  Fifth  Floor,  Boston,  MA
 ** 02110-1301, USA.
-**
 *)
 
 (* ****** ****** *)
@@ -54,7 +53,6 @@ fn string_make_charlst_rev_int
   {n:nat} (cs: charlst_vt n, n: int n): string n = let
   val n1 = size1_of_int1 (n + 1)
   val (pf_buf_gc, pf_buf | p_buf) = malloc_gc (n1)
-  prval () = free_gc_elim (pf_buf_gc)
   val () = loop (pf_buf | p_buf, cs) where {
     fun loop {n:nat} {l:addr} (
       pf_buf: !b0ytes (n+1) @ l >> strbuf (n+1, n) @ l
@@ -83,7 +81,7 @@ fn string_make_charlst_rev_int
     end
   } // end of [val]
 in
-  string1_of_strbuf (pf_buf | p_buf)
+  string1_of_strbuf (pf_buf_gc, pf_buf | p_buf)
 end // end of [string_make_charlst_rev_int]
 
 (* ****** ****** *)
