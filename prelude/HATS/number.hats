@@ -48,9 +48,14 @@ implement print_elt<zcmplx> (x) = $CMPLX.print_zcmplx x
 (* ****** ****** *)
 
 implement of_int<float> (x) = float_of_int (x)
-implement of_int<double> (x) = double_of_int x
+implement of_int<double> (x) = double_of_int (x)
 implement of_int<ccmplx> (x) = $CMPLX.ccmplx_of_int (x)
 implement of_int<zcmplx> (x) = $CMPLX.zcmplx_of_int (x)
+
+(* ****** ****** *)
+
+implement of_size<float> (x) = float_of_size (x)
+implement of_size<double> (x) = double_of_size (x)
 
 (* ****** ****** *)
 
@@ -153,6 +158,14 @@ implement cmplx_make_cart<float,ccmplx>
   (x1, x2) = $CMPLX.ccmplx_make_cart (x1, x2)
 implement cmplx_make_cart<double,zcmplx>
   (x1, x2) = $CMPLX.zcmplx_make_cart (x1, x2)
+
+(* ****** ****** *)
+
+implement creal<float,ccmplx> (x) = $CMPLX.crealf (x)
+implement creal<double,zcmplx> (x) = $CMPLX.creal (x)
+
+implement cimag<float,ccmplx> (x) = $CMPLX.cimagf (x)
+implement cimag<double,zcmplx> (x) = $CMPLX.cimag (x)
 
 (* ****** ****** *)
 

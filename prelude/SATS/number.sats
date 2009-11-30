@@ -40,6 +40,11 @@ fun{a:t@ype} of_int (x: int):<> a
 
 (* ****** ****** *)
 
+// S, D
+fun{a:t@ype} of_size (x: size_t):<> a
+
+(* ****** ****** *)
+
 // S, D, C, Z
 fun{a:t@ype} of_double (x: double):<> a
 
@@ -92,6 +97,13 @@ fun{a:t@ype} neq (x1: a, x2: a):<> bool
 // (S, C), (D, Z)
 // a1 = |a2|
 fun{a1,a2:t@ype} cmplx_make_cart (real: a1, imag: a1):<> a2
+
+(* ****** ****** *)
+
+// (S, C), (D, Z)
+
+fun {a1,a2:t@ype} creal (x: a2):<> a1
+fun {a1,a2:t@ype} cimag (x: a2):<> a1
 
 (* ****** ****** *)
 

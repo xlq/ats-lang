@@ -258,6 +258,7 @@ datatype d2var_fin =
   | D2VARFINnone
   | D2VARFINsome of s2exp
   | D2VARFINvbox of s2exp
+// end of [d2var_fin]
 
 //
 
@@ -391,6 +392,7 @@ fun d2varset_foreach_cloptr
 
 fun d2sym_make
   (_: loc_t, q: d0ynq, id: sym_t, d2is: d2itemlst): d2sym
+// end of [d2sym_make]
 
 (* ****** ****** *)
 
@@ -442,11 +444,13 @@ datatype p2at_node =
       (int(*refknd*), d2var_t)
   | P2Tvbox of // vbox pattern
       d2var_t
+// end of [p2at_node]
 
 and labp2atlst =
   | LABP2ATLSTnil
   | LABP2ATLSTdot
   | LABP2ATLSTcons of (lab_t, p2at, labp2atlst)
+// end of [labp2atlst]
 
 where p2at = '{
   p2at_loc= loc_t
@@ -454,7 +458,7 @@ where p2at = '{
 , p2at_dvs= d2varlstord_t
 , p2at_typ= s2expopt
 , p2at_node= p2at_node
-}
+} // end of [p2at]
 
 and p2atlst (n:int) = list (p2at, n)
 and p2atlst = [n:nat] p2atlst n
@@ -1363,6 +1367,7 @@ datatype l2val = // type for left-values
   | L2VALvar_mut of (* variable path selection *)
       (d2var_t, d2lablst)
   | L2VALnone of d2exp (* non-left-values *)
+// end of [l2val]
 
 fun l2val_make_d2exp (d2e0: d2exp): l2val
 

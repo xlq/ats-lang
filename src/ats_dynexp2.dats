@@ -31,8 +31,8 @@
 
 (* ****** ****** *)
 
-// Time: November 2007
 // Author: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
+// Time: November 2007
 
 (* ****** ****** *)
 
@@ -64,6 +64,10 @@ staload _(*anonymous*) = "ats_reference.dats"
 
 overload < with $Sym.lt_symbol_symbol
 overload <= with $Sym.lte_symbol_symbol
+
+(* ****** ****** *)
+
+fn prerr_interror () = prerr "INTERNAL ERROR (ats_dynexp2)"
 
 (* ****** ****** *)
 
@@ -188,7 +192,7 @@ implement s2varlstord_union (s2vs10, s2vs20) = begin
       end (* end of [::] *)
     | nil () => s2vs10
     end (* end of [::] *)
-  | nil () => s2vs20
+  | nil () => s2vs20 // end of [nil]
 end // end of [s2varlstord_union]
 
 implement d2varlstord_union (d2vs10, d2vs20) = begin
@@ -201,7 +205,7 @@ implement d2varlstord_union (d2vs10, d2vs20) = begin
           cons (d2v2, d2varlstord_union (d2vs10, d2vs2))
         end // end of [if]
       end (* end of [::] *)
-    | nil () => d2vs10
+    | nil () => d2vs10 // end of [nil]
     end (* end of [::] *)
   | nil () => d2vs20
 end // end of [d2varlstord_union]
@@ -220,14 +224,14 @@ implement s2varlstord_linearity_test (loc, s2vs) = let
           s2var_errmsg (loc, s2v0); aux (loc, s2v, s2vs, err+1)
         end // end of [if]
       end (* end of [cons] *)
-    | nil () => err
+    | nil () => err // end of [nil]
   // end of [aux]
 in
   case+ s2vs of
   | cons (s2v, s2vs) => begin
       if aux (loc, s2v, s2vs, 0) > 0 then $Err.abort {void} ()
     end // end of [cons]
-  | nil () => ()
+  | nil () => () // end of [nil]
 end (* end of [s2varlstord_linearity_test] *)
 
 implement d2varlstord_linearity_test (loc, d2vs) = let
@@ -241,14 +245,14 @@ implement d2varlstord_linearity_test (loc, d2vs) = let
           d2var_errmsg (loc, d2v0); aux (loc, d2v, d2vs, err+1)
         end // end of [if]
       end (* end of [cons] *)
-    | nil () => err
+    | nil () => err // end of [nil]
   // end of [aux]
 in
   case+ d2vs of
   | cons (d2v, d2vs) => begin
       if aux (loc, d2v, d2vs, 0) > 0 then $Err.abort {void} ()
     end // end of [cons]
-  | nil () => ()
+  | nil () => () // end of [nil]
 end (* end of [d2varlstord_linearity_test] *)
 
 end // end of [local]
@@ -273,7 +277,7 @@ implement p2atlst_dvs_union (p2ts) = let
     | cons (p2t, p2ts) => begin
         loop (p2ts, d2varlstord_union (ans, p2t.p2at_dvs))
       end // end of [cons]
-    | nil () => ans
+    | nil () => ans // end of [nil]
   // end of [loop]
 in
   loop (p2ts, d2varlstord_nil)
@@ -287,7 +291,7 @@ implement labp2atlst_svs_union (lp2ts) = let
     | LABP2ATLSTcons (l, p2t, lp2ts) => begin
         loop (lp2ts, s2varlstord_union (ans, p2t.p2at_svs))
       end // end of [LABP2ATLSTcons]
-    | _ => ans
+    | _ => ans // end of [_]
   // end of [loop]
 in
   loop (lp2ts, s2varlstord_nil)
@@ -299,7 +303,7 @@ implement labp2atlst_dvs_union (lp2ts) = let
     | LABP2ATLSTcons (l, p2t, lp2ts) => begin
         loop (lp2ts, d2varlstord_union (ans, p2t.p2at_dvs))
       end // end of [LABP2ATLSTcons]
-    | _ => ans
+    | _ => ans // end of [_]
   // end of [loop]
 in
   loop (lp2ts, d2varlstord_nil)
@@ -356,7 +360,7 @@ implement p2at_con (loc, refknd, d2c, qua, res, npf, p2ts_arg) = let
       | cons (s2vps, s2vpss) => begin
           loop (s2vpss, s2varlstord_addlst (svs, s2vps.0))
         end // end of [cons]
-      | nil () => svs
+      | nil () => svs // end of [nil]
   } // end of [where]
   val dvs = p2atlst_dvs_union (p2ts_arg)
 in '{
@@ -519,7 +523,7 @@ implement d2exp_app_sta (loc0, d2e_fun, s2as) = begin
     in
       '{ d2exp_loc= loc0, d2exp_node= node, d2exp_typ= None () }
     end // end of [cons]
-  | nil _ => d2e_fun
+  | nil _ => d2e_fun // end of [nil]
 end (* end of [d2exp_app_sta] *)
 
 implement d2exp_app_dyn
@@ -957,16 +961,15 @@ in
       val s2e_addr = (case+ d2var_addr_get d2v of
         | Some s2e_addr => s2e_addr
         | None => begin
-            prerr "Internal Error: i2nvresstate_tr: no address: d2v = ";
-            prerr d2v;
-            prerr_newline ();
+            prerr_interror ();
+            prerr ": i2nvresstate_tr: d2v = "; prerr d2v; prerr_newline ();
             $Err.abort {s2exp} ()
-          end
-      ) : s2exp
+          end // end of [None]
+      ) : s2exp // end of [val]
       val os2e_at = (case+ arg.i2nvarg_typ of
         | Some s2e => Some (s2exp_at_viewt0ype_addr_view (s2e, s2e_addr))
         | None () => None ()
-      ) : s2expopt
+      ) : s2expopt // end of [val]
     in
       i2nvarg_make (d2v_view, os2e_at)
     end // end of [D2VAROPTsome]
@@ -1196,18 +1199,20 @@ extern typedef "d2exp_t" = d2exp
 %{$
 
 ats_void_type
-ats_dynexp2_p2at_typ_set (ats_ptr_type p2t, ats_ptr_type os2e)
-{
+ats_dynexp2_p2at_typ_set (
+  ats_ptr_type p2t, ats_ptr_type os2e
+) {
   ((p2at_t)p2t)->atslab_p2at_typ = os2e ; return ;
-}
+} // end of [ats_dynexp2_p2at_typ_set]
 
 ats_void_type
-ats_dynexp2_d2exp_typ_set (ats_ptr_type d2e, ats_ptr_type os2e)
-{
+ats_dynexp2_d2exp_typ_set (
+  ats_ptr_type d2e, ats_ptr_type os2e
+) {
   ((d2exp_t)d2e)->atslab_d2exp_typ = os2e ; return ;
-}
+} // end of [ats_dynexp2_d2exp_typ_set]
 
-%}
+%} // end of [%{$]
 
 (* ****** ****** *)
 
