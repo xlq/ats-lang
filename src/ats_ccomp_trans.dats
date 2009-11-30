@@ -41,6 +41,10 @@
 staload Err = "ats_error.sats"
 staload IntInf = "ats_intinf.sats"
 staload Lab = "ats_label.sats"
+
+staload Loc = "ats_location.sats"
+typedef loc_t = $Loc.location_t
+
 staload Lst = "ats_list.sats"
 staload Map = "ats_map_lin.sats"
 
@@ -66,6 +70,13 @@ staload _(*anonymous*) = "ats_reference.dats"
 (* ****** ****** *)
 
 staload _(*anonymous*) = "ats_map_lin.dats"
+
+(* ****** ****** *)
+
+fn prerr_interror () = prerr "INTERNAL ERROR (ats_ccomp_trans)"
+fn prerr_interror_loc (loc: loc_t) = begin
+  $Loc.prerr_location loc; prerr ": INTERNAL ERROR (ats_ccomp_trans)"
+end // end of [prerr_interror_loc]
 
 (* ****** ****** *)
 
@@ -175,9 +186,8 @@ fn the_dynctx_del (d2v: d2var_t): void = let
 in
   case+ ans of
   | ~Some_vt _ => () | ~None_vt () => begin
-      prerr "INTERNAL ERROR";
-      prerr ": [ats_ccomp_trans]: the_dynctx_del: d2v = ";
-      prerr d2v; prerr_newline ();
+      prerr_interror ();
+      prerr ": the_dynctx_del: d2v = "; prerr d2v; prerr_newline ();
       $Err.abort {void} ()
     end // end of [None_vt]
 end // end of [the_dynctx_del]
@@ -189,9 +199,7 @@ implement the_dynctx_unmark (pf_mark | (*none*)) = let
         (the_dynctx_del (d2v); aux (vms))
     | ~DYNMARKLSTmark (vms) => vms
     | ~DYNMARKLSTnil () => begin
-        prerr "INTERNAL ERROR";
-        prerr ": [ats_ccomp_trans]: the_dynctx_unmark: aux";
-        prerr_newline ();
+        prerr_interror (); prerr ": the_dynctx_unmark: aux"; prerr_newline ();
         $Err.abort {dynmarklst} ()
       end // end of [DYNMARKLSTnil]
   end // end of [aux]
@@ -234,10 +242,8 @@ implement the_dynctx_find (d2v) = let
 in
   case+ ans of
   | ~Some_vt vp => vp | ~None_vt () => begin
-      $Loc.prerr_location (d2var_loc_get d2v);
-      prerr ": INTERNAL ERROR";
-      prerr ": [ats_ccomp_trans]: the_dynctx_find: d2v = ";
-      prerr d2v; prerr_newline ();
+      prerr_interror_loc (d2var_loc_get d2v);
+      prerr ": the_dynctx_find: d2v = "; prerr d2v; prerr_newline ();
       $Err.abort {valprim} ()
     end // end of [None_vt]
 end (* end of [the_dynctx_find] *)
@@ -258,9 +264,7 @@ implement the_dynctx_pop (pf_push | (*none*)) = let
       end // end of [list_vt_nil]
   end : dynctx // end of [val]
   val () = if err > 0 then begin // error checking
-    prerr "INTERNAL ERROR";
-    prerr ": [ats_ccomp_trans]: the_dynctx_pop";
-    prerr_newline ();
+    prerr_interror (); prerr ": the_dynctx_pop"; prerr_newline ();
     $Err.abort {void} ()
   end // end of [val]
   val () = the_dynctx_unmark (unit_v () | (*none*))
@@ -589,9 +593,8 @@ in
     end // end of [HIPstring]
   | HIPvar _ => ()
   | _ => begin
-      prerr "INTERNAL ERROR";
-      prerr ": [ats_ccomp_trans]: ccomp_patck: not implemented yet: hip0 = ";
-      prerr_hipat hip0; prerr_newline ();
+      prerr_interror ();
+      prerr ": ccomp_patck: hip0 = "; prerr_hipat hip0; prerr_newline ();
       $Err.abort {void} ()
     end // end of [_]
 end // end of [ccomp_patck]
@@ -718,22 +721,22 @@ fn ccomp_match_sum (
     | HIPvar (refknd, d2v) => aux_var (res, level, i, hip0, refknd, d2v)
     | _ => let
         val vp = (case+ hip0.hipat_asvar of
-          | D2VAROPTsome d2v => the_dynctx_find d2v
-          | D2VAROPTnone () => begin
-              prerr "INTERNAL ERROR";
-              prerr ": [ats_ccomp_trans]: ccomp_match_sum: aux_pat: hip0 = ";
-              prerr_hipat hip0; prerr_newline ();
-              $Err.abort {valprim} ()
-            end // end of [D2VAROPTnone]
+        | D2VAROPTsome d2v => the_dynctx_find d2v
+        | D2VAROPTnone () => begin
+            prerr_interror ();
+            prerr ": ccomp_match_sum: aux_pat: hip0 = "; prerr_hipat hip0; prerr_newline ();
+            $Err.abort {valprim} ()
+          end // end of [D2VAROPTnone]
         ) : valprim // end of [val]
       in  
         ccomp_match (res, level, vp, hip0)
       end // end of [_]
   end (* end of [aux_pat] *)
 
-  fun auxlst_pat
-    (res: &instrlst_vt, level: int, i: int, hips: hipatlst)
-    :<cloref1> void = begin case+ hips of
+  fun auxlst_pat (
+      res: &instrlst_vt
+    , level: int, i: int, hips: hipatlst
+    ) :<cloref1> void = begin case+ hips of
     | list_cons (hip, hips) => () where {
         val () = aux_pat (res, level, i, hip)
         val () = auxlst_pat (res, level, i+1, hips)
@@ -826,10 +829,8 @@ in
   | HIPstring _ => ()
   | HIPvar (_(*refknd*), d2v) => aux_var (res, level, vp0, d2v)
   | _ => begin
-      $Loc.prerr_location hip0.hipat_loc;
-      prerr ": INTERNAL ERROR";
-      prerr ": [ats_ccomp_trans]: ccomp_match: hip0 = "; prerr_hipat hip0;
-      prerr_newline ();
+      prerr_interror_loc (hip0.hipat_loc);
+      prerr ": ccomp_match: hip0 = "; prerr_hipat hip0; prerr_newline ();
       $Err.abort {void} ()
     end // end of [_]
 end (* end of [ccomp_match] *)
@@ -849,7 +850,6 @@ extern fun ccomp_exp_var (d2v: d2var_t): valprim
 (* ****** ****** *)
 
 extern fun ccomp_hilab (res: &instrlst_vt, hil: hilab): offset
-
 extern fun ccomp_hilablst (res: &instrlst_vt, hils: hilablst): offsetlst
 
 (* ****** ****** *)
@@ -1193,10 +1193,8 @@ fn ccomp_exp_refarg (
     | HIEsel_var (d2v_mut, hils) =>
         ccomp_exp_ptrof_var (res, d2v_mut, hils)
     | _ => begin
-        $Loc.prerr_location (hie.hiexp_loc);
-        prerr ": INTERNAL ERROR";
-        prerr ": [ats_ccomp_trans]: ccomp_exp_refarg: hie = ";
-        prerr_hiexp hie; prerr_newline ();
+        prerr_interror_loc (hie.hiexp_loc);
+        prerr ": ccomp_exp_refarg: hie = "; prerr_hiexp hie; prerr_newline ();
         $Err.abort {valprim} ()
       end // end of [_]
   end // end of [_]
@@ -2120,10 +2118,8 @@ in
       instr_add_move_val (res, tmp_res, ccomp_exp_var (d2v))
     end // end of [HIEvar]
   | _ => begin
-      $Loc.prerr_location (hie0.hiexp_loc);
-      prerr ": INTERNAL ERROR";
-      prerr ": [ats_ccomp_trans]: ccomp_exp_tmpvar: not implemented: hie0 = ";
-      prerr_hiexp hie0; prerr_newline ();
+      prerr_interror_loc (hie0.hiexp_loc);
+      prerr ": ccomp_exp_tmpvar: hie0 = "; prerr_hiexp hie0; prerr_newline ();
       $Err.abort {void} ()
     end // end of [_]
 end // end of [ccomp_exp_tmpvar]
@@ -2163,29 +2159,26 @@ fn d2var_typ_ptr_get
     case+ d2var_view_get d2v of
     | D2VAROPTsome d2v_view => d2v_view
     | D2VAROPTnone () => begin
-        prerr "INTERNAL ERROR";
-        prerr ": [ats_ccomp_trans]: d2var_typ_ptr_get: d2v = ";
-        prerr d2v; prerr_newline ();
+        prerr_interror ();
+        prerr ": d2var_typ_ptr_get: d2v = "; prerr d2v; prerr_newline ();
         $Err.abort {d2var_t} ()
       end // end of [D2VAROPTnone]
   ) : d2var_t // end of [val d2v_view]
   val s2e_view = (
     case+ d2var_mastyp_get (d2v_view) of
     | Some s2e_view => s2e_view | None () => begin
-        prerr "INTERNAL ERROR";
-        prerr ": [ats_ccomp_trans]: d2var_typ_ptr_get: d2v_view = ";
-        prerr d2v_view; prerr_newline ();
+        prerr_interror ();
+        prerr ": d2var_typ_ptr_get: d2v_view = "; prerr d2v_view; prerr_newline ();
         $Err.abort {s2exp} ()
       end // end of [None]
-  ) : s2exp // end of [s2e_view]
+  ) : s2exp // end of [val s2e_view]
   val s2e_elt = (
     case+ un_s2exp_at_viewt0ype_addr_view (s2e_view) of
     | ~Some_vt (s2es2e) => s2es2e.0 | ~None_vt () => begin
-      prerr "INTERNAL ERROR";
-      prerr ": [ats_ccomp_trans]: d2var_typ_ptr_get: s2e_view = ";
-      prerr s2e_view; prerr_newline ();
-      $Err.abort {s2exp} ()
-    end // end of [None_vt]
+        prerr_interror ();
+        prerr ": d2var_typ_ptr_get: s2e_view = "; prerr s2e_view; prerr_newline ();
+        $Err.abort {s2exp} ()
+      end // end of [None_vt]
   ) : s2exp // end of [val s2e_elt]
 } (* end of [d2var_typ_ptr_get] *)
 
@@ -2256,9 +2249,9 @@ fn ccomp_fntdeclst_main {n:nat} (
           ccomp_exp_arg_body_funlab (loc_dec, prolog, hips_arg, hie_body, fl)
         end // end of [HIElam]
       | _ => begin
-          prerr "INTERNAL ERROR";
-          prerr ": [ats_ccomp_trans]: ccomp_fntdeclst_main; aux_ccomp: hie_def = ";
-          prerr_hiexp hie_def; prerr_newline ();
+          prerr_interror ();
+          prerr ": ccomp_fntdeclst_main; aux_ccomp: hie_def = "; prerr_hiexp hie_def;
+          prerr_newline ();
           $Err.abort {funentry_t} ()
         end // end of [_]
     end // end of [aux_ccomp]
@@ -2299,11 +2292,11 @@ fun ccomp_fundeclst_main {n:nat} (
             // empty
           end // end of [HIElam]
         | _ => begin
-            prerr "INTERNAL ERROR";
-            prerr ": [ats_ccomp_trans]: ccomp_fundeclst_main: hie_def = ";
-            prerr_hiexp hie_def; prerr_newline ();
+            prerr_interror ();
+            prerr ": ccomp_fundeclst_main: hie_def = "; prerr_hiexp hie_def;
+            prerr_newline ();
             $Err.abort {void} ();
-          end
+          end // end of [_]
       end // end of [val]
     in
       ccomp_fundeclst_main (fundecs, fls)
@@ -2411,10 +2404,9 @@ fn ccomp_vardec_dyn
   val () = the_dynctx_add (d2v, valprim_tmp tmp_ptr)
   val hie_ini = (case+ vardec.hivardec_ini of
     | Some hie => hie | None => begin
-        $Loc.prerr_location (vardec.hivardec_loc);
-        prerr ": INTERNAL ERROR";
-        prerr ": [ats_ccomp_trans]: ccomp_vardec_dyn: no initialization.";
-        prerr_newline (); $Err.abort {hiexp} ()
+        prerr_interror_loc (vardec.hivardec_loc);
+        prerr ": ccomp_vardec_dyn: no initialization."; prerr_newline ();
+        $Err.abort {hiexp} ()
       end // end of [None]
   ) : hiexp
 in
@@ -2440,9 +2432,8 @@ in
       instr_add_assgn_clo (res, vp_clo, fl, env)
     end // end of [HIElaminit]
   | _ => begin
-      prerr "INTERNAL ERROR";
-      prerr ": [ats_ccomp_trans]: ccomp_vardec_dyn: unsupported initialization form";
-      prerr ": hie_ini = "; prerr_hiexp hie_ini; prerr_newline ();
+      prerr_interror ();
+      prerr ": ccomp_vardec_dyn: hie_ini = "; prerr_hiexp hie_ini; prerr_newline ();
       $Err.abort {void} ()
     end // end of [_]
 end // end of [ccomp_vardec_dyn]
@@ -2688,7 +2679,7 @@ in
   | HIDstaload (fil) => begin the_stafilelst_add (fil) end
   | HIDlist hids => ccomp_declst (res, hids)
   | _ => begin
-      $Loc.prerr_location (hid0.hidec_loc);
+      prerr_interror_loc (hid0.hidec_loc);
       prerr ": ccomp_dec: not implemented yet."; prerr_newline ();
       $Err.abort {void} ()
     end // end of [_]

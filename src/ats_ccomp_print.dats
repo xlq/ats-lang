@@ -31,8 +31,8 @@
 
 (* ****** ****** *)
 
-// Time: March 2008
 // Author: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
+// Time: March 2008
 
 (* ****** ****** *)
 
@@ -46,8 +46,7 @@ staload Lab = "ats_label.sats"
 staload "ats_staexp2.sats"
 staload "ats_dynexp2.sats"
 
-staload "ats_hiexp.sats"
-staload "ats_ccomp.sats"
+staload "ats_hiexp.sats"; staload "ats_ccomp.sats"
 
 (* ****** ****** *)
 
@@ -69,8 +68,9 @@ implement fprint_tmpvarlst {m} (pf | out, tmps) = let
     | list_cons (tmp, tmps) => begin
         if i > 0 then fprint1_string (pf | out, ", ");
         fprint_tmpvar (pf | out, tmp); aux (out, i+1, tmps)
-      end
+      end // end of [list_cons]
     | list_nil () => ()
+  // end of [aux]
 in
   aux (out, 0, tmps)
 end // end of [fprint_tmpvarlst]
@@ -91,8 +91,9 @@ implement fprint_funlablst {m} (pf | out, fls) = let
     | list_cons (fl, fls) => begin
         if i > 0 then fprint1_string (pf | out, ", ");
         fprint_funlab (pf | out, fl); aux (out, i+1, fls)
-      end
+      end // end of [list_cons]
     | list_nil () => ()
+  // end of [aux]
 in
   aux (out, 0, fls)
 end // end of [fprint_funlablst]
@@ -198,7 +199,7 @@ in
       fprint1_string (pf | out, "fprint_valprim: not yet implemented.");
       fprint_newline (pf | out);
       $Err.abort {void} ()
-    end
+    end // end of [_]
 *)
 end // end of [fprint_valprim]
 
@@ -210,8 +211,9 @@ implement fprint_valprimlst {m} (pf | out, vps) = let
     | list_cons (vp, vps) => begin
         if i > 0 then fprint1_string (pf | out, ", ");
         fprint_valprim (pf | out, vp); aux (out, i+1, vps)
-      end
+      end // end of [list_cons]
     | list_nil () => ()
+  // end of [aux]
 in
   aux (out, 0, vps)
 end // end of [fprint_valprimlst]
@@ -225,6 +227,7 @@ implement fprint_labvalprimlst {m} (pf | out, lvps) = let
         fprint_valprim (pf | out, vp); aux (out, i+1, lvps)
       end
     | LABVALPRIMLSTnil () => ()
+  // end of [aux]
 in
   aux (out, 0, lvps)
 end // end of [fprint_labvalprimlst]
@@ -235,7 +238,7 @@ implement fprint_offset {m} (pf | out, off) = begin
   case+ off of
   | OFFSETlab (l, _(*hit_rec*)) => begin
       fprint1_string (pf | out, "."); fprint_label (pf | out, l)
-    end
+    end // end of [OFFSETlab]
   | OFFSETind (vpss, _(*hit_elt*)) => aux (out, vpss) where {
       fun aux (out: &FILE m, vpss: valprimlstlst)
         : void = begin case+ vpss of
@@ -247,7 +250,7 @@ implement fprint_offset {m} (pf | out, off) = begin
           end
         | list_nil () => ()
       end // end of [aux]
-    } // end of [where]
+    } // end of [OFFSETind]
 end // end of [fprint_offset]
 
 implement fprint_offsetlst {m} (pf | out, offs) = let
@@ -256,8 +259,9 @@ implement fprint_offsetlst {m} (pf | out, offs) = let
     | list_cons (off, offs) => begin
         if i > 0 then fprint1_string (pf | out, ", ");
         fprint_offset (pf | out, off); aux (out, i+1, offs)
-      end
+      end // end of [list_cons]
     | list_nil () => ()
+  // end of [aux]
 in
   aux (out, 0, offs)
 end // end of [fprint_offsetlst]
@@ -291,7 +295,7 @@ in
   | PATCKstring s => begin
       fprintf1_exn (pf | out, "PATCKstring(\"%s\")", @(s))
     end
-end
+end // end of [fprint_patck]
 
 implement fprint_patcklst {m} (pf | out, patcks) = let
   fun aux (out: &FILE m, i: int, patcks: patcklst): void =
@@ -299,8 +303,9 @@ implement fprint_patcklst {m} (pf | out, patcks) = let
     | list_cons (patck, patcks) => begin
         if i > 0 then fprint1_string (pf | out, ", ");
         fprint_patck (pf | out, patck); aux (out, i+1, patcks)
-      end
+      end // end of [list_cons]
     | list_nil () => ()
+  // end of [aux]
 in
   aux (out, 0, patcks)
 end // end of [fprint_patcklst]
@@ -715,9 +720,9 @@ implement fprint_instrlst {m} (pf | out, inss) = let
     | list_cons (ins, inss) => begin
         fprint_instr (pf | out, ins); fprint_newline (pf | out);
         aux (out, inss)
-      end
+      end // end of [list_cons]
     | list_nil () => ()
-  end
+  end // end of [aux]
 in
   aux (out, inss)
 end // end of [fprint_instrlst]
@@ -735,9 +740,9 @@ implement fprint_branchlst {m} (pf | out, brs) = let
     case+ brs of
     | list_cons (br, brs) => begin
         fprint_branch (pf | out, br); aux (out, brs)
-      end
+      end // en dof [list_cons]
     | list_nil () => ()
-  end
+  end // end of [aux]
 in
   aux (out, brs)
 end // end of [fprint_branchlst]

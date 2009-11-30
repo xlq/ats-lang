@@ -77,6 +77,10 @@ typedef fil_t = $Fil.filename_t
 
 (* ****** ****** *)
 
+fn prerr_interror () = prerr "INTERNAL ERROR (ats_ccomp_main)"
+
+(* ****** ****** *)
+
 fn emit_time_stamp {m:file_mode}
   (pf: file_mode_lte (m, w) | out: &FILE m): void = let
   var time: $TM.time_t = $TM.time_get ()
@@ -251,16 +255,14 @@ in
       fprint1_string (pf | out, "}")
     end
   | _ => begin
-      prerr "Internal Error: aux_sum_con: tag = "; prerr tag;
-      prerr_newline ();
+      prerr_interror ();
+      prerr ": aux_sum_con: tag = "; prerr tag; prerr_newline ();
       $Err.abort {void} ()
-    end
+    end // end of [_]
 end // end of [emit_typdef_sum]
 
 fn emit_typdeflst_free {m:file_mode} (
-    pf: file_mode_lte (m, w)
-  | out: &FILE m
-  , tds: typdeflst
+    pf: file_mode_lte (m, w) | out: &FILE m, tds: typdeflst
   ) : int = let
   fun aux (out: &FILE m, i: int, tds: typdeflst)
     : int = begin case+ tds of
@@ -278,7 +280,7 @@ fn emit_typdeflst_free {m:file_mode} (
         | TYPKEYuni lnames => ()
       in
         aux (out, i+1, tds)
-      end
+      end // end of [TYPDEFLSTcons]
     | ~TYPDEFLSTnil () => i
   end // end of [aux]
 in
@@ -696,9 +698,8 @@ fun emit_stafile_extcode {m:file_mode} (
   val od2cs = $TR2Env.d2eclst_namespace_find (fil_sym)
   val d2cs = (case+ od2cs of
     | ~Some_vt (d2cs) => d2cs | ~None_vt () => begin
-        prerr "INTERNAL ERROR";
-        prerr ": [ats_ccomp_main]: emit_instr_staload_file: fil = ";
-        $Fil.prerr_filename fil;
+        prerr_interror ();
+        prerr ": emit_stafile_extcode: fil = "; $Fil.prerr_filename fil;
         prerr_newline ();
         $Err.abort {d2eclst} ()
       end // end of [None_vt]
@@ -1083,14 +1084,15 @@ fn mainats_kind_get (): int = let
 in
   if is_main_void then begin
     if not (is_main_argc_argv) then MAINATS_VOID else begin
-      prerr "It is not allowed to implement both [main_void] and [main_argc_argv]";
+      prerr "error(ccomp)";
+      prerr ": it is not allowed to implement both [main_void] and [main_argc_argv]";
       prerr_newline ();
       $Err.abort {int} ()
     end // end of [if]
   end else begin
     if is_main_argc_argv then MAINATS_ARGC_ARGV else begin
       if main_dummy_is_implemented () then MAINATS_DUMMY else MAINATS_NONE
-    end
+    end // end of [if]
   end // end of [if]
 end // end of [main_is_implemented]
 
@@ -1098,7 +1100,6 @@ end // end of [main_is_implemented]
 
 implement ccomp_main {m}
   (pf | flag, out, fil, hids) = let
-
   var res: instrlst_vt = list_vt_nil ()
   val () = ccomp_declst (res, hids)
   val () = the_dynctx_free ()
@@ -1251,7 +1252,7 @@ implement ccomp_main {m}
   val mainats_kind = mainats_kind_get ()
 (*
   val () = begin
-    print "mainats_kind = "; print mainats_kind; print_newline ()
+    print "ccomp_main: mainats_kind = "; print mainats_kind; print_newline ()
   end // end of [val]
 *)
   val res = ( // defining the dynload function
