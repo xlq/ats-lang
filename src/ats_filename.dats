@@ -41,9 +41,7 @@
 (* ****** ****** *)
 
 %{^
-
 #include <sys/stat.h>
-
 %}
 
 (* ****** ****** *)
@@ -67,6 +65,10 @@ staload "ats_filename.sats"
 
 staload "ats_reference.sats"
 staload _(*anonymous*) = "ats_reference.dats"
+
+(* ****** ****** *)
+
+fn prerr_interror () = prerr "INTERNAL ERROR (ats_filename)"
 
 (* ****** ****** *)
 
@@ -115,7 +117,9 @@ ats_filename_is_exist (ats_ptr_type name) {
   return stat ((char*)name, &st) ? ats_false_bool : ats_true_bool ;
 } /* end of [ats_filename_is_exist] */
 
-%}
+%} // end of [%{^]
+
+(* ****** ****** *)
 
 %{$
 
@@ -138,7 +142,7 @@ ats_filename_append (
   return dirbas ;
 } /* end of [ats_filename_append] */
 
-%}
+%} // end of [%{$]
 
 (* ****** ****** *)
 
@@ -228,17 +232,17 @@ fn filename_normalize (s0: string): string = let
 (*
         val () = begin
           print "filename_normalize: loop2: dir = "; print dir; print_newline ()
-        end
+        end // end of [val]
 *)
       in
         dirs := list_cons (dir, dirs); loop1 (s0, n0, i + 1, dirs)
-      end
+      end // end of [if]
     end else let
       val dir = string_make_substring (s0, i0, i - i0)
 (*
       val () = begin
         print "filename_normalize: loop2: dir = "; print dir; print_newline ()
-      end
+      end // end of [val]
 *)
     in
       dirs := list_cons (dir, dirs)
@@ -292,11 +296,10 @@ implement the_pathlst_pop () = begin
   case+ !the_pathlst of
   | list_cons (_, ps) => !the_pathlst := ps
   | list_nil () => begin
-      prerr "INTERNAL ERROR";
-      prerrf (": %s: [pathlst_pop]: [the_pathlst] is empty.", @(THISFILENAME));
-      prerr_newline ();
+      prerr_interror ();
+      prerr (": pathlst_pop: the_pathlst is empty."); prerr_newline ();
       exit (1)
-    end
+    end // end of [list_nil]
 end // end of [the_pathlst_pop]
 
 implement the_pathlst_push (dirname) = let
@@ -307,8 +310,8 @@ implement the_pathlst_push (dirname) = let
   val dirname_full = filename_normalize (dirname_full)
 (*
   val () = begin
-    prerr "the_pathlst_push: dirname = "; prerr dirname; prerr_newline ();
-    prerr "the_pathlst_push: dirname_full = "; prerr dirname_full; prerr_newline ();
+    print "the_pathlst_push: dirname = "; print dirname; print_newline ();
+    print "the_pathlst_push: dirname_full = "; print dirname_full; print_newline ();
   end // end of [val]
 *)
 in
@@ -321,10 +324,9 @@ fun the_prepathlst_get (): pathlst = !the_prepathlst
 
 implement the_prepathlst_push (dirname) = let
   val () = if filename_is_relative dirname then begin
-    prerr "INTERNAL ERROR";
-    prerrf (": %s: [the_prepathlst_push]", @(THISFILENAME));
-    prerr ": the directory name ["; prerr dirname; prerr "] is not absolute.";
-    prerr_newline ();
+    prerr_interror ();
+    // the directory name [dirname] is not absolute
+    prerr (": the_prepathlst_push: dirname = "); prerr dirname; prerr_newline ();
     exit {void} (1)
   end // end of [val]
 in
@@ -350,9 +352,8 @@ fn the_filenamelst_reset (): void = !the_filenamelst := list_nil ()
 implement the_filename_get (): filename = !the_filename
 
 val the_filenamelst_pop_err = lam () =<fun1> begin
-  prerr "INTERNAL ERROR";
-  prerrf (": %s: [the_filenamelst_pop]: [the_filenamelst] is empty.", @(THISFILENAME));
-  prerr_newline ();
+  prerr_interror ();
+  prerr (": the_filenamelst_pop: the_filenamelst is empty"); prerr_newline ();
   exit (1)
 end // end of [the_filenamelst_pop_err]
 
@@ -373,7 +374,7 @@ end // end of [the_filenamelst_push]
 implement the_filenamelst_push_xit (loc0, f0) = let
 (*
   val () = begin
-    prerr "the_filenamelst_push: f0 = "; prerr f0; prerr_newline ()
+    print "the_filenamelst_push: f0 = "; print f0; print_newline ()
   end // end of [val]
 *)
   val loc0 = __cast loc0 where {
@@ -436,7 +437,7 @@ implement filenameopt_make (basename) = let
 (*
         val () = begin
           print "filenameopt_make: fullname = "; print fullname; print_newline ()
-        end
+        end // end of [val]
 *)
       in
         case+ 0 of
@@ -462,8 +463,8 @@ implement filenameopt_make (basename) = let
     | _ when filename_is_relative basename => aux_relative basename
     | _ => begin
         if filename_is_exist basename then stropt_some basename else stropt_none
-      end
-  ) : Stropt
+      end // end of [_]
+  ) : Stropt // end of [val]
 in
   if stropt_is_some fullnameopt then let
     val fullname = stropt_unsome fullnameopt
@@ -477,7 +478,9 @@ end // end of [filenameopt_make]
 
 (* ****** ****** *)
 
-implement ats_filename_prerr () = prerr_filename (the_filename_get ())
+implement ats_filename_prerr () =
+  prerr_filename (the_filename_get ())
+// end of [ats_filename_prerr]
 
 implement ats_filename_initialize () = begin
   the_pathlst_reset (); the_filename_reset (); the_filenamelst_reset ()
@@ -503,7 +506,7 @@ ats_filename_fprint_filename_base
   return ;
 } /* end of [ats_filename_fprint_filename_base] */
 
-%}
+%} // end of [%{$]
 
 (* ****** ****** *)
 

@@ -87,7 +87,8 @@ extern val "INTKINDnone" = $Syn.INTKINDnone ()
 
 %{$
 
-ats_ptr_type ats_trans3_floatkind_eval (ats_ptr_type s0) {
+ats_ptr_type
+ats_trans3_floatkind_eval (ats_ptr_type s0) {
   char *s ;
 
   s = s0 ; while (*s) { ++s ; } ; --s ;
@@ -100,7 +101,8 @@ ats_ptr_type ats_trans3_floatkind_eval (ats_ptr_type s0) {
   return FLOATKINDnone ;
 }
 
-ats_ptr_type ats_trans3_intkind_eval (ats_ptr_type s0) {
+ats_ptr_type
+ats_trans3_intkind_eval (ats_ptr_type s0) {
   char c, *s ; int nL, nU ;
   s = s0 ; nL = 0 ; nU = 0 ;
   while (c = *s) {
@@ -118,7 +120,7 @@ ats_ptr_type ats_trans3_intkind_eval (ats_ptr_type s0) {
   return INTKINDnone ;
 }
 
-%}
+%} // end of [%{$]
 
 (* ****** ****** *)
 
@@ -578,14 +580,13 @@ in
       var s2e_res: s2exp = s2e_fun_res
       var wths2es: wths2explst = WTHS2EXPLSTnil ()
       val iswth = s2exp_is_wth s2e_fun_res
-      val () =
-        if iswth then let
-          val s2e_fun_res = s2exp_opnexi_and_add (loc_app, s2e_fun_res)
-        in
-          case+ s2e_fun_res.s2exp_node of
-          | S2Ewth (s2e, wths2es1) => (s2e_res := s2e; wths2es := wths2es1)
-          | _ => $Err.error ("Deadcode: d23exp_app_tr_up: iswth")
-        end
+      val () = if iswth then let
+        val s2e_fun_res = s2exp_opnexi_and_add (loc_app, s2e_fun_res)
+      in
+        case+ s2e_fun_res.s2exp_node of
+        | S2Ewth (s2e, wths2es1) => (s2e_res := s2e; wths2es := wths2es1)
+        | _ => $Err.deadcode (": [ats_trans3_exp_up]: d23exp_app_tr_up: iswth")
+      end : void // end of [val]
       val d3e_fun = d3exp_funclo_restore (fc, d3e_fun)
       val d3es_arg = (
         if iswth then d3explst_arg_restore (d3es_arg, wths2es) else d3es_arg
@@ -860,8 +861,11 @@ fun aux1
                 val s2e_fun_res = s2exp_opnexi_and_add (loc0, s2e_fun_res)
               in
                 case+ s2e_fun_res.s2exp_node of
-                | S2Ewth (s2e, wths2es1) => (s2e_res := s2e; wths2es := wths2es1)
-                | _ => $Err.error ("Deadcode: d2exp_apps_sym_tr_up: aux1: iswth")
+                | S2Ewth (s2e, wths2es1) =>
+                    (s2e_res := s2e; wths2es := wths2es1)
+                | _ => $Err.deadcode (
+                    ": [ats_trans3_exp_up]: d2exp_apps_sym_tr_up: aux1: iswth"
+                  ) // end of [_]
               end
             val d3e_fun = d3exp_funclo_restore (fc, d3e_fun)
             val d3es_arg = (
@@ -884,7 +888,7 @@ fun aux1
           end // end of [_]
       end // end of [D3EXPARGdyn]
     end // end of [list_cons]
-  | list_nil () => d2exp_apps_tr_up (d3e_fun, d2as)
+  | list_nil () => d2exp_apps_tr_up (d3e_fun, d2as) // end of [list_nil]
 end // end of [aux1]
 
 fun aux2

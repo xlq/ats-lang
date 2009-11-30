@@ -31,8 +31,8 @@
 
 (* ****** ****** *)
 
-// Time: August 2007
 // Author: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
+// Time: August 2007
 
 (* ****** ****** *)
 
@@ -67,11 +67,6 @@ val s0taq_none = $Syn.s0taq_none ()
 
 fn s0rtq_is_none (q: $Syn.s0rtq): bool =
   case+ q.s0rtq_node of $Syn.S0RTQnone () => true | _ => false
-
-(* ****** ****** *)
-
-fun error {a:viewtype} (msg: string): a =
-  (prerr_string "ats_trans1: "; $Err.error {a} msg)
 
 (* ****** ****** *)
 

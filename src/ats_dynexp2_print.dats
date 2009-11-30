@@ -198,7 +198,7 @@ in
     end // end of [P2Tvbox]
 (*
   | _ => begin
-      prerr "INTERNAL ERROR";
+      prerr "INTERNAL ERROR (ats_dynexp2_print)";
       prerr ": fprint_p2at: the pattern at [";
       prerr p2t.p2at_loc; prerr "] is not supported.";
       prerr_newline ();

@@ -142,7 +142,7 @@ end // end of [e1xp_eval_opr_errmsg]
 fun e1xp_eval_int (s: string): int = let
 (*
   val () = begin
-    prerr "e1xp_eval_int s = "; prerr s; prerr_newline ()
+    print "e1xp_eval_int s = "; print s; print_newline ()
   end // end of [val]
 *)
   val [n:int] s = string1_of_string (s) // no-op casting
@@ -202,7 +202,7 @@ fun e1xp_eval_appid
   (loc: loc_t, id: sym_t, es: e1xplst): v1al = let
 (*
   val () = begin
-    prerr "e1xp_eval_appid: id = "; prerr id; print_newline ()
+    print "e1xp_eval_appid: id = "; print id; print_newline ()
   end // end of [val]
 *)
 in
@@ -485,7 +485,8 @@ in
           prerr ": the second argument of [<<] must be a natural number.";
           prerr_newline ();
           $Err.abort {void} ()
-        end
+        end // end of [if]
+      // end of [val]
       val () = assert (i2 >= 0) // redundant at run-time
     in
        V1ALint (i1 << i2)
@@ -510,7 +511,8 @@ in
           prerr ": the second argument of [<<] must be a natural number.";
           prerr_newline ();
           $Err.abort {void} ()
-        end
+        end // end of [if]
+      // end of [val]
       val () = assert (i2 >= 0) // redundant at run-time
     in
       V1ALint (i1 >> i2)

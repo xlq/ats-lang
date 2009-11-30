@@ -31,8 +31,8 @@
 
 (* ****** ****** *)
 
-// Time: August 2007
 // Author: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
+// Time: August 2007
 
 (* ****** ****** *)
 
@@ -110,8 +110,8 @@ implement fprint_effectlst {m} (pf | out, effs) = let
     | list_cons (eff, effs) => begin
         if i > 0 then fprint1_string (pf | out, ", ");
         fprint_effect (pf | out, eff); aux (i+1, out, effs)
-      end
-    | list_nil () => ()
+      end // end of [list_cons]
+    | list_nil () => () // end of [list_nil]
   // end of [aux]
 in
   aux (0, out, effs)
@@ -166,7 +166,7 @@ ats_effect_fprint_effset
   return ;
 } /* end of [ats_effect_fprint_effset] */
 
-%}
+%} // end of [%{]
 
 (* ****** ****** *)
 
@@ -203,7 +203,7 @@ ats_effect_effset_subset (ats_effset_t efs1, ats_effset_t efs2) {
   return (efs1 & ~efs2 ? ats_false_bool : ats_true_bool) ;
 }
 
-%}
+%} // end of [%{]
 
 (* ****** ****** *)
 
@@ -237,8 +237,9 @@ fun fprint_effvarlst {m:file_mode} (
     | cons (ev, evs) => begin
         if i > 0 then fprint1_string (pf | out, ", ");
         $Syn.fprint_i0de (pf | out, ev); aux (out, i+1, evs)
-      end
+      end // end of [cons]
     | nil () => ()
+  // end of [aux]
 in
   aux (out, 0, evs)
 end // end of [fprint_effvarlst]
@@ -252,7 +253,7 @@ implement fprint_effcst (pf | out, efc) = begin case+ efc of
       fprint1_string (pf | out, "; ");
       fprint_effvarlst (pf | out, evs);
       fprint1_string (pf | out, ")")
-    end
+    end // end of [EFFCSTset]
 end // end of [fprint_effcst]
 
 (* ****** ****** *)
@@ -394,7 +395,7 @@ fun loop (
         end // end of [E0FFTAGclo]
       // end of [case]
     } // end of [where] // end of [cons]
-  | nil () => ()
+  | nil () => () // end of [nil]
 end // end of [loop]
 
 in // in of [local]

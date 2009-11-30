@@ -81,6 +81,7 @@ typedef effvarlst = List effvar
 
 datatype effcst =
   | EFFCSTall | EFFCSTnil | EFFCSTset of (effset_t, effvarlst)
+// end of [effcst]
 
 (* ****** ****** *)
 
@@ -130,6 +131,7 @@ fun effcst_contain_ntm (efc: effcst): bool
 
 fun e0fftaglst_tr (fc0: $Syn.funclo, tags: $Syn.e0fftaglst)
   : @($Syn.funclo, int, int, effcst)
+// end of [e0fftaglst_tr]
 
 (* ****** ****** *)
 

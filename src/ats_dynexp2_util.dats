@@ -59,6 +59,10 @@ fn prerr_loc_error2 (loc: loc_t): void =
   ($Loc.prerr_location loc; prerr ": error(2)")
 // end of [prerr_loc_error2]
 
+fn prerr_interror () =
+  prerr ": INTERNAL ERROR (ats_dynexp2_util)"
+// end of [prerr_interror]
+
 (* ****** ****** *)
 
 implement s2exp_cls_lab_get
@@ -78,7 +82,7 @@ implement s2exp_cls_lab_get
     | S2Ecst s2c => s2c
     | S2Etmpid (s2c, ts2ess1) => (ts2ess := ts2ess1; s2c)
     | _ => let
-        val () = prerr "INTERNAL ERROR"
+        val () = prerr_interror ()
         val () = (
           prerr ": s2exp_cls_lab_get: s2e_head = "; prerr s2e_head
         ) // end of [val]
@@ -168,7 +172,7 @@ implement d2exp_var_cst_is_ptr (d2e) = begin
     end // end of [D2Ecst]
   | _ => begin
       $Loc.prerr_location d2e.d2exp_loc;
-      prerr ": INTERNAL ERROR";
+      prerr_interror ();
       prerr ": d2exp_var_cst_is_ptr: d2e = "; prerr d2e; prerr_newline ();
       $Err.abort {bool} ()
     end // end of [_]
