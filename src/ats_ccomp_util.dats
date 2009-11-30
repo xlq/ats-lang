@@ -31,8 +31,8 @@
 
 (* ****** ****** *)
 
-// Time: April 2008
 // Author: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
+// Time: April 2008
 
 (* ****** ****** *)
 
@@ -60,8 +60,7 @@ end // end of [tmpvarmap_add]
 
 fn tmpvarmap_add_root
   (m: &tmpvarmap, tmp: tmpvar_t): void = let
-  val tmp = (
-    case+ tmpvar_root_get tmp of
+  val tmp = (case+ tmpvar_root_get tmp of
     | TMPVAROPTsome tmp => tmp | TMPVAROPTnone () => tmp
   ) : tmpvar_t
 in
@@ -153,7 +152,7 @@ fn _emit_tmpvarmap_markroot {m:file_mode} {l:addr} (
     prval @(pf_fil, pf_int) = pf
     val+ ENVcon (p_l, p_i)= env
     val () = (!p_i := !p_i + 1)
-    val () = case+ 0 of
+    val () = (case+ 0 of
       | _ when tmpvar_is_void (tmp) => () | _ => let
           val () = fprint1_string (pf_mod | !p_l, "ATS_GC_MARKROOT(&")
           val () = emit_tmpvar (pf_mod | !p_l, tmp)
@@ -163,6 +162,7 @@ fn _emit_tmpvarmap_markroot {m:file_mode} {l:addr} (
         in
           // empty
         end // end of [_]
+    ) : void // end of [val]
   in
     pf := @(pf_fil, pf_int); fold@ env
   end // end of [f]
@@ -209,7 +209,7 @@ in
       tmpvarmap_add_root (m, tmp_ret_all);
       instrlst_tmpvarmap_add (m, inss_body);
       tmpvarmap_add_root (m, tmp_ret);
-    end
+    end // end of [INSTRfunction]
   | INSTRload_ptr (tmp, _) => tmpvarmap_add_root (m, tmp)
   | INSTRload_ptr_offs (tmp, _, _) => tmpvarmap_add_root (m, tmp)
   | INSTRload_var (tmp, _) => tmpvarmap_add_root (m, tmp)
