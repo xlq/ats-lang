@@ -31,8 +31,8 @@
 
 (* ****** ****** *)
 
-// Time: November 2007
 // Author: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
+// Time: November 2007
 
 (* ****** ****** *)
 
@@ -109,6 +109,12 @@ overload prerr with $Loc.prerr_location
 fn prerr_loc_error2 (loc: loc_t): void =
   ($Loc.prerr_location loc; prerr ": error(2)")
 // end of [prerr_loc_error2]
+
+fn prerr_interror () = prerr "INTERNAL ERROR (ats_trans2_dyn1)"
+
+fn prerr_loc_interror (loc: loc_t) = begin
+  $Loc.prerr_location loc; prerr ": INTERNAL ERROR (ats_trans2_dyn1)"
+end // end of [prerr_loc_interror]
 
 (* ****** ****** *)
 
@@ -612,9 +618,8 @@ val p2t0 = (
     end // end of [P1Trefas]
   | P1Tstring str => p2at_string (loc0, str)
   | P1Tsvararg _ => begin
-      prerr loc0;
-      prerr ": INTERNAL ERROR: p1at_tr: P1Tsvararg";
-      prerr_newline ();
+      prerr_loc_interror loc0;
+      prerr ": p1at_tr: P1Tsvararg"; prerr_newline ();
       $Err.abort {p2at} ()
     end // end of [P1Tavararg]
   | P1Ttup (tupknd, npf, p1ts) => let
@@ -686,9 +691,7 @@ fn d2sym_lrbrackets (loc: loc_t): d2sym = let
     | ~None_vt () => (err := 1)
   end // end of [val]
   val () = if err > 0 then begin // run-time checking
-    prerr loc;
-    prerr ": INTERNAL ERROR: d2sym_lrbrackets";
-    prerr_newline ();
+    prerr_loc_interror loc; prerr ": d2sym_lrbrackets"; prerr_newline ();
     $Err.abort {void} ()
   end // end of [val]
 in
@@ -713,22 +716,19 @@ fn d1exp_assgn_tr (loc0: loc_t, d1es: d1explst): d2exp = begin
       d2exp_assgn (loc0, d1exp_tr d1e1, d1exp_tr d1e2)
     end
   | _ => begin
-      prerr loc0;
-      prerr ": INTERNAL ERROR: d1exp_assgn_tr";
-      prerr_newline ();
+      prerr_loc_interror loc0; prerr ": d1exp_assgn_tr"; prerr_newline ();
       $Err.abort {d2exp} ()
-    end
+    end // end of [_]
 end // end of [d1exp_assgn_tr]
 
-fn d1exp_deref_tr (loc0: loc_t, d1es: d1explst): d2exp = begin
-  case+ d1es of
+fn d1exp_deref_tr (
+    loc0: loc_t, d1es: d1explst
+  ) : d2exp = begin case+ d1es of
   | cons (d1e, nil ()) => d2exp_deref (loc0, d1exp_tr d1e)
   | _ => begin
-      prerr loc0;
-      prerr ": INTERNAL ERROR: d1exp_deref_tr";
-      prerr_newline ();
+      prerr_loc_interror loc0; prerr ": d1exp_deref_tr"; prerr_newline ();
       $Err.abort {d2exp} ()
-    end
+    end // end of [_]
 end // end of [d1exp_deref_tr]
 
 (* ****** ****** *)
@@ -950,9 +950,8 @@ in
         d2exp_app_sta_dyn (loc_dap, loc_sap, d2e_fun, sarg, loc_arg, npf, darg)
       end // end of [D2ITEMcst]
     | D2ITEMe1xp _ => begin
-        $Loc.prerr_location loc_qid;
-        prerr ": INTERNAL ERROR: d1exp_qid_app_dyn_tr: D2ITEMe1xp";
-        prerr_newline ();
+        prerr_loc_interror loc_qid;
+        prerr ": d1exp_qid_app_dyn_tr: D2ITEMe1xp"; prerr_newline ();
         $Err.abort {d2exp} ()
       end // end of [D2ITEMe1xp]
     | D2ITEMmacdef d2m => let
@@ -1125,7 +1124,7 @@ fn c1lau_tr {n:nat} (n: int n, c1l: c1lau): c2lau n = let
   val np2ts: int np2ts = $Lst.list_length p2ts
 (*
   val () = begin
-    prerrf ("c1lau_tr: n = %i and np2ts = %i\n", @(n, np2ts))
+    printf ("c1lau_tr: n = %i and np2ts = %i\n", @(n, np2ts))
   end // end of [val]
 *)
   val () = (if np2ts <> n then begin
@@ -1307,7 +1306,7 @@ implement d1exp_tr (d1e0): d2exp = let
   val loc0 = d1e0.d1exp_loc
 (*
   val () = begin
-    prerr "d1exp_tr: d1e0 = "; prerr_d1exp d1e0; prerr_newline ()
+    print "d1exp_tr: d1e0 = "; print_d1exp d1e0; print_newline ()
   end // end of [val]
 *)
 in
@@ -1559,7 +1558,7 @@ in
   | D1Emacsyn (knd, d1e) => let
 (*
       val () = begin
-        prerr "d1exp_tr: d1e0 = "; prerr d1e0; prerr_newline ()
+        print "d1exp_tr: d1e0 = "; print d1e0; print_newline ()
       end // end of [val]
 *)
     in
@@ -1597,7 +1596,7 @@ in
         | S2Ecst s2c => s2c
         | S2Etmpid (s2c, ts2ess1) => (ts2ess := ts2ess1; s2c)
         | _ => let
-            val () = prerr "INTERNAL ERROR"
+            val () = prerr_interror ()
             val () = (
               prerr ": d1exp_tr: D1Eobj: s2e_head = "; prerr s2e_head
             ) // end of [val]
@@ -1654,12 +1653,12 @@ in
             val subtyp1 = d2mtd_subtyp_get (d2m1)
 (*
             val () = begin
-              prerr "d1exp_tr: D1Eobj: loop: sym1 = ";
-              $Sym.prerr_symbol sym1; prerr_newline ();
-              prerr "d1exp_tr: D1Eobj: loop: d2carg1 = ";
-              prerr_s2qualst decarg1; prerr_newline ();
-              prerr "d1exp_tr: D1Eobj: loop: ts2ess = ";
-              prerr_tmps2explstlst ts2ess; prerr_newline ();
+              print "d1exp_tr: D1Eobj: loop: sym1 = ";
+              $Sym.print_symbol sym1; print_newline ();
+              print "d1exp_tr: D1Eobj: loop: d2carg1 = ";
+              print_s2qualst decarg1; print_newline ();
+              print "d1exp_tr: D1Eobj: loop: ts2ess = ";
+              print_tmps2explstlst ts2ess; print_newline ();
             end // end of [val]
 *)
             val d2m = d2mtd_make
@@ -1759,10 +1758,8 @@ in
       d2exp_while (loc0, inv, test, body)
     end // end of [D1Ewhile]
   | _ => begin
-      prerr loc0;
-      prerr ": d1exp_tr: not implemented yet: ";
-      prerr_d1exp d1e0;
-      prerr_newline ();
+      prerr_loc_interror loc0;
+      prerr ": d1exp_tr: d1e0 = "; prerr_d1exp d1e0; prerr_newline ();
       $Err.abort {d2exp} ()
     end // end of [_]
 end // end of [d1exp_tr]

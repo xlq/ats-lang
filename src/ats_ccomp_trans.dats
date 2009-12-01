@@ -74,9 +74,9 @@ staload _(*anonymous*) = "ats_map_lin.dats"
 (* ****** ****** *)
 
 fn prerr_interror () = prerr "INTERNAL ERROR (ats_ccomp_trans)"
-fn prerr_interror_loc (loc: loc_t) = begin
+fn prerr_loc_interror (loc: loc_t) = begin
   $Loc.prerr_location loc; prerr ": INTERNAL ERROR (ats_ccomp_trans)"
-end // end of [prerr_interror_loc]
+end // end of [prerr_loc_interror]
 
 (* ****** ****** *)
 
@@ -242,7 +242,7 @@ implement the_dynctx_find (d2v) = let
 in
   case+ ans of
   | ~Some_vt vp => vp | ~None_vt () => begin
-      prerr_interror_loc (d2var_loc_get d2v);
+      prerr_loc_interror (d2var_loc_get d2v);
       prerr ": the_dynctx_find: d2v = "; prerr d2v; prerr_newline ();
       $Err.abort {valprim} ()
     end // end of [None_vt]
@@ -829,7 +829,7 @@ in
   | HIPstring _ => ()
   | HIPvar (_(*refknd*), d2v) => aux_var (res, level, vp0, d2v)
   | _ => begin
-      prerr_interror_loc (hip0.hipat_loc);
+      prerr_loc_interror (hip0.hipat_loc);
       prerr ": ccomp_match: hip0 = "; prerr_hipat hip0; prerr_newline ();
       $Err.abort {void} ()
     end // end of [_]
@@ -1193,7 +1193,7 @@ fn ccomp_exp_refarg (
     | HIEsel_var (d2v_mut, hils) =>
         ccomp_exp_ptrof_var (res, d2v_mut, hils)
     | _ => begin
-        prerr_interror_loc (hie.hiexp_loc);
+        prerr_loc_interror (hie.hiexp_loc);
         prerr ": ccomp_exp_refarg: hie = "; prerr_hiexp hie; prerr_newline ();
         $Err.abort {valprim} ()
       end // end of [_]
@@ -2118,7 +2118,7 @@ in
       instr_add_move_val (res, tmp_res, ccomp_exp_var (d2v))
     end // end of [HIEvar]
   | _ => begin
-      prerr_interror_loc (hie0.hiexp_loc);
+      prerr_loc_interror (hie0.hiexp_loc);
       prerr ": ccomp_exp_tmpvar: hie0 = "; prerr_hiexp hie0; prerr_newline ();
       $Err.abort {void} ()
     end // end of [_]
@@ -2404,7 +2404,7 @@ fn ccomp_vardec_dyn
   val () = the_dynctx_add (d2v, valprim_tmp tmp_ptr)
   val hie_ini = (case+ vardec.hivardec_ini of
     | Some hie => hie | None => begin
-        prerr_interror_loc (vardec.hivardec_loc);
+        prerr_loc_interror (vardec.hivardec_loc);
         prerr ": ccomp_vardec_dyn: no initialization."; prerr_newline ();
         $Err.abort {hiexp} ()
       end // end of [None]
@@ -2679,7 +2679,7 @@ in
   | HIDstaload (fil) => begin the_stafilelst_add (fil) end
   | HIDlist hids => ccomp_declst (res, hids)
   | _ => begin
-      prerr_interror_loc (hid0.hidec_loc);
+      prerr_loc_interror (hid0.hidec_loc);
       prerr ": ccomp_dec: not implemented yet."; prerr_newline ();
       $Err.abort {void} ()
     end // end of [_]

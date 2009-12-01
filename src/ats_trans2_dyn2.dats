@@ -93,6 +93,12 @@ fn prerr_loc_error2 (loc: loc_t): void =
   ($Loc.prerr_location loc; prerr ": error(2)")
 // end of [prerr_loc_error2]
 
+fn prerr_interror () = prerr "INTERNAL ERROR (ats_trans2_dyn2)"
+
+fn prerr_loc_interror (loc: loc_t) = begin
+  $Loc.prerr_location loc; prerr ": INTERNAL ERROR (ats_trans2_dyn2)"
+end // end of [prerr_loc_interror]
+
 (* ****** ****** *)
 
 fn dyncstimploc_posmark
@@ -135,10 +141,10 @@ end // end of [symelim_tr]
 fn overload_tr (id: $Syn.i0de, qid: $Syn.dqi0de): void = let
 (*
   val () = begin
-    prerr "overload_tr: id = ";
-    prerr id.i0de_sym; prerr_newline ();
-    prerr "overload_tr: qid = ";
-    prerr qid.dqi0de_qua; prerr qid.dqi0de_sym; prerr_newline ();
+    print "overload_tr: id = ";
+    print id.i0de_sym; print_newline ();
+    print "overload_tr: qid = ";
+    print qid.dqi0de_qua; print qid.dqi0de_sym; print_newline ();
   end // end of [val]
 *)
   val ans = 
@@ -189,7 +195,7 @@ fn overload_tr (id: $Syn.i0de, qid: $Syn.dqi0de): void = let
   ) : d2itemlst
 (*
   val () = begin
-    prerr "overload_tr: d2is := "; prerr_d2itemlst d2is; prerr_newline ()
+    print "overload_tr: d2is := "; print_d2itemlst d2is; print_newline ()
   end // end of [val]
 *)
   val d2i_new = D2ITEMsym (d2i :: d2is)
@@ -321,7 +327,7 @@ fn c1lassdec_tr (
   ) : s2exp // end of [val]
 (*
   val () = begin
-    prerr "c1lassdec_tr: s2e_self = "; prerr s2e_self; prerr_newline ()
+    print "c1lassdec_tr: s2e_self = "; print s2e_self; print_newline ()
   end // end of [val
 *)
 //
@@ -396,7 +402,7 @@ fn c1lassdec_tr (
           | S2Ecst s2c => s2c
           | S2Etmpid (s2c, ts2ess1) => (ts2ess := ts2ess1; s2c)
           | _ => let
-              val () = prerr "INTERNAL ERROR"
+              val () = prerr_interror ()
               val () = (
                 prerr ": c1lassdec_tr: aux1: s2e_head = "; prerr s2e_head
               ) // end of [val]
@@ -517,8 +523,8 @@ fn f1undec_tr (
   val def = d1exp_tr (d1c.f1undec_def)
 (*
   val () = begin
-    prerr "f1undec_tr: d2v = "; prerr d2v; prerr_newline ()
-    prerr "f1undec_tr: def = "; prerr def; prerr_newline ()
+    print "f1undec_tr: d2v = "; print d2v; print_newline ()
+    print "f1undec_tr: def = "; print def; print_newline ()
   end
 *)
   val ann = witht1ype_tr (d1c.f1undec_ann)
@@ -939,8 +945,8 @@ fun d1exp_arity_check (d1e: d1exp, ns: List int): bool = let
 
   and aux2 (d1e: d1exp, n: int, ns: List int): bool = begin
 (*
-    prerr "d1exp_arith_check: n = "; prerr n; prerr_newline ();
-    prerr "d1exp_arith_check: d1e = "; prerr_d1exp d1e; prerr_newline ();
+    print "d1exp_arith_check: n = "; print n; print_newline ();
+    print "d1exp_arith_check: d1e = "; print_d1exp d1e; print_newline ();
 *)
     case+ d1e.d1exp_node of
     | D1Elam_dyn (_(*lin*), p1t, d1e) => let
@@ -1211,14 +1217,14 @@ fn s1taload_tr
    d1cs: d1eclst)
   : d2ec = let
 (*
-  val () = prerr "s1taload_tr: staid = "
+  val () = print "s1taload_tr: staid = "
   val () = case+ idopt of
-    | Some id => prerr id | None () => prerr "None"
+    | Some id => print id | None () => print "None"
   // end of [val]
-  val () = prerr_newline ()
+  val () = print_newline ()
   val () = begin
-    prerr "s1taload_tr: filename = "; $Fil.prerr_filename fil;
-    prerr_newline ()
+    print "s1taload_tr: filename = "; $Fil.print_filename fil;
+    print_newline ()
   end // end of [val]
 *)
   var d2cs_loaded: d2eclst = list_nil ()
@@ -1441,7 +1447,7 @@ implement d1ec_tr (d1c0) = begin
     end // end of [D1Cstaload]
 (*
   | _ => begin
-      prerr_loc_error2 d1c0.d1ec_loc;
+      prerr_loc_interror d1c0.d1ec_loc;
       prerr ": d1ec_tr: not available yet.\n";
       $Err.abort {d2ec} ()
     end // end of [_]

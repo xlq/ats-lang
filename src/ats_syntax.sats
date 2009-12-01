@@ -217,6 +217,7 @@ datatype cstsp = // special constants
   | CSTSPcharcount of int
   | CSTSPlinecount of int
 *)
+// end of [cstsp]
 
 fun fprint_cstsp {m:file_mode}
   (pf: file_mode_lte (m, w) | out: &FILE m, _: cstsp): void
@@ -329,6 +330,7 @@ datatype p0rec =
   | P0RECide of i0de
   | P0RECinc of (i0de, int)
   | P0RECdec of (i0de, int)
+// end of [p0rec]
 
 fun p0rec_emp (): p0rec = "p0rec_emp"
 fun p0rec_ide (ide: i0de): p0rec = "p0rec_ide"
@@ -393,6 +395,7 @@ datatype s0rtq_node = (* sort qualifier *)
   | S0RTQnone
   | S0RTQstr of string (* filename *)
   | S0RTQsym of sym_t (* fileid *)
+// end of [s0rtq_node]
 
 typedef s0rtq = '{
   s0rtq_loc= loc_t, s0rtq_node= s0rtq_node
@@ -417,6 +420,7 @@ datatype s0rt_node =
   | S0RTqid of (s0rtq, sym_t) (* qualified sort identifier *)
   | S0RTlist of s0rtlst
   | S0RTtup of s0rtlst
+// end of [s0rt_node]
 
 where s0rt: type = '{ 
   s0rt_loc= loc_t, s0rt_node= s0rt_node
@@ -525,6 +529,7 @@ datatype e0fftag_node =
   | E0FFTAGlin of int(*non/lin*)
   | E0FFTAGfun of int(*nil/all*)
   | E0FFTAGclo of (int(*1/~1:ptr/ref*), int(*nil/all*))
+// end of [e0fftag_node]
 
 typedef e0fftag = '{
   e0fftag_loc= loc_t, e0fftag_node= e0fftag_node
@@ -555,6 +560,7 @@ datatype s0taq_node =
   | S0TAQfildot of string (* filename *)
   | S0TAQsymcolon of sym_t
   | S0TAQsymdot of sym_t
+// end of [s0taq_node]
 
 typedef s0taq = '{ s0taq_loc= loc_t, s0taq_node= s0taq_node }
 
@@ -1284,6 +1290,7 @@ fun d0cstdeclst_cons (x: d0cstdec, xs: d0cstdeclst): d0cstdeclst
 datatype floatkind =
   | FLOATKINDfloat | FLOATKINDdouble | FLOATKINDdouble_long
   | FLOATKINDnone (* not supported *)
+// end of [floatkind]
 
 datatype intkind =
   | INTKINDint (* signed *) | INTKINDuint (* unsigned *)
@@ -1292,6 +1299,7 @@ datatype intkind =
   | INTKINDint8 | INTKINDuint8 | INTKINDint16 | INTKINDuint16
   | INTKINDint32 | INTKINDuint32 | INTKINDint64 | INTKINDuint64
   | INTKINDnone (* not supported *)
+// end of [intkind]
 
 (* ****** ****** *)
 
@@ -1299,6 +1307,7 @@ datatype s0vararg =
   | S0VARARGone (* {..} *)
   | S0VARARGall (* {...} *)
   | S0VARARGseq of s0arglst
+// end of [s0vararg]
 
 fun s0vararg_one ():  s0vararg = "s0vararg_one"
 fun s0vararg_all ():  s0vararg = "s0vararg_all"
@@ -1328,9 +1337,11 @@ datatype p0at_node =
   | P0Tsvararg of s0vararg
   | P0Ttup of (int (*flat*), p0atlst)
   | P0Ttup2 of (int (*flat*), p0atlst, p0atlst)
+// end of [p0at_node]
 
 and labp0atlst =
   | LABP0ATLSTnil | LABP0ATLSTdot | LABP0ATLSTcons of (l0ab, p0at, labp0atlst)
+// end of [labp2atlst]
 
 where p0at = '{
    p0at_loc= loc_t, p0at_node= p0at_node
@@ -1401,6 +1412,7 @@ datatype f0arg_node =
   | F0ARGsta2 of s0arglst
   | F0ARGdyn of p0at
   | F0ARGmet of s0explst
+// end of [f0arg_node]
 
 typedef f0arg = '{ f0arg_loc= loc_t, f0arg_node= f0arg_node }
 
@@ -1426,6 +1438,7 @@ datatype s0exparg =
   | S0EXPARGone (* {..} *)
   | S0EXPARGall (* {...} *)
   | S0EXPARGseq of s0explst
+// end of [s0exparg]
 
 typedef s0expargopt = Option s0exparg
 
@@ -1486,6 +1499,7 @@ datatype witht0ype =
   | WITHT0YPEtype of s0exp
   | WITHT0YPEview of s0exp
   | WITHT0YPEviewtype of s0exp
+// end of [witht0ype]
 
 fun witht0ype_none (): witht0ype = "witht0ype_none"
 fun witht0ype_prop (_: s0exp): witht0ype = "witht0ype_prop"
@@ -1617,9 +1631,11 @@ datatype d0exp_node =
       (d0exp, d0eclst)
   | D0Ewhile of (* while-loop *)
       (loopi0nvopt, loc_t(*inv*), d0exp(*test*), d0exp(*body*))
+// end of [d0exp_node]
 
 and labd0explst =
   | LABD0EXPLSTnil | LABD0EXPLSTcons of (l0ab, d0exp, labd0explst)
+// end of [labd0explst]
 
 and d0ec_node =
   | D0Cfixity of  (* fixity introduction *)
@@ -2228,6 +2244,7 @@ fun i0mpdec_make
 
 dataviewtype d0ecllst =
   | D0CLLSTnil | D0CLLSTcons of (d0ecllst, d0ec)
+// end of [d0ecllst]
 
 (* ****** ****** *)
 

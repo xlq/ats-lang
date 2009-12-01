@@ -41,9 +41,7 @@
 (* ****** ****** *)
 
 %{^
-
 #include "ats_intinf.cats"
-
 %}
 
 (* ****** ****** *)
@@ -81,6 +79,10 @@ macdef fprint_label = $Lab.fprint_label
 
 (* ****** ****** *)
 
+fn prerr_interror () = prerr "INTERNAL ERROR (ats_patcst2)"
+
+(* ****** ****** *)
+
 assume intinfset_t = List intinf_t // of increasing order
 
 implement intinflst_of_intinfset (xs) = xs
@@ -103,8 +105,8 @@ fun intinfset_sing (x: intinf_t): intinfset_t = cons (x, nil ())
 fn p2atcst_lst (p2tcs0: p2atcstlst): p2atcst = let
 (*
   val () = begin
-    prerr "p2atcst_lst: p2tcs0 = "; prerr p2tcs0; prerr_newline ()
-  end
+    print "p2atcst_lst: p2tcs0 = "; print p2tcs0; print_newline ()
+  end // end of [val]
 *)
   fun aux
     (d2c_cons: d2con_t, d2c_nil: d2con_t, p2tcs: p2atcstlst)
@@ -120,7 +122,7 @@ fn p2atcst_lst (p2tcs0: p2atcstlst): p2atcst = let
   val p2tcs1 = aux (d2c_cons, d2c_nil, p2tcs0)
 (*
   val () = begin
-    prerr "p2atcst_lst: p2tcs1 = "; prerr p2tcs1; prerr_newline ()
+    print "p2atcst_lst: p2tcs1 = "; print p2tcs1; print_newline ()
   end
 *)
 in
@@ -152,14 +154,14 @@ implement p2atcst_of_p2at p2t0 = begin
   | P2Tfloat f(*string*) => P2TCfloat f
   | P2Tint (s(*string*), i(*intinf*)) => P2TCint i
   | P2Tlist _ => begin
-      prerr "Internal Error: p2atcst_of_p2at: P2Tlist";
-      prerr_newline ();
+      prerr_interror ();
+      prerr ": p2atcst_of_p2at: p2t0 = "; prerr p2t0; prerr_newline ();
       $Err.abort {p2atcst} ()
-    end
+    end // end of [P2Tlist]
   | P2Tlst p2ts => p2atcst_lst (p2atcstlst_of_p2atlst p2ts)
   | P2Trec (recknd, _(*npf*), lp2ts) => begin
       P2TCrec (recknd, labp2atcstlst_of_labp2atlst lp2ts)
-    end
+    end // end of [P2Trec]
   | P2Tstring s => P2TCstring s
   | P2Tvar _ => P2TCany ()
   | P2Tvbox _ => P2TCany ()
@@ -168,8 +170,9 @@ end // end of [p2atcst_of_p2at]
 implement p2atcstlst_of_p2atlst (p2ts) = case+ p2ts of
   | cons (p2t, p2ts) => begin
       cons (p2atcst_of_p2at p2t, p2atcstlst_of_p2atlst p2ts)
-    end
-  | nil () => nil ()
+    end // end of [cons]
+  | nil () => nil () // end of [nil]
+// end of [p2atcstlst_of_p2atlst]
 
 (* ****** ****** *)
 
@@ -181,8 +184,8 @@ fun fprint_intinfset {m:file_mode}
     | x :: xs => begin
         if i > 0 then fprint1_string (pf | out, ", ");
         $IntInf.fprint_intinf (pf | out, x); aux (out, i+1, xs)
-      end
-    | nil () => ()
+      end // end of [::]
+    | nil () => () // end of [nil]
   end // end of [aux]
 in
   aux (out, 0, xs)
@@ -324,20 +327,18 @@ implement p2atcst_complement (p2tc0) = begin case+ p2tc0 of
     in
       if tag >= 0 then let
         val s2c0 = d2con_scst_get d2c0
-        val d2cs: d2conlst = case+ s2cst_conlst_get s2c0 of
-          | Some d2cs => d2cs
-          | None _ => begin
-              prerr "Internal Error: p2atcst_complement: s2c0 = ";
-              prerr s2c0;
-              prerr_newline ();
+        val d2cs = (case+ s2cst_conlst_get s2c0 of
+          | Some d2cs => d2cs | None _ => begin
+              prerr_interror ();
+              prerr ": p2atcst_complement: s2c0 = "; prerr s2c0; prerr_newline ();
               $Err.abort {d2conlst} ()
-            end
-        in
-          p2atcst_con_complement (d2c0, d2cs, p2tcs)
-        end
-      else begin // associated with a extensible sum
+            end // end of [None]
+        ) : d2conlst // end of [val]
+      in
+        p2atcst_con_complement (d2c0, d2cs, p2tcs)
+      end else begin // associated with a extensible sum
         singleton (P2TCany ())
-      end
+      end // end of [if]
     end // end of [P2TCcon]
   | P2TCempty () => nil ()
   | P2TCfloat _ => singleton (P2TCany ()) // conservative estimation
@@ -354,11 +355,10 @@ implement p2atcst_complement (p2tc0) = begin case+ p2tc0 of
   | P2TCstring _ => singleton (P2TCany ())  // conservative estimation
 (*
   | _ => begin
-      prerr "Internal Error: p2atcst_complement: p2tc0 = ";
-      prerr p2tc0;
-      prerr_newline ();
+      prerr_interror ();
+      prerr ": p2atcst_complement: p2tc0 = "; prerr p2tc0; prerr_newline ();
       $Err.abort {p2atcstlst} ()
-    end
+    end // end of [_]
 *)
 end // end of [p2atcst_complement]
 
@@ -385,8 +385,8 @@ implement p2atcstlst_complement {n} (p2tcs0) = begin
       } // end of [where]
     in
       p2tcss
-    end
-  | nil () => nil ()
+    end // end of [::]
+  | nil () => nil () // end of [nil]
 end // end of [p2atcstlst_commplement]
 
 implement labp2atcstlst_complement (lp2tcs0) = begin
@@ -399,6 +399,7 @@ implement labp2atcstlst_complement (lp2tcs0) = begin
               LABP2ATCSTLSTcons (l, P2TCany (), aux lp2tcs)
             end
           | LABP2ATCSTLSTnil () => LABP2ATCSTLSTnil ()
+        // end of [aux]
       } // end of [where]
       val lp2tcss = aux (labp2atcstlst_complement lp2tcs1) where {
         fun aux (lp2tcss: labp2atcstlstlst):<cloref1> labp2atcstlstlst =
@@ -407,6 +408,7 @@ implement labp2atcstlst_complement (lp2tcs0) = begin
               cons (LABP2ATCSTLSTcons (l1, p2tc1, lp2tcs), aux lp2tcss)
             end
           | nil () => nil ()
+        // end of [aux]
       } // end of [where]
       val lp2tcss = aux (p2atcst_complement p2tc1) where {
         fun aux (p2tcs: p2atcstlst):<cloref1> labp2atcstlstlst =
@@ -551,8 +553,8 @@ implement p2atcst_difference (p2tc1, p2tc2) =
         (lp2tcss, lam (lp2tcs) =<cloptr> P2TCrec (knd1, lp2tcs))
     end // end of [P2TCrec, P2TCrec]
   | (_, _) => begin
-      prerr "INTERNAL ERROR";
-      prerr ": [p2atcst_difference] failed"; prerr_newline ();
+      prerr_interror ();
+      prerr ": p2atcst_difference: failed"; prerr_newline ();
       $Err.abort {p2atcstlst} ()
     end // end of [_, _]
 (* end of [p2atcst_difference] *)

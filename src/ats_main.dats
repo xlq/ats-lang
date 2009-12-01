@@ -31,8 +31,8 @@
 
 (* ****** ****** *)
 
-// Time: July 2007
 // Author: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
+// Time: July 2007
 
 (* ****** ****** *)
 
@@ -659,7 +659,8 @@ val () = $Fil.the_prepathlst_push ATSHOME // for the run-time and lib
 val () = $TransEnv2.trans2_env_initialize ()
 
 fn warning (str: string) = begin
-  prerr "Waring: unrecognized command line argument [";
+  prerr "Waring(ATS)";
+  prerr ": unrecognized command line argument [";
   prerr str; prerr "] is ignored."; prerr_newline ()
 end // end of [warning]
 

@@ -71,7 +71,7 @@ implement symtbl_make (sz) = let
   prval () = free_gc_elim {symtbl0} (pf_tbl_gc)
 (*
   val () = (
-    prerr "symtbl_make: p_tbl = "; prerr p_tbl; prerr_newline ()
+    print "symtbl_make: p_tbl = "; print p_tbl; print_newline ()
   ) // end of [val]
 *)
   val asz = max (sz, 1)
@@ -85,7 +85,7 @@ implement symtbl_make (sz) = let
   } // end of [val]
 (*
   val () = (
-    prerr "symtbl_make: p_arr = "; prerr p_arr; prerr_newline ()
+    print "symtbl_make: p_arr = "; print p_arr; print_newline ()
   ) // end of [val]
 *)
   val () = begin
@@ -106,7 +106,7 @@ fun symtbl_search_probe
   ) :<!ntm> tblent = let
 (*
   val () = $effmask_all begin
-    prerr "symtbl_search_probe: p = "; prerr p; prerr_newline ()
+    print "symtbl_search_probe: p = "; print p; print_newline ()
   end // end of [val]
 *)
   val ent = p[i] in case+ ent of

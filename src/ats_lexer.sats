@@ -31,8 +31,8 @@
 
 (* ****** ****** *)
 
-// July 2007
 // Author: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
+// July 2007
 
 (* ****** ****** *)
 
@@ -67,4 +67,3 @@ fun token_is_valid (t: token_t): bool = "token_is_valid"
 (* ****** ****** *)
 
 (* end of [ats_lexer.sats] *)
-

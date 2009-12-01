@@ -31,8 +31,8 @@
 
 /* ****** ****** */
 
-// September 2008
 // Author: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
+// September 2008
 
 /* ****** ****** */
 
@@ -144,7 +144,7 @@ ats_main_ATSHOMERELOC_set () {
   fprintf (stderr, "ats_main_ATSHOMERELOC_set: ATSHOMERELOC = %s\n", ats_main_ATSHOMERELOC) ;
 */
   return ;
-}
+} // end of [ats_main_ATSHOMERELOC_set]
 
 /* ****** ****** */
 

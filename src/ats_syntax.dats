@@ -83,6 +83,8 @@ fn prerr_loc_error0 (loc: loc_t): void =
   ($Loc.prerr_location loc; prerr ": error(0)")
 // end of [prerr_loc_error0]
 
+fn prerr_interror () = prerr "INTERNAL ERROR (ats_syntax)"
+
 (* ****** ****** *)
 
 implement abskind_prop () = ABSKINDprop ()
@@ -272,7 +274,7 @@ end // end of [fprint_i0delst]
 implement i0de_make (loc, str) = let
 (*
     val () = begin
-      prerr "i0de_make: sym = "; prerr str; prerr_newline ()
+      print "i0de_make: sym = "; print str; print_newline ()
     end // end of [val]
 *)
 in '{
@@ -515,9 +517,9 @@ implement s0rt_viewt0ype (t) = '{
 
 implement s0rt_app (s0t_fun, s0t_arg) = begin
 (*
-  prerr "s0rt_app:"; prerr_newline ();
-  prerr "loc_fun = "; prerr s0t_fun.s0rt_loc; prerr_newline ();
-  prerr "loc_arg = "; prerr s0t_arg.s0rt_loc; prerr_newline ();
+  print "s0rt_app:"; print_newline ();
+  print "loc_fun = "; print s0t_fun.s0rt_loc; print_newline ();
+  print "loc_arg = "; print s0t_arg.s0rt_loc; print_newline ();
 *)
   let val loc = combine (s0t_fun.s0rt_loc, s0t_arg.s0rt_loc) in
     '{ s0rt_loc= loc, s0rt_node= S0RTapp (s0t_fun, s0t_arg) }
@@ -535,9 +537,9 @@ implement s0rt_qid (q, id) =
 
 implement s0rt_list (t_beg, s0ts, t_end) = begin
 (*
-  prerr "s0rt_list:\n";
-  prerr "t_beg.loc = "; prerr t_beg.t0kn_loc; prerr_newline ();
-  prerr "t_end.loc = "; prerr t_end.t0kn_loc; prerr_newline ();
+  print "s0rt_list:\n";
+  print "t_beg.loc = "; print t_beg.t0kn_loc; print_newline ();
+  print "t_end.loc = "; print t_end.t0kn_loc; print_newline ();
 *)
   let val loc = combine (t_beg.t0kn_loc, t_end.t0kn_loc) in
     '{ s0rt_loc= loc, s0rt_node= S0RTlist s0ts }
@@ -1214,9 +1216,9 @@ implement witht0ype_viewtype (s0e) = WITHT0YPEviewtype (s0e)
 
 implement s0rtdef_make (id, def) = let
 (*
-  val () = prerr "s0rtdef_make:\n"
+  val () = print "s0rtdef_make:\n"
   val () = begin
-    prerr "def.loc = "; prerr def.s0rtext_loc; prerr_newline ()
+    print "def.loc = "; print def.s0rtext_loc; print_newline ()
   end // end of [val]
 *)
   val loc = combine (id.i0de_loc, def.s0rtext_loc)
@@ -1527,7 +1529,7 @@ implement extnamopt_none () = stropt_none
 implement extnamopt_some (ext) = let
 (*
   val () = begin
-    prerr "extnamopt_some: ext = "; prerr ext.s0tring_val; prerr_newline ()
+    print "extnamopt_some: ext = "; print ext.s0tring_val; print_newline ()
   end
 *)
 in
@@ -1884,7 +1886,7 @@ implement d0exp_for_itp (hd, itp, body) = let
   val loc = $Loc.location_combine (loc_inv, body.d0exp_loc)
 (*
   val () = begin
-    $Loc.prerr_location loc; prerr ": d0exp_for_itp"; prerr_newline ()
+    $Loc.print_location loc; print ": d0exp_for_itp"; print_newline ()
   end // end of [val]
 *)
   val inv = hd.loophead_inv
@@ -1951,9 +1953,8 @@ implement d0exp_lam
     | LAMKINDatllam tok => tok.t0kn_loc
     | LAMKINDfix () => let
         val () = begin
-          prerr "Internal Error";
-          prerr ": d0exp_lam: knd = LAMKINDfix ()";
-          prerr_newline ()
+          prerr_interror ();
+          prerr ": d0exp_lam: knd = LAMKINDfix ()"; prerr_newline ()
         end // end of [val]
       in
         exit {loc_t} (1)

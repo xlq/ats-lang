@@ -31,8 +31,8 @@
 
 (* ****** ****** *)
 
-// Time: March 2008
 // Author: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
+// Time: March 2008
 
 (* ****** ****** *)
 
@@ -74,6 +74,17 @@ overload = with $Sym.eq_symbol_symbol
 
 (* ****** ****** *)
 
+fn prerr_loc_error4 (loc: loc_t) = begin
+  $Loc.prerr_location loc; prerr ": error(4)"
+end // end of [prerr_loc_error4]
+
+fn prerr_interror () = prerr "INTERNAL ERROR (ats_trans4)"
+fn prerr_loc_interror (loc: loc_t) = begin
+  $Loc.prerr_location loc; prerr ": INTERNAL ERROR (ats_trans4)"
+end // end of [prerr_loc_interror]
+
+(* ****** ****** *)
+
 fn s2exp_app_tr (
     loc0: loc_t
   , deep: int
@@ -103,10 +114,8 @@ in
                     stasub_add (aux (s2vs, s2es), s2v, s2e)
                 | (nil _, nil _) => stasub_nil
                 | (_, _) => begin
-                    prerr "INTERNAL ERROR";
-                    $Deb.debug_prerrf (": [%s]", @(THISFILENAME));
-                    prerr ": s2exp_app_tr: S2Eapp: arity error";
-                    prerr_newline ();
+                    prerr_interror ();
+                    prerr ": s2exp_app_tr: S2Eapp: arity error"; prerr_newline ();
                     $Err.abort {stasub_t} ()
                   end // end [_,_]
               val sub = aux (s2vs_arg, s2es_arg)
@@ -147,12 +156,12 @@ implement s2exp_tr (loc0, deep, s2e0) = let
     print "s2exp_tr: s2e0 = "; print s2e0; print_newline ();
   end // end of [val]
 *)
-  fn err
-    (loc0: loc_t, s2t0: s2rt, s2e0: s2exp): hityp = begin
-    $Loc.prerr_location loc0; prerr ": error(4)";
+  fn err (
+      loc0: loc_t, s2t0: s2rt, s2e0: s2exp
+    ) : hityp = begin
+    prerr_loc_error4 (loc0);
     $Deb.debug_prerrf (": [%s]: s2exp_tr", @(THISFILENAME));
-    prerr ": s2t0 = "; prerr s2t0;
-    prerr "; s2e0 = "; prerr s2e0;
+    prerr ": s2t0 = "; prerr s2t0; prerr "; s2e0 = "; prerr s2e0;
     prerr_newline ();
     $Err.abort {hityp} ()
   end // end of [err]
@@ -459,8 +468,7 @@ in
       hipat_var (loc0, hit0, refknd, d2v)
     end // end of [P3Tvar]
   | _ => begin
-      prerr "INTERNAL ERROR";
-      $Deb.debug_prerrf (": [%s]", @(THISFILENAME));
+      prerr_interror ();
       prerr ": p3at_tr: p3t0 = "; prerr_p3at p3t0; prerr_newline ();
       $Err.abort {hipat} ()
     end // end of [_]
@@ -516,8 +524,7 @@ implement d3explst_funarg_tr (isvararg, npf, d3es) = let
           | D3Erec (_, _, ld3es) => aux0 (hies, ld3es)
           | _ => begin
             $Lst.list_vt_free__boxed (hies);
-            prerr "INTERNAL ERROR";
-            $Deb.debug_prerrf (": [%s]", @(THISFILENAME));
+            prerr_interror ();
             prerr ": d3explst_funarg_tr: aux1: d3e = "; prerr_d3exp d3e;
             prerr_newline ();
             $Err.abort {hiexplst} ()
@@ -611,8 +618,7 @@ fn d3exp_tmpcst_tr (
         hiexp_sizeof (loc0, hit0, s2exp_tr (loc0, 0(*deep*), s2e))
       end
     | _ => begin
-        prerr "INTERNAL ERROR";
-        $Deb.debug_prerrf (": [%s]", @(THISFILENAME));
+        prerr_interror ();
         prerr ": d3exp_tmpcst_tr: sizeof"; prerr_newline ();
         $Err.abort {hiexp} ()
       end (* end of [_] *)
@@ -763,9 +769,7 @@ in
 *)
           val hie = (case+ hies_arg of
             | list_cons (hie, list_nil ()) => hie | _ => begin
-                $Loc.prerr_location loc0;
-                prerr ": INTERNAL ERROR";
-                $Deb.debug_prerrf (": [%s]", @(THISFILENAME));
+                prerr_loc_interror (loc0);
                 prerr ": d3exp_tr: a casting function must be applied to exactly one argument.";
                 prerr_newline (); $Err.abort {hiexp} ()
               end // end of [list_cons]
@@ -888,11 +892,11 @@ in
       val hie_body = d3exp_tr d3e_body
       val () = // check for valueness of the body
         if hiexp_is_value hie_body then () else begin
-          $Loc.prerr_location loc0; prerr ": error(4)";
+          prerr_loc_error4 loc0;
           prerr ": a non-value fixed-point dynamic expression is not supported.";
           prerr_newline ();
           $Err.abort {void} ()
-        end
+        end // end of [if]
       // end of [val]
     in
       hiexp_fix (loc0, hit0, d2v_fun, hie_body)
@@ -953,7 +957,7 @@ in
       val hie_body = d3exp_tr d3e_body
       val () = // check for valueness
         if hiexp_is_value hie_body then () else begin
-          $Loc.prerr_location loc0; prerr ": error(4)";
+          prerr_loc_error4 (loc0);
           prerr ": a non-value body for static lambda-abstraction is not supported.";
           prerr_newline ();
           $Err.abort {void} ()
@@ -1005,9 +1009,8 @@ in
       hiexp_lst (loc0, hit0, lin, hit_elt, hies_elt)
     end // end of [D3Elst]
   | D3Emtd _ => begin
-      $Loc.prerr_location loc0;
-      prerr ": d3exp_tr: D2Emtd: not implemented yet.";
-      prerr_newline ();
+      prerr_loc_interror loc0;
+      prerr ": d3exp_tr: D2Emtd: not implemented yet."; prerr_newline ();
       $Err.abort {hiexp} ()
     end // end of [D3Emtd]
 (*
@@ -1044,7 +1047,7 @@ in
       hiexp_refarg (loc0, hit0, refval, freeknd, hie)
     end // end of [D3Erefarg]
   | D3Escaseof _ => begin
-      $Loc.prerr_location loc0; prerr ": Internal Error";
+      prerr_loc_interror loc0;
       prerr ": the static caseof-expression should have already been erased.";
       prerr_newline ();
       $Err.abort {hiexp} ()
@@ -1122,7 +1125,7 @@ in
     end // end of [D3Etrywith]
   | D3Evar d2v => let
       val () =  if d2var_isprf_get d2v then begin
-        $Loc.prerr_location loc0; prerr ": error(4)";
+        prerr_loc_error4 loc0;
         prerr ": the dynamic variable ["; prerr_d2var d2v;
         prerr "] refers to a proof and thus should have been erased.";
         prerr_newline ();
@@ -1135,13 +1138,13 @@ in
   | D3Eviewat_assgn_ptr _ => hiexp_empty (loc0, hityp_void)
   | D3Eviewat_assgn_var _ => hiexp_empty (loc0, hityp_void)
   | D3Eviewat_ptr _ => begin
-      $Loc.prerr_location loc0; prerr ": Internal Error";
+      prerr_loc_interror loc0;
       prerr ": this proof expression should have already been erased.";
       prerr_newline ();
       $Err.abort {hiexp} ()
     end // end of [D3Eviewat_ptr]
   | D3Eviewat_var _ => begin
-      $Loc.prerr_location loc0; prerr ": Internal Error";
+      prerr_loc_interror loc0;
       prerr ": this proof expression should have already been erased.";
       prerr_newline ();
       $Err.abort {hiexp} ()
@@ -1153,6 +1156,7 @@ in
       hiexp_let_simplify (loc0, hit0, hids, hie)
     end // end of [D3Ewhere]
   | _ => begin
+      prerr_loc_interror loc0;
       prerr "d3exp_tr: not yet implemented: d3e0 = "; prerr d3e0; prerr_newline ();
       $Err.abort {hiexp} ()
     end // end of [_]
@@ -1308,9 +1312,7 @@ in
       // empty
     end // end of [D3Ewhere]
   | _ => begin
-      $Loc.prerr_location d3e0.d3exp_loc;
-      prerr ": INTERNAL ERROR";
-      $Deb.debug_prerrf (": [%s]", @(THISFILENAME));
+      prerr_loc_interror d3e0.d3exp_loc;
       prerr ": d3exp_prf_tr: d3e0 = "; prerr_d3exp d3e0; prerr_newline ();
       $Err.abort {void} ()
     end // end of [_]
@@ -1404,10 +1406,8 @@ fn i3mpdec_tr (d3c: i3mpdec): hiimpdec = let
     | _ when d2cst_is_fun d2c => begin
       case+ def.hiexp_node of
       | HIElam _ => () | _ => begin
-          $Loc.prerr_location loc;
-          prerr ": error(4)";
-          prerr ": the dynamic constant [";
-          prerr d2c;
+          prerr_loc_error4 loc;
+          prerr ": the dynamic constant ["; prerr d2c;
           prerr "] is required to be implemented as a function";
           prerr ", but it is not.";
           prerr_newline ();
@@ -1557,11 +1557,8 @@ implement d3eclst_tr (d3cs0) = res where {
       | _ => let
           val () = (res := list_nil ())
         in
-          $Loc.prerr_location d3c.d3ec_loc;
-          prerr ": INTERNAL ERROR";
-          $Deb.debug_prerrf (": [%s]", @(THISFILENAME));
-          prerr ": d3eclst_tr: aux0: not available yet.";
-          prerr_newline ();
+          prerr_loc_interror d3c.d3ec_loc;
+          prerr ": d3eclst_tr: aux0: not available yet."; prerr_newline ();
           $Err.abort {void} ()
         end // end of [_]
       end (* end of [list_cons] *)
@@ -1614,14 +1611,12 @@ implement d3eclst_prf_tr
       | D3Cstaload _ => aux d3cs
       | D3Cdynload _ => aux d3cs
       | _ => begin
-          $Loc.prerr_location d3c.d3ec_loc;
-          prerr ": INTERNAL ERROR";
-          $Deb.debug_prerrf (": [%s]", @(THISFILENAME));
+          prerr_loc_interror d3c.d3ec_loc;
           prerr ": d3explst_prf_tr: illegal proof declaration"; prerr_newline ();
           $Err.abort {void} ()
         end // end of [_]
       end // end of [list_cons]
-    | list_nil () => ()
+    | list_nil () => () // end of [list_nil]
   end // end of [aux]
 } // end of [d3eclst_prf_tr]
 
