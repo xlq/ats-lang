@@ -31,8 +31,8 @@
 
 (* ****** ****** *)
 
-// Time: January 2008
 // Author: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
+// Time: January 2008
 
 (* ****** ****** *)
 
@@ -63,6 +63,10 @@ typedef stbefitem = '{
 } // end of [stbefitem]
 
 assume stbefitem_t = stbefitem
+
+(* ****** ****** *)
+
+fn prerr_interror () = prerr "INTERNAL ERROR (ats_trans3_env_state)"
 
 (* ****** ****** *)
 
@@ -110,7 +114,8 @@ fn saityp_loc_get (x: saityp): loc_t = case+ x of
   | SAITYPsome (loc, _) => loc | SAITYPnone loc => loc
 // end of [saityp_loc_get]
 
-fn saityplst_check (d2v: d2var_t, xs: saityplst): int = let
+fn saityplst_check
+  (d2v: d2var_t, xs: saityplst): int = let
   fn errmsg (d2v: d2var_t, x: saityp): void = case+ x of
     | SAITYPsome (loc, _) => begin
         $Loc.prerr_location loc;
@@ -362,12 +367,12 @@ fn aux_saityp (
       var used1: int = used
 (*
       val () = begin
-        prerr "staftscstr_stbefitemlst_check: aux_saityp: used1 = ";      
-        prerr used1; prerr_newline ();
-        prerr "staftscstr_stbefitemlst_check: aux_saityp: d2v = ";
-        prerr d2v; prerr_newline ();
-        prerr "staftscstr_stbefitemlst_check: aux_saityp: s2e = ";
-        prerr s2e; prerr_newline ()
+        print "staftscstr_stbefitemlst_check: aux_saityp: used1 = ";      
+        print used1; print_newline ();
+        print "staftscstr_stbefitemlst_check: aux_saityp: d2v = ";
+        print d2v; print_newline ();
+        print "staftscstr_stbefitemlst_check: aux_saityp: s2e = ";
+        print s2e; print_newline ()
       end // end of [val]
 *)
       val s2e_check = (case+ aux_find (sub, args, d2v) of
@@ -381,10 +386,10 @@ fn aux_saityp (
       ) : s2exp
 (*
       val () = begin
-        prerr "staftscstr_stbefitemlst_check: aux_saityp: used1 = ";      
-        prerr used1; prerr_newline ();
-        prerr "staftscstr_stbefitemlst_check: aux_saityp: s2e_check = ";
-        prerr s2e_check; prerr_newline ();
+        print "staftscstr_stbefitemlst_check: aux_saityp: used1 = ";      
+        print used1; print_newline ();
+        print "staftscstr_stbefitemlst_check: aux_saityp: s2e_check = ";
+        print s2e_check; print_newline ();
       end // end of [val]
 *)
       val () = if (used1 > 0) then let
@@ -413,7 +418,7 @@ fn aux_item_one (
   ) : void = let
 (*
   val () = begin
-    prerr "aux_item_one: d2v = "; prerr d2v; prerr_newline ()
+    print "aux_item_one: d2v = "; print d2v; print_newline ()
   end // end of [val]
 *)
   val xs = sai.staftitem_typ
@@ -439,7 +444,7 @@ fun aux_item_all {n:nat} (
       val d2v = sbi.stbefitem_var
 (*
       val () = begin
-        prerr "aux_item_all: d2v = "; prerr d2v; prerr_newline ()
+        print "aux_item_all: d2v = "; print d2v; print_newline ()
       end // end of [aux_item_all]
 *)
       val linaft = sai.staftitem_lin
@@ -464,8 +469,8 @@ fn aux_term_check
         val [n:int] sgn = $Lst.list_length_compare (s2es, s2es_bound)
         val () = (
           if (sgn <> 0) then begin
-            prerr "Internal Error: ats_trans3_env_state.dats: aux_term_check";
-            prerr_newline ();
+            prerr_interror ();
+            prerr ": aux_term_check: Some: Some"; prerr_newline ();
             $Err.abort {void} ();
             assert (sgn = 0)
           end else begin
@@ -476,8 +481,8 @@ fn aux_term_check
         trans3_env_add_metric_dec (x.sascstr_loc, s2es, s2es_bound)
       end // end of [Some]
     | None () => begin
-        prerr "Internal Error: : ats_trans3_env_state.dats: aux_term_check";
-        prerr_newline ();
+        prerr_interror ();
+        prerr ": aux_term_check: Some: None"; prerr_newline ();
         $Err.abort {void} ()
       end // end of [None]
     end (* end of [Some] *)
@@ -510,10 +515,10 @@ in // in of [local]
 implement staftscstr_stbefitemlst_check (loc0, sac, sbis) = let
 (*
   val () = begin
-    $Loc.prerr_location loc0;
-    prerr ": staftscstr_stbefitemlst_check: res = ";
-    prerr sac.staftscstr_res (* : i2nvresstate *);
-    prerr_newline ();
+    $Loc.print_location loc0;
+    print ": staftscstr_stbefitemlst_check: res = ";
+    print sac.staftscstr_res (* : i2nvresstate *);
+    print_newline ();
   end // end of [val]
 *)
   val met = sac.staftscstr_met
@@ -552,13 +557,13 @@ fun aux_iter {n:nat} (
       val linaft = sai.staftitem_lin and linbef = sbi.stbefitem_lin
 (*
       val () = begin
-        prerr "staftscstr_stbefitemlst_update: aux_iter: d2v = ";
-        prerr d2v; prerr_newline ();
-        prerrf (
+        print "staftscstr_stbefitemlst_update: aux_iter: d2v = ";
+        print d2v; print_newline ();
+        printf (
           "staftscstr_stbefitemlst_update: aux_iter: linaft = %i and linbef = %i"
         , @(linaft, linbef)
         );
-        prerr_newline ();
+        print_newline ();
       end // end of [val]
 *)
       val () = begin
@@ -622,7 +627,7 @@ ats_trans3_env_state_staftitem_typ_set (ats_ptr_type sai, ats_ptr_type os2es)
   ((staftitem_t)sai)->atslab_staftitem_typ = os2es; return ;
 }
 
-%}
+%} // end of [%{$]
 
 extern typedef "staftscstr_t" = [n:int] staftscstr (n)
 
@@ -640,7 +645,7 @@ ats_trans3_env_state_staftscstr_cstr_set (ats_ptr_type sac, ats_ptr_type cstr)
   ((staftscstr_t)sac)->atslab_staftscstr_cstr = cstr ; return ;
 }
 
-%}
+%} // end of [%{$]
 
 (* ****** ****** *)
 

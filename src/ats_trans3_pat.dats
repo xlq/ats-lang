@@ -72,6 +72,14 @@ overload prerr with $Loc.prerr_location
 
 (* ****** ****** *)
 
+fn prerr_interror () = prerr "INTERNAL ERROR (ats_trans3_pat)"
+
+fn prerr_loc_interror (loc: loc_t) = begin
+  $Loc.prerr_location loc; prerr ": INTERNAL ERROR (ats_trans3_pat)"
+end // end of [prerr_loc_interror]
+
+(* ****** ****** *)
+
 fun p3at_readize
   (s2e_v: s2exp, p3t: p3at): void = begin
   case+ p3t.p3at_node of
@@ -143,9 +151,8 @@ implement p2at_typ_syn (p2t0) = let
     | P2Tfloat _ => s2exp_double_t0ype ()
     | P2Tint _ => s2exp_int_t0ype ()
     | P2Tlist _ => begin
-        prerr p2t0.p2at_loc;
-        prerr ": Internal Error: p2at_typ_syn: P2Tlist";
-        prerr_newline ();
+        prerr_loc_interror p2t0.p2at_loc;
+        prerr ": p2at_typ_syn: P2Tlist"; prerr_newline ();
         $Err.abort {s2exp} ()
       end // end of [P2Tlist]
     | P2Tlst _ => begin
@@ -199,8 +206,8 @@ fun labp3atlst_typ_get (lp3ts: labp3atlst): labs2explst = begin
     end
   | LABP3ATLSTnil () => LABS2EXPLSTnil ()
   | LABP3ATLSTdot () => begin
-      prerr "INTERNAL ERROR: labp2atlst_typ_get: LABP3ATLSTdot";
-      prerr_newline ();
+      prerr_interror ();
+      prerr ": labp2atlst_typ_get: LABP3ATLSTdot"; prerr_newline ();
       $Err.abort {labs2explst} ()
     end // end of [LABP3ATLSTdot]
 end // end of [labp3atlst_typ_get]
@@ -234,11 +241,12 @@ in
   | S2Eapp (s2e_fun, s2es_arg) when
       s2cstref_exp_equ (Bool_bool_t0ype, s2e_fun) => let
       val s2e_arg = case+ s2es_arg of
-        | list_cons (s2e, _) => s2e | list_nil _ => begin
-            prerr loc0;
-            prerr ": INTERNAL ERROR: p2at_bool_tr_dn"; prerr_newline ();
-            $Err.abort {s2exp} ()
-          end (* end of [list_nil] *)
+      | list_cons (s2e, _) => s2e | list_nil _ => begin
+          prerr_loc_interror loc0;
+          prerr ": p2at_bool_tr_dn"; prerr_newline ();
+          $Err.abort {s2exp} ()
+        end (* end of [list_nil] *)
+      // end of [val]
       val () = trans3_env_hypo_add_eqeq (loc0, s2exp_bool b, s2e_arg)
     in
       p3at_bool (loc0, s2exp_bool_bool_t0ype b, b)
@@ -261,13 +269,13 @@ in
   | S2Eapp (s2e_fun, s2es_arg) when
       s2cstref_exp_equ (Char_char_t0ype, s2e_fun) => let
       val s2e_arg = case+ s2es_arg of
-        | list_cons (s2e, _) => s2e | list_nil _ => begin
-            prerr loc0;
-            prerr ": INTERNAL ERROR: p2at_tr_dn: P2Tchar";
-            prerr_newline ();
-            $Err.abort {s2exp} ()
-          end (* end of [list_nil] *)
-       val () = trans3_env_hypo_add_eqeq (loc0, s2exp_char c, s2e_arg)
+      | list_cons (s2e, _) => s2e | list_nil _ => begin
+          prerr_loc_interror loc0;
+          prerr ": p2at_tr_dn: P2Tchar"; prerr_newline ();
+          $Err.abort {s2exp} ()
+        end (* end of [list_nil] *)
+      // end of [val]
+      val () = trans3_env_hypo_add_eqeq (loc0, s2exp_char c, s2e_arg)
     in
       p3at_char (loc0, s2exp_char_char_t0ype c, c)
     end (* end of [S2Eapp] *)
@@ -456,8 +464,8 @@ in
       P2ATCONTRUPcon (p2ts, s2es_arg, s2e_res)
     end // end of [S2Efun]
   | _ => begin
-      prerr loc0;
-      prerr ": INTERNAL ERROR: p2at_con_tr_up"; prerr_newline ();
+      prerr_loc_interror loc0;
+      prerr ": p2at_con_tr_up"; prerr_newline ();
       $Err.abort {p2atcontrup} ()
     end // end of [_]
 end // end of [p2at_con_tr_up]
@@ -591,9 +599,8 @@ fn p2at_con_tr_dn (
       val s2es_arg = (s2es_arg_var: s2explst)
       val [sgn:int] sgn = $Lst.list_length_compare (p2ts, s2es_arg)
       val () = (if sgn <> 0 then begin
-        prerr loc0; prerr (": INTERNAL ERROR");
-        prerrf (": p2at_con_tr_dn: sgn = %i", @(sgn));
-        prerr_newline ();
+        prerr_loc_interror loc0;
+        prerrf (": p2at_con_tr_dn: sgn = %i", @(sgn)); prerr_newline ();
         $Err.abort {void} ();
         assert (sgn = 0) // deadcode
       end else begin
@@ -665,8 +672,7 @@ in
     end (* end of [S2Eexist] *)
   | _ => begin
       prerr loc0; prerr ": error(3)";
-      prerr ": the pattern is given the type [";
-      prerr s2e0;
+      prerr ": the pattern is given the type ["; prerr s2e0;
       prerr "] but an existentially quantified type is expected.";
       prerr_newline ();
       $Err.abort {p3at} ()
@@ -697,8 +703,7 @@ in
     end
   | ~None_vt () => begin
       prerr loc0; prerr ": error(3)";
-      prerr ": the pattern is given the type [";
-      prerr s2e_lst;
+      prerr ": the pattern is given the type ["; prerr s2e_lst;
       prerr "] but a type of the form [list (_, _)] is expected.";
       prerr_newline ();
       $Err.abort {p3at} ()
@@ -733,7 +738,7 @@ fn labp2atlst_tr_dn
           end else begin
             aux (loc0, lp2ts0, ls2es, LABS2EXPLSTcons (l2, s2e, omits))
           end
-        end
+        end // end of [LABS2EXPLSTcons]
       | LABS2EXPLSTnil () => begin
           prerr loc0; prerr ": error(3)";
           prerr ": the pattern contains a component with the label [";
@@ -741,8 +746,8 @@ fn labp2atlst_tr_dn
           prerr "] but it should not according to its assigned type.";
           prerr_newline ();
           $Err.abort {labp3atlst} ()
-        end
-      end
+        end // end of [LABS2EXPLSTnil]
+      end // end of [LABP2ATLSTcons]
     | LABP2ATLSTnil () => let
         val omits = labs2explst_revapp (omits, ls2es0)
         val () = case+ omits of
@@ -757,7 +762,7 @@ fn labp2atlst_tr_dn
           | _ => ()
       in
         LABP3ATLSTnil ()
-      end
+      end // end of [LABP2ATLSTnil]
     | LABP2ATLSTdot () => let
         fun auxcheck
           (loc0: loc_t, omits: labs2explst): void = begin
@@ -782,7 +787,7 @@ fn labp2atlst_tr_dn
         val () = auxcheck (loc0, omits)
       in
         LABP3ATLSTdot ()
-      end
+      end // end of [LABP2ATLSTdot]
   end // end of [aux]
 in
   aux (loc0, lp2ts0, ls2es0, LABS2EXPLSTnil ())
@@ -990,12 +995,12 @@ in
       | S2Eapp (s2e_fun, s2es_arg) when
           s2cstref_exp_equ (Int_int_t0ype, s2e_fun) => let
           val s2e_arg = case+ s2es_arg of
-            | list_cons (s2e, _) => s2e | list_nil () => begin
-                prerr loc0;
-                prerr ": INTERNAL ERROR: p2at_tr_dn: P2Tint";
-                prerr_newline ();
-                $Err.abort {s2exp} ()
-              end (* end of [list_nil] *)
+          | list_cons (s2e, _) => s2e | list_nil () => begin
+              prerr_loc_interror loc0;
+              prerr ": p2at_tr_dn: P2Tint"; prerr_newline ();
+              $Err.abort {s2exp} ()
+            end (* end of [list_nil] *)
+          // end of [val]
           val () = trans3_env_hypo_add_eqeq (loc0, s2exp_intinf i, s2e_arg)
         in
           p3at_int (loc0, s2exp_int_intinf_t0ype i, s, i)
@@ -1020,12 +1025,12 @@ in
       | S2Eapp (s2e_fun, s2es_arg) when
           s2cstref_exp_equ (String_int_type, s2e_fun) => let
           val s2e_arg = case+ s2es_arg of
-            | list_cons (s2e, _) => s2e | list_nil _ => begin
-                prerr loc0;
-                prerr ": INTERNAL ERROR: p2at_tr_dn: P2Tstring";
-                prerr_newline ();
-                $Err.abort {s2exp} ()
-              end // end of [list_nil]
+          | list_cons (s2e, _) => s2e | list_nil _ => begin
+              prerr_loc_interror loc0;
+              prerr ": p2at_tr_dn: P2Tstring"; prerr_newline ();
+              $Err.abort {s2exp} ()
+            end // end of [list_nil]
+          // end of [val]
           val n = string0_length str
           val n = size1_of_size (n); val n = int1_of_size1 (n)
           val () = trans3_env_hypo_add_eqeq (loc0, s2e_arg, s2exp_int n)
@@ -1047,7 +1052,7 @@ in
       p2at_vbox_tr_dn (loc0, d2v, s2e0)
     end // end of [P2Tvbox]
   | _ => begin
-      prerr loc0; prerr ": INTERNAL ERROR";
+      prerr_loc_interror loc0;
       prerr ": p2at_tr_dn: not implemented yet: p2t0 = "; prerr p2t0;
       prerr_newline ();
       $Err.abort {p3at} ()
@@ -1056,13 +1061,13 @@ end // end of [p2at_tr_dn]
 
 (* ****** ****** *)
 
-implement p2atlst_tr_dn (p2ts, s2es) = begin case+ p2ts of
+implement p2atlst_tr_dn (p2ts, s2es) = case+ p2ts of
   | list_cons (p2t, p2ts) => let
       val+ list_cons (s2e, s2es) = s2es in
       list_cons (p2at_tr_dn (p2t, s2e), p2atlst_tr_dn (p2ts, s2es))
     end (* end of [list_cons] *)
   | list_nil () => list_nil ()
-end // end of [p2atlst_tr_dn]
+// end of [p2atlst_tr_dn]
 
 (* ****** ****** *)
 
@@ -1078,7 +1083,7 @@ in
   | _ => begin case+ p2t0.p2at_typ of
     | Some s2e => p2at_tr_dn (p2t0, s2e)
     | None () => begin
-        prerr p2t0.p2at_loc; prerr ": INTERNAL ERROR";
+        prerr_loc_interror p2t0.p2at_loc;
         prerr ": p2at_arg_tr_up: p2t0 = "; prerr p2t0; prerr_newline ();
         $Err.abort {p3at} ()
       end // end of [None] 
@@ -1096,8 +1101,8 @@ implement p2at_arg_tr_dn (p2t0, s2e0) = let
 *)
       fn refknd_check (p2t0: p2at, refknd: int): void =
         if refknd > 0 then begin
-          prerr p2t0.p2at_loc;
-          prerr ": error(3): misuse of refvar pattern."; prerr_newline ();
+          prerr p2t0.p2at_loc; prerr ": error(3)";
+          prerr ": misuse of refvar pattern."; prerr_newline ();
           $Err.abort {void} ()
         end // end of [if]
     in

@@ -67,6 +67,14 @@ staload "ats_trans3.sats"
 
 (* ****** ****** *)
 
+fn prerr_interror () = prerr "INTERNAL ERROR (ats_trans3_dec)"
+
+fn prerr_loc_interror (loc: loc_t) = begin
+  $Loc.prerr_location loc; prerr ": INTERNAL ERROR (ats_trans3_dec)"
+end // end of [prerr_loc_interror]
+
+(* ****** ****** *)
+
 fn caskind_of_valkind
   (valknd: $Syn.valkind): int = begin case+ valknd of
   | $Syn.VALKINDval () => 0
@@ -104,7 +112,7 @@ implement m2thdec_tr (mtd) = begin
       val s2e_mtd = d2mtd_typ_get d2m
 (*
       val () = begin
-        prerr "m2thdec_tr: M2THDECimp: s2e_mtd = "; prerr s2e_mtd; print_newline ()
+        print "m2thdec_tr: M2THDECimp: s2e_mtd = "; print s2e_mtd; print_newline ()
       end // end of [val]
 *)
       val def = d2exp_tr_dn (def, s2e_mtd)
@@ -113,6 +121,7 @@ implement m2thdec_tr (mtd) = begin
     end (* end of [M2THDECimp] *)
 (*
   | _ => begin
+      prerr_interror ();
       prerr "m2thdec_tr: not yet available"; prerr_newline ();
       $Err.abort ()
     end (* end of [_] *)
@@ -213,7 +222,7 @@ fn v2aldec_tr
     end
   in
     $Lst.list_vt_free (s3is)
-  end
+  end // end of [val]
 *)
 in
   v3aldec_make (loc0, p3t, d3e_def)
@@ -305,7 +314,7 @@ fn f2undec_tr (d2c: f2undec): d3exp = let
         val () = begin
           print "f2undec_tr: s2e_ann = "; print s2e_ann; print_newline ();
           print "f2undec_tr: d2e_def = "; print d2e_def; print_newline ();
-        end
+        end // end of [val]
 *)
       in
         d2exp_tr_dn (d2e_def, s2e_ann)
@@ -350,6 +359,7 @@ fn d2exp_metfn_load
     | D2Elam_met (r, _, _) => !r := d2vs_fun
     | D2Elam_sta (_, _, d2e) => aux (d2e, d2vs_fun)
     | _ => ()
+  // end of [aux]
 in
   aux (d2e0, d2vs_fun)
 end // end of [d2exp_metfn_load]
@@ -399,7 +409,7 @@ fn f2undeclst_tr
         val () = d2var_mastyp_set (d2v_fun, os2e_fun)
       in
         aux_ini (i+1, os2ts0, d2cs, d2vs_fun)
-      end
+      end // end of [cons]
     | nil () => ()
     end // end of [aux_ini]
   val () = // initialization for recursive functions
@@ -430,17 +440,16 @@ fn f2undeclst_tr
         val d3cs = aux_fin (d2cs, d3es_def)
       in
         cons (d3c, d3cs)
-      end
+      end // end of [cons]
     | nil () => let
-        val+ ~list_vt_nil () = d3es_def
-      in
-        nil ()
-      end
+        val+ ~list_vt_nil () = d3es_def in nil ()
+      end // end of [nil]
   val d3es_def = aux d2cs where {
     fun aux {n:nat} (d2cs: list (f2undec, n)): list_vt (d3exp, n) =
       case+ d2cs of
       | cons (d2c, d3cs) => list_vt_cons (f2undec_tr d2c, aux d3cs)
       | nil () => list_vt_nil ()
+    // end of [aux]
   } // end of [where]
 in
   aux_fin (d2cs, d3es_def)
@@ -674,8 +683,9 @@ fun v2ardeclst_tr (d2cs: v2ardeclst): v3ardeclst = let
       (d2cs: v2ardeclst): void = case+ d2cs of
       | cons (d2c, d2cs) => begin
           trans3_env_add_svar (d2c.v2ardec_svar); aux d2cs
-        end
-      | nil () => ()
+        end // end of [cons]
+      | nil () => () // end of [nil]
+    // end of [aux]
   } // end of [where]
 in
   $Lst.list_map_fun (d2cs, v2ardec_tr)
@@ -686,7 +696,7 @@ end // end of [v2ardeclst_tr]
 implement d2ec_tr (d2c0) = let
 (*
   val () = begin
-    prerr "d2ec_tr: d2c0 = ..."; prerr_newline ()
+    print "d2ec_tr: d2c0 = ..."; print_newline ()
   end // end of [val]
 *)
 in
@@ -748,9 +758,8 @@ in
   | D2Cextype (name, s2e_def) => let
 (*
       val () = begin
-        prerr "ats_trans3_dec";
-        prerr ": d2ec_tr: D2Cextype: s2e_def = "; prerr s2e_def;
-        prerr_newline ()
+        print ": d2ec_tr: D2Cextype: s2e_def = "; print s2e_def;
+        print_newline ()
       end // end of [val]
 *)
     in
@@ -796,8 +805,8 @@ in
       val tmpgua = i2mpdec.i2mpdec_tmpgua
 (*
       val () = begin
-        prerr "d2ec_tr: D2Cimpdec: d2c = "; prerr d2c; prerr_newline ()
-      end
+        print "d2ec_tr: D2Cimpdec: d2c = "; print d2c; print_newline ()
+      end // end of [val]
 *)
       val () = trans3_env_push_sta ()
       val () = trans3_env_add_proplstlst (loc_id, tmpgua)
@@ -837,9 +846,8 @@ in
   | D2Cdynload fil => d3ec_dynload (d2c0.d2ec_loc, fil)
 (*
   | _ => begin
-      $Loc.prerr_location d2c0.d2ec_loc;
-      prerr ": d2ec_tr: not implemented yet.";
-      prerr_newline ();
+      prerr_loc_interror d2c0.d2ec_loc;
+      prerr ": d2ec_tr: not implemented yet."; prerr_newline ();
       $Err.abort {d3ec} ()
     end // end of [_]
 *)
@@ -857,8 +865,8 @@ implement c3str_final_get () = let
  val s3is_rev = $Lst.list_vt_reverse_list s3is
 (*
  val () = begin
-   prerr "c3str_final_get: s3is_rev = "; prerr_s3itemlst s3is_rev;
-   prerr_newline ()
+   print "c3str_final_get: s3is_rev = "; print_s3itemlst s3is_rev;
+   print_newline ()
  end // end of [val]
 *)
 in

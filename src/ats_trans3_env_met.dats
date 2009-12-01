@@ -7,33 +7,32 @@
 (***********************************************************************)
 
 (*
- * ATS/Anairiats - Unleashing the Potential of Types!
- *
- * Copyright (C) 2002-2008 Hongwei Xi, Boston University
- *
- * All rights reserved
- *
- * ATS is free software;  you can  redistribute it and/or modify it under
- * the terms of  the GNU GENERAL PUBLIC LICENSE (GPL) as published by the
- * Free Software Foundation; either version 3, or (at  your  option)  any
- * later version.
- * 
- * ATS is distributed in the hope that it will be useful, but WITHOUT ANY
- * WARRANTY; without  even  the  implied  warranty  of MERCHANTABILITY or
- * FITNESS FOR A PARTICULAR PURPOSE.  See the  GNU General Public License
- * for more details.
- * 
- * You  should  have  received  a  copy of the GNU General Public License
- * along  with  ATS;  see the  file COPYING.  If not, please write to the
- * Free Software Foundation,  51 Franklin Street, Fifth Floor, Boston, MA
- * 02110-1301, USA.
- *
- *)
+** ATS/Anairiats - Unleashing the Potential of Types!
+**
+** Copyright (C) 2002-2008 Hongwei Xi, Boston University
+**
+** All rights reserved
+**
+** ATS is free software;  you can  redistribute it and/or modify it under
+** the terms of  the GNU GENERAL PUBLIC LICENSE (GPL) as published by the
+** Free Software Foundation; either version 3, or (at  your  option)  any
+** later version.
+** 
+** ATS is distributed in the hope that it will be useful, but WITHOUT ANY
+** WARRANTY; without  even  the  implied  warranty  of MERCHANTABILITY or
+** FITNESS FOR A PARTICULAR PURPOSE.  See the  GNU General Public License
+** for more details.
+** 
+** You  should  have  received  a  copy of the GNU General Public License
+** along  with  ATS;  see the  file COPYING.  If not, please write to the
+** Free Software Foundation,  51 Franklin Street, Fifth Floor, Boston, MA
+** 02110-1301, USA.
+*)
 
 (* ****** ****** *)
 
-// Time: December 2007
 // Author: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
+// Time: December 2007
 
 (* ****** ****** *)
 
@@ -42,9 +41,7 @@
 (* ****** ****** *)
 
 %{^
-
 #include "ats_counter.cats" /* only needed for [ATS/Geizella] */
-
 %}
 
 (* ****** ****** *)
@@ -127,19 +124,20 @@ implement metric_env_pop (pf | (*none*)) = let
     case+ !p of
     | ~list_vt_cons (_, metbindlst) => (!p := (metbindlst: metbindlst_vt))
     | list_vt_nil () => (fold@ (!p); err := 1)
-  end
+  end // end of [val]
 in
   if err > 0 then begin
-    prerr "Internal Error: metric_env_pop: [the_metbindlst] is empty.";
-    prerr_newline ();
+    prerr "INTERNAL ERROR (ats_trans3_env_met)";
+    prerr ": metric_env_pop: the_metbindlst is empty."; prerr_newline ();
     $Err.abort {void} ()
   end
-end
+end // end of [metric_env_pop]
 
 implement metric_env_push (d2vs, s2es_met) =
   let val (vbox pf | p) = ref_get_view_ptr (the_metbindlst) in
     !p := list_vt_cons (@(d2vs, s2es_met), !p); (unit_v () | ())
-  end 
+  end // end of [let]
+// end of [metric_env_push]
 
 end // end of [local]
 
@@ -154,7 +152,7 @@ implement s2exp_metfn_load (s2e0, d2v0) = let
             s2exp_fun_srt (s2e0.s2exp_srt, fc, lin, s2fe, npf, s2es, s2e)
           )
         | ~None_vt () => None_vt ()
-      end
+      end // end of [S2Efun]
     | S2Emetfn (_(*stampopt*), s2es, s2e) => let
         val () = s2ts := aux s2es where {
           fun aux (s2es: s2explst): s2rtlst = case+ s2es of
@@ -163,18 +161,18 @@ implement s2exp_metfn_load (s2e0, d2v0) = let
         } // end of [where]
       in
         Some_vt (s2exp_metfn (Some (d2var_stamp_get d2v0), s2es, s2e))
-      end
+      end // end of [S2Emetfn]
     | S2Euni (s2vs, s2ps, s2e) => begin case+ aux (s2e, s2ts) of
       | ~Some_vt s2e => Some_vt (s2exp_uni (s2vs, s2ps, s2e))
       | ~None_vt () => None_vt ()
-      end
+      end // end of [S2Euni]
     | _ => None_vt ()
   end // end of [aux]
   var s2ts: s2rtlst = list_nil ()
 in
   case+ aux (s2e0, s2ts) of
   | ~Some_vt s2e => Some_vt @(s2e, s2ts) | ~None_vt () => None_vt ()
-end
+end // end of [s2exp_metfn_load]
 
 (* ****** ****** *)
 

@@ -7,33 +7,32 @@
 (***********************************************************************)
 
 (*
- * ATS/Anairiats - Unleashing the Potential of Types!
- *
- * Copyright (C) 2002-2008 Hongwei Xi, Boston University
- *
- * All rights reserved
- *
- * ATS is free software;  you can  redistribute it and/or modify it under
- * the terms of  the GNU GENERAL PUBLIC LICENSE (GPL) as published by the
- * Free Software Foundation; either version 3, or (at  your  option)  any
- * later version.
- * 
- * ATS is distributed in the hope that it will be useful, but WITHOUT ANY
- * WARRANTY; without  even  the  implied  warranty  of MERCHANTABILITY or
- * FITNESS FOR A PARTICULAR PURPOSE.  See the  GNU General Public License
- * for more details.
- * 
- * You  should  have  received  a  copy of the GNU General Public License
- * along  with  ATS;  see the  file COPYING.  If not, please write to the
- * Free Software Foundation,  51 Franklin Street, Fifth Floor, Boston, MA
- * 02110-1301, USA.
- *
- *)
+** ATS/Anairiats - Unleashing the Potential of Types!
+**
+** Copyright (C) 2002-2008 Hongwei Xi, Boston University
+**
+** All rights reserved
+**
+** ATS is free software;  you can  redistribute it and/or modify it under
+** the terms of  the GNU GENERAL PUBLIC LICENSE (GPL) as published by the
+** Free Software Foundation; either version 3, or (at  your  option)  any
+** later version.
+** 
+** ATS is distributed in the hope that it will be useful, but WITHOUT ANY
+** WARRANTY; without  even  the  implied  warranty  of MERCHANTABILITY or
+** FITNESS FOR A PARTICULAR PURPOSE.  See the  GNU General Public License
+** for more details.
+** 
+** You  should  have  received  a  copy of the GNU General Public License
+** along  with  ATS;  see the  file COPYING.  If not, please write to the
+** Free Software Foundation,  51 Franklin Street, Fifth Floor, Boston, MA
+** 02110-1301, USA.
+*)
 
 (* ****** ****** *)
 
-// Time: December 2007
 // Author: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
+// Time: December 2007
 
 (* ****** ****** *)
 
@@ -124,13 +123,14 @@ implement the_s2cstlst_env_pop (pf | (*none*)) = let
         !p := (s2css: s2cstlstlst_vt)
       end
     | ~list_vt_nil () => (err := 1; !p := list_vt_nil ())
-  end
+  end // end of [val]
   val () = // for reporting an error
     if err > 0 then begin
-      prerr "Internal Error: the_s2cstlst_env_pop: [the_s2cstlstlst] is empty.";
-      prerr_newline ();
+      prerr "INTERNAL ERROR (ats_trans3_env_scst)";
+      prerr ": the_s2cstlst_env_pop: [the_s2cstlstlst] is empty."; prerr_newline ();
       $Err.abort {void} ()
-    end
+    end // end of [if]
+  // end of [val]
 in
   s2cs0
 end // end of [the_s2cstlst_env_pop]
@@ -148,7 +148,7 @@ implement the_s2cstlst_env_pop_and_unbind (pf | (*none*)) = let
         val () = s2cst_def_set (s2c, None ())
       in
         aux s2cs
-      end
+      end // end of [S2CSTLSTcons]
     | S2CSTLSTnil () => ()
   end // end of [aux]
 in

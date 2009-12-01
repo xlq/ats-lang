@@ -242,7 +242,8 @@ implement d2exp_loopexn_tr_up (loc0, i) = let
       end // end of [LMLPloop1]
     | _ => begin
         $Loc.prerr_location loc0;
-        prerr ": Internal Error: d2exp_loopexn_tr_up"; prerr_newline ();
+        prerr ": INTERNAL ERROR (ats_trans3_loop)";
+        prerr ": d2exp_loopexn_tr_up"; prerr_newline ();
         $Err.abort {void} ()
       end // end of [_]
 in
