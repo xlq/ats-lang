@@ -45,9 +45,7 @@
 (* ****** ****** *)
 
 %{^
-
 #include "ats_solver_fm.cats"
-
 %}
 
 (* ****** ****** *)
@@ -61,6 +59,10 @@ staload Lst = "ats_list.sats"
 (* ****** ****** *)
 
 staload "ats_solver_fm.sats"
+
+(* ****** ****** *)
+
+fn prerr_interror () = prerr "INTERNAL ERROR (ats_solver_fm)"
 
 (* ****** ****** *)
 
@@ -98,7 +100,7 @@ implement prerr_intvec (vec, n) = let
 in
   fprint_intvec (file_mode_lte_w_w | !ptr_stderr, vec, n);
   stderr_view_set (pf_stderr | (*none*))
-end
+end // end of [prerr_intvec]
 
 (* ****** ****** *)
 
@@ -459,17 +461,16 @@ implement intvec_absmin_coeff_index_get {n} (vec, n) = let
         let var c0: i0nt = ~vi in aux1 (vec, i-1, i, c0) end
       else aux2 (vec, n, i-1)
     end else begin
-      prerr "Internal Error";
+      prerr_interror ();
       prerr ": intvec_absmin_coeff_index_get: all coefficients are zero: ";
       prerr_newline ();
       prerr "vec = "; prerr (vec, n); prerr_newline ();
       $Err.abort ()
-    end
+    end // end of [if]
   val ind = aux2 (vec, n, n - 1)
 (*
   val () = let
-    val vind = vec.[ind]
-  in
+    val vind = vec.[ind] in
     if vind < ~1 orelse vind > 1 then begin
       print "intvec_absmin_coeff_index_get: vec = ";
       print (vec, n); print_newline ();
@@ -477,8 +478,8 @@ implement intvec_absmin_coeff_index_get {n} (vec, n) = let
       print ind; print_newline ();
       print "intvec_absmin_coeff_index_get: vind = ";
       print_i0nt vind; print_newline ();
-    end
-  end
+    end // end of [if]
+  end // end of [val]
 *)
 in
   ind
@@ -987,77 +988,78 @@ fun aux_main {s:nat} (
           end // end of [if]
         end // end of [1(*eq*)]
       | _ (* knd = ~1(*neq*) *) => let
-            val @(pf1_gc, pf1_arr | p1) = intvecptr_copy (!ivp, n)
-            val () = p1->[0] := pred (p1->[0])
-            val ivp1 = intvecptr_make_view_ptr (pf1_gc, pf1_arr | p1)
-            val ic1 = ICvec (2(*gte*), ivp1)
-            val @(pf2_gc, pf2_arr | p2) = intvecptr_copy (!ivp, n)
-            val () = intvec_negate (!p2, n)
-            val () = p2->[0] := pred (p2->[0])
-            val ivp2 = intvecptr_make_view_ptr (pf2_gc, pf2_arr | p2)
-            val ic2 = ICvec (2(*gte*), ivp2)
-            val () = begin
-              intvecptr_free (!ivp); free@ {n} (!ic)
-            end
-            val ics1: icstrlst n =
-              list_vt_cons (ic1, list_vt_cons (ic2, list_vt_nil ()))
-            val ans = aux_main_disj (stamp, v1ecs, v1ecs_eq, n, !ics_nxt, ics1)
-          in
-            !ic := ICveclst (1(*disj*), ics1); fold@ ics; ans
-          end // end of [neq]
-        end // end of [ICvec]
-      | ICveclst (knd(*conj:0/disj:1*), !ics1) => begin
-          if knd = 0 then let // conjunction
-            val s1 = $Lst.list_vt_length__boxed (!ics1)
-            val () = !ics_nxt := $Lst.list_vt_append (!ics1, !ics_nxt)
-            val ans = aux_main (stamp, v1ecs, v1ecs_eq, n, !ics_nxt)
-            val () = !ics1 := $Lst.list_vt_prefix (!ics_nxt, s1)
-          in
-            fold@ (!ic); fold@ (ics); ans
-          end else let
-            val ans = aux_main_disj (stamp, v1ecs, v1ecs_eq, n, !ics_nxt, !ics1)
-          in
-            fold@ (!ic); fold@ (ics); ans
+          val @(pf1_gc, pf1_arr | p1) = intvecptr_copy (!ivp, n)
+          val () = p1->[0] := pred (p1->[0])
+          val ivp1 = intvecptr_make_view_ptr (pf1_gc, pf1_arr | p1)
+          val ic1 = ICvec (2(*gte*), ivp1)
+          val @(pf2_gc, pf2_arr | p2) = intvecptr_copy (!ivp, n)
+          val () = intvec_negate (!p2, n)
+          val () = p2->[0] := pred (p2->[0])
+          val ivp2 = intvecptr_make_view_ptr (pf2_gc, pf2_arr | p2)
+          val ic2 = ICvec (2(*gte*), ivp2)
+          val () = begin
+            intvecptr_free (!ivp); free@ {n} (!ic)
           end
-        end // end of [ICveclst]
-      end // end of [list_cons]
-    | list_vt_nil () => begin
-        fold@ (ics); 0(*unsolved*)
-      end // end of [list_nil]
-  end // end of [aux]
-
-  and aux_main_disj {s,s1:nat} (
-      stamp: int
-    , v1ecs: &intveclst1 n
-    , v1ecs_eq: &intveclst1 n
-    , n: int n
-    ,ics: &icstrlst (n, s)
-    , ics1: !icstrlst (n, s1)
-    ) : intBtw (~1, 1) = begin case+ ics1 of
-    | list_vt_cons (!ic1, !ics1_nxt) => let
-        val () = v1ecs_eq := INTVECLST1mark v1ecs_eq
-        val () = v1ecs := INTVECLST1mark v1ecs
-        val () = ics := list_vt_cons (!ic1, ics)
-        val ans = aux_main (stamp, v1ecs, v1ecs_eq, n, ics)
-        val+ ~list_vt_cons (ic1_v, ics_v) = ics
-        val () = (!ic1 := ic1_v; ics := ics_v)
-        val () = v1ecs_eq := intveclst1_backtrack v1ecs_eq
-        val () = v1ecs := intveclst1_backtrack v1ecs
-      in
-        if ans >= 0 then begin
-          fold@ ics1; 0 (*unsolved*)
-        end else let // solved and continue
-          val ans = aux_main_disj (stamp, v1ecs, v1ecs_eq, n, ics, !ics1_nxt)
+          val ics1: icstrlst n =
+            list_vt_cons (ic1, list_vt_cons (ic2, list_vt_nil ()))
+          val ans = aux_main_disj (stamp, v1ecs, v1ecs_eq, n, !ics_nxt, ics1)
         in
-          fold@ ics1; ans (*unsolved*)
-        end
-      end
-    | list_vt_nil () => (fold@ ics1; ~1(*solved*))
-  end // end [aux_disj]
-
-  var v1ecs_eq: intveclst1 n = INTVECLST1nil ()
-  var v1ecs: intveclst1 n = INTVECLST1nil ()
-  val ans = aux_main (0(*stamp*), v1ecs, v1ecs_eq, n, ics)
+          !ic := ICveclst (1(*disj*), ics1); fold@ ics; ans
+        end // end of [neq]
+      end // end of [ICvec]
+    | ICveclst (knd(*conj:0/disj:1*), !ics1) => begin
+        if knd = 0 then let // conjunction
+          val s1 = $Lst.list_vt_length__boxed (!ics1)
+          val () = !ics_nxt := $Lst.list_vt_append (!ics1, !ics_nxt)
+          val ans = aux_main (stamp, v1ecs, v1ecs_eq, n, !ics_nxt)
+          val () = !ics1 := $Lst.list_vt_prefix (!ics_nxt, s1)
+        in
+          fold@ (!ic); fold@ (ics); ans
+        end else let
+          val ans = aux_main_disj (stamp, v1ecs, v1ecs_eq, n, !ics_nxt, !ics1)
+        in
+          fold@ (!ic); fold@ (ics); ans
+        end // end of [if]
+      end // end of [ICveclst]
+    end // end of [list_cons]
+  | list_vt_nil () => begin
+      fold@ (ics); 0(*unsolved*)
+    end // end of [list_nil]
+end // end of [aux_main]
+//
+and aux_main_disj {s,s1:nat} (
+    stamp: int
+  , v1ecs: &intveclst1 n
+  , v1ecs_eq: &intveclst1 n
+  , n: int n
+  ,ics: &icstrlst (n, s)
+  , ics1: !icstrlst (n, s1)
+  ) : intBtw (~1, 1) = begin case+ ics1 of
+  | list_vt_cons (!ic1, !ics1_nxt) => let
+      val () = v1ecs_eq := INTVECLST1mark v1ecs_eq
+      val () = v1ecs := INTVECLST1mark v1ecs
+      val () = ics := list_vt_cons (!ic1, ics)
+      val ans = aux_main (stamp, v1ecs, v1ecs_eq, n, ics)
+      val+ ~list_vt_cons (ic1_v, ics_v) = ics
+      val () = (!ic1 := ic1_v; ics := ics_v)
+      val () = v1ecs_eq := intveclst1_backtrack v1ecs_eq
+      val () = v1ecs := intveclst1_backtrack v1ecs
+    in
+      if ans >= 0 then begin
+        fold@ ics1; 0 (*unsolved*)
+      end else let // solved and continue
+        val ans = aux_main_disj (stamp, v1ecs, v1ecs_eq, n, ics, !ics1_nxt)
+      in
+        fold@ ics1; ans (*unsolved*)
+      end // end of [if]
+    end // end of [list_vt_cons]
+  | list_vt_nil () => (fold@ ics1; ~1(*solved*))
+end // end [aux_main_disj]
+//
+var v1ecs_eq: intveclst1 n = INTVECLST1nil ()
+var v1ecs: intveclst1 n = INTVECLST1nil ()
+val ans = aux_main (0(*stamp*), v1ecs, v1ecs_eq, n, ics)
+//
 in
   intveclst1_free v1ecs_eq; intveclst1_free v1ecs; ans
 end // end of [icstrlst_solve]

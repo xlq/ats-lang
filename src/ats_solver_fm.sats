@@ -170,6 +170,7 @@ dataviewtype icstr (int) =
     ICvec (n) of (int(*knd*), intvecptr_t n)
   | {n:pos} {s:nat} (* knd: conj/disj: 0/1 *)
     ICveclst (n) of (int(*knd*), icstrlst (n, s))
+// end of [icstr]
 
 where icstrlst (n:int, s: int) = list_vt (icstr n, s)
 
