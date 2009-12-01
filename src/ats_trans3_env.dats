@@ -41,9 +41,7 @@
 (* ****** ****** *)
 
 %{^
-
 #include "ats_counter.cats" /* only needed for [ATS/Geizella] */
-
 %}
 
 (* ****** ****** *)
@@ -87,6 +85,18 @@ staload _(*anonymous*) = "ats_map_lin.dats"
 
 overload = with $Lab.eq_label_label
 overload prerr with $Loc.prerr_location
+
+(* ****** ****** *)
+
+fn prerr_loc_error3 (loc: loc_t): void =
+  ($Loc.prerr_location loc; prerr ": error(3)")
+// end of [prerr_loc_error3]
+
+fn prerr_interror () = prerr "INTERNAL ERROR (ats_trans3_env)"
+
+fn prerr_loc_interror (loc: loc_t) = begin
+  $Loc.prerr_location loc; prerr ": INTERNAL ERROR (ats_trans3_env)"
+end // end of [prerr_loc_interror]
 
 (* ****** ****** *)
 
@@ -267,8 +277,8 @@ in
       // empty
     end // end of [list_cons]
   | list_nil () => begin
-      prerr "INTERNAL ERROR";
-      prerr ": [ats_trans3_env]: the_s2varbindmap_pop: [s2varbind_svs_lst] is empty.";
+      prerr_interror ();
+      prerr ": the_s2varbindmap_pop: [s2varbind_svs_lst] is empty.";
       prerr_newline ();
       $Err.abort {void} ()
     end // end of [list_nil]
@@ -321,9 +331,9 @@ implement the_s2Varset_env_pop () = let
   end
 in
   if err > 0 then begin
-    prerr "INTERNAL ERROR: the_s2Varset_env_pop"; prerr_newline ();
+    prerr_interror (); prerr ": the_s2Varset_env_pop"; prerr_newline ();
     $Err.abort {void} ()
-  end
+  end // endof [if]
 end // end of [the_s2Varset_env_pop]
 
 implement the_s2Varset_env_push () = let
@@ -402,8 +412,7 @@ in
     | D2VARFINdone () => () // handled by [funarg_varfin_check]
     | D2VARFINnone () => let
         val () = if s2exp_is_linear s2e then begin
-          prerr loc0;
-          prerr ": error(3)";
+          prerr_loc_error3 loc0;
           prerr ": the linear dynamic variable [";
           prerr d2v;
           prerr "] needs to be consumed but it is preserved with the type [";
@@ -419,10 +428,8 @@ in
   | None () => begin case+ d2var_fin_get (d2v) of
     | D2VARFINdone () => () // handled by [funarg_varfin_check]
     | D2VARFINnone () => () | _ => begin
-        prerr loc0;
-        prerr ": error(3)";
-        prerr ": the linear dynamic variable [";
-        prerr d2v;
+        prerr_loc_error3 loc0;
+        prerr ": the linear dynamic variable ["; prerr d2v;
         prerr "] needs to be preserved but it is consumed instead.";
         prerr_newline ();
         $Err.abort {void} ()
@@ -478,10 +485,8 @@ fn the_d2varset_env_get_llam_ld2vs
   (loc0: loc_t): d2varlst = begin case+ !the_ld2vsitems of
   | list_cons (LD2VSITEMllam r, _) => !r
   | _ => begin
-      prerr loc0;
-      prerr ": INTERNAL ERROR";
-      prerr ": [ats_trans3_env]: the_d2varset_env_get_llam_ld2vs";
-      prerr_newline ();
+      prerr_loc_interror loc0;
+      prerr ": the_d2varset_env_get_llam_ld2vs"; prerr_newline ();
       $Err.abort {d2varlst} ()
     end // end of [_]
 end // end of [the_d2varset_env_get_llam_ld2vs]
@@ -510,8 +515,8 @@ implement the_d2varset_env_pop_lam (pf | (*none*)) = let
     | list_nil () => (err := 1)
 in
   if err > 0 then begin
-    prerr "INTERNAL ERROR";
-    prerr ": [ats_trans3_env]: the_d2varset_env_pop_lam"; prerr_newline ();
+    prerr_interror ();
+    prerr ": the_d2varset_env_pop_lam"; prerr_newline ();
     $Err.abort {void} ()
   end
 end // end of [the_d2varset_env_pop_lam]
@@ -541,8 +546,8 @@ implement the_d2varset_env_pop_let (pf | (*none*)) = let
     | list_nil () => (err := 1)
 in
   if err > 0 then begin
-    prerr "INTERNAL ERROR";
-    prerr ": [ats_trans3_env]: the_d2varset_env_pop_let"; prerr_newline ();
+    prerr_interror ();
+    prerr ": the_d2varset_env_pop_let"; prerr_newline ();
     $Err.abort {void} ()
   end // end of [if]
 end // end of [the_d2varset_env_pop_let]
@@ -577,9 +582,8 @@ implement the_d2varset_env_d2var_is_lam_local (d2v) = let
         end
       end
     | list_nil () => begin
-        prerr "INTERNAL ERROR";
-        prerr ": [ats_trans3_env]: d2var_is_lam_local: aux: d2v = ";
-        prerr d2v; prerr_newline ();
+        prerr_interror ();
+        prerr ": d2var_is_lam_local: aux: d2v = "; prerr d2v; prerr_newline ();
         $Err.abort {bool} ()
       end
   end // end of [aux]
@@ -601,11 +605,10 @@ implement the_d2varset_env_d2var_is_llam_local (d2v) = let
         end
       end // end of [list_cons]
     | list_nil () => begin
-        prerr "INTERNAL ERROR";
-        prerr ": [ats_trans3_env]: d2var_is_llam_local: aux: d2v = ";
-        prerr d2v; prerr_newline ();
+        prerr_interror ();
+        prerr ": d2var_is_llam_local: aux: d2v = "; prerr d2v; prerr_newline ();
         $Err.abort {bool} ()
-      end
+      end // end of [list_nil]
   end // end of [aux]
   val ans: bool = d2varset_ismem (!the_ld2vs, d2v)
 (*
@@ -644,10 +647,8 @@ implement the_d2varset_env_check_llam (loc0) = let
     | Some s2e => begin
         if s2exp_is_nonlin s2e then d2var_typ_set (d2v, None ())
         else begin
-          prerr loc0;
-          prerr ": error(3)";
-          prerr ": the linear dynamic variable [";
-          prerr d2v;
+          prerr_loc_error3 loc0;
+          prerr ": the linear dynamic variable ["; prerr d2v;
           prerr "] needs to be consumed but it is preserved with the type [";
           prerr s2e;
           prerr "] instead.";
@@ -1070,9 +1071,8 @@ implement trans3_env_pop_sta () = let
       end // end of [list_vt_nil]
   end) : s3itemlst_vt
   val () = if err > 0 then begin
-    prerr "INTERNAL ERROR";
-    prerr ": [ats_trans3_env]: trans3_env_pop_sta: [the_s3itemlstlst] is empty.";
-    prerr_newline ();
+    prerr_interror ();
+    prerr ": trans3_env_pop_sta: [the_s3itemlstlst] is empty."; prerr_newline ();
     $Err.abort {void} ()
   end // end of [val]
   val (vbox pf | p) = ref_get_view_ptr the_s3itemlst
@@ -1197,8 +1197,7 @@ implement s2qua_instantiate_with_and_add
         val s2t_s2v = s2var_srt_get s2v and s2t_s2e = s2e.s2exp_srt
         val () = // sort-checking
           if s2t_s2e <= s2t_s2v then () else begin
-            prerr loc_arg;
-            prerr ": error(3)";
+            prerr_loc_error3 loc_arg;
             prerr ": the static expression [";
             prerr s2e;
             prerr "] is of sort [";
@@ -1214,15 +1213,13 @@ implement s2qua_instantiate_with_and_add
       end // end of [list_cons, list_cons]
     | (list_nil _, list_nil _) => stasub_nil
     | (list_cons _, list_nil _) => begin
-        prerr loc0;
-        prerr ": error(3)";
+        prerr_loc_error3 loc0;
         prerr ": the static application needs more arguments.";
         prerr_newline ();
         $Err.abort {stasub_t} ()
       end // end of [list_cons, list_nil]
     | (list_nil _, list_cons _) => begin
-        prerr loc0;
-        prerr ": error(3)";
+        prerr_loc_error3 loc0;
         prerr ": the static application needs less arguments.";
         prerr_newline ();
         $Err.abort {stasub_t} ()
@@ -1250,7 +1247,8 @@ implement s2exp_metric_instantiate (loc0, d2vopt, met) = begin
   | Some d2v_stamp => let
       val met_bound = (case+ metric_env_get d2v_stamp of
         | Some s2es => s2es | None () => begin
-            prerr "INTERNAL ERROR: s2exp_metric_instantiate: no metric bound";
+            prerr_interror ();
+            prerr ": s2exp_metric_instantiate: no metric bound";
             prerr_newline ();            
             $Err.abort {s2explst} ()
           end // end of [None]
@@ -1286,10 +1284,8 @@ implement s2exp_exi_instantiate_one (loc0, s2e0) = let
         s2exp_subst (sub, s2e)
       end // end of [S2Eexi]
     | _ => begin
-        prerr loc0;
-        prerr ": error(3)";
-        prerr ": the type [";
-        prerr s2e0;
+        prerr_loc_error3 loc0;
+        prerr ": the type ["; prerr s2e0;
         prerr "] is expected to be existentially quantified.";
         prerr_newline ();
         $Err.abort {s2exp} ()
@@ -1306,10 +1302,8 @@ implement s2exp_exi_instantiate_seq (loc0, s2e0, loc_arg, s2es0) = let
         s2exp_subst (sub, s2e)
       end // end of [S2Eexi]
     | _ => begin
-        prerr loc0;
-        prerr ": error(3)";
-        prerr ": the type [";
-        prerr s2e0;
+        prerr_loc_error3 loc0;
+        prerr ": the type ["; prerr s2e0;
         prerr "] is expected to be existentially quantified.";
         prerr_newline ();
         $Err.abort {s2exp} ()
@@ -1370,10 +1364,8 @@ implement funarg_varfin_check (loc0) = let
 in
   case+ the_lamloop_env_arg_get loc0 of
   | ~Some_vt p3ts => auxpatlst (loc0, p3ts) | ~None_vt () => begin
-      prerr loc0;
-      prerr ": INTERNAL ERROR";
-      prerr ": [ats_trans3_env]: funarg_varfin_check: no argument(s).";
-      prerr_newline ();
+      prerr_loc_interror loc0;
+      prerr ": funarg_varfin_check: no argument(s)."; prerr_newline ();
       $Err.abort {void} ()
     end // end of [None_vt]
 end (* end of [funarg_varfin_check] *)
@@ -1396,10 +1388,8 @@ implement s2exp_wth_instantiate (loc0, s2e0) = let
       | P3Tvar (_(*refknd*), d2v) => d2v
       | P3Tas (_(*refknd*), d2v, _(*p2at*)) => d2v
       | _ => begin
-          prerr loc0;
-          prerr ": INTERNAL ERROR";
-          prerr ": [ats_trans3_env]: s2exp_wth_instantiate: aux: p3t = ";
-          prerr p3t;
+          prerr_loc_interror loc0;
+          prerr ": s2exp_wth_instantiate: aux: p3t = "; prerr p3t;
           prerr_newline ();
           $Err.abort {d2var_t} ()
         end // end of [_]
@@ -1451,10 +1441,8 @@ in
       val p3ts = (
         case+ the_lamloop_env_arg_get (loc0) of
         | ~Some_vt p3ts => p3ts | ~None_vt () => begin
-            prerr loc0;
-            prerr ": INTERNAL ERROR";
-            prerr ": [ats_trans3_env]: s2exp_wth_instantiate";
-            prerr_newline ();
+            prerr_loc_interror loc0;
+            prerr ": s2exp_wth_instantiate"; prerr_newline ();
             $Err.abort {p3atlst} ()
           end // end of [None_vt]
       ) : p3atlst
@@ -1490,10 +1478,8 @@ implement s2exp_uni_instantiate_one (loc0, s2e0) = let
         s2exp_subst (sub, s2e)
       end // end of [S2Euni]
     | _ => begin
-        prerr loc0;
-        prerr ": error(3)";
-        prerr ": the type [";
-        prerr s2e0;
+        prerr_loc_error3 loc0;
+        prerr ": the type ["; prerr s2e0;
         prerr "] is expected to be universally quantified.";
         prerr_newline ();
         $Err.abort {s2exp} ()
@@ -1510,10 +1496,8 @@ implement s2exp_uni_instantiate_seq (loc0, s2e0, loc_arg, s2es0) = let
         s2exp_subst (sub, s2e)
       end // end of [S2Euni]
     | _ => begin
-        prerr loc0;
-        prerr ": error(3)";
-        prerr ": the type [";
-        prerr s2e0;
+        prerr_loc_error3 loc0;
+        prerr ": the type ["; prerr s2e0;
         prerr "] is expected to be universally quantified.";
         prerr_newline ();
         $Err.abort {s2exp} ()
@@ -1575,8 +1559,7 @@ implement s2exp_template_instantiate (loc0, s2vpss, ts2ess, s2e) = let
           aux2 (loc0, list_cons (sub, subs), s2vpss, ts2ess, s2e)
         end // end of [list_cons]
       | list_nil () => begin
-          prerr loc0;
-          prerr ": error(3)";
+          prerr_loc_error3 loc0;
           $Deb.debug_prerrf (": %s: s2exp_template_instantiate", @(THISFILENAME));
           prerr ": too many template arguments are given.";
           prerr_newline ();
@@ -1681,9 +1664,8 @@ implement trans3_env_hypo_add_p2atcst (loc0, p2tc, s2e0) =
             case+ s2e_d2c.s2exp_node of
             | S2Efun (_, _, _, _, s2es, s2e) => @(s2es, s2e)
             | _ => begin
-                prerr "INTERNAL ERROR";
-                prerr ": [ats_trans3_env]: tran3_env_hypo_add_p2atcst: P2TCcon";
-                prerr_newline ();
+                prerr_interror ();
+                prerr ": tran3_env_hypo_add_p2atcst: P2TCcon"; prerr_newline ();
                 $Err.abort {@(s2explst, s2exp)} ()
               end // end of [_]
           ) : @(s2explst, s2exp)
@@ -1760,9 +1742,8 @@ implement trans3_env_hypo_add_p2atcstlst (loc0, p2tcs, s2es) = let
   val err = aux (loc0, p2tcs, s2es)
 in
   if err > 0 then begin
-    prerr loc0;
-    prerr ": INTERNAL ERROR: trans3_env_hypo_add_p2atcstlst";
-    prerr_newline ();
+    prerr_loc_interror loc0;
+    prerr ": trans3_env_hypo_add_p2atcstlst"; prerr_newline ();
     $Err.abort {void} ()
   end // end of [if]
 end // end of [trans3_env_hypo_add_p2atcstlst]
@@ -1784,9 +1765,8 @@ implement trans3_env_hypo_add_labp2atcstlst (loc0, lp2tcs, ls2es) = let
   val err = aux (loc0, lp2tcs, ls2es)
 in
   if err > 0 then begin
-    prerr loc0;
-    prerr ": INTERNAL ERROR: trans3_env_hypo_add_labp2atcstlst";
-    prerr_newline ();
+    prerr_loc_interror loc0;
+    prerr ": trans3_env_hypo_add_labp2atcstlst"; prerr_newline ();
     $Err.abort {void} ()
   end // end of [if]
 end // end of [trans3_env_hypo_add_labp2atcstlst]

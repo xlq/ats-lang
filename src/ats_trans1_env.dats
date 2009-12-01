@@ -58,12 +58,12 @@ staload _(*anonymous*) = "ats_symenv.dats"
 
 (* ****** ******* *)
 
-#define THIS_FILE "ats_trans1_env.dats"
+typedef sym_t = $Sym.symbol_t
+typedef symenv_t (itm:t@ype) = $SymEnv.symenv_t itm
 
 (* ****** ******* *)
 
-typedef sym_t = $Sym.symbol_t
-typedef symenv_t (itm:t@ype) = $SymEnv.symenv_t itm
+fn prerr_interror () = prerr "INTERNAL ERROR (ats_trans1_env)"
 
 (* ****** ******* *)
 
@@ -74,7 +74,7 @@ val the_e1xpenv = $SymEnv.symenv_make {e1xp} ()
 implement the_e1xpenv_add (opr, e1xp) = let
 (*
   val () = begin
-    prerr "e1xp_add: opr = "; prerr opr; prerr_newline ()
+    print "e1xp_add: opr = "; print opr; print_newline ()
   end // end of [val]
 *)
 in
@@ -84,7 +84,7 @@ end // end of [the_e1xpenv_add]
 implement the_e1xpenv_find (opr) = let
 (*
   val () = begin
-    prerr "e1xp_find: opr = "; prerr opr; prerr_newline ()
+    print "e1xp_find: opr = "; print opr; print_newline ()
   end // end of [val]
 *)
 in
@@ -124,7 +124,7 @@ end // end of [fxtyenv_pervasive_add_topenv]
 
 (* ****** ****** *)
 
-implement ats_fxtyenv_prerr () = let
+implement ats_fxtyenv_print () = let
   val r_m = $SymEnv.symenv_reftop_get the_fxtyenv
   val kis = $SymEnv.symmap_reflist_get (r_m)
   typedef ki = @(sym_t, fxty_t)
@@ -132,8 +132,8 @@ implement ats_fxtyenv_prerr () = let
     (kis: list_vt (ki, n)): void = begin case+ kis of
     | ~list_vt_cons (ki, kis) => let
         val (k, i) = ki; val () = begin
-          $Sym.prerr_symbol_code k; prerr " = "; $Fix.prerr_fxty i;
-          prerr_newline ()
+          $Sym.print_symbol_code k; print " = "; $Fix.print_fxty i;
+          print_newline ()
         end // end of [val]
       in
         loop (kis)
@@ -142,7 +142,7 @@ implement ats_fxtyenv_prerr () = let
   end (* end of [loop] *)
 in
   loop kis
-end // end of [ats_fxtyenv_prerr]
+end // end of [ats_fxtyenv_print]
 
 (* ****** ****** *)
 
@@ -213,10 +213,8 @@ implement staload_file_insert (fullname, d1cs) = let
 in
   case+ ans of
   | ~Some_vt (d1c) => begin
-      prerr "Internal Error: ";
-      prerr THIS_FILE;
-      prerr ": [staload_file_insert] failed.";
-      prerr_newline ();
+      prerr_interror ();
+      prerr ": [staload_file_insert] failed."; prerr_newline ();
       exit {void} (1)
     end // end of [Some_vt]
   | ~None_vt () => ()

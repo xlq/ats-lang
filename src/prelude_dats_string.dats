@@ -52,7 +52,7 @@ _string_alloc (const ats_size_type n) {
   p = ATS_MALLOC(n+1); p[n] = '\000'; return p ;
 } // end of [_string_alloc]
 
-%}
+%} // end of [%{^]
 
 (* ****** ****** *)
 
@@ -111,7 +111,7 @@ atspre_string_hash_33 (ats_ptr_type s0) {
   }
 } /* end of [atspre_string_hash] */
 
-%}
+%} // end of [%{$]
 
 (* ****** ****** *)
 
@@ -128,7 +128,7 @@ atspre_string_make_substring
   return des ;
 } /* atspre_string_make_substring */
 
-%}
+%} // end of [%{$]
 
 (* ****** ****** *)
 

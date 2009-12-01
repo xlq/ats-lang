@@ -31,8 +31,8 @@
 
 (* ****** ****** *)
 
-// Time: January 2008
 // Author: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
+// Time: January 2008
 
 (* ****** ****** *)
 
@@ -58,6 +58,18 @@ overload prerr with $Loc.prerr_location
 
 (* ****** ****** *)
 
+fn prerr_loc_error3 (loc: loc_t): void =
+  ($Loc.prerr_location loc; prerr ": error(3)")
+// end of [prerr_loc_error3]
+
+fn prerr_interror () = prerr "INTERNAL ERROR (ats_trans3_view)"
+
+fn prerr_loc_interror (loc: loc_t) = begin
+  $Loc.prerr_location loc; prerr ": INTERNAL ERROR (ats_trans3_view)"
+end // end of [prerr_loc_interror]
+
+(* ****** ****** *)
+
 implement s2exp_addr_viewat_slablst_try (loc0, s2e0_addr, s2ls0) = let
   val (s2r0, s2ls0_ft) = s2exp_addr_normalize s2e0_addr
   val s2ls0 = $Lst.list_append (s2ls0_ft, s2ls0)
@@ -77,8 +89,7 @@ in
         | list_nil () => ()
       // end of [aux]
     in
-      prerr loc0;
-      prerr ": error(3)";
+      prerr_loc_error3 loc0;
       prerr ": there is no view at ["; prerr s2r0; aux s2ls0; prerr "]";
       prerr_newline ();
       $Err.abort ()
@@ -115,8 +126,7 @@ in
         | list_cons (s2l, s2ls) => (prerr "."; prerr s2l; aux s2ls)
         | list_nil () => ()
     in
-      prerr loc0;
-      prerr ": error(3)";
+      prerr_loc_error3 loc0;
       prerr ": there is no view at ["; prerr s2r0; aux s2ls0; prerr "]";
       prerr_newline ();
       $Err.abort ()
@@ -132,11 +142,9 @@ implement s2exp_addr_viewat_slablst_set
     case+ un_s2exp_at_viewt0ype_addr_view s2e_new_at of
     | ~Some_vt (s2ts2a) => s2ts2a
     | ~None_vt () => begin
-        prerr loc0;
-        prerr ": error(3)";
+        prerr_loc_error3 loc0;
         prerr ": the view ["; prerr s2e_new_at;
-        prerr "] is expected to be an @-view";
-        prerr_newline ();
+        prerr "] is expected to be an @-view"; prerr_newline ();
         $Err.abort ()
       end
   val (s2r0, s2ls0_ft) = s2exp_addr_normalize s2e0_addr
@@ -154,8 +162,7 @@ in
       val () = trans3_env_add_proplst (loc0, cstr)
       val () = 
         if s2exp_syneq (s2e_addr, s2e_new_addr) then () else begin
-          prerr loc0;
-          prerr ": error(3)";
+          prerr_loc_error3 loc0;
           prerr ": address mismatch for @-view assignment: [";
           prerr s2e_addr; prerr "] <> [";
           prerr_s2exp s2e_new_addr; prerr "].";
@@ -171,8 +178,7 @@ in
       s2ls0_bk
     end // end of [Some_vt]
   | ~None_vt () => begin
-      prerr loc0;
-      prerr ": error(3)";
+      prerr_loc_error3 loc0;
       prerr ": the @-view associated with the location [";
       prerr s2r0; prerr "] cannot be found."; prerr_newline ();
       $Err.abort {s2lablst} ()
@@ -194,11 +200,9 @@ fn d2var_view_viewat_slablst_set_main
     case+ un_s2exp_at_viewt0ype_addr_view s2e_new_at of
     | ~Some_vt s2ts2a => s2ts2a
     | ~None_vt () => begin
-        prerr loc0;
-        prerr ": error(3)";
+        prerr_loc_error3 loc0;
         prerr ": the view ["; prerr s2e_new_at;
-        prerr "] is expected to be an @-view";
-        prerr_newline ();
+        prerr "] is expected to be an @-view"; prerr_newline ();
         $Err.abort {@(s2exp, s2exp)} ()
       end
   var cstr: s2explst = list_nil ()
@@ -208,12 +212,10 @@ fn d2var_view_viewat_slablst_set_main
   val () = trans3_env_add_proplst (loc0, cstr)
   val () = 
     if s2exp_syneq (s2e_addr, s2e_new_addr) then () else begin
-      prerr loc0;
-      prerr ": error(3)";
+      prerr_loc_error3 loc0;
       prerr ": address mismatch for @-view restoration: [";
       prerr s2e_addr; prerr "] <> [";
-      prerr_s2exp s2e_new_addr; prerr "].";
-      prerr_newline ();
+      prerr_s2exp s2e_new_addr; prerr "]."; prerr_newline ();
       $Err.abort {void} ()
     end
   val () = d2var_typ_reset_at (d2v_view, s2e0, s2e0_addr)
@@ -232,14 +234,12 @@ fn d2var_view_viewat_slablst_set
           (loc0, d2v_view, s2ts2a.0, s2ts2a.1, s2ls, s2e_new_at)
       end // end of [Some_vt]
     | ~None_vt () => begin
-        prerr loc0;
-        prerr ": error(3)";
+        prerr_loc_error3 loc0;
         prerr ": the view of ["; prerr d2v_view;
         prerr "] is expected to be an @-view but it is [";
-        prerr s2e_at; prerr "] instead.";
-        prerr_newline ();
+        prerr s2e_at; prerr "] instead."; prerr_newline ();
         $Err.abort ()
-      end
+      end // end of [None_vt]
     end // end [Some]
   | None () => let
       val s2e0 = s2exp_void_t0ype ()
@@ -268,13 +268,12 @@ fun s2lab0lst_of_d3lab1lst {n:nat} .<n>.
 implement d3exp_lval_typ_set (loc0, refval, d3e0, s2e_new, err) = let
 (*
   val () = begin
-    prerr "d3exp_lval_typ_set: d3e0 = "; print d3e0; print_newline ()
+    print "d3exp_lval_typ_set: d3e0 = "; print d3e0; print_newline ()
   end // end of [val]
 *)
   fn refval_check (loc0: loc_t, d2v: d2var_t, refval: int): void = 
     if refval > 1 then begin
-      prerr loc0;
-      prerr ": error(3)";
+      prerr_loc_error3 loc0;
       prerr ": the dynamic variable ["; prerr d2v;
       prerr "] is required to be mutable in order to support call-by-reference.";
       $Err.abort {void} ()
@@ -295,9 +294,8 @@ in
         (* empty *)
       end // end of [Some_vt]
     | ~None_vt () => begin
-        prerr loc0;
-        prerr ": Internal Error: d3exp_lval_typ_set: D3Esel_ptr";
-        prerr_newline ();
+        prerr_loc_interror loc0;
+        prerr ": d3exp_lval_typ_set: D3Esel_ptr"; prerr_newline ();
         $Err.abort {void} ()
       end // end of [None_vt]
     end // end of [D3Esel_ptr]
@@ -374,8 +372,7 @@ implement d3exp_lval_typ_set_arg (refval, d3e0, s2e_new) = let
     | _ when s2exp_fun_is_freeptr s2e_new => (freeknd := 1)
       // end of [_ when ...]
     | _ (*flag > 0*) => begin
-        prerr loc0;
-        prerr ": error(3)";
+        prerr_loc_error3 loc0;
         prerr ": the dynamic expression needs to be a left-value but it is not.";
         prerr_newline ();
         $Err.abort {void} ()
@@ -392,14 +389,13 @@ implement d3exp_lval_typ_set_pat (d3e0, p3t) = begin
       val () = d3exp_lval_typ_set (loc0, 0(*val*), d3e0, s2e, err)
     in
       if err > 0 then begin
-        prerr loc0;
-        prerr ": error(3)";
+        prerr_loc_error3 loc0;
         prerr ": the dynamic expression needs to be a left-value but it is not.";
         prerr_newline ();
         $Err.abort {void} ()
       end // end of [if]
     end // end of [Some]
-  | None () => ()
+  | None () => () // end of [None]
 end // end of [d3exp_lval_typ_set_pat]
 
 (* ****** ****** *)

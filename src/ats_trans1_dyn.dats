@@ -101,6 +101,10 @@ fn prerr_loc_error1 (loc: loc_t): void =
   ($Loc.prerr_location loc; prerr ": error(1)")
 // end of [prerr_loc_error1]
 
+fn prerr_loc_interror (loc: loc_t) = begin
+  $Loc.prerr_location loc; prerr ": INTERNAL ERROR (ats_trans1_dyn)"
+end // end of [prerr_loc_interror]
+
 (* ****** ****** *)
 
 typedef efc = $Eff.effcst
@@ -143,7 +147,7 @@ fun aux2
             s1exp_imp (loc_res, fc, 0, 0, None ())
           end else begin
             s1exp_imp (loc_res, fc, lin, prf, oefc)
-          end
+          end // end of [if]
         ) : s1exp
       in
         lst := lst + 1; s1exp_app (loc, imp, loc, '[s1e_arg, s1e_res])
@@ -160,7 +164,7 @@ fun aux2
             s1exp_imp (loc_res, fc, 0, 0, None ())
           end else begin
             s1exp_imp (loc_res, fc, lin, prf, oefc)
-          end
+          end // end of [if]
       in
         lst := lst + 1; s1exp_app (loc, imp, loc, '[s1es_arg, s1e_res])
       end // end of [D0ARGdyn2]
@@ -199,15 +203,15 @@ fn aux3 (
         val (fc1, lin1, prf1, efc1) = $Eff.e0fftaglst_tr (fc, tags)
       in
         fc := fc1; lin := lin1; prf := prf + prf1; oefc := Some efc1
-      end
+      end // end of [Some]
     | None () => ()
   // end of [val]
   val () = case+ fc of
     | $Syn.FUNCLOclo knd => begin
         if knd <> CLOREF then let
           val () = if knd = 0 then begin
-            $Loc.prerr_location loc0;
-            prerr ": INTERNAL ERROR: a closure at the toplevel"
+            prerr_loc_error1 (loc0);
+            prerr ": a closure at the toplevel"
           end // end of [val]
           val () = if knd = 1 then begin
             prerr_loc_error1 (loc0);
@@ -282,7 +286,7 @@ fn f (p1t1: p1at, p1t2: p1at):<cloref1> p1atitm = let
 (*
     val () = begin
       print "p1atitm_app: f: p1t_app = "; print p1t_app; print_newline ()
-    end
+    end // end of [val]
 *)
   in
     $Fix.ITEMatm p1t_app
@@ -320,8 +324,7 @@ fn s0vararg_tr (s0a: s0vararg): s1vararg =
 
 fn p0at_tr_errmsg_opr (loc: loc_t): p1at = begin
   prerr_loc_error1 loc;
-  prerr ": the operator needs to be applied";
-  prerr_newline ();
+  prerr ": the operator needs to be applied"; prerr_newline ();
   $Err.abort {p1at} ()
 end // end of [p0at_tr_errmsg_opr]
 
@@ -343,7 +346,7 @@ fun aux_item (p0t0: p0at): p1atitm = let
       end // end of [P0Tapp]
     | P0Tas (id, p0t) => begin
         $Fix.ITEMatm (p1at_as (loc, id, p0at_tr p0t))
-      end
+      end // end of [P0Tas]
     | P0Tchar c(*char*) => $Fix.ITEMatm (p1at_char (loc, c))
     | P0Texist (s0as) => let
         val s1as = s0arglst_tr s0as
@@ -364,14 +367,14 @@ fun aux_item (p0t0: p0at): p1atitm = let
       end
     | P0Tide id when id = $Sym.symbol_BACKSLASH => begin
         p1atitm_backslash
-      end
+      end // end of [P0Tide when ...]
     | P0Tide id => let
         val p1t = p1at_ide (loc, id)
       in
         case+ the_fxtyenv_find id of
         | ~Some_vt f => p1at_make_opr (p1t, f)
         | ~None_vt () => $Fix.ITEMatm p1t
-      end
+      end // end of [P0Tide]
     | P0Tint (str) => begin
         $Fix.ITEMatm (p1at_int (loc, str))
       end
@@ -420,7 +423,7 @@ fun aux_item (p0t0: p0at): p1atitm = let
       end // end of [P0Ttup2]
 (*
     | _ => begin
-        prerr_loc_error1 p0t0.p0at_loc;
+        prerr_loc_interror p0t0.p0at_loc;
         prerr ": p0at_tr: not available yet"; prerr_newline ();
         $Err.abort {p1atitm} ()
       end // end of [_]
@@ -450,7 +453,7 @@ implement p0atlst_tr p0ts = $Lst.list_map_fun (p0ts, p0at_tr)
 implement labp0atlst_tr (lp0ts) = case+ lp0ts of
   | LABP0ATLSTcons (l, p0t, lp0ts) => begin
       LABP1ATLSTcons (l, p0at_tr p0t, labp0atlst_tr lp0ts)
-    end
+    end // end of [LABP0ATLSTcons]
   | LABP0ATLSTnil () => LABP1ATLSTnil ()
   | LABP0ATLSTdot () => LABP1ATLSTdot ()
 // end of [labp0atlst_tr]
@@ -469,7 +472,7 @@ fn f (d1e1: d1exp, d1e2: d1exp):<cloref1> d1expitm = let
   val d1e_app = begin case+ d1e2.d1exp_node of
     | D1Elist (npf, d1es) => begin
         d1exp_app_dyn (loc, d1e1, d1e2.d1exp_loc, npf, d1es)
-      end
+      end // end of [D1Elist]
     | D1Esexparg s1a => begin case+ d1e1.d1exp_node of
       | D1Eapp_sta (d1e1, s1as) => begin
           d1exp_app_sta (loc, d1e1, $Lst.list_extend (s1as, s1a))
@@ -523,18 +526,17 @@ fn s0exparg_tr (loc: loc_t, s0a: s0exparg): s1exparg =
 fn s0expdarg_tr (d0e: d0exp): s1exparg = let
   val d1e = d0exp_tr d0e in case+ d1e.d1exp_node of
     | D1Esexparg s1a => s1a | _ => begin
-        $Loc.prerr_location d0e.d0exp_loc;
-        prerr ": INTERNAL ERROR: d0exp_tr: D0Efoldat";
-        prerr_newline ();
+        prerr_loc_interror d0e.d0exp_loc;
+        prerr ": d0exp_tr: D0Efoldat"; prerr_newline ();
         $Err.abort {s1exparg} ()
       end // end of [_]
 end // end of [s0expdarg_tr]
 
-fun s0expdarglst_tr (d0es: d0explst): s1exparglst = begin
-  case+ d0es of
+fun s0expdarglst_tr
+  (d0es: d0explst): s1exparglst = case+ d0es of
   | cons (d0e, d0es) => cons (s0expdarg_tr d0e, s0expdarglst_tr d0es)
   | nil () => nil ()
-end // end of [s0expdarglst_tr]
+// end of [s0expdarglst_tr]
 
 (* ****** ****** *)
 
@@ -655,7 +657,7 @@ implement d0exp_lams_dyn_tr
       in
         d1exp_ann_type (loc, d1e_body, s1e)
       end // end of [Some]
-    | None () => d1e_body
+    | None () => d1e_body // end of [None]
   ) : d1exp
 //
   val d1e_body = (case+ oefc of
@@ -691,7 +693,7 @@ fn termination_metric_check
         $Err.abort ()
       end // end of [if]
     end // end of [Some]
-  | None () => ()
+  | None () => () // end of [None]
 // end of [termination_metric_check]
 
 (* ****** ****** *)
@@ -1182,7 +1184,7 @@ fun aux_item (d0e0: d0exp): d1expitm = let
     end // end of [D0Ewhile]
 (*
    | _ => begin
-      prerr_loc_error1 d0e0.d0exp_loc;
+      prerr_loc_interror d0e0.d0exp_loc;
       prerr ": d0exp_tr: not available yet"; prerr_newline ();
       $Err.abort {d1expitm} ()
     end // end of [_]
@@ -1262,8 +1264,8 @@ implement m0thdec_tr (mtd) = case+ mtd of
       ) : d1expopt
 (*
       val () = begin
-        prerr "m0thdec_tr: M0THDECmtd: sym = "; prerr sym; prerr_newline ();
-        prerr "m0thdec_tr: M0THDECmtd: def_dummy = "; prerr def_dummy; prerr_newline ()
+        print "m0thdec_tr: M0THDECmtd: sym = "; print sym; print_newline ();
+        print "m0thdec_tr: M0THDECmtd: def_dummy = "; print def_dummy; print_newline ()
       end // end of [val]
 *)
     in
@@ -1606,7 +1608,7 @@ implement d0ec_tr d0c0 = begin
       val e1xp = e0xp_tr e0xp
 (*
       val () = begin
-        prerr "d0ec_tr: D0Ce0xpact: e1xp = "; prerr e1xp; prerr_newline ()
+        print "d0ec_tr: D0Ce0xpact: e1xp = "; print e1xp; print_newline ()
       end // end of [val]
 *)
       val v1al = e1xp_eval e1xp
@@ -1790,9 +1792,8 @@ implement d0ec_tr d0c0 = begin
     end // end of [D0Cinclude]
 (*
   | _ => begin
-      prerr_loc_error1 d0c0.d0ec_loc;
-      $Deb.debug_prerrf (": %s: d0ec_tr", @(THISFILENAME));
-      prerr ": not available yet.\n";
+      prerr_loc_interror d0c0.d0ec_loc;
+      prerr ": not available yet."; prerr_newline ();
       $Err.abort {d1ec} ()
     end // end of [_]
 *)

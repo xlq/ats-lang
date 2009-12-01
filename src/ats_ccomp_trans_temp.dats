@@ -94,9 +94,9 @@ extern fun the_stactx_pop (pf: stactx_token_v | (*none*)): void
 (* ****** ****** *)
 
 fn prerr_interror () = prerr "INTERNAL ERROR (ats_ccomp_trans_temp)"
-fn prerr_interror_loc (loc: loc_t) = begin
+fn prerr_loc_interror (loc: loc_t) = begin
   $Loc.prerr_location loc; prerr ": INTERNAL ERROR (ats_ccomp_trans_temp)"
-end // end of [prerr_interror_loc]
+end // end of [prerr_loc_interror]
 
 (* ****** ****** *)
 
@@ -382,7 +382,7 @@ implement ccomp_tmpdef
         ccomp_exp_arg_body_funlab (loc_fun, prolog, hips_arg, hie_body, fl)
       end // end of [HIElam]
     | _ => begin
-        prerr_interror_loc (loc_fun);
+        prerr_loc_interror (loc_fun);
         prerr ": ccomp_tmpdef: hie = "; prerr_hiexp hie; prerr_newline ();
         $Err.abort {funentry_t} ()
       end // end of [_]

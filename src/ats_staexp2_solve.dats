@@ -37,9 +37,7 @@
 (* ****** ****** *)
 
 %{^
-
 #include "ats_counter.cats" /* only needed for [ATS/Geizella] */
-
 %}
 
 (* ****** ****** *)
@@ -89,6 +87,10 @@ overload prerr with $Loc.prerr_location
 fn prerr_loc_error3 (loc: loc_t): void =
   ($Loc.prerr_location loc; prerr ": error(3)")
 // end of [prerr_loc_error3]
+
+fn prerr_loc_interror (loc: loc_t) = begin
+  $Loc.prerr_location loc; prerr ": INTERNAL ERROR (ats_staexp2_solve)"
+end // end of [prerr_loc_interror]
 
 (* ****** ****** *)
 
@@ -326,9 +328,9 @@ implement s2exp_equal_solve_err (loc0, s2e10, s2e20, err) = let
   val s2e10 = s2exp_whnf s2e10 and s2e20 = s2exp_whnf s2e20
 (*
   val () = begin
-    prerr "s2exp_equal_solve_err: s2e10 = "; prerr s2e10; prerr_newline ();
-    prerr "s2exp_equal_solve_err: s2e20 = "; prerr s2e20; prerr_newline ();
-    prerr "s2exp_equal_solve_err: err = "; prerr err; prerr_newline ();
+    print "s2exp_equal_solve_err: s2e10 = "; print s2e10; print_newline ();
+    print "s2exp_equal_solve_err: s2e20 = "; print s2e20; print_newline ();
+    print "s2exp_equal_solve_err: err = "; print err; print_newline ();
   end // end of [val]
 *)
 //
@@ -522,9 +524,9 @@ implement
   val s2e10 = s2exp_whnf s2e10 and s2e20 = s2exp_whnf s2e20
 (*
   val () = begin
-    prerr "s2exp_tyleq_solve_err: s2e10 = "; prerr s2e10; prerr_newline ();
-    prerr "s2exp_tyleq_solve_err: s2e20 = "; prerr s2e20; prerr_newline ();
-    prerr "s2exp_tyleq_solve_err: err = "; prerr err; prerr_newline ();
+    print "s2exp_tyleq_solve_err: s2e10 = "; print s2e10; print_newline ();
+    print "s2exp_tyleq_solve_err: s2e20 = "; print s2e20; print_newline ();
+    print "s2exp_tyleq_solve_err: err = "; print err; print_newline ();
   end // end of [val]
 *)
 //
@@ -716,8 +718,8 @@ implement
     | S2Etyrec (knd2, npf2, ls2es2) => () where {
 (*
         val () = begin
-          prerr "ls2es1 = "; prerr ls2es1; prerr_newline ();
-          prerr "ls2es2 = "; prerr ls2es2; prerr_newline ();
+          print "ls2es1 = "; print ls2es1; print_newline ();
+          print "ls2es2 = "; print ls2es2; print_newline ();
         end // end of [val]
 *)
         val () = tyreckind_equal_solve_err (loc0, knd1, knd2, err)
@@ -811,9 +813,8 @@ implement s2explst_tyleq_solve_argvarlst_err
         s2explst_tyleq_solve_argvarlst_err (loc0, s2es1, s2es2, argvarlst, err)
       end // end of [::, ::]
     | (_, _) => begin
-        prerr loc0;
-        prerr ": Internal Error: s2explst_tyleq_solve_argvarlst_err";
-        prerr_newline ();
+        prerr_loc_interror loc0;
+        prerr ": s2explst_tyleq_solve_argvarlst_err"; prerr_newline ();
         $Err.abort {void} ()        
       end // end of [_, _]
     end // end of [case]
@@ -881,9 +882,9 @@ end // end of [s2eff_leq_solve]
 implement s2eff_leq_solve_err (loc0, s2fe1, s2fe2, err) = let
 (*
   val () = begin
-    prerr "s2eff_leq_solve_err: s2fe1 = "; prerr s2fe1; prerr_newline ();
-    prerr "s2eff_leq_solve_err: s2fe2 = "; prerr s2fe2; prerr_newline ();
-  end
+    print "s2eff_leq_solve_err: s2fe1 = "; print s2fe1; print_newline ();
+    print "s2eff_leq_solve_err: s2fe2 = "; print s2fe2; print_newline ();
+  end // end of [val]
 *)
   val ans = (case+ s2fe2 of
     | S2EFFset (effs, s2es2) => begin case+ s2es2 of
@@ -937,19 +938,19 @@ fun s2exp_tyleq_solve_ubs_err
 implement s2exp_equal_solve_Var_err (loc0, s2V1, s2e1, s2e2, err) = let
 (*
   val () = begin
-    prerr "s2exp_equal_solve_Var_err: s2V1 = "; prerr s2V1; prerr_newline ();
-    prerr "s2exp_equal_solve_Var_err: s2e2 = "; prerr s2e2; prerr_newline ();
-    prerr "s2exp_equal_solve_Var_err: err = "; prerr err; prerr_newline ();
-  end
+    print "s2exp_equal_solve_Var_err: s2V1 = "; print s2V1; print_newline ();
+    print "s2exp_equal_solve_Var_err: s2e2 = "; print s2e2; print_newline ();
+    print "s2exp_equal_solve_Var_err: err = "; print err; print_newline ();
+  end // end of [val]
 *)
   var s2cs: s2cstlst = S2CSTLSTnil () and s2vs: s2varlst = list_nil ()
   val ans = s2Var_s2exp_occurs (s2V1, s2e2, s2cs, s2vs)
 (*
   val () = begin
-    prerr "s2exp_equal_solve_Var_err: ans = "; prerr ans; prerr_newline ();
-    prerr "s2exp_equal_solve_Var_err: s2cs = "; prerr s2cs; prerr_newline ();
-    prerr "s2exp_equal_solve_Var_err: s2vs = "; prerr s2vs; prerr_newline ();
-  end
+    print "s2exp_equal_solve_Var_err: ans = "; print ans; print_newline ();
+    print "s2exp_equal_solve_Var_err: s2cs = "; print s2cs; print_newline ();
+    print "s2exp_equal_solve_Var_err: s2vs = "; print s2vs; print_newline ();
+  end // end of [val]
 *)
 in
   case+ (ans, s2cs, s2vs) of
@@ -957,9 +958,9 @@ in
       val s2t1 = s2Var_srt_get s2V1 and s2t2 = s2e2.s2exp_srt
 (*
       val () = begin
-        prerr "s2exp_equal_solve_Var_err: s2t1 = "; prerr s2t1; prerr_newline ();
-        prerr "s2exp_equal_solve_Var_err: s2t2 = "; prerr s2t2; prerr_newline ();
-      end
+        print "s2exp_equal_solve_Var_err: s2t1 = "; print s2t1; print_newline ();
+        print "s2exp_equal_solve_Var_err: s2t2 = "; print s2t2; print_newline ();
+      end // end of [val]
 *)
     in
       if (s2t2 <= s2t1) then let
@@ -967,9 +968,9 @@ in
         val () = s2exp_srt_set (s2e1, s2t2)
 (*
         val () = begin
-          prerr "s2exp_equal_solve_Var_err: "; prerr s2V1; prerr " <- "; prerr s2e2;
-          prerr_newline ()
-        end
+          print "s2exp_equal_solve_Var_err: "; print s2V1; print " <- "; print s2e2;
+          print_newline ()
+        end // end of [val]
 *)
         val () = s2Var_link_set (s2V1, Some s2e2)
       in
@@ -990,12 +991,12 @@ in
       end // end of [if]
     end // end of [0, S2CSTLSTnil, list_nil]
   | (_, _, _) => let
-(*
+// (*
       val () = begin
-        prerr "s2exp_equal_solve_Var_err: s2e1 = "; prerr s2e1; prerr_newline ();
-        prerr "s2exp_equal_solve_Var_err: s2e2 = "; prerr s2e2; prerr_newline ();
-      end
-*)
+        print "s2exp_equal_solve_Var_err: s2e1 = "; print s2e1; print_newline ();
+        print "s2exp_equal_solve_Var_err: s2e2 = "; print s2e2; print_newline ();
+      end // end of [val]
+// *)
     in
       trans3_env_add_eqeq (loc0, s2e1, s2e2)
     end // end of (_, _, _)
@@ -1032,10 +1033,12 @@ in
       s2Var_ubs_set (s2V1, list_cons (ub, ubs))
     end // end of [0, S2CSTLSTnil, list_nil]
   | (_, _, _) => let
+// (*
       val () = begin
-        prerr "s2exp_tyleq_solve_Var_l_err: s2e1 = "; prerr s2e1; prerr_newline ();
-        prerr "s2exp_tyleq_solve_Var_l_err: s2e2 = "; prerr s2e2; prerr_newline ();
+        print "s2exp_tyleq_solve_Var_l_err: s2e1 = "; print s2e1; print_newline ();
+        print "s2exp_tyleq_solve_Var_l_err: s2e2 = "; print s2e2; print_newline ();
       end // end of [val]
+// *)
     in
       trans3_env_add_tyleq (loc0, s2e1, s2e2)
     end // end of [_, _, _]
@@ -1070,10 +1073,12 @@ in
       s2Var_lbs_set (s2V2, list_cons (lb, lbs))
     end
   | (_, _, _) => let
+// (*
       val () = begin
-        prerr "s2exp_tyleq_solve_Var_r_err: s2e1 = "; prerr s2e1; prerr_newline ();
-        prerr "s2exp_tyleq_solve_Var_r_err: s2e2 = "; prerr s2e2; prerr_newline ();
-      end
+        print "s2exp_tyleq_solve_Var_r_err: s2e1 = "; print s2e1; print_newline ();
+        print "s2exp_tyleq_solve_Var_r_err: s2e2 = "; print s2e2; print_newline ();
+      end // end of [val]
+// *)
     in
       trans3_env_add_tyleq (loc0, s2e1, s2e2)
     end
@@ -1125,8 +1130,8 @@ fn s2exp_hypo_equal_solve_con
   (loc0: loc_t, s2e1: s2exp, s2e2: s2exp): void = let
 (*
   val () = begin
-    prerr "s2exp_hypo_equal_solve_con: s2e1 = "; prerr s2e1; prerr_newline ();
-    prerr "s2exp_hypo_equal_solve_con: s2e2 = "; prerr s2e2; prerr_newline ();
+    print "s2exp_hypo_equal_solve_con: s2e1 = "; print s2e1; print_newline ();
+    print "s2exp_hypo_equal_solve_con: s2e2 = "; print s2e2; print_newline ();
   end // end of [val]
 *)
   fun aux_solve (loc0: loc_t, s2e1: s2exp, s2e2: s2exp): void =
@@ -1153,8 +1158,8 @@ implement s2exp_hypo_equal_solve (loc0, s2e1, s2e2) = let
   val s2e1 = s2exp_whnf s2e1 and s2e2 = s2exp_whnf s2e2
 (*
   val () = begin
-    prerr "s2exp_hypo_equal_solve: s2e1 = "; prerr s2e1; prerr_newline ();
-    prerr "s2exp_hypo_equal_solve: s2e2 = "; prerr s2e2; prerr_newline ();
+    print "s2exp_hypo_equal_solve: s2e1 = "; print s2e1; print_newline ();
+    print "s2exp_hypo_equal_solve: s2e2 = "; print s2e2; print_newline ();
   end // end of [val]
 *)
 in
@@ -1215,18 +1220,18 @@ in
   | (_, _) => trans3_env_hypo_add_eqeq (loc0, s2e1, s2e2)
 end // end of [s2exp_hypo_equal_solve]
 
-implement s2explst_hypo_equal_solve (loc0, s2es1, s2es2) = begin
+implement s2explst_hypo_equal_solve (loc0, s2es1, s2es2) =
   case+ (s2es1, s2es2) of
   | (cons (s2e1, s2es1), cons (s2e2, s2es2)) => begin
       s2exp_hypo_equal_solve (loc0, s2e1, s2e2);
       s2explst_hypo_equal_solve (loc0, s2es1, s2es2)
-    end
+    end // end of [cons, cons]
   | (nil (), nil ()) => ()
   | (_, _) => begin
       trans3_env_hypo_add_prop (loc0, s2exp_bool false)
     end // end of [_, _]
-end // end of [s2explst_hypo_equal_solve]
+// end of [s2explst_hypo_equal_solve]
 
 (* ****** ****** *)
 
-(* end of [ats_staexp2_solve.sats] *)
+(* end of [ats_staexp2_solve.dats] *)

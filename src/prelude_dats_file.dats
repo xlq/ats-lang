@@ -33,10 +33,8 @@
 (* ****** ****** *)
 
 %{^
-
 #include <sys/stat.h>
 #include "libc/CATS/stdio.cats"
-
 %}
 
 (* ****** ****** *)
@@ -76,7 +74,7 @@ atspre_test_file_isdir (ats_ptr_type path) {
   }
 } /* atspre_test_file_dir */
 
-%}
+%} // end of [%{^]
 
 (* ****** ****** *)
 

@@ -31,8 +31,8 @@
 
 (* ****** ****** *)
 
-// Time: October 2007
 // Author: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
+// Time: October 2007
 
 (* ****** ****** *)
 
@@ -261,13 +261,14 @@ fn f0arglst_posmark (f0as: f0arglst): void =
 fun i0nvarglst_posmark (args: i0nvarglst): void = case+ args of
   | arg :: args => begin
       s0expopt_posmark arg.i0nvarg_typ; i0nvarglst_posmark args
-    end
+    end // end of [::]
   | nil () => ()
 // end of [i0nvarglst_posmark]
 
 fn i0nvresstate_posmark (res: i0nvresstate): void = let
   val () = case+ res.i0nvresstate_qua of
     | Some s0qs => s0qualst_posmark s0qs | None () => ()
+  // end of [val]
 in
   i0nvarglst_posmark (res.i0nvresstate_arg)
 end // end of [i0nvresstate_posmark]
@@ -275,8 +276,10 @@ end // end of [i0nvresstate_posmark]
 fn loopi0nv_posmark (inv: loopi0nv): void = let
   val () = case+ inv.loopi0nv_qua of
     | Some s0qs => s0qualst_posmark s0qs | None () => ()
+  // end of [val]
   val () = case+ inv.loopi0nv_met of
     | Some s0es => s0explst_posmark s0es | None () => ()
+  // end of [val]
   val () = i0nvarglst_posmark inv.loopi0nv_arg
   val () = i0nvresstate_posmark inv.loopi0nv_res
 in
@@ -448,7 +451,7 @@ fn d0atcon_posmark (d0c: d0atcon): void = begin
   s0qualstlst_posmark d0c.d0atcon_qua;
   s0expopt_posmark d0c.d0atcon_arg;
   s0expopt_posmark d0c.d0atcon_ind;
-end
+end // end of [d0atcon_posmark]
 
 fn d0atconlst_posmark (d0cs: d0atconlst): void =
   $Lst.list_foreach_fun (d0cs, d0atcon_posmark)
@@ -557,15 +560,15 @@ fun guad0ec_node_posmark
   (gdn: guad0ec_node): void = begin case+ gdn of
   | GD0Cone (e0xp, d0cs) => begin
       e0xp_posmark e0xp; d0eclst_posmark d0cs;
-    end
+    end // end of [GD0Cone]
   | GD0Ctwo (e0xp, d0cs1, d0cs2) => begin
       e0xp_posmark e0xp;
       d0eclst_posmark d0cs1; d0eclst_posmark d0cs2;
-    end
+    end // end of [GD0Ctwo]
   | GD0Ccons (e0xp, d0cs, knd, gdn) => begin
       e0xp_posmark e0xp;
       d0eclst_posmark d0cs; guad0ec_node_posmark gdn;
-    end
+    end // end of [GD0Ccons]
 end // end of [guad0ec_node_posmark]
 
 (* ****** ****** *)

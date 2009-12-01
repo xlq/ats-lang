@@ -82,9 +82,9 @@ overload <> with $IntInf.neq_intinf_int
 (* ****** ****** *)
 
 fn prerr_interror () = prerr "INTERNAL ERROR (ats_constraint)"
-fn prerr_interror_loc (loc: loc_t) = begin
+fn prerr_loc_interror (loc: loc_t) = begin
   $Loc.prerr_location loc; prerr ": INTERNAL ERROR (ats_constraint)"
-end // end of [prerr_interror_loc]
+end // end of [prerr_loc_interror]
 
 (* ****** ****** *)
 
@@ -1248,7 +1248,7 @@ fn s2cst_index_find {n:pos}
 in
   case+ $Map.map_search (m, stamp) of
   | ~Some_vt (i) => if i < n then i else begin
-      prerr_interror_loc (loc0);
+      prerr_loc_interror (loc0);
       prerr ": s2cst_index_find: the static constant [";
       prerr_s2cst s2c;
       prerr "] is associated with an index that is out-of-range.";
@@ -1256,7 +1256,7 @@ in
       $Err.abort {intBtw (1, n)} ()
     end // end of [Some_vt]
   | ~None_vt () => begin
-      prerr_interror_loc (loc0);
+      prerr_loc_interror (loc0);
       prerr ": s2cst_index_find: the static constant [";
       prerr_s2cst s2c;
       prerr "] is not associated with any index.";
@@ -1275,7 +1275,7 @@ fn s2var_index_find {n:pos}
 in
   case+ $Map.map_search (m, stamp) of
   | ~Some_vt (i) => if i < n then i else begin
-      prerr_interror_loc (loc0);
+      prerr_loc_interror (loc0);
       prerr ": s2var_index_find: the static constant [";
       prerr_s2var s2v;
       prerr "] is associated with an index that is out-of-range.";
@@ -1283,7 +1283,7 @@ in
       $Err.abort {intBtw (1, n)} ()
     end // end of [Some_vt]
   | ~None_vt () => begin
-      prerr_interror_loc (loc0);
+      prerr_loc_interror (loc0);
       prerr ": s2var_index_find: the static constant [";
       prerr_s2var s2v;
       prerr "] is not associated with any index.";

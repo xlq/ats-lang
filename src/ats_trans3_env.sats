@@ -59,6 +59,7 @@ datatype c3strkind =
       (int (* kind: warning, error, etc. *), p2atcstlst)
   | C3STRKINDvarfin of (d2var_t, s2exp, s2exp)
   | C3STRKINDloop of int (* 0/1/2: enter/break/continue *)
+// end of [c3strkind]
 
 datatype s3item =
   | S3ITEMcstr of c3str
@@ -67,15 +68,18 @@ datatype s3item =
   | S3ITEMhypo of h3ypo
   | S3ITEMsvar of s2var_t
   | S3ITEMsVar of s2Var_t
+// end of [s3item]
 
 and c3str_node =
   | C3STRprop of s2exp
   | C3STRitmlst of s3itemlst
+// end of [c3str_node]
 
 and h3ypo_node =
   | H3YPOprop of s2exp
   | H3YPObind of (s2var_t, s2exp)
   | H3YPOeqeq of (s2exp, s2exp)
+// end of [h3ypo_node]
 
 where s3itemlst = List s3item
 and s3itemlstlst = List s3itemlst

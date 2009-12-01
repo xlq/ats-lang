@@ -54,7 +54,8 @@ typedef int16 = int16_t0ype // sized integer of size 16bit
 dataviewtype tblopt =
   | {n:nat} {l:addr}
     tblopt_some of (array_v (int16, n, l) | ptr l, int n)
-  | tblopt_none
+  | tblopt_none of ()
+// end of [tblopt]
 
 extern fun new_tbloptref_some {n:nat} {l:addr}
   (pf: array_v (int16, n, l) | p: ptr l, n: int n): ref tblopt =
@@ -71,11 +72,9 @@ extern fun table_ptr_free {a:viewt@ype}
   = "table_ptr_free"
 
 %{^
-
 static inline
 ats_void_type
 table_ptr_free (ats_ptr_type p) { free (p) ; return ; }
-
 %}
 
 fn tbloptref_free (r_tblopt: ref tblopt): void = let
@@ -110,11 +109,9 @@ implement __accept_table_free (r_tblopt): void =
 extern fun int_of_int16 (x: int16):<> int = "ats_int_of_int16"
 
 %{^
-
 static inline
 ats_int_type
 ats_int_of_int16 (ats_int16_type i) { return i ; }
-
 %}
 
 //
@@ -227,7 +224,7 @@ end (* end of [transition_table_get] *)
 
 (* ****** ****** *)
 
-%{
+%{$
 
 #define NBITS_PER_BYTE 8
 /*
@@ -299,7 +296,7 @@ __transition_table_make_fun (ats_int_type n, ats_ptr_type s0) {
   return res ;
 } /* end of [__transition_table_make_fun] */
 
-%}
+%} // end of [%{$]
 
 (* ****** ****** *)
 

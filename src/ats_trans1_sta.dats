@@ -87,6 +87,8 @@ fn prerr_loc_error1 (loc: loc_t): void =
   ($Loc.prerr_location loc; prerr ": error(1)")
 // end of [prerr_loc_error1]
 
+fn prerr_interror () = prerr "INTERNAL ERROR (ats_trans1_sta)"
+
 (* ****** ****** *)
 
 fn prec_tr_errmsg (opr: i0de): $Fix.prec_t = begin
@@ -106,9 +108,8 @@ fn p0rec_tr (p0: p0rec): $Fix.prec_t = let
     | ~Some_vt fxty => let
 (*
         val () = begin
-          prerr "p0rec_tr: Some: id = ";
-          $Sym.prerr_symbol_code id.i0de_sym;
-          prerr_newline ()
+          print "p0rec_tr: Some: id = ";
+          $Sym.print_symbol_code id.i0de_sym; print_newline ()
         end // end of [val]
 *)
         val precopt = $Fix.precedence_of_fixity fxty
@@ -151,7 +152,7 @@ fn f (e1: e1xp, e2: e1xp):<cloref1> e1xpitm = let
   val e_app = e1xp_app (loc, e1, e2.e1xp_loc, es2)
 (*
   val () = begin
-    prerr "e1xpitm_app: f: e_app = "; prerr e_app; prerr_newline ()
+    print "e1xpitm_app: f: e_app = "; print e_app; print_newline ()
   end // end of [val]
 *)
 in
@@ -335,7 +336,8 @@ fn s0rtpol_srt_tr (s0tp: s0rtpol): s1rt =
     prerr ": only a nonpolarized sort is allowed here";
     prerr_newline ();
     $Err.abort ()
-  end
+  end // end of [if]
+// end of [s0rtpol_srt_tr]
 
 (* ****** ****** *)
 
@@ -374,18 +376,17 @@ implement d0ec_fixity_tr (f0xty, ids) = let
     | cons (id, ids) => let
 (*
         val () = begin
-          prerr "d0ec_fixity_tr: loop: id = ";
-          $Sym.prerr_symbol_code id.i0de_sym;
-          prerr_newline ()
-        end
+          print "d0ec_fixity_tr: loop: id = ";
+          $Sym.print_symbol_code id.i0de_sym; print_newline ()
+        end // end of [val]
         val () = begin
-          prerr "the_fxtyenv_add: before: \n"; the_fxtyenv_prerr ()
+          print "the_fxtyenv_add: before: \n"; ats_fxtyenv_print ()
         end // end of [val]
 *)
         val () = the_fxtyenv_add (id.i0de_sym, fxty)
 (*
         val () = begin
-          prerr "the_fxtyenv_add: after: \n"; the_fxtyenv_prerr ()
+          print "the_fxtyenv_add: after: \n"; ats_fxtyenv_print ()
         end // end of [val]
 *)
       in
@@ -550,7 +551,7 @@ fn f (s1e1: s1exp, s1e2: s1exp):<cloref1> s1expitm = let
   val s1e_app = s1exp_app (loc, s1e1, s1e2.s1exp_loc, s1es2)
 (*
   val () = begin
-    prerr "s1expitm_app: f: s1e_app = "; prerr s1e_app; prerr_newline ()
+    print "s1expitm_app: f: s1e_app = "; print s1e_app; print_newline ()
   end // end of [val]
 *)
 in
@@ -590,11 +591,12 @@ implement s0qualstlst_tr (s0qss) = $Lst.list_map_fun (s0qss, s0qualst_tr)
 
 (* ****** ****** *)
 
-fn s0exp_tr_errmsg_opr (loc: loc_t): s1exp = begin
+fn s0exp_tr_errmsg_opr
+  (loc: loc_t): s1exp = begin
   prerr_loc_error1 loc;
   prerr ": the operator needs to be applied";
   $Err.abort {s1exp} ()
-end
+end // end of [s0exp_tr_errmsg_opr]
 
 implement s0exp_tr s0e0 = let
   fun aux_item (s0e0: s0exp): s1expitm = let
@@ -684,7 +686,7 @@ implement s0exp_tr s0e0 = let
         val (fc, lin, prf, efc) = $Eff.e0fftaglst_tr (fc, tags)
 (*
         val () = begin
-          prerr "s0exp_tr: S0Eimp: efc = "; $Eff.prerr_effcst efc; prerr_newline ()
+          print "s0exp_tr: S0Eimp: efc = "; $Eff.print_effcst efc; print_newline ()
         end // end of [val]
 *)
       in
@@ -695,9 +697,8 @@ implement s0exp_tr s0e0 = let
             s1exp_make_opr (s1e_imp, f)
           end // end of [Some_vt]
         | ~None_vt () => begin
-            prerr "INTERNAL ERROR";
-            prerr ": s0exp_tr: the fixity of -> is unavailable.";
-            prerr_newline ();
+            prerr_interror ();
+            prerr ": s0exp_tr: the fixity of -> is unavailable."; prerr_newline ();
             $Err.abort ()
           end // end of [None_vt]
       end // end of [S0Eimp]
@@ -708,8 +709,7 @@ implement s0exp_tr s0e0 = let
         val s1e_lam = s1exp_lam (loc0, arg, res, body)
 (*
         val () = begin
-          prerr "s0exp_tr: S0Elam: s1e_lam = "; prerr s1e_lam;
-          prerr_newline ();
+          print "s0exp_tr: S0Elam: s1e_lam = "; print s1e_lam; print_newline ()
         end // end of [val]
 *)
       in
@@ -863,11 +863,11 @@ end // end of [witht0ype_tr]
 implement s0rtdef_tr (d) = let
   val s1te = s0rtext_tr d.s0rtdef_def
 (*
-  val () = prerr "s0rtdef_tr: s1te = "
-  val (pf_stderr | ptr_stderr) = stderr_get ()
-  val () = fprint (file_mode_lte_w_w | !ptr_stderr, s1te)
-  val () = stderr_view_set (pf_stderr | (*none*))
-  val () = prerr_newline ()
+  val () = print "s0rtdef_tr: s1te = "
+  val (pf_stdout | ptr_stdout) = stdout_get ()
+  val () = fprint (file_mode_lte_w_w | !ptr_stdout, s1te)
+  val () = stdout_view_set (pf_stdout | (*none*))
+  val () = print_newline ()
 *)
 in
   s1rtdef_make (d.s0rtdef_loc, d.s0rtdef_sym, s1te)
@@ -885,7 +885,7 @@ implement s0expdef_tr (d) = let
   val def = s0exp_tr d.s0expdef_def
 (*
   val () = begin
-    prerr "s0expdef_tr: def = "; prerr def; prerr_newline ()
+    print "s0expdef_tr: def = "; print def; print_newline ()
   end // end of [val]
 *)
 in
@@ -910,8 +910,7 @@ fn d0atcon_tr (d0c: d0atcon): d1atcon = let
 
 val qua = s0qualstlst_tr (d0c.d0atcon_qua)
 var npf_var: int = 0
-val arg = (
-  case+ d0c.d0atcon_arg of
+val arg = (case+ d0c.d0atcon_arg of
   | Some s0e => let
       val s1e = s0exp_tr s0e
     in
@@ -922,20 +921,18 @@ val arg = (
   | None () => nil ()
 ) : s1explst
 
-val ind = (
-  case+ d0c.d0atcon_ind of
+val ind = (case+ d0c.d0atcon_ind of
   | Some s0e => let
       val s1es = case+ s0e.s0exp_node of
-        | S0Elist s0es => s0explst_tr s0es | _ => begin
-            prerr "Internal Error: ";
-            prerr "ats_trans1: d0atcon_tr: index is not a list.";
-            prerr_newline ();
-            $Err.abort ()
-          end
+      | S0Elist s0es => s0explst_tr s0es | _ => begin
+          prerr_interror ();
+          prerr ": d0atcon_tr: index is not a list."; prerr_newline ();
+          $Err.abort ()
+        end // end of [_]
     in
       Some s1es
-    end
-  | None () => None ()
+    end // end of [Some]
+  | None () => None () // end of [None]
 ) : s1explstopt
 
 in

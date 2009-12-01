@@ -174,16 +174,13 @@ fun aux (lxbf: &lexbuf_t, irule: &int, nstate: int):<cloptr1> int =
     printf ("lexing_engine_lexbuf: end: irule = %i\n", @(irule));
 *)
     irule
-  end
+  end // end of [aux]
 
 var irule = (0: int)
 
 in
-
   lexbuf_fstpos_set (lxbf); aux (lxbf, irule, 1)
-
 end // end of [lexing_engine_lexbuf]
-
 
 implement lexing_engine (transtbl, acctbl) = let
   val (pf_lexbuf | lexbuf) = lexing_lexbuf_get ()
@@ -225,18 +222,16 @@ end // end of [lexeme_lint]
 //
 
 %{^
-
 static inline
 ats_int_type
 ats_int_of_lint (ats_lint_type i) { return i ; }
-
 %}
 
 implement lexeme_int (base) = let
   extern fun int_of_lint (i: lint): int = "ats_int_of_lint"
 in
   int_of_lint (lexeme_lint base)
-end
+end // end of [lexeme_int]
 
 //
 
@@ -259,14 +254,12 @@ val () = let // initialization
   val () = lexing_lexbuf_markroot ()
 in
   // empty
-end
+end // end of [val]
 
 (* ****** ****** *)
 
 %{^
-
 #include "libc/CATS/stdio.cats"
-
 %}
 
 %{$

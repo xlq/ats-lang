@@ -73,9 +73,9 @@ overload prerr with $Loc.prerr_location
 
 (* ****** ****** *)
 
-fn prerr_loc_error2 (loc: loc_t): void =
-  ($Loc.prerr_location loc; prerr ": error(2)")
-// end of [prerr_loc_error2]
+fn prerr_loc_error3 (loc: loc_t): void =
+  ($Loc.prerr_location loc; prerr ": error(3)")
+// end of [prerr_loc_error3]
 
 fn prerr_interror () = prerr "INTERNAL ERROR (ats_staexp2_util2)"
 fn prerr_loc_interror (loc: loc_t) = begin
@@ -1009,7 +1009,7 @@ implement s2exp_lab_get_restlin_cstr
   (loc0, s2e0, l0, restlin, cstr) = let
   val s2e0 = s2exp_whnf s2e0
   fn err1 (loc0: loc_t, s2e0: s2exp, l0: lab_t): s2exp = begin
-    prerr_loc_error2 loc0;
+    prerr_loc_error3 loc0;
     prerr ": the label [";
     prerr l0;
     prerr "] is not found in [";
@@ -1019,7 +1019,7 @@ implement s2exp_lab_get_restlin_cstr
     $Err.abort {s2exp} ()
   end // end of [err]
   fn err2 {a:viewt@ype} (loc0: loc_t, s2e0: s2exp): a = begin
-    prerr_loc_error2 loc0;
+    prerr_loc_error3 loc0;
     $Deb.debug_prerrf (": [%s]: s2exp_lab_get_restlin_cstr", @(THISFILENAME));
     prerr ": the type [";
     prerr s2e0;
@@ -1084,7 +1084,7 @@ implement s2exp_slablst_get_restlin_cstr
           | S2LAB0lab l => l
           | S2LAB1lab (l, _) => l // this should not happen!
           | _ => begin
-              prerr_loc_error2 loc0;
+              prerr_loc_error3 loc0;
               prerr ": the use of array subscription is not supported.";
               prerr_newline ();
               $Err.abort {lab_t} ()
@@ -1196,7 +1196,7 @@ implement // [s2e0] must be normalized!
 //
   fn linear_abandonment_errmsg
     (loc0: loc_t, l0: lab_t): void = begin
-    prerr_loc_error2 loc0;
+    prerr_loc_error3 loc0;
     prerr ": the linear union component with the label [";
     prerr l0;
     prerr "] is abandoned";
@@ -1206,7 +1206,7 @@ implement // [s2e0] must be normalized!
 //
   fn label_notfound_errmsg
     (loc0: loc_t, s2e0: s2exp, l0: lab_t): s2exp = begin
-    prerr_loc_error2 loc0;
+    prerr_loc_error3 loc0;
     prerr ": the lable [";
     prerr l0;
     prerr "] is not found in [";
@@ -1256,7 +1256,7 @@ in
       end // end of [val]
     } // end of [S2Eunion]
   | _ => begin
-      prerr_loc_error2 loc0;
+      prerr_loc_error3 loc0;
       $Deb.debug_prerrf (": %s: s2exp_lab_linget_cstr", @(THISFILENAME));
       prerr ": the type [";
       prerr s2e0;
@@ -1274,7 +1274,7 @@ implement s2exp_ind_linget_cstr
       var err: int = 0
       val () = array_ind_dim_check_err (s2ess_ind, s2ess_dim, cstr, err)
       val () = if err > 0 then begin
-        prerr_loc_error2 loc0;
+        prerr_loc_error3 loc0;
         prerr ": array index/dimension mismatch."; prerr_newline ();
         $Err.abort {void} ()
       end // end of [val]
@@ -1282,7 +1282,7 @@ implement s2exp_ind_linget_cstr
       s2e_elt
     end // end of [S2Etyarr]
   | _ => begin
-      prerr_loc_error2 loc0;
+      prerr_loc_error3 loc0;
       prerr ": the type ["; prerr s2e0;
       prerr "] is expected to be an array but it is not."; prerr_newline ();
       $Err.abort ()
@@ -1480,7 +1480,7 @@ implement s2exp_slablst_lindel_cstr (loc0, s2e0, s2ls, cstr) = let
     | cons (s2l, s2ls) => let
         val () = (case+ s2l of
           | S2LAB0ind _ => begin
-              prerr_loc_error2 loc0;
+              prerr_loc_error3 loc0;
               prerr ": array subscription is not supported (for view extraction).";
               prerr_newline ();
               $Err.abort {void} ()

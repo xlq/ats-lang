@@ -77,6 +77,8 @@ fn prerr_loc_error2 (loc: loc_t): void =
   ($Loc.prerr_location loc; prerr ": error(2)")
 // end of [prerr_loc_error2]
 
+fn prerr_interror () = prerr "INTERNAL ERROR (ats_trans2_env)"
+
 (* ****** ****** *)
 
 viewtypedef s2rtextmap = $SymEnv.symmap_t (s2rtext)
@@ -127,9 +129,8 @@ implement d2eclst_namespace_add (id, d2cs) = let
 in
   case+ ans of
   | ~Some_vt _ => begin
-      prerr "INTERNAL ERROR";
-      prerr ": d2eclst_namespace_add: id = ";
-      $Sym.prerr_symbol id;
+      prerr_interror ();
+      prerr ": d2eclst_namespace_add: id = "; $Sym.prerr_symbol id;
       prerr_newline ();
       $Err.abort {void} ()
     end // end of [Some_vt]
@@ -165,8 +166,8 @@ fn the_s2rtenv_namespace_find
     val r_m: s2rtextmapref =
       case+ $HT.hashtbl_search (the_s2rtextmaptbl, name) of
       | ~Some_vt m => m | ~None_vt _ => begin
-          prerr "INTERNAL ERROR: s2rtenv_namespace_find: name = ";
-          $Sym.prerr_symbol name;
+          prerr_interror ();
+          prerr ": s2rtenv_namespace_find: name = "; $Sym.prerr_symbol name;
           prerr_newline ();
           $Err.abort {s2rtextmapref} ()
         end // end of [None_vt]
@@ -222,7 +223,8 @@ implement the_s2rtenv_find_qua (q, id) = begin
       case+ $HT.hashtbl_search (the_s2rtextmaptbl, fil_sym) of
       | ~Some_vt r_m => $SymEnv.symmap_ref_search (r_m, id)
       | ~None_vt () => begin
-          prerr "INTERNAL ERROR: the loaded file [";
+          prerr_interror ();
+          prerr ": the loaded file [";
           $Sym.prerr_symbol fil_sym;
           prerr "] cannot be located.";
           prerr_newline ();
@@ -263,9 +265,8 @@ fn the_s2rtenv_namespace_add_topenv (id: sym_t): void = let
 in
   case+ ans of
   | ~Some_vt _ => begin
-      prerr "INTERNAL ERROR";
-      prerr ": s2rtenv_namespace_add_topenv: id = ";
-      $Sym.prerr_symbol id;
+      prerr_interror ();
+      prerr ": s2rtenv_namespace_add_topenv: id = "; $Sym.prerr_symbol id;
       prerr_newline ();
       $Err.abort {void} ()
     end // end of [Some_vt]
@@ -365,8 +366,8 @@ fn the_s2expenv_namespace_find
     val r_m: s2itemmapref = begin
       case+ $HT.hashtbl_search (the_s2itemmaptbl, name) of
       | ~Some_vt m => m | ~None_vt _ => begin
-          prerr "INTERNAL ERROR: the_s2expenv_namespace_find: name = ";
-          $Sym.prerr_symbol name;
+          prerr_interror ();
+          prerr ": the_s2expenv_namespace_find: name = "; $Sym.prerr_symbol name;
           prerr_newline ();
           $Err.abort {s2itemmapref} ()
         end // end of [None_vt]
@@ -464,9 +465,8 @@ fn the_s2expenv_namespace_add_topenv (id: sym_t): void = let
 in
   case+ ans of
   | ~Some_vt _ => begin
-      prerr "INTERNAL ERROR";
-      prerr ": the_s2expenv_namespace_add_topenv: id = ";
-      $Sym.prerr_symbol id;
+      prerr_interror ();
+      prerr ": the_s2expenv_namespace_add_topenv: id = "; $Sym.prerr_symbol id;
       prerr_newline ();
       $Err.abort {void} ()
     end // end of [Some_vt]
@@ -492,9 +492,9 @@ implement macro_level_inc (loc) = let
   val level = !the_macro_level
 (*
   val () = if level > 0 then begin
-    prerr_loc_error2 loc;
-    prerr ": the syntax `(...) is used incorrectly at this location.";
-    prerr_newline ();
+    print_loc_error2 loc;
+    print ": the syntax `(...) is used incorrectly at this location.";
+    print_newline ();
     $Err.abort {void} ()
   end // end of [val]
 *)
@@ -693,8 +693,8 @@ fn the_d2expenv_namespace_find
     val ans = $HT.hashtbl_search (the_d2itemmaptbl, name)
     val r_m = (case+ ans of
       | ~Some_vt m => m | ~None_vt _ => begin
-          prerr "INTERNAL ERROR: d2expenv_namespace_find: name = ";
-          $Sym.prerr_symbol name;
+          prerr_interror ();
+          prerr ": d2expenv_namespace_find: name = "; $Sym.prerr_symbol name;
           prerr_newline ();
           $Err.abort {d2itemmapref} ()
         end // end of [None_vt]
@@ -805,9 +805,8 @@ fn the_d2expenv_namespace_add_topenv (id: sym_t): void = let
 in
   case+ ans of
   | ~Some_vt _ => begin
-      prerr "INTERNAL ERROR";
-      prerr ": d2expenv_namespace_add_topenv: id = ";
-      $Sym.prerr_symbol id;
+      prerr_interror ();
+      prerr ": d2expenv_namespace_add_topenv: id = "; $Sym.prerr_symbol id;
       prerr_newline ();
       $Err.abort {void} ()
     end // end of [Some_vt]
@@ -957,4 +956,3 @@ end // end of [trans2_env_initialize]
 (* ****** ****** *)
 
 (* end of [ats_trans2_env.dats] *)
-

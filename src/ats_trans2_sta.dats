@@ -31,15 +31,13 @@
 
 (* ****** ****** *)
 
-// Time: November 2007
 // Author: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
+// Time: November 2007
 
 (* ****** ****** *)
 
 %{^
-
 #include "ats_counter.cats" /* only needed for [ATS/Geizella] */
-
 %}
 
 (* ****** ****** *)
@@ -98,6 +96,12 @@ fn prerr_loc_error2 (loc: loc_t): void =
   ($Loc.prerr_location loc; prerr ": error(2)")
 // end of [prerr_loc_error2]
 
+fn prerr_interror () = prerr "INTERNAL ERROR (ats_trans2_sta)"
+
+fn prerr_loc_interror (loc: loc_t) = begin
+  $Loc.prerr_location loc; prerr ": INTERNAL ERROR (ats_trans2_sta)"
+end // end of [prerr_loc_interror]
+
 (* ****** ****** *)
 
 fn stacstuseloc_posmark
@@ -110,7 +114,6 @@ fn stacstuseloc_posmark
 in
   // empty
 end // end of [stacstuseloc_posmark]
-
 
 (* ****** ****** *)
 
@@ -131,7 +134,7 @@ fun s1rt_app_tr (
         S2RTfun (s2ts1, s2t2)
       end
     | _ => begin
-        prerr "INTERNAL ERROR";
+        prerr_interror ();
         prerr ": [s1rt_app_tr]: [->] is not an infix operator!";
         prerr_newline ();
         $Err.abort {s2rt} ()
@@ -180,7 +183,7 @@ implement s1rt_tr (s1t0) = begin
   | S1RTtup s1ts => S2RTtup (s1rtlst_tr s1ts)
 (*
   | _ => begin
-      prerr_loc_error2 s1t0.s1rt_loc;
+      prerr_loc_interror s1t0.s1rt_loc;
       prerr ": not yet implemented: ["; prerr s1t0; prerr "]";
       prerr_newline ();
       $Err.abort ()
@@ -658,10 +661,8 @@ fun s1exp_qid_app_tr_up (
   | S2ITEMfil _ => s1exp_qid_app_tr_up_errmsg_fil loc_qid qid
 *)
   | _ => begin
-      $Loc.prerr_location loc_qid;
-      prerr ": INTERNAL ERROR";
-      prerr ": s1exp_qid_app_tr_up: not implemented yet: s2i = ";
-      prerr s2i;
+      prerr_loc_interror loc_qid;
+      prerr ": s1exp_qid_app_tr_up: not implemented yet: s2i = "; prerr s2i;
       prerr_newline ();
       $Err.abort ()
     end // end of [_]
@@ -688,7 +689,7 @@ fn s1exp_qid_tr_up
           | _ => s2e_s2c
         end // end of [S2CSTLSTcons]
       | S2CSTLSTnil () => begin // this clause should be unreachable
-          prerr "INTERNAL ERROR";
+          prerr_interror ();
           prerr ": s1exp_qid_tr_up: Some: S2ITEMcst: S2CSTLSTnil";
           prerr_newline ();
           $Err.abort ()
@@ -699,8 +700,7 @@ fn s1exp_qid_tr_up
         val () = s2var_tmplev_check (loc0, s2v) in s2exp_var s2v
       end // end of [S2ITEMvar]
     | _ => begin
-        $Loc.prerr_location loc0;
-        prerr ": INTERNAL ERROR";
+        prerr_loc_interror loc0;
         prerr ": s1exp_qid_tr_up: s2i = "; prerr s2i; prerr_newline ();
         $Err.abort ()
       end // end of [_]
@@ -877,12 +877,11 @@ fn s1exp_arrow_tr_up // arrow is a special type constructor
     case+ s1es of
     | cons (s1e1, cons (s1e2, nil ())) => @(s1e1, s1e2)
     | _ => begin
-        $Loc.prerr_location loc0;
-        prerr "INTERNAL ERROR: s1exp_arrow_tr_up: s1es = ";
-        prerr_s1explst s1es;
+        prerr_loc_interror loc0;
+        prerr ": s1exp_arrow_tr_up: s1es = "; prerr_s1explst s1es;
         prerr_newline ();
         $Err.abort ()
-      end
+      end // end of [_]
   ) : @(s1exp, s1exp)
   var npf: int = 0 and s1es_arg: s1explst = nil ()
   val () = case+ s1e_arg.s1exp_node of
@@ -1169,8 +1168,7 @@ fn s1exp_tytup_tr_up
       s2exp_tyrec_srt (s2t_rec, TYRECKINDbox (), 0(*npf*), ls2es)
     end (* end of [_ when ...] *)
   | _ => begin
-      $Loc.prerr_location loc0;
-      prerr ": INTERNAL ERROR";
+      prerr_loc_interror loc0;
       prerr ": s1exp_tytup_tr_up"; prerr_newline ();
       $Err.abort {s2exp} ()
     end (* end of [_] *)
@@ -1209,10 +1207,10 @@ fn s1exp_tytup2_tr_up
       s2exp_tyrec_srt (s2t_rec, TYRECKINDbox (), npf, ls2es)
     end
   | _ => begin
-      $Loc.prerr_location loc0;
-      prerr ": INTERNAL ERROR: s1exp_tytup2_tr_up"; prerr_newline ();
+      prerr_loc_interror loc0;
+      prerr ": s1exp_tytup2_tr_up"; prerr_newline ();
       $Err.abort {s2exp} ()
-    end
+    end // end of [_]
 end // end of [s1exp_tytup2_tr_up]
 
 end // end of [local]
@@ -1267,8 +1265,8 @@ fn s1exp_tmpid_tr (
   ) : s2cst_t = s2c where {
 (*
   val () = begin
-    $Loc.prerr_location loc0;
-    prerr ": s1exp_tmpid_tr: id = "; $Sym.prerr_symbol id; prerr_newline ()
+    $Loc.print_location loc0;
+    print ": s1exp_tmpid_tr: id = "; $Sym.print_symbol id; print_newline ()
   end // end of [val]
 *)
   fn err1
@@ -1405,10 +1403,10 @@ fn s1exp_tyrec_tr_up
       s2exp_tyrec_srt (s2t_rec, TYRECKINDbox (), 0(*npf*), ls2es)
     end
   | _ => begin
-      $Loc.prerr_location loc0;
-      prerr ": INTERNAL ERROR: s1exp_tyrec_tr_up"; prerr_newline ();
+      prerr_loc_interror loc0;
+      prerr ": s1exp_tyrec_tr_up"; prerr_newline ();
       $Err.abort {s2exp} ()
-    end
+    end // end of [_]
 end // end of [s1exp_tyrec_tr_up]
 
 fn s1exp_union_tr_up (loc0: loc_t, s1e_ind: s1exp, ls1es: labs1explst)
@@ -1494,9 +1492,8 @@ in
     end // end of [S1Eexi]
   | S1Eextype name => s2exp_extype_srt (s2rt_viewt0ype, name)
   | S1Eimp _ => begin
-      $Loc.prerr_location s1e0.s1exp_loc;
-      prerr ": INTERNAL ERROR: s1exp_tr_up: S1Eimp";
-      prerr_newline ();
+      prerr_loc_interror s1e0.s1exp_loc;
+      prerr ": s1exp_tr_up: S1Eimp"; prerr_newline ();
       $Err.abort {s2exp} ()
     end // end of [S1Eimp]
   | S1Eint i(*string*) => s2exp_intinf ($IntInf.intinf_make_string i)
@@ -1523,8 +1520,8 @@ in
       s1exp_list_tr_up (s1e0.s1exp_loc, npf, s1es)
     end // end of [S1Elist]
   | S1Emod _ => begin
-      $Loc.prerr_location s1e0.s1exp_loc;
-      prerr ": INTERNAL ERROR: s1exp_tr_up: S1Emod: not implemented yet.";
+      prerr_loc_interror s1e0.s1exp_loc;
+      prerr ": s1exp_tr_up: S1Emod: not implemented yet.";
       prerr_newline ();
       $Err.abort {s2exp} ()
     end // end of [S1Emod]
@@ -1584,8 +1581,8 @@ in
     end // end of [S1Eunion]
 (*
   | _ => begin
-      prerr_loc_error2 s1e0.s1exp_loc;
-      prerr ": s1exp_tr: not available yet.\n";
+      prerr_loc_interror s1e0.s1exp_loc;
+      prerr ": s1exp_tr: not available yet."; prerr_newine ();
       $Err.abort {s2exp} ()
     end // end of [_]
 *)
@@ -2107,28 +2104,28 @@ fn d1atcon_tr (
   ) : d2con_t = let
 
   fn err1 (loc: loc_t, id: sym_t): s2explstopt = begin
-    $Loc.prerr_location loc;
+    prerr_loc_error2 loc;
     prerr ": less indexes are needed for the constructor [";
     $Sym.prerr_symbol id; prerr "]"; prerr_newline ();
     $Err.abort {s2explstopt} ()
   end // end of [err1]
 
   fn err2 (loc: loc_t, id: sym_t): s2explstopt = begin
-    $Loc.prerr_location loc;
+    prerr_loc_error2 loc;
     prerr ": more indexes are needed for the constructor [";
     $Sym.prerr_symbol id; prerr "]"; prerr_newline ();
     $Err.abort {s2explstopt} ()
   end // end of [err2]
 
   fn err3 (loc: loc_t, id: sym_t): s2explstopt = begin
-    $Loc.prerr_location loc;
+    prerr_loc_error2 loc;
     prerr ": no indexes are needed for the constructor [";
     $Sym.prerr_symbol id; prerr "]"; prerr_newline ();
     $Err.abort {s2explstopt} ()
   end // end of [err3]
 
   fn err4 (loc: loc_t, id: sym_t): s2explstopt = begin
-    $Loc.prerr_location loc;
+    prerr_loc_error2 loc;
     prerr ": some indexes are needed for the constructor [";
     $Sym.prerr_symbol id; prerr "]"; prerr_newline ();
     $Err.abort {s2explstopt} ()
@@ -2158,8 +2155,8 @@ fn d1atcon_tr (
           val s2t = (if i < npf then s2t_pfarg else s2t_arg): s2rt
         in
           cons (s1exp_tr_dn (s1e, s2t), aux (i+1, s1es))
-        end
-      | nil () => nil ()
+        end // end of [cons]
+      | nil () => nil () // end of [nil]
     end // end of [aux]
   in
     aux (0, s1es_arg)
@@ -2206,8 +2203,8 @@ fun d1atconlst_tr (
       val d2c = d1atcon_tr (s2c, islin, isprf, s2vs0, fil, d1c)
     in
       D2CONLSTcons (d2c, d1atconlst_tr (s2c, islin, isprf, s2vs0, fil, d1cs))
-    end
-  | nil () => D2CONLSTnil ()
+    end // end of [cons]
+  | nil () => D2CONLSTnil () // end of [nil]
 end // end of [d1atconlst_tr]
 
 (* ****** ****** *)
@@ -2309,12 +2306,12 @@ implement d1atdeclst_tr
     end (* end of [aux] *)
   } // end of [val]
 //
-  fun aux (xs: T): s2cstlst = begin case+ xs of
+  fun aux (xs: T): s2cstlst = case+ xs of
     | list_cons (x, xs) => begin
         d1atdec_tr (x.1, x.2, x.0); S2CSTLSTcons (x.1, aux xs)
       end // end of [cons]
     | list_nil () => S2CSTLSTnil ()
-  end // end of [aux]
+  // end of [aux]
 in
   aux (d1cs2cs2vslst)
 end // end of [d1atdeclst_tr]
@@ -2357,10 +2354,12 @@ implement e1xndeclst_tr (d1cs) = let
         D2CONLSTcons (d2c, aux (s2c, d1cs))
       end
     | nil () => D2CONLSTnil ()
+  // end of [aux]
   val s2c = s2cstref_cst_get (Exception_viewtype)
   val d2cs = aux (s2c, d1cs)
   val d2cs0 = case+ s2cst_conlst_get s2c of
     | Some d2cs0 => d2conlst_revapp (d2cs, d2cs0) | None () => d2cs
+  // end of [val]
 in
   s2cst_conlst_set (s2c, Some d2cs0); d2cs
 end // end of [e1xndeclst_tr]
