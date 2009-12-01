@@ -77,12 +77,12 @@ implement symbol_make_string name = let
 (*
   val () = begin
     print "symbol_make_string: name = "; print name; print_newline ()
-  end
+  end // end of [val]
 *)
   val symopt = symtbl_search (symtbl, name)
 in
   case+ symopt of
-  | Some sym => sym
+  | Some sym => sym // end of [Some]
   | None () => let
       val cnt = counter_get_and_inc (counter)
       val sym: symbol = '{ name= name, code= cnt }
@@ -91,11 +91,11 @@ in
         print "symbol_make_string: sym = ";
         print_symbol_code sym;
         print_newline ()
-      end
+      end // end of [val]
 *)
     in
       symtbl_insert (symtbl, name, sym); sym
-    end
+    end // end of [None]
 end // end of [symbol_make_string]
  
 end // end of [local]

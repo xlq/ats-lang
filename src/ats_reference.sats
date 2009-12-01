@@ -32,6 +32,7 @@
 (* ****** ****** *)
 
 (* author: Hongwei Xi (hwxi AT cs DOT bu DOT edu) *)
+// Time: month? 2007
 
 (* ****** ****** *)
 
@@ -84,4 +85,4 @@ fun{a:viewt@ype} ref_swap (r: ref a, x: &a):<!ref> void
 
 (* ****** ****** *)
 
-(* end of [reference.sats] *)
+(* end of [ats_reference.sats] *)

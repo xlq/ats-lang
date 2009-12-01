@@ -736,7 +736,7 @@ extern fun process_literal_int_check (_: string, err: &char): bool
 fn process_literal_int (): void = let
   val str = lexeme_string ()
 (*
-  val () = prerrf ("process_literal_int: str = %s\n", @(str))
+  val () = printf ("process_literal_int: str = %s\n", @(str))
 *)
   val loc = location_get ()
   var err: char = '\000'; val () =
@@ -1533,7 +1533,7 @@ ats_bool_type token_is_valid (ats_int_type tok) {
   return (tok >= 0 ? ats_true_bool : ats_false_bool) ;
 }
 
-%}
+%} // end of [%{]
 
 (* ****** ****** *)
 

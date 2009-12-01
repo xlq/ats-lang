@@ -60,9 +60,15 @@ typedef namelstlst = List namelst
 typedef saved = @(namelst, namelstlst)
 typedef savedlst = List saved
 
+(* ****** ****** *)
+
 val the_namelst: ref namelst = ref_make_elt (list_nil ())
 val the_namelstlst: ref namelstlst = ref_make_elt (list_nil ())
 val the_savedlst: ref savedlst = ref_make_elt (list_nil ())
+
+(* ****** ****** *)
+
+fn prerr_interror () = prerr "INTERNAL ERROR (ats_namespace)"
 
 (* ****** ****** *)
 
@@ -78,14 +84,14 @@ implement the_namespace_search {a} (f) = let
     | list_cons (n, ns) => begin
         case+ f (n)  of ~None_vt () => auxlst (f, ns) | ans => ans
       end // end of [list_cons]
-    | list_nil () => None_vt ()
+    | list_nil () => None_vt () // end of [list_nil]
   // end of [auxlst]
   fun auxlstlst (f: !name -<cloptr1> Option_vt a, nss: namelstlst): Option_vt a =
     case+ nss of
     | list_cons (ns, nss) => begin
         case+ auxlst (f, ns) of ~None_vt () => auxlstlst (f, nss) | ans => ans
       end // end of [auxlstlst]
-    | list_nil () => None_vt ()
+    | list_nil () => None_vt () // end of [list_nil]
   // end of [auxlstlst]
 in
   case+ auxlst (f, !the_namelst) of
@@ -97,10 +103,8 @@ end // end of [the_namespace_search]
 implement the_namespace_pop () = let
 
 fn pop_err (): void = begin
-  prerr "Internal Error: ";
-  prerr THIS_FILE;
-  prerr ": [pop]: [the_namlstlst] is empty";
-  prerr_newline ();
+  prerr_interror ();
+  prerr ": pop_err: the_namlstlst is empty"; prerr_newline ();
   exit (1)
 end // end of [pop_err]
 
@@ -135,27 +139,24 @@ end // end of [the_namespace_save]
 
 implement the_namespace_restore () = let
   fn err (): void = begin
-    prerr "Internal Error: ";
-    prerr THIS_FILE;
-    prerr ": the_namespace_restore: [the_savedlst] is empty";
-    prerr_newline ();
+    prerr_interror ();
+    prerr ": the_namespace_restore: the_savedlst is empty"; prerr_newline ();
     exit (1)
   end // end of [err]
 in
   case+ !the_savedlst of
   | list_cons (x, xs) => begin
       !the_savedlst := xs; !the_namelst := x.0; !the_namelstlst := x.1
-    end
-  | list_nil () => err ()
+    end // end of [list_cons]
+  | list_nil () => err () // end of [list_nil]
 end // end of [the_namespace_restore]
 
 (* ****** ****** *)
 
 implement the_namespace_localjoin () = let
   fn err (): void = begin
-    prerr "Internal Error: ";
-    prerr THIS_FILE;
-    prerr ": the_namespace_localjoin: [the_namelstlst] is too short";
+    prerr_interror ();
+    prerr ": the_namespace_localjoin: the_namelstlst is too short";
     prerr_newline ();
     exit (1)
   end // end of [err]

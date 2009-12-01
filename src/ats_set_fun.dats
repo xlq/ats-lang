@@ -31,8 +31,8 @@
 
 (* ****** ****** *)
 
-// Time: October 2007
 // Author: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
+// Time: October 2007
 
 (* ****** ****** *)
 
@@ -351,8 +351,8 @@ implement{a} avl_split_br
         !rp := avl_join_r<a> (e, !rp, r); (lpf, rpf | tag)
       end else begin
         !rp := avl_join_l<a> (e, !rp, r); (lpf, rpf | tag)
-      end
-    end
+      end // end of [if]
+    end // end of [~]
   | 1 => let
       val (lpf, rpf | tag) = avl_split (lpf, rpf | r, pred, lp, rp)
       val lh = avl_height l and rlh' = avl_height !lp
@@ -361,11 +361,11 @@ implement{a} avl_split_br
         !lp := avl_join_r<a> (e, l, !lp); (lpf, rpf | tag)
       end else begin
         !lp := avl_join_l<a> (e, l, !lp); (lpf, rpf | tag)
-      end
-    end
+      end // end of [ 1]
+    end // end of [if]
   | 0 => begin
       !lp := l; !rp := r; (lpf, rpf | 1)
-    end
+    end // end of [0]
 end // end of [avl_split_br]
 
 (* ****** ****** *)

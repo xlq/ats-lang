@@ -36,7 +36,8 @@
 
 (* ****** ****** *)
 
-staload "ats_symbol.sats"
+staload Sym = "ats_symbol.sats"
+typedef symbol_t = $Sym.symbol_t
 
 (* ****** ****** *)
 

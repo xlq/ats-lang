@@ -75,6 +75,11 @@ assume symenv_t = symenv
 
 (* ****** ****** *)
 
+// this one is used in other templates
+fn{} prerr_interror () = prerr "INTERNAL ERROR (ats_symenv)"
+
+(* ****** ****** *)
+
 implement{itm} symmap_search (m, k) =
   $Map.map_search<sym_t,itm> (m, k)
 
@@ -215,13 +220,13 @@ end // end of [symenv_pervasive_search]
 (* ****** ****** *)
 
 implement{itm} symenv_pop (env) = let
+//
   fn abort (): symmap itm = begin
-    prerr "Internal Error: "; prerr THIS_FILE;
-    prerr ": [symenv_pop]: [env.maplst] is empty";
-    prerr_newline ();
+    prerr_interror ();
+    prerr ": symenv_pop: env.maplst is empty"; prerr_newline ();
     exit {symmap itm} (1)
   end // [abort]
-
+//
   val m = let
     val (pfbox | p_ms) = ref_get_view_ptr env.maplst
     prval vbox pf_ms = pfbox
@@ -290,14 +295,13 @@ end // end of [symenv_save]
 
 implement{itm} symenv_restore (env) = let
   viewtypedef mms = @(symmap itm, symmaplst itm)
-
+//
   fn abort (): mms = begin
-    prerr "Internal Error: "; prerr THIS_FILE;
-    prerr ": [symenv_restore]: [env.savedlst] is empty";
-    prerr_newline ();
+    prerr_interror ();
+    prerr ": symenv_restore: env.savedlst is empty"; prerr_newline ();
     exit {mms} (1)
   end // end of [abort]
-
+//
   val (m, ms) = let
     val (vbox pf_saved | p_saved) = ref_get_view_ptr env.savedlst
   in
@@ -338,13 +342,13 @@ end // end of [symenv_top]
 implement symenv_reftop_get (env) = env.map
 
 implement{itm} symenv_localjoin (env) = let
+//
   fn abort (): symmap itm = begin
-    prerr "Internal Error: "; prerr THIS_FILE;
-    prerr ": [symenv_localjoin]: [env.maplst] is empty";
-    prerr_newline ();
+    prerr_interror ();
+    prerr ": symenv_localjoin: env.maplst is empty"; prerr_newline ();
     exit {symmap itm} (1)
   end // end of [symenv_localjoint]
-
+//
   val m1 = m where {
     val (vbox pf_ms | p_ms) = ref_get_view_ptr env.maplst
     val m = (case+ !p_ms of

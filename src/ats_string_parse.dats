@@ -67,8 +67,8 @@ implement s2exp_make_printf_c_argtypes (fats) = let
     case+ fats of
     | ~list_vt_cons (fat, fats) => begin
         list_cons (s2exp_make_printf_c_argtype fat, aux fats)
-      end
-    | ~list_vt_nil () => list_nil ()
+      end // end of [list_vt_cons]
+    | ~list_vt_nil () => list_nil () // end of [list_vt_nil]
   end // end of [aux]
 in
   s2exp_tylst (aux fats)

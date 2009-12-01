@@ -133,7 +133,7 @@ ats_bool_type ats_map_lin_dice (ats_int_type m, ats_int_type n) {
   return ((m + n) * r < m) ? ats_true_bool : ats_false_bool ;
 }
 
-%}
+%} // end of [%{^]
 
 (* ****** ****** *)
 
@@ -243,12 +243,12 @@ in
       val ans = bst_select<key,itm> (!p_tl, s)
     in
       fold@ {key,itm} (t); ans
-    end
+    end // end of [~1]
   |  1 => let
       val ans = bst_select<key,itm> (!p_tr, s-nl-1)
     in
       fold@ {key,itm} (t); ans
-    end
+    end // end of [ 1]
   |  _ (* 0 *) => (fold@ {key,itm} (t); i)
 end // end of [bst_select]
 
@@ -306,6 +306,7 @@ implement map_make (cmp) = MAP (cmp, BSTnil ())
 
 implement{key,item} map_free (m) =
   let val+ ~MAP (cmp, bst) = m in bst_free bst end
+// end of [map_free]
 
 implement{key,item} map_clean (m) = let
   val+ MAP (cmp, !p_bst) = m in
