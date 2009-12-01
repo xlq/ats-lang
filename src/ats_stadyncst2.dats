@@ -58,6 +58,10 @@ overload prerr with $Sym.prerr_symbol
 
 (* ****** ****** *)
 
+fn prerr_interror () = prerr "INTERNAL ERROR (ats_stadyncst2)"
+
+(* ****** ****** *)
+
 typedef s2cstref_struct =
   struct { sym= sym_t, cst= Option s2cst_t }
 
@@ -102,8 +106,8 @@ in
     in
       case+ os2c of
       | Some s2c => s2c | None () => begin
-          prerr "INTERNAL ERROR";
-          prerr ": [ats_stadyncst2]: s2cstref_cst_get: ";
+          prerr_interror ();
+          prerr ": s2cstref_cst_get: ";
           prerr "the pervasive static constant [";
           prerr id; prerr "] is not available.";
           prerr_newline ();
@@ -122,10 +126,8 @@ in
       val s2t_res = (case+ s2cst_srt_get s2c of
       | S2RTfun (_, s2t_res) => s2t_res
       | _ => begin
-          prerr "INTERNAL ERROR";
-          prerr ": [ats_stadyncst2]: s2cstref_exp_get: s2c = ";
-          prerr s2c;
-          prerr_newline ();
+          prerr_interror ();
+          prerr ": s2cstref_exp_get: s2c = "; prerr s2c; prerr_newline ();
           $Err.abort {s2rt} ()
         end // end of [_]
       ) : s2rt // end of [val]
@@ -435,8 +437,8 @@ in
     in
       case+ od2c of
       | Some d2c => d2c | None () => begin
-          prerr "INTERNAL ERROR";
-          prerr ": [ats_stadyncst2]: d2conref_con_get: ";
+          prerr_interror ();
+          prerr ": d2conref_con_get: ";
           prerr "the pervasive dynamic constructor [";
           prerr id; prerr "] is not available.";
           prerr_newline ();
@@ -514,8 +516,8 @@ in
     in
       case+ od2c of
       | Some d2c => d2c | None () => begin
-          prerr "INTERNAL ERROR";
-          prerr ": [ats_stadyncst2]: d2cstref_cst_get: ";
+          prerr_interror ();
+          prerr ": d2cstref_cst_get: ";
           prerr "the pervasive dynamic constant [";
           prerr id; prerr "] is not available.";
           prerr_newline ();
@@ -663,9 +665,8 @@ fn un_s2exp_s2cstref_1
           case+ s2es_arg of
           | list_cons (s2e, list_nil ()) => Some_vt (s2e)
           | _ => begin
-              prerr "INTERNAL ERROR";
-              prerr ": [ats_stadyncst2]: un_s2exp_s2cref: s2c = ";
-              prerr s2c; prerr_newline ();
+              prerr_interror ();
+              prerr ": un_s2exp_s2cref: s2c = "; prerr s2c; prerr_newline ();
               $Err.abort {Option_vt s2exp} ()
             end // end of [_]
         ) else (
@@ -688,9 +689,8 @@ fn un_s2exp_s2cstref_2
               Some_vt @(s2e1, s2e2)
             // end of [list_cons (list_cons (list_nil))]
           | _ => begin
-              prerr "INTERNAL ERROR";
-              prerr ": [ats_stadyncst2]: un_s2exp_s2cref: s2c = ";
-              prerr s2c; prerr_newline ();
+              prerr_interror ();
+              prerr ": un_s2exp_s2cref: s2c = "; prerr s2c; prerr_newline ();
               $Err.abort {Option_vt @(s2exp, s2exp)} ()
             end // end of [_]
         else None_vt ()
@@ -1084,4 +1084,4 @@ end // end of [sizeof_viewt0ype_int_assume]
 
 (* ****** ****** *)
 
-(* end of [ats_stacst2.dats] *)
+(* end of [ats_stadyncst2.dats] *)

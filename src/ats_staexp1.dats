@@ -365,13 +365,15 @@ fun aux (e0: e1xp):<cloptr1> s1exp = case+ e0.e1xp_node of
   | E1XPlist es => s1exp_list (loc0, aux_list es)
   | _ => begin
       prerr loc0;
-      prerr ": illegal static expression.";
-      prerr_newline ();
+      prerr "INTERNAL ERROR (ats_staexp1)";
+      prerr ": illegal static expression."; prerr_newline ();
       $Err.abort ()
-    end
+    end // end of [_]
+// end of [aux]
 
 and aux_list (es0: e1xplst):<cloptr1> s1explst = case+ es0 of
   | cons (e, es) => cons (aux e, aux_list es) | nil () => nil ()
+// end of [aux_list]
 
 in
   aux e0
@@ -386,15 +388,18 @@ implement wths1explst_is_none (wths1es) = begin case+ wths1es of
 end // end of [wths1explst_is_none]
 
 implement wths1explst_reverse (wths1es) = let
-  fun aux (wths1es: wths1explst, res: wths1explst): wths1explst =
-    case+ wths1es of
+  fun aux (
+      wths1es: wths1explst
+    , res: wths1explst
+    ) : wths1explst = case+ wths1es of
     | WTHS1EXPLSTcons_some (refval, s1e, wths1es) => begin
         aux (wths1es, WTHS1EXPLSTcons_some (refval, s1e, res))
       end
     | WTHS1EXPLSTcons_none (wths1es) => begin
         aux (wths1es, WTHS1EXPLSTcons_none res)
       end
-    | WTHS1EXPLSTnil () => res
+    | WTHS1EXPLSTnil () => res // end of [WTHS1EXPLSTnil]
+  // end of [aux]
 in
   aux (wths1es, WTHS1EXPLSTnil ())
 end // end of [wths1explst_reverse]

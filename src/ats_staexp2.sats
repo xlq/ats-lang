@@ -31,8 +31,8 @@
 
 (* ****** ****** *)
 
-// Time: October 2007
 // Author: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
+// Time: October 2007
 
 (* ****** ****** *)
 
@@ -143,13 +143,16 @@ and s2rt =
   | S2RTbas of s2rtbas (* base sort *)
   | S2RTfun of (s2rtlst, s2rt) // function sort
   | S2RTtup of s2rtlst (* tuple sort *)
+// end of [s2rt]
 
 and s2rtext = (* extended sort *)
   | S2TEsrt of s2rt
   | S2TEsub of (s2var_t, s2rt, s2explst)
+// end of [s2rtext]
 
 and sp2at_node =
   | SP2Tcon of (s2cst_t, s2varlst)
+// end of [sp2at_node]
 
 and s2kexp =
   | S2KEany
@@ -199,7 +202,7 @@ and s2lab =
       (lab_t, s2exp) (* record/union type *)
   | S2LAB1ind of (* array index *)
       (s2explstlst, s2exp(*element*))
-// en dof [s2lab]
+// end of [s2lab]
 
 and s2exp_node =
   | S2Eapp of (* static application *)

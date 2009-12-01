@@ -7,33 +7,32 @@
 (***********************************************************************)
 
 (*
- * ATS/Anairiats - Unleashing the Potential of Types!
- *
- * Copyright (C) 2002-2008 Hongwei Xi, Boston University
- *
- * All rights reserved
- *
- * ATS is free software;  you can  redistribute it and/or modify it under
- * the terms of  the GNU GENERAL PUBLIC LICENSE (GPL) as published by the
- * Free Software Foundation; either version 3, or (at  your  option)  any
- * later version.
- * 
- * ATS is distributed in the hope that it will be useful, but WITHOUT ANY
- * WARRANTY; without  even  the  implied  warranty  of MERCHANTABILITY or
- * FITNESS FOR A PARTICULAR PURPOSE.  See the  GNU General Public License
- * for more details.
- * 
- * You  should  have  received  a  copy of the GNU General Public License
- * along  with  ATS;  see the  file COPYING.  If not, please write to the
- * Free Software Foundation,  51 Franklin Street, Fifth Floor, Boston, MA
- * 02110-1301, USA.
- *
- *)
+** ATS/Anairiats - Unleashing the Potential of Types!
+**
+** Copyright (C) 2002-2008 Hongwei Xi, Boston University
+**
+** All rights reserved
+**
+** ATS is free software;  you can  redistribute it and/or modify it under
+** the terms of  the GNU GENERAL PUBLIC LICENSE (GPL) as published by the
+** Free Software Foundation; either version 3, or (at  your  option)  any
+** later version.
+** 
+** ATS is distributed in the hope that it will be useful, but WITHOUT ANY
+** WARRANTY; without  even  the  implied  warranty  of MERCHANTABILITY or
+** FITNESS FOR A PARTICULAR PURPOSE.  See the  GNU General Public License
+** for more details.
+** 
+** You  should  have  received  a  copy of the GNU General Public License
+** along  with  ATS;  see the  file COPYING.  If not, please write to the
+** Free Software Foundation,  51 Franklin Street, Fifth Floor, Boston, MA
+** 02110-1301, USA.
+*)
 
 (* ****** ****** *)
 
-// March 2008
 // Author: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
+// March 2008
 
 (* ****** ****** *)
 
@@ -56,6 +55,7 @@ staload "ats_string_parse.sats"
 
 fun printf_c_argtypes_free (ts: printf_c_argtypes): void = case+ ts of
   | ~list_vt_cons (_, ts) => printf_c_argtypes_free ts | ~list_vt_nil () => ()
+// end of [printf_c_argtypes_free]
 
 (* ****** ****** *)
 
@@ -76,10 +76,12 @@ extern fun string_contain_char (s: string, c: char): bool
 
 static inline
 ats_bool_type
-ats_printf_c_string_find_char (ats_ptr_type s, ats_char_type c) {
+ats_printf_c_string_find_char (
+  ats_ptr_type s, ats_char_type c
+) {
   void *ans = strchr (s, c) ;
   return (ans ? ats_true_bool : ats_false_bool) ;
-}
+} // end of [ats_printf_c_string_find_char]
 
 %}
 
@@ -112,14 +114,15 @@ fn spec2type_translate
   | _ when sp = 'p' => FAT_c_ptr
   | _ when sp = 's' => FAT_c_string
   | _ => begin
-      prerr "Internal Error";
+      prerr "INTERNAL ERROR (ats_printf_c)";
       prerr ": spec2type_translats: illegal arguments: sp = ";
       prerr sp; prerr_newline ();
-      prerr "Internal Error";
+      prerr "INTERNAL ERROR (ats_printf_c)";
       prerr ": spec2type_translats: illegal arguments: ls = ";
       prerr ls; prerr_newline ();
       $Err.abort ()
-    end
+    end // end of [_]
+// end of [spec2type_translate]
 
 val the_legal_prec_string: string = "aAdeEfFgGiosuxX"
 val the_legal_group_string: string = "dfFgGiu"

@@ -7,40 +7,37 @@
 (***********************************************************************)
 
 (*
- * ATS/Anairiats - Unleashing the Potential of Types!
- *
- * Copyright (C) 2002-2008 Hongwei Xi, Boston University
- *
- * All rights reserved
- *
- * ATS is free software;  you can  redistribute it and/or modify it under
- * the terms of  the GNU GENERAL PUBLIC LICENSE (GPL) as published by the
- * Free Software Foundation; either version 3, or (at  your  option)  any
- * later version.
- * 
- * ATS is distributed in the hope that it will be useful, but WITHOUT ANY
- * WARRANTY; without  even  the  implied  warranty  of MERCHANTABILITY or
- * FITNESS FOR A PARTICULAR PURPOSE.  See the  GNU General Public License
- * for more details.
- * 
- * You  should  have  received  a  copy of the GNU General Public License
- * along  with  ATS;  see the  file COPYING.  If not, please write to the
- * Free Software Foundation,  51 Franklin Street, Fifth Floor, Boston, MA
- * 02110-1301, USA.
- *
- *)
+** ATS/Anairiats - Unleashing the Potential of Types!
+**
+** Copyright (C) 2002-2008 Hongwei Xi, Boston University
+**
+** All rights reserved
+**
+** ATS is free software;  you can  redistribute it and/or modify it under
+** the terms of  the GNU GENERAL PUBLIC LICENSE (GPL) as published by the
+** Free Software Foundation; either version 3, or (at  your  option)  any
+** later version.
+** 
+** ATS is distributed in the hope that it will be useful, but WITHOUT ANY
+** WARRANTY; without  even  the  implied  warranty  of MERCHANTABILITY or
+** FITNESS FOR A PARTICULAR PURPOSE.  See the  GNU General Public License
+** for more details.
+** 
+** You  should  have  received  a  copy of the GNU General Public License
+** along  with  ATS;  see the  file COPYING.  If not, please write to the
+** Free Software Foundation,  51 Franklin Street, Fifth Floor, Boston, MA
+** 02110-1301, USA.
+*)
 
 (* ****** ****** *)
 
-// Time: October 2007
 // Author: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
+// Time: October 2007
 
 (* ****** ****** *)
 
 %{^
-
 #include "ats_counter.cats" /* only needed for [ATS/Geizella] */
-
 %}
 
 (* ****** ****** *)
@@ -68,7 +65,7 @@ typedef d2con_struct = struct { (* builtin or abstract *)
 , d2con_typ= s2exp // type for dynamic constructor
 , d2con_tag= int // tag for dynamic constructor
 , d2con_stamp= stamp_t // uniqueness
-}
+} // end of [d2con_struct]
 
 (* ****** ****** *)
 
@@ -87,27 +84,31 @@ val arity_real = let
   fun aux1 (i: int, s2es: s2explst): s2explst = case+ s2es of
     | list_cons (_, s2es1) => if i > 0 then aux1 (i-1, s2es1) else s2es
     | list_nil () => list_nil ()
+  // end of [aux1]
   fun aux2 (i: int, s2es: s2explst): int = case+ s2es of
     | list_cons (s2e, s2es1) => begin
         if s2exp_is_proof s2e then aux2 (i, s2es1) else aux2 (i+1, s2es1)
-      end
-    | list_nil () => i
+      end // end of [list_cons]
+    | list_nil () => i // end of [list_nil]
+  // end of [aux2]
 in
   aux2 (0, aux1 (npf, arg))
-end
+end // end of [val]
 
 val s2e_d2c = let
   fun aux (s2e: s2exp, s2vpss: List @(s2varlst, s2explst)): s2exp =
     case+ s2vpss of
     | list_cons (s2vps, s2vpss) => begin
         s2exp_uni (s2vps.0, s2vps.1, aux (s2e, s2vpss))
-      end
+      end // end of [list_cons]
     | list_nil () => s2e
+  // end of [aux]
   val s2e_res = case+ ind of
     | Some s2es => s2exp_cstapp (s2c, s2es) | None () => s2exp_cst (s2c)
+  // end of [val]
 in
   aux (s2exp_confun (npf, arg, s2e_res), qua)
-end
+end // end of [val]
 
 val (pf_gc, pf | p) = ptr_alloc_tsz {d2con_struct} (sizeof<d2con_struct>)
 prval () = free_gc_elim {d2con_struct} (pf_gc)
@@ -190,7 +191,7 @@ implement lt_d2con_d2con (d2c1, d2c2) = let
     let val (vbox pf2 | p2) = d2c2 in p2->d2con_stamp end
 in
   $Stamp.lt_stamp_stamp (stamp1, stamp2)
-end
+end // end of [lt_d2con_d2con]
 
 implement lte_d2con_d2con (d2c1, d2c2) = let
   val stamp1 =
@@ -199,7 +200,7 @@ implement lte_d2con_d2con (d2c1, d2c2) = let
     let val (vbox pf2 | p2) = d2c2 in p2->d2con_stamp end
 in
   $Stamp.lte_stamp_stamp (stamp1, stamp2)
-end
+end // end of [lte_d2con_d2con]
 
 implement eq_d2con_d2con (d2c1, d2c2) = let
   val stamp1 =
@@ -208,7 +209,7 @@ implement eq_d2con_d2con (d2c1, d2c2) = let
     let val (vbox pf2 | p2) = d2c2 in p2->d2con_stamp end
 in
   $Stamp.eq_stamp_stamp (stamp1, stamp2)
-end
+end // end of [eq_d2con_d2con]
 
 implement neq_d2con_d2con (d2c1, d2c2) = let
   val stamp1 =
@@ -217,7 +218,7 @@ implement neq_d2con_d2con (d2c1, d2c2) = let
     let val (vbox pf2 | p2) = d2c2 in p2->d2con_stamp end
 in
   $Stamp.neq_stamp_stamp (stamp1, stamp2)
-end
+end // end of [neq_d2con_d2con]
 
 //
 
@@ -229,7 +230,7 @@ fn _compare_d2con_d2con
     let val (vbox pf2 | p2) = d2c2 in p2->d2con_stamp end
 in
   $Stamp.compare_stamp_stamp (stamp1, stamp2)
-end
+end // end of [compare_d2con_d2con]
 
 implement compare_d2con_d2con (d2c1, d2c2) =
   $effmask_all ( _compare_d2con_d2con (d2c1, d2c2) )
@@ -264,8 +265,8 @@ implement fprint_d2conlst {m} (pf | out, d2cs) = let
     | D2CONLSTcons (d2c, d2cs) => begin
         if i > 0 then fprint1_string (pf | out, ", ");
         fprint_d2con (pf | out, d2c); aux (out, i+1, d2cs)
-      end
-    | D2CONLSTnil () => ()
+      end // end of [D2CONLSTcons]
+    | D2CONLSTnil () => () // end of [D2CONLSTnil]
   end // end of [aux]
 in
   aux (out, 0, d2cs)

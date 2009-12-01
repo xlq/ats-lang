@@ -185,7 +185,7 @@ implement posmark_pop () = let
       end // end of [list_vt_cons]
     | ~list_vt_nil () => let
         val xs = $effmask_ref begin
-          prerr "INTERNAL ERROR";
+          prerr "INTERNAL ERROR (ats_posmark)";
           prerr ": posmark_pop: empty stack"; prerr_newline ();
           $Err.abort {lintposmarklst} ()
         end // end of [val]
@@ -255,7 +255,7 @@ implement posmark_insert_extern_end (p) =
 implement posmark_insert_keyword_beg (p) = let
 (*
   val () = begin
-    prerr "posmark_insert_keyword_beg"; prerr_newline ()
+    print "posmark_insert_keyword_beg"; print_newline ()
   end // end of [val]
 *)
 in
@@ -265,7 +265,7 @@ end // end of [posmark_insert_keyword_beg]
 implement posmark_insert_keyword_end (p) = let
 (*
   val () = begin
-    prerr "posmark_insert_keyword_end"; prerr_newline ()
+    print "posmark_insert_keyword_end"; print_newline ()
   end // end of [val]
 *)
 in
@@ -736,13 +736,11 @@ local
 staload "ats_charlst.sats"
 
 fn char_of_xdigit (i: int): char = let
-  val i = (
-    if i >= 10 then let
-      val a = int_of_char 'a' in int_of_char 'a' + i - 10
-    end else begin
-      int_of_char '0' + i
-    end
-  ) : int
+  val i = (if i >= 10 then let
+    val a = int_of_char 'a' in int_of_char 'a' + i - 10
+  end else begin
+    int_of_char '0' + i
+  end) : int // end of [val]
 in
   char_of_int (i)
 end // end of [char_of_xdigit]
@@ -796,7 +794,7 @@ end // end of [local]
 
 val () = ats_posmark_initialize () where {
   extern fun ats_posmark_initialize (): void = "ats_posmark_initialize"
-}
+} // end of [val]
 
 (* ****** ****** *)
 
@@ -838,8 +836,8 @@ ats_void_type ats_posmark_initialize () {
   return ;
 }
 
-%}
+%} // end of [%{$]
 
 (* ****** ****** *)
 
-(* end of [ats_posmark.sats] *)
+(* end of [ats_posmark.dats] *)

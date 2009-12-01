@@ -108,7 +108,8 @@ implement fprint_e1xplst {m} (pf | out, es0) = let
       in
         fprint_e1xp (pf | out, e); aux (out, i+1, es)
       end // end of [cons]
-    | nil () => ()
+    | nil () => () // end of [nil]
+  // end of [aux]
 in
   aux (out, 0, es0)
 end // end of [fprint_e1xplst]
@@ -155,14 +156,17 @@ implement fprint_s1rtlst {m} (pf | out, s1ts0) = let
         val () = if i > 0 then fprint1_string (pf | out, ", ")
       in
         fprint_s1rt (pf | out, s1t); aux (out, i+1, s1ts)
-      end
-    | nil () => ()
+      end // end of [cons]
+    | nil () => () // end of [nil]
+  // end of [aux]
 in
   aux (out, 0, s1ts0)
 end // end of [fprint_s1rtlst]
 
-implement fprint_s1rtopt (pf | out, os1t) = case+ os1t of
+implement fprint_s1rtopt
+  (pf | out, os1t) = case+ os1t of
   | Some s1t => fprint_s1rt (pf | out, s1t) | None () => ()
+// end of [fprint_s1rtopt]
 
 (* ****** ****** *)
 
@@ -182,8 +186,8 @@ in
   case+ s1a.s1arg_srt of
   | Some s1t => begin
       fprint1_string (pf | out, ": "); fprint_s1rt (pf | out, s1t)
-    end
-  | None () => ()
+    end // end of [Some]
+  | None () => () // end of [None]
 end // end of [fprint_s1arg]
 
 fun fprint_s1arglst {m:file_mode}
@@ -194,8 +198,9 @@ fun fprint_s1arglst {m:file_mode}
     | cons (s1a, s1as) => begin
         if i > 0 then fprint1_string (pf | out, ", "); 
         fprint_s1arg (pf | out, s1a); aux (out, i+1, s1as)
-      end
-    | nil () => ()
+      end // end of [cons]
+    | nil () => () // end of [nil]
+  // end of [aux]
 in
   aux (out, 0, s1as)
 end // end of [fprint_s1qualst]
@@ -212,14 +217,14 @@ in
       prstr "S1Qprop(";
       fprint_s1exp (pf | out, s1e);
       prstr ")"
-    end
+    end // end of [S1Qprop]
   | S1Qvars (ids, s1te) => begin
       prstr "S1Qvars(";
       $Syn.fprint_i0delst (pf | out, ids);
       prstr "; ";
       fprint_s1rtext (pf | out, s1te);
       prstr ")"
-    end
+    end // end of [S1Qvars]
 end // end of [fprint_s1qua]
 
 fun fprint_s1qualst {m:file_mode}
@@ -230,8 +235,9 @@ fun fprint_s1qualst {m:file_mode}
     | cons (s1q, s1qs) => begin
         if i > 0 then fprint1_string (pf | out, ", "); 
         fprint_s1qua (pf | out, s1q); aux (out, i+1, s1qs)
-      end
-    | nil () => ()
+      end // end of [cons]
+    | nil () => () // end of [nil]
+  // end of [aux]
 in
   aux (out, 0, s1qs0)
 end // end of [fprint_s1qualst]
@@ -405,8 +411,9 @@ implement fprint_s1explst {m} (pf | out, s1es0) = let
         val () = if i > 0 then fprint1_string (pf | out, ", ")
       in
         fprint_s1exp (pf | out, s1e); aux (out, i+1, s1es)
-      end
-    | nil () => ()
+      end // end of [cons]
+    | nil () => () // end of [nil]
+  // end of [aux]
 in
   aux (out, 0, s1es0)
 end // end of [fprint_s1explst]
@@ -422,8 +429,9 @@ implement fprint_s1explstlst {m} (pf | out, s1ess0) = let
         val () = if i > 0 then fprint1_string (pf | out, "; ")
       in
         fprint_s1explst (pf | out, s1es); aux (out, i+1, s1ess)
-      end
-    | nil () => ()
+      end // end of [cons]
+    | nil () => () // end of [nil]
+  // end of [aux]
 in
   aux (out, 0, s1ess0)
 end // end of [fprint_s1explstlst]
@@ -457,6 +465,7 @@ implement fprint_tmps1explstlst {m} (pf | out, ts1ess0) = let
         fprint_s1explst (pf | out, s1es); aux (out, i + 1, ts1ess)
       end // end of [TMPS1EXPLSTLSTcons]
     | TMPS1EXPLSTLSTnil () => ()
+  // end of [aux]
 in
   aux (out, 0, ts1ess0)
 end // end of [fprint_s1explstlst]

@@ -374,6 +374,7 @@ datatype s1vararg =
   | S1VARARGone (* {..} *)
   | S1VARARGall (* {...} *)
   | S1VARARGseq of s1arglst
+// end of [s1vararg]
 
 typedef s1vararglst = List s1vararg
 
@@ -381,6 +382,7 @@ datatype s1exparg_node =
   | S1EXPARGone (* {..} *)
   | S1EXPARGall (* {...} *)
   | S1EXPARGseq of s1explst
+// end of [s1exparg_node]
 
 typedef s1exparg = '{
   s1exparg_loc= loc_t, s1exparg_node= s1exparg_node
@@ -471,6 +473,7 @@ datatype witht1ype =
   | WITHT1YPEtype of s1exp
   | WITHT1YPEview of s1exp
   | WITHT1YPEviewtype of s1exp
+// end of [witht1ype]
 
 (* ****** ****** *)
 

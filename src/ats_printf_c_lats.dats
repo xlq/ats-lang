@@ -17,6 +17,7 @@ staload "ats_string_parse.sats"
 
 fun printf_c_argtypes_free (ts: printf_c_argtypes): void = case+ ts of
   | ~list_vt_cons (_, ts) => printf_c_argtypes_free ts | ~list_vt_nil () => ()
+// end of [printf_c_argtypes_free]
 
 (* ****** ****** *)
 
@@ -37,10 +38,12 @@ extern fun string_contain_char (s: string, c: char): bool
 
 static inline
 ats_bool_type
-ats_printf_c_string_find_char (ats_ptr_type s, ats_char_type c) {
+ats_printf_c_string_find_char (
+  ats_ptr_type s, ats_char_type c
+) {
   void *ans = strchr (s, c) ;
   return (ans ? ats_true_bool : ats_false_bool) ;
-}
+} // end of [ats_printf_c_string_find_char]
 
 %}
 
@@ -73,14 +76,15 @@ fn spec2type_translate
   | _ when sp = 'p' => FAT_c_ptr
   | _ when sp = 's' => FAT_c_string
   | _ => begin
-      prerr "Internal Error";
+      prerr "INTERNAL ERROR (ats_printf_c)";
       prerr ": spec2type_translats: illegal arguments: sp = ";
       prerr sp; prerr_newline ();
-      prerr "Internal Error";
+      prerr "INTERNAL ERROR (ats_printf_c)";
       prerr ": spec2type_translats: illegal arguments: ls = ";
       prerr ls; prerr_newline ();
       $Err.abort ()
-    end
+    end // end of [_]
+// end of [spec2type_translate]
 
 val the_legal_prec_string: string = "aAdeEfFgGiosuxX"
 val the_legal_group_string: string = "dfFgGiu"

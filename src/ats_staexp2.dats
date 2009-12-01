@@ -31,15 +31,13 @@
 
 (* ****** ****** *)
 
-// Time: October 2007
 // Author: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
+// Time: October 2007
 
 (* ****** ****** *)
 
 %{^
-
 #include "ats_counter.cats" /* only needed for [ATS/Geizella] */
-
 %}
 
 (* ****** ****** *)
@@ -63,6 +61,10 @@ staload "ats_staexp2.sats"
 (* ****** ****** *)
 
 overload = with $Stamp.eq_stamp_stamp
+
+(* ****** ****** *)
+
+fn prerr_interror () = prerr "INTERNAL ERROR (ats_staexp2)"
 
 (* ****** ****** *)
 
@@ -119,22 +121,22 @@ implement s2rt_viewt0ype = S2RTbas s2tb_viewt0ype
 
 (* ****** ****** *)
 
-implement s2rt_linearize (s2t: s2rt): s2rt = let
+implement s2rt_linearize
+  (s2t: s2rt): s2rt = let
   var s2t: s2rt = s2t; var err: int = 0
   val () = case+ s2t of
     | S2RTbas s2tb => begin case+ s2tb of
       | S2RTBASimp (name, prf, lin) => begin
           s2t := S2RTbas (S2RTBASimp (name, prf, 1))
-        end
+        end // end of [S2RTBASimp]
       | _ => err := 1
-      end
+      end // end of [S2RTbas]
     | _ => err := 1
-  val () =
-    if err > 0 then begin
-      prerr "Internal Error: s2rt_linearize: s2t = "; prerr s2t;
-      prerr_newline ();
-      $Err.abort {void} ()
-    end
+  val () = if err > 0 then begin
+    prerr_interror ();
+    prerr ": s2rt_linearize: s2t = "; prerr s2t; prerr_newline ();
+    $Err.abort {void} ()
+  end // end of [val]
 in
   s2t
 end // end of [s2rt_linearize]
@@ -249,8 +251,7 @@ fun loop (s2t: s2rt, s2e: s2exp, s2ess: s2explstlst): s2exp =
         loop (s2t, s2e, s2ess)
       end // end of [Some_vt]
     | ~None_vt () => begin
-        prerr "Internal Error: s2exp_app_wind";
-        prerr_newline ();
+        prerr_interror (); prerr ": s2exp_app_wind"; prerr_newline ();
         $Err.abort ()
       end // end of [None_vt]
     end (* end of [::] *)
@@ -294,7 +295,7 @@ in
       s2exp_app_srt (s2ts_arg_s2t_res.1, s2e_fun, s2es_arg)
     end // end of [Some_vt]
   | ~None_vt () => begin
-      prerr "Internal Error: ";
+      prerr_interror ();
       prerr "s2exp_cstapp: the sort of the static constant [";
       prerr s2c_fun;
       prerr "] is not functional: ";
@@ -518,7 +519,7 @@ ats_staexp2_eqref_s2exp_s2exp
   return (s2e1 == s2e2 ? ats_true_bool : ats_false_bool) ;
 } /* end of [ats_staexp2_eqref_s2exp_s2exp] */
 
-%}
+%} // end of [%{$]
 
 (* ****** ****** *)
 
