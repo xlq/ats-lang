@@ -41,9 +41,7 @@
 (* ****** ****** *)
 
 %{^
-
 #include "ats_intinf.cats" // this for the ATS/Geizeilla compiler
-
 %}
 
 (* ****** ****** *)
@@ -86,6 +84,14 @@ staload "ats_trans3.sats"
 overload = with $Lab.eq_label_label
 overload prerr with $Loc.prerr_location
 overload prerr with $Lab.prerr_label
+
+(* ****** ****** *)
+
+fn prerr_interror () = prerr "INTERNAL ERROR (ats_trans3_exp_dn)"
+
+fn prerr_loc_interror (loc: loc_t) = begin
+  $Loc.prerr_location loc; prerr ": INTERNAL ERROR (ats_trans3_exp_dn)"
+end // end of [prerr_loc_interror]
 
 (* ****** ****** *)
 
@@ -137,6 +143,7 @@ fn d2exp_funclo_opt_of_d2exp
   case+ :(ofc0: Option_vt funclo) => d2e0.d2exp_node of
   | D2Eann_funclo (d2e, fc) => (ofc0 := Some_vt fc; d2e)
   | _ => (ofc0 := None_vt (); d2e0)
+// end of [d2exp_funclo_opt_of_d2exp]
 
 viewtypedef s2effopt_vt = Option_vt s2eff
 fn d2exp_s2eff_opt_of_d2exp
@@ -144,6 +151,7 @@ fn d2exp_s2eff_opt_of_d2exp
   case+ :(os2fe0: s2effopt_vt) => d2e0.d2exp_node of
   | D2Eann_seff (d2e, s2fe) => (os2fe0 := Some_vt s2fe; d2e)
   | _ => (os2fe0 := None_vt (); d2e0)
+// end of [d2exp_s2eff_opt_of_d2exp]
 
 (* ****** ****** *)
 
@@ -151,14 +159,14 @@ implement d3exp_tr_dn (d3e, s2e) = let
 (*
   val () = begin
     print "d3exp_tr_dn: d3e.d3exp_typ = "; print d3e.d3exp_typ; print_newline ()
-  end
+  end // end of [val]
   val () = begin
     print "d3exp_tr_dn: s2e = "; print s2e; print_newline ()
-  end
+  end // end of [val]
 *)
 in
   $SOL.s2exp_tyleq_solve (d3e.d3exp_loc, d3e.d3exp_typ, s2e)
-end
+end // end of [d3exp_tr_dn]
 
 (* ****** ****** *)
 
@@ -294,9 +302,8 @@ in
           val s2i = (case+ s2es_arg of
             | list_cons (s2e, _) => s2e
             | _ => begin
-                prerr "INTERNAL ERROR";
-                prerr ": [ats_trans3_exp_dn]: d2exp_int_tr_dn: Int_int_t0ype";
-                prerr_newline ();
+                prerr_interror ();
+                prerr ": d2exp_int_tr_dn: Int_int_t0ype"; prerr_newline ();
                 $Err.abort {s2exp} ()
               end // end of [_]
           ) : s2exp
@@ -309,9 +316,8 @@ in
           val s2i = (case+ s2es_arg of
             | list_cons (s2e, _) => s2e
             | _ => begin
-                prerr "INTERNAL ERROR";
-                prerr ": [ats_trans3_exp_dn]: d2exp_int_tr_dn: Int_int_t0ype";
-                prerr_newline ();
+                prerr_interror ();
+                prerr ": d2exp_int_tr_dn: Int_int_t0ype"; prerr_newline ();
                 $Err.abort {s2exp} ()
               end // end of [_]
           ) : s2exp
@@ -434,9 +440,8 @@ in
       | _ when s2cstref_cst_equ (String_int_type, s2c) => let
           val s2i = (case+ s2es_arg of
             | list_cons (s2e, _) => s2e | _ => begin
-                prerr "INTERNAL ERROR";
-                prerr ": [ats_trans3_exp_dn]: d2exp_string_tr_dn: String_int_type";
-                prerr_newline ();
+                prerr_interror ();
+                prerr ": d2exp_string_tr_dn: String_int_type"; prerr_newline ();
                 $Err.abort {s2exp} ()
               end // end of [_]
           ) : s2exp // end of [val]
@@ -449,9 +454,8 @@ in
       | _ when s2cstref_cst_equ (Printf_c_types_type, s2c) => let
           val s2e_arg = (case+ s2es_arg of
             | list_cons (s2e, _) => s2e | list_nil () => begin
-                prerr "INTERNAL ERROR";
-                prerr ": [ats_trans3_exp_dn]: d2exp_string_tr_dn: Printf_c_types_type";
-                prerr_newline ();
+                prerr_interror ();
+                prerr ": d2exp_string_tr_dn: Printf_c_types_type"; prerr_newline ();
                 $Err.abort {s2exp} ()
               end // end of [list_nil]
           ) : s2exp // end of [val]
@@ -827,12 +831,12 @@ in
   | S2Eapp (s2e_fun, s2es_arg) when
       s2cstref_exp_equ (Bool_bool_t0ype, s2e_fun) => let
       val s2e_arg = case+ s2es_arg of
-        | cons (s2e, _) => s2e
-        | nil _ => begin
-            prerr loc0; prerr ": INTERNAL ERROR";
-            prerr ": [ats_trans3_exp_dn]: assert_bool_tr_dn"; prerr_newline ();
-            $Err.abort {s2exp} ()
-          end // end of [nil]
+      | cons (s2e, _) => s2e
+      | nil _ => begin
+          prerr_loc_interror loc0;
+          prerr ": assert_bool_tr_dn"; prerr_newline ();
+          $Err.abort {s2exp} ()
+        end // end of [nil]
       // end of [s2e_arg]
     in
       trans3_env_hypo_add_eqeq (loc0, s2exp_bool b, s2e_arg)
@@ -844,19 +848,20 @@ end // end of [assert_bool_tr_dn]
 
 (* ****** ****** *)
 
-fn m2atch_tr_up (m2at: m2atch): m3atch = let
+fn m2atch_tr_up
+  (m2at: m2atch): m3atch = let
   val loc0 = m2at.m2atch_loc
   val d3e = d2exp_tr_up (m2at.m2atch_exp)
   val op3t = (
     case+ m2at.m2atch_pat of
     | Some p2t => begin
         Some (p2at_tr_dn (p2t, d3e.d3exp_typ))
-      end
+      end // end of [Some]
     | None () => let
         val () = assert_bool_tr_dn (loc0, true, d3e.d3exp_typ)
       in
         None ()
-      end
+      end // end of [None]
   ) : p3atopt
 in
   m3atch_make (loc0, d3e, op3t)

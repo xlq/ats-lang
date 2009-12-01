@@ -132,6 +132,12 @@ fn prerr_loc_error3 (loc: loc_t): void =
   ($Loc.prerr_location loc; prerr ": error(3)")
 // end of [prerr_loc_error3]
 
+fn prerr_interror () = prerr "INTERNAL ERROR (ats_trans3_exp_up)"
+
+fn prerr_loc_interror (loc: loc_t) = begin
+  $Loc.prerr_location loc; prerr ": INTERNAL ERROR (ats_trans3_exp_up)"
+end // end of [prerr_loc_interror]
+
 (* ****** ****** *)
 
 typedef funclo =  $Syn.funclo
@@ -350,18 +356,17 @@ fun d3lab1lst_of_d3lab0lst_s2lablst
               d3lab1_ind (d3l.d3lab0_loc, d3ess, s2e_elt)
             end // end of [S2LAB1ind]
           | _ => begin
-              prerr "INTERNAL ERROR";
-              prerr ": [ats_trans3_exp_up]: d3lab1lst_of_d3lab0lst_s2lablst: D3LAB0ind";
-              prerr_newline ();
+              prerr_interror ();
+              prerr ": d3lab1lst_of_d3lab0lst_s2lablst: D3LAB0ind"; prerr_newline ();
               $Err.abort {d3lab1} ()
             end // end of [_]
           end (* end of [D3LAB0ind] *)
         | D3LAB0lab l => begin case+ s2l of
           | S2LAB1lab (l, s2e) => d3lab1_lab (d3l.d3lab0_loc, l, s2e)
           | _ => begin
-              prerr "INTERNAL ERROR";
-              prerr ": [ats_trans3_exp_up]: d3lab1lst_of_d3lab0lst_s2lablst: D3LAB0lab: s2l = ";
-              prerr s2l; prerr_newline ();
+              prerr_interror ();
+              prerr ": d3lab1lst_of_d3lab0lst_s2lablst: D3LAB0lab: s2l = "; prerr s2l;
+              prerr_newline ();
               $Err.abort {d3lab1} ()
             end // end of [_]
           end (* end of [D3LAB0lab] *)
@@ -371,9 +376,8 @@ fun d3lab1lst_of_d3lab0lst_s2lablst
     end // end of [cons, cons]
   | (list_nil (), list_nil ()) => list_nil ()
   | (_, _) => begin
-      prerr "INTERNAL ERROR";
-      prerr ": [ats_trans3_exp_up]: d3lab1lst_of_d3lab0lst_s2lablst: length mismatch";
-      prerr_newline ();
+      prerr_interror ();
+      prerr ": d3lab1lst_of_d3lab0lst_s2lablst: length mismatch"; prerr_newline ();
       $Err.abort ()
     end // end of [_, _]
 end // end of [d3lab1lst_of_d3lab0lst_s2lablst]
@@ -398,17 +402,14 @@ fn d3exp_clo_restore (d3e: d3exp): d3exp = let
           end // end of [_]
       end // end of [S2Efun]
     | _ => begin
-        prerr loc;
-        prerr ": INTERNAL ERROR";
-        prerr ": [ats_trans3_exp_up]: d3exp_clo_restore: not a function type: s2e_fun = ";
-        prerr s2e_fun; prerr_newline ();
+        prerr_loc_interror loc;
+        prerr ": d3exp_clo_restore: s2e_fun = "; prerr s2e_fun; prerr_newline ();
         $Err.abort {s2exp} ()
       end // end of [_]
-  ) : s2exp
+  ) : s2exp // end of [val s2e_fun_new]
   val refval = (case+ fc0 of
-    | $Syn.FUNCLOclo knd => if knd = 0 then 1 else 0
-    | $Syn.FUNCLOfun () => 0
-  ) : int
+    | $Syn.FUNCLOclo knd => if knd = 0 then 1 else 0 | $Syn.FUNCLOfun () => 0
+  ) : int // end of [val refval]
   val freeknd = d3exp_lval_typ_set_arg (refval, d3e, s2e_fun_new)
 in
   d3exp_refarg (loc, s2e_fun_new, refval, freeknd, d3e)
@@ -481,8 +482,8 @@ fun d23explst_tr_up (d23es: d23explst): d3explst = begin
       ) : d3exp
     in
       cons (d3e, d23explst_tr_up d23es)
-    end
-  | nil () => nil ()
+    end // end of [cons]
+  | nil () => nil () // end of [nil]
 end // end of [d23explst_tr_up]
 
 fn d23explst_tr_dn {n:nat}
@@ -497,7 +498,7 @@ fn d23explst_tr_dn {n:nat}
         val d3e = (case+ d23e of
           | D23Ed2exp d2e => d2exp_tr_dn (d2e, s2e)
           | D23Ed3exp d3e => (d3exp_tr_dn (d3e, s2e); d3e)
-        ) : d3exp
+        ) : d3exp // end of [val]
       in
         cons (d3e, aux (d23es, s2es))
       end // end of [cons]
@@ -527,7 +528,7 @@ fun d2explst_arg_tr_up (d2es: d2explst): d23explst = begin case+ d2es of
     in
       cons (d23e, d2explst_arg_tr_up d2es)
     end // end of [cons]
-  | nil () => nil ()
+  | nil () => nil () // end of [nil]
 end // end of [d2explst_arg_tr_up]
 
 fun d23explst_open_and_add (d23es: d23explst): void = begin
@@ -539,7 +540,7 @@ fun d23explst_open_and_add (d23es: d23explst): void = begin
     in
       d23explst_open_and_add d23es
     end // end of [cons]
-  | nil () => ()
+  | nil () => () // end of [nil]
 end (* end of [d23explst_open_and_add] *)
 
 (* ****** ****** *)
@@ -551,7 +552,7 @@ fn d23exp_app_tr_up
   val () = begin
     print "d23exp_app_tr_up: d3e_fun.d3exp_typ = "; print d3e_fun.d3exp_typ;
     print_newline ()
-  end
+  end // end of [val]
 *)
   val loc_fun = d3e_fun.d3exp_loc
   val s2e_fun = s2exp_uni_instantiate_all (loc_fun, d3e_fun.d3exp_typ)
@@ -559,7 +560,7 @@ fn d23exp_app_tr_up
 (*
   val () = begin
     print "d23exp_app_tr_up: s2e_fun = "; print s2e_fun; print_newline ()
-  end
+  end // end of [val]
 *)
 in
   case+ s2e_fun.s2exp_node of
@@ -594,7 +595,7 @@ in
       val () = the_effect_env_check_seff (loc_app, s2fe_fun)
     in
       d3exp_app_dyn (loc_app, s2e_res, s2fe_fun, d3e_fun, npf, d3es_arg)
-    end
+    end // end of [S2Efun]
   | S2EVar s2V_fun => let
       val d3es_arg = d23explst_tr_up d23es_arg
       val s2es_arg = aux (npf, d3es_arg) where {
@@ -623,7 +624,7 @@ in
       val loc_app = $Loc.location_combine (loc_fun, loc_arg)
     in
       d3exp_app_dyn (loc_app, s2e_res, s2fe, d3e_fun, npf, d3es_arg)
-    end
+    end // end of [S2EVar]
   | _ => begin
       prerr_loc_error3 loc_fun;
       $Deb.debug_prerrf (": %s: d23exp_app_tr_dn", @(THISFILENAME));
@@ -632,7 +633,7 @@ in
       prerr "].";
       prerr_newline ();
       $Err.abort {d3exp} ()
-    end
+    end // end of [_]
 end // end of [d23exp_app_tr_up]
 
 (* ****** ****** *)
@@ -698,7 +699,7 @@ in
       val d3e_fun = d23exp_app_tr_up (d3e_fun, loc_arg, npf, d23es_arg)
     in
       d2exp_apps_tr_up (d3e_fun, d2as)
-    end
+    end // end of [_]
 end // end of [d2exp_apps_dyn_tr_up]
 
 (* ****** ****** *)
@@ -746,10 +747,10 @@ in
   case+ d3e.d3exp_node of
   | D3Ecst d2c => begin
       fprint_d2cst (pf | out, d2c)
-    end
+    end // end of [D3Ecst]
   | D3Evar d2v => begin
       fprint_d2var (pf | out, d2v)
-    end
+    end // end of [D3Evar]
   | _ => begin
       fprint1_string (pf | out, "Internal Error: fprint_xyz_root: d3e = ");
       fprint_d3exp (pf | out, d3e);
@@ -804,7 +805,7 @@ in
 (*
           val () = begin
             print "aux_filter: xyz_new = "; print_xyz xyz_new; print_newline ()
-          end
+          end // end of [val]
 *)
         in
           xyz_new :: aux_filter (xyzs, s2kes)
@@ -817,8 +818,8 @@ end // end of [aux_filter]
 fun aux_select0 (xyzs: xyzlst_t): xyzlst_t = begin case+ xyzs of
   | cons (xyz, xyzs) => begin
       if xyz.2 > 0 then aux_select0 xyzs else cons (xyz, aux_select0 xyzs)
-    end
-  | nil () => nil ()
+    end // end of [cons]
+  | nil () => nil () // end of [nil]
 end // end of [aux_select0]
 
 fun aux1
@@ -931,25 +932,25 @@ in
           case+ xyzs of
           | cons (xyz, nil ()) => begin 
               aux1 (loc0, xyz.0, $Lst.list_reverse d3as, nil ())
-            end
+            end // end of [cons (nil)]
           | nil _ => err_nil (loc0, d2s)
           | cons (xyz1, cons (xyz2, _)) => begin
               err_cons_cons (loc0, d2s, xyz1, xyz2)
-            end
+            end // end of [cons (cons)]
         end // end of [let]
       | list_cons (d2a, d2as) => begin case+ d2a of
         | D2EXPARGsta s2as => let
             val d3a = D3EXPARGsta s2as
           in
             aux2 (loc0, d2s, d3a :: d3as, xyzs, d2as)
-          end
+          end // end of [D2EXPARGsta]
         | D2EXPARGdyn (loc_arg, npf, d2es) => let
             val d3es = d23explst_tr_up (d2explst_arg_tr_up d2es)
 (*
             val () = begin
               print "d2exp_apps_sym_tr_up: aux2: s2es = ";
               print (d3explst_typ_get d3es); print_newline ()
-            end
+            end // end of [val]
 *)
             val d3a = D3EXPARGdyn (loc_arg, npf, d3es)
             val xyzs = aux_filter (xyzs, s2kexplst_make_d3explst d3es)
@@ -1012,7 +1013,7 @@ fn d2exp_apps_sym_tr_up
       | list_cons (d2i, d2is) => begin case+ d2i of
         | D2ITEMsym (d2is_new) => begin
             aux (loc0, d2as, d2is_new, list_vt_cons (d2is, d2iss))
-          end
+          end // end of [D2ITEMsym]
         | _ => let
             val d3e = d2exp_item_tr_up (loc0, d2i); val s2e = d3e.d3exp_typ
           in
@@ -1022,7 +1023,7 @@ fn d2exp_apps_sym_tr_up
               @(d3e, s2ke, 0) :: aux (loc0, d2as, d2is, d2iss)
             end else begin
               aux (loc0, d2as, d2is, d2iss)
-            end
+            end // end of [if]
           end // end of [_]
         end (* end of [list_cons] *)
       | list_nil () => begin case+ d2iss of
@@ -1055,19 +1056,19 @@ in
         val d2a = D2EXPARGdyn (loc_arg, 0, d2es_arg)
       in
         d2exp_apps_sym_tr_up (loc_arg, d2s_brackets, '[d2a])
-      end
+      end // end of [cons (nil)]
     | _ => begin
         prerr_loc_error3 loc0;
         prerr ": the format for array subscripts ["; prerr d2ess_ind;
         prerr "] is not supported."; prerr_newline ();
         $Err.abort {d3exp} ()
-      end
+      end // end of [_]
     end // end of [L2VALarrsub]
   | L2VALptr (d2e0, d2ls) => let
 (*
       val () = begin
         print "d2exp_assgn_tr_up: L2VALptr: d2e0 = "; print d2e0; print_newline ()
-      end
+      end // end of [val]
 *)
       val d3e0 = d2exp_tr_up d2e0
       val () = d3exp_open_and_add d3e0
@@ -1075,7 +1076,7 @@ in
 (*
       val () = begin
         print "d2exp_assgn_tr_up: L2VALptr: s2e0 = "; print s2e0; print_newline ()
-      end
+      end // end of [val]
 *)
     in
       case+ un_s2exp_ptr_addr_type s2e0 of
@@ -1089,9 +1090,8 @@ in
 (*
           val sgn = $Lst.list_length_compare (s2ls, s2ls_nt)
           val () = if (sgn <> 0) then begin
-            prerr "INTERNAL ERROR";
-            prerr ": [ats_trans3_exp_up]: d2exp_assgn_tr_up: list length mismatch!";
-            prerr_newline ();
+            prerr_interror ();
+            prerr ": d2exp_assgn_tr_up: list length mismatch!"; prerr_newline ();
             $Err.abort {void} ()
           end // end of [val]
 *)
@@ -1138,21 +1138,20 @@ in
       val d3e_r = d2exp_tr_up d2e_r
       val () = d3exp_open_and_add d3e_r
       val s2e_r = d3e_r.d3exp_typ
-      val () =
-        if s2exp_is_proof s2e_r then () else begin
-          prerr_loc_error3 d2e_l.d2exp_loc;
-          prerr ": the linear dynamic variable ["; prerr d2v;
-          prerr "] can support proof assignment but not value assignment.";
-          prerr_newline ();
-          $Err.abort {void} ()
-        end
+      val () = if s2exp_is_proof s2e_r then () else begin
+        prerr_loc_error3 d2e_l.d2exp_loc;
+        prerr ": the linear dynamic variable ["; prerr d2v;
+        prerr "] can support proof assignment but not value assignment.";
+        prerr_newline ();
+        $Err.abort {void} ()
+      end // end of [if]
       val s2ls = begin
         d2var_lin_slablst_assgn (loc0, d2v, s2ls_nt, s2e_r)
-      end
+      end // end of [s2ls]
       val d3ls = d3lab1lst_of_d3lab0lst_s2lablst (d3ls_nt, s2ls)
     in
       d3exp_assgn_var (loc0, d2v, d3ls, d3e_r)
-    end
+    end // end of [L2VALvar_lin]
   | L2VALvar_mut (d2v, d2ls) => let
       val d3ls_nt = d2lablst_tr_up d2ls
       val s2ls_nt = s2lab0lst_of_d3lab0lst d3ls_nt
@@ -1164,7 +1163,7 @@ in
       val d3ls = d3lab1lst_of_d3lab0lst_s2lablst (d3ls_nt, s2ls)
     in
       d3exp_assgn_var (loc0, d2v, d3ls, d3e_r)
-    end
+    end // end of [L2VALvar_mut]
   | L2VALnone d2e_l => begin case+ d2e_l.d2exp_node of
     | D2Eviewat d2e1_l => d2exp_viewat_assgn_tr_up (loc0, d2e1_l, d2e_r)
     | _ => begin
@@ -1173,7 +1172,7 @@ in
         prerr ", but it is not.";
         prerr_newline ();
         $Err.abort {d3exp} ()
-      end
+      end // end of [_]
     end // end of [L2VALnone]
   // end of [case]
 end // end of [d2exp_assgn_tr_up]
@@ -1201,7 +1200,7 @@ fn d2exp_deref_tr_up
 (*
   val () = begin
     print "d2exp_deref_tr_up: d2e0 = "; print d2e0; print_newline ();
-  end
+  end // end of [val]
 *)
   val d3e0 = d2exp_tr_up d2e0
   val () = d3exp_open_and_add d3e0
@@ -1224,14 +1223,14 @@ in
       val [sgn:int] sgn = $Lst.list_length_compare (s2ls, s2ls_nt)
       val () [sgn==0] void =
         if (sgn <> 0) then begin
-          prerr "INTERNAL ERROR";
-          prerr ": [ats_trans3_exp_up]: d2exp_deref_tr_up: list length mismatch!";
-          prerr_newline ();
+          prerr_interror ();
+          prerr ": d2exp_deref_tr_up: list length mismatch!"; prerr_newline ();
           $Err.abort {void} ();
           assert (sgn = 0) // deadcode
         end else begin
           () // [sgn = 0] holds!
-        end
+        end // end of [if]
+      // end of [val]
 *)
       val d3ls = d3lab1lst_of_d3lab0lst_s2lablst (d3ls_nt, s2ls)
     in
@@ -1283,7 +1282,7 @@ in
       val d3es = d23explst_tr_dn (loc0, d23es, s2es_fun_arg)
     in
       d3exp_con (loc0, s2e_fun_res, d2c, npf, d3es)
-    end
+    end // end of [S2Efun]
   | _ => begin
       prerr_loc_error3 loc0;
       $Deb.debug_prerrf (": %s: d2exp_con_tr_up", @(THISFILENAME));
@@ -1329,7 +1328,7 @@ fn d2exp_crypt_tr_up
     d2exp_encrypt_tr_up (loc0, d2e)
   end else begin
     d2exp_decrypt_tr_up (loc0, d2e)
-  end
+  end // end of [if]
 end // end of [d2exp_crypt_tr_up]
 
 (* ****** ****** *)
@@ -1428,11 +1427,9 @@ fn d2exp_foldat_freeat_tr_up
         end (* end of [if] *)
       end // end of [S2Efun]
     | _ => begin
-        prerr loc0;
-        prerr ": INTERNAL ERROR";
+        prerr_loc_interror loc0;
         prerr ": d2exp_foldat_freeat_tr_up";
-        prerr ": not a function type: s2e_d2c = ["; prerr s2e_d2c; prerr "]";
-        prerr_newline ();
+        prerr ": s2e_d2c = "; prerr s2e_d2c; prerr_newline ();
         $Err.abort {void} ()
       end // end of [_]
   ) : void // end of [val]
@@ -1635,7 +1632,7 @@ in
           d3exp_ptrof_var (loc0, s2e_ptr, d2v, nil ())
         end // end of [nil]
       // end of [case]
-    end // end of [L2VALvar]
+    end // end of [L2VALvar_mut]
   | L2VALarrsub _ => begin
       prerr_loc_error3 d2e0.d2exp_loc;
       prerr ": array subscription is not supported for address-of operation.";
@@ -1673,7 +1670,7 @@ fun labd3explst_nonlin_check (ld3es: labd3explst): void = begin
   case+ ld3es of
   | LABD3EXPLSTcons (_(*lab*), d3e, ld3es) => begin
       d3exp_nonlin_check (d3e); labd3explst_nonlin_check (ld3es)
-    end
+    end // end of [LABD3EXPLSTcons]
   | LABD3EXPLSTnil () => ()
 end // end of [labd3explst_nonlin_check]
 
@@ -1683,7 +1680,7 @@ fn d2exp_rec_tr_up
 (*
   val () = begin
     print "labd2explst_tr_up: ld2es = "; print ld2es; print_newline ()
-  end
+  end // end of [val]
 *)
   fun aux (ld2es: labd2explst): labd3explst =
     case+ ld2es of
@@ -1695,7 +1692,7 @@ fn d2exp_rec_tr_up
 (*
   val () = begin
     print "labd2explst_tr_up: ls2es = "; print ls2es; print_newline ()
-  end
+  end // end of [val]
 *)
   val () = if recknd = 2 then labd3explst_nonlin_check (ld3es)
   val ls2es = labd3explst_typ_get ld3es
@@ -1755,9 +1752,8 @@ in
       end // end of [val]
       val [sgn:int] sgn = $Lst.list_length_compare (s2ls, s2ls_nt)
       val () = (if (sgn <> 0) then begin
-        prerr "INTERNAL ERROR";
-        prerr ": [ats_trans3_exp_up]: d2exp_sel_tr_up: list length mismatch!";
-        prerr_newline ();
+        prerr_interror ();
+        prerr ": d2exp_sel_tr_up: list length mismatch!"; prerr_newline ();
         $Err.abort {void} ();
         assert (sgn = 0) // deadcode
       end else begin
@@ -1831,11 +1827,13 @@ end // end of [d2exp_seq_tr_up]
 
 (* ****** ****** *)
 
-fn d2exp_tmpid_tr_up
-  (loc0: loc_t, d2e: d2exp, ts2ess: tmps2explstlst): d3exp = let
+fn d2exp_tmpid_tr_up (
+    loc0: loc_t, d2e: d2exp, ts2ess: tmps2explstlst
+  ) : d3exp = let
   fun aux (subs: List stasub_t): s2explstlst = case+ subs of
     | cons (sub, subs) => cons (stasub_codomain_get_whnf sub, aux subs)
     | nil () => nil ()
+  // end of [aux]
 in
   case+ d2e.d2exp_node of
   | D2Ecst d2c => let
@@ -1983,7 +1981,7 @@ in
           val d3ls = d3lab1lst_of_d3lab0lst_s2lablst (d3ls_nt, s2ls)
         in
           d3exp_viewat_assgn_var (loc0, d2v, d3ls, d3e_r)
-        end
+        end // end of [cons]
       | nil _ => let
           val d2v_view = d2var_view_get_some (loc0, d2v)
           val () = case+ d2var_typ_get (d2v_view) of
@@ -1992,7 +1990,7 @@ in
           val () = d2var_typ_set (d2v_view, Some s2e_r)
         in
           d3exp_viewat_assgn_var (loc0, d2v, nil (), d3e_r)
-        end
+        end // end of [nil]
       // end of [case]
     end // end of [L2VALvar_mul]
   | L2VALarrsub _ => begin
@@ -2024,8 +2022,8 @@ fun d2explst_elt_tr_dn (d2es: d2explst, s2e: s2exp): d3explst =
   case+ d2es of
   | cons (d2e, d2es) => begin
       cons (d2exp_tr_dn (d2e, s2e), d2explst_elt_tr_dn (d2es, s2e))
-    end
-  | nil () => nil ()
+    end // end of [cons]
+  | nil () => nil () // end of [nil]
 // end of [d2explst_elt_tr_dn]
 
 (* ****** ****** *)
@@ -2034,7 +2032,7 @@ implement d2exp_tr_up (d2e0) = let
 (*
 val () = begin
   print "d2exp_tr_up: d2e0 = "; print d2e0; print_newline ()
-end
+end // end of [val]
 *)
 extern fun floatkind_eval
   (_: string): $Syn.floatkind = "ats_trans3_floatkind_eval"
@@ -2171,7 +2169,7 @@ val d3e0 = (case+ d2e0.d2exp_node of
         | $Syn.INTKINDuint () => s2exp_uint_intinf_t0ype (int)
         | $Syn.INTKINDulint () => s2exp_ulint_t0ype ()
         | _ => begin
-            prerr loc0; prerr ": INTERNAL ERROR";
+            prerr_loc_interror loc0;
             prerr ": d2exp_tr: D2Eintsp"; prerr_newline ();
             $Err.abort {s2exp} ()
           end // end of [_]
