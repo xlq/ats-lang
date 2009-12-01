@@ -84,4 +84,4 @@ implement pprerr_s2exp (s2e) = fpprint_s2exp (stderr_ref, s2e)
 
 (* ****** ****** *)
 
-(* end of [ats_staexp2_pprint.sats] *)
+(* end of [ats_staexp2_pprint.dats] *)

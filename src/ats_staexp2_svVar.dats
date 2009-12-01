@@ -37,9 +37,7 @@
 (* ****** ****** *)
 
 %{^
-
 #include "ats_counter.cats" /* only needed for [ATS/Geizella] */
-
 %}
 
 (* ****** ****** *)
@@ -112,7 +110,7 @@ implement s2var_make_srt (s2t) = let
   val id = s2var_name_make ()
 in
   s2var_make_id_srt (id, s2t)
-end
+end // end of [s2var_make_srt]
 
 implement s2var_copy (s2v0) = let
   val id0 = s2var_sym_get s2v0
@@ -120,7 +118,7 @@ implement s2var_copy (s2v0) = let
   val id_new = s2var_name_make_prefix ($Sym.symbol_name id0)
 in
   s2var_make_id_srt (id_new, s2t0)
-end
+end // end of [s2var_copy]
 
 (* ****** ****** *)
 
@@ -151,8 +149,10 @@ fn lt_s2var_s2var
   (s2v1: s2var_t, s2v2: s2var_t): bool = let
   val stamp1 =
     let val (vbox pf1 | p1) = s2v1 in p1->s2var_stamp end
+  // end of [val]
   val stamp2 =
     let val (vbox pf2 | p2) = s2v2 in p2->s2var_stamp end
+  // end of [val]
 in
   $Stamp.lt_stamp_stamp (stamp1, stamp2)
 end // end of [_lt_s2var_s2var]
@@ -163,8 +163,10 @@ fn lte_s2var_s2var
   (s2v1: s2var_t, s2v2: s2var_t): bool = let
   val stamp1 =
     let val (vbox pf1 | p1) = s2v1 in p1->s2var_stamp end
+  // end of [val]
   val stamp2 =
     let val (vbox pf2 | p2) = s2v2 in p2->s2var_stamp end
+  // end of [val]
 in
   $Stamp.lte_stamp_stamp (stamp1, stamp2)
 end // end of [_lte_s2var_s2var]
@@ -175,8 +177,10 @@ fn _eq_s2var_s2var
   (s2v1: s2var_t, s2v2: s2var_t): bool = let
   val stamp1 =
     let val (vbox pf1 | p1) = s2v1 in p1->s2var_stamp end
+  // end of [val]
   val stamp2 =
     let val (vbox pf2 | p2) = s2v2 in p2->s2var_stamp end
+  // end of [val]
 in
   $Stamp.eq_stamp_stamp (stamp1, stamp2)
 end // end of [_eq_s2var_s2var]
@@ -190,8 +194,10 @@ fn _neq_s2var_s2var
   (s2v1: s2var_t, s2v2: s2var_t): bool = let
   val stamp1 =
     let val (vbox pf1 | p1) = s2v1 in p1->s2var_stamp end
+  // end of [val]
   val stamp2 =
     let val (vbox pf2 | p2) = s2v2 in p2->s2var_stamp end
+  // end of [val]
 in
   $Stamp.neq_stamp_stamp (stamp1, stamp2)
 end // end of [_neq_s2var_s2var]
@@ -205,8 +211,10 @@ fn _compare_s2var_s2var
   (s2v1: s2var_t, s2v2: s2var_t): Sgn = let
   val stamp1 =
     let val (vbox pf1 | p1) = s2v1 in p1->s2var_stamp end
+  // end of [val]
   val stamp2 =
     let val (vbox pf2 | p2) = s2v2 in p2->s2var_stamp end
+  // end of [val]
 in
   $Stamp.compare_stamp_stamp (stamp1, stamp2)
 end // end of [_compare_s2var_s2var]
@@ -243,7 +251,7 @@ implement fprint_s2varlst {m} (pf | out, s2vs) = let
     | list_cons (s2v, s2vs) => begin
         if i > 0 then fprint1_string (pf | out, ", ");
         fprint_s2var (pf | out, s2v); aux (out, i+1, s2vs)
-      end
+      end // end of [list_cons]
     | list_nil () => ()
   end // end of [aux]
 in
@@ -314,11 +322,13 @@ implement s2varset_add (svs, s2v) = $Set.set_insert (svs, s2v, cmp)
 implement s2varset_adds (svs, s2vs) = case+ s2vs of
   | list_cons (s2v, s2vs) => s2varset_adds (s2varset_add (svs, s2v), s2vs)
   | list_nil () => svs
+// end of [s2varset_adds]
 
 implement s2varset_del (svs, s2v) = $Set.set_remove (svs, s2v, cmp)
 implement s2varset_dels (svs, s2vs) = case+ s2vs of
   | list_cons (s2v, s2vs) => s2varset_dels (s2varset_del (svs, s2v), s2vs)
   | list_nil () => svs
+// end of [s2varset_dels]
 
 implement s2varset_union (svs1, svs2) = $Set.set_union (svs1, svs2, cmp)
 
@@ -339,7 +349,7 @@ typedef s2Varbound_struct = struct {
 assume s2Varbound_t =
   [l:addr] (vbox (s2Varbound_struct @ l) | ptr l)
 
-in
+in // in of [local]
 
 implement s2Varbound_make (loc, s2e) = let
   val (pf_gc, pf | p) = begin
@@ -493,7 +503,7 @@ implement lt_s2Var_s2Var (s2V1, s2V2) = let
     let val (vbox pf2 | p2) = s2V2 in p2->s2Var_stamp end
 in
   $Stamp.lt_stamp_stamp (stamp1, stamp2)
-end
+end // end of [lt_s2Var_s2Var]
 
 implement lte_s2Var_s2Var (s2V1, s2V2) = let
   val stamp1 =
@@ -502,7 +512,7 @@ implement lte_s2Var_s2Var (s2V1, s2V2) = let
     let val (vbox pf2 | p2) = s2V2 in p2->s2Var_stamp end
 in
   $Stamp.lte_stamp_stamp (stamp1, stamp2)
-end
+end // end of [lte_s2Var_s2Var]
 
 implement eq_s2Var_s2Var (s2V1, s2V2) = let
   val stamp1 =
@@ -511,25 +521,29 @@ implement eq_s2Var_s2Var (s2V1, s2V2) = let
     let val (vbox pf2 | p2) = s2V2 in p2->s2Var_stamp end
 in
   $Stamp.eq_stamp_stamp (stamp1, stamp2)
-end
+end // end of [eq_s2Var_s2Var]
 
 implement neq_s2Var_s2Var (s2V1, s2V2) = let
   val stamp1 =
     let val (vbox pf1 | p1) = s2V1 in p1->s2Var_stamp end
+  // end of [val]
   val stamp2 =
     let val (vbox pf2 | p2) = s2V2 in p2->s2Var_stamp end
+  // end of [val]
 in
   $Stamp.neq_stamp_stamp (stamp1, stamp2)
-end
+end // end of [neq_s2Var_s2Var]
 
 implement compare_s2Var_s2Var (s2V1, s2V2) = let
   val stamp1 =
     let val (vbox pf1 | p1) = s2V1 in p1->s2Var_stamp end
+  // end of [val]
   val stamp2 =
     let val (vbox pf2 | p2) = s2V2 in p2->s2Var_stamp end
+  // end of [val]
 in
   $Stamp.compare_stamp_stamp (stamp1, stamp2)
-end
+end // end of [compare_s2Var_s2Var]
 
 (* ****** ****** *)
 
@@ -537,9 +551,9 @@ end // end of [local] (for assuming s2Var_t)
 
 (* ****** ****** *)
 
-implement fprint_s2Var (pf_out | out, s2V) = begin
+implement fprint_s2Var (pf_out | out, s2V) =
   $Cnt.fprint_count (pf_out | out, s2Var_cnt_get s2V)
-end
+// end of [fprint_s2Var]
 
 implement fprint_s2Varlst {m} (pf | out, s2Vs) = let
   fun aux (out: &FILE m, i: int, s2Vs: s2Varlst)
@@ -547,8 +561,8 @@ implement fprint_s2Varlst {m} (pf | out, s2Vs) = let
     | list_cons (s2V, s2Vs) => begin
         if i > 0 then fprint1_string (pf | out, ", ");
         fprint_s2Var (pf | out, s2V); aux (out, i+1, s2Vs)
-      end
-    | list_nil () => ()
+      end // end of [list_cons]
+    | list_nil () => () // end of [list_nil]
   end // end of [aux]
 in
   aux (out, 0, s2Vs)

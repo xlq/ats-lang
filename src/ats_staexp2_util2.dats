@@ -37,10 +37,8 @@
 (* ****** ****** *)
 
 %{^
-
 #include "ats_counter.cats" /* only needed for [ATS/Geizella] */
 #include "ats_intinf.cats"  /* only needed for [ATS/Geizella] */
-
 %}
 
 (* ****** ****** *)
@@ -75,11 +73,22 @@ overload prerr with $Loc.prerr_location
 
 (* ****** ****** *)
 
+fn prerr_loc_error2 (loc: loc_t): void =
+  ($Loc.prerr_location loc; prerr ": error(2)")
+// end of [prerr_loc_error2]
+
+fn prerr_interror () = prerr "INTERNAL ERROR (ats_staexp2_util2)"
+fn prerr_loc_interror (loc: loc_t) = begin
+  $Loc.prerr_location loc; prerr ": INTERNAL ERROR (ats_staexp2_util2)"
+end // end of [prerr_loc_interror]
+
+(* ****** ****** *)
+
 fun s2exp_link_remove_flag
   (s2e0: s2exp, flag: &int): s2exp = let
 (*
   val () = begin
-    prerr "s2exp_link_remove_flag: s2e0 = "; prerr s2e0; prerr_newline ()
+    print "s2exp_link_remove_flag: s2e0 = "; print s2e0; print_newline ()
   end // end of [val]
 *)
 in
@@ -214,13 +223,13 @@ fun s2exp_whnf_flag
   (s2e0: s2exp, flag: &int): s2exp = let
 (*
   val () = begin
-    prerr "s2exp_whnf_flag(0): s2e0 = "; prerr s2e0; prerr_newline ()
+    print "s2exp_whnf_flag(0): s2e0 = "; print s2e0; print_newline ()
   end // end of [val]
 *)
   val s2e0 = s2exp_link_remove_flag (s2e0, flag)
 (*
   val () = begin
-    prerr "s2exp_whnf_flag(1): s2e0 = "; prerr s2e0; prerr_newline ()
+    print "s2exp_whnf_flag(1): s2e0 = "; print s2e0; print_newline ()
   end // end of [val]
 *)
 in
@@ -237,9 +246,8 @@ in
                 stasub_add (aux (s2vs, s2es), s2v, s2e)
             | (nil _, nil _) => stasub_nil
             | (_, _) => begin
-                prerr "INTERNAL ERROR";
-                prerr ": [ats_staexp2_util2]: s2exp_whnf_flag: S2Eapp: arity error";
-                prerr_newline ();
+                prerr_interror ();
+                prerr ": s2exp_whnf_flag: S2Eapp: arity error"; prerr_newline ();
                 $Err.abort {stasub_t} ()
               end // end of [_, _]
           // end of [aux]
@@ -316,9 +324,8 @@ in
             case+ s2es of
             | cons (s2e, s2es) => (if n > 0 then aux (s2es, n-1) else s2e)
             | nil () => begin
-                prerr "INTERNAL ERROR";
-                prerr ": [ats_staexp2_util2]: s2exp_whnf: S2Etup: subscript error";
-                prerr_newline ();
+                prerr_interror ();
+                prerr ": s2exp_whnf: S2Etup: subscript error"; prerr_newline ();
                 $Err.abort {s2exp} ()
               end // end of [nil]
           // end of [aux]
@@ -535,8 +542,8 @@ implement s2exp_syneq (s2e10, s2e20) = let
   val s2e10 = s2exp_whnf s2e10 and s2e20 = s2exp_whnf s2e20
 (*
   val () = begin
-    prerr "s2exp_syneq: s2e10 = "; prerr s2e10; prerr_newline ();
-    prerr "s2exp_syneq: s2e20 = "; prerr s2e20; prerr_newline ();
+    print "s2exp_syneq: s2e10 = "; print s2e10; print_newline ();
+    print "s2exp_syneq: s2e20 = "; print s2e20; print_newline ();
   end // end of [val]
 *)
 in
@@ -810,11 +817,10 @@ fun s2exp_prenexing
               else s2e0
             end
           | _ => begin
-              prerr "INTERNAL ERROR";
-              prerr ": [ats_staexp2_util2] : s2exp_prenexing: At_viewt0ype_addr_view";
-              prerr_newline ();
+              prerr_interror ();
+              prerr ": s2exp_prenexing: At_viewt0ype_addr_view"; prerr_newline ();
               $Err.abort {s2exp} ()
-            end
+            end // end of [_]
         else s2e0 // end of [if]
       end // end of [S2Eapp]
     | S2Eexi (s2vs, s2ps, s2e_body) => begin
@@ -1003,8 +1009,7 @@ implement s2exp_lab_get_restlin_cstr
   (loc0, s2e0, l0, restlin, cstr) = let
   val s2e0 = s2exp_whnf s2e0
   fn err1 (loc0: loc_t, s2e0: s2exp, l0: lab_t): s2exp = begin
-    prerr loc0;
-    prerr ": error(3)";
+    prerr_loc_error2 loc0;
     prerr ": the label [";
     prerr l0;
     prerr "] is not found in [";
@@ -1014,8 +1019,7 @@ implement s2exp_lab_get_restlin_cstr
     $Err.abort {s2exp} ()
   end // end of [err]
   fn err2 {a:viewt@ype} (loc0: loc_t, s2e0: s2exp): a = begin
-    prerr loc0;
-    prerr ": error(3)";
+    prerr_loc_error2 loc0;
     $Deb.debug_prerrf (": [%s]: s2exp_lab_get_restlin_cstr", @(THISFILENAME));
     prerr ": the type [";
     prerr s2e0;
@@ -1080,8 +1084,7 @@ implement s2exp_slablst_get_restlin_cstr
           | S2LAB0lab l => l
           | S2LAB1lab (l, _) => l // this should not happen!
           | _ => begin
-              prerr loc0;
-              prerr ": error(3)";
+              prerr_loc_error2 loc0;
               prerr ": the use of array subscription is not supported.";
               prerr_newline ();
               $Err.abort {lab_t} ()
@@ -1116,9 +1119,8 @@ fun labs2explst_nth_get
       if i > 0 then labs2explst_nth_get (ls2es, i-1) else @(l, s2e)
     end // end of [LABS2EXPLSTcons]
   | LABS2EXPLSTnil () => begin
-      prerr "INTERNAL ERROR";
-      prerr ": [ats_staexp2_util2] : labs2explst_nth_get: i = "; prerr i;
-      prerr_newline ();
+      prerr_interror ();
+      prerr ": labs2explst_nth_get: i = "; prerr i; prerr_newline ();
       $Err.abort ()
     end // end of [LABS2EXPLSTnil]
 end (* end of [labs2explst_nth_get] *)
@@ -1134,9 +1136,8 @@ fun labs2explst_nth_set
       end // end of [if]
     end (* end of [LABS2EXPLSTcons] *)
   | LABS2EXPLSTnil () => begin
-      prerr "INTERNAL ERROR";
-      prerr ": [ats_staexp2_util2]: labs2explst_nth_set: i = "; prerr i;
-      prerr_newline ();
+      prerr_interror ();
+      prerr ": labs2explst_nth_set: i = "; prerr i; prerr_newline ();
       $Err.abort ()
     end (* end of [LABS2EXPLSTnil] *)
 end (* end of [labs2explst_nth_set] *)
@@ -1195,8 +1196,7 @@ implement // [s2e0] must be normalized!
 //
   fn linear_abandonment_errmsg
     (loc0: loc_t, l0: lab_t): void = begin
-    prerr loc0;
-    prerr ": error(3)";
+    prerr_loc_error2 loc0;
     prerr ": the linear union component with the label [";
     prerr l0;
     prerr "] is abandoned";
@@ -1206,8 +1206,7 @@ implement // [s2e0] must be normalized!
 //
   fn label_notfound_errmsg
     (loc0: loc_t, s2e0: s2exp, l0: lab_t): s2exp = begin
-    prerr loc0;
-    prerr ": error(3)";
+    prerr_loc_error2 loc0;
     prerr ": the lable [";
     prerr l0;
     prerr "] is not found in [";
@@ -1257,8 +1256,7 @@ in
       end // end of [val]
     } // end of [S2Eunion]
   | _ => begin
-      prerr loc0;
-      prerr ": error(3)";
+      prerr_loc_error2 loc0;
       $Deb.debug_prerrf (": %s: s2exp_lab_linget_cstr", @(THISFILENAME));
       prerr ": the type [";
       prerr s2e0;
@@ -1276,22 +1274,17 @@ implement s2exp_ind_linget_cstr
       var err: int = 0
       val () = array_ind_dim_check_err (s2ess_ind, s2ess_dim, cstr, err)
       val () = if err > 0 then begin
-        prerr loc0;
-        prerr ": error(3)";
-        prerr ": array index/dimension mismatch.";
-        prerr_newline ();
+        prerr_loc_error2 loc0;
+        prerr ": array index/dimension mismatch."; prerr_newline ();
         $Err.abort {void} ()
       end // end of [val]
     in
       s2e_elt
     end // end of [S2Etyarr]
   | _ => begin
-      prerr loc0;
-      prerr ": error(3)";
-      prerr ": the type [";
-      prerr s2e0;
-      prerr "] is expected to be an array but it is not.";
-      prerr_newline ();
+      prerr_loc_error2 loc0;
+      prerr ": the type ["; prerr s2e0;
+      prerr "] is expected to be an array but it is not."; prerr_newline ();
       $Err.abort ()
     end // end of [_]
 end (* end of [s2exp_ind_linget_cstr] *)
@@ -1312,10 +1305,8 @@ implement s2exp_slab_linget_cstr
       @(s2e_elt, S2LAB1ind (s2ess_ind, s2e_elt))
     end // end of [S2LAB0ind]
   | _ => begin
-      prerr loc0;
-      prerr ": INTERNAL ERROR";
-      prerr ": s2exp_select_slab_get: S2LAB1lab or S2LAB1ind";
-      prerr_newline ();
+      prerr_loc_interror loc0;
+      prerr ": s2exp_select_slab_get: S2LAB1lab or S2LAB1ind"; prerr_newline ();
       $Err.abort ()
     end // end of [_]
 end (* end of [s2exp_slab_linget_cstr] *)
@@ -1325,9 +1316,7 @@ end (* end of [s2exp_slab_linget_cstr] *)
 // [s2e0] is assumed to have been normalized
 implement s2exp_lab_linset (loc0, s2e0, l0, s2e_new) = let
   fn err {a:type} (loc0: loc_t): a = begin
-    prerr loc0;
-    prerr ": INTERNAL ERROR"; prerr ": s2exp_slab_set";
-    prerr_newline ();
+    prerr_loc_interror loc0; prerr ": s2exp_slab_set"; prerr_newline ();
     $Err.abort {a} ()
   end // end of [err]
 in
@@ -1413,9 +1402,8 @@ implement s2exp_slablst_linget_cstr (loc0, s2e0, s2ls, cstr) = let
                 val () = cstr := cons (s2exp_tyleq (1(*knd*), s2e1, s2e_elt), cstr)
               } // end of [S2LAB1ind]
             | _ => begin
-                prerr loc0;
-                prerr ": INTERNAL ERROR"; prerr ": s2exp_slablst_linget_cstr: aux";
-                prerr_newline ();
+                prerr_loc_interror loc0;
+                prerr ": s2exp_slablst_linget_cstr: aux"; prerr_newline ();
                 $Err.abort {s2expopt_vt} ()
               end // end of [_]
             end (* end of [Some_vt] *)
@@ -1461,9 +1449,8 @@ implement s2exp_slablst_linset_cstr
                 val () = cstr := cons (s2exp_tyleq (1(*knd*), s2e1, s2e_elt), cstr)
               } // end of [S2LAB1ind]
             | _ => begin
-                prerr loc0;
-                prerr ": INTERNAL ERROR"; prerr ": s2exp_slablst_linset_cstr: aux";
-                prerr_newline ();
+                prerr_loc_interror loc0;
+                prerr ": s2exp_slablst_linset_cstr: aux"; prerr_newline ();
                 $Err.abort {s2expopt_vt} ()
               end (* end of [_] *)
             end // end of [Some_vt]
@@ -1491,25 +1478,23 @@ implement s2exp_slablst_lindel_cstr (loc0, s2e0, s2ls, cstr) = let
     ) : @(s2exp(*part*), s2exp(*whole*), list (s2lab, n)) = begin
     case+ s2ls of
     | cons (s2l, s2ls) => let
-        val () = case+ s2l of
+        val () = (case+ s2l of
           | S2LAB0ind _ => begin
-              prerr loc0;
-              prerr ": error(3)";
+              prerr_loc_error2 loc0;
               prerr ": array subscription is not supported (for view extraction).";
               prerr_newline ();
               $Err.abort {void} ()
             end // end of [S2LAB0ind]
           | _ => ()
+        ) : void // end of [val]
         val s2e0 = s2exp_whnf s2e0
         val (s2e1, s2l) = s2exp_slab_linget_cstr (loc0, s2e0, s2l, cstr)
         val (s2e_out, s2e1, s2ls) = aux (loc0, s2e1, s2ls, cstr)
-        val s2e0 = (
-          case+ s2l of
+        val s2e0 = (case+ s2l of
           | S2LAB1lab (l, _) => s2exp_lab_linset (loc0, s2e0, l, s2e1)
           | _ => begin
-              prerr loc0;
-              prerr ": INTERNAL ERROR"; prerr ": s2exp_slablst_linset_cstr: aux";
-              prerr_newline ();
+              prerr_loc_interror loc0;
+              prerr ": s2exp_slablst_linset_cstr: aux"; prerr_newline ();
               $Err.abort {s2exp} ()
             end // end of [_]
         ) : s2exp

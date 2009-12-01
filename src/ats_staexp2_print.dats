@@ -472,7 +472,7 @@ in
     end // end of [S2Ewth]
 (*
   | _ => begin
-      prerr "Internal Error: ";
+      prerr "INTERNAL ERROR (ats_staexp2_print): ";
       prerr "[fprint_s2exp]: unsupported static expression";
       prerr_newline ();
       exit (1)      

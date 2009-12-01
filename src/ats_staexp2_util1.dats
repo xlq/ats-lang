@@ -75,6 +75,11 @@ fn prerr_loc_error2 (loc: loc_t): void =
   ($Loc.prerr_location loc; prerr ": error(2)")
 // end of [prerr_loc_error2]
 
+fn prerr_interror () = prerr "INTERNAL ERROR (ats_staexp2_util1)"
+fn prerr_loc_interror (loc: loc_t) = begin
+  $Loc.prerr_location loc; prerr ": INTERNAL ERROR (ats_staexp2_util1)"
+end // end of [prerr_loc_interror]
+
 (* ****** ****** *)
 
 extern fun eq_s2rtbas_s2rtbas (s2tb1: s2rtbas, s2tb2: s2rtbas): bool
@@ -362,11 +367,10 @@ in
   | S2Eeff s2fe => s2eff_contain_eff (s2fe, eff)
   | S2EVar s2V => begin
       prerr (s2Var_loc_get s2V);
-      prerr "Internal Warning: s2exp_contain_eff: s2e0 = ";
-      prerr s2e0;
-      prerr_newline ();
+      prerr ": INTERNAL WARNING (ats_staexp2_util1)";
+      prerr ": s2exp_contain_eff: s2e0 = "; prerr s2e0; prerr_newline ();
       false
-    end
+    end // end of [S2EVar]
   | _ => false
 end // end of [s2exp_contain_eff]
 
@@ -383,9 +387,9 @@ end // end of [s2explst_contain_eff]
 implement s2eff_contain_eff (s2fe, eff) = let
 (*
   val () = begin
-    prerr "s2eff_contain_eff: s2fe = "; prerr s2fe; prerr_newline ();
-    prerr "s2eff_contain_eff: eff = "; prerr eff; prerr_newline ();
-  end
+    print "s2eff_contain_eff: s2fe = "; print s2fe; print_newline ();
+    print "s2eff_contain_eff: eff = "; print eff; print_newline ();
+  end // end of [val]
 *)
 in
   case+ s2fe of
@@ -421,11 +425,10 @@ in
   | S2Evar s2v => eq_s2var_s2var (s2v0, s2v)
   | S2EVar s2V => begin
       prerr (s2Var_loc_get s2V);
-      prerr "Internal Warning: s2exp_contain_effvar: s2e = ";
-      prerr s2e;
-      prerr_newline ();
+      prerr ": INTERNAL WARNING (ats_staexp2_util1)";
+      prerr ": s2exp_contain_effvar: s2e = "; prerr s2e; prerr_newline ();
       false
-    end
+    end // end of [S2EVar]
   | _ => false
 end // end of [s2exp_contain_effvar]
 
@@ -434,8 +437,8 @@ and s2explst_contain_effvar (s2es0: s2explst, s2v0: s2var_t): bool =
   | list_cons (s2e, s2es) => begin
       if s2exp_contain_effvar (s2e, s2v0) then true
       else s2explst_contain_effvar (s2es, s2v0)
-    end
-  | list_nil () => false
+    end // end of [list_cons]
+  | list_nil () => false // end of [list_nil]
 // end of [s2explist_contain_effvar]
 
 implement s2eff_contain_effvar (s2fe, s2v) = case+ s2fe of
@@ -454,9 +457,8 @@ in
   | S2Evar s2v2 => s2eff_contain_effvar (s2fe1, s2v2)
   | S2EVar s2V2 => begin
       prerr (s2Var_loc_get s2V2);
-      prerr "INTERNAL WARNING";
-      prerr ": s2eff_contain_s2exp: s2e2 = "; prerr s2e2;
-      prerr_newline ();
+      prerr ": INTERNAL WARNING";
+      prerr ": s2eff_contain_s2exp: s2e2 = "; prerr s2e2; prerr_newline ();
       false
     end // end of [S2EVar]
   | _ => false
@@ -480,7 +482,7 @@ implement s2eff_contain_s2eff (s2fe1, s2fe2) = case+ s2fe1 of
         if s2eff_contain_effset (s2fe1, efs) then
           s2eff_contain_s2explst (s2fe1, s2es)
         else false
-      end
+      end // end of [S2EFFset]
     end // end of [_]
 // end of [s2eff_contain_s2eff]
 
@@ -505,8 +507,7 @@ implement // in [ats_trans3_assgn, ats_trans3_deref, ats_trans3_view]
     | list_cons (_, s2ls1) => begin case+ s2ls2 of
       | list_cons (_, s2ls2) => aux (s2ls1, s2ls2)
       | list_nil () => begin
-          prerr "INTERNAL ERROR"; prerr ": s2lablst_trim";
-          prerr_newline ();
+          prerr_interror (); prerr ": s2lablst_trim"; prerr_newline ();
           $Err.abort {s2lablst} ()
         end // end of [_]
       end (* end of [list_cons] *)
@@ -519,7 +520,7 @@ in
         s2lablst_trim_s2lablst_s2lablst (s2ls0_ft, s2ls_ft, s2ls_bk)
       end
     | list_nil () => aux (s2ls0_ft, s2ls_bk)
-    end
+    end // end of [list_cons]
   | list_nil () => $Lst.list_append (s2ls_ft, s2ls_bk)
 end // end of [s2lablst_trim_s2lablst_s2lablst]
 
@@ -593,10 +594,10 @@ fun lte_s2explst_s2rtlst
   case+ (s2es, s2ts) of
   | (s2e :: s2es, s2t :: s2ts) => begin
 (*
-      prerr "lte_s2explst_s2rtlst: srt = ";
-      prerr s2t; prerr_newline ();
-      prerr "lte_s2explst_s2rtlst: s2e.s2exp_srt = ";
-      prerr s2e.s2exp_srt; prerr_newline ();
+      print "lte_s2explst_s2rtlst: srt = ";
+      print s2t; print_newline ();
+      print "lte_s2explst_s2rtlst: s2e.s2exp_srt = ";
+      print s2e.s2exp_srt; print_newline ();
 *)
       if s2e.s2exp_srt <= s2t then
         lte_s2explst_s2rtlst (s2es, s2ts)
@@ -613,7 +614,7 @@ implement s2cst_select_s2explstlst (s2cs, s2ess) = let
       | ~Some_vt s2ts_s2t => begin
           if lte_s2explst_s2rtlst (s2es, s2ts_s2t.0) then test (s2ts_s2t.1, s2ess)
           else false
-        end
+        end // end of [Some]
       | ~None_vt () => false
       end
     | nil () => true
@@ -621,12 +622,12 @@ implement s2cst_select_s2explstlst (s2cs, s2ess) = let
     case+ s2cs of
     | S2CSTLSTcons (s2c, s2cs) => begin
 (*
-        prerr "s2cst_select_s2explstlst: filter: s2c = ";
-        prerr s2c;
-        prerr_newline ();
-        prerr "s2cst_select_s2explstlst: filter: s2c_s2t = ";
-        prerr (s2cst_srt_get s2c);
-        prerr_newline ();
+        print "s2cst_select_s2explstlst: filter: s2c = ";
+        print s2c;
+        print_newline ();
+        print "s2cst_select_s2explstlst: filter: s2c_s2t = ";
+        print (s2cst_srt_get s2c);
+        print_newline ();
 *)
         if test (s2cst_srt_get s2c, s2ess) then begin
           S2CSTLSTcons (s2c, filter (s2cs, s2ess))
@@ -662,15 +663,17 @@ fn labs2explst_is_singleton
     end else begin case+ ls2es of
       | LABS2EXPLSTcons (_, s2e, ls2es) => begin
           if s2exp_is_proof s2e then aux0 (0, ls2es) else aux1 (s2e, ls2es)
-        end
+        end // end of [LABS2EXPLSTcons]
       | LABS2EXPLSTnil () => None_vt ()
-    end
+    end // end of [if]
+  // end of [aux0]
   and aux1 (s2e0: s2exp, ls2es: labs2explst): Option_vt s2exp =
     case+ ls2es of
     | LABS2EXPLSTcons (_, s2e, ls2es) => begin
         if s2exp_is_proof s2e then aux1 (s2e0, ls2es) else None_vt ()
-      end
+      end // endof [LABS2EXPLSTcons]
     | LABS2EXPLSTnil () => Some_vt s2e0
+  // end of [aux1]
 in
   aux0 (npf, ls2es)
 end (* end of [labs2explst_is_singleton] *)
@@ -688,10 +691,10 @@ in
           val s2t = s2e.s2exp_srt
         in
           if lin > 0 then s2rt_linearize s2t else s2t
-        end
-      | ~None_vt () => s2t
-    end
-  else s2t
+        end // end of [Some_vt]
+      | ~None_vt () => s2t // end of [None_vt]
+    end // end of [if]
+  else s2t // end of [if]
 end // end of [s2rt_lin_prg_boxed_npf_labs2explst]
 
 (* ****** ****** *)
@@ -711,7 +714,7 @@ implement s2exp_tyrec (recknd, npf, ls2es) = let
         end
       in
         aux01 (i+1, npf, ls2es, lin, prg)
-      end
+      end // end of [LABS2EXPLSTcons]
     | LABS2EXPLSTnil () => ()
   // end of [aux01]
   val s2t_rec = (case+ recknd of
@@ -728,9 +731,8 @@ implement s2exp_tyrec (recknd, npf, ls2es) = let
     | 2 => s2rt_type // $rec_t/$tup_t
     | 3 => s2rt_viewtype // $rec_vt/$tup_vt
     | _ => begin
-        prerr "Internal Error: s2exp_tyrec: recknd = ";
-        prerr recknd;
-        prerr_newline ();
+        prerr_interror ();
+        prerr ": s2exp_tyrec: recknd = "; prerr recknd; prerr_newline ();
         $Err.abort {s2rt} ()
       end // end of [_]
   ) : s2rt
@@ -744,13 +746,16 @@ implement s2exp_union (isbox, stamp, s2i, ls2es) = let
     | LABS2EXPLSTcons (_, s2e, ls2es) => begin
         if s2rt_is_linear (s2e.s2exp_srt) then (lin := 1 + lin);
         aux1 (ls2es, lin)
-      end
+      end // end of [LABS2EXPLSTcons]
     | LABS2EXPLSTnil () => ()
+  // end of [aux1]
   fun aux2 (ls2es: labs2explst, i: int): s2expopt_vt =
     case+ ls2es of
     | LABS2EXPLSTcons (_, s2e, ls2es) =>
         if i = 0 then Some_vt (s2e) else aux2 (ls2es, i-1)
+      // end of [LABS2EXPLSTcons]
     | LABS2EXPLSTnil () => None_vt ()
+  // end of [aux2]
   var lin: int = 0
   val () = (case+ s2i.s2exp_node of
     | S2Eint i => begin
@@ -768,7 +773,7 @@ implement s2exp_union (isbox, stamp, s2i, ls2es) = let
       if isbox then s2rt_viewtype else s2rt_viewt0ype
     end else begin
       if isbox then s2rt_type else s2rt_t0ype
-    end
+    end // end of [if]
   ) : s2rt
 in
   s2exp_union_srt (s2t_union, stamp, s2i, ls2es)
@@ -897,8 +902,8 @@ end // end of [s2kexp_match_union]
 implement s2kexp_match_approx (pol, s2ke1, s2ke2, approx) = let
 (*
   val () = begin
-    prerr "s2kexp_match_approx: s2ke1 = "; prerr s2ke1; prerr_newline ();
-    prerr "s2kexp_match_approx: s2ke2 = "; prerr s2ke2; prerr_newline ();
+    print "s2kexp_match_approx: s2ke1 = "; print s2ke1; print_newline ();
+    print "s2kexp_match_approx: s2ke2 = "; print s2ke2; print_newline ();
   end // end of [val]
 *)
   val ret = (case+ (s2ke1, s2ke2) of
@@ -933,7 +938,7 @@ implement s2kexp_match_approx (pol, s2ke1, s2ke2, approx) = let
   ) : bool
 (*
   val () = begin
-    prerr "s2kexp_match_approx: ret = "; prerr ret; prerr_newline ();
+    print "s2kexp_match_approx: ret = "; print ret; print_newline ();
   end // end of [val]
 *)
 in
@@ -947,7 +952,7 @@ implement s2kexplst_match_approx
       if s2kexp_match_approx (pol, s2ke1, s2ke2, approx) then
         s2kexplst_match_approx (pol, s2kes1, s2kes2, approx)
       else false
-    end
+    end // end of [::, ::]
   | (nil _, nil _) => true
   | (_, _) => false
   ) : bool
@@ -964,7 +969,7 @@ implement labs2kexplst_match_approx (pol, ls2kes1, ls2kes2, approx) =
            labs2kexplst_match_approx (pol, ls2kes1, ls2kes2, approx)
          else false
        else false
-    end
+    end // end of [LABS2KEXPLSTcons, LABS2KEXPLSTcons]
   | (LABS2KEXPLSTnil _, LABS2KEXPLSTnil _) => true
   | (_, _) => false
 // end of [labs2kexplst_match_approx]
@@ -984,7 +989,7 @@ implement s2kexp_match_fun_arg (s2ke_fun, s2kes_arg) = begin
 *)
       else None_vt ()
     end // end of [S2KEfun]
-  | _ => None_vt ()
+  | _ => None_vt () // end of [_]
 end // end of [s2kexp_match_fun_arg]
 
 (* ****** ****** *)
@@ -1229,6 +1234,7 @@ implement stasub_extend_sarglst_svarlst (loc0, sub, s2as, s2vs) = let
       end // end of [::, ::]
     | (list_cons _, list_nil _) => err2 (loc0)
     | (list_nil _, list_cons _) => err3 (loc0)
+  // end of [aux]
 in
   aux (loc0, sub, nil (), s2as, s2vs)
 end (* end of [stasub_extend_sarg] *)
@@ -1627,20 +1633,20 @@ and s2lab_subst_flag
       val s2ess = s2explstlst_subst_flag (sub, s2ess, flag)
     in
       if flag > flag0 then S2LAB0ind (s2ess) else s2l0
-    end
+    end // end of [S2LAB0ind]
   | S2LAB1lab (l, s2e) => let
       val flag0 = flag
       val s2e = s2exp_subst_flag (sub, s2e, flag)
     in
       if flag > flag0 then S2LAB1lab (l, s2e) else s2l0
-    end
+    end // end of [S2LAB1lab]
   | S2LAB1ind (s2ess(*ind*), s2e(*elt*)) => let
       val flag0 = flag
       val s2ess = s2explstlst_subst_flag (sub, s2ess, flag)
       val s2e = s2exp_subst_flag (sub, s2e, flag)
     in
       if flag > flag0 then S2LAB1ind (s2ess, s2e) else s2l0
-    end
+    end // end of [S2LAB1ind]
 end // end of [s2lab_subst_flag]
 
 and s2zexp_subst_flag
@@ -1663,24 +1669,24 @@ and s2zexp_subst_flag
       val s2ess_ind = s2explstlst_subst_flag (sub, s2ess_ind, flag)
     in
       if flag > flag0 then  S2ZEtyarr (s2ze_elt, s2ess_ind) else s2ze0
-    end
+    end // end of[S2ZEtyarr]
   | S2ZEtyrec (knd, ls2zes) => let
       val flag0 = flag
       val ls2zes = labs2zexplst_subst_flag (sub, ls2zes, flag)
     in
       if flag > flag0 then S2ZEtyrec (knd, ls2zes) else s2ze0
-    end
+    end // end of [S2ZEtyrec]
   | S2ZEunion (stamp, ls2zes) => let
       val flag0 = flag
       val ls2zes = labs2zexplst_subst_flag (sub, ls2zes, flag)
     in
       if flag > flag0 then S2ZEunion (stamp, ls2zes) else s2ze0
-    end
+    end // end of [S2ZEunion]
   | S2ZEvar s2v => begin
       case+ s2var_subst (sub, s2v) of
       | ~Some_vt s2e => (flag := flag + 1; s2zexp_make_s2exp s2e)
       | ~None_vt () => s2ze0
-    end
+    end // end of [S2ZEvar]
   | S2ZEword _ => s2ze0
 end // end of [s2zexp_subst_flag]
 
@@ -1693,8 +1699,8 @@ and s2zexplst_subst_flag
       val s2zes = s2zexplst_subst_flag (sub, s2zes, flag)
     in
       if flag > flag0  then list_cons (s2ze, s2zes) else s2zes0
-    end
-  | list_nil () => list_nil ()
+    end // end of [list_cons]
+  | list_nil () => list_nil () // end of [list_nil]
 // end of [s2zexplst_subst_flag]
 
 and labs2zexplst_subst_flag
@@ -1706,7 +1712,7 @@ and labs2zexplst_subst_flag
       val ls2zes = labs2zexplst_subst_flag (sub, ls2zes, flag)
     in
       if flag > flag0 then LABS2ZEXPLSTcons (l, s2ze, ls2zes) else ls2zes0
-    end
+    end // end of [LABS2ZEXPLSTcons]
   | LABS2ZEXPLSTnil () => LABS2ZEXPLSTnil ()
 // end of [labs2zexplst_subst_flag]
 
@@ -1896,10 +1902,8 @@ and aux_s2Var
   (s2V: s2Var_t, fvs: &s2varset_t): void =
   case+ s2Var_link_get s2V of
   | Some s2e => aux_s2exp (s2e, fvs) | None () => begin
-      prerr (s2Var_loc_get s2V);
-      prerr "Internal Error: s2exp_freevars: s2V = ";
-      prerr s2V;
-      prerr_newline ();
+      prerr_loc_interror (s2Var_loc_get s2V);
+      prerr ": s2exp_freevars: s2V = "; prerr s2V; prerr_newline ();
       $Err.abort {void} ()
     end // end of [None]
 // end of [aux_s2Var]
@@ -1915,7 +1919,7 @@ and aux_s2zexp (s2ze: s2zexp, fvs: &s2varset_t): void = begin
   | S2ZEextype _ => ()
   | S2ZEtyarr (s2ze_elt, s2ess_dim) => begin
       aux_s2zexp (s2ze_elt, fvs); aux_s2explstlst (s2ess_dim, fvs)
-    end
+    end // end of [S2ZEtyarr]
   | S2ZEtyrec (_(*knd*), ls2zes) => aux_labs2zexplst (ls2zes, fvs)
   | S2ZEunion (_(*stamp*), ls2zes) => aux_labs2zexplst (ls2zes, fvs)
   | S2ZEvar s2v => (fvs := s2varset_add (fvs, s2v))
@@ -1934,7 +1938,7 @@ and aux_labs2zexplst (ls2zes: labs2zexplst, fvs: &s2varset_t): void =
   case+ ls2zes of
   | LABS2ZEXPLSTcons (_(*lab*), s2ze, ls2zes) => begin
       aux_s2zexp (s2ze, fvs); aux_labs2zexplst (ls2zes, fvs)
-    end
+    end // end of [LABS2ZEXPLSTcons]
   | LABS2ZEXPLSTnil () => ()
 // end of [aux_labs2zexplst]
 
@@ -2003,14 +2007,14 @@ fun aux_s2exp
   | S2Eproj (s2e, s2l) => begin
       aux_s2exp (s2V0, s2e, ans, s2cs, s2vs);
       aux_s2lab (s2V0, s2l, ans, s2cs, s2vs)
-    end
+    end // end of [S2Eproj]
   | S2Eread (_v, s2e) => begin
       aux_s2exp (s2V0, _v, ans, s2cs, s2vs);
       aux_s2exp (s2V0, s2e, ans, s2cs, s2vs)
-    end
+    end // end of [S2Eread]
   | S2Erefarg (_, s2e) => begin
       aux_s2exp (s2V0, s2e, ans, s2cs, s2vs)
-    end
+    end // end of [S2Erefarg]
   | S2Esel (s2e, _) => aux_s2exp (s2V0, s2e, ans, s2cs, s2vs)
   | S2Esize s2ze => aux_s2zexp (s2V0, s2ze, ans, s2cs, s2vs)
   | S2Esizeof s2e => aux_s2exp (s2V0, s2e, ans, s2cs, s2vs)
@@ -2238,7 +2242,7 @@ ats_staexp2_s2exp_equal_ref
   return (s2e1 == s2e2 ? ats_true_bool : ats_false_bool) ;
 } /* end of [ats_staexp2_s2exp_equal_ref] */
 
-%}
+%} // end of [%{$]
 
 (* ****** ****** *)
 

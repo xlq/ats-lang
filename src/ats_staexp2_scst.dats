@@ -37,9 +37,7 @@
 (* ****** ****** *)
 
 %{^
-
 #include "ats_counter.cats" /* only needed for [ATS/Geizella] */
-
 %}
 
 (* ****** ****** *)
@@ -81,8 +79,8 @@ typedef s2cst_struct = struct { (* builtin or abstract *)
 fun s2rt_arity_list (s2t: s2rt): List int = case+ s2t of
   | S2RTfun (s2ts, s2t) => begin
       list_cons ($Lst.list_length s2ts, s2rt_arity_list s2t)
-    end
-  | _ => list_nil ()
+    end // end of [S2RTfun]
+  | _ => list_nil () // end of [_]
 // end of [s2rt_arity_list]
 
 (* ****** ****** *)
@@ -232,8 +230,10 @@ fn _lt_s2cst_s2cst
   (s2c1: s2cst_t, s2c2: s2cst_t): bool = let
   val stamp1 =
     let val (vbox pf1 | p1) = s2c1 in p1->s2cst_stamp end
+  // end of [val]
   val stamp2 =
     let val (vbox pf2 | p2) = s2c2 in p2->s2cst_stamp end
+  // end of [val]
 in
   $Stamp.lt_stamp_stamp (stamp1, stamp2)
 end // end of [_lt_s2cst_s2cst]
@@ -247,8 +247,10 @@ fn _lte_s2cst_s2cst
   (s2c1: s2cst_t, s2c2: s2cst_t): bool = let
   val stamp1 =
     let val (vbox pf1 | p1) = s2c1 in p1->s2cst_stamp end
+  // end of [val]
   val stamp2 =
     let val (vbox pf2 | p2) = s2c2 in p2->s2cst_stamp end
+  // end of [val]
 in
   $Stamp.lte_stamp_stamp (stamp1, stamp2)
 end // end of [_lte_s2cst_s2cst]
@@ -262,8 +264,10 @@ fn _eq_s2cst_s2cst
   (s2c1: s2cst_t, s2c2: s2cst_t): bool = let
   val stamp1 =
     let val (vbox pf1 | p1) = s2c1 in p1->s2cst_stamp end
+  // end of [val]
   val stamp2 =
     let val (vbox pf2 | p2) = s2c2 in p2->s2cst_stamp end
+  // end of [val]
 in
   $Stamp.eq_stamp_stamp (stamp1, stamp2)
 end // end of [_eq_s2cst_s2cst]
@@ -292,8 +296,10 @@ fn _compare_s2cst_s2cst
   (s2c1: s2cst_t, s2c2: s2cst_t): Sgn = let
   val stamp1 =
     let val (vbox pf1 | p1) = s2c1 in p1->s2cst_stamp end
+  // end of [val]
   val stamp2 =
     let val (vbox pf2 | p2) = s2c2 in p2->s2cst_stamp end
+  // end of [val]
 in
   $Stamp.compare_stamp_stamp (stamp1, stamp2)
 end // end of [_compare_s2cst_s2cst]
@@ -348,7 +354,7 @@ in
   | Some d2cs => begin case+ d2cs of
     | D2CONLSTcons (_, D2CONLSTnil ()) => true | _ => false
     end // end of [Some]
-  | None () => false
+  | None () => false // end of [None]
 end // end of [s2cst_is_singular]
 
 end // end of [local] (for assuming s2cst_t)
@@ -410,18 +416,19 @@ end // end of [s2cst_make_cls]
 
 (* ****** ****** *)
 
-implement fprint_s2cst (pf_out | out, s2c) = begin
+implement fprint_s2cst (pf_out | out, s2c) =
   $Sym.fprint_symbol (pf_out | out, s2cst_sym_get s2c)
-end
+// end of [fprint_s2cst]
 
 implement fprint_s2cstlst {m} (pf | out, s2cs) = let
-fun aux (out: &FILE m, i: int, s2cs: s2cstlst): void =
-  case+ s2cs of
-  | S2CSTLSTcons (s2c, s2cs) => begin
-      if i > 0 then fprint1_string (pf | out, ", ");
-      fprint_s2cst (pf | out, s2c); aux (out, i+1, s2cs)
-    end
-  | S2CSTLSTnil () => ()
+  fun aux (out: &FILE m, i: int, s2cs: s2cstlst): void =
+    case+ s2cs of
+    | S2CSTLSTcons (s2c, s2cs) => begin
+        if i > 0 then fprint1_string (pf | out, ", ");
+        fprint_s2cst (pf | out, s2c); aux (out, i+1, s2cs)
+      end // end of [S2CSTLSTcons]
+    | S2CSTLSTnil () => () // end of [S2CSTLSTnil]
+  // end of [aux]
 in
   aux (out, 0, s2cs)
 end // end of [fprint_s2cstlst]
