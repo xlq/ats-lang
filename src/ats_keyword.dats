@@ -31,8 +31,8 @@
 
 (* ****** ****** *)
 
-// Time: July 2007
 // Author: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
+// Time: July 2007
 
 (* ****** ****** *)
 
@@ -290,7 +290,7 @@ ats_keyval_insert("absviewt@ype", ABSVIEWT0YPE) ;
 
 }
 
-%}
+%} // end of [%{^]
 
 extern fun keyval_table_init (): void = "ats_keyval_table_init"
 

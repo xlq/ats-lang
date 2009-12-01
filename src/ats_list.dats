@@ -32,6 +32,7 @@
 (* ****** ****** *)
 
 (* author: Hongwei Xi (hwxi AT cs DOT bu DOT edu) *)
+// Time: (month?) 2007
 
 (* ****** ****** *)
 
@@ -54,6 +55,7 @@ staload "ats_list.sats"
 
 implement list_is_cons (xs) =
   case+ xs of list_cons _ => true | list_nil _ => false
+// end of [list_is_cons]
 
 (* tail-recursive implementation *)
 implement list_append {a} (xs, ys) = let
@@ -66,8 +68,8 @@ implement list_append {a} (xs, ys) = let
         val () = (res := cons {a} {0} (x, ?)); val+ cons (_, !p) = res
       in
         aux (xs, ys, !p); fold@ res
-      end
-    | nil () => (res := ys)
+      end // end of [::]
+    | nil () => (res := ys) // end of [nil]
   end // end of [aux]
   var res: List a // uninitialized
 in
@@ -96,12 +98,13 @@ end // end of [list_foreach_cloptr]
 (* ****** ****** *)
 
 implement list_length {a} (xs) = let
-  fun aux {i,j:nat} .<i>.
+  fun loop {i,j:nat} .<i>.
     (xs: list (a, i), j: int j):<> int (i+j) =
-    case+ xs of  _ :: xs => aux (xs, succ j) | nil () => j
+    case+ xs of  _ :: xs => loop (xs, succ j) | nil () => j
+  // end of [loop]
 in
-  aux (xs, 0)
-end
+  loop (xs, 0)
+end // end of [list_length]
 
 (* ****** ****** *)
 
@@ -120,8 +123,8 @@ implement list_map_main
         val+ () = (res := cons {b} {0} (y, ?)); val+ cons (_, !p) = res
       in
         aux (pf | xs, f, !p, env); fold@ res
-      end
-    | nil () => (res := nil ())
+      end // end of [::]
+    | nil () => (res := nil ()) // end of [nil]
   end // end of [aux]
   var res: List b // uninitialized
 in
@@ -152,6 +155,7 @@ end // end of [list_map_cloptr]
 
 implement list_revapp (xs, ys) = case+ xs of
   | x :: xs => list_revapp (xs, x :: ys) | nil () => ys
+// end of [list_revapp]
 
 implement list_reverse (xs) = list_revapp (xs, nil ())  
 
@@ -160,10 +164,11 @@ implement list_reverse (xs) = list_revapp (xs, nil ())
 implement list_length_compare (xs1, xs2) = case+ xs1 of
   | _ :: xs1 => begin case+ xs2 of
     | _ :: xs2 => list_length_compare (xs1, xs2) | nil () => 1
-    end
+    end // end of [::]
   | nil () => begin
       case+ xs2 of _ :: _ => ~1 | nil () => 0
-    end
+    end // end of [nil]
+// end of [list_length_compare]
 
 (* ****** ****** *)
 
@@ -194,10 +199,10 @@ implement{a} list_vt_copy (xs) = let
         val+ list_vt_cons (_, !res_nxt) = res
       in
         aux (!xs_nxt, !res_nxt); fold@ xs; fold@ res
-      end
+      end // end of [list_vt_cons]
     | list_vt_nil () => begin
         res := list_vt_nil (); fold@ xs
-      end
+      end // end of [list_vt_nil]
   end // end of [aux]
   var res: (List_vt a)? // uninitialized
 in
@@ -274,6 +279,7 @@ implement list_vt_reverse (xs) = list_vt_revapp (xs, list_vt_nil ())
 implement list_vt_revapp_list (xs, ys) = case+ xs of
   | ~list_vt_cons (x, xs) => list_vt_revapp_list (xs, list_cons (x, ys))
   | ~list_vt_nil () => ys
+// end of [list_vt_revapp_list]
 
 implement list_vt_reverse_list (xs) = list_vt_revapp_list (xs, list_nil ())
 

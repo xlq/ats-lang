@@ -32,6 +32,7 @@
 (* ****** ****** *)
 
 (* author: Hongwei Xi (hwxi AT cs DOT bu DOT edu) *)
+// Time: (month?) 2007
 
 (* ****** ****** *)
 
@@ -53,6 +54,7 @@ fun list_extend {a:type} {n:nat}
 
 fun list_foreach_main {a:type} {v:view} {vt:viewtype} {f:eff}
   (pf: !v | xs: List a, f: (!v | a, !vt) -<f> void, env: !vt):<f> void
+// end of [list_foreach_main]
 
 fun list_foreach_fun {a:type} {f:eff}
   (xs: List a, f: a -<f> void):<f> void
@@ -68,6 +70,7 @@ fun list_length {a:type} {n:nat} (xs: list (a, n)):<> int n
 
 fun list_map_main {a,b:type} {v:view} {vt:viewtype} {n:nat} {f:eff}
   (pf: !v | xs: list (a, n), f: (!v | a, !vt) -<f> b, env: !vt):<f> list (b, n)
+// end of [list_map_main]
 
 fun list_map_fun {a,b:type} {n:nat} {f:eff}
   (xs: list (a, n), f: a -<f> b):<f> list (b, n)

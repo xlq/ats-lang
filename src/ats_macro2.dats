@@ -41,10 +41,8 @@
 (* ****** ****** *)
 
 %{^
-
 #include "ats_counter.cats" /* only needed for [ATS/Geizella] */
 #include "ats_intinf.cats"  /* only needed for [ATS/Geizella] */
-
 %}
 
 (* ****** ****** *)
@@ -71,6 +69,12 @@ overload prerr with $Loc.prerr_location
 
 (* ****** ****** *)
 
+fn prerr_loc_errmac (loc: loc_t): void =
+  ($Loc.prerr_location loc; prerr ": error(macro)")
+// end of [prerr_loc_errmac]
+
+(* ****** ****** *)
+
 datatype v2alue =
   | V2ALbool of bool
   | V2ALchar of char
@@ -80,6 +84,7 @@ datatype v2alue =
   | V2ALlst of v2aluelst
   | V2ALstring of (string, int(*length*))
   | V2ALunit
+// end of [v2alue]
 
 where v2aluelst = List v2alue
 
@@ -154,7 +159,7 @@ fn lift_val_exp
   | V2ALstring (str, len) => d2exp_string (loc0, str, len)
   | V2ALunit () => d2exp_empty (loc0)
   | _ => begin
-      prerr loc0; prerr ": error(macro)";
+      prerr_loc_errmac loc0;
       prerr ": a value representing code (abstract syntax tree) cannot be lifted.";
       prerr_newline ();
       $Err.abort {d2exp} ()
@@ -417,17 +422,17 @@ extern fun eval0_exp_app_sym (
 fn eval0_exp_app_compare_sgn
   (loc0: loc_t, v2al1: v2alue, v2al2: v2alue): Sgn = let
   fn err (loc0: loc_t, v2al1: v2alue, v2al2: v2alue): Sgn = begin
-    prerr loc0; prerr ": error(macro)";
+    prerr_loc_errmac loc0;
     prerr ": values that do not support comparison are compared.";
     prerr_newline ();
     $Err.abort {Sgn} ()
-  end
+  end // end of [err]
 in
   case+ v2al1 of
   | V2ALint i1 => begin case+ v2al2 of
     | V2ALint i2 => $IntInf.compare_intinf_intinf (i1, i2)
     | _ => err (loc0, v2al1, v2al2)
-    end
+    end // end of [V2ALint]
   | _ => err (loc0, v2al1, v2al2)
 end // end of [eval0_exp_app_compare]
 
@@ -478,7 +483,7 @@ end
 fn eval0_exp_app_neg
   (loc0: loc_t, v2al: v2alue): v2alue = let
   fn err (loc0: loc_t, v2al: v2alue): v2alue = begin
-    prerr loc0; prerr ": error(macro)";
+    prerr_loc_errmac loc0;
     prerr ": negation is performed on a value that does not support it.";
     prerr_newline ();
     $Err.abort {v2alue} ()
@@ -493,7 +498,7 @@ end // end of [eval0_exp_app_add]
 fn eval0_exp_app_add
   (loc0: loc_t, v2al1: v2alue, v2al2: v2alue): v2alue = let
   fn err (loc0: loc_t, v2al1: v2alue, v2al2: v2alue): v2alue = begin
-    prerr loc0; prerr ": error(macro)";
+    prerr_loc_errmac loc0;
     prerr ": addition is performed on values that do not support it.";
     prerr_newline ();
     $Err.abort {v2alue} ()
@@ -503,41 +508,41 @@ in
   | V2ALint i1 => begin case+ v2al2 of
     | V2ALint i2 => V2ALint ($IntInf.add_intinf_intinf (i1, i2))
     | _ => err (loc0, v2al1, v2al2)
-    end
+    end // end of [V2ALint]
   | _ => err (loc0, v2al1, v2al2)
 end // end of [eval0_exp_app_add]
 
 fn eval0_exp_app_sub
   (loc0: loc_t, v2al1: v2alue, v2al2: v2alue): v2alue = let
   fn err (loc0: loc_t, v2al1: v2alue, v2al2: v2alue): v2alue = begin
-    prerr loc0; prerr ": error(macro)";
+    prerr_loc_errmac loc0;
     prerr ": subtraction is performed on values that do not support it.";
     prerr_newline ();
     $Err.abort {v2alue} ()
-  end
+  end // end of [err]
 in
   case+ v2al1 of
   | V2ALint i1 => begin case+ v2al2 of
     | V2ALint i2 => V2ALint ($IntInf.sub_intinf_intinf (i1, i2))
     | _ => err (loc0, v2al1, v2al2)
-    end
+    end // end of [V2ALint]
   | _ => err (loc0, v2al1, v2al2)
 end // end of [eval0_exp_app_sub]
 
 fn eval0_exp_app_mul
   (loc0: loc_t, v2al1: v2alue, v2al2: v2alue): v2alue = let
   fn err (loc0: loc_t, v2al1: v2alue, v2al2: v2alue): v2alue = begin
-    prerr loc0; prerr ": error(macro)";
+    prerr_loc_errmac loc0;
     prerr ": multiplication is performed on values that do not support it.";
     prerr_newline ();
     $Err.abort {v2alue} ()
-  end
+  end // end of [err]
 in
   case+ v2al1 of
   | V2ALint i1 => begin case+ v2al2 of
     | V2ALint i2 => V2ALint ($IntInf.mul_intinf_intinf (i1, i2))
     | _ => err (loc0, v2al1, v2al2)
-    end
+    end // end of [V2ALint]
   | _ => err (loc0, v2al1, v2al2)
 end // end of [eval0_exp_app_mul]
 
@@ -545,11 +550,11 @@ end // end of [eval0_exp_app_mul]
 fn eval0_exp_app_div
   (loc0: loc_t, v2al1: v2alue, v2al2: v2alue): v2alue = let
   fn err (loc0: loc_t, v2al1: v2alue, v2al2: v2alue): v2alue = begin
-    prerr loc0; prerr ": error(macro)";
+    prerr_loc_errmac loc0;
     prerr ": division is performed on values that do not support it.";
     prerr_newline ();
     $Err.abort {v2alue} ()
-  end
+  end // end of [err]
 in
   case+ v2al1 of
   | V2ALint i1 => begin case+ v2al2 of
@@ -564,7 +569,7 @@ end // end of [eval0_exp_app_div]
 fn eval0_exp_app_is_nil
   (loc0: loc_t, v2al: v2alue): v2alue = let
   fn err (loc0: loc_t, v2al: v2alue): v2alue = begin
-    prerr loc0; prerr ": error(macro)";
+    prerr_loc_errmac loc0;
     prerr ": [is_nil] is performed on a value that do not support it.";
     prerr_newline ();
     $Err.abort {v2alue} ()
@@ -580,7 +585,7 @@ end // end of [eval0_exp_app_is_nil]
 fn eval0_exp_app_is_cons
   (loc0: loc_t, v2al: v2alue): v2alue = let
   fn err (loc0: loc_t, v2al: v2alue): v2alue = begin
-    prerr loc0; prerr ": error(macro)";
+    prerr_loc_errmac loc0;
     prerr ": [is_cons] is performed on a value that do not support it.";
     prerr_newline ();
     $Err.abort {v2alue} ()
@@ -598,11 +603,11 @@ end // end of [eval0_exp_app_is_cons]
 fn eval0_exp_app_tup_head (loc0: loc_t, v2al: v2alue): v2alue = let
 (*
   val () = begin
-    prerr "eval0_exp_app_tup_head: v2al = "; prerr v2al; prerr_newline ()
+    print "eval0_exp_app_tup_head: v2al = "; print v2al; print_newline ()
   end // end of [val]
 *)
   fn err (loc0: loc_t, v2al: v2alue): v2alue = begin
-    prerr loc0; prerr ": error(macro)";
+    prerr_loc_errmac loc0;
     prerr ": [tup_head] is performed on a value that do not support it.";
     prerr_newline ();
     $Err.abort {v2alue} ()
@@ -614,7 +619,7 @@ fn eval0_exp_app_tup_head (loc0: loc_t, v2al: v2alue): v2alue = let
     | _ => err (loc0, v2al)
 (*
   val () = begin
-    prerr "eval0_exp_app_tup_head: ret = "; prerr ret; prerr_newline ()
+    print "eval0_exp_app_tup_head: ret = "; print ret; print_newline ()
   end // end of [val]
 *)
 in
@@ -624,11 +629,11 @@ end (* end of [eval0_exp_app_tup_head] *)
 fn eval0_exp_app_tup_tail (loc0: loc_t, v2al: v2alue): v2alue = let
 (*
   val () = begin
-    prerr "eval0_exp_app_tup_tail: v2al = "; prerr v2al; prerr_newline ()
+    print "eval0_exp_app_tup_tail: v2al = "; print v2al; print_newline ()
   end // end of [val]
 *)
   fn err (loc0: loc_t, v2al: v2alue): v2alue = begin
-    prerr loc0; prerr ": error(macro)";
+    prerr_loc_errmac loc0;
     prerr ": [tup_tail] is performed on a value that do not support it.";
     prerr_newline ();
     $Err.abort {v2alue} ()
@@ -641,7 +646,7 @@ fn eval0_exp_app_tup_tail (loc0: loc_t, v2al: v2alue): v2alue = let
   ) : v2alue // end of [val]
 (*
   val () = begin
-    prerr "eval0_exp_app_tup_tail: ret = "; prerr ret; prerr_newline ()
+    print "eval0_exp_app_tup_tail: ret = "; print ret; print_newline ()
   end // end of [val]
 *)
 in
@@ -653,7 +658,7 @@ end (* end of [eval0_exp_app_tup_tail] *)
 fn eval0_exp_app_eval
   (loc0: loc_t, v2al: v2alue): v2alue = let
   fn err (loc0: loc_t, v2al: v2alue): v2alue = begin
-    prerr loc0; prerr ": error(macro)";
+    prerr_loc_errmac loc0;
     prerr ": evaluation is performed on a value not representing code.";
     prerr_newline ();
     $Err.abort {v2alue} ()
@@ -707,10 +712,10 @@ extern fun eval1_d2eclst
 
 fun eval0_var (loc0: loc_t, ctx: !eval0ctx, d2v: d2var_t): v2alue = let
   fn err (loc0: loc_t, d2v: d2var_t): v2alue = begin
-     prerr loc0; prerr ": error(macro)";
-     prerr ": the variable ["; prerr d2v; prerr "] is unbound.";
-     prerr_newline ();
-     $Err.abort {v2alue} ()
+    prerr_loc_errmac loc0;
+    prerr ": the variable ["; prerr d2v; prerr "] is unbound.";
+    prerr_newline ();
+    $Err.abort {v2alue} ()
   end (* end of [err] *)
   fun auxfind
     (ctx: !eval0ctx, stamp0: stamp_t):<cloptr1> v2alue =
@@ -744,8 +749,7 @@ implement eval0_exp (loc0, ctx, env, d2e0) = begin
         eval0_exp_app_sym (loc0, d2s.d2sym_sym, ctx, env, d2as)
       end // end of [D2Esym]
     | _ => begin
-        prerr loc0;
-        prerr ": error(macro)";
+        prerr_loc_errmac loc0;
         prerr ": the dynamic expression (";
         prerr d2e.d2exp_loc;
         prerr ") should be a macro but it is not.";
@@ -767,7 +771,7 @@ implement eval0_exp (loc0, ctx, env, d2e0) = begin
           end // end of [if]
         end // end of [V2ALbool]
       | _ => begin
-          prerr loc0; prerr ": error(macro)";
+          prerr_loc_errmac loc0;
           prerr ": the expansion of the dynamic expression (";
           prerr d2e_cond.d2exp_loc;
           prerr ") should return a boolean value but it did not.";
@@ -800,8 +804,7 @@ implement eval0_exp (loc0, ctx, env, d2e0) = begin
       end // end of [MACSYNKINDencode]
 (*
     | _ => begin
-        $Loc.prerr_location loc0;
-        prerr ": error(macro)";
+        prerr_loc_errmac loc0;
         prerr ": invalid use of macro syntax: ";
         prerr d2e0; prerr_newline ();
         $Err.abort {v2alue} ()
@@ -816,8 +819,7 @@ implement eval0_exp (loc0, ctx, env, d2e0) = begin
     end // end of [D2Erec]
   | D2Evar d2v => eval0_var (loc0, ctx, d2v)
   | _ => begin
-      prerr loc0;
-      prerr ": error(macro)";
+      prerr_loc_errmac loc0;
       prerr ": unsupported form for macro expansion: ";
       prerr d2e0; prerr_newline ();
       $Err.abort {v2alue} ()
@@ -847,7 +849,7 @@ fn d2exparg_dyn_get {n:nat} (
       val nd2es: int(nd2es) = $Lst.list_length d2es
       val () = ( // arity checking
         if nd2es <> n then begin
-          prerr loc0; prerr ": error(macro)";
+          prerr_loc_errmac loc0;
           prerr ": the dynamic symbol [";
           $Sym.prerr_symbol sym;
           if nd2es > 2 then prerr "] expects two arguments but is given more.";
@@ -863,8 +865,7 @@ fn d2exparg_dyn_get {n:nat} (
       d2es
     end // end of [D2EXPARGdyn]
   | D2EXPARGsta _ => begin
-      prerr loc0;
-      prerr ": error(macro)";
+      prerr_loc_errmac loc0;
       prerr ": the dynamic symbol [";
       $Sym.prerr_symbol sym;
       prerr "] is applied to static argument(s): {";
@@ -903,12 +904,11 @@ end // end of [symbol_is_binary]
 implement eval0_exp_app_sym (loc0, sym, ctx, env, d2as) = let
 (*
   val () = begin
-    prerr "eval0_exp_app_sym: sym = "; $Sym.prerr_symbol sym; prerr_newline ()
+    print "eval0_exp_app_sym: sym = "; $Sym.print_symbol sym; print_newline ()
   end // end of [val]
 *)
   fn err (loc0: loc_t, sym: sym_t): v2alue = begin
-    prerr loc0;
-    prerr ": error(macro)";
+    prerr_loc_errmac loc0;
     prerr ": an unrecognized symbol [";
     $Sym.prerr_symbol sym;
     prerr "] is encountered during macro expansion.";
@@ -919,7 +919,7 @@ in
   case+ sym of
   | _ when symbol_is_binary sym => let
       var d2e10: d2exp? and d2e20: d2exp?
-      val () = case+
+      val () = (case+
         :(d2e10: d2exp, d2e20: d2exp) => d2as of
         | list_cons (d2a, list_nil ()) => let
             val d2es = d2exparg_dyn_get (loc0, sym, d2a, 2)
@@ -929,14 +929,15 @@ in
             d2e10 := d2e1; d2e20 := d2e2
           end
         | _ => begin
-            prerr loc0; prerr ": error(macro)";
+            prerr_loc_errmac loc0;
             prerr ": the dynamic symbol ["; $Sym.prerr_symbol sym;
             prerr "] should be applied to exactly two arguments but it is not.";
             prerr_newline ();
             d2e10 := $Err.abort {d2exp} ();
             d2e20 := $Err.abort {d2exp} ();
             $Err.abort {void} ()
-          end
+          end // end of [_]
+      ) : void // end of [val]
       val v2al1 = eval0_exp (loc0, ctx, env, d2e10)
       and v2al2 = eval0_exp (loc0, ctx, env, d2e20)
     in
@@ -985,7 +986,7 @@ in
             d2e0 := d2e
           end (* end of [list_cons] *)
         | _ => begin
-            prerr loc0; prerr ": error(macro)";
+            prerr_loc_errmac loc0;
             prerr ": the dynamic symbol ["; $Sym.prerr_symbol sym;
             prerr "] should be applied to exactly one argument but it is not.";
             prerr_newline ();
@@ -1148,7 +1149,7 @@ end // end of [eval1_c2laulst]
 implement eval1_d2exp (loc0, ctx, env, d2e0) = let
 (*
   val () = begin
-    prerr "eval1_d2exp: d2e0 = "; prerr_d2exp d2e0; prerr_newline ()
+    print "eval1_d2exp: d2e0 = "; print_d2exp d2e0; print_newline ()
   end (* end of [val] *)
 *)
 in
@@ -1177,7 +1178,7 @@ in
             // expanding a macro in short form
             eval0_exp_app_mac_short (loc0, d2m, ctx, env, d2as)
           end else begin
-            prerr loc0; prerr ": error(macro)";
+            prerr_loc_errmac loc0;
             prerr ": the dynamic symbol ["; prerr d2m; prerr "] (";
             prerr d2e0.d2exp_loc;
             prerr ") refers to a macro definition in long form";
@@ -1315,7 +1316,7 @@ in
           end // end of [MACSYNKINDcross]
         | $Syn.MACSYNKINDdecode () => eval0_exp (loc0, ctx, env, d2e)
         | _ => begin
-            prerr loc0; prerr ": error(macro)";
+            prerr_loc_errmac loc0;
             prerr ": invalid use of macro syntax: ";
             prerr d2e0; prerr_newline ();
             $Err.abort {v2alue} ()
@@ -1324,7 +1325,7 @@ in
     in
       case+ v2al of
       | V2ALcode d2e_new => d2e_new | _ => begin
-          prerr loc0; prerr ": error(macro)";
+          prerr_loc_errmac loc0;
           prerr ": the expansion of this dynamic expression (";
           prerr d2e.d2exp_loc;
           prerr ") should return a value representing code (abstract syntax tree)";
@@ -1386,8 +1387,7 @@ in
     end // end of [D2Eviewat]
 (*
   | _ => begin
-      prerr loc0;
-      prerr ": error(macro)";
+      prerr_loc_errmac loc0;
       prerr ": unsupported form for macro expansion: ";
       prerr d2e0; prerr_newline ();
       $Err.abort {d2exp} ()
@@ -1509,7 +1509,7 @@ implement eval1_d2ec (loc0, ctx, env, d2c0) = begin
       d2ec_valdecs_rec (loc0, d2cs)
     end
   | _ => begin
-      prerr loc0; prerr ": error(macro)";
+      prerr_loc_errmac loc0;
       prerr ": this form of declaration (";
       prerr d2c0.d2ec_loc;
       prerr ") is not supported in macro expansion."; prerr_newline ();
@@ -1607,12 +1607,12 @@ fun eval0ctx_extend_arglst {narg:nat} (
       var d2es: d2explst = list_nil (); val () = case+ d2a of
         | D2EXPARGdyn (_(*loc*), _(*npf*), d2es1) => d2es := d2es1
         | D2EXPARGsta _ => begin
-            prerr loc0; prerr ": error(macro)";
+            prerr_loc_errmac loc0;
             prerr ": the macro function ["; prerr d2m;
             prerr "] should not be applied to static arguments.";
             prerr_newline ();
             $Err.abort {void} ()
-          end
+          end // end of [D2EXPARGsta]
       val d2es = (d2es: d2explst) // handle a complaint by [ATS/Geizella]
       val nd2vs = (case+ arg of
         | MACARGone d2v => @(1, '[d2v]) | MACARGlst (n, d2vs) => @(n, d2vs)
@@ -1623,7 +1623,7 @@ fun eval0ctx_extend_arglst {narg:nat} (
       val n: int n = n and nd2es: int nd2es = nd2es
       val () = ( // arity checking
         if (n <> nd2es) then begin
-          prerr loc0; prerr ": error(macro)";
+          prerr_loc_errmac loc0;
           prerr ": expansion of the macro ["; prerr d2m;
           prerr "] encounters an arity error.";
           prerr_newline ();
@@ -1644,20 +1644,20 @@ implement // expanding macros in long form
   eval0_exp_app_mac_long {narg} (loc0, d2m, ctx, env, d2as) = let
 (*
   val () = begin
-    prerr "eval0_exp_app_mac_long: d2m = "; prerr d2m; prerr_newline ()
+    print "eval0_exp_app_mac_long: d2m = "; print d2m; print_newline ()
   end
 *)
   val narg = d2mac_narg_get (d2m); val args = d2mac_arglst_get (d2m)
   stavar nd2as: int; val nd2as: int nd2as = $Lst.list_length d2as
 (*
   val () = begin
-    prerr "eval0_exp_app_mac_long: narg = "; prerr narg; prerr_newline ();
-    prerr "eval0_exp_app_mac_long: nd2as = "; prerr nd2as; prerr_newline ();
+    print "eval0_exp_app_mac_long: narg = "; print narg; print_newline ();
+    print "eval0_exp_app_mac_long: nd2as = "; print nd2as; print_newline ();
   end // end of [val]
 *)
   val () = ( // checking for improper application
     if narg <> nd2as then begin
-      prerr loc0; prerr ": error(macro)";
+      prerr_loc_errmac loc0;
       prerr ": the macro function ["; prerr d2m;
       if narg > nd2as then prerr "] is applied insufficiently.";
       if nd2as < narg then prerr "] is overly applied.";
@@ -1673,7 +1673,7 @@ implement // expanding macros in long form
   ) // end of [eval0ctx_extend_arglst]
 (*
   val () = begin
-    prerr "eval0_exp_app_mac_long: ctx_new = "; prerr_newline (); prerr ctx_new
+    print "eval0_exp_app_mac_long: ctx_new = "; print_newline (); print ctx_new
   end // end of [val]
 *)
   val v2al = eval0_exp (loc0, ctx_new, env, d2mac_def_get d2m)
@@ -1688,7 +1688,7 @@ implement // expanding macros in short form
   eval0_exp_app_mac_short {narg} (loc0, d2m, ctx, env, d2as) = let
 (*
   val () = begin
-    prerr "eval0_exp_app_mac_short: d2m = "; prerr d2m; prerr_newline ()
+    print "eval0_exp_app_mac_short: d2m = "; print d2m; print_newline ()
   end // end of [val]
 *)
   val narg = d2mac_narg_get (d2m)
@@ -1696,13 +1696,13 @@ implement // expanding macros in short form
   stavar nd2as: int; val nd2as: int (nd2as) = $Lst.list_length d2as
 (*
   val () = begin
-    prerr "eval0_exp_app_mac_short: narg = "; prerr narg; prerr_newline ();
-    prerr "eval0_exp_app_mac_short: nd2as = "; prerr nd2as; prerr_newline ();
+    print "eval0_exp_app_mac_short: narg = "; print narg; print_newline ();
+    print "eval0_exp_app_mac_short: nd2as = "; print nd2as; print_newline ();
   end // end of [val]
 *)
   val () = (
     if narg > nd2as then begin
-      prerr loc0; prerr ": error(macro)";
+      prerr_loc_errmac loc0;
       prerr ": the macro function ["; prerr d2m;
       prerr "] is applied insufficiently."; prerr_newline ();
       $Err.abort {void} ();
@@ -1729,7 +1729,7 @@ implement // expanding macros in short form
   ) // end of [eval0ctx_extend_arglst]
 (*
   val () = begin
-    prerr "eval0_exp_app_mac_short: ctx_new =\n"; prerr ctx_new
+    print "eval0_exp_app_mac_short: ctx_new =\n"; print ctx_new
   end // end of [val]
 *)
   val d2e = eval1_d2exp (loc0, ctx_new, env, d2mac_def_get d2m)
@@ -1741,7 +1741,7 @@ in
         val d2as_arg = $Lst.list_append (d2as1, d2as2)
       in
         d2exp_apps (loc0, d2e_fun, d2as_arg)
-      end
+      end // end of [D2Eapps]
     | _ =>  d2exp_apps (loc0, d2e, d2as2)
     end // end of [list_cons]
   | list_nil () => d2e
@@ -1771,12 +1771,12 @@ in
   case+ v2al of
   | V2ALcode d2e_new => d2e_new
   | _ => begin
-      prerr d2e.d2exp_loc; prerr ": error(macro)";
+      prerr_loc_errmac loc0;
       prerr ": the expansion of this macro should yield code (abstract syntax tree)";
       prerr ", but a value that does not represent code is returned instead.";
       prerr_newline ();
       $Err.abort {d2exp} ()
-    end
+    end // end of [_]
 end // end of [macro_eval]
 
 (* ****** ****** *)
