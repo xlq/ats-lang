@@ -77,6 +77,12 @@ staload _(*anonymous*) = "ats_map_lin.dats"
 #define VAR_TYPE_NAME "ats_var_type"
 #define VOID_TYPE_NAME "ats_void_type"
 
+(* ****** ****** *)
+
+fn prerr_interror () = prerr "INTERNAL ERROR (ats_ccomp_env)"
+
+(* ****** ****** *)
+
 implement hityp_is_void (hit0) = begin
   case+ hit0.hityp_node of
   | HITextype name => begin case+ 0 of
@@ -93,17 +99,15 @@ end // end of [hityp_is_void]
 implement hityp_fun_is_void (hit_fun) = let
 (*
   val () = begin
-    prerr "hityp_fun_is_void: hit_fun = "; prerr hit_fun; prerr_newline ()
+    print "hityp_fun_is_void: hit_fun = "; print hit_fun; print_newline ()
   end // end of [val]
 *)
 in
   case+ hit_fun.hityp_node of
   | HITfun (_(*fc*), _(*arg*), hit_res) => hityp_is_void (hit_res)
   | _ => begin
-      prerr "INTERNAL ERROR";
-      $Deb.debug_prerrf (": %s", @(THISFILENAME));
-      prerr ": hityp_fun_is_void: hit_fun = "; prerr_hityp hit_fun;
-      prerr_newline ();
+      prerr_interror ();
+      prerr ": hityp_fun_is_void: hit_fun = "; prerr_hityp hit_fun; prerr_newline ();
       $Err.abort {bool} ()
     end // end of [_]
 end // end of [hityp_fun_is_void]
@@ -121,8 +125,7 @@ in
       case+ arg of cons (hit, hits) => aux (hit, hits) | nil () => false
     end // end of [HITfun]
   | _ => begin
-      prerr "INTERNAL ERROR";
-      $Deb.debug_prerrf (": %s", @(THISFILENAME));
+      prerr_interror ();
       prerr ": hityp_fun_is_vararg: hit_fun = "; prerr_hityp hit_fun; print_newline ();
       $Err.abort {bool} ()
     end // end of [_]
@@ -502,11 +505,9 @@ implement hityp_tysum_make (d2c, hits_arg) = begin
   | list_cons _ => let
 (*
       val () = begin
-        prerr "hityp_tysum_make: d2c = "; prerr d2c; prerr_newline ()
-      end
-      val () = begin
-        prerr "hityp_tysum_make: hits_arg = "; prerr hits_arg; prerr_newline ()
-      end
+        print "hityp_tysum_make: d2c = "; print d2c; print_newline ();
+        print "hityp_tysum_make: hits_arg = "; print hits_arg; print_newline ()
+      end // end of [val]
 *)
       val names_arg = $Lst.list_map_fun (hits_arg, hityp_name_get)
       val s2c = d2con_scst_get (d2c)
@@ -532,7 +533,7 @@ fun hityp_normalize_flag
   (hit0: hityp, flag: &int): hityp = let
 (*
   val () = begin
-    prerr "hityp_normalize_flag: hit0 = "; prerr_hityp hit0; prerr_newline ()
+    print "hityp_normalize_flag: hit0 = "; print_hityp hit0; print_newline ()
   end // end of [val]
 *)
   val hit0_new = case+ hit0.hityp_node of
@@ -568,7 +569,7 @@ fun hityp_normalize_flag
   | _ => hit0
 (*
   val () = begin
-    prerr "hityp_normalize: hit0_new = "; prerr_hityp hit0_new; prerr_newline ()
+    print "hityp_normalize: hit0_new = "; print_hityp hit0_new; print_newline ()
   end // end of [val]
 *)
 in
@@ -620,11 +621,10 @@ end // end of [local]
 implement d2cst_hityp_get_some (d2c) = begin
   case+ d2cst_hityp_get d2c of
   | Some hit => hit | None () => begin
-      prerr "Internal Error: d2cst_hityp_get_some: d2c = ";
-      prerr d2c;
-      prerr_newline ();
+      prerr_interror ();
+      prerr ": d2cst_hityp_get_some: d2c = "; prerr d2c; prerr_newline ();
       $Err.abort {hityp_t} ()
-    end
+    end // end of [None]
 end // end of [d2cst_hityp_get_some]
 
 (* ****** ****** *)

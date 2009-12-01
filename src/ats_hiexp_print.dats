@@ -116,8 +116,9 @@ implement fprint_hityplst {m} (pf | out, hits0) = let
     | list_cons (hit, hits) => begin
         if i > 0 then fprint1_string (pf | out, ", ");
         fprint_hityp (pf | out, hit); aux (out, i+1, hits)
-      end
-    | list_nil () => ()
+      end // end of [list_cons]
+    | list_nil () => () // end of [list_nil]
+  // end of [aux]
 in
   aux (out, 0, hits0)
 end // end of [fprint_hityplst]
@@ -128,8 +129,9 @@ implement fprint_hityplstlst {m} (pf | out, hitss0) = let
     | list_cons (hits, hitss) => begin
         if i > 0 then fprint1_string (pf | out, ", ");
         fprint_hityplst (pf | out, hits); aux (out, i+1, hitss)
-      end
-    | list_nil () => ()
+      end // end of [list_cons]
+    | list_nil () => () // end of [list_nil]
+  // end of [aux]
 in
   aux (out, 0, hitss0)
 end // end of [fprint_hityplstlst]
@@ -157,7 +159,7 @@ in
     end // end of [HIPann]
   | HIPany () => begin
       fprint1_string (pf | out, "HIPany()")
-    end
+    end // end of [HIPany]
   | HIPas (knd, d2v, hip) => begin
       prstr "HIPas(";
       fprint1_int (pf | out, knd);
@@ -193,10 +195,10 @@ in
     end // end of [HIPcon_any]
   | HIPempty () => begin
       fprint1_string (pf | out, "HIPempty()");
-    end
+    end // end of [HIPempty]
   | HIPfloat f(*string*) => begin
       fprintf1_exn (pf | out, "HIPfloat(%s)", @(f))
-    end
+    end // end of [HIPfloat]
   | HIPint (str, int) => begin
       prstr "HIPint(";
       $IntInf.fprint_intinf (pf | out, int);
@@ -233,7 +235,7 @@ implement fprint_hipatlst {m} (pf | out, hips0) = let
         if i > 0 then fprint1_string (pf | out, ", ");
         fprint_hipat (pf | out, hip); aux (out, i+1, hips)
       end (* end of [list_cons] *)
-    | list_nil () => ()
+    | list_nil () => () // end of [list_nil]
   // end of [aux]
 in
   aux (out, 0, hips0)
@@ -250,12 +252,12 @@ implement fprint_labhipatlst
         fprint1_string (pf | out, "= ");
         fprint_hipat (pf | out, hip);
         aux (out, i+1, lhips)
-      end
+      end // end of [LABHIPATLSTcons]
     | LABHIPATLSTdot () => begin
         if i > 0 then fprint1_string (pf | out, ", ");
         fprint1_string (pf | out, "...")
-      end
-    | LABHIPATLSTnil () => ()
+      end // end of [LABHIPATLSTdot]
+    | LABHIPATLSTnil () => () // end of [LABHIPATLSTnil]
   // end of [aux]
 in
   aux (out, 0, lhips0)
@@ -322,7 +324,7 @@ in
     end // end of [HIEassgn_var]
   | HIEbool b => begin
       prstr "HIEbool("; fprint1_bool (pf | out, b); prstr ")"
-    end
+    end // end of [HIEbool]
   | HIEcaseof _ => begin
       prstr "HIEcaseof("; fprint1_string (pf | out, "..."); prstr ")"
     end // end of [HIEcaseof]
@@ -353,13 +355,13 @@ in
       prstr "HIEdynload(";
       $Fil.fprint_filename (pf | out, fil);
       prstr ")";
-    end
+    end // end of [HIEdynload]
   | HIEempty () => begin
       fprint1_string (pf | out, "HIEempty()")
-    end
+    end // end of [HIEempty]
   | HIEextval code => begin
       prstr "HIEextval("; fprint1_string (pf | out, code); prstr ")"
-    end
+    end // end of [HIEexval]
   | HIEfix (d2v_fun, hie_body) => begin
       prstr "HIEfix(";
       fprint_d2var (pf | out, d2v_fun);
@@ -566,8 +568,9 @@ implement fprint_hiexplst {m} (pf | out, hies0) = let
     | list_cons (hie, hies) => begin
         if i > 0 then fprint1_string (pf | out, ", ");
         fprint_hiexp (pf | out, hie); aux (out, i+1, hies)
-      end
-    | list_nil () => ()
+      end // end of [list_cons]
+    | list_nil () => () // end of [list_nil]
+  // end of [aux]
 in
   aux (out, 0, hies0)
 end // end of [fprint_hiexplst]
@@ -578,8 +581,8 @@ implement fprint_hiexplstlst {m} (pf | out, hiess0) = let
     | list_cons (hies, hiess) => begin
         if i > 0 then fprint1_string (pf | out, "; ");
         fprint_hiexplst (pf | out, hies); aux (out, i+1, hiess)
-      end
-    | list_nil () => ()
+      end // end of [list_cons]
+    | list_nil () => () // end of [list_nil]
   // end of [aux]
 in
   aux (out, 0, hiess0)
@@ -594,8 +597,8 @@ implement fprint_labhiexplst {m} (pf | out, lhies0) = let
         fprint1_string (pf | out, "= ");
         fprint_hiexp (pf | out, hie);
         aux (out, i+1, lhies)
-      end
-    | LABHIEXPLSTnil () => ()
+      end // end of [LABHIEXPLSTcons]
+    | LABHIEXPLSTnil () => () // end of [LABHIEXPLSTnil]
   // end of [aux]
 in
   aux (out, 0, lhies0)
@@ -620,7 +623,7 @@ implement fprint_hilablst {m} (pf | out, hils0) = let
         if i > 0 then fprint1_string (pf | out, ", ");
         fprint_hilab (pf | out, hil); aux (out, i+1, hils)
       end // end of [list_cons]
-    | list_nil () => ()
+    | list_nil () => () // end of [list_nil]
   // end of [aux]
 in
   aux (out, 0, hils0)

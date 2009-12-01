@@ -77,12 +77,13 @@ datatype hityp_node =
 and labhityplst =
   | LABHITYPLSTcons of (lab_t, hityp, labhityplst)
   | LABHITYPLSTnil
+// end of [labhityplst]
 
 and hityp_name = HITNAM of (int(*1/0: ptr/non*), string)
 
 where hityp = '{
   hityp_name= hityp_name, hityp_node= hityp_node
-}
+} // end of [hityp]
 
 and hityplst = List hityp
 and hityplstlst = List hityplst
@@ -199,6 +200,7 @@ and labhipatlst =
   | LABHIPATLSTcons of (lab_t, hipat, labhipatlst)
   | LABHIPATLSTdot
   | LABHIPATLSTnil
+// end of [labhipatlst]
 
 where hipat = '{
   hipat_loc= loc_t
@@ -305,6 +307,7 @@ datatype hidec_node =
       fil_t
   | HIDdynload of (* dynamic loading *)
       fil_t
+// end of [hidec_node]
 
 and hiexp_node =
   | HIEapp of (* dynamic application *)
@@ -400,16 +403,19 @@ and hiexp_node =
       (hiexp, hiclaulst)
   | HIEvar of (* variable *)
       d2var_t
+// end of [hiexp_node]
 
 and labhiexplst =
   | LABHIEXPLSTcons of (lab_t, hiexp, labhiexplst)
   | LABHIEXPLSTnil
+// end of [labhiexplst]
 
 and hilab_node =
   | HILlab of (* record selection *)
       (lab_t, hityp (*record*))
   | HILind of (* array subscription *)
       (hiexplstlst (*index*), hityp (*element*))
+// end of [hilab_node]
 
 (* ****** ****** *)
 
@@ -444,7 +450,7 @@ and hiclau = '{ (* type for clauses *)
 , hiclau_pat= hipatlst (* pattern list *)
 , hiclau_gua= himatlst (* clause guard *)
 , hiclau_exp= hiexp (* expression body *)
-}
+} // end of [hiclau]
 
 and hiclaulst = List hiclau
 
@@ -836,6 +842,7 @@ datatype typkey =
   | TYPKEYrec of labstrlst // record
   | TYPKEYsum of (int, strlst) // sum
   | TYPKEYuni of labstrlst // union
+// end of [typkey]
 
 // implemented in [ats_ccomp_env.dats]
 fun typdefmap_find (tk: typkey): string
@@ -870,4 +877,4 @@ fun tmpvarmap_find (d2v: d2var_t): Option_vt tmpdef_t
 
 (* ****** ****** *)
 
-(* end of [ats_hiexp.dats] *)
+(* end of [ats_hiexp.sats] *)

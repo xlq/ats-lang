@@ -121,7 +121,7 @@ ats_intinf_set_string (ats_mpz_ptr_type x, ats_ptr_type s0) {
 
   if (c0 == '\000') {
     atspre_exit_prerrf(1, "exit(ATS): ats_intinf_set_str(%s)\n", s) ;
-  }
+  } // end of [if]
 
   i = 0 ; base = 10 ;
   if (c0 == '~') { i = 1 ; c1 = s[1] ; } else { c1 = c0 ; }
@@ -146,7 +146,7 @@ ats_intinf_set_string (ats_mpz_ptr_type x, ats_ptr_type s0) {
 
   if (err < 0) {
     atspre_exit_prerrf(1, "exit(ATS): atslib_mpz_init_set_str(%s)\n", s) ;
-  }
+  } // end of [if]
 
   // mpz_out_str(stdout, 10, (mpz_ptr)x) ; fprintf (stdout, "\n") ;
 

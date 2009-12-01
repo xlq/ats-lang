@@ -250,11 +250,10 @@ implement s1exp_qid (loc, q, id): s1exp =
 
 implement s1exp_read (loc, s1e) = let
   fn err (loc: $Loc.location_t): s1exp = begin
-    prerr loc;
-    prerr ": [read@] requires exactly two arguments.";
-    prerr_newline ();
+    $Loc.prerr_location loc; prerr ": error(1)";
+    prerr ": [read@] requires exactly two arguments."; prerr_newline ();
     $Err.abort ()
-  end
+  end // end of [err]
 in
   case+ s1e.s1exp_node of
   | S1Elist (_(*npf*), s1es) => begin case+ s1es of
@@ -262,7 +261,7 @@ in
         s1exp_loc= loc, s1exp_node= S1Eread (s1e1, s1e2)
       } // end of [cons]
     | _ => err (loc)
-    end
+    end // end of [S1Elist]
   | _ => err (loc)
 end // end of [s1exp_read]
 

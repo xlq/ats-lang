@@ -31,8 +31,8 @@
 
 (* ****** ****** *)
 
-// Time: March 2008
 // Author: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
+// Time: March 2008
 
 (* ****** ****** *)
 
@@ -740,12 +740,13 @@ extern typedef "hipat_t" = hipat
 %{$
 
 ats_void_type
-ats_hiexp_hipat_asvar_set
-  (ats_ptr_type hip, ats_ptr_type od2v) {
+ats_hiexp_hipat_asvar_set (
+  ats_ptr_type hip, ats_ptr_type od2v
+) {
   ((hipat_t)hip)->atslab_hipat_asvar = od2v; return ;
-}
+} // end of [ats_hiexp_hipat_asvar_set]
 
-%}
+%} // end of [%{$]
 
 (* ****** ****** *)
 
