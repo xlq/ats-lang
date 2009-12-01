@@ -87,6 +87,10 @@ overload prerr with $Lab.prerr_label
 
 (* ****** ****** *)
 
+fn prerr_loc_error3 (loc: loc_t): void =
+  ($Loc.prerr_location loc; prerr ": error(3)")
+// end of [prerr_loc_error3]
+
 fn prerr_interror () = prerr "INTERNAL ERROR (ats_trans3_exp_dn)"
 
 fn prerr_loc_interror (loc: loc_t) = begin
@@ -98,8 +102,7 @@ end // end of [prerr_loc_interror]
 fn pfarity_check_rec
   (loc_rec: loc_t, npf1: int, npf2: int): void =
   if npf1 = npf2 then () else begin
-    prerr loc_rec;
-    prerr ": error(3)";
+    prerr_loc_error3 loc_rec;
     prerr ": the proof arity of the record is [";
     prerr npf1;
     prerr "] but it is expected to be [";
@@ -116,16 +119,14 @@ fn reckind_check
   (loc_rec: loc_t, k1: int, k2: tyreckind): void = begin
   if k1 > 0 then begin case+ k2 of
     | TYRECKINDbox () => () | _ => begin
-        prerr loc_rec;
-        prerr ": error(3)";
+        prerr_loc_error3 loc_rec;
         prerr ": the record is boxed but it is expected to be flat.";
         prerr_newline ();
         $Err.abort {void} ()
       end // end of [_]
   end else begin case+ k2 of // k1 = 0
    | TYRECKINDflt0 _ => () | TYRECKINDflt1 _ => () | _ => begin
-       prerr loc_rec;
-       prerr ": error(3)";
+       prerr_loc_error3 loc_rec;
        prerr ": the record is flat but it is expected to be boxed.";
        prerr_newline ();
        $Err.abort {void} ()
@@ -173,7 +174,7 @@ end // end of [d3exp_tr_dn]
 fn d2exp_float_tr_dn
   (d2e0: d2exp, fcst: string, s2e0: s2exp): d3exp = let
   fn err (loc0: loc_t, s2e0: s2exp): d3exp = begin
-    prerr loc0; prerr ": error(3)";
+    prerr_loc_error3 loc0;
     prerr ": the type ["; prerr s2e0;
     prerr "] cannot be assigned to a float constant.";
     prerr_newline ();
@@ -275,7 +276,7 @@ fn d2exp_int_tr_dn (
   , s2e0: s2exp
   ) : d3exp = let
   fn err (loc0: loc_t, s2e0: s2exp): d3exp = begin
-    prerr loc0; prerr ": error(3)";
+    prerr_loc_error3 loc0;
     prerr ": the type ["; prerr s2e0;
     prerr "] cannot be assigned to an integer constant.";
     prerr_newline ();
@@ -283,7 +284,7 @@ fn d2exp_int_tr_dn (
   end
   fn szcheck (loc0: loc_t, icst: intinf_t): void = begin
     if $IntInf.gte_intinf_int (icst, 0) then () else begin
-      prerr loc0; prerr ": error(3)";
+      prerr_loc_error3 loc0;
       $Deb.debug_prerrf (": %s: d2exp_int_tr_dn", @(THISFILENAME));
       prerr ": the negative number [";
       $IntInf.prerr_intinf icst;
@@ -354,8 +355,7 @@ fun labd2explst_tr_dn
         val d3e = d2exp_tr_dn (d2e, s2e) in
         LABD3EXPLSTcons (l1, d3e, labd2explst_tr_dn (loc0, ld2es, ls2es))
       end else begin
-        prerr d2e.d2exp_loc;
-        prerr ": error(3)";
+        prerr_loc_error3 d2e.d2exp_loc;
         $Deb.debug_prerrf (": %s: labd2explst_tr_dn", @(THISFILENAME));
         prerr ": label mismatch";
         prerr ": the label for the dynamic expression is [";
@@ -369,8 +369,7 @@ fun labd2explst_tr_dn
     end (* end of [LABD2EXPLSTcons, LABS2EXPLSTcons] *)
   | (LABD2EXPLSTnil (), LABS2EXPLSTnil ()) => LABD3EXPLSTnil ()
   | (LABD2EXPLSTcons (l1, _, _), LABS2EXPLSTnil ()) => begin
-      prerr loc0;
-      prerr ": error(3)";
+      prerr_loc_error3 loc0;
       $Deb.debug_prerrf (": %s: labd2explst_tr_dn", @(THISFILENAME));
       prerr ": the tuple/record needs less components";
       prerr ": a component with the label ["; prerr l1; prerr "] should be removed.";
@@ -378,8 +377,7 @@ fun labd2explst_tr_dn
       $Err.abort {labd3explst} ()
     end (* end of [LABD2EXPLSTcons, LABS2EXPLSTnil] *)
   | (LABD2EXPLSTnil (), LABS2EXPLSTcons (l2, _, _)) => begin
-      prerr loc0;
-      prerr ": error(3)";
+      prerr_loc_error3 loc0;
       $Deb.debug_prerrf (": %s: labd2explst_tr_dn", @(THISFILENAME));
       prerr ": the tuple/record needs more components";
       prerr ": a component with the label ["; prerr l2; prerr "] should be inserted.";
@@ -424,7 +422,7 @@ end // end of [d2exp_seq_tr_dn]
 fn d2exp_string_tr_dn
   (d2e0: d2exp, str: string, len: int, s2e0: s2exp): d3exp = let
   fn err (loc0: loc_t, s2e0: s2exp): d3exp = begin
-    prerr loc0; prerr ": error(3)";
+    prerr_loc_error3 loc0;
     prerr ": the type ["; prerr s2e0;
     prerr "] cannot be assigned to a string constant.";
     prerr_newline ();
@@ -461,7 +459,7 @@ in
           ) : s2exp // end of [val]
           val fats = (case+ printf_c_string_parse (str) of
             | ~Some_vt (fats) => fats | ~None_vt () => begin
-                prerr loc0; prerr ": error(3)";
+                prerr_loc_error3 loc0;
                 prerr ": the c-format string is invalid."; prerr_newline ();
                 $Err.abort ()
               end // end of [None_vt]
@@ -547,8 +545,7 @@ val d3e0 = case+ d2e0.d2exp_node of
         ) => let
           val () = // linearity check
             if lin <> lin_fun then begin
-              prerr loc0;
-              prerr ": error(3)";
+              prerr_loc_error3 loc0;
               if lin > lin_fun then
                 prerr " linear function is given a nonlinear type .";
               if lin < lin_fun then
@@ -558,8 +555,7 @@ val d3e0 = case+ d2e0.d2exp_node of
             end // end of [if]
           val () = // pfarity check
             if npf <> npf_fun then begin
-              prerr loc0;
-              prerr ": error(3)";
+              prerr_loc_error3 loc0;
               prerr ": this function is expected to have";
               if npf > npf_fun then prerr " less proof arguments.";
               if npf < npf_fun then prerr " more proof arguments.";
@@ -585,8 +581,7 @@ val d3e0 = case+ d2e0.d2exp_node of
           val [sgn:int] sgn = $Lst.list_length_compare (p2ts_arg, s2es_fun_arg)
           val () = ( // arity check
             if sgn <> 0 then begin
-              prerr loc0;
-              prerr ": error(3)";
+              prerr_loc_error3 loc0;
               prerr ": the funcion is expected to have";
               if sgn > 0 then prerr " less arguments.";
               if sgn < 0 then prerr " more arguments.";
@@ -635,8 +630,7 @@ val d3e0 = case+ d2e0.d2exp_node of
           d3e0
         end // end of [S2Euni]
       | _ when s2exp_is_non_fun s2e0 => begin
-          prerr loc0;
-          prerr ": error(3)";
+          prerr_loc_error3 loc0;
           prerr ": the function is assigned a non-function type [";
           prerr s2e0;
           prerr "].";
@@ -683,8 +677,7 @@ val d3e0 = case+ d2e0.d2exp_node of
           d3e0
         end // end of [S2Etyrec]
       | _ when s2exp_is_non_tyrec s2e0 => begin
-          prerr loc0;
-          prerr ": error(3)";
+          prerr_loc_error3 loc0;
           prerr ": the record is assigned a non-record type [";
           prerr s2e0;
           prerr "].";
@@ -722,34 +715,30 @@ val d3e0 = case+ d2e0.d2exp_node of
       | S2Etyrec (tyrecknd, npf, ls2es) => let
           val () = case+ tyrecknd of
             | TYRECKINDbox () => begin
-                prerr loc0;
-                prerr ": error(3)";
+                prerr_loc_error3 loc0;
                 $Deb.debug_prerrf (": %s: d2exp_tr_dn", @(THISFILENAME));
                 prerr ": the type for a struct cannot be boxed.";
                 prerr_newline ();
                 $Err.abort {void} ()
               end
             | TYRECKINDflt0 () => begin
-                prerr loc0;
-                prerr ": error(3)";
+                prerr_loc_error3 loc0;
                 $Deb.debug_prerrf (": %s: d2exp_tr_dn", @(THISFILENAME));
                 prerr ": the type for a struct cannot be a record type.";
                 prerr_newline ();
                 $Err.abort {void} ()
               end
             | TYRECKINDflt1 _ => ()
-          val () = begin
-            if npf > 0 then begin
-              prerr loc0;
-              prerr ": error(3)";
-              $Deb.debug_prerrf (": %s: d2exp_tr_dn", @(THISFILENAME));
-              prerr ": the proof arity of a struct cannot be [";
-              prerr npf;
-              prerr "].";
-              prerr_newline ();
-              $Err.abort {void} ()
-            end
-          end
+          // end of [val]
+          val () = if npf > 0 then begin
+            prerr_loc_error3 loc0;
+            $Deb.debug_prerrf (": %s: d2exp_tr_dn", @(THISFILENAME));
+            prerr ": the proof arity of a struct cannot be [";
+            prerr npf;
+            prerr "].";
+            prerr_newline ();
+            $Err.abort {void} ()
+          end // end of [val]
           val ld3es = labd2explst_tr_dn (loc0, ld2es, ls2es)
           val d3e0 = d3exp_struct (loc0, s2e0, ld3es)
           val () = if iswth > 0 then funarg_varfin_check (loc0)
@@ -757,8 +746,7 @@ val d3e0 = case+ d2e0.d2exp_node of
           d3e0
         end // end of [S2Etyrec]
       | _ when s2exp_is_non_fun s2e0 => begin
-          prerr loc0;
-          prerr ": error(3)";
+          prerr_loc_error3 loc0;
           prerr ": the struct is assigned a non-record type [";
           prerr s2e0;
           prerr "].";
@@ -766,8 +754,7 @@ val d3e0 = case+ d2e0.d2exp_node of
           $Err.abort {d3exp} ()
         end // end of [_ when ...]
       | _ => begin
-          prerr loc0;
-          prerr ": error(3)";
+          prerr_loc_error3 loc0;
           $Deb.debug_prerrf (": %s: d2exp_tr_dn", @(THISFILENAME));
           prerr ": the struct is given a type of an incorrect form [";
           prerr s2e0;
@@ -925,20 +912,17 @@ end // end of [c2lau_tr_dn]
 
 (* ****** ****** *)
 
-fn pattern_match_is_redundant_errmsg (loc: loc_t): void = begin
-  prerr loc;
-  prerr ": error(3)";
-  prerr ": this pattern match clause is redundant.";
-  prerr_newline ();
+fn pattern_match_is_redundant_errmsg (loc0: loc_t): void = begin
+  prerr_loc_error3 loc0;
+  prerr ": this pattern match clause is redundant."; prerr_newline ();
   $Err.abort {void} ()
 end // end of [pattern_match_is_redundant_errmsg]
 
 fn c2laulst0_tr_dn {n:nat}
   (loc0: loc_t, casknd: int, res: i2nvresstate,
    n: int n, s2es_pat: s2explst n, s2e0: s2exp): void = begin
-  prerr loc0;
-  prerr ": c2laulst0_tr_dn: not implemeted yet.";
-  prerr_newline ();
+  prerr_loc_interror loc0;
+  prerr ": c2laulst0_tr_dn: not implemeted yet."; prerr_newline ();
   $Err.abort {void} ()
 end // end of [c2laulst0_tr_dn]
 
