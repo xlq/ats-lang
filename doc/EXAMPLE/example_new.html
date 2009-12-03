@@ -57,6 +57,131 @@ that are relatively short but interesting.
 <PRE>
 <span class="comment">(*
 **
+** A proof of the equivalence of two definitions
+** of the Ackermann function
+**
+** Author: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
+** Time: December 2, 2009
+**
+*)</span>
+
+<span class="comment">(* ****** ****** *)</span>
+
+<span class="comment">(*
+
+The following two functions are proven to be the same
+(in the set-theoretic sense):
+
+fun ack
+  (m:int, n:int): int =
+  case+ m of
+  | 0 =&gt; n+1
+  | _ =&gt; begin case+ n of
+    | 0 =&gt; ack (m-1, 1) | _ =&gt; ack (m-1, ack (m, n-1))
+    end // end of [_]
+// end of [ack1]
+
+fun ackf (m: int): int -&lt;cloref1&gt; int = let
+  fun helper
+    (f: int -&lt;cloref1&gt; int): int -&lt;cloref1&gt; int =
+    lam n =&gt; if n = 0 then f (1) else f (helper f (n-1))
+  // end of [helper]
+in
+  case+ m of
+  | 0 =&gt; lam n =&gt; n+1 | _ =&gt; helper (ackf (m-1))
+end // end of [ackf]
+
+*)</span>
+
+<span class="comment">(* ****** ****** *)</span>
+
+<span class="keyword">dataprop</span> <span class="prfexp"><span class="staexp"><A name="765"><span class="stacstdec">ACK <span class="keyword">(</span>int<span class="keyword">,</span> int<span class="keyword">,</span> int<span class="keyword">)</span></span></span></A> <span class="keyword">=</span>
+  <span class="keyword">|</span> <span class="keyword">{</span><span class="staexp">n<span class="keyword">:</span>nat</span><span class="keyword">}</span> ACK1 <span class="staexp"><span class="keyword">(</span>0<span class="keyword">,</span> n<span class="keyword">,</span> n+1<span class="keyword">)</span></span> <span class="keyword">of</span> <span class="staexp"><span class="keyword">(</span><span class="keyword">)</span></span>
+  <span class="keyword">|</span> <span class="keyword">{</span><span class="staexp">m<span class="keyword">:</span>nat</span><span class="keyword">}</span> <span class="keyword">{</span><span class="staexp">r<span class="keyword">:</span>int</span><span class="keyword">}</span> ACK2 <span class="staexp"><span class="keyword">(</span>m+1<span class="keyword">,</span> 0<span class="keyword">,</span> r<span class="keyword">)</span></span> <span class="keyword">of</span> <span class="staexp">ACK <span class="keyword">(</span>m<span class="keyword">,</span> 1<span class="keyword">,</span> r<span class="keyword">)</span></span>
+  <span class="keyword">|</span> <span class="keyword">{</span><span class="staexp">m<span class="keyword">,</span>n<span class="keyword">:</span>nat</span><span class="keyword">}</span> <span class="keyword">{</span><span class="staexp">r1<span class="keyword">,</span>r2<span class="keyword">:</span>int</span><span class="keyword">}</span>
+    ACK3 <span class="staexp"><span class="keyword">(</span>m+1<span class="keyword">,</span> n+1<span class="keyword">,</span> r2<span class="keyword">)</span></span> <span class="keyword">of</span> <span class="staexp"><span class="keyword">(</span>ACK <span class="keyword">(</span>m+1<span class="keyword">,</span> n<span class="keyword">,</span> r1<span class="keyword">)</span><span class="keyword">,</span> ACK <span class="keyword">(</span>m<span class="keyword">,</span> r1<span class="keyword">,</span> r2<span class="keyword">)</span><span class="keyword">)</span></span></span>
+<span class="comment">// end of [ACK]
+</span>
+<span class="keyword">prfun</span> <span class="prfexp">ack_nat_nat_nat <span class="staexp"><span class="keyword">{</span>m<span class="keyword">,</span>n<span class="keyword">:</span>nat<span class="keyword">}</span></span>
+  <span class="staexp"><span class="keyword">{</span>r<span class="keyword">:</span>int<span class="keyword">}</span></span> <span class="staexp"><span class="keyword">.&lt;</span>m<span class="keyword">,</span>n<span class="keyword">&gt;.</span></span> <span class="keyword">(</span>pf<span class="keyword">:</span> <span class="staexp">ACK <span class="keyword">(</span>m<span class="keyword">,</span> n<span class="keyword">,</span> r<span class="keyword">)</span></span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp"><span class="keyword">[</span>r &gt;= 0<span class="keyword">]</span> void</span> <span class="keyword">=</span>
+  <span class="keyword">case+</span> pf <span class="keyword">of</span>
+  <span class="keyword">|</span> ACK1 <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=&gt;</span> <span class="keyword">(</span><span class="keyword">)</span>
+  <span class="keyword">|</span> ACK2 pf1 <span class="keyword">=&gt;</span> ack_nat_nat_nat <span class="keyword">(</span>pf1<span class="keyword">)</span>
+  <span class="keyword">|</span> ACK3 <span class="keyword">(</span>pf1<span class="keyword">,</span> pf2<span class="keyword">)</span> <span class="keyword">=&gt;</span> <span class="keyword">let</span>
+      <span class="keyword">prval</span> <span class="prfexp"><span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> ack_nat_nat_nat pf1</span>
+      <span class="keyword">prval</span> <span class="prfexp"><span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> ack_nat_nat_nat pf2</span>
+    <span class="keyword">in</span>
+      <span class="comment">// nothing
+</span>    <span class="keyword">end</span></span> <span class="comment">// end of [ACK3]
+</span><span class="comment">// end of [ack_nat_nat_nat]
+</span>
+<span class="keyword">sortdef</span> <span class="staexp">int2rel <span class="keyword">=</span> <span class="keyword">(</span>int<span class="keyword">,</span> int<span class="keyword">)</span> <span class="keyword">-&gt;</span> prop</span>
+
+<span class="keyword">dataprop</span> <span class="prfexp"><span class="staexp"><A name="1365"><span class="stacstdec">SUCC <span class="keyword">(</span>int<span class="keyword">,</span> int<span class="keyword">)</span></span></span></A> <span class="keyword">=</span> <span class="keyword">{</span><span class="staexp">n<span class="keyword">:</span>nat</span><span class="keyword">}</span> SUCC1 <span class="staexp"><span class="keyword">(</span>n<span class="keyword">,</span> n+1<span class="keyword">)</span></span> <span class="keyword">of</span> <span class="staexp"><span class="keyword">(</span><span class="keyword">)</span></span></span>
+
+<span class="keyword">dataprop</span> <span class="prfexp"><span class="staexp"><A name="1422"><span class="stacstdec">HELPER <span class="keyword">(</span>rel<span class="keyword">:</span>int2rel<span class="keyword">,</span> int<span class="keyword">,</span> int<span class="keyword">)</span></span></span></A> <span class="keyword">=</span>
+  <span class="keyword">|</span> <span class="keyword">{</span><span class="staexp">r<span class="keyword">:</span>int</span><span class="keyword">}</span> HELPER1 <span class="staexp"><span class="keyword">(</span>rel<span class="keyword">,</span> 0<span class="keyword">,</span> r<span class="keyword">)</span></span> <span class="keyword">of</span> <span class="staexp">rel <span class="keyword">(</span>1<span class="keyword">,</span> r<span class="keyword">)</span></span>
+  <span class="keyword">|</span> <span class="keyword">{</span><span class="staexp">n<span class="keyword">:</span>nat</span><span class="keyword">}</span> <span class="keyword">{</span><span class="staexp">r1<span class="keyword">,</span>r2<span class="keyword">:</span>int</span><span class="keyword">}</span>
+    HELPER2 <span class="staexp"><span class="keyword">(</span>rel<span class="keyword">,</span> n+1<span class="keyword">,</span> r2<span class="keyword">)</span></span> <span class="keyword">of</span> <span class="staexp"><span class="keyword">(</span>HELPER <span class="keyword">(</span>rel<span class="keyword">,</span> n<span class="keyword">,</span> r1<span class="keyword">)</span><span class="keyword">,</span> rel <span class="keyword">(</span>r1<span class="keyword">,</span> r2<span class="keyword">)</span><span class="keyword">)</span></span></span>
+<span class="comment">// end of [HELPER]
+</span>
+<span class="keyword">dataprop</span> <span class="prfexp"><span class="staexp"><A name="1620"><span class="stacstdec">ACKF <span class="keyword">(</span>int<span class="keyword">,</span> int2rel<span class="keyword">)</span></span></span></A> <span class="keyword">=</span>
+  <span class="keyword">|</span> ACKF1 <span class="staexp"><span class="keyword">(</span>0<span class="keyword">,</span> SUCC<span class="keyword">)</span></span> <span class="keyword">of</span> <span class="staexp"><span class="keyword">(</span><span class="keyword">)</span></span>
+  <span class="keyword">|</span> <span class="keyword">{</span><span class="staexp">m<span class="keyword">:</span>nat</span><span class="keyword">}</span> <span class="keyword">{</span><span class="staexp">rel<span class="keyword">:</span>int2rel</span><span class="keyword">}</span>
+    ACKF2 <span class="staexp"><span class="keyword">(</span>
+      m+1<span class="keyword">,</span> <span class="keyword">lam</span> <span class="keyword">(</span>r1<span class="keyword">:</span>int<span class="keyword">,</span> r2<span class="keyword">:</span>int<span class="keyword">)</span> <span class="keyword">=&gt;</span> HELPER <span class="keyword">(</span>rel<span class="keyword">,</span> r1<span class="keyword">,</span> r2<span class="keyword">)</span><span class="keyword">)</span></span> <span class="keyword">of</span> <span class="staexp">ACKF <span class="keyword">(</span>m<span class="keyword">,</span> rel
+    <span class="keyword">)</span></span></span> <span class="comment">// end of [ACKF2]
+</span><span class="comment">// end of [ACKF]
+</span>
+<span class="keyword">prfun</span> <span class="prfexp">ACKF_istot
+  <span class="staexp"><span class="keyword">{</span>m<span class="keyword">:</span>nat<span class="keyword">}</span></span> <span class="staexp"><span class="keyword">.&lt;</span>m<span class="keyword">&gt;.</span></span> <span class="keyword">(</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp"><span class="keyword">[</span>rel<span class="keyword">:</span>int2rel<span class="keyword">]</span> ACKF <span class="keyword">(</span>m<span class="keyword">,</span> rel<span class="keyword">)</span></span> <span class="keyword">=</span>
+  <span class="keyword">sif</span> <span class="staexp">m <span class="keyword">&gt;</span> 0</span> <span class="keyword">then</span> ACKF2 <span class="keyword">(</span>ACKF_istot <span class="staexp"><span class="keyword">{</span>m-1<span class="keyword">}</span></span> <span class="keyword">(</span><span class="keyword">)</span><span class="keyword">)</span> <span class="keyword">else</span> ACKF1 <span class="keyword">(</span><span class="keyword">)</span></span>
+<span class="comment">// end of [ACKF_istot]
+</span>
+<span class="comment">(*
+** this lemma means that applying ackf (m) to n gives
+** ack (m, n)
+*)</span>
+<span class="keyword">prfun</span> <span class="prfexp">ackf_ack_lemma1
+  <span class="staexp"><span class="keyword">{</span>m<span class="keyword">,</span>n<span class="keyword">:</span>nat<span class="keyword">}</span></span> <span class="staexp"><span class="keyword">{</span>rel<span class="keyword">:</span>int2rel<span class="keyword">}</span></span> <span class="staexp"><span class="keyword">{</span>r<span class="keyword">:</span>int<span class="keyword">}</span></span> <span class="staexp"><span class="keyword">.&lt;</span>m<span class="keyword">,</span>n+1<span class="keyword">&gt;.</span></span>
+  <span class="keyword">(</span>pf1<span class="keyword">:</span> <span class="staexp">ACKF <span class="keyword">(</span>m<span class="keyword">,</span> rel<span class="keyword">)</span></span><span class="keyword">,</span> pf2<span class="keyword">:</span> <span class="staexp">rel <span class="keyword">(</span>n<span class="keyword">,</span> r<span class="keyword">)</span></span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">ACK <span class="keyword">(</span>m<span class="keyword">,</span> n<span class="keyword">,</span> r<span class="keyword">)</span></span> <span class="keyword">=</span>
+  <span class="keyword">case</span> pf1 <span class="keyword">of</span>
+  <span class="keyword">|</span> ACKF1 <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=&gt;</span> <span class="keyword">let</span>
+      <span class="keyword">prval</span> <span class="prfexp">SUCC1 <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> pf2</span> <span class="keyword">in</span> ACK1 <span class="staexp"><span class="keyword">{</span>n<span class="keyword">}</span></span> <span class="keyword">(</span><span class="keyword">)</span>
+    <span class="keyword">end</span> <span class="comment">// end of [ACKF1]
+</span>  <span class="keyword">|</span> ACKF2 pf11 <span class="keyword">=&gt;</span> ackf_ack_lemma2 <span class="keyword">(</span>pf11<span class="keyword">,</span> pf2<span class="keyword">)</span>
+<span class="comment">// end of [ackf_ack_lemma1]
+</span>
+<span class="comment">(*
+** this lemma means that applying ackf (m) n times to 1 
+** gives ack (m+1, n)
+*)</span>
+<span class="keyword">and</span> ackf_ack_lemma2
+  <span class="staexp"><span class="keyword">{</span>m<span class="keyword">,</span>n<span class="keyword">:</span>nat<span class="keyword">}</span></span> <span class="staexp"><span class="keyword">{</span>rel<span class="keyword">:</span>int2rel<span class="keyword">}</span></span> <span class="staexp"><span class="keyword">{</span>r<span class="keyword">:</span>int<span class="keyword">}</span></span> <span class="staexp"><span class="keyword">.&lt;</span>m+1<span class="keyword">,</span>n<span class="keyword">&gt;.</span></span>
+  <span class="keyword">(</span>pf1<span class="keyword">:</span> <span class="staexp">ACKF <span class="keyword">(</span>m<span class="keyword">,</span> rel<span class="keyword">)</span></span><span class="keyword">,</span> pf2<span class="keyword">:</span> <span class="staexp">HELPER <span class="keyword">(</span>rel<span class="keyword">,</span> n<span class="keyword">,</span> r<span class="keyword">)</span></span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">ACK <span class="keyword">(</span>m+1<span class="keyword">,</span> n<span class="keyword">,</span> r<span class="keyword">)</span></span> <span class="keyword">=</span>
+  <span class="keyword">sif</span> <span class="staexp">n <span class="keyword">&gt;</span> 0</span> <span class="keyword">then</span> <span class="keyword">let</span>
+    <span class="keyword">prval</span> <span class="prfexp">HELPER2 <span class="keyword">(</span>pf21<span class="keyword">,</span> pf22<span class="keyword">)</span> <span class="keyword">=</span> pf2</span>
+    <span class="keyword">prval</span> <span class="prfexp">pf_ack <span class="keyword">=</span> ackf_ack_lemma2 <span class="keyword">(</span>pf1<span class="keyword">,</span> pf21<span class="keyword">)</span></span> <span class="comment">// ACK (m+1, n-1)
+</span>    <span class="keyword">prval</span> <span class="prfexp"><span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> ack_nat_nat_nat <span class="keyword">(</span>pf_ack<span class="keyword">)</span></span>
+  <span class="keyword">in</span>
+    ACK3 <span class="keyword">(</span>pf_ack<span class="keyword">,</span> ackf_ack_lemma1 <span class="keyword">(</span>pf1<span class="keyword">,</span> pf22<span class="keyword">)</span><span class="keyword">)</span>
+  <span class="keyword">end</span> <span class="keyword">else</span> <span class="keyword">let</span> <span class="comment">// n == 0
+</span>    <span class="keyword">prval</span> <span class="prfexp">HELPER1 <span class="keyword">(</span>pf21<span class="keyword">)</span> <span class="keyword">=</span> pf2</span>
+  <span class="keyword">in</span>
+    ACK2 <span class="keyword">(</span>ackf_ack_lemma1 <span class="keyword">(</span>pf1<span class="keyword">,</span> pf21<span class="keyword">)</span><span class="keyword">)</span>
+  <span class="keyword">end</span></span> <span class="comment">// end of [sif]
+</span><span class="comment">// end of [ackf_ack_lemma2]
+</span>
+<span class="comment">(* ****** ****** *)</span>
+
+<span class="comment">(* end of [Ackermann.dats] *)</span>
+</PRE>
+
+<HR SIZE=6 ALIGN=LEFT><P>
+
+<PRE>
+<span class="comment">(*
+**
 ** [infprime] proves that for any given natural number [n], there exists a
 ** prime number [p] that is greater than [n]
 **
