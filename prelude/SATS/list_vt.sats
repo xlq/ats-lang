@@ -49,10 +49,22 @@
 (* ****** ****** *)
 
 %{#
-
 #include "prelude/CATS/list_vt.cats"
-
 %}
+
+(* ****** ****** *)
+
+(*
+// this is defined in [basic_sta.sats]
+dataviewtype // viewt@ype+: covariant
+list_viewt0ype_int_viewtype (a:viewt@ype+, int) =
+  | {n:int | n >= 0}
+    list_vt_cons (a, n+1) of (a, list_viewt0ype_int_viewtype (a, n))
+  | list_vt_nil (a, 0)
+// end of [list_viewt0ype_int_viewtype]
+stadef list_vt = list_viewt0ype_int_viewtype
+viewtypedef List_vt (a:viewt@ype) = [n:int | n >=0] list_vt (a, n)
+*)
 
 (* ****** ****** *)
 

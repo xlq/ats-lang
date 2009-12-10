@@ -766,9 +766,11 @@ fun loop {i:nat | i <= n} .<i>. (
               val () = $PM.posmark_file_make_htm (basename, outname)
               val () = $PM.posmark_disable ()
             in
+(*
               print "The syntax marking of [";
               print basename; print "] is successfully completed!";
               print_newline ()
+*)
             end // end of [_]
           | _ when param.posmark_html = 2 => let
               val _(*d2cs*) = do_trans12 (param, basename, d0cs)
@@ -776,9 +778,11 @@ fun loop {i:nat | i <= n} .<i>. (
               val () = $PM.posmark_file_make_htm (basename, outname)
               val () = $PM.posmark_disable ()
             in
+(*
               print "The syntax cross referencing for [";
               print basename; print "] is successfully completed!";
               print_newline ()              
+*)
             end // end of [_ when ...]
           | _ when $Glo.ats_depgenflag_get () > 0 => ()
           | _ when param.typecheck_only > 0 => let

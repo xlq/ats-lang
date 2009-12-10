@@ -48,10 +48,20 @@
 (* ****** ****** *)
 
 %{#
-
 #include "prelude/CATS/option.cats"
-
 %}
+
+(* ****** ****** *)
+
+(*
+// this is defined in [basics_sta.sats"
+datatype // t@ype+: covariant
+option_t0ype_bool_type (a:t@ype+, bool) =
+  | None (a, false) | Some (a, true) of a
+// end of [datatype]
+stadef option = option_t0ype_bool_type
+typedef Option (a:t@ype) = [b:bool] option (a, b)
+*)
 
 (* ****** ****** *)
 

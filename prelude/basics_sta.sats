@@ -779,12 +779,10 @@ datatype list0_t0ype_type (a: t@ype+) =
 // end of [list0_t0ype_type]
 stadef list0 = list0_t0ype_type
 
-// [list_t0ype_int_type] is covariant
 datatype // t@ype+: covariant
 list_t0ype_int_type (a:t@ype+, int) =
   | {n:int | n >= 0}
-      list_cons (a, n+1) of (a, list_t0ype_int_type (a, n))
-    // end of [list_cons]
+    list_cons (a, n+1) of (a, list_t0ype_int_type (a, n))
   | list_nil (a, 0)
 // end of [datatype]
 stadef list = list_t0ype_int_type
@@ -797,7 +795,6 @@ datatype option0_t0ype_type (a: t@ype) =
 // end of [datatype]
 stadef option0 = option0_t0ype_type
 
-// [option_t0ype_bool_type] is covariant
 datatype // t@ype+: covariant
 option_t0ype_bool_type (a:t@ype+, bool) =
   | None (a, false) | Some (a, true) of a
@@ -809,19 +806,20 @@ typedef Option (a:t@ype) = [b:bool] option (a, b)
 
 // some common dataviewtypes
 
-// [list_viewt0ype_int_viewtype] is covariant
 dataviewtype // viewt@ype+: covariant
 list_viewt0ype_int_viewtype (a:viewt@ype+, int) =
   | {n:int | n >= 0}
-      list_vt_cons (a, n+1) of (a, list_viewt0ype_int_viewtype (a, n))
+    list_vt_cons (a, n+1) of (a, list_viewt0ype_int_viewtype (a, n))
   | list_vt_nil (a, 0)
+// end of [list_viewt0ype_int_viewtype]
 
 stadef list_vt = list_viewt0ype_int_viewtype
 viewtypedef List_vt (a:viewt@ype) = [n:int | n >=0] list_vt (a, n)
 
-// [option_viewt0ype_bool_viewtype] is covariant
-dataviewtype option_viewt0ype_bool_viewtype (a:viewt@ype+, bool) =
+dataviewtype // viewt@ype+: covariant
+option_viewt0ype_bool_viewtype (a:viewt@ype+, bool) =
   | None_vt (a, false) | Some_vt (a, true) of a
+// end of [option_viewt0ype_bool_viewtype]
 
 stadef option_vt = option_viewt0ype_bool_viewtype
 viewtypedef Option_vt (a:viewt@ype) = [b:bool] option_vt (a, b)

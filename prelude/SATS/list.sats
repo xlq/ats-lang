@@ -66,6 +66,20 @@
 
 (* ****** ****** *)
 
+(*
+// this is defined in [basic_sta.sats]
+datatype // t@ype+: covariant
+list_t0ype_int_type (a:t@ype+, int) =
+  | {n:int | n >= 0}
+    list_cons (a, n+1) of (a, list_t0ype_int_type (a, n))
+  | list_nil (a, 0)
+// end of [datatype]
+stadef list = list_t0ype_int_type
+typedef List (a:t@ype) = [n:int | n >= 0] list (a, n)
+*)
+
+(* ****** ****** *)
+
 prfun list_length_is_nonnegative
   {a:t@ype} {n:int} (xs: list (a, n)): [n>=0] void
 

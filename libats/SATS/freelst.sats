@@ -42,6 +42,9 @@
 
 (* ****** ****** *)
 
+(*
+** memory for storing a pointer to the next item
+*)
 sortdef itm = {a:viewt@ype | sizeof a >= sizeof ptr}
 
 (* ****** ****** *)
