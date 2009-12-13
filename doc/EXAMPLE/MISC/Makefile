@@ -15,7 +15,7 @@ checkall: compall cleanall
 compall: AutoDiff coin_flip \
      curve fft hamming_lazy \
      GaussElim GarsiaWachs \
-     hanoi kmp \
+     hanoi isqrt kmp \
      longestline montecarlo \
      quicksort_list \
      queens queens_appel queens_lazy_vt \
@@ -33,46 +33,54 @@ AutoDiff: AutoDiff.dats
 BlackScholes: BlackScholes.dats; $(ATSCC) -tc BlackScholes.dats
 
 # random number generation
-coin_flip: coin_flip.dats; $(ATSCC) -O3 -o coin_flip coin_flip.dats
+coin_flip: coin_flip.dats
+	$(ATSCC) -O3 -o coin_flip coin_flip.dats && ./coin_flip
 
 # an interesting curve
-curve: curve.dats; $(ATSCC) -o curve curve.dats -lm
+curve: curve.dats; $(ATSCC) -o curve curve.dats -lm # && ./curve
 
 # test for Mersenne primes
 fft: fft.dats; $(ATSCC) -O3 -o fft fft.dats -lm
 
 # Garsia-Wachs
 GarsiaWachs: GarsiaWachs.dats
-	$(ATSCC) -D_ATS_GCATS -O3 -o GarsiaWachs GarsiaWachs.dats
-
+	$(ATSCC) -D_ATS_GCATS -O3 -o GarsiaWachs GarsiaWachs.dats \
+     && ./GarsiaWachs
 
 # gaussian elimination
-GaussElim: GaussElim.dats; $(ATSCC) -o GaussElim GaussElim.dats
+GaussElim: GaussElim.dats
+	$(ATSCC) -o GaussElim GaussElim.dats && ./GaussElim
 
 # hamming in lazy style
 hamming_lazy: hamming_lazy.dats
-	$(ATSCC) -o hamming_lazy hamming_lazy.dats
+	$(ATSCC) -o hamming_lazy hamming_lazy.dats && ./hamming_lazy
 
 # hanoi tower
-hanoi: hanoi.dats; $(ATSCC) -o hanoi hanoi.dats
+hanoi: hanoi.dats; $(ATSCC) -o hanoi hanoi.dats && ./hanoi
+
+# integer square root
+isqrt: isqrt.dats; $(ATSCC) -o isqrt isqrt.dats && ./isqrt
 
 # Knuth-Morris-Pratt string search
-kmp: kmp.dats; $(ATSCC) -o kmp kmp.dats
+kmp: kmp.dats; $(ATSCC) -o kmp kmp.dats && ./kmp
 
 montecarlo: montecarlo.dats
-	$(ATSCC) -O2 -o montecarlo montecarlo.dats -lm -lats_smlbas
+	$(ATSCC) -O2 -o montecarlo montecarlo.dats -lm -lats_smlbas \
+     && ./montecarlo
 
 # An example of linear lazy evaluation
 longestline: longestline.dats
-	$(ATSCC) -o longestline longestline.dats
+	$(ATSCC) -o longestline longestline.dats \
+     && ./longestline < ./longestline.dats
 
 # generating a password randomly
-passwdgen: passwdgen.dats; $(ATSCC) -O3 -o passwdgen passwdgen.dats
+passwdgen: passwdgen.dats
+	$(ATSCC) -O3 -o passwdgen passwdgen.dats && ./passwdgen
 
 Peano: Peano.dats; $(ATSCC) -o Peano Peano.dats
 
 # Euler's transform in lazy style
-pi_lazy: pi_lazy.dats; $(ATSCC) -o pi_lazy pi_lazy.dats
+pi_lazy: pi_lazy.dats; $(ATSCC) -o pi_lazy pi_lazy.dats && ./pi_lazy
 
 quicksort_list: quicksort_list.dats
 	$(ATSCC) -o quicksort_list quicksort_list.dats
@@ -101,13 +109,13 @@ sieve_lazy_vt: sieve_lazy_vt.dats
 strmat: strmat.dats; $(ATSCC) -o strmat strmat.dats
 
 # a simple example of programming with theorem-proving
-sumup: sumup.dats; $(ATSCC) -O3 -o sumup sumup.dats
+sumup: sumup.dats; $(ATSCC) -O3 -o sumup sumup.dats && ./sumup
 
 # a poor man's game of tetrix
 tetrix: tetrix.dats; $(ATSCC) -O3 -o tetrix tetrix.dats
 
 # a simple implementation of world count
-wc: wc.dats; $(ATSCC) -O3 -o wc wc.dats
+wc: wc.dats; $(ATSCC) -O3 -o wc wc.dats && ./wc *.dats
 
 ######
 
@@ -119,6 +127,7 @@ html::
 	atsopt --posmark_html -d GaussElim.dats > GaussElim_dats.html
 	atsopt --posmark_html -d GarsiaWachs.dats > GarsiaWachs_dats.html
 	atsopt --posmark_html -d hanoi.dats > hanoi_dats.html
+	atsopt --posmark_html -d isqrt.dats > isqrt_dats.html
 	atsopt --posmark_html -d kmp.dats > kmp_dats.html
 	atsopt --posmark_html -d longestline.dats > longestline_dats.html
 	atsopt --posmark_html -d passwdgen.dats > passwdgen_dats.html
@@ -150,6 +159,7 @@ cleanall:: clean
 	rm -f GarsiaWachs
 	rm -f hamming_lazy
 	rm -f hanoi
+	rm -f isqrt
 	rm -f kmp
 	rm -f longestline
 	rm -f montecarlo

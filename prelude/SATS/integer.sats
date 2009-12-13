@@ -468,7 +468,7 @@ fun nmul (i: Nat, j: Nat):<> Nat = "atspre_nmul"
 and ndiv (i: Nat, j: Pos):<> Nat = "atspre_ndiv"
 
 fun nmod {i,j:int | i >= 0; j > 0} // [j] must be a constant!
-  (i: int i, j: int j) :<> [q,r:int | 0 <= r; r < j; i == q*j + r] int r
+  (i: int i, j: int j) :<> [q,r:nat | r < j; i == q*j + r] int r
   = "atspre_nmod"
 
 fun nmod1 {i,j:int | i >= 0; j > 0} (i: int i, j: int j):<> natLt j
