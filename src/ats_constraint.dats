@@ -149,13 +149,14 @@ implement s3bexp_bneq (s3be1, s3be2) = begin case+ s3be1 of
         val _s3be1 = s3bexp_bneg s3be1 and _s3be2 = s3bexp_bneg s3be2
       in
         S3BEbadd (S3BEbmul (s3be1, _s3be2), S3BEbmul (_s3be1, s3be2))
-      end
+      end // end of [_]
     end // end of [_]
 end // end of [s3bexp_beq]
 
 //
 
-implement s3bexp_badd (s3be1, s3be2) = begin case+ s3be1 of
+implement s3bexp_badd (s3be1, s3be2) = begin
+  case+ s3be1 of
   | S3BEbool b1 => if b1 then s3bexp_true else s3be2
   | _ => begin case+ s3be2 of
     | S3BEbool b2 => if b2 then s3bexp_true else s3be1
@@ -163,7 +164,8 @@ implement s3bexp_badd (s3be1, s3be2) = begin case+ s3be1 of
     end // end of [_]
 end // end of [s3bexp_badd]
 
-implement s3bexp_bmul (s3be1, s3be2) = begin case+ s3be1 of
+implement s3bexp_bmul (s3be1, s3be2) = begin
+  case+ s3be1 of
   | S3BEbool b1 => if b1 then s3be2 else s3bexp_false
   | _ => begin case+ s3be2 of
     | S3BEbool b2 => if b2 then s3be1 else s3bexp_false
@@ -203,43 +205,55 @@ end // end of [s3bexp_iexp]
 
 implement s3bexp_igt (s3ie1, s3ie2) =
   s3bexp_iexp (~2(*lt*), s3iexp_isub (s3ie2, s3ie1))
+// end of [s3bexp_igt]
 
 implement s3bexp_igte (s3ie1, s3ie2) =
   s3bexp_iexp (2(*gte*), s3iexp_isub (s3ie1, s3ie2))
+// end of [s3bexp_igte]
 
 implement s3bexp_ilt (s3ie1, s3ie2) =
   s3bexp_iexp (~2(*lt*), s3iexp_isub (s3ie1, s3ie2))
+// end of [s3bexp_ilt]
 
 implement s3bexp_ilte (s3ie1, s3ie2) =
   s3bexp_iexp (2(*gte*), s3iexp_isub (s3ie2, s3ie1))
+// end of [s3bexp_ilte]
 
 //
 
 implement s3bexp_ieq (s3ie1, s3ie2) =
   s3bexp_iexp (1(*eq*), s3iexp_isub (s3ie1, s3ie2))
+// end of [s3bexp_ieq]
 
 implement s3bexp_ineq (s3ie1, s3ie2) =
   s3bexp_iexp (~1(*neq*), s3iexp_isub (s3ie1, s3ie2))
+// end of [s3bexp_ineq]
 
 //
 
 implement s3bexp_pgt (s3ae1, s3ae2) =
   s3bexp_iexp (~2(*lt*), s3iexp_pdiff (s3ae2, s3ae1))
+// end of [s3bexp_pgt]
 
 implement s3bexp_pgte (s3ae1, s3ae2) =
   s3bexp_iexp (2(*gte*), s3iexp_pdiff (s3ae1, s3ae2))
+// end of [s3bexp_pgte]
 
 implement s3bexp_plt (s3ae1, s3ae2) =
   s3bexp_iexp (~2(*lt*), s3iexp_pdiff (s3ae1, s3ae2))
+// end of [s3bexp_plt]
 
 implement s3bexp_plte (s3ae1, s3ae2) =
   s3bexp_iexp (2(*gte*), s3iexp_pdiff (s3ae2, s3ae1))
+// end of [s3bexp_plte]
 
 implement s3bexp_peq (s3ae1, s3ae2) =
   s3bexp_iexp (1(*eq*), s3iexp_pdiff (s3ae1, s3ae2))
+// end of [s3bexp_peq]
 
 implement s3bexp_pneq (s3ae1, s3ae2) =
   s3bexp_iexp (~1(*neq*), s3iexp_pdiff (s3ae1, s3ae2))
+// end of [s3bexp_pneq]
 
 (* ****** ****** *)
 
@@ -257,8 +271,8 @@ implement s3iexp_ineg (s3ie) = begin
   | S3IEint i => S3IEint (~i)
   | S3IEintinf i => S3IEintinf (~i)
   | S3IEineg s3ie => s3ie
-  | _ => S3IEineg s3ie
-end // end of [s3iexp]
+  | _ => S3IEineg s3ie // end of [_]
+end // end of [s3iexp_ineg]
 
 implement s3iexp_iadd (s3ie1, s3ie2) = begin
   case+ (s3ie1, s3ie2) of
@@ -315,7 +329,7 @@ fun s2cfdeflst_free (fds: s2cfdeflst_vt): void = begin
       val () = case+ os3be of ~Some_vt _ => () | ~None_vt () => ()
     in
       s2cfdeflst_free (fds)
-    end
+    end // end of [S2CFDEFLSTcons]
   | ~S2CFDEFLSTmark (fds) => s2cfdeflst_free (fds)
   | ~S2CFDEFLSTnil () => ()
 end // end of [s2cfdeflst_free]
@@ -385,9 +399,11 @@ in
   fds := S2CFDEFLSTcons (s2c, s2es, s2v, os3be, fds)
 end // end of [s2cfdeflst_add]
 
-fn s2cfdeflst_replace
-  (s2t: s2rt, s2c: s2cst_t, s2es: s2explst,
-   s2cs: &s2cstlst, fds: &s2cfdeflst_vt): s2var_t =
+fn s2cfdeflst_replace (
+    s2t: s2rt
+  , s2c: s2cst_t, s2es: s2explst
+  , s2cs: &s2cstlst, fds: &s2cfdeflst_vt
+  ) : s2var_t =
   case+ s2cfdeflst_find (fds, s2c, s2es) of
   | ~None_vt () => let
       val s2v = s2var_make_srt (s2t)
@@ -395,7 +411,7 @@ fn s2cfdeflst_replace
     in
       s2v
     end // end of [None_vt]
-  | ~Some_vt s2v => s2v
+  | ~Some_vt s2v => s2v // end of [Some_vt]
 // end of [s2cfdeflst_replace]
 
 (* ****** ****** *)
