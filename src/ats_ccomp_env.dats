@@ -71,7 +71,9 @@ fn prerr_interror () = prerr "INTERNAL ERROR (ats_ccomp_env)"
 
 (* ****** ****** *)
 
-extern fun compare_strlst_strlst (ss1: strlst, ss2: strlst):<> Sgn
+extern
+fun compare_strlst_strlst
+  (ss1: strlst, ss2: strlst):<> Sgn
 overload compare with compare_strlst_strlst
 
 implement compare_strlst_strlst (ss1, ss2) = begin
@@ -86,7 +88,8 @@ implement compare_strlst_strlst (ss1, ss2) = begin
   | (list_nil (), list_nil ()) =>  0
 end // end [compare_strlst_strlst]
 
-extern fun compare_labstrlst_labstrlst
+extern
+fun compare_labstrlst_labstrlst
   (lss1: labstrlst, lss2: labstrlst):<> Sgn
 overload compare with compare_labstrlst_labstrlst
 
@@ -107,7 +110,9 @@ implement compare_labstrlst_labstrlst
   | (LABSTRLSTnil (), LABSTRLSTcons _) => ~1
 end // end [compare_labstrlst_labstrlst]
 
-extern fun compare_typkey_typkey (tk1: typkey, tk2: typkey):<> Sgn
+extern
+fun compare_typkey_typkey
+  (tk1: typkey, tk2: typkey):<> Sgn
 overload compare with compare_typkey_typkey
 
 implement compare_typkey_typkey (tk1, tk2) = begin
@@ -170,7 +175,8 @@ end // end of [typdeflst_reverse]
 
 in
 
-extern fun typdeflst_add (tk: typkey, name: string): void
+extern
+fun typdeflst_add (tk: typkey, name: string): void
 
 implement typdeflst_add (tk, name) = let
   val (pfbox | p) = ref_get_view_ptr (the_typdeflst)

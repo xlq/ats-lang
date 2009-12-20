@@ -73,6 +73,10 @@ staload _(*anonymous*) = "ats_map_lin.dats"
 
 (* ****** ****** *)
 
+fn prerr_loc_ccomp (loc: loc_t): void =
+  ($Loc.prerr_location loc; prerr ": error(ccomp)")
+// end of [prerr_loc_ccomp]
+
 fn prerr_interror () = prerr "INTERNAL ERROR (ats_ccomp_trans)"
 fn prerr_loc_interror (loc: loc_t) = begin
   $Loc.prerr_location loc; prerr ": INTERNAL ERROR (ats_ccomp_trans)"
@@ -1332,8 +1336,7 @@ in
   | HIEchar c => valprim_char c
   | HIEcst d2c => begin case+ 0 of
     | _ when d2cst_is_proof d2c => begin
-        $Loc.prerr_location (hie0.hiexp_loc);
-        prerr ": error(ccomp)";
+        prerr_loc_ccomp (hie0.hiexp_loc);
         prerr ": ["; prerr d2c; prerr "] is a proof constant";
         prerr ", which must not occur at run-time.";
         prerr_newline ();
@@ -1419,8 +1422,7 @@ in
     end // end of [HIEtop]
   | HIEvar d2v => begin case+ 0 of
     | _ when d2var_isprf_get d2v => begin
-        $Loc.prerr_location (hie0.hiexp_loc);
-        prerr ": error(ccomp)";
+        prerr_loc_ccomp (hie0.hiexp_loc);
         prerr ": ["; prerr d2v; prerr "] is a proof variable";
         prerr ", which must not occur at run-time.";
         prerr_newline ();
@@ -1952,8 +1954,7 @@ in
       end // end of [val]
 *)
       val () = if (d2con_is_proof d2c) then begin
-        $Loc.prerr_location (hie0.hiexp_loc);
-        prerr ": error(ccomp)";
+        prerr_loc_ccomp (hie0.hiexp_loc);
         prerr ": ["; prerr d2c; prerr "] is a proof constructor";
         prerr ", which must not occur at run-time.";
         prerr_newline ();
