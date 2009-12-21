@@ -1178,7 +1178,7 @@ in
   | _ => let // an expression that cannot be handled
       val () = begin
         prerr "warning(3): s3bexp_make_s2exp: s2e0 = "; prerr s2e0; prerr_newline ();
-      end
+      end // end of [val]
     in
       None_vt ()
     end // end of [_]
@@ -1207,7 +1207,7 @@ in
   | S2Eapp (s2e1, s2es2) => begin case+ s2e1.s2exp_node of
     | S2Ecst s2c1 => s3iexp_make_s2cst_s2explst (s2c1, s2es2, s2cs, fds)
     | _ => None_vt ()
-    end
+    end // end of [S2Eapp]
   | S2Echar c => let
       val i = int_of_char c in Some_vt (s3iexp_int i)
     end // end of [S2Echar]
