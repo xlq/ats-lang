@@ -51,6 +51,7 @@ dataprop MUL (int, int, int) =
   | {n:int} MULbas (0, n, 0)
   | {m,n,p:int | m >= 0} MULind (m+1, n, p+n) of MUL (m, n, p)
   | {m,n,p:int | m > 0} MULneg (~m, n, ~p) of MUL (m, n, p)
+// end of [MUL]
 
 (* ****** ****** *)
 

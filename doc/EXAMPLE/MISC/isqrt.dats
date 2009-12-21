@@ -41,7 +41,7 @@ fun isqrt {x:nat}
 // end of [isqrt]
 
 implement isqrt (x) = let
-  fun aux {x:nat}.<x>.
+  fun aux {x:nat}.<x>. // non-tail-recursive
     (x: int x):<> [n:nat] (ISQRT (x, n) | int n) =
     if x > 0 then let
       val x4 = x / 4

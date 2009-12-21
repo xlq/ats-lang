@@ -501,7 +501,6 @@ and is_odd  (x: int): bool = if x > 0 then is_even (x-1) else false
 </pre>
 
 <LI><I>Local Bindings</I><P>
-
 A common way to introduce local bindings is through the use of the keyword
 <u>let</u>. As an example, the following code defines a function that
 computes the roots of a quadratic equation in terms of the efficients
@@ -533,13 +532,29 @@ val fact10 = fact 10 where {
 
 This code is just an equivalent form of the following code:
 
-<pre>
+<PRE>
 val fact10 = let
   fun fact (x: int): int = if x > 0 then x * fact (x-1) else 1
 in
   fact 10
 end // end of [fact10]
-</pre>
+</PRE>
+
+<LI><I>Sequencing</I><P>
+
+Given expressions <i>$exp_1, ..., $exp_n, $exp_{n+1}</i>, where
+<i>n</i> is some natural number, we can sequence them to form the
+expression <i>($exp_1; ...; $exp_n; $exp_{n+1})</i>; this expression is
+essentially equivalent to the following one in terms of both static and
+dynamic semantics:
+<PRE>
+let val () = $exp_1 ... val () = $exp_n in $exp_{n+1} end
+</PRE>
+So it is clear that the expressions <i>$exp_1, ..., $exp_n</i> are required
+to be of the void type; the type of the sequence expression is the type of
+its last component <i>$exp_{n+1}</i>. If <i>$exp_{n+1}</i> is omitted, the
+default is the expression <i>()</i>, which represents the void value, that
+is, the only value of the void type.
 
 </MENU>
 

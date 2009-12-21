@@ -35,6 +35,9 @@ fact2: fact2.dats
 fact3: fact3.dats
 	$(ATSCC) -o fact3 fact3.dats -lats -lgmp && ./fact3 100
 
+fact4: fact4.dats
+	$(ATSCC) -o fact4 fact4.dats -lats -lgmp && ./fact4 10
+
 fact_in_c: fact_in_c.dats
 	$(ATSCC) -o fact_in_c fact_in_c.dats && ./fact_in_c 10
 
@@ -55,6 +58,7 @@ html::
 	$(ATSOPT) --posmark_html -d fact1.dats > fact1_dats.html
 	$(ATSOPT) --posmark_html -d fact2.dats > fact2_dats.html
 	$(ATSOPT) --posmark_html -d fact3.dats > fact3_dats.html
+	$(ATSOPT) --posmark_html -d fact4.dats > fact4_dats.html
 	$(ATSOPT) --posmark_html -d fact_in_c.dats > fact_in_c_dats.html
 	$(ATSOPT) --posmark_html -d fibs.dats > fibs_dats.html
 	$(ATSOPT) --posmark_html -d revarr.dats > revarr_dats.html

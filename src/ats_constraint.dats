@@ -257,6 +257,12 @@ implement s3bexp_pneq (s3ae1, s3ae2) =
 
 (* ****** ****** *)
 
+fn s3iexp_is_const (s3ie: s3iexp): bool = begin
+  case+ s3ie of S3IEint _ => true | S3IEintinf _ => true | _ => false
+end // end of [s3iexp_is_const]
+
+(* ****** ****** *)
+
 implement s3iexp_0 = S3IEint 0
 implement s3iexp_1 = S3IEint 1
 implement s3iexp_neg_1 = S3IEint (~1)
@@ -380,6 +386,9 @@ fun s2cfdeflst_find
     end // end of [S2CFDEFLSTnil]
 end // end of [s2cfdeflst_find]
 
+(* ****** ****** *)
+
+// for handling a special static function
 fn s2cfdeflst_add
   (s2c: s2cst_t, s2es: s2explst, s2v: s2var_t,
    s2cs: &s2cstlst, fds: &s2cfdeflst_vt): void = let
@@ -399,6 +408,24 @@ in
   fds := S2CFDEFLSTcons (s2c, s2es, s2v, os3be, fds)
 end // end of [s2cfdeflst_add]
 
+// for handling a generic static function
+fn s2cfdeflst_add_none
+  (s2c: s2cst_t, s2es: s2explst, s2v: s2var_t,
+   s2cs: &s2cstlst, fds: &s2cfdeflst_vt): void = let
+(*
+  val () = begin
+    print "s2cfdeflst_add: s2c = "; print s2c; print_newline ();
+    print "s2cfdeflst_add: s2es = "; print s2es; print_newline ();
+    print "s2cfdeflst_add: s2v = "; print s2v; print_newline ();
+  end // end of [val]
+*)
+in
+  fds := S2CFDEFLSTcons (s2c, s2es, s2v, None_vt (), fds)
+end // end of [s2cfdeflst_add_none]
+
+(* ****** ****** *)
+
+// for handling a special static function
 fn s2cfdeflst_replace (
     s2t: s2rt
   , s2c: s2cst_t, s2es: s2explst
@@ -413,6 +440,22 @@ fn s2cfdeflst_replace (
     end // end of [None_vt]
   | ~Some_vt s2v => s2v // end of [Some_vt]
 // end of [s2cfdeflst_replace]
+
+// for handling a generic static function
+fn s2cfdeflst_replace_none (
+    s2t: s2rt
+  , s2c: s2cst_t, s2es: s2explst
+  , s2cs: &s2cstlst, fds: &s2cfdeflst_vt
+  ) : s2var_t =
+  case+ s2cfdeflst_find (fds, s2c, s2es) of
+  | ~None_vt () => let
+      val s2v = s2var_make_srt (s2t)
+      val () = s2cfdeflst_add_none (s2c, s2es, s2v, s2cs, fds)
+    in
+      s2v
+    end // end of [None_vt]
+  | ~Some_vt s2v => s2v // end of [Some_vt]
+// end of [s2cfdeflst_replace_none]
 
 (* ****** ****** *)
 
@@ -457,15 +500,21 @@ in
     | _ => errmsg s2c
     end // end of [Sub_addr_int_addr]
   | _ => let
+      val s2v = s2cfdeflst_replace_none (s2rt_addr, s2c, s2es, s2cs, fds)
+    in
+      Some_vt (s3aexp_var s2v)
+    end // end of [_]
 (*
+  // a function cannot be handled
+  | _ => let
       val () = begin
         print "s3aexp_make_s2cst_s2explst: s2c = "; print s2c; print_newline ();
         print "s3aexp_make_s2cst_s2explst: s2es = "; print s2es; print_newline ();
       end // end of [val]
-*)
     in
       None_vt ()
     end // end of [_]
+*)
 end // end of [s3aexp_make_s2cst_s2explst]
 
 (* ****** ****** *)
@@ -802,17 +851,22 @@ in
       end // end of [list_cons]
     | _ => errmsg s2c
     end // end of [Neq_addr_addr_bool]
+  | _ => let
+      val s2v = s2cfdeflst_replace_none (s2rt_bool, s2c, s2es, s2cs, fds)
+    in
+      Some_vt (s3bexp_var s2v)
+    end // end of [_]
+(*
   // a function cannot be handled
   | _ => let
-(*
       val () = begin
         print "s3bexp_make_s2cst_s2explst: s2c = "; print s2c; print_newline ();
         print "s3bexp_make_s2cst_s2explst: s2es = "; print s2es; print_newline ();
       end // end of [val]
-*)
     in
       None_vt ()
     end // end of [_]
+*)
 end // end of [s3bexp_make_s2cst_s2explst]
 
 (* ****** ****** *)
@@ -873,10 +927,22 @@ in
     case+ s2es of
     | list_cons (s2e1, list_cons (s2e2, list_nil ())) => begin
       case+ s3iexp_make_s2exp (s2e1, s2cs, fds) of
-      | ~Some_vt s3ie1 => begin
-        case+ s3iexp_make_s2exp (s2e2, s2cs, fds) of
-        | ~Some_vt s3ie2 => Some_vt (s3iexp_imul (s3ie1, s3ie2))
-        | ~None_vt () => None_vt ()
+      | ~Some_vt s3ie1 => let
+          val islin = s3iexp_is_const s3ie1
+        in
+          case+ s3iexp_make_s2exp (s2e2, s2cs, fds) of
+          | ~Some_vt s3ie2 => let
+              val islin = islin orelse (s3iexp_is_const s3ie2)
+            in
+              if islin then
+                Some_vt (s3iexp_imul (s3ie1, s3ie2)) // linear term
+              else let // nonlinear term
+                val s2v = s2cfdeflst_replace_none (s2rt_int, s2c, s2es, s2cs, fds)
+              in
+                Some_vt (s3iexp_var s2v)
+              end // end of [if]
+            end // end of [Some_v]
+          | ~None_vt () => None_vt ()
         end // end of [Some_vt]
       | ~None_vt () => None_vt ()
       end // end of [list_cons]
@@ -951,17 +1017,22 @@ in
     in
       Some_vt (s3iexp_var s2v)
     end // end of [IntOfBool_bool_int]
+  | _ => let
+      val s2v = s2cfdeflst_replace_none (s2rt_int, s2c, s2es, s2cs, fds)
+    in
+      Some_vt (s3iexp_var s2v)
+    end // end of [_]
+(*
   // a function cannot be handled
   | _ => let
-(*
       val () = begin
         print "s3iexp_make_s2cst_s2explst: s2c = "; print s2c; print_newline ();
         print "s3iexp_make_s2cst_s2explst: s2es = "; print s2es; print_newline ();
       end // end of [val]
-*)
     in
       None_vt ()
     end // en dof [_]
+*)
 end // end of [s3iexp_make_s2cst_s2explst]
 
 (* ****** ****** *)

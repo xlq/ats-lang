@@ -558,6 +558,7 @@ fn doc_dir_copy () = let
   val () = cp "GaussElim.dats"
   val () = cp "hamming_lazy.dats"
   val () = cp "hanoi.dats"
+  val () = cp "isqrt.dats"
   val () = cp "kmp.dats"
   val () = cp "longestline.dats"
   val () = cp "montecarlo.dats"
