@@ -137,7 +137,7 @@ implement s3bexp_beq (s3be1, s3be2) = begin case+ s3be1 of
         val _s3be1 = s3bexp_bneg s3be1 and _s3be2 = s3bexp_bneg s3be2
       in
         S3BEbadd (S3BEbmul (s3be1, s3be2), S3BEbmul (_s3be1, _s3be2))
-      end
+      end // end of [_]
     end // end of [_]
 end // end of [s3bexp_beq]
 
@@ -1053,7 +1053,7 @@ in
         | ~None_vt () => None_vt ()
         end // end of [Some_vt]
       | ~None_vt () => None_vt ()
-    end
+    end // end of [s2t1 = s2rt_int]
   | _ when s2t1 = s2rt_addr => begin
       case+ s3aexp_make_s2exp (s2e1, s2cs, fds) of
       | ~Some_vt s3ae1 => begin
@@ -1062,7 +1062,7 @@ in
         | ~None_vt () => None_vt ()
         end // end of [Some_vt]
       | ~None_vt () => None_vt ()
-    end
+    end // end of [s2t1 = s2rt_addr]
   | _ when s2t1 = s2rt_bool => begin
       case+ s3bexp_make_s2exp (s2e1, s2cs, fds) of
       | ~Some_vt s3be1 => begin
@@ -1071,7 +1071,7 @@ in
         | ~None_vt () => None_vt ()
         end // end of [Some_vt]
       | ~None_vt () => None_vt ()
-    end
+    end // end of [s2t1 = s2rt_bool]
   | _ when s2t1 = s2rt_char => begin
       case+ s3iexp_make_s2exp (s2e1, s2cs, fds) of
       | ~Some_vt s3ie1 => begin
@@ -1080,7 +1080,19 @@ in
         | ~None_vt () => None_vt ()
         end // end of [Some_vt]
       | ~None_vt () => None_vt ()
-    end
+    end // end of [s2t1 = s2rt_char]
+// (*
+  // this is an experimental feature!!!
+  | _ when s2rt_is_dat s2t1 => begin
+      case+ s3iexp_make_s2exp (s2e1, s2cs, fds) of
+      | ~Some_vt s3ie1 => begin
+        case+ s3iexp_make_s2exp (s2e2, s2cs, fds) of
+        | ~Some_vt s3ie2 => Some_vt (s3bexp_ieq (s3ie1, s3ie2))
+        | ~None_vt () => None_vt ()
+        end // end of [Some_vt]
+      | ~None_vt () => None_vt ()
+    end // end of [s2rt_is_dat s2t1]
+// *)
   | _ => begin
       if s2exp_syneq (s2e1, s2e2) then Some_vt (s3bexp_true) else None_vt ()
     end // end of [_]
@@ -1209,12 +1221,12 @@ fn s2exp_metlt_reduce {n:nat}
               s2p_lt
             , s2exp_mul_bool_bool_bool (s2p_lte, auxlst (s2es1, s2es2))
             )
-          end
-        | _ when lt > 0 => s2p_lt (* true *)
+          end // end of [lt = 0]
+        | _ when lt > 0 => s2p_lt (* true *) // end of [lt > 0]
         | _ (* lt < 0 *) => begin
             if lte > 0 then auxlst (s2es1, s2es2) else s2p_lte (* false *)
-          end
-      end
+          end // end of [lt < 0]
+      end // end of [list_cons]
     | list_nil () => s2exp_bool false
   end // end of [auxlst]
 in

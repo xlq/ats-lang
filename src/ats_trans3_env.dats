@@ -963,7 +963,7 @@ implement trans3_env_hypo_add_proplst (loc, s2ps) = begin
   | list_cons (s2p, s2ps) => begin
       trans3_env_hypo_add_prop (loc, s2p);
       trans3_env_hypo_add_proplst (loc, s2ps)
-    end
+    end // end of [list_cons]
   | list_nil () => ()
 end // end of [trans3_env_hypo_add_proplst]
 

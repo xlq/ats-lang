@@ -21,6 +21,7 @@ all: ATS \
      ITPT \
      KolmogorovTrans \
      mini-ML \
+     naive-set.dats \
      pigeonhole \
      infprime \
      STLC-foas \
@@ -49,6 +50,7 @@ irrationality-of-sqrt2: ; $(ATSCC) $(ATSCCFLAG) irrationality-of-sqrt2.dats
 ITPT: ; $(ATSCC) $(ATSCCFLAG) ITPT.dats
 KolmogorovTrans: ; $(ATSCC) $(ATSCCFLAG) KolmogorovTrans.dats
 mini-ML: ; $(ATSCC) $(ATSCCFLAG) mini-ML.dats
+naive-set: ; $(ATSCC) $(ATSCCFLAG) naive-set.dats
 pigeonhole: ; $(ATSCC) $(ATSCCFLAG) pigeonhole.dats
 infprime: ; $(ATSCC) $(ATSCCFLAG) infprime.dats
 STLC-foas: ; $(ATSCC) $(ATSCCFLAG) STLC-foas.dats
@@ -71,6 +73,7 @@ typecheck::
 	$(ATSCC) $(ATSCCFLAG) ITPT.dats
 	$(ATSCC) $(ATSCCFLAG) KolmogorovTrans.dats
 	$(ATSCC) $(ATSCCFLAG) mini-ML.dats
+	$(ATSCC) $(ATSCCFLAG) naive-set.dats
 	$(ATSCC) $(ATSCCFLAG) pigeonhole.dats
 	$(ATSCC) $(ATSCCFLAG) infprime.dats
 	$(ATSCC) $(ATSCCFLAG) STLC-foas.dats
@@ -95,6 +98,7 @@ posmark::
 	$(ATSOPT) $(POSMARK) -d ITPT.dats > ITPT_dats.html
 	$(ATSOPT) $(POSMARK) -d KolmogorovTrans.dats > KolmogorovTrans_dats.html
 	$(ATSOPT) $(POSMARK) -d mini-ML.dats > mini-ML_dats.html
+	$(ATSOPT) $(POSMARK) -d naive-set.dats > naive-set_dats.html
 	$(ATSOPT) $(POSMARK) -d pigeonhole.dats > pigeonhole_dats.html
 	$(ATSOPT) $(POSMARK) -d infprime.dats > infprime_dats.html
 	$(ATSOPT) $(POSMARK) -d STLC-foas.dats > STLC-foas_dats.html
@@ -117,6 +121,7 @@ update::
 	cp ITPT.dats $(DIR)
 	cp KolmogorovTrans.dats $(DIR)
 	cp mini-ML.dats $(DIR)
+	cp naive-set.dats $(DIR)
 	cp pigeonhole.dats $(DIR)
 	cp infprime.dats $(DIR)
 	cp STLC-foas.dats $(DIR)
