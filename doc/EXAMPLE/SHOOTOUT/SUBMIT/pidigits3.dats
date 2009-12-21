@@ -5,8 +5,8 @@
 ** contributed by Hongwei Xi (hwxi AT cs DOT bu DOT edu)
 ** contributed by Zhiqiang Ren (aren AT cs DOT bu DOT edu)
 **
-** This code is a direct translation from a C submission by
-** Bonzini, Bartell and Mellor
+** This code is nearly a direct translation from a C submission
+** by Bonzini, Bartell and Mellor
 **
 ** compilation command:
 **   atscc -O3 -fomit-frame-pointer pidigits3.dats -o pidigits3 -lgmp
