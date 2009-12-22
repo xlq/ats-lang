@@ -26,7 +26,7 @@ dataprop SETEQ
 // end of [SETEQ]
 
 extern praxi
-extentionality {X1,X2:set}
+extensionality {X1,X2:set}
   (pf: {x:elt} IN (x, X1) == IN (x, X2)): SETEQ (X1, X2)
 
 (* ****** ****** *)
@@ -89,7 +89,7 @@ prfn union_assoc
       end // end of [inr]
   end // end of [g]
 in
-  extentionality {XY_Z, X_YZ} (lam {x:elt} => (f {x}, g {x}))
+  extensionality {XY_Z, X_YZ} (lam {x:elt} => (f {x}, g {x}))
 end // end of [union_assoc]
 
 (* ****** ****** *)
@@ -116,7 +116,7 @@ prfn inter_assoc
     inter_intr (pfXY, pfZ)
   end // end of [g]
 in
-  extentionality {XY_Z, X_YZ} (lam {x:elt} => (f {x}, g {x}))
+  extensionality {XY_Z, X_YZ} (lam {x:elt} => (f {x}, g {x}))
 end // end of [inter_assoc]
 
 (* ****** ****** *)
@@ -140,8 +140,39 @@ prfn inter_union_distribute
     // end of [case]
   end // end of [g]
 in
-  extentionality {X*(Y+Z),X*Y+X*Z} (lam {x:elt} => (f {x}, g {x}))
+  extensionality {X*(Y+Z),X*Y+X*Z} (lam {x:elt} => (f {x}, g {x}))
 end // end of [inter_union_distribute]
+
+(* ****** ****** *)
+
+prfn union_inter_distribute
+  {X,Y,Z:set} (): SETEQ (X+(Y*Z), (X+Y)*(X+Z)) = let
+  prfn f {x:elt} (pf: IN (x, X+(Y*Z))): IN (x, (X+Y)*(X+Z)) = begin
+    case+ union_elim (pf) of
+    | inl pfX => inter_intr {X+Y,X+Z}
+        (union_intr1 {X,Y} pfX, union_intr1 {X,Z} pfX)
+      // end of [inl]
+    | inr pfI_YZ => let
+        prval pfY = inter_elim1 {Y,Z} pfI_YZ
+        prval pfZ = inter_elim2 {Y,Z} pfI_YZ
+      in
+        inter_intr {X+Y,X+Z} (union_intr2 {X,Y} pfY, union_intr2 {X,Z} pfZ)
+      end // end of [inr]
+  end // end of [f]
+  prfn g {x:elt} (pf: IN (x, (X+Y)*(X+Z))): IN (x, X+(Y*Z)) = let
+    prval pfU_XY = inter_elim1 {X+Y,X+Z} (pf)
+    prval pfU_XZ = inter_elim2 {X+Y,X+Z} (pf)
+  in
+    case+ union_elim (pfU_XY) of
+    | inl pfX => union_intr1 {X,Y*Z} (pfX)
+    | inr pfY => begin case+ union_elim (pfU_XZ) of
+      | inl pfX => union_intr1 {X,Y*Z} (pfX)
+      | inr pfZ => union_intr2 {X,Y*Z} (inter_intr {Y,Z} (pfY, pfZ))
+      end // end of [inr]
+  end // end of [g]
+in
+  extensionality {X+(Y*Z), (X+Y)*(X+Z)} (lam {x:elt} => (f {x}, g {x}))
+end // end of [union_inter_distribute]
 
 (* ****** ****** *)
 
