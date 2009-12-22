@@ -1,10 +1,11 @@
-//
+(*
 //
 // A proof of the irrationality of the square root of 2 in ATS/LF
 //
-// author: Hongwei Xi (Nov 1, 2007)
+// Author: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
+// Time: Nov 1, 2007
 //
-//
+*)
 
 //
 // Aaron Stump mentioned the problem during his visit at BU on Nov 1, 2007.
@@ -26,6 +27,7 @@ dataprop MUL1 (int, int, int) =
       MUL1ind (m+1, n, p+n) of MUL1 (m, n, p)
   | {m,n,p:int | m > 0}
       MUL1neg (~m, n, ~p) of MUL1 (m, n, p)
+// end of [MUL1]
 
 // m * 0 = x implies x = 0
 prfun lemma00 {m:nat} {x:int} .<m>. (pf: MUL1 (m, 0, x)): [x == 0] void =
@@ -33,7 +35,8 @@ prfun lemma00 {m:nat} {x:int} .<m>. (pf: MUL1 (m, 0, x)): [x == 0] void =
     let prval MUL1ind pf1 = pf in lemma00 pf1 end
   end else begin
     let prval MUL1bas () = pf in () end
-  end
+  end // end of [sif]
+// end of [lemma00]
 
 // m * n = x implies m * (n-1) = x - m
 prfun lemma01 {m,n:nat} {x:int} .<m>. (pf: MUL1 (m, n, x))
@@ -42,7 +45,8 @@ prfun lemma01 {m,n:nat} {x:int} .<m>. (pf: MUL1 (m, n, x))
     let prval MUL1ind pf1 = pf in MUL1ind (lemma01 pf1) end
   end else begin
     let prval MUL1bas () = pf in MUL1bas () end
-  end
+  end // end of [sif]
+// end of [lemma01]
 
 // commutativity of multiplication
 // m * n = x implies n * m = x
@@ -54,7 +58,8 @@ prfun lemma_commute {m,n:nat} {x:int} .<n>. (pf: MUL1 (m, n, x))
     end
   end else begin
     let prval () = lemma00 (pf) in MUL1bas () end
-  end
+  end // end of [sif]
+// end of [lemma_commute]
 
 // (p + p) * (p + p) = x implies x = 4 * x4 for some x4
 prfun lemma1 {p:nat} {x:int} .<p>.

@@ -294,7 +294,7 @@ prfun reduceLemma {G:ctx} {t:tm} {T:tp} {n:nat} .<n>.
         r'
       end
       prfn fr {t:tm} (r: R(t,T1)): R(TMapp(TMlam f, t), T2) = let    
-        prval lamf_red = absSound(tp1, tp2, gr)
+        prval lamf_red = absSound {f} (tp1, tp2, gr)
         prval Rfun(red_imp) = lamf_red
       in
         red_imp r
