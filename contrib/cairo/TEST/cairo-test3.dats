@@ -1,10 +1,22 @@
 (*
 **
-** A simple CAIRO example
+** A simple CAIRO example: regular polygon
 **
 ** Author: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
 ** Time: December, 2009
 **
+*)
+
+(*
+** how to compile:
+   atscc -o test3 \
+     `pkg-config --cflags --libs cairo` \
+     $ATSHOME/contrib/cairo/atsctrb_cairo.o \
+     cairo-test3.dats
+
+** how ot test:
+   ./test3
+   'gthumb' can be used to view the generated image file 'cairo-test3.png'
 *)
 
 (* ****** ****** *)
@@ -42,8 +54,10 @@ end // end of [draw_reg_polygon]
 
 (* ****** ****** *)
 
-fn draw_circle
-  (cr: !cr, rad: dbl, x0: dbl, y0: dbl): void = let
+fn draw_circle (
+    cr: !cr
+  , rad: dbl, x0: dbl, y0: dbl
+  ) : void = let
   val n0 = 8
   val agl0 = 2 * $M.M_PI / n0
   val n = loop (rad, n0, agl0) where {
@@ -84,12 +98,12 @@ implement main () = () where {
   val () = draw_circle (cr, ALPHA * 100.0, x, y)
   val () = cairo_stroke (cr)
 //
-  val status = cairo_surface_write_to_png (surface, "regpoly.png")
+  val status = cairo_surface_write_to_png (surface, "cairo-test3.png")
   val () = cairo_surface_destroy (surface)
   val () = cairo_destroy (cr)
 //
   val () = if status = CAIRO_STATUS_SUCCESS then begin
-    print "The image is written to the file [regpoly.png].\n"
+    print "The image is written to the file [cairo-test3.png].\n"
   end else begin
     print "exit(ATS): [cairo_surface_write_to_png] failed"; print_newline ()
   end // end of [if]

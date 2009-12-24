@@ -1,10 +1,22 @@
 (*
 **
-** A simple CAIRO example
+** A simple CAIRO example: rounded rectangle
 **
 ** Author: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
 ** Time: December, 2009
 **
+*)
+
+(*
+** how to compile:
+   atscc -o test2 \
+     `pkg-config --cflags --libs cairo` \
+     $ATSHOME/contrib/cairo/atsctrb_cairo.o \
+     cairo-test2.dats
+
+** how ot test:
+   ./test2
+   'gthumb' can be used to view the generated image file 'cairo-test2.png'
 *)
 
 (* ****** ****** *)
@@ -48,12 +60,12 @@ implement main () = () where {
   val () = draw_rounded_rectangle (cr, x, y, w, h, r)
   val () = cairo_stroke (cr)
 //
-  val status = cairo_surface_write_to_png (surface, "rndrect.png")
+  val status = cairo_surface_write_to_png (surface, "cairo-test2.png")
   val () = cairo_surface_destroy (surface)
   val () = cairo_destroy (cr)
 //
   val () = if status = CAIRO_STATUS_SUCCESS then begin
-    print "The image is written to the file [rndrect.png].\n"
+    print "The image is written to the file [cairo-test2.png].\n"
   end else begin
     print "exit(ATS): [cairo_surface_write_to_png] failed"; print_newline ()
   end // end of [if]

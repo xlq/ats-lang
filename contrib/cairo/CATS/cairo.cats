@@ -36,8 +36,8 @@
 
 /* ****** ****** */
 
-#ifndef ATS_LIBC_CAIRO_CAIRO_CATS
-#define ATS_LIBC_CAIRO_CAIRO_CATS
+#ifndef ATSCTRB_CAIRO_CAIRO_CATS
+#define ATSCTRB_CAIRO_CAIRO_CATS
 
 /* ****** ****** */
 
@@ -179,6 +179,41 @@ atsctrb_cairo_set_source_rgba (
 /* ****** ****** */
 
 static inline
+ats_double_type
+atsctrb_cairo_get_line_width
+  (ats_cairo_ref cr) {
+  return cairo_get_line_width((cairo_t*)cr) ;
+} /* end of [atsctrb_cairo_get_line_width] */
+
+static inline
+ats_void_type
+atsctrb_cairo_set_line_width (
+  ats_cairo_ref cr, ats_double_type width
+) {
+  cairo_set_line_width((cairo_t*)cr, width) ; return ;
+} /* end of [atsctrb_cairo_set_line_width] */
+
+/* ****** ****** */
+
+static inline
+ats_void_type
+atsctrb_cairo_clip (
+  ats_cairo_ref cr
+) {
+  cairo_clip((cairo_t*)cr) ; return ;
+} /* end of [atsctrb_cairo_clip] */
+
+static inline
+ats_void_type
+atsctrb_cairo_clip_preserve (
+  ats_cairo_ref cr
+) {
+  cairo_clip_preserve((cairo_t*)cr) ; return ;
+} /* end of [atsctrb_cairo_clip_preserve] */
+
+/* ****** ****** */
+
+static inline
 ats_void_type
 atsctrb_cairo_fill (
   ats_cairo_ref cr
@@ -205,6 +240,48 @@ atsctrb_cairo_stroke (
 /* ****** ****** */
 
 // drawing paths
+
+/* ****** ****** */
+
+static inline
+ats_void_type
+atsctrb_cairo_new_path
+  (ats_cairo_ref cr) {
+  cairo_new_path ((cairo_t*)cr) ; return ;
+} /* end of [atsctrb_cairo_new_path] */
+
+static inline
+ats_void_type
+atsctrb_cairo_new_sub_path
+  (ats_cairo_ref cr) {
+  cairo_new_sub_path ((cairo_t*)cr) ; return ;
+} /* end of [atsctrb_cairo_new_sub_path] */
+
+/* ****** ****** */
+
+static inline
+ats_void_type
+atsctrb_cairo_arc (
+  ats_cairo_ref cr
+, ats_double_type xc, ats_double_type yc
+, ats_double_type rad
+, ats_double_type angle1, ats_double_type angle2
+) {
+  cairo_arc ((cairo_t*)cr, xc, yc, rad, angle1, angle2) ;
+  return ;
+} /* end of [atsctrb_cairo_arc] */
+
+static inline
+ats_void_type
+atsctrb_cairo_arc_negative (
+  ats_cairo_ref cr
+, ats_double_type xc, ats_double_type yc
+, ats_double_type rad
+, ats_double_type angle1, ats_double_type angle2
+) {
+  cairo_arc_negative ((cairo_t*)cr, xc, yc, rad, angle1, angle2) ;
+  return ;
+} /* end of [atsctrb_cairo_arc_negative] */
 
 static inline
 ats_void_type
@@ -245,6 +322,38 @@ atsctrb_cairo_rectangle (
 ) {
   cairo_rectangle ((cairo_t*)cr, x, y, w, h) ; return ;
 } /* end of [atsctrb_cairo_rectangle] */
+
+/* ****** ****** */
+
+static inline
+ats_void_type
+atsctrb_cairo_rel_curve_to (
+  ats_cairo_ref cr
+, ats_double_type x1, ats_double_type y1
+, ats_double_type x2, ats_double_type y2
+, ats_double_type x3, ats_double_type y3
+) {
+  cairo_rel_curve_to ((cairo_t*)cr, x1, y1, x2, y2, x3, y3) ;
+  return ;
+} /* end of [atsctrb_cairo_rel_curve_to] */
+
+static inline
+ats_void_type
+atsctrb_cairo_rel_line_to (
+  ats_cairo_ref cr
+, ats_double_type x, ats_double_type y
+) {
+  cairo_rel_line_to ((cairo_t*)cr, x, y) ; return ;
+} /* end of [atsctrb_cairo_rel_line_to] */
+
+static inline
+ats_void_type
+atsctrb_cairo_rel_move_to (
+  ats_cairo_ref cr
+, ats_double_type x, ats_double_type y
+) {
+  cairo_rel_move_to ((cairo_t*)cr, x, y) ; return ;
+} /* end of [atsctrb_cairo_rel_move_to] */
 
 /* ****** ****** */
 
@@ -498,6 +607,21 @@ atsctrb_cairo_matrix_transform_point (
 
 /* ****** ****** */
 
-#endif // end of [ATS_LIBC_CAIRO_CAIRO_CATS]
+static inline
+ats_ptr_type // string
+atsctrb_cairo_status_to_string
+  (ats_cairo_status_type status) {
+  return (ats_ptr_type)cairo_status_to_string(status) ;
+} // end of [atsctrb_cairo_status_to_string]
+
+static inline
+ats_void_type
+atsctrb_cairo_debug_reset_static_data () {
+  cairo_debug_reset_static_data() ; return ;
+} // end of [atsctrb_cairo_debug_reset_static_data]
+
+/* ****** ****** */
+
+#endif // end of [ATSCTRB_CAIRO_CAIRO_CATS]
 
 /* end of [cairo.cats] */

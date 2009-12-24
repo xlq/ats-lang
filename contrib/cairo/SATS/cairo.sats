@@ -270,8 +270,10 @@ fun cairo_set_source
   (cr: !cairo_ref, source: !cairo_pattern_ref): void
   = "atsctrb_cairo_set_source"
 
-fun cairo_set_source_surface
-  (cr: !cairo_ref, sf: !cairo_surface_ref, x: double, y: double): void
+fun cairo_set_source_surface (
+    cr: !cairo_ref
+  , sf: !cairo_surface_ref, x: double, y: double
+  ) : void
   = "atsctrb_cairo_set_source_surface"
 
 (* ****** ****** *)
@@ -282,6 +284,14 @@ fun cairo_get_line_width (cr: !cairo_ref): double
 fun cairo_set_line_width (cr: !cairo_ref, width: double): void
   = "atsctrb_cairo_set_line_width"
                                                          
+(* ****** ****** *)
+
+fun cairo_clip (cr: !cairo_ref): void
+  = "atsctrb_cairo_clip"
+
+fun cairo_clip_preserve (cr: !cairo_ref): void
+  = "atsctrb_cairo_clip_preserve"
+
 (* ****** ****** *)
 
 fun cairo_fill (cr: !cairo_ref): void
@@ -340,11 +350,35 @@ fun cairo_get_reference_count (cr: !cairo_ref): uint
 // drawing paths
 //
 
+(* ****** ****** *)
+
+fun cairo_new_path (cr: !cairo_ref): void
+  = "atsctrb_cairo_new_path"
+
+fun cairo_new_sub_path (cr: !cairo_ref): void
+  = "atsctrb_cairo_new_path"
+
+(* ****** ****** *)
+
+fun cairo_arc (
+    cr: !cairo_ref
+  , xc: double, yc: double
+  , rad: double, angle1: double, angle2: double
+  ) : void
+  = "atsctrb_cairo_arc"
+
+fun cairo_arc_negative (
+    cr: !cairo_ref
+  , xc: double, yc: double
+  , rad: double, angle1: double, angle2: double
+  ) : void
+  = "atsctrb_cairo_arc_negative"
+
 fun cairo_curve_to (
     cr: !cairo_ref
   , x1: double, y1: double
   , x2: double, y2: double
-  , x3: double, x4: double
+  , x3: double, y3: double
   ) : void
   = "atsctrb_cairo_curve_to"
 
@@ -361,6 +395,24 @@ fun cairo_rectangle (
   , x: double, y: double, width: double, height: double
   ) : void
   = "atsctrb_cairo_rectangle"
+
+(* ****** ****** *)
+
+fun cairo_rel_curve_to (
+    cr: !cairo_ref
+  , dx1: double, dy1: double
+  , dx2: double, dy2: double
+  , dx3: double, dy3: double
+  ) : void
+  = "atsctrb_cairo_rel_curve_to"
+
+fun cairo_rel_line_to
+  (cr: !cairo_ref, dx: double, dy: double): void
+  = "atsctrb_cairo_rel_line_to"
+
+fun cairo_rel_move_to
+  (cr: !cairo_ref, dx: double, dy: double): void
+  = "atsctrb_cairo_rel_move_to"
 
 (* ****** ****** *)
 
@@ -546,6 +598,17 @@ fun cairo_matrix_transform_point (
     matrix: &cairo_matrix_t (*read*), x: &double, y: &double
   ) : void
   = "cairo_matrix_transform_point"
+
+(* ****** ****** *)
+
+// error handling
+
+// all error strings are statically allocated
+fun cairo_status_to_string (status: cairo_status_t):<> string
+  = "atsctrb_cairo_status_to_string"
+
+fun cairo_debug_reset_static_data (): void
+  = "atsctrb_cairo_debug_reset_static_data"
 
 (* ****** ****** *)
 

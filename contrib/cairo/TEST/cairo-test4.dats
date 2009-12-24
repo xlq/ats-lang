@@ -1,10 +1,22 @@
 (*
 **
-** A simple CAIRO example: Koch curve
+** A simple CAIRO example: Koch fractal curve
 **
 ** Author: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
 ** Time: December, 2009
 **
+*)
+
+(*
+** how to compile:
+   atscc -o test4 \
+     `pkg-config --cflags --libs cairo` \
+     $ATSHOME/contrib/cairo/atsctrb_cairo.o \
+     cairo-test4.dats
+
+** how ot test:
+   ./test4
+   'gthumb' can be used to view the generated image file 'cairo-test4.png'
 *)
 
 (* ****** ****** *)
@@ -67,17 +79,34 @@ implement main () = () where {
   val surface =
     cairo_image_surface_create (CAIRO_FORMAT_ARGB32, 300, 300)
   val cr = cairo_create (surface)
-  val x0 = 50.0 and y0 = 150.0
+  val x0 = 50.0 and y0 = 100.0
+//
+  val (pf | ()) = cairo_save (cr)
   val () = cairo_translate (cr, x0, y0)
   val () = koch (cr, 3, 200.0)
+  val () = cairo_restore (pf | cr)
   val () = cairo_stroke (cr)
 //
-  val status = cairo_surface_write_to_png (surface, "koch.png")
+  val (pf | ()) = cairo_save (cr)
+  val () = cairo_translate (cr, x0+200, y0)
+  val () = cairo_rotate (cr, 2 * PI3)
+  val () = koch (cr, 3, 200.0)
+  val () = cairo_restore (pf | cr)
+  val () = cairo_stroke (cr)
+//
+  val (pf | ()) = cairo_save (cr)
+  val () = cairo_translate (cr, x0+100, y0+200*sin60)
+  val () = cairo_rotate (cr, ~2 * PI3)
+  val () = koch (cr, 3, 200.0)
+  val () = cairo_restore (pf | cr)
+  val () = cairo_stroke (cr)
+//
+  val status = cairo_surface_write_to_png (surface, "cairo-test4.png")
   val () = cairo_surface_destroy (surface)
   val () = cairo_destroy (cr)
 //
   val () = if status = CAIRO_STATUS_SUCCESS then begin
-    print "The image is written to the file [koch.png].\n"
+    print "The image is written to the file [cairo-test4.png].\n"
   end else begin
     print "exit(ATS): [cairo_surface_write_to_png] failed"; print_newline ()
   end // end of [if]
