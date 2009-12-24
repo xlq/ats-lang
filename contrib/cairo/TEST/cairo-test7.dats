@@ -1,6 +1,6 @@
 (*
 **
-** A simple CAIRO example: a clock @ my home
+** A simple CAIRO example: a clock @ home
 **
 ** Author: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
 ** Time: December, 2009
@@ -70,11 +70,12 @@ fn draw_clock
   val () = cairo_set_line_width (cr, 5.0)
   val () = cairo_stroke (cr)
 //
-  val () = cairo_move_to (cr, 0.0, 0.0)
-  val () = cairo_arc
-    (cr, 0.0, 0.0, 8.0, 0.0, 2 * M_PI)  
+
+  val () = cairo_new_sub_path (cr)
+  val () = cairo_arc (cr, 0.0, 0.0, 8.0, 0.0, 2 * M_PI)  
   val () = cairo_fill (cr)
 in
+  // nothing
 end // end of [draw_clock]
 
 (* ****** ****** *)
