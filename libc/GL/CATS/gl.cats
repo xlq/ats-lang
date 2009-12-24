@@ -29,12 +29,13 @@
 
 /* ****** ****** */
 
-/* author: Hongwei Xi (hwxi AT cs DOT bu DOT edu) */
+// Author of the file: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
+// Starting time: December, 2009
 
 /* ****** ****** */
 
-#ifndef _LIBC_GL_GL_CATS
-#define _LIBC_GL_GL_CATS
+#ifndef ATS_LIBC_GL_GL_CATS
+#define ATS_LIBC_GL_GL_CATS
 
 /* ****** ****** */
 
@@ -985,6 +986,6 @@ atslib_glMaterialiv (
 
 /* ****** ****** */
 
-#endif /* _LIBC_GL_GL_CATS */
+#endif /* ATS_LIBC_GL_GL_CATS */
 
 /* end of [gl.cats] */

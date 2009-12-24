@@ -7,40 +7,40 @@
 (***********************************************************************)
 
 (*
- * ATS - Unleashing the Potential of Types!
- *
- * Copyright (C) 2002-2007 Hongwei Xi, Boston University
- *
- * All rights reserved
- *
- * ATS is free software;  you can  redistribute it and/or modify it under
- * the terms of the GNU LESSER GENERAL PUBLIC LICENSE as published by the
- * Free Software Foundation; either version 2.1, or (at your option)  any
- * later version.
- * 
- * ATS is distributed in the hope that it will be useful, but WITHOUT ANY
- * WARRANTY; without  even  the  implied  warranty  of MERCHANTABILITY or
- * FITNESS FOR A PARTICULAR PURPOSE.  See the  GNU General Public License
- * for more details.
- * 
- * You  should  have  received  a  copy of the GNU General Public License
- * along  with  ATS;  see the  file COPYING.  If not, please write to the
- * Free Software Foundation,  51 Franklin Street, Fifth Floor, Boston, MA
- * 02110-1301, USA.
- *
- *)
+** ATS - Unleashing the Potential of Types!
+**
+** Copyright (C) 2002-2008 Hongwei Xi, Boston University
+**
+** All rights reserved
+**
+** ATS is free software;  you can  redistribute it and/or modify it under
+** the terms of the GNU LESSER GENERAL PUBLIC LICENSE as published by the
+** Free Software Foundation; either version 2.1, or (at your option)  any
+** later version.
+** 
+** ATS is distributed in the hope that it will be useful, but WITHOUT ANY
+** WARRANTY; without  even  the  implied  warranty  of MERCHANTABILITY or
+** FITNESS FOR A PARTICULAR PURPOSE.  See the  GNU General Public License
+** for more details.
+** 
+** You  should  have  received  a  copy of the GNU General Public License
+** along  with  ATS;  see the  file COPYING.  If not, please write to the
+** Free Software Foundation,  51 Franklin Street, Fifth Floor, Boston, MA
+** 02110-1301, USA.
+*)
 
 (* ****** ****** *)
 
-// author of the file: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
+// Author of the file: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
+// Starting time: Summer, 2008
 
 (* ****** ****** *)
 
 %{#
-
 #include "libc/GL/CATS/gl.cats"
-
 %}
+
+(* ****** ****** *)
 
 typedef GLvoid = void
 
@@ -825,49 +825,43 @@ fun glAccum (opr: GLenum, value: GLfloat): void = "atslib_glAccum"
 
 fun glMatrixMode (mode: GLenum): void = "atslib_glMatrixMode"
 
-//
+(* ****** ****** *)
+
+typedef glOrtho_type (a:t@ype) = (
+  a (*lft*), a (*rgt*)
+, a (*bot*), a (*top*)
+, a (*near_val*), a (*far_val*)
+) -<fun1> void // end of [glOrtho_type]
 
 symintr glOrtho
 
-fun glOrtho_double (
-    left: double, right: double
-  , bottom: double, top: double
-  , near_val: double, far_val: double
-  ) : void
+fun glOrtho_double : glOrtho_type (double)
   = "atslib_glOrtho_double"
-
-fun glOrtho_GLdouble (
-    left: GLdouble, right: GLdouble
-  , bottom: GLdouble, top: GLdouble
-  , near_val: GLdouble, far_val: GLdouble
-  ) : void
-  = "atslib_glOrtho_GLdouble"
-
 overload glOrtho with glOrtho_double
+
+fun glOrtho_GLdouble : glOrtho_type (GLdouble)
+  = "atslib_glOrtho_GLdouble"
 overload glOrtho with glOrtho_GLdouble
 
-//
+(* ****** ****** *)
+
+typedef glFrustum_type (a:t@ype) = (
+  a (*lft*), a (*rgh*)
+, a (*bot*), a (*top*)
+, a (*near_val*), a (*far_val*)
+) -<fun1> void
 
 symintr glFrustum
 
-fun glFrustum_double (
-    left: double, right: double
-  , bottom: double, top: double
-  , near_val: double, far_val: double
-  ) : void
+fun glFrustum_double : glFrustum_type (double)
   = "atslib_glFrustum_double"
-
-fun glFrustum_GLdouble (
-    left: GLdouble, right: GLdouble
-  , bottom: GLdouble, top: GLdouble
-  , near_val: GLdouble, far_val: GLdouble
-  ) : void
-  = "atslib_glFrustum_GLdouble"
-
 overload glFrustum with glFrustum_double
+
+fun glFrustum_GLdouble : glFrustum_type (GLdouble)
+  = "atslib_glFrustum_GLdouble"
 overload glFrustum with glFrustum_GLdouble
 
-//
+(* ****** ****** *)
 
 symintr glViewport
 fun glViewport_type (x: int, y: int, width: int, height: int): void
@@ -909,62 +903,79 @@ fun glMultMatrixf {l:addr}
   (pf: array_v (GLfloat, 16, l) | p: ptr l): void
   = "atslib_glMultMatrixf"
 
-//
+(* ****** ****** *)
+
+typedef glRotate_type (a:t@ype) =
+  (a(*angle*), a(*x*), a(*y*), a(*z*)) -<fun1> void
 
 symintr glRotated
-fun glRotated_double (angle: double, x: double, y: double, z: double): void
+
+fun glRotated_double : glRotate_type (double)
   = "atslib_glRotated_double"
-fun glRotated_GLdouble (angle: GLdouble, x: GLdouble, y: GLdouble, z: GLdouble): void
-  = "atslib_glRotated_GLdouble"
 overload glRotated with glRotated_double
+
+fun glRotated_GLdouble : glRotate_type (GLdouble)
+  = "atslib_glRotated_GLdouble"
 overload glRotated with glRotated_GLdouble
 
-//
-
 symintr glRotatef
-fun glRotatef_double(angle: double, x: double, y: double, z: double): void
+
+fun glRotatef_double : glRotate_type (double)
   = "atslib_glRotatef_double"
-fun glRotatef_GLfloat(angle: GLfloat, x: GLfloat, y: GLfloat, z: GLfloat): void
-  = "atslib_glRotatef_GLfloat"
 overload glRotatef with glRotatef_double
+
+fun glRotatef_GLfloat : glRotate_type (GLfloat)
+  = "atslib_glRotatef_GLfloat"
 overload glRotatef with glRotatef_GLfloat
 
-//
+(* ****** ****** *)
+
+typedef glScale_type (a:t@ype) =
+  (a(*x*), a(*y*), a(*z*)) -<fun1> void
 
 symintr glScaled
-fun glScaled_double 
-  (x: double, y: double, z: double): void = "atslib_glScaled_double"
-fun glScaled_GLdouble
-  (x: GLdouble, y: GLdouble, z: GLdouble): void = "atslib_glScaled_GLdouble"
+
+fun glScaled_double : glScale_type (double)
+  = "atslib_glScaled_double"
 overload glScaled with glScaled_double
+
+fun glScaled_GLdouble : glScale_type (GLdouble)
+  = "atslib_glScaled_GLdouble"
 overload glScaled with glScaled_GLdouble
 
 symintr glScalef
-fun glScalef_double 
-  (x: double, y: double, z: double): void = "atslib_glScalef_double"
-fun glScalef_GLfloat
-  (x: GLfloat, y: GLfloat, z: GLfloat): void = "atslib_glScalef_GLfloat"
+
+fun glScalef_double : glScale_type (double)
+  = "atslib_glScalef_double"
 overload glScalef with glScalef_double
+
+fun glScalef_GLfloat : glScale_type (GLfloat)
+  = "atslib_glScalef_GLfloat"
 overload glScalef with glScalef_GLfloat
 
-//
+(* ****** ****** *)
+
+typedef glTranslate_type (a:t@ype) =
+  (a(*x*), a(*y*), a(*z*)) -<fun1> void
 
 symintr glTranslated
-fun glTranslated_double (x: double, y: double, z: double): void
+
+fun glTranslated_double : glTranslate_type (double)
   = "atslib_glTranslated_double"
-fun glTranslated_GLdouble (x: GLdouble, y: GLdouble, z: GLdouble): void
-  = "atslib_glTranslated_GLdouble"
 overload glTranslated with glTranslated_double 
+
+fun glTranslated_GLdouble : glTranslate_type (GLdouble)
+  = "atslib_glTranslated_GLdouble"
 overload glTranslated with glTranslated_GLdouble 
 
-//
-
 symintr glTranslatef
-fun glTranslatef_double (x: double, y: double, z: double): void
+
+fun glTranslatef_double : glTranslate_type (double)
   = "atslib_glTranslatef_double"
-fun glTranslatef_GLfloat (x: GLfloat, y: GLfloat, z: GLfloat): void
-  = "atslib_glTranslatef_GLfloat"
 overload glTranslatef with glTranslatef_double
+
+fun glTranslatef_GLfloat : glTranslate_type (GLfloat)
+  = "atslib_glTranslatef_GLfloat"
 overload glTranslatef with glTranslatef_GLfloat
 
 (* ****** ****** *)
@@ -1004,27 +1015,36 @@ fun glCallList {n:nat}
 (* ****** ****** *)
 
 /*
- * Drawing Functions
- */
+** Drawing Functions
+*/
 
 absview glBeginView
 fun glBegin (mode: GLenum): @(glBeginView | void) = "atslib_glBegin"
 fun glEnd (pf: glBeginView | (*none*)): void = "atslib_glEnd"
 
-//
+(* ****** ****** *)
+
+typedef glVertex2_type (a:t@ype) = (a(*x*), a(*y*)) -<fun1> void
 
 symintr glVertex2d
-fun glVertex2d_double (x: double, y: double): void = "atslib_glVertex2d_double"
-fun glVertex2d_GLdouble (x: GLdouble, y: GLdouble): void = "atslib_glVertex2d_GLdouble"
+
+fun glVertex2d_double : glVertex2_type (double)
+  = "atslib_glVertex2d_double"
 overload glVertex2d with glVertex2d_double
+
+fun glVertex2d_GLdouble : glVertex2_type (GLdouble)
+  = "atslib_glVertex2d_GLdouble"
 overload glVertex2d with glVertex2d_GLdouble
 
 //
 
 symintr glVertex2f
-fun glVertex2f_double (x: double, y: double): void = "atslib_glVertex2f_double"
-fun glVertex2f_GLfloat (x: GLfloat, y: GLfloat): void = "atslib_glVertex2f_GLfloat"
+fun glVertex2f_double : glVertex2_type (double)
+  = "atslib_glVertex2f_double"
 overload glVertex2f with glVertex2f_double
+
+fun glVertex2f_GLfloat : glVertex2_type (GLfloat)
+  = "atslib_glVertex2f_GLfloat"
 overload glVertex2f with glVertex2f_GLfloat
 
 //
@@ -1032,41 +1052,51 @@ overload glVertex2f with glVertex2f_GLfloat
 fun glVertex2i (x: GLint, y: GLint): void = "atslib_glVertex2i"
 fun glVertex2s (x: GLshort, y: GLshort): void = "atslib_glVertex2s"
 
+(* ****** ****** *)
+
+typedef glVertex3_type (a:t@ype) =
+  (a(*x*), a(*y*), a(*z*)) -<fun1> void
+
 //
 
-fun glVertex3d (x: GLdouble, y: GLdouble, z: GLdouble): void = "atslib_glVertex3d"
+fun glVertex3d : glVertex3_type (GLdouble)
+  = "atslib_glVertex3d"
 
 //
 
 symintr glVertex3f
-fun glVertex3f_double (x: double, y: double, z: double): void
+
+fun glVertex3f_double : glVertex3_type (double)
   = "atslib_glVertex3f_double"
-fun glVertex3f_GLfloat (x: GLfloat, y: GLfloat, z: GLfloat): void
-  = "atslib_glVertex3f_GLfloat"
 overload glVertex3f with glVertex3f_double
+
+fun glVertex3f_GLfloat : glVertex3_type (GLfloat)
+  = "atslib_glVertex3f_GLfloat"
 overload glVertex3f with glVertex3f_GLfloat
 
 //
 
-fun glVertex3i (x: GLint, y: GLint, z: GLint): void = "atslib_glVertex3i"
-fun glVertex3s (x: GLshort, y: GLshort, z: GLshort): void = "atslib_glVertex3s"
+fun glVertex3i : glVertex3_type (GLint)
+  = "atslib_glVertex3i"
 
-//
+fun glVertex3s : glVertex3_type (GLshort)
+  = "atslib_glVertex3s"
 
-fun glVertex4d
-  (x: GLdouble, y: GLdouble, z: GLdouble, w: GLdouble): void
+(* ****** ****** *)
+
+typedef glVertex4_type (a:t@ype) =
+  (a(*x*), a(*y*), a(*z*), a(*w*)) -<fun1> void
+
+fun glVertex4d : glVertex4_type (GLdouble)
   = "atslib_glVertex4d"
 
-fun glVertex4f
-  (x: GLfloat, y: GLfloat, z: GLfloat, w: GLfloat): void
+fun glVertex4f : glVertex4_type (GLfloat)
   = "atslib_glVertex4f"
 
-fun glVertex4i
-  (x: GLint, y: GLint, z: GLint, w: GLint): void
+fun glVertex4i : glVertex4_type (GLint)
   = "atslib_glVertex4i"
 
-fun glVertex4s
-  (x: GLshort, y: GLshort, z: GLshort, w: GLshort): void
+fun glVertex4s : glVertex4_type (GLshort)
   = "atslib_glVertex4s"
 
 //
@@ -1167,86 +1197,86 @@ GLAPI void GLAPIENTRY glIndexsv( const GLshort *c );
 GLAPI void GLAPIENTRY glIndexubv( const GLubyte *c );  /* 1.1 */
 *)
 
-fun glColor3b (red: GLbyte, green: GLbyte, blue: GLbyte): void = "atslib_glColor3b"
-fun glColor3d (red: GLdouble, green: GLdouble, blue: GLdouble): void = "atslib_glColor3d"
+//
+
+typedef glColor3_type (a:t@ype) =
+  (a(*red*), a(*green*), a(*blue*)) -<fun1> void
+
+//
+
+fun glColor3b : glColor3_type (GLbyte) = "atslib_glColor3b"
+fun glColor3d : glColor3_type (GLdouble) = "atslib_glColor3d"
 
 //
 
 symintr glColor3f
-fun glColor3f_double
-  (red: double, green: double, blue: double): void
+
+fun glColor3f_double : glColor3_type (double)
   = "atslib_glColor3f_double"
-fun glColor3f_GLfloat
-  (red: GLfloat, green: GLfloat, blue: GLfloat): void
-  = "atslib_glColor3f_GLfloat"
 overload glColor3f with glColor3f_double
+
+fun glColor3f_GLfloat : glColor3_type (GLfloat)
+  = "atslib_glColor3f_GLfloat"
 overload glColor3f with glColor3f_GLfloat
 
 //
 
-fun glColor3i
-  (red: GLint, green: GLint, blue: GLint): void
+fun glColor3i : glColor3_type (GLint)
   = "atslib_glColor3i"
 
-fun glColor3s
-  (red: GLshort, green: GLshort, blue: GLshort): void
+fun glColor3s : glColor3_type (GLshort)
   = "atslib_glColor3s"
 
-fun glColor3ub
-  (red: GLubyte, green: GLubyte, blue: GLubyte): void
+fun glColor3ub : glColor3_type (GLubyte)
   = "atslib_glColor3ub"
 
-fun glColor3ui
-  (red: GLuint, green: GLuint, blue: GLuint): void
+fun glColor3ui : glColor3_type (GLuint)
   = "atslib_glColor3ui"
 
-fun glColor3us
-  (red: GLushort, green: GLushort, blue: GLushort): void
+fun glColor3us : glColor3_type (GLushort)
   = "atslib_glColor3us"
 
-//
+(* ****** ****** *)
 
-fun glColor4b
-  (red: GLbyte, green: GLbyte, blue: GLbyte, alpha: GLbyte): void
+typedef glColor4_type (a:t@ype) =
+  (a(*red*), a(*green*), a(*blue*), a(*alpha*)) -<fun1> void
+
+fun glColor4b : glColor4_type (GLbyte)
   = "atslib_glColor4b"
 
-fun glColor4d
-  (red: GLdouble, green: GLdouble, blue: GLdouble, alpha: GLdouble): void
+fun glColor4d : glColor4_type (GLdouble)
   = "atslib_glColor4d"
 
 //
 
 symintr glColor4f
-fun glColor4f_double
-  (red: double, green: double, blue: double, alpha: double): void
+
+fun glColor4f_double : glColor4_type (double)
   = "atslib_glColor4f_double"
-fun glColor4f_GLfloat
-  (red: GLfloat, green: GLfloat, blue: GLfloat, alpha: GLfloat): void
-  = "atslib_glColor4f_GLfloat"
 overload glColor4f with glColor4f_double
+
+fun glColor4f_GLfloat : glColor4_type (GLfloat)
+  = "atslib_glColor4f_GLfloat"
 overload glColor4f with glColor4f_GLfloat
 
 //
 
-fun glColor4i
-  (red: GLint, green: GLint, blue: GLint, alpha: GLint): void
+fun glColor4i : glColor4_type (GLint)
   = "atslib_glColor4i"
 
-fun glColor4s
-  (red: GLshort, green: GLshort, blue: GLshort, alpha: GLshort): void
+fun glColor4s : glColor4_type (GLshort)
   = "atslib_glColor4s"
 
-fun glColor4ub
-  (red: GLubyte, green: GLubyte, blue: GLubyte, alpha: GLubyte): void
+fun glColor4ub : glColor4_type (GLubyte)
   = "atslib_glColor4ub"
 
-fun glColor4ui
-  (red: GLuint, green: GLuint, blue: GLuint, alpha: GLuint): void
+fun glColor4ui : glColor4_type (GLuint)
   = "atslib_glColor4ui"
 
-fun glColor4us
-  (red: GLushort, green: GLushort, blue: GLushort, alpha: GLushort): void
+fun glColor4us : glColor4_type (GLushort)
   = "atslib_glColor4us"
+
+(* ****** ****** *)
 
 (*
 
@@ -1314,42 +1344,62 @@ GLAPI void GLAPIENTRY glTexCoord4sv( const GLshort *v );
 
 *)
 
+(* ****** ****** *)
+
+typedef glRasterPos2_type
+  (a:t@ype) = (a(*x*), a(*y*)) -<fun1> void
+// end of [glRasterPos2_type]
+
+//
+
 symintr glRasterPos2d
 
-fun glRasterPos2d_double
-  (x: double, y: double): void = "atslib_glRasterPos2d_double"
+fun glRasterPos2d_double : glRasterPos2_type (double)
+  = "atslib_glRasterPos2d_double"
 overload glRasterPos2d with glRasterPos2d_double
 
-fun glRasterPos2d_GLdouble
-  (x: GLdouble, y: GLdouble): void = "atslib_glRasterPos2d_GLdouble"
+fun glRasterPos2d_GLdouble : glRasterPos2_type (GLdouble)
+  = "atslib_glRasterPos2d_GLdouble"
 overload glRasterPos2d with glRasterPos2d_GLdouble
 
 //
 
 symintr glRasterPos2f
 
-fun glRasterPos2f_double
-  (x: double, y: double): void = "atslib_glRasterPos2f_double"
+fun glRasterPos2f_double : glRasterPos2_type (double)
+  = "atslib_glRasterPos2f_double"
 overload glRasterPos2f with glRasterPos2f_double
 
-fun glRasterPos2f_GLfloat
-  (x: GLfloat, y: GLfloat): void = "atslib_glRasterPos2f_GLfloat"
+fun glRasterPos2f_GLfloat : glRasterPos2_type (GLfloat)
+  = "atslib_glRasterPos2f_GLfloat"
 overload glRasterPos2f with glRasterPos2f_GLfloat
 
 //
 
-fun glRasterPos2i (x: GLint, y: GLint): void = "atslib_glRasterPos2i"
-fun glRasterPos2s (x: GLshort, y: GLshort): void = "atslib_glRasterPos2s"
+fun glRasterPos2i : glRasterPos2_type (GLint) = "atslib_glRasterPos2i"
+fun glRasterPos2s : glRasterPos2_type (GLshort) = "atslib_glRasterPos2s"
 
-fun glRasterPos3d (x: GLdouble, y: GLdouble, z: GLdouble): void = "atslib_glRasterPos3d"
-fun glRasterPos3f (x: GLfloat, y: GLfloat, z: GLfloat): void = "atslib_glRasterPos3f"
-fun glRasterPos3i (x: GLint, y: GLint, z: GLint): void = "atslib_glRasterPos3i"
-fun glRasterPos3s (x: GLshort, y: GLshort, z: GLshort): void = "atslib_glRasterPos3s"
+(* ****** ****** *)
 
-fun glRasterPos4d (x: GLdouble, y: GLdouble, z: GLdouble, w: GLdouble): void = "atslib_glRasterPos4d"
-fun glRasterPos4f (x: GLfloat, y: GLfloat, z: GLfloat, w: GLfloat): void = "atslib_glRasterPos4f"
-fun glRasterPos4i (x: GLint, y: GLint, z: GLint, w: GLint): void = "atslib_glRasterPos4i"
-fun glRasterPos4s (x: GLshort, y: GLshort, z: GLshort, w: GLshort): void = "atslib_glRasterPos4s"
+typedef glRasterPos3_type
+  (a:t@ype) = (a(*x*), a(*y*), a(*z*)) -<fun1> void
+// end of [glRasterPos3_type]
+
+fun glRasterPos3d : glRasterPos3_type (GLdouble) = "atslib_glRasterPos3d"
+fun glRasterPos3f : glRasterPos3_type (GLfloat)  = "atslib_glRasterPos3f"
+fun glRasterPos3i : glRasterPos3_type (GLint) = "atslib_glRasterPos3i"
+fun glRasterPos3s : glRasterPos3_type (GLshort) = "atslib_glRasterPos3s"
+
+(* ****** ****** *)
+
+typedef glRasterPos4_type
+  (a:t@ype) = (a(*x*), a(*y*), a(*z*), a(*w*)) -<fun1> void
+// end of [glRasterPos4_type]
+
+fun glRasterPos4d : glRasterPos4_type (GLdouble) = "atslib_glRasterPos4d"
+fun glRasterPos4f : glRasterPos4_type (GLfloat)  = "atslib_glRasterPos4f"
+fun glRasterPos4i : glRasterPos4_type (GLint) = "atslib_glRasterPos4i"
+fun glRasterPos4s : glRasterPos4_type (GLshort) = "atslib_glRasterPos4s"
 
 (*
 
@@ -1370,29 +1420,42 @@ GLAPI void GLAPIENTRY glRasterPos4sv( const GLshort *v );
 
 *)
 
+(* ****** ****** *)
+
+typedef glRect_type (a:t@ype) =
+ (a(*x1*), a(*y1*), a(*x2*), a(*y2*)) -<fun1> void
+
+//
+
 symintr glRectd
-fun glRectd_double
-  (x1: GLdouble, y1: GLdouble, x2: GLdouble, y2: GLdouble): void
+
+fun glRectd_double : glRect_type (double)
   = "atslib_glRectd_double"
-fun glRectd_GLdouble (x1: GLdouble, y1: GLdouble, x2: GLdouble, y2: GLdouble): void
-  = "atslib_glRectd_GLdouble"
 overload glRectd with glRectd_double
+
+fun glRectd_GLdouble : glRect_type (GLdouble)
+  = "atslib_glRectd_GLdouble"
 overload glRectd with glRectd_GLdouble
 
 //
 
 symintr glRectf
-fun glRectf_double (x1: double, y1: double, x2: double, y2: double): void
+
+fun glRectf_double : glRect_type (double)
   = "atslib_glRectf_double"
-fun glRectf_GLfloat (x1: GLfloat, y1: GLfloat, x2: GLfloat, y2: GLfloat): void
-  = "atslib_glRectf_GLfloat"
 overload glRectf with glRectf_double
+
+fun glRectf_GLfloat : glRect_type (GLfloat)
+  = "atslib_glRectf_GLfloat"
 overload glRectf with glRectf_GLfloat
 
 //
 
-fun glRecti (x1: GLint, y1: GLint, x2: GLint, y2: GLint): void = "atslib_glRecti"
-fun glRects (x1: GLshort, y1: GLshort, x2: GLshort, y2: GLshort): void = "atslib_glRects"
+fun glRecti : glRect_type (GLint)
+  = "atslib_glRecti"
+
+fun glRects : glRect_type (GLshort)
+  = "atslib_glRects"
 
 (*
 

@@ -1,0 +1,64 @@
+(*
+**
+** A simple CAIRO example
+**
+** Author: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
+** Time: December, 2009
+**
+*)
+
+(* ****** ****** *)
+
+staload "contrib/cairo/SATS/cairo.sats"
+
+(* ****** ****** *)
+
+stadef dbl = double
+stadef cr = cairo_ref
+
+fun draw_rounded_rectangle .<>. (
+    cr: !cr, x: dbl, y: dbl, w: dbl, h:dbl, r: dbl
+  ) : void = let
+  val () = cairo_move_to (cr, x+r, y)
+  val () = cairo_line_to (cr, x+w-r, y)
+  val () = cairo_curve_to (cr, x+w, y, x+w, y, x+w, y+r)
+  val () = cairo_line_to (cr, x+w, y+h-r)
+  val () = cairo_curve_to (cr, x+w, y+h, x+w, y+h, x+w-r, y+h)
+  val () = cairo_line_to (cr, x+r, y+h)
+  val () = cairo_curve_to (cr, x, y+h, x, y+h, x, y+h-r)
+  val () = cairo_line_to (cr, x, y+r)
+  val () = cairo_curve_to (cr, x, y, x, y, x+r, y)
+in
+  // nothing
+end // end of [draw_rounded_rectangle]
+   
+(* ****** ****** *)
+
+implement main () = () where {
+  val surface =
+    cairo_image_surface_create (CAIRO_FORMAT_ARGB32, 200, 200)
+  val cr = cairo_create (surface)
+//
+  val x = 50.0
+  val y = 50.0
+  val w = 100.0
+  val h = 100.0
+  val r = 10.0
+//  
+  val () = draw_rounded_rectangle (cr, x, y, w, h, r)
+  val () = cairo_stroke (cr)
+//
+  val status = cairo_surface_write_to_png (surface, "rndrect.png")
+  val () = cairo_surface_destroy (surface)
+  val () = cairo_destroy (cr)
+//
+  val () = if status = CAIRO_STATUS_SUCCESS then begin
+    print "The image is written to the file [rndrect.png].\n"
+  end else begin
+    print "exit(ATS): [cairo_surface_write_to_png] failed"; print_newline ()
+  end // end of [if]
+} // end of [main]
+
+(* ****** ****** *)
+
+(* end of [cairo-test2.dats] *)

@@ -1,5 +1,8 @@
 /* config.h.in.  Generated from configure.ac by autoheader.  */
 
+/* Define to 1 if you have the <cairo/cairo.h> header file. */
+#undef HAVE_CAIRO_CAIRO_H
+
 /* Informs us the availability of Boehm-Demers-Weiser garbage collection
    installed on the system. */
 #undef HAVE_GCBDW

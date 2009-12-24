@@ -67,6 +67,7 @@
 #define atspre_div_size_int atspre_div_size1_int1
 #define atspre_div_size_size atspre_div_size1_size1
 
+#define atspre_mod_size_int atspre_mod_size1_int1
 #define atspre_mod_size_size atspre_mod_size1_size1
 
 #define atspre_lt_size_size atspre_lt_size1_size1
@@ -248,8 +249,18 @@ atspre_div_size1_size1 (ats_size_type sz1, ats_size_type sz2) {
 // ------ ------
 
 static inline
+ats_int_type
+atspre_mod_size1_int1
+  (ats_size_type sz1, ats_int_type i2) {
+  return (sz1 % i2) ;
+} /* end of [atspre_mod_size1_int1] */
+
+#define atspre_mod1_size1_int1 atspre_mod_size1_int1
+
+static inline
 ats_size_type
-atspre_mod_size1_size1 (ats_size_type sz1, ats_size_type sz2) {
+atspre_mod_size1_size1
+  (ats_size_type sz1, ats_size_type sz2) {
   return (sz1 % sz2) ;
 } /* end of [atspre_mod_size1_size1] */
 

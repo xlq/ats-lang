@@ -1,6 +1,6 @@
 (*
 **
-** A simple implementation of the tetrix game
+** A simple OpenGL example
 **
 ** Author: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
 ** Time: Summer, 2008

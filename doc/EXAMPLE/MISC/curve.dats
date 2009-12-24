@@ -15,8 +15,12 @@
 **
 *)
 
+(* ****** ****** *)
+
+// Author: Hongwei Xi (* hwxi AT cs DOT bu DOT edu *)
 // 28 December 2008:
-// Author: Hongwei Xi (* hwxi AT CS DOT BU DOT EDU *)
+
+(* ****** ****** *)
 
 staload "libc/SATS/math.sats"
 

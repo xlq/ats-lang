@@ -9,7 +9,7 @@
 /*
 **
 ** This file is to be preprocessed to generate .libfiles_local, which is
-** needed by [atslib -all] for building libats.a
+** needed by [atslib --libats] for building libats.a
 **
 */
 
@@ -187,6 +187,12 @@ libc/GL/SATS/gl.sats
 
 #ifdef HAVE_GL_GLUT_H
 libc/GL/SATS/glut.sats
+#endif
+
+/* ****** ****** */
+
+#ifdef HAVE_CAIRO_CAIRO_H
+libc/cairo/SATS/cairo.sats
 #endif
 
 /* ****** ****** */
