@@ -31,6 +31,18 @@ stadef cr = cairo_ref
 
 (* ****** ****** *)
 
+fn draw_hand
+  (cr: !cr, bot: dbl, top:dbl, len: dbl): void = let
+  val () = cairo_move_to (cr, 0.0, bot/2)
+  val () = cairo_line_to (cr, len, top/2)
+  val () = cairo_line_to (cr, len, ~top/2)
+  val () = cairo_line_to (cr, 0.0, ~bot/2)
+  val () = cairo_close_path (cr)
+  val () = cairo_set_source_rgb (cr, 0.0, 0.0, 0.0)
+in
+  cairo_fill (cr)
+end // end of [draw_hand]
+
 fn draw_clock
   (cr: !cr, h: natLt 24, m: natLt 60): void = let
 //
@@ -42,10 +54,16 @@ fn draw_clock
   val () = cairo_arc
     (cr, 0.0, 0.0, rad, 0.0, 2 * M_PI)
   val () = cairo_set_source_rgb (cr, 1.0, 1.0, 1.0)
+(*
+  val () = cairo_set_source_rgb (cr, 1.0, 0.50, 0.50)
+*)
   val () = cairo_fill (cr)
   val () = cairo_arc
     (cr, 0.0, 0.0, rad, 0.0, 2 * M_PI)
   val () = cairo_set_source_rgb (cr, 0.0, 1.0, 0.0)
+(*
+  val () = cairo_set_source_rgb (cr, 1.0, 0.0, 1.0)
+*)
   val () = cairo_set_line_width (cr, 10.0)
   val () = cairo_stroke (cr)
 //
@@ -57,22 +75,36 @@ fn draw_clock
   val () = cairo_fill (cr)
 //
   val h_l = 0.60 * rad
-  val () = cairo_move_to (cr, 0.0, 0.0)
-  val () = cairo_rel_line_to (cr, h_l * cos (h_ang), h_l * sin (h_ang))
   val () = cairo_set_source_rgb (cr, 0.0, 0.0, 0.0)
-  val () = cairo_set_line_width (cr, 6.5)
-  val () = cairo_stroke (cr)
+(*
+  val () = cairo_set_source_rgb (cr, 0.0, 0.0, 0.85)
+*)
+  val (pf | ()) = cairo_save (cr)
+  val () = cairo_rotate (cr, h_ang)
+  val () = draw_hand (cr, 6.0, 6.0/2, h_l)
+  val () = cairo_restore (pf | cr)
+  val (pf | ()) = cairo_save (cr)
+  val () = cairo_rotate (cr, h_ang+M_PI)
+  val () = draw_hand (cr, 6.0, 6.0/2, h_l/4)
+  val () = cairo_restore (pf | cr)
+
 //
   val m_l = 0.85 * rad
-  val () = cairo_move_to (cr, 0.0, 0.0)
-  val () = cairo_rel_line_to (cr, m_l * cos (m_ang), m_l * sin (m_ang))
   val () = cairo_set_source_rgb (cr, 0.0, 0.0, 0.0)
-  val () = cairo_set_line_width (cr, 5.0)
-  val () = cairo_stroke (cr)
+(*
+  val () = cairo_set_source_rgb (cr, 0.0, 0.0, 0.85)
+*)
+  val (pf | ()) = cairo_save (cr)
+  val () = cairo_rotate (cr, m_ang)
+  val () = draw_hand (cr, 5.0, 5.0/2, m_l)
+  val () = cairo_restore (pf | cr)
+  val (pf | ()) = cairo_save (cr)
+  val () = cairo_rotate (cr, m_ang+M_PI)
+  val () = draw_hand (cr, 5.0, 5.0/2, h_l/4)
+  val () = cairo_restore (pf | cr)
 //
-
   val () = cairo_new_sub_path (cr)
-  val () = cairo_arc (cr, 0.0, 0.0, 8.0, 0.0, 2 * M_PI)  
+  val () = cairo_arc (cr, 0.0, 0.0, 6.0, 0.0, 2 * M_PI)  
   val () = cairo_fill (cr)
 in
   // nothing
@@ -82,7 +114,7 @@ end // end of [draw_clock]
 
 implement main () = () where {
 //
-  val hr = 10 and min = 19
+  val hr = 6 and min = 23
 //
   val wd = 300 and ht = 300
   val surface =
