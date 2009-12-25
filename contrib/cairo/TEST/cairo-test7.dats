@@ -47,8 +47,8 @@ fn draw_clock
   (cr: !cr, h: natLt 24, m: natLt 60): void = let
 //
   val h = (if h >= 12 then h - 12 else h): natLt 12
-  val m_ang = m * (1.0 / 30) * M_PI - M_PI/2
-  val h_ang = h * (1.0 / 6) * M_PI + m * (1.0 / 360) * M_PI - M_PI/2
+  val m_ang = m * (M_PI / 30) - M_PI/2
+  val h_ang = h * (M_PI / 6) + m * (M_PI / 360) - M_PI/2
 //
   val rad = 100.0
   val () = cairo_arc
@@ -67,7 +67,7 @@ fn draw_clock
   val () = cairo_set_line_width (cr, 10.0)
   val () = cairo_stroke (cr)
 //
-  val rad1 = 0.80 * rad
+  val rad1 = 0.90 * rad
   val () = cairo_arc (cr, ~rad1, ~rad1, rad1, 0.0,  M_PI/2)
   val () = cairo_arc (cr, ~rad1,  rad1, rad1, ~M_PI/2, 0.0)
   val () = cairo_arc (cr,  rad1,  rad1, rad1, ~M_PI, ~M_PI/2)
@@ -112,9 +112,19 @@ end // end of [draw_clock]
 
 (* ****** ****** *)
 
+staload RAND = "libc/SATS/random.sats"
+
 implement main () = () where {
 //
-  val hr = 6 and min = 23
+  #define DELTA 0.999999
+  val () = $RAND.srand48_with_time ()
+  val hr = int_of (24 * ($RAND.drand48 () * DELTA))
+  val hr = int1_of_int (hr)
+  val () = assert (0 <= hr && hr < 24)
+  val min = int_of (60 * ($RAND.drand48 () * DELTA))
+  val min = int1_of_int (min)
+  val () = assert (0 <= min && min < 60)
+  val () = printf ("The clock time is %2d:%2d\n", @(hr, min))
 //
   val wd = 300 and ht = 300
   val surface =

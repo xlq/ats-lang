@@ -257,6 +257,13 @@ atsctrb_cairo_new_sub_path
   cairo_new_sub_path ((cairo_t*)cr) ; return ;
 } /* end of [atsctrb_cairo_new_sub_path] */
 
+static inline
+ats_void_type
+atsctrb_cairo_close_path
+  (ats_cairo_ref cr) {
+  cairo_close_path ((cairo_t*)cr) ; return ;
+} /* end of [atsctrb_cairo_close_path] */
+
 /* ****** ****** */
 
 static inline

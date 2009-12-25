@@ -358,6 +358,9 @@ fun cairo_new_path (cr: !cairo_ref): void
 fun cairo_new_sub_path (cr: !cairo_ref): void
   = "atsctrb_cairo_new_path"
 
+fun cairo_close_path (cr: !cairo_ref): void
+  = "atsctrb_cairo_close_path"
+
 (* ****** ****** *)
 
 fun cairo_arc (
