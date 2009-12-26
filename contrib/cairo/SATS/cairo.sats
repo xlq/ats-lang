@@ -306,6 +306,10 @@ fun cairo_fill_extents (
   ) : void
   = "atsctrb_cairo_fill_extents"
 
+// [cairo_bool_t] and [bool] are the same
+fun cairo_in_fill (cr: !cairo_ref, x: double, y: double): bool
+  = "atsctrb_cairo_in_fill"
+
 (* ****** ****** *)
 
 fun cairo_paint (cr: !cairo_ref): void
@@ -349,6 +353,18 @@ fun cairo_get_reference_count (cr: !cairo_ref): uint
 //
 // drawing paths
 //
+
+(* ****** ****** *)
+
+// [cairo_bool_t] and [bool] are the same
+fun cairo_has_current_point (cr: !cairo_ref): bool
+  = "atsctrb_cairo_has_current_point"
+
+fun cairo_get_current_point (
+    cr: !cairo_ref
+  , x: &double? >> double, y: &double? >> double
+  ) : void
+  = "atsctrb_cairo_get_current_point"
 
 (* ****** ****** *)
 

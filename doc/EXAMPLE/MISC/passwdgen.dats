@@ -10,7 +10,6 @@
 (* ****** ****** *)
 
 staload Rand = "libc/SATS/random.sats"
-staload Time = "libc/SATS/time.sats"
 
 (* ****** ****** *)
 

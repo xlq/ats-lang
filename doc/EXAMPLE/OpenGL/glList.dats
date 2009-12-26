@@ -11,22 +11,22 @@
 
 abstype GLlistref
 
-extern fun glListRef_make (): GLlistref = "atslib_glListRef_make"
+extern fun glListRef_make (): GLlistref = "atsctrb_glListRef_make"
 
 extern fun glListRef_get
   (r: GLlistref): [n:nat] @(GLlist_v n | uint n)
-  = "atslib_glListRef_get"
+  = "atsctrb_glListRef_get"
 
 extern fun glListRef_set {n:nat}
   (pf: GLlist_v n | r: GLlistref, n: uint n): void
-  = "atslib_glListRef_set"
+  = "atsctrb_glListRef_set"
 
-extern fun glCallListRef (r: GLlistref): void = "atslib_glCallListRef"
+extern fun glCallListRef (r: GLlistref): void = "atsctrb_glCallListRef"
 
 %{^
 
 static inline
-ats_ptr_type atslib_glListRef_make () {
+ats_ptr_type atsctrb_glListRef_make () {
   uint *r ;
   r = ats_malloc_gc (sizeof(uint)) ; *r = (uint)0 ;
   return r ;
@@ -34,7 +34,7 @@ ats_ptr_type atslib_glListRef_make () {
 
 static inline
 ats_uint_type
-atslib_glListRef_get (ats_ptr_type r) {
+atsctrb_glListRef_get (ats_ptr_type r) {
   uint lst ;
   lst = *(uint*)r ;
   if (lst == 0) {
@@ -47,7 +47,7 @@ atslib_glListRef_get (ats_ptr_type r) {
 
 static inline
 ats_void_type
-atslib_glListRef_set
+atsctrb_glListRef_set
   (ats_ptr_type r, ats_uint_type lst) {
   if (*(uint*)r != 0) {
     fprintf (stderr, "Exit: [glListRef_set] failed.") ;
@@ -58,7 +58,7 @@ atslib_glListRef_set
 }
 
 static inline
-ats_void_type atslib_glCallListRef (ats_ptr_type r) {
+ats_void_type atsctrb_glCallListRef (ats_ptr_type r) {
   uint lst ;
   lst = *(ats_uint_type*)r ;
   if (lst == 0) {

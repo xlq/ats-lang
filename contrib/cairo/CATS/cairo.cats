@@ -223,6 +223,25 @@ atsctrb_cairo_fill (
 
 static inline
 ats_void_type
+atsctrb_cairo_fill_preserve (
+  ats_cairo_ref cr
+) {
+  cairo_fill_preserve((cairo_t*)cr) ; return ;
+} /* end of [atsctrb_cairo_fill_preserve] */
+
+static inline
+ats_bool_type
+atsctrb_cairo_in_fill (
+  ats_cairo_ref cr
+, ats_double_type x, ats_double_type y
+) {
+  return cairo_in_fill((cairo_t*)cr, x, y) ;
+} /* end of [atsctrb_cairo_in_fill] */
+
+/* ****** ****** */
+
+static inline
+ats_void_type
 atsctrb_cairo_paint (
   ats_cairo_ref cr
 ) {
@@ -240,6 +259,24 @@ atsctrb_cairo_stroke (
 /* ****** ****** */
 
 // drawing paths
+
+/* ****** ****** */
+
+static inline
+ats_bool_type
+atsctrb_cairo_has_current_point
+  (ats_cairo_ref cr) {
+  return cairo_has_current_point((cairo_t*)cr) ; 
+} // end of [atsctrb_cairo_has_current_point]
+
+static inline
+ats_void_type
+atsctrb_cairo_get_current_point (
+  ats_cairo_ref cr, ats_ref_type x, ats_ref_type y
+) {
+  cairo_get_current_point((cairo_t*)cr, (double*)x, (double*)y) ;
+  return ;
+} // end of [atsctrb_cairo_get_current_point]
 
 /* ****** ****** */
 

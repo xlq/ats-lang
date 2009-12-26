@@ -61,7 +61,9 @@ PKG_PROG_PKG_CONFIG
 dnl = check for [gmp.h pcre.h]
 AC_CHECK_HEADERS(gmp.h pcre.h)
 dnl = check for [GL/gl.h GL/glut.h]
-AC_CHECK_HEADERS(GL/gl.h GL/glut.h)
+dnl = AC_CHECK_HEADERS(GL/gl.h GL/glut.h)
+dnl = check for [cairo/cairo]
+dnl = AC_CHECK_HEADERS(cairo/cairo.h)
 
 dnl = check for SIZEOF_VOIDP
 AC_CHECK_SIZEOF(void*)

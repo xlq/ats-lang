@@ -15,8 +15,8 @@ extern ats_void_type mainats (ats_int_type argc, ats_ptr_type argv) ;
 
 (* ****** ****** *)
 
-staload "libc/GL/SATS/gl.sats"
-staload "libc/GL/SATS/glut.sats"
+staload "contrib/GL/SATS/gl.sats"
+staload "contrib/GL/SATS/glut.sats"
 
 (* ****** ****** *)
 
@@ -51,10 +51,11 @@ implement display () = let
 
   val () = glClear
     (GL_COLOR_BUFFER_BIT lor GL_DEPTH_BUFFER_BIT)
-
+//
   extern fun glLightfv {n:nat} {l:addr}
     (pf: !array_v (float, n, l) | light: GLenum, pname: GLenum, p: ptr l): void
-  = "atslib_glLightfv"
+    = "atsctrb_glLightfv"
+//
   val () = glLightfv (pf1 | GL_LIGHT0, GL_POSITION, p_pos)
   val () = glLightfv (pf2 | GL_LIGHT0, GL_DIFFUSE, p_light)
   val () = glLightfv (pf2 | GL_LIGHT0, GL_SPECULAR, p_light)

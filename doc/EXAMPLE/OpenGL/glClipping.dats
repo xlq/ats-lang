@@ -15,8 +15,8 @@ extern ats_void_type mainats (ats_int_type argc, ats_ptr_type argv) ;
 
 (* ****** ****** *)
 
-staload "libc/GL/SATS/gl.sats"
-staload "libc/GL/SATS/glut.sats"
+staload "contrib/GL/SATS/gl.sats"
+staload "contrib/GL/SATS/glut.sats"
 
 (* ****** ****** *)
 
@@ -36,11 +36,11 @@ implement display () = let
   val () = glColor3f (1.0, 1.0, 1.0)
   val (pf_mat | ()) = glPushMatrix ()
   val () = glTranslatef (0.0, 0.0, ~5.0)
-
+//
   extern fun glClipPlane {l:addr}
     (pf: !array_v (double, 4, l) | plane: GLenum, eqn: ptr l): void
-    = "atslib_glClipPlane"
-
+    = "atsctrb_glClipPlane"
+//
   val () = glRotatef (315.0, 1.0, 0.0, 0.0)
   val () = glRotatef (45.0, 0.0, 1.0, 0.0)
   val () = glClipPlane (pf_eqn0 | GL_CLIP_PLANE0, p_eqn0)

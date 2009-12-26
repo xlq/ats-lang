@@ -5,6 +5,7 @@
 #
 
 ATSCC="$(ATSHOME)"/bin/atscc
+ATSCTRB="$(ATSHOME)"/contrib/GL/atsctrb_GL.o
 
 ######
 
@@ -30,55 +31,55 @@ compall: \
   glTetrix \
 
 glHello: glHello.dats
-	$(ATSCC) -o glHello glHello.dats -lGL -lglut
+	$(ATSCC) -o glHello glHello.dats $(ATSCTRB) -lGL -lglut
 
 glDoubleBuffer: glDoubleBuffer.dats
-	$(ATSCC) -o glDoubleBuffer glDoubleBuffer.dats -lGL -lglut
+	$(ATSCC) -o glDoubleBuffer glDoubleBuffer.dats $(ATSCTRB) -lGL -lglut
 
 glIcosahedron: glIcosahedron.dats
-	$(ATSCC) -D_ATS_GCATS -o glIcosahedron glIcosahedron.dats -lGL -lglut
+	$(ATSCC) -D_ATS_GCATS -o glIcosahedron glIcosahedron.dats $(ATSCTRB) -lGL -lglut
 
 glClipping: glClipping.dats
-	$(ATSCC) -o glClipping glClipping.dats -lGL -lglut
+	$(ATSCC) -o glClipping glClipping.dats $(ATSCTRB) -lGL -lglut
 
 glCubeView: glCubeView.dats
-	$(ATSCC) -o glCubeView glCubeView.dats -lGL -lglut
+	$(ATSCC) -o glCubeView glCubeView.dats $(ATSCTRB) -lGL -lglut
 
 glPlanet: glPlanet.dats
-	$(ATSCC) -o glPlanet glPlanet.dats -lGL -lglut
+	$(ATSCC) -o glPlanet glPlanet.dats $(ATSCTRB) -lGL -lglut
 
 glColoredTriangle: glColoredTriangle.dats
-	$(ATSCC) -o glColoredTriangle glColoredTriangle.dats -lGL -lglut
+	$(ATSCC) -o glColoredTriangle glColoredTriangle.dats $(ATSCTRB) -lGL -lglut
 
 glLitSphere: glLitSphere.dats
-	$(ATSCC) -o glLitSphere glLitSphere.dats -lGL -lglut
+	$(ATSCC) -o glLitSphere glLitSphere.dats $(ATSCTRB) -lGL -lglut
 
 glLightMove1: glLightMove1.dats
-	$(ATSCC) -o glLightMove1 glLightMove1.dats -lGL -lglut
+	$(ATSCC) -o glLightMove1 glLightMove1.dats $(ATSCTRB) -lGL -lglut
 
 glLightMove2: glLightMove2.dats
-	$(ATSCC) -o glLightMove2 glLightMove2.dats -lGL -lglut
+	$(ATSCC) -o glLightMove2 glLightMove2.dats $(ATSCTRB) -lGL -lglut
 
 glBlending1: glBlending1.dats
-	$(ATSCC) -o glBlending1 glBlending1.dats -lGL -lglut
+	$(ATSCC) -o glBlending1 glBlending1.dats $(ATSCTRB) -lGL -lglut
 
 glBlending2: glBlending2.dats
-	$(ATSCC) -o glBlending2 glBlending2.dats -lGL -lglut
+	$(ATSCC) -o glBlending2 glBlending2.dats $(ATSCTRB) -lGL -lglut
 
 glDisplayList1: glDisplayList1.dats
-	$(ATSCC) -o glDisplayList1 glDisplayList1.dats -lGL -lglut
+	$(ATSCC) -o glDisplayList1 glDisplayList1.dats $(ATSCTRB) -lGL -lglut
 
 #
 # A little bit animation for fun
 #
 glFaces: glFaces.dats
-	$(ATSCC) -o glFaces glFaces.dats -lGL -lglut
+	$(ATSCC) -o glFaces glFaces.dats $(ATSCTRB) -lGL -lglut
 
 #
 # A simple game of Tetris implemented in ATS
 #
 glTetrix: glTetrix.dats
-	$(ATSCC) -O2 -o glTetrix glTetrix.dats -lGL -lglut
+	$(ATSCC) -O2 -o glTetrix glTetrix.dats $(ATSCTRB) -lGL -lglut
 
 ######
 

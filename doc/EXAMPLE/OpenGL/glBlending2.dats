@@ -15,8 +15,8 @@ extern ats_void_type mainats (ats_int_type argc, ats_ptr_type argv) ;
 
 (* ****** ****** *)
 
-staload "libc/GL/SATS/gl.sats"
-staload "libc/GL/SATS/glut.sats"
+staload "contrib/GL/SATS/gl.sats"
+staload "contrib/GL/SATS/glut.sats"
 
 (* ****** ****** *)
 
@@ -78,15 +78,15 @@ in
 
 extern fun glLightfv {n:nat} {l:addr}
   (pf: !array_v (GLfloat, n, l) | light: GLenum, pname: GLenum, p: ptr l): void
-  = "atslib_glLightfv"
+  = "atsctrb_glLightfv"
 
 extern fun glLightModelfv {n:nat} {l:addr}
   (pf: !array_v (GLfloat, n, l) | pname: GLenum, params: ptr l): void
-  = "atslib_glLightModelfv"
+  = "atsctrb_glLightModelfv"
 
 extern fun glMaterialfv {n:nat} {l:addr}
   (pf: !array_v (GLfloat, n, l) | face: GLenum, pname: GLenum, params: ptr l): void
-  = "atslib_glMaterialfv"
+  = "atsctrb_glMaterialfv"
 
 end
 

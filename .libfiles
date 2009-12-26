@@ -181,20 +181,4 @@ libc/DATS/pthread.dats
 
 /* ****** ****** */
 
-#ifdef HAVE_GL_GL_H
-libc/GL/SATS/gl.sats
-#endif
-
-#ifdef HAVE_GL_GLUT_H
-libc/GL/SATS/glut.sats
-#endif
-
-/* ****** ****** */
-
-#ifdef HAVE_CAIRO_CAIRO_H
-libc/cairo/SATS/cairo.sats
-#endif
-
-/* ****** ****** */
-
 /* end of [.libfiles] */

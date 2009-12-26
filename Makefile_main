@@ -40,7 +40,7 @@ MAKE=make
 ######
 
 GCC=gcc
-RANLIB=ranlib # this is equivalent to [ar -s]
+# RANLIB=ranlib # this is equivalent to [ar -s]
 
 PWD=$(shell pwd)
 ifdef ATSHOME

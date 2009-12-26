@@ -1,17 +1,8 @@
 /* config.h.in.  Generated from configure.ac by autoheader.  */
 
-/* Define to 1 if you have the <cairo/cairo.h> header file. */
-#undef HAVE_CAIRO_CAIRO_H
-
 /* Informs us the availability of Boehm-Demers-Weiser garbage collection
    installed on the system. */
 #undef HAVE_GCBDW
-
-/* Define to 1 if you have the <GL/glut.h> header file. */
-#undef HAVE_GL_GLUT_H
-
-/* Define to 1 if you have the <GL/gl.h> header file. */
-#undef HAVE_GL_GL_H
 
 /* Define to 1 if you have the <gmp.h> header file. */
 #undef HAVE_GMP_H

@@ -16,8 +16,8 @@ extern ats_void_type mainats (ats_int_type argc, ats_ptr_type argv) ;
 (* ****** ****** *)
 
 staload "libc/SATS/math.sats"
-staload "libc/GL/SATS/gl.sats"
-staload "libc/GL/SATS/glut.sats"
+staload "contrib/GL/SATS/gl.sats"
+staload "contrib/GL/SATS/glut.sats"
 
 staload _(*anonymous*) = "prelude/DATS/array.dats"
 
@@ -86,10 +86,10 @@ fn drawTriangle {l1,l2,l3:addr} (
   ) : void = let
 
   extern fun glNormal3fv {l:addr} (pf: !float_3_v l | p: ptr l): void
-    = "atslib_glNormal3fv"
+    = "atsctrb_glNormal3fv"
 
   extern fun glVertex3fv {l:addr} (pf: !float_3_v l | p: ptr l): void
-    = "atslib_glVertex3fv"
+    = "atsctrb_glVertex3fv"
 
   val (pf | ()) = glBegin (GL_TRIANGLES)
   val () = glNormal3fv (pf1 | p1)
@@ -204,9 +204,9 @@ implement display () = let
   val (pf | ()) = glBegin (GL_TRIANGLES)
   val () = loop (0) where {
     extern fun glNormal3fv (A: array (float, 3)): void
-      = "atslib_glNormal3fv"
+      = "atsctrb_glNormal3fv"
     extern fun glVertex3fv (A: array (float, 3)): void
-      = "atslib_glVertex3fv"
+      = "atsctrb_glVertex3fv"
     extern fun subdivide {n:nat} (
       A1: array (float, 3), A2: array (float, 3), A3: array (float, 3), n: int n
     ) : void = "subdivide"

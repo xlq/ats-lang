@@ -34,8 +34,8 @@ staload "libc/SATS/unistd.sats"
 
 (* ****** ****** *)
 
-staload "libc/GL/SATS/gl.sats"
-staload "libc/GL/SATS/glut.sats"
+staload "contrib/GL/SATS/gl.sats"
+staload "contrib/GL/SATS/glut.sats"
 
 (* ****** ****** *)
 

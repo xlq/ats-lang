@@ -15,8 +15,8 @@ extern ats_void_type mainats (ats_int_type argc, ats_ptr_type argv) ;
 
 (* ****** ****** *)
 
-staload "libc/GL/SATS/gl.sats"
-staload "libc/GL/SATS/glut.sats"
+staload "contrib/GL/SATS/gl.sats"
+staload "contrib/GL/SATS/glut.sats"
 
 (* ****** ****** *)
 
