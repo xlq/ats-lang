@@ -1,6 +1,9 @@
 (*
 **
-** A simple CAIRO example: an illusion of circular motion
+** A simple CAIRO example:
+**   an illusion of cirular motion
+**
+** This is a variant of cairo-test8
 **
 ** Author: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
 ** Time: December, 2009
@@ -9,14 +12,14 @@
 
 (*
 ** how to compile:
-   atscc -o test8 \
+   atscc -o test9 \
      `pkg-config --cflags --libs cairo` \
      $ATSHOME/contrib/cairo/atsctrb_cairo.o \
-     cairo-test8.dats
+     cairo-test9.dats
 
 ** how ot test:
-   ./test8
-   'gthumb' can be used to view the generated image file 'cairo-test8.png'
+   ./test9
+   'gthumb' can be used to view the generated image file 'cairo-test9.png'
 *)
 
 (* ****** ****** *)
@@ -54,61 +57,61 @@ fn rb_set (cr: !cr, rb: int): void =
 (* ****** ****** *)
 
 fn draw_ring
-  {bw: two}
   {n:int | n >= 2} (
     cr: !cr
-  , bw: int bw
+  , bw: int, rb: int
   , rad1: dbl, rad2: dbl
   , n: int n
   ) : void = let
   val alpha =  (1.0 - rad2/rad1) / 1.5
   val delta = 2 * PI / n
 //
-  fun loop {i:nat | i <= n} .<n-i>.
-    (cr: !cr, angle: double, i: int i, bw: int, rb: int)
+  fun loop1 {i:nat | i <= n} .<n-i>.
+    (cr: !cr, angle: double, i: int i, bw: int)
     :<cloref1> void = let
-    val _sin = sin angle and _cos = cos angle
-    val x1 = rad1 * _cos and y1 = rad1 * _sin
-    val x2 = rad2 * _cos and y2 = rad2 * _sin
-    val radm = (rad1 + rad2) / 2
-    val xm = radm * cos (angle-alpha)
-    and ym = radm * sin (angle-alpha)
-    val () = cairo_move_to (cr, x1, y1)
-    val () = cairo_curve_to (cr, x1, y1, xm, ym, x2, y2)
-    val xm = radm * cos (angle+alpha)
-    and ym = radm * sin (angle+alpha)
-    val () = cairo_curve_to (cr, x2, y2, xm, ym, x1, y1)
-    val () = rb_set (cr, rb)
-    val () = cairo_fill (cr)
+    val x2 = rad2 * cos angle
+    and y2 = rad2 * sin angle
 //
+    val angle_nxt = angle + delta
     val () = cairo_move_to (cr, x2, y2)
-    val () = cairo_curve_to (cr, x2, y2, xm, ym, x1, y1)
-    val () = cairo_arc (cr, 0.0, 0.0, rad1, angle, angle+delta)
-    val angle = angle + delta
-    val _sin = sin angle and _cos = cos angle
-    val x3 = rad1 * _cos and y3 = rad1 * _sin
-    val x4 = rad2 * _cos and y4 = rad2 * _sin
-    val xm = radm * cos (angle-alpha)
-    and ym = radm * sin (angle-alpha)
-    val () = cairo_curve_to (cr, x3, y3, xm, ym, x4, y4)
-    val () = cairo_arc_negative (cr, 0.0, 0.0, rad2, angle, angle-delta)
+    val () = cairo_arc (cr, 0., 0., rad1, angle, angle_nxt)
+    val () = cairo_arc_negative (cr, 0., 0., rad2, angle_nxt, angle)
     val () = bw_set (cr, bw)
     val () = cairo_fill (cr)
   in
-    if i < n then loop (cr, angle, i+1, 1-bw, 1-rb)
-  end // end of [loop]
+    if i < n then loop1 (cr, angle_nxt, i+1, 1-bw)
+  end // end of [loop1]
+  val () = loop1 (cr, 0.0, 1, bw)
+  fun loop2 {i:nat | i <= n} .<n-i>.
+    (cr: !cr, angle: double, i: int i, rb: int)
+    :<cloref1> void = let
+    val radm = (rad1 + rad2) / 2
+    val drad = rad1 - rad2
+    val xm = radm * cos angle
+    and ym = radm * sin angle
+    val (pf | ()) = cairo_save (cr)
+    val () = cairo_translate (cr, xm, ym)
+    val () = cairo_rotate (cr, angle)
+    val () = cairo_scale (cr, drad/2, drad/3.6)
+    val () = cairo_arc (cr, 0., 0., 1., 0., 2*PI)
+    val () = rb_set (cr, rb)
+    val () = cairo_fill (cr)
+    val () = cairo_restore (pf | cr)
+  in
+    if i < n then loop2 (cr, angle+delta, i+1, 1-rb)
+  end // end of [loop2]
+  val () = loop2 (cr, 0.0, 1, rb)
 in
-  loop (cr, 0.0, 1, bw, 1-bw)
+  // nothing
 end // end of [draw_ring]
 
 (* ****** ****** *)
 
 #define SHRINKAGE 0.80
 fun draw_rings
-  {bw: two}
   {n:int | n >= 2} (
     cr: !cr
-  , bw: int bw
+  , bw: int, rb: int
   , rad_beg: dbl, rad_end: dbl
   , n: int n
   ) : void =
@@ -120,9 +123,9 @@ fun draw_rings
     // loop exits
   end else let
     val rad_beg_nxt = SHRINKAGE * rad_beg
-    val () = draw_ring (cr, bw, rad_beg, rad_beg_nxt, n)
+    val () = draw_ring (cr, bw, rb, rad_beg, rad_beg_nxt, n)
   in
-    draw_rings (cr, 1-bw, rad_beg_nxt, rad_end, n)
+    draw_rings (cr, 1-bw, 1-rb, rad_beg_nxt, rad_end, n)
   end // end of [if]
 // end of [draw_rings]
 
@@ -144,7 +147,7 @@ implement main () = () where {
     for (j := 0; j < 3; j := j + 1) let
       val (pf | ()) = cairo_save (cr)
       val () = cairo_translate (cr, i*wd/2, j*ht/2)
-      val () = draw_rings (cr, 0, 128.0, 4.0, 40)
+      val () = draw_rings (cr, 0, 0, 128.0, 4.0, 40)
       val () = cairo_restore (pf | cr)
     in
       // nothing
@@ -154,30 +157,30 @@ implement main () = () where {
 //
   val (pf | ()) = cairo_save (cr)
   val () = cairo_translate (cr, wd/4, ht/4)
-  val () = draw_rings (cr, 0, 128.0, 4.0, 40)
+  val () = draw_rings (cr, 0, 0, 128.0, 4.0, 40)
   val () = cairo_restore (pf | cr)
 //
   val (pf | ()) = cairo_save (cr)
   val () = cairo_translate (cr, 3*wd/4, ht/4)
-  val () = draw_rings (cr, 0, 128.0, 4.0, 40)
+  val () = draw_rings (cr, 1, 0, 128.0, 4.0, 40)
   val () = cairo_restore (pf | cr)
 //
   val (pf | ()) = cairo_save (cr)
   val () = cairo_translate (cr, wd/4, 3*ht/4)
-  val () = draw_rings (cr, 0, 128.0, 4.0, 40)
+  val () = draw_rings (cr, 0, 0, 128.0, 4.0, 40)
   val () = cairo_restore (pf | cr)
 //
   val (pf | ()) = cairo_save (cr)
   val () = cairo_translate (cr, 3*wd/4, 3*ht/4)
-  val () = draw_rings (cr, 0, 128.0, 4.0, 40)
+  val () = draw_rings (cr, 1, 0, 128.0, 4.0, 40)
   val () = cairo_restore (pf | cr)
 //
-  val status = cairo_surface_write_to_png (surface, "cairo-test8.png")
+  val status = cairo_surface_write_to_png (surface, "cairo-test9.png")
   val () = cairo_surface_destroy (surface)
   val () = cairo_destroy (cr)
 //
   val () = if status = CAIRO_STATUS_SUCCESS then begin
-    print "The image is written to the file [cairo-test8.png].\n"
+    print "The image is written to the file [cairo-test9.png].\n"
   end else begin
     print "exit(ATS): [cairo_surface_write_to_png] failed"; print_newline ()
   end // end of [if]
@@ -185,4 +188,4 @@ implement main () = () where {
 
 (* ****** ****** *)
 
-(* end of [cairo-test8.dats] *)
+(* end of [cairo-test9.dats] *)
