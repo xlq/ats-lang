@@ -43,6 +43,7 @@
 
 #include <cairo-features.h>
 #include <cairo.h>
+#include <cairo-pdf.h>
 
 /* ****** ****** */
 
@@ -179,6 +180,29 @@ atsctrb_cairo_set_source_rgba (
 /* ****** ****** */
 
 static inline
+ats_void_type
+atsctrb_cairo_set_source (
+  ats_cairo_ref cr, ats_cairo_pattern_ref pat
+) {
+  cairo_set_source((cairo_t*)cr, (cairo_pattern_t*)pat) ;
+  return ;
+} /* end of [atsctrb_cairo_set_source] */
+
+static inline
+ats_void_type
+atsctrb_cairo_set_source_surface (
+  ats_cairo_ref cr
+, ats_cairo_surface_ref sf
+, ats_double_type x, ats_double_type y
+) {
+  cairo_set_source_surface(
+    (cairo_t*)cr, (cairo_surface_t*)sf, x, y
+  ) ; return ;
+} /* end of [atsctrb_cairo_set_source_surface] */
+
+/* ****** ****** */
+
+static inline
 ats_double_type
 atsctrb_cairo_get_line_width
   (ats_cairo_ref cr) {
@@ -255,6 +279,22 @@ atsctrb_cairo_stroke (
 ) {
   cairo_stroke((cairo_t*)cr) ; return ;
 } /* end of [atsctrb_cairo_stroke] */
+
+/* ****** ****** */
+
+static inline
+ats_void_type
+atsctrb_cairo_copy_page
+  (ats_cairo_ref cr) {
+  cairo_copy_page (cr) ; return ;
+} // end of [atsctrb_cairo_copy_page]
+
+static inline
+ats_void_type
+atsctrb_cairo_show_page
+  (ats_cairo_ref cr) {
+  cairo_show_page (cr) ; return ;
+} // end of [atsctrb_cairo_show_page]
 
 /* ****** ****** */
 
@@ -444,6 +484,28 @@ atsctrb_cairo_set_font_face (
 
 static inline
 ats_void_type
+atsctrb_cairo_font_extents (
+  ats_cairo_ref cr, ats_ref_type extents
+) {
+  cairo_font_extents (
+    (cairo_t*)cr, (cairo_font_extents_t*)extents
+  ) ; return ;
+} // end of [atsctrb_cairo_font_extents]
+
+static inline
+ats_void_type
+atsctrb_cairo_text_extents (
+  ats_cairo_ref cr, ats_ptr_type utf8, ats_ref_type extents
+) {
+  cairo_text_extents (
+    (cairo_t*)cr, (char*)utf8, (cairo_text_extents_t*)extents
+  ) ; return ;
+} // end of [atsctrb_cairo_text_extents]
+
+/* ****** ****** */
+
+static inline
+ats_void_type
 atsctrb_cairo_show_text (
   ats_cairo_ref cr, ats_ptr_type utf8
 ) {
@@ -508,11 +570,76 @@ atsctrb_cairo_image_surface_create (
 } /* end of [atsctrb_cairo_image_surface_create] */
 
 static inline
+ats_cairo_surface_ref
+atsctrb_cairo_image_surface_create_from_png
+  (ats_ptr_type filename) {
+  return cairo_image_surface_create_from_png ((char*)filename) ;
+} /* end of [atsctrb_cairo_image_surface_create_from_png] */
+
+static inline
+ats_double_type
+atsctrb_cairo_image_surface_get_width
+  (ats_ptr_type image) {
+  return cairo_image_surface_get_width (image) ;
+} /* end of [atsctrb_cairo_image_surface_get_width] */
+
+static inline
+ats_double_type
+atsctrb_cairo_image_surface_get_height
+  (ats_ptr_type image) {
+  return cairo_image_surface_get_height (image) ;
+} /* end of [atsctrb_cairo_image_surface_get_height] */
+
+static inline
+ats_double_type
+atsctrb_cairo_image_surface_get_stride
+  (ats_ptr_type image) {
+  return cairo_image_surface_get_stride (image) ;
+} /* end of [atsctrb_cairo_image_surface_get_stride] */
+
+/* ****** ****** */
+
+static inline
 ats_cairo_status_type
 atsctrb_cairo_surface_write_to_png
   (ats_cairo_surface_ref sf, ats_ptr_type filename) {
   return cairo_surface_write_to_png ((cairo_surface_t*)sf, (char*)filename) ;
 } /* end of [atsctrb_cairo_surface_write_to_png] */
+
+/* ****** ****** */
+
+// PDF surface
+
+#if (CAIRO_HAS_PDF_SURFACE)
+
+static inline
+ats_cairo_surface_ref
+atsctrb_cairo_pdf_surface_create (
+  ats_ptr_type filename
+, ats_double_type w_pts, ats_double_type h_pts
+) {
+  return cairo_pdf_surface_create((char*)filename, w_pts, h_pts) ;
+} /* end of [atsctrb_cairo_pdf_surface_create] */
+
+static inline
+ats_cairo_surface_ref
+atsctrb_cairo_pdf_surface_create_null (
+  ats_double_type w_pts, ats_double_type h_pts
+) {
+  return cairo_pdf_surface_create((char*)0, w_pts, h_pts) ;
+} /* end of [atsctrb_cairo_pdf_surface_create_null] */
+
+static inline
+ats_void_type
+atsctrb_cairo_pdf_surface_set_size (
+  ats_cairo_surface_ref sf
+, ats_double_type w_pts, ats_double_type h_pts
+) {
+  cairo_pdf_surface_set_size((cairo_surface_t*)sf, w_pts, h_pts) ;
+  return ;
+} /* end of [atsctrb_cairo_pdf_surface_set_size] */
+
+#endif // end of [CAIRO_HAS_PDF_SURFACE]
 
 /* ****** ****** */
 

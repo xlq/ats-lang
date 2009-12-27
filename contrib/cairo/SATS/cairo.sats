@@ -267,7 +267,7 @@ fun cairo_get_source
   = "atsctrb_cairo_get_source"
 
 fun cairo_set_source
-  (cr: !cairo_ref, source: !cairo_pattern_ref): void
+  (cr: !cairo_ref, pat: !cairo_pattern_ref): void
   = "atsctrb_cairo_set_source"
 
 fun cairo_set_source_surface (
@@ -347,6 +347,14 @@ fun cairo_stroke_extents (
 
 fun cairo_get_reference_count (cr: !cairo_ref): uint
   = "atsctrb_cairo_get_reference_count"
+
+(* ****** ****** *)
+
+fun cairo_copy_page (cr: !cairo_ref): void
+  = "atsctrb_cairo_copy_page"
+
+fun cairo_show_page (cr: !cairo_ref): void
+  = "atsctrb_cairo_show_page"
 
 (* ****** ****** *)
 
@@ -461,6 +469,40 @@ fun cairo_set_font_face
 
 (* ****** ****** *)
 
+(*
+abst@ype cairo_font_extents_t = $extype "cairo_font_extents_t"
+*)
+typedef cairo_font_extents_t = @{
+  ascent= double
+, descent= double
+, height= double
+, max_x_advance= double
+, max_y_advance= double
+} // end of [cairo_font_extents_t]
+
+(*
+abst@ype cairo_text_extents_t = $extype "cairo_text_extents_t"
+*)
+typedef cairo_text_extents_t = @{
+  x_bearing= double, y_bearing= double
+, width= double, height= double
+, x_advance= double, y_advance= double
+} // end of [cairo_text_extents_t]
+
+fun cairo_font_extents (
+    cr: !cairo_ref
+  , extents: &cairo_font_extents_t? >> cairo_font_extents_t
+  ) : void
+  = "atsctrb_cairo_font_extents"
+
+fun cairo_text_extents (
+    cr: !cairo_ref, utf8: string
+  , extents: &cairo_text_extents_t? >> cairo_text_extents_t
+  ) : void
+  = "atsctrb_cairo_text_extents"
+
+(* ****** ****** *)
+
 fun cairo_show_text (cr: !cairo_ref, utf8: string): void
   = "atsctrb_cairo_show_text"
 
@@ -535,9 +577,62 @@ fun cairo_image_surface_get_height (sf: !cairo_surface_ref): int
 fun cairo_image_surface_get_stride (sf: !cairo_surface_ref): int
   = "atsctrb_cairo_image_surface_get_stride"
 
+fun cairo_image_surface_create_from_png
+  (filename: string): cairo_surface_ref
+  = "atsctrb_cairo_image_surface_create_from_png"
+
+fun cairo_image_surface_get_width
+  (image: !cairo_surface_ref): double
+  = "atsctrb_cairo_image_surface_get_width"
+
+fun cairo_image_surface_get_height
+  (image: !cairo_surface_ref): double
+  = "atsctrb_cairo_image_surface_get_height"
+
+fun cairo_image_surface_get_stride
+  (image: !cairo_surface_ref): double
+  = "atsctrb_cairo_image_surface_get_stride"
+
+(* ****** ****** *)
+
 fun cairo_surface_write_to_png
   (sf: !cairo_surface_ref, filename: string): cairo_status_t
   = "atsctrb_cairo_surface_write_to_png"
+
+(* ****** ****** *)
+
+//
+// PDF surface
+//
+
+(*
+// how to handle this:
+#define CAIRO_HAS_PDF_SURFACE
+*)
+
+fun cairo_pdf_surface_create (
+    filename: string, width_in_points: double, height_in_points: double
+  ) : cairo_surface_ref
+  = "atsctrb_cairo_pdf_surface_create"
+
+fun cairo_pdf_surface_create_null (
+    width_in_points: double, height_in_points: double
+  ) : cairo_surface_ref
+  = "atsctrb_cairo_pdf_surface_create_null"
+
+(*
+fun cairo_pdf_surface_create_for_stream (
+    cairo_write_func_t write_func, void *closure
+  , double width_in_points, double height_in_points
+  ) : cairo_surface_ref
+  = "atsctrb_cairo_pdf_surface_create_for_stream"
+*)
+
+fun cairo_pdf_surface_set_size (
+    sf: !cairo_surface_ref
+  , width_in_points: double, height_in_points: double
+  ) : void 
+  = "atsctrb_cairo_pdf_surface_set_size"
 
 (* ****** ****** *)
 

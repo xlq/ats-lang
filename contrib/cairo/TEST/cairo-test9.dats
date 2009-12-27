@@ -92,11 +92,12 @@ fn draw_ring
     val (pf | ()) = cairo_save (cr)
     val () = cairo_translate (cr, xm, ym)
     val () = cairo_rotate (cr, angle)
+    // drawing an oval shape:
     val () = cairo_scale (cr, drad/2, drad/3.6)
     val () = cairo_arc (cr, 0., 0., 1., 0., 2*PI)
+    val () = cairo_restore (pf | cr)
     val () = rb_set (cr, rb)
     val () = cairo_fill (cr)
-    val () = cairo_restore (pf | cr)
   in
     if i < n then loop2 (cr, angle+delta, i+1, 1-rb)
   end // end of [loop2]
