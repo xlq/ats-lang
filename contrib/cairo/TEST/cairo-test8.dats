@@ -54,10 +54,9 @@ fn rb_set (cr: !cr, rb: int): void =
 (* ****** ****** *)
 
 fn draw_ring
-  {bw: two}
   {n:int | n >= 2} (
     cr: !cr
-  , bw: int bw
+  , bw: int, rb: int
   , rad1: dbl, rad2: dbl
   , n: int n
   ) : void = let
@@ -98,17 +97,16 @@ fn draw_ring
     if i < n then loop (cr, angle, i+1, 1-bw, 1-rb)
   end // end of [loop]
 in
-  loop (cr, 0.0, 1, bw, 1-bw)
+  loop (cr, 0.0, 1, bw, rb)
 end // end of [draw_ring]
 
 (* ****** ****** *)
 
 #define SHRINKAGE 0.80
 fun draw_rings
-  {bw: two}
   {n:int | n >= 2} (
     cr: !cr
-  , bw: int bw
+  , bw: int, rb: int
   , rad_beg: dbl, rad_end: dbl
   , n: int n
   ) : void =
@@ -120,9 +118,9 @@ fun draw_rings
     // loop exits
   end else let
     val rad_beg_nxt = SHRINKAGE * rad_beg
-    val () = draw_ring (cr, bw, rad_beg, rad_beg_nxt, n)
+    val () = draw_ring (cr, bw, rb, rad_beg, rad_beg_nxt, n)
   in
-    draw_rings (cr, 1-bw, rad_beg_nxt, rad_end, n)
+    draw_rings (cr, 1-bw, 1-rb, rad_beg_nxt, rad_end, n)
   end // end of [if]
 // end of [draw_rings]
 
@@ -144,7 +142,7 @@ implement main () = () where {
     for (j := 0; j < 3; j := j + 1) let
       val (pf | ()) = cairo_save (cr)
       val () = cairo_translate (cr, i*wd/2, j*ht/2)
-      val () = draw_rings (cr, 0, 128.0, 4.0, 40)
+      val () = draw_rings (cr, 0, 0, 128.0, 4.0, 40)
       val () = cairo_restore (pf | cr)
     in
       // nothing
@@ -152,25 +150,20 @@ implement main () = () where {
     ) // end of [for]
   ) // end of [val]
 //
-  val (pf | ()) = cairo_save (cr)
-  val () = cairo_translate (cr, wd/4, ht/4)
-  val () = draw_rings (cr, 0, 128.0, 4.0, 40)
-  val () = cairo_restore (pf | cr)
-//
-  val (pf | ()) = cairo_save (cr)
-  val () = cairo_translate (cr, 3*wd/4, ht/4)
-  val () = draw_rings (cr, 0, 128.0, 4.0, 40)
-  val () = cairo_restore (pf | cr)
-//
-  val (pf | ()) = cairo_save (cr)
-  val () = cairo_translate (cr, wd/4, 3*ht/4)
-  val () = draw_rings (cr, 0, 128.0, 4.0, 40)
-  val () = cairo_restore (pf | cr)
-//
-  val (pf | ()) = cairo_save (cr)
-  val () = cairo_translate (cr, 3*wd/4, 3*ht/4)
-  val () = draw_rings (cr, 0, 128.0, 4.0, 40)
-  val () = cairo_restore (pf | cr)
+  val () = (
+    for (i := 0; i < 2; i := i + 1) (
+    for (j := 0; j < 2; j := j + 1) let
+      val (pf | ()) = cairo_save (cr)
+      val () =
+        cairo_translate (cr, i*wd/2+wd/4, j*ht/2+ht/4)
+      // end of [val]
+      val () = draw_rings (cr, i, 0, 128.0, 4.0, 40)
+      val () = cairo_restore (pf | cr)
+    in
+      // nothing
+    end // end of [for]
+    ) // end of [for]
+  ) // end of [val]
 //
   val status = cairo_surface_write_to_png (surface, "cairo-test8.png")
   val () = cairo_surface_destroy (surface)

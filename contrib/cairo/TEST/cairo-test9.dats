@@ -156,25 +156,20 @@ implement main () = () where {
     ) // end of [for]
   ) // end of [val]
 //
-  val (pf | ()) = cairo_save (cr)
-  val () = cairo_translate (cr, wd/4, ht/4)
-  val () = draw_rings (cr, 0, 0, 128.0, 4.0, 40)
-  val () = cairo_restore (pf | cr)
-//
-  val (pf | ()) = cairo_save (cr)
-  val () = cairo_translate (cr, 3*wd/4, ht/4)
-  val () = draw_rings (cr, 1, 0, 128.0, 4.0, 40)
-  val () = cairo_restore (pf | cr)
-//
-  val (pf | ()) = cairo_save (cr)
-  val () = cairo_translate (cr, wd/4, 3*ht/4)
-  val () = draw_rings (cr, 0, 0, 128.0, 4.0, 40)
-  val () = cairo_restore (pf | cr)
-//
-  val (pf | ()) = cairo_save (cr)
-  val () = cairo_translate (cr, 3*wd/4, 3*ht/4)
-  val () = draw_rings (cr, 1, 0, 128.0, 4.0, 40)
-  val () = cairo_restore (pf | cr)
+  val () = (
+    for (i := 0; i < 2; i := i + 1) (
+    for (j := 0; j < 2; j := j + 1) let
+      val (pf | ()) = cairo_save (cr)
+      val () =
+        cairo_translate (cr, i*wd/2+wd/4, j*ht/2+ht/4)
+      // end of [val]
+      val () = draw_rings (cr, i, 0, 128.0, 4.0, 40)
+      val () = cairo_restore (pf | cr)
+    in
+      // nothing
+    end // end of [for]
+    ) // end of [for]
+  ) // end of [val]
 //
   val status = cairo_surface_write_to_png (surface, "cairo-test9.png")
   val () = cairo_surface_destroy (surface)
