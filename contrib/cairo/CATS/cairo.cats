@@ -44,6 +44,7 @@
 #include <cairo-features.h>
 #include <cairo.h>
 #include <cairo-pdf.h>
+#include <cairo-ps.h>
 
 /* ****** ****** */
 
@@ -573,8 +574,17 @@ static inline
 ats_cairo_surface_ref
 atsctrb_cairo_image_surface_create_from_png
   (ats_ptr_type filename) {
-  return cairo_image_surface_create_from_png ((char*)filename) ;
-} /* end of [atsctrb_cairo_image_surface_create_from_png] */
+  return cairo_image_surface_create_from_png((char*)filename) ;
+} // end of [atsctrb_cairo_image_surface_create_from_png]
+
+static inline
+ats_cairo_surface_ref
+atsctrb_cairo_image_surface_create_from_png_stream
+  (ats_fun_ptr_type fread, ats_ptr_type env) {
+  return cairo_image_surface_create_from_png_stream(
+    (cairo_read_func_t)fread, env
+  ) ; // end of [return]
+} // end of [atsctrb_cairo_image_surface_create_from_png_stream]
 
 static inline
 ats_double_type
@@ -606,6 +616,17 @@ atsctrb_cairo_surface_write_to_png
   return cairo_surface_write_to_png ((cairo_surface_t*)sf, (char*)filename) ;
 } /* end of [atsctrb_cairo_surface_write_to_png] */
 
+static inline
+ats_cairo_status_type
+atsctrb_cairo_surface_write_to_png_stream(
+  ats_cairo_surface_ref sf
+, ats_fun_ptr_type fwrite, ats_ptr_type env
+) {
+  return cairo_surface_write_to_png_stream (
+    (cairo_surface_t*)sf, (cairo_write_func_t)fwrite, env
+  ) ; // end of [return]
+} /* end of [atsctrb_cairo_surface_write_to_png_stream] */
+
 /* ****** ****** */
 
 // PDF surface
@@ -630,6 +651,17 @@ atsctrb_cairo_pdf_surface_create_null (
 } /* end of [atsctrb_cairo_pdf_surface_create_null] */
 
 static inline
+ats_cairo_surface_ref
+atsctrb_cairo_pdf_surface_create_for_stream (
+  ats_fun_ptr_type fwrite, ats_ptr_type env
+, ats_double_type w_pts, ats_double_type h_pts
+) {
+  return cairo_pdf_surface_create_for_stream(
+    (cairo_write_func_t)fwrite, (ats_ptr_type)env, w_pts, h_pts
+  ) ; // end of [return]
+} // end of [atsctrb_cairo_pdf_surface_create_for_stream]
+
+static inline
 ats_void_type
 atsctrb_cairo_pdf_surface_set_size (
   ats_cairo_surface_ref sf
@@ -640,6 +672,86 @@ atsctrb_cairo_pdf_surface_set_size (
 } /* end of [atsctrb_cairo_pdf_surface_set_size] */
 
 #endif // end of [CAIRO_HAS_PDF_SURFACE]
+
+/* ****** ****** */
+
+// PS surface
+
+#if (CAIRO_HAS_PS_SURFACE)
+
+static inline
+ats_cairo_surface_ref
+atsctrb_cairo_ps_surface_create (
+  ats_ptr_type filename
+, ats_double_type w_pts, ats_double_type h_pts
+) {
+  return cairo_ps_surface_create((char*)filename, w_pts, h_pts) ;
+} /* end of [atsctrb_cairo_ps_surface_create] */
+
+static inline
+ats_cairo_surface_ref
+atsctrb_cairo_ps_surface_create_null (
+  ats_double_type w_pts, ats_double_type h_pts
+) {
+  return cairo_ps_surface_create((char*)0, w_pts, h_pts) ;
+} /* end of [atsctrb_cairo_ps_surface_create_null] */
+
+static inline
+ats_cairo_surface_ref
+atsctrb_cairo_ps_surface_create_for_stream (
+  ats_fun_ptr_type fwrite, ats_ptr_type env
+, ats_double_type w_pts, ats_double_type h_pts
+) {
+  return cairo_ps_surface_create_for_stream(
+    (cairo_write_func_t)fwrite, (ats_ptr_type)env, w_pts, h_pts
+  ) ; // end of [return]
+} // end of [atsctrb_cairo_ps_surface_create_for_stream]
+
+/*
+typedef cairo_ps_level_t ats_cairo_ps_level_type ;
+
+ats_ref_type
+atsctrb_cairo_ps_get_levels
+  (ats_ref_type num_levels) {
+  cairo_ps_level_t **p_levels ;
+  cairo_ps_get_levels (p_levels, (int*)num_levels) ;
+  return (ats_ref_type)(*p_levels) ;
+} // end of [cairo_ps_get_levels]
+*/
+
+static inline
+ats_void_type
+atsctrb_cairo_ps_surface_set_size (
+  ats_cairo_surface_ref sf
+, ats_double_type w_pts, ats_double_type h_pts
+) {
+  cairo_ps_surface_set_size((cairo_surface_t*)sf, w_pts, h_pts) ;
+  return ;
+} /* end of [atsctrb_cairo_ps_surface_set_size] */
+
+static inline
+ats_void_type
+atsctrb_cairo_ps_surface_dsc_begin_setup
+  (ats_cairo_surface_ref sf) {
+  cairo_ps_surface_dsc_begin_setup (sf) ; return ;
+} // end of [atsctrb_cairo_ps_surface_dsc_begin_setup]
+
+static inline
+ats_void_type
+atsctrb_cairo_ps_surface_dsc_begin_page_setup
+  (ats_cairo_surface_ref sf) {
+  cairo_ps_surface_dsc_begin_page_setup (sf) ; return ;
+} // end of [atsctrb_cairo_ps_surface_dsc_begin_page_setup]
+
+static inline
+ats_void_type
+atsctrb_cairo_ps_surface_dsc_comment
+  (ats_cairo_surface_ref sf, ats_ptr_type comment) {
+  cairo_ps_surface_dsc_comment (sf, (char*)comment) ;
+  return ;
+} // end of [atsctrb_cairo_ps_surface_dsc_comment]
+
+#endif // end of [CAIRO_HAS_PS_SURFACE]
 
 /* ****** ****** */
 

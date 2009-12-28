@@ -581,6 +581,14 @@ fun cairo_image_surface_create_from_png
   (filename: string): cairo_surface_ref
   = "atsctrb_cairo_image_surface_create_from_png"
 
+fun cairo_image_surface_create_from_png_stream
+  {v:view} {vt:viewtype} (
+    pf: !v
+  | read_func: (!v | !vt, string, uint) -<fun1> cairo_status_t
+  , env: !vt
+  ) : cairo_surface_ref
+  = "atsctrb_cairo_image_surface_create_from_png"
+
 fun cairo_image_surface_get_width
   (image: !cairo_surface_ref): double
   = "atsctrb_cairo_image_surface_get_width"
@@ -599,6 +607,15 @@ fun cairo_surface_write_to_png
   (sf: !cairo_surface_ref, filename: string): cairo_status_t
   = "atsctrb_cairo_surface_write_to_png"
 
+fun cairo_surface_write_to_png_stream
+  {v:view} {vt:viewtype} (
+    pf: !v
+  | sf: !cairo_surface_ref
+  , write_func: (!v | !vt, string, uint) -<fun1> cairo_status_t
+  , env: !vt
+  ) : cairo_status_t
+  = "atsctrb_cairo_surface_write_to_png_stream"
+
 (* ****** ****** *)
 
 //
@@ -606,7 +623,6 @@ fun cairo_surface_write_to_png
 //
 
 (*
-// how to handle this:
 #define CAIRO_HAS_PDF_SURFACE
 *)
 
@@ -621,18 +637,100 @@ fun cairo_pdf_surface_create_null (
   = "atsctrb_cairo_pdf_surface_create_null"
 
 (*
-fun cairo_pdf_surface_create_for_stream (
-    cairo_write_func_t write_func, void *closure
-  , double width_in_points, double height_in_points
+** note that [pf] and [env] can be freed only after the
+** returned surface is destroyed by a call to[cairo_surface_destroy]
+*)
+fun cairo_pdf_surface_create_for_stream
+  {v:view} {vt:viewtype} (
+    pf: !v
+  | write_func: (!v | !vt, string, uint) -<fun1> cairo_status_t
+  , env: !vt
+  , width_in_points: double
+  , height_in_points: double
   ) : cairo_surface_ref
   = "atsctrb_cairo_pdf_surface_create_for_stream"
-*)
 
 fun cairo_pdf_surface_set_size (
     sf: !cairo_surface_ref
   , width_in_points: double, height_in_points: double
   ) : void 
   = "atsctrb_cairo_pdf_surface_set_size"
+
+(* ****** ****** *)
+
+//
+// PS surface
+//
+
+(*
+#define CAIRO_HAS_PS_SURFACE
+*)
+
+fun cairo_ps_surface_create (
+    filename: string, width_in_points: double, height_in_points: double
+  ) : cairo_surface_ref
+  = "atsctrb_cairo_ps_surface_create"
+
+fun cairo_ps_surface_create_null (
+    width_in_points: double, height_in_points: double
+  ) : cairo_surface_ref
+  = "atsctrb_cairo_ps_surface_create_null"
+
+(*
+** note that [pf] and [env] can be freed only after the
+** returned surface is destroyed by a call to[cairo_surface_destroy]
+*)
+fun cairo_ps_surface_create_for_stream
+  {v:view} {vt:viewtype} (
+    pf: !v
+  | write_func: (!v | !vt, string, uint) -<fun1> cairo_status_t
+  , env: !vt
+  , width_in_points: double
+  , height_in_points: double
+  ) : cairo_surface_ref
+  = "atsctrb_cairo_ps_surface_create_for_stream"
+
+(*
+// enum
+abst@ype cairo_ps_level_t =
+  $extype "ats_cairo_ps_level_type"
+
+macdef CAIRO_PS_LEVEL_2 =
+  $extval (cairo_ps_level_t, "CAIRO_PS_LEVEL_2")
+macdef CAIRO_PS_LEVEL_3 =
+  $extval (cairo_ps_level_t, "CAIRO_PS_LEVEL_3")
+
+(*
+void cairo_ps_get_levels
+  (cairo_ps_level_t const **levels, int *num_levels);
+*)
+fun cairo_ps_get_levels
+  (num_levels: &int? >> int n): #[n:nat] array (cairo_ps_level_t, n)
+  = "atsctrb_cairo_ps_get_levels"
+// end of [cairo_ps_get_levels]
+
+// a null string is returned if [level] is invalid
+fun cairo_ps_level_to_string (level: cairo_ps_level_t): Stropt
+
+*)
+
+fun cairo_ps_surface_set_size (
+    sf: !cairo_surface_ref
+  , width_in_points: double, height_in_points: double
+  ) : void 
+  = "atsctrb_cairo_ps_surface_set_size"
+
+fun cairo_ps_surface_dsc_begin_setup
+  (sf: !cairo_surface_ref) : void
+  = "atsctrb_cairo_ps_surface_dsc_begin_setup"
+
+fun cairo_ps_surface_dsc_begin_page_setup
+  (sf: !cairo_surface_ref) : void
+  = "atsctrb_cairo_ps_surface_dsc_begin_page_setup"
+
+fun cairo_ps_surface_dsc_comment
+  (sf: !cairo_surface_ref, comment: string): void
+  = "atsctrb_cairo_ps_surface_dsc_comment"
 
 (* ****** ****** *)
 

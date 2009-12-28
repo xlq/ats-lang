@@ -82,6 +82,6 @@ cleanall: clean
 	rm -f test7 cairo-test7.png
 	rm -f test8 cairo-test8.png
 	rm -f test9 cairo-test9.png
-	rm -f test10 cairo-test10.png
+	rm -f test10 cairo-test10.png cairo-test10.pdf cairo-test10.ps
 
 ###### end of [Makefile] ######

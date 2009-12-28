@@ -33,13 +33,14 @@ stadef cr = cairo_ref
 
 implement main () = () where {
 //
+  val wsf = 300 and hsf = 300
   val surface =
-    cairo_image_surface_create (CAIRO_FORMAT_ARGB32, 300, 300)
+    cairo_image_surface_create (CAIRO_FORMAT_ARGB32, wsf, hsf)
   val cr = cairo_create (surface)
 //
-  val xc = 150.0
-  val yc = 150.0
-  val rad = 100.0
+  val wsf = double_of wsf and hsf = double_of hsf
+  val xc = wsf / 2 and yc = hsf / 2
+  val rad = min (wsf, hsf) / 3
   val th1 = 45 * (M_PI / 180)
   val th2 = 180 * (M_PI / 180)
   val () = cairo_set_line_width (cr, 10.0)
