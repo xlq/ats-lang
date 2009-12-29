@@ -715,6 +715,16 @@ fun cairo_set_font_size
 
 (* ****** ****** *)
 
+fun cairo_set_font_matrix
+  (cr: !cairo_ref, mat: &cairo_matrix_t): void
+  = "atsctrb_cairo_set_font_matrx"
+
+fun cairo_get_font_matrix
+  (cr: !cairo_ref, mat: &cairo_matrix_t? >> cairo_matrix_t): void
+  = "atsctrb_cairo_get_font_matrx"
+
+(* ****** ****** *)
+
 fun cairo_get_font_face
   (cr: !cairo_ref): cairo_font_face_ref
   = "atsctrb_cairo_get_font_face"
@@ -781,7 +791,10 @@ fun cairo_transform (cr: !cairo_ref, mat: &cairo_matrix_t): void
   
 (* ****** ****** *)
 
-fun cairo_get_matrix (cr: !cairo_ref, mat: &cairo_matrix_t): void
+fun cairo_get_matrix (
+    cr: !cairo_ref
+  , mat: &cairo_matrix_t? >> cairo_matrix_t
+  ) : void
   = "atsctrb_cairo_get_matrix"
   
 fun cairo_set_matrix (cr: !cairo_ref, mat: &cairo_matrix_t): void
@@ -807,6 +820,28 @@ fun cairo_devide_to_user
 fun cairo_devide_to_user_distance
   (cr: !cairo_ref, dx: &double, dy: &double) : void
   = "atsctrb_cairo_devide_to_user_distance"
+
+(* ****** ****** *)
+
+//
+// fonts for drawing
+//
+
+fun cairo_font_face_reference
+  (font_face: !cairo_font_face_ref): cairo_font_face_ref
+  = "atsctrb_cairo_font_face_reference"
+
+fun cairo_font_face_destroy
+  (font_face: cairo_font_face_ref): void
+  = "atsctrb_cairo_font_face_destroy"
+
+fun cairo_font_face_status
+  (font_face: !cairo_font_face_ref): cairo_status_t
+  = "atsctrb_cairo_font_face_status"
+
+fun cairo_font_face_get_reference_count
+  (font_face: !cairo_font_face_ref): uint
+  = "atsctrb_cairo_font_face_get_reference_count"
 
 (* ****** ****** *)
 

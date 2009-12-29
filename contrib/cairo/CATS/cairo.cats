@@ -794,6 +794,24 @@ atsctrb_cairo_set_font_size (
 /* ****** ****** */
 
 static inline
+ats_void_type
+atsctrb_cairo_get_font_matrix
+  (ats_cairo_ref cr, ats_ref_type mat) {
+  cairo_get_font_matrix ((cairo_t*)cr, (cairo_matrix_t*)mat) ;
+  return ;
+} // end of [atsctrb_cairo_get_font_matrx]
+
+static inline
+ats_void_type
+atsctrb_cairo_set_font_matrix
+  (ats_cairo_ref cr, ats_ref_type mat) {
+  cairo_set_font_matrix ((cairo_t*)cr, (cairo_matrix_t*)mat) ;
+  return ;
+} // end of [atsctrb_cairo_set_font_matrx]
+
+/* ****** ****** */
+
+static inline
 ats_cairo_font_face_ref
 atsctrb_cairo_get_font_face (
   ats_cairo_ref cr
@@ -948,6 +966,36 @@ atsctrb_cairo_device_to_user_distance (
   cairo_device_to_user_distance((cairo_t*)cr, (double*)dx, (double*)dy) ;
   return ;
 } // end of [atsctrb_cairo_device_to_user_distance]
+
+/* ****** ****** */
+
+static inline
+ats_cairo_font_face_ref
+atsctrb_cairo_font_face_reference
+  (ats_cairo_font_face_ref font_face) {
+  return cairo_font_face_reference (font_face) ;
+} // end of [atsctrb_cairo_font_face_reference]
+
+static inline
+ats_void_type
+atsctrb_cairo_font_face_destroy
+  (ats_cairo_font_face_ref font_face) {
+  cairo_font_face_destroy (font_face) ; return ;
+} // end of [atsctrb_cairo_font_face_destroy]
+
+static inline
+ats_cairo_status_type
+atsctrb_cairo_font_face_status
+  (ats_cairo_font_face_ref font_face) {
+  return cairo_font_face_status (font_face) ;
+} // end of [atsctrb_cairo_font_face_status]
+
+static inline
+ats_uint_type
+atsctrb_cairo_font_face_get_reference_count
+  (ats_cairo_font_face_ref font_face) {
+  return cairo_font_face_get_reference_count (font_face) ;
+} // end of [atsctrb_cairo_font_face_get_reference_count]
 
 /* ****** ****** */
 
