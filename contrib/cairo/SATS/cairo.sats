@@ -49,6 +49,7 @@ absviewtype cairo_surface_ref // cairo_surface*
 absviewtype cairo_pattern_ref // cairo_pattern*
 
 absviewtype cairo_font_face_ref // cairo_font_face*
+absviewtype cairo_font_options_ptr // cairo_font_options_ptr
 
 (* ****** ****** *)
 
@@ -839,9 +840,131 @@ fun cairo_font_face_status
   (font_face: !cairo_font_face_ref): cairo_status_t
   = "atsctrb_cairo_font_face_status"
 
+abst@ype cairo_font_type_t =
+  $extype "ats_cairo_font_type_type"
+
+macdef CAIRO_FONT_TYPE_TOY =
+  $extval (cairo_font_type_t, "CAIRO_FONT_TYPE_TOY")
+macdef CAIRO_FONT_TYPE_FT =
+  $extval (cairo_font_type_t, "CAIRO_FONT_TYPE_FT")
+macdef CAIRO_FONT_TYPE_WIN32 =
+  $extval (cairo_font_type_t, "CAIRO_FONT_TYPE_WIN32")
+macdef CAIRO_FONT_TYPE_QUARTZ =
+  $extval (cairo_font_type_t, "CAIRO_FONT_TYPE_QUARTZ")
+macdef CAIRO_FONT_TYPE_USER =
+  $extval (cairo_font_type_t, "CAIRO_FONT_TYPE_USER")
+
+fun cairo_font_face_get_type
+  (font_face: !cairo_font_face_ref): cairo_font_type_t
+  = "atsctrb_cairo_font_face_get_type"
+
 fun cairo_font_face_get_reference_count
   (font_face: !cairo_font_face_ref): uint
   = "atsctrb_cairo_font_face_get_reference_count"
+
+(* ****** ****** *)
+
+// scaled fonts
+
+absviewtype cairo_scaled_font_ref // cairo_scaled_font_t*
+
+fun cairo_scaled_font_reference
+  (font: !cairo_scaled_font_ref): cairo_scaled_font_ref
+  = "atsctrb_cairo_scaled_font_reference"
+
+fun cairo_scaled_font_destroy
+  (font: cairo_scaled_font_ref): void
+  = "atsctrb_cairo_scaled_font_destroy"
+
+fun cairo_scaled_font_status
+  (font: !cairo_scaled_font_ref): cairo_status_t
+  = "atsctrb_cairo_scaled_font_status"
+
+fun cairo_scaled_font_get_reference_count
+  (font: !cairo_scaled_font_ref): uint
+  = "atsctrb_cairo_scaled_font_reference_count"
+
+fun cairo_scaled_font_extents (
+    font: !cairo_scaled_font_ref
+  , extents: &cairo_font_extents_t? >> cairo_font_extents_t
+  ) : void
+  = "atsctrb_cairo_scaled_font_extents"
+
+fun cairo_scaled_font_text_extents (
+    font: !cairo_scaled_font_ref
+  , utf8: string, extents: &cairo_text_extents_t? >> cairo_text_extents_t
+  ) : void
+  = "atsctrb_cairo_scaled_font_text_extents"
+
+fun cairo_scaled_font_get_font_face
+  (font: !cairo_scaled_font_ref) : cairo_font_face_ref
+  = "atsctrb_cairo_scaled_font_get_font_face"
+
+fun cairo_scaled_font_get_font_options (
+    font: !cairo_scaled_font_ref, options: !cairo_font_options_ptr
+  ) : void
+  = "atsctrb_cairo_scaled_font_get_font_options"
+
+fun cairo_scaled_font_get_font_matrix (
+    font: !cairo_scaled_font_ref
+  , font_matrix: &cairo_matrix_t? >> cairo_matrix_t
+  ) : void
+  = "atsctrb_cairo_scaled_font_get_font_matrix"
+
+fun cairo_scaled_font_get_ctm (
+    font: !cairo_scaled_font_ref
+  , ctm: &cairo_matrix_t? >> cairo_matrix_t
+  ) : void
+  = "atsctrb_cairo_scaled_font_get_ctm"
+
+fun cairo_scaled_font_get_scale_matrix (
+    font: !cairo_scaled_font_ref
+  , scale_matrix: &cairo_matrix_t? >> cairo_matrix_t
+  ) : void
+  = "atsctrb_cairo_scaled_font_get_scale_matrix"
+
+fun cairo_scaled_font_get_type
+  (font: !cairo_scaled_font_ref): cairo_font_type_t
+  = "atsctrb_cairo_scaled_font_get_type"
+
+(* ****** ****** *)
+
+// font options
+
+fun cairo_font_options_create (): cairo_font_options_ptr
+  = "atsctrb_cairo_font_options_create"
+
+fun cairo_font_options_copy
+  (options: !cairo_font_options_ptr): cairo_font_options_ptr
+  = "atsctrb_cairo_font_options_copy"
+
+fun cairo_font_options_destroy (options: cairo_font_options_ptr): void
+  = "atsctrb_cairo_font_options_copy"
+
+fun cairo_font_options_status
+  (options: !cairo_font_options_ptr): cairo_status_t
+  = "atsctrb_cairo_font_options_status"
+
+fun cairo_font_options_merge (
+    options: !cairo_font_options_ptr, other: !cairo_font_options_ptr
+  ) : void
+  = "atsctrb_cairo_font_options_merge"
+
+fun cairo_font_options_hash (options: !cairo_font_options_ptr): ulint
+  = "atsctrb_cairo_font_options_hash"
+
+fun cairo_font_options_equal (
+    options: !cairo_font_options_ptr, other: !cairo_font_options_ptr
+  ) : bool // cairo_bool_t
+  = "atsctrb_cairo_font_options_equal"
+
+fun cairo_font_options_get_antialias
+  (options: !cairo_font_options_ptr): cairo_antialias_t
+  = "atsctrb_cairo_font_options_get_antialias"
+
+fun cairo_set_font_options_antialias
+  (options: !cairo_font_options_ptr, antialias: cairo_antialias_t): void
+  = "atsctrb_cairo_font_options_set_antialias"
 
 (* ****** ****** *)
 
@@ -1034,7 +1157,6 @@ fun cairo_ps_get_levels
 
 // a null string is returned if [level] is invalid
 fun cairo_ps_level_to_string (level: cairo_ps_level_t): Stropt
-
 *)
 
 fun cairo_ps_surface_set_size (

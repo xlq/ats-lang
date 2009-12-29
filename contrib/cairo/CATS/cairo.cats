@@ -52,12 +52,11 @@ typedef ats_ref_type ats_cairo_ref ;
 typedef ats_ref_type ats_cairo_surface_ref ;
 typedef ats_ref_type ats_cairo_pattern_ref ;
 typedef ats_ref_type ats_cairo_font_face_ref ;
+typedef ats_ref_type ats_cairo_scaled_font_ref ;
 
 typedef cairo_status_t ats_cairo_status_type ;
-typedef cairo_operator_t ats_cairo_operator_type ;
-typedef cairo_format_t ats_cairo_format_type ;
-typedef cairo_font_slant_t ats_cairo_font_slant_type ;
-typedef cairo_font_weight_t ats_cairo_font_weight_type ;
+
+typedef cairo_matrix_t ats_cairo_matrix_type ;
 
 /* ****** ****** */
 
@@ -225,9 +224,9 @@ atsctrb_cairo_get_antialias
 static inline
 ats_void_type
 atsctrb_cairo_set_antialias (
-  ats_cairo_ref cr, ats_cairo_antialias_type rule
+  ats_cairo_ref cr, ats_cairo_antialias_type antialias
 ) {
-  cairo_set_antialias((cairo_t*)cr, rule) ; return ;
+  cairo_set_antialias((cairo_t*)cr, antialias) ; return ;
 } /* end of [atsctrb_cairo_set_antialias] */
 
 /* ****** ****** */
@@ -299,9 +298,9 @@ atsctrb_cairo_get_line_cap
 static inline
 ats_void_type
 atsctrb_cairo_set_line_cap (
-  ats_cairo_ref cr, ats_cairo_line_cap_type rule
+  ats_cairo_ref cr, ats_cairo_line_cap_type cap
 ) {
-  cairo_set_line_cap((cairo_t*)cr, rule) ; return ;
+  cairo_set_line_cap((cairo_t*)cr, cap) ; return ;
 } /* end of [atsctrb_cairo_set_line_cap] */
 
 /* ****** ****** */
@@ -318,9 +317,9 @@ atsctrb_cairo_get_line_join
 static inline
 ats_void_type
 atsctrb_cairo_set_line_join (
-  ats_cairo_ref cr, ats_cairo_line_join_type rule
+  ats_cairo_ref cr, ats_cairo_line_join_type join
 ) {
-  cairo_set_line_join((cairo_t*)cr, rule) ; return ;
+  cairo_set_line_join((cairo_t*)cr, join) ; return ;
 } /* end of [atsctrb_cairo_set_line_join] */
 
 /* ****** ****** */
@@ -359,6 +358,8 @@ atsctrb_cairo_set_miter_limit (
 
 /* ****** ****** */
 
+typedef cairo_operator_t ats_cairo_operator_type ;
+
 static inline
 ats_cairo_operator_type
 atsctrb_cairo_get_operator
@@ -369,9 +370,9 @@ atsctrb_cairo_get_operator
 static inline
 ats_void_type
 atsctrb_cairo_set_operator (
-  ats_cairo_ref cr, ats_cairo_operator_type rule
+  ats_cairo_ref cr, ats_cairo_operator_type opr
 ) {
-  cairo_set_operator((cairo_t*)cr, rule) ; return ;
+  cairo_set_operator((cairo_t*)cr, opr) ; return ;
 } /* end of [atsctrb_cairo_set_operator] */
 
 /* ****** ****** */
@@ -773,6 +774,9 @@ atsctrb_cairo_path_extents (
 
 // drawing texts
 
+typedef cairo_font_slant_t ats_cairo_font_slant_type ;
+typedef cairo_font_weight_t ats_cairo_font_weight_type ;
+
 static inline
 ats_void_type
 atsctrb_cairo_select_font_face (
@@ -990,12 +994,200 @@ atsctrb_cairo_font_face_status
   return cairo_font_face_status (font_face) ;
 } // end of [atsctrb_cairo_font_face_status]
 
+typedef cairo_font_type_t ats_cairo_font_type_type ;
+
+static inline
+ats_cairo_font_type_type
+atsctrb_cairo_font_face_get_type
+  (ats_cairo_font_face_ref font_face) {
+  return cairo_font_face_get_type (font_face) ;
+} // end of [atsctrb_cairo_font_face_get_type]
+
 static inline
 ats_uint_type
 atsctrb_cairo_font_face_get_reference_count
   (ats_cairo_font_face_ref font_face) {
   return cairo_font_face_get_reference_count (font_face) ;
 } // end of [atsctrb_cairo_font_face_get_reference_count]
+
+/* ****** ****** */
+
+// scaled fonts
+
+static inline
+ats_cairo_scaled_font_ref
+atsctrb_cairo_scaled_font_reference
+  (ats_cairo_scaled_font_ref font) {
+  return cairo_scaled_font_reference((cairo_scaled_font_t*)font) ;
+} // end of [atsctrb_cairo_scaled_font_reference]
+
+static inline
+ats_void_type
+atsctrb_cairo_scaled_font_destroy
+  (ats_cairo_scaled_font_ref font) {
+  cairo_scaled_font_destroy((cairo_scaled_font_t*)font) ; return ;
+} // end of [atsctrb_cairo_scaled_font_destroy]
+
+static inline
+ats_cairo_status_type
+atsctrb_cairo_scaled_font_status
+  (ats_cairo_scaled_font_ref font) {
+  return cairo_scaled_font_status((cairo_scaled_font_t*)font) ;
+} // end of [atsctrb_cairo_scaled_font_status]
+
+static inline
+ats_void_type
+atsctrb_cairo_scaled_font_extents (
+  ats_cairo_scaled_font_ref font, ats_ref_type extents
+) {
+  cairo_scaled_font_extents(
+    (cairo_scaled_font_t*)font, (cairo_font_extents_t*)extents
+  ) ; return ;
+} // end of [atsctrb_cairo_scaled_font_extents]
+
+static inline
+ats_void_type
+atsctrb_cairo_scaled_font_text_extents (
+  ats_cairo_scaled_font_ref font
+, ats_ptr_type utf8, ats_ref_type extents
+) {
+  cairo_scaled_font_text_extents(
+    (cairo_scaled_font_t*)font, (char*)utf8, (cairo_text_extents_t*)extents
+  ) ; return ;
+} // end of [atsctrb_cairo_scaled_font_text_extents]
+
+static inline
+ats_cairo_font_face_ref
+atsctrb_cairo_scaled_font_get_font_face
+  (ats_cairo_scaled_font_ref font) {
+  return cairo_scaled_font_get_font_face((cairo_scaled_font_t*)font) ;
+} // end of [atsctrb_cairo_scaled_font_get_font_face]
+
+static inline
+ats_void_type
+atsctrb_cairo_scaled_font_get_font_options (
+  ats_cairo_scaled_font_ref font, ats_ptr_type options
+) {
+  cairo_scaled_font_get_font_options(
+    (cairo_scaled_font_t*)font, (cairo_font_options_t*)options
+  ) ; return ;
+} // end of [atsctrb_cairo_scaled_font_get_font_options]
+
+static inline
+ats_void_type
+atsctrb_cairo_scaled_font_get_font_matrix (
+  ats_cairo_scaled_font_ref font, ats_ref_type font_matrix
+) {
+  cairo_scaled_font_get_font_matrix(
+    (cairo_scaled_font_t*)font, (cairo_matrix_t*)font_matrix
+  ) ; return ;
+} // end of [atsctrb_cairo_scaled_font_get_font_matrix]
+
+static inline
+ats_void_type
+atsctrb_cairo_scaled_font_get_ctm (
+  ats_cairo_scaled_font_ref font, ats_ref_type ctm
+) {
+  cairo_scaled_font_get_ctm(
+    (cairo_scaled_font_t*)font, (cairo_matrix_t*)ctm
+  ) ; return ;
+} // end of [atsctrb_cairo_scaled_font_get_ctm]
+
+static inline
+ats_void_type
+atsctrb_cairo_scaled_font_get_scale_matrix (
+  ats_cairo_scaled_font_ref font, ats_ref_type scale_matrix
+) {
+  cairo_scaled_font_get_scale_matrix(
+    (cairo_scaled_font_t*)font, (cairo_matrix_t*)scale_matrix
+  ) ; return ;
+} // end of [atsctrb_cairo_scaled_font_get_scale_matrix]
+
+static inline
+ats_cairo_font_type_type
+atsctrb_cairo_scaled_font_get_type
+  (ats_cairo_scaled_font_ref font) {
+  return cairo_scaled_font_get_type((cairo_scaled_font_t*)font) ;
+} // end of [atsctrb_cairo_scaled_font_get_type]
+
+static inline
+ats_uint_type
+atsctrb_cairo_scaled_font_get_reference_count
+  (ats_cairo_scaled_font_ref font) {
+  return cairo_scaled_font_get_reference_count((cairo_scaled_font_t*)font) ;
+} // end of [atsctrb_cairo_scaled_font_get_reference_count]
+
+/* ****** ****** */
+
+// font options
+
+static inline
+ats_ptr_type
+atsctrb_cairo_font_options_create () {
+  return cairo_font_options_create () ;
+} // end of [atsctrb_cairo_font_options_create]
+
+static inline
+ats_ptr_type
+atsctrb_cairo_font_options_copy
+  (ats_ptr_type options) {
+  return cairo_font_options_copy((cairo_font_options_t*)options) ;
+} // end of [atsctrb_cairo_font_options_copy]
+
+static inline
+ats_void_type
+atsctrb_cairo_font_options_destroy
+  (ats_ptr_type options) {
+  cairo_font_options_destroy((cairo_font_options_t*)options) ; return ;
+} // end of [atsctrb_cairo_font_options_destroy]
+
+static inline
+ats_cairo_status_type
+atsctrb_cairo_font_options_status
+  (ats_ptr_type options) {
+  return cairo_font_options_status((cairo_font_options_t*)options) ;
+} // end of [atsctrb_cairo_font_options_status]
+
+static inline
+ats_void_type
+atsctrb_cairo_font_options_merge
+  (ats_ptr_type options, ats_ptr_type other) {
+  cairo_font_options_merge(
+    (cairo_font_options_t*)options, (cairo_font_options_t*)other
+  ) ; return ;
+} // end of [atsctrb_cairo_font_options_merge]
+
+static inline
+ats_ulint_type
+atsctrb_cairo_font_options_hash
+  (ats_ptr_type options) {
+  return cairo_font_options_hash((cairo_font_options_t*)options) ;
+} // end of [atsctrb_cairo_font_options_hash]
+
+static inline
+ats_bool_type
+atsctrb_cairo_font_options_equal
+  (ats_ptr_type options, ats_ptr_type other) {
+  return cairo_font_options_equal(
+    (cairo_font_options_t*)options, (cairo_font_options_t*)other
+  ) ;
+} // end of [atsctrb_cairo_font_options_equal]
+
+static inline
+ats_cairo_antialias_type
+atsctrb_cairo_font_options_get_antialias
+  (ats_ptr_type font) {
+  return cairo_font_options_get_antialias((cairo_font_options_t*)font) ;
+} /* end of [atsctrb_cairo_font_options_get_antialias] */
+
+static inline
+ats_void_type
+atsctrb_cairo_font_options_set_antialias (
+  ats_ptr_type font, ats_cairo_antialias_type antialias
+) {
+  cairo_font_options_set_antialias((cairo_font_options_t*)font, antialias);
+  return ;
+} /* end of [atsctrb_cairo_font_options_set_antialias] */
 
 /* ****** ****** */
 
@@ -1013,6 +1205,8 @@ atsctrb_cairo_surface_destroy
 /* ****** ****** */
 
 // image surface
+
+typedef cairo_format_t ats_cairo_format_type ;
 
 static inline
 ats_cairo_surface_ref
