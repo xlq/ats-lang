@@ -13,7 +13,9 @@ ATSCTRB=$(ATSHOME)/contrib/cairo/atsctrb_cairo.o
 
 ######
 
-checkall: test1 test2 test3 test4 test5 cleanall
+checkall: \
+  test1 test2 test3 test4 test5 test6 test7 test8 test9 \
+  cleanall
 
 ######
 

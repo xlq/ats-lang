@@ -7,15 +7,19 @@ ATSCC="$(ATSHOME)"/bin/atscc
 
 ######
 
+all: atsctrb_GL.o clean
+
+######
+
 atsctrb_GL.o: gl_sats.o glut_sats.o
 	ld -r -o $@ gl_sats.o glut_sats.o
 
 ######
 
 gl_sats.o: SATS/gl.sats
-	atscc -o $@ -c SATS/gl.sats
+	$(ATSCC) -o $@ -c SATS/gl.sats
 glut_sats.o: SATS/glut.sats
-	atscc -o $@ -c SATS/glut.sats
+	$(ATSCC) -o $@ -c SATS/glut.sats
 
 ######
 

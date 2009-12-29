@@ -1,7 +1,7 @@
 (*
 **
-** A simple CAIRO example:
-**   an illusion of cirular motion
+** A simple CAIRO example: an illusion of circular motion
+** see Kitaoka's page: http://www.ritsumei.ac.jp/~akitaoka/
 **
 ** This is a variant of cairo-test8
 **
@@ -48,7 +48,7 @@ fn bw_set (cr: !cr, bw: int): void =
 
 fn rb_set (cr: !cr, rb: int): void =
   if rb > 0 then
-    cairo_set_source_rgb (cr, 1.0, 0.0, 0.0)
+    cairo_set_source_rgb (cr, 1.0, 0.75, 0.0)
   else
     cairo_set_source_rgb (cr, 0.0, 0.0, 1.0)
   // end of [if]

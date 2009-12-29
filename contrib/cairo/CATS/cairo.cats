@@ -139,6 +139,16 @@ atsctrb_cairo_push_group
   cairo_push_group((cairo_t*)cr) ; return ;
 }
 
+typedef cairo_content_t ats_cairo_content_type ;
+
+static inline
+ats_void_type
+atsctrb_cairo_push_group_with_content (
+  ats_cairo_ref cr, ats_cairo_content_type content
+) {
+  cairo_push_group_with_content((cairo_t*)cr, content) ; return ;
+} // end of [atsctrb_cairo_push_group_with_content]
+
 static inline
 ats_cairo_pattern_ref
 atsctrb_cairo_pop_group
@@ -203,6 +213,118 @@ atsctrb_cairo_set_source_surface (
 
 /* ****** ****** */
 
+typedef cairo_antialias_t ats_cairo_antialias_type ;
+
+static inline
+ats_cairo_antialias_type
+atsctrb_cairo_get_antialias
+  (ats_cairo_ref cr) {
+  return cairo_get_antialias((cairo_t*)cr) ;
+} /* end of [atsctrb_cairo_get_antialias] */
+
+static inline
+ats_void_type
+atsctrb_cairo_set_antialias (
+  ats_cairo_ref cr, ats_cairo_antialias_type rule
+) {
+  cairo_set_antialias((cairo_t*)cr, rule) ; return ;
+} /* end of [atsctrb_cairo_set_antialias] */
+
+/* ****** ****** */
+
+static inline
+ats_int_type
+atsctrb_cairo_get_dash_count
+  (ats_cairo_ref cr) {
+  return cairo_get_dash_count ((cairo_t*)cr) ; 
+} // end of [atsctrb_cairo_get_dash_count]
+
+static inline
+ats_int_type
+atsctrb_cairo_get_dash (
+  ats_cairo_ref cr
+, ats_ptr_type dashes, ats_int_type n
+, ats_ptr_type offset
+) {
+  int n1 = cairo_get_dash_count((cairo_t*)cr) ;
+  if (n1 <= n) {
+    cairo_get_dash((cairo_t*)cr, (double*)dashes, (double*)offset) ;
+  } else {
+    cairo_get_dash((cairo_t*)cr, (double*)0, (double*)offset) ;
+  } // end of [if]
+  return n1 ;
+} // end of [atsctrb_cairo_get_dash]
+
+static inline
+ats_int_type
+atsctrb_cairo_set_dash (
+  ats_cairo_ref cr
+, ats_ptr_type dashes, ats_int_type n
+, ats_double_type offset
+) {
+  cairo_set_dash((cairo_t*)cr, (double*)dashes, n, offset) ;
+  return ;
+} // end of [atsctrb_cairo_set_dash]
+
+/* ****** ****** */
+
+typedef cairo_fill_rule_t ats_cairo_fill_rule_type ;
+
+static inline
+ats_cairo_fill_rule_type
+atsctrb_cairo_get_fill_rule
+  (ats_cairo_ref cr) {
+  return cairo_get_fill_rule((cairo_t*)cr) ;
+} /* end of [atsctrb_cairo_get_fill_rule] */
+
+static inline
+ats_void_type
+atsctrb_cairo_set_fill_rule (
+  ats_cairo_ref cr, ats_cairo_fill_rule_type rule
+) {
+  cairo_set_fill_rule((cairo_t*)cr, rule) ; return ;
+} /* end of [atsctrb_cairo_set_fill_rule] */
+
+/* ****** ****** */
+
+typedef cairo_line_cap_t ats_cairo_line_cap_type ;
+
+static inline
+ats_cairo_line_cap_type
+atsctrb_cairo_get_line_cap
+  (ats_cairo_ref cr) {
+  return cairo_get_line_cap((cairo_t*)cr) ;
+} /* end of [atsctrb_cairo_get_line_cap] */
+
+static inline
+ats_void_type
+atsctrb_cairo_set_line_cap (
+  ats_cairo_ref cr, ats_cairo_line_cap_type rule
+) {
+  cairo_set_line_cap((cairo_t*)cr, rule) ; return ;
+} /* end of [atsctrb_cairo_set_line_cap] */
+
+/* ****** ****** */
+
+typedef cairo_line_join_t ats_cairo_line_join_type ;
+
+static inline
+ats_cairo_line_join_type
+atsctrb_cairo_get_line_join
+  (ats_cairo_ref cr) {
+  return cairo_get_line_join((cairo_t*)cr) ;
+} /* end of [atsctrb_cairo_get_line_join] */
+
+static inline
+ats_void_type
+atsctrb_cairo_set_line_join (
+  ats_cairo_ref cr, ats_cairo_line_join_type rule
+) {
+  cairo_set_line_join((cairo_t*)cr, rule) ; return ;
+} /* end of [atsctrb_cairo_set_line_join] */
+
+/* ****** ****** */
+
 static inline
 ats_double_type
 atsctrb_cairo_get_line_width
@@ -217,6 +339,78 @@ atsctrb_cairo_set_line_width (
 ) {
   cairo_set_line_width((cairo_t*)cr, width) ; return ;
 } /* end of [atsctrb_cairo_set_line_width] */
+
+/* ****** ****** */
+
+static inline
+ats_double_type
+atsctrb_cairo_get_miter_limit
+  (ats_cairo_ref cr) {
+  return cairo_get_miter_limit((cairo_t*)cr) ;
+} /* end of [atsctrb_cairo_get_miter_limit] */
+
+static inline
+ats_void_type
+atsctrb_cairo_set_miter_limit (
+  ats_cairo_ref cr, ats_double_type limit
+) {
+  cairo_set_miter_limit((cairo_t*)cr, limit) ; return ;
+} /* end of [atsctrb_cairo_set_miter_limit] */
+
+/* ****** ****** */
+
+static inline
+ats_cairo_operator_type
+atsctrb_cairo_get_operator
+  (ats_cairo_ref cr) {
+  return cairo_get_operator((cairo_t*)cr) ;
+} /* end of [atsctrb_cairo_get_operator] */
+
+static inline
+ats_void_type
+atsctrb_cairo_set_operator (
+  ats_cairo_ref cr, ats_cairo_operator_type rule
+) {
+  cairo_set_operator((cairo_t*)cr, rule) ; return ;
+} /* end of [atsctrb_cairo_set_operator] */
+
+/* ****** ****** */
+
+static inline
+ats_double_type
+atsctrb_cairo_get_tolerance
+  (ats_cairo_ref cr) {
+  return cairo_get_tolerance((cairo_t*)cr) ;
+} /* end of [atsctrb_cairo_get_tolerance] */
+
+static inline
+ats_void_type
+atsctrb_cairo_set_tolerance (
+  ats_cairo_ref cr, ats_double_type tolerance
+) {
+  cairo_set_tolerance((cairo_t*)cr, tolerance) ; return ;
+} /* end of [atsctrb_cairo_set_tolerance] */
+
+/* ****** ****** */
+
+#if (CAIRO_VERSION >= CAIRO_VERSION_ENCODE (1, 4, 0))
+
+static inline
+ats_void_type
+atsctrb_cairo_rectangle_list_destroy
+  (ats_ref_type lst) {
+  cairo_rectangle_list_destroy((cairo_rectangle_list_t*)lst) ;
+  return ;
+} // end of [cairo_rectangle_list_destroy]
+
+static inline
+ats_ref_type
+atsctrb_cairo_clip_rectangle_list)
+  (ats_cairo_ref cr)
+  return cairo_clip_rectangle_list((cairo_t*)cr) ;
+} // end of [cairo_clip_rectangle_list]
+
+#endif // end of [#if (CAIRO_VERSION >= 1.4.0)]
 
 /* ****** ****** */
 
@@ -236,23 +430,52 @@ atsctrb_cairo_clip_preserve (
   cairo_clip_preserve((cairo_t*)cr) ; return ;
 } /* end of [atsctrb_cairo_clip_preserve] */
 
+static inline
+ats_void_type
+atsctrb_cairo_clip_extents (
+  ats_cairo_ref cr
+, ats_ref_type x1, ats_ref_type y1
+, ats_ref_type x2, ats_ref_type y2
+) {
+  cairo_clip_extents(
+    (cairo_t*)cr, (double*)x1, (double*)y1, (double*)x2, (double*)y2
+  ) ; return ;
+} /* end of [atsctrb_cairo_clip_extents] */
+
+static inline
+ats_void_type
+atsctrb_cairo_reset_clip
+  (ats_cairo_ref cr) {
+  cairo_reset_clip((cairo_t*)cr) ; return ;
+} /* end of [atsctrb_cairo_reset_clip] */
+
 /* ****** ****** */
 
 static inline
 ats_void_type
-atsctrb_cairo_fill (
-  ats_cairo_ref cr
-) {
+atsctrb_cairo_fill
+  (ats_cairo_ref cr) {
   cairo_fill((cairo_t*)cr) ; return ;
 } /* end of [atsctrb_cairo_fill] */
 
 static inline
 ats_void_type
-atsctrb_cairo_fill_preserve (
-  ats_cairo_ref cr
-) {
+atsctrb_cairo_fill_preserve
+  (ats_cairo_ref cr) {
   cairo_fill_preserve((cairo_t*)cr) ; return ;
 } /* end of [atsctrb_cairo_fill_preserve] */
+
+static inline
+ats_void_type
+atsctrb_cairo_fill_extents (
+  ats_cairo_ref cr
+, ats_ref_type x1, ats_ref_type y1
+, ats_ref_type x2, ats_ref_type y2
+) {
+  cairo_fill_extents(
+    (cairo_t*)cr, (double*)x1, (double*)y1, (double*)x2, (double*)y2
+  ) ; return ;
+} /* end of [atsctrb_cairo_fill_extents] */
 
 static inline
 ats_bool_type
@@ -267,6 +490,28 @@ atsctrb_cairo_in_fill (
 
 static inline
 ats_void_type
+atsctrb_cairo_mask (
+  ats_cairo_ref cr, ats_cairo_pattern_ref pat
+) {
+  cairo_mask((cairo_t*)cr, (cairo_pattern_t*)pat) ; return ;
+} /* end of [atsctrb_cairo_mask] */
+
+static inline
+ats_void_type
+atsctrb_cairo_mask_surface (
+  ats_cairo_ref cr
+, ats_cairo_surface_ref sf
+, ats_double_type sf_x, ats_double_type sf_y
+) {
+  cairo_mask_surface(
+    (cairo_t*)cr, (cairo_surface_t*)sf, sf_x, sf_y
+  ) ; return ;
+} /* end of [atsctrb_cairo_mask_surface] */
+
+/* ****** ****** */
+
+static inline
+ats_void_type
 atsctrb_cairo_paint (
   ats_cairo_ref cr
 ) {
@@ -275,11 +520,50 @@ atsctrb_cairo_paint (
 
 static inline
 ats_void_type
+atsctrb_cairo_paint_with_alpha (
+  ats_cairo_ref cr, ats_double_type alpha
+) {
+  cairo_paint_with_alpha((cairo_t*)cr, alpha) ; return ;
+} /* end of [atsctrb_cairo_paint_with_alpha] */
+
+/* ****** ****** */
+
+static inline
+ats_void_type
 atsctrb_cairo_stroke (
   ats_cairo_ref cr
 ) {
   cairo_stroke((cairo_t*)cr) ; return ;
 } /* end of [atsctrb_cairo_stroke] */
+
+static inline
+ats_void_type
+atsctrb_cairo_stroke_preserve (
+  ats_cairo_ref cr
+) {
+  cairo_stroke_preserve((cairo_t*)cr) ; return ;
+} /* end of [atsctrb_cairo_stroke_preserve] */
+
+static inline
+ats_void_type
+atsctrb_cairo_stroke_extents (
+  ats_cairo_ref cr
+, ats_ref_type x1, ats_ref_type y1
+, ats_ref_type x2, ats_ref_type y2
+) {
+  cairo_stroke_extents(
+    (cairo_t*)cr, (double*)x1, (double*)y1, (double*)x2, (double*)y2
+  ) ; return ;
+} /* end of [atsctrb_cairo_stroke_extents] */
+
+static inline
+ats_bool_type
+atsctrb_cairo_in_stroke (
+  ats_cairo_ref cr
+, ats_double_type x, ats_double_type y
+) {
+  return cairo_in_stroke((cairo_t*)cr, x, y) ;
+} /* end of [atsctrb_cairo_in_stroke] */
 
 /* ****** ****** */
 
@@ -300,6 +584,37 @@ atsctrb_cairo_show_page
 /* ****** ****** */
 
 // drawing paths
+
+/* ****** ****** */
+
+static inline
+ats_ref_type
+atsctrb_cairo_copy_path
+  (ats_cairo_ref cr) {
+  return cairo_copy_path((cairo_t*)cr) ; 
+} // end of [atsctrb_cairo_copy_path]
+
+static inline
+ats_ref_type
+atsctrb_cairo_copy_path_flat
+  (ats_cairo_ref cr) {
+  return cairo_copy_path_flat((cairo_t*)cr) ; 
+} // end of [atsctrb_cairo_copy_path_flat]
+
+static inline
+ats_void_type
+atsctrb_cairo_append_path
+  (ats_cairo_ref cr, ats_ref_type path) {
+  cairo_append_path((cairo_t*)cr, (cairo_path_t*)path) ;
+  return ;
+} // end of [atsctrb_cairo_append_path]
+
+static inline
+ats_void_type
+atsctrb_cairo_path_destroy
+  (ats_ref_type path) {
+  cairo_path_destroy((cairo_path_t*)path) ; return ;
+} // end of [atsctrb_cairo_path_destroy]
 
 /* ****** ****** */
 
@@ -442,6 +757,20 @@ atsctrb_cairo_rel_move_to (
 
 /* ****** ****** */
 
+static inline
+ats_void_type
+atsctrb_cairo_path_extents (
+  ats_cairo_ref cr
+, ats_ref_type x1, ats_ref_type y1
+, ats_ref_type x2, ats_ref_type y2
+) {
+  cairo_path_extents(
+    (cairo_t*)cr, (double*)x1, (double*)y1, (double*)x2, (double*)y2
+  ) ; return ;
+} /* end of [atsctrb_cairo_path_extents] */
+
+/* ****** ****** */
+
 // drawing texts
 
 static inline
@@ -542,7 +871,83 @@ atsctrb_cairo_rotate (
 , ats_double_type angle
 ) {
   cairo_rotate((cairo_t*)cr, angle) ; return ;
-}
+} // end of [atsctrb_cairo_rotate]
+
+static inline
+ats_void_type
+atsctrb_cairo_transform (
+  ats_cairo_ref cr, ats_ref_type mat
+) {
+  cairo_transform ((cairo_t*)cr, (cairo_matrix_t*)mat) ;
+  return ;
+} // end of [atsctrb_cairo_transform]
+
+/* ****** ****** */
+
+static inline
+ats_void_type
+atsctrb_cairo_get_matrix (
+  ats_cairo_ref cr, ats_ref_type mat
+) {
+  cairo_get_matrix ((cairo_t*)cr, (cairo_matrix_t*)mat) ;
+  return ;
+} // end of [atsctrb_cairo_get_matrix]
+
+static inline
+ats_void_type
+atsctrb_cairo_set_matrix (
+  ats_cairo_ref cr, ats_ref_type mat
+) {
+  cairo_set_matrix ((cairo_t*)cr, (cairo_matrix_t*)mat) ;
+  return ;
+} // end of [atsctrb_cairo_set_matrix]
+
+static inline
+ats_void_type
+atsctrb_cairo_identity_matrix
+  (ats_cairo_ref cr) {
+  cairo_identity_matrix ((cairo_t*)cr) ; return ;
+} // end of [atsctrb_cairo_identity_matrix]
+
+/* ****** ****** */
+
+static inline
+ats_void_type
+atsctrb_cairo_user_to_device (
+  ats_cairo_ref cr
+, ats_ref_type x, ats_ref_type y
+) {
+  cairo_user_to_device((cairo_t*)cr, (double*)x, (double*)y) ;
+  return ;
+} // end of [atsctrb_cairo_user_to_device]
+
+static inline
+ats_void_type
+atsctrb_cairo_user_to_device_distance (
+  ats_cairo_ref cr, ats_ref_type dx, ats_ref_type dy
+) {
+  cairo_user_to_device_distance((cairo_t*)cr, (double*)dx, (double*)dy) ;
+  return ;
+} // end of [atsctrb_cairo_user_to_device_distance]
+
+static inline
+ats_void_type
+atsctrb_cairo_device_to_user (
+  ats_cairo_ref cr
+, ats_ref_type x, ats_ref_type y
+) {
+  cairo_device_to_user((cairo_t*)cr, (double*)x, (double*)y) ;
+  return ;
+} // end of [atsctrb_cairo_device_to_user]
+
+static inline
+ats_void_type
+atsctrb_cairo_device_to_user_distance (
+  ats_cairo_ref cr, ats_ref_type dx, ats_ref_type dy
+) {
+  cairo_device_to_user_distance((cairo_t*)cr, (double*)dx, (double*)dy) ;
+  return ;
+} // end of [atsctrb_cairo_device_to_user_distance]
 
 /* ****** ****** */
 
@@ -887,6 +1292,15 @@ atsctrb_cairo_matrix_transform_point (
     (cairo_matrix_t*)matrix, (double*)x, (double*)y
   ) ; return ;
 } // end of [atsctrb_cairo_matrix_transform_point]
+
+/* ****** ****** */
+
+static inline
+ats_uint_type
+atsctrb_cairo_get_reference_count
+  (ats_cairo_ref cr) {
+  return cairo_get_reference_count((cairo_t*)cr) ;
+} // end of [atsctrb_cairo_get_reference_count]
 
 /* ****** ****** */
 

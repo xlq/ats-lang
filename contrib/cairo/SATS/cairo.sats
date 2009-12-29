@@ -131,12 +131,6 @@ overload = with eq_cairo_status_cairo_status
 (* ****** ****** *)
 
 // enum type
-abst@ype cairo_operator_t = $extype "ats_cairo_operator_type"
-castfn int_of_cairo_operator_t (x: cairo_operator_t):<> int
-
-(* ****** ****** *)
-
-// enum type
 abst@ype cairo_format_t = $extype "ats_cairo_format_type"
 castfn int_of_cairo_format_t (x: cairo_format_t):<> int
 
@@ -233,10 +227,23 @@ fun cairo_push_group
   (cr: !cairo_ref): (cairo_push_group_v | void)
   = "atsctrb_cairo_push_group"
 
-(*
-void cairo_push_group_with_content
-(cairo_t *cr, cairo_content_t content);
-*)
+// enum type
+abst@ype cairo_content_t =
+  $extype "ats_cairo_content_type"
+
+macdef CAIRO_CONTENT_COLOR =
+  $extval (cairo_content_t, "CAIRO_CONTENT_COLOR")
+
+macdef CAIRO_CONTENT_ALPHA =
+  $extval (cairo_content_t, "CAIRO_CONTENT_ALPHA")
+
+macdef CAIRO_CONTENT_COLOR_ALPHA =
+  $extval (cairo_content_t, "CAIRO_CONTENT_COLOR_ALPHA")
+
+fun cairo_push_group_with_content (
+    cr: !cairo_ref, content: cairo_content_t
+  ) : (cairo_push_group_v | void)
+  = "atsctrb_cairo_push_group_with_content"
 
 fun cairo_pop_group
   (pf: cairo_push_group_v | cr: !cairo_ref): cairo_pattern_ref
@@ -278,6 +285,112 @@ fun cairo_set_source_surface (
 
 (* ****** ****** *)
 
+abst@ype cairo_antialias_t =
+  $extype "ats_cairo_antialias_type"
+
+macdef CAIRO_ANTIALIAS_DEFAULT =
+  $extval (cairo_antialias_t, "CAIRO_ANTIALIAS_DEFAULT")
+macdef CAIRO_ANTIALIAS_NONE =
+  $extval (cairo_antialias_t, "CAIRO_ANTIALIAS_NONE")
+macdef CAIRO_ANTIALIAS_GRAY =
+  $extval (cairo_antialias_t, "CAIRO_ANTIALIAS_GRAY")
+macdef CAIRO_ANTIALIAS_SUBPIXEL =
+  $extval (cairo_antialias_t, "CAIRO_ANTIALIAS_SUBPIXEL")
+
+fun cairo_get_antialias
+  (cr: !cairo_ref): cairo_antialias_t
+  = "atsctrb_cairo_get_antialias"
+
+fun cairo_set_antialias
+  (cr: !cairo_ref, antialias: cairo_antialias_t): void
+  = "atsctrb_cairo_set_antialias"
+
+(* ****** ****** *)
+
+fun cairo_get_dash_count (cr: !cairo_ref): int
+  = "atsctrb_cairo_get_dash_count"
+
+//
+// note that [dashes] gets updated only if [n1 <= n]
+//
+fun cairo_get_dash {n:nat} (
+    cr: !cairo_ref
+  , dashes: &(@[double][n]), n: int n, offset: &double? >> double
+  ) : [n1:nat] int n1
+  = "atsctrb_cairo_get_dash"
+
+fun cairo_set_dash {n:nat} (
+    cr: !cairo_ref, dashes: &(@[double][n]), n: int n, offset: double
+  ) : void
+  = "atsctrb_cairo_set_dash"
+
+(* ****** ****** *)
+
+// enum type
+abst@ype cairo_fill_rule_t =
+  $extype "ats_cairo_fill_rule_type"
+
+macdef CAIRO_FILL_RULE_WINDING =
+  $extval (cairo_fill_rule_t, "CAIRO_FILE_RULE_WINDING")
+macdef CAIRO_FILL_RULE_EVEN_ODD =
+  $extval (cairo_fill_rule_t, "CAIRO_FILE_RULE_EVENODD")
+
+fun cairo_get_fill_rule
+  (cr: !cairo_ref): cairo_fill_rule_t
+  = "atsctrb_cairo_get_fill_rule"
+
+fun cairo_set_fill_rule
+  (cr: !cairo_ref, fill_rule: cairo_fill_rule_t): void
+  = "atsctrb_cairo_set_fill_rule"
+
+(* ****** ****** *)
+
+// enum type
+abst@ype cairo_line_cap_t =
+  $extype "ats_cairo_line_cap_type"
+
+macdef CAIRO_LINE_CAP_BUTT =
+  $extval (cairo_line_cap_t, "CAIRO_LINE_CAP_BUTT")
+
+macdef CAIRO_LINE_CAP_ROUND =
+  $extval (cairo_line_cap_t, "CAIRO_LINE_CAP_ROUND")
+
+macdef CAIRO_LINE_CAP_SQUARE =
+  $extval (cairo_line_cap_t, "CAIRO_LINE_CAP_SQUARE")
+
+fun cairo_get_line_cap
+  (cr: !cairo_ref): cairo_line_cap_t
+  = "atsctrb_cairo_get_line_cap"
+
+fun cairo_set_line_cap
+  (cr: !cairo_ref, line_cap: cairo_line_cap_t): void
+  = "atsctrb_cairo_set_line_cap"
+
+(* ****** ****** *)
+
+// enum type
+abst@ype cairo_line_join_t =
+  $extype "ats_cairo_line_join_type"
+
+macdef CAIRO_LINE_JOIN_MITER =
+  $extval (cairo_line_join_t, "CAIRO_LINE_JOIN_MITER")
+
+macdef CAIRO_LINE_JOIN_ROUND =
+  $extval (cairo_line_join_t, "CAIRO_LINE_JOIN_ROUND")
+
+macdef CAIRO_LINE_JOIN_BEVEL =
+  $extval (cairo_line_join_t, "CAIRO_LINE_JOIN_BEVEL")
+
+fun cairo_get_line_join
+  (cr: !cairo_ref): cairo_line_join_t
+  = "atsctrb_cairo_get_line_join"
+
+fun cairo_set_line_join
+  (cr: !cairo_ref, line_join: cairo_line_join_t): void
+  = "atsctrb_cairo_set_line_join"
+
+(* ****** ****** *)
+
 fun cairo_get_line_width (cr: !cairo_ref): double
   = "atsctrb_cairo_get_line_width"
 
@@ -286,11 +399,113 @@ fun cairo_set_line_width (cr: !cairo_ref, width: double): void
                                                          
 (* ****** ****** *)
 
+fun cairo_get_miter_limit (cr: !cairo_ref): double
+  = "atsctrb_cairo_get_miter_limit"
+
+fun cairo_set_miter_limit (cr: !cairo_ref, width: double): void
+  = "atsctrb_cairo_set_miter_limit"
+                                                         
+(* ****** ****** *)
+
+// enum type
+abst@ype cairo_operator_t =
+  $extype "ats_cairo_operator_type"
+castfn int_of_cairo_operator_t (x: cairo_operator_t):<> int
+
+macdef CAIRO_OPERATOR_CLEAR =
+  $extval (cairo_operator_t, "CAIRO_OPERATOR_CLEAR")
+
+macdef CAIRO_OPERATOR_SOURCE =
+  $extval (cairo_operator_t, "CAIRO_OPERATOR_SOURCE")
+
+macdef CAIRO_OPERATOR_OVER =
+  $extval (cairo_operator_t, "CAIRO_OPERATOR_OVER")
+
+macdef CAIRO_OPERATOR_IN =
+  $extval (cairo_operator_t, "CAIRO_OPERATOR_IN")
+
+macdef CAIRO_OPERATOR_OUT =
+  $extval (cairo_operator_t, "CAIRO_OPERATOR_OUT")
+
+macdef CAIRO_OPERATOR_ATOP =
+  $extval (cairo_operator_t, "CAIRO_OPERATOR_ATOP")
+
+macdef CAIRO_OPERATOR_DEST =
+  $extval (cairo_operator_t, "CAIRO_OPERATOR_DEST")
+
+macdef CAIRO_OPERATOR_DEST_OVER =
+  $extval (cairo_operator_t, "CAIRO_OPERATOR_DEST_OVER")
+
+macdef CAIRO_OPERATOR_DEST_IN =
+  $extval (cairo_operator_t, "CAIRO_OPERATOR_DEST_IN")
+
+macdef CAIRO_OPERATOR_DEST_OUT =
+  $extval (cairo_operator_t, "CAIRO_OPERATOR_DEST_OUT")
+
+macdef CAIRO_OPERATOR_DEST_ATOP =
+  $extval (cairo_operator_t, "CAIRO_OPERATOR_DEST_ATOP")
+
+macdef CAIRO_OPERATOR_XOR =
+  $extval (cairo_operator_t, "CAIRO_OPERATOR_XOR")
+
+macdef CAIRO_OPERATOR_AND =
+  $extval (cairo_operator_t, "CAIRO_OPERATOR_AND")
+
+macdef CAIRO_OPERATOR_SATURATE =
+  $extval (cairo_operator_t, "CAIRO_OPERATOR_SATURATE")
+
+fun cairo_get_operator
+  (cr: !cairo_ref): cairo_operator_t
+  = "atsctrb_cairo_get_operator"
+
+fun cairo_set_operator
+  (cr: !cairo_ref, operator: cairo_operator_t): void
+  = "atsctrb_cairo_set_operator"
+
+(* ****** ****** *)
+
+fun cairo_get_tolerance (cr: !cairo_ref): double
+  = "atsctrb_cairo_get_tolerance"
+
+fun cairo_set_tolerance (cr: !cairo_ref, tolerance: double): void
+  = "atsctrb_cairo_set_tolerance"
+
+(* ****** ****** *)
+
+typedef cairo_rectangle_t = @{
+  x= double, y= double, width= double, height= double
+} // end of [cairo_rectangel_t]
+
+absviewtype // [n]: list length
+cairo_rectangle_list_ref (n:int) // cairo_rectangle_list_t*
+
+fun cairo_rectangle_list_destroy
+  {n:nat} (lst: cairo_rectangle_list_ref (n)): void
+  = "atsctrb_cairo_rectangle_list_destroy"
+
+fun cairo_copy_clip_rectangle_list
+  (cr: !cairo_ref): [n:nat] cairo_rectangle_list_ref (n)
+  = "atsctrb_cairo_copy_clip_rectangle_list"
+
+(* ****** ****** *)
+
 fun cairo_clip (cr: !cairo_ref): void
   = "atsctrb_cairo_clip"
 
 fun cairo_clip_preserve (cr: !cairo_ref): void
   = "atsctrb_cairo_clip_preserve"
+
+fun cairo_clip_extents (
+    cr: !cairo_ref
+  , x1: &double? >> double
+  , y1: &double? >> double
+  , x2: &double? >> double
+  , y2: &double? >> double
+  ) : void
+  = "atsctrb_cairo_clip_extents"
+
+fun cairo_reset_clip (cr: !cairo_ref): void
+  = "atsctrb_cairo_reset_clip"
 
 (* ****** ****** *)
 
@@ -302,7 +517,10 @@ fun cairo_fill_preserve (cr: !cairo_ref): void
 
 fun cairo_fill_extents (
     cr: !cairo_ref
-  , x1: double, y1: double, x2: double, y2: double
+  , x1: &double? >> double
+  , y1: &double? >> double
+  , x2: &double? >> double
+  , y2: &double? >> double
   ) : void
   = "atsctrb_cairo_fill_extents"
 
@@ -312,15 +530,8 @@ fun cairo_in_fill (cr: !cairo_ref, x: double, y: double): bool
 
 (* ****** ****** *)
 
-fun cairo_paint (cr: !cairo_ref): void
-  = "atsctrb_cairo_paint"
-
-fun cairo_paint_with_alpha (cr: !cairo_ref, alpha: double): void
-  = "atsctrb_cairo_paint_with_alpha"
-
-(* ****** ****** *)
-
-fun cairo_mask (cr: !cairo_ref, pattern: !cairo_pattern_ref): void
+fun cairo_mask
+  (cr: !cairo_ref, pattern: !cairo_pattern_ref): void
   = "atsctrb_cairo_mask"
 
 fun cairo_mask_surface (
@@ -328,6 +539,15 @@ fun cairo_mask_surface (
   , sf: !cairo_surface_ref, surface_x: double, surface_y: double
   ) : void
   = "atsctrb_cairo_mask_surface"
+
+(* ****** ****** *)
+
+fun cairo_paint (cr: !cairo_ref): void
+  = "atsctrb_cairo_paint"
+
+fun cairo_paint_with_alpha
+  (cr: !cairo_ref, alpha: double): void
+  = "atsctrb_cairo_paint_with_alpha"
 
 (* ****** ****** *)
 
@@ -339,9 +559,16 @@ fun cairo_stroke_preserve (cr: !cairo_ref): void
 
 fun cairo_stroke_extents (
     cr: !cairo_ref
-  , x1: double, y1: double, x2: double, y2: double
+  , x1: &double? >> double
+  , y1: &double? >> double
+  , x2: &double? >> double
+  , y2: &double? >> double
   ) : void
   = "atsctrb_cairo_stroke_extents"
+
+// [cairo_bool_t] and [bool] are the same
+fun cairo_in_stroke (cr: !cairo_ref, x: double, y: double): bool
+  = "atsctrb_cairo_in_stroke"
 
 (* ****** ****** *)
 
@@ -361,6 +588,24 @@ fun cairo_show_page (cr: !cairo_ref): void
 //
 // drawing paths
 //
+
+(* ****** ****** *)
+
+absviewtype // [n]: path length
+cairo_path_ref (n:int) // cairo_path_t*
+
+fun cairo_copy_path (cr: !cairo_ref): [n:nat] cairo_path_ref n
+  = "atsctrb_cairo_copy_path"
+
+fun cairo_copy_path_flat (cr: !cairo_ref): [n:nat] cairo_path_ref n
+  = "atsctrb_cairo_copy_path_flat"
+
+fun cairo_append_path {n:nat}
+  (cr: !cairo_ref, path: !cairo_path_ref n): void
+  = "atsctrb_cairo_append_path"
+
+fun cairo_path_destroy {n:nat} (path: cairo_path_ref n): void
+  = "atsctrb_cairo_path_destroy"
 
 (* ****** ****** *)
 
@@ -443,6 +688,17 @@ fun cairo_rel_move_to
 
 (* ****** ****** *)
 
+fun cairo_path_extents (
+    cr: !cairo_ref
+  , x1: &double? >> double
+  , y1: &double? >> double
+  , x2: &double? >> double
+  , y2: &double? >> double
+  ) : void
+  = "atsctrb_cairo_path_extents"
+
+(* ****** ****** *)
+
 // drawing texts
 
 fun cairo_select_font_face (
@@ -519,7 +775,39 @@ fun cairo_scale (cr: !cairo_ref, sx: double, sy: double): void
 
 fun cairo_rotate (cr: !cairo_ref, angle: double): void
   = "atsctrb_cairo_rotate"
+
+fun cairo_transform (cr: !cairo_ref, mat: &cairo_matrix_t): void
+  = "atsctrb_cairo_transform"
   
+(* ****** ****** *)
+
+fun cairo_get_matrix (cr: !cairo_ref, mat: &cairo_matrix_t): void
+  = "atsctrb_cairo_get_matrix"
+  
+fun cairo_set_matrix (cr: !cairo_ref, mat: &cairo_matrix_t): void
+  = "atsctrb_cairo_set_matrix"
+  
+fun cairo_identity_matrix (cr: !cairo_ref): void
+  = "atsctrb_cairo_identity_matrix"
+  
+(* ****** ****** *)
+
+fun cairo_user_to_device
+  (cr: !cairo_ref, x: &double, y: &double) : void
+  = "atsctrb_cairo_user_to_device"
+
+fun cairo_user_to_device_distance
+  (cr: !cairo_ref, dx: &double, dy: &double) : void
+  = "atsctrb_cairo_user_to_device_distance"
+
+fun cairo_devide_to_user
+  (cr: !cairo_ref, x: &double, y: &double) : void
+  = "atsctrb_cairo_devide_to_user"
+
+fun cairo_devide_to_user_distance
+  (cr: !cairo_ref, dx: &double, dy: &double) : void
+  = "atsctrb_cairo_devide_to_user_distance"
+
 (* ****** ****** *)
 
 //

@@ -795,6 +795,31 @@ in
   prerr_newline ()
 end // end of [libats_dir_copy]
 
+fn contrib_dir_copy () = let
+  val SRCROOTcontrib = SRCROOT + "contrib/"
+  val DSTROOTcontrib = DSTROOT + "contrib/"
+  val () = mkdir_exn (DSTROOTcontrib, DIRmode)
+//
+  // API for GL: [contrib/GL]
+  val SRCROOTcontrib_GL = SRCROOTcontrib + "GL/"
+  val DSTROOTcontrib_GL = DSTROOTcontrib + "GL/"
+  val () = lib_dir_copy (SRCROOTcontrib_GL, DSTROOTcontrib_GL)
+  val () = fcopy_exn (
+    SRCROOTcontrib_GL+"Makefile", DSTROOTcontrib_GL+"Makefile"
+  ) // end of [val]
+//
+  // API for cairo: [contrib/cairo]
+  val SRCROOTcontrib_cairo = SRCROOTcontrib + "cairo/"
+  val DSTROOTcontrib_cairo = DSTROOTcontrib + "cairo/"
+  val () = lib_dir_copy (SRCROOTcontrib_cairo, DSTROOTcontrib_cairo)
+  val () = fcopy_exn (
+    SRCROOTcontrib_cairo+"Makefile", DSTROOTcontrib_cairo+"Makefile"
+  ) // end of [val]
+in
+  prerr "The [contrib] directory is successfully copied.";
+  prerr_newline ()
+end // end of [contrib_dir_copy]
+
 (* ****** ****** *)
 
 (*
@@ -915,6 +940,7 @@ implement atspack_source_code () = let
   val () = prelude_dir_copy ()
   val () = libc_dir_copy ()
   val () = libats_dir_copy ()
+  val () = contrib_dir_copy ()
 (*
   val () = src_dir_copy () // The source code is no longer distributed
 *)
@@ -950,6 +976,7 @@ implement atspack_precompiled () = let
   val () = prelude_dir_copy ()
   val () = libc_dir_copy ()
   val () = libats_dir_copy ()
+  val () = contrib_dir_copy ()
 in
   // empty
 end // end of [atspack_precompiled]
