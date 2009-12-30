@@ -31,7 +31,8 @@
 
 (* ****** ****** *)
 
-// author of the file: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
+// Author of the file: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
+// Starting time: Summer, 2008
 
 (* ****** ****** *)
 
@@ -78,7 +79,7 @@ fun glutTimerFunc
 fun glutIdleFunc (callback: () -> void): void
   = "atsctrb_glutIdleFunc"
 
-fun glutIdleFuncNull (): void = "atsctrb_glutIdleFuncNull"
+fun glutIdleFunc_null (): void = "atsctrb_glutIdleFunc_null"
 
 (* ****** ****** *)
 
@@ -102,9 +103,11 @@ fun glutReshapeFunc
 
 fun glutVisibilityFunc
   (callback: (int) -> void): void = "atsctrb_glutVisibilityFunc"
+// end of [glutVisibilityFunc]
 
 fun glutDisplayFunc
   (callback: () -> void): void = "atsctrb_glutDisplayFunc"
+// end of [glutDisplayFunc]
 
 fun glutMotionFunc
   (callback: (int, int) -> void): void
@@ -116,21 +119,30 @@ fun glutPassiveMotionFunc
 
 fun glutEntryFunc
   (callback: (int) -> void): void = "atsctrb_glutEntryFunc"
+// end of [glutEntryFunc]
 
 (* ****** ****** *)
 
 symintr glutWireCube
-fun glutWireCube_type (size: double): void = "atsctrb_glutWireCube_type"
-fun glutWireCube_GLtype (size: GLdouble): void = "atsctrb_glutWireCube_GLtype"
+
+fun glutWireCube_type
+  (size: double): void = "atsctrb_glutWireCube_type"
 overload glutWireCube with glutWireCube_type
+
+fun glutWireCube_GLtype
+  (size: GLdouble): void = "atsctrb_glutWireCube_GLtype"
 overload glutWireCube with glutWireCube_GLtype
 
 //
 
 symintr glutSolidCube
-fun glutSolidCube_type (size: double): void = "atsctrb_glutSolidCube_type"
-fun glutSolidCube_GLtype (size: GLdouble): void = "atsctrb_glutSolidCube_GLtype"
+
+fun glutSolidCube_type
+  (size: double): void = "atsctrb_glutSolidCube_type"
 overload glutSolidCube with glutSolidCube_type
+
+fun glutSolidCube_GLtype
+  (size: GLdouble): void = "atsctrb_glutSolidCube_GLtype"
 overload glutSolidCube with glutSolidCube_GLtype
 
 //
@@ -140,12 +152,11 @@ symintr glutWireSphere
 fun glutWireSphere_type
   (radius: double, slices: int, stacks: int): void
   = "atsctrb_glutWireSphere_type"
+overload glutWireSphere with glutWireSphere_type
 
 fun glutWireSphere_GLtype
   (radius: GLdouble, slices: GLint, stacks: GLint): void
   = "atsctrb_glutWireSphere_GLtype"
-
-overload glutWireSphere with glutWireSphere_type
 overload glutWireSphere with glutWireSphere_GLtype
 
 //
@@ -155,12 +166,11 @@ symintr glutSolidSphere
 fun glutSolidSphere_type
   (radius: double, slices: int, stacks: int): void
   = "atsctrb_glutSolidSphere_type"
+overload glutSolidSphere with glutSolidSphere_type
 
 fun glutSolidSphere_GLtype
   (radius: GLdouble, slices: GLint, stacks: GLint): void
   = "atsctrb_glutSolidSphere_GLtype"
-
-overload glutSolidSphere with glutSolidSphere_type
 overload glutSolidSphere with glutSolidSphere_GLtype
 
 //
@@ -170,12 +180,11 @@ symintr glutWireCone
 fun glutWireCone_type
   (base: double, height: double, slices: int, stacks: int): void
   = "atsctrb_glutWireCone_type"
+overload glutWireCone with glutWireCone_type
 
 fun glutWireCone_GLtype
   (base: GLdouble, height: GLdouble, slices: GLint, stacks: GLint): void
   = "atsctrb_glutWireCone_GLtype"
-
-overload glutWireCone with glutWireCone_type
 overload glutWireCone with glutWireCone_GLtype
 
 //
@@ -185,12 +194,11 @@ symintr glutSolidCone
 fun glutSolidCone_type
   (base: double, height: double, slices: int, stacks: int): void
   = "atsctrb_glutSolidCone_type"
+overload glutSolidCone with glutSolidCone_type
 
 fun glutSolidCone_GLtype
   (base: GLdouble, height: GLdouble, slices: GLint, stacks: GLint): void
   = "atsctrb_glutSolidCone_GLtype"
-
-overload glutSolidCone with glutSolidCone_type
 overload glutSolidCone with glutSolidCone_GLtype
 
 //
@@ -200,41 +208,51 @@ symintr glutWireTorus
 fun glutWireTorus_type
   (innerRadius: double, outerRadius: double, sides: int, rings: int): void
   = "atsctrb_glutWireTorus_type"
+overload glutWireTorus with glutWireTorus_type
 
 fun glutWireTorus_GLtype
   (innerRadius: GLdouble, outerRadius: GLdouble, sides: GLint, rings: GLint): void
   = "atsctrb_glutWireTorus_GLtype"
-
-overload glutWireTorus with glutWireTorus_type
 overload glutWireTorus with glutWireTorus_GLtype
+
+//
 
 symintr glutSolidTorus
 
-fun glutSolidTorus_type
-  (innerRadius: double, outerRadius: double, sides: int, rings: int): void
+fun glutSolidTorus_type (
+    innerRadius: double, outerRadius: double, sides: int, rings: int
+  ) : void
   = "atsctrb_glutSolidTorus_type"
-
-fun glutSolidTorus_GLtype
-  (innerRadius: GLdouble, outerRadius: GLdouble, sides: GLint, rings: GLint): void
-  = "atsctrb_glutSolidTorus_GLtype"
-
 overload glutSolidTorus with glutSolidTorus_type
+
+fun glutSolidTorus_GLtype (
+    innerRadius: GLdouble, outerRadius: GLdouble, sides: GLint, rings: GLint
+  ) : void
+  = "atsctrb_glutSolidTorus_GLtype"
 overload glutSolidTorus with glutSolidTorus_GLtype
 
 (* ****** ****** *)
 
 symintr glutWireTeapot
-fun glutWireTeapot_type (size: double): void = "atsctrb_glutWireTeapot_type"
-fun glutWireTeapot_GLtype (size: GLdouble): void = "atsctrb_glutWireTeapot_GLtype"
+
+fun glutWireTeapot_type
+  (size: double): void = "atsctrb_glutWireTeapot_type"
 overload glutWireTeapot with glutWireTeapot_type
+
+fun glutWireTeapot_GLtype
+  (size: GLdouble): void = "atsctrb_glutWireTeapot_GLtype"
 overload glutWireTeapot with glutWireTeapot_GLtype
 
 //
 
 symintr glutSolidTeapot
-fun glutSolidTeapot_type (size: double): void = "atsctrb_glutSolidTeapot_type"
-fun glutSolidTeapot_GLtype (size: GLdouble): void = "atsctrb_glutSolidTeapot_GLtype"
+
+fun glutSolidTeapot_type
+  (size: double): void = "atsctrb_glutSolidTeapot_type"
 overload glutSolidTeapot with glutSolidTeapot_type
+
+fun glutSolidTeapot_GLtype
+  (size: GLdouble): void = "atsctrb_glutSolidTeapot_GLtype"
 overload glutSolidTeapot with glutSolidTeapot_GLtype
 
 (* ****** ****** *)

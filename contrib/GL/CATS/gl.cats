@@ -57,6 +57,11 @@ typedef GLfloat ats_GLfloat_type ;
 typedef GLint ats_GLint_type ;
 typedef GLshort ats_GLshort_type ;
 
+typedef GLbyte ats_GLbyte_type ;
+typedef GLubyte ats_GLubyte_type ;
+typedef GLuint ats_GLuint_type ;
+typedef GLushort ats_GLushort_type ;
+
 typedef GLsizei ats_GLsizei_type ;
 
 typedef GLclampd ats_GLclampd_type ;
@@ -82,9 +87,10 @@ atsctrb_GLfloat_of_doube (double x) { return x ; }
 
 static inline
 ats_GLbitfield_type
-atsctrb_lor_GLbitfield_GLbitfield (GLbitfield b1, GLbitfield b2) {
+atsctrb_lor_GLbitfield_GLbitfield
+  (GLbitfield b1, GLbitfield b2) {
   return (b1 | b2) ;
-}
+} // end of [atsctrb_lor_GLbitfield_GLbitfield]
 
 /* ****** ****** */
 
@@ -99,7 +105,7 @@ atsctrb_glClearColor_double (
 , ats_double_type alpha
 ) {
   glClearColor (red, green, blue, alpha) ; return ;
-}
+} // end of [atsctrb_glClearColor_double]
 
 static inline
 ats_void_type
@@ -110,15 +116,17 @@ atsctrb_glClearColor_GLclampf (
 , ats_GLclampf_type alpha
 ) {
   glClearColor (red, green, blue, alpha) ; return ;
-}
+} // end of [atsctrb_glClearColor_GLclampf]
 
 //
 
 static inline
 ats_void_type
-atsctrb_glClear (ats_GLbitfield_type mask) {
+atsctrb_glClear (
+  ats_GLbitfield_type mask
+) {
   glClear (mask) ; return ;
-}
+} // end of [atsctrb_glClear]
 
 //
 
@@ -131,9 +139,9 @@ atsctrb_glColorMask (
 , ats_GLboolean_type alpha
 ) {
   glColorMask (red, green, blue, alpha) ; return ;
-}
+} // end of [atsctrb_glColorMask]
 
-//
+/* ****** ****** */
 
 static inline
 ats_void_type atsctrb_glAlphaFunc
@@ -153,60 +161,132 @@ ats_void_type atsctrb_glBlendFunc
 
 static inline
 ats_void_type
-atsctrb_glPointSize_double (ats_double_type width) {
+atsctrb_glPointSize_double
+  (ats_double_type width) {
   glPointSize (width) ; return ;
-}
+} // end of [atsctrb_glPointSize_double]
 
 static inline
 ats_void_type
-atsctrb_glPointSize_GLfloat (ats_GLfloat_type width) {
+atsctrb_glPointSize_GLfloat
+  (ats_GLfloat_type width) {
   glPointSize (width) ; return ;
-}
+} // end of [atsctrb_glPointSize_GLfloat]
 
 /* ****** ****** */
 
 static inline
 ats_void_type
-atsctrb_glLineWidth_double (ats_double_type width) {
-  glLineWidth (width) ; return ;
-}
+atsctrb_glLineWidth_double
+  (ats_double_type width) {
+  glLineWidth(width) ; return ;
+} // end of [atsctrb_glLineWidth_double]
 
 static inline
 ats_void_type
-atsctrb_glLineWidth_GLfloat (ats_GLfloat_type width) {
-  glLineWidth (width) ; return ;
-}
+atsctrb_glLineWidth_GLfloat
+  (ats_GLfloat_type width) {
+  glLineWidth(width) ; return ;
+} // end of [atsctrb_glLineWidth_GLfloat]
 
 /* ****** ****** */
 
 static inline
-ats_void_type atsctrb_glEnable (ats_GLenum_type cap) {
-  glEnable (cap) ; return ;
-}
+ats_void_type
+atsctrb_glLineStipple_uint (
+  ats_int_type factor, ats_uint_type pattern
+) {
+  glLineStipple(factor, pattern) ; return ;
+} // end of [atsctrb_glLineStipple_uint]
 
 static inline
-ats_void_type atsctrb_glDisable (ats_GLenum_type cap) {
-  glDisable (cap) ; return ;
-}
+ats_void_type
+atsctrb_glLineStipple_GLushort (
+  ats_int_type factor, ats_GLushort_type pattern
+) {
+  glLineStipple(factor, pattern) ; return ;
+} // end of [atsctrb_glLineStipple_GLushort]
+
+/* ****** ****** */
+
+static inline
+ats_void_type
+atsctrb_glClipPlane (
+  ats_GLenum_type plane, ats_ptr_type eqn
+) {
+  glClipPlane(plane, (GLdouble*)eqn) ; return ;
+} // end of [atsctrb_glClipPlane]
+
+static inline
+ats_void_type
+atsctrb_glGetClipPlane (
+  ats_GLenum_type plane, ats_ptr_type eqn
+) {
+  glGetClipPlane(plane, (GLdouble*)eqn) ; return ;
+} // end of [atsctrb_glGetClipPlane]
+
+/* ****** ****** */
+
+static inline
+ats_void_type
+atsctrb_glEnable
+  (ats_GLenum_type cap) {
+  glEnable(cap) ; return ;
+} // end of [atsctrb_glEnable]
+
+static inline
+ats_void_type
+atsctrb_glDisable
+  (ats_GLenum_type cap) {
+  glDisable(cap) ; return ;
+} // end of [atsctrb_glIsDisabled]
+
+static inline
+ats_GLboolean_type
+atsctrb_glIsEnabled
+  (ats_GLenum_type cap) {
+  return glIsEnabled(cap) ;
+} // end of [atsctrb_glIsEnabled]
 
 //
 
 static inline
-ats_void_type atsctrb_glClipPlane
-  (ats_GLenum_type plane, ats_ptr_type eqn) {
-  glClipPlane (plane, (GLdouble*)eqn) ; return ;
-}
+ats_void_type
+atsctrb_glGetBooleanv (
+  ats_GLenum_type pname, ats_ptr_type params
+) {
+  glGetBooleanv(pname, (GLboolean*)params) ; return ;
+} // end of [atsctrb_glGetBooleanv]
 
 static inline
-ats_void_type atsctrb_glGetClipPlane
-  (ats_GLenum_type plane, ats_ptr_type eqn) {
-  glGetClipPlane (plane, (GLdouble*)eqn) ; return ;
-}
-
-//
+ats_void_type
+atsctrb_glGetDoublev (
+  ats_GLenum_type pname, ats_ptr_type params
+) {
+  glGetDoublev(pname, (GLdouble*)params) ; return ;
+} // end of [atsctrb_glGetDoublev]
 
 static inline
-ats_void_type atsctrb_glFlush () { glFlush () ; return ; }
+ats_void_type
+atsctrb_glGetFloatv (
+  ats_GLenum_type pname, ats_ptr_type params
+) {
+  glGetFloatv(pname, (GLfloat*)params) ; return ;
+} // end of [atsctrb_glGetFloatv]
+
+static inline
+ats_void_type
+atsctrb_glGetIntegerv (
+  ats_GLenum_type pname, ats_ptr_type params
+) {
+  glGetIntegerv(pname, (GLint*)params) ; return ;
+} // end of [atsctrb_glGetIntegerv]
+
+/* ****** ****** */
+
+static inline
+ats_void_type
+atsctrb_glFlush () { glFlush () ; return ; }
 
 /* ****** ****** */
 
@@ -419,30 +499,6 @@ ats_void_type atsctrb_glPushMatrix () { glPushMatrix () ; return ; }
 
 static inline
 ats_void_type
-atsctrb_glRotatef_double (
-  ats_double_type angle
-, ats_double_type x
-, ats_double_type y
-, ats_double_type z
-) {
-  glRotatef (angle, x, y, z) ; return ;
-}
-
-static inline
-ats_void_type
-atsctrb_glRotatef_GLfloat (
-  ats_GLfloat_type angle
-, ats_GLfloat_type x
-, ats_GLfloat_type y
-, ats_GLfloat_type z
-) {
-  glRotatef (angle, x, y, z) ; return ;
-}
-
-//
-
-static inline
-ats_void_type
 atsctrb_glRotated_double (
   ats_double_type angle
 , ats_double_type x
@@ -450,7 +506,7 @@ atsctrb_glRotated_double (
 , ats_double_type z
 ) {
   glRotated (angle, x, y, z) ; return ;
-}
+} // end of [atsctrb_glRotated_double]
 
 static inline
 ats_void_type
@@ -461,31 +517,22 @@ atsctrb_glRotated_GLdouble (
 , ats_GLdouble_type z
 ) {
   glRotated (angle, x, y, z) ; return ;
-}
+} // end of [atsctrb_glRotated_GLdouble]
 
-/* ****** ****** */
-
-static inline
-ats_void_type
-atsctrb_glScalef_double (
-  ats_double_type x
-, ats_double_type y
-, ats_double_type z
-) {
-  glScalef (x, y, z) ; return ;
-}
+//
 
 static inline
 ats_void_type
-atsctrb_glScalef_GLfloat (
-  ats_GLfloat_type x
+atsctrb_glRotatef (
+  ats_GLfloat_type angle
+, ats_GLfloat_type x
 , ats_GLfloat_type y
 , ats_GLfloat_type z
 ) {
-  glScalef (x, y, z) ; return ;
-}
+  glRotatef (angle, x, y, z) ; return ;
+} // end of [atsctrb_glRotatef]
 
-//
+/* ****** ****** */
 
 static inline
 ats_void_type
@@ -495,7 +542,7 @@ atsctrb_glScaled_double (
 , ats_double_type z
 ) {
   glScaled (x, y, z) ; return ;
-}
+} // end of [atsctrb_glScaled_double]
 
 static inline
 ats_void_type
@@ -505,31 +552,19 @@ atsctrb_glScaled_GLdouble (
 , ats_GLdouble_type z
 ) {
   glScaled (x, y, z) ; return ;
-}
-
-/* ****** ****** */
+} // end of [atsctrb_glScaled_GLdouble]
 
 static inline
 ats_void_type
-atsctrb_glTranslatef_double (
-  ats_double_type x
-, ats_double_type y
-, ats_double_type z
-) {
-  glTranslatef (x, y, z) ; return ;
-}
-
-static inline
-ats_void_type
-atsctrb_glTranslatef_GLfloat (
+atsctrb_glScalef (
   ats_GLfloat_type x
 , ats_GLfloat_type y
 , ats_GLfloat_type z
 ) {
-  glTranslatef (x, y, z) ; return ;
-}
+  glScalef (x, y, z) ; return ;
+} // end of [atsctrb_glScalef]
 
-//
+/* ****** ****** */
 
 static inline
 ats_void_type
@@ -539,7 +574,7 @@ atsctrb_glTranslated_double (
 , ats_double_type z
 ) {
   glTranslated (x, y, z) ; return ;
-}
+} // end of [atsctrb_glTranslated_double]
 
 static inline
 ats_void_type
@@ -549,7 +584,19 @@ atsctrb_glTranslated_GLdouble (
 , ats_GLdouble_type z
 ) {
   glTranslated (x, y, z) ; return ;
-}
+} // end of [atsctrb_glTranslated_GLdouble]
+
+//
+
+static inline
+ats_void_type
+atsctrb_glTranslatef (
+  ats_GLfloat_type x
+, ats_GLfloat_type y
+, ats_GLfloat_type z
+) {
+  glTranslatef (x, y, z) ; return ;
+} // end of [atsctrb_glTranslatef]
 
 /* ****** ****** */
 
@@ -558,17 +605,20 @@ ats_uint_type
 atsctrb_glGenList_exn () {
   uint lst = glGenLists (1) ;
   if (lst == 0) {
-    fprintf (stderr, "Exit: [glGenLists] failed.\n") ;
+    fprintf (stderr, "exit(ATS/GL): [glGenLists] failed.\n") ;
     exit (1) ;
   }
   return lst ;
-}
+} // end of [atsctrb_glGenList_exn]
 
 static inline
 ats_void_type
-atsctrb_glNewList (ats_uint_type lst, ats_GLenum_type mode) {
+atsctrb_glNewList (
+  ats_uint_type lst
+, ats_GLenum_type mode
+) {
   glNewList (lst, mode) ; return ;
-}
+} // end of [atsctrb_glNewList]
 
 static inline
 ats_void_type atsctrb_glEndList () { glEndList () ; return ; }
@@ -579,9 +629,11 @@ ats_void_type atsctrb_glEndList () { glEndList () ; return ; }
 
 static inline
 ats_void_type
-atsctrb_glBegin (ats_GLenum_type mode) {
+atsctrb_glBegin (
+  ats_GLenum_type mode
+) {
   glBegin(mode) ; return ;
-}
+} // end of [atsctrb_glBegin]
 
 static inline
 ats_void_type
@@ -607,17 +659,10 @@ atsctrb_glVertex2d_GLdouble
 
 static inline
 ats_void_type
-atsctrb_glVertex2f_double
-  (ats_double_type f1, ats_double_type f2) {
-  glVertex2f (f1, f2) ; return ;
-}
-
-static inline
-ats_void_type
-atsctrb_glVertex2f_GLfloat
+atsctrb_glVertex2f
   (ats_GLfloat_type f1, ats_GLfloat_type f2) {
   glVertex2f (f1, f2) ; return ;
-}
+} // end of [atsctrb_glVertex2f]
 
 //
 
@@ -626,51 +671,62 @@ ats_void_type
 atsctrb_glVertex2i
   (ats_GLint_type i1, ats_GLint_type i2) {
   glVertex2i (i1, i2) ; return ;
-}
+} // end of [atsctrb_glVertex2i]
 
 static inline
 ats_void_type
 atsctrb_glVertex2s
   (ats_GLshort_type s1, ats_GLshort_type s2) {
   glVertex2s (s1, s2) ; return ;
-}
+} // end of [atsctrb_glVertex2s]
 
 /* ****** ****** */
 
 static inline
 ats_void_type
-atsctrb_glVertex3d
-  (ats_GLdouble_type d1, ats_GLdouble_type d2, ats_GLdouble_type d3) {
+atsctrb_glVertex3d_double (
+  ats_double_type d1, ats_double_type d2, ats_double_type d3
+) {
   glVertex3d (d1, d2, d3) ; return ;
-}
+} // end of [atsctrb_glVertex3d_double]
 
 static inline
 ats_void_type
-atsctrb_glVertex3f_double
-  (ats_double_type f1, ats_double_type f2, ats_double_type f3) {
+atsctrb_glVertex3d_GLdouble (
+  ats_GLdouble_type d1, ats_GLdouble_type d2, ats_GLdouble_type d3
+) {
+  glVertex3d (d1, d2, d3) ; return ;
+} // end of [atsctrb_glVertex3d_GLdouble]
+
+//
+
+static inline
+ats_void_type
+atsctrb_glVertex3f (
+  ats_GLfloat_type f1, ats_GLfloat_type f2, ats_GLfloat_type f3
+) {
   glVertex3f (f1, f2, f3) ; return ;
-}
+} // end of [atsctrb_glVertex3f]
+
+//
 
 static inline
 ats_void_type
-atsctrb_glVertex3f_GLfloat
-  (ats_GLfloat_type f1, ats_GLfloat_type f2, ats_GLfloat_type f3) {
-  glVertex3f (f1, f2, f3) ; return ;
-}
-
-static inline
-ats_void_type
-atsctrb_glVertex3i
-  (ats_GLint_type i1, ats_GLint_type i2, ats_GLint_type i3) {
+atsctrb_glVertex3i (
+  ats_GLint_type i1, ats_GLint_type i2, ats_GLint_type i3
+) {
   glVertex3i (i1, i2, i3) ; return ;
-}
+} // end of [atsctrb_glVertex3i]
+
+//
 
 static inline
 ats_void_type
-atsctrb_glVertex3s
-  (ats_GLshort_type s1, ats_GLshort_type s2, ats_GLshort_type s3) {
+atsctrb_glVertex3s (
+  ats_GLshort_type s1, ats_GLshort_type s2, ats_GLshort_type s3
+) {
   glVertex3s (s1, s2, s3) ; return ;
-}
+} // end of [atsctrb_glVertex3s]
 
 /* ****** ****** */
 
@@ -830,91 +886,185 @@ atsctrb_glNormal3sv (ats_ptr_type v) {
 
 /* ****** ****** */
 
+//
+
 static inline
 ats_void_type
-atsctrb_glColor3f_double (
+atsctrb_glColor3b (
+  ats_GLbyte_type red
+, ats_GLbyte_type green
+, ats_GLbyte_type blue
+) {
+  glColor3b (red, green, blue) ; return ;
+} /* end of [atsctrb_glColor3b] */
+
+//
+
+static inline
+ats_void_type
+atsctrb_glColor3d_double (
   ats_double_type red
 , ats_double_type green
 , ats_double_type blue
 ) {
-  glColor3f (red, green, blue) ; return ;
-} /* end of [atsctrb_glColor3f_double] */
+  glColor3d (red, green, blue) ; return ;
+} /* end of [atsctrb_glColor3d_double] */
 
 static inline
 ats_void_type
-atsctrb_glColor3f_GLfloat (
+atsctrb_glColor3d_GLdouble (
+  ats_GLdouble_type red
+, ats_GLdouble_type green
+, ats_GLdouble_type blue
+) {
+  glColor3d (red, green, blue) ; return ;
+} /* end of [atsctrb_glColor3d_GLdouble] */
+
+//
+
+static inline
+ats_void_type
+atsctrb_glColor3f (
   ats_GLfloat_type red
 , ats_GLfloat_type green
 , ats_GLfloat_type blue
 ) {
   glColor3f (red, green, blue) ; return ;
-} /* end of [atsctrb_glColor3f_GLfloat] */
+} /* end of [atsctrb_glColor3f] */
+
+//
+
+static inline
+ats_void_type
+atsctrb_glColor3i (
+  ats_GLint_type red
+, ats_GLint_type green
+, ats_GLint_type blue
+) {
+  glColor3i (red, green, blue) ; return ;
+} /* end of [atsctrb_glColor3i] */
+
+//
+
+static inline
+ats_void_type
+atsctrb_glColor3s (
+  ats_GLshort_type red
+, ats_GLshort_type green
+, ats_GLshort_type blue
+) {
+  glColor3s (red, green, blue) ; return ;
+} /* end of [atsctrb_glColor3s] */
 
 /* ****** ****** */
 
 static inline
 ats_void_type
-atsctrb_glColor4f_double (
+atsctrb_glColor3dv (
+  ats_ptr_type rgb
+) {
+  glColor3dv ((GLdouble*)rgb) ; return ;
+} /* end of [atsctrb_glColor3d] */
+
+/* ****** ****** */
+
+static inline
+ats_void_type
+atsctrb_glColor4d_double (
   ats_double_type red
 , ats_double_type green
 , ats_double_type blue
 , ats_double_type alpha
 ) {
-  glColor4f (red, green, blue, alpha) ; return ;
-} /* end of [atsctrb_glColor4f_double] */
+  glColor4d (red, green, blue, alpha) ; return ;
+} /* end of [atsctrb_glColor4d_double] */
 
 static inline
 ats_void_type
-atsctrb_glColor4f_GLfloat (
+atsctrb_glColor4d_GLdouble (
+  ats_GLdouble_type red
+, ats_GLdouble_type green
+, ats_GLdouble_type blue
+, ats_GLdouble_type alpha
+) {
+  glColor4d (red, green, blue, alpha) ; return ;
+} /* end of [atsctrb_glColor4d_GLdouble] */
+
+static inline
+ats_void_type
+atsctrb_glColor4f (
   ats_GLfloat_type red
 , ats_GLfloat_type green
 , ats_GLfloat_type blue
 , ats_GLfloat_type alpha
 ) {
   glColor4f (red, green, blue, alpha) ; return ;
-} /* end of [atsctrb_glColor4f_GLfloat] */
+} /* end of [atsctrb_glColor4f] */
 
 /* ****** ****** */
 
 static inline
 ats_void_type
-atsctrb_glRasterPos2f_double (
+atsctrb_glRasterPos2d_double (
   ats_double_type x, ats_double_type y
 ) {
-  glRasterPos2f (x, y) ; return ;
-}
+  glRasterPos2d (x, y) ; return ;
+} // end of [atsctrb_glRasterPos2d_double]
 
 static inline
 ats_void_type
-atsctrb_glRasterPos2f_GLfloat (
+atsctrb_glRasterPos2d_GLdouble (
+  ats_GLdouble_type x, ats_GLdouble_type y
+) {
+  glRasterPos2d (x, y) ; return ;
+} // end of [atsctrb_glRasterPos2d_GLdouble]
+
+//
+
+static inline
+ats_void_type
+atsctrb_glRasterPos2f (
   ats_GLfloat_type x, ats_GLfloat_type y
 ) {
   glRasterPos2f (x, y) ; return ;
-}
+} // end of [atsctrb_glRasterPos2f]
 
 /* ****** ****** */
 
 static inline
 ats_void_type
-atsctrb_glRectf_double (
+atsctrb_glRectd_double (
   ats_double_type x1
 , ats_double_type y1
 , ats_double_type x2
 , ats_double_type y2
 ) {
-  glRectf (x1, y1, x2, y2) ; return ;
-} /* end of [atsctrb_glRectf_double] */
+  glRectd (x1, y1, x2, y2) ; return ;
+} /* end of [atsctrb_glRectd_double] */
 
 static inline
 ats_void_type
-atsctrb_glRectf_GLfloat (
+atsctrb_glRectd_GLdouble (
+  ats_GLdouble_type x1
+, ats_GLdouble_type y1
+, ats_GLdouble_type x2
+, ats_GLdouble_type y2
+) {
+  glRectd (x1, y1, x2, y2) ; return ;
+} /* end of [atsctrb_glRectd_GLdouble] */
+
+//
+
+static inline
+ats_void_type
+atsctrb_glRectf (
   ats_GLfloat_type x1
 , ats_GLfloat_type y1
 , ats_GLfloat_type x2
 , ats_GLfloat_type y2
 ) {
   glRectf (x1, y1, x2, y2) ; return ;
-} /* end of [atsctrb_glRectf_GLfloat] */
+} /* end of [atsctrb_glRectf] */
 
 /* ****** ****** */
 

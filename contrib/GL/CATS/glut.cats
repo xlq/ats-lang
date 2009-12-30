@@ -29,12 +29,13 @@
 
 /* ****** ****** */
 
-/* author: Hongwei Xi (hwxi AT cs DOT bu DOT edu) */
+// Author of the file: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
+// Starting time: December, 2009
 
 /* ****** ****** */
 
-#ifndef _LIBC_GL_GLUT_CATS
-#define _LIBC_GL_GLUT_CATS
+#ifndef ATSTRIB_GL_GLUT_CATS
+#define ATSTRIB_GL_GLUT_CATS
 
 /* ****** ****** */
 
@@ -71,27 +72,29 @@ atsctrb_glutSwapBuffers () { glutSwapBuffers (); return ; }
 // Global callback functions, see freeglut_callbacks.c
 
 static inline
-ats_void_type atsctrb_glutTimerFunc (
+ats_void_type
+atsctrb_glutTimerFunc (
   ats_uint_type time
 , ats_ptr_type callback
 , ats_int_type value
 ) {
   glutTimerFunc (time, (void (*)(int))callback, value); return ;
-}
+} // end of [atsctrb_glutTimerFunc]
 
 /* ****** ****** */
 
 static inline
 ats_void_type
-atsctrb_glutIdleFunc (ats_ptr_type callback) {
+atsctrb_glutIdleFunc
+  (ats_ptr_type callback) {
   glutIdleFunc ((void (*)(void))callback) ; return ;
-}
+} // end of [atsctrb_glutIdleFunc]
 
 static inline
 ats_void_type
-atsctrb_glutIdleFuncNull () {
+atsctrb_glutIdleFunc_null () {
   glutIdleFunc ((void (*)(void))0) ; return ;
-}
+} // end of [atsctrb_glutIdleFunc_null]
 
 /* ****** ****** */
 
@@ -99,87 +102,100 @@ atsctrb_glutIdleFuncNull () {
 
 static inline
 ats_void_type
-atsctrb_glutKeyboardFunc (ats_ptr_type callback) {
+atsctrb_glutKeyboardFunc
+  (ats_ptr_type callback) {
   glutKeyboardFunc ((void (*)(unsigned char, int, int))callback) ;
   return ;
-}
+} // end of [atsctrb_glutKeyboardFunc]
 
 static inline
 ats_void_type
-atsctrb_glutMouseFunc (ats_ptr_type callback) {
+atsctrb_glutMouseFunc
+  (ats_ptr_type callback) {
   glutMouseFunc ((void (*)(int, int, int, int))callback) ;
   return ;
-}
+} // end of [atsctrb_glutMouseFunc]
 
 static inline
 ats_void_type
-atsctrb_glutSpecialFunc (ats_ptr_type callback) {
+atsctrb_glutSpecialFunc
+  (ats_ptr_type callback) {
   glutSpecialFunc ((void (*)(int, int, int))callback) ; return ;
-}
+} // end of [atsctrb_glutSpecialFunc]
 
 static inline
 ats_void_type
-atsctrb_glutReshapeFunc (ats_ptr_type callback) {
+atsctrb_glutReshapeFunc
+  (ats_ptr_type callback) {
   glutReshapeFunc ((void (*)(int, int))callback) ; return ;
-}
+} // end of [atsctrb_glutReshapeFunc]
 
 static inline
 ats_void_type
-atsctrb_glutVisibilityFunc (ats_ptr_type callback) {
+atsctrb_glutVisibilityFunc
+  (ats_ptr_type callback) {
   glutVisibilityFunc ((void (*)(int))callback) ; return ;
-}
+} // end of [atsctrb_glutVisibilityFunc]
 
 static inline
 ats_void_type
-atsctrb_glutDisplayFunc (ats_ptr_type callback) {
+atsctrb_glutDisplayFunc
+  (ats_ptr_type callback) {
   glutDisplayFunc ((void (*)(void))callback) ; return ;
-}
+} // end of [atsctrb_glutDisplayFunc]
 
 static inline
 ats_void_type
-atsctrb_glutMotionFunc (ats_ptr_type callback) {
+atsctrb_glutMotionFunc
+  (ats_ptr_type callback) {
   glutMotionFunc ((void (*)(int, int))callback) ; return ;
-}
+} // end of [atsctrb_glutMotionFunc]
 
 static inline
 ats_void_type
-atsctrb_glutPassiveMotionFunc (ats_ptr_type callback) {
+atsctrb_glutPassiveMotionFunc
+  (ats_ptr_type callback) {
   glutPassiveMotionFunc ((void (*)(int, int))callback) ; return ;
-}
+} // end of [atsctrb_glutPassiveMotionFunc]
 
 static inline
 ats_void_type
-atsctrb_glutEntryFunc (ats_ptr_type callback) {
+atsctrb_glutEntryFunc
+  (ats_ptr_type callback) {
   glutEntryFunc ((void (*)(int))callback) ; return ;
-}
+} // end of [atsctrb_glutEntryFunc]
 
 /* ****** ****** */
 
 static inline
 ats_void_type
-atsctrb_glutWireCube_type (ats_double_type size) {
+atsctrb_glutWireCube_type
+  (ats_double_type size) {
   glutWireCube (size) ; return ;
-}
+} // end of [atsctrb_glutWireCube_type]
 
 static inline
 ats_void_type
-atsctrb_glutWireCube_GLtype (ats_GLdouble_type size) {
+atsctrb_glutWireCube_GLtype
+  (ats_GLdouble_type size) {
   glutWireCube (size) ; return ;
-}
+} // end of [atsctrb_glutWireCube_GLtype]
 
 //
 
 static inline
 ats_void_type
-atsctrb_glutSolidCube_type (ats_double_type size) {
+atsctrb_glutSolidCube_type
+  (ats_double_type size) {
   glutSolidCube (size) ; return ;
-}
+} // end of [atsctrb_glutSolidCube_type]
 
 static inline
 ats_void_type
-atsctrb_glutSolidCube_GLtype (ats_GLdouble_type size) {
+atsctrb_glutSolidCube_GLtype
+  (ats_GLdouble_type size) {
   glutSolidCube (size) ; return ;
-}
+} // end of [atsctrb_glutSolidCube_GLtype]
 
 /* ****** ****** */
 
@@ -191,7 +207,7 @@ atsctrb_glutWireSphere_type (
 , ats_int_type stacks
 ) {
   glutWireSphere (radius, slices, stacks) ; return ;
-}
+} // end of [atsctrb_glutWireSphere_type]
 
 static inline
 ats_void_type
@@ -201,7 +217,7 @@ atsctrb_glutWireSphere_GLtype (
 , ats_GLint_type stacks
 ) {
   glutWireSphere (radius, slices, stacks) ; return ;
-}
+} // end of [atsctrb_glutWireSphere_GLtype]
 
 //
 
@@ -213,7 +229,7 @@ atsctrb_glutSolidSphere_type (
 , ats_int_type stacks
 ) {
   glutSolidSphere (radius, slices, stacks) ; return ;
-}
+} // end of [atsctrb_glutSolidSphere_type]
 
 static inline
 ats_void_type
@@ -223,7 +239,7 @@ atsctrb_glutSolidSphere_GLtype (
 , ats_GLint_type stacks
 ) {
   glutSolidSphere (radius, slices, stacks) ; return ;
-}
+} // end of [atsctrb_glutSolidSphere_GLtype]
 
 /* ****** ****** */
 
@@ -236,7 +252,7 @@ atsctrb_glutWireCone_type (
 , ats_int_type stacks
 ) {
   glutWireCone (base, height, slices, stacks) ; return ;
-}
+} // end of [atsctrb_glutWireCone_type]
 
 static inline
 ats_void_type
@@ -247,7 +263,7 @@ atsctrb_glutWireCone_GLtype (
 , ats_GLint_type stacks
 ) {
   glutWireCone (base, height, slices, stacks) ; return ;
-}
+} // end of [atsctrb_glutWireCone_GLtype]
 
 //
 
@@ -260,7 +276,7 @@ atsctrb_glutSolidCone_type (
 , ats_int_type stacks
 ) {
   glutSolidCone (base, height, slices, stacks) ; return ;
-}
+} // end of [atsctrb_glutSolidCone_type]
 
 static inline
 ats_void_type
@@ -271,7 +287,7 @@ atsctrb_glutSolidCone_GLtype (
 , ats_GLint_type stacks
 ) {
   glutSolidCone (base, height, slices, stacks) ; return ;
-}
+} // end of [atsctrb_glutSolidCone_GLtype]
 
 /* ****** ****** */
 
@@ -284,7 +300,7 @@ atsctrb_glutWireTorus_type (
 , ats_int_type rings
 ) {
   glutWireTorus (innerRadius, outerRadius, sides, rings) ; return ;
-}
+} // end of [atsctrb_glutWireTorus_type]
 
 static inline
 ats_void_type
@@ -295,7 +311,7 @@ atsctrb_glutWireTorus_GLtype (
 , ats_GLint_type rings
 ) {
   glutWireTorus (innerRadius, outerRadius, sides, rings) ; return ;
-}
+} // end of [atsctrb_glutWireTorus_GLtype]
 
 //
 
@@ -308,7 +324,7 @@ atsctrb_glutSolidTorus_type (
 , ats_int_type rings
 ) {
   glutSolidTorus (innerRadius, outerRadius, sides, rings) ; return ;
-}
+} // end of [atsctrb_glutSolidTorus_type]
 
 static inline
 ats_void_type
@@ -319,19 +335,21 @@ atsctrb_glutSolidTorus_GLtype (
 , ats_GLint_type rings
 ) {
   glutSolidTorus (innerRadius, outerRadius, sides, rings) ; return ;
-}
+} // end of [atsctrb_glutSolidTorus_GLtype]
 
 /* ****** ****** */
 
 static inline
 ats_void_type
-atsctrb_glutWireTeapot_type (ats_double_type size) {
+atsctrb_glutWireTeapot_type
+  (ats_double_type size) {
   glutWireTeapot (size) ; return ;
 }
 
 static inline
 ats_void_type
-atsctrb_glutWireTeapot_GLtype (ats_GLdouble_type size) {
+atsctrb_glutWireTeapot_GLtype
+  (ats_GLdouble_type size) {
   glutWireTeapot (size) ; return ;
 }
 
@@ -339,13 +357,15 @@ atsctrb_glutWireTeapot_GLtype (ats_GLdouble_type size) {
 
 static inline
 ats_void_type
-atsctrb_glutSolidTeapot_type (ats_double_type size) {
+atsctrb_glutSolidTeapot_type
+  (ats_double_type size) {
   glutSolidTeapot (size) ; return ;
 }
 
 static inline
 ats_void_type
-atsctrb_glutSolidTeapot_GLtype (ats_GLdouble_type size) {
+atsctrb_glutSolidTeapot_GLtype
+  (ats_GLdouble_type size) {
   glutSolidTeapot (size) ; return ;
 }
 
@@ -353,38 +373,54 @@ atsctrb_glutSolidTeapot_GLtype (ats_GLdouble_type size) {
 
 static inline
 ats_void_type
-atsctrb_glutWireDodecahedron () { glutWireDodecahedron () ; return ; }
+atsctrb_glutWireDodecahedron () {
+  glutWireDodecahedron () ; return ;
+}
 
 static inline
 ats_void_type
-atsctrb_glutSolidDodecahedron () { glutSolidDodecahedron () ; return ; }
+atsctrb_glutSolidDodecahedron () {
+  glutSolidDodecahedron () ; return ;
+}
 
 static inline
 ats_void_type
-atsctrb_glutWireOctahedron () { glutWireOctahedron () ; return ; }
+atsctrb_glutWireOctahedron () {
+  glutWireOctahedron () ; return ;
+}
 
 static inline
 ats_void_type
-atsctrb_glutSolidOctahedron () { glutSolidOctahedron () ; return ; }
+atsctrb_glutSolidOctahedron () {
+  glutSolidOctahedron () ; return ;
+}
 
 static inline
 ats_void_type
-atsctrb_glutWireTetrahedron () { glutWireTetrahedron () ; return ; }
+atsctrb_glutWireTetrahedron () {
+  glutWireTetrahedron () ; return ;
+}
 
 static inline
 ats_void_type
-atsctrb_glutSolidTetrahedron () { glutSolidTetrahedron () ; return ; }
+atsctrb_glutSolidTetrahedron () {
+  glutSolidTetrahedron () ; return ;
+}
 
 static inline
 ats_void_type
-atsctrb_glutWireIcosahedron () { glutWireIcosahedron () ; return ; }
+atsctrb_glutWireIcosahedron () {
+  glutWireIcosahedron () ; return ;
+}
 
 static inline
 ats_void_type
-atsctrb_glutSolidIcosahedron () { glutSolidIcosahedron () ; return ; }
+atsctrb_glutSolidIcosahedron () {
+  glutSolidIcosahedron () ; return ;
+}
 
 /* ****** ****** */
 
-#endif /* _LIBC_GL_GLUT_CATS */
+#endif /* ATSTRIB_GL_GLUT_CATS */
 
 /* end of [glut.cats] */
