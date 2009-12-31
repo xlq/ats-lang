@@ -66,10 +66,10 @@ extern fun glTetrix_initialize (): void = "glTetrix_initialize"
 fn drawRectangle
   (x0: double, y0: double, wd: double, ht: double) : void = let
   val (pf_begin | ()) = glBegin (GL_POLYGON)
-  val () = glVertex3f (x0     , y0     , 0.0)
-  val () = glVertex3f (x0 + wd, y0     , 0.0)
-  val () = glVertex3f (x0 + wd, y0 + ht, 0.0)
-  val () = glVertex3f (x0     , y0 + ht, 0.0)
+  val () = glVertex3d (x0     , y0     , 0.0)
+  val () = glVertex3d (x0 + wd, y0     , 0.0)
+  val () = glVertex3d (x0 + wd, y0 + ht, 0.0)
+  val () = glVertex3d (x0     , y0 + ht, 0.0)
   val () = glEnd (pf_begin | (*none*))
 in
   // empty
@@ -268,8 +268,8 @@ end // end of [local]
 fn FRAME_glClear (): void =
   glClear (GL_COLOR_BUFFER_BIT)
 
-fn FRAME_glColor3f (): void =
-  glColor3f (0.0, 0.0, 0.0) // black
+fn FRAME_glColor3d (): void =
+  glColor3d (0.0, 0.0, 0.0) // black
 
 val FRAME_matrix: matrix (color_t, FRAME_X, FRAME_Y) =
   matrix_make_elt (FRAME_X, FRAME_Y, NONE_color)
@@ -377,7 +377,7 @@ extern fun the_iy_center_set (y: int): void = "the_iy_center_set"
 staload "libc/SATS/math.sats"
 
 fn drawArc {n:int | n >= 1} (
-    pf: !glBeginView
+    pf: !glBegin_v
   | x0: double, y0: double
   , radius: double, ang_init: double, ang_delta: double
   , n: int n
@@ -385,7 +385,7 @@ fn drawArc {n:int | n >= 1} (
   val theta = (ang_delta / n)
   fun loop {i:nat | i <= n}
     (i: int i, theta_i: double):<cloref1> void = let
-    val () = glVertex3f
+    val () = glVertex3d
       (x0 + radius * cos (theta_i), y0 + radius * sin (theta_i), 0.0)
   in
     if i < n then loop (i + 1, theta_i + theta)
@@ -424,19 +424,19 @@ in
 end // end of [drawBlock]
 
 // a placeholder
-fn glColor3f_color (c: color_t): void = let
+fn glColor3d_color (c: color_t): void = let
   val index = color_index_get (c)
 in
   case+ index of
-  | 1(*SHAPE0*) => glColor3f (1.0, 0.0, 0.0) // red
-  | 2(*SHAPE1*) => glColor3f (0.0, 1.0, 0.0) // green
-  | 3(*SHAPE2*) => glColor3f (0.5, 0.5, 1.0) // light blue
-  | 4(*SHAPE3*) => glColor3f (1.0, 1.0, 0.0) // yellow
-  | 5(*SHAPE4*) => glColor3f (1.0, 1.0, 0.0) // yellow
-  | 6(*SHAPE3*) => glColor3f (1.0, 0.475, 0.475) // pink?
-  | 7(*SHAPE4*) => glColor3f (1.0, 0.475, 0.475) // pink?
-  | _ => glColor3f (1.0, 1.0, 1.0)
-end // end of [glColor3f_color]
+  | 1(*SHAPE0*) => glColor3d (1.0, 0.0, 0.0) // red
+  | 2(*SHAPE1*) => glColor3d (0.0, 1.0, 0.0) // green
+  | 3(*SHAPE2*) => glColor3d (0.5, 0.5, 1.0) // light blue
+  | 4(*SHAPE3*) => glColor3d (1.0, 1.0, 0.0) // yellow
+  | 5(*SHAPE4*) => glColor3d (1.0, 1.0, 0.0) // yellow
+  | 6(*SHAPE3*) => glColor3d (1.0, 0.475, 0.475) // pink?
+  | 7(*SHAPE4*) => glColor3d (1.0, 0.475, 0.475) // pink?
+  | _ => glColor3d (1.0, 1.0, 1.0)
+end // end of [glColor3d_color]
 
 // flag = 1: draw; flag = 0: undraw
 fn shape_draw (flag: int, S: shape0_t): void = let
@@ -451,7 +451,7 @@ fn shape_draw (flag: int, S: shape0_t): void = let
     in
       if color_is_some (c) then let
         val () = begin
-          if flag > 0 then glColor3f_color (c) else FRAME_glColor3f ()
+          if flag > 0 then glColor3d_color (c) else FRAME_glColor3d ()
         end // end of [val]
         val () = drawBlock (i, j)
       in
@@ -805,7 +805,7 @@ fn FRAME_matrix_draw () = let
       val c = FRAME_matrix[i, FRAME_Y, j]
     in
       if :(i: natLt FRAME_X) => color_is_some (c) then let
-        val () = glColor3f_color (c); val () = drawBlock (i, j)
+        val () = glColor3d_color (c); val () = drawBlock (i, j)
       in
         // empty
       end // end of [if]
@@ -818,7 +818,7 @@ end // end of [FRAME_matrix_draw]
 
 implement glTetrix_display_main (flag) = let
   val () = FRAME_glClear ()
-  val () = FRAME_glColor3f ()
+  val () = FRAME_glColor3d ()
   val () = FRAME_draw ()
   val () = FRAME_matrix_draw ()
   val () = if theNextShapeShow_get () > 0 then let
@@ -930,14 +930,14 @@ implement glTetrix_finalize () = let
   macdef HELVETICA_18 = $extval (FONTref, "GLUT_BITMAP_HELVETICA_18")
 
   val () = glClear(GL_COLOR_BUFFER_BIT)
-  val () = glColor3f (0.0, 0.0, 0.0)
+  val () = glColor3d (0.0, 0.0, 0.0)
   val () = glMatrixMode(GL_MODELVIEW)
   val () = glLoadIdentity ()
-  val () = glRasterPos2f (0.25, 0.75)
+  val () = glRasterPos2d (0.25, 0.75)
   val () = show_string (TIMES_ROMAN_24, str_gameover)
-  val () = glRasterPos2f (0.25, 0.50)
+  val () = glRasterPos2d (0.25, 0.50)
   val () = show_string (HELVETICA_18, str_level)
-  val () = glRasterPos2f (0.25, 0.45)
+  val () = glRasterPos2d (0.25, 0.45)
   val () = show_string (HELVETICA_18, str_score)
   val () = glFlush ()
   val () = glutSwapBuffers ()

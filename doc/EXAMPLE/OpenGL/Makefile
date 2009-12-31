@@ -104,5 +104,3 @@ cleanall: clean
 	rm -f glTetrix
 
 ###### end of [Makefile] ######
- 
-

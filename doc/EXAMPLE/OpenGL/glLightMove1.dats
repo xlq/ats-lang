@@ -47,16 +47,16 @@ implement display () = let
   val () = glClear
     (GL_COLOR_BUFFER_BIT lor GL_DEPTH_BUFFER_BIT)
   val (pf1_push | ()) = glPushMatrix ()
-  val () = glTranslatef (0.0, 0.0, ~5.0)
+  val () = glTranslated (0.0, 0.0, ~5.0)
   val (pf2_push | ()) = glPushMatrix ()
   val () = glRotated (double_of !spin, 0.0, 1.0, 0.0)
   extern fun glLightfv {n:nat} {l:addr}
     (pf: !array_v (float, n, l) | light: GLenum, pname: GLenum, p: ptr l): void
-  = "atslib_glLightfv"
+  = "atsctrb_glLightfv"
   val () = glLightfv (pf_pos | GL_LIGHT0, GL_POSITION, p_pos)
-  val () = glTranslatef (x_pos, y_pos, z_pos)
+  val () = glTranslated (x_pos, y_pos, z_pos)
   val () = glDisable (GL_LIGHTING)
-  val () = glColor3f (0.0, 1.0, 1.0)
+  val () = glColor3d (0.0, 1.0, 1.0)
   val () = glutWireCube (0.1)
   val () = glEnable (GL_LIGHTING)
   val () = glPopMatrix (pf2_push | (*none*))

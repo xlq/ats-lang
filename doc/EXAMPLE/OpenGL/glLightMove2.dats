@@ -62,7 +62,7 @@ implement display () = let
   val () = glEnable (GL_LIGHTING)
 
   val (pf1_push | ()) = glPushMatrix ()
-  val () = glTranslatef (0.0, 0.0, ~5.0)
+  val () = glTranslated (0.0, 0.0, ~5.0)
   val () = glRotated (double_of !spin_x, 1.0, 0.0, 0.0)
   val () = glRotated (double_of !spin_y, 0.0, 1.0, 0.0)
 (*

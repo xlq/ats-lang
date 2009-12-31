@@ -66,13 +66,13 @@ symintr liftmac evalmac
 
 symintr assert assert_errmsg
 
-symintr int_of uint_of
-symintr int1_of uint1_of
-symintr lint_of ulint_of
-symintr llint_of ullint_of
-symintr sint_of usint_of
-symintr ssint_of ussint_of
-symintr float_of double_of ldouble_of
+symintr int_of uint_of // signed/unsigned integers
+symintr int1_of uint1_of // signed/unsigned indexed integers
+symintr lint_of ulint_of // signed/unsigned long integers
+symintr llint_of ullint_of // signed/unsigned long long integers
+symintr sint_of usint_of // signed/unsigned short integers
+symintr ssint_of ussint_of // signed/unsigned short short integers
+symintr float_of double_of ldouble_of // single/double/long double
 
 (* ****** ****** *)
 

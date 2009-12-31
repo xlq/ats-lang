@@ -783,16 +783,6 @@ static inline
 ats_uint_type
 atspre_uint_of_ulint (ats_ulint_type ul) { return ul ; }
 
-//
-
-static inline
-ats_ulint_type
-atspre_ulint_of_lint (ats_lint_type li) { return li ; }
-
-static inline
-ats_lint_type
-atspre_lint_of_ulint (ats_ulint_type ul) { return ul ; }
-
 /* ****** ****** */
 
 static inline
@@ -869,7 +859,9 @@ atspre_neq_ulint_ulint (ats_ulint_type i1, ats_ulint_type i2) {
   return (i1 != i2) ;
 }
 
+//
 // compare, max and min
+//
 
 static inline
 ats_int_type
@@ -892,7 +884,9 @@ atspre_min_ulint_ulint (ats_ulint_type i1, ats_ulint_type i2) {
   return (i1 <= i2 ? i1 : i2) ;
 }
 
+//
 // bitwise operations
+//
 
 static inline
 ats_ulint_type
@@ -928,63 +922,75 @@ atspre_lsr_ulint_int1 (ats_ulint_type i, ats_int_type n) {
   return i >> n ;
 }
 
+//
 // print functions
+//
 
 static inline
 ats_void_type
-atspre_fprint_ulint (ats_ptr_type out, ats_ulint_type i) {
+atspre_fprint_ulint
+  (ats_ptr_type out, ats_ulint_type i) {
   int n = fprintf ((FILE*)out, "%lu", i) ;
   if (n < 0) {
     ats_exit_errmsg (n, (ats_ptr_type)"exit(ATS): [fprint_ulint] failed.\n") ;
   }
   return ;
-}
+} // end of [atspre_fprint_ulint]
 
 static inline
 ats_void_type
-atspre_print_ulint (ats_ulint_type i) {
+atspre_print_ulint
+  (ats_ulint_type i) {
   atspre_stdout_view_get () ;
   atspre_fprint_ulint ((ats_ptr_type)stdout, i) ;
   atspre_stdout_view_set () ;
   return ;
-}
+} // end of [atspre_print_ulint]
 
 static inline
 ats_void_type
-atspre_prerr_ulint (ats_ulint_type i) {
+atspre_prerr_ulint
+  (ats_ulint_type i) {
   atspre_stderr_view_get () ;
   atspre_fprint_ulint ((ats_ptr_type)stderr, i) ;
   atspre_stderr_view_set () ;
   return ;
-}
+} // end of [atspre_prerr_ulint]
 
 //
 
 static inline
 ats_ptr_type
-atspre_tostring_ulint (ats_ulint_type i) {
+atspre_tostring_ulint
+  (ats_ulint_type i) {
   return atspre_tostring_ullint (i) ;
-}
+} // end of [atspre_tostring_ulint]
 
 /* ****** ****** */
 
-/* long long integers */
+//
+// long long integers
+//
 
 /* ****** ****** */
 
 static inline
 ats_llint_type
-atspre_llint_of_int (ats_int_type i) {
+atspre_llint_of_int
+  (ats_int_type i) {
   return ((ats_llint_type)i) ;
-}
+} // end of [atspre_llint_of_int]
 
 static inline
 ats_llint_type
-atspre_llint_of_string (ats_ptr_type s) {
+atspre_llint_of_string
+  (ats_ptr_type s) {
   return atoll ((char*)s) ;
-}
+} // end of [atspre_llint_of_string]
 
+//
 // arithmetic functions and comparison functions
+//
 
 static inline
 ats_llint_type
@@ -1085,49 +1091,61 @@ atspre_compare_llint_llint
 
 static inline
 ats_llint_type
-atspre_max_llint_llint (ats_llint_type i1, ats_llint_type i2) {
+atspre_max_llint_llint (
+  ats_llint_type i1, ats_llint_type i2
+) {
   return (i1 >= i2 ? i1 : i2) ;
-}
+} // end of [atspre_max_llint_llint]
 
 static inline
 ats_llint_type
-atspre_min_llint_llint (ats_llint_type i1, ats_llint_type i2) {
+atspre_min_llint_llint (
+  ats_llint_type i1, ats_llint_type i2
+) {
   return (i1 <= i2 ? i1 : i2) ;
-}
+} // end of [atspre_min_llint_llint]
 
+//
 // print functions
+//
 
 static inline
 ats_void_type
-atspre_fprint_llint (ats_ptr_type out, ats_llint_type i) {
+atspre_fprint_llint (
+  ats_ptr_type out, ats_llint_type i
+) {
   int n = fprintf ((FILE*)out, "%lli", i) ;
   if (n < 0) {
     ats_exit_errmsg (n, (ats_ptr_type)"exit(ATS): [fprint_llint] failed.\n") ;
   }
   return ;
-}
+} // end of [atspre_fprint_llint]
 
 static inline
 ats_void_type
-atspre_print_llint (ats_llint_type lli) {
+atspre_print_llint
+  (ats_llint_type lli) {
   atspre_stdout_view_get () ;
   atspre_fprint_llint ((ats_ptr_type)stdout, lli) ;
   atspre_stdout_view_set () ;
   return ;
-}
+} // end of [atspre_print_llint]
 
 static inline
 ats_void_type
-atspre_prerr_llint (ats_llint_type lli) {
+atspre_prerr_llint
+  (ats_llint_type lli) {
   atspre_stderr_view_get () ;
   atspre_fprint_llint ((ats_ptr_type)stderr, lli) ;
   atspre_stderr_view_set () ;
   return ;
-}
+} // end of [atspre_prerr_llint]
 
 /* ****** ****** */
 
+//
 /* unsigned long long integers */
+//
 
 /* ****** ****** */
 
@@ -1135,7 +1153,7 @@ static inline
 ats_ullint_type
 atspre_ullint_of_int
   (ats_int_type i) { return ((ats_ullint_type)i) ; }
-// end of ...
+// end of [atspre_ullint_of_int]
 
 static inline
 ats_ullint_type
@@ -1147,15 +1165,19 @@ atspre_pred_ullint (ats_ullint_type i) { return (i - 1) ; }
 
 static inline
 ats_ullint_type
-atspre_add_ullint_ullint (ats_ullint_type i1, ats_ullint_type i2) {
+atspre_add_ullint_ullint (
+  ats_ullint_type i1, ats_ullint_type i2
+) {
   return (i1 + i2) ;
-}
+} // end of [atspre_add_ullint_ullint]
 
 static inline
 ats_ullint_type
-atspre_sub_ullint_ullint (ats_ullint_type i1, ats_ullint_type i2) {
+atspre_sub_ullint_ullint (
+  ats_ullint_type i1, ats_ullint_type i2
+) {
   return (i1 - i2) ;
-}
+} // end of [atspre_sub_ullint_ullint]
 
 static inline
 ats_ullint_type
@@ -1211,7 +1233,9 @@ atspre_neq_ullint_ullint (ats_ullint_type i1, ats_ullint_type i2) {
   return (i1 != i2) ;
 }
 
+//
 // compare, max and min
+//
 
 static inline
 ats_int_type

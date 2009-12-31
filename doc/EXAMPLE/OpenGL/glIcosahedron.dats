@@ -200,7 +200,7 @@ val tindices
 extern fun display (): void = "display"
 implement display () = let
   val () = glClear (GL_COLOR_BUFFER_BIT lor GL_DEPTH_BUFFER_BIT)
-  val () = glColor3f (1.0, 1.0, 1.0)
+  val () = glColor3d (1.0, 1.0, 1.0)
   val (pf | ()) = glBegin (GL_TRIANGLES)
   val () = loop (0) where {
     extern fun glNormal3fv (A: array (float, 3)): void

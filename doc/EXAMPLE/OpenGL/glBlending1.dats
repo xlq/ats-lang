@@ -40,10 +40,10 @@ end // end of [initialize]
 
 fn drawLeftTriangle () = let
   val (pf | ()) = glBegin (GL_TRIANGLES)
-  val () = glColor4f (1.0, 1.0, 0.0, 0.75) // yellow
-  val () = glVertex3f (0.1, 0.9, 0.0)
-  val () = glVertex3f (0.1, 0.1, 0.0)
-  val () = glVertex3f (0.7, 0.5, 0.0)
+  val () = glColor4d (1.0, 1.0, 0.0, 0.75) // yellow
+  val () = glVertex3d (0.1, 0.9, 0.0)
+  val () = glVertex3d (0.1, 0.1, 0.0)
+  val () = glVertex3d (0.7, 0.5, 0.0)
   val () = glEnd (pf | (*none*))
 in
   // empty
@@ -51,10 +51,10 @@ end // end of [drawleftTriangle]
 
 fn drawRightTriangle () = let
   val (pf | ()) = glBegin (GL_TRIANGLES)
-  val () = glColor4f (0.0, 1.0, 1.0, 0.75) // cyan
-  val () = glVertex3f (0.9, 0.9, 0.0)
-  val () = glVertex3f (0.3, 0.5, 0.0)
-  val () = glVertex3f (0.9, 0.1, 0.0)
+  val () = glColor4d (0.0, 1.0, 1.0, 0.75) // cyan
+  val () = glVertex3d (0.9, 0.9, 0.0)
+  val () = glVertex3d (0.3, 0.5, 0.0)
+  val () = glVertex3d (0.9, 0.1, 0.0)
   val () = glEnd (pf | (*none*))
 in
   // empty

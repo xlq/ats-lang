@@ -58,7 +58,7 @@ fn draw_arc {n:int | n >= 1} (
   val theta = (ang_delta / n)
   fun loop {i:nat | i <= n}
     (i: int i, theta_i: double):<cloref1> void = let
-    val () = glVertex3f
+    val () = glVertex3d
       (radius * cos (theta_i), radius * sin (theta_i), 0.0)
   in
     if i < n then loop (i + 1, theta_i + theta)
@@ -78,7 +78,7 @@ fn draw_polygon_eqlat
   fun loop {i:nat | i <= n}
     (i: int i, theta_i: double):<cloref1> void =
     if i < n then let
-      val () = glVertex3f
+      val () = glVertex3d
         (radius * cos (theta_i), radius * sin (theta_i), 0.0)
     in
       loop (i + 1, theta_i + theta)
@@ -107,24 +107,24 @@ fn draw_eye (
   val R = R2 / 2
 
   val (pf_push | ()) = glPushMatrix ()
-  val () = glTranslatef (0.0, R - r, 0.0)
+  val () = glTranslated (0.0, R - r, 0.0)
   val () = draw_arc (R, 1.5 * M_PI - theta2, theta4, 16)
   val () = glPopMatrix (pf_push | (*none*))
 
   val (pf_push | ()) = glPushMatrix ()
-  val () = glTranslatef (0.0, r - R, 0.0)
+  val () = glTranslated (0.0, r - R, 0.0)
   val () = draw_arc (R, 0.5 * M_PI - theta2, theta4, 16)
   val () = glPopMatrix (pf_push | (*none*))
 
   val (pf_push | ()) = glPushMatrix ()
-  val () = glTranslatef (iris_x_ofs, 0.0, 0.0)
-  val () = glColor3f (0.0, 0.0, 0.0)
+  val () = glTranslated (iris_x_ofs, 0.0, 0.0)
+  val () = glColor3d (0.0, 0.0, 0.0)
   val () = draw_polygon_eqlat (GL_POLYGON, r / 1.25, 16)
 
-  val () = glColor3f (1.0, 1.0, 1.0)
-  val () = glTranslatef (iris_x_ofs / 2, 0.0, 0.0)
+  val () = glColor3d (1.0, 1.0, 1.0)
+  val () = glTranslated (iris_x_ofs / 2, 0.0, 0.0)
   val () = draw_polygon_eqlat (GL_POLYGON, r / 8, 16)
-  val () = glColor3f (0.0, 0.0, 0.0)
+  val () = glColor3d (0.0, 0.0, 0.0)
   val () = glPopMatrix (pf_push | (*none*))
 in
   // empty
@@ -139,18 +139,18 @@ fn draw_face
   val mouth_angle = 0.425 * M_PI
 
   val (pf_push | ()) = glPushMatrix ()
-  val () = glScalef (1.0625, 1.3125, 1.0)
+  val () = glScaled (1.0625, 1.3125, 1.0)
 
   val () = begin
     if sgn > 0 then begin
-      glColor3f (anim_ratio, 0.5, 1.0 - anim_ratio)
+      glColor3d (anim_ratio, 0.5, 1.0 - anim_ratio)
     end else begin
-      glColor3f (1.0 - anim_ratio, 0.5, anim_ratio)
+      glColor3d (1.0 - anim_ratio, 0.5, anim_ratio)
     end
   end // end of [val]
 
   val () = draw_polygon_eqlat (GL_POLYGON, face_radius, 64)
-  val () = glColor3f (0.0, 0.0, 0.0)
+  val () = glColor3d (0.0, 0.0, 0.0)
   val (pf_beg | ()) = glBegin (GL_LINES)
 
   val x_hair = face_radius * cos (hair_angle)
@@ -176,12 +176,12 @@ fn draw_face
   val y_delta2 = hair_length * cos (ang2)
   val x_delta3 = sgn * hair_length * sin (ang3)
   val y_delta3 = hair_length * cos (ang3)
-  val () = glVertex3f (~x_hair, y_hair, 0.0)
-  val () = glVertex3f (~x_hair - x_delta1, y_hair + y_delta1, 0.0)
-  val () = glVertex3f (0.0, face_radius, 0.0)
-  val () = glVertex3f (~x_delta2, face_radius + y_delta2, 0.0)
-  val () = glVertex3f (x_hair, y_hair, 0.0)
-  val () = glVertex3f (x_hair - x_delta3, y_hair + y_delta3, 0.0)  
+  val () = glVertex3d (~x_hair, y_hair, 0.0)
+  val () = glVertex3d (~x_hair - x_delta1, y_hair + y_delta1, 0.0)
+  val () = glVertex3d (0.0, face_radius, 0.0)
+  val () = glVertex3d (~x_delta2, face_radius + y_delta2, 0.0)
+  val () = glVertex3d (x_hair, y_hair, 0.0)
+  val () = glVertex3d (x_hair - x_delta3, y_hair + y_delta3, 0.0)  
   val () = glPopMatrix (pf_push1 | (*none*))
   val () = glEnd (pf_beg | (*none*))
   val () = glPopMatrix (pf_push | (*none*))
@@ -189,12 +189,12 @@ fn draw_face
   // eye drawing
   val iris_x_ofs = sgn * (anim_ratio * iris_x_ofs_max)
   val (pf_push | ()) = glPushMatrix ()
-  val () = glTranslatef (~4.0, 4.0, 0.0)
+  val () = glTranslated (~4.0, 4.0, 0.0)
   val () = draw_eye (6.0, 3.0, iris_x_ofs)
   val () = glPopMatrix (pf_push | (*none*))
 
   val (pf_push | ()) = glPushMatrix ()
-  val () = glTranslatef (4.0, 4.0, 0.0)
+  val () = glTranslated (4.0, 4.0, 0.0)
   val () = draw_eye (6.0, 3.0, iris_x_ofs)
   val () = glPopMatrix (pf_push | (*none*))
 
@@ -202,12 +202,12 @@ fn draw_face
   val (pf_push | ()) = glPushMatrix ()
   val () =
     if sgn > 0 then let
-      val () = glTranslatef (0.0, ~4.0, 0.0)
+      val () = glTranslated (0.0, ~4.0, 0.0)
       val () = draw_arc (2.5, 1.5 * M_PI - mouth_angle, 2 * mouth_angle, 32)
     in
       // empty
     end else let
-      val () = glTranslatef (0.0, ~7.0, 0.0)
+      val () = glTranslated (0.0, ~7.0, 0.0)
       val () = draw_arc (2.5, 0.5 * M_PI - mouth_angle, 2 * mouth_angle, 32)
     in
       // empty
@@ -247,7 +247,7 @@ implement display () = let
 
   val () = glClear (GL_COLOR_BUFFER_BIT)
   val () = glLineWidth (2.5)
-  val () = glColor3f (0.0, 0.0, 0.0)
+  val () = glColor3d (0.0, 0.0, 0.0)
 
   val head_rotate_angle = anim_ratio * head_rotate_angle_max
   val x_ratio = cos (head_rotate_angle * M_PI / 180)
@@ -261,7 +261,7 @@ implement display () = let
       glTranslatef (~30.0 + 15.0 * x_ratio , 0.0, 0.0)
     end
 *)
-  val () = glTranslatef (~20.0, 0.0, 0.0)
+  val () = glTranslated (~20.0, 0.0, 0.0)
 (*
   val () =
     if dir > 0 then begin
@@ -282,7 +282,7 @@ implement display () = let
       glTranslatef (30.0 - 15.0 * x_ratio, 0.0, 0.0)
     end
 *)
-  val () = glTranslatef (20.0, 0.0, 0.0)
+  val () = glTranslated (20.0, 0.0, 0.0)
 (*
   val () =
     if dir > 0 then begin
@@ -336,7 +336,7 @@ implement mouse (button, state, x, y) = begin case+ 0 of
         val status = !animation_status_ref
         val () = !animation_status_ref := 1 - status
       in
-        if status = 0 then glutIdleFunc (animate) else glutIdleFuncNull ()
+        if status = 0 then glutIdleFunc (animate) else glutIdleFunc_null ()
       end // end of [if]
     end // end of [_ when ...]
   | _ => ()

@@ -32,12 +32,12 @@ end // end of [initialize]
 extern fun display (): void = "display"
 implement display () = let
   val () = glClear (GL_COLOR_BUFFER_BIT)
-  val () = glColor3f (1.0, 1.0, 1.0)
+  val () = glColor3d (1.0, 1.0, 1.0)
   val (pf | ()) = glBegin (GL_POLYGON)
-  val () = glVertex3f (0.25, 0.25, 0.0)
-  val () = glVertex3f (0.75, 0.25, 0.0)
-  val () = glVertex3f (0.75, 0.75, 0.0)
-  val () = glVertex3f (0.25, 0.75, 0.0)
+  val () = glVertex3d (0.25, 0.25, 0.0)
+  val () = glVertex3d (0.75, 0.25, 0.0)
+  val () = glVertex3d (0.75, 0.75, 0.0)
+  val () = glVertex3d (0.25, 0.75, 0.0)
   val () = glEnd (pf | (*none*))
   val () = glFlush ()
 in

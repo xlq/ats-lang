@@ -33,22 +33,22 @@ implement display () = let
   var !p_eqn0 with pf_eqn0 = @[double](1.0, 0.0, 0.0, 0.0)
   var !p_eqn1 with pf_eqn1 = @[double](0.0, 1.0, 0.0, 0.0)
   val () = glClear (GL_COLOR_BUFFER_BIT)
-  val () = glColor3f (1.0, 1.0, 1.0)
+  val () = glColor3d (1.0, 1.0, 1.0)
   val (pf_mat | ()) = glPushMatrix ()
-  val () = glTranslatef (0.0, 0.0, ~5.0)
+  val () = glTranslated (0.0, 0.0, ~5.0)
 //
   extern fun glClipPlane {l:addr}
     (pf: !array_v (double, 4, l) | plane: GLenum, eqn: ptr l): void
     = "atsctrb_glClipPlane"
 //
-  val () = glRotatef (315.0, 1.0, 0.0, 0.0)
-  val () = glRotatef (45.0, 0.0, 1.0, 0.0)
+  val () = glRotated (315.0, 1.0, 0.0, 0.0)
+  val () = glRotated (45.0, 0.0, 1.0, 0.0)
   val () = glClipPlane (pf_eqn0 | GL_CLIP_PLANE0, p_eqn0)
   val () = glEnable (GL_CLIP_PLANE0)
   val () = glClipPlane (pf_eqn1 | GL_CLIP_PLANE1, p_eqn1)
   val () = glEnable (GL_CLIP_PLANE1)
 
-  val () = glRotatef (90.0, 1.0, 0.0, 0.0)
+  val () = glRotated (90.0, 1.0, 0.0, 0.0)
   val () = glutWireSphere (1.0, 40, 32)
   val () = glPopMatrix (pf_mat | (*none*))
 
@@ -70,11 +70,10 @@ extern fun gluPerspective
 
 end
 
-extern fun reshape (w: int, h: int): void = "reshape"
+extern
+fun reshape (w: int, h: int): void = "reshape"
 implement reshape (w, h) = let
-  val () = glViewport (
-    GLint_of_int 0, GLint_of_int 0, GLsizei_of_int w, GLsizei_of_int h
-  )
+  val () = glViewport (0, 0, w, h)
   val () = glMatrixMode (GL_PROJECTION)
   val () = glLoadIdentity ()
   val () = gluPerspective

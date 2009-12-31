@@ -17,6 +17,7 @@ extern ats_void_type mainats (ats_int_type argc, ats_ptr_type argv) ;
 
 staload "libc/SATS/math.sats"
 staload "contrib/GL/SATS/gl.sats"
+staload "contrib/GL/SATS/glu.sats"
 staload "contrib/GL/SATS/glut.sats"
 
 (* ****** ****** *)
@@ -41,7 +42,7 @@ implement drawTorus {c,t} (numc, numt) = let
     val sin_tangt = sin (tangt)
     val y = (1.0 + 0.1 * cos_cangc) * sin_tangt
     val z = 0.1 * sin_cangc
-    val () = glVertex3f (x, y, z)
+    val () = glVertex3d (x, y, z)
   in
     if k > 0 then loop3 (i, j, k-1) else ()
   end
@@ -93,24 +94,13 @@ end // end of [initialize]
 extern fun display (): void = "display"
 implement display () = let
   val () = glClear (GL_COLOR_BUFFER_BIT)
-  val () = glColor3f (1.0, 1.0, 1.0)
+  val () = glColor3d (1.0, 1.0, 1.0)
   val () = glCallListRef (torusLst_ref)
 in
   glFlush ()
 end // end of [display]
 
 (* ****** ****** *)
-
-extern fun gluPerspective
-  (_: double, _: double, _: double, _: double): void
-  = "gluPerspective"
-
-extern fun gluLookAt (
-  eyeX: double, eyeY: double, eyeZ: double
-, centerX: double, centerY: double, centerZ: double
-, upX: double, upY: double, upZ: double
-) : void
-  = "gluLookAt"
 
 extern fun reshape (w: int, h: int): void = "reshape"
 implement reshape (w, h) = let
@@ -143,10 +133,10 @@ implement keyboard (key, x, y) = let
 in
   case+ 0 of
   | _ when (key = 'x' orelse key = 'X') => begin
-      glRotatef (30.0, 1.0, 0.0, 0.0); glutPostRedisplay ()
+      glRotated (30.0, 1.0, 0.0, 0.0); glutPostRedisplay ()
     end
   | _ when (key = 'y' orelse key = 'Y') => begin
-      glRotatef (30.0, 0.0, 1.0, 0.0); glutPostRedisplay ()
+      glRotated (30.0, 0.0, 1.0, 0.0); glutPostRedisplay ()
     end
   | _ when (key = 'i' orelse key = 'I') => begin
       glLoadIdentity (); gluLookAt (0.0, 0.0, 10.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0);

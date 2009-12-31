@@ -30,12 +30,12 @@ end // end of [initialize]
 
 fn drawTriangle (): void = let
   val (pf | ()) = glBegin (GL_TRIANGLES)
-  val () = glColor3f (1.0, 0.0, 0.0)
-  val () = glVertex2f (5.0, 5.0)
-  val () = glColor3f (0.0, 1.0, 0.0)
-  val () = glVertex2f (25.0, 5.0)
-  val () = glColor3f (0.0, 0.0, 1.0)
-  val () = glVertex2f (5.0, 25.0)
+  val () = glColor3d (1.0, 0.0, 0.0)
+  val () = glVertex2d (5.0, 5.0)
+  val () = glColor3d (0.0, 1.0, 0.0)
+  val () = glVertex2d (25.0, 5.0)
+  val () = glColor3d (0.0, 0.0, 1.0)
+  val () = glVertex2d (5.0, 25.0)
   val () = glEnd (pf | (*none*))
 in
   // empty
@@ -63,9 +63,7 @@ end
 
 extern fun reshape (w: int, h: int): void = "reshape"
 implement reshape (w, h) = let
-  val () = glViewport (
-    GLint_of_int 0, GLint_of_int 0, GLsizei_of_int w, GLsizei_of_int h
-  )
+  val () = glViewport (0, 0, w, h)
   val () = glMatrixMode (GL_PROJECTION)
   val () = glLoadIdentity ()
   val () = case+ 0 of

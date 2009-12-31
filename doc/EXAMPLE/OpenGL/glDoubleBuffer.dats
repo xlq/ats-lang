@@ -22,6 +22,8 @@ extern ats_void_type mainats (ats_int_type argc, ats_ptr_type argv) ;
 staload "contrib/GL/SATS/gl.sats"
 staload "contrib/GL/SATS/glut.sats"
 
+(* ****** ****** *)
+
 var spin: double = 0.0
 val (pf_spin: vbox (double @ spin) | ()) =
   vbox_make_view_ptr (view@ spin | &spin)
@@ -39,9 +41,9 @@ implement display () = let
   val spin = let prval vbox (pf) = pf_spin in spin end
   val () = glClear (GL_COLOR_BUFFER_BIT)
   val (pf | ()) = glPushMatrix ()
-  val () = glRotatef (spin, 0.0, 0.0, 1.0)
-  val () = glColor3f (1.0, 1.0, 1.0)
-  val () = glRectf (~25.0, ~25.0, 25.0, 25.0)
+  val () = glRotated (spin, 0.0, 0.0, 1.0)
+  val () = glColor3d (1.0, 1.0, 1.0)
+  val () = glRectd (~25.0, ~25.0, 25.0, 25.0)
   val () = glPopMatrix (pf | (*none*))
   val () = glutSwapBuffers ()
 in
@@ -86,7 +88,7 @@ implement mouse (button, state, x, y) = begin
       if (state = GLUT_DOWN) then glutIdleFunc (spinDisplay)
     end
   | _ when (button = GLUT_RIGHT_BUTTON) => begin
-      if (state = GLUT_DOWN) then glutIdleFuncNull ()
+      if (state = GLUT_DOWN) then glutIdleFunc_null ()
     end
   | _ => ()
 end // end of [mouse]

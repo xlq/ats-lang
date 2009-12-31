@@ -16,6 +16,7 @@ extern ats_void_type mainats (ats_int_type argc, ats_ptr_type argv) ;
 (* ****** ****** *)
 
 staload "contrib/GL/SATS/gl.sats"
+staload "contrib/GL/SATS/glu.sats"
 staload "contrib/GL/SATS/glut.sats"
 
 (* ****** ****** *)
@@ -50,9 +51,9 @@ end // end of [initialize]
 extern fun display (): void = "display"
 implement display () = let
   val () = glClear (GL_COLOR_BUFFER_BIT)
-  val () = glColor3f (1.0, 1.0, 1.0)
+  val () = glColor3d (1.0, 1.0, 1.0)
   val (pf1_mat | ()) = glPushMatrix ()
-  val () = glRotatef (270.0, 1.0, 0.0, 0.0)
+  val () = glRotated (270.0, 1.0, 0.0, 0.0)
   val () = glutWireSphere (1.0, 20, 16) // sun
 
   val day = day_get ()
@@ -61,15 +62,15 @@ implement display () = let
   val m_angle = (double_of mday / 30) * 360.0
   and y_angle = (double_of yday / 365) * 360.0
 
-  val () = glRotatef (y_angle, 0.0, 0.0, 1.0)
-  val () = glTranslatef (2.0, 0.0, 0.0)
+  val () = glRotated (y_angle, 0.0, 0.0, 1.0)
+  val () = glTranslated (2.0, 0.0, 0.0)
 
   val (pf2_mat | ()) = glPushMatrix ()
-  val () = glRotatef (15.0, 0.0, 1.0, 0.0)
+  val () = glRotated (15.0, 0.0, 1.0, 0.0)
   val () = glutWireSphere (0.25, 10, 8) // planet
 
-  val () = glRotatef (m_angle, 0.0, 0.0, 1.0)
-  val () = glTranslatef (0.5, 0.0, 0.0)  
+  val () = glRotated (m_angle, 0.0, 0.0, 1.0)
+  val () = glTranslated (0.5, 0.0, 0.0)  
   val () = glutWireSphere (0.10, 5, 4) // planet
 
   val () = glPopMatrix (pf2_mat | (*none*))
@@ -82,30 +83,9 @@ end // end of [display]
 
 (* ****** ****** *)
 
-local
-
-typedef GLdouble = double
-
-in
-
-extern fun gluPerspective
-  (_: GLdouble, _: GLdouble, _: GLdouble, _: GLdouble): void
-  = "gluPerspective"
-
-extern fun gluLookAt (
-  eyeX: GLdouble, eyeY: GLdouble, eyeZ: GLdouble
-, centerX: GLdouble, centerY: GLdouble, centerZ: GLdouble
-, upX: GLdouble, upY: GLdouble, upZ: GLdouble
-) : void
-  = "gluLookAt"
-
-end
-
 extern fun reshape (w: int, h: int): void = "reshape"
 implement reshape (w, h) = let
-  val () = glViewport (
-    GLint_of_int 0, GLint_of_int 0, GLsizei_of_int w, GLsizei_of_int h
-  )
+  val () = glViewport (0, 0, w, h)
   val () = glMatrixMode (GL_PROJECTION)
   val () = glLoadIdentity ()
   val () = gluPerspective

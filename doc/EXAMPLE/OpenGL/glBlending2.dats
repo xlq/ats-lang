@@ -100,16 +100,16 @@ implement display () = let
   val () = glClear (GL_COLOR_BUFFER_BIT lor GL_DEPTH_BUFFER_BIT)
 
   val (pf_push | ()) = glPushMatrix ()
-  val () = glTranslatef (~0.15, ~0.15, !solidZ)
+  val () = glTranslated (~0.15, ~0.15, !solidZ)
   val () = glMaterialfv (pf2 | GL_FRONT, GL_EMISSION, p_mat_zero)
   val () = glMaterialfv (pf1 | GL_FRONT, GL_DIFFUSE, p_mat_solid)
   val () = glCallListRef (sphereLst_ref)
   val () = glPopMatrix (pf_push | (*none*))
 
   val (pf_push | ()) = glPushMatrix ()
-  val () = glTranslatef (0.15, 0.15, !transparentZ)
-  val () = glRotatef (15.0, 1.0, 1.0, 0.0)
-  val () = glRotatef (30.0, 0.0, 1.0, 0.0)
+  val () = glTranslated (0.15, 0.15, !transparentZ)
+  val () = glRotated (15.0, 1.0, 1.0, 0.0)
+  val () = glRotated (30.0, 0.0, 1.0, 0.0)
   val () = glMaterialfv (pf4 | GL_FRONT, GL_EMISSION, p_emission)
   val () = glMaterialfv (pf3 | GL_FRONT, GL_DIFFUSE, p_transparent)
   val () = glEnable (GL_BLEND)
@@ -131,8 +131,8 @@ implement animate () = let
   val solidZ_v = !solidZ
   val transparentZ_v = !transparentZ
 in
-  if solidZ_v <= MINZ then glutIdleFuncNull ()
-  else if transparentZ_v >= MAXZ then glutIdleFuncNull ()
+  if solidZ_v <= MINZ then glutIdleFunc_null ()
+  else if transparentZ_v >= MAXZ then glutIdleFunc_null ()
   else let
     val () = !solidZ := solidZ_v - ZINC
     val () = !transparentZ := transparentZ_v + ZINC

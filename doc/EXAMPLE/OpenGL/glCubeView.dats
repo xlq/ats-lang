@@ -17,6 +17,7 @@ extern ats_void_type mainats (ats_int_type argc, ats_ptr_type argv) ;
 
 staload "libc/SATS/math.sats"
 staload "contrib/GL/SATS/gl.sats"
+staload "contrib/GL/SATS/glu.sats"
 staload "contrib/GL/SATS/glut.sats"
 
 (* ****** ****** *)
@@ -31,28 +32,13 @@ end // end of [initialize]
 
 (* ****** ****** *)
 
-local
-
-typedef GLdouble = double
-
-in
-
-extern fun gluLookAt (
-  eyeX: GLdouble, eyeY: GLdouble, eyeZ: GLdouble
-, centerX: GLdouble, centerY: GLdouble, centerZ: GLdouble
-, upX: GLdouble, upY: GLdouble, upZ: GLdouble
-) : void
-  = "gluLookAt"
-
-end
-
 extern fun display (): void = "display"
 implement display () = let
   val () = glClear (GL_COLOR_BUFFER_BIT)
-  val () = glColor3f (1.0, 1.0, 1.0)
+  val () = glColor3d (1.0, 1.0, 1.0)
   val () = glLoadIdentity ()
   val () = gluLookAt (0.0, 0.0, 5.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0)
-  val () = glScalef (1.0, 2.0, 1.0)
+  val () = glScaled (1.0, 2.0, 1.0)
   val () = glutWireCube (1.0)
 (*
   val () = glutSolidCube (1.0)
@@ -60,13 +46,12 @@ implement display () = let
   val () = glFlush ()
 in
   // empty
-end
+end // end of [display]
 
-extern fun reshape (w: int, h: int): void = "reshape"
+extern
+fun reshape (w: int, h: int): void = "reshape"
 implement reshape (w, h) = let
-  val () = glViewport (
-    GLint_of_int 0, GLint_of_int 0, GLsizei_of_int w, GLsizei_of_int h
-  ) // end of [glViewport]
+  val () = glViewport (0, 0, w, h)
   val () = glMatrixMode (GL_PROJECTION)
   val () = glLoadIdentity ()
   val () = glFrustum (~1.0, 1.0, ~1.0, 1.0, 1.5, 20.0)

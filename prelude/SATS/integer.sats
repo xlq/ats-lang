@@ -69,6 +69,8 @@ overload int_of with int_of_uchar
 fun int_of_string (s: string):<> int = "atspre_int_of_string"
 overload int_of with int_of_string
 
+(* ****** ****** *)
+
 // arithmetic functions and comparison functions
 
 fun abs_int (i: int):<> int = "atspre_abs_int"
@@ -158,7 +160,9 @@ overload pow with pow_int_int1
 
 (* ****** ****** *)
 
+//
 // bit operations
+//
 
 fun asl_int_int1 (i: int, n: Nat):<> int
   = "atspre_asl_int_int1"
@@ -236,6 +240,8 @@ overload uint_of with uint_of_char
 fun uint_of_double (d: double):<> uint
   = "atspre_uint_of_double"
 overload uint_of with uint_of_double
+
+(* ****** ****** *)
 
 // arithmetic functions and comparison functions
 
@@ -639,6 +645,8 @@ fun lint_of_string (s: string):<> lint
   = "atspre_lint_of_string"
 overload lint_of with lint_of_string
 
+(* ****** ****** *)
+
 // arithmetic functions and comparison functions
 
 fun abs_lint (li: lint):<> lint
@@ -758,6 +766,11 @@ overload tostring with tostring_lint
 
 typedef ulint = uint_long_t0ype
 
+castfn ulint_of_lint (li: lint):<> ulint
+castfn lint_of_ulint (ul: ulint):<> lint
+
+//
+
 fun ulint_of_int (i: int):<> ulint = "atspre_ulint_of_int"
 overload ulint_of with ulint_of_int
 
@@ -769,13 +782,7 @@ overload ulint_of with ulint_of_uint
 fun uint_of_ulint (ul: ulint):<> uint = "atspre_uint_of_ulint"
 overload uint_of with uint_of_ulint
 
-//
-
-fun ulint_of_lint (li: lint):<> ulint = "atspre_ulint_of_lint"
-overload ulint_of with ulint_of_lint
-
-fun lint_of_ulint (ul: ulint):<> lint = "atspre_lint_of_ulint"
-overload lint_of with lint_of_ulint
+(* ****** ****** *)
 
 // arithmetic functions and comparison functions
 
@@ -1040,7 +1047,6 @@ overload prerr with prerr_llint
 
 fun tostring_llint (i: llint):<> string
   = "atspre_tostring_llint"
-
 overload tostring with tostring_llint
 
 (* ****** ****** *)
@@ -1051,10 +1057,17 @@ overload tostring with tostring_llint
 
 typedef ullint = uint_long_long_t0ype
 
+//
+
+castfn ullint_of_llint (i: llint):<> ullint
+castfn llint_of_ullint (u: ullint):<> llint
+
+//
+
 fun ullint_of_int (i: int):<> ullint
   = "atspre_ullint_of_int"
 
-overload ullint_of with ullint_of_int
+(* ****** ****** *)
 
 // arithmetic functions and comparison functions
 
@@ -1113,6 +1126,10 @@ overload >= with gte_ullint_ullint
 overload = with eq_ullint_ullint
 overload <> with neq_ullint_ullint
 
+//
+// compare, max and min
+//
+
 fun compare_ullint_ullint (i1: ullint, i2: ullint):<> Sgn
   = "atspre_compare_ullint_ullint"
 overload compare with compare_ullint_ullint
@@ -1158,7 +1175,6 @@ overload prerr with prerr_ullint
 
 fun tostring_ullint (i: ullint):<> string
   = "atspre_tostring_ullint"
-
 overload tostring with tostring_ullint
 
 (* ****** ****** *)
