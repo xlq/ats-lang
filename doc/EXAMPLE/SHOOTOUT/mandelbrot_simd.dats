@@ -9,82 +9,14 @@
 **
 **)
 
-%{^
- 
-// vector of two doubles
-typedef double v2df __attribute__ ((vector_size(16))) ;
-typedef v2df ats_v2df_type ;
-
-%}
-
 (* ****** ****** *)
 
-abst@ype v2df = $extype "ats_v2df_type"
+staload "libc/SATS/SIMD_v2df.sats"
+
+(* ****** ****** *)
 
 #define TIMES 50
 #define LIMIT 2.0; #define LIMIT2 (LIMIT * LIMIT)
-
-(* ****** ****** *)
-
-%{^
-
-ats_v2df_type ats_zero_v2df = { 0.0, 0.0 } ;
-
-ats_v2df_type
-ats_v2df_make
-  (ats_double_type d0, ats_double_type d1) {
-  v2df dd ;
-  ((double*)&dd)[0] = d0 ; ((double*)&dd)[1] = d1 ;
-  return dd ;
-}
-
-static inline
-ats_double_type
-ats_v2df_fst (ats_v2df_type dd) { return ((double*)&dd)[0] ; }
-
-static inline
-ats_double_type
-ats_v2df_snd (ats_v2df_type dd) { return ((double*)&dd)[1] ; }
-
-static inline
-ats_v2df_type
-ats_dbl_v2df (ats_v2df_type dd) { return (dd + dd) ; }
-
-static inline
-ats_v2df_type
-ats_add_v2df_v2df (ats_v2df_type dd1, ats_v2df_type dd2) {
-  return (dd1 + dd2) ;
-}
-
-static inline
-ats_v2df_type
-ats_sub_v2df_v2df (ats_v2df_type dd1, ats_v2df_type dd2) {
-  return (dd1 - dd2) ;
-}
-
-static inline
-ats_v2df_type
-ats_mul_v2df_v2df (ats_v2df_type dd1, ats_v2df_type dd2) {
-  return (dd1 * dd2) ;
-}
-
-%}
-
-extern val zero_v2df: v2df = "ats_zero_v2df"
-
-extern fun v2df_make
-  (d0: double, d1: double): v2df = "ats_v2df_make"
-
-extern fun v2df_fst (dd: v2df): double = "ats_v2df_fst"
-extern fun v2df_snd (dd: v2df): double = "ats_v2df_snd"
-
-extern fun dbl_v2df (_: v2df): v2df = "ats_dbl_v2df"
-extern fun add_v2df_v2df (_: v2df, _: v2df): v2df = "ats_add_v2df_v2df"
-extern fun sub_v2df_v2df (_: v2df, _: v2df): v2df = "ats_sub_v2df_v2df"
-extern fun mul_v2df_v2df (_: v2df, _: v2df): v2df = "ats_mul_v2df_v2df"
-overload + with add_v2df_v2df
-overload - with sub_v2df_v2df
-overload * with mul_v2df_v2df
 
 (* ****** ****** *)
 
@@ -141,7 +73,7 @@ fun test (x: int, y: int):<cloref1> int = let
   fun loopv
     (Zrv: v2df, Ziv: v2df, times: int):<cloref1> int = let
     val Trv = Zrv * Zrv and Tiv = Ziv * Ziv; val Triv = Trv + Tiv
-    val Tri0 = v2df_fst (Triv) and Tri1 = v2df_snd (Triv)
+    val Tri0 = v2df_get_fst (Triv) and Tri1 = v2df_get_snd (Triv)
 (*
     val () = begin
       print "loopv: Tri0 = "; print Tri0; print_newline ();
@@ -154,15 +86,15 @@ fun test (x: int, y: int):<cloref1> int = let
       | _ when Tri1 <= LIMIT2 => begin
           if times = 0 then 0x3 else let
             val Zrv_new = Trv - Tiv + Crv
-            val Ziv_new = dbl_v2df (Zrv * Ziv) + Civ
+            val Ziv_new = (tmp + tmp) + Civ where { val tmp = Zrv * Ziv }
           in
             loopv (Zrv_new, Ziv_new, times-1)
           end // end of [if]
         end // end of [_ when ...]
       | _ => begin
           if times = 0 then 0x2 else let
-            val Zr0 = v2df_fst (Zrv) and Zi0 = v2df_fst (Ziv)
-            val Tr0 = v2df_fst (Trv) and Ti0 = v2df_fst (Tiv)
+            val Zr0 = v2df_get_fst (Zrv) and Zi0 = v2df_get_fst (Ziv)
+            val Tr0 = v2df_get_fst (Trv) and Ti0 = v2df_get_fst (Tiv)
             val Zr0_new = Tr0 - Ti0 + Cr0
             val Zi0_new = 2.0 * (Zr0 * Zi0) + Ci0
           in
@@ -173,8 +105,8 @@ fun test (x: int, y: int):<cloref1> int = let
     | _ => begin case+ 0 of
       | _ when Tri1 <= LIMIT2 => begin
           if times = 0 then 0x1 else let
-            val Zr1 = v2df_snd (Zrv) and Zi1 = v2df_snd (Ziv)
-            val Tr1 = v2df_snd (Trv) and Ti1 = v2df_snd (Tiv)
+            val Zr1 = v2df_get_snd (Zrv) and Zi1 = v2df_get_snd (Ziv)
+            val Tr1 = v2df_get_snd (Trv) and Ti1 = v2df_get_snd (Tiv)
             val Zr1_new = Tr1 - Ti1 + Cr1
             val Zi1_new = 2.0 * (Zr1 * Zi1) + Ci1
           in
@@ -185,7 +117,7 @@ fun test (x: int, y: int):<cloref1> int = let
       end // end of [_]
   end // end of [loopv]
 in
-  loopv (zero_v2df, zero_v2df, TIMES)
+  loopv (v2df_0_0, v2df_0_0, TIMES)
 end // end of [test]
 
 #define i2b byte_of_int

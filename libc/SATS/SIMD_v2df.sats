@@ -54,9 +54,14 @@ abst@ype v2df = $extype "ats_v2df_type"
 val v2df_0_0: v2df = "atslib_v2df_0_0"
 val v2df_1_1: v2df = "atslib_v2df_1_1"
 
+//
+
+symintr v2df_make
+
 fun v2df_make_double_double
   (d0: double, d1: double): v2df = "atslib_v2df_make_double_double"
 // end of [v2df_make_double_double]
+overload v2df_make with v2df_make_double_double
 
 //
 
