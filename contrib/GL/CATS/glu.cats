@@ -70,6 +70,48 @@ atsctrb_gluOrtho2D_double (
 
 /* ****** ****** */
 
+static inline
+ats_void_type
+atsctrb_gluPerspective_double (
+  ats_double_type fovy, ats_double_type aspect
+, ats_double_type zNear, ats_double_type zFar
+) {
+  gluPerspective(fovy, aspect, zNear, zFar) ; return ;
+} // end of [atsctrb_gluPerspective_double]
+
+static inline
+ats_void_type
+atsctrb_gluPerspective_GLdouble (
+  ats_GLdouble_type fovy, ats_GLdouble_type aspect
+, ats_GLdouble_type zNear, ats_GLdouble_type zFar
+) {
+  gluPerspective(fovy, aspect, zNear, zFar) ; return ;
+} // end of [atsctrb_gluPerspective_GLdouble]
+
+/* ****** ****** */
+
+static inline
+ats_GLint_type
+atsctrb_gluUnProject (
+  ats_GLdouble_type winX
+, ats_GLdouble_type winY
+, ats_GLdouble_type winZ
+, ats_ref_type model
+, ats_ref_type project
+, ats_ref_type viewport
+, ats_ref_type objX
+, ats_ref_type objY
+, ats_ref_type objZ
+) {
+  return gluUnProject (
+    winX, winY, winZ
+  , (GLdouble*)model, (GLdouble*)project, (GLint*)viewport
+  , (GLdouble*)objX, (GLdouble*)objY, (GLint*)objZ
+  ) ; // end of [return]
+} // end of [atsctrb_gluUnProject]
+
+/* ****** ****** */
+
 #endif /* ATSCTRB_GL_GLU_CATS */
 
 /* end of [glu.cats] */

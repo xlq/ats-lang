@@ -93,4 +93,47 @@ overload gluOrtho2D with gluOrtho2D_GLdouble
 
 (* ****** ****** *)
 
+(*
+GLAPI void GLAPIENTRY gluPerspective (GLdouble fovy, GLdouble aspect, GLdouble zNear, GLdouble zFar);
+*)
+typedef gluPerspective_type (a:t@ype) =
+  (a(*fovy*), a(*aspect*), a(*zNear*), a(*zFar*)) -<fun1> void
+// end of [gluPerspective_type]
+
+symintr gluPerspective
+
+fun gluPerspective_double : gluPerspective_type (double)
+  = "atsctrb_gluPerspective_double"
+overload gluPerspective with gluPerspective_double
+
+fun gluPerspective_GLdouble : gluPerspective_type (GLdouble)
+  = "atsctrb_gluPerspective_GLdouble"
+overload gluPerspective with gluPerspective_GLdouble
+
+(* ****** ****** *)
+
+(*
+GLAPI GLint GLAPIENTRY gluUnProject (
+  GLdouble winX, GLdouble winY, GLdouble winZ
+, const GLdouble *model, const GLdouble *proj
+, const GLint *view
+, GLdouble* objX, GLdouble* objY, GLdouble* objZ
+) ;
+*)
+
+fun gluUnProject (
+    winX: GLdouble
+  , winY: GLdouble
+  , winZ: GLdouble
+  , model: &(@[GLdouble][16])
+  , project: &(@[GLdouble][16])
+  , viewport: &(@[GLint][4])
+  , objX: &GLdouble? >> GLdouble
+  , objY: &GLdouble? >> GLdouble
+  , objZ: &GLdouble? >> GLdouble
+  ) : GLint
+  = "atsctrb_gluUnProject"
+
+(* ****** ****** *)
+
 (* end of [glu.sats] *)
