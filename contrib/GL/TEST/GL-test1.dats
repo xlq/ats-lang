@@ -29,6 +29,7 @@ implement initialize () = let
   val () = glMatrixMode (GL_PROJECTION)
   val () = glLoadIdentity ()
   val () = glOrtho (0.0, 1.0, 0.0, 1.0, ~1.0, 1.0)
+  val () = glMatrixMode (GL_MODELVIEW)
 in
   // empty
 end // end of [initialize]
@@ -42,19 +43,19 @@ implement display () = let
   val () = glColor3d (1.0, 1.0, 1.0)
   val (pf | ()) = glBegin (GL_POLYGON)
 //
-  var !p_rgb =
-    @[GLfloat]((GLfloat)0.0, (GLfloat)0.25, (GLfloat)0.25)
+  var !p =
+    @[GLfloat]((GLfloat)0.25, (GLfloat)0.25, (GLfloat)0.00)
   // end of [var]
-  val () = glVertex3fv (!p_rgb)
+  val () = glVertex3fv (!p)
 //
-  val () = p_rgb->[0] := (GLfloat)0.75
-  val () = glVertex3fv (!p_rgb)
+  val () = p->[0] := (GLfloat)0.75
+  val () = glVertex3fv (!p)
 //
-  val () = p_rgb->[1] := (GLfloat)0.75
-  val () = glVertex3fv (!p_rgb)
+  val () = p->[1] := (GLfloat)0.75
+  val () = glVertex3fv (!p)
 //
-  val () = p_rgb->[0] := (GLfloat)0.25
-  val () = glVertex3fv (!p_rgb)
+  val () = p->[0] := (GLfloat)0.25
+  val () = glVertex3fv (!p)
 //
   val () = glEnd (pf | (*none*))
   val () = glFlush ()

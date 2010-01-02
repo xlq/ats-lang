@@ -268,7 +268,7 @@ in
 end // end of [list_vt_foreach__main]
 
 implement{a} list_vt_foreach_clo {v} {n} {f:eff} (pf1 | xs, f) = let
-  typedef clo_t = (!v | a) -<clo,f> void
+  typedef clo_t = (!v | &a) -<clo,f> void
   stavar l_f: addr; val p_f: ptr l_f = &f
   viewdef V = (v, clo_t @ l_f)
   fn app (pf: !V | x: &a, p_f: !ptr l_f):<f> void = () where {

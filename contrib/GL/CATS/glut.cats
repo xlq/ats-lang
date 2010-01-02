@@ -43,29 +43,51 @@
 
 /* ****** ****** */
 
-// Process loop function, see freeglut_main.c
-static inline
-ats_void_type atsctrb_glutMainLoop () {
-  glutMainLoop () ; return ;
-}
+/*
+** Initialization functions, see fglut_init.c
+*/
+#define atsctrb_glutInit glutInit
+#define atsctrb_glutInitWindowPosition glutInitWindowPosition
+#define atsctrb_glutInitWindowSize glutInitWindowSize
+#define atsctrb_glutInitDisplayMode glutInitDisplayMode
+#define atsctrb_glutInitDisplayString glutInitDisplayString
 
 /* ****** ****** */
 
-// Display-connected functions, see freeglut_display.c
+/*
+** Process loop function, see freeglut_main.c
+*/
+#define atsctrb_glutMainLoop glutMainLoop
 
-static inline
-ats_void_type
-atsctrb_glutPostWindowRedisplay (int window) {
-  glutPostWindowRedisplay (window) ; return ;
-}
+/* ****** ****** */
 
-static inline
-ats_void_type
-atsctrb_glutPostRedisplay () { glutPostRedisplay (); return ; }
+/*
+** Window management functions, see freeglut_window.c
+*/
+#define atsctrb_glutCreateWindow glutCreateWindow
+#define atsctrb_glutCreateSubWindow glutCreateSubWindow
+#define atsctrb_glutDestroyWindow atsctrb_glutDestroyWindow
+#define atsctrb_glutGetWindow glutGetWindow
+#define atsctrb_glutSetWindow glutSetWindow
+#define atsctrb_glutSetWindowTitle glutSetWindowTitle
+#define atsctrb_glutSetIconTitle glutSetIconTitle
+#define atsctrb_glutReshapeWindow glutReshapeWindow
+#define atsctrb_glutPositionWindow glutPositionWindow
+#define atsctrb_glutShowWindow glutShowWindow
+#define atsctrb_glutHideWindow glutHideWindow
+#define atsctrb_glutIconifyWindow glutIconifyWindow
+#define atsctrb_glutPushWindow glutPushWindow
+#define atsctrb_glutPopWindow glutPopWindow
+#define atsctrb_glutFullScreen glutFullScreen
 
-static inline
-ats_void_type
-atsctrb_glutSwapBuffers () { glutSwapBuffers (); return ; }
+/* ****** ****** */
+
+/*
+** Display-connected functions, see freeglut_display.c
+*/
+#define atsctrb_glutPostWindowRedisplay glutPostWindowRedisplay
+#define atsctrb_glutPostRedisplay glutPostRedisplay
+#define atsctrb_glutSwapBuffers glutSwapBuffers
 
 /* ****** ****** */
 
@@ -98,7 +120,9 @@ atsctrb_glutIdleFunc_null () {
 
 /* ****** ****** */
 
-// Window-specific callback functions, see freeglut_callbacks.c
+/*
+** Window-specific callback functions, see freeglut_callbacks.c
+*/
 
 static inline
 ats_void_type
@@ -164,6 +188,13 @@ atsctrb_glutEntryFunc
   (ats_ptr_type callback) {
   glutEntryFunc ((void (*)(int))callback) ; return ;
 } // end of [atsctrb_glutEntryFunc]
+
+/* ****** ****** */
+
+#define atsctrb_glutGet glutGet
+#define atsctrb_glutDeviceGet glutDeviceGet
+#define atsctrb_glutGetModifiers glutGetModifiers
+#define atsctrb_glutLayerGet glutLayerGet
 
 /* ****** ****** */
 

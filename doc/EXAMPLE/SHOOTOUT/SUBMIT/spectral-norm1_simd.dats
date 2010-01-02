@@ -5,7 +5,7 @@
 ** contributed by Hongwei Xi (hwxi AT cs DOT bu DOT edu)
 **
 ** compilation command:
-**   atscc -O3 -msse2 spectral-norm.dats -o spectral-norm -lm
+**   atscc -O3 -msse2 spectral-norm1_simd.dats -o spectral-norm -lm
 **
 *)
 
@@ -23,7 +23,7 @@ macdef A(i,j) = // macro definition
 %{^
  
 // vector of two doubles
-typedef double v2df __attribute__ ((vector_size(16))) ;
+typedef double v2df __attribute__((vector_size(16))) ;
 typedef v2df ats_v2df_type ;
 
 %}
@@ -263,4 +263,4 @@ end // end of [main]
 
 (* ****** ****** *)
 
-(* end of [spectral-norm1.dats] *)
+(* end of [spectral-norm1_simd.dats] *)

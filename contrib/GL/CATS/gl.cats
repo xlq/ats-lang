@@ -71,9 +71,24 @@ typedef GLclampf ats_GLclampf_type ;
 
 static inline
 ats_int_type
-ats_int_of_GLenum (GLenum x) { return x ; }
+atsctrb_int_of_GLenum (GLenum x) { return x ; }
+
+static inline
+ats_bool_type
+atsctrb_eq_GLenum_GLenum
+  (GLenum x1, GLenum x2) {
+  return (x1 == x2 ? ats_true_bool : ats_false_bool) ;
+} // end of [atsctrb_eq_GLenum_GLenum]
 
 //
+
+static inline
+ats_GLbyte_type
+atsctrb_GLbyte_of_int (int x) { return x ; }
+
+static inline
+ats_GLubyte_type
+atsctrb_GLubyte_of_int (int x) { return x ; }
 
 static inline
 ats_GLshort_type
@@ -81,7 +96,7 @@ atsctrb_GLshort_of_int (int x) { return x ; }
 
 static inline
 ats_GLushort_type
-atsctrb_GLushort_of_uint (unsigned int x) { return x ; }
+atsctrb_GLushort_of_int (int x) { return x ; }
 
 static inline
 ats_GLsizei_type

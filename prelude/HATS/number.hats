@@ -184,6 +184,28 @@ implement cos<double> (x) = $MATH.cos (x)
 implement cos<ccmplx> (x) = $CMPLX.cos_ccmplx (x)
 implement cos<zcmplx> (x) = $CMPLX.cos_zcmplx (x)
 
+implement tan<float> (x) = $MATH.tanf (x)
+implement tan<double> (x) = $MATH.tan (x)
+implement tan<ccmplx> (x) = $CMPLX.tan_ccmplx (x)
+implement tan<zcmplx> (x) = $CMPLX.tan_zcmplx (x)
+
+(* ****** ****** *)
+
+implement asin<float> (x) = $MATH.asinf (x)
+implement asin<double> (x) = $MATH.asin (x)
+implement asin<ccmplx> (x) = $CMPLX.casinf (x)
+implement asin<zcmplx> (x) = $CMPLX.casin (x)
+
+implement acos<float> (x) = $MATH.acosf (x)
+implement acos<double> (x) = $MATH.acos (x)
+implement acos<ccmplx> (x) = $CMPLX.cacosf (x)
+implement acos<zcmplx> (x) = $CMPLX.cacos (x)
+
+implement atan<float> (x) = $MATH.atanf (x)
+implement atan<double> (x) = $MATH.atan (x)
+implement atan<ccmplx> (x) = $CMPLX.catanf (x)
+implement atan<zcmplx> (x) = $CMPLX.catan (x)
+
 (* ****** ****** *)
 
 (* end of [number.hats] *)

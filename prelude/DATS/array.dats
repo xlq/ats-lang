@@ -66,6 +66,23 @@ in
   x := tmp
 end // end of [array_ptr_xch_elt_at]
 
+implement{a} array_ptr_exch (A, i, j) = let
+  var tmp: a // uninitialized
+  extern prfun __copy {l:addr} (pf: !a @ l): a @ l  
+  val (pf, fpf | pi) = array_ptr_takeout_tsz (view@ A | &A, i, sizeof<a>)
+  prval pfi = __copy (pf)
+  prval () = view@ A := fpf (pf)
+  val (pf, fpf | pj) = array_ptr_takeout_tsz (view@ A | &A, j, sizeof<a>)
+  prval pfj = __copy (pf)
+  prval () = view@ A := fpf (pf)
+  val () = (tmp := !pi; !pi := !pj; !pj := tmp)
+  extern prfun __free {l:addr} (pf: a @ l): void
+  prval () = __free (pfi)
+  prval () = __free (pfj)
+in
+  // nothing
+end // end of [array_ptr_exch]
+
 (* ****** ****** *)
 
 //
@@ -447,7 +464,7 @@ implement{a} array_exch (A, i1, i2) =
     val A_data = A.data; prval vbox pf = A.view
   in
     array_ptr_exch<a> (!A_data, i1, i2)
-  end
+  end // end of [if]
 // end of [array_exch]
 
 (* ****** ****** *)

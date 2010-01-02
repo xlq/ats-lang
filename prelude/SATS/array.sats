@@ -180,12 +180,12 @@ fun array_ptr_initialize_elt_tsz {a:t@ype} {n:nat}
 
 fun{a:t@ype} array_ptr_initialize_lst {n:nat}
   (base: &(@[a?][n]) >> @[a][n], xs: list (a, n)):<> void
-// end of [fun]
+// end of [array_ptr_initialize_lst]
 
 // the linear list is freed along the way
 fun{a:viewt@ype} array_ptr_initialize_lst_vt {n:nat}
   (base: &(@[a?][n]) >> @[a][n], xs: list_vt (a, n)):<> void
-// end of [fun]
+// end of [array_ptr_initialize_lst_vt]
 
 (* ****** ****** *)
 
@@ -406,7 +406,7 @@ fun array_ptr_copy_tsz {a:t@ype} {n:nat} (
     A: &(@[a][n]), B: &(@[a?][n]) >> @[a][n], n: size_t n
   , tsz: sizeof_t a
   ) :<> void = "atspre_array_ptr_copy_tsz"
-// end of [fun]
+// end of [array_ptr_copy_tsz]
 
 (*
 // implemented in C (prelude/CATS/array.cats)
@@ -415,12 +415,15 @@ fun array_ptr_move_tsz {a:viewt@ype} {n:nat} (
     A: &(@[a][n]) >> @[a?][n], B: &(@[a?][n]) >> @[a][n], n: size_t n
   , tsz: sizeof_t a
   ) :<> void = "atspre_array_ptr_move_tsz"
-// end of [fun]
+// end of [array_ptr_move_tsz]
 
+(*
+// implemented in ATS (prelude/DATS/array.dats)
+*)
 fun{a:viewt@ype} array_ptr_exch
   {n,i1,i2:nat | i1 < n; i2 < n; i1 <> i2}
   (A: &(@[a][n]), i1: size_t i1, i2: size_t i2):<> void
-// end of [fun]
+// end of [array_ptr_exch]
 
 (* ****** ****** *)
 
@@ -645,6 +648,7 @@ fun{a:viewt@ype} array_xch_elt_at__intsz {n:nat}
 
 fun{a:viewt@ype} array_exch {n:nat}
   (A: array (a, n), i: sizeLt n, j: sizeLt n):<!ref> void
+// end of [array_exch]
 
 (* ****** ****** *)
 

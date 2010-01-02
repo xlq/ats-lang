@@ -49,6 +49,10 @@ typedef GLvoid = void
 abst@ype GLenum = $extype "ats_GLenum_type"
 fun int_of_GLenum (x: GLenum): int = "atsctrb_int_of_GLenum"
 
+fun eq_GLenum_GLenum (x1: GLenum, x2: GLenum):<> bool
+  = "atsctrb_eq_GLenum_GLenum"
+overload = with eq_GLenum_GLenum
+
 abst@ype GLenum_type (a:t@ype) = GLenum
 abst@ype GLenum_format (n: int) = GLenum
 
@@ -66,9 +70,11 @@ abst@ype GLboolean = $extype "ats_GLboolean_type"
 
 // typedef GLbyte = char // 1-byte signed
 abst@ype GLbyte = $extype "ats_GLbyte_type"
+castfn GLbyte_of_byte (x: byte):<> GLbyte
 
 // typedef GLubyte = uchar // 1-byte unsigned
 abst@ype GLubyte = $extype "ats_GLubyte_type"
+castfn GLubyte_of_byte (x: byte):<> GLubyte
 
 (* ****** ****** *)
 
@@ -123,8 +129,11 @@ castfn GLclampf_of_float (x: float):<> GLclampf
 
 (* ****** ****** *)
 
+fun GLbyte_of_int (x: int):<> GLbyte = "atsctrb_GLbyte_of_int"
+fun GLubyte_of_int (x: int):<> GLubyte = "atsctrb_GLubyte_of_int"
+
 fun GLshort_of_int (x: int):<> GLshort = "atsctrb_GLshort_of_int"
-fun GLushort_of_uint (x: uint):<> GLushort = "atsctrb_GLushort_of_uint"
+fun GLushort_of_int (x: int):<> GLushort = "atsctrb_GLushort_of_int"
 
 fun GLsizei_of_int {i:int} (x: int i): GLsizei i = "atsctrb_GLsizei_of_int"
 
@@ -133,9 +142,13 @@ fun GLclampf_of_double (x: double):<> GLclampf = "atsctrb_GLclampf_of_double"
 
 (* ****** ****** *)
 
+symintr GLbyte GLubyte
+overload GLbyte with GLbyte_of_int
+overload GLubyte with GLubyte_of_int
+
 symintr GLshort GLushort
 overload GLshort with GLshort_of_int
-overload GLushort with GLushort_of_uint
+overload GLushort with GLushort_of_int
 
 symintr GLint GLuint
 overload GLint with GLint_of_int // castfn

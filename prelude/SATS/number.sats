@@ -115,6 +115,14 @@ fun{a:t@ype} conj (x: a):<> a
 // S, D, C, Z
 fun{a:t@ype} sin (x: a):<> a
 fun{a:t@ype} cos (x: a):<> a
+fun{a:t@ype} tan (x: a):<> a
+
+(* ****** ****** *)
+
+// S, D, C, Z
+fun{a:t@ype} asin (x: a):<> a
+fun{a:t@ype} acos (x: a):<> a
+fun{a:t@ype} atan (x: a):<> a
 
 (* ****** ****** *)
 

@@ -59,7 +59,7 @@ fn drawOneLine (
   val () = glEnd (pf | (*none*))
 } // end of [drawOneLine]
 
-#define GLdbl GLdouble_of_double
+#define GLdbl GLdouble
 
 extern
 fun display (): void = "display"
@@ -70,23 +70,23 @@ implement display () = let
 //
   val () = glEnable(GL_LINE_STIPPLE)
 //
-  val () = glLineStipple(1, (GLushort)0x0101U) (* dotted *)
+  val () = glLineStipple(1, (GLushort)0x0101) (* dotted *)
   val () = drawOneLine (50.0, 125.0, 150.0, 125.0)
-  val () = glLineStipple(1, (GLushort)0x00FFU) (* dashed *)
+  val () = glLineStipple(1, (GLushort)0x00FF) (* dashed *)
   val () = drawOneLine (150.0, 125.0, 250.0, 125.0)
-  val () = glLineStipple(1, (GLushort)0x1C47U) (* dash/dot/dash *)
+  val () = glLineStipple(1, (GLushort)0x1C47) (* dash/dot/dash *)
   val () = drawOneLine (250.0, 125.0, 350.0, 125.0)
 //
   val () = glLineWidth (5.0)
-  val () = glLineStipple(1, (GLushort)0x0101U) (* dotted *)
+  val () = glLineStipple(1, (GLushort)0x0101) (* dotted *)
   val () = drawOneLine (50.0, 100.0, 150.0, 100.0)
-  val () = glLineStipple(1, (GLushort)0x00FFU) (* dashed *)
+  val () = glLineStipple(1, (GLushort)0x00FF) (* dashed *)
   val () = drawOneLine (150.0, 100.0, 250.0, 100.0)
-  val () = glLineStipple(1, (GLushort)0x1C47U) (* dash/dot/dash *)
+  val () = glLineStipple(1, (GLushort)0x1C47) (* dash/dot/dash *)
   val () = drawOneLine (250.0, 100.0, 350.0, 100.0)
   val () = glLineWidth (1.0)
 //
-  val () = glLineStipple(5, (GLushort)0x1C47U) (* dash/dot/dash *)
+  val () = glLineStipple(5, (GLushort)0x1C47) (* dash/dot/dash *)
   val () = drawOneLine (50.0, 25.0, 350.0, 25.0)
 //
   val () = glDisable(GL_LINE_STIPPLE)

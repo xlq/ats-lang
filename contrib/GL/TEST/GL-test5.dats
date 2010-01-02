@@ -50,6 +50,9 @@ implement reshape (w, h) = () where {
 
 (* ****** ****** *)
 
+symintr int
+overload int with int_of_GLenum
+
 extern
 fun mouse
   (button: int, state: int, x: int, y: int): void
@@ -60,8 +63,8 @@ implement mouse (button, state, x, y) = () where {
   var !p_projmatrix = @[GLdouble?][16]()
   var wx = (GLdouble)0.0 and wy = (GLdouble)0.0 and wz = (GLdouble)0.0
   val () = case+ 0 of
-    | _ when (button = GLUT_LEFT_BUTTON) => begin
-        if (state = GLUT_DOWN) then let
+    | _ when (button = (int)GLUT_LEFT_BUTTON) => begin
+        if (state = (int)GLUT_DOWN) then let
           val () = glGetIntegerv (GL_VIEWPORT, !p_viewport)
           val () = glGetDoublev (GL_MODELVIEW_MATRIX, !p_mvmatrix)
           val () = glGetDoublev (GL_PROJECTION_MATRIX, !p_projmatrix)
@@ -91,7 +94,7 @@ implement mouse (button, state, x, y) = () where {
           // nothing
         end // end of [if]
       end // end of [_ when ...]
-    | _ when (button = GLUT_RIGHT_BUTTON) => (if (state = GLUT_DOWN) then exit 0)
+    | _ when (button = (int)GLUT_RIGHT_BUTTON) => (if (state = (int)GLUT_DOWN) then exit 0)
     | _ => () // ignored
 } // end of [mouse]
 

@@ -19,6 +19,8 @@ compall: \
   test3 \
   test4 \
   test5 \
+  test6 \
+  test7 \
 
 test1: GL-test1.dats
 	$(ATSCC) -o test1 GL-test1.dats $(ATSCTRB) -lGL -lglut
@@ -35,6 +37,12 @@ test4: GL-test4.dats
 test5: GL-test5.dats
 	$(ATSCC) -o test5 GL-test5.dats $(ATSCTRB) -lGL -lglut
 
+test6: GL-test6.dats
+	$(ATSCC) -O3 -o test6 GL-test6.dats $(ATSCTRB) -lGL -lglut
+
+test7: GL-test7.dats
+	$(ATSCC) -D_ATS_GCATS -O3 -o test7 GL-test7.dats $(ATSCTRB) -lGL -lglut
+
 ######
 
 clean:
@@ -46,5 +54,7 @@ cleanall: clean
 	rm -f test3
 	rm -f test4
 	rm -f test5
+	rm -f test6
+	rm -f test7
 
 ###### end of [Makefile] ######

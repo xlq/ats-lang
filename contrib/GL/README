@@ -1,0 +1,17 @@
+#
+# API for gl/glu/glut in ATS
+#
+
+######
+
+The TEST directory contains a list of GL examples:
+
+GL-test1.dats: Hello, world! (a still square)
+GL-test2.dats: A rotating square
+GL-test3.dats: Stippled lines
+GL-test4.dats: A simple example involving texturing
+GL-test5.dats: testing gluUnProject
+GL-test6.dats: Starfield (originally by Nate Robbins)
+GL-test7.dats: Randomly generated regular polygons
+
+####### end of [README] ######

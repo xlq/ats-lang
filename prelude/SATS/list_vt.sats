@@ -27,7 +27,6 @@
 ** along  with  ATS;  see the  file COPYING.  If not, please write to the
 ** Free Software Foundation,  51 Franklin Street, Fifth Floor, Boston, MA
 ** 02110-1301, USA.
-**
 *)
 
 (* ****** ****** *)
@@ -120,7 +119,7 @@ fun{a:viewt@ype} list_vt_foreach__main
   :<f> void
 
 fun{a:t@ype} list_vt_foreach_clo {v:view} {n:nat} {f:eff}
-  (pf: !v | xs: !list_vt (a, n), f: &(!v | a) -<clo,f> void):<f> void
+  (pf: !v | xs: !list_vt (a, n), f: &(!v | &a) -<clo,f> void):<f> void
 // end of [list_vt_foreach_clo]
 
 (* ****** ****** *)
