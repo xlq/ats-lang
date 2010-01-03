@@ -54,13 +54,13 @@ implement initialize () = let
 
   val (pf_sphereLst | sphereLst) = glGenList_exn ()
   val (pf_list | ()) = glNewList (pf_sphereLst | sphereLst, GL_COMPILE)
-  val () = glutSolidSphere (0.4, 20, 16)
+  val () = glutSolidSphere ((GLdouble)0.4, (GLint)20, (GLint)16)
   val () = glEndList (pf_list | (*none*))
   val () = glListRef_set (pf_sphereLst | sphereLst_ref, sphereLst)
 
   val (pf_cubeLst | cubeLst) = glGenList_exn ()
   val (pf_list | ()) = glNewList (pf_cubeLst | cubeLst, GL_COMPILE)
-  val () = glutSolidCube (0.6)
+  val () = glutSolidCube ((GLdouble)0.6)
   val () = glEndList (pf_list | (*none*))
   val () = glListRef_set (pf_cubeLst | cubeLst_ref, cubeLst)
 

@@ -238,14 +238,22 @@ in
   ans
 end // end of [list_vt_tabulate_fun]
 
-implement{a} list_vt_tabulate_clo {n} {f:eff} (f, n) = let
-  typedef clo_t = natLt n -<clo,f> a
+implement{a} list_vt_tabulate_clo
+  {v} {n} {f:eff} (pf1 | f, n) = let
+  typedef clo_t = (!v | natLt n) -<clo,f> a
   stavar l_f: addr; val p_f: ptr l_f = &f
-  viewdef V = clo_t @ l_f
-  fn app (pf: !V | i: natLt n, p_f: !ptr l_f):<f> a = !p_f (i)
-  prval pf = view@ f
+  viewdef V = (v, clo_t @ l_f)
+  fn app (pf: !V | i: natLt n, p_f: !ptr l_f):<f> a = let
+    prval (pf1, pf2) = pf
+    val x = !p_f (pf1 | i)
+    prval () = pf := (pf1, pf2)
+  in
+    x
+  end // end of [app]
+  prval pf = (pf1, view@ f)
   val ans = list_vt_tabulate__main<a> {V} {ptr l_f} (pf | app, n, p_f)
-  prval () = view@ f := pf
+  prval () = pf1 := pf.0
+  prval () = view@ f := pf.1
 in
   ans
 end // end of [list_vt_tabulate_clo]
@@ -266,6 +274,18 @@ implement{a} list_vt_foreach__main
 in
   loop (pf | xs0, f, env)
 end // end of [list_vt_foreach__main]
+
+implement{a} list_vt_foreach_fun
+  {n} {f:eff} (xs, f) = let
+  typedef fun0_t = (&a) -<fun,f> void
+  typedef fun1_t = (!unit_v | &a, !ptr) -<fun,f> void
+  val f = __cast (f) where { extern castfn __cast (f: fun0_t):<> fun1_t }
+  prval pf = unit_v ()
+  val () = list_vt_foreach__main<a> {unit_v} {ptr} (pf | xs, f, null)
+  prval unit_v () = pf
+in
+  // nothing
+end // end of [list_vt_foreach_fun]
 
 implement{a} list_vt_foreach_clo {v} {n} {f:eff} (pf1 | xs, f) = let
   typedef clo_t = (!v | &a) -<clo,f> void
@@ -300,8 +320,19 @@ in
   loop (pf | 0, xs0, f, env)
 end // end of [list_vt_iforeach__main]
 
+implement{a} list_vt_iforeach_fun {n} {f:eff} (xs, f) = let
+  typedef fun0_t = (natLt n, &a) -<fun,f> void
+  typedef fun1_t = (!unit_v | natLt n, &a, !ptr) -<fun,f> void
+  val f = __cast (f) where { extern castfn __cast (f: fun0_t):<> fun1_t }
+  prval pf = unit_v ()
+  val () = list_vt_iforeach__main<a> {unit_v} {ptr} (pf | xs, f, null)
+  prval unit_v () = pf
+in
+  // nothing
+end // end of [list_vt_iforeach_fun]
+
 implement{a} list_vt_iforeach_clo {v} {n} {f:eff} (pf1 | xs, f) = let
-  typedef clo_t = (!v | natLt n, a) -<clo,f> void
+  typedef clo_t = (!v | natLt n, &a) -<clo,f> void
   stavar l_f: addr; val p_f: ptr l_f = &f
   viewdef V = (v, clo_t @ l_f)
   fn app (pf: !V | i: natLt n, x: &a, p_f: !ptr l_f):<f> void = () where {
@@ -344,7 +375,7 @@ implement{a} list_vt_quicksort {n} (xs, cmp) = let
   val () = $effmask_all ($STDLIB.qsort (!p_arr, asz, sizeof<a1>, cmp))
   val () = loop (pf_arr | p_arr, xs) where {
     fun loop {n:nat} {l:addr} .<n>. (
-        pf_arr: !array_v (a1, n, l)
+        pf_arr: !array_v (a1, n, l) >> array_v (a1?, n, l)
       | p_arr: ptr l, xs: !list_vt (a1?, n) >> list_vt (a1, n)
       ) :<> void =
       case+ xs of
@@ -352,13 +383,13 @@ implement{a} list_vt_quicksort {n} (xs, cmp) = let
           prval (pf1_elt, pf2_arr) = array_v_uncons {a1} (pf_arr)
           val () = !p_x1 := !p_arr
           val () = loop (pf2_arr | p_arr + sizeof<a1>, !p_xs1)
-          prval () = pf_arr := array_v_cons {a1} (pf1_elt, pf2_arr)
+          prval () = pf_arr := array_v_cons {a1?} (pf1_elt, pf2_arr)
         in
           fold@ (xs)
         end // end of [list_vt_cons]
       | list_vt_nil () => let
           prval () = array_v_unnil {a1} (pf_arr)
-          prval () = pf_arr := array_v_nil {a1} ()
+          prval () = pf_arr := array_v_nil {a1?} ()
         in
           fold@ (xs)
         end // end of [list_vt_nil]

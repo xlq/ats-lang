@@ -124,14 +124,9 @@ implement{a} list0_forall_cloref (xs, f) =
 
 (* ****** ****** *)
 
-implement{a} list0_foreach_fun (xs, f) = let
-  fn f (pf: !unit_v | x: a): void = f (x)
-  prval pf = unit_v ()
-  val () = list_foreach_fun<a> {unit_v} (pf | list1_of_list0 xs, f)
-  prval unit_v () = pf
-in
-  // empty
-end // end of [list0_foreach_fun]
+implement{a} list0_foreach_fun (xs, f) =
+  list_foreach_fun<a> (list1_of_list0 xs, f)
+// end of [list0_foreach_fun]
   
 implement{a} list0_foreach_cloref (xs, f) = let
   val () = list_foreach_cloref<a> (list1_of_list0 xs, f)

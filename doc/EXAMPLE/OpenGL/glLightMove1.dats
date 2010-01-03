@@ -16,6 +16,7 @@ extern ats_void_type mainats (ats_int_type argc, ats_ptr_type argv) ;
 (* ****** ****** *)
 
 staload "contrib/GL/SATS/gl.sats"
+staload "contrib/GL/SATS/glu.sats"
 staload "contrib/GL/SATS/glut.sats"
 
 (* ****** ****** *)
@@ -57,26 +58,28 @@ implement display () = let
   val () = glTranslated (x_pos, y_pos, z_pos)
   val () = glDisable (GL_LIGHTING)
   val () = glColor3d (0.0, 1.0, 1.0)
-  val () = glutWireCube (0.1)
+  val () = glutWireCube ((GLdouble)0.1)
   val () = glEnable (GL_LIGHTING)
   val () = glPopMatrix (pf2_push | (*none*))
 
 (*
-  val () = glutWireCube (1.0)
-  val () = glutSolidCube (1.0)
+  val () = glutWireCube ((GLdouble)1.0)
+  val () = glutSolidCube ((GLdouble)1.0)
 *)
 (*
-  val () = glutWireSphere (1.0, 32, 60)
-  val () = glutSolidSphere (1.0, 32, 60)
+  val () = glutWireSphere ((GLdouble)1.0, (GLint)32, (GLint)60)
+  val () = glutSolidSphere ((GLdouble)1.0, (GLint)32, (GLint)60)
 *)
 (*
-  val () = glutWireTorus (0.50, 1.0, 16, 30)
-  val () = glutSolidTorus (0.50, 1.0, 16, 30)
+  val () = glutWireTorus
+    ((GLdouble)0.50, (GLdouble)1.0, (GLint)16, (GLint)30)
+  val () = glutSolidTorus
+    ((GLdouble)0.50, (GLdouble)1.0, (GLint)16, (GLint)30)
 *)
 (*
-  val () = glutWireTeapot (1.0)
+  val () = glutWireTeapot ((GLdouble)1.0)
 *)
-  val () = glutSolidTeapot (1.0)
+  val () = glutSolidTeapot ((GLdouble)1.0)
 
   val () = glPopMatrix (pf1_push | (*none*))
   val () = glFlush ()
@@ -84,17 +87,14 @@ in
   // empty
 end // end of [display]
 
-typedef GLdouble = double
-extern fun gluPerspective
-  (_: GLdouble, _: GLdouble, _: GLdouble, _: GLdouble): void = "gluPerspective"
-
 extern fun reshape (w: int, h: int): void = "reshape"
 implement reshape (w, h) = let
   val () = glViewport (0, 0, w, h)
   val () = glMatrixMode (GL_PROJECTION)
   val () = glLoadIdentity ()
   val w_h = (double_of w) / (double_of h)
-  val () = gluPerspective (40.0, w_h, 1.0, 20.0)
+  val () = gluPerspective
+    ((GLdouble)40.0, (GLdouble)w_h, (GLdouble)1.0, (GLdouble)20.0)
   val () = glMatrixMode (GL_MODELVIEW)
   val () = glLoadIdentity ()
 in
@@ -103,12 +103,14 @@ end // end of [reshape]
 
 (* ****** ****** *)
 
+macdef int = int_of_GLenum
+
 extern fun mouse
   (button: int, state: int, x: int, y: int): void = "mouse"
 
 implement mouse (button, state, x, y) = begin case+ 0 of
-  | _ when (button = GLUT_LEFT_BUTTON) => begin
-      if (state = GLUT_DOWN) then begin
+  | _ when (button = (int)GLUT_LEFT_BUTTON) => begin
+      if (state = (int)GLUT_DOWN) then begin
         !spin := (!spin + 30) mod 360; glutPostRedisplay ()
       end
     end // end  of [_ when ...]

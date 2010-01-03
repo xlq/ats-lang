@@ -47,11 +47,12 @@ val () = $RAND.srand48_with_time () // generating a new seed
 
 (* ****** ****** *)
 
-#define NSIDE_MAX 7.0
-#define ROT_V_MAX 15.0
+#define NSIDE_MAX 8.0
+#define ROT_V_MAX 30.0
 
 fun pgn_make (pgn: &pgn0? >> pgn): void = let
   val n = 3 + int_of_double ((NSIDE_MAX - 3.000001) * drand48 ())
+  val n = if n >= 7 then 128 else n
   val [n:int] n = int1_of_int (n)
   val () = assert (n >= 3)
 (*
@@ -84,31 +85,60 @@ in
   pgn.angle := 360 * drand48 ()
 end // end of [pgn_make]
 
-fun pgnlst_make {k:nat}
-  (k: int k): list_vt (pgn, k) = let
-  fun loop {k:nat} .<k>.
-    (k: int k, res: &pgnlst? >> list_vt (pgn, k)): void =
-    if k > 0 then let
-      val () = res := list_vt_cons {pgn0} {0} (?, ?)
-      val list_vt_cons (!p_x, !p_xs1) = res
-      val () = pgn_make (!p_x)
-      val () = loop (k-1, !p_xs1)
-    in
-      fold@ res
-    end else (res := list_vt_nil ())
-  // end of [loop]
-  var res: pgnlst // uninitialized
-in
-  loop (k, res); res
-end // end of [pgnlst_make]
+fn pgn_free (pgn: &pgn >> pgn?):<> void = list_vt_free (pgn.vrtxlst)
+
+fun pgnlst_add {k0,k:nat} .<k>.
+  (k: int k, res: &list_vt (pgn, k0) >> list_vt (pgn, k0+k)): void =
+  if k > 0 then let
+    val res_new =
+      list_vt_cons {pgn0} {k0} (?, ?)
+    val list_vt_cons (!p_x, !p_xs1) = res_new
+    val () = pgn_make (!p_x)
+    val () = !p_xs1 := res
+  in
+    fold@ res_new; res := res_new; pgnlst_add (k-1, res)
+  end // end of [if]
+// end of [pgnlst_add]
 
 (* ****** ****** *)
 
-var thePgnLst: pgnlst = pgnlst_make (32)
+var thePgnLst: pgnlst = let
+  var res = list_vt_nil (); val () = pgnlst_add (32, res)
+in
+  res
+end // end of [var]
 
 val (pf_thePgnLst | ()) =
   vbox_make_view_ptr {pgnlst} (view@ thePgnLst | &thePgnLst)
 // end of [prval]
+
+(* ****** ****** *)
+
+fn thePgnLst_add {k:nat}
+  (k: int k): void = let
+  prval vbox pf = pf_thePgnLst
+in
+  $effmask_ref (pgnlst_add (k, thePgnLst))
+end // end of [thePgnLst_add]
+
+fn thePgnLst_del {k:nat}
+  (k: int k): void = let
+  fun loop {k:nat} .<k>.
+    (pgns: pgnlst, k: int k):<> pgnlst =
+    if k > 0 then begin case+ pgns of
+      | list_vt_cons (!p_pgn, pgns1) => let
+          val () =  pgn_free (!p_pgn)
+          val () = free@ {pgn} {0} (pgns)
+        in
+          loop {k-1} (pgns1, k-1)
+        end // end of [list_vt_cons]
+      | list_vt_nil () => (fold@ pgns; pgns)
+    end else pgns
+  // end of [loop]
+  prval vbox pf = pf_thePgnLst
+in
+  thePgnLst := loop (thePgnLst, k)
+end // end of [thePgnLst_del]
 
 (* ****** ****** *)
 
@@ -158,11 +188,7 @@ implement draw_pgn (pgn) = let
   val (pf_pushmat | ()) = glPushMatrix ()
   val xc = perturb (pgn.cntr_x) and yc = perturb (pgn.cntr_y)
   val () = glTranslated (xc, yc, 0.0)
-//
-  val t0 = pgn.angle
-  val () = glRotated (t0, 0.0, 0.0, 1.0)
-  val () = pgn.angle := t0 + pgn.rot_v
-//
+  val () = glRotated (pgn.angle, 0.0, 0.0, 1.0)
   val () = glScaled (RADIUS, RADIUS, 1.0)
   val (pf_begin | ()) = glBegin (GL_POLYGON)
   val () = loop (pgn.vrtxlst)
@@ -210,7 +236,8 @@ fn draw_pgnlst {n:nat}
   val n = list_vt_length<pgn> (pgns)
   abst@ype a = pgn?
   val xs = __cast pgns where {
-    extern castfn __cast (xs: !list_vt (pgn, n)): list (a, n)
+    extern castfn __cast
+      (xs: !list_vt (pgn, n) >> list_vt (pgn, n)):<> list (a, n)
   } // end of [val]
   var !p_arr with pf_arr = @[a][n]() // stack allocation
   val () = array_ptr_initialize_lst<a> (!p_arr, xs)
@@ -220,6 +247,8 @@ fn draw_pgnlst {n:nat}
   prval pf_unit = unit_v ()
   val () = array_ptr_foreach_fun<a> {unit_v} (pf_unit | !p_arr, f, asz)
   prval unit_v () = pf_unit
+  fn f (pgn: &pgn): void = pgn.angle := pgn.angle + pgn.rot_v
+  val () = list_vt_foreach_fun (pgns, f)
 in
   // nothing
 end // end of [draw_pgnlst]
@@ -273,6 +302,25 @@ end // end of [reshape]
 
 (* ****** ****** *)
 
+extern fun keyboard (
+  key: uchar, x: int, y: int
+) : void = "keyboard"
+implement keyboard
+  (key, x, y) = let
+  val key = char_of_uchar key
+in
+  case+ key of
+  | 'a' => thePgnLst_add (1)
+  | 'A' => thePgnLst_add (5)
+  | 'd' => thePgnLst_del (1)
+  | 'D' => thePgnLst_del (5)
+  | 'q' => exit (0)
+  | _ when (int_of (key) = 27) => exit (0)
+  | _ => () // ignored
+end // end of [keyboard]
+
+(* ****** ****** *)
+
 //
 
 implement main_dummy () = ()
@@ -292,6 +340,7 @@ ats_void_type mainats (
   initialize () ;
   glutDisplayFunc (display) ;
   glutReshapeFunc (reshape) ;
+  glutKeyboardFunc (keyboard) ;
   glutIdleFunc (glutPostRedisplay) ;
   glutMainLoop () ;
   return ; /* deadcode */

@@ -55,7 +55,7 @@ end // end of [initialize]
 extern fun display (): void = "display"
 implement display () = let
   val () = glClear (GL_COLOR_BUFFER_BIT lor GL_DEPTH_BUFFER_BIT)
-  val () = glutSolidSphere (1.0, 160, 128)
+  val () = glutSolidSphere ((GLdouble)1.0, (GLint)160, (GLint)128)
   val () = glFlush ()
 in
   // empty

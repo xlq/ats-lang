@@ -190,10 +190,12 @@ fun interp0Exp_CallExp
         interp0Exp (env, e_body)
       end // end of [VFVALfun]
     | VFVALpre f_pre => let
-        var !p_interp0 =
-          @lam (e: exp): value =<clo1> interp0Exp (env0, e)
+        var !p_interp0 = @lam
+          (pf: !unit_v | e: exp): value =<clo1> interp0Exp (env0, e)
         // end of [var]
-        val vs = list_map_clo<exp,value> (es, !p_interp0)
+        prval pf = unit_v
+        val vs = list_map_clo<exp,value> (pf | es, !p_interp0)
+        prval unit_v () = pf
         val vs = list_of_list_vt (vs)
       in
         f_pre (vs)

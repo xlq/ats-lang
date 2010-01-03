@@ -78,17 +78,19 @@ end // end of [reshape]
 
 (* ****** ****** *)
 
+macdef int = int_of_GLenum
+
 extern fun mouse
   (button: int, state: int, x: int, y: int): void = "mouse"
 // end of [mouse]
 
 implement mouse (button, state, x, y) = begin
   case+ 0 of
-  | _ when (button = GLUT_LEFT_BUTTON) => begin
-      if (state = GLUT_DOWN) then glutIdleFunc (spinDisplay)
+  | _ when (button = (int)GLUT_LEFT_BUTTON) => begin
+      if (state = (int)GLUT_DOWN) then glutIdleFunc (spinDisplay)
     end
-  | _ when (button = GLUT_RIGHT_BUTTON) => begin
-      if (state = GLUT_DOWN) then glutIdleFunc_null ()
+  | _ when (button = (int)GLUT_RIGHT_BUTTON) => begin
+      if (state = (int)GLUT_DOWN) then glutIdleFunc_null ()
     end
   | _ => ()
 end // end of [mouse]

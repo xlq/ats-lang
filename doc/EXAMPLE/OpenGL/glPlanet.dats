@@ -54,7 +54,7 @@ implement display () = let
   val () = glColor3d (1.0, 1.0, 1.0)
   val (pf1_mat | ()) = glPushMatrix ()
   val () = glRotated (270.0, 1.0, 0.0, 0.0)
-  val () = glutWireSphere (1.0, 20, 16) // sun
+  val () = glutWireSphere ((GLdouble)1.0, (GLint)20, (GLint)16) // sun
 
   val day = day_get ()
   val mday = day mod 30 and yday = day
@@ -67,11 +67,11 @@ implement display () = let
 
   val (pf2_mat | ()) = glPushMatrix ()
   val () = glRotated (15.0, 0.0, 1.0, 0.0)
-  val () = glutWireSphere (0.25, 10, 8) // planet
+  val () = glutWireSphere ((GLdouble)0.25, (GLint)10, (GLint)8) // planet
 
   val () = glRotated (m_angle, 0.0, 0.0, 1.0)
   val () = glTranslated (0.5, 0.0, 0.0)  
-  val () = glutWireSphere (0.10, 5, 4) // planet
+  val () = glutWireSphere ((GLdouble)0.10, (GLint)5, (GLint)4) // planet
 
   val () = glPopMatrix (pf2_mat | (*none*))
 

@@ -16,6 +16,7 @@ extern ats_void_type mainats (ats_int_type argc, ats_ptr_type argv) ;
 (* ****** ****** *)
 
 staload "contrib/GL/SATS/gl.sats"
+staload "contrib/GL/SATS/glu.sats"
 staload "contrib/GL/SATS/glut.sats"
 
 (* ****** ****** *)
@@ -66,38 +67,29 @@ implement display () = let
   val () = glRotated (double_of !spin_x, 1.0, 0.0, 0.0)
   val () = glRotated (double_of !spin_y, 0.0, 1.0, 0.0)
 (*
-  val () = glutWireCube (1.0)
-  val () = glutSolidCube (1.0)
+  val () = glutWireCube ((GLdouble)1.0)
+  val () = glutSolidCube ((GLdouble)1.0)
 *)
 (*
   val () = glutWireSphere (1.0, 32, 60)
   val () = glutSolidSphere (1.0, 32, 60)
 *)
 (*
-  val () = glutWireTorus (0.50, 1.0, 16, 30)
-  val () = glutSolidTorus (0.50, 1.0, 16, 30)
+  val () = glutWireTorus
+    ((GLdouble)0.50, (GLdouble)1.0, (GLint)16, (GLint)30)
+  val () = glutSolidTorus
+    ((GLdouble)0.50, (GLdouble)1.0, (GLint)16, (GLint)30)
 *)
 (*
-  val () = glutWireTeapot (1.0)
+  val () = glutWireTeapot ((GLdouble)1.0)
 *)
-  val () = glutSolidTeapot (1.0)
+  val () = glutSolidTeapot ((GLdouble)1.0)
 
   val () = glPopMatrix (pf1_push | (*none*))
   val () = glFlush ()
 in
   // empty
 end // end of [display]
-
-local
-
-typedef GLdouble = double
-
-in
-
-extern fun gluPerspective
-  (_: GLdouble, _: GLdouble, _: GLdouble, _: GLdouble): void = "gluPerspective"
-
-end
 
 extern fun reshape (w: int, h: int): void = "reshape"
 implement reshape (w, h) = let
@@ -114,17 +106,19 @@ end // end of [reshape]
 
 (* ****** ****** *)
 
+macdef int = int_of_GLenum
+
 extern fun mouse
   (button: int, state: int, x: int, y: int): void = "mouse"
 
 implement mouse (button, state, x, y) = begin case+ 0 of
-  | _ when (button = GLUT_LEFT_BUTTON) => begin
-      if (state = GLUT_DOWN) then begin
+  | _ when (button = (int)GLUT_LEFT_BUTTON) => begin
+      if (state = (int)GLUT_DOWN) then begin
         !spin_x := (!spin_x + 30) mod 360; glutPostRedisplay ()
       end
     end // end  of [_ when ...]
-  | _ when (button = GLUT_RIGHT_BUTTON) => begin
-      if (state = GLUT_DOWN) then begin
+  | _ when (button = (int)GLUT_RIGHT_BUTTON) => begin
+      if (state = (int)GLUT_DOWN) then begin
         !spin_y := (!spin_y + 30) mod 360; glutPostRedisplay ()
       end
     end // end  of [_ when ...]

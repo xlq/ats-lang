@@ -108,8 +108,8 @@ fun{a:viewt@ype} list_vt_tabulate__main
 fun{a:viewt@ype} list_vt_tabulate_fun {n:nat} {f:eff}
   (f: natLt n -<f> a, n: int n):<f> list_vt (a, n)
 
-fun{a:viewt@ype} list_vt_tabulate_clo {n:nat} {f:eff}
-  (f: &natLt n -<clo,f> a, n: int n):<f> list_vt (a, n)
+fun{a:viewt@ype} list_vt_tabulate_clo {v:view} {n:nat} {f:eff}
+  (pf: !v | f: &(!v | natLt n) -<clo,f> a, n: int n):<f> list_vt (a, n)
 
 (* ****** ****** *)
 
@@ -118,7 +118,11 @@ fun{a:viewt@ype} list_vt_foreach__main
   (pf: !v | xs: !list_vt (a, n), f: !(!v | &a, !vt) -<f> void, env: !vt)
   :<f> void
 
-fun{a:t@ype} list_vt_foreach_clo {v:view} {n:nat} {f:eff}
+fun{a:viewt@ype} list_vt_foreach_fun {n:nat} {f:eff}
+  (xs: !list_vt (a, n), f: (&a) -<fun,f> void):<f> void
+// end of [list_vt_foreach_fun]
+
+fun{a:viewt@ype} list_vt_foreach_clo {v:view} {n:nat} {f:eff}
   (pf: !v | xs: !list_vt (a, n), f: &(!v | &a) -<clo,f> void):<f> void
 // end of [list_vt_foreach_clo]
 
@@ -129,9 +133,14 @@ fun{a:viewt@ype} list_vt_iforeach__main
     pf: !v
   | xs: !list_vt (a, n), f: (!v | natLt n, &a, !vt) -<fun,f> void, env: !vt
   ) :<f> void
+// end of [list_vt_iforeach__main]
 
-fun{a:t@ype} list_vt_iforeach_clo {v:view} {n:nat} {f:eff}
-  (pf: !v | xs: !list_vt (a, n), f: &(!v | natLt n, a) -<clo,f> void):<f> void
+fun{a:viewt@ype} list_vt_iforeach_fun {n:nat} {f:eff}
+  (xs: !list_vt (a, n), f: (natLt n, &a) -<fun,f> void):<f> void
+// end of [list_vt_iforeach_fun]
+
+fun{a:viewt@ype} list_vt_iforeach_clo {v:view} {n:nat} {f:eff}
+  (pf: !v | xs: !list_vt (a, n), f: &(!v | natLt n, &a) -<clo,f> void):<f> void
 // end of [list_vt_iforeach_clo]
 
 (* ****** ****** *)

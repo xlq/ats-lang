@@ -47,13 +47,11 @@ implement main (argc, argv) = let
     val xs = __cast (xs) where {
       extern castfn __cast (xs: !list_vt (int, n)): list (int, n)
     } // end of [val]
-    prval pf = unit_v ()
-    val () = list_iforeach_fun {unit_v} (pf | xs, f) where {
-      fn f (pf: !unit_v | i: int, x: int)
+    val () = list_iforeach_fun (xs, f) where {
+      fn f (i: int, x: int)
         : void = (if i > 0 then print (", "); print x)
       // end of [f]
     } // end of [val]
-    prval unit_v () = pf
   } // end of [lstpr]
 //
   val () = $RAND.srand48_with_time () // a new seed is generated

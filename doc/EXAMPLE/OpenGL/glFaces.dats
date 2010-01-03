@@ -325,14 +325,16 @@ end // end of [keyboard]
 
 (* ****** ****** *)
 
+macdef int = int_of_GLenum
+
 val animation_status_ref = ref_make_elt<int> (0)
 
 extern fun mouse
   (button: int, state: int, x: int, y: int): void = "mouse"
 
 implement mouse (button, state, x, y) = begin case+ 0 of
-  | _ when (button = GLUT_LEFT_BUTTON) => begin
-      if (state = GLUT_DOWN) then let
+  | _ when (button = (int)GLUT_LEFT_BUTTON) => begin
+      if (state = (int)GLUT_DOWN) then let
         val status = !animation_status_ref
         val () = !animation_status_ref := 1 - status
       in

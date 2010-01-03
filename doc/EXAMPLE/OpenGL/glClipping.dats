@@ -16,6 +16,7 @@ extern ats_void_type mainats (ats_int_type argc, ats_ptr_type argv) ;
 (* ****** ****** *)
 
 staload "contrib/GL/SATS/gl.sats"
+staload "contrib/GL/SATS/glu.sats"
 staload "contrib/GL/SATS/glut.sats"
 
 (* ****** ****** *)
@@ -49,26 +50,15 @@ implement display () = let
   val () = glEnable (GL_CLIP_PLANE1)
 
   val () = glRotated (90.0, 1.0, 0.0, 0.0)
-  val () = glutWireSphere (1.0, 40, 32)
+  val () = glutWireSphere ((GLdouble)1.0, (GLint)40, (GLint)32)
   val () = glPopMatrix (pf_mat | (*none*))
 
   val () = glFlush ()
 in
   // empty
-end
+end // end of [display]
 
 (* ****** ****** *)
-
-local
-
-typedef GLdouble = double
-
-in
-
-extern fun gluPerspective
-  (_: GLdouble, _: GLdouble, _: GLdouble, _: GLdouble): void = "gluPerspective"
-
-end
 
 extern
 fun reshape (w: int, h: int): void = "reshape"

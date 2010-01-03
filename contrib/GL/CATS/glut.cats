@@ -198,257 +198,40 @@ atsctrb_glutEntryFunc
 
 /* ****** ****** */
 
-static inline
-ats_void_type
-atsctrb_glutWireCube_type
-  (ats_double_type size) {
-  glutWireCube (size) ; return ;
-} // end of [atsctrb_glutWireCube_type]
+#define atsctrb_glutWireCube glutWireCube
+#define atsctrb_glutSolidCube glutSolidCube
 
-static inline
-ats_void_type
-atsctrb_glutWireCube_GLtype
-  (ats_GLdouble_type size) {
-  glutWireCube (size) ; return ;
-} // end of [atsctrb_glutWireCube_GLtype]
-
-//
-
-static inline
-ats_void_type
-atsctrb_glutSolidCube_type
-  (ats_double_type size) {
-  glutSolidCube (size) ; return ;
-} // end of [atsctrb_glutSolidCube_type]
-
-static inline
-ats_void_type
-atsctrb_glutSolidCube_GLtype
-  (ats_GLdouble_type size) {
-  glutSolidCube (size) ; return ;
-} // end of [atsctrb_glutSolidCube_GLtype]
+#define atsctrb_glutWireSphere glutWireSphere
+#define atsctrb_glutSolidSphere glutSolidSphere
 
 /* ****** ****** */
 
-static inline
-ats_void_type
-atsctrb_glutWireSphere_type (
-  ats_double_type radius
-, ats_int_type slices
-, ats_int_type stacks
-) {
-  glutWireSphere (radius, slices, stacks) ; return ;
-} // end of [atsctrb_glutWireSphere_type]
-
-static inline
-ats_void_type
-atsctrb_glutWireSphere_GLtype (
-  ats_GLdouble_type radius
-, ats_GLint_type slices
-, ats_GLint_type stacks
-) {
-  glutWireSphere (radius, slices, stacks) ; return ;
-} // end of [atsctrb_glutWireSphere_GLtype]
-
-//
-
-static inline
-ats_void_type
-atsctrb_glutSolidSphere_type (
-  ats_double_type radius
-, ats_int_type slices
-, ats_int_type stacks
-) {
-  glutSolidSphere (radius, slices, stacks) ; return ;
-} // end of [atsctrb_glutSolidSphere_type]
-
-static inline
-ats_void_type
-atsctrb_glutSolidSphere_GLtype (
-  ats_GLdouble_type radius
-, ats_GLint_type slices
-, ats_GLint_type stacks
-) {
-  glutSolidSphere (radius, slices, stacks) ; return ;
-} // end of [atsctrb_glutSolidSphere_GLtype]
+#define atsctrb_glutWireCone glutWireCone
+#define atsctrb_glutSolidCone glutSolidCone
 
 /* ****** ****** */
 
-static inline
-ats_void_type
-atsctrb_glutWireCone_type (
-  ats_double_type base
-, ats_double_type height
-, ats_int_type slices
-, ats_int_type stacks
-) {
-  glutWireCone (base, height, slices, stacks) ; return ;
-} // end of [atsctrb_glutWireCone_type]
-
-static inline
-ats_void_type
-atsctrb_glutWireCone_GLtype (
-  ats_GLdouble_type base
-, ats_GLdouble_type height
-, ats_GLint_type slices
-, ats_GLint_type stacks
-) {
-  glutWireCone (base, height, slices, stacks) ; return ;
-} // end of [atsctrb_glutWireCone_GLtype]
-
-//
-
-static inline
-ats_void_type
-atsctrb_glutSolidCone_type (
-  ats_double_type base
-, ats_double_type height
-, ats_int_type slices
-, ats_int_type stacks
-) {
-  glutSolidCone (base, height, slices, stacks) ; return ;
-} // end of [atsctrb_glutSolidCone_type]
-
-static inline
-ats_void_type
-atsctrb_glutSolidCone_GLtype (
-  ats_GLdouble_type base
-, ats_GLdouble_type height
-, ats_GLint_type slices
-, ats_GLint_type stacks
-) {
-  glutSolidCone (base, height, slices, stacks) ; return ;
-} // end of [atsctrb_glutSolidCone_GLtype]
+#define atsctrb_glutWireTorus glutWireTorus
+#define atsctrb_glutSolidTorus glutSolidTorus
 
 /* ****** ****** */
 
-static inline
-ats_void_type
-atsctrb_glutWireTorus_type (
-  ats_double_type innerRadius
-, ats_double_type outerRadius
-, ats_int_type sides
-, ats_int_type rings
-) {
-  glutWireTorus (innerRadius, outerRadius, sides, rings) ; return ;
-} // end of [atsctrb_glutWireTorus_type]
-
-static inline
-ats_void_type
-atsctrb_glutWireTorus_GLtype (
-  ats_GLdouble_type innerRadius
-, ats_GLdouble_type outerRadius
-, ats_GLint_type sides
-, ats_GLint_type rings
-) {
-  glutWireTorus (innerRadius, outerRadius, sides, rings) ; return ;
-} // end of [atsctrb_glutWireTorus_GLtype]
-
-//
-
-static inline
-ats_void_type
-atsctrb_glutSolidTorus_type (
-  ats_double_type innerRadius
-, ats_double_type outerRadius
-, ats_int_type sides
-, ats_int_type rings
-) {
-  glutSolidTorus (innerRadius, outerRadius, sides, rings) ; return ;
-} // end of [atsctrb_glutSolidTorus_type]
-
-static inline
-ats_void_type
-atsctrb_glutSolidTorus_GLtype (
-  ats_GLdouble_type innerRadius
-, ats_GLdouble_type outerRadius
-, ats_GLint_type sides
-, ats_GLint_type rings
-) {
-  glutSolidTorus (innerRadius, outerRadius, sides, rings) ; return ;
-} // end of [atsctrb_glutSolidTorus_GLtype]
+#define atsctrb_glutWireTeapot glutWireTeapot
+#define atsctrb_glutSolidTeapot glutSolidTeapot
 
 /* ****** ****** */
 
-static inline
-ats_void_type
-atsctrb_glutWireTeapot_type
-  (ats_double_type size) {
-  glutWireTeapot (size) ; return ;
-}
+#define atsctrb_glutWireDodecahedron glutWireDodecahedron
+#define atsctrb_glutSolidDodecahedron glutSolidDodecahedron
 
-static inline
-ats_void_type
-atsctrb_glutWireTeapot_GLtype
-  (ats_GLdouble_type size) {
-  glutWireTeapot (size) ; return ;
-}
+#define atsctrb_glutWireOctahedron glutWireOctahedron
+#define atsctrb_glutSolidOctahedron glutSolidOctahedron
 
-//
+#define atsctrb_glutWireTetrahedron glutWireTetrahedron
+#define atsctrb_glutSolidTetrahedron glutSolidTetrahedron
 
-static inline
-ats_void_type
-atsctrb_glutSolidTeapot_type
-  (ats_double_type size) {
-  glutSolidTeapot (size) ; return ;
-}
-
-static inline
-ats_void_type
-atsctrb_glutSolidTeapot_GLtype
-  (ats_GLdouble_type size) {
-  glutSolidTeapot (size) ; return ;
-}
-
-/* ****** ****** */
-
-static inline
-ats_void_type
-atsctrb_glutWireDodecahedron () {
-  glutWireDodecahedron () ; return ;
-}
-
-static inline
-ats_void_type
-atsctrb_glutSolidDodecahedron () {
-  glutSolidDodecahedron () ; return ;
-}
-
-static inline
-ats_void_type
-atsctrb_glutWireOctahedron () {
-  glutWireOctahedron () ; return ;
-}
-
-static inline
-ats_void_type
-atsctrb_glutSolidOctahedron () {
-  glutSolidOctahedron () ; return ;
-}
-
-static inline
-ats_void_type
-atsctrb_glutWireTetrahedron () {
-  glutWireTetrahedron () ; return ;
-}
-
-static inline
-ats_void_type
-atsctrb_glutSolidTetrahedron () {
-  glutSolidTetrahedron () ; return ;
-}
-
-static inline
-ats_void_type
-atsctrb_glutWireIcosahedron () {
-  glutWireIcosahedron () ; return ;
-}
-
-static inline
-ats_void_type
-atsctrb_glutSolidIcosahedron () {
-  glutSolidIcosahedron () ; return ;
-}
+#define atsctrb_glutWireIcosahedron glutWireIcosahedron ()
+#define atsctrb_glutSolidIcosahedron glutSolidIcosahedron ()
 
 /* ****** ****** */
 

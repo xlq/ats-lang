@@ -39,9 +39,9 @@ implement display () = let
   val () = glLoadIdentity ()
   val () = gluLookAt (0.0, 0.0, 5.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0)
   val () = glScaled (1.0, 2.0, 1.0)
-  val () = glutWireCube (1.0)
+  val () = glutWireCube ((GLdouble)1.0)
 (*
-  val () = glutSolidCube (1.0)
+  val () = glutSolidCube ((GLdouble)1.0)
 *)
   val () = glFlush ()
 in

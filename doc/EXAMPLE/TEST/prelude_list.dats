@@ -45,13 +45,11 @@ implement main (argc, argv) = let
 // for printing out an integer list
 // also for testing [list_iforeach]
   fn lstpr (xs: List int): void = () where {
-    prval pf = unit_v ()
-    val () = list_iforeach_fun {unit_v} (pf | xs, f) where {
-      fn f (pf: !unit_v | i: int, x: int)
+    val () = list_iforeach_fun (xs, f) where {
+      fn f (i: int, x: int)
         : void = (if i > 0 then print (", "); print x)
       // end of [f]
     } // end of [val]
-    prval unit_v () = pf
   } // end of [lstpr]
   fun lsteq (xs1: List int, xs2: List int): bool =
     case+ (xs1, xs2) of
