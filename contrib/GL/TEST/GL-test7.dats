@@ -85,7 +85,16 @@ in
   pgn.angle := 360 * drand48 ()
 end // end of [pgn_make]
 
-fn pgn_free (pgn: &pgn >> pgn?):<> void = list_vt_free (pgn.vrtxlst)
+fn pgn_free
+  (pgn: &pgn >> pgn?):<> void = list_vt_free (pgn.vrtxlst)
+// end of [pgn_free]
+fun pgnlst_free {n:nat} .<n>. (pgns: list_vt (pgn, n)):<> void =
+  case+ pgns of
+  | list_vt_cons (!p_pgn, pgns1) => (
+      pgn_free !p_pgn; free@ {pgn} {0} pgns; pgnlst_free pgns1
+    ) // end of [list_vt_cons]
+  | ~list_vt_nil () => ()
+// end of [pgnlst_free]
 
 fun pgnlst_add {k0,k:nat} .<k>.
   (k: int k, res: &list_vt (pgn, k0) >> list_vt (pgn, k0+k)): void =
@@ -271,6 +280,19 @@ end // end of [initialize]
 (* ****** ****** *)
 
 extern
+fun finalize (): void = "finalize"
+implement finalize () = () where {
+  val () = () where {
+    prval vbox pf = pf_thePgnLst
+    val () = pgnlst_free (thePgnLst)
+    val () = thePgnLst := list_vt_nil ()
+  } // end of [val]
+  val () = exit (0) // normal exit
+} // end of [finalize]
+
+(* ****** ****** *)
+
+extern
 fun display (): void = "display"
 implement display () = let
   val () = glClear (GL_COLOR_BUFFER_BIT)
@@ -314,8 +336,8 @@ in
   | 'A' => thePgnLst_add (5)
   | 'd' => thePgnLst_del (1)
   | 'D' => thePgnLst_del (5)
-  | 'q' => exit (0)
-  | _ when (int_of (key) = 27) => exit (0)
+  | 'q' => finalize ()
+  | _ when (int_of (key) = 27) => finalize ()
   | _ => () // ignored
 end // end of [keyboard]
 
