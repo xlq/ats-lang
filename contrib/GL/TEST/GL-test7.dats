@@ -1,6 +1,7 @@
 (*
 **
-** A simple OpenGL example
+** A simple OpenGL example:
+**   randomly generated polygons purturbing around
 **
 ** Author: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
 ** Time: January, 2010
@@ -15,14 +16,16 @@ staload _(*anonymous*) = "prelude/DATS/list_vt.dats"
 (* ****** ****** *)
 
 typedef point = @{
-  x= double, y= double, r= double, b= double, g= double, a= double
+  x= double, y= double
+, r= double, b= double, g= double, a= double
 }
 
 viewtypedef pgn (n:int) = @{
   nvrtx= int n
 , cntr_x= double, cntr_y = double
+, pgn_z= double
 , vrtxlst= list_vt (point, n)
-, rot_v= double // rotating velocity
+, zrot_v= double // rotating velocity
 , angle= double // current angle
 }
 
@@ -79,9 +82,11 @@ fun pgn_make (pgn: &pgn0? >> pgn): void = let
   } // end of [loop]
 in
   pgn.nvrtx := n;
-  pgn.cntr_x := drand48 () - 0.5; pgn.cntr_y := drand48 () - 0.5;
+  pgn.cntr_x := drand48 () - 0.5;
+  pgn.cntr_y := drand48 () - 0.5;
+  pgn.pgn_z := 0.0 ; // pgn.pgn_z := drand48 () - 0.5;
   pgn.vrtxlst := pts;
-  pgn.rot_v := ROT_V_MAX * (drand48 () - 0.5);
+  pgn.zrot_v := ROT_V_MAX * (drand48 () - 0.5);
   pgn.angle := 360 * drand48 ()
 end // end of [pgn_make]
 
@@ -182,13 +187,13 @@ extern fun draw_pgn (pgn: &pgn): void = "draw_pgn"
 
 implement draw_pgn (pgn) = let
   fun loop {n:nat} .<n>. (
-      pts: !list_vt (point, n)
+      pts: !list_vt (point, n), pgn_z: double
     ) : void =
     case+ pts of
     | list_vt_cons (pt, !p_pts1) => let
         val () = glColor4d (pt.r, pt.g, pt.b, pt.a)
-        val () = glVertex2d (pt.x, pt.y)
-        val () = loop (!p_pts1)
+        val () = glVertex3d (pt.x, pt.y, pgn_z)
+        val () = loop (!p_pts1, pgn_z)
       in
         fold@ pts
       end // end of [list_vt_cons]
@@ -200,7 +205,7 @@ implement draw_pgn (pgn) = let
   val () = glRotated (pgn.angle, 0.0, 0.0, 1.0)
   val () = glScaled (RADIUS, RADIUS, 1.0)
   val (pf_begin | ()) = glBegin (GL_POLYGON)
-  val () = loop (pgn.vrtxlst)
+  val () = loop (pgn.vrtxlst, pgn.pgn_z)
   val () = glEnd (pf_begin | (*none*))
   val () = glPopMatrix (pf_pushmat | (*none*))
 in
@@ -256,7 +261,7 @@ fn draw_pgnlst {n:nat}
   prval pf_unit = unit_v ()
   val () = array_ptr_foreach_fun<a> {unit_v} (pf_unit | !p_arr, f, asz)
   prval unit_v () = pf_unit
-  fn f (pgn: &pgn): void = pgn.angle := pgn.angle + pgn.rot_v
+  fn f (pgn: &pgn): void = pgn.angle := pgn.angle + pgn.zrot_v
   val () = list_vt_foreach_fun (pgns, f)
 in
   // nothing
@@ -292,15 +297,31 @@ implement finalize () = () where {
 
 (* ****** ****** *)
 
+(*
+#define THE_YROT_V 5.0
+var the_yrot_angle = 0.0
+*)
+
 extern
 fun display (): void = "display"
 implement display () = let
   val () = glClear (GL_COLOR_BUFFER_BIT)
+(*
+  val (pf_mat | ()) = glPushMatrix ()
+  val t0 = the_yrot_angle
+  val t1 = t0 + THE_YROT_V
+  val t1 = (if t1 >= 360.0 then t1 - 360.0 else t1): double
+  val () = the_yrot_angle := t1
+  val () = glRotated (t0, 0., 1., 0.)
+*)
   val () = let
     prval vbox pflst = pf_thePgnLst
   in
     $effmask_ref (draw_pgnlst thePgnLst)
   end // end of [val]
+(*
+  val () = glPopMatrix (pf_mat | (*none*))
+*)
   val () = glutSwapBuffers ()
 in
   // nothing
@@ -311,11 +332,15 @@ end // end of [display]
 extern
 fun reshape (w: int, h: int): void = "reshape"
 implement reshape (w, h) = let
+  val wh = min (w, h)
   val () = glViewport (0, 0, w, h)
   val () = glMatrixMode (GL_PROJECTION)
   val () = glLoadIdentity ()
-  val x = 0.65 and y = 0.65
-  val () = glOrtho (~x, x, y, ~y, ~1.0, 1.0)
+  val a = 0.60
+  val w = double_of w and h = double_of h
+  val wh = double_of wh
+  val r_w = w/wh and r_h = h/wh
+  val () = glOrtho (~a*r_w, a*r_w, ~a*r_h, a*r_h, ~1.0, 1.0)
   val () = glMatrixMode (GL_MODELVIEW)
   val () = glLoadIdentity ()
 in
@@ -358,7 +383,7 @@ ats_void_type mainats (
   glutInitDisplayMode (GLUT_DOUBLE | GLUT_RGB) ;
   glutInitWindowSize (500, 500) ;
   glutInitWindowPosition (100, 100) ;
-  glutCreateWindow("Hello!") ;
+  glutCreateWindow("Fidgeting Shapes") ;
   initialize () ;
   glutDisplayFunc (display) ;
   glutReshapeFunc (reshape) ;
