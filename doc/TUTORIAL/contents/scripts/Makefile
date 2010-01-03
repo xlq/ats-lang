@@ -1,3 +1,9 @@
+#
+#
+# for processing the ATS tutorial
+#
+#
+
 ######
 
 fproc: main.dats fildescopy_dats.o

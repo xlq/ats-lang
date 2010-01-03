@@ -160,6 +160,8 @@ span.prfexp  {color:009000}\n\
 <MENU>\n\
 <LI> <A href=\"#castingfun\">Casting Functions</A>\n\
 <LI> <A href=\"#stackalloc\">Allocation in Stack Frames</A>\n\
+<LI> <A href=\"#statetypes\">State Types</A>\n\
+<LI> <A href=\"#looping\">Looping Constructs</A>\n\
 </MENU>\n\
 "
 
