@@ -86,17 +86,33 @@ static inline
 ats_GLbyte_type
 atsctrb_GLbyte_of_int (int x) { return x ; }
 
+//
+
 static inline
 ats_GLubyte_type
 atsctrb_GLubyte_of_int (int x) { return x ; }
 
 static inline
+ats_GLubyte_type
+atsctrb_GLubyte_of_uint (unsigned int x) { return x ; }
+
+//
+
+static inline
 ats_GLshort_type
 atsctrb_GLshort_of_int (int x) { return x ; }
+
+//
 
 static inline
 ats_GLushort_type
 atsctrb_GLushort_of_int (int x) { return x ; }
+
+static inline
+ats_GLushort_type
+atsctrb_GLushort_of_uint (unsigned int x) { return x ; }
+
+//
 
 static inline
 ats_GLsizei_type
@@ -149,6 +165,12 @@ atsctrb_glClearColor_double (
 
 #define atsctrb_glAlphaFunc glAlphaFunc
 #define atsctrb_glBlendFunc glBlendFunc
+#define atsctrb_glLogicOp glLogicOp
+
+/* ****** ****** */
+
+#define atsctrb_glCullFace glCullFace
+#define atsctrb_glFrontFace glFrontFace
 
 /* ****** ****** */
 
@@ -169,6 +191,11 @@ atsctrb_glLineWidth_double
 /* ****** ****** */
 
 #define atsctrb_glLineStipple glLineStipple
+
+/* ****** ****** */
+
+#define atsctrb_glPolygonMode glPolygonMode
+#define atsctrb_glPolygonOffset glPolygonOffset
 
 /* ****** ****** */
 

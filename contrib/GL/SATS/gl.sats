@@ -131,9 +131,11 @@ castfn GLclampf_of_float (x: float):<> GLclampf
 
 fun GLbyte_of_int (x: int):<> GLbyte = "atsctrb_GLbyte_of_int"
 fun GLubyte_of_int (x: int):<> GLubyte = "atsctrb_GLubyte_of_int"
+fun GLubyte_of_uint (x: uint):<> GLubyte = "atsctrb_GLubyte_of_uint"
 
 fun GLshort_of_int (x: int):<> GLshort = "atsctrb_GLshort_of_int"
 fun GLushort_of_int (x: int):<> GLushort = "atsctrb_GLushort_of_int"
+fun GLushort_of_uint (x: uint):<> GLushort = "atsctrb_GLushort_of_uint"
 
 fun GLsizei_of_int {i:int} (x: int i): GLsizei i = "atsctrb_GLsizei_of_int"
 
@@ -145,10 +147,12 @@ fun GLclampf_of_double (x: double):<> GLclampf = "atsctrb_GLclampf_of_double"
 symintr GLbyte GLubyte
 overload GLbyte with GLbyte_of_int
 overload GLubyte with GLubyte_of_int
+overload GLubyte with GLubyte_of_uint
 
 symintr GLshort GLushort
 overload GLshort with GLshort_of_int
 overload GLushort with GLushort_of_int
+overload GLushort with GLushort_of_uint
 
 symintr GLint GLuint
 overload GLint with GLint_of_int // castfn
@@ -831,6 +835,8 @@ fun glAlphaFunc (func: GLenum, ref: GLclampf): void = "atsctrb_glAlphaFunc"
 fun glBlendFunc (sfactor: GLenum, dfactor: GLenum): void = "atsctrb_glBlendFunc"
 
 fun glLogicOp (opcode: GLenum): void = "atsctrb_glLogicOp"
+
+(* ****** ****** *)
 
 fun glCullFace (mode: GLenum): void = "atsctrb_glCullFace"
 

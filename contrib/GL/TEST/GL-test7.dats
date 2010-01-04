@@ -204,6 +204,7 @@ implement draw_pgn (pgn) = let
   val () = glTranslated (xc, yc, 0.0)
   val () = glRotated (pgn.angle, 0.0, 0.0, 1.0)
   val () = glScaled (RADIUS, RADIUS, 1.0)
+  val () = glPolygonMode (GL_FRONT, GL_FILL)
   val (pf_begin | ()) = glBegin (GL_POLYGON)
   val () = loop (pgn.vrtxlst, pgn.pgn_z)
   val () = glEnd (pf_begin | (*none*))
@@ -336,7 +337,7 @@ implement reshape (w, h) = let
   val () = glViewport (0, 0, w, h)
   val () = glMatrixMode (GL_PROJECTION)
   val () = glLoadIdentity ()
-  val a = 0.60
+  val a = 2.0 / 3
   val w = double_of w and h = double_of h
   val wh = double_of wh
   val r_w = w/wh and r_h = h/wh

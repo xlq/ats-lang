@@ -1,6 +1,6 @@
 (*
 **
-** A simple OpenGL example
+** A simple OpenGL example: stippled lines
 **
 ** Author: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
 ** Time: December, 2009
@@ -59,8 +59,6 @@ fn drawOneLine (
   val () = glEnd (pf | (*none*))
 } // end of [drawOneLine]
 
-#define GLdbl GLdouble
-
 extern
 fun display (): void = "display"
 implement display () = let
@@ -86,6 +84,24 @@ implement display () = let
   val () = drawOneLine (250.0, 100.0, 350.0, 100.0)
   val () = glLineWidth (1.0)
 //
+  var i : int // uninitialized
+//
+  val () = glLineStipple(1, (GLushort)0x1C47) (* dotted *)
+  val (pf_beg | ()) = glBegin (GL_LINE_STRIP)
+  val () = for (i := 0; i < 7; i := i+1) begin
+    glVertex2d (50.0 + (double_of_int)i * 50.0, 75.0)
+  end // end of [val]
+  val () = glEnd (pf_beg | (*none*))
+//
+  val (pf_beg | ()) = glBegin (GL_LINE_STRIP)
+  val () = for (i := 0; i < 6; i := i+1) begin
+    drawOneLine (
+      50.0 + (double_of_int)i * 50.0, 50.0
+    , 50.0 + (double_of_int)(i+1) * 50.0, 50.0
+    ) // end of [drawOneLine]
+  end // end of [val]
+  val () = glEnd (pf_beg | (*none*))
+//
   val () = glLineStipple(5, (GLushort)0x1C47) (* dash/dot/dash *)
   val () = drawOneLine (50.0, 25.0, 350.0, 25.0)
 //
@@ -102,9 +118,10 @@ extern
 fun reshape (w: int, h: int): void = "reshape"
 implement reshape (w, h) = let
   val () = glViewport (0, 0, w, h)
+  val w = double_of w and h = double_of h
   val () = glMatrixMode (GL_PROJECTION)
   val () = glLoadIdentity ()
-  val () = gluOrtho2D (0.0, double_of w, 0.0, double_of h)
+  val () = gluOrtho2D (0.0, w, 0.0, h)
 in
   // empty
 end // end of [reshape]
@@ -133,7 +150,7 @@ ats_void_type mainats
   (ats_int_type argc, ats_ptr_type argv) {
   glutInit ((int*)&argc, (char**)argv) ;
   glutInitDisplayMode (GLUT_SINGLE | GLUT_RGB) ;
-  glutInitWindowSize (500, 500) ;
+  glutInitWindowSize (400, 150) ;
   glutInitWindowPosition (100, 100) ;
   glutCreateWindow(((char**)argv)[0]) ;
   main_work () ;
@@ -144,4 +161,4 @@ ats_void_type mainats
 
 (* ****** ****** *)
 
-(* end of [GL-test3.dats] *)
+(* end of [GL-test3-1.dats] *)
