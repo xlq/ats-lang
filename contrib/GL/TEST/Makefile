@@ -16,7 +16,7 @@ checkall: compall cleanall
 compall: \
   test1 \
   test2 \
-  test3 \
+  test3-1 test3-2 \
   test4 \
   test5 \
   test6 \
@@ -30,8 +30,11 @@ test1: GL-test1.dats
 test2: GL-test2.dats
 	$(ATSCC) -o test2 GL-test2.dats $(ATSCTRB) -lGL -lglut
 
-test3: GL-test3.dats
-	$(ATSCC) -o test3 GL-test3.dats $(ATSCTRB) -lGL -lglut
+test3-1: GL-test3-1.dats
+	$(ATSCC) -o test3-1 GL-test3-1.dats $(ATSCTRB) -lGL -lglut
+
+test3-2: GL-test3-2.dats
+	$(ATSCC) -o test3-2 GL-test3-2.dats $(ATSCTRB) -lGL -lglut
 
 test4: GL-test4.dats
 	$(ATSCC) -o test4 GL-test4.dats $(ATSCTRB) -lGL -lglut
@@ -59,7 +62,7 @@ clean:
 cleanall: clean
 	rm -f test1
 	rm -f test2
-	rm -f test3
+	rm -f test3-1 test3-2
 	rm -f test4
 	rm -f test5
 	rm -f test6

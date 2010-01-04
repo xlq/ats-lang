@@ -30,6 +30,7 @@ macdef cos = $MATH.cos
 (* ****** ****** *)
 
 staload "contrib/GL/SATS/gl.sats"
+staload "contrib/GL/SATS/glu.sats"
 staload "contrib/GL/SATS/glut.sats"
 
 (* ****** ****** *)
@@ -136,12 +137,23 @@ end // end of [draw_clock_decor]
 
 (* ****** ****** *)
 
+fn draw_clock_center (): void = () where {
+  val () = glColor3d (0.0, 0.0, 0.0)
+  val (pf_obj | p_obj) = gluNewQuadric_exn ()
+  val () = gluDisk
+    (!p_obj, (GLdouble)0.0, (GLdouble)0.025, 8, 1)
+  val () = gluDeleteQuadric (pf_obj | p_obj)
+} // end of [draw_clock_center]
+
+(* ****** ****** *)
+
 #define HAND_H_BOT 0.016
 #define HAND_H_MID 0.025
 #define HAND_H_TOP 0.010
 #define HAND_H_LEN1 0.18
 #define HAND_H_LEN2 0.05
 fn draw_clock_hand_h (): void = () where {
+  val () = glEnable (GL_POLYGON_SMOOTH)
   val (pf_beg | ()) = glBegin (GL_POLYGON)
   val () = glColor3ub ((GLubyte)0, (GLubyte)0, (GLubyte)0)
 //
@@ -156,6 +168,7 @@ fn draw_clock_hand_h (): void = () where {
   val () = glVertex2d (0.0, ~HAND_H_MID/2)  
 //
   val () = glEnd (pf_beg | (*none*))
+  val () = glDisable (GL_POLYGON_SMOOTH)
 } // end of [draw_clock_hand_h]
 
 #define HAND_M_BOT 0.012
@@ -164,6 +177,7 @@ fn draw_clock_hand_h (): void = () where {
 #define HAND_M_LEN1 0.25
 #define HAND_M_LEN2 0.05
 fn draw_clock_hand_m (): void = () where {
+  val () = glEnable (GL_POLYGON_SMOOTH)
   val (pf_beg | ()) = glBegin (GL_POLYGON)
   val () = glColor3ub ((GLubyte)0, (GLubyte)0, (GLubyte)0)
 //
@@ -178,6 +192,7 @@ fn draw_clock_hand_m (): void = () where {
   val () = glVertex2d (0.0, ~HAND_M_MID/2)  
 //
   val () = glEnd (pf_beg | (*none*))
+  val () = glDisable (GL_POLYGON_SMOOTH)
 } // end of [draw_clock_hand_m]
 
 (* ****** ****** *)
@@ -186,6 +201,9 @@ extern
 fun initialize (): void = "initialize"
 implement initialize () = let
   val () = glClearColor (0.0, 0.0, 0.0, 0.0)
+  val () = glEnable (GL_BLEND)
+  val () = glBlendFunc (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA)
+  val () = glHint (GL_POLYGON_SMOOTH_HINT, GL_DONT_CARE)
   val () = glShadeModel (GL_FLAT)
 in
   // empty
@@ -205,6 +223,8 @@ implement display () = let
   val () = glClear (GL_COLOR_BUFFER_BIT)
   val () = draw_clock_face (128)
   val () = draw_clock_decor ()
+//
+  val () = draw_clock_center ()
 //
   val (pf_mat | ()) = glPushMatrix ()
   val h_angle = 90 - (30.0*h + 0.50*m)

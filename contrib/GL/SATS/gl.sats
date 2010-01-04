@@ -881,11 +881,14 @@ fun glPolygonMode (face: GLenum, mode: GLenum): void
 fun glPolygonOffset (factor: GLfloat, units: GLfloat): void
   = "atsctrb_glPolygonOffset"
 
-// fun glPolygonStipple (const GLubyte *mask);
-// fun glGetPolygonStipple (GLubyte *mask);
+fun glPolygonStipple (mask: &GLarray2 (GLubyte, 32, 32)): void
+  = "atsctrb_glPolygonStipple"
+
+fun glGetPolygonStipple (mask: &GLarray2 (GLubyte, 32, 32)): void
+  = "atsctrb_glGetPolygonStipple"
 
 fun glEdgeFlag (flag: GLboolean): void = "atsctrb_glEdgeFlag"
-// fun glEdgeFlagv ( const GLboolean *flag);
+fun glEdgeFlagv (flag: &GLboolean): void = "atsctrb_glEdgeFlagv"
 
 fun glScissor
   (x: GLint, y: GLint, width: GLsizei, height: GLsizei): void
@@ -959,6 +962,7 @@ fun glPushClientAttrib (mask: GLbitfield): void = "atsctrb_glPushClientAttrib"
 fun glPopClientAttrib (): void = "atsctrb_glPopClientAttrib"
 
 fun glRenderMode (mode: GLenum): GLint = "atsctrb_glRenderMode"
+
 fun glGetError (): GLenum = "atsctrb_glGetError"
 
 fun glGetString (name: GLenum): string = "atsctrb_glGetString"

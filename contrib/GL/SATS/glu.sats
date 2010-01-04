@@ -46,6 +46,46 @@ staload "contrib/GL/SATS/gl.sats"
 
 (* ****** ****** *)
 
+abst@ype GLUquadricObj = $extype "ats_GLUquadricObj_type"
+
+(* ****** ****** *)
+
+(*
+GLAPI void GLAPIENTRY gluCylinder (
+  GLUquadric* quad, GLdouble base, GLdouble top, GLdouble height
+, GLint slices, GLint stacks
+);
+*)
+fun gluCylinder {n,sk:nat} (
+    qobj: &GLUquadricObj
+  , base: GLdouble, top: GLdouble, height: GLdouble
+  , slices: int n, stacks: int sk
+  ) : void
+  = "atsctrb_gluCynliner"
+
+(* ****** ****** *)
+
+(*
+GLAPI void GLAPIENTRY gluDeleteQuadric (GLUquadric* quad);
+*)
+fun gluDeleteQuadric {l:addr} (pf: GLUquadricObj @ l | p: ptr l): void
+  = "atsctrb_gluDeleteQuadric"
+
+(* ****** ****** *)
+
+(*
+GLAPI void GLAPIENTRY gluDisk (
+  GLUquadric* quad, GLdouble inner, GLdouble outer, GLint slices, GLint loops
+) ;
+*)
+
+fun gluDisk {n,lp:nat} (
+    qobj: &GLUquadricObj, inner: GLdouble, outer: GLdouble, slices: int n, loops: int lp
+  ) : void
+  = "atsctrb_gluDisk"
+
+(* ****** ****** *)
+
 (*
 GLAPI void GLAPIENTRY gluLookAt (
   GLdouble eyeX, GLdouble eyeY, GLdouble eyeZ
@@ -72,6 +112,15 @@ overload gluLookAt with gluLookAt_GLdouble
 
 (* ****** ****** *)
 
+fun gluNewQuadric ()
+  : [l:addr] (option_v (GLUquadricObj @ l, l <> null) | ptr l)
+  = "atsctrb_gluNewQuadric"
+
+fun gluNewQuadric_exn (): [l:addr] (GLUquadricObj @ l | ptr l)
+  = "atsctrb_gluNewQuadric_exn"
+
+(* ****** ****** *)
+
 (*
 GLAPI void GLAPIENTRY gluOrtho2D (
   GLdouble left, GLdouble right, GLdouble bottom, GLdouble top
@@ -92,6 +141,20 @@ fun gluOrtho2D_GLdouble : gluOrtho2D_type (GLdouble)
 overload gluOrtho2D with gluOrtho2D_GLdouble
 
 (* ****** ****** *)
+  
+(*
+GLAPI void GLAPIENTRY gluPartialDisk (
+  GLUquadric* quad, GLdouble inner, GLdouble outer, GLint slices, GLint loops
+, GLdouble start, GLdouble sweep
+) ;
+*)
+fun gluPartialDisk {n,lp:nat} (
+    qobj: &GLUquadricObj, inner: GLdouble, outer: GLdouble, slices: int n, loops: int lp
+  , start: GLdouble, sweep: GLdouble
+  ) : void
+  = "atsctrb_gluPartialDisk"
+
+(* ****** ****** *)
 
 (*
 GLAPI void GLAPIENTRY gluPerspective (GLdouble fovy, GLdouble aspect, GLdouble zNear, GLdouble zFar);
@@ -109,6 +172,42 @@ overload gluPerspective with gluPerspective_double
 fun gluPerspective_GLdouble : gluPerspective_type (GLdouble)
   = "atsctrb_gluPerspective_GLdouble"
 overload gluPerspective with gluPerspective_GLdouble
+
+(* ****** ****** *)
+
+(*
+GLAPI void GLAPIENTRY gluQuadricDrawStyle (GLUquadric* quad, GLenum draw);
+*)
+fun gluQuadricDrawStyle (qobj: &GLUquadricObj, draw: GLenum): void
+  = "atsctrb_gluQuadricDrawStyle"
+
+(*
+GLAPI void GLAPIENTRY gluQuadricNormals (GLUquadric* quad, GLenum normal);
+*)
+fun gluQuadricNormals (qobj: &GLUquadricObj, normal: GLenum): void
+  = "atsctrb_gluQuadricNormals"
+
+(*
+GLAPI void GLAPIENTRY gluQuadricOrientation (GLUquadric* quad, GLenum orientation);
+*)
+fun gluQuadricTexture (qobj: &GLUquadricObj, orientation: GLenum): void
+  = "atsctrb_gluQuadricOrientation"
+
+(*
+GLAPI void GLAPIENTRY gluQuadricTexture (GLUquadric* quad, GLboolean texture);
+*)
+fun gluQuadricTexture (qobj: &GLUquadricObj, texture: GLboolean): void
+  = "atsctrb_gluQuadricTexture"
+
+(* ****** ****** *)
+
+(*
+GLAPI void GLAPIENTRY gluSphere (GLUquadric* quad, GLdouble radius, GLint slices, GLint stacks);
+*)
+fun gluSphere {n,lp:nat} (
+    qobj: &GLUquadricObj, radius: GLdouble, slices: int n, loops: int lp
+  ) : void
+  = "atsctrb_gluSphere"
 
 (* ****** ****** *)
 

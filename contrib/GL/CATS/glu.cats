@@ -39,6 +39,59 @@
 
 /* ****** ****** */
 
+#include <stdio.h>
+
+/* ****** ****** */
+
+#include <GL/glu.h>
+
+/* ****** ****** */
+
+typedef GLUquadricObj ats_GLUquadricObj_type ;
+
+/* ****** ****** */
+
+static inline
+ats_void_type
+atsctrb_gluCylinder (
+  ats_ref_type qobj
+, ats_GLdouble_type base
+, ats_GLdouble_type top
+, ats_GLdouble_type height
+, ats_int_type slices
+, ats_int_type stacks
+) {
+  gluCylinder(
+    (GLUquadric*)qobj, base, top, height, (GLint)slices, (GLint)stacks
+  ) ; return ;
+} // end of [atsctrb_gluCylinder]
+
+/* ****** ****** */
+
+static inline
+ats_void_type
+atsctrb_gluDeleteQuadric
+  (ats_ptr_type p_obj) {
+  gluDeleteQuadric((GLUquadricObj*)p_obj) ; return ;
+} // end of [atsctrb_gluDeleteQuadric]
+
+/* ****** ****** */
+
+static inline
+ats_void_type
+atsctrb_gluDisk (
+  ats_ref_type qobj
+, ats_GLdouble_type inner
+, ats_GLdouble_type outer
+, ats_int_type slices
+, ats_int_type loops
+) {
+  gluDisk((GLUquadric*)qobj, inner, outer, (GLint)slices, (GLint)loops) ;
+  return ;
+} // end of [atsctrb_gluDisk]
+
+/* ****** ****** */
+
 static inline
 ats_void_type
 atsctrb_gluLookAt_double (
@@ -60,6 +113,24 @@ atsctrb_gluLookAt_double (
 /* ****** ****** */
 
 static inline
+ats_ptr_type
+atsctrb_gluNewQuadric () { return gluNewQuadric() ; }
+
+static inline
+ats_ptr_type
+atsctrb_gluNewQuadric_exn () {
+  GLUquadricObj* p_obj ;
+  p_obj = gluNewQuadric() ;
+  if (!p_obj) {
+    fprintf (stderr, "exit(ATSCTRB/glu): [gluNewQuadric] failed.\n") ;
+    exit (1) ;
+  } // end of [if]
+  return p_obj ;
+} // end of [atsctrb_gluNewQuadric_exn]
+
+/* ****** ****** */
+
+static inline
 ats_void_type
 atsctrb_gluOrtho2D_double (
   ats_double_type lft, ats_double_type rgh
@@ -67,6 +138,24 @@ atsctrb_gluOrtho2D_double (
 ) {
   gluOrtho2D(lft, rgh, bot, top) ; return ;
 } // end of [atsctrb_gluOrtho2D_double]
+
+/* ****** ****** */
+
+static inline
+ats_void_type
+atsctrb_gluPartialDisk (
+  ats_ref_type qobj
+, ats_GLdouble_type inner
+, ats_GLdouble_type outer
+, ats_int_type slices
+, ats_int_type loops
+, ats_GLdouble_type start
+, ats_GLdouble_type sweep
+) {
+  gluPartialDisk(
+    (GLUquadric*)qobj, inner, outer, (GLint)slices, (GLint)loops, start, sweep
+  ) ; return ;
+} // end of [atsctrb_gluPartialDisk]
 
 /* ****** ****** */
 
@@ -91,6 +180,54 @@ atsctrb_gluPerspective_GLdouble (
 /* ****** ****** */
 
 static inline
+ats_void_type
+atsctrb_gluQuadricDrawStyle (
+  ats_ref_type qobj, ats_GLenum_type draw
+) {
+  gluQuadricDrawStyle((GLUquadricObj*)qobj, draw); return ;
+} // end of [atsctrb_gluQuadricDrawStyle]
+
+static inline
+ats_void_type
+atsctrb_gluQuadricNormals (
+  ats_ref_type qobj, ats_GLenum_type normal
+) {
+  gluQuadricNormals((GLUquadricObj*)qobj, normal); return ;
+} // end of [atsctrb_gluQuadricNormals]
+
+static inline
+ats_void_type
+atsctrb_gluQuadricOrientation (
+  ats_ref_type qobj, ats_GLboolean_type orientation
+) {
+  gluQuadricOrientation((GLUquadricObj*)qobj, orientation); return ;
+} // end of [atsctrb_gluQuadricOrientation]
+
+static inline
+ats_void_type
+atsctrb_gluQuadricTexture (
+  ats_ref_type qobj, ats_GLboolean_type texture
+) {
+  gluQuadricTexture((GLUquadricObj*)qobj, texture); return ;
+} // end of [atsctrb_gluQuadricTexture]
+
+/* ****** ****** */
+
+static inline
+ats_void_type
+atsctrb_gluSphere (
+  ats_ref_type qobj
+, ats_GLdouble_type radius
+, ats_int_type slices
+, ats_int_type loops
+) {
+  gluSphere((GLUquadric*)qobj, radius, (GLint)slices, (GLint)loops) ;
+  return ;
+} // end of [atsctrb_gluSphere]
+
+/* ****** ****** */
+
+static inline
 ats_GLint_type
 atsctrb_gluUnProject (
   ats_GLdouble_type winX
@@ -106,7 +243,7 @@ atsctrb_gluUnProject (
   return gluUnProject (
     winX, winY, winZ
   , (GLdouble*)model, (GLdouble*)project, (GLint*)viewport
-  , (GLdouble*)objX, (GLdouble*)objY, (GLint*)objZ
+  , (GLdouble*)objX, (GLdouble*)objY, (GLdouble*)objZ
   ) ; // end of [return]
 } // end of [atsctrb_gluUnProject]
 

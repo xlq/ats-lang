@@ -197,6 +197,20 @@ atsctrb_glLineWidth_double
 #define atsctrb_glPolygonMode glPolygonMode
 #define atsctrb_glPolygonOffset glPolygonOffset
 
+static inline
+ats_void_type
+atsctrb_glPolygonStipple
+  (ats_ref_type mask) {
+  glPolygonStipple ((GLubyte*)mask) ; return ;
+} // end of [atsctrb_glPolygonStipple]
+
+static inline
+ats_void_type
+atsctrb_glGetPolygonStipple
+  (ats_ref_type mask) {
+  glGetPolygonStipple ((GLubyte*)mask) ; return ;
+} // end of [atsctrb_glGetPolygonStipple]
+
 /* ****** ****** */
 
 static inline
@@ -214,6 +228,15 @@ atsctrb_glGetClipPlane (
 ) {
   glGetClipPlane(plane, (GLdouble*)eqn) ; return ;
 } // end of [atsctrb_glGetClipPlane]
+
+#define atsctrb_glEdgeFlag glEdgeFlag
+
+static inline
+ats_void_type
+atsctrb_glEdgeFlagv
+  (ats_ref_type flag) {
+  glEdgeFlagv((GLboolean*)flag) ; return ;
+} // end of [atsctrb_glEdgeFlagv]
 
 /* ****** ****** */
 
@@ -257,9 +280,12 @@ atsctrb_glGetIntegerv (
 
 /* ****** ****** */
 
-static inline
-ats_void_type
-atsctrb_glFlush () { glFlush () ; return ; }
+#define atsctrb_glRenderMode glRenderMode
+#define atsctrb_glGetError glGetError
+#define atsctrb_glGetString glGetString
+#define atsctrb_glFinish glFinish
+#define atsctrb_glFlush glFlush
+#define atsctrb_glHint glHint
 
 /* ****** ****** */
 

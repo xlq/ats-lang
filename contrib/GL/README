@@ -15,5 +15,6 @@ GL-test5.dats: testing gluUnProject
 GL-test6.dats: Starfield (originally by Nate Robbins)
 GL-test7.dats: Randomly generated regular polygons
 GL-test8.dats: A simple wall clock implementation
+GL-test9.dats: A simple example of antialiaing
 
 ####### end of [README] ######
