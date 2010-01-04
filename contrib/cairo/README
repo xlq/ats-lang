@@ -1,0 +1,19 @@
+#
+# API for cairo in ATS
+#
+
+######
+
+The TEST directory contains a list of GL examples:
+
+cairo-test1.dats: Hello, world!
+cairo-test2.dats: drawing a rounded rectangle
+cairo-test3.dats: drawing a filled regular pentagon
+cairo-test4.dats: drawing a Koch (fractal) curve
+cairo-test5.dats: drawing a negative arc
+cairo-test6.dats: clipping
+cairo-test7.dats: drawing a (still) clock
+cairo-test8.dats: Kitaoka's famous image of illusory circular motion
+cairo-test9.dats: A variant of [cairo-test8.dats]
+
+####### end of [README] ######

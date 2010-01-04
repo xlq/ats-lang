@@ -1,6 +1,6 @@
 (*
 **
-** A simple CAIRO example: Koch curve
+** A simple CAIRO example: clipping
 **
 ** Author: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
 ** Time: December, 2009

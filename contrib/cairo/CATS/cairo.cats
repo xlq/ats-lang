@@ -402,14 +402,14 @@ atsctrb_cairo_rectangle_list_destroy
   (ats_ref_type lst) {
   cairo_rectangle_list_destroy((cairo_rectangle_list_t*)lst) ;
   return ;
-} // end of [cairo_rectangle_list_destroy]
+} // end of [atsctrb_cairo_rectangle_list_destroy]
 
 static inline
 ats_ref_type
-atsctrb_cairo_clip_rectangle_list)
+atsctrb_cairo_copy_clip_rectangle_list
   (ats_cairo_ref cr)
-  return cairo_clip_rectangle_list((cairo_t*)cr) ;
-} // end of [cairo_clip_rectangle_list]
+  return cairo_copy_clip_rectangle_list((cairo_t*)cr) ;
+} // end of [atsctrb_cairo_copy_clip_rectangle_list]
 
 #endif // end of [#if (CAIRO_VERSION >= 1.4.0)]
 
