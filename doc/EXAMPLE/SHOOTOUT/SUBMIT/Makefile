@@ -140,6 +140,11 @@ spectral-norm1_simd: spectral-norm1_simd.dats
 spectral-norm2: spectral-norm2.dats
 	$(ATSCC) -O3 -fomit-frame-pointer -msse2 spectral-norm2.dats -o spectral-norm2 -lm
 
+spectral-norm3: spectral-norm3.dats
+	$(ATSCC) -O3 -fomit-frame-pointer -msse3 spectral-norm3.dats -o spectral-norm3 -lm
+
+######
+
 thread-ring: thread-ring.dats
 	$(ATSCC) -O3 -fomit-frame-pointer thread-ring.dats -o thread-ring -lpthread
 

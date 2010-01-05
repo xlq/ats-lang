@@ -132,12 +132,14 @@ implement main (argc, argv) = let
   fun loop2 {i:nat| i <= N} .<N-i>.
     (u: &darray N, v: &darray N,
      vBv: double, vv: double, i: int i):<cloptr1> @(double, double) =
-    if i < N then
-      let val ui = u[i] and vi = v[i] in
-        loop2 (u, v, vBv+ui*vi, vv+vi*vi, i+1)
-      end
-    else (vBv, vv)
+    if i < N then let
+      val ui = u[i] and vi = v[i]
+      val () = printf ("u[%i] = %f and v[%i] = %f\n", @(i, ui, i, vi))
+    in
+      loop2 (u, v, vBv+ui*vi, vv+vi*vi, i+1)
+    end else (vBv, vv)
   val @(vBv, vv) = loop2 (!p_u, !p_v, 0.0, 0.0, 0)
+  val () = printf ("vBv = %f and vv = %f\n", @(vBv, vv))
   val () = (darray_free (pf_u | p_u); darray_free (pf_v | p_v))
 in
   printf("%0.9f\n", @($M.sqrt (vBv/vv)))
