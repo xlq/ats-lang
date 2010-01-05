@@ -394,7 +394,7 @@ atsctrb_cairo_set_tolerance (
 
 /* ****** ****** */
 
-#if (CAIRO_VERSION >= CAIRO_VERSION_ENCODE (1, 4, 0))
+#if (CAIRO_VERSION >= CAIRO_VERSION_ENCODE (1,4,0))
 
 static inline
 ats_void_type
@@ -407,7 +407,7 @@ atsctrb_cairo_rectangle_list_destroy
 static inline
 ats_ref_type
 atsctrb_cairo_copy_clip_rectangle_list
-  (ats_cairo_ref cr)
+  (ats_cairo_ref cr) {
   return cairo_copy_clip_rectangle_list((cairo_t*)cr) ;
 } // end of [atsctrb_cairo_copy_clip_rectangle_list]
 

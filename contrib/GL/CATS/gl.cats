@@ -713,9 +713,20 @@ atsctrb_glColor4sv (
 
 /* ****** ****** */
 
-#define atsctrb_glRasterPos2d_double glRasterPos2d
-#define atsctrb_glRasterPos2d_GLdouble glRasterPos2d
+#define atsctrb_glRasterPos2d glRasterPos2d
 #define atsctrb_glRasterPos2f glRasterPos2f
+#define atsctrb_glRasterPos2i glRasterPos2i
+#define atsctrb_glRasterPos2s glRasterPos2s
+
+#define atsctrb_glRasterPos3d glRasterPos3d
+#define atsctrb_glRasterPos3f glRasterPos3f
+#define atsctrb_glRasterPos3i glRasterPos3i
+#define atsctrb_glRasterPos3s glRasterPos3s
+
+#define atsctrb_glRasterPos4d glRasterPos4d
+#define atsctrb_glRasterPos4f glRasterPos4f
+#define atsctrb_glRasterPos4i glRasterPos4i
+#define atsctrb_glRasterPos4s glRasterPos4s
 
 /* ****** ****** */
 
@@ -808,6 +819,22 @@ atsctrb_glMaterialiv (
 
 #define atsctrb_glPixelStoref glPixelStoref
 #define atsctrb_glPixelStorei glPixelStorei
+
+static inline
+ats_void_type
+atsctrb_glBitmap (
+  ats_GLsizei_type width
+, ats_GLsizei_type height
+, ats_GLfloat_type xorig
+, ats_GLfloat_type yorig
+, ats_GLfloat_type xmove
+, ats_GLfloat_type ymove
+, ats_ref_type bitmap
+) {
+  glBitmap (
+    width, height, xorig, yorig, xmove, ymove, (GLubyte*)bitmap
+  ) ; return ;
+} // end of [atsctrb_glBitmap]
 
 /* ****** ****** */
 

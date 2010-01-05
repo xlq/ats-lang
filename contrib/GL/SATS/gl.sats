@@ -1503,20 +1503,7 @@ typedef glRasterPos2_type
   (a:t@ype) = (a(*x*), a(*y*)) -<fun1> void
 // end of [glRasterPos2_type]
 
-//
-
-symintr glRasterPos2d
-
-fun glRasterPos2d_double : glRasterPos2_type (double)
-  = "atsctrb_glRasterPos2d_double"
-overload glRasterPos2d with glRasterPos2d_double
-
-fun glRasterPos2d_GLdouble : glRasterPos2_type (GLdouble)
-  = "atsctrb_glRasterPos2d_GLdouble"
-overload glRasterPos2d with glRasterPos2d_GLdouble
-
-//
-
+fun glRasterPos2d : glRasterPos2_type (GLdouble) = "atsctrb_glRasterPos2d"
 fun glRasterPos2f : glRasterPos2_type (GLfloat) = "atsctrb_glRasterPos2f"
 fun glRasterPos2i : glRasterPos2_type (GLint) = "atsctrb_glRasterPos2i"
 fun glRasterPos2s : glRasterPos2_type (GLshort) = "atsctrb_glRasterPos2s"
@@ -1713,6 +1700,17 @@ typedef glPixelStore_type (a:t@ype) =
 
 fun glPixelStoref : glPixelStore_type (GLfloat) = "atsctrb_glPixelStoref"
 fun glPixelStorei : glPixelStore_type (GLint) = "atsctrb_glPixelStorei"
+
+(* ****** ****** *)
+
+fun glBitmap
+  {w,h:nat} {n:nat} {wh:int | wh <= 8*n} (
+    pf: MUL (w, h, wh)
+  | width: GLsizei w, height: GLsizei h
+  , xorig: GLfloat, yorig: GLfloat, xmove: GLfloat, ymove: GLfloat
+  , bitmap: &(@[GLubyte][n])
+  ) : void
+  = "atsctrb_glBitmap"
 
 (* ****** ****** *)
 
