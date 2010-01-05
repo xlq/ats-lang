@@ -6,13 +6,13 @@
 ** contributed by Zhiqiang Ren
 **
 ** compilation command:
-**   atscc -O3 -msse2 spectralnorm_new.dats -o spectralnorm_new -lm
+**   atscc -O3 -msse2 spectral-norm3.dats -o spectral-norm3 -lm
 **
 *)
 
-(* ****** ****** *)
-
-staload M = "libc/SATS/math.sats"
+//
+// relying on XMM to speed up the computation
+//
 
 (* ****** ****** *)
 
@@ -42,7 +42,6 @@ extern val v2df_1_1: v2df = "atslib_v2df_1_1"
 symintr v2df_make
 extern fun v2df_make_int_int
   (i0: int, i1: int): v2df = "atslib_v2df_make_int_int"
-// end of [v2df_make_int_int]
 overload v2df_make with v2df_make_int_int
 extern fun v2df_get_fst (dd: v2df): double = "atslib_v2df_get_fst"
 extern fun v2df_get_snd (dd: v2df): double = "atslib_v2df_get_snd"
@@ -57,20 +56,15 @@ overload / with div_v2df_v2df
 
 %{^
 #include <malloc.h>
-
-static inline
-ats_ptr_type darr_make (
-  ats_int_type n, ats_double_type f
-) {
+static inline ats_ptr_type
+darr_make (ats_int_type n, ats_double_type f) {
   int i; double *p0, *p ;
   // proper alignment is needed of v2df-processing
   p0 = (double*)memalign(64, n * sizeof(double)) ;
   p = p0; for (i = 0; i < n; ++i) *p++ = f ;
   return p0 ;
 }
-
-static inline
-ats_void_type
+static inline ats_void_type
 darr_free (ats_ptr_type A) { free (A) ; return ; }
 %} // end of [%{^]
 
@@ -92,15 +86,13 @@ macdef denom (i, j) =
   (,(i) + ,(j)) * (,(i) + ,(j) + 1) / 2 + ,(i) + 1
 macdef eval_A (i,j) = 1.0 / denom (,(i), ,(j))
 
-fun eval_A_i (i: int, j: int): v2df = let
-  val k1 = denom(i,j); val k2 = k1 + (i+j+2) in
-  v2df_1_1 / v2df_make (k1, k2)
-end // end of [eval_A_i]
+fn eval_A_0 (i: int, j: int): v2df = let // two divisions at a time
+  val k1 = denom(i,j); val k2 = k1 + (i+j+1) in v2df_1_1 / v2df_make (k1, k2)
+end // end of [eval_A_0]
 
-fun eval_A_j (i: int, j: int): v2df = let
-  val k1 = denom(i,j); val k2 = k1 + (i+j+1) in
-  v2df_1_1 / v2df_make (k1, k2)
-end // end of [eval_A_j]
+fn eval_A_1 (i: int, j: int): v2df = let // two divisions at a time
+  val k1 = denom(i,j); val k2 = k1 + (i+j+2) in v2df_1_1 / v2df_make (k1, k2)
+end // end of [eval_A_1]
 
 (* ****** ****** *)
 
@@ -116,7 +108,7 @@ fn eval_A_times_u {N:nat} {l: addr}
     ) :<cloref1> void =
     if j < N2 then let
       prval (pf1, pf2) = array_v_uncons {v2df} (pf)
-      val () = sum += !p_dd * eval_A_j (i, 2*j)
+      val () = sum += !p_dd * eval_A_0 (i, 2*j)
       val () = loop2_0 (pf2 | p_dd + sizeof<v2df>, sum, i, j+1)
     in
       pf := array_v_cons {v2df} (pf1, pf2)
@@ -129,7 +121,7 @@ fn eval_A_times_u {N:nat} {l: addr}
     ) :<cloref1> void =
     if j < N2 then let
       prval (pf1, pf2) = array_v_uncons {v2df} (pf)
-      val () = sum += !p_dd * eval_A_i (2*j, i)
+      val () = sum += !p_dd * eval_A_1 (2*j, i)
       val () = loop2_1 (pf2 | p_dd + sizeof<v2df>, sum, i, j+1)
     in
       pf := array_v_cons {v2df} (pf1, pf2)
@@ -168,8 +160,7 @@ fn eval_AtA_times_u {N:nat}
 
 (* ****** ****** *)
 
-#define TIMES 10
-
+staload M = "libc/SATS/math.sats"
 implement main (argc, argv) = let
   val () = assert_errmsg (argc = 2, "Exit: wrong command format!\n")
   val [N:int] N = int1_of_string argv.[1]
@@ -180,6 +171,7 @@ implement main (argc, argv) = let
   val (pf_v | p_v) = darr_make (N, 0.0)
   val (pf_tmp | p_tmp) = darr_make (N, 0.0)
 //  
+  #define TIMES 10
   var i: Nat // uninitialized
   val () = for
     (i := 0; i < TIMES; i := i+1) let
