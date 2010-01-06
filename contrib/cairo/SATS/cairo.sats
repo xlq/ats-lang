@@ -36,6 +36,12 @@
 
 (* ****** ****** *)
 
+//
+// API for cairo in ATS
+//
+
+(* ****** ****** *)
+
 %{#
 #include "contrib/cairo/CATS/cairo.cats"
 %}
@@ -200,8 +206,6 @@ fun cairo_reference (cr: !cairo_ref): cairo_ref
 fun cairo_destroy (cr: cairo_ref): void
   = "atsctrb_cairo_destroy"
 
-//
-
 fun cairo_status (cr: !cairo_ref): cairo_status_t
   = "atsctrb_cairo_status"
 
@@ -218,8 +222,7 @@ fun cairo_restore (pf: cairo_save_v | cr: !cairo_ref): void
 fun cairo_get_target (cr: !cairo_ref): cairo_surface_ref
   = "atsctrb_cairo_get_target"
 
-fun cairo_get_group_target
-  (cr: !cairo_ref): cairo_surface_ref
+fun cairo_get_group_target (cr: !cairo_ref): cairo_surface_ref
   = "atsctrb_cairo_get_group_target"
 
 (* ****** ****** *)
@@ -583,6 +586,29 @@ fun cairo_copy_page (cr: !cairo_ref): void
 
 fun cairo_show_page (cr: !cairo_ref): void
   = "atsctrb_cairo_show_page"
+
+(* ****** ****** *)
+
+abst@ype cairo_user_data_key_t =
+  $extype "ats_cairo_user_data_key_type"
+// end of [cairo_user_data_key_t]
+
+//
+// note: this interface is unsafe!!!
+//
+fun cairo_set_user_data (
+    cr: !cairo_ref
+  , key: &cairo_user_data_key_t
+  , user_data: ptr (* the proof of its view is aborbed into [cr] *)
+  , destroy_func: ptr -<fun1> void
+  ) : cairo_status_t
+  = "atsctrb_cairo_set_user_data"
+
+fun cairo_get_user_data (
+    cr: !cairo_ref
+  , key: &cairo_user_data_key_t
+  ) : ptr
+  = "atsctrb_cairo_get_user_data"
 
 (* ****** ****** *)
 

@@ -394,7 +394,7 @@ atsctrb_cairo_set_tolerance (
 
 /* ****** ****** */
 
-#if (CAIRO_VERSION >= CAIRO_VERSION_ENCODE (1,4,0))
+#if (CAIRO_VERSION >= CAIRO_VERSION_ENCODE(1,4,0))
 
 static inline
 ats_void_type
@@ -569,6 +569,15 @@ atsctrb_cairo_in_stroke (
 /* ****** ****** */
 
 static inline
+ats_uint_type
+atsctrb_cairo_get_reference_count
+  (ats_cairo_ref cr) {
+  return cairo_get_reference_count((cairo_t*)cr) ;
+} // end of [atsctrb_cairo_get_reference_count]
+
+/* ****** ****** */
+
+static inline
 ats_void_type
 atsctrb_cairo_copy_page
   (ats_cairo_ref cr) {
@@ -581,6 +590,38 @@ atsctrb_cairo_show_page
   (ats_cairo_ref cr) {
   cairo_show_page (cr) ; return ;
 } // end of [atsctrb_cairo_show_page]
+
+/* ****** ****** */
+
+#if (CAIRO_VERSION >= CAIRO_VERSION_ENCODE(1,4,0))
+
+typedef cairo_user_data_key_t ats_cairo_user_data_key_type ;
+
+static inline
+ats_ptr_type // user_data
+atsctrb_cairo_get_user_data (
+  ats_cairo_ref cr, ats_ref_type key
+) {
+  return cairo_get_user_data (
+    (cairo_t*)cr, (cairo_user_data_key_t*)key
+  ) ; // end of [return]
+} // end of [atsctrb_cairo_get_user_data]
+
+static inline
+ats_cairo_status_type
+atsctrb_cairo_set_user_data (
+  ats_cairo_ref cr
+, ats_ref_type key
+, ats_ptr_type user_data
+, ats_fun_ptr destroy_func
+) {
+  return cairo_set_user_data (
+    (cairo_t*)cr, (cairo_user_data_key_t*)key
+  , (void*)user_data, (cairo_destroy_func_t)destroy_func
+  ) ; // end of [return]
+} // end of [atsctrb_cairo_set_user_data]
+
+#endif // end of [#if (CAIRO_VERSION >= 1.4.0)]
 
 /* ****** ****** */
 
@@ -1534,15 +1575,6 @@ atsctrb_cairo_matrix_transform_point (
     (cairo_matrix_t*)matrix, (double*)x, (double*)y
   ) ; return ;
 } // end of [atsctrb_cairo_matrix_transform_point]
-
-/* ****** ****** */
-
-static inline
-ats_uint_type
-atsctrb_cairo_get_reference_count
-  (ats_cairo_ref cr) {
-  return cairo_get_reference_count((cairo_t*)cr) ;
-} // end of [atsctrb_cairo_get_reference_count]
 
 /* ****** ****** */
 
