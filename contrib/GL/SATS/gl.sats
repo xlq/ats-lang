@@ -1703,9 +1703,9 @@ fun glPixelStorei : glPixelStore_type (GLint) = "atsctrb_glPixelStorei"
 
 (* ****** ****** *)
 
-fun glBitmap
-  {w,h:nat} {n:nat} {wh:int | wh <= 8*n} (
-    pf: MUL (w, h, wh)
+fun glBitmap {w8:nat}
+  {w,h:nat | w <= 8*w8} {n:nat} {p:int | p <= n} (
+    pf: MUL (w8, h, p)
   | width: GLsizei w, height: GLsizei h
   , xorig: GLfloat, yorig: GLfloat, xmove: GLfloat, ymove: GLfloat
   , bitmap: &(@[GLubyte][n])

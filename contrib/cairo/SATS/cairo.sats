@@ -1211,7 +1211,9 @@ fun cairo_ps_surface_dsc_comment
 
 (* ****** ****** *)
 
+//
 // generic matrix operations
+//
 
 fun cairo_matrix_init (
     matrix: &cairo_matrix_t? >> cairo_matrix_t
