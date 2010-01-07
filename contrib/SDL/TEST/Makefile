@@ -14,22 +14,11 @@ checkall: compall cleanall
 ######
 
 compall: \
-  test1 \
-  test2 \
-  test3-1 test3-2 \
-  test4 \
-  test5 \
-  test6 \
-  test7 \
-  test8 \
-  test9 \
-  test10 \
+  lesson01 \
+  lesson02 \
 
-test1: SDL-test1.dats
-	$(ATSCC) -o test1 SDL-test1.dats $(ATSCTRB) -lSDL
-
-test2: SDL-test2.dats
-	$(ATSCC) -o test2 SDL-test2.dats $(ATSCTRB) -lSDL
+lesson01: LazyFoo-lesson01/lesson01.dats
+	$(ATSCC) -o lesson01 LazyFoo-lesson01/lesson01.dats $(ATSCTRB) -lSDL
 
 ######
 
@@ -37,7 +26,7 @@ clean:
 	rm -f *_?ats.c *.o *~
 
 cleanall: clean
-	rm -f test1
-	rm -f test2
+	rm -f lesson01
+	rm -f lesson02
 
 ###### end of [Makefile] ######
