@@ -36,48 +36,44 @@
 
 /* ****** ****** */
 
-#ifndef ATSCTRB_SDL_SDL_CATS
-#define ATSCTRB_SDL_SDL_CATS
-
-/* ****** ****** */
-
-#include "SDL/SDL.h"
+#ifndef ATSCTRB_SDL_SDL_EVENTS_CATS
+#define ATSCTRB_SDL_SDL_EVENTS_CATS
 
 /* ****** ****** */
 
 static inline
 ats_bool_type
-atsctrb_SDL_ref_is_null
-  (ats_ref_type p) {
-  return (p == (ats_ptr_type)0 ? ats_true_bool : ats_false_bool) ;
-} // end of [atsctrb_SDL_is_null]
+atsctrb_eq_SDL_EventType_SDL_EventType
+  (SDL_EventType x1, SDL_EventType x2) {
+  return (x1 == x2 ? ats_true_bool : ats_false_bool) ;
+} // end of [atsctrb_eq_SDL_EventType_SDL_EventType]
+
+/* ****** ****** */
 
 static inline
-ats_bool_type
-atsctrb_SDL_ref_is_notnull
-  (ats_ref_type p) {
-  return (p != (ats_ptr_type)0 ? ats_true_bool : ats_false_bool) ;
-} // end of [atsctrb_SDL_ref_is_notnull]
+SDL_EventType
+atsctrb_SDL_Event_type
+  (ats_ref_type event) {
+  return ((SDL_Event*)event)->type ;
+} // end of [atsctrb_SDL_Event_type]
 
 /* ****** ****** */
 
-#include "contrib/SDL/CATS/SDL_events.cats"
-#include "contrib/SDL/CATS/SDL_timer.cats"
-#include "contrib/SDL/CATS/SDL_video.cats"
+static inline
+ats_int_type
+atsctrb_SDL_PollEvent
+  (ats_ref_type event) {
+  return SDL_PollEvent((SDL_Event*)event) ;
+} // end of [atsctrb_SDL_PollEvent]
+
+static inline
+ats_int_type
+atsctrb_SDL_PollEvent_null () {
+  return SDL_PollEvent((SDL_Event*)0) ;
+} // end of [atsctrb_SDL_PollEvent_null]
 
 /* ****** ****** */
 
-#define atsctrb_SDL_Init SDL_Init
-#define atsctrb_SDL_Quit SDL_Quit
+#endif // end of [ATSCTRB_SDL_SDL_EVENTS_CATS]
 
-/* ****** ****** */
-
-#define atsctrb_SDL_InitSubSystem InitSubSystem
-#define atsctrb_SDL_QuitSubSystem QuitSubSystem
-#define atsctrb_SDL_WasInit SDL_WasInit
-
-/* ****** ****** */
-
-#endif // end of [ATSCTRB_SDL_SDL_CATS]
-
-/* end of [SDL.cats] */
+/* end of [SDL_events.cats] */

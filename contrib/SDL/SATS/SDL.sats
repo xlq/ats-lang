@@ -54,7 +54,16 @@ symintr Sint16 Uint16
 symintr Sint32 Uint32
 symintr Sint64 Uint64
 
-symintr refopt_test
+symintr ref_null // castfn
+symintr ref_free_null // castfn
+symintr ref_is_null ref_is_notnull // fun
+
+(* ****** ****** *)
+
+absviewt@ype minus_viewt0ype_view (vt: viewt@ype, v: view)
+stadef minus = minus_viewt0ype_view
+prfun minus_addback
+  {vt:viewt@ype} {v:view} (pf: v | x: !minus (vt, v) >> vt): void
 
 (* ****** ****** *)
 
@@ -62,6 +71,7 @@ symintr refopt_test
 
 (* ****** ****** *)
 
+#include "contrib/SDL/SATS/SDL_events.sats"
 #include "contrib/SDL/SATS/SDL_timer.sats"
 #include "contrib/SDL/SATS/SDL_video.sats"
 
@@ -91,7 +101,7 @@ macdef SDL_INIT_EVERYTHING = $extval (Uint32, "SDL_INIT_EVERYTHING")
 
 fun SDL_Init (flags: Uint32): int = "atsctrb_SDL_Init"
 fun SDL_Quit (): void = "atsctrb_SDL_Quit"
-castfn SDL_Quit_screen (sf: SDL_Surface_ref): ptr
+castfn SDL_Quit_screen (sf: SDL_Surface_ref1): ptr
 
 (* ****** ****** *)
 

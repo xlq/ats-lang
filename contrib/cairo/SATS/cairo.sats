@@ -49,13 +49,20 @@
 (* ****** ****** *)
 
 // a reference to cairo drawing context
-absviewtype cairo_ref // cairo_t*
+// [cairo_ref] is reference counted
+absviewtype cairo_ref // cairo_t* != null
 
-absviewtype cairo_surface_ref // cairo_surface*
-absviewtype cairo_pattern_ref // cairo_pattern*
+// [cairo_surface_ref] is reference counted
+absviewtype cairo_surface_ref // cairo_surface* != null
 
-absviewtype cairo_font_face_ref // cairo_font_face*
-absviewtype cairo_font_options_ptr // cairo_font_options_ptr
+// [cairo_pattern_ref] is reference counted
+absviewtype cairo_pattern_ref // cairo_pattern* != null
+
+// [cairo_font_face_ref] is reference counted
+absviewtype cairo_font_face_ref // cairo_font_face* != null
+
+// [cairo_font_options_ptr] is not reference counted
+absviewtype cairo_font_options_ptr // cairo_font_options_ptr != null
 
 (* ****** ****** *)
 

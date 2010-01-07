@@ -1,6 +1,13 @@
 //
-// LazyFoo-lesson01 translated into ATS
+// LazyFoo-lesson01 _translated_ into ATS
 // See http://lazyfoo.net/SDL_tutorials/lesson01
+//
+
+(* ****** ****** *)
+
+//
+// Author: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
+// Time: January, 2010
 //
 
 (* ****** ****** *)

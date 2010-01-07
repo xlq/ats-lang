@@ -52,29 +52,29 @@ staload "contrib/SDL/SATS/SDL.sats"
 
 implement SDL_SetVideoMode_exn
   (width, height, bpp, flags) = let
-  val sfopt = SDL_SetVideoMode (width, height, bpp, flags)
+  val sf = SDL_SetVideoMode (width, height, bpp, flags)
 in
-  if refopt_test (sfopt) then (SDL_Surface_ref)sfopt else let
-    val _ = (NULL)sfopt
+  if ref_is_null (sf) then let
+    val _null = ref_free_null (sf)
     val () = prerr ("exit(ATS/SDL): [SDL_SetVideoMode] failed.\n")
   in
     exit (1)
-  end // end of [if]
+  end else sf // end of [if]
 end // end of [SDL_SetVideoMode_exn]
 
 (* ****** ****** *)
 
 implement SDL_LoadBMP_exn (filename) = let
-  val sfopt = SDL_LoadBMP (filename) // [sfopt] may be null
+  val sf = SDL_LoadBMP (filename) // [sfopt] may be null
 in
-  if refopt_test (sfopt) then (SDL_Surface_ref)sfopt else let
-    val _ = (NULL)sfopt
+  if ref_is_null (sf) then let
+    val _null = ref_free_null sf
     val () = prerrf (
       "exit(ATS/SDL): [SDL_LoadBMP(%s)] failed.\n", @(filename)
     ) // end of [val]
   in
     exit (1)
-  end // end of [if]
+  end else sf // end of [if]
 end // end of [SDL_LoadBMP_exn]
 
 (* ****** ****** *)
