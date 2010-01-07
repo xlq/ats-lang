@@ -299,4 +299,4 @@ end // end of [main]
 
 (* ****** ****** *)
 
-(* end of [spectral-norm.dats] *)
+(* end of [spectral-norm_smp.dats] *)

@@ -43,7 +43,7 @@
 
 %{#
 #include "libc/CATS/SIMD_v2df.cats"
-%}
+%} // end of [%{#]
 
 (* ****** ****** *)
 
@@ -63,6 +63,10 @@ fun v2df_make_double_double
 // end of [v2df_make_double_double]
 overload v2df_make with v2df_make_double_double
 
+fun v2df_make_int_int
+  (i0: int, i1: int): v2df = "atslib_v2df_make_int_int"
+// end of [v2df_make_int_int]
+
 //
 
 fun v2df_get_fst (dd: v2df): double = "atslib_v2df_get_fst"
@@ -78,6 +82,9 @@ overload - with sub_v2df_v2df
 
 fun mul_v2df_v2df (_: v2df, _: v2df): v2df = "atslib_mul_v2df_v2df"
 overload * with mul_v2df_v2df
+
+fun div_v2df_v2df (_: v2df, _: v2df): v2df = "atslib_div_v2df_v2df"
+overload / with div_v2df_v2df
 
 (* ****** ****** *)
 

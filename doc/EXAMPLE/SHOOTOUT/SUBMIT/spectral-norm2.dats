@@ -87,11 +87,11 @@ macdef denom (i, j) =
 macdef eval_A (i,j) = 1.0 / denom (,(i), ,(j))
 
 fn eval_A_0 (i: int, j: int): v2df = let // two divisions at a time
-  val k1 = denom(i,j); val k2 = k1 + (i+j+1) in v2df_1_1 / v2df_make (k1, k2)
+  val k1 = denom(i,j); val k2 = denom (i,j+1) in v2df_1_1 / v2df_make (k1, k2)
 end // end of [eval_A_0]
 
 fn eval_A_1 (i: int, j: int): v2df = let // two divisions at a time
-  val k1 = denom(i,j); val k2 = k1 + (i+j+2) in v2df_1_1 / v2df_make (k1, k2)
+  val k1 = denom(i,j); val k2 = denom (i+1,j) in v2df_1_1 / v2df_make (k1, k2)
 end // end of [eval_A_1]
 
 (* ****** ****** *)
@@ -141,8 +141,7 @@ fn eval_A_times_u {N:nat} {l: addr}
       // end of [if]
       prval () = pf := fpf2 (pf1)
       val () = tmp.[i] := v2df_get_fst(sum) + v2df_get_snd(sum)
-      val j = N-1
-      val () =  if N > N2+N2 then tmp.[i] += eval_A(i, j) * p_u->[j]
+      val () = if N > N2+N2 then tmp.[i] += eval_A(i,N-1) * p_u->[N-1]
     in
       loop1 (pf | i+1, p_u, tmp)
     end // end of [if]
@@ -184,7 +183,7 @@ implement main (argc, argv) = let
     val ui = p_u->[i] and vi = p_v->[i] in vBv += ui*vi; vv += vi*vi
   end // end of [val]
 //
-  // val () = printf ("vBv = %f and vv = %f\n", @(vBv, vv))
+  val () = printf ("vBv = %f and vv = %f\n", @(vBv, vv))
   val () = darr_free (pf_u | p_u)
   val () = darr_free (pf_v | p_v)
   val () = darr_free (pf_tmp | p_tmp)

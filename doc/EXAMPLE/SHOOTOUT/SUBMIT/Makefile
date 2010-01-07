@@ -1,3 +1,9 @@
+#
+#
+# Makefile for SHOOTOUT submissions
+#
+#
+
 ATSCC="$(ATSHOME)"/bin/atscc
 ATSOPT="$(ATSHOME)"/bin/atsopt
 CC=$(HOME)/gcc-4.3.2/bin/gcc
@@ -138,10 +144,7 @@ spectral-norm1_simd: spectral-norm1_simd.dats
 	$(ATSCC) -O3 -fomit-frame-pointer -D_ISOC9X_SOURCE -mfpmath=sse -msse2 -o spectral-norm1_simd spectral-norm1_simd.dats -lm
 
 spectral-norm2: spectral-norm2.dats
-	$(ATSCC) -O3 -fomit-frame-pointer -msse2 spectral-norm2.dats -o spectral-norm2 -lm
-
-spectral-norm3: spectral-norm3.dats
-	$(ATSCC) -O3 -fomit-frame-pointer -msse3 spectral-norm3.dats -o spectral-norm3 -lm
+	$(ATSCC) -O3 -fomit-frame-pointer -msse3 spectral-norm2.dats -o spectral-norm2 -lm
 
 ######
 
@@ -190,4 +193,7 @@ cleanall: clean
 	rm -f spectral-norm_smp2
 	rm -f spectral-norm1
 	rm -f spectral-norm1_simd
+	rm -f spectral-norm2
 	rm -f thread-ring
+
+###### end of [Makefile] ######

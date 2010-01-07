@@ -44,6 +44,7 @@ tutorial_all:
           programming-with-theorem-proving.html \
           casting-functions.html \
           stack-allocation.html \
+          statetypes.html \
           looping.html \
 
 	scp $(OUTPUT)/tutorial_all.html \

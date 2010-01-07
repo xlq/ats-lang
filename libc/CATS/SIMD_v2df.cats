@@ -50,8 +50,13 @@ typedef v2df ats_v2df_type ;
 
 /* ****** ****** */
 
+static
 ats_v2df_type atslib_v2df_0_0 = { 0.0, 0.0 } ;
+
+static
 ats_v2df_type atslib_v2df_1_1 = { 1.0, 1.0 } ;
+
+/* ****** ****** */
 
 static inline
 ats_v2df_type
@@ -60,6 +65,16 @@ atslib_v2df_make_double_double (
 ) {
   v2df dd = { d0, d1 } ; return dd ;
 } /* end of [ats_v2df_make_double_double] */
+
+static inline
+ats_v2df_type
+atslib_v2df_make_int_int (
+  ats_int_type i0, ats_int_type i1
+) {
+  v2df dd = { i0, i1 } ; return dd ;
+} /* end of [ats_v2df_make_int_int] */
+
+/* ****** ****** */
 
 static inline
 ats_double_type
@@ -93,8 +108,16 @@ atslib_mul_v2df_v2df (
   return (dd1 * dd2) ;
 } /* end of [atslib_mul_v2df_v2df] */
 
+static inline
+ats_v2df_type
+atslib_div_v2df_v2df (
+  ats_v2df_type dd1, ats_v2df_type dd2
+) { 
+  return (dd1 / dd2) ;
+} /* end of [atslib_div_v2df_v2df] */
+
 /* ****** ****** */
 
 #endif /* ATS_LIBC_SIMD_V2DF_CATS */
 
-/* end of [SIMD_v2df.dats] */
+/* end of [SIMD_v2df.cats] */
