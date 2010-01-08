@@ -89,8 +89,8 @@
 
 /* ****** ****** */
 
-#define ats_field_get(tyrec, arg, lab) (((tyrec)(arg)).lab)
-#define ats_field_ptrget(tyrec, arg, lab) (((tyrec)(arg))->lab)
+#define ats_field_getval(tyrec, ref, lab) (((tyrec*)(ref))->lab)
+#define ats_field_getptr(tyrec, ref, lab) (&((tyrec*)(ref))->lab)
 
 /* ****** ****** */
 

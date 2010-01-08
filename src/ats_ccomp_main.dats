@@ -498,14 +498,16 @@ fn emit_d2cst_dec {m:file_mode} // for a non-proof constant
     val () = fprint1_string (pf | out, ") ;\n")
   } // end of [_]
 in
-  if d2cst_is_proof d2c then () else begin
-    case+ hit1.hityp_node of
+  case+ 0 of
+  | _ when d2cst_is_proof d2c => ()
+  | _ when d2cst_is_extmac d2c => ()
+  | _ => begin case+ hit1.hityp_node of
     | HITfun (fc, hits_arg, hit_res) => begin case+ fc of
       | $Syn.FUNCLOclo _ => f_isfun_FUNCLOclo_mac (hits_arg, hit_res)
       | $Syn.FUNCLOfun _ => f_isfun_FUNCLOfun_mac (hits_arg, hit_res)
       end // end of [HITfun]
     | _ => f_isnotfun_mac ()
-  end // end of [if]
+    end // end of [_]
 end // end of [emit_d2cst_dec]
 
 fn emit_d2cst_dec_trmck {m:file_mode} // for terminating constants

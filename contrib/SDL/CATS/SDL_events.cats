@@ -41,6 +41,10 @@
 
 /* ****** ****** */
 
+#include "contrib/SDL/CATS/SDL_keyboard.cats"
+
+/* ****** ****** */
+
 static inline
 ats_bool_type
 atsctrb_eq_SDL_EventType_SDL_EventType
@@ -50,27 +54,23 @@ atsctrb_eq_SDL_EventType_SDL_EventType
 
 /* ****** ****** */
 
-static inline
-SDL_EventType
-atsctrb_SDL_Event_type
-  (ats_ref_type event) {
-  return ((SDL_Event*)event)->type ;
-} // end of [atsctrb_SDL_Event_type]
+#define atsctrb_SDL_Event_type(event) (((SDL_Event*)(event))->type)
 
 /* ****** ****** */
 
-static inline
-ats_int_type
-atsctrb_SDL_PollEvent
-  (ats_ref_type event) {
-  return SDL_PollEvent((SDL_Event*)event) ;
-} // end of [atsctrb_SDL_PollEvent]
+#define atsctrb_SDL_KeyboardEvent_type(ref) \
+  ats_field_getval(SDL_KeyboardEvent, ref, type)
+#define atsctrb_SDL_KeyboardEvent_which(ref) \
+  ats_field_getval(SDL_KeyboardEvent, ref, which)
+#define atsctrb_SDL_KeyboardEvent_state(ref) \
+  ats_field_getval(SDL_KeyboardEvent, ref, state)
+#define atsctrb_SDL_KeyboardEvent_keysym(ref) \
+  ats_field_getval(SDL_KeyboardEvent, ref, keysym)
 
-static inline
-ats_int_type
-atsctrb_SDL_PollEvent_null () {
-  return SDL_PollEvent((SDL_Event*)0) ;
-} // end of [atsctrb_SDL_PollEvent_null]
+/* ****** ****** */
+
+#define atsctrb_SDL_PollEvent SDL_PollEvent
+#define atsctrb_SDL_PollEvent_null () SDL_PollEvent((SDL_Event*)0) ;
 
 /* ****** ****** */
 

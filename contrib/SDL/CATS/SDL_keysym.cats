@@ -36,70 +36,20 @@
 
 /* ****** ****** */
 
-#ifndef ATSCTRB_SDL_SDL_TTF_CATS
-#define ATSCTRB_SDL_SDL_TTF_CATS
+#ifndef ATSCTRB_SDL_SDL_KEYSYM_CATS
+#define ATSCTRB_SDL_SDL_KEYSYM_CATS
 
 /* ****** ****** */
 
-#include "SDL/SDL.h"
-#include "SDL/SDL_ttf.h"
+static inline
+ats_bool_type
+atsctrb_eq_SDLKey_SDLKey
+  (SDLKey x1, SDLKey x2) {
+  return (x1 == x2 ? ats_true_bool : ats_false_bool) ;
+} // end of [atsctrb_eq_SDL_EventType_SDL_EventType]
 
 /* ****** ****** */
 
-#define atsctrb_TTF_Init TTF_Init 
+#endif // end of [ATSCTRB_SDL_SDL_KEYSYM_CATS]
 
-/* ****** ****** */
-
-#define atsctrb_TTF_OpenFont TTF_OpenFont
-
-/* ****** ****** */
-
-#define atsctrb_TTF_GetFontStyle TTF_GetFontStyle
-#define atsctrb_TTF_SetFontStyle TTF_SetFontStyle
-
-#define atsctrb_TTF_GetFontHeight TTF_GetFontHeight
-
-#define atsctrb_TTF_FontAscent TTF_FontAscent
-#define atsctrb_TTF_FontDescent TTF_FontDescent
-#define atsctrb_TTF_FontLineSkip TTF_FontLineSkip
-#define atsctrb_TTF_FontFaces TTF_FontFaces
-
-/* ****** ****** */
-
-#define atsctrb_TTF_FontFaceIsFixedWidth TTF_FontFaceIsFixedWidth
-#define atsctrb_TTF_FontFaceFamilyName
-#define atsctrb_FontFaceStyleName
-
-/* ****** ****** */
-
-#define atsctrb_TTF_SizeText TTF_SizeText
-#define atsctrb_TTF_SizeUTF8 TTF_SizeUTF8
-
-/* ****** ****** */
-
-#define atsctrb_TTF_GlyphMetrics TTF_GlyphMetrics
-
-/* ****** ****** */
-
-#define atsctrb_TTF_RenderText_Solid TTF_RenderText_Solid
-#define atsctrb_TTF_RenderUTF8_Solid TTF_RenderUTF8_Solid
-
-#define atsctrb_TTF_RenderText_Shaded TTF_RenderText_Shaded
-#define atsctrb_TTF_RenderUTF8_Shaded TTF_RenderUTF8_Shaded
-
-#define atsctrb_TTF_RenderGlyph_Solid TTF_RenderGlyph_Solid
-
-/* ****** ****** */
-
-#define atsctrb_TTF_CloseFont TTF_CloseFont
-
-/* ****** ****** */
-
-#define atsctrb_TTF_Quit TTF_Quit 
-#define atsctrb_TTF_WasInit TTF_WasInit
-
-/* ****** ****** */
-
-#endif // end of [ATSCTRB_SDL_SDL_TTF_CATS]
-
-/* end of [SDL_ttf.cats] */
+/* end of [SDL_keysym.cats] */

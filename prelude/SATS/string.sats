@@ -119,6 +119,7 @@ dataview strbufopt_v (int, int, addr, char) =
     strbufopt_v_none (m, ~1, l, NUL) of b0ytes m @ l
   | {m,n:nat} {l:addr} {c:char | c <> NUL}
     strbufopt_v_some (m, n, l, c) of strbuf_v (m, n, l)
+// end of [strbufopt_v]
 
 praxi strbuf_v_uncons
   {m,n:nat} {l:addr} (pf: strbuf_v (m, n, l))
@@ -129,16 +130,17 @@ praxi strbuf_v_uncons
 //
 
 prfun strbuf_v_split
-  {m,n:nat} {i:nat | i <= n} {l:addr} {ofs:int}
-  (pf_mul: MUL (i, sizeof char, ofs), pf_str: strbuf_v (m, n, l))
-  : (c1hars i @ l, strbuf_v (m-i, n-i, l+ofs))
+  {m,n:nat} {i:nat | i <= n} {l:addr} {ofs:int} (
+    pf_mul: MUL (i, sizeof char, ofs), pf_str: strbuf_v (m, n, l)
+  ) : (c1hars i @ l, strbuf_v (m-i, n-i, l+ofs))
+// end of [strbuf_v_split]
 
 prfun strbuf_v_unsplit
   {n1:nat} {m2,n2:nat} {l:addr} {ofs:int} (
     pf_mul: MUL (n1, sizeof char, ofs)
-  , pf_buf: c1hars n1 @ l
-  , pf_str: strbuf_v (m2, n2, l+ofs)
+  , pf_buf: c1hars n1 @ l, pf_str: strbuf_v (m2, n2, l+ofs)
   ) : strbuf_v (n1+m2, n1+n2, l)
+// end of [strbuf_v_unsplit]
 
 (* ****** ****** *)
 

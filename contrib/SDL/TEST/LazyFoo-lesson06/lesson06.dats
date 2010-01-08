@@ -1,5 +1,5 @@
 //
-// LazyFoo-lesson05 _translated_ into ATS
+// LazyFoo-lesson06 _translated_ into ATS
 // See http://lazyfoo.net/SDL_tutorials/lesson06
 //
 
@@ -61,7 +61,7 @@ fun apply_surface {l1,l2:anz} (
 implement apply_surface
   (x, y, src, dst, rect) = () where {
   var offset: SDL_Rect // unintialized
-  val () = offset.x := (Sint16)x and () = offset.y := (Sint16)y
+  val () = SDL_Rect_init (offset, (Sint16)x, (Sint16)y, (Uint16)0, (Uint16)0)
   val _err = SDL_UpperBlit_ptr (src, &rect, dst, &offset)
 } // end of [apply_surface]
 
@@ -83,28 +83,16 @@ implement main () = () where {
   val () = assert_errmsg (ref_is_notnull dots, #LOCATION)
 //
   var clip0: SDL_Rect
-  val () = clip0.x := (Sint16)0
-  val () = clip0.y := (Sint16)0
-  val () = clip0.w := (Uint16)100
-  val () = clip0.h := (Uint16)100
+  val () = SDL_Rect_init (clip0, (Sint16)0, (Sint16)0, (Uint16)100, (Uint16)100)
 //
   var clip1: SDL_Rect
-  val () = clip1.x := (Sint16)100
-  val () = clip1.y := (Sint16)0
-  val () = clip1.w := (Uint16)100
-  val () = clip1.h := (Uint16)100
+  val () = SDL_Rect_init (clip1, (Sint16)100, (Sint16)0, (Uint16)100, (Uint16)100)
 //
   var clip2: SDL_Rect
-  val () = clip2.x := (Sint16)0
-  val () = clip2.y := (Sint16)100
-  val () = clip2.w := (Uint16)100
-  val () = clip2.h := (Uint16)100
+  val () = SDL_Rect_init (clip2, (Sint16)0, (Sint16)100, (Uint16)100, (Uint16)100)
 //
   var clip3: SDL_Rect
-  val () = clip3.x := (Sint16)100
-  val () = clip3.y := (Sint16)100
-  val () = clip3.w := (Uint16)100
-  val () = clip3.h := (Uint16)100
+  val () = SDL_Rect_init (clip3, (Sint16)100, (Sint16)100, (Uint16)100, (Uint16)100)
 //
   // Fill the screen white
   val (pf_format | p_format) = SDL_Surface_format (screen)

@@ -42,157 +42,94 @@
 /* ****** ****** */
 
 static inline
-ats_ref_type // SDL_Surface_ref0
-atsctrb_SDL_SetVideoMode (
-  ats_int_type width, ats_int_type height, ats_int_type bpp, Uint32 flags
-) {
-  return SDL_SetVideoMode(width, height, bpp, flags) ;
-} // end of [atsctrb_SDL_SetVideoMode]
-
-/* ****** ****** */
-
-static inline
-ats_int_type // err
-atsctrb_SDL_Flip (
-  ats_ref_type screen
-) {
-  return SDL_Flip((SDL_Surface*)screen) ;
-} // end of [atsctrb_SDL_Flip]
-
-/* ****** ****** */
-
-static inline
-Uint32
-atsctrb_SDL_MapRGB (
-  ats_ref_type format, Uint8 r, Uint8 g, Uint8 b
-) {
-  return SDL_MapRGB ((SDL_PixelFormat*)format, r, g, b) ;
-} // end of [atsctrb_SDL_MapRGB]
-
-static inline
-Uint32
-atsctrb_SDL_MapRGBA (
-  ats_ref_type format, Uint8 r, Uint8 g, Uint8 b, Uint8 a
-) {
-  return SDL_MapRGBA ((SDL_PixelFormat*)format, r, g, b, a) ;
-} // end of [atsctrb_SDL_MapRGBA]
-
-/* ****** ****** */
-
-static inline
-ats_ref_type // SDL_Surface_ref0
-atsctrb_SDL_CreateRGBSurface (
-  Uint32 flags
-, ats_int_type wd, ats_int_type ht, ats_int_type dp
-, Uint32 Rmask, Uint32 Gmask, Uint32 Bmask, Uint32 Amask
-) {
-  return SDL_CreateRGBSurface(flags, wd, ht, dp, Rmask, Gmask, Bmask, Amask) ;
-} // end of [atsctrb_SDL_CreateRGBSurface]
-
-static inline
 ats_void_type
-atsctrb_SDL_FreeSurface
-  (ats_ref_type surface) {
-  SDL_FreeSurface((SDL_Surface*)surface) ; return ;
-} // end of [atsctrb_SDL_FreeSurface]
-
-/* ****** ****** */
-
-static inline
-ats_ref_type
-atsctrb_SDL_LoadBMP (
-  ats_ptr_type filename
+atsctrb_SDL_Rect_init (
+  ats_ref_type rect
+, Sint16 x, Sint16 y, Uint16 w, Uint16 h
 ) {
-  return SDL_LoadBMP(filename) ;
-} // end of [atsctrb_SDL_LoadBMP]
-
-/* ****** ****** */
-
-static inline
-ats_int_type // err
-atsctrb_SDL_SetColorKey (
-  ats_ref_type surface, Uint32 flag, Uint32 key
-) {
-  return SDL_SetColorKey((SDL_Surface*)surface, flag, key) ;
-} // end of [atsctrb_SDL_SetColorKey]
-
-static inline
-ats_int_type // err
-atsctrb_SDL_SetAlpha (
-  ats_ref_type surface, Uint32 flag, Uint8 alpha
-) {
-  return SDL_SetAlpha((SDL_Surface*)surface, flag, alpha) ;
-} // end of [atsctrb_SDL_SetAlpha]
-
-/* ****** ****** */
-
-static inline
-ats_void_type
-atsctrb_SDL_GetClipRect (
-  ats_ref_type surface, ats_ref_type rect
-) {
-  SDL_GetClipRect((SDL_Surface*)surface, (SDL_Rect*)rect) ;
+  ((SDL_Rect*)rect)->x = x ;
+  ((SDL_Rect*)rect)->y = y ;
+  ((SDL_Rect*)rect)->w = w ;
+  ((SDL_Rect*)rect)->h = h ;
   return ;
-} // end of [atsctrb_SDL_GetClipRect]
+} // end of [atsctrb_SDL_Rect_init]
 
-/* ****** ****** */
-
-static inline
-ats_int_type // err
-atsctrb_SDL_UpperBlit (
-  ats_ref_type src, ats_ref_type srcrect
-, ats_ref_type dst, ats_ref_type dstrect
-) {
-  return SDL_UpperBlit (
-    (SDL_Surface*)src, (SDL_Rect*)srcrect, (SDL_Surface*)dst, (SDL_Rect*)dstrect
-  ) ; // end of [return]
-} // end of [atsctrb_SDL_UpperBlit]
-
-/* ****** ****** */
-
-static inline
-ats_int_type // err
-atsctrb_SDL_FillRect (
-  ats_ref_type dst, ats_ref_type dstrect, Uint32 color
-) {
-  return SDL_FillRect((SDL_Surface*)dst, (SDL_Rect*)dstrect, color) ;
-} // end of [atsctrb_SDL_FillRect]
-
-/* ****** ****** */
-
-static inline
-ats_ref_type // SDL_Surface_ref0
-atsctrb_SDL_DisplayFormat (
-  ats_ref_type surface
-) {
-  return SDL_DisplayFormat((SDL_Surface*)surface) ;
-} // end of [atsctrb_SDL_DisplayFormat]
-
-static inline
-ats_ref_type // SDL_Surface_ref0
-atsctrb_SDL_DisplayFormatAlpha (
-  ats_ref_type surface
-) {
-  return SDL_DisplayFormatAlpha((SDL_Surface*)surface) ;
-} // end of [atsctrb_SDL_DisplayFormatAlpha]
+#define atsctrb_SDL_Rect_x(rect) (((SDL_Rect*)(rect))->x)
+#define atsctrb_SDL_Rect_y(rect) (((SDL_Rect*)(rect))->y)
+#define atsctrb_SDL_Rect_w(rect) (((SDL_Rect*)(rect))->w)
+#define atsctrb_SDL_Rect_h(rect) (((SDL_Rect*)(rect))->h)
 
 /* ****** ****** */
 
 static inline
 ats_void_type
-atsctrb_SDL_WM_GetCaption (
-  ats_ptr_type title, ats_ptr_type icon
+atsctrb_SDL_Color_init (
+  ats_ref_type color, Uint8 r, Uint8 g, Uint8 b
 ) {
-  SDL_WM_GetCaption((char**)title, (char**)icon) ; return ;
-} // end of [atsctrb_SDL_WM_GetCaption]
+  ((SDL_Color*)color)->r = r ;
+  ((SDL_Color*)color)->g = g ;
+  ((SDL_Color*)color)->b = b ;
+  return ;
+} // end of [atsctrb_SDL_Color_init]
 
-static inline
-ats_void_type
-atsctrb_SDL_WM_SetCaption (
-  ats_ptr_type title, ats_ptr_type icon
-) {
-  SDL_WM_SetCaption((char*)title, (char*)icon) ; return ;
-} // end of [atsctrb_SDL_WM_SetCaption]
+#define atsctrb_SDL_Color_r(color) (((SDL_Color*)(color))->r)
+#define atsctrb_SDL_Color_g(color) (((SDL_Color*)(color))->g)
+#define atsctrb_SDL_Color_b(color) (((SDL_Color*)(color))->b)
+
+/* ****** ****** */
+
+#define atsctrb_SDL_Surface_format(sf) (((SDL_Surface*)(sf))->format)
+#define atsctrb_SDL_Surface_w(sf) (((SDL_Surface*)(sf))->w)
+#define atsctrb_SDL_Surface_h(sf) (((SDL_Surface*)(sf))->h)
+
+/* ****** ****** */
+
+#define atsctrb_SDL_SetVideoMode SDL_SetVideoMode
+
+/* ****** ****** */
+
+#define atsctrb_SDL_Flip SDL_Flip
+
+/* ****** ****** */
+
+#define atsctrb_SDL_MapRGB SDL_MapRGB
+#define atsctrb_SDL_MapRGBA SDL_MapRGBA
+
+/* ****** ****** */
+
+#define atsctrb_SDL_CreateRGBSurface SDL_CreateRGBSurface
+#define atsctrb_SDL_FreeSurface SDL_FreeSurface
+
+/* ****** ****** */
+
+#define atsctrb_SDL_LoadBMP SDL_LoadBMP
+
+/* ****** ****** */
+
+#define atsctrb_SDL_SetColorKey SDL_SetColorKey
+#define atsctrb_SDL_SetAlpha SDL_SetAlpha
+
+/* ****** ****** */
+
+#define atsctrb_SDL_GetClipRect SDL_GetClipRect
+
+/* ****** ****** */
+
+#define atsctrb_SDL_UpperBlit SDL_UpperBlit
+
+/* ****** ****** */
+
+#define atsctrb_SDL_FillRect SDL_FillRect
+
+/* ****** ****** */
+
+#define atsctrb_SDL_DisplayFormat SDL_DisplayFormat
+#define atsctrb_SDL_DisplayFormatAlpha SDL_DisplayFormatAlpha
+
+/* ****** ****** */
+
+#define atsctrb_SDL_WM_GetCaption SDL_WM_GetCaption
+#define atsctrb_SDL_WM_SetCaption SDL_WM_SetCaption
 
 /* ****** ****** */
 

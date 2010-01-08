@@ -36,35 +36,57 @@
 
 (* ****** ****** *)
 
-(*
-** This is the OS scheduler timeslice, in milliseconds
-*)
-macdef SDL_TIMESLICE = 10
-
-(*
-** This is the maximum resolution of the SDL timer on all platforms
-*)
-macdef TIMER_RESOLUTION = 10 (* Experimentally determined *)
-
-fun SDL_GetTicks (): Uint32 = "#atsctrb_SDLCALL SDL_GetTicks"
+#include "contrib/SDL/SATS/SDL_keysym.sats"
 
 (* ****** ****** *)
 
-fun SDL_Delay (ms: Uint32): void = "#atsctrb_SDL_Delay"
+abst@ype SDL_keysym = $extype "SDL_keysym"
+
+fun SDL_keysym_scancode (x: &SDL_keysym):<> Uint8
+  = "#atsctrb_SDL_keysym_scancode"
+fun SDL_keysym_sym (x: &SDL_keysym):<> SDLKey
+  = "#atsctrb_SDL_keysym_sym"
+fun SDL_keysym_mod (x: &SDL_keysym):<> SDLMod
+  = "#atsctrb_SDL_keysym_mod"
+fun SDL_keysym_unicode (x: &SDL_keysym):<> Uint16
+  = "#atsctrb_SDL_keysym_unicode"
 
 (* ****** ****** *)
 
-typedef SDL_TimerCallback = (Uint32(*interval*)) -<fun1> Uint32
-
-fun SDL_SetTimer (interval: Uint32, callback: SDL_TimerCallback): int
-  = "#atsctrb_SDL_SetTimer"
-
-//
-// SDL_CancelTimer () = SDL_SetTimer (0, NULL)
-//
-fun SDL_CancelTimer (): int // cancel the current running timer
-  = "#atsctrb_SDL_CancelTimer"
+#define SDL_ALL_HOTKEYS 0xFFFFFFFF
 
 (* ****** ****** *)
 
-(* end of [SDL_timer.sats] *)
+fun SDL_EnableUNICODE (enable: int): int = "#atsctrb_SDL_EnableUNICODE"
+
+(* ****** ****** *)
+
+#define SDL_DEFAULT_REPEAT_DELAY 500
+#define SDL_DEFAULT_REPEAT_INTERVAL 30
+
+fun SDL_EnableKeyRepeat
+  (delay: int, interval: int): int = "#atsctrb_SDL_EnableKeyRepeat"
+// end of [SDL_EnableKeyRepeat]
+
+fun SDL_GetKeyRepeat
+  (delay: &int? >> int, interval: &int? >> int): void = "#atsctrb_SDL_GetKeyRepeat"
+// end of [SDL_GetKeyRepeat]
+
+(* ****** ****** *)
+
+fun SDL_GetKeyState
+  (numkeys: &int? >> int n): #[n:nat] array (Uint8, n)
+  = "#atsctrb_SDL_GetKeyState"
+
+(* ****** ****** *)
+
+fun SDL_GetModState (): SDLMod = "#atsctrb_SDL_GetModState"
+fun SDL_SetModState (state: SDLMod): void = "#atsctrb_SDL_SetModState"
+
+(* ****** ****** *)
+
+fun SDL_GetKeyName (key: SDLKey): string = "#atsctrb_SDL_GetKeyName"
+
+(* ****** ****** *)
+
+(* end of [SDL_keyboard.sats] *)

@@ -36,70 +36,26 @@
 
 /* ****** ****** */
 
-#ifndef ATSCTRB_SDL_SDL_TTF_CATS
-#define ATSCTRB_SDL_SDL_TTF_CATS
+#ifndef ATSCTRB_SDL_SDL_KEYBOARD_CATS
+#define ATSCTRB_SDL_SDL_KEYBOARD_CATS
 
 /* ****** ****** */
 
-#include "SDL/SDL.h"
-#include "SDL/SDL_ttf.h"
+#include "contrib/SDL/CATS/SDL_keysym.cats"
 
 /* ****** ****** */
 
-#define atsctrb_TTF_Init TTF_Init 
+#define atsctrb_SDL_keysym_scancode(ref) \
+  ats_field_getval(SDL_keysym, ref, scancode)
+#define atsctrb_SDL_keysym_sym(ref) \
+  ats_field_getval(SDL_keysym, ref, sym)
+#define atsctrb_SDL_keysym_mod(ref) \
+  ats_field_getval(SDL_keysym, ref, mod)
+#define atsctrb_SDL_keysym_unicode(ref) \
+  ats_field_getval(SDL_keysym, ref, unicode)
 
 /* ****** ****** */
 
-#define atsctrb_TTF_OpenFont TTF_OpenFont
+#endif // end of [ATSCTRB_SDL_SDL_KEYBOARD_CATS]
 
-/* ****** ****** */
-
-#define atsctrb_TTF_GetFontStyle TTF_GetFontStyle
-#define atsctrb_TTF_SetFontStyle TTF_SetFontStyle
-
-#define atsctrb_TTF_GetFontHeight TTF_GetFontHeight
-
-#define atsctrb_TTF_FontAscent TTF_FontAscent
-#define atsctrb_TTF_FontDescent TTF_FontDescent
-#define atsctrb_TTF_FontLineSkip TTF_FontLineSkip
-#define atsctrb_TTF_FontFaces TTF_FontFaces
-
-/* ****** ****** */
-
-#define atsctrb_TTF_FontFaceIsFixedWidth TTF_FontFaceIsFixedWidth
-#define atsctrb_TTF_FontFaceFamilyName
-#define atsctrb_FontFaceStyleName
-
-/* ****** ****** */
-
-#define atsctrb_TTF_SizeText TTF_SizeText
-#define atsctrb_TTF_SizeUTF8 TTF_SizeUTF8
-
-/* ****** ****** */
-
-#define atsctrb_TTF_GlyphMetrics TTF_GlyphMetrics
-
-/* ****** ****** */
-
-#define atsctrb_TTF_RenderText_Solid TTF_RenderText_Solid
-#define atsctrb_TTF_RenderUTF8_Solid TTF_RenderUTF8_Solid
-
-#define atsctrb_TTF_RenderText_Shaded TTF_RenderText_Shaded
-#define atsctrb_TTF_RenderUTF8_Shaded TTF_RenderUTF8_Shaded
-
-#define atsctrb_TTF_RenderGlyph_Solid TTF_RenderGlyph_Solid
-
-/* ****** ****** */
-
-#define atsctrb_TTF_CloseFont TTF_CloseFont
-
-/* ****** ****** */
-
-#define atsctrb_TTF_Quit TTF_Quit 
-#define atsctrb_TTF_WasInit TTF_WasInit
-
-/* ****** ****** */
-
-#endif // end of [ATSCTRB_SDL_SDL_TTF_CATS]
-
-/* end of [SDL_ttf.cats] */
+/* end of [SDL_keyboard.cats] */

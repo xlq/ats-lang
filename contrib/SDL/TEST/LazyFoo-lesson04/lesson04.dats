@@ -52,7 +52,7 @@ fun apply_surface {l1,l2:anz} (
 implement apply_surface
   (x, y, src, dst) = () where {
   var offset: SDL_Rect // unintialized
-  val () = offset.x := (Sint16)x and () = offset.y := (Sint16)y
+  val () = SDL_Rect_init (offset, (Sint16)x, (Sint16)y, (Uint16)0, (Uint16)0)
   val _err = SDL_UpperBlit_ptr (src, null, dst, &offset)
 } // end of [apply_surface]
 

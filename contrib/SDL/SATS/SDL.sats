@@ -99,15 +99,15 @@ macdef SDL_INIT_EVERYTHING = $extval (Uint32, "SDL_INIT_EVERYTHING")
 
 (* ****** ****** *)
 
-fun SDL_Init (flags: Uint32): int = "atsctrb_SDL_Init"
-fun SDL_Quit (): void = "atsctrb_SDL_Quit"
+fun SDL_Init (flags: Uint32): int = "#atsctrb_SDL_Init"
+fun SDL_Quit (): void = "#atsctrb_SDL_Quit"
 castfn SDL_Quit_screen (sf: SDL_Surface_ref1): ptr
 
 (* ****** ****** *)
 
-fun SDL_InitSubSystem (flags: Uint32): int = "atsctrb_SDL_InitSubSystem"
-fun SDL_QuitSubSystem (flags: Uint32): void = "atsctrb_SDL_QuitSubSystem"
-fun SDL_WasInit (flags: Uint32): Uint32 = "atsctrb_SDL_WasInit"
+fun SDL_InitSubSystem (flags: Uint32): int = "#atsctrb_SDL_InitSubSystem"
+fun SDL_QuitSubSystem (flags: Uint32): void = "#atsctrb_SDL_QuitSubSystem"
+fun SDL_WasInit (flags: Uint32): Uint32 = "#atsctrb_SDL_WasInit"
 
 (* ****** ****** *)
 

@@ -117,10 +117,18 @@ fn dcstextdef_tr
   if stropt_is_none ext then DCSTEXTDEFnone ()
   else let
     val ext = stropt_unsome ext
+    var ismac : bool = false
+    val () =
+      if string_isnot_at_end (ext, 0) then let
+        val c = ext[0]
+      in
+        if (c = '#') then (ismac := true)
+      end // end of [if]
+    // end of [val]
   in
-    DCSTEXTDEFname ext
+    if ismac then DCSTEXTDEFsome_mac ext else DCSTEXTDEFsome_fun ext
   end // end of [if]
-// end of [dcstextdef]
+// end of [dcstextdef_tr]
 
 (* ****** ****** *)
 

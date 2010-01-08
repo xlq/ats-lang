@@ -55,9 +55,6 @@ typedef intinf_t = $IntInf.intinf_t
 staload SEXP1 = "ats_staexp1.sats" // for [e1xp]
 typedef e1xp = $SEXP1.e1xp
 
-staload DEXP1 = "ats_dynexp1.sats" // for [dcstextdef]
-typedef dcstextdef = $DEXP1.dcstextdef
-
 staload Stamp = "ats_stamp.sats"
 typedef stamp_t = $Stamp.stamp_t
 
@@ -66,6 +63,9 @@ typedef sym_t = $Sym.symbol_t
 
 staload SymEnv = "ats_symenv.sats"
 stadef symmapref = $SymEnv.symmapref
+
+staload Syn = "ats_syntax.sats"
+typedef dcstextdef = $Syn.dcstextdef
 
 (* ****** ****** *)
 
@@ -196,6 +196,7 @@ overload compare with compare_d2cst_d2cst
 
 fun d2cst_is_fun (d2c: d2cst_t):<> bool
 fun d2cst_is_castfn (d2c: d2cst_t):<> bool
+fun d2cst_is_extmac (d2c: d2cst_t):<> bool
 fun d2cst_is_praxi (d2c: d2cst_t):<> bool
 fun d2cst_is_prfun (d2c: d2cst_t):<> bool
 fun d2cst_is_prval (d2c: d2cst_t):<> bool

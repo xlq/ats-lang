@@ -59,10 +59,6 @@ staload Loc = "ats_location.sats"
 
 (* ****** ****** *)
 
-staload DEXP1 = "ats_dynexp1.sats" // for datatype dcstextdef
-
-(* ****** ****** *)
-
 staload "ats_staexp2.sats"
 staload "ats_dynexp2.sats"
 
@@ -194,19 +190,27 @@ implement emit_d2cst (pf | out, d2c) = let
   val extdef = d2cst_extdef_get (d2c)
 in
   case+ extdef of
-  | $DEXP1.DCSTEXTDEFnone () => () where {
+  | $Syn.DCSTEXTDEFnone () => () where {
       val fil = d2cst_fil_get (d2c)
       val name = $Sym.symbol_name (d2cst_sym_get d2c)
       val () = emit_filename (pf | out, fil)
       val () = fprint1_string (pf | out, "__")
       val () = emit_identifier (pf | out, name)
     } // end of [DCSTEXTDEFnone]
-  | $DEXP1.DCSTEXTDEFname name => emit_identifier (pf | out, name)
-  | $DEXP1.DCSTEXTDEFcall _ => begin
-      prerr_interror ();
-      prerr ": emit_d2cst: DCSTEXTDEFcall: d2c = "; prerr_d2cst d2c;
-      prerr_newline ();
-      $Err.abort {void} ()
+  | $Syn.DCSTEXTDEFsome_fun name => emit_identifier (pf | out, name)
+  | $Syn.DCSTEXTDEFsome_mac name => let // [name] = "#..."
+(*
+** HX: this is a bit ugly but rather convenient
+*)
+      val p_name = __cast name where {
+        extern castfn __cast (x: string):<> [l:addr] ptr l
+      } // end of [val]
+      val p_name1 = p_name + sizeof<char>
+      val name1 = __cast (p_name1) where {
+        extern castfn __cast {l:addr} (x: ptr l):<> string
+      } // end of [val]
+    in
+      emit_identifier (pf | out, name1)
     end // end of [DCSTEXTDEFcall]
 end // end of [emit_d2cst]
 

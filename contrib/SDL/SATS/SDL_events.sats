@@ -36,6 +36,10 @@
 
 (* ****** ****** *)
 
+#include "contrib/SDL/SATS/SDL_keyboard.sats"
+
+(* ****** ****** *)
+
 abst@ype SDL_Event = $extype "SDL_Event"
 
 (* ****** ****** *)
@@ -69,30 +73,34 @@ macdef SDL_VIDEORESIZE = $extval (SDL_EventType, "SDL_VIDEORESIZE")
 macdef SDL_VIDEOEXPOSE = $extval (SDL_EventType, "SDL_VIDEOEXPOSE")
 
 fun SDL_Event_type
-  (x: &SDL_Event):<> SDL_EventType = "atsctrb_SDL_Event_type"
+  (x: &SDL_Event):<> SDL_EventType = "#atsctrb_SDL_Event_type"
 // end of [SDL_Event_type]
 
 (* ****** ****** *)
 
 abst@ype SDL_KeyboardEvent = $extype "SDL_KeyboardEvent"
-praxi SDL_KeyboardEvent_of_SDL_Event
-  (x: &SDL_Event >> SDL_KeyboardEvent): void
-praxi SDL_Event_of_SDL_KeyboardEvent
-  (x: &SDL_KeyboardEvent >> SDL_Event): void
 
-(*
-fun SDL_KeyboardEvent_type (x: &SDL_KeyboardEvent): Uint8
-fun SDL_KeyboardEvent_which (x: &SDL_KeyboardEvent): Uint8
-fun SDL_KeyboardEvent_state (x: &SDL_KeyboardEvent): Uint8
-*)
+praxi SDL_Event_key_castdn {l:addr}
+  (pf: !SDL_Event @ l >> SDL_KeyboardEvent @ l): void
+praxi SDL_Event_key_castup {l:addr}
+  (pf: !SDL_KeyboardEvent @ l >> SDL_Event @ l): void
+
+fun SDL_KeyboardEvent_type (x: &SDL_KeyboardEvent):<> Uint8
+  = "#atsctrb_SDL_KeyboardEvent_type"
+fun SDL_KeyboardEvent_which (x: &SDL_KeyboardEvent):<> Uint8
+  = "#atsctrb_SDL_KeyboardEvent_which"
+fun SDL_KeyboardEvent_state (x: &SDL_KeyboardEvent):<> Uint8
+  = "#atsctrb_SDL_KeyboardEvent_state"
+fun SDL_KeyboardEvent_keysym (x: &SDL_KeyboardEvent):<> SDL_keysym
+  = "#atsctrb_SDL_KeyboardEvent_keysym"
 
 (* ****** ****** *)
 
 fun SDL_PollEvent
   (event: &SDL_Event? >> opt (SDL_Event, i>0)): #[i:two] int i
-  = "atsctrb_SDL_PollEvent"
+  = "#atsctrb_SDL_PollEvent"
 
-fun SDL_PollEvent_null (): [i:two] int i = "atsctrb_SDL_PollEvent_null"
+fun SDL_PollEvent_null (): [i:two] int i = "#atsctrb_SDL_PollEvent_null"
 
 (* ****** ****** *)
 

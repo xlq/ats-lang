@@ -1525,6 +1525,10 @@ implement m0acarglst_cons (x, xs) = cons (x, xs)
 
 (* ****** ****** *)
 
+implement dcstextdef_is_mac (x) =
+  case+ x of DCSTEXTDEFsome_mac _ => true | _ => false
+// end of [dcstextdef_is_mac]
+
 implement extnamopt_none () = stropt_none
 implement extnamopt_some (ext) = let
 (*

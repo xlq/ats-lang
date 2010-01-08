@@ -52,10 +52,6 @@ staload Syn = "ats_syntax.sats"
 
 (* ****** ****** *)
 
-staload DEXP1 = "ats_dynexp1.sats" // for datatype dcstextdef
-
-(* ****** ****** *)
-
 staload "ats_dynexp2.sats"
 staload "ats_trans2_env.sats"
 
@@ -259,19 +255,19 @@ fn global_cst_name_make
   val extdef = d2cst_extdef_get d2c
 in
   case+ extdef of
-  | $DEXP1.DCSTEXTDEFnone () => let
+  | $Syn.DCSTEXTDEFnone () => let
       val d2c_name = $Sym.symbol_name (d2cst_sym_get d2c)
     in
       case+ d2cst_kind_get d2c of
       | $Syn.DCSTKINDval () => d2c_name + "$fun" | _ => d2c_name
     end // end of [DSTEXTDEFnone]
-  | $DEXP1.DCSTEXTDEFname name => name
-  | $DEXP1.DCSTEXTDEFcall _ => begin
+  | $Syn.DCSTEXTDEFsome_fun name => name
+  | $Syn.DCSTEXTDEFsome_mac _name => begin
       prerr_interror ();
       prerr ": global_cst_name_make: DCSTEXTDEFcall: d2c = "; prerr_d2cst d2c;
       prerr_newline ();
       $Err.abort {string} ()
-    end // end of [DSTEXTDEFcall]
+    end // end of [DSTEXTDEFsome_mac]
 end // end of [global_cst_name_make]
 
 implement funlab_make_cst_typ (d2c, tmparg, hit) = let

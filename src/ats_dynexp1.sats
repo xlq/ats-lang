@@ -76,13 +76,7 @@ typedef funkind = $Syn.funkind
 typedef intkind = $Syn.intkind
 typedef valkind = $Syn.valkind
 
-(* ****** ****** *)
-
-datatype dcstextdef =
-  | DCSTEXTDEFnone of ()
-  | DCSTEXTDEFname of string
-  | DCSTEXTDEFcall of (string, List int)
-// end of [dcstextdef]
+typedef dcstextdef = $Syn.dcstextdef
 
 (* ****** ****** *)
 

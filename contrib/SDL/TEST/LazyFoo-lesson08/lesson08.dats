@@ -1,6 +1,6 @@
 //
-// LazyFoo-lesson07 _translated_ into ATS
-// See http://lazyfoo.net/SDL_tutorials/lesson07
+// LazyFoo-lesson08 _translated_ into ATS
+// See http://lazyfoo.net/SDL_tutorials/lesson08
 //
 
 (* ****** ****** *)
@@ -68,10 +68,27 @@ implement apply_surface
 
 (* ****** ****** *)
 
+stadef sfr = SDL_Surface_ref
+
+fn show_message {l1,l2,l3:anz} (
+    screen: !sfr l1, background: !sfr l2, message: !sfr l3
+  ) : void = let
+  val () = apply_surface (0, 0, background, screen)
+  val x = (SCREEN_WIDTH - SDL_Surface_w message) / 2
+  and y = (SCREEN_HEIGHT - SDL_Surface_h message) / 2
+  val () = apply_surface (x, y, message, screen)
+  val _err = SDL_Flip (screen)
+  val () = assert_errmsg (_err = 0, #LOCATION)
+in
+  // nothing
+end // end of [show_message]
+
+(* ****** ****** *)
+
 implement main () = () where {
   val _err = SDL_Init (SDL_INIT_EVERYTHING)
   val () = assert_errmsg (_err = 0, #LOCATION)
-  val screen = SDL_SetVideoMode (
+  val [l1:addr] screen = SDL_SetVideoMode (
     SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_BPP, SDL_SWSURFACE
   ) // end of [val]
   val () = assert_errmsg (ref_is_notnull screen, #LOCATION)
@@ -79,44 +96,66 @@ implement main () = () where {
   val () = assert_errmsg (_err = 0, #LOCATION)
 //
   val () = SDL_WM_SetCaption (
-    stropt_some "TTF test", stropt_none
+    stropt_some "Press an Arrow Key", stropt_none
   ) // end of [val]
 //
-  val background = load_image ("LazyFoo-lesson07/background.png")
+  val [l2:addr] background = load_image ("LazyFoo-lesson08/background.png")
   val () = assert_errmsg (ref_is_notnull background, #LOCATION)
 //
   // Open the font
-  val font = TTF_OpenFont ("LazyFoo-lesson07/lazy.ttf", 28)
+  val font = TTF_OpenFont ("LazyFoo-lesson08/lazy.ttf", 72)
   val () = assert_errmsg (TTF_Font_ref_is_notnull font, #LOCATION)
 //
   //The color of the font
   var textColor : SDL_Color
-  val () = SDL_Color_init (textColor, (Uint8)255, (Uint8)255, (Uint8)255)
+  val () = SDL_Color_init (textColor, (Uint8)0, (Uint8)0, (Uint8)0)
   // Render the text
-  val message = TTF_RenderText_Solid
-    (font, "The quick brown fox jumps over the lazy dog", textColor)
-  // end of [val]
-  val () = assert_errmsg (ref_is_notnull message, #LOCATION)
+  val [l3_up:addr] upMessage =
+    TTF_RenderText_Solid (font, "Up was pressed", textColor)
+  val () = assert_errmsg (ref_is_notnull upMessage, #LOCATION)
+  val [l3_down:addr] downMessage =
+    TTF_RenderText_Solid (font, "Down was pressed", textColor)
+  val () = assert_errmsg (ref_is_notnull downMessage, #LOCATION)
+  val [l3_left:addr] leftMessage =
+    TTF_RenderText_Solid (font, "Left was pressed", textColor)
+  val () = assert_errmsg (ref_is_notnull leftMessage, #LOCATION)
+  val [l3_right:addr] rightMessage =
+    TTF_RenderText_Solid (font, "Right was pressed", textColor)
+  val () = assert_errmsg (ref_is_notnull rightMessage, #LOCATION)
 //
   // Apply the images to the screen
   val () = apply_surface (0, 0, background, screen)
-  val () = apply_surface (0, 150, message, screen)
 //
   val _err = SDL_Flip (screen)
   val () = assert_errmsg (_err = 0, #LOCATION)
 //
   var quit: bool = false
   var event: SDL_Event?
+//  
   val () = while (quit = false) let
     val () = while (true) begin
       if SDL_PollEvent (event) > 0 then let
         prval () = opt_unsome (event)
+        val _type = SDL_Event_type event
       in
-        if SDL_Event_type event = SDL_QUIT then quit := true
+        case+ 0 of
+        | _ when _type = SDL_KEYDOWN => let
+            prval () = SDL_Event_key_castdn (view@ event)
+            var keysym = SDL_KeyboardEvent_keysym (event)
+            prval () = SDL_Event_key_castup (view@ event)
+            val sym = SDL_keysym_sym (keysym)
+          in
+            case+ 0 of
+            | _ when sym = SDLK_UP => show_message (screen, background, upMessage)
+            | _ when sym = SDLK_DOWN => show_message (screen, background, downMessage)
+            | _ when sym = SDLK_LEFT => show_message (screen, background, leftMessage)
+            | _ when sym = SDLK_RIGHT => show_message (screen, background, rightMessage)
+            | _ => ()
+          end // end of [SDL_KEYDOWN]
+        | _ when _type = SDL_QUIT => quit := true
+        | _ => () // ignored
       end else let
-        prval () = opt_unnone (event)
-      in
-        break // loop exit
+        prval () = opt_unnone (event) in break // loop exit
       end // end of [if]
     end // end of [val]
   in
@@ -125,7 +164,10 @@ implement main () = () where {
 //
   val () = TTF_CloseFont (font)
   val () = SDL_FreeSurface (background)
-  val () = SDL_FreeSurface (message)
+  val () = SDL_FreeSurface (upMessage)
+  val () = SDL_FreeSurface (downMessage)
+  val () = SDL_FreeSurface (leftMessage)
+  val () = SDL_FreeSurface (rightMessage)
   val () = TTF_Quit ()
   val _ptr = SDL_Quit_screen (screen)
   val () = SDL_Quit ()
@@ -133,4 +175,4 @@ implement main () = () where {
 
 (* ****** ****** *)
 
-(* end of [LazyFoo-lesson07.dats] *)
+(* end of [LazyFoo-lesson08.dats] *)

@@ -1265,6 +1265,16 @@ fun m0acarglst_cons (x: m0acarg, xs: m0acarglst): m0acarglst
 
 (* ****** ****** *)
 
+datatype dcstextdef =
+  | DCSTEXTDEFnone of ()
+  | DCSTEXTDEFsome_fun of string
+  | DCSTEXTDEFsome_mac of string
+// end of [dcstextdef]
+
+fun dcstextdef_is_mac (x: dcstextdef):<> bool
+
+(* ****** ****** *)
+
 fun extnamopt_none (): Stropt = "extnamopt_none"
 fun extnamopt_some (ext: s0tring): Stropt = "extnamopt_some"
 

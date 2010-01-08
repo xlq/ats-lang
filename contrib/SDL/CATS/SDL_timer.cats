@@ -46,19 +46,9 @@
 
 /* ****** ****** */
 
-static inline
-ats_int_type
-atsctrb_SDL_SetTimer (
-  Uint32 interval, ats_fun_ptr_type callback
-) {
-  return SDL_SetTimer (interval, (SDL_TimerCallback)callback) ;
-} // end of [atsctrb_SDL_SetTimer]
-
-static inline
-ats_int_type
-atsctrb_SDL_CancelTimer () {
-  return SDL_SetTimer ((Uint32)0, (SDL_TimerCallback)NULL) ;
-} // end of [atsctrb_SDL_CancelTimer]
+#define atsctrb_SDL_SetTimer SDL_SetTimer
+#define atsctrb_SDL_CancelTimer () \
+  SDL_SetTimer ((Uint32)0, (SDL_TimerCallback)NULL)
 
 /* ****** ****** */
 
