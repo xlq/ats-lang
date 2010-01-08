@@ -62,6 +62,7 @@ typedef t0kn = @{ t0kn_loc= loc_t }
 datatype abskind = 
   | ABSKINDprop | ABSKINDtype | ABSKINDt0ype
   | ABSKINDview | ABSKINDviewtype | ABSKINDviewt0ype
+// end of [abskind]
 
 fun abskind_prop ():<> abskind = "abskind_prop"
 fun abskind_type ():<> abskind = "abskind_type"
@@ -75,6 +76,7 @@ fun abskind_viewt0ype ():<> abskind = "abskind_viewt0ype"
 datatype dcstkind =
   | DCSTKINDfun | DCSTKINDval | DCSTKINDcastfn
   | DCSTKINDpraxi | DCSTKINDprfun | DCSTKINDprval
+// end of [dcstkind]
 
 fun dcstkind_fun ():<> dcstkind = "dcstkind_fun"
 fun dcstkind_val ():<> dcstkind = "dcstkind_val"
@@ -96,6 +98,7 @@ fun fprint_dcstkind (out: FILEref, knd: dcstkind): void
 
 datatype datakind =
   | DATAKINDprop | DATAKINDtype | DATAKINDview | DATAKINDviewtype
+// end of [datakind]
 
 fun datakind_prop ():<> datakind = "datakind_prop"
 and datakind_type ():<> datakind = "datakind_type"
@@ -157,6 +160,7 @@ fun valkind_is_proof (vk: valkind):<> bool
 datatype funkind =
   | FUNKINDfn | FUNKINDfnstar | FUNKINDfun
   | FUNKINDprfn | FUNKINDprfun | FUNKINDcastfn
+// end of [funkind]
 
 fun funkind_fn ():<> funkind = "funkind_fn"
 fun funkind_fnstar ():<> funkind = "funkind_fnstar"
