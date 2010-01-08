@@ -54,16 +54,12 @@ typedef ats_ref_type ats_cairo_pattern_ref ;
 typedef ats_ref_type ats_cairo_font_face_ref ;
 typedef ats_ref_type ats_cairo_scaled_font_ref ;
 
-typedef cairo_status_t ats_cairo_status_type ;
-
-typedef cairo_matrix_t ats_cairo_matrix_type ;
-
 /* ****** ****** */
 
 static inline
 ats_bool_type
 atsctrb_eq_cairo_status_cairo_status (
-  ats_cairo_status_type x1, ats_cairo_status_type x2
+  cairo_status_t x1, cairo_status_t x2
 ) {
   return (x1 == x2 ? ats_true_bool : ats_false_bool) ;
 } // end of [atsctrb_eq_cairo_status_cairo_status]
@@ -74,169 +70,43 @@ atsctrb_eq_cairo_status_cairo_status (
 // contexts for drawing
 //
 
-static inline
-ats_cairo_ref
-atsctrb_cairo_create
-  (ats_cairo_surface_ref sf) {
-  return cairo_create((cairo_surface_t*)sf) ;
-}
+/* ****** ****** */
 
-static inline
-ats_cairo_ref
-atsctrb_cairo_reference
-  (ats_cairo_ref cr) {
-  return cairo_reference((cairo_t*)cr) ;
-}
+#define atsctrb_cairo_create cairo_create
+#define atsctrb_cairo_reference cairo_reference
+#define atsctrb_cairo_destroy cairo_destroy
+#define atsctrb_cairo_status cairo_status
 
-static inline
-ats_void_type
-atsctrb_cairo_destroy
-  (ats_cairo_ref cr) {
-  cairo_destroy((cairo_t*)cr) ; return ;
-}
+#define atsctrb_cairo_save cairo_save
+#define atsctrb_cairo_restore cairo_restore
+
+#define atsctrb_cairo_get_target cairo_get_target
+#define atsctrb_cairo_get_group_target cairo_get_group_target
+
+#define atsctrb_cairo_push_group cairo_push_group
+#define atsctrb_cairo_push_group_with_content cairo_push_group_with_content
+#define atsctrb_cairo_pop_group cairo_pop_group
+#define atsctrb_cairo_pop_group_to_source cairo_pop_group_to_source
 
 /* ****** ****** */
 
-static inline
-ats_cairo_status_type
-atsctrb_cairo_status
-  (ats_cairo_ref cr) {
-  return cairo_status((cairo_t*)cr) ;
-}
+#define atsctrb_cairo_set_source_rgb cairo_set_source_rgb
+#define atsctrb_cairo_set_source_rgba cairo_set_source_rgba
 
 /* ****** ****** */
 
-static inline
-ats_void_type
-atsctrb_cairo_save
-  (ats_cairo_ref cr) {
-  cairo_save((cairo_t*)cr) ; return ;
-}
-
-static inline
-ats_void_type
-atsctrb_cairo_restore
-  (ats_cairo_ref cr) {
-  cairo_restore((cairo_t*)cr) ; return ;
-}
+#define atsctrb_cairo_get_source cairo_get_source
+#define atsctrb_cairo_set_source cairo_set_source
+#define atsctrb_cairo_set_source_surface cairo_set_source_surface
 
 /* ****** ****** */
 
-static inline
-ats_cairo_surface_ref
-atsctrb_cairo_get_target
-  (ats_cairo_ref cr) {
-  return cairo_get_target((cairo_t*)cr) ;
-}
+#define atsctrb_cairo_get_antialias cairo_get_antialias
+#define atsctrb_cairo_set_antialias cairo_set_antialias
 
 /* ****** ****** */
 
-static inline
-ats_void_type
-atsctrb_cairo_push_group
-  (ats_cairo_ref cr) {
-  cairo_push_group((cairo_t*)cr) ; return ;
-}
-
-typedef cairo_content_t ats_cairo_content_type ;
-
-static inline
-ats_void_type
-atsctrb_cairo_push_group_with_content (
-  ats_cairo_ref cr, ats_cairo_content_type content
-) {
-  cairo_push_group_with_content((cairo_t*)cr, content) ; return ;
-} // end of [atsctrb_cairo_push_group_with_content]
-
-static inline
-ats_cairo_pattern_ref
-atsctrb_cairo_pop_group
-  (ats_cairo_ref cr) {
-  return cairo_pop_group((cairo_t*)cr) ;
-}
-
-static inline
-ats_void_type
-atsctrb_cairo_pop_group_to_source
-  (ats_cairo_ref cr) {
-  cairo_pop_group_to_source((cairo_t*)cr) ; return ;
-}
-
-/* ****** ****** */
-
-static inline
-ats_void_type
-atsctrb_cairo_set_source_rgb (
-  ats_cairo_ref cr
-, ats_double_type r
-, ats_double_type g
-, ats_double_type b
-) {
-  cairo_set_source_rgb((cairo_t*)cr, r, g, b) ; return ;
-} /* end of [atsctrb_cairo_set_source_rgb] */
-
-static inline
-ats_void_type
-atsctrb_cairo_set_source_rgba (
-  ats_cairo_ref cr
-, ats_double_type r
-, ats_double_type g
-, ats_double_type b
-, ats_double_type a
-) {
-  cairo_set_source_rgba((cairo_t*)cr, r, g, b, a) ; return ;
-} /* end of [atsctrb_cairo_set_source_rgba] */
-
-/* ****** ****** */
-
-static inline
-ats_void_type
-atsctrb_cairo_set_source (
-  ats_cairo_ref cr, ats_cairo_pattern_ref pat
-) {
-  cairo_set_source((cairo_t*)cr, (cairo_pattern_t*)pat) ;
-  return ;
-} /* end of [atsctrb_cairo_set_source] */
-
-static inline
-ats_void_type
-atsctrb_cairo_set_source_surface (
-  ats_cairo_ref cr
-, ats_cairo_surface_ref sf
-, ats_double_type x, ats_double_type y
-) {
-  cairo_set_source_surface(
-    (cairo_t*)cr, (cairo_surface_t*)sf, x, y
-  ) ; return ;
-} /* end of [atsctrb_cairo_set_source_surface] */
-
-/* ****** ****** */
-
-typedef cairo_antialias_t ats_cairo_antialias_type ;
-
-static inline
-ats_cairo_antialias_type
-atsctrb_cairo_get_antialias
-  (ats_cairo_ref cr) {
-  return cairo_get_antialias((cairo_t*)cr) ;
-} /* end of [atsctrb_cairo_get_antialias] */
-
-static inline
-ats_void_type
-atsctrb_cairo_set_antialias (
-  ats_cairo_ref cr, ats_cairo_antialias_type antialias
-) {
-  cairo_set_antialias((cairo_t*)cr, antialias) ; return ;
-} /* end of [atsctrb_cairo_set_antialias] */
-
-/* ****** ****** */
-
-static inline
-ats_int_type
-atsctrb_cairo_get_dash_count
-  (ats_cairo_ref cr) {
-  return cairo_get_dash_count ((cairo_t*)cr) ; 
-} // end of [atsctrb_cairo_get_dash_count]
+#define atsctrb_cairo_get_dash_count cairo_get_dash_count
 
 static inline
 ats_int_type
@@ -254,981 +124,249 @@ atsctrb_cairo_get_dash (
   return n1 ;
 } // end of [atsctrb_cairo_get_dash]
 
-static inline
-ats_int_type
-atsctrb_cairo_set_dash (
-  ats_cairo_ref cr
-, ats_ptr_type dashes, ats_int_type n
-, ats_double_type offset
-) {
-  cairo_set_dash((cairo_t*)cr, (double*)dashes, n, offset) ;
-  return ;
-} // end of [atsctrb_cairo_set_dash]
+#define atsctrb_cairo_set_dash cairo_set_dash
 
 /* ****** ****** */
 
-typedef cairo_fill_rule_t ats_cairo_fill_rule_type ;
-
-static inline
-ats_cairo_fill_rule_type
-atsctrb_cairo_get_fill_rule
-  (ats_cairo_ref cr) {
-  return cairo_get_fill_rule((cairo_t*)cr) ;
-} /* end of [atsctrb_cairo_get_fill_rule] */
-
-static inline
-ats_void_type
-atsctrb_cairo_set_fill_rule (
-  ats_cairo_ref cr, ats_cairo_fill_rule_type rule
-) {
-  cairo_set_fill_rule((cairo_t*)cr, rule) ; return ;
-} /* end of [atsctrb_cairo_set_fill_rule] */
+#define atsctrb_cairo_get_fill_rule cairo_get_fill_rule
+#define atsctrb_cairo_set_fill_rule cairo_set_fill_rule
 
 /* ****** ****** */
 
-typedef cairo_line_cap_t ats_cairo_line_cap_type ;
-
-static inline
-ats_cairo_line_cap_type
-atsctrb_cairo_get_line_cap
-  (ats_cairo_ref cr) {
-  return cairo_get_line_cap((cairo_t*)cr) ;
-} /* end of [atsctrb_cairo_get_line_cap] */
-
-static inline
-ats_void_type
-atsctrb_cairo_set_line_cap (
-  ats_cairo_ref cr, ats_cairo_line_cap_type cap
-) {
-  cairo_set_line_cap((cairo_t*)cr, cap) ; return ;
-} /* end of [atsctrb_cairo_set_line_cap] */
+#define atsctrb_cairo_get_line_cap cairo_get_line_cap
+#define atsctrb_cairo_set_line_cap cairo_set_line_cap
 
 /* ****** ****** */
 
-typedef cairo_line_join_t ats_cairo_line_join_type ;
-
-static inline
-ats_cairo_line_join_type
-atsctrb_cairo_get_line_join
-  (ats_cairo_ref cr) {
-  return cairo_get_line_join((cairo_t*)cr) ;
-} /* end of [atsctrb_cairo_get_line_join] */
-
-static inline
-ats_void_type
-atsctrb_cairo_set_line_join (
-  ats_cairo_ref cr, ats_cairo_line_join_type join
-) {
-  cairo_set_line_join((cairo_t*)cr, join) ; return ;
-} /* end of [atsctrb_cairo_set_line_join] */
+#define atsctrb_cairo_get_line_join cairo_get_line_join
+#define atsctrb_cairo_set_line_join cairo_set_line_join
 
 /* ****** ****** */
 
-static inline
-ats_double_type
-atsctrb_cairo_get_line_width
-  (ats_cairo_ref cr) {
-  return cairo_get_line_width((cairo_t*)cr) ;
-} /* end of [atsctrb_cairo_get_line_width] */
-
-static inline
-ats_void_type
-atsctrb_cairo_set_line_width (
-  ats_cairo_ref cr, ats_double_type width
-) {
-  cairo_set_line_width((cairo_t*)cr, width) ; return ;
-} /* end of [atsctrb_cairo_set_line_width] */
+#define atsctrb_cairo_get_line_width cairo_get_line_width
+#define atsctrb_cairo_set_line_width cairo_set_line_width
 
 /* ****** ****** */
 
-static inline
-ats_double_type
-atsctrb_cairo_get_miter_limit
-  (ats_cairo_ref cr) {
-  return cairo_get_miter_limit((cairo_t*)cr) ;
-} /* end of [atsctrb_cairo_get_miter_limit] */
-
-static inline
-ats_void_type
-atsctrb_cairo_set_miter_limit (
-  ats_cairo_ref cr, ats_double_type limit
-) {
-  cairo_set_miter_limit((cairo_t*)cr, limit) ; return ;
-} /* end of [atsctrb_cairo_set_miter_limit] */
+#define atsctrb_cairo_get_miter_limit cairo_get_miter_limit
+#define atsctrb_cairo_set_miter_limit cairo_set_miter_limit
 
 /* ****** ****** */
 
-typedef cairo_operator_t ats_cairo_operator_type ;
-
-static inline
-ats_cairo_operator_type
-atsctrb_cairo_get_operator
-  (ats_cairo_ref cr) {
-  return cairo_get_operator((cairo_t*)cr) ;
-} /* end of [atsctrb_cairo_get_operator] */
-
-static inline
-ats_void_type
-atsctrb_cairo_set_operator (
-  ats_cairo_ref cr, ats_cairo_operator_type opr
-) {
-  cairo_set_operator((cairo_t*)cr, opr) ; return ;
-} /* end of [atsctrb_cairo_set_operator] */
+#define atsctrb_cairo_get_operator cairo_get_operator
+#define atsctrb_cairo_set_operator cairo_set_operator
 
 /* ****** ****** */
 
-static inline
-ats_double_type
-atsctrb_cairo_get_tolerance
-  (ats_cairo_ref cr) {
-  return cairo_get_tolerance((cairo_t*)cr) ;
-} /* end of [atsctrb_cairo_get_tolerance] */
-
-static inline
-ats_void_type
-atsctrb_cairo_set_tolerance (
-  ats_cairo_ref cr, ats_double_type tolerance
-) {
-  cairo_set_tolerance((cairo_t*)cr, tolerance) ; return ;
-} /* end of [atsctrb_cairo_set_tolerance] */
+#define atsctrb_cairo_get_tolerance cairo_get_tolerance
+#define atsctrb_cairo_set_tolerance cairo_set_tolerance
 
 /* ****** ****** */
 
 #if (CAIRO_VERSION >= CAIRO_VERSION_ENCODE(1,4,0))
 
-static inline
-ats_void_type
-atsctrb_cairo_rectangle_list_destroy
-  (ats_ref_type lst) {
-  cairo_rectangle_list_destroy((cairo_rectangle_list_t*)lst) ;
-  return ;
-} // end of [atsctrb_cairo_rectangle_list_destroy]
-
-static inline
-ats_ref_type
-atsctrb_cairo_copy_clip_rectangle_list
-  (ats_cairo_ref cr) {
-  return cairo_copy_clip_rectangle_list((cairo_t*)cr) ;
-} // end of [atsctrb_cairo_copy_clip_rectangle_list]
+#define atsctrb_cairo_rectangle_list_destroy cairo_rectangle_list_destroy
+#define atsctrb_cairo_copy_clip_rectangle_list cairo_copy_clip_rectangle_list
 
 #endif // end of [#if (CAIRO_VERSION >= 1.4.0)]
 
 /* ****** ****** */
 
-static inline
-ats_void_type
-atsctrb_cairo_clip (
-  ats_cairo_ref cr
-) {
-  cairo_clip((cairo_t*)cr) ; return ;
-} /* end of [atsctrb_cairo_clip] */
-
-static inline
-ats_void_type
-atsctrb_cairo_clip_preserve (
-  ats_cairo_ref cr
-) {
-  cairo_clip_preserve((cairo_t*)cr) ; return ;
-} /* end of [atsctrb_cairo_clip_preserve] */
-
-static inline
-ats_void_type
-atsctrb_cairo_clip_extents (
-  ats_cairo_ref cr
-, ats_ref_type x1, ats_ref_type y1
-, ats_ref_type x2, ats_ref_type y2
-) {
-  cairo_clip_extents(
-    (cairo_t*)cr, (double*)x1, (double*)y1, (double*)x2, (double*)y2
-  ) ; return ;
-} /* end of [atsctrb_cairo_clip_extents] */
-
-static inline
-ats_void_type
-atsctrb_cairo_reset_clip
-  (ats_cairo_ref cr) {
-  cairo_reset_clip((cairo_t*)cr) ; return ;
-} /* end of [atsctrb_cairo_reset_clip] */
+#define atsctrb_cairo_clip cairo_clip
+#define atsctrb_cairo_clip_preserve cairo_clip_preserve
+#define atsctrb_cairo_clip_extents cairo_clip_extents
+#define atsctrb_cairo_reset_clip cairo_reset_clip
 
 /* ****** ****** */
 
-static inline
-ats_void_type
-atsctrb_cairo_fill
-  (ats_cairo_ref cr) {
-  cairo_fill((cairo_t*)cr) ; return ;
-} /* end of [atsctrb_cairo_fill] */
-
-static inline
-ats_void_type
-atsctrb_cairo_fill_preserve
-  (ats_cairo_ref cr) {
-  cairo_fill_preserve((cairo_t*)cr) ; return ;
-} /* end of [atsctrb_cairo_fill_preserve] */
-
-static inline
-ats_void_type
-atsctrb_cairo_fill_extents (
-  ats_cairo_ref cr
-, ats_ref_type x1, ats_ref_type y1
-, ats_ref_type x2, ats_ref_type y2
-) {
-  cairo_fill_extents(
-    (cairo_t*)cr, (double*)x1, (double*)y1, (double*)x2, (double*)y2
-  ) ; return ;
-} /* end of [atsctrb_cairo_fill_extents] */
-
-static inline
-ats_bool_type
-atsctrb_cairo_in_fill (
-  ats_cairo_ref cr
-, ats_double_type x, ats_double_type y
-) {
-  return cairo_in_fill((cairo_t*)cr, x, y) ;
-} /* end of [atsctrb_cairo_in_fill] */
+#define atsctrb_cairo_fill cairo_fill
+#define atsctrb_cairo_fill_preserve cairo_fill_preserve
+#define atsctrb_cairo_fill_extents cairo_fill_extents
+#define atsctrb_cairo_in_fill cairo_in_fill
 
 /* ****** ****** */
 
-static inline
-ats_void_type
-atsctrb_cairo_mask (
-  ats_cairo_ref cr, ats_cairo_pattern_ref pat
-) {
-  cairo_mask((cairo_t*)cr, (cairo_pattern_t*)pat) ; return ;
-} /* end of [atsctrb_cairo_mask] */
-
-static inline
-ats_void_type
-atsctrb_cairo_mask_surface (
-  ats_cairo_ref cr
-, ats_cairo_surface_ref sf
-, ats_double_type sf_x, ats_double_type sf_y
-) {
-  cairo_mask_surface(
-    (cairo_t*)cr, (cairo_surface_t*)sf, sf_x, sf_y
-  ) ; return ;
-} /* end of [atsctrb_cairo_mask_surface] */
+#define atsctrb_cairo_mask cairo_mask
+#define atsctrb_cairo_mask_surface cairo_mask_surface
 
 /* ****** ****** */
 
-static inline
-ats_void_type
-atsctrb_cairo_paint (
-  ats_cairo_ref cr
-) {
-  cairo_paint((cairo_t*)cr) ; return ;
-} /* end of [atsctrb_cairo_paint] */
-
-static inline
-ats_void_type
-atsctrb_cairo_paint_with_alpha (
-  ats_cairo_ref cr, ats_double_type alpha
-) {
-  cairo_paint_with_alpha((cairo_t*)cr, alpha) ; return ;
-} /* end of [atsctrb_cairo_paint_with_alpha] */
+#define atsctrb_cairo_paint cairo_paint
+#define atsctrb_cairo_paint_with_alpha cairo_paint_with_alpha
 
 /* ****** ****** */
 
-static inline
-ats_void_type
-atsctrb_cairo_stroke (
-  ats_cairo_ref cr
-) {
-  cairo_stroke((cairo_t*)cr) ; return ;
-} /* end of [atsctrb_cairo_stroke] */
-
-static inline
-ats_void_type
-atsctrb_cairo_stroke_preserve (
-  ats_cairo_ref cr
-) {
-  cairo_stroke_preserve((cairo_t*)cr) ; return ;
-} /* end of [atsctrb_cairo_stroke_preserve] */
-
-static inline
-ats_void_type
-atsctrb_cairo_stroke_extents (
-  ats_cairo_ref cr
-, ats_ref_type x1, ats_ref_type y1
-, ats_ref_type x2, ats_ref_type y2
-) {
-  cairo_stroke_extents(
-    (cairo_t*)cr, (double*)x1, (double*)y1, (double*)x2, (double*)y2
-  ) ; return ;
-} /* end of [atsctrb_cairo_stroke_extents] */
-
-static inline
-ats_bool_type
-atsctrb_cairo_in_stroke (
-  ats_cairo_ref cr
-, ats_double_type x, ats_double_type y
-) {
-  return cairo_in_stroke((cairo_t*)cr, x, y) ;
-} /* end of [atsctrb_cairo_in_stroke] */
+#define atsctrb_cairo_stroke cairo_stroke
+#define atsctrb_cairo_stroke_preserve cairo_stroke_preserve
+#define atsctrb_cairo_stroke_extents cairo_stroke_extents
+#define atsctrb_cairo_in_stroke atsctrb_cairo_in_stroke
 
 /* ****** ****** */
 
-static inline
-ats_uint_type
-atsctrb_cairo_get_reference_count
-  (ats_cairo_ref cr) {
-  return cairo_get_reference_count((cairo_t*)cr) ;
-} // end of [atsctrb_cairo_get_reference_count]
+#define atsctrb_cairo_get_reference_count cairo_get_reference_count
 
 /* ****** ****** */
 
-static inline
-ats_void_type
-atsctrb_cairo_copy_page
-  (ats_cairo_ref cr) {
-  cairo_copy_page (cr) ; return ;
-} // end of [atsctrb_cairo_copy_page]
-
-static inline
-ats_void_type
-atsctrb_cairo_show_page
-  (ats_cairo_ref cr) {
-  cairo_show_page (cr) ; return ;
-} // end of [atsctrb_cairo_show_page]
+#define atsctrb_cairo_copy_page cairo_copy_page
+#define atsctrb_cairo_show_page cairo_show_page
 
 /* ****** ****** */
 
 #if (CAIRO_VERSION >= CAIRO_VERSION_ENCODE(1,4,0))
 
-typedef cairo_user_data_key_t ats_cairo_user_data_key_type ;
-
-static inline
-ats_ptr_type // user_data
-atsctrb_cairo_get_user_data (
-  ats_cairo_ref cr, ats_ref_type key
-) {
-  return cairo_get_user_data (
-    (cairo_t*)cr, (cairo_user_data_key_t*)key
-  ) ; // end of [return]
-} // end of [atsctrb_cairo_get_user_data]
-
-static inline
-ats_cairo_status_type
-atsctrb_cairo_set_user_data (
-  ats_cairo_ref cr
-, ats_ref_type key
-, ats_ptr_type user_data
-, ats_fun_ptr destroy_func
-) {
-  return cairo_set_user_data (
-    (cairo_t*)cr, (cairo_user_data_key_t*)key
-  , (void*)user_data, (cairo_destroy_func_t)destroy_func
-  ) ; // end of [return]
-} // end of [atsctrb_cairo_set_user_data]
+#define atsctrb_cairo_get_user_data cairo_get_user_data
+#define atsctrb_cairo_set_user_data cairo_set_user_data
 
 #endif // end of [#if (CAIRO_VERSION >= 1.4.0)]
 
 /* ****** ****** */
 
+//
 // drawing paths
+//
 
 /* ****** ****** */
 
-static inline
-ats_ref_type
-atsctrb_cairo_copy_path
-  (ats_cairo_ref cr) {
-  return cairo_copy_path((cairo_t*)cr) ; 
-} // end of [atsctrb_cairo_copy_path]
-
-static inline
-ats_ref_type
-atsctrb_cairo_copy_path_flat
-  (ats_cairo_ref cr) {
-  return cairo_copy_path_flat((cairo_t*)cr) ; 
-} // end of [atsctrb_cairo_copy_path_flat]
-
-static inline
-ats_void_type
-atsctrb_cairo_append_path
-  (ats_cairo_ref cr, ats_ref_type path) {
-  cairo_append_path((cairo_t*)cr, (cairo_path_t*)path) ;
-  return ;
-} // end of [atsctrb_cairo_append_path]
-
-static inline
-ats_void_type
-atsctrb_cairo_path_destroy
-  (ats_ref_type path) {
-  cairo_path_destroy((cairo_path_t*)path) ; return ;
-} // end of [atsctrb_cairo_path_destroy]
+#define atsctrb_cairo_copy_path cairo_copy_path
+#define atsctrb_cairo_copy_path_flat cairo_copy_path_flat
+#define atsctrb_cairo_append_path cairo_append_path
+#define atsctrb_cairo_path_destroy cairo_path_destroy
 
 /* ****** ****** */
 
-static inline
-ats_bool_type
-atsctrb_cairo_has_current_point
-  (ats_cairo_ref cr) {
-  return cairo_has_current_point((cairo_t*)cr) ; 
-} // end of [atsctrb_cairo_has_current_point]
-
-static inline
-ats_void_type
-atsctrb_cairo_get_current_point (
-  ats_cairo_ref cr, ats_ref_type x, ats_ref_type y
-) {
-  cairo_get_current_point((cairo_t*)cr, (double*)x, (double*)y) ;
-  return ;
-} // end of [atsctrb_cairo_get_current_point]
+#define atsctrb_cairo_has_current_point cairo_has_current_point
+#define atsctrb_cairo_get_current_point cairo_get_current_point
 
 /* ****** ****** */
 
-static inline
-ats_void_type
-atsctrb_cairo_new_path
-  (ats_cairo_ref cr) {
-  cairo_new_path ((cairo_t*)cr) ; return ;
-} /* end of [atsctrb_cairo_new_path] */
-
-static inline
-ats_void_type
-atsctrb_cairo_new_sub_path
-  (ats_cairo_ref cr) {
-  cairo_new_sub_path ((cairo_t*)cr) ; return ;
-} /* end of [atsctrb_cairo_new_sub_path] */
-
-static inline
-ats_void_type
-atsctrb_cairo_close_path
-  (ats_cairo_ref cr) {
-  cairo_close_path ((cairo_t*)cr) ; return ;
-} /* end of [atsctrb_cairo_close_path] */
+#define atsctrb_cairo_new_path cairo_new_path
+#define atsctrb_cairo_new_sub_path cairo_new_sub_path
+#define atsctrb_cairo_close_path cairo_close_path
 
 /* ****** ****** */
 
-static inline
-ats_void_type
-atsctrb_cairo_arc (
-  ats_cairo_ref cr
-, ats_double_type xc, ats_double_type yc
-, ats_double_type rad
-, ats_double_type angle1, ats_double_type angle2
-) {
-  cairo_arc ((cairo_t*)cr, xc, yc, rad, angle1, angle2) ;
-  return ;
-} /* end of [atsctrb_cairo_arc] */
-
-static inline
-ats_void_type
-atsctrb_cairo_arc_negative (
-  ats_cairo_ref cr
-, ats_double_type xc, ats_double_type yc
-, ats_double_type rad
-, ats_double_type angle1, ats_double_type angle2
-) {
-  cairo_arc_negative ((cairo_t*)cr, xc, yc, rad, angle1, angle2) ;
-  return ;
-} /* end of [atsctrb_cairo_arc_negative] */
-
-static inline
-ats_void_type
-atsctrb_cairo_curve_to (
-  ats_cairo_ref cr
-, ats_double_type x1, ats_double_type y1
-, ats_double_type x2, ats_double_type y2
-, ats_double_type x3, ats_double_type y3
-) {
-  cairo_curve_to ((cairo_t*)cr, x1, y1, x2, y2, x3, y3) ;
-  return ;
-} /* end of [atsctrb_cairo_curve_to] */
-
-static inline
-ats_void_type
-atsctrb_cairo_line_to (
-  ats_cairo_ref cr
-, ats_double_type x, ats_double_type y
-) {
-  cairo_line_to ((cairo_t*)cr, x, y) ; return ;
-} /* end of [atsctrb_cairo_line_to] */
-
-static inline
-ats_void_type
-atsctrb_cairo_move_to (
-  ats_cairo_ref cr
-, ats_double_type x, ats_double_type y
-) {
-  cairo_move_to ((cairo_t*)cr, x, y) ; return ;
-} /* end of [atsctrb_cairo_move_to] */
-
-static inline
-ats_void_type
-atsctrb_cairo_rectangle (
-  ats_cairo_ref cr
-, ats_double_type x, ats_double_type y
-, ats_double_type w, ats_double_type h
-) {
-  cairo_rectangle ((cairo_t*)cr, x, y, w, h) ; return ;
-} /* end of [atsctrb_cairo_rectangle] */
+#define atsctrb_cairo_arc cairo_arc
+#define atsctrb_cairo_arc_negative cairo_arc_negative
+#define atsctrb_cairo_curve_to cairo_curve_to
+#define atsctrb_cairo_line_to cairo_line_to
+#define atsctrb_cairo_move_to cairo_move_to
+#define atsctrb_cairo_rectangle cairo_rectangle
 
 /* ****** ****** */
 
-static inline
-ats_void_type
-atsctrb_cairo_rel_curve_to (
-  ats_cairo_ref cr
-, ats_double_type x1, ats_double_type y1
-, ats_double_type x2, ats_double_type y2
-, ats_double_type x3, ats_double_type y3
-) {
-  cairo_rel_curve_to ((cairo_t*)cr, x1, y1, x2, y2, x3, y3) ;
-  return ;
-} /* end of [atsctrb_cairo_rel_curve_to] */
-
-static inline
-ats_void_type
-atsctrb_cairo_rel_line_to (
-  ats_cairo_ref cr
-, ats_double_type x, ats_double_type y
-) {
-  cairo_rel_line_to ((cairo_t*)cr, x, y) ; return ;
-} /* end of [atsctrb_cairo_rel_line_to] */
-
-static inline
-ats_void_type
-atsctrb_cairo_rel_move_to (
-  ats_cairo_ref cr
-, ats_double_type x, ats_double_type y
-) {
-  cairo_rel_move_to ((cairo_t*)cr, x, y) ; return ;
-} /* end of [atsctrb_cairo_rel_move_to] */
+#define atsctrb_cairo_rel_curve_to cairo_rel_curve_to
+#define atsctrb_cairo_rel_line_to cairo_rel_line_to
+#define atsctrb_cairo_rel_move_to cairo_rel_move_to
 
 /* ****** ****** */
 
-static inline
-ats_void_type
-atsctrb_cairo_path_extents (
-  ats_cairo_ref cr
-, ats_ref_type x1, ats_ref_type y1
-, ats_ref_type x2, ats_ref_type y2
-) {
-  cairo_path_extents(
-    (cairo_t*)cr, (double*)x1, (double*)y1, (double*)x2, (double*)y2
-  ) ; return ;
-} /* end of [atsctrb_cairo_path_extents] */
+#define atsctrb_cairo_path_extents cairo_path_extents
 
 /* ****** ****** */
 
+//
 // drawing texts
-
-typedef cairo_font_slant_t ats_cairo_font_slant_type ;
-typedef cairo_font_weight_t ats_cairo_font_weight_type ;
-
-static inline
-ats_void_type
-atsctrb_cairo_select_font_face (
-  ats_cairo_ref cr, ats_ptr_type name
-, ats_cairo_font_slant_type slnt
-, ats_cairo_font_weight_type wght
-) {
-  cairo_select_font_face((cairo_t*)cr, name, slnt, wght) ; return ;
-} /* end of [atsctrb_cairo_select_font_face] */
-
-static inline
-ats_void_type
-atsctrb_cairo_set_font_size (
-  ats_cairo_ref cr, ats_double_type size
-) {
-  cairo_set_font_size((cairo_t*)cr, size) ; return ;
-} /* end of [atsctrb cairo_set_font_size] */
+//
 
 /* ****** ****** */
 
-static inline
-ats_void_type
-atsctrb_cairo_get_font_matrix
-  (ats_cairo_ref cr, ats_ref_type mat) {
-  cairo_get_font_matrix ((cairo_t*)cr, (cairo_matrix_t*)mat) ;
-  return ;
-} // end of [atsctrb_cairo_get_font_matrx]
-
-static inline
-ats_void_type
-atsctrb_cairo_set_font_matrix
-  (ats_cairo_ref cr, ats_ref_type mat) {
-  cairo_set_font_matrix ((cairo_t*)cr, (cairo_matrix_t*)mat) ;
-  return ;
-} // end of [atsctrb_cairo_set_font_matrx]
+#define atsctrb_cairo_select_font_face cairo_select_font_face
+#define atsctrb_cairo_set_font_size cairo_set_font_size
 
 /* ****** ****** */
 
-static inline
-ats_cairo_font_face_ref
-atsctrb_cairo_get_font_face (
-  ats_cairo_ref cr
-) {
-  return cairo_get_font_face((cairo_t*)cr) ;
-} /* end of [atsctrb cairo_get_font_face] */
-
-static inline
-ats_void_type
-atsctrb_cairo_set_font_face (
-  ats_cairo_ref cr, ats_cairo_font_face_ref face
-) {
-  cairo_set_font_face((cairo_t*)cr, (cairo_font_face_t*)face) ;
-  return ;
-} /* end of [atsctrb cairo_set_font_face] */
+#define atsctrb_cairo_get_font_matrix cairo_get_font_matrix
+#define atsctrb_cairo_set_font_matrix cairo_set_font_matrix
 
 /* ****** ****** */
 
-static inline
-ats_void_type
-atsctrb_cairo_font_extents (
-  ats_cairo_ref cr, ats_ref_type extents
-) {
-  cairo_font_extents (
-    (cairo_t*)cr, (cairo_font_extents_t*)extents
-  ) ; return ;
-} // end of [atsctrb_cairo_font_extents]
-
-static inline
-ats_void_type
-atsctrb_cairo_text_extents (
-  ats_cairo_ref cr, ats_ptr_type utf8, ats_ref_type extents
-) {
-  cairo_text_extents (
-    (cairo_t*)cr, (char*)utf8, (cairo_text_extents_t*)extents
-  ) ; return ;
-} // end of [atsctrb_cairo_text_extents]
+#define atsctrb_cairo_get_font_face cairo_get_font_face
+#define atsctrb_cairo_set_font_face cairo_set_font_face
 
 /* ****** ****** */
 
-static inline
-ats_void_type
-atsctrb_cairo_show_text (
-  ats_cairo_ref cr, ats_ptr_type utf8
-) {
-  cairo_show_text((cairo_t*)cr, (char*)utf8) ; return ;
-} /* end of [atsctrb cairo_show_text] */
+#define atsctrb_cairo_font_extents cairo_font_extents
+#define atsctrb_cairo_text_extents cairo_text_extents
+ 
+/* ****** ****** */
+
+#define atsctrb_cairo_show_text cairo_show_text
 
 /* ****** ****** */
 
+//
 // transformations for drawing
-
-static inline
-ats_void_type
-atsctrb_cairo_translate (
-  ats_cairo_ref cr
-, ats_double_type sx, ats_double_type sy
-) {
-  cairo_translate((cairo_t*)cr, sx, sy) ; return ;
-}
-
-static inline
-ats_void_type
-atsctrb_cairo_scale (
-  ats_cairo_ref cr
-, ats_double_type sx, ats_double_type sy
-) {
-  cairo_scale((cairo_t*)cr, sx, sy) ; return ;
-}
-
-static inline
-ats_void_type
-atsctrb_cairo_rotate (
-  ats_cairo_ref cr
-, ats_double_type angle
-) {
-  cairo_rotate((cairo_t*)cr, angle) ; return ;
-} // end of [atsctrb_cairo_rotate]
-
-static inline
-ats_void_type
-atsctrb_cairo_transform (
-  ats_cairo_ref cr, ats_ref_type mat
-) {
-  cairo_transform ((cairo_t*)cr, (cairo_matrix_t*)mat) ;
-  return ;
-} // end of [atsctrb_cairo_transform]
+//
 
 /* ****** ****** */
 
-static inline
-ats_void_type
-atsctrb_cairo_get_matrix (
-  ats_cairo_ref cr, ats_ref_type mat
-) {
-  cairo_get_matrix ((cairo_t*)cr, (cairo_matrix_t*)mat) ;
-  return ;
-} // end of [atsctrb_cairo_get_matrix]
-
-static inline
-ats_void_type
-atsctrb_cairo_set_matrix (
-  ats_cairo_ref cr, ats_ref_type mat
-) {
-  cairo_set_matrix ((cairo_t*)cr, (cairo_matrix_t*)mat) ;
-  return ;
-} // end of [atsctrb_cairo_set_matrix]
-
-static inline
-ats_void_type
-atsctrb_cairo_identity_matrix
-  (ats_cairo_ref cr) {
-  cairo_identity_matrix ((cairo_t*)cr) ; return ;
-} // end of [atsctrb_cairo_identity_matrix]
+#define atsctrb_cairo_translate cairo_translate
+#define atsctrb_cairo_scale cairo_scale
+#define atsctrb_cairo_rotate cairo_rotate
+#define atsctrb_cairo_transform cairo_transform
 
 /* ****** ****** */
 
-static inline
-ats_void_type
-atsctrb_cairo_user_to_device (
-  ats_cairo_ref cr
-, ats_ref_type x, ats_ref_type y
-) {
-  cairo_user_to_device((cairo_t*)cr, (double*)x, (double*)y) ;
-  return ;
-} // end of [atsctrb_cairo_user_to_device]
-
-static inline
-ats_void_type
-atsctrb_cairo_user_to_device_distance (
-  ats_cairo_ref cr, ats_ref_type dx, ats_ref_type dy
-) {
-  cairo_user_to_device_distance((cairo_t*)cr, (double*)dx, (double*)dy) ;
-  return ;
-} // end of [atsctrb_cairo_user_to_device_distance]
-
-static inline
-ats_void_type
-atsctrb_cairo_device_to_user (
-  ats_cairo_ref cr
-, ats_ref_type x, ats_ref_type y
-) {
-  cairo_device_to_user((cairo_t*)cr, (double*)x, (double*)y) ;
-  return ;
-} // end of [atsctrb_cairo_device_to_user]
-
-static inline
-ats_void_type
-atsctrb_cairo_device_to_user_distance (
-  ats_cairo_ref cr, ats_ref_type dx, ats_ref_type dy
-) {
-  cairo_device_to_user_distance((cairo_t*)cr, (double*)dx, (double*)dy) ;
-  return ;
-} // end of [atsctrb_cairo_device_to_user_distance]
+#define atsctrb_cairo_get_matrix cairo_get_matrix
+#define atsctrb_cairo_set_matrix cairo_set_matrix
+#define atsctrb_cairo_identity_matrix cairo_identity_matrix
 
 /* ****** ****** */
 
-static inline
-ats_cairo_font_face_ref
-atsctrb_cairo_font_face_reference
-  (ats_cairo_font_face_ref font_face) {
-  return cairo_font_face_reference (font_face) ;
-} // end of [atsctrb_cairo_font_face_reference]
+#define atsctrb_cairo_user_to_device cairo_user_to_device
+#define atsctrb_cairo_user_to_device_distance cairo_user_to_device_distance
+#define atsctrb_cairo_device_to_user cairo_device_to_user
+#define atsctrb_cairo_device_to_user_distance cairo_device_to_user_distance
 
-static inline
-ats_void_type
-atsctrb_cairo_font_face_destroy
-  (ats_cairo_font_face_ref font_face) {
-  cairo_font_face_destroy (font_face) ; return ;
-} // end of [atsctrb_cairo_font_face_destroy]
+/* ****** ****** */
 
-static inline
-ats_cairo_status_type
-atsctrb_cairo_font_face_status
-  (ats_cairo_font_face_ref font_face) {
-  return cairo_font_face_status (font_face) ;
-} // end of [atsctrb_cairo_font_face_status]
+//
+// fonts for drawing
+//
+
+#define atsctrb_cairo_font_face_reference cairo_font_face_reference
+#define atsctrb_cairo_font_face_destroy cairo_font_face_destroy
+#define atsctrb_cairo_font_face_status cairo_font_face_status
 
 typedef cairo_font_type_t ats_cairo_font_type_type ;
 
-static inline
-ats_cairo_font_type_type
-atsctrb_cairo_font_face_get_type
-  (ats_cairo_font_face_ref font_face) {
-  return cairo_font_face_get_type (font_face) ;
-} // end of [atsctrb_cairo_font_face_get_type]
-
-static inline
-ats_uint_type
-atsctrb_cairo_font_face_get_reference_count
-  (ats_cairo_font_face_ref font_face) {
-  return cairo_font_face_get_reference_count (font_face) ;
-} // end of [atsctrb_cairo_font_face_get_reference_count]
+#define atsctrb_cairo_font_face_get_type cairo_font_face_get_type
+#define atsctrb_cairo_font_face_get_reference_count cairo_font_face_get_reference_count
 
 /* ****** ****** */
 
+//
 // scaled fonts
+//
 
-static inline
-ats_cairo_scaled_font_ref
-atsctrb_cairo_scaled_font_reference
-  (ats_cairo_scaled_font_ref font) {
-  return cairo_scaled_font_reference((cairo_scaled_font_t*)font) ;
-} // end of [atsctrb_cairo_scaled_font_reference]
-
-static inline
-ats_void_type
-atsctrb_cairo_scaled_font_destroy
-  (ats_cairo_scaled_font_ref font) {
-  cairo_scaled_font_destroy((cairo_scaled_font_t*)font) ; return ;
-} // end of [atsctrb_cairo_scaled_font_destroy]
-
-static inline
-ats_cairo_status_type
-atsctrb_cairo_scaled_font_status
-  (ats_cairo_scaled_font_ref font) {
-  return cairo_scaled_font_status((cairo_scaled_font_t*)font) ;
-} // end of [atsctrb_cairo_scaled_font_status]
-
-static inline
-ats_void_type
-atsctrb_cairo_scaled_font_extents (
-  ats_cairo_scaled_font_ref font, ats_ref_type extents
-) {
-  cairo_scaled_font_extents(
-    (cairo_scaled_font_t*)font, (cairo_font_extents_t*)extents
-  ) ; return ;
-} // end of [atsctrb_cairo_scaled_font_extents]
-
-static inline
-ats_void_type
-atsctrb_cairo_scaled_font_text_extents (
-  ats_cairo_scaled_font_ref font
-, ats_ptr_type utf8, ats_ref_type extents
-) {
-  cairo_scaled_font_text_extents(
-    (cairo_scaled_font_t*)font, (char*)utf8, (cairo_text_extents_t*)extents
-  ) ; return ;
-} // end of [atsctrb_cairo_scaled_font_text_extents]
-
-static inline
-ats_cairo_font_face_ref
-atsctrb_cairo_scaled_font_get_font_face
-  (ats_cairo_scaled_font_ref font) {
-  return cairo_scaled_font_get_font_face((cairo_scaled_font_t*)font) ;
-} // end of [atsctrb_cairo_scaled_font_get_font_face]
-
-static inline
-ats_void_type
-atsctrb_cairo_scaled_font_get_font_options (
-  ats_cairo_scaled_font_ref font, ats_ptr_type options
-) {
-  cairo_scaled_font_get_font_options(
-    (cairo_scaled_font_t*)font, (cairo_font_options_t*)options
-  ) ; return ;
-} // end of [atsctrb_cairo_scaled_font_get_font_options]
-
-static inline
-ats_void_type
-atsctrb_cairo_scaled_font_get_font_matrix (
-  ats_cairo_scaled_font_ref font, ats_ref_type font_matrix
-) {
-  cairo_scaled_font_get_font_matrix(
-    (cairo_scaled_font_t*)font, (cairo_matrix_t*)font_matrix
-  ) ; return ;
-} // end of [atsctrb_cairo_scaled_font_get_font_matrix]
-
-static inline
-ats_void_type
-atsctrb_cairo_scaled_font_get_ctm (
-  ats_cairo_scaled_font_ref font, ats_ref_type ctm
-) {
-  cairo_scaled_font_get_ctm(
-    (cairo_scaled_font_t*)font, (cairo_matrix_t*)ctm
-  ) ; return ;
-} // end of [atsctrb_cairo_scaled_font_get_ctm]
-
-static inline
-ats_void_type
-atsctrb_cairo_scaled_font_get_scale_matrix (
-  ats_cairo_scaled_font_ref font, ats_ref_type scale_matrix
-) {
-  cairo_scaled_font_get_scale_matrix(
-    (cairo_scaled_font_t*)font, (cairo_matrix_t*)scale_matrix
-  ) ; return ;
-} // end of [atsctrb_cairo_scaled_font_get_scale_matrix]
-
-static inline
-ats_cairo_font_type_type
-atsctrb_cairo_scaled_font_get_type
-  (ats_cairo_scaled_font_ref font) {
-  return cairo_scaled_font_get_type((cairo_scaled_font_t*)font) ;
-} // end of [atsctrb_cairo_scaled_font_get_type]
-
-static inline
-ats_uint_type
-atsctrb_cairo_scaled_font_get_reference_count
-  (ats_cairo_scaled_font_ref font) {
-  return cairo_scaled_font_get_reference_count((cairo_scaled_font_t*)font) ;
-} // end of [atsctrb_cairo_scaled_font_get_reference_count]
+#define atsctrb_cairo_scaled_font_reference cairo_scaled_font_reference
+#define atsctrb_cairo_scaled_font_destroy cairo_scaled_font_destroy
+#define atsctrb_cairo_scaled_font_status cairo_scaled_font_status
+#define atsctrb_cairo_scaled_font_extents cairo_scaled_font_extents
+#define atsctrb_cairo_scaled_font_text_extents cairo_scaled_font_text_extents
+#define atsctrb_cairo_scaled_font_get_font_face cairo_scaled_font_get_font_face
+#define atsctrb_cairo_scaled_font_get_font_options cairo_scaled_font_get_font_options
+#define atsctrb_cairo_scaled_font_get_font_matrix cairo_scaled_font_get_font_matrix
+#define atsctrb_cairo_scaled_font_get_ctm cairo_scaled_font_get_ctm
+#define atsctrb_cairo_scaled_font_get_scale_matrix cairo_scaled_font_get_scale_matrix
+#define atsctrb_cairo_scaled_font_get_type cairo_scaled_font_get_type
+#define atsctrb_cairo_scaled_font_get_reference_count cairo_scaled_font_get_reference_count
 
 /* ****** ****** */
 
+//
 // font options
+//
 
-static inline
-ats_ptr_type
-atsctrb_cairo_font_options_create () {
-  return cairo_font_options_create () ;
-} // end of [atsctrb_cairo_font_options_create]
-
-static inline
-ats_ptr_type
-atsctrb_cairo_font_options_copy
-  (ats_ptr_type options) {
-  return cairo_font_options_copy((cairo_font_options_t*)options) ;
-} // end of [atsctrb_cairo_font_options_copy]
-
-static inline
-ats_void_type
-atsctrb_cairo_font_options_destroy
-  (ats_ptr_type options) {
-  cairo_font_options_destroy((cairo_font_options_t*)options) ; return ;
-} // end of [atsctrb_cairo_font_options_destroy]
-
-static inline
-ats_cairo_status_type
-atsctrb_cairo_font_options_status
-  (ats_ptr_type options) {
-  return cairo_font_options_status((cairo_font_options_t*)options) ;
-} // end of [atsctrb_cairo_font_options_status]
-
-static inline
-ats_void_type
-atsctrb_cairo_font_options_merge
-  (ats_ptr_type options, ats_ptr_type other) {
-  cairo_font_options_merge(
-    (cairo_font_options_t*)options, (cairo_font_options_t*)other
-  ) ; return ;
-} // end of [atsctrb_cairo_font_options_merge]
-
-static inline
-ats_ulint_type
-atsctrb_cairo_font_options_hash
-  (ats_ptr_type options) {
-  return cairo_font_options_hash((cairo_font_options_t*)options) ;
-} // end of [atsctrb_cairo_font_options_hash]
-
-static inline
-ats_bool_type
-atsctrb_cairo_font_options_equal
-  (ats_ptr_type options, ats_ptr_type other) {
-  return cairo_font_options_equal(
-    (cairo_font_options_t*)options, (cairo_font_options_t*)other
-  ) ;
-} // end of [atsctrb_cairo_font_options_equal]
-
-static inline
-ats_cairo_antialias_type
-atsctrb_cairo_font_options_get_antialias
-  (ats_ptr_type font) {
-  return cairo_font_options_get_antialias((cairo_font_options_t*)font) ;
-} /* end of [atsctrb_cairo_font_options_get_antialias] */
-
-static inline
-ats_void_type
-atsctrb_cairo_font_options_set_antialias (
-  ats_ptr_type font, ats_cairo_antialias_type antialias
-) {
-  cairo_font_options_set_antialias((cairo_font_options_t*)font, antialias);
-  return ;
-} /* end of [atsctrb_cairo_font_options_set_antialias] */
+#define atsctrb_cairo_font_options_create cairo_font_options_create
+#define atsctrb_cairo_font_options_copy cairo_font_options_copy
+#define atsctrb_cairo_font_options_destroy cairo_font_options_destroy
+#define atsctrb_cairo_font_options_status cairo_font_options_status
+#define atsctrb_cairo_font_options_merge cairo_font_options_merge
+#define atsctrb_cairo_font_options_hash cairo_font_options_hash
+#define atsctrb_cairo_font_options_equal cairo_font_options_equal
+#define atsctrb_cairo_font_options_get_antialias cairo_font_options_get_antialias
+#define atsctrb_cairo_font_options_set_antialias cairo_font_options_set_antialias
 
 /* ****** ****** */
 
@@ -1236,12 +374,7 @@ atsctrb_cairo_font_options_set_antialias (
 // surfaces for drawing
 //
 
-static inline
-ats_void_type
-atsctrb_cairo_surface_destroy
-  (ats_cairo_surface_ref sf) {
-  cairo_surface_destroy((cairo_surface_t*)sf) ; return ;
-}
+#define atsctrb_cairo_surface_destroy cairo_surface_destroy
 
 /* ****** ****** */
 
@@ -1249,71 +382,23 @@ atsctrb_cairo_surface_destroy
 
 typedef cairo_format_t ats_cairo_format_type ;
 
-static inline
-ats_cairo_surface_ref
-atsctrb_cairo_image_surface_create (
-  ats_cairo_format_type fmt
-, ats_int_type w, ats_int_type h
-) {
-  return cairo_image_surface_create(fmt, w, h) ;
-} /* end of [atsctrb_cairo_image_surface_create] */
-
-static inline
-ats_cairo_surface_ref
-atsctrb_cairo_image_surface_create_from_png
-  (ats_ptr_type filename) {
-  return cairo_image_surface_create_from_png((char*)filename) ;
-} // end of [atsctrb_cairo_image_surface_create_from_png]
-
-static inline
-ats_cairo_surface_ref
-atsctrb_cairo_image_surface_create_from_png_stream
-  (ats_fun_ptr_type fread, ats_ptr_type env) {
-  return cairo_image_surface_create_from_png_stream(
-    (cairo_read_func_t)fread, env
-  ) ; // end of [return]
-} // end of [atsctrb_cairo_image_surface_create_from_png_stream]
-
-static inline
-ats_double_type
-atsctrb_cairo_image_surface_get_width
-  (ats_ptr_type image) {
-  return cairo_image_surface_get_width (image) ;
-} /* end of [atsctrb_cairo_image_surface_get_width] */
-
-static inline
-ats_double_type
-atsctrb_cairo_image_surface_get_height
-  (ats_ptr_type image) {
-  return cairo_image_surface_get_height (image) ;
-} /* end of [atsctrb_cairo_image_surface_get_height] */
-
-static inline
-ats_double_type
-atsctrb_cairo_image_surface_get_stride
-  (ats_ptr_type image) {
-  return cairo_image_surface_get_stride (image) ;
-} /* end of [atsctrb_cairo_image_surface_get_stride] */
+#define atsctrb_cairo_format_stride_for_width cairo_format_stride_for_width
+#define atsctrb_cairo_image_surface_create cairo_image_surface_create
+#define atsctrb_cairo_image_surface_create_for_data cairo_image_surface_create_for_data
+#define atsctrb_cairo_image_surface_get_data cairo_image_surface_get_data
+#define atsctrb_cairo_image_surface_get_format cairo_image_surface_get_format
+#define atsctrb_cairo_image_surface_get_width cairo_image_surface_get_width
+#define atsctrb_cairo_image_surface_get_height cairo_image_surface_get_height
+#define atsctrb_cairo_image_surface_get_stride cairo_image_surface_get_stride
 
 /* ****** ****** */
 
-static inline
-ats_cairo_status_type
-atsctrb_cairo_surface_write_to_png
-  (ats_cairo_surface_ref sf, ats_ptr_type filename) {
-  return cairo_surface_write_to_png ((cairo_surface_t*)sf, (char*)filename) ;
-} /* end of [atsctrb_cairo_surface_write_to_png] */
+// PNG support
 
-static inline
-ats_cairo_status_type
-atsctrb_cairo_surface_write_to_png_stream(
-  ats_cairo_surface_ref sf
-, ats_fun_ptr_type fwrite, ats_ptr_type env
-) {
-  return cairo_surface_write_to_png_stream (
-    (cairo_surface_t*)sf, (cairo_write_func_t)fwrite, env
-  ) ; // end of [return]
-} /* end of [atsctrb_cairo_surface_write_to_png_stream] */
+#define atsctrb_cairo_image_surface_create_from_png cairo_image_surface_create_from_png
+#define atsctrb_cairo_image_surface_create_from_png_stream cairo_image_surface_create_from_png_stream
+#define atsctrb_cairo_surface_write_to_png cairo_surface_write_to_png
+#define atsctrb_cairo_surface_write_to_png_stream cairo_surface_write_to_png_stream
 
 /* ****** ****** */
 
@@ -1321,43 +406,10 @@ atsctrb_cairo_surface_write_to_png_stream(
 
 #if (CAIRO_HAS_PDF_SURFACE)
 
-static inline
-ats_cairo_surface_ref
-atsctrb_cairo_pdf_surface_create (
-  ats_ptr_type filename
-, ats_double_type w_pts, ats_double_type h_pts
-) {
-  return cairo_pdf_surface_create((char*)filename, w_pts, h_pts) ;
-} /* end of [atsctrb_cairo_pdf_surface_create] */
-
-static inline
-ats_cairo_surface_ref
-atsctrb_cairo_pdf_surface_create_null (
-  ats_double_type w_pts, ats_double_type h_pts
-) {
-  return cairo_pdf_surface_create((char*)0, w_pts, h_pts) ;
-} /* end of [atsctrb_cairo_pdf_surface_create_null] */
-
-static inline
-ats_cairo_surface_ref
-atsctrb_cairo_pdf_surface_create_for_stream (
-  ats_fun_ptr_type fwrite, ats_ptr_type env
-, ats_double_type w_pts, ats_double_type h_pts
-) {
-  return cairo_pdf_surface_create_for_stream(
-    (cairo_write_func_t)fwrite, (ats_ptr_type)env, w_pts, h_pts
-  ) ; // end of [return]
-} // end of [atsctrb_cairo_pdf_surface_create_for_stream]
-
-static inline
-ats_void_type
-atsctrb_cairo_pdf_surface_set_size (
-  ats_cairo_surface_ref sf
-, ats_double_type w_pts, ats_double_type h_pts
-) {
-  cairo_pdf_surface_set_size((cairo_surface_t*)sf, w_pts, h_pts) ;
-  return ;
-} /* end of [atsctrb_cairo_pdf_surface_set_size] */
+#define atsctrb_cairo_pdf_surface_create cairo_pdf_surface_create
+#define atsctrb_cairo_pdf_surface_create_null cairo_pdf_surface_create_null
+#define atsctrb_cairo_pdf_surface_create_for_stream cairo_pdf_surface_create_for_stream
+#define atsctrb_cairo_pdf_surface_set_size cairo_pdf_surface_set_size
 
 #endif // end of [CAIRO_HAS_PDF_SURFACE]
 
@@ -1367,33 +419,9 @@ atsctrb_cairo_pdf_surface_set_size (
 
 #if (CAIRO_HAS_PS_SURFACE)
 
-static inline
-ats_cairo_surface_ref
-atsctrb_cairo_ps_surface_create (
-  ats_ptr_type filename
-, ats_double_type w_pts, ats_double_type h_pts
-) {
-  return cairo_ps_surface_create((char*)filename, w_pts, h_pts) ;
-} /* end of [atsctrb_cairo_ps_surface_create] */
-
-static inline
-ats_cairo_surface_ref
-atsctrb_cairo_ps_surface_create_null (
-  ats_double_type w_pts, ats_double_type h_pts
-) {
-  return cairo_ps_surface_create((char*)0, w_pts, h_pts) ;
-} /* end of [atsctrb_cairo_ps_surface_create_null] */
-
-static inline
-ats_cairo_surface_ref
-atsctrb_cairo_ps_surface_create_for_stream (
-  ats_fun_ptr_type fwrite, ats_ptr_type env
-, ats_double_type w_pts, ats_double_type h_pts
-) {
-  return cairo_ps_surface_create_for_stream(
-    (cairo_write_func_t)fwrite, (ats_ptr_type)env, w_pts, h_pts
-  ) ; // end of [return]
-} // end of [atsctrb_cairo_ps_surface_create_for_stream]
+#define atsctrb_cairo_ps_surface_create cairo_ps_surface_create
+#define atsctrb_cairo_ps_surface_create_null cairo_ps_surface_create_null
+#define atsctrb_cairo_ps_surface_create_for_stream cairo_ps_surface_create_for_stream
 
 /*
 typedef cairo_ps_level_t ats_cairo_ps_level_type ;
@@ -1407,37 +435,10 @@ atsctrb_cairo_ps_get_levels
 } // end of [cairo_ps_get_levels]
 */
 
-static inline
-ats_void_type
-atsctrb_cairo_ps_surface_set_size (
-  ats_cairo_surface_ref sf
-, ats_double_type w_pts, ats_double_type h_pts
-) {
-  cairo_ps_surface_set_size((cairo_surface_t*)sf, w_pts, h_pts) ;
-  return ;
-} /* end of [atsctrb_cairo_ps_surface_set_size] */
-
-static inline
-ats_void_type
-atsctrb_cairo_ps_surface_dsc_begin_setup
-  (ats_cairo_surface_ref sf) {
-  cairo_ps_surface_dsc_begin_setup (sf) ; return ;
-} // end of [atsctrb_cairo_ps_surface_dsc_begin_setup]
-
-static inline
-ats_void_type
-atsctrb_cairo_ps_surface_dsc_begin_page_setup
-  (ats_cairo_surface_ref sf) {
-  cairo_ps_surface_dsc_begin_page_setup (sf) ; return ;
-} // end of [atsctrb_cairo_ps_surface_dsc_begin_page_setup]
-
-static inline
-ats_void_type
-atsctrb_cairo_ps_surface_dsc_comment
-  (ats_cairo_surface_ref sf, ats_ptr_type comment) {
-  cairo_ps_surface_dsc_comment (sf, (char*)comment) ;
-  return ;
-} // end of [atsctrb_cairo_ps_surface_dsc_comment]
+#define atsctrb_cairo_ps_surface_set_size cairo_ps_surface_set_size
+#define atsctrb_cairo_ps_surface_dsc_begin_setup cairo_ps_surface_dsc_begin_setup
+#define atsctrb_cairo_ps_surface_dsc_begin_page_setup cairo_ps_surface_dsc_begin_page_setup
+#define atsctrb_cairo_ps_surface_dsc_comment cairo_ps_surface_dsc_comment
 
 #endif // end of [CAIRO_HAS_PS_SURFACE]
 
@@ -1451,145 +452,29 @@ atsctrb_cairo_ps_surface_dsc_comment
 
 // generic matrix operations
 
-static inline
-ats_void_type
-atsctrb_cairo_matrix_init (
-  ats_ref_type matrix
-, ats_double_type xx, ats_double_type yx
-, ats_double_type xy, ats_double_type yy
-, ats_double_type x0, ats_double_type y0
-) {
-  cairo_matrix_init((cairo_matrix_t*)matrix, xx, yx, xy, yy, x0, y0) ;
-  return ;
-} /* end of [atsctrb_cairo_matrix_init] */
-
-static inline
-ats_void_type
-atsctrb_cairo_matrix_init_identity (
-  ats_ref_type matrix
-) {
-  cairo_matrix_init_identity((cairo_matrix_t*)matrix) ; return ;
-} /* end of [atsctrb_cairo_matrix_init_identity] */
-
-static inline
-ats_void_type
-atsctrb_cairo_matrix_init_translate (
-  ats_ref_type matrix
-, ats_double_type tx, ats_double_type ty
-) {
-  cairo_matrix_init_translate((cairo_matrix_t*)matrix, tx, ty) ;
-  return ;
-} /* end of [atsctrb_cairo_matrix_init_translate] */
-
-static inline
-ats_void_type
-atsctrb_cairo_matrix_init_scale (
-  ats_ref_type matrix
-, ats_double_type sx, ats_double_type sy
-) {
-  cairo_matrix_init_scale((cairo_matrix_t*)matrix, sx, sy) ;
-  return ;
-} /* end of [atsctrb_cairo_matrix_init_scale] */
-
-static inline
-ats_void_type
-atsctrb_cairo_matrix_init_rotate (
-  ats_ref_type matrix
-, ats_double_type angle
-) {
-  cairo_matrix_init_rotate((cairo_matrix_t*)matrix, angle) ;
-  return ;
-} /* end of [atsctrb_cairo_matrix_init_rotate] */
+#define atsctrb_cairo_matrix_init cairo_matrix_init
+#define atsctrb_cairo_matrix_init_identity cairo_matrix_init_identity
+#define atsctrb_cairo_matrix_init_translate cairo_matrix_init_translate
+#define atsctrb_cairo_matrix_init_scale cairo_matrix_init_scale
+#define atsctrb_cairo_matrix_init_rotate cairo_matrix_init_rotate
 
 /* ****** ****** */
 
-static inline
-ats_void_type
-atsctrb_cairo_matrix_translate (
-  ats_ref_type matrix
-, ats_double_type tx, ats_double_type ty
-) {
-  cairo_matrix_translate((cairo_matrix_t*)matrix, tx, ty) ;
-  return ;
-} /* end of [atsctrb_cairo_matrix_translate] */
-
-static inline
-ats_void_type
-atsctrb_cairo_matrix_scale (
-  ats_ref_type matrix
-, ats_double_type sx, ats_double_type sy
-) {
-  cairo_matrix_scale((cairo_matrix_t*)matrix, sx, sy) ;
-  return ;
-} /* end of [atsctrb_cairo_matrix_scale] */
-
-static inline
-ats_void_type
-atsctrb_cairo_matrix_rotate (
-  ats_ref_type matrix
-, ats_double_type angle
-) {
-  cairo_matrix_rotate((cairo_matrix_t*)matrix, angle) ;
-  return ;
-} /* end of [atsctrb_cairo_matrix_rotate] */
+#define atsctrb_cairo_matrix_translate cairo_matrix_translate
+#define atsctrb_cairo_matrix_scale cairo_matrix_scale
+#define atsctrb_cairo_matrix_rotate cairo_matrix_rotate
 
 /* ****** ****** */
 
-static inline
-ats_cairo_status_type
-atsctrb_cairo_matrix_invert
-  (ats_ref_type matrix) {
-  return cairo_matrix_invert(matrix) ;
-} // end of [atsctrb_cairo_matrix_invert]
-
-static inline
-ats_void_type
-atsctrb_cairo_matrix_multiply (
-  ats_ref_type result
-, ats_ref_type a, ats_ref_type b
-) {
-  cairo_matrix_multiply(
-    (cairo_matrix_t*)result
-  , (cairo_matrix_t*)a, (cairo_matrix_t*)b
-  ) ; return ;
-} // end of [atsctrb_cairo_matrix_multiply]
-
-static inline
-ats_void_type
-atsctrb_cairo_matrix_transform_distance (
-  ats_ref_type matrix
-, ats_ref_type dx, ats_ref_type dy
-) {
-  cairo_matrix_transform_distance(
-    (cairo_matrix_t*)matrix, (double*)dx, (double*)dy
-  ) ; return ;
-} // end of [atsctrb_cairo_matrix_transform_distance]
-
-static inline
-ats_void_type
-atsctrb_cairo_matrix_transform_point (
-  ats_ref_type matrix
-, ats_ref_type x, ats_ref_type y
-) {
-  cairo_matrix_transform_point(
-    (cairo_matrix_t*)matrix, (double*)x, (double*)y
-  ) ; return ;
-} // end of [atsctrb_cairo_matrix_transform_point]
+#define atsctrb_cairo_matrix_invert cairo_matrix_invert
+#define atsctrb_cairo_matrix_multiply cairo_matrix_multiply
+#define atsctrb_cairo_matrix_transform_distance cairo_matrix_transform_distance
+#define atsctrb_cairo_matrix_transform_point cairo_matrix_transform_point
 
 /* ****** ****** */
 
-static inline
-ats_ptr_type // string
-atsctrb_cairo_status_to_string
-  (ats_cairo_status_type status) {
-  return (ats_ptr_type)cairo_status_to_string(status) ;
-} // end of [atsctrb_cairo_status_to_string]
-
-static inline
-ats_void_type
-atsctrb_cairo_debug_reset_static_data () {
-  cairo_debug_reset_static_data() ; return ;
-} // end of [atsctrb_cairo_debug_reset_static_data]
+#define atsctrb_cairo_status_to_string cairo_status_to_string
+#define atsctrb_cairo_debug_reset_static_data cairo_debug_reset_static_data
 
 /* ****** ****** */
 
