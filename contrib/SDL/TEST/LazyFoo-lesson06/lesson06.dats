@@ -1,6 +1,6 @@
 //
 // LazyFoo-lesson05 _translated_ into ATS
-// See http://lazyfoo.net/SDL_tutorials/lesson05
+// See http://lazyfoo.net/SDL_tutorials/lesson06
 //
 
 (* ****** ****** *)
@@ -42,8 +42,8 @@ in
       // Map the color key
       val (pf_format | p_format) = SDL_Surface_format (optimizedImage)
       val colorkey = SDL_MapRGB (!p_format, (Uint8)0, (Uint8)0xFF, (Uint8)0xFF)
-      prval () = minus_addback (pf_format | optimizedImage)
       //Set all pixels of color R 0, G 0xFF, B 0xFF to be transparent
+      prval () = minus_addback (pf_format | optimizedImage)
       val _err = SDL_SetColorKey (optimizedImage, SDL_SRCCOLORKEY, colorkey)
     in
       optimizedImage
@@ -55,39 +55,68 @@ end // end of [load_image]
 
 extern
 fun apply_surface {l1,l2:anz} (
-    x: int, y: int, src: !SDL_Surface_ref l1, dst: !SDL_Surface_ref l2
+    x: int, y: int, src: !SDL_Surface_ref l1, dst: !SDL_Surface_ref l2, rect: &SDL_Rect
   ) : void
 
 implement apply_surface
-  (x, y, src, dst) = () where {
+  (x, y, src, dst, rect) = () where {
   var offset: SDL_Rect // unintialized
   val () = offset.x := (Sint16)x and () = offset.y := (Sint16)y
-  val _err = SDL_UpperBlit_ptr (src, null, dst, &offset)
+  val _err = SDL_UpperBlit_ptr (src, &rect, dst, &offset)
 } // end of [apply_surface]
 
 (* ****** ****** *)
 
 implement main () = () where {
-//
   val _err = SDL_Init (SDL_INIT_EVERYTHING)
   val () = assert_errmsg (_err = 0, #LOCATION)
   val screen = SDL_SetVideoMode (
     SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_BPP, SDL_SWSURFACE
   ) // end of [val]
   val () = assert_errmsg (ref_is_notnull screen, #LOCATION)
-  // Set the window caption
+//
   val () = SDL_WM_SetCaption (
-    stropt_some "Foo says \"Hello!\"", stropt_none
+    stropt_some "Split the dots", stropt_none
   ) // end of [val]
 //
-  val background = load_image ("background.png")
-  val () = assert_errmsg (ref_is_notnull background, #LOCATION)
-  val foo = load_image ("LazyFoo-lesson05/foo.png")
-  val () = assert_errmsg (ref_is_notnull foo, #LOCATION)
+  val dots = load_image ("LazyFoo-lesson06/dots.png")
+  val () = assert_errmsg (ref_is_notnull dots, #LOCATION)
 //
-  //Apply the surfaces to the screen
-  val () = apply_surface (0, 0, background, screen)
-  val () = apply_surface (240, 190, foo, screen)
+  var clip0: SDL_Rect
+  val () = clip0.x := (Sint16)0
+  val () = clip0.y := (Sint16)0
+  val () = clip0.w := (Uint16)100
+  val () = clip0.h := (Uint16)100
+//
+  var clip1: SDL_Rect
+  val () = clip1.x := (Sint16)100
+  val () = clip1.y := (Sint16)0
+  val () = clip1.w := (Uint16)100
+  val () = clip1.h := (Uint16)100
+//
+  var clip2: SDL_Rect
+  val () = clip2.x := (Sint16)0
+  val () = clip2.y := (Sint16)100
+  val () = clip2.w := (Uint16)100
+  val () = clip2.h := (Uint16)100
+//
+  var clip3: SDL_Rect
+  val () = clip3.x := (Sint16)100
+  val () = clip3.y := (Sint16)100
+  val () = clip3.w := (Uint16)100
+  val () = clip3.h := (Uint16)100
+//
+  // Fill the screen white
+  val (pf_format | p_format) = SDL_Surface_format (screen)
+  val color = SDL_MapRGB (!p_format, (Uint8)0xFF, (Uint8)0xFF, (Uint8)0xFF)
+  prval () = minus_addback (pf_format | screen)
+  val _err = SDL_FillRect_ptr (screen, null, color)
+//
+  // Apply the sprites to the screen
+  val () = apply_surface(0, 0, dots, screen, clip0)
+  val () = apply_surface(540, 0, dots, screen, clip1)
+  val () = apply_surface(0, 380, dots, screen, clip2)
+  val () = apply_surface(540, 380, dots, screen, clip3)
 //
   val _err = SDL_Flip (screen)
   val () = assert_errmsg (_err = 0, #LOCATION)
@@ -110,12 +139,11 @@ implement main () = () where {
     // nothing
   end // end of [val]
 //
-  val () = SDL_FreeSurface (background)
-  val () = SDL_FreeSurface (foo)
+  val () = SDL_FreeSurface (dots)
   val _ptr = SDL_Quit_screen (screen)
   val () = SDL_Quit ()
 } // end of [main]
 
 (* ****** ****** *)
 
-(* end of [LazyFoo-lesson05.dats] *)
+(* end of [lesson06.dats] *)

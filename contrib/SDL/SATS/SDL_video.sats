@@ -36,10 +36,12 @@
 
 (* ****** ****** *)
 
+abst@ype SDL_Rect_t = $extype "SDL_Rect"
 typedef SDL_Rect = @{
-  x= Sint16, y= Sint16, w= Uint16, v= Uint16
+  x= Sint16, y= Sint16, w= Uint16, h= Uint16
 } // end of [SDL_Rect]
 
+abst@ype SDL_Color_t = $extype "SDL_Color"
 typedef SDL_Color = @{
   r= Uint8, g= Uint8, b= Uint8, unused= Uint8
 } // end of [SDL_Color]

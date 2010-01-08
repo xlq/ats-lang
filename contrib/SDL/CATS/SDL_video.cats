@@ -160,6 +160,16 @@ atsctrb_SDL_UpperBlit (
 /* ****** ****** */
 
 static inline
+ats_int_type // err
+atsctrb_SDL_FillRect (
+  ats_ref_type dst, ats_ref_type dstrect, Uint32 color
+) {
+  return SDL_FillRect((SDL_Surface*)dst, (SDL_Rect*)dstrect, color) ;
+} // end of [atsctrb_SDL_FillRect]
+
+/* ****** ****** */
+
+static inline
 ats_ref_type // SDL_Surface_ref0
 atsctrb_SDL_DisplayFormat (
   ats_ref_type surface
