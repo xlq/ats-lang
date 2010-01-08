@@ -59,6 +59,10 @@ staload Loc = "ats_location.sats"
 
 (* ****** ****** *)
 
+staload DEXP1 = "ats_dynexp1.sats" // for datatype dcstextdef
+
+(* ****** ****** *)
+
 staload "ats_staexp2.sats"
 staload "ats_dynexp2.sats"
 
@@ -187,19 +191,23 @@ in
 end // end of [emit_d2con]
 
 implement emit_d2cst (pf | out, d2c) = let
-  val ext = d2cst_ext_get (d2c)
+  val extdef = d2cst_extdef_get (d2c)
 in
-  if stropt_is_none ext then let
-    val fil = d2cst_fil_get (d2c)
-    val name = $Sym.symbol_name (d2cst_sym_get d2c)
-    val () = emit_filename (pf | out, fil)
-    val () = fprint1_string (pf | out, "__")
-    val () = emit_identifier (pf | out, name)
-  in
-    // empty
-  end else begin
-    emit_identifier (pf | out, stropt_unsome ext)
-  end // end of [if]
+  case+ extdef of
+  | $DEXP1.DCSTEXTDEFnone () => () where {
+      val fil = d2cst_fil_get (d2c)
+      val name = $Sym.symbol_name (d2cst_sym_get d2c)
+      val () = emit_filename (pf | out, fil)
+      val () = fprint1_string (pf | out, "__")
+      val () = emit_identifier (pf | out, name)
+    } // end of [DCSTEXTDEFnone]
+  | $DEXP1.DCSTEXTDEFname name => emit_identifier (pf | out, name)
+  | $DEXP1.DCSTEXTDEFcall _ => begin
+      prerr_interror ();
+      prerr ": emit_d2cst: DCSTEXTDEFcall: d2c = "; prerr_d2cst d2c;
+      prerr_newline ();
+      $Err.abort {void} ()
+    end // end of [DCSTEXTDEFcall]
 end // end of [emit_d2cst]
 
 fn emit_funlab_prefix {m:file_mode}
@@ -218,9 +226,10 @@ implement emit_funlab (pf | out, fl) = let
   val () = case+ funlab_qua_get fl of
     | D2CSTOPTsome d2c => let // global function
         val () = emit_d2cst (pf | out, d2c)
-        val () = case+ d2cst_kind_get d2c of
+        val () = (case+ d2cst_kind_get d2c of
           | $Syn.DCSTKINDval () => fprint1_string (pf | out, "$fun")
           | _ => ()
+        ) : void // end of [val]
       in
         // empty
       end // end of [D2CSTOPTsome]

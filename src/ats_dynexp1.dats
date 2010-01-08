@@ -746,12 +746,12 @@ implement s1aspdec_make (loc, qid, arg, res, def) = '{
 , s1aspdec_def= def
 } // end of [s1aspdec_make]
 
-implement d1cstdec_make (loc, fil, id, s1e, ext) = '{
+implement d1cstdec_make (loc, fil, id, s1e, extdef) = '{
   d1cstdec_loc= loc
 , d1cstdec_fil= fil
 , d1cstdec_sym= id
 , d1cstdec_typ= s1e
-, d1cstdec_ext= ext
+, d1cstdec_extdef= extdef
 } // end of [d1cstdec_make]
 
 implement d1atcon_make (loc, id, qua, npf, arg, ind) = '{

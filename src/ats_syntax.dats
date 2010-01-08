@@ -1536,11 +1536,10 @@ in
   stropt_some (string1_of_string ext.s0tring_val)
 end
 
-implement d0cstdec_make (id, arg, eff, res, ext) = let
-
-val fil = $Fil.the_filename_get ()
-val loc = combine (id.i0de_loc, res.s0exp_loc)
-
+implement d0cstdec_make
+  (id, arg, eff, res, extdef) = let
+  val fil = $Fil.the_filename_get ()
+  val loc = combine (id.i0de_loc, res.s0exp_loc)
 in '{
   d0cstdec_loc= loc
 , d0cstdec_fil= fil
@@ -1548,7 +1547,7 @@ in '{
 , d0cstdec_arg= arg
 , d0cstdec_eff= eff
 , d0cstdec_res= res
-, d0cstdec_ext= ext
+, d0cstdec_extdef= extdef
 } end // end of [d0cstdec_make]
 
 implement d0cstdeclst_nil () = nil ()

@@ -55,6 +55,9 @@ typedef intinf_t = $IntInf.intinf_t
 staload SEXP1 = "ats_staexp1.sats" // for [e1xp]
 typedef e1xp = $SEXP1.e1xp
 
+staload DEXP1 = "ats_dynexp1.sats" // for [dcstextdef]
+typedef dcstextdef = $DEXP1.dcstextdef
+
 staload Stamp = "ats_stamp.sats"
 typedef stamp_t = $Stamp.stamp_t
 
@@ -156,7 +159,7 @@ fun d2cst_make (
 , decarg: s2qualst
 , arilst: List int
 , typ: s2exp
-, ext: Stropt
+, extdef: dcstextdef
 ) : d2cst_t
 
 //
@@ -169,7 +172,7 @@ fun d2cst_arilst_get (_: d2cst_t): List int
 fun d2cst_decarg_get (_: d2cst_t): s2qualst
 fun d2cst_decarg_set (_: d2cst_t, _: s2qualst): void
 fun d2cst_typ_get (_: d2cst_t): s2exp
-fun d2cst_ext_get (_: d2cst_t): Stropt
+fun d2cst_extdef_get (_: d2cst_t): dcstextdef
 fun d2cst_stamp_get (_: d2cst_t): stamp_t
 
 //

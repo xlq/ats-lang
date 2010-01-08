@@ -38,6 +38,8 @@
 
 abst@ype SDL_Event = $extype "SDL_Event"
 
+(* ****** ****** *)
+
 abst@ype SDL_EventType = $extype "SDL_EventType"
 //
 castfn int_of_SDL_EventType (x: SDL_EventType):<> int
@@ -69,6 +71,20 @@ macdef SDL_VIDEOEXPOSE = $extval (SDL_EventType, "SDL_VIDEOEXPOSE")
 fun SDL_Event_type
   (x: &SDL_Event):<> SDL_EventType = "atsctrb_SDL_Event_type"
 // end of [SDL_Event_type]
+
+(* ****** ****** *)
+
+abst@ype SDL_KeyboardEvent = $extype "SDL_KeyboardEvent"
+praxi SDL_KeyboardEvent_of_SDL_Event
+  (x: &SDL_Event >> SDL_KeyboardEvent): void
+praxi SDL_Event_of_SDL_KeyboardEvent
+  (x: &SDL_KeyboardEvent >> SDL_Event): void
+
+(*
+fun SDL_KeyboardEvent_type (x: &SDL_KeyboardEvent): Uint8
+fun SDL_KeyboardEvent_which (x: &SDL_KeyboardEvent): Uint8
+fun SDL_KeyboardEvent_state (x: &SDL_KeyboardEvent): Uint8
+*)
 
 (* ****** ****** *)
 

@@ -155,8 +155,8 @@ fn d1cstdec_tr (
                                   else s1exp_tr_dn_t0ype d1c.d1cstdec_typ
   ) : s2exp // end of [var]
   val arilst = s2exp_arity_list s2e_cst
-  val ext = d1c.d1cstdec_ext
-  val d2c = d2cst_make (loc, fil, id, dck, s2vpslst, arilst, s2e_cst, ext)
+  val extdef = d1c.d1cstdec_extdef
+  val d2c = d2cst_make (loc, fil, id, dck, s2vpslst, arilst, s2e_cst, extdef)
 in
   the_d2expenv_add_dcst d2c; d2c
 end // end of [d1cstdec_tr]

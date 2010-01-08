@@ -73,7 +73,7 @@ typedef d2cst_struct = struct {
 , d2cst_decarg= s2qualst // template arg
 , d2cst_arilst= List int // arity
 , d2cst_typ= s2exp // assigned type
-, d2cst_ext= Stropt // external name
+, d2cst_extdef= dcstextdef // external dcst definition
 , d2cst_def= d2expopt // definition
 , d2cst_stamp= stamp_t // unique stamp
 , d2cst_hityp= Option (hityp_t) // type erasure
@@ -86,7 +86,7 @@ assume d2cst_t = [l:addr] (vbox (d2cst_struct @ l) | ptr l)
 in // in of [local]
 
 implement d2cst_make
-  (loc, fil, id, dck, decarg, arilst, typ, ext) = let
+  (loc, fil, id, dck, decarg, arilst, typ, extdef) = let
 
 val stamp = $Stamp.d2cst_stamp_make ()
 val (pf_gc, pf | p) = ptr_alloc_tsz {d2cst_struct} (sizeof<d2cst_struct>)
@@ -100,7 +100,7 @@ p->d2cst_kind := dck;
 p->d2cst_decarg := decarg;
 p->d2cst_arilst := arilst;
 p->d2cst_typ := typ;
-p->d2cst_ext := ext;
+p->d2cst_extdef := extdef;
 p->d2cst_def := None ();
 p->d2cst_stamp := stamp;
 p->d2cst_hityp := None ();
@@ -138,8 +138,8 @@ implement d2cst_decarg_set (d2c, decarg) =
 implement d2cst_typ_get (d2c) =
   let val (vbox pf | p) = d2c in p->d2cst_typ end
 
-implement d2cst_ext_get (d2c) =
-  let val (vbox pf | p) = d2c in p->d2cst_ext end
+implement d2cst_extdef_get (d2c) =
+  let val (vbox pf | p) = d2c in p->d2cst_extdef end
 
 implement d2cst_def_get (d2c) =
   let val (vbox pf | p) = d2c in p->d2cst_def end

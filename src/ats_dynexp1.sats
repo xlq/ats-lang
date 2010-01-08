@@ -78,6 +78,14 @@ typedef valkind = $Syn.valkind
 
 (* ****** ****** *)
 
+datatype dcstextdef =
+  | DCSTEXTDEFnone of ()
+  | DCSTEXTDEFname of string
+  | DCSTEXTDEFcall of (string, List int)
+// end of [dcstextdef]
+
+(* ****** ****** *)
+
 datatype p1at_node = 
   | P1Tann of // ascribed pattern
       (p1at, s1exp) 
@@ -564,7 +572,7 @@ and d1cstdec = '{
 , d1cstdec_fil= fil_t
 , d1cstdec_sym= sym_t
 , d1cstdec_typ= s1exp
-, d1cstdec_ext= Stropt
+, d1cstdec_extdef= dcstextdef
 } // end of [d1cstdec]
 
 and d1cstdeclst = List d1cstdec
@@ -1011,7 +1019,7 @@ fun s1aspdec_make
 // end of [s1aspdec_make]
 
 fun d1cstdec_make
-  (loc: loc_t, fil: fil_t, id: sym_t, typ: s1exp, ext: Stropt)
+  (loc: loc_t, fil: fil_t, id: sym_t, typ: s1exp, extdef: dcstextdef)
   : d1cstdec
 // end of [d1cstdec_make]
 

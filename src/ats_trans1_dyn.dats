@@ -110,6 +110,20 @@ end // end of [prerr_loc_interror]
 typedef efc = $Eff.effcst
 typedef efcopt = Option efc
 
+(* ****** ****** *)
+
+fn dcstextdef_tr
+  (ext: Stropt): dcstextdef =
+  if stropt_is_none ext then DCSTEXTDEFnone ()
+  else let
+    val ext = stropt_unsome ext
+  in
+    DCSTEXTDEFname ext
+  end // end of [if]
+// end of [dcstextdef]
+
+(* ****** ****** *)
+
 // translation of dynamic constants
 
 local // defining [d0cstdec_tr]
@@ -241,9 +255,10 @@ fn d0cstdec_tr (
   val s1e_res = s0exp_tr d.d0cstdec_res
   val arg = d.d0cstdec_arg and eff = d.d0cstdec_eff
   val s1e = aux3 (loc0, isfun, isprf, arg, eff, s1e_res)
+  val extdef = dcstextdef_tr (d.d0cstdec_extdef)
 in
   d1cstdec_make (
-    loc0, d.d0cstdec_fil, d.d0cstdec_sym, s1e, d.d0cstdec_ext
+    loc0, d.d0cstdec_fil, d.d0cstdec_sym, s1e, extdef
   ) // end of [d1cstdec_make]
 end // end of [d0cstdec_tr]
 

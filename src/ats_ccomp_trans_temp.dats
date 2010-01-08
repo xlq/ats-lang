@@ -58,6 +58,10 @@ staload Sym = "ats_symbol.sats"
 
 (* ****** ****** *)
 
+staload DEXP1 = "ats_dynexp1.sats" // for datatype dcstextdef
+
+(* ****** ****** *)
+
 staload "ats_staexp2.sats"
 staload "ats_dynexp2.sats"
 staload "ats_trans2_env.sats"
@@ -398,18 +402,23 @@ end // end of [ccomp_tmpdef]
 (* ****** ****** *)
 
 implement template_cst_name_make (d2c, hitss) = let
-  val ext = d2cst_ext_get d2c
-  val basename = (
-    if stropt_is_some ext then stropt_unsome ext else let
-      val sym = d2cst_sym_get d2c; val stamp = d2cst_stamp_get d2c
-    in
-      tostringf (
-        "%s$%s", @($Sym.symbol_name sym, $Stamp.tostring_stamp stamp)
-      ) // end of [tostringf]
-    end // end of [if]
+  val extdef = d2cst_extdef_get d2c; val base = (case+ extdef of
+    | $DEXP1.DCSTEXTDEFnone () => let
+        val sym = d2cst_sym_get d2c; val stamp = d2cst_stamp_get d2c
+      in
+        tostringf (
+          "%s$%s", @($Sym.symbol_name sym, $Stamp.tostring_stamp stamp)
+        ) // end of [tostringf]
+      end // end of [if]
+    | $DEXP1.DCSTEXTDEFname name => name
+    | $DEXP1.DCSTEXTDEFcall (_name, _args) => begin
+        prerr_interror ();
+        prerr ": tmpnamtbl_cst_name_make: d2c = "; prerr d2c; prerr_newline ();
+        $Err.abort {string} ()
+      end // end of [DCSTEXTDEFcall]
   ) : string
 in
-  template_name_make (basename, hitss)
+  template_name_make (base, hitss)
 end // end of [template_cst_name_make]
 
 implement template_var_name_make (d2v, hitss) = let

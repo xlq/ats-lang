@@ -1275,8 +1275,8 @@ typedef d0cstdec = '{
 , d0cstdec_arg= d0arglst
 , d0cstdec_eff= e0fftaglstopt
 , d0cstdec_res= s0exp
-, d0cstdec_ext= Stropt
-}
+, d0cstdec_extdef= Stropt
+} // end of [d0cstdec]
 
 fun d0cstdec_make
   (_: i0de, arg: d0arglst, _: e0fftaglstopt, res: s0exp, ext: Stropt)

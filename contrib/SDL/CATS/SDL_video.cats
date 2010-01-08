@@ -42,15 +42,6 @@
 /* ****** ****** */
 
 static inline
-ats_ptr_type
-atsctrb_SDL_Surface_format
-  (ats_ref_type surface) {
-  return ((SDL_Surface*)surface)->format ;
-} // end of [atsctrb_SDL_Surface_format]
-
-/* ****** ****** */
-
-static inline
 ats_ref_type // SDL_Surface_ref0
 atsctrb_SDL_SetVideoMode (
   ats_int_type width, ats_int_type height, ats_int_type bpp, Uint32 flags

@@ -99,7 +99,13 @@ overload ref_is_notnull with SDL_Surface_ref_is_notnull
 fun SDL_Surface_format {l:anz} (
     sf: !SDL_Surface_ref l >> minus (SDL_Surface_ref l, SDL_PixelFormat @ l_format)
   ) : #[l_format:addr] (SDL_PixelFormat @ l_format | ptr l_format)
-  = "atsctrb_SDL_Surface_format"
+  = "ats_field_get(SDL_Surface, #sf, format)"
+
+fun SDL_Surface_w {l:anz} (sf: !SDL_Surface_ref l): int
+  = "ats_field_get(SDL_Surface, #sf, w)"
+
+fun SDL_Surface_h {l:anz} (sf: !SDL_Surface_ref l): int
+  = "ats_field_get(SDL_Surface, #sf, h)"
 
 (* ****** ****** *)
 
