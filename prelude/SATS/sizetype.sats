@@ -462,7 +462,27 @@ fun ssize_of_int (i: int):<> ssize_t
 
 (* ****** ****** *)
 
+fun add_ssize_ssize (i: ssize_t, j: ssize_t): ssize_t
+  = "atspre_add_ssize_ssize"
+overload + with add_ssize_ssize
+
+fun sub_ssize_ssize (i: ssize_t, j: ssize_t): ssize_t
+  = "atspre_sub_ssize_ssize"
+overload - with sub_ssize_ssize
+
+fun mul_ssize_ssize (i: ssize_t, j: ssize_t): ssize_t
+  = "atspre_mul_ssize_ssize"
+overload * with sub_ssize_ssize
+
+fun div_ssize_ssize (i: ssize_t, j: ssize_t): ssize_t
+  = "atspre_div_ssize_ssize"
+overload / with sub_ssize_ssize
+
+(* ****** ****** *)
+
+//
 // signed indexed size type
+//
 
 (* ****** ****** *)
 
@@ -476,6 +496,28 @@ fun int1_of_ssize1 {i:int} (sz: ssize_t i):<> int i
 
 fun ssize1_of_int1 {i:int} (i: int i):<> ssize_t i
   = "atspre_ssize1_of_int1"
+
+(* ****** ****** *)
+
+fun add_ssize1_ssize1 {i,j:int}
+  (i: ssize_t i, j: ssize_t j): ssize_t (i+j)
+  = "atspre_add_ssize1_ssize1"
+overload + with add_ssize1_ssize1
+
+fun sub_ssize1_ssize1 {i,j:int}
+  (i: ssize_t i, j: ssize_t j): ssize_t (i-j)
+  = "atspre_sub_ssize1_ssize1"
+overload - with sub_ssize1_ssize1
+
+fun mul_ssize1_ssize1 {i,j:int}
+  (i: ssize_t i, j: ssize_t j): ssize_t (i*j)
+  = "atspre_mul_ssize1_ssize1"
+overload * with mul_ssize1_ssize1
+
+fun div_ssize1_ssize1 {i,j:int}
+  (i: ssize_t i, j: ssize_t j): ssize_t (i/j)
+  = "atspre_div_ssize1_ssize1"
+overload / with div_ssize1_ssize1
 
 (* ****** ****** *)
 

@@ -1,6 +1,6 @@
 //
 // LazyFoo-lesson05 _translated_ into ATS
-// See http://lazyfoo.net/SDL_tutorials/lesson06
+// See http://lazyfoo.net/SDL_tutorials/lesson07
 //
 
 (* ****** ****** *)
@@ -13,6 +13,7 @@
 (* ****** ****** *)
 
 staload "contrib/SDL/SATS/SDL.sats"
+staload "contrib/SDL/SATS/SDL_ttf.sats"
 
 (* ****** ****** *)
 
@@ -55,14 +56,14 @@ end // end of [load_image]
 
 extern
 fun apply_surface {l1,l2:anz} (
-    x: int, y: int, src: !SDL_Surface_ref l1, dst: !SDL_Surface_ref l2, rect: &SDL_Rect
+    x: int, y: int, src: !SDL_Surface_ref l1, dst: !SDL_Surface_ref l2
   ) : void
 
 implement apply_surface
-  (x, y, src, dst, rect) = () where {
+  (x, y, src, dst) = () where {
   var offset: SDL_Rect // unintialized
   val () = offset.x := (Sint16)x and () = offset.y := (Sint16)y
-  val _err = SDL_UpperBlit_ptr (src, &rect, dst, &offset)
+  val _err = SDL_UpperBlit_ptr (src, null, dst, &offset)
 } // end of [apply_surface]
 
 (* ****** ****** *)
@@ -74,49 +75,33 @@ implement main () = () where {
     SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_BPP, SDL_SWSURFACE
   ) // end of [val]
   val () = assert_errmsg (ref_is_notnull screen, #LOCATION)
+  val _err = TTF_Init ()
+  val () = assert_errmsg (_err = 0, #LOCATION)
 //
   val () = SDL_WM_SetCaption (
-    stropt_some "Split the dots", stropt_none
+    stropt_some "TTF test", stropt_none
   ) // end of [val]
 //
-  val dots = load_image ("LazyFoo-lesson06/dots.png")
-  val () = assert_errmsg (ref_is_notnull dots, #LOCATION)
+  val background = load_image ("LazyFoo-lesson07/background.png")
+  val () = assert_errmsg (ref_is_notnull background, #LOCATION)
 //
-  var clip0: SDL_Rect
-  val () = clip0.x := (Sint16)0
-  val () = clip0.y := (Sint16)0
-  val () = clip0.w := (Uint16)100
-  val () = clip0.h := (Uint16)100
+  // Open the font
+  val font = TTF_OpenFont ("LazyFoo-lesson07/lazy.ttf", 28)
+  val () = assert_errmsg (TTF_Font_ref_is_notnull font, #LOCATION)
 //
-  var clip1: SDL_Rect
-  val () = clip1.x := (Sint16)100
-  val () = clip1.y := (Sint16)0
-  val () = clip1.w := (Uint16)100
-  val () = clip1.h := (Uint16)100
+  //The color of the font
+  var textColor : SDL_Color = @{
+    r= (Uint8)255, g= (Uint8)255, b= (Uint8)255, unused= (Uint8)0
+  } // end of [var]
+  // Render the text
+  val message = TTF_RenderText_Solid
+    (font, "The quick brown fox jumps over the lazy dog", textColor)
+  // end of [val]
+  val () = assert_errmsg (ref_is_notnull message, #LOCATION)
 //
-  var clip2: SDL_Rect
-  val () = clip2.x := (Sint16)0
-  val () = clip2.y := (Sint16)100
-  val () = clip2.w := (Uint16)100
-  val () = clip2.h := (Uint16)100
-//
-  var clip3: SDL_Rect
-  val () = clip3.x := (Sint16)100
-  val () = clip3.y := (Sint16)100
-  val () = clip3.w := (Uint16)100
-  val () = clip3.h := (Uint16)100
-//
-  // Fill the screen white
-  val (pf_format | p_format) = SDL_Surface_format (screen)
-  val color = SDL_MapRGB (!p_format, (Uint8)0xFF, (Uint8)0xFF, (Uint8)0xFF)
-  prval () = minus_addback (pf_format | screen)
-  val _err = SDL_FillRect_ptr (screen, null, color)
-//
-  // Apply the sprites to the screen
-  val () = apply_surface(0, 0, dots, screen, clip0)
-  val () = apply_surface(540, 0, dots, screen, clip1)
-  val () = apply_surface(0, 380, dots, screen, clip2)
-  val () = apply_surface(540, 380, dots, screen, clip3)
+  // Apply the images to the screen
+  val () = apply_surface (0, 0, background, screen)
+  val () = apply_surface (0, 150, message, screen)
 //
   val _err = SDL_Flip (screen)
   val () = assert_errmsg (_err = 0, #LOCATION)
@@ -139,11 +124,14 @@ implement main () = () where {
     // nothing
   end // end of [val]
 //
-  val () = SDL_FreeSurface (dots)
+  val () = TTF_CloseFont (font)
+  val () = SDL_FreeSurface (background)
+  val () = SDL_FreeSurface (message)
+  val () = TTF_Quit ()
   val _ptr = SDL_Quit_screen (screen)
   val () = SDL_Quit ()
 } // end of [main]
 
 (* ****** ****** *)
 
-(* end of [LazyFoo-lesson06.dats] *)
+(* end of [LazyFoo-lesson07.dats] *)

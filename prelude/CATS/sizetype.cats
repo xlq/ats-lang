@@ -86,7 +86,9 @@
 
 /* ****** ****** */
 
-// size type // unsigned
+//
+// unsigned size type
+//
 
 /* ****** ****** */
 
@@ -394,7 +396,16 @@ atspre_min_size1_size1
 
 /* ****** ****** */
 
-// signed size type
+//
+// signed size type (unindexed)
+//
+
+/* ****** ****** */
+
+#define atspre_add_ssize_ssize atspre_add_ssize1_ssize1
+#define atspre_sub_ssize_ssize atspre_sub_ssize1_ssize1
+#define atspre_mul_ssize_ssize atspre_mul_ssize1_ssize1
+#define atspre_div_ssize_ssize atspre_div_ssize1_ssize1
 
 /* ****** ****** */
 
@@ -410,42 +421,44 @@ atspre_int1_of_ssize1 (ats_ssize_type ssz) {
 } /* end of [atspre_int1_of_ssize1] */
 
 static inline
-ats_ssize_type atspre_ssize1_of_int1 (ats_int_type i) {
-  return (ats_ssize_type)i ;
-}
+ats_ssize_type
+atspre_ssize1_of_int1
+  (ats_int_type i) { return (ats_ssize_type)i ; }
+// end of [atspre_ssize1_of_int1]
 
 /* ****** ****** */
 
-// print functions
+static inline
+ats_ssize_type
+atspre_add_ssize1_ssize1 (
+  ats_ssize_type i, ats_ssize_type j
+) {
+  return (i + j) ;
+} // end of [atspre_add_ssize1_ssize1]
 
 static inline
-ats_void_type
-atspre_fprint_ssize (ats_ptr_type out, ats_ssize_type ssz) {
-  int n ;
-  n = fprintf ((FILE*)out, "%li", (ats_lint_type)ssz) ;
-  if (n < 0) {
-    ats_exit_errmsg (n, (ats_ptr_type)"exit(ATS): [fprint_ssize] failed.\n") ;
-  } /* end of [if] */
-  return ;
-} /* end of [atspre_fprint_ssize] */
+ats_ssize_type
+atspre_sub_ssize1_ssize1 (
+  ats_ssize_type i, ats_ssize_type j
+) {
+  return (i - j) ;
+} // end of [atspre_sub_ssize1_ssize1]
 
 static inline
-ats_void_type
-atspre_print_ssize (ats_ssize_type ssz) {
-  atspre_stdout_view_get () ;
-  atspre_fprint_ssize ((ats_ptr_type)stdout, ssz) ;
-  atspre_stdout_view_set () ;
-  return ;
-}
+ats_ssize_type
+atspre_mul_ssize1_ssize1 (
+  ats_ssize_type i, ats_ssize_type j
+) {
+  return (i * j) ;
+} // end of [atspre_mul_ssize1_ssize1]
 
 static inline
-ats_void_type
-atspre_prerr_ssize (ats_size_type ssz) {
-  atspre_stderr_view_get () ;
-  atspre_fprint_ssize ((ats_ptr_type)stderr, ssz) ;
-  atspre_stderr_view_set () ;
-  return ;
-}
+ats_ssize_type
+atspre_div_ssize1_ssize1 (
+  ats_ssize_type i, ats_ssize_type j
+) {
+  return (i / j) ;
+} // end of [atspre_div_ssize1_ssize1]
 
 /* ****** ****** */
 
@@ -498,6 +511,39 @@ atspre_neq_ssize1_ssize1
   (ats_ssize_type ssz1, ats_ssize_type ssz2) {
   return (ssz1 != ssz2 ? ats_true_bool : ats_false_bool) ;
 } /* end of [atspre_eq_ssize1_ssize1] */
+
+/* ****** ****** */
+
+// print functions
+
+static inline
+ats_void_type
+atspre_fprint_ssize (ats_ptr_type out, ats_ssize_type ssz) {
+  int n ;
+  n = fprintf ((FILE*)out, "%li", (ats_lint_type)ssz) ;
+  if (n < 0) {
+    ats_exit_errmsg (n, (ats_ptr_type)"exit(ATS): [fprint_ssize] failed.\n") ;
+  } /* end of [if] */
+  return ;
+} /* end of [atspre_fprint_ssize] */
+
+static inline
+ats_void_type
+atspre_print_ssize (ats_ssize_type ssz) {
+  atspre_stdout_view_get () ;
+  atspre_fprint_ssize ((ats_ptr_type)stdout, ssz) ;
+  atspre_stdout_view_set () ;
+  return ;
+}
+
+static inline
+ats_void_type
+atspre_prerr_ssize (ats_size_type ssz) {
+  atspre_stderr_view_get () ;
+  atspre_fprint_ssize ((ats_ptr_type)stderr, ssz) ;
+  atspre_stderr_view_set () ;
+  return ;
+}
 
 /* ****** ****** */
 
