@@ -73,10 +73,10 @@ OBJECTS_mt := $(OBJECTS) gc_multithread_dats.o
 #
 
 gc.o: gc0_hats gcats1_sats.o gcats1_all_cats.o
-	ld -r -o gc.o gcats1_sats.o gcats1_all_cats.o
+	ld -r -o $@ gcats1_sats.o gcats1_all_cats.o
 
 gc_mt.o: gc1_hats gcats1_sats.o gcats1_mt_all_cats.o
-	ld -r -o gcats1_mt.o gcats1_sats.o gcats1_mt_all_cats.o
+	ld -r -o $@ gcats1_sats.o gcats1_mt_all_cats.o
 
 ######
 

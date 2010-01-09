@@ -58,14 +58,14 @@ atsctrb_eq_SDL_EventType_SDL_EventType
 
 /* ****** ****** */
 
-#define atsctrb_SDL_KeyboardEvent_type(ref) \
-  ats_field_getval(SDL_KeyboardEvent, ref, type)
-#define atsctrb_SDL_KeyboardEvent_which(ref) \
-  ats_field_getval(SDL_KeyboardEvent, ref, which)
-#define atsctrb_SDL_KeyboardEvent_state(ref) \
-  ats_field_getval(SDL_KeyboardEvent, ref, state)
-#define atsctrb_SDL_KeyboardEvent_keysym(ref) \
-  ats_field_getval(SDL_KeyboardEvent, ref, keysym)
+#define atsctrb_SDL_KeyboardEvent_type(_ref) \
+  ats_field_getval(SDL_KeyboardEvent, _ref, type)
+#define atsctrb_SDL_KeyboardEvent_which(_ref) \
+  ats_field_getval(SDL_KeyboardEvent, _ref, which)
+#define atsctrb_SDL_KeyboardEvent_state(_ref) \
+  ats_field_getval(SDL_KeyboardEvent, _ref, state)
+#define atsctrb_SDL_KeyboardEvent_keysym(_ref) \
+  ats_field_getval(SDL_KeyboardEvent, _ref, keysym)
 
 /* ****** ****** */
 

@@ -372,6 +372,13 @@ in
       fprint_labs1explst (pf | out, ls1es);
       prstr ")"
     end // end of [S1Etyrec]
+  | S1Etyrec_ext (name, ls1es) => begin
+      prstr "S1Etyrec_ext(";
+      fprint1_string (pf | out, name);
+      prstr "; ";
+      fprint_labs1explst (pf | out, ls1es);
+      prstr ")"
+    end // end of [S1Etyrec]
   | S1Etytup (flat, s1es) => begin
       prstr "S1Etytup(";
       fprint1_int (pf | out, flat);

@@ -45,14 +45,14 @@
 
 /* ****** ****** */
 
-#define atsctrb_SDL_keysym_scancode(ref) \
-  ats_field_getval(SDL_keysym, ref, scancode)
-#define atsctrb_SDL_keysym_sym(ref) \
-  ats_field_getval(SDL_keysym, ref, sym)
-#define atsctrb_SDL_keysym_mod(ref) \
-  ats_field_getval(SDL_keysym, ref, mod)
-#define atsctrb_SDL_keysym_unicode(ref) \
-  ats_field_getval(SDL_keysym, ref, unicode)
+#define atsctrb_SDL_keysym_scancode(_ref) \
+  ats_field_getval(SDL_keysym, _ref, scancode)
+#define atsctrb_SDL_keysym_sym(_ref) \
+  ats_field_getval(SDL_keysym, _ref, sym)
+#define atsctrb_SDL_keysym_mod(_ref) \
+  ats_field_getval(SDL_keysym, _ref, mod)
+#define atsctrb_SDL_keysym_unicode(_ref) \
+  ats_field_getval(SDL_keysym, _ref, unicode)
 
 /* ****** ****** */
 

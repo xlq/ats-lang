@@ -455,12 +455,13 @@ fun cairo_set_tolerance (cr: !cairo_ref, tolerance: double): void
 (* ****** ****** *)
 
 (*
+// this would be of great inconvenience!
+abst@ype cairo_rectangle_t = $extype "cairo_rectangle_t"
+*)
 typedef cairo_rectangle_t =
-  $extype "cairo_rectangle_t" of @{
+  $extype_rec "cairo_rectangle_t" of {
   x= double, y= double, width= double, height= double
 } // end of [cairo_rectangel_t]
-*)
-abst@ype cairo_rectangle_t = $extype "cairo_rectangle_t"
 
 (* ****** ****** *)
 
@@ -774,28 +775,47 @@ fun cairo_set_font_face
 (* ****** ****** *)
 
 (*
+// this would be of great inconvenience
+abst@ype cairo_glyph_t = $extype "cairo_glyph_t"
+abst@ype cairo_cluster_t = $extype "cairo_cluster_t"
+*)
+
+typedef cairo_glyph_t =
+  $extype_rec "cairo_glyph_t" of { index= ulint, x= double, y= double }
+// end of [cairo_glyph_t]
+
+typedef cairo_text_cluster_t =
+  $extype_rec "cairo_text_cluster_t" of { num_bytes= int, num_glyphs= int }
+// end of [cairo_text_cluster_t]
+
+absviewtype cairo_glyph_arrptr (n:int, l:addr) // = cairo_glyph_t*  
+absviewtype cairo_cluster_arrptr (n:int, l:addr) // = cairo_cluster_t*
+
+(*
+// this would be of great inconvenience
+abst@ype cairo_font_extents_t = $extype "cairo_font_extents_t"
+*)
 typedef cairo_font_extents_t =
-  $extype "cairo_font_extents_t" of @{
+  $extype_rec "cairo_font_extents_t" of {
   ascent= double
 , descent= double
 , height= double
 , max_x_advance= double
 , max_y_advance= double
 } // end of [cairo_font_extents_t]
-*)
-abst@ype cairo_font_extents_t = $extype "cairo_font_extents_t"
 
 (* ****** ****** *)
 
 (*
+// this would be of great inconvenience
+abst@ype cairo_text_extents_t = $extype "cairo_text_extents_t"
+*)
 typedef cairo_text_extents_t =
-  $extype "cairo_text_extents_t" of @{
+  $extype_rec "cairo_text_extents_t" of {
   x_bearing= double, y_bearing= double
 , width= double, height= double
 , x_advance= double, y_advance= double
 } // end of [cairo_text_extents_t]
-*)
-abst@ype cairo_text_extents_t = $extype "cairo_text_extents_t"
 
 (* ****** ****** *)
 
@@ -811,10 +831,59 @@ fun cairo_text_extents (
   ) : void
   = "#atsctrb_cairo_text_extents"
 
+fun cairo_glyph_extents {n:nat} {l:anz} (
+    cr: !cairo_ref
+  , glyphs: !cairo_glyph_arrptr (n, l), n: int n
+  , extents: &cairo_text_extents_t? >> cairo_text_extents_t
+  ) : void
+  = "#atsctrb_cairo_glyph_extents"
+
 (* ****** ****** *)
 
 fun cairo_show_text (cr: !cairo_ref, utf8: string): void
   = "#atsctrb_cairo_show_text"
+
+fun cairo_show_glyphs {n:nat} {l:anz} (
+    cr: !cairo_ref, glyphs: !cairo_glyph_arrptr (n, l), n: int n
+  ) : void
+  = "#atsctrb_cairo_show_glyphs"
+
+(* ****** ****** *)
+
+fun cairo_toy_font_face_create (
+    family: string, s: cairo_font_slant_t, w: cairo_font_weight_t
+  ) : cairo_font_face_ref
+  = "#atsctrb_cairo_toy_font_face_create"
+
+fun cairo_toy_font_face_get_family
+  (font_face: !cairo_font_face_ref): string
+  = "#atsctrb_cairo_toy_font_face_get_family"
+
+fun cairo_toy_font_face_get_slant
+  (font_face: !cairo_font_face_ref): cairo_font_slant_t
+  = "#atsctrb_cairo_toy_font_face_get_slant"
+
+fun cairo_toy_font_face_get_weight
+  (font_face: !cairo_font_face_ref): cairo_font_weight_t
+  = "#atsctrb_cairo_toy_font_face_get_weight"
+
+(* ****** ****** *)
+
+fun cairo_glyph_allocate {n:nat}
+  (n: int n): [l:addr] cairo_glyph_arrptr (n, l) = "#atsctrb_cairo_glyph_allocate"
+// end of [cairo_glyph_allocate]
+
+fun cairo_glyph_free {n:nat} {l:addr} // [l] can be null
+  (p_arr: cairo_glyph_arrptr (n, l)): void = "#atsctrb_cairo_glyph_free"
+// end of [cairo_glyph_free]
+
+fun cairo_cluster_allocate {n:nat}
+  (n: int n): [l:addr] cairo_cluster_arrptr (n, l) = "#atsctrb_cairo_cluster_allocate"
+// end of [cairo_cluster_allocate]
+
+fun cairo_cluster_free {n:nat} {l:addr} // [l] can be null
+  (p_arr: cairo_cluster_arrptr (n, l)): void = "#atsctrb_cairo_cluster_free"
+// end of [cairo_cluster_free]
 
 (* ****** ****** *)
 
@@ -1008,13 +1077,94 @@ fun cairo_font_options_equal (
   ) : bool // cairo_bool_t
   = "#atsctrb_cairo_font_options_equal"
 
+(* ****** ****** *)
+
 fun cairo_font_options_get_antialias
   (options: !cairo_font_options_ptr): cairo_antialias_t
   = "#atsctrb_cairo_font_options_get_antialias"
 
-fun cairo_set_font_options_antialias
+fun cairo_font_options_set_antialias
   (options: !cairo_font_options_ptr, antialias: cairo_antialias_t): void
   = "#atsctrb_cairo_font_options_set_antialias"
+
+(*
+** enum
+*)
+abst@ype cairo_subpixel_order_t = $extype "cairo_subpixel_order_t"
+
+fun cairo_font_options_get_subpixel_order
+  (options: !cairo_font_options_ptr):<> cairo_subpixel_order_t
+  = "#atsctrb_cairo_font_options_get_subpixel_order"
+
+fun cairo_font_options_set_subpixel_order (
+    options: !cairo_font_options_ptr, subpixel_order: cairo_subpixel_order_t
+  ) : void
+  = "#atsctrb_cairo_font_options_set_subpixel_order"
+
+(*
+** enum
+*)
+abst@ype cairo_hint_style_t = $extype "cairo_hint_style_t"
+
+fun cairo_font_options_get_hint_style
+  (options: !cairo_font_options_ptr):<> cairo_hint_style_t
+  = "#atsctrb_cairo_font_options_get_hint_style"
+
+fun cairo_font_options_set_hint_style (
+    options: !cairo_font_options_ptr, hint_style: cairo_hint_style_t
+  ) : void
+  = "#atsctrb_cairo_font_options_set_hint_style"
+
+(*
+** enum
+*)
+abst@ype cairo_hint_metrics_t = $extype "cairo_hint_metrics_t"
+
+fun cairo_font_options_get_hint_metrics
+  (options: !cairo_font_options_ptr):<> cairo_hint_metrics_t
+  = "#atsctrb_cairo_font_options_get_hint_metrics"
+
+fun cairo_font_options_set_hint_metrics (
+    options: cairo_font_options_ptr, hint_metrics: cairo_hint_metrics_t
+  ) : void
+  = "#atsctrb_cairo_font_options_set_hint_metrics"
+
+(* ****** ****** *)
+
+//
+// Support for FreeType Font 
+//
+
+(* ****** ****** *)
+
+(*
+#define CAIRO_HAS_FT_FONT
+*)
+
+absviewtype FT_Face // boxed object
+absviewtype FcPattern_ptr // FcPattern*
+
+fun cairo_ft_font_face_create_for_ft_face
+  (face: FT_Face, load_flags: int): cairo_font_face_ref
+  = "#atsctrb_cairo_ft_font_face_create_for_ft_face"
+
+fun cairo_ft_font_face_create_for_pattern
+  (pattern: FcPattern_ptr): cairo_font_face_ref
+  = "#atsctrb_cairo_ft_font_face_create_for_pattern"
+
+fun cairo_ft_font_options_substitute
+  (options: !cairo_font_options_ptr, pattern: FcPattern_ptr):<> void
+  = "#atsctrb_cairo_ft_font_options_substitute"
+
+absview scaled_font_lock_face_v
+
+fun cairo_ft_scaled_font_lock_face
+  (scaled_font: !cairo_scaled_font_ref):<> (scaled_font_lock_face_v | FT_Face)
+  = "#atsctrb_cairo_ft_scaled_font_lock_face"
+  
+fun cairo_ft_scaled_font_unlock_face
+  (pf: scaled_font_lock_face_v | scaled_font: !cairo_scaled_font_ref):<> void
+  = "#atsctrb_cairo_ft_scaled_font_unlock_face"
 
 (* ****** ****** *)
 
@@ -1025,8 +1175,8 @@ fun cairo_set_font_options_antialias
 (* ****** ****** *)
 
 fun cairo_surface_destroy
-  (sf: cairo_surface_ref): void
-  = "#atsctrb_cairo_surface_destroy"
+  (sf: cairo_surface_ref): void = "#atsctrb_cairo_surface_destroy"
+// end of [cairo_surface_destroy]
 
 (* ****** ****** *)
 
@@ -1124,7 +1274,7 @@ fun cairo_pdf_surface_create (
 fun cairo_pdf_surface_create_null (
     width_in_points: double, height_in_points: double
   ) : cairo_surface_ref
-  = "#atsctrb_cairo_pdf_surface_create_null"
+  = "atsctrb_cairo_pdf_surface_create_null" // function!
 
 (*
 ** note that [pf] and [env] can be freed only after the
@@ -1164,7 +1314,7 @@ fun cairo_ps_surface_create (
 fun cairo_ps_surface_create_null (
     width_in_points: double, height_in_points: double
   ) : cairo_surface_ref
-  = "#atsctrb_cairo_ps_surface_create_null"
+  = "atsctrb_cairo_ps_surface_create_null" // function
 
 (*
 ** note that [pf] and [env] can be freed only after the
@@ -1259,6 +1409,35 @@ fun cairo_svg_get_versions
 fun cairo_svg_version_to_string
   (version: cairo_svg_version_t): string
   = "#atsctrb_cairo_svg_version_to_string"
+
+(* ****** ****** *)
+
+//
+// Quartz surface
+//
+
+(*
+#define CAIRO_HAS_QUARTZ_SURFACE
+*)
+
+fun cairo_quartz_surface_create
+  (format: cairo_format_t, width: uint, height: uint): cairo_surface_ref
+  = "#atsctrb_cairo_quartz_surface_create"
+
+(*
+** HX (2010-01-9):
+** this type should probably be linear; however I do not really know
+** how it can be properly handled as I have never used it.
+*)
+abstype CGContextRef = $extype "CGContextRef"
+
+fun cairo_quartz_surface_create_for_cg_context
+  (cgContext: CGContextRef, width: uint, height: uint): cairo_surface_ref
+  = "#atsctrb_cairo_quartz_surface_create_for_cg_context"
+
+fun cairo_quartz_surface_get_cg_context
+  (surface: !cairo_surface_ref): CGContextRef
+  = "#atsctrb_cairo_quartz_surface_get_cg_context"
 
 (* ****** ****** *)
 

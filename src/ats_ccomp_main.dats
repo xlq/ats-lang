@@ -408,14 +408,14 @@ fn _emit_dynconset {m:file_mode} {l:addr} (
     val+ ENV2con (p_l, p_i)= env
     val i = !p_i; val () = (!p_i := i + 1)
     val () = fprint1_string (pf_mod | !p_l, "ATSextern_val(")
-    val () = case+ 0 of
+    val () = (case+ 0 of
       | _ when d2con_is_exn d2c => begin
           fprint1_string (pf_mod | !p_l, "ats_exn_type, ")
         end
       | _ => begin
           fprint1_string (pf_mod | !p_l, "ats_sum_type, ")
-        end
-    // end of [val]
+        end // end of [_]
+    ) : void // end of [val]
     val () = emit_d2con (pf_mod | !p_l, d2c)
     val () = fprint1_string (pf_mod | !p_l, ") ;\n")
   in

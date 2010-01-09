@@ -753,6 +753,8 @@ datatype s0exp_node =
       (s0exp (*element*), s0explstlst (*dimension*))
   | S0Etyrec of (* record type *)
       (int (*flat*), labs0explst)
+  | S0Etyrec_ext of (* external tyrec *)
+      (string, labs0explst) // it is assumed to be flat
   | S0Etytup of (* tuple type *)
       (int (*flat*), s0explst)
   | S0Etytup2 of (* tuple type *)
@@ -867,6 +869,10 @@ fun s0exp_tyarr (t_beg: t0kn, elt: s0exp, ind: s0arrind): s0exp
 fun s0exp_tyrec
   (kind: int, t_beg: t0kn, _: labs0explst, t_end: t0kn): s0exp
   = "s0exp_tyrec"
+
+fun s0exp_tyrec_ext // external record
+  (t_beg: t0kn, ext: s0tring, _: labs0explst, t_end: t0kn): s0exp
+  = "s0exp_tyrec_ext"
 
 fun s0exp_tytup
   (kind: int, t_beg: t0kn, _: s0explst, t_end: t0kn): s0exp

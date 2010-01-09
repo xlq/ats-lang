@@ -157,8 +157,9 @@ fun hityp_fun_is_void (hit: hityp): bool
 fun hityp_is_vararg (hit: hityp): bool
 fun hityp_fun_is_vararg (hit: hityp): bool
 
-fun hityp_is_tyrecbox (hit: hityp): bool
-fun hityp_is_tyrecsin (hit: hityp): bool
+fun hityp_is_tyrecbox (hit: hityp): bool // boxed record
+fun hityp_is_tyrecext (hit: hityp): bool // external (flat) record
+fun hityp_is_tyrecsin (hit: hityp): bool // singular (flat) record
 
 (* ****** ****** *)
 
@@ -783,6 +784,7 @@ fun hityp_t_name_get (hit: hityp_t): hityp_name
 fun hityp_t_is_void (hit: hityp_t): bool
 fun hityp_t_fun_is_void (hit: hityp_t): bool
 fun hityp_t_is_tyrecbox (hit: hityp_t): bool
+fun hityp_t_is_tyrecext (hit: hityp_t): bool
 fun hityp_t_is_tyrecsin (hit: hityp_t): bool
 
 fun hityplst_encode (hits: hityplst): hityplst_t

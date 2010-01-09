@@ -289,6 +289,10 @@ implement s1exp_tyrec (loc, flat, ls1es) = '{
   s1exp_loc= loc, s1exp_node= S1Etyrec (flat, ls1es)
 }
 
+implement s1exp_tyrec_ext (loc, name, ls1es) = '{
+  s1exp_loc= loc, s1exp_node= S1Etyrec_ext (name, ls1es)
+}
+
 implement s1exp_tytup (loc, flat, s1es) = '{
   s1exp_loc= loc, s1exp_node= S1Etytup (flat, s1es)
 }

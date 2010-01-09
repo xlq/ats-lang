@@ -2,6 +2,9 @@
 #
 # Some programs involving the CAIRO drawing package
 #
+# Author: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
+# Time: December, 2010
+#
 #
 
 

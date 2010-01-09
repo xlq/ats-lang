@@ -73,6 +73,7 @@ implement eq_tyreckind_tyreckind (k1, k2) = begin
   | (TYRECKINDbox (), TYRECKINDbox ()) => true
   | (TYRECKINDflt0 (), TYRECKINDflt0 ()) => true
   | (TYRECKINDflt1 s1, TYRECKINDflt1 s2) => (s1 = s2)
+  | (TYRECKINDflt_ext s1, TYRECKINDflt_ext s2) => (s1 = s2)
   | (_, _) => false
 end // end of [eq_tyreckind_tyreckind]
 

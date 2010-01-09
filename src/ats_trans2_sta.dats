@@ -1233,24 +1233,28 @@ fun aux01
   | LABS1EXPLSTnil () => LABS2EXPLSTnil ()
 end // end of [aux01]
 
-fun aux23 (s2t: s2rt, ls1es: labs1explst): labs2explst = begin
+fun aux23 (
+    s2t: s2rt, ls1es: labs1explst
+  ) : labs2explst = begin
   case+ ls1es of
   | LABS1EXPLSTcons (lab, s1e, ls1es) => let
       val s2e = s1exp_tr_dn (s1e, s2t)
     in
       LABS2EXPLSTcons (lab, s2e, aux23 (s2t, ls1es))
-    end
+    end // end of [LABS1EXPLSTcons]
   | LABS1EXPLSTnil () => LABS2EXPLSTnil ()
 end // end of [aux23]
 
 in // in of [local]
 
-fn s1exp_struct_tr_up (loc0: loc_t, ls1es: labs1explst): s2exp = let
+fn s1exp_struct_tr_up (
+   loc0: loc_t, ls1es: labs1explst
+  ) : s2exp = let
   var lin: int = 0 and prg: int = 0      
   val ls2es = aux01 (ls1es, lin, prg)
   val s2t_rec: s2rt = begin
     s2rt_lin_prg_boxed_npf_labs2explst (lin, prg, 0(*boxed*), 0, ls2es)
-  end
+  end // end of [val]
   val stamp = $Stamp.s2exp_struct_stamp_make ()
 in
   s2exp_tyrec_srt (s2t_rec, TYRECKINDflt1 stamp, 0(*npf*), ls2es)
@@ -1409,6 +1413,17 @@ fn s1exp_tyrec_tr_up
     end // end of [_]
 end // end of [s1exp_tyrec_tr_up]
 
+fn s1exp_tyrec_ext_tr_up
+  (loc0: loc_t, name: string, ls1es: labs1explst): s2exp = let
+  var lin: int = 0 and prg: int = 0      
+  val ls2es = aux01 (ls1es, lin, prg)
+  val s2t_rec: s2rt = begin
+    s2rt_lin_prg_boxed_npf_labs2explst (lin, prg, 0(*boxed*), 0, ls2es)
+  end // end of [val]
+in
+  s2exp_tyrec_srt (s2t_rec, TYRECKINDflt_ext name, 0(*npf*), ls2es)
+end // end of [s1exp_tyrec_ext_tr_up]
+
 fn s1exp_union_tr_up (loc0: loc_t, s1e_ind: s1exp, ls1es: labs1explst)
   : s2exp = let
   val s2e_ind = s1exp_tr_dn_int s1e_ind
@@ -1561,6 +1576,9 @@ in
   | S1Etyrec (recknd, ls1es) => begin
       s1exp_tyrec_tr_up (s1e0.s1exp_loc, recknd, ls1es)
     end // end of [S1Etyrec]
+  | S1Etyrec_ext (name, ls1es) => begin
+      s1exp_tyrec_ext_tr_up (s1e0.s1exp_loc, name, ls1es)
+    end // end of [S1Etyrec_ext]
   | S1Etytup (tupknd, s1es) => begin
       s1exp_tytup_tr_up (s1e0.s1exp_loc, tupknd, s1es)
     end // end of [S1Etytup]

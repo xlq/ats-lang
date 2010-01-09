@@ -288,10 +288,30 @@ atsctrb_cairo_get_dash (
 
 #define atsctrb_cairo_font_extents cairo_font_extents
 #define atsctrb_cairo_text_extents cairo_text_extents
+#define atsctrb_cairo_glyph_extents cairo_glyph_extents
  
 /* ****** ****** */
 
 #define atsctrb_cairo_show_text cairo_show_text
+#define atsctrb_cairo_show_glyphs cairo_show_glyphs
+
+/* ****** ****** */
+
+#define atsctrb_cairo_toy_font_face_create cairo_toy_font_face_create
+#define atsctrb_cairo_toy_font_face_get_family cairo_toy_font_face_get_family
+#define atsctrb_cairo_toy_font_face_get_slant cairo_toy_font_face_get_slant
+#define atsctrb_cairo_toy_font_face_get_weight cairo_toy_font_face_get_weight
+
+/* ****** ****** */
+
+#if CAIRO_VERSION_ENCODE(1,8,0)
+
+#define atsctrb_cairo_glyph_allocate cairo_glyph_allocate
+#define atsctrb_cairo_glyph_free cairo_glyph_free
+#define atsctrb_cairo_cluster_allocate cairo_cluster_allocate
+#define atsctrb_cairo_cluster_free cairo_cluster_free
+
+#endif // end of [#if (CAIRO_VERSION >= 1.8.0)]
 
 /* ****** ****** */
 
@@ -366,8 +386,27 @@ typedef cairo_font_type_t ats_cairo_font_type_type ;
 #define atsctrb_cairo_font_options_merge cairo_font_options_merge
 #define atsctrb_cairo_font_options_hash cairo_font_options_hash
 #define atsctrb_cairo_font_options_equal cairo_font_options_equal
+
 #define atsctrb_cairo_font_options_get_antialias cairo_font_options_get_antialias
 #define atsctrb_cairo_font_options_set_antialias cairo_font_options_set_antialias
+#define atsctrb_cairo_font_options_get_subpixel_order cairo_font_options_get_subpixel_order
+#define atsctrb_cairo_font_options_set_subpixel_order cairo_font_options_set_subpixel_order
+#define atsctrb_cairo_font_options_get_hint_style cairo_font_options_get_hint_style
+#define atsctrb_cairo_font_options_set_hint_style cairo_font_options_set_hint_style
+#define atsctrb_cairo_font_options_get_hint_metrics cairo_font_options_get_hint_metrics
+#define atsctrb_cairo_font_options_set_hint_metrics cairo_font_options_set_hint_metrics
+
+/* ****** ****** */
+
+//
+// Support for FreeType Font 
+//
+
+#define atsctrb_cairo_ft_font_face_create_for_ft_face cairo_ft_font_face_create_for_ft_face
+#define atsctrb_cairo_ft_font_face_create_for_pattern cairo_ft_font_face_create_for_pattern
+#define atsctrb_cairo_ft_font_options_substitute cairo_ft_font_options_substitute
+#define atsctrb_cairo_ft_scaled_font_lock_face cairo_ft_scaled_font_lock_face
+#define atsctrb_cairo_ft_scaled_font_unlock_face cairo_ft_scaled_font_unlock_face
 
 /* ****** ****** */
 
@@ -408,7 +447,15 @@ typedef cairo_format_t ats_cairo_format_type ;
 #if (CAIRO_HAS_PDF_SURFACE)
 
 #define atsctrb_cairo_pdf_surface_create cairo_pdf_surface_create
-#define atsctrb_cairo_pdf_surface_create_null cairo_pdf_surface_create_null
+
+static inline
+ats_ref_type
+atsctrb_cairo_pdf_surface_create_null (
+  ats_double_type width, ats_double_type height
+) {
+  return cairo_pdf_surface_create((char*)0, width, height) ;
+} // end of [atsctrb_cairo_pdf_surface_create_null]
+
 #define atsctrb_cairo_pdf_surface_create_for_stream cairo_pdf_surface_create_for_stream
 #define atsctrb_cairo_pdf_surface_set_size cairo_pdf_surface_set_size
 
@@ -421,8 +468,17 @@ typedef cairo_format_t ats_cairo_format_type ;
 #if (CAIRO_HAS_PS_SURFACE)
 
 #define atsctrb_cairo_ps_surface_create cairo_ps_surface_create
-#define atsctrb_cairo_ps_surface_create_null cairo_ps_surface_create_null
-#define atsctrb_cairo_ps_surface_create_for_stream cairo_ps_surface_create_for_stream
+
+static inline
+ats_ref_type
+atsctrb_cairo_ps_surface_create_null (
+  ats_double_type width, ats_double_type height
+) {
+  return cairo_ps_surface_create((char*)0, width, height) ;
+} // end of [atsctrb_cairo_ps_surface_create_null]
+
+#define atsctrb_cairo_ps_surface_create_for_stream \
+  cairo_ps_surface_create_for_stream
 
 /*
 typedef cairo_ps_level_t ats_cairo_ps_level_type ;
@@ -436,10 +492,14 @@ atsctrb_cairo_ps_get_levels
 } // end of [cairo_ps_get_levels]
 */
 
-#define atsctrb_cairo_ps_surface_set_size cairo_ps_surface_set_size
-#define atsctrb_cairo_ps_surface_dsc_begin_setup cairo_ps_surface_dsc_begin_setup
-#define atsctrb_cairo_ps_surface_dsc_begin_page_setup cairo_ps_surface_dsc_begin_page_setup
-#define atsctrb_cairo_ps_surface_dsc_comment cairo_ps_surface_dsc_comment
+#define atsctrb_cairo_ps_surface_set_size \
+  cairo_ps_surface_set_size
+#define atsctrb_cairo_ps_surface_dsc_begin_setup \
+  cairo_ps_surface_dsc_begin_setup
+#define atsctrb_cairo_ps_surface_dsc_begin_page_setup \
+  cairo_ps_surface_dsc_begin_page_setup
+#define atsctrb_cairo_ps_surface_dsc_comment \
+  cairo_ps_surface_dsc_comment
 
 #endif // end of [CAIRO_HAS_PS_SURFACE]
 
@@ -447,9 +507,12 @@ atsctrb_cairo_ps_get_levels
 
 #if (CAIRO_HAS_SVG_SURFACE)
 
-#define atsctrb_cairo_svg_surface_create cairo_svg_surface_create
-#define atsctrb_cairo_svg_surface_create_for_stream cairo_svg_surface_create_for_stream
-#define atsctrb_cairo_svg_surface_restrict_to_version cairo_svg_surface_restrict_to_version
+#define atsctrb_cairo_svg_surface_create \
+  cairo_svg_surface_create
+#define atsctrb_cairo_svg_surface_create_for_stream \
+  cairo_svg_surface_create_for_stream
+#define atsctrb_cairo_svg_surface_restrict_to_version \
+  cairo_svg_surface_restrict_to_version
 
 static inline
 ats_ref_type // array of versions
@@ -462,6 +525,19 @@ atsctrb_cairo_svg_get_versions
 #define atsctrb_cairo_svg_version_to_string cairo_svg_version_to_string
 
 #endif // end of [CAIRO_HAS_SVG_SURFACE]
+
+/* ****** ****** */
+
+#if (CAIRO_HAS_QUARTZ_SURFACE)
+
+#define atsctrb_cairo_quartz_surface_create \
+  cairo_quartz_surface_create
+#define atsctrb_cairo_quartz_surface_create_for_cg_context \
+  cairo_quartz_surface_create_for_cg_context
+#define atsctrb_cairo_quartz_surface_get_cg_context \
+  cairo_quartz_surface_get_cg_context
+
+#endif // end of [CAIRO_HAS_QUARTZ_SURFACE]
 
 /* ****** ****** */
 

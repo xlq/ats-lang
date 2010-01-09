@@ -125,12 +125,15 @@ fn reckind_check
         $Err.abort {void} ()
       end // end of [_]
   end else begin case+ k2 of // k1 = 0
-   | TYRECKINDflt0 _ => () | TYRECKINDflt1 _ => () | _ => begin
-       prerr_loc_error3 loc_rec;
-       prerr ": the record is flat but it is expected to be boxed.";
-       prerr_newline ();
-       $Err.abort {void} ()
-     end // end of [_]
+    | TYRECKINDflt0 _ => ()
+    | TYRECKINDflt1 _ => ()
+    | TYRECKINDflt_ext _ => ()
+    | _ => begin
+        prerr_loc_error3 loc_rec;
+        prerr ": the record is flat but it is expected to be boxed.";
+        prerr_newline ();
+        $Err.abort {void} ()
+      end // end of [_]
   end // end of [if]
 end // end of [reckind_check]
 
@@ -713,23 +716,24 @@ val d3e0 = case+ d2e0.d2exp_node of
     in
       case+ s2e0.s2exp_node of
       | S2Etyrec (tyrecknd, npf, ls2es) => let
-          val () = case+ tyrecknd of
+          val () = (case+ tyrecknd of // flatness checking
             | TYRECKINDbox () => begin
                 prerr_loc_error3 loc0;
                 $Deb.debug_prerrf (": %s: d2exp_tr_dn", @(THISFILENAME));
                 prerr ": the type for a struct cannot be boxed.";
                 prerr_newline ();
                 $Err.abort {void} ()
-              end
+              end // end of [TYRECKINDbox]
             | TYRECKINDflt0 () => begin
                 prerr_loc_error3 loc0;
                 $Deb.debug_prerrf (": %s: d2exp_tr_dn", @(THISFILENAME));
                 prerr ": the type for a struct cannot be a record type.";
                 prerr_newline ();
                 $Err.abort {void} ()
-              end
+              end // end of [TYRECKINDflt0]
             | TYRECKINDflt1 _ => ()
-          // end of [val]
+            | TYRECKINDflt_ext _ => ()
+          ) : void // end of [val]
           val () = if npf > 0 then begin
             prerr_loc_error3 loc0;
             $Deb.debug_prerrf (": %s: d2exp_tr_dn", @(THISFILENAME));

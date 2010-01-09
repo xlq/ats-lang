@@ -63,7 +63,7 @@ staload "ats_trans1.sats"
 
 (* ****** ****** *)
 
-#define THISFILENAME "ats_trans2_sta.dats"
+#define THISFILENAME "ats_trans1_sta.dats"
 
 (* ****** ****** *)
 
@@ -753,6 +753,11 @@ implement s0exp_tr s0e0 = let
       in
         $Fix.ITEMatm (s1exp_tyrec (loc0, flat, ls1es))
       end // end of [S0Etyrec]
+    | S0Etyrec_ext (name, ls0es) => let
+        val ls1es = labs0explst_tr ls0es
+      in
+        $Fix.ITEMatm (s1exp_tyrec_ext (loc0, name, ls1es))
+      end // end of [S0Etyrec_ext]
     | S0Etytup (flat, s0es) => let
         val s1es = s0explst_tr s0es
       in

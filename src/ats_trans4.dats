@@ -243,6 +243,7 @@ in
         | TYRECKINDbox () => begin
             if deep > 0 then hityp_tyrectemp (1(*box*), lhits) else hityp_ptr
           end // end of [TYRECKINDbox]
+        | TYRECKINDflt_ext name => hityp_tyrec (~1(*ext*), name, lhits)
         | _ (*TYRECKINDflt0 or TYRECKINDflt1*) => begin case+ lhits of
           | LABHITYPLSTcons (_(*lab*), hit, LABHITYPLSTnil ()) => hityp_tyrecsin hit
           | _ => hityp_tyrectemp (0(*flt*), lhits)

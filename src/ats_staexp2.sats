@@ -125,6 +125,8 @@ datatype tyreckind =
   | TYRECKINDbox (* boxed *)
   | TYRECKINDflt0
   | TYRECKINDflt1 of stamp_t (* flat *)
+  | TYRECKINDflt_ext of string  (* flat *)
+// end of [tyreckind]
 
 fun eq_tyreckind_tyreckind (_: tyreckind, _: tyreckind): bool
 overload = with eq_tyreckind_tyreckind
@@ -138,6 +140,7 @@ datatype s2rtbas =
       (sym_t, int (*prf*), int (*lin*))
   | S2RTBASdef of (* user-defined datasorts *)
       s2rtdat_t
+// end of [s2rtbas]
 
 and s2rt =
   | S2RTbas of s2rtbas (* base sort *)

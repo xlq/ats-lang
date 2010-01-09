@@ -66,11 +66,16 @@ fun fprint_tyreckind {m:file_mode}
   case+ k of
   | TYRECKINDbox _ => fprint1_string (pf | out, "box")
   | TYRECKINDflt0 _ => fprint1_string (pf | out, "flt")
-  | TYRECKINDflt1 s => begin
+  | TYRECKINDflt1 stamp => begin
       fprint1_string (pf | out, "flt(");
-      $Stamp.fprint_stamp (pf | out, s);
+      $Stamp.fprint_stamp (pf | out, stamp);
       fprint1_string (pf | out, ")")
-    end
+    end // end of [TYRECKINDflt1]
+  | TYRECKINDflt_ext name => begin
+      fprint1_string (pf | out, "flt(");
+      fprint1_string (pf | out, name);
+      fprint1_string (pf | out, ")")
+    end // end of [TYRECKINDflt_ext]
 // end of [fprint_tyreckind]
 
 (* ****** ****** *)

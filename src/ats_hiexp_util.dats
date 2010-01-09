@@ -135,6 +135,10 @@ implement hityp_is_tyrecbox (hit_rec) = begin
   case+ hit_rec.hityp_node of HITtyrec (knd, _) => knd > 0 | _ => false
 end // end of [hityp_is_tyrecbox]
 
+implement hityp_is_tyrecext (hit_rec) = begin
+  case+ hit_rec.hityp_node of HITtyrec (knd, _) => knd < 0 | _ => false
+end // end of [hityp_is_tyrecext]
+
 implement hityp_is_tyrecsin (hit_rec) = begin
   case+ hit_rec.hityp_node of HITtyrecsin _ => true | _ => false
 end // end of [hityp_is_tyrecsim]
@@ -472,6 +476,7 @@ implement hityp_t_void = hityp_void // so this file must be loaded
 implement hityp_t_is_void (hit) = hityp_is_void (hit)
 implement hityp_t_fun_is_void (hit_fun) = hityp_fun_is_void (hit_fun) 
 implement hityp_t_is_tyrecbox (hit_rec) = hityp_is_tyrecbox (hit_rec)
+implement hityp_t_is_tyrecext (hit_rec) = hityp_is_tyrecext (hit_rec)
 implement hityp_t_is_tyrecsin (hit_rec) = hityp_is_tyrecsin (hit_rec)
 
 (* ****** ****** *)

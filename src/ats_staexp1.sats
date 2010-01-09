@@ -267,6 +267,8 @@ datatype s1exp_node =
       (s1exp (*element*), s1explstlst (*dimension*))
   | S1Etyrec of (* record type *)
       (int (*recknd*), labs1explst)
+  | S1Etyrec_ext of (* external record type *)
+      (string (*name*), labs1explst) // it is assumed to be flat
   | S1Etytup of (* tuple type *)
       (int (*tupknd*), s1explst)
   | S1Etytup2 of (* tuple type *)
@@ -432,6 +434,7 @@ fun s1exp_top (_: loc_t, knd: int, arg: s1exp): s1exp
 fun s1exp_trans (_: loc_t, arg1: s1exp, arg2: s1exp): s1exp
 fun s1exp_tyarr (_: loc_t, elt: s1exp, dim: s1explstlst): s1exp
 fun s1exp_tyrec (_: loc_t, kind: int, _: labs1explst): s1exp
+fun s1exp_tyrec_ext (_: loc_t, name: string, _: labs1explst): s1exp
 fun s1exp_tytup (_: loc_t, kind: int, _: s1explst): s1exp
 fun s1exp_tytup2
   (_: loc_t, kind: int, _1: s1explst, _2: s1explst): s1exp

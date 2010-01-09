@@ -172,7 +172,7 @@ ats_ccomp_emit_filename (ats_ptr_type out, ats_ptr_type fil) {
   return ;
 } /* end of ats_ccomp_emit_filename */
 
-%}
+%} // end of [%{$]
 
 (* ****** ****** *)
 
@@ -285,11 +285,10 @@ end // end of [emit_tmpvar]
 fn _emit_hityp {m:file_mode}
   (pf: file_mode_lte (m, w) | out: &FILE m, hit: hityp)
   : void = let
-  val HITNAM (knd, name) = hit.hityp_name
-  val () = if knd = 0 then fprint_string (pf | out, name)
-  val () = if knd > 0 then fprint1_string (pf | out, PTR_TYPE_NAME)
-in
-  // empty
+  val HITNAM (knd, name) = hit.hityp_name in
+  case+ 0 of
+  | _ when knd <= 0 => fprint_string (pf | out, name)
+  | _ (*boxed: knd > 0*) => fprint1_string (pf | out, PTR_TYPE_NAME)
 end // end of [_emit_hityp]
 
 implement emit_hityp (pf | out, hit) =
@@ -575,15 +574,23 @@ end // end of [emit_valprim_ptrof]
 (* ****** ****** *)
 
 fn emit_select_lab {m:file_mode} (
-    pf: file_mode_lte (m, w)| out: &FILE m, lab: lab_t
-  ) : void = begin
-  fprint1_string (pf | out, ".atslab_"); emit_label (pf | out, lab)
+    pf: file_mode_lte (m, w) | out: &FILE m, isext: bool, lab: lab_t
+  ) : void = let
+  val () = if isext then
+    fprint1_string (pf | out, ".") else fprint1_string (pf | out, ".atslab_")
+  // end of [if]
+in
+  emit_label (pf | out, lab)
 end // end of [emit_select_lab]
 
 fn emit_select_lab_ptr {m:file_mode} (
-    pf: file_mode_lte (m, w)| out: &FILE m, lab: lab_t
-  ) : void = begin
-  fprint1_string (pf | out, "->atslab_"); emit_label (pf | out, lab)
+    pf: file_mode_lte (m, w) | out: &FILE m, isext: bool, lab: lab_t
+  ) : void = let
+  val () = if isext then
+    fprint1_string (pf | out, "->") else fprint1_string (pf | out, "->atslab_")
+  // end of [if]
+in
+  emit_label (pf | out, lab)
 end // end of [emit_select_lab_ptr]
 
 (* ****** ****** *)
@@ -664,7 +671,8 @@ fn emit_valprim_select_aft {m:file_mode} (
         case+ 0 of
         | _ when hityp_t_is_tyrecbox hit_rec => let
             val () = fprint1_string (pf | out, ")")
-            val () = emit_select_lab_ptr (pf | out, lab)
+            val isext = false
+            val () = emit_select_lab_ptr (pf | out, isext, lab)
           in
             aux (out, offs)
           end // end of [_ when ...]
@@ -675,7 +683,8 @@ fn emit_valprim_select_aft {m:file_mode} (
           end // end of [_ when ...]
         | _ => let
             val () = fprint1_string (pf | out, ")")
-            val () = emit_select_lab (pf | out, lab)
+            val isext = hityp_t_is_tyrecext hit_rec
+            val () = emit_select_lab (pf | out, isext, lab)
           in
             aux (out, offs)
           end // end of [_]
@@ -730,8 +739,9 @@ fn emit_valprim_select_varptr {m:file_mode} (
           val () = fprint1_string (pf | out, "*)")
           val () = emit_valprim (pf | out, vp_root)
           val () = fprint1_string (pf | out, ")")
+          val isext = false
         in
-          emit_select_lab_ptr (pf | out, lab)
+          emit_select_lab_ptr (pf | out, false, lab)
         end // end of [_ when ...]
       | _ when hityp_t_is_tyrecsin hit_rec => let
           val () = if knd > 0 then let
@@ -758,12 +768,13 @@ fn emit_valprim_select_varptr {m:file_mode} (
           ) // end of [val]
           val () = emit_valprim (pf | out, vp_root)
           val () = fprint1_string (pf | out, ")")
+          val isext = hityp_t_is_tyrecext hit_rec
         in
           case+ 0 of
           | _ when knd > 0 =>
-              emit_select_lab_ptr (pf | out, lab)
+              emit_select_lab_ptr (pf | out, isext, lab)
             // end of [ptr]
-          | _ => emit_select_lab (pf | out, lab) // var
+          | _ => emit_select_lab (pf | out, isext, lab) // var
         end // end of [_]
     end // end [OFFSETlab]
   end // end of [aux_fst]

@@ -1071,6 +1071,13 @@ in '{
   s0exp_loc= loc, s0exp_node= S0Etyrec (flat, ls0es)
 } end // end of [s0exp_tyrec]
 
+implement s0exp_tyrec_ext
+  (t_beg, name(*s0tring*), ls0es, t_end) = let
+  val loc = combine (t_beg.t0kn_loc, t_end.t0kn_loc)
+in '{
+  s0exp_loc= loc, s0exp_node= S0Etyrec_ext (name.s0tring_val, ls0es)
+} end // end of [s0exp_tyrec_ext]
+
 implement s0exp_tytup
   (flat, t_beg, s0es, t_end) = let
   val loc = combine (t_beg.t0kn_loc, t_end.t0kn_loc)
