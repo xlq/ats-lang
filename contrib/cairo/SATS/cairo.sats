@@ -455,7 +455,8 @@ fun cairo_set_tolerance (cr: !cairo_ref, tolerance: double): void
 (* ****** ****** *)
 
 (*
-typedef cairo_rectangle_t = @{
+typedef cairo_rectangle_t =
+  $extype "cairo_rectangle_t" of @{
   x= double, y= double, width= double, height= double
 } // end of [cairo_rectangel_t]
 *)
@@ -773,7 +774,8 @@ fun cairo_set_font_face
 (* ****** ****** *)
 
 (*
-typedef cairo_font_extents_t = @{
+typedef cairo_font_extents_t =
+  $extype "cairo_font_extents_t" of @{
   ascent= double
 , descent= double
 , height= double
@@ -786,7 +788,8 @@ abst@ype cairo_font_extents_t = $extype "cairo_font_extents_t"
 (* ****** ****** *)
 
 (*
-typedef cairo_text_extents_t = @{
+typedef cairo_text_extents_t =
+  $extype "cairo_text_extents_t" of @{
   x_bearing= double, y_bearing= double
 , width= double, height= double
 , x_advance= double, y_advance= double
@@ -1219,6 +1222,46 @@ fun cairo_ps_surface_dsc_comment
 
 (* ****** ****** *)
 
+(*
+#define CAIRO_HAS_SVG_SURFACE
+*)
+fun cairo_svg_surface_create (
+    filename: string
+  , width_in_points: double, height_in_points: double
+  ) : cairo_ref
+  = "#atsctrb_cairo_svg_surface_create"
+
+(*
+** note that [pf] and [env] can be freed only after the
+** returned surface is destroyed by a call to[cairo_surface_destroy]
+*)
+fun cairo_svg_surface_create_for_stream
+  {v:view} {vt:viewtype} (
+    pf: !v
+  | write_func: (!v | !vt, string, uint) -<fun1> cairo_status_t
+  , env: !vt
+  , width_in_points: double
+  , height_in_points: double
+  ) : cairo_surface_ref
+  = "#atsctrb_cairo_svg_surface_create_for_stream"
+
+// enum type
+abst@ype cairo_svg_version_t = $extype "cairo_svg_version_t"
+
+fun cairo_svg_surface_restrict_to_version
+  (cr: !cairo_ref, version: cairo_svg_version_t): void
+  = "#atsctrb_cairo_svg_surface_restrict_to_version"
+
+fun cairo_svg_get_versions
+  (n: &int? >> int n): #[n:nat] array (cairo_svg_version_t, n)
+  = "atsctrb_cairo_svg_get_versions" // this is a function!
+
+fun cairo_svg_version_to_string
+  (version: cairo_svg_version_t): string
+  = "#atsctrb_cairo_svg_version_to_string"
+
+(* ****** ****** *)
+
 //
 // utilities for drawing
 //
@@ -1309,6 +1352,29 @@ fun cairo_status_to_string (status: cairo_status_t):<> string
 fun cairo_debug_reset_static_data (): void
   = "#atsctrb_cairo_debug_reset_static_data"
 
+(* ****** ****** *)
+
+//
+// cairo version macros and functions
+//
+
+macdef CAIRO_VERSION = $extval (int, "CAIRO_VERSION")
+macdef CAIRO_VERSION_MAJOR = $extval (int, "CAIRO_VERSION_MAJOR")
+macdef CAIRO_VERSION_MINOR = $extval (int, "CAIRO_VERSION_MINOR")
+macdef CAIRO_VERSION_MICRO = $extval (int, "CAIRO_VERSION_MICRO")
+macdef CAIRO_VERSION_STRING = $extval (string, "CAIRO_VERSION_STRING")
+
+fun CAIRO_VERSION_ENCODE
+  (major: int, minor: int, micro: int): int
+  = "#CAIRO_VERSION_ENCODE"
+
+fun CAIRO_VERSION_STRINGIZE
+  (major: int, minor: int, micro: int): string
+  = "#CAIRO_VERSION_STRINGIZE"
+
+fun cairo_version (): int = "#atsctrb_cairo_version"
+fun cairo_version_string (): string = "atsctrb_cairo_version_string" // function!
+  
 (* ****** ****** *)
 
 (* end of [cairo.sats] *)

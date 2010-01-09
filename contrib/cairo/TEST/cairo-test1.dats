@@ -26,6 +26,14 @@ staload "contrib/cairo/SATS/cairo.sats"
 (* ****** ****** *)
 
 implement main () = () where {
+//
+  val () = printf ("CAIRO_VERSION = %i\n", @(CAIRO_VERSION))
+  val () = printf ("CAIRO_VERSION_MAJOR = %i\n", @(CAIRO_VERSION_MAJOR))
+  val () = printf ("CAIRO_VERSION_MINOR = %i\n", @(CAIRO_VERSION_MINOR))
+  val () = printf ("CAIRO_VERSION_MICRO = %i\n", @(CAIRO_VERSION_MICRO))
+  val () = printf ("cairo:version:number = %i\n", @(cairo_version()))
+  val () = printf ("cairo:version:string = %s\n", @(cairo_version_string()))
+//
   val surface =
     cairo_image_surface_create (CAIRO_FORMAT_ARGB32, 250, 80)
   val cr = cairo_create (surface)

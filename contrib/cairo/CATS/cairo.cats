@@ -45,6 +45,7 @@
 #include <cairo.h>
 #include <cairo-pdf.h>
 #include <cairo-ps.h>
+#include <cairo-svg.h>
 
 /* ****** ****** */
 
@@ -444,6 +445,26 @@ atsctrb_cairo_ps_get_levels
 
 /* ****** ****** */
 
+#if (CAIRO_HAS_SVG_SURFACE)
+
+#define atsctrb_cairo_svg_surface_create cairo_svg_surface_create
+#define atsctrb_cairo_svg_surface_create_for_stream cairo_svg_surface_create_for_stream
+#define atsctrb_cairo_svg_surface_restrict_to_version cairo_svg_surface_restrict_to_version
+
+static inline
+ats_ref_type // array of versions
+atsctrb_cairo_svg_get_versions
+  (ats_ref_type n) {
+  cairo_svg_version_t const **versions ;
+  cairo_svg_get_versions(versions, (int*)n) ; return (ats_ref_type)(*versions) ;
+} // end of [atsctrb_cairo_svg_get_versions]
+
+#define atsctrb_cairo_svg_version_to_string cairo_svg_version_to_string
+
+#endif // end of [CAIRO_HAS_SVG_SURFACE]
+
+/* ****** ****** */
+
 //
 // utilities for drawing
 //
@@ -475,6 +496,20 @@ atsctrb_cairo_ps_get_levels
 
 #define atsctrb_cairo_status_to_string cairo_status_to_string
 #define atsctrb_cairo_debug_reset_static_data cairo_debug_reset_static_data
+
+/* ****** ****** */
+
+//
+// cairo version macros and functions
+//
+
+#define atsctrb_cairo_version cairo_version
+
+static inline
+ats_ptr_type // string
+atsctrb_cairo_version_string () {
+  return (ats_ptr_type)cairo_version_string() ;
+} // end of [atsctrb_cairo_version_string]
 
 /* ****** ****** */
 

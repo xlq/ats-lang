@@ -1,4 +1,6 @@
 #
+# API for cairo in ATS
+#
 # Author: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
 # Time: December, 2009
 #
