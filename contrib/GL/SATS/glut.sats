@@ -306,21 +306,21 @@ extern void glutInit( int* pargc, char** argv );
 *)
 
 fun glutInitWindowPosition (x: int, y: int): void
-  = "atsctrb_glutInitWindowPosition"
+  = "#atsctrb_glutInitWindowPosition"
 
 fun glutInitWindowSize (width: int, height: int): void
-  = "atsctrb_glutInitWindowSize"
+  = "#atsctrb_glutInitWindowSize"
 
 fun glutInitDisplayMode (display: uint): void
-  = "atsctrb_glutInitDisplayMode"
+  = "#atsctrb_glutInitDisplayMode"
 
 fun glutInitDisplayString (display: string): void
-  = "atsctrb_glutInitDisplayString"
+  = "#atsctrb_glutInitDisplayString"
 
 (* ****** ****** *)
 
 // Process loop function, see freeglut_main.c
-fun glutMainLoop (): void = "atsctrb_glutMainLoop"
+fun glutMainLoop (): void = "#atsctrb_glutMainLoop"
 
 (* ****** ****** *)
 
@@ -328,36 +328,36 @@ fun glutMainLoop (): void = "atsctrb_glutMainLoop"
 ** Window management functions, see freeglut_window.c
 *)
 fun glutCreateWindow (title: string): int
-  = "atsctrb_glutCreateWindow"
+  = "#atsctrb_glutCreateWindow"
 
 fun glutCreateSubWindow
   (window: int, x: int, y: int, width: int, height: int): int
-  = "atsctrb_glutCreateSubWindow"
+  = "#atsctrb_glutCreateSubWindow"
 
 fun glutDestroyWindow (window: int): void
-  = "atsctrb_glutDestroyWindow"
+  = "#atsctrb_glutDestroyWindow"
 
-fun glutGetWindow (): int = "atsctrb_glutGetWindow"
-fun glutSetWindow (window: int): void = "atsctrb_glutSetWindow"
+fun glutGetWindow (): int = "#atsctrb_glutGetWindow"
+fun glutSetWindow (window: int): void = "#atsctrb_glutSetWindow"
 
 fun glutSetWindowTitle (title: string): void
-  = "atsctrb_glutSetWindowTitle"
+  = "#atsctrb_glutSetWindowTitle"
 
 fun glutSetIconTitle (title: string): void
-  = "atsctrb_glutSetIconTitle"
+  = "#atsctrb_glutSetIconTitle"
   
 fun glutReshapeWindow (width: int, height: int): void
-  = "atsctrb_glutReshapeWindow"
+  = "#atsctrb_glutReshapeWindow"
 
 fun glutPositionWindow (x: int, y: int): void
-  = "atsctrb_glutPositionWindow"
+  = "#atsctrb_glutPositionWindow"
 
-fun glutShowWindow (): void = "atsctrb_glutShowWindow"
-fun glutHideWindow (): void = "atsctrb_glutHideWindow"
-fun glutIconifyWindow (): void = "atsctrb_glutIconifyWindow"
-fun glutPushWindow (): void = "atsctrb_glutPushWindow"
-fun glutPopWindow (): void = "atsctrb_glutPopWindow"
-fun glutFullScreen (): void = "atsctrb_glutFullScreen"
+fun glutShowWindow (): void = "#atsctrb_glutShowWindow"
+fun glutHideWindow (): void = "#atsctrb_glutHideWindow"
+fun glutIconifyWindow (): void = "#atsctrb_glutIconifyWindow"
+fun glutPushWindow (): void = "#atsctrb_glutPushWindow"
+fun glutPopWindow (): void = "#atsctrb_glutPopWindow"
+fun glutFullScreen (): void = "#atsctrb_glutFullScreen"
 
 (* ****** ****** *)
 
@@ -366,11 +366,11 @@ fun glutFullScreen (): void = "atsctrb_glutFullScreen"
 *)
 
 fun glutPostWindowRedisplay (window: int): void
-  = "atsctrb_glutPostWindowRedisplay"
+  = "#atsctrb_glutPostWindowRedisplay"
 
-fun glutPostRedisplay (): void = "atsctrb_glutPostRedisplay"
+fun glutPostRedisplay (): void = "#atsctrb_glutPostRedisplay"
 
-fun glutSwapBuffers (): void = "atsctrb_glutSwapBuffers"
+fun glutSwapBuffers (): void = "#atsctrb_glutSwapBuffers"
 
 (* ****** ****** *)
 
@@ -379,12 +379,14 @@ fun glutSwapBuffers (): void = "atsctrb_glutSwapBuffers"
 *)
 fun glutTimerFunc
   (time: uint, callback: (int) -> void, value: int): void
-  = "atsctrb_glutTimerFunc"
+  = "#atsctrb_glutTimerFunc"
 
 fun glutIdleFunc (callback: () -> void): void
-  = "atsctrb_glutIdleFunc"
+  = "#atsctrb_glutIdleFunc"
 
-fun glutIdleFunc_null (): void = "atsctrb_glutIdleFunc_null"
+fun glutIdleFunc_null
+  (): void = "atsctrb_glutIdleFunc_null" // this is a function!
+// end of [glutIdleFunc_null]
 
 (* ****** ****** *)
 
@@ -393,38 +395,38 @@ fun glutIdleFunc_null (): void = "atsctrb_glutIdleFunc_null"
 *)
 fun glutKeyboardFunc
   (callback: (uchar, int, int) -> void): void
-  = "atsctrb_glutKeyboardFunc"
+  = "#atsctrb_glutKeyboardFunc"
 
 fun glutMouseFunc
   (callback: (int, int, int, int) -> void): void
-  = "atsctrb_glutMouseFunc"
+  = "#atsctrb_glutMouseFunc"
 
 fun glutSpecialFunc
   (callback: (int, int, int) -> void): void
-  = "atsctrb_glutSpecialFunc"
+  = "#atsctrb_glutSpecialFunc"
 
 fun glutReshapeFunc
   (callback: (int, int) -> void): void
-  = "atsctrb_glutReshapeFunc"
+  = "#atsctrb_glutReshapeFunc"
 
 fun glutVisibilityFunc
-  (callback: (int) -> void): void = "atsctrb_glutVisibilityFunc"
+  (callback: (int) -> void): void = "#atsctrb_glutVisibilityFunc"
 // end of [glutVisibilityFunc]
 
 fun glutDisplayFunc
-  (callback: () -> void): void = "atsctrb_glutDisplayFunc"
+  (callback: () -> void): void = "#atsctrb_glutDisplayFunc"
 // end of [glutDisplayFunc]
 
 fun glutMotionFunc
   (callback: (int, int) -> void): void
-  = "atsctrb_glutMotionFunc"
+  = "#atsctrb_glutMotionFunc"
 
 fun glutPassiveMotionFunc
   (callback: (int, int) -> void): void
-  = "atsctrb_glutPassiveMotionFunc"
+  = "#atsctrb_glutPassiveMotionFunc"
 
 fun glutEntryFunc
-  (callback: (int) -> void): void = "atsctrb_glutEntryFunc"
+  (callback: (int) -> void): void = "#atsctrb_glutEntryFunc"
 // end of [glutEntryFunc]
 
 (* ****** ****** *)
@@ -432,67 +434,67 @@ fun glutEntryFunc
 (*
 ** State setting and retrieval functions, see freeglut_state.c
 *)
-fun glutGet (query: GLenum): int = "atsctrb_glutGet"
-fun glutDeviceGet (query: GLenum): int = "atsctrb_glutDeviceGet"
-fun glutGetModifiers (): int = "atsctrb_glutGetModifiers"
-fun glutLayerGet (query: GLenum): int = "atsctrb_glutLayerGet"
+fun glutGet (query: GLenum): int = "#atsctrb_glutGet"
+fun glutDeviceGet (query: GLenum): int = "#atsctrb_glutDeviceGet"
+fun glutGetModifiers (): int = "#atsctrb_glutGetModifiers"
+fun glutLayerGet (query: GLenum): int = "#atsctrb_glutLayerGet"
 
 (* ****** ****** *)
 
-fun glutWireCube (size: GLdouble): void = "atsctrb_glutWireCube"
-fun glutSolidCube (size: GLdouble): void = "atsctrb_glutSolidCube"
+fun glutWireCube (size: GLdouble): void = "#atsctrb_glutWireCube"
+fun glutSolidCube (size: GLdouble): void = "#atsctrb_glutSolidCube"
 
 fun glutWireSphere
   (radius: GLdouble, slices: GLint, stacks: GLint): void
-  = "atsctrb_glutWireSphere"
+  = "#atsctrb_glutWireSphere"
 
 fun glutSolidSphere
   (radius: GLdouble, slices: GLint, stacks: GLint): void
-  = "atsctrb_glutSolidSphere"
+  = "#atsctrb_glutSolidSphere"
 
 (* ****** ****** *)
 
 fun glutWireCone
   (base: GLdouble, height: GLdouble, slices: GLint, stacks: GLint): void
-  = "atsctrb_glutWireCone"
+  = "#atsctrb_glutWireCone"
 
 fun glutSolidCone
   (base: GLdouble, height: GLdouble, slices: GLint, stacks: GLint): void
-  = "atsctrb_glutSolidCone"
+  = "#atsctrb_glutSolidCone"
 
 (* ****** ****** *)
 
 fun glutWireTorus (
     innerRadius: GLdouble, outerRadius: GLdouble, sides: GLint, rings: GLint
   ) : void
-  = "atsctrb_glutWireTorus"
+  = "#atsctrb_glutWireTorus"
 
 fun glutSolidTorus (
     innerRadius: GLdouble, outerRadius: GLdouble, sides: GLint, rings: GLint
   ) : void
-  = "atsctrb_glutSolidTorus"
+  = "#atsctrb_glutSolidTorus"
 
 (* ****** ****** *)
 
 fun glutWireTeapot
-  (size: GLdouble): void = "atsctrb_glutWireTeapot"
+  (size: GLdouble): void = "#atsctrb_glutWireTeapot"
 
 fun glutSolidTeapot
-  (size: GLdouble): void = "atsctrb_glutSolidTeapot"
+  (size: GLdouble): void = "#atsctrb_glutSolidTeapot"
 
 (* ****** ****** *)
 
-fun glutWireDodecahedron (): void = "atsctrb_glutWireDodecahedron"
-fun glutSolidDodecahedron (): void = "atsctrb_glutSolidDodecahedron"
+fun glutWireDodecahedron (): void = "#atsctrb_glutWireDodecahedron"
+fun glutSolidDodecahedron (): void = "#atsctrb_glutSolidDodecahedron"
 
-fun glutWireOctahedron (): void = "atsctrb_glutWireOctahedron"
-fun glutSolidOctahedron (): void = "atsctrb_glutSolidOctahedron"
+fun glutWireOctahedron (): void = "#atsctrb_glutWireOctahedron"
+fun glutSolidOctahedron (): void = "#atsctrb_glutSolidOctahedron"
 
-fun glutWireTetrahedron (): void = "atsctrb_glutWireTetrahedron"
-fun glutSolidTetrahedron (): void = "atsctrb_glutSolidTetrahedron"
+fun glutWireTetrahedron (): void = "#atsctrb_glutWireTetrahedron"
+fun glutSolidTetrahedron (): void = "#atsctrb_glutSolidTetrahedron"
 
-fun glutWireIcosahedron (): void = "atsctrb_glutWireIcosahedron"
-fun glutSolidIcosahedron (): void = "atsctrb_glutSolidIcosahedron"
+fun glutWireIcosahedron (): void = "#atsctrb_glutWireIcosahedron"
+fun glutSolidIcosahedron (): void = "#atsctrb_glutSolidIcosahedron"
 
 (* ****** ****** *)
 

@@ -86,10 +86,10 @@ fn drawTriangle {l1,l2,l3:addr} (
   ) : void = let
 
   extern fun glNormal3fv {l:addr} (pf: !float_3_v l | p: ptr l): void
-    = "atsctrb_glNormal3fv"
+    = "#atsctrb_glNormal3fv"
 
   extern fun glVertex3fv {l:addr} (pf: !float_3_v l | p: ptr l): void
-    = "atsctrb_glVertex3fv"
+    = "#atsctrb_glVertex3fv"
 
   val (pf | ()) = glBegin (GL_TRIANGLES)
   val () = glNormal3fv (pf1 | p1)
@@ -101,7 +101,7 @@ fn drawTriangle {l1,l2,l3:addr} (
   val () = glEnd (pf | (*none*))
 in
   // empty
-end
+end // end of [drawTriangle]
 
 extern fun subdivide {n:nat} {l1,l2,l3:addr} (
     pf1: !float_3_v l1 , pf2: !float_3_v l2 , pf3: !float_3_v l3
@@ -204,9 +204,9 @@ implement display () = let
   val (pf | ()) = glBegin (GL_TRIANGLES)
   val () = loop (0) where {
     extern fun glNormal3fv (A: array (float, 3)): void
-      = "atsctrb_glNormal3fv"
+      = "#atsctrb_glNormal3fv"
     extern fun glVertex3fv (A: array (float, 3)): void
-      = "atsctrb_glVertex3fv"
+      = "#atsctrb_glVertex3fv"
     extern fun subdivide {n:nat} (
       A1: array (float, 3), A2: array (float, 3), A3: array (float, 3), n: int n
     ) : void = "subdivide"

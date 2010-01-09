@@ -55,7 +55,7 @@ implement display () = let
 //
   extern fun glLightfv {n:nat} {l:addr}
     (pf: !array_v (float, n, l) | light: GLenum, pname: GLenum, p: ptr l): void
-    = "atsctrb_glLightfv"
+    = "#atsctrb_glLightfv"
 //
   val () = glLightfv (pf1 | GL_LIGHT0, GL_POSITION, p_pos)
   val () = glLightfv (pf2 | GL_LIGHT0, GL_DIFFUSE, p_light)

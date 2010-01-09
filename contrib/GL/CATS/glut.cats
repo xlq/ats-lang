@@ -93,24 +93,11 @@
 
 // Global callback functions, see freeglut_callbacks.c
 
-static inline
-ats_void_type
-atsctrb_glutTimerFunc (
-  ats_uint_type time
-, ats_ptr_type callback
-, ats_int_type value
-) {
-  glutTimerFunc (time, (void (*)(int))callback, value); return ;
-} // end of [atsctrb_glutTimerFunc]
+#define atsctrb_glutTimerFunc glutTimerFunc
 
 /* ****** ****** */
 
-static inline
-ats_void_type
-atsctrb_glutIdleFunc
-  (ats_ptr_type callback) {
-  glutIdleFunc ((void (*)(void))callback) ; return ;
-} // end of [atsctrb_glutIdleFunc]
+#define atsctrb_glutIdleFunc glutIdleFunc
 
 static inline
 ats_void_type
@@ -123,71 +110,15 @@ atsctrb_glutIdleFunc_null () {
 /*
 ** Window-specific callback functions, see freeglut_callbacks.c
 */
-
-static inline
-ats_void_type
-atsctrb_glutKeyboardFunc
-  (ats_ptr_type callback) {
-  glutKeyboardFunc ((void (*)(unsigned char, int, int))callback) ;
-  return ;
-} // end of [atsctrb_glutKeyboardFunc]
-
-static inline
-ats_void_type
-atsctrb_glutMouseFunc
-  (ats_ptr_type callback) {
-  glutMouseFunc ((void (*)(int, int, int, int))callback) ;
-  return ;
-} // end of [atsctrb_glutMouseFunc]
-
-static inline
-ats_void_type
-atsctrb_glutSpecialFunc
-  (ats_ptr_type callback) {
-  glutSpecialFunc ((void (*)(int, int, int))callback) ; return ;
-} // end of [atsctrb_glutSpecialFunc]
-
-static inline
-ats_void_type
-atsctrb_glutReshapeFunc
-  (ats_ptr_type callback) {
-  glutReshapeFunc ((void (*)(int, int))callback) ; return ;
-} // end of [atsctrb_glutReshapeFunc]
-
-static inline
-ats_void_type
-atsctrb_glutVisibilityFunc
-  (ats_ptr_type callback) {
-  glutVisibilityFunc ((void (*)(int))callback) ; return ;
-} // end of [atsctrb_glutVisibilityFunc]
-
-static inline
-ats_void_type
-atsctrb_glutDisplayFunc
-  (ats_ptr_type callback) {
-  glutDisplayFunc ((void (*)(void))callback) ; return ;
-} // end of [atsctrb_glutDisplayFunc]
-
-static inline
-ats_void_type
-atsctrb_glutMotionFunc
-  (ats_ptr_type callback) {
-  glutMotionFunc ((void (*)(int, int))callback) ; return ;
-} // end of [atsctrb_glutMotionFunc]
-
-static inline
-ats_void_type
-atsctrb_glutPassiveMotionFunc
-  (ats_ptr_type callback) {
-  glutPassiveMotionFunc ((void (*)(int, int))callback) ; return ;
-} // end of [atsctrb_glutPassiveMotionFunc]
-
-static inline
-ats_void_type
-atsctrb_glutEntryFunc
-  (ats_ptr_type callback) {
-  glutEntryFunc ((void (*)(int))callback) ; return ;
-} // end of [atsctrb_glutEntryFunc]
+#define atsctrb_glutKeyboardFunc glutKeyboardFunc
+#define atsctrb_glutMouseFunc glutMouseFunc
+#define atsctrb_glutSpecialFunc glutSpecialFunc
+#define atsctrb_glutReshapeFunc glutReshapeFunc
+#define atsctrb_glutVisibilityFunc glutVisibilityFunc
+#define atsctrb_glutDisplayFunc glutDisplayFunc
+#define atsctrb_glutMotionFunc glutMotionFunc
+#define atsctrb_glutPassiveMotionFunc glutPassiveMotionFunc
+#define atsctrb_glutEntryFunc glutEntryFunc
 
 /* ****** ****** */
 

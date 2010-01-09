@@ -16,6 +16,7 @@ extern ats_void_type mainats (ats_int_type argc, ats_ptr_type argv) ;
 (* ****** ****** *)
 
 staload "contrib/GL/SATS/gl.sats"
+staload "contrib/GL/SATS/glu.sats"
 staload "contrib/GL/SATS/glut.sats"
 
 (* ****** ****** *)
@@ -77,17 +78,6 @@ in
 end // end of [display]
 
 (* ****** ****** *)
-
-local
-
-typedef GLdouble = double
-
-in
-
-extern fun gluOrtho2D
-  (_: double, _: double, _: double, _: double): void = "gluOrtho2D"
-
-end
 
 extern fun reshape (w: int, h: int): void = "reshape"
 implement reshape (w, h) = let

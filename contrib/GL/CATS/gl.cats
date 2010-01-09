@@ -143,22 +143,13 @@ atsctrb_lor_GLbitfield_GLbitfield
 
 /* ****** ****** */
 
-static inline
-ats_void_type
-atsctrb_glClearColor_double (
-  ats_double_type red
-, ats_double_type green
-, ats_double_type blue
-, ats_double_type alpha
-) {
-  glClearColor (red, green, blue, alpha) ; return ;
-} // end of [atsctrb_glClearColor_double]
-
-#define atsctrb_glClearColor_GLclampf glClearColor
+#define atsctrb_glClearIndex glClearIndex
+#define atsctrb_glClearColor glClearColor
 
 /* ****** ****** */
 
 #define atsctrb_glClear glClear
+#define atsctrb_glIndexMask glIndexMask
 #define atsctrb_glColorMask glColorMask
 
 /* ****** ****** */
@@ -174,19 +165,11 @@ atsctrb_glClearColor_double (
 
 /* ****** ****** */
 
-#define atsctrb_glPointSize_double glPointSize
-#define atsctrb_glPointSize_GLfloat glPointSize
+#define atsctrb_glPointSize glPointSize
 
 /* ****** ****** */
 
-static inline
-ats_void_type
-atsctrb_glLineWidth_double
-  (ats_double_type width) {
-  glLineWidth (width) ; return ;
-} // end of [atsctrb_glLineWidth_double]
-
-#define atsctrb_glLineWidth_GLfloat glLineWidth
+#define atsctrb_glLineWidth glLineWidth
 
 /* ****** ****** */
 
@@ -196,47 +179,21 @@ atsctrb_glLineWidth_double
 
 #define atsctrb_glPolygonMode glPolygonMode
 #define atsctrb_glPolygonOffset glPolygonOffset
-
-static inline
-ats_void_type
-atsctrb_glPolygonStipple
-  (ats_ref_type mask) {
-  glPolygonStipple ((GLubyte*)mask) ; return ;
-} // end of [atsctrb_glPolygonStipple]
-
-static inline
-ats_void_type
-atsctrb_glGetPolygonStipple
-  (ats_ref_type mask) {
-  glGetPolygonStipple ((GLubyte*)mask) ; return ;
-} // end of [atsctrb_glGetPolygonStipple]
+#define atsctrb_glPolygonStipple glPolygonStipple
+#define atsctrb_glGetPolygonStipple glGetPolygonStipple
+#define atsctrb_glEdgeFlag glEdgeFlag
+#define atsctrb_glEdgeFlagv glEdgeFlagv
+#define atsctrb_glScissor glScissor
 
 /* ****** ****** */
 
-static inline
-ats_void_type
-atsctrb_glClipPlane (
-  ats_GLenum_type plane, ats_ptr_type eqn
-) {
-  glClipPlane(plane, (GLdouble*)eqn) ; return ;
-} // end of [atsctrb_glClipPlane]
+#define atsctrb_glClipPlane glClipPlane
+#define atsctrb_glGetClipPlane glGetClipPlane
 
-static inline
-ats_void_type
-atsctrb_glGetClipPlane (
-  ats_GLenum_type plane, ats_ptr_type eqn
-) {
-  glGetClipPlane(plane, (GLdouble*)eqn) ; return ;
-} // end of [atsctrb_glGetClipPlane]
+/* ****** ****** */
 
-#define atsctrb_glEdgeFlag glEdgeFlag
-
-static inline
-ats_void_type
-atsctrb_glEdgeFlagv
-  (ats_ref_type flag) {
-  glEdgeFlagv((GLboolean*)flag) ; return ;
-} // end of [atsctrb_glEdgeFlagv]
+#define atsctrb_glDrawBuffer glDrawBuffer
+#define atsctrb_glReadBuffer glReadBuffer
 
 /* ****** ****** */
 
@@ -244,39 +201,23 @@ atsctrb_glEdgeFlagv
 #define atsctrb_glDisable glDisable
 #define atsctrb_glIsEnabled glIsEnabled
 
-//
+/*
+// OpenGL 1.1
+#define atsctrb_glEnableClientState glEnableClientState
+#define atsctrb_glDisableClientState glDisableClientState
+*/
 
-static inline
-ats_void_type
-atsctrb_glGetBooleanv (
-  ats_GLenum_type pname, ats_ptr_type params
-) {
-  glGetBooleanv(pname, (GLboolean*)params) ; return ;
-} // end of [atsctrb_glGetBooleanv]
+/* ****** ****** */
 
-static inline
-ats_void_type
-atsctrb_glGetDoublev (
-  ats_GLenum_type pname, ats_ptr_type params
-) {
-  glGetDoublev(pname, (GLdouble*)params) ; return ;
-} // end of [atsctrb_glGetDoublev]
+#define atsctrb_glGetBooleanv glGetBooleanv
+#define atsctrb_glGetDoublev glGetDoublev
+#define atsctrb_glGetFloatv glGetFloatv
+#define atsctrb_glGetIntegerv glGetIntegerv
 
-static inline
-ats_void_type
-atsctrb_glGetFloatv (
-  ats_GLenum_type pname, ats_ptr_type params
-) {
-  glGetFloatv(pname, (GLfloat*)params) ; return ;
-} // end of [atsctrb_glGetFloatv]
+/* ****** ****** */
 
-static inline
-ats_void_type
-atsctrb_glGetIntegerv (
-  ats_GLenum_type pname, ats_ptr_type params
-) {
-  glGetIntegerv(pname, (GLint*)params) ; return ;
-} // end of [atsctrb_glGetIntegerv]
+#define atsctrb_glPushAttrib glPushAttrib
+#define atsctrb_glPopAttrib glPopAttrib
 
 /* ****** ****** */
 
@@ -300,25 +241,8 @@ atsctrb_glGetIntegerv (
 
 // Accumulation Buffer
 
-static inline
-ats_void_type
-atsctrb_glClearAccum (
-  ats_GLfloat_type red
-, ats_GLfloat_type green
-, ats_GLfloat_type blue
-, ats_GLfloat_type alpha
-) {
-  glClearAccum (red, green, blue, alpha) ; return ;
-} // end of [atsctrb_glClearAccum]
-
-static inline
-ats_void_type
-atsctrb_glAccum (
-  ats_GLenum_type opr
-, ats_GLfloat_type value
-) {
-  glAccum (opr, value) ; return ;
-} // end of [atsctrb_glAccum]
+#define atsctrb_glClearAccum glClearAccum
+#define atsctrb_glAccum glAccum
 
 /* ****** ****** */
 
@@ -332,63 +256,15 @@ atsctrb_glAccum (
 
 /* ****** ****** */
 
-#define atsctrb_glOrtho_double glOrtho
-#define atsctrb_glOrtho_GLdouble glOrtho
+#define atsctrb_glOrtho glOrtho
 
 /* ****** ****** */
 
-#define atsctrb_glFrustum_double glFrustum
-#define atsctrb_glFrustum_GLdouble glFrustum
+#define atsctrb_glFrustum glFrustum
 
 /* ****** ****** */
 
-#define atsctrb_glLoadIdentity glLoadIdentity
-
-/* ****** ****** */
-
-static inline
-ats_void_type
-atsctrb_glLoadMatrixd
-  (ats_ptr_type mat) {
-  glLoadMatrixd ((GLdouble*)mat) ; return ;
-} // end of [atsctrb_glLoadMatrixd]
-
-static inline
-ats_void_type
-atsctrb_glLoadMatrixf
-  (ats_ptr_type mat) {
-  glLoadMatrixf ((GLfloat*)mat) ; return ;
-} // end of [atsctrb_glLoadMatrixf]
-
-/* ****** ****** */
-
-static inline
-ats_void_type
-atsctrb_glMultMatrixd
-  (ats_ptr_type mat) {
-  glMultMatrixd ((GLdouble*)mat) ; return ;
-} // end of [atsctrb_glMultMatrixd]
-
-static inline
-ats_void_type
-atsctrb_glMultMatrixf
-  (ats_ptr_type mat) {
-  glMultMatrixf ((GLfloat*)mat) ; return ;
-} // end of [atsctrb_glMultMatrixf]
-
-/* ****** ****** */
-
-static inline
-ats_void_type atsctrb_glViewport_type (
-  ats_int_type x
-, ats_int_type y
-, ats_int_type width
-, ats_int_type height
-) {
-  glViewport (x, y, (GLsizei)width, (GLsizei)height) ; return ;
-} // end of [atsctrb_glViewport_type]
-
-#define atsctrb_glViewport_GLtype glViewport
+#define atsctrb_glViewport glViewport
 
 /* ****** ****** */
 
@@ -397,19 +273,33 @@ ats_void_type atsctrb_glViewport_type (
 
 /* ****** ****** */
 
-#define atsctrb_glRotated_double glRotated
-#define atsctrb_glRotated_GLdouble glRotated
+#define atsctrb_glLoadIdentity glLoadIdentity
+#define atsctrb_glLoadMatrixd glLoadMatrixd
+#define atsctrb_glLoadMatrixf glLoadMatrixf
+
+/* ****** ****** */
+
+#define atsctrb_glMultMatrixd glMultMatrixd
+#define atsctrb_glMultMatrixf glMultMatrixf
+
+/* ****** ****** */
+
+#define atsctrb_glRotated glRotated
 #define atsctrb_glRotatef glRotatef
 
-#define atsctrb_glScaled_double glScaled
-#define atsctrb_glScaled_GLdouble glScaled
+#define atsctrb_glScaled glScaled
 #define atsctrb_glScalef glScalef
 
-#define atsctrb_glTranslated_double glTranslated
-#define atsctrb_glTranslated_GLdouble glTranslated
+#define atsctrb_glTranslated glTranslated
 #define atsctrb_glTranslatef glTranslatef
 
 /* ****** ****** */
+
+//
+// Display Lists
+//
+
+#define atsctrb_glIsList glIsList
 
 static inline
 ats_uint_type
@@ -422,31 +312,14 @@ atsctrb_glGenList_exn () {
   return lst ;
 } // end of [atsctrb_glGenList_exn]
 
-static inline
-ats_void_type
-atsctrb_glNewList (
-  ats_uint_type lst
-, ats_GLenum_type mode
-) {
-  glNewList (lst, mode) ; return ;
-} // end of [atsctrb_glNewList]
-
-static inline
-ats_void_type atsctrb_glEndList () { glEndList () ; return ; }
+#define atsctrb_glNewList glNewList
+#define atsctrb_glEndList glEndList
+#define atsctrb_glCallList glCallList
 
 /* ****** ****** */
 
-static inline
-ats_void_type
-atsctrb_glBegin (
-  ats_GLenum_type mode
-) {
-  glBegin(mode) ; return ;
-} // end of [atsctrb_glBegin]
-
-static inline
-ats_void_type
-atsctrb_glEnd () { glEnd() ; return ; }
+#define atsctrb_glBegin glBegin
+#define atsctrb_glEnd glEnd
 
 /* ****** ****** */
 
@@ -454,156 +327,66 @@ atsctrb_glEnd () { glEnd() ; return ; }
 // Drawing functions
 //
 
-#define atsctrb_glVertex2d_double glVertex2d
-#define atsctrb_glVertex2d_GLdouble glVertex2d
+#define atsctrb_glVertex2d glVertex2d
 #define atsctrb_glVertex2f glVertex2f
 #define atsctrb_glVertex2i glVertex2i
 #define atsctrb_glVertex2s glVertex2s
 
-#define atsctrb_glVertex3d_double glVertex3d
-#define atsctrb_glVertex3d_GLdouble glVertex3d
+#define atsctrb_glVertex2dv glVertex2dv
+#define atsctrb_glVertex2fv glVertex2fv
+#define atsctrb_glVertex2iv glVertex2iv
+#define atsctrb_glVertex2sv glVertex2sv
+
+/* ****** ****** */
+
+#define atsctrb_glVertex3d glVertex3d
 #define atsctrb_glVertex3f glVertex3f
 #define atsctrb_glVertex3i glVertex3i
 #define atsctrb_glVertex3s glVertex3s
 
-#define atsctrb_glVertex4d_double glVertex4d
-#define atsctrb_glVertex4d_GLdouble glVertex4d
+#define atsctrb_glVertex3dv glVertex3dv
+#define atsctrb_glVertex3fv glVertex3fv
+#define atsctrb_glVertex3iv glVertex3iv
+#define atsctrb_glVertex3sv glVertex3sv
+
+/* ****** ****** */
+
+#define atsctrb_glVertex4d glVertex4d
 #define atsctrb_glVertex4f glVertex4f
 #define atsctrb_glVertex4i glVertex4i
 #define atsctrb_glVertex4s glVertex4s
 
-/* ****** ****** */
-
-static inline
-ats_void_type
-atsctrb_glVertex2dv
-  (ats_ref_type v) {
-  glVertex2dv ((GLdouble*)v) ; return ;
-} // end of [atsctrb_glVertex2dv]
-
-static inline
-ats_void_type
-atsctrb_glVertex2fv
-  (ats_ref_type v) {
-  glVertex2fv ((GLfloat*)v) ; return ;
-} // end of [atsctrb_glVertex2fv]
-
-static inline
-ats_void_type
-atsctrb_glVertex2iv
-  (ats_ref_type v) {
-  glVertex2iv ((GLint*)v) ; return ;
-} // end of [atsctrb_glVertex2iv]
-
-static inline
-ats_void_type
-atsctrb_glVertex2sv
-  (ats_ref_type v) {
-  glVertex2sv ((GLshort*)v) ; return ;
-} // end of [atsctrb_glVertex2sv]
+#define atsctrb_glVertex4dv glVertex4dv
+#define atsctrb_glVertex4fv glVertex4fv
+#define atsctrb_glVertex4iv glVertex4iv
+#define atsctrb_glVertex4sv glVertex4sv
 
 /* ****** ****** */
 
-static inline
-ats_void_type
-atsctrb_glVertex3dv
-  (ats_ref_type v) {
-  glVertex3dv ((GLdouble*)v) ; return ;
-} // end of [atsctrb_glVertex3dv]
+#define atsctrb_glNormal3b glNormal3b
+#define atsctrb_glNormal3d glNormal3d
+#define atsctrb_glNormal3f glNormal3f
+#define atsctrb_glNormal3i glNormal3i
+#define atsctrb_glNormal3s glNormal3s
 
-static inline
-ats_void_type
-atsctrb_glVertex3fv
-  (ats_ref_type v) {
-  glVertex3fv ((GLfloat*)v) ; return ;
-} // end of [atsctrb_glVertex3fv]
-
-static inline
-ats_void_type
-atsctrb_glVertex3iv
-  (ats_ref_type v) {
-  glVertex3iv ((GLint*)v) ; return ;
-} // end of [atsctrb_glVertex3iv]
-
-static inline
-ats_void_type
-atsctrb_glVertex3sv
-  (ats_ref_type v) {
-  glVertex3sv ((GLshort*)v) ; return ;
-} // end of [atsctrb_glVertex3sv]
+#define atsctrb_glNormal3bv glNormal3bv
+#define atsctrb_glNormal3dv glNormal3dv
+#define atsctrb_glNormal3fv glNormal3fv
+#define atsctrb_glNormal3iv glNormal3iv
+#define atsctrb_glNormal3sv glNormal3sv
 
 /* ****** ****** */
 
-static inline
-ats_void_type
-atsctrb_glVertex4dv
-  (ats_ref_type v) {
-  glVertex4dv ((GLdouble*)v) ; return ;
-} // end of [atsctrb_glVertex4dv]
-
-static inline
-ats_void_type
-atsctrb_glVertex4fv
-  (ats_ref_type v) {
-  glVertex4fv ((GLfloat*)v) ; return ;
-} // end of [atsctrb_glVertex4fv]
-
-static inline
-ats_void_type
-atsctrb_glVertex4iv
-  (ats_ref_type v) {
-  glVertex4iv ((GLint*)v) ; return ;
-} // end of [atsctrb_glVertex4iv]
-
-static inline
-ats_void_type
-atsctrb_glVertex4sv
-  (ats_ref_type v) {
-  glVertex4sv ((GLshort*)v) ; return ;
-} // end of [atsctrb_glVertex4sv]
-
-/* ****** ****** */
-
-static inline
-ats_void_type
-atsctrb_glNormal3bv
-  (ats_ref_type v) {
-  glNormal3bv ((GLbyte*)v) ; return ;
-} // end of [atsctrb_glNormal3bv]
-
-static inline
-ats_void_type
-atsctrb_glNormal3dv
-  (ats_ref_type v) {
-  glNormal3dv ((GLdouble*)v) ; return ;
-} // end of [atsctrb_glNormal3dv]
-
-static inline
-ats_void_type
-atsctrb_glNormal3fv
-  (ats_ref_type v) {
-  glNormal3fv ((GLfloat*)v) ; return ;
-} // end of [atsctrb_glNormal3fv]
-
-static inline
-ats_void_type
-atsctrb_glNormal3iv
-  (ats_ref_type v) {
-  glNormal3iv ((GLint*)v) ; return ;
-} // end of [atsctrb_glNormal3iv]
-
-static inline
-ats_void_type
-atsctrb_glNormal3sv
-  (ats_ref_type v) {
-  glNormal3sv ((GLshort*)v) ; return ;
-} // end of [atsctrb_glNormal3sv]
+#define atsctrb_glIndexd glIndexd
+#define atsctrb_glIndexf glIndexf
+#define atsctrb_glIndexi glIndexi
+#define atsctrb_glIndexs glIndexs
+#define atsctrb_glIndexub glIndexub
 
 /* ****** ****** */
 
 #define atsctrb_glColor3b glColor3b
-#define atsctrb_glColor3d_double glColor3d
-#define atsctrb_glColor3d_GLdouble glColor3d
+#define atsctrb_glColor3d glColor3d
 #define atsctrb_glColor3f glColor3f
 #define atsctrb_glColor3i glColor3i
 #define atsctrb_glColor3s glColor3s
@@ -611,45 +394,20 @@ atsctrb_glNormal3sv
 #define atsctrb_glColor3ui glColor3ui
 #define atsctrb_glColor3us glColor3us
 
-/* ****** ****** */
+#define atsctrb_glColor3bv glColor3bv
+#define atsctrb_glColor3dv glColor3dv
+#define atsctrb_glColor3fv glColor3fv
+#define atsctrb_glColor3iv glColor3iv
+#define atsctrb_glColor3sv glColor3sv
+#define atsctrb_glColor3ubv glColor3ubv
+#define atsctrb_glColor3uiv glColor3uiv
+#define atsctrb_glColor3usv glColor3usv
 
-static inline
-ats_void_type
-atsctrb_glColor3dv (
-  ats_ref_type rgb
-) {
-  glColor3dv ((GLdouble*)rgb) ; return ;
-} /* end of [atsctrb_glColor3dv] */
-
-static inline
-ats_void_type
-atsctrb_glColor3fv (
-  ats_ref_type rgb
-) {
-  glColor3fv ((GLfloat*)rgb) ; return ;
-} /* end of [atsctrb_glColor3fv] */
-
-static inline
-ats_void_type
-atsctrb_glColor3iv (
-  ats_ref_type rgb
-) {
-  glColor3iv ((GLint*)rgb) ; return ;
-} /* end of [atsctrb_glColor3iv] */
-
-static inline
-ats_void_type
-atsctrb_glColor3sv (
-  ats_ref_type rgb
-) {
-  glColor3sv ((GLshort*)rgb) ; return ;
-} /* end of [atsctrb_glColor3sv] */
 
 /* ****** ****** */
 
 #define atsctrb_glColor4b glColor4b
-#define atsctrb_glColor4d_double glColor4d
-#define atsctrb_glColor4d_GLdouble glColor4d
+#define atsctrb_glColor4d glColor4d
 #define atsctrb_glColor4f glColor4f
 #define atsctrb_glColor4i glColor4i
 #define atsctrb_glColor4s glColor4s
@@ -657,56 +415,28 @@ atsctrb_glColor3sv (
 #define atsctrb_glColor4ui glColor4ui
 #define atsctrb_glColor4us glColor4us
 
-/* ****** ****** */
-
-static inline
-ats_void_type
-atsctrb_glColor4dv (
-  ats_ref_type rgb
-) {
-  glColor4dv ((GLdouble*)rgb) ; return ;
-} /* end of [atsctrb_glColor4dv] */
-
-static inline
-ats_void_type
-atsctrb_glColor4fv (
-  ats_ref_type rgb
-) {
-  glColor4fv ((GLfloat*)rgb) ; return ;
-} /* end of [atsctrb_glColor4fv] */
-
-static inline
-ats_void_type
-atsctrb_glColor4iv (
-  ats_ref_type rgb
-) {
-  glColor4iv ((GLint*)rgb) ; return ;
-} /* end of [atsctrb_glColor4iv] */
-
-static inline
-ats_void_type
-atsctrb_glColor4sv (
-  ats_ref_type rgb
-) {
-  glColor4sv ((GLshort*)rgb) ; return ;
-} /* end of [atsctrb_glColor4sv] */
+#define atsctrb_glColor4bv glColor4bv
+#define atsctrb_glColor4dv glColor4dv
+#define atsctrb_glColor4fv glColor4fv
+#define atsctrb_glColor4iv glColor4iv
+#define atsctrb_glColor4sv glColor4sv
+#define atsctrb_glColor4ubv glColor4ubv
+#define atsctrb_glColor4uiv glColor4uiv
+#define atsctrb_glColor4usv glColor4usv
 
 /* ****** ****** */
 
-#define atsctrb_glTexCoord1d_double glTexCoord1d
-#define atsctrb_glTexCoord1d_GLdouble glTexCoord1d
+#define atsctrb_glTexCoord1d glTexCoord1d
 #define atsctrb_glTexCoord1f glTexCoord1f
 #define atsctrb_glTexCoord1i glTexCoord1i
 #define atsctrb_glTexCoord1s glTexCoord1s
 
-#define atsctrb_glTexCoord2d_double glTexCoord2d
-#define atsctrb_glTexCoord2d_GLdouble glTexCoord2d
+#define atsctrb_glTexCoord2d glTexCoord2d
 #define atsctrb_glTexCoord2f glTexCoord2f
 #define atsctrb_glTexCoord2i glTexCoord2i
 #define atsctrb_glTexCoord2s glTexCoord2s
 
-#define atsctrb_glTexCoord3d_double glTexCoord3d
-#define atsctrb_glTexCoord3d_GLdouble glTexCoord3d
+#define atsctrb_glTexCoord3d glTexCoord3d
 #define atsctrb_glTexCoord3f glTexCoord3f
 #define atsctrb_glTexCoord3i glTexCoord3i
 #define atsctrb_glTexCoord3s glTexCoord3s
@@ -730,8 +460,7 @@ atsctrb_glColor4sv (
 
 /* ****** ****** */
 
-#define atsctrb_glRectd_double glRectd
-#define atsctrb_glRectd_GLdouble glRectd
+#define atsctrb_glRectd glRectd
 #define atsctrb_glRectf glRectf
 
 /* ****** ****** */
@@ -747,69 +476,32 @@ atsctrb_glColor4sv (
 #define atsctrb_glLightf glLightf
 #define atsctrb_glLighti glLighti
 
-static inline
-ats_void_type
-atsctrb_glLightfv (
-  ats_GLenum_type light
-, ats_GLenum_type pname
-, ats_ptr_type params) {
-  glLightfv (light, pname, (GLfloat*)params) ; return ;
-} /* end of [atsctrb_glLightfv] */
+#define atsctrb_glLightfv glLightfv
+#define atsctrb_glLightiv glLightiv
 
-static inline
-ats_void_type
-atsctrb_glLightiv (
-  ats_GLenum_type light
-, ats_GLenum_type pname
-, ats_ptr_type params) {
-  glLightiv (light, pname, (GLint*)params) ; return ;
-} /* end of [atsctrb_glLightiv] */
+#define atsctrb_glGetLightfv glGetLightfv
+#define atsctrb_glGetLightiv glGetLightiv
 
 /* ****** ****** */
 
 #define atsctrb_glLightModelf glLightModelf
 #define atsctrb_glLightModeli glLightModeli
 
-static inline
-ats_void_type
-atsctrb_glLightModelfv (
-  ats_GLenum_type pname, ats_ptr_type params
-) {
-  glLightModelfv (pname, (GLfloat*)params) ; return ;
-} /* end of [atsctrb_glLightModelfv] */
-
-static inline
-ats_void_type
-atsctrb_glLightModeliv (
-  ats_GLenum_type pname, ats_ptr_type params
-) {
-  glLightModeliv (pname, (GLint*)params) ; return ;
-} /* end of [atsctrb_glLightModeliv] */
+#define atsctrb_glLightModelfv glLightModelfv
+#define atsctrb_glLightModeliv glLightModeliv
 
 /* ****** ****** */
 
 #define atsctrb_glMaterialf glMaterialf
 #define atsctrb_glMateriali glMateriali
 
-static inline
-ats_void_type
-atsctrb_glMaterialfv (
-  ats_GLenum_type face
-, ats_GLenum_type pname
-, ats_ptr_type params
-) {
-  glMaterialfv (face, pname, (GLfloat*)params) ; return ;
-} /* end of [atsctrb_glMaterialfv] */
+#define atsctrb_glMaterialfv glMaterialfv
+#define atsctrb_glMaterialiv glMaterialiv
 
-static inline
-ats_void_type
-atsctrb_glMaterialiv (
-  ats_GLenum_type face
-, ats_GLenum_type pname
-, ats_ptr_type params
-) {
-  glMaterialiv (face, pname, (GLint*)params) ; return ;
-} /* end of [atsctrb_glMaterialiv] */
+#define atsctrb_glGetMaterialfv glGetMaterialfv
+#define atsctrb_glGetMaterialiv glGetMaterialiv
+
+#define atsctrb_glColorMaterial glColorMaterial
 
 /* ****** ****** */
 
@@ -820,21 +512,7 @@ atsctrb_glMaterialiv (
 #define atsctrb_glPixelStoref glPixelStoref
 #define atsctrb_glPixelStorei glPixelStorei
 
-static inline
-ats_void_type
-atsctrb_glBitmap (
-  ats_GLsizei_type width
-, ats_GLsizei_type height
-, ats_GLfloat_type xorig
-, ats_GLfloat_type yorig
-, ats_GLfloat_type xmove
-, ats_GLfloat_type ymove
-, ats_ref_type bitmap
-) {
-  glBitmap (
-    width, height, xorig, yorig, xmove, ymove, (GLubyte*)bitmap
-  ) ; return ;
-} // end of [atsctrb_glBitmap]
+#define atsctrb_glBitmap glBitmap
 
 /* ****** ****** */
 
@@ -850,52 +528,12 @@ atsctrb_glBitmap (
 
 /* ****** ****** */
 
-static inline
-ats_void_type
-atsctrb_glDeleteTexures (
-  ats_GLsizei_type n, ats_ref_type texnames
-) {
-  glDeleteTexures (n, (GLuint*)texnames) ; return ;
-} // end of [atsctrb_glDeleteTexures]
+#define atsctrb_glDeleteTexures glDeleteTexures
 
 /* ****** ****** */
 
-static inline
-ats_void_type
-atsctrb_glTexImage1D (
-  ats_GLenum_type target
-, ats_GLint_type level
-, ats_GLint_type internalFormat
-, ats_GLsizei_type width
-, ats_int_type border // 0 or 1
-, ats_GLenum_type format
-, ats_GLenum_type type
-, ats_ref_type texels
-) {
-  glTexImage1D (
-    target, level, internalFormat
-  , width, border, format, type, (GLvoid*)texels
-  ) ; return ;
-} // end of [atsctrb_glTexImage1D]
-
-static inline
-ats_void_type
-atsctrb_glTexImage2D (
-  ats_GLenum_type target
-, ats_GLint_type level
-, ats_GLint_type internalFormat
-, ats_GLsizei_type width
-, ats_GLsizei_type height
-, ats_int_type border // 0 or 1
-, ats_GLenum_type format
-, ats_GLenum_type type
-, ats_ref_type texels
-) {
-  glTexImage2D (
-    target, level, internalFormat
-  , width, height, border, format, type, (GLvoid*)texels
-  ) ; return ;
-} // end of [atsctrb_glTexImage2D]
+#define atsctrb_glTexImage1D glTexImage1D
+#define atsctrb_glTexImage2D glTexImage2D
 
 /* ****** ****** */
 
@@ -903,14 +541,7 @@ atsctrb_glTexImage2D (
 // OpenGL 1.1
 //
 
-static inline
-ats_void_type
-atsctrb_glGenTextures (
-  ats_GLsizei_type n, ats_ref_type textures
-) {
-  glGenTextures(n, (GLuint*)textures) ; return ;
-} // end of [atsctrb_glGenTextures]
-
+#define atsctrb_glGenTextures glGenTextures
 #define atsctrb_glBindTexture glBindTexture
 
 /* ****** ****** */
