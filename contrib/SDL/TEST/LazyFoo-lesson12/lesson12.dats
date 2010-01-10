@@ -1,6 +1,6 @@
 //
-// LazyFoo-lesson10 _translated_ into ATS
-// See http://lazyfoo.net/SDL_tutorials/lesson10
+// LazyFoo-lesson12 _translated_ into ATS
+// See http://lazyfoo.net/SDL_tutorials/lesson12
 //
 
 (* ****** ****** *)
@@ -23,10 +23,8 @@ staload "contrib/SDL/SATS/SDL_ttf.sats"
 
 (* ****** ****** *)
 
-symintr int
-overload int with int_of_Sint16
-overload int with int_of_Uint16
-overload int with int_of_SDL_EventType
+symintr uint
+overload uint with uint_of_Uint32
 
 (* ****** ****** *)
 
@@ -75,6 +73,8 @@ implement apply_surface
 
 (* ****** ****** *)
 
+staload "libc/SATS/printf.sats"
+
 implement main () = () where {
   val _err = SDL_Init (SDL_INIT_EVERYTHING)
   val () = assert_errmsg (_err = 0, #LOCATION)
@@ -86,43 +86,54 @@ implement main () = () where {
   val () = assert_errmsg (_err = 0, #LOCATION)
 //
   val () = SDL_WM_SetCaption (
-    stropt_some "Press an Arrow Key", stropt_none
+    stropt_some "Timer test", stropt_none
   ) // end of [val]
 //
-  val [l2:addr] background = load_image ("LazyFoo-lesson10/background.png")
+  val [l2:addr] background = load_image ("LazyFoo-lesson12/background.png")
   val () = assert_errmsg (ref_is_notnull background, #LOCATION)
 //
   // Open the font
-  val font = TTF_OpenFont ("LazyFoo-lesson10/lazy.ttf", 72)
+  val [_l:addr] font = TTF_OpenFont ("LazyFoo-lesson12/lazy.ttf", 36)
   val () = assert_errmsg (TTF_Font_ref_is_notnull font, #LOCATION)
 //
   //The color of the font
   var textColor : SDL_Color
   val () = SDL_Color_init (textColor, (Uint8)0, (Uint8)0, (Uint8)0)
+//
   // Render the text
-  val [_l:addr] up = TTF_RenderText_Solid (font, "Up", textColor)
-  val () = assert_errmsg (ref_is_notnull up, #LOCATION)
-  val [_l:addr] down = TTF_RenderText_Solid (font, "Down", textColor)
-  val () = assert_errmsg (ref_is_notnull down, #LOCATION)
-  val [_l:addr] left = TTF_RenderText_Solid (font, "Left", textColor)
-  val () = assert_errmsg (ref_is_notnull left, #LOCATION)
-  val [_l:addr] right = TTF_RenderText_Solid (font, "Right", textColor)
-  val () = assert_errmsg (ref_is_notnull right, #LOCATION)
+  val [_l:addr] startStop = TTF_RenderText_Solid
+    (font, "Press S to start or stop the timer", textColor)
+  val () = assert_errmsg (ref_is_notnull startStop, #LOCATION)
+//
+  // Start the timer
+  var running: bool = true
+  var start: Uint32 = SDL_GetTicks ()
 //
   var quit: bool = false
   var event: SDL_Event?
   val () = while (~quit) let
-//
     val () = while (true) begin
       if SDL_PollEvent (event) > 0 then let
         prval () = opt_unsome (event)
         val _type = SDL_Event_type event
-(*
-        val () = printf ("event.type = %i\n", @((int)_type))
-*)
-        val () = if _type = SDL_QUIT then quit := true
       in
-        continue
+        case+ 0 of
+        | _ when _type = SDL_KEYDOWN => let
+            prval () = SDL_Event_key_castdn (view@ event)
+            var sym = (&event)->keysym.sym
+            prval () = SDL_Event_key_castup (view@ event)
+          in
+            case+ 0 of
+            | _ when sym = SDLK_s =>
+                if running then
+                  (running := false; start := (Uint32)0)
+                else
+                  (running := true; start := SDL_GetTicks ())
+                // end of [if]
+            | _ => () // ignored
+          end // end of [SDL_KEYDOWN]
+        | _ when _type = SDL_QUIT => (quit := true)
+        | _ => () // ignored
       end else let
         prval () = opt_unnone (event) in break
       end // end of [if]
@@ -130,49 +141,44 @@ implement main () = () where {
 //
     val () = apply_surface (0, 0, background, screen)
 //
-    val keystates = SDL_GetKeyState_null ()
+    val () = () where {
+      val w = SDL_Surface_w (startStop)
+      val () = apply_surface((SCREEN_WIDTH - w) / 2, 200, startStop, screen)
+    } // end of [val]
 //
-    val () = if (keystates[SDLK_UP] > 0) then let
-      val w = SDL_Surface_w up and h = SDL_Surface_h up
+    val () = if running then let
+      #define BUFSZ 1024
+      var !p_buf with pf_buf = @[byte][BUFSZ]() // uninitialized
+      val now = SDL_GetTicks ()
+      val diff = (uint)now - (uint)start
+      val _n = snprintf (pf_buf | p_buf, BUFSZ, "Timer: %u", @(diff))
+      prval () = pf_buf := bytes_v_of_strbuf_v (pf_buf)
+      val () = () where {
+        extern castfn __cast (p: ptr): string
+        val seconds = TTF_RenderText_Solid (font, __cast p_buf, textColor)
+        val () = assert_errmsg (ref_is_notnull seconds, #LOCATION)
+        val w = SDL_Surface_w (seconds)
+        val () = apply_surface ((SCREEN_WIDTH - w) / 2, 50, seconds, screen)
+        val () = SDL_FreeSurface (seconds)
+      } // end of [where]
     in
-      apply_surface((SCREEN_WIDTH - w) / 2, (SCREEN_HEIGHT / 2 - h) / 2, up, screen)
-    end // end of [val]
-//
-    val () = if (keystates[SDLK_DOWN] > 0) then let
-      val w = SDL_Surface_w down and h = SDL_Surface_h down
-    in
-      apply_surface((SCREEN_WIDTH - w) / 2, (SCREEN_HEIGHT / 2 - h) / 2 + SCREEN_HEIGHT / 2, down, screen)
-    end // end of [val]
-//
-    val () = if (keystates[SDLK_LEFT] > 0) then let
-      val w = SDL_Surface_w left and h = SDL_Surface_h left
-    in
-      apply_surface((SCREEN_WIDTH / 2 - w) / 2, (SCREEN_HEIGHT - h) / 2, left, screen)
-    end // end of [val]
-//
-    val () = if (keystates[SDLK_RIGHT] > 0) then let
-      val w = SDL_Surface_w right and h = SDL_Surface_h right
-    in
-      apply_surface((SCREEN_WIDTH / 2 - w) / 2 + SCREEN_WIDTH / 2, (SCREEN_HEIGHT - h) / 2, right, screen)
+      // nothing
     end // end of [val]
 //
     val _err = SDL_Flip (screen)
     val () = assert_errmsg (_err = 0, #LOCATION)
+//
   in
     // nothing
   end // end of [val]
 //
   val () = TTF_CloseFont (font)
   val () = SDL_FreeSurface (background)
-  val () = SDL_FreeSurface (up)
-  val () = SDL_FreeSurface (down)
-  val () = SDL_FreeSurface (left)
-  val () = SDL_FreeSurface (right)
-  val () = TTF_Quit ()
+  val () = SDL_FreeSurface (startStop)
   val _ptr = SDL_Quit_screen (screen)
   val () = SDL_Quit ()
 } // end of [main]
 
 (* ****** ****** *)
 
-(* end of [LazyFoo-lesson10.dats] *)
+(* end of [LazyFoo-lesson12.dats] *)

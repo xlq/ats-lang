@@ -75,12 +75,15 @@ abst@ype Uint32 = uint32_t0ype
 
 castfn Sint32_of_int (x: int):<> Sint32
 overload Sint32 with Sint32_of_int
+castfn int_of_Sint32 (x: Sint32):<> int
 
 castfn Uint32_of_int (x: int):<> Uint32
 overload Uint32 with Uint32_of_int
+castfn int_of_Uint32 (x: Uint32):<> int
 
 castfn Uint32_of_uint (x: uint):<> Uint32
 overload Uint32 with Uint32_of_uint
+castfn uint_of_Uint32 (x: Uint32):<> uint
 
 (* ****** ****** *)
 

@@ -129,7 +129,10 @@ fun clips_init
 (* ****** ****** *)
 
 //
-// HX: this is done in a functional style rather than a OO style.
+// HX:
+// this is done in a functional style rather than an OO style.
+// if you read this code, you are probably a functional programmer
+// anyway :)
 //
 
 typedef button = SDL_Rect
@@ -209,12 +212,12 @@ implement main () = () where {
   val () = assert_errmsg (ref_is_notnull buttonSheet, #LOCATION)
 //
   val (pf_format | p_format) = SDL_Surface_format (screen)
-  val color = SDL_MapRGB (!p_format, (Uint8)0xFF, (Uint8)0xFF, (Uint8)0xFF)
+  val white_color = SDL_MapRGB (!p_format, (Uint8)0xFF, (Uint8)0xFF, (Uint8)0xFF)
   prval () = minus_addback (pf_format | screen)
 //
   var !p_clips with pf_clips = @[SDL_Rect][4]()
   val () = clips_init (!p_clips)
-  val () = (print "clips_init is done."; print_newline ())
+  // val () = (print "clips_init is done."; print_newline ())
 //
   var myButton : button
   val () = SDL_Rect_init
@@ -249,7 +252,7 @@ implement main () = () where {
     val () = if nclip_new >= 0 then nclip := nclip_new
 //
     // Fill the screen white
-    val _err = SDL_FillRect_ptr (screen, null, color)
+    val _err = SDL_FillRect_ptr (screen, null, white_color)
 //
     val () = button_show (myButton, buttonSheet, screen, p_clips->[nclip])
 //

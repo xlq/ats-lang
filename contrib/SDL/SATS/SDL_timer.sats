@@ -46,7 +46,7 @@ macdef SDL_TIMESLICE = 10
 *)
 macdef TIMER_RESOLUTION = 10 (* Experimentally determined *)
 
-fun SDL_GetTicks (): Uint32 = "#atsctrb_SDLCALL SDL_GetTicks"
+fun SDL_GetTicks (): Uint32 = "#atsctrb_SDL_GetTicks"
 
 (* ****** ****** *)
 
