@@ -1813,7 +1813,7 @@ and f0undeclst = List f0undec
 
 and v0ardec = '{
   v0ardec_loc= loc_t
-, v0ardec_knd= int
+, v0ardec_knd= int (* BANG: knd = 1 *)
 , v0ardec_sym= sym_t
 , v0ardec_sym_loc= loc_t
 , v0ardec_typ= s0expopt

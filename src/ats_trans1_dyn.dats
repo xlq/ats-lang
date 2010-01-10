@@ -314,7 +314,6 @@ fn f (p1t1: p1at, p1t2: p1at):<cloref1> p1atitm = let
   in
     $Fix.ITEMatm p1t_app
   end // end of [f]
-
 in
   $Fix.item_app f
 end // end of [app_p1at_item]
@@ -342,6 +341,7 @@ fn s0vararg_tr (s0a: s0vararg): s1vararg =
   | S0VARARGseq (s0as) => S1VARARGseq (s0arglst_tr s0as)
   | S0VARARGone () => S1VARARGone ()
   | S0VARARGall () => S1VARARGall ()
+// end of [s0vararg_tr]
 
 (* ****** ****** *)
 

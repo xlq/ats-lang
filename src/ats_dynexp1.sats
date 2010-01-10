@@ -647,7 +647,7 @@ and f1undeclst = List f1undec
 
 and v1ardec = '{
   v1ardec_loc= loc_t
-, v1ardec_knd= int
+, v1ardec_knd= int (* BANG: knd = 1 *)
 , v1ardec_sym= sym_t
 , v1ardec_sym_loc= loc_t
 , v1ardec_typ= s1expopt

@@ -871,7 +871,7 @@ and f2undeclst = List f2undec
 
 and v2ardec = '{
   v2ardec_loc= loc_t
-, v2ardec_knd= int
+, v2ardec_knd= int (* BANG: knd = 1 *)
 , v2ardec_dvar= d2var_t // dynamic address
 , v2ardec_svar= s2var_t // static address
 , v2ardec_typ= s2expopt

@@ -41,12 +41,15 @@ abst@ype Uint8 = uint8_t0ype
 
 castfn Sint8_of_int (x: int):<> Sint8
 overload Sint8 with Sint8_of_int
+castfn int_of_Sint8 (x: Sint8):<> int
 
 castfn Uint8_of_int (x: int):<> Uint8
 overload Uint8 with Uint8_of_int
+castfn int_of_Uint8 (x: Uint8):<> int
 
 castfn Uint8_of_uint (x: uint):<> Uint8
 overload Uint8 with Uint8_of_uint
+castfn uint_of_Uint8 (x: Uint8):<> uint
 
 (* ****** ****** *)
 
@@ -55,12 +58,15 @@ abst@ype Uint16 = uint16_t0ype
 
 castfn Sint16_of_int (x: int):<> Sint16
 overload Sint16 with Sint16_of_int
+castfn int_of_Sint16 (x: Sint16):<> int
 
 castfn Uint16_of_int (x: int):<> Uint16
 overload Uint16 with Uint16_of_int
+castfn int_of_Uint16 (x: Uint16):<> int
 
 castfn Uint16_of_uint (x: uint):<> Uint16
 overload Uint16 with Uint16_of_uint
+castfn uint_of_Uint16 (x: Uint16):<> uint
 
 (* ****** ****** *)
 

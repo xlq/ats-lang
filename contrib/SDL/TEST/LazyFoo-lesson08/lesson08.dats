@@ -43,7 +43,7 @@ in
       // Map the color key
       val (pf_format | p_format) = SDL_Surface_format (optimizedImage)
       val colorkey = SDL_MapRGB (!p_format, (Uint8)0, (Uint8)0xFF, (Uint8)0xFF)
-      //Set all pixels of color R 0, G 0xFF, B 0xFF to be transparent
+      // Set all pixels of color R 0, G 0xFF, B 0xFF to be transparent
       prval () = minus_addback (pf_format | optimizedImage)
       val _err = SDL_SetColorKey (optimizedImage, SDL_SRCCOLORKEY, colorkey)
     in
@@ -84,6 +84,9 @@ in
 end // end of [show_message]
 
 (* ****** ****** *)
+
+symintr int
+overload int with int_of_SDL_EventType
 
 implement main () = () where {
   val _err = SDL_Init (SDL_INIT_EVERYTHING)
@@ -137,13 +140,15 @@ implement main () = () where {
       if SDL_PollEvent (event) > 0 then let
         prval () = opt_unsome (event)
         val _type = SDL_Event_type event
+        val () = printf
+          ("_type = %i and SDL_QUIT = %i\n", @((int)_type, (int)SDL_QUIT))
+        // end of [val]
       in
         case+ 0 of
         | _ when _type = SDL_KEYDOWN => let
             prval () = SDL_Event_key_castdn (view@ event)
-            var keysym = SDL_KeyboardEvent_keysym (event)
+            var sym = (&event)->keysym.sym
             prval () = SDL_Event_key_castup (view@ event)
-            val sym = SDL_keysym_sym (keysym)
           in
             case+ 0 of
             | _ when sym = SDLK_UP => show_message (screen, background, upMessage)

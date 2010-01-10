@@ -40,16 +40,10 @@
 
 (* ****** ****** *)
 
-abst@ype SDL_keysym = $extype "SDL_keysym"
-
-fun SDL_keysym_scancode (x: &SDL_keysym):<> Uint8
-  = "#atsctrb_SDL_keysym_scancode"
-fun SDL_keysym_sym (x: &SDL_keysym):<> SDLKey
-  = "#atsctrb_SDL_keysym_sym"
-fun SDL_keysym_mod (x: &SDL_keysym):<> SDLMod
-  = "#atsctrb_SDL_keysym_mod"
-fun SDL_keysym_unicode (x: &SDL_keysym):<> Uint16
-  = "#atsctrb_SDL_keysym_unicode"
+typedef SDL_keysym =
+  $extype_rec "SDL_keysym" of {
+  scancode= Uint8, sym= SDLKey, mod= SDLMod, unicode= Uint16
+} // end of [SDL_keysym]
 
 (* ****** ****** *)
 

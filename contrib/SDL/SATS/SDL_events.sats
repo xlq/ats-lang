@@ -78,21 +78,111 @@ fun SDL_Event_type
 
 (* ****** ****** *)
 
-abst@ype SDL_KeyboardEvent = $extype "SDL_KeyboardEvent"
+typedef SDL_ActiveEvent =
+  $extype_rec "SDL_ActiveEvent" of {
+  type= Uint8, gain= Uint8, state= Uint8
+} // end of [SDL_ActiveEvent]
+
+praxi SDL_Event_active_castdn {l:addr}
+  (pf: !SDL_Event @ l >> SDL_ActiveEvent @ l): void
+praxi SDL_Event_active_castup {l:addr}
+  (pf: !SDL_ActiveEvent @ l >> SDL_Event @ l): void
+
+(* ****** ****** *)
+
+typedef SDL_KeyboardEvent =
+  $extype_rec "SDL_KeyboardEvent" of {
+  type= Uint8, which= Uint8, state= Uint8, keysym= SDL_keysym
+} // end of [SDL_KeyboardEvent]
 
 praxi SDL_Event_key_castdn {l:addr}
   (pf: !SDL_Event @ l >> SDL_KeyboardEvent @ l): void
 praxi SDL_Event_key_castup {l:addr}
   (pf: !SDL_KeyboardEvent @ l >> SDL_Event @ l): void
 
-fun SDL_KeyboardEvent_type (x: &SDL_KeyboardEvent):<> Uint8
-  = "#atsctrb_SDL_KeyboardEvent_type"
-fun SDL_KeyboardEvent_which (x: &SDL_KeyboardEvent):<> Uint8
-  = "#atsctrb_SDL_KeyboardEvent_which"
-fun SDL_KeyboardEvent_state (x: &SDL_KeyboardEvent):<> Uint8
-  = "#atsctrb_SDL_KeyboardEvent_state"
-fun SDL_KeyboardEvent_keysym (x: &SDL_KeyboardEvent):<> SDL_keysym
-  = "#atsctrb_SDL_KeyboardEvent_keysym"
+(* ****** ****** *)
+  
+typedef SDL_MouseMotionEvent =
+  $extype_rec "SDL_MouseMotionEvent" of {
+  type= Uint8
+, which= Uint8
+, state= Uint8
+, x= Uint16
+, y= Uint16
+, xrel= Sint16
+, yrel= Sint16
+} // end of [SDL_MouseMotionEvent]
+
+praxi SDL_Event_motion_castdn {l:addr}
+  (pf: !SDL_Event @ l >> SDL_MouseMotionEvent @ l): void
+praxi SDL_Event_motion_castup {l:addr}
+  (pf: !SDL_MouseMotionEvent @ l >> SDL_Event @ l): void
+
+(* ****** ****** *)
+
+typedef SDL_MouseButtonEvent =
+  $extype_rec "SDL_MouseButtonEvent" of {
+  type= Uint8
+, which= Uint8
+, button= Uint8
+, state= Uint8
+, x= Uint16
+, y= Uint16
+} // end of [SDL_MouseButtonEvent]
+
+praxi SDL_Event_button_castdn {l:addr}
+  (pf: !SDL_Event @ l >> SDL_MouseButtonEvent @ l): void
+praxi SDL_Event_button_castup {l:addr}
+  (pf: !SDL_MouseButtonEvent @ l >> SDL_Event @ l): void
+
+(* ****** ****** *)
+
+typedef SDL_JoyAxisEvent =
+  $extype_rec "SDL_JoyAxisEvent" of {
+  type= Uint8
+, which= Uint8
+, axis= Uint8
+, value= Sint16
+} // end of [SDL_JoyAxisEvent]
+
+(* ****** ****** *)
+
+typedef SDL_JoyBallEvent =
+  $extype_rec "SDL_JoyBallEvent" of {
+  type= Uint8
+, which= Uint8
+, ball= Uint8
+, xrel= Sint16
+, yrel= Sint16
+} // end of [SDL_JoyBallEvent]
+
+(* ****** ****** *)
+
+typedef SDL_JoyButtonEvent =
+  $extype_rec "SDL_JoyButtonEvent" of {
+  type= Uint8
+, which= Uint8
+, button= Uint8
+, state= Uint8
+} // end of [SDL_JoyButtonEvent]
+
+(* ****** ****** *)
+
+typedef SDL_ResizeEvent =
+  $extype_rec "SDL_ResizeEvent" of { type= Uint8, w= int, h= int }
+// end of [SDL_ResizeEvent]
+
+(* ****** ****** *)
+
+typedef SDL_ExposeEvent =
+  $extype_rec "SDL_ExposeEvent" of { type= Uint8 } 
+// end of [SDL_ExposeEvent]
+
+(* ****** ****** *)
+
+typedef SDL_QuitEvent =
+  $extype_rec "SDL_QuitEvent" of { type= Uint8 } 
+// end of [SDL_QuitEvent]
 
 (* ****** ****** *)
 

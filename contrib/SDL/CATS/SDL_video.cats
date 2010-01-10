@@ -54,11 +54,6 @@ atsctrb_SDL_Rect_init (
   return ;
 } // end of [atsctrb_SDL_Rect_init]
 
-#define atsctrb_SDL_Rect_x(rect) (((SDL_Rect*)(rect))->x)
-#define atsctrb_SDL_Rect_y(rect) (((SDL_Rect*)(rect))->y)
-#define atsctrb_SDL_Rect_w(rect) (((SDL_Rect*)(rect))->w)
-#define atsctrb_SDL_Rect_h(rect) (((SDL_Rect*)(rect))->h)
-
 /* ****** ****** */
 
 static inline
@@ -71,10 +66,6 @@ atsctrb_SDL_Color_init (
   ((SDL_Color*)color)->b = b ;
   return ;
 } // end of [atsctrb_SDL_Color_init]
-
-#define atsctrb_SDL_Color_r(color) (((SDL_Color*)(color))->r)
-#define atsctrb_SDL_Color_g(color) (((SDL_Color*)(color))->g)
-#define atsctrb_SDL_Color_b(color) (((SDL_Color*)(color))->b)
 
 /* ****** ****** */
 

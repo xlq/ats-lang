@@ -36,12 +36,10 @@
 
 (* ****** ****** *)
 
-(*
-typedef SDL_Rect = @{
+typedef SDL_Rect =
+  $extype_rec "SDL_Rect" of {
   x= Sint16, y= Sint16, w= Uint16, h= Uint16
 } // end of [SDL_Rect]
-*)
-abst@ype SDL_Rect = $extype "SDL_Rect"
 
 fun SDL_Rect_init (
     rect: &SDL_Rect? >> SDL_Rect
@@ -49,28 +47,17 @@ fun SDL_Rect_init (
   ) :<> void
   = "atsctrb_SDL_Rect_init"
 
-fun SDL_Rect_x (rect: &SDL_Rect): Sint16 = "#atsctrb_SDL_Rect_x"
-fun SDL_Rect_y (rect: &SDL_Rect): Sint16 = "#atsctrb_SDL_Rect_y"
-fun SDL_Rect_w (rect: &SDL_Rect): Uint16 = "#atsctrb_SDL_Rect_w"
-fun SDL_Rect_h (rect: &SDL_Rect): Uint16 = "#atsctrb_SDL_Rect_h"
-
 (* ****** ****** *)
 
-(*
-typedef SDL_Color = @{
-  r= Uint8, g= Uint8, b= Uint8, unused= Uint8
+typedef SDL_Color =
+  $extype_rec "SDL_Color" of {
+  r= Uint8, g= Uint8, b= Uint8 (* , unused= Uint8 *)
 } // end of [SDL_Color]
-*)
-abst@ype SDL_Color = $extype "SDL_Color"
 
 fun SDL_Color_init (
     color: &SDL_Color? >> SDL_Color, r: Uint8, g: Uint8, b: Uint8
   ) :<> void
   = "atsctrb_SDL_Color_init"
-
-fun SDL_Color_r (rect: &SDL_Color): Uint8 = "#atsctrb_SDL_Color_r"
-fun SDL_Color_g (rect: &SDL_Color): Uint8 = "#atsctrb_SDL_Color_g"
-fun SDL_Color_b (rect: &SDL_Color): Uint8 = "#atsctrb_SDL_Color_b"
 
 (* ****** ****** *)
 
@@ -166,7 +153,6 @@ macdef SDL_OPENGL = $extval (Uint32, "SDL_OPENGL")
 macdef SDL_OPENGLBLIT = $extval (Uint32, "SDL_OPENGLBLIT")
 macdef SDL_RESIZABLE = $extval (Uint32, "SDL_RESIZABLE")
 macdef SDL_NOFRAME = $extval (Uint32, "SDL_NOFRAME")
-
 
 (*
 /** Used internally (read-only) */

@@ -1732,7 +1732,7 @@ fn ccomp_exp_arrinit_tmpvar (
       in
         valprim_int ($IntInf.intinf_make_int n)
       end // end of [None]
-  ) : valprim
+  ) : valprim // end of [val]
   val () = instr_add_arr_stack (res, tmp_arr, vp_asz, hit_elt)
 in
   case+ ohie_asz of
