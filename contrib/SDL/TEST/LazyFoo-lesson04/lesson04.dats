@@ -165,20 +165,14 @@ implement __main
   val () = if (_err <> 0) then exit (1)
 //
   var event: SDL_Event?
-  val () = while (quit = false) let
-    val () = while (true) begin
-      if SDL_PollEvent (event) > 0 then let
-        prval () = opt_unsome (event)
-      in
-        if SDL_Event_type event = SDL_QUIT then quit := true
-      end else let
-        prval () = opt_unnone (event)
-      in
-        break // loop exit
-      end // end of [if]
-    end // end of [val]
-  in
-    // nothing
+  val () = while (~quit) begin
+    if SDL_PollEvent (event) > 0 then let
+      prval () = opt_unsome (event)
+    in
+      if SDL_Event_type event = SDL_QUIT then quit := true
+    end else let
+      prval () = opt_unnone (event) in (*nothing*)
+    end // end of [if]
   end // end of [val]
 (*
   val () = (

@@ -22,6 +22,7 @@ compall: \
   lesson07 \
   lesson08 \
   lesson09 \
+  lesson10 \
 
 ######
 
@@ -51,7 +52,10 @@ lesson08: LazyFoo-lesson08/lesson08.dats
 	$(ATSCC) -o lesson08 LazyFoo-lesson08/lesson08.dats $(ATSCTRB) -lSDL -lSDL_image -lSDL_ttf
 
 lesson09: LazyFoo-lesson09/lesson09.dats
-	$(ATSCC) -o lesson09 LazyFoo-lesson09/lesson09.dats $(ATSCTRB) -lSDL -lSDL_image -lSDL_ttf
+	$(ATSCC) -o lesson09 LazyFoo-lesson09/lesson09.dats $(ATSCTRB) -lSDL -lSDL_image
+
+lesson10: LazyFoo-lesson10/lesson10.dats
+	$(ATSCC) -o lesson10 LazyFoo-lesson10/lesson10.dats $(ATSCTRB) -lSDL -lSDL_image -lSDL_ttf
 
 ######
 
@@ -67,5 +71,6 @@ cleanall: clean
 	rm -f lesson07
 	rm -f lesson08
 	rm -f lesson09
+	rm -f lesson10
 
 ###### end of [Makefile] ######

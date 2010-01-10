@@ -135,36 +135,32 @@ implement main () = () where {
   var quit: bool = false
   var event: SDL_Event?
 //  
-  val () = while (quit = false) let
-    val () = while (true) begin
-      if SDL_PollEvent (event) > 0 then let
-        prval () = opt_unsome (event)
-        val _type = SDL_Event_type event
-        val () = printf
-          ("_type = %i and SDL_QUIT = %i\n", @((int)_type, (int)SDL_QUIT))
-        // end of [val]
-      in
-        case+ 0 of
-        | _ when _type = SDL_KEYDOWN => let
-            prval () = SDL_Event_key_castdn (view@ event)
-            var sym = (&event)->keysym.sym
-            prval () = SDL_Event_key_castup (view@ event)
-          in
-            case+ 0 of
-            | _ when sym = SDLK_UP => show_message (screen, background, upMessage)
-            | _ when sym = SDLK_DOWN => show_message (screen, background, downMessage)
-            | _ when sym = SDLK_LEFT => show_message (screen, background, leftMessage)
-            | _ when sym = SDLK_RIGHT => show_message (screen, background, rightMessage)
-            | _ => ()
-          end // end of [SDL_KEYDOWN]
-        | _ when _type = SDL_QUIT => quit := true
-        | _ => () // ignored
-      end else let
-        prval () = opt_unnone (event) in break // loop exit
-      end // end of [if]
-    end // end of [val]
-  in
-    // nothing
+  val () = while (quit = false) begin
+    if SDL_PollEvent (event) > 0 then let
+      prval () = opt_unsome (event)
+      val _type = SDL_Event_type event
+(*
+      val () = printf ("_type = %i\n", @((int)_type))
+*)
+    in
+      case+ 0 of
+      | _ when _type = SDL_KEYDOWN => let
+          prval () = SDL_Event_key_castdn (view@ event)
+          var sym = (&event)->keysym.sym
+          prval () = SDL_Event_key_castup (view@ event)
+        in
+          case+ 0 of
+          | _ when sym = SDLK_UP => show_message (screen, background, upMessage)
+          | _ when sym = SDLK_DOWN => show_message (screen, background, downMessage)
+          | _ when sym = SDLK_LEFT => show_message (screen, background, leftMessage)
+          | _ when sym = SDLK_RIGHT => show_message (screen, background, rightMessage)
+          | _ => ()
+        end // end of [SDL_KEYDOWN]
+      | _ when _type = SDL_QUIT => quit := true
+      | _ => () // ignored
+    end else let
+      prval () = opt_unnone (event) in (*nothing*)
+    end // end of [if]
   end // end of [val]
 //
   val () = TTF_CloseFont (font)

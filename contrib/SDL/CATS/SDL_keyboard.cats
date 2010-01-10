@@ -45,6 +45,24 @@
 
 /* ****** ****** */
 
+#define atsctrb_SDL_GetKeyState SDL_GetKeyState
+
+static inline
+ats_ref_type // SDL_KeyStateArr
+atsctrb_SDL_GetKeyState_null () {
+  return SDL_GetKeyState ((int*)0) ;
+} // end of [atsctrb_SDL_GetKeyState_null]
+
+static inline
+ats_int_type // SDL_KeyStateArr
+atsctrb_SDL_KeyStateArr_get (
+  ats_ref_type keyarr, SDLKey key
+) {
+  return ((Uint8*)keyarr)[key] ;
+} // end of [atsctrb_SDL_KeyStateArr_get]
+
+/* ****** ****** */
+
 #endif // end of [ATSCTRB_SDL_SDL_KEYBOARD_CATS]
 
 /* end of [SDL_keyboard.cats] */
