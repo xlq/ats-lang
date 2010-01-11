@@ -323,13 +323,13 @@ implement main () = () where {
   val [l1:addr] screen = SDL_SetVideoMode (
     SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_BPP, SDL_SWSURFACE
   ) // end of [val]
-  val () = assert_errmsg (ref_is_notnull screen, #LOCATION)
+  val () = assert_errmsg (ref_isnot_null screen, #LOCATION)
   val () = SDL_WM_SetCaption (
     stropt_some "Animation test", stropt_none
   ) // end of [val]
 //
   val [l2:addr] foo = load_image ("LazyFoo-lesson20/foo.png")
-  val () = assert_errmsg (ref_is_notnull foo, #LOCATION)
+  val () = assert_errmsg (ref_isnot_null foo, #LOCATION)
 //
   var theFoo: Foo // uninitialized
   val () = Foo_init (theFoo, 0, 0, 0, FOO_RIGHT)

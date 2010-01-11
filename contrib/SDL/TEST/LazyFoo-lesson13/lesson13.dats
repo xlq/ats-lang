@@ -91,7 +91,7 @@ implement main () = () where {
   val [l1:addr] screen = SDL_SetVideoMode (
     SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_BPP, SDL_SWSURFACE
   ) // end of [val]
-  val () = assert_errmsg (ref_is_notnull screen, #LOCATION)
+  val () = assert_errmsg (ref_isnot_null screen, #LOCATION)
   val _err = TTF_Init ()
   val () = assert_errmsg (_err = 0, #LOCATION)
 //
@@ -100,11 +100,11 @@ implement main () = () where {
   ) // end of [val]
 //
   val [l2:addr] background = load_image ("LazyFoo-lesson13/background.png")
-  val () = assert_errmsg (ref_is_notnull background, #LOCATION)
+  val () = assert_errmsg (ref_isnot_null background, #LOCATION)
 //
   // Open the font
   val [_l:addr] font = TTF_OpenFont ("LazyFoo-lesson13/lazy.ttf", 36)
-  val () = assert_errmsg (TTF_Font_ref_is_notnull font, #LOCATION)
+  val () = assert_errmsg (TTF_Font_ref_isnot_null font, #LOCATION)
 //
   //The color of the font
   var textColor : SDL_Color
@@ -113,7 +113,7 @@ implement main () = () where {
   // Render the text
   val [_l:addr] startStop = TTF_RenderText_Solid
     (font, "Press S to start or stop the timer", textColor)
-  val () = assert_errmsg (ref_is_notnull startStop, #LOCATION)
+  val () = assert_errmsg (ref_isnot_null startStop, #LOCATION)
 //
   // Start the timer
   var myTimer: Timer
@@ -168,7 +168,7 @@ implement main () = () where {
       val () = () where {
         extern castfn __cast (p: ptr): string
         val seconds = TTF_RenderText_Solid (font, __cast p_buf, textColor)
-        val () = assert_errmsg (ref_is_notnull seconds, #LOCATION)
+        val () = assert_errmsg (ref_isnot_null seconds, #LOCATION)
         val w = SDL_Surface_w (seconds)
         val () = apply_surface ((SCREEN_WIDTH - w) / 2, 50, seconds, screen)
         val () = SDL_FreeSurface (seconds)

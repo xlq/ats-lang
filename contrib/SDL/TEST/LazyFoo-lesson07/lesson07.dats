@@ -74,7 +74,7 @@ implement main () = () where {
   val screen = SDL_SetVideoMode (
     SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_BPP, SDL_SWSURFACE
   ) // end of [val]
-  val () = assert_errmsg (ref_is_notnull screen, #LOCATION)
+  val () = assert_errmsg (ref_isnot_null screen, #LOCATION)
   val _err = TTF_Init ()
   val () = assert_errmsg (_err = 0, #LOCATION)
 //
@@ -83,11 +83,11 @@ implement main () = () where {
   ) // end of [val]
 //
   val background = load_image ("LazyFoo-lesson07/background.png")
-  val () = assert_errmsg (ref_is_notnull background, #LOCATION)
+  val () = assert_errmsg (ref_isnot_null background, #LOCATION)
 //
   // Open the font
   val font = TTF_OpenFont ("LazyFoo-lesson07/lazy.ttf", 28)
-  val () = assert_errmsg (TTF_Font_ref_is_notnull font, #LOCATION)
+  val () = assert_errmsg (TTF_Font_ref_isnot_null font, #LOCATION)
 //
   //The color of the font
   var textColor : SDL_Color
@@ -96,7 +96,7 @@ implement main () = () where {
   val message = TTF_RenderText_Solid
     (font, "The quick brown fox jumps over the lazy dog", textColor)
   // end of [val]
-  val () = assert_errmsg (ref_is_notnull message, #LOCATION)
+  val () = assert_errmsg (ref_isnot_null message, #LOCATION)
 //
   // Apply the images to the screen
   val () = apply_surface (0, 0, background, screen)

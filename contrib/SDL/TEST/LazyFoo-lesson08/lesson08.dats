@@ -94,7 +94,7 @@ implement main () = () where {
   val [l1:addr] screen = SDL_SetVideoMode (
     SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_BPP, SDL_SWSURFACE
   ) // end of [val]
-  val () = assert_errmsg (ref_is_notnull screen, #LOCATION)
+  val () = assert_errmsg (ref_isnot_null screen, #LOCATION)
   val _err = TTF_Init ()
   val () = assert_errmsg (_err = 0, #LOCATION)
 //
@@ -103,11 +103,11 @@ implement main () = () where {
   ) // end of [val]
 //
   val [l2:addr] background = load_image ("LazyFoo-lesson08/background.png")
-  val () = assert_errmsg (ref_is_notnull background, #LOCATION)
+  val () = assert_errmsg (ref_isnot_null background, #LOCATION)
 //
   // Open the font
   val font = TTF_OpenFont ("LazyFoo-lesson08/lazy.ttf", 72)
-  val () = assert_errmsg (TTF_Font_ref_is_notnull font, #LOCATION)
+  val () = assert_errmsg (TTF_Font_ref_isnot_null font, #LOCATION)
 //
   //The color of the font
   var textColor : SDL_Color
@@ -115,16 +115,16 @@ implement main () = () where {
   // Render the text
   val [l3_up:addr] upMessage =
     TTF_RenderText_Solid (font, "Up was pressed", textColor)
-  val () = assert_errmsg (ref_is_notnull upMessage, #LOCATION)
+  val () = assert_errmsg (ref_isnot_null upMessage, #LOCATION)
   val [l3_down:addr] downMessage =
     TTF_RenderText_Solid (font, "Down was pressed", textColor)
-  val () = assert_errmsg (ref_is_notnull downMessage, #LOCATION)
+  val () = assert_errmsg (ref_isnot_null downMessage, #LOCATION)
   val [l3_left:addr] leftMessage =
     TTF_RenderText_Solid (font, "Left was pressed", textColor)
-  val () = assert_errmsg (ref_is_notnull leftMessage, #LOCATION)
+  val () = assert_errmsg (ref_isnot_null leftMessage, #LOCATION)
   val [l3_right:addr] rightMessage =
     TTF_RenderText_Solid (font, "Right was pressed", textColor)
-  val () = assert_errmsg (ref_is_notnull rightMessage, #LOCATION)
+  val () = assert_errmsg (ref_isnot_null rightMessage, #LOCATION)
 //
   // Apply the images to the screen
   val () = apply_surface (0, 0, background, screen)

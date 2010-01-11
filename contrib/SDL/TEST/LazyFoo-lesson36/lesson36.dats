@@ -128,7 +128,7 @@ implement main () = () where {
   val [l1:addr] screen = SDL_SetVideoMode (
     SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_BPP, SDL_OPENGL
   ) // end of [val]
-  val () = assert_errmsg (ref_is_notnull screen, #LOCATION)
+  val () = assert_errmsg (ref_isnot_null screen, #LOCATION)
 //
   val () = glClearColor (0.0, 0.0, 0.0, 0.0)
   val () = glMatrixMode (GL_PROJECTION)

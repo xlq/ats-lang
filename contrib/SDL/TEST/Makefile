@@ -26,8 +26,10 @@ compall: \
   lesson10 \
   lesson12 \
   lesson13 \
+  lesson14 \
   lesson16 \
   lesson20 \
+  lesson21 \
   lesson36 \
 
 ######
@@ -75,6 +77,11 @@ lesson13: LazyFoo-lesson13/lesson13.dats
           LazyFoo-lesson13/lesson13.dats utils/timer.sats utils/timer.dats \
           $(ATSCTRB) -lSDL -lSDL_image -lSDL_ttf
 
+lesson14: LazyFoo-lesson14/lesson14.dats
+	$(ATSCC) -IATS utils -o lesson14 \
+          LazyFoo-lesson14/lesson14.dats utils/timer.sats utils/timer.dats \
+          $(ATSCTRB) -lSDL -lSDL_image -lSDL_ttf
+
 lesson16: LazyFoo-lesson16/lesson16.dats
 	$(ATSCC) -IATS utils -o lesson16 \
           LazyFoo-lesson16/lesson16.dats utils/timer.sats utils/timer.dats \
@@ -83,6 +90,11 @@ lesson16: LazyFoo-lesson16/lesson16.dats
 lesson20: LazyFoo-lesson20/lesson20.dats
 	$(ATSCC) -IATS utils -o lesson20 \
           LazyFoo-lesson20/lesson20.dats utils/timer.sats utils/timer.dats \
+          $(ATSCTRB) -lSDL -lSDL_image
+
+lesson21: LazyFoo-lesson21/lesson21.dats
+	$(ATSCC) -IATS utils -o lesson21 \
+          LazyFoo-lesson21/lesson21.dats utils/timer.sats utils/timer.dats \
           $(ATSCTRB) -lSDL -lSDL_image
 
 lesson36: LazyFoo-lesson36/lesson36.dats
@@ -107,8 +119,10 @@ cleanall: clean
 	rm -f lesson10
 	rm -f lesson12
 	rm -f lesson13
+	rm -f lesson14
 	rm -f lesson16
 	rm -f lesson20
+	rm -f lesson21
 	rm -f lesson36
 
 ###### end of [Makefile] ######

@@ -81,7 +81,7 @@ implement main () = () where {
   val [l1:addr] screen = SDL_SetVideoMode (
     SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_BPP, SDL_SWSURFACE
   ) // end of [val]
-  val () = assert_errmsg (ref_is_notnull screen, #LOCATION)
+  val () = assert_errmsg (ref_isnot_null screen, #LOCATION)
   val _err = TTF_Init ()
   val () = assert_errmsg (_err = 0, #LOCATION)
 //
@@ -90,24 +90,24 @@ implement main () = () where {
   ) // end of [val]
 //
   val [l2:addr] background = load_image ("LazyFoo-lesson10/background.png")
-  val () = assert_errmsg (ref_is_notnull background, #LOCATION)
+  val () = assert_errmsg (ref_isnot_null background, #LOCATION)
 //
   // Open the font
   val font = TTF_OpenFont ("LazyFoo-lesson10/lazy.ttf", 72)
-  val () = assert_errmsg (TTF_Font_ref_is_notnull font, #LOCATION)
+  val () = assert_errmsg (TTF_Font_ref_isnot_null font, #LOCATION)
 //
   //The color of the font
   var textColor : SDL_Color
   val () = SDL_Color_init (textColor, (Uint8)0, (Uint8)0, (Uint8)0)
   // Render the text
   val [_l:addr] up = TTF_RenderText_Solid (font, "Up", textColor)
-  val () = assert_errmsg (ref_is_notnull up, #LOCATION)
+  val () = assert_errmsg (ref_isnot_null up, #LOCATION)
   val [_l:addr] down = TTF_RenderText_Solid (font, "Down", textColor)
-  val () = assert_errmsg (ref_is_notnull down, #LOCATION)
+  val () = assert_errmsg (ref_isnot_null down, #LOCATION)
   val [_l:addr] left = TTF_RenderText_Solid (font, "Left", textColor)
-  val () = assert_errmsg (ref_is_notnull left, #LOCATION)
+  val () = assert_errmsg (ref_isnot_null left, #LOCATION)
   val [_l:addr] right = TTF_RenderText_Solid (font, "Right", textColor)
-  val () = assert_errmsg (ref_is_notnull right, #LOCATION)
+  val () = assert_errmsg (ref_isnot_null right, #LOCATION)
 //
   var quit: bool = false
   var event: SDL_Event?

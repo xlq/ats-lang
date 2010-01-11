@@ -202,14 +202,14 @@ implement main () = () where {
   val [l1:addr] screen = SDL_SetVideoMode (
     SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_BPP, SDL_SWSURFACE
   ) // end of [val]
-  val () = assert_errmsg (ref_is_notnull screen, #LOCATION)
+  val () = assert_errmsg (ref_isnot_null screen, #LOCATION)
 //
   val () = SDL_WM_SetCaption (
     stropt_some "Button test", stropt_none
   ) // end of [val]
 //
   val [l2:addr] buttonSheet = load_image ("LazyFoo-lesson09/button.png")
-  val () = assert_errmsg (ref_is_notnull buttonSheet, #LOCATION)
+  val () = assert_errmsg (ref_isnot_null buttonSheet, #LOCATION)
 //
   val (pf_format | p_format) = SDL_Surface_format (screen)
   val white_color = SDL_MapRGB (!p_format, (Uint8)0xFF, (Uint8)0xFF, (Uint8)0xFF)

@@ -1,6 +1,6 @@
 //
-// LazyFoo-lesson16 _translated_ into ATS
-// See http://lazyfoo.net/SDL_tutorials/lesson16
+// LazyFoo-lesson21 _translated_ into ATS
+// See http://lazyfoo.net/SDL_tutorials/lesson21
 //
 
 (* ****** ****** *)
@@ -57,17 +57,23 @@ end // end of [load_image]
 
 (* ****** ****** *)
 
-extern
-fun apply_surface {l1,l2:anz} (
-    x: int, y: int, src: !SDL_Surface_ref l1, dst: !SDL_Surface_ref l2
-  ) : void
+fn apply_surface {l1,l2:anz} (
+    x: int, y: int
+  , src: !SDL_Surface_ref l1, dst: !SDL_Surface_ref l2
+  , srcrect: &SDL_Rect
+  ) : void = () where {
+  var offset: SDL_Rect // unintialized
+  val () = SDL_Rect_init (offset, (Sint16)x, (Sint16)y, (Uint16)0, (Uint16)0)
+  val _err = SDL_UpperBlit_ptr (src, &srcrect, dst, &offset)
+} // end of [apply_surface]
 
-implement apply_surface
-  (x, y, src, dst) = () where {
+fn apply_surface_null {l1,l2:anz} (
+    x: int, y: int, src: !SDL_Surface_ref l1, dst: !SDL_Surface_ref l2
+  ) : void = () where {
   var offset: SDL_Rect // unintialized
   val () = SDL_Rect_init (offset, (Sint16)x, (Sint16)y, (Uint16)0, (Uint16)0)
   val _err = SDL_UpperBlit_ptr (src, null, dst, &offset)
-} // end of [apply_surface]
+} // end of [apply_surface_null]
 
 (* ****** ****** *)
 
@@ -137,12 +143,30 @@ fn Dot_move
 
 fn Dot_show {l1,l2:anz}
   (obj: &Dot, dot: !SDL_Surface_ref l1, screen: !SDL_Surface_ref l2): void =
-  apply_surface (obj.x, obj.y, dot, screen)
+  apply_surface_null (obj.x, obj.y, dot, screen)
 // end of [Dot_show]
 
 (* ****** ****** *)
 
-#define FRAMES_PER_SECOND 10
+symintr int
+overload int with int_of_Uint16
+
+macdef LEVEL_WIDTH = 1280
+macdef LEVEL_HEIGHT = 960
+
+fn Dot_set_camera
+  (obj: &Dot, cam: &SDL_Rect): void = () where {
+  val x = (obj.x + DOT_WIDTH/2) - SCREEN_WIDTH/2
+  val y = (obj.y + DOT_HEIGHT/2) - SCREEN_HEIGHT/2
+  val () = cam.x := Sint16
+    (if x < 0 then 0 else min (x, LEVEL_WIDTH - (int)cam.w))
+  val () = cam.y := Sint16
+    (if y < 0 then 0 else min (y, LEVEL_HEIGHT - (int)cam.h))
+} // end of [Dot_set_camera]
+
+(* ****** ****** *)
+
+#define FRAMES_PER_SECOND 20
 
 implement main () = () where {
   val _err = SDL_Init (SDL_INIT_EVERYTHING)
@@ -155,17 +179,20 @@ implement main () = () where {
     stropt_some "Move the dot", stropt_none
   ) // end of [val]
 //
-  val [l2:addr] dot = load_image ("LazyFoo-lesson16/dot.bmp")
+  val [l2:addr] dot = load_image ("LazyFoo-lesson21/dot.bmp")
   val () = assert_errmsg (ref_isnot_null dot, #LOCATION)
+  val [l3:addr] background = load_image("LazyFoo-lesson21/bg.png")
+  val () = assert_errmsg (ref_isnot_null background, #LOCATION)
+//
+  var theCam : SDL_Rect
+  val () = SDL_Rect_init (
+    theCam, (Sint16)0, (Sint16)0, (Uint16)SCREEN_WIDTH, (Uint16)SCREEN_HEIGHT
+  ) // end of [val]
 //
   var theDot: Dot // uninitialized
   val () = Dot_init (theDot)
   var fps: Timer // uninitialized
   val () = Timer_init (fps)
-//
-  val (pf_format | p_format) = SDL_Surface_format (screen)
-  val white_color = SDL_MapRGB (!p_format, (Uint8)0xFF, (Uint8)0xFF, (Uint8)0xFF)
-  prval () = minus_addback (pf_format | screen)
 //
   var quit: bool = false
   var event: SDL_Event?  
@@ -185,8 +212,10 @@ implement main () = () where {
     end // end of [val]
     val () = Dot_move (theDot)
 //
-    // Fill the screen white
-    val _err = SDL_FillRect_ptr (screen, null, white_color)
+    val () = Dot_set_camera (theDot, theCam)
+//
+    // Show the background
+    val () = apply_surface( 0, 0, background, screen, theCam)
 //
     val () = Dot_show (theDot, dot, screen)
 //
@@ -202,10 +231,11 @@ implement main () = () where {
   end // end of [val]
 //
   val () = SDL_FreeSurface (dot)
+  val () = SDL_FreeSurface (background)
   val _ptr = SDL_Quit_screen (screen)
   val () = SDL_Quit ()
 } // end of [main]
 
 (* ****** ****** *)
 
-(* end of [LazyFoo-lesson16.dats] *)
+(* end of [LazyFoo-lesson21.dats] *)

@@ -1,6 +1,6 @@
 //
-// LazyFoo-lesson12 _translated_ into ATS
-// See http://lazyfoo.net/SDL_tutorials/lesson12
+// LazyFoo-lesson13 _translated_ into ATS
+// See http://lazyfoo.net/SDL_tutorials/lesson13
 //
 
 (* ****** ****** *)
@@ -23,14 +23,13 @@ staload "contrib/SDL/SATS/SDL_ttf.sats"
 
 (* ****** ****** *)
 
-#define SCREEN_WIDTH 640
-#define SCREEN_HEIGHT 480
-#define SCREEN_BPP 32
+staload "timer.sats"
 
 (* ****** ****** *)
 
-symintr uint
-overload uint with uint_of_Uint32
+#define SCREEN_WIDTH 640
+#define SCREEN_HEIGHT 480
+#define SCREEN_BPP 32
 
 (* ****** ****** *)
 
@@ -79,45 +78,45 @@ implement apply_surface
 
 (* ****** ****** *)
 
-staload "libc/SATS/printf.sats"
+macdef FRAMES_PER_SECOND = 20
 
 implement main () = () where {
   val _err = SDL_Init (SDL_INIT_EVERYTHING)
   val () = assert_errmsg (_err = 0, #LOCATION)
-  val [l1:addr] screen = SDL_SetVideoMode (
-    SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_BPP, SDL_SWSURFACE
-  ) // end of [val]
+//
+  val [_l:addr] screen = SDL_SetVideoMode
+    (SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_BPP, SDL_SWSURFACE)
+  // end of [val]
   val () = assert_errmsg (ref_isnot_null screen, #LOCATION)
+//
   val _err = TTF_Init ()
   val () = assert_errmsg (_err = 0, #LOCATION)
 //
-  val () = SDL_WM_SetCaption (
-    stropt_some "Timer test", stropt_none
-  ) // end of [val]
+  val () = SDL_WM_SetCaption
+    (stropt_some "Frame Rate Test", stropt_none)
+  // end of [val]
 //
-  val [l2:addr] background = load_image ("LazyFoo-lesson12/background.png")
+  val [_l:addr] background = load_image ("LazyFoo-lesson14/background.png")
   val () = assert_errmsg (ref_isnot_null background, #LOCATION)
 //
   // Open the font
-  val [_l:addr] font = TTF_OpenFont ("LazyFoo-lesson12/lazy.ttf", 36)
+  val font = TTF_OpenFont ("LazyFoo-lesson14/lazy.ttf", 50)
   val () = assert_errmsg (TTF_Font_ref_isnot_null font, #LOCATION)
 //
-  //The color of the font
+  var quit: bool = false;
+  var frame: int = 0
+  var cap: bool = true
+  var fps: Timer // uninitialized
+  val () = Timer_init (fps)
+//
   var textColor : SDL_Color
   val () = SDL_Color_init (textColor, (Uint8)0, (Uint8)0, (Uint8)0)
+  val [_l:addr] message = TTF_RenderText_Solid (font, "Testing frame rate", textColor)
+  val () = assert_errmsg (ref_isnot_null message, #LOCATION)
 //
-  // Render the text
-  val [_l:addr] startStop = TTF_RenderText_Solid
-    (font, "Press S to start or stop the timer", textColor)
-  val () = assert_errmsg (ref_isnot_null startStop, #LOCATION)
-//
-  // Start the timer
-  var running: bool = true
-  var start: Uint32 = SDL_GetTicks ()
-//
-  var quit: bool = false
   var event: SDL_Event?
   val () = while (~quit) let
+    val () = Timer_start (fps)
     val () = while (true) begin
       if SDL_PollEvent (event) > 0 then let
         prval () = opt_unsome (event)
@@ -130,61 +129,51 @@ implement main () = () where {
             prval () = view@ event := fpf (pf)
           in
             case+ 0 of
-            | _ when sym = SDLK_s =>
-                if running then
-                  (running := false; start := (Uint32)0)
-                else
-                  (running := true; start := SDL_GetTicks ())
-                // end of [if]
+            | _ when sym = SDLK_RETURN => cap := ~cap
             | _ => () // ignored
           end // end of [SDL_KEYDOWN]
-        | _ when _type = SDL_QUIT => (quit := true)
+        | _ when _type = SDL_QUIT => quit := true
         | _ => () // ignored
       end else let
         prval () = opt_unnone (event) in break
       end // end of [if]
     end // end of [val]
-//
+    // Apply the background
     val () = apply_surface (0, 0, background, screen)
-//
-    val () = () where {
-      val w = SDL_Surface_w (startStop)
-      val () = apply_surface((SCREEN_WIDTH - w) / 2, 200, startStop, screen)
-    } // end of [val]
-//
-    val () = if running then let
-      #define BUFSZ 1024
-      var !p_buf with pf_buf = @[byte][BUFSZ]() // uninitialized
-      val now = SDL_GetTicks ()
-      val diff = (uint)now - (uint)start
-      val _n = snprintf (pf_buf | p_buf, BUFSZ, "Timer: %u", @(diff))
-      prval () = pf_buf := bytes_v_of_strbuf_v (pf_buf)
-      val () = () where {
-        extern castfn __cast (p: ptr): string
-        val seconds = TTF_RenderText_Solid (font, __cast p_buf, textColor)
-        val () = assert_errmsg (ref_isnot_null seconds, #LOCATION)
-        val w = SDL_Surface_w (seconds)
-        val () = apply_surface ((SCREEN_WIDTH - w) / 2, 50, seconds, screen)
-        val () = SDL_FreeSurface (seconds)
-      } // end of [where]
+    // Apply the message
+    val () = let
+      val w = SDL_Surface_w message and h = SDL_Surface_h message
     in
-      // nothing
+      apply_surface(
+        (SCREEN_WIDTH - w)/2
+      , ((SCREEN_HEIGHT + 2*h)/FRAMES_PER_SECOND) * (frame mod FRAMES_PER_SECOND ) - h
+      , message
+      , screen
+      ) // end of [apply_surface]
     end // end of [val]
 //
     val _err = SDL_Flip (screen)
     val () = assert_errmsg (_err = 0, #LOCATION)
 //
+    val () = frame := frame + 1
+    val () = if cap then let
+      val _ticks = Timer_getTicks (fps)
+      val _ratio = 1000 / FRAMES_PER_SECOND
+    in
+      if _ticks < _ratio then SDL_Delay (Uint32(_ratio - _ticks))
+    end // end of [val]
   in
     // nothing
   end // end of [val]
 //
   val () = TTF_CloseFont (font)
+  val () = TTF_Quit ()
+  val () = SDL_FreeSurface (message)
   val () = SDL_FreeSurface (background)
-  val () = SDL_FreeSurface (startStop)
-  val _ptr = SDL_Quit_screen (screen)
+  val _ptr = SDL_Quit_screen (screen) // no-op cast
   val () = SDL_Quit ()
 } // end of [main]
 
 (* ****** ****** *)
 
-(* end of [LazyFoo-lesson12.dats] *)
+(* end of [lesson14.dats] *)

@@ -82,7 +82,7 @@ implement init (pf | (*none*)) = let
       SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_BPP, SDL_SWSURFACE
     )
   in
-    ret := ref_is_notnull (screen)
+    ret := ref_isnot_null (screen)
   end // end of [val]
   val () = if ret then
     SDL_WM_SetCaption (stropt_some "Event test", stropt_none)
@@ -111,7 +111,7 @@ implement load_files (pf | (*none*)) = let
   val () = assert (ref_is_null _image)
   val _ = ref_free_null (_image)
   val () = image := load_image ("LazyFoo-lesson04/x.png")
-  val () = ret := ref_is_notnull (image)
+  val () = ret := ref_isnot_null (image)
 in
   ret
 end // end of [load_files]
@@ -128,7 +128,7 @@ fun clean_up (
 
 implement clean_up (pf | (*none*)) = let
   val _image = image
-  val () = assert (ref_is_notnull _image)
+  val () = assert (ref_isnot_null _image)
   val () = SDL_FreeSurface (_image)
   val () = image := SDL_Surface_ref_null (null)
 in

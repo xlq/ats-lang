@@ -74,16 +74,16 @@ implement main () = () where {
   val screen = SDL_SetVideoMode (
     SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_BPP, SDL_SWSURFACE
   ) // end of [val]
-  val () = assert_errmsg (ref_is_notnull screen, #LOCATION)
+  val () = assert_errmsg (ref_isnot_null screen, #LOCATION)
   // Set the window caption
   val () = SDL_WM_SetCaption (
     stropt_some "Foo says \"Hello!\"", stropt_none
   ) // end of [val]
 //
   val background = load_image ("background.png")
-  val () = assert_errmsg (ref_is_notnull background, #LOCATION)
+  val () = assert_errmsg (ref_isnot_null background, #LOCATION)
   val foo = load_image ("LazyFoo-lesson05/foo.png")
-  val () = assert_errmsg (ref_is_notnull foo, #LOCATION)
+  val () = assert_errmsg (ref_isnot_null foo, #LOCATION)
 //
   //Apply the surfaces to the screen
   val () = apply_surface (0, 0, background, screen)

@@ -73,14 +73,14 @@ implement main () = () where {
   val screen = SDL_SetVideoMode (
     SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_BPP, SDL_SWSURFACE
   ) // end of [val]
-  val () = assert_errmsg (ref_is_notnull screen, #LOCATION)
+  val () = assert_errmsg (ref_isnot_null screen, #LOCATION)
 //
   val () = SDL_WM_SetCaption (
     stropt_some "Split the dots", stropt_none
   ) // end of [val]
 //
   val dots = load_image ("LazyFoo-lesson06/dots.png")
-  val () = assert_errmsg (ref_is_notnull dots, #LOCATION)
+  val () = assert_errmsg (ref_isnot_null dots, #LOCATION)
 //
   var clip0: SDL_Rect
   val () = SDL_Rect_init (clip0, (Sint16)0, (Sint16)0, (Uint16)100, (Uint16)100)
