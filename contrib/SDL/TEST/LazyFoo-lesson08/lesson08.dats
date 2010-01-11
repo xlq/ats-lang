@@ -146,7 +146,7 @@ implement main () = () where {
       case+ 0 of
       | _ when _type = SDL_KEYDOWN => let
           prval () = SDL_Event_key_castdn (view@ event)
-          var sym = (&event)->keysym.sym
+          val sym = (&event)->keysym.sym
           prval () = SDL_Event_key_castup (view@ event)
         in
           case+ 0 of
