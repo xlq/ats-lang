@@ -45,4 +45,4 @@ fun Timer_is_paused (obj: &Timer):<> bool
 
 (* ****** ****** *)
 
-(* end of [LazyFoo-lesson20-timer.sats] *)
+(* end of [LazyFoo-timer.sats] *)

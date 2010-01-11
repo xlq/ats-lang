@@ -6,6 +6,7 @@
 
 ATSCC="$(ATSHOME)"/bin/atscc
 ATSCTRB="$(ATSHOME)"/contrib/SDL/atsctrb_SDL.o
+ATSCTRB_GL="$(ATSHOME)"/contrib/GL/atsctrb_GL.o
 
 ######
 
@@ -24,7 +25,10 @@ compall: \
   lesson09 \
   lesson10 \
   lesson12 \
+  lesson13 \
+  lesson16 \
   lesson20 \
+  lesson36 \
 
 ######
 
@@ -66,15 +70,25 @@ lesson10: LazyFoo-lesson10/lesson10.dats
 lesson12: LazyFoo-lesson12/lesson12.dats
 	$(ATSCC) -o lesson12 LazyFoo-lesson12/lesson12.dats $(ATSCTRB) -lSDL -lSDL_image -lSDL_ttf
 
+lesson13: LazyFoo-lesson13/lesson13.dats
+	$(ATSCC) -IATS utils -o lesson13 \
+          LazyFoo-lesson13/lesson13.dats utils/timer.sats utils/timer.dats \
+          $(ATSCTRB) -lSDL -lSDL_image -lSDL_ttf
+
 lesson16: LazyFoo-lesson16/lesson16.dats
 	$(ATSCC) -IATS utils -o lesson16 \
           LazyFoo-lesson16/lesson16.dats utils/timer.sats utils/timer.dats \
-          $(ATSCTRB) -lSDL -lSDL_image -lSDL_ttf
+          $(ATSCTRB) -lSDL -lSDL_image
 
 lesson20: LazyFoo-lesson20/lesson20.dats
 	$(ATSCC) -IATS utils -o lesson20 \
           LazyFoo-lesson20/lesson20.dats utils/timer.sats utils/timer.dats \
-          $(ATSCTRB) -lSDL -lSDL_image -lSDL_ttf
+          $(ATSCTRB) -lSDL -lSDL_image
+
+lesson36: LazyFoo-lesson36/lesson36.dats
+	$(ATSCC) -IATS utils -o lesson36 \
+          LazyFoo-lesson36/lesson36.dats utils/timer.sats utils/timer.dats \
+          $(ATSCTRB) $(ATSCTRB_GL) -lSDL -lGL
 
 ######
 
@@ -92,6 +106,9 @@ cleanall: clean
 	rm -f lesson09
 	rm -f lesson10
 	rm -f lesson12
+	rm -f lesson13
+	rm -f lesson16
 	rm -f lesson20
+	rm -f lesson36
 
 ###### end of [Makefile] ######

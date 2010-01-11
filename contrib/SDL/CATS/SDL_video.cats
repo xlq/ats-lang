@@ -124,6 +124,10 @@ atsctrb_SDL_Color_init (
 
 /* ****** ****** */
 
+#define atsctrb_SDL_GL_SwapBuffers SDL_GL_SwapBuffers
+
+/* ****** ****** */
+
 #endif // end of [ATSCTRB_SDL_SDL_VIDEO_CATS]
 
 /* end of [SDL_video.cats] */

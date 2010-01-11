@@ -1,0 +1,194 @@
+//
+// LazyFoo-lesson13 _translated_ into ATS
+// See http://lazyfoo.net/SDL_tutorials/lesson13
+//
+
+(* ****** ****** *)
+
+//
+// Author: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
+// Time: January, 2010
+//
+
+(* ****** ****** *)
+
+//
+// How to compiler: see ../Makefile
+//
+
+(* ****** ****** *)
+
+staload "contrib/SDL/SATS/SDL.sats"
+staload "contrib/SDL/SATS/SDL_ttf.sats"
+
+(* ****** ****** *)
+
+staload "timer.sats"
+
+(* ****** ****** *)
+
+#define SCREEN_WIDTH 640
+#define SCREEN_HEIGHT 480
+#define SCREEN_BPP 32
+
+(* ****** ****** *)
+
+symintr uint
+overload uint with uint_of_Uint32
+
+(* ****** ****** *)
+
+//
+// this one is in the SDL_image extension of SDL
+//
+extern
+fun IMG_Load (filename: string): SDL_Surface_ref0 
+  = "IMG_Load"
+
+extern
+fun load_image (filename: string): SDL_Surface_ref0
+implement load_image (filename) = let
+  val loadedImage = IMG_Load (filename)
+in
+  if ref_is_null loadedImage then loadedImage else let
+    val optimizedImage = SDL_DisplayFormat (loadedImage)
+    val () = SDL_FreeSurface (loadedImage)
+  in
+    if ref_is_null (optimizedImage) then optimizedImage else let
+      // Map the color key
+      val (pf_format | p_format) = SDL_Surface_format (optimizedImage)
+      val colorkey = SDL_MapRGB (!p_format, (Uint8)0, (Uint8)0xFF, (Uint8)0xFF)
+      //Set all pixels of color R 0, G 0xFF, B 0xFF to be transparent
+      prval () = minus_addback (pf_format | optimizedImage)
+      val _err = SDL_SetColorKey (optimizedImage, SDL_SRCCOLORKEY, colorkey)
+    in
+      optimizedImage
+    end // end of [if]
+  end // end of [if]
+end // end of [load_image]
+
+(* ****** ****** *)
+
+extern
+fun apply_surface {l1,l2:anz} (
+    x: int, y: int, src: !SDL_Surface_ref l1, dst: !SDL_Surface_ref l2
+  ) : void
+
+implement apply_surface
+  (x, y, src, dst) = () where {
+  var offset: SDL_Rect // unintialized
+  val () = SDL_Rect_init (offset, (Sint16)x, (Sint16)y, (Uint16)0, (Uint16)0)
+  val _err = SDL_UpperBlit_ptr (src, null, dst, &offset)
+} // end of [apply_surface]
+
+(* ****** ****** *)
+
+staload "libc/SATS/printf.sats"
+
+implement main () = () where {
+  val _err = SDL_Init (SDL_INIT_EVERYTHING)
+  val () = assert_errmsg (_err = 0, #LOCATION)
+  val [l1:addr] screen = SDL_SetVideoMode (
+    SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_BPP, SDL_SWSURFACE
+  ) // end of [val]
+  val () = assert_errmsg (ref_is_notnull screen, #LOCATION)
+  val _err = TTF_Init ()
+  val () = assert_errmsg (_err = 0, #LOCATION)
+//
+  val () = SDL_WM_SetCaption (
+    stropt_some "Timer test (advanced)", stropt_none
+  ) // end of [val]
+//
+  val [l2:addr] background = load_image ("LazyFoo-lesson13/background.png")
+  val () = assert_errmsg (ref_is_notnull background, #LOCATION)
+//
+  // Open the font
+  val [_l:addr] font = TTF_OpenFont ("LazyFoo-lesson13/lazy.ttf", 36)
+  val () = assert_errmsg (TTF_Font_ref_is_notnull font, #LOCATION)
+//
+  //The color of the font
+  var textColor : SDL_Color
+  val () = SDL_Color_init (textColor, (Uint8)0, (Uint8)0, (Uint8)0)
+//
+  // Render the text
+  val [_l:addr] startStop = TTF_RenderText_Solid
+    (font, "Press S to start or stop the timer", textColor)
+  val () = assert_errmsg (ref_is_notnull startStop, #LOCATION)
+//
+  // Start the timer
+  var myTimer: Timer
+  val () = Timer_init (myTimer)
+  val () = Timer_start (myTimer)
+//
+  var quit: bool = false
+  var event: SDL_Event?
+//
+  val () = while (~quit) let
+    val () = while (true) begin
+      if SDL_PollEvent (event) > 0 then let
+        prval () = opt_unsome (event)
+        val _type = SDL_Event_type event
+      in
+        case+ 0 of
+        | _ when _type = SDL_KEYDOWN => let
+            prval (pf, fpf) = SDL_Event_key_castdn (view@ event)
+            var sym = (&event)->keysym.sym
+            prval () = view@ event := fpf (pf)
+          in
+            case+ 0 of
+            | _ when sym = SDLK_s => let
+                val tst = Timer_is_started (myTimer)
+              in
+                if tst then Timer_stop (myTimer) else Timer_start (myTimer)
+              end // end of [SDLK_s]
+            | _ when sym = SDLK_p => let
+                val tst = Timer_is_paused (myTimer)
+              in
+                if tst then Timer_unpause (myTimer) else Timer_pause (myTimer)
+              end // end of [SDLK_p]
+            | _ => () // ignored
+          end // end of [SDL_KEYDOWN]
+        | _ when _type = SDL_QUIT => (quit := true)
+        | _ => () // ignored
+      end else let
+        prval () = opt_unnone (event) in break
+      end // end of [if]
+    end // end of [val]
+//
+    val () = apply_surface (0, 0, background, screen)
+//
+    val () = () where {
+      val w = SDL_Surface_w (startStop)
+      val () = apply_surface((SCREEN_WIDTH - w) / 2, 200, startStop, screen)
+      #define BUFSZ 1024
+      var !p_buf with pf_buf = @[byte][BUFSZ]() // uninitialized
+      val now = Timer_getTicks (myTimer) / 1000
+      val _n = snprintf (pf_buf | p_buf, BUFSZ, "Timer: %i", @(now))
+      prval () = pf_buf := bytes_v_of_strbuf_v (pf_buf)
+      val () = () where {
+        extern castfn __cast (p: ptr): string
+        val seconds = TTF_RenderText_Solid (font, __cast p_buf, textColor)
+        val () = assert_errmsg (ref_is_notnull seconds, #LOCATION)
+        val w = SDL_Surface_w (seconds)
+        val () = apply_surface ((SCREEN_WIDTH - w) / 2, 50, seconds, screen)
+        val () = SDL_FreeSurface (seconds)
+      } // end of [where]
+    } // end of [val]
+//
+    val _err = SDL_Flip (screen)
+    val () = assert_errmsg (_err = 0, #LOCATION)
+//
+  in
+    // nothing
+  end // end of [val]
+//
+  val () = TTF_CloseFont (font)
+  val () = SDL_FreeSurface (background)
+  val () = SDL_FreeSurface (startStop)
+  val _ptr = SDL_Quit_screen (screen)
+  val () = SDL_Quit ()
+} // end of [main]
+
+(* ****** ****** *)
+
+(* end of [LazyFoo-lesson13.dats] *)

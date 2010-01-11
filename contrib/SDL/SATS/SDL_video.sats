@@ -346,7 +346,7 @@ fun SDL_WM_GetCaption
 
 (* ****** ****** *)
 
-fun SDL_GL_SwapBuffers (): void = "atsctrb_SDL_GL_SwapBuffers"
+fun SDL_GL_SwapBuffers (): void = "#atsctrb_SDL_GL_SwapBuffers"
 
 (* ****** ****** *)
 

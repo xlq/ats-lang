@@ -331,8 +331,8 @@ implement main () = () where {
   val [l2:addr] foo = load_image ("LazyFoo-lesson20/foo.png")
   val () = assert_errmsg (ref_is_notnull foo, #LOCATION)
 //
-  var walk: Foo // uninitialized
-  val () = Foo_init (walk, 0, 0, 0, FOO_RIGHT)
+  var theFoo: Foo // uninitialized
+  val () = Foo_init (theFoo, 0, 0, 0, FOO_RIGHT)
   var fps: Timer // uninitialized
   val () = Timer_init (fps)
 //
@@ -348,7 +348,7 @@ implement main () = () where {
     val () = while (true) begin
       if SDL_PollEvent (event) > 0 then let
         prval () = opt_unsome (event)
-        val () = Foo_handle_events (walk, event)
+        val () = Foo_handle_events (theFoo, event)
         val _type = SDL_Event_type event
       in
         if (_type = SDL_QUIT) then quit := true
@@ -356,12 +356,12 @@ implement main () = () where {
         prval () = opt_unnone (event) in break
       end // end of [if]
     end // end of [val]
-    val () = Foo_move (walk)
+    val () = Foo_move (theFoo)
 //
     // Fill the screen white
     val _err = SDL_FillRect_ptr (screen, null, white_color)
 //
-    val () = Foo_show (walk, foo, screen)
+    val () = Foo_show (theFoo, foo, screen)
 //
     val _err = SDL_Flip (screen)
     val () = assert_errmsg (_err = 0, #LOCATION)

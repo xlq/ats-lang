@@ -98,10 +98,10 @@ in
       prval () = view@ event := fpf (pf)
     in
       case+ 0 of
-      | _ when sym = SDLK_UP => obj.yVel -= DOT_HEIGHT
-      | _ when sym = SDLK_DOWN => obj.yVel += DOT_HEIGHT
-      | _ when sym = SDLK_LEFT => obj.xVel -= DOT_WIDTH
-      | _ when sym = SDLK_RIGHT => obj.xVel += DOT_WIDTH
+      | _ when sym = SDLK_UP => obj.yVel -= DOT_HEIGHT/2
+      | _ when sym = SDLK_DOWN => obj.yVel += DOT_HEIGHT/2
+      | _ when sym = SDLK_LEFT => obj.xVel -= DOT_WIDTH/2
+      | _ when sym = SDLK_RIGHT => obj.xVel += DOT_WIDTH/2
       | _ => () // ignored
     end // end of [SDL_KEYDOWN]
   | _ when _type = SDL_KEYUP => let

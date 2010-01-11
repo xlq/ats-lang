@@ -60,10 +60,6 @@ implement Timer_stop (obj) = begin
   obj.private.started := false ; obj.private.paused := false ;
 end // end of [Timer_stop]
 
-(*
-fun Timer_pause (obj: &Timer):<> void
-*)
-
 implement Timer_pause (obj) =
   if (obj.private.started) then
     if ~(obj.private.paused) then begin
@@ -93,4 +89,4 @@ implement Timer_is_paused (obj) = obj.private.paused
 
 (* ****** ****** *)
 
-(* end of [LazyFoo-lesson20-timer.sats] *)
+(* end of [LazyFoo-timer.sats] *)
