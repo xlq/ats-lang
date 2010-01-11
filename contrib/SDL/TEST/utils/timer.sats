@@ -12,6 +12,19 @@
 
 (* ****** ****** *)
 
+%{#
+typedef struct {
+  struct {
+    ats_int_type startTicks ;
+    ats_bool_type started ; 
+    ats_int_type pausedTicks ;
+    ats_bool_type paused ;
+  } private ;
+} Timer ;
+%} // end of [%{#}
+
+(* ****** ****** *)
+
 staload "contrib/SDL/SATS/SDL.sats"
 
 (* ****** ****** *)

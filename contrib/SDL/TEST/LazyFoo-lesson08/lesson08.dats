@@ -145,9 +145,9 @@ implement main () = () where {
     in
       case+ 0 of
       | _ when _type = SDL_KEYDOWN => let
-          prval () = SDL_Event_key_castdn (view@ event)
+          prval (pf, fpf) = SDL_Event_key_castdn (view@ event)
           val sym = (&event)->keysym.sym
-          prval () = SDL_Event_key_castup (view@ event)
+          prval () = view@ event := fpf (pf)
         in
           case+ 0 of
           | _ when sym = SDLK_UP => show_message (screen, background, upMessage)

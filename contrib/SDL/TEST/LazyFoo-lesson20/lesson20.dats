@@ -12,6 +12,12 @@
 
 (* ****** ****** *)
 
+//
+// How to compiler: see ../Makefile
+//
+
+(* ****** ****** *)
+
 staload "contrib/SDL/SATS/SDL.sats"
 
 (* ****** ****** *)
@@ -153,7 +159,6 @@ macdef FOO_RIGHT = 0;
 macdef FOO_LEFT = 1;
 
 %{^
-
 typedef struct {
   ats_int_type velocity ;
   ats_int_type frame ;
@@ -162,14 +167,6 @@ typedef struct {
     ats_int_type offset ;
   } private ;
 } Foo ;
-
-typedef struct {
-  ats_int_type startTicks ;
-  ats_bool_type started ; 
-  ats_int_type pausedTicks ;
-  ats_bool_type paused ;
-} Timer ;
-
 %} // end of [%{^}
 
 abst@ype Foo_private
@@ -246,9 +243,9 @@ implement Foo_handle_events
 in
   case+ 0 of
   | _ when _type = SDL_KEYDOWN => () where {
-      prval () = SDL_Event_key_castdn (view@ event)
+      prval (pf, fpf) = SDL_Event_key_castdn (view@ event)
       val sym = (&event)->keysym.sym
-      prval () = SDL_Event_key_castup (view@ event)
+      prval () = view@ event := fpf (pf)
       val () = case+ 0 of
         | _ when sym = SDLK_LEFT =>
             (obj.velocity := obj.velocity - FOO_WIDTH/4)
@@ -258,9 +255,9 @@ in
       // end of [val]
     } // end of [SDL_KEYDOWN]
   | _ when _type = SDL_KEYUP => () where {
-      prval () = SDL_Event_key_castdn (view@ event)
+      prval (pf, fpf) = SDL_Event_key_castdn (view@ event)
       val sym = (&event)->keysym.sym
-      prval () = SDL_Event_key_castup (view@ event)
+      prval () = view@ event := fpf (pf)
       val () = case+ 0 of
         | _ when sym = SDLK_LEFT =>
             (obj.velocity := obj.velocity + FOO_WIDTH/4)

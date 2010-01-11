@@ -12,6 +12,12 @@
 
 (* ****** ****** *)
 
+//
+// How to compiler: see ../Makefile
+//
+
+(* ****** ****** *)
+
 staload "contrib/SDL/SATS/SDL.sats"
 staload "contrib/SDL/SATS/SDL_ttf.sats"
 
@@ -119,9 +125,9 @@ implement main () = () where {
       in
         case+ 0 of
         | _ when _type = SDL_KEYDOWN => let
-            prval () = SDL_Event_key_castdn (view@ event)
+            prval (pf, fpf) = SDL_Event_key_castdn (view@ event)
             var sym = (&event)->keysym.sym
-            prval () = SDL_Event_key_castup (view@ event)
+            prval () = view@ event := fpf (pf)
           in
             case+ 0 of
             | _ when sym = SDLK_s =>

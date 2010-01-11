@@ -66,13 +66,15 @@ lesson10: LazyFoo-lesson10/lesson10.dats
 lesson12: LazyFoo-lesson12/lesson12.dats
 	$(ATSCC) -o lesson12 LazyFoo-lesson12/lesson12.dats $(ATSCTRB) -lSDL -lSDL_image -lSDL_ttf
 
-lesson20: \
-  LazyFoo-lesson20/lesson20.dats \
-  LazyFoo-lesson20/timer.sats LazyFoo-lesson20/timer.dats
-	$(ATSCC) -IATS LazyFoo-lesson20 -o lesson20 \
-  LazyFoo-lesson20/lesson20.dats \
-  LazyFoo-lesson20/timer.sats LazyFoo-lesson20/timer.dats \
-  $(ATSCTRB) -lSDL -lSDL_image -lSDL_ttf
+lesson16: LazyFoo-lesson16/lesson16.dats
+	$(ATSCC) -IATS utils -o lesson16 \
+          LazyFoo-lesson16/lesson16.dats utils/timer.sats utils/timer.dats \
+          $(ATSCTRB) -lSDL -lSDL_image -lSDL_ttf
+
+lesson20: LazyFoo-lesson20/lesson20.dats
+	$(ATSCC) -IATS utils -o lesson20 \
+          LazyFoo-lesson20/lesson20.dats utils/timer.sats utils/timer.dats \
+          $(ATSCTRB) -lSDL -lSDL_image -lSDL_ttf
 
 ######
 

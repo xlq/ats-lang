@@ -155,25 +155,25 @@ fn button_handle_event (
 in
   case+ 0 of
   | _ when _type = SDL_MOUSEMOTION => let
-      prval () = SDL_Event_motion_castdn (view@ event)
+      prval (pf, fpf) = SDL_Event_motion_castdn (view@ event)
       val x = (&event)->x and y = (&event)->y
-      prval () = SDL_Event_motion_castup (view@ event)
+      prval () = view@ event := fpf (pf)
       val isover = button_mouse_is_over (btn, (int)x, (int)y)
     in
       if isover then CLIP_MOUSEOVER else CLIP_MOUSEOUT
     end // end of [SDL_MOUSEMOTION]
   | _ when _type = SDL_MOUSEBUTTONDOWN => let
-      prval () = SDL_Event_button_castdn (view@ event)
+      prval (pf, fpf) = SDL_Event_button_castdn (view@ event)
       val x = (&event)->x and y = (&event)->y
-      prval () = SDL_Event_button_castup (view@ event)
+      prval () = view@ event := fpf (pf)
       val isover = button_mouse_is_over (btn, (int)x, (int)y)
     in
       if isover then CLIP_MOUSEDOWN else ~1 (*default*)
     end // end of [SDL_MOUSEBUTTONDOWN]
   | _ when _type = SDL_MOUSEBUTTONUP => let
-      prval () = SDL_Event_button_castdn (view@ event)
+      prval (pf, fpf) = SDL_Event_button_castdn (view@ event)
       val x = (&event)->x and y = (&event)->y
-      prval () = SDL_Event_button_castup (view@ event)
+      prval () = view@ event := fpf (pf)
       val isover = button_mouse_is_over (btn, (int)x, (int)y)
     in
       if isover then CLIP_MOUSEUP else ~1 (*default*)

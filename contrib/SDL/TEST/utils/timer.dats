@@ -30,17 +30,6 @@ staload "timer.sats"
 
 (* ****** ****** *)
 
-%{^
-typedef struct {
-  struct {
-    ats_int_type startTicks ;
-    ats_bool_type started ; 
-    ats_int_type pausedTicks ;
-    ats_bool_type paused ;
-  } private ;
-} Timer ;
-%} // end of [%{^]
-
 assume Timer_private =
   $extype_rec "Timer" of {
   startTicks= int

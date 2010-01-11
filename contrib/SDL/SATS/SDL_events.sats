@@ -83,10 +83,9 @@ typedef SDL_ActiveEvent =
   type= Uint8, gain= Uint8, state= Uint8
 } // end of [SDL_ActiveEvent]
 
-praxi SDL_Event_active_castdn {l:addr}
-  (pf: !SDL_Event @ l >> SDL_ActiveEvent @ l): void
-praxi SDL_Event_active_castup {l:addr}
-  (pf: !SDL_ActiveEvent @ l >> SDL_Event @ l): void
+praxi SDL_Event_active_castdn {l:addr} (pf: SDL_Event @ l)
+  : (SDL_ActiveEvent @ l, SDL_ActiveEvent @ l -<lin,prf> SDL_Event @ l)
+// end of [SDL_Event_active_castdn]
 
 (* ****** ****** *)
 
@@ -95,10 +94,9 @@ typedef SDL_KeyboardEvent =
   type= Uint8, which= Uint8, state= Uint8, keysym= SDL_keysym
 } // end of [SDL_KeyboardEvent]
 
-praxi SDL_Event_key_castdn {l:addr}
-  (pf: !SDL_Event @ l >> SDL_KeyboardEvent @ l): void
-praxi SDL_Event_key_castup {l:addr}
-  (pf: !SDL_KeyboardEvent @ l >> SDL_Event @ l): void
+praxi SDL_Event_key_castdn {l:addr} (pf: SDL_Event @ l)
+  : (SDL_KeyboardEvent @ l, SDL_KeyboardEvent @ l -<lin,prf> SDL_Event @ l)
+// end of [SDL_Event_key_castdn]
 
 (* ****** ****** *)
   
@@ -113,10 +111,9 @@ typedef SDL_MouseMotionEvent =
 , yrel= Sint16
 } // end of [SDL_MouseMotionEvent]
 
-praxi SDL_Event_motion_castdn {l:addr}
-  (pf: !SDL_Event @ l >> SDL_MouseMotionEvent @ l): void
-praxi SDL_Event_motion_castup {l:addr}
-  (pf: !SDL_MouseMotionEvent @ l >> SDL_Event @ l): void
+praxi SDL_Event_motion_castdn {l:addr} (pf: SDL_Event @ l)
+  : (SDL_MouseMotionEvent @ l, SDL_MouseMotionEvent @ l -<lin,prf> SDL_Event @ l)
+// end of [SDL_Event_motion_castdn]
 
 (* ****** ****** *)
 
@@ -130,10 +127,9 @@ typedef SDL_MouseButtonEvent =
 , y= Uint16
 } // end of [SDL_MouseButtonEvent]
 
-praxi SDL_Event_button_castdn {l:addr}
-  (pf: !SDL_Event @ l >> SDL_MouseButtonEvent @ l): void
-praxi SDL_Event_button_castup {l:addr}
-  (pf: !SDL_MouseButtonEvent @ l >> SDL_Event @ l): void
+praxi SDL_Event_button_castdn {l:addr} (pf: SDL_Event @ l)
+  : (SDL_MouseButtonEvent @ l, SDL_MouseButtonEvent @ l -<lin,prf> SDL_Event @ l)
+// end of [SDL_Event_button_castdn]
 
 (* ****** ****** *)
 
@@ -144,6 +140,10 @@ typedef SDL_JoyAxisEvent =
 , axis= Uint8
 , value= Sint16
 } // end of [SDL_JoyAxisEvent]
+
+praxi SDL_Event_jaxis_castdn {l:addr} (pf: SDL_Event @ l)
+  : (SDL_JoyAxisEvent @ l, SDL_JoyAxisEvent @ l -<lin,prf> SDL_Event @ l)
+// end of [SDL_Event_jaxis_castdn]
 
 (* ****** ****** *)
 
@@ -156,6 +156,10 @@ typedef SDL_JoyBallEvent =
 , yrel= Sint16
 } // end of [SDL_JoyBallEvent]
 
+praxi SDL_Event_jball_castdn {l:addr} (pf: SDL_Event @ l)
+  : (SDL_JoyBallEvent @ l, SDL_JoyBallEvent @ l -<lin,prf> SDL_Event @ l)
+// end of [SDL_Event_jball_castdn]
+
 (* ****** ****** *)
 
 typedef SDL_JoyButtonEvent =
@@ -166,17 +170,29 @@ typedef SDL_JoyButtonEvent =
 , state= Uint8
 } // end of [SDL_JoyButtonEvent]
 
+praxi SDL_Event_jbutton_castdn {l:addr} (pf: SDL_Event @ l)
+  : (SDL_JoyButtonEvent @ l, SDL_JoyButtonEvent @ l -<lin,prf> SDL_Event @ l)
+// end of [SDL_Event_jbutton_castdn]
+
 (* ****** ****** *)
 
 typedef SDL_ResizeEvent =
   $extype_rec "SDL_ResizeEvent" of { type= Uint8, w= int, h= int }
 // end of [SDL_ResizeEvent]
 
+praxi SDL_Event_resize_castdn {l:addr} (pf: SDL_Event @ l)
+  : (SDL_ResizeEvent @ l, SDL_ResizeEvent @ l -<lin,prf> SDL_Event @ l)
+// end of [SDL_Event_resize_castdn]
+
 (* ****** ****** *)
 
 typedef SDL_ExposeEvent =
   $extype_rec "SDL_ExposeEvent" of { type= Uint8 } 
 // end of [SDL_ExposeEvent]
+
+praxi SDL_Event_expose_castdn {l:addr} (pf: SDL_Event @ l)
+  : (SDL_ExposeEvent @ l, SDL_ExposeEvent @ l -<lin,prf> SDL_Event @ l)
+// end of [SDL_Event_expose_castdn]
 
 (* ****** ****** *)
 
