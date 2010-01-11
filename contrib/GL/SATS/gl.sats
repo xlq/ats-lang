@@ -53,6 +53,10 @@ fun eq_GLenum_GLenum (x1: GLenum, x2: GLenum):<> bool
   = "atsctrb_eq_GLenum_GLenum"
 overload = with eq_GLenum_GLenum
 
+fun neq_GLenum_GLenum (x1: GLenum, x2: GLenum):<> bool
+  = "atsctrb_neq_GLenum_GLenum"
+overload <> with neq_GLenum_GLenum
+
 abst@ype GLenum_type (a:t@ype) = GLenum
 abst@ype GLenum_format (n: int) = GLenum
 
@@ -139,6 +143,9 @@ fun GLushort_of_uint (x: uint):<> GLushort = "atsctrb_GLushort_of_uint"
 
 fun GLsizei_of_int {i:int} (x: int i): GLsizei i = "atsctrb_GLsizei_of_int"
 
+fun GLdouble_of_int (x: int):<> GLdouble = "atsctrb_GLdouble_of_int"
+
+fun GLfloat_of_int (x: int):<> GLfloat = "atsctrb_GLfloat_of_int"
 fun GLfloat_of_double (x: double):<> GLfloat = "atsctrb_GLfloat_of_double"
 fun GLclampf_of_double (x: double):<> GLclampf = "atsctrb_GLclampf_of_double"
 
@@ -163,10 +170,12 @@ symintr GLsizei
 overload GLsizei with GLsizei_of_int
 
 symintr GLdouble GLclampd
+overload GLdouble with GLdouble_of_int
 overload GLdouble with GLdouble_of_double // castfn
 overload GLclampd with GLclampd_of_double // castfn
 
 symintr GLfloat GLclampf
+overload GLfloat with GLfloat_of_int
 overload GLfloat with GLfloat_of_double
 overload GLclampf with GLclampf_of_double
 

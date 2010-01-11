@@ -73,12 +73,21 @@ static inline
 ats_int_type
 atsctrb_int_of_GLenum (GLenum x) { return x ; }
 
+//
+
 static inline
 ats_bool_type
 atsctrb_eq_GLenum_GLenum
   (GLenum x1, GLenum x2) {
   return (x1 == x2 ? ats_true_bool : ats_false_bool) ;
 } // end of [atsctrb_eq_GLenum_GLenum]
+
+static inline
+ats_bool_type
+atsctrb_neq_GLenum_GLenum
+  (GLenum x1, GLenum x2) {
+  return (x1 != x2 ? ats_true_bool : ats_false_bool) ;
+} // end of [atsctrb_neq_GLenum_GLenum]
 
 //
 
@@ -117,6 +126,18 @@ atsctrb_GLushort_of_uint (unsigned int x) { return x ; }
 static inline
 ats_GLsizei_type
 atsctrb_GLsizei_of_int (int x) { return x ; }
+
+//
+
+static inline
+ats_GLdouble_type
+atsctrb_GLdouble_of_int (int x) { return x ; }
+
+//
+
+static inline
+ats_GLfloat_type
+atsctrb_GLfloat_of_int (int x) { return x ; }
 
 static inline
 ats_GLfloat_type

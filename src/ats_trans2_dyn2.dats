@@ -860,7 +860,9 @@ and d1exp_arg_body_tr_ann (
   in
     the_d2expenv_add_dvarlst d2vs
   end // end of [val]
+  val (pf_level | ()) = d2var_current_level_inc ()
   val d2e_body = d1exp_tr_ann (d1e_body, s2e_res)
+  val () = d2var_current_level_dec (pf_level | (*none*))
   val () = trans2_env_pop (pf_env2 | (*none*))
   val loc_body = d2e_body.d2exp_loc
   val d2e_body = d2exp_ann_seff (loc_body, d2e_body, s2fe)
@@ -1064,7 +1066,7 @@ fn i1mpdec_tr
   val () = dyncstimploc_posmark (qid.impqi0de_loc, d2c)
 //
 (*
-  // automatic instantiation is not supported because it can otherwise readily
+  // automatic instantiation is not supported because it can readily
   // lead to confusion as to whether an implementation is actually compiled.
   fun aux1
     (s2vpss: s2qualst, s2e: s2exp, out: &s2qualst): s2exp = begin
