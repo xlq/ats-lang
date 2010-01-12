@@ -18,6 +18,14 @@
 
 (* ****** ****** *)
 
+//
+// HX: Jan 11, 2010
+// This example shows that SDL_thread is kind of buggy. I would
+// stay away from using it for now.
+//
+
+(* ****** ****** *)
+
 staload "contrib/SDL/SATS/SDL.sats"
 
 (* ****** ****** *)
