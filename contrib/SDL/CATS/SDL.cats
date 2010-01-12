@@ -54,15 +54,16 @@ atsctrb_SDL_ref_is_null
 
 static inline
 ats_bool_type
-atsctrb_SDL_ref_is_notnull
+atsctrb_SDL_ref_isnot_null
   (ats_ref_type p) {
   return (p != (ats_ptr_type)0 ? ats_true_bool : ats_false_bool) ;
-} // end of [atsctrb_SDL_ref_is_notnull]
+} // end of [atsctrb_SDL_ref_isnot_null]
 
 /* ****** ****** */
 
 #include "contrib/SDL/CATS/SDL_events.cats"
 #include "contrib/SDL/CATS/SDL_timer.cats"
+#include "contrib/SDL/CATS/SDL_thread.cats"
 #include "contrib/SDL/CATS/SDL_video.cats"
 
 /* ****** ****** */

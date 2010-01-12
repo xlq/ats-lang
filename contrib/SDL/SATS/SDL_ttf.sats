@@ -61,10 +61,10 @@ fun TTF_Font_ref_is_null
   = "atsctrb_SDL_ref_is_null"
 // overload ref_is_null with TTF_Font_ref_is_null
 
-fun TTF_Font_ref_is_notnull
+fun TTF_Font_ref_isnot_null
   {l:addr} (x: !TTF_Font_ref l):<> bool (l <> null)
-  = "atsctrb_SDL_ref_is_notnull"
-// overload ref_is_notnull with TTF_Font_ref_is_notnull
+  = "atsctrb_SDL_ref_isnot_null"
+// overload ref_isnot_null with TTF_Font_ref_isnot_null
 
 (* ****** ****** *)
 

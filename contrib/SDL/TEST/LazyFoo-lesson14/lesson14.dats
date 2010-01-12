@@ -144,7 +144,7 @@ implement main () = () where {
     val () = let
       val w = SDL_Surface_w message and h = SDL_Surface_h message
     in
-      apply_surface(
+      apply_surface (
         (SCREEN_WIDTH - w)/2
       , ((SCREEN_HEIGHT + 2*h)/FRAMES_PER_SECOND) * (frame mod FRAMES_PER_SECOND ) - h
       , message

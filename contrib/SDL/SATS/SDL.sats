@@ -56,7 +56,7 @@ symintr Sint64 Uint64
 
 symintr ref_null // castfn
 symintr ref_free_null // castfn
-symintr ref_is_null ref_is_notnull // fun
+symintr ref_is_null ref_isnot_null // fun
 
 (* ****** ****** *)
 
@@ -72,6 +72,7 @@ prfun minus_addback
 (* ****** ****** *)
 
 #include "contrib/SDL/SATS/SDL_events.sats"
+#include "contrib/SDL/SATS/SDL_thread.sats"
 #include "contrib/SDL/SATS/SDL_timer.sats"
 #include "contrib/SDL/SATS/SDL_video.sats"
 

@@ -102,10 +102,10 @@ fun SDL_Surface_ref_is_null
   = "atsctrb_SDL_ref_is_null"
 overload ref_is_null with SDL_Surface_ref_is_null
 
-fun SDL_Surface_ref_is_notnull
+fun SDL_Surface_ref_isnot_null
   {l:addr} (x: !SDL_Surface_ref l):<> bool (l <> null)
-  = "atsctrb_SDL_ref_is_notnull"
-overload ref_is_notnull with SDL_Surface_ref_is_notnull
+  = "atsctrb_SDL_ref_isnot_null"
+overload ref_isnot_null with SDL_Surface_ref_isnot_null
 
 (* ****** ****** *)
 

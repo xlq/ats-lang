@@ -45,7 +45,8 @@ typedef Square = @{
   x= int, y= int, xVel= int, yVel= int
 } // end of [Square]
 
-fn Square_init (obj: &Square? >> Square):<> void = begin
+fn Square_init
+  (obj: &Square? >> Square):<> void = begin
   obj.x := 0; obj.y := 0; obj.xVel := 0; obj.yVel := 0
 end // end of [Square_init]
 
@@ -115,8 +116,6 @@ fn Square_show
   val () = glEnd (pf_beg | (*none*))
   val () = glLoadIdentity ()
 } // end of [Square_move]
-
-(* ****** ****** *)
 
 (* ****** ****** *)
 
