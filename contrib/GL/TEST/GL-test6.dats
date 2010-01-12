@@ -247,6 +247,18 @@ end // end of [keyboard]
 
 (* ****** ****** *)
 
+macdef TIME_INTERVAL = 50U
+
+extern
+fun timer (flag: int): void = "timer"
+implement timer (flag) = let
+  val () = glutPostRedisplay ()
+in
+  glutTimerFunc (TIME_INTERVAL, timer, 0)
+end // end of [timer]
+
+(* ****** ****** *)
+
 extern
 fun idle (): void = "idle"
 implement idle
@@ -344,9 +356,10 @@ ats_void_type mainats (
 #else
   glutKeyboardFunc (keyboard) ;
 #endif // end of [#if SCREEN_SAVER_MODE]
-
+/*
   glutIdleFunc (idle) ;
-
+*/
+  timer (0) ;
   glutMainLoop () ;
   return ; /* deadcode */
 } // end of [mainats]

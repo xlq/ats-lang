@@ -20,6 +20,7 @@ atsctrb_SDL.o: \
 
 SDL_sats.o: \
    SATS/SDL.sats \
+   SATS/SDL_thread.sats \
    SATS/SDL_timer.sats \
    SATS/SDL_video.sats \
 
@@ -30,14 +31,12 @@ SDL_dats.o: DATS/SDL.dats
 
 ######
 
-SDL_image_sats.o: \
-   SATS/SDL_image.sats \
-
+SDL_image_sats.o: SATS/SDL_image.sats
 	$(ATSCC) -o $@ -c SATS/SDL_image.sats
 
-SDL_ttf_sats.o: \
-   SATS/SDL_ttf.sats \
+######
 
+SDL_ttf_sats.o: SATS/SDL_ttf.sats
 	$(ATSCC) -o $@ -c SATS/SDL_ttf.sats
 
 ######
@@ -45,6 +44,7 @@ SDL_ttf_sats.o: \
 clean::
 	rm -f SDL_sats.c SDL_sats.o
 	rm -f SDL_dats.c SDL_dats.o
+	rm -f SDL_image_sats.c SDL_image_sats.o
 	rm -f SDL_ttf_sats.c SDL_ttf_sats.o
 
 cleanall: clean

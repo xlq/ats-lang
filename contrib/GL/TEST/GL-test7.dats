@@ -369,11 +369,21 @@ end // end of [keyboard]
 
 (* ****** ****** *)
 
-//
+macdef TIME_INTERVAL = 150U
+
+extern
+fun timer (flag: int): void = "timer"
+implement timer (flag) = let
+  val () = glutPostRedisplay ()
+in
+  glutTimerFunc (TIME_INTERVAL, timer, 0)
+end // end of [timer]
+
+(* ****** ****** *)
 
 implement main_dummy () = ()
 
-//
+(* ****** ****** *)
 
 %{$
 
@@ -389,7 +399,7 @@ ats_void_type mainats (
   glutDisplayFunc (display) ;
   glutReshapeFunc (reshape) ;
   glutKeyboardFunc (keyboard) ;
-  glutIdleFunc (glutPostRedisplay) ;
+  timer (0) ;
   glutMainLoop () ;
   return ; /* deadcode */
 } // end of [mainats]

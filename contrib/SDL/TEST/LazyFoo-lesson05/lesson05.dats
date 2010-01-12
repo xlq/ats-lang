@@ -74,7 +74,7 @@ implement main () = () where {
     stropt_some "Foo says \"Hello!\"", stropt_none
   ) // end of [val]
 //
-  val background = load_image ("background.png")
+  val background = load_image ("LazyFoo-lesson05/background.png")
   val () = assert_errmsg (ref_isnot_null background, #LOCATION)
   val foo = load_image ("LazyFoo-lesson05/foo.png")
   val () = assert_errmsg (ref_isnot_null foo, #LOCATION)

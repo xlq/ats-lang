@@ -185,8 +185,10 @@ fn button_show {l1,l2:anz} (
   , screen: !SDL_Surface_ref l2
   , clip: &SDL_Rect
   ) : void = () where {
+(*
   val () = printf
     ("button_show: btn.x = %i and btn.y = %i\n", @((int)btn.x, (int)btn.y))
+*)
   val () = apply_surface((int)btn.x, (int)btn.y, buttonSheet, screen, clip)
 } // end of [button_show]
 
@@ -230,7 +232,7 @@ implement main () = () where {
       if SDL_PollEvent (event) > 0 then let
         prval () = opt_unsome (event)
         val _type = SDL_Event_type event
-        val () = printf ("event.type = %i\n", @((int)_type))
+        // val () = printf ("event.type = %i\n", @((int)_type))
         val () = if _type = SDL_QUIT then quit := true
       in
         continue
@@ -244,7 +246,6 @@ implement main () = () where {
     } // end of [val]
 //
     val nclip_new = button_handle_event (myButton, event)
-    val () = printf ("nclip_new = %i\n", @(nclip_new))
     val () = if nclip_new >= 0 then nclip := nclip_new
 //
     // Fill the screen white

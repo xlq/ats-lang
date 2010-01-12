@@ -1,0 +1,18 @@
+#
+#
+#
+
+######
+
+HX:
+
+The code in each LazyFoo-lesson?? directory is, more or less, a translation
+into ATS the corresponding tutorial code (in C++) that is available at the
+following site:
+
+http://lazyfoo.net/SDL_tutorials
+
+I did the translation in January, 2010. If changes are to be made to the
+original C++ code in the future, I may not update the translation.
+
+###### end of [README] ######
