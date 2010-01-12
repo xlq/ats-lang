@@ -12,9 +12,9 @@ all: atsctrb_SDL.o clean
 ######
 
 atsctrb_SDL.o: \
-  SDL_sats.o SDL_dats.o SDL_ttf_sats.o
+  SDL_sats.o SDL_dats.o SDL_image_sats.o SDL_ttf_sats.o
 	ld -r -o $@ \
-  SDL_sats.o SDL_dats.o SDL_ttf_sats.o
+  SDL_sats.o SDL_dats.o SDL_image_sats.o SDL_ttf_sats.o
 
 ######
 
@@ -29,6 +29,11 @@ SDL_dats.o: DATS/SDL.dats
 	$(ATSCC) -o $@ -c DATS/SDL.dats
 
 ######
+
+SDL_image_sats.o: \
+   SATS/SDL_image.sats \
+
+	$(ATSCC) -o $@ -c SATS/SDL_image.sats
 
 SDL_ttf_sats.o: \
    SATS/SDL_ttf.sats \

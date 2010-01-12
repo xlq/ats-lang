@@ -13,6 +13,7 @@
 (* ****** ****** *)
 
 staload "contrib/SDL/SATS/SDL.sats"
+staload "contrib/SDL/SATS/SDL_image.sats"
 staload "contrib/SDL/SATS/SDL_ttf.sats"
 
 (* ****** ****** *)
@@ -42,12 +43,7 @@ macdef CLIP_MOUSEOUT = 1
 macdef CLIP_MOUSEDOWN = 2
 macdef CLIP_MOUSEUP = 3
 
-//
-// this one is in the SDL_image extension of SDL
-//
-extern
-fun IMG_Load (filename: string): SDL_Surface_ref0 
-  = "IMG_Load"
+(* ****** ****** *)
 
 extern
 fun load_image (filename: string): SDL_Surface_ref0
