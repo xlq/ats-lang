@@ -158,7 +158,6 @@ implement main () = () where {
       val now = SDL_GetTicks ()
       val diff = (uint)now - (uint)start
       val _n = snprintf (pf_buf | p_buf, BUFSZ, "Timer: %u", @(diff))
-      prval () = pf_buf := bytes_v_of_strbuf_v (pf_buf)
       val () = () where {
         extern castfn __cast (p: ptr): string
         val seconds = TTF_RenderText_Solid (font, __cast p_buf, textColor)
@@ -167,6 +166,7 @@ implement main () = () where {
         val () = apply_surface ((SCREEN_WIDTH - w) / 2, 50, seconds, screen)
         val () = SDL_FreeSurface (seconds)
       } // end of [where]
+      prval () = pf_buf := bytes_v_of_strbuf_v (pf_buf)
     in
       // nothing
     end // end of [val]
