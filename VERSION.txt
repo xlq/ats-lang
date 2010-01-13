@@ -1,7 +1,3 @@
-0.2.0-unstable
-
-###### this line as well as the following ones are ignored ######
-
 0.1.7
 
 <pre>

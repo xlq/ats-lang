@@ -12,6 +12,10 @@
 
 (* ****** ****** *)
 
+staload _(*anon*) = "prelude/DATS/list.dats"
+
+(* ****** ****** *)
+
 staload "contrib/SDL/SATS/SDL.sats"
 staload "contrib/SDL/SATS/SDL_image.sats"
 
@@ -106,7 +110,8 @@ end // end of [local]
 
 (* ****** ****** *)
 
-typedef boxlst = List @(int(*x*), int(*y*), int(*w*), int(*h*))
+typedef box = @(int(*x*), int(*y*), int(*w*), int(*h*))
+typedef boxlst = List box
 
 (* ****** ****** *)
 
@@ -300,19 +305,10 @@ implement main () = () where {
     , @(7, 19, 6, 1)  
     ) // end of [val]
     val () = Dot_init (myDot, 0, 0, boxlst1)
-    val boxlst2: boxlst = $lst (
-      @(27, 20, 6, 1)
-    , @(25, 21, 10, 1)
-    , @(23, 22, 14, 1)
-    , @(22, 23, 16, 2)
-    , @(21, 25, 18, 2)
-    , @(20, 27, 20, 6)
-    , @(21, 33, 18, 2)
-    , @(22, 35, 16, 2)
-    , @(23, 37, 14, 1)
-    , @(25, 38, 10, 1)
-    , @(27, 39, 6, 1)  
-    ) // end of [val]
+    val boxlst2 = list_map_fun<box,box> (
+      boxlst1, lam bx =<fun> @(bx.0 + 20, bx.1 + 20, bx.2, bx.3)
+    )
+    val boxlst2 = list_of_list_vt (boxlst2)
     val () = Dot_init (otherDot, 20, 20, boxlst2)
   in
     // nothing
