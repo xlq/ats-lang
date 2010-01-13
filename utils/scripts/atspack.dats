@@ -277,12 +277,12 @@ datatype packnd =
 fn packnd_is_source (knd: packnd): bool = begin
   case+ knd of
   | PACKNDsource () => true | PACKNDprecompiled () => false
-end // end of [packnd_is_precompile]
+end // end of [packnd_is_source]
 
 fn packnd_is_precompiled (knd: packnd): bool = begin
   case+ knd of
   | PACKNDsource () => false | PACKNDprecompiled () => true
-end // end of [packnd_is_precompile]
+end // end of [packnd_is_precompiled]
 
 (* ****** ****** *)
 
@@ -762,6 +762,8 @@ fn libc_dir_copy () = let
   val DSTROOTlibc_netinet = DSTROOTlibc + "netinet/"
   val () = lib_dir_copy (SRCROOTlibc_netinet, DSTROOTlibc_netinet)
 //
+(*
+  // moved to $ATSHOME/contrib/GL
   val SRCROOTlibc_GL = SRCROOTlibc + "GL/"
   val () = if
     file_isexi (SRCROOTlibc_GL) then let
@@ -769,6 +771,8 @@ fn libc_dir_copy () = let
   in
     lib_dir_copy (SRCROOTlibc_GL, DSTROOTlibc_GL)
   end // end of [val]
+*)
+//
 in
   prerr "The [libc] directory is successfully copied.";
   prerr_newline ()
@@ -800,6 +804,14 @@ fn contrib_dir_copy () = let
   val DSTROOTcontrib = DSTROOT + "contrib/"
   val () = mkdir_exn (DSTROOTcontrib, DIRmode)
 //
+  // API for cairo: [contrib/cairo]
+  val SRCROOTcontrib_cairo = SRCROOTcontrib + "cairo/"
+  val DSTROOTcontrib_cairo = DSTROOTcontrib + "cairo/"
+  val () = lib_dir_copy (SRCROOTcontrib_cairo, DSTROOTcontrib_cairo)
+  val () = fcopy_exn (
+    SRCROOTcontrib_cairo+"Makefile", DSTROOTcontrib_cairo+"Makefile"
+  ) // end of [val]
+//
   // API for GL: [contrib/GL]
   val SRCROOTcontrib_GL = SRCROOTcontrib + "GL/"
   val DSTROOTcontrib_GL = DSTROOTcontrib + "GL/"
@@ -808,13 +820,14 @@ fn contrib_dir_copy () = let
     SRCROOTcontrib_GL+"Makefile", DSTROOTcontrib_GL+"Makefile"
   ) // end of [val]
 //
-  // API for cairo: [contrib/cairo]
-  val SRCROOTcontrib_cairo = SRCROOTcontrib + "cairo/"
-  val DSTROOTcontrib_cairo = DSTROOTcontrib + "cairo/"
-  val () = lib_dir_copy (SRCROOTcontrib_cairo, DSTROOTcontrib_cairo)
+  // API for GL: [contrib/SDL]
+  val SRCROOTcontrib_SDL = SRCROOTcontrib + "SDL/"
+  val DSTROOTcontrib_SDL = DSTROOTcontrib + "SDL/"
+  val () = lib_dir_copy (SRCROOTcontrib_SDL, DSTROOTcontrib_SDL)
   val () = fcopy_exn (
-    SRCROOTcontrib_cairo+"Makefile", DSTROOTcontrib_cairo+"Makefile"
+    SRCROOTcontrib_SDL+"Makefile", DSTROOTcontrib_SDL+"Makefile"
   ) // end of [val]
+//
 in
   prerr "The [contrib] directory is successfully copied.";
   prerr_newline ()

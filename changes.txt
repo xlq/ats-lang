@@ -1,6 +1,6 @@
 ########################################################################
 
-ats-lang-anairiats-0.2.0
+ats-lang-anairiats-0.1.7
 
 1. Adding support for implementing variadic functions in ATS.
    Please see the files: $ATSHOME/libc/?ATS/stdarg.?ats

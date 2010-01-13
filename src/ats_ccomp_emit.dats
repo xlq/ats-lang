@@ -285,10 +285,22 @@ end // end of [emit_tmpvar]
 fn _emit_hityp {m:file_mode}
   (pf: file_mode_lte (m, w) | out: &FILE m, hit: hityp)
   : void = let
-  val HITNAM (knd, name) = hit.hityp_name in
+  val HITNAM (knd, name) = hit.hityp_name
+(*
+  val () = (
+    print "_emit_hityp: knd = "; print knd; print_newline ()
+  ) // end of [val]
+  val () = (
+    print "_emit_hityp: name = "; print name; print_newline ()
+  ) // end of [val]
+*)
+in
   case+ 0 of
-  | _ when knd <= 0 => fprint_string (pf | out, name)
-  | _ (*boxed: knd > 0*) => fprint1_string (pf | out, PTR_TYPE_NAME)
+  | _ when knd <= 0 => (* flt_ext: ~1; flt: 0 *)
+      fprint_string (pf | out, name)
+  | _ => (* boxed: knd > 0 *)
+      fprint1_string (pf | out, PTR_TYPE_NAME)
+  // end of [case]
 end // end of [_emit_hityp]
 
 implement emit_hityp (pf | out, hit) =

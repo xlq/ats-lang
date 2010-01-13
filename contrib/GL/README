@@ -1,7 +1,3 @@
-#
-# API for gl/glu/glut in ATS
-#
-
 ######
 
 The TEST directory contains a list of GL examples:

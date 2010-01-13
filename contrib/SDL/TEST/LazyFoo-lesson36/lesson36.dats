@@ -84,11 +84,6 @@ end // end of [Square_handle_input]
 
 (* ****** ****** *)
 
-symintr double
-overload double with double_of_int
-
-(* ****** ****** *)
-
 fn Square_move
   (obj: &Square): void = () where {
   val x_new = obj.x + obj.xVel
@@ -102,6 +97,11 @@ fn Square_move
     obj.y := y_new
   // end of [val]
 } // end of [Square_move]
+
+(* ****** ****** *)
+
+symintr double
+overload double with double_of_int
 
 fn Square_show
   (obj: &Square): void = () where {

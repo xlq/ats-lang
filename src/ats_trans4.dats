@@ -251,7 +251,7 @@ in
       ) : hityp
 (*
       val () = begin
-        print "s2exp_tr: S2Etyrec: hit0 = "; print hit0; print_newline ()
+        print "s2exp_tr: S2Etyrec: hit0 = "; print_hityp hit0; print_newline ()
       end // end of [val]
 *)
     in

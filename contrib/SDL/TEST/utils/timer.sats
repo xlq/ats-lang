@@ -13,6 +13,8 @@
 (* ****** ****** *)
 
 %{#
+#ifndef timer_sats_Timer
+#define timer_sats_Timer
 typedef struct {
   struct {
     ats_int_type startTicks ;
@@ -21,6 +23,7 @@ typedef struct {
     ats_bool_type paused ;
   } private ;
 } Timer ;
+#endif // end of [timer_sats_Timer]
 %} // end of [%{#}
 
 (* ****** ****** *)

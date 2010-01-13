@@ -485,7 +485,8 @@ fn hityp_name_get (hit: hityp) = let
   val HITNAM (knd, name) = hit.hityp_name
 in
   case+ 0 of
-  | _ when knd = 0 => name | _ => name where {
+  | _ when knd <= 0 => name (* flt_ext: ~1; flt: 0 *)
+  | _ => name where {
       val HITNAM (_, name) = hityp_ptr.hityp_name
     } // end of [where]
 end // end of [hityp_name_get]
@@ -495,11 +496,11 @@ implement hityp_tyrec_make (recknd, lhits) = let
     fun aux (lhits: labhityplst): labstrlst = case+ lhits of
       | LABHITYPLSTcons (l, hit, lhits) => begin
           LABSTRLSTcons (l, hityp_name_get hit, aux lhits)
-        end
+        end // end of [LABHITYPLSTcons]
       | LABHITYPLSTnil () => LABSTRLSTnil ()
   } // end of [where]
   val name_rec = typdefmap_find (TYPKEYrec lnames)
-  val fltboxknd = (if recknd <> 0 then 1 else 0): int
+  val fltboxknd = (if recknd > 0 then 1 else 0): int
   val hit_rec = hityp_tyrec (fltboxknd, name_rec, lhits)
 in
   hityp_encode (hit_rec)
