@@ -30,6 +30,7 @@ compall: \
   lesson15 \
   lesson16 \
   lesson17 \
+  lesson18 \
   lesson20 \
   lesson21 \
   lesson36 \
@@ -99,6 +100,11 @@ lesson17: LazyFoo-lesson17/lesson17.dats
           LazyFoo-lesson17/lesson17.dats utils/timer.sats utils/timer.dats \
           $(ATSCTRB) -lSDL -lSDL_image
 
+lesson18: LazyFoo-lesson18/lesson18.dats
+	$(ATSCC) -IATS utils -o lesson18 \
+          LazyFoo-lesson18/lesson18.dats utils/timer.sats utils/timer.dats \
+          $(ATSCTRB) -lSDL -lSDL_image
+
 lesson20: LazyFoo-lesson20/lesson20.dats
 	$(ATSCC) -IATS utils -o lesson20 \
           LazyFoo-lesson20/lesson20.dats utils/timer.sats utils/timer.dats \
@@ -138,6 +144,7 @@ cleanall: clean
 	rm -f lesson15
 	rm -f lesson16
 	rm -f lesson17
+	rm -f lesson18
 	rm -f lesson20
 	rm -f lesson21
 	rm -f lesson33
