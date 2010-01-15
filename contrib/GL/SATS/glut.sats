@@ -441,6 +441,28 @@ fun glutLayerGet (query: GLenum): int = "#atsctrb_glutLayerGet"
 
 (* ****** ****** *)
 
+abstype GLUTfontref // void*
+
+macdef TIMES_ROMAN_24 =
+  $extval (GLUTfontref, "GLUT_BITMAP_TIMES_ROMAN_24")
+macdef HELVETICA_18 = $extval (GLUTfontref, "GLUT_BITMAP_HELVETICA_18")
+
+fun glutBitmapCharacter(font: GLUTfontref, c: char): void
+  = "#atsctrb_glutBitmapCharacter"
+fun glutBitmapWidth(font: GLUTfontref, c: char): int
+  = "#atsctrb_glutBitmapWidth"
+fun glutBitmapLength(font: GLUTfontref, txt: string): int
+  = "#atsctrb_glutBitmapLength"
+
+fun glutStrokeCharacter(font: GLUTfontref, c: char): void
+  = "#atsctrb_glutStrokeCharacter"
+fun glutStrokeWidth(font: GLUTfontref, c: char): int
+  = "#atsctrb_glutStrokeWidth"
+fun glutStrokeLength(font: GLUTfontref, txt: string): int
+  = "#atsctrb_glutStrokeLength"
+  
+(* ****** ****** *)
+
 fun glutWireCube (size: GLdouble): void = "#atsctrb_glutWireCube"
 fun glutSolidCube (size: GLdouble): void = "#atsctrb_glutSolidCube"
 

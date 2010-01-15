@@ -4,6 +4,7 @@
 #
 
 ATSCC="$(ATSHOME)"/bin/atscc
+SDLCFLAGS=`sdl-config --cflags`
 
 ######
 
@@ -24,20 +25,20 @@ SDL_sats.o: \
    SATS/SDL_timer.sats \
    SATS/SDL_video.sats \
 
-	$(ATSCC) -o $@ -c SATS/SDL.sats
+	$(ATSCC) $(SDLCFLAGS) -o $@ -c SATS/SDL.sats
 
 SDL_dats.o: DATS/SDL.dats
-	$(ATSCC) -o $@ -c DATS/SDL.dats
+	$(ATSCC) $(SDLCFLAGS) -o $@ -c DATS/SDL.dats
 
 ######
 
 SDL_image_sats.o: SATS/SDL_image.sats
-	$(ATSCC) -o $@ -c SATS/SDL_image.sats
+	$(ATSCC) $(SDLCFLAGS) -o $@ -c SATS/SDL_image.sats
 
 ######
 
 SDL_ttf_sats.o: SATS/SDL_ttf.sats
-	$(ATSCC) -o $@ -c SATS/SDL_ttf.sats
+	$(ATSCC) $(SDLCFLAGS) -o $@ -c SATS/SDL_ttf.sats
 
 ######
 

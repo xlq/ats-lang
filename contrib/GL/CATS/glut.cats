@@ -129,6 +129,16 @@ atsctrb_glutIdleFunc_null () {
 
 /* ****** ****** */
 
+#define atsctrb_glutBitmapCharacter glutBitmapCharacter
+#define atsctrb_glutBitmapWidth glutBitmapWidth
+#define atsctrb_glutBitmapLength glutBitmapLength
+
+#define atsctrb_glutStrokeCharacter glutStrokeCharacter
+#define atsctrb_glutStrokeWidth glutStrokeWidth
+#define atsctrb_glutStrokeLength glutStrokeLength
+
+/* ****** ****** */
+
 #define atsctrb_glutWireCube glutWireCube
 #define atsctrb_glutSolidCube glutSolidCube
 

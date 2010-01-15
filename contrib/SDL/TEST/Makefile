@@ -7,6 +7,7 @@
 ATSCC="$(ATSHOME)"/bin/atscc
 ATSCTRB="$(ATSHOME)"/contrib/SDL/atsctrb_SDL.o
 ATSCTRB_GL="$(ATSHOME)"/contrib/GL/atsctrb_GL.o
+SDLCFLAGS=`sdl-config --cflags`
 
 ######
 
@@ -38,88 +39,99 @@ compall: \
 ######
 
 lesson01: LazyFoo-lesson01/lesson01.dats
-	$(ATSCC) -o lesson01 LazyFoo-lesson01/lesson01.dats $(ATSCTRB) -lSDL
+	$(ATSCC) $(SDLCFLAGS) -o lesson01 \
+          LazyFoo-lesson01/lesson01.dats $(ATSCTRB) -lSDL
 
 lesson02: LazyFoo-lesson02/lesson02.dats
-	$(ATSCC) -o lesson02 LazyFoo-lesson02/lesson02.dats $(ATSCTRB) -lSDL
+	$(ATSCC) $(SDLCFLAGS) -o lesson02 \
+          LazyFoo-lesson02/lesson02.dats $(ATSCTRB) -lSDL
 
 #
 #lesson03: there is no code for lesson03
 #
 
 lesson04: LazyFoo-lesson04/lesson04.dats
-	$(ATSCC) -o lesson04 LazyFoo-lesson04/lesson04.dats $(ATSCTRB) -lSDL -lSDL_image
+	$(ATSCC) $(SDLCFLAGS) -o lesson04 \
+          LazyFoo-lesson04/lesson04.dats $(ATSCTRB) -lSDL -lSDL_image
 
 lesson05: LazyFoo-lesson05/lesson05.dats
-	$(ATSCC) -o lesson05 LazyFoo-lesson05/lesson05.dats $(ATSCTRB) -lSDL -lSDL_image
+	$(ATSCC) $(SDLCFLAGS) -o lesson05 \
+          LazyFoo-lesson05/lesson05.dats $(ATSCTRB) -lSDL -lSDL_image
 
 lesson06: LazyFoo-lesson06/lesson06.dats
-	$(ATSCC) -o lesson06 LazyFoo-lesson06/lesson06.dats $(ATSCTRB) -lSDL -lSDL_image
+	$(ATSCC) $(SDLCFLAGS) -o lesson06 \
+          LazyFoo-lesson06/lesson06.dats $(ATSCTRB) -lSDL -lSDL_image
 
 lesson07: LazyFoo-lesson07/lesson07.dats
-	$(ATSCC) -o lesson07 LazyFoo-lesson07/lesson07.dats $(ATSCTRB) -lSDL -lSDL_image -lSDL_ttf
+	$(ATSCC) $(SDLCFLAGS) -o lesson07 \
+          LazyFoo-lesson07/lesson07.dats $(ATSCTRB) -lSDL -lSDL_image -lSDL_ttf
 
 lesson08: LazyFoo-lesson08/lesson08.dats
-	$(ATSCC) -o lesson08 LazyFoo-lesson08/lesson08.dats $(ATSCTRB) -lSDL -lSDL_image -lSDL_ttf
+	$(ATSCC) $(SDLCFLAGS) -o lesson08 \
+          LazyFoo-lesson08/lesson08.dats $(ATSCTRB) -lSDL -lSDL_image -lSDL_ttf
 
 lesson09: LazyFoo-lesson09/lesson09.dats
-	$(ATSCC) -o lesson09 LazyFoo-lesson09/lesson09.dats $(ATSCTRB) -lSDL -lSDL_image
+	$(ATSCC) $(SDLCFLAGS) -o lesson09 \
+          LazyFoo-lesson09/lesson09.dats $(ATSCTRB) -lSDL -lSDL_image
 
 lesson10: LazyFoo-lesson10/lesson10.dats
-	$(ATSCC) -o lesson10 LazyFoo-lesson10/lesson10.dats $(ATSCTRB) -lSDL -lSDL_image -lSDL_ttf
+	$(ATSCC) $(SDLCFLAGS) -o lesson10 \
+          LazyFoo-lesson10/lesson10.dats $(ATSCTRB) -lSDL -lSDL_image -lSDL_ttf
 
 #
 # lesson11: skipped for now
 #
 
 lesson12: LazyFoo-lesson12/lesson12.dats
-	$(ATSCC) -o lesson12 LazyFoo-lesson12/lesson12.dats $(ATSCTRB) -lSDL -lSDL_image -lSDL_ttf
+	$(ATSCC) $(SDLCFLAGS) -o lesson12 \
+          LazyFoo-lesson12/lesson12.dats $(ATSCTRB) -lSDL -lSDL_image -lSDL_ttf
 
 lesson13: LazyFoo-lesson13/lesson13.dats
-	$(ATSCC) -IATS utils -o lesson13 \
+	$(ATSCC) -IATS utils $(SDLCFLAGS) -o lesson13 \
           LazyFoo-lesson13/lesson13.dats utils/timer.sats utils/timer.dats \
           $(ATSCTRB) -lSDL -lSDL_image -lSDL_ttf
 
 lesson14: LazyFoo-lesson14/lesson14.dats
-	$(ATSCC) -IATS utils -o lesson14 \
+	$(ATSCC) -IATS utils $(SDLCFLAGS) -o lesson14 \
           LazyFoo-lesson14/lesson14.dats utils/timer.sats utils/timer.dats \
           $(ATSCTRB) -lSDL -lSDL_image -lSDL_ttf
 
 lesson15: LazyFoo-lesson15/lesson15.dats
-	$(ATSCC) -IATS utils -o lesson15 \
+	$(ATSCC) -IATS utils $(SDLCFLAGS) -o lesson15 \
           LazyFoo-lesson15/lesson15.dats utils/timer.sats utils/timer.dats \
           $(ATSCTRB) -lSDL -lSDL_image
 
 lesson16: LazyFoo-lesson16/lesson16.dats
-	$(ATSCC) -IATS utils -o lesson16 \
+	$(ATSCC) -IATS utils $(SDLCFLAGS) -o lesson16 \
           LazyFoo-lesson16/lesson16.dats utils/timer.sats utils/timer.dats \
           $(ATSCTRB) -lSDL -lSDL_image
 
 lesson17: LazyFoo-lesson17/lesson17.dats
-	$(ATSCC) -IATS utils -o lesson17 \
+	$(ATSCC) -IATS utils $(SDLCFLAGS) -o lesson17 \
           LazyFoo-lesson17/lesson17.dats utils/timer.sats utils/timer.dats \
           $(ATSCTRB) -lSDL -lSDL_image
 
 lesson18: LazyFoo-lesson18/lesson18.dats
-	$(ATSCC) -IATS utils -o lesson18 \
+	$(ATSCC) -IATS utils $(SDLCFLAGS) -o lesson18 \
           LazyFoo-lesson18/lesson18.dats utils/timer.sats utils/timer.dats \
           $(ATSCTRB) -lSDL -lSDL_image
 
 lesson20: LazyFoo-lesson20/lesson20.dats
-	$(ATSCC) -IATS utils -o lesson20 \
+	$(ATSCC) -IATS utils $(SDLCFLAGS) -o lesson20 \
           LazyFoo-lesson20/lesson20.dats utils/timer.sats utils/timer.dats \
           $(ATSCTRB) -lSDL -lSDL_image
 
 lesson21: LazyFoo-lesson21/lesson21.dats
-	$(ATSCC) -IATS utils -o lesson21 \
+	$(ATSCC) -IATS utils $(SDLCFLAGS) -o lesson21 \
           LazyFoo-lesson21/lesson21.dats utils/timer.sats utils/timer.dats \
           $(ATSCTRB) -lSDL -lSDL_image
 
 lesson33: LazyFoo-lesson33/lesson33.dats
-	$(ATSCC) -IATS utils -o lesson33 LazyFoo-lesson33/lesson33.dats $(ATSCTRB) -lSDL -lSDL_image
+	$(ATSCC) -IATS utils $(SDLCFLAGS) -o lesson33 \
+          LazyFoo-lesson33/lesson33.dats $(ATSCTRB) -lSDL -lSDL_image
 
 lesson36: LazyFoo-lesson36/lesson36.dats
-	$(ATSCC) -IATS utils -o lesson36 \
+	$(ATSCC) -IATS utils $(SDLCFLAGS) -o lesson36 \
           LazyFoo-lesson36/lesson36.dats utils/timer.sats utils/timer.dats \
           $(ATSCTRB) $(ATSCTRB_GL) -lSDL -lGL
 

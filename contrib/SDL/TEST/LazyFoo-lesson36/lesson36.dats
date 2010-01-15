@@ -148,10 +148,6 @@ implement main () = () where {
   var fps: Timer // uninitialized
   val () = Timer_init (fps)
 //
-  val (pf_format | p_format) = SDL_Surface_format (screen)
-  val white_color = SDL_MapRGB (!p_format, (Uint8)0xFF, (Uint8)0xFF, (Uint8)0xFF)
-  prval () = minus_addback (pf_format | screen)
-//
   var quit: bool = false
   var event: SDL_Event?  
 //
@@ -169,9 +165,6 @@ implement main () = () where {
       end // end of [if]
     end // end of [val]
     val () = Square_move (theSquare)
-//
-    // Fill the screen white
-    val _err = SDL_FillRect_ptr (screen, null, white_color)
 //
     val () = glClear(GL_COLOR_BUFFER_BIT)
     val () = Square_show (theSquare)

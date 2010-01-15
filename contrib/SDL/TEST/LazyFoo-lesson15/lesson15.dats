@@ -1,6 +1,6 @@
 //
-// LazyFoo-lesson14 _translated_ into ATS
-// See http://lazyfoo.net/SDL_tutorials/lesson14
+// LazyFoo-lesson15 _translated_ into ATS
+// See http://lazyfoo.net/SDL_tutorials/lesson15
 //
 
 (* ****** ****** *)
@@ -43,16 +43,7 @@ in
     val optimizedImage = SDL_DisplayFormat (loadedImage)
     val () = SDL_FreeSurface (loadedImage)
   in
-    if ref_is_null (optimizedImage) then optimizedImage else let
-      // Map the color key
-      val (pf_format | p_format) = SDL_Surface_format (optimizedImage)
-      val colorkey = SDL_MapRGB (!p_format, (Uint8)0, (Uint8)0xFF, (Uint8)0xFF)
-      //Set all pixels of color R 0, G 0xFF, B 0xFF to be transparent
-      prval () = minus_addback (pf_format | optimizedImage)
-      val _err = SDL_SetColorKey (optimizedImage, SDL_SRCCOLORKEY, colorkey)
-    in
-      optimizedImage
-    end // end of [if]
+    optimizedImage
   end // end of [if]
 end // end of [load_image]
 
@@ -139,4 +130,4 @@ implement main () = () where {
 
 (* ****** ****** *)
 
-(* end of [LazyFoo-lesson14.dats] *)
+(* end of [LazyFoo-lesson15.dats] *)
