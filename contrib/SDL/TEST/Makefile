@@ -7,7 +7,9 @@
 ATSCC="$(ATSHOME)"/bin/atscc
 ATSCTRB="$(ATSHOME)"/contrib/SDL/atsctrb_SDL.o
 ATSCTRB_GL="$(ATSHOME)"/contrib/GL/atsctrb_GL.o
+ATSCTRB_xr="$(ATSHOME)"/contrib/cairo/atsctrb_cairo.o
 SDLCFLAGS=`sdl-config --cflags`
+CAIROCFLAGS=`pkg-config cairo --cflags`
 
 ######
 
@@ -137,6 +139,15 @@ lesson36: LazyFoo-lesson36/lesson36.dats
 
 ######
 
+SDL_cairo_clock: SDL_cairo_clock.dats
+	$(ATSCC) -IATS utils \
+          $(SDLCFLAGS) $(CAIROCFLAGS) \
+          -o SDL_cairo_clock \
+          SDL_cairo_clock.dats utils/timer.sats utils/timer.dats \
+          $(ATSCTRB) $(ATSCTRB_xr) -lSDL -lcairo
+
+######
+
 clean:
 	rm -f *_?ats.c *.o *~
 
@@ -161,5 +172,6 @@ cleanall: clean
 	rm -f lesson21
 	rm -f lesson33
 	rm -f lesson36
+	rm -f SDL_cairo_clock
 
 ###### end of [Makefile] ######

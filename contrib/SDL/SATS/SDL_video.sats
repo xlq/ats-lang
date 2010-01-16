@@ -208,11 +208,11 @@ fun SDL_SetVideoMode_exn
 fun SDL_UpdateRect {l:anz} (
     screen: !SDL_Surface_ref l, x: Sint32, y: Sint32, w: Uint32, h: Uint32
   ) : void
-  = "atsctrb_SDL_UpdateRect"
+  = "#atsctrb_SDL_UpdateRect"
   
 fun SDL_UpdateRects {l:anz} {n:nat}
   (screen: !SDL_Surface_ref l, n: int n, rects: &(@[SDL_Rect][n])): void
-  = "atsctrb_SDL_UpdateRects"
+  = "#atsctrb_SDL_UpdateRects"
   
 (* ****** ****** *)
 
@@ -258,6 +258,13 @@ fun SDL_CreateRGBSurface (
   , Rmask: Uint32, Gmask: Uint32, Bmask: Uint32, Amask: Uint32
   ) : SDL_Surface_ref0
   = "#atsctrb_SDL_CreateRGBSurface"
+
+fun SDL_CreateRGBSurfaceFrom (
+    data: ptr // this is unsafe
+  , width: int, height: int, depth: int, pitch: int
+  , Rmask: Uint32, Gmask: Uint32, Bmask: Uint32, Amask: Uint32
+  ) : SDL_Surface_ref0
+  = "#atsctrb_SDL_CreateRGBSurfaceFrom"
 
 fun SDL_FreeSurface (surface: SDL_Surface_ref1): void = "#atsctrb_SDL_FreeSurface"
 

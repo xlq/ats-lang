@@ -52,7 +52,10 @@
 (* ****** ****** *)
 
 typedef lint = int_long_t0ype
+typedef ulint = uint_long_t0ype
+
 typedef llint = int_long_long_t0ype
+typedef ullint = uint_long_long_t0ype
 
 (* ****** ****** *)
 
@@ -86,13 +89,31 @@ fun float_of_int (i: int):<> float
   = "atspre_float_of_int"
 overload float_of with float_of_int
 
-fun float_of_lint (li: lint):<> float
+fun float_of_uint (u: uint):<> float
+  = "atspre_float_of_uint"
+overload float_of with float_of_uint
+
+//
+
+fun float_of_lint (i: lint):<> float
   = "atspre_float_of_lint"
 overload float_of with float_of_lint
 
-fun float_of_llint (lli: llint):<> float
+fun float_of_ulint (u: ulint):<> float
+  = "atspre_float_of_ulint"
+overload float_of with float_of_ulint
+
+//
+
+fun float_of_llint (i: llint):<> float
   = "atspre_float_of_llint"
 overload float_of with float_of_llint
+
+fun float_of_ullint (u: ullint):<> float
+  = "atspre_float_of_ullint"
+overload float_of with float_of_ullint
+
+//
 
 fun float_of_size (sz: size_t):<> float
   = "atspre_float_of_size"

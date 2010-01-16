@@ -40,6 +40,7 @@ fun draw_rounded_rectangle .<>. (
   val () = cairo_curve_to (cr, x, y+h, x, y+h, x, y+h-r)
   val () = cairo_line_to (cr, x, y+r)
   val () = cairo_curve_to (cr, x, y, x, y, x+r, y)
+  val () = cairo_stroke (cr)
 in
   // nothing
 end // end of [draw_rounded_rectangle]
@@ -58,7 +59,6 @@ implement main () = () where {
   val r = 10.0
 //  
   val () = draw_rounded_rectangle (cr, x, y, w, h, r)
-  val () = cairo_stroke (cr)
 //
   val status = cairo_surface_write_to_png (surface, "cairo-test2.png")
   val () = cairo_surface_destroy (surface)

@@ -77,15 +77,39 @@ atspre_float_of_int (const ats_int_type i) {
 
 static inline
 ats_float_type
-atspre_float_of_lint (const ats_lint_type li) {
-  return (ats_float_type)li ;
+atspre_float_of_uint (const ats_uint_type u) {
+  return (ats_float_type)u ;
+}
+
+//
+
+static inline
+ats_float_type
+atspre_float_of_lint (const ats_lint_type i) {
+  return (ats_float_type)i ;
 }
 
 static inline
 ats_float_type
-atspre_float_of_llint (const ats_llint_type lli) {
-  return (ats_float_type)lli ;
+atspre_float_of_ulint (const ats_ulint_type u) {
+  return (ats_float_type)u ;
 }
+
+//
+
+static inline
+ats_float_type
+atspre_float_of_llint (const ats_llint_type i) {
+  return (ats_float_type)i ;
+}
+
+static inline
+ats_float_type
+atspre_float_of_ullint (const ats_ullint_type u) {
+  return (ats_float_type)u ;
+}
+
+//
 
 static inline
 ats_float_type

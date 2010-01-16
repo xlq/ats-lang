@@ -281,11 +281,11 @@ implement clock_timer (flag) = let
   val _(*ignored*) = time_get_and_set (t)
   var tm: tm_struct // unintialized
   val () = localtime_r (t, tm)
-  val m_new = tm_min_get (tm)
+  val m_new = tm.tm_min
   val m_old = !theMinuteRef
   val () = if (m_new <> m_old) then let
     val () = changed := true
-    val () = !theHourRef := tm_hour_get (tm)
+    val () = !theHourRef := tm.tm_hour
     val () = !theMinuteRef := m_new
   in
     // nothing

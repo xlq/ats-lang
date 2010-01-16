@@ -47,7 +47,20 @@ staload TYPES = "libc/sys/SATS/types.sats"
 
 (* ****** ****** *)
 
-abst@ype tm_struct = $extype "ats_tm_struct_type"
+typedef tm_struct =
+  $extype_rec "ats_tm_struct_type" of {
+  tm_sec= int (* seconds *)
+, tm_min= int (* minutes *)
+, tm_hour= int (* hours *)
+, tm_mday= int (* day of the month *)
+, tm_mon= int (* month *)
+, tm_year= int (* year *)
+, tm_wday= int (* day of the week *)
+, tm_yday= int (* day in the year *)
+, tm_isdst= int (* daylight saving time *)
+} // end of [tm_struct]
+
+(* ****** ****** *)
 
 typedef time_t = $TYPES.time_t
 typedef clock_t = $TYPES.clock_t
@@ -66,8 +79,10 @@ overload double_of with double_of_time
 
 (* ****** ****** *)
 
-symintr time
-
+(*
+** HX (2010-01-15):
+** These functions are now kept for backward compatibility
+*)
 fun tm_sec_get (tm: &tm_struct): int
   = "atslib_tm_sec_get"
 
@@ -95,13 +110,15 @@ fun tm_yday_get (tm: &tm_struct): int
 fun tm_isdst_get (tm: &tm_struct): int
   = "atslib_tm_isdst_get"
 
-//
+(* ****** ****** *)
+
+symintr time
 
 fun time_get (): time_t = "atslib_time_get"
+overload time with time_get
+
 fun time_get_and_set (p: &time_t? >> time_t): time_t
   = "atslib_time_get_and_set"
-
-overload time with time_get
 overload time with time_get_and_set
 
 (* ****** ****** *)

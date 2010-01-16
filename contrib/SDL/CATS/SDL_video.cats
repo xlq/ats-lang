@@ -79,6 +79,8 @@ atsctrb_SDL_Color_init (
 
 /* ****** ****** */
 
+#define atsctrb_SDL_UpdateRect SDL_UpdateRect
+#define atsctrb_SDL_UpdateRects SDL_UpdateRects
 #define atsctrb_SDL_Flip SDL_Flip
 
 /* ****** ****** */
@@ -89,6 +91,7 @@ atsctrb_SDL_Color_init (
 /* ****** ****** */
 
 #define atsctrb_SDL_CreateRGBSurface SDL_CreateRGBSurface
+#define atsctrb_SDL_CreateRGBSurfaceFrom SDL_CreateRGBSurfaceFrom
 #define atsctrb_SDL_FreeSurface SDL_FreeSurface
 
 /* ****** ****** */

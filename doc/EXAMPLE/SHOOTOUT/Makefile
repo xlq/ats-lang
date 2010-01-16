@@ -26,6 +26,8 @@ fannkuch_smp: fannkuch_smp.dats
 	$(ATSCC) -D_ATS_MULTITHREAD -O3 -fomit-frame-pointer fannkuch_smp.dats -o fannkuch_smp -lpthread
 
 fasta: fasta.dats; $(ATSCC) -msse2 -O3 fasta.dats -o fasta
+fasta2: fasta2.dats; $(ATSCC) -msse2 -O3 fasta2.dats -o fasta2
+fasta4: fasta4.dats; $(ATSCC) -msse2 -O3 fasta4.dats -o fasta4
 
 k-nucleotide: k-nucleotide.dats symtbl.dats
 #	$(ATSCC) -O3 k-nucleotide.dats -o k-nucleotide
@@ -128,7 +130,7 @@ cleanall: clean
 	rm -f binary-trees-ref
 	rm -f fannkuch
 	rm -f fannkuch_smp
-	rm -f fasta
+	rm -f fasta fasta2 fasta4
 	rm -f k-nucleotide
 	rm -f mandelbrot
 	rm -f mandelbrot_simd
