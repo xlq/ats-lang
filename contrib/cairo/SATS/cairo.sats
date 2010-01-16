@@ -459,7 +459,7 @@ fun cairo_set_tolerance (cr: !cairo_ref, tolerance: double): void
 abst@ype cairo_rectangle_t = $extype "cairo_rectangle_t"
 *)
 typedef cairo_rectangle_t =
-  $extype_rec "cairo_rectangle_t" of {
+  $extype_struct "cairo_rectangle_t" of {
   x= double, y= double, width= double, height= double
 } // end of [cairo_rectangel_t]
 
@@ -781,11 +781,11 @@ abst@ype cairo_cluster_t = $extype "cairo_cluster_t"
 *)
 
 typedef cairo_glyph_t =
-  $extype_rec "cairo_glyph_t" of { index= ulint, x= double, y= double }
+  $extype_struct "cairo_glyph_t" of { index= ulint, x= double, y= double }
 // end of [cairo_glyph_t]
 
 typedef cairo_text_cluster_t =
-  $extype_rec "cairo_text_cluster_t" of { num_bytes= int, num_glyphs= int }
+  $extype_struct "cairo_text_cluster_t" of { num_bytes= int, num_glyphs= int }
 // end of [cairo_text_cluster_t]
 
 absviewtype cairo_glyph_arrptr (n:int, l:addr) // = cairo_glyph_t*  
@@ -796,7 +796,7 @@ absviewtype cairo_cluster_arrptr (n:int, l:addr) // = cairo_cluster_t*
 abst@ype cairo_font_extents_t = $extype "cairo_font_extents_t"
 *)
 typedef cairo_font_extents_t =
-  $extype_rec "cairo_font_extents_t" of {
+  $extype_struct "cairo_font_extents_t" of {
   ascent= double
 , descent= double
 , height= double
@@ -811,7 +811,7 @@ typedef cairo_font_extents_t =
 abst@ype cairo_text_extents_t = $extype "cairo_text_extents_t"
 *)
 typedef cairo_text_extents_t =
-  $extype_rec "cairo_text_extents_t" of {
+  $extype_struct "cairo_text_extents_t" of {
   x_bearing= double, y_bearing= double
 , width= double, height= double
 , x_advance= double, y_advance= double

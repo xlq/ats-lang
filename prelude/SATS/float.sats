@@ -272,13 +272,31 @@ fun double_of_int (i: int):<> double
   = "atspre_double_of_int"
 overload double_of with double_of_int
 
-fun double_of_lint (li: lint):<> double
+fun double_of_uint (u: uint):<> double
+  = "atspre_double_of_uint"
+overload double_of with double_of_uint
+
+//
+
+fun double_of_lint (i: lint):<> double
   = "atspre_double_of_lint"
 overload double_of with double_of_lint
 
-fun double_of_llint (lli: llint):<> double
+fun double_of_ulint (u: ulint):<> double
+  = "atspre_double_of_ulint"
+overload double_of with double_of_ulint
+
+//
+
+fun double_of_llint (i: llint):<> double
   = "atspre_double_of_llint"
 overload double_of with double_of_llint
+
+fun double_of_ullint (u: ullint):<> double
+  = "atspre_double_of_ullint"
+overload double_of with double_of_ullint
+
+//
 
 fun double_of_size (sz: size_t):<> double
   = "atspre_double_of_size"

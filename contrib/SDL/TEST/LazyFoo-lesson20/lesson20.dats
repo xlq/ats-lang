@@ -165,7 +165,7 @@ typedef struct {
 
 abst@ype Foo_private
 typedef Foo =
-  $extype_rec "Foo" of {
+  $extype_struct "Foo" of {
   velocity= int
 , frame= natLt (NFRAME)
 , status= int
@@ -202,7 +202,7 @@ fun Foo_show {l1,l2:anz} (
 local
 
 assume Foo_private =
-  $extype_rec "Foo" of { offset= int }
+  $extype_struct "Foo" of { offset= int }
 // end of [Foo_private]
 
 in // in of [local]

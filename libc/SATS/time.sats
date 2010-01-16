@@ -48,7 +48,7 @@ staload TYPES = "libc/sys/SATS/types.sats"
 (* ****** ****** *)
 
 typedef tm_struct =
-  $extype_rec "ats_tm_struct_type" of {
+  $extype_struct "ats_tm_struct_type" of {
   tm_sec= int (* seconds *)
 , tm_min= int (* minutes *)
 , tm_hour= int (* hours *)

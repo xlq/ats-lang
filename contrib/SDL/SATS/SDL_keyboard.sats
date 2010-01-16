@@ -41,7 +41,7 @@
 (* ****** ****** *)
 
 typedef SDL_keysym =
-  $extype_rec "SDL_keysym" of {
+  $extype_struct "SDL_keysym" of {
   scancode= Uint8, sym= SDLKey, mod= SDLMod, unicode= Uint16
 } // end of [SDL_keysym]
 

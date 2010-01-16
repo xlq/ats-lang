@@ -37,7 +37,7 @@
 (* ****** ****** *)
 
 typedef SDL_Rect =
-  $extype_rec "SDL_Rect" of {
+  $extype_struct "SDL_Rect" of {
   x= Sint16, y= Sint16, w= Uint16, h= Uint16
 } // end of [SDL_Rect]
 
@@ -50,7 +50,7 @@ fun SDL_Rect_init (
 (* ****** ****** *)
 
 typedef SDL_Color =
-  $extype_rec "SDL_Color" of {
+  $extype_struct "SDL_Color" of {
   r= Uint8, g= Uint8, b= Uint8 (* , unused= Uint8 *)
 } // end of [SDL_Color]
 

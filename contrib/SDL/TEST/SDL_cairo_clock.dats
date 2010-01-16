@@ -1,5 +1,6 @@
 (*
-** This example shows how to use Cairo with SDL.
+** This is for showing how to use Cairo with SDL.
+**
 ** It is translated into ATS from an example made by
 ** Writser Cleveringa, based upon code from Eric Windisch
 ** (plus minor code clean up by Chris Nystrom)
@@ -86,7 +87,7 @@ clockDataRef_make (
     exit(1) ;
   }
   return p ;
-}
+} // end of [clockDataRef_make]
 
 ats_void_type
 clockDataRef_free (ats_ptr_type p) { free(p); return ; }
@@ -98,6 +99,8 @@ extern fun clockDataRef_make (stride: int, height: int): clockDataRef
   = "clockDataRef_make"
 extern fun clockDataRef_free (x: clockDataRef): void
   = "clockDataRef_free"
+
+(* ****** ****** *)
 
 (*
 ** draw with Cairo on SDL surfaces
@@ -197,37 +200,6 @@ implement main () = () where {
   // [SDL_Quit_screen] is a no-op cast
   val _ptr = SDL_Quit_screen (screen) // [screen] should be freed by SDL_Quit
   val () = SDL_Quit ()
-} // end of [val]
-
-
-(* ****** ****** *)
-
-////
-implement main () = () where {
-//
-  val w = 200
-  val h = 200
-  val surface =
-    cairo_image_surface_create (CAIRO_FORMAT_ARGB32, w, h)
-  val cr = cairo_create (surface)
-//
-  val w = double_of w and h = double_of h
-  val x = 50.0
-  val y = 50.0
-  val r = 10.0
-//  
-  val () = cairo_scale (cr, w, h)
-  val () = drawClock (cr)
-//
-  val status = cairo_surface_write_to_png (surface, "SDL_cairo_clock.png")
-  val () = cairo_surface_destroy (surface)
-  val () = cairo_destroy (cr)
-//
-  val () = if status = CAIRO_STATUS_SUCCESS then begin
-    print "The image is written to the file [SDL_cairo_clock.png].\n"
-  end else begin
-    print "exit(ATS): [cairo_surface_write_to_png] failed"; print_newline ()
-  end // end of [if]
 } // end of [main]
 
 (* ****** ****** *)

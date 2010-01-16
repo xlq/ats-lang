@@ -231,7 +231,7 @@ ats_keyval_insert("$exec", DLREXEC) ;
 ats_keyval_insert("$extern", DLREXTERN) ;
 ats_keyval_insert("$extval", DLREXTVAL) ;
 ats_keyval_insert("$extype", DLREXTYPE) ;
-ats_keyval_insert("$extype_rec", DLREXTYPE_REC) ;
+ats_keyval_insert("$extype_struct", DLREXTYPE_STRUCT) ;
 ats_keyval_insert("$decrypt", DLRDECRYPT) ;
 ats_keyval_insert("$delay", DLRDELAY) ;
 ats_keyval_insert("$delay_vt", DLRDELAY_VT) ;

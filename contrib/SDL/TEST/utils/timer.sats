@@ -34,7 +34,7 @@ staload "contrib/SDL/SATS/SDL.sats"
 
 abst@ype Timer_private
 typedef Timer =
-  $extype_rec "Timer" of { private= Timer_private }
+  $extype_struct "Timer" of { private= Timer_private }
 // end of [Timer]
 
 fun Timer_init (obj: &Timer? >> Timer):<> void

@@ -349,15 +349,39 @@ atspre_double_of_int (const ats_int_type i) {
 
 static inline
 ats_double_type
-atspre_double_of_lint (const ats_lint_type li) {
-  return (ats_double_type)li ;
+atspre_double_of_uint (const ats_uint_type u) {
+  return (ats_double_type)u ;
+}
+
+//
+
+static inline
+ats_double_type
+atspre_double_of_lint (const ats_lint_type i) {
+  return (ats_double_type)i ;
 }
 
 static inline
 ats_double_type
-atspre_double_of_llint (const ats_llint_type lli) {
-  return (ats_double_type)lli ;
+atspre_double_of_ulint (const ats_ulint_type u) {
+  return (ats_double_type)u ;
 }
+
+//
+
+static inline
+ats_double_type
+atspre_double_of_llint (const ats_llint_type i) {
+  return (ats_double_type)i ;
+}
+
+static inline
+ats_double_type
+atspre_double_of_ullint (const ats_ullint_type u) {
+  return (ats_double_type)u ;
+}
+
+//
 
 static inline
 ats_double_type
@@ -372,6 +396,8 @@ ats_double_type
 atspre_double_of_float (const ats_float_type f) {
   return (ats_double_type)f ;
 }
+
+//
 
 static inline
 ats_double_type

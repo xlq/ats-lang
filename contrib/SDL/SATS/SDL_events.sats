@@ -79,7 +79,7 @@ fun SDL_Event_type
 (* ****** ****** *)
 
 typedef SDL_ActiveEvent =
-  $extype_rec "SDL_ActiveEvent" of {
+  $extype_struct "SDL_ActiveEvent" of {
   type= Uint8, gain= Uint8, state= Uint8
 } // end of [SDL_ActiveEvent]
 
@@ -90,7 +90,7 @@ praxi SDL_Event_active_castdn {l:addr} (pf: SDL_Event @ l)
 (* ****** ****** *)
 
 typedef SDL_KeyboardEvent =
-  $extype_rec "SDL_KeyboardEvent" of {
+  $extype_struct "SDL_KeyboardEvent" of {
   type= Uint8, which= Uint8, state= Uint8, keysym= SDL_keysym
 } // end of [SDL_KeyboardEvent]
 
@@ -101,7 +101,7 @@ praxi SDL_Event_key_castdn {l:addr} (pf: SDL_Event @ l)
 (* ****** ****** *)
   
 typedef SDL_MouseMotionEvent =
-  $extype_rec "SDL_MouseMotionEvent" of {
+  $extype_struct "SDL_MouseMotionEvent" of {
   type= Uint8
 , which= Uint8
 , state= Uint8
@@ -118,7 +118,7 @@ praxi SDL_Event_motion_castdn {l:addr} (pf: SDL_Event @ l)
 (* ****** ****** *)
 
 typedef SDL_MouseButtonEvent =
-  $extype_rec "SDL_MouseButtonEvent" of {
+  $extype_struct "SDL_MouseButtonEvent" of {
   type= Uint8
 , which= Uint8
 , button= Uint8
@@ -134,7 +134,7 @@ praxi SDL_Event_button_castdn {l:addr} (pf: SDL_Event @ l)
 (* ****** ****** *)
 
 typedef SDL_JoyAxisEvent =
-  $extype_rec "SDL_JoyAxisEvent" of {
+  $extype_struct "SDL_JoyAxisEvent" of {
   type= Uint8
 , which= Uint8
 , axis= Uint8
@@ -148,7 +148,7 @@ praxi SDL_Event_jaxis_castdn {l:addr} (pf: SDL_Event @ l)
 (* ****** ****** *)
 
 typedef SDL_JoyBallEvent =
-  $extype_rec "SDL_JoyBallEvent" of {
+  $extype_struct "SDL_JoyBallEvent" of {
   type= Uint8
 , which= Uint8
 , ball= Uint8
@@ -163,7 +163,7 @@ praxi SDL_Event_jball_castdn {l:addr} (pf: SDL_Event @ l)
 (* ****** ****** *)
 
 typedef SDL_JoyButtonEvent =
-  $extype_rec "SDL_JoyButtonEvent" of {
+  $extype_struct "SDL_JoyButtonEvent" of {
   type= Uint8
 , which= Uint8
 , button= Uint8
@@ -177,7 +177,7 @@ praxi SDL_Event_jbutton_castdn {l:addr} (pf: SDL_Event @ l)
 (* ****** ****** *)
 
 typedef SDL_ResizeEvent =
-  $extype_rec "SDL_ResizeEvent" of { type= Uint8, w= int, h= int }
+  $extype_struct "SDL_ResizeEvent" of { type= Uint8, w= int, h= int }
 // end of [SDL_ResizeEvent]
 
 praxi SDL_Event_resize_castdn {l:addr} (pf: SDL_Event @ l)
@@ -187,7 +187,7 @@ praxi SDL_Event_resize_castdn {l:addr} (pf: SDL_Event @ l)
 (* ****** ****** *)
 
 typedef SDL_ExposeEvent =
-  $extype_rec "SDL_ExposeEvent" of { type= Uint8 } 
+  $extype_struct "SDL_ExposeEvent" of { type= Uint8 } 
 // end of [SDL_ExposeEvent]
 
 praxi SDL_Event_expose_castdn {l:addr} (pf: SDL_Event @ l)
@@ -197,7 +197,7 @@ praxi SDL_Event_expose_castdn {l:addr} (pf: SDL_Event @ l)
 (* ****** ****** *)
 
 typedef SDL_QuitEvent =
-  $extype_rec "SDL_QuitEvent" of { type= Uint8 } 
+  $extype_struct "SDL_QuitEvent" of { type= Uint8 } 
 // end of [SDL_QuitEvent]
 
 (* ****** ****** *)

@@ -45,7 +45,7 @@ end // end of [random_next_lookup]
 (* ****** ****** *)
 
 typedef amino_acid =
-  $extype_rec "amino_acid" of {
+  $extype_struct "amino_acid" of {
   sym= char, prob= float, cprob_lookup= float
 } // end of [amino_acid]
 

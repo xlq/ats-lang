@@ -31,7 +31,7 @@ staload "timer.sats"
 (* ****** ****** *)
 
 assume Timer_private =
-  $extype_rec "Timer" of {
+  $extype_struct "Timer" of {
   startTicks= int
 , started= bool
 , pausedTicks= int
