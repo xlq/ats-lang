@@ -1719,6 +1719,7 @@ end // end of [ccomp_exp_assgn_arr]
 
 fn ccomp_exp_arrinit_tmpvar (
     res: &instrlst_vt
+  , level: int
   , hit_elt: hityp_t
   , ohie_asz: hiexpopt
   , hies_elt: hiexplst
@@ -1733,7 +1734,9 @@ fn ccomp_exp_arrinit_tmpvar (
         valprim_int ($IntInf.intinf_make_int n)
       end // end of [None]
   ) : valprim // end of [val]
-  val () = instr_add_arr_stack (res, tmp_arr, vp_asz, hit_elt)
+  val () = instr_add_arr_stack
+    (res, tmp_arr, level, vp_asz, hit_elt)
+  // end of [val]
 in
   case+ ohie_asz of
   | Some _ => begin case+ hies_elt of
@@ -1747,7 +1750,7 @@ in
     | list_nil () => ()
     end // end of [Some]
   | None () => ccomp_exp_assgn_arr (res, vp_arr, hit_elt, hies_elt)
-end // end of [ccomp_exp_arrinit]
+end // end of [ccomp_exp_arrinit_tmpvar]
 
 (* ****** ****** *)
 
@@ -2415,7 +2418,7 @@ in
   | HIEarrinit (hit_elt, ohie_asz, hies_elt) => let
       val hit_elt = hityp_normalize hit_elt
     in
-      ccomp_exp_arrinit_tmpvar (res, hit_elt, ohie_asz, hies_elt, tmp_ptr)
+      ccomp_exp_arrinit_tmpvar (res, level, hit_elt, ohie_asz, hies_elt, tmp_ptr)
     end // end of [HIEarrinit]
   | HIElaminit (hips_arg, hie_body) => let
       val hit_ini = hityp_normalize (hie_ini.hiexp_typ)

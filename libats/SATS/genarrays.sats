@@ -366,10 +366,9 @@ viewdef GEMAT_v
 
 (* ****** ****** *)
 
-prfun GEMAT_v_trans
-  {a:viewt@ype} {ord1:order} {m,n:nat} {ld:inc} {l:addr} (
+prfun GEMAT_v_trans // HX: yes, [ld:int] is fine
+  {a:viewt@ype} {ord1:order} {m,n:nat} {ld:int} {l:addr} (
     pf_mat: !GEMAT_v (a, m, n, ord1, ld, l) >> GEMAT_v (a, n, m, ord2, ld, l)
-    // end of [pf_mat]
   ) :<> #[ord2:order] tranord_p (ord1, ord2)
 // end of [GEMAT_v_trans]
 
@@ -605,7 +604,7 @@ fun{a1:viewt@ype}
 
 fun{a:t@ype}
   GEMAT_row_ptr_allocfree
-  {m:nat;n:pos} (m: size_t m, n: size_t n)
+  {m,n:nat} (m: size_t m, n: size_t n)
   : [l:addr] (
     GEMAT (a?, m, n, row, n) @ l
   | ptr l
@@ -615,7 +614,7 @@ fun{a:t@ype}
 
 fun{a:t@ype}
   GEMAT_col_ptr_allocfree
-  {m:pos;n:nat} (m: size_t m, n: size_t n)
+  {m,n:nat} (m: size_t m, n: size_t n)
   : [l:addr] (
     GEMAT (a?, m, n, col, m) @ l
   | ptr l

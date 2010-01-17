@@ -395,7 +395,7 @@ datatype instr =
   | INSTRarr_heap of (* heap array allocation *)
       (tmpvar_t, int(*size*), hityp_t(*element type*))
   | INSTRarr_stack of (* stack array allcation *)
-      (tmpvar_t, valprim(*size*), hityp_t(*element type*))
+      (tmpvar_t, int(*level*), valprim(*size*), hityp_t(*element type*))
   | INSTRassgn_arr of (* array initialization *)
       (valprim(*arr*), valprim(*asz*), tmpvar_t(*elt*), valprim(*tsz*))
   | INSTRassgn_clo of (* closure initialization *)
@@ -537,6 +537,7 @@ fun instr_add_arr_heap (
 fun instr_add_arr_stack (
     res: &instrlst_vt
   , tmp: tmpvar_t
+  , level: int // top: level = 0; inner: level > 0
   , vp_asz: valprim
   , hit_elt: hityp_t
   ) : void

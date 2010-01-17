@@ -441,26 +441,57 @@ fun glutLayerGet (query: GLenum): int = "#atsctrb_glutLayerGet"
 
 (* ****** ****** *)
 
-abstype GLUTfontref // void*
+abstype GLUTfontref_stroke // void*
 
-macdef TIMES_ROMAN_24 =
-  $extval (GLUTfontref, "GLUT_BITMAP_TIMES_ROMAN_24")
-macdef HELVETICA_18 = $extval (GLUTfontref, "GLUT_BITMAP_HELVETICA_18")
+macdef GLUT_STROKE_ROMAN =
+  $extval (GLUTfontref_stroke, "GLUT_STROKE_ROMAN")
 
-fun glutBitmapCharacter(font: GLUTfontref, c: char): void
-  = "#atsctrb_glutBitmapCharacter"
-fun glutBitmapWidth(font: GLUTfontref, c: char): int
-  = "#atsctrb_glutBitmapWidth"
-fun glutBitmapLength(font: GLUTfontref, txt: string): int
-  = "#atsctrb_glutBitmapLength"
+macdef GLUT_STROKE_MONO_ROMAN =
+  $extval (GLUTfontref_stroke, "GLUT_STROKE_MONO_ROMAN")
 
-fun glutStrokeCharacter(font: GLUTfontref, c: char): void
+fun glutStrokeCharacter (font: GLUTfontref_stroke, c: char): void
   = "#atsctrb_glutStrokeCharacter"
-fun glutStrokeWidth(font: GLUTfontref, c: char): int
+fun glutStrokeWidth (font: GLUTfontref_stroke, c: char): int
   = "#atsctrb_glutStrokeWidth"
-fun glutStrokeLength(font: GLUTfontref, txt: string): int
+fun glutStrokeLength (font: GLUTfontref_stroke, txt: string): int
   = "#atsctrb_glutStrokeLength"
   
+// implemented in [glut.dats]
+fun glutStrokeString (font: GLUTfontref_stroke, s: string): void
+
+(* ****** ****** *)
+
+abstype GLUTfontref_bitmap // void*
+
+macdef GLUT_BITMAP_8_BY_13 =
+  $extval (GLUTfontref_bitmap, "GLUT_BITMAP_8_BY_13")
+
+macdef GLUT_BITMAP_9_BY_15 =
+  $extval (GLUTfontref_bitmap, "GLUT_BITMAP_9_BY_15")
+
+macdef GLUT_BITMAP_TIMES_ROMAN_10 =
+  $extval (GLUTfontref_bitmap, "GLUT_BITMAP_TIMES_ROMAN_10")
+
+macdef GLUT_BITMAP_TIMES_ROMAN_24 =
+  $extval (GLUTfontref_bitmap, "GLUT_BITMAP_TIMES_ROMAN_24")
+
+macdef GLUT_BITMAP_HELVETICA_10 =
+  $extval (GLUTfontref_bitmap, "GLUT_BITMAP_HELVETICA_10")
+macdef GLUT_BITMAP_HELVETICA_12 =
+  $extval (GLUTfontref_bitmap, "GLUT_BITMAP_HELVETICA_12")
+macdef GLUT_BITMAP_HELVETICA_18 =
+  $extval (GLUTfontref_bitmap, "GLUT_BITMAP_HELVETICA_18")
+
+fun glutBitmapCharacter (font: GLUTfontref_bitmap, c: char): void
+  = "#atsctrb_glutBitmapCharacter"
+fun glutBitmapWidth (font: GLUTfontref_bitmap, c: char): int
+  = "#atsctrb_glutBitmapWidth"
+fun glutBitmapLength (font: GLUTfontref_bitmap, txt: string): int
+  = "#atsctrb_glutBitmapLength"
+
+// implemented in [glut.dats]
+fun glutBitmapString (font: GLUTfontref_bitmap, s: string): void
+
 (* ****** ****** *)
 
 fun glutWireCube (size: GLdouble): void = "#atsctrb_glutWireCube"

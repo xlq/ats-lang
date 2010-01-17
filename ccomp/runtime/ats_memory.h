@@ -52,7 +52,7 @@
 extern void *alloca (size_t nsz) ; // [alloca.h]
 
 #define ATS_ALLOCA1(sz) alloca(sz)
-#define ATS_ALLOCA2(n, sz) alloca(n * sz)
+#define ATS_ALLOCA2(n, sz) alloca((n)*(sz))
 
 /* ****** ****** */
 
@@ -63,6 +63,7 @@ extern void *alloca (size_t nsz) ; // [alloca.h]
 
 #define ATS_FREE ats_free_gc
 #define ATS_MALLOC ats_malloc_gc
+#define ATS_MALLOC2(n, sz) ATS_MALLOC((n)*(sz))
 #define ATS_CALLOC ats_calloc_gc
 #define ATS_REALLOC ats_realloc_gc
 

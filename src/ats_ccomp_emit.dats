@@ -1360,12 +1360,16 @@ end // end of [emit_instr_arr_heap]
 
 fn emit_instr_arr_stack {m:file_mode} (
     pf: file_mode_lte (m, w)
-  | out: &FILE m, tmp: tmpvar_t, vp_asz: valprim, hit_elt: hityp_t
+  | out: &FILE m
+  , tmp: tmpvar_t, level: int, vp_asz: valprim, hit_elt: hityp_t
   ) : void = let
   val () = fprint1_string
     (pf | out, "/* array allocation on stack */\n")
   val () = emit_valprim_tmpvar (pf | out, tmp)
-  val () = fprint1_string (pf | out, " = ATS_ALLOCA2(")
+  val () = case+ 0 of
+    | _ when level > 0 => fprint1_string (pf | out, " = ATS_ALLOCA2(")
+    | _ (* level = 0 *) => fprint1_string (pf | out, " = ATS_MALLOC2(")
+  // end of [val]
   val () = emit_valprim (pf | out, vp_asz)
   val () = fprint1_string (pf | out, ", sizeof(")
   val () = emit_hityp (pf | out, hit_elt)
@@ -1495,8 +1499,8 @@ in
   | INSTRarr_heap (tmp, asz, hit_elt) => begin
       emit_instr_arr_heap (pf | out, tmp, asz, hit_elt)
     end // end of [INSTRarr_heap]
-  | INSTRarr_stack (tmp, vp_asz, hit_elt) => begin
-      emit_instr_arr_stack (pf | out, tmp, vp_asz, hit_elt)
+  | INSTRarr_stack (tmp, level, vp_asz, hit_elt) => begin
+      emit_instr_arr_stack (pf | out, tmp, level, vp_asz, hit_elt)
     end // end of [INSTRarr_heap]
   | INSTRassgn_arr (vp_arr, vp_asz, tmp_elt, vp_tsz) => begin
       emit_instr_assgn_arr (pf | out, vp_arr, vp_asz, tmp_elt, vp_tsz)

@@ -373,9 +373,11 @@ in
       fprint_hityp (pf | out, hityp_decode hit_elt);
       prstr ")";
     end // end of [INSTRarr_heap]
-  | INSTRarr_stack (tmp, vp_asz, hit_elt) => begin
+  | INSTRarr_stack (tmp, level, vp_asz, hit_elt) => begin
       prstr "INSTRarr_stack(";
       fprint_tmpvar (pf | out, tmp);
+      prstr "; ";
+      fprint_int (pf | out, level);
       prstr "; ";
       fprint_valprim (pf | out, vp_asz);
       prstr "; ";

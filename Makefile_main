@@ -67,6 +67,7 @@ all: \
   atsopt1_gc
 	echo "ATS/Anairiats has been built up successfully!"
 	echo "The value of ATSHOME for this build is \"$(ATSHOME)\"."
+	echo "The value of ATSHOMERELOC for this build is \"$(ATSHOMERELOC)\"."
 
 ###### system configuration ######
 

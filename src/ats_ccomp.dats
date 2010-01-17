@@ -539,8 +539,9 @@ implement instr_add_arr_heap (res, tmp_res, asz, hit_elt) = begin
   res := list_vt_cons (INSTRarr_heap (tmp_res, asz, hit_elt), res)
 end // end of [instr_add_arr_heap]
 
-implement instr_add_arr_stack (res, tmp_res, vp_asz, hit_elt) = begin
-  res := list_vt_cons (INSTRarr_stack (tmp_res, vp_asz, hit_elt), res)
+implement instr_add_arr_stack
+  (res, tmp_res, level, vp_asz, hit_elt) = begin
+  res := list_vt_cons (INSTRarr_stack (tmp_res, level, vp_asz, hit_elt), res)
 end // end of [instr_add_arr_stack]
 
 //
