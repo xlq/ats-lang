@@ -200,6 +200,10 @@ fun SDL_SetVideoMode
 fun SDL_SetVideoMode_exn
   (width: int, height: int, bpp: int, flags: Uint32): SDL_Surface_ref1
 
+fun SDL_ResetVideoMode (
+    screen: &SDL_Surface_ref1, width: int, height: int, bpp: int, flags: Uint32
+  ) : int (*err*)
+
 (* ****** ****** *)
 
 //

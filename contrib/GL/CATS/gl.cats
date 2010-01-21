@@ -549,10 +549,6 @@ atsctrb_glGenList_exn () {
 
 /* ****** ****** */
 
-#define atsctrb_glDeleteTexures glDeleteTexures
-
-/* ****** ****** */
-
 #define atsctrb_glTexImage1D glTexImage1D
 #define atsctrb_glTexImage2D glTexImage2D
 
@@ -562,7 +558,24 @@ atsctrb_glGenList_exn () {
 // OpenGL 1.1
 //
 
+static inline
+ats_void_type
+atsctrb_glGenTexture
+  (ats_ref_type texture) {
+  glGenTextures(1, (GLuint*)texture) ; return ;
+}
+
 #define atsctrb_glGenTextures glGenTextures
+
+static inline
+ats_void_type
+atsctrb_glDeleteTexture
+  (ats_GLuint_type texture) {
+  glDeleteTextures(1, (GLuint*)&texture) ; return ;
+}
+
+#define atsctrb_glDeleteTextures glDeleteTextures
+
 #define atsctrb_glBindTexture glBindTexture
 
 /* ****** ****** */

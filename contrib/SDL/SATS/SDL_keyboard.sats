@@ -69,6 +69,7 @@ fun SDL_GetKeyRepeat
 (* ****** ****** *)
 
 abstype SDL_KeyStateArr (int)
+typedef SDL_KeyStateArr = [n:nat] SDL_KeyStateArr n
 
 fun SDL_GetKeyState
   (numkeys: &int? >> int n): #[n:nat] SDL_KeyStateArr (n)
@@ -78,7 +79,7 @@ fun SDL_GetKeyState_null (): [n:nat] SDL_KeyStateArr (n)
   = "atsctrb_SDL_GetKeyState_null" // this is a function!
 
 fun SDL_KeyStateArr_get {n:nat}
-  (keyarr: SDL_KeyStateArr n, key: SDLKey): int
+  (keyarr: SDL_KeyStateArr n, key: SDLKey):<> int
   = "atsctrb_SDL_KeyStateArr_get" // this is a function!
 overload [] with SDL_KeyStateArr_get
 

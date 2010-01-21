@@ -168,7 +168,7 @@ implement main () = () where {
 //
   val () = SDL_KillThread (thread)
   val () = SDL_FreeSurface (image)
-  val _ptr = SDL_Quit_screen (screen)
+  val () = SDL_FreeSurface (screen)
   val () = SDL_Quit ()
 //
 } // end of [main]

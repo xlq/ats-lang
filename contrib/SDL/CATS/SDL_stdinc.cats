@@ -36,53 +36,51 @@
 
 /* ****** ****** */
 
-#ifndef ATSCTRB_SDL_SDL_CATS
-#define ATSCTRB_SDL_SDL_CATS
-
-/* ****** ****** */
-
-#include "SDL.h"
+#ifndef ATSCTRB_SDL_SDL_STDINC_CATS
+#define ATSCTRB_SDL_SDL_STDINC_CATS
 
 /* ****** ****** */
 
 static inline
-ats_bool_type
-atsctrb_SDL_ref_is_null
-  (ats_ref_type p) {
-  return (p == (ats_ptr_type)0 ? ats_true_bool : ats_false_bool) ;
-} // end of [atsctrb_SDL_is_null]
+Uint16
+atsctrb_add_Uint16_Uint16
+  (Uint16 x1, Uint16 x2) { return (x1 + x2) ; }
+// end of [atsctrb_add_Uint16_Uint16]
 
 static inline
-ats_bool_type
-atsctrb_SDL_ref_isnot_null
-  (ats_ref_type p) {
-  return (p != (ats_ptr_type)0 ? ats_true_bool : ats_false_bool) ;
-} // end of [atsctrb_SDL_ref_isnot_null]
+Uint16
+atsctrb_sub_Uint16_Uint16
+  (Uint16 x1, Uint16 x2) { return (x1 - x2) ; }
+// end of [atsctrb_sub_Uint16_Uint16]
 
 /* ****** ****** */
 
-#include "contrib/SDL/CATS/SDL_stdinc.cats"
+static inline
+Uint32
+atsctrb_add_Uint32_Uint32
+  (Uint32 x1, Uint32 x2) { return (x1 + x2) ; }
+// end of [atsctrb_add_Uint32_Uint32]
+
+static inline
+Uint32
+atsctrb_sub_Uint32_Uint32
+  (Uint32 x1, Uint32 x2) { return (x1 - x2) ; }
+// end of [atsctrb_sub_Uint32_Uint32]
+
+static inline
+Uint32
+atsctrb_land_Uint32_Uint32
+  (Uint32 x1, Uint32 x2) { return (x1 & x2) ; }
+// end of [atsctrb_land_Uint32_Uint32]
+
+static inline
+Uint32
+atsctrb_lor_Uint32_Uint32
+  (Uint32 x1, Uint32 x2) { return (x1 | x2) ; }
+// end of [atsctrb_lor_Uint32_Uint32]
 
 /* ****** ****** */
 
-#include "contrib/SDL/CATS/SDL_events.cats"
-#include "contrib/SDL/CATS/SDL_timer.cats"
-#include "contrib/SDL/CATS/SDL_thread.cats"
-#include "contrib/SDL/CATS/SDL_video.cats"
+#endif // end of [ATSCTRB_SDL_SDL_STDINC_CATS]
 
-/* ****** ****** */
-
-#define atsctrb_SDL_Init SDL_Init
-#define atsctrb_SDL_Quit SDL_Quit
-
-/* ****** ****** */
-
-#define atsctrb_SDL_InitSubSystem InitSubSystem
-#define atsctrb_SDL_QuitSubSystem QuitSubSystem
-#define atsctrb_SDL_WasInit SDL_WasInit
-
-/* ****** ****** */
-
-#endif // end of [ATSCTRB_SDL_SDL_CATS]
-
-/* end of [SDL.cats] */
+/* end of [SDL_stdinc.cats] */

@@ -155,7 +155,7 @@ implement main () = () where {
   val () = TTF_Quit ()
   val () = SDL_FreeSurface (message)
   val () = SDL_FreeSurface (background)
-  val _ptr = SDL_Quit_screen (screen) // no-op cast
+  val () = SDL_FreeSurface (screen)
   val () = SDL_Quit ()
 } // end of [main]
 

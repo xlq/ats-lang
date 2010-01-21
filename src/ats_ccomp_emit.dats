@@ -1708,6 +1708,7 @@ in
       // empty
     end // end of [INSTRmove_lazy_delay]
   | INSTRmove_rec_box (tmp, hit_rec, lvps) => let
+      val isext = hityp_t_is_tyrecext hit_rec
       fun aux (
           out: &FILE m, tmp: tmpvar_t, lvps: labvalprimlst
         ) :<cloptr1> void = begin case+ lvps of
@@ -1716,7 +1717,11 @@ in
             val () = emit_hityp_ptr (pf | out, hit_rec)
             val () = fprint1_string (pf | out, "*)")
             val () = emit_valprim_tmpvar (pf | out, tmp)
-            val () = fprint1_string (pf | out, ")->atslab_")
+            val () = if isext then
+              fprint1_string (pf | out, ")->")
+            else
+              fprint1_string (pf | out, ")->atslab_")
+            // end of [if]
             val () = emit_label (pf | out, l)
             val () = fprint1_string (pf | out, " = ")
             val () = emit_valprim (pf | out, vp)
@@ -1734,12 +1739,17 @@ in
       aux (out, tmp, lvps)
     end // end of [INSTRmove_rec_box]
   | INSTRmove_rec_flt (tmp, hit_rec, lvps) => let
+      val isext = hityp_t_is_tyrecext hit_rec
       fun aux (
           out: &FILE m, tmp: tmpvar_t, lvps: labvalprimlst
-        ) : void = begin case+ lvps of
+        ) :<cloptr1> void = begin case+ lvps of
         | LABVALPRIMLSTcons (l, v, lvps) => let
             val () = emit_valprim_tmpvar (pf | out, tmp)
-            val () = fprint1_string (pf | out, ".atslab_")
+            val () = if isext then
+              fprint1_string (pf | out, ".")
+            else
+              fprint1_string (pf | out, ".atslab_")
+            // end of [if]
             val () = emit_label (pf | out, l)
             val () = fprint1_string (pf | out, " = ")
             val () = emit_valprim (pf | out, v)

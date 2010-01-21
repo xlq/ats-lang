@@ -85,8 +85,7 @@ implement main () = () where {
   val () = SDL_FreeSurface (message)
   val () = SDL_FreeSurface (background)
 //
-  // [SDL_Quit_screen] is a no-op cast
-  val _ptr = SDL_Quit_screen (screen) // [screen] should be freed by SDL_Quit
+  val () = SDL_FreeSurface (screen)
   val () = SDL_Quit ()
 } // end of [main]
 

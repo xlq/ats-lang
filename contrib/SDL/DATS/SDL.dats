@@ -64,6 +64,19 @@ end // end of [SDL_SetVideoMode_exn]
 
 (* ****** ****** *)
 
+implement SDL_ResetVideoMode
+  (screen, width, height, bpp, flags) = let
+  val sf = SDL_SetVideoMode (width, height, bpp, flags)
+in
+  if ref_is_null (sf) then let
+    val _null = ref_free_null (sf) in 1 (*no reset*)
+  end else let
+    val () = SDL_FreeSurface (screen) in screen := sf; 0 (*reset done*)
+  end // end of [if]
+end // end of [SDL_ResetVideoMode]
+
+(* ****** ****** *)
+
 implement SDL_LoadBMP_exn (filename) = let
   val sf = SDL_LoadBMP (filename) // [sfopt] may be null
 in

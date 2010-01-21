@@ -36,9 +36,9 @@ fn drawClock
   val _(*ignored*) = time_get_and_set (t)
   var tm: tm_struct // unintialized
   val () = localtime_r (t, tm)
-  val ms = tm.tm_min * PI / 30
-  val hs = tm.tm_hour * PI / 6
   val ss = tm.tm_sec * PI / 30
+  val ms = tm.tm_min * PI / 30 // + ss / 60
+  val hs = tm.tm_hour * PI / 6 + ms / 12
 //
   val () = cairo_set_source_rgba (cr, 1.0, 1.0, 1.0, 1.0)
   val () = cairo_paint (cr)
@@ -64,6 +64,7 @@ fn drawClock
   val () = cairo_stroke(cr)
 //
   // draw the hours indicator
+  val () = cairo_set_source_rgba (cr, 1.0, 0.2, 0.2, 0.6)
   val () = cairo_move_to (cr, 0.0, 0.0)
   val () = cairo_line_to (cr, 0.2 * sin(hs), 0.2 * ~cos(hs))
   val () = cairo_stroke (cr)

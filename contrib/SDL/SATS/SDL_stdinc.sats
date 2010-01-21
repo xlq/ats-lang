@@ -92,4 +92,32 @@ abst@ype Uint64 = uint64_t0ype
 
 (* ****** ****** *)
 
+fun add_Uint16_Uint16 (x1: Uint16, x2: Uint16): Uint16
+  = "atsctrb_add_Uint16_Uint16" // function
+overload + with add_Uint16_Uint16
+
+fun sub_Uint16_Uint16 (x1: Uint16, x2: Uint16): Uint16
+  = "atsctrb_sub_Uint16_Uint16" // function
+overload - with sub_Uint16_Uint16
+
+(* ****** ****** *)
+
+fun add_Uint32_Uint32 (x1: Uint32, x2: Uint32): Uint32
+  = "atsctrb_add_Uint32_Uint32" // function
+overload + with add_Uint32_Uint32
+
+fun sub_Uint32_Uint32 (x1: Uint32, x2: Uint32): Uint32
+  = "atsctrb_sub_Uint32_Uint32" // function
+overload - with sub_Uint32_Uint32
+
+fun land_Uint32_Uint32 (x1: Uint32, x2: Uint32): Uint32
+  = "atsctrb_land_Uint32_Uint32" // function
+overload land with land_Uint32_Uint32
+
+fun lor_Uint32_Uint32 (x1: Uint32, x2: Uint32): Uint32
+  = "atsctrb_lor_Uint32_Uint32" // function
+overload lor with lor_Uint32_Uint32
+
+(* ****** ****** *)
+
 (* end of [SDL_stdinc.sats] *)

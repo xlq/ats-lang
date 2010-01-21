@@ -532,7 +532,6 @@ macdef GL_DITHER = $extval (GLenum, "GL_DITHER")
 //
 macdef GL_RGB = $extval (GLenum, "GL_RGB")
 macdef GL_RGB_format = $extval (GLenum_format 3, "GL_RGB")
-
 macdef GL_RGBA = $extval (GLenum, "GL_RGBA")
 macdef GL_RGBA_format = $extval (GLenum_format 4, "GL_RGBA")
 //
@@ -1747,12 +1746,6 @@ fun glTexEnvi : glTexEnv_type (GLint) = "#atsctrb_glTexEnvi"
 
 (* ****** ****** *)
 
-fun glDeleteTextures {n:nat}
-  (n: GLsizei n, texnames: &(@[GLuint][n])): void
-  = "#atsctrb_glDeleteTextures"
-
-(* ****** ****** *)
-
 fun glTexImage1D
   {a:t@ype} {w:nat} {n:int} (
     target: GLenum
@@ -1786,9 +1779,21 @@ fun glTexImage2D
 // OpenGL 1.1
 //
 
+fun glGenTexture
+  (texture: &GLuint? >> GLuint): void
+  = "atsctrb_glGenTexture" // this is a function!
+
 fun glGenTextures {n:pos}
   (n: GLsizei n, textures: &(@[GLuint?][n]) >> @[GLuint][n]): void
   = "#atsctrb_glGenTextures"
+
+fun glDeleteTexture
+  (texture: GLuint): void
+  = "atsctrb_glDeleteTexture" // this is a function!
+
+fun glDeleteTextures {n:pos}
+  (n: GLsizei n, textures: &(@[GLuint][n])): void
+  = "#atsctrb_glDeleteTextures"
 
 fun glBindTexture (target: GLenum, texture: GLuint): void
   = "#atsctrb_glBindTexture"

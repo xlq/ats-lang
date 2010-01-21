@@ -148,6 +148,15 @@ SDL_cairo_clock: SDL_cairo_clock.dats
 
 ######
 
+SDL_GL_cairo_clock: SDL_GL_cairo_clock.dats
+	$(ATSCC) -IATS utils \
+          $(SDLCFLAGS) $(CAIROCFLAGS) \
+          -o SDL_GL_cairo_clock \
+          SDL_GL_cairo_clock.dats utils/timer.sats utils/timer.dats \
+          $(ATSCTRB) $(ATSCTRB_GL) $(ATSCTRB_xr) -lSDL -lGL -lglut -lcairo
+
+######
+
 clean:
 	rm -f *_?ats.c *.o *~
 
@@ -173,5 +182,6 @@ cleanall: clean
 	rm -f lesson33
 	rm -f lesson36
 	rm -f SDL_cairo_clock
+	rm -f SDL_GL_cairo_clock
 
 ###### end of [Makefile] ######

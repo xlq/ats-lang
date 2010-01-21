@@ -154,7 +154,7 @@ implement main () = () where {
   val () = SDL_FreeSurface (left)
   val () = SDL_FreeSurface (right)
   val () = TTF_Quit ()
-  val _ptr = SDL_Quit_screen (screen)
+  val () = SDL_FreeSurface (screen)
   val () = SDL_Quit ()
 } // end of [main]
 

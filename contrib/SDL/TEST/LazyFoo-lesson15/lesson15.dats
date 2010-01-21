@@ -124,7 +124,7 @@ implement main () = () where {
   end // end of [val]
 //
   val () = SDL_FreeSurface (image)
-  val _ptr = SDL_Quit_screen (screen) // no-op cast
+  val () = SDL_FreeSurface (screen)
   val () = SDL_Quit ()
 } // end of [main]
 

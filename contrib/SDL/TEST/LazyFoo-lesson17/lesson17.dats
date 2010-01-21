@@ -275,7 +275,7 @@ implement main () = () where {
   end // end of [val]
 //
   val () = SDL_FreeSurface (square)
-  val _ptr = SDL_Quit_screen (screen)
+  val () = SDL_FreeSurface (screen)
   val () = SDL_Quit ()
 } // end of [main]
 
