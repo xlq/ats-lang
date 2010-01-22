@@ -566,6 +566,14 @@ fun hityp_normalize_flag
     in
       if flag > flag0 then hityp_tyrecsin hit else hit0
     end // end of [HITtyrecsin]
+  | HITrefarg (refval, hit_arg) =>
+      if refval = 0 then let // call-by-value
+        val flag0 = flag
+        val hit_arg = hityp_normalize_flag (hit_arg, flag)
+      in
+        if flag > flag0 then hityp_refarg (0, hit_arg) else hit0
+      end else hit0
+    // end of [HITrefarg]
   | HITs2var s2v => hit0_new where {
       val hit0_new = (
         case+ hityp_s2var_normalize (s2v) of
