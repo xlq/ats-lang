@@ -56,7 +56,7 @@ implement main () = () where {
   val () = assert_errmsg (_err = 0, #LOCATION)
 //
   // Set up screen
-  val screen = SDL_SetVideoMode_exn
+  val (pf_scr | screen) = SDL_SetVideoMode_exn
     (SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_BPP, SDL_SWSURFACE)
 //
   val () = SDL_WM_SetCaption
@@ -85,7 +85,7 @@ implement main () = () where {
   val () = SDL_FreeSurface (message)
   val () = SDL_FreeSurface (background)
 //
-  val () = SDL_FreeSurface (screen)
+  val _ptr = SDL_Quit_Video (pf_scr | screen)
   val () = SDL_Quit ()
 } // end of [main]
 

@@ -101,6 +101,8 @@ macdef SDL_INIT_EVERYTHING = $extval (Uint32, "SDL_INIT_EVERYTHING")
 (* ****** ****** *)
 
 fun SDL_Init (flags: Uint32): int = "#atsctrb_SDL_Init"
+
+castfn SDL_Quit_Video {l:addr} (pf: Video_v l | sf: SDL_Surface_ref l): ptr
 fun SDL_Quit (): void = "#atsctrb_SDL_Quit"
 
 (* ****** ****** *)

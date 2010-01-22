@@ -77,6 +77,18 @@ atsctrb_SDL_Color_init (
 
 #define atsctrb_SDL_SetVideoMode SDL_SetVideoMode
 
+static inline
+ats_ref_type
+atsctrb_SDL_ResetVideoMode (
+  ats_ref_type screen // not actually used
+, ats_int_type width
+, ats_int_type height
+, ats_int_type bpp
+, Uint32 flags
+) {
+  return SDL_SetVideoMode (width, height, bpp, flags) ;
+} // end of [atsctrb_SDL_ResetVideoMode]
+
 /* ****** ****** */
 
 #define atsctrb_SDL_UpdateRect SDL_UpdateRect

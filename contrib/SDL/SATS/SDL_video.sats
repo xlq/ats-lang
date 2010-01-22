@@ -193,16 +193,33 @@ macdef SDL_GL_SWAP_CONTROL = $extval (SDL_GLattr, "SDL_GL_SWAP_CONTROL")
 
 (* ****** ****** *)
 
-fun SDL_SetVideoMode
-  (width: int, height: int, bpp: int, flags: Uint32): SDL_Surface_ref0
+absview Video_v (l:addr)
+praxi Video_v_unnull (pf: Video_v null): void
+
+fun SDL_SetVideoMode (
+    width: int
+  , height: int
+  , bpp: int
+  , flags: Uint32
+  ) : [l:addr] (Video_v l | SDL_Surface_ref l)
   = "#atsctrb_SDL_SetVideoMode"
 
-fun SDL_SetVideoMode_exn
-  (width: int, height: int, bpp: int, flags: Uint32): SDL_Surface_ref1
+fun SDL_SetVideoMode_exn (
+    width: int
+  , height: int
+  , bpp: int
+  , flags: Uint32
+  ) : [l:anz] (Video_v l | SDL_Surface_ref l)
 
-fun SDL_ResetVideoMode (
-    screen: &SDL_Surface_ref1, width: int, height: int, bpp: int, flags: Uint32
-  ) : int (*err*)
+fun SDL_ResetVideoMode {l:addr} (
+    pf: Video_v l
+  | surf: SDL_Surface_ref l
+  , width: int
+  , height: int
+  , bpp: int
+  , flags: Uint32
+  ) : [l:addr] (Video_v l | SDL_Surface_ref l)
+  = "atsctrb_SDL_ResetVideoMode"
 
 (* ****** ****** *)
 

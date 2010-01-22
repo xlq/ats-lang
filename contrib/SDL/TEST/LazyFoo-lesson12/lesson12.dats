@@ -69,7 +69,7 @@ staload "libc/SATS/printf.sats"
 implement main () = () where {
   val _err = SDL_Init (SDL_INIT_EVERYTHING)
   val () = assert_errmsg (_err = 0, #LOCATION)
-  val [l1:addr] screen = SDL_SetVideoMode (
+  val [l1:addr] (pf_scr | screen) = SDL_SetVideoMode (
     SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_BPP, SDL_SWSURFACE
   ) // end of [val]
   val () = assert_errmsg (ref_isnot_null screen, #LOCATION)
@@ -166,7 +166,8 @@ implement main () = () where {
   val () = TTF_CloseFont (font)
   val () = SDL_FreeSurface (background)
   val () = SDL_FreeSurface (startStop)
-  val () = SDL_FreeSurface (screen)
+//
+  val _ptr = SDL_Quit_Video (pf_scr | screen)
   val () = SDL_Quit ()
 } // end of [main]
 

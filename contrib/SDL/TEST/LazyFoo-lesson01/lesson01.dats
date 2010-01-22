@@ -20,7 +20,7 @@ implement main () = () where {
   val _err = SDL_Init (SDL_INIT_EVERYTHING)
   val () = assert_errmsg (_err = 0, #LOCATION)
   // Set up screen
-  val screen = SDL_SetVideoMode_exn (640, 480, 32, SDL_SWSURFACE)
+  val (pf_scr | screen) = SDL_SetVideoMode_exn (640, 480, 32, SDL_SWSURFACE)
   // loading a bitmap file
   val bmpfil = SDL_LoadBMP_exn ("LazyFoo-lesson01/hello.bmp")
   // SDL_UpperBlit_ptr is "unsafe" SDL_UpperBlit
@@ -30,7 +30,7 @@ implement main () = () where {
   val _err = SDL_Delay ((Uint32)2000(*ms*))
   val () = SDL_FreeSurface (bmpfil)
   // [SDL_Quit_screen] is a no-op cast
-  val () = SDL_FreeSurface (screen)
+  val _ptr = SDL_Quit_Video (pf_scr | screen)
   val () = SDL_Quit ()
 } // end of [main]
 

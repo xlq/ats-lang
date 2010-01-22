@@ -72,9 +72,13 @@ implement init (pf | (*none*)) = let
     val _screen = screen
     val () = assert (ref_is_null _screen)
     val _ptr = ref_free_null (_screen)
-    val () = screen := SDL_SetVideoMode (
+    val (pf_scr | scr) = SDL_SetVideoMode (
       SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_BPP, SDL_SWSURFACE
     )
+    prval () = __leak (pf_scr) where {
+      extern prfun __leak {l:addr} (pf: Video_v l): void
+    }
+    val () = screen := scr
   in
     ret := ref_isnot_null (screen)
   end // end of [val]

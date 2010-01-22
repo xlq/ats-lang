@@ -135,7 +135,7 @@ lesson33: LazyFoo-lesson33/lesson33.dats
 lesson36: LazyFoo-lesson36/lesson36.dats
 	$(ATSCC) -IATS utils $(SDLCFLAGS) -o lesson36 \
           LazyFoo-lesson36/lesson36.dats utils/timer.sats utils/timer.dats \
-          $(ATSCTRB) $(ATSCTRB_GL) -lSDL -lGL
+          $(ATSCTRB) $(ATSCTRB_GL) -lSDL -lGL -lglut
 
 ######
 
