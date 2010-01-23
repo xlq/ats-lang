@@ -93,7 +93,7 @@ fun{a:viewt@ype}
   , fmatrix_v (a?, m, n, l)
   | ptr l
   )
-// end of [fmarix_ptr_alloc]
+// end of [fmatrix_ptr_alloc]
 
 (* ****** ****** *)
 
@@ -114,7 +114,7 @@ fun{a:viewt@ype}
     fmatrix_v (a?, m, n, l)
   | ptr l, (fmatrix_v (a?, m, n, l) | ptr l) -<lin> void
   )
-// end of [fmarix_ptr_allocfree]
+// end of [fmatrix_ptr_allocfree]
 
 (* ****** ****** *)
 
