@@ -1194,6 +1194,8 @@ fn array_ind_dim_check_err (
 implement // [s2e0] must be normalized!
   s2exp_lab_linget_cstr (loc0, s2e0, l0, cstr) = let
 //
+  val s2e0 = s2exp_whnf s2e0
+//
   fn linear_abandonment_errmsg
     (loc0: loc_t, l0: lab_t): void = begin
     prerr_loc_error3 loc0;

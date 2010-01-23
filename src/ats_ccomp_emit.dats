@@ -1507,7 +1507,7 @@ in
     end // end of [INSTRassgn_arr]
   | INSTRassgn_clo (vp_clo, fl, env) => begin
       emit_valprim (pf | out, vp_clo);
-      fprint1_string (pf  | out, " = ATS_ALLOCA1(sizeof(");
+      fprint1_string (pf  | out, " = ATS_ALLOCA(sizeof(");
       emit_funlab (pf | out, fl);
       fprint1_string (pf | out, "_closure_type)) ;\n");
       emit_valprim_clo_init (pf | out, 0(*unboxed*), vp_clo, fl, env);

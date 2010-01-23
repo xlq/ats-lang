@@ -36,18 +36,16 @@
 
 (* ****** ****** *)
 
+#define ATS_DYNLOADFLAG 0 // no need for dynamic loading
+
+(* ****** ****** *)
+
 staload "contrib/Xlib/SATS/Xlib.sats"
 
 (* ****** ****** *)
 
-abst@ype GLXFBConfig = $extype "GLXFBConfig"
-
-fun glXGetFBConfigs {l:anz} (
-    dpy: !Display_ptr l, screen: int, nelements: &int 0 >> int n
-  ) : #[n:nat] [l:addr] (
-    XFree_v (GLXFBConfig, n, l), @[GLXFBConfig][n] @ l | ptr l
-  ) = "#atsctrb_glXGetFBConfigs"
+// it is yet empty
 
 (* ****** ****** *)
 
-(* end of [glx.sats] *)
+(* end of [Xlib.dats] *)

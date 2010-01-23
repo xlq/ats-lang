@@ -51,7 +51,7 @@
 // the function [alloca] is declared in
 extern void *alloca (size_t nsz) ; // [alloca.h]
 
-#define ATS_ALLOCA1(sz) alloca(sz)
+#define ATS_ALLOCA(sz) alloca(sz)
 #define ATS_ALLOCA2(n, sz) alloca((n)*(sz))
 
 /* ****** ****** */

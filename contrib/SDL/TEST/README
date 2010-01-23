@@ -15,4 +15,18 @@ http://lazyfoo.net/SDL_tutorials
 I did the translation in January, 2010. If changes are to be made to the
 original C++ code in the future, I may not update the translation.
 
+######
+
+SDL_cairo_clock.dats:
+
+An example of demonstrating how cairo can be combined with SDL
+
+######
+
+SDL_GL_cairo_clock.dats:
+
+An example of demonstrating how cairo can be combined with SDL and OpenGL
+
+######
+
 ###### end of [README] ######

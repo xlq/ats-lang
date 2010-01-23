@@ -13,9 +13,12 @@ all: atsctrb_SDL.o clean
 ######
 
 atsctrb_SDL.o: \
-  SDL_sats.o SDL_dats.o SDL_image_sats.o SDL_ttf_sats.o
+  SDL_sats.o SDL_dats.o \
+  SDL_image_sats.o SDL_ttf_sats.o
+
 	ld -r -o $@ \
-  SDL_sats.o SDL_dats.o SDL_image_sats.o SDL_ttf_sats.o
+  SDL_sats.o SDL_dats.o \
+  SDL_image_sats.o SDL_ttf_sats.o
 
 ######
 

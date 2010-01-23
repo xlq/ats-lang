@@ -1,5 +1,5 @@
 (*
-** This is for showing how to use Cairo with SDL.
+** This is for showing how to use Cairo with SDL_GL.
 **
 ** It is translated into ATS from an example made by
 ** Writser Cleveringa, based upon code from Eric Windisch
@@ -73,6 +73,7 @@ fn drawClock
 
 (* ****** ****** *)
 
+staload "contrib/GL/SATS/gl.sats"
 staload "contrib/SDL/SATS/SDL.sats"
 
 (* ****** ****** *)
@@ -109,41 +110,64 @@ extern fun clockDataRef_free (x: clockDataRef): void
 fn drawScreen {l:anz}
   (screen: !SDL_Surface_ref l)
   : void = () where {
-  // The drawing will exactly fit in the screen
-  val width = SDL_Surface_w (screen)
-  val height = SDL_Surface_h (screen)
+  val sf_width = 256 (*power-of-2*)
+  and sf_height = 256 (*power-of-2*)
   // The number of bytes used for every scanline
-  val stride = 4 * width // why 4? because 32bits = 4 bytes?
-  val clockDataRef = clockDataRef_make (stride, height)
-  val sf = cairo_image_surface_create_for_data
-    ((ptr_of)clockDataRef, CAIRO_FORMAT_ARGB32, width, height, stride) where {
+  val sf_stride = 4 * sf_width // why 4? because 32bits = 4 bytes?
+  val clockDataRef = clockDataRef_make (sf_stride, sf_height)
+  val sf = cairo_image_surface_create_for_data (
+      (ptr_of)clockDataRef, CAIRO_FORMAT_ARGB32, sf_width, sf_height, sf_stride
+    ) where {
     extern castfn ptr_of (x: !clockDataRef): ptr
   } // end of [val]
   // create a cairo drawing context, normalize it and draw a clock
   val cr = cairo_create (sf)
   val () = cairo_surface_destroy (sf)
-  val () = cairo_scale (cr, (double_of)width, (double_of)height)
+  val () = cairo_scale (cr, (double_of)sf_width, (double_of)sf_height)
   val () = drawClock (cr)
-  val () = cairo_destroy (cr)
+  val () = cairo_destroy (cr) // the context [cr] is destroyed but [sf] is not
 //
-  val Rmask = (Uint32)0x00ff0000U
-  val Gmask = (Uint32)0x0000ff00U
-  val Bmask = (Uint32)0x000000ffU
-  val Amask = (Uint32)0xff000000U
+  var clockTexture: GLuint
+  val () = glGenTexture (clockTexture)
+  val () = glBindTexture (GL_TEXTURE_2D, clockTexture)
+  val () = glTexParameteri (GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, (GLint)GL_LINEAR)
+  val () = glTexParameteri (GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, (GLint)GL_LINEAR)
 //
-  val clockSurface = SDL_CreateRGBSurfaceFrom (
-    (ptr_of)clockDataRef
-  , width, height, 32(*depth*), stride, Rmask, Gmask, Bmask, Amask
-  ) where {
-    extern castfn ptr_of (x: !clockDataRef): ptr
+  val (pf, fpf | p_texels) =
+    __cast clockDataRef where {
+    stadef w = 256 and h = 256 and n = 4
+    typedef T = GLarray3 (GLubyte, w, h, n)
+    extern castfn __cast (x: !clockDataRef): [l:addr] (T@l, T@l -<lin,prf> void | ptr l)
   } // end of [val]
-  val () = assert_errmsg (ref_isnot_null clockSurface, #LOCATION)
+  val () = glTexImage2D (
+    GL_TEXTURE_2D
+  , (GLint)0, (GLint)GL_RGBA
+  , (GLsizei)sf_width
+  , (GLsizei)sf_height
+  , 0(*border*), GL_RGBA_format, GL_UNSIGNED_BYTE
+  , !p_texels
+  ) // end of [val]
+  prval () = fpf (pf)
 //
-  // blit the clock to the screen and refresh
-  val _err = SDL_UpperBlit_ptr (clockSurface, null, screen, null)
-  val () = assert_errmsg (_err = 0, #LOCATION)
-  val () = SDL_UpdateRect (screen, (Sint32)0, (Sint32)0, (Uint32)0, (Uint32)0)
-  val () = SDL_FreeSurface (clockSurface)
+  val sn_width = SDL_Surface_w (screen)
+  val sn_height = SDL_Surface_h (screen)
+  val () = glClear (GL_COLOR_BUFFER_BIT)
+  val () = glEnable (GL_TEXTURE_2D)
+  val () = glTexEnvi (GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, (GLint)GL_REPLACE)
+  val (pf | ()) = glBegin (GL_QUADS)
+  val () = glTexCoord2d (0.0, 0.0)
+  val () = glVertex2d (0.0, 0.0)
+  val () = glTexCoord2d (0.0, 1.0)
+  val () = glVertex2d (0.0, 1.0*sn_height)
+  val () = glTexCoord2d (1.0, 1.0)
+  val () = glVertex2d (1.0*sn_width, 1.0*sn_height)
+  val () = glTexCoord2d (1.0, 0.0)
+  val () = glVertex2d (1.0*sn_width, 0.0)
+  val () = glEnd (pf | (*none*))
+  val () = glDisable (GL_TEXTURE_2D)
+  val () = glDeleteTexture (clockTexture)
+//
+  val () = SDL_GL_SwapBuffers ()
   val () = clockDataRef_free (clockDataRef)
 //
 } // end of [drawScreen]
@@ -154,7 +178,7 @@ staload "utils/timer.sats"
 
 (* ****** ****** *)
 
-#define SCREEN_WIDTH 480
+#define SCREEN_WIDTH 640
 #define SCREEN_HEIGHT 480
 
 #define FRAMES_PER_SECOND 10
@@ -164,11 +188,19 @@ implement main () = () where {
   val () = assert_errmsg (_err = 0, #LOCATION)
   // Set up screen
   val (pf_scr | screen) =
-    SDL_SetVideoMode_exn (SCREEN_WIDTH, SCREEN_HEIGHT, 32, SDL_SWSURFACE)
-  // end of [val]
+    SDL_SetVideoMode_exn (SCREEN_WIDTH, SCREEN_HEIGHT, 32, SDL_OPENGL)
+//
+  val () = glClearColor (1.0, 1.0, 1.0, 1.0) 
+  val () = glMatrixMode (GL_PROJECTION)
+  val () = glLoadIdentity ()
+  val () = glOrtho
+    (0.0, (double_of)SCREEN_WIDTH, (double_of)SCREEN_HEIGHT, 0.0, ~1.0, 1.0)
+  val () = glMatrixMode (GL_MODELVIEW)
+  val () = glLoadIdentity ()
+  val () = assert_errmsg (glGetError() = GL_NO_ERROR, #LOCATION)
 //
   val () = SDL_WM_SetCaption (
-    stropt_some "ATS/SDL-cairo clock", stropt_none
+    stropt_some "ATS/SDL-GL-cairo clock", stropt_none
   ) // end of [val]
 //
   var fps: Timer // uninitialized
@@ -200,6 +232,7 @@ implement main () = () where {
     // nothing
   end // end of [val]
 //
+  // [SDL_Quit_screen] is a no-op cast
   val _ptr =
     SDL_Quit_Video (pf_scr | screen) // [screen] should be freed by SDL_Quit
   val () = SDL_Quit ()
