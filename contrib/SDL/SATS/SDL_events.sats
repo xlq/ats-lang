@@ -36,6 +36,7 @@
 
 (* ****** ****** *)
 
+#include "contrib/SDL/SATS/SDL_active.sats"
 #include "contrib/SDL/SATS/SDL_keyboard.sats"
 
 (* ****** ****** *)

@@ -36,6 +36,7 @@ compall: \
   lesson18 \
   lesson20 \
   lesson21 \
+  lesson26 \
   lesson36 \
 
 ######
@@ -128,6 +129,10 @@ lesson21: LazyFoo-lesson21/lesson21.dats
           LazyFoo-lesson21/lesson21.dats utils/timer.sats utils/timer.dats \
           $(ATSCTRB) -lSDL -lSDL_image
 
+lesson26: LazyFoo-lesson26/lesson26.dats
+	$(ATSCC) -IATS utils $(SDLCFLAGS) -o lesson26 \
+          LazyFoo-lesson26/lesson26.dats $(ATSCTRB) -lSDL -lSDL_image
+
 lesson33: LazyFoo-lesson33/lesson33.dats
 	$(ATSCC) -IATS utils $(SDLCFLAGS) -o lesson33 \
           LazyFoo-lesson33/lesson33.dats $(ATSCTRB) -lSDL -lSDL_image
@@ -179,6 +184,7 @@ cleanall: clean
 	rm -f lesson18
 	rm -f lesson20
 	rm -f lesson21
+	rm -f lesson26
 	rm -f lesson33
 	rm -f lesson36
 	rm -f SDL_cairo_clock

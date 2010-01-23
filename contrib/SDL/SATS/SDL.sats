@@ -60,7 +60,7 @@ symintr ref_is_null ref_isnot_null // fun
 
 (* ****** ****** *)
 
-absviewt@ype minus_viewt0ype_view (vt: viewt@ype, v: view)
+absviewt@ype minus_viewt0ype_view (vt: viewt@ype, v: view) = vt
 stadef minus = minus_viewt0ype_view
 prfun minus_addback
   {vt:viewt@ype} {v:view} (pf: v | x: !minus (vt, v) >> vt): void

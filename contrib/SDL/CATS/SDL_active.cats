@@ -36,77 +36,15 @@
 
 /* ****** ****** */
 
-#ifndef ATSCTRB_SDL_SDL_STDINC_CATS
-#define ATSCTRB_SDL_SDL_STDINC_CATS
+#ifndef ATSCTRB_SDL_SDL_ACTIVE_CATS
+#define ATSCTRB_SDL_SDL_ACTIVE_CATS
 
 /* ****** ****** */
 
-static inline
-Uint8
-atsctrb_land_Uint8_Uint8
-  (Uint8 x1, Uint8 x2) { return (x1 & x2) ; }
-// end of [atsctrb_land_Uint8_Uint8]
-
-static inline
-Uint8
-atsctrb_lor_Uint8_Uint8
-  (Uint8 x1, Uint8 x2) { return (x1 | x2) ; }
-// end of [atsctrb_lor_Uint8_Uint8]
+#define atsctrb_SDL_GetAppState SDL_GetAppState
 
 /* ****** ****** */
 
-static inline
-Uint16
-atsctrb_add_Uint16_Uint16
-  (Uint16 x1, Uint16 x2) { return (x1 + x2) ; }
-// end of [atsctrb_add_Uint16_Uint16]
+#endif // end of [ATSCTRB_SDL_SDL_ACTIVE_CATS]
 
-static inline
-Uint16
-atsctrb_sub_Uint16_Uint16
-  (Uint16 x1, Uint16 x2) { return (x1 - x2) ; }
-// end of [atsctrb_sub_Uint16_Uint16]
-
-static inline
-Uint16
-atsctrb_land_Uint16_Uint16
-  (Uint16 x1, Uint16 x2) { return (x1 & x2) ; }
-// end of [atsctrb_land_Uint16_Uint16]
-
-static inline
-Uint16
-atsctrb_lor_Uint16_Uint16
-  (Uint16 x1, Uint16 x2) { return (x1 | x2) ; }
-// end of [atsctrb_lor_Uint16_Uint16]
-
-/* ****** ****** */
-
-static inline
-Uint32
-atsctrb_add_Uint32_Uint32
-  (Uint32 x1, Uint32 x2) { return (x1 + x2) ; }
-// end of [atsctrb_add_Uint32_Uint32]
-
-static inline
-Uint32
-atsctrb_sub_Uint32_Uint32
-  (Uint32 x1, Uint32 x2) { return (x1 - x2) ; }
-// end of [atsctrb_sub_Uint32_Uint32]
-
-static inline
-Uint32
-atsctrb_land_Uint32_Uint32
-  (Uint32 x1, Uint32 x2) { return (x1 & x2) ; }
-// end of [atsctrb_land_Uint32_Uint32]
-
-static inline
-Uint32
-atsctrb_lor_Uint32_Uint32
-  (Uint32 x1, Uint32 x2) { return (x1 | x2) ; }
-// end of [atsctrb_lor_Uint32_Uint32]
-
-/* ****** ****** */
-
-#endif // end of [ATSCTRB_SDL_SDL_STDINC_CATS]
-
-/* end of [SDL_stdinc.cats] */
+/* end of [SDL_active.cats] */

@@ -51,6 +51,14 @@ castfn Uint8_of_uint (x: uint):<> Uint8
 overload Uint8 with Uint8_of_uint
 castfn uint_of_Uint8 (x: Uint8):<> uint
 
+fun land_Uint8_Uint8 (x1: Uint8, x2: Uint8): Uint8
+  = "atsctrb_land_Uint8_Uint8" // function
+overload land with land_Uint8_Uint8
+
+fun lor_Uint8_Uint8 (x1: Uint8, x2: Uint8): Uint8
+  = "atsctrb_lor_Uint8_Uint8" // function
+overload lor with lor_Uint8_Uint8
+
 (* ****** ****** *)
 
 abst@ype Sint16 = int16_t0ype
@@ -99,6 +107,14 @@ overload + with add_Uint16_Uint16
 fun sub_Uint16_Uint16 (x1: Uint16, x2: Uint16): Uint16
   = "atsctrb_sub_Uint16_Uint16" // function
 overload - with sub_Uint16_Uint16
+
+fun land_Uint16_Uint16 (x1: Uint16, x2: Uint16): Uint16
+  = "atsctrb_land_Uint16_Uint16" // function
+overload land with land_Uint16_Uint16
+
+fun lor_Uint16_Uint16 (x1: Uint16, x2: Uint16): Uint16
+  = "atsctrb_lor_Uint16_Uint16" // function
+overload lor with lor_Uint16_Uint16
 
 (* ****** ****** *)
 

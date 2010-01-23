@@ -41,6 +41,7 @@
 
 /* ****** ****** */
 
+#include "contrib/SDL/CATS/SDL_active.cats"
 #include "contrib/SDL/CATS/SDL_keyboard.cats"
 
 /* ****** ****** */
