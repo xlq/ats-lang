@@ -201,11 +201,16 @@ fun cairo_restore (pf: cairo_save_v | cr: !cairo_ref): void
 
 (* ****** ****** *)
 
-fun cairo_get_target (cr: !cairo_ref): cairo_surface_ref
-  = "#atsctrb_cairo_get_target"
+//
+// HX-2010-01-23:
+// note that these two functions are slightly different from
+// the original ones in cairo in terms of reference counting
+//
+fun cairo_get_target1 (cr: !cairo_ref): cairo_surface_ref
+  = "atsctrb_cairo_get_target1" // function!
 
-fun cairo_get_group_target (cr: !cairo_ref): cairo_surface_ref
-  = "#atsctrb_cairo_get_group_target"
+fun cairo_get_group_target1 (cr: !cairo_ref): cairo_surface_ref
+  = "atsctrb_cairo_get_group_target1" // function!
 
 (* ****** ****** *)
 
@@ -590,7 +595,7 @@ fun cairo_set_user_data (
 fun cairo_get_user_data (
     cr: !cairo_ref
   , key: &cairo_user_data_key_t
-  ) : ptr
+  ) : Ptr
   = "#atsctrb_cairo_get_user_data"
 
 (* ****** ****** *)
@@ -1209,20 +1214,20 @@ fun cairo_image_surface_create_for_data (
   = "#atsctrb_cairo_image_surface_create_for_data"
 
 fun cairo_image_surface_get_data
-  (sf: !cairo_surface_ref): ptr // uchar*
+  (sf: !cairo_surface_ref): Ptr // uchar*
   = "#atsctrb_cairo_image_surface_get_data"
 
 fun cairo_image_surface_get_format
   (sf: !cairo_surface_ref): cairo_format_t
   = "#atsctrb_cairo_image_surface_get_format"
 
-fun cairo_image_surface_get_width (sf: !cairo_surface_ref): int
+fun cairo_image_surface_get_width (sf: !cairo_surface_ref): Nat
   = "#atsctrb_cairo_image_surface_get_width"
 
-fun cairo_image_surface_get_height (sf: !cairo_surface_ref): int
+fun cairo_image_surface_get_height (sf: !cairo_surface_ref): Nat
   = "#atsctrb_cairo_image_surface_get_height"
 
-fun cairo_image_surface_get_stride (sf: !cairo_surface_ref): int
+fun cairo_image_surface_get_stride (sf: !cairo_surface_ref): Nat
   = "#atsctrb_cairo_image_surface_get_stride"
 
 (* ****** ****** *)

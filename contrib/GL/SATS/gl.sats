@@ -1760,7 +1760,7 @@ fun glTexImage1D
   = "#atsctrb_glTexImage1D"
 
 fun glTexImage2D
-  {a:t@ype} {w,h:nat} {n:int} (
+  {a:t@ype} {w,h:int} {n:int} (
     target: GLenum
   , level: GLint
   , interalFormat: GLint

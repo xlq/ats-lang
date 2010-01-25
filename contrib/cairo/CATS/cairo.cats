@@ -81,8 +81,29 @@ atsctrb_eq_cairo_status_cairo_status (
 #define atsctrb_cairo_save cairo_save
 #define atsctrb_cairo_restore cairo_restore
 
-#define atsctrb_cairo_get_target cairo_get_target
-#define atsctrb_cairo_get_group_target cairo_get_group_target
+/* ****** ****** */
+
+static inline
+ats_ref_type
+atsctrb_cairo_get_target1
+  (ats_ref_type cr) {
+  ats_ref_type sf ;
+  sf = cairo_get_target(cr) ;
+  cairo_surface_reference(sf) ;
+  return sf ;
+} // end of [atsctrb_cairo_get_target1]
+
+static inline
+ats_ref_type
+atsctrb_cairo_get_group_target1
+  (ats_ref_type cr) {
+  ats_ref_type sf ;
+  sf = cairo_get_group_target(cr) ;
+  cairo_surface_reference(sf) ;
+  return sf ;
+} // end of [atsctrb_cairo_get_group_target1]
+
+/* ****** ****** */
 
 #define atsctrb_cairo_push_group cairo_push_group
 #define atsctrb_cairo_push_group_with_content cairo_push_group_with_content
