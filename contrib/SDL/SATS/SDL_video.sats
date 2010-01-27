@@ -61,29 +61,19 @@ fun SDL_Color_init (
 
 (* ****** ****** *)
 
-absviewt@ype SDL_PixelFormat
+absviewt@ype SDL_PixelFormat_rest // ...
 
-fun SDL_PixelFormat_BitsPerPixel (x: &SDL_PixelFormat): Uint8
-fun SDL_PixelFormat_BytesPerPixel (x: &SDL_PixelFormat): Uint8
-
-fun SDL_PixelFormat_Rloss (x: &SDL_PixelFormat): Uint8
-fun SDL_PixelFormat_Gloss (x: &SDL_PixelFormat): Uint8
-fun SDL_PixelFormat_Bloss (x: &SDL_PixelFormat): Uint8
-fun SDL_PixelFormat_Aloss (x: &SDL_PixelFormat): Uint8
-
-fun SDL_PixelFormat_Rshift (x: &SDL_PixelFormat): Uint8
-fun SDL_PixelFormat_Gshift (x: &SDL_PixelFormat): Uint8
-fun SDL_PixelFormat_Bshift (x: &SDL_PixelFormat): Uint8
-fun SDL_PixelFormat_Ashift (x: &SDL_PixelFormat): Uint8
-
-fun SDL_PixelFormat_Rmask (x: &SDL_PixelFormat): Uint32
-fun SDL_PixelFormat_Gmask (x: &SDL_PixelFormat): Uint32
-fun SDL_PixelFormat_Bmask (x: &SDL_PixelFormat): Uint32
-fun SDL_PixelFormat_Amask (x: &SDL_PixelFormat): Uint32
-
-fun SDL_PixelFormat_colorkey (x: &SDL_PixelFormat): Uint32
-
-fun SDL_PixelFormat_alpha (x: &SDL_PixelFormat): Uint8
+viewtypedef SDL_PixelFormat =
+  $extype_struct "SDL_PixelFormat" of {
+  BitsPerPixel= Uint8
+, BytesPerPixel= Uint8
+, Rloss= Uint8, Gloss= Uint8, Bloss= Uint8, Aloss= Uint8
+, Rshift= Uint8, Gshift= Uint8, Bshift= Uint8, Ashift= Uint8
+, Rmask= Uint32, Gmask= Uint32, Bmask= Uint32, Amask= Uint32
+, colorkey= Uint32
+, alpha= Uint8
+, rest=SDL_PixelFormat_rest
+} // end of [SDL_PixelFormat]
 
 (* ****** ****** *)
 
@@ -109,6 +99,9 @@ overload ref_isnot_null with SDL_Surface_ref_isnot_null
 
 (* ****** ****** *)
 
+fun SDL_Surface_flags {l:anz} (sf: !SDL_Surface_ref l): Uint32
+  = "#atsctrb_SDL_Surface_flags"
+
 fun SDL_Surface_format {l:anz} (
     sf: !SDL_Surface_ref l >> minus (SDL_Surface_ref l, SDL_PixelFormat @ l_format)
   ) : #[l_format:addr] (SDL_PixelFormat @ l_format | ptr l_format)
@@ -119,6 +112,17 @@ fun SDL_Surface_w {l:anz} (sf: !SDL_Surface_ref l): int
 
 fun SDL_Surface_h {l:anz} (sf: !SDL_Surface_ref l): int
   = "#atsctrb_SDL_Surface_h"
+
+fun SDL_Surface_pitch {l:anz} (sf: !SDL_Surface_ref l): Uint16
+  = "#atsctrb_SDL_Surface_pitch"
+
+fun SDL_Surface_clip_rect {l:anz} (
+    sf: !SDL_Surface_ref l >> minus (SDL_Surface_ref l, SDL_Rect @ l_rect)
+  ) : #[l_rect:addr] (SDL_Rect @ l_rect | ptr l_rect)
+  = "#atsctrb_SDL_Surface_clip_rect"
+
+fun SDL_Surface_refcount {l:anz} (sf: !SDL_Surface_ref l): int
+  = "#atsctrb_SDL_Surface_refcount"
 
 (* ****** ****** *)
 
@@ -327,6 +331,10 @@ fun SDL_SetAlpha {l:anz}
 fun SDL_GetClipRect {l:anz}
   (surface: !SDL_Surface_ref l, rect: &SDL_Rect? >> SDL_Rect): void
   = "#atsctrb_SDL_GetClipRect"
+
+fun SDL_SetClipRect {l:anz}
+  (surface: !SDL_Surface_ref l, rect: &SDL_Rect): int(*SDL_TRUE/SDL_FALSE*)
+  = "#atsctrb_SDL_SetClipRect"
 
 (* ****** ****** *)
 

@@ -69,9 +69,13 @@ atsctrb_SDL_Color_init (
 
 /* ****** ****** */
 
+#define atsctrb_SDL_Surface_flags(sf) (((SDL_Surface*)(sf))->flags)
 #define atsctrb_SDL_Surface_format(sf) (((SDL_Surface*)(sf))->format)
 #define atsctrb_SDL_Surface_w(sf) (((SDL_Surface*)(sf))->w)
 #define atsctrb_SDL_Surface_h(sf) (((SDL_Surface*)(sf))->h)
+#define atsctrb_SDL_Surface_pitch(sf) (((SDL_Surface*)(sf))->pitch)
+#define atsctrb_SDL_Surface_clip_rect(sf) (((SDL_Surface*)(sf))->clip_rect)
+#define atsctrb_SDL_Surface_refcount(sf) (((SDL_Surface*)(sf))->refcount)
 
 /* ****** ****** */
 
@@ -118,6 +122,7 @@ atsctrb_SDL_ResetVideoMode (
 /* ****** ****** */
 
 #define atsctrb_SDL_GetClipRect SDL_GetClipRect
+#define atsctrb_SDL_SetClipRect SDL_SetClipRect
 
 /* ****** ****** */
 

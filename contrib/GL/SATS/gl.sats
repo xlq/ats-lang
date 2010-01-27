@@ -58,7 +58,7 @@ fun neq_GLenum_GLenum (x1: GLenum, x2: GLenum):<> bool
 overload <> with neq_GLenum_GLenum
 
 abst@ype GLenum_type (a:t@ype) = GLenum
-abst@ype GLenum_format (n: int) = GLenum
+abst@ype GLenum_format (n:int) = GLenum
 
 (* ****** ****** *)
 
@@ -506,13 +506,20 @@ macdef GL_AUX2 = $extval (GLenum, "GL_AUX2")
 macdef GL_AUX3 = $extval (GLenum, "GL_AUX3")
 //
 macdef GL_COLOR_INDEX = $extval (GLenum, "GL_COLOR_INDEX")
+macdef GL_COLOR_INDEX_format = $extval (GLenum_format 1, "GL_COLOR_INDEX")
 macdef GL_RED = $extval (GLenum, "GL_RED")
+macdef GL_RED_format = $extval (GLenum_format 1, "GL_RED")
 macdef GL_GREEN = $extval (GLenum, "GL_GREEN")
+macdef GL_GREEN_format = $extval (GLenum_format 1, "GL_GREEN")
 macdef GL_BLUE = $extval (GLenum, "GL_BLUE")
+macdef GL_BLUE_format = $extval (GLenum_format 1, "GL_BLUE")
 macdef GL_ALPHA = $extval (GLenum, "GL_ALPHA")
-//
+macdef GL_ALPHA_format = $extval (GLenum_format 1, "GL_ALPHA")
 macdef GL_LUMINANCE = $extval (GLenum, "GL_LUMINANCE")
+macdef GL_LUMINANCE_format = $extval (GLenum_format 1, "GL_LUMINANCE")
 macdef GL_LUMINANCE_ALPHA = $extval (GLenum, "GL_LUMINANCE_ALPHA")
+macdef GL_LUMINANCE_ALPHA_format = $extval (GLenum_format 2, "GL_LUMINANCE_ALPHA")
+//
 macdef GL_ALPHA_BITS = $extval (GLenum, "GL_ALPHA_BITS")
 macdef GL_RED_BITS = $extval (GLenum, "GL_RED_BITS")
 macdef GL_GREEN_BITS = $extval (GLenum, "GL_GREEN_BITS")
@@ -1753,7 +1760,7 @@ fun glTexImage1D
   , interalFormat: GLint
   , width: GLsizei w // height = 1
   , border: natLt(2)
-  , format: GLenum_format (n)
+  , format: GLenum_format n
   , type: GLenum_type (a)
   , texels: &GLarray2 (a, w, n)
   ) : void
@@ -1767,7 +1774,7 @@ fun glTexImage2D
   , width: GLsizei w
   , height: GLsizei h
   , border: natLt(2)
-  , format: GLenum_format (n)
+  , format: GLenum_format n
   , type: GLenum_type (a)
   , texels: &GLarray3 (a, w, h, n)
   ) : void
@@ -1810,8 +1817,12 @@ macdef GL_RESCALE_NORMAL = $extval (GLenum, "GL_RESCALE_NORMAL")
 macdef GL_CLAMP_TO_EDGE = $extval (GLenum, "GL_CLAMP_TO_EDGE")
 macdef GL_MAX_ELEMENTS_VERTICES = $extval (GLenum, "GL_MAX_ELEMENTS_VERTICES")
 macdef GL_MAX_ELEMENTS_INDICES = $extval (GLenum, "GL_MAX_ELEMENTS_INDICES")
+//
 macdef GL_BGR = $extval (GLenum, "GL_BGR")
+macdef GL_BGR_format = $extval (GLenum_format 3, "GL_BGR")
 macdef GL_BGRA = $extval (GLenum, "GL_BGRA")
+macdef GL_BGRA_format = $extval (GLenum_format 4, "GL_BGRA")
+//
 macdef GL_UNSIGNED_BYTE_3_3_2 = $extval (GLenum, "GL_UNSIGNED_BYTE_3_3_2")
 macdef GL_UNSIGNED_BYTE_2_3_3_REV = $extval (GLenum, "GL_UNSIGNED_BYTE_2_3_3_REV")
 macdef GL_UNSIGNED_SHORT_5_6_5 = $extval (GLenum, "GL_UNSIGNED_SHORT_5_6_5")
