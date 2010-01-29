@@ -249,7 +249,7 @@ implement main () = () where {
 //
     val (pf_format | p_format) = SDL_Surface_format (myWin.screen)
     val color = SDL_MapRGB (!p_format, (Uint8)0xFF, (Uint8)0xFF, (Uint8)0xFF)
-    prval () = minus_addback (pf_format | myWin.screen)
+    prval () = minus_addback (myWin.screen, pf_format)
 //
     val _err = SDL_FillRect_ptr (myWin.screen, null, color)
     val () = assert_errmsg (_err = 0, #LOCATION)

@@ -850,9 +850,9 @@ stadef disj_v = disj_view_view_int_view
 
 //
 
-// note that v1 \minus v2 = v2 -<lin,prf> v1
-absview minus_view_view (v1: view, v2: view)
-stadef minus = minus_view_view
+// note that vt1 \minus v2 = v2 -<lin,prf> vt1
+absview minus_viewt0ype_view (vt1: viewt@ype, v2: view) = vt1
+stadef minus = minus_viewt0ype_view
 
 //
 

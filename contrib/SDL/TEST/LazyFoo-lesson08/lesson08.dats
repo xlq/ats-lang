@@ -38,7 +38,7 @@ in
       val (pf_format | p_format) = SDL_Surface_format (optimizedImage)
       val colorkey = SDL_MapRGB (!p_format, (Uint8)0, (Uint8)0xFF, (Uint8)0xFF)
       // Set all pixels of color R 0, G 0xFF, B 0xFF to be transparent
-      prval () = minus_addback (pf_format | optimizedImage)
+      prval () = minus_addback (optimizedImage, pf_format)
       val _err = SDL_SetColorKey (optimizedImage, SDL_SRCCOLORKEY, colorkey)
     in
       optimizedImage

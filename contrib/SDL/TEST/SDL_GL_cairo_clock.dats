@@ -29,8 +29,8 @@ staload "contrib/cairo/SATS/cairo.sats"
 
 (* ****** ****** *)
 
-fn drawClock
-  (cr: !cairo_ref): void = () where {
+fn drawClock {l:addr}
+  (cr: !cairo_ref l): void = () where {
 //
   var t: time_t // unintialized
   val _(*ignored*) = time_get_and_set (t)

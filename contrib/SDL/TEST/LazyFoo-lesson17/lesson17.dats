@@ -229,11 +229,11 @@ implement main () = () where {
 //
   val (pf_format | p_format) = SDL_Surface_format (screen)
   val bg_color = SDL_MapRGB (!p_format, (Uint8)0xFF, (Uint8)0xFF, (Uint8)0xFF)
-  prval () = minus_addback (pf_format | screen)
+  prval () = minus_addback (screen, pf_format)
 //
   val (pf_format | p_format) = SDL_Surface_format (screen)
   val wall_color = SDL_MapRGB (!p_format, (Uint8)0x77, (Uint8)0x77F, (Uint8)0x77)
-  prval () = minus_addback (pf_format | screen)
+  prval () = minus_addback (screen, pf_format)
 //
   var quit: bool = false
   var event: SDL_Event?  

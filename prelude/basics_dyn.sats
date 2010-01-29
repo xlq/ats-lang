@@ -444,7 +444,7 @@ prval unit_v_elim : unit_v -<prf> void
 (* ****** ****** *)
 
 prfun minus_addback // [minus] is defined in basics_sta.sats
-  {v1:view} {v2:view} (pf1: !minus(v1, v2) >> v1, pf2: v2): void
+  {vt1:viewt@ype} {v2:view} (pf1: !minus(vt1, v2) >> vt1, pf2: v2): void
 // end of [minus_addback]
 
 (* ****** ****** *)
