@@ -141,6 +141,10 @@ fun XDisplayString {l:anz} (dpy: !Display_ptr l): string
 
 (* ****** ****** *)
 
+fun XMaxRequestSize {l:anz}
+  (dpy: !Display_ptr l): lint // in 4-byte units
+  = "#atsctrb_XMaxRequestSize"
+
 // the full serial number for the last processed request
 fun XLastKnownRequestProcessed {l:anz} (dpy: !Display_ptr l): ulint
   = "#atsctrb_XLastKnownRequestProcessed"
@@ -149,7 +153,15 @@ fun XLastKnownRequestProcessed {l:anz} (dpy: !Display_ptr l): ulint
 fun XNextRequest {l:anz} (dpy: !Display_ptr l): ulint
   = "#atsctrb_XNextRequest"
 
-(* ****** ****** *)  
+(* ****** ****** *)
+
+fun XProtocolVersion {l:anz} (dpy: !Display_ptr l): int
+  = "#atsctrb_XProtocolVersion"
+
+fun XProtocolRevision {l:anz} (dpy: !Display_ptr l): int
+  = "#atsctrb_XProtocolRevision"
+
+(* ****** ****** *)
 
 // the length of the event queue for [dpy]
 fun XQLength {l:anz} (dpy: !Display_ptr l): int
@@ -162,6 +174,12 @@ fun XRootWindow {l:anz} (dpy: !Display_ptr l, nscr: int): Window
 
 fun XScreenCount {l:anz} (dpy: !Display_ptr l): int
   = "#atsctrb_XScreenCount"
+
+fun XServerVendor {l:anz} (dpy: !Display_ptr l): string
+  = "#atsctrb_XServerVendor"
+
+fun XVendorRelease {l:anz} (dpy: !Display_ptr l): int
+  = "#atsctrb_XVendorRelease"
 
 (* ****** ****** *)
 

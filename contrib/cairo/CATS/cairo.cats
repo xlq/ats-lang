@@ -83,6 +83,9 @@ atsctrb_eq_cairo_status_cairo_status (
 
 /* ****** ****** */
 
+#define atsctrb_cairo_get_target cairo_get_target
+#define atsctrb_cairo_get_group_target cairo_get_group_target
+
 static inline
 ats_ref_type
 atsctrb_cairo_get_target1

@@ -444,11 +444,11 @@ A recursive function can be constructed based on the following
 syntactic form:
 
 <pre>
-<u>fix</u> ($funargseq_n) ... ($funargseq_n) {: $typ} <u>=></u> $exp
+<u>fix</u> $var ($funargseq_n) ... ($funargseq_n) {: $typ} <u>=></u> $exp
 </pre>
 
 As an example, the following function, which is of the type
-<i>Nat -> Nat</i>, computes Fibonacci numbers:
+<i>Nat -> Nat</i>, computes the Fibonacci numbers:
 
 <pre>
 fix fib (x: Nat): Nat => if x >= 2 then fib (x-1) + fib (x-2) else x

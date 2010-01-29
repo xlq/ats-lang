@@ -67,13 +67,19 @@
 #define atsctrb_XDisplayPlanes XDisplayPlanes
 #define atsctrb_XDisplayString XDisplayString
 
+#define atsctrb_XMaxRequestSize XMaxRequestSize
 #define atsctrb_XLastKnownRequestProcessed XLastKnownRequestProcessed
 #define atsctrb_XNextRequest XNextRequest
+
+#define atsctrb_XProtocolVersion XProtocolVersion
+#define atsctrb_XProtocolRevision XProtocolRevision
 
 #define atsctrb_XQLength XQLength
 
 #define atsctrb_XRootWindow XRootWindow
 #define atsctrb_XScreenCount XScreenCount
+#define atsctrb_XServerVendor XServerVendor
+#define atsctrb_XVendorRelease XVendorRelease
 
 /* ****** ****** */
 

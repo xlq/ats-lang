@@ -62,6 +62,18 @@ implement main () = () where {
   val name = XDisplayString (dpy)
   val () = (print "name = "; print name; print_newline ())
 //
+  val maxsz = XMaxRequestSize (dpy)
+  val () = (print "maxsz = "; print maxsz; print_newline ())
+//
+  val version = XProtocolVersion (dpy)
+  val () = (print "version = "; print version; print_newline ())
+  val revision = XProtocolRevision (dpy)
+  val () = (print "revision = "; print revision; print_newline ())
+  val vendor = XServerVendor (dpy)
+  val () = (print "vendor = "; print vendor; print_newline ())
+  val release = XVendorRelease (dpy)
+  val () = (print "release = "; print release; print_newline ())
+//
   val last = XLastKnownRequestProcessed (dpy)
   val () = (print "last = "; print last; print_newline ())
   val next = XNextRequest (dpy)

@@ -140,8 +140,7 @@ end // end of [draw_clock_decor]
 fn draw_clock_center (): void = () where {
   val () = glColor3d (0.0, 0.0, 0.0)
   val (pf_obj | p_obj) = gluNewQuadric_exn ()
-  val () = gluDisk
-    (!p_obj, (GLdouble)0.0, (GLdouble)0.025, 8, 1)
+  val () = gluDisk (!p_obj, (GLdouble)0.0, (GLdouble)0.025, 8, 1)
   val () = gluDeleteQuadric (pf_obj | p_obj)
 } // end of [draw_clock_center]
 
