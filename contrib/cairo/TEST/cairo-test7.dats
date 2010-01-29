@@ -27,12 +27,12 @@ staload "contrib/cairo/SATS/cairo.sats"
 (* ****** ****** *)
 
 stadef dbl = double
-stadef cr = cairo_ref
+stadef cr (l:addr) = cairo_ref l
 
 (* ****** ****** *)
 
-fn draw_hand
-  (cr: !cr, bot: dbl, top:dbl, len: dbl): void = let
+fn draw_hand {l:addr}
+  (cr: !cr l, bot: dbl, top:dbl, len: dbl): void = let
   val () = cairo_move_to (cr, 0.0, bot/2)
   val () = cairo_line_to (cr, len, top/2)
   val () = cairo_line_to (cr, len, ~top/2)
@@ -43,8 +43,8 @@ in
   cairo_fill (cr)
 end // end of [draw_hand]
 
-fn draw_clock
-  (cr: !cr, h: natLt 24, m: natLt 60): void = let
+fn draw_clock {l:addr}
+  (cr: !cr l, h: natLt 24, m: natLt 60): void = let
 //
   val h = (if h >= 12 then h - 12 else h): natLt 12
   val m_ang = m * (M_PI / 30) - M_PI/2

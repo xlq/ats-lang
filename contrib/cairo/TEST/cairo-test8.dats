@@ -32,11 +32,11 @@ staload "contrib/cairo/SATS/cairo.sats"
 (* ****** ****** *)
 
 stadef dbl = double
-stadef cr = cairo_ref
+stadef cr (l:addr) = cairo_ref l
 
 (* ****** ****** *)
 
-fn bw_set (cr: !cr, bw: int): void =
+fn bw_set {l:addr} (cr: !cr l, bw: int): void =
   if bw > 0 then
     cairo_set_source_rgb (cr, 0.0, 0.0, 0.0)
   else
@@ -44,7 +44,7 @@ fn bw_set (cr: !cr, bw: int): void =
   // end of [if]
 // end of [rb_set]
 
-fn rb_set (cr: !cr, rb: int): void =
+fn rb_set {l:addr} (cr: !cr l, rb: int): void =
   if rb > 0 then
     cairo_set_source_rgb (cr, 1.0, 0.0, 0.0)
   else
@@ -55,8 +55,8 @@ fn rb_set (cr: !cr, rb: int): void =
 (* ****** ****** *)
 
 fn draw_ring
-  {n:int | n >= 2} (
-    cr: !cr
+  {l:addr} {n:int | n >= 2} (
+    cr: !cr l
   , bw: int, rb: int
   , rad1: dbl, rad2: dbl
   , n: int n
@@ -65,7 +65,7 @@ fn draw_ring
   val delta = 2 * PI / n
 //
   fun loop {i:nat | i <= n} .<n-i>.
-    (cr: !cr, angle: double, i: int i, bw: int, rb: int)
+    (cr: !cr l, angle: double, i: int i, bw: int, rb: int)
     :<cloref1> void = let
     val _sin = sin angle and _cos = cos angle
     val x1 = rad1 * _cos and y1 = rad1 * _sin
@@ -105,8 +105,8 @@ end // end of [draw_ring]
 
 #define SHRINKAGE 0.80
 fun draw_rings
-  {n:int | n >= 2} (
-    cr: !cr
+  {l:addr} {n:int | n >= 2} (
+    cr: !cr l
   , bw: int, rb: int
   , rad_beg: dbl, rad_end: dbl
   , n: int n

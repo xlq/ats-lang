@@ -27,15 +27,15 @@ staload "contrib/cairo/SATS/cairo.sats"
 (* ****** ****** *)
 
 stadef dbl = double
-stadef cr = cairo_ref
+stadef cr (l:addr) = cairo_ref l
 
 (* ****** ****** *)
 
 val PI3 = M_PI / 3
 val sin60 = sin (PI3)
 
-fn koch0
-  (cr: !cr, x: dbl): void = let
+fn koch0 {l:addr}
+  (cr: !cr l, x: dbl): void = let
   val () = cairo_move_to (cr, 0.0, 0.0)
   val () = cairo_line_to (cr, x / 3, 0.0)
   val () = cairo_line_to (cr, x / 2, ~x / 3 * sin60)
@@ -45,8 +45,8 @@ in
   // nothing
 end // end of [koch0]
 
-fun koch {n:nat} .<n>.
-  (cr: !cr, n: int n, x: dbl): void =
+fun koch {l:addr} {n:nat} .<n>.
+  (cr: !cr l, n: int n, x: dbl): void =
   if n > 0 then let
     val () = koch (cr, n-1, x / 3)
 //

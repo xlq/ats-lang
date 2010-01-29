@@ -27,14 +27,14 @@ staload "contrib/cairo/SATS/cairo.sats"
 (* ****** ****** *)
 
 stadef dbl = double
-stadef cr = cairo_ref
+stadef cr (l:addr) = cairo_ref (l)
 
 fun draw_reg_polygon
-  {n:nat | n >= 3}
-  (cr: !cr, n: int n): void = let
+  {l:addr} {n:nat | n >= 3}
+  (cr: !cr l, n: int n): void = let
   val agl_delta = 2 * $M.M_PI / n
   fun loop {i:nat | i <= n} .<n-i>.
-    (cr: !cr, agl0: dbl, i: int i):<cloref1> void =
+    (cr: !cr l, agl0: dbl, i: int i):<cloref1> void =
     if i < n - 1 then let
       val agl1 = agl0 + agl_delta
       val () = cairo_line_to (cr, $M.cos agl1, $M.sin agl1)
@@ -54,9 +54,8 @@ end // end of [draw_reg_polygon]
 
 (* ****** ****** *)
 
-fn draw_circle (
-    cr: !cr
-  , rad: dbl, x0: dbl, y0: dbl
+fn draw_circle {l:addr} (
+    cr: !cr l, rad: dbl, x0: dbl, y0: dbl
   ) : void = let
   val n0 = 8
   val agl0 = 2 * $M.M_PI / n0

@@ -27,7 +27,7 @@ staload "contrib/cairo/SATS/cairo.sats"
 (* ****** ****** *)
 
 stadef dbl = double
-stadef cr = cairo_ref
+stadef cr (l:addr) = cairo_ref l
 
 (* ****** ****** *)
 
