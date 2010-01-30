@@ -36,16 +36,32 @@
 
 (* ****** ****** *)
 
-#define ATS_DYNLOADFLAG 0 // no need for dynamic loading
+%{#
+#include "contrib/Xlib/CATS/X.cats"
+%} // end of [{%#]
 
 (* ****** ****** *)
 
-staload "contrib/Xlib/SATS/Xlib.sats"
+abst@ype Atom = $extype "Atom" // unsigned long int
+abst@ype Mask = $extype "Mask" // unsigned long int
+abst@ype VisualID = $extype "VisualID" // unsigned long int
+abst@ype Time = $extype "Time" // unsigned long int
 
 (* ****** ****** *)
 
-// it is yet empty
+// [XID] is unsigned long int  
+
+abst@ype Window = $extype "Window" // = XID
+abst@ype Drawable = $extype "Drawable" // = XID
+
+abst@ype Font = $extype "Font" // = XID
+
+abst@ype Pixmap = $extype "Pixmap" // = XID
+abst@ype Cursor = $extype "Cursor" // = XID
+abst@ype Colormap = $extype "Colormap" // = XID
+abst@ype GContext = $extype "GContext" // = XID
+abst@ype KeySym = $extype "KeySym" // = XID
 
 (* ****** ****** *)
 
-(* end of [Xlib.dats] *)
+(* end of [X.sats] *)

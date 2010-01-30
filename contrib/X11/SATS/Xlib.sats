@@ -42,6 +42,10 @@
 
 (* ****** ****** *)
 
+staload "contrib/X11/SATS/X.sats"
+
+(* ****** ****** *)
+
 absview XFree_v (l:addr) // ticket view for XFree
 absview XFree_v (a:viewt@ype, l:addr) // ticket view for XFree
 absview XFree_v (a:viewt@ype, n:int, l:addr) // ticket view for XFree
@@ -105,10 +109,6 @@ fun XWhitePixel {l:anz}
 fun XConnectionNumber {l:anz} (dpy: !Display_ptr l):<> int
   = "#atsctrb_XConnectionNumber"
 
-//
-// Colormap is XID, which is unsigned long 
-//
-abst@ype Colormap = $extype "Colormap" // for colormap ids
 fun XDefaultColormap {l:anz}
   (dpy: !Display_ptr l, nscr: int):<> Colormap
   = "#atsctrb_XDefaultColormap"
@@ -135,10 +135,6 @@ fun XDefaultGC {l:anz}
 
 (* ****** ****** *)
 
-//
-// Window is XID
-//
-abst@ype Window = $extype "Window" // for window ids
 fun XDefaultRootWindow {l:anz} (dpy: !Display_ptr l): Window
   = "#atsctrb_XDefaultRootWindow"
 
@@ -363,6 +359,31 @@ macdef RetainTemporary = $extval (close_mode_t, "RetainTemporary")
 
 // [XSetCloseDownMode] may generate a BadValue error
 fun XSetCloseDownMode {l:anz} (dpy: Display_ptr l, mode: close_mode_t): void
+
+(* ****** ****** *)
+
+// Chapter 3: Window Functions
+
+(* ****** ****** *)
+
+typedef XSetWindowAttributes =
+  $extype_struct "XSetWindowAttributes" of {
+  background_pixmap= Pixmap
+, background_pixel= ulint
+, border_pixmap= Pixmap
+, border_pixel= ulint
+, bit_gravity= int
+, win_gravity= int
+, backing_store= int
+, backing_planes= ulint
+, backing_pixel= ulint
+, save_under= bool
+, event_mask= lint
+, do_not_propagate_mask= lint
+, override_redirect= bool
+, colormap= Colormap
+, cursor= Cursor
+} // end of [XSetWindowAttributes]
 
 (* ****** ****** *)
 
