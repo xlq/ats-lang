@@ -28,6 +28,8 @@ prelude/ats_main_prelude.dats
 /* primary */
 prelude/DATS/basics.dats
 
+prelude/SATS/extern.sats /* for building external API's */
+
 prelude/SATS/file.sats
 prelude/DATS/file.dats
 

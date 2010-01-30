@@ -227,13 +227,13 @@ implement main () = () where {
   var fps: Timer // uninitialized
   val () = Timer_init (fps)
 //
-  val (pf_format | p_format) = SDL_Surface_format (screen)
-  val bg_color = SDL_MapRGB (!p_format, (Uint8)0xFF, (Uint8)0xFF, (Uint8)0xFF)
-  prval () = minus_addback (screen, pf_format)
+  val (pf_minus, pf_fmt | p_fmt) = SDL_Surface_format (screen)
+  val bg_color = SDL_MapRGB (!p_fmt, (Uint8)0xFF, (Uint8)0xFF, (Uint8)0xFF)
+  prval () = minus_addback (pf_minus, pf_fmt | screen)
 //
-  val (pf_format | p_format) = SDL_Surface_format (screen)
-  val wall_color = SDL_MapRGB (!p_format, (Uint8)0x77, (Uint8)0x77F, (Uint8)0x77)
-  prval () = minus_addback (screen, pf_format)
+  val (pf_minus, pf_fmt | p_fmt) = SDL_Surface_format (screen)
+  val wall_color = SDL_MapRGB (!p_fmt, (Uint8)0x77, (Uint8)0x77F, (Uint8)0x77)
+  prval () = minus_addback (pf_minus, pf_fmt | screen)
 //
   var quit: bool = false
   var event: SDL_Event?  

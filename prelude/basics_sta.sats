@@ -850,12 +850,6 @@ stadef disj_v = disj_view_view_int_view
 
 //
 
-// note that vt1 \minus v2 = v2 -<lin,prf> vt1
-absview minus_viewt0ype_view (vt1: viewt@ype, v2: view) = vt1
-stadef minus = minus_viewt0ype_view
-
-//
-
 // subview relation that only allows *reading*
 absprop vsubr_p (v1:view+, v2: view-) // v2 -<prf> [v:iew] @(v1, v)
 stadef <= (v1:view, v2:view) = vsubr_p (v1, v2)

@@ -209,15 +209,19 @@ fun cairo_restore {l:addr}
 
 (* ****** ****** *)
 
-fun cairo_get_target {l1:addr}
-  (cr: !cairo_ref l1 >> minus (cairo_ref l1, cairo_surface_ref l2))
-  : #[l2:addr] cairo_surface_ref l2
-  = "#atsctrb_cairo_get_target"
+fun cairo_get_target
+  {l1:addr} (cr: !cairo_ref l1): [l2:addr] (
+    minus (cairo_ref l1, cairo_surface_ref l2)
+  | cairo_surface_ref l2
+  ) = "#atsctrb_cairo_get_target"
+// end of [cairo_get_target]
 
-fun cairo_get_group_target {l1:addr}
-  (cr: !cairo_ref l1 >> minus (cairo_ref l1, cairo_surface_ref l2))
-  : #[l2:addr] cairo_surface_ref l2
-  = "atsctrb_cairo_get_group_target"
+fun cairo_get_group_target
+  {l1:addr} (cr: !cairo_ref l1): [l2:addr] (
+    minus (cairo_ref l1, cairo_surface_ref l2)
+  | cairo_surface_ref l2
+  ) = "#atsctrb_cairo_get_group_target"
+// end of [cairo_get_group_target]
 
 //
 // HX-2010-01-23:

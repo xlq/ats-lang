@@ -443,12 +443,6 @@ prval unit_v_elim : unit_v -<prf> void
 
 (* ****** ****** *)
 
-prfun minus_addback // [minus] is defined in basics_sta.sats
-  {vt1:viewt@ype} {v2:view} (pf1: !minus(vt1, v2) >> vt1, pf2: v2): void
-// end of [minus_addback]
-
-(* ****** ****** *)
-
 (*
 
 // it is now supported internally; see [lazy.cats]

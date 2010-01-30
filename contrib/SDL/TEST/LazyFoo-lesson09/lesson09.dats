@@ -200,9 +200,9 @@ implement main () = () where {
   val [l2:addr] buttonSheet = load_image ("LazyFoo-lesson09/button.png")
   val () = assert_errmsg (ref_isnot_null buttonSheet, #LOCATION)
 //
-  val (pf_format | p_format) = SDL_Surface_format (screen)
-  val white_color = SDL_MapRGB (!p_format, (Uint8)0xFF, (Uint8)0xFF, (Uint8)0xFF)
-  prval () = minus_addback (screen, pf_format)
+  val (pf_minus, pf_fmt | p_fmt) = SDL_Surface_format (screen)
+  val white_color = SDL_MapRGB (!p_fmt, (Uint8)0xFF, (Uint8)0xFF, (Uint8)0xFF)
+  prval () = minus_addback (pf_minus, pf_fmt | screen)
 //
   var !p_clips with pf_clips = @[SDL_Rect][4]()
   val () = clips_init (!p_clips)

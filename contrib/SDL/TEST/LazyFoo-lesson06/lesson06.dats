@@ -34,10 +34,10 @@ in
   in
     if ref_is_null (optimizedImage) then optimizedImage else let
       // Map the color key
-      val (pf_format | p_format) = SDL_Surface_format (optimizedImage)
-      val colorkey = SDL_MapRGB (!p_format, (Uint8)0, (Uint8)0xFF, (Uint8)0xFF)
+      val (pf_minus, pf_fmt | p_fmt) = SDL_Surface_format (optimizedImage)
+      val colorkey = SDL_MapRGB (!p_fmt, (Uint8)0, (Uint8)0xFF, (Uint8)0xFF)
       //Set all pixels of color R 0, G 0xFF, B 0xFF to be transparent
-      prval () = minus_addback (optimizedImage, pf_format)
+      prval () = minus_addback (pf_minus, pf_fmt | optimizedImage)
       val _err = SDL_SetColorKey (optimizedImage, SDL_SRCCOLORKEY, colorkey)
     in
       optimizedImage
@@ -89,9 +89,9 @@ implement main () = () where {
   val () = SDL_Rect_init (clip3, (Sint16)100, (Sint16)100, (Uint16)100, (Uint16)100)
 //
   // Fill the screen white
-  val (pf_format | p_format) = SDL_Surface_format (screen)
-  val color = SDL_MapRGB (!p_format, (Uint8)0xFF, (Uint8)0xFF, (Uint8)0xFF)
-  prval () = minus_addback (screen, pf_format)
+  val (pf_minus, pf_fmt | p_fmt) = SDL_Surface_format (screen)
+  val color = SDL_MapRGB (!p_fmt, (Uint8)0xFF, (Uint8)0xFF, (Uint8)0xFF)
+  prval () = minus_addback (pf_minus, pf_fmt | screen)
   val _err = SDL_FillRect_ptr (screen, null, color)
 //
   // Apply the sprites to the screen

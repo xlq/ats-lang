@@ -247,9 +247,9 @@ implement main () = () where {
     val () = if Window_error (myWin) then exit (1)
     val () = assert_errmsg (ref_isnot_null myWin.screen, #LOCATION)
 //
-    val (pf_format | p_format) = SDL_Surface_format (myWin.screen)
-    val color = SDL_MapRGB (!p_format, (Uint8)0xFF, (Uint8)0xFF, (Uint8)0xFF)
-    prval () = minus_addback (myWin.screen, pf_format)
+    val (pf_minus, pf_fmt | p_fmt) = SDL_Surface_format (myWin.screen)
+    val color = SDL_MapRGB (!p_fmt, (Uint8)0xFF, (Uint8)0xFF, (Uint8)0xFF)
+    prval () = minus_addback (pf_minus, pf_fmt | myWin.screen)
 //
     val _err = SDL_FillRect_ptr (myWin.screen, null, color)
     val () = assert_errmsg (_err = 0, #LOCATION)

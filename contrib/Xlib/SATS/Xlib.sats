@@ -62,12 +62,34 @@ viewtypedef Screen_ptr1 = [l:anz] Screen_ptr l
 
 (* ****** ****** *)
 
+//
+// Chapter 2: Display Functions
+//
+
+(* ****** ****** *)
+
+//
+// 2.1: opening the display
+//
+
+(* ****** ****** *)
+
 fun XOpenDisplay (name: string): Display_ptr0 = "#atsctrb_XOpenDisplay"
 
 fun Display_ptr_is_null {l:addr} (p_dpy: !Display_ptr l): bool (l == null)
   = "atspre_ptr_is_null" // defined in $ATSHOME/prelude/CATS/pointer.cats
 fun Display_ptr_isnot_null {l:addr} (p_dpy: !Display_ptr l): bool (l <> null)
   = "atspre_ptr_isnot_null" // defined in $ATSHOME/prelude/CATS/pointer.cats
+
+(* ****** ****** *)
+
+//
+// 2.2: obtaining information about display, image formats or screens
+//
+
+(* ****** ****** *)
+
+// 2.2.1: display macros
 
 (* ****** ****** *)
 
@@ -183,6 +205,10 @@ fun XVendorRelease {l:anz} (dpy: !Display_ptr l): int
 
 (* ****** ****** *)
 
+// 2.2.2: image format functions and macros
+
+(* ****** ****** *)
+
 typedef XPixmapFormatValues =
   $extype_struct "XPixmapFormatValues" of {
   depth= int, bits_per_pixel= int, scanline_pad= int
@@ -225,8 +251,83 @@ fun XDisplayWidthMM {l:anz} (dpy: !Display_ptr l, nscr: int): int
 
 (* ****** ****** *)
 
+// 2.2.3: screen information macros
+
+(* ****** ****** *)
+
+fun XBlackPixelOfScreen {l:anz} (scr: !Screen_ptr l): ulint
+  = "#atsctrb_XBlackPixelOfScreen"
+
+fun XWhitePixelOfScreen {l:anz} (scr: !Screen_ptr l): ulint
+  = "#atsctrb_XWhitePixelOfScreen"
+
+fun XCellsOfScreen {l:anz} (scr: !Screen_ptr l): int
+  = "#atsctrb_XCellsOfScreen"
+
+fun XDefaultColormapOfScreen {l:anz} (scr: !Screen_ptr l): Colormap
+  = "#atsctrb_XDefaultColormapOfScreen"
+
+fun XDefaultDepthOfScreen {l:anz} (scr: !Screen_ptr l): int
+  = "#atsctrb_XDefaultDepthOfScreen"
+
+fun XDefaultGCOfScreen {l:anz} (scr: !Screen_ptr l): GCref
+  = "#atsctrb_XDefaultGCOfScreen"
+
+//
+// the function returns WhenMapped, NotUseful or Always
+//
+fun XDoesBackingStore {l:anz} (scr: !Screen_ptr l): int
+  = "#atsctrb_XDoesBackingStore"
+
+fun XDoesSaveUnders {l:anz} (scr: !Screen_ptr l): bool
+  = "#atsctrb_XDoesSaveUnders"
+
+fun XScreenNumberOfScreen {l:anz} (scr: !Screen_ptr l): int
+  = "#atsctrb_XScreenNumberofScreen"
+
+fun XEventMaskOfScreen {l:anz} (scr: !Screen_ptr l): lint
+  = "#atsctrb_XEventMaskOfScreen"
+
+fun XWidthOfScreen {l:anz} (scr: !Screen_ptr l): int
+  = "#atsctrb_XWidthOfScreen"
+
+fun XWidthMMOfScreen {l:anz} (scr: !Screen_ptr l): int
+  = "#atsctrb_XWidthMMOfScreen"
+
+fun XHeightOfScreen {l:anz} (scr: !Screen_ptr l): int
+  = "#atsctrb_XHeightOfScreen"
+
+fun XHeightMMOfScreen {l:anz} (scr: !Screen_ptr l): int
+  = "#atsctrb_XHeightMMOfScreen"
+
+fun XMaxCmapsOfScreen {l:anz} (scr: !Screen_ptr l): int
+  = "#atsctrb_XMaxCmapsOfScreen"
+
+fun XMinCmapsOfScreen {l:anz} (scr: !Screen_ptr l): int
+  = "#atsctrb_XMinCmapsOfScreen"
+
+fun XPlanesOfScreen {l:anz} (scr: !Screen_ptr l): int
+  = "#atsctrb_XPlanesOfScreen"
+
+fun XRootWindowOfScreen {l:anz} (scr: !Screen_ptr l): Window
+  = "#atsctrb_XRootWindowOfScreen"
+
+(* ****** ****** *)
+
+//
+// 2.3: generating a NoOperation protocol request
+//
+
+(* ****** ****** *)
+
 fun XNoOp {l:anz} (dpy: Display_ptr l): void
   = "#atsctrb_XNoOp"
+
+(* ****** ****** *)
+
+//
+// 2.4: freeing client-created data
+//
 
 (* ****** ****** *)
 
@@ -248,6 +349,10 @@ overload XFree with XFree1
 overload XFree with XFree2
 
 (* ****** ****** *)
+
+//
+// 2.5: closing the display
+//
 
 fun XCloseDisplay (dpy: Display_ptr1): void = "#atsctrb_XCloseDisplay"
 

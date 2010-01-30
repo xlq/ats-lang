@@ -72,7 +72,7 @@ viewtypedef SDL_PixelFormat =
 , Rmask= Uint32, Gmask= Uint32, Bmask= Uint32, Amask= Uint32
 , colorkey= Uint32
 , alpha= Uint8
-, rest=SDL_PixelFormat_rest
+, rest=SDL_PixelFormat_rest // fields that are not exported
 } // end of [SDL_PixelFormat]
 
 (* ****** ****** *)
@@ -103,9 +103,13 @@ fun SDL_Surface_flags {l:anz} (sf: !SDL_Surface_ref l): Uint32
   = "#atsctrb_SDL_Surface_flags"
 
 fun SDL_Surface_format {l:anz} (
-    sf: !SDL_Surface_ref l >> minus (SDL_Surface_ref l, SDL_PixelFormat @ l_format)
-  ) : #[l_format:addr] (SDL_PixelFormat @ l_format | ptr l_format)
-  = "#atsctrb_SDL_Surface_format"
+    sf: !SDL_Surface_ref l
+  ) : [l_format:addr] (
+    minus (SDL_Surface_ref l, SDL_PixelFormat @ l_format)
+  , SDL_PixelFormat @ l_format
+  | ptr l_format
+  ) = "#atsctrb_SDL_Surface_format"
+// end of [SDL_Surface_format]
 
 fun SDL_Surface_w {l:anz} (sf: !SDL_Surface_ref l): int
   = "#atsctrb_SDL_Surface_w"
