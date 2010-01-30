@@ -37,7 +37,7 @@
 (* ****** ****** *)
 
 %{#
-#include "contrib/Xlib/CATS/X.cats"
+// #include "contrib/X11/CATS/X.cats"
 %} // end of [{%#]
 
 (* ****** ****** *)
@@ -52,15 +52,24 @@ abst@ype Time = $extype "Time" // unsigned long int
 // [XID] is unsigned long int  
 
 abst@ype Window = $extype "Window" // = XID
-abst@ype Drawable = $extype "Drawable" // = XID
-
 abst@ype Font = $extype "Font" // = XID
-
 abst@ype Pixmap = $extype "Pixmap" // = XID
 abst@ype Cursor = $extype "Cursor" // = XID
 abst@ype Colormap = $extype "Colormap" // = XID
 abst@ype GContext = $extype "GContext" // = XID
 abst@ype KeySym = $extype "KeySym" // = XID
+
+//
+
+abst@ype Drawable = $extype "Drawable" // = XID
+
+symintr Drawable
+
+castfn Drawable_of_Window (x: Window): Drawable
+overload Drawable with Drawable_of_Window
+
+castfn Drawable_of_Pixmap (x: Pixmap): Drawable
+overload Drawable with Drawable_of_Pixmap
 
 (* ****** ****** *)
 

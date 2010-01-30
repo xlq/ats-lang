@@ -11,8 +11,9 @@
 ######
 
 ATSCC=$(ATSHOME)/bin/atscc
-ATSCTRB=$(ATSHOME)/contrib/cairo/atsctrb_cairo.o
-
+ATSCTRB=\
+  $(ATSHOME)/contrib/X11/atsctrb_X11.o \
+  $(ATSHOME)/contrib/cairo/atsctrb_cairo.o
 
 ######
 
@@ -64,7 +65,7 @@ test8: cairo-test8.dats
 
 test9: cairo-test9.dats
 	$(ATSCC) -o test9 `pkg-config --cflags --libs cairo` $(ATSCTRB) \
-          cairo-test9.dats \
+          cairo-test9.dats -lX11 \
      && ./test9
 
 test10: cairo-test10.dats

@@ -45,6 +45,12 @@
 
 /* ****** ****** */
 
+//
+// Chapter 2: Display Functions
+//
+
+/* ****** ****** */
+
 #define atsctrb_XOpenDisplay XOpenDisplay
 
 /* ****** ****** */
@@ -60,8 +66,10 @@
 
 #define atsctrb_XDefaultGC XDefaultGC
 #define atsctrb_XDefaultRootWindow XDefaultRootWindow
-
+#define atsctrb_XDefaultScreenOfDisplay XDefaultScreenOfDisplay
+#define atsctrb_XScreenOfDisplay XScreenOfDisplay
 #define atsctrb_XDefaultScreen XDefaultScreen
+#define atsctrb_XDefaultVisual XDefaultVisual
 
 #define atsctrb_XDisplayCells XDisplayCells
 #define atsctrb_XDisplayPlanes XDisplayPlanes
@@ -105,6 +113,77 @@
 /* ****** ****** */
 
 #define atsctrb_XCloseDisplay XCloseDisplay
+
+/* ****** ****** */
+
+//
+// Chapter 3: Window Functions
+//
+
+/* ****** ****** */
+
+#define atsctrb_XVisualIDFromVisual XVisualIDFromVisual
+#define atsctrb_XCreateWindow XCreateWindow
+#define atsctrb_XCreateSimpleWindow XCreateSimpleWindow
+#define atsctrb_XDestroyWindow XDestroyWindow
+#define atsctrb_XDestroyWindow XDestroyWindow
+
+#define atsctrb_XMapWindow XMapWindow
+#define atsctrb_XMapRaised XMapRaised
+#define atsctrb_XMapSubwindows XMapSubwindows
+
+#define atsctrb_XUnmapWindow XUnmapWindow
+#define atsctrb_XUnmapSubwindows XUnmapSubwindows
+
+#define atsctrb_XConfigureWindow XConfigureWindow
+#define atsctrb_XMoveWindow XMoveWindow
+#define atsctrb_XResizeWindow XResizeWindow
+#define atsctrb_XMoveResizeWindow XMoveResizeWindow
+#define atsctrb_XSetWindowBorderWidth XSetWindowBorderWidth
+
+#define atsctrb_XRaiseWindow XRaiseWindow
+#define atsctrb_XLowerWindow XLowerWindow
+#define atsctrb_XCirculateSubwindows XCirculateSubwindows
+#define atsctrb_XCirculateSubwindowsUp XCirculateSubwindowsUp
+#define atsctrb_XCirculateSubwindowsDown XCirculateSubwindowsDown
+#define atsctrb_XRestackWindows XRestackWindows
+
+#define atsctrb_XChangeWindowAttributes XChangeWindowAttributes
+#define atsctrb_XSetWindowBackground XSetWindowBackground
+#define atsctrb_XSetWindowBackgroundPixmap XSetWindowBackgroundPixmap
+#define atsctrb_XSetWindowBorder XSetWindowBorder
+#define atsctrb_XSetWindowBorderPixmap XSetWindowBorderPixmap
+#define atsctrb_XSetWindowColormap XSetWindowColormap
+
+#define atsctrb_XDefineCursor XDefineCursor
+#define atsctrb_XUndefineCursor XUndefineCursor
+
+/* ****** ****** */
+
+//
+// Chapter 4: Window Information Functions
+//
+
+/* ****** ****** */
+
+#define atsctrb_XQueryTree XQueryTree
+#define atsctrb_XGetWindowAttributes XGetWindowAttributes
+#define atsctrb_XGetWindowAttributes XGetWindowAttributes
+
+/* ****** ****** */
+
+//
+// Chapter 11: Event Handling Functions
+//
+
+/* ****** ****** */
+
+#define atsctrb_XSelectInput XSelectInput
+
+/* ****** ****** */
+
+#define atsctrb_XFlush XFlush
+#define atsctrb_XSync XSync
 
 /* ****** ****** */
 

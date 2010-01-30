@@ -46,6 +46,7 @@
 #include <cairo-pdf.h>
 #include <cairo-ps.h>
 #include <cairo-svg.h>
+#include <cairo-xlib.h>
 
 /* ****** ****** */
 
@@ -562,6 +563,35 @@ atsctrb_cairo_svg_get_versions
   cairo_quartz_surface_get_cg_context
 
 #endif // end of [CAIRO_HAS_QUARTZ_SURFACE]
+
+/* ****** ****** */
+
+#if (CAIRO_HAS_XLIB_SURFACE)
+
+#define atsctrb_cairo_xlib_surface_create \
+  cairo_xlib_surface_create
+
+#define atsctrb_cairo_xlib_surface_create_for_bitmap \
+  cairo_xlib_surface_create_for_bitmap
+
+#define atsctrb_cairo_xlib_surface_set_size \
+  cairo_xlib_surface_set_size
+
+#define atsctrb_cairo_xlib_surface_get_drawable \
+ cairo_xlib_surface_get_drawable
+
+#define atsctrb_cairo_xlib_surface_set_drawable \
+  cairo_xlib_surface_set_drawable
+
+#define atsctrb_cairo_xlib_surface_get_display cairo_xlib_surface_get_display
+#define atsctrb_cairo_xlib_surface_get_screen cairo_xlib_surface_get_screen
+#define atsctrb_cairo_xlib_surface_get_visual cairo_xlib_surface_get_visual
+
+#define atsctrb_cairo_xlib_surface_get_width cairo_xlib_surface_get_width
+#define atsctrb_cairo_xlib_surface_get_height cairo_xlib_surface_get_height
+#define atsctrb_cairo_xlib_surface_get_depth cairo_xlib_surface_get_depth
+
+#endif // end of [CAIRO_HAS_XLIB_SURFACE]
 
 /* ****** ****** */
 

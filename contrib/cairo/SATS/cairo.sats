@@ -1502,6 +1502,83 @@ fun cairo_quartz_surface_get_cg_context
 (* ****** ****** *)
 
 //
+// Xlib surface
+//
+
+(*
+#define CAIRO_HAS_XLIB_SURFACE
+*)
+
+staload X = "contrib/X11/SATS/X.sats"
+staload Xlib = "contrib/X11/SATS/Xlib.sats"
+stadef Drawable = $X.Drawable
+stadef Pixmap = $X.Pixmap
+stadef Display_ptr (l:addr) = $Xlib.Display_ptr l
+stadef Screen_ptr (l:addr) = $Xlib.Screen_ptr l
+stadef Visual_ptr (l:addr) = $Xlib.Visual_ptr l
+
+fun cairo_xlib_surface_create {l1,l2:anz} (
+    dpy: !Display_ptr l1
+  , drw: Drawable, visual: !Visual_ptr l2, width: int, height: int
+  ) : cairo_surface_ref
+  = "#atsctrb_cairo_xlib_surface_create"
+  
+fun cairo_xlib_surface_create_for_bitmap {l1,l2:anz} (
+    dpy: !Display_ptr l1
+  , bitmap: Pixmap, scr: !Screen_ptr l2, width: int, height: int
+  ) : cairo_surface_ref
+  = "#atsctrb_cairo_xlib_surface_create_for_bitmap"
+
+fun cairo_xlib_surface_set_size {l:addr}
+  (surface: !cairo_surface_ref l, width: int, height: int): void
+  = "#atsctrb_cairo_xlib_surface_set_size"
+
+fun cairo_xlib_surface_set_drawable {l:addr} (
+    surface: !cairo_surface_ref l, drw: Drawable, width: int, height: int
+  ) : void = "#atsctrb_cairo_xlib_surface_set_drawable"
+// end of [cairo_xlib_surface_set_drawable]
+
+fun cairo_xlib_surface_get_drawable
+  {l:addr} (surface: !cairo_surface_ref l): Drawable
+  = "#atsctrb_cairo_xlib_surface_get_drawable"
+// end of [cairo_xlib_surface_get_drawable]
+
+fun cairo_xlib_surface_get_display
+  {l1:addr} (surface: !cairo_surface_ref l1)
+  : [l2:anz] (
+    minus (cairo_surface_ref l1, Display_ptr l2) | Display_ptr l2
+  ) = "#atsctrb_cairo_xlib_surface_get_display"
+// end of [cairo_xlib_surface_get_display]
+
+fun cairo_xlib_surface_get_screen
+  {l1:addr} (surface: !cairo_surface_ref l1)
+  : [l2:anz] (
+    minus (cairo_surface_ref l1, Screen_ptr l2) | Screen_ptr l2
+  ) = "#atsctrb_cairo_xlib_surface_get_screen"
+// end of [cairo_xlib_surface_get_screen]
+
+fun cairo_xlib_surface_get_visual
+  {l1:addr} (surface: !cairo_surface_ref l1)
+  : [l2:anz] (
+    minus (cairo_surface_ref l1, Visual_ptr l2) | Visual_ptr l2
+  ) = "#atsctrb_cairo_xlib_surface_get_visual"
+// end of [cairo_xlib_surface_get_visual]
+
+fun cairo_xlib_surface_get_width
+  {l:addr} (surface: !cairo_surface_ref l): int
+  = "#atsctrb_cairo_xlib_surface_get_width"
+
+fun cairo_xlib_surface_get_height
+  {l:addr} (surface: !cairo_surface_ref l): int
+  = "#atsctrb_cairo_xlib_surface_get_height"
+
+fun cairo_xlib_surface_get_depth
+  {l:addr} (surface: !cairo_surface_ref l): int
+  = "#atsctrb_cairo_xlib_surface_get_depth"
+
+(* ****** ****** *)
+
+//
 // utilities for drawing
 //
 

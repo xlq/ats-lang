@@ -37,7 +37,7 @@
 (* ****** ****** *)
 
 %{#
-#include "contrib/Xlib/CATS/Xlib.cats"
+#include "contrib/X11/CATS/Xlib.cats"
 %} // end of [{%#]
 
 (* ****** ****** *)
@@ -63,6 +63,11 @@ viewtypedef Display_ptr1 = [l:anz] Display_ptr l
 absviewtype Screen_ptr (l:addr) // Screen*
 viewtypedef Screen_ptr0 = [l:addr] Screen_ptr l
 viewtypedef Screen_ptr1 = [l:anz] Screen_ptr l
+
+// it is just a pointer; it is not reference counted
+absviewtype Visual_ptr (l:addr) // Visual*
+viewtypedef Visual_ptr0 = [l:addr] Visual_ptr l
+viewtypedef Visual_ptr1 = [l:anz] Visual_ptr l
 
 (* ****** ****** *)
 
@@ -138,10 +143,29 @@ fun XDefaultGC {l:anz}
 fun XDefaultRootWindow {l:anz} (dpy: !Display_ptr l): Window
   = "#atsctrb_XDefaultRootWindow"
 
-(* ****** ****** *)
+fun XDefaultScreenOfDisplay
+  {l1:anz} (dpy: !Display_ptr l1)
+  : [l2:anz] (
+    minus (Display_ptr l1, Screen_ptr l2) | Screen_ptr l2
+  ) = "#atsctrb_XDefaultScreenOfDisplay"
+// end of [XDefaultScreenOfDisplay]
+
+fun XScreenOfDisplay
+  {l1:anz} (dpy: !Display_ptr l1, nsrc: int)
+  : [l2:anz] (
+    minus (Display_ptr l1, Screen_ptr l2) | Screen_ptr l2
+  ) = "#atsctrb_XDefaultScreenOfDisplay"
+// end of [XDefaultScreenOfDisplay]
 
 fun XDefaultScreen {l:anz} (dpy: !Display_ptr l): int(*nscr*)
   = "#atsctrb_XDefaultScreen"
+
+fun XDefaultVisual
+  {l1:anz} (dpy: !Display_ptr l1, nsrc: int)
+  : [l2:anz] (
+    minus (Display_ptr l1, Visual_ptr l2) | Visual_ptr l2
+  ) = "#atsctrb_XDefaultVisual"
+// end of [XDefaultVisual]
 
 // number of entries in the default colormap
 fun XDisplayCells {l:anz}
@@ -219,7 +243,7 @@ fun XListPixmapFormats {l:anz}
   ) = "#atsctrb_XListPixmapFormats"
 
 macdef LSBFirst = $extval (int, "LSBFirst")
-macdef <SBFirst = $extval (int, "MSBFirst")
+macdef MSBFirst = $extval (int, "MSBFirst")
 
 fun XImageByteOrder {l:anz} (dpy: !Display_ptr l): int
   = "#atsctrb_XImageByteOrder"
@@ -362,9 +386,24 @@ fun XSetCloseDownMode {l:anz} (dpy: Display_ptr l, mode: close_mode_t): void
 
 (* ****** ****** *)
 
+//
 // Chapter 3: Window Functions
+//
 
 (* ****** ****** *)
+
+//
+// 3.1: visual types
+//
+
+fun XVisualIDFromVisual {l:anz} (visual: !Visual_ptr l): VisualID
+  = "#atsctrb_XVisualIDFromVisual"
+  
+(* ****** ****** *)
+
+//
+// 3.2: window attributes
+//
 
 typedef XSetWindowAttributes =
   $extype_struct "XSetWindowAttributes" of {
@@ -384,6 +423,285 @@ typedef XSetWindowAttributes =
 , colormap= Colormap
 , cursor= Cursor
 } // end of [XSetWindowAttributes]
+
+(* ****** ****** *)
+
+//
+// 3.3: creating windows
+//
+
+fun XCreateWindow {ld,lv:anz} (
+    dpy: !Display_ptr ld
+  , parent: Window
+  , x: int, y: int
+  , width: uint, height: uint
+  , border_width: uint
+  , depth: uint // can [depth] be negative?
+  , _class: uint
+  , visual: !Visual_ptr lv
+  , valuemask: ulint
+  , attr: &XSetWindowAttributes
+  ) : Window
+  = "#atsctrb_XCreateWindow"
+// end of [XCreateWindow]
+
+fun XCreateSimpleWindow {ld:anz} (
+    dpy: !Display_ptr ld
+  , parent: Window
+  , x: int, y: int
+  , width: uint, height: uint
+  , border_width: uint
+  , border: ulint
+  , background: ulint
+  ) : Window
+  = "#atsctrb_XCreateSimpleWindow"
+// end of [XCreateSimpleWindow]
+
+(* ****** ****** *)
+
+//
+// 3.4: destroying windows
+//
+
+fun XDestroyWindow {l:anz}
+  (dpy: !Display_ptr l, win: Window): void
+  = "#atsctrb_XDestroyWindow"
+
+fun XDestroySubwindows {l:anz}
+  (dpy: !Display_ptr l, win: Window): void
+  = "#atsctrb_XDestroyWindow"
+
+(* ****** ****** *)
+
+//
+// 3.5: mapping windows
+//
+
+fun XMapWindow {l:anz}
+  (dpy: !Display_ptr l, win: Window): void
+  = "#atsctrb_XMapWindow"
+
+fun XMapRaised {l:anz}
+  (dpy: !Display_ptr l, win: Window): void
+  = "#atsctrb_XMapRaised"
+
+fun XMapSubwindows {l:anz}
+  (dpy: !Display_ptr l, win: Window): void
+  = "#atsctrb_XMapSubwindows"
+
+(* ****** ****** *)
+
+//
+// 3.6: unmapping windows
+//
+
+fun XUnmapWindow {l:anz}
+  (dpy: !Display_ptr l, win: Window): void
+  = "#atsctrb_XUnmapWindow"
+
+fun XUnmapSubwindows {l:anz}
+  (dpy: !Display_ptr l, win: Window): void
+  = "#atsctrb_XUnmapSubwindows"
+
+(* ****** ****** *)
+
+//
+// 3.7: configuring windows
+//
+
+typedef XWindowChanges =
+  $extype_struct "XWindowChanges" of {
+  x= int, y= int
+, width= int, height= int
+, border_width= int
+, sibling= Window
+, stack_mode= int
+} // end of [XWindowChanges]
+
+fun XConfigureWindow {l:addr} (
+    dpy: !Display_ptr l, win: Window, valmask: uint, values: &XWindowChanges
+  ) : void
+  = "#atsctrb_XConfigureWindow"
+
+fun XMoveWindow {l:addr}
+  (dpy: !Display_ptr l, win: Window, x: int, y: int): void
+  = "#atsctrb_XMoveWindow"
+
+fun XResizeWindow {l:addr}
+  (dpy: !Display_ptr l, win: Window, width: uint, height: uint): void
+  = "#atsctrb_XResizeWindow"
+
+fun XMoveResizeWindow {l:addr} (
+    dpy: !Display_ptr l, win: Window, x: int, y: int, width: uint, height: uint
+  ) : void
+  = "#atsctrb_XMoveResizeWindow"
+
+fun XSetWindowBorderWidth {l:addr}
+  (dpy: !Display_ptr l, win: Window, border_width: uint): void
+  = "#atsctrb_XSetWindowBorderWidth"
+
+(* ****** ****** *)
+
+//
+// 3.8: changing windows stacking order
+//
+
+fun XRaiseWindow {l:anz}
+  (dpy: !Display_ptr l, win: Window): void
+  = "#atsctrb_XRaiseWindow"
+
+fun XLowerWindow {l:anz}
+  (dpy: !Display_ptr l, win: Window): void
+  = "#atsctrb_XLowerWindow"
+
+fun XCirculateSubwindows {l:anz}
+  (dpy: !Display_ptr l, win: Window, dir: int): void
+  = "#atsctrb_XCirculateSubwindows"
+
+fun XCirculateSubwindowsUp {l:anz}
+  (dpy: !Display_ptr l, win: Window): void
+  = "#atsctrb_XCirculateSubwindowsUp"
+
+fun XCirculateSubwindowsDown {l:anz}
+  (dpy: !Display_ptr l, win: Window): void
+  = "#atsctrb_XCirculateSubwindowsDown"
+
+fun XRestackWindows {l:anz} {n:nat}
+  (dpy: !Display_ptr l, wins: &(@[Window][n]), nwin: int n): void
+  = "#atsctrb_XRestackWindows"
+
+(* ****** ****** *)
+
+//
+// 3.9: changing windows attributes
+//
+
+fun XChangeWindowAttributes {l:anz} (
+    dpy: !Display_ptr l, win: Window, valmask: ulint, attr: &XSetWindowAttributes
+  ) : void
+  = "#atsctrb_XChangeWindowAttributes"
+
+fun XSetWindowBackground {l:anz}
+  (dpy: !Display_ptr l, win: Window, bg_pixel: ulint): void
+  = "#atsctrb_XSetWindowBackground"
+
+fun XSetWindowBackgroundPixmap {l:anz}
+  (dpy: !Display_ptr l, win: Window, bg_pixmap: Pixmap): void
+  = "#atsctrb_XSetWindowBackgroundPixmap"
+
+fun XSetWindowBorder {l:anz}
+  (dpy: !Display_ptr l, win: Window, bd_pixel: ulint): void
+  = "#atsctrb_XSetWindowBorder"
+
+fun XSetWindowBorderPixmap {l:anz}
+  (dpy: !Display_ptr l, win: Window, bd_pixmap: Pixmap): void
+  = "#atsctrb_XSetWindowBorderPixmap"
+
+fun XSetWindowColormap {l:anz}
+  (dpy: !Display_ptr l, win: Window, colormap: Colormap): void
+  = "#atsctrb_XSetWindowColormap"
+
+fun XDefineCursor {l:anz}
+  (dpy: !Display_ptr l, win: Window, cursor: Cursor): void
+  = "#atsctrb_XDefineCursor"
+
+fun XUndefineCursor {l:anz} (dpy: !Display_ptr l, win: Window): void
+  = "#atsctrb_XUndefineCursor"
+
+(* ****** ****** *)
+
+//
+// Chapter 4: Window Information Functions
+//
+
+(* ****** ****** *)
+
+abst@ype Status = $extype "Status" // = int
+castfn int_of_Status (x: Status):<> int
+overload int_of with int_of_Status
+
+fun XQueryTree {l:anz} (
+    dpy: !Display_ptr l
+  , win: Window
+  , root: &Window? >> Window
+  , parent: &Window? >> Window
+  , children: &ptr? >> ptr l
+  , nchilren: &int >> int n
+  ) : #[l:addr;n:nat] (
+    XFree_v (Window, n, l), array_v (Window, n, l) | Status
+  ) = "#atsctrb_XQueryTree"
+// end of [XQueryTree]
+
+typedef XWindowAttributes =
+  $extype_struct "XWindowAttributes" of {
+  x= int, y= int
+, width= uint, height= uint
+, border_width= uint
+, depth= int
+// , visual= Visual_ptr1
+, root= Window
+, _class= int
+, bit_gravity= int
+, win_gravity= int
+, backing_store= int
+, backing_planes= ulint
+, backing_pixel= ulint
+, save_under= bool
+, colormap= Colormap
+, map_installed= bool
+, map_state= int
+, all_event_mask= lint
+, your_event_mask= lint
+, do_not_propagate_mask= lint
+, override_redirect= bool
+// , screen= Screen_ptr1
+} // end of [XWindowAttributes]
+
+fun XGetWindowAttributes {l:anz} (
+    dpy: !Display_ptr l, win: Window
+  , attr: &XWindowAttributes? >> XWindowAttributes
+  ) : Status
+  = "#atsctrb_XGetWindowAttributes"
+
+fun XGetGeometry {l:anz} (
+    dpy: !Display_ptr l, drw: Drawable
+  , root: &Window? >> Window
+  , x: &int? >> int, y: &int? >> int
+  , width: &uint? >> uint, height: &uint? >> uint
+  , border_width: &uint? >> uint
+  , depth: &uint? >> uint
+  ) : Status
+  = "#atsctrb_XGetWindowAttributes"
+
+(* ****** ****** *)
+
+//
+// 4.2: translating screen coordinates
+//
+
+(* ****** ****** *)
+
+//
+// Chapter 11: Event Handling functions
+//
+
+(* ****** ****** *)
+
+// 11.1: selecting events
+
+fun XSelectInput {l:anz}
+  (dpy: !Display_ptr l, win: Window, eventmask: lint): void
+  = "#atsctrb_XSelectInput"
+
+(* ****** ****** *)
+
+// 11.2: handling the output buffer
+
+fun XFlush {l:anz} (dpy: !Display_ptr l): void
+  = "#atsctrb_XFlush"
+
+fun XSync {l:anz} (dpy: !Display_ptr l, discard: bool): void
+  = "#atsctrb_XSync"
 
 (* ****** ****** *)
 
