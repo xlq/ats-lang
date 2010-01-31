@@ -679,6 +679,119 @@ fun XGetGeometry {l:anz} (
 // 4.2: translating screen coordinates
 //
 
+fun XTranslateCoordinates {l:anz} (
+    dpy: !Display_ptr l
+  , win_src: Window, win_dst: Window
+  , x_src: int, y_src: int
+  , x_dst: &int? >> int, y_dst: &int? >> int
+  , child: &Window? >> Window
+  ) : bool
+  = "#atsctrb_XTranslateCoordinates"
+
+fun XQueryPointer {l:anz} (
+    dpy: !Display_ptr l
+  , win: Window
+  , root: &Window? >> Window, child: &Window? >> Window
+  , x_root: &int? >> int, y_root: &int? >> int
+  , x_win: &int? >> int, y_win: &int? >> int
+  , mask: &uint? >> uint
+  ) : bool
+  = "#atsctrb_XQueryPointer"
+
+(* ****** ****** *)
+
+//
+// 4.3: properties and atoms
+//
+
+fun XInternAtom {l:anz} (
+    dpy: !Display_ptr l, atom_name: string, only_if_exists: bool
+  ) : Atom = "#atsctrb_XInternAtom"
+// end of [XInternAtom]
+
+fun XGetAtomName {l:anz}
+  (dpy: !Display_ptr l, atom: Atom)
+  : [l_str:addr] (XFree_v l, strbuf_v l_str | ptr l_str)
+  = "#atsctrb_XGetAtomName"
+// end of [XGetAtomName]
+
+(* ****** ****** *)
+
+//
+// 4.4: obtaining and changing window properties
+//
+
+(* ****** ****** *)
+
+//
+// Chapter 5: Pixmap and Cursor Functions
+//
+
+(* ****** ****** *)
+
+//
+// 5.1: creating and freeing pixmaps
+//
+
+fun XCreatePixmap {l:anz} (
+    dpy: !Display_ptr l
+  , drw: Drawable, width: uint, height: uint, depth: uint
+  ) : Pixmap
+  = "#atsctrb_XCreatePixmap"
+
+fun XFreePixmap
+  {l:anz} (dpy: !Display_ptr l, pixmap: Pixmap): void
+  = "#atsctrb_XFreePixmap"
+
+(* ****** ****** *)
+
+//
+// 5.2: creating, recoloring and freeing cursors
+//
+
+fun XCreateFontCursor
+  {l:anz} (dpy: !Display_ptr l, shape: uint) : Cursor
+  = "#atsctrb_XCreateFontCursor"
+
+fun XFreeCursor
+  {l:anz} (dpy: !Display_ptr l, cursor: Cursor): void
+  = "#atsctrb_XFreeCursor"
+
+(* ****** ****** *)
+
+//
+// Chapter 6: Color Management Functions
+//
+
+(* ****** ****** *)
+
+// 6.1: color structures
+
+typedef XColor =
+  $extype_struct "XColor" of {
+  pixel= ulint
+, red= usint, green= usint, blue= usint
+, flags= char, pad= char
+} // end of [XColor]
+
+(* ****** ****** *)
+
+// 6.4: creating, copying and destroying
+
+fun XCreateColormap {l1,l2:addr} (
+    dsp: !Display_ptr l1
+  , win: Window, visual: !Visual_ptr l2, alloc: int
+  ) : Colormap
+  = "#atsctrb_XCreateColormap"
+
+fun XCopyColormapAndFree {l:addr}
+  (dpy: !Display_ptr l, colormap: Colormap): void
+  = "#atsctrb_XCopyColormapAndFree"
+
+fun XFreeColormap {l:addr}
+  (dpy: !Display_ptr l, colormap: Colormap): void
+  = "#atsctrb_XFreeColormap"
+
 (* ****** ****** *)
 
 //

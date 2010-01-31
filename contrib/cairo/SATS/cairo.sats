@@ -1659,7 +1659,9 @@ fun cairo_matrix_transform_point (
 
 (* ****** ****** *)
 
+//
 // error handling
+//
 
 // all error strings are statically allocated
 fun cairo_status_to_string (status: cairo_status_t):<> string
