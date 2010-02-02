@@ -98,6 +98,7 @@ datatype staerr =
   | STAERR_s2exp_tyleq of (loc_t, s2exp, s2exp)
   | STAERR_s2exp_equal of (loc_t, s2exp, s2exp)
   | STAERR_funclo_equal of (loc_t, funclo, funclo)
+  | STAERR_s2eff_leq of (loc_t, s2eff, s2eff)
 // end of [datatype]
 
 viewtypedef staerrlst_vt = List_vt (staerr)
@@ -156,6 +157,15 @@ fn prerr_staerr_s2exp_equal
   prerr "The actual term is: "; pprerr_s2exp s2e1; prerr_newline ();
 end // end of [prerr_staerr_s2exp_equal]
 
+fn prerr_staerr_s2eff_leq
+  (loc: loc_t, s2fe1: s2eff, s2fe2: s2eff): void = begin
+  prerr_loc_error3 (loc);
+  $Deb.debug_prerrf (": %s: s2exp_equal_solve", @(THISFILENAME));
+  prerr ": mismatch of effects:\n";
+  prerr "The needed term is: "; prerr_s2eff s2fe2; prerr_newline ();
+  prerr "The actual term is: "; prerr_s2eff s2fe1; prerr_newline ();  
+end // end of [prerr_staerr_s2eff_leq]
+
 fn prerr_the_staerrlst () = let
   fun loop (xs: staerrlst_vt): void = case+ xs of
     | ~list_vt_cons (x, xs) => let
@@ -163,6 +173,7 @@ fn prerr_the_staerrlst () = let
         | STAERR_funclo_equal (loc, fc1, fc2) => prerr_staerr_funclo_equal (loc, fc1, fc2)
         | STAERR_s2exp_equal (loc, s2e1, s2e2) => prerr_staerr_s2exp_equal (loc, s2e1, s2e2)
         | STAERR_s2exp_tyleq (loc, s2e1, s2e2) => prerr_staerr_s2exp_tyleq (loc, s2e1, s2e2)
+        | STAERR_s2eff_leq (loc, s2fe1, s2fe2) => prerr_staerr_s2eff_leq (loc, s2fe1, s2fe2)
         // end of [case] // end of [val]
       in
         loop (xs)
@@ -548,20 +559,14 @@ implement
     | 0 (* topization *) => begin
         if s2exp_is_nonlin s2e10 then begin
           s2exp_size_equal_solve_err (loc0, s2e10, s2e20, err)
-        end else begin
-          err := err + 1
-        end
+        end else (err := err + 1) // end of [if]
       end // end of [knd2 = 0]
     | _ (* typization *) => begin case+ s2en10 of
       | S2Etop (knd1, s2e1) =>
           if knd1 = 1 then begin
             s2exp_tyleq_solve_err (loc0, s2e1, s2e2, err)
-          end else begin
-            err := err + 1
-          end // end of [if]
-      | _ => begin
-          err := err + 1 
-        end (* end of [_] *)
+          end else (err := err + 1) // end of [if]
+      | _ => (err := err + 1)
       end (* end of [knd2 = 1] *)
     end // end of [_, S2Etop]
   | (S2Euni _, _) => let
@@ -905,8 +910,12 @@ implement s2eff_leq_solve_err (loc0, s2fe1, s2fe2, err) = let
   ) : int // end of [val]
 in
   if ans > 0 then
-    (if ~(s2eff_contain_s2eff (s2fe2, s2fe1)) then (err := err + 1))
-  else ()
+    if s2eff_contain_s2eff (s2fe2, s2fe1) then () else let
+      val () = the_staerrlst_add (STAERR_s2eff_leq (loc0, s2fe1, s2fe2))
+    in
+      err := err + 1
+    end // end of [if]
+  // end of [if]
 end // end of [s2eff_leq_solve_err]
 
 (* ****** ****** *)

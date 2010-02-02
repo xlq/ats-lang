@@ -757,7 +757,7 @@ fn emit_staload {m:file_mode} (
         val () = aux_staload_dec (out, !fils_rest)
       in
         fold@ fils
-      end
+      end // end of [STAFILELSTcons]
     | STAFILELSTnil () => fold@ fils
   end // end of [ats_staload_dec]
 //
@@ -769,7 +769,7 @@ fn emit_staload {m:file_mode} (
         val () = aux_staload_app (out, !fils_rest)
       in
         fold@ fils
-      end
+      end // end of [STAFILELSTcons]
     | STAFILELSTnil () => fold@ fils
   end // end of [ats_staload_app]
 //
@@ -786,7 +786,7 @@ fn emit_staload {m:file_mode} (
           val () = fprintf1_exn (pf | out, ".tag = %i ;\n", @(tag))
         in
           aux_conlst (out, d2cs)
-        end
+        end // end of [D2CONLSTcons]
       | D2CONLSTnil () => ()
     end // end of [aux_conlst]
     fn aux_cst (out: &FILE m, s2c: s2cst_t)
@@ -827,7 +827,7 @@ fn emit_staload {m:file_mode} (
           val n = aux (out, i+1, !d2cs1)
         in
           fold@ d2cs; n
-        end
+        end // end of [EXNCONLSTcons]
       | EXNCONLSTnil () => (fold@ d2cs; i)
     end // end of [aux]
   in

@@ -1179,6 +1179,11 @@ overload tostring with tostring_ullint
 
 (* ****** ****** *)
 
+typedef sint = int_short_t0ype
+typedef usint = uint_short_t0ype
+
+(* ****** ****** *)
+
 #if VERBOSE_PRELUDE #then
 
 #print "Loading [integer.sats] finishes!\n"

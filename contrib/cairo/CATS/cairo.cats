@@ -439,7 +439,24 @@ typedef cairo_font_type_t ats_cairo_font_type_type ;
 // surfaces for drawing
 //
 
+#define atsctrb_cairo_surface_create_similar cairo_surface_create_similar
 #define atsctrb_cairo_surface_destroy cairo_surface_destroy
+#define atsctrb_cairo_surface_reference cairo_surface_reference
+#define atsctrb_cairo_surface_status cairo_surface_status
+#define atsctrb_cairo_surface_finish cairo_surface_finish
+#define atsctrb_cairo_surface_flush cairo_surface_flush
+#define atsctrb_cairo_surface_get_font_options cairo_surface_get_font_options
+#define atsctrb_cairo_surface_get_content cairo_surface_get_content
+#define atsctrb_cairo_surface_mark_dirty cairo_surface_mark_dirty
+#define atsctrb_cairo_surface_mark_dirty_rectangle cairo_surface_mark_dirty_rectangle
+#define atsctrb_cairo_get_device_offset cairo_get_device_offset
+#define atsctrb_cairo_set_device_offset cairo_set_device_offset
+
+#define atsctrb_cairo_surface_get_type cairo_surface_get_type
+#define atsctrb_cairo_surface_get_reference_count cairo_surface_get_reference_count
+
+#define atsctrb_cairo_surface_copy_page cairo_surface_copy_page
+#define atsctrb_cairo_surface_show_page cairo_surface_show_page
 
 /* ****** ****** */
 

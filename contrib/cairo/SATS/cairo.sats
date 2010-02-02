@@ -1232,9 +1232,123 @@ fun cairo_ft_scaled_font_unlock_face {l:addr}
 
 (* ****** ****** *)
 
+fun cairo_surface_create_similar
+  {l:addr} (
+    sf: !cairo_surface_ref l
+  , content: cairo_content_t, width: int, height: int
+  ) : cairo_surface_ref
+  = "#atsctrb_cairo_surface_create_similar"
+// end of [cairo_surface_create_similar]
+
+fun cairo_surface_reference {l:addr}
+  (sf: !cairo_surface_ref l): cairo_surface_ref l
+  = "#atsctrb_cairo_surface_reference"
+// end of [cairo_surface_reference]
+
 fun cairo_surface_destroy
   (sf: cairo_surface_ref): void = "#atsctrb_cairo_surface_destroy"
 // end of [cairo_surface_destroy]
+
+fun cairo_surface_status {l:addr}
+  (sf: !cairo_surface_ref l): cairo_status_t = "#atsctrb_cairo_surface_status"
+// end of [cairo_surface_status]
+
+fun cairo_surface_finish {l:addr}
+  (sf: !cairo_surface_ref l): void = "#atsctrb_cairo_surface_finish"
+// end of [cairo_surface_finish]
+
+fun cairo_surface_flush {l:addr}
+  (sf: !cairo_surface_ref l): void = "#atsctrb_cairo_surface_flush"
+// end of [cairo_surface_flush]
+
+fun cairo_surface_get_font_options {l1,l2:addr}
+  (sf: !cairo_surface_ref l1, options: !cairo_font_options_ptr l2): void
+  = "#atsctrb_cairo_surface_get_font_options"
+// end of [cairo_surface_get_font_options]
+
+fun cairo_surface_get_content {l:addr}
+  (sf: !cairo_surface_ref l): cairo_content_t
+  = "#atsctrb_cairo_surface_get_content"
+// end of [cairo_surface_get_content]
+
+fun cairo_surface_mark_dirty {l:addr}
+  (sf: !cairo_surface_ref l): void = "#atsctrb_cairo_surface_mark_dirty"
+// end of [cairo_surface_mark_dirty]
+
+fun cairo_surface_mark_dirty_rectangle {l:addr}
+  (sf: !cairo_surface_ref l, x: int, y: int, width: int, height: int): void
+  = "#atsctrb_cairo_surface_mark_dirty"
+// end of [cairo_surface_mark_dirty_rectangle]
+
+fun cairo_get_device_offset {l:addr} (
+    sf: !cairo_surface_ref l
+  , x_ofs: &double? >> double, y_ofs: &double? >> double
+  ) : void
+  = "#atsctrb_cairo_get_device_offset"
+// end of [cairo_get_device_offset]
+
+fun cairo_set_device_offset {l:addr}
+  (sf: !cairo_surface_ref l, x_ofs: double, y_ofs: double): void
+  = "#atsctrb_cairo_set_device_offset"
+// end of [cairo_set_device_offset]
+
+// enum type
+abstype cairo_surface_type_t = $extype "cairo_surface_type_t"
+
+macdef CAIRO_SURFACE_TYPE_IMAGE =
+  $extval (cairo_surface_type_t, "CAIRO_SURFACE_TYPE_IMAGE")
+
+macdef CAIRO_SURFACE_TYPE_PDF =
+  $extval (cairo_surface_type_t, "CAIRO_SURFACE_TYPE_PDF")
+
+macdef CAIRO_SURFACE_TYPE_PS =
+  $extval (cairo_surface_type_t, "CAIRO_SURFACE_TYPE_PS")
+
+macdef CAIRO_SURFACE_TYPE_XLIB =
+  $extval (cairo_surface_type_t, "CAIRO_SURFACE_TYPE_XLIB")
+
+macdef CAIRO_SURFACE_TYPE_XCB =
+  $extval (cairo_surface_type_t, "CAIRO_SURFACE_TYPE_XCB")
+
+macdef CAIRO_SURFACE_TYPE_GLITZ =
+  $extval (cairo_surface_type_t, "CAIRO_SURFACE_TYPE_GLITZ")
+
+macdef CAIRO_SURFACE_TYPE_QUARTZ =
+  $extval (cairo_surface_type_t, "CAIRO_SURFACE_TYPE_QUARTZ")
+macdef CAIRO_SURFACE_TYPE_QUARTZ_IMAGE =
+  $extval (cairo_surface_type_t, "CAIRO_SURFACE_TYPE_QUARTZ_IMAGE")
+
+macdef CAIRO_SURFACE_TYPE_WIN32 =
+  $extval (cairo_surface_type_t, "CAIRO_SURFACE_TYPE_WIN32")
+macdef CAIRO_SURFACE_TYPE_WIN32_PRINTING =
+  $extval (cairo_surface_type_t, "CAIRO_SURFACE_TYPE_WIN32_PRINTING")
+
+macdef CAIRO_SURFACE_TYPE_BEOS =
+  $extval (cairo_surface_type_t, "CAIRO_SURFACE_TYPE_BEOS")
+
+macdef CAIRO_SURFACE_TYPE_DIRECTFB =
+  $extval (cairo_surface_type_t, "CAIRO_SURFACE_TYPE_DIRECTFB")
+
+macdef CAIRO_SURFACE_TYPE_SVG =
+  $extval (cairo_surface_type_t, "CAIRO_SURFACE_TYPE_SVG")
+
+macdef CAIRO_SURFACE_TYPE_OS2 =
+  $extval (cairo_surface_type_t, "CAIRO_SURFACE_TYPE_OS2")
+
+fun cairo_surface_get_type {l:addr}
+  (sf: !cairo_surface_ref l): cairo_surface_type_t
+  = "#atsctrb_cairo_surface_get_type"
+// end of [cairo_surface_get_type]
+
+fun cairo_surface_get_reference_count {l:addr}
+  (sf: !cairo_surface_ref l): int = "#atsctrb_cairo_surface_get_reference_count"
+// end of [cairo_surface_get_reference_count]
+
+fun cairo_surface_copy_page {l:addr} (sf: !cairo_surface_ref l): void
+  = "#atsctrb_cairo_surface_copy_page"
+
+fun cairo_surface_show_page {l:addr} (sf: !cairo_surface_ref l): void
+  = "#atsctrb_cairo_surface_show_page"
 
 (* ****** ****** *)
 

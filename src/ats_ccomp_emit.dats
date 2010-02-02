@@ -568,7 +568,7 @@ fn emit_valprim_ptrof {m:file_mode}
       val ind = varindmap_find_some (vartyp_var_get vtp)
     in
       fprint1_string (pf | out, "env"); fprint1_int (pf | out, ind)
-    end
+    end // end of [VPenv]
   | VPtmp_ref tmp => let
       val () = fprint1_string (pf | out, "(&")
       val () = emit_tmpvar (pf | out, tmp)
