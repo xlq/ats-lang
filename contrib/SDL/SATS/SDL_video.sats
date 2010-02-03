@@ -36,6 +36,11 @@
 
 (* ****** ****** *)
 
+macdef SDL_ALPHA_OPAQUE = 255
+macdef SDL_ALPHA_TRANSPARENT = 0
+
+(* ****** ****** *)
+
 typedef SDL_Rect =
   $extype_struct "SDL_Rect" of {
   x= Sint16, y= Sint16, w= Uint16, h= Uint16

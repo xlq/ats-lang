@@ -2,9 +2,11 @@
 # Some examples in ATS that make use of the ATS/SDL API
 #
 
+# Author: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
+
 ######
 
-HX:
+LazyFoo:
 
 The code in each LazyFoo-lesson?? directory is, more or less, a translation
 into ATS the corresponding tutorial code (in C++) that is available at the
