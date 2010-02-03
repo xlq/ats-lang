@@ -1506,6 +1506,12 @@ fn tailcall_arg_move (
   , tmps_arg: tmpvarlst
   , vps_arg: valprimlst
   ) : void = let
+(*
+  val () = begin
+    print "tailcall_arg_move: tmps_arg = "; print_tmpvarlst tmps_arg; print_newline ();
+    print "tailcall_arg_move: vps_arg = "; print_valprimlst vps_arg; print_newline ();
+  end // end of [val]
+*)
   fun valprim_mov
     (res: &instrlst_vt, vp: valprim): valprim = let
     val tmp = tmpvar_make (vp.valprim_typ)
@@ -1513,14 +1519,16 @@ fn tailcall_arg_move (
   in
     valprim_tmp (tmp)
   end // end of [valmov]
-
-  fun aux1_arg (res: &instrlst_vt, i: int, vps: valprimlst)
-    : valprimlst_vt = begin case+ vps of
+//
+  fun aux1_arg (
+      res: &instrlst_vt, i: int, vps: valprimlst
+    ) : valprimlst_vt = begin case+ vps of
     | list_cons (vp, vps) => let
-        val vp = (
-          case+ vp.valprim_node of
+        val vp = (case+ vp.valprim_node of
           | VParg i_arg when i_arg < i => valprim_mov (res, vp)
-          | VParg_ref i_arg when i_arg < i => valprim_mov (res, vp)
+          | VPptrof vp1 => begin case+ vp1.valprim_node of
+              | VParg_ref i_arg when i_arg < i => valprim_mov (res, vp) | _ => vp
+            end // end of [VPptrof]
           | VPclo _ => valprim_mov (res, vp)
           | _ => vp
         ) : valprim
@@ -1529,7 +1537,7 @@ fn tailcall_arg_move (
       end // end of [list_vt_cons]
     | list_nil () => list_vt_nil ()
   end // end of [aux1_arg]
-
+//
   fun aux2_arg
     (res: &instrlst_vt, vps: valprimlst)
     : valprimlst_vt = begin case+ vps of
@@ -1538,13 +1546,13 @@ fn tailcall_arg_move (
       end // end of [list_cons]
     | list_nil () => list_vt_nil ()
   end // end of [aux2_arg]
-
+//
   val vps_arg = (
     case+ knd of
     | 0 => aux1_arg (res, 0, vps_arg) // a call to self
     | _ => aux2_arg (res, vps_arg)
   ) : valprimlst_vt
-
+//
   fun aux1_mov (
       res: &instrlst_vt
     , i: int
@@ -1557,7 +1565,7 @@ fn tailcall_arg_move (
       end // end of [list_vt_cons]
     | ~list_vt_nil () => ()
   end // end of [aux1_mov]
-
+//
   fun aux2_mov (
       res: &instrlst_vt
     , tmps: tmpvarlst
@@ -1575,8 +1583,8 @@ fn tailcall_arg_move (
   end // end of [aux2_mov]
 in
   case+ tmps_arg of
-  | list_nil () => aux1_mov (res, 0, vps_arg)
   | list_cons _ => aux2_mov (res, tmps_arg, vps_arg)
+  | list_nil () => aux1_mov (res, 0, vps_arg)
 end // end of [tailcall_arg_move]
 
 //
