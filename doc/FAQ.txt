@@ -25,8 +25,8 @@ A. The statics of ATS is typed and the types for static terms are called
    
    datatype list (t@ype+, nat) = ...
                           ^^^
-   Instead, the sort [int] needs to chosen to replace the sort [nat]. In
-   order to capture the fact that all lists have nonnegative length, one
+   Instead, the sort [int] needs to be chosen to replace the sort [nat].
+   In order to capture the fact that all lists have nonnegative length, one
    may introduce a type definition as follows:
    
    typedef list' (a:t@ype, n:int) = [n >= 0] list (a, n)   

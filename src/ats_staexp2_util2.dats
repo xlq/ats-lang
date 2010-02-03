@@ -891,7 +891,7 @@ end // end of [labs2explst_prenexing]
 implement s2exp_absuni (s2e) = let
   var flag: int = 0
   var s2vs_r: s2varlst = nil () and s2ps_r: s2explst = nil ()
-  val s2e = s2exp_prenexing (false, s2e, s2vs_r, s2ps_r, flag)
+  val s2e = s2exp_prenexing (false(*isexi*), s2e, s2vs_r, s2ps_r, flag)
 in
   ($Lst.list_reverse s2vs_r, $Lst.list_reverse s2ps_r, s2e)
 end // end of [s2exp_absuni]
@@ -899,7 +899,7 @@ end // end of [s2exp_absuni]
 implement s2exp_opnexi (s2e) = let
   var flag: int = 0
   var s2vs_r: s2varlst = nil () and s2ps_r: s2explst = nil ()
-  val s2e = s2exp_prenexing (true, s2e, s2vs_r, s2ps_r, flag)
+  val s2e = s2exp_prenexing (true(*isexi*), s2e, s2vs_r, s2ps_r, flag)
 in
   ($Lst.list_reverse s2vs_r, $Lst.list_reverse s2ps_r, s2e)
 end // end of [s2exp_opnexi]
@@ -907,7 +907,7 @@ end // end of [s2exp_opnexi]
 implement s2explst_opnexi (s2es) = let
   var flag: int = 0
   var s2vs_r: s2varlst = nil () and s2ps_r: s2explst = nil ()
-  val s2es = s2explst_prenexing (true, s2es, s2vs_r, s2ps_r, flag)
+  val s2es = s2explst_prenexing (true(*isexi*), s2es, s2vs_r, s2ps_r, flag)
 in
   ($Lst.list_reverse s2vs_r, $Lst.list_reverse s2ps_r, s2es)
 end // end of [s2explst_opnexi]

@@ -1375,7 +1375,7 @@ in
   case+ $Map.map_search (m, stamp) of
   | ~Some_vt (i) => if i < n then i else begin
       prerr_loc_interror (loc0);
-      prerr ": s2var_index_find: the static constant [";
+      prerr ": s2var_index_find: the static variable [";
       prerr_s2var s2v;
       prerr "] is associated with an index that is out-of-range.";
       prerr_newline ();
@@ -1383,7 +1383,7 @@ in
     end // end of [Some_vt]
   | ~None_vt () => begin
       prerr_loc_interror (loc0);
-      prerr ": s2var_index_find: the static constant [";
+      prerr ": s2var_index_find: the static variable [";
       prerr_s2var s2v;
       prerr "] is not associated with any index.";
       prerr_newline ();
