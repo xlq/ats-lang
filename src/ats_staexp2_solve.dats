@@ -570,6 +570,23 @@ implement
       | _ => (err := err + 1)
       end (* end of [knd2 = 1] *)
     end // end of [_, S2Etop]
+(* ****** ******
+//
+// HX-2010-02-04: this is not common; should it be supported?
+//
+  | (S2Euni (nil (), _, _), _) => let
+      val s2e1 = s2exp_uni_instantiate_all (loc0, s2e10)
+      val () = s2exp_tyleq_solve_err (loc0, s2e1, s2e20, err)
+    in
+      // nothing
+    end // end of [S2Euni (nil, _, _), _]
+  | (_, S2Eexi (nil (), _, _)) => let
+      val s2e2 = s2exp_exi_instantiate_all (loc0, s2e20)
+      val () = s2exp_tyleq_solve_err (loc0, s2e10, s2e2, err)
+    in
+      // nothing
+    end // end of [_, S2Eexi (nil, _, _)]
+****** ****** *)
   | (S2Euni _, _) => let
       val () = trans3_env_push_sta ()
       // this order is mandatary!
