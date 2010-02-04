@@ -1591,6 +1591,10 @@ implement s2exp_absuni_and_add (loc0, s2e0) = let
     print_newline ()
   end // end of [val]
 *)
+//
+  val s2vs: s2varlst = s2vss2pss2e.0
+  val () = s2varlst_sVarset_set (s2vs, the_s2Varset_env_get ())
+//
   val () = trans3_env_add_svarlst (s2vss2pss2e.0)
   val () = trans3_env_hypo_add_proplst (loc0, s2vss2pss2e.1)
 in
@@ -1615,7 +1619,11 @@ implement s2exp_opnexi_and_add (loc0, s2e0) = let
     print_newline ()
   end // end of [val]
 *)
-  val () = trans3_env_add_svarlst (s2vss2pss2e.0)
+//
+  val s2vs: s2varlst = s2vss2pss2e.0
+  val () = s2varlst_sVarset_set (s2vs, the_s2Varset_env_get ())
+//
+  val () = trans3_env_add_svarlst (s2vs)
   val () = trans3_env_hypo_add_proplst (loc0, s2vss2pss2e.1)
 in
   s2vss2pss2e.2
@@ -1623,7 +1631,11 @@ end // end of [s2exp_opnexi_and_add]
 
 implement s2explst_opnexi_and_add (loc0, s2es0) = let
   val s2vss2pss2es = s2explst_opnexi s2es0
-  val () = trans3_env_add_svarlst (s2vss2pss2es.0)
+//
+  val s2vs: s2varlst = s2vss2pss2es.0
+  val () = s2varlst_sVarset_set (s2vs, the_s2Varset_env_get ())
+//
+  val () = trans3_env_add_svarlst (s2vs)
   val () = trans3_env_hypo_add_proplst (loc0, s2vss2pss2es.1)
 in
   s2vss2pss2es.2

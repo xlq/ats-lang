@@ -939,12 +939,12 @@ end // end of [p2at_vbox_tr_dn]
 
 implement p2at_tr_dn (p2t0, s2e0) = let
   val loc0 = p2t0.p2at_loc
-// (*
+(*
   val () = begin
     print "p2at_tr_dn: p2t0 = "; print p2t0; print_newline ();
     print "p2at_tr_dn: s2e0 = "; print s2e0; print_newline ();
   end // end of [val]
-// *)
+*)
 in
   case+ p2t0.p2at_node of
   | P2Tann (p2t, s2e_ann) => let

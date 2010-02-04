@@ -533,13 +533,14 @@ implement
   s2exp_tyleq_solve_err (loc0, s2e10, s2e20, err) = let
   val err0 = err
   val s2e10 = s2exp_whnf s2e10 and s2e20 = s2exp_whnf s2e20
-// (*
+//
+(*
   val () = begin
     print "s2exp_tyleq_solve_err: s2e10 = "; print s2e10; print_newline ();
     print "s2exp_tyleq_solve_err: s2e20 = "; print s2e20; print_newline ();
     print "s2exp_tyleq_solve_err: err = "; print err; print_newline ();
   end // end of [val]
-// *)
+*)
 //
   val () = case+ (s2e10.s2exp_node, s2e20.s2exp_node) of
   | (S2EVar s2V1, S2EVar s2V2) when eq_s2Var_s2Var (s2V1, s2V2) => ()

@@ -621,6 +621,7 @@ fun s2var_tmplev_get (s2v: s2var_t): int
 fun s2var_tmplev_set (s2v: s2var_t, lev: int): void
 fun s2var_sVarset_get (_: s2var_t): s2Varset_t
 fun s2var_sVarset_set (_: s2var_t, _: s2Varset_t): void
+fun s2varlst_sVarset_set (_: s2varlst, _: s2Varset_t): void
 fun s2var_stamp_get (s2v: s2var_t): stamp_t
 
 //

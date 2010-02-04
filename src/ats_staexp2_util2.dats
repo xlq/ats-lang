@@ -868,7 +868,7 @@ and s2explst_prenexing
       val s2es = s2explst_prenexing (isexi, s2es, s2vs_r, s2ps_r, flag)
     in
       if flag > flag0 then cons (s2e, s2es) else s2es0
-    end
+    end // end of [cons]
   | nil () => nil ()
 end // end of [s2explst_prenexing]
 

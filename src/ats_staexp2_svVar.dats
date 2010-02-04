@@ -139,9 +139,23 @@ implement s2var_sVarset_get (s2v) =
 
 implement s2var_sVarset_set (s2v, sVs) =
   let val (vbox pf | p) = s2v in p->s2var_sVarset := sVs end
+// end of [s2var_sVarset_get]
+
+implement s2varlst_sVarset_set (s2vs, sVs) = let
+  fun loop (s2vs: s2varlst, sVs: s2Varset_t): void =
+    case+ s2vs of
+    | list_cons (s2v, s2vs) => (
+        s2var_sVarset_set (s2v, sVs); loop (s2vs, sVs)
+      ) // end of [list_cons]
+    | list_nil () => ()
+  // end of [loop]
+in
+  loop (s2vs, sVs)
+end // end of [s2varlst_sVarset_set]
 
 implement s2var_stamp_get (s2v) =
   let val (vbox pf | p) = s2v in p->s2var_stamp end
+// end of [s2var_stamp_get]
 
 (* ****** ****** *)
 
