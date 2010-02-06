@@ -547,46 +547,60 @@ atslib_mpz_mul_2exp ( // x = y * 2^n
 
 /* ****** ****** */
 
-// division
+// truncate division
+
+#define atslib_mpz_tdiv_qr_mpz_4 mpz_tdiv_qr
+#define atslib_mpz_tdiv_qr_ulint_4 mpz_tdiv_qr_ui
+
+#define atslib_mpz_tdiv_q_mpz_3 mpz_tdiv_q
+#define atslib_mpz_tdiv_q_ulint_3 mpz_tdiv_q_ui
 
 static inline
 ats_void_type
-atslib_mpz_tdiv_q_mpz_3
-  (ats_mpz_ptr_type q, ats_mpz_ptr_type n, ats_mpz_ptr_type d) {
-  mpz_tdiv_q ((mpz_ptr)q, (mpz_ptr)n, (mpz_ptr)d) ; return ;
-}
-
-static inline
-ats_void_type
-atslib_mpz_tdiv_q_ulint_3
-  (ats_mpz_ptr_type q, ats_mpz_ptr_type n, ats_ulint_type d) {
-  mpz_tdiv_q_ui ((mpz_ptr)q, (mpz_ptr)n, d) ; return ;
-}
-
-static inline
-ats_void_type
-atslib_mpz_tdiv_q_mpz_2 (ats_mpz_ptr_type x, ats_mpz_ptr_type d) {
-  mpz_tdiv_q ((mpz_ptr)x, (mpz_ptr)x, (mpz_ptr)d) ; return ;
-}
-
-static inline
-ats_void_type
-atslib_mpz_tdiv_q_ulint_2 (ats_mpz_ptr_type x, ats_ulint_type d) {
-  mpz_tdiv_q_ui ((mpz_ptr)x, (mpz_ptr)x, d) ; return ;
-}
-
-//
-
-static inline
-ats_void_type
-atslib_mpz_fdiv_qr ( // (q,r) := x / y
-  ats_mpz_ptr_type q
-, ats_mpz_ptr_type r
-, ats_mpz_ptr_type x
-, ats_mpz_ptr_type y
+atslib_mpz_tdiv_q_mpz_2 (
+  ats_mpz_ptr_type x, ats_mpz_ptr_type d
 ) {
-  mpz_fdiv_qr((mpz_ptr)q, (mpz_ptr)r, (mpz_ptr)x, (mpz_ptr)y) ; return ;
-} // end of [atslib_mpz_fdiv_qr]
+  mpz_tdiv_q ((mpz_ptr)x, (mpz_ptr)x, (mpz_ptr)d) ; return ;
+} // end of [atslib_mpz_tdiv_q_mpz_2]
+
+static inline
+ats_void_type
+atslib_mpz_tdiv_q_ulint_2 (
+  ats_mpz_ptr_type x, ats_ulint_type d
+) {
+  mpz_tdiv_q_ui ((mpz_ptr)x, (mpz_ptr)x, d) ; return ;
+} // end of [atslib_mpz_tdiv_q_ulint_2]
+
+/* ****** ****** */
+
+// floor division
+
+#define atslib_mpz_fdiv_qr_mpz_4 mpz_fdiv_qr
+#define atslib_mpz_fdiv_qr_ulint_4 mpz_fdiv_qr_ui
+
+#define atslib_mpz_fdiv_q_mpz_3 mpz_fdiv_q
+#define atslib_mpz_fdiv_q_ulint_3 mpz_fdiv_q_ui
+
+static inline
+ats_void_type
+atslib_mpz_fdiv_q_mpz_2 (
+  ats_mpz_ptr_type x, ats_mpz_ptr_type d
+) {
+  mpz_fdiv_q ((mpz_ptr)x, (mpz_ptr)x, (mpz_ptr)d) ; return ;
+} // end of [atslib_mpz_fdiv_q_mpz_2]
+
+static inline
+ats_void_type
+atslib_mpz_fdiv_q_ulint_2 (
+  ats_mpz_ptr_type x, ats_ulint_type d
+) {
+  mpz_fdiv_q_ui ((mpz_ptr)x, (mpz_ptr)x, d) ; return ;
+} // end of [atslib_mpz_fdiv_q_ulint_2]
+
+/* ****** ****** */
+
+#define atslib_mpz_mod_mpz_3 mpz_mod
+#define atslib_mpz_mod_ulint_3 mpz_mod_ui
 
 /* ****** ****** */
 

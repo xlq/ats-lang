@@ -37,10 +37,8 @@
 (* ****** ****** *)
 
 %{#
-
 #include "libc/CATS/gmp.cats"
-
-%}
+%} // end of [%{#]
 
 (* ****** ****** *)
 
@@ -159,51 +157,52 @@ symintr mpz_init_set
 // [x] := [y]
 fun mpz_init_set_mpz (x: &mpz_vt? >> mpz_vt, y: &mpz_vt):<> void
   = "atslib_mpz_init_set_mpz"
+overload mpz_init_set with mpz_init_set_mpz
 
 // [x] := [y]
 fun mpz_init_set_int (x: &mpz_vt? >> mpz_vt, y: int):<> void
   = "atslib_mpz_init_set_int"
-
-// [x] := [y]
-fun mpz_init_set_lint (x: &mpz_vt? >> mpz_vt, y: lint):<> void
-  = "atslib_mpz_init_set_lint"
+overload mpz_init_set with mpz_init_set_int
 
 // [x] := [y]
 fun mpz_init_set_uint (x: &mpz_vt? >> mpz_vt, y: uint):<> void
   = "atslib_mpz_init_set_uint"
+overload mpz_init_set with mpz_init_set_uint
+
+// [x] := [y]
+fun mpz_init_set_lint (x: &mpz_vt? >> mpz_vt, y: lint):<> void
+  = "atslib_mpz_init_set_lint"
+overload mpz_init_set with mpz_init_set_lint
 
 // [x] := [y]
 fun mpz_init_set_ulint (x: &mpz_vt? >> mpz_vt, y: ulint):<> void
   = "atslib_mpz_init_set_ulint"
+overload mpz_init_set with mpz_init_set_ulint
 
 // [x] := [y]
 fun mpz_init_set_double (x: &mpz_vt? >> mpz_vt, y: double):<> void
   = "atslib_mpz_init_set_double"
+overload mpz_init_set with mpz_init_set_double
 
 // [x] := [y]
 fun mpz_init_set_mpq (x: &mpz_vt? >> mpz_vt, y: &mpq_vt):<> void
   = "atslib_mpz_init_set_mpq"
+overload mpz_init_set with mpz_init_set_mpq
 
 // [x] := [y]
 fun mpz_init_set_mpf (x: &mpz_vt? >> mpz_vt, y: &mpf_vt):<> void
   = "atslib_mpz_init_set_mpf"
+overload mpz_init_set with mpz_init_set_mpf
 
 // the function returns 0 if the string is valid, or -1 otherwise.
-fun mpz_init_set_str_err {i:int | 2 <= i; i <= 62}
-  (x: &mpz_vt? >> mpz_vt, s: string, base: int i):<> int
+fun mpz_init_set_str_err
+  {i:int | 2 <= i; i <= 62} (x: &mpz_vt? >> mpz_vt, s: string, base: int i):<> int
   = "atslib_mpz_init_set_str_err"
 
 // the function exits the string is invalid.
 fun mpz_init_set_str {i:int | 2 <= i; i <= 62}
   (x: &mpz_vt? >> mpz_vt, s: string, base: int i):<> void
   = "atslib_mpz_init_set_str"
-
-overload mpz_init_set with mpz_init_set_mpz
-overload mpz_init_set with mpz_init_set_uint
-overload mpz_init_set with mpz_init_set_int
-overload mpz_init_set with mpz_init_set_double
-overload mpz_init_set with mpz_init_set_mpq
-overload mpz_init_set with mpz_init_set_mpf
 overload mpz_init_set with mpz_init_set_str
 
 (* ****** ****** *)
@@ -442,33 +441,49 @@ fun mpz_mul_2exp
 
 (* ****** ****** *)
 
-// division
+// truncate division
+
+symintr mpz_tdiv_qr
+
+// (q, r) = n / d
+fun mpz_tdiv_qr_mpz_4
+  (q: &mpz_vt, r: &mpz_vt, n: &mpz_vt, d: &mpz_vt):<> void = "#atslib_mpz_tdiv_qr_mpz_4"
+// end of [mpz_tdiv_qr_mpz_4]
+overload mpz_tdiv_qr with mpz_tdiv_qr_mpz_4
+
+// (q, r) = n / d
+fun mpz_tdiv_qr_ulint_4
+  (q: &mpz_vt, r: &mpz_vt, n: &mpz_vt, d: ulint):<> void = "#atslib_mpz_tdiv_qr_ulint_4"
+// end of [mpz_tdiv_qr_ulint_4]
+overload mpz_tdiv_qr with mpz_tdiv_qr_ulint_4
+
+//
 
 symintr mpz_tdiv_q
 
 // [q] := [n] / [d]
 fun mpz_tdiv_q_mpz_3
-  (q: &mpz_vt, n: &mpz_vt, d: &mpz_vt):<> void
-  = "atslib_mpz_tdiv_q_mpz_3"
-
-fun mpz_tdiv_q_ulint_3
-  (q: &mpz_vt, n: &mpz_vt, d: ulint):<> void
-  = "atslib_mpz_tdiv_q_ulint_3"
-
+  (q: &mpz_vt, n: &mpz_vt, d: &mpz_vt):<> void = "#atslib_mpz_tdiv_q_mpz_3"
 overload mpz_tdiv_q with mpz_tdiv_q_mpz_3
+
+// [q] := [n] / [d]
+fun mpz_tdiv_q_ulint_3
+  (q: &mpz_vt, n: &mpz_vt, d: ulint):<> void = "#atslib_mpz_tdiv_q_ulint_3"
 overload mpz_tdiv_q with mpz_tdiv_q_ulint_3
 
 // [q] := [q] / [d]
-fun mpz_tdiv_q_mpz_2 (q: &mpz_vt, d: &mpz_vt):<> void
-  = "atslib_mpz_tdiv_q_mpz_2"
-
-fun mpz_tdiv_q_ulint_2 (q: &mpz_vt, d: ulint):<> void
-  = "atslib_mpz_tdiv_q_ulint_2"
-
+fun mpz_tdiv_q_mpz_2
+  (q: &mpz_vt, d: &mpz_vt):<> void = "atslib_mpz_tdiv_q_mpz_2"
 overload mpz_tdiv_q with mpz_tdiv_q_mpz_2
+
+// [q] := [q] / [d]
+fun mpz_tdiv_q_ulint_2
+  (q: &mpz_vt, d: ulint):<> void = "atslib_mpz_tdiv_q_ulint_2"
 overload mpz_tdiv_q with mpz_tdiv_q_ulint_2
 
-//
+(* ****** ****** *)
+
+// floor division
 
 (*
 ** Function: mpz_fdiv_qr
@@ -485,10 +500,56 @@ overload mpz_tdiv_q with mpz_tdiv_q_ulint_2
 **   unpredictable. No other constraints on the pass of other arguments, e.g. the same
 **   object can be passed to both quot and dividend.
 *)
-fun mpz_fdiv_qr (
-    quot: &mpz_vt, rem: &mpz_vt, dividend: &mpz_vt, divisor: &mpz_vt
-  ) :<> void
-  = "atslib_mpz_fdiv_qr"
+
+//
+
+symintr mpz_fdiv_qr
+
+fun mpz_fdiv_qr_mpz_4
+  (quot: &mpz_vt, rem: &mpz_vt, dividend: &mpz_vt, divisor: &mpz_vt):<> void
+  = "#atslib_mpz_fdiv_qr_mpz_4"
+overload mpz_fdiv_qr with mpz_fdiv_qr_mpz_4
+
+fun mpz_fdiv_qr_ulint_4
+  (quot: &mpz_vt, rem: &mpz_vt, dividend: &mpz_vt, divisor: ulint):<> void
+  = "#atslib_mpz_fdiv_qr_ulint_4"
+overload mpz_fdiv_qr with mpz_fdiv_qr_ulint_4
+
+//
+
+symintr mpz_fdiv_q
+
+// [q] := [n] / [d]
+fun mpz_fdiv_q_mpz_3
+  (q: &mpz_vt, n: &mpz_vt, d: &mpz_vt):<> void = "#atslib_mpz_fdiv_q_mpz_3"
+overload mpz_fdiv_q with mpz_fdiv_q_mpz_3
+
+// [q] := [n] / [d]
+fun mpz_fdiv_q_ulint_3
+  (q: &mpz_vt, n: &mpz_vt, d: ulint):<> void = "#atslib_mpz_fdiv_q_ulint_3"
+overload mpz_fdiv_q with mpz_fdiv_q_ulint_3
+
+// [q] := [q] / [d]
+fun mpz_fdiv_q_mpz_2
+  (q: &mpz_vt, d: &mpz_vt):<> void = "atslib_mpz_fdiv_q_mpz_2"
+overload mpz_fdiv_q with mpz_fdiv_q_mpz_2
+
+// [q] := [q] / [d]
+fun mpz_fdiv_q_ulint_2
+  (q: &mpz_vt, d: ulint):<> void = "atslib_mpz_fdiv_q_ulint_2"
+overload mpz_fdiv_q with mpz_fdiv_q_ulint_2
+
+(* ****** ****** *)
+
+symintr mpz_mod
+
+fun mpz_mod_mpz_3
+  (r: &mpz_vt, n: &mpz_vt, d: &mpz_vt):<> void = "#atslib_mpz_mod_mpz_3"
+overload mpz_mod with mpz_mod_mpz_3
+
+fun mpz_mod_ulint_3
+  (r: &mpz_vt, n: &mpz_vt, d: ulint):<> void = "#atslib_mpz_mod_ulint_3"
+overload mpz_mod with mpz_mod_ulint_3
 
 (* ****** ****** *)
 

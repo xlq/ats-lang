@@ -42,10 +42,8 @@ typedef off_t = $TYPES.off_t
 (* ****** ****** *)
 
 %{#
-
 #include "libc/CATS/dirent.cats"
-
-%}
+%} // end of [%{#]
 
 (* ****** ****** *)
 

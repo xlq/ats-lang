@@ -140,9 +140,11 @@ fun strpbrk {m,n:nat} {l:addr}
 // implemented in [string.dats]
 fun strdup_gc {n:nat} (str: string n)
   :<> [l:addr] (free_gc_v (n+1, l), strbuf (n+1, n) @ l | ptr l)
+  = "atslib_strdup_gc"
 
 fun strdup_ngc {n:nat} (str: string n)
   :<> [l:addr] (free_ngc_v (n+1, l), strbuf (n+1, n) @ l | ptr l)
+  = "atslib_strdup_ngc"
 
 (* ****** ****** *)
 

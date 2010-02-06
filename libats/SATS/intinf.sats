@@ -60,11 +60,25 @@ viewtypedef Intinfptr_gc = [i:int] intinfptr_gc (i)
   
 (* ****** ****** *)
 
-fun intinf_make {i:int} (i: int i)
+symintr intinf_make
+
+fun intinf_make_int {i:int} (i: int i)
   : [l:addr] (free_gc_v (Intinf, l), intinf i @ l | ptr l)
+overload intinf_make with intinf_make_int
+
+fun intinf_make_size {i:int} (i: size_t i)
+  : [l:addr] (free_gc_v (Intinf, l), intinf i @ l | ptr l)
+overload intinf_make with intinf_make_size
+
+(* ****** ****** *)
 
 fun intinf_free {l:addr}
   (pf_gc: free_gc_v (Intinf, l), pf_at: Intinf @ l | p: ptr l): void
+
+(* ****** ****** *)
+
+fun intinf_get_int {n:int} (n: &intinf n): int n // this is unsafe ...
+  = "atslib_mpz_get_int"
 
 (* ****** ****** *)
 
@@ -133,10 +147,21 @@ overload * with mul_intinf_intinf
 
 //
 
-fun div_intinf_int {m,n:int | n > 0} (m: &intinf m, n: int n)
+//
+// fdiv: floor division: round toward -infinity
+//
+fun fdiv_intinf_int
+  {m,n:int | n > 0} (m: &intinf m, n: int n)
   : [q,r:int | 0 <= r; r < n] (MUL (q, n, m-r) | intinfptr_gc q)
+  = "atslib_fdiv_intinf_int"
+overload / with fdiv_intinf_int
 
-overload / with div_intinf_int
+//
+// fmod: floor division: round toward -infinity
+//
+fun fmod_intinf_int {m,n:int | n > 0} (m: &intinf m, n: int n)
+  : [q,r:int | 0 <= r; r < n] (MUL (q, n, m-r) | int r)
+overload mod with fmod_intinf_int
 
 (* ****** ****** *)
 

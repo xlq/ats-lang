@@ -122,6 +122,8 @@ libc/SATS/complex.sats
 libc/SATS/dirent.sats
 libc/DATS/dirent.dats
 
+libc/SATS/dlfcn.sats
+
 libc/SATS/errno.sats
 
 libc/SATS/fcntl.sats

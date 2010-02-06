@@ -101,6 +101,7 @@ dataprop GCD (int, int, int) =
   | {m:int;n:pos | m > n } {r:int} GCDind2 (m, n, r) of GCD (m-n, n, r)
   | {m:nat;n:int | n < 0} {r:int} GCDneg1 (m, n, r) of GCD (m, ~n, r)
   | {m:int;n:int | m < 0} {r:int} GCDneg2 (m, n, r) of GCD (~m, n, r)
+// end of [GCD]
 
 prfun gcd_is_fun {m,n:int} {r1,r2:int}
   (pf1: GCD (m, n, r1), pf2: GCD (m, n, r2)):<prf> [r1==r2] void

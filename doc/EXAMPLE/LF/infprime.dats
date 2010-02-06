@@ -15,9 +15,9 @@ propdef PRIME (p:int) = // if p >= 2
 (*
 
 extern prval prime2: PRIME (2)
-extern prval prime2: PRIME (3)
-extern prval prime2: PRIME (5)
-extern prval prime2: PRIME (7)
+extern prval prime3: PRIME (3)
+extern prval prime5: PRIME (5)
+extern prval prime7: PRIME (7)
 
 *)
 

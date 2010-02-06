@@ -56,12 +56,24 @@ assume intinf (i:int) = mpz_vt // [i] is a fake
 
 (* ****** ****** *)
 
-implement intinf_make (i) = let
+implement intinf_make_int (i) = let
   val @(pf_gc, pf_at | p) = ptr_alloc_tsz {mpz_vt} (sizeof<mpz_vt>)
-  val () = mpz_init_set (!p, i)
+  val () = mpz_init_set_int (!p, i)
 in
   @(pf_gc, pf_at | p)
 end // end of [intinf_of_int1]
+
+implement intinf_make_size (i) = let
+  val @(pf_gc, pf_at | p) = ptr_alloc_tsz {mpz_vt} (sizeof<mpz_vt>)
+  val i = lint_of_size (i) where {
+    extern castfn lint_of_size (x: size_t): lint
+  }
+  val () = mpz_init_set_lint (!p, i)
+in
+  @(pf_gc, pf_at | p)
+end // end of [intinf_of_int1]
+
+(* ****** ****** *)
 
 implement intinf_free (pf_gc, pf_at | p) =
   (mpz_clear (!p); ptr_free {Intinf} (pf_gc, pf_at | p))
@@ -164,7 +176,18 @@ end // end of [mul_intinf_intinf]
 
 (* ****** ****** *)
 
-implement div_intinf_int {m,n} (intinf, i) = let
+implement fdiv_intinf_int {m,n} (intinf, i) = let
+  prval [q,r:int] pf_mul = lemma () where {
+    extern prfun lemma () : [q,r:int | 0 <= r; r < n] MUL (q, n, m-r)
+  } // end of [prval]
+  val @(pf_gc, pf_at | p) = ptr_alloc_tsz {mpz_vt} (sizeof<mpz_vt>)
+  val () = mpz_init (!p)
+  val ui = ulint_of_int i; val () = mpz_fdiv_q (!p, intinf, ui)
+in
+  #[q,r | @(pf_mul | @(pf_gc, pf_at | p))]
+end // end of [fdiv_intinf_int]
+
+implement fmod_intinf_int {m,n} (intinf, i) = let
   prval [q,r:int] pf_mul =
     div_lemma {m,n} () where {
     extern praxi div_lemma {m,n:int | n > 0} ()
@@ -172,10 +195,14 @@ implement div_intinf_int {m,n} (intinf, i) = let
   } // end of [prval]
   val @(pf_gc, pf_at | p) = ptr_alloc_tsz {mpz_vt} (sizeof<mpz_vt>)
   val () = mpz_init (!p)
-  val ui = ulint_of_int i; val () = mpz_tdiv_q (!p, intinf, ui)
+  val ui = ulint_of_int i; val () = mpz_mod (!p, intinf, ui)
+  val r = mpz_get_int (!p)
+  val [r1:int] r = int1_of_int r
+  prval () = __assert () where { extern prfun __assert (): [r==r1] void }
+  val () = intinf_free (pf_gc, pf_at | p)
 in
-  #[q,r | @(pf_mul | @(pf_gc, pf_at | p))]
-end // end of [div_intinf_int]
+  #[q,r | @(pf_mul | r)]
+end // end of [fmod_intinf_int]
 
 (* ****** ****** *)
 
