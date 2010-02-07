@@ -18,6 +18,8 @@ staload "prelude/DATS/list_vt.dats"
 
 (* ****** ****** *)
 
+#define sbp2str string1_of_strbuf
+
 implement main (argc, argv) = let
   val s1 = "Hello"
   val s2 = ", world!"
@@ -28,7 +30,7 @@ implement main (argc, argv) = let
   end // end of [val]
   val () = assert (sgn = 1)
 //
-  val s12 = s1 + s2
+  val s12 = sbp2str (s1 + s2)
   val () = begin
     print "s12 (Hello, world!) = "; print s12; print_newline ()
   end // end of [val]
@@ -42,7 +44,7 @@ implement main (argc, argv) = let
   end // end of [val]
   val () = assert (sgn = ~1)
 //
-  val s12 = s1 + s2
+  val s12 = sbp2str (s1 + s2)
   val () = begin
     print "s12 (Hello, world!) = "; print s12; print_newline ()
   end // end of [val]
@@ -50,21 +52,23 @@ implement main (argc, argv) = let
   val () = list_vt_free (cs)
 //
   val cs = string_explode (s12)
-  val s12' = string_implode (__cast cs) where {
-    extern castfn __cast {n:nat} (cs: !list_vt (char, n)): list (char, n)
-  } // end of [val]
+  val s12' = sbp2str (sbp) where {
+    val sbp = string_implode (__cast cs) where {
+      extern castfn __cast {n:nat} (cs: !list_vt (char, n)): list (char, n)
+    } // end of [val]
+  } // end of [s12']
   val () = list_vt_free (cs)
   val () = begin
     print "s12' (Hello, world!) = "; print s12'; print_newline ()
   end // end of [val]
   val () = assert (s12' = "Hello, world!")
 //
-  val s12_upper = string_toupper (s12)
+  val s12_upper = sbp2str (string_toupper (s12))
   val () = begin
     print "s12_upper (HELLO, WORLD!) = "; print s12_upper; print_newline ()
   end // end of [val]
   val () = assert (s12_upper = "HELLO, WORLD!")
-  val s12_lower = string_tolower (s12)
+  val s12_lower = sbp2str (string_tolower (s12))
   val () = begin
     print "s12_lower (hello, world!) = "; print s12_lower; print_newline ()
   end // end of [val]

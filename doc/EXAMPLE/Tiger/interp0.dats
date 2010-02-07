@@ -585,7 +585,8 @@ val vfval_chr = lam (vs: valuelst): value => let
   val- list_cons (v, _) = vs
   val- VALint i = v
   val c = char_of_int (i)
-  val s = string_make_char (1, c)
+  val sbp = string_make_char (1, c)
+  val s = string1_of_strbuf (sbp)
 in
   VALstring (s)
 end // end of [vfval_chr]
@@ -608,7 +609,9 @@ end // end of [vfval_flush]
 val vfval_getchar = lam (vs: valuelst): value => let
   val i = getchar ()
   val c = char_of_int i
-  val s = string_make_char (1, c) in
+  val sbp = string_make_char (1, c)
+  val s = string1_of_strbuf (sbp)
+in
   VALstring (s)
 end // end of [vfval_getchar]
 
@@ -669,7 +672,10 @@ val vfval_substring = lam (vs: valuelst): value => let
   val () = assert_errmsg (ln >= 0, "substring: illegal length")
   val () = assert_errmsg (st+ln <= nstr, "substring: illegal length")
   val st = size1_of_int1 st and ln = size1_of_int1 ln
-  val substr = string_make_substring (str, st, ln)
+  val substr =
+    string1_of_strbuf (sbp) where {
+    val sbp = string_make_substring (str, st, ln)
+  } // end of [val]
 in
   VALstring (substr)
 end // end of [vfval_substring]

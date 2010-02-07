@@ -63,11 +63,9 @@ in
   @(pf_gc, pf_at | p)
 end // end of [intinf_of_int1]
 
-implement intinf_make_size (i) = let
+implement intinf_make_lint (i) = let
   val @(pf_gc, pf_at | p) = ptr_alloc_tsz {mpz_vt} (sizeof<mpz_vt>)
-  val i = lint_of_size (i) where {
-    extern castfn lint_of_size (x: size_t): lint
-  }
+  val i = lint_of_lint1 (i) where { extern castfn lint_of_lint1 {i:int} (x: lint i): lint }
   val () = mpz_init_set_lint (!p, i)
 in
   @(pf_gc, pf_at | p)
@@ -82,13 +80,13 @@ implement intinf_free (pf_gc, pf_at | p) =
 (* ****** ****** *)
 
 implement fprint_intinf
-  (pf | fil, intinf) = mpz_out_str (pf | fil, 10, intinf)
+  (pf | fil, intinf) = mpz_out_str_exn (pf | fil, 10, intinf)
 // end of [fprint_intinf]
 
 implement print_intinf (intinf) = print_mac (fprint_intinf, intinf)
 
 implement fprint_intinf_base
-  (pf | fil, base, intinf) = mpz_out_str (pf | fil, base, intinf)
+  (pf | fil, base, intinf) = mpz_out_str_exn (pf | fil, base, intinf)
 // end of [fprint_intinf_base]
 
 implement print_intinf_base (base, intinf) = let
@@ -173,6 +171,17 @@ implement mul_intinf_intinf {m,n} (intinf1, intinf2) = let
 in
   @(pf_mul | @(pf_gc, pf_at | p))
 end // end of [mul_intinf_intinf]
+
+(* ****** ****** *)
+
+implement square_intinf {n} (intinf) = let
+  prval pf_mul = mul_make {n,n} ()
+  val @(pf_gc, pf_at | p) =
+    ptr_alloc_tsz {mpz_vt} (sizeof<mpz_vt>)
+  val () = mpz_init_set (!p, intinf); val () = mpz_mul (!p, intinf)
+in
+  @(pf_mul | @(pf_gc, pf_at | p))
+end // end of [square_intinf]
 
 (* ****** ****** *)
 

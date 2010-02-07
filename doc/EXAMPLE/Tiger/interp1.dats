@@ -187,7 +187,10 @@ val () = the_labmap_insert (
   val f_pre = lam
     (vs: List v1al): v1al =<cloref1> let
     val i = getchar (); val c = char_of_int i
-    val s = string_make_char (1, c) in V1ALstr (s)
+    val sbp = string_make_char (1, c)
+    val s = string1_of_strbuf (sbp)
+  in
+    V1ALstr (s)
   end // end of [val]
 } // end of [val]
 
@@ -215,7 +218,8 @@ val () = the_labmap_insert (
     val- list_cons (v, vs) = vs
     val- V1ALint i = v
     val c = char_of_int (i)
-    val str = string_make_char (1, c)
+    val sbp = string_make_char (1, c)
+    val str = string1_of_strbuf (sbp)
   in
     V1ALstr (str)
   end // end of [val]

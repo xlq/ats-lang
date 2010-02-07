@@ -67,19 +67,23 @@ typedef c1hars (n:int) = @[c1har][n]
 
 viewdef strbuf_v
   (m: int, n: int, l:addr) = strbuf (m, n) @ l
-
 viewdef strbuf_v (l:addr) = [m,n:nat] strbuf (m, n) @ l
 
 (* ****** ****** *)
 
 prfun strbuf_vsubr_lemma0 // implemneted in [string.dats]
   {m,n:nat} {l:addr} (): vsubr_p (strbuf_v l, strbuf_v (m, n, l))
-// end of ...
+// end of [strbuf_vsubr_lemma0]
 
 (* ****** ****** *)
 
-viewtypedef strbufptr_gc (m:int, n:int, l:addr) =
-  @(free_gc_v (m, l), strbuf_v (m, n, l) | ptr l)
+viewtypedef strbufptr_gc
+  (m:int, n:int, l:addr) = @(free_gc_v (m, l), strbuf_v (m, n, l) | ptr l)
+// end of [strbufptr_gc]
+
+viewdef strbufptr_gc
+  (n:int) = [m:nat;l:addr] strbufptr_gc (m, n, l)
+viewdef Strbufptr_gc = [m,n:nat;l:addr] strbufptr_gc (m, n, l)
 
 (* ****** ****** *)
 
@@ -161,19 +165,14 @@ castfn string1_of_string (str: string):<> [n:nat] string n
 
 (* ****** ****** *)
 
-castfn string1_of_strbuf {m,n:nat} {l:addr}
-  (pf_gc: free_gc_v (m, l), pf_buf: strbuf (m, n) @ l | p: ptr l) :<> string n
-  = "atspre_string1_of_strbuf"
-
+castfn string1_of_strbuf
+  {n:nat} (bufptr: strbufptr_gc n):<> string n
 castfn strbuf_of_string1 {n:nat} (str: string n)
   :<> [m:int | n < m] [l:addr] (vbox (strbuf (m, n) @ l) | ptr l)
-  = "atspre_strbuf_of_string1"
 
 (* ****** ****** *)
 
-fun strbuf_ptr_free {m,n:nat} {l:addr}
-  (pf_gc: free_gc_v (m, l), pf_buf: strbuf (m, n) @ l | base: ptr l):<> void
-  = "atspre_strbuf_ptr_free"
+fun strbufptr_free (p_buf: Strbufptr_gc):<> void = "atspre_strbufptr_free"
 
 (* ****** ****** *)
 
@@ -385,58 +384,36 @@ fun strbuf_initialize_substring {bsz:int}
 
 (* ****** ****** *)
 
-fun string_make_char {n:nat}
-  (n: size_t n, c: char):<> string n
-  = "atspre_string_make_char"
-
-fun string_make_char__bufptr
-  {n:nat} (n: size_t n, c: char)
-  :<> [m:nat] [l:addr] strbufptr_gc (m, n, l)
+fun string_make_char
+  {n:nat} (n: size_t n, c: char):<> strbufptr_gc n
   = "atspre_string_make_char"
 
 (* ****** ****** *)
 
-fun string_make_list_int {n:nat}
-  (cs: list (char, n), n: int n):<> string n
-  = "atspre_string_make_list_int"
-
-fun string_make_list_int__bufptr
-  {n:nat} (cs: list (char, n), n: int n)
-  :<> [m:nat] [l:addr] strbufptr_gc (m, n, l)
+fun string_make_list_int
+  {n:nat} (cs: list (char, n), n: int n):<> strbufptr_gc n
   = "atspre_string_make_list_int"
 
 (* ****** ****** *)
 
-fun string_make_list_rev_int {n:nat}
-  (cs: list (char, n), n: int n):<> string n
-  = "atspre_string_make_list_rev_int"
-
-fun string_make_list_rev_int__bufptr
-  {n:nat} (cs: list (char, n), n: int n)
-  :<> [m:nat] [l:addr] strbufptr_gc (m, n, l)
+fun string_make_list_rev_int
+  {n:nat} (cs: list (char, n), n: int n):<> strbufptr_gc n
   = "atspre_string_make_list_rev_int"
 
 (* ****** ****** *)
 
 fun string_make_substring
   {n:int} {st,ln:nat | st + ln <= n}
-  (str: string n, st: size_t st, ln: size_t ln)
-  :<> string ln
-  = "atspre_string_make_substring"
-
-fun string_make_substring__bufptr
-  {n:int} {st,ln:nat | st + ln <= n} (
-    str: string n, st: size_t st, ln: size_t ln
-  ) :<> [m:nat] [l:addr] strbufptr_gc (m, ln, l)
+  (str: string n, st: size_t st, ln: size_t ln):<> strbufptr_gc ln
   = "atspre_string_make_substring"
 
 fun string_make_substring__main {v:view}
   {m,n:int} {st,ln:nat | st+ln <= n} {l:addr} (
     pf: !v
-  , pf_con: vsubr_p (strbuf_v (m, n, l), v)
-  | p: ptr l, st: size_t st, ln: size_t ln
-  ) :<> [m:nat] [l:addr] strbufptr_gc (m, ln, l)
+  , pf_con: vsubr_p (strbuf_v (m, n, l), v) | p: ptr l, st: size_t st, ln: size_t ln
+  ) :<> strbufptr_gc ln
   = "atspre_string_make_substring"
+// end of [string_make_substring__main]
 
 (* ****** ****** *)
 
@@ -446,36 +423,28 @@ fun string0_append
 overload + with string0_append
 
 fun string1_append {i,j:nat}
-  (s1: string i, s2: string j):<> string (i+j)
+  (s1: string i, s2: string j):<> strbufptr_gc (i+j)
   = "atspre_string_append"
 overload + with string1_append
-
-fun string1_append__bufptr {i,j:nat}
-  (s1: string i, s2: string j)
-  :<> [m:nat] [l:addr] strbufptr_gc (m, i+j, l)
-  = "atspre_string_append"
 
 fun string1_append__main {v:view}
   {m1,i:nat} {m2,j:nat} {l1,l2:addr} (
     pf: !v
-  , pf1: vsubr_p (strbuf_v (m1, i, l1), v)
-  , pf2: vsubr_p (strbuf_v (m2, j, l2), v)
+  , pf1: vsubr_p (strbuf_v (m1, i, l1), v), pf2: vsubr_p (strbuf_v (m2, j, l2), v)
   | p1: ptr l1, p2: ptr l2
-  ) :<> [m:nat] [l:addr] strbufptr_gc (m, i+j, l)
+  ) :<> strbufptr_gc (i+j)
   = "atspre_string_append"
+// end of [string1_append__main]
 
 (* ****** ****** *)
 
-fun string_compare (s1: string, s2: string):<> Sgn
-  = "atspre_compare_string_string"
+fun string_compare
+  (s1: string, s2: string):<> Sgn = "atspre_compare_string_string"
+// end of [string_compare]
 
 (* ****** ****** *)
 
-fun stringlst_concat (xs: List string):<> string
-  = "atspre_stringlst_concat"
-
-fun stringlst_concat__bufptr
-  (xs: List string):<> [m,n:nat] [l:addr] strbufptr_gc (m, n, l)
+fun stringlst_concat (xs: List string):<> Strbufptr_gc
   = "atspre_stringlst_concat"
 
 (* ****** ****** *)
@@ -485,22 +454,21 @@ fun string_contains (str: string, c: char):<> bool
 
 (* ****** ****** *)
 
-fun string_equal (s1: string, s2: string):<> bool
-  = "atspre_eq_string_string"
+fun string_equal (s1: string, s2: string):<> bool = "atspre_eq_string_string"
 
 (* ****** ****** *)
 
 fun strbuf_length {m,n:nat} (sbf: &strbuf (m, n)):<> size_t n
   = "atspre_string_length"
 
-fun string0_length (str: string):<> size_t
-  = "atspre_string_length"
-
-fun string1_length {n:nat} (str: string n):<> size_t n
-  = "atspre_string_length"
-
 symintr string_length
+
+fun string0_length
+  (str: string):<> size_t = "atspre_string_length"
 overload string_length with string0_length
+
+fun string1_length
+  {n:nat} (str: string n):<> size_t n = "atspre_string_length"
 overload string_length with string1_length
 
 (* ****** ****** *)
@@ -565,7 +533,7 @@ fun string_explode {n:nat}
 (* ****** ****** *)
 
 // alias of [string_make_list]
-fun string_implode {n:nat} (cs: list (char, n)):<> string n
+fun string_implode {n:nat} (cs: list (char, n)):<> strbufptr_gc n
   = "atspre_string_implode"
 
 (* ****** ****** *)
@@ -573,14 +541,16 @@ fun string_implode {n:nat} (cs: list (char, n)):<> string n
 // This function is based on [strchr] in [string.h]
 // the NULL character at the end of a string is considered in the string
 
-fun string_index_of_char_from_left // locate a character from left
+// locate a character from left
+fun string_index_of_char_from_left
   {n:nat} (str: string n, c: c1har):<> ssizeBtw (~1, n)
   = "atspre_string_index_of_char_from_left"
 
 // This function is based on [strrchr] in [string.h]
 // the NULL character at the end of a string is considered in the string
 
-fun string_index_of_char_from_right // locate a character from right
+// locate a character from right
+fun string_index_of_char_from_right
   {n:nat} (str: string n, c: c1har):<> ssizeBtw (~1, n)
   = "atspre_string_index_of_char_from_right"
 
@@ -595,10 +565,7 @@ fun string_index_of_string // locate a substring from left
 (* ****** ****** *)
 
 // implemented in [prelude/CATS/string.cats]
-fun string_singleton (c: char):<> string 1 = "atspre_string_singleton"
-
-fun string_singleton__bufptr (c: char)
-  :<> [m:nat] [l:addr] strbufptr_gc (m, 1, l) = "atspre_string_singleton"
+fun string_singleton (c: char):<> strbufptr_gc 1 = "atspre_string_singleton"
 
 (* ****** ****** *)
 
@@ -612,11 +579,8 @@ fun string_foreach__main {v:view} {vt:viewtype} {n:nat} {f:eff}
 fun strbuf_tolower {m,n:nat} (buf: &strbuf (m, n)): void
   = "atspre_strbuf_tolower"
 
-// implemented in [prelude/DATS/string.dats] // note that
-fun string_tolower {n:nat} (str: string n):<> string n // a new string is created
-
-fun string_tolower__bufptr {n:nat} {l:addr}
-  (str: string n) :<> [m:nat] [l:addr] strbufptr_gc (m, n, l)
+// implemented in [prelude/DATS/string.dats]
+fun string_tolower {n:nat} (str: string n):<> strbufptr_gc n
 
 (* ****** ****** *)
 
@@ -624,11 +588,8 @@ fun string_tolower__bufptr {n:nat} {l:addr}
 fun strbuf_toupper {m,n:nat} (buf: &strbuf (m, n)): void
   = "atspre_strbuf_toupper"
 
-// implemented in [prelude/DATS/string.dats] // note that
-fun string_toupper {n:nat} (str: string n):<> string n // a new string is created
-
-fun string_toupper__bufptr {n:nat} {l:addr}
-  (str: string n) :<> [m:nat] [l:addr] strbufptr_gc (m, n, l)
+// implemented in [prelude/DATS/string.dats]
+fun string_toupper {n:nat} (str: string n):<> strbufptr_gc n
 
 (* ****** ****** *)
 
@@ -657,7 +618,7 @@ fun stropt_is_some {i:int} (stropt: stropt i):<> bool (i >= 0)
 absviewtype stropt_gc (m:int, n:int)
 
 castfn stropt_gc_none
-  (_: ptr null): stropt_gc (0,0)
+  (_: ptr null): stropt_gc (0, 0)
 
 castfn stropt_gc_unnone
   {n:int} (x: stropt_gc (0, n)):<> ptr (null)
@@ -688,12 +649,10 @@ viewtypedef Stropt_gc = [m,n:nat] stropt_gc (m, n)
 //
 
 fun tostringf__bufptr {ts:types}
-  (fmt: printf_c ts, arg: ts):<> [m,n:nat][l:addr] strbufptr_gc (m, n, l)
-  = "atspre_tostringf"
+  (fmt: printf_c ts, arg: ts):<> Strbufptr_gc = "atspre_tostringf"
 
 fun sprintf__bufptr {ts:types}
-  (fmt: printf_c ts, arg: ts):<> [m,n:nat][l:addr] strbufptr_gc (m, n, l)
-  = "atspre_tostringf"
+  (fmt: printf_c ts, arg: ts):<> Strbufptr_gc = "atspre_tostringf"
 
 (* ****** ****** *)
 

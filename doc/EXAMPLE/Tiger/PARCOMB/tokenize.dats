@@ -427,8 +427,9 @@ val p_token_str = (seq3wth_parser_fun
         // end of [val]
         val loc = location_make (cp0.1, cp1.1)
         val ncs = list_length (cs)
+        val str = string1_of_strbuf (string_make_list_int (cs, ncs))
       in
-        token_str_make (loc, string_make_list_int (cs, ncs))
+        token_str_make (loc, str)
       end // end of [Some]
     | None () => $effmask_all begin
         prerr cp0.1; prerr ": error(0)";
@@ -530,7 +531,7 @@ val p_token_ide = let
     prval pf = array_v_cons {char} (pf1, pf2)
     prval pf = bytes_v_of_chars_v (pf)
     val () = bytes_strbuf_trans (pf | p0, size1_of_int1 (n+1))
-    val str = string1_of_strbuf (pf_gc, pf | p0)
+    val str = string1_of_strbuf @(pf_gc, pf | p0)
   in
     token_ide_make (loc, str)
   end // end of [f1]

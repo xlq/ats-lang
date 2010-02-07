@@ -48,89 +48,76 @@ stadef mpq_vt = mpq_viewt0ype
 (* ****** ****** *)
 
 // [x] is initialized with 0
-fun mpz_init (x: &mpz_vt? >> mpz_vt):<> void
-  = "atslib_mpz_init"
+fun mpz_init (x: &mpz_vt? >> mpz_vt):<> void = "#atslib_mpz_init"
 
 // [x] is cleared
-fun mpz_clear (x: &mpz_vt >> mpz_vt?):<> void
-  = "atslib_mpz_clear"
+fun mpz_clear (x: &mpz_vt >> mpz_vt?):<> void = "#atslib_mpz_clear"
 
 (* ****** ****** *)
 
-fun mpz_get_int (x: &mpz_vt):<> int
-  = "atslib_mpz_get_int"
+fun mpz_get_int
+  (x: &mpz_vt):<> int = "#atslib_mpz_get_int" // macro!
+// end of [mpz_get_int]
 
 fun mpz_get_str
   {i:int | 2 <= i; i <= 36} (base: int i, x: &mpz_vt): String
-  = "atslib_mpz_get_str"
+  = "atslib_mpz_get_str" // function!
+// end of [mpz_get_str]
 
 (* ****** ****** *)
 
 symintr mpz_set
 
 // [x] := [y]
-fun mpz_set_mpz (x: &mpz_vt, y: &mpz_vt):<> void
-  = "atslib_mpz_set_mpz"
+fun mpz_set_mpz
+  (x: &mpz_vt, y: &mpz_vt):<> void = "#atslib_mpz_set_mpz"
+overload mpz_set with mpz_set_mpz
 
 // [x] := [y]
-fun mpz_set_int (x: &mpz_vt, y: int):<> void
-  = "atslib_mpz_set_int"
-
-// the function returns 0 if the string is valid, or -1 otherwise.
-fun mpz_set_str_err {i:int | 2 <= i; i <= 62}
-  (x: &mpz_vt, s: string, base: int i):<> int
-  = "atslib_mpz_set_str_err"
-
-fun mpz_set_str {i:int | 2 <= i; i <= 62}
-  (x: &mpz_vt, s: string, base: int i):<> void
-  = "atslib_mpz_set_str"
-
-overload mpz_set with mpz_set_mpz
+fun mpz_set_int (x: &mpz_vt, y: int):<> void = "#atslib_mpz_set_int"
 overload mpz_set with mpz_set_int
-overload mpz_set with mpz_set_str
 
 (* ****** ****** *)
 
 symintr mpz_init_set
 
 // [x] := [y]
-fun mpz_init_set_mpz (x: &mpz_vt? >> mpz_vt, y: &mpz_vt):<> void
-  = "atslib_mpz_init_set_mpz"
+fun mpz_init_set_mpz
+  (x: &mpz_vt? >> mpz_vt, y: &mpz_vt)
+  :<> void = "#atslib_mpz_init_set_mpz"
+overload mpz_init_set with mpz_init_set_mpz
 
 // [x] := [y]
-fun mpz_init_set_int (x: &mpz_vt? >> mpz_vt, y: int):<> void
-  = "atslib_mpz_init_set_int"
+fun mpz_init_set_int
+  (x: &mpz_vt? >> mpz_vt, y: int):<> void = "#atslib_mpz_init_set_int"
+overload mpz_init_set with mpz_init_set_int
 
 // the function returns 0 if the string is valid, or -1 otherwise.
-fun mpz_init_set_str_err {i:int | 2 <= i; i <= 62}
+fun mpz_init_set_str_err
+  {i:int | 2 <= i; i <= 62}
   (x: &mpz_vt? >> mpz_vt, s: string, base: int i):<> int
-  = "atslib_mpz_init_set_str_err"
+  = "atslib_mpz_init_set_str_err" // function!
 
 // the function exits the string is invalid.
-fun mpz_init_set_str {i:int | 2 <= i; i <= 62}
+fun mpz_init_set_str_exn
+  {i:int | 2 <= i; i <= 62}
   (x: &mpz_vt? >> mpz_vt, s: string, base: int i):<> void
-  = "atslib_mpz_init_set_str"
-
-overload mpz_init_set with mpz_init_set_mpz
-overload mpz_init_set with mpz_init_set_int
-overload mpz_init_set with mpz_init_set_str
+  = "atslib_mpz_init_set_str_exn" // function!
 
 (* ****** ****** *)
 
 #define sixtythree 63
-fun mpz_out_str_err {m:file_mode}
-  (pf_mode: file_mode_lte (m, w) |
-   file: &FILE m,
-   base: intBtw (2, sixtythree),
-   x: &mpz_vt): int
-  = "atslib_mpz_out_str_err"
+fun mpz_out_str_err {m:file_mode} (
+    pf_mode: file_mode_lte (m, w)
+  | file: &FILE m, base: intBtw (2, sixtythree), x: &mpz_vt
+  ) : int = "#atslib_mpz_out_str_err"
+// end of [mpz_out_str_err]
 
-fun mpz_out_str {m:file_mode}
-  (pf_mode: file_mode_lte (m, w) |
-   file: &FILE m,
-   base: intBtw (2, sixtythree),
-   x: &mpz_vt): void
-  = "atslib_mpz_out_str"
+fun mpz_out_str_exn {m:file_mode} (
+    pf_mode: file_mode_lte (m, w)
+  | file: &FILE m, base: intBtw (2, sixtythree), x: &mpz_vt
+  ) : void = "atslib_mpz_out_str_exn"
+// end of [mpz_out_str_exn]
 
 (* ****** ****** *)
 
@@ -139,144 +126,108 @@ fun mpz_out_str {m:file_mode}
 symintr mpz_neg
 
 // [x] := -[y]
-fun mpz_neg_2 (x: &mpz_vt, y: &mpz_vt):<> void
-  = "atslib_mpz_neg_2"
+fun mpz_neg_2 (x: &mpz_vt, y: &mpz_vt):<> void = "#atslib_mpz_neg_2"
+overload mpz_neg with mpz_neg_2
 
 // [x] := -[x]
-fun mpz_neg_1 (x: &mpz_vt):<> void
-  = "atslib_mpz_neg_1"
-
-overload mpz_neg with mpz_neg_2
+fun mpz_neg_1 (x: &mpz_vt):<> void = "atslib_mpz_neg_1"
 overload mpz_neg with mpz_neg_1
 
-// absolute value
+(* ****** ****** *)
 
-symintr mpz_abs
-
-// [x] := | [y] |
-fun mpz_abs_2 (x: &mpz_vt, y: &mpz_vt):<> void
-  = "atslib_mpz_abs_2"
-
-// [x] := | [x] |
-fun mpz_abs_1 (x: &mpz_vt):<> void
-  = "atslib_mpz_abs_1"
-
-overload mpz_abs with mpz_abs_2
-overload mpz_abs with mpz_abs_1
-
+//
 // addition
+//
 
 symintr mpz_add
 
 // [x] := [y] + [z]
 fun mpz_add_mpz_3
-  (x: &mpz_vt, y: &mpz_vt, z: &mpz_vt):<> void
-  = "atslib_mpz_add_mpz_3"
+  (x: &mpz_vt, y: &mpz_vt, z: &mpz_vt)
+  :<> void = "#atslib_mpz_add_mpz_3"
+overload mpz_add with mpz_add_mpz_3
 
 fun mpz_add_int_3
-  (x: &mpz_vt, y: &mpz_vt, z: int):<> void
-  = "atslib_mpz_add_int_3"
-
-overload mpz_add with mpz_add_mpz_3
+  (x: &mpz_vt, y: &mpz_vt, z: int):<> void = "#atslib_mpz_add_int_3"
 overload mpz_add with mpz_add_int_3
 
 // [x] := [x] + [y]
-fun mpz_add_mpz_2 (x: &mpz_vt, y: &mpz_vt):<> void
-  = "atslib_mpz_add_mpz_2"
-
-fun mpz_add_int_2 (x: &mpz_vt, y: int):<> void
-  = "atslib_mpz_add_int_2"
-
+fun mpz_add_mpz_2
+  (x: &mpz_vt, y: &mpz_vt):<> void = "atslib_mpz_add_mpz_2"
 overload mpz_add with mpz_add_mpz_2
+
+fun mpz_add_int_2 (x: &mpz_vt, y: int):<> void = "atslib_mpz_add_int_2"
 overload mpz_add with mpz_add_int_2
 
+(* ****** ****** *)
+
+//
 // subtraction
+//
 
 symintr mpz_sub
 
 // [x] := [y] - [z]
 fun mpz_sub_mpz_3
-  (x: &mpz_vt, y: &mpz_vt, z: &mpz_vt):<> void
-  = "atslib_mpz_sub_mpz_3"
+  (x: &mpz_vt, y: &mpz_vt, z: &mpz_vt)
+  :<> void = "#atslib_mpz_sub_mpz_3"
+overload mpz_sub with mpz_sub_mpz_3
 
 fun mpz_sub_int_3
-  (x: &mpz_vt, y: &mpz_vt, z: int):<> void
-  = "atslib_mpz_sub_int_3"
-
-overload mpz_sub with mpz_sub_mpz_3
+  (x: &mpz_vt, y: &mpz_vt, z: int):<> void = "#atslib_mpz_sub_int_3"
 overload mpz_sub with mpz_sub_int_3
 
 // [x] := [x] - [y]
-fun mpz_sub_mpz_2 (x: &mpz_vt, y: &mpz_vt):<> void
-  = "atslib_mpz_sub_mpz_2"
-
-fun mpz_sub_int_2 (x: &mpz_vt, y: int):<> void
-  = "atslib_mpz_sub_int_2"
-
+fun mpz_sub_mpz_2
+  (x: &mpz_vt, y: &mpz_vt):<> void = "atslib_mpz_sub_mpz_2"
 overload mpz_sub with mpz_sub_mpz_2
+
+fun mpz_sub_int_2 (x: &mpz_vt, y: int):<> void = "atslib_mpz_sub_int_2"
 overload mpz_sub with mpz_sub_int_2
 
+(* ****** ****** *)
+
+//
 // multiplication
+//
 
 symintr mpz_mul
 
 // [x] := [y] * [z]
 fun mpz_mul_mpz_3
-  (x: &mpz_vt, y: &mpz_vt, z: &mpz_vt):<> void
-  = "atslib_mpz_mul_mpz_3"
+  (x: &mpz_vt, y: &mpz_vt, z: &mpz_vt)
+  :<> void = "#atslib_mpz_mul_mpz_3"
+overload mpz_mul with mpz_mul_mpz_3
 
 fun mpz_mul_int_3
-  (x: &mpz_vt, y: &mpz_vt, z: int):<> void
-  = "atslib_mpz_mul_int_3"
-
-overload mpz_mul with mpz_mul_mpz_3
+  (x: &mpz_vt, y: &mpz_vt, z: int):<> void = "#atslib_mpz_mul_int_3"
 overload mpz_mul with mpz_mul_int_3
 
 // [x] := [x] * [y]
-fun mpz_mul_mpz_2 (x: &mpz_vt, y: &mpz_vt):<> void
-  = "atslib_mpz_mul_mpz_2"
-
-fun mpz_mul_int_2 (x: &mpz_vt, y: int):<> void
-  = "atslib_mpz_mul_int_2"
-
+fun mpz_mul_mpz_2
+  (x: &mpz_vt, y: &mpz_vt):<> void = "atslib_mpz_mul_mpz_2"
 overload mpz_mul with mpz_mul_mpz_2
+
+fun mpz_mul_int_2 (x: &mpz_vt, y: int):<> void = "atslib_mpz_mul_int_2"
 overload mpz_mul with mpz_mul_int_2
 
 // [x] := [x] * [x]
-fun mpz_mul_mpz_1 (x: &mpz_vt):<> void
-  = "atslib_mpz_mul_mpz_1"
-
+fun mpz_mul_mpz_1 (x: &mpz_vt):<> void = "atslib_mpz_mul_mpz_1"
 overload mpz_mul with mpz_mul_mpz_1
 
 (* ****** ****** *)
 
-symintr mpz_tdiv_q
-
-// [q] := [n] / [d]
-fun mpz_tdiv_q_mpz_3
-  (q: &mpz_vt, n: &mpz_vt, d: &mpz_vt):<> void
-  = "atslib_mpz_tdiv_q_mpz_3"
-
-fun mpz_tdiv_q_mpz_2 (x: &mpz_vt, d: &mpz_vt):<> void
-  = "atslib_mpz_tdiv_q_mpz_2"
-
-overload mpz_tdiv_q with mpz_tdiv_q_mpz_3
-overload mpz_tdiv_q with mpz_tdiv_q_mpz_2
-
-(* ****** ****** *)
+//
+// comparison
+//
 
 symintr mpz_cmp
 
-fun mpz_cmp_mpz (x: &mpz_vt, y: &mpz_vt):<> Sgn
-  = "atslib_mpz_cmp_mpz"
-
-fun mpz_cmp_int (x: &mpz_vt, y: int):<> Sgn
-  = "atslib_mpz_cmp_int"
-
+fun mpz_cmp_mpz (x: &mpz_vt, y: &mpz_vt):<> Sgn = "#atslib_mpz_cmp_mpz"
 overload mpz_cmp with mpz_cmp_mpz
-overload mpz_cmp with mpz_cmp_int
 
-fun mpz_sgn (x: &mpz_vt):<> Sgn = "atslib_mpz_sgn"
+fun mpz_cmp_int (x: &mpz_vt, y: int):<> Sgn = "#atslib_mpz_cmp_int"
+overload mpz_cmp with mpz_cmp_int
 
 (* ****** ****** *)
 
@@ -285,12 +236,10 @@ fun fprint_mpz {m:file_mode}
   = "atslib_fprint_mpz"
 overload fprint with fprint_mpz
 
-fun print_mpz (x: &mpz_vt) :<!ref> void
-  = "atslib_print_mpz"
-fun prerr_mpz (x: &mpz_vt) :<!ref> void
-  = "atslib_prerr_mpz"
-
+fun print_mpz (x: &mpz_vt) :<!ref> void = "atslib_print_mpz"
 overload print with print_mpz
+
+fun prerr_mpz (x: &mpz_vt) :<!ref> void = "atslib_prerr_mpz"
 overload prerr with prerr_mpz
 
 (* ****** ****** *)

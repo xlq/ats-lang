@@ -83,6 +83,7 @@ end // end of [gcc_libfile_err]
 (* ****** ****** *)
 
 #define i2u uint_of_int
+#define sbp2str string1_of_strbuf
 
 fn char_identifize (c: char):<cloptr1> String =
   if char_isalnum c then tostring c
@@ -116,23 +117,23 @@ implement ccomp_gcc_ar_libfile (param_rev, infile, libfile) = let
   ) : string
 //
   val outbase = string_trans (infull, char_identifize)
-  val outfile = atslib_output_global () + outbase
-  val outfile_c = outfile + ".c"
+  val outfile =
+    sbp2str (atslib_output_global () + outbase)
+  val outfile_c = sbp2str (outfile + ".c")
   val status = ccomp_file_to_file_err
     (flag_stadyn, STRLSTnil(*param_ats*), infile, outfile_c)
-  val () = 
-   if (status <> 0) then exit_prerrf {void}
-     (status, "Exit: [ccomp_gcc_ar_libfile(%s)] failed: ccomp\n", @(infile))
-   else ()
-  val outfile_o = outfile + ".o"
+  val () = if (status <> 0) then exit_prerrf {void}
+    (status, "Exit: [ccomp_gcc_ar_libfile(%s)] failed: ccomp\n", @(infile))
+  // end of [val]
+  val outfile_o = sbp2str (outfile + ".o")
   val status = gcc_libfile_err (param_rev, outfile_c, outfile_o)
   val () = if (status <> 0) then begin exit_prerrf {void}
     (status, "Exit: [ccomp_gcc_ar_libfile(%s)] failed: gcc\n", @(infile))
   end // end of [val]
   val status = ar_r_err (libfile, outfile_o)
-  val () = if (status <> 0) then begin exit_prerrf {void}
+  val () = if (status <> 0) then exit_prerrf {void}
     (status, "Exit: [ccomp_gcc_ar_libfile(%s)] failed: ar\n", @(infile))
-  end // end of [val]
+  // end of [val]
 in
   printf ("The file [%s] has been compiled and archived.\n", @(infile))
 end // end of [ccomp_gcc_ar_libfile]
@@ -140,8 +141,8 @@ end // end of [ccomp_gcc_ar_libfile]
 (* ****** ****** *)
 
 extern fun fget_line {m:fm}
-  (pf: file_mode_lte (m, r) | f: &FILE m): String
-  = "fget_line"
+  (pf: file_mode_lte (m, r) | f: &FILE m): String = "fget_line"
+// end of [fget_line]
 
 #define i2sz size1_of_int1
 
@@ -158,8 +159,9 @@ in
   if feof (file) <> 0 then ()
   else let
     val name = fget_line (file_mode_lte_r_r | file)
-    val () = if filename_is_legal name then begin
-      ccomp_gcc_ar_libfile (param_rev, dir + name, libfilename)
+    val () = if filename_is_legal name then let
+      val dirname = sbp2str (dir + name) in
+      ccomp_gcc_ar_libfile (param_rev, dirname, libfilename)
     end // end of [val]
   in
     library_make_loop (param_rev, file, dir, libfilename)
@@ -185,12 +187,16 @@ end // end of [libats_make]
 
 implement libats_lex_make (param_rev) = let
   val dir = ATSHOME_dir_append "libats/lex/"
-  val libats_lex_local = atslib_local () + "libats_lex.a"
+  val libats_lex_local =
+    sbp2str (atslib_local () + "libats_lex.a")
   val libats_lex_global = ATSHOME_dir_append (libats_lex_local)
 in
-  ccomp_gcc_ar_libfile (param_rev, dir + "lexing.sats", libats_lex_global) ;
-  ccomp_gcc_ar_libfile (param_rev, dir + "lexing.dats", libats_lex_global) ;
-  ccomp_gcc_ar_libfile (param_rev, dir + "tables.dats", libats_lex_global) ;
+  ccomp_gcc_ar_libfile
+    (param_rev, sbp2str (dir + "lexing.sats"), libats_lex_global) ;
+  ccomp_gcc_ar_libfile
+    (param_rev, sbp2str (dir + "lexing.dats"), libats_lex_global) ;
+  ccomp_gcc_ar_libfile
+    (param_rev, sbp2str (dir + "tables.dats"), libats_lex_global) ;
   ar_s_exn (libats_lex_global) ;
 end // end of [libats_lex_make]
 
@@ -199,7 +205,7 @@ end // end of [libats_lex_make]
 implement libats_smlbas_make (param_rev) = () where {
   val smlbas_libfiles = ATSHOME_dir_append "libats/smlbas/.libfiles"
   val (pf_file | p_file) = fopen_exn (smlbas_libfiles, file_mode_r)
-  val libats_smlbas_local = atslib_local () + "libats_smlbas.a"
+  val libats_smlbas_local = sbp2str (atslib_local () + "libats_smlbas.a")
   val libats_smlbas_global = ATSHOME_dir_append (libats_smlbas_local)
   val () = library_make_loop (param_rev, !p_file, ATSHOME_dir, libats_smlbas_global)
   val () = fclose_exn (pf_file | p_file)

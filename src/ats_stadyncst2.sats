@@ -67,6 +67,8 @@ val Double_long_t0ype : s2cstref_t
 val Float_t0ype : s2cstref_t
 val Int_t0ype : s2cstref_t
 val Int_int_t0ype : s2cstref_t
+val Lint_t0ype : s2cstref_t
+val Lint_int_t0ype : s2cstref_t
 val Obj_cls_viewt0ype : s2cstref_t
 val Objmod_cls_type : s2cstref_t
 val Opt_viewt0ype_bool_viewt0ype : s2cstref_t
@@ -83,6 +85,8 @@ val String_type : s2cstref_t
 val String_int_type : s2cstref_t
 val Uint_t0ype : s2cstref_t
 val Uint_int_t0ype : s2cstref_t
+val Ulint_t0ype : s2cstref_t
+val Ulint_int_t0ype : s2cstref_t
 val Void_t0ype : s2cstref_t
 
 (* ****** ****** *)

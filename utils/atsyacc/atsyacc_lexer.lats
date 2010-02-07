@@ -81,7 +81,7 @@ fn string_make_charlst_rev_int
     end
   } // end of [val]
 in
-  string1_of_strbuf (pf_buf_gc, pf_buf | p_buf)
+  string1_of_strbuf @(pf_buf_gc, pf_buf | p_buf)
 end // end of [string_make_charlst_rev_int]
 
 (* ****** ****** *)

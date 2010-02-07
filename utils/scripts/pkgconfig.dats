@@ -166,6 +166,7 @@ implement shelltok_parse (inp) = let
             string_make_substring (__cast buf, 0, k) where {
             extern castfn __cast (buf: &bytes bsz):<> string (k)
           } // end of [val]
+          val itm = string1_of_strbuf (itm)
         in
           loop1 (inp, i+1, buf, bsz, LSTRLSTcons (itm, itms))
         end // end of [_ when ...]
@@ -178,6 +179,7 @@ implement shelltok_parse (inp) = let
         string_make_substring (__cast buf, 0, k) where {
         extern castfn __cast (buf: &bytes bsz):<> string (k)
       } // end of [val]
+      val itm = string1_of_strbuf (itm)
       //
       // should an unclosed quote be reported?
       //

@@ -39,15 +39,13 @@
 
 (* ****** ****** *)
 
-staload "libc/SATS/gmp.sats"
+%{#
+#include "libats/CATS/intinf.cats"
+%} // end of [%{#]
 
 (* ****** ****** *)
 
-%{#
-
-#include "libats/CATS/intinf.cats"
-
-%}
+staload "libc/SATS/gmp.sats"
 
 (* ****** ****** *)
 
@@ -66,9 +64,9 @@ fun intinf_make_int {i:int} (i: int i)
   : [l:addr] (free_gc_v (Intinf, l), intinf i @ l | ptr l)
 overload intinf_make with intinf_make_int
 
-fun intinf_make_size {i:int} (i: size_t i)
+fun intinf_make_lint {i:int} (i: lint i)
   : [l:addr] (free_gc_v (Intinf, l), intinf i @ l | ptr l)
-overload intinf_make with intinf_make_size
+overload intinf_make with intinf_make_lint
 
 (* ****** ****** *)
 
@@ -134,16 +132,21 @@ overload - with sub_intinf_intinf
 
 fun mul_int_intinf {m,n:int}
   (m: int m, n: &intinf n): [p:int] (MUL (m, n, p) | intinfptr_gc p)
+overload * with mul_int_intinf
 
 fun mul_intinf_int {m,n:int}
   (m: &intinf m, n: int n): [p:int] (MUL (m, n, p) | intinfptr_gc p)
+overload * with mul_intinf_int
 
 fun mul_intinf_intinf {m,n:int}
   (m: &intinf m, n: &intinf n): [p:int] (MUL (m, n, p) | intinfptr_gc p)
-
-overload * with mul_int_intinf
-overload * with mul_intinf_int
 overload * with mul_intinf_intinf
+
+//
+
+fun square_intinf
+  {n:int} (n: &intinf n): [p:int] (MUL (n, n, p) | intinfptr_gc p)
+overload square with square_intinf
 
 //
 

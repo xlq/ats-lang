@@ -50,6 +50,7 @@
 
 /* ****** ****** */
 
+// #undef HAVE_GMP_H // testing
 #ifdef HAVE_GMP_H
 #include "libc/CATS/gmp.cats"
 #else

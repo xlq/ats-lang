@@ -172,6 +172,8 @@ fun atscc_outfile_name_make (basename: string): String
   = "atscc_outfile_name_make"
 
 (* ****** ****** *)
+
+#define sbp2str string1_of_strbuf
   
 fn atscc_argv_process {n:pos} {l:addr}
   (pf: !array_v (String, n, l) | n: int n, p: ptr l): Strlst(*param_c*) = let
@@ -195,9 +197,9 @@ fn* aux {i:nat | i <= n} ( // .<n-i,0>.
       end // end of [_]
   end else if intref_get is_objcode_only > 0 then let
     val param_c = strlst_reverse param_c
-    val _IATSHOME = "-I" + ATSHOME_dir
+    val _IATSHOME = sbp2str ("-I" + ATSHOME_dir)
     val param_c = _IATSHOME :: param_c
-    val _Iruntime_global = "-I" + runtime_global
+    val _Iruntime_global = sbp2str ("-I" + runtime_global)
     val param_c = _Iruntime_global :: param_c
   in
     param_c
@@ -213,7 +215,8 @@ fn* aux {i:nat | i <= n} ( // .<n-i,0>.
           gcobj_global :: param_c
         end // end of [ATS_GCATS]
       | _ when intref_get is_ATS_GCATS2 > 0 => let
-          val gc_o = runtime_global + "GCATS2/gc.o" in gc_o :: param_c
+          val gc_o = sbp2str (runtime_global + "GCATS2/gc.o") in
+          gc_o :: param_c
         end // end of [ATS_GCATS2]
       | _ when intref_get is_ATS_GCBDW > 0 => let
 (*
@@ -254,13 +257,13 @@ fn* aux {i:nat | i <= n} ( // .<n-i,0>.
       if intref_get is_lats > 0 then param_c else "-lats" :: param_c
     ) : Strlst
     val param_c = strlst_reverse param_c
-    val ats_prelude_c = runtime_global + "ats_prelude.c"
+    val ats_prelude_c = sbp2str (runtime_global + "ats_prelude.c")
     val param_c = ats_prelude_c :: param_c
-    val _Latslib_global = "-L" + atslib_global ()
+    val _Latslib_global = sbp2str ("-L" + atslib_global ())
     val param_c = _Latslib_global :: param_c
-    val _Iruntime_global = "-I" + runtime_global
+    val _Iruntime_global = sbp2str ("-I" + runtime_global)
     val param_c = _Iruntime_global :: param_c
-    val _IATSHOME = "-I" + ATSHOME_dir
+    val _IATSHOME = sbp2str ("-I" + ATSHOME_dir)
     val param_c = _IATSHOME :: param_c
   in
     param_c (* Strlst *)

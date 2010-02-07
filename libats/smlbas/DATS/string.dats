@@ -70,27 +70,35 @@ implement sub (s, i) = s[i]
 
 (* ****** ****** *)
 
-implement substring (str, st, ln) = string_make_substring (str, st, ln)
+implement substring (str, st, ln) = let
+  val sbp = string_make_substring (str, st, ln) in string1_of_strbuf sbp
+end // end of [substring]
 
 implement extract (str, st, oln) = case+ oln of
-  | Some ln => string_make_substring (str, st, ln)
+  | Some ln => let
+      val sbp = string_make_substring (str, st, ln) in string1_of_strbuf sbp
+    end // end of [Some]
   | None () => let
-      val n = string1_length (str) in string_make_substring (str, st, n-st)
+      val n = string1_length (str)
+      val sbp = string_make_substring (str, st, n-st) in string1_of_strbuf (sbp)
     end // end of [option_none]  
 (* end of [extract] *)
   
 (* ****** ****** *)
 
-implement ^ (s1, s2) = s1 + s2
+implement ^ (s1, s2) = string1_of_strbuf (s1 + s2)
 
 (* ****** ****** *)
 
-implement str (c: char) = string_make_char (1, c)
+implement str (c: char) = let
+  val sbp = string_make_char (1, c) in string1_of_strbuf sbp
+end // end of [str]
 
 (* ****** ****** *)
 
 implement concat (ss) = let
-  val ss = list1_of_list0 (ss) in stringlst_concat (ss)
+  val ss = list1_of_list0 (ss); val sbp = stringlst_concat (ss) in
+  string1_of_strbuf sbp
 end // end of [concat]
 
 implement concatWith (sep, ss) = let
@@ -120,19 +128,21 @@ in
       var res: List_vt string?
       val () = loop (sep, s, ss, res)
       val lss_sep = res
-      val str = stringlst_concat (__cast lss_sep) where {
+      val sbp = stringlst_concat (__cast lss_sep) where {
         extern castfn __cast (_: !List_vt string): List string 
       } // end of [val]
       val () = list_vt_free (lss_sep)
     in
-      str
+      string1_of_strbuf (sbp)
     end // end of [list_cons]  
   | list_nil () => ""
 end // end of [concatWith]
 
 (* ****** ****** *)
 
-implement implode (cs) = string_implode (list1_of_list0 cs)
+implement implode (cs) = let
+  val sbp = string_implode (list1_of_list0 cs) in string1_of_strbuf sbp
+end // end of [implode]
 
 implement explode (str) = begin
   list0_of_list_vt (string_explode (string1_of_string str))
@@ -171,7 +181,7 @@ implement map {n} (f, s) = let
     end (* end of [loop] *)
   } // end of [val]
 in
-  string1_of_strbuf (pf_gc, pf_buf | p_buf)
+  string1_of_strbuf @(pf_gc, pf_buf | p_buf)
 end // end of [map]
 
 (* ****** ****** *)
@@ -195,12 +205,12 @@ implement translate (f, s) = let
     end // end of [if]  
   end (* end of [loop] *)
   var res: res_t; val () = loop (f, s, 0, res)
-  val str = stringlst_concat (__cast res) where {
+  val sbp = stringlst_concat (__cast res) where {
     extern castfn __cast (_: !List_vt string): List string
   } // end of [val]
   val () = list_vt_free (res)
 in
-  str
+  string1_of_strbuf (sbp)
 end (* end of [translate] *)
 
 (* ****** ****** *)

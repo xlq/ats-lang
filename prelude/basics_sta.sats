@@ -436,6 +436,9 @@ abst@ype char_char_t0ype (char) = char_t0ype
 abst@ype int_int_t0ype (int) = int_t0ype
 abst@ype uint_int_t0ype (int) = uint_t0ype
 
+abst@ype lint_int_t0ype (int) = int_long_t0ype
+abst@ype ulint_int_t0ype (int) = uint_long_t0ype
+
 abst@ype size_int_t0ype (i:int) = size_t0ype
 abst@ype ssize_int_t0ype (i:int) = ssize_t0ype
 

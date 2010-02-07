@@ -82,6 +82,8 @@ end // end of [wordsize_target_get]
 
 (* ****** ****** *)
 
+#define sbp2str string1_of_strbuf
+
 implement atsopt_local = "bin/atsopt"
 implement precats_local = "prelude/CATS/"
 implement runtime_local = "ccomp/runtime/"
@@ -96,9 +98,11 @@ in
   | _ => "ccomp/lib/"
 end // end of [atslib_local]
 
-implement atslib_output_local () = atslib_local () + "output/"
+implement atslib_output_local () =
+  sbp2str (atslib_local () + "output/")
 
-implement libats_local () = atslib_local () + "libats.a"
+implement libats_local () =
+  sbp2str (atslib_local () + "libats.a")
 
 (*
 // multithreaded
@@ -134,7 +138,7 @@ implement ATSHOME_dir = let
   val n = string_length ATSHOME
 in
   if n > 0 then
-    if ATSHOME[n-1] = dirsep then ATSHOME else ATSHOME + dirsep_str
+    if ATSHOME[n-1] = dirsep then ATSHOME else sbp2str (ATSHOME + dirsep_str)
   else begin
     prerr "The variable [ATSHOME] is empty!\n" ;
     $raise (Fatal "ATSHOME")
@@ -142,7 +146,7 @@ in
 end // end of [ATSHOME]
 
 implement ATSHOME_dir_append basename =
-  ATSHOME_dir + (string1_of_string basename)
+  sbp2str (ATSHOME_dir + (string1_of_string basename))
 // end of [ATSHOME_dir_append]
 
 (* ****** ****** *)
@@ -173,8 +177,9 @@ in
     val i = size1_of_ssize1 (i)
     val () = assert_prerrf_bool1
       (i < n, "[basename_of(%s)] failed.\n", @(name))
+    val sbp = string_make_substring (name, i+1, n-i-1)
   in
-    string_make_substring (name, i+1, n-i-1)
+    sbp2str (sbp)
   end else begin
     name (* [name] containing no [dirsep] *)
   end // end of [if]
@@ -187,8 +192,9 @@ in
   if i >= 0 then let
     val i = size1_of_ssize1 (i)
     val n = string_length name
+    val str = sbp2str (string_make_substring (name, i+1, n-i-1))
   in
-    stropt_some (string_make_substring (name, i+1, n-i-1))
+    stropt_some (str)
   end else begin
     stropt_none (* [name] containing no [dirsep] *)
   end // end of [if]

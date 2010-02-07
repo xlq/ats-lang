@@ -94,7 +94,7 @@ dirent_name_get(ats_ptr_type dir) {
   } // end of [if]
 } /* end of [dirent_name_get] */ 
 
-%}
+%} // end of [%{^]
 
 (* ****** ****** *)
 
@@ -119,12 +119,18 @@ in
   str // return value
 end // end of [val]
 
-val SRCROOT = ATSHOME + "/"
+(* ****** ****** *)
+
+infixl ++
+symintr ++
+overload ++ with string0_append
 
 (* ****** ****** *)
 
+val SRCROOT = ATSHOME ++ "/"
+
 fn ATSPACKAGE_VERSION_get (): string = let
-  val name = SRCROOT + "VERSION.txt"
+  val name = SRCROOT ++ "VERSION.txt"
   val () = begin
     if ~(test_file_exists name) then begin
       prerr "The file ["; prerr name; prerr "] is not available.";
@@ -147,8 +153,10 @@ end // end of [ATSPACKAGE_VERSION_get]
 
 val ATSPACKAGE_VERSION: string = ATSPACKAGE_VERSION_get ()
 
-val DSTROOT: string = begin
-  stringlst_concat '[ATSPACKAGE_NAME, "-", ATSPACKAGE_VERSION, "/"]
+val DSTROOT: string = let
+  val sbp =
+    stringlst_concat '[ATSPACKAGE_NAME, "-", ATSPACKAGE_VERSION, "/"] in
+  string1_of_strbuf (sbp)
 end // end of [DSTROOT]
 
 (* ****** ****** *)
@@ -201,7 +209,8 @@ fn dir_copy
   val srcdir = string1_of_string srcdir
   and dstdir = string1_of_string dstdir
 
-  macdef cp (name) = fcopy_exn (srcdir + ,(name), dstdir + ,(name))
+  macdef cp (name) = fcopy_exn
+    (srcdir ++ ,(name), dstdir ++ ,(name))
 
   fun loop (dir: &DIR):<cloref1> void = let
     val name = dirent_name_get (dir) in case+ 0 of
@@ -224,32 +233,32 @@ end // end of [dir_copy]
 
 (* ****** ****** *)
 
-val SRCROOTccomp = SRCROOT + "ccomp/"
-val DSTROOTccomp = DSTROOT + "ccomp/"
+val SRCROOTccomp = SRCROOT ++ "ccomp/"
+val DSTROOTccomp = DSTROOT ++ "ccomp/"
 
-val SRCROOTccomp_lib = SRCROOTccomp + "lib/"
-val DSTROOTccomp_lib = DSTROOTccomp + "lib/"
-val SRCROOTccomp_lib_output = SRCROOTccomp_lib + "output/"
-val DSTROOTccomp_lib_output = DSTROOTccomp_lib + "output/"
+val SRCROOTccomp_lib = SRCROOTccomp ++ "lib/"
+val DSTROOTccomp_lib = DSTROOTccomp ++ "lib/"
+val SRCROOTccomp_lib_output = SRCROOTccomp_lib ++ "output/"
+val DSTROOTccomp_lib_output = DSTROOTccomp_lib ++ "output/"
 
-val SRCROOTccomp_lib64 = SRCROOTccomp + "lib64/"
-val DSTROOTccomp_lib64 = DSTROOTccomp + "lib64/"
-val SRCROOTccomp_lib64_output = SRCROOTccomp_lib64 + "output/"
-val DSTROOTccomp_lib64_output = DSTROOTccomp_lib64 + "output/"
+val SRCROOTccomp_lib64 = SRCROOTccomp ++ "lib64/"
+val DSTROOTccomp_lib64 = DSTROOTccomp ++ "lib64/"
+val SRCROOTccomp_lib64_output = SRCROOTccomp_lib64 ++ "output/"
+val DSTROOTccomp_lib64_output = DSTROOTccomp_lib64 ++ "output/"
 
-val SRCROOTccomp_runtime = SRCROOTccomp + "runtime/"
-val DSTROOTccomp_runtime = DSTROOTccomp + "runtime/"
+val SRCROOTccomp_runtime = SRCROOTccomp ++ "runtime/"
+val DSTROOTccomp_runtime = DSTROOTccomp ++ "runtime/"
 
 (*
-val SRCROOTccomp_runtime_NGC = SRCROOTccomp_runtime + "NGC/"
-val DSTROOTccomp_runtime_NGC = DSTROOTccomp_runtime + "NGC/"
+val SRCROOTccomp_runtime_NGC = SRCROOTccomp_runtime ++ "NGC/"
+val DSTROOTccomp_runtime_NGC = DSTROOTccomp_runtime ++ "NGC/"
 *)
 
-val SRCROOTccomp_runtime_GCATS = SRCROOTccomp_runtime + "GCATS/"
-val DSTROOTccomp_runtime_GCATS = DSTROOTccomp_runtime + "GCATS/"
+val SRCROOTccomp_runtime_GCATS = SRCROOTccomp_runtime ++ "GCATS/"
+val DSTROOTccomp_runtime_GCATS = DSTROOTccomp_runtime ++ "GCATS/"
 
 (*
-val SRCROOTsrc = SRCROOT + "src/"; val DSTROOTsrc = DSTROOT + "src/"
+val SRCROOTsrc = SRCROOT ++ "src/"; val DSTROOTsrc = DSTROOT ++ "src/"
 *)
 
 (* ****** ****** *)
@@ -287,14 +296,14 @@ end // end of [packnd_is_precompiled]
 (* ****** ****** *)
 
 fn bin_dir_copy (knd: packnd): void = let
-  val SRCROOTbin = SRCROOT + "bin/"
-  val DSTROOTbin = DSTROOT + "bin/"
+  val SRCROOTbin = SRCROOT ++ "bin/"
+  val DSTROOTbin = DSTROOT ++ "bin/"
 
   macdef cp (name) = fcopy_exn
-     (SRCROOTbin + ,(name), DSTROOTbin + ,(name))
+     (SRCROOTbin ++ ,(name), DSTROOTbin ++ ,(name))
   macdef cpx (name) = let
-    val src_name = SRCROOTbin + ,(name)
-    val dst_name = DSTROOTbin + ,(name)
+    val src_name = SRCROOTbin ++ ,(name)
+    val dst_name = DSTROOTbin ++ ,(name)
     val () = fcopy_exn (src_name, dst_name)
     val () = chmod_exn (dst_name, $STAT.S_IRWXU)
   in
@@ -358,8 +367,8 @@ end // end of [name_is_xats]
 (* ****** ****** *)
 
 fn bootstrap_dir_copy () = let
-  val SRCROOTbootstrap = SRCROOT + "bootstrap1/"
-  val DSTROOTbootstrap = DSTROOT + "bootstrap1/"
+  val SRCROOTbootstrap = SRCROOT ++ "bootstrap1/"
+  val DSTROOTbootstrap = DSTROOT ++ "bootstrap1/"
 
   fn test
     (name: string): bool = begin
@@ -370,7 +379,7 @@ fn bootstrap_dir_copy () = let
   end // end of [test]
 
   macdef cp (name) = fcopy_exn
-     (SRCROOTbootstrap + ,(name), DSTROOTbootstrap + ,(name))
+     (SRCROOTbootstrap ++ ,(name), DSTROOTbootstrap ++ ,(name))
 
   val () = mkdir_exn (DSTROOTbootstrap, DIRmode)
   val () = dir_copy (SRCROOTbootstrap, DSTROOTbootstrap, test)
@@ -391,17 +400,17 @@ fn ccomp_lib_dir_copy
     (packnd_is_precompiled knd) then let
     val () = if (wsz = 4(*bytes*)) then let
       val () = fcopy_exn
-        (SRCROOTccomp_lib + "libats.a", DSTROOTccomp_lib + "libats.a")
+        (SRCROOTccomp_lib ++ "libats.a", DSTROOTccomp_lib ++ "libats.a")
       val () = fcopy_exn
-        (SRCROOTccomp_lib + "libats_smlbas.a", DSTROOTccomp_lib + "libats_smlbas.a")
+        (SRCROOTccomp_lib ++ "libats_smlbas.a", DSTROOTccomp_lib ++ "libats_smlbas.a")
     in
       // nothing
     end // end of [val]
     val () = if (wsz = 8(*bytes*)) then let
       val () = fcopy_exn
-        (SRCROOTccomp_lib64 + "libats.a", DSTROOTccomp_lib64 + "libats.a")
+        (SRCROOTccomp_lib64 ++ "libats.a", DSTROOTccomp_lib64 ++ "libats.a")
       val () = fcopy_exn
-        (SRCROOTccomp_lib64 + "libats_smlbas.a", DSTROOTccomp_lib64 + "libats_smlbas.a")
+        (SRCROOTccomp_lib64 ++ "libats_smlbas.a", DSTROOTccomp_lib64 ++ "libats_smlbas.a")
     in
       // nothing
     end // end of [val]
@@ -410,11 +419,11 @@ fn ccomp_lib_dir_copy
   end // end of [val]
   val () = mkdir_exn (DSTROOTccomp_lib_output, DIRmode)
   val () = fcopy_exn // keeping the directory from being removed
-     (SRCROOTccomp_lib_output + ".keeper", DSTROOTccomp_lib_output + ".keeper")
+     (SRCROOTccomp_lib_output ++ ".keeper", DSTROOTccomp_lib_output ++ ".keeper")
   // end of [val]
   val () = mkdir_exn (DSTROOTccomp_lib64_output, DIRmode)
   val () = fcopy_exn // keeping the directory from being removed
-     (SRCROOTccomp_lib64_output + ".keeper", DSTROOTccomp_lib64_output + ".keeper")
+     (SRCROOTccomp_lib64_output ++ ".keeper", DSTROOTccomp_lib64_output ++ ".keeper")
   // end of [val]
 in
   // empty
@@ -427,7 +436,7 @@ end // end of [ccomp_lib_dir_copy]
 fn ccomp_runtime_NGC_dir_copy (knd: packnd): void = () where {
   val () = mkdir_exn (DSTROOTccomp_runtime_NGC, DIRmode)
   macdef cp (name) = fcopy_exn (
-    SRCROOTccomp_runtime_NGC + ,(name), DSTROOTccomp_runtime_NGC + ,(name)
+    SRCROOTccomp_runtime_NGC ++ ,(name), DSTROOTccomp_runtime_NGC ++ ,(name)
   ) // end of [fcopy_exn]
   val () = cp "gc.h"
   val () = prerr "The [ccomp/runtime/NGC] directory is successfully copied.";
@@ -444,7 +453,7 @@ fn ccomp_runtime_GCATS_dir_copy (knd: packnd): void = let
   end // end of [filename_test]
 
   macdef cp (name) = fcopy_exn (
-    SRCROOTccomp_runtime_GCATS + ,(name), DSTROOTccomp_runtime_GCATS + ,(name)
+    SRCROOTccomp_runtime_GCATS ++ ,(name), DSTROOTccomp_runtime_GCATS ++ ,(name)
   ) // end of [fcopy_exn]
 
   val () = mkdir_exn (DSTROOTccomp_runtime_GCATS, DIRmode)
@@ -466,7 +475,7 @@ end // end of [ccomp_runtime_GCATS_dir_copy]
 
 fn ccomp_runtime_dir_copy (knd: packnd): void = let
   macdef cp (name) = fcopy_exn (
-    SRCROOTccomp_runtime + ,(name), DSTROOTccomp_runtime + ,(name)
+    SRCROOTccomp_runtime ++ ,(name), DSTROOTccomp_runtime ++ ,(name)
   )
   val () = mkdir_exn (DSTROOTccomp_runtime, DIRmode)
 in
@@ -499,39 +508,39 @@ end // end of [ccomp_dir_copy]
 (* ****** ****** *)
 
 fn doc_dir_copy () = let
-  val SRCROOTdoc = SRCROOT + "doc/"
-  val DSTROOTdoc = DSTROOT + "doc/"
+  val SRCROOTdoc = SRCROOT ++ "doc/"
+  val DSTROOTdoc = DSTROOT ++ "doc/"
   val () = mkdir_exn (DSTROOTdoc, DIRmode)
   val () = fcopy_exn (
-    SRCROOTdoc + "FAQ.txt", DSTROOTdoc + "FAQ.txt"
+    SRCROOTdoc ++ "FAQ.txt", DSTROOTdoc ++ "FAQ.txt"
   ) // end of [fcopy_exn]
 (*
 //
-  val SRCROOTdoc_BOOK = SRCROOTdoc + "BOOK/"
-  val DSTROOTdoc_BOOK = DSTROOTdoc + "BOOK/"
+  val SRCROOTdoc_BOOK = SRCROOTdoc ++ "BOOK/"
+  val DSTROOTdoc_BOOK = DSTROOTdoc ++ "BOOK/"
   val () = mkdir_exn (DSTROOTdoc_BOOK, DIRmode)
-  val SRCROOTdoc_BOOK_manual = SRCROOTdoc_BOOK + "manual/"
-  val DSTROOTdoc_BOOK_manual = DSTROOTdoc_BOOK + "manual/"
+  val SRCROOTdoc_BOOK_manual = SRCROOTdoc_BOOK ++ "manual/"
+  val DSTROOTdoc_BOOK_manual = DSTROOTdoc_BOOK ++ "manual/"
   val () = mkdir_exn (DSTROOTdoc_BOOK_manual, DIRmode)
   val () = fcopy_exn (
-    SRCROOTdoc_BOOK_manual + "manual_main.ps"
-  , DSTROOTdoc_BOOK_manual + "manual_main.ps"
+    SRCROOTdoc_BOOK_manual ++ "manual_main.ps"
+  , DSTROOTdoc_BOOK_manual ++ "manual_main.ps"
   ) // end of [fcopy_exn]
   val () = fcopy_exn (
-    SRCROOTdoc_BOOK_manual + "manual_main.pdf"
-  , DSTROOTdoc_BOOK_manual + "manual_main.pdf"
+    SRCROOTdoc_BOOK_manual ++ "manual_main.pdf"
+  , DSTROOTdoc_BOOK_manual ++ "manual_main.pdf"
   ) // end of [fcopy_exn]
 //
 *)
-  val SRCROOTdoc_EXAMPLE = SRCROOTdoc + "EXAMPLE/"
-  val DSTROOTdoc_EXAMPLE = DSTROOTdoc + "EXAMPLE/"
+  val SRCROOTdoc_EXAMPLE = SRCROOTdoc ++ "EXAMPLE/"
+  val DSTROOTdoc_EXAMPLE = DSTROOTdoc ++ "EXAMPLE/"
   val () = mkdir_exn (DSTROOTdoc_EXAMPLE, DIRmode)
 //  
-  val SRCROOTdoc_EXAMPLE_INTRO = SRCROOTdoc_EXAMPLE + "INTRO/"
-  val DSTROOTdoc_EXAMPLE_INTRO = DSTROOTdoc_EXAMPLE + "INTRO/"
+  val SRCROOTdoc_EXAMPLE_INTRO = SRCROOTdoc_EXAMPLE ++ "INTRO/"
+  val DSTROOTdoc_EXAMPLE_INTRO = DSTROOTdoc_EXAMPLE ++ "INTRO/"
   val () = mkdir_exn (DSTROOTdoc_EXAMPLE_INTRO, DIRmode)
   macdef cp (name) = fcopy_exn (
-    SRCROOTdoc_EXAMPLE_INTRO + ,(name), DSTROOTdoc_EXAMPLE_INTRO + ,(name)
+    SRCROOTdoc_EXAMPLE_INTRO ++ ,(name), DSTROOTdoc_EXAMPLE_INTRO ++ ,(name)
   )
   val () = cp "Makefile"
   val () = cp "HelloWorld.dats"
@@ -543,11 +552,11 @@ fn doc_dir_copy () = let
   val () = cp "revarr.dats"
   val () = cp "revstr.dats"
 //
-  val SRCROOTdoc_EXAMPLE_MISC = SRCROOTdoc_EXAMPLE + "MISC/"
-  val DSTROOTdoc_EXAMPLE_MISC = DSTROOTdoc_EXAMPLE + "MISC/"
+  val SRCROOTdoc_EXAMPLE_MISC = SRCROOTdoc_EXAMPLE ++ "MISC/"
+  val DSTROOTdoc_EXAMPLE_MISC = DSTROOTdoc_EXAMPLE ++ "MISC/"
   val () = mkdir_exn (DSTROOTdoc_EXAMPLE_MISC, DIRmode)
   macdef cp (name) = fcopy_exn (
-    SRCROOTdoc_EXAMPLE_MISC + ,(name), DSTROOTdoc_EXAMPLE_MISC + ,(name)
+    SRCROOTdoc_EXAMPLE_MISC ++ ,(name), DSTROOTdoc_EXAMPLE_MISC ++ ,(name)
   )
   val () = cp "Makefile"
   val () = cp "AutoDiff.dats"
@@ -576,32 +585,32 @@ fn doc_dir_copy () = let
   val () = cp "tetrix.dats"
   val () = cp "wc.dats"
 //
-  val SRCROOTdoc_EXAMPLE_MISC = SRCROOTdoc_EXAMPLE + "MISC/Twentyfour/"
-  val DSTROOTdoc_EXAMPLE_MISC = DSTROOTdoc_EXAMPLE + "MISC/Twentyfour/"
+  val SRCROOTdoc_EXAMPLE_MISC = SRCROOTdoc_EXAMPLE ++ "MISC/Twentyfour/"
+  val DSTROOTdoc_EXAMPLE_MISC = DSTROOTdoc_EXAMPLE ++ "MISC/Twentyfour/"
   val () = mkdir_exn (DSTROOTdoc_EXAMPLE_MISC, DIRmode)
   macdef cp (name) = fcopy_exn (
-    SRCROOTdoc_EXAMPLE_MISC + ,(name), DSTROOTdoc_EXAMPLE_MISC + ,(name)
+    SRCROOTdoc_EXAMPLE_MISC ++ ,(name), DSTROOTdoc_EXAMPLE_MISC ++ ,(name)
   )
   val () = cp "Makefile"
   val () = cp "rational.sats"
   val () = cp "rational.dats"
   val () = cp "twentyfour.dats"
 //
-  val SRCROOTdoc_EXAMPLE_MISC = SRCROOTdoc_EXAMPLE + "MISC/HttpServer/"
-  val DSTROOTdoc_EXAMPLE_MISC = DSTROOTdoc_EXAMPLE + "MISC/HttpServer/"
+  val SRCROOTdoc_EXAMPLE_MISC = SRCROOTdoc_EXAMPLE ++ "MISC/HttpServer/"
+  val DSTROOTdoc_EXAMPLE_MISC = DSTROOTdoc_EXAMPLE ++ "MISC/HttpServer/"
   val () = mkdir_exn (DSTROOTdoc_EXAMPLE_MISC, DIRmode)
   macdef cp (name) = fcopy_exn (
-    SRCROOTdoc_EXAMPLE_MISC + ,(name), DSTROOTdoc_EXAMPLE_MISC + ,(name)
+    SRCROOTdoc_EXAMPLE_MISC ++ ,(name), DSTROOTdoc_EXAMPLE_MISC ++ ,(name)
   )
   val () = cp "Makefile"
   val () = cp "server.dats"
   val () = cp "server2.dats"
 //
-  val SRCROOTdoc_EXAMPLE_TEST = SRCROOTdoc_EXAMPLE + "TEST/"
-  val DSTROOTdoc_EXAMPLE_TEST = DSTROOTdoc_EXAMPLE + "TEST/"
+  val SRCROOTdoc_EXAMPLE_TEST = SRCROOTdoc_EXAMPLE ++ "TEST/"
+  val DSTROOTdoc_EXAMPLE_TEST = DSTROOTdoc_EXAMPLE ++ "TEST/"
   val () = mkdir_exn (DSTROOTdoc_EXAMPLE_TEST, DIRmode)
   macdef cp (name) = fcopy_exn (
-    SRCROOTdoc_EXAMPLE_TEST + ,(name), DSTROOTdoc_EXAMPLE_TEST + ,(name)
+    SRCROOTdoc_EXAMPLE_TEST ++ ,(name), DSTROOTdoc_EXAMPLE_TEST ++ ,(name)
   )
   val () = cp "Makefile"
   val () = cp "prelude_array.dats"
@@ -625,9 +634,9 @@ fn doc_dir_copy () = let
   val () = cp "libats_smlbas_time.dats"
 //
   val SRCROOTdoc_EXAMPLE_KernighanRitchie =
-    SRCROOTdoc_EXAMPLE + "KernighanRitchie/"
+    SRCROOTdoc_EXAMPLE ++ "KernighanRitchie/"
   val DSTROOTdoc_EXAMPLE_KernighanRitchie =
-    DSTROOTdoc_EXAMPLE + "KernighanRitchie/"
+    DSTROOTdoc_EXAMPLE ++ "KernighanRitchie/"
   val () = mkdir_exn (DSTROOTdoc_EXAMPLE_KernighanRitchie, DIRmode)
   #define NCHAPTER 8
   val () = cp "Makefile"
@@ -641,21 +650,21 @@ fn doc_dir_copy () = let
       ) :<cloref1> void =
       if i < NCHAPTER then let
         val name = names.[i]
-        val src = SRCROOTdoc_EXAMPLE_KernighanRitchie + name
-        val dst = DSTROOTdoc_EXAMPLE_KernighanRitchie + name
+        val src = SRCROOTdoc_EXAMPLE_KernighanRitchie ++ name
+        val dst = DSTROOTdoc_EXAMPLE_KernighanRitchie ++ name
         val () = mkdir_exn (dst, DIRmode)
-        val () = fcopy_exn (src + "Makefile", dst + "Makefile")
+        val () = fcopy_exn (src ++ "Makefile", dst ++ "Makefile")
         val () = dir_copy (src, dst, name_is_xats)
       in
         loop (names, i+1)
       end // end of [if]
   } // end of [val]
 //
-  val SRCROOTdoc_EXAMPLE_OpenGL = SRCROOTdoc_EXAMPLE + "OpenGL/"
-  val DSTROOTdoc_EXAMPLE_OpenGL = DSTROOTdoc_EXAMPLE + "OpenGL/"
+  val SRCROOTdoc_EXAMPLE_OpenGL = SRCROOTdoc_EXAMPLE ++ "OpenGL/"
+  val DSTROOTdoc_EXAMPLE_OpenGL = DSTROOTdoc_EXAMPLE ++ "OpenGL/"
   val () = mkdir_exn (DSTROOTdoc_EXAMPLE_OpenGL, DIRmode)
   macdef cp (name) = fcopy_exn (
-    SRCROOTdoc_EXAMPLE_OpenGL + ,(name), DSTROOTdoc_EXAMPLE_OpenGL + ,(name)
+    SRCROOTdoc_EXAMPLE_OpenGL ++ ,(name), DSTROOTdoc_EXAMPLE_OpenGL ++ ,(name)
   )
   val () = cp "Makefile"
   val () = dir_copy
@@ -688,33 +697,33 @@ fn lib_dir_copy
   and dstlibname = string1_of_string dstlibname
   val () = mkdir_exn (dstlibname, DIRmode)
 //
-  val srclibname_SATS = srclibname + "SATS/"
-  val dstlibname_SATS = dstlibname + "SATS/"
+  val srclibname_SATS = srclibname ++ "SATS/"
+  val dstlibname_SATS = dstlibname ++ "SATS/"
   val () = mkdir_exn (dstlibname_SATS, DIRmode)
   val () = dir_copy
     (srclibname_SATS, dstlibname_SATS, name_is_sats)
 //
-  val srclibname_DATS = srclibname + "DATS/"
-  val dstlibname_DATS = dstlibname + "DATS/"
+  val srclibname_DATS = srclibname ++ "DATS/"
+  val dstlibname_DATS = dstlibname ++ "DATS/"
   val () = mkdir_exn (dstlibname_DATS, DIRmode)
   val () = dir_copy
     (srclibname_DATS, dstlibname_DATS, name_is_dats)
 //
   // CATS is optional
-  val srclibname_CATS = srclibname + "CATS/"
+  val srclibname_CATS = srclibname ++ "CATS/"
   val () = if
     file_isexi (srclibname_CATS) then let
-    val dstlibname_CATS = dstlibname + "CATS/"
+    val dstlibname_CATS = dstlibname ++ "CATS/"
     val () = mkdir_exn (dstlibname_CATS, DIRmode)
   in
     dir_copy (srclibname_CATS, dstlibname_CATS, name_is_cats)
   end // end of [val]
 //
   // HATS is optional
-  val srclibname_HATS = srclibname + "HATS/"
+  val srclibname_HATS = srclibname ++ "HATS/"
   val () = if
     file_isexi (srclibname_HATS) then let
-    val dstlibname_HATS = dstlibname + "HATS/"
+    val dstlibname_HATS = dstlibname ++ "HATS/"
     val () = mkdir_exn (dstlibname_HATS, DIRmode)
   in
     dir_copy (srclibname_HATS, dstlibname_HATS, name_is_hats)
@@ -726,10 +735,10 @@ end // end of [lib_dir_copy]
 (* ****** ****** *)
 
 fn prelude_dir_copy () = let
-  val SRCROOTprelude = SRCROOT + "prelude/"
-  val DSTROOTprelude = DSTROOT + "prelude/"
+  val SRCROOTprelude = SRCROOT ++ "prelude/"
+  val DSTROOTprelude = DSTROOT ++ "prelude/"
   macdef cp (name) = fcopy_exn (
-    SRCROOTprelude + ,(name), DSTROOTprelude + ,(name)
+    SRCROOTprelude ++ ,(name), DSTROOTprelude ++ ,(name)
   )
   val () = lib_dir_copy (SRCROOTprelude, DSTROOTprelude)
   val () = cp "fixity.ats"
@@ -746,28 +755,28 @@ in
 end // end of [prelude_dir_copy]
 
 fn libc_dir_copy () = let
-  val SRCROOTlibc = SRCROOT + "libc/"
-  val DSTROOTlibc = DSTROOT + "libc/"
+  val SRCROOTlibc = SRCROOT ++ "libc/"
+  val DSTROOTlibc = DSTROOT ++ "libc/"
   val () = lib_dir_copy (SRCROOTlibc, DSTROOTlibc)
 //
-  val SRCROOTlibc_sys = SRCROOTlibc + "sys/"
-  val DSTROOTlibc_sys = DSTROOTlibc + "sys/"
+  val SRCROOTlibc_sys = SRCROOTlibc ++ "sys/"
+  val DSTROOTlibc_sys = DSTROOTlibc ++ "sys/"
   val () = lib_dir_copy (SRCROOTlibc_sys, DSTROOTlibc_sys)
 //
-  val SRCROOTlibc_arpa = SRCROOTlibc + "arpa/"
-  val DSTROOTlibc_arpa = DSTROOTlibc + "arpa/"
+  val SRCROOTlibc_arpa = SRCROOTlibc ++ "arpa/"
+  val DSTROOTlibc_arpa = DSTROOTlibc ++ "arpa/"
   val () = lib_dir_copy (SRCROOTlibc_arpa, DSTROOTlibc_arpa)
 //
-  val SRCROOTlibc_netinet = SRCROOTlibc + "netinet/"
-  val DSTROOTlibc_netinet = DSTROOTlibc + "netinet/"
+  val SRCROOTlibc_netinet = SRCROOTlibc ++ "netinet/"
+  val DSTROOTlibc_netinet = DSTROOTlibc ++ "netinet/"
   val () = lib_dir_copy (SRCROOTlibc_netinet, DSTROOTlibc_netinet)
 //
 (*
   // moved to $ATSHOME/contrib/GL
-  val SRCROOTlibc_GL = SRCROOTlibc + "GL/"
+  val SRCROOTlibc_GL = SRCROOTlibc ++ "GL/"
   val () = if
     file_isexi (SRCROOTlibc_GL) then let
-    val DSTROOTlibc_GL = DSTROOTlibc + "GL/"
+    val DSTROOTlibc_GL = DSTROOTlibc ++ "GL/"
   in
     lib_dir_copy (SRCROOTlibc_GL, DSTROOTlibc_GL)
   end // end of [val]
@@ -779,19 +788,19 @@ in
 end // end of [libc_dir_copy]
 
 fn libats_dir_copy () = let
-  val SRCROOTlibats = SRCROOT + "libats/"
-  val DSTROOTlibats = DSTROOT + "libats/"
+  val SRCROOTlibats = SRCROOT ++ "libats/"
+  val DSTROOTlibats = DSTROOT ++ "libats/"
   val () = lib_dir_copy (SRCROOTlibats, DSTROOTlibats)
   // the code for sml basis library lexer is in [libats/smlbas]
-  val SRCROOTlibats_smlbas = SRCROOTlibats + "smlbas/"
-  val DSTROOTlibats_smlbas = DSTROOTlibats + "smlbas/"
+  val SRCROOTlibats_smlbas = SRCROOTlibats ++ "smlbas/"
+  val DSTROOTlibats_smlbas = DSTROOTlibats ++ "smlbas/"
   val () = lib_dir_copy (SRCROOTlibats_smlbas, DSTROOTlibats_smlbas)
   val () = fcopy_exn (
-    SRCROOTlibats_smlbas + ".libfiles", DSTROOTlibats_smlbas + ".libfiles"
+    SRCROOTlibats_smlbas ++ ".libfiles", DSTROOTlibats_smlbas ++ ".libfiles"
   ) (* end of [val] *)
   // the code for ATS lexer is in [libats/lex]
-  val SRCROOTlibatslex = SRCROOTlibats + "lex/"
-  val DSTROOTlibatslex = DSTROOTlibats + "lex/"
+  val SRCROOTlibatslex = SRCROOTlibats ++ "lex/"
+  val DSTROOTlibatslex = DSTROOTlibats ++ "lex/"
   val () = mkdir_exn (DSTROOTlibatslex, DIRmode)
   val () = dir_copy (SRCROOTlibatslex, DSTROOTlibatslex, name_is_xats)
 in
@@ -800,32 +809,32 @@ in
 end // end of [libats_dir_copy]
 
 fn contrib_dir_copy () = let
-  val SRCROOTcontrib = SRCROOT + "contrib/"
-  val DSTROOTcontrib = DSTROOT + "contrib/"
+  val SRCROOTcontrib = SRCROOT ++ "contrib/"
+  val DSTROOTcontrib = DSTROOT ++ "contrib/"
   val () = mkdir_exn (DSTROOTcontrib, DIRmode)
 //
   // API for cairo: [contrib/cairo]
-  val SRCROOTcontrib_cairo = SRCROOTcontrib + "cairo/"
-  val DSTROOTcontrib_cairo = DSTROOTcontrib + "cairo/"
+  val SRCROOTcontrib_cairo = SRCROOTcontrib ++ "cairo/"
+  val DSTROOTcontrib_cairo = DSTROOTcontrib ++ "cairo/"
   val () = lib_dir_copy (SRCROOTcontrib_cairo, DSTROOTcontrib_cairo)
   val () = fcopy_exn (
-    SRCROOTcontrib_cairo+"Makefile", DSTROOTcontrib_cairo+"Makefile"
+    SRCROOTcontrib_cairo++"Makefile", DSTROOTcontrib_cairo++"Makefile"
   ) // end of [val]
 //
   // API for GL: [contrib/GL]
-  val SRCROOTcontrib_GL = SRCROOTcontrib + "GL/"
-  val DSTROOTcontrib_GL = DSTROOTcontrib + "GL/"
+  val SRCROOTcontrib_GL = SRCROOTcontrib ++ "GL/"
+  val DSTROOTcontrib_GL = DSTROOTcontrib ++ "GL/"
   val () = lib_dir_copy (SRCROOTcontrib_GL, DSTROOTcontrib_GL)
   val () = fcopy_exn (
-    SRCROOTcontrib_GL+"Makefile", DSTROOTcontrib_GL+"Makefile"
+    SRCROOTcontrib_GL++"Makefile", DSTROOTcontrib_GL++"Makefile"
   ) // end of [val]
 //
   // API for GL: [contrib/SDL]
-  val SRCROOTcontrib_SDL = SRCROOTcontrib + "SDL/"
-  val DSTROOTcontrib_SDL = DSTROOTcontrib + "SDL/"
+  val SRCROOTcontrib_SDL = SRCROOTcontrib ++ "SDL/"
+  val DSTROOTcontrib_SDL = DSTROOTcontrib ++ "SDL/"
   val () = lib_dir_copy (SRCROOTcontrib_SDL, DSTROOTcontrib_SDL)
   val () = fcopy_exn (
-    SRCROOTcontrib_SDL+"Makefile", DSTROOTcontrib_SDL+"Makefile"
+    SRCROOTcontrib_SDL++"Makefile", DSTROOTcontrib_SDL++"Makefile"
   ) // end of [val]
 //
 in
@@ -842,7 +851,7 @@ fn src_dir_copy (): void = let
   end // end of [filename_test]
 
   macdef cp (name) =
-    fcopy_exn (SRCROOTsrc + ,(name), DSTROOTsrc + ,(name))
+    fcopy_exn (SRCROOTsrc ++ ,(name), DSTROOTsrc ++ ,(name))
 
   val () = mkdir_exn (DSTROOTsrc, DIRmode)
   val () = dir_copy (SRCROOTsrc, DSTROOTsrc, test)
@@ -859,39 +868,39 @@ end // end of [src_dir_copy]
 (* ****** ****** *)
 
 fn utils_dir_copy () = let
-  val SRCROOTutils = SRCROOT + "utils/"
-  val DSTROOTutils = DSTROOT + "utils/"
+  val SRCROOTutils = SRCROOT ++ "utils/"
+  val DSTROOTutils = DSTROOT ++ "utils/"
   val () = mkdir_exn (DSTROOTutils, DIRmode)
 //
-  val SRCROOTutils_atslex = SRCROOTutils + "atslex/"
-  val DSTROOTutils_atslex = DSTROOTutils + "atslex/"
+  val SRCROOTutils_atslex = SRCROOTutils ++ "atslex/"
+  val DSTROOTutils_atslex = DSTROOTutils ++ "atslex/"
   val () = mkdir_exn (DSTROOTutils_atslex, DIRmode)
   val () = dir_copy
     (SRCROOTutils_atslex, DSTROOTutils_atslex, name_is_xats)
   val () = fcopy_exn (
-    SRCROOTutils_atslex + "Makefile", DSTROOTutils_atslex + "Makefile"
+    SRCROOTutils_atslex ++ "Makefile", DSTROOTutils_atslex ++ "Makefile"
   ) // end of [fcopy_exn]
   val () = fcopy_exn (
-    SRCROOTutils_atslex + "README", DSTROOTutils_atslex + "README"
+    SRCROOTutils_atslex ++ "README", DSTROOTutils_atslex ++ "README"
   ) // end of [fcopy_exn]
 //
-  val SRCROOTutils_atslex_EXAMPLE = SRCROOTutils_atslex + "EXAMPLE/"
-  val DSTROOTutils_atslex_EXAMPLE = DSTROOTutils_atslex + "EXAMPLE/"
+  val SRCROOTutils_atslex_EXAMPLE = SRCROOTutils_atslex ++ "EXAMPLE/"
+  val DSTROOTutils_atslex_EXAMPLE = DSTROOTutils_atslex ++ "EXAMPLE/"
   val () = mkdir_exn (DSTROOTutils_atslex_EXAMPLE, DIRmode)
   val () = dir_copy
     (SRCROOTutils_atslex_EXAMPLE, DSTROOTutils_atslex_EXAMPLE, name_is_xats)
   val () = fcopy_exn (
-    SRCROOTutils_atslex_EXAMPLE + "Makefile"
-  , DSTROOTutils_atslex_EXAMPLE + "Makefile"
+    SRCROOTutils_atslex_EXAMPLE ++ "Makefile"
+  , DSTROOTutils_atslex_EXAMPLE ++ "Makefile"
   ) // end of [fcopy_exn]
 //
-  val SRCROOTutils_scripts = SRCROOTutils + "scripts/"
-  val DSTROOTutils_scripts = DSTROOTutils + "scripts/"
+  val SRCROOTutils_scripts = SRCROOTutils ++ "scripts/"
+  val DSTROOTutils_scripts = DSTROOTutils ++ "scripts/"
   val () = mkdir_exn (DSTROOTutils_scripts, DIRmode)
   val () = dir_copy
     (SRCROOTutils_scripts, DSTROOTutils_scripts, name_is_xats)
   val () = fcopy_exn (
-    SRCROOTutils_scripts + "Makefile", DSTROOTutils_scripts + "Makefile"
+    SRCROOTutils_scripts ++ "Makefile", DSTROOTutils_scripts ++ "Makefile"
   ) // end of [fcopy_exn]
 in
   prerr "The [utils] directory is successfully copied.";
@@ -912,12 +921,12 @@ implement atspack_source_code () = let
   val () = mkdir_exn (DSTROOT, DIRmode)
 
   macdef cp name =
-    fcopy_exn (SRCROOT + ,(name), DSTROOT + ,(name))
+    fcopy_exn (SRCROOT ++ ,(name), DSTROOT ++ ,(name))
   macdef cp2 name1 name2 =
-    fcopy_exn (SRCROOT + ,(name1), DSTROOT + ,(name2))
+    fcopy_exn (SRCROOT ++ ,(name1), DSTROOT ++ ,(name2))
   macdef cpx (name) = let
-    val src_name = SRCROOT + ,(name)
-    val dst_name = DSTROOT + ,(name)
+    val src_name = SRCROOT ++ ,(name)
+    val dst_name = DSTROOT ++ ,(name)
     val () = fcopy_exn (src_name, dst_name)
     val () = chmod_exn (dst_name, $STAT.S_IRWXU)
   in
@@ -981,7 +990,7 @@ implement atspack_precompiled () = let
     end // end of [if]
   val () = mkdir_exn (DSTROOT, DIRmode)
 
-  macdef cp (name) = fcopy_exn (SRCROOT + ,(name), DSTROOT + ,(name))
+  macdef cp (name) = fcopy_exn (SRCROOT ++ ,(name), DSTROOT ++ ,(name))
   val () = cp "INSTALL"
   val () = cp "config.h"
   val () = bin_dir_copy (PACKNDprecompiled)

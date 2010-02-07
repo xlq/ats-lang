@@ -1,5 +1,12 @@
 ########################################################################
 
+ats-lang-anairiats-0.1.8
+
+1. string generation functions have been modified to return linear strings
+   that can be freed.
+
+########################################################################
+
 ats-lang-anairiats-0.1.7
 
 1. Adding support for implementing variadic functions in ATS.

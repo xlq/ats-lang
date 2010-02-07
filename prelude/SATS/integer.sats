@@ -630,7 +630,10 @@ fun uhalf {i:nat} (i: uint i):<> uint (i/2)
 
 (* ****** ****** *)
 
-typedef lint = int_long_t0ype
+stadef lint = lint_int_t0ype // indexed
+typedef lint = int_long_t0ype // unindexed
+
+castfn lint1_of_lint (i: lint):<> [i:int] lint i
 
 fun lint_of_int (i: int):<> lint
   = "atspre_lint_of_int"
@@ -764,10 +767,18 @@ overload tostring with tostring_lint
 
 (* ****** ****** *)
 
-typedef ulint = uint_long_t0ype
+stadef ulint = ulint_int_t0ype // indexed
+typedef ulint = uint_long_t0ype // unindexed
 
-castfn ulint_of_lint (li: lint):<> ulint
-castfn lint_of_ulint (ul: ulint):<> lint
+//
+
+castfn ulint1_of_ulint (x: ulint):<> [i:nat] ulint i
+castfn ulint1_of_lint1 {i:nat} (x: lint i):<> ulint i
+
+//
+
+castfn ulint_of_lint (x: lint):<> ulint
+castfn lint_of_ulint (x: ulint):<> lint
 
 //
 

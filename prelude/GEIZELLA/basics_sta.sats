@@ -406,8 +406,12 @@ abst@ype char_char_t0ype (char) = $extype "ats_char_type"
 abst@ype int_int_t0ype (int) = $extype "ats_int_type"
 abst@ype uint_int_t0ype (int) = $extype "ats_uint_type"
 
+abst@ype lint_int_t0ype (int) = int_long_t0ype
+abst@ype ulint_int_t0ype (int) = uint_long_t0ype
+
 abst@ype size_int_t0ype (i:int) = $extype "ats_size_type"
 abst@ype ssize_int_t0ype (i:int) = $extype "ats_ssize_type"
+
 abst@ype ptrdiff_int_t0ype (i:int) = $extype "ats_ptrdiff_type"
 
 (* ****** ****** *)
@@ -589,7 +593,7 @@ typedef sizeof_t (a:viewt@ype) =
 
 typedef sizeLt (n: int) = [i:int | 0 <= i; i < n] size_t (i)
 typedef sizeLte (n: int) = [i:int | 0 <= i; i <= n] size_t (i)
-typedef sizeBtw (lb:int, ub:int) = [i: int | lb <= i; i < ub] ssize_t i
+typedef ssizeBtw (lb:int, ub:int) = [i: int | lb <= i; i < ub] ssize_t i
 
 (* ****** ****** *)
 

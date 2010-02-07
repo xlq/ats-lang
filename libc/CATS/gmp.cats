@@ -67,168 +67,80 @@ typedef ats_ref_type ats_mpz_ptr_type ;
 typedef ats_ref_type ats_mpq_ptr_type ;
 typedef ats_ref_type ats_mpf_ptr_type ;
 
-/* allocation and deallocation */
+/* ****** ****** */
 
-static inline
-ats_void_type
-atslib_mpz_init(ats_mpz_ptr_type x) {
-  mpz_init((mpz_ptr)x) ; return ;
-}
+//
+// init/clear/realloc
+//
 
-static inline
-ats_void_type
-atslib_mpz_clear(ats_mpz_ptr_type x) {
-  mpz_clear((mpz_ptr)x) ; return ;
-}
+#define atslib_mpz_init mpz_init
+#define atslib_mpz_init2 mpz_init2
+#define atslib_mpz_clear mpz_clear
+#define atslib_mpz_realloc2 mpz_realloc2
 
 /* ****** ****** */
 
+//
 // various get and set functions
+//
 
+/* ****** ****** */
+
+//
 // get functions
+//
 
-static inline
-ats_int_type
-atslib_mpz_get_int (ats_mpz_ptr_type x) {
-  return mpz_get_si((mpz_ptr)x) ;
-}
-
-static inline
-ats_lint_type
-atslib_mpz_get_lint (ats_mpz_ptr_type x) {
-  return mpz_get_si((mpz_ptr)x) ;
-}
-
-static inline
-ats_uint_type
-atslib_mpz_get_uint (ats_mpz_ptr_type x) {
-  return mpz_get_ui((mpz_ptr)x) ;
-}
-
-static inline
-ats_ulint_type
-atslib_mpz_get_ulint (ats_mpz_ptr_type x) {
-  return mpz_get_ui((mpz_ptr)x) ;
-}
-
-static inline
-ats_double_type
-atslib_mpz_get_double (ats_mpz_ptr_type x) {
-  return mpz_get_d((mpz_ptr)x) ;
-}
+#define atslib_mpz_get_int mpz_get_si
+#define atslib_mpz_get_uint mpz_get_ui
+#define atslib_mpz_get_lint mpz_get_si
+#define atslib_mpz_get_ulint mpz_get_ui
+#define atslib_mpz_get_double mpz_get_d
 
 static inline
 ats_ptr_type
-atslib_mpz_get_str(ats_int_type base, ats_mpz_ptr_type x) {
-  return mpz_get_str((char *)0, base, (mpz_ptr)x) ;
-}
+atslib_mpz_get_str (
+  ats_int_type base, ats_mpz_ptr_type x
+) {
+  return mpz_get_str((char*)0, base, (mpz_ptr)x) ;
+} // end of [atslib_mpz_get_str]
 
+//
 // set functions
+//
+
+#define atslib_mpz_set_mpz mpz_set
+#define atslib_mpz_set_int mpz_set_si
+#define atslib_mpz_set_uint mpz_set_ui
+#define atslib_mpz_set_lint mpz_set_si
+#define atslib_mpz_set_ulint mpz_set_ui
+#define atslib_mpz_set_double mpz_set_d
+#define atslib_mpz_set_mpq mpz_set_q
+#define atslib_mpz_set_mpf mpz_set_f
+#define atslib_mpz_set_str_err mpz_set_str
 
 static inline
 ats_void_type
-atslib_mpz_set_mpz (ats_mpz_ptr_type x, ats_mpz_ptr_type y) {
-  mpz_set((mpz_ptr)x, (mpz_ptr)y) ; return ;
-}
-
-static inline
-ats_void_type
-atslib_mpz_set_int (ats_mpz_ptr_type x, ats_int_type y) {
-  mpz_set_si((mpz_ptr)x, y) ; return ;
-}
-
-static inline
-ats_void_type
-atslib_mpz_set_lint (ats_mpz_ptr_type x, ats_lint_type y) {
-  mpz_set_si((mpz_ptr)x, y) ; return ;
-}
-
-static inline
-ats_void_type
-atslib_mpz_set_uint (ats_mpz_ptr_type x, ats_uint_type y) {
-  mpz_set_ui((mpz_ptr)x, y) ; return ;
-}
-
-static inline
-ats_void_type
-atslib_mpz_set_ulint (ats_mpz_ptr_type x, ats_ulint_type y) {
-  mpz_set_ui((mpz_ptr)x, y) ; return ;
-}
-
-static inline
-ats_void_type
-atslib_mpz_set_double (ats_mpz_ptr_type x, ats_double_type y) {
-  mpz_set_d((mpz_ptr)x, y) ; return ;
-}
-
-static inline
-ats_void_type
-atslib_mpz_set_mpq (ats_mpz_ptr_type x, ats_mpq_ptr_type y) {
-  mpz_set_q((mpz_ptr)x, y) ; return ;
-}
-
-static inline
-ats_void_type
-atslib_mpz_set_mpf (ats_mpz_ptr_type x, ats_mpf_ptr_type y) {
-  mpz_set_f((mpz_ptr)x, (mpf_ptr)y) ; return ;
-}
-
-static inline
-ats_int_type
-atslib_mpz_set_str_err
-  (ats_mpz_ptr_type x, ats_ptr_type s, ats_int_type base) {
-  return mpz_set_str((mpz_ptr)x, (char*)s, base) ;
-}
-
-static inline
-ats_void_type
-atslib_mpz_set_str
-  (ats_mpz_ptr_type x, ats_ptr_type s, ats_int_type base) {
+atslib_mpz_set_str_exn (
+  ats_mpz_ptr_type x, ats_ptr_type s, ats_int_type base
+) {
   int n ;
   n = mpz_set_str((mpz_ptr)x, (char*)s, base) ;
   if (n < 0) {
     atspre_exit_prerrf(1, "exit(ATS): [atslib_mpz_set_str(%s)]: failed\n", s) ;
-  }
+  } // end of [if]
   return ;
-} /* end of [atslib_mpz_set_str] */
+} // end of [atslib_mpz_set_str_exn]
 
+//
 // init and set functions
+//
 
-static inline
-ats_void_type
-atslib_mpz_init_set_mpz (ats_mpz_ptr_type x, ats_mpz_ptr_type y) {
-  mpz_init_set((mpz_ptr)x, (mpz_ptr)y) ; return ;
-}
-
-static inline
-ats_void_type
-atslib_mpz_init_set_int (ats_mpz_ptr_type x, ats_int_type y) {
-  mpz_init_set_si((mpz_ptr)x, y) ; return ;
-}
-
-static inline
-ats_void_type
-atslib_mpz_init_set_lint (ats_mpz_ptr_type x, ats_lint_type y) {
-  mpz_init_set_si((mpz_ptr)x, y) ; return ;
-}
-
-static inline
-ats_void_type
-atslib_mpz_init_set_uint (ats_mpz_ptr_type x, ats_uint_type y) {
-  mpz_init_set_ui((mpz_ptr)x, y) ; return ;
-}
-
-static inline
-ats_void_type
-atslib_mpz_init_set_ulint (ats_mpz_ptr_type x, ats_ulint_type y) {
-  mpz_init_set_ui((mpz_ptr)x, y) ; return ;
-}
-
-static inline
-ats_void_type
-atslib_mpz_init_set_double (ats_mpz_ptr_type x, ats_double_type y) {
-  mpz_init_set_d((mpz_ptr)x, y) ; return ;
-}
+#define atslib_mpz_init_set_mpz mpz_init_set
+#define atslib_mpz_init_set_int mpz_init_set_si
+#define atslib_mpz_init_set_uint mpz_init_set_ui
+#define atslib_mpz_init_set_lint mpz_init_set_si
+#define atslib_mpz_init_set_ulint mpz_init_set_ui
+#define atslib_mpz_init_set_double mpz_init_set_d
 
 static inline
 ats_void_type
@@ -243,14 +155,15 @@ atslib_mpz_init_set_mpf (ats_mpz_ptr_type x, ats_mpf_ptr_type y) {
 }
 
 static inline
-ats_int_type atslib_mpz_init_set_str_err
+ats_int_type
+atslib_mpz_init_set_str_err
   (ats_mpz_ptr_type x, ats_ptr_type s, ats_int_type base) {
   mpz_init((mpz_ptr)x) ; return atslib_mpz_set_str_err (x, s, base);
-}
+} // end of [atslib_mpz_init_set_str_err]
 
 static inline
 ats_void_type
-atslib_mpz_init_set_str
+atslib_mpz_init_set_str_exn
   (ats_mpz_ptr_type x, ats_ptr_type s, ats_int_type base) {
   int err ;
   err = mpz_init_set_str((mpz_ptr)x, (char*)s, base) ;
@@ -258,17 +171,15 @@ atslib_mpz_init_set_str
     atspre_exit_prerrf(1, "exit(ATS): [atslib_mpz_init_set_str(%s)] failed\n", s) ;
   }
   return ;
-} /* end of [atslib_mpz_init_set_str] */
+} /* end of [atslib_mpz_init_set_str_exn] */
 
 /* ****** ****** */
 
+//
 // negation
+//
 
-static inline
-ats_void_type
-atslib_mpz_neg_2 (ats_mpz_ptr_type x, ats_mpz_ptr_type y) {
-  mpz_neg((mpz_ptr)x, (mpz_ptr)y) ; return ;
-}
+#define atslib_mpz_neg_2 mpz_neg
 
 static inline
 ats_void_type
@@ -276,14 +187,11 @@ atslib_mpz_neg_1 (ats_mpz_ptr_type x) {
   mpz_neg((mpz_ptr)x, (mpz_ptr)x) ; return ;
 }
 
-
+//
 // absolute value
+//
 
-static inline
-ats_void_type
-atslib_mpz_abs_2 (ats_mpz_ptr_type x, ats_mpz_ptr_type y) {
-  mpz_abs((mpz_ptr)x, (mpz_ptr)y) ; return ;
-}
+#define atslib_mpz_abs_2 mpz_abs
 
 static inline
 ats_void_type
@@ -291,29 +199,34 @@ atslib_mpz_abs_1 (ats_mpz_ptr_type x) {
   mpz_abs((mpz_ptr)x, (mpz_ptr)x) ; return ;
 }
 
+/* ****** ****** */
 
-/* addition, subtraction and multiplcation */
+//
+// addition, subtraction and multiplcation
+//
 
+/* ****** ****** */
+
+//
 // addition
+//
+
+#define atslib_mpz_add_mpz_3 mpz_add
 
 static inline
 ats_void_type
-atslib_mpz_add_mpz_3
-  (ats_mpz_ptr_type x, ats_mpz_ptr_type y, ats_mpz_ptr_type z) {
-  mpz_add ((mpz_ptr)x, (mpz_ptr)y, (mpz_ptr)z) ; return ;
-}
-
-static inline
-ats_void_type
-atslib_mpz_add_int_3
-  (ats_mpz_ptr_type x, ats_mpz_ptr_type y, ats_int_type z) {
+atslib_mpz_add_int_3 (
+  ats_mpz_ptr_type x, ats_mpz_ptr_type y, ats_int_type z
+) {
   if (z >= 0) {
     mpz_add_ui ((mpz_ptr)x, (mpz_ptr)y, z) ;
   } else {
     mpz_sub_ui ((mpz_ptr)x, (mpz_ptr)y, -z) ;
   }
   return ;
-}
+} // end of [atslib_mpz_add_int_3]
+
+#define atslib_mpz_add_uint_3 mpz_add_ui
 
 static inline
 ats_void_type
@@ -325,217 +238,204 @@ atslib_mpz_add_lint_3
     mpz_sub_ui ((mpz_ptr)x, (mpz_ptr)y, -z) ;
   }
   return ;
-}
+} // end of [atslib_mpz_add_lint_3]
+
+#define atslib_mpz_add_ulint_3 mpz_add_ui
+
+//
 
 static inline
 ats_void_type
-atslib_mpz_add_uint_3
-  (ats_mpz_ptr_type x, ats_mpz_ptr_type y, ats_uint_type z) {
-  mpz_add_ui ((mpz_ptr)x, (mpz_ptr)y, z) ; return ;
-}
-
-static inline
-ats_void_type
-atslib_mpz_add_ulint_3
-  (ats_mpz_ptr_type x, ats_mpz_ptr_type y, ats_ulint_type z) {
-  mpz_add_ui ((mpz_ptr)x, (mpz_ptr)y, z) ; return ;
-}
-
-static inline
-ats_void_type
-atslib_mpz_add_mpz_2 (ats_mpz_ptr_type x, ats_mpz_ptr_type y) {
+atslib_mpz_add_mpz_2 (
+  ats_mpz_ptr_type x, ats_mpz_ptr_type y
+) {
   mpz_add ((mpz_ptr)x, (mpz_ptr)x, (mpz_ptr)y) ; return ;
-}
+} // end of [atslib_mpz_add_mpz_2]
 
 static inline
 ats_void_type
-atslib_mpz_add_int_2 (ats_mpz_ptr_type x, ats_int_type y) {
+atslib_mpz_add_int_2 (
+  ats_mpz_ptr_type x, ats_int_type y
+) {
   if (y >= 0) {
     mpz_add_ui ((mpz_ptr)x, (mpz_ptr)x, y) ;
   } else {
     mpz_sub_ui ((mpz_ptr)x, (mpz_ptr)x, -y) ;
   }
   return ;
+} // end of [atslib_mpz_add_int_2]
+
+static inline
+ats_void_type
+atslib_mpz_add_uint_2 (
+  ats_mpz_ptr_type x, ats_uint_type y
+) {
+  mpz_add_ui ((mpz_ptr)x, (mpz_ptr)x, y) ; return ;
 }
 
 static inline
 ats_void_type
-atslib_mpz_add_lint_2 (ats_mpz_ptr_type x, ats_lint_type y) {
+atslib_mpz_add_lint_2 (
+  ats_mpz_ptr_type x, ats_lint_type y
+) {
   if (y >= 0) {
-    mpz_add_ui ((mpz_ptr)x, (mpz_ptr)x, y) ; return ;
+    mpz_add_ui ((mpz_ptr)x, (mpz_ptr)x, y) ;
   } else {
-    mpz_sub_ui ((mpz_ptr)x, (mpz_ptr)x, -y) ; return ;
+    mpz_sub_ui ((mpz_ptr)x, (mpz_ptr)x, -y) ;
   }
-}
+  return ;
+} // end of [atslib_mpz_add_lint_2]
 
 static inline
 ats_void_type
-atslib_mpz_add_uint_2 (ats_mpz_ptr_type x, ats_uint_type y) {
+atslib_mpz_add_ulint_2 (
+  ats_mpz_ptr_type x, ats_ulint_type y
+) {
   mpz_add_ui ((mpz_ptr)x, (mpz_ptr)x, y) ; return ;
 }
 
-static inline
-ats_void_type
-atslib_mpz_add_ulint_2 (ats_mpz_ptr_type x, ats_ulint_type y) {
-  mpz_add_ui ((mpz_ptr)x, (mpz_ptr)x, y) ; return ;
-}
-
+//
 // subtraction
+//
+
+#define atslib_mpz_sub_mpz_3 mpz_sub
 
 static inline
 ats_void_type
-atslib_mpz_sub_mpz_3 (ats_mpz_ptr_type x, ats_mpz_ptr_type y, ats_mpz_ptr_type z) {
-  mpz_sub ((mpz_ptr)x, (mpz_ptr)y, (mpz_ptr)z) ; return ;
-}
-
-static inline
-ats_void_type
-atslib_mpz_sub_int_3 (ats_mpz_ptr_type x, ats_mpz_ptr_type y, ats_int_type z) {
+atslib_mpz_sub_int_3 (
+  ats_mpz_ptr_type x, ats_mpz_ptr_type y, ats_int_type z
+) {
   if (z >= 0) {
     mpz_sub_ui ((mpz_ptr)x, (mpz_ptr)y, z) ;
   } else {
     mpz_add_ui ((mpz_ptr)x, (mpz_ptr)y, -z) ;
   }
   return ;
-}
+} // end of [atslib_mpz_sub_int_3]
+
+#define atslib_mpz_sub_uint_3 mpz_sub_ui
 
 static inline
 ats_void_type
-atslib_mpz_sub_lint_3 (ats_mpz_ptr_type x, ats_mpz_ptr_type y, ats_lint_type z) {
+atslib_mpz_sub_lint_3 (
+  ats_mpz_ptr_type x, ats_mpz_ptr_type y, ats_lint_type z
+) {
   if (z >= 0) {
     mpz_sub_ui ((mpz_ptr)x, (mpz_ptr)y, z) ;
   } else {
     mpz_add_ui ((mpz_ptr)x, (mpz_ptr)y, -z) ;
   }
   return ;
-}
+} // end of [atslib_mpz_sub_lint_3]
+
+#define atslib_mpz_sub_ulint_3 mpz_sub_ui
 
 static inline
 ats_void_type
-atslib_mpz_sub_uint_3 (ats_mpz_ptr_type x, ats_mpz_ptr_type y, ats_uint_type z) {
-  mpz_sub_ui ((mpz_ptr)x, (mpz_ptr)y, z) ; return ;
-}
-
-static inline
-ats_void_type
-atslib_mpz_sub_ulint_3 (ats_mpz_ptr_type x, ats_mpz_ptr_type y, ats_ulint_type z) {
-  mpz_sub_ui ((mpz_ptr)x, (mpz_ptr)y, z) ; return ;
-}
-
-static inline
-ats_void_type
-atslib_mpz_sub_mpz_2 (ats_mpz_ptr_type x, ats_mpz_ptr_type y) {
+atslib_mpz_sub_mpz_2 (
+  ats_mpz_ptr_type x, ats_mpz_ptr_type y
+) {
   mpz_sub ((mpz_ptr)x, (mpz_ptr)x, (mpz_ptr)y) ; return ;
-}
+} // end of [atslib_mpz_sub_mpz_2]
 
 static inline
 ats_void_type
-atslib_mpz_sub_int_2 (ats_mpz_ptr_type x, ats_int_type y) {
+atslib_mpz_sub_int_2 (
+  ats_mpz_ptr_type x, ats_int_type y
+) {
   if (y >= 0) {
     mpz_sub_ui ((mpz_ptr)x, (mpz_ptr)x, y) ;
   } else {
     mpz_add_ui ((mpz_ptr)x, (mpz_ptr)x, -y) ;
   }
   return ;
-}
+} // end of [atslib_mpz_sub_int_2]
 
 static inline
 ats_void_type
-atslib_mpz_sub_lint_2 (ats_mpz_ptr_type x, ats_lint_type y) {
+atslib_mpz_sub_uint_2 (
+  ats_mpz_ptr_type x, ats_uint_type y
+) {
+  mpz_sub_ui ((mpz_ptr)x, (mpz_ptr)x, y) ; return ;
+} // end of [atslib_mpz_sub_uint_2]
+
+static inline
+ats_void_type
+atslib_mpz_sub_lint_2 (
+  ats_mpz_ptr_type x, ats_lint_type y
+) {
   if (y >= 0) {
     mpz_sub_ui ((mpz_ptr)x, (mpz_ptr)x, y) ;
   } else {
     mpz_add_ui ((mpz_ptr)x, (mpz_ptr)x, -y) ;
   }
   return ;
-}
+} // end of [atslib_mpz_sub_lint_2]
 
 static inline
 ats_void_type
-atslib_mpz_sub_uint_2 (ats_mpz_ptr_type x, ats_uint_type y) {
+atslib_mpz_sub_ulint_2 (
+  ats_mpz_ptr_type x, ats_ulint_type y
+) {
   mpz_sub_ui ((mpz_ptr)x, (mpz_ptr)x, y) ; return ;
-}
+} // end of [atslib_mpz_sub_ulint_2]
 
-static inline
-ats_void_type
-atslib_mpz_sub_ulint_2 (ats_mpz_ptr_type x, ats_ulint_type y) {
-  mpz_sub_ui ((mpz_ptr)x, (mpz_ptr)x, y) ; return ;
-}
-
+//
 // multiplication
+//
+
+#define atslib_mpz_mul_mpz_3 mpz_mul
+#define atslib_mpz_mul_int_3 mpz_mul_si
+#define atslib_mpz_mul_uint_3 mpz_mul_ui
+#define atslib_mpz_mul_lint_3 mpz_mul_si
+#define atslib_mpz_mul_ulint_3 mpz_mul_ui
 
 static inline
 ats_void_type
-atslib_mpz_mul_mpz_3
-  (ats_mpz_ptr_type x, ats_mpz_ptr_type y, ats_mpz_ptr_type z) {
-  mpz_mul ((mpz_ptr)x, (mpz_ptr)y, (mpz_ptr)z) ; return ;
-}
-
-static inline
-ats_void_type
-atslib_mpz_mul_int_3
-  (ats_mpz_ptr_type x, ats_mpz_ptr_type y, ats_int_type z) {
-  mpz_mul_si ((mpz_ptr)x, (mpz_ptr)y, z) ; return ;
-}
-
-static inline
-ats_void_type
-atslib_mpz_mul_lint_3
-  (ats_mpz_ptr_type x, ats_mpz_ptr_type y, ats_lint_type z) {
-  mpz_mul_si ((mpz_ptr)x, (mpz_ptr)y, z) ; return ;
-}
-
-static inline
-ats_void_type
-atslib_mpz_mul_uint_3
-  (ats_mpz_ptr_type x, ats_mpz_ptr_type y, ats_uint_type z) {
-  mpz_mul_ui ((mpz_ptr)x, (mpz_ptr)y, z) ; return ;
-}
-
-static inline
-ats_void_type
-atslib_mpz_mul_ulint_3
-  (ats_mpz_ptr_type x, ats_mpz_ptr_type y, ats_ulint_type z) {
-  mpz_mul_ui ((mpz_ptr)x, (mpz_ptr)y, z) ; return ;
-}
-
-static inline
-ats_void_type
-atslib_mpz_mul_mpz_2 (ats_mpz_ptr_type x, ats_mpz_ptr_type y) {
+atslib_mpz_mul_mpz_2 (
+  ats_mpz_ptr_type x, ats_mpz_ptr_type y
+) {
   mpz_mul ((mpz_ptr)x, (mpz_ptr)x, (mpz_ptr)y) ; return ;
 }
 
 static inline
 ats_void_type
-atslib_mpz_mul_int_2 (ats_mpz_ptr_type x, ats_int_type y) {
+atslib_mpz_mul_int_2 (
+  ats_mpz_ptr_type x, ats_int_type y
+) {
   mpz_mul_si ((mpz_ptr)x, (mpz_ptr)x, y) ; return ;
-}
+} // end of [atslib_mpz_mul_int_2]
 
 static inline
 ats_void_type
-atslib_mpz_mul_lint_2 (ats_mpz_ptr_type x, ats_lint_type y) {
+atslib_mpz_mul_uint_2 (
+  ats_mpz_ptr_type x, ats_uint_type y
+) {
+  mpz_mul_ui ((mpz_ptr)x, (mpz_ptr)x, y) ; return ;
+} // end of [atslib_mpz_mul_uint_2]
+
+static inline
+ats_void_type
+atslib_mpz_mul_lint_2 (
+  ats_mpz_ptr_type x, ats_lint_type y
+) {
   mpz_mul_si ((mpz_ptr)x, (mpz_ptr)x, y) ; return ;
-}
+} // end of [atslib_mpz_mul_lint_2]
 
 static inline
 ats_void_type
-atslib_mpz_mul_uint_2 (ats_mpz_ptr_type x, ats_uint_type y) {
+atslib_mpz_mul_ulint_2 (
+  ats_mpz_ptr_type x, ats_ulint_type y
+) {
   mpz_mul_ui ((mpz_ptr)x, (mpz_ptr)x, y) ; return ;
-}
+} // end of [atslib_mpz_mul_ulint_2]
 
 static inline
 ats_void_type
-atslib_mpz_mul_ulint_2 (ats_mpz_ptr_type x, ats_ulint_type y) {
-  mpz_mul_ui ((mpz_ptr)x, (mpz_ptr)x, y) ; return ;
-}
-
-static inline
-ats_void_type
-atslib_mpz_mul_mpz_1 (ats_mpz_ptr_type x) {
+atslib_mpz_mul_mpz_1
+  (ats_mpz_ptr_type x) {
   mpz_mul ((mpz_ptr)x, (mpz_ptr)x, (mpz_ptr)x) ; return ;
-}
-
-//
+} // end of [atslib_mpz_mul_mpz_1]
 
 static inline
 ats_void_type
@@ -547,7 +447,9 @@ atslib_mpz_mul_2exp ( // x = y * 2^n
 
 /* ****** ****** */
 
+//
 // truncate division
+//
 
 #define atslib_mpz_tdiv_qr_mpz_4 mpz_tdiv_qr
 #define atslib_mpz_tdiv_qr_ulint_4 mpz_tdiv_qr_ui
@@ -573,7 +475,9 @@ atslib_mpz_tdiv_q_ulint_2 (
 
 /* ****** ****** */
 
+//
 // floor division
+//
 
 #define atslib_mpz_fdiv_qr_mpz_4 mpz_fdiv_qr
 #define atslib_mpz_fdiv_qr_ulint_4 mpz_fdiv_qr_ui
@@ -606,117 +510,72 @@ atslib_mpz_fdiv_q_ulint_2 (
 
 // addmul and submul compibination
 
-static inline
-ats_void_type
-atslib_mpz_addmul_mpz_3 (
-  ats_mpz_ptr_type x, ats_mpz_ptr_type y, ats_mpz_ptr_type z
-) {
-  mpz_addmul ((mpz_ptr)x, (mpz_ptr)y, (mpz_ptr)z) ; return ;
-} /* end of [atslib_mpz_addmul_mpz_3] */
-
-static inline
-ats_void_type
-atslib_mpz_addmul_uint_3 (
-  ats_mpz_ptr_type x, ats_mpz_ptr_type y, ats_uint_type z
-) {
-  mpz_addmul_ui ((mpz_ptr)x, (mpz_ptr)y, (unsigned int)z) ; return ;
-} /* end of [atslib_mpz_addmul_mpz_3] */
-
-static inline
-ats_void_type
-atslib_mpz_submul_mpz_3 (
-  ats_mpz_ptr_type x, ats_mpz_ptr_type y, ats_mpz_ptr_type z
-) {
-  mpz_submul ((mpz_ptr)x, (mpz_ptr)y, (mpz_ptr)z) ; return ;
-} /* end of [atslib_mpz_submul_uint_3] */
-
-static inline
-ats_void_type
-atslib_mpz_submul_uint_3 (
-  ats_mpz_ptr_type x, ats_mpz_ptr_type y, ats_uint_type z
-) {
-  mpz_submul_ui ((mpz_ptr)x, (mpz_ptr)y, (unsigned int)z) ; return ;
-} /* end of [atslib_mpz_submul_uint_3] */
+#define atslib_mpz_addmul_mpz_3  mpz_addmul
+#define atslib_mpz_addmul_uint_3 mpz_addmul_ui
+#define atslib_mpz_submul_mpz_3 mpz_submul
+#define atslib_mpz_submul_uint_3 mpz_submul_ui
 
 /* ****** ****** */
 
 // comparison
 
-static inline
-ats_int_type
-atslib_mpz_cmp_mpz (ats_mpz_ptr_type x, ats_mpz_ptr_type y) {
-  return mpz_cmp((mpz_ptr)x, (mpz_ptr)y) ;
-}
+#define atslib_mpz_cmp_mpz mpz_cmp
+#define atslib_mpz_cmp_int mpz_cmp_si
+#define atslib_mpz_cmp_uint mpz_cmp_ui
+#define atslib_mpz_cmp_lint mpz_cmp_si
+#define atslib_mpz_cmp_ulint mpz_cmp_ui
 
 static inline
 ats_int_type
-atslib_mpz_cmp_int (ats_mpz_ptr_type x, ats_int_type y) {
-  return mpz_cmp_si((mpz_ptr)x, y) ;
-}
-
-static inline
-ats_int_type
-atslib_mpz_cmp_lint (ats_mpz_ptr_type x, ats_lint_type y) {
-  return mpz_cmp_si((mpz_ptr)x, y) ;
-}
-
-static inline
-ats_int_type
-atslib_mpz_cmp_uint (ats_mpz_ptr_type x, ats_uint_type y) {
-  return mpz_cmp_ui((mpz_ptr)x, y) ;
-}
-
-static inline
-ats_int_type
-atslib_mpz_cmp_ulint (ats_mpz_ptr_type x, ats_ulint_type y) {
-  return mpz_cmp_ui((mpz_ptr)x, y) ;
-}
+atslib_mpz_sgn (ats_mpz_ptr_type x) { return mpz_cmp_si((mpz_ptr)x, 0) ; }
 
 /* ****** ****** */
 
 // print functions
 
-static inline
-ats_int_type
-atslib_mpz_out_str_err
-  (ats_ptr_type file, ats_int_type base, const ats_mpz_ptr_type x) {
-  return mpz_out_str((FILE*)file, base, (mpz_ptr)x) ;
-}
+#define atslib_mpz_out_str_err mpz_out_str
 
 static inline
 ats_void_type
-atslib_mpz_out_str
-  (ats_ptr_type file, ats_int_type base, const ats_mpz_ptr_type x) {
+atslib_mpz_out_str_exn (
+  ats_ptr_type file, ats_int_type base, const ats_mpz_ptr_type x
+) {
   int n = mpz_out_str((FILE*)file, base, (mpz_ptr)x) ;
   if (!n) {
     ats_exit_errmsg (1, "exit(ATS): [atslib_mpz_out_str] failed.\n") ;
-  }
+  } // end of [if]
   return ;
-} /* end of [atslib_mpz_out_str] */
+} // end of [atslib_mpz_out_str_exn]
 
 static inline
 ats_void_type
-atslib_fprint_mpz(ats_ptr_type file, const ats_mpz_ptr_type x) {
+atslib_fprint_mpz (
+  ats_ptr_type file, const ats_mpz_ptr_type x
+) {
   mpz_out_str((FILE*)file, 10, (mpz_ptr)x) ; return ;
-}
+} // end of [atslib_fprint_mpz]
 
 static inline
 ats_void_type
-atslib_print_mpz(const ats_mpz_ptr_type x) {
+atslib_print_mpz (
+  const ats_mpz_ptr_type x
+) {
   atspre_stdout_view_get() ;
   atslib_fprint_mpz(stdout, x) ;
   atspre_stdout_view_set() ;
   return ;
-}
+} // end of [atslib_print_mpz]
 
 static inline
 ats_void_type
-atslib_prerr_mpz(const ats_mpz_ptr_type x) {
+atslib_prerr_mpz (
+  const ats_mpz_ptr_type x
+) {
   atspre_stderr_view_get() ;
   atslib_fprint_mpz(stderr, x) ;
   atspre_stderr_view_set() ;
   return ;
-}
+} // end of [atslib_prerr_mpz]
 
 /* ****** ****** */
 
@@ -724,9 +583,11 @@ atslib_prerr_mpz(const ats_mpz_ptr_type x) {
 
 static inline
 ats_ptr_type
-atslib_tostring_mpz (const ats_mpz_ptr_type x) {
+atslib_tostring_mpz (
+  const ats_mpz_ptr_type x
+) {
   return mpz_get_str((char *)0, 10, (mpz_ptr)x) ;
-}
+} // end of [atslib_tostring_mpz]
 
 /* ****** ****** */
 

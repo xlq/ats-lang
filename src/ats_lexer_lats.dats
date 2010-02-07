@@ -532,7 +532,9 @@ end // end of [tokenize_identifier_sym]
 fn prefix_identifier_arr (s0: string): string = let
   val s0 = string1_of_string s0; val n0 = string_length s0
 in
-  if n0 > 0 then string_make_substring (s0, 0, n0-1) else s0
+  if n0 > 0 then let
+    val sbp = string_make_substring (s0, 0, n0-1) in string1_of_strbuf sbp
+  end else s0
 end // end of [prefix_identifier_arr]
    
 fn tokenize_identifier_arr (): token_t = let // array identifier
@@ -545,7 +547,9 @@ end // end of [tokenize_identifier_arr]
 fn prefix_identifier_tmp (s0: string): string = let
   val s0 = string1_of_string s0; val n0 = string_length s0
 in
-  if n0 > 0 then string_make_substring (s0, 0, n0-1) else s0
+  if n0 > 0 then let
+    val sbp = string_make_substring (s0, 0, n0-1) in string1_of_strbuf sbp
+  end else s0
 end // end of [prefix_identifier_tmp]
 
 fn tokenize_identifier_tmp (): token_t = let // template identifier

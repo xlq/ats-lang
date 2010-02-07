@@ -228,7 +228,8 @@ fn filename_normalize (s0: string): string = let
     in
       if s0[i] <> dirsep then loop2 (s0, n0, i0, i+1, dirs)
       else let
-        val dir = string_make_substring (s0, i0, i - i0 + 1)
+        val sbp = string_make_substring (s0, i0, i - i0 + 1)
+        val dir = string1_of_strbuf (sbp) // this is a no-op cast
 (*
         val () = begin
           print "filename_normalize: loop2: dir = "; print dir; print_newline ()
@@ -238,7 +239,8 @@ fn filename_normalize (s0: string): string = let
         dirs := list_cons (dir, dirs); loop1 (s0, n0, i + 1, dirs)
       end // end of [if]
     end else let
-      val dir = string_make_substring (s0, i0, i - i0)
+      val sbp = string_make_substring (s0, i0, i - i0)
+      val dir = string1_of_strbuf (sbp) // this is a no-op cast
 (*
       val () = begin
         print "filename_normalize: loop2: dir = "; print dir; print_newline ()
@@ -274,7 +276,7 @@ fn filename_normalize (s0: string): string = let
   val fullname = stringlst_concat (dirs)
 //
 in
-  fullname
+  string1_of_strbuf (fullname)
 end // end of [filename_normalize]
 
 (* ****** ****** *)

@@ -135,7 +135,7 @@ implement string_make_list_int (cs, n) = let
       end // end of [if]
   } // end of [val]
 in
-  string1_of_strbuf (pf_gc, pf_sb | p_sb)
+  #[.. | (pf_gc, pf_sb | p_sb)]
 end // end of [string_make_list_int]
 
 implement string_make_list_rev_int (cs, n) = let
@@ -162,12 +162,12 @@ implement string_make_list_rev_int (cs, n) = let
       end // end of [if]
   } // end of [val]
 in
-  string1_of_strbuf (pf_gc, pf_sb | p_sb)
+  #[.. | (pf_gc, pf_sb | p_sb)]
 end // end of [string_make_list_int]
 
 (* ****** ****** *)
 
-implement stringlst_concat__bufptr (ss) = let
+implement stringlst_concat (ss) = let
   val n0 = aux (ss, i2sz 0) where {
     fun aux {k:nat} .<k>.
       (ss: list (string, k), n: size_t):<> size_t = case+ ss of
@@ -201,8 +201,8 @@ implement stringlst_concat__bufptr (ss) = let
   } // end of [val]
   val () = loop2 (!p_sb, n0, 0, ss)
 in
-  #[n0+1,n0 | #[l | @(pf_gc, pf_sb | p_sb)]]
-end // end of [stringlst_concat__bufptr]
+  #[n0+1,n0,l | (pf_gc, pf_sb | p_sb)]
+end // end of [stringlst_concat]
 
 (* ****** ****** *)
 
@@ -279,27 +279,17 @@ end // end of [string_make_fun]
 
 in // in of [local]
 
-implement string_tolower__bufptr (s) = let
+implement string_tolower (s) = let
   extern fun tolower (c: c1har):<> c1har = "atspre_char_tolower"
 in
   string_make_fun (s, tolower)
 end // end of [string_tolower__bufptr]
 
-implement string_tolower (s) =
-  string1_of_strbuf (pf_gc, pf_buf | p_buf) where {
-  val (pf_gc, pf_buf | p_buf) = string_tolower__bufptr (s)
-} // end of [string_tolower]
-
-implement string_toupper__bufptr (s) = let
+implement string_toupper (s) = let
   extern fun toupper (c: c1har):<> c1har = "atspre_char_toupper"
 in
   string_make_fun (s, toupper)
 end // end of [string_toupper__bufptr]
-
-implement string_toupper (s) =
-  string1_of_strbuf (pf_gc, pf_buf | p_buf) where {
-  val (pf_gc, pf_buf | p_buf) = string_toupper__bufptr (s)
-} // end of [string_toupper]
 
 end // end of [local]
 
@@ -323,7 +313,7 @@ atspre_string_hash_33 (ats_ptr_type s0) {
   }
 } /* atspre_string_hash_33 */
 
-%}
+%} // end of [%{$]
 
 (* ****** ****** *)
 
@@ -332,8 +322,9 @@ atspre_string_hash_33 (ats_ptr_type s0) {
 /* ****** ****** */
 
 ats_ptr_type
-atspre_string_make_char
-  (ats_size_type n, ats_char_type c) {
+atspre_string_make_char (
+  ats_size_type n, ats_char_type c
+) {
   char *p ; 
   if (!c) { ats_exit_errmsg
     (1, "exit(ATS): [string_make_char] failed: null char.\n") ;
@@ -345,9 +336,9 @@ atspre_string_make_char
 /* ****** ****** */
 
 ats_ptr_type
-atspre_string_make_substring
-  (ats_ptr_type src0, ats_size_type start, ats_size_type len)
-{
+atspre_string_make_substring (
+  ats_ptr_type src0, ats_size_type start, ats_size_type len
+) {
   char *des, *src ;
   des = ATS_MALLOC(len+1) ;
   src = ((char*)src0) + start ;
@@ -358,14 +349,16 @@ atspre_string_make_substring
 /* ****** ****** */
 
 ats_void_type
-atspre_strbuf_tolower (ats_ptr_type p0) {
+atspre_strbuf_tolower
+  (ats_ptr_type p0) {
   int c ; char *p = (char*)p0 ;
   while (c = *p) { *p = tolower (c) ; ++p ; }
   return ;
 }
 
 ats_void_type
-atspre_strbuf_toupper (ats_ptr_type p0) {
+atspre_strbuf_toupper
+  (ats_ptr_type p0) {
   int c ; char *p = (char*)p0 ;
   while (c = *p) { *p = toupper (c) ; ++p ; }
   return ;
@@ -373,7 +366,7 @@ atspre_strbuf_toupper (ats_ptr_type p0) {
 
 /* ****** ****** */
 
-%}
+%} // end of [%{$]
 
 (* ****** ****** *)
 

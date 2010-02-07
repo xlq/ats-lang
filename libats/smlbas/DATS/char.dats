@@ -123,7 +123,9 @@ implement toCString (c) = case+ c of
   | '\v' => "\\v"
   | '\f' => "\\f"
   | '\r' => "\\r"
-  | _ when char_isprint c => string_make_char (1, c)
+  | _ when char_isprint c => let
+      val sbp = string_make_char (1, c) in string1_of_strbuf sbp
+    end // end of [_ when ...]
   | _ => let
       val u = ord c
       val u3 = u land 0x7U

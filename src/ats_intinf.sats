@@ -31,16 +31,14 @@
 
 (* ****** ****** *)
 
-// Time: December 2007
 // Author: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
+// Time: December 2007
 
 (* ****** ****** *)
 
 %{#
-
 #include "ats_intinf.cats"
-
-%}
+%} // end of [%{#]
 
 (* ****** ****** *)
 

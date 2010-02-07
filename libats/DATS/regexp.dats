@@ -157,13 +157,15 @@ implement string_split_regexp (str, re) = let
             val () = assert (i1 <= i2)
             val () = assert (i2 <= n)
             val st = i2sz i and ln = i2sz (i1 - i)
-            val s = string_make_substring (s0, st, ln)
+            val sbp = string_make_substring (s0, st, ln)
+            val s = string1_of_strbuf (sbp) // no-op cast
           in
             stream_cons (s, $delay loop (pf_gc, pf_arr | re, s0, n, i2, p))
           end // end of [_ when rc >= 0]
         | _ => let
             val st = i2sz i and ln = i2sz (n - i)
-            val s = string_make_substring (s0, st, ln)
+            val sbp = string_make_substring (s0, st, ln)
+            val s = string1_of_strbuf (sbp) // no-op cast
           in
             stream_cons (s, $delay loop (pf_gc, pf_arr | re, s0, n, n, p))
           end // end of [_]

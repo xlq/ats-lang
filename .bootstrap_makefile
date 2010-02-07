@@ -63,7 +63,7 @@ ATSRUNTIME="$(ATSHOME)"/ccomp/runtime
 
 ######
 
-CC=gcc
+CC=gcc -Wall
 #CC=gcc -fsigned-char // should be OK as well
 #CC=gcc -funsigned-char // should be OK as well
 #CCFLAG=-I"$(ATSHOME)" -I$(ATSRUNTIME) -O2
