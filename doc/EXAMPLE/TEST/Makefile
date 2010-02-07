@@ -25,6 +25,7 @@ compall:: \
   prelude_matrix0 \
   prelude_string \
   libc_dirent \
+  libc_dlfcn \
   libc_stdlib \
   libats_genarrays \
   libats_intinf \
@@ -64,6 +65,9 @@ prelude_string: prelude_string.dats
 
 libc_dirent: libc_dirent.dats
 	$(ATSCC) -O2 -o libc_dirent libc_dirent.dats && ./libc_dirent "."
+
+libc_dlfcn: libc_dlfcn.dats
+	$(ATSCC) -rdynamic -O2 -o libc_dlfcn libc_dlfcn.dats -ldl && ./libc_dlfcn "."
 
 libc_stdlib: libc_stdlib.dats
 	$(ATSCC) -O2 -o libc_stdlib libc_stdlib.dats && ./libc_stdlib
@@ -117,6 +121,7 @@ cleanall: clean
 	rm -f prelude_matrix0
 	rm -f prelude_string
 	rm -f libc_dirent
+	rm -f libc_dlfcn
 	rm -f libc_stdlib
 	rm -f libats_genarrays
 	rm -f libats_intinf

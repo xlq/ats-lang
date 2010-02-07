@@ -43,6 +43,14 @@
 
 /* ****** ****** */
 
+static inline
+ats_int_type
+atslib_lor_dlopen_flag_dlopen_flagext
+  (ats_int_type flag, ats_int_type ext) { return (flag | ext) ;
+} // end of [atslib_lor_dlopen_flag_dlopen_flagext]
+
+/* ****** ****** */
+
 #define atslib_dlopen dlopen
 
 static inline
