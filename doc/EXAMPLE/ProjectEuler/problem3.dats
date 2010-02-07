@@ -160,6 +160,7 @@ implement main () = () where {
   val () = intinf_free (pf_N2_gc, pf_N2 | p_N2)
 //
 // (*
+  // HX-2010-02-06: I added this one
   val (pf_N3_gc, pf_N3 | p_N3) = N3obj
   val N4obj = !p_N3 - 1
   val () = intinf_free (pf_N3_gc, pf_N3 | p_N3)

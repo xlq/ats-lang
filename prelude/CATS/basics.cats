@@ -48,9 +48,12 @@
 
 /* ****** ****** */
 
+/*
+** HX-2010-02-07: this one is used in many places
+*/
 static inline
 ats_ptr_type
-ats_castfn_ptr (ats_ptr_type p) { return p ; }
+atspre_castfn_ptr (ats_ptr_type p) { return p ; }
 
 /* ****** ****** */
 

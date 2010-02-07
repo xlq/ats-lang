@@ -63,18 +63,6 @@ atspre_bytes_strbuf_trans
 
 /* ****** ****** */
 
-#ifdef _ATS_GEIZELLA
-//
-// this is still needed by the ATS/Geizella compiler
-//
-static inline
-ats_ptr_type // a casting function
-atspre_string_of_string (const ats_ptr_type s) { return s ; }
-//
-#endif /* end of [_ATS_GEIZELLA] */
-
-/* ****** ****** */
-
 static inline
 ats_void_type
 atspre_strbufptr_free (ats_ptr_type base) { ATS_FREE(base); return ; }
@@ -228,14 +216,14 @@ atspre_strbuf_initialize_substring (
 ) {
   memcpy (p_buf, ((char*)s)+st, ln) ; ((char*)p_buf)[ln] = '\000' ;
   return ;
-} /* end of [atspre_strbuf_initialize_substring] */
+} // end of [atspre_strbuf_initialize_substring]
 
 /* ****** ****** */
 
 static inline
 ats_ptr_type
 atspre_string_append
-  (const ats_ptr_type s1, const ats_ptr_type s2) {
+  (ats_ptr_type s1, ats_ptr_type s2) {
   int n1, n2 ; char *des ;
   n1 = strlen((char*)s1) ;
   n2 = strlen((char*)s2) ;
@@ -243,53 +231,57 @@ atspre_string_append
   des[n1+n2] = '\000' ;
   memcpy(des, s1, n1) ; memcpy (des+n1, s2, n2) ;
   return (ats_ptr_type)des ;
-} /* end of [atspre_string_append] */
+} // end of [atspre_string_append]
 
 /* ****** ****** */
 
 static inline
 ats_bool_type
 atspre_string_contains
-  (const ats_ptr_type s0, const ats_char_type c) {
+  (ats_ptr_type s0, ats_char_type c) {
   char *s = strchr((char*)s0, (char)c) ;
   return (s != (char*)0 ? ats_true_bool : ats_false_bool) ;
-} /* end of [atspre_string_contains] */
+} // end of [atspre_string_contains]
 
 /* ****** ****** */
 
 static inline
 ats_size_type
-atspre_string_length (const ats_ptr_type s) {
-  return (strlen((char*)s)) ;
-} /* end of [atspre_string_length] */
+atspre_string_length
+  (ats_ptr_type s) { return (strlen((char*)s)) ; }
+// end of [atspre_string_length]
 
 /* ****** ****** */
 
 static inline
 ats_bool_type
-atspre_string_is_empty (const ats_ptr_type s) {
-  return (*((char*)s) == '\000') ;
-} /* end of [atspre_string_is_empty] */
+atspre_string_is_empty
+  (ats_ptr_type s) { return (*((char*)s) == '\000') ; }
+// end of [atspre_string_is_empty]
 
 static inline
 ats_bool_type
-atspre_string_isnot_empty (const ats_ptr_type s) {
-  return (*((char*)s) != '\000') ;
-} /* end of [atspre_string_isnot_empty] */
+atspre_string_isnot_empty
+  (ats_ptr_type s) { return (*((char*)s) != '\000') ; }
+// end of [atspre_string_isnot_empty]
 
 /* ****** ****** */
 
 static inline
 ats_bool_type
-atspre_string_is_at_end (const ats_ptr_type s, ats_size_type i) {
+atspre_string_is_at_end (
+  ats_ptr_type s, ats_size_type i
+) {
   return (*((char*)s + i) == '\000' ? ats_true_bool : ats_false_bool) ;
-} /* end of [atspre_string_is_at_end] */
+} // end of [atspre_string_is_at_end]
 
 static inline
 ats_bool_type
-atspre_string_isnot_at_end (const ats_ptr_type s, ats_size_type i) {
+atspre_string_isnot_at_end (
+  ats_ptr_type s, ats_size_type i
+) {
   return (*((char*)s + i) != '\000' ? ats_true_bool : ats_false_bool) ;
-} /* end of [atspre_string_isnot_at_end] */
+} // end of [atspre_string_isnot_at_end]
 
 /* ****** ****** */
 
@@ -301,7 +293,7 @@ atspre_string_index_of_char_from_left
   res = strchr ((char*)s, c) ;
   if (res != (char*)0) return (res - (char*)s) ;
   return (-1) ;
-} /* end of [atspre_string_index_of_char_from_left] */
+} // end of [atspre_string_index_of_char_from_left]
 
 static inline
 ats_ssize_type
@@ -311,7 +303,7 @@ atspre_string_index_of_char_from_right
   res = strrchr ((char*)s, c) ;
   if (res != (char*)0) return (res - (char*)s) ;
   return (-1) ;
-} /* end of [atspre_string_index_of_char_from_right] */
+} // end of [atspre_string_index_of_char_from_right]
 
 /* ****** ****** */
 
@@ -323,21 +315,21 @@ atspre_string_index_of_string
   res = strstr ((char*)s1, (char*)s2) ;
   if (res != (char*)0) return (res - (char*)s1) ;
   return (-1) ;
-} /* end of [atspre_string_index_of_string] */
+} // end of [atspre_string_index_of_string]
 
 /* ****** ****** */
 
 extern ats_ptr_type
 atspre_string_make_char (
-  const ats_size_type n, const ats_char_type c
+  ats_size_type n, const ats_char_type c
 ) ; // implemented in [prelude/DATS/string.dats]
 
 static inline
 ats_ptr_type
 atspre_string_singleton
-  (const ats_char_type c) {
+  (ats_char_type c) {
   return atspre_string_make_char (1, c) ;
-} /* end of [atspre_string_singleton] */
+} // end of [atspre_string_singleton]
 
 /* ****** ****** */
 
@@ -346,31 +338,17 @@ atspre_string_singleton
 static
 ats_ptr_type atspre_stropt_none = (ats_ptr_type)0 ;
 
-#ifdef _ATS_GEIZELLA
-
-// this is still needed by the ATS/Geizella compiler
-
 static inline
-ats_ptr_type // a casting function
-atspre_stropt_some (const ats_ptr_type s) { return s ; }
-
-static inline
-ats_ptr_type // a casting function
-atspre_stropt_unsome (const ats_ptr_type s) { return s ; }
-
-#endif /* end of [_ATS_GEIZELLA] */
+ats_bool_type
+atspre_stropt_is_none
+  (ats_ptr_type s) { return (s == (ats_ptr_type)0) ;
+} // end of [atspre_stropt_is_none]
 
 static inline
 ats_bool_type
-atspre_stropt_is_none (const ats_ptr_type s) {
-  return (s == (ats_ptr_type)0) ;
-}
-
-static inline
-ats_bool_type
-atspre_stropt_is_some (const ats_ptr_type s) {
-  return (s != (ats_ptr_type)0) ;
-}
+atspre_stropt_is_some
+  (ats_ptr_type s) { return (s != (ats_ptr_type)0) ;
+} // end of [atspre_stropt_is_some]
 
 /* ****** ****** */
 

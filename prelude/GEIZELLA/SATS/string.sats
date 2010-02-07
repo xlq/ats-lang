@@ -166,15 +166,15 @@ fun bytes_strbuf_trans {m,n:nat | n < m} {l:addr}
 //
 
 fun string1_of_string (str: string):<> [n:nat] string n
-  = "atspre_string_of_string"
+  = "atspre_castfn_ptr"
 
 fun string1_of_strbuf
   {n:nat} (bufptr: strbufptr_gc n):<> string n
-  = "atspre_string_of_string"
+  = "atspre_castfn_ptr"
 
 fun strbuf_of_string1 {n:nat} (str: string n)
   :<> [m:int | n < m] [l:addr] (vbox (strbuf (m, n) @ l) | ptr l)
-  = "atspre_string_of_string"
+  = "atspre_castfn_ptr"
 
 (* ****** ****** *)
 
@@ -612,9 +612,9 @@ fun string_hash_33 (str: string):<> ulint = "atspre_string_hash_33"
 val stropt_none : stropt (~1) = "atspre_stropt_none"
 
 fun stropt_some {n:nat} (str: string n):<> stropt n
-  = "atspre_stropt_some"
+  = "atspre_castfn_ptr"
 fun stropt_unsome {n:nat} (stropt: stropt n):<> string n
-  = "atspre_stropt_unsome"
+  = "atspre_castfn_ptr"
 
 fun stropt_is_none {i:int} (stropt: stropt i):<> bool (i < 0)
   = "atspre_stropt_is_none"
