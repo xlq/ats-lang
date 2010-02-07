@@ -101,11 +101,17 @@ implement strbuf_initialize_cloptr {m,n}
   end // end of [loop]
 } // end of [val]
 
+(* ****** ****** *)
+
+extern fun string_make_substring
+  {n:int} {st,ln:nat | st + ln <= n}
+  (str: string n, st: size_t st, ln: size_t ln):<> string ln
+
 implement string_make_substring (str, st, ln) = let
   val (pf_gc, pf_buf | p_buf) = malloc_gc (ln + 1)
   val () = strbuf_initialize_cloptr (pf_buf | p_buf, ln, lam (i) => str[st + i])
 in
-  string1_of_strbuf (pf_gc, pf_buf | p_buf)
+  string1_of_strbuf @(pf_gc, pf_buf | p_buf)
 end // end of [string_make_substring]
 
 (* ****** ****** *)

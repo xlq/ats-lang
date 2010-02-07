@@ -35,7 +35,11 @@
 
 (* ****** ****** *)
 
-// infinite precision integers based on the gmp package
+//
+// HX-2010-02-06:
+// infinite precision integers based on the gmp package; the primary purpose
+// of [intinf] is for doing quick demo involving large numbers.
+//
 
 (* ****** ****** *)
 
@@ -75,8 +79,9 @@ fun intinf_free {l:addr}
 
 (* ****** ****** *)
 
-fun intinf_get_int {n:int} (n: &intinf n): int n // this is unsafe ...
-  = "atslib_mpz_get_int"
+fun intinf_get_int // this is unsafe because of potential
+  {n:int} (n: &intinf n): int n = "#atslib_mpz_get_int" // overflow
+// end of [intinf_get_int]
 
 (* ****** ****** *)
 

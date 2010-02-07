@@ -188,8 +188,10 @@ in
   if i >= 0 then let
     val n = string_length filename
     val i1 = size1_of_ssize1 (i) + 1
+    val sbp = string_make_substring (filename, i1, n-i1)
+    val str = string1_of_strbuf (sbp)
   in
-    stropt_some (string_make_substring (filename, i1, n-i1))
+    stropt_some (str)
   end else begin
     stropt_none // = null pointer
   end // end of [if]
@@ -230,17 +232,19 @@ filename_extract(ats_ptr_type msg, ats_size_type n) {
 extern fun doctype_of_filename (filename: string): string
 implement doctype_of_filename (filename: string) = let
   val sfx_opt = suffix_of_filename filename
-  val dt_opt = (
-    if stropt_is_none sfx_opt then
-      stropt_some "text/plain" // the doctype for files without suffix
-    else let
-      val sfx = string_tolower (stropt_unsome sfx_opt) in doctype_find sfx
-    end
-  ) : Stropt
+  val dt_opt = (if stropt_is_none sfx_opt then
+     stropt_some "text/plain" // the doctype for files without suffix
+   else let
+     val sfx = stropt_unsome sfx_opt
+     val sfx = string_tolower (sfx)
+     val sfx = string1_of_strbuf (sfx)
+   in
+     doctype_find sfx
+   end) : Stropt
 in
   if stropt_is_none dt_opt then "content/unknown"
   else stropt_unsome dt_opt
-end
+end // end of [doctype_of_filename]
 
 //
 
@@ -545,7 +549,10 @@ implement directory_send_loop (pf_conn | fd, parent, ents): void =
         val () = printf ("directory_send_loop: ent = %s\n", @(ent))
 *)
         val ft = case ent of
-          | "." => 1 | ".." => 1 | _ => filename_type (parent + ent)
+          | "." => 1 | ".." => 1
+          | _ => let
+              val name = string1_of_strbuf (parent + ent) in filename_type name
+            end // end of [_]
       in
         case+ ft of
         | 0 => let
@@ -653,9 +660,10 @@ implement main_loop
 in
   if fd_c >= 0 then let
     prval accept_succ pf_conn = pf_accept
-    val n = socket_read_exn (pf_conn | fd_c, !p_buf, BUFSZ)
+    val n = socket_read_exn
+      (pf_conn | fd_c, !p_buf, BUFSZ)
     val (pf_gc, pf_sb | p) = strbuf_make_bytes (!p_buf, 0, n)
-    val msg = string1_of_strbuf (pf_gc, pf_sb | p)
+    val msg = string1_of_strbuf @(pf_gc, pf_sb | p)
   in
     case+ msg of // [msg] is leaked out if not reclaimed!!!
     | _ when request_is_get (msg) => begin

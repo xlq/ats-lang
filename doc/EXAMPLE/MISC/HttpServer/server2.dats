@@ -285,7 +285,7 @@ val dir_msg31_str = let
   var ntick = time_get ()
   val _(*p_buf*) = ctime_r (pf_buf | ntick, p_buf) // reentrant function
 in
-  string1_of_strbuf (pf_gc, pf_buf | p_buf)
+  string1_of_strbuf @(pf_gc, pf_buf | p_buf)
 end // end of [val]
 
 val dir_msg31_len = string_length dir_msg31_str
@@ -471,11 +471,7 @@ extern fun dirent_name_get (dir: &DIR): Stropt_gc = "dirent_name_get"
 
 (* ****** ****** *)
 
-viewtypedef Strlin = [m,n:nat] [l:addr] strbufptr_gc (m,n,l)
-
-fn strbufptr_free (x: Strlin): void = let
-  val (pf_gc, pf_buf | p_buf) = x in strbuf_ptr_free (pf_gc, pf_buf | p_buf)
-end // end of [strbufptr_free]
+viewtypedef Strlin = Strbufptr_gc
 
 (* ****** ****** *)
 
@@ -533,12 +529,12 @@ in
       | "." => 1 | ".." => 1 | _ => ft where {
           val str = string1_of_string (str)
           val parent = string1_of_string (parent)
-          val fil = string1_append__bufptr (parent, str)
+          val fil = string1_append (parent, str)
           val (pf_gc, pf_fil | p_fil) = fil
           val ft = filename_type (name) where {
             extern castfn __cast (p: ptr): string; val name = __cast p_fil
           } // end of [val]
-          val () = strbuf_ptr_free (pf_gc, pf_fil | p_fil)
+          val () = strbufptr_free @(pf_gc, pf_fil | p_fil)
         } // end of [_]
     end : Sgn (* end of [val] *)
     val () = case+ 0 of
