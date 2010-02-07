@@ -130,6 +130,7 @@ praxi strbuf_v_uncons
   :<prf> [c:char] @(
      char c @ l, strbufopt_v (m-1, n-1, l + sizeof(char), c)
    )
+// end of [strbuf_v_uncons]
 
 //
 
@@ -384,9 +385,9 @@ fun strbuf_initialize_substring {bsz:int}
 
 (* ****** ****** *)
 
-fun string_make_char
-  {n:nat} (n: size_t n, c: char):<> strbufptr_gc n
-  = "atspre_string_make_char"
+fun string_make_char {n:nat}
+  (n: size_t n, c: char):<> strbufptr_gc n = "atspre_string_make_char"
+// end of [string_make_char]
 
 (* ****** ****** *)
 
@@ -418,12 +419,12 @@ fun string_make_substring__main {v:view}
 (* ****** ****** *)
 
 fun string0_append
-  (s1: string, s2: string):<> string
+  (s1: string, s2: string):<> string // persistent
   = "atspre_string_append" 
 overload + with string0_append
 
 fun string1_append {i,j:nat}
-  (s1: string i, s2: string j):<> strbufptr_gc (i+j)
+  (s1: string i, s2: string j):<> strbufptr_gc (i+j) // linear
   = "atspre_string_append"
 overload + with string1_append
 
@@ -458,10 +459,11 @@ fun string_equal (s1: string, s2: string):<> bool = "atspre_eq_string_string"
 
 (* ****** ****** *)
 
-fun strbuf_length {m,n:nat} (sbf: &strbuf (m, n)):<> size_t n
-  = "atspre_string_length"
-
 symintr string_length
+
+fun strbuf_length {m,n:nat}
+  (sbf: &strbuf (m, n)):<> size_t n = "atspre_string_length"
+// end of [strbuf_length]
 
 fun string0_length
   (str: string):<> size_t = "atspre_string_length"
@@ -475,17 +477,16 @@ overload string_length with string1_length
 
 symintr string_is_empty
 
-fun strbuf_is_empty {m,n:nat}
-  (sbf: &strbuf (m, n)):<> bool (n==0)
+fun strbuf_is_empty
+  {m,n:nat} (sbf: &strbuf (m, n)):<> bool (n==0)
   = "atspre_string_is_empty"
 
-fun string0_is_empty (str: string):<> bool
-  = "atspre_string_is_empty"
-
-fun string1_is_empty {n:nat} (str: string n):<> bool (n==0)
-  = "atspre_string_is_empty"
-
+fun string0_is_empty
+  (str: string):<> bool = "atspre_string_is_empty"
 overload string_is_empty with string0_is_empty
+
+fun string1_is_empty {n:nat}
+  (str: string n):<> bool (n==0) = "atspre_string_is_empty"
 overload string_is_empty with string1_is_empty
 
 (* ****** ****** *)
@@ -496,13 +497,12 @@ fun strbuf_isnot_empty {m,n:nat}
   (sbf: &strbuf (m, n)):<> bool (n > 0)
   = "atspre_string_isnot_empty"
 
-fun string0_isnot_empty (str: string):<> bool
-  = "atspre_string_isnot_empty"
+fun string0_isnot_empty
+  (str: string):<> bool = "atspre_string_isnot_empty"
+overload string_isnot_empty with string0_isnot_empty
 
 fun string1_isnot_empty {n:nat} (str: string n):<> bool (n > 0)
   = "atspre_string_isnot_empty"
-
-overload string_isnot_empty with string0_isnot_empty
 overload string_isnot_empty with string1_isnot_empty
 
 (* ****** ****** *)
@@ -529,12 +529,14 @@ fun string_isnot_at_end {n,i:nat | i <= n}
 
 fun string_explode {n:nat}
   (str: string n):<> list_vt (char, n) = "atspre_string_explode"
+// end of [string_explode]
 
 (* ****** ****** *)
 
 // alias of [string_make_list]
 fun string_implode {n:nat} (cs: list (char, n)):<> strbufptr_gc n
   = "atspre_string_implode"
+// end of [string_implode]
 
 (* ****** ****** *)
 
