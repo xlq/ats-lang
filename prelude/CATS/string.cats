@@ -64,21 +64,13 @@ atspre_bytes_strbuf_trans
 /* ****** ****** */
 
 #ifdef _ATS_GEIZELLA
-
+//
 // this is still needed by the ATS/Geizella compiler
-
+//
 static inline
 ats_ptr_type // a casting function
-atspre_string1_of_string (const ats_ptr_type s) { return s ; }
-
-static inline
-ats_ptr_type // a casting function
-atspre_strbuf_of_string1 (const ats_ptr_type s) { return s ; }
-
-static inline
-ats_ptr_type // a casting function
-atspre_string1_of_strbuf (const ats_ptr_type s) { return s ; }
-
+atspre_string_of_string (const ats_ptr_type s) { return s ; }
+//
 #endif /* end of [_ATS_GEIZELLA] */
 
 /* ****** ****** */
