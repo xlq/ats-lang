@@ -32,29 +32,22 @@ end // end of [fcos]
 
 implement main () = () where {
   val (pf_lib | p_lib) = dlopen_exn ("libm.so", RTLD_LAZY)
+//
   val fsin = ftrig_get (pf_lib | p_lib, "sin")
-  val sin00 = fsin (0.0)
-  val () = (print "sin00 = "; print sin00; print_newline ())
   val sin30 = fsin (PI / 6)
   val () = (print "sin30 = "; print sin30; print_newline ())
   val sin45 = fsin (PI / 4)
   val () = (print "sin45 = "; print sin45; print_newline ())
   val sin60 = fsin (PI / 3)
   val () = (print "sin60 = "; print sin60; print_newline ())
-  val sin90 = fsin (PI / 2)
-  val () = (print "sin90 = "; print sin90; print_newline ())
 //
   val fcos = ftrig_get (pf_lib | p_lib, "cos")
-  val cos00 = fcos (0.0)
-  val () = (print "cos00 = "; print cos00; print_newline ())
   val cos30 = fcos (PI / 6)
   val () = (print "cos30 = "; print cos30; print_newline ())
   val cos45 = fcos (PI / 4)
   val () = (print "cos45 = "; print cos45; print_newline ())
   val cos60 = fcos (PI / 3)
   val () = (print "cos60 = "; print cos60; print_newline ())
-  val cos90 = fcos (PI / 2)
-  val () = (print "cos90 = "; print cos90; print_newline ())
 //
   val _err = dlclose (pf_lib | p_lib)
 } // end of [main]

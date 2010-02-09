@@ -51,6 +51,144 @@ span.dyncstuse  {color:B80000;text-decoration:underline}
 
 In this page, we primarily present some newly constructed examples in ATS
 that are relatively short but interesting.
+<P>
+
+<HR SIZE=6 ALIGN=LEFT><P>
+
+<PRE>
+<span class="comment">(*
+**
+** A proof sketch for the representation
+** of Pythagorean triangluar integer triples
+**
+** Suppose that a and b are positive integers
+** satisfying gcd (a, b) = 1.
+**
+** If a*a + b*b = c*c for some integer c, then
+**
+** 1. either a or b is even
+** 2. if a is even, then there exists integers
+**     p, q such that:
+**
+**    a = 2*p*q
+**    b = p*p - q*q
+**    c = p*p + q*q
+**
+*)</span>
+
+<span class="comment">(* ****** ****** *)</span>
+
+<span class="comment">(*
+** Author: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
+** Time: February 7, 2010
+*)</span>
+
+<span class="comment">(* ****** ****** *)</span>
+
+<span class="comment">(*
+**
+** HX-2010-02-08:
+**
+** What is written as follows is not really a proof in any rigourous
+** sense. However, it is close to a style we as human being do mathematics.
+** I envision a system (ATS/LF) where refinement can be done gradually to
+** remove the number of __assert functions used in such a proof. Who will
+** take the grand challenge :)
+**
+*)</span>
+
+<span class="comment">(* ****** ****** *)</span>
+
+<span class="keyword">absprop</span> <span class="staexp"><A name="900"><span class="stacstdec">MOD</span></span></A> <span class="keyword">(</span>n<span class="keyword">:</span>int<span class="keyword">,</span> p<span class="keyword">:</span>int<span class="keyword">,</span> r<span class="keyword">:</span>int<span class="keyword">)</span> <span class="comment">// n mod p = r
+</span>
+<span class="comment">(* ****** ****** *)</span>
+
+<span class="keyword">extern</span> <span class="keyword">prfun</span> <span class="prfexp"><A name="976"><span class="dyncstdec">lemma1 <span class="staexp"><span class="keyword">{</span>n<span class="keyword">:</span>nat<span class="keyword">}</span></span> <span class="staexp"><span class="keyword">{</span>n2<span class="keyword">:</span>int<span class="keyword">}</span></span>
+  <span class="keyword">(</span>pf1<span class="keyword">:</span> <span class="staexp">MOD <span class="keyword">(</span>n<span class="keyword">,</span> 2<span class="keyword">,</span> 0<span class="keyword">)</span></span><span class="keyword">,</span> pf2<span class="keyword">:</span> <span class="staexp">MUL <span class="keyword">(</span>n<span class="keyword">,</span> n<span class="keyword">,</span> n2<span class="keyword">)</span></span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">MOD <span class="keyword">(</span>n2<span class="keyword">,</span> 4<span class="keyword">,</span> 0<span class="keyword">)</span></span></span></span></A>
+<span class="comment">// end of [lemma1]
+</span>
+<span class="keyword">extern</span> <span class="keyword">prfun</span> <span class="prfexp"><A name="1093"><span class="dyncstdec">lemma2 <span class="staexp"><span class="keyword">{</span>n<span class="keyword">:</span>nat<span class="keyword">}</span></span> <span class="staexp"><span class="keyword">{</span>n2<span class="keyword">:</span>int<span class="keyword">}</span></span>
+  <span class="keyword">(</span>pf1<span class="keyword">:</span> <span class="staexp">MOD <span class="keyword">(</span>n<span class="keyword">,</span> 2<span class="keyword">,</span> 1<span class="keyword">)</span></span><span class="keyword">,</span> pf2<span class="keyword">:</span> <span class="staexp">MUL <span class="keyword">(</span>n<span class="keyword">,</span> n<span class="keyword">,</span> n2<span class="keyword">)</span></span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">MOD <span class="keyword">(</span>n2<span class="keyword">,</span> 4<span class="keyword">,</span> 1<span class="keyword">)</span></span></span></span></A>
+<span class="comment">// end of [lemma2]
+</span>
+<span class="comment">(* ****** ****** *)</span>
+
+<span class="keyword">dataprop</span> <span class="prfexp"><span class="staexp"><A name="1227"><span class="stacstdec">por <span class="keyword">(</span>A<span class="keyword">:</span> prop<span class="keyword">,</span> B<span class="keyword">:</span> prop<span class="keyword">)</span></span></span></A> <span class="keyword">=</span> inl <span class="staexp"><span class="keyword">(</span>A<span class="keyword">,</span> B<span class="keyword">)</span></span> <span class="keyword">of</span> <span class="staexp">A</span> <span class="keyword">|</span> inr <span class="staexp"><span class="keyword">(</span>A<span class="keyword">,</span> B<span class="keyword">)</span></span> <span class="keyword">of</span> <span class="staexp">B</span></span>
+
+<span class="keyword">extern</span> <span class="keyword">prfun</span> <span class="prfexp"><A name="1300"><span class="dyncstdec">lemma3 <span class="staexp"><span class="keyword">{</span>a<span class="keyword">,</span>b<span class="keyword">,</span>c<span class="keyword">:</span>nat<span class="keyword">}</span></span> <span class="staexp"><span class="keyword">{</span>a2<span class="keyword">,</span>b2<span class="keyword">:</span>int<span class="keyword">}</span></span>
+  <span class="keyword">(</span>pfa<span class="keyword">:</span> <span class="staexp">MUL <span class="keyword">(</span>a<span class="keyword">,</span> a<span class="keyword">,</span> a2<span class="keyword">)</span></span><span class="keyword">,</span> pfb<span class="keyword">:</span> <span class="staexp">MUL <span class="keyword">(</span>b<span class="keyword">,</span> b<span class="keyword">,</span> b2<span class="keyword">)</span></span><span class="keyword">,</span> pfc<span class="keyword">:</span> <span class="staexp">MUL <span class="keyword">(</span>c<span class="keyword">,</span> c<span class="keyword">,</span> a2+b2<span class="keyword">)</span></span><span class="keyword">)</span>
+  <span class="keyword">:</span> <span class="staexp">por <span class="keyword">(</span>MOD <span class="keyword">(</span>a<span class="keyword">,</span> 2<span class="keyword">,</span> 0<span class="keyword">)</span><span class="keyword">,</span> MOD <span class="keyword">(</span>b<span class="keyword">,</span> 2<span class="keyword">,</span> 0<span class="keyword">)</span><span class="keyword">)</span></span></span></span></A>
+
+<span class="comment">(* ****** ****** *)</span>
+
+<span class="keyword">extern</span> <span class="keyword">prfun</span> <span class="prfexp"><A name="1474"><span class="dyncstdec">lemma5 <span class="staexp"><span class="keyword">{</span>P<span class="keyword">,</span>Q<span class="keyword">:</span>pos<span class="keyword">}</span></span> <span class="staexp"><span class="keyword">{</span>n<span class="keyword">:</span>nat<span class="keyword">}</span></span>
+  <span class="keyword">(</span>pf<span class="keyword">:</span> <span class="staexp">GCD <span class="keyword">(</span>P<span class="keyword">,</span> Q<span class="keyword">,</span> 1<span class="keyword">)</span></span><span class="keyword">,</span> pf<span class="keyword">:</span> <span class="staexp">MUL <span class="keyword">(</span>P<span class="keyword">,</span> Q<span class="keyword">,</span> n*n<span class="keyword">)</span></span><span class="keyword">)</span>
+  <span class="keyword">:</span> <span class="staexp"><span class="keyword">[</span>p<span class="keyword">,</span>q<span class="keyword">:</span>nat<span class="keyword">]</span> <span class="keyword">(</span>MUL <span class="keyword">(</span>p<span class="keyword">,</span> p<span class="keyword">,</span> P<span class="keyword">)</span><span class="keyword">,</span> MUL <span class="keyword">(</span>p<span class="keyword">,</span> q<span class="keyword">,</span> n<span class="keyword">)</span><span class="keyword">,</span> MUL <span class="keyword">(</span>q<span class="keyword">,</span> q<span class="keyword">,</span> Q<span class="keyword">)</span><span class="keyword">)</span></span></span></span></A>
+<span class="comment">// end of [lemma5]
+</span>
+<span class="comment">(* ****** ****** *)</span>
+
+<span class="keyword">extern</span> <span class="keyword">prfun</span> <span class="prfexp"><A name="1656"><span class="dyncstdec">PyTri <span class="staexp"><span class="keyword">{</span>a<span class="keyword">,</span>b<span class="keyword">,</span>c<span class="keyword">:</span>pos<span class="keyword">}</span></span> <span class="staexp"><span class="keyword">{</span>a2<span class="keyword">,</span>b2<span class="keyword">:</span>int<span class="keyword">}</span></span> <span class="keyword">(</span>
+    pfa_mod<span class="keyword">:</span> <span class="staexp">MOD <span class="keyword">(</span>a<span class="keyword">,</span> 2<span class="keyword">,</span> 0<span class="keyword">)</span></span>
+  <span class="keyword">,</span> pfab_gcd<span class="keyword">:</span> <span class="staexp">GCD <span class="keyword">(</span>a<span class="keyword">,</span> b<span class="keyword">,</span> 1<span class="keyword">)</span></span>
+  <span class="keyword">,</span> pfa<span class="keyword">:</span> <span class="staexp">MUL <span class="keyword">(</span>a<span class="keyword">,</span> a<span class="keyword">,</span> a2<span class="keyword">)</span></span>
+  <span class="keyword">,</span> pfb<span class="keyword">:</span> <span class="staexp">MUL <span class="keyword">(</span>b<span class="keyword">,</span> b<span class="keyword">,</span> b2<span class="keyword">)</span></span>
+  <span class="keyword">,</span> pfc<span class="keyword">:</span> <span class="staexp">MUL <span class="keyword">(</span>c<span class="keyword">,</span> c<span class="keyword">,</span> a2+b2<span class="keyword">)</span></span>
+  <span class="keyword">)</span> <span class="keyword">:</span> <span class="staexp"><span class="keyword">[</span>p<span class="keyword">,</span>q<span class="keyword">:</span>nat<span class="keyword">]</span>
+    <span class="keyword">[</span>p2<span class="keyword">,</span>pq<span class="keyword">,</span>q2<span class="keyword">:</span>int <span class="keyword">|</span> a == 2*pq<span class="keyword">;</span> b == p2-q2<span class="keyword">;</span> c == p2+q2<span class="keyword">]</span>
+    <span class="keyword">(</span>MUL <span class="keyword">(</span>p<span class="keyword">,</span> p<span class="keyword">,</span> p2<span class="keyword">)</span><span class="keyword">,</span> MUL <span class="keyword">(</span>p<span class="keyword">,</span> q<span class="keyword">,</span> pq<span class="keyword">)</span><span class="keyword">,</span> MUL <span class="keyword">(</span>q<span class="keyword">,</span> q<span class="keyword">,</span> q2<span class="keyword">)</span><span class="keyword">)</span></span></span></span></A>
+<span class="comment">// end of [PyTri]
+</span>
+<span class="comment">(* ****** ****** *)</span>
+
+<span class="keyword">implement</span> PyTri <span class="staexp"><span class="keyword">{</span>a<span class="keyword">,</span>b<span class="keyword">,</span>c<span class="keyword">}</span></span> <span class="staexp"><span class="keyword">{</span>a2<span class="keyword">,</span>b2<span class="keyword">}</span></span>
+  <span class="keyword">(</span>pfa_mod<span class="keyword">,</span> pfab_gcd<span class="keyword">,</span> pfa<span class="keyword">,</span> pfb<span class="keyword">,</span> pfc<span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">let</span>
+  <span class="keyword">prval</span> <span class="prfexp"><span class="keyword">[</span><span class="staexp">ha<span class="keyword">:</span>int</span><span class="keyword">]</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> __assert <span class="keyword">(</span>pfa_mod<span class="keyword">)</span> <span class="keyword">where</span> <span class="keyword">{</span>
+    <span class="keyword">extern</span> <span class="keyword">prfun</span> <span class="prfexp"><A name="2123"><span class="dyncstdec">__assert <span class="keyword">(</span>pf<span class="keyword">:</span> <span class="staexp">MOD <span class="keyword">(</span>a<span class="keyword">,</span> 2<span class="keyword">,</span> 0<span class="keyword">)</span></span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp"><span class="keyword">[</span>ha<span class="keyword">:</span>int <span class="keyword">|</span> 2*ha==a<span class="keyword">]</span> void</span></span></span></A>
+  <span class="keyword">}</span></span>
+  <span class="keyword">prval</span> <span class="prfexp"><span class="keyword">[</span><span class="staexp">hb<span class="keyword">:</span>int</span><span class="keyword">]</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> __assert <span class="keyword">(</span>pfb_mod<span class="keyword">)</span> <span class="keyword">where</span> <span class="keyword">{</span>
+    <span class="keyword">extern</span> <span class="keyword">prfun</span> <span class="prfexp"><A name="2247"><span class="dyncstdec">__assert <span class="keyword">(</span>pf<span class="keyword">:</span> <span class="staexp">MOD <span class="keyword">(</span>b<span class="keyword">,</span> 2<span class="keyword">,</span> 1<span class="keyword">)</span></span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp"><span class="keyword">[</span>hb<span class="keyword">:</span>int <span class="keyword">|</span> 2*hb+1==b<span class="keyword">]</span> void</span></span></span></A>
+    <span class="keyword">prval</span> <span class="prfexp">pfb_mod <span class="keyword">=</span> __assert <span class="keyword">(</span>pfa_mod<span class="keyword">,</span> pfab_gcd<span class="keyword">)</span> <span class="keyword">where</span> <span class="keyword">{</span>
+      <span class="keyword">extern</span> <span class="keyword">prfun</span> <span class="prfexp"><A name="2379"><span class="dyncstdec">__assert <span class="keyword">(</span>pf1<span class="keyword">:</span> <span class="staexp">MOD <span class="keyword">(</span>a<span class="keyword">,</span> 2<span class="keyword">,</span> 0<span class="keyword">)</span></span><span class="keyword">,</span> pf2<span class="keyword">:</span> <span class="staexp">GCD <span class="keyword">(</span>a<span class="keyword">,</span> b<span class="keyword">,</span> 1<span class="keyword">)</span></span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">MOD <span class="keyword">(</span>b<span class="keyword">,</span> 2<span class="keyword">,</span> 1<span class="keyword">)</span></span></span></span></A>
+    <span class="keyword">}</span></span> <span class="comment">// end of [prval]
+</span>  <span class="keyword">}</span></span> <span class="comment">// end of [prval]
+</span>  <span class="keyword">prval</span> <span class="prfexp"><span class="keyword">[</span><span class="staexp">hc<span class="keyword">:</span>int</span><span class="keyword">]</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> __assert <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">where</span> <span class="keyword">{</span>
+    <span class="keyword">extern</span> <span class="keyword">prfun</span> <span class="prfexp"><A name="2549"><span class="dyncstdec">__assert <span class="keyword">(</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp"><span class="keyword">[</span>hc<span class="keyword">:</span>int <span class="keyword">|</span> 2*hc+1==c<span class="keyword">]</span> void</span></span></span></A>
+  <span class="keyword">}</span></span> <span class="comment">// end of [prval]
+</span>  <span class="keyword">prval</span> <span class="prfexp"><span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> __assert <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">where</span> <span class="keyword">{</span>
+    <span class="keyword">extern</span> <span class="keyword">prfun</span> <span class="prfexp"><A name="2660"><span class="dyncstdec">__assert <span class="keyword">(</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp"><span class="keyword">[</span>a <span class="keyword">&lt;</span> c<span class="keyword">;</span> b <span class="keyword">&lt;</span> c<span class="keyword">]</span> void</span></span></span></A>
+  <span class="keyword">}</span></span>
+<span class="comment">//
+</span>  <span class="keyword">prval</span> <span class="prfexp"><span class="keyword">[</span><span class="staexp">ha2<span class="keyword">:</span>int</span><span class="keyword">]</span> _pf <span class="keyword">=</span> mul_istot <span class="staexp"><span class="keyword">{</span>ha<span class="keyword">,</span>ha<span class="keyword">}</span></span> <span class="keyword">(</span><span class="keyword">)</span></span>
+  <span class="keyword">prval</span> <span class="prfexp"><span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> mul_elim <span class="keyword">(</span>_pf<span class="keyword">)</span></span>
+  <span class="keyword">prval</span> <span class="prfexp"><span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> __assert <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">where</span> <span class="keyword">{</span>
+    <span class="keyword">extern</span> <span class="keyword">prfun</span> <span class="prfexp"><A name="2823"><span class="dyncstdec">__assert <span class="keyword">(</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp"><span class="keyword">[</span>4*ha2 == a2<span class="keyword">]</span> void</span></span></span></A>
+  <span class="keyword">}</span></span>
+<span class="comment">//
+</span>  <span class="keyword">prval</span> <span class="prfexp"><span class="keyword">[</span><span class="staexp">_a2<span class="keyword">:</span>int</span><span class="keyword">]</span> _pf <span class="keyword">=</span> mul_istot <span class="staexp"><span class="keyword">{</span>c+b<span class="keyword">,</span>c-b<span class="keyword">}</span></span> <span class="keyword">(</span><span class="keyword">)</span></span>
+  <span class="keyword">prval</span> <span class="prfexp"><span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> mul_elim <span class="keyword">(</span>_pf<span class="keyword">)</span></span>
+  <span class="keyword">prval</span> <span class="prfexp"><span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> __assert <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">where</span> <span class="keyword">{</span>
+    <span class="keyword">extern</span> <span class="keyword">prfun</span> <span class="prfexp"><A name="2987"><span class="dyncstdec">__assert <span class="keyword">(</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp"><span class="keyword">[</span>_a2 == a2<span class="keyword">]</span> void</span></span></span></A> <span class="comment">// (c+b)*(c-b) = c*c - b*b
+</span>  <span class="keyword">}</span></span> <span class="comment">// end of [prval]
+</span>  <span class="keyword">stadef</span> <span class="staexp"><A name="3075"><span class="stacstdec">P <span class="keyword">=</span> hc+hb+1</span></span></A> <span class="keyword">and</span> <span class="staexp"><A name="3091"><span class="stacstdec">Q <span class="keyword">=</span> hc-hb</span></span></A>
+  <span class="keyword">prval</span> <span class="prfexp"><span class="keyword">[</span><span class="staexp">PQ<span class="keyword">:</span>int</span><span class="keyword">]</span> pfPQ_mul <span class="keyword">=</span> mul_istot <span class="staexp"><span class="keyword">{</span>P<span class="keyword">,</span>Q<span class="keyword">}</span></span> <span class="keyword">(</span><span class="keyword">)</span></span>
+  <span class="keyword">prval</span> <span class="prfexp"><span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> mul_elim <span class="keyword">(</span>_pf<span class="keyword">)</span></span>
+  <span class="keyword">prval</span> <span class="prfexp"><span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> __assert <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">where</span> <span class="keyword">{</span>
+    <span class="keyword">extern</span> <span class="keyword">prfun</span> <span class="prfexp"><A name="3226"><span class="dyncstdec">__assert <span class="keyword">(</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp"><span class="keyword">[</span>4*PQ == a2<span class="keyword">]</span> void</span></span></span></A>
+  <span class="keyword">}</span></span>
+  <span class="keyword">prval</span> <span class="prfexp">pfPQ_gcd <span class="keyword">=</span> __assert <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">where</span> <span class="keyword">{</span>
+    <span class="keyword">extern</span> <span class="keyword">prfun</span> <span class="prfexp"><A name="3317"><span class="dyncstdec">__assert <span class="keyword">(</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">GCD <span class="keyword">(</span>P<span class="keyword">,</span> Q<span class="keyword">,</span> 1<span class="keyword">)</span></span></span></span></A>
+  <span class="keyword">}</span></span>
+  <span class="keyword">prval</span> <span class="prfexp"><span class="keyword">[</span><span class="staexp">p</span><span class="keyword">,</span><span class="staexp">q<span class="keyword">:</span>int</span><span class="keyword">]</span> <span class="keyword">(</span>pfpp<span class="keyword">,</span> pfpq<span class="keyword">,</span> pfqq<span class="keyword">)</span> <span class="keyword">=</span> lemma5 <span class="staexp"><span class="keyword">{</span>P<span class="keyword">,</span>Q<span class="keyword">}</span></span> <span class="staexp"><span class="keyword">{</span>ha<span class="keyword">}</span></span> <span class="keyword">(</span>pfPQ_gcd<span class="keyword">,</span> pfPQ_mul<span class="keyword">)</span></span>
+  <span class="comment">// prval () = verify_constraint {false} () // check for sanity
+</span><span class="keyword">in</span>
+  <span class="keyword">(</span>pfpp<span class="keyword">,</span> pfpq<span class="keyword">,</span> pfqq<span class="keyword">)</span>
+<span class="keyword">end</span> <span class="comment">// end of [PyTri]
+</span>
+<span class="comment">(* ****** ****** *)</span>
+
+<span class="comment">(* end of [PyTri.dats] *)</span>
+</PRE>
 
 <HR SIZE=6 ALIGN=LEFT><P>
 

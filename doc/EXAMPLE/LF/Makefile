@@ -17,13 +17,14 @@ all: ATS \
      CutElimIL \
      CutElimILL \
      HilbertCalculus \
+     infprime \
      irrationality-of-sqrt2 \
      ITPT \
      KolmogorovTrans \
      mini-ML \
      naive-set.dats \
      pigeonhole \
-     infprime \
+     PyTri \
      STLC-foas \
      STLC-hoas \
      STLC-SN-foas \
@@ -46,13 +47,14 @@ CPS: ; $(ATSCC) $(ATSCCFLAG) CPS.dats
 CutElimIL: ; $(ATSCC) $(ATSCCFLAG) CutElimIL.dats
 CutElimILL: ; $(ATSCC) $(ATSCCFLAG) CutElimILL.dats
 HilbertCalculus: ; $(ATSCC) $(ATSCCFLAG) HilbertCalculus.dats
+infprime: ; $(ATSCC) $(ATSCCFLAG) infprime.dats
 irrationality-of-sqrt2: ; $(ATSCC) $(ATSCCFLAG) irrationality-of-sqrt2.dats
 ITPT: ; $(ATSCC) $(ATSCCFLAG) ITPT.dats
 KolmogorovTrans: ; $(ATSCC) $(ATSCCFLAG) KolmogorovTrans.dats
 mini-ML: ; $(ATSCC) $(ATSCCFLAG) mini-ML.dats
 naive-set: ; $(ATSCC) $(ATSCCFLAG) naive-set.dats
 pigeonhole: ; $(ATSCC) $(ATSCCFLAG) pigeonhole.dats
-infprime: ; $(ATSCC) $(ATSCCFLAG) infprime.dats
+PyTri: ; $(ATSCC) $(ATSCCFLAG) PyTri.dats
 STLC-foas: ; $(ATSCC) $(ATSCCFLAG) STLC-foas.dats
 STLC-hoas: ; $(ATSCC) $(ATSCCFLAG) STLC-hoas.dats
 STLC-SN-foas: ; $(ATSCC) $(ATSCCFLAG) STLC-SN-foas.dats
@@ -94,13 +96,14 @@ posmark::
 #	$(ATSOPT) $(POSMARK) -d CutElimIL.dats > CutElimIL_dats.html
 	$(ATSOPT) $(POSMARK) -d CutElimILL.dats > CutElimILL_dats.html
 	$(ATSOPT) $(POSMARK) -d HilbertCalculus.dats > HilbertCalculus_dats.html
+	$(ATSOPT) $(POSMARK) -d infprime.dats > infprime_dats.html
 	$(ATSOPT) $(POSMARK) -d irrationality-of-sqrt2.dats > irrationality-of-sqrt2_dats.html
 	$(ATSOPT) $(POSMARK) -d ITPT.dats > ITPT_dats.html
 	$(ATSOPT) $(POSMARK) -d KolmogorovTrans.dats > KolmogorovTrans_dats.html
 	$(ATSOPT) $(POSMARK) -d mini-ML.dats > mini-ML_dats.html
 	$(ATSOPT) $(POSMARK) -d naive-set.dats > naive-set_dats.html
 	$(ATSOPT) $(POSMARK) -d pigeonhole.dats > pigeonhole_dats.html
-	$(ATSOPT) $(POSMARK) -d infprime.dats > infprime_dats.html
+	$(ATSOPT) $(POSMARK) -d PyTri.dats > PyTri_dats.html
 	$(ATSOPT) $(POSMARK) -d STLC-foas.dats > STLC-foas_dats.html
 #	$(ATSOPT) $(POSMARK) -d STLC-hoas.dats > STLC-hoas_dats.html
 	$(ATSOPT) $(POSMARK) -d STLC-SN-foas.dats > STLC-SN-foas_dats.html
@@ -117,13 +120,14 @@ update::
 	cp CutElimIL.dats $(DIR)
 	cp CutElimILL.dats $(DIR)
 	cp HilbertCalculus.dats $(DIR)
+	cp infprime.dats $(DIR)
 	cp irrationality-of-sqrt2.dats $(DIR)
 	cp ITPT.dats $(DIR)
 	cp KolmogorovTrans.dats $(DIR)
 	cp mini-ML.dats $(DIR)
 	cp naive-set.dats $(DIR)
 	cp pigeonhole.dats $(DIR)
-	cp infprime.dats $(DIR)
+	cp PyTri.dats $(DIR)
 	cp STLC-foas.dats $(DIR)
 	cp STLC-hoas.dats $(DIR)
 	cp STLC-SN-foas.dats $(DIR)
