@@ -92,7 +92,7 @@ void sllist_append (sllist *p_xs, sllist ys) {
   sllist xs ;
   xs = *p_xs ;
   while (xs != NULL) { p_xs = &xs->tail ; xs = *p_xs ; }
-  p_xs = ys ;
+  *p_xs = ys ;
   return ;
 } /* end of [sllist_append] */
 </PRE>
