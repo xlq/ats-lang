@@ -142,7 +142,7 @@ implement string_split_regexp (str, re) = let
     | re: REGEXPref, s0: string n, n: int n, i: int i, p: ptr l
     ) :<1,~ref> int
     = "atslib_string_split_regexp_search"
-
+//
   fun loop {n,i:nat | i <= n} {l:addr} (
       pf_gc: free_gc_v (int, 3, l), pf_arr: @[int?][3] @ l
     | re: REGEXPref, s0: string n, n: int n, i: int i, p: ptr l
@@ -175,7 +175,7 @@ implement string_split_regexp (str, re) = let
       in
         stream_nil ()
       end // end of [_]
-
+//
   val _3 = i2sz 3
   val s0 = string1_of_string str
   val n = string_length s0; val n = sz2i (n)

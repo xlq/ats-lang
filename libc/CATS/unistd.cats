@@ -95,43 +95,25 @@ atslib_usleep (ats_int_type n) { usleep (n) ; return ; }
 
 /* ****** ****** */
 
-static inline
-ats_int_type
-atslib_getpagesize () { return getpagesize () ; }
+#define atslib_getpagesize getpagesize
 
 /* ****** ****** */
 
-static inline
-ats_pid_type
-atslib_getpid () { return getpid () ; }
+#define atslib_getpid getpid
+#define atslib_getppid getppid
 
-static inline
-ats_pid_type
-atslib_getppid () { return getppid () ; }
+#define atslib_getuid getuid
+#define atslib_geteuid geteuid
 
 /* ****** ****** */
 
-static inline
-ats_uid_type
-atslib_getuid () { return getuid () ; }
-
-static inline
-ats_uid_type
-atslib_geteuid () { return geteuid () ; }
-
-/* ****** ****** */
-
-static inline
-ats_int_type
-atslib_chdir_err (
-  ats_ptr_type path
-) {
-  return chdir ((char*)path) ;
-} // end of [atslib_chdir_err]
+#define atslib_chdir_err chdir
 
 static inline
 ats_void_type
-atslib_chdir_exn (ats_ptr_type path) {
+atslib_chdir_exn (
+  ats_ptr_type path
+) {
   int err ;
   err = chdir ((char*)path) ;
   if (err == -1) {
@@ -140,14 +122,12 @@ atslib_chdir_exn (ats_ptr_type path) {
   } // end of [if]
 } /* end of [atslib_chdir_exn] */
 
-static inline
-ats_int_type
-atslib_fchdir_err (ats_int_type fd) { return fchdir (fd) ; }
-// end of [atslib_chdir_err]
+#define atslib_fchdir_err fchdir
 
 static inline
 ats_void_type
-atslib_fchdir_exn (ats_int_type fd) {
+atslib_fchdir_exn
+  (ats_int_type fd) {
   int err ;
   err = fchdir (fd) ;
   if (err == -1) {
@@ -158,19 +138,31 @@ atslib_fchdir_exn (ats_int_type fd) {
 
 /* ****** ****** */
 
-static inline
-ats_int_type
-atslib_unlink_err (
-  ats_ptr_type path
-) {
-  return unlink ((char*)path) ;
-} /* end of [atslib_unlink_err] */
+#define atslib_link_err link
 
 static inline
 ats_void_type
-atslib_unlink_exn (ats_ptr_type name) { 
+atslib_link_exn (
+  ats_ptr_type src, ats_ptr_type dst
+) { 
   int err ;
-  err = unlink ((char*)name) ;
+  err = link ((char*)src, (char*)dst) ;
+  if (err == -1) {
+    perror ("link") ;
+    ats_exit_errmsg (1, "exit(ATS): [link] failed\n") ;
+  } // end of [if]
+  return ;
+} /* end of [atslib_link_exn] */
+
+/* ****** ****** */
+
+#define atslib_unlink_err unlink
+
+static inline
+ats_void_type
+atslib_unlink_exn (ats_ptr_type path) { 
+  int err ;
+  err = unlink ((char*)path) ;
   if (err == -1) {
     perror ("unlink") ;
     ats_exit_errmsg (1, "exit(ATS): [unlink] failed\n") ;

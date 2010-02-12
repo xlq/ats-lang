@@ -147,39 +147,42 @@ fun usleep (n: natLte MILLION (* microseconds *)): void
 
 (* ****** ****** *)
 
-fun getpagesize ():<> int = "atslib_getpagesize"
+fun getpagesize ():<> int = "#atslib_getpagesize" // macro
 
 (* ****** ****** *)
 
-fun getpid (): pid_t = "atslib_getpid"
-fun getppid (): pid_t = "atslib_getppid"
+fun getpid (): pid_t = "#atslib_getpid" // macro
+fun getppid (): pid_t = "#atslib_getppid" // macro
 
 (* ****** ****** *)
 
-fun getuid ():<> uid_t = "atslib_getuid"
-fun geteuid ():<> uid_t = "atslib_geteuid"
+fun getuid ():<> uid_t = "#atslib_getuid" // macro
+fun geteuid ():<> uid_t = "#atslib_geteuid" // macro
 
 (* ****** ****** *)
 
-fun chdir_err (path: string): int(*errno*)
-  = "atslib_chdir_err"
-
-fun chdir_exn (path: string): void
-  = "atslib_chdir_exn"
+fun chdir_err (path: string): int(*err*) = "#atslib_chdir_err"
+fun chdir_exn (path: string): void = "atslib_chdir_exn" // function
 
 fun fchdir_err {fd:int} {flag:open_flag}
-  (pf: !fildes_v (fd, flag) | fd: int): int(*errno*) 
-  = "atslib_fchdir_err"
+  (pf: !fildes_v (fd, flag) | fd: int): int(*err*) = "#atslib_fchdir_err"
+// end of [fchdir_err]
 
 fun fchdir_exn {fd:int} {flag:open_flag}
-  (pf: !fildes_v (fd, flag) | fd: int): void
-  = "atslib_fchdir_exn"
+  (pf: !fildes_v (fd, flag) | fd: int): void = "atslib_fchdir_exn" // fun
+// end of [fchdir_exn]
 
 (* ****** ****** *)
 
-fun unlink_err (path: string): int = "atslib_unlink_err"
+fun link_err
+  (src: string, dst: string): int = "#atslib_link_err" // macro
+// end of [link_err]
+fun link_exn
+  (src: string, dst: string): void = "atslib_link_exn" // function
+// end of [link_exn]
 
-fun unlink_exn (path: string): void = "atslib_unlink_exn"
+fun unlink_err (path: string): int = "#atslib_unlink_err" // macro
+fun unlink_exn (path: string): void = "atslib_unlink_exn" // function
 
 (* ****** ****** *)
 

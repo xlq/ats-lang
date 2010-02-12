@@ -229,12 +229,11 @@ end // end of [char_stream_vt_make_file]
 %{$
 
 ats_bool_type
-atspre_test_file_exists (ats_ptr_type path) {
+atspre_test_file_exists
+  (ats_ptr_type path) {
   int ret ;
   struct stat buf ;
-
   ret = stat ((char*)path, &buf) ;
-
   if (!ret) {
     return ats_true_bool ; // ret == 0
   } else {
@@ -243,12 +242,11 @@ atspre_test_file_exists (ats_ptr_type path) {
 } /* test_file_exists */
 
 ats_bool_type
-atspre_test_file_isdir (ats_ptr_type path) {
+atspre_test_file_isdir
+  (ats_ptr_type path) {
   int ret ;
   struct stat buf ; mode_t mode ;
-
   ret = stat ((char*)path, &buf) ;
-
   if (!ret) { // ret == 0
     mode = buf.st_mode ;
     return (S_ISDIR(mode) ? ats_true_bool : ats_false_bool) ;
@@ -257,7 +255,7 @@ atspre_test_file_isdir (ats_ptr_type path) {
   }
 } /* atspre_test_file_dir */
 
-%}
+%} // end of [%{$]
 
 (* ****** ****** *)
 

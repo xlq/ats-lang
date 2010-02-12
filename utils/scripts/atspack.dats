@@ -813,6 +813,14 @@ fn contrib_dir_copy () = let
   val DSTROOTcontrib = DSTROOT ++ "contrib/"
   val () = mkdir_exn (DSTROOTcontrib, DIRmode)
 //
+  // API for X11: [contrib/X11]
+  val SRCROOTcontrib_X11 = SRCROOTcontrib ++ "X11/"
+  val DSTROOTcontrib_X11 = DSTROOTcontrib ++ "X11/"
+  val () = lib_dir_copy (SRCROOTcontrib_X11, DSTROOTcontrib_X11)
+  val () = fcopy_exn (
+    SRCROOTcontrib_X11++"Makefile", DSTROOTcontrib_X11++"Makefile"
+  ) // end of [val]
+//
   // API for cairo: [contrib/cairo]
   val SRCROOTcontrib_cairo = SRCROOTcontrib ++ "cairo/"
   val DSTROOTcontrib_cairo = DSTROOTcontrib ++ "cairo/"

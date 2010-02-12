@@ -80,15 +80,15 @@ macdef stderr_ref = $extval (FILEref, "stderr")
 
 symintr open_file
 
-fun open_file
-  (path: string, mode: file_mode): FILEref
-  = "atslib_fopen_exn"
+fun open_file // exit on failure
+  (path: string, mode: file_mode): FILEref = "atslib_fopen_exn"
+// end of [open_file]
 
 fun close_file (fil: FILEref): void = "atslib_fclose_exn"
 
-fun reopen_file
-  (path: string, mode: file_mode, fil: FILEref): void
-  = "atslib_freopen_exn"
+fun reopen_file // exit on failure
+  (path: string, mode: file_mode, fil: FILEref): void = "atslib_freopen_exn"
+// end of [reopen_file]
 
 (* ****** ****** *)
 
@@ -134,16 +134,18 @@ fun line_stream_make_file (fil: FILEref):<1,~ref> stream (string)
 
 (* ****** ****** *)
 
-// making a linear lazy char stream out of a file handle
+// making a _linear_ lazy char stream out of a file handle
 fun char_stream_vt_make_file {m:file_mode} {l:addr}
   (pf_mod: file_mode_lte (m, r), pf_fil: FILE m @ l | p_fil: ptr l)
   :<1,~ref> stream_vt (char)
+// end of [char_stream_vt_make_file]
 
-// making a linear lazy line stream out of a file handle
+// making a _linear_ lazy line stream out of a file handle
 // note that the newline character at the end of each line is dropped
 fun line_stream_vt_make_file {m:file_mode} {l:addr}
   (pf_mod: file_mode_lte (m, r), pf_fil: FILE m @ l | p_fil: ptr l)
   :<1,~ref> stream_vt (string)
+// end of [line_stream_vt_make_file]
 
 (* ****** ****** *)
 
