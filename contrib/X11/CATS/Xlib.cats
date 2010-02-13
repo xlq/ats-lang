@@ -173,15 +173,105 @@
 /* ****** ****** */
 
 //
+// Chapter 5: Creating and Freeing Pixmaps
+//
+
+/* ****** ****** */
+
+#define atsctrb_XCreatePixmap XCreatePixmap
+#define atsctrb_XFreePixmap XFreePixmap
+
+#define atsctrb_XCreateFontCursor XCreateFontCursor
+#define atsctrb_XFreeCursor XFreeCursor
+
+/* ****** ****** */
+
+//
+// Chapter 6: Color Management Functions
+//
+
+/* ****** ****** */
+
+#define atsctrb_XCreateColormap XCreateColormap
+#define atsctrb_XCopyColormapAndFree XCopyColormapAndFree
+#define atsctrb_XFreeColormap XFreeColormap
+#define atsctrb_XLookupColor XLookupColor
+#define atsctrb_XParseColor XParseColor
+#define atsctrb_XAllocColor XAllocColor
+#define atsctrb_XAllocNamedColor XAllocNamedColor
+#define atsctrb_XStoreColor XStoreColor
+#define atsctrb_XStoreColors XStoreColors
+#define atsctrb_XStoreNamedColor XStoreNamedColor
+#define atsctrb_XQueryColor XQueryColor
+#define atsctrb_XQueryColors XQueryColors
+
+/* ****** ****** */
+
+//
+// Chapter 7: Graphics Context Functions
+//
+
+/* ****** ****** */
+
+#define atsctrb_XCreateGC XCreateGC
+#define atsctrb_XCopyGC XCopyGC
+#define atsctrb_XChangeGC XChangeGC
+#define atsctrb_XGetGCValues XGetGCValues
+#define atsctrb_XFreeGC XFreeGC
+#define atsctrb_XFlushGC XFlushGC
+
+/* ****** ****** */
+
+//
+// Chapter 8: Graphics Functions
+//
+
+/* ****** ****** */
+
+#define atsctrb_XClearArea XClearArea
+#define atsctrb_XClearWindow XClearWindow
+
+/* ****** ****** */
+
+//
+// Chapter 9: Window and Session Manager Functions
+//
+
+/* ****** ****** */
+
+#define atsctrb_XReparentWindow XReparentWindow
+#define atsctrb_XChangeSaveSet XChangeSaveSet
+#define atsctrb_XAddSaveSet XAddSaveSet
+#define atsctrb_XRemoveFromSaveSet XRemoveFromSaveSet
+#define atsctrb_XInstallColormap XInstallColormap
+#define atsctrb_XUninstallColormap XUninstallColormap
+#define atsctrb_XListInstalledColormaps XListInstalledColormaps
+#define atsctrb_XGrabServer XGrabServer
+#define atsctrb_XUngrabServer XUngrabServer
+#define atsctrb_XKillClient XKillClient
+#define atsctrb_XSetScreenSaver XSetScreenSaver
+#define atsctrb_XForceScreenSaver XForceScreenSaver
+#define atsctrb_XActivateScreenSaver XActivateScreenSaver
+#define atsctrb_XResetScreenSaver XResetScreenSaver
+#define atsctrb_XGetScreenSaver XGetScreenSaver
+#define atsctrb_XAddHost XAddHost
+#define atsctrb_XAddHosts XAddHosts
+#define atsctrb_XListHosts XListHosts
+#define atsctrb_XRemoveHost XRemoveHost
+#define atsctrb_XRemoveHosts XRemoveHosts
+#define atsctrb_XSetAccessControl XSetAccessControl
+#define atsctrb_XEnableAccessControl XEnableAccessControl
+#define atsctrb_XDisableAccessControl XDisableAccessControl
+
+/* ****** ****** */
+
+//
 // Chapter 11: Event Handling Functions
 //
 
 /* ****** ****** */
 
 #define atsctrb_XSelectInput XSelectInput
-
-/* ****** ****** */
-
 #define atsctrb_XFlush XFlush
 #define atsctrb_XSync XSync
 

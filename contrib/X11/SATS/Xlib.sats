@@ -71,6 +71,12 @@ viewtypedef Visual_ptr1 = [l:anz] Visual_ptr l
 
 (* ****** ****** *)
 
+// it is just a pointer; it is not reference counted
+absviewtype GCptr (l:addr)  = $extype "GC"
+abstype GCref = $extype "GC" // this one should never be freed!
+
+(* ****** ****** *)
+
 //
 // Chapter 2: Display Functions
 //
@@ -132,11 +138,9 @@ fun XListDepths {l:anz} // [cnt] needs to be set to 0 first!
 
 (* ****** ****** *)
 
-abstype GCref =
-  $extype "GC" // this one should never be freed!
-fun XDefaultGC {l:anz}
-  (dpy: !Display_ptr l, nscr: int): GCref
+fun XDefaultGC {l:anz} (dpy: !Display_ptr l, nscr: int): GCref
   = "#atsctrb_XDefaultGC"
+// end of [XDefaultGC]
 
 (* ****** ****** *)
 
@@ -340,7 +344,7 @@ fun XRootWindowOfScreen {l:anz} (scr: !Screen_ptr l): Window
 
 (* ****** ****** *)
 
-fun XNoOp {l:anz} (dpy: Display_ptr l): void
+fun XNoOp {l:anz} (dpy: !Display_ptr l): void
   = "#atsctrb_XNoOp"
 
 (* ****** ****** *)
@@ -742,6 +746,7 @@ fun XCreatePixmap {l:anz} (
 fun XFreePixmap
   {l:anz} (dpy: !Display_ptr l, pixmap: Pixmap): void
   = "#atsctrb_XFreePixmap"
+// end of [XFreePixmap]
 
 (* ****** ****** *)
 
@@ -778,24 +783,435 @@ typedef XColor =
 
 // 6.4: creating, copying and destroying
 
-fun XCreateColormap {l1,l2:addr} (
+fun XCreateColormap {l1,l2:anz} (
     dsp: !Display_ptr l1
   , win: Window, visual: !Visual_ptr l2, alloc: int
   ) : Colormap
   = "#atsctrb_XCreateColormap"
 
-fun XCopyColormapAndFree {l:addr}
+fun XCopyColormapAndFree {l:anz}
   (dpy: !Display_ptr l, colormap: Colormap): void
   = "#atsctrb_XCopyColormapAndFree"
 
-fun XFreeColormap {l:addr}
+fun XFreeColormap {l:anz}
   (dpy: !Display_ptr l, colormap: Colormap): void
   = "#atsctrb_XFreeColormap"
 
 (* ****** ****** *)
 
+// 6.5: Mapping Color Names to Values
+
+fun XLookupColor {l:anz} (
+    dpy: !Display_ptr l
+  , colormap: Colormap, color_name: string
+  , exact_def: &XColor? >> XColor, screen_def: &XColor? >> XColor 
+  ) : Status // nonzero if the name is resolved
+  = "#atsctrb_XLookupColor"
+// end of [XLookupColor]
+
+fun XParseColor {l:anz} (
+    dpy: !Display_ptr l
+  , colormap: Colormap
+  , spec: string
+  , exact_def: &XColor? >> XColor
+  ) : Status // nonzero if the name is resolved
+  = "#atsctrb_XParseColor"
+// end of [XParseColor]
+
+(*
+fun XcmsLookupColor (...)
+*)
+
+(* ****** ****** *)
+
+// 6.6: Allocating and Freeing Color Cells
+
+fun XAllocColor {l:anz} (
+    dpy: !Display_ptr l
+  , colormap: Colormap, screen_in_out: &XColor >> XColor
+  ) : Status
+  = "#atsctrb_XAllocColor"
+// end of [XAllocColor]
+
+(*
+fun XcmsAllocColor (...)
+*)
+
+fun XAllocNamedColor {l:anz} (
+    dpy: !Display_ptr l
+  , colormap: Colormap
+  , color_name: string
+  , screen_def: &XColor? >> XColor
+  , exact_def: &XColor? >> XColor
+  ) : Status
+  = "#atsctrb_XAllocNamedColor"
+// end of [XAllocNamedColor]
+
+(*
+fun XcmsAllocNamedColor (...)
+*)
+
+(*
+fun XAllocColorCells (...)
+fun XAllocColorPlanes (...)
+*)
+
+(*
+fun XFreeColors (...)
+*)
+
+(* ****** ****** *)
+
+// 6.7: Modifying and Querying Colormap Cells
+
+fun XStoreColor {l:anz} (
+    dpy: !Display_ptr l, colormap: Colormap, color: &XColor
+  ) : void = "#atsctrb_XStoreColor"
+// end of [XStoreColor]
+
+fun XStoreColors {l:anz} {n:nat} (
+    dpy: !Display_ptr l
+  , colormap: Colormap, colors: &(@[XColor][n]), ncolor: int n
+  ) : void = "#atsctrb_XStoreColors"
+// end of [XStoreColors]
+
+(*
+XcmsStoreColor (...)
+XcmsStoreColors (...)
+*)
+
+fun XStoreNamedColor {l:anz} (
+    dpy: !Display_ptr l
+  , colormap: Colormap, color_name: string, pixel: ulint, flags: int
+  ) : void = "#atsctrb_XStoreNamedColor"
+// end of [XStoreNamedColor]
+
+fun XQueryColor {l:anz} (
+    dpy: !Display_ptr l
+    , colormap: Colormap, def_in_out: &XColor >> XColor
+  ) : void = "#atsctrb_XQueryColor"
+// end of [XQueryColor]
+
+fun XQueryColors {l:anz} {n:nat} (
+    dpy: !Display_ptr l
+  , colormap: Colormap, defs_in_out: &(@[XColor][n]), ncolor: int n
+  ) : void = "#atsctrb_XQueryColors"
+// end of [XQueryColors]
+
+(*
+fun XcmsQueryColor (...)
+fun XcmsQueryColors (...)
+*)
+
+(* ****** ****** *)
+
+// 6.8: Color Conversion Context Functions
+
+(* ****** ****** *)
+
+// 6.9: Converting Between Color Spaces
+
+(* ****** ****** *)
+
+// 6.10: Callback functions
+
+(* ****** ****** *)
+
+// 6.11: Gamut querying functions
+
+(* ****** ****** *)
+
+// 6.12: Color management extensions
+
+(* ****** ****** *)
+
 //
-// Chapter 11: Event Handling functions
+// Chapter 7: Graphics Context Functions
+//
+
+(* ****** ****** *)
+
+// 7.1: Manipulating Graphics Context/State
+
+macdef GCFunction = $extval (lint, "GCFunction")
+macdef GCPlaneMask = $extval (lint, "GCPlaneMask")
+macdef GCForeground = $extval (lint, "GCForeground")
+macdef GCBackground = $extval (lint, "GCBackground")
+macdef GCLineWidth = $extval (lint, "GCLineWidth")
+macdef GCLineStyle = $extval (lint, "GCLineStyle")
+macdef GCCapStyle = $extval (lint, "GCCapStyle")
+macdef GCJoinStyle = $extval (lint, "GCJoinStyle")
+macdef GCFillStyle = $extval (lint, "GCFillStyle")
+macdef GCFillRule = $extval (lint, "GCFillRule")
+macdef GCTile = $extval (lint, "GCTile")
+macdef GCStipple = $extval (lint, "GCStipple")
+macdef GCTileStipXOrigin = $extval (lint, "GCTileStipXOrigin")
+macdef GCTileStipYOrigin = $extval (lint, "GCTileStipYOrigin")
+macdef GCFont = $extval (lint, "GCFont")
+macdef GCSubWindowMode = $extval (lint, "GCSubWindowMode")
+macdef GCGraphicsExposures = $extval (lint, "GCGraphicsExposures")
+macdef GCClipXOrigin = $extval (lint, "GCClipXOrigin")
+macdef GCClipYOrigin = $extval (lint, "GCClipYOrigin")
+macdef GCClipMask = $extval (lint, "GCClipMask")
+macdef GCDashOffset = $extval (lint, "GCDashOffset")
+macdef GCDashList = $extval (lint, "GCDashList")
+macdef GCArcMode = $extval (lint, "GCArcMode")
+
+typedef XGCValues =
+  $extype_struct "XGCValues" of {
+  function= int
+, plane_mask= ulint
+, foreground= ulint
+, background= ulint
+, line_width= int
+, line_style= int
+, cap_style= int
+, join_style= int
+, fill_style= int
+, arc_mode= int
+, tile= Pixmap
+, stipple= Pixmap
+, ts_x_origin = int
+, ts_y_origin = int
+, font= Font
+, subwindow_mode= int
+, graphics_exposures= Bool
+, clip_x_origin= int
+, clip_y_origin= int
+, clip_mask= Pixmap
+, dash_offset= int
+, dashes= char
+} // end of [XGCValues]
+
+fun XCreateGC {l:anz} (
+    dpy: !Display_ptr l, drw: Drawable, mask: ulint, values: &XGCValues
+  ) : [l:addr] GCptr l
+  = "#atsctrb_XCreateGC"
+// end of [XCreateGC]
+
+fun XCopyGC {l1:addr} {l2,l3:addr}
+  (dpy: !Display_ptr l1, src: !GCptr l2, dst: !GCptr l3, mask: ulint): void
+  = "#atsctrb_XCopyGC"
+// end of [XCopyGC]
+
+fun XChangeGC {l1:anz} {l2:addr}
+  (dpy: !Display_ptr l1, gc: GCptr l2, mask: ulint, values: &XGCValues): void
+  = "#atsctrb_XChangeGC"
+// end of [XChangeGC]
+
+fun XGetGCValues {l1:anz} {l2:addr} (
+    dpy: !Display_ptr l1, gc: GCptr l2, mask: ulint, values: &XGCValues? >> XGCValues
+  ) : void = "#atsctrb_XGetGCValues"
+// end of [XGetGCValues]
+
+fun XFreeGC {l1:anz} {l2:addr} (dpy: !Display_ptr l1, gc: GCptr l2): void
+  = "#atsctrb_XFreeGC"
+// end of [XFreeGC]
+
+fun XFlushGC {l1:anz} {l2:addr} (dpy: !Display_ptr l1, gc: !GCptr l2): void
+  = "#atsctrb_XFlushGC"
+// end of [XFlushGC]
+
+(* ****** ****** *)
+
+// 7.2: Using GC convenience routines
+
+(* ****** ****** *)
+
+//
+// Chapter 8: Graphics Functions
+//
+
+(* ****** ****** *)
+
+// 8.1: Clearing Areas
+
+fun XClearArea {l:anz} (
+    dsp: !Display_ptr l
+  , win: Window
+  , x: int, y: int
+  , width: uint, height: uint
+  , exposures: Bool
+  ) : void
+  = "#atsctrb_XClearArea"
+
+fun XClearWindow {l:anz} (dsp: !Display_ptr l, win: Window) : void
+  = "#atsctrb_XClearWindow"
+// end of [XClearWindow]
+
+(* ****** ****** *)
+
+//
+// Chapter 9: Window and Session Manager Functions
+//
+
+(* ****** ****** *)
+
+// 9.1: Changing the parent of a window
+
+fun XReparentWindow {l:anz}
+  (dpy: !Display_ptr l, win: Window, parent: Window, x: int, y: int): void
+  = "#atsctrb_XReparentWindow"
+// end of [XReparentWindow]
+
+(* ****** ****** *)
+
+// 9.2: Controlling the Lifetime of a Window
+
+fun XChangeSaveSet {l:anz}
+  (dpy: !Display_ptr l, win: Window, mode: int): void
+  = "#atsctrb_XChangeSaveSet"
+// end of [atsctrb_XChangeSaveSet]
+
+fun XAddSaveSet {l:anz}
+  (dpy: !Display_ptr l, win: Window): void = "#atsctrb_XAddSaveSet"
+// end of [XAddSaveSet]
+
+fun XRemoveFromSaveSet {l:anz}
+  (dpy: !Display_ptr l, win: Window): void = "#atsctrb_XRemoveFromSaveSet"
+// end of [XRemoveFromSaveSet]
+
+(* ****** ****** *)
+
+// 9.3: Managing installed colormaps
+
+fun XInstallColormap {l:anz}
+  (dpy: !Display_ptr l, colormap: Colormap): void = "#atsctrb_XInstallColormap"
+// end of [XInstallColormap]
+
+fun XUninstallColormap {l:anz}
+  (dpy: !Display_ptr l, colormap: Colormap): void = "#atsctrb_XUninstallColormap"
+// end of [XUninstallColormap]
+
+fun XListInstalledColormaps {l:anz} (
+    dpy: !Display_ptr l, win: Window, nmap: &int? >> int n
+  ) : #[la:addr;n:nat] (
+    XFree_v (Colormap, n, la), @[Colormap][n] @ la | ptr la
+  ) = "#atsctrb_XListInstalledColormaps"
+// end of [XListInstalledColormaps]
+
+(* ****** ****** *)
+
+// 9.4: Setting and Retrieving the Fond Search Path
+
+(* ****** ****** *)
+
+// 9.5: Server Grabbing
+
+fun XGrabServer {l:anz}
+  (dpy: !Display_ptr l): void = "#atsctrb_XGrabServer"
+// end of [XGrabServer]
+
+fun XUngrabServer {l:anz}
+  (dpy: !Display_ptr l): void = "#atsctrb_XUngrabServer"
+// end of [XUngrabServer]
+
+(* ****** ****** *)
+
+// 9.6: Killing Clients
+
+fun XKillClient {l:anz}
+  (dpy: !Display_ptr l, resource: XID): void = "#atsctrb_XKillClient"
+// end of [XKillClient]
+
+(* ****** ****** *)
+
+// 9.7: Screen Saver Control
+
+fun XSetScreenSaver {l:anz} (
+    dpy: !Display_ptr l
+  , timeout: int, interval: int, prefer_blanking: int, allow_exposures: int
+  ) : void = "#atsctrb_XSetScreenSaver"
+// end of [XSetScreenSaver]
+
+fun XForceScreenSaver
+  {l:anz} (dpy: !Display_ptr l, mode: int): void = "#atsctrb_XForceScreenSaver"
+// end of [XForceScreenSaver]
+
+fun XActivateScreenSaver
+  {l:anz} (dpy: !Display_ptr l): void = "#atsctrb_XActivateScreenSaver"
+// end of [XActivateScreenSaver]
+
+fun XResetScreenSaver
+  {l:anz} (dpy: !Display_ptr l): void = "#atsctrb_XResetScreenSaver"
+// end of [XResetScreenSaver]
+
+fun XGetScreenSaver {l:anz} (
+    dpy: !Display_ptr l
+  , timeout: &int? >> int
+  , interval: &int? >> int
+  , prefer_blanking: &int? >> int
+  , allow_exposures: &int? >> int
+  ) : void = "#atsctrb_XGetScreenSaver"
+// end of [XGetScreenSaver]
+
+(* ****** ****** *)
+
+// 9.8: Controlling Host Access
+
+(* ****** ****** *)
+
+// 9.8.1: Adding, Getting or Removing Hosts
+
+typedef XHostAddress = $extype_struct "XHostAddress" of {
+  family= int
+, length= int
+, address= string
+} // end of [XHostAddress]
+
+fun XAddHost {l:anz}
+  (dpy: !Display_ptr l, host: &XHostAddress): void = "#atsctrb_XAddHost"
+// end of [XAddHost]
+
+fun XAddHosts {l:anz} {n:nat}
+  (dpy: !Display_ptr l, hosts: &(@[XHostAddress][n]), n: int n): void
+  = "#atsctrb_XAddHosts"
+// end of [XAddHosts]
+
+fun XListHosts {l:anz} (
+    dpy: !Display_ptr l, nhost: &int? >> int n, state: &Bool? >> Bool
+  ) : #[la:addr;n:nat] (
+    XFree_v (XHostAddress, n, la), @[XHostAddress][n] @ la | ptr la
+  ) = "#atsctrb_XListHosts"
+// end of [XListHosts]
+
+fun XRemoveHost {l:anz}
+  (dpy: !Display_ptr l, host: &XHostAddress): void
+  = "#atsctrb_XRemoveHost"
+// end of [XRemoveHost]
+
+fun XRemoveHosts {l:anz} {n:nat}
+  (dpy: !Display_ptr l, hosts: &(@[XHostAddress][n]), n: int n): void
+  = "#atsctrb_XRemoveHosts"
+// end of [XRemoveHosts]
+
+(* ****** ****** *)
+
+// 9.8.2: Changing, Enabling or Disabling Access Control
+
+fun XSetAccessControl {l:anz}
+  (dpy: !Display_ptr l, mode: int): void = "#atsctrb_XSetAccessControl"
+// end of [XSetAccessControl]
+
+fun XEnableAccessControl {l:anz}
+  (dpy: !Display_ptr l): void = "#atsctrb_XEnableAccessControl"
+// end of [XEnableAccessControl]
+
+fun XDisableAccessControl {l:anz}
+  (dpy: !Display_ptr l): void = "#atsctrb_XDisableAccessControl"
+// end of [XDisableAccessControl]
+
+(* ****** ****** *)
+
+//
+// Chapter 10: Events
+//
+
+
+(* ****** ****** *)
+
+//
+// Chapter 11: Event Handling Functions
 //
 
 (* ****** ****** *)

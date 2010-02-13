@@ -51,6 +51,7 @@ abst@ype Time = $extype "Time" // unsigned long int
 
 // [XID] is unsigned long int  
 
+abst@ype XID = $extype "XID"
 abst@ype Window = $extype "Window" // = XID
 abst@ype Font = $extype "Font" // = XID
 abst@ype Pixmap = $extype "Pixmap" // = XID
