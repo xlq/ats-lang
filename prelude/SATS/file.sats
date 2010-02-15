@@ -50,11 +50,9 @@
 (* ****** ****** *)
 
 %{#
-
 #include <sys/stat.h>
 #include "libc/CATS/stdio.cats"
-
-%}
+%} // end of [%{#]
 
 (* ****** ****** *)
 

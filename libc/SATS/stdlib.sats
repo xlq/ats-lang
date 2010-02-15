@@ -36,25 +36,21 @@
 (* ****** ****** *)
 
 %{#
-
 #include "libc/CATS/stdlib.cats"
-
-%}
+%} // end of [%{#]
 
 (* ****** ****** *)
 
 staload FCNTL = "libc/SATS/fcntl.sats" // for [mkstemp]
-
 stadef open_flag_rdwr = $FCNTL.open_flag_rdwr
-
 stadef open_v = $FCNTL.open_v
 
 (* ****** ****** *)
 
-fun atoi (s: string):<> int = "atslib_atoi"
-fun atof (s: string):<> double = "atslib_atof"
-fun atol (s: string):<> lint = "atslib_atol"
-fun atoll (s: string):<> llint = "atslib_atoll"
+fun atoi (s: string):<> int = "#atslib_atoi"
+fun atof (s: string):<> double = "#atslib_atof"
+fun atol (s: string):<> lint = "#atslib_atol"
+fun atoll (s: string):<> llint = "#atslib_atoll"
 
 (* ****** ****** *)
 
@@ -74,14 +70,18 @@ macdef EXIT_FAILURE = $extval (int, "EXIT_FAILURE")
 
 (* ****** ****** *)
 
-fun atexit_err (f: () -> void): int = "atslib_atexit_err"
-fun atexit_exn (f: () -> void): void = "atslib_atexit_exn"
+fun atexit_err (f: () -> void): int = "#atslib_atexit_err"
+fun atexit_exn (f: () -> void): void = "atslib_atexit_exn" // function
+
+(* ****** ****** *)
+
+fun system_err (cmd: string): int = "#atslib_system_err"
 
 (* ****** ****** *)
 
 fun mkstemp_err {m,n:nat}
   (buf: &strbuf (m, n)): [i: int] (open_v (i, open_flag_rdwr) | int i)
-  = "atslib_mkstemp_err"
+  = "#atslib_mkstemp_err" // macro
 // end of [mkstemp]
 
 (* ****** ****** *)
@@ -93,7 +93,7 @@ fun bsearch {a:viewt@ype} {n:nat} (
   , base: &(@[a][n]), nmemb: size_t n, size: sizeof_t a
   , compar: (&a, &a) -<fun> int
   ) :<> intBtw (~1, n)
-  = "atslib_bsearch"
+  = "atslib_bsearch" // function!
 
 (* ****** ****** *)
 
@@ -104,7 +104,7 @@ fun qsort {a:viewt@ype} {n:nat} (
   , nmemb: size_t n, size: sizeof_t a
   , compar: (&a, &a) -<fun> int
   ) :<> void
-  = "atslib_qsort"
+  = "#atslib_qsort" // macro
 
 (* ****** ****** *)
 

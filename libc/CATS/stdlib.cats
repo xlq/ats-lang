@@ -53,21 +53,10 @@ atspre_exit_prerrf(ats_int_type code, ats_ptr_type fmt, ...) ;
 
 /* ****** ****** */
 
-static inline
-ats_double_type
-atslib_atof(const ats_ptr_type s) { return atof(s) ; }
-
-static inline
-ats_int_type
-atslib_atoi(const ats_ptr_type s) { return atoi(s) ; }
-
-static inline
-ats_lint_type
-atslib_atol (const ats_ptr_type s) { return atol(s) ; }
-
-static inline
-ats_llint_type
-atslib_atoll (const ats_ptr_type s) { return atoll(s) ; }
+#define atslib_atoi atoi
+#define atslib_atof atof
+#define atslib_atol atol
+#define atslib_atoll atoll
 
 /* ****** ****** */
 
@@ -109,11 +98,7 @@ atslib_setenv_exn
 
 /* ****** ****** */
 
-static inline
-ats_int_type
-atslib_atexit_err (ats_ptr_type fcn) {
-  return atexit ((void(*)(void))fcn) ;
-} /* end of [atslib_atexit_err] */
+#define atslib_atexit_err atexit
 
 static inline
 ats_void_type
@@ -126,11 +111,11 @@ atslib_atexit_exn (ats_ptr_type fcn) {
 
 /* ****** ****** */
 
-static inline
-ats_int_type
-atslib_mkstemp (ats_ptr_type template) {
-  return mkstemp ((char*)template) ; // may not set errno on error
-} /* end of [atslib_mkstemp] */
+#define atslib_system_err system
+
+/* ****** ****** */
+
+#define atslib_mkstemp mkstemp
 
 /* ****** ****** */
 
@@ -146,20 +131,12 @@ atslib_bsearch (
     key, base, nmemb, size, (int(*)(const void*, const void*))compar
   ) ; // end of [bsearch]
   if (!p) return -1 ;
-  return ((char *)p - (char *)base) / size ;
+  return ((char*)p - (char*)base) / size ;
 } /* end of [atslib_bsearch] */
 
-static inline
-ats_void_type
-atslib_qsort (
-  ats_ref_type base,
-  ats_size_type nmemb,
-  ats_size_type size,
-  ats_ptr_type compar
-) {
-  qsort(base, nmemb, size, (int(*)(const void*, const void*))compar) ;
-  return ;
-} /* end of [atslib_qsort] */
+/* ****** ****** */
+
+#define atslib_qsort qsort
 
 /* ****** ****** */
 

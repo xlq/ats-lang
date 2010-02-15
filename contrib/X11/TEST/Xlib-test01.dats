@@ -1,6 +1,6 @@
 (*
 **
-** A simple Xlib example
+** A simple example for testing some Xlib functions
 **
 ** Author: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
 ** Time: January, 2010
@@ -15,7 +15,7 @@ staload "contrib/X11/SATS/Xlib.sats"
 (* ****** ****** *)
 
 implement main () = () where {
-  val dpy = XOpenDisplay ("localhost:10.0")
+  val dpy = XOpenDisplay (stropt_none)
   val () = assert_errmsg (Display_ptr_isnot_null dpy, #LOCATION)
   val bpxl = XBlackPixel (dpy, 0)
   val () = (print "bpxl = "; print bpxl; print_newline ())

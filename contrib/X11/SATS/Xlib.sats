@@ -89,7 +89,7 @@ abstype GCref = $extype "GC" // this one should never be freed!
 
 (* ****** ****** *)
 
-fun XOpenDisplay (name: string): Display_ptr0 = "#atsctrb_XOpenDisplay"
+fun XOpenDisplay (name: Stropt): Display_ptr0 = "#atsctrb_XOpenDisplay"
 
 fun Display_ptr_is_null {l:addr} (p_dpy: !Display_ptr l): bool (l == null)
   = "atspre_ptr_is_null" // defined in $ATSHOME/prelude/CATS/pointer.cats
@@ -1207,6 +1207,139 @@ fun XDisableAccessControl {l:anz}
 // Chapter 10: Events
 //
 
+(* ****** ****** *)
+
+abst@ype XEvent_rest // unknown quantity
+
+typedef XEvent =
+  $extype_struct "XEvent" of {
+  type= EventType_t // the type of the event
+, _rest= XEvent_rest // this field is abstract and cannot be accessed
+} // end of [XEvent]
+
+propdef XEvent_castfn_t (a:t@ype) = {l:addr}
+  (XEvent @ l) -<prf> (a @ l, a @ l -<lin,prf> XEvent @ l)
+// end of [XEvent_castfn_t]
+
+(* ****** ****** *)
+
+// 10.2: Event Structures
+
+typedef XAnyEvent = $extype_struct "XAnyEvent" of {
+  type= EventType_t
+, serial = ulint // # of last request processed by server
+, send_event= Bool // true if this comes from a SendEvent request
+/*
+, display= Display_ptr0 // Display the event was read freom
+*/
+, window= Window
+} // end of [XAnyEvent]
+
+praxi XEvent_xany_castn : XEvent_castfn_t (XAnyEvent)
+
+(* ****** ****** *)
+
+// 10.5: Keyboard and Pointer Events
+
+(* ****** ****** *)
+
+typedef XKeyEvent = $extype_struct "XKeyEvent" of {
+  type= EventType_t
+, serial= ulint
+, send_event= Bool
+/*
+, display= Display_ptr0 // Display the event was read freom
+*/
+, window= Window
+// individual section
+, root= Window
+, subwindow= Window
+/*
+, time= Time
+*/
+, x= int, y= int
+, x_root= int, y_root= int
+, state= uint
+, keycode= uint
+, same_screen= Bool  
+} // end of [XKeyEvent]
+
+praxi XEvent_xkey_castn : XEvent_castfn_t (XKeyEvent)
+
+//
+
+typedef XKeyPressedEvent = XKeyEvent
+typedef XKeyReleasedEvent = XKeyEvent
+
+//
+
+typedef XButtonEvent = $extype_struct "XButtonEvent" of {
+  type= EventType_t
+, serial= ulint
+, send_event= Bool
+/*
+, display= Display_ptr0 // Display the event was read freom
+*/
+, window= Window
+// individual section
+, root= Window
+, subwindow= Window
+/*
+, time= Time
+*/
+, x= int, y= int
+, x_root= int, y_root= int
+, state= uint
+, button= uint
+, same_screen= Bool
+} // end of [XButtonEvent]
+
+praxi XEvent_xbutton_castn : XEvent_castfn_t (XButtonEvent)
+
+//
+
+typedef XMotionEvent = $extype_struct "XMotionEvent" of {
+  type= EventType_t
+, serial= ulint
+, send_event= Bool
+/*
+, display= Display_ptr0 // Display the event was read freom
+*/
+, window= Window
+// individual section
+, root= Window
+, subwindow= Window
+/*
+, time= Time
+*/
+, x= int, y= int
+, x_root= int, y_root= int
+, state= uint
+, in_hint= char
+, same_screen= Bool  
+} // end of [XMotionEvent]
+
+praxi XEvent_xmotion_castn : XEvent_castfn_t (XMotionEvent)
+
+(* ****** ****** *)
+
+// 10.6: Window Entry/Exit Events
+
+(* ****** ****** *)
+
+// 10.7: Input Focus Events
+
+(* ****** ****** *)
+
+// 10.8: Key Map State Notification Events
+
+(* ****** ****** *)
+
+// 10.9: Exposure Events
+
+(* ****** ****** *)
+
+// 10.10: Window State Change Events
 
 (* ****** ****** *)
 
@@ -1219,8 +1352,9 @@ fun XDisableAccessControl {l:anz}
 // 11.1: selecting events
 
 fun XSelectInput {l:anz}
-  (dpy: !Display_ptr l, win: Window, eventmask: lint): void
+  (dpy: !Display_ptr l, win: Window, eventmask: InputEventMask_t): void
   = "#atsctrb_XSelectInput"
+// end of [XSelectInput]
 
 (* ****** ****** *)
 
@@ -1228,9 +1362,224 @@ fun XSelectInput {l:anz}
 
 fun XFlush {l:anz} (dpy: !Display_ptr l): void
   = "#atsctrb_XFlush"
+// end of [XFlush]
 
 fun XSync {l:anz} (dpy: !Display_ptr l, discard: bool): void
   = "#atsctrb_XSync"
+// end of [XSync]
+
+(* ****** ****** *)
+
+// 11.3: Event Queue Management
+
+fun XEventsQueued {l:anz} (dpy: Display_ptr l, mode: int): int
+  = "#atsctrb_XEventsQueued"
+// end of [XEventsQueued]
+
+fun XPending {l:anz} (dpy: Display_ptr l): int = "#atsctrb_XPending"
+
+(* ****** ****** *)
+
+// 11.4: manipulating the event queue
+
+(* ****** ****** *)
+
+// 11.4.1: returning the next event
+
+fun XNextEvent {l:anz}
+  (dpy: !Display_ptr l, event: &XEvent? >> XEvent): void = "#atsctrb_XNextEvent"
+// end of [XNextEvent]
+
+fun XPeekEvent {l:anz}
+  (dpy: !Display_ptr l, event: &XEvent? >> XEvent): void = "#atsctrb_XPeekEvent"
+// end of [XPeekEvent]
+
+(* ****** ****** *)
+
+//
+// Chapter 14: Inter-client communication functions
+//
+
+// source: "X11/Xutil.h"
+
+(* ****** ****** *)
+
+// 14.1: Client to Window Manage Communication
+
+typedef XTextProperty =
+  $extype_struct "XTextProperty" of {
+  value= ptr // property data
+, encoding= Atom // type of property
+, format= int // 8, 16, or 32
+, nitems= ulint // number of items in value
+} // end of [XTextProperty]
+
+(* ****** ****** *)
+
+abst@ype XICCEncodingStyle = $extype "XICCEncodingStyle"
+
+macdef XStringStyle = $extval (XICCEncodingStyle, "XStringStyle")
+macdef XCompoundTextStyle = $extval (XICCEncodingStyle, "XCompoundTextStyle")
+macdef XTextStyle = $extval (XICCEncodingStyle, "XTextStyle")
+macdef XStdICCTextStyle = $extval (XICCEncodingStyle, "XStdICCTextStyle")
+
+(* ****** ****** *)
+
+// 14.1.6: Setting and Reading the WM_HINTS Property
+
+macdef InputHint = $extval (lint, "InputHint")
+macdef StateHint = $extval (lint, "StateHint")
+macdef IconPixmapHint = $extval (lint, "IconPixmapHint")
+macdef IconWindowHint = $extval (lint, "IconWindowHint")
+macdef IconPositionHint = $extval (lint, "IconPositionHint")
+macdef IconMaskHint = $extval (lint, "IconMaskHint")
+macdef WindowGroupHint = $extval (lint, "WindowGroupHint")
+macdef AllHints = $extval (lint, "AllHints")
+macdef XUrgencyHint = $extval (lint, "XUrgencyHint")
+
+typedef XWMHints =
+  $extype_struct "XWHints" of {
+  flags= lint // marks which fields in this structure are defined
+, input= Bool // does this application rely on the window manager to get keyword input?
+, initial_state= int // see below
+, icon_pixmap= Pixmap // pixmap to be used as icon
+, icon_window= Window // window to be used as icon
+, icon_x= int, icon_y= int // initial position of icon
+, icon_mask= Pixmap // pixmap to be used as mask for icon_pixmap
+, window_group= XID // id of related window group // may be extended in the future
+} // end of [XWMHints]
+
+fun XAllocWMHints ()
+  : [l:addr] (XFree_v (XWMHints, l), ptropt_v (XWMHints?, l) | ptr l)
+  = "#atsctrb_XAllocWMHints"
+// end of [XAllocWMHints]
+
+fun XSetWNHints {l:addr}
+  (dpy: !Display_ptr l, win: Window, wmhints: &XWMHints): void
+  = "#atsctrb_XSetWNHints"
+// end of [XSetWNHints]
+
+fun XGetWNHints {l:addr}
+  (dpy: !Display_ptr l, win: Window)
+  : [l:addr] (XFree_v (XWMHints, l), ptropt_v (XWMHints, l) | ptr l)
+  = "#atsctrb_XGetWNHints"
+// end of [XGetWNHints]
+
+(* ****** ****** *)
+
+// 14.1.7: Setting and Reading the WM_NORMAL Property
+
+typedef XSizeHints_aspect =
+  $extype_struct "XSizeHints_aspect" of { x= int, y= int }
+// end of [XSizeHints_aspect]
+
+macdef USPosition = $extval (lint, "USPosition")
+macdef USSize = $extval (lint, "USSize")
+macdef PPosition = $extval (lint, "PPosition")
+macdef PSize = $extval (lint, "PSize")
+macdef PMinSize = $extval (lint, "PMinSize")
+macdef PMaxSize = $extval (lint, "PMaxSize")
+macdef PResizeInc = $extval (lint, "PResizeInc")
+macdef PAspect = $extval (lint, "PAspect")
+macdef PBaseSize = $extval (lint, "PBaseSize")
+macdef PWinGravity = $extval (lint, "PWinGravity")
+
+typedef XSizeHints =
+  $extype_struct "XSizeHints" of {
+  flags= lint
+, x= int, y= int
+, width= int, height= int
+, min_width= int, min_height= int
+, max_width= int, max_height= int
+, width_inc= int, height_inc= int
+, min_aspect= XSizeHints_aspect, max_aspect= XSizeHints_aspect
+, base_width= int, base_height= int
+, win_gravity= int
+} // end of [XSizeHints]
+
+fun XAllocSizeHints ()
+  : [l:addr] (XFree_v (XSizeHints, l), ptropt_v (XSizeHints?, l) | ptr l)
+  = "#atsctrb_XAllocSizeHints"
+// end of [XAllocSizeHints]
+
+//
+
+fun XSetWMNormalHints {l:anz}
+  (dpy: !Display_ptr l, win: Window, hints: &XSizeHints): void
+  = "#atsctrb_XSetWMNormalHints"
+// end of [XSetWMNormalHints]
+
+fun XGetWMNormalHints {l:anz} (
+    dpy: !Display_ptr l, win: Window
+  , hints: &XSizeHints? >> XSizeHints, supplied: &lint? >> lint
+  ) : Status
+  = "#atsctrb_XGetWMNormalHints"
+// end of [XGetWMNormalHints]
+
+//
+
+fun XSetWMSizeHints {l:anz}
+  (dpy: !Display_ptr l, win: Window, hints: &XSizeHints, property: Atom): void
+  = "#atsctrb_XSetWMSizeHints"
+// end of [XSetWMSizeHints]
+
+fun XGetWMSizeHints {l:anz} (
+    dpy: !Display_ptr l, win: Window
+  , hints: &XSizeHints? >> XSizeHints, supplied: &lint? >> lint, property: Atom
+  ) : Status
+  = "#atsctrb_XGetWMSizeHints"
+// end of [XGetWMSizeHints]
+
+(* ****** ****** *)
+
+// 14.1.8: Setting and Reading the WM_CLASS Property
+
+typedef XClassHint = $extype_struct "XClassHint" of {
+  res_name= string
+, res_class= string
+} // end of [XClassHint]
+
+fun XAllocClassHint ()
+  : [l:addr] (XFree_v (XClassHint, l), ptropt_v (XClassHint?, l) | ptr l)
+  = "#atsctrb_XAllocClassHint"
+// end of [XAllocClassHint]
+
+fun XSetClassHint {l:anz}
+  (dpy: !Display_ptr l, win: Window, class_hint: XClassHint): void
+  = "#atsctrb_XSetClassHint"
+
+fun XGetClassHint {l:anz}
+  (dpy: !Display_ptr l, win: Window, class_hint: &XClassHint? >> XClassHint): Status
+  = "#atsctrb_XGetClassHint"
+
+(* ****** ****** *)
+
+//
+// Chapter 16: Application Unitility Functions
+//
+
+(* ****** ****** *)
+
+// 16.9: Manipulating Bitmaps
+
+fun XCreatePixmapFromBitmapData {l:anz} (
+    dpy: !Display_ptr l
+  , drw: Drawable, data: ptr(*chars*)
+  , width: uint, height: uint, fg: ulint, bg: ulint, depth: uint
+  ) : Pixmap
+  = "#atsctrb_XCreatePixmapFromBitmapData"
+// end of [XCreatePixmapFromBitmapData]
+
+fun XCreateBitmapFromData {l:anz} (
+    dpy: !Display_ptr l
+  , drw: Drawable, data: ptr(*chars*), width: uint, height: uint
+  ) : Pixmap
+  = "#atsctrb_XCreateBitmapFromData"
+// end of [XCreateBitmapFromData]
+
+(* ****** ****** *)
+
+// 16.10: Using the Context Manager
 
 (* ****** ****** *)
 

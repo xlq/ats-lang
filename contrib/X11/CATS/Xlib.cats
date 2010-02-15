@@ -42,6 +42,7 @@
 /* ****** ****** */
 
 #include "X11/Xlib.h"
+#include "X11/Xutil.h"
 
 /* ****** ****** */
 
@@ -274,6 +275,34 @@
 #define atsctrb_XSelectInput XSelectInput
 #define atsctrb_XFlush XFlush
 #define atsctrb_XSync XSync
+
+/* ****** ****** */
+
+//
+// Chapter 14: Inter-client communication functions
+//
+
+/* ****** ****** */
+
+#define atsctrb_XAllocWMHints XAllocWMHints
+#define atsctrb_XAllocSizeHints XAllocSizeHints
+#define atsctrb_XAllocClassHint XAllocClassHint
+
+#define atsctrb_XEventsQueued XEventsQueued
+#define atsctrb_XPending XPending
+
+#define atsctrb_XNextEvent XNextEvent
+#define atsctrb_XPeekEvent XPeekEvent
+
+/* ****** ****** */
+
+//
+// Chapter 16: Application Unitility Functions
+//
+
+/* ****** ****** */
+
+#define atsctrb_XCreateBitmapFromData XCreateBitmapFromData
 
 /* ****** ****** */
 

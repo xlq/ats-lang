@@ -37,8 +37,13 @@
 
 //
 // HX-2010-02-06:
+//
 // infinite precision integers based on the gmp package; the primary purpose
-// of [intinf] is for doing quick demo involving large numbers.
+// of [intinf] is for doing quick demo involving large numbers. If you need
+// full-fledged support for large numbers, please use the API for GMP in ATS
+// directly:
+//
+// $ATSHOME/libc/SATS/gmp.sats
 //
 
 (* ****** ****** *)
@@ -167,7 +172,8 @@ overload / with fdiv_intinf_int
 //
 // fmod: floor division: round toward -infinity
 //
-fun fmod_intinf_int {m,n:int | n > 0} (m: &intinf m, n: int n)
+fun fmod_intinf_int
+  {m,n:int | n > 0} (m: &intinf m, n: int n)
   : [q,r:int | 0 <= r; r < n] (MUL (q, n, m-r) | int r)
 overload mod with fmod_intinf_int
 
