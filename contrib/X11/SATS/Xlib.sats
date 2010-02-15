@@ -1372,10 +1372,15 @@ fun XSync {l:anz} (dpy: !Display_ptr l, discard: bool): void
 
 // 11.3: Event Queue Management
 
+macdef QueuedAlready = $extval (int, "QueuedAlready")
+macdef QueuedAfterReading = $extval (int, "QueuedAfterReading")
+macdef QueuedAfterFlush = $extval (int, "QueuedAfterFlush")
+
 fun XEventsQueued {l:anz} (dpy: Display_ptr l, mode: int): int
   = "#atsctrb_XEventsQueued"
 // end of [XEventsQueued]
 
+// this one is equivalent to XEventsQueued (QueuedAfterFlush)
 fun XPending {l:anz} (dpy: Display_ptr l): int = "#atsctrb_XPending"
 
 (* ****** ****** *)

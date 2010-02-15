@@ -61,11 +61,12 @@ extern fun fputc_exn {m:file_mode}
   (pf: file_mode_lte (m, w) | c: char, f: &FILE m): void
   = "atslib_fputc_exn"
 
+//
 // staload "libc/SATS/stdlib.sats"
-
+//
 extern fun qsort {a:viewt@ype} {n:nat} {f:eff} (
   base: &(@[a][n]), nmemb: size_t n, size: sizeof_t a, compar: (&a, &a) -<f> int
-) : void = "atslib_qsort"
+) : void = "#atslib_qsort"
 
 (* ****** ****** *)
 

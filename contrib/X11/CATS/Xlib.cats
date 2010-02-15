@@ -302,6 +302,7 @@
 
 /* ****** ****** */
 
+#define atsctrb_XCreatePixmapFromBitmapData XCreatePixmapFromBitmapData
 #define atsctrb_XCreateBitmapFromData XCreateBitmapFromData
 
 /* ****** ****** */
