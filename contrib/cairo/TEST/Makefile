@@ -65,8 +65,7 @@ test8: cairo-test8.dats
 
 test9: cairo-test9.dats
 	$(ATSCC) -o test9 `pkg-config --cflags --libs cairo` $(ATSCTRB) \
-          cairo-test9.dats -lX11 \
-     && ./test9
+          cairo-test9.dats -lX11
 
 test10: cairo-test10.dats
 	$(ATSCC) -o test10 `pkg-config --cflags --libs cairo` $(ATSCTRB) \

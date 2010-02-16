@@ -1636,16 +1636,19 @@ fun cairo_xlib_surface_create {l1,l2:anz} (
   , drw: Drawable, visual: !Visual_ptr l2, width: int, height: int
   ) : cairo_surface_ref
   = "#atsctrb_cairo_xlib_surface_create"
+// end of [cairo_xlib_surface_create]
   
 fun cairo_xlib_surface_create_for_bitmap {l1,l2:anz} (
     dpy: !Display_ptr l1
   , bitmap: Pixmap, scr: !Screen_ptr l2, width: int, height: int
   ) : cairo_surface_ref
   = "#atsctrb_cairo_xlib_surface_create_for_bitmap"
+// end of [cairo_xlib_surface_create_for_bitmap]
 
 fun cairo_xlib_surface_set_size {l:addr}
   (surface: !cairo_surface_ref l, width: int, height: int): void
   = "#atsctrb_cairo_xlib_surface_set_size"
+// end of [cairo_xlib_surface_set_size]
 
 fun cairo_xlib_surface_set_drawable {l:addr} (
     surface: !cairo_surface_ref l, drw: Drawable, width: int, height: int
@@ -1681,14 +1684,17 @@ fun cairo_xlib_surface_get_visual
 fun cairo_xlib_surface_get_width
   {l:addr} (surface: !cairo_surface_ref l): int
   = "#atsctrb_cairo_xlib_surface_get_width"
+// end of [cairo_xlib_surface_get_width]
 
 fun cairo_xlib_surface_get_height
   {l:addr} (surface: !cairo_surface_ref l): int
   = "#atsctrb_cairo_xlib_surface_get_height"
+// end of [cairo_xlib_surface_get_height]
 
 fun cairo_xlib_surface_get_depth
   {l:addr} (surface: !cairo_surface_ref l): int
   = "#atsctrb_cairo_xlib_surface_get_depth"
+// end of [cairo_xlib_surface_get_depth]
 
 (* ****** ****** *)
 

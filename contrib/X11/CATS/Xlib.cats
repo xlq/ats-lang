@@ -231,6 +231,24 @@
 
 #define atsctrb_XClearArea XClearArea
 #define atsctrb_XClearWindow XClearWindow
+#define atsctrb_XCopyArea XCopyArea
+#define atsctrb_XCopyPlane XCopyPlane
+
+#define atsctrb_XDrawPoint XDrawPoint
+#define atsctrb_XDrawPoints XDrawPoints
+#define atsctrb_XDrawLine XDrawLine
+#define atsctrb_XDrawLines XDrawLines
+#define atsctrb_XDrawSegments XDrawSegments
+#define atsctrb_XDrawRectangle XDrawRectangle
+#define atsctrb_XDrawRectangles XDrawRectangles
+#define atsctrb_XDrawArc XDrawArc
+#define atsctrb_XDrawArcs XDrawArcs
+
+#define atsctrb_XFillRectangle XFillRectangle
+#define atsctrb_XFillRectangles XFillRectangles
+#define atsctrb_XFillPolygon XFillPolygon
+#define atsctrb_XFillArc XFillArc
+#define atsctrb_XFillArcs XFillArcs
 
 /* ****** ****** */
 

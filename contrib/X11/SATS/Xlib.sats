@@ -454,9 +454,9 @@ fun XCreateSimpleWindow {ld:anz} (
   , parent: Window
   , x: int, y: int
   , width: uint, height: uint
-  , border_width: uint
-  , border: ulint
-  , background: ulint
+  , border_width: uint // in pixels
+  , border: ulint // border pixel value
+  , background: ulint // background pixel value
   ) : Window
   = "#atsctrb_XCreateSimpleWindow"
 // end of [XCreateSimpleWindow]
@@ -1038,6 +1038,176 @@ fun XClearArea {l:anz} (
 fun XClearWindow {l:anz} (dsp: !Display_ptr l, win: Window) : void
   = "#atsctrb_XClearWindow"
 // end of [XClearWindow]
+
+(* ****** ****** *)
+
+// 8.2: Copying Areas
+
+fun XCopyArea
+  {l1:anz} {l2:addr} (
+    dpy: !Display_ptr l1
+  , src: Drawable, dst: Drawable
+  , gc: GCptr l2
+  , x_src: int, y_src: int
+  , width: uint, height: uint
+  , x_dst: int, y_dst: int
+  ) : void
+  = "#atsctrb_XCopyArea"
+
+fun XCopyPlane
+  {l1:anz} {l2:addr} (
+    dpy: !Display_ptr l1
+  , src: Drawable, dst: Drawable
+  , gc: GCptr l2
+  , x_src: int, y_src: int
+  , width: uint, height: uint
+  , x_dst: int, y_dst: int
+  , plane: ulint // set exactly one-bit to 1
+  ) : void
+  = "#atsctrb_XCopyPlane"
+
+(* ****** ****** *)
+
+// 8.3: Drawing Points, Lines, Rectangles and Arcs
+
+typedef XSegment =
+  $extype_struct "XSegment" of {
+  x1= sint, y1= sint, x2= sint, y2= sint
+} // end of [XSegment]
+
+typedef XPoint =
+  $extype_struct "XPoint" of { x= sint, y= sint }
+// end of [XPoint]
+
+typedef XRectangle =
+  $extype_struct "XRectangle" of {
+  x= sint, y= sint, width= usint, height= usint
+} // end of [XRectangle]
+
+typedef XArc =
+  $extype_struct "XArc" of {
+  x= sint, y= sint
+, width= usint, height= usint
+, angle1= sint, angle2= sint // uint: 1/64 degree
+} // end of [XArc]
+
+(* ****** ****** *)
+
+// 8.3.1: Drawing Single and Multiple Points
+
+fun XDrawPoint {l1:anz} {l2:addr} (
+    dpy: !Display_ptr l1, drw: Drawable, gc: GCptr l2, x: int, y: int
+  ) : void = "#atsctrb_XDrawPoint"
+// end of [XDrawPoint]
+
+fun XDrawPoints {l1:anz} {l2:addr} {n:nat} (
+    dpy: !Display_ptr l1
+  , drw: Drawable, gc: GCptr l2, points: &(@[XPoint][n]), n: int n, mode: int
+  ) : void = "#atsctrb_XDrawPoints"
+// end of [XDrawPoints]
+
+(* ****** ****** *)
+
+// 8.3.2: Drawing Single and Multiple Lines
+
+fun XDrawLine {l1:anz} {l2:addr} (
+    dpy: !Display_ptr l1
+  , drw: Drawable, gc: GCptr l2, x1: int, y1: int, x2: int, y2: int
+  ) : void = "#atsctrb_XDrawLine"
+// end of [XDrawLine]
+
+fun XDrawLines {l1:anz} {l2:addr} {n:nat} (
+    dpy: !Display_ptr l1
+  , drw: Drawable, gc: GCptr l2, points: &(@[XPoint][n]), n: int n, mode: int
+  ) : void = "#atsctrb_XDrawLines"
+// end of [XDrawLines]
+
+fun XDrawSegments {l1:anz} {l2:addr} {n:nat} (
+    dpy: !Display_ptr l1
+  , drw: Drawable, gc: GCptr l2, segments: &(@[XSegment][n]), n: int n
+  ) : void = "#atsctrb_XDrawSegments"
+// end of [XDrawSegments]
+
+(* ****** ****** *)
+
+// 8.3.3: Drawing Single and Multiple Rectangles
+
+fun XDrawRectangle {l1:anz} {l2:addr} (
+    dpy: !Display_ptr l1
+  , drw: Drawable, gc: GCptr l2, x: int, y: int, width: uint, height: uint
+  ) : void = "#atsctrb_XDrawRectangle"
+// end of [XDrawRectangle]
+
+fun XDrawRectangles {l1:anz} {l2:addr} {n:nat} (
+    dpy: !Display_ptr l1
+  , drw: Drawable, gc: GCptr l2, rectangles: &(@[XRectangle][n]), n: int n
+  ) : void = "#atsctrb_XDrawRectangles"
+// end of [XDrawRectangles]
+
+(* ****** ****** *)
+
+// 8.3.4: Drawing Single and Multiple Arcs
+
+fun XDrawArc {l1:anz} {l2:addr} (
+    dpy: !Display_ptr l1
+  , drw: Drawable, gc: GCptr l2
+  , x: int, y: int, width: uint, height: uint, angle1: int, angle2: int
+  ) : void = "#atsctrb_XDrawArc"
+// end of [XDrawArc]
+
+fun XDrawArcs {l1:anz} {l2:addr} {n:nat} (
+    dpy: !Display_ptr l1
+  , drw: Drawable, gc: GCptr l2, arcs: &(@[XArc][n]), n: int n
+  ) : void = "#atsctrb_XDrawArcs"
+// end of [XDrawArcs]
+
+(* ****** ****** *)
+
+// 8.4: Filling Areas
+
+(* ****** ****** *)
+
+// 8.4.1: Filling Single and Multiple Rectangles
+
+fun XFillRectangle {l1:anz} {l2:addr} (
+    dpy: !Display_ptr l1
+  , drw: Drawable, gc: GCptr l2, x: int, y: int, width: uint, height: uint
+  ) : void = "#atsctrb_XFillRectangle"
+// end of [XFillRectangle]
+
+fun XFillRectangles {l1:anz} {l2:addr} {n:nat} (
+    dpy: !Display_ptr l1
+  , drw: Drawable, gc: GCptr l2, rectangles: &(@[XRectangle][n]), n: int n
+  ) : void = "#atsctrb_XFillRectangles"
+// end of [XFillRectangles]
+
+(* ****** ****** *)
+
+// 8.4.2: Filling a Single Polygon
+
+fun XFillPolygon {l1:anz} {l2:addr} {n:nat} (
+    dpy: !Display_ptr l1
+  , drw: Drawable, gc: GCptr l2, points: &(@[XPoint][n]), n: int n
+  , shape: int, mode: int
+  ) : void = "#atsctrb_XFillPolygon"
+// end of [XFillPolygon]
+
+(* ****** ****** *)
+
+// 8.4.3: Filling Single and Multiple Arcs
+
+fun XFillArc {l1:anz} {l2:addr} (
+    dpy: !Display_ptr l1
+  , drw: Drawable, gc: GCptr l2
+  , x: int, y: int, width: uint, height: uint, angle1: int, angle2: int
+  ) : void = "#atsctrb_XFillArc"
+// end of [XFillArc]
+
+fun XFillArcs {l1:anz} {l2:addr} {n:nat} (
+    dpy: !Display_ptr l1
+  , drw: Drawable, gc: GCptr l2, arcs: &(@[XArc][n]), n: int n
+  ) : void = "#atsctrb_XFillArcs"
+// end of [XFillArcs]
 
 (* ****** ****** *)
 

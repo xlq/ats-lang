@@ -132,11 +132,46 @@ fun draw_rings
 
 (* ****** ****** *)
 
+staload "contrib/X11/SATS/X.sats"
+staload "contrib/X11/SATS/Xlib.sats"
+
+(* ****** ****** *)
+
+symintr uint
+overload uint with uint_of_int // no-op casting
+
+(* ****** ****** *)
+
 implement main () = () where {
   val wd = 512 and ht = 512
   val margin = 10
+(*
   val surface = cairo_image_surface_create
     (CAIRO_FORMAT_ARGB32, wd+margin, ht+margin)
+*)
+//
+  val [l_dpy:addr] dpy = XOpenDisplay (stropt_none)
+  val () = assert_errmsg (Display_ptr_isnot_null dpy, #LOCATION)
+//
+  val screen_num = XDefaultScreen (dpy)
+//
+  val mywin = XCreateSimpleWindow (
+    dpy, parent, x, y, width, height, border_width, w_pix, b_pix
+  ) where {
+    val parent = XRootWindow (dpy, screen_num)
+    val x = 0 and y = 0
+    val width = (uint)wd and height = (uint)ht
+    val border_width = (uint)4
+    val w_pix = XWhitePixel (dpy, screen_num)
+    val b_pix = XBlackPixel (dpy, screen_num)
+  }
+//
+  val (pf_minus | visual) = XDefaultVisual (dpy, screen_num)
+  val surface = cairo_xlib_surface_create (dpy, (Drawable)mywin, visual, wd, ht)
+  prval () = minus_addback (pf_minus, visual | dpy)
+//
+  val () = XMapWindow(dpy, mywin)
+//
   val cr = cairo_create (surface)
   val wd = double_of wd and ht = double_of ht
   val margin = double_of margin
@@ -171,15 +206,34 @@ implement main () = () where {
     ) // end of [for]
   ) // end of [val]
 //
+  val () = XSelectInput (dpy, mywin, flag) where {
+    val flag = ExposureMask lor KeyPressMask lor ButtonPressMask lor StructureNotifyMask
+  } // end of [val]
+//
+  var report: XEvent? // uninitialized
+  val () = while (true) let
+    val () = XNextEvent (dpy, report)
+    val type = report.type
+  in
+    case+ 0 of
+    | _ when (type = KeyPress) => (break)
+    | _ => () // ignored
+  end // end of [val]
+//
+(*
   val status = cairo_surface_write_to_png (surface, "cairo-test9.png")
+*)
   val () = cairo_surface_destroy (surface)
   val () = cairo_destroy (cr)
+  val () = XCloseDisplay (dpy)
 //
+(*
   val () = if status = CAIRO_STATUS_SUCCESS then begin
     print "The image is written to the file [cairo-test9.png].\n"
   end else begin
     print "exit(ATS): [cairo_surface_write_to_png] failed"; print_newline ()
   end // end of [if]
+*)
 } // end of [main]
 
 (* ****** ****** *)
