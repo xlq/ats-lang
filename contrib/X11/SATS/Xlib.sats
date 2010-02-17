@@ -1497,9 +1497,9 @@ typedef XEvent =
 , _rest= XEvent_rest // this field is abstract and cannot be accessed
 } // end of [XEvent]
 
-propdef XEvent_castfn_t (a:t@ype) = {l:addr}
+propdef XEvent_castdn_t (a:t@ype) = {l:addr}
   (XEvent @ l) -<prf> (a @ l, a @ l -<lin,prf> XEvent @ l)
-// end of [XEvent_castfn_t]
+// end of [XEvent_castdn_t]
 
 (* ****** ****** *)
 
@@ -1515,7 +1515,7 @@ typedef XAnyEvent = $extype_struct "XAnyEvent" of {
 , window= Window
 } // end of [XAnyEvent]
 
-praxi XEvent_xany_castn : XEvent_castfn_t (XAnyEvent)
+praxi XEvent_xany_castdn : XEvent_castdn_t (XAnyEvent)
 
 (* ****** ****** *)
 
@@ -1544,7 +1544,7 @@ typedef XKeyEvent = $extype_struct "XKeyEvent" of {
 , same_screen= Bool  
 } // end of [XKeyEvent]
 
-praxi XEvent_xkey_castn : XEvent_castfn_t (XKeyEvent)
+praxi XEvent_xkey_castdn : XEvent_castdn_t (XKeyEvent)
 
 //
 
@@ -1574,7 +1574,7 @@ typedef XButtonEvent = $extype_struct "XButtonEvent" of {
 , same_screen= Bool
 } // end of [XButtonEvent]
 
-praxi XEvent_xbutton_castn : XEvent_castfn_t (XButtonEvent)
+praxi XEvent_xbutton_castdn : XEvent_castdn_t (XButtonEvent)
 
 //
 
@@ -1599,7 +1599,7 @@ typedef XMotionEvent = $extype_struct "XMotionEvent" of {
 , same_screen= Bool  
 } // end of [XMotionEvent]
 
-praxi XEvent_xmotion_castn : XEvent_castfn_t (XMotionEvent)
+praxi XEvent_xmotion_castdn : XEvent_castdn_t (XMotionEvent)
 
 (* ****** ****** *)
 
@@ -1631,7 +1631,7 @@ typedef XExposeEvent = $extype_struct "XExposeEvent" of {
 , count= int  
 } // end of [XExposeEvent]
 
-praxi XEvent_xexpose_castn : XEvent_castfn_t (XExposeEvent)
+praxi XEvent_xexpose_castdn : XEvent_castdn_t (XExposeEvent)
 
 (* ****** ****** *)
 
@@ -1655,7 +1655,7 @@ typedef XCirculateEvent =
 , place= int  
 } // end of [XCirculateEvent]
 
-praxi XEvent_xcirculate_castn : XEvent_castfn_t (XCirculateEvent)
+praxi XEvent_xcirculate_castdn : XEvent_castdn_t (XCirculateEvent)
 
 (* ****** ****** *)
 

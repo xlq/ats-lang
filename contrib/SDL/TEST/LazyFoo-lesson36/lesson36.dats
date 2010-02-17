@@ -52,7 +52,7 @@ end // end of [Square_init]
 
 fn Square_handle_input
   (obj: &Square, event: &SDL_Event): void = let
-  val _type = SDL_Event_type event
+  val _type = event.type
 in
   case+ 0 of
   | _ when _type = SDL_KEYDOWN => let
@@ -161,7 +161,7 @@ implement main () = () where {
       in
         if (_type = SDL_QUIT) then quit := true
       end else let
-        prval () = opt_unnone (event) in break
+        prval () = opt_unnone {SDL_Event} (event) in break
       end // end of [if]
     end // end of [val]
     val () = Square_move (theSquare)

@@ -161,11 +161,11 @@ implement main () = () where {
       if SDL_PollEvent (event) > 0 then let
         prval () = opt_unsome (event)
         val () = Dot_handle_input (theDot, event)
-        val _type = SDL_Event_type event
+        val _type = event.type
       in
         if (_type = SDL_QUIT) then quit := true
       end else let
-        prval () = opt_unnone (event) in break
+        prval () = opt_unnone {SDL_Event} (event) in break
       end // end of [if]
     end // end of [val]
     val () = Dot_move (theDot)

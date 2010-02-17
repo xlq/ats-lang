@@ -109,7 +109,7 @@ implement main () = () where {
       in
         continue
       end else let
-        prval () = opt_unnone (event) in break
+        prval () = opt_unnone {SDL_Event} (event) in break
       end // end of [if]
     end // end of [val]
 //

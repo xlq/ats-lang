@@ -41,12 +41,21 @@
 
 (* ****** ****** *)
 
-abst@ype SDL_Event = $extype "SDL_Event"
+abst@ype SDL_EventType = $extype "SDL_EventType"
+abst@ype SDL_Event_rest // this abstype is never defined
+
+typedef SDL_Event =
+  $extype_struct "SDL_Event" of {
+  type= SDL_EventType
+, _rest= SDL_Event_rest // this field cannot be accessed
+} // end of [SDL_Event]
+
+propdef SDL_Event_castdn_t (a:t@ype) = {l:addr}
+  (SDL_Event @ l) -<prf> (a @ l, a @ l -<lin,prf> SDL_Event @ l)
+// end of [SDL_Event_castdn_t]
 
 (* ****** ****** *)
 
-abst@ype SDL_EventType = $extype "SDL_EventType"
-//
 castfn int_of_SDL_EventType (x: SDL_EventType):<> int
 overload int_of with int_of_SDL_EventType
 //
@@ -84,9 +93,7 @@ typedef SDL_ActiveEvent =
   type= Uint8, gain= Uint8, state= Uint8
 } // end of [SDL_ActiveEvent]
 
-praxi SDL_Event_active_castdn {l:addr} (pf: SDL_Event @ l)
-  : (SDL_ActiveEvent @ l, SDL_ActiveEvent @ l -<lin,prf> SDL_Event @ l)
-// end of [SDL_Event_active_castdn]
+praxi SDL_Event_active_castdn : SDL_Event_castdn_t (SDL_ActiveEvent)
 
 (* ****** ****** *)
 
@@ -95,9 +102,7 @@ typedef SDL_KeyboardEvent =
   type= Uint8, which= Uint8, state= Uint8, keysym= SDL_keysym
 } // end of [SDL_KeyboardEvent]
 
-praxi SDL_Event_key_castdn {l:addr} (pf: SDL_Event @ l)
-  : (SDL_KeyboardEvent @ l, SDL_KeyboardEvent @ l -<lin,prf> SDL_Event @ l)
-// end of [SDL_Event_key_castdn]
+praxi SDL_Event_key_castdn : SDL_Event_castdn_t (SDL_KeyboardEvent)
 
 (* ****** ****** *)
   
@@ -112,9 +117,7 @@ typedef SDL_MouseMotionEvent =
 , yrel= Sint16
 } // end of [SDL_MouseMotionEvent]
 
-praxi SDL_Event_motion_castdn {l:addr} (pf: SDL_Event @ l)
-  : (SDL_MouseMotionEvent @ l, SDL_MouseMotionEvent @ l -<lin,prf> SDL_Event @ l)
-// end of [SDL_Event_motion_castdn]
+praxi SDL_Event_motion_castdn : SDL_Event_castdn_t (SDL_MouseMotionEvent)
 
 (* ****** ****** *)
 
@@ -128,9 +131,7 @@ typedef SDL_MouseButtonEvent =
 , y= Uint16
 } // end of [SDL_MouseButtonEvent]
 
-praxi SDL_Event_button_castdn {l:addr} (pf: SDL_Event @ l)
-  : (SDL_MouseButtonEvent @ l, SDL_MouseButtonEvent @ l -<lin,prf> SDL_Event @ l)
-// end of [SDL_Event_button_castdn]
+praxi SDL_Event_button_castdn : SDL_Event_castdn_t (SDL_MouseButtonEvent)
 
 (* ****** ****** *)
 
@@ -142,9 +143,7 @@ typedef SDL_JoyAxisEvent =
 , value= Sint16
 } // end of [SDL_JoyAxisEvent]
 
-praxi SDL_Event_jaxis_castdn {l:addr} (pf: SDL_Event @ l)
-  : (SDL_JoyAxisEvent @ l, SDL_JoyAxisEvent @ l -<lin,prf> SDL_Event @ l)
-// end of [SDL_Event_jaxis_castdn]
+praxi SDL_Event_jaxis_castdn : SDL_Event_castdn_t (SDL_JoyAxisEvent)
 
 (* ****** ****** *)
 
@@ -157,9 +156,7 @@ typedef SDL_JoyBallEvent =
 , yrel= Sint16
 } // end of [SDL_JoyBallEvent]
 
-praxi SDL_Event_jball_castdn {l:addr} (pf: SDL_Event @ l)
-  : (SDL_JoyBallEvent @ l, SDL_JoyBallEvent @ l -<lin,prf> SDL_Event @ l)
-// end of [SDL_Event_jball_castdn]
+praxi SDL_Event_jball_castdn : SDL_Event_castdn_t (SDL_JoyBallEvent)
 
 (* ****** ****** *)
 
@@ -171,9 +168,7 @@ typedef SDL_JoyButtonEvent =
 , state= Uint8
 } // end of [SDL_JoyButtonEvent]
 
-praxi SDL_Event_jbutton_castdn {l:addr} (pf: SDL_Event @ l)
-  : (SDL_JoyButtonEvent @ l, SDL_JoyButtonEvent @ l -<lin,prf> SDL_Event @ l)
-// end of [SDL_Event_jbutton_castdn]
+praxi SDL_Event_jbutton_castdn : SDL_Event_castdn_t (SDL_JoyButtonEvent)
 
 (* ****** ****** *)
 
@@ -181,9 +176,7 @@ typedef SDL_ResizeEvent =
   $extype_struct "SDL_ResizeEvent" of { type= Uint8, w= int, h= int }
 // end of [SDL_ResizeEvent]
 
-praxi SDL_Event_resize_castdn {l:addr} (pf: SDL_Event @ l)
-  : (SDL_ResizeEvent @ l, SDL_ResizeEvent @ l -<lin,prf> SDL_Event @ l)
-// end of [SDL_Event_resize_castdn]
+praxi SDL_Event_resize_castdn : SDL_Event_castdn_t (SDL_ResizeEvent)
 
 (* ****** ****** *)
 
@@ -191,9 +184,7 @@ typedef SDL_ExposeEvent =
   $extype_struct "SDL_ExposeEvent" of { type= Uint8 } 
 // end of [SDL_ExposeEvent]
 
-praxi SDL_Event_expose_castdn {l:addr} (pf: SDL_Event @ l)
-  : (SDL_ExposeEvent @ l, SDL_ExposeEvent @ l -<lin,prf> SDL_Event @ l)
-// end of [SDL_Event_expose_castdn]
+praxi SDL_Event_expose_castdn : SDL_Event_castdn_t (SDL_ExposeEvent)
 
 (* ****** ****** *)
 

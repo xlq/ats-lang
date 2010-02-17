@@ -153,7 +153,7 @@ implement main () = () where {
       | _ when _type = SDL_QUIT => quit := true
       | _ => () // ignored
     end else let
-      prval () = opt_unnone (event) in (*nothing*)
+      prval () = opt_unnone {SDL_Event} (event) in (*nothing*)
     end // end of [if]
   end // end of [val]
 //
