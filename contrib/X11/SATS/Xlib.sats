@@ -976,7 +976,7 @@ typedef XGCValues =
 , ts_y_origin = int
 , font= Font
 , subwindow_mode= int
-, graphics_exposures= Bool
+, graphics_exposures= XBool
 , clip_x_origin= int
 , clip_y_origin= int
 , clip_mask= Pixmap
@@ -1073,7 +1073,7 @@ fun XClearArea {l:anz} (
   , win: Window
   , x: int, y: int
   , width: uint, height: uint
-  , exposures: Bool
+  , exposures: XBool
   ) : void
   = "#atsctrb_XClearArea"
 
@@ -1278,7 +1278,7 @@ typedef XFontStruct = $extype_struct "XFontStruct" of {
 , max_char_or_byte2= uint
 , min_byte1= uint
 , max_byte1= uint
-, all_chars_exist= Bool
+, all_chars_exist= XBool
 , default_char= uint
 // , n_properties= int n
 // , properties= ptr l_properties // @[XFontProp][n] @ l_properties
@@ -1319,6 +1319,76 @@ fun XFreeFont {l1:anz} {l2:addr} (
   = "#atsctrb_XFreeFont"
 // end of [XFreeFont]
             
+(* ****** ****** *)
+
+// 8.5.3: Computing Character String Sizes
+
+fun XTextWidth {n:nat}
+  (ftinfo: &XFontStruct, str: string n, nstr: int n): int
+  = "#atsctrb_XTextWidth"
+// end of [XTextWidth]
+
+fun XTextWidth16 {n:nat}
+  (ftinfo: &XFontStruct, str: array (XChar2b, n), nstr: int n): int
+  = "#atsctrb_XTextWidth16"
+// end of [XTextWidth]
+
+(* ****** ****** *)
+
+// 8.6: Drawing Text
+
+(* ****** ****** *)
+
+// 8.6.2: Drawing Text Characters
+
+fun XDrawString
+  {l1:anz} {l2:addr} {n:nat} (
+    dpy: !Display_ptr l1
+  , drw: Drawable
+  , gc: !GCptr l2
+  , x: int, y: int
+  , str: string n
+  , len: int n
+  ) : void = "#atsctrb_XDrawString"
+// end of [XDrawString]
+
+fun XDrawString16
+  {l1:anz} {l2:addr} {n:nat} (
+    dpy: !Display_ptr l1
+  , drw: Drawable
+  , gc: !GCptr l2
+  , x: int, y: int
+  , str: array (XChar2b, n)
+  , len: int n
+  ) : void = "#atsctrb_XDrawString16"
+// end of [XDrawString16]
+
+(* ****** ****** *)
+
+// 8.6.2: Drawing Text Characters
+
+fun XDrawString
+  {l1:anz} {l2:addr} {n:nat} (
+    dpy: !Display_ptr l1
+  , drw: Drawable
+  , gc: !GCptr l2
+  , x: int, y: int
+  , str: string n
+  , len: int n
+  ) : void = "#atsctrb_XDrawString"
+// end of [XDrawString]
+
+fun XDrawString16
+  {l1:anz} {l2:addr} {n:nat} (
+    dpy: !Display_ptr l1
+  , drw: Drawable
+  , gc: !GCptr l2
+  , x: int, y: int
+  , str: array (XChar2b, n)
+  , len: int n
+  ) : void = "#atsctrb_XDrawString16"
+// end of [XDrawString16]
+
 (* ****** ****** *)
 
 //
@@ -1449,7 +1519,7 @@ fun XAddHosts {l:anz} {n:nat}
 // end of [XAddHosts]
 
 fun XListHosts {l:anz} (
-    dpy: !Display_ptr l, nhost: &int? >> int n, state: &Bool? >> Bool
+    dpy: !Display_ptr l, nhost: &int? >> int n, state: &XBool? >> XBool
   ) : #[la:addr;n:nat] (
     XFree_v (XHostAddress, n, la), @[XHostAddress][n] @ la | ptr la
   ) = "#atsctrb_XListHosts"
@@ -1508,7 +1578,7 @@ propdef XEvent_castdn_t (a:t@ype) = {l:addr}
 typedef XAnyEvent = $extype_struct "XAnyEvent" of {
   type= EventType_t
 , serial = ulint // # of last request processed by server
-, send_event= Bool // true if this comes from a SendEvent request
+, send_event= XBool // true if this comes from a SendEvent request
 /*
 , display= Display_ptr0 // Display the event was read freom
 */
@@ -1526,7 +1596,7 @@ praxi XEvent_xany_castdn : XEvent_castdn_t (XAnyEvent)
 typedef XKeyEvent = $extype_struct "XKeyEvent" of {
   type= EventType_t
 , serial= ulint
-, send_event= Bool
+, send_event= XBool
 /*
 , display= Display_ptr0 // Display the event was read freom
 */
@@ -1541,7 +1611,7 @@ typedef XKeyEvent = $extype_struct "XKeyEvent" of {
 , x_root= int, y_root= int
 , state= uint
 , keycode= uint
-, same_screen= Bool  
+, same_screen= XBool  
 } // end of [XKeyEvent]
 
 praxi XEvent_xkey_castdn : XEvent_castdn_t (XKeyEvent)
@@ -1556,7 +1626,7 @@ typedef XKeyReleasedEvent = XKeyEvent
 typedef XButtonEvent = $extype_struct "XButtonEvent" of {
   type= EventType_t
 , serial= ulint
-, send_event= Bool
+, send_event= XBool
 /*
 , display= Display_ptr0 // Display the event was read freom
 */
@@ -1571,7 +1641,7 @@ typedef XButtonEvent = $extype_struct "XButtonEvent" of {
 , x_root= int, y_root= int
 , state= uint
 , button= uint
-, same_screen= Bool
+, same_screen= XBool
 } // end of [XButtonEvent]
 
 praxi XEvent_xbutton_castdn : XEvent_castdn_t (XButtonEvent)
@@ -1581,7 +1651,7 @@ praxi XEvent_xbutton_castdn : XEvent_castdn_t (XButtonEvent)
 typedef XMotionEvent = $extype_struct "XMotionEvent" of {
   type= EventType_t
 , serial= ulint
-, send_event= Bool
+, send_event= XBool
 /*
 , display= Display_ptr0 // Display the event was read freom
 */
@@ -1596,7 +1666,7 @@ typedef XMotionEvent = $extype_struct "XMotionEvent" of {
 , x_root= int, y_root= int
 , state= uint
 , in_hint= char
-, same_screen= Bool  
+, same_screen= XBool  
 } // end of [XMotionEvent]
 
 praxi XEvent_xmotion_castdn : XEvent_castdn_t (XMotionEvent)
@@ -1620,7 +1690,7 @@ praxi XEvent_xmotion_castdn : XEvent_castdn_t (XMotionEvent)
 typedef XExposeEvent = $extype_struct "XExposeEvent" of {
   type= EventType_t
 , serial= ulint
-, send_event= Bool
+, send_event= XBool
 /*
 , display= Display_ptr0 // Display the event was read freom
 */
@@ -1645,7 +1715,7 @@ typedef XCirculateEvent =
   $extype_struct "XCirculateEvent" of {
   type= EventType_t
 , serial= ulint
-, send_event= Bool
+, send_event= XBool
 /*
 , display= Display_ptr0 // Display the event was read freom
 */
@@ -1761,7 +1831,7 @@ macdef XUrgencyHint = $extval (lint, "XUrgencyHint")
 typedef XWMHints =
   $extype_struct "XWHints" of {
   flags= lint // marks which fields in this structure are defined
-, input= Bool // does this application rely on the window manager to get keyword input?
+, input= XBool // does this application rely on the window manager to get keyword input?
 , initial_state= int // see below
 , icon_pixmap= Pixmap // pixmap to be used as icon
 , icon_window= Window // window to be used as icon

@@ -42,6 +42,9 @@
 
 (* ****** ****** *)
 
+// Bool is already used in ATS
+typedef XBool = bool // unindexed
+//
 abst@ype Atom = $extype "Atom" // unsigned long int
 abst@ype Mask = $extype "Mask" // unsigned long int
 abst@ype VisualID = $extype "VisualID" // unsigned long int

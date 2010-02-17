@@ -771,16 +771,16 @@ fn labp2atlst_tr_dn
                val () = // linearity check
                  if s2exp_is_linear s2e then begin
                    prerr loc0; prerr ": error(3)";
-                   prerr ": the component with the lable [";
+                   prerr ": the component with the label [";
                    $Lab.prerr_label l;
                    prerr "] is omitted but it is linear";
                    prerr ": only a nonlinear component can be omitted.";
                    prerr_newline ();
                    $Err.abort {void} ()
-                 end
+                 end // end of [if]
             in
               auxcheck (loc0, omits)
-            end
+            end // end of [LABS2EXPcons]
           | LABS2EXPLSTnil () => ()
         end // end of [auxcheck]
         val omits = labs2explst_revapp (omits, ls2es0)

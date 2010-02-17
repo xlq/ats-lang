@@ -1209,7 +1209,7 @@ implement // [s2e0] must be normalized!
   fn label_notfound_errmsg
     (loc0: loc_t, s2e0: s2exp, l0: lab_t): s2exp = begin
     prerr_loc_error3 loc0;
-    prerr ": the lable [";
+    prerr ": the label [";
     prerr l0;
     prerr "] is not found in [";
     prerr s2e0;

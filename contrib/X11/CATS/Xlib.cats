@@ -265,6 +265,12 @@
 #define atsctrb_XLoadQueryFont XLoadQueryFont
 #define atsctrb_XFreeFont XFreeFont
 
+#define atsctrb_XTextWidth XTextWidth
+#define atsctrb_XTextWidth16 XTextWidth16
+
+#define atsctrb_XDrawString XDrawString
+#define atsctrb_XDrawString16 XDrawString16
+
 /* ****** ****** */
 
 //
