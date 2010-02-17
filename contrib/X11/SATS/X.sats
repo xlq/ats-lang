@@ -42,6 +42,17 @@
 
 (* ****** ****** *)
 
+//
+// HX-2010-02-17: This is ugly:
+// Flags in X should have been declared of the type ulint!
+//
+fun lor_lint_lint
+  (x: lint, y: lint):<> lint = "#atspre_lor_ulint_ulint"
+// end of [lor_lint_lint]
+overload lor with lor_lint_lint
+
+(* ****** ****** *)
+
 // Bool is already used in ATS
 typedef XBool = bool // unindexed
 //

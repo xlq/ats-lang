@@ -224,7 +224,7 @@ implement main () = () where {
   in
     case+ 0 of
     | _ when (type = Expose) => let
-        prval (pf, fpf) = XEvent_xexpose_castn (view@ report)
+        prval (pf, fpf) = XEvent_xexpose_castdn (view@ report)
         val count = (&report)->count
         prval () = view@ report := fpf (pf)
       in

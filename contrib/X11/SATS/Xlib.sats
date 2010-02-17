@@ -356,8 +356,8 @@ fun XNoOp {l:anz} (dpy: !Display_ptr l): void
 
 (* ****** ****** *)
 
-fun XFree0 {a:viewt@ype} {l:addr}
-  (pf1: XFree_v l, pf2: a? @ l | p: ptr l): void
+fun XFree0
+  {l:addr} (pf: XFree_v l | p: ptr l): void
   = "#atsctrb_XFree"
 
 fun XFree1 {a:viewt@ype} {l:addr}
@@ -621,8 +621,9 @@ fun XUndefineCursor {l:anz} (dpy: !Display_ptr l, win: Window): void
 
 (* ****** ****** *)
 
-abst@ype Status = $extype "Status" // = int
-castfn int_of_Status (x: Status):<> int
+abst@ype Status (i:int) = $extype "Status" // = int
+typedef Status = [i:int] Status i
+castfn int_of_Status {i:int} (x: Status i):<> int i
 overload int_of with int_of_Status
 
 fun XQueryTree {l:anz} (
@@ -1365,9 +1366,9 @@ fun XDrawString16
 
 (* ****** ****** *)
 
-// 8.6.2: Drawing Text Characters
+// 8.6.3: Drawing Image Characters
 
-fun XDrawString
+fun XDrawImageString
   {l1:anz} {l2:addr} {n:nat} (
     dpy: !Display_ptr l1
   , drw: Drawable
@@ -1375,10 +1376,10 @@ fun XDrawString
   , x: int, y: int
   , str: string n
   , len: int n
-  ) : void = "#atsctrb_XDrawString"
-// end of [XDrawString]
+  ) : void = "#atsctrb_XDrawImageString"
+// end of [XDrawImageString]
 
-fun XDrawString16
+fun XDrawImageString16
   {l1:anz} {l2:addr} {n:nat} (
     dpy: !Display_ptr l1
   , drw: Drawable
@@ -1386,8 +1387,8 @@ fun XDrawString16
   , x: int, y: int
   , str: array (XChar2b, n)
   , len: int n
-  ) : void = "#atsctrb_XDrawString16"
-// end of [XDrawString16]
+  ) : void = "#atsctrb_XDrawImageString16"
+// end of [XDrawImageString16]
 
 (* ****** ****** *)
 
@@ -1729,6 +1730,73 @@ praxi XEvent_xcirculate_castdn : XEvent_castdn_t (XCirculateEvent)
 
 (* ****** ****** *)
 
+// 10.10.2: ConfigureNotify Events
+
+typedef XConfigureEvent =
+  $extype_struct "XConfigureEvent" of {
+  type= EventType_t
+, serial= ulint
+, send_event= XBool
+/*
+, display= Display_ptr0 // Display the event was read freom
+*/
+// individual section
+, event= Window
+, window= Window
+, x= int, y= int
+, width= int, height= int
+, border_width= int
+, above= Window
+, override_redirect= XBool
+} // end of [XConfigureEvent]
+
+praxi XEvent_xconfigure_castdn : XEvent_castdn_t (XConfigureEvent)
+
+(* ****** ****** *)
+
+// 10.10.2: CreateNotify Events
+
+typedef XCreateWindowEvent =
+  $extype_struct "XCreateWindowEvent" of {
+  type= EventType_t
+, serial= ulint
+, send_event= XBool
+/*
+, display= Display_ptr0 // Display the event was read freom
+*/
+// individual section
+, parent= Window
+, window= Window
+, x= int, y= int
+, width= int, height= int
+, border_width= int
+, override_redirect= XBool
+} // end of [XCreateWindowEvent]
+
+praxi XEvent_xcreatewindow_castdn : XEvent_castdn_t (XCreateWindowEvent)
+
+(* ****** ****** *)
+
+// 10.10.2: DestroyNotify Events
+
+typedef XDestroyWindowEvent =
+  $extype_struct "XDestroyWindowEvent" of {
+  type= EventType_t
+, serial= ulint
+, send_event= XBool
+/*
+, display= Display_ptr0 // Display the event was read freom
+*/
+// individual section
+, event= Window
+, window= Window
+, x= int, y= int
+} // end of [XDestroyWindowEvent]
+
+praxi XEvent_xdestroywindow_castdn : XEvent_castdn_t (XDestroyWindowEvent)
+
+(* ****** ****** *)
+
 //
 // Chapter 11: Event Handling Functions
 //
@@ -1797,22 +1865,80 @@ fun XPeekEvent {l:anz}
 
 // 14.1: Client to Window Manage Communication
 
-typedef XTextProperty =
+typedef XTextProperty (l:addr) =
   $extype_struct "XTextProperty" of {
-  value= ptr // property data
+  value= ptr l // property data
 , encoding= Atom // type of property
 , format= int // 8, 16, or 32
 , nitems= ulint // number of items in value
 } // end of [XTextProperty]
 
+typedef XTextProperty = [l:addr] XTextProperty l
+
 (* ****** ****** *)
 
+// this is an enum type
 abst@ype XICCEncodingStyle = $extype "XICCEncodingStyle"
 
 macdef XStringStyle = $extval (XICCEncodingStyle, "XStringStyle")
 macdef XCompoundTextStyle = $extval (XICCEncodingStyle, "XCompoundTextStyle")
 macdef XTextStyle = $extval (XICCEncodingStyle, "XTextStyle")
 macdef XStdICCTextStyle = $extval (XICCEncodingStyle, "XStdICCTextStyle")
+
+(* ****** ****** *)
+
+// 14.1.1: Manipulating Top-Level Windows
+
+fun XIconifyWindow {l:anz}
+  (dpy: !Display_ptr l, win: Window, nscr: int): Status
+  = "#atsctrb_XIconifyWindow"
+// end of [XIconifyWindow]
+
+fun XWithdrawWindow {l:anz}
+  (dpy: !Display_ptr l, win: Window, nscr: int): Status
+  = "#atsctrb_XWithdrawWindow"
+// end of [XWithdrawWindow]
+
+fun XReconfigureWMWindow {l:anz} (
+    dpy: !Display_ptr l
+  , win: Window, nscr: int, mask: uint, values: &XWindowChanges?
+  ) : Status = "#atsctrb_XReconfigureWMWindow"
+// end of [XReconfigureWMWindow]
+
+(* ****** ****** *)
+
+// 14.1.2: Converting String Lists
+
+fun XDefaultString (): string = "#atsctrb_XDefaultString"
+
+//
+
+fun XStringToTextProperty (
+    str: string
+  , text: &XTextProperty? >> opt (XTextProperty l, i <> 0)
+  ) : #[i:int;l:addr] (XFree_v l | Status i) = "atsctrb_XStringToTextProperty"
+// end of [XStringToTextProperty]
+
+fun XStringListToTextProperty {n:nat} (
+    list: &(@[string][n]), n: int n
+  , text: &XTextProperty? >> opt (XTextProperty l, i <> 0)
+  ) : #[i:int;l:addr] (XFree_v l | Status i) = "#atsctrb_XStringListToTextProperty"
+// end of [XStringListToTextProperty]
+
+//
+
+// for a array of strings:
+abst@ype XStrarr (n: int) // array + strings are allocated by XAlloc
+fun XTextPropertyToStringList {l:addr} (
+    text: &XTextProperty l
+  , list: &XStrarr? >> opt (XStrarr n, i <> 0)
+  , n: &int? >> opt (int n, i <> 0)
+  ) : #[i:int;n:nat] Status i = "#atsctrb_XTextPropertyToStringList"
+// end of [XTextPropertyToStringList]
+
+(* ****** ****** *)
+
+// 14.1.3: Setting and Reading Text Properties
 
 (* ****** ****** *)
 
@@ -1828,8 +1954,14 @@ macdef WindowGroupHint = $extval (lint, "WindowGroupHint")
 macdef AllHints = $extval (lint, "AllHints")
 macdef XUrgencyHint = $extval (lint, "XUrgencyHint")
 
+//
+
+macdef WithdrawnState = $extval (int, "WithdrawnState")
+macdef NormalState = $extval (int, "NormalState")
+macdef IconicState = $extval (int, "IconicState")
+
 typedef XWMHints =
-  $extype_struct "XWHints" of {
+  $extype_struct "XWMHints" of {
   flags= lint // marks which fields in this structure are defined
 , input= XBool // does this application rely on the window manager to get keyword input?
 , initial_state= int // see below
@@ -1942,6 +2074,22 @@ fun XSetClassHint {l:anz}
 fun XGetClassHint {l:anz}
   (dpy: !Display_ptr l, win: Window, class_hint: &XClassHint? >> XClassHint): Status
   = "#atsctrb_XGetClassHint"
+
+(* ****** ****** *)
+
+// 14.1.13: Using Window Manager Convenience Functions
+
+fun XSetWMProperties {l:anz} {l1,l2:addr} {n:nat} (
+    dpy: !Display_ptr l
+  , win: Window
+  , win_name: &XTextProperty l1, icon_name: &XTextProperty l2
+  , argv: &(@[string][n])
+  , argc: int n
+  , normal_hints: &XSizeHints // partially init
+  , wm_hints: &XWMHints // partially init
+  , class_hint: &XClassHint // partially init
+  ) : void = "#atsctrb_XSetWMProperties"
+// end of [XSetWMProperties]
 
 (* ****** ****** *)
 

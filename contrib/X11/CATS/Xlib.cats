@@ -270,6 +270,8 @@
 
 #define atsctrb_XDrawString XDrawString
 #define atsctrb_XDrawString16 XDrawString16
+#define atsctrb_XDrawImageString XDrawImageString
+#define atsctrb_XDrawImageString16 XDrawImageString16
 
 /* ****** ****** */
 
@@ -323,6 +325,28 @@
 
 /* ****** ****** */
 
+#define atsctrb_XIconifyWindow XIconifyWindow
+#define atsctrb_XDestroyWindow XDestroyWindow
+#define atsctrb_XReconfigureWMWindow XReconfigureWMWindow
+
+#define atsctrb_XDefaultString XDefaultString
+
+//
+
+static inline
+Status
+atsctrb_XStringToTextProperty (
+  ats_ptr_type str, ats_ref_type text
+) { return
+  XStringListToTextProperty((char**)&str, 1, (XTextProperty*)text) ;
+} // end of [XStringToTextProperty]
+
+#define atsctrb_XStringListToTextProperty XStringListToTextProperty
+
+//
+
+#define atsctrb_XTextPropertyToStringList XTextPropertyToStringList
+
 #define atsctrb_XAllocWMHints XAllocWMHints
 #define atsctrb_XAllocSizeHints XAllocSizeHints
 #define atsctrb_XAllocClassHint XAllocClassHint
@@ -332,6 +356,10 @@
 
 #define atsctrb_XNextEvent XNextEvent
 #define atsctrb_XPeekEvent XPeekEvent
+
+//
+
+#define atsctrb_XSetWMProperties XSetWMProperties
 
 /* ****** ****** */
 

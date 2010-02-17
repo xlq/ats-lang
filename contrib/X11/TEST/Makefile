@@ -1,6 +1,6 @@
 #
 #
-# Some programs involving OpenGL
+# Some programs involving Xlib programming
 #
 #
 
