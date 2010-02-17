@@ -136,7 +136,20 @@ atslib_bsearch (
 
 /* ****** ****** */
 
-#define atslib_qsort qsort
+//
+// #define atslib_qsort qsort
+//
+static inline
+ats_void_type
+atslib_qsort (
+  ats_ref_type base,
+  ats_size_type nmemb,
+  ats_size_type size,
+  ats_ptr_type compar
+) {
+  qsort(base, nmemb, size, (int(*)(const void*, const void*))compar) ;
+  return ;
+} /* end of [atslib_qsort] */
 
 /* ****** ****** */
 

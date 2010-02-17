@@ -72,7 +72,8 @@ viewtypedef Visual_ptr1 = [l:anz] Visual_ptr l
 (* ****** ****** *)
 
 // it is just a pointer; it is not reference counted
-absviewtype GCptr (l:addr)  = $extype "GC"
+absviewtype GCptr (l:addr)  = $extype "GC" // *GC = _XGC
+viewtypedef GCptr = [l:addr] GCptr l
 abstype GCref = $extype "GC" // this one should never be freed!
 
 (* ****** ****** *)
@@ -983,8 +984,8 @@ typedef XGCValues =
 , dashes= char
 } // end of [XGCValues]
 
-fun XCreateGC {l:anz} (
-    dpy: !Display_ptr l, drw: Drawable, mask: ulint, values: &XGCValues
+fun XCreateGC {l:anz} ( // [values] can be uninitialized ...
+    dpy: !Display_ptr l, drw: Drawable, mask: ulint, values: &XGCValues?
   ) : [l:addr] GCptr l
   = "#atsctrb_XCreateGC"
 // end of [XCreateGC]
@@ -995,12 +996,12 @@ fun XCopyGC {l1:addr} {l2,l3:addr}
 // end of [XCopyGC]
 
 fun XChangeGC {l1:anz} {l2:addr}
-  (dpy: !Display_ptr l1, gc: GCptr l2, mask: ulint, values: &XGCValues): void
+  (dpy: !Display_ptr l1, gc: !GCptr l2, mask: ulint, values: &XGCValues): void
   = "#atsctrb_XChangeGC"
 // end of [XChangeGC]
 
 fun XGetGCValues {l1:anz} {l2:addr} (
-    dpy: !Display_ptr l1, gc: GCptr l2, mask: ulint, values: &XGCValues? >> XGCValues
+    dpy: !Display_ptr l1, gc: !GCptr l2, mask: ulint, values: &XGCValues? >> XGCValues
   ) : void = "#atsctrb_XGetGCValues"
 // end of [XGetGCValues]
 
@@ -1015,6 +1016,47 @@ fun XFlushGC {l1:anz} {l2:addr} (dpy: !Display_ptr l1, gc: !GCptr l2): void
 (* ****** ****** *)
 
 // 7.2: Using GC convenience routines
+
+fun XSetForeground {l1:anz} {l2:addr}
+  (dpy: !Display_ptr l1, gc: !GCptr l2, foreground: ulint): void
+  = "#atsctrb_XSetForeground"
+// end of [XSetForeground]
+
+fun XSetBackground {l1:anz} {l2:addr}
+  (dpy: !Display_ptr l1, gc: !GCptr l2, background: ulint): void
+  = "#atsctrb_XSetBackground"
+// end of [XSetBackground]                                    
+
+fun XSetFunction {l1:anz} {l2:addr}
+  (dpy: !Display_ptr l1, gc: !GCptr l2, _function: int): void
+  = "#atsctrb_XSetFunction"
+// end of [XSetFunction]                                    
+
+fun XSetPlaneMask {l1:anz} {l2:addr}
+  (dpy: !Display_ptr l1, gc: !GCptr l2, plane_mask: ulint): void
+  = "#atsctrb_XSetPlaneMask"
+// end of [XSetPlaneMask]                                    
+
+fun XSetFont {l1:anz} {l2:addr}
+  (dpy: !Display_ptr l1, gc: !GCptr l2, font: Font): void
+  = "#atsctrb_XSetFont"
+// end of [XSetFont]
+
+fun XSetLineAttributes
+  {l1:anz} {l2:addr} (
+    dpy: !Display_ptr l1, gc: !GCptr l2
+  , line_width: uint, line_style: int, cap_style: int, join_style: int
+  ) : void
+  = "#atsctrb_XSetLineAttributes"
+// end of [XSetLineAttributes]
+
+fun XSetDashes
+  {l1:anz} {l2:addr} {n:nat} (
+    dpy: !Display_ptr l1, gc: !GCptr l2
+  , dash_offset: int, dash_list: &(@[char][n]), n: int n
+  ) : void
+  = "#atsctrb_XSetDashes"
+// end of [XSetDashes]
 
 (* ****** ****** *)
 
@@ -1047,7 +1089,7 @@ fun XCopyArea
   {l1:anz} {l2:addr} (
     dpy: !Display_ptr l1
   , src: Drawable, dst: Drawable
-  , gc: GCptr l2
+  , gc: !GCptr l2
   , x_src: int, y_src: int
   , width: uint, height: uint
   , x_dst: int, y_dst: int
@@ -1058,7 +1100,7 @@ fun XCopyPlane
   {l1:anz} {l2:addr} (
     dpy: !Display_ptr l1
   , src: Drawable, dst: Drawable
-  , gc: GCptr l2
+  , gc: !GCptr l2
   , x_src: int, y_src: int
   , width: uint, height: uint
   , x_dst: int, y_dst: int
@@ -1096,13 +1138,13 @@ typedef XArc =
 // 8.3.1: Drawing Single and Multiple Points
 
 fun XDrawPoint {l1:anz} {l2:addr} (
-    dpy: !Display_ptr l1, drw: Drawable, gc: GCptr l2, x: int, y: int
+    dpy: !Display_ptr l1, drw: Drawable, gc: !GCptr l2, x: int, y: int
   ) : void = "#atsctrb_XDrawPoint"
 // end of [XDrawPoint]
 
 fun XDrawPoints {l1:anz} {l2:addr} {n:nat} (
     dpy: !Display_ptr l1
-  , drw: Drawable, gc: GCptr l2, points: &(@[XPoint][n]), n: int n, mode: int
+  , drw: Drawable, gc: !GCptr l2, points: &(@[XPoint][n]), n: int n, mode: int
   ) : void = "#atsctrb_XDrawPoints"
 // end of [XDrawPoints]
 
@@ -1112,19 +1154,19 @@ fun XDrawPoints {l1:anz} {l2:addr} {n:nat} (
 
 fun XDrawLine {l1:anz} {l2:addr} (
     dpy: !Display_ptr l1
-  , drw: Drawable, gc: GCptr l2, x1: int, y1: int, x2: int, y2: int
+  , drw: Drawable, gc: !GCptr l2, x1: int, y1: int, x2: int, y2: int
   ) : void = "#atsctrb_XDrawLine"
 // end of [XDrawLine]
 
 fun XDrawLines {l1:anz} {l2:addr} {n:nat} (
     dpy: !Display_ptr l1
-  , drw: Drawable, gc: GCptr l2, points: &(@[XPoint][n]), n: int n, mode: int
+  , drw: Drawable, gc: !GCptr l2, points: &(@[XPoint][n]), n: int n, mode: int
   ) : void = "#atsctrb_XDrawLines"
 // end of [XDrawLines]
 
 fun XDrawSegments {l1:anz} {l2:addr} {n:nat} (
     dpy: !Display_ptr l1
-  , drw: Drawable, gc: GCptr l2, segments: &(@[XSegment][n]), n: int n
+  , drw: Drawable, gc: !GCptr l2, segments: &(@[XSegment][n]), n: int n
   ) : void = "#atsctrb_XDrawSegments"
 // end of [XDrawSegments]
 
@@ -1134,13 +1176,13 @@ fun XDrawSegments {l1:anz} {l2:addr} {n:nat} (
 
 fun XDrawRectangle {l1:anz} {l2:addr} (
     dpy: !Display_ptr l1
-  , drw: Drawable, gc: GCptr l2, x: int, y: int, width: uint, height: uint
+  , drw: Drawable, gc: !GCptr l2, x: int, y: int, width: uint, height: uint
   ) : void = "#atsctrb_XDrawRectangle"
 // end of [XDrawRectangle]
 
 fun XDrawRectangles {l1:anz} {l2:addr} {n:nat} (
     dpy: !Display_ptr l1
-  , drw: Drawable, gc: GCptr l2, rectangles: &(@[XRectangle][n]), n: int n
+  , drw: Drawable, gc: !GCptr l2, rectangles: &(@[XRectangle][n]), n: int n
   ) : void = "#atsctrb_XDrawRectangles"
 // end of [XDrawRectangles]
 
@@ -1150,14 +1192,14 @@ fun XDrawRectangles {l1:anz} {l2:addr} {n:nat} (
 
 fun XDrawArc {l1:anz} {l2:addr} (
     dpy: !Display_ptr l1
-  , drw: Drawable, gc: GCptr l2
+  , drw: Drawable, gc: !GCptr l2
   , x: int, y: int, width: uint, height: uint, angle1: int, angle2: int
   ) : void = "#atsctrb_XDrawArc"
 // end of [XDrawArc]
 
 fun XDrawArcs {l1:anz} {l2:addr} {n:nat} (
     dpy: !Display_ptr l1
-  , drw: Drawable, gc: GCptr l2, arcs: &(@[XArc][n]), n: int n
+  , drw: Drawable, gc: !GCptr l2, arcs: &(@[XArc][n]), n: int n
   ) : void = "#atsctrb_XDrawArcs"
 // end of [XDrawArcs]
 
@@ -1171,13 +1213,13 @@ fun XDrawArcs {l1:anz} {l2:addr} {n:nat} (
 
 fun XFillRectangle {l1:anz} {l2:addr} (
     dpy: !Display_ptr l1
-  , drw: Drawable, gc: GCptr l2, x: int, y: int, width: uint, height: uint
+  , drw: Drawable, gc: !GCptr l2, x: int, y: int, width: uint, height: uint
   ) : void = "#atsctrb_XFillRectangle"
 // end of [XFillRectangle]
 
 fun XFillRectangles {l1:anz} {l2:addr} {n:nat} (
     dpy: !Display_ptr l1
-  , drw: Drawable, gc: GCptr l2, rectangles: &(@[XRectangle][n]), n: int n
+  , drw: Drawable, gc: !GCptr l2, rectangles: &(@[XRectangle][n]), n: int n
   ) : void = "#atsctrb_XFillRectangles"
 // end of [XFillRectangles]
 
@@ -1187,7 +1229,7 @@ fun XFillRectangles {l1:anz} {l2:addr} {n:nat} (
 
 fun XFillPolygon {l1:anz} {l2:addr} {n:nat} (
     dpy: !Display_ptr l1
-  , drw: Drawable, gc: GCptr l2, points: &(@[XPoint][n]), n: int n
+  , drw: Drawable, gc: !GCptr l2, points: &(@[XPoint][n]), n: int n
   , shape: int, mode: int
   ) : void = "#atsctrb_XFillPolygon"
 // end of [XFillPolygon]
@@ -1198,17 +1240,85 @@ fun XFillPolygon {l1:anz} {l2:addr} {n:nat} (
 
 fun XFillArc {l1:anz} {l2:addr} (
     dpy: !Display_ptr l1
-  , drw: Drawable, gc: GCptr l2
+  , drw: Drawable, gc: !GCptr l2
   , x: int, y: int, width: uint, height: uint, angle1: int, angle2: int
   ) : void = "#atsctrb_XFillArc"
 // end of [XFillArc]
 
 fun XFillArcs {l1:anz} {l2:addr} {n:nat} (
     dpy: !Display_ptr l1
-  , drw: Drawable, gc: GCptr l2, arcs: &(@[XArc][n]), n: int n
+  , drw: Drawable, gc: !GCptr l2, arcs: &(@[XArc][n]), n: int n
   ) : void = "#atsctrb_XFillArcs"
 // end of [XFillArcs]
 
+(* ****** ****** *)
+
+// 8.5: Font Metrics
+
+typedef XCharStruct =
+  $extype_struct "XCharStruct" of {
+  lbearing= sint, rbearing= sint
+, width= sint, ascent= sint, descent= sint
+, attributes= usint
+} // end of [XCharStruct]
+
+typedef XFontProp =
+  $extype_struct "XFontProp" of { name= Atom, card32= ulint }
+// end of [XFontProp]
+
+typedef XChar2b =
+  $extype_struct "XChar2b" of { byte1= uchar, byte2= uchar }
+// end of [XChar2b]
+
+typedef XFontStruct = $extype_struct "XFontStruct" of {
+  XExtData= ptr
+, fid= Font
+, direction= uint
+, min_char_or_byte2= uint
+, max_char_or_byte2= uint
+, min_byte1= uint
+, max_byte1= uint
+, all_chars_exist= Bool
+, default_char= uint
+// , n_properties= int n
+// , properties= ptr l_properties // @[XFontProp][n] @ l_properties
+, min_bounds= XCharStruct
+, max_bounds= XCharStruct
+// , per_char= ptr // XCharStruct*
+, ascent= int
+, descent= int
+} // end of [XFontStruct]
+
+(* ****** ****** *)
+
+// 8.5.1: Loading and Freeing Fonts
+
+absview XFreeFont_v (l:addr)
+prfun XFreeFont_v_unnull (pf: XFreeFont_v null): void
+
+fun XLoadFont {l:anz}
+  (dpy: !Display_ptr l, name: string): Font = "#atsctrb_XLoadFont"
+// end of [XLoadFont]
+
+fun XQueryFont {l:anz}
+  (dpy: !Display_ptr l, font_id: XID)
+  : [l:addr] (XFreeFont_v l, ptropt_v (XFontStruct, l) | ptr l)
+  = "#atsctrb_XQueryFont"
+// end of [XQueryFont]
+
+fun XLoadQueryFont {l:anz}
+  (dpy: !Display_ptr l, name: string)
+  : [l:addr] (XFreeFont_v l, ptropt_v (XFontStruct, l) | ptr l)
+  = "#atsctrb_XLoadQueryFont"
+// end of [XLoadQueryFont]
+
+fun XFreeFont {l1:anz} {l2:addr} (
+    pf1: XFreeFont_v l2, pf2: XFontStruct @ l2
+  | dpy: !Display_ptr l1, p_font_struct: ptr l2
+  ) : void
+  = "#atsctrb_XFreeFont"
+// end of [XFreeFont]
+            
 (* ****** ****** *)
 
 //
@@ -1507,9 +1617,45 @@ praxi XEvent_xmotion_castn : XEvent_castfn_t (XMotionEvent)
 
 // 10.9: Exposure Events
 
+typedef XExposeEvent = $extype_struct "XExposeEvent" of {
+  type= EventType_t
+, serial= ulint
+, send_event= Bool
+/*
+, display= Display_ptr0 // Display the event was read freom
+*/
+, window= Window
+// individual section
+, x= int, y= int
+, width= int, height= int
+, count= int  
+} // end of [XExposeEvent]
+
+praxi XEvent_xexpose_castn : XEvent_castfn_t (XExposeEvent)
+
 (* ****** ****** *)
 
 // 10.10: Window State Change Events
+
+(* ****** ****** *)
+
+// 10.10.1: CirculateNotify Events
+
+typedef XCirculateEvent =
+  $extype_struct "XCirculateEvent" of {
+  type= EventType_t
+, serial= ulint
+, send_event= Bool
+/*
+, display= Display_ptr0 // Display the event was read freom
+*/
+// individual section
+, event= Window
+, window= Window
+, place= int  
+} // end of [XCirculateEvent]
+
+praxi XEvent_xcirculate_castn : XEvent_castfn_t (XCirculateEvent)
 
 (* ****** ****** *)
 

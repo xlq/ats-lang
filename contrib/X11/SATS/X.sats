@@ -164,4 +164,121 @@ macdef LASTEvent = $extval (EventType_t, "LASTEvent")
 
 (* ****** ****** *)
 
+(*
+** GRAPHICS DEFINITIONS
+*)
+
+(* graphics functions, as in GC.alu *)
+
+macdef GXclear = $extval (int, "GXclear")
+macdef GXand = $extval (int, "GXand")
+macdef GXandReverse = $extval (int, "GXandReverse")
+macdef GXcopy = $extval (int, "GXcopy")
+macdef GXandInverted = $extval (int, "GXandInverted")
+macdef GXnoop = $extval (int, "GXnoop")
+macdef GXxor = $extval (int, "GXxor")
+macdef GXor = $extval (int, "GXor")
+macdef GXnor = $extval (int, "GXnor")
+macdef GXequiv = $extval (int, "GXequiv")
+macdef GXinvert = $extval (int, "GXinvert")
+macdef GXorReverse = $extval (int, "GXorReverse")
+macdef GXcopyInverted = $extval (int, "GXcopyInverted")
+macdef GXorInverted = $extval (int, "GXorInverted")
+macdef GXnand = $extval (int, "GXnand")
+macdef GXset = $extval (int, "GXset")
+
+(* LineStyle *)
+
+macdef LineSolid = $extval (int, "LineSolid")
+macdef LineOnOffDash = $extval (int, "LineOnOffDash")
+macdef LineDoubleDash = $extval (int, "LineDoubleDash")
+
+(* capStyle *)
+
+macdef CapNotLast = $extval (int, "CapNotLast")
+macdef CapButt = $extval (int, "CapButt")
+macdef CapRound = $extval (int, "CapRound")
+macdef CapProjecting = $extval (int, "CapProjecting")
+
+(* joinStyle *)
+
+macdef JoinMiter = $extval (int, "JoinMiter")
+macdef JoinRound = $extval (int, "JoinRound")
+macdef JoinBevel = $extval (int, "JoinBevel")
+
+(* fillStyle *)
+
+macdef FillSolid = $extval (int, "FillSolid")
+macdef FillTiled = $extval (int, "FillTiled")
+macdef FillStippled = $extval (int, "FillStippled")
+macdef FillOpaqueStippled = $extval (int, "FillOpaqueStippled")
+
+(* fillRule *)
+
+macdef EvenOddRule = $extval (int, "EvenOddRule")
+macdef WindingRule = $extval (int, "WindingRule")
+
+(* subwindow mode *)
+
+macdef ClipByChildren = $extval (int, "ClipByChildren")
+macdef IncludeInferiors = $extval (int, "IncludeInferiors")
+
+(** SetClipRectangles ordering *)
+
+macdef Unsorted = $extval (int, "Unsorted")
+macdef YSorted = $extval (int, "YSorted")
+macdef YXSorted = $extval (int, "YXSorted")
+macdef YXBanded = $extval (int, "YXBanded")
+
+(* CoordinateMode for drawing routines *)
+
+macdef CoordModeOrigin = $extval (int, "CoordModeOrigin")
+macdef CoordModePrevious = $extval (int, "CoordModePrevious")
+
+(* Polygon shapes *)
+
+macdef Complex = $extval (int, "Complex")
+macdef Nonconvex = $extval (int, "Nonconvex")
+macdef Convex = $extval (int, "Convex")
+
+(* Arc modes for PolyFillArc *)
+
+macdef ArcChord = $extval (int, "ArcChord")
+macdef ArcPieSlice = $extval (int, "ArcPieSlice")
+
+(*
+**
+** GC components:
+** masks used in CreateGC, CopyGC, ChangeGC, OR'ed into GC.stateChanges
+**
+*)
+
+macdef GCFunction = $extval (int, "GCFunction")
+macdef GCPlaneMask = $extval (int, "GCPlaneMask")
+macdef GCForeground = $extval (int, "GCForeground")
+macdef GCBackground = $extval (int, "GCBackground")
+macdef GCLineWidth = $extval (int, "GCLineWidth")
+macdef GCLineStyle = $extval (int, "GCLineStyle")
+macdef GCCapStyle = $extval (int, "GCCapStyle")
+macdef GCJoinStyle = $extval (int, "GCJoinStyle")
+macdef GCFillStyle = $extval (int, "GCFillStyle")
+macdef GCFillRule = $extval (int, "GCFillRule")
+macdef GCTile = $extval (int, "GCTile")
+macdef GCStipple = $extval (int, "GCStipple")
+macdef GCTileStipXOrigin = $extval (int, "GCTileStipXOrigin")
+macdef GCTileStipYOrigin = $extval (int, "GCTileStipYOrigin")
+macdef GCFont = $extval (int, "GCFont")
+macdef GCSubwindowMode = $extval (int, "GCSubwindowMode")
+macdef GCGraphicsExposures = $extval (int, "GCGraphicsExposures")
+macdef GCClipXOrigin = $extval (int, "GCClipXOrigin")
+macdef GCClipYOrigin = $extval (int, "GCClipYOrigin")
+macdef GCClipMask = $extval (int, "GCClipMask")
+macdef GCDashOffset = $extval (int, "GCDashOffset")
+macdef GCDashList = $extval (int, "GCDashList")
+macdef GCArcMode = $extval (int, "GCArcMode")
+
+macdef GCLastBit = $extval (int, "GCLastBit")
+
+(* ****** ****** *)
+
 (* end of [X.sats] *)

@@ -104,7 +104,7 @@ fun qsort {a:viewt@ype} {n:nat} (
   , nmemb: size_t n, size: sizeof_t a
   , compar: (&a, &a) -<fun> int
   ) :<> void
-  = "#atslib_qsort" // macro
+  = "atslib_qsort" // function!
 
 (* ****** ****** *)
 

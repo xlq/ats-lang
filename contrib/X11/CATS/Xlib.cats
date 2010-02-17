@@ -221,6 +221,16 @@
 #define atsctrb_XFreeGC XFreeGC
 #define atsctrb_XFlushGC XFlushGC
 
+#define atsctrb_XSetForeground XSetForeground
+#define atsctrb_XSetBackground XSetBackground
+#define atsctrb_XSetFunction XSetFunction
+#define atsctrb_XSetPlaneMask XSetPlaneMask
+#define atsctrb_XSetFont XSetFont
+
+
+#define atsctrb_XSetLineAttributes XSetLineAttributes
+#define atsctrb_XSetDashes XSetDashes
+
 /* ****** ****** */
 
 //
@@ -249,6 +259,11 @@
 #define atsctrb_XFillPolygon XFillPolygon
 #define atsctrb_XFillArc XFillArc
 #define atsctrb_XFillArcs XFillArcs
+
+#define atsctrb_XLoadFont XLoadFont
+#define atsctrb_XQueryFont XQueryFont
+#define atsctrb_XLoadQueryFont XLoadQueryFont
+#define atsctrb_XFreeFont XFreeFont
 
 /* ****** ****** */
 

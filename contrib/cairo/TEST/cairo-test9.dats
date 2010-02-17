@@ -176,35 +176,42 @@ implement main () = () where {
   val wd = double_of wd and ht = double_of ht
   val margin = double_of margin
 //
-  val () = cairo_translate (cr, margin/2, margin/2)
-  var i : int = 0 and j : int = 0
-  val () = (
-    for (i := 0; i < 3; i := i + 1) (
-    for (j := 0; j < 3; j := j + 1) let
-      val (pf | ()) = cairo_save (cr)
-      val () = cairo_translate (cr, i*wd/2, j*ht/2)
-      val () = draw_rings (cr, 0, 0, 128.0, 4.0, 40)
-      val () = cairo_restore (pf | cr)
-    in
-      // nothing
-    end // end of [for]
-    ) // end of [for]
-  ) // end of [val]
+  fun fshow {l:addr} .<l>.
+    (cr: !cairo_ref l):<cloref1> void = () where {
+    val (pf | ()) = cairo_save (cr)
+    val () = cairo_translate (cr, margin/2, margin/2)
+    var i : int = 0 and j : int = 0
+    val () = (
+      for (i := 0; i < 3; i := i + 1) (
+      for (j := 0; j < 3; j := j + 1) let
+        val (pf | ()) = cairo_save (cr)
+        val () = cairo_translate (cr, i*wd/2, j*ht/2)
+        val () = draw_rings (cr, 0, 0, 128.0, 4.0, 40)
+        val () = cairo_restore (pf | cr)
+      in
+        // nothing
+      end // end of [for]
+      ) // end of [for]
+    ) // end of [val]
 //
-  val () = (
-    for (i := 0; i < 2; i := i + 1) (
-    for (j := 0; j < 2; j := j + 1) let
-      val (pf | ()) = cairo_save (cr)
-      val () =
-        cairo_translate (cr, i*wd/2+wd/4, j*ht/2+ht/4)
-      // end of [val]
-      val () = draw_rings (cr, i, 0, 128.0, 4.0, 40)
-      val () = cairo_restore (pf | cr)
-    in
-      // nothing
-    end // end of [for]
-    ) // end of [for]
-  ) // end of [val]
+    val () = (
+      for (i := 0; i < 2; i := i + 1) (
+      for (j := 0; j < 2; j := j + 1) let
+        val (pf | ()) = cairo_save (cr)
+        val () =
+          cairo_translate (cr, i*wd/2+wd/4, j*ht/2+ht/4)
+        // end of [val]
+        val () = draw_rings (cr, i, 0, 128.0, 4.0, 40)
+        val () = cairo_restore (pf | cr)
+      in
+        // nothing
+      end // end of [for]
+      ) // end of [for]
+    ) // end of [val]
+  val () = cairo_restore (pf | cr)
+  } // end of [fshow]
+//
+  val () = fshow (cr)
 //
   val () = XSelectInput (dpy, mywin, flag) where {
     val flag = ExposureMask lor KeyPressMask lor ButtonPressMask lor StructureNotifyMask
@@ -216,6 +223,13 @@ implement main () = () where {
     val type = report.type
   in
     case+ 0 of
+    | _ when (type = Expose) => let
+        prval (pf, fpf) = XEvent_xexpose_castn (view@ report)
+        val count = (&report)->count
+        prval () = view@ report := fpf (pf)
+      in
+        if count = 0 then fshow (cr)
+      end // end of [Expose]
     | _ when (type = KeyPress) => (break)
     | _ => () // ignored
   end // end of [val]
