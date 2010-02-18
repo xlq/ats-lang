@@ -1927,8 +1927,8 @@ fun XStringListToTextProperty {n:nat} (
 
 //
 
-// for a array of strings:
-abst@ype XStrarr (n: int) // array + strings are allocated by XAlloc
+// for a array of linear strings:
+absviewtype XStrarr (n:int) // array + strings are allocated by XAlloc
 fun XTextPropertyToStringList {l:addr} (
     text: &XTextProperty l
   , list: &XStrarr? >> opt (XStrarr n, i <> 0)
@@ -1936,9 +1936,69 @@ fun XTextPropertyToStringList {l:addr} (
   ) : #[i:int;n:nat] Status i = "#atsctrb_XTextPropertyToStringList"
 // end of [XTextPropertyToStringList]
 
+fun XFreeStringList {n:nat} (list: XStrarr (n)): void
+  = "#atsctrb_XFreeStringList"
+// end of [XFreeStringList]
+
 (* ****** ****** *)
 
 // 14.1.3: Setting and Reading Text Properties
+
+fun XSetTextProperty {l:anz} (
+    dpy: !Display_ptr l
+  , win: Window
+  , text: &XTextProperty
+  , property: Atom
+  ) : void = "#atsctrb_XSetTextProperty"
+// end of [XSetTextProperty]
+
+fun XGetTextProperty {l:anz} (
+    dpy: !Display_ptr l
+  , win: Window
+  , text: &XTextProperty? >> opt (XTextProperty, i <> 0)
+  , property: Atom
+  ) : #[i:int] Status i = "#atsctrb_XGetTextProperty"
+// end of [XGetTextProperty]
+
+(* ****** ****** *)
+
+// 14.1.4: Setting and Reading the WM_NAME Property
+
+fun XSetWMName {l:anz} (
+    dpy: !Display_ptr l
+  , win: Window
+  , text: &XTextProperty
+  ) : void = "#atsctrb_XSetWMName"
+// end of [XSetWMName]
+
+fun XGetWMName {l:anz} (
+    dpy: !Display_ptr l
+  , win: Window
+  , text: &XTextProperty >> opt (XTextProperty, i <> 0)
+  ) : #[i:int] Status i = "#atsctrb_XGetWMName"
+// end of [XGetWMName]
+
+fun XStoreName {l:anz} (
+    dpy: !Display_ptr l
+  , win: Window
+  , window_name: string // the name is copied into ...
+  ) : void = "#atsctrb_XStoreName"
+// end of [XStoreName]
+
+absviewtype XString
+fun XFetchName {l:anz} (
+    dpy: !Display_ptr l
+  , win: Window
+  , window_name: &XString? >> opt (XString, i <> 0)
+  ) : #[i:int] Status i
+  = "#atsctrb_XFetchName"
+// end of [XFetchName]
+
+fun XStringFree (str: XString): void = "#atsctrb_XFree"
+
+(* ****** ****** *)
+
+// 14.1.5: Setting and Reading the WM_ICON_NAME Property
 
 (* ****** ****** *)
 

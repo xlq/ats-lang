@@ -346,6 +346,19 @@ atsctrb_XStringToTextProperty (
 //
 
 #define atsctrb_XTextPropertyToStringList XTextPropertyToStringList
+#define atsctrb_XFreeStringList XFreeStringList
+
+//
+
+#define atsctrb_XSetTextProperty XSetTextProperty
+#define atsctrb_XGetTextProperty XGetTextProperty
+
+#define atsctrb_XSetWMName XSetWMName
+#define atsctrb_XGetWMName XGetWMName
+#define atsctrb_XStoreName XStoreName
+#define atsctrb_XFetchName XFetchName
+
+//
 
 #define atsctrb_XAllocWMHints XAllocWMHints
 #define atsctrb_XAllocSizeHints XAllocSizeHints

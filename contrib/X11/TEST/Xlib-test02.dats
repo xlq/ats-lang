@@ -385,6 +385,15 @@ implement main (argc, argv) = () where {
 
 (* ****** ****** *)
 
+//
+// HX-2010-02-17:
+// For a quick reference, I attach as follows
+// the original code taken from the O'Reily book on
+// Xlib Programming.
+//
+
+(* ****** ****** *)
+
 ////
 
 #include <X11/Xlib.h>
