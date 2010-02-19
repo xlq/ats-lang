@@ -701,8 +701,8 @@ typedef XWindowAttributes =
 
 fun XGetWindowAttributes {l:anz} (
     dpy: !Display_ptr l, win: Window
-  , attr: &XWindowAttributes? >> XWindowAttributes
-  ) : Status
+  , attr: &XWindowAttributes? >> opt (XWindowAttributes, i <> 0)
+  ) : #[i:int] Status i
   = "#atsctrb_XGetWindowAttributes"
 
 fun XGetGeometry {l:anz} (
@@ -712,7 +712,7 @@ fun XGetGeometry {l:anz} (
   , width: &uint? >> uint, height: &uint? >> uint
   , border_width: &uint? >> uint
   , depth: &uint? >> uint
-  ) : Status
+  ) : Status // ...
   = "#atsctrb_XGetWindowAttributes"
 
 (* ****** ****** *)
@@ -841,8 +841,9 @@ fun XFreeColormap {l:anz}
 fun XLookupColor {l:anz} (
     dpy: !Display_ptr l
   , colormap: Colormap, color_name: string
-  , exact_def: &XColor? >> XColor, screen_def: &XColor? >> XColor 
-  ) : Status // nonzero if the name is resolved
+  , exact_def: &XColor? >> opt (XColor, i <> 0)
+  , screen_def: &XColor? >> opt (XColor, i <> 0)
+  ) : #[i:int] Status i // nonzero if the name is resolved
   = "#atsctrb_XLookupColor"
 // end of [XLookupColor]
 
@@ -850,8 +851,8 @@ fun XParseColor {l:anz} (
     dpy: !Display_ptr l
   , colormap: Colormap
   , spec: string
-  , exact_def: &XColor? >> XColor
-  ) : Status // nonzero if the name is resolved
+  , exact_def: &XColor? >> opt (XColor, i <> 0)
+  ) : #[i:int] Status i // nonzero if the name is resolved
   = "#atsctrb_XParseColor"
 // end of [XParseColor]
 
@@ -865,8 +866,8 @@ fun XcmsLookupColor (...)
 
 fun XAllocColor {l:anz} (
     dpy: !Display_ptr l
-  , colormap: Colormap, screen_in_out: &XColor >> XColor
-  ) : Status
+  , colormap: Colormap, screen_in_out: &XColor >> opt (XColor, i <> 0)
+  ) : #[i:int] Status i
   = "#atsctrb_XAllocColor"
 // end of [XAllocColor]
 
@@ -878,9 +879,9 @@ fun XAllocNamedColor {l:anz} (
     dpy: !Display_ptr l
   , colormap: Colormap
   , color_name: string
-  , screen_def: &XColor? >> XColor
-  , exact_def: &XColor? >> XColor
-  ) : Status
+  , screen_def: &XColor? >> opt (XColor, i <> 0)
+  , exact_def: &XColor? >> opt (XColor, i <> 0)
+  ) : #[i:int] Status i
   = "#atsctrb_XAllocNamedColor"
 // end of [XAllocNamedColor]
 
@@ -2033,6 +2034,34 @@ fun XFetchName {l:anz} (
 
 // 14.1.5: Setting and Reading the WM_ICON_NAME Property
 
+fun XSetWMIconName {l:anz} (
+    dpy: !Display_ptr l
+  , win: Window
+  , text: &XTextProperty
+  ) : void = "#atsctrb_XSetWMIconName"
+// end of [XSetWMIconName]
+
+fun XGetWMIconName {l:anz} (
+    dpy: !Display_ptr l
+  , win: Window
+  , text: &XTextProperty >> opt (XTextProperty, i <> 0)
+  ) : #[i:int] Status i = "#atsctrb_XGetWMIconName"
+// end of [XGetWMIconName]
+
+fun XSetIconName {l:anz} (
+    dpy: !Display_ptr l
+  , win: Window
+  , icon_name: string // copied into ...
+  ) : void = "#atsctrb_XSetIconName"
+// end of [XSetIconName]
+
+fun XGetIconName {l:anz} (
+    dpy: !Display_ptr l
+  , win: Window
+  , icon_name: &XString? >> opt (XString0, i <> 0)
+  ) : #[i:int] Status i = "#atsctrb_XGetIconName"
+// end of [XGetIconName]
+
 (* ****** ****** *)
 
 // 14.1.6: Setting and Reading the WM_HINTS Property
@@ -2052,6 +2081,8 @@ macdef XUrgencyHint = $extval (lint, "XUrgencyHint")
 macdef WithdrawnState = $extval (int, "WithdrawnState")
 macdef NormalState = $extval (int, "NormalState")
 macdef IconicState = $extval (int, "IconicState")
+
+//
 
 typedef XWMHints =
   $extype_struct "XWMHints" of {
@@ -2167,6 +2198,21 @@ fun XGetClassHint {l:anz} (
   , class_hint: &XClassHint? >> opt (XClassHint, i <> 0)
   ) : #[i:int] Status i
   = "#atsctrb_XGetClassHint"
+
+(* ****** ****** *)
+
+// 14.1.9: Setting and Reading the WM_TRANSIENT_FOR Property
+
+fun XSetTransientForHint {l:anz} (
+    dpy: !Display_ptr l, win: Window, prop_window: Window
+  ) : void = "#atsctrb_XSetTransientForHint"
+// end of [XSetTransientForHint]
+
+fun XGetTransientForHint {l:anz} (
+    dpy: !Display_ptr l
+  , win: Window, prop_window: &Window? >> opt (Window, i <> 0)
+  ) : #[i:int] Status i = "#atsctrb_XGetTransientForHint"
+// end of [XGetTransientForHint]
 
 (* ****** ****** *)
 

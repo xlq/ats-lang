@@ -36,7 +36,8 @@
 
 ## ###### ###### ##
 
-YACC=byacc
+#YACC=byacc
+YACC=yacc
 ATSOPT="$(ATSHOME)"/bootstrap0/atsopt
 BOOTDIR="$(ATSHOME)"/bootstrap1
 ATSCCFLAG=-g

@@ -358,6 +358,14 @@ atsctrb_XStringToTextProperty (
 #define atsctrb_XStoreName XStoreName
 #define atsctrb_XFetchName XFetchName
 
+#define atsctrb_XSetWMIconName XSetWMIconName
+#define atsctrb_XGetWMIconName XGetWMIconName
+#define atsctrb_XSetIconName XSetIconName
+#define atsctrb_XGetIconName XGetIconName
+
+#define atsctrb_XSetTransientForHint XSetTransientForHint
+#define atsctrb_XGetTransientForHint XGetTransientForHint
+
 //
 
 #define atsctrb_XAllocWMHints XAllocWMHints
