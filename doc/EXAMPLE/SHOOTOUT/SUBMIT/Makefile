@@ -11,14 +11,15 @@ CC=$(HOME)/gcc-4.3.2/bin/gcc
 all: \
   binary-trees binary-trees2 \
   fannkuch fannkuch2 \
-  fasta fasta2 \
+  fasta fasta2 fasta4 \
   k-nucleotide k-nucleotide2 \
   mandelbrot \
   n-body n-body2 \
   pidigits pidigits2 pidigits3 \
   regex-dna regex-dna2 \
   reverse-complement reverse-complement2 \
-  spectral-norm thread-ring \
+  spectral-norm spectral-norm2 \
+  thread-ring \
 
 binary-trees: binary-trees.dats
 #	$(ATSCC) -O3 binary-trees.dats -o binary-trees
@@ -61,6 +62,9 @@ fasta: fasta.dats
 
 fasta2: fasta2.dats
 	$(ATSCC) -msse2 -mfpmath=sse -O3 fasta2.dats -o fasta2
+
+fasta4: fasta4.dats
+	$(ATSCC) -msse2 -mfpmath=sse -O3 fasta4.dats -o fasta4
 
 k-nucleotide: k-nucleotide.dats
 #	$(ATSCC) -O3 k-nucleotide.dats -o k-nucleotide
@@ -170,6 +174,7 @@ cleanall: clean
 	rm -f fasta
 	rm -f fasta_smp
 	rm -f fasta2
+	rm -f fasta4
 	rm -f fasta_output.txt
 	rm -f k-nucleotide
 	rm -f k-nucleotide2

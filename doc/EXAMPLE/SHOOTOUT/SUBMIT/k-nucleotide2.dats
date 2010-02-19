@@ -28,7 +28,7 @@ staload _(*anonymous*) = "prelude/DATS/list_vt.dats"
 typedef char *symbol_t ;
 typedef struct { symbol_t sym ; int cnt ; } tblent_t ;
 
-%}
+%} // end of [%{^]
 
 (* ****** ****** *)
 
@@ -221,7 +221,7 @@ ats_int_type symtbl_search_probe
   } // end of [while]
 } /* end of [symtbl_search_probe] */
 
-%}
+%} // end of [%{]
 
 implement symtbl_search (tbl, name) = let
 
@@ -267,7 +267,7 @@ ats_bool_type symtbl_insert_probe
   return 1 ;
 }
 
-%}
+%} // end of [%{]
 
 (* ****** ****** *)
 
@@ -304,7 +304,7 @@ ats_void_type tblent_array_fold
   return ;
 }
 
-%}
+%} // end of [%{]
 
 implement symtbl_fold {a} (tbl, f, res) = let
   val (vbox pf_tbl | p_tbl) = tbl
@@ -367,21 +367,21 @@ end // end of [write_count]
 
 (* ****** ****** *)
 
-extern fun getline (): string = "getline"
-extern fun getrest (sz: &size_t? >> size_t n): #[n:nat] string n = "getrest"
+extern fun getline (): string = "__getline"
+extern fun getrest (sz: &size_t? >> size_t n): #[n:nat] string n = "__getrest"
 
 %{$
 
 #define LINEBUFSZ 1024
 char theLineBuffer[LINEBUFSZ] ;
-ats_ptr_type getline () {
+ats_ptr_type __getline () {
   fgets (theLineBuffer, LINEBUFSZ, stdin) ; return theLineBuffer ;
 } /* end of [getline] */
 
 #define RESTBUFSZ (128 * 1024 * 1024)
 char theRestBuffer[RESTBUFSZ] ;
 
-ats_ptr_type getrest (ats_ref_type p_n) {
+ats_ptr_type __getrest (ats_ref_type p_n) {
   int c ; size_t i ; char *s ;
   s = theRestBuffer ; i = 0 ;
   while ((c = fgetc(stdin)) != EOF) {
@@ -392,7 +392,7 @@ ats_ptr_type getrest (ats_ref_type p_n) {
     fprintf (stderr, "exit(ATS): too much data for processing\n") ; exit(1) ;
   }
   return theRestBuffer ;
-} /* end of [getrest] */
+} /* end of [__getrest] */
 
 %}
 
@@ -439,7 +439,9 @@ end (* end of [main] *)
 %{$
 
 ats_ptr_type
-dna_count (ats_ptr_type tbl, ats_size_type n, ats_size_type k) {
+dna_count (
+  ats_ptr_type tbl, ats_size_type n, ats_size_type k
+) {
   char *sym ;
   symtbl_clear (tbl) ;
   symtbl_symlen_set (tbl, k) ;
@@ -448,9 +450,9 @@ dna_count (ats_ptr_type tbl, ats_size_type n, ats_size_type k) {
     symtbl_insert (tbl, sym, 0) ; n -= 1 ; sym += 1 ;
   }
   return tbl ;
-}
+} // end of [dna_count]
 
-%}
+%} // end of [%{$]
 
 (* ****** ****** *)
 

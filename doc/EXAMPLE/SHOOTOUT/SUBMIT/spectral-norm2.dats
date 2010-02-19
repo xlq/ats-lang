@@ -6,7 +6,7 @@
 ** contributed by Zhiqiang Ren
 **
 ** compilation command:
-**   atscc -O3 -msse2 spectral-norm3.dats -o spectral-norm3 -lm
+**   atscc -O3 -msse2 spectral-norm2.dats -o spectral-norm2 -lm
 **
 *)
 
@@ -16,33 +16,16 @@
 
 (* ****** ****** *)
 
-%{^
-// this is only needed for backward compatibility
-typedef double v2df __attribute__((vector_size(16))) ;
-typedef v2df ats_v2df_type ;
-static ats_v2df_type atslib_v2df_0_0 = { 0.0, 0.0 } ;
-static ats_v2df_type atslib_v2df_1_1 = { 1.0, 1.0 } ;
-static inline ats_v2df_type
-atslib_v2df_make_int_int
-  (int i0, int i1) { v2df dd = { i0, i1 } ; return dd ; }
-static inline ats_double_type
-atslib_v2df_get_fst (v2df dd) { return ((double*)&dd)[0] ; }
-static inline ats_double_type
-atslib_v2df_get_snd (v2df dd) { return ((double*)&dd)[1] ; }
-static inline v2df atslib_add_v2df_v2df (v2df dd1, v2df dd2) { return (dd1 + dd2) ; }
-static inline v2df atslib_mul_v2df_v2df (v2df dd1, v2df dd2) { return (dd1 * dd2) ; }
-static inline v2df atslib_div_v2df_v2df (v2df dd1, v2df dd2) { return (dd1 / dd2) ; }
-%}
-
 // staload "libc/SATS/SIMD_v2df.sats"
 // this is only needed for backward compatibility
+%{^
+#include "libc/CATS/SIMD_v2df.cats"
+%}
 abst@ype v2df = $extype "ats_v2df_type"
 extern val v2df_0_0: v2df = "atslib_v2df_0_0"
 extern val v2df_1_1: v2df = "atslib_v2df_1_1"
-symintr v2df_make
 extern fun v2df_make_int_int
   (i0: int, i1: int): v2df = "atslib_v2df_make_int_int"
-overload v2df_make with v2df_make_int_int
 extern fun v2df_get_fst (dd: v2df): double = "atslib_v2df_get_fst"
 extern fun v2df_get_snd (dd: v2df): double = "atslib_v2df_get_snd"
 extern fun add_v2df_v2df (_: v2df, _: v2df): v2df = "atslib_add_v2df_v2df"
@@ -63,7 +46,7 @@ darr_make (ats_int_type n, ats_double_type f) {
   p0 = (double*)memalign(64, n * sizeof(double)) ;
   p = p0; for (i = 0; i < n; ++i) *p++ = f ;
   return p0 ;
-}
+} // end of [darr_make]
 static inline ats_void_type
 darr_free (ats_ptr_type A) { free (A) ; return ; }
 %} // end of [%{^]
@@ -87,11 +70,11 @@ macdef denom (i, j) =
 macdef eval_A (i,j) = 1.0 / denom (,(i), ,(j))
 
 fn eval_A_0 (i: int, j: int): v2df = let // two divisions at a time
-  val k1 = denom(i,j); val k2 = denom (i,j+1) in v2df_1_1 / v2df_make (k1, k2)
+  val k1 = denom(i,j); val k2 = denom (i,j+1) in v2df_1_1 / v2df_make_int_int (k1, k2)
 end // end of [eval_A_0]
 
 fn eval_A_1 (i: int, j: int): v2df = let // two divisions at a time
-  val k1 = denom(i,j); val k2 = denom (i+1,j) in v2df_1_1 / v2df_make (k1, k2)
+  val k1 = denom(i,j); val k2 = denom (i+1,j) in v2df_1_1 / v2df_make_int_int (k1, k2)
 end // end of [eval_A_1]
 
 (* ****** ****** *)
@@ -183,7 +166,7 @@ implement main (argc, argv) = let
     val ui = p_u->[i] and vi = p_v->[i] in vBv += ui*vi; vv += vi*vi
   end // end of [val]
 //
-  val () = printf ("vBv = %f and vv = %f\n", @(vBv, vv))
+  // val () = printf ("vBv = %f and vv = %f\n", @(vBv, vv))
   val () = darr_free (pf_u | p_u)
   val () = darr_free (pf_v | p_v)
   val () = darr_free (pf_tmp | p_tmp)
@@ -193,4 +176,4 @@ end // end of [main]
 
 (* ****** ****** *)
 
-(* end of [spectral-norm3.dats] *)
+(* end of [spectral-norm2.dats] *)

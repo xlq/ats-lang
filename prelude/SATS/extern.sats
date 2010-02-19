@@ -59,7 +59,7 @@
 absview minus_viewt0ype_view (vt1: viewt@ype, v2: view) = vt1
 stadef minus = minus_viewt0ype_view
 prfun minus_addback // [minus] is defined in basics_sta.sats
-  {vt1:viewt@ype} {v2:view} (pf1: minus(vt1, v2), pf2: v2 | x: !vt1): void
+  {vt1:viewt@ype} {v2:view} (pf1: minus (vt1, v2), pf2: v2 | x: !vt1): void
 // end of [minus_addback]
 
 (* ****** ****** *)

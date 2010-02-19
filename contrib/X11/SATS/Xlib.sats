@@ -46,9 +46,54 @@ staload "contrib/X11/SATS/X.sats"
 
 (* ****** ****** *)
 
-absview XFree_v (l:addr) // ticket view for XFree
-absview XFree_v (a:viewt@ype, l:addr) // ticket view for XFree
-absview XFree_v (a:viewt@ype, n:int, l:addr) // ticket view for XFree
+// these are resource allocated by
+absviewtype XPtr (a:viewt@ype, l:addr)
+viewtypedef XPtr0 (a:viewt@ype) = [l:addr] XPtr (a, l)
+viewtypedef XPtr1 (a:viewt@ype) = [l:anz] XPtr (a, l)
+//
+prfun XPtr_viewget {a:viewt@ype} {l:anz}
+  (x: !XPtr (a, l)): (minus (XPtr (a, l), a @  l), a @ l)
+//
+castfn ptr_of_XPtr {a:viewt@ype} {l:addr} (x: !XPtr (a, l)): ptr l
+overload ptr_of with ptr_of_XPtr
+
+//
+
+absviewtype XArray (a:viewt@ype, n:int, l:addr)
+viewtypedef XArray1 (a:viewt@ype, n:int) = [l:anz] XArray (a, n, l)
+//
+prfun XArray_viewget
+  {a:viewt@ype} {n:nat} {l:anz} (x: !XArray (a, n, l))
+  : (minus (XArray (a, n, l), array_v (a, n, l)), array_v (a, n, l))
+//
+castfn ptr_of_XArray
+  {a:viewt@ype} {n:nat} {l:addr} (x: !XArray (a, n, l)): ptr l
+overload ptr_of with ptr_of_XArray
+
+//
+
+absviewtype XString (l:addr)
+viewtypedef XString0 = [l:addr] XString (l)
+viewtypedef XString1 = [l:anz] XString (l)
+//
+castfn ptr_of_XString {l:addr} (x: !XString (l)): ptr l
+overload ptr_of with ptr_of_XString
+
+//
+// for a array of linear strings:
+absviewtype XStrarr (n:int, l:addr) // array + strings are allocated by XAlloc
+viewtypedef XStrarr1 (n:int) = [l:anz] XStrarr (n, l)
+
+(* ****** ****** *)
+
+fun XPtrFree {a:viewt@ype} {l:addr} (x: XPtr (a, l)): void
+  = "#atsctrb_XFree"
+
+fun XArrayFree {a:viewt@ype} {n:nat} {l:addr} (x: XArray (a, n, l)): void
+  = "#atsctrb_XFree"
+
+fun XStringFree {a:viewt@ype} {l:addr} (x: XString l): void
+  = "#atsctrb_XFree"
 
 (* ****** ****** *)
 
@@ -131,11 +176,12 @@ fun XDefaultDepth {l:anz}
   (dpy: !Display_ptr l, nscr: int):<> int
   = "#atsctrb_XDefaultDepth"
 
-// note: for simplifying error handling,
-fun XListDepths {l:anz} // [cnt] needs to be set to 0 first!
-  (dpy: !Display_ptr l, nscr: int, cnt: &int 0 >> int n)
-  : #[la:addr;n:nat] (XFree_v (int, n, la), @[int][n] @ la | ptr la)
+fun XListDepths {l:anz} (
+    dpy: !Display_ptr l
+  , nscr: int, cnt: &int? >> opt (int n, la <> null)
+  ) : #[n:nat;la:addr] XArray (int, n, la)
   = "#atsctrb_XListDepths"
+// end of [XListDepths]
 
 (* ****** ****** *)
 
@@ -240,12 +286,9 @@ typedef XPixmapFormatValues =
 } // end of [XPixmapFormatValues]
 
 fun XListPixmapFormats {l:anz}
-  (dpy: !Display_ptr l, n: &int 0 >> int n)
-  : #[la:addr;n:nat] (
-    XFree_v (XPixmapFormatValues, n, la)
-  , array_v (XPixmapFormatValues, n, la)
-  | ptr la
-  ) = "#atsctrb_XListPixmapFormats"
+  (dpy: !Display_ptr l, n: &int? >> opt (int n, la <> null))
+  : #[n:nat;la:addr] XArray (XPixmapFormatValues, n, l)
+  = "#atsctrb_XListPixmapFormats"
 
 macdef LSBFirst = $extval (int, "LSBFirst")
 macdef MSBFirst = $extval (int, "MSBFirst")
@@ -356,22 +399,17 @@ fun XNoOp {l:anz} (dpy: !Display_ptr l): void
 
 (* ****** ****** *)
 
-fun XFree0
-  {l:addr} (pf: XFree_v l | p: ptr l): void
-  = "#atsctrb_XFree"
+absview XFree_v (l:addr)
 
-fun XFree1 {a:viewt@ype} {l:addr}
-  (pf1: XFree_v (a, l), pf2: a? @ l | p: ptr l): void
-  = "#atsctrb_XFree"
-
-fun XFree2 {a:viewt@ype} {n:nat} {l:addr}
-  (pf1: XFree_v (a, n, l), pf2: array_v (a?, n, l) | p: ptr l): void
-  = "#atsctrb_XFree"
+fun XFree0 {l:addr}
+  (pf: XFree_v l | p: ptr l): void = "#atsctrb_XFree"
+// end of [XFree0]
 
 symintr XFree
 overload XFree with XFree0
-overload XFree with XFree1
-overload XFree with XFree2
+overload XFree with XPtrFree
+overload XFree with XArrayFree
+overload XFree with XStringFree
 
 (* ****** ****** *)
 
@@ -631,11 +669,9 @@ fun XQueryTree {l:anz} (
   , win: Window
   , root: &Window? >> Window
   , parent: &Window? >> Window
-  , children: &ptr? >> ptr l
-  , nchilren: &int >> int n
-  ) : #[l:addr;n:nat] (
-    XFree_v (Window, n, l), array_v (Window, n, l) | Status
-  ) = "#atsctrb_XQueryTree"
+  , children: &ptr? >> opt (XArray1 (Window, n), i <> 0)
+  , nchilren: &int? >> opt (int n, i <> 0)
+  ) : #[i:int;n:nat] Status i = "#atsctrb_XQueryTree"
 // end of [XQueryTree]
 
 typedef XWindowAttributes =
@@ -716,8 +752,7 @@ fun XInternAtom {l:anz} (
 // end of [XInternAtom]
 
 fun XGetAtomName {l:anz}
-  (dpy: !Display_ptr l, atom: Atom)
-  : [l_str:addr] (XFree_v l, strbuf_v l_str | ptr l_str)
+  (dpy: !Display_ptr l, atom: Atom): XString0
   = "#atsctrb_XGetAtomName"
 // end of [XGetAtomName]
 
@@ -1435,10 +1470,9 @@ fun XUninstallColormap {l:anz}
 // end of [XUninstallColormap]
 
 fun XListInstalledColormaps {l:anz} (
-    dpy: !Display_ptr l, win: Window, nmap: &int? >> int n
-  ) : #[la:addr;n:nat] (
-    XFree_v (Colormap, n, la), @[Colormap][n] @ la | ptr la
-  ) = "#atsctrb_XListInstalledColormaps"
+    dpy: !Display_ptr l, win: Window, nmap: &int? >> opt (int n, la <> null)
+  ) : #[n:nat;la:addr] XArray (Colormap, n, la)
+  = "#atsctrb_XListInstalledColormaps"
 // end of [XListInstalledColormaps]
 
 (* ****** ****** *)
@@ -1520,10 +1554,11 @@ fun XAddHosts {l:anz} {n:nat}
 // end of [XAddHosts]
 
 fun XListHosts {l:anz} (
-    dpy: !Display_ptr l, nhost: &int? >> int n, state: &XBool? >> XBool
-  ) : #[la:addr;n:nat] (
-    XFree_v (XHostAddress, n, la), @[XHostAddress][n] @ la | ptr la
-  ) = "#atsctrb_XListHosts"
+    dpy: !Display_ptr l
+  , nhost: &int? >> opt (int n, la <> null)
+  , state: &XBool? >> opt (XBool, la <> null)
+  ) : #[n:nat;la:addr] XArray (XHostAddress, n, la)
+  = "#atsctrb_XListHosts"
 // end of [XListHosts]
 
 fun XRemoveHost {l:anz}
@@ -1916,27 +1951,27 @@ fun XDefaultString (): string = "#atsctrb_XDefaultString"
 fun XStringToTextProperty (
     str: string
   , text: &XTextProperty? >> opt (XTextProperty l, i <> 0)
-  ) : #[i:int;l:addr] (XFree_v l | Status i) = "atsctrb_XStringToTextProperty"
+  ) : #[i:int;l:addr] (XFree_v l | Status i)
+  = "atsctrb_XStringToTextProperty"
 // end of [XStringToTextProperty]
 
 fun XStringListToTextProperty {n:nat} (
     list: &(@[string][n]), n: int n
   , text: &XTextProperty? >> opt (XTextProperty l, i <> 0)
-  ) : #[i:int;l:addr] (XFree_v l | Status i) = "#atsctrb_XStringListToTextProperty"
+  ) : #[i:int;l:addr] (XFree_v l | Status i)
+  = "#atsctrb_XStringListToTextProperty"
 // end of [XStringListToTextProperty]
 
 //
 
-// for a array of linear strings:
-absviewtype XStrarr (n:int) // array + strings are allocated by XAlloc
 fun XTextPropertyToStringList {l:addr} (
     text: &XTextProperty l
-  , list: &XStrarr? >> opt (XStrarr n, i <> 0)
+  , list: &XStrarr? >> opt (XStrarr1 n, i <> 0)
   , n: &int? >> opt (int n, i <> 0)
   ) : #[i:int;n:nat] Status i = "#atsctrb_XTextPropertyToStringList"
 // end of [XTextPropertyToStringList]
 
-fun XFreeStringList {n:nat} (list: XStrarr (n)): void
+fun XFreeStringList {n:nat} {l:addr} (list: XStrarr (n, l)): void
   = "#atsctrb_XFreeStringList"
 // end of [XFreeStringList]
 
@@ -1989,12 +2024,10 @@ absviewtype XString
 fun XFetchName {l:anz} (
     dpy: !Display_ptr l
   , win: Window
-  , window_name: &XString? >> opt (XString, i <> 0)
+  , window_name: &XString? >> opt (XString0, i <> 0)
   ) : #[i:int] Status i
   = "#atsctrb_XFetchName"
 // end of [XFetchName]
-
-fun XStringFree (str: XString): void = "#atsctrb_XFree"
 
 (* ****** ****** *)
 
@@ -2032,9 +2065,8 @@ typedef XWMHints =
 , window_group= XID // id of related window group // may be extended in the future
 } // end of [XWMHints]
 
-fun XAllocWMHints ()
-  : [l:addr] (XFree_v (XWMHints, l), ptropt_v (XWMHints?, l) | ptr l)
-  = "#atsctrb_XAllocWMHints"
+fun XAllocWMHints
+  (): XPtr0 (XWMHints) = "#atsctrb_XAllocWMHints"
 // end of [XAllocWMHints]
 
 fun XSetWNHints {l:addr}
@@ -2043,8 +2075,7 @@ fun XSetWNHints {l:addr}
 // end of [XSetWNHints]
 
 fun XGetWNHints {l:addr}
-  (dpy: !Display_ptr l, win: Window)
-  : [l:addr] (XFree_v (XWMHints, l), ptropt_v (XWMHints, l) | ptr l)
+  (dpy: !Display_ptr l, win: Window): XPtr0 (XWMHints)
   = "#atsctrb_XGetWNHints"
 // end of [XGetWNHints]
 
@@ -2081,8 +2112,7 @@ typedef XSizeHints =
 } // end of [XSizeHints]
 
 fun XAllocSizeHints ()
-  : [l:addr] (XFree_v (XSizeHints, l), ptropt_v (XSizeHints?, l) | ptr l)
-  = "#atsctrb_XAllocSizeHints"
+  : XPtr0 (XSizeHints) = "#atsctrb_XAllocSizeHints"
 // end of [XAllocSizeHints]
 
 //
@@ -2094,8 +2124,8 @@ fun XSetWMNormalHints {l:anz}
 
 fun XGetWMNormalHints {l:anz} (
     dpy: !Display_ptr l, win: Window
-  , hints: &XSizeHints? >> XSizeHints, supplied: &lint? >> lint
-  ) : Status
+  , hints: &XSizeHints? >> opt (XSizeHints, i <> 0), supplied: &lint? >> lint
+  ) : #[i:int] Status i
   = "#atsctrb_XGetWMNormalHints"
 // end of [XGetWMNormalHints]
 
@@ -2108,8 +2138,9 @@ fun XSetWMSizeHints {l:anz}
 
 fun XGetWMSizeHints {l:anz} (
     dpy: !Display_ptr l, win: Window
-  , hints: &XSizeHints? >> XSizeHints, supplied: &lint? >> lint, property: Atom
-  ) : Status
+  , hints: &XSizeHints? >> opt (XSizeHints, i <> 0)
+  , supplied: &lint? >> lint, property: Atom
+  ) : #[i:int] Status i
   = "#atsctrb_XGetWMSizeHints"
 // end of [XGetWMSizeHints]
 
@@ -2123,16 +2154,18 @@ typedef XClassHint = $extype_struct "XClassHint" of {
 } // end of [XClassHint]
 
 fun XAllocClassHint ()
-  : [l:addr] (XFree_v (XClassHint, l), ptropt_v (XClassHint?, l) | ptr l)
-  = "#atsctrb_XAllocClassHint"
+  : XPtr0 (XClassHint) = "#atsctrb_XAllocClassHint"
 // end of [XAllocClassHint]
 
 fun XSetClassHint {l:anz}
   (dpy: !Display_ptr l, win: Window, class_hint: XClassHint): void
   = "#atsctrb_XSetClassHint"
 
-fun XGetClassHint {l:anz}
-  (dpy: !Display_ptr l, win: Window, class_hint: &XClassHint? >> XClassHint): Status
+fun XGetClassHint {l:anz} (
+    dpy: !Display_ptr l
+  , win: Window
+  , class_hint: &XClassHint? >> opt (XClassHint, i <> 0)
+  ) : #[i:int] Status i
   = "#atsctrb_XGetClassHint"
 
 (* ****** ****** *)

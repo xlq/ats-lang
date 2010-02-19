@@ -34,11 +34,14 @@ implement main () = () where {
   val depth = XDefaultDepth (dpy, 0)
   val () = (print "depth = "; print depth; print_newline ())
 //
-  var asz: int = 0
-  val (pf_free, pf_arr | p_arr) = XListDepths (dpy, 0, asz)
-  val () = (print "asz = "; print asz; print_newline ())
+  var asz: int
+  val xarr = XListDepths (dpy, 0, asz)
+  val p_arr = ptr_of (xarr)
+  val () = assert_errmsg (p_arr <> null, #LOCATION)
+  prval () = opt_unsome (asz)
+  val () = (print "asz = "; print_int asz; print_newline ())
   val () = (print "p_arr = "; print p_arr; print_newline ())
-  val () = XFree (pf_free, pf_arr | p_arr)
+  val () = XFree (xarr)
 //
   val gc = XDefaultGC (dpy, 0)
 //

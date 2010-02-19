@@ -126,9 +126,13 @@ fun SDL_Surface_pitch {l:anz} (sf: !SDL_Surface_ref l): Uint16
   = "#atsctrb_SDL_Surface_pitch"
 
 fun SDL_Surface_clip_rect {l:anz} (
-    sf: !SDL_Surface_ref l >> minus (SDL_Surface_ref l, SDL_Rect @ l_rect)
-  ) : #[l_rect:addr] (SDL_Rect @ l_rect | ptr l_rect)
-  = "#atsctrb_SDL_Surface_clip_rect"
+    sf: !SDL_Surface_ref l
+  ) : [l_rect:addr] (
+    minus (SDL_Surface_ref l, SDL_Rect @ l_rect)
+  , SDL_Rect @ l_rect
+  | ptr l_rect
+  ) = "#atsctrb_SDL_Surface_clip_rect"
+// end of [SDL_Surface_clip_rect]
 
 fun SDL_Surface_refcount {l:anz} (sf: !SDL_Surface_ref l): int
   = "#atsctrb_SDL_Surface_refcount"

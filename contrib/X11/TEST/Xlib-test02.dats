@@ -239,17 +239,20 @@ implement main (argc, argv) = () where {
 //
   var window_size: int = TOO_SMALL
 //
-  val (pfszhnt_free, pfszhnt_at | pszhnt) = XAllocSizeHints ()
+  val xpszhnt = XAllocSizeHints ()
+  val pszhnt = ptr_of (xpszhnt)
   val () = assert_errmsg (pszhnt <> null, #LOCATION)
-  prval Some_v (pfszhnt_at) = pfszhnt_at
+  prval (fpfszhnt, pfszhnt_at) = XPtr_viewget (xpszhnt)
 //
-  val (pfwmhnt_free, pfwmhnt_at | pwmhnt) = XAllocWMHints ()
+  val xpwmhnt = XAllocWMHints ()
+  val pwmhnt = ptr_of (xpwmhnt)
   val () = assert_errmsg (pwmhnt <> null, #LOCATION)
-  prval Some_v (pfwmhnt_at) = pfwmhnt_at
+  prval (fpfwmhnt, pfwmhnt_at) = XPtr_viewget (xpwmhnt)
 //
-  val (pfcshnt_free, pfcshnt_at | pcshnt) = XAllocClassHint ()
+  val xpcshnt = XAllocClassHint ()
+  val pcshnt = ptr_of (xpcshnt)
   val () = assert_errmsg (pcshnt <> null, #LOCATION)
-  prval Some_v (pfcshnt_at) = pfcshnt_at
+  prval (fpfcshnt, pfcshnt_at) = XPtr_viewget (xpcshnt)
 //
   val display_name = (case+ 0 of
     | _ when argc >= 2 => stropt_some (string1_of_string argv.[1])
@@ -376,9 +379,12 @@ implement main (argc, argv) = () where {
 //
   val () = XFreeFont
     (pf_free, pf_ftinfo | display, p_ftinfo)
-  val () = XFree (pfszhnt_free, pfszhnt_at | pszhnt)
-  val () = XFree (pfwmhnt_free, pfwmhnt_at | pwmhnt)
-  val () = XFree (pfcshnt_free, pfcshnt_at | pcshnt)
+  prval () = minus_addback (fpfszhnt, pfszhnt_at | xpszhnt)
+  val () = XFree (xpszhnt)
+  prval () = minus_addback (fpfwmhnt, pfwmhnt_at | xpwmhnt)
+  val () = XFree (xpwmhnt)
+  prval () = minus_addback (fpfcshnt, pfcshnt_at | xpcshnt)
+  val () = XFree (xpcshnt)
   val () = XFreeGC (display, gc)
   val () = XCloseDisplay (display)
 } // end of [main]
