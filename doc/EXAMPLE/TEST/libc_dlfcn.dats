@@ -1,11 +1,11 @@
 (*
 ** some testing code for functions declared in
-** libc/SATS/stdlib.sats
+** libc/SATS/dlfcn.sats
 *)
 
 //
 // Author: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
-// Time: May, 2009
+// Time: February, 2010
 //
 
 (* ****** ****** *)
