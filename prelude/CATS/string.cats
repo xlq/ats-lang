@@ -173,36 +173,46 @@ atspre_string_get_char_at
 
 static inline
 ats_char_type
-atspre_string_get_char_at__intsz
-  (const ats_ptr_type s, ats_int_type offset) {
+atspre_string_get_char_at__intsz (
+  const ats_ptr_type s, ats_int_type offset
+) {
   return *((char*)s + offset) ;
 } /* end of [atspre_string_get_char_at__intsz] */
 
 static inline
 ats_void_type
-atspre_strbuf_set_char_at
-  (ats_ptr_type s, ats_size_type offset, ats_char_type c) {
+atspre_strbuf_set_char_at (
+  ats_ptr_type s, ats_size_type offset, ats_char_type c
+) {
+/*
+  fprintf (stdout, "atspre_strbuf_set_char_at: s = %s\n", s);
+  fprintf (stdout, "atspre_strbuf_set_char_at: offset = %li\n", (unsigned long)offset);
+  fprintf (stdout, "atspre_strbuf_set_char_at: c = %c\n", c);
+*/
   *((char*)s + offset) = c ; return ;
 } /* end of [atspre_strbuf_set_char_at] */
 
 static inline
 ats_void_type
-atspre_strbuf_set_char_at__intsz
-  (ats_ptr_type s, ats_int_type offset, ats_char_type c) {
+atspre_strbuf_set_char_at__intsz (
+  ats_ptr_type s, ats_int_type offset, ats_char_type c
+) {
   *((char*)s + offset) = c ; return ;
 } /* end of [atspre_strbuf_set_char_at__intsz] */
 
 static inline
 ats_char_type
-atspre_string_test_char_at
-  (const ats_ptr_type s, ats_size_type offset) {
+atspre_string_test_char_at (
+  const ats_ptr_type s, ats_size_type offset
+) {
   return *((char*)s + offset) ;
 } /* end of [atspre_string_test_char_at] */
 
 static inline
 ats_char_type
-atspre_string_test_char_at__intsz
-  (const ats_ptr_type s, ats_int_type offset) {
+atspre_string_test_char_at__intsz (
+  const ats_ptr_type s, ats_int_type offset
+) {
   return *((char*)s + offset) ;
 } /* end of [atspre_string_test_char_at__intsz] */
 

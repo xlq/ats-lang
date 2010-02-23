@@ -246,7 +246,7 @@ mainats (
   randomize(homosapiens, ARRAY_SIZE(homosapiens), n*5, &rand);
 //
   return;
-} // end of [val]
+} // end of [mainats]
                                                     
 %}
 

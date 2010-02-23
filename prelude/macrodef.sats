@@ -45,7 +45,7 @@
 
 #print "Loading [macrodef.ats] starts!\n"
 
-#endif
+#endif // end of [VERBOSE_PRELUDE]
 
 (* ****** ****** *)
 
@@ -66,6 +66,7 @@ macdef andalso (x, y) = if ,(x) then ,(y) else false
 (* only a macro in long form can be defined recursively *)
 macrodef rec power_mac x(*base:code*) n(*exponent:int*) =
   if n > 1 then `(,(x) * ,(power_mac x (n-1))) else (if n > 0 then x else `(1))
+// end of [power_mac]
 
 macdef square_mac (x) = ,(power_mac x 2) and cube_mac (x)  = ,(power_mac x 3)
 
@@ -87,23 +88,42 @@ end // end of [prerr_mac]
 
 (* ****** ****** *)
 
+macdef println (str) = begin
+  print ,(str); print_newline ()
+end // end of [println]
+
+macdef prerrln (str) = begin
+  prerr ,(str); prerr_newline ()
+end // end of [prerrln]
+
+(* ****** ****** *)
+
 symintr is_nil; symintr is_cons
 symintr tup_head; symintr tup_tail
 
 local
 
-macrodef rec printstar_rec args =
+macrodef
+rec printstar_rec args =
   if is_nil args then `() else `(
     print ,(tup_head args) ; ,(printstar_rec (tup_tail args))
   ) // end of [if]
+// end of [printstar_rec]
 
-macrodef rec prerrstar_rec args =
+macrodef
+rec prerrstar_rec args =
   if is_nil args then `() else `(
     prerr ,(tup_head args) ; ,(prerrstar_rec (tup_tail args))
   ) // end of [if]
+// end of [prerrstar_rec]
 
 in // in of [local]
 
+//
+// for instance, we can write something like:
+//
+// printstarln @("x+y = ", x+y, "and x*y = ", x*y)
+//
 macdef printstar args = ,(printstar_rec args)
 macdef printstarln args = begin ,(printstar_rec args); print_newline () end
 
@@ -118,7 +138,7 @@ end // end of [local]
 
 #print "Loading [macrodef.ats] finishes!\n"
 
-#endif
+#endif // end of [VERBOSE_PRELUDE]
 
 (* ****** ****** *)
 

@@ -10,11 +10,11 @@ Given the performance of each tested ATS program, it is probably fair to
 say that ATS code (in functional style) can be as efficient as the C
 code. ATS at this point clearly outperforms Haskell (GHC), O'Caml
 (ocamlopt) and ML (both MLton and SML/NJ) on most of these examples by a
-clear margin as far as efficiency is of the concern.
+significant margin as far as efficiency is of the concern.
 
 ------
 
-README.FIRST
+README
 Makefile
 
 binary-search.dats

@@ -29,9 +29,9 @@ implement main (argc, argv) = let
   val intpat = "^[1-9][0-9]*$"
   val () = assert (argc = 2)
   val intstr = argv.[1]
-  val (pf_gc, pf_at | p_re) = regexp_compile_exn intpat
-  val ans = test_regexp_match_str (!p_re, intstr)
-  val () = regexp_free (pf_gc, pf_at | p_re)
+  val re = regexp_compile_exn intpat
+  val ans = test_regexp_match_str (re, intstr)
+  val () = regexp_free (re)
 in
   if ans then begin
     printf ("the input [%s] represents a valid integer.\n", @(intstr))

@@ -37,7 +37,8 @@
 
 //
 // some common functions that iterate over natural numbers;
-// The code serves as an example for writing iterative loops.
+// The code mainly serves as an example for writing iterative loops
+// in ATS
 //
 
 (* ****** ****** *)
@@ -53,6 +54,7 @@ implement foreach_main
     (pf: !v | f: fun_t, n: int n, i: int i, env: !vt):<f> void =
     if i < n then (f (pf | i, env); aux (pf | f, n, i+1, env))
     else ()
+  // end of [aux]
 in
   aux (pf | f, n, 0, env)
 end // end of [foreach_main]
@@ -173,6 +175,7 @@ implement
     (pf: !v | f: fun_t, i: int i, env: !vt):<f> void =
     if i > 0 then (f (pf | env); aux (pf | f, i-1, env))
     else ()
+  // end of [aux]
 in
   aux (pf | f, n, env)
 end // end of [repeat_main]

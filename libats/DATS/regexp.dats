@@ -48,27 +48,36 @@ staload "libats/SATS/regexp.sats"
 
 (* ****** ****** *)
 
-%{$
+%{^
 
-pcre *atslib_regexp_compile_exn
+ats_ptr_type
+atslib_regexp_compile
   (ats_ptr_type pattern) {
-  const char *errptr ; int erroffset ; pcre *result ;
+  const char *errptr ;
+  int erroffset ; pcre *result ;
   result = pcre_compile (
     (char*)pattern
   , 0 /* option bits */
   , &errptr, &erroffset
   , (unsigned char*)0 /* tableptr */
   ) ; // end of [pcre_compile]
-
-  if (!result) {
-    fprintf (stderr, "Exit: [pcre_compile] failed: %s\n", errptr) ;
-    exit (1) ;
-  } // end of [if]
-
   return result ;
-} /* end of [atslib_regexp_compile_exn] */
+} /* end of [atslib_regexp_compile] */
 
-%}
+%} // end of [%{^]
+
+implement
+regexp_compile_exn (pattern) = let
+  val re0 = regexp_compile (pattern) 
+  val p_re0 = ptr_of (re0)
+in
+  if (p_re0 <> null) then re0 else let
+    val _ = regexp_free_null (re0)
+  in
+    prerrf ("exit(ATS): [pcre_comiple] failed: pattern = %s\n", @(pattern));
+    exit(1)
+  end // end of [if]
+end // end of [regexp_compile_exn]
 
 (* ****** ****** *)
 
@@ -83,8 +92,10 @@ end // end of [test_regexp_match_str]
 
 %{$
 
-ats_bool_type atslib_test_regexp_match_str_len_ofs
-  (ats_ptr_type re, ats_ptr_type str, ats_int_type len, ats_int_type ofs) {
+ats_bool_type
+atslib_test_regexp_match_str_len_ofs (
+  ats_ptr_type re, ats_ptr_type str, ats_int_type len, ats_int_type ofs
+) {
   int result ;
   result = pcre_exec (
     (pcre*)re
@@ -106,7 +117,7 @@ ats_bool_type atslib_test_regexp_match_str_len_ofs
   return ats_false_bool ; /* deadcode */
 } /* end of [atslib_test_regexp_match_str_len_ofs] */
 
-%}
+%} // end of [%{$]
 
 (* ****** ****** *)
 
@@ -130,11 +141,10 @@ atslib_string_split_regexp_search (
   , (int*)ofsvec /* ovector */
   , 3 /* ovecsize */
   ) ; // end of [pcre_exec]
-
   return result ;
 } /* end of [atslib_string_split_regexp_search] */
 
-%}
+%} // end of [%{^]
 
 implement string_split_regexp (str, re) = let
   extern fun search {n,i:nat | i < n} {l:addr} (
@@ -188,12 +198,13 @@ end // end of [string_split_regexp]
 
 val () = initialize () where {
   extern fun initialize (): void = "atslib_libats_regexp_initialize"
-}
+} // end of [val]
 
 (* ****** ****** *)
 
 %{$
 
+// HX-2010-02-20: is this really necessary?
 ats_void_type atslib_libats_regexp_initialize () {
   pcre_malloc = (void *(*)(size_t))ats_malloc_gc ;
   pcre_free = (void (*)(void*))ats_free_gc ;
@@ -202,7 +213,7 @@ ats_void_type atslib_libats_regexp_initialize () {
   return ;  
 } /* end of [atslib_libats_regexp_initialize] */
 
-%}
+%} // end of [%{$]
 
 (* ****** ****** *)
 

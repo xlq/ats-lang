@@ -43,33 +43,46 @@
 
 (* ****** ****** *)
 
-abst@ype REGEXP
-abstype REGEXPref
+absviewtype REGEXPptr (l:addr)
+viewtypedef REGEXPptr0 = [l:addr] REGEXPptr l
+viewtypedef REGEXPptr1 = [l:addr | l <> null] REGEXPptr l
+//
+castfn ptr_of_REGEXPptr {l:addr} (x: !REGEXPptr l): ptr l
+overload ptr_of with ptr_of_REGEXPptr
+//
+abstype REGEXPref // = ref (REGEXP)
 
 (* ****** ****** *)
 
-fun regexp_compile_exn (pattern: string)
-  : [l:addr] (free_gc_v l, REGEXP @ l | ptr l)
-  = "atslib_regexp_compile_exn"
+// implemented in C
+fun regexp_compile (pattern: string): REGEXPptr0
+  = "atslib_regexp_compile"
 
-fun regexp_free {l:addr}
-  (pf_gc: free_gc_v l, pf_at: REGEXP @ l | p: ptr l): void
-  = "atslib_regexp_free"
-
-(* ****** ****** *)
-
-fun regexp_ref_make {l:addr}
-  (pf_gc: free_gc_v l, pf_at: REGEXP @ l | p: ptr l): REGEXPref
-  = "atslib_regexp_ref_make"
+// implemented in ATS
+fun regexp_compile_exn (pattern: string): REGEXPptr1
 
 (* ****** ****** *)
 
-fun test_regexp_match_str (re: &REGEXP, str: string): bool
+castfn regexp_free_null (p: REGEXPptr null): ptr
+
+fun regexp_free
+  {l:anz} (p: REGEXPptr l): void = "atslib_regexp_free"
+// end of [regexp_free]
+
+(* ****** ****** *)
+
+fun regexp_ref_make {l:anz} (p: REGEXPptr l): REGEXPref
+
+(* ****** ****** *)
+
+fun test_regexp_match_str {l:anz}
+  (re: !REGEXPptr l, str: string): bool
 
 fun test_regexp_match_str_len_ofs
-  {n,i:int | 0 <= i; i <= n }
-  (re: &REGEXP, str: string n, len: int n, ofs: int i): bool
+  {l:anz} {n,i:int | 0 <= i; i <= n }
+  (re: !REGEXPptr l, str: string n, len: int n, ofs: int i): bool
   = "atslib_test_regexp_match_str_len_ofs"
+// end of [test_regexp_match_str_len_ofs]
 
 symintr test_regexp_match
 overload test_regexp_match with test_regexp_match_str
@@ -77,8 +90,10 @@ overload test_regexp_match with test_regexp_match_str_len_ofs
 
 (* ****** ****** *)
 
-fun string_split_regexp (str: string, re: REGEXPref): stream string
+fun string_split_regexp
+  (str: string, re: REGEXPref): stream string
   = "atslib_string_split_regexp"
+// end of [string_split_regexp]
 
 (* ****** ****** *)
 

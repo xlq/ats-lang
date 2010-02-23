@@ -52,7 +52,7 @@
 
 %{#
 #include "libats/CATS/genarrays.cats"
-%}
+%} // end of [%{#]
 
 (* ****** ****** *)
 

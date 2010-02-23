@@ -35,7 +35,13 @@
 
 (* ****** ****** *)
 
-// some common functions that iterate over integers
+//
+// some common functions that iterate over natural numbers;
+// The code mainly serves as an example for writing iterative loops
+// in ATS
+//
+
+(* ****** ****** *)
 
 fun foreach_main {v:view} {vt: viewtype} {n:nat} {f:eff}
   (pf: !v | n: int n, f: (!v | natLt n, !vt) -<f> void, env: !vt):<f> void
@@ -68,6 +74,7 @@ fun foreach2_clo {v:view} {m,n:nat} {f:eff}
 // this one is the usual functional version
 fun foreach2_cloref {m,n:nat} {f:eff}
   (m: int m, n: int n, f: (natLt m, natLt n) -<cloref,f> void) :<f> void
+// end of [foreach2_cloref]
 
 (* ****** ****** *)
 
