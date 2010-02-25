@@ -9,7 +9,7 @@
 (*
 ** ATS - Unleashing the Potential of Types!
 **
-** Copyright (C) 2002-2008 Hongwei Xi, Boston University
+** Copyright (C) 2002-2009 Hongwei Xi, Boston University
 **
 ** All rights reserved
 **
@@ -31,15 +31,13 @@
 
 (* ****** ****** *)
 
-(* author: Hongwei Xi (hwxi AT cs DOT bu DOT edu) *)
+(* Author: Hongwei Xi (hwxi AT cs DOT bu DOT edu) *)
 
 (* ****** ****** *)
 
 %{#
-
 #include "libc/CATS/stdarg.cats"
-
-%}
+%} // end of [%{#]
 
 (* ****** ****** *)
 
@@ -54,7 +52,7 @@ absviewt@ype va_list1 (t: t@ype, ts: types) = va_list (ts)
 
 typedef va_arg_type (t:t@ype) =
   {ts:types} (&va_list1 (t, ts) >> va_list ts) -<> t
-// ...
+// end of [va_arg_type]
 
 fun{t:t@ype} va_arg : va_arg_type (t)
 
@@ -64,16 +62,12 @@ fun va_arg_ptr : va_arg_type (ptr) = "atslib_va_arg_ptr"
 fun va_arg_bool : va_arg_type (bool) = "atslib_va_arg_bool"
 fun va_arg_char : va_arg_type (char) = "atslib_va_arg_char"
 
-fun va_arg_string
-  : va_arg_type (string) = "atslib_va_arg_ptr"
-// end of ...
+fun va_arg_string : va_arg_type (string) = "atslib_va_arg_ptr"
 
 (* ****** ****** *)
 
 (*
-
 fun va_start ... // this one is built-in
-
 *)
 
 fun va_end (ap: &va_list >> va_list?):<> void = "atslib_va_end"
@@ -83,6 +77,7 @@ fun va_end (ap: &va_list >> va_list?):<> void = "atslib_va_end"
 fun va_copy {ts:types}
   (dst: &va_list? >> va_list ts, src: va_list ts):<> void
   = "atslib_va_copy"
+// end of [va_copy]
 
 (* ****** ****** *)
 
