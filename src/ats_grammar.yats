@@ -3209,7 +3209,7 @@ int yylex () {
     tok = yylex_tok0 ; yylex_tok0 = -1 ;
   } else {
     tok = ats_lexer_token_get () ;
-  }
+  } // end of [if]
 /*
   fprintf (stdout, "tok = %i\n", tok) ;
 */
@@ -3267,16 +3267,24 @@ void yyerror (char *s) {
 } /* end of [yyerror] */
 
 ats_ptr_type
-yyparse_main (ats_int_type tok0) {
-
-  // must take care of garbage collection
-
+yyparse_main (
+  ats_int_type tok0
+) {
+/*
+** must take care of garbage collection
+*/
   // fprintf (stderr, "yyparse_main: &yyss = %p\n", &yyss) ;
   // ATS_GC_MARKROOT (&yyss, sizeof(short*)) ; // [ats_malloc_ngc] is used
 
   // fprintf (stderr, "yyparse_main: &yyvs = %p\n", &yyvs) ;
   // ATS_GC_MARKROOT (&yyvs, sizeof(YYSTYPE*)) ;  // [ats_malloc_ngc] is used
 
+/*
+** HX-2010-02-25:
+** if BISON is used then [yyval] is a stack variable and
+** thus there is no need to treat it as a GC root explicitly
+*/
+  extern YYSTYPE yyval;
   // fprintf (stderr, "yyparse_main: &yyval = %p\n", &yyval) ;
   ATS_GC_MARKROOT (&yyval, sizeof(YYSTYPE)) ;
 
