@@ -98,17 +98,11 @@ install: config.h
 	  echo "$$f"; \
 	done
 
-	# install wrapper scripts and symbolic links.
-	for f in ats_env.sh; do \
-	  cd $(abs_top_srcdir) && \
-	  $(INSTALL) -m 755 -D "$$f" $(DESTDIR)$(bindir)/"$$f" && \
-	  echo "$$f"; \
-	done
-
+	# install multiple copies of wrapper script, for each binary.
 	for f in bin/*; do \
-	  cd $(DESTDIR)$(bindir) && \
-	  ln -sf ats_env.sh `basename "$$f"` && \
-	  echo $(bindir)/`basename "$$f"` '->' ats_env.sh; \
+	  cd $(abs_top_srcdir) && \
+	  $(INSTALL) -m 755 -D ats_env.sh $(DESTDIR)$(bindir)/`basename "$$f"` && \
+	  echo install ats_env.sh to $(bindir)/`basename "$$f"`; \
 	done
 
 # NOTE(liulk): once most major functions of Makefile_main is
