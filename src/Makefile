@@ -42,9 +42,9 @@ MAKE=make
 #MAKE=gmake
 
 CC=gcc
-#YACC=yacc // HX: this one may work
-#YACC=bison // HX: this one does not work
-YACC=byacc
+#YACC=yacc # HX: this one should work
+#YACC=bison # HX: this one does not work
+YACC=byacc # HX: this is the default one
 
 ATSCC="$(ATSHOME)"/bin/atscc
 
