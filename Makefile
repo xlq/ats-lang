@@ -48,14 +48,15 @@ all: config.h
 
 -include config.mk
 
-config.h ats_env.sh: \
-  config.h.in config.mk.in ats_env.sh.in configure
+config.h ats_env.sh test.sh: \
+  config.h.in config.mk.in ats_env.sh.in test.sh.in configure
 	test -x config.status && ./config.status || ./configure
 
 Makefile: ;
 configure.ac: ;
 config.mk.in: ;
 ats_env.sh.in: ;
+test.sh.in: ;
 
 config.mk:
 	touch $@
@@ -104,6 +105,10 @@ install: config.h
 	  $(INSTALL) -m 755 -D ats_env.sh $(DESTDIR)$(bindir)/`basename "$$f"` && \
 	  echo install ats_env.sh to $(bindir)/`basename "$$f"`; \
 	done
+
+.PHONY: test
+test:
+	sh test.sh
 
 # NOTE(liulk): once most major functions of Makefile_main is
 # superceded, remove the following code.
