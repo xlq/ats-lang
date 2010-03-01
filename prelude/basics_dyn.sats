@@ -160,24 +160,24 @@ overload assert with assert_bool1
 //
 
 fun assert_errmsg_bool
-  (assertion: bool, msg: string):<!exnref> void
+  (assertion: bool, msg: string):<!exn> void
   = "atspre_assert_errmsg"
 overload assert_errmsg with assert_errmsg_bool
 
 fun assert_errmsg_bool1 {b:bool}
-  (assertion: bool b, msg: string):<!exnref> [b] void
+  (assertion: bool b, msg: string):<!exn> [b] void
   = "atspre_assert_errmsg"
 overload assert_errmsg with assert_errmsg_bool1
 
 //
 
 fun assert_errmsg_bool_string1
-  (assertion: bool, msg: String):<!exnref> void
+  (assertion: bool, msg: String):<!exn> void
   = "atspre_assert_errmsg"
 overload assert_errmsg with assert_errmsg_bool_string1
 
 fun assert_errmsg_bool1_string1 {b:bool}
-  (assertion: bool b, msg: String):<!exnref> [b] void
+  (assertion: bool b, msg: String):<!exn> [b] void
   = "atspre_assert_errmsg"
 overload assert_errmsg with assert_errmsg_bool1_string1
 

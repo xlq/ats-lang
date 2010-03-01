@@ -40,10 +40,8 @@ staload "libc/sys/SATS/types.sats"
 (* ****** ****** *)
 
 %{#
-
 #include "libc/sys/CATS/wait.cats"
-
-%}
+%} // end of [%{#]
 
 (* ****** ****** *)
 
@@ -52,10 +50,12 @@ absprop WIFEXITED_p (s: int, i: int)
 fun WIFEXITED {s:int}
   (status: int s): [i:int] (WIFEXITED_p (s, i) | int i)
   = "atslib_WIFEXITED"
+// end of [WIFEXITED]
 
 fun WEXITSTATUS {s:int}
   {i:int | i <> 0} (pf: WIFEXITED_p (s, i) | status: int s): int
   = "atslib_WEXITSTATUS"
+// end of [WEXITSTATUS]
 
 (* ****** ****** *)
 
@@ -64,10 +64,12 @@ absprop WIFSIGNALED_p (s: int, i: int)
 fun WIFSIGNALED {s:int}
   (status: int s): [i:int] (WIFSIGNALED_p (s, i) | int i)
   = "atslib_WIFSIGNALED"
+// end of [WIFSIGNALED]
 
 fun WTERMSIG {s:int}
   {i:int | i <> 0} (pf: WIFSIGNALED_p (s, i) | status: int s): int
   = "atslib_WTERMSIG"
+// end of [WTERMSIG]
 
 (* ****** ****** *)
 
@@ -76,10 +78,12 @@ absprop WIFSTOPPED_p (s: int, i: int)
 fun WIFSTOPPED {s:int}
   (status: int s): [i:int] (WIFSTOPPED_p (s, i) | int i)
   = "atslib_WIFSTOPPED"
+// end of [WIFSTOPPED]
 
 fun WSTOPSIG {s:int}
   {i:int | i <> 0} (pf: WIFSTOPPED_p (s, i) | status: int s): int
   = "atslib_WSTOPSIG"
+// end of [WSTOPSIG]
 
 (* ****** ****** *)
 
@@ -95,12 +99,14 @@ macdef WNONE = $extval (waitopt_t, "0") // default value for [waitopt_t]
 
 (* ****** ****** *)
 
-fun lor_waitopt_waitopt (opt1: waitopt_t, opt2: waitopt_t): waitopt_t
+fun lor_waitopt_waitopt
+  (opt1: waitopt_t, opt2: waitopt_t): waitopt_t
 overload lor with lor_waitopt_waitopt
 
 fun waitpid
   (chldpid: pid_t, status: &int? >> int, options: waitopt_t): pid_t
   = "atslib_waitpid"
+// end of [waitpid]
 
 (* ****** ****** *)
 

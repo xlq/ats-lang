@@ -1,13 +1,18 @@
 ########################################################################
 
-ats-lang-anairiats-0.1.8
+ats-lang-anairiats-0.1.8:
 
 1. string generation functions have been modified to return linear strings
    that can be freed.
 
+2. $extype_struct is introduced to interface with C structs
+
+3. Fixing a serious mistake causing static unification variable to be
+   wrongly tagged.
+
 ########################################################################
 
-ats-lang-anairiats-0.1.7
+ats-lang-anairiats-0.1.7:
 
 1. Adding support for implementing variadic functions in ATS.
    Please see the files: $ATSHOME/libc/?ATS/stdarg.?ats

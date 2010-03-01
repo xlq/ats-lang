@@ -58,6 +58,10 @@
 
 /* ****** ****** */
 
+#define ATSinline() static inline
+
+/* ****** ****** */
+
 #define ATSdeadcode() \
   do { \
     fprintf ( \
