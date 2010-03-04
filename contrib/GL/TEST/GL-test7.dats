@@ -18,7 +18,7 @@ staload _(*anonymous*) = "prelude/DATS/list_vt.dats"
 typedef point = @{
   x= double, y= double
 , r= double, b= double, g= double, a= double
-}
+} // end of [point]
 
 viewtypedef pgn (n:int) = @{
   nvrtx= int n
@@ -27,7 +27,7 @@ viewtypedef pgn (n:int) = @{
 , vrtxlst= list_vt (point, n)
 , zrot_v= double // rotating velocity
 , angle= double // current angle
-}
+} // end of [pgn]
 
 viewtypedef pgn0 = pgn 0
 viewtypedef pgn = [n:nat] pgn (n)
@@ -160,7 +160,7 @@ end // end of [thePgnLst_del]
 extern
 ats_void_type
 mainats (ats_int_type argc, ats_ptr_type argv) ;
-%}
+%} // end of [%{^]
 
 (* ****** ****** *)
 

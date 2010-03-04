@@ -43,13 +43,13 @@
 
 /* ****** ****** */
 
-static inline
+ATSinline()
 ats_bool_type
 atspre_bool1_of_bool(const ats_bool_type b) { return b ; }
 
 /* ****** ****** */
 
-static inline
+ATSinline()
 ats_bool_type
 atspre_neg_bool(const ats_bool_type b) {
   return (b ? ats_false_bool : ats_true_bool) ;
@@ -57,14 +57,14 @@ atspre_neg_bool(const ats_bool_type b) {
 
 /* ****** ****** */
 
-static inline
+ATSinline()
 ats_bool_type
 atspre_add_bool_bool
   (const ats_bool_type b1, const ats_bool_type b2) {
   if (b1) { return ats_true_bool ; } else { return b2 ; }
 }
 
-static inline
+ATSinline()
 ats_bool_type
 atspre_mul_bool_bool
   (const ats_bool_type b1, const ats_bool_type b2) {
@@ -73,42 +73,42 @@ atspre_mul_bool_bool
 
 /* ****** ****** */
 
-static inline
+ATSinline()
 ats_bool_type
 atspre_lt_bool_bool
   (const ats_bool_type b1, const ats_bool_type b2) {
   return (!b1 && b2) ;
 }
 
-static inline
+ATSinline()
 ats_bool_type
 atspre_lte_bool_bool
   (const ats_bool_type b1, const ats_bool_type b2) {
   return (!b1 || b2) ;
 }
 
-static inline
+ATSinline()
 ats_bool_type
 atspre_gt_bool_bool
   (const ats_bool_type b1, const ats_bool_type b2) {
   return (b1 && !b2) ;
 }
 
-static inline
+ATSinline()
 ats_bool_type
 atspre_gte_bool_bool
   (const ats_bool_type b1, const ats_bool_type b2) {
   return (b1 || !b2) ;
 }
 
-static inline
+ATSinline()
 ats_bool_type
 atspre_eq_bool_bool
   (const ats_bool_type b1, const ats_bool_type b2) {
   if (b1) { return b2 ; } else { return !b2 ; }
 }
 
-static inline
+ATSinline()
 ats_bool_type
 atspre_neq_bool_bool
   (const ats_bool_type b1, const ats_bool_type b2) {
@@ -117,7 +117,7 @@ atspre_neq_bool_bool
 
 // print functions
 
-static inline
+ATSinline()
 ats_void_type
 atspre_fprint_bool (const ats_ptr_type out, const ats_bool_type b) {
   int n ;
@@ -135,7 +135,7 @@ atspre_fprint_bool (const ats_ptr_type out, const ats_bool_type b) {
   return ;
 }
 
-static inline
+ATSinline()
 ats_void_type
 atspre_print_bool(const ats_bool_type b) {
   atspre_stdout_view_get() ;
@@ -144,7 +144,7 @@ atspre_print_bool(const ats_bool_type b) {
   return ;
 }
 
-static inline
+ATSinline()
 ats_void_type
 atspre_prerr_bool(const ats_bool_type b) {
   atspre_stderr_view_get() ;
@@ -155,7 +155,7 @@ atspre_prerr_bool(const ats_bool_type b) {
 
 // stringization
 
-static inline
+ATSinline()
 ats_ptr_type
 atspre_tostring_bool(const ats_bool_type b) {
   return (b ? (ats_ptr_type)"true" : (ats_ptr_type)"false") ;

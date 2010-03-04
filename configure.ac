@@ -9,7 +9,7 @@ dnl =========================================================================
 dnl =
 dnl =  ATS - Unleashing the Power of Types!
 dnl =
-dnl =  Copyright (C) 2002-2008 Hongwei Xi.
+dnl =  Copyright (C) 2002-2010 Hongwei Xi.
 dnl =
 dnl =  ATS is  free software;  you can redistribute it and/or modify it under
 dnl =  the  terms of the  GNU General Public License as published by the Free

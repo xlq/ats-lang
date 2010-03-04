@@ -51,7 +51,7 @@
 /*
 ** HX-2010-02-07: this one is used in many places
 */
-static inline
+ATSinline()
 ats_ptr_type
 atspre_castfn_ptr (ats_ptr_type p) { return p ; }
 
@@ -61,40 +61,41 @@ atspre_castfn_ptr (ats_ptr_type p) { return p ; }
 ** HX: cutting the corners? yes. worth it? probably.
 */
 
-static inline
+ATSinline()
 ats_ptr_type
 atspre_fun_coerce (ats_ptr_type p) { return p ; }
 
-static inline
+ATSinline()
 ats_ptr_type
 atspre_clo_coerce (ats_ptr_type p) { return p ; }
 
 /* ****** ****** */
 
-static inline
+ATSinline()
 ats_ptr_type
 atspre_cloptr_get_view_ptr (ats_ptr_type p) { return p ; }
 
 /* ****** ****** */
 
-static inline
+ATSinline()
 ats_void_type
-atspre_cloptr_free (ats_ptr_type p)
-  { ATS_FREE (p) ; return ; } // end of [atspre_cloptr_free]
+atspre_cloptr_free (
+  ats_ptr_type p ) { ATS_FREE (p) ; return ; }
+// end of [atspre_cloptr_free]
 
 /* ****** ****** */
 
-static inline
+ATSinline()
 ats_ptr_type
 atspre_objmod_upcast (ats_ptr_type p) { return p ; }
 
 /* ****** ****** */
 
-static inline
+ATSinline()
 ats_void_type
 atspre_vbox_make_view_ptr (ats_ptr_type p) { return ; }
 
-static inline
+ATSinline()
 ats_void_type
 atspre_vbox_make_view_ptr_gc (ats_ptr_type p) { return ; }
 
@@ -115,7 +116,7 @@ atspre_exit_prerrf(ats_int_type code, ats_ptr_type fmt, ...) ;
 // int ats_stdin_view_lock = 1 ;
 extern int ats_stdin_view_lock ;
 
-static inline
+ATSinline()
 ats_ptr_type
 atspre_stdin_get(void) {
 #ifdef _ATS_RUNTIME_CHECK
@@ -127,7 +128,7 @@ atspre_stdin_get(void) {
   return (ats_ptr_type)stdin;
 }
 
-static inline
+ATSinline()
 ats_void_type
 atspre_stdin_view_get(void) {
 #ifdef _ATS_RUNTIME_CHECK
@@ -139,7 +140,7 @@ atspre_stdin_view_get(void) {
   return ;
 }
 
-static inline
+ATSinline()
 ats_void_type
 atspre_stdin_view_set(void) {
 #ifdef _ATS_RUNTIME_CHECK
@@ -151,7 +152,7 @@ atspre_stdin_view_set(void) {
   return ;
 }
 
-static inline
+ATSinline()
 ats_bool_type
 atspre_stdin_view_get_opt(void) {
   if (ats_stdin_view_lock) {
@@ -160,7 +161,7 @@ atspre_stdin_view_get_opt(void) {
   return 0 ;
 }
 
-static inline
+ATSinline()
 ats_bool_type
 atspre_stdin_view_set_opt(void) { 
   if (!ats_stdin_view_lock) {
@@ -174,7 +175,7 @@ atspre_stdin_view_set_opt(void) {
 // int ats_stdout_view_lock = 1 ;
 extern int ats_stdout_view_lock ;
 
-static inline
+ATSinline()
 ats_ptr_type
 atspre_stdout_get(void) {
 #ifdef _ATS_RUNTIME_CHECK
@@ -186,7 +187,7 @@ atspre_stdout_get(void) {
   return (ats_ptr_type)stdout ;
 }
 
-static inline
+ATSinline()
 ats_void_type
 atspre_stdout_view_get(void) {
 #ifdef _ATS_RUNTIME_CHECK
@@ -198,7 +199,7 @@ atspre_stdout_view_get(void) {
   return ;
 }
 
-static inline
+ATSinline()
 ats_void_type
 atspre_stdout_view_set(void) {
 #ifdef _ATS_RUNTIME_CHECK
@@ -210,7 +211,7 @@ atspre_stdout_view_set(void) {
   return ;
 }
 
-static inline
+ATSinline()
 ats_bool_type
 atspre_stdout_view_get_opt(void) {
   if (ats_stdout_view_lock) {
@@ -219,7 +220,7 @@ atspre_stdout_view_get_opt(void) {
   return 0 ;
 }
 
-static inline
+ATSinline()
 ats_bool_type
 atspre_stdout_view_set_opt(void) { 
   if (!ats_stdout_view_lock) {
@@ -233,7 +234,7 @@ atspre_stdout_view_set_opt(void) {
 // int ats_stderr_view_lock = 1 ;
 extern int ats_stderr_view_lock ;
 
-static inline
+ATSinline()
 ats_ptr_type
 atspre_stderr_get(void) {
 #ifdef _ATS_RUNTIME_CHECK
@@ -245,7 +246,7 @@ atspre_stderr_get(void) {
   return (ats_ptr_type)stderr ;
 }
 
-static inline
+ATSinline()
 ats_void_type
 atspre_stderr_view_get(void) {
 #ifdef _ATS_RUNTIME_CHECK
@@ -257,7 +258,7 @@ atspre_stderr_view_get(void) {
   return ;
 }
 
-static inline
+ATSinline()
 ats_void_type
 atspre_stderr_view_set(void) {
 #ifdef _ATS_RUNTIME_CHECK
@@ -269,7 +270,7 @@ atspre_stderr_view_set(void) {
   return ;
 }
 
-static inline
+ATSinline()
 ats_bool_type
 atspre_stderr_view_get_opt(void) {
   if (ats_stderr_view_lock) {
@@ -278,7 +279,7 @@ atspre_stderr_view_get_opt(void) {
   return 0 ;
 }
 
-static inline
+ATSinline()
 ats_bool_type
 atspre_stderr_view_set_opt(void) { 
   if (!ats_stderr_view_lock) {
@@ -292,7 +293,7 @@ atspre_stderr_view_set_opt(void) {
 // printing a newline on a given stream also fflushes the buffer
 // associated with the stream.
 
-static inline
+ATSinline()
 ats_void_type
 atspre_fprint_newline(const ats_ptr_type out) {
   int n1, n2 ;
@@ -303,7 +304,7 @@ atspre_fprint_newline(const ats_ptr_type out) {
   return ;
 }
 
-static inline
+ATSinline()
 ats_void_type
 atspre_print_newline(void) {
   atspre_stdout_view_get() ;
@@ -312,7 +313,7 @@ atspre_print_newline(void) {
   return ;
 }
 
-static inline
+ATSinline()
 ats_void_type
 atspre_prerr_newline(void) {
   atspre_stderr_view_get() ;
