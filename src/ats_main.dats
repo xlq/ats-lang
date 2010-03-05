@@ -253,10 +253,18 @@ fn atsopt_usage (cmd: string): void = begin
   print_newline ()
 end // end of [atsopt_usage]
 
+(* ****** ****** *)
+
+//
+// ATS_MAJOR_VERSION, ATS_MINOR_VERSION, ATS_MICRO_VERSION
+// defined in [prelude/params.hats]
+//
+
 fn atsopt_version (): void = begin
-// print "ATS/Anairiats version 0.1.6"; print_newline ()
-// print "ATS/Anairiats version 0.1.7"; print_newline ()
-   print "ATS/Anairiats version 0.2.0"; print_newline ()
+  printf (
+    "The version of ATS/Anairiats is %i.%i.%i\n"
+  , @(ATS_MAJOR_VERSION, ATS_MINOR_VERSION, ATS_MICRO_VERSION)
+  ) // end of [printf]
 end // end of [atsopt_version]
 
 (* ****** ****** *)

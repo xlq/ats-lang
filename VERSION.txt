@@ -1,4 +1,19 @@
-0.2.0-unstable
+0.1.8
+
+<pre>
+ats-lang-aniriats-0.1.8:
+
+As usual, this release contains many bug fixes. Also, the following
+external package have been made available in ATS:
+
+$ATSHOME/contrib/X11
+
+And the following external package have been significantly extended in ATS:
+
+$ATSHOME/contrib/GL
+$ATSHOME/contrib/cairo
+$ATSHOME/contrib/SDL
+</pre>
 
 ######
 
@@ -9,7 +24,7 @@ ats-lang-aniriats-0.1.7:
 
 As usual, this release contains a large number of bug fixes. Also,
 the following external packages have been made available for doing
-graphics in ATS.
+graphics in ATS:
 
 $ATSHOME/contrib/GL
 $ATSHOME/contrib/cairo

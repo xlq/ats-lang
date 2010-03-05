@@ -35,7 +35,9 @@
 
 (* ****** ****** *)
 
+//
 // some system parameters
+//
 
 #define NBIT_PER_BYTE 8 (* 8 bits in each byte *)
 

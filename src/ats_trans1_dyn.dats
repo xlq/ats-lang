@@ -1459,26 +1459,28 @@ end // end of [i0mpdec_tr]
 
 (* ****** ****** *)
 
-fn guad0ec_tr (knd: srpifkind, gd: guad0ec): d1eclst = let
+fn guad0ec_tr
+  (knd: srpifkind, gd: guad0ec): d1eclst = let
   fun loop (knd: srpifkind, gdn: guad0ec_node): d1eclst =
     case+ gdn of
     | GD0Cone (e0xp, d0cs) => let
         val v1al = e1xp_eval_if (knd, e0xp_tr e0xp)
       in
         if v1al_is_true v1al then d0eclst_tr d0cs else nil ()
-      end
+      end // end of [GD0Cone]
     | GD0Ctwo (e0xp, d0cs_then, d0cs_else) => let
         val v1al = e1xp_eval_if (knd, e0xp_tr e0xp)
       in
         if v1al_is_true v1al then d0eclst_tr d0cs_then
         else d0eclst_tr d0cs_else
-      end
+      end // end of [GD0Ctwo]
     | GD0Ccons (e0xp, d0cs_then, knd_elif, gdn_else) => let
         val v1al = e1xp_eval_if (knd, e0xp_tr e0xp)
       in
         if v1al_is_true v1al then d0eclst_tr d0cs_then
         else loop (knd_elif, gdn_else)
-      end
+      end // end of [GD0Ccons]
+  // end of [loop]
 in
   loop (knd, gd.guad0ec_node)
 end // end of [guad0ec_tr]

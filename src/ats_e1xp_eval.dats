@@ -202,7 +202,7 @@ fun e1xp_eval_appid
   (loc: loc_t, id: sym_t, es: e1xplst): v1al = let
 (*
   val () = begin
-    print "e1xp_eval_appid: id = "; print id; print_newline ()
+    print "e1xp_eval_appid: id = "; $Sym.print_symbol id; print_newline ()
   end // end of [val]
 *)
 in

@@ -40,7 +40,13 @@
 
 (* ****** ****** *)
 
-#define ATS_VERBOSE_LEVEL 0 // this one is used in the following files
+#define ATS_MAJOR_VERSION 0
+#define ATS_MINOR_VERSION 1
+#define ATS_MICRO_VERSION 8
+
+(* ****** ****** *)
+
+#define ATS_VERBOSE_LEVEL 0
 
 #define ATS_CC_VERBOSE_LEVEL 1 // this one is used in the following files
 // $ATSHOME/src/ats_ccomp_emit.dats

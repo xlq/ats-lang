@@ -172,6 +172,7 @@ castfn string1_of_strbuf
 
 castfn strbuf_of_string1 {n:nat} (str: string n)
   :<> [m:int | n < m] [l:addr] (vbox (strbuf (m, n) @ l) | ptr l)
+// end of [strbuf_of_string1]
 
 (* ****** ****** *)
 
