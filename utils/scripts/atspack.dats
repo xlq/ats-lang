@@ -620,6 +620,7 @@ fn doc_dir_copy () = let
   val () = cp "prelude_matrix.dats"
   val () = cp "prelude_matrix0.dats"
   val () = cp "prelude_string.dats"
+  val () = cp "libc_dlfcn.dats"
   val () = cp "libc_dirent.dats"
   val () = cp "libc_stdlib.dats"
   val () = cp "libats_genarrays.dats"
@@ -958,6 +959,8 @@ implement atspack_source_code () = let
 (*
   val () = cpx "install-sh"; val () = cpx "missing"
 *)
+//
+  val () = cp "test.sh.in"
 //
   val () = cp ".libfiles"
   val () = cp ".bootstrap_header"

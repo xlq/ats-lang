@@ -44,7 +44,7 @@
 
 %{#
 #include "contrib/cairo/CATS/cairo.cats"
-%}
+%} // end of [%{#]
 
 (* ****** ****** *)
 
