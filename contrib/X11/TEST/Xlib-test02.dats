@@ -385,9 +385,14 @@ implement main (argc, argv) = () where {
   val () = XFree (xpwmhnt)
   prval () = minus_addback (fpfcshnt, pfcshnt_at | xpcshnt)
   val () = XFree (xpcshnt)
+//
   val () = XFreeGC (display, gc)
   val () = XCloseDisplay (display)
 } // end of [main]
+
+(* ****** ****** *)
+
+////
 
 (* ****** ****** *)
 
@@ -399,8 +404,6 @@ implement main (argc, argv) = () where {
 //
 
 (* ****** ****** *)
-
-////
 
 #include <X11/Xlib.h>
 #include <X11/Xutil.h>
