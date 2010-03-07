@@ -671,13 +671,16 @@ implement p1at_arg_tr (p1t0, wths1es) = begin
   | _ => p1at_tr p1t0
 end // end of [p1at_arg_tr]
 
-implement p1atlst_arg_tr (p1ts, wths1es) = begin
-  case+ p1ts of
-  | cons (p1t, p1ts) => begin
-      cons (p1at_arg_tr (p1t, wths1es), p1atlst_arg_tr (p1ts, wths1es))
-    end // end of [cons]
-  | nil () => nil ()
-end // end of [p1atlst_arg_tr]
+implement p1atlst_arg_tr
+  (p1ts, wths1es) = case+ p1ts of
+  | list_cons (p1t, p1ts) => let
+      val p2t = p1at_arg_tr (p1t, wths1es)
+      val p2ts = p1atlst_arg_tr (p1ts, wths1es)
+    in
+      list_cons (p2t, p2ts)
+    end // end of [list_cons]
+  | list_nil () => list_nil ()
+// end of [p1atlst_arg_tr]
 
 (* ****** ****** *)
 
@@ -687,7 +690,7 @@ fn d2sym_lrbrackets (loc: loc_t): d2sym = let
   val () = begin case+ the_d2expenv_find (id) of
     | ~Some_vt d2i => begin
         case+ d2i of D2ITEMsymdef d2is => d2is0 := d2is | _ => err := 1
-      end
+      end // end of [Some_vt]
     | ~None_vt () => (err := 1)
   end // end of [val]
   val () = if err > 0 then begin // run-time checking
