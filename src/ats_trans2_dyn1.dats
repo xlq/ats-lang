@@ -789,9 +789,11 @@ end // end of [specdynid_of_qid]
 
 (* ****** ****** *)
 
-fn d1exp_qid_tr
-  (loc0: loc_t, q: $Syn.d0ynq, id: sym_t): d2exp = let
-  val ans = the_d2expenv_find_qua (q, id) in case+ ans of
+fn d1exp_qid_tr (
+    loc0: loc_t, q: $Syn.d0ynq, id: sym_t
+  ) : d2exp = let
+  val ans = the_d2expenv_find_qua (q, id) in
+  case+ ans of
   | ~Some_vt d2i => begin case+ d2i of
     | D2ITEMcon d2cs => let
         val d2cs = d2con_select_arity (d2cs, 0)

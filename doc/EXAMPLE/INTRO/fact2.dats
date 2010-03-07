@@ -28,7 +28,8 @@ implement main (argc, argv) =
     printf ("factorial of %i = %i\n", @(n, res))
   end else begin
     fact2_usage (argv.[0]); exit (1)
-  end
+  end // end of [if]
+// end of [main]
 
 (* ****** ****** *)
 

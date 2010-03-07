@@ -60,6 +60,8 @@ staload Syn = "ats_syntax.sats"
 staload "ats_staexp2.sats"
 staload "ats_dynexp2.sats"
 
+staload TRAN2ENV = "ats_trans2_env.sats"
+
 staload "ats_macro2.sats"
 
 (* ****** ****** *)
@@ -1366,10 +1368,26 @@ in
     end // end of [D2Esif]
   | D2Estring _ => d2e0
   | D2Estruct ld2es => let
-      val ld2es = eval1_labd2explst (loc0, ctx, env, ld2es)
+      val ld2es =
+        eval1_labd2explst (loc0, ctx, env, ld2es)
+      // end of [val]
     in
       d2exp_struct (loc0, ld2es)
     end // end of [D2Estruct]
+  | D2Esym d2s => let
+      val q = d2s.d2sym_qua and id = d2s.d2sym_sym
+      val ans = $TRAN2ENV.the_d2expenv_find_qua (q, id)
+    in
+      case ans of
+      | ~Some_vt d2i => (case+ d2i of
+          | D2ITEMsymdef d2is => let // reload symdef list
+              val d2s_new = d2sym_make (loc0, q, id, d2is) in
+              d2exp_sym (loc0, d2s_new)
+            end // end of [D2ITEMsymdef]
+          | _ => d2e0
+        ) // end of [Some_vt]
+      | ~None_vt () => d2e0
+    end // end of [D2Esym]
   | D2Etmpid (d2e, ts2ess) => let
       val d2e = eval1_d2exp (loc0, ctx, env, d2e)
     in
@@ -1394,7 +1412,7 @@ in
     end // end of [_]
 *)
 // (*
-  | _ => d2e0 // location is not changed; it needs to be changed recursively!
+  | _ => d2e0 // location is not changed; it should be changed recursively!
 // *)
 end // end of [eval1_d2exp]
 
