@@ -949,7 +949,7 @@ implement trans2_env_initialize () = begin
   the_s2rtenv_add ($Sym.symbol_TYPES, S2TEsrt s2rt_types);
   the_s2rtenv_pervasive_add_topenv ();
   // dynamic environment
-  the_d2expenv_add ($Sym.symbol_LRBRACKETS, D2ITEMsym (nil ()));
+  the_d2expenv_add ($Sym.symbol_LRBRACKETS, D2ITEMsymdef nil);
   the_d2expenv_pervasive_add_topenv ()
 end // end of [trans2_env_initialize]
 

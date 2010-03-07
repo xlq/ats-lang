@@ -116,10 +116,10 @@ end // end of [dyncstimploc_posmark]
 
 fn symintr_tr (ids: i0delst): void = let
   fun aux (ids: i0delst): void = case+ ids of
-    | cons (id, ids) => aux ids where {
-        val () = the_d2expenv_add (id.i0de_sym, D2ITEMsym nil)
-      } // end of [cons]
-    | list_nil () => ()
+    | list_cons (id, ids) => aux ids where {
+        val () = the_d2expenv_add (id.i0de_sym, D2ITEMsymdef nil)
+      } // end of [list_cons]
+    | list_nil () => () // end of [list_nil]
   // end of [aux]
 in
   aux ids
@@ -127,10 +127,10 @@ end // end of [symintr_tr]
 
 fn symelim_tr (ids: i0delst): void = let
   fun aux (ids: i0delst): void = case+ ids of
-    | cons (id, ids) => aux ids where {
-        val () = the_d2expenv_add (id.i0de_sym, D2ITEMsym nil)
-      } // end of [cons]
-    | nil () => ()
+    | list_cons (id, ids) => aux ids where {
+        val () = the_d2expenv_add (id.i0de_sym, D2ITEMsymdef nil)
+      } // end of [list_cons]
+    | list_nil () => () // end of [list_nil]
   // end of [aux]
 in
   aux ids
@@ -138,13 +138,17 @@ end // end of [symelim_tr]
 
 (* ****** ****** *)
 
-fn overload_tr (id: $Syn.i0de, qid: $Syn.dqi0de): void = let
+fn overload_tr
+  (id: $Syn.i0de, qid: $Syn.dqi0de) : void = let
 (*
   val () = begin
     print "overload_tr: id = ";
-    print id.i0de_sym; print_newline ();
+    $Sym.print_symbol id.i0de_sym;
+    print_newline ();
     print "overload_tr: qid = ";
-    print qid.dqi0de_qua; print qid.dqi0de_sym; print_newline ();
+    $Syn.print_d0ynq qid.dqi0de_qua;
+    $Sym.print_symbol qid.dqi0de_sym;
+    print_newline ();
   end // end of [val]
 *)
   val ans = 
@@ -173,7 +177,7 @@ fn overload_tr (id: $Syn.i0de, qid: $Syn.dqi0de): void = let
   } // end of [val]
   val d2is = (case+ ans of
     | ~Some_vt d2i => begin case+ d2i of
-      | D2ITEMsym d2is => d2is | _ => begin
+      | D2ITEMsymdef d2is => d2is | _ => begin
           prerr_loc_error2 id.i0de_loc;
           $Deb.debug_prerrf (": %s: overload_tr", @(THISFILENAME));
           prerr ": the identifier [";
@@ -198,7 +202,7 @@ fn overload_tr (id: $Syn.i0de, qid: $Syn.dqi0de): void = let
     print "overload_tr: d2is := "; print_d2itemlst d2is; print_newline ()
   end // end of [val]
 *)
-  val d2i_new = D2ITEMsym (d2i :: d2is)
+  val d2i_new = D2ITEMsymdef (d2i :: d2is)
 in
   if is_current then begin
     the_d2expenv_add (id.i0de_sym, d2i_new)
@@ -328,7 +332,7 @@ fn c1lassdec_tr (
 (*
   val () = begin
     print "c1lassdec_tr: s2e_self = "; print s2e_self; print_newline ()
-  end // end of [val
+  end // end of [val]
 *)
 //
   val () = aux (decarg, d1cs_def) where {
@@ -1044,7 +1048,7 @@ fn i1mpdec_tr
     case+ the_d2expenv_find_qua (q, id) of
     | ~Some_vt d2i => begin case+ d2i of
       | D2ITEMcst d2c => d2c
-      | D2ITEMsym (d2is) => i1mpdec_tr_d2cst_select (d1c, d2is)
+      | D2ITEMsymdef (d2is) => i1mpdec_tr_d2cst_select (d1c, d2is)
       | _ => begin
           prerr_loc_error2 d1c.i1mpdec_loc;
           $Deb.debug_prerrf (": %s: i1mpdec_tr", @(THISFILENAME));

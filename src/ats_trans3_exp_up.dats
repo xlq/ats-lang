@@ -1011,9 +1011,9 @@ fn d2exp_apps_sym_tr_up
       , d2as: d2exparglst, d2is: d2itemlst, d2iss: d2itemlstlst_vt
       ) : xyzlst_t = begin case+ d2is of
       | list_cons (d2i, d2is) => begin case+ d2i of
-        | D2ITEMsym (d2is_new) => begin
+        | D2ITEMsymdef (d2is_new) => begin
             aux (loc0, d2as, d2is_new, list_vt_cons (d2is, d2iss))
-          end // end of [D2ITEMsym]
+          end // end of [D2ITEMsymdef]
         | _ => let
             val d3e = d2exp_item_tr_up (loc0, d2i); val s2e = d3e.d3exp_typ
           in

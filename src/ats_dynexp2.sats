@@ -123,7 +123,7 @@ datatype d2item =
   | D2ITEMmacdef of d2mac_t
   | D2ITEMmacvar of d2var_t
   | D2ITEMmtd of d2mtd_t
-  | D2ITEMsym of List d2item (* overloaded symbol *)
+  | D2ITEMsymdef of List d2item (* overloaded symbol *)
   | D2ITEMvar of d2var_t
 // end of [d2item]
 
@@ -140,13 +140,12 @@ typedef d2sym = '{
 
 fun fprint_d2sym {m:file_mode}
   (pf: file_mode_lte (m, w) | out: &FILE m, d2s: d2sym): void
-
 overload fprint with fprint_d2sym
 
 fun print_d2sym (_: d2sym): void
-fun prerr_d2sym (_: d2sym): void
-
 overload print with print_d2sym
+
+fun prerr_d2sym (_: d2sym): void
 overload prerr with prerr_d2sym
 
 (* ****** ****** *)

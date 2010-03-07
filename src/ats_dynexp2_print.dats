@@ -85,9 +85,9 @@ in
   | D2ITEMmtd d2m => begin
       prstr "D2ITEMmtd("; fprint_d2mtd (pf | out, d2m); prstr ")"
     end // end of [D2ITEMmtd]
-  | D2ITEMsym d2is => begin
-      fprint1_string (pf | out, "D2ITEMsym(...)")
-    end // end of [D2ITEMsym]
+  | D2ITEMsymdef d2is => begin
+      fprint1_string (pf | out, "D2ITEMsymdef(...)")
+    end // end of [D2ITEMsymdef]
   | D2ITEMvar d2v => begin
       prstr "D2ITEMvar("; fprint_d2var (pf | out, d2v); prstr ")"
     end // end of [D2ITEMvar]
@@ -104,8 +104,9 @@ implement fprint_d2itemlst {m} (pf | out, d2is) = let
     | cons (d2i, d2is) => begin
         if i > 0 then fprint1_string (pf | out, ", ");
         fprint_d2item (pf | out, d2i); aux (out, i+1, d2is)
-      end
-    | nil () => ()
+      end // end of [cons]
+    | nil () => () // end of [nil]
+  // end of [aux]
 in
   aux (out, 0, d2is)
 end // end of [fprint_d2itemlst]

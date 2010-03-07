@@ -686,7 +686,7 @@ fn d2sym_lrbrackets (loc: loc_t): d2sym = let
   var d2is0: d2itemlst = list_nil () and err: int = 0
   val () = begin case+ the_d2expenv_find (id) of
     | ~Some_vt d2i => begin
-        case+ d2i of D2ITEMsym d2is => d2is0 := d2is | _ => err := 1
+        case+ d2i of D2ITEMsymdef d2is => d2is0 := d2is | _ => err := 1
       end
     | ~None_vt () => (err := 1)
   end // end of [val]
@@ -822,11 +822,11 @@ fn d1exp_qid_tr
         d2exp_var (loc0, d2v)
       end // end of [D2ITEMmacvar]
     | D2ITEMmtd d2m => d2exp_mtd (loc0, d2m)
-    | D2ITEMsym d2is => let
+    | D2ITEMsymdef d2is => let
         val d2s = d2sym_make (loc0, q, id, d2is)
       in
         d2exp_sym (loc0, d2s)
-      end // end of [D2ITEMsym]
+      end // end of [D2ITEMsymdef]
     | D2ITEMvar d2v => d2exp_var (loc0, d2v)
     end // end of [Some_vt]
   | ~None_vt () => begin
@@ -973,7 +973,7 @@ in
       in
         d2exp_app_sta_dyn (loc_dap, loc_sap, d2e_fun, sarg, loc_arg, npf, darg)
       end // end of [D2ITEMmtd]
-    | D2ITEMsym d2is => let
+    | D2ITEMsymdef d2is => let
         val d2s =
           d2sym_make (loc_qid, q, id, d2is)
         // end of [val]

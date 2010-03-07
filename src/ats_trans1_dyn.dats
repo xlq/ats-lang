@@ -1534,7 +1534,8 @@ extern fun string_suffix_is_dats (s: string): bool
 
 static inline
 ats_bool_type
-ats_trans1_string_is_dats (ats_ptr_type s0) {
+ats_trans1_string_is_dats
+  (ats_ptr_type s0) {
   char *s = s0 ;
   s = ++s ; if (*s != 'd') return ats_false_bool ;
   s = ++s ; if (*s != 'a') return ats_false_bool ;
@@ -1542,17 +1543,18 @@ ats_trans1_string_is_dats (ats_ptr_type s0) {
   s = ++s ; if (*s != 's') return ats_false_bool ;
   s = ++s ; if (*s != '\0') return ats_false_bool ;
   return ats_true_bool ;
-}
+} // end of [ats_trans1_string_is_dats]
 
 static inline
 ats_bool_type
-ats_trans1_string_suffix_is_dats (ats_ptr_type s0) {
+ats_trans1_string_suffix_is_dats
+  (ats_ptr_type s0) {
   char *s = strrchr (s0, '.') ;
   if (s) return ats_trans1_string_is_dats (s) ;
   return ats_false_bool ;
-}
+} // end of [ats_trans1_string_suffix_is_dats]
 
-%}
+%} // end of [%{^]
 
 (* ****** ****** *)
 
