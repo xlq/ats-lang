@@ -120,22 +120,20 @@ overload succ with succ_intinf
 
 fun add_intinf_int {i,j:int}
   (i: &intinf i, j: int j): intinfptr_gc (i+j)
+overload + with add_intinf_int
 
 fun add_intinf_intinf {i,j:int}
   (i: &intinf i, j: &intinf j): intinfptr_gc (i+j)
-
-overload + with add_intinf_int
 overload + with add_intinf_intinf
 
 //
 
 fun sub_intinf_int {i,j:int}
   (i: &intinf i, j: int j): intinfptr_gc (i-j)
+overload - with sub_intinf_int
 
 fun sub_intinf_intinf {i,j:int}
   (i: &intinf i, j: &intinf j): intinfptr_gc (i-j)
-
-overload - with sub_intinf_int
 overload - with sub_intinf_intinf
 
 //
@@ -182,12 +180,11 @@ overload mod with fmod_intinf_int
 fun lt_intinf_int {i,j:int}
   (i: &intinf i, j: int j): bool (i < j)
   = "atslib_lt_intinf_int"
+overload < with lt_intinf_int
 
 fun lt_intinf_intinf {i,j:int}
   (i: &intinf i, j: &intinf j): bool (i < j)
   = "atslib_lt_intinf_intinf"
-
-overload < with lt_intinf_int
 overload < with lt_intinf_intinf
 
 //
@@ -195,12 +192,11 @@ overload < with lt_intinf_intinf
 fun lte_intinf_int {i,j:int}
   (i: &intinf i, j: int j): bool (i <= j)
   = "atslib_lte_intinf_int"
+overload <= with lte_intinf_int
 
 fun lte_intinf_intinf {i,j:int}
   (i: &intinf i, j: &intinf j): bool (i <= j)
   = "atslib_lte_intinf_intinf"
-
-overload <= with lte_intinf_int
 overload <= with lte_intinf_intinf
 
 //
@@ -208,12 +204,11 @@ overload <= with lte_intinf_intinf
 fun gt_intinf_int {i,j:int}
   (i: &intinf i, j: int j): bool (i > j)
   = "atslib_gt_intinf_int"
+overload > with gt_intinf_int
 
 fun gt_intinf_intinf {i,j:int}
   (i: &intinf i, j: &intinf j): bool (i > j)
   = "atslib_gt_intinf_intinf"
-
-overload > with gt_intinf_int
 overload > with gt_intinf_intinf
 
 //
@@ -221,12 +216,11 @@ overload > with gt_intinf_intinf
 fun gte_intinf_int {i,j:int}
   (i: &intinf i, j: int j): bool (i >= j)
   = "atslib_gte_intinf_int"
+overload >= with gte_intinf_int
 
 fun gte_intinf_intinf {i,j:int}
   (i: &intinf i, j: &intinf j): bool (i >= j)
   = "atslib_gte_intinf_intinf"
-
-overload >= with gte_intinf_int
 overload >= with gte_intinf_intinf
 
 //
@@ -234,12 +228,11 @@ overload >= with gte_intinf_intinf
 fun eq_intinf_int {i,j:int}
   (i: &intinf i, j: int j): bool (i == j)
   = "atslib_eq_intinf_int"
+overload = with eq_intinf_int
 
 fun eq_intinf_intinf {i,j:int}
   (i: &intinf i, j: &intinf j): bool (i == j)
   = "atslib_eq_intinf_intinf"
-
-overload = with eq_intinf_int
 overload = with eq_intinf_intinf
 
 //
@@ -247,12 +240,11 @@ overload = with eq_intinf_intinf
 fun neq_intinf_int {i,j:int}
   (i: &intinf i, j: int j): bool (i <> j)
   = "atslib_neq_intinf_int"
+overload <> with neq_intinf_int
 
 fun neq_intinf_intinf {i,j:int}
   (i: &intinf i, j: &intinf j): bool (i <> j)
   = "atslib_neq_intinf_intinf"
-
-overload <> with neq_intinf_int
 overload <> with neq_intinf_intinf
 
 //
@@ -260,12 +252,11 @@ overload <> with neq_intinf_intinf
 fun compare_intinf_int {i,j:int}
   (i: &intinf i, j: int j): [k:int | sgn_r (i-j, k)] int k
   = "atslib_compare_intinf_int"
+overload compare with compare_intinf_int
 
 fun compare_intinf_intinf {i,j:int}
   (i: &intinf i, j: &intinf j): [k:int | sgn_r (i-j, k)] int k
   = "atslib_compare_intinf_intinf"
-
-overload compare with compare_intinf_int
 overload compare with compare_intinf_intinf
 
 (* ****** ****** *)

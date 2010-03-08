@@ -130,22 +130,23 @@ end // end of [fprint_v2alue]
 and fprint_v2aluelst {m:file_mode}
   (pf: file_mode_lte (m, w) | out: &FILE m, vs: v2aluelst)
   : void = let
-  fun loop (out: &FILE m, vs: v2aluelst, i: int): void =
+  fun loop
+    (out: &FILE m, vs: v2aluelst, i: int): void =
     case+ vs of
     | list_cons (v, vs) => loop (out, vs, i+1) where {
         val () = if (i > 0) then fprint1_string (pf | out, ", ")
         val () = fprint_v2alue (pf | out, v)
       } // end of [list_cons]  
-    | list_nil () => ()
+    | list_nil () => () // end of [list_nil]
   // end of [loop]  
 in
   loop (out, vs, 0)
 end // end of [fprint_v2aluelst]
 
 fn print_v2alue (v2al: v2alue): void = print_mac (fprint_v2alue, v2al)
-fn prerr_v2alue (v2al: v2alue): void = prerr_mac (fprint_v2alue, v2al)
-
 overload print with print_v2alue
+
+fn prerr_v2alue (v2al: v2alue): void = prerr_mac (fprint_v2alue, v2al)
 overload prerr with prerr_v2alue
 
 (* ****** ****** *)
@@ -165,7 +166,7 @@ fn lift_val_exp
       prerr ": a value representing code (abstract syntax tree) cannot be lifted.";
       prerr_newline ();
       $Err.abort {d2exp} ()
-    end
+    end // end of [_]
 end // end of [lift_val_exp]
 
 (* ****** ****** *)
@@ -174,6 +175,7 @@ dataviewtype alphaenv =
   | ALPHAENVcons of (stamp_t, d2var_t, alphaenv)
   | ALPHAENVmark of alphaenv
   | ALPHAENVnil
+// end of [alphaenv]
 
 fun alphaenv_free (env: alphaenv): void = begin
   case+ env of
@@ -185,6 +187,7 @@ end // end of [alphaenv_free]
 fn alphaenv_add
   (env: alphaenv, d2v: d2var_t, d2v_new: d2var_t): alphaenv =
   ALPHAENVcons (d2var_stamp_get d2v, d2v_new, env)
+// end of [alphaenv_add]
 
 fn alphaenv_find
   (env: !alphaenv, d2v0: d2var_t): Option_vt (d2var_t) = let
@@ -220,14 +223,17 @@ fun alphaenv_pop (env: &alphaenv): void = let
     | ~ALPHAENVnil () => ALPHAENVnil ()
 in
   env := aux (env)
-end
+end // end of [alphaenv_pop]
 
 fn alphaenv_push (env: &alphaenv): void = (env := ALPHAENVmark env)
 
 (* ****** ****** *)
 
-extern fun d2var_copy (loc: loc_t, d2v: d2var_t): d2var_t
+extern fun d2var_copy
+  (loc: loc_t, d2v: d2var_t): d2var_t
 implement d2var_copy (loc, d2v) = d2v
+
+(* ****** ****** *)
 
 // eval0: evaluation at level 0
 // eval1: evaluation at level 1
@@ -311,7 +317,7 @@ implement eval1_p2atlst (loc0, env, p2ts) = let
   var res: p2atlst? // uninitialized
 in
   aux (loc0, env, p2ts, res); res
-end
+end // end of [eval1_p2atlst]
 
 implement eval1_labp2atlst (loc0, env, lp2ts) = let
   fun aux (
@@ -334,13 +340,14 @@ implement eval1_labp2atlst (loc0, env, lp2ts) = let
   var res: labp2atlst? // uninitialized
 in
   aux (loc0, env, lp2ts, res); res
-end
+end // end of [eval1_labp2atlst]
 
 (* ****** ****** *)
 
 dataviewtype eval0ctx =
   | EVAL0CTXcons of (stamp_t, v2alue, eval0ctx)
   | EVAL0CTXnil
+// end of [eval0ctx]
 
 fun eval0ctx_free (ctx: eval0ctx): void = begin
   case+ ctx of
@@ -351,6 +358,7 @@ end // end of [eval0ctx_free]
 fn eval0ctx_add
   (ctx: eval0ctx, d2v: d2var_t, v2al: v2alue): eval0ctx =
   EVAL0CTXcons (d2var_stamp_get d2v, v2al, ctx)
+// end of [eval0ctx_add]
 
 (* ****** ****** *)
 
@@ -369,9 +377,9 @@ fun fprint_eval0ctx {m:file_mode}
 end // end of [fprint_eval0ctx]
 
 fn print_eval0ctx (ctx: !eval0ctx): void = print_mac (fprint_eval0ctx, ctx)
-fn prerr_eval0ctx (ctx: !eval0ctx): void = prerr_mac (fprint_eval0ctx, ctx)
-
 overload print with print_eval0ctx
+
+fn prerr_eval0ctx (ctx: !eval0ctx): void = prerr_mac (fprint_eval0ctx, ctx)
 overload prerr with prerr_eval0ctx
 
 (* ****** ****** *)
@@ -443,42 +451,42 @@ fn eval0_exp_app_gt
   val sgn = eval0_exp_app_compare_sgn (loc0, v2al1, v2al2)
 in
   if sgn > 0 then v2alue_bool_true else v2alue_bool_false
-end
+end // end of [eval0_exp_app_gt]
 
 fn eval0_exp_app_gte
   (loc0: loc_t, v2al1: v2alue, v2al2: v2alue): v2alue = let
   val sgn = eval0_exp_app_compare_sgn (loc0, v2al1, v2al2)
 in
   if sgn >= 0 then v2alue_bool_true else v2alue_bool_false
-end
+end // end of [eval0_exp_app_gte]
 
 fn eval0_exp_app_lt
   (loc0: loc_t, v2al1: v2alue, v2al2: v2alue): v2alue = let
   val sgn = eval0_exp_app_compare_sgn (loc0, v2al1, v2al2)
 in
   if sgn < 0 then v2alue_bool_true else v2alue_bool_false
-end
+end // end of [eval0_exp_app_lt]
 
 fn eval0_exp_app_lte
   (loc0: loc_t, v2al1: v2alue, v2al2: v2alue): v2alue = let
   val sgn = eval0_exp_app_compare_sgn (loc0, v2al1, v2al2)
 in
   if sgn <= 0 then v2alue_bool_true else v2alue_bool_false
-end
+end // end of [eval0_exp_app_lte]
 
 fn eval0_exp_app_eq
   (loc0: loc_t, v2al1: v2alue, v2al2: v2alue): v2alue = let
   val sgn = eval0_exp_app_compare_sgn (loc0, v2al1, v2al2)
 in
   if sgn = 0 then v2alue_bool_true else v2alue_bool_false
-end
+end // end of [eval0_exp_app_eq]
 
 fn eval0_exp_app_neq
   (loc0: loc_t, v2al1: v2alue, v2al2: v2alue): v2alue = let
   val sgn = eval0_exp_app_compare_sgn (loc0, v2al1, v2al2)
 in
   if sgn <> 0 then v2alue_bool_true else v2alue_bool_false
-end
+end // end of [eval0_exp_app_neq]
 
 (* ****** ****** *)
 
@@ -489,7 +497,7 @@ fn eval0_exp_app_neg
     prerr ": negation is performed on a value that does not support it.";
     prerr_newline ();
     $Err.abort {v2alue} ()
-  end
+  end // end of [err]
 in
   case+ v2al of
   | V2ALbool b => if b then v2alue_bool_false else v2alue_bool_true
@@ -504,7 +512,7 @@ fn eval0_exp_app_add
     prerr ": addition is performed on values that do not support it.";
     prerr_newline ();
     $Err.abort {v2alue} ()
-  end
+  end // end of [err]
 in
   case+ v2al1 of
   | V2ALint i1 => begin case+ v2al2 of

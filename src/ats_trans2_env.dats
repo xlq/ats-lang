@@ -673,7 +673,9 @@ end // end of [the_d2expenv_add_dvarlst]
 
 (* ****** ****** *)
 
+//
 // this is for handling [overload]
+//
 implement the_d2expenv_pervasive_replace (id, d2i) = let
   val ans =
     $SymEnv.symenv_pervasive_replace (the_d2expenv, id, d2i)

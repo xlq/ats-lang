@@ -1,5 +1,13 @@
 ########################################################################
 
+ats-lang-anairiats-0.1.9:
+
+1. overloaded symbols in a macro definition is re-loaded when the macro
+   definition is expanded. This change can greatly facilitate the use of
+   macros defined in $ATSHOME/prelude/macrodef.sats
+
+########################################################################
+
 ats-lang-anairiats-0.1.8:
 
 1. string generation functions have been modified to return linear strings

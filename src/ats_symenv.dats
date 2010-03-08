@@ -239,7 +239,6 @@ implement{itm} symenv_pop (env) = let
         fold@ (!p_ms); $effmask_ref (abort ())
       end // end of [list_vt_nil]
   end : symmap itm
-
   val (vbox pf_m | p_m) = ref_get_view_ptr env.map
 in
   symmap_free<itm> (!p_m); !p_m := m
@@ -254,7 +253,6 @@ implement symenv_push {itm} (env) = let
   in
     !p_m := symmap_make (); m
   end : symmap itm
-
   val (vbox pf_ms | p_ms) = ref_get_view_ptr env.maplst
 in
   !p_ms := list_vt_cons (m, !p_ms)
@@ -278,14 +276,14 @@ implement symenv_save {itm} (env) = let
   in
     !p_m := symmap_make (); m
   end : symmap itm
-
+//
   val ms = let
     val (vbox pf_ms | p_ms) = ref_get_view_ptr env.maplst
     val ms = !p_ms
   in
     !p_ms := list_vt_nil (); ms
   end : symmaplst itm
-
+//
   val (vbox pf_saved | p_saved) = ref_get_view_ptr env.savedlst
 in
   !p_saved := list_vt_cons ( @(m, ms), !p_saved )
@@ -313,13 +311,13 @@ implement{itm} symenv_restore (env) = let
         fold@ (!p_saved); $effmask_ref (abort ())
       end // end of [list_vt_nil]
   end : mms // end of [val]
-
+//
   val () = let
     val (vbox pf_m | p_m) = ref_get_view_ptr env.map
   in
     symmap_free<itm> (!p_m); !p_m := m
   end // end of [val]
-
+//
   val () = let
     val (vbox pf_ms | p_ms) = ref_get_view_ptr env.maplst
   in
@@ -360,9 +358,9 @@ implement{itm} symenv_localjoin (env) = let
         end // end of [list_vt_nil]
     ) : symmap itm
   } // end of [where]
-
+//
   val () = symmap_free<itm> m1
-
+//
   val m2 = m where {
     val (vbox pf_ms | p_ms) = ref_get_view_ptr env.maplst
     val m = (case+ !p_ms of
@@ -374,7 +372,7 @@ implement{itm} symenv_localjoin (env) = let
         end // end of [list_vt_nil]
     ) : symmap itm 
   } // end of [where]
-
+//
   val (vbox pf_m | p_m) = ref_get_view_ptr env.map
 in
   !p_m := $Map.map_join (m2, !p_m)

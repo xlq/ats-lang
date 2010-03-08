@@ -2,7 +2,10 @@
 // A simple example for illustrating some benefits of dependent types
 //
 
+//
 // Author: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
+// Time: Spring, 2009
+//
 
 (*
 
@@ -16,10 +19,10 @@ fun{a:t@ype} revarr
   val n: int = int_of_size (n)
   fun loop  (A: array0 a, i: int, j: int): void =
     if i < j then let
-      val tmp = A[i]
-    in
+      val tmp = A[i] in
       A[i] := A[j]; A[j] := tmp; loop (A, i + 1, j - 1)
-    end
+    end // end of [if]
+  // end of [loop]
 } // end of [revarr]
 
 implement main () = let
@@ -31,7 +34,7 @@ implement main () = let
       end else begin
         // loop exits
       end // end of [if]
-  }
+  } // end of [pr]
   val A = array0_make_arraysize $arrsz {int} (0, 1, 2, 3, 4, 5)
   val () = pr A
   val () = print_newline ()
@@ -51,10 +54,9 @@ fun{a:t@ype} revarr {n:nat}
   fun loop  {i:nat;j:int | i <= j+1; i + j == n-1}
     (A: array (a, n), i: int i, j: int j): void =
     if i < j then let
-      val tmp = A[i]
-    in
+      val tmp = A[i] in
       A[i] := A[j]; A[j] := tmp; loop (A, i + 1, j - 1)
-    end
+    end // end of [if]
 } // end of [revarr]
 
 implement main () = let
@@ -68,8 +70,8 @@ implement main () = let
         // loop exits
       end // end of [if]
   } // end of [pr]
-  val N = 6
-  val A = array_make_arraysize $arrsz {int} (0, 1, 2, 3, 4, 5)
+  val N = 10
+  val A = array_make_arraysize $arrsz {int} (0, 1, 2, 3, 4, 5, 6, 7, 8, 9)
   val () = pr (A, N)
   val () = print_newline ()
   val () = revarr<int> (A, N)

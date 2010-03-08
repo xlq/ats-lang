@@ -1247,7 +1247,7 @@ fn s1taload_tr
   var d2cs_loaded: d2eclst = list_nil ()
   val fil_sym = $Fil.filename_full_sym fil
   val staloadknd = (
-    case+ idopt of Some _ => 1 | None _ => 0 (*opened*)
+    case+ idopt of Some _ => 1 (*named*) | None _ => 0 (*opened*)
   ) : int // end of [val]
   val (pf_token | ()) = staload_level_push (staloadknd)
   val ans = d2eclst_namespace_find fil_sym

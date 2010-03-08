@@ -1,9 +1,12 @@
 //
 //
-// Author: Hongwei Xi (August 2007)
+// Author: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
+// Time: August 2007
+//
 //
 // This is an example of programming with theorem proving: A verified
 // implmentation of the factioral function is given.
+//
 
 //
 // How to compile:
@@ -18,6 +21,7 @@ dynload "libats/DATS/intinf.dats"
 dataprop FACT (int, int) =
   | FACTzero (0, 1)
   | {n,r,r1:int | n > 0} FACTsucc (n, r) of (FACT (n-1, r1), MUL (n, r1, r))
+// end of [FACT]
 
 fun fact3 {n:nat} .<n>. (n: int n): [r:int] (FACT (n, r) | intinfptr_gc r) =
   if n > 0 then let
@@ -30,6 +34,7 @@ fun fact3 {n:nat} .<n>. (n: int n): [r:int] (FACT (n, r) | intinfptr_gc r) =
   end else begin
     (FACTzero () | intinf_make 1)
   end // end of [if]
+// end of [fact3]
 
 (* ****** ****** *)
 
