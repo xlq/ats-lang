@@ -89,6 +89,10 @@ fun the_s2expenv_pervasive_find (id: sym_t): s2itemopt_vt
 
 (* ****** ****** *)
 
+fun macdef_get (): int
+fun macdef_inc (): void
+fun macdef_dec (): void
+
 fun macro_level_get (): int
 fun macro_level_inc (loc: loc_t): void
 fun macro_level_dec (loc: loc_t): void

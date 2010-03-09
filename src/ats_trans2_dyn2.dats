@@ -889,9 +889,11 @@ fn m1acdef_tr
       | nil () => ()
     end // end of [aux]
   } // end of [where]
+  val () = macdef_inc ()
   val () = if knd > 0 then macro_level_dec (loc)
   val def = d1exp_tr (d1c.m1acdef_def)
   val () = if knd > 0 then macro_level_inc (loc)
+  val () = macdef_dec ()
   val () = the_d2expenv_pop (pf_d2expenv | (*none*))
   val () = d2mac_def_set (d2m, def)
 in
@@ -1276,10 +1278,10 @@ end // end of [s1taload_tr]
 
 (* ****** ****** *)
 
-implement staload_d2eclst_overload (d2cs) =
+implement overload_d2eclst_tr (d2cs) =
   case+ d2cs of
   | list_cons (d2c, d2cs) => let
-      val () = case+ d2c.d2ec_node of
+      val () = (case+ d2c.d2ec_node of
         | D2Csymintr ids => symintr_tr (ids)
 (*
         | D2Csymelim ids => symelim_tr (ids) // is this really needed?
@@ -1287,20 +1289,21 @@ implement staload_d2eclst_overload (d2cs) =
         | D2Coverload (id, d2i) => let
 (*
             val () = begin
-              print "staload_d2eclst_overload: id = "; $Syn.print_i0de id; print_newline ();
-              print "staload_d2eclst_overload: d2i = "; print_d2item d2i; print_newline ();
+              print "overload_d2eclst_tr: id = "; $Syn.print_i0de id; print_newline ();
+              print "overload_d2eclst_tr: d2i = "; print_d2item d2i; print_newline ();
             end // end of [D2Coverload]
 *)
           in
             overload_def_tr (id, d2i)
           end // end of [D2Coverload]
+        | D2Cinclude d2cs_include => overload_d2eclst_tr d2cs_include
         | _ => ()
-      // end of [val]
+      ) : void // end of [val]
     in
-      staload_d2eclst_overload (d2cs)
+      overload_d2eclst_tr (d2cs)
     end // end of [list_cons]
   | list_nil () => ()
-// end of [staload_d2eclst_overload]
+// end of [overload_d2eclst_tr]
 
 (* ****** ****** *)
 
@@ -1440,9 +1443,9 @@ implement d1ec_tr (d1c0) = begin
     in
       d2ec_vardecs (d1c0.d1ec_loc, d2cs)
     end // end of [D1Cvardecs]
-  | D1Cmacdefs (knd, d1cs) => begin
+  | D1Cmacdefs (knd, d1cs) => let
        // knd: 0/1/2 => short/long/long rec
-       m1acdeflst_tr (knd, d1cs); d2ec_none (d1c0.d1ec_loc)
+       val () = m1acdeflst_tr (knd, d1cs) in d2ec_none (d1c0.d1ec_loc)
     end // end of [D1Cmacdefs]
   | D1Cimpdec (i1mparg, d1c) => let
       val loc0 = d1c0.d1ec_loc
@@ -1466,7 +1469,7 @@ implement d1ec_tr (d1c0) = begin
         (d1c0.d1ec_loc, idopt, fil, loaded, d1cs, d2cs_loaded)
       // end of [val]
       val () = case+ idopt of
-        | None _ => staload_d2eclst_overload (d2cs_loaded) | Some _ => ((*named*))
+        | None _ => overload_d2eclst_tr (d2cs_loaded) | Some _ => ((*named*))
       // end of [val]
     in
       d2c0

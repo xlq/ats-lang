@@ -482,6 +482,24 @@ end // end of [local]
 
 local
 
+val the_macdef: ref int = ref_make_elt<int> (0)
+
+in // in of [local]
+
+implement macdef_get () = !the_macdef
+implement macdef_inc () = let
+  val x = !the_macdef in !the_macdef := x + 1
+end // end of [macdef_inc]
+implement macdef_dec () = let
+  val x = !the_macdef in !the_macdef := x - 1
+end // end of [macdef_dec]
+
+end // end of [local]
+
+(* ****** ****** *)
+
+local
+
 val the_macro_level: ref int = ref_make_elt<int> (1)
 
 in // in of [local]

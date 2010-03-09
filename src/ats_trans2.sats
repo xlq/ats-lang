@@ -173,7 +173,7 @@ fun overload_def_tr
   (id: $Syn.i0de, d2i: d2item) : void
 // end of [overload_def_tr]
 
-fun staload_d2eclst_overload (d2cs: d2eclst): void
+fun overload_d2eclst_tr (d2cs: d2eclst): void
 
 (* ****** ****** *)
 

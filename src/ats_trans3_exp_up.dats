@@ -2303,27 +2303,28 @@ val d3e0 = (case+ d2e0.d2exp_node of
     in
       d2exp_tr_up (d2e0)
     end // end of [D2Emac]
-  | D2Emacsyn (knd, d2e) => d2exp_tr_up d2e_mac where {
 (*
+//
+// HX-2010-03-08: this is now done by [d1exp_tr]
+//
+  | D2Emacsyn (knd, d2e) => d2exp_tr_up d2e_mac where {
       val () = begin
         print "d2exp_tr_up: D2Emacsyn: d2e = "; print d2e; print_newline ()
       end // end of [val]
-*)
       val d2e_mac = case+ knd of
         | $Syn.MACSYNKINDcross () => $Mac.macro_eval_cross (d2e)
-        | $Syn.MACSYNKINDdecode () => $Mac.macro_eval_decode (d2e) 
+        | $Syn.MACSYNKINDdecode () => $Mac.macro_eval_decode (d2e)
         | $Syn.MACSYNKINDencode () => begin
             prerr loc0; prerr ": error(macro)";
             prerr ": the macro syntax `(...) is incorrectly used at this location.";
             prerr_newline ();
             $Err.abort {d2exp} ()
           end // end of [MACSYNKINDencode]
-(*
       val () = begin
         print "d2exp_tr_up: D2Emacsyn: d2e_mac = "; print d2e_mac; print_newline ()
       end // end of [val]
-*)
     } // end of [D2Emacsyn]
+*)
   | D2Emtd d2m => let
       val s2e_mtd =
         d2mtd_typ_get d2m in d3exp_mtd (loc0, s2e_mtd, d2m)

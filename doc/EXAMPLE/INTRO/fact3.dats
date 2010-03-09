@@ -14,6 +14,8 @@
 // atscc -o fact3 fact3.dats -lgmp
 //
 
+// #include "prelude/macrodef.sats" // for printstarln
+
 staload "libats/SATS/intinf.sats"
 dynload "libats/DATS/intinf.dats"
 

@@ -66,6 +66,10 @@ staload "ats_trans2.sats"
 
 (* ****** ****** *)
 
+staload MAC = "ats_macro2.sats"
+
+(* ****** ****** *)
+
 staload _(*anonymous*) = "ats_array.dats"
 
 staload "ats_reference.sats"
@@ -770,7 +774,7 @@ in
     prerr "] incorrectly refers to a macro argument variable.";
     prerr_newline ();
     $Err.abort {void} ()
-  end
+  end (* end of [if] *)
 end // end of [macro_var_check]
 
 (* ****** ****** *)
@@ -1572,15 +1576,19 @@ in
           val () = macro_level_dec (loc0)
           val d2e0 = d2exp_macsyn (loc0, knd, d1exp_tr d1e)
           val () = macro_level_inc (loc0)
+          // val d2e0 = $Mac.macro_eval_cross (d2e0) // ???
         in
           d2e0
         end // end of [MACSYNKINDcross]
       | $Syn.MACSYNKINDdecode () => let
+          val mdef = macdef_get ()
           val () = macro_level_dec (loc0)
+          val level = macro_level_get ()
           val d2e0 = d2exp_macsyn (loc0, knd, d1exp_tr d1e)
           val () = macro_level_inc (loc0)
+          // val d2e0 = $MAC.macro_eval_decode (d2e0) // ???
         in
-          d2e0
+          if (mdef + level = 0) then $MAC.macro_eval_decode (d2e0) else d2e0
         end // end of [MACSYNKINDdecode]
       | $Syn.MACSYNKINDencode () => let
           val () = macro_level_inc (loc0)

@@ -44,7 +44,7 @@
 
 %{#
 #include "contrib/SDL/CATS/SDL.cats"
-%}
+%} // end of [%{#]
 
 (* ****** ****** *)
 

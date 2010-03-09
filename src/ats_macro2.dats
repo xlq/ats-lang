@@ -1382,8 +1382,6 @@ in
     in
       d2exp_struct (loc0, ld2es)
     end // end of [D2Estruct]
-  | D2Esym _ => d2e0
-(*
   | D2Esym d2s => let
       val q = d2s.d2sym_qua and id = d2s.d2sym_sym
       val ans = $TRAN2ENV.the_d2expenv_find_qua (q, id)
@@ -1398,7 +1396,6 @@ in
         ) // end of [Some_vt]
       | ~None_vt () => d2e0
     end // end of [D2Esym]
-*)
   | D2Etmpid (d2e, ts2ess) => let
       val d2e = eval1_d2exp (loc0, ctx, env, d2e)
     in
