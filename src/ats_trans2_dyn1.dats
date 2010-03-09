@@ -1573,18 +1573,18 @@ in
     in
       case+ knd of
       | $Syn.MACSYNKINDcross () => let
-          val mdef = macdef_get ()
+          // val mdef = macdef_get ()
           val () = macro_level_dec (loc0)
-          val level = macro_level_get ()
+          // val level = macro_level_get ()
           val d2e0 = d2exp_macsyn (loc0, knd, d1exp_tr d1e)
           val () = macro_level_inc (loc0)
         in
           d2e0 // if (mdef + level = 0) then $MAC.macro_eval_cross (d2e0) else d2e0
         end // end of [MACSYNKINDcross]
       | $Syn.MACSYNKINDdecode () => let
-          val mdef = macdef_get ()
+          // val mdef = macdef_get ()
           val () = macro_level_dec (loc0)
-          val level = macro_level_get ()
+          // val level = macro_level_get ()
           val d2e0 = d2exp_macsyn (loc0, knd, d1exp_tr d1e)
           val () = macro_level_inc (loc0)
         in

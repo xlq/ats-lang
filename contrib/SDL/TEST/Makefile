@@ -41,6 +41,8 @@ compall: \
   lesson26 \
   lesson27 \
   lesson36 \
+  SDL_cairo_clock \
+  SDL_GL_cairo_clock \
 
 ######
 
