@@ -714,9 +714,8 @@ fun emit_stafile_extcode {m:file_mode} (
           | D2Cextcode (pos, code) => begin
               if (pos >= 0) then () else fprint1_string (pf | out, code)
             end // end of [D2Cextcode]
-          | D2Cstaload (fil, _(*od2cs*)) => begin
-              emit_stafile_extcode (pf | out, fil)
-            end // end of [D2Cstaload]
+          | D2Cstaload (_qua, fil, _loaded, _d2cs) =>
+              emit_stafile_extcode (pf | out, fil) // end of [D2Cstaload]
           | _ => ()
         ) : void // end of [val]
       in

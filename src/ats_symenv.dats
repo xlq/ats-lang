@@ -137,15 +137,15 @@ implement symenv_make {itm} () = '{
 
 (* ****** ****** *)
 
-implement{itm} symenv_insert_fst (env, k, i) = let
-  val (vbox pf_m | p_m) = ref_get_view_ptr env.map
-in
+implement{itm}
+  symenv_insert_fst (env, k, i) = let
+  val (vbox pf_m | p_m) = ref_get_view_ptr env.map in
   $Map.map_insert (!p_m, k, i)
 end // end of [symenv_insert]
 
-implement{itm} symenv_remove_fst (env, k) = let
-  val (vbox pf_m | p_m) = ref_get_view_ptr env.map
-in
+implement{itm}
+  symenv_remove_fst (env, k) = let
+  val (vbox pf_m | p_m) = ref_get_view_ptr env.map in
   $Map.map_remove (!p_m, k)
 end // end of [symenv_remove]
 
@@ -324,7 +324,7 @@ implement{itm} symenv_restore (env) = let
     symmaplst_free<itm> (!p_ms); !p_ms := ms
   end // end of [val]
 in
-  // no value returned
+  // no return value
 end // end of [symenv_restore]
 
 (* ****** ****** *)

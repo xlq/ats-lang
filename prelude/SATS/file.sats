@@ -76,8 +76,6 @@ macdef stderr_ref = $extval (FILEref, "stderr")
 
 (* ****** ****** *)
 
-symintr open_file
-
 fun open_file // exit on failure
   (path: string, mode: file_mode): FILEref = "atslib_fopen_exn"
 // end of [open_file]

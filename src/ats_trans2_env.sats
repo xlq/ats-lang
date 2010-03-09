@@ -147,8 +147,7 @@ fun the_d2expenv_pervasive_find (id: sym_t): d2itemopt_vt
 
 absview staload_level_token
 fun staload_level_get_level (): int
-fun staload_level_get_topkind (): int
-fun staload_level_push (knd: int): (staload_level_token | void)
+fun staload_level_push (): (staload_level_token | void)
 fun staload_level_pop (pf: staload_level_token | (*none*)): void
 
 (* ****** ****** *)

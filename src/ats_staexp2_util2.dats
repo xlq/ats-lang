@@ -46,6 +46,7 @@
 staload Deb = "ats_debug.sats"
 staload Err = "ats_error.sats"
 staload IntInf = "ats_intinf.sats"
+staload Lab = "ats_label.sats"
 staload Lst = "ats_list.sats"
 
 (* ****** ****** *)

@@ -1112,8 +1112,8 @@ implement d2ec_classdec (loc, d2c) = '{
   d2ec_loc= loc, d2ec_node= D2Cclassdec (d2c)
 }
 
-implement d2ec_overload (loc, id, qid) = '{
-  d2ec_loc= loc, d2ec_node= D2Coverload (id, qid)
+implement d2ec_overload (loc, id, d2i) = '{
+  d2ec_loc= loc, d2ec_node= D2Coverload (id, d2i)
 }
 
 implement d2ec_extype (loc, name, s2e_def) = '{
@@ -1160,9 +1160,9 @@ implement d2ec_dynload (loc, fil) = '{
   d2ec_loc= loc, d2ec_node= D2Cdynload (fil)
 }
 
-implement d2ec_staload (loc, fil, od2cs) = '{
-  d2ec_loc= loc, d2ec_node= D2Cstaload (fil, od2cs)
-}
+implement d2ec_staload (loc, qua, fil, loaded, d2cs) = '{
+  d2ec_loc= loc, d2ec_node= D2Cstaload (qua, fil, loaded, d2cs)
+} // end of [d2ec_staload]
 
 (* ****** ****** *)
 

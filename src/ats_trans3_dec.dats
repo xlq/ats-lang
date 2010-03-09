@@ -50,6 +50,9 @@ staload Sym = "ats_symbol.sats"
 
 staload "ats_staexp2.sats"
 staload "ats_dynexp2.sats"
+
+(* ****** ****** *)
+
 staload "ats_stadyncst2.sats"
 staload "ats_patcst2.sats"
 staload "ats_dynexp3.sats"
@@ -754,7 +757,7 @@ in
       val d3c = c2lassdec_tr (d2c) in
       d3ec_classdec (d2c0.d2ec_loc, d3c)
     end // end of [D2Cclassdec]
-  | D2Coverload _ => d3ec_none (d2c0.d2ec_loc)
+  | D2Coverload (id, d2i) => d3ec_none (d2c0.d2ec_loc)
   | D2Cextype (name, s2e_def) => let
 (*
       val () = begin
@@ -828,17 +831,15 @@ in
     in
       d3ec_local (d2c0.d2ec_loc, d3cs_head, d3cs_body)
     end // end of [D2Clocal]
-  | D2Cstaload (fil, od2cs) => let
+  | D2Cstaload (qua, fil, loaded, d2cs) => let
       val od3cs = (
-        case+ od2cs of
-        | Some d2cs => let
-            val (pf | ()) = the_s2cstlst_env_push ()
-            val d3cs = d2eclst_tr d2cs
-            val () = the_s2cstlst_env_pop_and_unbind (pf | (*none*))
-          in
-            Some d3cs
-          end
-        | None () => None ()
+        if loaded > 0 then None () else let
+          val (pf | ()) = the_s2cstlst_env_push ()
+          val d3cs = d2eclst_tr d2cs
+          val () = the_s2cstlst_env_pop_and_unbind (pf | (*none*))
+        in
+          Some d3cs
+        end // end of [Some]
       ) : Option (d3eclst)
     in
       d3ec_staload (d2c0.d2ec_loc, fil, od3cs)

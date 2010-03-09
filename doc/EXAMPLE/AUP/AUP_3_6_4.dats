@@ -77,7 +77,7 @@ fun push_pathlist
   (lstrs: &pathlist, name: string): void = let
   val name = string1_of_string name
   val n = string1_length (name)
-  val (pf_gc, pf_buf | p) = string_make_substring__bufptr (name, 0, n)
+  val (pf_gc, pf_buf | p) = string_make_substring (name, 0, n)
   val lstr = lstring_make (pf_gc, pf_buf | p)
 in
   lstrs := list_vt_cons {lstring} (lstr, lstrs)
@@ -192,7 +192,7 @@ in
   | list_vt_cons _ => let
       val () = fold@ lstrs
       val (pf_gc, pf_buf | p_path) =
-      stringlst_concat__bufptr (__cast lstrs) where {
+      stringlst_concat (__cast lstrs) where {
         extern castfn __cast (lstrs: !pathlist): List string
       } // end of [val]
       val () = free_pathlist (lstrs)

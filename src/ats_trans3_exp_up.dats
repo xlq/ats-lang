@@ -53,6 +53,9 @@ staload Syn = "ats_syntax.sats"
 
 staload "ats_staexp2.sats"
 staload "ats_dynexp2.sats"
+
+(* ****** ****** *)
+
 staload "ats_stadyncst2.sats"
 staload "ats_patcst2.sats"
 staload "ats_dynexp3.sats"
@@ -924,11 +927,10 @@ in
   | list_cons (xyz, xyzs1) => begin case+ xyzs1 of
     | list_nil () => begin
         aux1 (loc0, xyz.0, $Lst.list_reverse d3as, d2as)
-      end
+      end // end of [list_nil]
     | list_cons _ => begin case+ d2as of
       | list_nil () => let
-          val xyzs = aux_select0 xyzs
-        in
+          val xyzs = aux_select0 xyzs in
           case+ xyzs of
           | cons (xyz, nil ()) => begin 
               aux1 (loc0, xyz.0, $Lst.list_reverse d3as, nil ())
@@ -940,8 +942,7 @@ in
         end // end of [let]
       | list_cons (d2a, d2as) => begin case+ d2a of
         | D2EXPARGsta s2as => let
-            val d3a = D3EXPARGsta s2as
-          in
+            val d3a = D3EXPARGsta s2as in
             aux2 (loc0, d2s, d3a :: d3as, xyzs, d2as)
           end // end of [D2EXPARGsta]
         | D2EXPARGdyn (loc_arg, npf, d2es) => let
@@ -1003,8 +1004,9 @@ fn d2exp_apps_sym_tr_up
     print_newline ()
   end // end of [val]
 *)
-  val xyzs =
-    aux (loc0, d2as, d2s.d2sym_itm, list_vt_nil ()) where {
+  val xyzs = aux (
+      loc0, d2as, d2s.d2sym_itm, list_vt_nil ()
+    ) where {
     viewtypedef d2itemlstlst_vt = List_vt (d2itemlst)
     fun aux (
         loc0: loc_t

@@ -138,8 +138,52 @@ end // end of [symelim_tr]
 
 (* ****** ****** *)
 
-fn overload_tr
-  (id: $Syn.i0de, qid: $Syn.dqi0de) : void = let
+implement overload_def_tr (id, def) = let
+  val ans = ans where {
+    val id_sym = id.i0de_sym
+    val ans = the_d2expenv_current_find id_sym
+    val ans = (case+ ans of
+      | Some_vt _ => (fold@ ans; ans)
+      | ~None_vt () => the_d2expenv_pervasive_find id_sym
+    ) : d2itemopt_vt
+  } // end of [val]
+  val d2is = (case+ ans of
+    | ~Some_vt d2i => begin case+ d2i of
+      | D2ITEMsymdef d2is => d2is | _ => begin
+          prerr_loc_error2 id.i0de_loc;
+          $Deb.debug_prerrf (": %s: overload_def_tr", @(THISFILENAME));
+          prerr ": the identifier [";
+          prerr id.i0de_sym;
+          prerr "] should refer to a symbol but it does not.";
+          prerr_newline ();
+          $Err.abort {d2itemlst} ()          
+        end // end of [_]
+      end (* end of [Some_vt] *)
+    | ~None_vt () => begin
+        prerr_loc_error2 id.i0de_loc;
+        $Deb.debug_prerrf (": %s: overload_def_tr", @(THISFILENAME));
+        prerr ": the identifier [";
+        prerr id.i0de_sym;
+        prerr "] is unrecognized.";
+        prerr_newline ();
+        $Err.abort {d2itemlst} ()
+      end // end of [None_vt]
+  ) : d2itemlst
+(*
+  val () = begin
+    print "overload_def_tr: def := "; print_d2item def; print_newline ();
+    print "overload_def_tr: d2is := "; print_d2itemlst d2is; print_newline ();
+  end // end of [val]
+*)
+  val d2is_new = D2ITEMsymdef (def :: d2is) 
+in
+  the_d2expenv_add (id.i0de_sym, d2is_new)
+end (* end of [overload_def_tr] *)
+
+(* ****** ****** *)
+
+fun overload_tr
+  (id: $Syn.i0de, qid: $Syn.dqi0de): d2item = def where {
 (*
   val () = begin
     print "overload_tr: id = ";
@@ -154,9 +198,8 @@ fn overload_tr
   val ans = 
     the_d2expenv_find_qua (qid.dqi0de_qua, qid.dqi0de_sym)
   // end of [val]
-  val d2i = (case+ ans of
-    | ~Some_vt d2i => d2i
-    | ~None_vt () => begin
+  val def = (case+ ans of
+    | ~Some_vt d2i => d2i | ~None_vt () => begin
         prerr_loc_error2 qid.dqi0de_loc;
         $Deb.debug_prerrf (": %s: overload_tr", @(THISFILENAME));
         prerr ": the dynamic identifier [";
@@ -166,58 +209,8 @@ fn overload_tr
         $Err.abort {d2item} ()
       end // end of [None_vt]
   ) : d2item
-  var is_current: bool = false
-  val ans = ans where {
-    val id_sym = id.i0de_sym
-    val ans = the_d2expenv_current_find id_sym
-    val ans = (case+ ans of
-      | Some_vt _ => (is_current := true; fold@ ans; ans)
-      | ~None_vt () => the_d2expenv_pervasive_find id_sym
-    ) : d2itemopt_vt
-  } // end of [val]
-  val d2is = (case+ ans of
-    | ~Some_vt d2i => begin case+ d2i of
-      | D2ITEMsymdef d2is => d2is | _ => begin
-          prerr_loc_error2 id.i0de_loc;
-          $Deb.debug_prerrf (": %s: overload_tr", @(THISFILENAME));
-          prerr ": the identifier [";
-          prerr id.i0de_sym;
-          prerr "] should refer to a symbol but it does not.";
-          prerr_newline ();
-          $Err.abort {d2itemlst} ()          
-        end // end of [_]
-      end (* end of [Some_vt] *)
-    | ~None_vt () => begin
-        prerr_loc_error2 id.i0de_loc;
-        $Deb.debug_prerrf (": %s: overload_tr", @(THISFILENAME));
-        prerr ": the identifier [";
-        prerr id.i0de_sym;
-        prerr "] is unrecognized.";
-        prerr_newline ();
-        $Err.abort {d2itemlst} ()
-      end // end of [None_vt]
-  ) : d2itemlst
-(*
-  val () = begin
-    print "overload_tr: d2is := "; print_d2itemlst d2is; print_newline ()
-  end // end of [val]
-*)
-  val d2i_new = D2ITEMsymdef (d2i :: d2is)
-in
-  if is_current then begin
-    the_d2expenv_add (id.i0de_sym, d2i_new)
-  end else begin
-    the_d2expenv_pervasive_replace (id.i0de_sym, d2i_new)
-  end // end of [if]
-end (* end of [overload_tr] *)
-
-fn overload_tr_if
-  (id: $Syn.i0de, qid: $Syn.dqi0de): void = let
-  val level = staload_level_get_level ()
-  val topknd = staload_level_get_topkind ()
-in
-  if (level + topknd) <= 1 then overload_tr (id, qid) else ()
-end // end of [overload_tr_if]
+  val () = overload_def_tr (id, def)
+} // end of [overload_tr]
 
 (* ****** ****** *)
 
@@ -1228,15 +1221,16 @@ end // end of [i1mpdec_tr]
 
 (* ****** ****** *)
 
-fn s1taload_tr
-  (loc0: loc_t,
-   idopt: symopt_t, fil: fil_t, loaded: int,
-   d1cs: d1eclst)
-  : d2ec = let
+fn s1taload_tr (
+    loc0: loc_t
+  , idopt: symopt_t, fil: fil_t, loaded: int
+  , d1cs: d1eclst
+  , d2cs_loaded: &d2eclst
+  ) : d2ec = let
 (*
   val () = print "s1taload_tr: staid = "
   val () = case+ idopt of
-    | Some id => print id | None () => print "None"
+    | Some id => $Sym.print_symbol id | None () => print "None"
   // end of [val]
   val () = print_newline ()
   val () = begin
@@ -1244,62 +1238,69 @@ fn s1taload_tr
     print_newline ()
   end // end of [val]
 *)
-  var d2cs_loaded: d2eclst = list_nil ()
   val fil_sym = $Fil.filename_full_sym fil
-  val staloadknd = (
-    case+ idopt of Some _ => 1 (*named*) | None _ => 0 (*opened*)
-  ) : int // end of [val]
-  val (pf_token | ()) = staload_level_push (staloadknd)
+  var loaded: int = 0
+  val (pf_token | ()) = staload_level_push ()
+  val qua = // qualified, that is, closed
+    (case+ idopt of Some _ => 1 | None _ => 0): int
+  // end of [val]
   val ans = d2eclst_namespace_find fil_sym
-  val od2cs = (case+ ans of
-    | ~Some_vt d2cs => let
-        val () = d2cs_loaded := d2cs in None ()
-      end // end of [Some_vt]
+  val d2cs = (case+ ans of
+    | ~Some_vt d2cs => (loaded := 1; d2cs)
     | ~None_vt _ => let
         val () = trans2_env_save ()
 //
         val flag = $PM.posmark_pause_get ()
         val d2cs = d1eclst_tr d1cs
+        val () = d2cs_loaded := d2cs
         val () = $PM.posmark_resume_set (flag)
 //
         val () = trans2_env_namespace_add_topenv (fil_sym)
         val () = trans2_env_restore ()
         val () = d2eclst_namespace_add (fil_sym, d2cs)
       in
-        Some d2cs
+        d2cs
       end // end of [None_vt]
-  ) : Option d2eclst
+  ) : d2eclst
+  val () = d2cs_loaded := d2cs
   val () = case+ idopt of
     | Some id => the_s2expenv_add (id, S2ITEMfil fil)
     | None () => begin
         $NS.the_namespace_add fil_sym (* opened file *)
       end // end of [None]
   // end of [val]
-  val () = (case+ d2cs_loaded of
-    | list_nil () => () | list_cons _ => let
-        val level = staload_level_get_level ()
-        val topknd = staload_level_get_topkind ()
-      in
-        if (level + topknd <= 1) then loop (d2cs_loaded)
-      end // end of [list_cons]
-  ) where {
-    fun loop (d2cs: d2eclst)
-      : void = begin case+ d2cs of
-      | list_cons (d2c, d2cs) => loop d2cs where {
-          val () = case+ d2c.d2ec_node of
-            | D2Csymintr ids => symintr_tr (ids)
-            | D2Csymelim ids => symelim_tr (ids)
-            | D2Coverload (id, qid) => overload_tr (id, qid)
-            | _ => ()
-          // end of [val]
-        } // end of [list_cons]
-      | list_nil () => ()
-    end // end of [loop]
-  } // end of [val]
   val () = staload_level_pop (pf_token | (*none*))
 in
-  d2ec_staload (loc0, fil, od2cs)
+  d2ec_staload (loc0, qua, fil, loaded, d2cs)
 end // end of [s1taload_tr]
+
+(* ****** ****** *)
+
+implement staload_d2eclst_overload (d2cs) =
+  case+ d2cs of
+  | list_cons (d2c, d2cs) => let
+      val () = case+ d2c.d2ec_node of
+        | D2Csymintr ids => symintr_tr (ids)
+(*
+        | D2Csymelim ids => symelim_tr (ids) // is this really needed?
+*)
+        | D2Coverload (id, d2i) => let
+(*
+            val () = begin
+              print "staload_d2eclst_overload: id = "; $Syn.print_i0de id; print_newline ();
+              print "staload_d2eclst_overload: d2i = "; print_d2item d2i; print_newline ();
+            end // end of [D2Coverload]
+*)
+          in
+            overload_def_tr (id, d2i)
+          end // end of [D2Coverload]
+        | _ => ()
+      // end of [val]
+    in
+      staload_d2eclst_overload (d2cs)
+    end // end of [list_cons]
+  | list_nil () => ()
+// end of [staload_d2eclst_overload]
 
 (* ****** ****** *)
 
@@ -1389,8 +1390,8 @@ implement d1ec_tr (d1c0) = begin
       d2ec_classdec (d1c0.d1ec_loc, d2c_cls)
     end // end of [D1Cfundecs]
   | D1Coverload (id, qid) => let
-      val () = overload_tr_if (id, qid) in
-      d2ec_overload (d1c0.d1ec_loc, id, qid)
+      val d2i = overload_tr (id, qid) in
+      d2ec_overload (d1c0.d1ec_loc, id, d2i)
     end // end of [D1Coverload]
   | D1Cextype (name, s1e_def) => let
       val s2e_def = s1exp_tr_dn_viewt0ype s1e_def
@@ -1459,8 +1460,16 @@ implement d1ec_tr (d1c0) = begin
       d2ec_local (d1c0.d1ec_loc, d2cs_head, d2cs_body)
     end // end of [D1Clocal]
   | D1Cdynload (fil) => d2ec_dynload (d1c0.d1ec_loc, fil)
-  | D1Cstaload (idopt, fil, loaded, d1cs) => begin
-      s1taload_tr (d1c0.d1ec_loc, idopt, fil, loaded, d1cs)
+  | D1Cstaload (idopt, fil, loaded, d1cs) => let
+      var d2cs_loaded: d2eclst = list_nil ()
+      val d2c0 = s1taload_tr
+        (d1c0.d1ec_loc, idopt, fil, loaded, d1cs, d2cs_loaded)
+      // end of [val]
+      val () = case+ idopt of
+        | None _ => staload_d2eclst_overload (d2cs_loaded) | Some _ => ((*named*))
+      // end of [val]
+    in
+      d2c0
     end // end of [D1Cstaload]
 (*
   | _ => begin

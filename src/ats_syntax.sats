@@ -242,6 +242,9 @@ fun fprint_i0de {m:file_mode}
   (pf: file_mode_lte (m, w) | out: &FILE m, _: i0de): void
 overload fprint with fprint_i0de
 
+fun print_i0de (_: i0de): void
+fun prerr_i0de (_: i0de): void
+
 fun fprint_i0delst {m:file_mode}
   (pf: file_mode_lte (m, w) | out: &FILE m, _: i0delst): void
 overload fprint with fprint_i0delst

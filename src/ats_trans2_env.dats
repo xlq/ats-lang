@@ -828,51 +828,24 @@ assume staload_level_token = unit_v
 
 local
 
-viewtypedef intlst_vt = List_vt (int)
-val the_staload_level = ref_make_elt<intlst_vt> (list_vt_nil)
+val the_staload_level = ref_make_elt<int> (0)
 
 in
 
-implement staload_level_get_level () = n where {
-  val (pfbox | p) = ref_get_view_ptr (the_staload_level)
-  prval vbox pf = pfbox
-  val n = loop_length (!p, 0) where {
-    fun loop_length {i,j:nat} .<i>.
-      (xs: !list_vt (int, i), j: int j):<> int (i+j) =
-      case+ xs of
-      | list_vt_cons (_, !p_xs) => let
-          val n = loop_length (!p_xs, j+1) in fold@ xs; n
-        end // end of [list_vt_cons]
-      | list_vt_nil () => (fold@ xs; j)
-    // end of [loop_length]
-  }
-} // end of [staload_level_get]
+implement staload_level_get_level () = !the_staload_level
 
-implement staload_level_get_topkind () = knd where {
-  val (pfbox | p) = ref_get_view_ptr (the_staload_level)
-  prval vbox pf = pfbox
-  val knd = (case+ !p of
-    | list_vt_cons (knd, _) => (fold@ (!p); knd)
-    | list_vt_nil () => (fold@ (!p); 0)
-  ) : int // end of [val]
-} // end of [staload_level_get_kind]
-
-implement staload_level_push (knd) = let
-  val (pfbox | p) = ref_get_view_ptr (the_staload_level)
-  prval vbox pf = pfbox
-  val () = !p := list_vt_cons (knd, !p)
+implement staload_level_push () = let
+  val (vbox pf | p) = ref_get_view_ptr (the_staload_level)
+  val () = !p := !p + 1
 in
   (unit_v () | ())
 end // end of [staload_level_inc]
 
 implement staload_level_pop (pf | (*none*)) = let
   prval unit_v () = pf
-  val (pfbox | p) = ref_get_view_ptr (the_staload_level)
-  prval vbox pf = pfbox
+  val (vbox pf | p) = ref_get_view_ptr (the_staload_level)
 in
-  case+ !p of
-  | ~list_vt_cons (_(*knd*), kndlst) => !p := (kndlst: intlst_vt)
-  | list_vt_nil () => fold@ (!p)
+  !p := !p - 1
 end // end of [staload_level_dec]
 
 end // end of [local]

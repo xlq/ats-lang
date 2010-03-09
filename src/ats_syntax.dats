@@ -258,6 +258,11 @@ implement s0tring_make (loc, str, len) =
 implement fprint_i0de (pf | out, id) =
   $Sym.fprint_symbol (pf | out, id.i0de_sym)
 
+implement print_i0de id = print_mac (fprint_i0de, id)
+implement prerr_i0de id = prerr_mac (fprint_i0de, id)
+
+//
+
 implement fprint_i0delst {m} (pf | out, ids) = let
 fun aux (out: &FILE m, id0: i0de, ids: i0delst): void =
   case+ ids of

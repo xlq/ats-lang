@@ -169,6 +169,14 @@ fun d1lab_tr (_: d1lab): d2lab
 
 (* ****** ****** *)
 
+fun overload_def_tr
+  (id: $Syn.i0de, d2i: d2item) : void
+// end of [overload_def_tr]
+
+fun staload_d2eclst_overload (d2cs: d2eclst): void
+
+(* ****** ****** *)
+
 fun d1ec_tr (d1c: d1ec): d2ec
 fun d1eclst_tr (d1cs: d1eclst): d2eclst
 

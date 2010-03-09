@@ -554,7 +554,7 @@ datatype d2ec_node =
   | D2Cexndec of d2conlst
   | D2Cclassdec of c2lassdec
   | D2Coverload of (* overloading *) // for temporary use
-      ($Syn.i0de, $Syn.dqi0de)
+      ($Syn.i0de, d2item)
   | D2Cextype of // external type
       (string(*name*), s2exp(*definition*))
   | D2Cextval of (* external value *)
@@ -578,7 +578,8 @@ datatype d2ec_node =
   | D2Cdynload of (* dynamic load *)
       fil_t
   | D2Cstaload of (* static load *)
-      (fil_t, Option d2eclst)
+      (int(*qua*), fil_t, int(*loaded*), d2eclst)
+    // end of [D2Cstaload]
 // end of [d2ec_node]
 
 and d2exp_node =
@@ -1337,7 +1338,7 @@ fun d2ec_saspdec (_: loc_t, d: s2aspdec): d2ec
 fun d2ec_dcstdec (_: loc_t, _: $Syn.dcstkind, ds: d2cstlst): d2ec
 fun d2ec_datdec (_: loc_t, k: $Syn.datakind, ds: s2cstlst): d2ec
 fun d2ec_classdec (_: loc_t, d: c2lassdec): d2ec
-fun d2ec_overload (_: loc_t, id: $Syn.i0de, qid: $Syn.dqi0de): d2ec
+fun d2ec_overload (_: loc_t, id: $Syn.i0de, d2i: d2item): d2ec
 fun d2ec_exndec (_: loc_t, con: d2conlst): d2ec
 fun d2ec_extype (_: loc_t, name: string, def: s2exp): d2ec
 fun d2ec_extval (_: loc_t, name: string, def: d2exp): d2ec
@@ -1356,7 +1357,9 @@ fun d2ec_impdec (_: loc_t, d: i2mpdec): d2ec
 fun d2ec_local (_: loc_t, head: d2eclst, body: d2eclst): d2ec
 
 fun d2ec_dynload (_: loc_t, _: fil_t): d2ec
-fun d2ec_staload (_: loc_t, _: fil_t, _: Option (d2eclst)): d2ec
+fun d2ec_staload
+  (_: loc_t, qua: int, _: fil_t, loaded: int, _: d2eclst): d2ec
+// end of [d2ec_staload]
 
 (* ****** ****** *)
 

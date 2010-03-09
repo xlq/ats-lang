@@ -145,21 +145,21 @@ fun symbol_make_string (name: string): symbol_t
 (* ****** ****** *)
 
 fun lt_symbol_symbol (s1: symbol_t, s2: symbol_t):<> bool
-fun lte_symbol_symbol (s1: symbol_t, s2: symbol_t):<> bool
-
 overload < with lt_symbol_symbol
+
+fun lte_symbol_symbol (s1: symbol_t, s2: symbol_t):<> bool
 overload <= with lte_symbol_symbol
 
 fun gt_symbol_symbol (s1: symbol_t, s2: symbol_t):<> bool
-fun gte_symbol_symbol (s1: symbol_t, s2: symbol_t):<> bool
-
 overload > with gt_symbol_symbol
+
+fun gte_symbol_symbol (s1: symbol_t, s2: symbol_t):<> bool
 overload >= with gte_symbol_symbol
 
 fun eq_symbol_symbol (s1: symbol_t, s2: symbol_t):<> bool
-fun neq_symbol_symbol (s1: symbol_t, s2: symbol_t):<> bool
-
 overload = with eq_symbol_symbol
+
+fun neq_symbol_symbol (s1: symbol_t, s2: symbol_t):<> bool
 overload <> with neq_symbol_symbol
 
 fun compare_symbol_symbol (s1: symbol_t, s2: symbol_t):<> Sgn
@@ -173,19 +173,19 @@ fun symbol_hash (s: symbol_t):<> uInt
 
 fun fprint_symbol {m:file_mode}
   (pf: file_mode_lte (m, w) | out: &FILE m, s: symbol_t): void
-
 overload fprint with fprint_symbol
 
 fun print_symbol (s: symbol_t): void
-fun prerr_symbol (s: symbol_t): void
-
 overload print with print_symbol
+
+fun prerr_symbol (s: symbol_t): void
 overload prerr with prerr_symbol
 
 (* ****** ****** *)
 
 fun fprint_symbol_code {m:file_mode}
   (pf: file_mode_lte (m, w) | out: &FILE m, s: symbol_t): void
+// end of [fprint_symbol_code]
 
 fun print_symbol_code (s: symbol_t): void
 fun prerr_symbol_code (s: symbol_t): void

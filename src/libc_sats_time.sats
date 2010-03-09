@@ -45,12 +45,10 @@ abst@ype clock_t = $extype "ats_clock_type"
 
 fun lint_of_time_t (t: time_t):<> int_long_t0ype
   = "atslib_lint_of_time_t"
-
 overload lint_of with lint_of_time_t
 
 fun double_of_time_t (t: time_t):<> double_t0ype
   = "atslib_double_of_time_t"
-
 overload double_of with double_of_time_t
 
 //
@@ -84,15 +82,12 @@ fun tm_yday_get (tm: &tm_struct): int
 fun tm_isdst_get (tm: &tm_struct): int
   = "atslib_tm_isdst_get"
 
-//
+(* ****** ****** *)
 
 fun time_get (): time_t = "atslib_time_get"
 fun time_get_and_set {l:addr}
   (pf: !time_t? @ l >> time_t @ l | p: ptr l): time_t
   = "atslib_time_get_and_set"
-
-overload time with time_get
-overload time with time_get_and_set
 
 (* ****** ****** *)
 

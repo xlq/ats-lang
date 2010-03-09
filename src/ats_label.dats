@@ -74,24 +74,24 @@ implement gte_label_label (lab1, lab2) = compare (lab1, lab2) >= 0
 
 implement eq_label_label (lab1, lab2) =
   case+ (lab1, lab2) of
-    | (LABint i1, LABint i2) => i1 = i2
-    | (LABsym s1, LABsym s2) => s1 = s2
-    | (_, _) => false
+  | (LABint i1, LABint i2) => i1 = i2
+  | (LABsym s1, LABsym s2) => s1 = s2
+  | (_, _) => false
 // end of [eq_label_label]
 
 implement neq_label_label (lab1, lab2) =
   case+ (lab1, lab2) of
-    | (LABint i1, LABint i2) => i1 <> i2
-    | (LABsym s1, LABsym s2) => s1 <> s2
-    | (_, _) => true
+  | (LABint i1, LABint i2) => i1 <> i2
+  | (LABsym s1, LABsym s2) => s1 <> s2
+  | (_, _) => true
 // end of [neg_label_label]
 
 implement compare_label_label (lab1, lab2) =
   case+ (lab1, lab2) of
-    | (LABint i1, LABint i2) => compare (i1, i2)
-    | (LABsym s1, LABsym s2) => compare (s1, s2)
-    | (LABint _, LABsym _) => ~1
-    | (LABsym _, LABint _) =>  1
+  | (LABint i1, LABint i2) => compare (i1, i2)
+  | (LABsym s1, LABsym s2) => compare (s1, s2)
+  | (LABint _, LABsym _) => ~1
+  | (LABsym _, LABint _) =>  1
 // end of [compare_label_label]
 
 (* ****** ****** *)
