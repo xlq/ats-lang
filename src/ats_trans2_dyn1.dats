@@ -243,11 +243,11 @@ fun d1exp_make_d1exp (d1e: d1exp): d1exp = begin
     | ~Some_vt d2i => begin case+ d2i of
       | D2ITEMe1xp e1xp => begin
           d1exp_make_d1exp (d1exp_make_e1xp (d1e.d1exp_loc, e1xp))
-        end
-      | _ => d1e
+        end // end of [D2ITEMe1xp]
+      | _ => d1e // end of [_]
       end // end of [Some_vt]
     | ~None_vt () => d1e
-    end
+    end // end of [D1Eqid]
   | _ => d1e
 end // end of [d1exp_make_d1exp]
 
@@ -861,16 +861,15 @@ in
   | ~Some_vt d2i => begin case+ d2i of
     | D2ITEMcon d2cs => let
         val d2cs = d2con_select_arity (d2cs, 0)
-        val d2c: d2con_t = case+ d2cs of
+        val d2c = (case+ d2cs of
           | D2CONLSTcons (d2c, d2cs) => begin case+ d2cs of
-            | D2CONLSTcons _ => begin
+            | D2CONLSTcons _ =>
                 d2con_select_arity_err_some (loc_id, q, id, 0)
-              end
+              // end of [D2CONLSTcons]
             | _ => d2c
-            end
-          | _ => begin
-              d2con_select_arity_err_none (loc_id, q, id, 0)
-            end
+            end // end of [D2CONLSTcons]
+          | D2CONLSTnil _ => d2con_select_arity_err_none (loc_id, q, id, 0)
+        ) : d2con_t // end of [val]
       in
         d2exp_con (loc_sap, d2c, s2as, 0(*npf*), nil ())
       end // end of [D2ITEMcon]
@@ -1567,18 +1566,20 @@ in
   | D1Emacsyn (knd, d1e) => let
 (*
       val () = begin
-        print "d1exp_tr: d1e0 = "; print d1e0; print_newline ()
+        print "d1exp_tr: D1Emacsyn: knd = "; print d1e; print_newline ();
+        print "d1exp_tr: D1Emacsyn: d1e = "; print d1e; print_newline ();
       end // end of [val]
 *)
     in
       case+ knd of
       | $Syn.MACSYNKINDcross () => let
+          val mdef = macdef_get ()
           val () = macro_level_dec (loc0)
+          val level = macro_level_get ()
           val d2e0 = d2exp_macsyn (loc0, knd, d1exp_tr d1e)
           val () = macro_level_inc (loc0)
-          // val d2e0 = $Mac.macro_eval_cross (d2e0) // ???
         in
-          d2e0
+          d2e0 // if (mdef + level = 0) then $MAC.macro_eval_cross (d2e0) else d2e0
         end // end of [MACSYNKINDcross]
       | $Syn.MACSYNKINDdecode () => let
           val mdef = macdef_get ()
@@ -1586,9 +1587,8 @@ in
           val level = macro_level_get ()
           val d2e0 = d2exp_macsyn (loc0, knd, d1exp_tr d1e)
           val () = macro_level_inc (loc0)
-          // val d2e0 = $MAC.macro_eval_decode (d2e0) // ???
         in
-          if (mdef + level = 0) then $MAC.macro_eval_decode (d2e0) else d2e0
+          d2e0 // if (mdef + level = 0) then $MAC.macro_eval_decode (d2e0) else d2e0
         end // end of [MACSYNKINDdecode]
       | $Syn.MACSYNKINDencode () => let
           val () = macro_level_inc (loc0)

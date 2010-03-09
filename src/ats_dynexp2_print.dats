@@ -86,7 +86,7 @@ in
       prstr "D2ITEMmtd("; fprint_d2mtd (pf | out, d2m); prstr ")"
     end // end of [D2ITEMmtd]
   | D2ITEMsymdef d2is => begin
-      fprint1_string (pf | out, "D2ITEMsymdef(...)")
+      prstr "D2ITEMsymdef("; fprint_d2itemlst (pf | out, d2is); prstr ")";
     end // end of [D2ITEMsymdef]
   | D2ITEMvar d2v => begin
       prstr "D2ITEMvar("; fprint_d2var (pf | out, d2v); prstr ")"

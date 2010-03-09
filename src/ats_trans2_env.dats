@@ -691,22 +691,6 @@ end // end of [the_d2expenv_add_dvarlst]
 
 (* ****** ****** *)
 
-//
-// this is for handling [overload]
-//
-implement the_d2expenv_pervasive_replace (id, d2i) = let
-  val ans =
-    $SymEnv.symenv_pervasive_replace (the_d2expenv, id, d2i)
-  // end of [val]
-  val () = begin
-    case+ ans of ~Some_vt _ => () | ~None_vt () => ()
-  end // end of [val]
-in
-  // empty
-end // end of [the_d2expenv_pervasive_replace]
-
-(* ****** ****** *)
-
 fn the_d2expenv_namespace_find
   (id: sym_t): d2itemopt_vt = let
   fn f (name: sym_t):<cloptr1> d2itemopt_vt = let
@@ -727,8 +711,21 @@ in
 end // end of [the_d2expenv_namespace_find]
 
 implement the_d2expenv_find (id) = let
+(*
+  val () = let
+    val ptr = __cast (the_d2expenv)
+      where { extern castfn __cast (x: d2expenv): ptr }
+    // end of [val]
+  in
+    print "the_d2expenv_find: ptr = "; print ptr; print_newline ()
+  end // end of [val]
+  val () = begin
+    print "the_d2expenv_find: id = "; $Sym.print_symbol id; print_newline ()
+  end // end of [val]
+*)
   val ans =
     $SymEnv.symenv_search_all (the_d2expenv, id)
+  // end of [val]
 in
   case+ ans of
   | Some_vt _ => let

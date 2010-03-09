@@ -129,9 +129,6 @@ fun the_d2expenv_add_dmac_varlst (d2vs: d2varlst): void
 fun the_d2expenv_add_dvar (d2v: d2var_t): void
 fun the_d2expenv_add_dvarlst (d2vs: d2varlst): void
 
-// this is for handling [overload]
-fun the_d2expenv_pervasive_replace (id: sym_t, d2i: d2item): void
-
 // [find] goes in the following order:
 // current env; namespace env; pervasive env
 fun the_d2expenv_find (id: sym_t): d2itemopt_vt

@@ -45,7 +45,6 @@ staload Eff = "ats_effect.sats"
 staload Err = "ats_error.sats"
 staload Loc = "ats_location.sats"
 staload Lst = "ats_list.sats"
-staload Mac = "ats_macro2.sats"
 staload SOL = "ats_staexp2_solve.sats"
 staload Syn = "ats_syntax.sats"
 
@@ -53,6 +52,7 @@ staload Syn = "ats_syntax.sats"
 
 staload "ats_staexp2.sats"
 staload "ats_dynexp2.sats"
+staload MAC = "ats_macro2.sats"
 
 (* ****** ****** *)
 
@@ -102,7 +102,7 @@ ats_trans3_floatkind_eval (ats_ptr_type s0) {
     default : ;
   }
   return FLOATKINDnone ;
-}
+} // end of [ats_trans3_floatkind_eval]
 
 ats_ptr_type
 ats_trans3_intkind_eval (ats_ptr_type s0) {
@@ -121,7 +121,7 @@ ats_trans3_intkind_eval (ats_ptr_type s0) {
   if (nL == 0 && nU == 1) return INTKINDuint ; /* unsigned */
   if (nL == 1 && nU == 1) return INTKINDulint ; /* unsigned long */
   return INTKINDnone ;
-}
+} // end of [ats_trans3_intkind_eval]
 
 %} // end of [%{$]
 
@@ -832,7 +832,7 @@ fun aux1
     | D3EXPARGsta s2as => let
         val s2e_fun = begin
           s2exp_uni_instantiate_sexparglst (loc0, d3e_fun.d3exp_typ, s2as)
-        end
+        end // end of [val]
         val d3e_fun = d3exp_app_sta (loc0, s2e_fun, d3e_fun)
       in
         aux1 (loc0, d3e_fun, d3as, d2as)
@@ -987,7 +987,7 @@ in
   | S2Eexi (_(*s2vs*), _(*s2ps*), s2e) => aux3_app (npf, d2es, d2as, s2e)
   | S2Euni (_(*s2vs*), _(*s2ps*), s2e) => aux3_app (npf, d2es, d2as, s2e)
   | S2Emetfn (_(*stamp*), _(*met*), s2e) => aux3_app (npf, d2es, d2as, s2e)
-  | _ => false
+  | _ => false // end of [_]
 end // end of [aux3_app]
 
 in // in of [local]
@@ -2051,9 +2051,11 @@ val d3e0 = (case+ d2e0.d2exp_node of
   | D2Eapps (d2e_fun, d2as_arg) => begin
     case+ d2e_fun.d2exp_node of
     | D2Emac d2m => let
-        val d2e0 = $Mac.macro_eval_app_short (loc0, d2m, d2as_arg)
+        val d2e0 =
+          $MAC.macro_eval_app_short (loc0, d2m, d2as_arg)
+        // end of [val]
       in
-        d2exp_tr_up (d2e0)
+        d2exp_tr_up d2e0
       end // end of [D2Emac]
     | D2Esym d2s => d2exp_apps_sym_tr_up (loc0, d2s, d2as_arg)
     | _ => let
@@ -2293,7 +2295,7 @@ val d3e0 = (case+ d2e0.d2exp_node of
         $Loc.print_location loc0; print_newline ()
       end // end of [val]
 *)
-      val d2e0 = $Mac.macro_eval_app_short (loc0, d2m, d2as)
+      val d2e0 = $MAC.macro_eval_app_short (loc0, d2m, d2as)
 (*
       val () = begin
         print "d2exp_tr_up: D2Emac: d2e0.d2exp_loc = ";
@@ -2303,28 +2305,29 @@ val d3e0 = (case+ d2e0.d2exp_node of
     in
       d2exp_tr_up (d2e0)
     end // end of [D2Emac]
-(*
-//
-// HX-2010-03-08: this is now done by [d1exp_tr]
-//
   | D2Emacsyn (knd, d2e) => d2exp_tr_up d2e_mac where {
+(*
       val () = begin
-        print "d2exp_tr_up: D2Emacsyn: d2e = "; print d2e; print_newline ()
+        print "d2exp_tr_up: D2Emacsyn: knd = "; print knd; print_newline ();
+        print "d2exp_tr_up: D2Emacsyn: d2e = "; print d2e; print_newline ();
       end // end of [val]
+*)
       val d2e_mac = case+ knd of
-        | $Syn.MACSYNKINDcross () => $Mac.macro_eval_cross (d2e)
-        | $Syn.MACSYNKINDdecode () => $Mac.macro_eval_decode (d2e)
+        | $Syn.MACSYNKINDcross () => $MAC.macro_eval_cross (d2e)
+        | $Syn.MACSYNKINDdecode () => $MAC.macro_eval_decode (d2e)
         | $Syn.MACSYNKINDencode () => begin
             prerr loc0; prerr ": error(macro)";
             prerr ": the macro syntax `(...) is incorrectly used at this location.";
             prerr_newline ();
             $Err.abort {d2exp} ()
           end // end of [MACSYNKINDencode]
+      // end of [val]
+(*
       val () = begin
         print "d2exp_tr_up: D2Emacsyn: d2e_mac = "; print d2e_mac; print_newline ()
       end // end of [val]
-    } // end of [D2Emacsyn]
 *)
+    } // end of [D2Emacsyn]
   | D2Emtd d2m => let
       val s2e_mtd =
         d2mtd_typ_get d2m in d3exp_mtd (loc0, s2e_mtd, d2m)

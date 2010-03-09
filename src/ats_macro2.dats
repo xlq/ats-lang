@@ -746,7 +746,13 @@ end (* end of [eval0_var] *)
 
 (* ****** ****** *)
 
-implement eval0_exp (loc0, ctx, env, d2e0) = begin
+implement eval0_exp (loc0, ctx, env, d2e0) = let
+(*
+  val () = begin
+    print "eval0_exp: d2e0 = "; print_d2exp d2e0; print_newline ()
+  end // end of [val]
+*)
+in
   case+ d2e0.d2exp_node of
   | D2Eapps (d2e, d2as) => begin
     case+ d2e.d2exp_node of
@@ -812,15 +818,10 @@ implement eval0_exp (loc0, ctx, env, d2e0) = begin
       in
         V2ALcode (d2e)
       end // end of [MACSYNKINDencode]
-(*
-    | _ => begin
-        prerr_loc_errmac loc0;
-        prerr ": invalid use of macro syntax: ";
-        prerr d2e0; prerr_newline ();
-        $Err.abort {v2alue} ()
-      end // end of [_]
-*)
     end // end of [D2Emacsyn]
+(*
+  | D2Eseq '[d2e] => eval0_exp (loc0, ctx, env, d2e)
+*)
   | D2Estring (str, len) => V2ALstring (str, len)
   | D2Erec (_(*recknd*), _(*npf*), ld2es) => let
       val v2ls = eval0_labexplst (loc0, ctx, env, ld2es)
@@ -829,22 +830,23 @@ implement eval0_exp (loc0, ctx, env, d2e0) = begin
     end // end of [D2Erec]
   | D2Evar d2v => eval0_var (loc0, ctx, d2v)
   | _ => begin
-      prerr_loc_errmac loc0;
-      prerr ": unsupported form for macro expansion: ";
-      prerr d2e0; prerr_newline ();
-      $Err.abort {v2alue} ()
-    end // end of [_]
+     prerr_loc_errmac loc0;
+     prerr ": unsupported form for macro expansion: "; prerr d2e0;
+     prerr_newline ();
+     $Err.abort {v2alue} ()
+   end // end of [_]
 end // end of [eval0_exp]
 
 implement eval0_labexplst
-  (loc0, ctx, env, ld2es) = begin case+ ld2es of
+  (loc0, ctx, env, ld2es) = case+ ld2es of
   | LABD2EXPLSTcons (_(*lab*), d2e, ld2es) => let
       val v2l = eval0_exp (loc0, ctx, env, d2e)
+      val v2ls = eval0_labexplst (loc0, ctx, env, ld2es)
     in
-      list_cons (v2l, eval0_labexplst (loc0, ctx, env, ld2es))
+      list_cons (v2l, v2ls)
     end // end of [LABD2EXPLSTcons]
   | LABD2EXPLSTnil () => list_nil ()
-end // end of [eval0_labexplst]
+// end of [eval0_labexplst]
 
 (* ****** ****** *)
 
@@ -1382,6 +1384,11 @@ in
     in
       d2exp_struct (loc0, ld2es)
     end // end of [D2Estruct]
+  | D2Esym d2s => d2e0 // this is static binding
+(*
+//
+// HX-2010-03-09: should dynamic binding be supported?
+//
   | D2Esym d2s => let
       val q = d2s.d2sym_qua and id = d2s.d2sym_sym
       val ans = $TRAN2ENV.the_d2expenv_find_qua (q, id)
@@ -1389,6 +1396,9 @@ in
       case ans of
       | ~Some_vt d2i => (case+ d2i of
           | D2ITEMsymdef d2is => let // reload symdef list
+              val () = begin
+                print "eval1_d2exp: D2Esym: d2is = "; print_d2itemlst d2is; print_newline ()
+              end // end of [val]
               val d2s_new = d2sym_make (loc0, q, id, d2is) in
               d2exp_sym (loc0, d2s_new)
             end // end of [D2ITEMsymdef]
@@ -1396,6 +1406,7 @@ in
         ) // end of [Some_vt]
       | ~None_vt () => d2e0
     end // end of [D2Esym]
+*)
   | D2Etmpid (d2e, ts2ess) => let
       val d2e = eval1_d2exp (loc0, ctx, env, d2e)
     in
@@ -1803,7 +1814,7 @@ in
       prerr_newline ();
       $Err.abort {d2exp} ()
     end // end of [_]
-end // end of [macro_eval]
+end // end of [macro_eval_decode]
 
 (* ****** ****** *)
 
