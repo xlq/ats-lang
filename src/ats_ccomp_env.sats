@@ -231,14 +231,14 @@ fun the_extcodelst_add (position: int, code: string): void
 (* ****** ****** *)
 
 dataviewtype stafilelst =
-  | STAFILELSTcons of ($Fil.filename_t, stafilelst)
+  | STAFILELSTcons of ($Fil.filename_t, int(*loadflag*), stafilelst)
   | STAFILELSTnil of ()
 // end of [stafilelst]
 
 fun stafilelst_free (fils: stafilelst): void
 
 fun the_stafilelst_get (): stafilelst
-fun the_stafilelst_add (fil: $Fil.filename_t): void
+fun the_stafilelst_add (fil: $Fil.filename_t, loadflag: int): void
 
 (* ****** ****** *)
 

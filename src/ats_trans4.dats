@@ -1538,7 +1538,7 @@ implement d3eclst_tr (d3cs0) = res where {
         in
           aux1 (d3cs, hid, res)
         end // end of [D3Clocal]
-      | D3Cstaload (fil, od3c) => let
+      | D3Cstaload (fil, loadflag, od3c) => let
           val () = begin case+ od3c of
             | Some d3cs => begin
                 // record definitions for templates
@@ -1546,7 +1546,7 @@ implement d3eclst_tr (d3cs0) = res where {
               end // end of [Some]
             | None () => ()
           end // end of [val]
-          val hid = hidec_staload (d3c.d3ec_loc, fil)
+          val hid = hidec_staload (d3c.d3ec_loc, fil, loadflag)
         in
           aux1 (d3cs, hid, res)
         end // end of [D3Cstaload]

@@ -974,15 +974,15 @@ implement d3ec_impdec (loc, d3c) = '{
 
 implement d3ec_local (loc, d3cs_head, d3cs_body) = '{
   d3ec_loc= loc, d3ec_node= D3Clocal (d3cs_head, d3cs_body)
-}
+} // end of [d3ec_local]
 
-implement d3ec_staload (loc, fil, od3cs) = '{
-  d3ec_loc= loc, d3ec_node= D3Cstaload (fil, od3cs)
-}
+implement d3ec_staload (loc, fil, loadflag, od3cs) = '{
+  d3ec_loc= loc, d3ec_node= D3Cstaload (fil, loadflag, od3cs)
+} // end of [d3ec_staload]
 
 implement d3ec_dynload (loc, fil) = '{
   d3ec_loc= loc, d3ec_node= D3Cdynload (fil)
-}
+} // end of [d3ec_dynload]
 
 (* ****** ****** *)
 

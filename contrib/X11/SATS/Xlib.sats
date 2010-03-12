@@ -42,6 +42,10 @@
 
 (* ****** ****** *)
 
+#define ATS_STALOADFLAG 0 // no static loading at run-time
+
+(* ****** ****** *)
+
 staload "contrib/X11/SATS/X.sats"
 
 (* ****** ****** *)

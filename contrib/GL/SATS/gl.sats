@@ -39,7 +39,11 @@
 
 %{#
 #include "contrib/GL/CATS/gl.cats"
-%}
+%} // end of [%{#]
+
+(* ****** ****** *)
+
+#define ATS_STALOADFLAG 0 // no static loading at run-time
 
 (* ****** ****** *)
 

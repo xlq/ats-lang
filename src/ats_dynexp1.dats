@@ -692,9 +692,10 @@ implement d1ec_dynload (loc, fil) = '{
   d1ec_loc= loc, d1ec_node= D1Cdynload (fil)
 }
 
-implement d1ec_staload (loc, idopt, fil, loaded, d1cs) = '{
-  d1ec_loc= loc, d1ec_node= D1Cstaload (idopt, fil, loaded, d1cs)
-}
+implement d1ec_staload
+  (loc, idopt, fil, loaded, loadflag, d1cs) = '{
+  d1ec_loc= loc, d1ec_node= D1Cstaload (idopt, fil, loaded, loadflag, d1cs)
+} // end of [d1ec_staload]
 
 (* ****** ****** *)
 

@@ -831,7 +831,7 @@ in
     in
       d3ec_local (d2c0.d2ec_loc, d3cs_head, d3cs_body)
     end // end of [D2Clocal]
-  | D2Cstaload (qua, fil, loaded, d2cs) => let
+  | D2Cstaload (qua, fil, loaded, loadflag, d2cs) => let
       val od3cs = (
         if loaded > 0 then None () else let
           val (pf | ()) = the_s2cstlst_env_push ()
@@ -842,7 +842,7 @@ in
         end // end of [Some]
       ) : Option (d3eclst)
     in
-      d3ec_staload (d2c0.d2ec_loc, fil, od3cs)
+      d3ec_staload (d2c0.d2ec_loc, fil, loadflag, od3cs)
     end // end of [D2Cstaload]
   | D2Cdynload fil => d3ec_dynload (d2c0.d2ec_loc, fil)
 (*

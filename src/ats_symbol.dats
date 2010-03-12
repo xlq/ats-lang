@@ -188,6 +188,11 @@ implement symbol_MYCLS = symbol_make_string "mycls"
 implement symbol_ATSCCOMP_NAMESPACE =
   symbol_make_string "ATSCCOMP_NAMESPACE"
 
+// static loading at run-time is needed or not
+implement symbol_ATS_STALOADFLAG =
+  symbol_make_string "ATS_STALOADFLAG"
+
+// dynamic loading at run-time is needed or not
 implement symbol_ATS_DYNLOADFLAG =
   symbol_make_string "ATS_DYNLOADFLAG"
 

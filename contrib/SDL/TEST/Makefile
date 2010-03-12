@@ -5,8 +5,10 @@
 #
 
 ATSCC="$(ATSHOME)"/bin/atscc
-ATSCTRB="$(ATSHOME)"/contrib/SDL/atsctrb_SDL.o
-ATSCTRB_GL="$(ATSHOME)"/contrib/GL/atsctrb_GL.o
+ATSCTRB=\
+  "$(ATSHOME)"/contrib/SDL/atsctrb_SDL.o
+ATSCTRB_GL=\
+  "$(ATSHOME)"/contrib/GL/atsctrb_GL.o
 ATSCTRB_xr=\
   "$(ATSHOME)"/contrib/X11/atsctrb_X11.o \
   "$(ATSHOME)"/contrib/cairo/atsctrb_cairo.o

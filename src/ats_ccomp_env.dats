@@ -898,7 +898,7 @@ fn stafilelst_reverse
   (xs: stafilelst): stafilelst = let
   fun aux (xs: stafilelst, ys: stafilelst)
     : stafilelst = begin case+ xs of
-    | STAFILELSTcons (_(*fil*), !xs1) => let
+    | STAFILELSTcons (_fil, _loadflag, !xs1) => let
         val xs1_v = !xs1; val () = (!xs1 := ys; fold@ (xs))
       in
         aux (xs1_v, xs)
@@ -911,11 +911,11 @@ end // end of [stafilelst_reverse]
 
 in // in of [local]
 
-implement the_stafilelst_add (fil) = let
+implement the_stafilelst_add (fil, loadflag) = let
   val (pfbox | p) = ref_get_view_ptr (the_stafilelst)
   prval vbox pf = pfbox
 in
-  !p := STAFILELSTcons (fil, !p)
+  !p := STAFILELSTcons (fil, loadflag, !p)
 end // end of [the_stafilelst_add]
 
 implement the_stafilelst_get () = let
@@ -929,7 +929,7 @@ end // end of [the_stafilelst_get]
 
 implement stafilelst_free (fils) = begin
   case+ fils of
-  | ~STAFILELSTcons (fil, fils) => stafilelst_free fils
+  | ~STAFILELSTcons (_fil, _loadflag, fils) => stafilelst_free fils
   | ~STAFILELSTnil () => ()
 end // end of [stafilelst_free]
 

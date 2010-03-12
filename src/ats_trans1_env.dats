@@ -201,15 +201,16 @@ staload HASHTBL = "ats_hashtbl.dats"
 
 local
 
+typedef itm = @(int(*loadflag*), d1eclst)
 val SIZE_HINT = 7
 val theHashTable = begin
-  $HT.hashtbl_str_make_hint (SIZE_HINT): $HT.hashtbl_t (string, d1eclst)
+  $HT.hashtbl_str_make_hint (SIZE_HINT): $HT.hashtbl_t (string, itm)
 end // end of [val]
 
 in // in of [local]
 
-implement staload_file_insert (fullname, d1cs) = let
-  val ans = $HT.hashtbl_insert (theHashTable, fullname, d1cs)
+implement staload_file_insert (fullname, flag, d1cs) = let
+  val ans = $HT.hashtbl_insert (theHashTable, fullname, @(flag,d1cs))
 in
   case+ ans of
   | ~Some_vt (d1c) => begin

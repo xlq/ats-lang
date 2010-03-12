@@ -698,9 +698,10 @@ implement hidec_local (loc, _head, _body) = '{
   hidec_loc= loc, hidec_node= HIDlocal (_head, _body)
 }
 
-implement hidec_staload (loc, fil) = '{
-  hidec_loc= loc, hidec_node= HIDstaload (fil)
-}
+implement hidec_staload
+  (loc, fil, loadflag) = '{
+  hidec_loc= loc, hidec_node= HIDstaload (fil, loadflag)
+} // end of [hidec_staload]
 
 implement hidec_dynload (loc, fil) = '{
   hidec_loc= loc, hidec_node= HIDdynload (fil)

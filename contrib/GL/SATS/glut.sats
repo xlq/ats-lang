@@ -31,18 +31,24 @@
 
 (* ****** ****** *)
 
+//
 // Author of the file: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
 // Starting time: Summer, 2008
-
-(* ****** ****** *)
-
-staload "contrib/GL/SATS/gl.sats"
+//
 
 (* ****** ****** *)
 
 %{#
 #include "contrib/GL/CATS/glut.cats"
 %}
+
+(* ****** ****** *)
+
+#define ATS_STALOADFLAG 0 // no static loading at run-time
+
+(* ****** ****** *)
+
+staload "contrib/GL/SATS/gl.sats"
 
 (* ****** ****** *)
 

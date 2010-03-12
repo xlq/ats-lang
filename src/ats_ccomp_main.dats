@@ -714,7 +714,7 @@ fun emit_stafile_extcode {m:file_mode} (
           | D2Cextcode (pos, code) => begin
               if (pos >= 0) then () else fprint1_string (pf | out, code)
             end // end of [D2Cextcode]
-          | D2Cstaload (_qua, fil, _loaded, _d2cs) =>
+          | D2Cstaload (_qua, fil, _loaded, _loadflag, _d2cs) =>
               emit_stafile_extcode (pf | out, fil) // end of [D2Cstaload]
           | _ => ()
         ) : void // end of [val]
@@ -730,7 +730,7 @@ end // end of [emit_stafile_extcode]
 fun emit_stafilelst_extcode {m:file_mode}
   (pf: file_mode_lte (m, w) | out: &FILE m, fils: !stafilelst)
   : void = begin case+ fils of
-  | STAFILELSTcons (fil, !fils_rest) => let
+  | STAFILELSTcons (fil, loadflag, !fils_rest) => let
      val () = emit_stafile_extcode (pf | out, fil)
      val () = emit_stafilelst_extcode (pf | out, !fils_rest)
    in
@@ -748,8 +748,11 @@ fn emit_staload {m:file_mode} (
 //
   fun aux_staload_dec (out: &FILE m, fils: !stafilelst)
     : void = begin case+ fils of
-    | STAFILELSTcons (fil, !fils_rest) => let
-        val () = fprint1_string (pf | out, "extern\n")
+    | STAFILELSTcons (fil, loadflag, !fils_rest) => let
+        val () =
+          if (loadflag = 0) then fprint1_string (pf | out, "// ")
+        // end of [val]
+        val () = fprint1_string (pf | out, "extern ")
         val () = fprint1_string (pf | out, "ats_void_type ")
         val () = emit_filename (pf | out, fil)
         val () = fprint1_string (pf | out, "__staload (void) ;\n")
@@ -762,7 +765,10 @@ fn emit_staload {m:file_mode} (
 //
   fun aux_staload_app (out: &FILE m, fils: !stafilelst)
     : void = begin case+ fils of
-    | STAFILELSTcons (fil, !fils_rest) => let
+    | STAFILELSTcons (fil, loadflag, !fils_rest) => let
+        val () =
+          if (loadflag = 0) then fprint1_string (pf | out, "// ")
+        // end of [val]
         val () = emit_filename (pf | out, fil)
         val () = fprint1_string (pf | out, "__staload () ;\n")
         val () = aux_staload_app (out, !fils_rest)

@@ -84,8 +84,10 @@ fun trans1_env_restore (): void
 
 (* ****** ******* *)
 
-fun staload_file_insert (fullname: string, d1cs: d1eclst): void
-fun staload_file_search (fullname: string): Option_vt d1eclst
+fun staload_file_insert
+  (fullname: string, flag: int, d1cs: d1eclst): void
+fun staload_file_search
+  (fullname: string): Option_vt @(int(*flag*), d1eclst)
 
 (* ****** ******* *)
 

@@ -72,6 +72,8 @@ implement v1al_is_true (v) = begin case+ v of
     end // end of [V1ALstring]
 end // end of [v1al_is_true]
 
+implement v1al_is_false (v) = ~(v1al_is_true v)
+
 (* ****** ****** *)
 
 overload = with $Sym.eq_symbol_symbol

@@ -11,9 +11,7 @@
 ######
 
 ATSCC=$(ATSHOME)/bin/atscc
-ATSCTRB=\
-  $(ATSHOME)/contrib/X11/atsctrb_X11.o \
-  $(ATSHOME)/contrib/cairo/atsctrb_cairo.o
+ATSCTRB=$(ATSHOME)/contrib/cairo/atsctrb_cairo.o
 
 ######
 

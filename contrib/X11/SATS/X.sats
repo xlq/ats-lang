@@ -42,6 +42,10 @@
 
 (* ****** ****** *)
 
+#define ATS_STALOADFLAG 0 // no static loading at run-time
+
+(* ****** ****** *)
+
 //
 // HX-2010-02-17: This is ugly:
 // Flags in X should have been declared of the type ulint!

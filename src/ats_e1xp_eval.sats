@@ -43,6 +43,7 @@ staload SEXP = "ats_staexp1.sats"
 (* ****** ****** *)
 
 fun v1al_is_true (v: $SEXP.v1al): bool
+fun v1al_is_false (v: $SEXP.v1al): bool
 fun e1xp_eval (e: $SEXP.e1xp): $SEXP.v1al
 fun e1xp_eval_if (knd: $Syn.srpifkind, e: $SEXP.e1xp): $SEXP.v1al
 fun e1xp_make_v1al (loc: $Loc.location_t, v: $SEXP.v1al): $SEXP.e1xp

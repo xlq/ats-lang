@@ -305,7 +305,7 @@ datatype hidec_node =
   | HIDlocal of (* local declaration *)
       (hideclst (*head*), hideclst (*body*))
   | HIDstaload of (* static loading *)
-      fil_t
+      (fil_t, int(*loadflag*))
   | HIDdynload of (* dynamic loading *)
       fil_t
 // end of [hidec_node]
@@ -765,7 +765,7 @@ fun hidec_impdec_prf (_: loc_t, hid: hiimpdec_prf): hidec
 
 fun hidec_local (_: loc_t, _head: hideclst, _body: hideclst): hidec
 
-fun hidec_staload (_: loc_t, _: fil_t): hidec
+fun hidec_staload (_: loc_t, _: fil_t, loadflag: int): hidec
 fun hidec_dynload (_: loc_t, _: fil_t): hidec
 
 (* ****** ****** *)

@@ -186,7 +186,7 @@ datatype d3ec_node =
   | D3Clocal of (* local declaration *)
       (d3eclst, d3eclst)
   | D3Cstaload of (* static load *)
-      (fil_t, Option d3eclst)
+      (fil_t, int(*loadflag*), Option d3eclst) // 1: staloading at run-time
   | D3Cdynload of (* dynamic load *)
       fil_t
 // end of [d3ec_node]
@@ -756,10 +756,13 @@ fun d3ec_valdecs_par (_: loc_t, ds: v3aldeclst): d3ec
 fun d3ec_valdecs_rec (_: loc_t, ds: v3aldeclst): d3ec
 fun d3ec_fundecs
   (_: loc_t, decarg: s2qualst, _: $Syn.funkind, ds: f3undeclst): d3ec
+// end of [d3ec_fundecs]
 fun d3ec_vardecs (_: loc_t, ds: v3ardeclst): d3ec
 fun d3ec_impdec (_: loc_t, d: i3mpdec): d3ec
 fun d3ec_local (_: loc_t, head: d3eclst, body: d3eclst): d3ec
-fun d3ec_staload (_: loc_t, _: fil_t, _: Option (d3eclst)): d3ec
+fun d3ec_staload
+  (_: loc_t, _: fil_t, loadflag: int, _: Option (d3eclst)): d3ec
+// end of [d3ec_staload]
 fun d3ec_dynload (_: loc_t, _: fil_t): d3ec
 
 (* ****** ****** *)

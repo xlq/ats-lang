@@ -31,11 +31,13 @@
 
 (* ****** ****** *)
 
+//
 // Author of the file: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
 // Starting time: December, 2009
+//
 
 (* ****** ****** *)
-
+  
 //
 // API for cairo in ATS
 //
@@ -45,6 +47,10 @@
 %{#
 #include "contrib/cairo/CATS/cairo.cats"
 %} // end of [%{#]
+
+(* ****** ****** *)
+
+#define ATS_STALOADFLAG 0 // no static loading at run-time
 
 (* ****** ****** *)
 

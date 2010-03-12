@@ -36,13 +36,17 @@
 
 (* ****** ****** *)
 
-staload "contrib/GL/SATS/gl.sats"
-
-(* ****** ****** *)
-
 %{#
 #include "contrib/GL/CATS/glu.cats"
 %}
+
+(* ****** ****** *)
+
+#define ATS_STALOADFLAG 0 // no static loading at run-time
+
+(* ****** ****** *)
+
+staload "contrib/GL/SATS/gl.sats"
 
 (* ****** ****** *)
 

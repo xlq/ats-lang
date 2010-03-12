@@ -31,8 +31,10 @@
 
 (* ****** ****** *)
 
+//
 // Author: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
 // Time: August 2007
+//
 
 (* ****** ****** *)
 
@@ -1562,9 +1564,10 @@ fn s0taload_tr (
     loc0: loc_t, idopt: Option sym_t, fil: fil_t
   ) : d1ec = let
   val fullname = $Fil.filename_full fil
-  val od1cs = staload_file_search fullname
-  val d1cs = (case+ od1cs of
-    | ~Some_vt (d1cs) => let
+  val oflagd1cs = staload_file_search fullname
+  var loadflag: int = 1
+  val d1cs = (case+ oflagd1cs of
+    | ~Some_vt (flagd1cs) => let
 (*
         val () = begin
           printf ("The file [%s] is already loaded.", @(fullname));
@@ -1572,7 +1575,7 @@ fn s0taload_tr (
         end // end of [val]
 *)
       in
-        d1cs
+        loadflag := flagd1cs.0; flagd1cs.1
       end // end of [Some_vt]
     | ~None_vt () => d1cs where {
         val () = the_filenamelst_push_xit (loc0, fil)
@@ -1597,7 +1600,17 @@ fn s0taload_tr (
         end
 *)
         val () = trans1_env_save ()
+//
         val d1cs = d0eclst_tr d0cs
+        val () = case+
+          the_e1xpenv_find ($Sym.symbol_ATS_STALOADFLAG) of
+          | ~Some_vt e1xp => let
+            val v1al = e1xp_eval (e1xp) in
+            if v1al_is_false v1al then loadflag := 0
+          end // end of [Some_vt]
+          | ~None_vt () => () // the default value
+        // end of [val]
+//
         val () = trans1_env_restore ()
 (*
         val () = begin
@@ -1606,11 +1619,11 @@ fn s0taload_tr (
         end // end of [val]
 *)
         val () = $Fil.the_filenamelst_pop () // a loop is to be reported if it occurs
-        val () = staload_file_insert (fullname, d1cs)
+        val () = staload_file_insert (fullname, loadflag, d1cs)
       } // end of [None_vt]
   ) : d1eclst // end of [val]
 in
-  d1ec_staload (loc0, idopt, fil, 0(*loaded*), d1cs)
+  d1ec_staload (loc0, idopt, fil, 0(*loaded*), loadflag, d1cs)
 end // end of [s0taload_tr]
 
 (* ****** ****** *)
@@ -1897,4 +1910,4 @@ implement finalize () = () where {
 
 (* ****** ****** *)
 
-(* end of [ats_trans1.dats] *)
+(* end of [ats_trans1_dyn.dats] *)

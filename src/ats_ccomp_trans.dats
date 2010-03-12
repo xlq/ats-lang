@@ -2688,7 +2688,9 @@ in
   | HIDdynload fil => begin
       the_dynfilelst_add (fil); instr_add_dynload_file (res, fil)
     end // end of [HIDdynload]
-  | HIDstaload (fil) => begin the_stafilelst_add (fil) end
+  | HIDstaload (fil, loadflag) => begin
+      the_stafilelst_add (fil, loadflag)
+    end // end of [HIDstaload]
   | HIDlist hids => ccomp_declst (res, hids)
   | _ => begin
       prerr_loc_interror (hid0.hidec_loc);
@@ -2697,7 +2699,8 @@ in
     end // end of [_]
 end // end of [ccomp_dec]
 
-implement ccomp_declst (res, hids) = case+ hids of
+implement ccomp_declst
+  (res, hids) = case+ hids of
   | list_cons (hid, hids) => begin
       ccomp_dec (res, hid); ccomp_declst (res, hids)
     end // end of [list_cons]

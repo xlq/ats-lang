@@ -31,8 +31,10 @@
 
 (* ****** ****** *)
 
+//
 // Author of the file: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
 // Starting time: January, 2010
+//
 
 (* ****** ****** *)
 
@@ -45,6 +47,10 @@
 %{#
 #include "contrib/SDL/CATS/SDL.cats"
 %} // end of [%{#]
+
+(* ****** ****** *)
+
+#define ATS_STALOADFLAG 0 // no static loading at run-time
 
 (* ****** ****** *)
 

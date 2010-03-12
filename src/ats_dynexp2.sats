@@ -578,7 +578,7 @@ datatype d2ec_node =
   | D2Cdynload of (* dynamic load *)
       fil_t
   | D2Cstaload of (* static load *)
-      (int(*qua*), fil_t, int(*loaded*), d2eclst)
+      (int(*qua*), fil_t, int(*loaded*), int(*loadflag*), d2eclst)
     // end of [D2Cstaload]
 // end of [d2ec_node]
 
@@ -1358,7 +1358,7 @@ fun d2ec_local (_: loc_t, head: d2eclst, body: d2eclst): d2ec
 
 fun d2ec_dynload (_: loc_t, _: fil_t): d2ec
 fun d2ec_staload
-  (_: loc_t, qua: int, _: fil_t, loaded: int, _: d2eclst): d2ec
+  (_: loc_t, qua: int, _: fil_t, loaded: int, loadflag: int, _: d2eclst): d2ec
 // end of [d2ec_staload]
 
 (* ****** ****** *)

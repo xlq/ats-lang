@@ -1159,8 +1159,9 @@ implement d2ec_dynload (loc, fil) = '{
   d2ec_loc= loc, d2ec_node= D2Cdynload (fil)
 }
 
-implement d2ec_staload (loc, qua, fil, loaded, d2cs) = '{
-  d2ec_loc= loc, d2ec_node= D2Cstaload (qua, fil, loaded, d2cs)
+implement d2ec_staload
+  (loc, qua, fil, loaded, loadflag, d2cs) = '{
+  d2ec_loc= loc, d2ec_node= D2Cstaload (qua, fil, loaded, loadflag, d2cs)
 } // end of [d2ec_staload]
 
 (* ****** ****** *)
