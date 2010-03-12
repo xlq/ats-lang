@@ -176,6 +176,7 @@ overload GLclampd with GLclampd_of_double // castfn
 
 symintr GLfloat GLclampf
 overload GLfloat with GLfloat_of_int
+overload GLfloat with GLfloat_of_float
 overload GLfloat with GLfloat_of_double
 overload GLclampf with GLclampf_of_double
 
@@ -967,14 +968,19 @@ fun glGetIntegerv : {n:nat} glGetParams_type (GLint, n)
 
 (* ****** ****** *)
 
-fun glPushAttrib (mask: GLbitfield): void = "#atsctrb_glPushAttrib"
-fun glPopAttrib (): void = "#atsctrb_glPopAttrib"
+absview glPushAttrib_v
+fun glPushAttrib
+  (mask: GLbitfield): (glPushAttrib_v | void) = "#atsctrb_glPushAttrib"
+// end of [glPushAttrib]
+fun glPopAttrib (pf: glPushAttrib_v | (*none*)): void = "#atsctrb_glPopAttrib"
 
 (*
 // OpenGL 1.1
 fun glPushClientAttrib (mask: GLbitfield): void = "#atsctrb_glPushClientAttrib"
 fun glPopClientAttrib (): void = "#atsctrb_glPopClientAttrib"
 *)
+
+(* ****** ****** *)
 
 fun glRenderMode (mode: GLenum): GLint = "#atsctrb_glRenderMode"
 

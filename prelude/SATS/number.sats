@@ -94,6 +94,12 @@ fun{a:t@ype} neq (x1: a, x2: a):<> bool
 
 (* ****** ****** *)
 
+// S, D
+fun{a:t@ype} signof (x: a):<> Sgn
+fun{a:t@ype} compare (x1: a, x2: a):<> Sgn
+
+(* ****** ****** *)
+
 // (S, C), (D, Z)
 // a1 = |a2|
 fun{a1,a2:t@ype} cmplx_make_cart (real: a1, imag: a1):<> a2

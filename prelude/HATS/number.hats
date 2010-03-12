@@ -142,6 +142,15 @@ implement gte<double> (x1, x2) = x1 >= x2
 
 (* ****** ****** *)
 
+implement signof<float> (x) =
+  compare_float_float (x, (float_of)0.0)
+implement signof<double> (x) = compare_double_double (x, 0.0)
+
+implement compare<float> (x1, x2) = compare_float_float (x1, x2)
+implement compare<double> (x1, x2) = compare_double_double (x1, x2)
+
+(* ****** ****** *)
+
 implement eq<float> (x1, x2) = eq_float_float (x1, x2)
 implement eq<double> (x1, x2) = eq_double_double (x1, x2)
 implement eq<ccmplx> (x1, x2) = $CMPLX.eq_ccmplx_ccmplx (x1, x2)
