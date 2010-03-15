@@ -647,14 +647,14 @@ typedef uInt = [n:int | n >=0] uint n
 typedef sizeof_t (a:viewt@ype) =
   size_int_t0ype (sizeof_viewt0ype_int a)
 
+typedef Size = [i:int | i >= 0] size_t i
 typedef sizeLt (n: int) = [i:int | 0 <= i; i < n] size_t (i)
 typedef sizeLte (n: int) = [i:int | 0 <= i; i <= n] size_t (i)
-
 typedef sizeGt (n: int) = [i:int | i > n] size_t (i)
 typedef sizeGte (n: int) = [i:int | i >= n] size_t (i)
-
 typedef sizeBtw (lb:int, ub:int) = [i: int | lb <= i; i < ub] size_t i
 
+typedef SSize = [i:int] ssize_t i
 typedef ssizeBtw (lb:int, ub:int) = [i: int | lb <= i; i < ub] ssize_t i
 
 (* ****** ****** *)

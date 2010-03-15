@@ -42,10 +42,8 @@
 (* ****** ****** *)
 
 %{#
-
 #include "libc/CATS/pthread.cats"
-
-%}
+%} // end of [%{#]
 
 (* ****** ****** *)
 
@@ -55,6 +53,7 @@ fun pthread_create_detached_cloptr
 
 fun pthread_exit (): void // this function does not return
   = "ats_pthread_exit"
+// end of [pthread_exit]
 
 (* ****** ****** *)
 

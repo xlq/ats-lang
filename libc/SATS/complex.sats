@@ -36,10 +36,12 @@
 (* ****** ****** *)
 
 %{#
-
 #include "libc/CATS/complex.cats"
+%} // end of [%{#}
 
-%}
+(* ****** ****** *)
+
+#define ATS_STALOADFLAG 0 // no static loading at run-time
 
 (* ****** ****** *)
 
@@ -452,8 +454,7 @@ fun pow_zcmplx_zcmplx (z1: zcmplx, z2: zcmplx):<> zcmplx
 
 (* ****** ****** *)
 
-fun cproj (z: zcmplx):<> double
-  = "atslib_cproj"
+fun cproj (z: zcmplx):<> double = "atslib_cproj"
 
 (* ****** ****** *)
 

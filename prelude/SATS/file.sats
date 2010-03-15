@@ -109,9 +109,9 @@ fun test_file_issock (path: string): bool = "atspre_test_file_issock"
 ** [input_line] reads a sequence of characters ending with a newline
 ** character or EOF; the string returned by [input_line] does not include
 ** the newline character it reads; if [input_line] encounters EOF when it
-** starts, then an empty string is returned.
+** starts, then stropt_none (a null pointer) is returned.
 *)
-fun input_line (fil: FILEref): string
+fun input_line (fil: FILEref): Stropt
 
 (*
 ** [output_line] writes to a given file handle a string plus a newline

@@ -100,27 +100,34 @@ extern fun fclose1_exn {m:file_mode} {l:addr}
 (* ****** ****** *)
 
 extern fun string_make_charlst_rev {n:nat}
-  (sz: int n, cs: list_vt (char, n)):<> string
+  (sz: int n, cs: list_vt (char, n)):<> String
   = "string_make_charlst_rev"
 
 (* ****** ****** *)
 
 // if the last character is '\n', it is dropped
 implement input_line (fil) = let
-  fun loop {n:nat}
-    (fil: FILEref, n: int n, cs: list_vt (char, n))
-    : string = let
-      val c = fgetc0_err (fil)
+  fun loop {n:nat} (
+      fil: FILEref, n: int n, cs: list_vt (char, n)
+    ) : Stropt = let
+    val c = fgetc0_err (fil)
+  in
+    if c <> EOF then let
+      val c = i2c c
     in
-      if c <> EOF then let
-        val c = i2c c
-      in
-        if (c <> '\n') then loop (fil, n+1, list_vt_cons (c, cs))
-        else string_make_charlst_rev (n, cs)
-      end else begin
-        string_make_charlst_rev (n, cs)
-      end  // end of [if]
-    end // end of [loop]
+      if (c <> '\n') then
+        loop (fil, n+1, list_vt_cons (c, cs))
+      else 
+        stropt_some (string_make_charlst_rev (n, cs))
+      // end of [if]
+    end else begin
+      if n = 0 then let
+        val+ ~list_vt_nil () = cs in stropt_none
+      end else
+        stropt_some (string_make_charlst_rev (n, cs))
+      // end of [if]
+    end  // end of [if]
+  end // end of [loop]
 in
   loop (fil, 0, list_vt_nil ())
 end // end of [input_line]
@@ -143,28 +150,31 @@ end // end of [output_line]
 
 (* ****** ****** *)
 
-implement char_stream_make_file (fil) = $delay (let
-  val c = fgetc0_err (fil)
-in
-  if c <> EOF then let
-    val c = i2c c
+implement char_stream_make_file
+  (fil) = $delay (let
+    val c = fgetc0_err (fil)
   in
-    stream_cons (c, char_stream_make_file fil)
-  end else begin
-    let val () = fclose0_exn (fil) in stream_nil () end
-  end // end of [if]
-end : stream_con char) // end of [char_stream_make_file]
+    if c <> EOF then let
+      val c = i2c c in
+      stream_cons (c, char_stream_make_file fil)
+    end else begin
+      let val () = fclose0_exn (fil) in stream_nil () end
+    end // end of [if]
+  end : stream_con char
+) (* end of [char_stream_make_file] *)
 
 (* ****** ****** *)
 
 implement line_stream_make_file
-  (fil) = $delay (if 
-    feof0 (fil) <> 0 then let
-    val () = fclose0_exn fil in stream_nil ()
-  end else let
+  (fil) = $delay (let
     val line = $effmask_ref (input_line fil) in
-    stream_cons (line, line_stream_make_file fil)
-  end : stream_con string // end of [if]
+    if stropt_is_some line then let
+      val line = stropt_unsome line in
+      stream_cons (line, line_stream_make_file fil)
+    end else let
+      val () = fclose0_exn fil in stream_nil ()
+    end // end of [if]
+  end : stream_con string // end of [let]
 ) (* end of [line_stream_make_file] *)
 
 (* ****** ****** *)
