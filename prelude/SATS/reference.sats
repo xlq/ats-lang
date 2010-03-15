@@ -66,6 +66,7 @@ fun{a:viewt@ype} ref_make_elt (x: a):<> ref a
 fun ref_make_view_ptr
   {a:viewt@ype} {l:addr} (pf: vbox (a @ l) | p: ptr l):<> ref a
   = "atspre_ref_make_view_ptr"
+// end of [ref_make_view_ptr]
 
 // implemented in [prelude/CATS/reference.cats]
 fun ref_void_make ():<> ref void = "atspre_ref_void_make"

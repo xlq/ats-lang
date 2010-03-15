@@ -37,10 +37,12 @@
 (* ****** ****** *)
 
 %{#
-
 #include "libc/CATS/pthread_locks.cats"
+%} // end of [%{#]
 
-%}
+(* ****** ****** *)
+
+#define ATS_STALOADFLAG 0 // no need for static loading at run-time
 
 (* ****** ****** *)
 

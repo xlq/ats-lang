@@ -140,6 +140,8 @@ fn ATSPACKAGE_VERSION_get (): string = let
   end
   val fil = open_file (name, file_mode_r)
   val version = input_line (fil)
+  val () = assert_errmsg (stropt_is_some version, #LOCATION)
+  val version = stropt_unsome version
   val () = close_file (fil)
 (*
   val () = begin

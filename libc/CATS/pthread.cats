@@ -30,7 +30,7 @@
 /* author: Hongwei Xi (hwxi AT cs DOT bu DOT edu) */
 
 /*
-** A linker error is issued if a user does not define multithread and
+** A linker error is issued if a user does not define _ATS_MULTITHREAD and
 ** tries to use them anyways
 */
 
@@ -39,14 +39,18 @@
 #ifndef ATS_LIBC_PTHREAD_CATS
 #define ATS_LIBC_PTHREAD_CATS
 
+/* ****** ****** */
+
 #ifdef _ATS_MULTITHREAD
 
-// #define THREAD_SAFE ?
+// #define THREAD_SAFE ???
 
-#include <pthread.h>
+//
+
 #include <stdio.h>
 #include <unistd.h>
 #include <stdlib.h>
+#include <pthread.h>
 
 //
 
@@ -56,84 +60,91 @@
 
 /* ****** ****** */
 
-static inline
+ATSinline()
 ats_void_type
-atslib_pthread_mutex_init_locked (ats_ptr_type p) {
+atslib_pthread_mutex_init_locked
+  (ats_ptr_type p) {
   pthread_mutex_init ((pthread_mutex_t*)p, NULL) ;
   pthread_mutex_lock ((pthread_mutex_t*)p) ;
   return ;
-}
+} // end of [atslib_pthread_mutex_init_locked]
 
-static inline
+ATSinline()
 ats_void_type
-atslib_pthread_mutex_init_unlocked (ats_ptr_type p) {
+atslib_pthread_mutex_init_unlocked
+  (ats_ptr_type p) {
   pthread_mutex_init ((pthread_mutex_t*)p, NULL) ; return ;
-}
+} // end of [atslib_pthread_mutex_init_unlocked]
 
 /* ****** ****** */
 
-static inline
+ATSinline()
 ats_ptr_type
-atslib_pthread_mutex_create_locked (void) {
+atslib_pthread_mutex_create_locked () {
   pthread_mutex_t *p ;
   p = (pthread_mutex_t*)ATS_MALLOC(sizeof (pthread_mutex_t)) ;
   pthread_mutex_init_locked (p, NULL) ;
   return p ;
-}
+} // end of [atslib_pthread_mutex_create_locked]
 
-static inline
+ATSinline()
 ats_ptr_type
-atslib_pthread_mutex_create_unlocked (void) {
+atslib_pthread_mutex_create_unlocked () {
   pthread_mutex_t *p ;
   p = (pthread_mutex_t*)ATS_MALLOC(sizeof (pthread_mutex_t)) ;
   pthread_mutex_init_unlocked (p, NULL) ;
   return p ;
-}
+} // end of [atslib_pthread_mutex_create_unlocked]
 
 /* ****** ****** */
 
-static inline
+ATSinline()
 ats_void_type
-atslib_pthread_mutex_lock (ats_ptr_type mutex) {
+atslib_pthread_mutex_lock
+  (ats_ptr_type mutex) {
   pthread_mutex_lock ((pthread_mutex_t*)mutex) ; return ;
-}
+} // end of [atslib_pthread_mutex_lock]
 
-static inline
+ATSinline()
 ats_void_type
-atslib_pthread_mutex_unlock (ats_ptr_type mutex) {
+atslib_pthread_mutex_unlock
+  (ats_ptr_type mutex) {
   pthread_mutex_unlock ((pthread_mutex_t*)mutex) ; return ;
-}
+} // end of [atslib_pthread_mutex_unlock]
 
 /* ****** ****** */
 
-static inline
+ATSinline()
 ats_ptr_type
-atslib_pthread_cond_create (void) {
+atslib_pthread_cond_create () {
   pthread_cond_t *p ;
   p = (pthread_cond_t*)ATS_MALLOC(sizeof (pthread_cond_t)) ;
   pthread_cond_init (p, NULL) ;
   return p ;
-}
+} // end of [atslib_pthread_cond_create]
 
-static inline
+ATSinline()
 ats_void_type
-atslib_pthread_cond_wait_mutex
-  (ats_ptr_type cond, ats_ptr_type mutex) {
+atslib_pthread_cond_wait_mutex (
+  ats_ptr_type cond, ats_ptr_type mutex
+) {
   pthread_cond_wait ((pthread_cond_t*)cond, (pthread_mutex_t*)mutex) ;
   return ;
-}
+} // end of [atslib_pthread_cond_wait_mutex]
 
-static inline
+ATSinline()
 ats_void_type
-atslib_pthread_cond_signal (ats_ptr_type cond) {
+atslib_pthread_cond_signal
+  (ats_ptr_type cond) {
   pthread_cond_signal ((pthread_cond_t*)cond) ; return ;
-}
+} // end of [atslib_pthread_cond_signal]
 
-static inline
+ATSinline()
 ats_void_type
-atslib_pthread_cond_broadcast (ats_ptr_type cond) {
+atslib_pthread_cond_broadcast
+  (ats_ptr_type cond) {
   pthread_cond_broadcast ((pthread_cond_t*)cond) ; return ;
-}
+} // end of [atslib_pthread_cond_broadcast]
 
 /* ****** ****** */
 

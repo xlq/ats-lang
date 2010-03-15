@@ -66,6 +66,9 @@ fasta2: fasta2.dats
 fasta4: fasta4.dats
 	$(ATSCC) -msse2 -mfpmath=sse -O3 fasta4.dats -o fasta4
 
+fasta5: fasta5.dats
+	$(ATSCC) -msse2 -mfpmath=sse -O3 fasta5.dats -o fasta5
+
 k-nucleotide: k-nucleotide.dats
 #	$(ATSCC) -O3 k-nucleotide.dats -o k-nucleotide
 #	$(ATSCC) -O3 k-nucleotide.dats -o k-nucleotide -D_ATS_gc
@@ -175,6 +178,7 @@ cleanall: clean
 	rm -f fasta_smp
 	rm -f fasta2
 	rm -f fasta4
+	rm -f fasta5
 	rm -f fasta_output.txt
 	rm -f k-nucleotide
 	rm -f k-nucleotide2

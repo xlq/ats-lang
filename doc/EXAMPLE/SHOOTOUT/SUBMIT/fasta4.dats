@@ -13,6 +13,14 @@
 
 (* ****** ****** *)
 
+%{^
+#define likely(x) __builtin_expect((x), 1)
+#define unlikely(x) __builtin_expect((x), 0)
+%} // end of [{%^]
+extern fun unlikely0 (x: bool): bool = "#unlikely"
+
+(* ****** ****** *)
+
 staload "libc/SATS/stdio.sats"
   
 (* ****** ****** *)
@@ -203,7 +211,7 @@ implement randomize
       val r1 = u1->cprob_lookup
       prval () = fpf (pf)
     in
-      if (r1 < r) then u := u + sizeof<T> else break
+      if unlikely0(r1 < r) then u := u + sizeof<T> else break
     end // end of [val]
 //
     val (pf, fpf | u1) = __cast (u)

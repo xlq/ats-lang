@@ -33,7 +33,10 @@
 
 (* author: Hongwei Xi (hwxi AT cs DOT bu DOT edu) *)
 
-// History:
+(* ****** ****** *)
+
+//
+// some history:
 //
 // Rui Shi and Hongwei Xi first did [pthread] in ATS/Proto, on which
 // this version is primarily based.
@@ -47,6 +50,10 @@
 
 (* ****** ****** *)
 
+#define ATS_STALOADFLAG 0 // no need for static loading at run-time
+
+(* ****** ****** *)
+
 fun pthread_create_detached_cloptr
   (f: () -<lin,cloptr1> void): void // a linear closure!
   = "ats_pthread_create_detached_cloptr"
@@ -57,24 +64,38 @@ fun pthread_exit (): void // this function does not return
 
 (* ****** ****** *)
 
-absviewt@ype pthread_mutex_view_viewt0ype (v:view) =
-  $extype "pthread_mutex_t"
-
+absviewt@ype
+pthread_mutex_view_viewt0ype
+  (v:view) = $extype "pthread_mutex_t"
+// end of [absviewt@ype]
 stadef mutex_vt = pthread_mutex_view_viewt0ype
 
-absviewtype pthread_mutexref_view_type (v:view) // a boxed type
+absviewtype
+pthread_mutexref_view_type (v:view, l:addr) // a boxed type
+// end of [absviewt@ype]
+stadef mutexref_t = pthread_mutexref_view_type
+viewtypedef mutexref_t (v:view) = [l:addr] mutexref_t (v, l)
 
-stadef mutex_ref_t = pthread_mutexref_view_type
+castfn mutexref_get_view_ptr
+  {v:view} {l:addr} (x: mutexref_t (v, l))
+  : (minus (mutexref_t (v, l), mutex_vt v @ l), mutex_vt v @ l | ptr l)
+// end of [mutexref_get_view_ptr]
+
+castfn mutexref_make_view_ptr
+  {v:view} {l:addr} (pf: mutex_vt v @ l | p: ptr l):<> mutexref_t (v, l)
+// end of [mutexref_make_view_ptr]
 
 (* ****** ****** *)
 
 fun pthread_mutex_init_locked
   {v:view} (mut: &mutex_vt? >> mutex_vt v): void
   = "atslib_pthread_mutex_init_locked"
+// end of [pthread_mutex_init_locked]
 
 fun pthread_mutex_init_unlocked
-  {v:view} (resource: v | mut: &mutex_vt? >> mutex_vt v): void
+  {v:view} (pf_resource: v | mut: &mutex_vt? >> mutex_vt v): void
   = "atslib_pthread_mutex_init_unlocked"
+// end of [pthread_mutex_init_unlocked]
 
 (* ****** ****** *)
 
@@ -88,23 +109,13 @@ fun pthread_mutex_create_unlocked {v:view} {l:addr}
 
 (* ****** ****** *)
 
-fun pthread_mutexref_create_locked
-  {v:view} (): mutex_ref_t (v)
-  = "atslib_pthread_mutex_create_locked"
-
-fun pthread_mutexref_create_unlocked
-  {v:view} (resource: v | (*none*)): mutex_ref_t (v)
-  = "atslib_pthread_mutex_create_unlocked"
-
-fun pthread_mutexref_create_mutex {v:view}
-  {l:addr} (pf: mutex_vt v @ l | p: ptr l): mutex_ref_t (v)
-  = "atslib_pthread_mutexref_create_mutex"
-
-(* ****** ****** *)
-
+//
+// HX-2010-03-14: it should be called clear!
+//
 fun pthread_mutex_destroy {v:view} {l:addr}
   (pf: !mutex_vt v @ l >> mutex_vt? @ l | p: ptr l): (v | void)
   = "atslib_pthread_mutex_destroy"
+// end of [pthread_mutex_destroy]
 
 (* ****** ****** *)
 
@@ -118,19 +129,7 @@ fun pthread_mutex_unlock {v:view}
 
 (* ****** ****** *)
 
-fun pthread_mutexref_lock
-  {v:view} (mutex: mutex_ref_t v): (v | void)
-  = "atslib_pthread_mutex_lock"
-
-fun pthread_mutexref_unlock
-  {v:view} (resource: v | mutex: mutex_ref_t v): void
-  = "atslib_pthread_mutex_unlock"
-
-(* ****** ****** *)
-
-absviewt@ype pthread_cond_viewt0ype =
-  $extype "pthread_cond_t"
-
+absviewt@ype pthread_cond_viewt0ype = $extype "pthread_cond_t"
 stadef cond_vt = pthread_cond_viewt0ype
 
 (* ****** ****** *)
