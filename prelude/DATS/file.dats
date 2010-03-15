@@ -35,7 +35,12 @@
 
 (* ****** ****** *)
 
-// some basic IO operations
+//
+// HX-2010-03-14: Here are some basic IO operations which
+// are mostly for prototype implementation. If something more
+// efficient is needed, please use the functions in declared
+// in the following file: libc/SATS/stdio.sats
+//
 
 (* ****** ****** *)
 
@@ -61,8 +66,8 @@ implement file_mode_lte_rw_rw = file_mode_lte_refl {rw} ()
 %{^
 
 typedef struct {
-ats_char_type atslab_0 ; ats_ptr_type atslab_1 ;
-} *charlst ;
+  ats_char_type atslab_0 ; ats_ptr_type atslab_1 ;
+} *charlst ; // end of [typedef]
 
 static inline
 ats_ptr_type string_make_charlst_rev
@@ -78,7 +83,7 @@ ats_ptr_type string_make_charlst_rev
   return s0 ;
 } /* string_make_charlst_rev */
 
-%}
+%} // end of [%{^]
 
 (* ****** ****** *)
 
@@ -88,20 +93,32 @@ macdef EOF = $extval (int, "EOF")
 
 extern fun feof0 (f: FILEref):<> int = "atslib_feof"
 
-extern fun fgetc0_err (fil: FILEref):<> int = "atslib_fgetc_err"
-extern fun fgetc1_err {m:file_mode} {l:addr}
+extern
+fun fgetc0_err (fil: FILEref):<> int = "atslib_fgetc_err"
+// end of [fgetc0_err]
+
+extern
+fun fgetc1_err {m:file_mode} {l:addr}
   (pf_mod: file_mode_lte (m, r) | fil: &FILE m):<> int
   = "atslib_fgetc_err"
+// end of [fgetc1_err]
 
-extern fun fclose0_exn (fil: FILEref):<!exn> void = "atslib_fclose_exn"
-extern fun fclose1_exn {m:file_mode} {l:addr}
+extern
+fun fclose0_exn (fil: FILEref):<!exn> void = "atslib_fclose_exn"
+// end of [fclose0_exn]
+
+extern
+fun fclose1_exn {m:file_mode} {l:addr}
   (pf_fil: FILE m @ l | p_fil: ptr l):<!exn> void = "atslib_fclose_exn"
+// end of [fclose1_exn]
 
 (* ****** ****** *)
 
-extern fun string_make_charlst_rev {n:nat}
+extern
+fun string_make_charlst_rev {n:nat}
   (sz: int n, cs: list_vt (char, n)):<> String
   = "string_make_charlst_rev"
+// end of [string_make_charlst_rev]
 
 (* ****** ****** *)
 
@@ -134,14 +151,21 @@ end // end of [input_line]
 
 (* ****** ****** *)
 
-extern fun fputc0_exn (c: char, fil: FILEref):<!exn> void
+extern
+fun fputc0_exn (c: char, fil: FILEref):<!exn> void
   = "atslib_fputc_exn"
+// end of [fputc0_exn]
 
-extern fun fputs0_exn (str: string, fil: FILEref):<!exn> void
+extern
+fun fputs0_exn
+  (str: string, fil: FILEref):<!exn> void
   = "atslib_fputs_exn"
+// end of [fputs0_exn]
 
-extern fun fflush0_exn (fil: FILEref):<!exn> void
+extern
+fun fflush0_exn (fil: FILEref):<!exn> void
   = "atslib_fflush_exn"
+// end of [fflush0_exn]
 
 // the character '\n' is added at the end
 implement output_line (fil, line) = begin
@@ -230,7 +254,8 @@ implement line_stream_vt_make_file
   end (* end of [loop] *)
 in
   $delay_vt (
-    loop (pf_fil | p_fil, 0, list_vt_nil ()), fclose1_exn (pf_fil | p_fil)
+    loop (pf_fil
+  | p_fil, 0, list_vt_nil ()), fclose1_exn (pf_fil | p_fil)
   ) // end of [$delay_vt]
 end // end of [char_stream_vt_make_file]
 
@@ -248,7 +273,7 @@ atspre_test_file_exists
     return ats_true_bool ; // ret == 0
   } else {
     return ats_false_bool ; // ret == -1
-  }
+  } // end of [if]
 } /* test_file_exists */
 
 ats_bool_type
@@ -262,7 +287,7 @@ atspre_test_file_isdir
     return (S_ISDIR(mode) ? ats_true_bool : ats_false_bool) ;
   } else { // ret == -1
     return ats_false_bool ;
-  }
+  } // end of [if]
 } /* atspre_test_file_dir */
 
 %} // end of [%{$]
