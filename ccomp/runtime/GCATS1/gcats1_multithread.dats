@@ -31,8 +31,10 @@
 
 (* ****** ****** *)
 
+//
 // Author: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
 // Time: June 2008
+//
 
 (* ****** ****** *)
 
@@ -117,7 +119,7 @@ void gc_signal_init () {
 
 /* ****** ****** */
 
-%}
+%} // end of [%{^]
 
 #include "gcats1.hats"
 
@@ -300,7 +302,7 @@ ats_void_type gc_mark_the_threadinfolst () {
   gc_mark_threadinfolst_all (the_threadinfolst_fst) ;
 } /* end of [gc_mark_the_threadinfo] */
 
-%}
+%} // end of [%{$]
 
 (* ****** ****** *)
 
@@ -313,12 +315,10 @@ extern ats_ptr_type gc_man_malloc_bsz (ats_int_type) ;
 void* gc_pthread_stubfun (void *data0) {
   void **data ;
   void *(*start_routine)(void*), *arg, *ret ;
-  int linclo ;
 
   data = (void**)data0 ;
   start_routine = (void *(*)(void*))(data[0]) ;
   arg = data[1] ;
-  linclo = (int)(intptr_t)(data[2]) ;
 
   gc_man_free (data) ;
 
@@ -326,13 +326,12 @@ void* gc_pthread_stubfun (void *data0) {
 
   pthread_cleanup_push (gc_threadinfo_fini, (void*)0) ;
 
-  // fprintf (stderr, "gc_pthread_clo: before call to [start_routine]\n") ;
+  // fprintf (stderr, "gc_pthread_stubfun: before call to [start_routine]\n") ;
 
   ret = start_routine (arg) ;
 
-  // fprintf (stderr, "gc_pthread_clo: after call to [start_routine]\n") ;
+  // fprintf (stderr, "gc_pthread_stubfun: after call to [start_routine]\n") ;
 
-  if (linclo) gc_aut_free (arg) ; // a linear closure call
   pthread_cleanup_pop (1) ; // [1] means pop and execute
 
   return ret ;
@@ -340,30 +339,32 @@ void* gc_pthread_stubfun (void *data0) {
 
 /* ****** ****** */
 
-int gc_pthread_create_cloptr (
-  ats_clo_ptr_type cloptr, pthread_t *pid_r, int detached, int linclo
+int gc_pthread_create (
+  ats_ptr_type f
+, ats_ptr_type env
+, pthread_t *pid_r
+, int detached
 ) {
-  void **data ; pthread_attr_t attr; pthread_t pid ; int ret ;
-
-  data = gc_man_malloc_bsz (3 * sizeof(void*)) ;
-  data[0] = cloptr->closure_fun ; data[1] = cloptr ; data[2] = (void*)(intptr_t)linclo ;
-
+  void **data ;
+  pthread_t pid ; pthread_attr_t attr;
+  int ret ;
+//
+  data = gc_man_malloc_bsz (2*sizeof(void*)) ;
+  data[0] = f ; data[1] = env ;
+//
   if (detached) {
     pthread_attr_init (&attr);
     pthread_attr_setdetachstate (&attr, PTHREAD_CREATE_DETACHED) ;
     ret = pthread_create (&pid, &attr, &gc_pthread_stubfun, data) ;
   } else {
-    ret = pthread_create (&pid, NULL, &gc_pthread_stubfun, data) ;
-  }
-
-  if (ret != 0) gc_man_free (data) ;
-
+    ret = pthread_create (&pid, NULL/*default*/, &gc_pthread_stubfun, data) ;
+  } // end of [if]
+  if (ret != 0) gc_man_free (data) ; // no thread is created due to error
   if (pid_r) *pid_r = pid ;
-
   return ret ;
-} /* end of [gc_pthread_create_cloptr] */
+} /* end of [gc_pthread_create] */
 
-%}
+%} // end of [%{$]
 
 (* ****** ****** *)
 

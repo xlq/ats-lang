@@ -166,40 +166,37 @@ ats_funarg_match_failure_handle (
 
 #ifdef _ATS_MULTITHREAD
 
-static ats_ptr_type
-ats_pthread_app (ats_ptr_type f) {
-  ((void (*)(ats_ptr_type))((ats_clo_ptr_type)f)->closure_fun)(f) ;
-  ATS_FREE (f) ; // this is a linear application; it must be freed to avoid leak
-  return (ats_ptr_type)0 ;
-} // end of [ats_pthread_app]
-
-#ifdef _ATS_GCATS
-extern int gc_pthread_create_cloptr (
-  ats_clo_ptr_type cloptr, pthread_t *pid_r, int detached, int linclo
-) ;
-#endif // end of [_ATS_GCATS]
-
 ats_void_type
-ats_pthread_create_detached_cloptr (ats_ptr_type thunk) {
-#ifdef _ATS_NGC
-  pthread_t pid ; int ret ;
-  ret = pthread_create (&pid, NULL, ats_pthread_app, thunk) ;
-#elif _ATS_GCATS
+ats_pthread_create_detached (
+  ats_ptr_type f // f(ats_ptr_type): void
+, ats_ptr_type env
+) {
   int ret ;
+#ifdef _ATS_NGC
+  pthread_t pid ;
+  pthread_attr_t attr;
+  pthread_attr_init (&attr);
+  pthread_attr_setdetachstate (&attr, PTHREAD_CREATE_DETACHED) ;
+  ret = pthread_create (&pid, &attr, f, env) ;
+#elif _ATS_GCATS
+  ret = gc_pthread_create (f, env, NULL/*pid_r*/, 1/*detached*/) ;
 /*
-  fprintf (stderr, "[ats_pthread_create_detached_cloptr] is called.\n") ;
+  fprintf (stderr, "exit(ATS): there is no support for pthreads under GCATS.\n") ;
+  exit (1) ;
 */
-  ret = gc_pthread_create_cloptr (thunk, NULL/*pid_r*/, 1/*detached*/, 1/*lin*/) ;
 #elif _ATS_GCBDW
   fprintf (stderr, "exit(ATS): there is no support for pthreads under GCBDW.\n") ;
   exit (1) ;
 #else // _ATS_NGC is the default
-  pthread_t pid ; int ret ;
-  ret = pthread_create (&pid, NULL, ats_pthread_app, thunk) ;
-#endif
-  if (ret != 0) { perror ("ats_pthread_create_detached_clo: ") ; exit(1) ; }
+  pthread_t pid ;
+  pthread_attr_t attr;
+  pthread_attr_init (&attr);
+  pthread_attr_setdetachstate (&attr, PTHREAD_CREATE_DETACHED) ;
+  ret = pthread_create (&pid, &attr, f, env) ;
+#endif // end of [#ifdef]
+  if (ret != 0) { perror ("ats_pthread_create_detached: ") ; exit(1) ; }
   return ;
-} /* end of [ats_pthread_create_detach] */
+} /* end of [ats_pthread_create_detached] */
 
 /* ****** ****** */
 

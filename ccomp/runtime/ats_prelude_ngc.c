@@ -31,11 +31,16 @@
 
 /* ****** ****** */
 
+//
 // Author: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
 // Time: May 2009
+//
 
 /* ****** ****** */
 
+//
+// HX-2010-03-17: should it be named ATS_PRELUDE_NGC_C?
+//
 #ifndef ATSRUNTIME_NGC_C
 #define ATSRUNTIME_NGC_C
 
@@ -81,7 +86,9 @@ ats_gc_chunk_count_limit_max_set
 /* ****** ****** */
 
 ats_ptr_type
-ats_malloc_gc (ats_size_type n) {
+ats_malloc_gc (
+  ats_size_type n
+) {
   ats_ptr_type *p ;
 /*
   fprintf (stderr, "ats_malloc_gc: n = %i\n", n) ;
@@ -90,12 +97,14 @@ ats_malloc_gc (ats_size_type n) {
 /*
   fprintf (stderr, "ats_malloc_gc: p = %p(%li)\n", p, p) ;
 */
-  if (!p) ats_exit_errmsg(1, "Exit: [ats_malloc_gc] failed.\n") ;
+  if (!p) ats_exit_errmsg(1, "exit(ATS): [ats_malloc_gc] failed.\n") ;
   return p ;
 } /* end of [ats_malloc_gc] */
 
 ats_ptr_type
-ats_calloc_gc (ats_size_type n, ats_size_type bsz) {
+ats_calloc_gc (
+  ats_size_type n, ats_size_type bsz
+) {
   ats_ptr_type *p ;
 /*
   fprintf (stderr, "ats_calloc_gc: n = %i and bsz = %i\n", n, bsz) ;
@@ -104,12 +113,14 @@ ats_calloc_gc (ats_size_type n, ats_size_type bsz) {
 /*
   fprintf (stderr, "ats_calloc_gc: p = %p(%li)\n", p, p) ;
 */
-  if (!p) ats_exit_errmsg(1, "Exit: [ats_calloc_gc] failed.\n") ;
+  if (!p) ats_exit_errmsg(1, "exit(ATS): [ats_calloc_gc] failed.\n") ;
   return p ;
 } /* end of [ats_calloc_gc] */
 
 ats_void_type
-ats_free_gc (const ats_ptr_type p) {
+ats_free_gc (
+  const ats_ptr_type p
+) {
 /*
   fprintf (stderr, "ats_free_gc: p = %p(%li)\n", p, p) ;
 */
@@ -117,7 +128,9 @@ ats_free_gc (const ats_ptr_type p) {
 } /* end of [ats_free_gc] */
 
 ats_ptr_type
-ats_realloc_gc (const ats_ptr_type p, ats_size_type bsz) {
+ats_realloc_gc (
+  const ats_ptr_type p, ats_size_type bsz
+) {
   ats_ptr_type p_new ;
 /*
   fprintf (stderr, "ats_realloc_gc: p = %p and bsz = %i\n", p, bsz) ;
@@ -126,14 +139,16 @@ ats_realloc_gc (const ats_ptr_type p, ats_size_type bsz) {
 /*
   fprintf (stderr, "ats_realloc_gc: p_new = %p(%li)\n", p_new, p_new) ;
 */
-  if (!p_new) ats_exit_errmsg(1, "Exit: [ats_realloc_gc] failed.\n") ;
+  if (!p_new) ats_exit_errmsg(1, "exit(ATS): [ats_realloc_gc] failed.\n") ;
   return p_new ;
 }
 
 /* ****** ****** */
 
 ats_ptr_type
-ats_malloc_ngc (ats_size_type n) {
+ats_malloc_ngc (
+  ats_size_type n
+) {
   ats_ptr_type *p ;
   /*
   fprintf (stderr, "ats_malloc_ngc: _ATS_NGC: n = %i\n", n) ;
@@ -142,21 +157,24 @@ ats_malloc_ngc (ats_size_type n) {
   /*
   fprintf (stderr, "ats_malloc_ngc: _ATS_NGC: p = %p(%li)\n", p, p) ;
   */
-  if (!p) ats_exit_errmsg(1, "Exit: [ats_malloc_ngc] failed.\n") ;
+  if (!p) ats_exit_errmsg(1, "exit(ATS): [ats_malloc_ngc] failed.\n") ;
   return p ;
 } /* end of [ats_malloc_ngc] */
 
 ats_ptr_type
-ats_calloc_ngc (ats_size_type n, ats_size_type bsz)
-{
+ats_calloc_ngc (
+  ats_size_type n, ats_size_type bsz
+) {
   ats_ptr_type *p ;
   p = calloc(n, bsz) ;
-  if (!p) ats_exit_errmsg (1, "Exit: [ats_calloc_ngc] failed.\n") ;
+  if (!p) ats_exit_errmsg (1, "exit(ATS): [ats_calloc_ngc] failed.\n") ;
   return p ;
 } /* end of [ats_calloc_ngc] */
 
 ats_void_type
-ats_free_ngc (const ats_ptr_type p) {
+ats_free_ngc (
+  const ats_ptr_type p
+) {
   /*
   fprintf (stderr, "ats_free_ngc: _ATS_NGC: p = %p\n", p) ;
   */
@@ -164,7 +182,9 @@ ats_free_ngc (const ats_ptr_type p) {
 } /* end of [ats_free_ngc] */
 
 ats_ptr_type
-ats_realloc_ngc (const ats_ptr_type p, ats_size_type bsz) {
+ats_realloc_ngc (
+  const ats_ptr_type p, ats_size_type bsz
+) {
   ats_ptr_type *p_new ;
   /*
   fprintf (stderr, "ats_realloc_ngc: _ATS_NGC: p = %p\n", p) ;
@@ -174,7 +194,7 @@ ats_realloc_ngc (const ats_ptr_type p, ats_size_type bsz) {
   /*
   fprintf (stderr, "ats_realloc_ngc: _ATS_NGC: p_new = %p\n", p_new) ;
   */
-  if (!p_new) ats_exit_errmsg(1, "Exit: [ats_realloc_ngc] failed.\n") ;
+  if (!p_new) ats_exit_errmsg(1, "exit(ATS): [ats_realloc_ngc] failed.\n") ;
   return p_new ;
 } /* end of [ats_realloc_ngc] */
 

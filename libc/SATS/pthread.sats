@@ -54,13 +54,19 @@
 
 (* ****** ****** *)
 
-fun pthread_create_detached_cloptr
-  (f: () -<lin,cloptr1> void): void // a linear closure!
-  = "ats_pthread_create_detached_cloptr"
+// implemented in [$ATSHOME/ccomp/runtime/ats_prelude.c]
+fun pthread_create_detached {vt:viewtype}
+  (f: (vt) -<fun1> void, env: vt): void // env is to be processed by f
+  = "ats_pthread_create_detached"
+// end of [pthread_create_detached]
 
-fun pthread_exit (): void // this function does not return
-  = "ats_pthread_exit"
-// end of [pthread_exit]
+fun pthread_create_detached_cloptr
+  (f: () -<lin,cloptr1> void): void // closure must be freed to avoid leak!
+// end of [pthread_create_detached_cloptr]
+
+// this function does not return to the caller
+// implemented in [$ATSHOME/ccomp/runtime/ats_prelude.c]
+fun pthread_exit (): void = "ats_pthread_exit" // end of [pthread_exit]
 
 (* ****** ****** *)
 
