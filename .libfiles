@@ -101,6 +101,10 @@ libats/DATS/freelst.dats
 libats/SATS/genarrays.sats
 libats/DATS/genarrays.dats
 
+/* hashtable implementation based on linear chaining */
+libats/SATS/hashtable.sats
+libats/DATS/hashtable.dats
+
 #ifdef HAVE_GMP_H
 libats/SATS/intinf.sats
 libats/DATS/intinf.dats

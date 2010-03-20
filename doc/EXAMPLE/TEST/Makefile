@@ -28,6 +28,7 @@ compall:: \
   libc_dlfcn \
   libc_stdlib \
   libats_genarrays \
+  libats_hashtable \
   libats_intinf \
   libats_iterint \
   libats_regexp \
@@ -77,6 +78,9 @@ libc_stdlib: libc_stdlib.dats
 libats_genarrays: libats_genarrays.dats
 	$(ATSCC) -O2 -o libats_genarrays libats_genarrays.dats && ./libats_genarrays
 
+libats_hashtable: libats_hashtable.dats
+	$(ATSCC) -O2 -o libats_hashtable libats_hashtable.dats && ./libats_hashtable 1000000
+
 libats_intinf: libats_intinf.dats
 	$(ATSCC) -O2 -o libats_intinf libats_intinf.dats -lgmp && ./libats_intinf 10
 
@@ -124,6 +128,7 @@ cleanall: clean
 	rm -f libc_dlfcn
 	rm -f libc_stdlib
 	rm -f libats_genarrays
+	rm -f libats_hashtable
 	rm -f libats_intinf
 	rm -f libats_iterint
 	rm -f libats_regexp
