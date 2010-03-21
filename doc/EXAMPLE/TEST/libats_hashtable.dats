@@ -50,20 +50,19 @@ implement main (argc, argv) = let
 
   val [l:addr] ptbl = $H.hashtbl_make {int,string} (hash, eq)
   var i: int; val () = for (i := 0; i < n; i := i+1) let
-    val key = $RAND.randint n
+    // val key = $RAND.randint n
+    val key = i
     val itm = tostring key // val itm = sprintf ("%i", @(key))
     // val () = printf ("key = %i and itm = %s\n", @(key, itm))
   in
     $H.hashtbl_insert<key,itm> (ptbl, key, itm)
   end // end [while]
   val size = $H.hashtbl_size (ptbl)
-  val () = begin
-    print "size = "; print size; print_newline ()
-  end
   val total = $H.hashtbl_total (ptbl)
   val () = begin
-    print "total = "; print total; print_newline ()
-  end
+    print "size = "; print size; print_newline ();
+    print "total = "; print total; print_newline ();
+  end // end of [val]
   val k0 = 0
   val () = printf ("%i\t->\t", @(k0))
   val () = case+ $H.hashtbl_search (ptbl, k0) of
@@ -114,7 +113,16 @@ implement main (argc, argv) = let
     | ~None_vt _ => (print "None()")
   val () = print_newline ()
 //
-  val () = $H.hashtbl_clear (ptbl)
+  var i: int; val () = for (i := 0; i < n; i := i+1) let
+    // val key = $RAND.randint n
+    val key = i
+    val ans = $H.hashtbl_remove<key,itm> (ptbl, key)
+  in
+    case+ ans of ~Some_vt _ => () | ~None_vt () => ()
+  end // end [while]
+//
+  val total = $H.hashtbl_total (ptbl)
+  val () = (print "total(aft) = "; print total; print_newline ())
   val () = $H.hashtbl_free_exn (ptbl)  
 in
   // empty

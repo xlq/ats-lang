@@ -37,7 +37,7 @@
 ** where buckets are represented as linked lists
 **
 ** Contributed by Hongwei Xi (hwxi AT cs DOT bu DOT edu)
-** Time: March, 2010
+** Time: March, 2010 // based on a version on in October, 2008
 **
 *)
 
@@ -45,12 +45,6 @@
 
 //
 // License: LGPL 3.0 (available at http://www.gnu.org/licenses/lgpl.txt)
-//
-
-(* ****** ****** *)
-
-//
-// This implementation is intended for being used in functional programming
 //
 
 (* ****** ****** *)
@@ -86,15 +80,15 @@ equal_key_key (x1: key, x2: key, eq: eq key):<> bool
 
 (* ****** ****** *)
 
-fun hashtbl_size
+fun hashtbl_size // the size of the hashtable
   {key:t@ype;itm:viewt@ype} {l:anz} (p: !HASHTBLptr (key, itm, l)):<> size_t
 // end of [hashtbl_size]
 
-fun hashtbl_total
+fun hashtbl_total // the total number of elements in the hashtable
   {key:t@ype;itm:viewt@ype} {l:anz} (tbl: !HASHTBLptr (key, itm, l)):<> size_t
 // end of [hashtbl_total]
 
-fun{key:t@ype;itm:t@ype}
+fun{key:t@ype;itm:t@ype} // clear the hashtable: all the chains are freed
 hashtbl_clear {l:anz} (ptbl: !HASHTBLptr (key, itm, l)):<> void
 // end of [hashtbl_clear]
 

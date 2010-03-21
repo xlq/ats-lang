@@ -37,7 +37,7 @@
 ** where buckets are represented as linked lists
 **
 ** Contributed by Hongwei Xi (hwxi AT cs DOT bu DOT edu)
-** Time: March, 2010
+** Time: March, 2010 // based on a version on in October, 2008
 **
 *)
 
@@ -51,8 +51,11 @@ staload "libats/SATS/hashtable.sats"
 
 (* ****** ****** *)
 
-implement{key} hash_key (x, hash) = hash (x)
+sortdef t0p = t@ype and vt0p = viewt@ype
 
+(* ****** ****** *)
+
+implement{key} hash_key (x, hash) = hash (x)
 implement{key} equal_key_key (x1, x2, eq) = eq (x1, x2)
 
 (* ****** ****** *)
@@ -62,7 +65,7 @@ dataviewtype chain (key:t@ype, itm:viewt@ype+, int) =
   | CHAINnil (key, itm, 0)
 // end of [chain]
 
-viewtypedef chain (key:t@ype,itm:viewt@ype) = [n:nat] chain (key, itm, n)
+viewtypedef chain (key:t0p,itm:vt0p) = [n:nat] chain (key, itm, n)
 viewtypedef chain0 = chain (void, void, 0)
 
 stadef chainsz = sizeof (chain0)
@@ -70,7 +73,8 @@ extern typedef "chain0" = chain0
 
 (* ****** ****** *)
 
-fun{key:t@ype;itm:t@ype} chain_free {n:nat} .<n>.
+fun{key:t0p;itm:t0p}
+chain_free {n:nat} .<n>.
   (kis: chain (key, itm, n)):<> void = begin case+ kis of
   | ~CHAINcons (_(*key*), _(*itm*), kis) => chain_free (kis)
   | ~CHAINnil () => ()
@@ -78,7 +82,7 @@ end // end of [chain_free]
 
 (* ****** ****** *)
 
-fun{key:t@ype;itm:viewt@ype}
+fun{key:t0p;itm:vt0p}
 chain_search {n:nat} .<n>.
   (kis: !chain (key,itm,n), k0: key, eq: eq key):<> Ptr =
   case+ kis of
@@ -96,7 +100,8 @@ chain_search {n:nat} .<n>.
 
 (* ****** ****** *)
 
-fn{key:t@ype;itm:viewt@ype} chain_insert {n:nat}
+fn{key:t0p;itm:vt0p}
+chain_insert {n:nat}
   (kis: &chain (key,itm,n) >> chain (key,itm,n+1), k: key, i: itm):<> void =
   kis := CHAINcons (k, i, kis)
 // end of [chain_insert]
@@ -104,7 +109,7 @@ fn{key:t@ype;itm:viewt@ype} chain_insert {n:nat}
 (* ****** ****** *)
 
 stadef b2i = int_of_bool
-fun{key:t@ype;itm:viewt@ype} chain_remove {n:nat} .<n>.
+fun{key:t0p;itm:vt0p} chain_remove {n:nat} .<n>.
   (kis: &chain (key,itm,n) >> chain (key,itm,n-b2i b), k0: key, eq: eq key)
   :<> #[b:bool | b2i b <= n] option_vt (itm, b) = begin case+ kis of
   | CHAINcons (k, !i, !kis1) => let
@@ -125,7 +130,7 @@ fun{key:t@ype;itm:viewt@ype} chain_remove {n:nat} .<n>.
     end // end of [nil]
 end // end of [chain_remove]
 
-fun{key:t@ype;itm:viewt@ype}
+fun{key:t0p;itm:vt0p}
   chain_foreach_clo {v:view} {n:nat} {f:eff} .<n>. (
     pf: !v | kis: !chain (key, itm, n), f: &(!v | key, &itm) -<clo,f> void
   ) :<f> void = begin case+ kis of
@@ -146,7 +151,7 @@ dataview hashtbl_v // it is just an array of chains
 // end of [hashtbl_v]
 
 viewtypedef HASHTBL (
-  key: t@ype, itm: viewt@ype, sz: int, tot: int, l_beg: addr, l_end: addr
+  key: t0p, itm: vt0p, sz: int, tot: int, l_beg: addr, l_end: addr
 ) = @{
   pfgc= free_gc_v (l_beg)
 , pftbl= hashtbl_v (key, itm, sz, tot, l_beg, l_end)
@@ -157,7 +162,7 @@ viewtypedef HASHTBL (
 , feq = eq key
 } // end of [HASHTBL]
 
-viewtypedef HASHTBL (key: t@ype, itm: viewt@ype) =
+viewtypedef HASHTBL (key: t0p, itm: vt0p) =
   [sz,tot:int;l_beg,l_end:addr] [0 < sz; 0 <= tot] HASHTBL (key, itm, sz, tot, l_beg, l_end)
 // end of [HASHTBL]
 
@@ -165,7 +170,7 @@ extern typedef "HASHTBL" = HASHTBL (void, void)
 
 extern
 castfn HASHTBLptr_tblget
-  {key:t@ype;itm:viewt@ype} {l:anz} (ptbl: !HASHTBLptr (key, itm, l))
+  {key:t0p;itm:vt0p} {l:anz} (ptbl: !HASHTBLptr (key, itm, l))
   :<> (minus (HASHTBLptr (key, itm, l), HASHTBL (key, itm) @ l), HASHTBL (key, itm) @ l | ptr l)
 // end of [HASHTBLptr_get]
 
@@ -185,7 +190,7 @@ implement hashtbl_total {key,itm} (ptbl) = tot where {
 
 (* ****** ****** *)
 
-fun{key:t@ype;itm:t@ype}
+fun{key:t0p;itm:t0p}
   hashtbl_ptr_clear
     {sz,tot:nat} {l_beg,l_end:addr} .<sz>. (
     pf: !hashtbl_v (key, itm, sz, tot, l_beg, l_end)
@@ -217,7 +222,7 @@ hashtbl_clear (ptbl) = () where {
 (* ****** ****** *)
 
 extern fun hashtbl_ptr_make
-  {key:t@ype;itm:viewt@ype} {sz:pos} (sz: size_t sz)
+  {key:t0p;itm:vt0p} {sz:pos} (sz: size_t sz)
   :<> [l_beg,l_end:addr] @(
     free_gc_v l_beg
   , hashtbl_v (key, itm, sz, 0(*tot*), l_beg, l_end)
@@ -227,7 +232,7 @@ extern fun hashtbl_ptr_make
 // end of [hashtbl_ptr_make]
 
 extern fun hashtbl_ptr_free
-  {key:t@ype;itm:viewt@ype} {sz:pos} {l_beg,l_end:addr} (
+  {key:t0p;itm:vt0p} {sz:pos} {l_beg,l_end:addr} (
     pf_gc: free_gc_v l_beg
   , pf_tbl: hashtbl_v (key, itm, sz, 0(*tot*), l_beg, l_end)
   | p_beg: ptr l_beg
@@ -238,7 +243,7 @@ extern fun hashtbl_ptr_free
 (* ****** ****** *)
 
 extern prfun // proof is omitted
-  hashtbl_v_split {key:t@ype;itm:viewt@ype}
+  hashtbl_v_split {key:t0p;itm:vt0p}
   {sz,sz1,tot:nat | sz1 <= sz} {l_beg,l_end:addr} {ofs:int} (
     pf_mul: MUL (sz1, chainsz, ofs)
   , pf_tbl: hashtbl_v (key, itm, sz, tot, l_beg, l_end)
@@ -248,7 +253,7 @@ extern prfun // proof is omitted
   ) // end of [hashtbl_v_split]
 
 extern prfun // proof is omitted
-  hashtbl_v_unsplit {key:t@ype;itm:viewt@ype}
+  hashtbl_v_unsplit {key:t0p;itm:vt0p}
   {sz1,sz2,tot1,tot2:nat} {l_beg,l_mid,l_end:addr} (
     pf1: hashtbl_v (key, itm, sz1, tot1, l_beg, l_mid)
   , pf2: hashtbl_v (key, itm, sz2, tot2, l_mid, l_end)
@@ -258,7 +263,7 @@ extern prfun // proof is omitted
 
 (* ****** ****** *)
 
-fn{key:t@ype;itm:viewt@ype} hashtbl_ptr_split 
+fn{key:t0p;itm:vt0p} hashtbl_ptr_split 
   {sz,sz1,tot:nat | sz1 <= sz} {l_beg,l_end:addr} (
     pf_tbl: hashtbl_v (key, itm, sz, tot, l_beg, l_end)
   | p_beg: ptr l_beg, sz1: size_t sz1
@@ -284,7 +289,7 @@ extern castfn size1_of_ulint (x: ulint):<> [i:nat] size_t i
 
 (* ****** ****** *)
 
-fn{key:t@ype;itm:viewt@ype}
+fn{key:t0p;itm:vt0p}
 hashtbl_ptr_search_ofs
   {sz,ofs,tot:nat | ofs < sz} {l_beg,l_end:addr} (
     pf: !hashtbl_v (key, itm, sz, tot, l_beg, l_end)
@@ -328,7 +333,7 @@ end // end of [hashtbl_search]
 
 (* ****** ****** *)
 
-fn{key:t@ype;itm:viewt@ype}
+fn{key:t0p;itm:vt0p}
 hashtbl_ptr_insert_ofs
   {sz,ofs,tot:nat | ofs < sz} {l_beg,l_end:addr} (
     pf: !hashtbl_v (key, itm, sz, tot, l_beg, l_end)
@@ -347,7 +352,7 @@ end // end of [hashtbl_ptr_insert_ofs]
 
 (* ****** ****** *)
 
-fn{key:t@ype;itm:viewt@ype}
+fn{key:t0p;itm:vt0p}
 hashtbl_ptr_remove_ofs
   {sz,ofs,tot:nat | ofs < sz} {l_beg,l_end:addr} (
     pf: !hashtbl_v (key, itm, sz, tot, l_beg, l_end)
@@ -366,7 +371,7 @@ end // end of [hashtbl_ptr_remove_ofs]
 
 (* ****** ****** *)
 
-fun{key:t@ype;itm:viewt@ype}
+fun{key:t0p;itm:vt0p}
 hashtbl_ptr_insert_chain
   {sz:pos;tot,n:nat} {l_beg,l_end:addr} .<n>. (
     pf: !hashtbl_v (key, itm, sz, tot, l_beg, l_end)
@@ -396,7 +401,7 @@ end // end of [hashtbl_ptr_insert_chain]
 
 (* ****** ****** *)
 
-fun{key:t@ype;itm:viewt@ype}
+fun{key:t0p;itm:vt0p}
   hashtbl_ptr_relocate
   {sz1:nat;sz2:pos;tot1,tot2:nat} .<sz1>.
   {l1_beg,l2_beg,l1_end,l2_end:addr} (
@@ -425,7 +430,7 @@ end // end of [hashtbl_ptr_relocate]
 
 (* ****** ****** *)
 
-fn{key:t@ype;itm:viewt@ype}
+fn{key:t0p;itm:vt0p}
 hashtbl_resize {l:anz} {sz_new:pos} (
   ptbl: !HASHTBLptr (key, itm, l), sz_new: size_t sz_new
 ) :<> void = () where {
@@ -447,7 +452,7 @@ hashtbl_resize {l:anz} {sz_new:pos} (
 #define HASHTABLE_HALF_THRESHOLD 0.5
 #assert (HASHTABLE_HALF_THRESHOLD < 1.0)
 
-fn{key:t@ype;itm:viewt@ype}
+fn{key:t0p;itm:vt0p}
   hashtbl_resize_double {l:anz} (ptbl: !HASHTBLptr (key, itm, l)):<> void = let
   val sz = hashtbl_size (ptbl)
   val sz = size1_of_size (sz) // casting: no op
@@ -455,7 +460,7 @@ in
   if sz > 0 then hashtbl_resize<key,itm> (ptbl, sz + sz) else ()
 end // end of [hashtbl_resize_double]
 
-fn{key:t@ype;itm:viewt@ype}
+fn{key:t0p;itm:vt0p}
   hashtbl_resize_half {l:anz} (ptbl: !HASHTBLptr (key, itm, l)): void = let
   val sz = hashtbl_size (ptbl)
   val sz = size1_of_size (sz) // casting: no op
@@ -506,7 +511,7 @@ hashtbl_remove {l} (ptbl, k0) = ans where {
 
 (* ****** ****** *)
 
-fun{key:t@ype;itm:viewt@ype}
+fun{key:t0p;itm:vt0p}
   hashtbl_ptr_foreach_clo {v:view}
     {sz,tot:nat} {l_beg,l_end:addr} {f:eff} .<sz>. (
     pf: !v, pf_tbl: !hashtbl_v (key, itm, sz, tot, l_beg, l_end)
