@@ -394,7 +394,7 @@ ats_ptr_type __getrest (ats_ref_type p_n) {
   return theRestBuffer ;
 } /* end of [__getrest] */
 
-%}
+%} // end of [%{$]
 
 (* ****** ****** *)
 

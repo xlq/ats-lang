@@ -12,7 +12,7 @@ all: \
   binary-trees binary-trees2 \
   fannkuch fannkuch2 \
   fasta fasta2 fasta4 \
-  k-nucleotide k-nucleotide2 \
+  k-nucleotide k-nucleotide2 k-nucleotide3 \
   mandelbrot \
   n-body n-body2 \
   pidigits pidigits2 pidigits3 \
@@ -84,7 +84,7 @@ k-nucleotide2: k-nucleotide2.dats
 #	$(ATSCC) -O3 k-nucleotide2.dats -o k-nucleotide2
 
 k-nucleotide3: k-nucleotide3.dats
-	$(ATSCC) -D_ATS_GCATS -O3 k-nucleotide3.dats funmset_avltree.dats -o k-nucleotide3
+	$(ATSCC) -D_ATS_GCATS -O3 k-nucleotide3.dats -o k-nucleotide3
 #	$(ATSCC) -O3 k-nucleotide3.dats -o k-nucleotide3
 
 mandelbrot: mandelbrot.dats

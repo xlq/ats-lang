@@ -78,19 +78,20 @@ end // end of [chain_free]
 
 (* ****** ****** *)
 
-fun{key:t@ype;itm:t@ype} chain_search {n:nat} .<n>.
-  (kis: !chain (key,itm,n), k0: key, eq: eq key):<> Option_vt itm =
+fun{key:t@ype;itm:viewt@ype}
+chain_search {n:nat} .<n>.
+  (kis: !chain (key,itm,n), k0: key, eq: eq key):<> Ptr =
   case+ kis of
-  | CHAINcons (k, i, !kis1) => let
+  | CHAINcons (k, !i, !kis1) => let
       val keq = equal_key_key (k0, k, eq)
     in
-      if keq then (fold@ kis; Some_vt i) else let
+      if keq then (fold@ kis; i) else let
         val ans = chain_search (!kis1, k0, eq)
       in
         fold@ kis; ans
       end // end of [if]
     end // end of [cons]
-  | CHAINnil () => (fold@ kis; None_vt ())
+  | CHAINnil () => (fold@ kis; null)
 // end of [chain_search]
 
 (* ****** ****** *)
@@ -283,30 +284,47 @@ extern castfn size1_of_ulint (x: ulint):<> [i:nat] size_t i
 
 (* ****** ****** *)
 
-fn{key:t@ype;itm:t@ype}
+fn{key:t@ype;itm:viewt@ype}
 hashtbl_ptr_search_ofs
   {sz,ofs,tot:nat | ofs < sz} {l_beg,l_end:addr} (
     pf: !hashtbl_v (key, itm, sz, tot, l_beg, l_end)
   | p_beg: ptr l_beg, k0: key, eq: eq key, ofs: size_t ofs
-  ) :<> Option_vt itm = let
+  ) :<> Ptr (* null or pointing to the found item *) = let
   val (pf1, pf2 | p_mid) =
     hashtbl_ptr_split<key,itm> {sz,ofs,tot} (pf | p_beg, ofs)
   prval hashtbl_v_cons (pf21, pf22) = pf2
-  val ans = chain_search (!p_mid, k0, eq)
+  val p_itm = chain_search (!p_mid, k0, eq)
   prval pf2 = hashtbl_v_cons (pf21, pf22)
   prval () = pf := hashtbl_v_unsplit (pf1, pf2)
 in
-  ans
+  p_itm
 end // end of [hashtbl_ptr_search_ofs]
 
 implement{key,itm}
-hashtbl_search (ptbl, k0) = ans where {
+hashtbl_search_ref (ptbl, k0) = let
   val (fpf, pf | p) = HASHTBLptr_tblget {key,itm} (ptbl)
   val h = hash_key (k0, p->fhash)
   val h = size1_of_ulint (h); val ofs = sz1mod (h, p->sz)
-  val ans = hashtbl_ptr_search_ofs (p->pftbl | p->pbeg, k0, p->feq, ofs)
+  val [l:addr] p_itm = hashtbl_ptr_search_ofs (p->pftbl | p->pbeg, k0, p->feq, ofs)
   prval () = minus_addback (fpf, pf | ptbl)
-} // end of [hashtbl_search]
+in
+  p_itm
+end // end of [hashtbl_search]
+
+implement{key,itm}
+hashtbl_search (ptbl, k0) = let
+  val [l:addr] p_itm = hashtbl_search_ref (ptbl, k0)
+in
+  if p_itm <> null then let
+    prval (fpf, pf) = __assert () where {
+      extern prfun __assert (): (itm @ l -<prf> void, itm @ l)
+    } // end of [prval]
+    val ans = Some_vt (!p_itm)
+    prval () = fpf (pf)
+  in
+    ans
+  end else None_vt ()
+end // end of [hashtbl_search]
 
 (* ****** ****** *)
 

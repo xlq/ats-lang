@@ -51,13 +51,23 @@
 
 (* ****** ****** *)
 
+fun add_ptr_int
+  (p: ptr, i: int):<> ptr = "atspre_padd_int"
+overload + with add_ptr_int
+
 fun add_ptr_size
-  (p: ptr, sz: size_t):<> ptr = "atspre_padd"
+  (p: ptr, sz: size_t):<> ptr = "atspre_padd_size"
 overload + with add_ptr_size
 
+fun sub_ptr_int
+  (p: ptr, i: int):<> ptr = "atspre_psub_int"
+overload - with sub_ptr_int
+
 fun sub_ptr_size
-  (p: ptr, sz: size_t):<> ptr = "atspre_psub"
+  (p: ptr, sz: size_t):<> ptr = "atspre_psub_size"
 overload - with sub_ptr_size
+
+(* ****** ****** *)
 
 fun lt_ptr_ptr (p1: ptr, p2: ptr):<> bool = "atspre_plt"
 and lte_ptr_ptr (p1: ptr, p2: ptr):<> bool = "atspre_plte"
@@ -104,27 +114,27 @@ overload ~ with ptr_isnot_null
 
 fun psucc {l:addr} (p: ptr l):<> ptr (l + 1)
   = "atspre_psucc"
-
-and ppred {l:addr} (p: ptr l):<> ptr (l - 1)
-  = "atspre_ppred"
-
 overload succ with psucc
+
+fun ppred {l:addr} (p: ptr l):<> ptr (l - 1)
+  = "atspre_ppred"
 overload pred with ppred
 
 (* ****** ****** *)
 
 fun padd {l:addr} {i:int} (p: ptr l, i: size_t i):<> ptr (l + i)
-  = "atspre_padd"
+  = "atspre_padd_size"
+overload + with padd
 
-and psub {l:addr} {i:int} (p: ptr l, i: size_t i):<> ptr (l - i)
-  = "atspre_psub"
+fun psub {l:addr} {i:int} (p: ptr l, i: size_t i):<> ptr (l - i)
+  = "atspre_psub_size"
+overload - with psub
 
 fun pdiff {l1,l2:addr} (p1: ptr l1, p2: ptr l2):<> ptrdiff_t (l1 - l2)
   = "atspre_pdiff"
-
-overload + with padd
-overload - with psub
 overload - with pdiff
+
+(* ****** ****** *)
 
 fun plt {l1,l2:addr} (p1: ptr l1, p2: ptr l2):<> bool (l1 < l2)
   = "atspre_plt"

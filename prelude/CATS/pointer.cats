@@ -51,13 +51,13 @@
 static
 ats_ptr_type atspre_null_ptr = (ats_ptr_type)0 ;
 
-static inline
+ATSinline()
 ats_bool_type
 atspre_ptr_is_null (ats_ptr_type p) {
   return (p == (ats_ptr_type)0 ? ats_true_bool : ats_false_bool) ;
 }
 
-static inline
+ATSinline()
 ats_bool_type
 atspre_ptr_isnot_null (ats_ptr_type p) {
   return (p != (ats_ptr_type)0 ? ats_true_bool : ats_false_bool) ;
@@ -65,13 +65,13 @@ atspre_ptr_isnot_null (ats_ptr_type p) {
 
 /* ****** ****** */
 
-static inline
+ATSinline()
 ats_ptr_type
 atspre_psucc (const ats_ptr_type p) {
   return (ats_ptr_type)((ats_byte_type*)p + 1) ;
 }
 
-static inline
+ATSinline()
 ats_ptr_type
 atspre_ppred (const ats_ptr_type p) {
   return (ats_ptr_type)((ats_byte_type*)p - 1) ;
@@ -79,23 +79,39 @@ atspre_ppred (const ats_ptr_type p) {
 
 /* ****** ****** */
 
-static inline
+ATSinline()
 ats_ptr_type
-atspre_padd (
+atspre_padd_int (
+  const ats_ptr_type p, ats_int_type n
+) {
+  return (ats_ptr_type)((ats_byte_type*)p + n) ;
+} // end of [atspre_padd_int]
+
+ATSinline()
+ats_ptr_type
+atspre_padd_size (
   const ats_ptr_type p, const ats_size_type n
 ) {
   return (ats_ptr_type)((ats_byte_type*)p + n) ;
-}
+} // end of [atspre_padd_size]
 
-static inline
+ATSinline()
 ats_ptr_type
-atspre_psub (
-  const ats_ptr_type p, const ats_size_type n
+atspre_psub_int (
+  const ats_ptr_type p, ats_int_type n
 ) {
   return (ats_ptr_type)((ats_byte_type*)p - n) ;
-}
+} // end of [atspre_psub_int]
 
-static inline
+ATSinline()
+ats_ptr_type
+atspre_psub_size (
+  const ats_ptr_type p, ats_size_type n
+) {
+  return (ats_ptr_type)((ats_byte_type*)p - n) ;
+} // end of [atspre_psub_size]
+
+ATSinline()
 ats_ptrdiff_type
 atspre_pdiff (
   const ats_ptr_type p1, const ats_ptr_type p2
@@ -105,43 +121,43 @@ atspre_pdiff (
 
 /* ****** ****** */
 
-static inline
+ATSinline()
 ats_bool_type
 atspre_plt (const ats_ptr_type p1, const ats_ptr_type p2) {
   return (p1 < p2) ;
 }
 
-static inline
+ATSinline()
 ats_bool_type
 atspre_plte (const ats_ptr_type p1, const ats_ptr_type p2) {
   return (p1 <= p2) ;
 }
 
-static inline
+ATSinline()
 ats_bool_type
 atspre_pgt (const ats_ptr_type p1, const ats_ptr_type p2) {
   return (p1 > p2) ;
 }
 
-static inline
+ATSinline()
 ats_bool_type
 atspre_pgte (const ats_ptr_type p1, const ats_ptr_type p2) {
   return (p1 >= p2) ;
 }
 
-static inline
+ATSinline()
 ats_bool_type
 atspre_peq (const ats_ptr_type p1, const ats_ptr_type p2) {
   return (p1 == p2) ;
 }
 
-static inline
+ATSinline()
 ats_bool_type
 atspre_pneq (const ats_ptr_type p1, const ats_ptr_type p2) {
   return (p1 != p2) ;
 }
 
-static inline
+ATSinline()
 ats_int_type
 atspre_compare_ptr_ptr (
   const ats_ptr_type p1, const ats_ptr_type p2
@@ -155,7 +171,7 @@ atspre_compare_ptr_ptr (
 
 // print functions
 
-static inline
+ATSinline()
 ats_void_type
 atspre_fprint_ptr (
   const ats_ptr_type out, const ats_ptr_type p
@@ -167,7 +183,7 @@ atspre_fprint_ptr (
   return ;
 }
 
-static inline
+ATSinline()
 ats_void_type
 atspre_print_ptr(const ats_ptr_type p) {
   atspre_stdout_view_get() ;
@@ -176,7 +192,7 @@ atspre_print_ptr(const ats_ptr_type p) {
   return ;
 }
 
-static inline
+ATSinline()
 ats_void_type
 atspre_prerr_ptr(const ats_ptr_type p) {
   atspre_stderr_view_get() ;
@@ -187,14 +203,14 @@ atspre_prerr_ptr(const ats_ptr_type p) {
 
 /* ****** ****** */
 
-static inline
+ATSinline()
 ats_ptr_type
 atspre_ptr_alloc_tsz
   (const ats_size_type tsz) {
   ats_ptr_type p ; p = ATS_MALLOC(tsz) ; return (ats_ptr_type)p ;
 }
 
-static inline
+ATSinline()
 ats_void_type
 atspre_ptr_free(const ats_ptr_type ptr) { ATS_FREE(ptr) ; return ; }
 
@@ -202,7 +218,7 @@ atspre_ptr_free(const ats_ptr_type ptr) { ATS_FREE(ptr) ; return ; }
 
 // for both [ptr_move_t_tsz] and [ptr_move_vt_tsz]
 
-static inline
+ATSinline()
 ats_void_type
 atspre_ptr_move_tsz (
   ats_ptr_type p1

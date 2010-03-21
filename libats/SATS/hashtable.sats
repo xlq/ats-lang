@@ -100,17 +100,24 @@ hashtbl_clear {l:anz} (ptbl: !HASHTBLptr (key, itm, l)):<> void
 
 (* ****** ****** *)
 
-fun{key:t@ype;itm:t@ype}
-hashtbl_search {l:anz} (
-  ptbl: !HASHTBLptr (key, itm, l), k0: key, res: &itm? >> opt (itm, tag)
-) :<> #[tag:bool] bool tag
-// end of [hashtbl_search]
+//
+// HX-2010-03-20:
+// if the returned pointer is used, it must be done before the hashtable
+// is changed!
+//
+fun{key:t@ype;itm:viewt@ype}
+hashtbl_search_ref {l:anz} (ptbl: !HASHTBLptr (key, itm, l), k0: key): Ptr
+// end of [hashtbl_search_ptr]
 
-(* ****** ****** *)
-
+//
+// HX-2010-03-20:
+// this one is a safe version, but it can only handle non-linear items
+//
 fun{key:t@ype;itm:t@ype}
 hashtbl_search {l:anz} (ptbl: !HASHTBLptr (key, itm, l), k0: key): Option_vt itm
 // end of [hashtbl_search]
+
+(* ****** ****** *)
 
 fun{key:t@ype;itm:viewt@ype}
 hashtbl_insert {l:anz} (ptbl: !HASHTBLptr (key, itm, l), k: key, i: itm):<> void
