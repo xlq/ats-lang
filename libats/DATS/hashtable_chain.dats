@@ -47,7 +47,7 @@
 
 (* ****** ****** *)
 
-staload "libats/SATS/hashtable.sats"
+staload "libats/SATS/hashtable_chain.sats"
 
 (* ****** ****** *)
 

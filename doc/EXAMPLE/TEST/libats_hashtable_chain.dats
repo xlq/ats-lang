@@ -14,8 +14,8 @@ staload _(*anon*) = "prelude/DATS/reference.dats"
 
 (* ****** ****** *)
 
-staload H = "libats/SATS/hashtable.sats"
-staload _(*anon*) = "libats/DATS/hashtable.dats"
+staload H = "libats/SATS/hashtable_chain.sats"
+staload _(*anon*) = "libats/DATS/hashtable_chain.dats"
 
 (* ****** ****** *)
 
