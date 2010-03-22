@@ -79,7 +79,7 @@ implement main () = () where {
 //
   // Open the font
   val font = TTF_OpenFont ("LazyFoo-lesson10/lazy.ttf", 72)
-  val () = assert_errmsg (TTF_Font_ref_isnot_null font, #LOCATION)
+  val () = assert_errmsg (ref_isnot_null font, #LOCATION)
 //
   //The color of the font
   var textColor : SDL_Color

@@ -94,7 +94,7 @@ implement main () = () where {
 //
   // Open the font
   val font = TTF_OpenFont ("LazyFoo-lesson11/lazy.ttf", 30)
-  val () = assert_errmsg (TTF_Font_ref_isnot_null font, #LOCATION)
+  val () = assert_errmsg (ref_isnot_null font, #LOCATION)
 //
   val [l_music:addr] music =
     Mix_LoadMUS ("LazyFoo-lesson11/beat.wav")
