@@ -71,26 +71,31 @@ overload ptr_of with ptr_of_HASHTBLptr
 (* ****** ****** *)
 
 fun{key:t@ype}
-hash_key (x: key, hash: hash key):<> ulint
+hash_key (x: key, fhash: hash key):<> ulint
 // end of [hash_key]
 
 fun{key:t@ype}
-equal_key_key (x1: key, x2: key, eq: eq key):<> bool
+equal_key_key (x1: key, x2: key, feq: eq key):<> bool
 // end of [equal_key_key]
 
 (* ****** ****** *)
 
-fun hashtbl_size // the size of the hashtable
+fun hashtbl_size // the (array) size of the hashtable
   {key:t@ype;itm:viewt@ype} {l:anz} (p: !HASHTBLptr (key, itm, l)):<> size_t
 // end of [hashtbl_size]
 
-fun hashtbl_total // the total number of elements in the hashtable
+fun hashtbl_total // the total number of elements present in the hashtable
   {key:t@ype;itm:viewt@ype} {l:anz} (tbl: !HASHTBLptr (key, itm, l)):<> size_t
 // end of [hashtbl_total]
 
 fun{key:t@ype;itm:t@ype} // clear the hashtable: all the chains are freed
 hashtbl_clear {l:anz} (ptbl: !HASHTBLptr (key, itm, l)):<> void
 // end of [hashtbl_clear]
+
+fun{key:t@ype;itm:t@ype} // clear the hashtable: all the chains are freed
+hashtbl_clear_vt
+  {l:anz} (ptbl: !HASHTBLptr (key, itm, l), f: (&itm >> itm?) -<> void):<> void
+// end of [hashtbl_clear_vt]
 
 (* ****** ****** *)
 
@@ -146,16 +151,26 @@ fun hashtbl_make_hint {key:t@ype;itm:viewt@ype}
 
 (* ****** ****** *)
 
+fun hashtbl_free
+  {key:t@ype;itm:t@ype} {l:anz} (tbl: HASHTBLptr (key, itm, l)): void
+  = "atslib_hashtbl_free"
+// end of [hashtbl_free]
+
 fun hashtbl_free_null
   {key:t@ype;itm:viewt@ype} (tbl: HASHTBLptr (key, itm, null)): void
   = "atslib_hashtbl_free_null"
 // end of [hashtbl_free_exn]
 
-fun hashtbl_free_exn
-  {key:t@ype;itm:viewt@ype} {l:anz} (tbl: HASHTBLptr (key, itm, l)): void
-  = "atslib_hashtbl_free_exn"
-// end of [hashtbl_free_exn]
+//
+// HX-2010-03-21:
+// [hashtbl_clear_vt] may need to be called first to clear up the hashtable
+//
+fun hashtbl_free_vt
+  {key:t@ype;itm:viewt@ype} {l:anz}
+  (tbl: !HASHTBLptr (key, itm, l) >> opt (HASHTBLptr (key, itm, l), i > 0))
+  : #[i:two] int i = "atslib_hashtbl_free_vt"
+// end of [hashtbl_free_vt]
 
 (* ****** ****** *)
 
-(* end of [hashtable.sats] *)
+(* end of [hashtable_chain.sats] *)

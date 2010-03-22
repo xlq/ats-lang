@@ -123,7 +123,9 @@ implement main (argc, argv) = let
 //
   val total = $H.hashtbl_total (ptbl)
   val () = (print "total(aft) = "; print total; print_newline ())
-  val () = $H.hashtbl_free_exn (ptbl)  
+  val status = $H.hashtbl_free_vt (ptbl)
+  val () = assert_errmsg (status = 0, #LOCATION)
+  prval () = opt_unnone (ptbl)
 in
   // empty
 end // end of [main]

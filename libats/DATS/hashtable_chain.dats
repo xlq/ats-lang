@@ -613,22 +613,23 @@ atslib_hashtbl_make_hint (
   return ptbl ;
 } // end of [atslib_hashtbl_make_hint]
 
+ats_int_type
+atslib_hashtbl_free (ats_ptr_type ptbl) {
+  ATS_FREE(((HASHTBL*)ptbl)->atslab_pbeg) ; ATS_FREE(ptbl) ; return ;
+} // end of [atslib_hashtbl_free]
+
 ats_void_type
 atslib_hashtbl_free_null (ats_ptr_type ptbl) { return ; }
+// end of [atslib_hashtbl_free_null]
 
-ats_void_type
-atslib_hashtbl_free_exn (ats_ptr_type ptbl) {
-  if (((HASHTBL*)ptbl)->atslab_tot != 0) {
-    fprintf (stderr, "exit(ATS): [hashtbl_free_exn]: non-empty hashtable cannot be freed\n.");
-    exit (1) ;
-  } // end of [if]
-  ATS_FREE(((HASHTBL*)ptbl)->atslab_pbeg) ; ATS_FREE(ptbl) ; return ;
-} // end of [atslib_hashtbl_free_exn]
-
-/* end of [hashtbl_ptr_free] */
+ats_int_type
+atslib_hashtbl_free_vt (ats_ptr_type ptbl) {
+  if (((HASHTBL*)ptbl)->atslab_tot != 0) return 1 ;
+  ATS_FREE(((HASHTBL*)ptbl)->atslab_pbeg) ; ATS_FREE(ptbl) ; return 0 ;
+} // end of [atslib_hashtbl_free_vt]
 
 %} // end of [%{$]
 
 (* ****** ****** *)
 
-(* end of [hashtable.dats] *)
+(* end of [hashtable_chain.dats] *)
