@@ -242,17 +242,17 @@ implement main (argc, argv) = () where {
   val xpszhnt = XAllocSizeHints ()
   val pszhnt = ptr_of (xpszhnt)
   val () = assert_errmsg (pszhnt <> null, #LOCATION)
-  prval (fpfszhnt, pfszhnt_at) = XPtr_viewget (xpszhnt)
+  prval (pfszhnt_at, fpfszhnt) = XPtr_viewget (xpszhnt)
 //
   val xpwmhnt = XAllocWMHints ()
   val pwmhnt = ptr_of (xpwmhnt)
   val () = assert_errmsg (pwmhnt <> null, #LOCATION)
-  prval (fpfwmhnt, pfwmhnt_at) = XPtr_viewget (xpwmhnt)
+  prval (pfwmhnt_at, fpfwmhnt) = XPtr_viewget (xpwmhnt)
 //
   val xpcshnt = XAllocClassHint ()
   val pcshnt = ptr_of (xpcshnt)
   val () = assert_errmsg (pcshnt <> null, #LOCATION)
-  prval (fpfcshnt, pfcshnt_at) = XPtr_viewget (xpcshnt)
+  prval (pfcshnt_at, fpfcshnt) = XPtr_viewget (xpcshnt)
 //
   val display_name = (case+ 0 of
     | _ when argc >= 2 => stropt_some (string1_of_string argv.[1])

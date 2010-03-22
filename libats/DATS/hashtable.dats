@@ -171,19 +171,19 @@ extern typedef "HASHTBL" = HASHTBL (void, void)
 extern
 castfn HASHTBLptr_tblget
   {key:t0p;itm:vt0p} {l:anz} (ptbl: !HASHTBLptr (key, itm, l))
-  :<> (minus (HASHTBLptr (key, itm, l), HASHTBL (key, itm) @ l), HASHTBL (key, itm) @ l | ptr l)
+  :<> (HASHTBL (key, itm) @ l, minus (HASHTBLptr (key, itm, l), HASHTBL (key, itm) @ l) | ptr l)
 // end of [HASHTBLptr_get]
 
 (* ****** ****** *)
 
 implement hashtbl_size {key,itm} (ptbl) = sz where {
-  val (fpf, pf | p) = HASHTBLptr_tblget {key,itm} (ptbl)
+  val (pf, fpf | p) = HASHTBLptr_tblget {key,itm} (ptbl)
   val sz = p->sz
   prval () = minus_addback (fpf, pf | ptbl)
 } // end of [hashtbl_size]  
 
 implement hashtbl_total {key,itm} (ptbl) = tot where {
-  val (fpf, pf | p) = HASHTBLptr_tblget {key,itm} (ptbl)
+  val (pf, fpf | p) = HASHTBLptr_tblget {key,itm} (ptbl)
   val tot = p->tot
   prval () = minus_addback (fpf, pf | ptbl)
 } // end of [hashtbl_total]  
@@ -213,7 +213,7 @@ end // end of [hashtbl_ptr_clear]
 
 implement{key,itm}
 hashtbl_clear (ptbl) = () where {
-  val (fpf, pf | p) = HASHTBLptr_tblget {key,itm} (ptbl)
+  val (pf, fpf | p) = HASHTBLptr_tblget {key,itm} (ptbl)
   val () = hashtbl_ptr_clear<key,itm> (p->pftbl | p->sz, p->pbeg)
   val () = p->tot := (size1_of_int1)0 // reset it to zero
   prval () = minus_addback (fpf, pf | ptbl)
@@ -307,7 +307,7 @@ end // end of [hashtbl_ptr_search_ofs]
 
 implement{key,itm}
 hashtbl_search_ref (ptbl, k0) = let
-  val (fpf, pf | p) = HASHTBLptr_tblget {key,itm} (ptbl)
+  val (pf, fpf | p) = HASHTBLptr_tblget {key,itm} (ptbl)
   val h = hash_key (k0, p->fhash)
   val h = size1_of_ulint (h); val ofs = sz1mod (h, p->sz)
   val [l:addr] p_itm = hashtbl_ptr_search_ofs (p->pftbl | p->pbeg, k0, p->feq, ofs)
@@ -434,7 +434,7 @@ fn{key:t0p;itm:vt0p}
 hashtbl_resize {l:anz} {sz_new:pos} (
   ptbl: !HASHTBLptr (key, itm, l), sz_new: size_t sz_new
 ) :<> void = () where {
-  val (fpf, pf | p) = HASHTBLptr_tblget {key,itm} (ptbl)
+  val (pf, fpf | p) = HASHTBLptr_tblget {key,itm} (ptbl)
   val (pfgc2, pftbl2 | pbeg2) = hashtbl_ptr_make (sz_new)
   val () = hashtbl_ptr_relocate (p->pftbl, pftbl2 | p->sz, sz_new, p->pbeg, pbeg2, p->fhash)
   val () = hashtbl_ptr_free (p->pfgc, p->pftbl | p->pbeg)
@@ -473,7 +473,7 @@ end // end of [hashtbl_resize_half]
 implement{key,itm}
 hashtbl_insert (ptbl, k, i) = () where {
   var ratio: double = 0.0
-  val (fpf, pf | p) = HASHTBLptr_tblget (ptbl)
+  val (pf, fpf | p) = HASHTBLptr_tblget (ptbl)
   val tot1 = p->tot + 1
   val () = ratio := double_of_size (tot1) / double_of_size (p->sz)
   val h = hash_key (k, p->fhash)
@@ -491,7 +491,7 @@ hashtbl_insert (ptbl, k, i) = () where {
 implement{key,itm}
 hashtbl_remove {l} (ptbl, k0) = ans where {
   var ratio: double = 1.0
-  val (fpf, pf | p) = HASHTBLptr_tblget {key,itm} (ptbl)
+  val (pf, fpf | p) = HASHTBLptr_tblget {key,itm} (ptbl)
   val h = hash_key (k0, p->fhash)
   val h = size1_of_ulint (h); val ofs = sz1mod (h, p->sz)
   val ans = hashtbl_ptr_remove_ofs<key,itm> (p->pftbl | p->pbeg, k0, p->feq, ofs)
@@ -532,7 +532,7 @@ end // end of [hashtbl_ptr_foreach_clo]
 implement{key,itm}
 hashtbl_foreach_clo {v}
   (pf0 | ptbl, f) = () where {
-  val (fpf, pf | p) = HASHTBLptr_tblget {key,itm} (ptbl)  
+  val (pf, fpf | p) = HASHTBLptr_tblget {key,itm} (ptbl)  
   val () = $effmask_ref begin
     hashtbl_ptr_foreach_clo {v} (pf0, p->pftbl | p->sz, p->pbeg, f)
   end // end of [val]

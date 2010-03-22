@@ -99,7 +99,7 @@ hashtbl_clear {l:anz} (ptbl: !HASHTBLptr (key, itm, l)):<> void
 // if the returned pointer is used, it must be done before the hashtable
 // is changed!
 //
-fun{key:t@ype;itm:viewt@ype}
+fun{key:t@ype;itm:viewt@ype} // unsafe but ...
 hashtbl_search_ref {l:anz} (ptbl: !HASHTBLptr (key, itm, l), k0: key): Ptr
 // end of [hashtbl_search_ptr]
 

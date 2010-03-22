@@ -18,6 +18,8 @@ cairo-test6.dats: clipping
 cairo-test7.dats: drawing a (still) clock
 cairo-test8.dats: Kitaoka's famous image of illusory circular motion
 cairo-test9.dats: A variant of [cairo-test8.dats]
+cairo-test11.dats: an example testing two filling rule
+cairo-test12.dats: an example involving radial pattern (gradient)
 
 There is also a [Makefile] for generating executable binaries.
 

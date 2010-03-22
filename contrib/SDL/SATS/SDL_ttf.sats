@@ -42,11 +42,17 @@
 
 (* ****** ****** *)
 
+#define ATS_STALOADFLAG 0 // there is no need for static loading at run-time
+
+(* ****** ****** *)
+
 staload "contrib/SDL/SATS/SDL.sats"
 
 (* ****** ****** *)
 
-// is this type reference counted?
+//
+// is this type refcounted?
+//
 absviewtype TTF_Font_ref (l:addr) // TTF_Font* or null
 viewtypedef TTF_Font_ref0 = [l:addr] TTF_Font_ref l
 viewtypedef TTF_Font_ref1 = [l:addr | l <> null] TTF_Font_ref l

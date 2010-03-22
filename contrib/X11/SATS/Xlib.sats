@@ -56,7 +56,7 @@ viewtypedef XPtr0 (a:viewt@ype) = [l:addr] XPtr (a, l)
 viewtypedef XPtr1 (a:viewt@ype) = [l:anz] XPtr (a, l)
 //
 prfun XPtr_viewget {a:viewt@ype} {l:anz}
-  (x: !XPtr (a, l)): (minus (XPtr (a, l), a @  l), a @ l)
+  (x: !XPtr (a, l)): (a @ l, minus (XPtr (a, l), a @ l))
 //
 castfn ptr_of_XPtr {a:viewt@ype} {l:addr} (x: !XPtr (a, l)): ptr l
 overload ptr_of with ptr_of_XPtr
@@ -68,7 +68,7 @@ viewtypedef XArray1 (a:viewt@ype, n:int) = [l:anz] XArray (a, n, l)
 //
 prfun XArray_viewget
   {a:viewt@ype} {n:nat} {l:anz} (x: !XArray (a, n, l))
-  : (minus (XArray (a, n, l), array_v (a, n, l)), array_v (a, n, l))
+  : (array_v (a, n, l), minus (XArray (a, n, l), array_v (a, n, l)))
 //
 castfn ptr_of_XArray
   {a:viewt@ype} {n:nat} {l:addr} (x: !XArray (a, n, l)): ptr l

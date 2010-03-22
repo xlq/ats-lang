@@ -303,8 +303,8 @@ fun cairo_set_source {l1,l2:addr}
 fun cairo_set_source_surface {l1,l2:addr} (
     cr: !cairo_ref l1
   , sf: !cairo_surface_ref l2, x: double, y: double
-  ) : void
-  = "#atsctrb_cairo_set_source_surface"
+  ) : void = "#atsctrb_cairo_set_source_surface"
+// end of [cairo_set_source_surface]
 
 (* ****** ****** *)
 
@@ -352,9 +352,9 @@ fun cairo_set_dash {l:addr} {n:nat} (
 abst@ype cairo_fill_rule_t = $extype "cairo_fill_rule_t"
 
 macdef CAIRO_FILL_RULE_WINDING =
-  $extval (cairo_fill_rule_t, "CAIRO_FILE_RULE_WINDING")
+  $extval (cairo_fill_rule_t, "CAIRO_FILL_RULE_WINDING")
 macdef CAIRO_FILL_RULE_EVEN_ODD =
-  $extval (cairo_fill_rule_t, "CAIRO_FILE_RULE_EVENODD")
+  $extval (cairo_fill_rule_t, "CAIRO_FILL_RULE_EVEN_ODD")
 
 fun cairo_get_fill_rule
   {l:addr} (cr: !cairo_ref l): cairo_fill_rule_t
@@ -758,6 +758,87 @@ fun cairo_path_extents
 (* ****** ****** *)
 
 //
+// patterns for drawing
+//
+
+(* ****** ****** *)
+
+// enum type
+abst@ype cairo_pattern_type_t = $extype "cairo_pattern_type_t"
+macdef CAIRO_PATTERN_TYPE_SOLID =
+  $extval (cairo_pattern_type_t, "CAIRO_PATTERN_TYPE_SOLID")
+macdef CAIRO_PATTERN_TYPE_SURFACE =
+  $extval (cairo_pattern_type_t, "CAIRO_PATTERN_TYPE_SURFACE")
+macdef CAIRO_PATTERN_TYPE_LINEAR =
+  $extval (cairo_pattern_type_t, "CAIRO_PATTERN_TYPE_LINEAR")
+macdef CAIRO_PATTERN_TYPE_RADIAL =
+  $extval (cairo_pattern_type_t, "CAIRO_PATTERN_TYPE_RADIAL")
+
+(* ****** ****** *)
+
+fun cairo_pattern_create_rgb
+  (red: double, green: double, blue: double): cairo_pattern_ref
+  = "#atsctrb_cairo_pattern_create_rgb"
+
+fun cairo_pattern_create_rgba
+  (red: double, green: double, blue: double, alpha: double): cairo_pattern_ref
+  = "#atsctrb_cairo_pattern_create_rgba"
+
+fun cairo_pattern_create_for_surface
+  {l:addr} (sf: !cairo_surface_ref l): cairo_pattern_ref
+  = "#atsctrb_cairo_pattern_create_for_surface"
+ 
+fun cairo_pattern_create_linear
+  {l:addr} (x0: double, x1: double, x2: double, x3: double): cairo_pattern_ref
+  = "#atsctrb_cairo_pattern_create_linear"
+
+fun cairo_pattern_create_radial {l:addr} (
+    cx0: double, cy0: double, rad0: double, cx1: double, cy1: double, rad1: double
+  ) : cairo_pattern_ref = "#atsctrb_cairo_pattern_create_radial"
+// end of [cairo_pattern_create_radial]
+
+(* ****** ****** *)
+
+fun cairo_pattern_status {l:addr} (pat: cairo_pattern_ref l): cairo_status_t
+  = "#atsctrb_cairo_pattern_status"
+
+fun cairo_pattern_reference {l:addr}
+  (pat: !cairo_pattern_ref l): cairo_pattern_ref l = "#atsctrb_cairo_pattern_reference"
+// end of [cairo_pattern_reference]
+
+fun cairo_pattern_destroy
+  (pat: cairo_pattern_ref): void = "#atsctrb_cairo_pattern_destroy"
+// end of [cairo_pattern_destroy]
+
+(* ****** ****** *)
+
+fun cairo_pattern_get_type
+  {l:addr} (pat: !cairo_pattern_ref l): cairo_pattern_type_t
+  = "#atsctrb_cairo_pattern_get_type"
+
+fun cairo_pattern_add_color_stop_rgb {l:addr} (
+    pat: !cairo_pattern_ref l
+  , offset: double, red: double, green: double, blue: double
+  ) : void = "#atsctrb_cairo_pattern_add_color_stop_rgb"
+// end of [cairo_pattern_add_color_stop_rgb]
+
+fun cairo_pattern_add_color_stop_rgba {l:addr} (
+    pat: !cairo_pattern_ref l
+  , offset: double, red: double, green: double, blue: double, alpha: double
+  ) : void = "#atsctrb_cairo_pattern_add_color_stop_rgba"
+// end of [cairo_pattern_add_color_stop_rgba]
+
+fun cairo_pattern_set_matrix {l:addr}
+  (pat: !cairo_pattern_ref l, matrix: &cairo_matrix_t): void
+  = "#atsctrb_cairo_pattern_set_matrix"
+
+fun cairo_pattern_get_matrix {l:addr}
+  (pat: !cairo_pattern_ref l, matrix: &cairo_matrix_t? >> cairo_matrix_t): void
+  = "#atsctrb_cairo_pattern_get_matrix"
+
+(* ****** ****** *)
+
+//
 // drawing texts
 //
 
@@ -892,14 +973,26 @@ fun cairo_glyph_extents
 
 (* ****** ****** *)
 
+fun cairo_text_path {l:addr}
+  (cr: !cairo_ref l, text: string): void = "#atsctrb_cairo_text_path"
+// end of [cairo_text_path]
+
+fun cairo_glyph_path
+  {l:addr} {n:nat} {la:anz}
+  (cr: !cairo_ref l, glyphs: !cairo_glyph_arrptr (n, la), n: int n)
+  : void = "#atsctrb_cairo_glyph_path"
+// end of [cairo_glyph_path]
+
+(* ****** ****** *)
+
 fun cairo_show_text {l:addr} (cr: !cairo_ref l, utf8: string): void
   = "#atsctrb_cairo_show_text"
 
 fun cairo_show_glyphs
   {l:addr} {n:nat} {la:anz} (
     cr: !cairo_ref l, glyphs: !cairo_glyph_arrptr (n, la), n: int n
-  ) : void
-  = "#atsctrb_cairo_show_glyphs"
+  ) : void = "#atsctrb_cairo_show_glyphs"
+// end of [cairo_show_glyphs]
 
 (* ****** ****** *)
 

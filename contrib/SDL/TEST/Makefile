@@ -31,6 +31,7 @@ compall: \
   lesson08 \
   lesson09 \
   lesson10 \
+  lesson11 \
   lesson12 \
   lesson13 \
   lesson14 \
@@ -88,9 +89,9 @@ lesson10: LazyFoo-lesson10/lesson10.dats
 	$(ATSCC) $(SDLCFLAGS) -o lesson10 \
           LazyFoo-lesson10/lesson10.dats $(ATSCTRB) -lSDL -lSDL_image -lSDL_ttf
 
-#
-# lesson11: skipped for now
-#
+lesson11: LazyFoo-lesson11/lesson11.dats
+	$(ATSCC) $(SDLCFLAGS) -o lesson11 \
+          LazyFoo-lesson11/lesson11.dats $(ATSCTRB) -lSDL -lSDL_image -lSDL_ttf -lSDL_mixer
 
 lesson12: LazyFoo-lesson12/lesson12.dats
 	$(ATSCC) $(SDLCFLAGS) -o lesson12 \
@@ -187,6 +188,7 @@ cleanall: clean
 	rm -f lesson08
 	rm -f lesson09
 	rm -f lesson10
+	rm -f lesson11
 	rm -f lesson12
 	rm -f lesson13
 	rm -f lesson14

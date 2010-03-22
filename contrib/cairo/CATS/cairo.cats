@@ -291,6 +291,28 @@ atsctrb_cairo_get_dash (
 /* ****** ****** */
 
 //
+// patterns for drawing
+//
+
+#define atsctrb_cairo_pattern_create_rgb cairo_pattern_create_rgb
+#define atsctrb_cairo_pattern_create_rgba cairo_pattern_create_rgba
+#define atsctrb_cairo_pattern_create_for_surface cairo_pattern_create_for_surface
+#define atsctrb_cairo_pattern_create_linear cairo_pattern_create_linear
+#define atsctrb_cairo_pattern_create_radial cairo_pattern_create_radial
+
+#define atsctrb_cairo_pattern_status cairo_pattern_status
+#define atsctrb_cairo_pattern_reference cairo_pattern_reference
+#define atsctrb_cairo_pattern_destroy cairo_pattern_destroy
+
+#define atsctrb_cairo_pattern_get_type cairo_pattern_get_type
+#define atsctrb_cairo_pattern_add_color_stop_rgb cairo_pattern_add_color_stop_rgb
+#define atsctrb_cairo_pattern_add_color_stop_rgba cairo_pattern_add_color_stop_rgba
+#define atsctrb_cairo_pattern_set_matrix cairo_pattern_set_matrix
+#define atsctrb_cairo_pattern_get_matrix cairo_pattern_get_matrix
+
+/* ****** ****** */
+
+//
 // drawing texts
 //
 
@@ -315,6 +337,11 @@ atsctrb_cairo_get_dash (
 #define atsctrb_cairo_text_extents cairo_text_extents
 #define atsctrb_cairo_glyph_extents cairo_glyph_extents
  
+/* ****** ****** */
+
+#define atsctrb_cairo_text_path cairo_text_path
+#define atsctrb_cairo_glyph_path cairo_glyph_path
+
 /* ****** ****** */
 
 #define atsctrb_cairo_show_text cairo_show_text
