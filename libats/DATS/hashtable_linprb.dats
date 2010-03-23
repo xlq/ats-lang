@@ -55,6 +55,7 @@ sortdef t0p = t@ype and vt0p = viewt@ype
 (* ****** ****** *)
 
 //
+// HX-2010-03-20:
 // special versions of these two functions can be implemented
 // on the spot for gaining some efficiency
 //

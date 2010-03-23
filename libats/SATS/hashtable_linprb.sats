@@ -127,9 +127,14 @@ hashtbl_insert {l:anz}
   (ptbl: !HASHTBLptr (key, itm, l), k: key, i: itm) :<> Option_vt (itm)
 // end of [hashtbl_insert]
 
+(*
+//
+// HX-2010-03-23:
+// if removal is needed, please use [hashtable_chain] instead
 fun{key:t@ype;itm:viewt@ype}
 hashtbl_remove {l:anz} (ptbl: !HASHTBLptr (key, itm, l), k0: key): Option_vt itm
 // end of [hashtbl_remove]
+*)
 
 (* ****** ****** *)
 
