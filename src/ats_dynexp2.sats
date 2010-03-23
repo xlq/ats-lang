@@ -1002,69 +1002,71 @@ fun fprint_d2exp {m:file_mode}
   (pf: file_mode_lte (m, w) | out: &FILE m, d2e: d2exp): void
 overload fprint with fprint_d2exp
 
+fun print_d2exp (d2e: d2exp): void
+overload print with print_d2exp
+
+fun prerr_d2exp (d2e: d2exp): void
+overload prerr with prerr_d2exp
+
+(* ****** ****** *)
+
 fun fprint_d2explst {m:file_mode}
   (pf: file_mode_lte (m, w) | out: &FILE m, d2es: d2explst): void
 overload fprint with fprint_d2explst
+
+fun print_d2explst (d2es: d2explst): void
+overload print with print_d2explst
+
+fun prerr_d2explst (d2es: d2explst): void
+overload prerr with prerr_d2explst
+
+(* ****** ****** *)
 
 fun fprint_d2explstlst {m:file_mode}
   (pf: file_mode_lte (m, w) | out: &FILE m, d2ess: d2explstlst): void
 overload fprint with fprint_d2explstlst
 
+fun print_d2explstlst (d2ess: d2explstlst): void
+overload print with print_d2explstlst
+
+fun prerr_d2explstlst (d2ess: d2explstlst): void
+overload prerr with prerr_d2explstlst
+
+(* ****** ****** *)
+
 fun fprint_labd2explst {m:file_mode}
   (pf: file_mode_lte (m, w) | out: &FILE m, ld2es: labd2explst): void
 overload fprint with fprint_labd2explst
 
+fun print_labd2explst (ld2es: labd2explst): void
+overload print with print_labd2explst
+
+fun prerr_labd2explst (ld2es: labd2explst): void
+overload prerr with prerr_labd2explst
+
+(* ****** ****** *)
+
 fun fprint_d2lab {m:file_mode}
   (pf: file_mode_lte (m, w) | out: &FILE m, d2l: d2lab): void
-overload fprint with fprint_d2lab
+fun print_d2lab (d2l: d2lab): void
+fun prerr_d2lab (d2l: d2lab): void
 
 fun fprint_d2lablst {m:file_mode}
   (pf: file_mode_lte (m, w) | out: &FILE m, d2ls: d2lablst): void
-overload fprint with fprint_d2lablst
-
-fun print_d2exp (d2e: d2exp): void
-fun prerr_d2exp (d2e: d2exp): void
-
-overload print with print_d2exp
-overload prerr with prerr_d2exp
-
-fun print_d2explst (d2es: d2explst): void
-fun prerr_d2explst (d2es: d2explst): void
-
-overload print with print_d2explst
-overload prerr with prerr_d2explst
-
-fun print_d2explstlst (d2ess: d2explstlst): void
-fun prerr_d2explstlst (d2ess: d2explstlst): void
-
-overload print with print_d2explstlst
-overload prerr with prerr_d2explstlst
-
-fun print_labd2explst (ld2es: labd2explst): void
-fun prerr_labd2explst (ld2es: labd2explst): void
-
-overload print with print_labd2explst
-overload prerr with prerr_labd2explst
+fun print_d2lablst (d2ls: d2lablst): void
+fun prerr_d2lablst (d2ls: d2lablst): void
 
 (* ****** ****** *)
 
 fun fprint_d2exparg {m:file_mode}
   (pf: file_mode_lte (m, w) | out: &FILE m, d2a: d2exparg): void
-
 fun print_d2exparg (d2a: d2exparg): void
 fun prerr_d2exparg (d2a: d2exparg): void
 
-overload print with print_d2exparg
-overload prerr with prerr_d2exparg
-
 fun fprint_d2exparglst {m:file_mode}
   (pf: file_mode_lte (m, w) | out: &FILE m, d2as: d2exparglst): void
-
 fun print_d2exparglst (d2as: d2exparglst): void
 fun prerr_d2exparglst (d2as: d2exparglst): void
-
-overload print with print_d2exparglst
-overload prerr with prerr_d2exparglst
 
 (* ****** ****** *)
 
@@ -1376,6 +1378,13 @@ datatype l2val = // type for left-values
 // end of [l2val]
 
 fun l2val_make_d2exp (d2e0: d2exp): l2val
+
+fun fprint_l2val {m:file_mode}
+  (pf: file_mode_lte (m, w) | out: &FILE m, l2v: l2val): void
+// end of [fprint_l2val]
+
+fun print_l2val (l2v: l2val): void
+fun prerr_l2val (l2v: l2val): void
 
 (* ****** ****** *)
 

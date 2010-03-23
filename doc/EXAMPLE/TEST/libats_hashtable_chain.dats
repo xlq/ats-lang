@@ -19,7 +19,7 @@ staload _(*anon*) = "libats/DATS/hashtable_chain.dats"
 
 (* ****** ****** *)
 
-// dynload "hashtable.dats" // not needed as [ATS_DYNLOADFLAG = 0]
+// dynload "hashtable_chain.dats" // not needed as [ATS_DYNLOADFLAG = 0]
 
 (* ****** ****** *)
 
@@ -50,13 +50,13 @@ implement main (argc, argv) = let
 
   val [l:addr] ptbl = $H.hashtbl_make {int,string} (hash, eq)
   var i: int; val () = for (i := 0; i < n; i := i+1) let
-    // val key = $RAND.randint n
-    val key = i
+    val key = $RAND.randint n
+    // val key = i
     val itm = tostring key // val itm = sprintf ("%i", @(key))
     // val () = printf ("key = %i and itm = %s\n", @(key, itm))
   in
     $H.hashtbl_insert<key,itm> (ptbl, key, itm)
-  end // end [while]
+  end // end [for]
   val size = $H.hashtbl_size (ptbl)
   val total = $H.hashtbl_total (ptbl)
   val () = begin
@@ -119,17 +119,15 @@ implement main (argc, argv) = let
     val ans = $H.hashtbl_remove<key,itm> (ptbl, key)
   in
     case+ ans of ~Some_vt _ => () | ~None_vt () => ()
-  end // end [while]
+  end // end [for]
 //
   val total = $H.hashtbl_total (ptbl)
   val () = (print "total(aft) = "; print total; print_newline ())
-  val status = $H.hashtbl_free_vt (ptbl)
-  val () = assert_errmsg (status = 0, #LOCATION)
-  prval () = opt_unnone (ptbl)
+  val () = $H.hashtbl_free (ptbl)
 in
   // empty
 end // end of [main]
 
 (* ****** ****** *)
 
-(* end of [test.dats] *)
+(* end of [libats_hashtable_chain.dats] *)

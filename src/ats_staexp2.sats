@@ -922,8 +922,12 @@ overload fprint with fprint_s2lab
 fun print_s2lab (s2l: s2lab): void
 fun prerr_s2lab (s2l: s2lab): void
 
-overload print with print_s2lab
-overload prerr with prerr_s2lab
+fun fprint_s2lablst {m:file_mode}
+  (pf: file_mode_lte (m, w) | out: &FILE m, s2ls: s2lablst): void
+overload fprint with fprint_s2lablst
+
+fun print_s2lablst (s2ls: s2lablst): void
+fun prerr_s2lablst (s2ls: s2lablst): void
 
 (* ****** ****** *)
 

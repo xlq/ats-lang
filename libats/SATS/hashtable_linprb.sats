@@ -33,8 +33,7 @@
 
 (*
 **
-** A hashtable implementation
-** where buckets are represented as linked lists
+** A hashtable implementation based on linear probing
 **
 ** Contributed by Hongwei Xi (hwxi AT cs DOT bu DOT edu)
 ** Time: March, 2010 // based on a version on in October, 2008
@@ -80,6 +79,16 @@ equal_key_key (x1: key, x2: key, feq: eq key):<> bool
 
 (* ****** ****** *)
 
+absviewt@ype Opt (a:viewt@ype) = a
+prfun Opt_none {itm:viewt@ype} (x: !itm? >> Opt itm):<> void
+prfun Opt_some {itm:viewt@ype} (x: !(itm) >> Opt itm):<> void
+prfun Opt_encode {itm:viewt@ype} {b:bool} (x: !opt (itm, b) >> Opt itm):<> void
+
+fun{itm:viewt@ype}
+item_isnot_null (x: &Opt itm >> opt (itm, b)):<> #[b:bool] bool b
+
+(* ****** ****** *)
+
 fun hashtbl_size // the (array) size of the hashtable
   {key:t@ype;itm:viewt@ype} {l:anz} (p: !HASHTBLptr (key, itm, l)):<> size_t
 // end of [hashtbl_size]
@@ -88,14 +97,9 @@ fun hashtbl_total // the total number of elements present in the hashtable
   {key:t@ype;itm:viewt@ype} {l:anz} (tbl: !HASHTBLptr (key, itm, l)):<> size_t
 // end of [hashtbl_total]
 
-fun{key:t@ype;itm:t@ype} // clear the hashtable: all the chains are freed
+fun{key:t@ype;itm:t@ype} // clear the hashtable
 hashtbl_clear {l:anz} (ptbl: !HASHTBLptr (key, itm, l)):<> void
 // end of [hashtbl_clear]
-
-fun{key:t@ype;itm:t@ype} // clear the hashtable: all the chains are freed
-hashtbl_clear_vt
-  {l:anz} (ptbl: !HASHTBLptr (key, itm, l), f: (&itm >> itm?) -<> void):<> void
-// end of [hashtbl_clear_vt]
 
 (* ****** ****** *)
 
@@ -119,7 +123,8 @@ hashtbl_search {l:anz} (ptbl: !HASHTBLptr (key, itm, l), k0: key): Option_vt itm
 (* ****** ****** *)
 
 fun{key:t@ype;itm:viewt@ype}
-hashtbl_insert {l:anz} (ptbl: !HASHTBLptr (key, itm, l), k: key, i: itm):<> void
+hashtbl_insert {l:anz}
+  (ptbl: !HASHTBLptr (key, itm, l), k: key, i: itm) :<> Option_vt (itm)
 // end of [hashtbl_insert]
 
 fun{key:t@ype;itm:viewt@ype}
@@ -140,37 +145,24 @@ hashtbl_foreach_cloref {l:anz}
 
 (* ****** ****** *)
 
-fun hashtbl_make {key:t@ype;itm:viewt@ype}
+fun{key:t@ype;itm:viewt@ype}
+hashtbl_make
   (fhash: hash key, feq: eq key): HASHTBLptr1 (key, itm)
 // end of [hashtbl_make]
 
-fun hashtbl_make_hint {key:t@ype;itm:viewt@ype}
+fun{key:t@ype;itm:viewt@ype}
+hashtbl_make_hint 
   (fhash: hash key, feq: eq key, hint: size_t): HASHTBLptr1 (key, itm)
-  = "atslib_hashtbl_make_hint__chain"
+  = "atslib_hashtbl_make_hint__linprb"
 // end of [hashtbl_make_hint]
 
 (* ****** ****** *)
 
 fun hashtbl_free
   {key:t@ype;itm:t@ype} {l:anz} (tbl: HASHTBLptr (key, itm, l)): void
-  = "atslib_hashtbl_free__chain"
+  = "atslib_hashtbl_free__linprb"
 // end of [hashtbl_free]
-
-fun hashtbl_free_null
-  {key:t@ype;itm:viewt@ype} (tbl: HASHTBLptr (key, itm, null)): void
-  = "atslib_hashtbl_free_null__chain"
-// end of [hashtbl_free_exn]
-
-//
-// HX-2010-03-21:
-// [hashtbl_clear_vt] may need to be called first to clear up the hashtable
-//
-fun hashtbl_free_vt
-  {key:t@ype;itm:viewt@ype} {l:anz}
-  (tbl: !HASHTBLptr (key, itm, l) >> opt (HASHTBLptr (key, itm, l), i > 0))
-  : #[i:two] int i = "atslib_hashtbl_free_vt__chain"
-// end of [hashtbl_free_vt]
 
 (* ****** ****** *)
 
-(* end of [hashtable_chain.sats] *)
+(* end of [hashtable_linprb.sats] *)

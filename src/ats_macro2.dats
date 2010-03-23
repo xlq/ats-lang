@@ -881,7 +881,7 @@ fn d2exparg_dyn_get {n:nat} (
       prerr ": the dynamic symbol [";
       $Sym.prerr_symbol sym;
       prerr "] is applied to static argument(s): {";
-      prerr d2a; prerr "}"; prerr_newline ();
+      prerr_d2exparg d2a; prerr "}"; prerr_newline ();
       $Err.abort {d2explst n} ()
     end // end of [D2EXPARGsta]
 end // end of [d2exparg_dyn_get]

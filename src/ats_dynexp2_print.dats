@@ -763,6 +763,9 @@ in
     end // end of [D2LABind]
 end // end of [fprint_d2lab]
 
+implement print_d2lab (d2l) = print_mac (fprint_d2lab, d2l)
+implement prerr_d2lab (d2l) = prerr_mac (fprint_d2lab, d2l)
+
 implement fprint_d2lablst {m} (pf | out, d2ls) = let
   fun aux (out: &FILE m, i: int, d2ls: d2lablst): void =
     case+ d2ls of
@@ -775,6 +778,65 @@ implement fprint_d2lablst {m} (pf | out, d2ls) = let
 in
   aux (out, 0, d2ls)
 end // end of [fprint_d2lablst]
+
+implement print_d2lablst (d2ls) = print_mac (fprint_d2lablst, d2ls)
+implement prerr_d2lablst (d2ls) = prerr_mac (fprint_d2lablst, d2ls)
+
+(* ****** ****** *)
+
+datatype l2val = // type for left-values
+
+implement fprint_l2val (pf | out, l2v) = let
+  macdef prstr (s) = fprint1_string (pf | out, ,(s))
+in
+  case+ l2v of
+  | L2VALarrsub (d2s, d2e_arr, loc, d2ess_ind) => let
+      val () = prstr "L2VALarrsub("
+      val () = fprint_d2exp (pf | out, d2e_arr)
+      val () = prstr "; "
+      val () = fprint_d2explstlst (pf | out, d2ess_ind)
+      val () = prstr ")"
+    in
+      // nothing
+    end // end of [L2VALarrsub]
+  | L2VALptr (d2e_ptr, d2ls) => let
+      val () = prstr "L2VALptr("
+      val () = fprint_d2exp (pf | out, d2e_ptr)
+      val () = prstr ", "
+      val () = fprint_d2lablst (pf | out, d2ls)
+      val () = prstr ")"
+    in
+      // nothing
+    end // end of [L2VALptr]
+  | L2VALvar_lin (d2v, d2ls) => let
+      val () = prstr "L2VALvar_lin("
+      val () = fprint_d2var (pf | out, d2v)
+      val () = prstr ", "
+      val () = fprint_d2lablst (pf | out, d2ls)
+      val () = prstr ")"
+    in
+      // nothing
+    end // end of [L2VALptr]
+  | L2VALvar_mut (d2v, d2ls) => let
+      val () = prstr "L2VALvar_mut("
+      val () = fprint_d2var (pf | out, d2v)
+      val () = prstr ", "
+      val () = fprint_d2lablst (pf | out, d2ls)
+      val () = prstr ")"
+    in
+      // nothing
+    end // end of [L2VALptr]
+  | L2VALnone d2e => let
+      val () = prstr "L2VALnone("
+      val () = fprint_d2exp (pf | out, d2e)
+      val () = prstr ")"
+    in
+      // nothing
+    end // end of [L2VALnone]
+end // end of [fprint_l2val]
+
+implement print_l2val (l2v) = print_mac (fprint_l2val, l2v)
+implement prerr_l2val (l2v) = prerr_mac (fprint_l2val, l2v)
 
 (* ****** ****** *)
 

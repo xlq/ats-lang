@@ -228,7 +228,7 @@ extern fun hashtbl_ptr_make
   , hashtbl_v (key, itm, sz, 0(*tot*), l_beg, l_end)
   | ptr l_beg
   ) // end of [hashtbl_ptr_make]
-  = "atslib_hashtbl_ptr_make"
+  = "atslib_hashtbl_ptr_make__chain"
 // end of [hashtbl_ptr_make]
 
 extern fun hashtbl_ptr_free
@@ -237,8 +237,8 @@ extern fun hashtbl_ptr_free
   , pf_tbl: hashtbl_v (key, itm, sz, 0(*tot*), l_beg, l_end)
   | p_beg: ptr l_beg
   ) :<> void
-  = "atslib_hashtbl_ptr_free"
-// end of [atslib_hashtbl_ptr_free]
+  = "atslib_hashtbl_ptr_free__chain"
+// end of [hashtbl_ptr_free]
 
 (* ****** ****** *)
 
@@ -314,7 +314,7 @@ hashtbl_search_ref (ptbl, k0) = let
   prval () = minus_addback (fpf, pf | ptbl)
 in
   p_itm
-end // end of [hashtbl_search]
+end // end of [hashtbl_search_ref]
 
 implement{key,itm}
 hashtbl_search (ptbl, k0) = let
@@ -447,10 +447,11 @@ hashtbl_resize {l:anz} {sz_new:pos} (
 
 (* ****** ****** *)
 
-#define HASHTABLE_DOUBLE_THRESHOLD 5.0
-#assert (HASHTABLE_DOUBLE_THRESHOLD > 2.0)
-#define HASHTABLE_HALF_THRESHOLD 0.5
-#assert (HASHTABLE_HALF_THRESHOLD < 1.0)
+#define HASHTBL_MINSZ 97
+#define HASHTABLE_DOUBLE_FACTOR 5.0
+#assert (HASHTABLE_DOUBLE_FACTOR > 2.0)
+#define HASHTABLE_HALF_FACTOR 0.5
+#assert (HASHTABLE_HALF_FACTOR < 1.0)
 
 fn{key:t0p;itm:vt0p}
   hashtbl_resize_double {l:anz} (ptbl: !HASHTBLptr (key, itm, l)):<> void = let
@@ -464,8 +465,9 @@ fn{key:t0p;itm:vt0p}
   hashtbl_resize_half {l:anz} (ptbl: !HASHTBLptr (key, itm, l)): void = let
   val sz = hashtbl_size (ptbl)
   val sz = size1_of_size (sz) // casting: no op
+  val sz2 = sz / 2
 in
-  if sz >= 2 then hashtbl_resize<key,itm> (ptbl, sz / 2) else ()
+  if sz2 >= HASHTBL_MINSZ then hashtbl_resize<key,itm> (ptbl, sz2) else ()
 end // end of [hashtbl_resize_half]
 
 (* ****** ****** *)
@@ -482,7 +484,7 @@ hashtbl_insert (ptbl, k, i) = () where {
   val () = p->tot := tot1
   prval () = minus_addback (fpf, pf | ptbl)
   val () = begin
-    if ratio >= HASHTABLE_DOUBLE_THRESHOLD then hashtbl_resize_double<key,itm> (ptbl)
+    if ratio >= HASHTABLE_DOUBLE_FACTOR then hashtbl_resize_double<key,itm> (ptbl)
   end // end of [val]
 } // end of [hashtbl_insert]
 
@@ -506,7 +508,7 @@ hashtbl_remove {l} (ptbl, k0) = ans where {
     | None_vt _ => fold@ ans
   ) : void // end of [val]
   prval () = minus_addback (fpf, pf | ptbl)
-  val () = if ratio <= HASHTABLE_HALF_THRESHOLD then hashtbl_resize_half<key,itm> (ptbl)
+  val () = if ratio <= HASHTABLE_HALF_FACTOR then hashtbl_resize_half<key,itm> (ptbl)
 } // end of [hashtbl_remove]
 
 (* ****** ****** *)
@@ -538,8 +540,6 @@ hashtbl_foreach_clo {v}
   end // end of [val]
   prval () = minus_addback (fpf, pf | ptbl)
 } // end of [hashtbl_foreach_clo]
-
-(* ****** ****** *)
 
 implement{key,itm}
   hashtbl_foreach_cloref (tbl, f) = let
@@ -573,17 +573,17 @@ hashtbl_make {key,itm}
 %{$
 
 ats_ptr_type
-atslib_hashtbl_ptr_make (ats_size_type sz) {
+atslib_hashtbl_ptr_make__chain (ats_size_type sz) {
   ats_ptr_type pbeg ;
   /* zeroing the allocated memory is mandatory! */
   pbeg = ATS_CALLOC(sz, sizeof(chain0)) ;
   return pbeg ;
-} /* end of [hashtbl_ptr_make] */
+} // end of [atslib_hashtbl_ptr_make__chain]
 
 ats_void_type
-atslib_hashtbl_ptr_free
+atslib_hashtbl_ptr_free__chain
   (ats_ptr_type pbeg) { ATS_FREE(pbeg) ; return ; }
-/* end of [hashtbl_ptr_free] */
+// end of [atslib_hashtbl_ptr_free__chain]
 
 %} // end of [%{$]
 
@@ -593,16 +593,16 @@ atslib_hashtbl_ptr_free
 
 // shortcuts? yes. worth it? probably.
 
-#define HASHTABLE_SIZE_HINT 97 // it is chosen arbitrarily
+#define HASHTABLE_MINSZ 97 // it is chosen arbitrarily
 
 ats_ptr_type
-atslib_hashtbl_make_hint (
+atslib_hashtbl_make_hint__chain (
   ats_clo_ref_type fhash, ats_clo_ref_type feq, ats_size_type hint
 ) {
   size_t sz ;
   HASHTBL *ptbl ; void *pbeg ;
   ptbl = ATS_MALLOC(sizeof(HASHTBL)) ;
-  sz = (hint > 0 ? hint : HASHTABLE_SIZE_HINT) ;
+  sz = (hint > 0 ? hint : HASHTABLE_MINSZ) ;
   /* zeroing the allocated memory is mandatory! */
   pbeg = ATS_CALLOC(sz, sizeof(chain0)) ;
   ptbl->atslab_sz = sz ;
@@ -611,22 +611,22 @@ atslib_hashtbl_make_hint (
   ptbl->atslab_fhash = fhash ;
   ptbl->atslab_feq = feq ;
   return ptbl ;
-} // end of [atslib_hashtbl_make_hint]
+} // end of [atslib_hashtbl_make_hint__chain]
 
 ats_int_type
-atslib_hashtbl_free (ats_ptr_type ptbl) {
+atslib_hashtbl_free__chain (ats_ptr_type ptbl) {
   ATS_FREE(((HASHTBL*)ptbl)->atslab_pbeg) ; ATS_FREE(ptbl) ; return ;
-} // end of [atslib_hashtbl_free]
+} // end of [atslib_hashtbl_free__chain]
 
 ats_void_type
-atslib_hashtbl_free_null (ats_ptr_type ptbl) { return ; }
-// end of [atslib_hashtbl_free_null]
+atslib_hashtbl_free_null__chain (ats_ptr_type ptbl) { return ; }
+// end of [atslib_hashtbl_free_null__chain]
 
 ats_int_type
-atslib_hashtbl_free_vt (ats_ptr_type ptbl) {
+atslib_hashtbl_free_vt__chain (ats_ptr_type ptbl) {
   if (((HASHTBL*)ptbl)->atslab_tot != 0) return 1 ;
   ATS_FREE(((HASHTBL*)ptbl)->atslab_pbeg) ; ATS_FREE(ptbl) ; return 0 ;
-} // end of [atslib_hashtbl_free_vt]
+} // end of [atslib_hashtbl_free_vt__chain]
 
 %} // end of [%{$]
 

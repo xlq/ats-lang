@@ -85,7 +85,7 @@ in
     end // end of [Some_vt]
   | ~None_vt () => let
       fun aux (s2ls: s2lablst): void = case+ s2ls of
-        | list_cons (s2l, s2ls) => (prerr "."; prerr s2l; aux s2ls)
+        | list_cons (s2l, s2ls) => (prerr "."; prerr_s2lab s2l; aux s2ls)
         | list_nil () => ()
       // end of [aux]
     in
@@ -123,7 +123,7 @@ in
     end // end of [Some_vt]
   | ~None_vt () => let
       fun aux (s2ls: s2lablst): void = case+ s2ls of
-        | list_cons (s2l, s2ls) => (prerr "."; prerr s2l; aux s2ls)
+        | list_cons (s2l, s2ls) => (prerr "."; prerr_s2lab s2l; aux s2ls)
         | list_nil () => ()
     in
       prerr_loc_error3 loc0;

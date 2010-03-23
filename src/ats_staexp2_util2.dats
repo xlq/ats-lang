@@ -1302,6 +1302,11 @@ implement s2exp_slab_linget_cstr
     in
       @(s2e_prj, S2LAB1lab (l, s2e0))
     end // end of [S2LAB0lab]
+  | S2LAB1lab (l, _) => let
+      val s2e_prj = s2exp_lab_linget_cstr (loc0, s2e0, l, cstr)
+    in
+      @(s2e_prj, S2LAB1lab (l, s2e0))
+    end // end of [S2LAB0lab]
   | S2LAB0ind (s2ess_ind) => let
       val s2e_elt = s2exp_ind_linget_cstr (loc0, s2e0, s2ess_ind, cstr)
     in
@@ -1309,7 +1314,7 @@ implement s2exp_slab_linget_cstr
     end // end of [S2LAB0ind]
   | _ => begin
       prerr_loc_interror loc0;
-      prerr ": s2exp_select_slab_get: S2LAB1lab or S2LAB1ind"; prerr_newline ();
+      prerr ": s2exp_slab_linget_get: S2LAB1ind"; prerr_newline ();
       $Err.abort ()
     end // end of [_]
 end (* end of [s2exp_slab_linget_cstr] *)
@@ -1368,7 +1373,8 @@ end (* end of [s2exp_lab_linset] *)
 
 (* ****** ****** *)
 
-implement s2exp_slablst_lintry_cstr (loc0, s2e0, s2ls, cstr) = let
+implement
+s2exp_slablst_lintry_cstr (loc0, s2e0, s2ls, cstr) = let
   fun aux {n:nat} (
       loc0: loc_t, s2e0: s2exp, s2ls: list (s2lab, n), cstr: &s2explst
     ) : list (s2lab, n) = begin case+ s2ls of
@@ -1387,7 +1393,8 @@ end (* end of [s2exp_slablst_lintry_cstr] *)
 
 (* ****** ****** *)
 
-implement s2exp_slablst_linget_cstr (loc0, s2e0, s2ls, cstr) = let
+implement
+s2exp_slablst_linget_cstr (loc0, s2e0, s2ls, cstr) = let
   fun aux {n:nat} (
       loc0: loc_t
     , s2e0: s2exp

@@ -61,46 +61,56 @@ overload prerr with $Loc.prerr_location
 
 implement s2exp_addr_slablst_deref (loc0, s2e0, s2ls) = let
   val @(s2r0, s2ls0_ft) = s2exp_addr_normalize s2e0
-  val s2ls0 = $Lst.list_append (s2ls0_ft, s2ls)
+  val s2ls = $Lst.list_append (s2ls0_ft, s2ls)
 in
   case+ the_d2varset_env_find_viewat (s2r0, s2ls) of
   | ~Some_vt ans => let
       val @(d2v_view, s2e_vt, s2e_addr, s2ls_ft, s2ls_bk) = ans
+(*
+      val () = begin
+        print "s2exp_add_slablst_deref: s2e_addr = "; print_s2exp s2e_addr; print_newline ();
+        print "s2exp_add_slablst_deref: s2ls_ft = "; print_s2lablst s2ls_ft; print_newline ();
+        print "s2exp_add_slablst_deref: s2ls_bk = "; print_s2lablst s2ls_bk; print_newline ();
+      end // end of [val]
+*)
       val _ (* is_local_llam *) =
         the_d2varset_env_d2var_is_llam_local d2v_view
       var cstr: s2explst = list_nil ()
       val (s2e_elt, s2e_vt, s2ls_bk) = begin
         s2exp_slablst_linget_cstr (loc0, s2e_vt, s2ls_bk, cstr)
-      end
+      end // end of [val]
       val () = trans3_env_add_proplst (loc0, cstr)
 (*
       val () = begin
         print "s2exp_addr_slablst_deref: d2v_view = "; print d2v_view; print_newline ();
         print "s2exp_addr_slablst_deref: s2e_vt = "; print s2e_vt; print_newline ();
         print "s2exp_addr_slablst_deref: s2e_elt = "; print s2e_elt; print_newline ();
-        print "s2exp_addr_slablst_deref: s2e_elt.srt = "; print s2e_elt.s2exp_srt; print_newline ();
         print "s2exp_addr_slablst_deref: s2e_addr = "; print s2e_addr; print_newline ();
-      end
+      end // end of [val]
 *)
       val s2ls0_bk = s2lablst_trim_s2lablst_s2lablst (s2ls0_ft, s2ls_ft, s2ls_bk)
+(*
+      val () = begin
+        print "s2exp_add_slablst_deref; s2ls0_bk = "; print_s2lablst s2ls0_bk; print_newline ();
+      end // end of [val]
+*)
       val () = d2var_typ_reset_at (d2v_view, s2e_vt, s2e_addr)
     in
       (s2e_elt, s2ls0_bk)
-    end
+    end // end of [Some_vt]
   | ~None_vt () => let
       fun aux (s2ls: s2lablst): void = begin
         case+ s2ls of
-        | list_cons (s2l, s2ls) => (prerr "."; prerr s2l; aux s2ls)
+        | list_cons (s2l, s2ls) => (prerr "."; prerr_s2lab s2l; aux s2ls)
         | list_nil () => ()
       end // end of [aux]
     in
       prerr loc0;
       prerr ": error(3)";
-      prerr ": there is no view at [";
-      prerr s2r0; aux s2ls0; prerr "]";
+      prerr ": there is no view at ["; prerr s2r0; aux s2ls; prerr "]";
       prerr_newline ();
       $Err.abort ()
-    end
+    end // end of [None_vt]
 end // end of [s2exp_addr_slablst_deref]
 
 (* ****** ****** *)

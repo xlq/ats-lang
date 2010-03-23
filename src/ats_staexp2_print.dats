@@ -629,6 +629,24 @@ end (* end of [fprint_s2lab] *)
 implement print_s2lab (s2l) = print_mac (fprint_s2lab, s2l)
 implement prerr_s2lab (s2l) = prerr_mac (fprint_s2lab, s2l)
 
+implement fprint_s2lablst {m} (pf | out, s2ls) = let
+  fun aux (out: &FILE m, s2ls: s2lablst, i: int): void =
+    case+ s2ls of
+    | list_cons (s2l, s2ls) => let
+        val () = if i > 0 then fprint1_string (pf | out, ", ")
+        val () = fprint_s2lab (pf | out, s2l)
+      in
+        aux (out, s2ls, i+1)
+      end // end of [list_cons]
+    | list_nil () => ()
+  // end of [aux]
+in
+  aux (out, s2ls, 0)
+end (* end of [fprint_s2lablst] *)
+
+implement print_s2lablst (s2ls) = print_mac (fprint_s2lablst, s2ls)
+implement prerr_s2lablst (s2ls) = prerr_mac (fprint_s2lablst, s2ls)
+
 (* ****** ****** *)
 
 implement fprint_s2kexp (pf | out, s2ke) = let

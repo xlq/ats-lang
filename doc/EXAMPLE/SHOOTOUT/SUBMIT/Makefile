@@ -87,6 +87,12 @@ k-nucleotide3: k-nucleotide3.dats
 	$(ATSCC) -D_ATS_GCATS -O3 k-nucleotide3.dats -o k-nucleotide3
 #	$(ATSCC) -O3 k-nucleotide3.dats -o k-nucleotide3
 
+k-nucleotide4: k-nucleotide4.dats
+	$(ATSCC) -D_ATS_GCATS -O4 k-nucleotide4.dats -o k-nucleotide4
+#	$(ATSCC) -O4 k-nucleotide4.dats -o k-nucleotide4
+
+######
+
 mandelbrot: mandelbrot.dats
 	$(ATSCC) -msse2 -O3 mandelbrot.dats -o mandelbrot
 mandelbrot_simd: mandelbrot_simd.dats

@@ -368,7 +368,7 @@ fun d3lab1lst_of_d3lab0lst_s2lablst
           | S2LAB1lab (l, s2e) => d3lab1_lab (d3l.d3lab0_loc, l, s2e)
           | _ => begin
               prerr_interror ();
-              prerr ": d3lab1lst_of_d3lab0lst_s2lablst: D3LAB0lab: s2l = "; prerr s2l;
+              prerr ": d3lab1lst_of_d3lab0lst_s2lablst: D3LAB0lab: s2l = "; prerr_s2lab s2l;
               prerr_newline ();
               $Err.abort {d3lab1} ()
             end // end of [_]
@@ -1202,6 +1202,7 @@ fn d2exp_deref_tr_up
 (*
   val () = begin
     print "d2exp_deref_tr_up: d2e0 = "; print d2e0; print_newline ();
+    print "d2exp_deref_tr_up: d2ls = "; print_d2lablst d2ls; print_newline ();    
   end // end of [val]
 *)
   val d3e0 = d2exp_tr_up d2e0
@@ -1220,19 +1221,21 @@ in
       val (s2e_elt, s2ls) = s2exp_addr_slablst_deref (loc0, s2e_addr, s2ls_nt)
 (*
       val () = begin
-        print "d2exp_deref_tr_up: s2e_elt = "; print s2e_elt; print_newline ()
-      end
+        print "d2exp_deref_tr_up: s2e_elt = "; print s2e_elt; print_newline ();
+        print "d2exp_deref_tr_up: s2ls = "; print_s2lablst s2ls; print_newline ();
+      end // end of [val]
+*)
+//
+(*
       val [sgn:int] sgn = $Lst.list_length_compare (s2ls, s2ls_nt)
-      val () [sgn==0] void =
-        if (sgn <> 0) then begin
-          prerr_interror ();
-          prerr ": d2exp_deref_tr_up: list length mismatch!"; prerr_newline ();
-          $Err.abort {void} ();
-          assert (sgn = 0) // deadcode
-        end else begin
-          () // [sgn = 0] holds!
-        end // end of [if]
-      // end of [val]
+      val () = if (sgn <> 0) then begin
+        prerr_interror ();
+        prerr ": d2exp_deref_tr_up: list length mismatch!"; prerr_newline ();
+        $Err.abort {void} ();
+        assert (sgn = 0) // deadcode
+      end else begin
+        () // [sgn = 0] holds!
+      end : [sgn==0] void // end of [if]
 *)
       val d3ls = d3lab1lst_of_d3lab0lst_s2lablst (d3ls_nt, s2ls)
     in
@@ -1578,8 +1581,20 @@ end // end of [d2exp_lazy_delay_vt_tr_up]
 
 (* ****** ****** *)
 
-fn d2exp_ptrof_tr_up (loc0: loc_t, d2e0: d2exp): d3exp = let
+fn d2exp_ptrof_tr_up (
+   loc0: loc_t, d2e0: d2exp
+  ) : d3exp = let
+(*
+  val () = begin
+    print "d2exp_ptrof_tr_up: d2e0 = "; print_d2exp d2e0; print_newline ()
+  end // end of [val]
+*)
   val l2v0 = l2val_make_d2exp d2e0
+(*
+  val () = begin
+    print "d2exp_ptrof_tr_up: l2v0 = "; print_l2val l2v0; print_newline ()
+  end // end of [val]
+*)
 in
   case+ l2v0 of
   | L2VALptr (d2e_ptr, d2ls) => let

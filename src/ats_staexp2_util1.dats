@@ -488,7 +488,8 @@ implement s2eff_contain_s2eff (s2fe1, s2fe2) = case+ s2fe1 of
 
 (* ****** ****** *)
 
-implement s2lab_syneq (s2l1, s2l2) = begin
+implement
+s2lab_syneq (s2l1, s2l2) = begin
   case+ (s2l1, s2l2) of
   | (S2LAB0lab l1, S2LAB0lab l2) => l1 = l2
   | (S2LAB1lab (l1, _), S2LAB1lab (l2, _)) => l1 = l2
@@ -501,9 +502,24 @@ implement s2lab_syneq (s2l1, s2l2) = begin
   | (_,  _) => false
 end // end of [s2lab_syneq]
 
-implement // in [ats_trans3_assgn, ats_trans3_deref, ats_trans3_view]
-  s2lablst_trim_s2lablst_s2lablst (s2ls0_ft, s2ls_ft, s2ls_bk) = let
-  fun aux (s2ls1: s2lablst, s2ls2: s2lablst): s2lablst = case+ s2ls1 of
+//
+// the function is used in
+// [ats_trans3_assgn, ats_trans3_deref, ats_trans3_view]
+//
+implement
+s2lablst_trim_s2lablst_s2lablst
+  (s2ls0_ft, s2ls_ft, s2ls_bk) = let
+(*
+  val () = begin
+    print "s2lablst_trim_s2lablst_s2lablst: s2ls0_ft = "; print_s2lablst s2ls0_ft; print_newline ();
+    print "s2lablst_trim_s2lablst_s2lablst: s2ls_ft = "; print_s2lablst s2ls_ft; print_newline ();
+    print "s2lablst_trim_s2lablst_s2lablst: s2ls_bk = "; print_s2lablst s2ls_bk; print_newline ();
+  end // end of [val]
+*)
+  fun aux (
+      s2ls1: s2lablst, s2ls2: s2lablst
+    ) : s2lablst = begin
+    case+ s2ls1 of
     | list_cons (_, s2ls1) => begin case+ s2ls2 of
       | list_cons (_, s2ls2) => aux (s2ls1, s2ls2)
       | list_nil () => begin
@@ -512,13 +528,13 @@ implement // in [ats_trans3_assgn, ats_trans3_deref, ats_trans3_view]
         end // end of [_]
       end (* end of [list_cons] *)
     | list_nil () => s2ls2
-  // end of [aux]
+  end // end of [aux]
 in
   case+ s2ls0_ft of
-  | list_cons (_, s2ls0_ft) => begin case+ s2ls_ft of
+  | list_cons (_, s2ls0_ft1) => begin case+ s2ls_ft of
     | list_cons (_, s2ls_ft) => begin
-        s2lablst_trim_s2lablst_s2lablst (s2ls0_ft, s2ls_ft, s2ls_bk)
-      end
+        s2lablst_trim_s2lablst_s2lablst (s2ls0_ft1, s2ls_ft, s2ls_bk)
+      end // end of [val]
     | list_nil () => aux (s2ls0_ft, s2ls_bk)
     end // end of [list_cons]
   | list_nil () => $Lst.list_append (s2ls_ft, s2ls_bk)
