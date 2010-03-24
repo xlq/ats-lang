@@ -61,7 +61,8 @@ end // end of [foreach_main]
 
 //
 
-implement foreach_fun {v} {n} {f:eff} (pf | n, f) = let
+implement
+foreach_fun {v} {n} {f:eff} (pf | n, f) = let
   typedef fun0_t = (!v | natLt n) -<f> void
   typedef fun1_t = (!v | natLt n, !ptr) -<f> void
   val f = coerce f where {
@@ -73,7 +74,8 @@ end // end of [foreach_fun]
 
 //
 
-implement foreach_clo {v} {n} {f:eff} (pf | n, f) = let
+implement
+foreach_clo {v} {n} {f:eff} (pf | n, f) = let
   viewtypedef clo_t = (!v | natLt n) -<clo,f> void
   stavar l_f: addr; val p_f: ptr l_f = &f
   viewdef v1 = @(v, clo_t @ l_f)
@@ -92,7 +94,8 @@ end // end of [foreach_clo]
 
 //
 
-implement foreach_cloref {n} {f:eff} (n, f) = let
+implement
+foreach_cloref {n} {f:eff} (n, f) = let
   typedef cloref_t = (natLt n) -<cloref,f> void
   fn app (pf: !unit_v | i: natLt n, f: !cloref_t):<f> void = f (i)
   prval pf = unit_v ()
@@ -124,7 +127,8 @@ end // end of [foreach2_main]
 
 //
 
-implement foreach2_fun {v} {m,n} {f:eff} (pf | m, n, f) = let
+implement
+foreach2_fun {v} {m,n} {f:eff} (pf | m, n, f) = let
   typedef fun0_t = (!v | natLt m, natLt n) -<f> void
   typedef fun1_t = (!v | natLt m, natLt n, !ptr) -<f> void
   val f = coerce f where {
@@ -136,7 +140,8 @@ end // end of [foreach2_fun]
 
 //
 
-implement foreach2_clo {v} {m,n} {f:eff} (pf | m, n, f) = let
+implement
+foreach2_clo {v} {m,n} {f:eff} (pf | m, n, f) = let
   viewtypedef clo_t = (!v | natLt m, natLt n) -<clo,f> void
   stavar l_f: addr; val p_f: ptr l_f = &f
   viewdef v1 = @(v, clo_t @ l_f)
@@ -155,7 +160,8 @@ end // end of [foreach2_clo]
 
 //
 
-implement foreach2_cloref {m,n} {f:eff} (m, n, f) = let
+implement
+foreach2_cloref {m,n} {f:eff} (m, n, f) = let
   typedef cloref_t = (natLt m, natLt n) -<cloref,f> void
   fn app (pf: !unit_v | i: natLt m, j: natLt n, f: !cloref_t):<f> void =
     f (i, j)
@@ -169,7 +175,7 @@ end // end of [foreach2_cloref]
 (* ****** ****** *)
 
 implement
-  repeat_main {v} {vt} {n} {f} (pf | n, f, env) = let
+repeat_main {v} {vt} {n} {f} (pf | n, f, env) = let
   typedef fun_t = (!v | !vt) -<f> void
   fun aux {i:nat | i <= n} .<i>.
     (pf: !v | f: fun_t, i: int i, env: !vt):<f> void =
@@ -182,7 +188,8 @@ end // end of [repeat_main]
 
 //
 
-implement repeat_fun {v} {n} {f:eff} (pf | n, f) = let
+implement
+repeat_fun {v} {n} {f:eff} (pf | n, f) = let
   typedef fun0_t = (!v | (**)) -<f> void
   typedef fun1_t = (!v | !ptr) -<f> void
   val f = coerce f where {
@@ -194,7 +201,8 @@ end // end of [repeat_fun]
 
 //
 
-implement repeat_clo {v} {n} {f:eff} (pf | n, f) = let
+implement
+repeat_clo {v} {n} {f:eff} (pf | n, f) = let
   viewtypedef clo_t = (!v | (*none*)) -<clo,f> void
   stavar l_f: addr; val p_f: ptr l_f = &f
   viewdef v1 = @(v, clo_t @ l_f)
@@ -213,7 +221,8 @@ end // end of [repeat_clo]
 
 //
 
-implement repeat_cloref {n} {f} (n, f) = let
+implement
+repeat_cloref {n} {f} (n, f) = let
   typedef cloref_t = () -<cloref,f> void
   fn app (pf: !unit_v | f: !cloref_t):<f> void = f ()
   prval pf = unit_v ()

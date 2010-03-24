@@ -908,7 +908,7 @@ fn process_illegal_char
   {a:viewt@ype} (fstpos: position_t): a = begin
   $Fil.ats_filename_prerr ();
   prerr_string ": LEXING ERROR";
-  prerr_string "illegal character at [";
+  prerr_string ": illegal character at [";
   prerr_position fstpos;
   prerr_string "] is unclosed!\n";
   $raise LexingErrorException

@@ -36,10 +36,8 @@
 (* ****** ****** *)
 
 %{#
-
 #include "libats/CATS/regexp.cats"
-
-%}
+%} // end of [%{#]
 
 (* ****** ****** *)
 
@@ -57,13 +55,14 @@ abstype REGEXPref // = ref (REGEXP)
 // implemented in C
 fun regexp_compile (pattern: string): REGEXPptr0
   = "atslib_regexp_compile"
+// end of [regexp_compile]
 
 // implemented in ATS
 fun regexp_compile_exn (pattern: string): REGEXPptr1
 
 (* ****** ****** *)
 
-castfn regexp_free_null (p: REGEXPptr null): ptr
+castfn regexp_free_null (p: REGEXPptr null): ptr(*null*)
 
 fun regexp_free
   {l:anz} (p: REGEXPptr l): void = "atslib_regexp_free"

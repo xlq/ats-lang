@@ -55,6 +55,8 @@ fun chr (i: uint): char
 fun succ (c: char): char
 fun pred (c: char): char
 
+(* ****** ****** *)
+
 fun compare (c1: char, c2: char): int
 
 fun lt (c1: char, c2: char): bool
@@ -105,8 +107,10 @@ fun fromString (s: string): option0 char // not implemented
 
 (* ****** ****** *)
 
+//
 // not yet implemented
 // fun scan : (Char.char, 'a) StringCvt.reader -> (char, 'a) StringCvt.reader
+//
 
 (* ****** ****** *)
 
@@ -115,4 +119,4 @@ fun fromCString (s: string): option0 char
 
 (* ****** ****** *)
 
-(* end of [bool.sats] *)
+(* end of [char.sats] *)

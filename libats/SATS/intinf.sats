@@ -150,13 +150,13 @@ fun mul_intinf_intinf {m,n:int}
   (m: &intinf m, n: &intinf n): [p:int] (MUL (m, n, p) | intinfptr_gc p)
 overload * with mul_intinf_intinf
 
-//
+(* ****** ****** *)
 
 fun square_intinf
   {n:int} (n: &intinf n): [p:int] (MUL (n, n, p) | intinfptr_gc p)
 overload square with square_intinf
 
-//
+(* ****** ****** *)
 
 //
 // fdiv: floor division: round toward -infinity

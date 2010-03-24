@@ -47,13 +47,8 @@
 
 (* ****** ****** *)
 
-// a casting function implemented in [prelude/DATS/option.cats]
-castfn option0_of_option1 {a:t@ype} (xs: List a):<> option0 a
-  = "atspre_option0_of_option1"
-
-// a casting function implemented in [prelude/DATS/option.cats]
-castfn option1_of_option0 {a:t@ype} (xs: option0 a):<> List a
-  = "atspre_option1_of_option0"
+castfn option0_of_option1 {a:t@ype} (xs: Option a):<> option0 a
+castfn option1_of_option0 {a:t@ype} (xs: option0 a):<> Option a
 
 (* ****** ****** *)
 

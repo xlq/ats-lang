@@ -450,11 +450,13 @@ fun string_compare
 
 fun stringlst_concat (xs: List string):<> Strbufptr_gc
   = "atspre_stringlst_concat"
+// end of [stringlst_concat]
 
 (* ****** ****** *)
 
 fun string_contains (str: string, c: char):<> bool
   = "atspre_string_contains"
+// end of [string_contains]
 
 (* ****** ****** *)
 
