@@ -31,8 +31,10 @@
 
 (* ****** ****** *)
 
+//
 // Author: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
 // Time: February 2008
+//
 
 (* ****** ****** *)
 
@@ -251,7 +253,8 @@ extern fun eval1_p2atlst {n:nat}
 extern fun eval1_labp2atlst
   (loc0: loc_t, env: &alphaenv, lp2ts: labp2atlst): labp2atlst
 
-implement eval1_p2at (loc0, env, p2t0) = begin
+implement
+eval1_p2at (loc0, env, p2t0) = begin
   case+ p2t0.p2at_node of
   | P2Tann (p2t, s2e) => let
       val p2t = eval1_p2at (loc0, env, p2t)
@@ -292,6 +295,7 @@ implement eval1_p2at (loc0, env, p2t0) = begin
     in
       p2at_con (loc0, freeknd, d2c, s2qs, s2e, npf, p2ts)
     end // end of [P2Tcon]
+  | P2Tempty () => p2at_empty (loc0)
   | P2Texist (s2vs, p2t) => let
       val p2t = eval1_p2at (loc0, env, p2t)
     in
@@ -325,7 +329,8 @@ implement eval1_p2at (loc0, env, p2t0) = begin
     } // end of [_]
 end // end of [eval1_p2at]
 
-implement eval1_p2atlst (loc0, env, p2ts) = let
+implement
+eval1_p2atlst (loc0, env, p2ts) = let
   fun aux {n:nat} (
       loc0: loc_t
     , env: &alphaenv
@@ -347,7 +352,8 @@ in
   aux (loc0, env, p2ts, res); res
 end // end of [eval1_p2atlst]
 
-implement eval1_labp2atlst (loc0, env, lp2ts) = let
+implement
+eval1_labp2atlst (loc0, env, lp2ts) = let
   fun aux (
       loc0: loc_t
     , env: &alphaenv
@@ -638,7 +644,8 @@ end // end of [eval0_exp_app_is_cons]
 
 (* ****** ****** *)
 
-fn eval0_exp_app_tup_head (loc0: loc_t, v2al: v2alue): v2alue = let
+fn eval0_exp_app_tup_head
+  (loc0: loc_t, v2al: v2alue): v2alue = let
 (*
   val () = begin
     print "eval0_exp_app_tup_head: v2al = "; print v2al; print_newline ()
@@ -748,7 +755,9 @@ extern fun eval1_d2eclst
 
 (* ****** ****** *)
 
-fun eval0_var (loc0: loc_t, ctx: !eval0ctx, d2v: d2var_t): v2alue = let
+fun eval0_var (
+    loc0: loc_t, ctx: !eval0ctx, d2v: d2var_t
+  ) : v2alue = let
   fn err (loc0: loc_t, d2v: d2var_t): v2alue = begin
     prerr_loc_errmac loc0;
     prerr ": the variable ["; prerr d2v; prerr "] is unbound.";
@@ -774,7 +783,8 @@ end (* end of [eval0_var] *)
 
 (* ****** ****** *)
 
-implement eval0_exp (loc0, ctx, env, d2e0) = let
+implement
+eval0_exp (loc0, ctx, env, d2e0) = let
 (*
   val () = begin
     print "eval0_exp: d2e0 = "; print_d2exp d2e0; print_newline ()
@@ -941,7 +951,8 @@ fn symbol_is_binary (sym: sym_t) = begin
   | _ => false
 end // end of [symbol_is_binary]
 
-implement eval0_exp_app_sym (loc0, sym, ctx, env, d2as) = let
+implement
+eval0_exp_app_sym (loc0, sym, ctx, env, d2as) = let
 (*
   val () = begin
     print "eval0_exp_app_sym: sym = "; $Sym.print_symbol sym; print_newline ()
@@ -1186,7 +1197,8 @@ end // end of [eval1_c2laulst]
 
 (* ****** ****** *)
 
-implement eval1_d2exp (loc0, ctx, env, d2e0) = let
+implement
+eval1_d2exp (loc0, ctx, env, d2e0) = let
 (*
   val () = begin
     print "eval1_d2exp: d2e0 = "; print_d2exp d2e0; print_newline ()
@@ -1465,7 +1477,8 @@ end // end of [eval1_d2exp]
 
 (* ****** ****** *)
 
-implement eval1_d2explst (loc0, ctx, env, d2es) = let
+implement
+eval1_d2explst (loc0, ctx, env, d2es) = let
   fun aux {n:nat} (
       loc0: loc_t
     , ctx: !eval0ctx
@@ -1488,7 +1501,8 @@ in
   aux (loc0, ctx, env, d2es, res); res
 end // end of [eval1_d2explst]
 
-implement eval1_d2explstlst (loc0, ctx, env, d2ess) = begin
+implement
+eval1_d2explstlst (loc0, ctx, env, d2ess) = begin
   case+ d2ess of
   | list_cons (d2es, d2ess) => let
       val d2es = eval1_d2explst (loc0, ctx, env, d2es)
@@ -1500,7 +1514,8 @@ end // end of [eval1_d2explstlst]
 
 (* ****** ****** *)
 
-implement eval1_labd2explst (loc0, ctx, env, ld2es) = let
+implement
+eval1_labd2explst (loc0, ctx, env, ld2es) = let
   fun aux (
       loc0: loc_t
     , ctx: !eval0ctx
@@ -1559,7 +1574,8 @@ end // end of [eval1_v2aldeclst]
 
 (* ****** ****** *)
 
-implement eval1_d2ec (loc0, ctx, env, d2c0) = begin
+implement
+eval1_d2ec (loc0, ctx, env, d2c0) = begin
   case+ d2c0.d2ec_node of
   | D2Cnone () => d2ec_none (loc0)
   | D2Clist d2cs => d2ec_list (loc0, eval1_d2eclst (loc0, ctx, env, d2cs))
@@ -1582,7 +1598,8 @@ implement eval1_d2ec (loc0, ctx, env, d2c0) = begin
     end
 end // end of [eval1_d2ec]
 
-implement eval1_d2eclst (loc0, ctx, env, d2cs) = let
+implement
+eval1_d2eclst (loc0, ctx, env, d2cs) = let
   fun aux (
       loc0: loc_t
     , ctx: !eval0ctx
@@ -1706,7 +1723,7 @@ fun eval0ctx_extend_arglst {narg:nat} (
 end // end of [eval0ctx_extend_arglst]
 
 implement // expanding macros in long form
-  eval0_exp_app_mac_long {narg} (loc0, d2m, ctx, env, d2as) = let
+eval0_exp_app_mac_long {narg} (loc0, d2m, ctx, env, d2as) = let
 (*
   val () = begin
     print "eval0_exp_app_mac_long: d2m = "; print d2m; print_newline ()
@@ -1750,7 +1767,7 @@ end // end of [eval0_exp_app_mac_long]
 (* ****** ****** *)
 
 implement // expanding macros in short form
-  eval0_exp_app_mac_short {narg} (loc0, d2m, ctx, env, d2as) = let
+eval0_exp_app_mac_short {narg} (loc0, d2m, ctx, env, d2as) = let
 (*
   val () = begin
     print "eval0_exp_app_mac_short: d2m = "; print d2m; print_newline ()
@@ -1814,7 +1831,8 @@ end // end of [eval0_exp_app_mac_short]
 
 (* ****** ****** *)
 
-implement macro_eval_cross (d2e) = let
+implement
+macro_eval_cross (d2e) = let
   val loc0 = d2e.d2exp_loc
   var ctx = EVAL0CTXnil ()
   var env = ALPHAENVnil ()
@@ -1825,7 +1843,8 @@ in
   lift_val_exp (loc0, v2al)
 end // end of [macro_eval_cross]
 
-implement macro_eval_decode (d2e) = let
+implement
+macro_eval_decode (d2e) = let
   val loc0 = d2e.d2exp_loc
   var ctx = EVAL0CTXnil ()
   var env = ALPHAENVnil ()
@@ -1846,7 +1865,8 @@ end // end of [macro_eval_decode]
 
 (* ****** ****** *)
 
-implement macro_eval_app_short (loc0, d2m, d2as) = let
+implement
+macro_eval_app_short (loc0, d2m, d2as) = let
   var ctx = EVAL0CTXnil ()
   var env = ALPHAENVnil ()
   val d2e = eval0_exp_app_mac_short (loc0, d2m, ctx, env, d2as)

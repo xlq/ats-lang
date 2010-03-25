@@ -117,14 +117,17 @@ hashtbl_search_ref {l:anz} (ptbl: !HASHTBLptr (key, itm, l), k0: key): Ptr
 // this one is a safe version, but it can only handle non-linear items
 //
 fun{key:t@ype;itm:t@ype}
-hashtbl_search {l:anz} (ptbl: !HASHTBLptr (key, itm, l), k0: key): Option_vt itm
+hashtbl_search {l:anz} (
+  ptbl: !HASHTBLptr (key, itm, l), k0: key, res: &itm? >> opt (itm, b)
+) :<> #[b:bool] bool b
 // end of [hashtbl_search]
 
 (* ****** ****** *)
 
 fun{key:t@ype;itm:viewt@ype}
-hashtbl_insert {l:anz}
-  (ptbl: !HASHTBLptr (key, itm, l), k: key, i: itm) :<> Option_vt (itm)
+hashtbl_insert {l:anz} (
+  ptbl: !HASHTBLptr (key, itm, l), k: key, i: &itm >> opt (itm, b)
+) :<> #[b:bool] bool b
 // end of [hashtbl_insert]
 
 (*
@@ -132,7 +135,9 @@ hashtbl_insert {l:anz}
 // HX-2010-03-23:
 // if removal is needed, please use [hashtable_chain] instead
 fun{key:t@ype;itm:viewt@ype}
-hashtbl_remove {l:anz} (ptbl: !HASHTBLptr (key, itm, l), k0: key): Option_vt itm
+hashtbl_remove {l:anz} (
+  ptbl: !HASHTBLptr (key, itm, l), k0: key, res: &itm? >> opt (itm, b)
+) :<> #[b:bool] bool b
 // end of [hashtbl_remove]
 *)
 

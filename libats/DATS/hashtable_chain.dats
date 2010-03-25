@@ -109,24 +109,30 @@ chain_insert {n:nat}
 (* ****** ****** *)
 
 stadef b2i = int_of_bool
-fun{key:t0p;itm:vt0p} chain_remove {n:nat} .<n>.
-  (kis: &chain (key,itm,n) >> chain (key,itm,n-b2i b), k0: key, eq: eq key)
-  :<> #[b:bool | b2i b <= n] option_vt (itm, b) = begin case+ kis of
+fun{key:t0p;itm:vt0p} chain_remove {n:nat} .<n>. (
+    kis: &chain (key,itm,n) >> chain (key,itm,n-b2i b)
+  , k0: key, eq: eq key, res: &itm? >> opt (itm, b)
+  ) :<> #[b:bool | b2i b <= n] bool b = begin case+ kis of
   | CHAINcons (k, !i, !kis1) => let
       val keq = equal_key_key (k0, k, eq)
     in
       if keq then let
-        val i = !i and kis1 = !kis1
+        val () = res := !i
+        prval () = opt_some {itm} (res)
+        val kis1 = !kis1
       in
-        free@ {key,itm} {n} (kis); kis := kis1; Some_vt i
+        free@ {key,itm} {n} (kis); kis := kis1; true
       end else let
-        val ans = chain_remove<key,itm> {n-1} (!kis1, k0, eq)
+        val ans = chain_remove<key,itm> {n-1} (!kis1, k0, eq, res)
       in
         fold@ kis; ans
       end // end of [if]
     end // end of [cons]
   | CHAINnil () => let
-      prval () = fold@ kis in None_vt ()
+      prval () = opt_none {itm} (res)
+      prval () = fold@ kis
+    in
+      false
     end // end of [nil]
 end // end of [chain_remove]
 
@@ -317,18 +323,21 @@ in
 end // end of [hashtbl_search_ref]
 
 implement{key,itm}
-hashtbl_search (ptbl, k0) = let
+hashtbl_search (ptbl, k0, res) = let
   val [l:addr] p_itm = hashtbl_search_ref (ptbl, k0)
 in
   if p_itm <> null then let
     prval (fpf, pf) = __assert () where {
       extern prfun __assert (): (itm @ l -<prf> void, itm @ l)
     } // end of [prval]
-    val ans = Some_vt (!p_itm)
+    val () = res := !p_itm
     prval () = fpf (pf)
+    prval () = opt_some {itm} (res)
   in
-    ans
-  end else None_vt ()
+    true
+  end else let
+    prval () = opt_none {itm} (res) in false
+  end // end of [if]
 end // end of [hashtbl_search]
 
 (* ****** ****** *)
@@ -358,11 +367,12 @@ hashtbl_ptr_remove_ofs
     pf: !hashtbl_v (key, itm, sz, tot, l_beg, l_end)
           >> hashtbl_v (key, itm, sz, tot-b2i b, l_beg, l_end)
   | p_beg: ptr l_beg, k0: key, eq: eq key, ofs: size_t ofs
-  ) :<> #[b:bool | b2i b <= tot] option_vt (itm, b) = let
+  , res: &itm? >> opt (itm, b)
+  ) :<> #[b:bool | b2i b <= tot] bool b = let
   val (pf1, pf2 | p_mid) =
     hashtbl_ptr_split<key,itm> {sz,ofs,tot} (pf | p_beg, ofs)
   prval hashtbl_v_cons (pf21, pf22) = pf2
-  val ans = chain_remove (!p_mid, k0, eq)
+  val ans = chain_remove (!p_mid, k0, eq, res)
   prval pf2 = hashtbl_v_cons (pf21, pf22)
   prval () = pf := hashtbl_v_unsplit (pf1, pf2)
 in
@@ -491,21 +501,20 @@ hashtbl_insert (ptbl, k, i) = () where {
 (* ****** ****** *)
 
 implement{key,itm}
-hashtbl_remove {l} (ptbl, k0) = ans where {
+hashtbl_remove {l} (ptbl, k0, res) = ans where {
   var ratio: double = 1.0
   val (pf, fpf | p) = HASHTBLptr_tblget {key,itm} (ptbl)
   val h = hash_key (k0, p->fhash)
   val h = size1_of_ulint (h); val ofs = sz1mod (h, p->sz)
-  val ans = hashtbl_ptr_remove_ofs<key,itm> (p->pftbl | p->pbeg, k0, p->feq, ofs)
-  val () = (case+ :(pf: HASHTBL (key, itm) @ l) => ans of
-    | Some_vt _ => let
-        val tot1 = p->tot - 1
-        val () = ratio := double_of_size tot1 / double_of_size (p->sz)
-        val () = p->tot := tot1
-      in
-        fold@ ans
-      end // end of [Some_vt]
-    | None_vt _ => fold@ ans
+  val ans = hashtbl_ptr_remove_ofs<key,itm> (p->pftbl | p->pbeg, k0, p->feq, ofs, res)
+  val () = (
+    if :(pf: HASHTBL (key, itm) @ l) => ans then let
+      val tot1 = p->tot - 1
+      val () = ratio := double_of_size tot1 / double_of_size (p->sz)
+      val () = p->tot := tot1
+    in
+      // nothing
+    end else () // end of [if]
   ) : void // end of [val]
   prval () = minus_addback (fpf, pf | ptbl)
   val () = if ratio <= HASHTABLE_HALF_FACTOR then hashtbl_resize_half<key,itm> (ptbl)

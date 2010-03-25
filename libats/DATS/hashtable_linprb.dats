@@ -262,7 +262,7 @@ end // end of [hashtbl_search_ref]
 (* ****** ****** *)
 
 implement{key,itm}
-hashtbl_search (ptbl, k0) = let
+hashtbl_search (ptbl, k0, res) = let
   val (pf, fpf | p) = HASHTBLptr_tblget {key,itm} (ptbl)
   val h = hash_key (k0, p->fhash)
   val h = size1_of_ulint (h); val ofs = sz1mod (h, p->sz)
@@ -275,11 +275,14 @@ in
     prval (fpf, pf) = __assert () where {
       extern prfun __assert (): ((key,itm) @ l -<prf> void, (key,itm) @ l)
     } // end of [prval]
-    val ans = Some_vt (pkeyitm->1)
+    val () = res := pkeyitm->1
+    prval () = opt_some {itm} (res)
     prval () = fpf (pf)
   in
-    ans
-  end else None_vt ()
+    true
+  end else let
+    prval () = opt_none {itm} (res) in false
+  end // end of [if]
 end // end of [hashtbl_search]
 
 (* ****** ****** *)
@@ -362,7 +365,7 @@ hashtbl_resize {l:anz} {sz_new:pos} (
 (* ****** ****** *)
 
 implement{key,itm}
-hashtbl_insert (ptbl, k0, i0) = ans where {
+hashtbl_insert (ptbl, k0, i0) = found where {
   val (pf0, fpf0 | p) = HASHTBLptr_tblget {key,itm} (ptbl)
   val h = hash_key (k0, p->fhash)
   val h = size1_of_ulint (h)
@@ -372,8 +375,12 @@ hashtbl_insert (ptbl, k0, i0) = ans where {
   var doubleTag: int = 0
   val [l:addr] pkeyitm =
     hashtbl_ptr_probe_ofs<key,itm> (p->pftbl | p->pbeg, k0, p->feq, sz, ofs, found)
-  val ans = (if found then Some_vt (i0) else let
-//
+  val [b:bool] found = bool1_of_bool (found)
+  val () = (if :(i0: opt (itm, b)) => found then let
+    prval () = opt_some {itm} (i0)
+  in
+    // nothing
+  end else let
     val tot = p->tot
     val () = p->tot := tot + 1
 //
@@ -384,13 +391,15 @@ hashtbl_insert (ptbl, k0, i0) = ans where {
     val () = pkeyitm->1 := i0
     prval () = fpf (pf)
 //
+    prval () = opt_none {itm} (i0)
+//
     val () = if (
       HASHTABLE_DOUBLE_FACTOR * (double_of_size)tot >= (double_of_size)sz
     ) then doubleTag := 1 // end of [if]
 //
   in
-    None_vt ()
-  end) : Option_vt itm // end of [if]
+    // nothing
+  end) : void // end of [if]
   prval () = minus_addback (fpf0, pf0 | ptbl)
   val () = if (doubleTag > 0) then hashtbl_resize<key,itm> (ptbl, sz + sz)
 } // end of [hashtbl_insert]

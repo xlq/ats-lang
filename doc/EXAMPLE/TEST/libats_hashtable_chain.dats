@@ -17,6 +17,8 @@ staload _(*anon*) = "prelude/DATS/reference.dats"
 staload H = "libats/SATS/hashtable_chain.sats"
 staload _(*anon*) = "libats/DATS/hashtable_chain.dats"
 
+stadef HASHTBLptr = $H.HASHTBLptr
+
 (* ****** ****** *)
 
 // dynload "hashtable_chain.dats" // not needed as [ATS_DYNLOADFLAG = 0]
@@ -50,8 +52,8 @@ implement main (argc, argv) = let
 
   val [l:addr] ptbl = $H.hashtbl_make {int,string} (hash, eq)
   var i: int; val () = for (i := 0; i < n; i := i+1) let
-    val key = $RAND.randint n
-    // val key = i
+    val key = i
+    // val key = $RAND.randint n
     val itm = tostring key // val itm = sprintf ("%i", @(key))
     // val () = printf ("key = %i and itm = %s\n", @(key, itm))
   in
@@ -63,42 +65,36 @@ implement main (argc, argv) = let
     print "size = "; print size; print_newline ();
     print "total = "; print total; print_newline ();
   end // end of [val]
+//
+  fn find {l:anz} (
+      ptbl: !HASHTBLptr (key, itm, l), k0: key, res: &itm?
+    ) : void = () where {
+    val () = printf ("%i\t->\t", @(k0))
+    val ans = $H.hashtbl_search (ptbl, k0, res)
+    val () = if ans then let
+      prval () = opt_unsome {itm} (res) in
+      print "Some("; print res; print ")"
+    end else let
+      prval () = opt_unnone {itm} (res) in
+      print "None()"
+    end // end of [if]
+    val () = print_newline ()
+  } // end of [find]
+//
+  var res: itm?
+//
   val k0 = 0
-  val () = printf ("%i\t->\t", @(k0))
-  val () = case+ $H.hashtbl_search (ptbl, k0) of
-    | ~Some_vt s => (print "Some("; print s; print ")")
-    | ~None_vt _ => (print "None()")
-  val () = print_newline ()
+  val () = find (ptbl, k0, res)
   val k1 = 1
-  val () = printf ("%i\t->\t", @(k1))
-  val () = case+ $H.hashtbl_search (ptbl, k1) of
-    | ~Some_vt s => (print "Some("; print s; print ")")
-    | ~None_vt _ => (print "None()")
-  val () = print_newline ()
+  val () = find (ptbl, k1, res)
   val k10 = 10
-  val () = printf ("%i\t->\t", @(k10))
-  val () = case+ $H.hashtbl_search (ptbl, k10) of
-    | ~Some_vt s => (print "Some("; print s; print ")")
-    | ~None_vt _ => (print "None()")
-  val () = print_newline ()
+  val () = find (ptbl, k10, res)
   val k100 = 100
-  val () = printf ("%i\t->\t", @(k100))
-  val () = case+ $H.hashtbl_search (ptbl, k100) of
-    | ~Some_vt s => (print "Some("; print s; print ")")
-    | ~None_vt _ => (print "None()")
-  val () = print_newline ()
+  val () = find (ptbl, k100, res)
   val k1000 = 1000
-  val () = printf ("%i\t->\t", @(k1000))
-  val () = case+ $H.hashtbl_search (ptbl, k1000) of
-    | ~Some_vt s => (print "Some("; print s; print ")")
-    | ~None_vt _ => (print "None()")
-  val () = print_newline ()
+  val () = find (ptbl, k1000, res)
   val k10000 = 10000
-  val () = printf ("%i\t->\t", @(k10000))
-  val () = case+ $H.hashtbl_search (ptbl, k10000) of
-    | ~Some_vt s => (print "Some("; print s; print ")")
-    | ~None_vt _ => (print "None()")
-  val () = print_newline ()
+  val () = find (ptbl, k10000, res)
 //
   var !p_f = @lam
     (pf: !unit_v | k: key, i: &itm): void =<clo> i := sprintf ("%i", @(k+k+1))
@@ -107,18 +103,15 @@ implement main (argc, argv) = let
   val () = $H.hashtbl_foreach_clo<key,itm> {unit_v} (pf | ptbl, !p_f)
   prval unit_v () = pf
 //
-  val () = printf ("%i\t->\t", @(k10000))
-  val () = case+ $H.hashtbl_search (ptbl, k10000) of
-    | ~Some_vt s => (print "Some("; print s; print ")")
-    | ~None_vt _ => (print "None()")
-  val () = print_newline ()
+  val () = find (ptbl, k10000, res)
 //
   var i: int; val () = for (i := 0; i < n; i := i+1) let
-    // val key = $RAND.randint n
     val key = i
-    val ans = $H.hashtbl_remove<key,itm> (ptbl, key)
+    // val key = $RAND.randint n
+    val ans = $H.hashtbl_remove<key,itm> (ptbl, key, res)
+    prval () = opt_clear (res)
   in
-    case+ ans of ~Some_vt _ => () | ~None_vt () => ()
+    // nothing
   end // end [for]
 //
   val total = $H.hashtbl_total (ptbl)
