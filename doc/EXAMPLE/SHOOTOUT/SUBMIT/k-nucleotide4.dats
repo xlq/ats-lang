@@ -5,7 +5,7 @@
 ** contributed by Hongwei Xi (hwxi AT cs DOT bu DOT edu)
 **
 ** compilation command:
-**   atscc -O3 k-nucleotide3.dats -o k-nucleotide3 -D_ATS_GCATS
+**   atscc -O3 k-nucleotide4.dats -o k-nucleotide4 -D_ATS_GCATS
 *)
 
 (* ****** ****** *)
@@ -18,8 +18,17 @@ staload _(*anonymous*) = "prelude/DATS/list_vt.dats"
 
 (* ****** ****** *)
 
-staload H = "libats/SATS/hashtable_chain.sats"
-staload _(*anon*) = "libats/DATS/hashtable_chain.dats"
+staload H = "libats/SATS/hashtable_linprb.sats"
+staload _(*anon*) = "libats/DATS/hashtable_linprb.dats"
+
+implement
+$H.item_isnot_null<int> (x) = let
+  extern castfn __cast
+    (x: !($H.Opt int) >> opt (int, i <> 0)):<> #[i:int] int i
+  // end of [__cast]
+in
+  __cast (x) <> 0
+end // end of [item_isnot_null]
 
 (* ****** ****** *)
 
@@ -140,7 +149,13 @@ in
       prval () = fpf (pf)
     in
       // nothing
-    end else $H.hashtbl_insert (tbl, sym, 1)
+    end else let
+      var res: int = 1
+      val ans = $H.hashtbl_insert<symbol_t,int> (tbl, sym, res)
+      prval () = opt_clear (res)
+    in
+      // nothing
+    end // end of [val]
   in
     n := n - 1; sym := succ_symbol sym
   end // end of [while]
@@ -267,7 +282,7 @@ implement main (argc, argv) = let
   }
   val eqfn = $extval ($H.eq symbol_t, "0")
   val fhash = $extval ($H.hash symbol_t, "0")
-  val tbl = $H.hashtbl_make_hint (fhash, eqfn, 98317)
+  val tbl = $H.hashtbl_make_hint (fhash, eqfn, 196613)
 in
   write_frequencies (tbl, dna3, n, 1) ; print_newline () ;
   write_frequencies (tbl, dna3, n, 2) ; print_newline () ;
@@ -281,4 +296,4 @@ end (* end of [main] *)
 
 (* ****** ****** *)
 
-(* end of [k-nucleotide3.dats] *)
+(* end of [k-nucleotide4.dats] *)
