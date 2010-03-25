@@ -153,60 +153,6 @@ funmap_search
 
 (* ****** ****** *)
 
-#if (HTDF == 1) #then
-
-(*
-** left rotation for restoring height invariant
-*)
-fn{key,itm:t@ype}
-avltree_lrotate {hl,hr:nat | hl+2 == hr} (
-    k: key, x: itm
-  , hl: int hl
-  , tl: avltree (key, itm, hl)
-  , hr: int hr
-  , tr: avltree (key, itm, hr)
-  ) :<> avltree_inc (key, itm, hr) = let
-  val+ B {..} {hrl,hrr} (_(*hr*), kr, xr, trl, trr) = tr
-  val hrl = avltree_height trl : int hrl
-  and hrr = avltree_height trr : int hrr
-in
-  if hrl <= hrr then begin // hr = 1+hrr
-    B (hrl+2, kr, xr, B (hrl+1, k, x, tl, trl), trr)
-  end else let // [hrl > hrr]: deep rotation
-    val+ B (_(*hrl*), krl, xrl, trll, trlr) = trl
-  in
-    B (hr, krl, xrl, B (hrl, k, x, tl, trll), B (hrl, kr, xr, trlr, trr))
-  end // end of [if]
-end // end of [avltree_lrotate]
-
-(*
-** right rotation for restoring height invariant
-*)
-fn{key,itm:t@ype}
-avltree_rrotate {hl,hr:nat | hl == hr+2} (
-    k: key, x: itm
-  , hl: int hl
-  , tl: avltree (key, itm, hl)
-  , hr: int hr
-  , tr: avltree (key, itm, hr)
-  ) :<> avltree_inc (key, itm, hl) = let
-  val+ B {..} {hll, hlr} (_(*hl*), kl, xl, tll, tlr) = tl
-  val hll = avltree_height tll : int hll
-  and hlr = avltree_height tlr : int hlr
-in
-  if hll >= hlr then begin // hl = 1+hll
-    B (hlr+2, kl, xl, tll, B (hlr+1, k, x, tlr, tr))
-  end else let // [hll < hlr]: deep rotation
-    val+ B (_(*hlr*), klr, xlr, tlrl, tlrr) = tlr
-  in
-    B (hl, klr, xlr, B (hlr, kl, xl, tll, tlrl), B (hlr, k, x, tlrr, tr))
-  end // end of [if]
-end // end of [avltree_rrotate]
-
-#endif // end of [HTDF == 1]
-
-(* ****** ****** *)
-
 (*
 ** left rotation for restoring height invariant
 *)
