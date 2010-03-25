@@ -99,9 +99,13 @@ fun{key,itm:t@ype} funmap_insert_clo (
 
 (* ****** ****** *)
 
-fun{key,itm:t@ype} funmap_remove (
+fun{key,itm:t@ype} funmap_takeout (
   m: map (key, itm), k0: key, cmp: cmp key, res: &itm? >> opt (itm, b), b: &bool? >> bool b
 ) :<> #[b:bool] map (key, itm)
+// end of [funmap_takeout]
+
+fun{key,itm:t@ype} funmap_remove
+  (m: map (key, itm), k0: key, cmp: cmp key):<> map (key, itm)
 // end of [funmap_remove]
 
 (* ****** ****** *)

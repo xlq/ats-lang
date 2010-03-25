@@ -312,18 +312,34 @@ in
   | E () => (k0 := k; x0 := x; tr)
 end // end of [avltree_takeout_min]
 
+(* ****** ****** *)
+
+//
+// HX-2010-03-25: unsafe but convenient to implement
+//
+extern
+fun{key,itm:t@ype}
+funmap_takeout_ptr {l_res,l_b:addr} (
+  m: map (key, itm), k0: key, cmp: cmp key, res: ptr l_res, b: ptr l_b
+) :<> map (key, itm)
+// end of [funmap_takeout]
+
 implement{key,itm}
-funmap_remove (m, k0, cmp, res, b) = remove (m, res, b) where {
-  fun remove {h:nat} .<h>. (
-      t: avltree (key, itm, h), res: &itm? >> opt (itm, b), b: &bool? >> bool b
-    ) :<cloref> #[b:bool] avltree_dec (key, itm, h) = begin
+funmap_takeout_ptr
+  {l_res,l_b}
+  (m, k0, cmp, p_res, p_b) =
+  takeout (m, p_res, p_b) where {
+  fun takeout {h:nat} .<h>. (
+      t: avltree (key, itm, h)
+    , p_res: ptr l_res, p_b: ptr l_b
+    ) :<cloref> avltree_dec (key, itm, h) = begin
     case+ t of
     | B {..} {hl,hr} (h, k, x, tl, tr) => let
         val sgn = compare_key_key (k0, k, cmp)
       in
         case+ 0 of
         | _ when sgn < 0 => let
-            val [hl:int] tl = remove (tl, res, b)
+            val [hl:int] tl = takeout (tl, p_res, p_b)
             val hl = avltree_height (tl) : int hl
             and hr = avltree_height (tr) : int hr
           in
@@ -334,7 +350,7 @@ funmap_remove (m, k0, cmp, res, b) = remove (m, res, b) where {
             end // end of [if]
           end // end of [sgn < 0]
         | _ when sgn > 0 => let
-            val [hr:int] tr = remove (tr, res, b)
+            val [hr:int] tr = takeout (tr, p_res, p_b)
             val hl = avltree_height (tl) : int hl
             and hr = avltree_height (tr) : int hr
           in
@@ -345,9 +361,24 @@ funmap_remove (m, k0, cmp, res, b) = remove (m, res, b) where {
             end // end of [if]
           end // end of [sgn > 0]
         | _ (*sgn = 0*) => let
-            val () = res := x
-            prval () = opt_some (res)
-            val () = b := true
+            val () = if (p_res <> null) then let
+              prval (pf, fpf) = __assert () where {
+                extern prfun __assert (): (itm? @ l_res, itm @ l_res -<> void)
+              }
+              val () = !p_res := x
+              prval () = fpf (pf)
+            in
+              // nothing
+            end // end of [val]
+            val () = if (p_b <> null) then let
+              prval (pf, fpf) = __assert () where {
+                extern prfun __assert (): (bool? @ l_b, bool @ l_b -<> void)
+              }
+              val () = !p_b := true
+              prval () = fpf (pf)
+            in
+              // nothing
+            end // end of [val]
           in
             case+ tr of
             | B _ => let
@@ -357,18 +388,46 @@ funmap_remove (m, k0, cmp, res, b) = remove (m, res, b) where {
                 and hr = avltree_height (tr) : int hr
               in
                 if hl - hr <= HTDF then begin
-                  B (1+max(hl,hr), k, x, tl, tr)
+                  B (1+max(hl,hr), k_min, x_min, tl, tr)
                 end else begin // hl=hr+HTDF1
-                  avltree_rrotate (k, x, hl, tl, hr, tr)
+                  avltree_rrotate (k_min, x_min, hl, tl, hr, tr)
                 end // end of [if]
               end // end of [B]
             | E _ => tl
           end // end of [sgn = 0]
       end // end of [B]
-    | E () => let
-        prval () = opt_none {itm} (res); val () = b := false in t
-      end // end of [E]
-  end // end of [remove]
+    | E () => t where {
+        val () = if (p_b <> null) then let
+          prval (pf, fpf) = __assert () where {
+            extern prfun __assert (): (bool? @ l_b, bool @ l_b -<> void)
+          }
+          val () = !p_b := false
+          prval () = fpf (pf)
+        in
+          // nothing
+        end // end of [E]
+      } // end of [E]
+  end // end of [takeout]
+} // end of [funmap_takeout_ptr]
+
+(* ****** ****** *)
+
+implement{key,itm}
+funmap_takeout
+  (m, k0, cmp, res, b) = m where {
+  val m = funmap_takeout_ptr<key,itm> (m, k0, cmp, &res, &b)
+  prval (pf1, pf2) = __assert (view@ res, view@ b) where {
+    extern prfun __assert {l_res,l_b:addr}
+      (pf1: itm? @ l_res, pf2: bool? @ l_b):<> [b:bool] (opt (itm, b) @ l_res, bool b @ l_b)
+    // end of [__assert]
+  } // end of [prval]
+  prval () = (view@ res := pf1; view@ b := pf2)
+} // end of [funmap_takeout]
+
+implement{key,itm}
+funmap_remove
+  (m, k0, cmp) = m where {
+  val m = funmap_takeout_ptr<key,itm> (m, k0, cmp, null, null)
 } // end of [funmap_remove]
 
 (* ****** ****** *)
