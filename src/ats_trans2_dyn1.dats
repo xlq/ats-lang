@@ -310,9 +310,9 @@ in // in of [let]
         in
           out := @(s2vs, s2ps) :: out;
           aux2 (loc_sap, d2c, sub, s2vpss, s1as, out)
-        end
+        end // end of [cons]
       | nil () => err (loc_sap, d2c)
-      end
+      end // end of [S1VARARGone]
     | S1VARARGall () => aux1 (d2c, sub, s2vpss, out)
     | S1VARARGseq arg => begin case+ s2vpss of
       | cons (s2vps, s2vpss) => let
@@ -323,19 +323,19 @@ in // in of [let]
         in
           out := @(s2vs, s2ps) :: out;
           aux2 (loc_sap, d2c, sub, s2vpss, s1as, out)
-        end
+        end // end of [cons]
       | nil () => err (loc_sap, d2c)
-      end
-    end
+      end // end of [S1VARARGseq]
+    end // end of [cons]
   | nil () => aux1 (d2c, sub, s2vpss, out)
 end // end of [aux2]
 
 in // in of [local]
 
-fn p1at_con_tr
-  (loc_dap: loc_t, loc_sap: loc_t,
-   d2c: d2con_t, s1as: s1vararglst, npf: int, p1ts: p1atlst)
-  : p2at = let
+fn p1at_con_tr (
+    loc_dap: loc_t, loc_sap: loc_t
+  , d2c: d2con_t, s1as: s1vararglst, npf: int, p1ts: p1atlst
+  ) : p2at = let
   val s2vpss = d2con_qua_get d2c
   var out: s2qualst = nil ()
   val s2e = aux2 (loc_sap, d2c, stasub_nil, s2vpss, s1as, out)
@@ -344,7 +344,8 @@ in
   p2at_con (loc_dap, 1(*freeknd*), d2c, out, s2e, npf, p2ts)
 end // end of [p1at_con_tr]
 
-implement p1at_con_instantiate (loc_sap, d2c) = let
+implement
+p1at_con_instantiate (loc_sap, d2c) = let
   var out: s2qualst = nil (); val s2e = begin
     aux2 (loc_sap, d2c, stasub_nil, d2con_qua_get d2c, nil (), out)
   end // end of [val]
@@ -366,7 +367,7 @@ fn p1at_qid_app_dyn_tr (
   , npf: int
   , p1ts: p1atlst
   ) : p2at = let
-
+//
   fn err1 (
       loc_id: loc_t, q: $Syn.d0ynq, id: sym_t
     ) : d2conlst = begin
@@ -378,7 +379,7 @@ fn p1at_qid_app_dyn_tr (
     prerr_newline ();
     $Err.abort {d2conlst} ()     
   end // end of [err1]
-
+//
   fn err2 (
       loc_id: loc_t, q: $Syn.d0ynq, id: sym_t
     ) : d2conlst = begin
@@ -390,7 +391,7 @@ fn p1at_qid_app_dyn_tr (
     prerr_newline ();
     $Err.abort {d2conlst} ()
   end // end of [err2]
-
+//
   val d2cs = let
     val ans = the_d2expenv_find_qua (q, id) in case+ ans of
     | ~Some_vt d2i => begin case+ d2i of

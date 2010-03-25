@@ -352,14 +352,14 @@ implement s2exp_equal_solve_err (loc0, s2e10, s2e20, err) = let
   | (_, S2EVar s2V2) => begin
       s2exp_equal_solve_Var_err (loc0, s2V2, s2e20, s2e10, err)
     end // end of [_, S2EVar]
-// (*
+(*
   | (S2Enamed (_(*name*), s2e1), _) =>
       s2exp_equal_solve_err (loc0, s2e1, s2e20, err)
     // end of [S2Enamed, _]  
   | (_, S2Enamed (_(*name*), s2e2)) =>
       s2exp_equal_solve_err (loc0, s2e10, s2e2, err)
     // end of [_, S2Enamed]  
-// *)
+*)
   | (S2Ecrypt s2e1, s2en20) => begin case+ s2en20 of
     | S2Ecrypt s2e2 => s2exp_equal_solve_err (loc0, s2e1, s2e2, err)
     | _ => (err := err + 1)
@@ -550,12 +550,12 @@ implement
   | (_, S2EVar s2V2) => begin
       s2exp_tyleq_solve_Var_r_err (loc0, s2e10, s2V2, s2e20, err)
     end // end of [_, S2EVar]
-// (*
+(*
   | (S2Enamed (_(*name*), s2e1), _) =>
       s2exp_tyleq_solve_err (loc0, s2e1, s2e20, err)
   | (_, S2Enamed (_(*name*), s2e2)) =>
       s2exp_tyleq_solve_err (loc0, s2e10, s2e2, err)
-// *)
+*)
   | (s2en10, S2Etop (knd2, s2e2)) => begin case+ knd2 of
     | 0 (* topization *) => begin
         if s2exp_is_nonlin s2e10 then begin
@@ -1018,12 +1018,12 @@ in
       end // end of [if]
     end // end of [0, S2CSTLSTnil, list_nil]
   | (_, _, _) => let
-// (*
+(*
       val () = begin
         print "s2exp_equal_solve_Var_err: s2e1 = "; print s2e1; print_newline ();
         print "s2exp_equal_solve_Var_err: s2e2 = "; print s2e2; print_newline ();
       end // end of [val]
-// *)
+*)
     in
       trans3_env_add_eqeq (loc0, s2e1, s2e2)
     end // end of (_, _, _)
@@ -1060,12 +1060,12 @@ in
       s2Var_ubs_set (s2V1, list_cons (ub, ubs))
     end // end of [0, S2CSTLSTnil, list_nil]
   | (_, _, _) => let
-// (*
+(*
       val () = begin
         print "s2exp_tyleq_solve_Var_l_err: s2e1 = "; print s2e1; print_newline ();
         print "s2exp_tyleq_solve_Var_l_err: s2e2 = "; print s2e2; print_newline ();
       end // end of [val]
-// *)
+*)
     in
       trans3_env_add_tyleq (loc0, s2e1, s2e2)
     end // end of [_, _, _]
@@ -1100,12 +1100,12 @@ in
       s2Var_lbs_set (s2V2, list_cons (lb, lbs))
     end
   | (_, _, _) => let
-// (*
+(*
       val () = begin
         print "s2exp_tyleq_solve_Var_r_err: s2e1 = "; print s2e1; print_newline ();
         print "s2exp_tyleq_solve_Var_r_err: s2e2 = "; print s2e2; print_newline ();
       end // end of [val]
-// *)
+*)
     in
       trans3_env_add_tyleq (loc0, s2e1, s2e2)
     end

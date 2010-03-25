@@ -31,8 +31,8 @@
 
 (* ****** ****** *)
 
-// Time: October 2007
 // Author: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
+// Time: October 2007
 
 (* ****** ****** *)
 
@@ -60,7 +60,7 @@ typedef s2var_struct = struct {
 , s2var_tmplev= int // the template level
 , s2var_sVarset= s2Varset_t // existential variable occurrences
 , s2var_stamp= stamp_t // uniqueness
-}
+} // end of [s2var_struct]
 
 local
 
@@ -68,19 +68,17 @@ assume s2var_t = [l:addr] (vbox (s2var_struct @ l) | ptr l)
 
 val s2var_name_counter = $Cnt.counter_make ()
 
-fn s2var_name_make (): sym_t =
-  let
-    val n = $Cnt.counter_get_and_inc s2var_name_counter
-  in
-    $Sym.symbol_make_string ($Cnt.tostring_prefix ("$", n))
-  end
+fn s2var_name_make (): sym_t = let
+  val n = $Cnt.counter_get_and_inc s2var_name_counter
+in
+  $Sym.symbol_make_string ($Cnt.tostring_prefix ("$", n))
+end // end of [s2var_name_make]
 
-fn s2var_name_make_prefix (pre: string): sym_t =
-  let
-    val n = $Cnt.counter_get_and_inc s2var_name_counter
-  in
-    $Sym.symbol_make_string (pre + $Cnt.tostring_prefix ("$", n))
-  end
+fn s2var_name_make_prefix (pre: string): sym_t = let
+  val n = $Cnt.counter_get_and_inc s2var_name_counter
+in
+  $Sym.symbol_make_string (pre + $Cnt.tostring_prefix ("$", n))
+end // end of [s2var_name_make_prefix]
 
 in // in of [local]
 
@@ -250,11 +248,11 @@ end // end of [local] (for assuming s2var_t)
 
 implement fprint_s2var (pf_out | out, s2v) = let
   val () = $Sym.fprint_symbol (pf_out | out, s2var_sym_get s2v)
-(*
+// (*
   val () = fprint_string (pf_out | out, "(")
   val () = $Stamp.fprint_stamp (pf_out | out, s2var_stamp_get s2v)
   val () = fprint_string (pf_out | out, ")")
-*)
+// *)
 in
   // empty
 end // end of [fprint_s2var]

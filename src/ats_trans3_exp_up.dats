@@ -1501,7 +1501,7 @@ fn d2exp_arg_body_tr_up (
   val () = if cmplt = 0 then begin
     trans3_env_add_p2atcstlstlst_false (loc0, 1(*casknd*), p2tcss, s2es_arg)
   end // end of [val]
-
+//
   val p3ts_arg = p2atlst_arg_tr_up (npf, p2ts_arg)
   val (pf_lamloop | ()) = the_lamloop_env_push_lam (p3ts_arg)
   val d3e_body = d2exp_tr_up d2e_body
@@ -1511,7 +1511,7 @@ fn d2exp_arg_body_tr_up (
   val () = the_d2varset_env_pop_lam (pf_d2varset | (*none*))
   val () = the_effect_env_pop (pf_effect | (*none*))
   val () = trans3_env_pop_sta_and_add_none (loc0)
-
+//
   val s2e_res = d3e_body.d3exp_typ
   val isprf = s2exp_is_proof s2e_res
   val s2t_fun = s2rt_prf_lin_fc (loc0, isprf, lin > 0, fc)
@@ -1887,7 +1887,9 @@ end (* end of [d2exp_tmpid_tr_up] *)
 extern fun d2exp_viewat_tr_up
   (loc0: loc_t, d2e0: d2exp): d3exp
 
-implement d2exp_viewat_tr_up (loc0, d2e0) = let
+implement
+d2exp_viewat_tr_up
+  (loc0, d2e0) = let
   val l2v0 = l2val_make_d2exp d2e0
 in
   case+ l2v0 of
@@ -1954,7 +1956,9 @@ end (* end of [d2exp_viewat_tr_up] *)
 (* ****** ****** *)
 
 // the function is declared above
-implement d2exp_viewat_assgn_tr_up (loc0, d2e_l, d2e_r) = let
+implement
+d2exp_viewat_assgn_tr_up
+  (loc0, d2e_l, d2e_r) = let
   val l2v = l2val_make_d2exp d2e_l
 in
   case+ l2v of
@@ -2069,6 +2073,11 @@ val d3e0 = (case+ d2e0.d2exp_node of
         val d2e0 =
           $MAC.macro_eval_app_short (loc0, d2m, d2as_arg)
         // end of [val]
+(*
+        val () = begin
+          print "d2exp_tr_up: D2Eapps: D2Emac: d2e0 = "; print_d2exp d2e0; print_newline ()
+        end // end of [val]
+*)
       in
         d2exp_tr_up d2e0
       end // end of [D2Emac]

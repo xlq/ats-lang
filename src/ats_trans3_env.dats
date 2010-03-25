@@ -42,7 +42,7 @@
 
 %{^
 #include "ats_counter.cats" /* only needed for [ATS/Geizella] */
-%}
+%} // end of [%{^]
 
 (* ****** ****** *)
 
@@ -100,27 +100,31 @@ end // end of [prerr_loc_interror]
 
 (* ****** ****** *)
 
-implement c3str_prop (loc, s2e) = '{
+implement
+c3str_prop (loc, s2e) = '{
   c3str_loc= loc
 , c3str_kind= C3STRKINDnone
 , c3str_node= C3STRprop s2e
 } // end of [c3str_prop]
 
-implement c3str_itmlst (loc, knd, s3is) = '{
+implement
+c3str_itmlst (loc, knd, s3is) = '{
   c3str_loc= loc
 , c3str_kind= knd
 , c3str_node= C3STRitmlst s3is
 } // end of [c3str_itmlst]
 
-implement c3str_metric_nat (loc, s2e) = '{
+implement
+c3str_metric_nat (loc, s2e) = '{
   c3str_loc= loc
 , c3str_kind= C3STRKINDmetric_nat
 , c3str_node= begin
     C3STRprop (s2exp_gte_int_int_bool (s2e, s2exp_int_0))
-  end
+  end // end of [c3str_node]
 }
 
-implement c3str_metric_dec (loc, met, met_bound) = '{
+implement
+c3str_metric_dec (loc, met, met_bound) = '{
   c3str_loc= loc
 , c3str_kind= C3STRKINDmetric_dec
 , c3str_node= C3STRprop (s2exp_metlt (met, met_bound))
@@ -135,23 +139,27 @@ implement
 
 //
 
-implement h3ypo_prop (loc, s2p) = '{
+implement
+h3ypo_prop (loc, s2p) = '{
   h3ypo_loc= loc, h3ypo_node = H3YPOprop s2p
-}
+} // end of [h3ypo_prop]
 
-implement h3ypo_bind (loc, s2v1, s2e2) = '{
+implement
+h3ypo_bind (loc, s2v1, s2e2) = '{
   h3ypo_loc= loc, h3ypo_node = H3YPObind (s2v1, s2e2)
-}
+} // end of [h3ypo_bind]
 
-implement h3ypo_eqeq (loc, s2e1, s2e2) = '{
+implement
+h3ypo_eqeq (loc, s2e1, s2e2) = '{
   h3ypo_loc= loc, h3ypo_node = H3YPOeqeq (s2e1, s2e2)
-}
+} // end of [h3ypo_eqeq]
 
 (* ****** ****** *)
 
 local
 
-viewtypedef s2varbindmap = $Map.map_vt (stamp_t, s2exp)
+viewtypedef
+s2varbindmap = $Map.map_vt (stamp_t, s2exp)
 
 val s2varbind_svs: ref (s2varlst) = ref_make_elt (list_nil ())
 val s2varbind_svs_lst: ref (List s2varlst) = ref_make_elt (list_nil ())
@@ -169,7 +177,8 @@ fn the_s2varbindmap_initialize () = let
   $Map.map_clean<stamp_t, s2exp> (!p)
 end // end of [the_s2varbindmap_initialize]
 
-implement fprint_the_s2varbindmap {m} (pfout | out) = let
+implement
+fprint_the_s2varbindmap {m} (pfout | out) = let
   val kis = $Map.map_list_inf (!p) where {
     val (vbox pf | p) = ref_get_view_ptr (the_s2varbindmap)
   }
@@ -187,14 +196,16 @@ in
   loop (out, kis)
 end // end of [fprint_the_s2varbindmap]
 
-implement print_the_s2varbindmap () = let
+implement
+print_the_s2varbindmap () = let
   val (pf_stdout | ptr_stdout) = stdout_get ()
   val () = fprint_the_s2varbindmap (file_mode_lte_w_w | !ptr_stdout)
 in
   stdout_view_set (pf_stdout | (*none*))
 end // end of [print_the_s2varbindmap]
 
-implement prerr_the_s2varbindmap () = let
+implement
+prerr_the_s2varbindmap () = let
   val (pf_stderr | ptr_stderr) = stderr_get ()
   val () = fprint_the_s2varbindmap (file_mode_lte_w_w | !ptr_stderr)
 in
@@ -203,7 +214,8 @@ end // end of [prerr_the_s2varbindmap]
 
 //
 
-implement the_s2varbindmap_add (s2v, s2e) = let
+implement
+the_s2varbindmap_add (s2v, s2e) = let
   val stamp = s2var_stamp_get (s2v)
 (*
   val () = begin
@@ -232,7 +244,8 @@ in
   !s2varbind_svs := list_cons (s2v, !s2varbind_svs)
 end // end of [the_s2varbindmap_add]
 
-implement the_s2varbindmap_find (s2v) = let
+implement
+the_s2varbindmap_find (s2v) = let
 (*
   val () = begin
     print "the_s2varbindmap_find: s2v = "; print s2v; print_newline ()
@@ -244,7 +257,8 @@ in
   $Map.map_search (!p, stamp)
 end // end of [the_s2varbindmap_find]
 
-implement the_s2varbindmap_pop () = let
+implement
+the_s2varbindmap_pop () = let
 (*
   val () = begin
     print "the_s2varbindmap_pop: the_s2varbindmap =\n"; print_the_s2varbindmap ()
@@ -284,7 +298,8 @@ in
     end // end of [list_nil]
 end // end of [s2varbindmap_pop]
 
-implement the_s2varbindmap_push () = let
+implement
+the_s2varbindmap_push () = let
   val s2vs = !s2varbind_svs
 in
   !s2varbind_svs := list_nil ();
@@ -304,13 +319,16 @@ val the_s2Varsetlst = ref_make_elt<s2Varsetlst> (list_vt_nil ())
 
 in
 
-implement the_s2Varset_env_add (s2V) = begin
+implement
+the_s2Varset_env_add (s2V) = begin
   !the_s2Varset := s2Varset_add (!the_s2Varset, s2V)
 end
 
-implement the_s2Varset_env_get () = !the_s2Varset
+implement
+the_s2Varset_env_get () = !the_s2Varset
 
-implement the_s2Varset_env_get_prev () = let
+implement
+the_s2Varset_env_get_prev () = let
   val (vbox pf | p) = ref_get_view_ptr (the_s2Varsetlst)
 in
   case+ !p of
@@ -318,7 +336,8 @@ in
   | list_vt_nil () => (fold@ (!p); s2Varset_nil)
 end // end of [the_s2Varset_env_get_prev]
 
-implement the_s2Varset_env_pop () = let
+implement
+the_s2Varset_env_pop () = let
   var err: int = 0
   val () = let
     val (vbox pf | p) = ref_get_view_ptr (the_s2Varsetlst)
@@ -336,7 +355,8 @@ in
   end // endof [if]
 end // end of [the_s2Varset_env_pop]
 
-implement the_s2Varset_env_push () = let
+implement
+the_s2Varset_env_push () = let
   val (vbox pf | p) = ref_get_view_ptr the_s2Varsetlst
 in
   !p := list_vt_cons ($effmask_ref (!the_s2Varset), !p)
@@ -447,6 +467,7 @@ datatype ld2vsitem = // local dynamic variables
   | LD2VSITEMlam // marker for nonlinear lambda
   | LD2VSITEMllam of ref (d2varlst) // marker for linear lambda
   | LD2VSITEMset of d2varset_t // local dynamic variable set
+// end of [ld2vsitem]
 
 typedef ld2vsitemlst = List ld2vsitem
 
@@ -455,21 +476,25 @@ val the_ld2vsitems = ref_make_elt<ld2vsitemlst> (list_nil ())
 
 in
 
-implement the_d2varset_env_add (d2v) = begin
+implement
+the_d2varset_env_add (d2v) = begin
   !the_ld2vs := d2varset_add (!the_ld2vs, d2v)
 end // end of [the_d2varset_env_add]
 
-implement the_d2varset_env_adds (d2vs) = begin
+implement
+the_d2varset_env_adds (d2vs) = begin
   !the_ld2vs := d2varset_adds (!the_ld2vs, d2vs)
 end // end of [the_d2varset_env_adds]
 
-implement the_d2varset_env_add_p2at (p2t) = let
+implement
+the_d2varset_env_add_p2at (p2t) = let
   val d2vs = d2varlst_of_d2varlstord (p2t.p2at_dvs)
 in
   !the_ld2vs := d2varset_adds (!the_ld2vs, d2vs)
 end // end of [the_d2varset_env_add_p2at]
 
-implement the_d2varset_env_add_p2atlst (p2ts) = case+ p2ts of
+implement
+the_d2varset_env_add_p2atlst (p2ts) = case+ p2ts of
   | list_cons (p2t, p2ts) => begin
       the_d2varset_env_add_p2at p2t; the_d2varset_env_add_p2atlst p2ts
     end // end of [list_cons]
@@ -478,8 +503,10 @@ implement the_d2varset_env_add_p2atlst (p2ts) = case+ p2ts of
 
 //
 
-implement the_d2varset_env_print_ld2vs () = print (!the_ld2vs)
-implement the_d2varset_env_prerr_ld2vs () = prerr (!the_ld2vs)
+implement
+the_d2varset_env_print_ld2vs () = print (!the_ld2vs)
+implement
+the_d2varset_env_prerr_ld2vs () = prerr (!the_ld2vs)
 
 fn the_d2varset_env_get_llam_ld2vs
   (loc0: loc_t): d2varlst = begin case+ !the_ld2vsitems of
@@ -493,7 +520,8 @@ end // end of [the_d2varset_env_get_llam_ld2vs]
 
 //
 
-implement the_d2varset_env_pop_lam (pf | (*none*)) = let
+implement
+the_d2varset_env_pop_lam (pf | (*none*)) = let
   prval unit_v () = pf; var err: int = 0
   var ld2vsitems_var: ld2vsitemlst = list_nil
   val () = case+ !the_ld2vsitems of
@@ -521,21 +549,24 @@ in
   end
 end // end of [the_d2varset_env_pop_lam]
 
-implement the_d2varset_env_push_lam (lin) = let
-  val marker: ld2vsitem =
+implement
+the_d2varset_env_push_lam (lin) = let
+  val marker = (
     if lin > 0 then
       (LD2VSITEMllam (ref_make_elt<d2varlst> (list_nil)))
     else LD2VSITEMlam ()
+  ) : ld2vsitem // end of [val]
+  val () = !the_ld2vsitems :=
+     list_cons (marker, list_cons (LD2VSITEMset !the_ld2vs, !the_ld2vsitems))
+  val () = !the_ld2vs := d2varset_nil
 in
-  !the_ld2vsitems :=
-     list_cons (marker, list_cons (LD2VSITEMset !the_ld2vs, !the_ld2vsitems));
-  !the_ld2vs := d2varset_nil;
   (unit_v () | ())
 end // end of [the_d2varset_env_push_lam]
 
-implement the_d2varset_env_pop_let (pf | (*none*)) = let
+implement
+the_d2varset_env_pop_let (pf | (*none*)) = let
   prval unit_v () = pf; var err: int = 0
-  val () = case+ !the_ld2vsitems of
+  val () = (case+ !the_ld2vsitems of
     | list_cons (ld2vsitem, ld2vsitems) => begin
       case+ ld2vsitem of
       | LD2VSITEMset ld2vs => begin
@@ -544,6 +575,7 @@ implement the_d2varset_env_pop_let (pf | (*none*)) = let
       | _ => (err := 1)
       end // end of [list_cons]
     | list_nil () => (err := 1)
+  ) : void // end of [val]
 in
   if err > 0 then begin
     prerr_interror ();
@@ -552,26 +584,31 @@ in
   end // end of [if]
 end // end of [the_d2varset_env_pop_let]
 
-implement the_d2varset_env_push_let () = begin
-  !the_ld2vsitems :=
-    list_cons (LD2VSITEMset (!the_ld2vs), !the_ld2vsitems);
-  !the_ld2vs := d2varset_nil;
+implement
+the_d2varset_env_push_let () = let
+  val () = !the_ld2vsitems :=
+    list_cons (LD2VSITEMset (!the_ld2vs), !the_ld2vsitems)
+  val () = !the_ld2vs := d2varset_nil // it is not a constructor
+in
   (unit_v () | ())
 end // end of [the_d2varset_env_push_let]
 
 //
 
-implement the_d2varset_env_pop_try (pf | (*none*)) = begin
+implement
+the_d2varset_env_pop_try (pf | (*none*)) = begin
   the_d2varset_env_pop_lam (pf | (*none*))
 end // end of [the_d2varset_env_pop_try]
 
-implement the_d2varset_env_push_try () = begin
+implement
+the_d2varset_env_push_try () = begin
   the_d2varset_env_push_lam (0(*lin*))
 end // end of [the_d2varset_env_push_try]
 
 //
 
-implement the_d2varset_env_d2var_is_lam_local (d2v) = let
+implement
+the_d2varset_env_d2var_is_lam_local (d2v) = let
   fun aux (itms: ld2vsitemlst, d2v: d2var_t): bool = begin
     case+ itms of
     | list_cons (itm, itms) => begin case+ itm of
@@ -579,30 +616,31 @@ implement the_d2varset_env_d2var_is_lam_local (d2v) = let
       | LD2VSITEMllam _ => false
       | LD2VSITEMset dvs => begin
           if d2varset_ismem (dvs, d2v) then true else aux (itms, d2v)
-        end
-      end
+        end // end of [LD2VSITEMset]
+      end // end of [list_cons]
     | list_nil () => begin
         prerr_interror ();
         prerr ": d2var_is_lam_local: aux: d2v = "; prerr d2v; prerr_newline ();
         $Err.abort {bool} ()
-      end
+      end // end of [list_nil]
   end // end of [aux]
   val ans: bool = d2varset_ismem (!the_ld2vs, d2v)
 in
   if ans then true else aux (!the_ld2vsitems, d2v)
 end // end of [the_d2varset_env_d2var_is_lam_local]
 
-implement the_d2varset_env_d2var_is_llam_local (d2v) = let
+implement
+the_d2varset_env_d2var_is_llam_local (d2v) = let
   fun aux (itms: ld2vsitemlst, d2v: d2var_t): bool = begin
     case+ itms of
     | list_cons (itm, itms) => begin case+ itm of
       | LD2VSITEMlam () => false
       | LD2VSITEMllam r => begin
           !r := list_cons (d2v, !r); aux (itms, d2v)
-        end
+        end // end of [LD2VSITEMllam]
       | LD2VSITEMset dvs => begin
           if d2varset_ismem (dvs, d2v) then true else aux (itms, d2v)
-        end
+        end // end of [LD2VSITEMset]
       end // end of [list_cons]
     | list_nil () => begin
         prerr_interror ();
@@ -630,7 +668,8 @@ end // end of [the_d2varset_env_d2var_is_llam_local]
 
 //
 
-implement the_d2varset_env_check (loc0) = let
+implement
+the_d2varset_env_check (loc0) = let
 (*
   val () = begin
     print "the_d2varset_env_check: enter"; print_newline ()
@@ -641,7 +680,8 @@ in
     (!the_ld2vs, lam (d2v) => d2var_fin_check (loc0, d2v))
 end // end of [the_d2varset_env_check]
 
-implement the_d2varset_env_check_llam (loc0) = let
+implement
+the_d2varset_env_check_llam (loc0) = let
   fn auxCK (d2v: d2var_t):<cloptr1> void = begin
     case+ d2var_typ_get (d2v) of
     | Some s2e => begin
@@ -667,7 +707,8 @@ end // end of [the_d2varset_env_check_llam]
 
 (* ****** ****** *)
 
-implement the_d2varset_env_find_view (s2e0) = let
+implement
+the_d2varset_env_find_view (s2e0) = let
   exception NotFound // local exception
   exception Found of d2var_t // local exception
   typedef env_t = s2exp; val env = s2e0 // closure environment
@@ -708,7 +749,8 @@ in
   // end of [try]
 end // end of [the_d2varset_env_find_view]
 
-implement the_d2varset_env_find_viewat (s2r0, s2ls0) = let
+implement
+the_d2varset_env_find_viewat (s2r0, s2ls0) = let
   exception NotFound // local exception
   exception Found of d2varset_env_find_viewat_t // local exception
   dataviewtype env_vt = ENVcon of (s2exp, s2lablst)
@@ -772,7 +814,8 @@ end // end of [the_d2varset_env_find_viewat]
 
 (* ****** ****** *)
 
-implement the_d2varset_env_stbefitemlst_save () = let
+implement
+the_d2varset_env_stbefitemlst_save () = let
   var sbis: stbefitemlst = list_nil ()
   typedef sbisptr = ptr sbis
   viewdef V = stbefitemlst @ sbis
@@ -818,20 +861,23 @@ val the_s3itemlstlst = ref_make_elt<s3itemlstlst_vt> (list_vt_nil ())
 
 in
 
-implement trans3_env_s3itemlst_copy () = let
+implement
+trans3_env_s3itemlst_copy () = let
   val (vbox pf | p) = ref_get_view_ptr (the_s3itemlst)
 in
   $Lst.list_vt_copy__boxed (!p)
 end // end of [trans3_Env_s3itemlst_copy]
 
-implement trans3_env_s3itemlst_get () = let
+implement
+trans3_env_s3itemlst_get () = let
   val (vbox pf | p) = ref_get_view_ptr (the_s3itemlst)
   val s3is = !p; val () = !p := list_vt_nil ()
 in
   s3is
 end // end of [trans3_env_s3itemlst_get]
 
-implement trans3_env_s3itemlst_set (s3is) = let
+implement
+trans3_env_s3itemlst_set (s3is) = let
   val (vbox pf | p) = ref_get_view_ptr (the_s3itemlst)
 in
   case+ !p of
@@ -839,13 +885,15 @@ in
   | list_vt_cons _ => (fold@ (!p); Some_vt s3is)
 end // end of [trans3_env_s3itemlst_set]
 
-implement trans3_env_add_svar (s2v) = let
+implement
+trans3_env_add_svar (s2v) = let
   val (vbox pf | p) = ref_get_view_ptr (the_s3itemlst)
 in
   !p := list_vt_cons (S3ITEMsvar s2v, !p)
 end // end of [trans3_env_add_svar]
 
-implement trans3_env_add_svarlst (s2vs) = let
+implement
+trans3_env_add_svarlst (s2vs) = let
   fun aux {n:nat} .<n>.
     (s3is: s3itemlst_vt, s2vs: list (s2var_t, n)):<> s3itemlst_vt =
     case+ s2vs of
@@ -858,21 +906,23 @@ end // end of [trans3_env_add_svarlst]
 
 (* ****** ****** *)
 
-implement trans3_env_add_sVar (s2V) = let
+implement
+trans3_env_add_sVar (s2V) = let
   val () = the_s2Varset_env_add (s2V)
   val (vbox pf | p) = ref_get_view_ptr the_s3itemlst
 in
  !p := list_vt_cons (S3ITEMsVar s2V, !p)
 end // end of [trans3_env_add_sVar]
 
-implement trans3_env_add_sVarlst (s2Vs) = let
+implement
+trans3_env_add_sVarlst (s2Vs) = let
   fun aux {n:nat} .<n>.
     (s3is: s3itemlst_vt, s2Vs: list (s2Var_t, n))
     :<> s3itemlst_vt = begin case+ s2Vs of
     | list_cons (s2V, s2Vs) => begin
         $effmask_all (the_s2Varset_env_add s2V);
         aux (list_vt_cons (S3ITEMsVar s2V, s3is), s2Vs)
-      end
+      end // end of [val]
     | list_nil () => s3is
   end // end of [aux]
   val (vbox pf | p) = ref_get_view_ptr the_s3itemlst
@@ -882,13 +932,15 @@ end // end of [trans3_env_add_sVarlst]
 
 (* ****** ****** *)
 
-implement trans3_env_add_cstr (c3t) = let
+implement
+trans3_env_add_cstr (c3t) = let
   val (vbox pf | p) = ref_get_view_ptr the_s3itemlst
 in
   !p := list_vt_cons (S3ITEMcstr c3t, !p)
-end
+end // end of [trans3_env_add_cstr]
 
-implement trans3_env_add_cstr_ref (r) = let
+implement
+trans3_env_add_cstr_ref (r) = let
   val (vbox pf | p) = ref_get_view_ptr the_s3itemlst
 in
   !p := list_vt_cons (S3ITEMcstr_ref r, !p)
@@ -896,7 +948,8 @@ end // end of [trans3_env_add_cstr_ref]
 
 //
 
-implement trans3_env_add_prop (loc, s2p) = begin
+implement
+trans3_env_add_prop (loc, s2p) =
   case+ s2p.s2exp_node of
   | S2Etyleq (knd, s2e1, s2e2) when knd > 0 => let
       val () = trans3_env_push_sta ()
@@ -908,9 +961,10 @@ implement trans3_env_add_prop (loc, s2p) = begin
   | _ => begin
       trans3_env_add_cstr (c3str_prop (loc, s2p))
     end // end of [_]
-end // end of [trans3_env_add_prop]
+// end of [trans3_env_add_prop]
 
-implement trans3_env_add_proplst (loc, s2ps) = begin
+implement
+trans3_env_add_proplst (loc, s2ps) =
   case+ s2ps of
   | list_cons (s2p, s2ps) => let
       val () = trans3_env_add_prop (loc, s2p)
@@ -918,9 +972,10 @@ implement trans3_env_add_proplst (loc, s2ps) = begin
       trans3_env_add_proplst (loc, s2ps)
     end // end of [list_cons]
   | list_nil () => ()
-end // end of [trans3_env_add_proplst]
+// end of [trans3_env_add_proplst]
 
-implement trans3_env_add_proplstlst (loc, s2pss) = begin
+implement
+trans3_env_add_proplstlst (loc, s2pss) =
   case+ s2pss of
   | list_cons (s2ps, s2pss) => let
       val () = trans3_env_add_proplst (loc, s2ps)
@@ -928,17 +983,27 @@ implement trans3_env_add_proplstlst (loc, s2pss) = begin
       trans3_env_add_proplstlst (loc, s2pss)
     end // end of [list_cons]
   | list_nil () => ()
-end // end of [trans3_env_add_proplstlst]
+// end of [trans3_env_add_proplstlst]
 
 //
 
-implement trans3_env_add_eqeq (loc, s2e1, s2e2) = let
+implement
+trans3_env_add_eqeq
+  (loc, s2e1, s2e2) = let
+(*
+  val () = begin
+    print "trans3_env_add_eqeq: s2e1 = "; print_s2exp s2e1; print_newline ();
+    print "trans3_env_add_eqeq: s2e2 = "; print_s2exp s2e2; print_newline ();
+  end // end of [val]
+*)
   val s2p = s2exp_eqeq (s2e1, s2e2)
 in
   trans3_env_add_prop (loc, s2p)
 end // end of [trans3_env_add_eqeq]
 
-implement trans3_env_add_tyleq (loc, s2e1, s2e2) = let
+implement
+trans3_env_add_tyleq
+  (loc, s2e1, s2e2) = let
   val s2p = s2exp_tyleq (0, s2e1, s2e2) // already tried
 in
   trans3_env_add_prop (loc, s2p)
@@ -946,7 +1011,8 @@ end // end of [trans3_env_add_tyleq]
 
 (* ****** ****** *)
 
-implement trans3_env_hypo_add_prop (loc, s2p) = let
+implement
+trans3_env_hypo_add_prop (loc, s2p) = let
 (*
   val () = begin
     print "trans3_env_hypo_add_prop: s2p = "; print s2p; print_newline ()
@@ -958,16 +1024,19 @@ in
   !p := list_vt_cons (S3ITEMhypo h3p, !p)
 end // end of [trans3_env_hypo_add_prop]
 
-implement trans3_env_hypo_add_proplst (loc, s2ps) = begin
+implement
+trans3_env_hypo_add_proplst (loc, s2ps) =
   case+ s2ps of
   | list_cons (s2p, s2ps) => begin
       trans3_env_hypo_add_prop (loc, s2p);
       trans3_env_hypo_add_proplst (loc, s2ps)
     end // end of [list_cons]
   | list_nil () => ()
-end // end of [trans3_env_hypo_add_proplst]
+// end of [trans3_env_hypo_add_proplst]
 
-implement trans3_env_hypo_add_bind (loc, s2v1, s2e2) = let
+implement
+trans3_env_hypo_add_bind
+  (loc, s2v1, s2e2) = let
 (*
   val () = begin
     print "trans3_env_hypo_add_bind: s2v1 = "; print s2v1; print_newline ();
@@ -977,17 +1046,20 @@ implement trans3_env_hypo_add_bind (loc, s2v1, s2e2) = let
   val os2e1 = the_s2varbindmap_find (s2v1)
 in
   case+ os2e1 of
-  | ~Some_vt (s2e1) => trans3_env_hypo_add_eqeq (loc, s2e1, s2e2)
+  | ~Some_vt (s2e1) =>
+      trans3_env_hypo_add_eqeq (loc, s2e1, s2e2)
+    // end of [Some_vt]
   | ~None_vt () => let
       val () = the_s2varbindmap_add (s2v1, s2e2)
       val h3p = h3ypo_bind (loc, s2v1, s2e2)
       val (vbox pf | p) = ref_get_view_ptr the_s3itemlst
     in
       !p := list_vt_cons (S3ITEMhypo h3p, !p)
-    end
+    end // end of [None_vt]
 end // end of [trans3_env_hypo_add_bind]
 
-implement trans3_env_hypo_add_eqeq (loc, s2e1, s2e2) = let
+implement
+trans3_env_hypo_add_eqeq (loc, s2e1, s2e2) = let
 (*
   val () = begin
     print "trans3_env_hypo_add_eqeq: s2e1 = "; print s2e1; print_newline ();
@@ -1000,7 +1072,8 @@ in
   !p := list_vt_cons (S3ITEMhypo h3p, !p)
 end // end of [trans3_env_hypo_add_eqeq]
 
-implement trans3_env_hypo_add_s2qualst (loc, s2vpss) = begin
+implement
+trans3_env_hypo_add_s2qualst (loc, s2vpss) = begin
   case+ s2vpss of
   | list_cons (s2vps, s2vpss) => begin
       trans3_env_add_svarlst s2vps.0;
@@ -1019,30 +1092,39 @@ end // end of [trans3_env_hypo_add_p2atcstlstlst]
 
 (* ****** ****** *)
 
-extern fun print_the_s3itemlst (): void
+extern
+fun print_the_s3itemlst (): void
   = "ats_trans3_env_print_the_s3itemlst"
+// end of [print_the_s3itemlst]
 
-implement print_the_s3itemlst () = let
+implement
+print_the_s3itemlst () = let
   val (vbox pf | p) = ref_get_view_ptr the_s3itemlst
 in
   $effmask_ref (print_s3itemlst_vt !p)
 end // end of [print_the_s3itemlst]
 
-extern fun prerr_the_s3itemlstlst (): void
-  = "ats_trans3_env_prerr_the_s3itemlstlst"
+extern
+fun print_the_s3itemlstlst (): void
+  = "ats_trans3_env_print_the_s3itemlstlst"
+// end of [print_the_s3itemlstlst]
   
-implement prerr_the_s3itemlstlst () = let
+implement
+print_the_s3itemlstlst () = let
   val (vbox pf | ps) = ref_get_view_ptr the_s3itemlstlst
 in
-  $effmask_ref (prerr_s3itemlstlst_vt !ps)
-end // end of [prerr_the_s3itemlstlst]
+  $effmask_ref (print_s3itemlstlst_vt !ps)
+end // end of [print_the_s3itemlstlst]
 
 (* ****** ****** *)
 
-extern fun free_the_s3itemlst (): void
+extern
+fun free_the_s3itemlst (): void
   = "ats_trans3_env_free_the_s3itemlst"
+// end of [free_the_s3itemlst]
 
-implement free_the_s3itemlst () = let
+implement
+free_the_s3itemlst () = let
   val (vbox pf | p) = ref_get_view_ptr the_s3itemlst
   val s3is = !p
 in
@@ -1051,7 +1133,8 @@ end // end of [free_the_s3itemlst]
 
 (* ****** ****** *)
 
-implement trans3_env_pop_sta () = let
+implement
+trans3_env_pop_sta () = let
 (*
   val () = $effmask_ref begin
     print "trans3_env_pop_sta: the_s3itemlst = "; print_the_s3itemlst (); print_newline ();
@@ -1081,7 +1164,8 @@ in
   s3is0
 end // end of [trans3_env_pop_sta]
 
-implement trans3_env_pop_sta_and_add (loc, cstrknd) = let
+implement
+trans3_env_pop_sta_and_add (loc, cstrknd) = let
   val s3is0 = trans3_env_pop_sta ()
   val c3t = c3str_itmlst (loc, cstrknd, $Lst.list_vt_reverse_list s3is0)
 (*
@@ -1094,16 +1178,20 @@ in
   !p := list_vt_cons (S3ITEMcstr c3t, !p)
 end // end of [trans3_env_pop_sta_and_add]
 
-implement trans3_env_pop_sta_and_add_none (loc) =
+implement
+trans3_env_pop_sta_and_add_none (loc) =
  trans3_env_pop_sta_and_add (loc, C3STRKINDnone ())
+// end of ...
 
-implement trans3_env_pop_sta_and_free () = let
+implement
+trans3_env_pop_sta_and_free () = let
   val s3is = trans3_env_pop_sta () in $Lst.list_vt_free__boxed (s3is)
 end // end of [trans3_env_pop_sta_and_free]
 
 (* ****** ****** *)
 
-implement trans3_env_push_sta () = let
+implement
+trans3_env_push_sta () = let
 (*
   val () = begin
     print "trans3_env_push_sta: the_s3itemlst = "; print_the_s3itemlst (); print_newline ();
@@ -1131,14 +1219,16 @@ end // end of [local]
 
 (* ****** ****** *)
 
-implement s2exp_Var_make_srt (loc, s2t) = let
+implement
+s2exp_Var_make_srt (loc, s2t) = let
   val s2V = s2Var_make_srt (loc, s2t)
   val () = s2Var_sVarset_set (s2V, the_s2Varset_env_get_prev ())
 in
   trans3_env_add_sVar (s2V); s2exp_Var (s2V)
 end // end of [s2exp_Var_make_srt]
 
-implement s2exp_Var_make_var (loc, s2v) = let
+implement
+s2exp_Var_make_var (loc, s2v) = let
 (*
   val () = begin
     print "s2exp_Var_make_var: s2v = "; print s2v; print_newline ()
@@ -1157,7 +1247,8 @@ end // end of [s2exp_Var_make_var]
 
 (* ****** ****** *)
 
-implement s2qua_instantiate_and_add (loc0, s2vs, s2ps) = let
+implement
+s2qua_instantiate_and_add (loc0, s2vs, s2ps) = let
 (*
   val () = begin
     print "s2qua_instantiate_and_add: s2vs = "; print s2vs; print_newline ();
@@ -1189,7 +1280,8 @@ in
   trans3_env_add_proplst (loc0, s2ps_new); sub
 end // end of [s2qua_instantiate_and_add]
 
-implement s2qua_instantiate_with_and_add
+implement
+s2qua_instantiate_with_and_add
   (loc0, s2vs, s2ps, loc_arg, s2es) = let
   fun aux (s2vs: s2varlst, s2es: s2explst):<cloptr1> stasub_t =
     case+ (s2vs, s2es) of
@@ -1231,7 +1323,8 @@ in
   sub
 end // end of [s2qua_instantiate_with_and_add]
 
-implement s2qua_hypo_instantiate_and_add (loc0, s2vs, s2ps) = let
+implement
+s2qua_hypo_instantiate_and_add (loc0, s2vs, s2ps) = let
   val @(sub, s2vs_new) = stasub_extend_svarlst (stasub_nil, s2vs)
   val s2ps_new = s2explst_subst (sub, s2ps)
   val () = trans3_env_add_svarlst s2vs_new
@@ -1242,7 +1335,8 @@ end // end of [s2qua_hypo_instantiate_and_add]
 
 (* ****** ****** *)
 
-implement s2exp_metric_instantiate (loc0, d2vopt, met) = begin
+implement
+s2exp_metric_instantiate (loc0, d2vopt, met) = begin
   case+ d2vopt of
   | Some d2v_stamp => let
       val met_bound = (case+ metric_env_get d2v_stamp of
@@ -1265,7 +1359,8 @@ end // end of [s2exp_metric_instantiate]
 
 (* ****** ****** *)
 
-implement s2exp_exi_instantiate_all (loc0, s2e0) = let
+implement
+s2exp_exi_instantiate_all (loc0, s2e0) = let
   val s2e0 = s2exp_whnf s2e0 in case+ s2e0.s2exp_node of
     | S2Eexi (s2vs, s2ps, s2e) => let
         val sub = s2qua_instantiate_and_add (loc0, s2vs, s2ps)
@@ -1276,7 +1371,8 @@ implement s2exp_exi_instantiate_all (loc0, s2e0) = let
     | _ => s2e0
 end // end of [s2exp_exi_instantiate_all]
 
-implement s2exp_exi_instantiate_one (loc0, s2e0) = let
+implement
+s2exp_exi_instantiate_one (loc0, s2e0) = let
   val s2e0 = s2exp_whnf s2e0 in case+ s2e0.s2exp_node of
     | S2Eexi (s2vs, s2ps, s2e) => let
         val sub = s2qua_instantiate_and_add (loc0, s2vs, s2ps)
@@ -1292,7 +1388,8 @@ implement s2exp_exi_instantiate_one (loc0, s2e0) = let
       end // end of [_]
 end // end of [s2exp_exi_instantiate_one]
 
-implement s2exp_exi_instantiate_seq (loc0, s2e0, loc_arg, s2es0) = let
+implement
+s2exp_exi_instantiate_seq (loc0, s2e0, loc_arg, s2es0) = let
   val s2e0 = s2exp_whnf s2e0 in case+ s2e0.s2exp_node of
     | S2Eexi (s2vs, s2ps, s2e) => let
         val sub = begin
@@ -1310,7 +1407,8 @@ implement s2exp_exi_instantiate_seq (loc0, s2e0, loc_arg, s2es0) = let
       end // end of [_]
 end // end of [s2exp_exi_instantiate_seq]
 
-implement s2exp_exi_instantiate_sexparg (loc0, s2e0, s2a) =
+implement
+s2exp_exi_instantiate_sexparg (loc0, s2e0, s2a) =
   case+ s2a.s2exparg_node of
   | S2EXPARGall () => s2exp_exi_instantiate_all (loc0, s2e0)
   | S2EXPARGone () => s2exp_exi_instantiate_one (loc0, s2e0)
@@ -1321,7 +1419,8 @@ implement s2exp_exi_instantiate_sexparg (loc0, s2e0, s2a) =
 
 (* ****** ****** *)
 
-implement funarg_varfin_check (loc0) = let
+implement
+funarg_varfin_check (loc0) = let
 (*
   val () = begin
     $Loc.print_location loc0; print ": funarg_varfin_check"; print_newline ()
@@ -1372,7 +1471,8 @@ end (* end of [funarg_varfin_check] *)
 
 (* ****** ****** *)
 
-implement s2exp_wth_instantiate (loc0, s2e0) = let
+implement
+s2exp_wth_instantiate (loc0, s2e0) = let
 (*
   val () = begin
     print "s2exp_wth_instantiate: s2e0 = "; print s2e0; print_newline ()
@@ -1454,7 +1554,8 @@ end // end of [s2exp_wth_instantiate]
 
 (* ****** ****** *)
 
-implement s2exp_uni_instantiate_all (loc0, s2e0) = let
+implement
+s2exp_uni_instantiate_all (loc0, s2e0) = let
   val s2e0 = s2exp_whnf s2e0 in case+ s2e0.s2exp_node of
     | S2Euni (s2vs, s2ps, s2e) => let
         val sub = s2qua_instantiate_and_add (loc0, s2vs, s2ps)
@@ -1470,7 +1571,8 @@ implement s2exp_uni_instantiate_all (loc0, s2e0) = let
     | _ => s2e0
 end // end [s2exp_uni_instantiate_all]
 
-implement s2exp_uni_instantiate_one (loc0, s2e0) = let
+implement
+s2exp_uni_instantiate_one (loc0, s2e0) = let
   val s2e0 = s2exp_whnf s2e0 in case+ s2e0.s2exp_node of
     | S2Euni (s2vs, s2ps, s2e) => let
         val sub = s2qua_instantiate_and_add (loc0, s2vs, s2ps)
@@ -1486,7 +1588,8 @@ implement s2exp_uni_instantiate_one (loc0, s2e0) = let
       end // end of [_]
 end // end of [s2exp_uni_instantiate_one]
 
-implement s2exp_uni_instantiate_seq (loc0, s2e0, loc_arg, s2es0) = let
+implement
+s2exp_uni_instantiate_seq (loc0, s2e0, loc_arg, s2es0) = let
   val s2e0 = s2exp_whnf s2e0 in case+ s2e0.s2exp_node of
     | S2Euni (s2vs, s2ps, s2e) => let
         val sub = begin
@@ -1504,7 +1607,8 @@ implement s2exp_uni_instantiate_seq (loc0, s2e0, loc_arg, s2es0) = let
       end // end of [_]
 end // end of [s2exp_uni_instantiate_seq]
 
-implement s2exp_uni_instantiate_sexparg (loc0, s2e0, s2a) =
+implement
+s2exp_uni_instantiate_sexparg (loc0, s2e0, s2a) =
   case+ s2a.s2exparg_node of
   | S2EXPARGone () => s2exp_uni_instantiate_one (loc0, s2e0)
   | S2EXPARGall () => s2exp_uni_instantiate_all (loc0, s2e0)
@@ -1513,7 +1617,8 @@ implement s2exp_uni_instantiate_sexparg (loc0, s2e0, s2a) =
     end // end of [S2EXPARGseq]
 // end of [s2exp_uni_instantiate_sexparg]
 
-implement s2exp_uni_instantiate_sexparglst (loc0, s2e0, s2as) =
+implement
+s2exp_uni_instantiate_sexparglst (loc0, s2e0, s2as) =
   case+ s2as of
   | list_cons (s2a, s2as) => let
       val s2e0 = s2exp_uni_instantiate_sexparg (loc0, s2e0, s2a)
@@ -1525,7 +1630,8 @@ implement s2exp_uni_instantiate_sexparglst (loc0, s2e0, s2as) =
 
 (* ****** ****** *)
 
-implement s2exp_template_instantiate (loc0, s2vpss, ts2ess, s2e) = let
+implement
+s2exp_template_instantiate (loc0, s2vpss, ts2ess, s2e) = let
   fun aux0 (sub: stasub_t, s2vpss: s2qualst): s2qualst = begin
     case+ s2vpss of
     | list_cons (s2vps, s2vpss) => begin
@@ -1574,7 +1680,8 @@ end // end of [s2exp_template_instantiate]
 
 (* ****** ****** *)
 
-implement s2exp_absuni_and_add (loc0, s2e0) = let
+implement
+s2exp_absuni_and_add (loc0, s2e0) = let
 (*
   val () = begin
     print "s2exp_absuni_and_add: before: s2e0 = "; print s2e0; print_newline ()
@@ -1601,7 +1708,8 @@ in
   s2vss2pss2e.2
 end // end of [s2exp_absuni_and_add]
 
-implement s2exp_opnexi_and_add (loc0, s2e0) = let
+implement
+s2exp_opnexi_and_add (loc0, s2e0) = let
 (*
   val () = begin
     print "s2exp_opnexi_and_add: before: s2e0 = "; print s2e0;
@@ -1629,7 +1737,8 @@ in
   s2vss2pss2e.2
 end // end of [s2exp_opnexi_and_add]
 
-implement s2explst_opnexi_and_add (loc0, s2es0) = let
+implement
+s2explst_opnexi_and_add (loc0, s2es0) = let
   val s2vss2pss2es = s2explst_opnexi s2es0
 //
   val s2vs: s2varlst = s2vss2pss2es.0
@@ -1641,7 +1750,8 @@ in
   s2vss2pss2es.2
 end // end of [s2exp_opnexi_and_add]
 
-implement s2expopt_opnexi_and_add (loc0, os2e0) = begin
+implement
+s2expopt_opnexi_and_add (loc0, os2e0) = begin
   case+ os2e0 of
   | Some s2e0 => Some (s2exp_opnexi_and_add (loc0, s2e0))
   | None () => None ()
@@ -1649,7 +1759,8 @@ end // end of [s2expopt_opnexi_and_add]
 
 (* ****** ****** *)
 
-implement trans3_env_hypo_add_p2atcst (loc0, p2tc, s2e0) =
+implement
+trans3_env_hypo_add_p2atcst (loc0, p2tc, s2e0) =
   let val s2e0 = s2exp_opnexi_and_add (loc0, s2e0) in case+ p2tc of
     | P2TCany () => ()
     | P2TCbool b => begin
@@ -1737,7 +1848,9 @@ implement trans3_env_hypo_add_p2atcst (loc0, p2tc, s2e0) =
     | P2TCstring _ => ()
 end // end of [trans3_env_hypo_add_p2atcst]
 
-implement trans3_env_hypo_add_p2atcstlst (loc0, p2tcs, s2es) = let
+implement
+trans3_env_hypo_add_p2atcstlst
+  (loc0, p2tcs, s2es) = let
   fun aux (loc0: loc_t, p2tcs: p2atcstlst, s2es: s2explst)
     : int = begin case+ p2tcs of
     | list_cons (p2tc, p2tcs) => begin case+ s2es of
@@ -1760,7 +1873,9 @@ in
   end // end of [if]
 end // end of [trans3_env_hypo_add_p2atcstlst]
 
-implement trans3_env_hypo_add_labp2atcstlst (loc0, lp2tcs, ls2es) = let
+implement
+trans3_env_hypo_add_labp2atcstlst
+  (loc0, lp2tcs, ls2es) = let
   fun aux (loc0: loc_t, lp2tcs: labp2atcstlst, ls2es: labs2explst)
     : int = begin case+ lp2tcs of
     | LABP2ATCSTLSTcons (_, p2tc, lp2tcs) => begin case+ ls2es of
@@ -1786,7 +1901,9 @@ end // end of [trans3_env_hypo_add_labp2atcstlst]
 //
 
 // for adding sequentiality assumption
-implement trans3_env_hypo_add_p2atcstlstlst (loc0, p2tcss, s2es) = let
+implement
+trans3_env_hypo_add_p2atcstlstlst
+  (loc0, p2tcss, s2es) = let
   fun aux (p2tcss: p2atcstlstlst, s3iss: List_vt (s3itemlst))
     :<cloptr1> s3itemlstlst = begin case+ p2tcss of
     | list_cons (p2tcs, p2tcss) => let
@@ -1806,14 +1923,16 @@ end // end of [trans3_env_hypo_add_p2atcstlstlst]
 //
 
 // for checking termination metric being decreasing
-implement trans3_env_add_metric_dec (loc, met, met_bound) = begin
+implement
+trans3_env_add_metric_dec (loc, met, met_bound) =
   let val c3t = c3str_metric_dec (loc, met, met_bound) in
     trans3_env_add_cstr c3t
   end
-end // end of [trans3_env_add_metric]
+// end of [trans3_env_add_metric]
 
 // for checking pattern matching exhaustiveness
-implement trans3_env_add_p2atcstlstlst_false
+implement
+trans3_env_add_p2atcstlstlst_false
   (loc0, casknd, p2tcss, s2es) = aux p2tcss where {
   fun aux (p2tcss: p2atcstlstlst):<cloptr1> void = begin
     case+ p2tcss of
@@ -1834,7 +1953,8 @@ implement trans3_env_add_p2atcstlstlst_false
 
 (* ****** ****** *)
 
-implement trans3_env_initialize () = let
+implement
+trans3_env_initialize () = let
   val () = the_s2varbindmap_initialize ()
 
   val () = s2cst_sup_set (s2c1, S2CSTOPTsome s2c0) where {

@@ -36,7 +36,7 @@
 ** A hashtable implementation based on linear probing
 **
 ** Contributed by Hongwei Xi (hwxi AT cs DOT bu DOT edu)
-** Time: March, 2010 // based on a version on in October, 2008
+** Time: March, 2010
 **
 *)
 

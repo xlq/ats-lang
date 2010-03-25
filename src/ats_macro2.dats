@@ -235,8 +235,10 @@ implement d2var_copy (loc, d2v) = d2v
 
 (* ****** ****** *)
 
+//
 // eval0: evaluation at level 0
 // eval1: evaluation at level 1
+//
 
 (* ****** ****** *)
 
@@ -255,46 +257,72 @@ implement eval1_p2at (loc0, env, p2t0) = begin
       val p2t = eval1_p2at (loc0, env, p2t)
     in
       p2at_ann (loc0, p2t, s2e)
-    end
+    end // end of [P2Tann]
+  | P2Tany () => p2at_any (loc0)
   | P2Tas (refknd, d2v, p2t) => let
       val d2v_new = d2var_copy (loc0, d2v)
       val () = alphaenv_insert (env, d2v, d2v_new)
       val p2t = eval1_p2at (loc0, env, p2t)
     in
       p2at_as (loc0, refknd, d2v_new, p2t)
-    end
+    end // end of [P2Tas]
   | P2Tcon (freeknd, d2c, s2qs, s2e, npf, p2ts) => let
+//
+// HX-2010-03-24:
+// this is necessary for handling the static arguments
+//
+      var sub: stasub_t = stasub_nil
+      val s2qs = aux (s2qs, sub) where {
+        fun aux (s2qs: s2qualst, sub: &stasub_t): s2qualst =
+          case+ s2qs of
+          | list_cons (s2q, s2qs) => let
+              val subs2vs = stasub_extend_svarlst (sub, s2q.0)
+              val () = sub := subs2vs.0
+              val s2vs = subs2vs.1
+              val s2ps = s2explst_subst (sub, s2q.1)
+              val s2q = (s2vs, s2ps)
+            in
+              list_cons (s2q, aux (s2qs, sub))
+            end // end of [list_cons]
+          | list_nil () => list_nil ()
+      } // end of [val]
+      val s2e = s2exp_subst (sub, s2e)
+//
       val p2ts = eval1_p2atlst (loc0, env, p2ts)
     in
       p2at_con (loc0, freeknd, d2c, s2qs, s2e, npf, p2ts)
-    end
+    end // end of [P2Tcon]
   | P2Texist (s2vs, p2t) => let
       val p2t = eval1_p2at (loc0, env, p2t)
     in
       p2at_exist (loc0, s2vs, p2t)
-    end
+    end // end of [P2Texist]
   | P2Tlist (npf, p2ts) => let
       val p2ts = eval1_p2atlst (loc0, env, p2ts)
     in
       p2at_list (loc0, npf, p2ts)
-    end
+    end // end of [P2Tlist]
   | P2Tlst (p2ts) => let
       val p2ts = eval1_p2atlst (loc0, env, p2ts)
     in
       p2at_lst (loc0, p2ts)
-    end
+    end // end of [P2Tlst]
   | P2Trec (recknd, npf, lp2ts) => let
       val lp2ts = eval1_labp2atlst (loc0, env, lp2ts)
     in
       p2at_rec (loc0, recknd, npf, lp2ts)
-    end
+    end // end of [P2Trec]
   | P2Tvar (refknd, d2v) => let
       val d2v_new = d2var_copy (loc0, d2v)
       val () = alphaenv_insert (env, d2v, d2v_new)
     in
       p2at_var (loc0, refknd, d2v_new)
-    end
-  | _ => p2t0
+    end // end of [P2Tvar]
+  | _ => p2t0 where {
+      val () = begin
+        print "eval1_p2at: p2t0 = "; print_p2at p2t0; print_newline ()
+      end // end of [val]
+    } // end of [_]
 end // end of [eval1_p2at]
 
 implement eval1_p2atlst (loc0, env, p2ts) = let
@@ -1395,14 +1423,14 @@ in
     in
       case ans of
       | ~Some_vt d2i => (case+ d2i of
-          | D2ITEMsymdef d2is => let // reload symdef list
-              val () = begin
-                print "eval1_d2exp: D2Esym: d2is = "; print_d2itemlst d2is; print_newline ()
-              end // end of [val]
-              val d2s_new = d2sym_make (loc0, q, id, d2is) in
-              d2exp_sym (loc0, d2s_new)
-            end // end of [D2ITEMsymdef]
-          | _ => d2e0
+        | D2ITEMsymdef d2is => let // reload symdef list
+            val () = begin
+              print "eval1_d2exp: D2Esym: d2is = "; print_d2itemlst d2is; print_newline ()
+            end // end of [val]
+            val d2s_new = d2sym_make (loc0, q, id, d2is) in
+            d2exp_sym (loc0, d2s_new)
+          end // end of [D2ITEMsymdef]
+        | _ => d2e0 // end of [_]
         ) // end of [Some_vt]
       | ~None_vt () => d2e0
     end // end of [D2Esym]

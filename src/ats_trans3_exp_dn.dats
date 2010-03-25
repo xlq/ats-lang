@@ -59,6 +59,7 @@ staload Syn = "ats_syntax.sats"
 
 staload "ats_staexp2.sats"
 staload "ats_dynexp2.sats"
+staload MAC = "ats_macro2.sats"
 
 (* ****** ****** *)
 
@@ -162,7 +163,8 @@ fn d2exp_s2eff_opt_of_d2exp
 
 (* ****** ****** *)
 
-implement d3exp_tr_dn (d3e, s2e) = let
+implement
+d3exp_tr_dn (d3e, s2e) = let
 (*
   val () = begin
     print "d3exp_tr_dn: d3e.d3exp_typ = "; print d3e.d3exp_typ; print_newline ()
@@ -227,7 +229,8 @@ end // end of [c2lau_make_if_d2expopt]
 
 (* ****** ****** *)
 
-implement d2exp_if_tr_dn
+implement
+d2exp_if_tr_dn
   (loc0, res, d2e_cond, d2e_then, od2e_else, s2e0) = let
   val loc_cond = d2e_cond.d2exp_loc
   val c2l_then = c2lau_make_if_d2exp (loc_cond, true, d2e_then)
@@ -499,15 +502,27 @@ end // end of [d2exp_string_tr_dn]
 
 (* ****** ****** *)
 
-implement d2exp_tr_dn (d2e0, s2e0) = let
+implement
+d2exp_tr_dn (d2e0, s2e0) = let
 (*
 val () = begin
   print "d2exp_tr_dn: d2e0 = "; print d2e0; print_newline ()
   print "d2exp_tr_dn: s2e0 = "; print s2e0; print_newline ()
-end
+end // end of [val]
 *)
 val loc0 = d2e0.d2exp_loc
 val d3e0 = case+ d2e0.d2exp_node of
+  | D2Eapps (d2e_fun, d2as_arg) => begin
+    case+ d2e_fun.d2exp_node of
+    | D2Emac d2m => let
+        val d2e0 =
+          $MAC.macro_eval_app_short (loc0, d2m, d2as_arg)
+        // end of [val]
+      in
+        d2exp_tr_dn (d2e0, s2e0)
+      end // end of [D2Emac]
+    | _ => d2exp_tr_dn_rest (d2e0, s2e0)
+    end // end of [D2Eapps]
   | D2Ecaseof (casknd, res, n, d2es, c2ls) => begin
       d2exp_caseof_tr_dn (loc0, casknd, res, n, d2es, c2ls, s2e0)
     end // end of [D2Ecaseof]
@@ -797,7 +812,8 @@ end // end of [d2exp_tr_dn]
 
 (* ****** ****** *)
 
-implement d2exp_tr_dn_rest (d2e0, s2e0) = let
+implement
+d2exp_tr_dn_rest (d2e0, s2e0) = let
   val loc0 = d2e0.d2exp_loc
   var iswth: int = 0
   val d3e0 = d2exp_tr_up d2e0
@@ -818,7 +834,8 @@ end // end of [d2exp_tr_dn_rest]
 
 (* ****** ****** *)
 
-implement assert_bool_tr_dn (loc0, b, s2e0) = let
+implement
+assert_bool_tr_dn (loc0, b, s2e0) = let
   val s2e0 = s2exp_opnexi_and_add (loc0, s2e0)
 in
   case+ s2e0.s2exp_node of
@@ -1103,8 +1120,14 @@ end (* end of [c2laulst_tr_dn] *)
 
 (* ****** ****** *)
 
-implement d2exp_caseof_tr_dn
+implement
+d2exp_caseof_tr_dn
   (loc0, casknd, r2es, n, d2es, c2ls, s2e0) = let
+(*
+  val () = begin
+    print "d2exp_caseof_tr_dn: s2e0 = "; print_s2exp s2e0; print_newline ()
+  end // end of [val]
+*)
   val d3es = d2explst_tr_up d2es
   val () = d3explst_open_and_add d3es
   val s2es_pat = d3explst_typ_get d3es

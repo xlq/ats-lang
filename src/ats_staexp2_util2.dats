@@ -845,9 +845,11 @@ fun s2exp_prenexing
     | _ => s2e0
 end // end of [s2exp_prenexing]
 
-and s2exp_prenexing_main
-  (isexi: bool, s2vs: s2varlst, s2ps: s2explst, s2e_body: s2exp,
-   s2vs_r: &s2varlst, s2ps_r: &s2explst, flag: &int): s2exp = let
+and s2exp_prenexing_main (
+    isexi: bool
+  , s2vs: s2varlst, s2ps: s2explst, s2e_body: s2exp
+  , s2vs_r: &s2varlst, s2ps_r: &s2explst, flag: &int
+  ) : s2exp = let
   val @(sub, s2vs) = stasub_extend_svarlst (stasub_nil, s2vs)
   val s2ps = s2explst_subst (sub, s2ps)
   val s2e_body = s2exp_subst (sub, s2e_body)
@@ -859,9 +861,11 @@ in
   s2e_body
 end // end of [s2exp_prenexing_main]
 
-and s2explst_prenexing
-  (isexi: bool, s2es0: s2explst,
-   s2vs_r: &s2varlst, s2ps_r: &s2explst, flag: &int): s2explst = begin
+and s2explst_prenexing (
+    isexi: bool
+  , s2es0: s2explst
+  , s2vs_r: &s2varlst, s2ps_r: &s2explst, flag: &int
+  ) : s2explst = begin
   case+ s2es0 of
   | cons (s2e, s2es) => let
       val flag0 = flag
@@ -873,9 +877,11 @@ and s2explst_prenexing
   | nil () => nil ()
 end // end of [s2explst_prenexing]
 
-and labs2explst_prenexing
-  (isexi: bool, ls2es0: labs2explst,
-   s2vs_r: &s2varlst, s2ps_r: &s2explst, flag: &int): labs2explst = begin
+and labs2explst_prenexing (
+    isexi: bool
+  , ls2es0: labs2explst
+  , s2vs_r: &s2varlst, s2ps_r: &s2explst, flag: &int
+  ) : labs2explst = begin
   case+ ls2es0 of
   | LABS2EXPLSTcons (l, s2e, ls2es) => let
       val flag0 = flag

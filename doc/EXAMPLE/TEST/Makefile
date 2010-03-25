@@ -27,6 +27,7 @@ compall:: \
   libc_dirent \
   libc_dlfcn \
   libc_stdlib \
+  libats_funmap_avltree \
   libats_genarrays \
   libats_hashtable_chain \
   libats_hashtable_linprb \
@@ -76,16 +77,24 @@ libc_stdlib: libc_stdlib.dats
 
 ######
 
+libats_funmap_avltree: libats_funmap_avltree.dats
+	$(ATSCC) -D_ATS_GCATS -O2 -o libats_funmap_avltree libats_funmap_avltree.dats \
+     && ./libats_funmap_avltree 1000000
+
+######
+
 libats_genarrays: libats_genarrays.dats
 	$(ATSCC) -O2 -o libats_genarrays libats_genarrays.dats && ./libats_genarrays
 
 ######
 
 libats_hashtable_chain: libats_hashtable_chain.dats
-	$(ATSCC) -O2 -o libats_hashtable_chain libats_hashtable_chain.dats && ./libats_hashtable_chain 1000000
+	$(ATSCC) -D_ATS_GCATS -O2 -o libats_hashtable_chain libats_hashtable_chain.dats \
+     && ./libats_hashtable_chain 1000000
 
 libats_hashtable_linprb: libats_hashtable_linprb.dats
-	$(ATSCC) -O2 -o libats_hashtable_linprb libats_hashtable_linprb.dats && ./libats_hashtable_linprb 1000000
+	$(ATSCC) -D_ATS_GCATS -O2 -o libats_hashtable_linprb libats_hashtable_linprb.dats \
+     && ./libats_hashtable_linprb 1000000
 
 ######
 
@@ -101,22 +110,28 @@ libats_regexp: libats_regexp.dats
 ######
 
 libats_smlbas_array: libats_smlbas_array.dats
-	$(ATSCC) -O2 -o libats_smlbas_array libats_smlbas_array.dats -lats_smlbas && ./libats_smlbas_array
+	$(ATSCC) -O2 -o libats_smlbas_array libats_smlbas_array.dats -lats_smlbas \
+     && ./libats_smlbas_array
 
 libats_smlbas_array2: libats_smlbas_array2.dats
-	$(ATSCC) -O2 -o libats_smlbas_array2 libats_smlbas_array2.dats -lats_smlbas && ./libats_smlbas_array2
+	$(ATSCC) -O2 -o libats_smlbas_array2 libats_smlbas_array2.dats -lats_smlbas \
+     && ./libats_smlbas_array2
 
 libats_smlbas_char: libats_smlbas_char.dats
-	$(ATSCC) -O2 -o libats_smlbas_char libats_smlbas_char.dats -lats_smlbas && ./libats_smlbas_char
+	$(ATSCC) -O2 -o libats_smlbas_char libats_smlbas_char.dats -lats_smlbas \
+     && ./libats_smlbas_char
 
 libats_smlbas_list: libats_smlbas_list.dats
-	$(ATSCC) -O2 -o libats_smlbas_list libats_smlbas_list.dats -lats_smlbas && ./libats_smlbas_list
+	$(ATSCC) -O2 -o libats_smlbas_list libats_smlbas_list.dats -lats_smlbas \
+     && ./libats_smlbas_list
 
 libats_smlbas_string: libats_smlbas_string.dats
-	$(ATSCC) -O2 -o libats_smlbas_string libats_smlbas_string.dats -lats_smlbas && ./libats_smlbas_string
+	$(ATSCC) -O2 -o libats_smlbas_string libats_smlbas_string.dats -lats_smlbas \
+     && ./libats_smlbas_string
 
 libats_smlbas_time: libats_smlbas_time.dats
-	$(ATSCC) -O2 -o libats_smlbas_time libats_smlbas_time.dats -lats_smlbas -lm && ./libats_smlbas_time
+	$(ATSCC) -O2 -o libats_smlbas_time libats_smlbas_time.dats -lats_smlbas -lm \
+     && ./libats_smlbas_time
 
 ######
 

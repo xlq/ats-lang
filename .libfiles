@@ -97,6 +97,10 @@ libats/DATS/fmatrix.dats
 libats/SATS/freelst.sats
 libats/DATS/freelst.dats
 
+/* funmap implementation based on AVL trees */
+libats/SATS/funmap_avltree.sats
+libats/DATS/funmap_avltree.dats
+
 /* generic arrays of various dimensions */
 libats/SATS/genarrays.sats
 libats/DATS/genarrays.dats
