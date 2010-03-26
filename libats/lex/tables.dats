@@ -7,33 +7,34 @@
 (***********************************************************************)
 
 (*
- * ATS/Anairiats - Unleashing the Potential of Types!
- *
- * Copyright (C) 2002-2008 Hongwei Xi, Boston University
- *
- * All rights reserved
- *
- * ATS is free software;  you can  redistribute it and/or modify it under
- * the terms of the GNU LESSER GENERAL PUBLIC LICENSE as published by the
- * Free Software Foundation; either version 2.1, or (at your option)  any
- * later version.
- * 
- * ATS is distributed in the hope that it will be useful, but WITHOUT ANY
- * WARRANTY; without  even  the  implied  warranty  of MERCHANTABILITY or
- * FITNESS FOR A PARTICULAR PURPOSE.  See the  GNU General Public License
- * for more details.
- * 
- * You  should  have  received  a  copy of the GNU General Public License
- * along  with  ATS;  see  the  file  COPYING.  If not, write to the Free
- * Software Foundation, 51  Franklin  Street,  Fifth  Floor,  Boston,  MA
- * 02110-1301, USA.
- *
- *)
+** ATS/Anairiats - Unleashing the Potential of Types!
+**
+** Copyright (C) 2002-2008 Hongwei Xi, Boston University
+**
+** All rights reserved
+**
+** ATS is free software;  you can  redistribute it and/or modify it under
+** the terms of the GNU LESSER GENERAL PUBLIC LICENSE as published by the
+** Free Software Foundation; either version 2.1, or (at your option)  any
+** later version.
+** 
+** ATS is distributed in the hope that it will be useful, but WITHOUT ANY
+** WARRANTY; without  even  the  implied  warranty  of MERCHANTABILITY or
+** FITNESS FOR A PARTICULAR PURPOSE.  See the  GNU General Public License
+** for more details.
+** 
+** You  should  have  received  a  copy of the GNU General Public License
+** along  with  ATS;  see  the  file  COPYING.  If not, write to the Free
+** Software Foundation, 51  Franklin  Street,  Fifth  Floor,  Boston,  MA
+** 02110-1301, USA.
+*)
 
 (* ****** ****** *)
 
-// July, 2007
+//
 // Author: Hongwei Xi (* hwxi AT cs DOT bu DOT edu *)
+// Time: July 2007
+//
 
 (* ****** ****** *)
 
@@ -76,13 +77,14 @@ table_ptr_free (ats_ptr_type p) { free (p) ; return ; }
 
 %}
 
-fn tbloptref_free (r_tblopt: ref tblopt): void = let
+fn tbloptref_free
+  (r_tblopt: ref tblopt): void = let
   val (vbox pf_tblopt | p_tblopt) = ref_get_view_ptr r_tblopt
 in
   case+ !p_tblopt of
   | ~tblopt_some (pf | p, n) => begin
       table_ptr_free {int16} (pf | p); !p_tblopt := tblopt_none ()
-    end
+    end // end of [tblopt_some]
   | tblopt_none () => fold@ (!p_tblopt)
 end // end of [tbloptref_free]
   
@@ -97,11 +99,14 @@ extern fun __accept_table_make_fun
   (ntot: int, nfin: int, s: string): accept_table_t
   = "__accept_table_make_fun"
 
-implement __accept_table_make ntot = lam nfin => lam s =>
-  __accept_table_make_fun (ntot, nfin, s)
+implement
+__accept_table_make ntot =
+  lam nfin => lam s => __accept_table_make_fun (ntot, nfin, s)
+// end of [__accept_table_make ntot]
 
-implement __accept_table_free (r_tblopt): void =
-  tbloptref_free r_tblopt
+implement
+__accept_table_free (r_tblopt): void = tbloptref_free r_tblopt
+// end of [__accept_table_free]
 
 //
 
@@ -113,22 +118,23 @@ static inline
 ats_int_type
 ats_int_of_int16 (ats_int16_type i) { return i ; }
 
-%}
+%} // end of [%{^]
 
-//
+(* ****** ****** *)
 
-implement accept_table_get (r_tblopt, nstate) = let
+implement
+accept_table_get (r_tblopt, nstate) = let
   var ans: int = (0: int)
   var err: int = (0: int)
   val () = let
     val (vbox pf_tblopt | p_tblopt) = ref_get_view_ptr r_tblopt
   in
     case+ !p_tblopt of
-    | tblopt_none () => begin
-        err := (1: int); fold@ (!p_tblopt)
+    | tblopt_none () => let
+        prval () = fold@ (!p_tblopt) in err := (1: int)
       end // end of [tblopt_none]
     | tblopt_some (!pf | p, n) => let
-        val nstate = int1_of_int nstate
+        val nstate = int1_of_int nstate // no-op cast
       in
         if nstate < 0 then begin
           err := (2: int); fold@ (!p_tblopt)
@@ -138,7 +144,7 @@ implement accept_table_get (r_tblopt, nstate) = let
           prval pf_v = !pf
         in
           ans := int_of_int16 (!p.[nstate]); !pf := pf_v; fold@ (!p_tblopt)
-        end
+        end (* end of [if] *)
       end // end of [tblopt_some]
   end // end of [val]
 in
