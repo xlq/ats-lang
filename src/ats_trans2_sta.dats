@@ -2161,7 +2161,9 @@ fn d1atcon_tr (
     | S2RTfun (s2ts, s2t) => (os2ts_s2c_ind := Some s2ts) | s2t => ()
   val npf = d1c.d1atcon_npf and s1es_arg = d1c.d1atcon_arg
   val s2es_arg = let
-    val s2t_pfarg = (if islin then s2rt_view else s2rt_prop): s2rt
+    val s2t_pfarg = (
+      if islin then s2rt_view else s2rt_prop
+    ) : s2rt
     val s2t_arg = (
       if isprf then s2t_pfarg else begin
         if islin then s2rt_viewt0ype else s2rt_t0ype
@@ -2205,6 +2207,7 @@ fn d1atcon_tr (
     in
       if islin then the_s2expenv_add_datconptr d2c // unfold
     end // end of [if]
+  // end of [val]
 in
   d2c
 end // end of [d1atcon_tr]

@@ -551,10 +551,11 @@ fn p2at_con_tr_dn (
     prerr_newline ();
     $Err.abort {void} ()
   end // end of [val]
-  val flag_vwtp: int =
+  val flag_vwtp = (
     if isread then 0 else begin
       if flag > 0 then 1 else d2con_vwtp_get d2c
     end // end of [if]
+  ) : int // end of [val]
   val () = // checking for legality of destruction 
     if freeknd > 0 then begin
       (if flag_vwtp > 0 then () else freeknd := 0)
@@ -578,7 +579,7 @@ fn p2at_con_tr_dn (
       val s2es_arg = s2explst_nfapp s2es_arg // this is important for erasure!
       val p3ts = p2atlst_tr_dn (p2ts, s2es_arg)
       val p3t0 = p3at_con (loc0, s2e0, freeknd, d2c, npf, p3ts)
-      val () = begin case+ 0 of
+      val () = (case+ 0 of
         | _ when freeknd = 0 => () where {
             fun aux (p3ts: p3atlst, err: &int)
               :<cloref1> void = begin case+ p3ts of
@@ -602,7 +603,7 @@ fn p2at_con_tr_dn (
             end // end of [val]
           } // end of [_ when freeknd = 0]
         | _ (*freeknd <> 0*) => p3at_con_free_update (p3t0, freeknd, d2c, p3ts)
-      end // end of [val]
+      ) : void // end of [val]
     in
       p3t0 // the returned constructor pattern
     end (* end of [_ when flag = 0] *)
@@ -624,9 +625,9 @@ fn p2at_con_tr_dn (
       p3t0 // the returned constructor pattern
     end (* end of [_ when flag <> 0] *)
   ) : p3at // end of [val]
-  val () = begin case+ os2e_v of
+  val () = (case+ os2e_v of
     | ~Some_vt s2e_v => p3at_readize (s2e_v, p3t0) | ~None_vt () => ()
-  end // readizing all the dynamic variables in [p3t0]
+  ) : void // readizing all the dynamic variables in [p3t0]
 in
   p3t0
 end // end of [p2at_con_tr_dn]

@@ -79,6 +79,7 @@ avltree (key:t@ype, itm:viewt@ype+, int(*height*)) =
       (int (1+max(hl,hr)), key, itm, avltree (key, itm, hl), avltree (key, itm, hr))
   | E (key, itm, 0)
 // end of [datatype avltree]
+typedef avltree0 = avltree (void, void, 0)?
 
 viewtypedef avltree_inc (key:t@ype, itm:viewt@ype, h:int) =
   [h1:nat | h <= h1; h1 <= h+1] avltree (key, itm, h1)
@@ -328,7 +329,7 @@ implement{key,itm} linmap_insert
           in
             ans
           end // end of [if]
-        end else let (* sgn = 0: item already exists *)
+        end else let (* key already exists *)
           val () = res := !p_x
           prval () = opt_some {itm} (res)
           val () = !p_x := x0
@@ -349,15 +350,29 @@ implement{key,itm} linmap_insert
 (* ****** ****** *)
 
 viewtypedef
-B_node (key:t@ype, itm:viewt@ype) = [l_h,l_k,l_x,l_tl,l_tr:addr]
-  (int? @ l_h, key @ l_k, itm @ l_x, avltree? @ l_tl, avltree? @ l_tr | B_unfold (l_h, l_k, l_x, l_tl, l_tr))
+B_node (key:t@ype, itm:viewt@ype) =
+  B_pstruct (int?, key, itm, avltree0, avltree0)
 // end of [B_node]
+
+extern
+castfn B_node_make
+  {key:t@ype;itm:viewt@ype}
+  {l_h,l_k,l_x,l_tl,l_tr:addr} (
+    pf_h: int? @ l_h, pf_k: key @ l_k, pf_x: itm @ l_x, pf_tl: avltree? @ l_tl, pf_tr: avltree? @ l_tr
+  | x: B_unfold (l_h, l_k, l_x, l_tl, l_tr)
+  ) :<> B_node (key, itm)
+// end of [B_node_make]
 
 fun{key:t0p;itm:vt0p}
 avltree_takeout_min {h:pos} .<h>. (
   t: &avltree (key, itm, h) >> avltree_dec (key, itm, h)
 ) :<> B_node (key, itm) = let
   val+ B {..} {hl,hr} (!p_h, !p_k, !p_x, !p_tl, !p_tr) = t
+  prval pf_h = view@ !p_h
+  prval pf_k = view@ !p_k
+  prval pf_x = view@ !p_x
+  prval pf_tl = view@ !p_tl
+  prval pf_tr = view@ !p_tr
 in
   case+ !p_tl of
   | B _ => let
@@ -372,11 +387,6 @@ in
       in
         node
       end else let
-        prval pf_h = view@ !p_h
-        prval pf_k = view@ !p_k
-        prval pf_x = view@ !p_x
-        prval pf_tl = view@ !p_tl
-        prval pf_tr = view@ !p_tr
         val () = t := avltree_lrotate<key,itm>
           (pf_h, pf_k, pf_x, pf_tl, pf_tr | p_h, hl, p_tl, hr, p_tr, t)
         // end of [val]
@@ -385,13 +395,8 @@ in
       end // end of [if]
     end // end of [B]
   | ~E () => let
-      prval pf_h = view@ !p_h
-      prval pf_k = view@ !p_k
-      prval pf_x = view@ !p_x
-      prval pf_tl = view@ !p_tl
-      prval pf_tr = view@ !p_tr
       val tr = !p_tr; val t0 = t; val () = t := tr in
-      (pf_h, pf_k, pf_x, pf_tl, pf_tr | t0)
+      B_node_make {key,itm} (pf_h, pf_k, pf_x, pf_tl, pf_tr | t0)
     end // end of [E]
 end // end of [avltree_takeout_min]
 
@@ -402,105 +407,115 @@ end // end of [avltree_takeout_min]
 //
 extern
 fun{key:t0p;itm:vt0p}
-linmap_takeout_ptr {l_res,l_b:addr} (
+linmap_takeout_ptr {l_res:addr} (
   m: &map (key, itm), k0: key, cmp: cmp key, res: ptr l_res
-) :<> [b:bool] bool b
+) :<> bool
 // end of [linmap_takeout]
 
-(*
 implement{key,itm}
-linmap_takeout_ptr
-  {l_res,l_b}
-  (m, k0, cmp, p_res, p_b) =
-  takeout (m, p_res, p_b) where {
+linmap_takeout_ptr {l_res}
+  (m, k0, cmp, p_res) = takeout (m, p_res) where {
   fun takeout {h:nat} .<h>. (
-      t: avltree (key, itm, h)
-    , p_res: ptr l_res, p_b: ptr l_b
-    ) :<cloref> avltree_dec (key, itm, h) = begin
-    case+ t of
-    | B {..} {hl,hr} (h, k, x, tl, tr) => let
-        val sgn = compare_key_key (k0, k, cmp)
+      t: &avltree (key, itm, h) >> avltree_dec (key, itm, h)
+    , p_res: ptr l_res
+    ) :<cloref> bool = begin case+ t of
+    | B {..} {hl,hr} (!p_h, !p_k, !p_x, !p_tl, !p_tr) => let
+        stavar l_x:addr
+        val p_x = p_x : ptr l_x
+        prval pf_h = view@ !p_h
+        prval pf_k = view@ !p_k
+        prval pf_x = view@ !p_x
+        prval pf_tl = view@ !p_tl
+        prval pf_tr = view@ !p_tr
+        val sgn = compare_key_key (k0, !p_k, cmp)
       in
         case+ 0 of
         | _ when sgn < 0 => let
-            val [hl:int] tl = takeout (tl, p_res, p_b)
-            val hl = avltree_height (tl) : int hl
-            and hr = avltree_height (tr) : int hr
+            val ans(*removed*) = takeout (!p_tl, p_res)
+            val hl = avltree_height<key,itm> (!p_tl)
+            and hr = avltree_height<key,itm> (!p_tr)
           in
-            if hr - hl <= HTDF then begin
-              B (1+max(hl,hr), k, x, tl, tr)
-            end else begin // hl+HTDF1 = hr
-              avltree_lrotate (k, x, hl, tl, hr, tr)
+            if hr - hl <= HTDF then let
+              prval () = !p_h := 1+max(hl,hr) in fold@ (t); ans
+            end else let // hl+HTDF1 = hr
+              val () = t := avltree_lrotate<key,itm>
+                (pf_h, pf_k, pf_x, pf_tl, pf_tr | p_h, hl, p_tl, hr, p_tr, t)
+              // end of [val]
+            in
+              ans
             end // end of [if]
           end // end of [sgn < 0]
         | _ when sgn > 0 => let
-            val [hr:int] tr = takeout (tr, p_res, p_b)
-            val hl = avltree_height (tl) : int hl
-            and hr = avltree_height (tr) : int hr
+            val ans = takeout (!p_tr, p_res)
+            val hl = avltree_height<key,itm> (!p_tl)
+            and hr = avltree_height<key,itm> (!p_tr)
           in
-            if hl - hr <= HTDF then begin
-              B (1+max(hl,hr), k, x, tl, tr)
-            end else begin // hl=hr+HTDF1
-              avltree_rrotate (k, x, hl, tl, hr, tr)
+            if hl - hr <= HTDF then let
+              prval () = !p_h := 1+max(hl,hr) in fold@ (t); ans
+            end else let // hl=hr+HTDF1
+              val () = t := avltree_rrotate<key,itm>
+                (pf_h, pf_k, pf_x, pf_tl, pf_tr | p_h, hl, p_tl, hr, p_tr, t)
+              // end of [val]
+            in
+              ans
             end // end of [if]
           end // end of [sgn > 0]
         | _ (*sgn = 0*) => let
-            val () = if (p_res <> null) then let
+            val () = if :(pf_x: itm? @ l_x) =>
+              (p_res <> null) then let
               prval (pf, fpf) = __assert () where {
                 extern prfun __assert (): (itm? @ l_res, itm @ l_res -<> void)
               }
-              val () = !p_res := x
+              val () = !p_res := !p_x
               prval () = fpf (pf)
             in
               // nothing
-            end // end of [val]
-            val () = if (p_b <> null) then let
-              prval (pf, fpf) = __assert () where {
-                extern prfun __assert (): (bool? @ l_b, bool @ l_b -<> void)
-              }
-              val () = !p_b := true
-              prval () = fpf (pf)
+            end else let
+              extern prfun __assert (pf: !itm @ l_x >> itm? @ l_x): void
+              prval () = __assert (pf_x) // leak happens if [itm] contains resources!
             in
               // nothing
             end // end of [val]
+            var tl = !p_tl and tr = !p_tr
+            val () = free@ {key,itm} {0,0} (t)
           in
             case+ tr of
             | B _ => let
-                var k_min: key? and x_min: itm?
-                val [hr:int] tr = avltree_takeout_min<key,itm> (tr, k_min, x_min)
-                val hl = avltree_height (tl) : int hl
-                and hr = avltree_height (tr) : int hr
+                prval () = fold@ tr
+                val t1 = avltree_takeout_min<key,itm> (tr)
+                val B (!p1_h, !p1_k, !p1_x, !p1_tl, !p1_tr) = t1
+                prval pf1_h = view@ !p1_h
+                prval pf1_k = view@ !p1_k
+                prval pf1_x = view@ !p1_x                
+                prval pf1_tl = view@ !p1_tl
+                prval pf1_tr = view@ !p1_tr
+                val hl = avltree_height<key,itm> (tl)
+                and hr = avltree_height<key,itm> (tr)
+                val () = !p1_tl := tl and () = !p1_tr := tr 
               in
-                if hl - hr <= HTDF then begin
-                  B (1+max(hl,hr), k_min, x_min, tl, tr)
-                end else begin // hl=hr+HTDF1
-                  avltree_rrotate (k_min, x_min, hl, tl, hr, tr)
+                if hl - hr <= HTDF then let
+                  val () = !p1_h := 1+max(hl,hr) in fold@ t1; t := t1; true
+                end else let
+                  val () = t := avltree_rrotate<key,itm>
+                    (pf1_h, pf1_k, pf1_x, pf1_tl, pf1_tr | p1_h, hl, p1_tl, hr, p1_tr, t1)
+                in
+                  true
                 end // end of [if]
               end // end of [B]
-            | E _ => tl
+            | E _ => (t := tl; true)
           end // end of [sgn = 0]
       end // end of [B]
-    | E () => t where {
-        val () = if (p_b <> null) then let
-          prval (pf, fpf) = __assert () where {
-            extern prfun __assert (): (bool? @ l_b, bool @ l_b -<> void)
-          }
-          val () = !p_b := false
-          prval () = fpf (pf)
-        in
-          // nothing
-        end // end of [E]
-      } // end of [E]
+    | E () => (fold@ t; false(*~removed*))
   end // end of [takeout]
 } // end of [linmap_takeout_ptr]
-*)
 
 (* ****** ****** *)
 
 implement{key,itm}
 linmap_takeout
   (m, k0, cmp, res) = ans where {
-  val [b:bool] ans = linmap_takeout_ptr<key,itm> (m, k0, cmp, &res)
+  val ans = linmap_takeout_ptr<key,itm> (m, k0, cmp, &res)
+  val [b:bool] ans = bool1_of_bool (ans)
   prval pf = __assert (view@ res) where {
     extern prfun __assert {l_res:addr} (pf: itm? @ l_res):<> opt (itm, b) @ l_res
   } // end of [prval]
