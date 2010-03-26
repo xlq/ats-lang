@@ -633,8 +633,10 @@ atslib_hashtbl_free_null__chain (ats_ptr_type ptbl) { return ; }
 
 ats_int_type
 atslib_hashtbl_free_vt__chain (ats_ptr_type ptbl) {
-  if (((HASHTBL*)ptbl)->atslab_tot != 0) return 1 ;
-  ATS_FREE(((HASHTBL*)ptbl)->atslab_pbeg) ; ATS_FREE(ptbl) ; return 0 ;
+  if (((HASHTBL*)ptbl)->atslab_tot != 0)
+    return ats_true_bool ;
+  ATS_FREE(((HASHTBL*)ptbl)->atslab_pbeg) ; ATS_FREE(ptbl) ;
+  return ats_false_bool ;
 } // end of [atslib_hashtbl_free_vt__chain]
 
 %} // end of [%{$]

@@ -173,6 +173,16 @@ fun hashtbl_free
   = "atslib_hashtbl_free__linprb"
 // end of [hashtbl_free]
 
+//
+// HX-2010-03-21:
+// [hashtbl_clear_vt] may need to be called first to clear up the hashtable
+//
+fun hashtbl_free_vt
+  {key:t@ype;itm:viewt@ype} {l:anz}
+  (tbl: !HASHTBLptr (key, itm, l) >> opt (HASHTBLptr (key, itm, l), b))
+  : #[b:bool] bool b(*~freed*) = "atslib_hashtbl_free_vt__linprb"
+// end of [hashtbl_free_vt]
+
 (* ****** ****** *)
 
 (* end of [hashtable_linprb.sats] *)

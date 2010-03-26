@@ -578,11 +578,23 @@ end // end of [linmap_foreach_cloref]
 
 implement{key,itm}
 linmap_free (m) = _free (m) where {
-  fun _free {h:nat} .<h>. (t: avltree (key, itm, h)):<> void =
-    case+ t of
-    | ~B (_, _, _, tl, tr) => (_free tl; _free tr)
-    | ~E () => ()
-} // end of [_free]
+  fun _free {h:nat} .<h>.
+    (t: avltree (key, itm, h)):<> void = case+ t of
+    | ~B (_, _, _, tl, tr) => (_free tl; _free tr) | ~E () => ()
+  // end of [_free]
+} // end of [linmap_free]
+
+implement{key,itm}
+linmap_free_vt (m) = let
+  viewtypedef VT = map (key, itm) in
+  case+ m of
+  | B _ => true where {
+      prval () = fold@ (m); prval () = opt_some {VT} (m)
+    } // end of [B]
+  | E () => false where {
+      prval () = opt_none {VT} (m)
+    } // end of [E]
+end // end of [linmap_free]
 
 (* ****** ****** *)
 

@@ -112,7 +112,9 @@ implement main (argc, argv) = let
     print "size = "; print size; print_newline ()
   end // end of [size]
 //
-  val () = $M.linmap_free (map)
+  val notfreed = $M.linmap_free_vt (map)
+  val () = assert_errmsg (notfreed = false, #LOCATION)
+  prval () = opt_unnone (map)
 //
 in
   // empty

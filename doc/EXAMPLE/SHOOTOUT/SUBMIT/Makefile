@@ -12,7 +12,8 @@ all: \
   binary-trees binary-trees2 \
   fannkuch fannkuch2 \
   fasta fasta2 fasta4 \
-  k-nucleotide k-nucleotide2 k-nucleotide3 \
+  k-nucleotide k-nucleotide2 \
+  k-nucleotide3 k-nucleotide4 \
   mandelbrot \
   n-body n-body2 \
   pidigits pidigits2 pidigits3 \
@@ -68,6 +69,8 @@ fasta4: fasta4.dats
 
 fasta5: fasta5.dats
 	$(ATSCC) -msse2 -mfpmath=sse -O3 fasta5.dats -o fasta5
+
+######
 
 k-nucleotide: k-nucleotide.dats
 #	$(ATSCC) -O3 k-nucleotide.dats -o k-nucleotide
@@ -190,6 +193,8 @@ cleanall: clean
 	rm -f fasta_output.txt
 	rm -f k-nucleotide
 	rm -f k-nucleotide2
+	rm -f k-nucleotide3
+	rm -f k-nucleotide4
 	rm -f mandelbrot
 	rm -f mandelbrot_simd
 	rm -f mandelbrot_simd_smp

@@ -121,6 +121,10 @@ libats/DATS/intinf.dats
 libats/SATS/iterint.sats
 libats/DATS/iterint.dats
 
+/* linmap implementation based on AVL trees */
+libats/SATS/linmap_avltree.sats
+libats/DATS/linmap_avltree.dats
+
 #ifdef HAVE_PCRE_H
 libats/SATS/regexp.sats
 libats/DATS/regexp.dats

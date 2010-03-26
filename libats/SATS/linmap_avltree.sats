@@ -135,6 +135,11 @@ linmap_foreach_cloref
 fun{key:t0p;itm:t0p}
 linmap_free (m: map (key, itm)):<> void
 
+fun{key:t0p;itm:vt0p}
+linmap_free_vt (
+  m: !map (key, itm) >> opt (map (key, itm), b)
+) :<> #[b:bool] bool b(*~freed*)
+
 (* ****** ****** *)
 
 (* end of [linmap_avltree.sats] *)

@@ -65,7 +65,8 @@ fun gluCylinder {n,sk:nat} (
   , base: GLdouble, top: GLdouble, height: GLdouble
   , slices: int n, stacks: int sk
   ) : void
-  = "#atsctrb_gluCynliner"
+  = "#atsctrb_gluCylinder"
+// end of [gluCylinder]
 
 (* ****** ****** *)
 
@@ -74,6 +75,7 @@ GLAPI void GLAPIENTRY gluDeleteQuadric (GLUquadric* quad);
 *)
 fun gluDeleteQuadric {l:addr} (pf: GLUquadricObj @ l | p: ptr l): void
   = "#atsctrb_gluDeleteQuadric"
+// end of [gluDeleteQuadric]
 
 (* ****** ****** *)
 
@@ -84,8 +86,8 @@ GLAPI void GLAPIENTRY gluDisk (
 *)
 fun gluDisk {n,lp:nat} (
     qobj: &GLUquadricObj, inner: GLdouble, outer: GLdouble, slices: int n, loops: int lp
-  ) : void
-  = "#atsctrb_gluDisk"
+  ) : void = "#atsctrb_gluDisk"
+// end of [gluDisk]
 
 (* ****** ****** *)
 
@@ -117,9 +119,11 @@ overload gluLookAt with gluLookAt_GLdouble
 fun gluNewQuadric ()
   : [l:addr] (option_v (GLUquadricObj @ l, l <> null) | ptr l)
   = "#atsctrb_gluNewQuadric"
+// end of [gluNewQuadric]
 
 fun gluNewQuadric_exn (): [l:addr] (GLUquadricObj @ l | ptr l)
   = "atsctrb_gluNewQuadric_exn" // this is a function!
+// end of [gluNewQuadric_exn]
 
 (* ****** ****** *)
 

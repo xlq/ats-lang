@@ -172,8 +172,8 @@ fun hashtbl_free_null
 //
 fun hashtbl_free_vt
   {key:t@ype;itm:viewt@ype} {l:anz}
-  (tbl: !HASHTBLptr (key, itm, l) >> opt (HASHTBLptr (key, itm, l), i > 0))
-  : #[i:two] int i = "atslib_hashtbl_free_vt__chain"
+  (tbl: !HASHTBLptr (key, itm, l) >> opt (HASHTBLptr (key, itm, l), b))
+  : #[b:bool] bool b(*~freed*) = "atslib_hashtbl_free_vt__chain"
 // end of [hashtbl_free_vt]
 
 (* ****** ****** *)
