@@ -33,6 +33,7 @@ compall:: \
   libats_hashtable_linprb \
   libats_intinf \
   libats_iterint \
+  libats_linmap_avltree \
   libats_regexp \
   libats_smlbas_array \
   libats_smlbas_array2 \
@@ -104,6 +105,14 @@ libats_intinf: libats_intinf.dats
 libats_iterint: libats_iterint.dats
 	$(ATSCC) -O2 -o libats_iterint libats_iterint.dats && ./libats_iterint
 
+######
+
+libats_linmap_avltree: libats_linmap_avltree.dats
+	$(ATSCC) -D_ATS_GCATS -O2 -o libats_linmap_avltree libats_linmap_avltree.dats \
+     && ./libats_linmap_avltree 1000000
+
+######
+
 libats_regexp: libats_regexp.dats
 	$(ATSCC) -O2 -o libats_regexp libats_regexp.dats -lpcre && ./libats_regexp "12345789"
 
@@ -150,11 +159,13 @@ cleanall: clean
 	rm -f libc_dirent
 	rm -f libc_dlfcn
 	rm -f libc_stdlib
+	rm -f libats_funmap
 	rm -f libats_genarrays
 	rm -f libats_hashtable_chain
 	rm -f libats_hashtable_linprb
 	rm -f libats_intinf
 	rm -f libats_iterint
+	rm -f libats_linmap
 	rm -f libats_regexp
 	rm -f libats_smlbas_array
 	rm -f libats_smlbas_array2

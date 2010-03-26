@@ -9,7 +9,7 @@
 (*
 ** ATS - Unleashing the Potential of Types!
 **
-** Copyright (C) 2002-2008 Hongwei Xi, Boston University
+** Copyright (C) 2002-2010 Hongwei Xi, Boston University
 **
 ** All rights reserved
 **
@@ -36,7 +36,7 @@
 ** A map implementation based on AVL trees
 **
 ** Contributed by Hongwei Xi (hwxi AT cs DOT bu DOT edu)
-** Time: March, 2010 // based on a version done in October, 2008
+** Time: March, 2010 // based on a version done in October, 2010
 **
 *)
 
@@ -74,8 +74,8 @@ implement{key} compare_key_key (x1, x2, cmp) = cmp (x1, x2)
 
 datatype avltree (key:t@ype, itm:t@ype+, int(*height*)) =
   | {hl,hr:nat | hl <= hr+HTDF; hr <= hl+HTDF}
-    B (key, itm, max(hl,hr)+1) of
-      (int (max(hl,hr)+1), key, itm, avltree (key, itm, hl), avltree (key, itm, hr))
+    B (key, itm, 1+max(hl,hr)) of
+      (int (1+max(hl,hr)), key, itm, avltree (key, itm, hl), avltree (key, itm, hr))
   | E (key, itm, 0)
 // end of [datatype avltree]
 
@@ -99,11 +99,11 @@ implement{} funmap_make_nil () = E ()
 
 implement{}
 funmap_is_nil (t) = case+ t of | B _ => false | E () => true
-// end of [funmap_is_empty]
+// end of [funmap_is_nil]
 
 implement{}
 funmap_isnot_nil (t) = case+ t of | B _ => true | E () => false
-// end of [funmap_isnot_empty]
+// end of [funmap_isnot_nil]
 
 (* ****** ****** *)
 
@@ -211,15 +211,17 @@ end // end of [avltree_rrotate]
 
 (* ****** ****** *)
 
-implement{key,itm} funmap_insert
-  (m, k0, x0, cmp) = insert (m) where {
-  fun insert {h:nat} .<h>. (t: avltree (key, itm, h))
-    :<cloref> avltree_inc (key, itm, h) = begin case+ t of
+implement{key,itm}
+funmap_insert
+  (m, k0, x0, cmp) = res where {
+  fun insert {h:nat} .<h>. (
+      t: avltree (key, itm, h), res: &bool? >> bool
+    ) :<cloref> avltree_inc (key, itm, h) = begin case+ t of
     | B {..} {hl,hr} (h, k, x, tl, tr) => let
         val sgn = compare_key_key (k0, k, cmp)
       in
         if sgn < 0 then let
-          val [hl:int] tl = insert (tl)
+          val [hl:int] tl = insert (tl, res)
           val hl = avltree_height (tl) : int hl
           and hr = avltree_height (tr) : int hr
         in
@@ -229,7 +231,7 @@ implement{key,itm} funmap_insert
             avltree_rrotate (k, x, hl, tl, hr, tr)
           end // end of [if]
         end else if sgn > 0 then let
-          val [hr:int] tr = insert (tr)
+          val [hr:int] tr = insert (tr, res)
           val hl = avltree_height (tl) : int hl
           and hr = avltree_height (tr) : int hr
         in
@@ -238,20 +240,23 @@ implement{key,itm} funmap_insert
           end else begin // hl+HTDF1 = hr
             avltree_lrotate (k, x, hl, tl, hr, tr)
           end // end of [if]
-        end else begin (* sgn = 0: item already exists *)
-          B (h, k, x0, tl, tr)
+        end else let (* [k0] already exists *)
+          val () = res := true in B (h, k, x0, tl, tr)
         end // end of [if]
       end // end of [B]
-    | E () => begin
-        B (1, k0, x0, E (), E ())
+    | E () => let (* [k0] is not in [m] *)
+        val () = res := false in B (1, k0, x0, E (), E ())
       end // end of [E]
   end // end of [insert]
+  var res: bool // uninitialized
+  val () = m := insert (m, res)
 } // end of [funmap_insert]
 
 (* ****** ****** *)
 
-implement{key,itm} funmap_insert_clo
-  (m, k0, x0, f, cmp) = insert (m, f) where {
+implement{key,itm}
+funmap_insert_clo
+  (m, k0, x0, f, cmp) = () where {
   fun insert {h:nat} .<h>.
     (t: avltree (key, itm, h), f: &(itm, itm) -<clo> itm)
     :<cloref> avltree_inc (key, itm, h) = begin case+ t of
@@ -286,11 +291,13 @@ implement{key,itm} funmap_insert_clo
         B (1, k0, x0, E (), E ())
       end // end of [E]
   end // end of [insert]
+  val () = m := insert (m, f)
 } // end of [funmap_insert_clo]
 
 (* ****** ****** *)
 
-fun{key,itm:t@ype} avltree_takeout_min {h:pos} .<h>. (
+fun{key,itm:t@ype}
+avltree_takeout_min {h:pos} .<h>. (
     t: avltree (key, itm, h)
   , k0: &key? >> key
   , x0: &itm? >> itm
@@ -304,9 +311,9 @@ in
       and hr = avltree_height (tr) : int hr
     in
       if hr - hl <= HTDF then begin
-        B (max(hl,hr)+1, k, x, tl, tr)
+        B (1+max(hl,hr), k, x, tl, tr)
       end else begin // hl+HTDF1 = hr
-       avltree_lrotate (k, x, hl, tl, hr, tr)
+        avltree_lrotate (k, x, hl, tl, hr, tr)
       end // end of [if]
     end // end of [B]
   | E () => (k0 := k; x0 := x; tr)
@@ -319,19 +326,16 @@ end // end of [avltree_takeout_min]
 //
 extern
 fun{key,itm:t@ype}
-funmap_takeout_ptr {l_res,l_b:addr} (
-  m: map (key, itm), k0: key, cmp: cmp key, res: ptr l_res, b: ptr l_b
-) :<> map (key, itm)
+funmap_takeout_ptr {l_res:addr}
+  (m: &map (key, itm), k0: key, cmp: cmp key, res: ptr l_res):<> bool
 // end of [funmap_takeout]
 
 implement{key,itm}
-funmap_takeout_ptr
-  {l_res,l_b}
-  (m, k0, cmp, p_res, p_b) =
-  takeout (m, p_res, p_b) where {
+funmap_takeout_ptr {l_res}
+  (m, k0, cmp, p_res) = b(*removed*) where {
   fun takeout {h:nat} .<h>. (
       t: avltree (key, itm, h)
-    , p_res: ptr l_res, p_b: ptr l_b
+    , p_res: ptr l_res, b: &bool? >> bool
     ) :<cloref> avltree_dec (key, itm, h) = begin
     case+ t of
     | B {..} {hl,hr} (h, k, x, tl, tr) => let
@@ -339,7 +343,7 @@ funmap_takeout_ptr
       in
         case+ 0 of
         | _ when sgn < 0 => let
-            val [hl:int] tl = takeout (tl, p_res, p_b)
+            val [hl:int] tl = takeout (tl, p_res, b)
             val hl = avltree_height (tl) : int hl
             and hr = avltree_height (tr) : int hr
           in
@@ -350,7 +354,7 @@ funmap_takeout_ptr
             end // end of [if]
           end // end of [sgn < 0]
         | _ when sgn > 0 => let
-            val [hr:int] tr = takeout (tr, p_res, p_b)
+            val [hr:int] tr = takeout (tr, p_res, b)
             val hl = avltree_height (tl) : int hl
             and hr = avltree_height (tr) : int hr
           in
@@ -370,15 +374,7 @@ funmap_takeout_ptr
             in
               // nothing
             end // end of [val]
-            val () = if (p_b <> null) then let
-              prval (pf, fpf) = __assert () where {
-                extern prfun __assert (): (bool? @ l_b, bool @ l_b -<> void)
-              }
-              val () = !p_b := true
-              prval () = fpf (pf)
-            in
-              // nothing
-            end // end of [val]
+            val () = b := true
           in
             case+ tr of
             | B _ => let
@@ -397,38 +393,29 @@ funmap_takeout_ptr
           end // end of [sgn = 0]
       end // end of [B]
     | E () => t where {
-        val () = if (p_b <> null) then let
-          prval (pf, fpf) = __assert () where {
-            extern prfun __assert (): (bool? @ l_b, bool @ l_b -<> void)
-          }
-          val () = !p_b := false
-          prval () = fpf (pf)
-        in
-          // nothing
-        end // end of [E]
+        val () = b := false
       } // end of [E]
   end // end of [takeout]
+  var b: bool // unitialized
+  val () = m := takeout (m, p_res, b)
 } // end of [funmap_takeout_ptr]
 
 (* ****** ****** *)
 
 implement{key,itm}
 funmap_takeout
-  (m, k0, cmp, res, b) = m where {
-  val m = funmap_takeout_ptr<key,itm> (m, k0, cmp, &res, &b)
-  prval (pf1, pf2) = __assert (view@ res, view@ b) where {
-    extern prfun __assert {l_res,l_b:addr}
-      (pf1: itm? @ l_res, pf2: bool? @ l_b):<> [b:bool] (opt (itm, b) @ l_res, bool b @ l_b)
-    // end of [__assert]
+  (m, k0, cmp, res) = ans where {
+  val ans = funmap_takeout_ptr<key,itm> (m, k0, cmp, &res)
+  val [b:bool] ans = bool1_of_bool (ans)
+  prval pf = __assert (view@ res) where {
+    extern prfun __assert {l_res:addr} (pf: itm? @ l_res):<> (opt (itm, b) @ l_res)
   } // end of [prval]
-  prval () = (view@ res := pf1; view@ b := pf2)
+  prval () = (view@ res := pf)
 } // end of [funmap_takeout]
 
 implement{key,itm}
-funmap_remove
-  (m, k0, cmp) = m where {
-  val m = funmap_takeout_ptr<key,itm> (m, k0, cmp, null, null)
-} // end of [funmap_remove]
+funmap_remove (m, k0, cmp) = funmap_takeout_ptr<key,itm> (m, k0, cmp, null)
+// end of [funmap_remove]
 
 (* ****** ****** *)
 

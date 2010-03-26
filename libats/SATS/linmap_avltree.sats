@@ -36,7 +36,7 @@
 ** A map implementation based on AVL trees
 **
 ** Contributed by Hongwei Xi (hwxi AT cs DOT bu DOT edu)
-** Time: March, 2010 // based on a version done in October, 2010
+** Time: March, 2010
 **
 *)
 
@@ -52,8 +52,8 @@
 
 (* ****** ****** *)
 
-abstype map_t0ype_t0ype (key:t@ype, itm:t@ype+)
-stadef map = map_t0ype_t0ype
+absviewtype map_t0ype_viewt0ype (key:t@ype, itm:viewt@ype+)
+stadef map = map_t0ype_viewt0ype
 
 (* ****** ****** *)
 
@@ -62,28 +62,32 @@ fun{key:t@ype} compare_key_key (x1: key, x2: key, cmp: cmp key):<> Sgn
 
 (* ****** ****** *)
 
-fun{} funmap_make_nil {key,itm:t@ype} ():<> map (key, itm)
+sortdef t0p = t@ype and vt0p = viewt@ype
 
 (* ****** ****** *)
 
-fun{} funmap_is_nil {key,itm:t@ype} (m: map (key, itm)):<> bool
-fun{} funmap_isnot_nil {key,itm:t@ype} (m: map (key, itm)):<> bool
+fun{} linmap_make_nil {key:t0p;itm:vt0p} ():<> map (key, itm)
+
+(* ****** ****** *)
+
+fun{} linmap_is_nil {key:t0p;itm:vt0p} (m: !map (key, itm)):<> bool
+fun{} linmap_isnot_nil {key:t0p;itm:vt0p} (m: !map (key, itm)):<> bool
 
 (* ****** ****** *)
 
 // this function is O(n)-time and non-tail-recursive
-fun{key,itm:t@ype} funmap_size (m: map (key, itm)):<> Nat
+fun{key,itm:t@ype} linmap_size (m: !map (key, itm)):<> Nat
 
 // this function is O(1) // for gathering stats
-fun{key,itm:t@ype} funmap_height (m: map (key, itm)):<> Nat
+fun{key,itm:t@ype} linmap_height (m: !map (key, itm)):<> Nat
 
 (* ****** ****** *)
 
-fun{key,itm:t@ype}
-funmap_search (
-  m: map (key, itm), k0: key, cmp: cmp key, res: &itm? >> opt (itm, b)
+fun{key:t0p;itm:t0p}
+linmap_search (
+  m: !map (key, itm), k0: key, cmp: cmp key, res: &itm? >> opt (itm, b)
 ) :<> #[b:bool] bool b
-// end of [funmap_search]
+// end of [linmap_search]
 
 (* ****** ****** *)
 
@@ -91,41 +95,46 @@ funmap_search (
 // HX-2010-03-25:
 // if [k0] occurs in [m], [x0] replaces the original value associated with [k0]
 //
-fun{key,itm:t@ype} funmap_insert (
-    m: &map (key, itm), k0: key, x0: itm, cmp: cmp key
-  ) :<> bool(*[k0] alreay exists in [m]*)
-// end of [funmap_insert]
-
-fun{key,itm:t@ype} funmap_insert_clo (
-    m: &map (key, itm), k0: key, x0: itm, f: &(itm(*new*), itm) -<clo> itm, cmp: cmp key
-  ) :<> void
-// end of [funmap_insert_clo]
+fun{key:t0p;itm:vt0p}
+linmap_insert (
+    m: &map (key, itm), k0: key, x0: itm, cmp: cmp key, res: &itm? >> opt (itm, b)
+  ) :<> #[b:bool] bool b
+// end of [linmap_insert]
 
 (* ****** ****** *)
 
-fun{key,itm:t@ype} funmap_takeout (
+fun{key:t0p;itm:vt0p}
+linmap_takeout (
   m: &map (key, itm), k0: key, cmp: cmp key, res: &itm? >> opt (itm, b)
 ) :<> #[b:bool] bool b
-// end of [funmap_takeout]
+// end of [linmap_takeout]
 
-fun{key,itm:t@ype} funmap_remove
-  (m: &map (key, itm), k0: key, cmp: cmp key):<> bool(*removed/not: true/false*)
-// end of [funmap_remove]
-
-(* ****** ****** *)
-
-fun{key,itm:t@ype} funmap_foreach_main {v:view} {vt:viewtype}
-  (pf: !v | xs: map (key, itm), f: (!v | key, itm, !vt) -<fun> void, env: !vt):<> void
-// end of [funmap_foreach_main]
-
-fun{key,itm:t@ype} funmap_foreach_clo {v:view}
-  (pf: !v | xs: map (key, itm), f: &(!v | key, itm) -<clo> void):<> void
-// end of [funmap_foreach_clo]
-
-fun{key,itm:t@ype} funmap_foreach_cloref
-  (xs: map (key, itm), f: (key, itm) -<cloref> void):<!ref> void
-// end of [funmap_foreach_cloref]
+fun{key:t0p;itm:t0p}
+linmap_remove (m: &map (key, itm), k0: key, cmp: cmp key):<> bool
+// end of [linmap_remove]
 
 (* ****** ****** *)
 
-(* end of [funmap_avltree.sats] *)
+fun{key:t0p;itm:vt0p}
+linmap_foreach_main {v:view} {vt:viewtype}
+  (pf: !v | m: !map (key, itm), f: (!v | key, &itm, !vt) -<fun> void, env: !vt):<> void
+// end of [linmap_foreach_main]
+
+fun{key:t0p;itm:vt0p}
+linmap_foreach_clo {v:view}
+  (pf: !v | m: !map (key, itm), f: &(!v | key, &itm) -<clo> void):<> void
+// end of [linmap_foreach_clo]
+
+fun{key:t0p;itm:vt0p}
+linmap_foreach_cloref
+  (m: !map (key, itm), f: (key, &itm) -<cloref> void):<!ref> void
+// end of [linmap_foreach_cloref]
+
+(* ****** ****** *)
+
+fun{key:t0p;itm:t0p}
+linmap_free (m: map (key, itm)):<> void
+
+(* ****** ****** *)
+
+(* end of [linmap_avltree.sats] *)

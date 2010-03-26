@@ -48,8 +48,9 @@ implement main (argc, argv) = let
     // val key = $RAND.randint n
     val itm = tostring key // val itm = sprintf ("%i", @(key))
     // val () = printf ("key = %i and itm = %s\n", @(key, itm))
+    val _(*exists*) = $M.funmap_insert<int,string> (map, key, itm, cmp)
   in
-    map := $M.funmap_insert<int,string> (map, key, itm, cmp)
+    // nothing
   end // end [for]
 //
   val size = $M.funmap_size (map)
@@ -65,7 +66,7 @@ implement main (argc, argv) = let
   val () = if n < 100 then let
     prval pf = unit_v (); val () =
       $M.funmap_foreach_clo<int,string> {unit_v} (pf | map, !p_clo) where {
-      var !p_clo = @lam (pf: !unit_v | k: int, i: string): void =<clo> $effmask_all
+      var !p_clo = @lam (pf: !unit_v | k: key, i: itm): void =<clo> $effmask_all
         (printf ("%i\t->\t%s\n", @(k, i)))
     } // end of [val]
     prval unit_v () = pf
@@ -99,7 +100,7 @@ implement main (argc, argv) = let
 //
   var i: int; val () = for (i := 0; i < n; i := i+1) let
     val key = i
-    val () = map := $M.funmap_remove<int,string> (map, key, cmp)
+    val _(*removed*) = $M.funmap_remove<int,string> (map, key, cmp)
   in
     // nothing
   end // end [for]
