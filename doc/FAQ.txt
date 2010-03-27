@@ -113,13 +113,24 @@ A. In the first case, the type of [e] must be synthesized and this type is
    In the second case, the type of the expression [e : T] is [T], which is
    immediately assigned to [x], and [e] is then checked against [T].
 
-   If in double, please choose the second form of type annotation.
+   If in doublt, please choose the second form of type annotation.
 
 ------
 
 Q. What is the symbol for "not equal"?
 
 A. The symbol "<>" is used for "not equal".
+
+------
+
+Q. How to write a single precision float point number in ATS?
+
+A. Each of the following expressions gives a single precision float point
+   number representing 3.1415926:
+
+   3.1415926f
+   (3.1415926: float)
+   float_of_double(3.1415926)
 
 ------
 

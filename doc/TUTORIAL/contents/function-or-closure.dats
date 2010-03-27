@@ -4,11 +4,7 @@
 //
 //
 
-%{^
-
-#include "libc/CATS/stdlib.cats"
-
-%}
+(* ****** ****** *)
 
 staload "libc/SATS/stdlib.sats"
 
