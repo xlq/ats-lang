@@ -1,6 +1,6 @@
 #
 #
-# unit testing (kind of)
+# unit testing (kind of) for ATS library code
 #
 #
 
@@ -34,6 +34,7 @@ compall:: \
   libats_intinf \
   libats_iterint \
   libats_linmap_avltree \
+  libats_linqueue_arr \
   libats_regexp \
   libats_smlbas_array \
   libats_smlbas_array2 \
@@ -113,6 +114,12 @@ libats_linmap_avltree: libats_linmap_avltree.dats
 
 ######
 
+libats_linqueue_arr: libats_linqueue_arr.dats
+	$(ATSCC) -D_ATS_GCATS -O2 -o libats_linqueue_arr libats_linqueue_arr.dats \
+     && ./libats_linqueue_arr 1000000
+
+######
+
 libats_regexp: libats_regexp.dats
 	$(ATSCC) -O2 -o libats_regexp libats_regexp.dats -lpcre && ./libats_regexp "12345789"
 
@@ -159,13 +166,14 @@ cleanall: clean
 	rm -f libc_dirent
 	rm -f libc_dlfcn
 	rm -f libc_stdlib
-	rm -f libats_funmap
+	rm -f libats_funmap_avltree
 	rm -f libats_genarrays
 	rm -f libats_hashtable_chain
 	rm -f libats_hashtable_linprb
 	rm -f libats_intinf
 	rm -f libats_iterint
-	rm -f libats_linmap
+	rm -f libats_linmap_avltree
+	rm -f libats_linqueue_arr
 	rm -f libats_regexp
 	rm -f libats_smlbas_array
 	rm -f libats_smlbas_array2

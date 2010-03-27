@@ -75,7 +75,7 @@ hash_key (x: key, fhash: hash key):<> ulint
 // end of [hash_key]
 
 fun{key:t@ype}
-equal_key_key (x1: key, x2: key, feq: eq key):<> bool
+equal_key_key (x1: key, x2: key, eqfn: eq key):<> bool
 // end of [equal_key_key]
 
 (* ****** ****** *)
@@ -146,11 +146,11 @@ hashtbl_foreach_cloref {l:anz}
 (* ****** ****** *)
 
 fun hashtbl_make {key:t@ype;itm:viewt@ype}
-  (fhash: hash key, feq: eq key): HASHTBLptr1 (key, itm)
+  (fhash: hash key, eqfn: eq key): HASHTBLptr1 (key, itm)
 // end of [hashtbl_make]
 
 fun hashtbl_make_hint {key:t@ype;itm:viewt@ype}
-  (fhash: hash key, feq: eq key, hint: size_t): HASHTBLptr1 (key, itm)
+  (fhash: hash key, eqfn: eq key, hint: size_t): HASHTBLptr1 (key, itm)
   = "atslib_hashtbl_make_hint__chain"
 // end of [hashtbl_make_hint]
 
