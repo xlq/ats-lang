@@ -1,15 +1,16 @@
-all: fib_mt gcd_mt \
+##
+## A simple Makefile
+##
+
+######
+
+all: fib_mt \
      mergesort_mt_int mergesort_mt_float \
      partial-sums_mt nsieve_mt
 
 fib_mt: fib_mt.dats
 #	atscc -o fib_mt -O3 -D_ATS_gc -D_ATS_MULTITHREAD -pthread fib_mt.dats
 	atscc -o fib_mt -O3 -D_ATS_MULTITHREAD -pthread fib_mt.dats
-
-gcd_mt: gcd_mt.dats
-#	atscc -o gcd_mt -O3 -D_ATS_MULTITHREAD -pthread gcd_mt.dats
-#	atscc -o gcd_mt -O3 -D_ATS_MULTITHREAD -D_ATS_gc -pthread gcd_mt.dats
-	atscc -o gcd_mt -O3 -D_ATS_MULTITHREAD -D_ATS_GCATS -pthread gcd_mt.dats
 
 partial-sums_mt: partial-sums_mt.dats
 #	atscc -o partial-sums_mt -O3 -D_ATS_gc -D_ATS_MULTITHREAD -pthread partial-sums_mt.dats -lm
@@ -42,9 +43,7 @@ clean::
 
 cleanall: clean
 	rm -f a.out
-	rm -f fib
 	rm -f fib_mt
-	rm -f gcd_mt
 	rm -f mergesort_mt_int
 	rm -f mergesort_mt_float
 	rm -f quicksort_mt_int
@@ -52,3 +51,4 @@ cleanall: clean
 	rm -f nsieve_mt
 	rm -f partial-sums_mt
 
+###### end of [Makefile] ######

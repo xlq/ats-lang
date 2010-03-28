@@ -15,7 +15,7 @@ checkall: compall cleanall
 compall: AutoDiff coin_flip \
      curve fft hamming_lazy \
      GaussElim GarsiaWachs \
-     hanoi isqrt kmp \
+     gcd_mt hanoi isqrt kmp \
      longestline montecarlo \
      quicksort_list \
      queens queens_appel queens_lazy_vt \
@@ -50,6 +50,11 @@ GarsiaWachs: GarsiaWachs.dats
 # gaussian elimination
 GaussElim: GaussElim.dats
 	$(ATSCC) -o GaussElim GaussElim.dats && ./GaussElim
+
+# a multithreaded implementation of GCD
+gcd_mt: gcd_mt.dats
+	atscc -o gcd_mt -O3 -D_ATS_MULTITHREAD -pthread gcd_mt.dats \
+     && ./gcd_mt 12345 67890
 
 # hamming in lazy style
 hamming_lazy: hamming_lazy.dats
@@ -157,6 +162,7 @@ cleanall:: clean
 	rm -f fft
 	rm -f GaussElim
 	rm -f GarsiaWachs
+	rm -f gcd_mt
 	rm -f hamming_lazy
 	rm -f hanoi
 	rm -f isqrt

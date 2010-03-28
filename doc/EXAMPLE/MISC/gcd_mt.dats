@@ -4,16 +4,9 @@
 //
 //
 
-%{^
-
-#include "libc/CATS/pthread.cats"
-#include "libc/CATS/pthread_locks.cats"
-
-%}
-
 staload "libc/SATS/pthread.sats"
 staload _(*anonymous*) = "libc/DATS/pthread.dats"
-staload "libc/SATS/pthread_locks.sats"
+staload "libc/SATS/pthread_uplock.sats"
 
 (* ****** ****** *)
 
@@ -46,7 +39,8 @@ extern fun pthread_mutexref_unlock {a:viewt@ype} {l:addr}
 
 (* ****** ****** *)
 
-implement{a} pthread_mutexref_create (x) = let
+implement{a}
+pthread_mutexref_create (x) = let
   var x = x
 in
   pthread_mutexref_create_tsz {a} (view@ (x) | &x, sizeof<a>)
@@ -54,6 +48,9 @@ end // end of [pthread_mutexref_create]
 
 %{^
 
+//
+// HX-2010-03-28: this style cannot safely support GC
+//
 typedef struct {
   pthread_mutex_t mutex ; void* value[0] ;
 } pthread_mutexref_struct ;
@@ -65,41 +62,39 @@ ats_ptr_type
 atslib_pthread_mutexref_create_tsz
   (ats_ptr_type p_x, ats_size_type tsz) {
   pthread_mutexref_struct *p ;
-  p = ats_malloc_gc (sizeof (pthread_mutexref_struct) + tsz) ;
+  p = ATS_MALLOC(sizeof (pthread_mutexref_struct) + tsz) ;
   pthread_mutex_init (&(p->mutex), NULL) ;
   memcpy (&(p->value), p_x, (size_t)tsz) ;
   return p ;
-}
+} // end of [atslib_pthread_mutexref_create_tsz]
 
 static inline
 ats_ptr_type
-atslib_pthread_mutexref_lock (ats_ptr_type p0) {
+atslib_pthread_mutexref_lock
+  (ats_ptr_type p0) {
   pthread_mutexref_struct *p = p0 ;
   pthread_mutex_lock (&(p->mutex)) ;
   return &(p->value) ;
-}
+} // end of [atslib_pthread_mutexref_lock]
 
 static inline
 ats_void_type
-atslib_pthread_mutexref_unlock (ats_ptr_type p_value) {
+atslib_pthread_mutexref_unlock
+  (ats_ptr_type p_value) {
   pthread_mutex_unlock (
     (pthread_mutex_t*)((char*)p_value - sizeof(pthread_mutexref_struct))
   ) ;
   return ;
-}
+} // end of [atslib_pthread_mutexref_unlock]
 
-%}
+%} // end of [%{^]
 
 (* ****** ****** *)
 
 absprop GCD (int, int, int)
-
 extern prval gcd_lemma0 {x,y:int} ():<prf> [z:nat] GCD (x, y, z)
-
 extern prval gcd_lemma1 {x,y,z:int} (pf: GCD (x, y, z)):<prf> GCD (x - y, y, z)
-
 extern prval gcd_lemma2 {x,y,z:int} (pf: GCD (x, y, z)):<prf> GCD (x, y - x, z)
-
 extern prval gcd_lemma3 {x:nat;z:int} (pf: GCD (x, x, z)):<prf> [x == z] void
 
 //
@@ -146,16 +141,16 @@ fun gcd_mt {x0,y0:pos} {z:int}
   val ini = @((view@ x, view@ y, pfgcd) | 0)
   val mut = pthread_mutexref_create<VT> (ini)
   fun gcd_worker (ticket: upticket0, flag: int):<cloptr1> void = let
-     val (pf_ticket, pf_at | ptr) = pthread_mutexref_lock (mut)
-     val done = gcd_flag (ptr->0 | flag, &x, &y)
-     val () = pthread_mutexref_unlock (pf_ticket, pf_at | ptr)
-   in
-     if done then begin
-       pthread_upticket_upload_and_destroy (() | ticket)
-     end else begin
-       gcd_worker (ticket, flag)
-     end
-   end
+    val (pf_ticket, pf_at | ptr) = pthread_mutexref_lock (mut)
+    val done = gcd_flag (ptr->0 | flag, &x, &y)
+    val () = pthread_mutexref_unlock (pf_ticket, pf_at | ptr)
+  in
+    if done then begin
+      pthread_upticket_upload_and_destroy (() | ticket)
+    end else begin
+      gcd_worker (ticket, flag)
+    end
+  end // end of [gcd_worker]
   val uplock1 = pthread_uplock_create {void} ()
   val upticket1 = pthread_upticket_create {void} (uplock1)
   val () = pthread_create_detached_cloptr
