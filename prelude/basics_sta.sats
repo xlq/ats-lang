@@ -364,7 +364,7 @@ stadef refconst = refconst_t0ype_type
 
 (*
 
-// HX: should this be added?
+// HX-2009: should this be added?
 abstype refopt_viewt0ype_bool_type (viewt@ype, bool)
 stadef refopt = refopt_viewt0ype_bool_type
 

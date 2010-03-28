@@ -40,14 +40,14 @@
 
 /*
 #ifndef _ATS_MULTITHREAD
-#error "[pthread_locks.cats]: _ATS_MULTITHREAD is undefined!"
+#error "[pthread_uplock.cats]: _ATS_MULTITHREAD is undefined!"
 #endif
 */
 
 /* ****** ****** */
 
-#ifndef ATS_LIBC_PTHREAD_LOCKS_CATS
-#define ATS_LIBC_PTHREAD_LOCKS_CATS
+#ifndef ATS_LIBC_PTHREAD_UPLOCK_CATS
+#define ATS_LIBC_PTHREAD_UPLOCK_CATS
 
 /* ****** ****** */
 
@@ -65,29 +65,29 @@
 // locks and tickets for uploading
 
 typedef struct {
-  pthread_mutex_t mutex_res; /* for resources */
-} uplock_t ; /* linear lock uploading */
+  pthread_mutex_t mutex_res; /* for resource protection */
+} ats_pthread_uplock_t ; /* linear lock uploading */
 
-typedef uplock_t upticket_t ;
+typedef ats_pthread_uplock_t ats_pthread_upticket_t ;
 
 /* ****** ****** */
 
-static inline
+ATSinline()
 ats_void_type
 atslib_pthread_uplockopt_unnone (ats_ptr_type p) { return ; }
 
-static inline
+ATSinline()
 ats_ptr_type
 atslib_pthread_uplockopt_unsome (ats_ptr_type p) { return p ; }
 
-static inline
+ATSinline()
 ats_bool_type
 atslib_pthread_uplockopt_is_none
   (ats_ptr_type p) {
   return (p ? ats_false_bool : ats_true_bool) ;
 } // end of [atslib_pthread_uplockopt_is_none]
 
-static inline
+ATSinline()
 ats_bool_type
 atslib_pthread_uplockopt_is_some
   (ats_ptr_type p) {
@@ -96,38 +96,38 @@ atslib_pthread_uplockopt_is_some
 
 /* ****** ****** */
 
-static inline
+ATSinline()
 ats_ptr_type
 atslib_pthread_uplock_create () {
-  uplock_t *p ;
-  p = (uplock_t*)ATS_MALLOC(sizeof(uplock_t)) ;
+  ats_pthread_uplock_t *p ;
+  p = (ats_pthread_uplock_t*)ATS_MALLOC(sizeof(ats_pthread_uplock_t)) ;
   pthread_mutex_init (&p->mutex_res, NULL) ;
   return p ;
 } // end of [atslib_pthread_uplock_create]
 
-static inline
+ATSinline()
 ats_ptr_type
 atslib_pthread_upticket_create
   (ats_ptr_type p) {
-  pthread_mutex_lock (&((uplock_t*)p)->mutex_res) ;
+  pthread_mutex_lock (&((ats_pthread_upticket_t*)p)->mutex_res) ;
   return p ;
 } // end of [atslib_pthread_upticket_create]
 
-static inline
+ATSinline()
 ats_void_type
 atslib_pthread_upticket_upload_and_destroy
   (ats_ptr_type p) {
-  pthread_mutex_unlock (&((uplock_t*)p)->mutex_res) ;
+  pthread_mutex_unlock (&((ats_pthread_upticket_t*)p)->mutex_res) ;
   return ;
 } // end of [atslib_pthread_upticket_upload_and_destroy]
 
-static inline
+ATSinline()
 ats_void_type
 atslib_pthread_uplock_download
   (ats_ptr_type p) {
-  pthread_mutex_lock (&((uplock_t*)p)->mutex_res) ;
-  pthread_mutex_destroy (&((uplock_t*)p)->mutex_res) ;
-  ATS_FREE (p) ;
+  pthread_mutex_lock (&((ats_pthread_uplock_t*)p)->mutex_res) ;
+  pthread_mutex_destroy (&((ats_pthread_uplock_t*)p)->mutex_res) ;
+  ATS_FREE(p) ;
   return ;
 } // end of [atslib_pthread_uplock_download]
 
@@ -137,8 +137,8 @@ atslib_pthread_uplock_download
 
 /* ****** ****** */
 
-#endif // end of [#ifndef ATS_LIBC_PTHREAD_LOCKS_CATS]
+#endif // end of [#ifndef ATS_LIBC_PTHREAD_UPLOCK_CATS]
 
 /* ****** ****** */
 
-/* end of [pthread_locks.cats] */
+/* end of [pthread_uplock.cats] */

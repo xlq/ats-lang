@@ -64,8 +64,10 @@ fun pthread_create_detached_cloptr
   (f: () -<lin,cloptr1> void): void // closure must be freed to avoid leak!
 // end of [pthread_create_detached_cloptr]
 
+//
 // this function does not return to the caller
 // implemented in [$ATSHOME/ccomp/runtime/ats_prelude.c]
+//
 fun pthread_exit (): void = "ats_pthread_exit" // end of [pthread_exit]
 
 (* ****** ****** *)
@@ -116,7 +118,8 @@ fun pthread_mutex_create_unlocked {v:view} {l:addr}
 (* ****** ****** *)
 
 //
-// HX-2010-03-14: it should be called clear!
+// HX-2010-03-14:
+// it should be called uninitialize in ATS
 //
 fun pthread_mutex_destroy {v:view} {l:addr}
   (pf: !mutex_vt v @ l >> mutex_vt? @ l | p: ptr l): (v | void)

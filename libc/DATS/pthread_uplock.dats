@@ -35,7 +35,7 @@
 
 (* ****** ****** *)
 
-staload "libc/SATS/pthread.sats"
+staload "libc/SATS/pthread_uplock.sats"
 
 (* ****** ****** *)
 
@@ -43,18 +43,8 @@ staload "libc/SATS/pthread.sats"
 
 (* ****** ****** *)
 
-(*
-fun pthread_create_detached_cloptr
-  (f: () -<cloptr1> void): void // closure must be freed to avoid leak!
-// end of [pthread_create_detached_cloptr]
-*)
-
-implement pthread_create_detached_cloptr (f) = let
-  fun app (f: () -<lin,cloptr1> void): void = (f (); cloptr_free (f))
-in
-  pthread_create_detached (app, f)
-end // end of [pthread_create_detached_cloptr]
+// it is still empty!
 
 (* ****** ****** *)
 
-(* end of [pthread.dats] *)
+(* end of [pthread_uplock.dats] *)

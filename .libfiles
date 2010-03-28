@@ -201,11 +201,11 @@ libc/arpa/SATS/inet.sats
 
 libc/netinet/SATS/in.sats
 
-libc/SATS/pthread_locks.sats
-libc/DATS/pthread_locks.dats
-
 libc/SATS/pthread.sats
 libc/DATS/pthread.dats
+
+libc/SATS/pthread_uplock.sats
+libc/DATS/pthread_uplock.dats
 
 /* ****** ****** */
 

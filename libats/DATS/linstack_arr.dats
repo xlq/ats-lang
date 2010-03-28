@@ -74,7 +74,7 @@ STACKarr_v_decode
 
 extern prfun
 STACKarr_v_clear {a:t@ype}
-  {m,n:nat} {l_beg,l_cur:addr} {ofs:int}
+  {m,n:nat} {l_beg,l_cur:addr}
   (pfarr: STACKarr_v (a, m, n, l_beg, l_cur)):<prf> STACKarr_v (a, m, 0, l_beg, l_beg)
 // end of [STACKarr_v_clear]
 
@@ -84,8 +84,8 @@ viewtypedef STACK_vt (
   a:viewt@ype, m:int, n:int, l_beg:addr, l_cur:addr
 ) = $extype_struct "ats_libats_linstack_arr_STACK_vt" of {
   cap= size_t m
-, nitm= size_t n
-, sarr_beg = ptr l_beg
+, nitm= size_t n // = (l_beg - l_cur) / sizeof(a)
+, sarr_beg = ptr l_beg // this is definitely needed if GC is involved
 , sarr_cur = ptr l_cur
 , pfsarr= STACKarr_v (a, m, n, l_beg, l_cur)
 , pfsarr_gc= free_gc_v (a, m, l_beg)
@@ -130,7 +130,6 @@ stack_initialize {m} (s, m) = () where {
   val () = s.nitm := (size1_of_int1)0
   val tsz = sizeof<a>
   val [l_beg:addr] (pfarr_gc, pfarr | p_beg) = array_ptr_alloc_tsz {a} (m, tsz)
-  val [ofs:int] (pfmul | ofs) = mul2_size1_size1 (m, sizeof<a>)
   val () = s.sarr_beg := p_beg
   val () = s.sarr_cur := p_beg
   prval pfsarr = STACKarr_v_encode {a} (pfarr)
