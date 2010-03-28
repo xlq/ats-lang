@@ -122,13 +122,31 @@ overload pred with ppred
 
 (* ****** ****** *)
 
-fun padd {l:addr} {i:int} (p: ptr l, i: size_t i):<> ptr (l + i)
-  = "atspre_padd_size"
-overload + with padd
+symintr padd
+fun padd_int {l:addr} {i:int} (p: ptr l, i: int i):<> ptr (l + i)
+  = "atspre_padd_int"
+overload + with padd_int
+overload padd with padd_int
 
-fun psub {l:addr} {i:int} (p: ptr l, i: size_t i):<> ptr (l - i)
+fun padd_size {l:addr} {i:int} (p: ptr l, i: size_t i):<> ptr (l + i)
+  = "atspre_padd_size"
+overload + with padd_size
+overload padd with padd_size
+
+(* ****** ****** *)
+
+symintr psub
+fun psub_int {l:addr} {i:int} (p: ptr l, i: int i):<> ptr (l - i)
+  = "atspre_psub_int"
+overload - with psub_int
+overload psub with psub_int
+
+fun psub_size {l:addr} {i:int} (p: ptr l, i: size_t i):<> ptr (l - i)
   = "atspre_psub_size"
-overload - with psub
+overload - with psub_size
+overload psub with psub_size
+
+(* ****** ****** *)
 
 fun pdiff {l1,l2:addr} (p1: ptr l1, p2: ptr l2):<> ptrdiff_t (l1 - l2)
   = "atspre_pdiff"

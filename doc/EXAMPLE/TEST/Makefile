@@ -35,6 +35,7 @@ compall:: \
   libats_iterint \
   libats_linmap_avltree \
   libats_linqueue_arr \
+  libats_linstack_arr \
   libats_regexp \
   libats_smlbas_array \
   libats_smlbas_array2 \
@@ -118,6 +119,10 @@ libats_linqueue_arr: libats_linqueue_arr.dats
 	$(ATSCC) -D_ATS_GCATS -O2 -o libats_linqueue_arr libats_linqueue_arr.dats \
      && ./libats_linqueue_arr 1000000
 
+libats_linstack_arr: libats_linstack_arr.dats
+	$(ATSCC) -D_ATS_GCATS -O2 -o libats_linstack_arr libats_linstack_arr.dats \
+     && ./libats_linstack_arr 1000000
+
 ######
 
 libats_regexp: libats_regexp.dats
@@ -174,6 +179,7 @@ cleanall: clean
 	rm -f libats_iterint
 	rm -f libats_linmap_avltree
 	rm -f libats_linqueue_arr
+	rm -f libats_linstack_arr
 	rm -f libats_regexp
 	rm -f libats_smlbas_array
 	rm -f libats_smlbas_array2

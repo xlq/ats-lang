@@ -56,26 +56,26 @@ staload "libats/SATS/linqueue_arr.sats"
 
 (* ****** ****** *)
 
-absview QUEUEarr_v
-  (a:viewt@ype+, m:int, n:int, l_beg:addr, l_end:addr, l_fst:addr, l_lst:addr)
-// end of [QUEUEarr_v]
+absview QUEUEarr_v (
+  a:viewt@ype+, m:int, n:int, l_beg:addr, l_end:addr, l_fst:addr, l_lst:addr
+) // end of [QUEUEarr_v]
 
 extern prfun
-QUEUEarr_v_encode
-  {a:viewt@ype} {m:nat} {l:addr} {ofs:int}
-  (pfmul: MUL (m, sizeof a, ofs), pfarr: array_v (a?, m, l))
-  :<prf> QUEUEarr_v (a, m, 0, l, l+ofs, l, l)
+QUEUEarr_v_encode {a:viewt@ype}
+  {m:nat} {l_beg:addr} {ofs:int} (
+    pfmul: MUL (m, sizeof a, ofs), pfarr: array_v (a?, m, l_beg)
+  ) :<prf> QUEUEarr_v (a, m, 0, l_beg, l_beg+ofs, l_beg, l_beg)
 // end of [QUEUEarr_v_encode]
 
 extern prfun
-QUEUEarr_v_decode
-  {a:viewt@ype} {m:nat} {l_beg,l_end,l_fst,l_lst:addr}
+QUEUEarr_v_decode {a:viewt@ype}
+  {m:nat} {l_beg,l_end,l_fst,l_lst:addr}
   (pf: QUEUEarr_v (a, m, 0, l_beg, l_end, l_fst, l_lst)):<prf> array_v (a?, m, l_beg)
 // end of [QUEUEarr_v_decode]
 
 extern prfun
-QUEUEarr_v_clear
-  {a:viewt@ype} {m,n:nat} {l_beg,l_end,l_fst,l_lst:addr}
+QUEUEarr_v_clear {a:t@ype}
+  {m,n:nat} {l_beg,l_end,l_fst,l_lst:addr}
   (pf: QUEUEarr_v (a, m, n, l_beg, l_end, l_fst, l_lst))
   :<prf> QUEUEarr_v (a, m, 0, l_beg, l_end, l_beg, l_beg)
 // end of [QUEUEarr_v_clear]
