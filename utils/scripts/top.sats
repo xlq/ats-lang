@@ -68,10 +68,8 @@ fun atslib_output_global (): String = "atslib_output_global"
 fun libats_local (): String = "libats_local"
 fun libats_global (): String = "libats_global"
 
-(*
 fun libats_mt_local (): String = "libats_mt_local"
 fun libats_mt_global (): String = "libats_mt_global"
-*)
 
 (* ****** ****** *)
 

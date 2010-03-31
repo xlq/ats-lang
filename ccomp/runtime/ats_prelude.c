@@ -166,7 +166,7 @@ ats_funarg_match_failure_handle (
 
 #ifdef _ATS_MULTITHREAD
 
-ats_void_type
+ats_int_type
 ats_pthread_create_detached (
   ats_ptr_type f // f(ats_ptr_type): void
 , ats_ptr_type env
@@ -194,7 +194,6 @@ ats_pthread_create_detached (
   pthread_attr_setdetachstate (&attr, PTHREAD_CREATE_DETACHED) ;
   ret = pthread_create (&pid, &attr, f, env) ;
 #endif // end of [#ifdef]
-  if (ret != 0) { perror ("ats_pthread_create_detached: ") ; exit(1) ; }
   return ;
 } /* end of [ats_pthread_create_detached] */
 

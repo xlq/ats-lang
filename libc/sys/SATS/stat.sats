@@ -40,10 +40,8 @@ staload "libc/sys/SATS/types.sats"
 (* ****** ****** *)
 
 %{#
-
 #include "libc/sys/CATS/stat.cats"
-
-%}
+%} // end of [%{#]
 
 (* ****** ****** *)
 

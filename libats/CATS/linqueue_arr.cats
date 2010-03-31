@@ -49,7 +49,7 @@ typedef struct {
   ats_ptr_type qarr_end ;
   ats_ptr_type qarr_fst ;
   ats_ptr_type qarr_lst ;
-} ats_libats_linqueue_arr_QUEUE_vt ;
+} atslib_linqueue_arr_QUEUE ;
 
 /* ****** ****** */
 

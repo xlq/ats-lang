@@ -88,6 +88,7 @@ implement main {n} (argc, argv) = let
         // empty // skip the empty argument
       end else begin case+ arg of
         | "--libats" => libats_make (param_rev)
+        | "--libats_mt" => libats_mt_make (param_rev)
         | "--libats_smlbas" => libats_smlbas_make (param_rev)
         | "--libats_lex" => libats_lex_make (param_rev)
         | "-m32" => let

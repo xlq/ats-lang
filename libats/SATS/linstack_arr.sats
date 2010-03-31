@@ -65,9 +65,22 @@
 //
 absviewt@ype STACK
   (a:viewt@ype+, m: int, n: int)
-  = $extype "ats_libats_linstack_arr_STACK_vt"
+  = $extype "atslib_linstack_arr_STACK"
 // end of [STACK]
 typedef STACK0 (a:viewt@ype) = STACK (a, 0, 0)?
+
+(* ****** ****** *)
+
+fun stack_cap {a:viewt@ype} {m,n:nat} (q: &STACK (a, m, n)):<> size_t m
+fun stack_size {a:viewt@ype} {m,n:nat} (q: &STACK (a, m, n)):<> size_t n
+
+(* ****** ****** *)
+
+fun stack_is_empty {a:viewt@ype} {m,n:nat} (q: &STACK (a, m, n)):<> bool (n==0)
+fun stack_isnot_empty {a:viewt@ype} {m,n:nat} (q: &STACK (a, m, n)):<> bool (n > 0)
+
+fun stack_is_full {a:viewt@ype} {m,n:nat} (q: &STACK (a, m, n)):<> bool (m==n)
+fun stack_isnot_full {a:viewt@ype} {m,n:nat} (q: &STACK (a, m, n)):<> bool (m > n)
 
 (* ****** ****** *)
 

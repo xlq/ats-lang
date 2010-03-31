@@ -65,16 +65,37 @@
 //
 absviewt@ype QUEUE
   (a:viewt@ype+, m: int, n: int)
-  = $extype "ats_libats_linqueue_arr_QUEUE_vt"
+  = $extype "atslib_linqueue_arr_QUEUE"
 // end of [QUEUE]
+viewtypedef QUEUE (a:viewt@ype) = [m,n:nat] QUEUE (a, m, n)
 typedef QUEUE0 (a:viewt@ype) = QUEUE (a, 0, 0)?
 
 (* ****** ****** *)
 
+fun queue_cap {a:viewt@ype} {m,n:int} (q: &QUEUE (a, m, n)):<> size_t m
+fun queue_size {a:viewt@ype} {m,n:int} (q: &QUEUE (a, m, n)):<> size_t n
+
+(* ****** ****** *)
+
+fun queue_is_empty {a:viewt@ype} {m,n:nat} (q: &QUEUE (a, m, n)):<> bool (n <= 0)
+fun queue_isnot_empty {a:viewt@ype} {m,n:nat} (q: &QUEUE (a, m, n)):<> bool (n > 0)
+
+fun queue_is_full {a:viewt@ype} {m,n:nat} (q: &QUEUE (a, m, n)):<> bool (m <= n)
+fun queue_isnot_full {a:viewt@ype} {m,n:nat} (q: &QUEUE (a, m, n)):<> bool (m > n)
+
+(* ****** ****** *)
+
 // initializing to a queue of capacity [m]
-fun{a:viewt@ype} queue_initialize {m:nat}
+fun{a:viewt@ype}
+queue_initialize {m:nat}
   (q: &QUEUE0 a >> QUEUE (a, m, 0), m: size_t m):<> void
-// end of [linqueuearr_initialize]
+// end of [queue_initialize]
+
+// initializing to a queue of capacity [m]
+fun queue_initialize_tsz {a:viewt@ype} {m:nat}
+  (q: &QUEUE0 a >> QUEUE (a, m, 0), m: size_t m, tsz: sizeof_t a):<> void
+  = "atslib_linqueue_arr_queue_initialize_tsz"
+// end of [queue_initialize_tsz]
 
 (* ****** ****** *)
 
@@ -93,6 +114,7 @@ queue_remove (*first*)
 
 fun queue_uninitialize {a:t@ype}
   {m,n:nat} {l:addr} (q: &QUEUE (a, m, n) >> QUEUE0 a):<> void
+  = "atslib_linqueue_arr_queue_uninitialize"
 // end of [queue_uninitialize]
 
 //
@@ -100,7 +122,7 @@ fun queue_uninitialize {a:t@ype}
 //
 fun queue_uninitialize_vt {a:viewt@ype}
   {m:nat} {l:addr} (q: &QUEUE (a, m, 0) >> QUEUE0 a):<> void
-// end of [queue_unintialize_vt]
+// end of [queue_uninitialize_vt]
 
 (* ****** ****** *)
 

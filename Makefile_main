@@ -139,6 +139,10 @@ lib64files: .libfiles_local
 	"$(ATSHOME)"/bin/atslib $(ATS_TERMINATION_CHECK) -m64 -O2 --libats_lex
 	"$(ATSHOME)"/bin/atslib $(ATS_TERMINATION_CHECK) -m64 -O2 --libats_smlbas
 
+.libfiles_mt_local: ; $(GCC) -E -P -x c .libfiles_mt -o .libfiles_mt_local
+libfiles_mt: .libfiles_mt_local
+	"$(ATSHOME)"/bin/atslib $(ATS_TERMINATION_CHECK) -D_ATS_MULTITHREAD -O2 --libats_mt
+
 ###### a lexer for ATS ######
 
 bin/atslex:
@@ -184,6 +188,7 @@ clean::
 cleanall:: clean
 	rm -f config.h
 	rm -f .libfiles_local
+	rm -f .libfiles_mt_local
 	rm -f bin/atsopt bin/atscc bin/atslib bin/atslex bin/atspack
 	rm -f ccomp/lib/libats.a
 	rm -f ccomp/lib/libats_lex.a
@@ -207,6 +212,7 @@ tar:: cleanall
 	cp Makefile ATS
 	cp Makefile_chmod ATS
 	cp .libfiles ATS
+	cp .libfiles_mt ATS
 	cp configure.ac configure config.h.in ATS
 	mkdir ATS/bin
 	mkdir ATS/bootstrap

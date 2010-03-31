@@ -60,7 +60,7 @@ atspre_exit_prerrf(ats_int_type code, ats_ptr_type fmt, ...) ;
 
 /* --------------------------------------- */
 
-static inline
+ATSinline()
 ats_void_type
 atslib_clearerr(ats_ptr_type fil) {
   clearerr ((FILE*)fil) ; return ;
@@ -68,13 +68,13 @@ atslib_clearerr(ats_ptr_type fil) {
 
 /* --------------------------------------- */
 
-static inline
+ATSinline()
 ats_int_type
 atslib_fclose_err(ats_ptr_type fil) {
   return fclose((FILE*)fil) ;
 }
 
-static inline
+ATSinline()
 ats_void_type
 atslib_fclose_exn(ats_ptr_type fil) {
   int err = fclose((FILE*)fil) ;
@@ -85,21 +85,21 @@ atslib_fclose_exn(ats_ptr_type fil) {
   return ;
 }
 
-static inline
+ATSinline()
 ats_void_type
 atslib_fclose_stdin() {
   atspre_stdin_view_get() ; atslib_fclose_exn(stdin) ;
   return ;
 }
 
-static inline
+ATSinline()
 ats_void_type
 atslib_fclose_stdout() {
   atspre_stdout_view_get() ; atslib_fclose_exn(stdout) ;
   return ;
 }
 
-static inline
+ATSinline()
 ats_void_type
 atslib_fclose_stderr() {
   atspre_stderr_view_get() ; atslib_fclose_exn(stderr) ;
@@ -108,7 +108,7 @@ atslib_fclose_stderr() {
 
 /* --------------------------------------- */
 
-static inline
+ATSinline()
 ats_int_type
 atslib_feof (
   ats_ptr_type fil
@@ -116,7 +116,7 @@ atslib_feof (
   return feof((FILE*)fil) ;
 }
 
-static inline
+ATSinline()
 ats_int_type
 atslib_ferror(
   ats_ptr_type fil
@@ -126,7 +126,7 @@ atslib_ferror(
 
 /* --------------------------------------- */
 
-static inline
+ATSinline()
 ats_int_type
 atslib_fflush_err(
   ats_ptr_type fil
@@ -134,7 +134,7 @@ atslib_fflush_err(
   return fflush((FILE*)fil) ;
 }
 
-static inline
+ATSinline()
 ats_void_type
 atslib_fflush_exn(
   ats_ptr_type fil
@@ -147,7 +147,7 @@ atslib_fflush_exn(
   return ;
 } /* end of [atslib_fflush_exn] */
 
-static inline
+ATSinline()
 ats_void_type
 atslib_fflush_stdout (void) {
   atspre_stdout_view_get ();
@@ -158,11 +158,11 @@ atslib_fflush_stdout (void) {
 
 /* --------------------------------------- */
 
-static inline
+ATSinline()
 ats_int_type
 atslib_fgetc_err (ats_ptr_type fil) { return fgetc((FILE*)fil) ; }
 
-static inline
+ATSinline()
 ats_int_type
 atslib_getchar () {
   int i ;
@@ -172,7 +172,7 @@ atslib_getchar () {
 
 /* --------------------------------------- */
 
-static inline
+ATSinline()
 ats_ptr_type
 atslib_fgets_err (
   ats_ptr_type buf
@@ -182,7 +182,7 @@ atslib_fgets_err (
   return fgets((char*)buf, (int)n, (FILE*)fil) ;
 }
 
-static inline
+ATSinline()
 ats_void_type
 atslib_fgets_exn (
   ats_ptr_type buf
@@ -204,13 +204,13 @@ atslib_fgets_exn (
 
 /* --------------------------------------- */
 
-static inline
+ATSinline()
 ats_int_type
 atslib_fileno(ats_ptr_type fil) { return fileno((FILE*)fil) ; }
 
 /* --------------------------------------- */
 
-static inline
+ATSinline()
 ats_ptr_type
 atslib_fopen_err (
   ats_ptr_type name, ats_ptr_type mode
@@ -218,7 +218,7 @@ atslib_fopen_err (
   return fopen((char*)name, (char*)mode) ;
 }
 
-static inline
+ATSinline()
 ats_ptr_type
 atslib_fopen_exn (
   ats_ptr_type name, ats_ptr_type mode
@@ -234,7 +234,7 @@ atslib_fopen_exn (
 
 /* --------------------------------------- */
 
-static inline
+ATSinline()
 ats_int_type
 atslib_fputc_err (
   ats_char_type c, ats_ptr_type fil
@@ -242,7 +242,7 @@ atslib_fputc_err (
   return fputc((unsigned char)c, (FILE*)fil) ;
 }
 
-static inline
+ATSinline()
 ats_void_type
 atslib_fputc_exn (
   ats_char_type c, ats_ptr_type fil
@@ -257,7 +257,7 @@ atslib_fputc_exn (
 
 /* --------------------------------------- */
 
-static inline
+ATSinline()
 ats_int_type
 atslib_fputs_err(
   ats_ptr_type s, ats_ptr_type fil
@@ -265,7 +265,7 @@ atslib_fputs_err(
   return fputs ((char*)s, (FILE*)fil) ;
 }
 
-static inline
+ATSinline()
 ats_void_type
 atslib_fputs_exn(
   ats_ptr_type s, ats_ptr_type fil
@@ -280,7 +280,7 @@ atslib_fputs_exn(
 
 /* --------------------------------------- */
 
-static inline
+ATSinline()
 ats_size_type
 atslib_fread (
   ats_ptr_type buf
@@ -292,7 +292,7 @@ atslib_fread (
   return fread ((void*)buf, sz, n, (FILE*)fil) ;
 }
 
-static inline
+ATSinline()
 ats_size_type
 atslib_fread_byte (
   ats_ptr_type buf
@@ -302,7 +302,7 @@ atslib_fread_byte (
   return fread ((void*)buf, 1, n, (FILE*)fil) ;
 }
 
-static inline
+ATSinline()
 ats_void_type
 atslib_fread_byte_exn (
   ats_ptr_type buf
@@ -320,7 +320,7 @@ atslib_fread_byte_exn (
 
 /* --------------------------------------- */
 
-static inline
+ATSinline()
 ats_ptr_type
 atslib_freopen_err (
   ats_ptr_type name
@@ -330,7 +330,7 @@ atslib_freopen_err (
   return freopen(name, mode, (FILE*)fil) ;
 }
 
-static inline
+ATSinline()
 ats_void_type
 atslib_freopen_exn(
   ats_ptr_type name
@@ -348,7 +348,7 @@ atslib_freopen_exn(
 
 /* --------------------------------------- */
 
-static inline
+ATSinline()
 ats_void_type
 atslib_freopen_stdin
   (ats_ptr_type name) {
@@ -364,7 +364,7 @@ atslib_freopen_stdin
   return ;
 }
 
-static inline
+ATSinline()
 ats_void_type
 atslib_freopen_stdout
   (ats_ptr_type name) {
@@ -380,7 +380,7 @@ atslib_freopen_stdout
   return ;
 }
 
-static inline
+ATSinline()
 ats_void_type
 atslib_freopen_stderr
   (ats_ptr_type name) {
@@ -398,7 +398,7 @@ atslib_freopen_stderr
 
 /* --------------------------------------- */
 
-static inline
+ATSinline()
 ats_int_type
 atslib_fseek_err (
   ats_ptr_type fil
@@ -408,7 +408,7 @@ atslib_fseek_err (
   return fseek ((FILE*)fil, offset, whence) ;
 } /* atslib_fseek_err */
 
-static inline
+ATSinline()
 ats_void_type
 atslib_fseek_exn (
   ats_ptr_type fil
@@ -426,7 +426,7 @@ atslib_fseek_exn (
 
 /* --------------------------------------- */
 
-static inline
+ATSinline()
 ats_lint_type
 atslib_ftell_err(
   ats_ptr_type fil
@@ -434,7 +434,7 @@ atslib_ftell_err(
   return ftell((FILE*)fil) ;
 }
 
-static inline
+ATSinline()
 ats_lint_type
 atslib_ftell_exn(
   ats_ptr_type fil
@@ -449,7 +449,7 @@ atslib_ftell_exn(
 
 /* --------------------------------------- */
 
-static inline
+ATSinline()
 ats_size_type
 atslib_fwrite (
   ats_ptr_type buf
@@ -460,7 +460,7 @@ atslib_fwrite (
   return fwrite((void*)buf, sz, n, (FILE*)fil) ;
 } /* atslib_fwrite */
 
-static inline
+ATSinline()
 ats_size_type
 atslib_fwrite_byte (
   ats_ptr_type buf
@@ -470,7 +470,7 @@ atslib_fwrite_byte (
   return fwrite((void*)buf, 1, n, (FILE*)fil) ;
 } /* atslib_fwrite_byte */
 
-static inline
+ATSinline()
 ats_void_type
 atslib_fwrite_byte_exn (
   ats_ptr_type buf0
@@ -488,7 +488,7 @@ atslib_fwrite_byte_exn (
 
 /* --------------------------------------- */
 
-static inline
+ATSinline()
 ats_void_type
 atslib_perror(
   ats_ptr_type msg
@@ -501,7 +501,7 @@ atslib_perror(
 
 /* --------------------------------------- */
 
-static inline
+ATSinline()
 ats_int_type
 atslib_putchar(
   ats_char_type c
@@ -515,7 +515,7 @@ atslib_putchar(
 
 /* --------------------------------------- */
 
-static inline
+ATSinline()
 ats_int_type
 atslib_puts_err(
   ats_ptr_type str
@@ -527,7 +527,7 @@ atslib_puts_err(
   return err ;
 } /* end of [atslib_puts_err] */
 
-static inline
+ATSinline()
 ats_void_type
 atslib_puts_exn(
   ats_ptr_type str
@@ -545,7 +545,7 @@ atslib_puts_exn(
 
 /* --------------------------------------- */
 
-static inline
+ATSinline()
 ats_int_type
 atslib_remove_err (
   ats_ptr_type path
@@ -553,7 +553,7 @@ atslib_remove_err (
   return remove((char*)path) ;
 }
 
-static inline
+ATSinline()
 ats_void_type
 atslib_remove_exn(
   ats_ptr_type path
@@ -568,7 +568,7 @@ atslib_remove_exn(
 
 /* --------------------------------------- */
 
-static inline
+ATSinline()
 ats_int_type
 atslib_rename_err (
   ats_ptr_type oldpath, ats_ptr_type newpath
@@ -576,7 +576,7 @@ atslib_rename_err (
   return rename((char*)oldpath, (char*)newpath) ;
 }
 
-static inline
+ATSinline()
 ats_void_type
 atslib_rename_exn (
   ats_ptr_type oldpath, ats_ptr_type newpath
@@ -591,7 +591,7 @@ atslib_rename_exn (
 
 /* --------------------------------------- */
 
-static inline
+ATSinline()
 ats_void_type
 atslib_rewind (
   ats_ptr_type fil
@@ -601,11 +601,11 @@ atslib_rewind (
 
 /* --------------------------------------- */
 
-static inline
+ATSinline()
 ats_ptr_type
 atslib_tmpfile_err () { return tmpfile() ; }
 
-static inline
+ATSinline()
 ats_ptr_type
 atslib_tmpfile_exn () {
   FILE* fil =  tmpfile() ;
@@ -618,7 +618,7 @@ atslib_tmpfile_exn () {
 
 /* --------------------------------------- */
 
-static inline
+ATSinline()
 ats_int_type
 atslib_ungetc_err (
   ats_char_type c, ats_ptr_type fil
@@ -626,7 +626,7 @@ atslib_ungetc_err (
   return ungetc((unsigned char)c, (FILE*)fil) ;
 }
 
-static inline
+ATSinline()
 ats_void_type
 atslib_ungetc_exn (
   ats_char_type c, ats_ptr_type fil
@@ -635,7 +635,7 @@ atslib_ungetc_exn (
   if (err < 0) {
     perror ("ungetc") ;
     ats_exit_errmsg (1, (ats_ptr_type)"exit(ATS): [ungetc] failed\n") ;
-  }
+  } // end of [if]
   return ;
 } /* end of [atslib_ungetc_exn] */
 

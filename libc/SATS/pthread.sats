@@ -54,11 +54,24 @@
 
 (* ****** ****** *)
 
+abst@ype pthread_t = $extype "pthread_t"
+castfn int_of_pthread (x: pthread_t):<> int
+castfn lint_of_pthread (x: pthread_t):<> lint
+fun pthread_self (): pthread_t = "#atslib_pthread_self"
+
+(* ****** ****** *)
+
+//
 // implemented in [$ATSHOME/ccomp/runtime/ats_prelude.c]
+//
 fun pthread_create_detached {vt:viewtype}
-  (f: (vt) -<fun1> void, env: vt): void // env is to be processed by f
+  (f: (vt) -<fun1> void, env: !vt >> opt (vt, i <> 0)): #[i:int] int i
   = "ats_pthread_create_detached"
 // end of [pthread_create_detached]
+
+fun pthread_create_detached_exn {vt:viewtype}
+  (f: (vt) -<fun1> void, env: vt): void // env is to be processed by f
+// end of [pthread_create_detached_exn]
 
 fun pthread_create_detached_cloptr
   (f: () -<lin,cloptr1> void): void // closure must be freed to avoid leak!
@@ -138,7 +151,8 @@ fun pthread_mutex_unlock {v:view}
 
 (* ****** ****** *)
 
-absviewt@ype pthread_cond_viewt0ype = $extype "pthread_cond_t"
+absviewt@ype
+pthread_cond_viewt0ype = $extype "pthread_cond_t"
 stadef cond_vt = pthread_cond_viewt0ype
 
 (* ****** ****** *)

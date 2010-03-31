@@ -85,7 +85,7 @@ QUEUEarr_v_clear {a:t@ype}
 viewtypedef QUEUE_vt (
   a:viewt@ype, m:int, n:int
 , l_beg:addr, l_end:addr, l_fst:addr, l_lst:addr
-) = $extype_struct "ats_libats_linqueue_arr_QUEUE_vt" of {
+) = $extype_struct "atslib_linqueue_arr_QUEUE" of {
   cap= size_t m
 , nitm= size_t n
 , qarr_beg = ptr l_beg
@@ -156,16 +156,36 @@ assume QUEUE (a:viewt@ype, m:int, n:int) =
 
 (* ****** ****** *)
 
+implement queue_cap (q) = q.cap
+implement queue_size (q) = q.nitm
+
+implement queue_is_empty (q) = (q.nitm <= 0)
+implement queue_isnot_empty (q) = (q.nitm > 0)
+
+implement queue_is_full (q) = (q.cap <= q.nitm)
+implement queue_isnot_full (q) = (q.cap > q.nitm)
+
+(* ****** ****** *)
+
 implement{a}
-queue_initialize {m} (q, m) = () where {
+queue_initialize {m} (q, m) = queue_initialize_tsz {a} {m} (q, m, sizeof<a>)
+// end of [queue_initialize]
+
+//
+// HX-2010-03-29:
+// the function is given the external name:
+// atslib_linqueue_arr_queue_initialize_tsz
+//
+implement
+queue_initialize_tsz
+  {a} {m} (q, m, tsz) = () where {
   prval () = __assert (q) where {
     extern prfun __assert (q: &QUEUE0 a >> QUEUE0_vt a):<> void
   } // end of [val]
   val () = q.cap := m
   val () = q.nitm := (size1_of_int1)0
-  val tsz = sizeof<a>
   val [l_beg:addr] (pfarr_gc, pfarr | p_beg) = array_ptr_alloc_tsz {a} (m, tsz)
-  val [ofs:int] (pfmul | ofs) = mul2_size1_size1 (m, sizeof<a>)
+  val [ofs:int] (pfmul | ofs) = mul2_size1_size1 (m, tsz)
   val () = q.qarr_beg := p_beg
   val () = q.qarr_end := p_beg + ofs
   val () = q.qarr_fst := p_beg
@@ -173,7 +193,7 @@ queue_initialize {m} (q, m) = () where {
   prval pfqarr = QUEUEarr_v_encode {a} (pfmul, pfarr)
   prval () = q.pfqarr := pfqarr
   prval () = q.pfqarr_gc := pfarr_gc
-} // end of [queue_initialize]
+} // end of [queue_initialize_tsz]
 
 (* ****** ****** *)
 
@@ -205,6 +225,11 @@ queue_remove (q) = x where {
 
 (* ****** ****** *)
 
+//
+// HX-2010-03-29:
+// the function is given the external name:
+// atslib_linqueue_arr_queue_uninitialize
+//
 implement
 queue_uninitialize
   {a} {m,n} (q) = () where {

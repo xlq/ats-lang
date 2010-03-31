@@ -631,35 +631,42 @@ fn name_is_prf (name: string): bool = name = "prf"
 
 fn name_is_lin0 (name: string): bool = 
   if name = "lin" then true else name = "lin0"
-
 fn name_is_lin1 (name: string): bool = name = "lin1"
 
 //
 
 fn name_is_fun0 (name: string): bool = 
   if name = "fun" then true else name = "fun0"
-
 fn name_is_fun1 (name: string): bool = name = "fun1"
+
+fn name_is_linfun0 (name: string): bool = 
+  if name = "linfun" then true else name = "linfun0"
+fn name_is_linfun1 (name: string): bool = name = "linfun1"
 
 //
 
 fn name_is_clo0 (name: string): bool =
   if name = "clo" then true else name = "clo0"
-
 fn name_is_clo1 (name: string): bool = name = "clo1"
+
+fn name_is_linclo0 (name: string): bool =
+  if name = "linclo" then true else name = "linclo0"
+fn name_is_linclo1 (name: string): bool = name = "linclo1"
 
 //
 
 fn name_is_cloptr0 (name: string): bool = 
   if name = "cloptr" then true else name = "cloptr0"
-
 fn name_is_cloptr1 (name: string): bool = name = "cloptr1"
+
+fn name_is_lincloptr0 (name: string): bool = 
+  if name = "lincloptr" then true else name = "lincloptr0"
+fn name_is_lincloptr1 (name: string): bool = name = "lincloptr1"
 
 //
 
 fn name_is_cloref0 (name: string): bool = 
   if name = "cloref" then true else name = "cloref0"
-
 fn name_is_cloref1 (name: string): bool = name = "cloref1"
 
 //
@@ -673,17 +680,29 @@ in
 implement e0fftag_var (id) = let
   val name = $Sym.symbol_name (id.i0de_sym)
   val node: e0fftag_node = case+ name of
-    | _ when name_is_clo0 name => E0FFTAGclo (CLO, 0)
-    | _ when name_is_clo1 name => E0FFTAGclo (CLO, 1)
-    | _ when name_is_cloptr0 name => E0FFTAGclo (CLOPTR, 0)
-    | _ when name_is_cloptr1 name => E0FFTAGclo (CLOPTR, 1)
-    | _ when name_is_cloref0 name => E0FFTAGclo (CLOREF, 0)
-    | _ when name_is_cloref1 name => E0FFTAGclo (CLOREF, 1)
-    | _ when name_is_fun0 name => E0FFTAGfun 0
-    | _ when name_is_fun1 name => E0FFTAGfun 1
+    | _ when name_is_clo0 name => E0FFTAGclo (~1(*u*), CLO, 0)
+    | _ when name_is_clo1 name => E0FFTAGclo (~1(*u*), CLO, 1)
+    | _ when name_is_linclo0 name => E0FFTAGclo (1(*l*), CLO, 0)
+    | _ when name_is_linclo1 name => E0FFTAGclo (1(*l*), CLO, 1)
+//
+    | _ when name_is_cloptr0 name => E0FFTAGclo (~1(*u*), CLOPTR, 0)
+    | _ when name_is_cloptr1 name => E0FFTAGclo (~1(*u*), CLOPTR, 1)
+    | _ when name_is_lincloptr0 name => E0FFTAGclo (1(*l*), CLOPTR, 0)
+    | _ when name_is_lincloptr1 name => E0FFTAGclo (1(*l*), CLOPTR, 1)
+//
+    | _ when name_is_cloref0 name => E0FFTAGclo (0(*n*), CLOREF, 0)
+    | _ when name_is_cloref1 name => E0FFTAGclo (0(*n*), CLOREF, 1)
+//
+    | _ when name_is_fun0 name => E0FFTAGfun (~1(*u*), 0)
+    | _ when name_is_fun1 name => E0FFTAGfun (~1(*u*), 1)
+    | _ when name_is_linfun0 name => E0FFTAGfun (1(*l*), 0)
+    | _ when name_is_linfun1 name => E0FFTAGfun (1(*l*), 1)
+//
     | _ when name_is_lin0 name => E0FFTAGlin 0
     | _ when name_is_lin1 name => E0FFTAGlin 1
+//
     | _ when name_is_prf name => E0FFTAGprf
+//
     | _ => E0FFTAGvar id
 in '{
   e0fftag_loc= id.i0de_loc, e0fftag_node= node
@@ -692,8 +711,8 @@ in '{
 end // end of [local]
 
 implement e0fftag_var_fun (t) = '{
-  e0fftag_loc= t.t0kn_loc, e0fftag_node= E0FFTAGfun 0
-}
+  e0fftag_loc= t.t0kn_loc, e0fftag_node= E0FFTAGfun (~1(*u*), 0)
+} // end of [e0fftag_var_fun]
 
 implement e0fftag_int (i) = '{
   e0fftag_loc= i.i0nt_loc, e0fftag_node= E0FFTAGcst (0, i.i0nt_val)

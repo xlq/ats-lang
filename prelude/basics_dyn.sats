@@ -78,6 +78,10 @@ symintr ptr_of // many, many, many, ...
 
 (* ****** ****** *)
 
+praxi cleanup_top {a:viewt@ype} (x: a?):<> void
+
+(* ****** ****** *)
+
 //
 // should this be assumed?
 // praxi eqsize_byte_one (): [sizeof byte == 1] void

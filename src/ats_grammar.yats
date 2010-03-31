@@ -2246,7 +2246,8 @@ commas0expseq
 ;
 
 labs0expseq /* labeled static expression sequence */
-  : l0ab EQ s0exp commalabs0expseq      { $$ = labs0explst_cons($1, $3, $4) ; }
+  : /* empty */                         { $$ = labs0explst_nil() ; }
+  | l0ab EQ s0exp commalabs0expseq      { $$ = labs0explst_cons($1, $3, $4) ; }
 ;
 
 commalabs0expseq

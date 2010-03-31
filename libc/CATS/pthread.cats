@@ -60,6 +60,10 @@
 
 /* ****** ****** */
 
+#define atslib_pthread_self pthread_self
+
+/* ****** ****** */
+
 ATSinline()
 ats_void_type
 atslib_pthread_mutex_init_locked

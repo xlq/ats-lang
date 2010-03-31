@@ -181,7 +181,16 @@ in
   // nothing
 end // end of [libats_make]
 
-// implement libats_mt_make () = library_make (libats_mt_global)
+implement libats_mt_make (param_rev) = let
+  val libfiles_mt_local = ATSHOME_dir_append ".libfiles_mt_local"
+  val libats_mt_global = libats_mt_global ()
+  val (pf_file | p_file) = fopen_exn (libfiles_mt_local, file_mode_r)
+  val () = library_make_loop (param_rev, !p_file, ATSHOME_dir, libats_mt_global)
+  val () = fclose_exn (pf_file | p_file)
+  val () = ar_s_exn (libats_mt_global)
+in
+  // nothing
+end // end of [libats_mt_make]
 
 (* ****** ****** *)
 

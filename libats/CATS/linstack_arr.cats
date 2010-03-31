@@ -47,7 +47,7 @@ typedef struct {
   ats_size_type nitm ;
   ats_ptr_type sarr_beg ;
   ats_ptr_type sarr_cur ;
-} ats_libats_linstack_arr_STACK_vt ;
+} atslib_linstack_arr_STACK ;
 
 /* ****** ****** */
 

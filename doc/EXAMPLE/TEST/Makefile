@@ -132,7 +132,7 @@ libats_regexp: libats_regexp.dats
 ######
 
 libats_parworkshop: libats_parworkshop.dats
-	$(ATSCC) -D_ATS_MULTITHREAD -O2 -o libats_parworkshop libats_parworkshop.dats -lpthread \
+	$(ATSCC) -D_ATS_MULTITHREAD -O2 -o libats_parworkshop libats_parworkshop.dats -lpthread -lats_mt \
      && ./libats_parworkshop
 
 ######

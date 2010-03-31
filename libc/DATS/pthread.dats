@@ -35,6 +35,10 @@
 
 (* ****** ****** *)
 
+staload STDIO = "libc/SATS/stdio.sats"
+
+(* ****** ****** *)
+
 staload "libc/SATS/pthread.sats"
 
 (* ****** ****** *)
@@ -49,10 +53,32 @@ fun pthread_create_detached_cloptr
 // end of [pthread_create_detached_cloptr]
 *)
 
-implement pthread_create_detached_cloptr (f) = let
+implement
+pthread_create_detached_exn
+  {vt} (f, env) = let
+  val ret = pthread_create_detached (f, env)
+in
+  if :(env: vt?) =>
+    (ret = 0) then let
+    prval () = opt_unnone {vt} (env)
+  in
+    // nothing
+  end else let
+    prval () = opt_unsome {vt} (env)
+    prval () = __assert (env) where {
+      extern prfun __assert (x: !vt >> vt?):<> void
+    } // end of [prval]
+    val () = $STDIO.perror ("pthread_create")
+  in
+    exit_errmsg (1, "exit(ATS): [pthread_create] failed\n")
+  end // end of [if]
+end // end of [pthread_create_detached_exn]
+
+implement
+pthread_create_detached_cloptr (f) = let
   fun app (f: () -<lin,cloptr1> void): void = (f (); cloptr_free (f))
 in
-  pthread_create_detached (app, f)
+  pthread_create_detached_exn (app, f)
 end // end of [pthread_create_detached_cloptr]
 
 (* ****** ****** *)

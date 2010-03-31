@@ -82,7 +82,7 @@ STACKarr_v_clear {a:t@ype}
 
 viewtypedef STACK_vt (
   a:viewt@ype, m:int, n:int, l_beg:addr, l_cur:addr
-) = $extype_struct "ats_libats_linstack_arr_STACK_vt" of {
+) = $extype_struct "atslib_linstack_arr_STACK" of {
   cap= size_t m
 , nitm= size_t n // = (l_beg - l_cur) / sizeof(a)
 , sarr_beg = ptr l_beg // this is definitely needed if GC is involved
@@ -118,6 +118,17 @@ prfun STACKarr_takeout_cur
 assume STACK (a:viewt@ype, m:int, n:int) =
   [l_beg,l_cur:addr] STACK_vt (a, m, n, l_beg, l_cur)
 // end of [STACK]
+
+(* ****** ****** *)
+
+implement stack_cap (s) = s.cap
+implement stack_size (s) = s.nitm
+
+implement stack_is_empty (s) = (s.nitm = 0)
+implement stack_isnot_empty (s) = (s.nitm > 0)
+
+implement stack_is_full (s) = (s.cap = s.nitm)
+implement stack_isnot_full (s) = (s.cap > s.nitm)
 
 (* ****** ****** *)
 

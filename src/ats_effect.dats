@@ -325,11 +325,13 @@ fun loop (
       loop (fc, lin, prf, efs, evs, tags) where {
       val () = case+ tag.e0fftag_node of
       | $Syn.E0FFTAGvar ev => evs := cons (ev, evs)
-      | $Syn.E0FFTAGcst (isneg, name) when name_is_all name => begin
+      | $Syn.E0FFTAGcst (isneg, name)
+          when name_is_all name => begin
           if isneg > 0 then efs := effset_nil else efs := effset_all;
           evs := effvars_nil
         end // end of [E0FFTAGcst when ...]
-      | $Syn.E0FFTAGcst (isneg, name) when name_is_emp name => begin
+      | $Syn.E0FFTAGcst (isneg, name)
+          when name_is_emp name => begin
           if isneg > 0 then efs := effset_all else efs := effset_nil;
           evs := effvars_nil
         end // end of [E0FFTAGcst when ...]
@@ -371,29 +373,33 @@ fun loop (
           end // end of [_ when ...]
         | _ => loop_err (tag.e0fftag_loc, name)
         end // end of [E0FFTAGcst]
+//
       | $Syn.E0FFTAGprf () => prf := 1
-      | $Syn.E0FFTAGlin i => begin
-          if i > 0 then begin
-            lin := 1; efs := effset_all; evs := effvars_nil
-          end else begin
-            lin := 1
-          end // end of [if]
+//
+      | $Syn.E0FFTAGlin
+          (i(*nil/all*)) => let
+          val () = lin := 1 // linearity
+        in
+          if i > 0 then (efs := effset_all; evs := effvars_nil)
         end // end of [E0FFTAGlin]
-      | $Syn.E0FFTAGfun i(*nil/all*) => begin
-          if i > 0 then begin
-            fc := $Syn.FUNCLOfun (); efs := effset_all; evs := effvars_nil
-          end else begin
-            fc := $Syn.FUNCLOfun ()
-          end // end of [if]
+//
+      | $Syn.E0FFTAGfun
+          (uln, i(*nil/all*)) => let
+          val () = if (uln >= 0) then lin := uln
+          val () = fc := $Syn.FUNCLOfun ()
+        in
+          if i > 0 then (efs := effset_all; evs := effvars_nil)
         end // end of [E0FFTAGfun]
-      | $Syn.E0FFTAGclo (knd(*1/~1:ptr/ref*), i(*nil/all*)) => begin
-          if i > 0 then begin
-            fc := $Syn.FUNCLOclo (knd); efs := effset_all; evs := effvars_nil
-          end else begin
-            fc := $Syn.FUNCLOclo (knd)
-          end // end of [if]
+//
+      | $Syn.E0FFTAGclo
+          (uln, knd, i) => let
+          // knd : 1/~1:ptr/ref; i : nil/all
+          val () = if (uln >= 0) then lin := uln
+          val () = fc := $Syn.FUNCLOclo (knd)
+        in
+          if i > 0 then (efs := effset_all; evs := effvars_nil)
         end // end of [E0FFTAGclo]
-      // end of [case]
+//
     } // end of [where] // end of [cons]
   | nil () => () // end of [nil]
 end // end of [loop]

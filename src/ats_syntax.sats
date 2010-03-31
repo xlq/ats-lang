@@ -534,8 +534,12 @@ datatype e0fftag_node =
   | E0FFTAGvar of i0de
   | E0FFTAGprf
   | E0FFTAGlin of int(*non/lin*)
-  | E0FFTAGfun of int(*nil/all*)
-  | E0FFTAGclo of (int(*1/~1:ptr/ref*), int(*nil/all*))
+  | E0FFTAGfun of (
+      int(*non/lin*), int(*nil/all*)
+    ) // E0FFTAGfun
+  | E0FFTAGclo of (
+      int(*non/lin*), int(*1/~1:ptr/ref*), int(*nil/all*)
+    ) // E0FFTAGclo
 // end of [e0fftag_node]
 
 typedef e0fftag = '{

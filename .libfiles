@@ -87,56 +87,7 @@ prelude/SATS/option0.sats
 prelude/SATS/slseg.sats
 prelude/DATS/slseg.dats
 
-/* libats files */
-
-/* FORTRAN matrix: column-major */
-libats/SATS/fmatrix.sats
-libats/DATS/fmatrix.dats
-
-/* FREE LIST implementation */
-libats/SATS/freelst.sats
-libats/DATS/freelst.dats
-
-/* functional map implementation based on AVL trees */
-libats/SATS/funmap_avltree.sats
-libats/DATS/funmap_avltree.dats
-
-/* generic arrays of various dimensions */
-libats/SATS/genarrays.sats
-libats/DATS/genarrays.dats
-
-/* hashtable implementation based on separate chaining */
-libats/SATS/hashtable_chain.sats
-libats/DATS/hashtable_chain.dats
-
-/* hashtable implementation based on linear probing */
-libats/SATS/hashtable_linprb.sats
-libats/DATS/hashtable_linprb.dats
-
-#ifdef HAVE_GMP_H
-libats/SATS/intinf.sats
-libats/DATS/intinf.dats
-#endif
-
-libats/SATS/iterint.sats
-libats/DATS/iterint.dats
-
-/* linear map implementation based on AVL trees */
-libats/SATS/linmap_avltree.sats
-libats/DATS/linmap_avltree.dats
-
-/* linear array-based queue implementation */
-libats/SATS/linqueue_arr.sats
-libats/DATS/linqueue_arr.dats
-
-/* linear array-based stack implementation */
-libats/SATS/linstack_arr.sats
-libats/DATS/linstack_arr.dats
-
-#ifdef HAVE_PCRE_H
-libats/SATS/regexp.sats
-libats/DATS/regexp.dats
-#endif
+/* ****** ****** */
 
 /* libc files */
 
@@ -201,11 +152,58 @@ libc/arpa/SATS/inet.sats
 
 libc/netinet/SATS/in.sats
 
-libc/SATS/pthread.sats
-libc/DATS/pthread.dats
+/* ****** ****** */
 
-libc/SATS/pthread_uplock.sats
-libc/DATS/pthread_uplock.dats
+/* libats files */
+
+/* FORTRAN matrix: column-major */
+libats/SATS/fmatrix.sats
+libats/DATS/fmatrix.dats
+
+/* FREE LIST implementation */
+libats/SATS/freelst.sats
+libats/DATS/freelst.dats
+
+/* functional map implementation based on AVL trees */
+libats/SATS/funmap_avltree.sats
+libats/DATS/funmap_avltree.dats
+
+/* generic arrays of various dimensions */
+libats/SATS/genarrays.sats
+libats/DATS/genarrays.dats
+
+/* hashtable implementation based on separate chaining */
+libats/SATS/hashtable_chain.sats
+libats/DATS/hashtable_chain.dats
+
+/* hashtable implementation based on linear probing */
+libats/SATS/hashtable_linprb.sats
+libats/DATS/hashtable_linprb.dats
+
+#ifdef HAVE_GMP_H
+libats/SATS/intinf.sats
+libats/DATS/intinf.dats
+#endif
+
+libats/SATS/iterint.sats
+libats/DATS/iterint.dats
+
+/* linear map implementation based on AVL trees */
+libats/SATS/linmap_avltree.sats
+libats/DATS/linmap_avltree.dats
+
+/* linear array-based queue implementation */
+libats/SATS/linqueue_arr.sats
+libats/DATS/linqueue_arr.dats
+
+/* linear array-based stack implementation */
+libats/SATS/linstack_arr.sats
+libats/DATS/linstack_arr.dats
+
+#ifdef HAVE_PCRE_H
+libats/SATS/regexp.sats
+libats/DATS/regexp.dats
+#endif
 
 /* ****** ****** */
 

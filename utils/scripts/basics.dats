@@ -104,10 +104,9 @@ implement atslib_output_local () =
 implement libats_local () =
   sbp2str (atslib_local () + "libats.a")
 
-(*
 // multithreaded
-implement libats_mt_local = "ccomp/lib/libats_mt.a"
-*)
+implement libats_mt_local () =
+  sbp2str (atslib_local () + "libats_mt.a")
 
 (* ****** ****** *)
 
@@ -220,9 +219,7 @@ implement atslib_global () = ATSHOME_dir_append (atslib_local ())
 implement atslib_output_global () = ATSHOME_dir_append (atslib_output_local ())
 
 implement libats_global () = ATSHOME_dir_append (libats_local ())
-(*
 implement libats_mt_global () = ATSHOME_dir_append (libats_mt_local ())
-*)
 
 (* ****** ****** *)
 

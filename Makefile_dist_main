@@ -124,6 +124,7 @@ clean::
 cleanall::
 	rm -f config.h
 	rm -f .libfiles_local
+	rm -f .libfiles_mt_local
 	rm -f bin/atsopt bin/atscc bin/atslib bin/atslex
 	rm -f ccomp/lib/libats.a
 	rm -f ccomp/lib/libatslex.a
@@ -136,6 +137,6 @@ cleanall::
 
 ######
 #
-# end of [Makefile]
+# end of [Makefile_dist_main]
 #
 ######
