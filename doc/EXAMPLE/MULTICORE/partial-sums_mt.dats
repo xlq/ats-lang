@@ -1,7 +1,8 @@
 //
-// partial-sums.dats: computing partial sums of various series
+// partial-sums.dats: computing partial sums of a power series
 //
-// by Hongwei Xi (hwxi AT cs DOT bu DOT edu)
+// Author: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
+// Time: March, 2010
 //
 
 (* ****** ****** *)
@@ -10,59 +11,133 @@ staload M = "libc/SATS/math.sats"
 
 (* ****** ****** *)
 
-%{^
-
-#include "libats/CATS/thunk.cats"
-
-#include "libc/CATS/pthread.cats"
-#include "libc/CATS/pthread_locks.cats"
-
-%}
-
 staload "libc/SATS/pthread.sats"
-staload "libc/SATS/pthread_locks.sats"
 
 (* ****** ****** *)
 
-staload "libats/SATS/parallel.sats"
+staload "libats/SATS/parworkshop.sats"
+staload _ = "libats/DATS/parworkshop.dats"
 
 (* ****** ****** *)
 
-dynload "libats/DATS/parallel.dats"
+fun loop
+  (n: int, i: int, sum: &double): void =
+  if i < n then let
+    val () = sum := sum + $M.pow (2.0 / 3.0, double_of i)
+  in
+    loop (n, i+1, sum)
+  end else ()
+// end of [loop]
 
 (* ****** ****** *)
 
-fun loop1 (n: int, i: int, sum: double): double =
-  if i < n then loop1 (n, i+1, sum + pow(2.0 / 3.0, double_of i)) else sum
+dataviewtype ans =
+  | D of (ans, ans) | S of double
 
-#define NLOOP1SPLIT 2048
-fun loop1_mt (n: int, i: int): double = let
+fun finalize (t: ans): double =
+  case+ t of
+  | ~D (t1, t2) => finalize t1 + finalize t2
+  | ~S sum => sum
+// end of [finalize]
+
+(* ****** ****** *)
+
+viewtypedef work = () -<lincloptr1> void
+viewtypedef WSptr (l:addr) = WORKSHOPptr (work, l)
+
+(* ****** ****** *)
+
+fun fwork {l:addr}
+  (ws: !WSptr l, wk: &work >> work?): int = let
+  val wk = wk
+  val pfun = __cast (wk) where {
+    extern castfn __cast
+      (wk: !work >> opt (work, l > null)): #[l:addr] ptr l
+  } // end of [val]
+in
+  if pfun > null then let
+    prval () = opt_unsome {work} (wk)
+    val () = wk ()
+    val () = cloptr_free (wk)
+  in
+    1 // the worker is to continue
+  end else let
+    val i = intptr_of_ptr (pfun)
+    prval () = opt_unnone {work} (wk)
+    prval () = cleanup_top {work} (wk)
+  in
+    int_of_intptr (i) // the worker is to pause or quit
+  end // end of [if]
+end // end of [fwork]
+
+(* ****** ****** *)
+
+fun loop_split {l:addr}
+  (NSPLIT: int, ws: !WSptr l, n: int, i: int): ans = let
   val ni = n - i
 in
-  if ni > NLOOP1SPLIT then let
+  if ni > NSPLIT then let
     val ni2 = i + (ni / 2)
-
-    val par sum1 = loop1_mt (n, ni2) and sum2 = loop1_mt (ni2, i)
+    val ans1 = loop_split (NSPLIT, ws, n, ni2)
+    and ans2 = loop_split (NSPLIT, ws, ni2, i)
   in
-    sum1 + sum2
-  end else begin
-    loop1 (n, i, 0.0)
-  end
-end // end of [loop1_mt]
+    D (ans1, ans2)
+  end else let
+    val res = S (?)
+    val S (!p) = res
+    val () = !p := 0.0
+    extern prfun __ref
+      {l:addr} (pf: !double @ l): double @ l
+    prval pf = __ref (view@ !p)
+    extern prfun __unref {l:addr} (pf: double @ l): void
+    val f = lam (): void =<lincloptr1>
+      let val () = loop (n, i, !p); prval () =__unref (pf) in (*empty*) end
+    // val () = f ()
+    val () = workshop_insert_work (ws, f)
+  in
+    fold@ res; res
+  end // end of [val]
+end // end of [loop_split]
 
 (* ****** ****** *)
 
-implement main (argc, argv) = let
-  var nthread: int = 0
-  val () = assert_errmsg_bool1 (argc >= 2, "Exit: wrong command format!\n")
+dynload "libats/DATS/parworkshop.dats"
+
+(* ****** ****** *)
+
+#define NWORKER 1
+
+implement
+main (argc, argv) = let
+  val () = assert_errmsg_bool1
+    (argc >= 2, "exit: wrong command format!\n")
   val n = int_of argv.[1]
-  val () = if argc >= 3 then (nthread := int_of argv.[2])
-  val () = parallel_worker_add_many (nthread-1)
-
-  val res1 = loop1_mt (n, 0)
-
+  val N = n / 1024
+  val ws = workshop_make<work> (1024, fwork)
+  val nworker =
+    (if (argc >= 3) then int_of argv.[2] else NWORKER): int
+  val nworker = int1_of_int (nworker)
+  val () = assert_errmsg (nworker > 0, #LOCATION)
+  val _err = workshop_add_nworker (ws, nworker)
+  val () = assert_errmsg (_err = 0, #LOCATION)
+  val t = loop_split (N, ws, n, 0)
+  val () = (print "spliting is done"; print_newline ())
+  var i: Nat = 0
+  val () = while (i < nworker) let
+    val _0 = $extval (work, "(void*)0")
+    val () = workshop_insert_work (ws, _0) in i := i + 1
+  end // end of [val]
+  val () = workshop_wait_worker_paused (ws)
+  val sum = finalize (t)
+  val () = while (i < nworker) let
+    val _1 = $extval (work, "(void*)-1")
+    val () = workshop_insert_work (ws, _1) in i := i + 1
+  end // end of [val]
+  val ws = __cast (ws) where {
+    extern castfn __cast {l:addr} (_: WSptr l):<> ptr l
+  }
 in
-  printf ("%.9f\t(2/3)^k", @(res1)); print_newline ();
+  printf ("%.9f\t(2/3)^k", @(sum)); print_newline ();
 end // end of [main]
 
 (* ****** ****** *)

@@ -5,7 +5,7 @@
 
 //
 // Author: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
-// Time: Spring, 2010
+// Time: March, 2010
 //
 
 (* ****** ****** *)

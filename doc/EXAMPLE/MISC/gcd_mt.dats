@@ -1,8 +1,11 @@
 //
+// A multithreaded implementation of GCD
 //
-// Author: Hongwei Xi (March 10, 2008)
+// Author: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
+// Time: March 10, 2008
 //
-//
+
+(* ****** ****** *)
 
 staload "libc/SATS/pthread.sats"
 staload _(*anonymous*) = "libc/DATS/pthread.dats"
@@ -153,13 +156,11 @@ fun gcd_mt {x0,y0:pos} {z:int}
   end // end of [gcd_worker]
   val uplock1 = pthread_uplock_create {void} ()
   val upticket1 = pthread_upticket_create {void} (uplock1)
-  val () = pthread_create_detached_cloptr
-    (llam () => gcd_worker (upticket1,  1))
+  val () = pthread_create_detached_cloptr (llam () => gcd_worker (upticket1,  1))
 
   val uplock2 = pthread_uplock_create {void} ()
   val upticket2 = pthread_upticket_create {void} (uplock2)
-  val () = pthread_create_detached_cloptr
-    (llam () => gcd_worker (upticket2, ~1))
+  val () = pthread_create_detached_cloptr (llam () => gcd_worker (upticket2, ~1))
 
   val (_(*void*) | ()) = pthread_uplock_download {void} (uplock1)
   val (_(*void*) | ()) = pthread_uplock_download {void} (uplock2)

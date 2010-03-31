@@ -21,34 +21,32 @@ overload <= with lte_T_T
 
 (* ****** ****** *)
 
-staload "libats/SATS/parallel.sats"
+// staload "libats/SATS/parallel.sats"
 
 (* ****** ****** *)
 
 fn merge_split_find {m:nat} {b:addr} .<m>.
-  (pfb: !array_v (T, m, b) | B: ptr b, m: int m, x: &T):<> natLte (m) = let
+  (pfb: !array_v (T, m, b) | B: ptr b, m: size_t m, x: &T):<> sizeLte (m) = let
   fun loop
-    {lft,rgt: int | 0 <= lft; lft <= rgt+1; rgt+1 <= m}
-    .<rgt-lft+1>.
-    (pfb: !array_v (T, m, b) | lft: int lft, rgt: int rgt, x: &T)
-    :<cloptr> natLte (m) = begin
-    if lft <= rgt then let
-      val mid = lft + nhalf (rgt - lft)
+    {lft,rgt1:nat | 0 <= lft; lft <= rgt1; rgt1 <= m}
+    .<rgt1-lft>.
+    (pfb: !array_v (T, m, b) | lft: size_t lft, rgt1: size_t rgt1, x: &T)
+    :<cloptr> sizeLte (m) = begin
+    if lft < rgt1 then let
+      val mid = lft + (rgt1 - 1 - lft) / 2
       val (pfy, pfb_pfy | y) = array_ptr_takeout_tsz {T} (pfb | B, mid, sizeof<T>)
       val sgn = compare (x, !y)
       prval () = pfb := pfb_pfy (pfy)    
     in
       case+ sgn of
-      |  1 => loop (pfb | mid+1, rgt, x)
-      | ~1 => loop (pfb | lft, mid-1, x)
-      | _ (* 0 *) => mid
+      |  1 => loop (pfb | mid+1, rgt1, x) | ~1 => loop (pfb | lft, mid, x) | _ (*0*) => mid
     end else begin
       lft // Note that it is [lft] instead of [rgt]
-    end
+    end (* end of [if] *)
   end // end of [loop]
 in
-  loop (pfb | 0, m-1, x)
-end
+  loop (pfb | 0, m, x)
+end // end of [merge_split_find]
 
 (* ****** ****** *)
 
@@ -59,49 +57,49 @@ fn array_ptr_move_1 {r1,r2:addr} (
   , pf2: !array_v (T?, 1, r2) >> array_v (T, 1, r2)
   | R1: ptr r1, R2: ptr r2
   ) :<> void = let
-  prval (pf11, pf12) = array_v_unsome {T} (pf1)
-  prval (pf21, pf22) = array_v_unsome {T?} (pf2)
-  prval () = array_v_unnone (pf12)
-  prval () = array_v_unnone (pf22)
+  prval (pf11, pf12) = array_v_uncons {T} (pf1)
+  prval (pf21, pf22) = array_v_uncons {T?} (pf2)
+  prval () = array_v_unnil (pf12)
+  prval () = array_v_unnil (pf22)
   val () = !R2 := !R1
 in
-  pf1 := array_v_some {T?} (pf11, array_v_none {T?} ());
-  pf2 := array_v_some {T} (pf21, array_v_none {T} ());
-end
+  pf1 := array_v_cons {T?} (pf11, array_v_nil {T?} ());
+  pf2 := array_v_cons {T} (pf21, array_v_nil {T} ());
+end // end of [array_ptr_move_1]
 
 //
 
 fn array_ptr_move_out_1 {r:addr} (
     pf: !array_v (T, 1, r) >> array_v (T?, 1, r) | R: ptr r
   ) :<> T = let
-  prval (pf1, pf2) = array_v_unsome {T} (pf)
-  prval () = array_v_unnone (pf2)
+  prval (pf1, pf2) = array_v_uncons {T} (pf)
+  prval () = array_v_unnil (pf2)
   val x = !R
 in
-  pf := array_v_some {T?} (pf1, array_v_none {T?} ()); x
-end
+  pf := array_v_cons {T?} (pf1, array_v_nil {T?} ()); x
+end // end of [array_ptr_move_out_1]
 
 fn array_ptr_move_into_1 {r:addr} (
     pf: !array_v (T?, 1, r) >> array_v (T, 1, r) | R: ptr r, x: T
   ) :<> void = let
-  prval (pf1, pf2) = array_v_unsome {T?} (pf)
-  prval () = array_v_unnone (pf2)
+  prval (pf1, pf2) = array_v_uncons {T?} (pf)
+  prval () = array_v_unnil (pf2)
   val () = !R := x
 in
-  pf := array_v_some {T} (pf1, array_v_none {T} ())
-end
+  pf := array_v_cons {T} (pf1, array_v_nil {T} ())
+end // end of [array_ptr_move_into_1]
 
 //
 
 fn array_ptr_move_into_2 {r:addr} (
     pf: !array_v (T?, 2, r) >> array_v (T, 2, r) | R: ptr r, x1: T, x2: T
   ) :<> void = let
-  prval (pf1, pf2) = array_v_unsome {T?} (pf)
+  prval (pf1, pf2) = array_v_uncons {T?} (pf)
   val () = !R := x1
   val () = array_ptr_move_into_1 (pf2 | R+sizeof<T>, x2)
 in
-  pf := array_v_some {T} (pf1, pf2)
-end
+  pf := array_v_cons {T} (pf1, pf2)
+end // end of [array_ptr_move_into_2]
 
 (* ****** ****** *)
   
@@ -109,8 +107,8 @@ fun merge {l:pos;m:nat} {a,b,c:addr} .<l+m,1>. (
     pfa: !array_v (T, l, a) >> array_v (T?, l, a)
   , pfb: !array_v (T, m, b) >> array_v (T?, m, b)
   , pfc: !array_v (T?, l+m, c) >> array_v (T, l+m, c)
-  | A: ptr a, l: int l
-  , B: ptr b, m: int m
+  | A: ptr a, l: size_t l
+  , B: ptr b, m: size_t m
   , C: ptr c
   ) :<1> void = begin
   if l >= m then begin
@@ -125,56 +123,54 @@ and merge_gte
     pfa: !array_v (T, l, a) >> array_v (T?, l, a)
   , pfb: !array_v (T, m, b) >> array_v (T?, m, b)
   , pfc: !array_v (T?, l+m, c) >> array_v (T, l+m, c)
-  | A: ptr a, l: int l
-  , B: ptr b, m: int m
+  | A: ptr a, l: size_t l
+  , B: ptr b, m: size_t m
   , C: ptr c
   ) :<1> void = begin
-  case+ l of
-  | 1 => begin case+ m of
-    | 0 => let
-        prval () = array_v_unnone (pfb)
-        prval () = (pfb := array_v_none {T?} ())
-        val x = array_ptr_move_out_1 (pfa | A)
-      in
-        array_ptr_move_into_1 (pfc | C, x)
-      end
-    | _ (* m = 1 *) =>> let
-        val x = array_ptr_move_out_1 (pfa | A)
-        val y = array_ptr_move_out_1 (pfb | B)
-      in
-        if x <= y then begin
-          array_ptr_move_into_2 (pfc | C, x, y)
-        end else begin
-          array_ptr_move_into_2 (pfc | C, y, x)
-        end
-      end // end of [_]
-    end // end of [l = 1]
-  | _ (* >1 *) =>> let
-      val [l2:int] l2 = nhalf (l)
-      val (pfx, pfa_pfx | x) = array_ptr_takeout_tsz {T} (pfa | A, l2, sizeof<T>)
-      val [m2:int] m2 = merge_split_find (pfb | B, m, !x)
-      prval () = pfa := pfa_pfx (pfx)
-      val [a_ofs:int] (pfa_mul | A_ofs) = l2 imul2 sizeof<T>
-      prval pfa1_mul = mul_commute (pfa_mul)
-      val [b_ofs:int] (pfb_mul | B_ofs) = m2 imul2 sizeof<T>
-      prval pfb1_mul = mul_commute (pfb_mul)
-      prval pfc1_mul = mul_distribute (pfa1_mul, pfb1_mul)
-      prval pfc_mul = mul_commute (pfc1_mul)
-      val C_ofs = A_ofs + B_ofs
-      prval (pfa1, pfa2) = array_v_split {T} {l,l2} (pfa_mul, pfa)
-      prval (pfb1, pfb2) = array_v_split {T} {m,m2} (pfb_mul, pfb)
-      prval (pfc1, pfc2) = array_v_split {T?} {l+m,l2+m2} (pfc_mul, pfc)
-      val ll2 = l - l2 and mm2 = m - m2
-
-      val // par
-          () = merge (pfa1, pfb1, pfc1 | A, l2, B, m2, C)
-      and 
-          () = merge (pfa2, pfb2, pfc2 | A+A_ofs, ll2, B+B_ofs, mm2, C+C_ofs)
+  if l = 1 then (
+    if m = 0 then let
+      prval () = array_v_unnil (pfb)
+      prval () = (pfb := array_v_nil {T?} ())
+      val x = array_ptr_move_out_1 (pfa | A)
     in
-      pfa := array_v_unsplit {T?} {l2,l-l2} (pfa_mul, pfa1, pfa2);
-      pfb := array_v_unsplit {T?} {m2,m-m2} (pfb_mul, pfb1, pfb2);
-      pfc := array_v_unsplit {T} {l2+m2,l-l2+m-m2} (pfc_mul, pfc1, pfc2);
-    end
+      array_ptr_move_into_1 (pfc | C, x)
+    end else let
+      val x = array_ptr_move_out_1 (pfa | A)
+      val y = array_ptr_move_out_1 (pfb | B)
+    in
+      if x <= y then begin
+        array_ptr_move_into_2 (pfc | C, x, y)
+      end else begin
+        array_ptr_move_into_2 (pfc | C, y, x)
+      end
+    end // end of [if]
+  ) else let // l > 1
+    stavar l2:int
+    val l2 : size_t l2 = l / 2
+    val (pfx, pfa_pfx | x) = array_ptr_takeout_tsz {T} (pfa | A, l2, sizeof<T>)
+    val [m2:int] m2 = merge_split_find (pfb | B, m, !x)
+    prval () = pfa := pfa_pfx (pfx)
+    val [a_ofs:int] (pfa_mul | A_ofs) = l2 szmul2 sizeof<T>
+    prval pfa1_mul = mul_commute (pfa_mul)
+    val [b_ofs:int] (pfb_mul | B_ofs) = m2 szmul2 sizeof<T>
+    prval pfb1_mul = mul_commute (pfb_mul)
+    prval pfc1_mul = mul_distribute (pfa1_mul, pfb1_mul)
+    prval pfc_mul = mul_commute (pfc1_mul)
+    val C_ofs = A_ofs + B_ofs
+    prval (pfa1, pfa2) = array_v_split {T} {l,l2} (pfa_mul, pfa)
+    prval (pfb1, pfb2) = array_v_split {T} {m,m2} (pfb_mul, pfb)
+    prval (pfc1, pfc2) = array_v_split {T?} {l+m,l2+m2} (pfc_mul, pfc)
+    val ll2 = l - l2 and mm2 = m - m2
+
+    val // par
+        () = merge (pfa1, pfb1, pfc1 | A, l2, B, m2, C)
+    and 
+        () = merge (pfa2, pfb2, pfc2 | A+A_ofs, ll2, B+B_ofs, mm2, C+C_ofs)
+  in
+    pfa := array_v_unsplit {T?} {l2,l-l2} (pfa_mul, pfa1, pfa2);
+    pfb := array_v_unsplit {T?} {m2,m-m2} (pfb_mul, pfb1, pfb2);
+    pfc := array_v_unsplit {T} {l2+m2,l-l2+m-m2} (pfc_mul, pfc1, pfc2);
+  end (* end of [if] *)
 end // end of [merge_gte]
 
 (* ****** ****** *)
@@ -184,11 +180,12 @@ end // end of [merge_gte]
 fun mergesort1 {l:nat} {a1,a2:addr} .<l>. (
     pfa1: !array_v (T, l, a1)
   , pfa2: !array_v (T?, l, a2)
-  | A1: ptr a1, A2: ptr a2, l: int l
+  | A1: ptr a1, A2: ptr a2, l: size_t l
   ) :<1> void = begin
   if l >= 2 then let
-    val [l2:int] l2= nhalf (l); val ll2 = l - l2
-    val [ofs:int] (pfa_mul | ofs) = l2 imul2 sizeof<T>
+    stavar l2 : int
+    val l2 : size_t l2 = l / 2; val ll2 = l - l2
+    val [ofs:int] (pfa_mul | ofs) = l2 szmul2 sizeof<T>
     prval (pfa11, pfa12) = array_v_split {T} {l,l2} (pfa_mul, pfa1)
     prval (pfa21, pfa22) = array_v_split {T?} {l,l2} (pfa_mul, pfa2)
     val ll2 = l - l2
@@ -225,11 +222,12 @@ end // end of [mergesort1]
 and mergesort2 {l:pos} {a1,a2:addr} .<l>. (
     pfa1: !array_v (T, l, a1) >> array_v (T?, l, a1)
   , pfa2: !array_v (T?, l, a2) >> array_v (T, l, a2)
-  | A1: ptr a1, A2: ptr a2, l: int l
+  | A1: ptr a1, A2: ptr a2, l: size_t l
   ) :<1> void = begin
   if l >= 2 then let
-    val [l2:int] l2= nhalf (l); val ll2 = l - l2
-    val [ofs:int] (pfa_mul | ofs) = l2 imul2 sizeof<T>
+    stavar l2: int
+    val l2 : size_t l2 = l / 2; val ll2 = l - l2
+    val [ofs:int] (pfa_mul | ofs) = l2 szmul2 sizeof<T>
     prval (pfa11, pfa12) = array_v_split {T} {l,l2} (pfa_mul, pfa1)
     prval (pfa21, pfa22) = array_v_split {T?} {l,l2} (pfa_mul, pfa2)
     val ll2 = l - l2
@@ -270,7 +268,7 @@ end // end of [mergesort2]
 (* ****** ****** *)
 
 extern fun mergesort {l:nat} {a:addr}
-  (pfa: !array_v (T, l, a) | A: ptr a, l: int l): void
+  (pfa: !array_v (T, l, a) | A: ptr a, l: size_t l): void
 
 implement mergesort (pfa1 | A1, l) = let
   val (pf_gc, pfa2 | A2) = array_ptr_alloc_tsz {T} (l, sizeof<T>)

@@ -1,7 +1,7 @@
 (*
-
-// author: Hongwei Xi (October, 2008)
-
+//
+// Author: Hongwei Xi (March, 2010)
+//
 *)
 
 (* ****** ****** *)
