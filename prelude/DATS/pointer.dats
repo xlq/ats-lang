@@ -35,15 +35,9 @@
 
 (* ****** ****** *)
 
-// some pointer operations
-
-#define VERBOSE 1
-
-#if VERBOSE #then
-
-#print "Loading pointer.dats starts!\n"
-
-#endif
+//
+// some common pointer operations
+//
 
 (* ****** ****** *)
 
@@ -78,8 +72,4 @@ end // end of [ptr_view_conversion]
 
 (* ****** ****** *)
 
-#if VERBOSE #then
-
-#print "Loading pointer.dats finishes!\n"
-
-#endif
+(* end of [pointer.dats] *)

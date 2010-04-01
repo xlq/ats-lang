@@ -54,10 +54,10 @@ fun fwork {l:addr}
     = "atspre_uintptr_of_uint"
   extern fun uint1_of_uintptr1 {i:nat} (u: uintptr i): uint i
     = "atspre_uint_of_uintptr"
-  extern fun gte_uintptr1_uint1
+  extern fun gte_uintptr1_uintptr1
     {i1,i2:nat} (u1: uintptr i1, u2: uintptr i2):<> bool (i1 >= i2)
     = "atspre_gte_uintptr_uintptr"
-  overload >= with gte_uintptr1_uint1
+  overload >= with gte_uintptr1_uintptr1
 in
   if pfun >= (uintptr1_of_uint1)1U then let
     prval () = opt_unsome {work} (wk)

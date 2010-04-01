@@ -36,10 +36,8 @@
 (* ****** ****** *)
 
 %{^
-
 #include "prelude/CATS/array.cats"
-
-%}
+%} // end of [%{^]
 
 (* ****** ****** *)
 
@@ -780,7 +778,7 @@ atspre_array_ptr_initialize_elt_tsz (
   return ;
 } /* end of [atspre_array_ptr_initialize_elt_tsz] */
 
-%}
+%} // end of [%{$]
 
 (* ****** ****** *)
 
