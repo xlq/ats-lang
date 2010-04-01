@@ -1,4 +1,7 @@
 //
+// qsort_mt_flt:
+// A plain multithreaded quicksort implementation
+//
 // Author: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
 // Time: March, 2010
 //

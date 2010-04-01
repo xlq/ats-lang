@@ -10,7 +10,7 @@
 
 (*
 
-command: time nsieve 12
+command: time nsieve2_mt <integer> <ncore>
 
 output:
 Primes up to 40960000  2488465
@@ -270,4 +270,4 @@ end // end of [main]
 
 (* ****** ****** *)
 
-(* end of [nsieve_mt.dats] *)
+(* end of [nsieve2_mt.dats] *)

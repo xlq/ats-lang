@@ -10,7 +10,7 @@
 
 (*
 
-command: time nsieve 12
+command: time nsieve_mt <integer> <ncore>
 
 output:
 Primes up to 40960000  2488465
