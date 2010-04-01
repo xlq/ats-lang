@@ -27,10 +27,11 @@ fun fib
 
 (* ****** ****** *)
 
-dataviewtype ans =
-  | D of (ans, ans) | S of int64
+dataviewtype cont =
+  | D of (cont, cont) | S of int64
+// end of [cont]
 
-fun finalize (t: ans): int64 =
+fun finalize (t: cont): int64 =
   case+ t of
   | ~D (t1, t2) => finalize t1 + finalize t2
   | ~S sum => sum
@@ -50,14 +51,6 @@ fun fwork {l:addr}
     extern castfn __cast
       (wk: !work >> opt (work, i >= 1)): #[i:nat] uintptr i
   } // end of [val]
-  extern fun uintptr1_of_uint1 {i:nat} (u: uint i): uintptr i
-    = "atspre_uintptr_of_uint"
-  extern fun uint1_of_uintptr1 {i:nat} (u: uintptr i): uint i
-    = "atspre_uint_of_uintptr"
-  extern fun gte_uintptr1_uintptr1
-    {i1,i2:nat} (u1: uintptr i1, u2: uintptr i2):<> bool (i1 >= i2)
-    = "atspre_gte_uintptr_uintptr"
-  overload >= with gte_uintptr1_uintptr1
 in
   if pfun >= (uintptr1_of_uint1)1U then let
     prval () = opt_unsome {work} (wk)
@@ -78,13 +71,13 @@ end // end of [fwork]
 (* ****** ****** *)
 
 fun fib_split {l:addr}
-  (N: int, ws: !WSptr l, n: int): ans = let
+  (N: int, ws: !WSptr l, n: int): cont = let
 in
   if n > N then let
-    val ans1 = fib_split (N, ws, n-1)
-    and ans2 = fib_split (N, ws, n-2)
+    val cont1 = fib_split (N, ws, n-1)
+    and cont2 = fib_split (N, ws, n-2)
   in
-    D (ans1, ans2)
+    D (cont1, cont2)
   end else let
     val res = S (?)
     val S (!p) = res

@@ -47,7 +47,10 @@
 
 (* ****** ****** *)
 
-// intrptr and uintptr
+//
+// intptr:
+// signed integers of the pointer size
+//
 
 (* ****** ****** *)
 
@@ -203,6 +206,51 @@ overload print with print_intptr
 overload prerr with prerr_intptr
 
 (* ****** ****** *)
+
+fun intptr1_of_int1 {i:nat} (i: int i): intptr i
+  = "atspre_intptr_of_int"
+
+fun int1_of_intptr1 {i:nat} (i: intptr i): int i
+  = "atspre_int_of_intptr"
+
+(* ****** ****** *)
+
+fun lt_intptr1_intptr1
+  {i1,i2:nat} (i1: intptr i1, i2: intptr i2):<> bool (i1 < i2)
+  = "atspre_lt_intptr_intptr"
+overload < with lt_intptr1_intptr1
+
+fun lte_intptr1_intptr1
+  {i1,i2:nat} (i1: intptr i1, i2: intptr i2):<> bool (i1 <= i2)
+  = "atspre_lte_intptr_intptr"
+overload <= with lte_intptr1_intptr1
+
+fun gt_intptr1_intptr1
+  {i1,i2:nat} (i1: intptr i1, i2: intptr i2):<> bool (i1 > i2)
+  = "atspre_gt_intptr_intptr"
+overload > with gt_intptr1_intptr1
+
+fun gte_intptr1_intptr1
+  {i1,i2:nat} (i1: intptr i1, i2: intptr i2):<> bool (i1 >= i2)
+  = "atspre_gte_intptr_intptr"
+overload >= with gte_intptr1_intptr1
+
+fun eq_intptr1_intptr1
+  {i1,i2:nat} (i1: intptr i1, i2: intptr i2):<> bool (i1 == i2)
+  = "atspre_eq_intptr_intptr"
+overload = with eq_intptr1_intptr1
+
+fun neq_intptr1_intptr1
+  {i1,i2:nat} (i1: intptr i1, i2: intptr i2):<> bool (i1 <> i2)
+  = "atspre_neq_intptr_intptr"
+overload <> with neq_intptr1_intptr1
+
+(* ****** ****** *)
+
+//
+// uintptr:
+// unsigned integers of the pointer size
+//
 
 abstype uintptr_int_type (i:int) = uintptr_type
 stadef uintptr = uintptr_int_type
@@ -392,6 +440,46 @@ and prerr_uintptr (u: uintptr):<!ref> void
 
 overload print with print_uintptr
 overload prerr with prerr_uintptr
+
+(* ****** ****** *)
+
+fun uintptr1_of_uint1 {i:nat} (u: uint i): uintptr i
+  = "atspre_uintptr_of_uint"
+
+fun uint1_of_uintptr1 {i:nat} (u: uintptr i): uint i
+  = "atspre_uint_of_uintptr"
+
+(* ****** ****** *)
+
+fun lt_uintptr1_uintptr1
+  {i1,i2:nat} (u1: uintptr i1, u2: uintptr i2):<> bool (i1 < i2)
+  = "atspre_lt_uintptr_uintptr"
+overload < with lt_uintptr1_uintptr1
+
+fun lte_uintptr1_uintptr1
+  {i1,i2:nat} (u1: uintptr i1, u2: uintptr i2):<> bool (i1 <= i2)
+  = "atspre_lte_uintptr_uintptr"
+overload <= with lte_uintptr1_uintptr1
+
+fun gt_uintptr1_uintptr1
+  {i1,i2:nat} (u1: uintptr i1, u2: uintptr i2):<> bool (i1 > i2)
+  = "atspre_gt_uintptr_uintptr"
+overload > with gt_uintptr1_uintptr1
+
+fun gte_uintptr1_uintptr1
+  {i1,i2:nat} (u1: uintptr i1, u2: uintptr i2):<> bool (i1 >= i2)
+  = "atspre_gte_uintptr_uintptr"
+overload >= with gte_uintptr1_uintptr1
+
+fun eq_uintptr1_uintptr1
+  {i1,i2:nat} (u1: uintptr i1, u2: uintptr i2):<> bool (i1 == i2)
+  = "atspre_eq_uintptr_uintptr"
+overload = with eq_uintptr1_uintptr1
+
+fun neq_uintptr1_uintptr1
+  {i1,i2:nat} (u1: uintptr i1, u2: uintptr i2):<> bool (i1 <> i2)
+  = "atspre_neq_uintptr_uintptr"
+overload <> with neq_uintptr1_uintptr1
 
 (* ****** ****** *)
 

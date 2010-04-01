@@ -34,14 +34,6 @@ implement fwork (ws, wk) = let
     extern castfn __cast
       (wk: !work >> opt (work, i >= 2)): #[i:nat] uintptr i
   } // end of [val]
-  extern fun uintptr1_of_uint1 {i:nat} (u: uint i): uintptr i
-    = "atspre_uintptr_of_uint"
-  extern fun uint1_of_uintptr1 {i:nat} (u: uintptr i): uint i
-    = "atspre_uint_of_uintptr"
-  extern fun gte_uintptr1_uintptr1
-    {i1,i2:nat} (u1: uintptr i1, u2: uintptr i2):<> bool (i1 >= i2)
-    = "atspre_gte_uintptr_uintptr"
-  overload >= with gte_uintptr1_uintptr1
 in
   if pfun >= (uintptr1_of_uint1)2U then let
     prval () = opt_unsome {work} (wk)
@@ -194,7 +186,8 @@ main (argc, argv) = let
   val t = quicksort_splt (ws, A, n)
 //
   val () = workshop_wait_worker_blocked (ws)
-  // val () = (array_ptr_print (pfarr | A, nsz); print_newline ())
+  val () = if (n <= 100) then
+    (array_ptr_print (pfarr | A, nsz); print_newline ())
   val () = array_ptr_free {T} (pfgc, pfarr | A)
 //
   var i: Nat = 0

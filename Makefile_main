@@ -60,7 +60,7 @@ all: \
   atsopt1 \
   bin/atscc \
   bin/atslib \
-  libfiles \
+  libfiles libfiles_mt \
   bin/atspack \
   bin/atslex \
   ccomp/runtime/GCATS/gc.o \

@@ -346,6 +346,8 @@ workshop_add_worker
           $PTHREAD.pthread_cond_broadcast (p_ws->WSisz)
         val () = if (nworker1 = p_ws->npaused) then
           $PTHREAD.pthread_cond_broadcast (p_ws->WSequ1)
+        val () = if (nworker1 = p_ws->nblocked) then
+          $PTHREAD.pthread_cond_broadcast (p_ws->WSequ2)
         val () = workshop_release (pf_ws | p_ws)
         val () = workshop_unref (ws)
       in
@@ -473,7 +475,9 @@ workshop_remove_work {l} (ws) = let
 //
       val nblock1 = p_ws->nblocked + 1
       val () = p_ws->nblocked := nblock1
-      val () = if (nblock1 = p_ws->nworker) then $PTHREAD.pthread_cond_broadcast (p_ws->WSequ2)
+      val () = if (nblock1 = p_ws->nworker)
+        then $PTHREAD.pthread_cond_broadcast (p_ws->WSequ2)
+      // end of [val]
 //
       val [l_mut:addr] (pf_mut, fpf_mut | p_mut) =
         workshop_WSmut_get {a} {l} (pf_ws | p_ws)
