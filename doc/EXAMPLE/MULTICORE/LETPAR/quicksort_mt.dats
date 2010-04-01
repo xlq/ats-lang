@@ -21,14 +21,22 @@ overload <= with lte_T_T
 
 (* ****** ****** *)
 
-#define ARG_INSORT_DATS 1; #include "insort.dats"
+#define ARG_INSORT_DATS 1
+
+(* ****** ****** *)
+
+#include "insort.dats"
+
+(* ****** ****** *)
+
+macdef size = size1_of_int1
 
 (* ****** ****** *)
 
 fn exch {n,i1,i2:nat | i1 < n; i2 < n; i1 <> i2} {A:addr}
   (pf: !array_v (T, n, A) | A: ptr A, i1: int i1, i2: int i2): void = let
   val @(pf1, pf2, fpf | p1, p2) =
-    array_ptr_takeout2_tsz {T} (pf | A, i1, i2, sizeof<T>)
+    array_ptr_takeout2_tsz {T} (pf | A, (size)i1, (size)i2, sizeof<T>)
   val tmp = !p1; val () = !p1 := !p2; val () = !p2 := tmp
 in
   pf := fpf (pf1, pf2)
@@ -40,7 +48,7 @@ fun innerLoop_l {n,l,r:int | 0 <= l; l <= r+1; r < n} {A:addr} .<n-l>.
   (pf: !array_v (T, n, A) | A: ptr A, pivot: !T, l: int l, r: int r)
   : natLte (r+1) = begin
   if l <= r then let
-    val (pf1, fpf | p1) = array_ptr_takeout_tsz {T} (pf | A, l, sizeof<T>)
+    val (pf1, fpf | p1) = array_ptr_takeout_tsz {T} (pf | A, (size)l, sizeof<T>)
   in
     if !p1 <= pivot then let
       prval () = pf := fpf (pf1)
@@ -58,7 +66,7 @@ fun innerLoop_r {n,l,r:int | 0 <= l; l <= r+1; r < n} {A:addr} .<r+1>.
   (pf: !array_v (T, n, A) | A: ptr A, pivot: !T, l: int l, r: int r)
   : intBtw (l-1, n) = begin
   if l <= r then let
-    val (pf1, fpf | p1) = array_ptr_takeout_tsz {T} (pf | A, r, sizeof<T>)
+    val (pf1, fpf | p1) = array_ptr_takeout_tsz {T} (pf | A, (size)r, sizeof<T>)
   in
     if pivot <= !p1 then let
       prval () = pf := fpf (pf1)
@@ -89,7 +97,7 @@ end // end of [outerLoop]
 
 fn partition {n:nat | n >= 2} {A:addr}
   (pf: !array_v (T, n, A) | A: ptr A, n: int n): natLt n = let
-  val (pf_mul | ofs) = n imul2 sizeof<T>
+  val (pf_mul | ofs) = (size)n szmul2 sizeof<T>
   prval pf1_mul = mul_add_const {~1} (pf_mul)
   prval @(pf1, pf2) = array_v_unextend {T} (pf_mul, pf)
   val pivot = ptr_get_vt<T> (pf2 | A + ofs - sizeof<T>)
@@ -97,7 +105,7 @@ fn partition {n:nat | n >= 2} {A:addr}
   val () =
     if i_pivot < n - 1 then let
       val (pf11, fpf1 | p) = begin
-        array_ptr_takeout_tsz {T} (pf1 | A, i_pivot, sizeof<T>)
+        array_ptr_takeout_tsz {T} (pf1 | A, (size)i_pivot, sizeof<T>)
       end
       val () = ptr_set_vt<T> (pf2 | A + ofs - sizeof<T>, !p)
       val () = !p := pivot; prval () = pf1 := fpf1 (pf11)
@@ -118,51 +126,25 @@ fun quicksort_main {n:nat} {A:addr}
   : void = begin
   if n >= THRESHOLD then let
     val i_pivot = partition (pf | A, n)
-    val (pf_mul | ofs) = i_pivot imul2 sizeof<T>
+    val (pf_mul | ofs) = (size)i_pivot szmul2 sizeof<T>
       prval (pf1, pf2) = array_v_split {T} (pf_mul, pf)
-    prval (pf21, pf22) = array_v_unsome {T} (pf2)
+    prval (pf21, pf22) = array_v_uncons {T} (pf2)
     prval pf1_mul = mul_add_const {1} (pf_mul)
     val () = quicksort_main (pf1 | A, i_pivot)
     and () = quicksort_main (pf22 | A+ofs+sizeof<T>, n-i_pivot-1)
-    prval () = pf2 := array_v_some {T} (pf21, pf22)
+    prval () = pf2 := array_v_cons {T} (pf21, pf22)
     prval () = pf := array_v_unsplit {T} (pf_mul, pf1, pf2)
   in
     // empty
   end else begin
     // empty
-  end
+  end (* end of [if] *)
 end // end of [quicksort]
 
 fun quicksort {n:nat} {A:addr}
   (pf: !array_v (T, n, A) | A: ptr A, n: int n): void = begin
   quicksort_main (pf | A, n); insort (pf | A, n)
-end
-
-(* ****** ****** *)
-
-#define CUTOFF 512
-
-fun quicksort_mt {n:nat} {A:addr}
-  (pf: !array_v (T, n, A) | A: ptr A, n: int n)
-  : void = begin
-  if n > CUTOFF then let
-    val i_pivot = partition (pf | A, n)
-    val (pf_mul | ofs) = i_pivot imul2 sizeof<T>
-      prval (pf1, pf2) = array_v_split {T} (pf_mul, pf)
-    prval (pf21, pf22) = array_v_unsome {T} (pf2)
-    prval pf1_mul = mul_add_const {1} (pf_mul)
-    val par
-      () = quicksort_mt (pf1 | A, i_pivot)
-    and
-      () = quicksort_mt (pf22 | A+ofs+sizeof<T>, n-i_pivot-1)
-    prval () = pf2 := array_v_some {T} (pf21, pf22)
-    prval () = pf := array_v_unsplit {T} (pf_mul, pf1, pf2)
-  in
-    // empty
-  end else begin
-    quicksort (pf | A, n)
-  end
-end // end of [quicksort_mt]
+end // end of [quicksort]
 
 (* ****** ****** *)
 

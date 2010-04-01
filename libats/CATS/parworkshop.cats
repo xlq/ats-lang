@@ -59,7 +59,9 @@ typedef struct {
   pthread_cond_t WSisz ; // nworker = 0
   ats_int_type npaused ;
   pthread_cond_t WSpaused ;
-  pthread_cond_t WSequ ; // npaused = nworker
+  pthread_cond_t WSequ1 ; // npaused = nworker
+  ats_int_type nblocked ;
+  pthread_cond_t WSequ2 ; // nblocked = nworker
   ats_fun_ptr_type fwork ;
   ats_int_type refcount ;
 } atslib_parworkshop_WORKSHOP ;
@@ -116,10 +118,17 @@ atslib_parworkshop_workshop_WSpaused_get
 
 ATSinline()
 ats_ptr_type
-atslib_parworkshop_workshop_WSequ_get
+atslib_parworkshop_workshop_WSequ1_get
   (ats_ptr_type ws) {
-  return &((atslib_parworkshop_WORKSHOP*)ws)->WSequ ;
-} // end of [atslib_parworkshop_workshop_WSequ_get]
+  return &((atslib_parworkshop_WORKSHOP*)ws)->WSequ1 ;
+} // end of [atslib_parworkshop_workshop_WSequ1_get]
+
+ATSinline()
+ats_ptr_type
+atslib_parworkshop_workshop_WSequ2_get
+  (ats_ptr_type ws) {
+  return &((atslib_parworkshop_WORKSHOP*)ws)->WSequ2 ;
+} // end of [atslib_parworkshop_workshop_WSequ2_get]
 
 /* ****** ****** */
 

@@ -34,13 +34,13 @@ fun insert_one {n,i:nat | i < n} {A:addr} {ofs:int} (
         val () = ptr_set_vt<T> (pf12 | p1, x1)
         prval pf1 = array_v_extend {T} (pf1_mul, pf11, pf12)
         val () = !p := x
-        prval pf2 = array_v_some {T} (pf21, pf22)
+        prval pf2 = array_v_cons {T} (pf21, pf22)
         prval pf = array_v_unsplit {T} (pf_mul, pf1, pf2)
       in
         (pf | ())
       end else let
         val () = !p := x1
-        prval pf2 = array_v_some {T} (pf21, pf22)
+        prval pf2 = array_v_cons {T} (pf21, pf22)
       in
         insert_one (pf1_mul, pf11, pf12, pf2 | x, p1, i-1)
       end
@@ -48,9 +48,9 @@ fun insert_one {n,i:nat | i < n} {A:addr} {ofs:int} (
   | _ => let
       val () = assert (i = 0)
       prval MULbas () = pf_mul
-      prval () = array_v_unnone {T} (pf1)
+      prval () = array_v_unnil {T} (pf1)
       val () = !p := x
-      prval pf = array_v_some {T} (pf21, pf22)
+      prval pf = array_v_cons {T} (pf21, pf22)
     in
       (pf | ())
     end
@@ -65,7 +65,7 @@ fun insert_all {n,i:nat | i <= n} {A:addr} {ofs:int} (
   ) : void = begin
   if i < n then let
     prval (pf1, pf2) = array_v_split {T} (pf_mul, pf)
-    prval (pf21, pf22) = array_v_unsome {T} (pf2)
+    prval (pf21, pf22) = array_v_uncons {T} (pf2)
     val x = ptr_get_vt<T> (pf21 | p)
     val (pf_new | ()) = insert_one (pf_mul, pf1, pf21, pf22 | x, p, i)
     prval () = pf := pf_new

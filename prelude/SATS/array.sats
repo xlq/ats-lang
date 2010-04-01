@@ -506,7 +506,8 @@ fun array_ptr_iforeach_fun_tsz {a:viewt@ype} {v:view} {n:nat} (
 
 //
 
-fun{a:viewt@ype} array_ptr_iforeach_clo {v:view} {n:nat} (
+fun{a:viewt@ype}
+array_ptr_iforeach_clo {v:view} {n:nat} (
     pf: !v
   | base: &(@[a][n]), f: &(!v | sizeLt n, &a) -<clo> void, asz: size_t n
   ) :<> void

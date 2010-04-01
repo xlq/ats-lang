@@ -1500,7 +1500,7 @@ in
   | D1Elam_sta_ana _ => begin
       prerr_loc_error2 loc0;
       $Deb.debug_prerrf (": %s: d1exp_tr: D1Elam_sta_ana: ", @(THISFILENAME));
-      prerr "illegal use of static lambda-abstraction in analysis form.";
+      prerr ": illegal use of static lambda-abstraction in analysis form.";
       prerr_newline ();
       $Err.abort {d2exp} ()
     end // end of [D1Elam_sta_ana]

@@ -1,5 +1,6 @@
 //
-// partial-sums.dats: computing partial sums of a power series
+// partial-sums.dats:
+//   computing partial sums of a power series
 //
 // Author: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
 // Time: March, 2010
@@ -52,21 +53,30 @@ fun fwork {l:addr}
   val wk = wk
   val pfun = __cast (wk) where {
     extern castfn __cast
-      (wk: !work >> opt (work, l > null)): #[l:addr] ptr l
+      (wk: !work >> opt (work, i >= 2)): #[i:nat] uintptr i
   } // end of [val]
+  extern fun uintptr1_of_uint1 {i:nat} (u: uint i): uintptr i
+    = "atspre_uintptr_of_uint"
+  extern fun uint1_of_uintptr1 {i:nat} (u: uintptr i): uint i
+    = "atspre_uint_of_uintptr"
+  extern fun gte_uintptr1_uint1
+    {i1,i2:nat} (u1: uintptr i1, u2: uintptr i2):<> bool (i1 >= i2)
+    = "atspre_gte_uintptr_uintptr"
+  overload >= with gte_uintptr1_uint1
 in
-  if pfun > null then let
+  if pfun >= (uintptr1_of_uint1)2U then let
     prval () = opt_unsome {work} (wk)
     val () = wk ()
     val () = cloptr_free (wk)
   in
     1 // the worker is to continue
   end else let
-    val i = intptr_of_ptr (pfun)
+    val u = uint1_of_uintptr1 (pfun)
+    val i = int_of_uint (u)
     prval () = opt_unnone {work} (wk)
     prval () = cleanup_top {work} (wk)
   in
-    int_of_intptr (i) // the worker is to pause or quit
+    ~i // the worker is to pause or quit
   end // end of [if]
 end // end of [fwork]
 
@@ -101,7 +111,7 @@ end // end of [loop_split]
 
 (* ****** ****** *)
 
-dynload "libats/DATS/parworkshop.dats"
+// dynload "libats/DATS/parworkshop.dats" // unnecessary
 
 (* ****** ****** *)
 
@@ -112,7 +122,7 @@ main (argc, argv) = let
   val () = assert_errmsg_bool1
     (argc >= 2, "exit: wrong command format!\n")
   val n = int_of argv.[1]
-  val N = n / 1024
+  val N = max (1024, n / 1024)
   val ws = workshop_make<work> (1024, fwork)
   val nworker =
     (if (argc >= 3) then int_of argv.[2] else NWORKER): int
@@ -121,21 +131,16 @@ main (argc, argv) = let
   val _err = workshop_add_nworker (ws, nworker)
   val () = assert_errmsg (_err = 0, #LOCATION)
   val t = loop_split (N, ws, n, 0)
-  val () = (print "spliting is done"; print_newline ())
+  // val () = (print "spliting is done"; print_newline ())
+  val () = workshop_wait_worker_blocked (ws)
+  val sum = finalize (t)
   var i: Nat = 0
   val () = while (i < nworker) let
-    val _0 = $extval (work, "(void*)0")
-    val () = workshop_insert_work (ws, _0) in i := i + 1
+    val _quit = $extval (work, "(void*)0")
+    val () = workshop_insert_work (ws, _quit) in i := i + 1
   end // end of [val]
-  val () = workshop_wait_worker_paused (ws)
-  val sum = finalize (t)
-  val () = while (i < nworker) let
-    val _1 = $extval (work, "(void*)-1")
-    val () = workshop_insert_work (ws, _1) in i := i + 1
-  end // end of [val]
-  val ws = __cast (ws) where {
-    extern castfn __cast {l:addr} (_: WSptr l):<> ptr l
-  }
+  val () = workshop_wait_worker_quit (ws)
+  val () = workshop_free_vt_exn (ws)
 in
   printf ("%.9f\t(2/3)^k", @(sum)); print_newline ();
 end // end of [main]

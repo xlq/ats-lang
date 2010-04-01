@@ -85,6 +85,14 @@ fun workshop_npaused_get
   = "atslib_parworkshop_workshop_npaused_get"
 // end of [workshop_npaused_get]
 
+//
+// locking/unlocking
+//
+fun workshop_nblocked_get
+  {a:viewt@ype} {l:addr} (ws: !WORKSHOPptr (a, l)):<> int
+  = "atslib_parworkshop_workshop_nblocked_get"
+// end of [workshop_nblocked_get]
+
 (* ****** ****** *)
 
 fun{a:viewt@ype}
@@ -120,6 +128,10 @@ fun workshop_wait_worker_paused
 fun workshop_resume_worker_paused
   {a:viewt@ype} {l:addr} (ws: !WORKSHOPptr (a, l)): void
 // end of [workshop_resume_worker_paused]
+
+fun workshop_wait_worker_blocked
+  {a:viewt@ype} {l:addr} (ws: !WORKSHOPptr (a, l)): void
+// end of [workshop_wait_worker_blocked]
 
 (* ****** ****** *)
 

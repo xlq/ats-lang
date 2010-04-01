@@ -36,7 +36,34 @@ overload <= with lte_T_T
 
 typedef T = int
 
+(* ****** ****** *)
+
 #include "quicksort_mt.dats"
+
+#define CUTOFF 512
+
+fun quicksort_mt {n:nat} {A:addr}
+  (pf: !array_v (T, n, A) | A: ptr A, n: int n)
+  : void = begin
+  if n > CUTOFF then let
+    val i_pivot = partition (pf | A, n)
+    val (pf_mul | ofs) = (size)i_pivot szmul2 sizeof<T>
+      prval (pf1, pf2) = array_v_split {T} (pf_mul, pf)
+    prval (pf21, pf22) = array_v_uncons {T} (pf2)
+    prval pf1_mul = mul_add_const {1} (pf_mul)
+    val // par
+      () = quicksort_mt (pf1 | A, i_pivot)
+    and
+      () = quicksort_mt (pf22 | A+ofs+sizeof<T>, n-i_pivot-1)
+    // end of [val]
+    prval () = pf2 := array_v_cons {T} (pf21, pf22)
+    prval () = pf := array_v_unsplit {T} (pf_mul, pf1, pf2)
+  in
+    // empty
+  end else begin
+    quicksort (pf | A, n)
+  end
+end // end of [quicksort_mt]
 
 (* ****** ****** *)
 
@@ -102,5 +129,4 @@ end // end of [main]
 
 (* ****** ****** *)
 
-(* end of [quicksort_mt_float] *)
-
+(* end of [quicksort_mt_int] *)

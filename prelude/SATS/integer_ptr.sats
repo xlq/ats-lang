@@ -51,7 +51,11 @@
 
 (* ****** ****** *)
 
+abstype intptr_int_type (i:int) = intptr_type
+stadef intptr = intptr_int_type
 typedef intptr = intptr_type
+
+(* ****** ****** *)
 
 symintr intptr_of
 
@@ -200,7 +204,11 @@ overload prerr with prerr_intptr
 
 (* ****** ****** *)
 
+abstype uintptr_int_type (i:int) = uintptr_type
+stadef uintptr = uintptr_int_type
 typedef uintptr = uintptr_type
+
+(* ****** ****** *)
 
 symintr uintptr_of
 
