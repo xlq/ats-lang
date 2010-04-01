@@ -79,7 +79,7 @@ typedef T = double
 
 (* ****** ****** *)
 
-#define CUTOFF 1024
+#define CUTOFF %(1 << 20)
 
 fun quicksort_splt {lws:addr}
   {n:nat} {A:addr} (ws: !WSptr lws, A: ptr A, n: int n): void = let
@@ -208,4 +208,4 @@ end // end of [main]
 
 (* ****** ****** *)
 
-(* end of [quicksort_mt_float] *)
+(* end of [qsort_mt_flt.dats] *)
