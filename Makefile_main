@@ -64,6 +64,7 @@ all: \
   bin/atspack \
   bin/atslex \
   ccomp/runtime/GCATS/gc.o \
+  ccomp/runtime/GCATS/gc_mt.o \
   atsopt1_gc
 	echo "ATS/Anairiats has been built up successfully!"
 	echo "The value of ATSHOME for this build is \"$(ATSHOME)\"."
@@ -153,6 +154,9 @@ bin/atslex:
 
 ccomp/runtime/GCATS/gc.o:
 	cd ccomp/runtime/GCATS; $(MAKE) gc.o; $(MAKE) clean
+
+ccomp/runtime/GCATS/gc_mt.o:
+	cd ccomp/runtime/GCATS; $(MAKE) gc_mt.o; $(MAKE) clean
 
 ######
 

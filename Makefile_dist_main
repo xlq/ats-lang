@@ -1,35 +1,31 @@
 #########################################################################
-#                                                                       #
-#                         Applied Type System                           #
-#                                                                       #
-#                              Hongwei Xi                               #
-#                                                                       #
+##                                                                     ##
+##                         Applied Type System                         ##
+##                                                                     ##
+##                              Hongwei Xi                             ##
+##                                                                     ##
 #########################################################################
 
-#
-#  ATS/Anairiats - Unleashing the Potential of Types!
-#
-#  Copyright (C) 2002-2008 Hongwei Xi.
-#
-#  ATS is  free software;  you can redistribute it and/or modify it under
-#  the  terms of the  GNU General Public License as published by the Free
-#  Software Foundation; either version 2.1, or (at your option) any later
-#  version.
-# 
-#  ATS is distributed in the hope that it will be useful, but WITHOUT ANY
-#  WARRANTY; without  even  the  implied  warranty  of MERCHANTABILITY or
-#  FITNESS FOR A PARTICULAR PURPOSE.  See the  GNU General Public License
-#  for more details.
-# 
-#  You  should  have  received  a  copy of the GNU General Public License
-#  along  with  ATS;  see  the  file  COPYING.  If not, write to the Free
-#  Software Foundation, 51  Franklin  Street,  Fifth  Floor,  Boston,  MA
-#  02110-1301, USA.
-#
-
-#
-# Author: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
-#
+##
+## ATS/Anairiats - Unleashing the Potential of Types!
+##
+## Copyright (C) 2002-2008 Hongwei Xi.
+##
+## ATS is  free software;  you can redistribute it and/or modify it under
+## the  terms of the  GNU General Public License as published by the Free
+## Software Foundation; either version 2.1, or (at your option) any later
+## version.
+##
+## ATS is distributed in the hope that it will be useful, but WITHOUT ANY
+## WARRANTY; without  even  the  implied  warranty  of MERCHANTABILITY or
+## FITNESS FOR A PARTICULAR PURPOSE.  See the  GNU General Public License
+## for more details.
+##
+## You  should  have  received  a  copy of the GNU General Public License
+## along  with  ATS;  see  the  file  COPYING.  If not, write to the Free
+## Software Foundation, 51  Franklin  Street,  Fifth  Floor,  Boston,  MA
+## 02110-1301, USA.
+##
 
 ######
 
@@ -55,6 +51,7 @@ all: \
   libfiles \
   bin/atslex \
   ccomp/runtime/GCATS/gc.o \
+  ccomp/runtime/GCATS/gc_mt.o \
   atsopt1_gc
 	echo "ATS/Anairiats has been built up successfully!"
 	echo "The value of ATSHOME for this build is \"$(ATSHOME)\"."
@@ -111,6 +108,9 @@ bin/atslex:
 
 ccomp/runtime/GCATS/gc.o:
 	cd ccomp/runtime/GCATS; make gc.o; make clean
+
+ccomp/runtime/GCATS/gc_mt.o:
+	cd ccomp/runtime/GCATS; make gc_mt.o; make clean
 
 ######
 

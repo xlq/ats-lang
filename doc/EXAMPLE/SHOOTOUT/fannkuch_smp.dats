@@ -10,8 +10,6 @@
 
 %{^
 
-#include "libc/CATS/pthread_locks.cats"
-
 #ifndef _ATS_MULTITHREAD
 #error "_ATS_MULTITHREAD is undefined!"
 #endif
@@ -194,13 +192,15 @@ end // end of [fannkuch_all]
 
 (* ****** ****** *)
 
+staload "libc/SATS/pthread.sats"
+staload "libc/SATS/pthread_uplock.sats"
+
+(* ****** ****** *)
+
 viewdef fannkuch_v
   (l_a: addr, l_C: addr, l_P: addr, l_S: addr) = (
   int @ l_a, intarr @ l_C, intarr @ l_P, intarr @ l_S
 ) // end of [fannkuch_v]
-
-staload "libc/SATS/pthread.sats"
-staload "libc/SATS/pthread_locks.sats"
 
 viewtypedef lock
   (l_a:addr, l_C:addr, l_P:addr, l_S:addr) =
@@ -266,9 +266,13 @@ end // end of [fannkuch_locklst_gen]
 
 (* ****** ****** *)
 
-fun fannkuch_locklst_free (locks: locklst): int = let
-  fun loop (locks: locklst, max: int): int = case+ locks of
-    | ~locklst_cons (p_a, p_C, p_P, p_S, lock, locks) => let
+fun fannkuch_locklst_free
+  (locks: locklst): int = let
+  fun loop (
+      locks: locklst, max: int
+    ) : int = case+ locks of
+    | ~locklst_cons
+        (p_a, p_C, p_P, p_S, lock, locks) => let
         val (pf | ()) = pthread_uplock_download (lock)
         prval pf_a = pf.0
         val ans = !p_a
@@ -278,18 +282,20 @@ fun fannkuch_locklst_free (locks: locklst): int = let
         val () = intarr_free (pf.3 | p_S)
       in
         if ans <= max then loop (locks, max) else loop (locks, ans)
-      end
+      end // end of [locklst_cons]
     | ~locklst_nil () => max
+  // end of [loop]
 in
   loop (locks, 0)
 end // end of [fannkuch_locklst_free]
 
 (* ****** ****** *)
 
-fn usage (cmd: string): void = printf ("usage: %s [integer]\n", @(cmd))
+fn prerr_usage (cmd: string): void =
+  printf ("usage: %s [integer]\n", @(cmd))
 
 implement main (argc, argv) = let
-  val () = if argc < 2 then (usage argv.[0]; exit (1))
+  val () = if argc < 2 then (prerr_usage argv.[0]; exit (1))
   val () = assert (argc >= 2)
   val sz = int_of_string argv.[1]
   val locks = fannkuch_locklst_gen (sz)
@@ -301,8 +307,7 @@ implement main (argc, argv) = let
   val () = loop (!p_C, !p_P, sz, 1) where {
     fun loop (C: &intarr, P: &intarr, sz: int, n: int) : void =
       if n < NPRINT then let
-        val _ = perm_next (C, P, 2)
-      in
+        val _ = perm_next (C, P, 2) in
         print_intarr (P, sz); loop (C, P, sz, n+1)
       end // end of [if]
   }  // end of [where]
@@ -315,4 +320,4 @@ end // end of [main]
 
 (* ****** ****** *)
 
-(* end of [fannkuch.dats] *)
+(* end of [fannkuch_smp.dats] *)

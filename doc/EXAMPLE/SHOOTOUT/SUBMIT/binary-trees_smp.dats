@@ -10,16 +10,8 @@
 
 (* ****** ****** *)
 
-%{^
-
-#include "libc/CATS/pthread_locks.cats"
-
-%}
-
-(* ****** ****** *)
-
 staload "libc/SATS/pthread.sats"
-staload "libc/SATS/pthread_locks.sats"
+staload "libc/SATS/pthread_uplock.sats"
 
 (* ****** ****** *)
 

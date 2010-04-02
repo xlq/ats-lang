@@ -43,14 +43,21 @@ typedef two = int8
 
 %{^
 
+ATSinline()
 ats_int_type
-cmultiple (ats_int_type k, ats_int_type i) { return ((k + i - 1) / i) * i ; }
+ceil2 (ats_int_type k, ats_int_type i) {
+  int r = k % i ;
+  if (r == 0) {
+    return k ;
+  } else {
+    return (k + i - r) ;
+  } // end of [if]
+} // end of [ceil2]
 
 %} // end of [%{^]
 
 extern
-fun cmultiple {k,i:nat | i > 0} (k: int k, i: int i): intGte k
-  = "cmultiple"
+fun ceil2 {k,i:nat | i > 0} (k: int k, i: int i): intGte k = "ceil2"
 
 (* ****** ****** *)
 
@@ -98,7 +105,7 @@ implement sieve_many_seg (pf | p_A, m1, m2, m3) = () where {
   var i: intGte 2 = 2
   val () = while (i < m1) let
     val () = if p_A->[i] = tt then let
-      val j = cmultiple (m2, i) in sieve_once (pf | p_A, m3, i, j)
+      val j = ceil2 (m2, i) in sieve_once (pf | p_A, m3, i, j)
     end // end of [val]
   in
     i := i + 1

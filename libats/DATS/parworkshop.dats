@@ -46,7 +46,7 @@
 
 staload LQ = "libats/SATS/linqueue_arr.sats"
 staload _(*anon*) = "libats/DATS/linqueue_arr.dats"
-stadef QUEUE = $LQ.QUEUE
+stadef QUEUE = $LQ.QUEUE1
 
 (* ****** ****** *)
 
@@ -167,7 +167,7 @@ viewtypedef WORKSHOP (a:viewt@ype) =
 //
 // WSmut = $PTHREAD.mutex_vt
 //
-  WQ = $LQ.QUEUE (a)
+  WQ = $LQ.QUEUE1 (a)
 , WQemp = $PTHREAD.cond_vt
 , WQful = $PTHREAD.cond_vt
 , nworker = int // number of workers affiliated with the workshop
@@ -279,6 +279,14 @@ workshop_npaused_get
   val npaused = p_ws->npaused
   val () = workshop_release (pf_ws | p_ws)
 } // end of [workshop_npaused_get]
+
+implement
+workshop_nblocked_get
+  (ws) = nblocked where {
+  val (pf_ws | p_ws) = workshop_acquire (ws)
+  val nblocked = p_ws->nblocked
+  val () = workshop_release (pf_ws | p_ws)
+} // end of [workshop_nblocked_get]
 
 (* ****** ****** *)
 

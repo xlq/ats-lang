@@ -12,10 +12,8 @@
 (* ****** ****** *)
 
 %{^
-
 #include <pcre.h>
-
-%}
+%} // end of [%{^]
 
 (* ****** ****** *)
 
@@ -155,7 +153,8 @@ blocklst_concat_and_free
 
 %{$
 
-ats_int_type count_pattern_match
+ats_int_type
+count_pattern_match
   (ats_int_type nsrc, ats_ptr_type src, ats_ptr_type pat) {
   int count ;
   pcre *re; pcre_extra *re_ex ; const char *re_e ;
@@ -170,9 +169,8 @@ ats_int_type count_pattern_match
     err = pcre_exec (re, re_ex, (char*)src, nsrc, pos, 0, m, 3) ;
     if (err < 0) break ; count += 1 ; pos = m[1] ;
   }
-
   return count ;
-}
+} // end of [count_pattern_match]
 
 %}
 
@@ -206,6 +204,7 @@ fun count_loop {i:nat} {n:nat} {l:addr}
   in
     count_loop (pf | n, p, i + 1)
   end // end of [if]
+// end of [count_loop]
 
 (* ****** ****** *)
 
@@ -273,7 +272,7 @@ int_ptr_type subst_pattern_string
   return ans ;
 }
 
-%}
+%} // end of [%{]
 
 (* ****** ****** *)
 

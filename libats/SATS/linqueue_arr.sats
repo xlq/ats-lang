@@ -67,8 +67,8 @@ absviewt@ype QUEUE
   (a:viewt@ype+, m: int, n: int)
   = $extype "atslib_linqueue_arr_QUEUE"
 // end of [QUEUE]
-viewtypedef QUEUE (a:viewt@ype) = [m,n:nat] QUEUE (a, m, n)
 typedef QUEUE0 (a:viewt@ype) = QUEUE (a, 0, 0)?
+viewtypedef QUEUE1 (a:viewt@ype) = [m,n:nat] QUEUE (a, m, n)
 
 (* ****** ****** *)
 

@@ -110,11 +110,11 @@ main (argc, argv) = let
     (argc >= 2, "command format: fib_mt <int> <ncore>")
   val n = int_of argv.[1]
   val N = max (10, n - 16)
-  val ws = workshop_make<work> (QSZ, fwork)
   val nworker =
     (if (argc >= 3) then int_of argv.[2] else NWORKER): int
   val nworker = int1_of_int (nworker)
   val () = assert_errmsg (nworker > 0, #LOCATION)
+  val ws = workshop_make<work> (QSZ, fwork)
   val _err = workshop_add_nworker (ws, nworker)
   val () = assert_errmsg (_err = 0, #LOCATION)
   val t = fib_split (N, ws, n)
