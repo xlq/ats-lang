@@ -15,6 +15,9 @@ all: \
   k-nucleotide k-nucleotide2 \
   k-nucleotide3 k-nucleotide4 \
   mandelbrot \
+  mandelbrot_simd \
+  mandelbrot_simd_smp \
+  mandelbrot2 \
   n-body n-body2 \
   pidigits pidigits2 pidigits3 \
   regex-dna regex-dna2 \
@@ -108,6 +111,9 @@ mandelbrot_simd: mandelbrot_simd.dats
 	$(ATSCC) -O3 -fomit-frame-pointer -D_ISOC9X_SOURCE -mfpmath=sse -msse2 -o mandelbrot_simd mandelbrot_simd.dats
 mandelbrot_simd_smp: mandelbrot_simd_smp.dats
 	$(ATSCC) -D_ATS_MULTITHREAD -O3 -fomit-frame-pointer -D_ISOC9X_SOURCE -mfpmath=sse -msse2 -o mandelbrot_simd_smp mandelbrot_simd_smp.dats -lpthread -lats_mt
+
+mandelbrot2: mandelbrot2.dats
+	$(ATSCC) -D_GNU_SOURCE -D_ATS_MULTITHREAD -msse2 -O3 mandelbrot2.dats -o mandelbrot2 -lpthread -lats_mt
 
 ######
 
@@ -211,6 +217,7 @@ cleanall: clean
 	rm -f mandelbrot
 	rm -f mandelbrot_simd
 	rm -f mandelbrot_simd_smp
+	rm -f mandelbrot2
 	rm -f n-body
 	rm -f n-body_smp
 	rm -f n-body1

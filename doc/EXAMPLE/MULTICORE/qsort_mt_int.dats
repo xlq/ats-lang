@@ -1,5 +1,5 @@
 //
-// qsort_mt_flt:
+// qsort_mt_int:
 // A plain multithreaded quicksort implementation
 //
 // Author: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
@@ -66,7 +66,7 @@ overload <= with lte_T_T
 
 *)
 
-typedef T = double
+typedef T = int
 
 (* ****** ****** *)
 
@@ -121,7 +121,7 @@ fn array_ptr_print {n:nat} {l:addr}
   (pf_arr: !array_v (T, n, l) | A: ptr l, n: size_t n): void = let
   var !p_f = @lam
     (pf: !unit_v | i: sizeLt n, x: &T): void =<clo> begin
-    $effmask_all (if i > 0 then print ", "; printf ("%.2f", @(x)))
+    $effmask_all (if i > 0 then print ", "; printf ("%i", @(x)))
   end // end of [var]
   prval pf = unit_v ()
   val () = array_ptr_iforeach_clo_tsz {T} (pf | !A, !p_f, n, sizeof<T>)
@@ -132,7 +132,7 @@ end // end of [array_ptr_print]
 
 (* ****** ****** *)
 
-#define N 100.0
+#define N 100000000
 
 fn random_array_ptr_gen {n:nat} (n: size_t n):<>
   [l:addr | l <> null] (free_gc_v (T, n, l), array_v (T, n, l) | ptr l) = let
@@ -142,7 +142,7 @@ fn random_array_ptr_gen {n:nat} (n: size_t n):<>
     pf
   | !parr
   , n
-  , lam (pf | i, x) => x := $effmask_ref (N * $RAND.drand48 ())
+  , lam (pf | i, x) => x := $effmask_ref ($RAND.randint (N))
   , sizeof<T>
   ) // end of [array_ptr_make_fun_tsz_cloptr]
   prval unit_v () = pf
@@ -166,7 +166,7 @@ end // end of [prerr_usage]
 implement
 main (argc, argv) = let
   val () = assert_errmsg_bool1
-    (argc >= 2, "command format: qsort_mt_flt <int> <ncore>")
+    (argc >= 2, "command format: qsort_mt_int <int> <ncore>")
   val n = int_of argv.[1]
   val n = int1_of_int (n)
   val () = assert_errmsg (n >= 0, #LOCATION)
@@ -204,4 +204,4 @@ end // end of [main]
 
 (* ****** ****** *)
 
-(* end of [qsort_mt_flt.dats] *)
+(* end of [qsort_mt_int.dats] *)

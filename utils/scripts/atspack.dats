@@ -624,7 +624,8 @@ fn doc_dir_copy () = let
   val () = cp "prelude_string.dats"
   val () = cp "libc_dlfcn.dats"
   val () = cp "libc_dirent.dats"
-  val () = cp "libc_stdlib.dats"
+  val () = cp "libc_sched.dats"
+  val () = cp "libc_stdlib.dats"  
   val () = cp "libats_funmap_avltree.dats"
   val () = cp "libats_genarrays.dats"  
   val () = cp "libats_hashtable_chain.dats"
@@ -670,6 +671,17 @@ fn doc_dir_copy () = let
       end // end of [if]
   } // end of [val]
 //
+  val SRCROOTdoc_EXAMPLE_MULTICORE = SRCROOTdoc_EXAMPLE ++ "MULTICORE/"
+  val DSTROOTdoc_EXAMPLE_MULTICORE = DSTROOTdoc_EXAMPLE ++ "MULTICORE/"
+  val () = mkdir_exn (DSTROOTdoc_EXAMPLE_MULTICORE, DIRmode)
+  macdef cp (name) = fcopy_exn (
+    SRCROOTdoc_EXAMPLE_MULTICORE ++ ,(name), DSTROOTdoc_EXAMPLE_MULTICORE ++ ,(name)
+  )
+  val () = cp "Makefile"
+  val () = dir_copy
+    (SRCROOTdoc_EXAMPLE_MULTICORE, DSTROOTdoc_EXAMPLE_MULTICORE, name_is_xats)
+  // end of [val]
+//
   val SRCROOTdoc_EXAMPLE_OpenGL = SRCROOTdoc_EXAMPLE ++ "OpenGL/"
   val DSTROOTdoc_EXAMPLE_OpenGL = DSTROOTdoc_EXAMPLE ++ "OpenGL/"
   val () = mkdir_exn (DSTROOTdoc_EXAMPLE_OpenGL, DIRmode)
@@ -679,6 +691,8 @@ fn doc_dir_copy () = let
   val () = cp "Makefile"
   val () = dir_copy
     (SRCROOTdoc_EXAMPLE_OpenGL, DSTROOTdoc_EXAMPLE_OpenGL, name_is_xats)
+  // end of [val]
+//
 in
   prerr "The [doc] directory is successfully copied.";
   prerr_newline ()

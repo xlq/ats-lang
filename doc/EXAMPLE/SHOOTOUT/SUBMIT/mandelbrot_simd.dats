@@ -123,7 +123,7 @@ end // end of [mandelbrot]
 
 implement main (argc, argv) = let
   val () = assert_errmsg_bool1
-    (argc = 2, "Exit: wrong command format!\n")
+    (argc >= 2, "Exit: wrong command format!\n")
   val i = int1_of_string argv.[1]
   val () = assert_errmsg_bool1
     (i >= 2, "The input integer needs to be at least 2.\n")
