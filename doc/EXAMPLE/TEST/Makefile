@@ -26,6 +26,7 @@ compall:: \
   prelude_string \
   libc_dirent \
   libc_dlfcn \
+  libc_sched \
   libc_stdlib \
   libats_funmap_avltree \
   libats_genarrays \
@@ -75,6 +76,13 @@ libc_dirent: libc_dirent.dats
 
 libc_dlfcn: libc_dlfcn.dats
 	$(ATSCC) -rdynamic -O2 -o libc_dlfcn libc_dlfcn.dats -ldl && ./libc_dlfcn "."
+
+######
+
+libc_sched: libc_sched.dats
+	$(ATSCC) -D_GNU_SOURCE -O2 -o libc_sched libc_sched.dats && ./libc_sched
+
+######
 
 libc_stdlib: libc_stdlib.dats
 	$(ATSCC) -O2 -o libc_stdlib libc_stdlib.dats && ./libc_stdlib
@@ -177,6 +185,7 @@ cleanall: clean
 	rm -f prelude_string
 	rm -f libc_dirent
 	rm -f libc_dlfcn
+	rm -f libc_sched
 	rm -f libc_stdlib
 	rm -f libats_funmap_avltree
 	rm -f libats_genarrays

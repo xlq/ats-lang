@@ -83,19 +83,22 @@ k-nucleotide: k-nucleotide.dats
 #	$(ATSCC) -O3 k-nucleotide.dats -o k-nucleotide
 
 k-nucleotide1: k-nucleotide1.dats
-	$(ATSCC) -D_ATS_GCATS -O3 k-nucleotide1.dats hashtable.dats -o k-nucleotide1
+	$(ATSCC) -D_ATS_GCATS -O3 -o k-nucleotide1 k-nucleotide1.dats hashtable.dats
 
 k-nucleotide2: k-nucleotide2.dats
-	$(ATSCC) -D_ATS_GCATS -O3 k-nucleotide2.dats -o k-nucleotide2
-#	$(ATSCC) -O3 k-nucleotide2.dats -o k-nucleotide2
+	$(ATSCC) -D_ATS_GCATS -O3 -o k-nucleotide2 k-nucleotide2.dats
+#	$(ATSCC) -O3 -o k-nucleotide2 k-nucleotide2.dats
 
 k-nucleotide3: k-nucleotide3.dats
-	$(ATSCC) -D_ATS_GCATS -O3 k-nucleotide3.dats -o k-nucleotide3
-#	$(ATSCC) -O3 k-nucleotide3.dats -o k-nucleotide3
+	$(ATSCC) -D_ATS_GCATS -O3 -o k-nucleotide3 k-nucleotide3.dats
+#	$(ATSCC) -O3 -o k-nucleotide3 k-nucleotide3.dats
 
 k-nucleotide4: k-nucleotide4.dats
-	$(ATSCC) -D_ATS_GCATS -O4 k-nucleotide4.dats -o k-nucleotide4
-#	$(ATSCC) -O4 k-nucleotide4.dats -o k-nucleotide4
+	$(ATSCC) -D_ATS_GCATS -O3 -o k-nucleotide4 k-nucleotide4.dats
+#	$(ATSCC) -O3 k-nucleotide4.dats -o k-nucleotide4
+
+k-nucleotide_mset: k-nucleotide_mset.dats
+	$(ATSCC) -D_ATS_GCATS -O3  -o k-nucleotide_mset k-nucleotide_mset.dats funmset_avltree.dats
 
 ######
 
@@ -201,6 +204,7 @@ cleanall: clean
 	rm -f fasta5
 	rm -f fasta_output.txt
 	rm -f k-nucleotide
+	rm -f k-nucleotide1
 	rm -f k-nucleotide2
 	rm -f k-nucleotide3
 	rm -f k-nucleotide4

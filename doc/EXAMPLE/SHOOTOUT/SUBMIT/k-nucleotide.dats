@@ -87,13 +87,12 @@ ats_void_type fprint_symbol
 
 %}
 
-implement print_symbol (dna, sym) =
-  let
-     val (pf_stdout | ptr_stdout) = stdout_get ()
-  in
-     fprint_symbol (file_mode_lte_w_w | !ptr_stdout, dna, sym);
-     stdout_view_set (pf_stdout | (*none*))
-  end
+implement print_symbol (dna, sym) = let
+  val (pf_stdout | ptr_stdout) = stdout_get ()
+in
+  fprint_symbol (file_mode_lte_w_w | !ptr_stdout, dna, sym);
+  stdout_view_set (pf_stdout | (*none*))
+end // end of [print_symbol]
 
 (* ****** ****** *)
 
@@ -660,7 +659,7 @@ string_make_charlst_int (ats_ptr_type cs, const ats_int_type n) {
   return s0 ;
 }
 
-%}
+%} // end of [%{$]
 
 (* ****** ****** *)
 

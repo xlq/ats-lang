@@ -9,81 +9,14 @@
 **
 *)
 
-%{^
- 
-// vector of two doubles
-typedef double v2df __attribute__ ((vector_size(16))) ;
-typedef v2df ats_v2df_type ;
-
-%}
-
 (* ****** ****** *)
 
-abst@ype v2df = $extype "ats_v2df_type"
+staload "libc/SATS/SIMD_v2df.sats" // no dynamic loading
+
+(* ****** ****** *)
 
 #define TIMES 50
 #define LIMIT 2.0; #define LIMIT2 (LIMIT * LIMIT)
-
-(* ****** ****** *)
-
-%{^
-
-ats_v2df_type ats_zero_v2df = { 0.0, 0.0 } ;
-
-ats_v2df_type
-ats_v2df_make
-  (ats_double_type d0, ats_double_type d1) {
-  v2df dd ;
-  ((double*)&dd)[0] = d0 ; ((double*)&dd)[1] = d1 ;
-  return dd ;
-}
-
-static inline
-ats_double_type
-ats_v2df_fst (ats_v2df_type dd) { return ((double*)&dd)[0] ; }
-
-static inline
-ats_double_type
-ats_v2df_snd (ats_v2df_type dd) { return ((double*)&dd)[1] ; }
-
-static inline
-ats_v2df_type
-ats_dbl_v2df (ats_v2df_type dd) { return (dd + dd) ; }
-
-static inline
-ats_v2df_type
-ats_add_v2df_v2df (ats_v2df_type dd1, ats_v2df_type dd2) {
-  return (dd1 + dd2) ;
-}
-
-static inline
-ats_v2df_type
-ats_sub_v2df_v2df (ats_v2df_type dd1, ats_v2df_type dd2) {
-  return (dd1 - dd2) ;
-}
-
-static inline
-ats_v2df_type
-ats_mul_v2df_v2df (ats_v2df_type dd1, ats_v2df_type dd2) {
-  return (dd1 * dd2) ;
-}
-
-%}
-
-extern val zero_v2df: v2df = "ats_zero_v2df"
-
-extern fun v2df_make (d0: double, d1: double): v2df = "ats_v2df_make"
-
-extern fun v2df_fst (dd: v2df): double = "ats_v2df_fst"
-extern fun v2df_snd (dd: v2df): double = "ats_v2df_snd"
-
-extern fun dbl_v2df (_: v2df): v2df = "ats_dbl_v2df"
-extern fun add_v2df_v2df (_: v2df, _: v2df): v2df = "ats_add_v2df_v2df"
-extern fun sub_v2df_v2df (_: v2df, _: v2df): v2df = "ats_sub_v2df_v2df"
-extern fun mul_v2df_v2df (_: v2df, _: v2df): v2df = "ats_mul_v2df_v2df"
-overload + with add_v2df_v2df
-overload - with sub_v2df_v2df
-overload * with mul_v2df_v2df
 
 (* ****** ****** *)
 
@@ -249,8 +182,9 @@ fun test (h_r: double, w_r: double, x: int, y: int): int = let
   fun loopv
     (Zrv: v2df, Ziv: v2df, times: int):<cloref1> int = let
     val Trv = Zrv * Zrv and Tiv = Ziv * Ziv; val Triv = Trv + Tiv
-    val Tri0 = v2df_fst (Triv) and Tri1 = v2df_snd (Triv)
-    val Zrv_new = Trv - Tiv + Crv; val Ziv_new = dbl_v2df (Zrv * Ziv) + Civ
+    val Tri0 = v2df_get_fst (Triv) and Tri1 = v2df_get_snd (Triv)
+    val Zrv_new = Trv - Tiv + Crv
+    val Ziv_new = (x + x) + Civ  where { val x = Zrv * Ziv }
   in
     case+ 0 of
     | _ when Tri0 <= LIMIT2 => begin case+ 0 of
@@ -259,7 +193,7 @@ fun test (h_r: double, w_r: double, x: int, y: int): int = let
         end // end of [_ when ...]
       | _ => begin
           if times = 0 then 0x2 else let
-            val Zr0_new = v2df_fst (Zrv_new) and Zi0_new = v2df_fst (Ziv_new)
+            val Zr0_new = v2df_get_fst (Zrv_new) and Zi0_new = v2df_get_fst (Ziv_new)
           in
             loop (0x2(*eo*), Cr0, Ci0, Zr0_new, Zi0_new, times-1)
           end // end of [if]
@@ -268,7 +202,7 @@ fun test (h_r: double, w_r: double, x: int, y: int): int = let
     | _ => begin case+ 0 of
       | _ when Tri1 <= LIMIT2 => begin
           if times = 0 then 0x1 else let
-            val Zr1_new = v2df_snd (Zrv_new) and Zi1_new = v2df_snd (Ziv_new)
+            val Zr1_new = v2df_get_snd (Zrv_new) and Zi1_new = v2df_get_snd (Ziv_new)
           in
             loop (0x1(*eo*), Cr1, Ci1, Zr1_new, Zi1_new, times-1)
           end // end of [if]
@@ -277,7 +211,7 @@ fun test (h_r: double, w_r: double, x: int, y: int): int = let
       end // end of [_]
   end // end of [loopv]
 in
-  loopv (zero_v2df, zero_v2df, TIMES)
+  loopv (v2df_0_0, v2df_0_0, TIMES)
 end // end of [test]
 
 (* ****** ****** *)
@@ -367,7 +301,7 @@ end // end of [mandelbrot]
 
 implement main (argc, argv) = let
   val () = assert_errmsg_bool1
-    (argc = 2, "Exit: wrong command format!\n")
+    (argc => 2, "Exit: wrong command format!\n")
   val i = int1_of_string argv.[1]
   val () = assert_errmsg_bool1
     (i >= 2, "The input integer needs to be at least 2.\n")
@@ -377,4 +311,4 @@ end // end of [main]
 
 (* ****** ****** *)
 
-(* end of [mandelbrot_simd.dats] *)
+(* end of [mandelbrot_simd_smp.dats] *)

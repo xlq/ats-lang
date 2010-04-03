@@ -11,7 +11,10 @@
 (* ****** ****** *)
 
 staload "libc/SATS/stdio.sats"
-staload _(*anonymous*) = "prelude/DATS/reference.dats"
+staload "libc/SATS/stdlib.sats"
+staload "libc/SATS/string.sats"
+staload _(*anonymous*) = "prelude/DATS/array.dats"
+staload _(*anonymous*) = "prelude/DATS/list_vt.dats"
 
 (* ****** ****** *)
 
@@ -146,19 +149,23 @@ fn write_frequencies {n,k:nat | k <= n}
   val total = $MS.funmset_size (ms)
   val ftotal = float_of total
   var frqs: frqlst = FRQLSTnil (); viewdef V2 = frqlst @ frqs
-  fn f2 (pf: !V2 | k: symbol_t, cnt: int):<cloref1> void = let
+  var !p_f2 = @lam (pf: !V2 | k: symbol_t, cnt: int): void =<clo> let
     val fval = 100 * (float_of cnt) / ftotal in frqs := FRQLSTcons (k, fval, frqs)
   end // end of [f2]
-  val () = $MS.funmset_foreach_cloref {V2} (view@ frqs | ms, f2)
+  val () = $MS.funmset_foreach_clo {V2} (view@ frqs | ms, !p_f2)
 in
   print_free_frqlst (frqlst_sort frqs)
 end // end of [write_frequencies]
 
 (* ****** ****** *)
 
+macdef sz2i = int1_of_size1
+
 fn write_count {n,k:nat}
   (dna: dna_t, n: int n, seq: string k): void = let
-  val k = length seq; val () = assert (k <= n)
+  val k = string1_length seq
+  val k = (sz2i)k
+  val () = assert (k <= n)
   val ms = dna_count (dna, n, k)
   val sym = symbol_make_strint (seq, k)
   val cnt = begin
@@ -170,74 +177,44 @@ end // end of [write_count]
 
 (* ****** ****** *)
 
-typedef string_int = [n:nat] (string n, int n)
+extern fun getline (): string = "__getline"
+extern fun getrest (sz: &size_t? >> size_t n): #[n:nat] string n = "__getrest"
 
-extern fun getline (): string
-extern fun getrest (): string_int
+%{$
 
-dataviewtype charlst (int) =
-  | charlst_nil (0)
-  | {n:nat} charlst_cons (n+1) of (char, charlst n)
+#define LINEBUFSZ 1024
+char theLineBuffer[LINEBUFSZ] ;
+ats_ptr_type __getline () {
+  fgets (theLineBuffer, LINEBUFSZ, stdin) ; return theLineBuffer ;
+} /* end of [getline] */
 
-#define nil charlst_nil
-#define cons charlst_cons
-#define :: charlst_cons
+#define RESTBUFSZ (128 * 1024 * 1024)
+char theRestBuffer[RESTBUFSZ] ;
 
-extern fun charlst_is_nil {n:nat} (cs: &charlst n): bool (n == 0) =
-  "charlst_is_nil"
+ats_ptr_type __getrest (ats_ref_type p_n) {
+  int c ; size_t i ; char *s ;
+  s = theRestBuffer ; i = 0 ;
+  while ((c = fgetc(stdin)) != EOF) {
+    if (c != '\n') { *s++ = toupper(c) ; i++ ; }
+  }
+  *s = '\000' ; *((size_t*)p_n) = i ;
+  if (i >= RESTBUFSZ) {
+    fprintf (stderr, "exit(ATS): too much data for processing\n") ; exit(1) ;
+  }
+  return theRestBuffer ;
+} /* end of [__getrest] */
 
-implement charlst_is_nil (cs) = case+ cs of
-  | nil () => (fold@ cs; true) | cons (c, !cs_r) => (fold@ cs; false)
+%} // end of [%{$]
 
-extern fun
-charlst_uncons {n:pos} (cs: &charlst n >> charlst (n-1)): char =
-  "charlst_uncons"
+(* ****** ****** *)
 
-implement charlst_uncons (cs) =
-  let val ~(c :: cs_r) = cs in cs := cs_r; c end
-// end of [charlst_uncons]
-
-extern fun
-string_make_charlst_int {n:nat} (cs: charlst n, n: int n): string n =
-  "string_make_charlst_int"
-
-#define i2c char_of_int
-
-implement getline () = let
-  fun loop {n:nat} (cs: charlst n, n: int n): string =
-    let val i = getchar () in
-      if i >= 0 then let
-        val c = i2c i
-      in
-        if c <> '\n' then loop (charlst_cons (c, cs), n+1)
-        else string_make_charlst_int (cs, n)
-      end else begin
-        string_make_charlst_int (cs, n)
-      end
-   end // end of [loop]
-in
-  loop (charlst_nil (), 0)
-end // end of [getline]
-
-implement getrest () = loop (charlst_nil (), 0) where {
-  fun loop {n:nat} (cs: charlst n, n: int n): string_int =
-    let val i = getchar () in
-      if i >= 0 then let
-        val c = i2c i
-      in
-        if c <> '\n' then
-          loop (charlst_cons (char_toupper c, cs), n+1)
-        else loop (cs, n)
-      end else begin
-        @(string_make_charlst_int (cs, n), n)
-      end
-    end // end of [let]
-} // end of [getrest]
+fun is_three (s: string): bool =
+  if strncmp (s, ">THREE", 6) = 0 then true else false
+// end of [is_three]
 
 (* ****** ****** *)
 
 extern fun dna_of_string (s: string): dna_t = "dna_of_string"
-extern fun is_three (s: string): bool = "is_three"
 
 %{$
 
@@ -258,50 +235,35 @@ ats_bool_type is_three (ats_ptr_type s0) {
 %}
 
 implement main (argc, argv) = let
-
-fun dna_three_get (): string_int = let
-  val s = getline ()
-in
-  if s <> "" then
-    if is_three (s) then getrest () else dna_three_get ()
-  else begin
-    exit_errmsg {string_int} (1, "[dna_three_get] failed.\n")
-  end // end of [if]
-end // end of [dna_three_get]
-
 val () = gc_chunk_count_limit_max_set (~1) // no max
 
-val (dna_three, n) = dna_three_get ()
-val dna = dna_of_string dna_three
+fun dna_three_get
+  (n: &size_t? >> size_t n): #[n:nat] string n = let
+  val s = getline (); val is3 = is_three (s)
+in
+  if is3 then getrest (n) else dna_three_get (n)
+end // end of [dna_three_get]
+var n: size_t // uninitialized
+val dna_three = dna_three_get (n)
+val n = (sz2i)n
 val () = assert (n >= 2)
+val dna3 = dna_of_string dna_three where {
+  extern castfn dna_of_string (str: string): dna_t
+}
 
 in
 
-write_frequencies (dna, n, 1) ; print_newline () ;
-write_frequencies (dna, n, 2) ; print_newline () ;
+write_frequencies (dna3, n, 1) ; print_newline () ;
+write_frequencies (dna3, n, 2) ; print_newline () ;
 
-write_count (dna, n, "GGT") ;
-write_count (dna, n, "GGTA") ;
-write_count (dna, n, "GGTATT") ;
-write_count (dna, n, "GGTATTTTAATT") ;
-write_count (dna, n, "GGTATTTTAATTTATAGT") ;
+write_count (dna3, n, "GGT") ;
+write_count (dna3, n, "GGTA") ;
+write_count (dna3, n, "GGTATT") ;
+write_count (dna3, n, "GGTATTTTAATT") ;
+write_count (dna3, n, "GGTATTTTAATTTATAGT") ;
 
 end // end of [main]
 
 (* ****** ****** *)
 
-%{$
-
-ats_ptr_type
-string_make_charlst_int (ats_ptr_type cs, const ats_int_type n) {
-  char *s;
-  s = ats_malloc_gc(n+1) ; s += n ; *s = '\000' ;
-  while (!charlst_is_nil(&cs)) { *--s = charlst_uncons(&cs) ; }
-  return s ;
-}
-
-%}
-
-(* ****** ****** *)
-
-(* end of [k-nucleotide1.dats] *)
+(* end of [k-nucleotide_mset.dats] *)

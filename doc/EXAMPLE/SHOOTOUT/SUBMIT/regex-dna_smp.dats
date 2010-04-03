@@ -3,7 +3,7 @@
 ** http://shootout.alioth.debian.org/
 ** contributed by Hongwei Xi (hwxi AT cs DOT bu DOT edu)
 **
-** regex-dna benchmark using PCRE
+** multicore version of regex-dna benchmark using PCRE
 **
 ** compilation command:
 **   atscc -D_ATS_MULTITHREAD -O3 -fomit-frame-pointer regex-dna_smp.dats -o regex-dna_smp -lpthread -lpcre
@@ -12,11 +12,9 @@
 (* ****** ****** *)
 
 %{^
-
 #include <pcre.h>
 #include <pthread.h>
-
-%}
+%} // end of [%{^]
 
 (* ****** ****** *)
 
@@ -25,10 +23,10 @@ staload _(*anonymous*) = "prelude/DATS/array.dats"
 (* ****** ****** *)
 
 extern fun malloc_atm {n:nat}
-  (n: int n): [l:addr] @(bytes_v (n, l) | ptr l) = "malloc_atm"
+  (n: int n): [l:addr] @(bytes n @ l | ptr l) = "malloc_atm"
 
 extern fun free_atm {n:nat} {l:addr}
-  (pf: bytes_v (n, l) | p: ptr l): void = "free_atm"
+  (pf: bytes n @ l | p: ptr l): void = "free_atm"
 
 %{^
 
@@ -48,7 +46,7 @@ ats_void_type free_atm (ats_ptr_type p) { free (p) ; return ; }
 
 (* ****** ****** *)
 
-viewdef block_v (sz:int, l:addr) = bytes_v (sz, l)
+viewdef block_v (sz:int, l:addr) = bytes (sz) @ l
 dataviewtype blocklst (int) =
   | {n:nat} {sz:nat} {l:addr} blocklst_cons (n+1) of
       (block_v (sz, l) | int sz, ptr l, blocklst n)
@@ -57,17 +55,8 @@ viewtypedef blocklst = [n:nat] blocklst (n)
 
 (* ****** ****** *)
 
-(*
 extern typedef "blocklst_cons_pstruct" =
   blocklst_cons_pstruct (void | int, ptr, blocklst)
-*)
-
-%{^
-// this is to circumvent a bug in version 0.0.1
-typedef struct {
-ats_int_type atslab_0 ; ats_ptr_type atslab_1 ; ats_ptr_type atslab_2 ;
-} *blocklst_cons_pstruct ;
-%}
 
 (* ****** ****** *)
 
@@ -89,7 +78,7 @@ fread_stdin_block (ats_int_type sz0, ats_ptr_type p0) {
   return (sz0 - sz) ;
 }
 
-%}
+%} // end of [%{$]
 
 (* ****** ****** *)
 
@@ -118,7 +107,7 @@ end // end of [fread_stdin_blocklst]
 (* ****** ****** *)
 
 extern fun blocklst_concat_and_free
-  {n:nat} (n: int n, blks: blocklst): [l:addr] @(bytes_v (n, l) | ptr l)
+  {n:nat} (n: int n, blks: blocklst): [l:addr] @(bytes (n) @ l | ptr l)
   = "blocklst_concat_and_free"
 
 %{$
@@ -147,7 +136,7 @@ blocklst_concat_and_free
   return res0 ;
 }
 
-%}
+%} // end of [%{$]
 
 (* ****** ****** *)
 
@@ -169,18 +158,18 @@ ats_int_type count_pattern_match
   return count ;
 }
 
-%}
+%} // end of [%{$]
 
 (* ****** ****** *)
 
 extern fun count_pattern_match {n:nat} {l:addr}
-  (pf: !bytes_v (n, l) | n: int n, p: ptr l, pat: string): int
+  (pf: !bytes n @ l | n: int n, p: ptr l, pat: string): int
   = "count_pattern_match"
 
 (* ****** ****** *)
 
 #define variants_length 9
-val variants: array (string, variants_length) = array_make_arraysize @[string][
+val variants: array (string, variants_length) = array_make_arraysize $arrsz{string}(
   "agggtaaa|tttaccct"
 , "[cgt]gggtaaa|tttaccc[acg]"
 , "a[act]ggtaaa|tttacc[agt]t"
@@ -190,7 +179,7 @@ val variants: array (string, variants_length) = array_make_arraysize @[string][
 , "agggt[cgt]aa|tt[acg]accct"
 , "agggta[cgt]a|t[acg]taccct"
 , "agggtaa[cgt]|[acg]ttaccct"
-]
+)
 
 // a linear list would be better, but ...
 val answers: array (int, variants_length) = array_make_elt<int> (variants_length, ~1)
@@ -247,12 +236,9 @@ absview thread_v; absview nthread_v (int)
 
 extern fun thread_v_return
   (pf: thread_v | (*none*)): void = "thread_v_return"
-
 extern prfun nthread_v_take {n:pos}
   (pf: !nthread_v n >> nthread_v (n-1)): thread_v
-
 extern prfun nthread_v_elim (pf: nthread_v 0):<> void
-
 extern fun nticket_get
   (pf: !thread_v | (*none*)): Nat = "nticket_get"
   
@@ -271,8 +257,8 @@ staload "libc/SATS/pthread.sats"
 (* ****** ****** *)
 
 fun count_worker {n:nat} {l:addr}
-  (pf1: thread_v, pf2: bytes_v (n, l) | n: int n, p: ptr l): void = let
-  extern prfun bytes_v_elim (pf: bytes_v (n, l)): void
+  (pf1: thread_v, pf2: bytes n @ l | n: int n, p: ptr l): void = let
+  extern prfun bytes_v_elim (pf: bytes n @ l): void
   val i = nticket_get (pf1 | (*none*))
 in
   case+ 0 of
@@ -289,8 +275,8 @@ end // end of [count_one]
 (* ****** ****** *)
 
 fun count_all {n:nat} {l:addr}
-  (pf: !bytes_v (n, l) | n: int n, p: ptr l): void = let
-  extern prfun bytes_v_make (): bytes_v (n, l)
+  (pf: !bytes n @ l | n: int n, p: ptr l): void = let
+  extern prfun bytes_v_make (): bytes n @ l
   fun workerlst_gen {t:nat}
     (pf_nthread: nthread_v t | t: int t):<cloref1> void =
     if t > 0 then let
@@ -388,19 +374,19 @@ int_ptr_type subst_pattern_string
   return ans ;
 }
 
-%}
+%} // end of [%{$]
 
 (* ****** ****** *)
 
 extern fun subst_pattern_string {n:nat} {l:addr}
-  (pf: !bytes_v (n, l) | n: int n, p: ptr l, pat: string, sub: string)
-  : [n:nat] [l:addr] @(bytes_v (n, l) | int n, ptr l)
+  (pf: !bytes n @ l | n: int n, p: ptr l, pat: string, sub: string)
+  : [n:nat] [l:addr] @(bytes n @ l | int n, ptr l)
   = "subst_pattern_string"
 
 (* ****** ****** *)
 
 #define subst_length 22
-val subst: array (string, subst_length) = array_make_arraysize @[string][
+val subst: array (string, subst_length) = array_make_arraysize $arrsz{string}(
   "B", "(c|g|t)"
 , "D", "(a|g|t)"
 , "H", "(a|c|t)"
@@ -412,12 +398,12 @@ val subst: array (string, subst_length) = array_make_arraysize @[string][
 , "V", "(a|c|g)"
 , "W", "(a|t)"
 , "Y", "(c|t)"
-]
+)
 
 (* ****** ****** *)
 
 fun subst_loop {i:nat} {n:nat} {l:addr}
-  (pf: bytes_v (n, l) | n: int n, p: ptr l, i: int i): int =
+  (pf: bytes n @ l | n: int n, p: ptr l, i: int i): int =
   if i < subst_length - 1 then let
     val pat = subst[i]; val sub = subst[i+1]
     val (pf1 | n1, p1) = subst_pattern_string (pf | n, p, pat, sub)
@@ -429,7 +415,7 @@ fun subst_loop {i:nat} {n:nat} {l:addr}
   end // end of [if]
   
 fn subst_top {n:nat} {l:addr}
-  (pf: !bytes_v (n, l) | n: int n, p: ptr l): int = let
+  (pf: !bytes n @ l | n: int n, p: ptr l): int = let
   val pat = subst[0]; val sub = subst[1]
   val (pf1 | n1, p1) = subst_pattern_string (pf | n, p, pat, sub)
 in
@@ -438,7 +424,7 @@ end // end of [subst_top]
   
 (* ****** ****** *)
 
-#define BLOCKSIZE 0x10000 // 0x4000000
+#define BLOCKSIZE 0x10000
 
 implement main () = let
   var n0: int = 0

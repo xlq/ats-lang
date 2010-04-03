@@ -105,6 +105,7 @@ fun lint_of_off (off: off_t):<> lint = "atslib_lint_of_off"
 
 // for process IDs // a signed integer type
 abst@ype pid_t = $extype "ats_pid_type"
+fun pid_of_int (i: int):<> pid_t = "atslib_pid_of_int"
 fun int_of_pid (pid: pid_t):<> int = "atslib_int_of_pid"
 fun lint_of_pid (pid: pid_t):<> lint = "atslib_lint_of_pid"
 

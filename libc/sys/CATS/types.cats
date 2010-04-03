@@ -55,7 +55,7 @@ typedef clock_t ats_clock_type ; // for CLOCKS_PER_SEC
 
 typedef dev_t ats_dev_type ; // for device IDs
 
-static inline
+ATSinline()
 ats_bool_type
 atslib_eq_dev_dev (dev_t x1, dev_t x2) {
   return (x1 == x2 ? ats_true_bool : ats_false_bool) ;
@@ -73,7 +73,7 @@ typedef gid_t ats_gid_type ; // for group IDs
 
 typedef ino_t ats_ino_type ; // for file serial numbers
 
-static inline
+ATSinline()
 ats_bool_type
 atslib_eq_ino_ino (ino_t x1, ino_t x2) {
   return (x1 == x2 ? ats_true_bool : ats_false_bool) ;
@@ -87,7 +87,7 @@ typedef key_t ats_key_type ; // for XSI interprocess communication
 
 typedef mode_t ats_mode_type ; // file mode
 
-static inline
+ATSinline()
 ats_mode_type atslib_lor_mode_mode
   (ats_mode_type m1, ats_mode_type m2) {
   return (m1 | m2) ;
@@ -101,12 +101,12 @@ typedef nlink_t ats_nlink_type ; // number of hard links to a file
 
 typedef off_t ats_off_type ; // file size in bytes
 
-static inline
+ATSinline()
 ats_lint_type atslib_lint_of_off (ats_off_type off) {
   return off ;
 }
 
-static inline
+ATSinline()
 ats_off_type atslib_off_of_lint (ats_lint_type li) {
   return li ;
 }
@@ -115,12 +115,19 @@ ats_off_type atslib_off_of_lint (ats_lint_type li) {
 
 typedef pid_t ats_pid_type ; // for process IDs // signed integer type
 
-static inline
-ats_int_type atslib_int_of_pid (ats_pid_type p) { return p ; }
+ATSinline()
+ats_pid_type
+atslib_pid_of_int (ats_int_type i) { return (i) ; }
+/* end of [atslib_pid_of_int] */
+
+ATSinline()
+ats_int_type
+atslib_int_of_pid (ats_pid_type p) { return (p) ; }
 /* end of [atslib_int_of_pid] */
 
-static inline
-ats_lint_type atslib_lint_of_pid (ats_pid_type p) { return p ; }
+ATSinline()
+ats_lint_type
+atslib_lint_of_pid (ats_pid_type p) { return (p) ; }
 /* end of [atslib_lint_of_pid] */
 
 /* ****** ****** */
@@ -139,12 +146,14 @@ typedef time_t ats_time_type ; // for time in seconds
 
 typedef uid_t ats_uid_type ;
 
-static inline
-ats_int_type atslib_int_of_uid (ats_uid_type u) { return u ; }
+ATSinline()
+ats_int_type
+atslib_int_of_uid (ats_uid_type u) { return u ; }
 /* end of [atslist_int_of_uid] */
 
-static inline
-ats_uid_type atslib_uid_of_int (ats_int_type i) { return i ; }
+ATSinline()
+ats_uid_type
+atslib_uid_of_int (ats_int_type i) { return i ; }
 /* end of [atslist_uid_of_int] */
 
 /* ****** ****** */

@@ -118,6 +118,8 @@ libc/DATS/printf.dats
 libc/SATS/random.sats
 libc/DATS/random.dats
 
+libc/SATS/sched.sats
+
 libc/SATS/signal.sats
 
 libc/SATS/stdarg.sats

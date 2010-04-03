@@ -198,18 +198,27 @@ fn eval_AtA_times_u {lws:addr} {N:nat} (
 
 (* ****** ****** *)
 
-%{^
-#include <sched.h>
-ats_int_type
-nworker_get () {
-  int i ; int count = 0 ; cpu_set_t cs ;
-  CPU_ZERO(&cs) ;
-  sched_getaffinity (0, sizeof(cpu_set_t), &cs) ;
-  for (i = 0; i < 16; i += 1) if (CPU_ISSET(i, &cs)) count += 1 ;
-  return count ;
-} // end of [nworker_get]
-%} // end of [%{^]
-extern fun nworker_get (): int = "nworker_get"
+staload "libc/SATS/sched.sats"
+staload TYPES = "libc/sys/SATS/types.sats"
+macdef pid_t = $TYPES.pid_of_int
+
+extern fun ncore_get (): int
+implement ncore_get () = let
+  var cs: cpu_set0_t // uninitialized
+  prval () = cpusetinit (cs) // not a real initialization
+  stavar nset: int
+  val nset = cpusetsize_get (cs)
+  val () = assert_errmsg (nset >= 2, #LOCATION)
+  val err = sched_getaffinity ((pid_t)0, 2, cs)
+  var count: Nat = 0
+  var i: natLte 16 // uninitialized
+  val () = for* (cs: cpu_set_t nset) =>
+    (i := 0; i < 16; i := i + 1)
+    if (CPU_ISSET (i, cs) > 0) then count := count + 1
+  // end of [val]
+in
+  count
+end // end of [ncore_get]
 
 (* ****** ****** *)
 
@@ -225,11 +234,11 @@ implement main (argc, argv) = let
     N >= 0, "The input integer needs to be a natural number.\n"
   )
 //
-  val NWORKER = nworker_get ()
-  // val () = (print "NWORKER = "; print NWORKER; print_newline ())
+  val NCORE = ncore_get ()
+  // val () = (print "NCORE = "; print NCORE; print_newline ())
 //
   val nworker =
-    (if (argc >= 3) then int_of argv.[2] else NWORKER): int
+    (if (argc >= 3) then int_of argv.[2] else NCORE): int
   val nworker = int1_of_int (nworker)
   val () = assert_errmsg (nworker > 0, #LOCATION)  
 //

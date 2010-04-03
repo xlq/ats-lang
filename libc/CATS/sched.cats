@@ -29,51 +29,68 @@
 
 /* ****** ****** */
 
-/* author: Hongwei Xi (hwxi AT cs DOT bu DOT edu) */
+//
+// Author: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
+// Time: April, 2010
+//
 
 /* ****** ****** */
 
-#ifndef ATS_LIBC_DLFCN_CATS
-#define ATS_LIBC_DLFCN_CATS
+#ifndef ATS_LIBC_SCHED_CATS
+#define ATS_LIBC_SCHED_CATS
 
 /* ****** ****** */
 
-#include <dlfcn.h>
-#include <stdio.h>
+#include <sched.h>
+
+#include "libc/sys/CATS/types.cats"
 
 /* ****** ****** */
 
-static inline
+ATSinline()
+ats_size_type
+atslib_cpusetsize_get
+  (ats_ref_type mask) { return sizeof(cpu_set_t) ; }
+// end of [atslib_cpusetsize_get]
+
+/* ****** ****** */
+
+/*
+fun sched_setaffinity {n:nat}
+  (pid: pid_t, n: size_t n, mask: &cpu_set_t n): int(*err*)
+  = "atslib_sched_setaffinity"
+*/
+
+ATSinline()
 ats_int_type
-atslib_lor_dlopen_flag_dlopen_flagext
-  (ats_int_type flag, ats_int_type ext) { return (flag | ext) ;
-} // end of [atslib_lor_dlopen_flag_dlopen_flagext]
-
-/* ****** ****** */
-
-#define atslib_dlopen dlopen
-
-static inline
-ats_ptr_type
-atslib_dlopen_exn (
-  ats_ptr_type filename, ats_int_type flag
+atslib_sched_setaffinity (
+  ats_pid_type pid, ats_size_type n, ats_ref_type mask
 ) {
-  void *p ; char *msg ;
-  p = dlopen ((char*)filename, (int)flag) ;
-  if (!p) {
-    msg = dlerror () ;
-    fprintf (stderr, (ats_ptr_type)"exit(ATS): %s\n", msg) ;
-    exit (1) ;
-  } // end of [if]
-  return p ;
-} // end of [atslib_dlopen_exn]
+  return sched_setaffinity (pid, n, (cpu_set_t*)mask) ;
+} // end of [atslib_sched_setaffinity]
+
+/*
+fun sched_getaffinity {n:nat} (
+    pid: pid_t, n: size_t n, cs: &cpu_set_t n? >> opt (cpu_set_t n, i==0)
+  ) : #[i:int | i <= 0] int i(*err*) = "atslib_sched_getaffinity"
+// end of [sched_getaffinity]
+*/
+
+ATSinline()
+ats_int_type
+atslib_sched_getaffinity (
+  ats_pid_type pid, ats_size_type n, ats_ref_type mask
+) {
+  return sched_getaffinity (pid, n, (cpu_set_t*)mask) ;
+} // end of [atslib_sched_getaffinity]
 
 /* ****** ****** */
 
-#define atslib_dlclose dlclose
-#define atslib_dlerror dlerror
-#define atslib_dlsym dlsym
+#define atslib_CPU_ZERO CPU_ZERO
+#define atslib_CPU_CLR CPU_CLR
+#define atslib_CPU_SET CPU_SET
+#define atslib_CPU_ISSET CPU_ISSET
 
 /* ****** ****** */
 
-#endif /* ATS_LIBC_DLFCN_CATS */
+#endif /* ATS_LIBC_SCHED_CATS */
