@@ -1,6 +1,12 @@
 //
 // insertion sort
 //
+// Time: March 2008
+// Author: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
+//
+//
+
+(* ****** ****** *)
 
 #if undefined (ARG_INSORT_DATS) #then
 
@@ -89,7 +95,6 @@ fun insort {n:nat} {A:addr}
   end
 end // end of [insort]
   
-
 (* ****** ****** *)
 
 (* end of [insort.dats] *)

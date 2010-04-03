@@ -1,7 +1,8 @@
 //
 // partial-sums.dats: computing partial sums of various series
 //
-// by Hongwei Xi (hwxi AT cs DOT bu DOT edu)
+// Author: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
+// Time: March 2008
 //
 
 (* ****** ****** *)

@@ -1,8 +1,8 @@
 //
 // A parallelized implementation of mergesort
 //
-// Time: March 2008
 // Author: Hongwei Xi (* hwxi AT cs DOT bu DOT edu *)
+// Time: March 2008
 //
 
 (* ****** ****** *)
@@ -121,7 +121,7 @@ end // end of [partition]
 
 #define THRESHOLD 16
 
-fun quicksort_main {n:nat} {A:addr}
+fun qsort_main {n:nat} {A:addr}
   (pf: !array_v (T, n, A) | A: ptr A, n: int n)
   : void = begin
   if n >= THRESHOLD then let
@@ -130,8 +130,8 @@ fun quicksort_main {n:nat} {A:addr}
       prval (pf1, pf2) = array_v_split {T} (pf_mul, pf)
     prval (pf21, pf22) = array_v_uncons {T} (pf2)
     prval pf1_mul = mul_add_const {1} (pf_mul)
-    val () = quicksort_main (pf1 | A, i_pivot)
-    and () = quicksort_main (pf22 | A+ofs+sizeof<T>, n-i_pivot-1)
+    val () = qsort_main (pf1 | A, i_pivot)
+    and () = qsort_main (pf22 | A+ofs+sizeof<T>, n-i_pivot-1)
     prval () = pf2 := array_v_cons {T} (pf21, pf22)
     prval () = pf := array_v_unsplit {T} (pf_mul, pf1, pf2)
   in
@@ -139,13 +139,13 @@ fun quicksort_main {n:nat} {A:addr}
   end else begin
     // empty
   end (* end of [if] *)
-end // end of [quicksort]
+end // end of [qsort]
 
-fun quicksort {n:nat} {A:addr}
+fun qsort {n:nat} {A:addr}
   (pf: !array_v (T, n, A) | A: ptr A, n: int n): void = begin
-  quicksort_main (pf | A, n); insort (pf | A, n)
-end // end of [quicksort]
+  qsort_main (pf | A, n); insort (pf | A, n)
+end // end of [qsort]
 
 (* ****** ****** *)
 
-(* end of [quicksort_mt.dats] *)
+(* end of [qsort_mt.dats] *)

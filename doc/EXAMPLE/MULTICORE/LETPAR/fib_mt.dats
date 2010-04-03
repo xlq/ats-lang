@@ -5,6 +5,8 @@
 //
 //
 
+(* ****** ****** *)
+
 %{^
 
 #include "libats/CATS/thunk.cats"
