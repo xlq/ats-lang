@@ -33,10 +33,10 @@
 
 (*
 **
-** A map implementation based on AVL trees
+** A functional map implementation based on AVL trees
 **
 ** Contributed by Hongwei Xi (hwxi AT cs DOT bu DOT edu)
-** Time: March, 2010 // based on a version done in October, 2010
+** Time: March, 2010 // based on a version done in October, 2008
 **
 *)
 
@@ -89,7 +89,7 @@ typedef avltree_dec (key:t@ype, itm:t@ype, h:int) =
 
 (* ****** ****** *)
 
-assume map_t0ype_t0ype (key:t@ype, itm:t@ype) = [h:nat] avltree (key, itm, h)
+assume map_t0ype_type (key:t@ype, itm:t@ype) = [h:nat] avltree (key, itm, h)
 
 (* ****** ****** *)
 
@@ -110,8 +110,8 @@ funmap_isnot_nil (t) = case+ t of | B _ => true | E () => false
 implement{key,itm}
 funmap_size (t) = size (t) where {
   fun size {h:nat} .<h>.
-    (t: avltree (key, itm, h)):<> Nat = begin case+ t of
-    | B (_(*h*), _(*key*), _(*itm*), tl, tr) => 1 + size (tl) + size (tr)
+    (t: avltree (key, itm, h)):<> size_t = begin case+ t of
+    | B (_(*h*), _(*key*), _(*itm*), tl, tr) => (size_of_int1)1 + size (tl) + size (tr)
     | E () => 0
   end // end of [size]
 } // end of [funmap_size]

@@ -166,6 +166,10 @@ libats/DATS/fmatrix.dats
 libats/SATS/freelst.sats
 libats/DATS/freelst.dats
 
+/* functional heap implementation based on Braun trees */
+libats/SATS/funheap_braun.sats
+libats/DATS/funheap_braun.dats
+
 /* functional map implementation based on AVL trees */
 libats/SATS/funmap_avltree.sats
 libats/DATS/funmap_avltree.dats

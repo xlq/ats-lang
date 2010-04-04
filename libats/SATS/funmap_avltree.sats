@@ -33,7 +33,7 @@
 
 (*
 **
-** A map implementation based on AVL trees
+** A functional map implementation based on AVL trees
 **
 ** Contributed by Hongwei Xi (hwxi AT cs DOT bu DOT edu)
 ** Time: March, 2010 // based on a version done in October, 2010
@@ -52,8 +52,8 @@
 
 (* ****** ****** *)
 
-abstype map_t0ype_t0ype (key:t@ype, itm:t@ype+)
-stadef map = map_t0ype_t0ype
+abstype map_t0ype_type (key:t@ype, itm:t@ype+)
+stadef map = map_t0ype_type
 
 (* ****** ****** *)
 
@@ -72,7 +72,7 @@ fun{} funmap_isnot_nil {key,itm:t@ype} (m: map (key, itm)):<> bool
 (* ****** ****** *)
 
 // this function is O(n)-time and non-tail-recursive
-fun{key,itm:t@ype} funmap_size (m: map (key, itm)):<> Nat
+fun{key,itm:t@ype} funmap_size (m: map (key, itm)):<> size_t
 
 // this function is O(1) // for gathering stats
 fun{key,itm:t@ype} funmap_height (m: map (key, itm)):<> Nat

@@ -369,9 +369,9 @@ ats_void_type gc_collect () {
   if (the_chunk_count_limit_max >= 0) {
     // [the_chunk_count_limit_max] is finite
     if (the_chunk_count_limit >= the_chunk_count_limit_max) {
-      fprintf(
-        stderr, "GC: Warning: the maximal chunk count limit is reached!\n"
-      ) ;
+      // fprintf(stderr, "GC: the_chunk_count_limit = %i\n", the_chunk_count_limit) ;
+      // fprintf(stderr, "GC: the_chunk_count_limit_max = %i\n", the_chunk_count_limit_max) ;
+      fprintf(stderr, "GC: Warning: the maximal chunk count limit is reached!\n") ;
       return ;
     }
   } /* end of [if] */
