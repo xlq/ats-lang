@@ -183,7 +183,7 @@ fn eval_A_times_u {lws:addr} {N:nat} {l:addr} (
     end // end of [if]
   // end of [split]
   val () = split (ws, 0, &u, &tmp)
-  val () = workshop_wait_worker_blocked (ws)
+  val () = workshop_wait_blocked_all (ws)
 in
   // nothing
 end // end of [eval_A_times_u]
@@ -209,7 +209,7 @@ implement ncore_get () = let
   stavar nset: int
   val nset = cpusetsize_get (cs)
   val () = assert_errmsg (nset >= 2, #LOCATION)
-  val err = sched_getaffinity ((pid_t)0, 2, cs)
+  val err = sched_getaffinity ((pid_t)0, nset, cs)
   var count: Nat = 0
   var i: natLte 16 // uninitialized
   val () = for* (cs: cpu_set_t nset) =>
@@ -274,7 +274,7 @@ implement main (argc, argv) = let
     val _quit = $extval (work, "(void*)0")
     val () = workshop_insert_work (ws, _quit) in i := i + 1
   end // end of [val]
-  val () = workshop_wait_worker_quit (ws)
+  val () = workshop_wait_quit_all (ws)
   val () = workshop_free_vt_exn (ws)
 //
 in

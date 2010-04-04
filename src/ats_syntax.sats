@@ -1322,6 +1322,7 @@ datatype floatkind =
 datatype intkind =
   | INTKINDint (* signed *) | INTKINDuint (* unsigned *)
   | INTKINDlint (* signed long *) | INTKINDulint (* unsigned long *)
+  | INTKINDllint (* signed long long *) | INTKINDullint (* unsigned long long *)
   | INTKINDsint (* signed short *) | INTKINDusint (* unsigned short *)
   | INTKINDint8 | INTKINDuint8 | INTKINDint16 | INTKINDuint16
   | INTKINDint32 | INTKINDuint32 | INTKINDint64 | INTKINDuint64

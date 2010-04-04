@@ -149,14 +149,14 @@ fn nsieve_mt {lws:addr}
 //
   }
 //
-  val () = workshop_wait_worker_blocked (ws)  
+  val () = workshop_wait_blocked_all (ws)  
   val nworker = workshop_nworker_get (ws)
   var i: Nat = 0
   val () = while (i < nworker) let
     val _quit = $extval (work, "(void*)0")
     val () = workshop_insert_work (ws, _quit) in i := i + 1
   end // end of [val]
-  val () = workshop_wait_worker_quit (ws)  
+  val () = workshop_wait_quit_all (ws)  
 //
   val count = loop (pf | 2, 0) where {
     fun loop {i:nat}

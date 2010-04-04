@@ -307,15 +307,15 @@ fun un_s2exp_string_int_type (s2e: s2exp): Option_vt (s2exp)
 (* ****** ****** *)
 
 fun s2exp_lint_t0ype (): s2exp
-fun s2exp_llint_t0ype (): s2exp
-
 fun s2exp_ulint_t0ype (): s2exp
+
+fun s2exp_llint_t0ype (): s2exp
 fun s2exp_ullint_t0ype (): s2exp
 
 fun s2exp_sint_t0ype (): s2exp
-fun s2exp_ssint_t0ype (): s2exp
-
 fun s2exp_usint_t0ype (): s2exp
+
+fun s2exp_ssint_t0ype (): s2exp
 fun s2exp_ussint_t0ype (): s2exp
 
 (* ****** ****** *)

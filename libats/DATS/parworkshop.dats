@@ -522,7 +522,7 @@ end // end of [workshop_remove_work]
 (* ****** ****** *)
 
 implement
-workshop_wait_worker_quit
+workshop_wait_quit_all
   {a} {l} (ws) = () where {
   viewdef V_ws = WORKSHOP a @ l
   val (pf_ws | p_ws) = workshop_acquire (ws)
@@ -543,10 +543,10 @@ workshop_wait_worker_quit
   end // end of [loop]
   val () = loop (pf_ws | p_ws)
   val () = workshop_release (pf_ws | p_ws)
-} // end of [workshop_wait_worker_quit]
+} // end of [workshop_wait_quit_all]
 
 implement
-workshop_wait_worker_paused
+workshop_wait_paused_all
   {a} {l} (ws) = () where {
   viewdef V_ws = WORKSHOP a @ l
   val (pf_ws | p_ws) = workshop_acquire (ws)
@@ -568,21 +568,21 @@ workshop_wait_worker_paused
   end // end of [loop]
   val () = loop (pf_ws | p_ws)
   val () = workshop_release (pf_ws | p_ws)
-} // end of [workshop_wait_worker_paused]
+} // end of [workshop_wait_paused_all]
 
 implement
-workshop_resume_worker_paused
+workshop_resume_paused_all
   {a} {l} (ws) = () where {
   viewdef V_ws = WORKSHOP a @ l
   val (pf_ws | p_ws) = workshop_acquire (ws)
   val () = $PTHREAD.pthread_cond_broadcast (p_ws->WSpaused)
   val () = workshop_release (pf_ws | p_ws)
-} // end of [workshop_wait_worker_paused]
+} // end of [workshop_wait_paused_all]
 
 (* ****** ****** *)
 
 implement
-workshop_wait_worker_blocked
+workshop_wait_blocked_all
   {a} {l} (ws) = () where {
   viewdef V_ws = WORKSHOP a @ l
   val (pf_ws | p_ws) = workshop_acquire (ws)
@@ -604,7 +604,7 @@ workshop_wait_worker_blocked
   end // end of [loop]
   val () = loop (pf_ws | p_ws)
   val () = workshop_release (pf_ws | p_ws)
-} // end of [workshop_wait_worker_blocked]
+} // end of [workshop_wait_blocked_all]
 
 (* ****** ****** *)
 

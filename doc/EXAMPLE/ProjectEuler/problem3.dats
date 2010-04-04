@@ -146,18 +146,19 @@ implement main () = () where {
   val () = intinf_free (pf_N1_gc, pf_N1 | p_N1)
   val () = printf ("The largest prime factor of [%i] is [%i].\n", @(N1,p))
 //
-  val [n2:int] N2 = lint1_of_lint (600851475143L)
+  val N2 = 600851475143LL
+  val [n2:int] N21 = llint1_of_llint (N2)
   prval () = __assert () where { extern prfun __assert (): [n2 >= 2] void }
-  val (pf_N2_gc, pf_N2 | p_N2) = intinf_make_lint (N2)
-  val (pf_P3 | p) = P3main (!p_N2)
+  val (pf_N21_gc, pf_N21 | p_N21) = intinf_make_llint (N21)
+  val (pf_P3 | p) = P3main (!p_N21)
   val () = begin
     print ("The largest prime factor of ["); print N2; print "] is ["; print p; print "]."; print_newline ()
   end // end of [val]
 //
 // (*
-  val [_:int] (pf_mul | N3obj) = square (!p_N2)
+  val [_:int] (pf_mul | N3obj) = square (!p_N21)
 // *)
-  val () = intinf_free (pf_N2_gc, pf_N2 | p_N2)
+  val () = intinf_free (pf_N21_gc, pf_N21 | p_N21)
 //
 // (*
   // HX-2010-02-06: I added this one

@@ -117,21 +117,21 @@ workshop_remove_work {l:addr} (ws: !WORKSHOPptr (a, l)): a
 
 (* ****** ****** *)
 
-fun workshop_wait_worker_quit
+fun workshop_wait_quit_all
   {a:viewt@ype} {l:addr} (ws: !WORKSHOPptr (a, l)): void
-// end of [workshop_wait_worker_quit]
+// end of [workshop_wait_quit_all]
 
-fun workshop_wait_worker_paused
+fun workshop_wait_paused_all
   {a:viewt@ype} {l:addr} (ws: !WORKSHOPptr (a, l)): void
-// end of [workshop_wait_worker_paused]
+// end of [workshop_wait_paused_all]
 
-fun workshop_resume_worker_paused
+fun workshop_resume_paused_all
   {a:viewt@ype} {l:addr} (ws: !WORKSHOPptr (a, l)): void
-// end of [workshop_resume_worker_paused]
+// end of [workshop_resume_paused_all]
 
-fun workshop_wait_worker_blocked
+fun workshop_wait_blocked_all
   {a:viewt@ype} {l:addr} (ws: !WORKSHOPptr (a, l)): void
-// end of [workshop_wait_worker_blocked]
+// end of [workshop_wait_blocked_all]
 
 (* ****** ****** *)
 

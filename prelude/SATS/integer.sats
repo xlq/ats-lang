@@ -914,11 +914,10 @@ overload fprint with fprint_ulint
 
 fun print_ulint (lu: ulint):<!ref> void
   = "atspre_print_ulint"
-
-and prerr_ulint (lu: ulint):<!ref> void
-  = "atspre_prerr_ulint"
-
 overload print with print_ulint
+
+fun prerr_ulint (lu: ulint):<!ref> void
+  = "atspre_prerr_ulint"
 overload prerr with prerr_ulint
 
 (* ****** ****** *)
@@ -927,7 +926,6 @@ overload prerr with prerr_ulint
 
 fun tostring_ulint (i: ulint):<> string
   = "atspre_tostring_ulint"
-
 overload tostring with tostring_ulint
 
 (* ****** ****** *)
@@ -936,7 +934,10 @@ overload tostring with tostring_ulint
 
 (* ****** ****** *)
 
-typedef llint = int_long_long_t0ype
+stadef llint = llint_int_t0ype // indexed
+typedef llint = int_long_long_t0ype // unindexed
+
+castfn llint1_of_llint (i: llint):<> [i:int] llint i
 
 // Note that the following coersion is automatic
 fun llint_of_int (i: int):<> llint
@@ -1045,11 +1046,10 @@ overload fprint with fprint_llint
 
 fun print_llint (lli: llint):<!ref> void
   = "atspre_print_llint"
-
-and prerr_llint (lli: llint):<!ref> void
-  = "atspre_prerr_llint"
-
 overload print with print_llint
+
+fun prerr_llint (lli: llint):<!ref> void
+  = "atspre_prerr_llint"
 overload prerr with prerr_llint
 
 (* ****** ****** *)

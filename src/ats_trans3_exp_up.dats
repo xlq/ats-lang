@@ -83,9 +83,11 @@ extern val "FLOATKINDdouble_long" = $Syn.FLOATKINDdouble_long ()
 extern val "FLOATKINDnone" = $Syn.FLOATKINDnone ()
 
 extern val "INTKINDint" = $Syn.INTKINDint ()
-extern val "INTKINDlint" = $Syn.INTKINDlint ()
 extern val "INTKINDuint" = $Syn.INTKINDuint ()
+extern val "INTKINDlint" = $Syn.INTKINDlint ()
 extern val "INTKINDulint" = $Syn.INTKINDulint ()
+extern val "INTKINDllint" = $Syn.INTKINDllint ()
+extern val "INTKINDullint" = $Syn.INTKINDullint ()
 extern val "INTKINDnone" = $Syn.INTKINDnone ()
 
 %{$
@@ -115,11 +117,22 @@ ats_trans3_intkind_eval (ats_ptr_type s0) {
       default : break ;
     } // end of [switch]
   } /* end of [while] */
-
-  if (nL == 0 && nU == 0) return INTKINDint ; /* deadcode */
-  if (nL == 1 && nU == 0) return INTKINDlint ; /* long */
-  if (nL == 0 && nU == 1) return INTKINDuint ; /* unsigned */
-  if (nL == 1 && nU == 1) return INTKINDulint ; /* unsigned long */
+//
+  if (nL == 0) {
+    if (nU == 0) return INTKINDint ; /* deadcode */
+    if (nU == 1) return INTKINDuint ; /* unsigned */
+  } // end of [if]
+//
+  if (nL == 1) {
+    if (nU == 0) return INTKINDlint ; /* long */
+    if (nU == 1) return INTKINDulint ; /* unsigned long */
+  } // end of [if]
+//
+  if (nL == 2) {
+    if (nU == 0) return INTKINDllint ; /* long long */
+    if (nU == 1) return INTKINDullint ; /* unsigned long long */
+  } // end of [if]
+//
   return INTKINDnone ;
 } // end of [ats_trans3_intkind_eval]
 
@@ -2193,9 +2206,11 @@ val d3e0 = (case+ d2e0.d2exp_node of
     end // end of [D2Eint]
   | D2Eintsp (str, int) => let
       val s2e = (case+ intkind_eval (str) of
-        | $Syn.INTKINDlint () => s2exp_lint_t0ype ()
         | $Syn.INTKINDuint () => s2exp_uint_intinf_t0ype (int)
+        | $Syn.INTKINDlint () => s2exp_lint_t0ype ()
         | $Syn.INTKINDulint () => s2exp_ulint_t0ype ()
+        | $Syn.INTKINDllint () => s2exp_llint_t0ype ()
+        | $Syn.INTKINDullint () => s2exp_ullint_t0ype ()
         | _ => begin
             prerr_loc_interror loc0;
             prerr ": d2exp_tr: D2Eintsp"; prerr_newline ();

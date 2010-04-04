@@ -76,6 +76,7 @@ cleanall:: clean
 	if [ -f fact1 ] ; then rm fact1 ; fi
 	if [ -f fact2 ] ; then rm fact2 ; fi
 	if [ -f fact3 ] ; then rm fact3 ; fi
+	if [ -f fact4 ] ; then rm fact4 ; fi
 	if [ -f fact_in_c ] ; then rm fact_in_c ; fi
 	if [ -f fibs ] ; then rm fibs ; fi
 	if [ -f revarr ] ; then rm revarr ; fi

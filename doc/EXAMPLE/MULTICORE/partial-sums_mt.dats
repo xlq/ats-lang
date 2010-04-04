@@ -124,14 +124,14 @@ main (argc, argv) = let
   val () = assert_errmsg (_err = 0, #LOCATION)
   val t = loop_split (N, ws, n, 0)
   // val () = (print "spliting is done"; print_newline ())
-  val () = workshop_wait_worker_blocked (ws)
+  val () = workshop_wait_blocked_all (ws)
   val sum = finalize (t)
   var i: Nat = 0
   val () = while (i < nworker) let
     val _quit = $extval (work, "(void*)0")
     val () = workshop_insert_work (ws, _quit) in i := i + 1
   end // end of [val]
-  val () = workshop_wait_worker_quit (ws)
+  val () = workshop_wait_quit_all (ws)
   val () = workshop_free_vt_exn (ws)
 in
   printf ("%.9f\t(2/3)^k", @(sum)); print_newline ();

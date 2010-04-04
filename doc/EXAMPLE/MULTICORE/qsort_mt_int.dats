@@ -185,7 +185,7 @@ main (argc, argv) = let
   val (pfgc, pfarr | A) = random_array_ptr_gen (nsz)
   val t = qsort_splt (ws, A, n)
 //
-  val () = workshop_wait_worker_blocked (ws)
+  val () = workshop_wait_blocked_all (ws)
   val () = if (n <= 100) then
     (array_ptr_print (pfarr | A, nsz); print_newline ())
   val () = array_ptr_free {T} (pfgc, pfarr | A)
@@ -195,7 +195,7 @@ main (argc, argv) = let
     val _quit = $extval (work_vt, "(void*)0")
     val () = workshop_insert_work (ws, _quit) in i := i + 1
   end // end of [val]
-  val () = workshop_wait_worker_quit (ws)
+  val () = workshop_wait_quit_all (ws)
   val () = (print "sorting is finished"; print_newline ())
   val () = workshop_free_vt_exn (ws)
 in

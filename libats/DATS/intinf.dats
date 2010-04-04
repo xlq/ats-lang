@@ -69,7 +69,16 @@ implement intinf_make_lint (i) = let
   val () = mpz_init_set_lint (!p, i)
 in
   @(pf_gc, pf_at | p)
-end // end of [intinf_of_int1]
+end // end of [intinf_of_lint1]
+
+implement intinf_make_llint (i) = let
+  val @(pf_gc, pf_at | p) = ptr_alloc_tsz {mpz_vt} (sizeof<mpz_vt>)
+  val i = llint_of_llint1 (i) where { extern castfn llint_of_llint1 {i:int} (x: llint i): llint }
+  val i = double_of_llint (i)
+  val () = mpz_init_set_double (!p, i)
+in
+  @(pf_gc, pf_at | p)
+end // end of [intinf_of_llint1]
 
 (* ****** ****** *)
 

@@ -77,6 +77,14 @@ fun intinf_make_lint {i:int} (i: lint i)
   : [l:addr] (free_gc_v (Intinf, l), intinf i @ l | ptr l)
 overload intinf_make with intinf_make_lint
 
+fun intinf_make_llint {i:int} (i: llint i)
+  : [l:addr] (free_gc_v (Intinf, l), intinf i @ l | ptr l)
+overload intinf_make with intinf_make_llint
+
+fun intinf_make_double (i: double)
+  : [l:addr] (free_gc_v (Intinf, l), Intinf @ l | ptr l)
+overload intinf_make with intinf_make_double
+
 (* ****** ****** *)
 
 fun intinf_free {l:addr}
