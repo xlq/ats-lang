@@ -85,6 +85,9 @@ prfun Opt_some {itm:viewt@ype} (x: !(itm) >> Opt itm):<> void
 prfun Opt_encode {itm:viewt@ype} {b:bool} (x: !opt (itm, b) >> Opt itm):<> void
 
 fun{itm:viewt@ype}
+item_nullify (x: &itm? >> Opt itm):<> void
+
+fun{itm:viewt@ype}
 item_isnot_null (x: &Opt itm >> opt (itm, b)):<> #[b:bool] bool b
 
 (* ****** ****** *)
@@ -124,22 +127,25 @@ hashtbl_search {l:anz} (
 
 (* ****** ****** *)
 
+//
+// HX-2010-04-03:
+// if [k] is already in the table, [i] replaces the original one
+//
 fun{key:t@ype;itm:viewt@ype}
 hashtbl_insert {l:anz} (
   ptbl: !HASHTBLptr (key, itm, l), k: key, i: &itm >> opt (itm, b)
 ) :<> #[b:bool] bool b
 // end of [hashtbl_insert]
 
-(*
 //
-// HX-2010-03-23:
-// if removal is needed, please use [hashtable_chain] instead
+// HX-2010-04-03:
+// removal seems to be quite efficient as well
+//
 fun{key:t@ype;itm:viewt@ype}
 hashtbl_remove {l:anz} (
   ptbl: !HASHTBLptr (key, itm, l), k0: key, res: &itm? >> opt (itm, b)
 ) :<> #[b:bool] bool b
 // end of [hashtbl_remove]
-*)
 
 (* ****** ****** *)
 

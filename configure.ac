@@ -48,6 +48,7 @@ dnl = checks for system services
 dnl = AC_CONFIG_FILES([file...])
 
 dnl = AC_INIT([ATS/Anairiats], [0.1.8], [hwxi@cs.bu.edu])
+dnl = AC_INIT([ATS/Anairiats], [0.1.9], [hwxi@cs.bu.edu])
 AC_INIT([ATS/Anairiats], [0.2.0], [hwxi@cs.bu.edu])
 AC_CONFIG_SRCDIR([config.h.in])
 AC_CONFIG_HEADER([config.h])

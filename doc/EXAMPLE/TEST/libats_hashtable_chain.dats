@@ -31,7 +31,28 @@ stadef HASHTBLptr = $H.HASHTBLptr
 *)
 
 // (*
-implement $H.hash_key<int> (x, _) = ulint_of_int (x)
+//
+// Robert Jenkin's 32-bit function:
+//
+%{^
+ats_int_type
+__jenkin32 (ats_int_type x) {
+  uint32_t a = x ;
+  a = (a+0x7ed55d16) + (a<<12);
+  a = (a^0xc761c23c) ^ (a>>19);
+  a = (a+0x165667b1) + (a<<5);
+  a = (a+0xd3a2646c) ^ (a<<9);
+  a = (a+0xfd7046c5) + (a<<3);
+  a = (a^0xb55a4f09) ^ (a>>16);
+  return a;
+} // end of [__jenkin]
+%} // end of [%{^]
+extern fun __jenkin32 (x: int):<> int = "__jenkin32"
+implement
+$H.hash_key<int> (x, _) = let
+  val h = __jenkin32 (x) in ulint_of_int (h)
+end // end of [hash_key]
+
 implement $H.equal_key_key<int> (x1, x2, _) = (x1 = x2)
 // *)
 

@@ -226,4 +226,12 @@ end // end of [fun]
 
 ######
 
+Saturday: April 2, 2010 (HX)
+
+Status: no solution yet
+
+Using linear values in a while/for loop is not done correctly during typechecking
+
+######
+
 ------------------ end of [BUGS.txt] -------------------

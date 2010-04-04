@@ -189,6 +189,7 @@ extern castfn size1_of_ulint (x: ulint):<> [i:nat] size_t i
 (* ****** ****** *)
 
 #define i2sz size1_of_int1
+#define sz1mul mul_size1_size1
 #define sz1mod mod1_size1_size1
 
 (* ****** ****** *)
@@ -201,7 +202,7 @@ hashtbl_ptr_probe_ofs
   | pbeg: ptr l_beg
   , k0: key, eq: eq key, sz: size_t sz, ofs: size_t ofs
   , found: &bool? >> bool
-  ) :<> Ptr (* null or pointing to the found item *) = let
+  ) :<> Ptr (* pointing to the found item or where it should be *) = let
   val (pf1, pf2 | p_mid) =
     hashtbl_ptr_split<key,itm> {sz,ofs} (pf | pbeg, ofs)
   viewtypedef keyitm = @(key, itm)
@@ -296,11 +297,9 @@ fun{key:t0p;itm:vt0p}
   {sz1:nat;sz2:pos} .<sz1>.
   {l1_beg,l2_beg,l1_end,l2_end:addr} (
     pf1: !hashtbl_v (key, itm, sz1, l1_beg, l1_end)
-          >> hashtbl_v (key, itm, sz1, l1_beg, l1_end)
   , pf2: !hashtbl_v (key, itm, sz2, l2_beg, l2_end)
-          >> hashtbl_v (key, itm, sz2, l2_beg, l2_end)
   | sz1: size_t sz1, sz2: size_t sz2, p1_beg: ptr l1_beg, p2_beg: ptr l2_beg
-  , hash: hash key, eq: eq key
+  , fhash: hash key, eqfn: eq key
   ) :<> void = let
   viewtypedef keyitm = @(key, itm)
 in
@@ -312,11 +311,11 @@ in
       prval () = opt_unsome {itm} (p1_beg->1)
       val i0 = p1_beg->1
       prval () = Opt_none {itm} (p1_beg->1)
-      val h = hash_key (k0, hash)
+      val h = hash_key (k0, fhash)
       val h = size1_of_ulint (h); val ofs = sz1mod (h, sz2)
       var found: bool // uninitalized
       val [l:addr] pkeyitm =
-        hashtbl_ptr_probe_ofs<key,itm> (pf2 | p2_beg, k0, eq, sz2, ofs, found)
+        hashtbl_ptr_probe_ofs<key,itm> (pf2 | p2_beg, k0, eqfn, sz2, ofs, found)
       prval (fpf, pf) = __assert () where {
         extern prfun __assert (): ((key,itm) @ l -<prf> void, (key,itm?) @ l)
       } // end of [prval]
@@ -331,7 +330,7 @@ in
       // nothing
     end // end of [if]
     val () = hashtbl_ptr_relocate<key,itm>
-      (pf12, pf2 | sz1-1, sz2, p1_beg+sizeof<keyitm>, p2_beg, hash, eq)
+      (pf12, pf2 | sz1-1, sz2, p1_beg+sizeof<keyitm>, p2_beg, fhash, eqfn)
     prval () = pf1 := hashtbl_v_cons (pf11, pf12)
   in
     // empty
@@ -364,6 +363,90 @@ hashtbl_resize {l:anz} {sz_new:pos} (
 
 (* ****** ****** *)
 
+fn{key:t0p;itm:vt0p}
+hashtbl_ptr_reinsert
+  {sz:pos} {l_beg,l_end:addr} (
+    pf: !hashtbl_v (key, itm, sz, l_beg, l_end)
+  | sz: size_t sz, p_beg: ptr l_beg, fhash: hash key, pkeyitm: Ptr
+  ) :<> void = let
+  viewtypedef keyitm = @(key, itm)
+  viewtypedef keyitmopt = @(key, Opt (itm))
+  extern prfun __assert1
+    {l:addr} (p: ptr l): (keyitmopt @ l, keyitmopt @ l -<prf> void)
+  extern prfun __assert2
+    {l:addr} (p: ptr l): ((key,itm?) @ l, (key,itm) @ l -<prf> void)
+  extern prfun __assert3
+    {l:addr} (p: ptr l): ((key,itm) @ l, keyitmopt @ l -<prf> void)
+  val p_end = p_beg + sz1mul (sz, sizeof<keyitm>)
+  fun ins {l1,l2:addr}
+    (p1: ptr l1, p2: ptr l2, i0: &itm >> opt (itm, b)):<cloref1> #[b:bool] bool b =
+    if p1 < p2 then let
+      prval (pf, fpf) = __assert1 (p1)
+      val isnotnull = item_isnot_null<itm> (p1->1)
+      prval () = Opt_encode (p1->1)
+      prval () = fpf (pf)
+    in
+      if isnotnull then
+        ins (p1+sizeof<keyitm>, p2, i0) // trying the next slot
+      else let // an empty slot is found
+        prval (pf, fpf) = __assert2 (p1)
+        val () = p1->1 := i0
+        prval () = fpf (pf)
+        prval () = opt_none {itm} (i0)
+      in
+        false(*inserted*) // nothing is left
+      end // end of [if]
+    end else let
+      prval () = opt_some {itm} (i0) in true(*notinserted*) // item is left
+    end // end of [if]
+  // end of [ins]
+  fun rem {l1,l2:addr}
+    (p1: ptr l1, p2: ptr l2):<cloref1> bool =
+    if p1 < p2 then let
+      prval (pf, fpf) = __assert1 (p1)
+      val isnotnull = item_isnot_null<itm> (p1->1)
+      prval () = Opt_encode (p1->1)
+      prval () = fpf (pf)
+    in
+      if isnotnull then let
+        prval (pf, fpf) = __assert3 (p1)
+        var i0 = p1->1
+        val () = item_nullify<itm> (p1->1)
+        val h = hash_key (p1->0, fhash)
+        prval () = fpf (pf)
+        val h = size1_of_ulint (h)
+        val ofs = sz1mod (h, sz)
+        val p_cur = p_beg + sz1mul (ofs, sizeof<keyitm>)
+        val b1 = ins (p_cur, p_end, i0)
+        val () = if :(i0: itm?) => (b1) then let
+          prval () = opt_unsome {itm} (i0)
+          val b2 = ins (p_beg, p_cur, i0)
+          prval () = __assert (b2) where {
+            // the item must have been inserted at this point
+            extern prfun __assert {b:bool} (b: bool b): [b==false] void
+          } // end of [val]
+          prval () = opt_unnone {itm} (i0)
+        in
+          // nothing
+        end else let
+          prval () = opt_unnone {itm} (i0)
+        in
+          // nothing
+        end // end of [if]
+      in
+        rem (p1+sizeof<keyitm>, p2)
+      end else true(*done*)
+    end else false(*notdone*)
+  // end of [rem]
+  val done = $effmask_all (
+    if rem (pkeyitm+sizeof<keyitm>, p_end) then true else rem (p_beg, pkeyitm)
+  ) : bool
+in
+  // nothing
+end // end of [hashtbl_ptr_reinsert]
+
+(* ****** ****** *)
+
 implement{key,itm}
 hashtbl_insert (ptbl, k0, i0) = found where {
   val (pf0, fpf0 | p) = HASHTBLptr_tblget {key,itm} (ptbl)
@@ -377,6 +460,13 @@ hashtbl_insert (ptbl, k0, i0) = found where {
     hashtbl_ptr_probe_ofs<key,itm> (p->pftbl | p->pbeg, k0, p->feq, sz, ofs, found)
   val [b:bool] found = bool1_of_bool (found)
   val () = (if :(i0: opt (itm, b)) => found then let
+    prval (pf, fpf) = __assert () where {
+      extern prfun __assert (): ((key,itm) @ l, (key,itm) @ l -<prf> void)
+    } // end of [prval]
+    val i = pkeyitm->1
+    val () = pkeyitm->1 := i0
+    val () = i0 := i
+    prval () = fpf (pf)
     prval () = opt_some {itm} (i0)
   in
     // nothing
@@ -384,8 +474,8 @@ hashtbl_insert (ptbl, k0, i0) = found where {
     val tot = p->tot
     val () = p->tot := tot + 1
 //
-    prval (fpf, pf) = __assert () where {
-      extern prfun __assert (): ((key,itm) @ l -<prf> void, (key,itm?) @ l)
+    prval (pf, fpf) = __assert () where {
+      extern prfun __assert (): ((key,itm?) @ l, (key,itm) @ l -<prf> void)
     } // end of [prval]
     val () = pkeyitm->0 := k0
     val () = pkeyitm->1 := i0
@@ -403,6 +493,46 @@ hashtbl_insert (ptbl, k0, i0) = found where {
   prval () = minus_addback (fpf0, pf0 | ptbl)
   val () = if (doubleTag > 0) then hashtbl_resize<key,itm> (ptbl, sz + sz)
 } // end of [hashtbl_insert]
+
+(* ****** ****** *)
+
+(*
+fun{key:t@ype;itm:viewt@ype}
+hashtbl_remove {l:anz} (
+  ptbl: !HASHTBLptr (key, itm, l), k0: key, res: &itm? >> opt (itm, b)
+) :<> #[b:bool] bool b
+// end of [hashtbl_remove]
+*)
+implement{key,itm}
+hashtbl_remove {l} (ptbl, k0, res) = found where {
+  val (pf0, fpf0 | p) = HASHTBLptr_tblget {key,itm} (ptbl)
+  val h = hash_key (k0, p->fhash)
+  val h = size1_of_ulint (h)
+  val sz = p->sz
+  val ofs = sz1mod (h, sz)
+  var found: bool // uninitalized
+  // var halfTag: int = 0 // no shrinking
+  val [l:addr] pkeyitm =
+    hashtbl_ptr_probe_ofs<key,itm> (p->pftbl | p->pbeg, k0, p->feq, sz, ofs, found)
+  val [b:bool] found = bool1_of_bool (found)
+  val () = (if :(res: opt (itm, b)) => found then let
+    val tot = p->tot
+    val () = p->tot := tot - 1
+    prval (pf, fpf) = __assert () where {
+      extern prfun __assert (): ((key,itm) @ l, (key,itm?) @ l -<prf> void)
+    } // end of [prval]
+    val () = res := pkeyitm->1
+    prval () = fpf (pf)
+    prval () = opt_some {itm} (res)
+  in
+    hashtbl_ptr_reinsert<key,itm> (p->pftbl | sz, p->pbeg, p->fhash, pkeyitm)
+  end else let
+    prval () = opt_none {itm} (res)
+  in
+    // nothing
+  end) : void // end of [if]
+  prval () = minus_addback (fpf0, pf0 | ptbl)
+} // end of [hashtbl_remove]
 
 (* ****** ****** *)
 

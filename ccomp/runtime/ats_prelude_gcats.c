@@ -27,7 +27,7 @@
 ** along  with  ATS;  see the  file COPYING.  If not, please write to the
 ** Free Software Foundation,  51 Franklin Street, Fifth Floor, Boston, MA
 ** 02110-1301, USA.
- */
+*/
 
 /* ****** ****** */
 
@@ -88,10 +88,9 @@ ats_ptr_type gc_man_realloc_bsz (ats_ptr_type ptr, ats_int_type bsz) ;
 
 /* ****** ****** */
 
-ats_void_type
-ats_gc_init () {
-  gc_init () ; return ;
-} /* end of [ats_gc_init] */
+extern void gc_init () ;
+ats_void_type ats_gc_init () { gc_init () ; return ; }
+// end of [ats_gc_init]
 
 ats_void_type
 ats_gc_markroot (const ats_ptr_type p, ats_size_type bsz) {
