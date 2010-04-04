@@ -245,7 +245,7 @@ end // end of [nsieve_mt]
 implement main (argc, argv) = let
   var nworker: int = NWORKER
   val () = assert_errmsg_bool1 (
-    argc >= 2, "Exit: wrong command format!\n"
+    argc >= 2, ": command format: nsieve2_mt <integer> <ncore>"
   )
   val i = int1_of argv.[1]
   val () = assert_errmsg_bool1 (

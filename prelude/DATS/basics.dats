@@ -54,28 +54,35 @@ implement file_mode_lte_w_w = file_mode_lte_refl {w} ()
 
 (* ****** ****** *)
 
-%{
+%{^
 
-/* functions for exits */
+/*
+** various functions for exits
+*/
 
 ats_void_type // external
-ats_exit(const ats_int_type status) { exit(status) ; return ; }
+ats_exit
+  (const ats_int_type status) { exit(status) ; return ; }
+// end of [ats_exit]
 
 ats_void_type // external
 ats_exit_errmsg (
-  const ats_int_type status, const ats_ptr_type errmsg
+  const ats_int_type status
+, const ats_ptr_type errmsg
 ) {
   fprintf(stderr, "%s", (char*)errmsg) ; exit(status) ;
   return ; // deadcode
 } /* end of [ats_exit_errmsg] */
 
-%} // end of [%{]
+%} // end of [%{^]
 
 (* ****** ****** *)
 
-%{
+%{^
 
-/* functions for asserts */
+/*
+** various functions for asserts
+*/
 
 ats_void_type
 atspre_assert (
@@ -83,7 +90,7 @@ atspre_assert (
 ) {
   if (!assertion) {
     fprintf (stderr, "exit(ATS): [assert] failed\n") ; exit(1) ;
-  }
+  } // end of [if]
   return ;
 } /* end of [atspre_assert] */
 
@@ -92,8 +99,8 @@ atspre_assert_errmsg (
   const ats_bool_type assertion, const ats_ptr_type errmsg
 ) {
   if (!assertion) {
-    fprintf (stderr, "exit(ATS): %s\n", (char*)errmsg) ; exit(1) ;
-  }
+    fprintf (stderr, "exit(ATS)%s\n", (char*)errmsg) ; exit(1) ;
+  } // end of [if]
   return ;
 } /* end of [atspre_assert_errmsg] */
 

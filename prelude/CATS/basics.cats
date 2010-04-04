@@ -103,13 +103,19 @@ atspre_vbox_make_view_ptr_gc (ats_ptr_type p) { return ; }
 
 /* functions for exits */
 
-extern ats_void_type ats_exit(const ats_int_type n) ;
+// implemented in [prelude/DATS/basics.dats]
+extern ats_void_type ats_exit (const ats_int_type n) ;
+// end of [ats_exit]
 
+// implemented in [prelude/DATS/basics.dats]
 extern ats_void_type
-ats_exit_errmsg(const ats_int_type n, const ats_ptr_type msg) ;
+ats_exit_errmsg (const ats_int_type n, const ats_ptr_type msg) ;
+// end of [ats_exit_errmsg]
 
+// implemented in [prelude/DATS/printf.dats]
 extern ats_void_type
-atspre_exit_prerrf(ats_int_type code, ats_ptr_type fmt, ...) ;
+atspre_exit_prerrf (ats_int_type code, ats_ptr_type fmt, ...) ;
+// end of [atspre_exit_prerrf]
 
 /* ****** ****** */
 
@@ -118,7 +124,7 @@ extern int ats_stdin_view_lock ;
 
 ATSinline()
 ats_ptr_type
-atspre_stdin_get(void) {
+atspre_stdin_get () {
 #ifdef _ATS_RUNTIME_CHECK
   if (!ats_stdin_view_lock) {
     ats_exit_errmsg (1, "exit(ATS): [stdin_get] failed\n") ;
@@ -126,49 +132,45 @@ atspre_stdin_get(void) {
 #endif
   ats_stdin_view_lock = 0 ;
   return (ats_ptr_type)stdin;
-}
+} // end of [atspre_stdin_get]
 
 ATSinline()
 ats_void_type
-atspre_stdin_view_get(void) {
+atspre_stdin_view_get () {
 #ifdef _ATS_RUNTIME_CHECK
   if (!ats_stdin_view_lock) {
     ats_exit_errmsg (1, "exit(ATS): [stdin_view_get] failed\n") ;
-  }
+  } // end of [if]
 #endif
   ats_stdin_view_lock = 0 ;
   return ;
-}
+} // end of [atspre_stdin_view_get]
 
 ATSinline()
 ats_void_type
-atspre_stdin_view_set(void) {
+atspre_stdin_view_set () {
 #ifdef _ATS_RUNTIME_CHECK
   if (ats_stdin_view_lock) {
     ats_exit_errmsg (1, "exit(ATS): [stdin_view_set] failed\n") ;
-  }
+  } // end of [if]
 #endif
   ats_stdin_view_lock = 1 ;
   return ;
-}
+} // end of [atspre_stdin_view_set]
 
 ATSinline()
 ats_bool_type
-atspre_stdin_view_get_opt(void) {
-  if (ats_stdin_view_lock) {
-    ats_stdin_view_lock = 0 ; return 1 ;
-  }
+atspre_stdin_view_get_opt () {
+  if (ats_stdin_view_lock) { ats_stdin_view_lock = 0 ; return 1 ; }
   return 0 ;
-}
+} // end of [atspre_stdin_view_get_opt]
 
 ATSinline()
 ats_bool_type
-atspre_stdin_view_set_opt(void) { 
-  if (!ats_stdin_view_lock) {
-    ats_stdin_view_lock = 1 ; return 1 ;
-  }
+atspre_stdin_view_set_opt () { 
+  if (!ats_stdin_view_lock) { ats_stdin_view_lock = 1 ; return 1 ; }
   return 0 ;
-}
+} // end of [atspre_stdin_view_set_opt]
 
 /* ****** ****** */
 
@@ -177,57 +179,53 @@ extern int ats_stdout_view_lock ;
 
 ATSinline()
 ats_ptr_type
-atspre_stdout_get(void) {
+atspre_stdout_get () {
 #ifdef _ATS_RUNTIME_CHECK
   if (!ats_stdout_view_lock) {
     ats_exit_errmsg (1, "exit(ATS): [stdout_get] failed\n") ;
-  }
+  } // end of [if]
 #endif
   ats_stdout_view_lock = 0 ;
   return (ats_ptr_type)stdout ;
-}
+} // end of [atspre_stdout_get]
 
 ATSinline()
 ats_void_type
-atspre_stdout_view_get(void) {
+atspre_stdout_view_get () {
 #ifdef _ATS_RUNTIME_CHECK
   if (!ats_stdout_view_lock) {
     ats_exit_errmsg (1, "exit(ATS): [stdout_view_get] failed\n") ;
-  }
+  } // end of [if]
 #endif
   ats_stdout_view_lock = 0 ;
   return ;
-}
+} // end of [atspre_stdout_view_get]
 
 ATSinline()
 ats_void_type
-atspre_stdout_view_set(void) {
+atspre_stdout_view_set () {
 #ifdef _ATS_RUNTIME_CHECK
   if (ats_stdout_view_lock) {
     ats_exit_errmsg (1, "exit(ATS): [stdout_view_set] failed\n") ;
-  }
+  } // end of [if]
 #endif
   ats_stdout_view_lock = 1 ;
   return ;
-}
+} // end of [atspre_stdout_view_set]
 
 ATSinline()
 ats_bool_type
-atspre_stdout_view_get_opt(void) {
-  if (ats_stdout_view_lock) {
-    ats_stdout_view_lock = 0 ; return 1 ;
-  }
+atspre_stdout_view_get_opt () {
+  if (ats_stdout_view_lock) { ats_stdout_view_lock = 0 ; return 1 ; }
   return 0 ;
-}
+} // end of [atspre_stdout_view_get_opt]
 
 ATSinline()
 ats_bool_type
-atspre_stdout_view_set_opt(void) { 
-  if (!ats_stdout_view_lock) {
-    ats_stdout_view_lock = 1 ; return 1 ;
-  }
+atspre_stdout_view_set_opt () { 
+  if (!ats_stdout_view_lock) { ats_stdout_view_lock = 1 ; return 1 ; }
   return 0 ;
-}
+} // end of [atspre_stdout_view_set_opt]
 
 /* ****** ****** */
 
@@ -236,91 +234,91 @@ extern int ats_stderr_view_lock ;
 
 ATSinline()
 ats_ptr_type
-atspre_stderr_get(void) {
+atspre_stderr_get () {
 #ifdef _ATS_RUNTIME_CHECK
   if (!ats_stderr_view_lock) {
     ats_exit_errmsg (1, "exit(ATS): [stderr_get] failed\n") ;
-  }
+  } // end of [if]
 #endif
   ats_stderr_view_lock = 0 ;
   return (ats_ptr_type)stderr ;
-}
+} // end of [atspre_stderr_get]
 
 ATSinline()
 ats_void_type
-atspre_stderr_view_get(void) {
+atspre_stderr_view_get () {
 #ifdef _ATS_RUNTIME_CHECK
   if (!ats_stderr_view_lock) {
     ats_exit_errmsg (1, "exit(ATS): [stderr_view_get] failed\n") ;
-  }
+  } // end of [if]
 #endif
   ats_stderr_view_lock = 0 ;
   return ;
-}
+} // end of [atspre_stderr_view_get]
 
 ATSinline()
 ats_void_type
-atspre_stderr_view_set(void) {
+atspre_stderr_view_set () {
 #ifdef _ATS_RUNTIME_CHECK
   if (ats_stderr_view_lock) {
     ats_exit_errmsg (1, (ats_ptr_type)"exit(ATS): [stderr_view_set] failed\n") ;
-  }
+  } // end of [if]
 #endif
   ats_stderr_view_lock = 1 ;
   return ;
-}
+} // end of [atspre_stderr_view_set]
 
 ATSinline()
 ats_bool_type
-atspre_stderr_view_get_opt(void) {
-  if (ats_stderr_view_lock) {
-    ats_stderr_view_lock = 0 ; return 1 ;
-  }
+atspre_stderr_view_get_opt () {
+  if (ats_stderr_view_lock) { ats_stderr_view_lock = 0 ; return 1 ; }
   return 0 ;
-}
+} // end of [atspre_stderr_view_get_opt]
 
 ATSinline()
 ats_bool_type
-atspre_stderr_view_set_opt(void) { 
-  if (!ats_stderr_view_lock) {
-    ats_stderr_view_lock = 1 ; return 1 ;
-  }
+atspre_stderr_view_set_opt () { 
+  if (!ats_stderr_view_lock) { ats_stderr_view_lock = 1 ; return 1 ; }
   return 0 ;
-}
+} // end of [atspre_stderr_view_get_opt]
 
 /* ****** ****** */
 
+//
 // printing a newline on a given stream also fflushes the buffer
 // associated with the stream.
+//
 
 ATSinline()
 ats_void_type
-atspre_fprint_newline(const ats_ptr_type out) {
+atspre_fprint_newline (
+  const ats_ptr_type out
+) {
   int n1, n2 ;
   n1 = fprintf((FILE *)out, "\n") ; n2 = fflush((FILE *)out) ;
   if (n1 + n2 < 0) { ats_exit_errmsg
     (1, (ats_ptr_type)"exit(ATS): [fprint_newline] failed.\n") ;
-  }
+  } // end of [if]
   return ;
-}
+} // end of [atspre_fprint_newline]
 
 ATSinline()
 ats_void_type
-atspre_print_newline(void) {
+atspre_print_newline () {
   atspre_stdout_view_get() ;
   atspre_fprint_newline((ats_ptr_type)stdout) ;
   atspre_stdout_view_set() ;
   return ;
-}
+} // end of [atspre_print_newline]
 
 ATSinline()
 ats_void_type
-atspre_prerr_newline(void) {
+atspre_prerr_newline () {
   atspre_stderr_view_get() ;
   atspre_fprint_newline((ats_ptr_type)stderr) ;
   atspre_stderr_view_set() ;
   return ;
-}
+} // end of [atspre_prerr_newline]
 
 /* ****** ****** */
 
