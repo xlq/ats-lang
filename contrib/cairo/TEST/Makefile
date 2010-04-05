@@ -96,6 +96,11 @@ test15: cairo-test15.dats
           cairo-test15.dats \
      && ./test15
 
+test16: cairo-test16.dats
+	$(ATSCC) -o test16 `pkg-config --cflags --libs cairo` $(ATSCTRB) \
+          cairo-test16.dats \
+     && ./test16
+
 ######
 
 clean::
@@ -117,5 +122,6 @@ cleanall: clean
 	rm -f test13 cairo-test13.png
 	rm -f test14 cairo-test14.png
 	rm -f test15 cairo-test15.png
+	rm -f test16 cairo-test16.png
 
 ###### end of [Makefile] ######

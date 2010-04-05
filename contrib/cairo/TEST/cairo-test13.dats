@@ -1,6 +1,6 @@
 (*
 **
-** A simple CAIRO example: filling rules
+** A simple CAIRO example: line cap styles
 **
 ** Author: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
 ** Time: March, 2010
