@@ -36,7 +36,7 @@ fun array_int_ptr_set
   : {n:nat} {l:addr} (! @[Nat][n] @ l | ptr l, natLt n, Nat) -<> void
   = "ats_array_int_ptr_set"
 
-%{
+%{^
 
 ats_ptr_type ats_array_int_ptr_make (ats_int_type n) {
   return calloc (n, sizeof(int)) ;  
@@ -54,7 +54,7 @@ ats_void_type ats_array_int_ptr_set (ats_ptr_type A, ats_int_type i, ats_int_typ
   ((ats_int_type *)A)[i] = x ; return ;
 }
 
-%}
+%} // end of [%{^]
 
 (* ****** ****** *)
 
@@ -101,28 +101,26 @@ fun test_show_all {n,i:nat | i <= n+1} {l:addr} .<n+1-i>.
 
 //
 
+macdef double = $Time.double_of_clock
+
 #define M 4096
 #define N 32
 
-val () = let
+implement main () = () where {
   val (pf | A) = array_int_ptr_make (N+1)
-  val clock_sta = $Time.double_of_clock ($Time.clock ())
+  val clock_sta = double ($Time.clock ())
   val () = begin
     $Rand.srand48_with_time ();
     test_many (pf | A, M, N);
     test_show_all (pf | A, N, 1);
     array_int_ptr_free (pf | A)
   end
-  val clock_fin = $Time.double_of_clock ($Time.clock ())
+  val clock_fin = double ($Time.clock ())
   val time_spent =
-     (clock_fin - clock_sta) / $Time.double_of_clock $Time.CLOCKS_PER_SEC
-in
-  printf ("time spent = %.10f\n", @(time_spent))
-end // end of [val]
-
-(* ****** ****** *)
-
-implement main () = ()
+     (clock_fin - clock_sta) / (double)$Time.CLOCKS_PER_SEC
+  // end of [val]
+  val () = printf ("time spent = %.10f\n", @(time_spent))
+} // end of [main]
 
 (* ****** ****** *)
 

@@ -53,7 +53,7 @@ GaussElim: GaussElim.dats
 
 # a multithreaded implementation of GCD
 gcd_mt: gcd_mt.dats
-	atscc -o gcd_mt -O3 -D_ATS_MULTITHREAD -pthread gcd_mt.dats \
+	atscc -o gcd_mt -O3 -D_ATS_MULTITHREAD gcd_mt.dats -lpthread -lats_mt \
      && ./gcd_mt 12345 67890
 
 # hamming in lazy style
@@ -91,10 +91,10 @@ quicksort_list: quicksort_list.dats
 	$(ATSCC) -o quicksort_list quicksort_list.dats
 
 # the n-queen problem
-queens: queens.dats; $(ATSCC) -o queens queens.dats
+queens: queens.dats; $(ATSCC) -o queens queens.dats && ./queens
 
 queens_appel: queens_appel.dats
-	$(ATSCC) -o queens_appel queens_appel.dats
+	$(ATSCC) -o queens_appel queens_appel.dats && ./queens_appel
 
 queens_lazy_vt: queens_lazy_vt.dats
 	$(ATSCC) -O3 -o queens_lazy_vt queens_lazy_vt.dats -D_ATS_GCATS
@@ -131,6 +131,7 @@ html::
 	atsopt --posmark_html -d fft.dats > fft_dats.html
 	atsopt --posmark_html -d GaussElim.dats > GaussElim_dats.html
 	atsopt --posmark_html -d GarsiaWachs.dats > GarsiaWachs_dats.html
+	atsopt --posmark_html -d gcd_mt.dats > gcd_mt_dats.html
 	atsopt --posmark_html -d hanoi.dats > hanoi_dats.html
 	atsopt --posmark_html -d isqrt.dats > isqrt_dats.html
 	atsopt --posmark_html -d kmp.dats > kmp_dats.html

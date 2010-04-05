@@ -53,15 +53,16 @@ binary-trees3: binary-trees3.dats
 
 fannkuch: fannkuch.dats
 	$(ATSCC) -fomit-frame-pointer -O3 fannkuch.dats -o fannkuch
+fannkuch_smp: fannkuch_smp.dats
+	$(ATSCC) -D_ATS_MULTITHREAD -O3 -fomit-frame-pointer fannkuch_smp.dats -o fannkuch_smp -lpthread -lats_mt
+
 fannkuch1: fannkuch1.dats
 	$(ATSCC) -fomit-frame-pointer -O3 fannkuch1.dats -o fannkuch1
 fannkuch2: fannkuch2.dats
 	$(ATSCC) -fomit-frame-pointer -O3 fannkuch2.dats -o fannkuch2
 
-fannkuch_smp: fannkuch_smp.dats
-	$(ATSCC) -D_ATS_MULTITHREAD -O3 -fomit-frame-pointer fannkuch_smp.dats -o fannkuch_smp -lpthread -lats_mt
-fannkuch_smp1: fannkuch_smp1.dats
-	$(ATSCC) -D_ATS_MULTITHREAD -O3 -fomit-frame-pointer fannkuch_smp1.dats -o fannkuch_smp1 -lpthread -lats_mt
+fannkuch3: fannkuch3.dats
+	$(ATSCC) -D_ATS_MULTITHREAD -O3 -fomit-frame-pointer fannkuch3.dats -o fannkuch3 -lpthread -lats_mt
 
 
 fasta: fasta.dats
@@ -200,9 +201,9 @@ cleanall: clean
 	rm -f binary-trees3
 	rm -f fannkuch
 	rm -f fannkuch_smp
-	rm -f fannkuch_smp1
 	rm -f fannkuch1
 	rm -f fannkuch2
+	rm -f fannkuch3
 	rm -f fasta
 	rm -f fasta_smp
 	rm -f fasta2

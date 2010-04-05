@@ -8,6 +8,13 @@
 **   atscc -D_ATS_MULTITHREAD -fomit-frame-pointer -O3 fannkuch_smp.dats -o fannkuch_smp -lpthread
 *)
 
+(* ****** ****** *)
+
+staload "libc/SATS/pthread.sats"
+staload "libc/SATS/pthread_uplock.sats"
+
+(* ****** ****** *)
+
 absviewt@ype intarr = $extype "intarr" // integer arrays
 
 %{^
@@ -22,43 +29,33 @@ ats_void_type int_free (ats_ptr_type p) { free (p); return ; }
 
 static inline
 ats_ptr_type
-intarr_make (ats_int_type n) {
-  return malloc((n+1) * sizeof(ats_int_type)) ;
-}
+intarr_make (ats_int_type n) { return malloc((n+1) * sizeof(ats_int_type)) ; }
 
 static inline
-ats_void_type intarr_free (ats_ptr_type A) {
-  free (A) ; return ;
-}
+ats_void_type intarr_free (ats_ptr_type A) { free (A) ; return ; }
 
 static inline
 ats_int_type // unsafe
-intarr_get (ats_ptr_type A, ats_int_type i) {
-  return ((ats_int_type*)A)[i] ;
-}
+intarr_get (ats_ptr_type A, ats_int_type i) { return ((ats_int_type*)A)[i] ; }
 
 static inline
 ats_void_type // unsafe
-intarr_set (ats_ptr_type A, ats_int_type i, ats_int_type x) {
+intarr_set (
+  ats_ptr_type A
+, ats_int_type i, ats_int_type x
+) {
   ((ats_int_type*)A)[i] = x ; return ;
-}
+} // end of [intarr_set]
 
-%}
+%} // end of [%{^]
 
-extern fun int_make (): [l:addr] (int @ l | ptr l)
-  = "int_make"
-extern fun int_free {l:addr} (pf: int @ l | p: ptr l): void
-  = "int_free"
-
-extern fun intarr_make (sz: int): [l:addr] (intarr @ l | ptr l)
-  = "intarr_make"
-extern fun intarr_free {l:addr} (pf: intarr @ l | p: ptr l): void
-  = "intarr_free"
-
+extern fun int_make (): [l:addr] (int @ l | ptr l) = "int_make"
+extern fun int_free {l:addr} (pf: int @ l | p: ptr l): void = "int_free"
+extern fun intarr_make (sz: int): [l:addr] (intarr @ l | ptr l) = "intarr_make"
+extern fun intarr_free {l:addr} (pf: intarr @ l | p: ptr l): void = "intarr_free"
 // unsafe version
 extern fun intarr_get (A: &intarr, i: int): int = "intarr_get"
 extern fun intarr_set (A: &intarr, i: int, x: int): void = "intarr_set"
-
 overload [] with intarr_get
 overload [] with intarr_set
 
@@ -69,22 +66,18 @@ overload [] with intarr_set
 static inline
 ats_void_type intarr_copy
   (ats_ptr_type src, ats_ptr_type dst, ats_int_type sz) {
-  memcpy ((int*)dst+1, (int*)src+1,  sz * sizeof(ats_int_type)) ;
-  return ;
-} /* end of intarr_copy */
+  memcpy ((int*)dst+1, (int*)src+1,  sz * sizeof(ats_int_type)) ; return ;
+} // end of [intarr_copy]
 
-%}
+%} // end of [%{^]
 
-extern fun intarr_copy
-  (src: &intarr, dst: &intarr, sz: int): void = "intarr_copy"
+extern fun intarr_copy (src: &intarr, dst: &intarr, sz: int): void = "intarr_copy"
 
 (* ****** ****** *)
 
 // printing an integer array
 fun print_intarr (A: &intarr, sz: int): void = let
-  var i: int = 1
-in
-  while (i <= sz) (print_int A[i]; i := i+1); print_newline ()
+  var i: int = 1 in while (i <= sz) (print_int A[i]; i := i+1); print_newline ()
 end // end of [print_intarr]
 
 fun perm_rotate (P: &intarr, i: int): void = let
@@ -150,24 +143,22 @@ end // end of [fannkuch_all]
 
 (* ****** ****** *)
 
-viewdef fannkuch_v
+viewdef
+fannkuch_v
   (l_a: addr, l_C: addr, l_P: addr, l_S: addr) = (
   int @ l_a, intarr @ l_C, intarr @ l_P, intarr @ l_S
 ) // end of [fannkuch_v]
 
-staload "libc/SATS/pthread.sats"
-staload "libc/SATS/pthread_uplock.sats"
-
-viewtypedef lock
-  (l_a:addr, l_C:addr, l_P:addr, l_S:addr) =
+viewtypedef
+lock (l_a:addr, l_C:addr, l_P:addr, l_S:addr) =
   uplock (1, fannkuch_v (l_a, l_C, l_P, l_S))
 
-viewtypedef ticket
-  (l_a:addr, l_C:addr, l_P:addr, l_S:addr) =
+viewtypedef
+ticket (l_a:addr, l_C:addr, l_P:addr, l_S:addr) =
   upticket (fannkuch_v (l_a, l_C, l_P, l_S))
 
 fun intarr_init (A: &intarr, i: int, n: int): void =
-    if i <= n then (A[i] := i; intarr_init (A, i+1, n)) else ()
+  if i <= n then (A[i] := i; intarr_init (A, i+1, n)) else ()
 
 fn fannkuch_worker {l_a, l_C, l_P, l_S: addr} (
     pf_a: int? @ l_a
@@ -192,6 +183,7 @@ end // end of [fannkuch_worker]
 dataviewtype locklst =
   | locklst_nil of () | {l_a,l_C,l_P,l_S:addr} locklst_cons of
       (ptr l_a, ptr l_C, ptr l_P, ptr l_S, lock (l_a, l_C, l_P, l_S), locklst)
+// end of [locklst]
 
 (* ****** ****** *)
 
@@ -223,7 +215,8 @@ end // end of [fannkuch_locklst_gen]
 
 (* ****** ****** *)
 
-fun fannkuch_locklst_free (locks: locklst): int = let
+fun fannkuch_locklst_free
+  (locks: locklst): int = loop (locks, 0) where {
   fun loop (locks: locklst, max: int): int = case+ locks of
     | ~locklst_cons (p_a, p_C, p_P, p_S, lock, locks) => let
         val (pf | ()) = pthread_uplock_download (lock)
@@ -235,17 +228,16 @@ fun fannkuch_locklst_free (locks: locklst): int = let
         val () = intarr_free (pf.3 | p_S)
       in
         if ans <= max then loop (locks, max) else loop (locks, ans)
-      end
+      end // end of [locklst_cons]
     | ~locklst_nil () => max
-in
-  loop (locks, 0)
-end // end of [fannkuch_locklst_free]
+} // end of [fannkuch_locklst_free]
 
 (* ****** ****** *)
 
 #define NPRINT 30
 
-fn usage (cmd: string): void = printf ("usage: %s [integer]\n", @(cmd))
+fn usage (cmd: string): void =
+  printf ("usage: %s [integer]\n", @(cmd))
 
 implement main (argc, argv) = let
   val () = if argc < 2 then (usage argv.[0]; exit (1))
@@ -272,4 +264,4 @@ end // end of [main]
 
 (* ****** ****** *)
 
-(* end of [fannkuch_smp1.dats] *)
+(* end of [fannkuch3.dats] *)

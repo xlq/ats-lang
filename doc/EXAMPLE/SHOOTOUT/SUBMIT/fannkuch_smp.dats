@@ -9,14 +9,17 @@
 *)
 
 %{^
-
-#include "libc/CATS/pthread_locks.cats"
-
 #ifndef _ATS_MULTITHREAD
 #error "_ATS_MULTITHREAD is undefined!"
 #endif
+%} // end of [%{^]
 
-%}
+(* ****** ****** *)
+
+staload "libc/SATS/pthread.sats"
+staload "libc/SATS/pthread_uplock.sats"
+
+(* ****** ****** *)
 
 absviewt@ype intarr = $extype "intarr" // integer arrays
 
@@ -199,9 +202,6 @@ viewdef fannkuch_v
   int @ l_a, intarr @ l_C, intarr @ l_P, intarr @ l_S
 ) // end of [fannkuch_v]
 
-staload "libc/SATS/pthread.sats"
-staload "libc/SATS/pthread_locks.sats"
-
 viewtypedef lock
   (l_a:addr, l_C:addr, l_P:addr, l_S:addr) =
   uplock (1, fannkuch_v (l_a, l_C, l_P, l_S))
@@ -300,8 +300,8 @@ implement main (argc, argv) = let
   val () = if 0 < NPRINT then print_intarr (!p_P, sz) else ()
   val () = loop (!p_C, !p_P, sz, 1) where {
     fun loop (C: &intarr, P: &intarr, sz: int, n: int) : void =
-      if n < NPRINT then begin
-        perm_next (C, P, 2); print_intarr (P, sz); loop (C, P, sz, n+1)
+      if n < NPRINT then let
+        val _ = perm_next (C, P, 2) in print_intarr (P, sz); loop (C, P, sz, n+1)
       end // end of [if]
   }  // end of [where]
   val () = intarr_free (pf_C | p_C)
