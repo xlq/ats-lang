@@ -91,13 +91,20 @@ libc_stdlib: libc_stdlib.dats
 ######
 
 libats_funheap_braun: libats_funheap_braun.dats
-	$(ATSCC) -D_ATS_GCATS -O2 -o libats_funheap_braun libats_funheap_braun.dats
+	$(ATSCC) -D_ATS_GCATS -O2 -o libats_funheap_braun libats_funheap_braun.dats \
+	&& ./libats_funheap_braun 1000000
 
 ######
 
 libats_funmap_avltree: libats_funmap_avltree.dats
 	$(ATSCC) -D_ATS_GCATS -O2 -o libats_funmap_avltree libats_funmap_avltree.dats \
      && ./libats_funmap_avltree 1000000
+
+######
+
+libats_funralist_nested: libats_funralist_nested.dats
+	$(ATSCC) -D_ATS_GCATS -O2 -o libats_funralist_nested libats_funralist_nested.dats \
+	&& ./libats_funralist_nested 1000000
 
 ######
 
@@ -195,6 +202,7 @@ cleanall: clean
 	rm -f libc_stdlib
 	rm -f libats_funheap_braun
 	rm -f libats_funmap_avltree
+	rm -f libats_funralist_nested
 	rm -f libats_genarrays
 	rm -f libats_hashtable_chain
 	rm -f libats_hashtable_linprb

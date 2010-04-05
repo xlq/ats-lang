@@ -33,7 +33,7 @@
 
 (*
 **
-** A functional heap implementation based on AVL trees
+** A functional heap implementation based on Braun trees
 **
 ** Contributed by Hongwei Xi (hwxi AT cs DOT bu DOT edu)
 ** Time: April, 2010 // based on a version done in November, 2008
@@ -115,9 +115,7 @@ implement{elt}
 funheap_height (hp) = loop (hp, 0) where {
   fun loop {n:nat} .<n>.
     (t: bt (elt, n), res: Nat):<> Nat =
-    case+ t of
-    | B (_, tl, _) => loop (tl, res + 1)
-    | E _ => res
+    case+ t of B (_, tl, _) => loop (tl, res + 1) | E () => res
   // end of [loop]
 } // end of [funheap_height]
 
