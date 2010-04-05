@@ -626,7 +626,10 @@ fn doc_dir_copy () = let
   val () = cp "libc_dirent.dats"
   val () = cp "libc_sched.dats"
   val () = cp "libc_stdlib.dats"  
+//
+  val () = cp "libats_funheap_braun.dats"
   val () = cp "libats_funmap_avltree.dats"
+  val () = cp "libats_funralist_nested.dats"
   val () = cp "libats_genarrays.dats"  
   val () = cp "libats_hashtable_chain.dats"
   val () = cp "libats_hashtable_linprb.dats"
@@ -637,6 +640,7 @@ fn doc_dir_copy () = let
   val () = cp "libats_linstack_arr.dats"
   val () = cp "libats_regexp.dats"
   val () = cp "libats_parworkshop.dats"  
+//
   val () = cp "libats_smlbas_array.dats"
   val () = cp "libats_smlbas_array2.dats"
   val () = cp "libats_smlbas_char.dats"

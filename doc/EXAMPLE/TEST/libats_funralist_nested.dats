@@ -42,6 +42,23 @@ main (argc, argv) = () where {
 //
   val () = assert_errmsg (n = $RA.funralist_length xs, #LOCATION)
 //
+  var i: int = 0
+  val () = $RA.funralist_foreach_clo<int> {int@i} (view@ i | xs, !p_f) where {
+    var !p_f = @lam (pf: !int @ i | x: int): void =<clo> $effmask_exn (i := i + 1; assert (x = i))
+  } // end of [val]
+//
+  val () = loop (xs, n, 1) where {
+    fun loop {n:nat}
+      (xs: ralist (int, n), n: int n, k: int): void =
+      if n > 0 then let
+        var x0: int; val xs = $RA.funralist_uncons (xs, x0)
+        val () = assert_errmsg (x0 = k, #LOCATION)
+      in
+        loop (xs, n-1, k+1)
+      end else ()
+    // end of [loop]
+  } // end of [val]
+//
   var i: Nat = 0
   val () = for (i := 0; i < n; i := i + 1) let
     val xs = $RA.funralist_update (xs, i, i+i+1)
@@ -72,12 +89,6 @@ staload RA = "funralist.dats"
 implement main () = let
   val xs = ralist_gen (100)
 
-  var !p_pr =
-    @lam (pf: !unit_v | x: int): void =<clo> $effmask_all (print x; print_newline ())
-  // end of [pr]
-  prval pf = unit_v ()
-  val () = $RA.ralist_foreach_clo<int> (pf | xs, !p_pr)
-  prval unit_v () = pf
   val n = $RA.ralist_length<int> (xs)
   val () = begin
     print "n(100) = "; print n; print_newline ()

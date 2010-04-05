@@ -75,6 +75,11 @@ funralist_uncons {n:pos} (xs: list (a, n), x: &a? >> a):<> list (a, n-1)
 
 (* ****** ****** *)
 
+fun{a:t@ype} funralist_head {n:pos} (xs: list (a, n)):<> a
+fun{a:t@ype} funralist_tail {n:pos} (xs: list (a, n)):<> list (a, n-1)
+
+(* ****** ****** *)
+
 fun{a:t@ype}
 funralist_lookup {n:nat} (xs: list (a, n), i: natLt n):<> a
 // end of [funralist_lookup]
@@ -82,6 +87,18 @@ funralist_lookup {n:nat} (xs: list (a, n), i: natLt n):<> a
 fun{a:t@ype}
 funralist_update {n:nat} (xs: list (a, n), i: natLt n, x: a):<> list (a, n)
 // end of [funralist_update]
+
+(* ****** ****** *)
+
+fun{elt:t@ype}
+funralist_foreach_clo {v:view} {n:nat} {f:eff}
+  (pf: !v | xs: list (elt, n), f: &(!v | elt) -<clo,f> void):<f> void
+// end of [funralist_foreach_clo]
+
+fun{elt:t@ype}
+funralist_foreach_cloref {v:view} {n:nat} {f:eff}
+  (pf: !v | xs: list (elt, n), f: !(!v | elt) -<cloref,f> void):<f> void
+// end of [funralist_foreach_cloref]
 
 (* ****** ****** *)
 

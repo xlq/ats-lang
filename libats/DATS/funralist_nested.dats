@@ -105,7 +105,7 @@ funralist_cons (x0, xs) = cons<elt> (x0, xs) where {
     | RAodd (x, xxs) => RAevn (cons<elt2> (P x0 x, xxs))
     | RAnil _ => RAodd (x0, RAnil ())
   end // end of [cons]
-} // end of [ralist_cons]
+} // end of [funralist_cons]
 
 (* ****** ****** *)
 
@@ -130,6 +130,41 @@ funralist_uncons
       end // end of [RAodd]
   end // end of [uncons]
 } // end of [funralist_uncons]
+
+(* ****** ****** *)
+
+implement{elt}
+funralist_head (xs) = head (xs) where {
+  fun{elt:t@ype}
+  head {n:pos} .<n>. (xs: ralist (elt, n)):<> elt = let
+    typedef elt2 = P elt elt
+  in
+    case+ xs of
+    | RAevn xxs => let val xx = funralist_head<elt2> xxs in xx.0 end
+    | RAodd (x, _) => x
+  end // end of [head]
+} // end of [funralist_head]
+
+(* ****** ****** *)
+
+implement{elt}
+funralist_tail (xs) = tail<elt> (xs) where {
+  fun{elt:t@ype} tail {n:pos} .<n>.
+    (xs: ralist (elt, n)):<> ralist (elt, n-1) = let
+    typedef elt2 = P elt elt
+  in
+    case+ xs of
+    | RAodd (_, xxs) => begin
+        case+ xxs of RAnil () => RAnil () | _ =>> RAevn xxs
+      end // end of [RAodd]
+    | RAevn xxs => let
+        var xx: elt2 // uninitialized
+        val xxs = funralist_uncons<elt2> (xxs, xx)
+      in
+        RAodd (xx.1, xxs)
+      end // end of [RAevn]
+   end // end of [tail]
+} // end of [funralist_tail]
 
 (* ****** ****** *)
 
@@ -209,6 +244,57 @@ funralist_update (xs, i, x) = let
 in
   fupdate<elt> (xs, i, CLOSURE_ (box_vt x, f0))
 end // end of [funralist_update]
+
+(* ****** ****** *)
+
+implement{elt}
+funralist_foreach_clo {v} {n} {f} (pf0 | xs, f) = let
+  typedef clo_type = (!v | elt) -<clo,f> void
+  typedef cloref_type = (!v | elt) -<cloref,f> void
+  val f = cloref_make_cloptr (view@ f | &f) where {
+    extern castfn cloref_make_cloptr {l:addr}
+      (pf: !clo_type @ l | p: ptr l):<> cloref_type
+  } // end of [where]
+  val () = funralist_foreach_cloref<elt> {v} (pf0 | xs, f)
+in
+  // empty
+end // end of [funralist_foreach_clo]
+
+fun{a:t@ype}
+foreach {v:view} {n:pos} {f:eff} .<n>. (
+  pf0: !v | xs: ralist (a, n), f: !(!v | a) -<cloref,f> void
+) :<f> void = case+ xs of
+  | RAodd (x, xxs) => let
+      val () = f (pf0 | x) in case+ xxs of
+      | RAnil () => () | _ =>> let
+          var !p_f2 with pf_f2 =
+            @lam (pf0: !v | xx: P a a): void =<clo,f> (f (pf0 | xx.0); f (pf0 | xx.1))
+          typedef clo_type = (!v | P a a) -<clo,f> void
+          typedef cloref_type = (!v | P a a) -<cloref,f> void
+          val f2 = cloref_make_clo (pf_f2 | p_f2) where { // cutting a corner here!
+            extern castfn cloref_make_clo (pf: !clo_type @ p_f2 | p: ptr p_f2):<> cloref_type
+          } // end of [val]
+        in
+          foreach<P a a> (pf0 | xxs, f2)
+        end // end of [_]
+    end // end of [RAodd]
+  | RAevn xxs => let
+      var !p_f2 with pf_f2 =
+        @lam (pf0: !v | xx: P a a): void =<clo,f> (f (pf0 | xx.0); f (pf0 | xx.1))
+      typedef clo_type = (!v | P a a) -<clo,f> void
+      typedef cloref_type = (!v | P a a) -<cloref,f> void
+      val f2 = cloref_make_clo (pf_f2 | p_f2) where { // cutting a corner here!
+        extern castfn cloref_make_clo (pf: !clo_type @ p_f2 | p: ptr p_f2):<> cloref_type
+      } // end of [val]
+    in
+      foreach<P a a> (pf0 | xxs, f2)
+    end // end of [RAevn]
+// end of [foreach]
+
+implement{elt}
+funralist_foreach_cloref (pf0 | xs, f) = begin
+  case+ xs of RAnil () => () | _ =>> foreach<elt> (pf0 | xs, f)
+end // end of [funralist_foreach_cloref]
 
 (* ****** ****** *)
 
