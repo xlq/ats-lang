@@ -91,7 +91,7 @@ prelude/DATS/slseg.dats
 
 /* libc files */
 
-libc/SATS/complex.sats
+// libc/SATS/complex.sats
 // libc/DATS/complex.dats
 
 libc/SATS/dirent.sats
@@ -165,6 +165,10 @@ libats/DATS/fmatrix.dats
 /* FREE LIST implementation */
 libats/SATS/freelst.sats
 libats/DATS/freelst.dats
+
+/* functional array implementation based on Braun trees */
+libats/SATS/funarray_braun.sats
+libats/DATS/funarray_braun.dats
 
 /* functional heap implementation based on Braun trees */
 libats/SATS/funheap_braun.sats

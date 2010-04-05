@@ -28,6 +28,7 @@ compall:: \
   libc_dlfcn \
   libc_sched \
   libc_stdlib \
+  libats_funarray_braun \
   libats_funheap_braun \
   libats_funmap_avltree \
   libats_genarrays \
@@ -87,6 +88,12 @@ libc_sched: libc_sched.dats
 
 libc_stdlib: libc_stdlib.dats
 	$(ATSCC) -O2 -o libc_stdlib libc_stdlib.dats && ./libc_stdlib
+
+######
+
+libats_funarray_braun: libats_funarray_braun.dats
+	$(ATSCC) -D_ATS_GCATS -O2 -o libats_funarray_braun libats_funarray_braun.dats \
+	&& ./libats_funarray_braun 0 1 2 3 4 5 6 7 8 9
 
 ######
 
@@ -200,6 +207,7 @@ cleanall: clean
 	rm -f libc_dlfcn
 	rm -f libc_sched
 	rm -f libc_stdlib
+	rm -f libats_funarray_braun
 	rm -f libats_funheap_braun
 	rm -f libats_funmap_avltree
 	rm -f libats_funralist_nested

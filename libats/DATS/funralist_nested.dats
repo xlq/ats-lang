@@ -148,7 +148,8 @@ funralist_head (xs) = head (xs) where {
 (* ****** ****** *)
 
 implement{elt}
-funralist_tail (xs) = tail<elt> (xs) where {
+funralist_tail
+  (xs) = tail<elt> (xs) where {
   fun{elt:t@ype} tail {n:pos} .<n>.
     (xs: ralist (elt, n)):<> ralist (elt, n-1) = let
     typedef elt2 = P elt elt

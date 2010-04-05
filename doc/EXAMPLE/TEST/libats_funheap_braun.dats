@@ -1,15 +1,11 @@
 (*
 
-// some testing code for [funheap.dats]
+// some testing code for [libats/funheap_braun]
 
 // Author: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
 // Time: April, 2010
 
 *)
-
-(* ****** ****** *)
-
-staload RAND = "libc/SATS/random.sats"
 
 (* ****** ****** *)
 
@@ -29,15 +25,11 @@ implement main (argc, argv) = () where {
   end // end of [va]
   val [n:int] n = int1_of_int n
   val () = assert (n > 0)
-(*
-  val () = $Rand.srand48 (0L)
-*)
-  val () = $RAND.srand48_with_time ()
   val cmp = lam (x1: elt, x2: elt): Sgn =<cloref> compare_int_int (x1, x2)
   var heap: heap_t = $H.funheap_make_nil ()
   var i: Nat // uninitialized
   val () = for (i := n; i > 0; i := i-1) let
-    val elt = i // $RAND.randint n
+    val elt = i
     val () = $H.funheap_insert<elt> (heap, elt, cmp)
   in
     // nothing
@@ -69,4 +61,4 @@ implement main (argc, argv) = () where {
 
 (* ****** ****** *)
 
-(* end of [test.dats] *)
+(* end of [libats_funheap_braun.dats] *)
