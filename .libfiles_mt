@@ -1,0 +1,35 @@
+/***********************************************************************/
+/*                                                                     */
+/*                        Applied Type System                          */
+/*                                                                     */
+/*                             Hongwei Xi                              */
+/*                                                                     */
+/***********************************************************************/
+
+/*
+**
+** This file is to be preprocessed to generate .libfiles_local, which is
+** needed by [atslib --libats] for building libats.a
+**
+*/
+
+/* ****** ****** */
+
+#include "config.h"
+
+/* ****** ****** */
+
+libc/SATS/pthread.sats
+libc/DATS/pthread.dats
+
+libc/SATS/pthread_uplock.sats
+libc/DATS/pthread_uplock.dats
+
+/* ****** ****** */
+
+libats/SATS/parworkshop.sats
+libats/DATS/parworkshop.dats
+
+/* ****** ****** */
+
+/* end of [.libfiles_mt] */
