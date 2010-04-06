@@ -42,7 +42,6 @@
 /* ****** ****** */
 
 #include <sched.h>
-
 #include "libc/sys/CATS/types.cats"
 
 /* ****** ****** */

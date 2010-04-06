@@ -195,10 +195,12 @@ cleanall:: clean
 	rm -f .libfiles_mt_local
 	rm -f bin/atsopt bin/atscc bin/atslib bin/atslex bin/atspack
 	rm -f ccomp/lib/libats.a
+	rm -f ccomp/lib/libats_mt.a
 	rm -f ccomp/lib/libats_lex.a
 	rm -f ccomp/lib/libats_smlbas.a
 	rm -f ccomp/lib/output/*
 	rm -f ccomp/lib64/libats.a
+	rm -f ccomp/lib64/libats_mt.a
 	rm -f ccomp/lib64/libats_lex.a
 	rm -f ccomp/lib64/libats_smlbas.a
 	rm -f ccomp/lib64/output/*

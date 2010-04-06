@@ -403,16 +403,26 @@ fn ccomp_lib_dir_copy
     val () = if (wsz = 4(*bytes*)) then let
       val () = fcopy_exn
         (SRCROOTccomp_lib ++ "libats.a", DSTROOTccomp_lib ++ "libats.a")
+      // end of [val]
+      val () = fcopy_exn
+        (SRCROOTccomp_lib ++ "libats_mt.a", DSTROOTccomp_lib ++ "libats_mt.a")
+      // end of [val]
       val () = fcopy_exn
         (SRCROOTccomp_lib ++ "libats_smlbas.a", DSTROOTccomp_lib ++ "libats_smlbas.a")
+      // end of [val]
     in
       // nothing
     end // end of [val]
     val () = if (wsz = 8(*bytes*)) then let
       val () = fcopy_exn
         (SRCROOTccomp_lib64 ++ "libats.a", DSTROOTccomp_lib64 ++ "libats.a")
+      // end of [val]
+      val () = fcopy_exn
+        (SRCROOTccomp_lib64 ++ "libats_mt.a", DSTROOTccomp_lib64 ++ "libats_mt.a")
+      // end of [val]
       val () = fcopy_exn
         (SRCROOTccomp_lib64 ++ "libats_smlbas.a", DSTROOTccomp_lib64 ++ "libats_smlbas.a")
+      // end of [val]
     in
       // nothing
     end // end of [val]
@@ -991,6 +1001,7 @@ implement atspack_source_code () = let
   val () = cp "test.sh.in"
 //
   val () = cp ".libfiles"
+  val () = cp ".libfiles_mt"
   val () = cp ".bootstrap_header"
   val () = cp ".bootstrap_makefile"
 

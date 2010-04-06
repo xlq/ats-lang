@@ -48,7 +48,7 @@ all: \
   atsopt1 \
   bin/atscc \
   bin/atslib \
-  libfiles \
+  libfiles libfiles_mt \
   bin/atslex \
   ccomp/runtime/GCATS/gc.o \
   ccomp/runtime/GCATS/gc_mt.o \
@@ -98,6 +98,10 @@ libfiles: .libfiles_local
 	"$(ATSHOME)"/bin/atslib $(ATS_TERMINATION_CHECK) -O2 --libats
 	"$(ATSHOME)"/bin/atslib $(ATS_TERMINATION_CHECK) -O2 --libats_smlbas
 
+.libfiles_mt_local: ; $(GCC) -E -P -x c .libfiles_mt -o .libfiles_mt_local
+libfiles_mt: .libfiles_mt_local
+	"$(ATSHOME)"/bin/atslib $(ATS_TERMINATION_CHECK) -D_ATS_MULTITHREAD -O2 --libats_mt
+
 ###### a lexer for ATS ######
 
 bin/atslex:
@@ -127,8 +131,15 @@ cleanall::
 	rm -f .libfiles_mt_local
 	rm -f bin/atsopt bin/atscc bin/atslib bin/atslex
 	rm -f ccomp/lib/libats.a
-	rm -f ccomp/lib/libatslex.a
+	rm -f ccomp/lib/libats_mt.a
+	rm -f ccomp/lib/libats_lex.a
+	rm -f ccomp/lib/libats_smlbas.a
 	rm -f ccomp/lib/output/*
+	rm -f ccomp/lib64/libats.a
+	rm -f ccomp/lib64/libats_mt.a
+	rm -f ccomp/lib64/libats_lex.a
+	rm -f ccomp/lib64/libats_smlbas.a
+	rm -f ccomp/lib64/output/*
 	rm -f .*~ *~ */*~ */*/*~ */*/*/*~ */*/*/*/*~
 	rm -f bootstrap1/Makefile bootstrap1/*.o
 	cd utils/scripts; make clean
