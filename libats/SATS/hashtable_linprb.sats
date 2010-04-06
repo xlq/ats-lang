@@ -80,15 +80,17 @@ equal_key_key (x1: key, x2: key, feq: eq key):<> bool
 (* ****** ****** *)
 
 absviewt@ype Opt (a:viewt@ype) = a
-prfun Opt_none {itm:viewt@ype} (x: !itm? >> Opt itm):<> void
-prfun Opt_some {itm:viewt@ype} (x: !(itm) >> Opt itm):<> void
-prfun Opt_encode {itm:viewt@ype} {b:bool} (x: !opt (itm, b) >> Opt itm):<> void
+prfun Opt_none {keyitm:viewt@ype} (x: !keyitm? >> Opt keyitm):<> void
+prfun Opt_some {keyitm:viewt@ype} (x: !(keyitm) >> Opt keyitm):<> void
+prfun Opt_encode
+  {keyitm:viewt@ype} {b:bool} (x: !opt (keyitm, b) >> Opt keyitm):<> void
+// end of [Opt_encode]
 
-fun{itm:viewt@ype}
-item_nullify (x: &itm? >> Opt itm):<> void
+fun{keyitm:viewt@ype}
+keyitem_nullify (x: &keyitm? >> Opt keyitm):<> void
 
-fun{itm:viewt@ype}
-item_isnot_null (x: &Opt itm >> opt (itm, b)):<> #[b:bool] bool b
+fun{keyitm:viewt@ype}
+keyitem_isnot_null (x: &Opt keyitm >> opt (keyitm, b)):<> #[b:bool] bool b
 
 (* ****** ****** *)
 

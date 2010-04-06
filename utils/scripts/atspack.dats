@@ -285,22 +285,21 @@ end // end of [wordsize_target_get]
 datatype packnd =
   | PACKNDsource | PACKNDprecompiled
 
-fn packnd_is_source (knd: packnd): bool = begin
-  case+ knd of
-  | PACKNDsource () => true | PACKNDprecompiled () => false
-end // end of [packnd_is_source]
+fn packnd_is_source (knd: packnd): bool =
+  case+ knd of PACKNDsource () => true | _ => false
+// end of [packnd_is_source]
 
-fn packnd_is_precompiled (knd: packnd): bool = begin
-  case+ knd of
-  | PACKNDsource () => false | PACKNDprecompiled () => true
-end // end of [packnd_is_precompiled]
+fn packnd_is_precompiled (knd: packnd): bool =
+  case+ knd of PACKNDprecompiled () => true | _ => false
+// end of [packnd_is_precompiled]
 
 (* ****** ****** *)
 
-fn bin_dir_copy (knd: packnd): void = let
+fn bin_dir_copy
+  (knd: packnd): void = let
   val SRCROOTbin = SRCROOT ++ "bin/"
   val DSTROOTbin = DSTROOT ++ "bin/"
-
+//
   macdef cp (name) = fcopy_exn
      (SRCROOTbin ++ ,(name), DSTROOTbin ++ ,(name))
   macdef cpx (name) = let
@@ -311,7 +310,7 @@ fn bin_dir_copy (knd: packnd): void = let
   in
     // empty
   end // end of [cpx]
-
+//
   val () = mkdir_exn (DSTROOTbin, DIRmode)
   // for keeping the directory from being removed
   val () = cp (".keeper")
@@ -321,7 +320,7 @@ fn bin_dir_copy (knd: packnd): void = let
 in
   prerr "The [bin] directory is successfully copied.";
   prerr_newline ()
-end // end of [bin]
+end // end of [bin_dir_copy]
 
 (* ****** ****** *)
 
@@ -371,7 +370,7 @@ end // end of [name_is_xats]
 fn bootstrap_dir_copy () = let
   val SRCROOTbootstrap = SRCROOT ++ "bootstrap1/"
   val DSTROOTbootstrap = DSTROOT ++ "bootstrap1/"
-
+//
   fn test
     (name: string): bool = begin
     case+ name of
@@ -379,10 +378,10 @@ fn bootstrap_dir_copy () = let
     | _ when name_is_cats (name) => true
     | _ => false
   end // end of [test]
-
+//
   macdef cp (name) = fcopy_exn
      (SRCROOTbootstrap ++ ,(name), DSTROOTbootstrap ++ ,(name))
-
+//
   val () = mkdir_exn (DSTROOTbootstrap, DIRmode)
   val () = dir_copy (SRCROOTbootstrap, DSTROOTbootstrap, test)
   val () = cp "ats_grammar_yats.h"
@@ -398,31 +397,25 @@ fn ccomp_lib_dir_copy
   val wsz = size1_of_size (wsz) // no-op casting
   val () = mkdir_exn (DSTROOTccomp_lib, DIRmode)
   val () = mkdir_exn (DSTROOTccomp_lib64, DIRmode)
+  macdef cp32 (name) =
+    fcopy_exn (SRCROOTccomp_lib ++ ,(name), DSTROOTccomp_lib ++ ,(name))
+  macdef cp64 (name) =
+    fcopy_exn (SRCROOTccomp_lib64 ++ ,(name), DSTROOTccomp_lib64 ++ ,(name))
   val () = if
     (packnd_is_precompiled knd) then let
-    val () = if (wsz = 4(*bytes*)) then let
-      val () = fcopy_exn
-        (SRCROOTccomp_lib ++ "libats.a", DSTROOTccomp_lib ++ "libats.a")
-      // end of [val]
-      val () = fcopy_exn
-        (SRCROOTccomp_lib ++ "libats_mt.a", DSTROOTccomp_lib ++ "libats_mt.a")
-      // end of [val]
-      val () = fcopy_exn
-        (SRCROOTccomp_lib ++ "libats_smlbas.a", DSTROOTccomp_lib ++ "libats_smlbas.a")
-      // end of [val]
+    val () = if
+      (wsz = 4(*bytes*)) then let
+      val () = cp32 ("libats.a")
+      val () = cp32 ("libats_mt.a")
+      val () = cp32 ("libats_smlbas.a")
     in
       // nothing
     end // end of [val]
-    val () = if (wsz = 8(*bytes*)) then let
-      val () = fcopy_exn
-        (SRCROOTccomp_lib64 ++ "libats.a", DSTROOTccomp_lib64 ++ "libats.a")
-      // end of [val]
-      val () = fcopy_exn
-        (SRCROOTccomp_lib64 ++ "libats_mt.a", DSTROOTccomp_lib64 ++ "libats_mt.a")
-      // end of [val]
-      val () = fcopy_exn
-        (SRCROOTccomp_lib64 ++ "libats_smlbas.a", DSTROOTccomp_lib64 ++ "libats_smlbas.a")
-      // end of [val]
+    val () = if
+      (wsz = 8(*bytes*)) then let
+      val () = cp64 ("libats.a")
+      val () = cp64 ("libats_mt.a")
+      val () = cp64 ("libats_smlbas.a")
     in
       // nothing
     end // end of [val]
@@ -430,10 +423,10 @@ fn ccomp_lib_dir_copy
     // nothing
   end // end of [val]
   val () = mkdir_exn (DSTROOTccomp_lib_output, DIRmode)
+  val () = mkdir_exn (DSTROOTccomp_lib64_output, DIRmode)
   val () = fcopy_exn // keeping the directory from being removed
      (SRCROOTccomp_lib_output ++ ".keeper", DSTROOTccomp_lib_output ++ ".keeper")
   // end of [val]
-  val () = mkdir_exn (DSTROOTccomp_lib64_output, DIRmode)
   val () = fcopy_exn // keeping the directory from being removed
      (SRCROOTccomp_lib64_output ++ ".keeper", DSTROOTccomp_lib64_output ++ ".keeper")
   // end of [val]
@@ -459,15 +452,16 @@ fn ccomp_runtime_NGC_dir_copy (knd: packnd): void = () where {
 
 (* ****** ****** *)
 
-fn ccomp_runtime_GCATS_dir_copy (knd: packnd): void = let
+fn ccomp_runtime_GCATS_dir_copy
+  (knd: packnd): void = let
   fn test (name: string): bool = begin case+ name of
     | _ when name_is_xats (name) => true | _ => false
   end // end of [filename_test]
-
+//
   macdef cp (name) = fcopy_exn (
     SRCROOTccomp_runtime_GCATS ++ ,(name), DSTROOTccomp_runtime_GCATS ++ ,(name)
   ) // end of [fcopy_exn]
-
+//
   val () = mkdir_exn (DSTROOTccomp_runtime_GCATS, DIRmode)
   val () = dir_copy (
     SRCROOTccomp_runtime_GCATS, DSTROOTccomp_runtime_GCATS, test

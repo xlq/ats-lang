@@ -21,15 +21,6 @@ staload _(*anonymous*) = "prelude/DATS/list_vt.dats"
 staload H = "libats/SATS/hashtable_linprb.sats"
 staload _(*anon*) = "libats/DATS/hashtable_linprb.dats"
 
-implement
-$H.item_isnot_null<int> (x) = let
-  extern castfn __cast
-    (x: !($H.Opt int) >> opt (int, i <> 0)):<> #[i:int] int i
-  // end of [__cast]
-in
-  __cast (x) <> 0
-end // end of [item_isnot_null]
-
 (* ****** ****** *)
 
 %{^
@@ -40,6 +31,25 @@ typedef char *symbol_t ;
 
 abstype dna_t // boxed type
 abst@ype symbol_t = $extype "symbol_t"
+
+(* ****** ****** *)
+
+typedef keyitm = @(symbol_t, int)
+
+implement
+$H.keyitem_isnot_null<keyitm> (ki) = let
+  prval () = __assert (ki) where {
+    extern prfun __assert (x: !($H.Opt keyitm) >> keyitm):<> void
+  } // end of [prval]
+  val i = ki.1
+  val res = (i <> 0)
+  val [b:bool] res = bool1_of_bool (res)
+  prval () = __assert (ki) where {
+    extern prfun __assert (x: &keyitm >> opt (keyitm, b)):<> void
+  } // end of [prval]
+in
+  res
+end // end of [keyitem_isnot_null]
 
 (* ****** ****** *)
 

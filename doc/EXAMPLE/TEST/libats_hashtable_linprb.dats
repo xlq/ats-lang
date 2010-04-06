@@ -21,26 +21,34 @@ stadef HASHTBLptr = $H.HASHTBLptr
 
 (* ****** ****** *)
 
-implement
-$H.item_nullify<string> (stropt) = let
-  val () = stropt := __cast (null) where {
-    extern castfn __cast (x: ptr null):<> string
-  } // end of [val]
-  prval () = __assert (stropt) where {
-    extern prfun __assert (x: &string >> $H.Opt string):<> void
-  } // end of [prval]
-in
-  // nothing
-end // end of [item_nullify]
+typedef keyitm = @(int,string)
 
 implement
-$H.item_isnot_null<string> (stropt) = let
-  extern castfn __cast
-    (x: !($H.Opt string) >> opt (string, l <> null)):<> #[l:addr] ptr l
-  // end of [__cast]
+$H.keyitem_nullify<keyitm> (ki) = let
+  val () = ki.1 := __cast (null) where {
+    extern castfn __cast (x: ptr null):<> string
+  } // end of [val]
+  prval () = $H.Opt_none {keyitm} (ki)
 in
-  __cast (stropt) <> null
-end // end of [item_isnot_null]
+  // nothing
+end // end of [keyitem_nullify]
+
+implement
+$H.keyitem_isnot_null<keyitm> (ki) = let
+  prval () = __assert (ki) where {
+    extern prfun __assert (x: !($H.Opt keyitm) >> keyitm):<> void
+  } // end of [prval]
+  val i = ki.1
+  extern castfn __cast (x: string):<> ptr
+  val i = __cast (i)
+  val res = (i <> null)
+  val [b:bool] res = bool1_of_bool (res)
+  prval () = __assert (ki) where {
+    extern prfun __assert (x: &keyitm >> opt (keyitm, b)):<> void
+  } // end of [prval]
+in
+  res
+end // end of [keyitem_isnot_null]
 
 (* ****** ****** *)
 

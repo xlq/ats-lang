@@ -72,7 +72,7 @@ dataview hashtbl_v // it is just an array of chains
   (key:t@ype, itm:viewt@ype+, int(*sz*), addr, addr) =
   | {sz:nat} {b:bool} {l_beg,l_end:addr}
     hashtbl_v_cons (key, itm, sz+1, l_beg, l_end) of
-      ((key, Opt itm) @ l_beg, hashtbl_v (key, itm, sz, l_beg+sizeof2(key,itm), l_end))
+      (Opt @(key, itm) @ l_beg, hashtbl_v (key, itm, sz, l_beg+sizeof2(key,itm), l_end))
   | {l:addr} hashtbl_v_nil (key, itm, 0, l, l)
 // end of [hashtbl_v]
 
@@ -213,17 +213,20 @@ hashtbl_ptr_probe_ofs
     ) :<cloref> void =
     if n > 0 then let
       prval hashtbl_v_cons (pf1, pf2) = pf
-      val isnotnull = item_isnot_null<itm> (p1->1)
-      prval () = Opt_encode (p1->1)
+      val isnotnull = keyitem_isnot_null<keyitm> (!p1)
       val () = if isnotnull then let
+        prval () = opt_unsome {keyitm} (!p1)
         val k = p1->0
+        prval () = Opt_some {keyitm} (!p1)
       in
         if equal_key_key (k0, k, eq) then
           (pres := p1; found := true)
         else
           loop (pf2 | p1 + keyitmsz, n-1, pres, found)
         // end of [if]
-      end else (pres := p1) // end of [if]
+      end else let
+        prval () = Opt_encode {keyitm} (!p1) in pres := p1
+      end // end of [if]
       prval () = pf := hashtbl_v_cons (pf1, pf2)
     in
       // nothing
@@ -305,12 +308,12 @@ fun{key:t0p;itm:vt0p}
 in
   if sz1 > 0 then let
     prval hashtbl_v_cons (pf11, pf12) = pf1
-    val isnotnull = item_isnot_null<itm> (p1_beg->1)
+    val isnotnull = keyitem_isnot_null<keyitm> (!p1_beg)
     val () = if isnotnull then let
+      prval () = opt_unsome {keyitm} (!p1_beg)
       val k0 = p1_beg->0
-      prval () = opt_unsome {itm} (p1_beg->1)
       val i0 = p1_beg->1
-      prval () = Opt_none {itm} (p1_beg->1)
+      prval () = Opt_none {keyitm} (!p1_beg)
       val h = hash_key (k0, fhash)
       val h = size1_of_ulint (h); val ofs = sz1mod (h, sz2)
       var found: bool // uninitalized
@@ -325,9 +328,7 @@ in
     in
       // nothing
     end else let
-      prval () = Opt_encode (p1_beg->1)
-    in
-      // nothing
+      prval () = Opt_encode {keyitm} (!p1_beg) in (*nothing*)
     end // end of [if]
     val () = hashtbl_ptr_relocate<key,itm>
       (pf12, pf2 | sz1-1, sz2, p1_beg+sizeof<keyitm>, p2_beg, fhash, eqfn)
@@ -370,7 +371,7 @@ hashtbl_ptr_reinsert
   | sz: size_t sz, p_beg: ptr l_beg, fhash: hash key, pkeyitm: Ptr
   ) :<> void = let
   viewtypedef keyitm = @(key, itm)
-  viewtypedef keyitmopt = @(key, Opt (itm))
+  viewtypedef keyitmopt = Opt @(key, itm)
   extern prfun __assert1
     {l:addr} (p: ptr l): (keyitmopt @ l, keyitmopt @ l -<prf> void)
   extern prfun __assert2
@@ -382,8 +383,8 @@ hashtbl_ptr_reinsert
     (p1: ptr l1, p2: ptr l2, i0: &itm >> opt (itm, b)):<cloref1> #[b:bool] bool b =
     if p1 < p2 then let
       prval (pf, fpf) = __assert1 (p1)
-      val isnotnull = item_isnot_null<itm> (p1->1)
-      prval () = Opt_encode (p1->1)
+      val isnotnull = keyitem_isnot_null<keyitm> (!p1)
+      prval () = Opt_encode {keyitm} (!p1)
       prval () = fpf (pf)
     in
       if isnotnull then
@@ -404,15 +405,15 @@ hashtbl_ptr_reinsert
     (p1: ptr l1, p2: ptr l2):<cloref1> bool =
     if p1 < p2 then let
       prval (pf, fpf) = __assert1 (p1)
-      val isnotnull = item_isnot_null<itm> (p1->1)
-      prval () = Opt_encode (p1->1)
+      val isnotnull = keyitem_isnot_null<keyitm> (!p1)
+      prval () = Opt_encode {keyitm} (!p1)
       prval () = fpf (pf)
     in
       if isnotnull then let
         prval (pf, fpf) = __assert3 (p1)
         var i0 = p1->1
-        val () = item_nullify<itm> (p1->1)
         val h = hash_key (p1->0, fhash)
+        val () = keyitem_nullify<keyitm> (!p1)
         prval () = fpf (pf)
         val h = size1_of_ulint (h)
         val ofs = sz1mod (h, sz)
@@ -545,15 +546,15 @@ fun{key:t0p;itm:vt0p}
   if sz > 0 then let
     viewtypedef keyitm = @(key, itm)
     prval hashtbl_v_cons (pf1_tbl, pf2_tbl) = pf_tbl
-    val isnotnull = item_isnot_null (pbeg->1)
+    val isnotnull = keyitem_isnot_null<keyitm> (!pbeg)
     val () = if isnotnull then let
-      prval () = opt_unsome (pbeg->1)
+      prval () = opt_unsome {keyitm} (!pbeg)
       val () = f (pf | pbeg->0, pbeg->1)
-      prval () = Opt_some (pbeg->1)
+      prval () = Opt_some {keyitm} (!pbeg)
     in
       // nothing
     end else let
-      prval () = Opt_encode (pbeg->1)
+      prval () = Opt_encode {keyitm} (!pbeg)
     in
       // nothing
     end // end of [val]
