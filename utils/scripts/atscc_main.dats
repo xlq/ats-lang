@@ -165,6 +165,10 @@ fn flag_is_lats (flag: string): Bool =
   case+ flag of "-lats" => true | _ => false
 val is_lats: intref = intref_make 0
 
+fn flag_is_lats_mt (flag: string): Bool =
+  case+ flag of "-lats_mt" => true | _ => false
+val is_lats_mt: intref = intref_make 0
+
 (* ****** ****** *)
 
 extern
@@ -253,9 +257,16 @@ fn* aux {i:nat | i <= n} ( // .<n-i,0>.
         end // end of [ATS_GCBDW]
       | _ => param_c
     ) : Strlst // end of [val]
+//
     val param_c = (
       if intref_get is_lats > 0 then param_c else "-lats" :: param_c
     ) : Strlst
+    val param_c = (
+      if intref_get is_ATS_MULTITHREAD > 0 then
+        if intref_get is_lats_mt > 0 then param_c else "-lats_mt" :: param_c
+      else param_c
+    ) : Strlst
+//
     val param_c = strlst_reverse param_c
     val ats_prelude_c = sbp2str (runtime_global + "ats_prelude.c")
     val param_c = ats_prelude_c :: param_c
@@ -326,6 +337,11 @@ and aux_flag {i:nat | i < n} // .<n-i-1,1>.
     end
   | _ when flag_is_lats flag => let
       val () = intref_set (is_lats, 1)
+    in
+      aux (pf | param_ats, flag :: param_c, i+1)
+    end
+  | _ when flag_is_lats_mt flag => let
+      val () = intref_set (is_lats_mt, 1)
     in
       aux (pf | param_ats, flag :: param_c, i+1)
     end

@@ -194,13 +194,13 @@ ats_pthread_create_detached (
   pthread_attr_setdetachstate (&attr, PTHREAD_CREATE_DETACHED) ;
   ret = pthread_create (&pid, &attr, f, env) ;
 #endif // end of [#ifdef]
-  return ;
+  return ret ;
 } /* end of [ats_pthread_create_detached] */
 
 /* ****** ****** */
 
-static inline
-ats_void_type ats_pthread_exit () {
+ats_void_type
+ats_pthread_exit () {
 #ifdef _ATS_GCATS
   pthread_exit (NULL) ; // this is clearly problematic!!!
 #else

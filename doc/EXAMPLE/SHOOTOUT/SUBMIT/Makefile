@@ -22,7 +22,7 @@ all: \
   pidigits pidigits2 pidigits3 \
   regex-dna regex-dna2 \
   reverse-complement reverse-complement2 \
-  spectral-norm spectral-norm2 \
+  spectral-norm spectral-norm2 spectral-norm3 \
   thread-ring \
 
 binary-trees: binary-trees.dats
@@ -179,7 +179,7 @@ spectral-norm2: spectral-norm2.dats
 
 # SIMD and SMP
 spectral-norm3: spectral-norm3.dats
-	$(ATSCC) -D_GNU_SOURCE -D_ATS_MULTITHREAD -o spectral-norm3 -O3 -fomit-frame-pointer -msse3 spectral-norm3.dats  -lm -lpthread -lats_mt -lats
+	$(ATSCC) -D_GNU_SOURCE -D_ATS_MULTITHREAD -o spectral-norm3 -O3 -fomit-frame-pointer -msse3 spectral-norm3.dats -lm -lpthread
 
 ######
 
