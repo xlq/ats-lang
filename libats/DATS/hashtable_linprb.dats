@@ -253,8 +253,8 @@ hashtbl_search_ref (ptbl, k0) = let
   prval () = minus_addback (fpf, pf | ptbl)
 in
   if found then let
-    prval (fpf, pf) = __assert () where {
-      extern prfun __assert (): ((key,itm) @ l -<prf> void, (key,itm) @ l)
+    prval (pf, fpf) = __assert () where {
+      extern prfun __assert (): ((key,itm) @ l, (key,itm) @ l -<prf> void)
     } // end of [prval]
     val pitm = &(pkeyitm->1)
     prval () = fpf (pf)
@@ -276,8 +276,8 @@ hashtbl_search (ptbl, k0, res) = let
   prval () = minus_addback (fpf, pf | ptbl)
 in
   if found then let
-    prval (fpf, pf) = __assert () where {
-      extern prfun __assert (): ((key,itm) @ l -<prf> void, (key,itm) @ l)
+    prval (pf, fpf) = __assert () where {
+      extern prfun __assert (): ((key,itm) @ l, (key,itm) @ l -<prf> void)
     } // end of [prval]
     val () = res := pkeyitm->1
     prval () = opt_some {itm} (res)
@@ -319,8 +319,8 @@ in
       var found: bool // uninitalized
       val [l:addr] pkeyitm =
         hashtbl_ptr_probe_ofs<key,itm> (pf2 | p2_beg, k0, eqfn, sz2, ofs, found)
-      prval (fpf, pf) = __assert () where {
-        extern prfun __assert (): ((key,itm) @ l -<prf> void, (key,itm?) @ l)
+      prval (pf, fpf) = __assert () where {
+        extern prfun __assert (): ((key,itm?) @ l, (key,itm) @ l -<prf> void)
       } // end of [prval]
       val () = pkeyitm->0 := k0
       val () = pkeyitm->1 := i0

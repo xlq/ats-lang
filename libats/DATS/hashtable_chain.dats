@@ -83,8 +83,9 @@ end // end of [chain_free]
 (* ****** ****** *)
 
 fun{key:t0p;itm:vt0p}
-chain_search {n:nat} .<n>.
-  (kis: !chain (key,itm,n), k0: key, eq: eq key):<> Ptr =
+chain_search {n:nat} .<n>. (
+  kis: !chain (key,itm,n), k0: key, eq: eq key
+) :<> Ptr =
   case+ kis of
   | CHAINcons (k, !i, !kis1) => let
       val keq = equal_key_key (k0, k, eq)
@@ -316,7 +317,9 @@ hashtbl_search_ref (ptbl, k0) = let
   val (pf, fpf | p) = HASHTBLptr_tblget {key,itm} (ptbl)
   val h = hash_key (k0, p->fhash)
   val h = size1_of_ulint (h); val ofs = sz1mod (h, p->sz)
-  val [l:addr] p_itm = hashtbl_ptr_search_ofs (p->pftbl | p->pbeg, k0, p->feq, ofs)
+  val [l:addr] p_itm =
+    hashtbl_ptr_search_ofs (p->pftbl | p->pbeg, k0, p->feq, ofs)
+  // end of [val]
   prval () = minus_addback (fpf, pf | ptbl)
 in
   p_itm
@@ -446,7 +449,9 @@ hashtbl_resize {l:anz} {sz_new:pos} (
 ) :<> void = () where {
   val (pf, fpf | p) = HASHTBLptr_tblget {key,itm} (ptbl)
   val (pfgc2, pftbl2 | pbeg2) = hashtbl_ptr_make (sz_new)
-  val () = hashtbl_ptr_relocate (p->pftbl, pftbl2 | p->sz, sz_new, p->pbeg, pbeg2, p->fhash)
+  val () = hashtbl_ptr_relocate
+    (p->pftbl, pftbl2 | p->sz, sz_new, p->pbeg, pbeg2, p->fhash)
+  // end of [val]
   val () = hashtbl_ptr_free (p->pfgc, p->pftbl | p->pbeg)
   prval () = p->pfgc := pfgc2
   prval () = p->pftbl := pftbl2
@@ -464,7 +469,8 @@ hashtbl_resize {l:anz} {sz_new:pos} (
 #assert (HASHTABLE_HALF_FACTOR < 1.0)
 
 fn{key:t0p;itm:vt0p}
-  hashtbl_resize_double {l:anz} (ptbl: !HASHTBLptr (key, itm, l)):<> void = let
+hashtbl_resize_double
+  {l:anz} (ptbl: !HASHTBLptr (key, itm, l)):<> void = let
   val sz = hashtbl_size (ptbl)
   val sz = size1_of_size (sz) // casting: no op
 in
@@ -472,12 +478,15 @@ in
 end // end of [hashtbl_resize_double]
 
 fn{key:t0p;itm:vt0p}
-  hashtbl_resize_half {l:anz} (ptbl: !HASHTBLptr (key, itm, l)): void = let
+hashtbl_resize_half
+  {l:anz} (ptbl: !HASHTBLptr (key, itm, l)): void = let
   val sz = hashtbl_size (ptbl)
   val sz = size1_of_size (sz) // casting: no op
   val sz2 = sz / 2
 in
-  if sz2 >= HASHTBL_MINSZ then hashtbl_resize<key,itm> (ptbl, sz2) else ()
+  if sz2 >= HASHTBL_MINSZ
+    then hashtbl_resize<key,itm> (ptbl, sz2) else ()
+  // end of [if]
 end // end of [hashtbl_resize_half]
 
 (* ****** ****** *)
@@ -493,9 +502,9 @@ hashtbl_insert (ptbl, k, i) = () where {
   val () = hashtbl_ptr_insert_ofs<key,itm> (p->pftbl | p->pbeg, k, i, ofs)
   val () = p->tot := tot1
   prval () = minus_addback (fpf, pf | ptbl)
-  val () = begin
-    if ratio >= HASHTABLE_DOUBLE_FACTOR then hashtbl_resize_double<key,itm> (ptbl)
-  end // end of [val]
+  val () = if
+    ratio >= HASHTABLE_DOUBLE_FACTOR then hashtbl_resize_double<key,itm> (ptbl)
+  // end of [if]
 } // end of [hashtbl_insert]
 
 (* ****** ****** *)
@@ -506,7 +515,9 @@ hashtbl_remove {l} (ptbl, k0, res) = ans where {
   val (pf, fpf | p) = HASHTBLptr_tblget {key,itm} (ptbl)
   val h = hash_key (k0, p->fhash)
   val h = size1_of_ulint (h); val ofs = sz1mod (h, p->sz)
-  val ans = hashtbl_ptr_remove_ofs<key,itm> (p->pftbl | p->pbeg, k0, p->feq, ofs, res)
+  val ans = hashtbl_ptr_remove_ofs<key,itm>
+    (p->pftbl | p->pbeg, k0, p->feq, ofs, res)
+  // end of [val]
   val () = (
     if :(pf: HASHTBL (key, itm) @ l) => ans then let
       val tot1 = p->tot - 1
@@ -517,17 +528,19 @@ hashtbl_remove {l} (ptbl, k0, res) = ans where {
     end else () // end of [if]
   ) : void // end of [val]
   prval () = minus_addback (fpf, pf | ptbl)
-  val () = if ratio <= HASHTABLE_HALF_FACTOR then hashtbl_resize_half<key,itm> (ptbl)
+  val () = if
+    ratio <= HASHTABLE_HALF_FACTOR then hashtbl_resize_half<key,itm> (ptbl)
+  // end of [if]
 } // end of [hashtbl_remove]
 
 (* ****** ****** *)
 
 fun{key:t0p;itm:vt0p}
-  hashtbl_ptr_foreach_clo {v:view}
-    {sz,tot:nat} {l_beg,l_end:addr} {f:eff} .<sz>. (
-    pf: !v, pf_tbl: !hashtbl_v (key, itm, sz, tot, l_beg, l_end)
-  | sz: size_t sz, p_beg: ptr l_beg, f: &(!v | key, &itm) -<clo,f> void
-  ) :<f> void = begin
+hashtbl_ptr_foreach_clo {v:view}
+  {sz,tot:nat} {l_beg,l_end:addr} {f:eff} .<sz>. (
+  pf: !v, pf_tbl: !hashtbl_v (key, itm, sz, tot, l_beg, l_end)
+| sz: size_t sz, p_beg: ptr l_beg, f: &(!v | key, &itm) -<clo,f> void
+) :<f> void = begin
   if sz > 0 then let
     prval hashtbl_v_cons (pf1_tbl, pf2_tbl) = pf_tbl
     val () = chain_foreach_clo (pf | !p_beg, f)
