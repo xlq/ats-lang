@@ -1,51 +1,41 @@
 ######
 
+.PHONY: all
 all:: \
   compall \
-  Chapter01 Chapter02 Chapter03 Chapter04 Chapter05 Chapter06 Chapter07 Chapter08 \
-  cleanall
+  Chapter01 Chapter02 Chapter03 Chapter04 Chapter05 Chapter06 Chapter07 Chapter08 
+
+ATSCC=$(or $(ATSHOME), "/usr")/bin/atscc
+ATSOPT=$(or $(ATSHOME), "/usr")/bin/atsopt
+
+
+
 
 ######
 
 Chapter01::
 	cd Chapter01; make html
-	scp Chapter01/*.c Chapter01/*.dats Chapter01/*_dats.html \
-          ats-hwxi,ats-lang@web.sourceforge.net:htdocs/EXAMPLE/KernighanRitchie/Chapter01
 
 Chapter02::
 	cd Chapter02; make html
-	scp Chapter02/*.dats Chapter02/*_dats.html \
-          ats-hwxi,ats-lang@web.sourceforge.net:htdocs/EXAMPLE/KernighanRitchie/Chapter02
 
 Chapter03::
 	cd Chapter03; make html
-	scp Chapter03/*.c Chapter03/*.dats Chapter03/*_dats.html \
-          ats-hwxi,ats-lang@web.sourceforge.net:htdocs/EXAMPLE/KernighanRitchie/Chapter03
 
 Chapter04::
 	cd Chapter04; make html
-	scp Chapter04/*.dats Chapter04/*_dats.html \
-          ats-hwxi,ats-lang@web.sourceforge.net:htdocs/EXAMPLE/KernighanRitchie/Chapter04
 
 Chapter05::
 	cd Chapter05; make html
-	scp Chapter05/*.dats Chapter05/*_dats.html \
-          ats-hwxi,ats-lang@web.sourceforge.net:htdocs/EXAMPLE/KernighanRitchie/Chapter05
 
 Chapter06::
 	cd Chapter06; make html
-	scp Chapter06/*.dats Chapter06/*_dats.html \
-          ats-hwxi,ats-lang@web.sourceforge.net:htdocs/EXAMPLE/KernighanRitchie/Chapter06
 
 Chapter07::
 	cd Chapter07; make html
-	scp Chapter07/*.dats Chapter07/*_dats.html \
-          ats-hwxi,ats-lang@web.sourceforge.net:htdocs/EXAMPLE/KernighanRitchie/Chapter07
 
 Chapter08::
 	cd Chapter08; make html
-	scp Chapter08/*.dats Chapter08/*_dats.html \
-          ats-hwxi,ats-lang@web.sourceforge.net:htdocs/EXAMPLE/KernighanRitchie/Chapter08
 
 ######
 

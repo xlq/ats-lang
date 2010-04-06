@@ -4,24 +4,31 @@
 #
 #
 
+.PHONY: all
+all:  compall
+
+ATSCC=$(or $(ATSHOME), "/usr")/bin/atscc
+ATSOPT=$(or $(ATSHOME), "/usr")/bin/atsopt
+
+
 checkall:: compall cleanall
 
 compall:: HelloWorld menu sudoku
 
 # A warm-up example
 HelloWorld: HelloWorld.dats
-	atscc glib.sats gtk.sats HelloWorld.dats -o HelloWorld \
+	$(ATSCC) glib.sats gtk.sats HelloWorld.dats -o HelloWorld \
           `pkg-config --cflags --libs gtk+-2.0`
 
 # A simple menu
 menu: menu.dats
-	atscc glib.sats gtk.sats menu.dats -o menu \
+	$(ATSCC) glib.sats gtk.sats menu.dats -o menu \
           `pkg-config --cflags --libs gtk+-2.0`
 
 
 # A primitive implementation of the famous sudoku game
 sudoku: sudoku.dats
-	atscc glib.sats gtk.sats sudoku.dats -o sudoku \
+	$(ATSCC) glib.sats gtk.sats sudoku.dats -o sudoku \
           `pkg-config --cflags --libs gtk+-2.0`
 
 ######

@@ -1,5 +1,5 @@
 GCC=gcc
-ATSCC="$(ATSHOME)"/bin/atscc
+ATSCC=$(or $(ATSHOME), "/usr")/bin/atscc
 
 all: binary-trees binary-trees-ref \
      fannkuch fannkuch_smp fasta k-nucleotide \

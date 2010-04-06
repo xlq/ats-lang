@@ -6,12 +6,15 @@
 
 ######
 
+.PHONY: all
+all:  compall
+
 checkall: compall cleanall
 
 ######
 
-ATSCC=$(ATSHOME)/bin/atscc
-ATSOPT=$(ATSHOME)/bin/atsopt
+ATSCC=$(or $(ATSHOME), "/usr")/bin/atscc
+ATSOPT=$(or $(ATSHOME), "/usr")/bin/atsopt
 
 ######
 

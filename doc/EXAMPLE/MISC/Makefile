@@ -4,7 +4,12 @@
 #
 ######
 
-ATSCC="$(ATSHOME)/bin/atscc"
+.PHONY: all
+all:  compall
+
+ATSCC=$(or $(ATSHOME), "/usr")/bin/atscc
+ATSOPT=$(or $(ATSHOME), "/usr")/bin/atsopt
+
 
 ######
 

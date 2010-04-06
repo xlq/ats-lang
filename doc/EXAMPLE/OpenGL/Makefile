@@ -4,7 +4,10 @@
 #
 #
 
-ATSCC="$(ATSHOME)"/bin/atscc
+.PHONY: all
+all:  compall
+
+ATSCC=$(or $(ATSHOME), "/usr")/bin/atscc
 ATSCTRB="$(ATSHOME)"/contrib/GL/atsctrb_GL.o
 
 ######

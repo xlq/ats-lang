@@ -4,6 +4,10 @@
 #
 ######
 
+.PHONY: all
+all:  compall
+
+
 checkall: compall cleanall
 
 ######

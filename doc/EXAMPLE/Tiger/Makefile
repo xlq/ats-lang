@@ -7,6 +7,9 @@
 ##
 ##
 
+.PHONY: all
+all:  tigcomp
+
 ######
 
 CCFLAGS=
@@ -307,7 +310,7 @@ linmap_randbst_dats.o: LIB/linmap_randbst.dats
 
 ######
 
-ATSOPT=$(ATSHOME)/bin/atsopt
+ATSOPT=$(or $(ATSHOME), "/usr")/bin/atsopt
 
 xref::
 	$(ATSOPT) --posmark_xref=XREF \

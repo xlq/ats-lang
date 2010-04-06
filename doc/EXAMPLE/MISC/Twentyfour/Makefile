@@ -7,7 +7,10 @@
 GCFLAG=-D_ATS_GCATS
 #GCFLAG=-D_ATS_GCBDW
 
-ATSCC="$(ATSHOME)"/bin/atscc
+ATSCC=$(or $(ATSHOME), "/usr")/bin/atscc
+
+.PHONY: all
+all:  compall
 
 ######
 

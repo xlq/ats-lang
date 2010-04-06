@@ -4,7 +4,7 @@
 #
 #
 
-ATSCC="$(ATSHOME)"/bin/atscc
+ATSCC=$(or $(ATSHOME), "/usr")/bin/atscc
 ATSOPT="$(ATSHOME)"/bin/atsopt
 CC=$(HOME)/gcc-4.3.2/bin/gcc
 

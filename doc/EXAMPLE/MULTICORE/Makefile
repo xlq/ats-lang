@@ -4,7 +4,7 @@
 
 ######
 
-ATSCC=$(ATSHOME)/bin/atscc
+ATSCC=$(or $(ATSHOME), "/usr")/bin/atscc
 
 ######
 
