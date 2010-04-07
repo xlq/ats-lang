@@ -114,7 +114,7 @@ mandelbrot_simd_smp: mandelbrot_simd_smp.dats
 	$(ATSCC) -D_ATS_MULTITHREAD -O3 -fomit-frame-pointer -D_ISOC9X_SOURCE -mfpmath=sse -msse2 -o mandelbrot_simd_smp mandelbrot_simd_smp.dats -lpthread -lats_mt
 
 mandelbrot2: mandelbrot2.dats
-	$(ATSCC) -D_GNU_SOURCE -D_ATS_MULTITHREAD -msse2 -O3 mandelbrot2.dats -o mandelbrot2 -lpthread -lats_mt
+	$(ATSCC) -D_GNU_SOURCE -D_ATS_MULTITHREAD -lpthread -msse2 -O3 mandelbrot2.dats -o mandelbrot2
 
 ######
 

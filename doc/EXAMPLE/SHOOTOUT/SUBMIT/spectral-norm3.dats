@@ -169,8 +169,8 @@ fn eval_A_times_u {lws:addr} {N:nat} {l:addr} (
   val nworker =
     workshop_nworker_get (ws)
   val () = assert_errmsg (nworker > 0, #LOCATION)
-  val INC = (N+nworker-1)/nworker
-  val INC = (int1_of_int)INC
+  val INC = (N+nworker-1)/nworker/64
+  val INC = max (1, (int1_of_int)INC)
   val () = assert_errmsg (INC > 0, #LOCATION)
   fun split {lws:addr} {i:nat | i <= N} {l,l_tmp:addr}
     (ws: !WSptr lws, i: int i, p_u: ptr l, p_tmp: ptr l_tmp):<cloref1> void =
