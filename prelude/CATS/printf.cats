@@ -67,20 +67,13 @@ atspre_fprintf_exn(ats_ptr_type file, ats_ptr_type fmt, ...) {
   return ;
 }
 
-static
-ats_int_type
-atspre_printf_err (ats_ptr_type fmt, ...) {
-  int n ;
-  va_list ap ;
-  va_start(ap, fmt) ;
-  n = vprintf((char*)fmt, ap) ;
-  va_end(ap) ;
-  return n ; 
-}
+/* ****** ****** */
 
 static
 ats_void_type
-atspre_printf_exn(ats_ptr_type fmt, ...) {
+atspre_printf_exn (
+  ats_ptr_type fmt, ...
+) {
   int n ;
   va_list ap ;
   atspre_stdout_view_get() ;
@@ -94,7 +87,9 @@ atspre_printf_exn(ats_ptr_type fmt, ...) {
 
 static
 ats_void_type
-atspre_prerrf_exn(ats_ptr_type fmt, ...) {
+atspre_prerrf_exn (
+  ats_ptr_type fmt, ...
+) {
   int n ;
   va_list ap ;
   atspre_stderr_view_get() ;

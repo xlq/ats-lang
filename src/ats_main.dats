@@ -314,20 +314,16 @@ end // end of [pervasive_load]
 fn prelude_load (ATSHOME: string): void = let
   val () = fixity_load (ATSHOME)
   val () = pervasive_load (ATSHOME, "prelude/basics_sta.sats")
-(*
-  val () = begin
-    print "pervasive_load: loading [prelude/basics_sta.sats] is done.";
-    print_newline ()
-  end // end of [val]
-*)
   val () = pervasive_load (ATSHOME, "prelude/sortdef.sats")
   val () = pervasive_load (ATSHOME, "prelude/basics_dyn.sats")
   val () = pervasive_load (ATSHOME, "prelude/macrodef.sats")
-  //  [trans2_env_pervasive_add_topenv] needs to be called for the rest
+(*
+** [trans2_env_pervasive_add_topenv] needs to be called for the rest
+*)
   val () = $TransEnv2.trans2_env_pervasive_add_topenv ()
-
-  // these are all the .sats files in $ATSHOME/prelude
-
+(*
+** these are all the .sats files in $ATSHOME/prelude
+*)
   val () = pervasive_load (ATSHOME, "prelude/SATS/arith.sats")
   val () = pervasive_load (ATSHOME, "prelude/SATS/vsubrw.sats")
 
@@ -350,8 +346,9 @@ fn prelude_load (ATSHOME: string): void = let
   val () = pervasive_load (ATSHOME, "prelude/SATS/reference.sats")
   val () = pervasive_load (ATSHOME, "prelude/SATS/sizetype.sats")
   val () = pervasive_load (ATSHOME, "prelude/SATS/string.sats")
-
-  // these are here because they are so commonly needed
+(*
+** these are here because they are so commonly needed
+*)
   val () = pervasive_load (ATSHOME, "prelude/SATS/array.sats")
   val () = pervasive_load (ATSHOME, "prelude/SATS/array0.sats")
   val () = pervasive_load (ATSHOME, "prelude/SATS/list.sats")
@@ -362,11 +359,10 @@ fn prelude_load (ATSHOME: string): void = let
   val () = pervasive_load (ATSHOME, "prelude/SATS/option.sats")
   val () = pervasive_load (ATSHOME, "prelude/SATS/option0.sats")
   val () = pervasive_load (ATSHOME, "prelude/SATS/slseg.sats")
-
 (*
-  val () = pervasive_load (ATSHOME, "prelude/SATS/slseg.sats")
+  // HX-2010-04-09: is this a good idea?
+  val () = pervasive_load (ATSHOME, "prelude/SATS/prelude_finish.sats") // miscellaneous
 *)
-
   val () = $TransEnv2.trans2_env_pervasive_add_topenv ()
   val () = $TransEnv3.trans3_env_initialize ()
 in

@@ -75,9 +75,6 @@ overload fprintf with fprintf1_exn
 
 (* ****** ****** *)
 
-fun printf_err {ts:types} (fmt: printf_c ts, arg: ts):<!ref> int
-  = "atspre_printf_err"
-
 fun printf {ts:types} (fmt: printf_c ts, arg: ts):<!exnref> void
   = "atspre_printf_exn"
 
@@ -91,12 +88,11 @@ symintr assert_prerrf
 fun assert_prerrf_bool {ts:types}
   (assertion: bool, fmt: printf_c ts, arg: ts):<!exn> void
   = "atspre_assert_prerrf"
+overload assert_prerrf with assert_prerrf_bool
 
 fun assert_prerrf_bool1 {b:bool} {ts:types}
   (assertion: bool b, fmt: printf_c ts, arg: ts):<!exn> [b] void
   = "atspre_assert_prerrf"
-
-overload assert_prerrf with assert_prerrf_bool
 overload assert_prerrf with assert_prerrf_bool1
 
 (* ****** ****** *)

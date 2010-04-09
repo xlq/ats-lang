@@ -250,7 +250,7 @@ extern fun hashtbl_ptr_free
 (* ****** ****** *)
 
 extern prfun // proof is omitted
-  hashtbl_v_split {key:t0p;itm:vt0p}
+hashtbl_v_split {key:t0p;itm:vt0p}
   {sz,sz1,tot:nat | sz1 <= sz} {l_beg,l_end:addr} {ofs:int} (
     pf_mul: MUL (sz1, chainsz, ofs)
   , pf_tbl: hashtbl_v (key, itm, sz, tot, l_beg, l_end)
@@ -260,7 +260,7 @@ extern prfun // proof is omitted
   ) // end of [hashtbl_v_split]
 
 extern prfun // proof is omitted
-  hashtbl_v_unsplit {key:t0p;itm:vt0p}
+hashtbl_v_unsplit {key:t0p;itm:vt0p}
   {sz1,sz2,tot1,tot2:nat} {l_beg,l_mid,l_end:addr} (
     pf1: hashtbl_v (key, itm, sz1, tot1, l_beg, l_mid)
   , pf2: hashtbl_v (key, itm, sz2, tot2, l_mid, l_end)
@@ -415,7 +415,7 @@ end // end of [hashtbl_ptr_insert_chain]
 (* ****** ****** *)
 
 fun{key:t0p;itm:vt0p}
-  hashtbl_ptr_relocate
+hashtbl_ptr_relocate
   {sz1:nat;sz2:pos;tot1,tot2:nat} .<sz1>.
   {l1_beg,l2_beg,l1_end,l2_end:addr} (
     pf1: !hashtbl_v (key, itm, sz1, tot1, l1_beg, l1_end)
@@ -564,7 +564,7 @@ hashtbl_foreach_clo {v}
 } // end of [hashtbl_foreach_clo]
 
 implement{key,itm}
-  hashtbl_foreach_cloref (tbl, f) = let
+hashtbl_foreach_cloref (tbl, f) = let
   val f = __cast (f) where { extern castfn __cast
     (f: (key, &itm) -<cloref> void):<> (!unit_v | key, &itm) -<cloref> void
   } // end of [val]
