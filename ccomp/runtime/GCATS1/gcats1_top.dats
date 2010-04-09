@@ -78,7 +78,9 @@ ats_void_type gc_sweeplst_lock_array_init () {
   while (i < FREEITMLST_ARRAYSIZE) { 
     pthread_mutex_init (p_lock, NULL); i += 1; p_lock += 1 ;
   }
+/*
   fprintf (stderr, "the_sweeplst_lock_array has been initialized.\n") ;
+*/
   return ;
 }
 #endif

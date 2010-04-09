@@ -390,6 +390,10 @@ implement Neq_addr_addr_bool = s2cstref_make "neq_addr_addr_bool"
 
 (* ****** ****** *)
 
+implement Lte_cls_cls_bool = s2cstref_make "lte_cls_cls_bool"
+
+(* ****** ****** *)
+
 local
 
 typedef d2conref_struct =

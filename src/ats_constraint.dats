@@ -525,8 +525,12 @@ fun s3bexp_make_s2cst_s2explst
   : s3bexpopt_vt
 // end of [fun s3bexp_make_s2cst_s2explst]
 
-// a large but simple function
-implement s3bexp_make_s2cst_s2explst (s2c, s2es, s2cs, fds) = let
+//
+// this is a large but simple function
+//
+implement
+s3bexp_make_s2cst_s2explst
+  (s2c, s2es, s2cs, fds) = let
   fn errmsg (s2c: s2cst_t): s3bexpopt_vt = begin
     prerr_interror ();
     prerr ": s3bexp_make_s2cst_s2explst: s2c = "; prerr s2c; prerr_newline ();
@@ -851,6 +855,25 @@ in
       end // end of [list_cons]
     | _ => errmsg s2c
     end // end of [Neq_addr_addr_bool]
+  // subclass relation
+  | _ when s2cstref_cst_equ (Lte_cls_cls_bool, s2c) => begin
+    case+ s2es of
+    | list_cons (
+        s2e1, list_cons (s2e2, list_nil ())
+      ) => let
+        val sgn = subclass_relation_test (s2e1, s2e2) in
+        case+ 0 of
+        | _ when sgn > 0 => Some_vt s3bexp_true
+        | _ when sgn < 0 => Some_vt s3bexp_false
+        | _ => let
+            val s2v = s2cfdeflst_replace_none (s2rt_bool, s2c, s2es, s2cs, fds)
+          in
+            Some_vt (s3bexp_var s2v)
+          end (* end of [if] *)
+        // end of [case]       
+      end // end of [list_cons]
+    | _ => errmsg s2c
+    end // end of [Lte_cls_cls_bool]
   | _ => let
       val s2v = s2cfdeflst_replace_none (s2rt_bool, s2c, s2es, s2cs, fds)
     in
@@ -1233,7 +1256,9 @@ in
   auxlst (met, met_bound)
 end // end of [s2exp_metlt_reduce]
 
-implement s3bexp_make_s2exp (s2e0, s2cs, fds) = let
+implement
+s3bexp_make_s2exp
+  (s2e0, s2cs, fds) = let
   val s2e0 = s2exp_whnf s2e0
 (*
   val () = begin
@@ -1267,7 +1292,9 @@ in
     end // end of [_]
 end // end of [s3bexp_make_s2exp]
 
-implement s3bexp_make_h3ypo (h3p, s2cs, fds) = begin
+implement
+s3bexp_make_h3ypo
+  (h3p, s2cs, fds) = begin
   case+ h3p.h3ypo_node of
   | H3YPOprop s2p => s3bexp_make_s2exp (s2p, s2cs, fds)
   | H3YPObind (s2v1, s2e2) => aux_bind (h3p.h3ypo_loc, s2v1, s2e2, s2cs, fds)
@@ -1278,7 +1305,9 @@ end // end of [local]
 
 (* ****** ****** *)
 
-implement s3iexp_make_s2exp (s2e0, s2cs, fds) = let
+implement
+s3iexp_make_s2exp
+  (s2e0, s2cs, fds) = let
   val s2e0 = s2exp_whnf s2e0
 (*
   val () = begin
@@ -1442,7 +1471,8 @@ extern fun s3iexp_intvec_update_err {n:pos} {l:addr} (
 
 //
 
-implement s3aexp_intvec_update_err
+implement
+s3aexp_intvec_update_err
   (pf_arr | loc0, cim, vim, ivp, n, coef, s3ae0, errno) = let
 (*
   val () = begin
@@ -1477,7 +1507,8 @@ end // end of [s3aexp_intvec_update_err]
 
 //
 
-implement s3iexp_intvec_update_err
+implement
+s3iexp_intvec_update_err
   (pf_arr | loc0, cim, vim, ivp, n, coef, s3ie0, errno) = let
 (*
   val () = begin
@@ -1565,7 +1596,9 @@ extern fun s3bexp_icstr_make_err {n:pos} (
   , errno: &int
   ) : $FM.icstr n
 
-implement s3bexp_icstr_make_err (loc0, cim, vim, n, s3be0, errno) = let
+implement
+s3bexp_icstr_make_err
+  (loc0, cim, vim, n, s3be0, errno) = let
 (*
   val () = begin
     print "s3bexp_icstr_err: s3be0 = "; print_s3bexp s3be; print_newline ()
@@ -1636,7 +1669,8 @@ extern fun s3bexplst_s2exp_solve_fm (
   , errno: &int
   ) : intBtw (~1, 1)
 
-implement s3bexplst_s2exp_solve_fm
+implement
+s3bexplst_s2exp_solve_fm
   (loc0, s2vs, s3bes, s2p, s2cs, fds, errno) = let
 (*
   val () = begin
@@ -1929,7 +1963,8 @@ end // end of [c3str_solve_main]
 
 (* ****** ****** *)
 
-implement c3str_solve_prop
+implement
+c3str_solve_prop
   (loc0, s2vs, s3bes, s2p, s2cs, fds, errno) = let
 (*
   val () = begin
@@ -1944,7 +1979,8 @@ end // end of [c3str_solve_prop]
 
 (* ****** ****** *)
 
-implement c3str_solve_itmlst
+implement
+c3str_solve_itmlst
   (loc0, s2vs, s3bes, s3is, s2cs, fds, unsolved, errno) = let
 (*
   val () = begin
@@ -2025,7 +2061,8 @@ end // end of [c3str_solve_itmlst]
 
 //
 
-implement c3str_solve_itmlst_disj
+implement
+c3str_solve_itmlst_disj
   (loc0, s2vs, s3bes, s3is0, s3iss_disj, s2cs, fds, unsolved, errno) = begin
   case+ s3iss_disj of
   | list_cons (s3is_disj, s3iss_disj) => let
@@ -2045,7 +2082,8 @@ end // end of [c3str_solve_itmlst_disj]
 
 (* ****** ****** *)
 
-implement c3str_solve (c3t) = let
+implement
+c3str_solve (c3t) = let
 (*
   val () = begin
     print "c3str_solve: c3t = "; print c3t; print_newline ()

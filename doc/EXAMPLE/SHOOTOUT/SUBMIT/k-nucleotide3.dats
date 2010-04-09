@@ -72,7 +72,7 @@ static // inline
 ats_ulint_type hash_symbol_len (
   symbol_t sym, ats_size_type len
 ) {
-  unsigned long int hash_val = 0UL ;
+  unsigned long int hash_val = 31415927UL ;
   while (len >= 4) {
     hash_val += hash_val * 33 ;
     hash_val += sym[0] << 24 ;
@@ -121,7 +121,7 @@ viewtypedef symtbl (l:addr) = $H.HASHTBLptr (symbol_t, int, l)
 
 extern fun succ_symbol (x: symbol_t): symbol_t = "#atspre_psucc"
 
-fun dna_count {n,k:pos | k <= n} {l:anz}
+fn dna_count {n,k:pos | k <= n} {l:anz}
   (tbl: !symtbl l, dna: dna_t, n: size_t n, k: size_t k): void = let
   val () = symlen_set (k)
   val () = $H.hashtbl_clear (tbl)

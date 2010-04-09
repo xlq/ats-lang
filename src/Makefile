@@ -31,10 +31,17 @@
 
 ## ###### ###### ##
 
-## Time: July 2007
 ## Author: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
+## Time: July 2007
 
 ## ###### ###### ##
+
+#
+# HX-2010-04-07:
+# this Makefile can support parallel execution: make -j8 (for 8 cores)
+#
+
+######
 
 DIR=.
 

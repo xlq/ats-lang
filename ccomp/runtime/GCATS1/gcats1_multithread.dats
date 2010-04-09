@@ -100,9 +100,9 @@ void gc_signal_init () {
   if (err < 0) {
     perror ("[sigaction] failed on [SIGUSR1]\n") ;
   }
-
+/*
   fprintf (stderr, "gc_signal_init: [SIGUSR1] has been initialized\n") ;
-
+*/
   action2.sa_handler = &SIGUSR2_handle ;
   action2_sa_mask = &(action2.sa_mask) ;
   sigemptyset (action2_sa_mask) ;
@@ -111,9 +111,9 @@ void gc_signal_init () {
   if (err < 0) {
     perror ("[sigaction] failed on [SIGUSR2]\n") ;
   }
-
+/*
   fprintf (stderr, "gc_signal_init: [SIGUSR2] has been initialized\n") ;
-
+*/
   return ;
 } /* end of [gc_signal_init] */
 
@@ -194,9 +194,9 @@ ats_void_type gc_threadinfo_init () {
   /* thread-local: */ the_threadinfolst_self = current ;
 
   current->pid = pthread_self() ;
-
+/*
   fprintf (stdout, "gc_threadinfo_init: current->pid = %i\n", current->pid) ;
-
+*/
   gc_stack_beg_set (gc_stack_dir_get ()) ;
   current->stack_beg = gc_stack_beg_get () ;
   current->stack_end = (ats_ptr_type)0 ;
@@ -211,9 +211,9 @@ ats_void_type gc_threadinfo_init () {
 
   // [the_freeitmlst_array] is thread-local
   current->freeitmlst_array = the_freeitmlst_array ;
-
+/*
   fprintf (stdout, "gc_threadinfo_init: return\n") ;
-
+*/
   return ;
 } /* gc_threadinfo_init */
 

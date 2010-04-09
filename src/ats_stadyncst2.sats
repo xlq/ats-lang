@@ -233,6 +233,10 @@ val Neq_addr_addr_bool : s2cstref_t
 
 (* ****** ****** *)
 
+val Lte_cls_cls_bool : s2cstref_t
+
+(* ****** ****** *)
+
 abstype d2conref_t // boxed type
 
 fun d2conref_make (name: string): d2conref_t

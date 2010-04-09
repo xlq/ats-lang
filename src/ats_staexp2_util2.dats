@@ -1525,4 +1525,8 @@ end (* end of [s2exp_slablst_lindel_cstr] *)
 
 (* ****** ****** *)
 
+implement subclass_relation_test (s2e1, s2e2) = 1 // TO BE FIXED!!!
+
+(* ****** ****** *)
+
 (* end of [ats_staexp2_util2.dats] *)

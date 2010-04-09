@@ -1443,6 +1443,22 @@ implement d3eclst_tr (d3cs0) = res where {
         in
           aux1 (d3cs, hid, res)
         end // end of [D3Csaspdec]
+      | D3Cdcstdec (knd, d2cs) => let
+          val hid = hidec_dcstdec (d3c.d3ec_loc, knd, d2cs)
+        in
+          aux1 (d3cs, hid, res)
+        end // end of [D3Cdcstdec]
+      | D3Cdatdec (knd, s2cs) => let
+          val hid = hidec_datdec (d3c.d3ec_loc, knd, s2cs)
+        in
+          aux1 (d3cs, hid, res)
+        end // end of [D3Cdatdec]
+      | D3Cexndec d3cs1 => let
+          val hid = hidec_exndec (d3c.d3ec_loc, d3cs1)
+        in
+          aux1 (d3cs, hid, res)
+        end // end of [D3Cexndec]
+      | D3Cclassdec _ => aux0 (d3cs, res)
       | D3Cextype (name, s2e_def) => let
           val loc = d3c.d3ec_loc
           val hit_def = s2exp_tr (loc, 1(*deep*), s2e_def)
@@ -1461,21 +1477,6 @@ implement d3eclst_tr (d3cs0) = res where {
         in
           aux1 (d3cs, hid, res)
         end // end of [D3Cextcode]
-      | D3Cdatdec (knd, s2cs) => let
-          val hid = hidec_datdec (d3c.d3ec_loc, knd, s2cs)
-        in
-          aux1 (d3cs, hid, res)
-        end // end of [D3Cdatdec]
-      | D3Cexndec d3cs1 => let
-          val hid = hidec_exndec (d3c.d3ec_loc, d3cs1)
-        in
-          aux1 (d3cs, hid, res)
-        end // end of [D3Cexndec]
-      | D3Cdcstdec (knd, d2cs) => let
-          val hid = hidec_dcstdec (d3c.d3ec_loc, knd, d2cs)
-        in
-          aux1 (d3cs, hid, res)
-        end // end of [D3Cdcstdec]
       | D3Cimpdec impdec => let
           val d2c = impdec.i3mpdec_cst
           val hid = (case+ 0 of
@@ -1555,6 +1556,7 @@ implement d3eclst_tr (d3cs0) = res where {
         in
           aux1 (d3cs, hid, res)
         end // end of [D3Cdynload]
+(*
       | _ => let
           val () = (res := list_nil ())
         in
@@ -1562,6 +1564,7 @@ implement d3eclst_tr (d3cs0) = res where {
           prerr ": d3eclst_tr: aux0: not available yet."; prerr_newline ();
           $Err.abort {void} ()
         end // end of [_]
+*)
       end (* end of [list_cons] *)
     | list_nil () => (res := list_nil ())
   end // end of [aux0]

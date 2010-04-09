@@ -1249,9 +1249,10 @@ guad0ec_t guad0ec ;
 %token <t0kn> LOCAL
 %token <t0kn> MACDEF MACRODEF
 %token <t0kn> METHOD METHODSTAR
-%token <t0kn> MODULE
+%token <t0kn> MODCLS
 %token <t0kn> NONFIX
 %token <t0kn> OBJECT
+%token <t0kn> OBJCLS
 %token <t0kn> OF
 %token <t0kn> OP
 %token <t0kn> OVERLOAD
@@ -1748,8 +1749,8 @@ stadefkind
 ;
 
 clskind
-  : MODULE CLASS                        { $$ = clskind_mod ($1) ; }
-  | OBJECT CLASS                        { $$ = clskind_obj ($1) ; }
+  : MODCLS                              { $$ = clskind_mod ($1) ; }
+  | OBJCLS                              { $$ = clskind_obj ($1) ; }
 ;
 
 objkind

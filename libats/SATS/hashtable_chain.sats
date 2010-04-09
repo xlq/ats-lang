@@ -154,6 +154,11 @@ fun hashtbl_make_hint {key:t@ype;itm:viewt@ype}
   = "atslib_hashtbl_make_hint__chain"
 // end of [hashtbl_make_hint]
 
+fun hashtbl_make_null
+  {key:t@ype;itm:viewt@ype} (): HASHTBLptr (key, itm, null)
+  = "atslib_hashtbl_make_null__chain"
+// end of [hashtbl_make_null]
+
 (* ****** ****** *)
 
 fun hashtbl_free

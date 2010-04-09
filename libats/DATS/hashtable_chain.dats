@@ -635,6 +635,16 @@ atslib_hashtbl_make_hint__chain (
   return ptbl ;
 } // end of [atslib_hashtbl_make_hint__chain]
 
+ats_ptr_type
+atslib_hashtbl_make_null__chain () { return (void*)0; }
+// end of [atslib_hashtbl_make_null__chain]
+
+%} // end of [%{$]
+
+(* ****** ****** *)
+
+%{$
+
 ats_int_type
 atslib_hashtbl_free__chain (ats_ptr_type ptbl) {
   ATS_FREE(((HASHTBL*)ptbl)->atslab_pbeg) ; ATS_FREE(ptbl) ; return ;

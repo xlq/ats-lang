@@ -1338,4 +1338,17 @@ fun s2exp_slablst_lindel_cstr {n:nat}
 
 (* ****** ****** *)
 
+//
+// HX-2010-04-07:
+// this functions yields a definite answer
+// if both [s2e1] and [s2e2] are constants
+//
+// positive:  1
+// negative: ~1
+// undecided: 0
+//
+fun subclass_relation_test (s2e1: s2exp, s2e2: s2exp): Sgn
+
+(* ****** ****** *)
+
 (* end of [ats_staexp2.sats] *)

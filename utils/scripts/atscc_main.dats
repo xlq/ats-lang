@@ -259,12 +259,13 @@ fn* aux {i:nat | i <= n} ( // .<n-i,0>.
     ) : Strlst // end of [val]
 //
     val param_c = (
-      if intref_get is_lats > 0 then param_c else "-lats" :: param_c
-    ) : Strlst
-    val param_c = (
       if intref_get is_ATS_MULTITHREAD > 0 then
         if intref_get is_lats_mt > 0 then param_c else "-lats_mt" :: param_c
       else param_c
+    ) : Strlst
+//
+    val param_c = (
+      if intref_get is_lats > 0 then param_c else "-lats" :: param_c
     ) : Strlst
 //
     val param_c = strlst_reverse param_c

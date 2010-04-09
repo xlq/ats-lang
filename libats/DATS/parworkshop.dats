@@ -335,6 +335,12 @@ workshop_unref {a} {l} (ws) = () where {
 
 (* ****** ****** *)
 
+//
+// HX:
+// return status >  0 : continue
+// return status =  0 : quit
+// return status = ~1 : pause
+//
 implement{a}
 workshop_add_worker
   {l} (ws) = err where {

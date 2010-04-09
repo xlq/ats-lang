@@ -10,17 +10,22 @@ CC=$(HOME)/gcc-4.3.2/bin/gcc
 
 all: \
   binary-trees binary-trees2 \
-  fannkuch fannkuch2 \
+  fannkuch fannkuch2 fannkuch3 \
   fasta fasta2 fasta4 \
-  k-nucleotide k-nucleotide2 \
-  k-nucleotide3 k-nucleotide4 \
+  k-nucleotide \
+  k-nucleotide2 \
+  k-nucleotide3 \
+  k-nucleotide3_smp \
+  k-nucleotide4 \
   mandelbrot \
   mandelbrot_simd \
   mandelbrot_simd_smp \
   mandelbrot2 \
   n-body n-body2 \
   pidigits pidigits2 pidigits3 \
-  regex-dna regex-dna2 \
+  regex-dna \
+  regex-dna_smp \
+  regex-dna2 \
   reverse-complement reverse-complement2 \
   spectral-norm spectral-norm2 spectral-norm3 \
   thread-ring \
@@ -33,28 +38,28 @@ binary-trees: binary-trees.dats
 #	$(ATSCC) -O3 binary-trees.dats -o binary-trees -D_ATS_GCBDW
 
 binary-trees_smp: binary-trees_smp_dats.c
-#	$(ATSCC) -D_ATS_MULTITHREAD -D_ATS_GCBDW -O3 -g binary-trees_smp_dats.c -o binary-trees_smp -lpthread -lats_mt
-	$(ATSCC) -D_ATS_MULTITHREAD -D_ATS_GCATS -O3 -g binary-trees_smp_dats.c -o binary-trees_smp -lpthread -lats_mt
-#	$(ATSCC) -D_ATS_MULTITHREAD -D_ATS_gc -O3 -g binary-trees_smp_dats.c -o binary-trees_smp -lpthread -lats_mt
+#	$(ATSCC) -D_ATS_MULTITHREAD -D_ATS_GCBDW -O3 -g binary-trees_smp_dats.c -o binary-trees_smp -lpthread
+	$(ATSCC) -D_ATS_MULTITHREAD -D_ATS_GCATS -O3 -g binary-trees_smp_dats.c -o binary-trees_smp -lpthread
+#	$(ATSCC) -D_ATS_MULTITHREAD -D_ATS_gc -O3 -g binary-trees_smp_dats.c -o binary-trees_smp -lpthread
 
 binary-trees_smp_dats.c: binary-trees_smp.dats
-	$(ATSOPT) -o binary-trees_smp_dats.c -d binary-trees_smp.dats -lats_mt
+	$(ATSOPT) -o binary-trees_smp_dats.c -d binary-trees_smp.dats
 
 binary-trees2: binary-trees2.dats
-	$(ATSCC) -O3 binary-trees2.dats -o binary-trees2 -D_ATS_GCATS -lats_mt
+	$(ATSCC) -O3 binary-trees2.dats -o binary-trees2 -D_ATS_GCATS
 
 binary-trees2_smp: binary-trees2_smp.dats
-	$(ATSCC) -D_ATS_MULTITHREAD -O3 binary-trees2_smp.dats -o binary-trees2_smp -D_ATS_GCATS -lpthread -lats_mt
+	$(ATSCC) -D_ATS_MULTITHREAD -O3 binary-trees2_smp.dats -o binary-trees2_smp -D_ATS_GCATS -lpthread
 
 binary-trees3: binary-trees3.dats
-	$(ATSCC) -D_ATS_MULTITHREAD -O3 binary-trees3.dats -o binary-trees3 -D_ATS_GCATS -lpthread -lats_mt
+	$(ATSCC) -D_GNU_SOURCE -D_ATS_MULTITHREAD -O3 binary-trees3.dats -o binary-trees3 -D_ATS_GCATS -lpthread
 
 ######
 
 fannkuch: fannkuch.dats
 	$(ATSCC) -fomit-frame-pointer -O3 fannkuch.dats -o fannkuch
 fannkuch_smp: fannkuch_smp.dats
-	$(ATSCC) -D_ATS_MULTITHREAD -O3 -fomit-frame-pointer fannkuch_smp.dats -o fannkuch_smp -lpthread -lats_mt
+	$(ATSCC) -D_ATS_MULTITHREAD -O3 -fomit-frame-pointer fannkuch_smp.dats -o fannkuch_smp -lpthread
 
 fannkuch1: fannkuch1.dats
 	$(ATSCC) -fomit-frame-pointer -O3 fannkuch1.dats -o fannkuch1
@@ -64,6 +69,7 @@ fannkuch2: fannkuch2.dats
 fannkuch3: fannkuch3.dats
 	$(ATSCC) -D_ATS_MULTITHREAD -O3 -fomit-frame-pointer fannkuch3.dats -o fannkuch3 -lpthread -lats_mt
 
+######
 
 fasta: fasta.dats
 	$(ATSCC) -msse2 -mfpmath=sse -O3 fasta.dats -o fasta
@@ -97,6 +103,9 @@ k-nucleotide3: k-nucleotide3.dats
 	$(ATSCC) -D_ATS_GCATS -O3 -o k-nucleotide3 k-nucleotide3.dats
 #	$(ATSCC) -O3 -o k-nucleotide3 k-nucleotide3.dats
 
+k-nucleotide3_smp: k-nucleotide3_smp.dats
+	$(ATSCC) -D_GNU_SOURCE -D_ATS_MULTITHREAD -D_ATS_GCATS -O3 -o k-nucleotide3_smp -lpthread k-nucleotide3_smp.dats
+
 k-nucleotide4: k-nucleotide4.dats
 	$(ATSCC) -D_ATS_GCATS -O3 -o k-nucleotide4 k-nucleotide4.dats
 #	$(ATSCC) -O3 k-nucleotide4.dats -o k-nucleotide4
@@ -111,10 +120,10 @@ mandelbrot: mandelbrot.dats
 mandelbrot_simd: mandelbrot_simd.dats
 	$(ATSCC) -O3 -fomit-frame-pointer -D_ISOC9X_SOURCE -mfpmath=sse -msse2 -o mandelbrot_simd mandelbrot_simd.dats
 mandelbrot_simd_smp: mandelbrot_simd_smp.dats
-	$(ATSCC) -D_ATS_MULTITHREAD -O3 -fomit-frame-pointer -D_ISOC9X_SOURCE -mfpmath=sse -msse2 -o mandelbrot_simd_smp mandelbrot_simd_smp.dats -lpthread -lats_mt
+	$(ATSCC) -D_ATS_MULTITHREAD -O3 -fomit-frame-pointer -D_ISOC9X_SOURCE -mfpmath=sse -msse2 -o mandelbrot_simd_smp mandelbrot_simd_smp.dats -lpthread
 
 mandelbrot2: mandelbrot2.dats
-	$(ATSCC) -D_GNU_SOURCE -D_ATS_MULTITHREAD -lpthread -msse2 -O3 mandelbrot2.dats -o mandelbrot2
+	$(ATSCC) -D_GNU_SOURCE -D_ATS_MULTITHREAD -msse2 -O3 mandelbrot2.dats -o mandelbrot2 -lpthread
 
 ######
 
@@ -123,7 +132,7 @@ n-body: n-body.dats
 n-body1: n-body1.dats
 	$(ATSCC) -msse2 -mfpmath=sse -O3 n-body1.dats -o n-body1 -lm
 n-body_smp: n-body_smp.dats
-	$(ATSCC) -D_ATS_MULTITHREAD -msse2 -mfpmath=sse -O3 n-body_smp.dats -o n-body_smp -lm -lpthread -lats_mt
+	$(ATSCC) -D_ATS_MULTITHREAD -msse2 -mfpmath=sse -O3 n-body_smp.dats -o n-body_smp -lm -lpthread
 
 n-body2: n-body2.dats
 	$(ATSCC) -fomit-frame-pointer -msse2 -mfpmath=sse -O3 n-body2.dats -o n-body2 -lm
@@ -148,7 +157,7 @@ regex-dna: regex-dna.dats
 	$(ATSCC) -D_ATS_GCATS -O3 -fomit-frame-pointer regex-dna.dats -o regex-dna -lpcre
 
 regex-dna_smp: regex-dna_smp.dats
-	$(ATSCC) -D_ATS_MULTITHREAD -O3 -fomit-frame-pointer regex-dna_smp.dats -o regex-dna_smp -lpthread -lpcre -lats_mt
+	$(ATSCC) -D_ATS_MULTITHREAD -lpthread -lpcre -O3 -fomit-frame-pointer regex-dna_smp.dats -o regex-dna_smp
 
 regex-dna2: regex-dna2.dats
 	$(ATSCC) -D_ATS_GCATS -O3 -fomit-frame-pointer regex-dna2.dats -o regex-dna2 -lpcre
@@ -166,7 +175,7 @@ reverse-complement2: reverse-complement2.dats
 spectral-norm: spectral-norm.dats
 	$(ATSCC) -O3 -fomit-frame-pointer -msse2 spectral-norm.dats -o spectral-norm -lm
 spectral-norm_smp: spectral-norm_smp.dats
-	$(ATSCC) -D_ATS_MULTITHREAD -O3 -fomit-frame-pointer -msse2 spectral-norm_smp.dats -o spectral-norm_smp -lm -lpthread -lats_mt
+	$(ATSCC) -D_ATS_MULTITHREAD -O3 -fomit-frame-pointer -msse2 spectral-norm_smp.dats -o spectral-norm_smp -lm -lpthread
 
 spectral-norm1: spectral-norm1.dats
 	$(ATSCC) -O3 -fomit-frame-pointer -msse2 spectral-norm1.dats -o spectral-norm1 -lm

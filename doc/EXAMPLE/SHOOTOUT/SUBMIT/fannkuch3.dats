@@ -5,7 +5,7 @@
 ** contributed by Hongwei Xi (hwxi AT cs DOT bu DOT edu)
 **
 ** compilation command:
-**   atscc -D_ATS_MULTITHREAD -fomit-frame-pointer -O3 fannkuch_smp.dats -o fannkuch_smp -lpthread
+**   atscc -D_ATS_MULTITHREAD -O3 -fomit-frame-pointer fannkuch3.dats -o fannkuch3 -lpthread -lats_mt
 *)
 
 (* ****** ****** *)
