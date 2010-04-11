@@ -66,6 +66,7 @@ symintr liftmac evalmac
 
 symintr assert assert_errmsg
 
+symintr bool_of // booleans
 symintr char_of uchar_of // signed/unsigned chars
 symintr int_of uint_of // signed/unsigned integers
 symintr int1_of uint1_of // signed/unsigned indexed integers

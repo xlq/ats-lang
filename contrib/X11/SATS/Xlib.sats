@@ -1639,7 +1639,7 @@ typedef XKeyEvent = $extype_struct "XKeyEvent" of {
 , serial= ulint
 , send_event= XBool
 /*
-, display= Display_ptr0 // Display the event was read freom
+, display= Display_ptr0 // display from which the event was read
 */
 , window= Window
 // individual section

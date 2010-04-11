@@ -67,7 +67,7 @@ stadef ldouble = double_long_t0ype
 
 (* ****** ****** *)
 
-// floating point numbers of double precision
+// floating point numbers of single precision
 
 (* ****** ****** *)
 
