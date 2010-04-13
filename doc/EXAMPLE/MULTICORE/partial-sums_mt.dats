@@ -107,6 +107,7 @@ end // end of [loop_split]
 
 (* ****** ****** *)
 
+#define QSZ 256
 #define NWORKER 1
 
 implement
@@ -114,14 +115,14 @@ main (argc, argv) = let
   val () = assert_errmsg_bool1
     (argc >= 2, "exit: wrong command format!\n")
   val n = int_of argv.[1]
-  val N = max (1024, n / 1024)
-  val ws = workshop_make<work> (1024, fwork)
+  val ws = workshop_make<work> (QSZ, fwork)
   val nworker =
     (if (argc >= 3) then int_of argv.[2] else NWORKER): int
   val nworker = int1_of_int (nworker)
   val () = assert_errmsg (nworker > 0, #LOCATION)
   val _err = workshop_add_nworker (ws, nworker)
   val () = assert_errmsg (_err = 0, #LOCATION)
+  val N = max (1024, n / 1024) // threshold for splitting
   val t = loop_split (N, ws, n, 0)
   // val () = (print "spliting is done"; print_newline ())
   val () = workshop_wait_blocked_all (ws)
