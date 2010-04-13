@@ -206,6 +206,7 @@ datatype valprim_node =
   | VPenv of vartyp_t
   | VPext of string
   | VPfloat of string
+  | VPfloatsp of string
   | VPfun of funlab_t
   | VPint of intinf_t
   | VPintsp of (string, intinf_t)
@@ -300,10 +301,13 @@ fun valprim_cstsp (loc: loc_t, cst: $Syn.cstsp, hit: hityp_t): valprim
 fun valprim_env (vtp: vartyp_t, hit: hityp_t): valprim
 fun valprim_ext (code: string, hit: hityp_t): valprim
 fun valprim_float (f: string): valprim
+fun valprim_floatsp (f: string, hit: hityp_t): valprim
 fun valprim_fun (fl: funlab_t): valprim
 
 fun valprim_int (int: intinf_t): valprim
-fun valprim_intsp (str: string, int: intinf_t): valprim
+fun valprim_intsp
+  (str: string, int: intinf_t, hit: hityp_t): valprim
+// end of [valprim_intsp]
 
 fun valprim_ptrof (vp: valprim): valprim
 fun valprim_ptrof_ptr_offs (vp: valprim, offs: offsetlst): valprim
@@ -746,6 +750,7 @@ fun emit_hityp_ptr {m:file_mode}
 
 fun emit_valprim_tmpvar {m:file_mode}
   (pf: file_mode_lte (m, w) | out: &FILE m, tmp: tmpvar_t): void
+// end of [emit_valprim_tmpvar]
 
 (* ****** ****** *)
 

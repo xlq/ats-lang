@@ -1368,13 +1368,22 @@ in
       valprim_ext (code, hit0)
     end // end of [HIEextval]
   | HIEfloat f(*string*) => valprim_float f
+  | HIEfloatsp f(*string*) => let
+      val hit0 = hityp_normalize (hie0.hiexp_typ)
+    in
+      valprim_floatsp (f, hit0)
+    end // end of [HIEfloatsp]
   | HIEfreeat hie => let
       val () = ccomp_exp_freeat (res, hie)
     in
       valprim_void ()
     end // end of [HIEfreeat]
   | HIEint (_(*str*), int) => valprim_int (int)
-  | HIEintsp (str, int) => valprim_intsp (str, int)
+  | HIEintsp (str, int) => let
+      val hit0 = hityp_normalize (hie0.hiexp_typ)
+    in
+      valprim_intsp (str, int, hit0)
+    end // end of [HIEintsp]
   | HIElam (hips_arg, hie_body) => begin
       ccomp_exp_lam (hie0.hiexp_loc, hie0.hiexp_typ, hips_arg, hie_body)
     end // end if [HIElam]
@@ -1452,7 +1461,7 @@ in
       val () = ccomp_exp_tmpvar (res, hie0, tmp_res)
     in
       valprim_tmp tmp_res
-    end
+    end (* end of [_] *)
 end // end of [ccomp_exp]
 
 (* ****** ****** *)
@@ -1990,7 +1999,12 @@ in
     end // end of [HIEextval]
   | HIEfloat f(*string*) => begin
       instr_add_move_val (res, tmp_res, valprim_float f)
-    end
+    end // end of [HIEfloat]
+  | HIEfloatsp f(*string*) => let
+      val hit0 = hityp_normalize (hie0.hiexp_typ)
+    in
+      instr_add_move_val (res, tmp_res, valprim_floatsp (f, hit0))
+    end // end of [HIEfloatsp]
   | HIEif (hie_cond, hie_then, hie_else) => let
       val vp_cond = ccomp_exp (res, hie_cond)
       val tmp_res_then = tmpvar_make_root (tmp_res)
@@ -2007,10 +2021,12 @@ in
     end // end of [HIEif]
   | HIEint (_(*str*), int) => begin
       instr_add_move_val (res, tmp_res, valprim_int int)
-    end
-  | HIEintsp (str, int) => begin
-      instr_add_move_val (res, tmp_res, valprim_intsp (str, int))
-    end
+    end // end of [HIEint]
+  | HIEintsp (str, int) => let
+      val hit0 = hityp_normalize (hie0.hiexp_typ)
+    in
+      instr_add_move_val (res, tmp_res, valprim_intsp (str, int, hit0))
+    end // end of [HIEintsp]
   | HIElam (hips_arg, hie_body) => let
       val vp_lam = ccomp_exp_lam
         (hie0.hiexp_loc, hie0.hiexp_typ, hips_arg, hie_body)

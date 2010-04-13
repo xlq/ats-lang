@@ -422,7 +422,7 @@ implement valprim_arg_ref (n, hit) = '{
 
 implement valprim_bool (b) = '{
   valprim_node= VPbool b, valprim_typ= hityp_encode (hityp_bool)
-}
+} // end of [valprim_bool]
 
 implement valprim_castfn (d2c, vp, hit) = '{
   valprim_node= VPcastfn (d2c, vp), valprim_typ= hit
@@ -430,7 +430,7 @@ implement valprim_castfn (d2c, vp, hit) = '{
 
 implement valprim_char (c) = '{
   valprim_node= VPchar c, valprim_typ= hityp_encode (hityp_char)
-}
+} // end of [valprim_char]
 
 implement valprim_cst (d2c, hit) = '{
   valprim_node= VPcst (d2c), valprim_typ= hit
@@ -450,7 +450,11 @@ implement valprim_ext (code, hit) = '{
 
 implement valprim_float f(*string*) = '{
   valprim_node= VPfloat f, valprim_typ= hityp_encode (hityp_double)
-}
+} // end of [valprim_float]
+
+implement valprim_floatsp (f, hit) = '{
+  valprim_node= VPfloatsp f, valprim_typ= hit
+} // end of [valprim_floatsp]
 
 implement valprim_clo (knd, fl, env) = let
   val hit = (if knd <> 0 then hityp_ptr else hityp_clo): hityp
@@ -465,28 +469,26 @@ implement valprim_fun (funlab) = '{
 (* ****** ****** *)
 
 implement valprim_int (int) = '{
-  valprim_node= VPint (int)
-, valprim_typ= hityp_encode (hityp_int)
-}
+  valprim_node= VPint (int), valprim_typ= hityp_encode (hityp_int)
+} // end of [valprim_int]
 
-implement valprim_intsp (str, int) = '{
-  valprim_node= VPintsp (str, int)
-, valprim_typ= hityp_encode (hityp_int)
-}
+implement valprim_intsp (str, int, hit) = '{
+  // [valprim_typ] is incorrect
+  valprim_node= VPintsp (str, int), valprim_typ= hit
+} // end of [valprim_intsp]
 
 (* ****** ****** *)
 
 implement valprim_ptrof (vp) = '{
-  valprim_node= VPptrof vp
-, valprim_typ= hityp_encode (hityp_ptr)
-}
+  valprim_node= VPptrof vp, valprim_typ= hityp_encode (hityp_ptr)
+} // end of [valprim_ptrof]
 
 implement valprim_ptrof_ptr_offs
   (vp, offs) = begin case+ offs of
   | list_cons _ => '{
       valprim_node= VPptrof_ptr_offs (vp, offs)
     , valprim_typ= hityp_encode (hityp_ptr)
-    }
+    } // end of [list_cons]
   | list_nil () => valprim_ptrof (vp)
 end // end of [valprim_ptrof_ptr_offs]
 
@@ -495,7 +497,7 @@ implement valprim_ptrof_var_offs
   | list_cons _ => '{
       valprim_node= VPptrof_var_offs (vp, offs)
     , valprim_typ= hityp_encode (hityp_ptr)
-    }
+    } // end of [list_cons]
   | list_nil () => valprim_ptrof (vp)
 end // end of [valprim_ptrof_var_offs]
 
@@ -713,9 +715,10 @@ end // end of [instr_add_store_ptr_offs]
 
 implement instr_add_store_var_offs
   (res, vp_mut, offs, vp_val) = let
-  val ins = case+ offs of
+  val ins = (case+ offs of
     | list_cons _ => INSTRstore_var_offs (vp_mut, offs, vp_val)
     | list_nil () => INSTRstore_var (vp_mut, vp_val)
+  ) : instr // end of [val]
 in
   res := list_vt_cons (ins, res)
 end // end of [instr_add_store_var_offs]

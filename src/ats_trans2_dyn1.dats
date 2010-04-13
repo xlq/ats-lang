@@ -1602,8 +1602,8 @@ in
 (*
   | D1Emod (m1ids) => d2exp_mod (loc, mid1_list_tr m1ids)
 *)
-  | D1Eobj (objknd, objcls, mtdlst) => let
-      val s2e_cls = s1exp_tr_dn_cls (objcls)
+  | D1Eobj (knd, cls, mtdlst) => let
+      val s2e_cls = s1exp_tr_dn_cls (cls)
       val s2e_head = s2exp_head_get (s2e_cls)
       var ts2ess: tmps2explstlst = TMPS2EXPLSTLSTnil ()
       val s2c_cls = (case+ s2e_head.s2exp_node of
@@ -1630,14 +1630,14 @@ in
         #define OBJ_T 0; #define OBJ_VT 1; #define OBJMOD ~1
 *)
         val () = begin case- clsknd of
-        | 0 (*object*) => if objknd < 0 then begin
+        | 0 (*object*) => if knd < 0 then begin
             prerr_loc_error2 (loc0);
             prerr ": the class ["; prerr_s2cst s2c_cls;
             prerr "] is required to be a module class but it is not.";
             prerr_newline ();
             $Err.abort ()         
           end // end of [1]
-        | 1 (*module*) => if objknd >= 0 then begin
+        | 1 (*module*) => if knd >= 0 then begin
             prerr_loc_error2 (loc0);
             prerr ": the class ["; prerr_s2cst s2c_cls;
             prerr "] is required to be a object class but it is not.";
@@ -1694,7 +1694,7 @@ in
       val r_mtdmap = ref_make_elt<mtdmap_t> (mtdmap)
       val mtdlst = m1thdeclst_tr (r_mtdmap, s2e_self, mtdlst)
     in
-      d2exp_obj (loc0, objknd, d2c_cls, s2e_cls, mtdlst)
+      d2exp_obj (loc0, knd, d2c_cls, s2e_cls, mtdlst)
     end // end of [D1Eobj]
   | D1Eqid (q, id) => d1exp_qid_tr (loc0, q, id)
   | D1Eptrof d1e => d2exp_ptrof (loc0, d1exp_tr d1e)

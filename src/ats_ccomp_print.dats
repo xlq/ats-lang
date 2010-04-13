@@ -148,6 +148,9 @@ in
   | VPfloat f(*string*) => begin
       fprintf1_exn (pf | out, "VPfloat(%s)", @(f))
     end // end of [VPfloat]
+  | VPfloatsp f(*string*) => begin
+      fprintf1_exn (pf | out, "VPfloatsp(%s)", @(f))
+    end // end of [VPfloatsp]
   | VPfun fl => begin
       prstr "VPfun("; fprint_funlab (pf | out, fl); prstr ")"
     end // end of [VPfun]

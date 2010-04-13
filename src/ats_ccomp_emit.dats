@@ -528,12 +528,7 @@ end // end of [emit_valprim_clo_make]
 
 (* ****** ****** *)
 
-extern fun emit_valprim_float {m:file_mode}
-  (pf: file_mode_lte (m, w) | out: &FILE m, f: string): void
-  = "ats_ccomp_emit_valprim_float"
-
-%{$
-
+%{^
 ats_void_type
 ats_ccomp_emit_valprim_float
   (ats_ptr_type out, ats_ptr_type f) {
@@ -542,8 +537,11 @@ ats_ccomp_emit_valprim_float
   fputs (s, (FILE*)out) ;
   return ;
 } /* ats_ccomp_emit_valprim_float */
-
-%}
+%} // end of [%{^]
+extern fun emit_valprim_float {m:file_mode}
+  (pf: file_mode_lte (m, w) | out: &FILE m, f: string): void
+  = "ats_ccomp_emit_valprim_float"
+// end of [emit_valprim_float]
 
 (* ****** ****** *)
 
@@ -924,6 +922,7 @@ implement emit_valprim (pf | out, vp0) = begin
     end // end of [VPenv]
   | VPext code => fprint1_string (pf | out, code)
   | VPfloat f => emit_valprim_float (pf | out, f)
+  | VPfloatsp f => emit_valprim_float (pf | out, f)
   | VPfun fl => begin
       fprint1_string (pf | out, "&"); emit_funlab (pf | out, fl)
     end // end of [VPfun]
@@ -1778,13 +1777,13 @@ in
         fprint1_string (pf | out, " = ");
         emit_valprim (pf | out, vp);
         fprint1_string (pf | out, " */ ;")
-      end
+      end // end of [_ when ...]
     | _ => begin
         emit_valprim_tmpvar (pf | out, tmp);
         fprint1_string (pf | out, " = ");
         emit_valprim (pf | out, vp);
         fprint1_string (pf | out, " ;")
-      end
+      end // end of [_]
     end // end of [INSTRmove_val]
   | INSTRpatck (vp, patck, fail) => let
       val fail1 = case+ fail of
