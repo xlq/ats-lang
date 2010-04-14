@@ -38,17 +38,18 @@
 
 (* ****** ****** *)
 
-fun gtk_check_button_new
-  (): GtkCheckButton_ptr1 = "#atsctrb_gtk_check_button_new"
+fun gtk_arrow_new (
+    arrow_type: GtkArrowType, shadow_type: GtkShadowType
+  ) : GtkArrow_ptr1 = "#atsctrb_gtk_arrow_new"
+// end of [gtk_arrow_new]
 
-fun gtk_check_button_new_with_label
-  (name: string): GtkCheckButton_ptr1 = "#atsctrb_gtk_check_button_new_with_label"
-// end of [gtk_check_button_new_with_label]
-
-fun gtk_check_button_new_with_mnemonic
-  (name: string): GtkCheckButton_ptr1 = "#atsctrb_gtk_check_button_new_with_mnemonic"
-// end of [gtk_check_button_new_with_mnemonic]
+fun gtk_arrow_set
+  {c:cls | c <= GtkArrow} {l:anz} (
+    arrow: !gobjptr (c, l)
+  , arrow_type: GtkArrowType, shadow_type: GtkShadowType
+  ) : void = "#atsctrb_gtk_arrow_set"
+// end of [gtk_arrow_set]
 
 (* ****** ****** *)
 
-(* end of [gtkcheckbutton.sats] *)
+(* end of [gtkarrow.sats] *)

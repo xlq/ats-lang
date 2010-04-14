@@ -38,17 +38,18 @@
 
 (* ****** ****** *)
 
-fun gtk_check_button_new
-  (): GtkCheckButton_ptr1 = "#atsctrb_gtk_check_button_new"
+fun gtk_menu_item_new
+  (): GtkMenuItem_ptr1 = "#atsctrb_gtk_menu_item_new"
+// end of [gtk_menu_item_new]
 
-fun gtk_check_button_new_with_label
-  (name: string): GtkCheckButton_ptr1 = "#atsctrb_gtk_check_button_new_with_label"
-// end of [gtk_check_button_new_with_label]
+fun gtk_menu_item_new_with_label
+  (name: string): GtkMenuItem_ptr1 = "#atsctrb_gtk_menu_item_new_with_label"
+// end of [gtk_menu_item_new_with_label]
 
-fun gtk_check_button_new_with_mnemonic
-  (name: string): GtkCheckButton_ptr1 = "#atsctrb_gtk_check_button_new_with_mnemonic"
-// end of [gtk_check_button_new_with_mnemonic]
+fun gtk_menu_item_new_with_mnemonic
+  (name: string): GtkMenuItem_ptr1 = "#atsctrb_gtk_menu_item_new_with_mnemonic"
+// end of [gtk_menu_item_new_with_mnemonic]
 
 (* ****** ****** *)
 
-(* end of [gtkcheckbutton.sats] *)
+(* end of [gtkmenuitem.sats] *)

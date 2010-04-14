@@ -38,15 +38,25 @@
 
 (* ****** ****** *)
 
-fun gtk_adjustment_new (
-    value: gdouble
-  , lower: gdouble
-  , upper: gdouble
-  , step_increment: gdouble
-  , page_increment: gdouble
-  , page_size: gdouble
-  ) : GtkAdjustment_ptr1 = "#atsctrb_gtk_adjustment_new"
-// end of [gtk_adjustment_new]
+symintr gtk_adjustment_new
+
+typedef
+gtk_adjustment_new_type (a:t@ype) = (
+    a // value
+  , a // lower
+  , a // upper
+  , a // step_increment
+  , a // page_increment
+  , a // page_size
+  ) -<fun1> GtkAdjustment_ptr1
+
+fun gtk_adjustment_new__type : gtk_adjustment_new_type (double)
+  = "#atsctrb_gtk_adjustment_new"
+overload gtk_adjustment_new with gtk_adjustment_new__type
+
+fun gtk_adjustment_new__gtype : gtk_adjustment_new_type (gdouble)
+  = "#atsctrb_gtk_adjustment_new"
+overload gtk_adjustment_new with gtk_adjustment_new__gtype
 
 (* ****** ****** *)
 

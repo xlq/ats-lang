@@ -53,6 +53,31 @@
 /* ****** ****** */
 
 //
+// source: gtk/gtkadjustment.h
+//
+
+ATSinline()
+ats_ptr_type
+atsctrb_gtk_adjustment_new (
+  gdouble value
+, gdouble lower
+, gdouble upper
+, gdouble step_inc
+, gdouble page_inc
+, gdouble page_size
+) {
+  GtkObject *adj = gtk_adjustment_new
+    (value, lower, upper, step_inc, page_inc, page_size) ;
+  g_object_ref_sink(G_OBJECT(adj)) ; // removing floating reference!
+  return adj ;
+} // end of [atsctrb_gtk_adjustment_new]
+
+#define atsctrb_gtk_adjustment_get_value gtk_adjustment_get_value
+#define atsctrb_gtk_adjustment_set_value gtk_adjustment_set_value
+
+/* ****** ****** */
+
+//
 // source: gtk/gtkarrow.h
 //
 
@@ -113,6 +138,38 @@ atsctrb_gtk_button_new_with_mnemonic
 /* ****** ****** */
 
 //
+// source: gtk/gtkcheckbutton.h
+//
+
+ATSinline()
+ats_ptr_type
+atsctrb_gtk_check_button_new () {
+  GtkWidget *widget = gtk_check_button_new() ;
+  g_object_ref_sink(G_OBJECT(widget)) ; // removing floating reference!
+  return widget ;
+} // end of [atsctrb_gtk_check_button_new]
+
+ATSinline()
+ats_ptr_type
+atsctrb_gtk_check_button_new_with_label
+  (ats_ptr_type label) {
+  GtkWidget *widget = gtk_check_button_new_with_label((gchar*)label) ;
+  g_object_ref_sink(G_OBJECT(widget)) ; // removing floating reference!
+  return widget ;
+} // end of [atsctrb_gtk_check_button_new_with_label]
+
+ATSinline()
+ats_ptr_type
+atsctrb_gtk_check_button_new_with_mnemonic
+  (ats_ptr_type label) {
+  GtkWidget *widget = gtk_check_button_new_with_mnemonic((gchar*)label) ;
+  g_object_ref_sink(G_OBJECT(widget)) ; // removing floating reference!
+  return widget ;
+} // end of [atsctrb_gtk_check_button_new_with_mnemonic]
+
+/* ****** ****** */
+
+//
 // source: gtk/gtkcontainer.h
 //
 
@@ -162,6 +219,21 @@ atsctrb_gtk_hscale_new_with_range
 /* ****** ****** */
 
 //
+// source: gtk/gtkhsrollbar.h
+//
+
+ATSinline()
+ats_ptr_type
+atsctrb_gtk_hscrollbar_new
+  (ats_ptr_type adj) {
+  GtkWidget *widget = gtk_hscrollbar_new ((GtkAdjustment*)adj) ;
+  g_object_ref_sink(G_OBJECT(widget)) ; // removing floating reference!
+  return widget ;
+} // end of [atsctrb_gtk_hscrollbar_new]
+
+/* ****** ****** */
+
+//
 // source: gtk/gtkhseparator.h
 //
 
@@ -190,11 +262,81 @@ atsctrb_gtk_label_new (ats_ptr_type name) {
 /* ****** ****** */
 
 //
+// source: gtk/gtkmenu.h
+//
+
+ATSinline()
+ats_ptr_type
+atsctrb_gtk_menu_new () {
+  GtkWidget *widget = gtk_menu_new () ;
+  g_object_ref_sink(G_OBJECT(widget)) ; // removing floating reference!
+  return widget ;
+} // end of [atsctrb_gtk_menu_new]
+
+/* ****** ****** */
+
+//
+// source: gtk/gtkmenuitem.h
+//
+
+ATSinline()
+ats_ptr_type
+atsctrb_gtk_menu_item_new () {
+  GtkWidget *widget = gtk_menu_item_new () ;
+  g_object_ref_sink(G_OBJECT(widget)) ; // removing floating reference!
+  return widget ;
+} // end of [atsctrb_gtk_menu_item_new]
+
+ATSinline()
+ats_ptr_type
+atsctrb_gtk_menu_item_new_with_label
+  (ats_ptr_type name) {
+  GtkWidget *widget = gtk_menu_item_new_with_label ((gchar*)name) ;
+  g_object_ref_sink(G_OBJECT(widget)) ; // removing floating reference!
+  return widget ;
+} // end of [atsctrb_gtk_menu_item_new_with_label]
+
+ATSinline()
+ats_ptr_type
+atsctrb_gtk_menu_item_new_with_mnemonic (ats_ptr_type name) {
+  GtkWidget *widget = gtk_menu_item_new_with_mnemonic ((gchar*)name) ;
+  g_object_ref_sink(G_OBJECT(widget)) ; // removing floating reference!
+  return widget ;
+} // end of [atsctrb_gtk_menu_item_new_with_mnemonic]
+
+/* ****** ****** */
+
+//
+// source: gtk/gtkmenushell.h
+//
+
+#define atsctrb_gtk_menu_shell_append gtk_menu_shell_append
+#define atsctrb_gtk_menu_shell_prepend gtk_menu_shell_prepend
+
+/* ****** ****** */
+
+//
 // Source: gtk/gtkmisc.h
 //
 
 #define atsctrb_gtk_misc_get_alignment gtk_misc_get_alignment
 #define atsctrb_gtk_misc_set_alignment gtk_misc_set_alignment
+
+/* ****** ****** */
+
+//
+// source: gtk/gtkoptionmenu.h
+//
+
+ATSinline()
+ats_ptr_type
+atsctrb_gtk_option_menu_new () {
+  GtkWidget *widget = gtk_option_menu_new () ;
+  g_object_ref_sink(G_OBJECT(widget)) ; // removing floating reference!
+  return widget ;
+} // end of [atsctrb_gtk_option_menu_new]
+
+#define atsctrb_gtk_option_menu_set_menu gtk_option_menu_set_menu
 
 /* ****** ****** */
 
@@ -259,22 +401,6 @@ atsctrb_gtk_radio_button_new_with_label_from_widget
 //
 // source: gtk/gtkrange.h
 //
-
-ATSinline()
-ats_ptr_type
-atsctrb_gtk_adjustment_new (
-  gdouble value
-, gdouble lower
-, gdouble upper
-, gdouble step_inc
-, gdouble page_inc
-, gdouble page_size
-) {
-  GtkObject *adj = gtk_adjustment_new
-    (value, lower, upper, step_inc, page_inc, page_size) ;
-  g_object_ref_sink(G_OBJECT(adj)) ; // removing floating reference!
-  return adj ;
-} // end of [atsctrb_gtk_adjustment_new]
 
 #define atsctrb_gtk_range_get_adjustment gtk_range_get_adjustment
 #define atsctrb_gtk_range_set_adjustment gtk_range_set_adjustment

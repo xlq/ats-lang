@@ -38,12 +38,6 @@
 
 (* ****** ****** *)
 
-%{#
-#include "contrib/GTK/CATS/gtkmain.cats"
-%} // end of [%{#]
-
-(* ****** ****** *)
-
 fun gtk_main (): void = "#atsctrb_gtk_main"
 fun gtk_main_level (): guint = "#atsctrb_gtk_main_level"
 fun gtk_main_quit (): void = "#atsctrb_gtk_main_quit"

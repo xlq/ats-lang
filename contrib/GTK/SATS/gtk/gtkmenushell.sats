@@ -38,17 +38,18 @@
 
 (* ****** ****** *)
 
-fun gtk_check_button_new
-  (): GtkCheckButton_ptr1 = "#atsctrb_gtk_check_button_new"
+fun gtk_menu_shell_append
+  {c1,c2:cls | c1 <= GtkMenuShell; c2 <= GtkWidget}
+  {l1,l2:anz} (container: !gobjptr (c1, l1), widget: !gobjptr (c2, l2)): void
+  = "#atsctrb_gtk_menu_shell_append"
+// end of [gtk_menu_shell_append]
 
-fun gtk_check_button_new_with_label
-  (name: string): GtkCheckButton_ptr1 = "#atsctrb_gtk_check_button_new_with_label"
-// end of [gtk_check_button_new_with_label]
-
-fun gtk_check_button_new_with_mnemonic
-  (name: string): GtkCheckButton_ptr1 = "#atsctrb_gtk_check_button_new_with_mnemonic"
-// end of [gtk_check_button_new_with_mnemonic]
+fun gtk_menu_shell_prepend
+  {c1,c2:cls | c1 <= GtkMenuShell; c2 <= GtkWidget}
+  {l1,l2:anz} (container: !gobjptr (c1, l1), widget: !gobjptr (c2, l2)): void
+  = "#atsctrb_gtk_menu_shell_prepend"
+// end of [gtk_menu_shell_prepend]
 
 (* ****** ****** *)
 
-(* end of [gtkcheckbutton.sats] *)
+(* end of [gtkmenushell.sats] *)
