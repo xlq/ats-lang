@@ -54,27 +54,24 @@ implement main1 () = () where {
   val () = gtk_container_set_border_width (window, (guint)10U)
 //
   val box1 = gtk_hbox_new (GFALSE, (gint)0)
-  val (fpf_box1 | box1_) = g_object_vref (box1)
-  val () = gtk_container_add (window, box1_)
+  val () = gtk_container_add (window, box1)
 //
   val button = gtk_button_new_with_label ("Button 1")
   val _sid = g_signal_connect
     (button, (gsignal)"clicked", G_CALLBACK(callback), (gpointer)"button 1")
-  val (fpf_button | button_) = g_object_vref (button)
-  val () = gtk_box_pack_start (box1, button_, GTRUE, GTRUE, (guint)0U)
+  val () = gtk_box_pack_start (box1, button, GTRUE, GTRUE, (guint)0U)
   val () = gtk_widget_show (button)
-  prval () = fpf_button (button)
+  val () = g_object_unref (button)
 //
   val button = gtk_button_new_with_label ("Button 2")
   val _sid = g_signal_connect
     (button, (gsignal)"clicked", G_CALLBACK(callback), (gpointer)"button 2")
-  val (fpf_button | button_) = g_object_vref (button)
-  val () = gtk_box_pack_start (box1, button_, GTRUE, GTRUE, (guint)0U)
+  val () = gtk_box_pack_start (box1, button, GTRUE, GTRUE, (guint)0U)
   val () = gtk_widget_show (button)
-  prval () = fpf_button (button)
+  val () = g_object_unref (button)
 //
   val () = gtk_widget_show (box1)
-  prval () = fpf_box1 (box1)
+  val () = g_object_unref (box1)
 //
   val () = gtk_widget_show (window)
 //

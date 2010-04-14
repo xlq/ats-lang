@@ -44,7 +44,7 @@ fun gtk_vscale_new {c:cls | c <= GtkAdjustment} {l:anz}
 
 fun gtk_vscale_new_with_range
   {c:cls | c <= GtkAdjustment} {l:anz}
-  (min: gdouble, max: gdouble, step: gdouble): GtkVScrollbar_ptr1
+  (min: gdouble, max: gdouble, step: gdouble): GtkVScale_ptr1
   = "#atsctrb_gtk_vscale_new_with_range"
 // end of [gtk_vscale_new_with_rangle]
 

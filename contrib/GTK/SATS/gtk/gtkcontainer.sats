@@ -40,9 +40,11 @@
 
 fun gtk_container_add
   {c1,c2:cls | c1 <= GtkContainer; c2 <= GtkWidget}
-  {l1,l2:anz} (container: !gobjptr (c1, l1), widget: gobjptr (c2, l2)): void
+  {l1,l2:anz} (container: !gobjptr (c1, l1), widget: !gobjptr (c2, l2)): void
   = "#atsctrb_gtk_container_add"
 // end of [gtk_container_add]
+
+(* ****** ****** *)
 
 fun gtk_container_set_border_width
   {c:cls | c <= GtkContainer} {l:anz} (container: !gobjptr (c, l), width: guint): void

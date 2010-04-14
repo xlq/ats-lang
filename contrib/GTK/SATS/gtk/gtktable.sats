@@ -66,8 +66,7 @@ fun gtk_table_attach
   , yopt: GtkAttachOptions
   , xpadding: guint
   , ypadding: guint
-  ) : (gobjptr (c2, l2) -<lin,prf> void | void)
-  = "#atsctrb_gtk_table_attach"
+  ) : void = "#atsctrb_gtk_table_attach"
 // end of [gtk_table_attach]
 
 fun gtk_table_attach_defaults
@@ -75,8 +74,7 @@ fun gtk_table_attach_defaults
   {l1,l2:anz} (
     table: !gobjptr (c1, l1), widget: !gobjptr (c2, l2)
   , left: guint, right: guint, top: guint, bot: guint
-  ) : (gobjptr (c2, l2) -<lin,prf> void | void)
-  = "#atsctrb_gtk_table_attach_defaults"
+  ) : void = "#atsctrb_gtk_table_attach_defaults"
 // end of [gtk_table_attach_defaults]
 
 (* ****** ****** *)

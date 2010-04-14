@@ -203,6 +203,10 @@ viewtypedef GtkAdjustment_ptr (l:addr) = gobjptr (GtkAdjustment, l)
 viewtypedef GtkAdjustment_ptr0 = [l:addr] GtkAdjustment_ptr l
 viewtypedef GtkAdjustment_ptr1 = [l:addr | l <> null] GtkAdjustment_ptr l
 
+viewtypedef GtkArrow_ptr (l:addr) = gobjptr (GtkArrow, l)
+viewtypedef GtkArrow_ptr0 = [l:addr] GtkArrow_ptr l
+viewtypedef GtkArrow_ptr1 = [l:addr | l <> null] GtkArrow_ptr l
+
 viewtypedef GtkButton_ptr (l:addr) = gobjptr (GtkButton, l)
 viewtypedef GtkButton_ptr0 = [l:addr] GtkButton_ptr l
 viewtypedef GtkButton_ptr1 = [l:addr | l <> null] GtkButton_ptr l
@@ -214,6 +218,10 @@ viewtypedef GtkCheckButton_ptr1 = [l:addr | l <> null] GtkCheckButton_ptr l
 viewtypedef GtkHBox_ptr (l:addr) = gobjptr (GtkHBox, l)
 viewtypedef GtkHBox_ptr0 = [l:addr] GtkHBox_ptr l
 viewtypedef GtkHBox_ptr1 = [l:addr | l <> null] GtkHBox_ptr l
+
+viewtypedef GtkHScale_ptr (l:addr) = gobjptr (GtkHScale, l)
+viewtypedef GtkHScale_ptr0 = [l:addr] GtkHScale_ptr l
+viewtypedef GtkHScale_ptr1 = [l:addr | l <> null] GtkHScale_ptr l
 
 viewtypedef GtkHScrollbar_ptr (l:addr) = gobjptr (GtkHScrollbar, l)
 viewtypedef GtkHScrollbar_ptr0 = [l:addr] GtkHScrollbar_ptr l
@@ -243,6 +251,10 @@ viewtypedef GtkVBox_ptr (l:addr) = gobjptr (GtkVBox, l)
 viewtypedef GtkVBox_ptr0 = [l:addr] GtkVBox_ptr l
 viewtypedef GtkVBox_ptr1 = [l:addr | l <> null] GtkVBox_ptr l
 
+viewtypedef GtkVScale_ptr (l:addr) = gobjptr (GtkVScale, l)
+viewtypedef GtkVScale_ptr0 = [l:addr] GtkVScale_ptr l
+viewtypedef GtkVScale_ptr1 = [l:addr | l <> null] GtkVScale_ptr l
+
 viewtypedef GtkVScrollbar_ptr (l:addr) = gobjptr (GtkVScrollbar, l)
 viewtypedef GtkVScrollbar_ptr0 = [l:addr] GtkVScrollbar_ptr l
 viewtypedef GtkVScrollbar_ptr1 = [l:addr | l <> null] GtkVScrollbar_ptr l
@@ -256,6 +268,24 @@ viewtypedef GtkWidget_ptr (l:addr) = gobjptr (GtkWidget, l)
 viewtypedef GtkWindow_ptr (l:addr) = gobjptr (GtkWindow, l)
 viewtypedef GtkWindow_ptr0 = [l:addr] GtkWindow_ptr l
 viewtypedef GtkWindow_ptr1 = [l:addr | l <> null] GtkWindow_ptr l
+
+(* ****** ****** *)
+
+abst@ype
+GtkArrowType = $extype "GtkArrowType"
+macdef GTK_ARROW_UP = $extval (GtkArrowType, "GTK_ARROW_UP")
+macdef GTK_ARROW_DOWN = $extval (GtkArrowType, "GTK_ARROW_DOWN")
+macdef GTK_ARROW_LEFT = $extval (GtkArrowType, "GTK_ARROW_LEFT")
+macdef GTK_ARROW_RIGHT = $extval (GtkArrowType, "GTK_ARROW_RIGHT")
+
+(* ****** ****** *)
+
+abst@ype
+GtkShadowType = $extype "GtkShadowType"
+macdef GTK_SHADOW_IN = $extval (GtkShadowType, "GTK_SHADOW_IN")
+macdef GTK_SHADOW_OUT = $extval (GtkShadowType, "GTK_SHADOW_OUT") // default
+macdef GTK_SHADOW_ETCHED_IN = $extval (GtkShadowType, "GTK_SHADOW_ETCHED_IN")
+macdef GTK_SHADOW_ETCHED_OUT = $extval (GtkShadowType, "GTK_SHADOW_ETCHED_OUT")
 
 (* ****** ****** *)
 
@@ -275,11 +305,11 @@ macdef GTK_POS_BOTTOM =
 abst@ype
 GtkUpdateType = $extype "GtkUpdateType"
 macdef GTK_UPDATE_CONTINUOUS =
-  $extval (GtkPositionType, "GTK_UPDATE_CONTINUOUS")
+  $extval (GtkUpdateType, "GTK_UPDATE_CONTINUOUS")
 macdef GTK_UPDATE_DISCONTINUOUS =
-  $extval (GtkPositionType, "GTK_UPDATE_DISCONTINUOUS")
+  $extval (GtkUpdateType, "GTK_UPDATE_DISCONTINUOUS")
 macdef GTK_UPDATE_DELAYED =
-  $extval (GtkPositionType, "GTK_UPDATE_DELAYED")
+  $extval (GtkUpdateType, "GTK_UPDATE_DELAYED")
 
 (* ****** ****** *)
 
@@ -295,11 +325,13 @@ macdef GTK_WINDOW_POPUP =
 #include "contrib/GTK/SATS/gtk/gtkmain.sats"
 
 #include "contrib/GTK/SATS/gtk/gtkadjustment.sats"
+#include "contrib/GTK/SATS/gtk/gtkarrow.sats"
 #include "contrib/GTK/SATS/gtk/gtkbox.sats"
 #include "contrib/GTK/SATS/gtk/gtkbutton.sats"
 #include "contrib/GTK/SATS/gtk/gtkcheckbutton.sats"
 #include "contrib/GTK/SATS/gtk/gtkcontainer.sats"
 #include "contrib/GTK/SATS/gtk/gtkhbox.sats"
+#include "contrib/GTK/SATS/gtk/gtkhscale.sats"
 #include "contrib/GTK/SATS/gtk/gtkhseparator.sats"
 #include "contrib/GTK/SATS/gtk/gtkhscrollbar.sats"
 #include "contrib/GTK/SATS/gtk/gtklabel.sats"
@@ -312,8 +344,9 @@ macdef GTK_WINDOW_POPUP =
 #include "contrib/GTK/SATS/gtk/gtktable.sats"
 #include "contrib/GTK/SATS/gtk/gtktogglebutton.sats"
 #include "contrib/GTK/SATS/gtk/gtkvbox.sats"
-#include "contrib/GTK/SATS/gtk/gtkvseparator.sats"
+#include "contrib/GTK/SATS/gtk/gtkvscale.sats"
 #include "contrib/GTK/SATS/gtk/gtkvscrollbar.sats"
+#include "contrib/GTK/SATS/gtk/gtkvseparator.sats"
 #include "contrib/GTK/SATS/gtk/gtkwidget.sats"
 #include "contrib/GTK/SATS/gtk/gtkwindow.sats"
 

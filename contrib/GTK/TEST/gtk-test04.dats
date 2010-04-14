@@ -54,35 +54,34 @@ implement main1 () = () where {
   val () = gtk_container_set_border_width (window, (guint)10U)
 //
   val table = gtk_table_new ((guint)2U, (guint)2U, GTRUE)
-  val (fpf_table | table_) = g_object_vref (table)
-  val () = gtk_container_add (window, table_)
+  val () = gtk_container_add (window, table)
 //
   val button = gtk_button_new_with_label ("Button 1")
   val _sid = g_signal_connect
     (button, (gsignal)"clicked", G_CALLBACK(callback), (gpointer)"button 1")
-  val (fpf_button | ()) = gtk_table_attach_defaults
+  val () = gtk_table_attach_defaults
     (table, button, (guint)0U, (guint)1U, (guint)0U, (guint)1U)
   val () = gtk_widget_show (button)
-  prval () = fpf_button (button)
+  val () = g_object_unref (button)
 //
   val button = gtk_button_new_with_label ("Button 2")
   val _sid = g_signal_connect
     (button, (gsignal)"clicked", G_CALLBACK(callback), (gpointer)"button 2")
-  val (fpf_button | ()) = gtk_table_attach_defaults
+  val () = gtk_table_attach_defaults
     (table, button, (guint)1U, (guint)2U, (guint)0U, (guint)1U)
   val () = gtk_widget_show (button)
-  prval () = fpf_button (button)
+  val () = g_object_unref (button)
 //
   val button = gtk_button_new_with_mnemonic ("_Q_u_i_t")
   val _sid = g_signal_connect
     (button, (gsignal)"clicked", G_CALLBACK(delete_event), (gpointer)null)
-  val (fpf_button | ()) = gtk_table_attach_defaults
+  val () = gtk_table_attach_defaults
     (table, button, (guint)0U, (guint)2U, (guint)1U, (guint)2U)
   val () = gtk_widget_show (button)
-  prval () = fpf_button (button)
+  val () = g_object_unref (button)
 //
   val () = gtk_widget_show (table)
-  prval () = fpf_table (table)
+  val () = g_object_unref (table)
 //
   val () = gtk_widget_show (window)
 //

@@ -53,6 +53,25 @@
 /* ****** ****** */
 
 //
+// source: gtk/gtkarrow.h
+//
+
+ATSinline()
+ats_ptr_type
+atsctrb_gtk_arrow_new (
+  GtkArrowType arrow_type
+, GtkShadowType shadow_type
+) {
+  GtkWidget *widget = gtk_arrow_new(arrow_type, shadow_type);
+  g_object_ref_sink(G_OBJECT(widget)) ; // removing floating reference!
+  return widget ;
+} // end of [atsctrb_gtk_arrow_new]
+
+#define atsctrb_gtk_arrow_set gtk_arrow_set
+
+/* ****** ****** */
+
+//
 // source: gtk/gtkbox.h
 //
 
@@ -64,9 +83,32 @@
 //
 // source: gtk/gtkbutton.h
 //
-#define atsctrb_gtk_button_new gtk_button_new
-#define atsctrb_gtk_button_new_with_label gtk_button_new_with_label
-#define atsctrb_gtk_button_new_with_mnemonic gtk_button_new_with_mnemonic
+
+ATSinline()
+ats_ptr_type
+atsctrb_gtk_button_new () {
+  GtkWidget *widget = gtk_button_new() ;
+  g_object_ref_sink(G_OBJECT(widget)) ; // removing floating reference!
+  return widget ;
+} // end of [atsctrb_gtk_button_new]
+
+ATSinline()
+ats_ptr_type
+atsctrb_gtk_button_new_with_label
+  (ats_ptr_type label) {
+  GtkWidget *widget = gtk_button_new_with_label((gchar*)label) ;
+  g_object_ref_sink(G_OBJECT(widget)) ; // removing floating reference!
+  return widget ;
+} // end of [atsctrb_gtk_button_new_with_label]
+
+ATSinline()
+ats_ptr_type
+atsctrb_gtk_button_new_with_mnemonic
+  (ats_ptr_type label) {
+  GtkWidget *widget = gtk_button_new_with_mnemonic((gchar*)label) ;
+  g_object_ref_sink(G_OBJECT(widget)) ; // removing floating reference!
+  return widget ;
+} // end of [atsctrb_gtk_button_new_with_mnemonic]
 
 /* ****** ****** */
 
@@ -83,7 +125,39 @@
 // source: gtk/gtkhbox.h
 //
 
-#define atsctrb_gtk_hbox_new gtk_hbox_new
+ATSinline()
+ats_ptr_type
+atsctrb_gtk_hbox_new (
+  gboolean homo, gint spacing
+) {
+  GtkWidget *widget = gtk_hbox_new (homo, spacing) ;
+  g_object_ref_sink(G_OBJECT(widget)) ; // removing floating reference!
+  return widget ;
+} // end of [atsctrb_gtk_hbox_new]
+
+/* ****** ****** */
+
+//
+// source: gtk/gtkhscale.h
+//
+
+ATSinline()
+ats_ptr_type
+atsctrb_gtk_hscale_new
+  (ats_ptr_type adj) {
+  GtkWidget *widget = gtk_hscale_new ((GtkAdjustment*)adj) ;
+  g_object_ref_sink(G_OBJECT(widget)) ; // removing floating reference!
+  return widget ;
+} // end of [atsctrb_gtk_hscale_new]
+
+ATSinline()
+ats_ptr_type
+atsctrb_gtk_hscale_new_with_range
+  (gdouble min, gdouble max, gdouble step) {
+  GtkWidget *widget = gtk_hscale_new_with_range (min, max, step) ;
+  g_object_ref_sink(G_OBJECT(widget)) ; // removing floating reference!
+  return widget ;
+} // end of [atsctrb_gtk_hscale_new_with_range]
 
 /* ****** ****** */
 
@@ -91,7 +165,13 @@
 // source: gtk/gtkhseparator.h
 //
 
-#define atsctrb_gtk_hseparator_new gtk_hseparator_new
+ATSinline()
+ats_ptr_type
+atsctrb_gtk_hseparator_new () {
+  GtkWidget *widget = gtk_hseparator_new () ;
+  g_object_ref_sink(G_OBJECT(widget)) ; // removing floating reference!
+  return widget ;
+} // end of [atsctrb_gtk_hseparator_new]
 
 /* ****** ****** */
 
@@ -99,12 +179,18 @@
 // source: gtk/gtklabel.h
 //
 
-#define atsctrb_gtk_label_new gtk_label_new
+ATSinline()
+ats_ptr_type
+atsctrb_gtk_label_new (ats_ptr_type name) {
+  GtkWidget *widget = gtk_label_new ((gchar*)name) ;
+  g_object_ref_sink(G_OBJECT(widget)) ; // removing floating reference!
+  return widget ;
+} // end of [atsctrb_gtk_label_new]
 
 /* ****** ****** */
 
 //
-// source: gtk/gtkmisc.h
+// Source: gtk/gtkmisc.h
 //
 
 #define atsctrb_gtk_misc_get_alignment gtk_misc_get_alignment
@@ -116,8 +202,54 @@
 // source: gtk/gtkradiobutton.h
 //
 
-#define atsctrb_gtk_radio_button_new_with_label gtk_radio_button_new_with_label
-#define atsctrb_gtk_radio_button_new_with_label_from_widget gtk_radio_button_new_with_label_from_widget
+ATSinline()
+ats_ptr_type
+atsctrb_gtk_radio_button_new
+  (ats_ptr_type group) {
+  GtkWidget *widget = gtk_radio_button_new ((GSList*)group) ;
+  g_object_ref_sink(G_OBJECT(widget)) ; // removing floating reference!
+  return widget ;
+} // end of [gtk_radio_button_new]
+
+ATSinline()
+ats_ptr_type
+atsctrb_gtk_radio_button_new_with_label
+  (ats_ptr_type group, ats_ptr_type name) {
+  GtkWidget *widget =
+    gtk_radio_button_new_with_label ((GSList*)group, (gchar*)name) ;
+  g_object_ref_sink(G_OBJECT(widget)) ; // removing floating reference!
+  return widget ;
+} // end of [gtk_radio_button_new_with_label]
+
+ATSinline()
+ats_ptr_type
+atsctrb_gtk_radio_button_new_with_mnemonic
+  (ats_ptr_type group, ats_ptr_type name) {
+  GtkWidget *widget =
+    gtk_radio_button_new_with_mnemonic ((GSList*)group, (gchar*)name) ;
+  g_object_ref_sink(G_OBJECT(widget)) ; // removing floating reference!
+  return widget ;
+} // end of [gtk_radio_button_new_with_mnemonic]
+
+ATSinline()
+ats_ptr_type
+atsctrb_gtk_radio_button_new_from_widget
+  (ats_ptr_type member) {
+  GtkWidget *widget =
+    gtk_radio_button_new_from_widget ((GtkRadioButton*)member) ;
+  g_object_ref_sink(G_OBJECT(widget)) ; // removing floating reference!
+  return widget ;
+} // end of [gtk_radio_button_new_from_widget]
+
+ATSinline()
+ats_ptr_type
+atsctrb_gtk_radio_button_new_with_label_from_widget
+  (ats_ptr_type member, ats_ptr_type name) {
+  GtkWidget *widget =
+    gtk_radio_button_new_with_label_from_widget ((GtkRadioButton*)member, (gchar*)name) ;
+  g_object_ref_sink(G_OBJECT(widget)) ; // removing floating reference!
+  return widget ;
+} // end of [gtk_radio_button_new_with_label_from_widget]
 
 #define atsctrb_gtk_radio_button_get_group gtk_radio_button_get_group
 #define atsctrb_gtk_radio_button_set_group gtk_radio_button_set_group
@@ -128,8 +260,36 @@
 // source: gtk/gtkrange.h
 //
 
+ATSinline()
+ats_ptr_type
+atsctrb_gtk_adjustment_new (
+  gdouble value
+, gdouble lower
+, gdouble upper
+, gdouble step_inc
+, gdouble page_inc
+, gdouble page_size
+) {
+  GtkObject *adj = gtk_adjustment_new
+    (value, lower, upper, step_inc, page_inc, page_size) ;
+  g_object_ref_sink(G_OBJECT(adj)) ; // removing floating reference!
+  return adj ;
+} // end of [atsctrb_gtk_adjustment_new]
+
 #define atsctrb_gtk_range_get_adjustment gtk_range_get_adjustment
 #define atsctrb_gtk_range_set_adjustment gtk_range_set_adjustment
+
+#define atsctrb_gtk_range_set_update_policy gtk_range_set_update_policy
+
+/* ****** ****** */
+
+//
+// source: gtk/gtkscale.h
+//
+
+#define atsctrb_gtk_scale_set_digits gtk_scale_set_digits
+#define atsctrb_gtk_scale_set_value_pos gtk_scale_set_value_pos
+#define atsctrb_gtk_scale_set_draw_value gtk_scale_set_draw_value
 
 /* ****** ****** */
 
@@ -137,7 +297,16 @@
 // source: gtk/gtktable.h
 //
 
-#define atsctrb_gtk_table_new gtk_table_new
+ATSinline()
+ats_ptr_type
+atsctrb_gtk_table_new (
+  guint rows, guint cols, gboolean homo
+) {
+  GtkWidget *widget = gtk_table_new (rows, cols, homo) ;
+  g_object_ref_sink(G_OBJECT(widget)) ; // removing floating reference!
+  return widget ;
+} // end of [atsctrb_gtk_table_new]
+
 
 #define atsctrb_gtk_table_attach gtk_table_attach
 #define atsctrb_gtk_table_attach_defaults gtk_table_attach_defaults
@@ -155,9 +324,28 @@
 // source: gtk/gtktogglebutton.h
 //
 
-#define atsctrb_gtk_toggle_button_new gtk_toggle_button_new
-#define atsctrb_gtk_toggle_button_new_with_label gtk_toggle_button_new_with_label
-#define atsctrb_gtk_toggle_button_new_with_mnemonic gtk_toggle_button_new_with_mnemonic
+ats_ptr_type
+atsctrb_gtk_toggle_button_new () {
+  GtkWidget *widget = gtk_toggle_button_new () ;
+  g_object_ref_sink(G_OBJECT(widget)) ; // removing floating reference!
+  return widget ;
+} // end of [gtk_toggle_button_new]
+
+ats_ptr_type
+atsctrb_gtk_toggle_button_new_with_label
+  (ats_ptr_type name) {
+  GtkWidget *widget = gtk_toggle_button_new_with_label ((gchar*)name) ;
+  g_object_ref_sink(G_OBJECT(widget)) ; // removing floating reference!
+  return widget ;
+} // end of [gtk_toggle_button_new_with_label]
+
+ats_ptr_type
+atsctrb_gtk_toggle_button_new_with_mnemonic
+  (ats_ptr_type name) {
+  GtkWidget *widget = gtk_toggle_button_new_with_mnemonic ((gchar*)name) ;
+  g_object_ref_sink(G_OBJECT(widget)) ; // removing floating reference!
+  return widget ;
+} // end of [gtk_toggle_button_new_with_mnemonic]
 
 #define atsctrb_gtk_toggle_button_get_active gtk_toggle_button_get_active
 #define atsctrb_gtk_toggle_button_set_active gtk_toggle_button_set_active
@@ -168,7 +356,53 @@
 // source: gtk/gtkvbox.h
 //
 
-#define atsctrb_gtk_vbox_new gtk_vbox_new
+ATSinline()
+ats_ptr_type
+atsctrb_gtk_vbox_new (
+  gboolean homo, gint spacing
+) {
+  GtkWidget *widget = gtk_vbox_new (homo, spacing) ;
+  g_object_ref_sink(G_OBJECT(widget)) ; // removing floating reference!
+  return widget ;
+} // end of [atsctrb_gtk_vbox_new]
+
+/* ****** ****** */
+
+//
+// source: gtk/gtkvscale.h
+//
+
+ATSinline()
+ats_ptr_type
+atsctrb_gtk_vscale_new
+  (ats_ptr_type adj) {
+  GtkWidget *widget = gtk_vscale_new ((GtkAdjustment*)adj) ;
+  g_object_ref_sink(G_OBJECT(widget)) ; // removing floating reference!
+  return widget ;
+} // end of [atsctrb_gtk_vscale_new]
+
+ATSinline()
+ats_ptr_type
+atsctrb_gtk_vscale_new_with_range
+  (gdouble min, gdouble max, gdouble step) {
+  GtkWidget *widget = gtk_vscale_new_with_range (min, max, step) ;
+  g_object_ref_sink(G_OBJECT(widget)) ; // removing floating reference!
+  return widget ;
+} // end of [atsctrb_gtk_vscale_new_with_range]
+
+/* ****** ****** */
+
+//
+// source: gtk/gtkvseparator.h
+//
+
+ATSinline()
+ats_ptr_type
+atsctrb_gtk_vseparator_new () {
+  GtkWidget *widget = gtk_vseparator_new () ;
+  g_object_ref_sink(G_OBJECT(widget)) ; // removing floating reference!
+  return widget ;
+} // end of [atsctrb_gtk_vseparator_new]
 
 /* ****** ****** */
 
@@ -188,7 +422,16 @@
 //
 // source: gtk/gtkwindow.h
 //
-#define atsctrb_gtk_window_new gtk_window_new
+
+ATSinline()
+ats_ptr_type
+atsctrb_gtk_window_new
+  (GtkWindowType window_type) {
+  GtkWidget *widget = gtk_window_new (window_type) ;
+  g_object_ref_sink(G_OBJECT(widget)) ; // removing floating reference!
+  return widget ;
+} // end of [atsctrb_gtk_window_new]
+
 #define atsctrb_gtk_window_set_title gtk_window_set_title
 
 /* ****** ****** */

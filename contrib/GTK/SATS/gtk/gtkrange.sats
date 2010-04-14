@@ -39,9 +39,10 @@
 (* ****** ****** *)
 
 fun gtk_range_set_update_policy
-  {c:cls | c <= GtkRange} {l1,l2:anz}
-  (range: !gobjptr (c, l1), policy: GtkUpdateType): void
+  {c:cls | c <= GtkRange} {l:anz}
+  (range: !gobjptr (c, l), policy: GtkUpdateType): void
   = "#atsctrb_gtk_range_set_update_policy"
+// end of [gtk_range_set_update_policy]
 
 (* ****** ****** *)
 
@@ -50,6 +51,7 @@ fun gtk_range_get_adjustment
   (range: !gobjptr (c, l))
   : [l1:addr] (gobjptr (GtkAdjustment, l1) -<lin,prf> void | gobjptr (GtkAdjustment, l1))
   = "#atsctrb_gtk_range_get_adjustment"
+// end of [gtk_range_get_adjustment]
 
 //
 // HX-2010-04-13: [g_object_ref] is called on [adj] if it is added!
@@ -58,6 +60,7 @@ fun gtk_range_set_adjustment
   {c:cls | c <= GtkRange} {l1,l2:anz}
   (range: !gobjptr (c, l1), adj: !gobjptr (GtkAdjustment, l2)): void
   = "#atsctrb_gtk_range_set_adjustment"
+// end of [gtk_range_set_adjustment]
 
 (* ****** ****** *)
 

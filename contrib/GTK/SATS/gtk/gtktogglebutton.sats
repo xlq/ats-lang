@@ -42,11 +42,11 @@ fun gtk_toggle_button_new
   (): GtkToggleButton_ptr1 = "#atsctrb_gtk_toggle_button_new"
 
 fun gtk_toggle_button_new_with_label
-  (label: string): GtkToggleButton_ptr1 = "#atsctrb_gtk_toggle_button_new_with_label"
+  (name: string): GtkToggleButton_ptr1 = "#atsctrb_gtk_toggle_button_new_with_label"
 // end of [gtk_toggle_button_new_with_label]
 
 fun gtk_toggle_button_new_with_mnemonic
-  (label: string): GtkToggleButton_ptr1 = "#atsctrb_gtk_toggle_button_new_with_mnemonic"
+  (name: string): GtkToggleButton_ptr1 = "#atsctrb_gtk_toggle_button_new_with_mnemonic"
 // end of [gtk_toggle_button_new_with_mnemonic]
 
 (* ****** ****** *)

@@ -39,12 +39,12 @@
 (* ****** ****** *)
 
 fun gtk_hscale_new {c:cls | c <= GtkAdjustment} {l:anz}
-  (adj: !gobjptr (c, l)): GtkHScrollbar_ptr1 = "#atsctrb_gtk_hscale_new"
+  (adj: !gobjptr (c, l)): GtkHScale_ptr1 = "#atsctrb_gtk_hscale_new"
 // end of [gtk_hscale_new]
 
 fun gtk_hscale_new_with_range
   {c:cls | c <= GtkAdjustment} {l:anz}
-  (min: gdouble, max: gdouble, step: gdouble): GtkHScrollbar_ptr1
+  (min: gdouble, max: gdouble, step: gdouble): GtkHScale_ptr1
   = "#atsctrb_gtk_hscale_new_with_range"
 // end of [gtk_hscale_new_with_rangle]
 
