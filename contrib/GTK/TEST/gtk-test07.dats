@@ -112,9 +112,9 @@ cb_page_size (ats_ptr_type get0, ats_ptr_type set0) {
 } // end of [cb_page_size]
 %} // end of [%{^]
 extern fun cb_page_size
-  {c1,c2:cls | c1 <= GtkAdjustment; c2 <= GtkAdjustment}
-  {l1,l2:anz} (get: !gobjptr (c1, l1), set: !gobjptr (c2, l2)): void
-  = "cb_page_size"
+  {c1,c2:cls | c1 <= GtkAdjustment; c2 <= GtkAdjustment} {l1,l2:anz}
+  (get: !gobjptr (c1, l1), set: !gobjptr (c2, l2)): void = "cb_page_size"
+// end of [cb_page_size]
 
 (* ****** ****** *)
 
