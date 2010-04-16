@@ -38,49 +38,10 @@
 
 (* ****** ****** *)
 
-fun gtk_label_new
-  (name: string): GtkLabel_ptr1 = "#atsctrb_gtk_label_new"
-// end of [gtk_label_new]
+fun gtk_hruler_new
+  (): GtkHRuler_ptr1 = "#atsctrb_gtk_hruler_new"
+// end of [gtk_hruler_new]
 
 (* ****** ****** *)
 
-fun gtk_label_set_text
-  {c:cls | c <= GtkLabel} {l:anz}
-  (label: !gobjptr (c, l), name: string): void = "#atsctrb_gtk_label_set_text"
-// end of [gtk_label_set_text]
-
-fun gtk_label_get_text
-  {c:cls | c <= GtkLabel} {l:anz}
-  (label: !gobjptr (c, l)): [t:int] (stamp t | stamped (string, t))
-  = "#atsctrb_gtk_label_get_text"
-// end of [gtk_label_get_text]
-
-(* ****** ****** *)
-
-fun gtk_label_get_justify
-  {c:cls | c <= GtkLabel} {l:anz}
-  (label: !gobjptr (c, l)): GtkJustification = "#atsctrb_gtk_label_get_justify"
-// end of [gtk_label_get_justify]
-
-fun gtk_label_set_justify
-  {c:cls | c <= GtkLabel} {l:anz}
-  (label: !gobjptr (c, l), jtype: GtkJustification): void
-  = "#atsctrb_gtk_label_set_justify"
-// end of [gtk_label_set_justify]
-
-(* ****** ****** *)
-
-fun gtk_label_get_line_wrap
-  {c:cls | c <= GtkLabel} {l:anz}
-  (label: !gobjptr (c, l)): gboolean = "#atsctrb_gtk_label_get_line_wrap"
-// end of [gtk_label_get_line_wrap]
-
-fun gtk_label_set_line_wrap
-  {c:cls | c <= GtkLabel} {l:anz}
-  (label: !gobjptr (c, l), wrap: gboolean): void
-  = "#atsctrb_gtk_label_set_line_wrap"
-// end of [gtk_label_set_line_wrap]
-
-(* ****** ****** *)
-
-(* end of [gtklabel.sats] *)
+(* end of [gtkhruler.sats] *)

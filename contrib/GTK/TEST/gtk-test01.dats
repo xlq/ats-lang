@@ -27,7 +27,7 @@ implement main1 () = () where {
   val window = gtk_window_new (GTK_WINDOW_TOPLEVEL)
   val () = gtk_widget_show {GtkWindow} (window)
   val () = gtk_main ()
-  val () = gtk_widget_destroy (window)
+  val () = gtk_widget_destroy (window) // can never be reached!!!
 } // end of [main1]
 
 (* ****** ****** *)

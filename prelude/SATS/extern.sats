@@ -64,4 +64,16 @@ prfun minus_addback // [minus] is defined in basics_sta.sats
 
 (* ****** ****** *)
 
+absprop stamp (t: int)
+absviewt@ype stamped (a:viewt@ype, t: int) = a
+
+prfun stamped_encode {a:viewt@ype} {t:int} (v: !a >> stamped (a, t)): void
+prfun stamped_decode {a:viewt@ype} {t:int} (v: !stamped (a, t) >> a): void
+
+prfun stamp_forfeit
+  {a:viewt@ype} {t:int} (s: stamp t, v: stamped (a, t)): void
+// [stamp_forfeit]
+
+(* ****** ****** *)
+
 (* end of [extern.sats] *)

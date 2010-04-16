@@ -43,6 +43,14 @@
 
 /* ****** ****** */
 
+ATSinline()
+GtkAttachOptions
+atsctrb_lor_GtkAttachOptions_GtkAttachOptions
+  (GtkAttachOptions x1, GtkAttachOptions x2) { return (x1 | x2) ; }
+// end of [atsctrb_lor_GtkAttachOptions_GtkAttachOptions]
+
+/* ****** ****** */
+
 //
 // source: gtk/gtkmain.h
 //
@@ -179,6 +187,36 @@ atsctrb_gtk_check_button_new_with_mnemonic
 /* ****** ****** */
 
 //
+// source: gtk/gtkdrawingarea.h
+//
+
+ATSinline()
+ats_ptr_type
+atsctrb_gtk_drawing_area_new () {
+  GtkWidget *widget = gtk_drawing_area_new () ;
+  g_object_ref_sink(G_OBJECT(widget)) ; // removing floating reference!
+  return widget ;
+} // end of [atsctrb_gtk_drawing_area_new]
+
+/* ****** ****** */
+
+//
+// source: gtk/gtkframe.h
+//
+
+ATSinline()
+ats_ptr_type
+atsctrb_gtk_frame_new (ats_ptr_type name) {
+  GtkWidget *widget = gtk_frame_new ((gchar*)name) ;
+  g_object_ref_sink(G_OBJECT(widget)) ; // removing floating reference!
+  return widget ;
+} // end of [atsctrb_gtk_frame_new]
+
+#define atsctrb_gtk_frame_new_null() atsctrb_gtk_frame_new(NULL)
+
+/* ****** ****** */
+
+//
 // source: gtk/gtkhbox.h
 //
 
@@ -191,6 +229,20 @@ atsctrb_gtk_hbox_new (
   g_object_ref_sink(G_OBJECT(widget)) ; // removing floating reference!
   return widget ;
 } // end of [atsctrb_gtk_hbox_new]
+
+/* ****** ****** */
+
+//
+// source: gtk/gtkhruler.h
+//
+
+ATSinline()
+ats_ptr_type
+atsctrb_gtk_hruler_new () {
+  GtkWidget *widget = gtk_hruler_new () ;
+  g_object_ref_sink(G_OBJECT(widget)) ; // removing floating reference!
+  return widget ;
+} // end of [atsctrb_gtk_hruler_new]
 
 /* ****** ****** */
 
@@ -258,6 +310,15 @@ atsctrb_gtk_label_new (ats_ptr_type name) {
   g_object_ref_sink(G_OBJECT(widget)) ; // removing floating reference!
   return widget ;
 } // end of [atsctrb_gtk_label_new]
+
+#define atsctrb_gtk_label_get_text gtk_label_get_text
+#define atsctrb_gtk_label_set_text gtk_label_set_text
+
+#define atsctrb_gtk_label_get_justify gtk_label_get_justify
+#define atsctrb_gtk_label_set_justify gtk_label_set_justify
+
+#define atsctrb_gtk_label_get_line_wrap gtk_label_get_line_wrap
+#define atsctrb_gtk_label_set_line_wrap gtk_label_set_line_wrap
 
 /* ****** ****** */
 
@@ -410,12 +471,44 @@ atsctrb_gtk_radio_button_new_with_label_from_widget
 /* ****** ****** */
 
 //
+// source: gtk/gtkruler.h
+//
+
+#define atsctrb_gtk_ruler_set_metric gtk_ruler_set_metric
+#define atsctrb_gtk_ruler_set_range gtk_ruler_set_range
+
+/* ****** ****** */
+
+//
 // source: gtk/gtkscale.h
 //
 
 #define atsctrb_gtk_scale_set_digits gtk_scale_set_digits
 #define atsctrb_gtk_scale_set_value_pos gtk_scale_set_value_pos
 #define atsctrb_gtk_scale_set_draw_value gtk_scale_set_draw_value
+
+/* ****** ****** */
+
+//
+// source: gtk/gtkstatusbar.h
+//
+
+ATSinline()
+ats_ptr_type
+atsctrb_gtk_statusbar_new () {
+  GtkWidget *widget = gtk_statusbar_new();
+  g_object_ref_sink(G_OBJECT(widget)) ; // removing floating reference!
+  return widget ;
+} // end of [atsctrb_gtk_statusbar_new]
+
+#define atsctrb_gtk_statusbar_push gtk_statusbar_push
+#define atsctrb_gtk_statusbar_pop gtk_statusbar_pop
+#define atsctrb_gtk_statusbar_remove gtk_statusbar_remove
+
+#define atsctrb_gtk_statusbar_get_context_id gtk_statusbar_get_context_id
+
+#define atsctrb_gtk_statusbar_get_has_resize_grip gtk_statusbar_get_has_resize_grip
+#define atsctrb_gtk_statusbar_set_has_resize_grip gtk_statusbar_set_has_resize_grip
 
 /* ****** ****** */
 
@@ -495,6 +588,20 @@ atsctrb_gtk_vbox_new (
 /* ****** ****** */
 
 //
+// source: gtk/gtkvruler.h
+//
+
+ATSinline()
+ats_ptr_type
+atsctrb_gtk_vruler_new () {
+  GtkWidget *widget = gtk_vruler_new () ;
+  g_object_ref_sink(G_OBJECT(widget)) ; // removing floating reference!
+  return widget ;
+} // end of [atsctrb_gtk_vruler_new]
+
+/* ****** ****** */
+
+//
 // source: gtk/gtkvscale.h
 //
 
@@ -540,8 +647,11 @@ atsctrb_gtk_vseparator_new () {
 
 #define atsctrb_gtk_widget_destroy gtk_widget_destroy
 #define atsctrb_gtk_widget_show gtk_widget_show
+#define atsctrb_gtk_widget_show_now gtk_widget_show_now
+#define atsctrb_gtk_widget_show_all gtk_widget_show_all
 #define atsctrb_gtk_widget_set_size_request gtk_widget_set_size_request
 #define atsctrb_gtk_widget_grab_default gtk_widget_grab_default
+#define atsctrb_gtk_widget_set_events gtk_widget_set_events
 
 /* ****** ****** */
 

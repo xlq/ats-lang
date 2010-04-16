@@ -1,6 +1,6 @@
 (*
 **
-** A simple GTK example: table packing
+** A simple GTK example: box packing
 **
 ** Author: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
 ** Time: April, 2010

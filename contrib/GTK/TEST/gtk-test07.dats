@@ -1,6 +1,6 @@
 (*
 **
-** A simple GTK example: table packing
+** A simple GTK example: adjustment, range, scale
 **
 ** Author: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
 ** Time: April, 2010
@@ -199,7 +199,8 @@ implement main1 () = () where {
   val () = gtk_box_pack_start (box1, box2, GTRUE, GTRUE, (guint)0)
   val () = gtk_widget_show (box2)
   val button = gtk_check_button_new_with_label ("Display value on scale widgets")
-  val _sid = g_signal_connect (button, (gsignal)"toggled", G_CALLBACK(cb_draw_value), (gpointer)null)
+  val _sid = g_signal_connect
+    (button, (gsignal)"toggled", G_CALLBACK(cb_draw_value), (gpointer)null)
   val () = gtk_toggle_button_set_active (button, GTRUE)
   val () = gtk_widget_show (button)
   val () = gtk_box_pack_start (box2, button, GTRUE, GTRUE, (guint)0)

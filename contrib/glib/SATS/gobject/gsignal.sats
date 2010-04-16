@@ -49,7 +49,24 @@ macdef GSIGNAL_DELETE_EVENT = $extval (gsignal, "\"delete_event\"")
 
 (* ****** ****** *)
 
-fun g_signal_connect
+symintr g_signal_connect
+
+//
+// for a destructive signal
+//
+fun g_signal_connect0
+  {c:cls | c <= GObject} {l:anz} (
+    x: gobjptr (c, l)
+  , sig: gsignal
+  , handler: GCallback
+  , data: gpointer
+  ) : guint = "#atsctrb_g_signal_connect"
+// end of [g_signal_connect0]
+
+//
+// for a non-destructive signal
+//
+fun g_signal_connect1
   {c:cls | c <= GObject} {l:anz} (
     x: !gobjptr (c, l)
   , sig: gsignal
@@ -57,6 +74,9 @@ fun g_signal_connect
   , data: gpointer
   ) : guint = "#atsctrb_g_signal_connect"
 // end of [g_signal_connect]
+overload g_signal_connect with g_signal_connect1
+
+(* ****** ****** *)
 
 fun g_signal_connect_after
   {c:cls | c <= GObject} {l:anz} (
@@ -68,6 +88,8 @@ fun g_signal_connect_after
 // end of [g_signal_connect_after]
 
 (* ****** ****** *)
+
+symintr g_signal_connect_swapped
 
 fun g_signal_connect_swapped0
   {c1,c2:cls | c1 <= GObject; c2 <= GObject}
@@ -89,6 +111,7 @@ fun g_signal_connect_swapped1
   , data: !gobjptr (c2, l2)
   ) : guint = "#atsctrb_g_signal_connect_swapped"
 // end of [g_signal_connect_swapped]
+overload g_signal_connect_swapped with g_signal_connect_swapped1
 
 (* ****** ****** *)
 

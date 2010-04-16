@@ -1,6 +1,6 @@
 (*
 **
-** A simple GTK example: table packing
+** A simple GTK example: various arrows
 **
 ** Author: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
 ** Time: April, 2010
@@ -46,8 +46,9 @@ extern fun main1 (): void = "main1"
 
 implement main1 () = () where {
   val window = gtk_window_new (GTK_WINDOW_TOPLEVEL)
-  val _sid = g_signal_connect (
-    window, (gsignal)"destroy", (G_CALLBACK)gtk_main_quit, (gpointer)null
+  val (fpf_window | window_) = g_object_vref (window) // no-op casting
+  val _sid = g_signal_connect0 (
+    window_, (gsignal)"destroy", (G_CALLBACK)gtk_main_quit, (gpointer)null
   ) // end of [val]
   val () = gtk_window_set_title (window, "Arrow Buttons")
   val () = gtk_container_set_border_width (window, (guint)10)
@@ -73,11 +74,8 @@ implement main1 () = () where {
   val () = g_object_unref (box)
 //
   val () = gtk_widget_show (window)
+  prval () = fpf_window (window)
   val () = gtk_main ()
-//
-  prval () = __leak (window) where {
-    extern prfun __leak {a:viewtype} (x: a): void // it is okay after [gtk_main]
-  }
 } // end of [main1]
 
 (* ****** ****** *)

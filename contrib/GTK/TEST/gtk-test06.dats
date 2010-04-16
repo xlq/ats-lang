@@ -1,6 +1,6 @@
 (*
 **
-** A simple GTK example: table packing
+** A simple GTK example: various buttons
 **
 ** Author: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
 ** Time: April, 2010
@@ -60,11 +60,13 @@ implement main1 () = () where {
   val () = g_slist_free_nil (G_SLIST_NULL)
   val () = gtk_box_pack_start (box2, button1, GTRUE, GTRUE, (guint)0)
   val () = gtk_widget_show (button1)
-  val (fpf_group | group) = gtk_radio_button_get_group (button1)
+  val (stamp | group) = gtk_radio_button_get_group (button1)
   val () = g_object_unref (button1)
 //
+  prval () = stamped_decode (group)
   val button2 = gtk_radio_button_new_with_label (group, "button2")
-  prval () = fpf_group (group)
+  prval () = stamped_encode (group)
+  prval () = stamp_forfeit (stamp, group)
   val () = gtk_toggle_button_set_active (button2, GTRUE)
   val () = gtk_box_pack_start (box2, button2, GTRUE, GTRUE, (guint)0)
   val () = gtk_widget_show (button2)

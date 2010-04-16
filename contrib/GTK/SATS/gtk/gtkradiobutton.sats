@@ -65,8 +65,8 @@ fun gtk_radio_button_new_with_label_from_widget
 (* ****** ****** *)
 
 fun gtk_radio_button_get_group
-  {c:cls | c <= GtkRadioButton} {l:anz} (button: !gobjptr (c, l))
-  : [n:nat] (GSList_ptr (gpointer, n) -<lin,prf> void | GSList_ptr (gpointer, n))
+  {c:cls | c <= GtkRadioButton} {l:anz}
+  (button: !gobjptr (c, l)): [t:int] (stamp t | stamped (GSList_ptr0 (gpointer), t))
   = "#atsctrb_gtk_radio_button_get_group"
 // end of [gtk_radio_button_get_group]
 

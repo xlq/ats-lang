@@ -43,4 +43,12 @@
 
 /* ****** ****** */
 
+ATSinline()
+GdkEventMask
+atsctrb_lor_GdkEventMask_GdkEventMask
+  (GdkEventMask x1, GdkEventMask x2) { return (x1 | x2) ; }
+// end of [atsctrb_lor_GdkEventMask_GdkEventMask]
+
+/* ****** ****** */
+
 #endif // end of [ATSCTRB_GDK_CATS]

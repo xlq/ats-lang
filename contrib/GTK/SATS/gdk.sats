@@ -63,15 +63,7 @@ stadef gobjptr = $GOBJ.gobjptr
 
 (* ****** ****** *)
 
-abst@ype GdkEventType
-
-typedef GdkEvent = $extype_struct "GdkEvent" of {
-  type= GdkEventType
-/*
-, window= GdkWindow
-*/
-, send_event= gint8
-} // end of [GdkEvent]
+#include "contrib/GTK/SATS/gdk/gdkevents.sats"
 
 (* ****** ****** *)
 

@@ -33,67 +33,52 @@
 
 //
 // Author: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
-// Start Time: April, 2010
+// Time: April, 2010
 //
 
 (* ****** ****** *)
 
-abst@ype GTK_WIDGET_FLAG = guint
-macdef GTK_CAN_DEFAULT = $extval (GTK_WIDGET_FLAG, "GTK_CAN_DEFAULT")
+fun gtk_statusbar_new
+  (): GtkStatusbar_ptr1 = "#atsctrb_gtk_statusbar_new"
+// end of [gtk_statusbar_new]
 
-fun GTK_WIDGET_SET_FLAGS
-  {c:cls | c <= GtkWidget} {l:anz} (widget: !gobjptr (c, l), flag: GTK_WIDGET_FLAG): void
-  = "#atsctrb_GTK_WIDGET_SET_FLAGS"
-// end of [...]
-
-(* ****** ****** *)
-
-//
-// this one is based on refcount?
-//
-fun gtk_widget_destroy
-  {c:cls | c <= GtkWidget} {l:anz} (widget: gobjptr (c, l)): void
-  = "#atsctrb_gtk_widget_destroy"
+fun gtk_statusbar_get_context_id
+  {c:cls | c <= GtkStatusbar} {l:anz} (bar: !gobjptr (c, l), context: string): guint
+  = "#atsctrb_gtk_statusbar_get_context_id"
+// end of [gtk_statusbar_get_context_id]
 
 (* ****** ****** *)
 
-fun gtk_widget_show
-  {c:cls | c <= GtkWidget} {l:anz} (widget: !gobjptr (c, l)): void
-  = "#atsctrb_gtk_widget_show"
+fun gtk_statusbar_push
+  {c:cls | c <= GtkStatusbar} {l:anz}
+  (bar: !gobjptr (c, l), context_id: guint, text: string): void
+  = "#atsctrb_gtk_statusbar_push"
+// end of [gtk_statusbar_push]
 
-fun gtk_widget_show_now
-  {c:cls | c <= GtkWidget} {l:anz} (widget: !gobjptr (c, l)): void
-  = "#atsctrb_gtk_widget_show_now"
+fun gtk_statusbar_pop
+  {c:cls | c <= GtkStatusbar} {l:anz}
+  (bar: !gobjptr (c, l), context_id: guint): void
+  = "#atsctrb_gtk_statusbar_pop"
+// end of [gtk_statusbar_pop]
 
-fun gtk_widget_show_all
-  {c:cls | c <= GtkWidget} {l:anz} (widget: !gobjptr (c, l)): void
-  = "#atsctrb_gtk_widget_show_all"
-
-(* ****** ****** *)
-
-//
-// HX: negative width/height can have special meaning
-//
-fun gtk_widget_set_size_request
-  {c:cls | c <= GtkWidget} {l:anz} (
-    widegt: !gobjptr (c, l), width: gint, height: gint
-  ) : void = "#atsctrb_gtk_widget_set_size_request"
-// end of [gtk_widget_set_size_request]
+fun gtk_statusbar_remove
+  {c:cls | c <= GtkStatusbar} {l:anz}
+  (bar: !gobjptr (c, l), context_id: guint, message_id: guint): void
+  = "#atsctrb_gtk_statusbar_remove"
+// end of [gtk_statusbar_remvoe]
 
 (* ****** ****** *)
 
-fun gtk_widget_grab_default
-  {c:cls | c <= GtkWidget} {l:anz} (widget: !gobjptr (c, l)): void
-  = "#atsctrb_gtk_widget_grab_default"
-// end of [gtk_widget_grab_default]
+fun gtk_statusbar_get_has_resize_grip
+  {c:cls | c <= GtkStatusbar} {l:anz} (bar: !gobjptr (c, l)): gboolean
+  = "#atsctrb_gtk_statusbar_get_has_resize_grip"
+// end of [gtk_statusbar_get_has_resize_grip]
+
+fun gtk_statusbar_set_has_resize_grip
+  {c:cls | c <= GtkStatusbar} {l:anz} (bar: !gobjptr (c, l), setting: gboolean): void
+  = "#atsctrb_gtk_statusbar_set_has_resize_grip"
+// end of [gtk_statusbar_set_has_resize_grip]
 
 (* ****** ****** *)
 
-fun gtk_widget_set_events
-  {c:cls | c <= GtkWidget} {l:anz} (widget: !gobjptr (c, l), events: gint): void
-  = "#atsctrb_gtk_widget_set_events"
-// end of [gtk_widget_set_events]
-
-(* ****** ****** *)
-
-(* end of [gtkwidget.sats] *)
+(* end of [gtkstatusbar.sats] *)

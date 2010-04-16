@@ -38,49 +38,33 @@
 
 (* ****** ****** *)
 
-fun gtk_label_new
-  (name: string): GtkLabel_ptr1 = "#atsctrb_gtk_label_new"
-// end of [gtk_label_new]
+fun gtk_ruler_set_metric
+  {c:cls | c <= GtkRuler} {l:anz}
+  (ruler: !gobjptr (c, l), metric: GtkMetricType): void
+  = "#atsctrb_gtk_ruler_set_metric"
+// end of [gtk_ruler_set_metric]
 
 (* ****** ****** *)
 
-fun gtk_label_set_text
-  {c:cls | c <= GtkLabel} {l:anz}
-  (label: !gobjptr (c, l), name: string): void = "#atsctrb_gtk_label_set_text"
-// end of [gtk_label_set_text]
+typedef
+gtk_ruler_set_range_type (a:t@ype) =
+  {c:cls | c <= GtkRuler} {l:anz} (
+  !gobjptr (c, l)
+, a // lower
+, a // upper
+, a // position
+, a // max_size
+) -<fun1> void // end of [gtk_ruler_set_range_type]
 
-fun gtk_label_get_text
-  {c:cls | c <= GtkLabel} {l:anz}
-  (label: !gobjptr (c, l)): [t:int] (stamp t | stamped (string, t))
-  = "#atsctrb_gtk_label_get_text"
-// end of [gtk_label_get_text]
+symintr gtk_ruler_set_range  
 
-(* ****** ****** *)
-
-fun gtk_label_get_justify
-  {c:cls | c <= GtkLabel} {l:anz}
-  (label: !gobjptr (c, l)): GtkJustification = "#atsctrb_gtk_label_get_justify"
-// end of [gtk_label_get_justify]
-
-fun gtk_label_set_justify
-  {c:cls | c <= GtkLabel} {l:anz}
-  (label: !gobjptr (c, l), jtype: GtkJustification): void
-  = "#atsctrb_gtk_label_set_justify"
-// end of [gtk_label_set_justify]
+fun gtk_ruler_set_range__type: gtk_ruler_set_range_type (double)
+  = "#atsctrb_gtk_ruler_set_range"
+overload gtk_ruler_set_range with gtk_ruler_set_range__type 
+fun gtk_ruler_set_range__gtype: gtk_ruler_set_range_type (gdouble)
+  = "#atsctrb_gtk_ruler_set_range"
+overload gtk_ruler_set_range with gtk_ruler_set_range__gtype 
 
 (* ****** ****** *)
 
-fun gtk_label_get_line_wrap
-  {c:cls | c <= GtkLabel} {l:anz}
-  (label: !gobjptr (c, l)): gboolean = "#atsctrb_gtk_label_get_line_wrap"
-// end of [gtk_label_get_line_wrap]
-
-fun gtk_label_set_line_wrap
-  {c:cls | c <= GtkLabel} {l:anz}
-  (label: !gobjptr (c, l), wrap: gboolean): void
-  = "#atsctrb_gtk_label_set_line_wrap"
-// end of [gtk_label_set_line_wrap]
-
-(* ****** ****** *)
-
-(* end of [gtklabel.sats] *)
+(* end of [gtkruler.sats] *)
