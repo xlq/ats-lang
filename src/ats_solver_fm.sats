@@ -58,7 +58,7 @@ fun i0nt_of_int (_: int): i0nt = "ats_solver_fm_i0nt_of_int"
 fun i0nt_of_intinf
   (_: $IntInf.intinf_t): i0nt = "ats_solver_fm_i0nt_of_intinf"
 
-//
+(* ****** ****** *)
 
 fun gt_i0nt_int (_: i0nt, _: int):<> bool = "ats_solver_fm_gt_i0nt_int"
 overload > with gt_i0nt_int

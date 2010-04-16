@@ -103,12 +103,29 @@ implement main1 () = () where {
   val vbox = gtk_vbox_new (GFALSE, (gint)0)
   val () = gtk_container_add (window, vbox)
 //
-  val entry = gtk_entry_new ()
+  val entry = gtk_entry_new () // HX: it seems to be grabbed by default!
+  val gp_entry = (gpointer_vt)entry
   val () = gtk_entry_set_max_length (entry, (gint)50)
+  val _sid = g_signal_connect (
+    entry, (gsignal)"activate", G_CALLBACK (cb), gp_entry
+  ) where {
+    val cb = lam (
+      _: ptr, entry: !GtkEntry_ptr1
+    ) : void => () where {
+      val (stamp | text) = gtk_entry_get_text (entry)
+      prval () = stamped_decode {string} (text)
+      val () = printf (
+        "Entry contexts: %s\n", @(__x)
+      ) where {
+        extern castfn __id (x: !string):<> string; val __x = __id text
+      } // end of [val]
+      prval () = stamped_encode {string} (text)
+      prval () = stamp_forfeit (stamp, text)
+    } // end of [val]
+  }
   val () = gtk_box_pack_start (vbox, entry, GTRUE, GTRUE, (guint)0)
   val () = gtk_entry_set_text (entry, "hello")
   val () = gtk_widget_show (entry)
-  val gp_entry = (gpointer_vt)entry
   val () = g_object_unref (entry)
 //
   val hbox = gtk_hbox_new (GFALSE, (gint)0)
@@ -149,6 +166,9 @@ implement main1 () = () where {
   val _sid = g_signal_connect_swapped
     (button, (gsignal)"clicked", G_CALLBACK (gtk_widget_destroy), window)
   val () = gtk_box_pack_start (vbox, button, GTRUE, GTRUE, (guint)0)
+//
+  val () = GTK_WIDGET_SET_FLAGS (button, GTK_CAN_DEFAULT)
+  val () = gtk_widget_grab_default (button)
   val () = gtk_widget_show (button)
   val () = g_object_unref (button)
 //

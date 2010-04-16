@@ -230,7 +230,13 @@ atsctrb_gtk_entry_new () {
 #define atsctrb_gtk_entry_get_max_length gtk_entry_get_max_length
 #define atsctrb_gtk_entry_set_max_length gtk_entry_set_max_length
 
-#define atsctrb_gtk_entry_get_text gtk_entry_get_text
+ATSinline()
+ats_ptr_type
+atsctrb_gtk_entry_get_text
+  (ats_ptr_type entry) {
+  // it returns a const pointer
+  return (void*)gtk_entry_get_text((GtkEntry*)entry) ;
+}
 #define atsctrb_gtk_entry_set_text gtk_entry_set_text
 
 /* ****** ****** */

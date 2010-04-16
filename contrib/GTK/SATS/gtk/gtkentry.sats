@@ -78,6 +78,12 @@ fun gtk_entry_set_max_length
 
 (* ****** ****** *)
 
+fun gtk_entry_get_text
+  {c:cls | c <= GtkEntry} {l:anz}
+  (entry: !gobjptr (c, l)): [t:int] (stamp t | stamped (string, t))
+  = "#atsctrb_gtk_entry_get_text"
+// end of [gtk_entry_get_text]
+
 fun gtk_entry_set_text
   {c:cls | c <= GtkEntry} {l:anz} (entry: !gobjptr (c, l), text: string): void
   = "#atsctrb_gtk_entry_set_text"
