@@ -128,8 +128,8 @@ atsctrb_gtk_button_new () {
 ATSinline()
 ats_ptr_type
 atsctrb_gtk_button_new_with_label
-  (ats_ptr_type label) {
-  GtkWidget *widget = gtk_button_new_with_label((gchar*)label) ;
+  (ats_ptr_type name) {
+  GtkWidget *widget = gtk_button_new_with_label((gchar*)name) ;
   g_object_ref_sink(G_OBJECT(widget)) ; // removing floating reference!
   return widget ;
 } // end of [atsctrb_gtk_button_new_with_label]
@@ -137,11 +137,20 @@ atsctrb_gtk_button_new_with_label
 ATSinline()
 ats_ptr_type
 atsctrb_gtk_button_new_with_mnemonic
-  (ats_ptr_type label) {
-  GtkWidget *widget = gtk_button_new_with_mnemonic((gchar*)label) ;
+  (ats_ptr_type name) {
+  GtkWidget *widget = gtk_button_new_with_mnemonic((gchar*)name) ;
   g_object_ref_sink(G_OBJECT(widget)) ; // removing floating reference!
   return widget ;
 } // end of [atsctrb_gtk_button_new_with_mnemonic]
+
+ATSinline()
+ats_ptr_type
+atsctrb_gtk_button_new_from_stock
+  (ats_ptr_type stock_id) {
+  GtkWidget *widget = gtk_button_new_from_stock((gchar*)stock_id) ;
+  g_object_ref_sink(G_OBJECT(widget)) ; // removing floating reference!
+  return widget ;
+} // end of [atsctrb_gtk_button_new_from_stock]
 
 /* ****** ****** */
 
@@ -160,8 +169,8 @@ atsctrb_gtk_check_button_new () {
 ATSinline()
 ats_ptr_type
 atsctrb_gtk_check_button_new_with_label
-  (ats_ptr_type label) {
-  GtkWidget *widget = gtk_check_button_new_with_label((gchar*)label) ;
+  (ats_ptr_type name) {
+  GtkWidget *widget = gtk_check_button_new_with_label((gchar*)name) ;
   g_object_ref_sink(G_OBJECT(widget)) ; // removing floating reference!
   return widget ;
 } // end of [atsctrb_gtk_check_button_new_with_label]
@@ -169,8 +178,8 @@ atsctrb_gtk_check_button_new_with_label
 ATSinline()
 ats_ptr_type
 atsctrb_gtk_check_button_new_with_mnemonic
-  (ats_ptr_type label) {
-  GtkWidget *widget = gtk_check_button_new_with_mnemonic((gchar*)label) ;
+  (ats_ptr_type name) {
+  GtkWidget *widget = gtk_check_button_new_with_mnemonic((gchar*)name) ;
   g_object_ref_sink(G_OBJECT(widget)) ; // removing floating reference!
   return widget ;
 } // end of [atsctrb_gtk_check_button_new_with_mnemonic]
@@ -197,6 +206,32 @@ atsctrb_gtk_drawing_area_new () {
   g_object_ref_sink(G_OBJECT(widget)) ; // removing floating reference!
   return widget ;
 } // end of [atsctrb_gtk_drawing_area_new]
+
+/* ****** ****** */
+
+//
+// source: gtk/gtkentry.h
+//
+
+ATSinline()
+ats_ptr_type
+atsctrb_gtk_entry_new () {
+  GtkWidget *widget = gtk_entry_new () ;
+  g_object_ref_sink(G_OBJECT(widget)) ; // removing floating reference!
+  return widget ;
+} // end of [atsctrb_gtk_entry_new]
+
+#define atsctrb_gtk_entry_get_editable gtk_entry_get_editable
+#define atsctrb_gtk_entry_set_editable gtk_entry_set_editable
+
+#define atsctrb_gtk_entry_get_visibility gtk_entry_get_visibility
+#define atsctrb_gtk_entry_set_visibility gtk_entry_set_visibility
+
+#define atsctrb_gtk_entry_get_max_length gtk_entry_get_max_length
+#define atsctrb_gtk_entry_set_max_length gtk_entry_set_max_length
+
+#define atsctrb_gtk_entry_get_text gtk_entry_get_text
+#define atsctrb_gtk_entry_set_text gtk_entry_set_text
 
 /* ****** ****** */
 

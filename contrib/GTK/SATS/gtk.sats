@@ -217,6 +217,10 @@ viewtypedef GtkCheckButton_ptr (l:addr) = gobjptr (GtkCheckButton, l)
 viewtypedef GtkCheckButton_ptr0 = [l:addr] GtkCheckButton_ptr l
 viewtypedef GtkCheckButton_ptr1 = [l:addr | l > null] GtkCheckButton_ptr l
 
+viewtypedef GtkEntry_ptr (l:addr) = gobjptr (GtkEntry, l)
+viewtypedef GtkEntry_ptr0 = [l:addr] GtkEntry_ptr l
+viewtypedef GtkEntry_ptr1 = [l:addr | l > null] GtkEntry_ptr l
+
 viewtypedef GtkFrame_ptr (l:addr) = gobjptr (GtkFrame, l)
 viewtypedef GtkFrame_ptr0 = [l:addr] GtkFrame_ptr l
 viewtypedef GtkFrame_ptr1 = [l:addr | l > null] GtkFrame_ptr l
@@ -382,6 +386,7 @@ macdef GTK_WINDOW_POPUP =
 #include "contrib/GTK/SATS/gtk/gtkcheckbutton.sats"
 #include "contrib/GTK/SATS/gtk/gtkcontainer.sats"
 #include "contrib/GTK/SATS/gtk/gtkdrawingarea.sats"
+#include "contrib/GTK/SATS/gtk/gtkentry.sats"
 #include "contrib/GTK/SATS/gtk/gtkframe.sats"
 #include "contrib/GTK/SATS/gtk/gtkhbox.sats"
 #include "contrib/GTK/SATS/gtk/gtkhruler.sats"
@@ -410,6 +415,10 @@ macdef GTK_WINDOW_POPUP =
 #include "contrib/GTK/SATS/gtk/gtkvseparator.sats"
 #include "contrib/GTK/SATS/gtk/gtkwidget.sats"
 #include "contrib/GTK/SATS/gtk/gtkwindow.sats"
+
+(* ****** ****** *)
+
+#include "contrib/GTK/SATS/gtk/gtkstock.sats"
 
 (* ****** ****** *)
 

@@ -20,6 +20,7 @@ all:: \
   test09 \
   test10 \
   test11 \
+  test12 \
 
 ######
 
@@ -58,6 +59,9 @@ test10: gtk-test10.dats
 test11: gtk-test11.dats
 	$(ATSCC) -o test11 gtk-test11.dats `pkg-config --cflags --libs gtk+-2.0`
 
+test12: gtk-test12.dats
+	$(ATSCC) -o test12 gtk-test12.dats `pkg-config --cflags --libs gtk+-2.0`
+
 ######
 
 clean::
@@ -77,5 +81,6 @@ cleanall: clean
 	rm -f test09
 	rm -f test10
 	rm -f test11
+	rm -f test12
 
 ###### end of [Makefile] ######

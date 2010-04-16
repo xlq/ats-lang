@@ -1,6 +1,6 @@
 (*
 **
-** A simple GTK example: statusbars
+** A simple GTK example: text entries
 **
 ** Author: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
 ** Time: April, 2010
@@ -93,36 +93,66 @@ extern fun main1 (): void = "main1"
 implement main1 () = () where {
   val window = gtk_window_new (GTK_WINDOW_TOPLEVEL)
   val () = gtk_widget_set_size_request (window, (gint)200, (gint)100)
-  val () = gtk_window_set_title (window, "GTK Statusbar Example")
+  val () = gtk_window_set_title (window, "GTK Entry Example")
+  val _sid = g_signal_connect1
+    (window, (gsignal)"delete_event", G_CALLBACK (delete_event), (gpointer)null)
   val (fpf_window | window_) = g_object_vref (window)
   val _sid = g_signal_connect0
-    (window_, (gsignal)"delete_event", G_CALLBACK (delete_event), (gpointer)null)
+    (window_, (gsignal)"destroy", G_CALLBACK (gtk_main_quit), (gpointer)null)
 //
-  val vbox = gtk_vbox_new (GFALSE, (gint)1)
+  val vbox = gtk_vbox_new (GFALSE, (gint)0)
   val () = gtk_container_add (window, vbox)
+//
+  val entry = gtk_entry_new ()
+  val () = gtk_entry_set_max_length (entry, (gint)50)
+  val () = gtk_box_pack_start (vbox, entry, GTRUE, GTRUE, (guint)0)
+  val () = gtk_entry_set_text (entry, "hello")
+  val () = gtk_widget_show (entry)
+  val gp_entry = (gpointer_vt)entry
+  val () = g_object_unref (entry)
+//
+  val hbox = gtk_hbox_new (GFALSE, (gint)0)
+  val () = gtk_container_add (vbox, hbox)
+//
+  val check = gtk_check_button_new_with_label ("Editable")
+  val _sid = g_signal_connect
+    (check, (gsignal)"toggled", G_CALLBACK cb, gp_entry) where {
+    val cb = lam (
+        x1: !GtkToggleButton_ptr1, x2: !GtkEntry_ptr1
+      ) : void => () where {
+      val () = gtk_entry_set_editable (x2, gtk_toggle_button_get_active (x1))
+    } // end of [cb]
+  } // end of [val]
+  val () = gtk_box_pack_start (hbox, check, GTRUE, GTRUE, (guint)0)
+  val () = gtk_toggle_button_set_active (check, GTRUE)
+  val () = gtk_widget_show (check)
+  val () = g_object_unref (check)
+//
+  val check = gtk_check_button_new_with_label ("Visible")
+  val _sid = g_signal_connect
+    (check, (gsignal)"toggled", G_CALLBACK cb, gp_entry) where {
+    val cb = lam (
+        x1: !GtkToggleButton_ptr1, x2: !GtkEntry_ptr1
+      ) : void => () where {
+      val () = gtk_entry_set_visibility (x2, gtk_toggle_button_get_active (x1))
+    } // end of [cb]
+  } // end of [val]
+  val () = gtk_box_pack_start (hbox, check, GTRUE, GTRUE, (guint)0)
+  val () = gtk_toggle_button_set_active (check, GTRUE)
+  val () = gtk_widget_show (check)
+  val () = g_object_unref (check)
+//
+  val () = gtk_widget_show (hbox)
+  val () = g_object_unref (hbox)
+//
+  val button = gtk_button_new_from_stock (GTK_STOCK_CLOSE)
+  val _sid = g_signal_connect_swapped
+    (button, (gsignal)"clicked", G_CALLBACK (gtk_widget_destroy), window)
+  val () = gtk_box_pack_start (vbox, button, GTRUE, GTRUE, (guint)0)
+  val () = gtk_widget_show (button)
+  val () = g_object_unref (button)
+//
   val () = gtk_widget_show (vbox)
-//
-  val statusbar = gtk_statusbar_new ()
-  val () = the_statusbar_set (statusbar)
-  val () = gtk_box_pack_start (vbox, statusbar, GTRUE, GTRUE, guint(0))
-  val () = gtk_widget_show (statusbar)
-  val context_id = gtk_statusbar_get_context_id (statusbar, "Statusbar Example")
-  val context_id = uint_of(context_id)
-  val context_id = uintptr_of(context_id)
-  val () = g_object_unref (statusbar)
-//
-  val button = gtk_button_new_with_label ("push item")
-  val _sid = g_signal_connect (button, (gsignal)"clicked", G_CALLBACK (push_item), (gpointer)context_id)
-  val () = gtk_box_pack_start (vbox, button, GTRUE, GTRUE, guint(2))
-  val () = gtk_widget_show (button)
-  val () = g_object_unref (button)
-//
-  val button = gtk_button_new_with_label ("pop last item")
-  val _sid = g_signal_connect (button, (gsignal)"clicked", G_CALLBACK (pop_item), (gpointer)context_id)
-  val () = gtk_box_pack_start (vbox, button, GTRUE, GTRUE, guint(2))
-  val () = gtk_widget_show (button)
-  val () = g_object_unref (button)
-//
   val () = g_object_unref (vbox)
 //
   val () = gtk_widget_show (window)
@@ -149,4 +179,4 @@ mainats (
 
 (* ****** ****** *)
 
-(* end of [gtk-test11.dats] *)
+(* end of [gtk-test12.dats] *)

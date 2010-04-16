@@ -38,23 +38,51 @@
 
 (* ****** ****** *)
 
-fun gtk_button_new
-  (): GtkButton_ptr1 = "#atsctrb_gtk_button_new"
-
-fun gtk_button_new_with_label
-  (label: string): GtkButton_ptr1 = "#atsctrb_gtk_button_new_with_label"
-// end of [gtk_button_new_with_label]
-
-fun gtk_button_new_with_mnemonic
-  (label: string): GtkButton_ptr1 = "#atsctrb_gtk_button_new_with_mnemonic"
-// end of [gtk_button_new_with_mnemonic]
+fun gtk_entry_new (): GtkEntry_ptr1 = "#atsctrb_gtk_entry_new"
 
 (* ****** ****** *)
 
-fun gtk_button_new_from_stock
-  (stock_id: string): GtkButton_ptr1 = "#atsctrb_gtk_button_new_from_stock"
-// end of [gtk_button_new_from_stock]
+fun gtk_entry_get_visibility
+  {c:cls | c <= GtkEntry} {l:anz} (entry: !gobjptr (c, l)): gboolean
+  = "#atsctrb_gtk_entry_get_visibility"
+// end of [gtk_entry_get_visibility]
+
+fun gtk_entry_set_visibility
+  {c:cls | c <= GtkEntry} {l:anz} (entry: !gobjptr (c, l), visibility: gboolean): void
+  = "#atsctrb_gtk_entry_set_visibility"
+// end of [gtk_entry_set_visibility]
 
 (* ****** ****** *)
 
-(* end of [gtkbutton.sats] *)
+fun gtk_entry_get_editable
+  {c:cls | c <= GtkEntry} {l:anz} (entry: !gobjptr (c, l)): gboolean
+  = "#atsctrb_gtk_entry_get_editable"
+// end of [gtk_entry_get_editable]
+
+fun gtk_entry_set_editable
+  {c:cls | c <= GtkEntry} {l:anz} (entry: !gobjptr (c, l), editable: gboolean): void
+  = "#atsctrb_gtk_entry_set_editable"
+// end of [gtk_entry_set_editable]
+
+(* ****** ****** *)
+
+fun gtk_entry_get_max_length
+  {c:cls | c <= GtkEntry} {l:anz} (entry: !gobjptr (c, l)): gint
+  = "#atsctrb_gtk_entry_get_max_length"
+// end of [gtk_entry_get_max_length]
+
+fun gtk_entry_set_max_length
+  {c:cls | c <= GtkEntry} {l:anz} (entry: !gobjptr (c, l), max: gint): void
+  = "#atsctrb_gtk_entry_set_max_length"
+// end of [gtk_entry_set_max_length]
+
+(* ****** ****** *)
+
+fun gtk_entry_set_text
+  {c:cls | c <= GtkEntry} {l:anz} (entry: !gobjptr (c, l), text: string): void
+  = "#atsctrb_gtk_entry_set_text"
+// end of [gtk_entry_set_text]
+
+(* ****** ****** *)
+
+(* end of [gtkentry.sats] *)
