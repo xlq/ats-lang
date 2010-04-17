@@ -69,13 +69,13 @@ in
 
 gtk_main ()
 
-end
+end // end of [main]
 
 (* ****** ****** *)
 
 implement main_dummy () = () // [mainats] is implemented in C
 
-%{
+%{$
 
 void mainats (ats_int_type argc, ats_ptr_type argv) {
 
@@ -85,7 +85,7 @@ return ;
 
 }
 
-%}
+%} // end of [%{$]
 
 (* ****** ****** *)
 
