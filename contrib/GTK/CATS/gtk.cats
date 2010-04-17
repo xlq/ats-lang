@@ -531,6 +531,43 @@ atsctrb_gtk_radio_button_new_with_label_from_widget
 /* ****** ****** */
 
 //
+// source: gtk/gtkspinbutton.h
+//
+
+ATSinline()
+ats_ptr_type
+atsctrb_gtk_spin_button_new (
+  ats_ptr_type adj, gdouble rate, guint digits
+) {
+  GtkWidget *widget ;
+  widget = gtk_spin_button_new ((GtkAdjustment*)adj, rate, digits) ;
+  g_object_ref_sink(G_OBJECT(widget)) ; // removing floating reference!
+  return widget ;
+} // end of [atsctrb_gtk_spin_button_new]
+
+#define atsctrb_gtk_spin_button_configure gtk_spin_button_configure
+
+#define atsctrb_gtk_spin_button_get_value gtk_spin_button_get_value
+#define atsctrb_gtk_spin_button_set_value gtk_spin_button_set_value
+
+#define atsctrb_gtk_spin_button_get_digits gtk_spin_button_get_digits
+#define atsctrb_gtk_spin_button_set_digits gtk_spin_button_set_digits
+
+#define atsctrb_gtk_spin_button_get_numeric gtk_spin_button_get_numeric
+#define atsctrb_gtk_spin_button_set_numeric gtk_spin_button_set_numeric
+
+#define atsctrb_gtk_spin_button_get_wrap gtk_spin_button_get_wrap
+#define atsctrb_gtk_spin_button_set_wrap gtk_spin_button_set_wrap
+
+#define atsctrb_gtk_spin_button_get_snap_to_ticks gtk_spin_button_get_snap_to_ticks
+#define atsctrb_gtk_spin_button_set_snap_to_ticks gtk_spin_button_set_snap_to_ticks
+
+#define atsctrb_gtk_spin_button_spin gtk_spin_button_spin
+#define atsctrb_gtk_spin_button_update gtk_spin_button_update
+
+/* ****** ****** */
+
+//
 // source: gtk/gtkstatusbar.h
 //
 

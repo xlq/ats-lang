@@ -45,11 +45,6 @@ fun gtk_table_new
 
 (* ****** ****** *)
 
-abst@ype GtkAttachOptions = $extype "GtkAttachOptions"
-macdef GTK_FILL = $extval (GtkAttachOptions, "GTK_FILL")
-macdef GTK_EXPAND = $extval (GtkAttachOptions, "GTK_EXPAND")
-macdef GTK_SHRINK = $extval (GtkAttachOptions, "GTK_SHRINK")
-
 fun lor_GtkAttachOptions_GtkAttachOptions
   (x1: GtkAttachOptions, x2: GtkAttachOptions):<> GtkAttachOptions
   = "atsctrb_lor_GtkAttachOptions_GtkAttachOptions"

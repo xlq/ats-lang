@@ -269,6 +269,10 @@ viewtypedef GtkRadioButton_ptr (l:addr) = gobjptr (GtkRadioButton, l)
 viewtypedef GtkRadioButton_ptr0 = [l:addr] GtkRadioButton_ptr l
 viewtypedef GtkRadioButton_ptr1 = [l:addr | l > null] GtkRadioButton_ptr l
 
+viewtypedef GtkSpinButton_ptr (l:addr) = gobjptr (GtkSpinButton, l)
+viewtypedef GtkSpinButton_ptr0 = [l:addr] GtkSpinButton_ptr l
+viewtypedef GtkSpinButton_ptr1 = [l:addr | l > null] GtkSpinButton_ptr l
+
 viewtypedef GtkStatusbar_ptr (l:addr) = gobjptr (GtkStatusbar, l)
 viewtypedef GtkStatusbar_ptr0 = [l:addr] GtkStatusbar_ptr l
 viewtypedef GtkStatusbar_ptr1 = [l:addr | l > null] GtkStatusbar_ptr l
@@ -309,75 +313,14 @@ viewtypedef GtkWindow_ptr1 = [l:addr | l > null] GtkWindow_ptr l
 
 (* ****** ****** *)
 
-abst@ype
-GtkArrowType = $extype "GtkArrowType"
-macdef GTK_ARROW_UP = $extval (GtkArrowType, "GTK_ARROW_UP")
-macdef GTK_ARROW_DOWN = $extval (GtkArrowType, "GTK_ARROW_DOWN")
-macdef GTK_ARROW_LEFT = $extval (GtkArrowType, "GTK_ARROW_LEFT")
-macdef GTK_ARROW_RIGHT = $extval (GtkArrowType, "GTK_ARROW_RIGHT")
-
-(* ****** ****** *)
-
-abst@ype
-GtkShadowType = $extype "GtkShadowType"
-macdef GTK_SHADOW_IN = $extval (GtkShadowType, "GTK_SHADOW_IN")
-macdef GTK_SHADOW_OUT = $extval (GtkShadowType, "GTK_SHADOW_OUT") // default
-macdef GTK_SHADOW_ETCHED_IN = $extval (GtkShadowType, "GTK_SHADOW_ETCHED_IN")
-macdef GTK_SHADOW_ETCHED_OUT = $extval (GtkShadowType, "GTK_SHADOW_ETCHED_OUT")
-
-(* ****** ****** *)
-
-abst@ype
-GtkJustification = $extype "GtkJustification"
-macdef GTK_JUSTIFY_LEFT = $extval (GtkJustification, "GTK_JUSTIFY_LEFT")
-macdef GTK_JUSTIFY_RIGHT = $extval (GtkJustification, "GTK_JUSTIFY_RIGHT")
-macdef GTK_JUSTIFY_CENTER = $extval (GtkJustification, "GTK_JUSTIFY_CENTER")
-macdef GTK_JUSTIFY_FILL = $extval (GtkJustification, "GTK_JUSTIFY_FILL")
-
-(* ****** ****** *)
-
-abst@ype
-GtkMetricType = $extype "GtkMetricType"
-macdef GTK_PIXELS = $extval (GtkMetricType, "GTK_PIXELS")
-macdef GTK_INCHES = $extval (GtkMetricType, "GTK_INCHES")
-macdef GTK_CENTIMETERS = $extval (GtkMetricType, "GTK_CENTIMETERS")
-
-(* ****** ****** *)
-
-abst@ype
-GtkPositionType = $extype "GtkPositionType"
-macdef GTK_POS_LEFT =
-  $extval (GtkPositionType, "GTK_POS_LEFT")
-macdef GTK_POS_RIGHT =
-  $extval (GtkPositionType, "GTK_POS_RIGHT")
-macdef GTK_POS_TOP =
-  $extval (GtkPositionType, "GTK_POS_TOP")
-macdef GTK_POS_BOTTOM =
-  $extval (GtkPositionType, "GTK_POS_BOTTOM")
-
-(* ****** ****** *)
-
-abst@ype
-GtkUpdateType = $extype "GtkUpdateType"
-macdef GTK_UPDATE_CONTINUOUS =
-  $extval (GtkUpdateType, "GTK_UPDATE_CONTINUOUS")
-macdef GTK_UPDATE_DISCONTINUOUS =
-  $extval (GtkUpdateType, "GTK_UPDATE_DISCONTINUOUS")
-macdef GTK_UPDATE_DELAYED =
-  $extval (GtkUpdateType, "GTK_UPDATE_DELAYED")
-
-(* ****** ****** *)
-
-abst@ype
-GtkWindowType = $extype "GtkWindowType"
-macdef GTK_WINDOW_TOPLEVEL =
-  $extval (GtkWindowType, "GTK_WINDOW_TOPLEVEL")
-macdef GTK_WINDOW_POPUP =
-  $extval (GtkWindowType, "GTK_WINDOW_POPUP")
-
-(* ****** ****** *)
-
 #include "contrib/GTK/SATS/gtk/gtkmain.sats"
+
+(* ****** ****** *)
+
+#include "contrib/GTK/SATS/gtk/gtkenums.sats"
+#include "contrib/GTK/SATS/gtk/gtkstock.sats"
+
+(* ****** ****** *)
 
 #include "contrib/GTK/SATS/gtk/gtkadjustment.sats"
 #include "contrib/GTK/SATS/gtk/gtkarrow.sats"
@@ -405,6 +348,7 @@ macdef GTK_WINDOW_POPUP =
 #include "contrib/GTK/SATS/gtk/gtkscale.sats"
 #include "contrib/GTK/SATS/gtk/gtkscrollbar.sats"
 #include "contrib/GTK/SATS/gtk/gtkseparator.sats"
+#include "contrib/GTK/SATS/gtk/gtkspinbutton.sats"
 #include "contrib/GTK/SATS/gtk/gtkstatusbar.sats"
 #include "contrib/GTK/SATS/gtk/gtktable.sats"
 #include "contrib/GTK/SATS/gtk/gtktogglebutton.sats"
@@ -415,10 +359,6 @@ macdef GTK_WINDOW_POPUP =
 #include "contrib/GTK/SATS/gtk/gtkvseparator.sats"
 #include "contrib/GTK/SATS/gtk/gtkwidget.sats"
 #include "contrib/GTK/SATS/gtk/gtkwindow.sats"
-
-(* ****** ****** *)
-
-#include "contrib/GTK/SATS/gtk/gtkstock.sats"
 
 (* ****** ****** *)
 
