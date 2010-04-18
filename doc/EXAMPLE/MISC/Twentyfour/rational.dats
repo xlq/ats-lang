@@ -1,8 +1,9 @@
 (*
 
 // Implementing some operations on rational numbers
-
+//
 // author: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
+//
 
 *)
 

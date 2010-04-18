@@ -18,7 +18,7 @@ ATSOPT=$(or $(ATSHOME), "/usr")/bin/atsopt
 ######
 
 .PHONY: all
-all:  compall
+all: checkall
 
 checkall: compall cleanall
 

@@ -31,15 +31,6 @@ staload "contrib/GTK/SATS/gtk.sats"
 
 (* ****** ****** *)
 
-fun delete_event {c:cls | c <= GtkWidget} {l:anz}
-  (widget: !gobjptr (c, l), event: &GdkEvent, _: gpointer): gboolean = let
-  val () = gtk_main_quit ()
-in
-  GFALSE // delivered!
-end // end of [delete_event]
-
-(* ****** ****** *)
-
 %{^
 GtkWidget *the_spinner1 = NULL;
 ats_ptr_type

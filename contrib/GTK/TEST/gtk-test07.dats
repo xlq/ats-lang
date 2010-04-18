@@ -107,7 +107,8 @@ cb_page_size (ats_ptr_type get0, ats_ptr_type set0) {
   GtkAdjustment *set = (GtkAdjustment*)set0 ;
   set->page_size = get->value;
   set->page_increment = get->value;
-  gtk_adjustment_set_value (set, CLAMP (set->value, set->lower, (set->upper - set->page_size)));
+  gtk_adjustment_set_value
+    (set, CLAMP (set->value, set->lower, (set->upper - set->page_size)));
   return ;
 } // end of [cb_page_size]
 %} // end of [%{^]

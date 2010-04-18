@@ -153,12 +153,18 @@ solver in ATS, which is based on the Fourier-Motzkin variable elimination
 method~\cite{DE73}. However, the second constraint cannot be handled by the
 constraint solver as it is nonlinear: The constraint cannot be turned into
 a linear integer programming problem due to the occurrence of the nonlinear
-term $n*r_1$.
-
-While nonlinear constraints cannot be handled automatically by the
-constraint solver in ATS, the programmer is given a means to verify them by
-constructing proofs in ATS explicitly. The issue of explicit proof
+term $n*r_1$.  While nonlinear constraints cannot be handled automatically
+by the constraint solver in ATS, the programmer is given a means to verify
+them by constructing proofs in ATS explicitly. The issue of explicit proof
 construction is to be elaborated elsewhere.
+
+Currently, the constraint-solver implemented for ATS/Anairiats makes use of
+machine-level arithmetic (in contrast to the standard arithmetic of
+infinite precision). This is done primarily for the sake of efficiency. In
+the presence of machine-level arithmetic overflow, results returned by the
+constraint-solver are likely to be incorrect. While such cases can be readily
+constructed, their appearances in practice seem exceedingly rare (and the
+author has not yet encountered one to this date).
 
 \section{A Simple Example: Dependent Types for Debugging}
 Given a non-negative integer $x$, the integer square root of $x$ is the

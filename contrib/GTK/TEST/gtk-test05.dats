@@ -1,6 +1,6 @@
 (*
 **
-** A simple GTK example: box packing
+** A simple GTK example: packing widgets
 **
 ** Author: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
 ** Time: April, 2010
@@ -66,7 +66,7 @@ fun make_box (
   val () = gtk_widget_show (button)
   val () = g_object_unref (button)
 //
-  val lable = (if (bool_of)fill then "TRUE," else ",FALSE"): string
+  val label = (if (bool_of)fill then "TRUE," else ",FALSE"): string
   val button = gtk_button_new_with_label (label)
   val () = gtk_box_pack_start (box, button, expand, fill, padding)
   val () = gtk_widget_show (button)
@@ -115,12 +115,12 @@ implement main1 (which) = () where {
         val () = g_object_unref (box2)
 //
         val box2 = make_box (GFALSE, (gint)0, GTRUE, GFALSE, (guint)0)
-        val () = gtk_box_pack_start (box1, box2, GFALSE, GFALSE, (guint)0)
+        val () = gtk_box_pack_start (box1, box2, GTRUE, GFALSE, (guint)0)
         val () = gtk_widget_show (box2)
         val () = g_object_unref (box2)
 //
         val box2 = make_box (GFALSE, (gint)0, GTRUE, GTRUE, (guint)0)
-        val () = gtk_box_pack_start (box1, box2, GFALSE, GFALSE, (guint)0)
+        val () = gtk_box_pack_start (box1, box2, GTRUE, GTRUE, (guint)0)
         val () = gtk_widget_show (box2)
         val () = g_object_unref (box2)
 //

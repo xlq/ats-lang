@@ -547,7 +547,11 @@ atsctrb_gtk_spin_button_new (
 
 #define atsctrb_gtk_spin_button_configure gtk_spin_button_configure
 
+#define atsctrb_gtk_spin_button_get_range gtk_spin_button_get_range
+#define atsctrb_gtk_spin_button_set_range gtk_spin_button_set_range
+
 #define atsctrb_gtk_spin_button_get_value gtk_spin_button_get_value
+#define atsctrb_gtk_spin_button_get_value_as_int gtk_spin_button_get_value_as_int
 #define atsctrb_gtk_spin_button_set_value gtk_spin_button_set_value
 
 #define atsctrb_gtk_spin_button_get_digits gtk_spin_button_get_digits

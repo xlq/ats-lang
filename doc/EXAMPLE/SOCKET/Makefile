@@ -5,8 +5,7 @@
 ######
 
 .PHONY: all
-all:  compall
-
+all: checkall
 
 checkall: compall cleanall
 

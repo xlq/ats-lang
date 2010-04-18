@@ -1,11 +1,13 @@
+//
 // An implemention of the so-called game-of-24
 // Some typical uses of macros are presented here.
-
+//
 // The code was first translated to ATS/Proto by Hongwei Xi in
 // the summer of 2004 from an earlier version in Standard ML
-
-// June 2007:
+//
 // Translated to ATS/Geizella by Hongwei Xi
+// Time: June 2007
+//
 
 (*
 
@@ -52,15 +54,12 @@ datatype expr =
   | Sub of (expr, expr)
   | Mul of (expr, expr)
   | Div of (expr, expr)
+// end of [expr]
 
 // macro definition
-macdef priority_mac e =
-  (case+ ,(e) of
-    | Num _ => 0
-    | Add _ => 2
-    | Sub _ => 2
-    | Mul _ => 1
-    | Div _ => 1): Nat
+macdef priority_mac e = (case+ ,(e) of
+  | Num _ => 0 | Add _ => 2 | Sub _ => 2 | Mul _ => 1 | Div _ => 1
+) : Nat // end of [priority_mac]
 
 // fun priority (e: expr): Nat = ,(priority_mac `(e))
 
@@ -90,6 +89,7 @@ end // end of [print_expr]
 
 and print_expr_ (p0: Nat, p: Nat, e: expr): void =
   if p < p0 then print_expr e else (print "("; print_expr e; print ")")
+// end of [print_expr_]
 
 typedef card = (expr, rat_t)
 
@@ -131,10 +131,12 @@ macrodef cardDiv_mac c1 c2 = `(
   end
 ) // end of [cardDiv_mac]
 
+(*
 // fun cardAdd (c1: card, c2: card) = ,(cardAdd_mac `(c1) `(c2))
 // fun cardSub (c1: card, c2: card) = ,(cardSub_mac `(c1) `(c2))
 // fun cardMul (c1: card, c2: card) = ,(cardMul_mac `(c1) `(c2))
 // fun cardDiv (c1: card, c2: card) = ,(cardDiv_mac `(c1) `(c2))
+*)
 
 datatype cards = cards_nil | cards_cons of (card, cards)
 
@@ -165,15 +167,16 @@ end // end of [cards_append_r]
 (* ****** ****** *)
 
 // this code does not make use of templates
-datatype ratpairs =
-  | ratpairs_nil | ratpairs_cons of (rat_t, rat_t, ratpairs)
+datatype ratpairlst =
+  | ratpairlst_nil | ratpairlst_cons of (rat_t, rat_t, ratpairlst)
+// end of [ratpairlst]
 
-#define rp_nil ratpairs_nil
-#define rp_cons ratpairs_cons
+#define rp_nil ratpairlst_nil
+#define rp_cons ratpairlst_cons
 
 fn ismem
-  (x0: rat_t, y0: rat_t, xys: ratpairs): Bool = let
-  fun aux (xys: ratpairs):<cloptr1> Bool = case+ xys of
+  (x0: rat_t, y0: rat_t, xys: ratpairlst): Bool = let
+  fun aux (xys: ratpairlst):<cloptr1> Bool = case+ xys of
     | rp_nil () => false
     | rp_cons (x, y, xys) => begin
         if x0 = x then (if y0 = y then true else aux xys) else aux xys
@@ -186,14 +189,13 @@ end // end of [ismem]
 (* ****** ****** *)
 
 exception Fatal
-
 fn fatal{a:viewtype} (msg: String): a = (print msg; $raise Fatal)
 
-//
+(* ****** ****** *)
 
 fun playGame (cs: cards, res: rat_t): Bool = let
   // [fn*]: mutual tail-call optimization
-  fn* aux_main (zs: cards, xys: ratpairs):<cloptr1> Bool =
+  fn* aux_main (zs: cards, xys: ratpairlst):<cloptr1> Bool =
     case- zs of
     | x :: nil () => 
        if res = val_of_card_mac x then begin
@@ -203,7 +205,7 @@ fun playGame (cs: cards, res: rat_t): Bool = let
   // end of [aux_main]
 
   and aux1
-    (x: card, xs: cards, y: card, ys: cards, zs: cards, xys: ratpairs)
+    (x: card, xs: cards, y: card, ys: cards, zs: cards, xys: ratpairlst)
     :<cloptr1> Bool =
     if ismem (val_of_card_mac x, val_of_card_mac y, xys) then
       aux2 (x, xs, y, ys, zs, xys) else aux1_ (combine (x, y), x, xs, y, ys, zs, xys)
@@ -211,7 +213,7 @@ fun playGame (cs: cards, res: rat_t): Bool = let
   (* end of [aux1] *)
 
   and aux1_
-    (rs: cards, x: card, xs: cards, y: card, ys: cards, zs: cards, xys: ratpairs)
+    (rs: cards, x: card, xs: cards, y: card, ys: cards, zs: cards, xys: ratpairlst)
     :<cloptr1> Bool =
     case+ rs of
     | r :: rs =>
@@ -223,7 +225,7 @@ fun playGame (cs: cards, res: rat_t): Bool = let
       // end of [nil]
   (* end of [aux1_] *)
 
-  and aux2 (x: card, xs: cards, y: card, ys: cards, zs: cards, xys: ratpairs)
+  and aux2 (x: card, xs: cards, y: card, ys: cards, zs: cards, xys: ratpairlst)
     :<cloptr1> Bool =
     case+ zs of
     | z :: zs => aux1 (x, xs, z, y :: ys, zs, xys) | nil () => (
@@ -245,9 +247,7 @@ fun play
   val cs = c1 :: c2 :: c3 :: c4 :: nil ()
 in
   playGame (cs, answer)
-end
-
-staload "libats/SATS/iterint.sats"
+end // end of [play]
 
 #define BOUND 13
 macdef BOUND_f = double_of BOUND
@@ -255,7 +255,11 @@ macdef BOUND_f = double_of BOUND
 staload "libc/SATS/math.sats"
 staload "libc/SATS/random.sats"
 
-fn int_gen (): int = int_of (floor (1.0 + drand48 () * BOUND_f))
+fn int_gen (): int =
+  int_of (floor (1.0 + drand48 () * BOUND_f))
+// end of [int_gen]
+
+(* ****** ****** *)
 
 implement main (argc, argv) = let
 
@@ -273,20 +277,23 @@ val _ = play (5, 7, 7, 11)
 
 *)
 
-// tail recursion
-
+//
+// mutual tail recursion
+//
 fn* loop1 (i1: int): void = begin
 (*
   prerr "loop1: i1 = "; prerr i1; prerr_newline ();
 *)
   if i1 <= BOUND then loop2 (i1, i1) else ()
-end
+end // end of [loop1]
 
 and loop2 (i1: int, i2: int): void =
   if i2 <= BOUND then loop3 (i1, i2, i2) else loop1 (i1+1)
+// end of [loop2]
 
 and loop3 (i1: int, i2: int, i3: int): void =
   if i3 <= BOUND then loop4 (i1, i2, i3, i3) else loop2 (i1, i2+1)
+// end of [loop3]
 
 and loop4 (i1: int, i2: int, i3: int, i4: int): void =
   if i4 <= BOUND then let
@@ -298,6 +305,7 @@ and loop4 (i1: int, i2: int, i3: int, i4: int): void =
   end else begin
     loop3 (i1, i2, i3+1)
   end // end of [if]
+// end of [loop4]
 
 (*
 
@@ -313,7 +321,7 @@ in
 
 loop1 1
 
-end
+end // end of [main]
 
 (* ****** ****** *)
 

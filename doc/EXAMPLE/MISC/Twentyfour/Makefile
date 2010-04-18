@@ -2,15 +2,21 @@
 ## Makefile for [twentyfour.dats]
 ##
 
+######
+
 #GCFLAG=-D_ATS_gc // no longer in use
 #GCFLAG=-D_ATS_gcats // no longer in use
 GCFLAG=-D_ATS_GCATS
 #GCFLAG=-D_ATS_GCBDW
 
+######
+
 ATSCC=$(or $(ATSHOME), "/usr")/bin/atscc
 
+######
+
 .PHONY: all
-all:  compall
+all: checkall
 
 ######
 

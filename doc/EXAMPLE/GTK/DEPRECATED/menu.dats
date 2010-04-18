@@ -7,7 +7,7 @@
 
 extern void mainats (ats_int_type argc, ats_ptr_type argv) ;
 
-%}
+%} // end of [%{^]
 
 staload "gtk.sats"
 staload "glib.sats"

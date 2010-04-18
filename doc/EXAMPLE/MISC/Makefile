@@ -96,7 +96,8 @@ quicksort_list: quicksort_list.dats
 	$(ATSCC) -o quicksort_list quicksort_list.dats
 
 # the n-queen problem
-queens: queens.dats; $(ATSCC) -o queens queens.dats && ./queens
+queens: queens.dats
+	$(ATSCC) -o queens queens.dats && ./queens 4 > /dev/null
 
 queens_appel: queens_appel.dats
 	$(ATSCC) -o queens_appel queens_appel.dats && ./queens_appel

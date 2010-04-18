@@ -110,6 +110,8 @@ castfn gfloat_of_float (x: float):<> gfloat
 overload gfloat with gfloat_of_float
 castfn gfloat_of_double (x: double):<> gfloat
 overload gfloat with gfloat_of_double
+castfn gfloat_of_int (x: int):<> gfloat
+overload gfloat with gfloat_of_int
 
 (* ****** ****** *)
 
@@ -119,6 +121,8 @@ overload double_of with double_of_gdouble
 symintr gdouble
 castfn gdouble_of_double (x: double):<> gdouble
 overload gdouble with gdouble_of_double
+castfn gdouble_of_int (x: int):<> gdouble
+overload gdouble with gdouble_of_int
 
 (* ****** ****** *)
 

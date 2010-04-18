@@ -13,14 +13,16 @@
 (*******************************************************************)
 
 (*
- *
- * Author: Hongwei Xi (September 2007)
- *
- *)
+**
+** Author: Hongwei Xi (September 2007)
+**
+*)
 
 (* ****** ****** *)
 
+//
 // HX: please do not "prettify" the code; please keep it as it is (10/20/2009)
+//
 
 (* ****** ****** *)
 
@@ -900,7 +902,7 @@ static gboolean menu_button_press_event
   return FALSE;
 }
 
-%}
+%} // end of [%{^]
 
 (* ****** ****** *)
 
