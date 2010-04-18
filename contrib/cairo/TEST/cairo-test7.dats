@@ -31,7 +31,7 @@ stadef cr (l:addr) = cairo_ref l
 
 (* ****** ****** *)
 
-fn draw_hand {l:addr}
+fn draw_hand {l:agz}
   (cr: !cr l, bot: dbl, top:dbl, len: dbl): void = let
   val () = cairo_move_to (cr, 0.0, bot/2)
   val () = cairo_line_to (cr, len, top/2)
@@ -43,7 +43,7 @@ in
   cairo_fill (cr)
 end // end of [draw_hand]
 
-fn draw_clock {l:addr}
+fn draw_clock {l:agz}
   (cr: !cr l, h: natLt 24, m: natLt 60): void = let
 //
   val h = (if h >= 12 then h - 12 else h): natLt 12

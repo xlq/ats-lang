@@ -96,7 +96,7 @@ extern typedef "HASHTBL" = HASHTBL (void, void)
 
 extern
 castfn HASHTBLptr_tblget
-  {key:t0p;itm:vt0p} {l:anz} (ptbl: !HASHTBLptr (key, itm, l))
+  {key:t0p;itm:vt0p} {l:agz} (ptbl: !HASHTBLptr (key, itm, l))
   :<> (HASHTBL (key, itm) @ l, minus (HASHTBLptr (key, itm, l), HASHTBL (key, itm) @ l) | ptr l)
 // end of [HASHTBLptr_get]
 
@@ -341,7 +341,7 @@ end // end of [hashtbl_ptr_relocate]
 (* ****** ****** *)
 
 fn{key:t0p;itm:vt0p}
-hashtbl_resize {l:anz} {sz_new:pos} (
+hashtbl_resize {l:agz} {sz_new:pos} (
   ptbl: !HASHTBLptr (key, itm, l), sz_new: size_t sz_new
 ) :<> void = () where {
   viewtypedef keyitm = @(key, itm)
@@ -499,7 +499,7 @@ hashtbl_insert (ptbl, k0, i0) = found where {
 
 (*
 fun{key:t@ype;itm:viewt@ype}
-hashtbl_remove {l:anz} (
+hashtbl_remove {l:agz} (
   ptbl: !HASHTBLptr (key, itm, l), k0: key, res: &itm? >> opt (itm, b)
 ) :<> #[b:bool] bool b
 // end of [hashtbl_remove]

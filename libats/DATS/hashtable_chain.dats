@@ -177,7 +177,7 @@ extern typedef "HASHTBL" = HASHTBL (void, void)
 
 extern
 castfn HASHTBLptr_tblget
-  {key:t0p;itm:vt0p} {l:anz} (ptbl: !HASHTBLptr (key, itm, l))
+  {key:t0p;itm:vt0p} {l:agz} (ptbl: !HASHTBLptr (key, itm, l))
   :<> (HASHTBL (key, itm) @ l, minus (HASHTBLptr (key, itm, l), HASHTBL (key, itm) @ l) | ptr l)
 // end of [HASHTBLptr_get]
 
@@ -444,7 +444,7 @@ end // end of [hashtbl_ptr_relocate]
 (* ****** ****** *)
 
 fn{key:t0p;itm:vt0p}
-hashtbl_resize {l:anz} {sz_new:pos} (
+hashtbl_resize {l:agz} {sz_new:pos} (
   ptbl: !HASHTBLptr (key, itm, l), sz_new: size_t sz_new
 ) :<> void = () where {
   val (pf, fpf | p) = HASHTBLptr_tblget {key,itm} (ptbl)
@@ -470,7 +470,7 @@ hashtbl_resize {l:anz} {sz_new:pos} (
 
 fn{key:t0p;itm:vt0p}
 hashtbl_resize_double
-  {l:anz} (ptbl: !HASHTBLptr (key, itm, l)):<> void = let
+  {l:agz} (ptbl: !HASHTBLptr (key, itm, l)):<> void = let
   val sz = hashtbl_size (ptbl)
   val sz = size1_of_size (sz) // casting: no op
 in
@@ -479,7 +479,7 @@ end // end of [hashtbl_resize_double]
 
 fn{key:t0p;itm:vt0p}
 hashtbl_resize_half
-  {l:anz} (ptbl: !HASHTBLptr (key, itm, l)): void = let
+  {l:agz} (ptbl: !HASHTBLptr (key, itm, l)): void = let
   val sz = hashtbl_size (ptbl)
   val sz = size1_of_size (sz) // casting: no op
   val sz2 = sz / 2

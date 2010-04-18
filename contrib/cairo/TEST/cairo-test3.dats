@@ -30,7 +30,7 @@ stadef dbl = double
 stadef cr (l:addr) = cairo_ref (l)
 
 fun draw_reg_polygon
-  {l:addr} {n:nat | n >= 3}
+  {l:agz} {n:nat | n >= 3}
   (cr: !cr l, n: int n): void = let
   val agl_delta = 2 * $M.M_PI / n
   fun loop {i:nat | i <= n} .<n-i>.
@@ -54,7 +54,7 @@ end // end of [draw_reg_polygon]
 
 (* ****** ****** *)
 
-fn draw_circle {l:addr} (
+fn draw_circle {l:agz} (
     cr: !cr l, rad: dbl, x0: dbl, y0: dbl
   ) : void = let
   val n0 = 8

@@ -42,8 +42,8 @@
 (* ****** ****** *)
 
 absviewtype REGEXPptr (l:addr)
-viewtypedef REGEXPptr0 = [l:addr] REGEXPptr l
-viewtypedef REGEXPptr1 = [l:addr | l <> null] REGEXPptr l
+viewtypedef REGEXPptr0 = [l:agez] REGEXPptr l
+viewtypedef REGEXPptr1 = [l:addr | l > null] REGEXPptr l
 //
 castfn ptr_of_REGEXPptr {l:addr} (x: !REGEXPptr l): ptr l
 overload ptr_of with ptr_of_REGEXPptr
@@ -65,20 +65,20 @@ fun regexp_compile_exn (pattern: string): REGEXPptr1
 castfn regexp_free_null (p: REGEXPptr null): ptr(*null*)
 
 fun regexp_free
-  {l:anz} (p: REGEXPptr l): void = "atslib_regexp_free"
+  {l:agz} (p: REGEXPptr l): void = "atslib_regexp_free"
 // end of [regexp_free]
 
 (* ****** ****** *)
 
-fun regexp_ref_make {l:anz} (p: REGEXPptr l): REGEXPref
+fun regexp_ref_make {l:agz} (p: REGEXPptr l): REGEXPref
 
 (* ****** ****** *)
 
-fun test_regexp_match_str {l:anz}
+fun test_regexp_match_str {l:agz}
   (re: !REGEXPptr l, str: string): bool
 
 fun test_regexp_match_str_len_ofs
-  {l:anz} {n,i:int | 0 <= i; i <= n }
+  {l:agz} {n,i:int | 0 <= i; i <= n }
   (re: !REGEXPptr l, str: string n, len: int n, ofs: int i): bool
   = "atslib_test_regexp_match_str_len_ofs"
 // end of [test_regexp_match_str_len_ofs]

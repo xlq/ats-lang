@@ -39,7 +39,7 @@ end // end of [load_image]
 (* ****** ****** *)
 
 extern
-fun apply_surface {l1,l2:anz} (
+fun apply_surface {l1,l2:agz} (
     x: int, y: int, src: !SDL_Surface_ref l1, dst: !SDL_Surface_ref l2
   ) : void
 
@@ -136,7 +136,7 @@ end // end of [clean_up]
 (* ****** ****** *)
 
 extern
-fun __main {l1,l2:anz} (
+fun __main {l1,l2:agz} (
     pf_screen:
       !SDL_Surface_ref l1 @ screen
   , pf_image: !SDL_Surface_ref l2 @ image

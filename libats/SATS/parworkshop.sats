@@ -47,8 +47,11 @@
 
 (* ****** ****** *)
 
-absviewtype WORKSHOPptr (a:viewt@ype, l:addr) // boxed linear type
-viewtypedef WORKSHOPptr (a:viewt@ype) = [l:addr] WORKSHOPptr (a, l)
+absviewtype WORKSHOPptr
+(a:viewt@ype, l:addr) // boxed linear type
+viewtypedef WORKSHOPptr (a:viewt@ype) =
+  [l:addr] WORKSHOPptr (a, l) // note that [l > null] always holds 
+// end of [WORKSHOPptr]
 
 (* ****** ****** *)
 

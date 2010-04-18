@@ -520,7 +520,6 @@ fn doc_dir_copy () = let
   val () = fcopy_exn (
     SRCROOTdoc ++ "FAQ.txt", DSTROOTdoc ++ "FAQ.txt"
   ) // end of [fcopy_exn]
-(*
 //
   val SRCROOTdoc_BOOK = SRCROOTdoc ++ "BOOK/"
   val DSTROOTdoc_BOOK = DSTROOTdoc ++ "BOOK/"
@@ -537,7 +536,6 @@ fn doc_dir_copy () = let
   , DSTROOTdoc_BOOK_manual ++ "manual_main.pdf"
   ) // end of [fcopy_exn]
 //
-*)
   val SRCROOTdoc_EXAMPLE = SRCROOTdoc ++ "EXAMPLE/"
   val DSTROOTdoc_EXAMPLE = DSTROOTdoc ++ "EXAMPLE/"
   val () = mkdir_exn (DSTROOTdoc_EXAMPLE, DIRmode)

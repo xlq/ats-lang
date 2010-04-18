@@ -26,7 +26,7 @@ staload "contrib/cairo/SATS/cairo.sats"
 (* ****** ****** *)
 
 stadef dbl = double
-stadef cr = cairo_ref
+stadef cr = cairo_ref1
 
 fun draw_rounded_rectangle .<>. (
     cr: !cr, x: dbl, y: dbl, w: dbl, h:dbl, r: dbl

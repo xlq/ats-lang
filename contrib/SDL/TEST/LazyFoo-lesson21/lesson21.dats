@@ -51,7 +51,7 @@ end // end of [load_image]
 
 (* ****** ****** *)
 
-fn apply_surface {l1,l2:anz} (
+fn apply_surface {l1,l2:agz} (
     x: int, y: int
   , src: !SDL_Surface_ref l1, dst: !SDL_Surface_ref l2
   , srcrect: &SDL_Rect
@@ -61,7 +61,7 @@ fn apply_surface {l1,l2:anz} (
   val _err = SDL_UpperBlit_ptr (src, &srcrect, dst, &offset)
 } // end of [apply_surface]
 
-fn apply_surface_null {l1,l2:anz} (
+fn apply_surface_null {l1,l2:agz} (
     x: int, y: int, src: !SDL_Surface_ref l1, dst: !SDL_Surface_ref l2
   ) : void = () where {
   var offset: SDL_Rect // unintialized
@@ -135,7 +135,7 @@ fn Dot_move
   // end of [val]
 } // end of [Dot_move]
 
-fn Dot_show {l1,l2:anz}
+fn Dot_show {l1,l2:agz}
   (obj: &Dot, dot: !SDL_Surface_ref l1, screen: !SDL_Surface_ref l2): void =
   apply_surface_null (obj.x, obj.y, dot, screen)
 // end of [Dot_show]

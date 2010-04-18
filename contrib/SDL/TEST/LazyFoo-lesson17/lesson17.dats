@@ -43,7 +43,7 @@ end // end of [load_image]
 (* ****** ****** *)
 
 extern
-fun apply_surface {l1,l2:anz} (
+fun apply_surface {l1,l2:agz} (
     x: int, y: int, src: !SDL_Surface_ref l1, dst: !SDL_Surface_ref l2
   ) : void
 
@@ -201,7 +201,7 @@ fn Square_move
 
 (* ****** ****** *)
 
-fn Square_show {l1,l2:anz}
+fn Square_show {l1,l2:agz}
   (obj: &Square, square: !SDL_Surface_ref l1, screen: !SDL_Surface_ref l2): void =
   apply_surface ((int)obj.box.x, (int)obj.box.y, square, screen)
 // end of [Square_show]

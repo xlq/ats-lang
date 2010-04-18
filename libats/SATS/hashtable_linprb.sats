@@ -57,10 +57,10 @@ typedef eq (key: t@ype) = (key, key) -<cloref> bool
 
 absviewtype HASHTBLptr (key:t@ype, itm:viewt@ype+, l:addr)
 viewtypedef HASHTBLptr0
-  (key:t@ype, itm:viewt@ype) = [l:addr] HASHTBLptr (key, itm, l)
+  (key:t@ype, itm:viewt@ype) = [l:agez] HASHTBLptr (key, itm, l)
 // end of [HASHTBLptr0]
 viewtypedef HASHTBLptr1
-  (key:t@ype, itm:viewt@ype) = [l:addr | l <> null] HASHTBLptr (key, itm, l)
+  (key:t@ype, itm:viewt@ype) = [l:addr | l > null] HASHTBLptr (key, itm, l)
 // end of [HASHTBLptr1]
 
 castfn ptr_of_HASHTBLptr
@@ -95,15 +95,15 @@ keyitem_isnot_null (x: &Opt keyitm >> opt (keyitm, b)):<> #[b:bool] bool b
 (* ****** ****** *)
 
 fun hashtbl_size // the (array) size of the hashtable
-  {key:t@ype;itm:viewt@ype} {l:anz} (p: !HASHTBLptr (key, itm, l)):<> size_t
+  {key:t@ype;itm:viewt@ype} {l:agz} (p: !HASHTBLptr (key, itm, l)):<> size_t
 // end of [hashtbl_size]
 
 fun hashtbl_total // the total number of elements present in the hashtable
-  {key:t@ype;itm:viewt@ype} {l:anz} (tbl: !HASHTBLptr (key, itm, l)):<> size_t
+  {key:t@ype;itm:viewt@ype} {l:agz} (tbl: !HASHTBLptr (key, itm, l)):<> size_t
 // end of [hashtbl_total]
 
 fun{key:t@ype;itm:t@ype} // clear the hashtable
-hashtbl_clear {l:anz} (ptbl: !HASHTBLptr (key, itm, l)):<> void
+hashtbl_clear {l:agz} (ptbl: !HASHTBLptr (key, itm, l)):<> void
 // end of [hashtbl_clear]
 
 (* ****** ****** *)
@@ -114,7 +114,7 @@ hashtbl_clear {l:anz} (ptbl: !HASHTBLptr (key, itm, l)):<> void
 // is changed!
 //
 fun{key:t@ype;itm:viewt@ype} // unsafe but ...
-hashtbl_search_ref {l:anz} (ptbl: !HASHTBLptr (key, itm, l), k0: key): Ptr
+hashtbl_search_ref {l:agz} (ptbl: !HASHTBLptr (key, itm, l), k0: key): Ptr
 // end of [hashtbl_search_ptr]
 
 //
@@ -122,7 +122,7 @@ hashtbl_search_ref {l:anz} (ptbl: !HASHTBLptr (key, itm, l), k0: key): Ptr
 // this one is a safe version, but it can only handle non-linear items
 //
 fun{key:t@ype;itm:t@ype}
-hashtbl_search {l:anz} (
+hashtbl_search {l:agz} (
   ptbl: !HASHTBLptr (key, itm, l), k0: key, res: &itm? >> opt (itm, b)
 ) :<> #[b:bool] bool b
 // end of [hashtbl_search]
@@ -134,7 +134,7 @@ hashtbl_search {l:anz} (
 // if [k] is already in the table, [i] replaces the original one
 //
 fun{key:t@ype;itm:viewt@ype}
-hashtbl_insert {l:anz} (
+hashtbl_insert {l:agz} (
   ptbl: !HASHTBLptr (key, itm, l), k: key, i: &itm >> opt (itm, b)
 ) :<> #[b:bool] bool b
 // end of [hashtbl_insert]
@@ -144,7 +144,7 @@ hashtbl_insert {l:anz} (
 // removal seems to be quite efficient as well
 //
 fun{key:t@ype;itm:viewt@ype}
-hashtbl_remove {l:anz} (
+hashtbl_remove {l:agz} (
   ptbl: !HASHTBLptr (key, itm, l), k0: key, res: &itm? >> opt (itm, b)
 ) :<> #[b:bool] bool b
 // end of [hashtbl_remove]
@@ -152,12 +152,12 @@ hashtbl_remove {l:anz} (
 (* ****** ****** *)
 
 fun{key:t@ype;itm:viewt@ype}
-hashtbl_foreach_clo {v:view} {l:anz}
+hashtbl_foreach_clo {v:view} {l:agz}
   (pf: !v | ptbl: !HASHTBLptr (key, itm, l), f: &(!v | key, &itm) -<clo> void):<!ref> void
 // end of [hashtbl_foreach_clo]
 
 fun{key:t@ype;itm:viewt@ype}
-hashtbl_foreach_cloref {l:anz}
+hashtbl_foreach_cloref {l:agz}
   (ptbl: !HASHTBLptr (key, itm, l), f: !(key, &itm) -<cloref> void):<!ref> void
 // end of [hashtbl_foreach_cloref]
 
@@ -182,7 +182,7 @@ hashtbl_make_hint
 (* ****** ****** *)
 
 fun hashtbl_free
-  {key:t@ype;itm:t@ype} {l:anz} (tbl: HASHTBLptr (key, itm, l)): void
+  {key:t@ype;itm:t@ype} {l:agz} (tbl: HASHTBLptr (key, itm, l)): void
   = "atslib_hashtbl_free__linprb"
 // end of [hashtbl_free]
 
@@ -191,7 +191,7 @@ fun hashtbl_free
 // [hashtbl_clear_vt] may need to be called first to clear up the hashtable
 //
 fun hashtbl_free_vt
-  {key:t@ype;itm:viewt@ype} {l:anz}
+  {key:t@ype;itm:viewt@ype} {l:agz}
   (tbl: !HASHTBLptr (key, itm, l) >> opt (HASHTBLptr (key, itm, l), b))
   : #[b:bool] bool b(*~freed*) = "atslib_hashtbl_free_vt__linprb"
 // end of [hashtbl_free_vt]

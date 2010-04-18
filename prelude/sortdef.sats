@@ -72,7 +72,7 @@ sortdef int8 = {i:int | ~power_2_7 <= i; i < power_2_7}
 sortdef int16 = {i:int | ~power_2_15 <= i; i < power_2_15}
 
 sortdef agz = {a:addr | a > null}
-    and anz = {a:addr | a <> null}
+    and agez = {a:addr | a >= null}
 
 (* ****** ****** *)
 

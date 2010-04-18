@@ -38,7 +38,8 @@ stadef cr (l:addr) = cairo_ref l
 
 (* ****** ****** *)
 
-fn bw_set {l:addr} (cr: !cr l, bw: int): void =
+fn bw_set {l:agz}
+  (cr: !cr l, bw: int): void =
   if bw > 0 then
     cairo_set_source_rgb (cr, 0.0, 0.0, 0.0)
   else
@@ -46,7 +47,8 @@ fn bw_set {l:addr} (cr: !cr l, bw: int): void =
   // end of [if]
 // end of [rb_set]
 
-fn rb_set {l:addr} (cr: !cr l, rb: int): void =
+fn rb_set {l:agz}
+  (cr: !cr l, rb: int): void =
   if rb > 0 then
     cairo_set_source_rgb (cr, 1.0, 0.75, 0.0)
   else
@@ -57,7 +59,7 @@ fn rb_set {l:addr} (cr: !cr l, rb: int): void =
 (* ****** ****** *)
 
 fn draw_ring
-  {l:addr} {n:int | n >= 2} (
+  {l:agz} {n:int | n >= 2} (
     cr: !cr l
   , bw: int, rb: int
   , rad1: dbl, rad2: dbl
@@ -110,7 +112,7 @@ end // end of [draw_ring]
 
 #define SHRINKAGE 0.80
 fun draw_rings
-  {l:addr} {n:int | n >= 2} (
+  {l:agz} {n:int | n >= 2} (
     cr: !cr l
   , bw: int, rb: int
   , rad_beg: dbl, rad_end: dbl
@@ -176,7 +178,7 @@ implement main () = () where {
   val wd = double_of wd and ht = double_of ht
   val margin = double_of margin
 //
-  fun fshow {l:addr} .<l>.
+  fun fshow {l:agz}
     (cr: !cairo_ref l):<cloref1> void = () where {
     val (pf | ()) = cairo_save (cr)
     val () = cairo_translate (cr, margin/2, margin/2)

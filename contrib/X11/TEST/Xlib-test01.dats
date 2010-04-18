@@ -37,7 +37,7 @@ implement main () = () where {
   var asz: int
   val xarr = XListDepths (dpy, 0, asz)
   val p_arr = ptr_of (xarr)
-  val () = assert_errmsg (p_arr <> null, #LOCATION)
+  val () = assert_errmsg (p_arr > null, #LOCATION)
   prval () = opt_unsome (asz)
   val () = (print "asz = "; print_int asz; print_newline ())
   val () = (print "p_arr = "; print p_arr; print_newline ())

@@ -34,7 +34,7 @@ stadef cr (l:addr) = cairo_ref l
 val PI3 = M_PI / 3
 val sin60 = sin (PI3)
 
-fn koch0 {l:addr}
+fn koch0 {l:agz}
   (cr: !cr l, x: dbl): void = let
   val () = cairo_move_to (cr, 0.0, 0.0)
   val () = cairo_line_to (cr, x / 3, 0.0)
@@ -45,7 +45,7 @@ in
   // nothing
 end // end of [koch0]
 
-fun koch {l:addr} {n:nat} .<n>.
+fun koch {l:agz} {n:nat} .<n>.
   (cr: !cr l, n: int n, x: dbl): void =
   if n > 0 then let
     val () = koch (cr, n-1, x / 3)

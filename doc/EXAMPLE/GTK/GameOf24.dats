@@ -5,14 +5,6 @@
 
 (* ****** ****** *)
 
-%{^
-extern
-ats_void_type
-mainats (ats_int_type argc, ats_ptr_type argv) ;
-%}
-
-(* ****** ****** *)
-
 staload _(*anon*) = "prelude/DATS/list.dats"
 staload _(*anon*) = "prelude/DATS/list_vt.dats"
 staload _(*anon*) = "prelude/DATS/reference.dats"
@@ -79,17 +71,17 @@ fun g_print_exp {l:anz}
     end // end of [Sub]
   | Mul (e1, e2) => let
       val p1 = priority_mac e1 and p2 = priority_mac e2
-      val () = g_print_exp_ (gs, 2, p1, e1)
+      val () = g_print_exp_ (gs, 1, p1, e1)
       val _ = g_string_append_c (gs, (gchar)'*')
-      val () = g_print_exp_ (gs, 2, p2, e2)
+      val () = g_print_exp_ (gs, 1, p2, e2)
     in
       // nothing
     end // end of [Mul]
   | Div (e1, e2) => let
       val p1 = priority_mac e1 and p2 = priority_mac e2
-      val () = g_print_exp_ (gs, 2, p1, e1)
+      val () = g_print_exp_ (gs, 1, p1, e1)
       val _ = g_string_append_c (gs, (gchar)'/')
-      val () = g_print_exp_ (gs, 2, p2, e2)
+      val () = g_print_exp_ (gs, 1, p2, e2)
     in
       // nothing
     end // end of [Div]
@@ -296,8 +288,9 @@ fun suit_spinner_gen
   val adj = gtk_adjustment_new
     (1.0, 1.0, 13.0, 1.0, 0.0(*ignored*), 0.0(*ignored*))
   val spinner = gtk_spin_button_new (adj, (gdouble)0.0, (guint)0)
-  val () = gtk_spin_button_set_numeric (spinner, GTRUE)
   val () = gtk_widget_show (spinner)
+  val () = gtk_spin_button_set_numeric (spinner, GTRUE)
+  val () = gtk_spin_button_set_wrap (spinner, GTRUE)
   val () = g_object_unref (adj)
 in
   spinner
@@ -365,24 +358,39 @@ in
 end // end of [evalapp]
 
 (* ****** ****** *)
+staload PRINTF = "libc/SATS/printf.sats"
 
 fun suit_spinnerlst_hbox_gen
   {n:nat} (n: int n): GtkHBox_ptr1 = let
   val hbox = gtk_hbox_new (GTRUE(*homo*), (gint)10(*spacing*))
   val () = gtk_widget_show (hbox)
-  val () = loop (hbox, n) where {
+  val () = loop (hbox, n, 1) where {
     fun loop
       {c:cls | c <= GtkBox}
       {l:anz} {n:nat} .<n>. (
-        box: !gobjptr (c, l), n: int n
+        box: !gobjptr (c, l), n: int n, i: int
       ) : void =
       if n > 0 then let
+        #define BUFSZ 16
+        var !p_buf with pf_buf = @[byte][BUFSZ]()
+        val vbox = gtk_vbox_new (GFALSE, (gint)0)
+        val () = gtk_widget_show (vbox)
+        val () = gtk_box_pack_start (box, vbox, GTRUE, GTRUE, (guint)20)
+        val _ = $PRINTF.snprintf (pf_buf | p_buf, BUFSZ, "Card %d:", @(i))
+        val label = gtk_label_new (txt) where {
+          val txt = __cast (p_buf) where { extern castfn __cast (x: ptr): string }           
+        } // end of [val]
+        prval () = pf_buf := bytes_v_of_strbuf_v (pf_buf)
+        val () = gtk_widget_show (label)        
+        val () = gtk_box_pack_start (vbox, label, GFALSE, GTRUE, (guint)2)
         val spinner = suit_spinner_gen ()
         val () = theSuitSpinnerLst_add (spinner)
-        val () = gtk_box_pack_start (box, spinner, GFALSE, GTRUE, (guint)20)
+        val () = gtk_box_pack_start (vbox, spinner, GFALSE, GTRUE, (guint)2)
+        val () = g_object_unref (label)
         val () = g_object_unref (spinner)
+        val () = g_object_unref (vbox)
       in
-        loop (box, n-1)
+        loop (box, n-1, i+1)
       end // end of [if]
     // end of [loop]
   } // end of [val]
@@ -398,6 +406,14 @@ fun quitapp {c:cls | c <= GtkWidget} {l:anz}
 in
   GFALSE // delivered!
 end // end of [quitapp]
+
+(* ****** ****** *)
+
+%{^
+extern
+ats_void_type
+mainats (ats_int_type argc, ats_ptr_type argv) ;
+%}
 
 (* ****** ****** *)
 
@@ -442,7 +458,7 @@ implement main1 () = () where {
   val () = gtk_box_pack_start (vbox0, hbox, GTRUE, GTRUE, (guint)10)
 
   val () = () where { // adding the [input] button
-    val button = gtk_button_new_with_label ("Input")
+    val button = gtk_button_new_with_label ("Random Input")
     val _sid = g_signal_connect
       (button, (gsignal)"clicked", G_CALLBACK(inputapp), (gpointer)null)
     val () = gtk_widget_show (button)

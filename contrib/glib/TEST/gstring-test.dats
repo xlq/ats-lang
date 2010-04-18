@@ -25,7 +25,7 @@ staload _(*anon*) = "contrib/glib/DATS/glib.dats"
 
 (* ****** ****** *)
 
-fun print_gstring {l:anz}
+fun print_gstring {l:agz}
   (gstring: !GString_ptr l): void = () where {
   val ptr = g_string_get_str (gstring)
   val string = __cast (ptr) where { extern castfn __cast (x: ptr): string }

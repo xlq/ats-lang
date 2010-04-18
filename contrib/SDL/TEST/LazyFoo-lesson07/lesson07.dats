@@ -49,7 +49,7 @@ end // end of [load_image]
 (* ****** ****** *)
 
 extern
-fun apply_surface {l1,l2:anz} (
+fun apply_surface {l1,l2:agz} (
     x: int, y: int, src: !SDL_Surface_ref l1, dst: !SDL_Surface_ref l2
   ) : void
 

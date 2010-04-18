@@ -58,7 +58,7 @@ end // end of [load_image]
 (* ****** ****** *)
 
 extern
-fun apply_surface {l1,l2:anz} (
+fun apply_surface {l1,l2:agz} (
     x: int, y: int, src: !SDL_Surface_ref l1, dst: !SDL_Surface_ref l2, rect: &SDL_Rect
   ) : void
 
@@ -191,7 +191,7 @@ fun Foo_handle_events
 (* ****** ****** *)
 
 extern
-fun Foo_show {l1,l2:anz} (
+fun Foo_show {l1,l2:agz} (
     obj: &Foo
   , foo: !SDL_Surface_ref l1, screen: !SDL_Surface_ref l2
   ) : void

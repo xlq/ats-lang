@@ -29,7 +29,7 @@ staload "contrib/cairo/SATS/cairo.sats"
 
 (* ****** ****** *)
 
-fn drawClock {l:addr}
+fn drawClock {l:agz}
   (cr: !cairo_ref l): void = () where {
 //
   var t: time_t // unintialized
@@ -106,7 +106,7 @@ extern fun clockDataRef_free (x: clockDataRef): void
 (*
 ** draw with Cairo on SDL surfaces
 *)
-fn drawScreen {l:anz}
+fn drawScreen {l:agz}
   (screen: !SDL_Surface_ref l)
   : void = () where {
   // The drawing will exactly fit in the screen

@@ -43,7 +43,7 @@ end // end of [load_image]
 (* ****** ****** *)
 
 extern
-fun apply_surface {l1,l2:anz} (
+fun apply_surface {l1,l2:agz} (
     x: int, y: int, src: !SDL_Surface_ref l1, dst: !SDL_Surface_ref l2
   ) : void
 
@@ -120,7 +120,7 @@ fn Dot_move
   // end of [val]
 } // end of [Dot_move]
 
-fn Dot_show {l1,l2:anz}
+fn Dot_show {l1,l2:agz}
   (obj: &Dot, dot: !SDL_Surface_ref l1, screen: !SDL_Surface_ref l2): void =
   apply_surface (obj.x, obj.y, dot, screen)
 // end of [Dot_show]

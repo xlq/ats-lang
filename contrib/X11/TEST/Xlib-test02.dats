@@ -32,7 +32,7 @@ overload uint with uint_of_int // no-op casting
 
 (* ****** ****** *)
 
-fun load_font {l_dpy:anz}
+fun load_font {l_dpy:agz}
   (display: !Display_ptr l_dpy)
   : [l:addr] (XFreeFont_v l, XFontStruct @ l | ptr l)
   = let
@@ -46,10 +46,10 @@ end // end of [load_font]
 
 (* ****** ****** *)
 
-fun getGC {l:anz} (
+fun getGC {l:agz} (
     display: !Display_ptr l
   , screen_num: int
-  , win: Window, gc: &GCptr? >> GCptr, font_info: &XFontStruct
+  , win: Window, gc: &GCptr? >> GCptr1, font_info: &XFontStruct
   ) : void = () where {
   val valuemask = 0UL // Ignore XGCvalues and use defaults
   var values: XGCValues
@@ -90,7 +90,7 @@ staload PRINTF = "libc/SATS/printf.sats"
 symintr int
 overload int with int1_of_size1 // no-op casting
 
-fun place_text {l1:anz} {l2:addr} (
+fun place_text {l1,l2:agz} (
     display: !Display_ptr l1
   , screen_num: int
   , win: Window
@@ -197,7 +197,7 @@ end // end of [place_text]
 
 (* ****** ****** *)
 
-fun place_graphics {l1:anz} {l2:addr} (
+fun place_graphics {l1,l2:agz} (
     display: !Display_ptr l1
   , win: Window
   , gc: !GCptr l2
@@ -215,7 +215,7 @@ end // end of [place_graphics]
 
 (* ****** ****** *)
 
-fun TooSmall {l1:anz} {l2:addr} (
+fun TooSmall {l1,l2:agz} (
     display: !Display_ptr l1
   , win: Window
   , gc: !GCptr l2
@@ -241,17 +241,17 @@ implement main (argc, argv) = () where {
 //
   val xpszhnt = XAllocSizeHints ()
   val pszhnt = ptr_of (xpszhnt)
-  val () = assert_errmsg (pszhnt <> null, #LOCATION)
+  val () = assert_errmsg (pszhnt > null, #LOCATION)
   prval (pfszhnt_at, fpfszhnt) = XPtr_viewget (xpszhnt)
 //
   val xpwmhnt = XAllocWMHints ()
   val pwmhnt = ptr_of (xpwmhnt)
-  val () = assert_errmsg (pwmhnt <> null, #LOCATION)
+  val () = assert_errmsg (pwmhnt > null, #LOCATION)
   prval (pfwmhnt_at, fpfwmhnt) = XPtr_viewget (xpwmhnt)
 //
   val xpcshnt = XAllocClassHint ()
   val pcshnt = ptr_of (xpcshnt)
-  val () = assert_errmsg (pcshnt <> null, #LOCATION)
+  val () = assert_errmsg (pcshnt > null, #LOCATION)
   prval (pfcshnt_at, fpfcshnt) = XPtr_viewget (xpcshnt)
 //
   val display_name = (case+ 0 of
@@ -338,7 +338,7 @@ implement main (argc, argv) = () where {
     val flag = ExposureMask lor KeyPressMask lor ButtonPressMask lor StructureNotifyMask
   } // end of [val]
 //
-  var gc: GCptr // unintialized
+  var gc: GCptr1 // unintialized
   val [l_ftinfo:addr]
     (pf_free, pf_ftinfo | p_ftinfo) = load_font (display)
   val () = getGC (display, screen_num, win, gc, !p_ftinfo)

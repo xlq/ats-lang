@@ -49,7 +49,7 @@ end // end of [load_image]
 (* ****** ****** *)
 
 extern
-fun apply_surface {l1,l2:anz} (
+fun apply_surface {l1,l2:agz} (
     x: int, y: int, src: !SDL_Surface_ref l1, dst: !SDL_Surface_ref l2
   ) : void
 
@@ -64,7 +64,7 @@ implement apply_surface
 
 stadef sfr = SDL_Surface_ref
 
-fn show_message {l1,l2,l3:anz} (
+fn show_message {l1,l2,l3:agz} (
     screen: !sfr l1, background: !sfr l2, message: !sfr l3
   ) : void = let
   val () = apply_surface (0, 0, background, screen)
