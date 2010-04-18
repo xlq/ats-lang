@@ -39,19 +39,19 @@
 (* ****** ****** *)
 
 fun g_object_is_floating
-  {c:cls | c <= GObject} {l:anz} (x: !gobjptr (c, l)): gboolean
+  {c:cls | c <= GObject} {l:agz} (x: !gobjptr (c, l)): gboolean
   = "#atsctrb_g_object_is_floating"
 // end of [g_object_is_floating]
 
 (* ****** ****** *)
 
 fun g_object_ref
-  {c:cls | c <= GObject} {l:anz} (x: !gobjptr (c, l)): gobjptr (c, l)
+  {c:cls | c <= GObject} {l:agz} (x: !gobjptr (c, l)): gobjptr (c, l)
   = "#atsctrb_g_object_ref"
 // end of [g_object_ref]
 
 fun g_object_unref
-  {c:cls | c <= GObject} {l:anz} (x: gobjptr (c, l)): void
+  {c:cls | c <= GObject} {l:agz} (x: gobjptr (c, l)): void
   = "#atsctrb_g_object_unref"
 // end of [g_object_unref]
 

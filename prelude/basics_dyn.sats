@@ -93,6 +93,11 @@ praxi eqsize_int_uint (): [sizeof int == sizeof uint] void
 praxi eqsize_char_schar (): [sizeof char == sizeof schar] void
 praxi eqsize_char_uchar (): [sizeof char == sizeof uchar] void
 
+//
+// HX-2010-04-18: there are no negative addresses
+//
+praxi ptr_is_gez {l:addr} (p: ptr l):<> [l >= null] void
+
 (* ****** ****** *)
 
 (*

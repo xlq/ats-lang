@@ -28,7 +28,7 @@ staload "contrib/GTK/SATS/gtk.sats"
 (* ****** ****** *)
 
 fun close_application
-  {c:cls | c <= GtkWidget} {l:anz}
+  {c:cls | c <= GtkWidget} {l:agz}
   (widget: !gobjptr (c, l), event: &GdkEvent, data: gpointer): gboolean = let
   val () = gtk_main_quit ()
 in

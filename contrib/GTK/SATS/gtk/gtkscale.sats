@@ -39,17 +39,17 @@
 (* ****** ****** *)
 
 fun gtk_scale_set_draw_value
-  {c:cls | c <= GtkScale} {l:anz}
+  {c:cls | c <= GtkScale} {l:agz}
   (scale: !gobjptr (c, l), draw_value: gboolean): void
   = "#atsctrb_gtk_scale_set_draw_value"
 
 fun gtk_scale_set_digits
-  {c:cls | c <= GtkScale} {l:anz}
+  {c:cls | c <= GtkScale} {l:agz}
   (scale: !gobjptr (c, l), digits: gint): void
   = "#atsctrb_gtk_scale_set_digits"
 
 fun gtk_scale_set_value_pos
-  {c:cls | c <= GtkScale} {l:anz}
+  {c:cls | c <= GtkScale} {l:agz}
   (scale: !gobjptr (c, l), pos: GtkPositionType): void
   = "#atsctrb_gtk_scale_set_value_pos"
 

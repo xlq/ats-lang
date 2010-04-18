@@ -49,7 +49,7 @@ fun priority_mac (e: exp): Nat = (case+ e of
 
 (* ****** ****** *)
 
-fun g_print_exp {l:anz}
+fun g_print_exp {l:agz}
   (gs: !GString_ptr l, e: exp): void = begin
   case+ e of
   | Num r => g_string_append_printf (gs, "%.0f", @(r))
@@ -87,7 +87,7 @@ fun g_print_exp {l:anz}
     end // end of [Div]
 end // end of [print_exp]
 
-and g_print_exp_ {l:anz}
+and g_print_exp_ {l:agz}
   (gs: !GString_ptr l, p0: Nat, p: Nat, e: exp): void =
   if p < p0 then g_print_exp (gs, e) else let
     val _ = g_string_append_c (gs, (gchar)'\(')
@@ -367,7 +367,7 @@ fun suit_spinnerlst_hbox_gen
   val () = loop (hbox, n, 1) where {
     fun loop
       {c:cls | c <= GtkBox}
-      {l:anz} {n:nat} .<n>. (
+      {l:agz} {n:nat} .<n>. (
         box: !gobjptr (c, l), n: int n, i: int
       ) : void =
       if n > 0 then let
@@ -400,7 +400,8 @@ end // end of [suit_spinnerlst_hbox_gen]
 
 (* ****** ****** *)
 
-fun quitapp {c:cls | c <= GtkWidget} {l:anz}
+fun quitapp
+  {c:cls | c <= GtkWidget} {l:agz}
   (widget: !gobjptr (c, l), event: &GdkEvent, _: gpointer): gboolean = let
   val () = gtk_main_quit ()
 in

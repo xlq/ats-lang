@@ -116,8 +116,8 @@ end // end of [implement]
 (* ****** ****** *)
 
 viewtypedef symtbl (l:addr) = $H.HASHTBLptr (symbol_t, int, l)
-viewtypedef symtbl0 = [l:addr] symtbl l
-viewtypedef symtbl1 = [l:anz] symtbl l
+viewtypedef symtbl0 = [l:agez] symtbl l
+viewtypedef symtbl1 = [l:addr | l > null] symtbl l
 
 (* ****** ****** *)
 
@@ -126,7 +126,7 @@ extern fun succ_symbol
 extern fun add_symbol_size
   (x: symbol_t, n: size_t): symbol_t = "#atspre_padd_size"
 
-fn dna_count_one {l:anz} {n1,n2:nat}
+fn dna_count_one {l:agz} {n1,n2:nat}
   (tbl: !symtbl l, dna: dna_t, n1: size_t n1, n2: size_t n2): void = let
   var n1: size_t = n1
   val sym0: symbol_t =
@@ -230,7 +230,7 @@ end // end of [dna_count]
 
 extern fun symtbls_merge (xs: List_vt symtbl1): symtbl0
 implement symtbls_merge (xs) = let
-  fun loop {l:addr} {l:anz}
+  fun loop {l:addr} {l:agz}
     (x: !symtbl l, xs: List_vt symtbl1): void =
     case+ xs of
     | ~list_vt_cons (x1, xs) => let

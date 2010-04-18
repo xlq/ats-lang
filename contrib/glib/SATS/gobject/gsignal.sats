@@ -55,7 +55,7 @@ symintr g_signal_connect
 // for a destructive signal
 //
 fun g_signal_connect0
-  {c:cls | c <= GObject} {l:anz} (
+  {c:cls | c <= GObject} {l:agz} (
     x: gobjptr (c, l)
   , sig: gsignal
   , handler: GCallback
@@ -67,7 +67,7 @@ fun g_signal_connect0
 // for a non-destructive signal
 //
 fun g_signal_connect1
-  {c:cls | c <= GObject} {l:anz} (
+  {c:cls | c <= GObject} {l:agz} (
     x: !gobjptr (c, l)
   , sig: gsignal
   , handler: GCallback
@@ -79,7 +79,7 @@ overload g_signal_connect with g_signal_connect1
 (* ****** ****** *)
 
 fun g_signal_connect_after
-  {c:cls | c <= GObject} {l:anz} (
+  {c:cls | c <= GObject} {l:agz} (
     x: !gobjptr (c, l)
   , sig: gsignal
   , handler: GCallback
@@ -93,7 +93,7 @@ symintr g_signal_connect_swapped
 
 fun g_signal_connect_swapped0
   {c1,c2:cls | c1 <= GObject; c2 <= GObject}
-  {l1,l2:anz} (
+  {l1,l2:agz} (
     x: !gobjptr (c1, l1)
   , sig: gsignal
   , handler: GCallback
@@ -104,7 +104,7 @@ fun g_signal_connect_swapped0
 
 fun g_signal_connect_swapped1
   {c1,c2:cls | c1 <= GObject; c2 <= GObject}
-  {l1,l2:anz} (
+  {l1,l2:agz} (
     x: !gobjptr (c1, l1)
   , sig: gsignal
   , handler: GCallback

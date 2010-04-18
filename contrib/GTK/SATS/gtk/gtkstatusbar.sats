@@ -43,26 +43,26 @@ fun gtk_statusbar_new
 // end of [gtk_statusbar_new]
 
 fun gtk_statusbar_get_context_id
-  {c:cls | c <= GtkStatusbar} {l:anz} (bar: !gobjptr (c, l), context: string): guint
+  {c:cls | c <= GtkStatusbar} {l:agz} (bar: !gobjptr (c, l), context: string): guint
   = "#atsctrb_gtk_statusbar_get_context_id"
 // end of [gtk_statusbar_get_context_id]
 
 (* ****** ****** *)
 
 fun gtk_statusbar_push
-  {c:cls | c <= GtkStatusbar} {l:anz}
+  {c:cls | c <= GtkStatusbar} {l:agz}
   (bar: !gobjptr (c, l), context_id: guint, text: string): void
   = "#atsctrb_gtk_statusbar_push"
 // end of [gtk_statusbar_push]
 
 fun gtk_statusbar_pop
-  {c:cls | c <= GtkStatusbar} {l:anz}
+  {c:cls | c <= GtkStatusbar} {l:agz}
   (bar: !gobjptr (c, l), context_id: guint): void
   = "#atsctrb_gtk_statusbar_pop"
 // end of [gtk_statusbar_pop]
 
 fun gtk_statusbar_remove
-  {c:cls | c <= GtkStatusbar} {l:anz}
+  {c:cls | c <= GtkStatusbar} {l:agz}
   (bar: !gobjptr (c, l), context_id: guint, message_id: guint): void
   = "#atsctrb_gtk_statusbar_remove"
 // end of [gtk_statusbar_remvoe]
@@ -70,12 +70,12 @@ fun gtk_statusbar_remove
 (* ****** ****** *)
 
 fun gtk_statusbar_get_has_resize_grip
-  {c:cls | c <= GtkStatusbar} {l:anz} (bar: !gobjptr (c, l)): gboolean
+  {c:cls | c <= GtkStatusbar} {l:agz} (bar: !gobjptr (c, l)): gboolean
   = "#atsctrb_gtk_statusbar_get_has_resize_grip"
 // end of [gtk_statusbar_get_has_resize_grip]
 
 fun gtk_statusbar_set_has_resize_grip
-  {c:cls | c <= GtkStatusbar} {l:anz} (bar: !gobjptr (c, l), setting: gboolean): void
+  {c:cls | c <= GtkStatusbar} {l:agz} (bar: !gobjptr (c, l), setting: gboolean): void
   = "#atsctrb_gtk_statusbar_set_has_resize_grip"
 // end of [gtk_statusbar_set_has_resize_grip]
 

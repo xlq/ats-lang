@@ -31,7 +31,8 @@ staload "contrib/GTK/SATS/gtk.sats"
 
 (* ****** ****** *)
 
-fun delete_event {c:cls | c <= GtkWidget} {l:anz}
+fun delete_event
+  {c:cls | c <= GtkWidget} {l:agz}
   (widget: !gobjptr (c, l), event: &GdkEvent, _: gpointer): gboolean = let
   val () = gtk_main_quit ()
 in

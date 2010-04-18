@@ -8,7 +8,14 @@ ATSCC=$(or $(ATSHOME), "/usr")/bin/atscc
 
 ######
 
-all: \
+.PHONY: all
+all:: checkall
+
+######
+
+checkall:: compall cleanall
+
+compall:: \
   fib_mt \
   nsieve_mt nsieve2_mt \
   partial-sums_mt \

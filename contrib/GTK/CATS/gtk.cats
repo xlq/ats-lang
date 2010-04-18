@@ -728,11 +728,32 @@ atsctrb_gtk_vseparator_new () {
 #define atsctrb_GTK_WIDGET_SET_FLAGS GTK_WIDGET_SET_FLAGS
 
 #define atsctrb_gtk_widget_destroy gtk_widget_destroy
+
 #define atsctrb_gtk_widget_show gtk_widget_show
 #define atsctrb_gtk_widget_show_now gtk_widget_show_now
 #define atsctrb_gtk_widget_show_all gtk_widget_show_all
+
+//
+// HX: get out of a GDK window
+//
+ATSinline()
+ats_ptr_type
+atsctrb_gtk_widget_takeout_window
+  (ats_ptr_type widget) { return (GTK_WIDGET(widget))->window ; }
+// end of [atsctrb_gtk_widget_takeout_window]
+
+ATSinline()
+ats_ptr_type
+atsctrb_gtk_widget_takeout_allocation
+  (ats_ptr_type widget) { return &(GTK_WIDGET(widget))->allocation ; }
+// end of [atsctrb_gtk_widget_takeout_allocation]
+#define atsctrb_gtk_widget_get_allocation gtk_widget_get_allocation
+#define atsctrb_gtk_widget_set_allocation gtk_widget_set_allocation
+
 #define atsctrb_gtk_widget_set_size_request gtk_widget_set_size_request
+
 #define atsctrb_gtk_widget_grab_default gtk_widget_grab_default
+
 #define atsctrb_gtk_widget_set_events gtk_widget_set_events
 
 /* ****** ****** */
@@ -751,6 +772,7 @@ atsctrb_gtk_window_new
 } // end of [atsctrb_gtk_window_new]
 
 #define atsctrb_gtk_window_set_title gtk_window_set_title
+#define atsctrb_gtk_window_set_default_size gtk_window_set_default_size
 
 /* ****** ****** */
 

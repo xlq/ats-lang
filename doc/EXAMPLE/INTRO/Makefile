@@ -6,17 +6,17 @@
 
 ######
 
-.PHONY: all
-all:  compall
-
-checkall: compall cleanall
-
-######
-
 ATSCC=$(or $(ATSHOME), "/usr")/bin/atscc
 ATSOPT=$(or $(ATSHOME), "/usr")/bin/atsopt
 
 ######
+
+.PHONY: all
+all: checkall
+
+######
+
+checkall: compall cleanall
 
 compall: \
   HelloWorld f91 fact1 fact2 fact3 fibs revarr revstr

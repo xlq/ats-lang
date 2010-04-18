@@ -38,12 +38,13 @@
 
 (* ****** ****** *)
 
-fun gtk_vscale_new {c:cls | c <= GtkAdjustment} {l:anz}
+fun gtk_vscale_new
+  {c:cls | c <= GtkAdjustment} {l:agz}
   (adj: !gobjptr (c, l)): GtkVScale_ptr1 = "#atsctrb_gtk_vscale_new"
 // end of [gtk_vscale_new]
 
 fun gtk_vscale_new_with_range
-  {c:cls | c <= GtkAdjustment} {l:anz}
+  {c:cls | c <= GtkAdjustment} {l:agz}
   (min: gdouble, max: gdouble, step: gdouble): GtkVScale_ptr1
   = "#atsctrb_gtk_vscale_new_with_range"
 // end of [gtk_vscale_new_with_rangle]

@@ -78,6 +78,18 @@ castfn g_object_vref {c:cls} {l:addr} // vitural reference
 
 (* ****** ****** *)
 
+fun g_object_is_null
+  {c:cls} {l:addr} (x: !gobjptr (c, l)): bool (l == null)
+  = "atspre_ptr_is_null"
+// end of [g_object_is_null]
+
+fun g_object_isnot_null
+  {c:cls} {l:addr} (x: !gobjptr (c, l)): bool (l > null)
+  = "atspre_ptr_isnot_null"
+// end of [g_object_is_null]
+
+(* ****** ****** *)
+
 abstype GCallback // = () -<fun1> void
 castfn G_CALLBACK {a:type} (x: a): GCallback // unfortunately ...
 

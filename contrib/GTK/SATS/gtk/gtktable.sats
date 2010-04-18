@@ -54,7 +54,7 @@ overload lor with lor_GtkAttachOptions_GtkAttachOptions
 
 fun gtk_table_attach
   {c1,c2:cls | c1 <= GtkTable; c2 <= GtkWidget}
-  {l1,l2:anz} (
+  {l1,l2:agz} (
     table: !gobjptr (c1, l1)
   , widget: !gobjptr (c2, l2)
   , left: guint, right: guint, top: guint, bot: guint
@@ -67,7 +67,7 @@ fun gtk_table_attach
 
 fun gtk_table_attach_defaults
   {c1,c2:cls | c1 <= GtkTable; c2 <= GtkWidget}
-  {l1,l2:anz} (
+  {l1,l2:agz} (
     table: !gobjptr (c1, l1), widget: !gobjptr (c2, l2)
   , left: guint, right: guint, top: guint, bot: guint
   ) : void = "#atsctrb_gtk_table_attach_defaults"

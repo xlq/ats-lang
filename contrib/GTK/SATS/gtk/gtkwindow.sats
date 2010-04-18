@@ -42,11 +42,25 @@ fun gtk_window_new
   (tp: GtkWindowType): GtkWindow_ptr1 = "#atsctrb_gtk_window_new"
 // end of [gtk_window_new]
 
+(* ****** ****** *)
+
 fun gtk_window_set_title
-  {c:cls | c <= GtkWindow} {l:anz}
+  {c:cls | c <= GtkWindow} {l:agz}
   (window: !gobjptr (c, l), title: string): void
   = "#atsctrb_gtk_window_set_title"
 // end of [gtk_window_set_title]
+
+(* ****** ****** *)
+
+//
+// [width = -1] means unset
+// [height = -1] means unset
+//
+fun gtk_window_set_default_size
+  {c:cls | c <= GtkWindow} {l:agz}
+  (window: !gobjptr (c, l), width: gint, height: gint): void
+  = "#atsctrb_gtk_window_set_default_size"
+// end of [gtk_window_set_default_size]
 
 (* ****** ****** *)
 

@@ -86,7 +86,7 @@ fun cb_update_menu_select
 (* ****** ****** *)
 
 fun cb_digits_scale
-  {c:cls | c <= GtkAdjustment} {l:anz}
+  {c:cls | c <= GtkAdjustment} {l:agz}
   (adj: !gobjptr (c, l)): void = () where {
   val value = gtk_adjustment_get_value (adj)
   val n = gint(int_of((double_of(value))))
@@ -113,14 +113,14 @@ cb_page_size (ats_ptr_type get0, ats_ptr_type set0) {
 } // end of [cb_page_size]
 %} // end of [%{^]
 extern fun cb_page_size
-  {c1,c2:cls | c1 <= GtkAdjustment; c2 <= GtkAdjustment} {l1,l2:anz}
+  {c1,c2:cls | c1 <= GtkAdjustment; c2 <= GtkAdjustment} {l1,l2:agz}
   (get: !gobjptr (c1, l1), set: !gobjptr (c2, l2)): void = "cb_page_size"
 // end of [cb_page_size]
 
 (* ****** ****** *)
 
 fun cb_draw_value
-  {c:cls | c <= GtkToggleButton} {l:anz}
+  {c:cls | c <= GtkToggleButton} {l:agz}
   (button: !gobjptr (c, l)): void = () where {
   val isactive = gtk_toggle_button_get_active (button)
   val scale = the_hscale_get ()
@@ -134,7 +134,7 @@ fun cb_draw_value
 (* ****** ****** *)
 
 fun scale_set_default_values
-  {c:cls | c <= GtkScale} {l:anz}
+  {c:cls | c <= GtkScale} {l:agz}
   (scale: !gobjptr (c, l)): void = () where {
   val () = gtk_range_set_update_policy (scale, GTK_UPDATE_CONTINUOUS)
   val () = gtk_scale_set_digits (scale, (gint)1)

@@ -40,13 +40,13 @@
 
 fun gtk_menu_shell_append
   {c1,c2:cls | c1 <= GtkMenuShell; c2 <= GtkWidget}
-  {l1,l2:anz} (container: !gobjptr (c1, l1), widget: !gobjptr (c2, l2)): void
+  {l1,l2:agz} (container: !gobjptr (c1, l1), widget: !gobjptr (c2, l2)): void
   = "#atsctrb_gtk_menu_shell_append"
 // end of [gtk_menu_shell_append]
 
 fun gtk_menu_shell_prepend
   {c1,c2:cls | c1 <= GtkMenuShell; c2 <= GtkWidget}
-  {l1,l2:anz} (container: !gobjptr (c1, l1), widget: !gobjptr (c2, l2)): void
+  {l1,l2:agz} (container: !gobjptr (c1, l1), widget: !gobjptr (c2, l2)): void
   = "#atsctrb_gtk_menu_shell_prepend"
 // end of [gtk_menu_shell_prepend]
 

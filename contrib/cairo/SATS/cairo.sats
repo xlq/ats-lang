@@ -473,8 +473,8 @@ macdef CAIRO_OPERATOR_DEST_ATOP =
 macdef CAIRO_OPERATOR_XOR =
   $extval (cairo_operator_t, "CAIRO_OPERATOR_XOR")
 
-macdef CAIRO_OPERATOR_AND =
-  $extval (cairo_operator_t, "CAIRO_OPERATOR_AND")
+macdef CAIRO_OPERATOR_ADD =
+  $extval (cairo_operator_t, "CAIRO_OPERATOR_ADD")
 
 macdef CAIRO_OPERATOR_SATURATE =
   $extval (cairo_operator_t, "CAIRO_OPERATOR_SATURATE")

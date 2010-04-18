@@ -27,7 +27,7 @@ staload "contrib/GTK/SATS/gtk.sats"
 
 (* ****** ****** *)
 
-fun delete_event {c:cls | c <= GtkWidget} {l:anz}
+fun delete_event {c:cls | c <= GtkWidget} {l:agz}
   (widget: !gobjptr (c, l), event: &GdkEvent, _: gpointer): gboolean = let
   val () = gtk_main_quit ()
 in
@@ -42,7 +42,7 @@ ats_ptr_type
 motion_notify_event (ats_ptr_type x) { return EVENT_METHOD(x, motion_notify_event) ; }
 %} // end of ...
 extern fun motion_notify_event
-  {c:cls | c <= GtkWidget} {l:anz} (x: !gobjptr (c, l)): ptr = "motion_notify_event"
+  {c:cls | c <= GtkWidget} {l:agz} (x: !gobjptr (c, l)): ptr = "motion_notify_event"
 // end of [motion_notify_event]
 
 (* ****** ****** *)

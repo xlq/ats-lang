@@ -44,7 +44,7 @@ fun gtk_arrow_new (
 // end of [gtk_arrow_new]
 
 fun gtk_arrow_set
-  {c:cls | c <= GtkArrow} {l:anz} (
+  {c:cls | c <= GtkArrow} {l:agz} (
     arrow: !gobjptr (c, l)
   , arrow_type: GtkArrowType, shadow_type: GtkShadowType
   ) : void = "#atsctrb_gtk_arrow_set"

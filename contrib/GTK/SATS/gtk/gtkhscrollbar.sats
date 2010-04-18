@@ -38,7 +38,7 @@
 
 (* ****** ****** *)
 
-fun gtk_hscrollbar_new {c:cls | c <= GtkAdjustment} {l:anz}
+fun gtk_hscrollbar_new {c:cls | c <= GtkAdjustment} {l:agz}
   (adj: !gobjptr (c, l)): GtkHScrollbar_ptr1 = "#atsctrb_gtk_hscrollbar_new"
 // end of [gtk_hscrollbar_new]
 

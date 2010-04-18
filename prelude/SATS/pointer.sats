@@ -106,7 +106,7 @@ val null : ptr null = "atspre_null_ptr"
 fun ptr_is_null {l:addr} (p: ptr l):<> bool (l == null)
   = "atspre_ptr_is_null"
 
-fun ptr_isnot_null {l:addr} (p: ptr l):<> bool (l <> null)
+fun ptr_isnot_null {l:addr} (p: ptr l):<> bool (l > null)
   = "atspre_ptr_isnot_null"
 overload ~ with ptr_isnot_null
 

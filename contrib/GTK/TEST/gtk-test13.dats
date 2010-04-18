@@ -9,14 +9,6 @@
 
 (* ****** ****** *)
 
-%{^
-extern
-ats_void_type
-mainats (ats_int_type argc, ats_ptr_type argv) ;
-%}
-
-(* ****** ****** *)
-
 staload _(*anon*) = "prelude/DATS/reference.dats"
 
 (* ****** ****** *)
@@ -136,6 +128,14 @@ fun get_value
   val () = g_object_unref (val_label)
   val () = g_object_unref (spinner1)
 } // end of [get_value]
+
+(* ****** ****** *)
+
+%{^
+extern
+ats_void_type
+mainats (ats_int_type argc, ats_ptr_type argv) ;
+%}
 
 (* ****** ****** *)
 

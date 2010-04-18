@@ -63,6 +63,23 @@ stadef gobjptr = $GOBJ.gobjptr
 
 (* ****** ****** *)
 
+//
+// class hierarchy for GDK
+//
+objcls GdkObject = { super: GObject }
+  objcls GdkDrawable = { super: GdkObject }
+    objcls GdkWindow = { super: GdkDrawable }
+  // end of [GdkDrawable]
+// end of [GdkObject]
+
+(* ****** ****** *)
+
+viewtypedef GdkWindow_ptr (l:addr) = gobjptr (GdkWindow, l)
+viewtypedef GdkWindow_ptr0 = [l:agez] GdkWindow_ptr l
+viewtypedef GdkWindow_ptr1 = [l:addr | l > null] GdkWindow_ptr l
+
+(* ****** ****** *)
+
 #include "contrib/GTK/SATS/gdk/gdkevents.sats"
 
 (* ****** ****** *)

@@ -528,10 +528,6 @@ fn doc_dir_copy () = let
   val DSTROOTdoc_BOOK_manual = DSTROOTdoc_BOOK ++ "manual/"
   val () = mkdir_exn (DSTROOTdoc_BOOK_manual, DIRmode)
   val () = fcopy_exn (
-    SRCROOTdoc_BOOK_manual ++ "manual_main.ps"
-  , DSTROOTdoc_BOOK_manual ++ "manual_main.ps"
-  ) // end of [fcopy_exn]
-  val () = fcopy_exn (
     SRCROOTdoc_BOOK_manual ++ "manual_main.pdf"
   , DSTROOTdoc_BOOK_manual ++ "manual_main.pdf"
   ) // end of [fcopy_exn]

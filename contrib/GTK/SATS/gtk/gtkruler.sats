@@ -39,7 +39,7 @@
 (* ****** ****** *)
 
 fun gtk_ruler_set_metric
-  {c:cls | c <= GtkRuler} {l:anz}
+  {c:cls | c <= GtkRuler} {l:agz}
   (ruler: !gobjptr (c, l), metric: GtkMetricType): void
   = "#atsctrb_gtk_ruler_set_metric"
 // end of [gtk_ruler_set_metric]
@@ -48,7 +48,7 @@ fun gtk_ruler_set_metric
 
 typedef
 gtk_ruler_set_range_type (a:t@ype) =
-  {c:cls | c <= GtkRuler} {l:anz} (
+  {c:cls | c <= GtkRuler} {l:agz} (
   !gobjptr (c, l)
 , a // lower
 , a // upper

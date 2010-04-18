@@ -8,7 +8,14 @@ ATSCC=$(ATSHOME)/bin/atscc
 
 ######
 
-all:: \
+.PHONY: all
+all:: checkall
+
+######
+
+checkall:: compall cleanall
+
+compall:: \
   test01 \
   test02 \
   test03 \

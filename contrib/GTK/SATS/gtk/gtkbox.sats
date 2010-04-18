@@ -40,7 +40,7 @@
 
 fun gtk_box_pack_start
   {c1,c2:cls | c1 <= GtkBox; c2 <= GtkWidget}
-  {l1,l2:anz} (
+  {l1,l2:agz} (
     box: !gobjptr (c1, l1)
   , child: !gobjptr (c2, l2)
   , expand: gboolean, fill: gboolean, padding: guint
@@ -49,7 +49,7 @@ fun gtk_box_pack_start
 
 fun gtk_box_pack_end
   {c1,c2:cls | c1 <= GtkBox; c2 <= GtkWidget}
-  {l1,l2:anz} (
+  {l1,l2:agz} (
     box: !gobjptr (c1, l1)
   , child: !gobjptr (c2, l2)
   , expand: gboolean, fill: gboolean, padding: guint

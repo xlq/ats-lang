@@ -62,18 +62,18 @@ overload gtk_adjustment_new with gtk_adjustment_new__gtype
 
 fun gtk_adjustment_changed
   {c:cls | c <= GtkAdjustment}
-  {l:anz} (adj: !gobjptr (c, l)): void
+  {l:agz} (adj: !gobjptr (c, l)): void
   = "#atsctrb_gtk_adjustment_changed"
 // end of [gtk_adjustment_changed]
 
 fun gtk_adjustment_value_changed
   {c:cls | c <= GtkAdjustment}
-  {l:anz} (adj: !gobjptr (c, l)): void
+  {l:agz} (adj: !gobjptr (c, l)): void
   = "#atsctrb_gtk_adjustment_value_changed"
 // end of [gtk_adjustment_value_changed]
 
 fun gtk_adjustment_clamp_page
-  {c:cls | c <= GtkAdjustment} {l:anz}
+  {c:cls | c <= GtkAdjustment} {l:agz}
   (adj: !gobjptr (c, l), lower: gdouble, upper: gdouble): void
   = "#atsctrb_gtk_adjustment_clamp_page"
 // end of [gtk_adjustment_clamp_page]
@@ -82,13 +82,13 @@ fun gtk_adjustment_clamp_page
 
 fun gtk_adjustment_get_value
   {c:cls | c <= GtkAdjustment}
-  {l:anz} (adj: !gobjptr (c, l)): gdouble
+  {l:agz} (adj: !gobjptr (c, l)): gdouble
   = "#atsctrb_gtk_adjustment_get_value"
 // end of [gtk_adjustment_get_value]
 
 fun gtk_adjustment_set_value
   {c:cls | c <= GtkAdjustment}
-  {l:anz} (adj: !gobjptr (c, l), value: gdouble): void
+  {l:agz} (adj: !gobjptr (c, l), value: gdouble): void
   = "#atsctrb_gtk_adjustment_set_value"
 // end of [gtk_adjustment_set_value]
 

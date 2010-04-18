@@ -27,12 +27,12 @@ staload "contrib/GTK/SATS/gtk.sats"
 
 (* ****** ****** *)
 
-fun callback {c:cls | c <= GtkWidget} {l:anz}
+fun callback {c:cls | c <= GtkWidget} {l:agz}
   (widget: !gobjptr (c, l), data: string): void =
   printf ("Hello again: %s was pressed\n", @(data))
 // end of [callback]
 
-fun delete_event {c:cls | c <= GtkWidget} {l:anz}
+fun delete_event {c:cls | c <= GtkWidget} {l:agz}
   (widget: !gobjptr (c, l), event: &GdkEvent, _: gpointer): gint = let
   val () = gtk_main_quit ()
 in

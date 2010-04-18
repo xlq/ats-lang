@@ -38,11 +38,22 @@
 
 (* ****** ****** *)
 
+typedef GtkAllocation =
+  $extype_struct "GtkAllocation" of {
+  x= gint
+, y= gint
+, width= gint
+, height= gint
+} // end of [GtkAllocation]
+
+(* ****** ****** *)
+
 abst@ype GTK_WIDGET_FLAG = guint
 macdef GTK_CAN_DEFAULT = $extval (GTK_WIDGET_FLAG, "GTK_CAN_DEFAULT")
 
 fun GTK_WIDGET_SET_FLAGS
-  {c:cls | c <= GtkWidget} {l:anz} (widget: !gobjptr (c, l), flag: GTK_WIDGET_FLAG): void
+  {c:cls | c <= GtkWidget} {l:agz}
+  (widget: !gobjptr (c, l), flag: GTK_WIDGET_FLAG): void
   = "#atsctrb_GTK_WIDGET_SET_FLAGS"
 // end of [...]
 
@@ -52,21 +63,21 @@ fun GTK_WIDGET_SET_FLAGS
 // this one is based on refcount?
 //
 fun gtk_widget_destroy
-  {c:cls | c <= GtkWidget} {l:anz} (widget: gobjptr (c, l)): void
+  {c:cls | c <= GtkWidget} {l:agz} (widget: gobjptr (c, l)): void
   = "#atsctrb_gtk_widget_destroy"
 
 (* ****** ****** *)
 
 fun gtk_widget_show
-  {c:cls | c <= GtkWidget} {l:anz} (widget: !gobjptr (c, l)): void
+  {c:cls | c <= GtkWidget} {l:agz} (widget: !gobjptr (c, l)): void
   = "#atsctrb_gtk_widget_show"
 
 fun gtk_widget_show_now
-  {c:cls | c <= GtkWidget} {l:anz} (widget: !gobjptr (c, l)): void
+  {c:cls | c <= GtkWidget} {l:agz} (widget: !gobjptr (c, l)): void
   = "#atsctrb_gtk_widget_show_now"
 
 fun gtk_widget_show_all
-  {c:cls | c <= GtkWidget} {l:anz} (widget: !gobjptr (c, l)): void
+  {c:cls | c <= GtkWidget} {l:agz} (widget: !gobjptr (c, l)): void
   = "#atsctrb_gtk_widget_show_all"
 
 (* ****** ****** *)
@@ -75,7 +86,7 @@ fun gtk_widget_show_all
 // HX: negative width/height can have special meaning
 //
 fun gtk_widget_set_size_request
-  {c:cls | c <= GtkWidget} {l:anz} (
+  {c:cls | c <= GtkWidget} {l:agz} (
     widegt: !gobjptr (c, l), width: gint, height: gint
   ) : void = "#atsctrb_gtk_widget_set_size_request"
 // end of [gtk_widget_set_size_request]
@@ -83,16 +94,46 @@ fun gtk_widget_set_size_request
 (* ****** ****** *)
 
 fun gtk_widget_grab_default
-  {c:cls | c <= GtkWidget} {l:anz} (widget: !gobjptr (c, l)): void
+  {c:cls | c <= GtkWidget} {l:agz} (widget: !gobjptr (c, l)): void
   = "#atsctrb_gtk_widget_grab_default"
 // end of [gtk_widget_grab_default]
 
 (* ****** ****** *)
 
 fun gtk_widget_set_events
-  {c:cls | c <= GtkWidget} {l:anz} (widget: !gobjptr (c, l), events: gint): void
+  {c:cls | c <= GtkWidget} {l:agz} (widget: !gobjptr (c, l), events: gint): void
   = "#atsctrb_gtk_widget_set_events"
 // end of [gtk_widget_set_events]
+
+(* ****** ****** *)
+
+fun gtk_widget_takeout_window(*GDK*)
+  {c:cls | c <= GtkWidget} {l:agz} (widget: !gobjptr (c, l))
+  : [l_win:addr] (gobjptr (GdkWindow, l_win) -<lin,prf> void | gobjptr (GdkWindow, l_win))
+  = "atsctrb_gtk_widget_takeout_window" // function!
+// end of [gtk_widget_takeout_window]
+
+(* ****** ****** *)
+
+fun gtk_widget_get_allocation
+  {c:cls | c <= GtkWidget} {l:agz}
+  (widget: !gobjptr (c, l), alloc: &GtkAllocation? >> GtkAllocation): void
+  = "#atsctrb_gtk_widget_get_allocation"
+// end of [gtk_widget_get_allocation]
+
+fun gtk_widget_set_allocation
+  {c:cls | c <= GtkWidget} {l:agz} (widget: !gobjptr (c, l), alloc: &GtkAllocation): void
+  = "#atsctrb_gtk_widget_set_allocation"
+// end of [gtk_widget_set_allocation]
+
+fun gtk_widget_takeout_allocation
+  {c:cls | c <= GtkWidget} {l:agz}
+  (widget: !gobjptr (c, l))
+  : [l_alloc:addr] (
+    GtkAllocation @ l_alloc, minus (gobjptr (c, l), GtkAllocation @ l_alloc)
+  | ptr l_alloc
+  ) = "atsctrb_gtk_widget_takeout_allocation" // function!
+// end of [gtk_widget_takeout_allocation]
 
 (* ****** ****** *)
 

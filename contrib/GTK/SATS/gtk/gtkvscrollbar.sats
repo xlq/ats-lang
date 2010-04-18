@@ -38,7 +38,8 @@
 
 (* ****** ****** *)
 
-fun gtk_vscrollbar_new {c:cls | c <= GtkAdjustment} {l:anz}
+fun gtk_vscrollbar_new
+  {c:cls | c <= GtkAdjustment} {l:agz}
   (adj: !gobjptr (c, l)): GtkVScrollbar_ptr1 = "#atsctrb_gtk_vscrollbar_new"
 // end of [gtk_vscrollbar_new]
 

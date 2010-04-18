@@ -95,26 +95,33 @@ macdef TTF_STYLE_BOLD = $extval (int, "TTF_STYLE_BOLD")
 macdef TTF_STYLE_ITALIC = $extval (int, "TTF_STYLE_ITALIC")
 macdef TTF_STYLE_UNDERLINE = $extval (int, "TTF_STYLE_UNDERLINE")
 
-fun TTF_GetFontStyle {l:agz} (font: !TTF_Font_ref l): int(*style*)
-  = "#atsctrb_TTF_GetFontStyle"
+fun TTF_GetFontStyle
+  {l:agz} (font: !TTF_Font_ref l): int(*style*) = "#atsctrb_TTF_GetFontStyle"
+// end of [TTF_GetFontStyle]
   
-fun TTF_SetFontStyle {l:agz} (font: !TTF_Font_ref l, style: int): void
-  = "#atsctrb_TTF_SetFontStyle"
+fun TTF_SetFontStyle {l:agz}
+  (font: !TTF_Font_ref l, style: int): void = "#atsctrb_TTF_SetFontStyle"
+// end of [TTF_SetFontStyle]
 
-fun TTF_FontHeight {l:agz} (font: !TTF_Font_ref l): int(*height*)
-  = "#atsctrb_TTF_FontHeight"
+fun TTF_FontHeight
+  {l:agz} (font: !TTF_Font_ref l): int(*height*) = "#atsctrb_TTF_FontHeight"
+// end of [TTF_FontHeight]
 
-fun TTF_FontAscent {l:agz} (font: !TTF_Font_ref l): int(*ascent*)
-  = "#atsctrb_TTF_FontAscent"
+fun TTF_FontAscent
+  {l:agz} (font: !TTF_Font_ref l): int(*ascent*) = "#atsctrb_TTF_FontAscent"
+// end of [TTF_FontAscent]
 
-fun TTF_FontDescent {l:agz} (font: !TTF_Font_ref l): int(*descent*)
-  = "#atsctrb_TTF_FontDescent"
+fun TTF_FontDescent
+  {l:agz} (font: !TTF_Font_ref l): int(*descent*) = "#atsctrb_TTF_FontDescent"
+// end of [TTF_FontDescent]
 
-fun TTF_FontLineSkip {l:agz} (font: !TTF_Font_ref l): int(*lineskip*)
-  = "#atsctrb_TTF_FontLineSkip"
+fun TTF_FontLineSkip
+  {l:agz} (font: !TTF_Font_ref l): int(*lineskip*) = "#atsctrb_TTF_FontLineSkip"
+// end of [TTF_FontLineSkip]
 
-fun TTF_FontFaces {l:agz} (font: !TTF_Font_ref l): lint(*number of faces*)
-  = "#atsctrb_TTF_FontFaces"
+fun TTF_FontFaces {l:agz}
+  (font: !TTF_Font_ref l): lint(*number of faces*) = "#atsctrb_TTF_FontFaces"
+// end of [TTF_FontFaces]
 
 (* ****** ****** *)
 
@@ -152,6 +159,7 @@ fun TTF_GlyphMetrics {l:agz} (
   , advance: &int? >> int
   ) : int (*err*)
   = "#atsctrb_TTF_GlyphMetrics"
+// end of [TTF_GlyphMetrics]
 
 (* ****** ****** *)
 
@@ -174,10 +182,12 @@ fun TTF_RenderUTF16_Solid {l:agz}
 fun TTF_RenderText_Shaded {l:agz}
   (font: !TTF_Font_ref l, txt: string, fg: SDL_Color, bg: SDL_Color): SDL_Surface_ref0
   = "#atsctrb_TTF_RenderText_Shaded"
+// end of [TTF_RenderText_Shaded]
 
 fun TTF_RenderUTF8_Shaded {l:agz}
   (font: !TTF_Font_ref l, txt: string, fg: SDL_Color, bg: SDL_Color): SDL_Surface_ref0
   = "#atsctrb_TTF_RenderUTF8_Shaded"
+// end of [TTF_RenderUTF8_Shaded]
 
 (*
 fun TTF_RenderUTF16_Shaded {l:agz}
@@ -190,6 +200,7 @@ fun TTF_RenderUTF16_Shaded {l:agz}
 fun TTF_RenderGlyph_Solid {l:agz}
   (font: !TTF_Font_ref l, ch: Uint16, fg: SDL_Color): SDL_Surface_ref0
   = "#atsctrb_TTF_RenderGlyph_Solid"
+// end of [TTF_RenderGlyph_Solid]
 
 (* ****** ****** *)
 

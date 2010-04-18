@@ -140,7 +140,7 @@ viewtypedef symtbl (l:addr) = $H.HASHTBLptr (symbol_t, int, l)
 
 extern fun succ_symbol (x: symbol_t): symbol_t = "#atspre_psucc"
 
-fun dna_count {n,k:pos | k <= n} {l:anz}
+fun dna_count {n,k:pos | k <= n} {l:agz}
   (tbl: !symtbl l, dna: dna_t, n: size_t n, k: size_t k): void = let
   val () = symlen_set (k)
   val () = $H.hashtbl_clear (tbl)
@@ -192,7 +192,7 @@ fun print_free_frqlst
   | ~list_vt_nil () => ()
 end // end of [print_free_frqlst]
 
-fn write_frequencies {n,k:pos | k <= n} {l:anz}
+fn write_frequencies {n,k:pos | k <= n} {l:agz}
   (tbl: !symtbl l, dna: dna_t, n: size_t n, k: size_t k): void = let
   val () = dna_count (tbl, dna, n, k)
   var total: int = 0
@@ -214,7 +214,7 @@ end // end of [write_frequencies]
 
 (* ****** ****** *)
 
-fn write_count {n,k:pos} {l:anz}
+fn write_count {n,k:pos} {l:agz}
   (tbl: !symtbl l, dna: dna_t, n: size_t n, seq: string k): void = let
   val k = string1_length seq
   val () = assert (k <= n)

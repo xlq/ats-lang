@@ -73,6 +73,10 @@ stadef gobjptr = $GOBJ.gobjptr
 
 (* ****** ****** *)
 
+staload "contrib/GTK/SATS/gdk.sats"
+
+(* ****** ****** *)
+
 //
 // class hierarchy for GTK
 //
@@ -202,113 +206,113 @@ objcls GtkObject = { super: GObject }
 (* ****** ****** *)
 
 viewtypedef GtkAdjustment_ptr (l:addr) = gobjptr (GtkAdjustment, l)
-viewtypedef GtkAdjustment_ptr0 = [l:addr] GtkAdjustment_ptr l
+viewtypedef GtkAdjustment_ptr0 = [l:agez] GtkAdjustment_ptr l
 viewtypedef GtkAdjustment_ptr1 = [l:addr | l > null] GtkAdjustment_ptr l
 
 viewtypedef GtkArrow_ptr (l:addr) = gobjptr (GtkArrow, l)
-viewtypedef GtkArrow_ptr0 = [l:addr] GtkArrow_ptr l
+viewtypedef GtkArrow_ptr0 = [l:agez] GtkArrow_ptr l
 viewtypedef GtkArrow_ptr1 = [l:addr | l > null] GtkArrow_ptr l
 
 viewtypedef GtkButton_ptr (l:addr) = gobjptr (GtkButton, l)
-viewtypedef GtkButton_ptr0 = [l:addr] GtkButton_ptr l
+viewtypedef GtkButton_ptr0 = [l:agez] GtkButton_ptr l
 viewtypedef GtkButton_ptr1 = [l:addr | l > null] GtkButton_ptr l
 
 viewtypedef GtkCheckButton_ptr (l:addr) = gobjptr (GtkCheckButton, l)
-viewtypedef GtkCheckButton_ptr0 = [l:addr] GtkCheckButton_ptr l
+viewtypedef GtkCheckButton_ptr0 = [l:agez] GtkCheckButton_ptr l
 viewtypedef GtkCheckButton_ptr1 = [l:addr | l > null] GtkCheckButton_ptr l
 
 viewtypedef GtkEntry_ptr (l:addr) = gobjptr (GtkEntry, l)
-viewtypedef GtkEntry_ptr0 = [l:addr] GtkEntry_ptr l
+viewtypedef GtkEntry_ptr0 = [l:agez] GtkEntry_ptr l
 viewtypedef GtkEntry_ptr1 = [l:addr | l > null] GtkEntry_ptr l
 
 viewtypedef GtkFrame_ptr (l:addr) = gobjptr (GtkFrame, l)
-viewtypedef GtkFrame_ptr0 = [l:addr] GtkFrame_ptr l
+viewtypedef GtkFrame_ptr0 = [l:agez] GtkFrame_ptr l
 viewtypedef GtkFrame_ptr1 = [l:addr | l > null] GtkFrame_ptr l
 
 viewtypedef GtkHBox_ptr (l:addr) = gobjptr (GtkHBox, l)
-viewtypedef GtkHBox_ptr0 = [l:addr] GtkHBox_ptr l
+viewtypedef GtkHBox_ptr0 = [l:agez] GtkHBox_ptr l
 viewtypedef GtkHBox_ptr1 = [l:addr | l > null] GtkHBox_ptr l
 
 viewtypedef GtkHRuler_ptr (l:addr) = gobjptr (GtkHRuler, l)
-viewtypedef GtkHRuler_ptr0 = [l:addr] GtkHRuler_ptr l
+viewtypedef GtkHRuler_ptr0 = [l:agez] GtkHRuler_ptr l
 viewtypedef GtkHRuler_ptr1 = [l:addr | l > null] GtkHRuler_ptr l
 
 viewtypedef GtkHScale_ptr (l:addr) = gobjptr (GtkHScale, l)
-viewtypedef GtkHScale_ptr0 = [l:addr] GtkHScale_ptr l
+viewtypedef GtkHScale_ptr0 = [l:agez] GtkHScale_ptr l
 viewtypedef GtkHScale_ptr1 = [l:addr | l > null] GtkHScale_ptr l
 
 viewtypedef GtkHScrollbar_ptr (l:addr) = gobjptr (GtkHScrollbar, l)
-viewtypedef GtkHScrollbar_ptr0 = [l:addr] GtkHScrollbar_ptr l
+viewtypedef GtkHScrollbar_ptr0 = [l:agez] GtkHScrollbar_ptr l
 viewtypedef GtkHScrollbar_ptr1 = [l:addr | l > null] GtkHScrollbar_ptr l
 
 viewtypedef GtkHSeparator_ptr (l:addr) = gobjptr (GtkHSeparator, l)
-viewtypedef GtkHSeparator_ptr0 = [l:addr] GtkHSeparator_ptr l
+viewtypedef GtkHSeparator_ptr0 = [l:agez] GtkHSeparator_ptr l
 viewtypedef GtkHSeparator_ptr1 = [l:addr | l > null] GtkHSeparator_ptr l
 
 viewtypedef GtkLabel_ptr (l:addr) = gobjptr (GtkLabel, l)
-viewtypedef GtkLabel_ptr0 = [l:addr] GtkLabel_ptr l
+viewtypedef GtkLabel_ptr0 = [l:agez] GtkLabel_ptr l
 viewtypedef GtkLabel_ptr1 = [l:addr | l > null] GtkLabel_ptr l
 
 viewtypedef GtkMenu_ptr (l:addr) = gobjptr (GtkMenu, l)
-viewtypedef GtkMenu_ptr0 = [l:addr] GtkMenu_ptr l
+viewtypedef GtkMenu_ptr0 = [l:agez] GtkMenu_ptr l
 viewtypedef GtkMenu_ptr1 = [l:addr | l > null] GtkMenu_ptr l
 
 viewtypedef GtkMenuItem_ptr (l:addr) = gobjptr (GtkMenuItem, l)
-viewtypedef GtkMenuItem_ptr0 = [l:addr] GtkMenuItem_ptr l
+viewtypedef GtkMenuItem_ptr0 = [l:agez] GtkMenuItem_ptr l
 viewtypedef GtkMenuItem_ptr1 = [l:addr | l > null] GtkMenuItem_ptr l
 
 viewtypedef GtkMenuShell_ptr (l:addr) = gobjptr (GtkMenuShell, l)
-viewtypedef GtkMenuShell_ptr0 = [l:addr] GtkMenuShell_ptr l
+viewtypedef GtkMenuShell_ptr0 = [l:agez] GtkMenuShell_ptr l
 viewtypedef GtkMenuShell_ptr1 = [l:addr | l > null] GtkMenuShell_ptr l
 
 viewtypedef GtkOptionMenu_ptr (l:addr) = gobjptr (GtkOptionMenu, l)
-viewtypedef GtkOptionMenu_ptr0 = [l:addr] GtkOptionMenu_ptr l
+viewtypedef GtkOptionMenu_ptr0 = [l:agez] GtkOptionMenu_ptr l
 viewtypedef GtkOptionMenu_ptr1 = [l:addr | l > null] GtkOptionMenu_ptr l
 
 viewtypedef GtkRadioButton_ptr (l:addr) = gobjptr (GtkRadioButton, l)
-viewtypedef GtkRadioButton_ptr0 = [l:addr] GtkRadioButton_ptr l
+viewtypedef GtkRadioButton_ptr0 = [l:agez] GtkRadioButton_ptr l
 viewtypedef GtkRadioButton_ptr1 = [l:addr | l > null] GtkRadioButton_ptr l
 
 viewtypedef GtkSpinButton_ptr (l:addr) = gobjptr (GtkSpinButton, l)
-viewtypedef GtkSpinButton_ptr0 = [l:addr] GtkSpinButton_ptr l
+viewtypedef GtkSpinButton_ptr0 = [l:agez] GtkSpinButton_ptr l
 viewtypedef GtkSpinButton_ptr1 = [l:addr | l > null] GtkSpinButton_ptr l
 
 viewtypedef GtkStatusbar_ptr (l:addr) = gobjptr (GtkStatusbar, l)
-viewtypedef GtkStatusbar_ptr0 = [l:addr] GtkStatusbar_ptr l
+viewtypedef GtkStatusbar_ptr0 = [l:agez] GtkStatusbar_ptr l
 viewtypedef GtkStatusbar_ptr1 = [l:addr | l > null] GtkStatusbar_ptr l
 
 viewtypedef GtkTable_ptr (l:addr) = gobjptr (GtkTable, l)
-viewtypedef GtkTable_ptr0 = [l:addr] GtkTable_ptr l
+viewtypedef GtkTable_ptr0 = [l:agez] GtkTable_ptr l
 viewtypedef GtkTable_ptr1 = [l:addr | l > null] GtkTable_ptr l
 
 viewtypedef GtkToggleButton_ptr (l:addr) = gobjptr (GtkToggleButton, l)
-viewtypedef GtkToggleButton_ptr0 = [l:addr] GtkToggleButton_ptr l
+viewtypedef GtkToggleButton_ptr0 = [l:agez] GtkToggleButton_ptr l
 viewtypedef GtkToggleButton_ptr1 = [l:addr | l > null] GtkToggleButton_ptr l
 
 viewtypedef GtkVBox_ptr (l:addr) = gobjptr (GtkVBox, l)
-viewtypedef GtkVBox_ptr0 = [l:addr] GtkVBox_ptr l
+viewtypedef GtkVBox_ptr0 = [l:agez] GtkVBox_ptr l
 viewtypedef GtkVBox_ptr1 = [l:addr | l > null] GtkVBox_ptr l
 
 viewtypedef GtkVRuler_ptr (l:addr) = gobjptr (GtkVRuler, l)
-viewtypedef GtkVRuler_ptr0 = [l:addr] GtkVRuler_ptr l
+viewtypedef GtkVRuler_ptr0 = [l:agez] GtkVRuler_ptr l
 viewtypedef GtkVRuler_ptr1 = [l:addr | l > null] GtkVRuler_ptr l
 
 viewtypedef GtkVScale_ptr (l:addr) = gobjptr (GtkVScale, l)
-viewtypedef GtkVScale_ptr0 = [l:addr] GtkVScale_ptr l
+viewtypedef GtkVScale_ptr0 = [l:agez] GtkVScale_ptr l
 viewtypedef GtkVScale_ptr1 = [l:addr | l > null] GtkVScale_ptr l
 
 viewtypedef GtkVScrollbar_ptr (l:addr) = gobjptr (GtkVScrollbar, l)
-viewtypedef GtkVScrollbar_ptr0 = [l:addr] GtkVScrollbar_ptr l
+viewtypedef GtkVScrollbar_ptr0 = [l:agez] GtkVScrollbar_ptr l
 viewtypedef GtkVScrollbar_ptr1 = [l:addr | l > null] GtkVScrollbar_ptr l
 
 viewtypedef GtkVSeparator_ptr (l:addr) = gobjptr (GtkVSeparator, l)
-viewtypedef GtkVSeparator_ptr0 = [l:addr] GtkVSeparator_ptr l
+viewtypedef GtkVSeparator_ptr0 = [l:agez] GtkVSeparator_ptr l
 viewtypedef GtkVSeparator_ptr1 = [l:addr | l > null] GtkVSeparator_ptr l
 
 viewtypedef GtkWidget_ptr (l:addr) = gobjptr (GtkWidget, l)
 
 viewtypedef GtkWindow_ptr (l:addr) = gobjptr (GtkWindow, l)
-viewtypedef GtkWindow_ptr0 = [l:addr] GtkWindow_ptr l
+viewtypedef GtkWindow_ptr0 = [l:agez] GtkWindow_ptr l
 viewtypedef GtkWindow_ptr1 = [l:addr | l > null] GtkWindow_ptr l
 
 (* ****** ****** *)

@@ -4,6 +4,12 @@ ATSCC=$(or $(ATSHOME), "/usr")/bin/atscc
 
 ######
 
+checkall: compall cleanall
+compall:: \
+  problem3 \
+
+######
+
 problem3: problem3.dats; $(ATSCC) -o $@ problem3.dats -lgmp && ./problem3
 
 ######

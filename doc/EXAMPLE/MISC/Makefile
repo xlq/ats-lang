@@ -5,7 +5,7 @@
 ######
 
 .PHONY: all
-all:  compall
+all: checkall
 
 ATSCC=$(or $(ATSHOME), "/usr")/bin/atscc
 ATSOPT=$(or $(ATSHOME), "/usr")/bin/atsopt

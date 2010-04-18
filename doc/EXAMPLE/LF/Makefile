@@ -74,7 +74,7 @@ typecheck::
 	$(ATSCC) $(ATSCCFLAG) irrationality-of-sqrt2.dats
 	$(ATSCC) $(ATSCCFLAG) ITPT.dats
 	$(ATSCC) $(ATSCCFLAG) KolmogorovTrans.dats
-	$(ATSCC) $(ATSCCFLAG) mini-ML.dats
+#	$(ATSCC) $(ATSCCFLAG) mini-ML.dats
 	$(ATSCC) $(ATSCCFLAG) naive-set.dats
 	$(ATSCC) $(ATSCCFLAG) pigeonhole.dats
 	$(ATSCC) $(ATSCCFLAG) infprime.dats
