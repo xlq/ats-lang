@@ -68,6 +68,9 @@ implement of_double<zcmplx> (x) = $CMPLX.zcmplx_of_double (x)
 
 (* ****** ****** *)
 
+implement to_int<float> (x) = int_of_float (x)
+implement to_int<double> (x) = int_of_double (x)
+
 implement to_float<float> (x) = x
 implement to_float<double> (x) = float_of_double (x)
 
@@ -112,6 +115,14 @@ implement div<zcmplx> (x1, x2) = $CMPLX.div_zcmplx_zcmplx (x1, x2)
 
 (* ****** ****** *)
 
+implement ceil<float> (x) = $M.ceilf (x)
+implement ceil<double> (x) = $M.ceil (x)
+
+implement floor<float> (x) = $M.floorf (x)
+implement floor<double> (x) = $M.floor (x)
+
+(* ****** ****** *)
+
 implement scal<float,float> (x1, x2) = mul_float_float (x1, x2)
 implement scal<float,ccmplx> (x1, x2) = let
   val x2_r = $CMPLX.ccmplx_real (x2) and x2_i = $CMPLX.ccmplx_imag (x2) in
@@ -148,6 +159,11 @@ implement signof<double> (x) = compare_double_double (x, 0.0)
 
 implement compare<float> (x1, x2) = compare_float_float (x1, x2)
 implement compare<double> (x1, x2) = compare_double_double (x1, x2)
+
+(* ****** ****** *)
+
+implement{a} min (x, y) = if lte<a> (x,y) then x else y
+implement{a} max (x, y) = if gte<a> (x,y) then x else y
 
 (* ****** ****** *)
 

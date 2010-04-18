@@ -91,7 +91,7 @@ fun g_object_isnot_null
 (* ****** ****** *)
 
 abstype GCallback // = () -<fun1> void
-castfn G_CALLBACK {a:type} (x: a): GCallback // unfortunately ...
+castfn G_CALLBACK {a:type} (x: a): GCallback // HX: unfortunately ...
 
 (* ****** ****** *)
 

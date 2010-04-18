@@ -9,7 +9,7 @@
 (*
 ** ATS - Unleashing the Potential of Types!
 **
-** Copyright (C) 2002-2008 Hongwei Xi, Boston University
+** Copyright (C) 2002-2010 Hongwei Xi, Boston University
 **
 ** All rights reserved
 **
@@ -36,23 +36,20 @@
 
 (* ****** ****** *)
 
-// some common functions on pointers
-
-(* ****** ****** *)
-
 #include "prelude/params.hats"
 
 (* ****** ****** *)
 
 //
-// this file is mostly used for building API's for external
-// packages.
+// HX: this file is mostly used for building API's for external packages.
+// The "tricks" presented here should be used sparringly in cases that do
+// require special attention.
 //
 
 (* ****** ****** *)
 
 //
-// note that (vt1 \minus v2) roughly means that a ticket of
+// HX: note that (vt1 \minus v2) roughly means that a ticket of
 // [v2] is taken from [vt1]; the ticket must be returned before
 // [vt1] is consumed.
 //
@@ -64,6 +61,11 @@ prfun minus_addback // [minus] is defined in basics_sta.sats
 
 (* ****** ****** *)
 
+//
+// HX-2010-04-18:
+// the types [stamp] and [stamped] should only be used in a situation where
+// the value takeout out cannot be uniquely identified by its type
+//
 absprop stamp (t: int)
 absviewt@ype stamped (a:viewt@ype, t: int) = a
 

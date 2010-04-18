@@ -198,7 +198,8 @@ implement main1 () = () where {
   val () = gtk_window_set_title (window, "cairo: Knockout Groups")
   val darea = gtk_drawing_area_new ()
   val () = gtk_container_add (window, darea)
-  val _sid = g_signal_connect (darea, (gsignal)"expose-event", G_CALLBACK (on_expose_event), (gpointer)null)
+  val _sid = g_signal_connect
+    (darea, (gsignal)"expose-event", G_CALLBACK (on_expose_event), (gpointer)null)
   val () = g_object_unref (darea)
   val (fpf_window | window_) = g_object_vref (window)
   val _sid = g_signal_connect0

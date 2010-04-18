@@ -51,6 +51,7 @@ fun{a:t@ype} of_double (x: double):<> a
 (* ****** ****** *)
 
 // S, D
+fun{a:t@ype} to_int (x:a):<> int
 fun{a:t@ype} to_float (x: a):<> float
 fun{a:t@ype} to_double (x: a):<> double
 
@@ -71,6 +72,12 @@ fun{a:t@ype} add (x1: a, x2: a):<> a
 fun{a:t@ype} sub (x1: a, x2: a):<> a
 fun{a:t@ype} mul (x1: a, x2: a):<> a
 fun{a:t@ype} div (x1: a, x2: a):<> a
+
+(* ****** ****** *)
+
+// S, D
+fun{a:t@ype} ceil (x:a) :<> a
+fun{a:t@ype} floor (x:a) :<> a
 
 (* ****** ****** *)
 
@@ -97,6 +104,12 @@ fun{a:t@ype} neq (x1: a, x2: a):<> bool
 // S, D
 fun{a:t@ype} signof (x: a):<> Sgn
 fun{a:t@ype} compare (x1: a, x2: a):<> Sgn
+
+(* ****** ****** *)
+
+// S, D
+fun{a:t@ype} min (x:a, y:a):<> a
+fun{a:t@ype} max (x:a, y:a):<> a
 
 (* ****** ****** *)
 

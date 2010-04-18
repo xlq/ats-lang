@@ -107,6 +107,9 @@ fun gtk_widget_set_events
 
 (* ****** ****** *)
 
+//
+// HX-2010-04-18: this is probably safe enough :)
+//
 fun gtk_widget_takeout_window(*GDK*)
   {c:cls | c <= GtkWidget} {l:agz} (widget: !gobjptr (c, l))
   : [l_win:addr] (gobjptr (GdkWindow, l_win) -<lin,prf> void | gobjptr (GdkWindow, l_win))
@@ -115,12 +118,14 @@ fun gtk_widget_takeout_window(*GDK*)
 
 (* ****** ****** *)
 
+// HX: since GTK-2.18
 fun gtk_widget_get_allocation
   {c:cls | c <= GtkWidget} {l:agz}
   (widget: !gobjptr (c, l), alloc: &GtkAllocation? >> GtkAllocation): void
   = "#atsctrb_gtk_widget_get_allocation"
 // end of [gtk_widget_get_allocation]
 
+// HX: since GTK-2.18
 fun gtk_widget_set_allocation
   {c:cls | c <= GtkWidget} {l:agz} (widget: !gobjptr (c, l), alloc: &GtkAllocation): void
   = "#atsctrb_gtk_widget_set_allocation"
