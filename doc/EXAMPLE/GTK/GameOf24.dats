@@ -24,6 +24,16 @@ staload RAND = "libc/SATS/random.sats"
 
 (* ****** ****** *)
 
+staload "contrib/glib/SATS/glib.sats"
+staload "contrib/glib/SATS/glib-object.sats"
+
+(* ****** ****** *)
+
+staload "contrib/GTK/SATS/gdk.sats"
+staload "contrib/GTK/SATS/gtk.sats"
+
+(* ****** ****** *)
+
 datatype exp =
   | Num of double
   | Add of (exp, exp)
@@ -45,34 +55,68 @@ fun priority_mac (e: exp): Nat = (case+ e of
   | Num _ => 0 | Add _ => 2 | Sub _ => 2 | Mul _ => 1 | Div _ => 1
 ) : Nat // end of [priority]
 
-fun print_exp (e: exp): void = begin case+ e of
-  | Num r => printf ("%.0f", @(r))
+(* ****** ****** *)
+
+fun g_print_exp {l:anz}
+  (gs: !GString_ptr l, e: exp): void = begin
+  case+ e of
+  | Num r => g_string_append_printf (gs, "%.0f", @(r))
   | Add (e1, e2) => let
       val p1 = priority_mac e1 and p2 = priority_mac e2
+      val () = g_print_exp_ (gs, 2, p1, e1)
+      val _ = g_string_append_c (gs, (gchar)'+')
+      val () = g_print_exp_ (gs, 2, p2, e2)
     in
-      print_exp_ (2, p1, e1); print '+'; print_exp_ (2, p2, e2)
+      // nothing
     end // end of [Add]
   | Sub (e1, e2) => let
       val p1 = priority_mac e1 and p2 = priority_mac e2
+      val () = g_print_exp_ (gs, 2, p1, e1)
+      val _ = g_string_append_c (gs, (gchar)'-')
+      val () = g_print_exp_ (gs, 2, p2, e2)
     in
-      print_exp_ (2, p1, e1); print '-'; print_exp_ (2, p2, e2)
+      // nothing
     end // end of [Sub]
   | Mul (e1, e2) => let
       val p1 = priority_mac e1 and p2 = priority_mac e2
+      val () = g_print_exp_ (gs, 2, p1, e1)
+      val _ = g_string_append_c (gs, (gchar)'*')
+      val () = g_print_exp_ (gs, 2, p2, e2)
     in
-      print_exp_ (1, p1, e1); print '*'; print_exp_ (1, p2, e2)
+      // nothing
     end // end of [Mul]
   | Div (e1, e2) => let
       val p1 = priority_mac e1 and p2 = priority_mac e2
+      val () = g_print_exp_ (gs, 2, p1, e1)
+      val _ = g_string_append_c (gs, (gchar)'/')
+      val () = g_print_exp_ (gs, 2, p2, e2)
     in
-      print_exp_ (1, p1, e1); print '/'; print_exp_ (1, p2, e2)
+      // nothing
     end // end of [Div]
 end // end of [print_exp]
 
-and print_exp_ (p0: Nat, p: Nat, e: exp): void =
-  if p < p0 then print_exp e else (print "("; print_exp e; print ")")
+and g_print_exp_ {l:anz}
+  (gs: !GString_ptr l, p0: Nat, p: Nat, e: exp): void =
+  if p < p0 then g_print_exp (gs, e) else let
+    val _ = g_string_append_c (gs, (gchar)'\(')
+    val () = g_print_exp (gs, e)
+    val _ = g_string_append_c (gs, (gchar)')')
+  in
+    // nothing
+  end // end of [if]
 // end of [print_exp_]
 
+fun print_exp (e: exp): void = let
+  val gs = g_string_new ()
+  val () = g_print_exp (gs, e)
+  val ptr = g_string_get_str (gs)
+  val () = print (string) where {
+    val string = __cast (ptr) where { extern castfn __cast (x: ptr): string }
+  } // end of [val]
+in
+  g_string_free_true (gs)
+end // end of [print_exp]
+  
 (* ****** ****** *)
 
 typedef explst (n:int) = list (exp, n)
@@ -145,6 +189,74 @@ fun play {n:int | n >= 2} (
 
 (* ****** ****** *)
 
+fun answering
+  (xs: List exp): void = () where {
+  val window = gtk_window_new (GTK_WINDOW_TOPLEVEL)
+  val (fpf_window | window_) = g_object_vref (window)
+  val _sid = g_signal_connect0
+    (window_, (gsignal)"destroy", G_CALLBACK(gtk_widget_destroy), (gpointer)null)
+//
+  val vbox0 = gtk_vbox_new (GFALSE, (gint)10)
+  val () = gtk_widget_show (vbox0)
+  val () = gtk_container_add (window, vbox0)
+//
+  val hbox1 = gtk_hbox_new (GFALSE, (gint)0)
+  val () = gtk_widget_show (hbox1)
+  val () = gtk_box_pack_start (vbox0, hbox1, GTRUE, GTRUE, guint(10))
+  val () = (case+ xs of
+    | list_cons (x, _) => let
+        val frame_ans = gtk_frame_new ("A solution is found:")
+        val () = gtk_widget_show (frame_ans)
+        val () = gtk_box_pack_start (hbox1, frame_ans, GTRUE, GFALSE, guint(10))
+        val gs  = g_string_new ()
+        val () = g_print_exp (gs , x)
+        val () = g_string_append_printf (gs, " = 24", @())
+        val ptr = g_string_get_str (gs)
+        val label_msg = gtk_label_new (msg) where {
+          val msg = __cast (ptr) where { extern castfn __cast (x: ptr): string }
+        } // end of [val]
+        val () = g_string_free_true (gs)
+        val () = gtk_widget_show (label_msg)
+        val () = gtk_container_add (frame_ans, label_msg)
+        val () = g_object_unref (label_msg)
+        val () = g_object_unref (frame_ans)
+      in
+        // nothing
+      end // end of [if]
+    | list_nil _ => let
+        val label_ans = gtk_label_new ("No solution is found!")
+        val () = gtk_widget_show (label_ans)
+        val () = gtk_box_pack_start (hbox1, label_ans, GTRUE, GFALSE, guint(10))
+        val () = g_object_unref (label_ans)
+      in
+        // nothing
+      end // end of [if]
+  ) : void // end of [val]
+  val () = g_object_unref (hbox1)
+//
+  val hsep = gtk_hseparator_new ()
+  val () = gtk_widget_show (hsep)
+  val () = gtk_box_pack_start (vbox0, hsep, GTRUE, GTRUE, guint(0))
+  val () = g_object_unref (hsep)
+//
+  val hbox1 = gtk_hbox_new (GFALSE, (gint)0)
+  val () = gtk_widget_show (hbox1)
+  val () = gtk_box_pack_start (vbox0, hbox1, GTRUE, GTRUE, guint(10))
+  val button = gtk_button_new_from_stock (GTK_STOCK_CLOSE)
+  val _sid = g_signal_connect_swapped
+    (button, (gsignal)"clicked", G_CALLBACK(gtk_widget_destroy), window)
+  val () = gtk_widget_show (button)
+  val () = gtk_box_pack_start (hbox1, button, GTRUE, GFALSE, (guint)0)
+  val () = g_object_unref (button)
+  val () = g_object_unref (hbox1)
+//
+  val () = g_object_unref (vbox0)
+  val () = gtk_widget_show (window)
+  prval () = fpf_window (window)
+} // end of [answering]
+
+(* ****** ****** *)
+
 fun play24 {n:nat}
   (ns: list_vt (int, n)) = let
   val xs = loop (ns, list_nil) where {
@@ -161,10 +273,8 @@ fun play24 {n:nat}
   val () = assert_errmsg (n >= 2, #LOCATION)
   val ans = 24.0
   val res = play (ans, n, xs, list_nil)
-  val () = case+ res of
-    | list_cons _ => print "Solution found:"
-    | list_nil () => print "No solution found!"
-  val () = print_newline ()
+  val () = answering (res)
+(*
   val () = loop (res) where {
     fun loop (xs: List exp): void =
       case+ xs of
@@ -173,20 +283,11 @@ fun play24 {n:nat}
         } // end of [list_cons]
       | list_nil () => ()
     // end of [loop]
-  } // end of [loop]
+  } // end of [val]
+*)
 in
   // nothing
 end // end of [play24]
-
-(* ****** ****** *)
-
-staload "contrib/glib/SATS/glib.sats"
-staload "contrib/glib/SATS/glib-object.sats"
-
-(* ****** ****** *)
-
-staload "contrib/GTK/SATS/gdk.sats"
-staload "contrib/GTK/SATS/gtk.sats"
 
 (* ****** ****** *)
 
