@@ -102,6 +102,20 @@ overload guint with guint_of_int1
 
 (* ****** ****** *)
 
+symintr guint8
+castfn guint8_of_uint (i: uint):<> guint8
+overload guint8 with guint8_of_uint
+
+symintr guint16
+castfn guint16_of_uint (i: uint):<> guint16
+overload guint16 with guint16_of_uint
+
+symintr guint32
+castfn guint32_of_uint (i: uint):<> guint32
+overload guint32 with guint32_of_uint
+
+(* ****** ****** *)
+
 castfn float_of_gfloat (x: gfloat):<> float
 overload float_of with float_of_gfloat
 

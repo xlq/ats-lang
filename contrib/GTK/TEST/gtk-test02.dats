@@ -32,10 +32,10 @@ fun hw {c:cls | c <= GtkWidget} {l:agz}
 // end of [hw]
 
 fun delete_event {c:cls | c <= GtkWidget} {l:agz}
-  (widget: !gobjptr (c, l), event: &GdkEvent, _: gpointer): gint = let
+  (widget: !gobjptr (c, l), event: &GdkEvent, _: gpointer): gboolean = let
   val () = print ("delete event occurred\n")
 in
-  (gint)1 // deletion ignored
+  GTRUE // deletion ignored
 end // end of [delete_event]
 
 fun destroy {c:cls | c <= GtkWidget} {l:agz}

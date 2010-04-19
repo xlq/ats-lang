@@ -196,6 +196,23 @@ atsctrb_gtk_check_button_new_with_mnemonic
 /* ****** ****** */
 
 //
+// source: gtk/gtkcolorsel.h
+//
+
+#define atsctrb_gtk_color_selection_new gtk_color_selection_new
+#define atsctrb_gtk_color_selection_get_current_color gtk_color_selection_get_current_color
+
+/* ****** ****** */
+
+//
+// source: gtk/gtkcolorseldialog.h
+//
+
+#define atsctrb_gtk_color_selection_dialog_new gtk_color_selection_dialog_new
+
+/* ****** ****** */
+
+//
 // source: gtk/gtkdrawingarea.h
 //
 
@@ -755,6 +772,9 @@ atsctrb_gtk_widget_takeout_allocation
 #define atsctrb_gtk_widget_grab_default gtk_widget_grab_default
 
 #define atsctrb_gtk_widget_set_events gtk_widget_set_events
+
+#define atsctrb_gtk_widget_modify_fg gtk_widget_modify_fg
+#define atsctrb_gtk_widget_modify_bg gtk_widget_modify_bg
 
 /* ****** ****** */
 

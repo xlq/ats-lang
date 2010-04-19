@@ -33,10 +33,10 @@ fun callback {c:cls | c <= GtkWidget} {l:agz}
 // end of [callback]
 
 fun delete_event {c:cls | c <= GtkWidget} {l:agz}
-  (widget: !gobjptr (c, l), event: &GdkEvent, _: gpointer): gint = let
+  (widget: !gobjptr (c, l), event: &GdkEvent, _: gpointer): gboolean = let
   val () = gtk_main_quit ()
 in
-  (gint)0 // deletion 
+  GFALSE // deletion 
 end // end of [delete_event]
 
 (* ****** ****** *)

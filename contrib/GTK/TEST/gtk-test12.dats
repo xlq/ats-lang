@@ -31,24 +31,12 @@ staload "contrib/GTK/SATS/gtk.sats"
 
 (* ****** ****** *)
 
-fun delete_event
-  {c:cls | c <= GtkWidget} {l:agz}
-  (widget: !gobjptr (c, l), event: &GdkEvent, _: gpointer): gboolean = let
-  val () = gtk_main_quit ()
-in
-  GFALSE // delivered!
-end // end of [delete_event]
-
-(* ****** ****** *)
-
 extern fun main1 (): void = "main1"
 
 implement main1 () = () where {
   val window = gtk_window_new (GTK_WINDOW_TOPLEVEL)
   val () = gtk_widget_set_size_request (window, (gint)200, (gint)100)
   val () = gtk_window_set_title (window, "GTK Entry Example")
-  val _sid = g_signal_connect1
-    (window, (gsignal)"delete_event", G_CALLBACK (delete_event), (gpointer)null)
   val (fpf_window | window_) = g_object_vref (window)
   val _sid = g_signal_connect0
     (window_, (gsignal)"destroy", G_CALLBACK (gtk_main_quit), (gpointer)null)

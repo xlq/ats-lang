@@ -142,4 +142,18 @@ fun gtk_widget_takeout_allocation
 
 (* ****** ****** *)
 
+fun gtk_widget_modify_fg
+  {c:cls | c <= GtkWidget} {l:agz}
+  (widget: !gobjptr (c, l), state: GtkStateType, color: &GdkColor): void
+  = "#atsctrb_gtk_widget_modify_fg"
+// end of [gtk_widget_modify_fg]
+
+fun gtk_widget_modify_bg
+  {c:cls | c <= GtkWidget} {l:agz}
+  (widget: !gobjptr (c, l), state: GtkStateType, color: &GdkColor): void
+  = "#atsctrb_gtk_widget_modify_bg"
+// end of [gtk_widget_modify_bg]
+
+(* ****** ****** *)
+
 (* end of [gtkwidget.sats] *)

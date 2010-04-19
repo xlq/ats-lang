@@ -32,12 +32,20 @@ fun callback {c:cls | c <= GtkWidget} {l:agz}
   printf ("Hello again: %s was pressed\n", @(data))
 // end of [callback]
 
-fun delete_event {c:cls | c <= GtkWidget} {l:agz}
+fun handle_delete_event {c:cls | c <= GtkWidget} {l:agz}
   (widget: !gobjptr (c, l), event: &GdkEvent, _: gpointer): gboolean = let
-  val () = gtk_main_quit ()
+  val () = (print "this is from [handle_delete_event]"; print_newline ())
 in
   GFALSE // deletion 
-end // end of [delete_event]
+end // end of [handle_delete_event]
+
+fun handle_destroy
+  {c:cls | c <= GtkWidget} {l:agz}
+  (widget: gobjptr (c, l)): void = () where {
+  val () = (print "this is from [handle_destroy]"; print_newline ())
+  val () = gtk_widget_destroy (widget)
+  val () = gtk_main_quit ()
+} // end of [handle_destroy]
 
 (* ****** ****** *)
 
@@ -46,9 +54,12 @@ extern fun main1 (): void = "main1"
 implement main1 () = () where {
   val window = gtk_window_new (GTK_WINDOW_TOPLEVEL)
   val () = gtk_window_set_title (window, "Hello Buttons!")
-//
-  val _sid = g_signal_connect (
-    window, (gsignal)"delete_event", (G_CALLBACK)delete_event, (gpointer)null
+  val (fpf_window | window_) = g_object_vref (window)
+  val _sid = g_signal_connect0 (
+    window_, (gsignal)"destroy", (G_CALLBACK)handle_destroy, (gpointer)null
+  ) // end of [val]
+  val _sid = g_signal_connect1 (
+    window, (gsignal)"delete_event", (G_CALLBACK)handle_delete_event, (gpointer)null
   ) // end of [val]
 //
   val () = gtk_container_set_border_width (window, (guint)10U)
@@ -73,8 +84,8 @@ implement main1 () = () where {
   val () = g_object_unref (button)
 //
   val button = gtk_button_new_with_mnemonic ("_Q_u_i_t")
-  val _sid = g_signal_connect
-    (button, (gsignal)"clicked", G_CALLBACK(delete_event), (gpointer)null)
+  val _sid = g_signal_connect_swapped1
+    (button, (gsignal)"clicked", G_CALLBACK(handle_destroy), window)
   val () = gtk_table_attach_defaults
     (table, button, (guint)0U, (guint)2U, (guint)1U, (guint)2U)
   val () = gtk_widget_show (button)
@@ -84,12 +95,10 @@ implement main1 () = () where {
   val () = g_object_unref (table)
 //
   val () = gtk_widget_show (window)
+  prval () = fpf_window (window)
 //
   val () = gtk_main ()
 //
-  prval () = __leak (window) where {
-    extern prfun __leak {a:viewtype} (x: a): void // it is okay after [gtk_main]
-  }
 } // end of [main1]
 
 (* ****** ****** *)

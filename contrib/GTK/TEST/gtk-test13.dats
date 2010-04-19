@@ -64,8 +64,8 @@ fun change_digits (
     _: ptr, spin: !GtkSpinButton_ptr1
   ) : void = () where {
   val spinner1 = the_spinner1_get ()
-  val n = gtk_spin_button_get_value (spin)
-  val n = uint_of(int_of(double_of(n)))
+  val n = gtk_spin_button_get_value_as_int (spin)
+  val n = uint_of(int_of(n))
   val () = gtk_spin_button_set_digits (spinner1, (guint)n)
   val () = g_object_unref (spinner1)
 } // end of [change_digits]
@@ -310,7 +310,7 @@ implement main1 () = () where {
   val button = gtk_button_new_with_label ("Close")
   val () = gtk_box_pack_start (hbox, button, GTRUE, GTRUE, (guint)5)
   val _sid = g_signal_connect_swapped
-    (button, (gsignal)"clicked", G_CALLBACK (gtk_widget_destroy), window)
+    (button, (gsignal)"clicked", G_CALLBACK (gtk_main_quit), window)
   val () = gtk_widget_show (button); val button = g_object_unref (button)
   val () = gtk_widget_show (hbox); val () = g_object_unref (hbox)
 //
