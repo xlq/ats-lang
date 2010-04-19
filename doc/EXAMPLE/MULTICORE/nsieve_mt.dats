@@ -81,8 +81,8 @@ viewtypedef WSptr (l:addr) = WORKSHOPptr (work, l)
 
 (* ****** ****** *)
 
-fun fwork {l:addr}
-  (ws: !WSptr l, wk: &work >> work?): int = let
+fun fwork {lws:agz}
+  (ws: !WSptr lws, wk: &work >> work?): int = let
   val wk = wk
   val pfun = __cast (wk) where {
     extern castfn __cast
@@ -107,7 +107,7 @@ end // end of [fwork]
 
 (* ****** ****** *)
 
-fn nsieve_mt {lws:addr}
+fn nsieve_mt {lws:agz}
   (ws: !WSptr lws, m: int): void = let
   val [m:int] m = int1_of_int m
 //

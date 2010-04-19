@@ -15,10 +15,27 @@ ATSCTRB=$(ATSHOME)/contrib/cairo/atsctrb_cairo.o
 
 ######
 
-checkall: \
-  test1 test2 test3 test4 test5 test6 test7 test8 test9 \
-  test10 test11 test12 test13 test14 test15 \
-  cleanall
+.PHONY: all
+all: checkall
+
+######
+
+checkall: compall cleanall
+compall: \
+  test1 \
+  test2 \
+  test3 \
+  test4 \
+  test5 \
+  test6 \
+  test7 \
+  test8-1 test8-2 \
+  test10 \
+  test11 \
+  test12 \
+  test13 \
+  test14 \
+  test15 \
 
 ######
 
@@ -57,14 +74,15 @@ test7: cairo-test7.dats
           cairo-test7.dats \
      && ./test7
 
-test8: cairo-test8.dats
-	$(ATSCC) -o test8 `pkg-config --cflags --libs cairo` $(ATSCTRB) \
-          cairo-test8.dats \
-     && ./test8
+test8-1: cairo-test8-1.dats
+	$(ATSCC) -o test8-1 `pkg-config --cflags --libs cairo` $(ATSCTRB) \
+          cairo-test8-1.dats \
+     && ./test8-1
 
-test9: cairo-test9.dats
-	$(ATSCC) -o test9 `pkg-config --cflags --libs cairo` $(ATSCTRB) \
-          cairo-test9.dats -lX11
+test8-2: cairo-test8-2.dats
+	$(ATSCC) -o test8-2 `pkg-config --cflags --libs cairo` $(ATSCTRB) \
+          cairo-test8-2.dats -lX11 \
+     && ./test8-2
 
 test10: cairo-test10.dats
 	$(ATSCC) -o test10 `pkg-config --cflags --libs cairo` $(ATSCTRB) \
@@ -114,8 +132,8 @@ cleanall: clean
 	rm -f test5 cairo-test5.png
 	rm -f test6 cairo-test6.png
 	rm -f test7 cairo-test7.png
-	rm -f test8 cairo-test8.png
-	rm -f test9 cairo-test9.png
+	rm -f test8-1 cairo-test8-1.png
+	rm -f test8-2
 	rm -f test10 cairo-test10.ps
 	rm -f test11 cairo-test11.png
 	rm -f test12 cairo-test12.png

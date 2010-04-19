@@ -19,13 +19,13 @@ staload _ = "libats/DATS/parworkshop.dats"
 
 absviewtype work_vt
 viewtypedef WSptr (l:addr) = WORKSHOPptr (work_vt, l)
-viewtypedef work = {l:addr} (!WSptr l) -<lincloptr1> void
+viewtypedef work = {l:agz} (!WSptr l) -<lincloptr1> void
 extern castfn work_encode (x: work): work_vt
 
 (* ****** ****** *)
 
 typedef fwork_type
-  (a:viewt@ype) = {l:addr} (!WSptr l, &a >> a?) -> int
+  (a:viewt@ype) = {l:agz} (!WSptr l, &a >> a?) -> int
 extern fun fwork : fwork_type (work)
 
 implement fwork (ws, wk) = let
@@ -76,7 +76,7 @@ typedef T = double
 
 #define CUTOFF %(1 << 20)
 
-fun qsort_splt {lws:addr}
+fun qsort_splt {lws:agz}
   {n:nat} {A:addr} (ws: !WSptr lws, A: ptr A, n: int n): void = let
   prval (pf, fpf) = __assert () where {
     extern prfun __assert (): (array_v (T, n, A), array_v (T, n, A) -<prf> void)
@@ -89,12 +89,12 @@ in
     prval (pf21, pf22) = array_v_uncons {T} (pf2)
     prval pf1_mul = mul_add_const {1} (pf_mul)
     val () = workshop_insert_work (ws, f) where {
-      val f = lam {l:addr} (ws: !WSptr l)
+      val f = lam {l:agz} (ws: !WSptr l)
         : void =<lincloptr1> qsort_splt (ws, A, i_pivot)
       val f = work_encode (f)
     } // end of [val]
     val () = workshop_insert_work (ws, f) where {
-      val f = lam {l:addr} (ws: !WSptr l)
+      val f = lam {l:agz} (ws: !WSptr l)
         : void =<lincloptr1> qsort_splt (ws, A+ofs+sizeof<T>, n-i_pivot-1)
       val f = work_encode (f)
     } // end of [val]

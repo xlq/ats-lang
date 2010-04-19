@@ -38,7 +38,7 @@
 
 (* ****** ****** *)
 
-fun gtk_drawing_area_new (): GtkFrame_ptr1 = "#atsctrb_gtk_drawing_area_new"
+fun gtk_drawing_area_new (): GtkDrawingArea_ptr1 = "#atsctrb_gtk_drawing_area_new"
 
 (* ****** ****** *)
 

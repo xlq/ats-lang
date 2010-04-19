@@ -43,14 +43,24 @@ in
   cairo_fill (cr)
 end // end of [draw_hand]
 
-fn draw_clock {l:agz}
-  (cr: !cr l, h: natLt 24, m: natLt 60): void = let
+fn draw_clock
+  {l:agz} {w,h:nat} (
+    cr: !cr l
+  , wd: int w, ht: int h
+  , h: natLt 24, m: natLt 60
+  ) : void = let
 //
   val h = (if h >= 12 then h - 12 else h): natLt 12
   val m_ang = m * (M_PI / 30) - M_PI/2
   val h_ang = h * (M_PI / 6) + m * (M_PI / 360) - M_PI/2
 //
-  val rad = 100.0
+  val wd = double_of (wd)
+  and ht = double_of (ht)
+  val mn = min (wd, ht)
+  val rad = 0.375 * mn
+  val (pf0 | ()) = cairo_save (cr)
+  val xc = wd / 2 and yc = ht / 2
+  val () = cairo_translate (cr, xc, yc)
   val () = cairo_arc
     (cr, 0.0, 0.0, rad, 0.0, 2 * M_PI)
   val () = cairo_set_source_rgb (cr, 1.0, 1.0, 1.0)
@@ -87,7 +97,6 @@ fn draw_clock {l:agz}
   val () = cairo_rotate (cr, h_ang+M_PI)
   val () = draw_hand (cr, 6.0, 6.0/2, h_l/4)
   val () = cairo_restore (pf | cr)
-
 //
   val m_l = 0.85 * rad
   val () = cairo_set_source_rgb (cr, 0.0, 0.0, 0.0)
@@ -106,37 +115,34 @@ fn draw_clock {l:agz}
   val () = cairo_new_sub_path (cr)
   val () = cairo_arc (cr, 0.0, 0.0, 6.0, 0.0, 2 * M_PI)  
   val () = cairo_fill (cr)
+  val () = cairo_restore (pf0 | cr)
 in
   // nothing
 end // end of [draw_clock]
 
 (* ****** ****** *)
 
-staload RAND = "libc/SATS/random.sats"
+staload "libc/SATS/time.sats"
 
 implement main () = () where {
 //
-  #define DELTA 0.999999
-  val () = $RAND.srand48_with_time ()
-  val hr = int_of (24 * ($RAND.drand48 () * DELTA))
+  val wd0 = 300 and ht0 = 300  
+//
+  var t: time_t // unintialized
+  val _(*ignored*) = time_get_and_set (t)
+  var tm: tm_struct // unintialized
+  val () = localtime_r (t, tm)
+  val hr = tm.tm_hour and min = tm.tm_min
   val hr = int1_of_int (hr)
   val () = assert (0 <= hr && hr < 24)
-  val min = int_of (60 * ($RAND.drand48 () * DELTA))
   val min = int1_of_int (min)
   val () = assert (0 <= min && min < 60)
-  val () = printf ("The clock time is %2d:%2d\n", @(hr, min))
 //
-  val wd = 300 and ht = 300
   val surface =
-    cairo_image_surface_create (CAIRO_FORMAT_ARGB32, wd, ht)
+    cairo_image_surface_create (CAIRO_FORMAT_ARGB32, wd0, ht0)
   val cr = cairo_create (surface)
 //
-  val wd = double_of wd and ht = double_of ht
-  val xc = wd / 2 and yc = ht / 2
-  val rad = 0.75 * min_double_double (xc, yc)
-//
-  val () = cairo_translate (cr, xc, yc)
-  val () = draw_clock (cr, hr, min)
+  val () = draw_clock (cr, wd0, ht0, hr, min)
 //
   val status = cairo_surface_write_to_png (surface, "cairo-test7.png")
   val () = cairo_surface_destroy (surface)

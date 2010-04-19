@@ -718,6 +718,7 @@ fun cairo_arc
   , rad: double, angle1: double, angle2: double
   ) : void
   = "#atsctrb_cairo_arc"
+// end of [cairo_arc]
 
 fun cairo_arc_negative
   {l:agz} (
@@ -726,6 +727,7 @@ fun cairo_arc_negative
   , rad: double, angle1: double, angle2: double
   ) : void
   = "#atsctrb_cairo_arc_negative"
+// end of [cairo_arc_negative]
 
 fun cairo_curve_to
   {l:agz} (
@@ -735,21 +737,24 @@ fun cairo_curve_to
   , x3: double, y3: double
   ) : void
   = "#atsctrb_cairo_curve_to"
+// end of [cairo_curve_to]
 
 fun cairo_line_to
   {l:agz} (cr: !cairo_ref l, x: double, y: double): void
   = "#atsctrb_cairo_line_to"
+// end of [cairo_line_to]
 
 fun cairo_move_to
   {l:agz} (cr: !cairo_ref l, x: double, y: double): void
   = "#atsctrb_cairo_move_to"
+// end of [cairo_move_to]
 
 fun cairo_rectangle
   {l:agz} (
     cr: !cairo_ref l
   , x: double, y: double, width: double, height: double
-  ) : void
-  = "#atsctrb_cairo_rectangle"
+  ) : void = "#atsctrb_cairo_rectangle"
+// end of [cairo_rectangle]
 
 (* ****** ****** *)
 
@@ -761,14 +766,17 @@ fun cairo_rel_curve_to
   , dx3: double, dy3: double
   ) : void
   = "#atsctrb_cairo_rel_curve_to"
+// end of [cairo_rel_curve_to]
 
 fun cairo_rel_line_to
   {l:agz} (cr: !cairo_ref l, dx: double, dy: double): void
   = "#atsctrb_cairo_rel_line_to"
+// end of [cairo_rel_line_to]
 
 fun cairo_rel_move_to
   {l:agz} (cr: !cairo_ref l, dx: double, dy: double): void
   = "#atsctrb_cairo_rel_move_to"
+// end of [cairo_rel_move_to]
 
 (* ****** ****** *)
 
@@ -781,6 +789,7 @@ fun cairo_path_extents
   , y2: &double? >> double
   ) : void
   = "#atsctrb_cairo_path_extents"
+// end of [cairo_path_extents]
 
 (* ****** ****** *)
 

@@ -70,7 +70,7 @@ end // end of [fwork]
 
 (* ****** ****** *)
 
-fun fib_split {l:addr}
+fun fib_split {l:agz}
   (N: int, ws: !WSptr l, n: int): cont = let
 in
   if n > N then let

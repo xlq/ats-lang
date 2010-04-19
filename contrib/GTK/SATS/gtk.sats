@@ -221,6 +221,22 @@ viewtypedef GtkCheckButton_ptr (l:addr) = gobjptr (GtkCheckButton, l)
 viewtypedef GtkCheckButton_ptr0 = [l:agez] GtkCheckButton_ptr l
 viewtypedef GtkCheckButton_ptr1 = [l:addr | l > null] GtkCheckButton_ptr l
 
+viewtypedef GtkColorSelection_ptr (l:addr) = gobjptr (GtkColorSelection, l)
+viewtypedef GtkColorSelection_ptr0 = [l:agez] GtkColorSelection_ptr l
+viewtypedef GtkColorSelection_ptr1 = [l:addr | l > null] GtkColorSelection_ptr l
+
+viewtypedef GtkColorSelectionDialog_ptr (l:addr) = gobjptr (GtkColorSelectionDialog, l)
+viewtypedef GtkColorSelectionDialog_ptr0 = [l:agez] GtkColorSelectionDialog_ptr l
+viewtypedef GtkColorSelectionDialog_ptr1 = [l:addr | l > null] GtkColorSelectionDialog_ptr l
+
+viewtypedef GtkDialog_ptr (l:addr) = gobjptr (GtkDialog, l)
+viewtypedef GtkDialog_ptr0 = [l:agez] GtkDialog_ptr l
+viewtypedef GtkDialog_ptr1 = [l:addr | l > null] GtkDialog_ptr l
+
+viewtypedef GtkDrawingArea_ptr (l:addr) = gobjptr (GtkDrawingArea, l)
+viewtypedef GtkDrawingArea_ptr0 = [l:agez] GtkDrawingArea_ptr l
+viewtypedef GtkDrawingArea_ptr1 = [l:addr | l > null] GtkDrawingArea_ptr l
+
 viewtypedef GtkEntry_ptr (l:addr) = gobjptr (GtkEntry, l)
 viewtypedef GtkEntry_ptr0 = [l:agez] GtkEntry_ptr l
 viewtypedef GtkEntry_ptr1 = [l:addr | l > null] GtkEntry_ptr l
@@ -332,6 +348,9 @@ viewtypedef GtkWindow_ptr1 = [l:addr | l > null] GtkWindow_ptr l
 #include "contrib/GTK/SATS/gtk/gtkbutton.sats"
 #include "contrib/GTK/SATS/gtk/gtkcheckbutton.sats"
 #include "contrib/GTK/SATS/gtk/gtkcontainer.sats"
+#include "contrib/GTK/SATS/gtk/gtkcolorsel.sats"
+#include "contrib/GTK/SATS/gtk/gtkcolorseldialog.sats"
+#include "contrib/GTK/SATS/gtk/gtkdialog.sats"
 #include "contrib/GTK/SATS/gtk/gtkdrawingarea.sats"
 #include "contrib/GTK/SATS/gtk/gtkentry.sats"
 #include "contrib/GTK/SATS/gtk/gtkframe.sats"

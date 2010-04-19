@@ -60,45 +60,43 @@
 fun int_of_size (sz: size_t):<> int
   = "atspre_int_of_size"
 
-fun size_of_int1 {i:nat} (i: int i):<> size_t
-  = "atspre_size_of_int1"
+fun size_of_int1
+  {i:nat} (i: int i):<> size_t = "atspre_size_of_int1"
+// end of [size_of_int1]
 
-fun uint_of_size (sz: size_t):<> uint
-  = "atspre_uint_of_size"
+fun uint_of_size
+  (sz: size_t):<> uint = "atspre_uint_of_size"
+// end of [uint_of_size]
 
-fun size_of_uint (u: uint):<> size_t
-  = "atspre_size_of_uint"
+fun size_of_uint
+  (u: uint):<> size_t = "atspre_size_of_uint"
+// end of [size_of_uint]
 
+castfn size_of_lint (i: lint):<> size_t
+castfn size_of_ulint (u: ulint):<> size_t
 castfn size_of_ssize (sz: ssize_t):<> size_t
 
 (* ****** ****** *)
 
-fun add_size_size
-  (sz1: size_t, sz2: size_t):<> size_t
-  = "atspre_add_size_size"
-overload + with add_size_size
-
-fun add_size_int (sz1: size_t, i2: int):<> size_t
-  = "atspre_add_size_int"
+fun add_size_int
+  (sz1: size_t, i2: int):<> size_t = "atspre_add_size_int"
 overload + with add_size_int
 
+fun add_size_size
+  (sz1: size_t, sz2: size_t):<> size_t = "atspre_add_size_size"
+overload + with add_size_size
+
 //
 
-fun sub_size_size
-  (sz1: size_t, sz2: size_t):<> size_t
-  = "atspre_sub_size_size"
-overload - with sub_size_size
-
-fun sub_size_int (sz1: size_t, i2: int):<> size_t
-  = "atspre_sub_size_int"
+fun sub_size_int
+  (sz1: size_t, i2: int):<> size_t = "atspre_sub_size_int"
 overload - with sub_size_int
 
-//
+fun sub_size_size
+  (sz1: size_t, sz2: size_t):<> size_t = "atspre_sub_size_size"
+overload - with sub_size_size
 
-fun mul_size_size
-  (sz1: size_t, sz2: size_t):<> size_t
-  = "atspre_mul_size_size"
-overload * with mul_size_size
+//
 
 fun mul_size_int (sz1: size_t, i2: int):<> size_t
   = "atspre_mul_size_int"
@@ -108,16 +106,19 @@ fun mul_int_size (i1: int, sz2: size_t):<> size_t
   = "atspre_mul_int_size"
 overload * with mul_int_size
 
-//
+fun mul_size_size
+  (sz1: size_t, sz2: size_t):<> size_t = "atspre_mul_size_size"
+overload * with mul_size_size
 
-fun div_size_size
-  (sz1: size_t, sz2: size_t):<> size_t
-  = "atspre_div_size_size"
-overload / with div_size_size
+//
 
 fun div_size_int (sz1: size_t, i2: int):<> size_t
   = "atspre_div_size_int"
 overload / with div_size_int
+
+fun div_size_size
+  (sz1: size_t, sz2: size_t):<> size_t = "atspre_div_size_size"
+overload / with div_size_size
 
 //
 
@@ -141,25 +142,23 @@ overload <= with lte_size_size
 
 //
 
-fun gt_size_size
-  (sz1: size_t, sz2: size_t):<> bool
-  = "atspre_gt_size_size"
-overload > with gt_size_size
-
 fun gt_size_int (sz1: size_t, i2: int):<> bool
   = "atspre_gt_size_int"
 overload > with gt_size_int
 
-//
+fun gt_size_size
+  (sz1: size_t, sz2: size_t):<> bool = "atspre_gt_size_size"
+overload > with gt_size_size
 
-fun gte_size_size
-  (sz1: size_t, sz2: size_t):<> bool
-  = "atspre_gte_size_size"
-overload >= with gte_size_size
+//
 
 fun gte_size_int (sz1: size_t, i2: int):<> bool
   = "atspre_gte_size_int"
 overload >= with gte_size_int
+
+fun gte_size_size
+  (sz1: size_t, sz2: size_t):<> bool = "atspre_gte_size_size"
+overload >= with gte_size_size
 
 //
 
@@ -167,8 +166,8 @@ fun eq_size_int (sz1: size_t, i2: int):<> bool
   = "atspre_eq_size_int"
 overload = with eq_size_int
 
-fun eq_size_size (sz1: size_t, sz2: size_t):<> bool
-  = "atspre_eq_size_size"
+fun eq_size_size
+  (sz1: size_t, sz2: size_t):<> bool = "atspre_eq_size_size"
 overload = with eq_size_size
 
 //
@@ -177,8 +176,8 @@ fun neq_size_int (sz1: size_t, i2: int):<> bool
   = "atspre_neq_size_int"
 overload <> with neq_size_int
 
-fun neq_size_size (sz1: size_t, sz2: size_t):<> bool
-  = "atspre_neq_size_size"
+fun neq_size_size
+  (sz1: size_t, sz2: size_t):<> bool = "atspre_neq_size_size"
 overload <> with neq_size_size
 
 (* ****** ****** *)
@@ -224,13 +223,12 @@ overload fprint with fprint_size
 
 (* ****** ****** *)
 
-fun print_size (sz: size_t):<!ref> void
-  = "atspre_print_size"
-
-and prerr_size (sz: size_t):<!ref> void
-  = "atspre_prerr_size"
-
+fun print_size
+  (sz: size_t):<!ref> void = "atspre_print_size"
 overload print with print_size
+
+fun prerr_size
+  (sz: size_t):<!ref> void = "atspre_prerr_size"
 overload prerr with prerr_size
 
 (* ****** ****** *)
@@ -279,25 +277,27 @@ overload pred with pred_size1
 
 // ------ ------
 
-fun add_size1_size1 {i,j:nat}
-  (i: size_t i, j: size_t j):<> size_t (i+j)
-  = "atspre_add_size1_size1"
-overload + with add_size1_size1
-
 fun add_size1_int1 {i,j:nat}
   (i: size_t i, j: int j):<> size_t (i+j)
   = "atspre_add_size1_int1"
 overload + with add_size1_int1
 
-fun sub_size1_size1 {i,j:nat | j <= i}
-  (i: size_t i, j: size_t j):<> size_t (i-j)
-  = "atspre_sub_size1_size1"
-overload - with sub_size1_size1
+fun add_size1_size1 {i,j:nat}
+  (i: size_t i, j: size_t j):<> size_t (i+j)
+  = "atspre_add_size1_size1"
+overload + with add_size1_size1
+
+// ------ ------
 
 fun sub_size1_int1 {i,j:nat | j <= i}
   (i: size_t i, j: int j):<> size_t (i-j)
   = "atspre_sub_size1_int1"
 overload - with sub_size1_int1
+
+fun sub_size1_size1 {i,j:nat | j <= i}
+  (i: size_t i, j: size_t j):<> size_t (i-j)
+  = "atspre_sub_size1_size1"
+overload - with sub_size1_size1
 
 // ------ ------
 
@@ -450,15 +450,13 @@ overload min with min_size1_size1
 
 (* ****** ****** *)
 
+castfn ssize_of_lint (i: lint):<> ssize_t
 castfn ssize_of_size (sz: size_t):<> ssize_t
 
 (* ****** ****** *)
 
-fun int_of_ssize (sz: ssize_t):<> int
-  = "atspre_int_of_ssize"
-
-fun ssize_of_int (i: int):<> ssize_t
-  = "atspre_ssize_of_int"
+fun int_of_ssize (sz: ssize_t):<> int = "atspre_int_of_ssize"
+fun ssize_of_int (i: int):<> ssize_t = "atspre_ssize_of_int"
 
 (* ****** ****** *)
 
@@ -491,11 +489,13 @@ castfn ssize1_of_size1 {i:nat} (sz: size_t i):<> ssize_t i
 
 (* ****** ****** *)
 
-fun int1_of_ssize1 {i:int} (sz: ssize_t i):<> int i
-  = "atspre_int1_of_ssize1"
+fun int1_of_ssize1
+  {i:int} (sz: ssize_t i):<> int i = "atspre_int1_of_ssize1"
+// end of [int1_of_ssize1]
 
-fun ssize1_of_int1 {i:int} (i: int i):<> ssize_t i
-  = "atspre_ssize1_of_int1"
+fun ssize1_of_int1
+  {i:int} (i: int i):<> ssize_t i = "atspre_ssize1_of_int1"
+// end of [ssize1_of_int1]
 
 (* ****** ****** *)
 

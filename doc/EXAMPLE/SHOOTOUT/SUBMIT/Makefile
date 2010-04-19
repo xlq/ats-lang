@@ -9,7 +9,10 @@ ATSOPT="$(ATSHOME)"/bin/atsopt
 CC=$(HOME)/gcc-4.3.2/bin/gcc
 
 all: \
-  binary-trees binary-trees2 \
+  binary-trees \
+  binary-trees2 \
+  binary-trees2_smp \
+  binary-trees3 \
   fannkuch fannkuch2 fannkuch3 \
   fasta fasta2 fasta4 \
   k-nucleotide \

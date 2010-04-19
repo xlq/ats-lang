@@ -146,8 +146,8 @@ end // end of [fwork]
 
 (* ****** ****** *)
 
-fun loop_depths {l:addr}
-  (ws: !WSptr l, d: Nat, max_depth: Nat, res: &CONT? >> CONT): void = let
+fun loop_depths {lws:agz}
+  (ws: !WSptr lws, d: Nat, max_depth: Nat, res: &CONT? >> CONT): void = let
   extern prfun __ref {v:view} (pf: !v): v
   extern prfun __unref {v:view} (pf: v): void
 in

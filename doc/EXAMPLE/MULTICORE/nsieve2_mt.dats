@@ -129,8 +129,8 @@ viewtypedef WSptr (l:addr) = WORKSHOPptr (work, l)
 
 (* ****** ****** *)
 
-fun fwork {l:addr}
-  (ws: !WSptr l, wk: &work >> work?): int = let
+fun fwork {lws:agz}
+  (ws: !WSptr lws, wk: &work >> work?): int = let
   val wk = wk
   val pfun = __cast (wk) where {
     extern castfn __cast
@@ -155,7 +155,7 @@ end // end of [fwork]
 
 (* ****** ****** *)
 
-fn nsieve_mt {lws:addr}
+fn nsieve_mt {lws:agz}
   {m:int | m >= 2} (ws: !WSptr lws, m: int m): void = let
 //
   val () = assert_prerrf_bool1 (

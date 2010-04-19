@@ -50,7 +50,7 @@
 absviewtype WORKSHOPptr
 (a:viewt@ype, l:addr) // boxed linear type
 viewtypedef WORKSHOPptr (a:viewt@ype) =
-  [l:addr] WORKSHOPptr (a, l) // note that [l > null] always holds 
+  [l:agz] WORKSHOPptr (a, l) // note that [l > null] always holds
 // end of [WORKSHOPptr]
 
 (* ****** ****** *)
@@ -58,13 +58,13 @@ viewtypedef WORKSHOPptr (a:viewt@ype) =
 fun{a:viewt@ype}
 workshop_make {n:pos} (
   qsz: size_t n
-, fwork: {l:addr} (!WORKSHOPptr (a, l), &a >> a?) -<fun1> int
+, fwork: {l:agz} (!WORKSHOPptr (a, l), &a >> a?) -<fun1> int
 ) : WORKSHOPptr a
 // end of [workshop_make]
 
 fun workshop_make_tsz {a:viewt@ype} {n:pos} (
   qsz: size_t n
-, fwork: {l:addr} (!WORKSHOPptr (a, l), &a >> a?) -<fun1> int
+, fwork: {l:agz} (!WORKSHOPptr (a, l), &a >> a?) -<fun1> int
 , tsz: sizeof_t a
 ) : WORKSHOPptr a
   = "atslib_parworkshop_workshop_make_tsz"
@@ -76,7 +76,7 @@ fun workshop_make_tsz {a:viewt@ype} {n:pos} (
 // locking/unlocking
 //
 fun workshop_nworker_get
-  {a:viewt@ype} {l:addr} (ws: !WORKSHOPptr (a, l)):<> int
+  {a:viewt@ype} {l:agz} (ws: !WORKSHOPptr (a, l)):<> int
   = "atslib_parworkshop_workshop_nworker_get"
 // end of [workshop_nworker_get]
 
@@ -84,7 +84,7 @@ fun workshop_nworker_get
 // locking/unlocking
 //
 fun workshop_npaused_get
-  {a:viewt@ype} {l:addr} (ws: !WORKSHOPptr (a, l)):<> int
+  {a:viewt@ype} {l:agz} (ws: !WORKSHOPptr (a, l)):<> int
   = "atslib_parworkshop_workshop_npaused_get"
 // end of [workshop_npaused_get]
 
@@ -92,7 +92,7 @@ fun workshop_npaused_get
 // locking/unlocking
 //
 fun workshop_nblocked_get
-  {a:viewt@ype} {l:addr} (ws: !WORKSHOPptr (a, l)):<> int
+  {a:viewt@ype} {l:agz} (ws: !WORKSHOPptr (a, l)):<> int
   = "atslib_parworkshop_workshop_nblocked_get"
 // end of [workshop_nblocked_get]
 
@@ -100,40 +100,40 @@ fun workshop_nblocked_get
 
 fun{a:viewt@ype}
 workshop_add_worker
-  {l:addr} (ws: !WORKSHOPptr (a, l)): int(*err*)
+  {l:agz} (ws: !WORKSHOPptr (a, l)): int(*err*)
 // end of [workshop_add_worker]
 
 fun{a:viewt@ype}
 workshop_add_nworker
-  {l:addr} {n:nat} (ws: !WORKSHOPptr (a, l), n: int n): int(*err*)
+  {l:agz} {n:nat} (ws: !WORKSHOPptr (a, l), n: int n): int(*err*)
 // end of [workshop_add_nworker]
 
 (* ****** ****** *)
 
 fun{a:viewt@ype}
 workshop_insert_work
-  {l:addr} (ws: !WORKSHOPptr (a, l), work: a): void
+  {l:agz} (ws: !WORKSHOPptr (a, l), work: a): void
 // end of [workshop_insert_work]
 
 fun{a:viewt@ype}
-workshop_remove_work {l:addr} (ws: !WORKSHOPptr (a, l)): a
+workshop_remove_work {l:agz} (ws: !WORKSHOPptr (a, l)): a
 
 (* ****** ****** *)
 
 fun workshop_wait_quit_all
-  {a:viewt@ype} {l:addr} (ws: !WORKSHOPptr (a, l)): void
+  {a:viewt@ype} {l:agz} (ws: !WORKSHOPptr (a, l)): void
 // end of [workshop_wait_quit_all]
 
 fun workshop_wait_paused_all
-  {a:viewt@ype} {l:addr} (ws: !WORKSHOPptr (a, l)): void
+  {a:viewt@ype} {l:agz} (ws: !WORKSHOPptr (a, l)): void
 // end of [workshop_wait_paused_all]
 
 fun workshop_resume_paused_all
-  {a:viewt@ype} {l:addr} (ws: !WORKSHOPptr (a, l)): void
+  {a:viewt@ype} {l:agz} (ws: !WORKSHOPptr (a, l)): void
 // end of [workshop_resume_paused_all]
 
 fun workshop_wait_blocked_all
-  {a:viewt@ype} {l:addr} (ws: !WORKSHOPptr (a, l)): void
+  {a:viewt@ype} {l:agz} (ws: !WORKSHOPptr (a, l)): void
 // end of [workshop_wait_blocked_all]
 
 (* ****** ****** *)
@@ -144,12 +144,12 @@ fun workshop_wait_blocked_all
 //
 
 fun workshop_free
-  {a:t@ype} {l:addr} (ws: WORKSHOPptr (a, l)): void
+  {a:t@ype} {l:agz} (ws: WORKSHOPptr (a, l)): void
   = "atslib_parworkshop_workshop_free"
 // end of [workshop_free]
 
 fun workshop_free_vt_exn
-  {a:viewt@ype} {l:addr} (ws: WORKSHOPptr (a, l)): void
+  {a:viewt@ype} {l:agz} (ws: WORKSHOPptr (a, l)): void
   = "atslib_parworkshop_workshop_free_vt_exn"
 // end of [workshop_free_vt_exn]
 

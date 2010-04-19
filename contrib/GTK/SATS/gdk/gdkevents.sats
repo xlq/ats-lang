@@ -38,7 +38,6 @@
 
 (* ****** ****** *)
 
-abst@ype GdkEventType
 macdef GDK_NOTHING = $extval (GdkEventType, "GDK_NOTHING")
 macdef GDK_DELETE = $extval (GdkEventType, "GDK_DELETE")
 macdef GDK_DESTROY = $extval (GdkEventType, "GDK_DESTROY")
@@ -79,8 +78,6 @@ macdef GDK_GRAB = $extval (GdkEventType, "GDK_GRAB")
 macdef GDK_DAMAGE = $extval (GdkEventType, "GDK_DAMAGE")
 
 (* ****** ****** *)
-
-abst@ype GdkEventMask = $extype "GdkEventMask"
 
 macdef GDK_EXPOSURE_MASK =
   $extval (GdkEventMask, "GDK_EXPOSURE_MASK")
@@ -136,7 +133,6 @@ overload lor with lor_GdkEventMask_GdkEventMask
 
 (* ****** ****** *)
 
-abst@ype GdkVisibilityState = $extype "GdkVisibilityState"
 macdef GDK_VISIBILITY_UNOBSCURED =
   $extval (GdkVisibilityState, "GDK_VISIBILITY_UNOBSCURED")
 macdef GDK_VISIBILITY_PARTIAL
@@ -146,7 +142,6 @@ macdef GDK_VISIBILITY_FULLY_OBSCURED =
 
 (* ****** ****** *)
 
-abst@ype GdkWindowState = $extype "GdkWindowState"
 macdef GDK_WINDOW_STATE_WITHDRAWN =
   $extval (GdkWindowState, "GDK_WINDOW_STATE_WITHDRAWN")
 macdef GDK_WINDOW_STATE_ICONIFIED =
@@ -164,14 +159,4 @@ macdef GDK_WINDOW_STATE_BELOW =
 
 (* ****** ****** *)
 
-typedef GdkEvent = $extype_struct "GdkEvent" of {
-  type= GdkEventType
-/*
-, window= GdkWindow
-*/
-, send_event= gint8
-} // end of [GdkEvent]
-
-(* ****** ****** *)
-
-(* end of [gdk.sats] *)
+(* end of [gdkevents.sats] *)

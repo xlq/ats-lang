@@ -48,7 +48,7 @@ viewtypedef WSptr (l:addr) = WORKSHOPptr (work, l)
 
 (* ****** ****** *)
 
-fun fwork {l:addr}
+fun fwork {l:agz}
   (ws: !WSptr l, wk: &work >> work?): int = let
   val wk = wk
   val pfun = __cast (wk) where {
@@ -74,7 +74,7 @@ end // end of [fwork]
 
 (* ****** ****** *)
 
-fun loop_split {l:addr}
+fun loop_split {l:agz}
   (NSPLIT: int, ws: !WSptr l, n: int, i: int): ans = let
   val ni = n - i
 in

@@ -53,6 +53,8 @@ stadef gint = $GLIB.gint
 stadef guint = $GLIB.guint
 stadef gint8 = $GLIB.gint8
 stadef guint8 = $GLIB.guint8
+stadef guint16 = $GLIB.guint16
+stadef guint32 = $GLIB.guint32
 stadef gpointer = $GLIB.gpointer
 
 (* ****** ****** *)
@@ -60,6 +62,10 @@ stadef gpointer = $GLIB.gpointer
 staload GOBJ = "contrib/glib/SATS/glib-object.sats"
 stadef GObject = $GOBJ.GObject
 stadef gobjptr = $GOBJ.gobjptr
+
+(* ****** ****** *)
+
+absview GdkFree_v (l:addr) // for free GDK resources
 
 (* ****** ****** *)
 
@@ -80,6 +86,11 @@ viewtypedef GdkWindow_ptr1 = [l:addr | l > null] GdkWindow_ptr l
 
 (* ****** ****** *)
 
+#include "contrib/GTK/SATS/gdk/gdktypes.sats"
+
+(* ****** ****** *)
+
+#include "contrib/GTK/SATS/gdk/gdkcolor.sats"
 #include "contrib/GTK/SATS/gdk/gdkevents.sats"
 
 (* ****** ****** *)

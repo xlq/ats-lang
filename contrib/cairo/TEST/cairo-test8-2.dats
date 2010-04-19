@@ -144,76 +144,76 @@ overload uint with uint_of_int // no-op casting
 
 (* ****** ****** *)
 
+macdef double = double_of
+
+fun draw_all {l:agz} (
+    dpy: !Display_ptr l, win: Window, wd: int, ht: int
+  ) :<cloref1> void = () where {
+  val screen_num = XDefaultScreen (dpy)
+//
+  val (pf_minus | visual) = XDefaultVisual (dpy, screen_num)
+  val surface = cairo_xlib_surface_create (dpy, (Drawable)win, visual, wd, ht)
+  prval () = minus_addback (pf_minus, visual | dpy)
+//
+  val mn = min (wd, ht)
+  val xmargin = double (wd - mn) / 2
+  val ymargin = double (ht - mn) / 2
+  val wd = (double)mn and ht = (double)mn
+  val cr = cairo_create (surface)
+  val () = cairo_surface_destroy (surface)
+  val () = cairo_translate (cr, xmargin, ymargin)
+  var i : int = 0 and j : int = 0
+  val () = (
+    for (i := 0; i < 3; i := i + 1) (
+    for (j := 0; j < 3; j := j + 1) let
+      val (pf | ()) = cairo_save (cr)
+      val () = cairo_translate (cr, i*wd/2, j*ht/2)
+      val () = draw_rings (cr, 0, 0, 128.0, 4.0, 40)
+      val () = cairo_restore (pf | cr)
+    in
+      // nothing
+    end // end of [for]
+    ) // end of [for]
+  ) // end of [val]
+//
+  val () = (
+    for (i := 0; i < 2; i := i + 1) (
+    for (j := 0; j < 2; j := j + 1) let
+      val (pf | ()) = cairo_save (cr)
+      val () =
+        cairo_translate (cr, i*wd/2+wd/4, j*ht/2+ht/4)
+      // end of [val]
+      val () = draw_rings (cr, i, 0, 128.0, 4.0, 40)
+      val () = cairo_restore (pf | cr)
+    in
+      // nothing
+    end // end of [for]
+    ) // end of [for]
+  ) // end of [val]
+  val () = cairo_destroy (cr)
+} // end of [draw_all]
+
+(* ****** ****** *)
+
 implement main () = () where {
-  val wd = 512 and ht = 512
-  val margin = 10
-(*
-  val surface = cairo_image_surface_create
-    (CAIRO_FORMAT_ARGB32, wd+margin, ht+margin)
-*)
+  val wd0 = 512 and ht0 = 512
 //
   val [l_dpy:addr] dpy = XOpenDisplay (stropt_none)
   val () = assert_errmsg (Display_ptr_isnot_null dpy, #LOCATION)
 //
   val screen_num = XDefaultScreen (dpy)
-//
   val mywin = XCreateSimpleWindow (
     dpy, parent, x, y, width, height, border_width, w_pix, b_pix
   ) where {
     val parent = XRootWindow (dpy, screen_num)
     val x = 0 and y = 0
-    val width = (uint)wd and height = (uint)ht
+    val width = (uint)wd0 and height = (uint)ht0
     val border_width = (uint)4
     val w_pix = XWhitePixel (dpy, screen_num)
     val b_pix = XBlackPixel (dpy, screen_num)
-  }
-//
-  val (pf_minus | visual) = XDefaultVisual (dpy, screen_num)
-  val surface = cairo_xlib_surface_create (dpy, (Drawable)mywin, visual, wd, ht)
-  prval () = minus_addback (pf_minus, visual | dpy)
+  } // end of [val]
 //
   val () = XMapWindow(dpy, mywin)
-//
-  val cr = cairo_create (surface)
-  val wd = double_of wd and ht = double_of ht
-  val margin = double_of margin
-//
-  fun fshow {l:agz}
-    (cr: !cairo_ref l):<cloref1> void = () where {
-    val (pf | ()) = cairo_save (cr)
-    val () = cairo_translate (cr, margin/2, margin/2)
-    var i : int = 0 and j : int = 0
-    val () = (
-      for (i := 0; i < 3; i := i + 1) (
-      for (j := 0; j < 3; j := j + 1) let
-        val (pf | ()) = cairo_save (cr)
-        val () = cairo_translate (cr, i*wd/2, j*ht/2)
-        val () = draw_rings (cr, 0, 0, 128.0, 4.0, 40)
-        val () = cairo_restore (pf | cr)
-      in
-        // nothing
-      end // end of [for]
-      ) // end of [for]
-    ) // end of [val]
-//
-    val () = (
-      for (i := 0; i < 2; i := i + 1) (
-      for (j := 0; j < 2; j := j + 1) let
-        val (pf | ()) = cairo_save (cr)
-        val () =
-          cairo_translate (cr, i*wd/2+wd/4, j*ht/2+ht/4)
-        // end of [val]
-        val () = draw_rings (cr, i, 0, 128.0, 4.0, 40)
-        val () = cairo_restore (pf | cr)
-      in
-        // nothing
-      end // end of [for]
-      ) // end of [for]
-    ) // end of [val]
-  val () = cairo_restore (pf | cr)
-  } // end of [fshow]
-//
-  val () = fshow (cr)
 //
   val () = XSelectInput (dpy, mywin, flag) where {
     val flag = ExposureMask lor KeyPressMask lor ButtonPressMask lor StructureNotifyMask
@@ -225,31 +225,22 @@ implement main () = () where {
     val type = report.type
   in
     case+ 0 of
-    | _ when (type = Expose) => let
+    | _ when (type = Expose) => () where {
         prval (pf, fpf) = XEvent_xexpose_castdn (view@ report)
         val count = (&report)->count
+        val () =  if count = 0 then let
+          val wd = (&report)->width and ht = (&report)->height
+        in
+          draw_all (dpy, mywin, wd, ht)
+        end (* end of [if] *)
         prval () = view@ report := fpf (pf)
-      in
-        if count = 0 then fshow (cr)
-      end // end of [Expose]
+      } // end of [Expose]
     | _ when (type = KeyPress) => (break)
     | _ => () // ignored
   end // end of [val]
 //
-(*
-  val status = cairo_surface_write_to_png (surface, "cairo-test9.png")
-*)
-  val () = cairo_surface_destroy (surface)
-  val () = cairo_destroy (cr)
   val () = XCloseDisplay (dpy)
 //
-(*
-  val () = if status = CAIRO_STATUS_SUCCESS then begin
-    print "The image is written to the file [cairo-test9.png].\n"
-  end else begin
-    print "exit(ATS): [cairo_surface_write_to_png] failed"; print_newline ()
-  end // end of [if]
-*)
 } // end of [main]
 
 (* ****** ****** *)
