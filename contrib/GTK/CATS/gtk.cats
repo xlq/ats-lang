@@ -293,6 +293,41 @@ atsctrb_gtk_entry_get_text
 /* ****** ****** */
 
 //
+// source: gtk/gtkfilesel.h
+//
+// HX-2010-04-19:
+// this is all DEPRECATED; please use gtk/gtkfilechooserdialog.h
+//
+
+ATSinline()
+ats_ptr_type
+atsctrb_gtk_file_selection_new
+  (ats_ptr_type title) {
+  GtkWidget *widget = gtk_file_selection_new ((gchar*)title) ;
+  g_object_ref_sink(G_OBJECT(widget)) ; // removing floating reference!
+  return widget ;
+} // end of [atsctrb_gtk_file_selection_new]
+
+ATSinline()
+ats_ptr_type
+atsctrb_gtk_file_selection_takeout_ok_button
+  (ats_ptr_type filesel) {
+  return ((GtkFileSelection*)filesel)->ok_button ;
+} // end of [...]
+
+ATSinline()
+ats_ptr_type
+atsctrb_gtk_file_selection_takeout_cancel_button
+  (ats_ptr_type filesel) {
+  return ((GtkFileSelection*)filesel)->cancel_button ;
+} // end of [...]
+
+#define atsctrb_gtk_file_selection_get_filename gtk_file_selection_get_filename
+#define atsctrb_gtk_file_selection_set_filename gtk_file_selection_set_filename
+
+/* ****** ****** */
+
+//
 // source: gtk/gtkframe.h
 //
 
@@ -829,6 +864,9 @@ atsctrb_gtk_window_new
 
 #define atsctrb_gtk_window_set_title gtk_window_set_title
 #define atsctrb_gtk_window_set_default_size gtk_window_set_default_size
+
+#define atsctrb_gtk_window_get_resizeable gtk_window_get_resizeable
+#define atsctrb_gtk_window_set_resizeable gtk_window_set_resizeable
 
 /* ****** ****** */
 

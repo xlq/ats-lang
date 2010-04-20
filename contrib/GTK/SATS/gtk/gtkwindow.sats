@@ -64,4 +64,17 @@ fun gtk_window_set_default_size
 
 (* ****** ****** *)
 
+fun gtk_window_get_resizeable
+  {c:cls | c <= GtkWindow} {l:agz}
+  (window: !gobjptr (c, l)): gboolean = "#atsctrb_gtk_window_get_resizeable"
+// end of [gtk_window_get_resizeable]
+
+fun gtk_window_set_resizeable
+  {c:cls | c <= GtkWindow} {l:agz}
+  (window: !gobjptr (c, l), resizeable: gboolean): void
+  = "#atsctrb_gtk_window_set_resizeable"
+// end of [gtk_window_set_resizeable]
+
+(* ****** ****** *)
+
 (* end of [gtkwindow.sats] *)

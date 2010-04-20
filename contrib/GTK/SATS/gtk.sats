@@ -241,6 +241,10 @@ viewtypedef GtkEntry_ptr (l:addr) = gobjptr (GtkEntry, l)
 viewtypedef GtkEntry_ptr0 = [l:agez] GtkEntry_ptr l
 viewtypedef GtkEntry_ptr1 = [l:addr | l > null] GtkEntry_ptr l
 
+viewtypedef GtkFileSelection_ptr (l:addr) = gobjptr (GtkFileSelection, l)
+viewtypedef GtkFileSelection_ptr0 = [l:agez] GtkFileSelection_ptr l
+viewtypedef GtkFileSelection_ptr1 = [l:addr | l > null] GtkFileSelection_ptr l
+
 viewtypedef GtkFrame_ptr (l:addr) = gobjptr (GtkFrame, l)
 viewtypedef GtkFrame_ptr0 = [l:agez] GtkFrame_ptr l
 viewtypedef GtkFrame_ptr1 = [l:addr | l > null] GtkFrame_ptr l
@@ -350,6 +354,7 @@ viewtypedef GtkWindow_ptr1 = [l:addr | l > null] GtkWindow_ptr l
 #include "contrib/GTK/SATS/gtk/gtkdialog.sats"
 #include "contrib/GTK/SATS/gtk/gtkdrawingarea.sats"
 #include "contrib/GTK/SATS/gtk/gtkentry.sats"
+#include "contrib/GTK/SATS/gtk/gtkfilesel.sats" // DEPRECATED!!!
 #include "contrib/GTK/SATS/gtk/gtkframe.sats"
 #include "contrib/GTK/SATS/gtk/gtkhbox.sats"
 #include "contrib/GTK/SATS/gtk/gtkhruler.sats"
