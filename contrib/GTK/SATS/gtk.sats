@@ -333,12 +333,9 @@ viewtypedef GtkWindow_ptr1 = [l:addr | l > null] GtkWindow_ptr l
 
 (* ****** ****** *)
 
-#include "contrib/GTK/SATS/gtk/gtkmain.sats"
-
-(* ****** ****** *)
-
 #include "contrib/GTK/SATS/gtk/gtkenums.sats"
 #include "contrib/GTK/SATS/gtk/gtkstock.sats"
+#include "contrib/GTK/SATS/gtk/gtktypeutils.sats"
 
 (* ****** ****** *)
 
@@ -382,6 +379,10 @@ viewtypedef GtkWindow_ptr1 = [l:addr | l > null] GtkWindow_ptr l
 #include "contrib/GTK/SATS/gtk/gtkvseparator.sats"
 #include "contrib/GTK/SATS/gtk/gtkwidget.sats"
 #include "contrib/GTK/SATS/gtk/gtkwindow.sats"
+
+(* ****** ****** *)
+
+#include "contrib/GTK/SATS/gtk/gtkmain.sats"
 
 (* ****** ****** *)
 

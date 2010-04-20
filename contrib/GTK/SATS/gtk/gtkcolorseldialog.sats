@@ -44,4 +44,12 @@ fun gtk_color_selection_dialog_new
 
 (* ****** ****** *)
 
+fun gtk_color_selection_dialog_takeout_colorsel
+  {c:cls | c <= GtkColorSelectionDialog} {l:agz} (dialog: !gobjptr (c, l))
+  : [l_sel:agz] (gobjptr (GtkColorSelection, l_sel) -<lin,prf> void | gobjptr (GtkColorSelection, l_sel))
+  = "#atsctrb_gtk_color_selection_dialog_takeout_colorsel"
+// end of [gtk_color_selection_dialog_takeout_colorsel]
+
+(* ****** ****** *)
+
 (* end of [gtkcolorseldialog.sats] *)

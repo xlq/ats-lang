@@ -52,15 +52,6 @@ atsctrb_lor_GtkAttachOptions_GtkAttachOptions
 /* ****** ****** */
 
 //
-// source: gtk/gtkmain.h
-//
-#define atsctrb_gtk_main gtk_main
-#define atsctrb_gtk_main_level gtk_main_level
-#define atsctrb_gtk_main_quit gtk_main_quit
-
-/* ****** ****** */
-
-//
 // source: gtk/gtkadjustment.h
 //
 
@@ -199,8 +190,29 @@ atsctrb_gtk_check_button_new_with_mnemonic
 // source: gtk/gtkcolorsel.h
 //
 
-#define atsctrb_gtk_color_selection_new gtk_color_selection_new
-#define atsctrb_gtk_color_selection_get_current_color gtk_color_selection_get_current_color
+ATSinline()
+ats_ptr_type
+atsctrb_gtk_color_selection_new () {
+  GtkWidget *widget = gtk_color_selection_new () ;
+  g_object_ref_sink(G_OBJECT(widget)) ; // removing floating reference!
+  return widget ;
+} // end of [atsctrb_gtk_color_selection_new]
+
+#define atsctrb_gtk_color_selection_get_previous_color \
+  gtk_color_selection_get_previous_color
+#define atsctrb_gtk_color_selection_set_previous_color \
+  gtk_color_selection_set_previous_color
+
+#define atsctrb_gtk_color_selection_get_current_color \
+  gtk_color_selection_get_current_color
+#define atsctrb_gtk_color_selection_set_current_color \
+  gtk_color_selection_set_current_color
+
+
+#define atsctrb_gtk_color_selection_set_has_palette \
+  gtk_color_selection_set_has_palette
+#define atsctrb_gtk_color_selection_set_has_opacitiy_control \
+  gtk_color_selection_set_has_opacitiy_control
 
 /* ****** ****** */
 
@@ -208,7 +220,29 @@ atsctrb_gtk_check_button_new_with_mnemonic
 // source: gtk/gtkcolorseldialog.h
 //
 
-#define atsctrb_gtk_color_selection_dialog_new gtk_color_selection_dialog_new
+ATSinline()
+ats_ptr_type
+atsctrb_gtk_color_selection_dialog_new
+  (ats_ptr_type title) {
+  GtkWidget *widget = gtk_color_selection_dialog_new ((gchar*)title) ;
+  g_object_ref_sink(G_OBJECT(widget)) ; // removing floating reference!
+  return widget ;
+} // end of [atsctrb_gtk_color_selection_dialog_new]
+
+ATSinline()
+ats_ptr_type
+atsctrb_gtk_color_selection_dialog_takeout_colorsel
+  (ats_ptr_type colorseldlg) {
+  return ((GtkColorSelectionDialog*)colorseldlg)->colorsel ;
+} // end of [...]
+
+/* ****** ****** */
+
+//
+// source: gtk/gtkdialog.h
+//
+
+#define atsctrb_gtk_dialog_run gtk_dialog_run
 
 /* ****** ****** */
 
@@ -750,6 +784,8 @@ atsctrb_gtk_vseparator_new () {
 #define atsctrb_gtk_widget_show_now gtk_widget_show_now
 #define atsctrb_gtk_widget_show_all gtk_widget_show_all
 
+#define atsctrb_gtk_widget_hide gtk_widget_hide
+
 //
 // HX: get out of a GDK window
 //
@@ -793,6 +829,17 @@ atsctrb_gtk_window_new
 
 #define atsctrb_gtk_window_set_title gtk_window_set_title
 #define atsctrb_gtk_window_set_default_size gtk_window_set_default_size
+
+/* ****** ****** */
+
+//
+// source: gtk/gtkmain.h
+//
+#define atsctrb_gtk_main gtk_main
+#define atsctrb_gtk_main_level gtk_main_level
+#define atsctrb_gtk_main_quit gtk_main_quit
+
+#define atsctrb_gtk_timeout_add gtk_timeout_add
 
 /* ****** ****** */
 

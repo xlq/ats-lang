@@ -43,6 +43,46 @@
 
 /* ****** ****** */
 
+//
+// source: gdkcolor.h
+//
+
+ATSinline()
+ats_void_type
+atsctrb_gdk_color3_set (
+  ats_ptr_type p_color, ats_uint_type r, ats_uint_type b, ats_uint_type g
+) {
+  ((GdkColor*)p_color)->red = (guint16)r ;
+  ((GdkColor*)p_color)->blue = (guint16)b ;
+  ((GdkColor*)p_color)->green = (guint16)g ;
+  return ;
+} // end of [atsctrb_gdk_color3_set]
+
+ATSinline()
+ats_void_type
+atsctrb_gdk_color4_set (
+  ats_ptr_type p_color
+, ats_uint_type pix, ats_uint_type r, ats_uint_type b, ats_uint_type g
+) {
+  ((GdkColor*)p_color)->pixel = (guint32)pix ;
+  ((GdkColor*)p_color)->red = (guint16)r ;
+  ((GdkColor*)p_color)->blue = (guint16)b ;
+  ((GdkColor*)p_color)->green = (guint16)g ;
+  return ;
+} // end of [atsctrb_gdk_color4_set]
+
+/* ****** ****** */
+
+//
+// source: gdkevent.h
+//
+
+ATSinline()
+ats_bool_type
+atsctrb_eq_GdkEventType_GdkEventType
+  (GdkEventType x1, GdkEventType x2) { return (x1 == x2) ; }
+// end of [atsctrb_eq_GdkEventType_GdkEventType]
+
 ATSinline()
 GdkEventMask
 atsctrb_lor_GdkEventMask_GdkEventMask

@@ -65,6 +65,16 @@ atspre_ptr_isnot_null (ats_ptr_type p) {
 
 /* ****** ****** */
 
+//
+// HX-2010-04-19: this one is to be used by various "free_null" functions
+//
+ATSinline()
+ats_void_type
+atspre_ptr_free_null (ats_ptr_type p) { return ; }
+// end of [atspre_ptr_free_null]
+
+/* ****** ****** */
+
 ATSinline()
 ats_ptr_type
 atspre_psucc (const ats_ptr_type p) {

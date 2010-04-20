@@ -82,6 +82,12 @@ fun gtk_widget_show_all
 
 (* ****** ****** *)
 
+fun gtk_widget_hide
+  {c:cls | c <= GtkWidget} {l:agz} (widget: !gobjptr (c, l)): void
+  = "#atsctrb_gtk_widget_hide"
+
+(* ****** ****** *)
+
 //
 // HX: negative width/height can have special meaning
 //

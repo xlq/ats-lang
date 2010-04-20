@@ -33,22 +33,16 @@
 
 //
 // Author: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
-// Time: April, 2010
+// Start Time: April, 2010
 //
 
 (* ****** ****** *)
 
-fun gtk_main (): void = "#atsctrb_gtk_main"
-fun gtk_main_level (): guint = "#atsctrb_gtk_main_level"
-fun gtk_main_quit (): void = "#atsctrb_gtk_main_quit"
+typedef GtkFunction = (gpointer) -<fun1> gboolean
 
 (* ****** ****** *)
 
-fun gtk_timeout_add
-  (interval: guint32, f: GtkFunction, data: gpointer): guint
-  = "#atsctrb_gtk_timeout_add"
-// end of [gtk_timeout_add]
+(* end of [gtktypeutils.sats] *)
 
 (* ****** ****** *)
 
-(* end of [gtkmain.sats] *)

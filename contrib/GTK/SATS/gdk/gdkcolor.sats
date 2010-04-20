@@ -38,6 +38,18 @@
 
 (* ****** ****** *)
 
+fun gdk_color3_set
+  (color: &GdkColor, r: uint, b: uint, g: uint):<> void
+  = "#atsctrb_gdk_color3_set"
+// end of [gdk_color3_set]
+
+fun gdk_color4_set
+  (color: &GdkColor, pix: uint, r: uint, b: uint, g: uint):<> void
+  = "#atsctrb_gdk_color4_set"
+// end of [gdk_color4_set]
+
+(* ****** ****** *)
+
 (*
 GdkColor *gdk_color_copy      (const GdkColor *color);
 void      gdk_color_free      (GdkColor       *color);
