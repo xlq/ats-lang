@@ -39,6 +39,23 @@
 (* ****** ****** *)
 
 abst@ype
+GtkDialogFlags = $extype "GtkDialogFlags"
+
+macdef GTK_DIALOG_MODAL =
+  $extval (GtkDialogFlags, "GTK_DIALOG_MODAL")
+macdef GTK_DIALOG_DESTROY_WITH_PARENT =
+  $extval (GtkDialogFlags, "GTK_DIALOG_DESTROY_WITH_PARENT")
+macdef GTK_DIALOG_NO_SEPARATOR =
+  $extval (GtkDialogFlags, "GTK_DIALOG_NO_SEPARATOR")
+
+fun lor_GtkDialogFlags_GtkDialogFlags
+  (x1: GtkDialogFlags, x2: GtkDialogFlags):<> GtkDialogFlags
+  = "#atsctrb_lor_GtkDialogFlags_GtkDialogFlags"
+overload lor with lor_GtkDialogFlags_GtkDialogFlags
+
+(* ****** ****** *)
+
+abst@ype
 GtkResponseType = $extype "GtkResponseType"
 
 (*
@@ -85,7 +102,45 @@ castfn gint_of_GtkResponseType (x: GtkResponseType):<> gint
 
 (* ****** ****** *)
 
-fun gtk_dialog_new (): GtkDialog_ptr1 = "#atsctrb_gtk_dialog_new"
+fun gtk_dialog_new ()
+  : GtkDialog_ptr1 = "#atsctrb_gtk_dialog_new"
+// end of [gtk_dialog_new]
+
+(*
+GtkWidget*
+gtk_dialog_new_with_buttons (
+  const gchar *title
+, GtkWindow *parent
+, GtkDialogFlags flags
+, const gchar *first_button_text
+, ...
+) ;
+*)
+
+(* ****** ****** *)
+
+(*
+fun gtk_dialog_takeout_window
+  {c:cls | c <= GtkDialog} {l:agz}
+  (dialog: !gobjptr (c, l))
+  :<> [l_win:agz] (
+    gobjptr (GtkWindow, l_win) -<lin,prf> void | gobjptr (GtkWindow, l_win)
+  ) = "#atsctrb_gtk_dialog_takeout_window"
+*)
+
+fun gtk_dialog_takeout_vbox
+  {c:cls | c <= GtkDialog} {l:agz}
+  (dialog: !gobjptr (c, l))
+  :<> [l_box:agz] (
+    gobjptr (GtkVBox, l_box) -<lin,prf> void | gobjptr (GtkVBox, l_box)
+  ) = "#atsctrb_gtk_dialog_takeout_vbox"
+
+fun gtk_dialog_takeout_action_area
+  {c:cls | c <= GtkDialog} {l:agz}
+  (dialog: !gobjptr (c, l))
+  :<> [l_box:agz] (
+    gobjptr (GtkHBox, l_box) -<lin,prf> void | gobjptr (GtkHBox, l_box)
+  ) = "#atsctrb_gtk_dialog_takeout_action_area"
 
 (* ****** ****** *)
 

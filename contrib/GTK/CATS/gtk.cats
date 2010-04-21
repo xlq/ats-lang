@@ -242,6 +242,43 @@ atsctrb_gtk_color_selection_dialog_takeout_colorsel
 // source: gtk/gtkdialog.h
 //
 
+ATSinline()
+GtkDialogFlags
+atsctrb_lor_GtkDialogFlags_GtkDialogFlags
+  (GtkDialogFlags x1, GtkDialogFlags x2) { return (x1 | x2) ; }
+// end of [atsctrb_lor_GtkDialogFlags_GtkDialogFlags]
+
+ATSinline()
+ats_ptr_type
+atsctrb_gtk_dialog_new () {
+  GtkWidget *widget = gtk_dialog_new () ;
+  g_object_ref_sink(G_OBJECT(widget)) ; // removing floating reference!
+  return widget ;
+} // end of [atsctrb_gtk_dialog_new]
+
+/*
+ATSinline()
+ats_ptr_type
+atsctrb_gtk_dialog_takeout_window
+  (ats_ptr_type dialog) {
+  return &((GtkDialog*)dialog)->window ;
+} // end of [...]
+*/
+
+ATSinline()
+ats_ptr_type
+atsctrb_gtk_dialog_takeout_vbox
+  (ats_ptr_type dialog) {
+  return ((GtkDialog*)dialog)->vbox ;
+} // end of [...]
+
+ATSinline()
+ats_ptr_type
+atsctrb_gtk_dialog_takeout_action_area
+  (ats_ptr_type dialog) {
+  return ((GtkDialog*)dialog)->action_area ;
+} // end of [...]
+
 #define atsctrb_gtk_dialog_run gtk_dialog_run
 
 /* ****** ****** */
@@ -322,7 +359,13 @@ atsctrb_gtk_file_selection_takeout_cancel_button
   return ((GtkFileSelection*)filesel)->cancel_button ;
 } // end of [...]
 
-#define atsctrb_gtk_file_selection_get_filename gtk_file_selection_get_filename
+ATSinline()
+ats_ptr_type
+atsctrb_gtk_file_selection_get_filename
+  (ats_ptr_type filesel) {
+  (void*)gtk_file_selection_get_filename ((GtkFileSelection*)filesel) ;
+} // end of [atsctrb_gtk_file_selection_get_filename]
+
 #define atsctrb_gtk_file_selection_set_filename gtk_file_selection_set_filename
 
 /* ****** ****** */
@@ -694,7 +737,6 @@ atsctrb_gtk_table_new (
   return widget ;
 } // end of [atsctrb_gtk_table_new]
 
-
 #define atsctrb_gtk_table_attach gtk_table_attach
 #define atsctrb_gtk_table_attach_defaults gtk_table_attach_defaults
 
@@ -704,6 +746,42 @@ atsctrb_gtk_table_new (
 #define atsctrb_gtk_table_set_col_spacing gtk_table_set_col_spacing
 #define atsctrb_gtk_table_set_row_spacings gtk_table_set_row_spacings
 #define atsctrb_gtk_table_set_col_spacings gtk_table_set_col_spacings
+
+/* ****** ****** */
+
+//
+// source: gtk/gtktextbuffer.h
+//
+
+#define atsctrb_gtk_text_buffer_get_iter_at_offset \
+  gtk_text_buffer_get_iter_at_offset
+
+ATSinline()
+ats_void_type
+atsctrb_gtk_text_buffer_insert_all (
+  ats_ptr_type tb, ats_ref_type iter, ats_ptr_type text
+) {
+  gtk_text_buffer_insert (
+    (GtkTextBuffer*)tb, (GtkTextIter*)iter, (gchar*)text, -1
+  ) ; return ;
+} // end of [atsctrb_gtk_text_buffer_insert_all]
+
+/* ****** ****** */
+
+//
+// source: gtk/gtktextview.h
+//
+
+ATSinline()
+ats_ptr_type
+atsctrb_gtk_text_view_new () {
+  GtkWidget *widget = gtk_text_view_new () ;
+  g_object_ref_sink(G_OBJECT(widget)) ; // removing floating reference!
+  return widget ;
+} // end of [atsctrb_gtk_text_view_new]
+
+#define atsctrb_gtk_text_view_get_buffer gtk_text_view_get_buffer
+#define atsctrb_gtk_text_view_set_buffer gtk_text_view_set_buffer
 
 /* ****** ****** */
 
@@ -863,10 +941,11 @@ atsctrb_gtk_window_new
 } // end of [atsctrb_gtk_window_new]
 
 #define atsctrb_gtk_window_set_title gtk_window_set_title
+#define atsctrb_gtk_window_set_position gtk_window_set_position
 #define atsctrb_gtk_window_set_default_size gtk_window_set_default_size
 
-#define atsctrb_gtk_window_get_resizeable gtk_window_get_resizeable
-#define atsctrb_gtk_window_set_resizeable gtk_window_set_resizeable
+#define atsctrb_gtk_window_get_resizable gtk_window_get_resizable
+#define atsctrb_gtk_window_set_resizable gtk_window_set_resizable
 
 /* ****** ****** */
 

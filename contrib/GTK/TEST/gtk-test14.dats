@@ -1,6 +1,6 @@
 (*
 **
-** A simple GTK example: spin buttons
+** A simple GTK example: color selection dialog
 **
 ** Author: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
 ** Time: April, 2010

@@ -53,7 +53,10 @@ stadef gboolean = $GLIB.gboolean
 //
 stadef gchar = $GLIB.gchar
 //
+stadef gint (i:int) = $GLIB.gint (i)
 stadef gint = $GLIB.gint
+//
+stadef guint (i:int) = $GLIB.guint (i)
 stadef guint = $GLIB.guint
 //
 stadef gfloat = $GLIB.gfloat
@@ -305,6 +308,10 @@ viewtypedef GtkTable_ptr (l:addr) = gobjptr (GtkTable, l)
 viewtypedef GtkTable_ptr0 = [l:agez] GtkTable_ptr l
 viewtypedef GtkTable_ptr1 = [l:addr | l > null] GtkTable_ptr l
 
+viewtypedef GtkTextView_ptr (l:addr) = gobjptr (GtkTextView, l)
+viewtypedef GtkTextView_ptr0 = [l:agez] GtkTextView_ptr l
+viewtypedef GtkTextView_ptr1 = [l:addr | l > null] GtkTextView_ptr l
+
 viewtypedef GtkToggleButton_ptr (l:addr) = gobjptr (GtkToggleButton, l)
 viewtypedef GtkToggleButton_ptr0 = [l:agez] GtkToggleButton_ptr l
 viewtypedef GtkToggleButton_ptr1 = [l:addr | l > null] GtkToggleButton_ptr l
@@ -337,9 +344,35 @@ viewtypedef GtkWindow_ptr1 = [l:addr | l > null] GtkWindow_ptr l
 
 (* ****** ****** *)
 
+objcls GtkTextBuffer = { super: GObject }
+viewtypedef GtkTextBuffer_ptr (l:addr) = gobjptr (GtkTextBuffer, l)
+viewtypedef GtkTextBuffer_ptr0 = [l:agez] GtkTextBuffer_ptr l
+viewtypedef GtkTextBuffer_ptr1 = [l:addr | l > null] GtkTextBuffer_ptr l
+
+objcls GtkTextTag = { super: GObject }
+viewtypedef GtkTextTag_ptr (l:addr) = gobjptr (GtkTextTag, l)
+viewtypedef GtkTextTag_ptr0 = [l:agez] GtkTextTag_ptr l
+viewtypedef GtkTextTag_ptr1 = [l:addr | l > null] GtkTextTag_ptr l
+
+objcls GtkTextTagTable = { super: GObject }
+viewtypedef GtkTextTagTable_ptr (l:addr) = gobjptr (GtkTextTagTable, l)
+viewtypedef GtkTextTagTable_ptr0 = [l:agez] GtkTextTagTable_ptr l
+viewtypedef GtkTextTagTable_ptr1 = [l:addr | l > null] GtkTextTagTable_ptr l
+
+abst@ype GtkTextIter = $extype "GtkTextIter" // opaque
+
+(* ****** ****** *)
+
 #include "contrib/GTK/SATS/gtk/gtkenums.sats"
 #include "contrib/GTK/SATS/gtk/gtkstock.sats"
 #include "contrib/GTK/SATS/gtk/gtktypeutils.sats"
+
+(* ****** ****** *)
+
+#include "contrib/GTK/SATS/gtk/gtktextbuffer.sats"
+#include "contrib/GTK/SATS/gtk/gtktextiter.sats"
+#include "contrib/GTK/SATS/gtk/gtktexttag.sats"
+#include "contrib/GTK/SATS/gtk/gtktexttagtable.sats"
 
 (* ****** ****** *)
 
@@ -373,9 +406,10 @@ viewtypedef GtkWindow_ptr1 = [l:addr | l > null] GtkWindow_ptr l
 #include "contrib/GTK/SATS/gtk/gtkscale.sats"
 #include "contrib/GTK/SATS/gtk/gtkscrollbar.sats"
 #include "contrib/GTK/SATS/gtk/gtkseparator.sats"
-#include "contrib/GTK/SATS/gtk/gtkspinbutton.sats"
+#include "contrib/GTK/SATS/gtk/gtkspinbutton.sats" // <= entry
 #include "contrib/GTK/SATS/gtk/gtkstatusbar.sats"
-#include "contrib/GTK/SATS/gtk/gtktable.sats"
+#include "contrib/GTK/SATS/gtk/gtktable.sats" // <= container
+#include "contrib/GTK/SATS/gtk/gtktextview.sats" // <= container
 #include "contrib/GTK/SATS/gtk/gtktogglebutton.sats"
 #include "contrib/GTK/SATS/gtk/gtkvbox.sats"
 #include "contrib/GTK/SATS/gtk/gtkvruler.sats"

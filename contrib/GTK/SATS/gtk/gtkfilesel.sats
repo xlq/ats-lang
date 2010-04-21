@@ -38,51 +38,47 @@
 
 (* ****** ****** *)
 
-fun gtk_window_new
-  (tp: GtkWindowType): GtkWindow_ptr1 = "#atsctrb_gtk_window_new"
-// end of [gtk_window_new]
-
-(* ****** ****** *)
-
-fun gtk_window_set_title
-  {c:cls | c <= GtkWindow} {l:agz}
-  (window: !gobjptr (c, l), title: string): void
-  = "#atsctrb_gtk_window_set_title"
-// end of [gtk_window_set_title]
-
-(* ****** ****** *)
-
-fun gtk_window_set_position
-  {c:cls | c <= GtkWindow} {l:agz}
-  (window: !gobjptr (c, l), pox: GtkWindowPosition): void
-  = "#atsctrb_gtk_window_set_position"
-// end of [gtk_window_set_position]
-
-(* ****** ****** *)
-
 //
-// [width = -1] means unset
-// [height = -1] means unset
+// HX-2010-04-19: this is all deprecated!!!
 //
-fun gtk_window_set_default_size
-  {c:cls | c <= GtkWindow} {l:agz}
-  (window: !gobjptr (c, l), width: gint, height: gint): void
-  = "#atsctrb_gtk_window_set_default_size"
-// end of [gtk_window_set_default_size]
 
 (* ****** ****** *)
 
-fun gtk_window_get_resizable
-  {c:cls | c <= GtkWindow} {l:agz}
-  (window: !gobjptr (c, l)): gboolean = "#atsctrb_gtk_window_get_resizeable"
-// end of [gtk_window_get_resizeable]
-
-fun gtk_window_set_resizable
-  {c:cls | c <= GtkWindow} {l:agz}
-  (window: !gobjptr (c, l), resizable: gboolean): void
-  = "#atsctrb_gtk_window_set_resizable"
-// end of [gtk_window_set_resizable]
+fun gtk_file_selection_new
+  (title: string): GtkColorSelection_ptr1 = "#atsctrb_gtk_file_selection_new"
+// end of [gtk_file_selection_new]
 
 (* ****** ****** *)
 
-(* end of [gtkwindow.sats] *)
+fun gtk_file_selection_takeout_ok_button
+  {c:cls | c <= GtkFileSelection} {l:agz}
+  (filesel: !gobjptr (c, l))
+  :<> [l_btn:agz] (
+    gobjptr (GtkButton, l_btn) -<lin,prf> void | gobjptr (GtkButton, l_btn)
+  ) = "atsctrb_gtk_file_selection_takeout_ok_button"
+// end of [gtk_file_selection_takeout_ok_button]
+
+fun gtk_file_selection_takeout_cancel_button
+  {c:cls | c <= GtkFileSelection} {l:agz}
+  (filesel: !gobjptr (c, l))
+  :<> [l_btn:agz] (
+    gobjptr (GtkButton, l_btn) -<lin,prf> void | gobjptr (GtkButton, l_btn)
+  ) = "atsctrb_gtk_file_selection_takeout_cancel_button"
+// end of [gtk_file_selection_takeout_cancel_button]
+
+(* ****** ****** *)
+
+fun gtk_file_selection_get_filename
+  {c:cls | c <= GtkFileSelection} {l:agz} (filesel: !gobjptr (c, l)): string
+  = "#atsctrb_gtk_file_selection_get_filename"
+// end of [gtk_file_selection_get_filename]
+
+fun gtk_file_selection_set_filename
+  {c:cls | c <= GtkFileSelection} {l:agz}
+  (filesel: !gobjptr (c, l), filename: string): void
+  = "#atsctrb_gtk_file_selection_set_filename"
+// end of [gtk_file_selection_set_filename]
+
+(* ****** ****** *)
+
+(* end of [gtkfilesel.sats] *)

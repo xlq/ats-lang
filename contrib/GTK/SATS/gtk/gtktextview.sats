@@ -33,56 +33,30 @@
 
 //
 // Author: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
-// Start Time: April, 2010
+// Time: April, 2010
 //
 
 (* ****** ****** *)
 
-fun gtk_window_new
-  (tp: GtkWindowType): GtkWindow_ptr1 = "#atsctrb_gtk_window_new"
-// end of [gtk_window_new]
+fun gtk_text_view_new (): GtkTextView_ptr1 = "#atsctrb_gtk_text_view_new"
 
 (* ****** ****** *)
 
-fun gtk_window_set_title
-  {c:cls | c <= GtkWindow} {l:agz}
-  (window: !gobjptr (c, l), title: string): void
-  = "#atsctrb_gtk_window_set_title"
-// end of [gtk_window_set_title]
-
-(* ****** ****** *)
-
-fun gtk_window_set_position
-  {c:cls | c <= GtkWindow} {l:agz}
-  (window: !gobjptr (c, l), pox: GtkWindowPosition): void
-  = "#atsctrb_gtk_window_set_position"
-// end of [gtk_window_set_position]
-
-(* ****** ****** *)
+fun gtk_text_view_set_buffer
+  {c1,c2:cls | c1 <= GtkTextView; c2 <= GtkTextBuffer} {l1,l2:agz}
+  (tv: !gobjptr (c1, l1), tb: !gobjptr (c2, l2)): void = "#atsctrb_gtk_text_view_set_buffer"
+// end of [gtk_text_view_set_buffer]
 
 //
-// [width = -1] means unset
-// [height = -1] means unset
+// HX: this one should be called 'takeout' (instead of 'get')
 //
-fun gtk_window_set_default_size
-  {c:cls | c <= GtkWindow} {l:agz}
-  (window: !gobjptr (c, l), width: gint, height: gint): void
-  = "#atsctrb_gtk_window_set_default_size"
-// end of [gtk_window_set_default_size]
+fun gtk_text_view_get_buffer
+  {c:cls | c <= GtkTextView} {l:agz}
+  (tv: !gobjptr (c, l)):<> [l_buf:agz] (
+    gobjptr (GtkTextBuffer, l_buf) -<lin,prf> void | gobjptr (GtkTextBuffer, l_buf)
+  ) = "#atsctrb_gtk_text_view_get_buffer"
+// end of [gtk_text_view_get_buffer]
 
 (* ****** ****** *)
 
-fun gtk_window_get_resizable
-  {c:cls | c <= GtkWindow} {l:agz}
-  (window: !gobjptr (c, l)): gboolean = "#atsctrb_gtk_window_get_resizeable"
-// end of [gtk_window_get_resizeable]
-
-fun gtk_window_set_resizable
-  {c:cls | c <= GtkWindow} {l:agz}
-  (window: !gobjptr (c, l), resizable: gboolean): void
-  = "#atsctrb_gtk_window_set_resizable"
-// end of [gtk_window_set_resizable]
-
-(* ****** ****** *)
-
-(* end of [gtkwindow.sats] *)
+(* end of [gtktextview.sats] *)

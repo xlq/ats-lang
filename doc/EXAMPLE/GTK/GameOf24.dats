@@ -181,16 +181,31 @@ fun play {n:int | n >= 2} (
 
 (* ****** ****** *)
 
+%{^
+ats_ptr_type
+answering_gtk_dialog_new () {
+  GtkWidget *widget ;
+  widget = gtk_dialog_new_with_buttons (
+    "Game-of-24 Answer Dialog"
+  , NULL
+  , GTK_DIALOG_MODAL
+  , "_Close", 0
+  , NULL
+  ) ;
+  g_object_ref_sink(G_OBJECT(widget)) ; // removing floating reference!
+  return widget ;
+}
+%} // end of [%{^]
+extern
+fun answering_gtk_dialog_new (): GtkDialog_ptr1 = "answering_gtk_dialog_new"
+
+overload gint with gint_of_GtkResponseType
+
 fun answering
   (xs: List exp): void = () where {
-  val window = gtk_window_new (GTK_WINDOW_TOPLEVEL)
-  val (fpf_window | window_) = g_object_vref (window)
-  val _sid = g_signal_connect0
-    (window_, (gsignal)"destroy", G_CALLBACK(gtk_widget_destroy), (gpointer)null)
+  val dialog = answering_gtk_dialog_new ()
 //
-  val vbox0 = gtk_vbox_new (GFALSE, (gint)10)
-  val () = gtk_widget_show (vbox0)
-  val () = gtk_container_add (window, vbox0)
+  val (fpf_vbox0 | vbox0) = gtk_dialog_takeout_vbox (dialog)
 //
   val hbox1 = gtk_hbox_new (GFALSE, (gint)0)
   val () = gtk_widget_show (hbox1)
@@ -226,25 +241,19 @@ fun answering
   ) : void // end of [val]
   val () = g_object_unref (hbox1)
 //
-  val hsep = gtk_hseparator_new ()
-  val () = gtk_widget_show (hsep)
-  val () = gtk_box_pack_start (vbox0, hsep, GTRUE, GTRUE, guint(0))
-  val () = g_object_unref (hsep)
+  prval () = fpf_vbox0 (vbox0)
+  val () = gtk_widget_show (dialog)
 //
-  val hbox1 = gtk_hbox_new (GFALSE, (gint)0)
-  val () = gtk_widget_show (hbox1)
-  val () = gtk_box_pack_start (vbox0, hbox1, GTRUE, GTRUE, guint(10))
-  val button = gtk_button_new_from_stock (GTK_STOCK_CLOSE)
-  val _sid = g_signal_connect_swapped
-    (button, (gsignal)"clicked", G_CALLBACK(gtk_widget_destroy), window)
-  val () = gtk_widget_show (button)
-  val () = gtk_box_pack_start (hbox1, button, GTRUE, GFALSE, (guint)0)
-  val () = g_object_unref (button)
-  val () = g_object_unref (hbox1)
+  val () = while (true) let
+    val response = gtk_dialog_run (dialog)
+    // val () = (print "response = "; print ((int_of)response); print_newline ())
+  in
+    case+ 0 of
+    | _ when response = (gint)0 => break
+    | _ => ()
+  end // end of [val]
 //
-  val () = g_object_unref (vbox0)
-  val () = gtk_widget_show (window)
-  prval () = fpf_window (window)
+  val () = gtk_widget_destroy (dialog)
 } // end of [answering]
 
 (* ****** ****** *)
