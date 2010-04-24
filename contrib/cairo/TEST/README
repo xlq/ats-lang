@@ -17,7 +17,8 @@ cairo-test5.dats: drawing a negative arc
 cairo-test6.dats: clipping
 cairo-test7.dats: drawing a (still) clock
 cairo-test8-1.dats: Kitaoka's famous image of illusory circular motion
-cairo-test8-2.dats: A variant of [cairo-test8-1.dats]
+cairo-test8-2.dats: A variant of [cairo-test8-1.dats] based on Xlib
+cairo-test8-3.dats: A variant of [cairo-test8-1.dats] based on GTK
 cairo-test11.dats: an example testing two filling rule
 cairo-test12.dats: an example involving radial pattern (gradient)
 cairo-test13.dats: an example testing line cap styles

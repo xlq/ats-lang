@@ -162,4 +162,12 @@ fun gtk_widget_modify_bg
 
 (* ****** ****** *)
 
+fun gtk_widget_queue_draw_area
+  {c:cls | c <= GtkWidget} {l:agz}
+  (widget: !gobjptr (c, l), x: gint, y: gint, width: gint, height: gint): void
+  = "#atsctrb_gtk_widget_queue_draw_area"
+// end of [gtk_widget_queue_draw_area]
+
+(* ****** ****** *)
+
 (* end of [gtkwidget.sats] *)

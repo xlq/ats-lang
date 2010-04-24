@@ -1,0 +1,16 @@
+(*
+**
+** HX-2010-04-21:
+** This is my effort to prepare ATS documentation with DocBook
+**
+*)
+
+(* ****** ****** *)
+
+BOOK:
+
+1. ATS/Anairiats User's Guide
+
+(* ****** ****** *)
+
+(* end of [README] *)

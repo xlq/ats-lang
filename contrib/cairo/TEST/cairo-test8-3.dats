@@ -6,19 +6,19 @@
 ** This is a variant of cairo-test8-1
 **
 ** Author: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
-** Time: February, 2010
+** Time: April, 2010
 **
 *)
 
 (*
 ** how to compile:
-   atscc -o test8-2 \
+   atscc -o test8-3 \
      `pkg-config --cflags --libs cairo` \
      $ATSHOME/contrib/cairo/atsctrb_cairo.o \
-     cairo-test8-2.dats
+     cairo-test8-3.dats
 
 ** how ot test:
-   ./test8-2
+   ./test8-3
 *)
 
 (* ****** ****** *)
@@ -133,32 +133,24 @@ fun draw_rings
 
 (* ****** ****** *)
 
-staload "contrib/X11/SATS/X.sats"
-staload "contrib/X11/SATS/Xlib.sats"
+staload "contrib/glib/SATS/glib.sats"
+staload "contrib/glib/SATS/glib-object.sats"
 
 (* ****** ****** *)
 
-symintr uint
-overload uint with uint_of_int // no-op casting
+staload "contrib/GTK/SATS/gdk.sats"
+staload "contrib/GTK/SATS/gtk.sats"
 
 (* ****** ****** *)
 
-macdef double = double_of
-
-fun draw_all {l:agz} (
-    dpy: !Display_ptr l, win: Window, wd: int, ht: int
-  ) :<cloref1> void = () where {
-  val screen_num = XDefaultScreen (dpy)
-//
-  val (pf_minus | visual) = XDefaultVisual (dpy, screen_num)
-  val surface = cairo_xlib_surface_create (dpy, (Drawable)win, visual, wd, ht)
-  prval () = minus_addback (pf_minus, visual | dpy)
-//
+extern fun draw_all {l:agz}
+  (cr: !cairo_ref l, width: int, height: int) : void = "draw_main"
+implement draw_all
+  (cr, wd, ht) = () where {
   val mn = min (wd, ht)
-  val xmargin = double (wd - mn) / 2
-  val ymargin = double (ht - mn) / 2
-  val cr = cairo_create (surface)
-  val () = cairo_surface_destroy (surface)
+  val xmargin = double_of (wd - mn) / 2
+  val ymargin = double_of (ht - mn) / 2
+  val (pf0 | ()) = cairo_save (cr)
   val () = cairo_translate (cr, xmargin, ymargin)
   val alpha = 1.0*mn/512
   val wd = 512.0 and ht = 512.0
@@ -191,59 +183,80 @@ fun draw_all {l:agz} (
     end // end of [for]
     ) // end of [for]
   ) // end of [val]
-  val () = cairo_destroy (cr)
+  val () = cairo_restore (pf0 | cr)
 } // end of [draw_all]
 
 (* ****** ****** *)
 
-implement main () = () where {
-  val wd0 = 512 and ht0 = 512
-//
-  val [l_dpy:addr] dpy = XOpenDisplay (stropt_none)
-  val () = assert_errmsg (Display_ptr_isnot_null dpy, #LOCATION)
-//
-  val screen_num = XDefaultScreen (dpy)
-  val mywin = XCreateSimpleWindow (
-    dpy, parent, x, y, width, height, border_width, w_pix, b_pix
-  ) where {
-    val parent = XRootWindow (dpy, screen_num)
-    val x = 0 and y = 0
-    val width = (uint)wd0 and height = (uint)ht0
-    val border_width = (uint)4
-    val w_pix = XWhitePixel (dpy, screen_num)
-    val b_pix = XBlackPixel (dpy, screen_num)
-  } // end of [val]
-//
-  val () = XMapWindow(dpy, mywin)
-//
-  val () = XSelectInput (dpy, mywin, flag) where {
-    val flag = ExposureMask lor KeyPressMask lor ButtonPressMask lor StructureNotifyMask
-  } // end of [val]
-//
-  var report: XEvent? // uninitialized
-  val () = while (true) let
-    val () = XNextEvent (dpy, report)
-    val type = report.type
-  in
-    case+ 0 of
-    | _ when (type = Expose) => () where {
-        prval (pf, fpf) = XEvent_xexpose_castdn (view@ report)
-        val count = (&report)->count
-        val () =  if count = 0 then let
-          val wd = (&report)->width and ht = (&report)->height
-        in
-          draw_all (dpy, mywin, wd, ht)
-        end (* end of [if] *)
-        prval () = view@ report := fpf (pf)
-      } // end of [Expose]
-    | _ when (type = KeyPress) => (break)
-    | _ => () // ignored
-  end // end of [val]
-//
-  val () = XCloseDisplay (dpy)
-//
-} // end of [main]
+%{^
+extern
+ats_void_type
+mainats (ats_int_type argc, ats_ptr_type argv) ;
+%}
 
 (* ****** ****** *)
 
-(* end of [cairo-test8-2.dats] *)
+extern fun gdk_cairo_create
+  {c:cls | c <= GdkDrawable} {l:agz} (widget: !gobjptr (c, l)): cairo_ref1
+  = "#gdk_cairo_create"
+// end of [gdk_cairo_create]
+
+fun on_expose_event
+  {c:cls | c <= GtkDrawingArea} {l:agz}
+  (darea: !gobjptr (c, l), event: &GdkEvent): gboolean = let
+  val (fpf_win | win) = gtk_widget_takeout_window (darea)
+  val () = assert_errmsg (g_object_isnot_null (win), #LOCATION)
+  val cr = gdk_cairo_create (win)
+  prval () = fpf_win (win)
+  val (pf, fpf | p) = gtk_widget_takeout_allocation (darea)
+  val () = draw_all (cr, (int_of)p->width, (int_of)p->height)
+  prval () = minus_addback (fpf, pf | darea)
+  val () = cairo_destroy (cr)
+in
+  GFALSE // HX: what does this mean?
+end // end of [on_expose_event]
+
+(* ****** ****** *)
+
+extern fun main1 (): void = "main1"
+
+implement main1 () = () where {
+  val window = gtk_window_new (GTK_WINDOW_TOPLEVEL)
+  val () = gtk_window_set_default_size (window, (gint)400, (gint)400)
+  val () = gtk_window_set_title (window, "cairo: Kitaoka's illusory circular motion")
+  val darea = gtk_drawing_area_new ()
+  val () = gtk_container_add (window, darea)
+  val _sid = g_signal_connect
+    (darea, (gsignal)"expose-event", G_CALLBACK (on_expose_event), (gpointer)null)
+  val () = g_object_unref (darea)
+  val (fpf_window | window_) = g_object_vref (window)
+  val _sid = g_signal_connect0
+    (window_, (gsignal)"delete-event", G_CALLBACK (gtk_main_quit), (gpointer)null)
+  val _sid = g_signal_connect1
+    (window, (gsignal)"destroy-event", G_CALLBACK (gtk_widget_destroy), (gpointer)null)
+  val () = gtk_widget_show_all (window)
+  prval () = fpf_window (window)
+  val () = gtk_main ()
+} // end of [val]
+
+(* ****** ****** *)
+
+implement main_dummy () = ()
+
+(* ****** ****** *)
+
+%{$
+ats_void_type
+mainats (
+  ats_int_type argc, ats_ptr_type argv
+) {
+  gtk_init ((int*)&argc, (char***)&argv) ;
+  main1 () ;
+  return ;
+} // end of [mainats]
+%} // end of [%{^]
+
+(* ****** ****** *)
+
+(* end of [cairo-test8-3.dats] *)
+

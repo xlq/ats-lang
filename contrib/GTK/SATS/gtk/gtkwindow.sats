@@ -70,6 +70,12 @@ fun gtk_window_set_default_size
   = "#atsctrb_gtk_window_set_default_size"
 // end of [gtk_window_set_default_size]
 
+fun gtk_window_get_size
+  {c:cls | c <= GtkWindow} {l:agz} (
+    window: !gobjptr (c, l), width: &gint? >> gint, height: &gint? >> gint
+  ) : void = "#atsctrb_gtk_window_get_size"
+// end of [gtk_window_get_size]
+
 (* ****** ****** *)
 
 fun gtk_window_get_resizable

@@ -53,26 +53,27 @@
 #define ATS_STALOADFLAG 0 // no static loading at run-time
 
 (* ****** ****** *)
-
+//
 // a reference to cairo drawing context
+//
 // [cairo_ref] is reference counted
-absviewtype cairo_ref (l:addr) // cairo_t* != null
+absviewtype cairo_ref (l:addr) // cairo_t*
 viewtypedef cairo_ref1 = [l:addr | l > null] cairo_ref l
 
 // [cairo_surface_ref] is reference counted
-absviewtype cairo_surface_ref (l:addr) // cairo_surface* != null
+absviewtype cairo_surface_ref (l:addr) // = cairo_surface_t*
 viewtypedef cairo_surface_ref1 = [l:addr | l > null] cairo_surface_ref l
 
 // [cairo_pattern_ref] is reference counted
-absviewtype cairo_pattern_ref (l:addr) // cairo_pattern* != null
+absviewtype cairo_pattern_ref (l:addr) // = cairo_pattern_t*
 viewtypedef cairo_pattern_ref1 = [l:addr | l > null] cairo_pattern_ref l
 
 // [cairo_font_face_ref] is reference counted
-absviewtype cairo_font_face_ref (l:addr) // cairo_font_face* != null
+absviewtype cairo_font_face_ref (l:addr) // = cairo_font_face_t*
 viewtypedef cairo_font_face_ref1 = [l:addr | l > null] cairo_font_face_ref l
 
 // [cairo_font_options_ptr] is not reference counted
-absviewtype cairo_font_options_ptr (l:addr) // cairo_font_options_ptr != null
+absviewtype cairo_font_options_ptr (l:addr) // = cairo_font_options_ptr
 viewtypedef cairo_font_options_ptr1 = [l:addr | l > null] cairo_font_options_ptr l
 
 (* ****** ****** *)

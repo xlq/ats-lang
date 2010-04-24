@@ -12,6 +12,10 @@
 
 (* ****** ****** *)
 
+#define ATS_STALOADFLAG 0 // no need for static loading at run-time
+
+(* ****** ****** *)
+
 %{#
 #ifndef timer_sats_Timer
 #define timer_sats_Timer

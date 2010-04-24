@@ -22,14 +22,14 @@ all: checkall
 
 checkall: compall cleanall
 compall: \
-  test1 \
+  test1-1 test1-2 \
   test2 \
   test3 \
   test4 \
   test5 \
   test6 \
   test7 \
-  test8-1 test8-2 \
+  test8-1 test8-2 test8-3 \
   test10 \
   test11 \
   test12 \
@@ -39,10 +39,17 @@ compall: \
 
 ######
 
-test1: cairo-test1.dats
-	$(ATSCC) -o test1 `pkg-config --cflags --libs cairo` $(ATSCTRB) \
-          cairo-test1.dats \
-     && ./test1
+test1-1: cairo-test1-1.dats
+	$(ATSCC) -o test1-1 `pkg-config --cflags --libs cairo` \
+          cairo-test1-1.dats \
+     && ./test1-1
+
+test1-2: cairo-test1-2.dats
+	$(ATSCC) -o test1-2 `pkg-config --cflags --libs gtk+-2.0` \
+          cairo-test1-2.dats \
+     # && ./test1-2
+
+######
 
 test2: cairo-test2.dats
 	$(ATSCC) -o test2 `pkg-config --cflags --libs cairo` $(ATSCTRB) \
@@ -74,6 +81,8 @@ test7: cairo-test7.dats
           cairo-test7.dats \
      && ./test7
 
+######
+
 test8-1: cairo-test8-1.dats
 	$(ATSCC) -o test8-1 `pkg-config --cflags --libs cairo` $(ATSCTRB) \
           cairo-test8-1.dats \
@@ -82,7 +91,17 @@ test8-1: cairo-test8-1.dats
 test8-2: cairo-test8-2.dats
 	$(ATSCC) -o test8-2 `pkg-config --cflags --libs cairo` $(ATSCTRB) \
           cairo-test8-2.dats -lX11 \
-     && ./test8-2
+     # && ./test8-2
+
+test8-3: cairo-test8-3.dats
+	$(ATSCC) -o test8-3 \
+          `pkg-config --cflags --libs cairo` \
+          `pkg-config --cflags --libs gtk+-2.0` \
+          $(ATSCTRB) \
+          cairo-test8-3.dats -lX11 \
+     # && ./test8-3
+
+######
 
 test10: cairo-test10.dats
 	$(ATSCC) -o test10 `pkg-config --cflags --libs cairo` $(ATSCTRB) \
@@ -125,7 +144,8 @@ clean::
 	rm -f *~ *_?ats.c *_?ats.o
 
 cleanall: clean
-	rm -f test1 cairo-test1.png
+	rm -f test1-1 cairo-test1-1.png
+	rm -f test1-2
 	rm -f test2 cairo-test2.png
 	rm -f test3 cairo-test3.png
 	rm -f test4 cairo-test4.png
@@ -133,7 +153,7 @@ cleanall: clean
 	rm -f test6 cairo-test6.png
 	rm -f test7 cairo-test7.png
 	rm -f test8-1 cairo-test8-1.png
-	rm -f test8-2
+	rm -f test8-2 test8-3
 	rm -f test10 cairo-test10.ps
 	rm -f test11 cairo-test11.png
 	rm -f test12 cairo-test12.png

@@ -45,6 +45,29 @@ typedef GdkColor =
 
 (* ****** ****** *)
 
+typedef GdkPoint =
+  $extype_struct "GdkPoint" of { x= gint, y= gint }
+// end of [GdkPoint]
+
+(* ****** ****** *)
+
+typedef GdkRectangle =
+  $extype_struct "GdkRectangle" of {
+  x= gint
+, y= gint
+, width= gint
+, height= gint
+} // end of [GdkRectangle]
+
+(* ****** ****** *)
+
+typedef GdkSpan =
+  $extype_struct "GdkSpan" of {
+  x= gint, y= gint, width= gint(*number of pixels in a span*)
+} // end of [GdkSpan]
+
+(* ****** ****** *)
+
 abst@ype GdkEventType = $extype "GdkEventType"
 abst@ype GdkEventMask = $extype "GdkEventMask"
 abst@ype GdkVisibilityState = $extype "GdkVisibilityState"

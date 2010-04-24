@@ -11,6 +11,10 @@
 
 (* ****** ****** *)
 
+staload _(*anon*) = "prelude/DATS/reference.dats"
+
+(* ****** ****** *)
+
 staload "libc/SATS/math.sats"
 macdef PI = M_PI
 macdef PI2 = PI/2
@@ -41,6 +45,8 @@ in
 end // end of [draw_hand]
 
 (* ****** ****** *)
+
+val theLastMin = ref_make_elt<int> (~1)
 
 fn draw_clock {l:agz} (
     cr: !cr l
@@ -115,7 +121,8 @@ end // end of [draw_clock]
 (* ****** ****** *)
 
 extern fun draw_main {l:agz}
-  (cr: !cairo_ref l, width: int, height: int) : void = "draw_main"
+  (cr: !cairo_ref l, width: int, height: int)
+  : void = "draw_main"
 implement draw_main
   (cr, width, height) = () where {
   val w = (double_of)width
@@ -189,15 +196,21 @@ fun draw_drawingarea
   {c:cls | c <= GtkDrawingArea} {l:agz}
   (darea: !gobjptr (c, l)): void = let
   val (fpf_win | win) = gtk_widget_takeout_window (darea)
-  val () = assert_errmsg (g_object_isnot_null (win), #LOCATION)
-  val cr = gdk_cairo_create (win)
-  prval () = fpf_win (win)
-  val (pf, fpf | p) = gtk_widget_takeout_allocation (darea)
-  val () = draw_main (cr, (int_of)p->width, (int_of)p->height)
-  prval () = minus_addback (fpf, pf | darea)
-  val () = cairo_destroy (cr)
 in
-  // nothing
+  if g_object_isnot_null (win) then let
+    val cr = gdk_cairo_create (win)
+    prval () = fpf_win (win)
+    val (pf, fpf | p) = gtk_widget_takeout_allocation (darea)
+    val () = draw_main (cr, (int_of)p->width, (int_of)p->height)
+    prval () = minus_addback (fpf, pf | darea)
+    val () = cairo_destroy (cr)
+  in
+    // nothing
+  end else let
+    prval () = fpf_win (win)
+  in
+    // nothing
+  end (* end of [if] *)
 end // end of [draw_drawingarea]
 
 (* ****** ****** *)
@@ -208,15 +221,43 @@ fun fexpose (): gboolean = let
   val () = g_object_unref (darea)
 in
   GFALSE
-end // end of [ftimeout]
+end // end of [fexpose]
+
+(* ****** ****** *)
+
+fun min_changed
+  (): bool = let
+  var t: time_t // unintialized
+  val _(*ignored*) = time_get_and_set (t)
+  var tm: tm_struct // unintialized
+  val () = localtime_r (t, tm)
+  val mt = tm.tm_min
+  val mt_old = !theLastMin
+in
+  mt <> mt_old
+end // end of [min_changed]
 
 fun ftimeout
   (_: gpointer): gboolean = let
-  val darea = the_drawingarea_get ()
-  val _ = draw_drawingarea (darea)
-  val () = g_object_unref (darea)
+  val [l:addr] darea = the_drawingarea_get ()
+  val (fpf_win | win) = gtk_widget_takeout_window (darea)
 in
-  GTRUE
+  if g_object_isnot_null (win) then let
+    prval () = fpf_win (win)
+    val (pf, fpf | p) = gtk_widget_takeout_allocation (darea)
+    val () = if min_changed () then
+      gtk_widget_queue_draw_area (darea, (gint)0, (gint)0, p->width, p->height)
+    // end of [val]
+    prval () = minus_addback (fpf, pf | darea)
+    val () = g_object_unref (darea)
+  in
+    GTRUE
+  end else let
+    prval () = fpf_win (win)  
+    val () = g_object_unref (darea)
+  in
+    GFALSE
+  end // end of [if]
 end // end of [ftimeout]
 
 (* ****** ****** *)
@@ -239,9 +280,7 @@ implement main1 () = () where {
   val _sid = g_signal_connect1
     (window, (gsignal)"destroy-event", G_CALLBACK (gtk_widget_destroy), (gpointer)null)
 //
-// update the clock every 31 seconds
-//
-  val _rid = gtk_timeout_add ((guint32)31000U, ftimeout, (gpointer)null)
+  val _rid = gtk_timeout_add ((guint32)100U, ftimeout, (gpointer)null)
   val () = gtk_widget_show_all (window)
   prval () = fpf_window (window)
   val () = gtk_main ()

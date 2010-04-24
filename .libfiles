@@ -9,7 +9,7 @@
 /*
 **
 ** This file is to be preprocessed to generate .libfiles_local, which is
-** needed by [atslib --libats] for building libats.a
+** needed by [atslib] for building libats.a
 **
 */
 

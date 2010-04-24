@@ -16,7 +16,7 @@
 
 ** how ot test:
    ./test1
-   'gthumb' can be used to view the generated image file 'cairo-test1.png'
+   'gthumb' can be used to view the generated image file 'cairo-test1-1.png'
 *)
 
 (* ****** ****** *)
@@ -49,12 +49,12 @@ implement main () = () where {
   val () = cairo_move_to (cr, 10.0, 50.0)
   val () = cairo_show_text (cr, "Hello, world!")
 //
-  val status = cairo_surface_write_to_png (surface, "cairo-test1.png")
+  val status = cairo_surface_write_to_png (surface, "cairo-test1-1.png")
   val () = cairo_surface_destroy (surface)
   val () = cairo_destroy (cr)
 //
   val () = if status = CAIRO_STATUS_SUCCESS then begin
-    print "The image is written to the file [cairo-test1.png].\n"
+    print "The image is written to the file [cairo-test1-1.png].\n"
   end else begin
     print "exit(ATS): [cairo_surface_write_to_png] failed"; print_newline ()
   end // end of [if]
@@ -62,4 +62,4 @@ implement main () = () where {
 
 (* ****** ****** *)
 
-(* end of [cairo-test1.dats] *)
+(* end of [cairo-test1-1.dats] *)

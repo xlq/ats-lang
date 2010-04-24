@@ -117,8 +117,8 @@ symintr time
 fun time_get (): time_t = "atslib_time_get"
 overload time with time_get
 
-fun time_get_and_set (p: &time_t? >> time_t): time_t
-  = "atslib_time_get_and_set"
+fun time_get_and_set
+  (p: &time_t? >> time_t): time_t = "atslib_time_get_and_set"
 overload time with time_get_and_set
 
 (* ****** ****** *)
@@ -130,13 +130,14 @@ fun ctime (t: &time_t):<!ref> string = "atslib_ctime"
 fun ctime_r {n:nat | n >= CTIME_BUFLEN} {l:addr} ( // reentrant
     pf: ! @[byte?][n] @ l >> strbuf (n, CTIME_BUFLEN - 1) @ l
   | t: &time_t, p_buf: ptr l
-  ) :<> ptr l
-  = "atslib_ctime_r"
+  ) :<> ptr l = "atslib_ctime_r"
+// end of [ctime_r]
 
 (* ****** ****** *)
 
-fun difftime (finish: time_t, start: time_t):<> double
-  = "atslib_difftime"
+fun difftime
+  (finish: time_t, start: time_t):<> double = "atslib_difftime"
+// end of [difftime]
 
 (* ****** ****** *)
 
@@ -150,14 +151,21 @@ fun localtime_r (time: &time_t, tm: &tm_struct? >> tm_struct): void
 
 (* ****** ****** *)
 
-fun lint_of_clock (c: clock_t):<> int_long_t0ype
-  = "atslib_lint_of_clock"
+fun strftime {m:pos} {l:addr} (
+    pf: !b0ytes m @ l >> strbuf (m, n) @ l
+  | p: ptr l, m: size_t m, fmt: string, tm: &tm_struct
+  ) :<> #[n:nat | n < m] size_t n
+  = "#atslib_strftime" // this a macro!
+// end of [strftime]
 
+(* ****** ****** *)
+
+fun lint_of_clock
+  (c: clock_t):<> int_long_t0ype = "atslib_lint_of_clock"
 overload lint_of with lint_of_clock
 
-fun double_of_clock (c: clock_t):<> double_t0ype
-  = "atslib_double_of_clock"
-
+fun double_of_clock
+  (c: clock_t):<> double_t0ype = "atslib_double_of_clock"
 overload double_of with double_of_clock
 
 //

@@ -925,6 +925,8 @@ atsctrb_gtk_widget_takeout_allocation
 #define atsctrb_gtk_widget_modify_fg gtk_widget_modify_fg
 #define atsctrb_gtk_widget_modify_bg gtk_widget_modify_bg
 
+#define atsctrb_gtk_widget_queue_draw_area gtk_widget_queue_draw_area
+
 /* ****** ****** */
 
 //
@@ -942,6 +944,8 @@ atsctrb_gtk_window_new
 
 #define atsctrb_gtk_window_set_title gtk_window_set_title
 #define atsctrb_gtk_window_set_position gtk_window_set_position
+
+#define atsctrb_gtk_window_get_size gtk_window_get_size
 #define atsctrb_gtk_window_set_default_size gtk_window_set_default_size
 
 #define atsctrb_gtk_window_get_resizable gtk_window_get_resizable

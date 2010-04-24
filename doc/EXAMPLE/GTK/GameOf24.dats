@@ -34,6 +34,40 @@ datatype exp =
   | Div of (exp, exp)
 // end of [exp]
 
+(* ****** ****** *)
+
+extern
+fun eq_exp_exp (x1: exp, x2: exp):<> bool
+overload = with eq_exp_exp
+
+implement eq_exp_exp (x1, x2) =
+  case+ (x1, x2) of
+  | (Num d1, Num d2) =>  (d1 = d2)
+  | (Add (x11, x12), Add (x21, x22)) =>
+      (x11 = x21 andalso x12 = x22) orelse (x11 = x22 andalso x12 = x21)
+  | (Sub (x11, x12), Sub (x21, x22)) => (x11 = x21) andalso (x12 = x22)
+  | (Mul (x11, x12), Mul (x21, x22)) =>
+      (x11 = x21 andalso x12 = x22) orelse (x11 = x22 andalso x12 = x21)
+  | (Div (x11, x12), Div (x21, x22)) => (x11 = x21) andalso (x12 = x22)
+  | (_, _) => false
+// end of [eq_exp_exp]
+
+fun explst_remdup
+  (xs: List exp): List exp = case+ xs of
+  | list_cons (x, xs) => let
+      var !p_clo = @lam (pf: !unit_v | x1: exp): bool =<clo> ~(x = x1)
+      prval pf = unit_v ()
+      val xs = list_filter_clo<exp> {unit_v} (pf | xs, !p_clo)
+      prval unit_v () = pf
+      val xs = list_of_list_vt (xs)
+    in
+      list_cons (x, explst_remdup xs)
+    end // end of [list_cons]
+  | list_nil () => list_nil ()
+// end of [explst_remdup]
+
+(* ****** ****** *)
+
 fun eval_exp
   (e: exp): double = case+ e of
   | Num (a) => a
@@ -211,27 +245,44 @@ fun answering
   val () = gtk_widget_show (hbox1)
   val () = gtk_box_pack_start (vbox0, hbox1, GTRUE, GTRUE, guint(10))
   val () = (case+ xs of
-    | list_cons (x, _) => let
-        val frame_ans = gtk_frame_new ("A solution is found:")
-        val () = gtk_widget_show (frame_ans)
-        val () = gtk_box_pack_start (hbox1, frame_ans, GTRUE, GFALSE, guint(10))
-        val gs  = g_string_new ()
-        val () = g_print_exp (gs , x)
-        val () = g_string_append_printf (gs, " = 24", @())
-        val ptr = g_string_get_str (gs)
-        val label_msg = gtk_label_new (msg) where {
-          val msg = __cast (ptr) where { extern castfn __cast (x: ptr): string }
-        } // end of [val]
+    | list_cons _ => let
+//
+        val frame = gtk_frame_new ("Solution(s) found:")
+        val () = gtk_box_pack_start (hbox1, frame, GTRUE, GFALSE, guint(10))
+        val () = gtk_widget_show (frame)
+        val [l_box:addr] vbox2 = gtk_vbox_new (GTRUE, gint(2))
+        val () = gtk_container_add (frame, vbox2)
+        val () = gtk_widget_show (vbox2)
+//
+        val [l_str:addr] gs  = g_string_new ()
+        val () = loop (vbox2, gs, xs) where {
+         fun loop (
+             vbox2: !gobjptr (GtkVBox, l_box), gs: !GString_ptr l_str, xs: List exp
+           ) : void = case+ xs of
+           | list_cons (x, xs) => let
+               val _ptr = g_string_truncate (gs, gsize(0))
+               val () = g_print_exp (gs , x)
+               val () = g_string_append_printf (gs, " = 24", @())
+               val ptr = g_string_get_str (gs)
+               val label_msg = gtk_label_new (msg) where {
+                 val msg = __cast (ptr) where { extern castfn __cast (x: ptr): string }
+               } // end of [val]
+              val () = gtk_widget_show (label_msg)
+              val () = gtk_box_pack_start (vbox2, label_msg, GFALSE, GTRUE, guint(0))
+              val () = g_object_unref (label_msg)
+            in
+              loop (vbox2, gs, xs)
+            end // end of [list_cons]
+          | list_nil () => ()
+        }
         val () = g_string_free_true (gs)
-        val () = gtk_widget_show (label_msg)
-        val () = gtk_container_add (frame_ans, label_msg)
-        val () = g_object_unref (label_msg)
-        val () = g_object_unref (frame_ans)
+        val () = g_object_unref (vbox2)
+        val () = g_object_unref (frame)
       in
         // nothing
       end // end of [if]
     | list_nil _ => let
-        val label_ans = gtk_label_new ("No solution is found!")
+        val label_ans = gtk_label_new ("No solution found!")
         val () = gtk_widget_show (label_ans)
         val () = gtk_box_pack_start (hbox1, label_ans, GTRUE, GFALSE, guint(10))
         val () = g_object_unref (label_ans)
@@ -250,6 +301,7 @@ fun answering
   in
     case+ 0 of
     | _ when response = (gint)0 => break
+    | _ when response = (gint)GTK_RESPONSE_DELETE_EVENT => break
     | _ => ()
   end // end of [val]
 //
@@ -274,6 +326,7 @@ fun play24 {n:nat}
   val () = assert_errmsg (n >= 2, #LOCATION)
   val ans = 24.0
   val res = play (ans, n, xs, list_nil)
+  val res = explst_remdup (res)
   val () = answering (res)
 (*
   val () = loop (res) where {

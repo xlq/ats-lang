@@ -158,6 +158,10 @@ atslib_localtime_r (ats_ptr_type time, ats_ptr_type tm) {
 
 /* ****** ****** */
 
+#define atslib_strftime strftime
+
+/* ****** ****** */
+
 static inline
 ats_lint_type
 atslib_lint_of_clock (clock_t t) { return t ; }
