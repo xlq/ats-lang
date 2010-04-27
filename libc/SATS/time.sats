@@ -40,10 +40,8 @@ staload TYPES = "libc/sys/SATS/types.sats"
 (* ****** ****** *)
 
 %{#
-
 #include "libc/CATS/time.cats"
-
-%}
+%} // end of [%{#]
 
 (* ****** ****** *)
 
@@ -67,14 +65,12 @@ typedef clock_t = $TYPES.clock_t
 
 (* ****** ****** *)
 
-fun lint_of_time (t: time_t):<> int_long_t0ype
-  = "atslib_lint_of_time"
-
+fun lint_of_time
+  (t: time_t):<> int_long_t0ype = "atslib_lint_of_time"
 overload lint_of with lint_of_time
 
-fun double_of_time (t: time_t):<> double_t0ype
-  = "atslib_double_of_time"
-
+fun double_of_time
+  (t: time_t):<> double_t0ype = "atslib_double_of_time"
 overload double_of with double_of_time
 
 (* ****** ****** *)

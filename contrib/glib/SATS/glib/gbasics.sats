@@ -244,6 +244,14 @@ symintr gpointer_vt
 castfn gpointer_of_viewtype {a:viewtype} (x: !a):<> gpointer
 overload gpointer_vt with gpointer_of_viewtype
 
+fun GPOINTER_TO_INT
+  (x: gpointer): gint = "#atsctrb_GPOINTER_TO_INT"
+// end of [GPOINTER_TO_INT]
+
+fun GINT_TO_POINTER
+  (x: gint): gpointer = "#atsctrb_GINT_TO_POINTER"
+// end of [GINT_TO_POINTER]
+
 (* ****** ****** *)
 
 (* end of [gbasics.sats] *)

@@ -212,6 +212,10 @@ viewtypedef GtkAdjustment_ptr (l:addr) = gobjptr (GtkAdjustment, l)
 viewtypedef GtkAdjustment_ptr0 = [l:agez] GtkAdjustment_ptr l
 viewtypedef GtkAdjustment_ptr1 = [l:addr | l > null] GtkAdjustment_ptr l
 
+viewtypedef GtkAlignment_ptr (l:addr) = gobjptr (GtkAlignment, l)
+viewtypedef GtkAlignment_ptr0 = [l:agez] GtkAlignment_ptr l
+viewtypedef GtkAlignment_ptr1 = [l:addr | l > null] GtkAlignment_ptr l
+
 viewtypedef GtkArrow_ptr (l:addr) = gobjptr (GtkArrow, l)
 viewtypedef GtkArrow_ptr0 = [l:agez] GtkArrow_ptr l
 viewtypedef GtkArrow_ptr1 = [l:addr | l > null] GtkArrow_ptr l
@@ -377,6 +381,7 @@ abst@ype GtkTextIter = $extype "GtkTextIter" // opaque
 (* ****** ****** *)
 
 #include "contrib/GTK/SATS/gtk/gtkadjustment.sats"
+#include "contrib/GTK/SATS/gtk/gtkalignment.sats"
 #include "contrib/GTK/SATS/gtk/gtkarrow.sats"
 #include "contrib/GTK/SATS/gtk/gtkbox.sats"
 #include "contrib/GTK/SATS/gtk/gtkbutton.sats"

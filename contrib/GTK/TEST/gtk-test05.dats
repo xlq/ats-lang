@@ -254,7 +254,7 @@ mainats (
   main1 (which) ;
   return ;
 } // end of [mainats]
-%} // end of [%{^]
+%} // end of [%{$]
 
 (* ****** ****** *)
 

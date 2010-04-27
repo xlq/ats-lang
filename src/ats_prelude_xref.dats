@@ -58,12 +58,18 @@ staload _ = "prelude/basics_dyn.sats"
 staload _ = "prelude/macrodef.sats"
 
 staload _ = "prelude/SATS/arith.sats"
+staload _ = "prelude/SATS/vsubrw.sats"
+
 staload _ = "prelude/SATS/bool.sats"
 staload _ = "prelude/SATS/byte.sats"
 staload _ = "prelude/SATS/char.sats"
+
+staload _ = "prelude/SATS/extern.sats"
+
 staload _ = "prelude/SATS/file.sats"
 staload _ = "prelude/SATS/float.sats"
 staload _ = "prelude/SATS/integer.sats"
+staload _ = "prelude/SATS/integer_fixed.sats"
 staload _ = "prelude/SATS/integer_ptr.sats"
 staload _ = "prelude/SATS/lazy.sats"
 staload _ = "prelude/SATS/lazy_vt.sats"
@@ -80,7 +86,9 @@ staload _ = "prelude/SATS/list.sats"
 staload _ = "prelude/SATS/list0.sats"
 staload _ = "prelude/SATS/list_vt.sats"
 staload _ = "prelude/SATS/matrix.sats"
+staload _ = "prelude/SATS/matrix0.sats"
 staload _ = "prelude/SATS/option.sats"
+staload _ = "prelude/SATS/option0.sats"
 staload _ = "prelude/SATS/slseg.sats"
 
 (* ****** ****** *)

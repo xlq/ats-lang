@@ -194,6 +194,13 @@ fun cairo_create {l:agz}
   (sf: !cairo_surface_ref l): cairo_ref1 = "#atsctrb_cairo_create"
 // end of [cairo_create]
 
+//
+// HX: implemented in [cairo.dats]
+//
+fun cairo_create0 {l:agz} (sf: cairo_surface_ref l): cairo_ref1
+
+(* ****** ****** *)
+
 fun cairo_reference
   {l:agz} (cr: !cairo_ref l): cairo_ref l = "#atsctrb_cairo_reference"
 // end of [cairo_reference]
@@ -696,8 +703,8 @@ fun cairo_has_current_point {l:agz} (cr: !cairo_ref l): bool
 
 fun cairo_get_current_point {l:agz} (
     cr: !cairo_ref l, x: &double? >> double, y: &double? >> double
-  ) : void
-  = "#atsctrb_cairo_get_current_point"
+  ) : void = "#atsctrb_cairo_get_current_point"
+// end of [cairo_get_current_point]
 
 (* ****** ****** *)
 
@@ -1602,7 +1609,7 @@ fun cairo_pdf_surface_create_null (
 
 (*
 ** note that [pf] and [env] can be freed only after the
-** returned surface is destroyed by a call to[cairo_surface_destroy]
+** returned surface is destroyed by a call to [cairo_surface_destroy]
 *)
 fun cairo_pdf_surface_create_for_stream
   {v:view} {vt:viewtype} (
@@ -1644,7 +1651,7 @@ fun cairo_ps_surface_create_null (
 
 (*
 ** note that [pf] and [env] can be freed only after the
-** returned surface is destroyed by a call to[cairo_surface_destroy]
+** returned surface is destroyed by a call to [cairo_surface_destroy]
 *)
 fun cairo_ps_surface_create_for_stream
   {v:view} {vt:viewtype} (
@@ -1715,7 +1722,7 @@ fun cairo_svg_surface_create (
 
 (*
 ** note that [pf] and [env] can be freed only after the
-** returned surface is destroyed by a call to[cairo_surface_destroy]
+** returned surface is destroyed by a call to [cairo_surface_destroy]
 *)
 fun cairo_svg_surface_create_for_stream
   {v:view} {vt:viewtype} (

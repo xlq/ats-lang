@@ -1511,7 +1511,25 @@ fn i0nclude_tr (
   end // end of [val]
 *)
   val flag = $PM.posmark_pause_get ()
+//
+// HX-2010-04-27: prepare for posmarking
+//
+  val pmstropt = $PM.posmark_xref_testnot_if (fullname)
+  val isposmark = stropt_is_some pmstropt
+  val () = if isposmark then begin
+    $PM.posmark_push (); $PM.posmark_enable ()
+  end // end of [val]
+//
   val d0cs = $Par.parse_from_filename (stadyn, filename)
+//
+// HX-2010-04-27: perform for posmarking if needed
+//
+  val () = if isposmark then let
+    val () = $Syn.d0eclst_posmark d0cs
+    val () = $PM. posmark_file_make_htm (fullname, pmstropt) in
+    $PM.posmark_disable (); $PM.posmark_pop ()
+  end // end of [val]
+//
   val () = $PM.posmark_resume_set (flag)
 (*
   val () = begin
@@ -1582,23 +1600,32 @@ fn s0taload_tr (
         val flag = (
           if string_suffix_is_dats fullname then 1(*dyn*) else 0(*sta*)
         ) : int // end of [val]
+//
+// HX-2010-04-27: prepare for posmarking
+//
         val pmstropt = $PM.posmark_xref_testnot_if (fullname)
         val isposmark = stropt_is_some pmstropt
         val () = if isposmark then begin
           $PM.posmark_push (); $PM.posmark_enable ()
         end // end of [val]
+//
         val d0cs = $Par.parse_from_filename (flag, fil)
+//
+// HX-2010-04-27: perform for posmarking if needed
+//
         val () = if isposmark then let
           val () = $Syn.d0eclst_posmark d0cs
           val () = $PM. posmark_file_make_htm (fullname, pmstropt) in
           $PM.posmark_disable (); $PM.posmark_pop ()
         end // end of [val]
+//
 (*
         val () = begin
           printf ("Translating [%s] begins.", @(fullname));
           print_newline ()
-        end
+        end // end of [val]
 *)
+//
         val () = trans1_env_save ()
 //
         val d1cs = d0eclst_tr d0cs

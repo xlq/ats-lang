@@ -59,4 +59,16 @@ fun gtk_text_view_get_buffer
 
 (* ****** ****** *)
 
+fun gtk_text_view_set_editable
+  {c:cls | c <= GtkTextView} {l:agz}
+  (tv: !gobjptr (c, l), editable: gboolean): void = "#atsctrb_gtk_text_view_set_editable"
+// end of [gtk_text_view_set_editable]
+
+fun gtk_text_view_set_cursor_visible
+  {c:cls | c <= GtkTextView} {l:agz}
+  (tv: !gobjptr (c, l), visible: gboolean): void = "#atsctrb_gtk_text_view_set_cursor_visible"
+// end of [gtk_text_view_set_cursor_visible]
+
+(* ****** ****** *)
+
 (* end of [gtktextview.sats] *)

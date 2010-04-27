@@ -77,6 +77,26 @@ atsctrb_gtk_adjustment_new (
 /* ****** ****** */
 
 //
+// source: gtk/gtkalignment.h
+//
+
+ATSinline()
+ats_ptr_type
+atsctrb_gtk_alignment_new (
+  gfloat xalign
+, gfloat yalign
+, gfloat xscale
+, gfloat yscale
+) {
+  GtkWidget *widget =
+    gtk_alignment_new (xalign, yalign, xscale, yscale) ;
+  g_object_ref_sink(G_OBJECT(widget)) ; // removing floating reference!
+  return widget ;
+} // end of [atsctrb_gtk_alignment_new]
+
+/* ****** ****** */
+
+//
 // source: gtk/gtkarrow.h
 //
 
@@ -142,6 +162,18 @@ atsctrb_gtk_button_new_from_stock
   g_object_ref_sink(G_OBJECT(widget)) ; // removing floating reference!
   return widget ;
 } // end of [atsctrb_gtk_button_new_from_stock]
+
+/* ****** ****** */
+
+ATSinline()
+ats_ptr_type
+atsctrb_gtk_button_get_label
+  (ats_ptr_type button) {
+  // HX: a string constant is returned:
+  return (void*)gtk_button_get_label((GtkButton*)button) ;
+} // end of [atsctrb_gtk_button_get_label]
+
+#define atsctrb_gtk_button_set_label gtk_button_set_label
 
 /* ****** ****** */
 
@@ -782,6 +814,9 @@ atsctrb_gtk_text_view_new () {
 
 #define atsctrb_gtk_text_view_get_buffer gtk_text_view_get_buffer
 #define atsctrb_gtk_text_view_set_buffer gtk_text_view_set_buffer
+
+#define atsctrb_gtk_text_view_set_editable gtk_text_view_set_editable
+#define atsctrb_gtk_text_view_set_cursor_visible gtk_text_view_set_cursor_visible
 
 /* ****** ****** */
 

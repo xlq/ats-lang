@@ -358,15 +358,19 @@ implement d1exp_let (loc, d1cs, d1e) = '{
   d1exp_loc= loc, d1exp_node= D1Elet (d1cs, d1e)
 }
 
-implement d1exp_list (loc, d1es) = begin
-  case+ d1es of
+implement d1exp_list
+  (loc, d1es) = case+ d1es of
+(*
+  // HX: this one affects postion marking
   | cons (d1e, nil ()) => '{ // singleton elimination
       d1exp_loc= loc, d1exp_node= d1e.d1exp_node
     }
+*)
+  | cons (d1e, nil ()) => d1e // singleton elimination
   | _ => '{
       d1exp_loc= loc, d1exp_node= D1Elist (0, d1es)
-    }
-end // end of [d1exp_list]
+    } (* end of [_] *)
+// end of [d1exp_list]
 
 implement d1exp_list2
   (loc, d1es1, d1es2) = let
@@ -378,15 +382,15 @@ in '{
 
 implement d1exp_loopexn (loc, i) = '{
   d1exp_loc= loc, d1exp_node= D1Eloopexn (i)
-}
+} // end of [d1exp_loopexn]
 
 implement d1exp_lst (loc, lin, os1e, d1es) = '{
   d1exp_loc= loc, d1exp_node= D1Elst (lin, os1e, d1es)
-}
+} // end of [d1exp_lst]
 
 implement d1exp_macsyn (loc, knd, d1e) = '{
   d1exp_loc= loc, d1exp_node= D1Emacsyn (knd, d1e)
-}
+} // end of [d1exp_macsyn]
 
 implement d1exp_obj (loc, knd, s1e_cls, mtds) = '{
   d1exp_loc= loc, d1exp_node= D1Eobj (knd, s1e_cls, mtds)
@@ -394,19 +398,19 @@ implement d1exp_obj (loc, knd, s1e_cls, mtds) = '{
 
 implement d1exp_ptrof (loc, d1e) = '{
   d1exp_loc= loc, d1exp_node= D1Eptrof d1e
-}
+} // end of [d1exp_ptrof]
 
 implement d1exp_qid (loc, q, id) = '{
   d1exp_loc= loc, d1exp_node= D1Eqid (q, id)
-}
+} // end of [d1exp_qid]
 
 implement d1exp_raise (loc, d1e_exn) = '{
   d1exp_loc= loc, d1exp_node= D1Eraise (d1e_exn)
-}
+} // end of [d1exp_raise]
 
 implement d1exp_rec (loc, recknd, ld1es) = '{
   d1exp_loc= loc, d1exp_node= D1Erec (recknd, ld1es)
-}
+} // end of [d1exp_rec]
 
 implement d1exp_scaseof (loc, inv, s1e, sc1ls) = '{
   d1exp_loc= loc, d1exp_node = D1Escaseof (inv, s1e, sc1ls)

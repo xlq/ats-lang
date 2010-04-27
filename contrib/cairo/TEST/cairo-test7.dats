@@ -38,7 +38,6 @@ fn draw_hand {l:agz}
   val () = cairo_line_to (cr, len, ~top/2)
   val () = cairo_line_to (cr, 0.0, ~bot/2)
   val () = cairo_close_path (cr)
-  val () = cairo_set_source_rgb (cr, 0.0, 0.0, 0.0)
 in
   cairo_fill (cr)
 end // end of [draw_hand]
@@ -64,16 +63,10 @@ fn draw_clock
   val () = cairo_arc
     (cr, 0.0, 0.0, rad, 0.0, 2 * M_PI)
   val () = cairo_set_source_rgb (cr, 1.0, 1.0, 1.0)
-(*
-  val () = cairo_set_source_rgb (cr, 1.0, 0.50, 0.50)
-*)
   val () = cairo_fill (cr)
   val () = cairo_arc
     (cr, 0.0, 0.0, rad, 0.0, 2 * M_PI)
   val () = cairo_set_source_rgb (cr, 0.0, 1.0, 0.0)
-(*
-  val () = cairo_set_source_rgb (cr, 1.0, 0.0, 1.0)
-*)
   val () = cairo_set_line_width (cr, 10.0)
   val () = cairo_stroke (cr)
 //
@@ -85,35 +78,32 @@ fn draw_clock
   val () = cairo_fill (cr)
 //
   val h_l = 0.60 * rad
-  val () = cairo_set_source_rgb (cr, 0.0, 0.0, 0.0)
-(*
-  val () = cairo_set_source_rgb (cr, 0.0, 0.0, 0.85)
-*)
   val (pf | ()) = cairo_save (cr)
   val () = cairo_rotate (cr, h_ang)
+  val () = cairo_set_source_rgb (cr, 0.0, 0.0, 0.0)
   val () = draw_hand (cr, 6.0, 6.0/2, h_l)
   val () = cairo_restore (pf | cr)
   val (pf | ()) = cairo_save (cr)
   val () = cairo_rotate (cr, h_ang+M_PI)
+  val () = cairo_set_source_rgb (cr, 0.0, 0.0, 0.0)
   val () = draw_hand (cr, 6.0, 6.0/2, h_l/4)
   val () = cairo_restore (pf | cr)
 //
   val m_l = 0.85 * rad
-  val () = cairo_set_source_rgb (cr, 0.0, 0.0, 0.0)
-(*
-  val () = cairo_set_source_rgb (cr, 0.0, 0.0, 0.85)
-*)
   val (pf | ()) = cairo_save (cr)
   val () = cairo_rotate (cr, m_ang)
+  val () = cairo_set_source_rgb (cr, 0.0, 0.0, 0.0)
   val () = draw_hand (cr, 5.0, 5.0/2, m_l)
   val () = cairo_restore (pf | cr)
   val (pf | ()) = cairo_save (cr)
   val () = cairo_rotate (cr, m_ang+M_PI)
+  val () = cairo_set_source_rgb (cr, 0.0, 0.0, 0.0)
   val () = draw_hand (cr, 5.0, 5.0/2, h_l/4)
   val () = cairo_restore (pf | cr)
 //
   val () = cairo_new_sub_path (cr)
-  val () = cairo_arc (cr, 0.0, 0.0, 6.0, 0.0, 2 * M_PI)  
+  val () = cairo_arc (cr, 0.0, 0.0, 7.2, 0.0, 2 * M_PI)  
+  val () = cairo_set_source_rgb (cr, 0.0, 0.0, 0.0)
   val () = cairo_fill (cr)
   val () = cairo_restore (pf0 | cr)
 in

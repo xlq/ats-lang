@@ -48,6 +48,13 @@ staload "contrib/cairo/SATS/cairo.sats"
 
 (* ****** ****** *)
 
+implement
+cairo_create0 (sf) = cr where {
+  val cr = cairo_create (sf); val () = cairo_surface_destroy (sf)
+} // end of [cairo_create0]
+
+(* ****** ****** *)
+
 (*
 
 //

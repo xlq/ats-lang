@@ -57,4 +57,21 @@ fun gtk_button_new_from_stock
 
 (* ****** ****** *)
 
+//
+// HX-2010-04-26: the label string belongs to the widget!
+//
+fun gtk_button_get_label
+  {c:cls | c <= GtkButton} {l:agz}
+  (widget: !gobjptr (c, l)): [t:int] (stamp t | stamped (Stropt, t))
+  = "#atsctrb_gtk_button_get_label"
+// end of [gtk_button_get_label]
+
+fun gtk_button_set_label
+  {c:cls | c <= GtkButton} {l:agz}
+  (widget: !gobjptr (c, l), label: Stropt): void
+  = "#atsctrb_gtk_button_set_label"
+// end of [gtk_button_set_label]
+
+(* ****** ****** *)
+
 (* end of [gtkbutton.sats] *)

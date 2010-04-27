@@ -136,7 +136,7 @@ mainats (
   main1 () ;
   return ;
 } // end of [mainats]
-%} // end of [%{^]
+%} // end of [%{$]
 
 (* ****** ****** *)
 

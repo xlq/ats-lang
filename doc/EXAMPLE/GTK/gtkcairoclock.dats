@@ -39,24 +39,25 @@ fn draw_hand {l:agz}
   val () = cairo_line_to (cr, len, ~top/2)
   val () = cairo_line_to (cr, 0.0, ~bot/2)
   val () = cairo_close_path (cr)
-  val () = cairo_set_source_rgb (cr, 0.0, 0.0, 0.0)
 in
   cairo_fill (cr)
 end // end of [draw_hand]
 
 (* ****** ****** *)
 
-val theLastMin = ref_make_elt<int> (~1)
+val theLastSec = ref_make_elt<int> (~1)
 
 fn draw_clock {l:agz} (
     cr: !cr l
-  , h: natLt 24, m: natLt 60 // hour and minute
+  , h: natLt 24, m: natLt 60, s: natLt 60 // hour and minute
   ) : void = let
 //
   val dim = 100.0 // please scale it!
   val rad = 0.375 * dim
 //
   val h = (if h >= 12 then h - 12 else h): natLt 12
+  val s_ang = s * (PI / 30) - PI2
+  // val m_ang = m * (PI / 30) + s * (PI / 1800) - PI2
   val m_ang = m * (PI / 30) - PI2
   val h_ang = h * (PI / 6) + m * (PI / 360) - PI2
 //
@@ -84,36 +85,47 @@ fn draw_clock {l:agz} (
   val () = cairo_fill (cr)
 //
   val h_l = 0.60 * rad
-  val () = cairo_set_source_rgb (cr, 0.0, 0.0, 0.0)
-(*
-  val () = cairo_set_source_rgb (cr, 0.0, 0.0, 0.85)
-*)
   val (pf | ()) = cairo_save (cr)
+  val () = cairo_set_source_rgb (cr, 0.0, 0.0, 0.0)
   val () = cairo_rotate (cr, h_ang)
   val () = draw_hand (cr, 3.0, 1.5, h_l)
   val () = cairo_restore (pf | cr)
   val (pf | ()) = cairo_save (cr)
+  val () = cairo_set_source_rgb (cr, 0.0, 0.0, 0.0)
   val () = cairo_rotate (cr, h_ang+PI)
   val () = draw_hand (cr, 3.0, 1.5, h_l/4)
   val () = cairo_restore (pf | cr)
 //
   val m_l = 0.85 * rad
-  val () = cairo_set_source_rgb (cr, 0.0, 0.0, 0.0)
-(*
-  val () = cairo_set_source_rgb (cr, 0.0, 0.0, 0.85)
-*)
   val (pf | ()) = cairo_save (cr)
+  val () = cairo_set_source_rgb (cr, 0.0, 0.0, 0.0)
   val () = cairo_rotate (cr, m_ang)
   val () = draw_hand (cr, 2.0, 1.0, m_l)
   val () = cairo_restore (pf | cr)
   val (pf | ()) = cairo_save (cr)
+  val () = cairo_set_source_rgb (cr, 0.0, 0.0, 0.0)
   val () = cairo_rotate (cr, m_ang+PI)
   val () = draw_hand (cr, 2.0, 1.0, h_l/4)
   val () = cairo_restore (pf | cr)
 //
+  val s_l = 0.85 * rad
+  val (pf | ()) = cairo_save (cr)
+  val () = cairo_set_source_rgb (cr, 1.0, 0.0, 0.0)
+  val () = cairo_rotate (cr, s_ang)
+  val () = draw_hand (cr, 1.0, 0.5, m_l)
+  val () = cairo_restore (pf | cr)
+  val (pf | ()) = cairo_save (cr)
+  val () = cairo_set_source_rgb (cr, 1.0, 0.0, 0.0)
+  val () = cairo_rotate (cr, s_ang+PI)
+  val () = draw_hand (cr, 1.0, 0.5, h_l/4)
+  val () = cairo_restore (pf | cr)
+//
+  val (pf | ()) = cairo_save (cr)
+  val () = cairo_set_source_rgb (cr, 0.0, 0.0, 0.0)
   val () = cairo_new_sub_path (cr)
-  val () = cairo_arc (cr, 0.0, 0.0, 3.0, 0.0, 2 * PI)  
+  val () = cairo_arc (cr, 0.0, 0.0, 2.5, 0.0, 2 * PI)  
   val () = cairo_fill (cr)
+  val () = cairo_restore (pf | cr)
 in
   // nothing
 end // end of [draw_clock]
@@ -138,12 +150,14 @@ implement draw_main
   val _(*ignored*) = time_get_and_set (t)
   var tm: tm_struct // unintialized
   val () = localtime_r (t, tm)
-  val hr = tm.tm_hour and mt = tm.tm_min
+  val hr = tm.tm_hour and mt = tm.tm_min and sd = tm.tm_sec
   val hr = int1_of_int (hr)
   val () = assert (0 <= hr && hr < 24)
   val mt = int1_of_int (mt)
   val () = assert (0 <= mt && mt < 60)
-  val () = draw_clock (cr, hr, mt)
+  val sd = int1_of_int (sd)
+  val () = assert (0 <= sd && sd < 60)
+  val () = draw_clock (cr, hr, mt, sd)
 //
   val () = cairo_restore (pf0 | cr)
 } // end of [val]
@@ -225,17 +239,17 @@ end // end of [fexpose]
 
 (* ****** ****** *)
 
-fun min_changed
+fun sec_changed
   (): bool = let
   var t: time_t // unintialized
   val _(*ignored*) = time_get_and_set (t)
   var tm: tm_struct // unintialized
   val () = localtime_r (t, tm)
-  val mt = tm.tm_min
-  val mt_old = !theLastMin
+  val sd = tm.tm_sec
+  val sd_old = !theLastSec
 in
-  mt <> mt_old
-end // end of [min_changed]
+  sd <> sd_old
+end // end of [sec_changed]
 
 fun ftimeout
   (_: gpointer): gboolean = let
@@ -245,7 +259,7 @@ in
   if g_object_isnot_null (win) then let
     prval () = fpf_win (win)
     val (pf, fpf | p) = gtk_widget_takeout_allocation (darea)
-    val () = if min_changed () then
+    val () = if sec_changed () then
       gtk_widget_queue_draw_area (darea, (gint)0, (gint)0, p->width, p->height)
     // end of [val]
     prval () = minus_addback (fpf, pf | darea)
@@ -301,7 +315,7 @@ mainats (
   main1 () ;
   return ;
 } // end of [mainats]
-%} // end of [%{^]
+%} // end of [%{$]
 
 (* ****** ****** *)
 

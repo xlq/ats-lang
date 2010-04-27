@@ -12,13 +12,10 @@
 
 (*
 ** how to compile:
-   atscc -o test8-2 \
-     `pkg-config --cflags --libs cairo` \
-     $ATSHOME/contrib/cairo/atsctrb_cairo.o \
-     cairo-test8-2.dats
-
+**   atscc -o test8-2 `pkg-config --cflags --libs cairo` cairo-test8-2.dats -lX11
+**
 ** how ot test:
-   ./test8-2
+**   ./test8-2
 *)
 
 (* ****** ****** *)
@@ -44,23 +41,23 @@ fn bw_set {l:agz}
   else
     cairo_set_source_rgb (cr, 1.0, 1.0, 1.0)
   // end of [if]
-// end of [rb_set]
+// end of [bw_set]
 
-fn rb_set {l:agz}
-  (cr: !cr l, rb: int): void =
-  if rb > 0 then
+fn yb_set {l:agz}
+  (cr: !cr l, yb: int): void =
+  if yb > 0 then
     cairo_set_source_rgb (cr, 1.0, 0.75, 0.0)
   else
     cairo_set_source_rgb (cr, 0.0, 0.0, 1.0)
   // end of [if]
-// end of [rb_set]
+// end of [yb_set]
 
 (* ****** ****** *)
 
 fn draw_ring
   {l:agz} {n:int | n >= 2} (
     cr: !cr l
-  , bw: int, rb: int
+  , bw: int, yb: int
   , rad1: dbl, rad2: dbl
   , n: int n
   ) : void = let
@@ -84,7 +81,7 @@ fn draw_ring
   end // end of [loop1]
   val () = loop1 (cr, 0.0, 1, bw)
   fun loop2 {i:nat | i <= n} .<n-i>.
-    (cr: !cr l, angle: double, i: int i, rb: int)
+    (cr: !cr l, angle: double, i: int i, yb: int)
     :<cloref1> void = let
     val radm = (rad1 + rad2) / 2
     val drad = rad1 - rad2
@@ -97,23 +94,23 @@ fn draw_ring
     val () = cairo_scale (cr, drad/2, drad/3.6)
     val () = cairo_arc (cr, 0., 0., 1., 0., 2*PI)
     val () = cairo_restore (pf | cr)
-    val () = rb_set (cr, rb)
+    val () = yb_set (cr, yb)
     val () = cairo_fill (cr)
   in
-    if i < n then loop2 (cr, angle+delta, i+1, 1-rb)
+    if i < n then loop2 (cr, angle+delta, i+1, 1-yb)
   end // end of [loop2]
-  val () = loop2 (cr, 0.0, 1, rb)
+  val () = loop2 (cr, 0.0, 1, yb)
 in
   // nothing
 end // end of [draw_ring]
 
 (* ****** ****** *)
 
-#define SHRINKAGE 0.80
+#define SHRINKAGE 0.81
 fun draw_rings
   {l:agz} {n:int | n >= 2} (
     cr: !cr l
-  , bw: int, rb: int
+  , bw: int, yb: int
   , rad_beg: dbl, rad_end: dbl
   , n: int n
   ) : void =
@@ -125,9 +122,9 @@ fun draw_rings
     // loop exits
   end else let
     val rad_beg_nxt = SHRINKAGE * rad_beg
-    val () = draw_ring (cr, bw, rb, rad_beg, rad_beg_nxt, n)
+    val () = draw_ring (cr, bw, yb, rad_beg, rad_beg_nxt, n)
   in
-    draw_rings (cr, 1-bw, 1-rb, rad_beg_nxt, rad_end, n)
+    draw_rings (cr, 1-bw, 1-yb, rad_beg_nxt, rad_end, n)
   end // end of [if]
 // end of [draw_rings]
 

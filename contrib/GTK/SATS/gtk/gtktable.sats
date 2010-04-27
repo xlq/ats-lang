@@ -52,26 +52,59 @@ overload lor with lor_GtkAttachOptions_GtkAttachOptions
 
 (* ****** ****** *)
 
-fun gtk_table_attach
-  {c1,c2:cls | c1 <= GtkTable; c2 <= GtkWidget}
-  {l1,l2:agz} (
-    table: !gobjptr (c1, l1)
-  , widget: !gobjptr (c2, l2)
-  , left: guint, right: guint, top: guint, bot: guint
-  , xopt: GtkAttachOptions
-  , yopt: GtkAttachOptions
-  , xpadding: guint
-  , ypadding: guint
-  ) : void = "#atsctrb_gtk_table_attach"
-// end of [gtk_table_attach]
+symintr gtk_table_attach
 
-fun gtk_table_attach_defaults
+typedef
+gtk_table_attach_type (a:t@ype) =
   {c1,c2:cls | c1 <= GtkTable; c2 <= GtkWidget}
   {l1,l2:agz} (
-    table: !gobjptr (c1, l1), widget: !gobjptr (c2, l2)
-  , left: guint, right: guint, top: guint, bot: guint
-  ) : void = "#atsctrb_gtk_table_attach_defaults"
-// end of [gtk_table_attach_defaults]
+    !gobjptr (c1, l1) // table
+  , !gobjptr (c2, l2) // widget
+  , a // left
+  , a // right
+  , a // top
+  , a // bot
+  , GtkAttachOptions // xopt
+  , GtkAttachOptions // yopt
+  , a // xpadding
+  , a // ypadding
+  ) -<fun1> void
+// end of [gtk_table_attach_type]
+
+fun gtk_table_attach__type: gtk_table_attach_type (uint)
+  = "#atsctrb_gtk_table_attach"
+overload gtk_table_attach with gtk_table_attach__type
+
+fun gtk_table_attach__gtype: gtk_table_attach_type (guint)
+  = "#atsctrb_gtk_table_attach"
+overload gtk_table_attach with gtk_table_attach__gtype
+
+(* ****** ****** *)
+
+symintr gtk_table_attach_defaults
+
+typedef
+gtk_table_attach_defaults_type (a:t@ype) =
+  {c1,c2:cls | c1 <= GtkTable; c2 <= GtkWidget}
+  {l1,l2:agz} (
+    !gobjptr (c1, l1) // table
+  , !gobjptr (c2, l2) // widget
+  , a // left
+  , a // right
+  , a // top
+  , a // bot
+  ) -<fun1> void
+// end of [gtk_table_attach_defaults_type]
+
+fun gtk_table_attach_defaults__type
+  : gtk_table_attach_defaults_type (uint)
+  = "#atsctrb_gtk_table_attach_defaults"
+overload gtk_table_attach_defaults with gtk_table_attach_defaults__type
+
+fun gtk_table_attach_defaults__gtype
+  : gtk_table_attach_defaults_type (guint)
+  = "#atsctrb_gtk_table_attach_defaults"
+overload gtk_table_attach_defaults with gtk_table_attach_defaults__gtype
 
 (* ****** ****** *)
 

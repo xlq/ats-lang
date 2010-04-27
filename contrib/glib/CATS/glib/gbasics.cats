@@ -104,4 +104,9 @@ atsctrb_lte_guint32_guint32
 
 /* ****** ****** */
 
+#define atsctrb_GPOINTER_TO_INT GPOINTER_TO_INT
+#define atsctrb_GINT_TO_POINTER GINT_TO_POINTER
+
+/* ****** ****** */
+
 #endif /* ATSCTRB_GLIB_GBASICS_CATS */

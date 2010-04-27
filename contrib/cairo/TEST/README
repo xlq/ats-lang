@@ -9,7 +9,8 @@
 
 The TEST directory contains a list of cairo examples:
 
-cairo-test1.dats: Hello, world!
+cairo-test1-1.dats: Hello, world!
+cairo-test1-2.dats: A cairo digital clock based on GTK
 cairo-test2.dats: drawing a rounded rectangle
 cairo-test3.dats: drawing a filled regular pentagon
 cairo-test4.dats: drawing a Koch (fractal) curve
@@ -19,11 +20,13 @@ cairo-test7.dats: drawing a (still) clock
 cairo-test8-1.dats: Kitaoka's famous image of illusory circular motion
 cairo-test8-2.dats: A variant of [cairo-test8-1.dats] based on Xlib
 cairo-test8-3.dats: A variant of [cairo-test8-1.dats] based on GTK
+cairo-test9.dats: A wavy illusion (with GTK interface)
 cairo-test11.dats: an example testing two filling rule
 cairo-test12.dats: an example involving radial pattern (gradient)
 cairo-test13.dats: an example testing line cap styles
 cairo-test14.dats: an example testing line joint styles
 cairo-test15.dats: an example testing text filling
+cairo-test16.dats: an example testing text alignment
 
 There is also a [Makefile] for generating executable binaries.
 

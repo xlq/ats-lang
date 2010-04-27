@@ -92,10 +92,11 @@ implement e1xp_list (loc, es) = '{
   e1xp_loc= loc, e1xp_node= E1XPlist (es: e1xplst)
 }
 
-implement e1xp_none () =
-  let val loc = $Loc.location_none in
-    '{ e1xp_loc= loc, e1xp_node= E1XPnone () }
-  end
+implement e1xp_none () = let
+  val loc = $Loc.location_none
+in '{
+  e1xp_loc= loc, e1xp_node= E1XPnone ()
+} end // end of [e1xp_none]
 
 implement e1xp_string (loc, str, len) = '{
   e1xp_loc= loc, e1xp_node= E1XPstring (str, len)
@@ -218,7 +219,7 @@ implement s1exp_lam (loc, arg, res, body) = '{
 
 implement s1exp_list (loc, s1es) = case+ s1es of
 (*
-  // this one affects postion marking
+  // HX: this one affects postion marking
   | cons (s1e, nil ()) => '{ // singleton elimination
       s1exp_loc= loc, s1exp_node= s1e.s1exp_node
     }
