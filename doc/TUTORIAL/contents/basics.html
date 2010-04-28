@@ -417,7 +417,7 @@ A non-recursive function can be constructed based on the following
 syntactic form:
 
 <pre>
-<u>lam</u> ($funargseq_n) ... ($funargseq_n) {: $typ} <u>=></u> $exp
+<u>lam</u> ($funargseq_1) ... ($funargseq_n) {: $typ} <u>=></u> $exp
 </pre>
 
 where we use <i>{...}</i> to indicate optional syntax. For instance,
@@ -490,7 +490,7 @@ we can use the following form of syntax:
 <u>and</u> bar ($funargseq_2_1) ... ($funargseq_2_n2) {: $typ_2} <u>=</u> $exp_2
 </pre>
 
-This form can be further generalized to delcare 
+This form can be further generalized to declare 
 <i>n</i> mutual recursive functions for <i>n >= 2 </i>.
 
 As an example, the follow code implements two mutually recursive functions:

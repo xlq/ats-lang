@@ -12,6 +12,7 @@ staload "libc/SATS/stdlib.sats"
 
 fn add (x: int): int -<cloref1> int =
   let fn add_x (y: int):<cloref1> int = x + y in add_x end
+// end of [add]
 
 (* ****** ****** *)
 
@@ -49,11 +50,10 @@ end // end of [add1]
 
 (* ****** ****** *)
 
-implement main () = let
+implement
+main () = () where {
   val () = test_qsort ()
-in
-  // empty
-end // end of [main]
+} // end of [main]
 
 (* ****** ****** *)
 
