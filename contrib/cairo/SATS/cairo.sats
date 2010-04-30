@@ -333,10 +333,12 @@ macdef CAIRO_ANTIALIAS_SUBPIXEL =
 fun cairo_get_antialias
   {l:agz} (cr: !cairo_ref l): cairo_antialias_t
   = "#atsctrb_cairo_get_antialias"
+// end of [cairo_get_antialias]
 
 fun cairo_set_antialias
   {l:agz} (cr: !cairo_ref l, antialias: cairo_antialias_t): void
   = "#atsctrb_cairo_set_antialias"
+// end of [cairo_set_antialias]
 
 (* ****** ****** *)
 
@@ -1269,9 +1271,14 @@ fun cairo_font_options_create
   (): cairo_font_options_ptr1 = "#atsctrb_cairo_font_options_create"
 // end of [cairo_font_options_create]
 
+//
+// HX-2010-04-30:
+// true copying (instead of reference counting)
+//
 fun cairo_font_options_copy {l:agz}
   (options: !cairo_font_options_ptr l): cairo_font_options_ptr1
   = "#atsctrb_cairo_font_options_copy"
+// end of [cairo_font_options_copy]
 
 fun cairo_font_options_destroy
   (options: cairo_font_options_ptr1): void = "#atsctrb_cairo_font_options_copy"
@@ -1284,8 +1291,8 @@ fun cairo_font_options_status
 
 fun cairo_font_options_merge {l1,l2:agz} (
     options: !cairo_font_options_ptr l1, other: !cairo_font_options_ptr l2
-  ) : void
-  = "#atsctrb_cairo_font_options_merge"
+  ) : void = "#atsctrb_cairo_font_options_merge"
+// end of [cairo_font_options_merge]
 
 fun cairo_font_options_hash
   {l:agz} (options: !cairo_font_options_ptr l): ulint = "#atsctrb_cairo_font_options_hash"
@@ -1312,11 +1319,23 @@ fun cairo_font_options_set_antialias
 (*
 ** enum
 *)
-abst@ype cairo_subpixel_order_t = $extype "cairo_subpixel_order_t"
+abst@ype
+cairo_subpixel_order_t = $extype "cairo_subpixel_order_t"
+macdef CAIRO_SUBPIXEL_ORDER_DEFAULT =
+  $extval (cairo_subpixel_order_t, "CAIRO_SUBPIXEL_ORDER_DEFAULT")
+macdef CAIRO_SUBPIXEL_ORDER_RGB =
+  $extval (cairo_subpixel_order_t, "CAIRO_SUBPIXEL_ORDER_RGB")
+macdef CAIRO_SUBPIXEL_ORDER_BGR =
+  $extval (cairo_subpixel_order_t, "CAIRO_SUBPIXEL_ORDER_BGR")
+macdef CAIRO_SUBPIXEL_ORDER_VRGB =
+  $extval (cairo_subpixel_order_t, "CAIRO_SUBPIXEL_ORDER_VRGB")
+macdef CAIRO_SUBPIXEL_ORDER_VBGR =
+  $extval (cairo_subpixel_order_t, "CAIRO_SUBPIXEL_ORDER_VBGR")
 
 fun cairo_font_options_get_subpixel_order
   {l:agz} (options: !cairo_font_options_ptr l):<> cairo_subpixel_order_t
   = "#atsctrb_cairo_font_options_get_subpixel_order"
+// end of [cairo_font_options_get_subpixel_order]
 
 fun cairo_font_options_set_subpixel_order {l:agz} (
     options: !cairo_font_options_ptr l, subpixel_order: cairo_subpixel_order_t
@@ -1327,6 +1346,16 @@ fun cairo_font_options_set_subpixel_order {l:agz} (
 ** enum
 *)
 abst@ype cairo_hint_style_t = $extype "cairo_hint_style_t"
+macdef CAIRO_HINT_STYLE_DEFAULT =
+  $extval (cairo_hint_style_t, "CAIRO_HINT_STYLE_DEFAULT")
+macdef CAIRO_HINT_STYLE_NONE =
+  $extval (cairo_hint_style_t, "CAIRO_HINT_STYLE_NONE")
+macdef CAIRO_HINT_STYLE_SLIGHT =
+  $extval (cairo_hint_style_t, "CAIRO_HINT_STYLE_SLIGHT")
+macdef CAIRO_HINT_STYLE_MEDIUM =
+  $extval (cairo_hint_style_t, "CAIRO_HINT_STYLE_MEDIUM")
+macdef CAIRO_HINT_STYLE_FULL =
+  $extval (cairo_hint_style_t, "CAIRO_HINT_STYLE_FULL")
 
 fun cairo_font_options_get_hint_style
   {l:agz} (options: !cairo_font_options_ptr l):<> cairo_hint_style_t
@@ -1341,7 +1370,14 @@ fun cairo_font_options_set_hint_style {l:agz} (
 (*
 ** enum
 *)
-abst@ype cairo_hint_metrics_t = $extype "cairo_hint_metrics_t"
+abst@ype
+cairo_hint_metrics_t = $extype "cairo_hint_metrics_t"
+macdef CAIRO_HINT_METRICS_DEFAULT =
+  $extval (cairo_hint_metrics_t, "CAIRO_HINT_METRICS_DEFAULT")
+macdef CAIRO_HINT_METRICS_OFF =
+  $extval (cairo_hint_metrics_t, "CAIRO_HINT_METRICS_OFF")
+macdef CAIRO_HINT_METRICS_ON =
+  $extval (cairo_hint_metrics_t, "CAIRO_HINT_METRICS_ON")
 
 fun cairo_font_options_get_hint_metrics
   {l:agz} (options: !cairo_font_options_ptr l):<> cairo_hint_metrics_t
