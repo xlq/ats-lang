@@ -9,14 +9,14 @@
 
 (*
 ** how to compile:
-   atscc -o test7 \
+   atscc -o test7-1 \
      `pkg-config --cflags --libs cairo` \
      $ATSHOME/contrib/cairo/atsctrb_cairo.o \
-     cairo-test7.dats
+     cairo-test7-1.dats
 
 ** how ot test:
-   ./test7
-   'gthumb' can be used to view the generated image file 'cairo-test7.png'
+   ./test7-1
+   'gthumb' can be used to view the generated image file 'cairo-test7-1.png'
 *)
 
 (* ****** ****** *)
@@ -134,12 +134,12 @@ implement main () = () where {
 //
   val () = draw_clock (cr, wd0, ht0, hr, min)
 //
-  val status = cairo_surface_write_to_png (surface, "cairo-test7.png")
+  val status = cairo_surface_write_to_png (surface, "cairo-test7-1.png")
   val () = cairo_surface_destroy (surface)
   val () = cairo_destroy (cr)
 //
   val () = if status = CAIRO_STATUS_SUCCESS then begin
-    print "The image is written to the file [cairo-test7.png].\n"
+    print "The image is written to the file [cairo-test7-1.png].\n"
   end else begin
     print "exit(ATS): [cairo_surface_write_to_png] failed"; print_newline ()
   end // end of [if]
@@ -147,4 +147,4 @@ implement main () = () where {
 
 (* ****** ****** *)
 
-(* end of [cairo-test7.dats] *)
+(* end of [cairo-test7-1.dats] *)

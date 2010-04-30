@@ -28,7 +28,7 @@ compall: \
   test4 \
   test5 \
   test6 \
-  test7 \
+  test7-1 test7-2 \
   test8-1 test8-2 test8-3 \
   test9 \
   test10 \
@@ -72,9 +72,14 @@ test6: cairo-test6.dats
 	$(ATSCC) -o test6 `pkg-config --cflags --libs cairo` cairo-test6.dats \
      && ./test6
 
-test7: cairo-test7.dats
-	$(ATSCC) -o test7 `pkg-config --cflags --libs cairo` cairo-test7.dats \
-     && ./test7
+######
+
+test7-1: cairo-test7-1.dats
+	$(ATSCC) -o test7-1 `pkg-config --cflags --libs cairo` cairo-test7-1.dats \
+     && ./test7-1
+
+test7-2: cairo-test7-2.dats
+	$(ATSCC) -o test7-2 `pkg-config --cflags --libs gtk+-2.0` cairo-test7-2.dats
 
 ######
 
@@ -138,7 +143,8 @@ cleanall: clean
 	rm -f test4 cairo-test4.png
 	rm -f test5 cairo-test5.png
 	rm -f test6 cairo-test6.png
-	rm -f test7 cairo-test7.png
+	rm -f test7-1 cairo-test7-1.png
+	rm -f test7-2
 	rm -f test8-1 cairo-test8-1.png
 	rm -f test8-2 test8-3
 	rm -f test9
