@@ -300,13 +300,17 @@ fun cairo_set_source_rgba {l:agz} (
 
 (* ****** ****** *)
 
-fun cairo_get_source {l:agz}
-  (cr: !cairo_ref l): cairo_pattern_ref1 = "#atsctrb_cairo_get_source"
+//
+// HX-2010-04-29: pattern reference count is unchanged!
+//
+fun cairo_get_source {l:agz} (cr: !cairo_ref l)
+  :<> [l1:agz] (minus (cairo_ref l, cairo_pattern_ref l1) | cairo_pattern_ref l1)
+  = "#atsctrb_cairo_get_source"
 // end of [cairo_get_source]
 
 fun cairo_set_source {l1,l2:agz}
-  (cr: !cairo_ref l1, pat: !cairo_pattern_ref l2): void
-  = "#atsctrb_cairo_set_source"
+  (cr: !cairo_ref l1, pat: !cairo_pattern_ref l2): void = "#atsctrb_cairo_set_source"
+// end of [cairo_set_source]
 
 fun cairo_set_source_surface {l1,l2:agz} (
     cr: !cairo_ref l1, sf: !cairo_surface_ref l2, x: double, y: double
@@ -983,7 +987,7 @@ typedef cairo_font_extents_t =
 (* ****** ****** *)
 
 (*
-// this would be of great inconvenience
+// HX: this would have been of great inconvenience:
 abst@ype cairo_text_extents_t = $extype "cairo_text_extents_t"
 *)
 typedef cairo_text_extents_t =
@@ -995,27 +999,25 @@ typedef cairo_text_extents_t =
 
 (* ****** ****** *)
 
-fun cairo_font_extents
-  {l:agz} (
+fun cairo_font_extents {l:agz} (
     cr: !cairo_ref l
   , extents: &cairo_font_extents_t? >> cairo_font_extents_t
-  ) : void
-  = "#atsctrb_cairo_font_extents"
+  ) : void = "#atsctrb_cairo_font_extents"
+// end of [cairo_font_extents]
 
-fun cairo_text_extents
-  {l:agz} (
+fun cairo_text_extents {l:agz} (
     cr: !cairo_ref l, utf8: string
   , extents: &cairo_text_extents_t? >> cairo_text_extents_t
-  ) : void
-  = "#atsctrb_cairo_text_extents"
+  ) : void = "#atsctrb_cairo_text_extents"
+// end of [cairo_text_extents]
 
 fun cairo_glyph_extents
   {l:agz} {n:nat} {la:agz} (
     cr: !cairo_ref l
   , glyphs: !cairo_glyph_arrptr (n, la), n: int n
   , extents: &cairo_text_extents_t? >> cairo_text_extents_t
-  ) : void
-  = "#atsctrb_cairo_glyph_extents"
+  ) : void = "#atsctrb_cairo_glyph_extents"
+// end of [cairo_glyph_extents]
 
 (* ****** ****** *)
 
@@ -1033,6 +1035,7 @@ fun cairo_glyph_path
 
 fun cairo_show_text {l:agz} (cr: !cairo_ref l, utf8: string): void
   = "#atsctrb_cairo_show_text"
+// end of [cairo_show_text]
 
 fun cairo_show_glyphs
   {l:agz} {n:nat} {la:agz} (
@@ -1046,18 +1049,22 @@ fun cairo_toy_font_face_create (
     family: string, s: cairo_font_slant_t, w: cairo_font_weight_t
   ) : cairo_font_face_ref1
   = "#atsctrb_cairo_toy_font_face_create"
+// end of [cairo_toy_font_face_create]
 
 fun cairo_toy_font_face_get_family
   {l:agz} (font_face: !cairo_font_face_ref l): string
   = "#atsctrb_cairo_toy_font_face_get_family"
+// end of [cairo_toy_font_face_get_family]
 
 fun cairo_toy_font_face_get_slant
   {l:agz} (font_face: !cairo_font_face_ref l): cairo_font_slant_t
   = "#atsctrb_cairo_toy_font_face_get_slant"
+// end of [cairo_toy_font_face_get_slant]
 
 fun cairo_toy_font_face_get_weight
   {l:agz} (font_face: !cairo_font_face_ref l): cairo_font_weight_t
   = "#atsctrb_cairo_toy_font_face_get_weight"
+// end of [cairo_toy_font_face_get_weight]
 
 (* ****** ****** *)
 
@@ -1106,33 +1113,39 @@ fun cairo_get_matrix
   {l:agz} (
     cr: !cairo_ref l
   , mat: &cairo_matrix_t? >> cairo_matrix_t
-  ) : void
-  = "#atsctrb_cairo_get_matrix"
+  ) : void = "#atsctrb_cairo_get_matrix"
+// end of [cairo_get_matrix]  
   
 fun cairo_set_matrix
   {l:agz} (cr: !cairo_ref l, mat: &cairo_matrix_t): void
   = "#atsctrb_cairo_set_matrix"
-  
+// end of [cairo_set_matrix]
+
 fun cairo_identity_matrix {l:agz} (cr: !cairo_ref l): void
   = "#atsctrb_cairo_identity_matrix"
-  
+// end of [cairo_identity_matrix]
+
 (* ****** ****** *)
 
 fun cairo_user_to_device
   {l:agz} (cr: !cairo_ref l, x: &double, y: &double) : void
   = "#atsctrb_cairo_user_to_device"
+// end of [cairo_user_to_device]
 
 fun cairo_user_to_device_distance
   {l:agz} (cr: !cairo_ref l, dx: &double, dy: &double) : void
   = "#atsctrb_cairo_user_to_device_distance"
+// end of [cairo_user_to_device_distance]
 
-fun cairo_devide_to_user
+fun cairo_device_to_user
   {l:agz} (cr: !cairo_ref l, x: &double, y: &double) : void
-  = "#atsctrb_cairo_devide_to_user"
+  = "#atsctrb_cairo_device_to_user"
+// end of [cairo_device_to_user]
 
-fun cairo_devide_to_user_distance
+fun cairo_device_to_user_distance
   {l:agz} (cr: !cairo_ref l, dx: &double, dy: &double) : void
-  = "#atsctrb_cairo_devide_to_user_distance"
+  = "#atsctrb_cairo_device_to_user_distance"
+// end of [cairo_device_to_user_distance]
 
 (* ****** ****** *)
 
