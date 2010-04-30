@@ -414,10 +414,12 @@ macdef CAIRO_LINE_JOIN_BEVEL =
 fun cairo_get_line_join
   {l:agz} (cr: !cairo_ref l): cairo_line_join_t
   = "#atsctrb_cairo_get_line_join"
+// end of [cairo_get_line_join]
 
 fun cairo_set_line_join
   {l:agz} (cr: !cairo_ref l, line_join: cairo_line_join_t): void
   = "#atsctrb_cairo_set_line_join"
+// end of [cairo_set_line_join]
 
 (* ****** ****** *)
 
@@ -1515,6 +1517,7 @@ fun cairo_surface_show_page
 fun cairo_format_stride_for_width
   (format: cairo_format_t, width: int): int
   = "#atsctrb_cairo_format_stride_for_width"
+// end of [cairo_format_stride_for_width]
 
 fun cairo_image_surface_create
   (format: cairo_format_t, width: int, height: int) : cairo_surface_ref1

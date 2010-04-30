@@ -1796,24 +1796,28 @@ fun glTexImage2D
 // OpenGL 1.1
 //
 
+absviewt@ype GLtexture (int) = GLuint
+viewtypedef GLtexture = [n:int] GLtexture (n)
+
 fun glGenTexture
-  (texture: &GLuint? >> GLuint): void
+  (texture: &GLtexture? >> GLtexture): void
   = "atsctrb_glGenTexture" // this is a function!
 
 fun glGenTextures {n:pos}
-  (n: GLsizei n, textures: &(@[GLuint?][n]) >> @[GLuint][n]): void
+  (n: GLsizei n, textures: &(@[GLtexture?][n]) >> @[GLtexture][n]): void
   = "#atsctrb_glGenTextures"
 
 fun glDeleteTexture
-  (texture: GLuint): void
-  = "atsctrb_glDeleteTexture" // this is a function!
+  (texture: GLtexture): void = "atsctrb_glDeleteTexture" // this is a function!
+// end of [glDeleteTexture]
 
 fun glDeleteTextures {n:pos}
-  (n: GLsizei n, textures: &(@[GLuint][n])): void
+  (n: GLsizei n, textures: &(@[GLtexture][n])): void
   = "#atsctrb_glDeleteTextures"
 
-fun glBindTexture (target: GLenum, texture: GLuint): void
-  = "#atsctrb_glBindTexture"
+fun glBindTexture {i:int}
+  (target: GLenum, texture: !GLtexture i): void = "#atsctrb_glBindTexture"
+// end of [glBindTexture]
 
 (* ****** ****** *)
 
