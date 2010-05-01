@@ -33,6 +33,7 @@ compall:: \
   test15 \
   test16 \
   test17 \
+  test18 \
 
 ######
 
@@ -89,6 +90,9 @@ test16: gtk-test16.dats
 test17: gtk-test17.dats
 	$(ATSCC) -o test17 gtk-test17.dats `pkg-config --cflags --libs gtk+-2.0`
 
+test18: gtk-test18.dats
+	$(ATSCC) -o test18 gtk-test18.dats `pkg-config --cflags --libs gtk+-2.0`
+
 ######
 
 clean::
@@ -114,5 +118,6 @@ cleanall: clean
 	rm -f test15
 	rm -f test16
 	rm -f test17
+	rm -f test18
 
 ###### end of [Makefile] ######
