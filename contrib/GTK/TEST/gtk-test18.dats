@@ -1,6 +1,6 @@
 (*
 **
-** A simple GTK example: horizontal/vertical alignment
+** A simple GTK example: menubar, menu, menuitem
 **
 ** Author: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
 ** Time: April, 2010
@@ -77,7 +77,7 @@ fun main1 (): void = "main1"
 implement main1 () = () where {
   val window = gtk_window_new (GTK_WINDOW_TOPLEVEL)
   val () = gtk_widget_set_size_request (window, (gint)200, (gint)100)
-  val () = gtk_window_set_title (window, "GTK menu test")
+  val () = gtk_window_set_title (window, "GTK menu test(1)")
 //
   val [l_menu:addr] menu = gtk_menu_new ()
 //

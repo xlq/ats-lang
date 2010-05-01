@@ -120,27 +120,30 @@ gtk_dialog_new_with_buttons (
 (* ****** ****** *)
 
 (*
+//
+// HX-2010-04: needed?
+//
 fun gtk_dialog_takeout_window
   {c:cls | c <= GtkDialog} {l:agz}
   (dialog: !gobjptr (c, l))
   :<> [l_win:agz] (
-    gobjptr (GtkWindow, l_win) -<lin,prf> void | gobjptr (GtkWindow, l_win)
+    minus (gobjptr (c, l), gobjptr (GtkWindow, l_win)) | gobjptr (GtkWindow, l_win)
   ) = "#atsctrb_gtk_dialog_takeout_window"
 *)
 
 fun gtk_dialog_takeout_vbox
   {c:cls | c <= GtkDialog} {l:agz}
-  (dialog: !gobjptr (c, l))
-  :<> [l_box:agz] (
-    gobjptr (GtkVBox, l_box) -<lin,prf> void | gobjptr (GtkVBox, l_box)
+  (dialog: !gobjptr (c, l)):<> [l_box:agz] (
+    minus (gobjptr (c, l), gobjptr (GtkVBox, l_box)) | gobjptr (GtkVBox, l_box)
   ) = "#atsctrb_gtk_dialog_takeout_vbox"
+// end of [gtk_dialog_takeout_vbox]
 
 fun gtk_dialog_takeout_action_area
   {c:cls | c <= GtkDialog} {l:agz}
-  (dialog: !gobjptr (c, l))
-  :<> [l_box:agz] (
-    gobjptr (GtkHBox, l_box) -<lin,prf> void | gobjptr (GtkHBox, l_box)
+  (dialog: !gobjptr (c, l)):<> [l_box:agz] (
+    minus (gobjptr (c, l), gobjptr (GtkHBox, l_box)) | gobjptr (GtkHBox, l_box)
   ) = "#atsctrb_gtk_dialog_takeout_action_area"
+// end of [gtk_dialog_takeout_action_area]
 
 (* ****** ****** *)
 

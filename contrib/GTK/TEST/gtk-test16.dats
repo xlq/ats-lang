@@ -51,7 +51,7 @@ implement main1 () = () where {
   val () = gtk_text_buffer_get_iter_at_offset (buffer, iter, (gint)0)
   val () = gtk_text_buffer_insert_all (buffer, iter, "Plain text\n")
 //
-  prval () = fpf_buffer (buffer)
+  prval () = minus_addback (fpf_buffer, buffer | textview)
   val () = g_object_unref (textview)
   val () = g_object_unref (vbox0)
 //

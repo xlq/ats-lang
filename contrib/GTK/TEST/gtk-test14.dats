@@ -129,7 +129,7 @@ in
             val () = g_object_unref (darea)
           } // end of [_]
       prval () = fpf_color (pf_color)
-      prval () = fpf_colorsel (colorsel)
+      prval () = minus_addback (fpf_colorsel, colorsel | colorseldlg)
       val () = gtk_widget_hide (colorseldlg)
       val () = g_object_unref (colorseldlg)
     in

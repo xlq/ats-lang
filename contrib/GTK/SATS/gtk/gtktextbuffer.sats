@@ -48,9 +48,9 @@ fun gtk_text_buffer_new_null ()
 //
 fun gtk_text_buffer_get_tag_table
   {c:cls | c <= GtkTextBuffer} {l:agz}
-  (tb: !gobjptr (c, l)):<> [l_tbl:agz]
-  (gobjptr (GtkTextTagTable, l_tbl) -<lin,prf> void | gobjptr (GtkTextTagTable, l_tbl))
-  = "#atsctrb_gtk_text_buffer_get_tag_table"
+  (tb: !gobjptr (c, l)):<> [l_tbl:agz] (
+    minus (gobjptr (c, l), gobjptr (GtkTextTagTable, l_tbl)) | gobjptr (GtkTextTagTable, l_tbl)
+  ) = "#atsctrb_gtk_text_buffer_get_tag_table"
 // end of [gtk_text_buffer_get_tag_table]
 
 (* ****** ****** *)

@@ -45,12 +45,14 @@ fun gtk_range_set_update_policy
 // end of [gtk_range_set_update_policy]
 
 (* ****** ****** *)
-
+//
+// HX-2010-04: this one should be called 'takeout' in ATS:
+//
 fun gtk_range_get_adjustment
   {c:cls | c <= GtkRange} {l:agz}
-  (range: !gobjptr (c, l))
-  : [l1:addr] (gobjptr (GtkAdjustment, l1) -<lin,prf> void | gobjptr (GtkAdjustment, l1))
-  = "#atsctrb_gtk_range_get_adjustment"
+  (range: !gobjptr (c, l)): [l1:addr] (
+    minus (gobjptr (c, l), gobjptr (GtkAdjustment, l1)) | gobjptr (GtkAdjustment, l1)
+  ) = "#atsctrb_gtk_range_get_adjustment"
 // end of [gtk_range_get_adjustment]
 
 //

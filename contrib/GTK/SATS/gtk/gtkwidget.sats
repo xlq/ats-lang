@@ -118,8 +118,9 @@ fun gtk_widget_set_events
 //
 fun gtk_widget_takeout_window(*GDK*)
   {c:cls | c <= GtkWidget} {l:agz} (widget: !gobjptr (c, l))
-  : [l_win:addr] (gobjptr (GdkWindow, l_win) -<lin,prf> void | gobjptr (GdkWindow, l_win))
-  = "atsctrb_gtk_widget_takeout_window" // function!
+  : [l_win:addr] (
+    minus (gobjptr (c, l), gobjptr (GdkWindow, l_win)) | gobjptr (GdkWindow, l_win)
+  ) = "atsctrb_gtk_widget_takeout_window" // function!
 // end of [gtk_widget_takeout_window]
 
 (* ****** ****** *)

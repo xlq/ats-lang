@@ -47,12 +47,12 @@ implement main1 () = () where {
   val (fpf_btn | btn) = gtk_file_selection_takeout_ok_button (filew)
   val _sid = g_signal_connect_swapped
     (btn, (gsignal)"clicked", G_CALLBACK(file_ok_sel), filew)
-  prval () = fpf_btn (btn)
+  prval () = minus_addback (fpf_btn, btn | filew)
 //
   val (fpf_btn | btn) = gtk_file_selection_takeout_cancel_button (filew)
   val _sid = g_signal_connect_swapped
     (btn, (gsignal)"clicked", G_CALLBACK(gtk_widget_destroy), filew)
-  prval () = fpf_btn (btn)
+  prval () = minus_addback (fpf_btn, btn | filew)
 //
   val () = gtk_file_selection_set_filename (filew, "penguin.png")
 //

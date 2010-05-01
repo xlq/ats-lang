@@ -53,7 +53,7 @@ fun gtk_text_view_set_buffer
 fun gtk_text_view_get_buffer
   {c:cls | c <= GtkTextView} {l:agz}
   (tv: !gobjptr (c, l)):<> [l_buf:agz] (
-    gobjptr (GtkTextBuffer, l_buf) -<lin,prf> void | gobjptr (GtkTextBuffer, l_buf)
+    minus (gobjptr (c, l), gobjptr (GtkTextBuffer, l_buf)) | gobjptr (GtkTextBuffer, l_buf)
   ) = "#atsctrb_gtk_text_view_get_buffer"
 // end of [gtk_text_view_get_buffer]
 
