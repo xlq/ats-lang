@@ -114,7 +114,7 @@ implement main1 () = () where {
   val (fpf_window | window_) = g_object_vref (window)
   val _sid = g_signal_connect0
     (window_, (gsignal)"destroy", G_CALLBACK(gtk_main_quit), (gpointer)null)  
-  val () = gtk_widget_show_all (window)
+  val () = gtk_widget_show (window)
   prval () = fpf_window (window)
   val () = gtk_main ()
 } // end of [main1]

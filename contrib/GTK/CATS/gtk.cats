@@ -49,6 +49,24 @@ atsctrb_lor_GtkAttachOptions_GtkAttachOptions
   (GtkAttachOptions x1, GtkAttachOptions x2) { return (x1 | x2) ; }
 // end of [atsctrb_lor_GtkAttachOptions_GtkAttachOptions]
 
+ATSinline()
+GtkAccelFlags
+atsctrb_lor_GtkAccelFlags_GtkAccelFlags
+  (GtkAccelFlags x1, GtkAccelFlags x2) { return (x1 | x2) ; }
+// end of [atsctrb_lor_GtkAccelFlags_GtkAccelFlags]
+
+/* ****** ****** */
+
+//
+// source: gtk/gtkaccelgroup.h
+//
+
+//
+// HX-2010-05-02:
+// it is a direct subclass of GObject, so there is no floating reference
+//
+#define atsctrb_gtk_accel_group_new gtk_accel_group_new
+
 /* ****** ****** */
 
 //
@@ -502,6 +520,51 @@ atsctrb_gtk_hseparator_new () {
 /* ****** ****** */
 
 //
+// source: gtk/gtkseparatormenuitem.h
+//
+
+ATSinline()
+ats_ptr_type
+atsctrb_gtk_image_menu_item_new () {
+  GtkWidget *widget = gtk_image_menu_item_new () ;
+  g_object_ref_sink(G_OBJECT(widget)) ; // removing floating reference!
+  return widget ;
+} // end of [atsctrb_gtk_image_menu_item_new]
+
+ATSinline()
+ats_ptr_type
+atsctrb_gtk_image_menu_item_new_with_label
+  (ats_ptr_type name) {
+  GtkWidget *widget = gtk_image_menu_item_new_with_label ((gchar*)name) ;
+  g_object_ref_sink(G_OBJECT(widget)) ; // removing floating reference!
+  return widget ;
+} // end of [atsctrb_gtk_image_menu_item_new_with_label]
+
+ATSinline()
+ats_ptr_type
+atsctrb_gtk_image_menu_item_new_with_mnemonic
+  (ats_ptr_type name) {
+  GtkWidget *widget = gtk_image_menu_item_new_with_mnemonic ((gchar*)name) ;
+  g_object_ref_sink(G_OBJECT(widget)) ; // removing floating reference!
+  return widget ;
+} // end of [atsctrb_gtk_image_menu_item_new_with_mnemonic]
+
+ATSinline()
+ats_ptr_type
+atsctrb_gtk_image_menu_item_new_from_stock
+  (ats_ptr_type name, ats_ptr_type aclgrp) {
+  GtkWidget *widget =
+    gtk_image_menu_item_new_from_stock ((gchar*)name, (GtkAccelGroup*)aclgrp) ;
+  g_object_ref_sink(G_OBJECT(widget)) ; // removing floating reference!
+  return widget ;
+} // end of [atsctrb_gtk_image_menu_item_new_from_stock]
+
+#define atsctrb_gtk_image_menu_item_new_from_stock_null(name) \
+  atsctrb_gtk_image_menu_item_new_from_stock(name, NULL)
+
+/* ****** ****** */
+
+//
 // source: gtk/gtklabel.h
 //
 
@@ -707,6 +770,20 @@ atsctrb_gtk_radio_button_new_with_label_from_widget
 #define atsctrb_gtk_scale_set_digits gtk_scale_set_digits
 #define atsctrb_gtk_scale_set_value_pos gtk_scale_set_value_pos
 #define atsctrb_gtk_scale_set_draw_value gtk_scale_set_draw_value
+
+/* ****** ****** */
+
+//
+// source: gtk/gtkseparatormenuitem.h
+//
+
+ATSinline()
+ats_ptr_type
+atsctrb_gtk_separator_menu_item_new () {
+  GtkWidget *widget = gtk_separator_menu_item_new () ;
+  g_object_ref_sink(G_OBJECT(widget)) ; // removing floating reference!
+  return widget ;
+} // end of [atsctrb_gtk_separator_menu_item_new]
 
 /* ****** ****** */
 
@@ -976,6 +1053,9 @@ atsctrb_gtk_widget_takeout_allocation
 
 #define atsctrb_gtk_widget_set_events gtk_widget_set_events
 
+#define atsctrb_gtk_widget_add_accelerator gtk_widget_add_accelerator
+#define atsctrb_gtk_widget_remove_accelerator gtk_widget_remove_accelerator
+
 #define atsctrb_gtk_widget_modify_fg gtk_widget_modify_fg
 #define atsctrb_gtk_widget_modify_bg gtk_widget_modify_bg
 
@@ -1004,6 +1084,9 @@ atsctrb_gtk_window_new
 
 #define atsctrb_gtk_window_get_resizable gtk_window_get_resizable
 #define atsctrb_gtk_window_set_resizable gtk_window_set_resizable
+
+#define atsctrb_gtk_window_add_accel_group gtk_window_add_accel_group
+#define atsctrb_gtk_window_remove_accel_group gtk_window_remove_accel_group
 
 /* ****** ****** */
 

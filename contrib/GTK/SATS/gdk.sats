@@ -96,6 +96,7 @@ viewtypedef GdkWindow_ptr1 = [l:addr | l > null] GdkWindow_ptr l
 
 #include "contrib/GTK/SATS/gdk/gdkcolor.sats"
 #include "contrib/GTK/SATS/gdk/gdkevents.sats"
+#include "contrib/GTK/SATS/gdk/gdkkeys.sats"
 
 (* ****** ****** *)
 

@@ -73,6 +73,7 @@ stadef GSList_ptr1 = $GLIB.GSList_ptr1
 staload GOBJ = "contrib/glib/SATS/glib-object.sats"
 stadef GObject = $GOBJ.GObject
 stadef gobjptr = $GOBJ.gobjptr
+stadef gsignal = $GOBJ.gsignal
 
 (* ****** ****** *)
 
@@ -276,6 +277,10 @@ viewtypedef GtkHSeparator_ptr (l:addr) = gobjptr (GtkHSeparator, l)
 viewtypedef GtkHSeparator_ptr0 = [l:agez] GtkHSeparator_ptr l
 viewtypedef GtkHSeparator_ptr1 = [l:addr | l > null] GtkHSeparator_ptr l
 
+viewtypedef GtkImageMenuItem_ptr (l:addr) = gobjptr (GtkImageMenuItem, l)
+viewtypedef GtkImageMenuItem_ptr0 = [l:agez] GtkImageMenuItem_ptr l
+viewtypedef GtkImageMenuItem_ptr1 = [l:addr | l > null] GtkImageMenuItem_ptr l
+
 viewtypedef GtkLabel_ptr (l:addr) = gobjptr (GtkLabel, l)
 viewtypedef GtkLabel_ptr0 = [l:agez] GtkLabel_ptr l
 viewtypedef GtkLabel_ptr1 = [l:addr | l > null] GtkLabel_ptr l
@@ -303,6 +308,10 @@ viewtypedef GtkOptionMenu_ptr1 = [l:addr | l > null] GtkOptionMenu_ptr l
 viewtypedef GtkRadioButton_ptr (l:addr) = gobjptr (GtkRadioButton, l)
 viewtypedef GtkRadioButton_ptr0 = [l:agez] GtkRadioButton_ptr l
 viewtypedef GtkRadioButton_ptr1 = [l:addr | l > null] GtkRadioButton_ptr l
+
+viewtypedef GtkSeparatorMenuItem_ptr (l:addr) = gobjptr (GtkSeparatorMenuItem, l)
+viewtypedef GtkSeparatorMenuItem_ptr0 = [l:agez] GtkSeparatorMenuItem_ptr l
+viewtypedef GtkSeparatorMenuItem_ptr1 = [l:addr | l > null] GtkSeparatorMenuItem_ptr l
 
 viewtypedef GtkSpinButton_ptr (l:addr) = gobjptr (GtkSpinButton, l)
 viewtypedef GtkSpinButton_ptr0 = [l:agez] GtkSpinButton_ptr l
@@ -352,6 +361,13 @@ viewtypedef GtkWindow_ptr1 = [l:addr | l > null] GtkWindow_ptr l
 
 (* ****** ****** *)
 
+objcls GtkAccelGroup = { super: GObject}
+viewtypedef GtkAccelGroup_ptr (l:addr) = gobjptr (GtkAccelGroup, l)
+viewtypedef GtkAccelGroup_ptr0 = [l:agez] GtkAccelGroup_ptr l
+viewtypedef GtkAccelGroup_ptr1 = [l:addr | l > null] GtkAccelGroup_ptr l
+
+(* ****** ****** *)
+
 objcls GtkTextBuffer = { super: GObject }
 viewtypedef GtkTextBuffer_ptr (l:addr) = gobjptr (GtkTextBuffer, l)
 viewtypedef GtkTextBuffer_ptr0 = [l:agez] GtkTextBuffer_ptr l
@@ -374,6 +390,10 @@ abst@ype GtkTextIter = $extype "GtkTextIter" // opaque
 #include "contrib/GTK/SATS/gtk/gtkenums.sats"
 #include "contrib/GTK/SATS/gtk/gtkstock.sats"
 #include "contrib/GTK/SATS/gtk/gtktypeutils.sats"
+
+(* ****** ****** *)
+
+#include "contrib/GTK/SATS/gtk/gtkaccelgroup.sats"
 
 (* ****** ****** *)
 
@@ -403,6 +423,7 @@ abst@ype GtkTextIter = $extype "GtkTextIter" // opaque
 #include "contrib/GTK/SATS/gtk/gtkhscale.sats"
 #include "contrib/GTK/SATS/gtk/gtkhseparator.sats"
 #include "contrib/GTK/SATS/gtk/gtkhscrollbar.sats"
+#include "contrib/GTK/SATS/gtk/gtkimagemenuitem.sats"
 #include "contrib/GTK/SATS/gtk/gtklabel.sats"
 #include "contrib/GTK/SATS/gtk/gtkmenu.sats"
 #include "contrib/GTK/SATS/gtk/gtkmenubar.sats"
@@ -416,6 +437,7 @@ abst@ype GtkTextIter = $extype "GtkTextIter" // opaque
 #include "contrib/GTK/SATS/gtk/gtkscale.sats"
 #include "contrib/GTK/SATS/gtk/gtkscrollbar.sats"
 #include "contrib/GTK/SATS/gtk/gtkseparator.sats"
+#include "contrib/GTK/SATS/gtk/gtkseparatormenuitem.sats" // <= menuitem
 #include "contrib/GTK/SATS/gtk/gtkspinbutton.sats" // <= entry
 #include "contrib/GTK/SATS/gtk/gtkstatusbar.sats"
 #include "contrib/GTK/SATS/gtk/gtktable.sats" // <= container

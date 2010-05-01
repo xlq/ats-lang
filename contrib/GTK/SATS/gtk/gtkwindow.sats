@@ -91,4 +91,20 @@ fun gtk_window_set_resizable
 
 (* ****** ****** *)
 
+fun gtk_window_add_accel_group
+  {c1,c2:cls | c1 <= GtkWindow; c2 <= GtkAccelGroup}
+  {l1,l2:agz}
+  (window: !gobjptr (c1, l1), aclgrp: !gobjptr (c2, l2)): void
+  = "#atsctrb_gtk_window_add_accel_group"
+// end of [gtk_window_add_accel_group]
+
+fun gtk_window_remove_accel_group
+  {c1,c2:cls | c1 <= GtkWindow; c2 <= GtkAccelGroup}
+  {l1,l2:agz}
+  (window: !gobjptr (c1, l1), aclgrp: !gobjptr (c2, l2)): void
+  = "#atsctrb_gtk_window_remove_accel_group"
+// end of [gtk_window_remove_accel_group]
+
+(* ****** ****** *)
+
 (* end of [gtkwindow.sats] *)

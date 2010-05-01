@@ -70,6 +70,32 @@ typedef GdkSpan =
 
 abst@ype GdkEventType = $extype "GdkEventType"
 abst@ype GdkEventMask = $extype "GdkEventMask"
+
+(* ****** ****** *)
+
+abst@ype GdkModifierType = $extype "GdkModifierType"
+
+macdef GDK_SHIFT_MASK = $extval (GdkModifierType, "GDK_SHIFT_MASK")
+macdef GDK_LOCK_MASK = $extval (GdkModifierType, "GDK_LOCK_MASK")
+macdef GDK_CONTROL_MASK = $extval (GdkModifierType, "GDK_CONTROL_MASK")
+macdef GDK_MOD1_MASK = $extval (GdkModifierType, "GDK_MOD1_MASK")
+macdef GDK_MOD2_MASK = $extval (GdkModifierType, "GDK_MOD2_MASK")
+macdef GDK_MOD3_MASK = $extval (GdkModifierType, "GDK_MOD3_MASK")
+macdef GDK_MOD4_MASK = $extval (GdkModifierType, "GDK_MOD4_MASK")
+macdef GDK_MOD5_MASK = $extval (GdkModifierType, "GDK_MOD5_MASK")
+macdef GDK_BUTTON1_MASK = $extval (GdkModifierType, "GDK_BUTTON1_MASK")
+macdef GDK_BUTTON2_MASK = $extval (GdkModifierType, "GDK_BUTTON2_MASK")
+macdef GDK_BUTTON3_MASK = $extval (GdkModifierType, "GDK_BUTTON3_MASK")
+macdef GDK_BUTTON4_MASK = $extval (GdkModifierType, "GDK_BUTTON4_MASK")
+macdef GDK_BUTTON5_MASK = $extval (GdkModifierType, "GDK_BUTTON5_MASK")
+macdef GDK_SUPER_MASK = $extval (GdkModifierType, "GDK_SUPER_MASK")
+macdef GDK_HYPER_MASK = $extval (GdkModifierType, "GDK_HYPER_MASK")
+macdef GDK_META_MASK = $extval (GdkModifierType, "GDK_META_MASK")
+macdef GDK_RELEASE_MASK = $extval (GdkModifierType, "GDK_RELEASE_MASK")
+macdef GDK_MODIFIER_MASK = $extval (GdkModifierType, "GDK_MODIFIER_MASK")
+
+(* ****** ****** *)
+
 abst@ype GdkVisibilityState = $extype "GdkVisibilityState"
 abst@ype GdkWindowState = $extype "GdkWindowState"
 

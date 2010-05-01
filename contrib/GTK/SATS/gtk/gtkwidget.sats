@@ -113,6 +113,31 @@ fun gtk_widget_set_events
 
 (* ****** ****** *)
 
+fun gtk_widget_add_accelerator
+  {c1,c2:cls | c1 <= GtkWidget; c2 <= GtkAccelGroup}
+  {l1,l2:agz} (
+    widget: !gobjptr (c1, l1)
+  , signal: gsignal
+  , aclgrp: !gobjptr (c2, l2)
+  , aclkey: guint
+  , aclmod: GdkModifierType
+  , aclflg: GtkAccelFlags
+  ) : void = "#atsctrb_gtk_widget_add_accelerator"
+// end of [gtk_widget_add_accelerator]
+
+fun gtk_widget_remove_accelerator
+  {c1,c2:cls | c1 <= GtkWidget; c2 <= GtkAccelGroup}
+  {l1,l2:agz} (
+    widget: !gobjptr (c1, l1)
+  , aclgrp: !gobjptr (c2, l2)
+  , aclkey: guint
+  , aclmod: GdkModifierType
+  ) : void = "#atsctrb_gtk_widget_remove_accelerator"
+// end of [gtk_widget_remove_accelerator]
+
+(* ****** ****** *)
+
+
 //
 // HX-2010-04-18: this is probably safe enough :)
 //
