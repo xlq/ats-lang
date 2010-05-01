@@ -73,16 +73,6 @@ abst@ype GdkEventMask = $extype "GdkEventMask"
 abst@ype GdkVisibilityState = $extype "GdkVisibilityState"
 abst@ype GdkWindowState = $extype "GdkWindowState"
 
-abst@ype GdkEvent_rest // completely opaque
-typedef GdkEvent = $extype_struct "GdkEvent" of {
-  type= GdkEventType
-/*
-, window= GdkWindow
-*/
-, send_event= gint8
-, _rest= GdkEvent_rest // this field cannot be accessed
-} // end of [GdkEvent]
-
 (* ****** ****** *)
 
 (* end of [gdktypes.sats] *)

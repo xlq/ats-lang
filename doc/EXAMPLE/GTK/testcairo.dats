@@ -111,35 +111,35 @@ implement draw_main
   val xc = w / 2 and yc = h / 2
 
   val (fpf_sf | sf) = cairo_get_target (cr)
-  val overlay = cairo_surface_create_similar (sf, CAIRO_CONTENT_COLOR_ALPHA,width, height)
+  val overlay = cairo_surface_create_similar (sf, CAIRO_CONTENT_COLOR_ALPHA, width, height)
   val punch = cairo_surface_create_similar (sf, CAIRO_CONTENT_ALPHA, width, height)
   val circles = cairo_surface_create_similar (sf, CAIRO_CONTENT_COLOR_ALPHA, width, height)
   prval () = minus_addback (fpf_sf, sf | cr)
   val () = fill_checks (cr, 0, 0, width, height)
 //
-  val overlay_cr = cairo_create (overlay)
-  val () = cairo_set_source_rgb (overlay_cr, 0., 0., 0.)
-  val () = oval_path (overlay_cr, xc, yc, radius, radius)
-  val () = cairo_fill (overlay_cr) 
+  val cr_overlay = cairo_create (overlay)
+  val () = cairo_set_source_rgb (cr_overlay, 0., 0., 0.)
+  val () = oval_path (cr_overlay, xc, yc, radius, radius)
+  val () = cairo_fill (cr_overlay) 
 //
-  val punch_cr = cairo_create (punch);
-  val () = draw_3circles (punch_cr, xc, yc, radius, 1.0)
-  val () = cairo_destroy (punch_cr)
+  val cr_punch = cairo_create (punch);
+  val () = draw_3circles (cr_punch, xc, yc, radius, 1.0)
+  val () = cairo_destroy (cr_punch)
 //
-  val () = cairo_set_operator (overlay_cr, CAIRO_OPERATOR_DEST_OUT)
-  val () = cairo_set_source_surface (overlay_cr, punch, 0.0, 0.0)
-  val () = cairo_paint (overlay_cr)
+  val () = cairo_set_operator (cr_overlay, CAIRO_OPERATOR_DEST_OUT)
+  val () = cairo_set_source_surface (cr_overlay, punch, 0.0, 0.0)
+  val () = cairo_paint (cr_overlay)
 //
-  val circles_cr = cairo_create (circles)
-  val () = cairo_set_operator (circles_cr, CAIRO_OPERATOR_OVER)
-  val () = draw_3circles (circles_cr, xc, yc, radius, 0.5)
-  val () = cairo_destroy (circles_cr)
+  val cr_circles = cairo_create (circles)
+  val () = cairo_set_operator (cr_circles, CAIRO_OPERATOR_OVER)
+  val () = draw_3circles (cr_circles, xc, yc, radius, 0.5)
+  val () = cairo_destroy (cr_circles)
 //
-  val () = cairo_set_operator (overlay_cr, CAIRO_OPERATOR_ADD)
-  val () = cairo_set_source_surface (overlay_cr, circles, 0.0, 0.0)
-  val () = cairo_paint (overlay_cr)
+  val () = cairo_set_operator (cr_overlay, CAIRO_OPERATOR_ADD)
+  val () = cairo_set_source_surface (cr_overlay, circles, 0.0, 0.0)
+  val () = cairo_paint (cr_overlay)
 //
-  val () = cairo_destroy (overlay_cr)
+  val () = cairo_destroy (cr_overlay)
   val () = cairo_set_source_surface (cr, overlay, 0.0, 0.0)
   val () = cairo_paint (cr)
 //

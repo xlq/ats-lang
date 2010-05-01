@@ -2,7 +2,7 @@
 # Testing the API for cairo in ATS
 #
 # Author: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
-# Time: December, 2010
+# Start Time: December, 2009
 #
 
 ######
@@ -17,7 +17,7 @@ cairo-test4.dats: drawing a Koch (fractal) curve
 cairo-test5.dats: drawing a negative arc
 cairo-test6.dats: clipping
 cairo-test7-1.dats: drawing a (still) clock
-cairo-test7-2.dats: drawing a functioning clock based on GTK
+cairo-test7-2.dats: drawing a functioning clock (with GTK interface)
 cairo-test8-1.dats: Kitaoka's famous image of illusory circular motion
 cairo-test8-2.dats: A variant of [cairo-test8-1.dats] based on Xlib
 cairo-test8-3.dats: A variant of [cairo-test8-1.dats] based on GTK

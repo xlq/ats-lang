@@ -536,6 +536,23 @@ atsctrb_gtk_menu_new () {
   return widget ;
 } // end of [atsctrb_gtk_menu_new]
 
+#define atsctrb_gtk_menu_popup_null(menu, button, time) \
+  gtk_menu_popup(menu, NULL, NULL, NULL, NULL, button, time)
+
+/* ****** ****** */
+
+//
+// source: gtk/gtkmenubar.h
+//
+
+ATSinline()
+ats_ptr_type
+atsctrb_gtk_menu_bar_new () {
+  GtkWidget *widget = gtk_menu_bar_new () ;
+  g_object_ref_sink(G_OBJECT(widget)) ; // removing floating reference!
+  return widget ;
+} // end of [atsctrb_gtk_menu_bar_new]
+
 /* ****** ****** */
 
 //
@@ -566,6 +583,8 @@ atsctrb_gtk_menu_item_new_with_mnemonic (ats_ptr_type name) {
   g_object_ref_sink(G_OBJECT(widget)) ; // removing floating reference!
   return widget ;
 } // end of [atsctrb_gtk_menu_item_new_with_mnemonic]
+
+#define atsctrb_gtk_menu_item_set_submenu gtk_menu_item_set_submenu
 
 /* ****** ****** */
 

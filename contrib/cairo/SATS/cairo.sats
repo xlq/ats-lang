@@ -451,65 +451,58 @@ fun cairo_set_miter_limit
 
 // enum type
 abst@ype cairo_operator_t = $extype "cairo_operator_t"
+
 castfn int_of_cairo_operator_t (x: cairo_operator_t):<> int
 
 macdef CAIRO_OPERATOR_CLEAR =
   $extval (cairo_operator_t, "CAIRO_OPERATOR_CLEAR")
-
 macdef CAIRO_OPERATOR_SOURCE =
   $extval (cairo_operator_t, "CAIRO_OPERATOR_SOURCE")
-
 macdef CAIRO_OPERATOR_OVER =
   $extval (cairo_operator_t, "CAIRO_OPERATOR_OVER")
-
 macdef CAIRO_OPERATOR_IN =
   $extval (cairo_operator_t, "CAIRO_OPERATOR_IN")
-
 macdef CAIRO_OPERATOR_OUT =
   $extval (cairo_operator_t, "CAIRO_OPERATOR_OUT")
-
 macdef CAIRO_OPERATOR_ATOP =
   $extval (cairo_operator_t, "CAIRO_OPERATOR_ATOP")
-
 macdef CAIRO_OPERATOR_DEST =
   $extval (cairo_operator_t, "CAIRO_OPERATOR_DEST")
-
 macdef CAIRO_OPERATOR_DEST_OVER =
   $extval (cairo_operator_t, "CAIRO_OPERATOR_DEST_OVER")
-
 macdef CAIRO_OPERATOR_DEST_IN =
   $extval (cairo_operator_t, "CAIRO_OPERATOR_DEST_IN")
-
 macdef CAIRO_OPERATOR_DEST_OUT =
   $extval (cairo_operator_t, "CAIRO_OPERATOR_DEST_OUT")
-
 macdef CAIRO_OPERATOR_DEST_ATOP =
   $extval (cairo_operator_t, "CAIRO_OPERATOR_DEST_ATOP")
-
 macdef CAIRO_OPERATOR_XOR =
   $extval (cairo_operator_t, "CAIRO_OPERATOR_XOR")
-
 macdef CAIRO_OPERATOR_ADD =
   $extval (cairo_operator_t, "CAIRO_OPERATOR_ADD")
-
 macdef CAIRO_OPERATOR_SATURATE =
   $extval (cairo_operator_t, "CAIRO_OPERATOR_SATURATE")
 
 fun cairo_get_operator
   {l:agz} (cr: !cairo_ref l): cairo_operator_t
   = "#atsctrb_cairo_get_operator"
+// end of [cairo_get_operator]
 
 fun cairo_set_operator
   {l:agz} (cr: !cairo_ref l, operator: cairo_operator_t): void
   = "#atsctrb_cairo_set_operator"
+// end of [cairo_set_operator]
 
 (* ****** ****** *)
 
-fun cairo_get_tolerance {l:agz} (cr: !cairo_ref l): double
-  = "#atsctrb_cairo_get_tolerance"
+fun cairo_get_tolerance
+  {l:agz} (cr: !cairo_ref l): double = "#atsctrb_cairo_get_tolerance"
+// end of [cairo_get_tolerance]
 
-fun cairo_set_tolerance {l:agz} (cr: !cairo_ref l, tolerance: double): void
+fun cairo_set_tolerance
+  {l:agz} (cr: !cairo_ref l, tolerance: double): void
   = "#atsctrb_cairo_set_tolerance"
+// end of [cairo_set_tolerance]
 
 (* ****** ****** *)
 
@@ -525,15 +518,19 @@ typedef cairo_rectangle_t =
 (* ****** ****** *)
 
 absviewtype // [n]: list length
-cairo_rectangle_list_ref (n:int) // cairo_rectangle_list_t*
+cairo_rectangle_list_ptr (n:int) // cairo_rectangle_list_t*
+viewtypedef
+cairo_rectangle_list_ptr1 = [n:nat] cairo_rectangle_list_ptr (n)
 
 fun cairo_rectangle_list_destroy
-  {n:nat} (lst: cairo_rectangle_list_ref (n)): void
+  {n:nat} (lst: cairo_rectangle_list_ptr (n)): void
   = "#atsctrb_cairo_rectangle_list_destroy"
+// end of [cairo_rectangle_list_destroy]
 
 fun cairo_copy_clip_rectangle_list
-  {l:agz} (cr: !cairo_ref l): [n:nat] cairo_rectangle_list_ref (n)
+  {l:agz} (cr: !cairo_ref l): [n:nat] cairo_rectangle_list_ptr (n)
   = "#atsctrb_cairo_copy_clip_rectangle_list"
+// end of [cairo_copy_clip_rectangle_list]
 
 (* ****** ****** *)
 
@@ -686,28 +683,35 @@ fun cairo_get_user_data {l:agz} (
 (* ****** ****** *)
 
 absviewtype // [n]: path length
-cairo_path_ref (n:int) // cairo_path_t*
+cairo_path_ptr (n:int) // cairo_path_t*
+viewtypedef cairo_path_ptr1 = [n:nat] cairo_path_ptr (n)
 
 fun cairo_copy_path
-  {l:agz} (cr: !cairo_ref l): [n:nat] cairo_path_ref n
+  {l:agz} (cr: !cairo_ref l): [n:nat] cairo_path_ptr n
   = "#atsctrb_cairo_copy_path"
+// end of [cairo_copy_path]
 
 fun cairo_copy_path_flat
-  {l:agz} (cr: !cairo_ref l): [n:nat] cairo_path_ref n
+  {l:agz} (cr: !cairo_ref l): [n:nat] cairo_path_ptr n
   = "#atsctrb_cairo_copy_path_flat"
+// end of [cairo_copy_path_flat]
 
-fun cairo_append_path {l:agz} {n:nat}
-  (cr: !cairo_ref l, path: !cairo_path_ref n): void
+fun cairo_append_path
+  {l:agz} {n:nat} (cr: !cairo_ref l, path: !cairo_path_ptr n): void
   = "#atsctrb_cairo_append_path"
+// end of [cairo_append_path]
 
-fun cairo_path_destroy {n:nat} (path: cairo_path_ref n): void
-  = "#atsctrb_cairo_path_destroy"
+fun cairo_path_destroy
+  {n:nat} (path: cairo_path_ptr n): void = "#atsctrb_cairo_path_destroy"
+// end of [cairo_path_destroy]
 
 (* ****** ****** *)
 
 // [cairo_bool_t] and [bool] are the same
-fun cairo_has_current_point {l:agz} (cr: !cairo_ref l): bool
+fun cairo_has_current_point
+  {l:agz} (cr: !cairo_ref l): bool
   = "#atsctrb_cairo_has_current_point"
+// end of [cairo_has_current_point]
 
 fun cairo_get_current_point {l:agz} (
     cr: !cairo_ref l, x: &double? >> double, y: &double? >> double
@@ -716,14 +720,17 @@ fun cairo_get_current_point {l:agz} (
 
 (* ****** ****** *)
 
-fun cairo_new_path {l:agz} (cr: !cairo_ref l): void
-  = "#atsctrb_cairo_new_path"
+fun cairo_new_path
+  {l:agz} (cr: !cairo_ref l): void = "#atsctrb_cairo_new_path"
+// end of [cairo_new_path]
 
-fun cairo_new_sub_path {l:agz} (cr: !cairo_ref l): void
-  = "#atsctrb_cairo_new_path"
+fun cairo_new_sub_path
+  {l:agz} (cr: !cairo_ref l): void = "#atsctrb_cairo_new_path"
+// end of [cairo_new_sub_path]
 
-fun cairo_close_path {l:agz} (cr: !cairo_ref l): void
-  = "#atsctrb_cairo_close_path"
+fun cairo_close_path
+  {l:agz} (cr: !cairo_ref l): void = "#atsctrb_cairo_close_path"
+// end of [cairo_close_path]
 
 (* ****** ****** *)
 
@@ -1035,8 +1042,8 @@ fun cairo_glyph_path
 
 (* ****** ****** *)
 
-fun cairo_show_text {l:agz} (cr: !cairo_ref l, utf8: string): void
-  = "#atsctrb_cairo_show_text"
+fun cairo_show_text
+  {l:agz} (cr: !cairo_ref l, utf8: string): void = "#atsctrb_cairo_show_text"
 // end of [cairo_show_text]
 
 fun cairo_show_glyphs
@@ -1097,17 +1104,24 @@ fun cairo_cluster_free {n:nat} {l:agz} // [l] can be null
 fun cairo_translate {l:agz}
   (cr: !cairo_ref l, x: double, y: double): void
   = "#atsctrb_cairo_translate"
+// end of [cairo_translate]
 
 fun cairo_scale {l:agz}
   (cr: !cairo_ref l, sx: double, sy: double): void
   = "#atsctrb_cairo_scale"
+// end of [cairo_scale]
 
-fun cairo_rotate {l:agz} (cr: !cairo_ref l, angle: double): void
-  = "#atsctrb_cairo_rotate"
+//
+// HX: radiants are used for angles
+//
+fun cairo_rotate {l:agz}
+  (cr: !cairo_ref l, angle: double): void = "#atsctrb_cairo_rotate"
+// end of [cairo_rotate]
 
 fun cairo_transform {l:agz}
   (cr: !cairo_ref l, mat: &cairo_matrix_t): void
   = "#atsctrb_cairo_transform"
+// end of [cairo_transform]
   
 (* ****** ****** *)
 

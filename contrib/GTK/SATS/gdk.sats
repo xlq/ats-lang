@@ -55,6 +55,10 @@ stadef gint8 = $GLIB.gint8
 stadef guint8 = $GLIB.guint8
 stadef guint16 = $GLIB.guint16
 stadef guint32 = $GLIB.guint32
+
+stadef gfloat = $GLIB.gfloat
+stadef gdouble = $GLIB.gdouble
+
 stadef gpointer = $GLIB.gpointer
 
 (* ****** ****** *)

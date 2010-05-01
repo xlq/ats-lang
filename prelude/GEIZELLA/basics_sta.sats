@@ -409,6 +409,9 @@ abst@ype uint_int_t0ype (int) = $extype "ats_uint_type"
 abst@ype lint_int_t0ype (int) = int_long_t0ype
 abst@ype ulint_int_t0ype (int) = uint_long_t0ype
 
+abst@ype llint_int_t0ype (int) = int_long_long_t0ype
+abst@ype ullint_int_t0ype (int) = uint_long_long_t0ype
+
 abst@ype size_int_t0ype (i:int) = $extype "ats_size_type"
 abst@ype ssize_int_t0ype (i:int) = $extype "ats_ssize_type"
 

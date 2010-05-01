@@ -284,6 +284,10 @@ viewtypedef GtkMenu_ptr (l:addr) = gobjptr (GtkMenu, l)
 viewtypedef GtkMenu_ptr0 = [l:agez] GtkMenu_ptr l
 viewtypedef GtkMenu_ptr1 = [l:addr | l > null] GtkMenu_ptr l
 
+viewtypedef GtkMenuBar_ptr (l:addr) = gobjptr (GtkMenuBar, l)
+viewtypedef GtkMenuBar_ptr0 = [l:agez] GtkMenuBar_ptr l
+viewtypedef GtkMenuBar_ptr1 = [l:addr | l > null] GtkMenuBar_ptr l
+
 viewtypedef GtkMenuItem_ptr (l:addr) = gobjptr (GtkMenuItem, l)
 viewtypedef GtkMenuItem_ptr0 = [l:agez] GtkMenuItem_ptr l
 viewtypedef GtkMenuItem_ptr1 = [l:addr | l > null] GtkMenuItem_ptr l
@@ -340,7 +344,7 @@ viewtypedef GtkVSeparator_ptr (l:addr) = gobjptr (GtkVSeparator, l)
 viewtypedef GtkVSeparator_ptr0 = [l:agez] GtkVSeparator_ptr l
 viewtypedef GtkVSeparator_ptr1 = [l:addr | l > null] GtkVSeparator_ptr l
 
-viewtypedef GtkWidget_ptr (l:addr) = gobjptr (GtkWidget, l)
+// viewtypedef GtkWidget_ptr (l:addr) = gobjptr (GtkWidget, l)
 
 viewtypedef GtkWindow_ptr (l:addr) = gobjptr (GtkWindow, l)
 viewtypedef GtkWindow_ptr0 = [l:agez] GtkWindow_ptr l
@@ -401,6 +405,7 @@ abst@ype GtkTextIter = $extype "GtkTextIter" // opaque
 #include "contrib/GTK/SATS/gtk/gtkhscrollbar.sats"
 #include "contrib/GTK/SATS/gtk/gtklabel.sats"
 #include "contrib/GTK/SATS/gtk/gtkmenu.sats"
+#include "contrib/GTK/SATS/gtk/gtkmenubar.sats"
 #include "contrib/GTK/SATS/gtk/gtkmenuitem.sats"
 #include "contrib/GTK/SATS/gtk/gtkmenushell.sats"
 #include "contrib/GTK/SATS/gtk/gtkmisc.sats"

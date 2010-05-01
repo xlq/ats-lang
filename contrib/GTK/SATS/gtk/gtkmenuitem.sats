@@ -52,4 +52,13 @@ fun gtk_menu_item_new_with_mnemonic
 
 (* ****** ****** *)
 
+fun gtk_menu_item_set_submenu
+  {c1,c2:cls | c1 <= GtkMenuItem; c2 <= GtkWidget}
+  {l1,l2:addr | l2 > null}
+  (menuitem: !gobjptr (c1, l1), submenu: !gobjptr (c2, l2)): void
+  = "#atsctrb_gtk_menu_item_set_submenu"
+// end of [gtk_menu_item_set_submenu]
+
+(* ****** ****** *)
+
 (* end of [gtkmenuitem.sats] *)
