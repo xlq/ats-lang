@@ -64,15 +64,23 @@ stadef gdouble = $GLIB.gdouble
 //
 stadef gpointer = $GLIB.gpointer
 //
+stadef gstring = $GLIB.gstring
+stadef gstring0 = $GLIB.gstring0
+stadef gstring1 = $GLIB.gstring1
+//
 stadef GSList_ptr = $GLIB.GSList_ptr
 stadef GSList_ptr0 = $GLIB.GSList_ptr0
 stadef GSList_ptr1 = $GLIB.GSList_ptr1
-
+//
 (* ****** ****** *)
 
 staload GOBJ = "contrib/glib/SATS/glib-object.sats"
-stadef GObject = $GOBJ.GObject
+
 stadef gobjptr = $GOBJ.gobjptr
+
+stadef GObject = $GOBJ.GObject
+stadef GInterface = $GOBJ.GInterface
+
 stadef gsignal = $GOBJ.gsignal
 
 (* ****** ****** *)
@@ -121,7 +129,8 @@ objcls GtkObject = { super: GObject }
         objcls GtkWindow = { super: GtkBin }
           objcls GtkDialog = { super: GtkWindow }
             objcls GtkColorSelectionDialog = { super: GtkDialog }
-            objcls GtkFileSelection = { super: GtkDialog }
+            objcls GtkFileSelection = { super: GtkDialog } // DEPRECATED!
+            objcls GtkFileChooserDialog = { super: GtkDialog }
             objcls GtkFontSelectionDialog = { super: GtkDialog }
             objcls GtkInputDialog = { super: GtkDialog }
             objcls GtkMessageDialog = { super: GtkDialog }
@@ -253,6 +262,10 @@ viewtypedef GtkFileSelection_ptr (l:addr) = gobjptr (GtkFileSelection, l)
 viewtypedef GtkFileSelection_ptr0 = [l:agez] GtkFileSelection_ptr l
 viewtypedef GtkFileSelection_ptr1 = [l:addr | l > null] GtkFileSelection_ptr l
 
+viewtypedef GtkFileChooserDialog_ptr (l:addr) = gobjptr (GtkFileChooserDialog, l)
+viewtypedef GtkFileChooserDialog_ptr0 = [l:agez] GtkFileChooserDialog_ptr l
+viewtypedef GtkFileChooserDialog_ptr1 = [l:addr | l > null] GtkFileChooserDialog_ptr l
+
 viewtypedef GtkFrame_ptr (l:addr) = gobjptr (GtkFrame, l)
 viewtypedef GtkFrame_ptr0 = [l:agez] GtkFrame_ptr l
 viewtypedef GtkFrame_ptr1 = [l:addr | l > null] GtkFrame_ptr l
@@ -368,6 +381,13 @@ viewtypedef GtkAccelGroup_ptr1 = [l:addr | l > null] GtkAccelGroup_ptr l
 
 (* ****** ****** *)
 
+objcls GtkFileChooser = { super: GInterface}
+viewtypedef GtkFileChooser_ptr (l:addr) = gobjptr (GtkFileChooser, l)
+viewtypedef GtkFileChooser_ptr0 = [l:agez] GtkFileChooser_ptr l
+viewtypedef GtkFileChooser_ptr1 = [l:addr | l > null] GtkFileChooser_ptr l
+
+(* ****** ****** *)
+
 objcls GtkTextBuffer = { super: GObject }
 viewtypedef GtkTextBuffer_ptr (l:addr) = gobjptr (GtkTextBuffer, l)
 viewtypedef GtkTextBuffer_ptr0 = [l:agez] GtkTextBuffer_ptr l
@@ -404,6 +424,10 @@ abst@ype GtkTextIter = $extype "GtkTextIter" // opaque
 
 (* ****** ****** *)
 
+#include "contrib/GTK/SATS/gtk/gtkfilechooser.sats" // GInterface
+
+(* ****** ****** *)
+
 #include "contrib/GTK/SATS/gtk/gtkadjustment.sats"
 #include "contrib/GTK/SATS/gtk/gtkalignment.sats"
 #include "contrib/GTK/SATS/gtk/gtkarrow.sats"
@@ -417,6 +441,7 @@ abst@ype GtkTextIter = $extype "GtkTextIter" // opaque
 #include "contrib/GTK/SATS/gtk/gtkdrawingarea.sats"
 #include "contrib/GTK/SATS/gtk/gtkentry.sats"
 #include "contrib/GTK/SATS/gtk/gtkfilesel.sats" // DEPRECATED!!!
+#include "contrib/GTK/SATS/gtk/gtkfilechooserdialog.sats"
 #include "contrib/GTK/SATS/gtk/gtkframe.sats"
 #include "contrib/GTK/SATS/gtk/gtkhbox.sats"
 #include "contrib/GTK/SATS/gtk/gtkhruler.sats"

@@ -42,6 +42,15 @@
 
 /* ****** ****** */
 
+ATSinline()
+ats_int_type
+atsctrb_g_object_ref_count
+  (ats_ptr_type x) {
+  return g_atomic_int_get ((int*)&((GObject*)x)->ref_count) ;
+} // end of [atsctrb_g_object_ref_count]
+
+/* ****** ****** */
+
 #define atsctrb_g_object_is_floating g_object_is_floating
 
 #define atsctrb_g_object_ref g_object_ref

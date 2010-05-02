@@ -33,51 +33,38 @@
 
 //
 // Author: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
-// Start Time: April, 2010
+// Time: April, 2010
 //
 
 (* ****** ****** *)
 
-//
-// HX-2010-04-19: this is all deprecated!!!
-//
+fun gtk_image_menu_item_new
+  (): GtkImageMenuItem_ptr1 = "atsctrb_gtk_image_menu_item_new"
+// end of [gtk_image_menu_item_new]
+
+fun gtk_image_menu_item_new_with_label
+  (name: string): GtkImageMenuItem_ptr1
+  = "atsctrb_gtk_image_menu_item_new_with_label"
+// end of [gtk_image_menu_item_new_with_label]
+
+fun gtk_image_menu_item_new_with_mnemonic
+  (name: string): GtkImageMenuItem_ptr1
+  = "atsctrb_gtk_image_menu_item_new_with_mnemonic"
+// end of [gtk_image_menu_item_new_with_mnemonic]
 
 (* ****** ****** *)
 
-fun gtk_file_selection_new
-  (title: string): GtkColorSelection_ptr1 = "#atsctrb_gtk_file_selection_new"
-// end of [gtk_file_selection_new]
+fun gtk_image_menu_item_new_from_stock
+  {c:cls | c <= GtkAccelGroup} {l:agz}
+  (name: string, aclgrp: !gobjptr (c, l)): GtkImageMenuItem_ptr1
+  = "atsctrb_gtk_image_menu_item_new_from_stock"
+// end of [gtk_image_menu_item_new_from_stock]
+
+fun gtk_image_menu_item_new_from_stock_null
+  (name: string): GtkImageMenuItem_ptr1
+  = "#atsctrb_gtk_image_menu_item_new_from_stock_null"
+// end of [gtk_image_menu_item_new_from_stock_null]
 
 (* ****** ****** *)
 
-fun gtk_file_selection_takeout_ok_button
-  {c:cls | c <= GtkFileSelection} {l:agz}
-  (filesel: !gobjptr (c, l)):<> [l_btn:agz] (
-    minus (gobjptr (c, l), gobjptr (GtkButton, l_btn)) | gobjptr (GtkButton, l_btn)
-  ) = "atsctrb_gtk_file_selection_takeout_ok_button"
-// end of [gtk_file_selection_takeout_ok_button]
-
-fun gtk_file_selection_takeout_cancel_button
-  {c:cls | c <= GtkFileSelection} {l:agz}
-  (filesel: !gobjptr (c, l)):<> [l_btn:agz] (
-    minus (gobjptr (c, l), gobjptr (GtkButton, l_btn)) | gobjptr (GtkButton, l_btn)
-  ) = "atsctrb_gtk_file_selection_takeout_cancel_button"
-// end of [gtk_file_selection_takeout_cancel_button]
-
-(* ****** ****** *)
-
-fun gtk_file_selection_get_filename
-  {c:cls | c <= GtkFileSelection} {l:agz}
-  (filesel: !gobjptr (c, l)): [t:int] (stamp t | stamped (string, t))
-  = "#atsctrb_gtk_file_selection_get_filename"
-// end of [gtk_file_selection_get_filename]
-
-fun gtk_file_selection_set_filename
-  {c:cls | c <= GtkFileSelection} {l:agz}
-  (filesel: !gobjptr (c, l), filename: string): void
-  = "#atsctrb_gtk_file_selection_set_filename"
-// end of [gtk_file_selection_set_filename]
-
-(* ****** ****** *)
-
-(* end of [gtkfilesel.sats] *)
+(* end of [gtkimagemenuitem.sats] *)

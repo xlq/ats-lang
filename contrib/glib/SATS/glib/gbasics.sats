@@ -254,4 +254,11 @@ fun GINT_TO_POINTER
 
 (* ****** ****** *)
 
+absviewtype gstring (l:addr)
+viewtypedef gstring0 = [l:agez] gstring l
+viewtypedef gstring1 = [l:addr | l > null] gstring l
+castfn ptr_of_gstring {l:addr} (x: gstring l):<> ptr l
+
+(* ****** ****** *)
+
 (* end of [gbasics.sats] *)

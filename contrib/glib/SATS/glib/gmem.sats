@@ -9,7 +9,7 @@
 (*
 ** ATS - Unleashing the Potential of Types!
 **
-** Copyright (C) 2002-2010 Hongwei Xi, Boston University
+** Copyright (C) 2002-2009 Hongwei Xi, Boston University
 **
 ** All rights reserved
 **
@@ -31,36 +31,23 @@
 
 (* ****** ****** *)
 
-//
-// Author: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
-// Time: April, 2010
-//
+(* Author: Hongwei Xi (hwxi AT cs DOT bu DOT edu) *)
 
 (* ****** ****** *)
 
-fun g_object_is_floating
-  {c:cls | c <= GObject} {l:agz} (x: !gobjptr (c, l)): bool
-  = "#atsctrb_g_object_is_floating"
-// end of [g_object_is_floating]
+%{#
+#include "contrib/glib/CATS/glib/gmem.cats"
+%}
 
 (* ****** ****** *)
 
-fun g_object_ref_count
-  {c:cls} {l:addr} (x: !gobjptr (c, l)): int = "#atsctrb_g_object_ref_count"
-// end of [g_object_ref_count]
+symintr g_free
 
 (* ****** ****** *)
 
-fun g_object_ref
-  {c:cls | c <= GObject} {l:agz} (x: !gobjptr (c, l)): gobjptr (c, l)
-  = "#atsctrb_g_object_ref"
-// end of [g_object_ref]
-
-fun g_object_unref
-  {c:cls | c <= GObject} {l:agz} (x: gobjptr (c, l)): void
-  = "#atsctrb_g_object_unref"
-// end of [g_object_unref]
+fun gstring_free {l:addr} (x: gstring l): void = "#atsctrb_g_free"
+overload g_free with gstring_free
 
 (* ****** ****** *)
 
-(* end of [gobject.sats] *)
+(* end of [gmem.sats] *)

@@ -68,11 +68,14 @@ GInitiallyUnowned_vt (c:cls) = $extype "GInitiallyUnowned"
 
 (* ****** ****** *)
 
-objcls GObject = { super: (*none*) }
 absviewtype gobjptr (c:cls, l:addr) // gobject pointer
-
 castfn ptr_of_gobjptr {c:cls} {l:addr} (x: !gobjptr (c, l)):<> ptr l
 overload ptr_of with ptr_of_gobjptr
+
+(* ****** ****** *)
+
+objcls GObject = { super: (*none*) }
+objcls GInterface = { super: (*none*) }
 
 (* ****** ****** *)
 

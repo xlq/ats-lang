@@ -22,8 +22,12 @@ staload "contrib/GTK/SATS/gtk.sats"
 fun file_ok_sel (
     fs: !GtkFileSelection_ptr1
   ) : void = () where {
-  val filename = gtk_file_selection_get_filename (fs)
-  val () = printf ("%s\n", @(filename))
+  val [t:int] (stamp | stamped) =
+    gtk_file_selection_get_filename (fs)
+  val () = printf ("%s\n", @(__cast stamped)) where {
+    extern castfn __cast (x: !stamped (string, t)): string
+  } // end of [val]
+  prval () = stamp_forfeit (stamp, stamped)
 } // end of [file_ok_sel]
 
 (* ****** ****** *)

@@ -30,7 +30,7 @@ compall:: \
   test12 \
   test13 \
   test14 \
-  test15 \
+  test15-1 test15-2 \
   test16 \
   test17 \
   test18 \
@@ -82,8 +82,15 @@ test13: gtk-test13.dats
 test14: gtk-test14.dats
 	$(ATSCC) -o test14 gtk-test14.dats `pkg-config --cflags --libs gtk+-2.0`
 
-test15: gtk-test15.dats
-	$(ATSCC) -o test15 gtk-test15.dats `pkg-config --cflags --libs gtk+-2.0`
+######
+
+test15-1: gtk-test15-1.dats
+	$(ATSCC) -o test15-1 gtk-test15-1.dats `pkg-config --cflags --libs gtk+-2.0`
+
+test15-2: gtk-test15-2.dats
+	$(ATSCC) -o test15-2 gtk-test15-2.dats `pkg-config --cflags --libs gtk+-2.0`
+
+######
 
 test16: gtk-test16.dats
 	$(ATSCC) -o test16 gtk-test16.dats `pkg-config --cflags --libs gtk+-2.0`
@@ -119,7 +126,7 @@ cleanall: clean
 	rm -f test12
 	rm -f test13
 	rm -f test14
-	rm -f test15
+	rm -f test15-1 test15-2
 	rm -f test16
 	rm -f test17
 	rm -f test18

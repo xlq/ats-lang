@@ -107,6 +107,7 @@ fun gtk_dialog_new ()
 // end of [gtk_dialog_new]
 
 (*
+// HX: this one is not supported directly in ATS
 GtkWidget*
 gtk_dialog_new_with_buttons (
   const gchar *title
@@ -119,9 +120,11 @@ gtk_dialog_new_with_buttons (
 
 (* ****** ****** *)
 
-(*
 //
 // HX-2010-04: needed?
+// HX-2010-05-02:
+// Yes. E.g, it may be needed for setting transient-window property
+// for the parent window.
 //
 fun gtk_dialog_takeout_window
   {c:cls | c <= GtkDialog} {l:agz}
@@ -129,7 +132,7 @@ fun gtk_dialog_takeout_window
   :<> [l_win:agz] (
     minus (gobjptr (c, l), gobjptr (GtkWindow, l_win)) | gobjptr (GtkWindow, l_win)
   ) = "#atsctrb_gtk_dialog_takeout_window"
-*)
+// end of [gtk_dialog_takeout_window]
 
 fun gtk_dialog_takeout_vbox
   {c:cls | c <= GtkDialog} {l:agz}
@@ -144,6 +147,15 @@ fun gtk_dialog_takeout_action_area
     minus (gobjptr (c, l), gobjptr (GtkHBox, l_box)) | gobjptr (GtkHBox, l_box)
   ) = "#atsctrb_gtk_dialog_takeout_action_area"
 // end of [gtk_dialog_takeout_action_area]
+
+(* ****** ****** *)
+
+fun gtk_dialog_add_button
+  {c:cls | c <= GtkDialog} {l:agz}
+  (dialog: !gobjptr (c, l), name: string, response_id: GtkResponseType)
+  : [l1:agz] (minus (gobjptr (c, l), gobjptr (GtkButton, l1)) | gobjptr (GtkButton, l1))
+  = "#atsctrb_gtk_dialog_add_button"
+// end of [gtk_dialog_add_button]
 
 (* ****** ****** *)
 

@@ -33,51 +33,44 @@
 
 //
 // Author: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
-// Start Time: April, 2010
+// Start Time: May, 2010
 //
 
 (* ****** ****** *)
 
-//
-// HX-2010-04-19: this is all deprecated!!!
-//
+abst@ype GtkFileChooserAction = $extype "GtkFileChooserAction"
+macdef GTK_FILE_CHOOSER_ACTION_OPEN =
+  $extval (GtkFileChooserAction, "GTK_FILE_CHOOSER_ACTION_OPEN")
+macdef GTK_FILE_CHOOSER_ACTION_SAVE =
+  $extval (GtkFileChooserAction, "GTK_FILE_CHOOSER_ACTION_SAVE")
+macdef GTK_FILE_CHOOSER_ACTION_SELECT_FOLDER =
+  $extval (GtkFileChooserAction, "GTK_FILE_CHOOSER_ACTION_SELECT_FOLDER")
+macdef GTK_FILE_CHOOSER_ACTION_CREATE_FOLDER =
+  $extval (GtkFileChooserAction, "GTK_FILE_CHOOSER_ACTION_CREATE_FOLDER")
 
 (* ****** ****** *)
 
-fun gtk_file_selection_new
-  (title: string): GtkColorSelection_ptr1 = "#atsctrb_gtk_file_selection_new"
-// end of [gtk_file_selection_new]
+abst@ype GtkFileChooserConfirmation = $extype "GtkFileChooserConfirmation"
+macdef GTK_FILE_CHOOSER_CONFIRMATION_CONFIRM =
+  $extval (GtkFileChooserConfirmation, "GTK_FILE_CHOOSER_CONFIRMATION_CONFIRM")
+macdef GTK_FILE_CHOOSER_CONFIRMATION_ACCEPT_FILENAME =
+  $extval (GtkFileChooserConfirmation, "GTK_FILE_CHOOSER_CONFIRMATION_ACCEPT_FILENAME")
+macdef GTK_FILE_CHOOSER_CONFIRMATION_SELECT_AGAIN =
+  $extval (GtkFileChooserConfirmation, "GTK_FILE_CHOOSER_CONFIRMATION_SELECT_AGAIN")
 
 (* ****** ****** *)
 
-fun gtk_file_selection_takeout_ok_button
-  {c:cls | c <= GtkFileSelection} {l:agz}
-  (filesel: !gobjptr (c, l)):<> [l_btn:agz] (
-    minus (gobjptr (c, l), gobjptr (GtkButton, l_btn)) | gobjptr (GtkButton, l_btn)
-  ) = "atsctrb_gtk_file_selection_takeout_ok_button"
-// end of [gtk_file_selection_takeout_ok_button]
+fun gtk_file_chooser_get_filename
+  {c:cls | c <= GtkFileChooser} {l:agz} (chooser: !gobjptr (c, l)): gstring0
+  = "#atsctrb_gtk_file_chooser_get_filename"
+// end of [gtk_file_chooser_get_filename]
 
-fun gtk_file_selection_takeout_cancel_button
-  {c:cls | c <= GtkFileSelection} {l:agz}
-  (filesel: !gobjptr (c, l)):<> [l_btn:agz] (
-    minus (gobjptr (c, l), gobjptr (GtkButton, l_btn)) | gobjptr (GtkButton, l_btn)
-  ) = "atsctrb_gtk_file_selection_takeout_cancel_button"
-// end of [gtk_file_selection_takeout_cancel_button]
+fun gtk_file_chooser_set_filename
+  {c:cls | c <= GtkFileChooser} {l:agz}
+  (filesel: !gobjptr (c, l), filename: string): gboolean
+  = "#atsctrb_gtk_file_chooser_set_filename"
+// end of [gtk_file_chooser_set_filename]
 
 (* ****** ****** *)
 
-fun gtk_file_selection_get_filename
-  {c:cls | c <= GtkFileSelection} {l:agz}
-  (filesel: !gobjptr (c, l)): [t:int] (stamp t | stamped (string, t))
-  = "#atsctrb_gtk_file_selection_get_filename"
-// end of [gtk_file_selection_get_filename]
-
-fun gtk_file_selection_set_filename
-  {c:cls | c <= GtkFileSelection} {l:agz}
-  (filesel: !gobjptr (c, l), filename: string): void
-  = "#atsctrb_gtk_file_selection_set_filename"
-// end of [gtk_file_selection_set_filename]
-
-(* ****** ****** *)
-
-(* end of [gtkfilesel.sats] *)
+(* end of [gtkfilechooser.sats] *)

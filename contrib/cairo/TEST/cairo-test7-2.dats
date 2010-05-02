@@ -2,13 +2,20 @@
 **
 ** A simple GTK/CAIRO example: a clock @ home
 ** The part of clock drawing is largely taken from
-** cairo-test7-2, which I did in December 2009
+** cairo-test7-1, which I did in December 2009
 **
 ** Author: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
 ** Time: April, 2010
 **
 *)
 
+(* ****** ****** *)
+//
+// how to compile:
+//  atscc -o test7-2 `pkg-config --cflags --libs gtk+-2.0` cairo-test7-2.dats
+// how to test:
+//   ./test7-2&
+//
 (* ****** ****** *)
 
 staload _(*anon*) = "prelude/DATS/reference.dats"

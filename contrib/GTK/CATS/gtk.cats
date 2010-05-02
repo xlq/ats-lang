@@ -329,6 +329,8 @@ atsctrb_gtk_dialog_takeout_action_area
   return ((GtkDialog*)dialog)->action_area ;
 } // end of [...]
 
+#define atsctrb_gtk_dialog_add_button gtk_dialog_add_button
+
 #define atsctrb_gtk_dialog_run gtk_dialog_run
 
 /* ****** ****** */
@@ -376,6 +378,43 @@ atsctrb_gtk_entry_get_text
   return (void*)gtk_entry_get_text((GtkEntry*)entry) ;
 }
 #define atsctrb_gtk_entry_set_text gtk_entry_set_text
+
+/* ****** ****** */
+
+//
+// source: gtk/gtkfilechooser.h
+//
+
+#define atsctrb_GTK_FILE_CHOOSER GTK_FILE_CHOOSER
+
+ATSinline()
+ats_ptr_type
+atsctrb_gtk_file_chooser_get_filename
+  (ats_ptr_type filesel) {
+  (void*)gtk_file_chooser_get_filename ((GtkFileChooser*)filesel) ;
+} // end of [atsctrb_gtk_file_chooser_get_filename]
+
+#define atsctrb_gtk_file_chooser_set_filename gtk_file_chooser_set_filename
+
+/* ****** ****** */
+
+//
+// source: gtk/gtkfilechooserdialog.h
+//
+ATSinline()
+ats_ptr_type
+atsctrb_gtk_file_chooser_dialog_new (
+  ats_ptr_type title, GtkFileChooserAction action
+) {
+  GtkWidget *widget = gtk_file_chooser_dialog_new (
+    (gchar*)title
+  , NULL // parent window
+  , action
+  , NULL // button/reponse_id pairs
+  ) ;
+  g_object_ref_sink(G_OBJECT(widget)) ; // removing floating reference!
+  return widget ;
+} // end of [gtk_file_chooser_dialog_new]
 
 /* ****** ****** */
 
@@ -920,6 +959,7 @@ atsctrb_gtk_text_view_new () {
 // source: gtk/gtktogglebutton.h
 //
 
+ATSinline()
 ats_ptr_type
 atsctrb_gtk_toggle_button_new () {
   GtkWidget *widget = gtk_toggle_button_new () ;
@@ -927,6 +967,7 @@ atsctrb_gtk_toggle_button_new () {
   return widget ;
 } // end of [gtk_toggle_button_new]
 
+ATSinline()
 ats_ptr_type
 atsctrb_gtk_toggle_button_new_with_label
   (ats_ptr_type name) {
@@ -935,6 +976,7 @@ atsctrb_gtk_toggle_button_new_with_label
   return widget ;
 } // end of [gtk_toggle_button_new_with_label]
 
+ATSinline()
 ats_ptr_type
 atsctrb_gtk_toggle_button_new_with_mnemonic
   (ats_ptr_type name) {
@@ -1102,3 +1144,5 @@ atsctrb_gtk_window_new
 /* ****** ****** */
 
 #endif // end of [ATSCTRB_GTK_CATS]
+
+/* end of [gtk.cats] */

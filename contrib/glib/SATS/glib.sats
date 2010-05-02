@@ -43,6 +43,8 @@
 //
 #include "contrib/glib/CATS/glib/gbasics.cats"
 //
+#include "contrib/glib/CATS/glib/gmem.cats"
+//
 #include "contrib/glib/CATS/glib/garray.cats"
 #include "contrib/glib/CATS/glib/ghash.cats"
 #include "contrib/glib/CATS/glib/glist.cats" // doubly-linked
@@ -76,6 +78,10 @@ macdef GLIB_VERSION =
 (* ****** ****** *)
 
 #include "contrib/glib/SATS/glib/gbasics.sats"
+
+(* ****** ****** *)
+
+#include "contrib/glib/SATS/glib/gmem.sats"
 
 (* ****** ****** *)
 
