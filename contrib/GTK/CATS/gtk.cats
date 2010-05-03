@@ -306,14 +306,12 @@ atsctrb_gtk_dialog_new () {
   return widget ;
 } // end of [atsctrb_gtk_dialog_new]
 
-/*
 ATSinline()
 ats_ptr_type
 atsctrb_gtk_dialog_takeout_window
   (ats_ptr_type dialog) {
   return &((GtkDialog*)dialog)->window ;
-} // end of [...]
-*/
+} // end of [gtk_dialog_takeout_window]
 
 ATSinline()
 ats_ptr_type
@@ -920,8 +918,7 @@ atsctrb_gtk_table_new (
 // source: gtk/gtktextbuffer.h
 //
 
-#define atsctrb_gtk_text_buffer_get_iter_at_offset \
-  gtk_text_buffer_get_iter_at_offset
+#define atsctrb_gtk_text_buffer_insert gtk_text_buffer_insert
 
 ATSinline()
 ats_void_type
@@ -932,6 +929,26 @@ atsctrb_gtk_text_buffer_insert_all (
     (GtkTextBuffer*)tb, (GtkTextIter*)iter, (gchar*)text, -1
   ) ; return ;
 } // end of [atsctrb_gtk_text_buffer_insert_all]
+
+//
+
+#define atsctrb_gtk_text_buffer_set_text gtk_text_buffer_set_text
+
+ATSinline()
+ats_void_type
+atsctrb_gtk_text_buffer_set_text_all
+  (ats_ptr_type tb, ats_ptr_type text) {
+  gtk_text_buffer_set_text ((GtkTextBuffer*)tb, (gchar*)text, -1) ;
+  return ;
+} // end of [atsctrb_gtk_text_buffer_set_text_all]
+
+//
+
+#define atsctrb_gtk_text_buffer_get_iter_at_offset \
+  gtk_text_buffer_get_iter_at_offset
+
+#define atsctrb_gtk_text_buffer_get_start_iter gtk_text_buffer_get_start_iter
+#define atsctrb_gtk_text_buffer_get_end_iter gtk_text_buffer_get_end_iter
 
 /* ****** ****** */
 
@@ -1120,6 +1137,7 @@ atsctrb_gtk_window_new
 
 #define atsctrb_gtk_window_set_title gtk_window_set_title
 #define atsctrb_gtk_window_set_position gtk_window_set_position
+#define atsctrb_gtk_window_set_transient_for gtk_window_set_transient_for
 
 #define atsctrb_gtk_window_get_size gtk_window_get_size
 #define atsctrb_gtk_window_set_default_size gtk_window_set_default_size

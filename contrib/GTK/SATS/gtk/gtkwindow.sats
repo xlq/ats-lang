@@ -54,9 +54,15 @@ fun gtk_window_set_title
 
 fun gtk_window_set_position
   {c:cls | c <= GtkWindow} {l:agz}
-  (window: !gobjptr (c, l), pox: GtkWindowPosition): void
+  (window: !gobjptr (c, l), pos: GtkWindowPosition): void
   = "#atsctrb_gtk_window_set_position"
 // end of [gtk_window_set_position]
+
+fun gtk_window_set_transient_for
+  {c1,c2:cls | c1 <= GtkWindow; c2 <= GtkWindow}
+  {l1,l2:agz} (window: !gobjptr (c1, l1), parent: !gobjptr (c2, l2)): void
+  = "#atsctrb_gtk_window_set_transient_for"
+// end of [gtk_window_set_transient_for]
 
 (* ****** ****** *)
 

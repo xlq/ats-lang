@@ -360,16 +360,17 @@ ing sequences (Additional characters may follow these sequences.):
 fun fopen_err {m:fm}
   (path: string, m: file_mode m):<!ref> [l:addr] (FILE_opt_v (m, l) | ptr l)
   = "atslib_fopen_err"
-
-//
+// end of [fopen_err]
 
 fun fopen_exn {m:fm}
   (path: string, m: file_mode m):<!exnref> [l:addr] (FILE m @ l | ptr l)
   = "atslib_fopen_exn"
+// end of [fopen_exn]
 
 fun fopen_ref_exn {m:fm}
   (path: string, m: file_mode m):<!exnref> FILEref
   = "atslib_fopen_exn"
+// end of [fopen_ref_exn]
 
 // ------------------------------------------------
 
@@ -458,23 +459,23 @@ must use [feof] and [ferror] to determine which occurred.
 *)
 
 fun fread
-  {sz:pos} {n_buf:int} {n,nsz:nat | nsz <= n_buf} {m:fm}
-  (pf_mod: file_mode_lte (m, r), pf_mul: MUL (n, sz, nsz) |
-   buf: &bytes (n_buf), sz: size_t sz, n: size_t n, f: &FILE m)
-  :<> sizeLte n
-  = "atslib_fread"
+  {sz:pos} {n_buf:int} {n,nsz:nat | nsz <= n_buf} {m:fm} (
+    pf_mod: file_mode_lte (m, r), pf_mul: MUL (n, sz, nsz)
+  | buf: &bytes (n_buf), sz: size_t sz, n: size_t n, f: &FILE m
+  ) :<> sizeLte n = "atslib_fread"
+// end of [fread]
 
 fun fread_byte
-  {n_buf:int} {n:nat | n <= n_buf} {m:fm}
-  (pf_mod: file_mode_lte (m, r) | buf: &bytes (n_buf), n: size_t n, f: &FILE m)
-  :<> sizeLte n
-  = "atslib_fread_byte"
+  {n_buf:int} {n:nat | n <= n_buf} {m:fm} (
+    pf_mod: file_mode_lte (m, r) | buf: &bytes (n_buf), n: size_t n, f: &FILE m
+  ) :<> sizeLte n = "atslib_fread_byte"
+// end of [fread_byte]
 
 fun fread_byte_exn
-  {n_buf:int} {n:nat | n <= n_buf} {m:fm}
-  (pf_mod: file_mode_lte (m, r) | buf: &bytes (n_buf), n: size_t n, f: &FILE m)
-  :<!exn> void
-  = "atslib_fread_byte_exn"
+  {n_buf:int} {n:nat | n <= n_buf} {m:fm} (
+    pf_mod: file_mode_lte (m, r) | buf: &bytes (n_buf), n: size_t n, f: &FILE m
+  ) :<!exn> void = "atslib_fread_byte_exn"
+// end of [fread_byte_exn]
 
 // ------------------------------------------------
 

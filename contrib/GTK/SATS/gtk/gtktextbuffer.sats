@@ -40,6 +40,7 @@
 
 fun gtk_text_buffer_new_null ()
   : GtkTextBuffer_ptr1 = "atsctrb_gtk_text_view_new_null"
+// end of [gtk_text_buffer_new_null]
 
 (* ****** ****** *)
 
@@ -94,6 +95,35 @@ fun gtk_text_buffer_insert_at_cursor
   (tb: !gobjptr (c, l), text: string n0, len: gint n1): void
   = "#atsctrb_gtk_text_buffer_insert_at_cursor"
 // end of [gtk_text_buffer_insert_at_cursor]
+
+(* ****** ****** *)
+
+fun gtk_text_buffer_get_start_iter
+  {c:cls | c <= GtkTextBuffer} {l:agz}
+  (tb: !gobjptr (c, l), iter: &GtkTextIter? >> GtkTextIter): void
+  = "#atsctrb_gtk_text_buffer_get_start_iter"
+// end of [gtk_text_buffer_get_start_iter]
+
+fun gtk_text_buffer_get_end_iter
+  {c:cls | c <= GtkTextBuffer} {l:agz}
+  (tb: !gobjptr (c, l), iter: &GtkTextIter? >> GtkTextIter): void
+  = "#atsctrb_gtk_text_buffer_get_end_iter"
+// end of [gtk_text_buffer_get_end_iter]
+
+(* ****** ****** *)
+
+fun gtk_text_buffer_set_text
+  {c:cls | c <= GtkTextBuffer} {l:agz}
+  {n0,n1:nat | n0 >= n1}
+  (tb: !gobjptr (c, l), text: &(@[gchar][n0]), len: gint n1): void
+  = "#atsctrb_gtk_text_buffer_set_text"
+// end of [gtk_text_buffer_set_text]
+
+fun gtk_text_buffer_set_text_all
+  {c:cls | c <= GtkTextBuffer} {l:agz} {n:nat}
+  (tb: !gobjptr (c, l), text: string n): void
+  = "atsctrb_gtk_text_buffer_set_text_all" // this a function!
+// end of [gtk_text_buffer_set_text_all]
 
 (* ****** ****** *)
 

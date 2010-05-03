@@ -768,6 +768,10 @@ absviewt@ype
 FILE_viewt0ype (file_mode) = $extype "ats_FILE_viewtype"
 stadef FILE = FILE_viewt0ype
 
+//
+// HX-2010-05-02:
+// this is unsafe and should probably be deprecated:
+//
 // [FILEref_type] is [ref (FILE m)] for some [m]
 abstype FILEref_type; stadef FILEref = FILEref_type
 
