@@ -68,7 +68,7 @@ implement prerr_position (pos) = prerr_mac (fprint_position, pos)
 
 (* ****** ****** *)
 
-typedef infile (v:view) = '{
+typedef infile (v:view) = @{
   free= (v | (*none*)) -<cloref1> void
 , getc= (!v | (*none*)) -<cloref1> int
 }
@@ -77,8 +77,11 @@ assume infile_t = infile
 
 //
 
-implement infile_free (pf | infil) = infil.free (pf | (*none*))
-implement infile_getc (pf | infil) = infil.getc (pf | (*none*))
+implement
+infile_free (pf | infil) = infil.free (pf | (*none*))
+
+implement
+infile_getc (pf | infil) = infil.getc (pf | (*none*))
 (*
   let val c = infil.getc (pf | (*none*)) in
     printf ("infile_getc: c = %i\n", @(c)); c
@@ -87,7 +90,8 @@ implement infile_getc (pf | infil) = infil.getc (pf | (*none*))
 
 //
 
-implement infile_make_string (s) = let
+implement
+infile_make_string (s) = let
   val [n:int] s = string1_of_string s; val n = string_length s
   typedef T = sizeLte n
   val [l:addr] (pf_gc, pf_at | p) = ptr_alloc_tsz {T} (sizeof<T>)
@@ -105,7 +109,7 @@ implement infile_make_string (s) = let
   end // end of [_getc]
   val () = !p := size1_of_int1 (0); 
 in
-  #[ V | (@(pf_gc, pf_at) | '{ free= _free, getc= _getc }) ]
+  #[ V | (@(pf_gc, pf_at) | @{ free= _free, getc= _getc }) ]
 end // end of [infile_make_string]
 
 //
@@ -126,22 +130,24 @@ extern fun getchar (): int = "atslib_getchar"
 
 in
 
-implement infile_make_file {m} {l} (pf_fil, pf_mod | fil) = let
+implement
+infile_make_file {m} {l} (pf_fil, pf_mod | fil) = let
   viewdef V = FILE m @ l
   fn _free (pf_fil: V | (*none*)):<cloref1> void = fclose_exn (pf_fil | fil)
   fn _getc (pf_fil: !V | (*none*)):<cloref1> int = fgetc_err (pf_mod | !fil)
 in
-  #[ V | (pf_fil | '{ free= _free, getc= _getc }) ]
+  #[ V | (pf_fil | @{ free= _free, getc= _getc }) ]
 end // end of [infile_make_file]
 
-implement infile_make_stdin () = let
+implement
+infile_make_stdin () = let
   viewdef V = unit_v
   fn _free (pf: V | (*none*)):<cloref1> void = () where {
      prval unit_v () = pf
   } // end of [_free]
   fn _getc (pf: !V | (*none*)):<cloref1> int = getchar ()
 in
-  #[ V | (unit_v () | '{ free= _free, getc= _getc } ) ]
+  #[ V | (unit_v () | @{ free= _free, getc= _getc } ) ]
 end // end of [infile_make_stdin]
 
 end // end of [local]

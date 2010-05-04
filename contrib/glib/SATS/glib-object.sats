@@ -61,6 +61,9 @@ GObject_vt (c:cls) = $extype "GObject"
 // abst@ype GObjectClass = $extype "GObjectClass"
 
 (*
+//
+// HX: what a hack! this is not supported in ATS
+//
 absviewt@ype
 GInitiallyUnowned_vt (c:cls) = $extype "GInitiallyUnowned"
 // abst@ype GInitiallyUnownedClass = $extype "GInitiallyUnownedClass"

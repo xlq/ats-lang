@@ -96,7 +96,7 @@ overload prerr with prerr_position
 
 (* ****** ****** *)
 
-abstype infile_t (view) // boxed type for the input file
+abst@ype infile_t (view) // boxed type for the input file
 
 fun infile_free {v:view}
   (pf: v | f: infile_t v): void = "lexing_infile_free"
@@ -108,6 +108,7 @@ fun infile_make_string (s: string): [v:view] (v | infile_t v)
 fun infile_make_file {m:file_mode} {l:addr}
   (pf_fil: FILE m @ l, pf_mod: file_mode_lte (m, r) | fil: ptr l)
   : [v:view] (v | infile_t v)
+// end of [infile_make_file]
 
 fun infile_make_stdin (): [v:view] (v | infile_t v)
 

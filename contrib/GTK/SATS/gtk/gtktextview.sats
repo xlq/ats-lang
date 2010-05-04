@@ -40,6 +40,14 @@
 
 fun gtk_text_view_new (): GtkTextView_ptr1 = "#atsctrb_gtk_text_view_new"
 
+//
+// HX-2010-05-03: if [NULL] is passed, a new one is created automatically
+//
+fun gtk_text_view_new_with_buffer
+  {c:cls | c <= GtkTextBuffer} {l:addr} (tb: !gobjptr (c, l)): GtkTextView_ptr1
+  = "atsctrb_gtk_text_view_new_with_buffer"
+// end of [gtk_text_view_new_with_buffer]
+  
 (* ****** ****** *)
 
 fun gtk_text_view_set_buffer
@@ -59,10 +67,22 @@ fun gtk_text_view_get_buffer
 
 (* ****** ****** *)
 
+fun gtk_text_view_get_editable
+  {c:cls | c <= GtkTextView} {l:agz}
+  (tv: !gobjptr (c, l)): gboolean = "#atsctrb_gtk_text_view_get_editable"
+// end of [gtk_text_view_get_editable]
+
 fun gtk_text_view_set_editable
   {c:cls | c <= GtkTextView} {l:agz}
   (tv: !gobjptr (c, l), editable: gboolean): void = "#atsctrb_gtk_text_view_set_editable"
 // end of [gtk_text_view_set_editable]
+
+(* ****** ****** *)
+
+fun gtk_text_view_get_cursor_visible
+  {c:cls | c <= GtkTextView} {l:agz}
+  (tv: !gobjptr (c, l)): gboolean = "#atsctrb_gtk_text_view_get_cursor_visible"
+// end of [gtk_text_view_get_cursor_visible]
 
 fun gtk_text_view_set_cursor_visible
   {c:cls | c <= GtkTextView} {l:agz}

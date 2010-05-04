@@ -112,6 +112,11 @@ atsctrb_gtk_alignment_new (
   return widget ;
 } // end of [atsctrb_gtk_alignment_new]
 
+#define atsctrb_gtk_alignment_set gtk_alignment_set
+
+#define atsctrb_gtk_alignment_get_padding gtk_alignment_get_padding
+#define atsctrb_gtk_alignment_set_padding gtk_alignment_set_padding
+
 /* ****** ****** */
 
 //
@@ -811,6 +816,35 @@ atsctrb_gtk_radio_button_new_with_label_from_widget
 /* ****** ****** */
 
 //
+// source: gtk/gtkscrolledwindow.h
+//
+
+ATSinline()
+ats_ptr_type
+atsctrb_gtk_scrolled_window_new (
+  ats_ptr_type hadj, ats_ptr_type vadj
+) {
+  GtkWidget *widget = gtk_scrolled_window_new
+    ((GtkAdjustment*)hadj, (GtkAdjustment*)vadj) ;
+  g_object_ref_sink(G_OBJECT(widget)) ; // removing floating reference!
+  return widget ;
+} // end of [atsctrb_gtk_scrolled_window_new]
+
+ATSinline()
+ats_ptr_type
+atsctrb_gtk_scrolled_window_new_null
+  () { return atsctrb_gtk_scrolled_window_new (NULL, NULL) ; }
+// end of [atsctrb_gtk_scrolled_window_new_null]
+
+#define atsctrb_gtk_scrolled_window_get_policy gtk_scrolled_window_get_policy
+#define atsctrb_gtk_scrolled_window_set_policy gtk_scrolled_window_set_policy
+
+#define atsctrb_gtk_scrolled_window_get_placement gtk_scrolled_window_get_placement
+#define atsctrb_gtk_scrolled_window_set_placement gtk_scrolled_window_set_placement
+
+/* ****** ****** */
+
+//
 // source: gtk/gtkseparatormenuitem.h
 //
 
@@ -918,6 +952,11 @@ atsctrb_gtk_table_new (
 // source: gtk/gtktextbuffer.h
 //
 
+//
+// HX-2010-05-03: there is no floating reference involved
+//
+#define atsctrb_gtk_text_buffer_new_null() gtk_text_buffer_new(NULL)
+
 #define atsctrb_gtk_text_buffer_insert gtk_text_buffer_insert
 
 ATSinline()
@@ -950,6 +989,8 @@ atsctrb_gtk_text_buffer_set_text_all
 #define atsctrb_gtk_text_buffer_get_start_iter gtk_text_buffer_get_start_iter
 #define atsctrb_gtk_text_buffer_get_end_iter gtk_text_buffer_get_end_iter
 
+#define atsctrb_gtk_text_buffer_place_cursor gtk_text_buffer_place_cursor
+
 /* ****** ****** */
 
 //
@@ -964,10 +1005,23 @@ atsctrb_gtk_text_view_new () {
   return widget ;
 } // end of [atsctrb_gtk_text_view_new]
 
+ATSinline()
+ats_ptr_type
+atsctrb_gtk_text_view_new_with_buffer
+  (ats_ptr_type tb) {
+  GtkWidget *widget =
+    gtk_text_view_new_with_buffer ((GtkTextBuffer*)tb) ;
+  g_object_ref_sink(G_OBJECT(widget)) ; // removing floating reference!
+  return widget ;
+} // end of [atsctrb_gtk_text_view_new_with_buffer]
+
 #define atsctrb_gtk_text_view_get_buffer gtk_text_view_get_buffer
 #define atsctrb_gtk_text_view_set_buffer gtk_text_view_set_buffer
 
+#define atsctrb_gtk_text_view_get_editable gtk_text_view_get_editable
 #define atsctrb_gtk_text_view_set_editable gtk_text_view_set_editable
+
+#define atsctrb_gtk_text_view_get_cursor_visible gtk_text_view_get_cursor_visible
 #define atsctrb_gtk_text_view_set_cursor_visible gtk_text_view_set_cursor_visible
 
 /* ****** ****** */
@@ -1058,6 +1112,21 @@ atsctrb_gtk_vscale_new_with_range
   g_object_ref_sink(G_OBJECT(widget)) ; // removing floating reference!
   return widget ;
 } // end of [atsctrb_gtk_vscale_new_with_range]
+
+/* ****** ****** */
+
+//
+// source: gtk/gtkvsrollbar.h
+//
+
+ATSinline()
+ats_ptr_type
+atsctrb_gtk_vscrollbar_new
+  (ats_ptr_type adj) {
+  GtkWidget *widget = gtk_vscrollbar_new ((GtkAdjustment*)adj) ;
+  g_object_ref_sink(G_OBJECT(widget)) ; // removing floating reference!
+  return widget ;
+} // end of [atsctrb_gtk_vscrollbar_new]
 
 /* ****** ****** */
 

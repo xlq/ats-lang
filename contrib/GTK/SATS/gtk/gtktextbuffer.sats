@@ -39,7 +39,7 @@
 (* ****** ****** *)
 
 fun gtk_text_buffer_new_null ()
-  : GtkTextBuffer_ptr1 = "atsctrb_gtk_text_view_new_null"
+  : GtkTextBuffer_ptr1 = "#atsctrb_gtk_text_buffer_new_null"
 // end of [gtk_text_buffer_new_null]
 
 (* ****** ****** *)
@@ -124,6 +124,14 @@ fun gtk_text_buffer_set_text_all
   (tb: !gobjptr (c, l), text: string n): void
   = "atsctrb_gtk_text_buffer_set_text_all" // this a function!
 // end of [gtk_text_buffer_set_text_all]
+
+(* ****** ****** *)
+
+fun gtk_text_buffer_place_cursor
+  {c:cls | c <= GtkTextBuffer} {l:agz}
+  (tb: !gobjptr (c, l), iter: &GtkTextIter): void
+  = "#atsctrb_gtk_text_buffer_place_cursor"
+// end of [gtk_text_buffer_place_cursor]
 
 (* ****** ****** *)
 

@@ -213,7 +213,7 @@ fun draw_drawingarea
 in
   if g_object_isnot_null (win) then let
     val cr = gdk_cairo_create (win)
-    prval () = fpf_win (win)
+    prval () = minus_addback (fpf_win, win | darea)
     val (pf, fpf | p) = gtk_widget_takeout_allocation (darea)
     val () = draw_main (cr, (int_of)p->width, (int_of)p->height)
     prval () = minus_addback (fpf, pf | darea)
@@ -221,7 +221,7 @@ in
   in
     // nothing
   end else let
-    prval () = fpf_win (win)
+    prval () = minus_addback (fpf_win, win | darea)
   in
     // nothing
   end (* end of [if] *)
@@ -257,7 +257,7 @@ fun ftimeout
   val (fpf_win | win) = gtk_widget_takeout_window (darea)
 in
   if g_object_isnot_null (win) then let
-    prval () = fpf_win (win)
+    prval () = minus_addback (fpf_win, win | darea)
     val (pf, fpf | p) = gtk_widget_takeout_allocation (darea)
     val () = if sec_changed () then
       gtk_widget_queue_draw_area (darea, (gint)0, (gint)0, p->width, p->height)
@@ -267,7 +267,7 @@ in
   in
     GTRUE
   end else let
-    prval () = fpf_win (win)  
+    prval () = minus_addback (fpf_win, win | darea)
     val () = g_object_unref (darea)
   in
     GFALSE

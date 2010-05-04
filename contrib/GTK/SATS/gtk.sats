@@ -139,7 +139,7 @@ objcls GtkObject = { super: GObject }
         // end of [GtkWindow]
         objcls GtkEventBox = { super: GtkBin }
         objcls GtkHandleBox = { super: GtkBin }
-        objcls GtkScrollWindow = { super: GtkBin }
+        objcls GtkScrolledWindow = { super: GtkBin }
         objcls GtkViewport = { super: GtkBin }
       // end of [GtkBin]
       objcls GtkBox = { super: GtkContainer }
@@ -322,6 +322,10 @@ viewtypedef GtkRadioButton_ptr (l:addr) = gobjptr (GtkRadioButton, l)
 viewtypedef GtkRadioButton_ptr0 = [l:agez] GtkRadioButton_ptr l
 viewtypedef GtkRadioButton_ptr1 = [l:addr | l > null] GtkRadioButton_ptr l
 
+viewtypedef GtkScrolledWindow_ptr (l:addr) = gobjptr (GtkScrolledWindow, l)
+viewtypedef GtkScrolledWindow_ptr0 = [l:agez] GtkScrolledWindow_ptr l
+viewtypedef GtkScrolledWindow_ptr1 = [l:addr | l > null] GtkScrolledWindow_ptr l
+
 viewtypedef GtkSeparatorMenuItem_ptr (l:addr) = gobjptr (GtkSeparatorMenuItem, l)
 viewtypedef GtkSeparatorMenuItem_ptr0 = [l:agez] GtkSeparatorMenuItem_ptr l
 viewtypedef GtkSeparatorMenuItem_ptr1 = [l:addr | l > null] GtkSeparatorMenuItem_ptr l
@@ -461,6 +465,7 @@ abst@ype GtkTextIter = $extype "GtkTextIter" // opaque
 #include "contrib/GTK/SATS/gtk/gtkruler.sats"
 #include "contrib/GTK/SATS/gtk/gtkscale.sats"
 #include "contrib/GTK/SATS/gtk/gtkscrollbar.sats"
+#include "contrib/GTK/SATS/gtk/gtkscrolledwindow.sats"
 #include "contrib/GTK/SATS/gtk/gtkseparator.sats"
 #include "contrib/GTK/SATS/gtk/gtkseparatormenuitem.sats" // <= menuitem
 #include "contrib/GTK/SATS/gtk/gtkspinbutton.sats" // <= entry

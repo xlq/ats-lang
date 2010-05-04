@@ -104,6 +104,34 @@ macdef GTK_JUSTIFY_FILL = $extval (GtkJustification, "GTK_JUSTIFY_FILL")
 
 (* ****** ****** *)
 
+(*
+** Placement type for scrolled window
+*)
+abst@ype GtkCornerType = $extype "GtkCornerType"
+macdef GTK_CORNER_TOP_LEFT = $extval (GtkCornerType, "GTK_CORNER_TOP_LEFT")
+macdef GTK_CORNER_BOTTOM_LEFT = $extval (GtkCornerType, "GTK_CORNER_BOTTOM_LEFT")
+macdef GTK_CORNER_TOP_RIGHT = $extval (GtkCornerType, "GTK_CORNER_TOP_RIGHT")
+macdef GTK_CORNER_BOTTOM_RIGHT = $extval (GtkCornerType, "GTK_CORNER_BOTTOM_RIGHT")
+
+(* ****** ****** *)
+
+abst@ype GtkPathType = $extype "GtkPathType"
+macdef GTK_PATH_WIDGET = $extval (GtkPathType, "GTK_PATH_WIDGET")
+macdef GTK_PATH_WIDGET_CLASS = $extval (GtkPathType, "GTK_PATH_WIDGET_CLASS")
+macdef GTK_PATH_CLASS = $extval (GtkPathType, "GTK_PATH_CLASS")
+
+(* ****** ****** *)
+
+(*
+** Policy type for scrolled window
+*)
+abst@ype GtkPolicyType = $extype "GtkPolicyType"
+macdef GTK_POLICY_ALWAYS = $extval (GtkPolicyType, "GTK_POLICY_ALWAYS")
+macdef GTK_POLICY_AUTOMATIC = $extval (GtkPolicyType, "GTK_POLICY_AUTOMATIC")
+macdef GTK_POLICY_NEVER = $extval (GtkPolicyType, "GTK_POLICY_NEVER")
+
+(* ****** ****** *)
+
 abst@ype
 GtkPositionType = $extype "GtkPositionType"
 macdef GTK_POS_LEFT = $extval (GtkPositionType, "GTK_POS_LEFT")

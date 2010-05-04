@@ -58,4 +58,64 @@ overload gtk_alignment_new with gtk_alignment_new__gtype
 
 (* ****** ****** *)
 
+symintr gtk_alignment_set
+
+typedef
+gtk_alignment_set_type (a:t@ype) = (
+    a // xalign
+  , a // yalign
+  , a // xscale
+  , a // yscale
+  ) -<fun1> void
+
+fun gtk_alignment_set__type
+  : gtk_alignment_set_type float = "#atsctrb_gtk_alignment_set"
+overload gtk_alignment_set with gtk_alignment_set__type
+
+fun gtk_alignment_set__gtype
+  : gtk_alignment_set_type gfloat = "#atsctrb_gtk_alignment_set"
+overload gtk_alignment_set with gtk_alignment_set__gtype
+
+(* ****** ****** *)
+
+symintr gtk_alignment_get_padding
+
+typedef
+gtk_alignment_get_padding_type (a:t@ype) = (
+    &a? >> a // xalign
+  , &a? >> a // yalign
+  , &a? >> a // xscale
+  , &a? >> a // yscale
+  ) -<fun1> void
+
+fun gtk_alignment_get_padding__type
+  : gtk_alignment_get_padding_type uint = "#atsctrb_gtk_alignment_get_padding"
+overload gtk_alignment_get_padding with gtk_alignment_get_padding__type
+
+fun gtk_alignment_get_padding__gtype
+  : gtk_alignment_get_padding_type guint = "#atsctrb_gtk_alignment_get_padding"
+overload gtk_alignment_get_padding with gtk_alignment_get_padding__gtype
+
+(* ****** ****** *)
+
+symintr gtk_alignment_set_padding
+
+typedef
+gtk_alignment_set_padding_type (a:t@ype) = (
+    &a // xalign
+  , &a // yalign
+  , &a // xscale
+  , &a // yscale
+  ) -<fun1> void
+
+fun gtk_alignment_set_padding__type
+  : gtk_alignment_set_padding_type uint = "#atsctrb_gtk_alignment_set_padding"
+overload gtk_alignment_set_padding with gtk_alignment_set_padding__type
+
+fun gtk_alignment_set_padding__gtype
+  : gtk_alignment_set_padding_type guint = "#atsctrb_gtk_alignment_set_padding"
+overload gtk_alignment_set_padding with gtk_alignment_set_padding__gtype
+
+(* ****** ****** *)
+
 (* end of [gtkalignment.sats] *)

@@ -79,7 +79,8 @@ fn flag_is_dyn (flag: int): bool = (flag > 0)
 
 (* ****** ****** *)
 
-implement parse_from_stdin (flag) = ans where {
+implement
+parse_from_stdin (flag) = ans where {
   val (pf_infil | p_infil) = $LEXING.infile_make_stdin ()
   val (pf_lexbuf | lexbuf) =
     $LEXING.lexbuf_make_infile (pf_infil | p_infil)
@@ -93,7 +94,8 @@ implement parse_from_stdin (flag) = ans where {
 
 (* ****** ****** *)
 
-implement parse_from_filename (flag, filename) = ans where {
+implement
+parse_from_filename (flag, filename) = ans where {
 (*
   val () = begin
     print "parse_from_filename: "; $Fil.print_filename filename; print_newline ()
