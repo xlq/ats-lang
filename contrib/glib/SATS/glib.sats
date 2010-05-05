@@ -39,19 +39,7 @@
 (* ****** ****** *)
 
 %{#
-#include <glib.h>
-//
-#include "contrib/glib/CATS/glib/gbasics.cats"
-//
-#include "contrib/glib/CATS/glib/gmem.cats"
-//
-#include "contrib/glib/CATS/glib/garray.cats"
-#include "contrib/glib/CATS/glib/ghash.cats"
-#include "contrib/glib/CATS/glib/glist.cats" // doubly-linked
-#include "contrib/glib/CATS/glib/gqsort.cats"
-#include "contrib/glib/CATS/glib/grand.cats"
-#include "contrib/glib/CATS/glib/gslist.cats" // singly-linked
-#include "contrib/glib/CATS/glib/gstring.cats"
+#include "contrib/glib/CATS/glib.cats"
 %} // end of [%{#]
 
 (* ****** ****** *)
