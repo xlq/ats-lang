@@ -60,11 +60,31 @@ fun GTK_WIDGET_SET_FLAGS
 (* ****** ****** *)
 
 //
-// this one is based on refcount?
+// HX: this one is based on refcount?
 //
 fun gtk_widget_destroy
   {c:cls | c <= GtkWidget} {l:agz} (widget: gobjptr (c, l)): void
   = "#atsctrb_gtk_widget_destroy"
+
+(* ****** ****** *)
+
+fun gtk_widget_map
+  {c:cls | c <= GtkWidget} {l:agz} (widget: !gobjptr (c, l)): void
+  = "#atsctrb_gtk_widget_map"
+
+fun gtk_widget_unmap
+  {c:cls | c <= GtkWidget} {l:agz} (widget: !gobjptr (c, l)): void
+  = "#atsctrb_gtk_widget_unmap"
+
+(* ****** ****** *)
+
+fun gtk_widget_realize
+  {c:cls | c <= GtkWidget} {l:agz} (widget: !gobjptr (c, l)): void
+  = "#atsctrb_gtk_widget_realize"
+
+fun gtk_widget_unrealize
+  {c:cls | c <= GtkWidget} {l:agz} (widget: !gobjptr (c, l)): void
+  = "#atsctrb_gtk_widget_unrealize"
 
 (* ****** ****** *)
 
@@ -185,6 +205,15 @@ fun gtk_widget_modify_bg
   (widget: !gobjptr (c, l), state: GtkStateType, color: &GdkColor): void
   = "#atsctrb_gtk_widget_modify_bg"
 // end of [gtk_widget_modify_bg]
+
+(* ****** ****** *)
+
+fun gtk_widget_get_colormap
+  {c:cls | c <= GtkWidget} {l:agz}
+  (widget: !gobjptr (c, l)): [l1:agz] (
+    minus (gobjptr (c, l), GdkColormap_ptr l1) | GdkColormap_ptr l1
+  ) = "#atsctrb_gtk_widget_get_colormap"
+// end of [gtk_widget_get_colormap]
 
 (* ****** ****** *)
 

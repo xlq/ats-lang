@@ -76,6 +76,14 @@ fun gtk_text_buffer_get_iter_at_offset
 
 (* ****** ****** *)
 
+fun gtk_text_buffer_delete
+  {c:cls | c <= GtkTextBuffer} {l:agz} (
+    tb: !gobjptr (c, l), _beg: &GtkTextIter, _end: &GtkTextIter
+  ) : void = "#atsctrb_gtk_text_buffer_delete"
+// end of [gtk_text_buffer_get_delete]
+
+(* ****** ****** *)
+
 fun gtk_text_buffer_insert
   {c:cls | c <= GtkTextBuffer} {l:agz} {n0,n1:nat | n0 >= n1}
   (tb: !gobjptr (c, l), iter: &GtkTextIter, text: &(@[gchar][n0]), len: gint n1): void
@@ -111,6 +119,27 @@ fun gtk_text_buffer_get_end_iter
 // end of [gtk_text_buffer_get_end_iter]
 
 (* ****** ****** *)
+
+fun gtk_text_buffer_get_bounds
+  {c:cls | c <= GtkTextBuffer} {l:agz} (
+    tb: !gobjptr (c, l)
+  , _beg: &GtkTextIter? >> GtkTextIter
+  , _end: &GtkTextIter? >> GtkTextIter
+  ) : void = "#atsctrb_gtk_text_buffer_get_bounds"
+// end of [gtk_text_buffer_get_bounds]
+
+(* ****** ****** *)
+
+//
+// HX-2010-05-04: yes, the return type is [gstring1]!
+//
+fun gtk_text_buffer_get_text
+  {c:cls | c <= GtkTextBuffer} {l:agz} (
+    tb: !gobjptr (c, l)
+  , _beg: &GtkTextIter, _end: &GtkTextIter
+  , include_hidden_chars: gboolean
+  ) : gstring1 = "#atsctrb_gtk_text_buffer_get_text"
+// end of [gtk_text_buffer_get_get_text]
 
 fun gtk_text_buffer_set_text
   {c:cls | c <= GtkTextBuffer} {l:agz}

@@ -396,8 +396,12 @@ atsctrb_gtk_file_chooser_get_filename
   (ats_ptr_type filesel) {
   (void*)gtk_file_chooser_get_filename ((GtkFileChooser*)filesel) ;
 } // end of [atsctrb_gtk_file_chooser_get_filename]
-
 #define atsctrb_gtk_file_chooser_set_filename gtk_file_chooser_set_filename
+
+#define atsctrb_gtk_file_chooser_get_do_overwrite_confirmation \
+  gtk_file_chooser_get_do_overwrite_confirmation
+#define atsctrb_gtk_file_chooser_set_do_overwrite_confirmation \
+  gtk_file_chooser_set_do_overwrite_confirmation
 
 /* ****** ****** */
 
@@ -971,6 +975,7 @@ atsctrb_gtk_text_buffer_insert_all (
 
 //
 
+#define atsctrb_gtk_text_buffer_get_text gtk_text_buffer_get_text
 #define atsctrb_gtk_text_buffer_set_text gtk_text_buffer_set_text
 
 ATSinline()
@@ -986,8 +991,11 @@ atsctrb_gtk_text_buffer_set_text_all
 #define atsctrb_gtk_text_buffer_get_iter_at_offset \
   gtk_text_buffer_get_iter_at_offset
 
+#define atsctrb_gtk_text_buffer_delete gtk_text_buffer_delete
+
 #define atsctrb_gtk_text_buffer_get_start_iter gtk_text_buffer_get_start_iter
 #define atsctrb_gtk_text_buffer_get_end_iter gtk_text_buffer_get_end_iter
+#define atsctrb_gtk_text_buffer_get_bounds gtk_text_buffer_get_bounds
 
 #define atsctrb_gtk_text_buffer_place_cursor gtk_text_buffer_place_cursor
 
@@ -1023,6 +1031,8 @@ atsctrb_gtk_text_view_new_with_buffer
 
 #define atsctrb_gtk_text_view_get_cursor_visible gtk_text_view_get_cursor_visible
 #define atsctrb_gtk_text_view_set_cursor_visible gtk_text_view_set_cursor_visible
+
+#define atsctrb_gtk_text_view_get_window gtk_text_view_get_window
 
 /* ****** ****** */
 
@@ -1152,6 +1162,12 @@ atsctrb_gtk_vseparator_new () {
 
 #define atsctrb_gtk_widget_destroy gtk_widget_destroy
 
+#define atsctrb_gtk_widget_map gtk_widget_map
+#define atsctrb_gtk_widget_unmap gtk_widget_unmap
+
+#define atsctrb_gtk_widget_realize gtk_widget_realize
+#define atsctrb_gtk_widget_unrealize gtk_widget_unrealize
+
 #define atsctrb_gtk_widget_show gtk_widget_show
 #define atsctrb_gtk_widget_show_now gtk_widget_show_now
 #define atsctrb_gtk_widget_show_all gtk_widget_show_all
@@ -1186,6 +1202,8 @@ atsctrb_gtk_widget_takeout_allocation
 
 #define atsctrb_gtk_widget_modify_fg gtk_widget_modify_fg
 #define atsctrb_gtk_widget_modify_bg gtk_widget_modify_bg
+
+#define atsctrb_gtk_widget_get_colormap gtk_widget_get_colormap
 
 #define atsctrb_gtk_widget_queue_draw_area gtk_widget_queue_draw_area
 

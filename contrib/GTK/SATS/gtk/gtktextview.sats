@@ -38,6 +38,17 @@
 
 (* ****** ****** *)
 
+abst@ype GtkTextWindowType = $extype "GtkTextWindowType"
+macdef GTK_TEXT_WINDOW_PRIVATE = $extval (GtkTextWindowType, "GTK_TEXT_WINDOW_PRIVATE")
+macdef GTK_TEXT_WINDOW_WIDGET = $extval (GtkTextWindowType, "GTK_TEXT_WINDOW_WIDGET")
+macdef GTK_TEXT_WINDOW_TEXT = $extval (GtkTextWindowType, "GTK_TEXT_WINDOW_TEXT")
+macdef GTK_TEXT_WINDOW_LEFT = $extval (GtkTextWindowType, "GTK_TEXT_WINDOW_LEFT")
+macdef GTK_TEXT_WINDOW_RIGHT = $extval (GtkTextWindowType, "GTK_TEXT_WINDOW_RIGHT")
+macdef GTK_TEXT_WINDOW_TOP = $extval (GtkTextWindowType, "GTK_TEXT_WINDOW_TOP")
+macdef GTK_TEXT_WINDOW_BOTTOM = $extval (GtkTextWindowType, "GTK_TEXT_WINDOW_BOTTOM")
+
+(* ****** ****** *)
+
 fun gtk_text_view_new (): GtkTextView_ptr1 = "#atsctrb_gtk_text_view_new"
 
 //
@@ -88,6 +99,16 @@ fun gtk_text_view_set_cursor_visible
   {c:cls | c <= GtkTextView} {l:agz}
   (tv: !gobjptr (c, l), visible: gboolean): void = "#atsctrb_gtk_text_view_set_cursor_visible"
 // end of [gtk_text_view_set_cursor_visible]
+
+(* ****** ****** *)
+
+fun gtk_text_view_get_window
+  {c:cls | c <= GtkTextView} {l:agz} (
+    tv: !gobjptr (c, l), type: GtkTextWindowType
+  ):<> [l1:addr] (
+    minus (gobjptr (c, l), GdkWindow_ptr l1) | GdkWindow_ptr l1
+  ) = "#atsctrb_gtk_text_view_get_window"
+// end of [gtk_text_view_get_window]
 
 (* ****** ****** *)
 

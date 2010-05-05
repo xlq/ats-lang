@@ -37,7 +37,7 @@
 
 %{#
 #include "contrib/glib/CATS/glib/gmem.cats"
-%}
+%} // end of [%{#]
 
 (* ****** ****** *)
 

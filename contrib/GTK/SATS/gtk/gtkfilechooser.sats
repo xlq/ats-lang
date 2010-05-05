@@ -66,10 +66,21 @@ fun gtk_file_chooser_get_filename
 // end of [gtk_file_chooser_get_filename]
 
 fun gtk_file_chooser_set_filename
-  {c:cls | c <= GtkFileChooser} {l:agz}
-  (filesel: !gobjptr (c, l), filename: string): gboolean
+  {c:cls | c <= GtkFileChooser} {l:agz} (filesel: !gobjptr (c, l), filename: string): gboolean
   = "#atsctrb_gtk_file_chooser_set_filename"
 // end of [gtk_file_chooser_set_filename]
+
+(* ****** ****** *)
+
+fun gtk_file_chooser_get_do_overwrite_confirmation
+  {c:cls | c <= GtkFileChooser} {l:agz} (chooser: !gobjptr (c, l)): gboolean
+  = "#atsctrb_gtk_file_chooser_get_do_overwrite_confirmation"
+// end of [gtk_file_chooser_get_do_overwrite_confirmation]
+
+fun gtk_file_chooser_set_do_overwrite_confirmation
+  {c:cls | c <= GtkFileChooser} {l:agz} (chooser: !gobjptr (c, l), yesno: gboolean): void
+  = "#atsctrb_gtk_file_chooser_set_do_overwrite_confirmation"
+// end of [gtk_file_chooser_set_do_overwrite_confirmation]
 
 (* ****** ****** *)
 

@@ -66,4 +66,10 @@ fun gdk_color_free {l:addr}
   
 (* ****** ****** *)
 
+fun gdk_color_parse
+  (spec: string, color: &GdkColor? >> GdkColor): void = "#atsctrb_gdk_color_parse"
+// end of [gdk_color_parse]
+
+(* ****** ****** *)
+
 (* end of [gdkcolor.sats] *)

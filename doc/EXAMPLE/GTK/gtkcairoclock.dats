@@ -160,7 +160,7 @@ implement draw_main
   val () = draw_clock (cr, hr, mt, sd)
 //
   val () = cairo_restore (pf0 | cr)
-} // end of [val]
+} // end of [draw_main]
 
 (* ****** ****** *)
 
@@ -185,19 +185,30 @@ mainats (ats_int_type argc, ats_ptr_type argv) ;
 %{^
 GtkWidget *the_drawingarea = NULL;
 ats_ptr_type
-the_drawingarea_get () {
-  g_object_ref (G_OBJECT(the_drawingarea)); return the_drawingarea ;
-}
+the_drawingarea_takeout () {
+  if (the_drawingarea == NULL) {
+    fprintf (stderr, "exit(the_drawingarea_get): not initialized yet\n"); exit(1);
+  } // end of [if]
+  return the_drawingarea ;
+} // end of [the_drawingarea_takeout]
 ats_void_type
-the_drawingarea_set (ats_ptr_type x) {
-  g_object_ref(G_OBJECT(x)) ;
-  if (the_drawingarea) g_object_unref (G_OBJECT(the_drawingarea));
-  the_drawingarea = x ;
-  return ;
-} // end of [the_drawingarea_set]
+the_drawingarea_initset (ats_ptr_type x) {
+  static the_drawingarea_initset_flag = 0 ;
+  if (the_drawingarea_initset_flag) {
+    fprintf (stderr, "exit(the_drawingarea_initset): already initialized\n"); exit(1);
+  } // end of [if]
+  the_drawingarea_initset_flag = 1 ; the_drawingarea = x ; return ;
+} // end of [the_drawingarea_initset]
 %} // end of [%{^] 
-extern fun the_drawingarea_get (): GtkDrawingArea_ptr1 = "the_drawingarea_get"
-extern fun the_drawingarea_set (x: !GtkDrawingArea_ptr1): void = "the_drawingarea_set"
+extern
+fun the_drawingarea_takeout (): [l:agz]
+  (gobjptr (GtkDrawingArea, l) -<lin,prf> void | gobjptr (GtkDrawingArea, l))
+  = "the_drawingarea_takeout"
+// end of [the_drawingarea_takeout]
+extern
+fun the_drawingarea_initset
+  (x: GtkDrawingArea_ptr1): void = "the_drawingarea_initset"
+// end of [the_drawingarea_initset]
 
 (* ****** ****** *)
 
@@ -230,9 +241,9 @@ end // end of [draw_drawingarea]
 (* ****** ****** *)
 
 fun fexpose (): gboolean = let
-  val darea = the_drawingarea_get ()
+  val (fpf_darea | darea) = the_drawingarea_takeout ()
   val _ = draw_drawingarea (darea)
-  val () = g_object_unref (darea)
+  prval () = fpf_darea (darea)
 in
   GFALSE
 end // end of [fexpose]
@@ -253,7 +264,7 @@ end // end of [sec_changed]
 
 fun ftimeout
   (_: gpointer): gboolean = let
-  val [l:addr] darea = the_drawingarea_get ()
+  val (fpf_darea | darea) = the_drawingarea_takeout ()
   val (fpf_win | win) = gtk_widget_takeout_window (darea)
 in
   if g_object_isnot_null (win) then let
@@ -263,12 +274,12 @@ in
       gtk_widget_queue_draw_area (darea, (gint)0, (gint)0, p->width, p->height)
     // end of [val]
     prval () = minus_addback (fpf, pf | darea)
-    val () = g_object_unref (darea)
+    prval () = fpf_darea (darea)
   in
     GTRUE
   end else let
     prval () = minus_addback (fpf_win, win | darea)
-    val () = g_object_unref (darea)
+    prval () = fpf_darea (darea)
   in
     GFALSE
   end // end of [if]
@@ -283,11 +294,10 @@ implement main1 () = () where {
   val () = gtk_window_set_default_size (window, (gint)400, (gint)400)
   val () = gtk_window_set_title (window, "gtkcairoclock")
   val darea = gtk_drawing_area_new ()
-  val () = the_drawingarea_set (darea)
   val () = gtk_container_add (window, darea)
   val _sid = g_signal_connect
     (darea, (gsignal)"expose-event", G_CALLBACK (fexpose), (gpointer)null)
-  val () = g_object_unref (darea)
+  val () = the_drawingarea_initset (darea)
   val (fpf_window | window_) = g_object_vref (window)
   val _sid = g_signal_connect0
     (window_, (gsignal)"delete-event", G_CALLBACK (gtk_main_quit), (gpointer)null)

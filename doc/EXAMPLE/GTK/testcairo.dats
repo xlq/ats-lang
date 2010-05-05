@@ -179,7 +179,7 @@ fun on_expose_event
   val (fpf_win | win) = gtk_widget_takeout_window (darea)
   val () = assert_errmsg (g_object_isnot_null (win), #LOCATION)
   val cr = gdk_cairo_create (win)
-  prval () = fpf_win (win)
+  prval () = minus_addback (fpf_win, win | darea)
   val (pf, fpf | p) = gtk_widget_takeout_allocation (darea)
   val () = draw_main (cr, (int_of)p->width, (int_of)p->height)
   prval () = minus_addback (fpf, pf | darea)

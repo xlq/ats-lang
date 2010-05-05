@@ -71,6 +71,11 @@ atsctrb_gdk_color4_set (
   return ;
 } // end of [atsctrb_gdk_color4_set]
 
+#define atsctrb_gdk_color_copy gdk_color_copy
+#define atsctrb_gdk_color_free gdk_color_free
+
+#define atsctrb_gdk_color_parse gdk_color_parse
+
 /* ****** ****** */
 
 //
@@ -88,6 +93,22 @@ GdkEventMask
 atsctrb_lor_GdkEventMask_GdkEventMask
   (GdkEventMask x1, GdkEventMask x2) { return (x1 | x2) ; }
 // end of [atsctrb_lor_GdkEventMask_GdkEventMask]
+
+/* ****** ****** */
+
+//
+// source: gdkrgb.h
+//
+
+#define atsctrb_gdk_rgb_find_color gdk_rgb_find_color
+
+/* ****** ****** */
+
+//
+// source: gdkwindow.h
+//
+
+#define atsctrb_gdk_window_set_background gdk_window_set_background
 
 /* ****** ****** */
 

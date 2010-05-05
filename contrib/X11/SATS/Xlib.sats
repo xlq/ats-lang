@@ -92,12 +92,15 @@ viewtypedef XStrarr1 (n:int) = [l:addr | l > null] XStrarr (n, l)
 
 fun XPtrFree {a:viewt@ype} {l:addr} (x: XPtr (a, l)): void
   = "#atsctrb_XFree"
+// end of [XPtrFree]
 
 fun XArrayFree {a:viewt@ype} {n:nat} {l:addr} (x: XArray (a, n, l)): void
   = "#atsctrb_XFree"
+// end of [XArrayFree]
 
 fun XStringFree {a:viewt@ype} {l:addr} (x: XString l): void
   = "#atsctrb_XFree"
+// end of [XStringFree]
 
 (* ****** ****** *)
 

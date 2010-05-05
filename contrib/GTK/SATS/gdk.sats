@@ -76,6 +76,7 @@ absview GdkFree_v (l:addr) // for free GDK resources
 //
 // class hierarchy for GDK
 //
+objcls GdkColormap = { super: GObject }
 objcls GdkObject = { super: GObject }
   objcls GdkDrawable = { super: GdkObject }
     objcls GdkWindow = { super: GdkDrawable }
@@ -83,6 +84,10 @@ objcls GdkObject = { super: GObject }
 // end of [GdkObject]
 
 (* ****** ****** *)
+
+viewtypedef GdkColormap_ptr (l:addr) = gobjptr (GdkColormap, l)
+viewtypedef GdkColormap_ptr0 = [l:agez] GdkColormap_ptr l
+viewtypedef GdkColormap_ptr1 = [l:addr | l > null] GdkColormap_ptr l
 
 viewtypedef GdkWindow_ptr (l:addr) = gobjptr (GdkWindow, l)
 viewtypedef GdkWindow_ptr0 = [l:agez] GdkWindow_ptr l
@@ -97,6 +102,8 @@ viewtypedef GdkWindow_ptr1 = [l:addr | l > null] GdkWindow_ptr l
 #include "contrib/GTK/SATS/gdk/gdkcolor.sats"
 #include "contrib/GTK/SATS/gdk/gdkevents.sats"
 #include "contrib/GTK/SATS/gdk/gdkkeys.sats"
+#include "contrib/GTK/SATS/gdk/gdkrgb.sats"
+#include "contrib/GTK/SATS/gdk/gdkwindow.sats"
 
 (* ****** ****** *)
 

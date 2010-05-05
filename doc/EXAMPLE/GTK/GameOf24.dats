@@ -292,7 +292,7 @@ fun answering
   ) : void // end of [val]
   val () = g_object_unref (hbox1)
 //
-  prval () = fpf_vbox0 (vbox0)
+  prval () = minus_addback (fpf_vbox0, vbox0 | dialog)
   val () = gtk_widget_show (dialog)
 //
   val () = while (true) let
