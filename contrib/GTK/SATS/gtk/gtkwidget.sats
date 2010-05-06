@@ -161,12 +161,12 @@ fun gtk_widget_remove_accelerator
 //
 // HX-2010-04-18: this is probably safe enough :)
 //
-fun gtk_widget_takeout_window(*GDK*)
+fun gtk_widget_get_window(*GDK*)
   {c:cls | c <= GtkWidget} {l:agz} (widget: !gobjptr (c, l))
   : [l_win:addr] (
     minus (gobjptr (c, l), gobjptr (GdkWindow, l_win)) | gobjptr (GdkWindow, l_win)
-  ) = "atsctrb_gtk_widget_takeout_window" // function!
-// end of [gtk_widget_takeout_window]
+  ) = "atsctrb_gtk_widget_get_window" // function!
+// end of [gtk_widget_get_window]
 
 (* ****** ****** *)
 
@@ -183,14 +183,14 @@ fun gtk_widget_set_allocation
   = "#atsctrb_gtk_widget_set_allocation"
 // end of [gtk_widget_set_allocation]
 
-fun gtk_widget_takeout_allocation
+fun gtk_widget_getref_allocation
   {c:cls | c <= GtkWidget} {l:agz}
   (widget: !gobjptr (c, l))
   : [l_alloc:addr] (
     GtkAllocation @ l_alloc, minus (gobjptr (c, l), GtkAllocation @ l_alloc)
   | ptr l_alloc
-  ) = "atsctrb_gtk_widget_takeout_allocation" // function!
-// end of [gtk_widget_takeout_allocation]
+  ) = "atsctrb_gtk_widget_getref_allocation" // function!
+// end of [gtk_widget_getref_allocation]
 
 (* ****** ****** *)
 

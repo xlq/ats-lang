@@ -239,7 +239,7 @@ fun answering
   (xs: List exp): void = () where {
   val dialog = answering_gtk_dialog_new ()
 //
-  val (fpf_vbox0 | vbox0) = gtk_dialog_takeout_vbox (dialog)
+  val (fpf_vbox0 | vbox0) = gtk_dialog_get_vbox (dialog)
 //
   val hbox1 = gtk_hbox_new (GFALSE, (gint)0)
   val () = gtk_widget_show (hbox1)

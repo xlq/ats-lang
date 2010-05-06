@@ -67,7 +67,7 @@ fun gtk_text_view_set_buffer
 // end of [gtk_text_view_set_buffer]
 
 //
-// HX: this one should be called 'takeout' (instead of 'get')
+// HX-2010-05-06: this one is 'get0'
 //
 fun gtk_text_view_get_buffer
   {c:cls | c <= GtkTextView} {l:agz}

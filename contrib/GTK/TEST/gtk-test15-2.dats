@@ -68,7 +68,7 @@ implement main1 () = () where {
   val _sid = g_signal_connect1
     (filew, (gsignal)"destroy", G_CALLBACK(gtk_widget_destroy), (gpointer)null)
 //
-  val (fpf_chooser | chooser) = gtk_file_chooser_dialog_takeout_chooser (filew)
+  val (fpf_chooser | chooser) = gtk_file_chooser_dialog_get_chooser (filew)
 //
   // val _ret = gtk_file_chooser_set_filename (filew, "/tmp")
 //

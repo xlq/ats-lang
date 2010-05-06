@@ -824,17 +824,44 @@ fun cairo_pattern_create_rgb
   (red: double, green: double, blue: double): cairo_pattern_ref1
   = "#atsctrb_cairo_pattern_create_rgb"
 
+(* ****** ****** *)
+
 fun cairo_pattern_create_rgba
   (red: double, green: double, blue: double, alpha: double): cairo_pattern_ref1
   = "#atsctrb_cairo_pattern_create_rgba"
 
+fun cairo_pattern_get_rgba
+  {l:agz} (
+    pat: !cairo_pattern_ref l
+  , r: &double? >> double
+  , g: &double? >> double
+  , b: &double? >> double    
+  , a: &double? >> double
+  ) : void = "#atsctrb_cairo_pattern_get_rgba"
+// end of [cairo_pattern_get_rgba]
+
+(* ****** ****** *)
+
 fun cairo_pattern_create_for_surface
   {l:agz} (sf: !cairo_surface_ref l): cairo_pattern_ref1
   = "#atsctrb_cairo_pattern_create_for_surface"
+
+fun cairo_pattern_get_surface
+  {l:agz} (
+    pat: !cairo_pattern_ref l
+  , surface: &cairo_surface_ref1? >> cairo_surface_ref l1
+  ) : #[l1:agz] ( // HX-2010-05-05: no ownership transfer
+    minus (cairo_pattern_ref l, cairo_surface_ref l1) | cairo_status_t
+  ) = "#atsctrb_cairo_pattern_get_surface"
+// end of [cairo_pattern_get_surface]
  
+(* ****** ****** *)
+
 fun cairo_pattern_create_linear
   (x0: double, x1: double, x2: double, x3: double): cairo_pattern_ref1
   = "#atsctrb_cairo_pattern_create_linear"
+
+(* ****** ****** *)
 
 fun cairo_pattern_create_radial (
     cx0: double, cy0: double, rad0: double, cx1: double, cy1: double, rad1: double

@@ -257,7 +257,16 @@ fun GINT_TO_POINTER
 absviewtype gstring (l:addr)
 viewtypedef gstring0 = [l:agez] gstring l
 viewtypedef gstring1 = [l:addr | l > null] gstring l
-castfn ptr_of_gstring {l:addr} (x: gstring l):<> ptr l
+castfn ptr_of_gstring {l:addr} (x: !gstring l):<> ptr l
+overload ptr_of with ptr_of_gstring
+
+fun g_strdup {l:agz} (x: !gstring l): gstring1
+  = "#atsctrb_g_strdup"
+fun g_strdup0 {l:addr} (x: !gstring l): gstring0
+  = "#atsctrb_g_strdup"
+fun g_strdup_printf {ts:types}
+  (fmt: printf_c ts, arg: ts): gstring1 = "#atsctrb_g_strdup_printf"
+// end of [g_strdup_printf]
 
 (* ****** ****** *)
 

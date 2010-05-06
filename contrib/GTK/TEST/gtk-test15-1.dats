@@ -48,12 +48,12 @@ implement main1 () = () where {
   val _sid = g_signal_connect0
     (filew_, (gsignal)"destroy", G_CALLBACK(gtk_main_quit), (gpointer)null)
 //
-  val (fpf_btn | btn) = gtk_file_selection_takeout_ok_button (filew)
+  val (fpf_btn | btn) = gtk_file_selection_get_ok_button (filew)
   val _sid = g_signal_connect_swapped
     (btn, (gsignal)"clicked", G_CALLBACK(file_ok_sel), filew)
   prval () = minus_addback (fpf_btn, btn | filew)
 //
-  val (fpf_btn | btn) = gtk_file_selection_takeout_cancel_button (filew)
+  val (fpf_btn | btn) = gtk_file_selection_get_cancel_button (filew)
   val _sid = g_signal_connect_swapped
     (btn, (gsignal)"clicked", G_CALLBACK(gtk_widget_destroy), filew)
   prval () = minus_addback (fpf_btn, btn | filew)

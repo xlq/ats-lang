@@ -38,6 +38,22 @@
 
 (* ****** ****** *)
 
+//
+// HX:
+// Some naming conventions used in this API for GTK
+//
+// get0 : get out a value that must be returned
+// get1 : get out a value by increasing its reference count
+// getref : get out a reference that must be returned
+//
+// set0 : consume-set; the original value is freed if necessary
+// set1 : preserve-set; the original value is freed if necessary
+//
+// takeout : this is the same as get0
+//
+
+(* ****** ****** *)
+
 %{#
 #include "contrib/GTK/CATS/gtk.cats"
 %} // end of [%{#]

@@ -46,8 +46,9 @@ GTKCCFLAGS=`pkg-config gtk+-2.0 --cflags`
 ######
 
 SOURCES := \
-  atsui_comp.sats atsui_comp.dats \
   atsui_util.sats atsui_util.dats \
+  atsui_comp.sats atsui_comp.dats \
+  atsui_srcwinlst.sats atsui_srcwinlst.dats \
   atsui_topenv.sats atsui_topenv.dats \
 
 OBJECTS := $(SOURCES)
@@ -74,6 +75,14 @@ atsui_main_dats.o: atsui_main.dats
 
 ######
 
+atsui_util_sats.o: atsui_util.sats
+	$(ATSCC) $(ATSCCFLAGS) $(GTKCCFLAGS) -c atsui_util.sats
+
+atsui_util_dats.o: atsui_util.dats
+	$(ATSCC) $(ATSCCFLAGS) $(GTKCCFLAGS) -c atsui_util.dats
+
+######
+
 atsui_comp_sats.o: atsui_comp.sats
 	$(ATSCC) $(ATSCCFLAGS) $(GTKCCFLAGS) -c atsui_comp.sats
 
@@ -82,11 +91,11 @@ atsui_comp_dats.o: atsui_comp.dats
 
 ######
 
-atsui_util_sats.o: atsui_util.sats
-	$(ATSCC) $(ATSCCFLAGS) $(GTKCCFLAGS) -c atsui_util.sats
+atsui_srcwinlst_sats.o: atsui_srcwinlst.sats
+	$(ATSCC) $(ATSCCFLAGS) $(GTKCCFLAGS) -c atsui_srcwinlst.sats
 
-atsui_util_dats.o: atsui_util.dats
-	$(ATSCC) $(ATSCCFLAGS) $(GTKCCFLAGS) -c atsui_util.dats
+atsui_srcwinlst_dats.o: atsui_srcwinlst.dats
+	$(ATSCC) $(ATSCCFLAGS) $(GTKCCFLAGS) -c atsui_srcwinlst.dats
 
 ######
 

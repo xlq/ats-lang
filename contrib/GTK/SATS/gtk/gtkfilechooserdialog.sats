@@ -61,14 +61,14 @@ gtk_file_chooser_dialog_new (
 
 //
 // HX-2010-05-02:
-// note that this is really a cast (intead of a field selection)
+// note that this is really just a cast (intead of a field selection)
 //
-fun gtk_file_chooser_dialog_takeout_chooser
+fun gtk_file_chooser_dialog_get_chooser
   {c:cls | c <= GtkFileChooserDialog} {l:agz}
   (chooserdlg: !gobjptr (c, l)): [l1:agz] (
     minus (gobjptr (c, l), gobjptr (GtkFileChooser, l1)) | gobjptr (GtkFileChooser, l1)
   ) = "#atsctrb_GTK_FILE_CHOOSER"
-// end of [gtk_file_chooser_dialog_takeout_chooser]
+// end of [gtk_file_chooser_dialog_get_chooser]
 
 (* ****** ****** *)
 

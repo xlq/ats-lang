@@ -46,7 +46,7 @@ fun gtk_range_set_update_policy
 
 (* ****** ****** *)
 //
-// HX-2010-04: this one should be called 'takeout' in ATS:
+// HX-2010-04: this one is 'get0' in ATS:
 //
 fun gtk_range_get_adjustment
   {c:cls | c <= GtkRange} {l:agz}
@@ -56,7 +56,8 @@ fun gtk_range_get_adjustment
 // end of [gtk_range_get_adjustment]
 
 //
-// HX-2010-04-13: [g_object_ref] is called on [adj] if it is added!
+// HX-2010-04-13:
+// this one is 'set1': [g_object_ref] is called on [adj] if it is added!
 //
 fun gtk_range_set_adjustment
   {c:cls | c <= GtkRange} {l1,l2:agz}

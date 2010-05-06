@@ -185,12 +185,12 @@ mainats (ats_int_type argc, ats_ptr_type argv) ;
 %{^
 GtkWidget *the_drawingarea = NULL;
 ats_ptr_type
-the_drawingarea_takeout () {
+the_drawingarea_get () {
   if (the_drawingarea == NULL) {
     fprintf (stderr, "exit(the_drawingarea_get): not initialized yet\n"); exit(1);
   } // end of [if]
   return the_drawingarea ;
-} // end of [the_drawingarea_takeout]
+} // end of [the_drawingarea_get]
 ats_void_type
 the_drawingarea_initset (ats_ptr_type x) {
   static the_drawingarea_initset_flag = 0 ;
@@ -201,10 +201,10 @@ the_drawingarea_initset (ats_ptr_type x) {
 } // end of [the_drawingarea_initset]
 %} // end of [%{^] 
 extern
-fun the_drawingarea_takeout (): [l:agz]
+fun the_drawingarea_get (): [l:agz]
   (gobjptr (GtkDrawingArea, l) -<lin,prf> void | gobjptr (GtkDrawingArea, l))
-  = "the_drawingarea_takeout"
-// end of [the_drawingarea_takeout]
+  = "the_drawingarea_get"
+// end of [the_drawingarea_get]
 extern
 fun the_drawingarea_initset
   (x: GtkDrawingArea_ptr1): void = "the_drawingarea_initset"
@@ -220,12 +220,12 @@ extern fun gdk_cairo_create
 fun draw_drawingarea
   {c:cls | c <= GtkDrawingArea} {l:agz}
   (darea: !gobjptr (c, l)): void = let
-  val (fpf_win | win) = gtk_widget_takeout_window (darea)
+  val (fpf_win | win) = gtk_widget_get_window (darea)
 in
   if g_object_isnot_null (win) then let
     val cr = gdk_cairo_create (win)
     prval () = minus_addback (fpf_win, win | darea)
-    val (pf, fpf | p) = gtk_widget_takeout_allocation (darea)
+    val (pf, fpf | p) = gtk_widget_getref_allocation (darea)
     val () = draw_main (cr, (int_of)p->width, (int_of)p->height)
     prval () = minus_addback (fpf, pf | darea)
     val () = cairo_destroy (cr)
@@ -241,7 +241,7 @@ end // end of [draw_drawingarea]
 (* ****** ****** *)
 
 fun fexpose (): gboolean = let
-  val (fpf_darea | darea) = the_drawingarea_takeout ()
+  val (fpf_darea | darea) = the_drawingarea_get ()
   val _ = draw_drawingarea (darea)
   prval () = fpf_darea (darea)
 in
@@ -264,12 +264,12 @@ end // end of [sec_changed]
 
 fun ftimeout
   (_: gpointer): gboolean = let
-  val (fpf_darea | darea) = the_drawingarea_takeout ()
-  val (fpf_win | win) = gtk_widget_takeout_window (darea)
+  val (fpf_darea | darea) = the_drawingarea_get ()
+  val (fpf_win | win) = gtk_widget_get_window (darea)
 in
   if g_object_isnot_null (win) then let
     prval () = minus_addback (fpf_win, win | darea)
-    val (pf, fpf | p) = gtk_widget_takeout_allocation (darea)
+    val (pf, fpf | p) = gtk_widget_getref_allocation (darea)
     val () = if sec_changed () then
       gtk_widget_queue_draw_area (darea, (gint)0, (gint)0, p->width, p->height)
     // end of [val]

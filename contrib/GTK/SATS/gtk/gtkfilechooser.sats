@@ -60,6 +60,10 @@ macdef GTK_FILE_CHOOSER_CONFIRMATION_SELECT_AGAIN =
 
 (* ****** ****** *)
 
+//
+// HX-2010-05-05:
+// the return may be a NULL gstring
+//
 fun gtk_file_chooser_get_filename
   {c:cls | c <= GtkFileChooser} {l:agz} (chooser: !gobjptr (c, l)): gstring0
   = "#atsctrb_gtk_file_chooser_get_filename"

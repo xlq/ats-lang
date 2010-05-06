@@ -286,7 +286,7 @@ atsctrb_gtk_color_selection_dialog_new
 
 ATSinline()
 ats_ptr_type
-atsctrb_gtk_color_selection_dialog_takeout_colorsel
+atsctrb_gtk_color_selection_dialog_get_colorsel
   (ats_ptr_type colorseldlg) {
   return ((GtkColorSelectionDialog*)colorseldlg)->colorsel ;
 } // end of [...]
@@ -313,21 +313,21 @@ atsctrb_gtk_dialog_new () {
 
 ATSinline()
 ats_ptr_type
-atsctrb_gtk_dialog_takeout_window
+atsctrb_gtk_dialog_get_window
   (ats_ptr_type dialog) {
   return &((GtkDialog*)dialog)->window ;
-} // end of [gtk_dialog_takeout_window]
+} // end of [gtk_dialog_get_window]
 
 ATSinline()
 ats_ptr_type
-atsctrb_gtk_dialog_takeout_vbox
+atsctrb_gtk_dialog_get_vbox
   (ats_ptr_type dialog) {
   return ((GtkDialog*)dialog)->vbox ;
 } // end of [...]
 
 ATSinline()
 ats_ptr_type
-atsctrb_gtk_dialog_takeout_action_area
+atsctrb_gtk_dialog_get_action_area
   (ats_ptr_type dialog) {
   return ((GtkDialog*)dialog)->action_area ;
 } // end of [...]
@@ -443,14 +443,14 @@ atsctrb_gtk_file_selection_new
 
 ATSinline()
 ats_ptr_type
-atsctrb_gtk_file_selection_takeout_ok_button
+atsctrb_gtk_file_selection_get_ok_button
   (ats_ptr_type filesel) {
   return ((GtkFileSelection*)filesel)->ok_button ;
 } // end of [...]
 
 ATSinline()
 ats_ptr_type
-atsctrb_gtk_file_selection_takeout_cancel_button
+atsctrb_gtk_file_selection_get_cancel_button
   (ats_ptr_type filesel) {
   return ((GtkFileSelection*)filesel)->cancel_button ;
 } // end of [...]
@@ -1179,15 +1179,15 @@ atsctrb_gtk_vseparator_new () {
 //
 ATSinline()
 ats_ptr_type
-atsctrb_gtk_widget_takeout_window
+atsctrb_gtk_widget_get_window
   (ats_ptr_type widget) { return (GTK_WIDGET(widget))->window ; }
-// end of [atsctrb_gtk_widget_takeout_window]
+// end of [atsctrb_gtk_widget_get_window]
 
 ATSinline()
 ats_ptr_type
-atsctrb_gtk_widget_takeout_allocation
+atsctrb_gtk_widget_getref_allocation
   (ats_ptr_type widget) { return &(GTK_WIDGET(widget))->allocation ; }
-// end of [atsctrb_gtk_widget_takeout_allocation]
+// end of [atsctrb_gtk_widget_get_allocation]
 #define atsctrb_gtk_widget_get_allocation gtk_widget_get_allocation
 #define atsctrb_gtk_widget_set_allocation gtk_widget_set_allocation
 

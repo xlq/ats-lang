@@ -42,19 +42,17 @@
 //
 #include "contrib/glib/CATS/glib/gbasics.cats"
 //
-#include "contrib/glib/CATS/glib/gmem.cats"
+#define atsctrb_g_strdup g_strdup
+#define atsctrb_g_strdup_printf g_strdup_printf
 //
 #include "contrib/glib/CATS/glib/garray.cats"
 #include "contrib/glib/CATS/glib/ghash.cats"
 #include "contrib/glib/CATS/glib/glist.cats" // doubly-linked
+#include "contrib/glib/CATS/glib/gmem.cats"
 #include "contrib/glib/CATS/glib/gqsort.cats"
 #include "contrib/glib/CATS/glib/grand.cats"
 #include "contrib/glib/CATS/glib/gslist.cats" // singly-linked
 #include "contrib/glib/CATS/glib/gstring.cats"
-
-/* ****** ****** */
-
-#define atsctrb_g_strdup g_strdup
 
 /* ****** ****** */
 

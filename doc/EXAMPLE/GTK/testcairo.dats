@@ -176,11 +176,11 @@ extern fun gdk_cairo_create
 fun on_expose_event
   {c:cls | c <= GtkDrawingArea} {l:agz}
   (darea: !gobjptr (c, l), event: &GdkEvent): gboolean = let
-  val (fpf_win | win) = gtk_widget_takeout_window (darea)
+  val (fpf_win | win) = gtk_widget_get_window (darea)
   val () = assert_errmsg (g_object_isnot_null (win), #LOCATION)
   val cr = gdk_cairo_create (win)
   prval () = minus_addback (fpf_win, win | darea)
-  val (pf, fpf | p) = gtk_widget_takeout_allocation (darea)
+  val (pf, fpf | p) = gtk_widget_getref_allocation (darea)
   val () = draw_main (cr, (int_of)p->width, (int_of)p->height)
   prval () = minus_addback (fpf, pf | darea)
   val () = cairo_destroy (cr)

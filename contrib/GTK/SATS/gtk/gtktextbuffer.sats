@@ -45,7 +45,7 @@ fun gtk_text_buffer_new_null ()
 (* ****** ****** *)
 
 //
-// HX: this one should be called 'takeout' instead of 'get'
+// HX-2010-05-06: this one is 'get0'
 //
 fun gtk_text_buffer_get_tag_table
   {c:cls | c <= GtkTextBuffer} {l:agz}

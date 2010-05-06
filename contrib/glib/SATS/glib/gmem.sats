@@ -45,6 +45,7 @@ symintr g_free
 
 (* ****** ****** *)
 
+castfn gstring_free_null (x: gstring null):<> ptr null
 fun gstring_free {l:addr} (x: gstring l): void = "#atsctrb_g_free"
 overload g_free with gstring_free
 

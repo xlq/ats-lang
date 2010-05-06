@@ -276,7 +276,11 @@ atsctrb_cairo_get_dash (
 
 #define atsctrb_cairo_pattern_create_rgb cairo_pattern_create_rgb
 #define atsctrb_cairo_pattern_create_rgba cairo_pattern_create_rgba
+#define atsctrb_cairo_pattern_get_rgba cairo_pattern_get_rgba
+
 #define atsctrb_cairo_pattern_create_for_surface cairo_pattern_create_for_surface
+#define atsctrb_cairo_pattern_get_surface cairo_pattern_get_surface
+
 #define atsctrb_cairo_pattern_create_linear cairo_pattern_create_linear
 #define atsctrb_cairo_pattern_create_radial cairo_pattern_create_radial
 

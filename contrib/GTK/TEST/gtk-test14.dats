@@ -72,11 +72,11 @@ fun cb_color_changed
 %{^
 GdkColor the_color ;
 ATSinline()
-ats_ptr_type the_color_takeout () { return &the_color ; }
+ats_ptr_type the_color_getref () { return &the_color ; }
 %} // end of [%{^]
-extern fun the_color_takeout ()
-  : [l:addr] (GdkColor @ l, GdkColor @ l -<lin,prf> void | ptr l) = "the_color_takeout"
-// end of [the_color_takeout]
+extern fun the_color_getref ()
+  : [l:addr] (GdkColor @ l, GdkColor @ l -<lin,prf> void | ptr l) = "the_color_getref"
+// end of [the_color_getref]
 
 (* ****** ****** *)
 
@@ -108,10 +108,10 @@ in
       val () = (print "p_colorseldlg(1) = "; print p_colorseldlg; print_newline ())
 *)
       val (fpf_colorsel | colorsel) =
-        gtk_color_selection_dialog_takeout_colorsel (colorseldlg)
+        gtk_color_selection_dialog_get_colorsel (colorseldlg)
       // end of [val]
 //
-      val (pf_color, fpf_color | p_color) = the_color_takeout ()
+      val (pf_color, fpf_color | p_color) = the_color_getref ()
 //
       val () = gtk_color_selection_set_previous_color (colorsel, !p_color)
       val () = gtk_color_selection_set_current_color (colorsel, !p_color)
@@ -160,7 +160,7 @@ implement main1 () = () where {
   ) // end of [val]
   val darea = gtk_drawing_area_new ()
   val () = the_drawingarea_set (darea)
-  val (pf_color, fpf_color | p_color) = the_color_takeout ()
+  val (pf_color, fpf_color | p_color) = the_color_getref ()
   val () = gdk_color3_set (!p_color, 0U, 65535U, 0U)
   val () = gtk_widget_modify_bg (darea, GTK_STATE_NORMAL, !p_color)
   prval () = fpf_color (pf_color)

@@ -50,19 +50,19 @@ fun gtk_file_selection_new
 
 (* ****** ****** *)
 
-fun gtk_file_selection_takeout_ok_button
+fun gtk_file_selection_get_ok_button
   {c:cls | c <= GtkFileSelection} {l:agz}
   (filesel: !gobjptr (c, l)):<> [l_btn:agz] (
     minus (gobjptr (c, l), gobjptr (GtkButton, l_btn)) | gobjptr (GtkButton, l_btn)
-  ) = "atsctrb_gtk_file_selection_takeout_ok_button"
-// end of [gtk_file_selection_takeout_ok_button]
+  ) = "atsctrb_gtk_file_selection_get_ok_button"
+// end of [gtk_file_selection_get_ok_button]
 
-fun gtk_file_selection_takeout_cancel_button
+fun gtk_file_selection_get_cancel_button
   {c:cls | c <= GtkFileSelection} {l:agz}
   (filesel: !gobjptr (c, l)):<> [l_btn:agz] (
     minus (gobjptr (c, l), gobjptr (GtkButton, l_btn)) | gobjptr (GtkButton, l_btn)
-  ) = "atsctrb_gtk_file_selection_takeout_cancel_button"
-// end of [gtk_file_selection_takeout_cancel_button]
+  ) = "atsctrb_gtk_file_selection_get_cancel_button"
+// end of [gtk_file_selection_get_cancel_button]
 
 (* ****** ****** *)
 

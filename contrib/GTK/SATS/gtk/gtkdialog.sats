@@ -126,27 +126,27 @@ gtk_dialog_new_with_buttons (
 // Yes. E.g, it may be needed for setting transient-window property
 // for the parent window.
 //
-fun gtk_dialog_takeout_window
+fun gtk_dialog_get_window
   {c:cls | c <= GtkDialog} {l:agz}
   (dialog: !gobjptr (c, l))
-  :<> [l_win:agz] (
+  :<> [l_win:agz] ( // this one is actually 'getref'
     minus (gobjptr (c, l), gobjptr (GtkWindow, l_win)) | gobjptr (GtkWindow, l_win)
-  ) = "#atsctrb_gtk_dialog_takeout_window"
-// end of [gtk_dialog_takeout_window]
+  ) = "#atsctrb_gtk_dialog_get_window"
+// end of [gtk_dialog_get_window]
 
-fun gtk_dialog_takeout_vbox
+fun gtk_dialog_get_vbox
   {c:cls | c <= GtkDialog} {l:agz}
   (dialog: !gobjptr (c, l)):<> [l_box:agz] (
     minus (gobjptr (c, l), gobjptr (GtkVBox, l_box)) | gobjptr (GtkVBox, l_box)
-  ) = "#atsctrb_gtk_dialog_takeout_vbox"
-// end of [gtk_dialog_takeout_vbox]
+  ) = "#atsctrb_gtk_dialog_get_vbox"
+// end of [gtk_dialog_get_vbox]
 
-fun gtk_dialog_takeout_action_area
+fun gtk_dialog_get_action_area
   {c:cls | c <= GtkDialog} {l:agz}
   (dialog: !gobjptr (c, l)):<> [l_box:agz] (
     minus (gobjptr (c, l), gobjptr (GtkHBox, l_box)) | gobjptr (GtkHBox, l_box)
-  ) = "#atsctrb_gtk_dialog_takeout_action_area"
-// end of [gtk_dialog_takeout_action_area]
+  ) = "#atsctrb_gtk_dialog_get_action_area"
+// end of [gtk_dialog_get_action_area]
 
 (* ****** ****** *)
 
