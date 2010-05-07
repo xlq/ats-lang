@@ -39,7 +39,7 @@
 (* ****** ****** *)
 
 fun gtk_hruler_new
-  (): GtkHRuler_ptr1 = "#atsctrb_gtk_hruler_new"
+  (): GtkHRuler_ref1 = "#atsctrb_gtk_hruler_new"
 // end of [gtk_hruler_new]
 
 (* ****** ****** *)

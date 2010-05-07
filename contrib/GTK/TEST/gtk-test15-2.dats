@@ -20,7 +20,7 @@ staload "contrib/GTK/SATS/gtk.sats"
 (* ****** ****** *)
 
 fun file_open {l:agz} (
-    chooser: !gobjptr (GtkFileChooser, l)
+    chooser: !gobjref (GtkFileChooser, l)
   ) : void = () where {
   val [l1:addr] gstr = gtk_file_chooser_get_filename (chooser)
   val () = printf ("%s\n", @(__cast gstr)) where {

@@ -28,12 +28,12 @@ staload "contrib/GTK/SATS/gtk.sats"
 (* ****** ****** *)
 
 fun callback {c:cls | c <= GtkWidget} {l:agz}
-  (widget: !gobjptr (c, l), data: string): void =
+  (widget: !gobjref (c, l), data: string): void =
   printf ("Hello again: %s was pressed\n", @(data))
 // end of [callback]
 
 fun handle_delete_event {c:cls | c <= GtkWidget} {l:agz}
-  (widget: !gobjptr (c, l), event: &GdkEvent, _: gpointer): gboolean = let
+  (widget: !gobjref (c, l), event: &GdkEvent, _: gpointer): gboolean = let
   val () = (print "this is from [handle_delete_event]"; print_newline ())
 in
   GFALSE // deletion 
@@ -41,7 +41,7 @@ end // end of [handle_delete_event]
 
 fun handle_destroy
   {c:cls | c <= GtkWidget} {l:agz}
-  (widget: gobjptr (c, l)): void = () where {
+  (widget: gobjref (c, l)): void = () where {
   val () = (print "this is from [handle_destroy]"; print_newline ())
   val () = gtk_widget_destroy (widget)
   val () = gtk_main_quit ()

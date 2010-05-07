@@ -39,20 +39,20 @@
 (* ****** ****** *)
 
 fun gtk_text_tag_table_new ()
-  : GtkTextTagTable_ptr1 = "#atsctrb_gtk_text_tag_table_new"
+  : GtkTextTagTable_ref1 = "#atsctrb_gtk_text_tag_table_new"
 // end of [gtk_text_tag_table_new]
 
 (* ****** ****** *)
 
 fun gtk_text_tag_table_add
   {c1,c2:cls | c1 <= GtkTextTagTable; c2 <= GtkTextTag}
-  {l1,l2:agz} (tbl: !gobjptr (c1, l1), tag: !gobjptr (c2, l2)): void
+  {l1,l2:agz} (tbl: !gobjref (c1, l1), tag: !gobjref (c2, l2)): void
   = "#atsctrb_gtk_text_tag_table_add"
 // end of [gtk_text_tag_table_add]
 
 fun gtk_text_tag_table_remove
   {c1,c2:cls | c1 <= GtkTextTagTable; c2 <= GtkTextTag}
-  {l1,l2:agz} (tbl: !gobjptr (c1, l1), tag: !gobjptr (c2, l2)): void
+  {l1,l2:agz} (tbl: !gobjref (c1, l1), tag: !gobjref (c2, l2)): void
   = "#atsctrb_gtk_text_tag_table_add"
 // end of [gtk_text_tag_table_add]
 

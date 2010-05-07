@@ -44,18 +44,18 @@
 //
 fun gtk_scrolled_window_new
   {c1,c2:cls | c1 <= GtkAdjustment; c2 <= GtkAdjustment}
-  {l1,l2:addr} (hadj: !gobjptr (c1, l1), vadj: !gobjptr (c2, l2)): GtkScrolledWindow_ptr1
+  {l1,l2:addr} (hadj: !gobjref (c1, l1), vadj: !gobjref (c2, l2)): GtkScrolledWindow_ref1
   = "atsctrb_gtk_scrolled_window_new"
 // end of [gtk_scrolled_window_new]
 
-fun gtk_scrolled_window_new_null (): GtkScrolledWindow_ptr1
+fun gtk_scrolled_window_new_null (): GtkScrolledWindow_ref1
   = "atsctrb_gtk_scrolled_window_new_null"
 
 (* ****** ****** *)
 
 fun gtk_scrolled_window_get_policy
   {c:cls | c <= GtkScrolledWindow} {l:agz} (
-    win: !gobjptr (c, l)
+    win: !gobjref (c, l)
   , hp: &GtkPolicyType? >> GtkPolicyType
   , vp: &GtkPolicyType? >> GtkPolicyType
   ) : void
@@ -64,7 +64,7 @@ fun gtk_scrolled_window_get_policy
 
 fun gtk_scrolled_window_set_policy
   {c:cls | c <= GtkScrolledWindow} {l:agz}
-  (win: !gobjptr (c, l), hp: GtkPolicyType, vp: GtkPolicyType): void
+  (win: !gobjref (c, l), hp: GtkPolicyType, vp: GtkPolicyType): void
   = "#atsctrb_gtk_scrolled_window_set_policy"
 // end of [gtk_scrolled_window_set_policy]
 
@@ -72,13 +72,13 @@ fun gtk_scrolled_window_set_policy
 
 fun gtk_scrolled_window_get_placement
   {c:cls | c <= GtkScrolledWindow} {l:agz}
-  (win: !gobjptr (c, l)): GtkCornerType
+  (win: !gobjref (c, l)): GtkCornerType
   = "#atsctrb_gtk_scrolled_window_get_placement"
 // end of [gtk_scrolled_window_get_placement]
 
 fun gtk_scrolled_window_set_placement
   {c:cls | c <= GtkScrolledWindow} {l:agz}
-  (win: !gobjptr (c, l), placement: GtkCornerType): void
+  (win: !gobjref (c, l), placement: GtkCornerType): void
   = "#atsctrb_gtk_scrolled_window_set_placement"
 // end of [gtk_scrolled_window_set_placement]
 

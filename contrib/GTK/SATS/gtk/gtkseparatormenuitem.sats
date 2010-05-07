@@ -39,7 +39,7 @@
 (* ****** ****** *)
 
 fun gtk_separator_menu_item_new
-  (): GtkSeparatorMenuItem_ptr1 = "atsctrb_gtk_separator_menu_item_new"
+  (): GtkSeparatorMenuItem_ref1 = "atsctrb_gtk_separator_menu_item_new"
 // end of [gtk_separator_menu_item_new]
 
 (* ****** ****** *)

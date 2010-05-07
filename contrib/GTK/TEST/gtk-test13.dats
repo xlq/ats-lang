@@ -37,13 +37,13 @@ the_spinner1_set (ats_ptr_type x) {
   return ;
 } // end of [the_spinner1_set]
 %} // end of [%{^] 
-extern fun the_spinner1_get (): GtkSpinButton_ptr1 = "the_spinner1_get"
-extern fun the_spinner1_set (x: !GtkSpinButton_ptr1): void = "the_spinner1_set"
+extern fun the_spinner1_get (): GtkSpinButton_ref1 = "the_spinner1_get"
+extern fun the_spinner1_set (x: !GtkSpinButton_ref1): void = "the_spinner1_set"
 
 (* ****** ****** *)
 
 fun toggle_snap (
-    toggle: !GtkToggleButton_ptr1, spin: !GtkSpinButton_ptr1
+    toggle: !GtkToggleButton_ref1, spin: !GtkSpinButton_ref1
   ) : void = () where {
  val active = gtk_toggle_button_get_active (toggle)
  val () = gtk_spin_button_set_snap_to_ticks (spin, active)
@@ -52,7 +52,7 @@ fun toggle_snap (
 (* ****** ****** *)
 
 fun toggle_numeric (
-    toggle: !GtkToggleButton_ptr1, spin: !GtkSpinButton_ptr1
+    toggle: !GtkToggleButton_ref1, spin: !GtkSpinButton_ref1
   ) : void = () where {
  val active = gtk_toggle_button_get_active (toggle)
  val () = gtk_spin_button_set_numeric (spin, active)
@@ -61,7 +61,7 @@ fun toggle_numeric (
 (* ****** ****** *)
 
 fun change_digits (
-    _: ptr, spin: !GtkSpinButton_ptr1
+    _: ptr, spin: !GtkSpinButton_ref1
   ) : void = () where {
   val spinner1 = the_spinner1_get ()
   val n = gtk_spin_button_get_value_as_int (spin)
@@ -86,8 +86,8 @@ the_val_label_set (ats_ptr_type x) {
   return ;
 } // end of [the_val_label_set]
 %} // end of [%{^] 
-extern fun the_val_label_get (): GtkLabel_ptr1 = "the_val_label_get"
-extern fun the_val_label_set (x: !GtkLabel_ptr1): void = "the_val_label_set"
+extern fun the_val_label_get (): GtkLabel_ref1 = "the_val_label_get"
+extern fun the_val_label_set (x: !GtkLabel_ref1): void = "the_val_label_set"
 
 (* ****** ****** *)
 

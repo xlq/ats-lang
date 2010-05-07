@@ -205,19 +205,19 @@ the_drawingarea_set (ats_ptr_type x) {
   return ;
 } // end of [the_drawingarea_set]
 %} // end of [%{^] 
-extern fun the_drawingarea_get (): GtkDrawingArea_ptr1 = "the_drawingarea_get"
-extern fun the_drawingarea_set (x: !GtkDrawingArea_ptr1): void = "the_drawingarea_set"
+extern fun the_drawingarea_get (): GtkDrawingArea_ref1 = "the_drawingarea_get"
+extern fun the_drawingarea_set (x: !GtkDrawingArea_ref1): void = "the_drawingarea_set"
 
 (* ****** ****** *)
 
 extern fun gdk_cairo_create
-  {c:cls | c <= GdkDrawable} {l:agz} (widget: !gobjptr (c, l)): cairo_ref1
+  {c:cls | c <= GdkDrawable} {l:agz} (widget: !gobjref (c, l)): cairo_ref1
   = "#gdk_cairo_create"
 // end of [gdk_cairo_create]
 
 fun draw_drawingarea
   {c:cls | c <= GtkDrawingArea} {l:agz}
-  (darea: !gobjptr (c, l)): void = let
+  (darea: !gobjref (c, l)): void = let
   val (fpf_win | win) = gtk_widget_get_window (darea)
 in
   if g_object_isnot_null (win) then let

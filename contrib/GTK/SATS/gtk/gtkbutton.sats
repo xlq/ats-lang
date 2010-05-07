@@ -39,20 +39,20 @@
 (* ****** ****** *)
 
 fun gtk_button_new
-  (): GtkButton_ptr1 = "#atsctrb_gtk_button_new"
+  (): GtkButton_ref1 = "#atsctrb_gtk_button_new"
 
 fun gtk_button_new_with_label
-  (label: string): GtkButton_ptr1 = "#atsctrb_gtk_button_new_with_label"
+  (label: string): GtkButton_ref1 = "#atsctrb_gtk_button_new_with_label"
 // end of [gtk_button_new_with_label]
 
 fun gtk_button_new_with_mnemonic
-  (label: string): GtkButton_ptr1 = "#atsctrb_gtk_button_new_with_mnemonic"
+  (label: string): GtkButton_ref1 = "#atsctrb_gtk_button_new_with_mnemonic"
 // end of [gtk_button_new_with_mnemonic]
 
 (* ****** ****** *)
 
 fun gtk_button_new_from_stock
-  (stock_id: string): GtkButton_ptr1 = "#atsctrb_gtk_button_new_from_stock"
+  (stock_id: string): GtkButton_ref1 = "#atsctrb_gtk_button_new_from_stock"
 // end of [gtk_button_new_from_stock]
 
 (* ****** ****** *)
@@ -62,13 +62,13 @@ fun gtk_button_new_from_stock
 //
 fun gtk_button_get_label
   {c:cls | c <= GtkButton} {l:agz}
-  (widget: !gobjptr (c, l)): [t:int] (stamp t | stamped (Stropt, t))
+  (widget: !gobjref (c, l)): [t:int] (stamp t | stamped (Stropt, t))
   = "#atsctrb_gtk_button_get_label"
 // end of [gtk_button_get_label]
 
 fun gtk_button_set_label
   {c:cls | c <= GtkButton} {l:agz}
-  (widget: !gobjptr (c, l), label: Stropt): void
+  (widget: !gobjref (c, l), label: Stropt): void
   = "#atsctrb_gtk_button_set_label"
 // end of [gtk_button_set_label]
 

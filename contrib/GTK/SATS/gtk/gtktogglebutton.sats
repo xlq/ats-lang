@@ -39,27 +39,27 @@
 (* ****** ****** *)
 
 fun gtk_toggle_button_new
-  (): GtkToggleButton_ptr1 = "#atsctrb_gtk_toggle_button_new"
+  (): GtkToggleButton_ref1 = "#atsctrb_gtk_toggle_button_new"
 
 fun gtk_toggle_button_new_with_label
-  (name: string): GtkToggleButton_ptr1 = "#atsctrb_gtk_toggle_button_new_with_label"
+  (name: string): GtkToggleButton_ref1 = "#atsctrb_gtk_toggle_button_new_with_label"
 // end of [gtk_toggle_button_new_with_label]
 
 fun gtk_toggle_button_new_with_mnemonic
-  (name: string): GtkToggleButton_ptr1 = "#atsctrb_gtk_toggle_button_new_with_mnemonic"
+  (name: string): GtkToggleButton_ref1 = "#atsctrb_gtk_toggle_button_new_with_mnemonic"
 // end of [gtk_toggle_button_new_with_mnemonic]
 
 (* ****** ****** *)
 
 fun gtk_toggle_button_set_active
   {c:cls | c <= GtkToggleButton} {l:agz}
-  (button: !gobjptr (c, l), isactive: gboolean): void
+  (button: !gobjref (c, l), isactive: gboolean): void
   = "#atsctrb_gtk_toggle_button_set_active"
 // end of [gtk_toggle_button_set_active]
 
 fun gtk_toggle_button_get_active
   {c:cls | c <= GtkToggleButton} {l:agz}
-  (button: !gobjptr (c, l)): gboolean
+  (button: !gobjref (c, l)): gboolean
   = "#atsctrb_gtk_toggle_button_get_active"
 // end of [gtk_toggle_button_get_active]
 

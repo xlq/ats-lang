@@ -31,7 +31,7 @@ staload PRINTF = "libc/SATS/printf.sats"
 
 fun menu_add_item
   {c:cls | c <= GtkMenu} {l:agz}
-  (menu: !gobjptr (c, l), i: int): void = () where {
+  (menu: !gobjref (c, l), i: int): void = () where {
   #define BUFSZ 1024
   var !p_str with pf_str = @[byte][BUFSZ]()
   val _int = $PRINTF.snprintf (pf_str | p_str, BUFSZ, "Test-undermenu - %i", @(i))
@@ -54,7 +54,7 @@ fun menu_add_item
 (* ****** ****** *)
 
 fun cb_button_press
-  (menu: !GtkMenu_ptr1, event: &GdkEvent): gboolean = let
+  (menu: !GtkMenu_ref1, event: &GdkEvent): gboolean = let
   val _type = event.type
 in
   case+ 0 of

@@ -71,9 +71,12 @@ GInitiallyUnowned_vt (c:cls) = $extype "GInitiallyUnowned"
 
 (* ****** ****** *)
 
-absviewtype gobjptr (c:cls, l:addr) // gobject pointer
-castfn ptr_of_gobjptr {c:cls} {l:addr} (x: !gobjptr (c, l)):<> ptr l
-overload ptr_of with ptr_of_gobjptr
+//
+// HX: [gobjref]: reference-counted
+//
+absviewtype gobjref (c:cls, l:addr) // gobject pointer
+castfn ptr_of_gobjref {c:cls} {l:addr} (x: !gobjref (c, l)):<> ptr l
+overload ptr_of with ptr_of_gobjref
 
 (* ****** ****** *)
 
@@ -83,18 +86,18 @@ objcls GInterface = { super: (*none*) }
 (* ****** ****** *)
 
 fun g_object_is_null
-  {c:cls} {l:addr} (x: !gobjptr (c, l)): bool (l == null)
+  {c:cls} {l:addr} (x: !gobjref (c, l)): bool (l == null)
   = "atspre_ptr_is_null"
 // end of [g_object_is_null]
 
 fun g_object_isnot_null
-  {c:cls} {l:addr} (x: !gobjptr (c, l)): bool (l > null)
+  {c:cls} {l:addr} (x: !gobjref (c, l)): bool (l > null)
   = "atspre_ptr_isnot_null"
 // end of [g_object_is_null]
 
 (* ****** ****** *)
 
-fun g_object_free_null {c:cls} (x: gobjptr (c, null)):<> void
+fun g_object_free_null {c:cls} (x: gobjref (c, null)):<> void
   = "atspre_ptr_free_null"
 // end of [g_object_free_null]
 
@@ -104,7 +107,7 @@ fun g_object_free_null {c:cls} (x: gobjptr (c, null)):<> void
 // HX-2010-04-13: this is unsafe but I cannot find a better means ...
 //
 castfn g_object_vref {c:cls} {l:addr} // vitural reference
-  (x: !gobjptr (c, l)):<> (gobjptr (c, l) -<lin,prf> void | gobjptr (c, l))
+  (x: !gobjref (c, l)):<> (gobjref (c, l) -<lin,prf> void | gobjref (c, l))
 // end of [g_object_vref]
 
 (* ****** ****** *)

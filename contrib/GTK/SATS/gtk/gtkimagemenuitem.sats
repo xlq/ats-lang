@@ -39,16 +39,16 @@
 (* ****** ****** *)
 
 fun gtk_image_menu_item_new
-  (): GtkImageMenuItem_ptr1 = "atsctrb_gtk_image_menu_item_new"
+  (): GtkImageMenuItem_ref1 = "atsctrb_gtk_image_menu_item_new"
 // end of [gtk_image_menu_item_new]
 
 fun gtk_image_menu_item_new_with_label
-  (name: string): GtkImageMenuItem_ptr1
+  (name: string): GtkImageMenuItem_ref1
   = "atsctrb_gtk_image_menu_item_new_with_label"
 // end of [gtk_image_menu_item_new_with_label]
 
 fun gtk_image_menu_item_new_with_mnemonic
-  (name: string): GtkImageMenuItem_ptr1
+  (name: string): GtkImageMenuItem_ref1
   = "atsctrb_gtk_image_menu_item_new_with_mnemonic"
 // end of [gtk_image_menu_item_new_with_mnemonic]
 
@@ -56,12 +56,12 @@ fun gtk_image_menu_item_new_with_mnemonic
 
 fun gtk_image_menu_item_new_from_stock
   {c:cls | c <= GtkAccelGroup} {l:agz}
-  (name: string, aclgrp: !gobjptr (c, l)): GtkImageMenuItem_ptr1
+  (name: string, aclgrp: !gobjref (c, l)): GtkImageMenuItem_ref1
   = "atsctrb_gtk_image_menu_item_new_from_stock"
 // end of [gtk_image_menu_item_new_from_stock]
 
 fun gtk_image_menu_item_new_from_stock_null
-  (name: string): GtkImageMenuItem_ptr1
+  (name: string): GtkImageMenuItem_ref1
   = "#atsctrb_gtk_image_menu_item_new_from_stock_null"
 // end of [gtk_image_menu_item_new_from_stock_null]
 

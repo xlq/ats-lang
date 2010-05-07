@@ -28,7 +28,7 @@ staload "contrib/GTK/SATS/gtk.sats"
 (* ****** ****** *)
 
 fun delete_event {c:cls | c <= GtkWidget} {l:agz}
-  (widget: !gobjptr (c, l), event: &GdkEvent, _: gpointer): gboolean = let
+  (widget: !gobjref (c, l), event: &GdkEvent, _: gpointer): gboolean = let
   val () = gtk_main_quit ()
 in
   GFALSE // deletion 
@@ -42,7 +42,7 @@ fun make_box (
   , expand: gboolean
   , fill: gboolean
   , padding: guint
-  ) : GtkHBox_ptr1 = let
+  ) : GtkHBox_ref1 = let
   val box = gtk_hbox_new (homo, spacing)
 //
   val button = gtk_button_new_with_label ("gtk_box_pack")

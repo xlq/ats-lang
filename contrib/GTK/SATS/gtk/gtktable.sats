@@ -39,7 +39,7 @@
 (* ****** ****** *)
 
 fun gtk_table_new
-  (nrow: guint, ncol: guint, homo: gboolean): GtkTable_ptr1
+  (nrow: guint, ncol: guint, homo: gboolean): GtkTable_ref1
   = "#atsctrb_gtk_table_new"
 // end of [gtk_table_new]
 
@@ -58,8 +58,8 @@ typedef
 gtk_table_attach_type (a:t@ype) =
   {c1,c2:cls | c1 <= GtkTable; c2 <= GtkWidget}
   {l1,l2:agz} (
-    !gobjptr (c1, l1) // table
-  , !gobjptr (c2, l2) // widget
+    !gobjref (c1, l1) // table
+  , !gobjref (c2, l2) // widget
   , a // left
   , a // right
   , a // top
@@ -87,8 +87,8 @@ typedef
 gtk_table_attach_defaults_type (a:t@ype) =
   {c1,c2:cls | c1 <= GtkTable; c2 <= GtkWidget}
   {l1,l2:agz} (
-    !gobjptr (c1, l1) // table
-  , !gobjptr (c2, l2) // widget
+    !gobjref (c1, l1) // table
+  , !gobjref (c2, l2) // widget
   , a // left
   , a // right
   , a // top
@@ -109,7 +109,7 @@ overload gtk_table_attach_defaults with gtk_table_attach_defaults__gtype
 (* ****** ****** *)
 
 fun gtk_table_resize {c:cls | c <= GtkTable} {l:addr}
-  (table: !gobjptr (c, l), nrow: guint, ncol: guint): void
+  (table: !gobjref (c, l), nrow: guint, ncol: guint): void
   = "#atsctrb_gtk_table_resize"
 // end of [gtk_table_resize]
 
@@ -117,13 +117,13 @@ fun gtk_table_resize {c:cls | c <= GtkTable} {l:addr}
 
 fun gtk_table_set_row_spacing
   {c:cls | c <= GtkTable} {l:addr}
-  (table: !gobjptr (c, l), row: guint, spacing: guint): void
+  (table: !gobjref (c, l), row: guint, spacing: guint): void
   = "#atsctrb_gtk_table_set_row_spacing"
 // end of [gtk_table_set_row_spacing]
 
 fun gtk_table_set_col_spacing
   {c:cls | c <= GtkTable} {l:addr}
-  (table: !gobjptr (c, l), col: guint, spacing: guint): void
+  (table: !gobjref (c, l), col: guint, spacing: guint): void
   = "#atsctrb_gtk_table_set_col_spacing"
 // end of [gtk_table_set_col_spacing]
 
@@ -131,13 +131,13 @@ fun gtk_table_set_col_spacing
 
 fun gtk_table_set_row_spacings
   {c:cls | c <= GtkTable} {l:addr}
-  (table: !gobjptr (c, l), spacing: guint): void
+  (table: !gobjref (c, l), spacing: guint): void
   = "#atsctrb_gtk_table_set_row_spacings"
 // end of [gtk_table_set_row_spacings]
 
 fun gtk_table_set_col_spacings
   {c:cls | c <= GtkTable} {l:addr}
-  (table: !gobjptr (c, l), spacing: guint): void
+  (table: !gobjref (c, l), spacing: guint): void
   = "#atsctrb_gtk_table_set_col_spacings"
 // end of [gtk_table_set_col_spacings]
 

@@ -50,7 +50,7 @@ overload lor with lor_GtkAccelFlags_GtkAccelFlags
 
 (* ****** ****** *)
 
-fun gtk_accel_group_new (): GtkAccelGroup_ptr1 = "#atsctrb_gtk_accel_group_new"
+fun gtk_accel_group_new (): GtkAccelGroup_ref1 = "#atsctrb_gtk_accel_group_new"
 
 (* ****** ****** *)
 

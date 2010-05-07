@@ -103,7 +103,7 @@ castfn gint_of_GtkResponseType (x: GtkResponseType):<> gint
 (* ****** ****** *)
 
 fun gtk_dialog_new ()
-  : GtkDialog_ptr1 = "#atsctrb_gtk_dialog_new"
+  : GtkDialog_ref1 = "#atsctrb_gtk_dialog_new"
 // end of [gtk_dialog_new]
 
 (*
@@ -128,23 +128,23 @@ gtk_dialog_new_with_buttons (
 //
 fun gtk_dialog_get_window
   {c:cls | c <= GtkDialog} {l:agz}
-  (dialog: !gobjptr (c, l))
+  (dialog: !gobjref (c, l))
   :<> [l_win:agz] ( // this one is actually 'getref'
-    minus (gobjptr (c, l), gobjptr (GtkWindow, l_win)) | gobjptr (GtkWindow, l_win)
+    minus (gobjref (c, l), gobjref (GtkWindow, l_win)) | gobjref (GtkWindow, l_win)
   ) = "#atsctrb_gtk_dialog_get_window"
 // end of [gtk_dialog_get_window]
 
 fun gtk_dialog_get_vbox
   {c:cls | c <= GtkDialog} {l:agz}
-  (dialog: !gobjptr (c, l)):<> [l_box:agz] (
-    minus (gobjptr (c, l), gobjptr (GtkVBox, l_box)) | gobjptr (GtkVBox, l_box)
+  (dialog: !gobjref (c, l)):<> [l_box:agz] (
+    minus (gobjref (c, l), gobjref (GtkVBox, l_box)) | gobjref (GtkVBox, l_box)
   ) = "#atsctrb_gtk_dialog_get_vbox"
 // end of [gtk_dialog_get_vbox]
 
 fun gtk_dialog_get_action_area
   {c:cls | c <= GtkDialog} {l:agz}
-  (dialog: !gobjptr (c, l)):<> [l_box:agz] (
-    minus (gobjptr (c, l), gobjptr (GtkHBox, l_box)) | gobjptr (GtkHBox, l_box)
+  (dialog: !gobjref (c, l)):<> [l_box:agz] (
+    minus (gobjref (c, l), gobjref (GtkHBox, l_box)) | gobjref (GtkHBox, l_box)
   ) = "#atsctrb_gtk_dialog_get_action_area"
 // end of [gtk_dialog_get_action_area]
 
@@ -152,8 +152,8 @@ fun gtk_dialog_get_action_area
 
 fun gtk_dialog_add_button
   {c:cls | c <= GtkDialog} {l:agz}
-  (dialog: !gobjptr (c, l), name: string, response_id: GtkResponseType)
-  : [l1:agz] (minus (gobjptr (c, l), gobjptr (GtkButton, l1)) | gobjptr (GtkButton, l1))
+  (dialog: !gobjref (c, l), name: string, response_id: GtkResponseType)
+  : [l1:agz] (minus (gobjref (c, l), gobjref (GtkButton, l1)) | gobjref (GtkButton, l1))
   = "#atsctrb_gtk_dialog_add_button"
 // end of [gtk_dialog_add_button]
 
@@ -165,14 +165,14 @@ fun gtk_dialog_add_button
 //
 fun gtk_dialog_run
   {c:cls | c <= GtkDialog} {l:agz}
-  (dialog: !gobjptr (c, l)): gint = "#atsctrb_gtk_dialog_run"
+  (dialog: !gobjref (c, l)): gint = "#atsctrb_gtk_dialog_run"
 // end of [gtk_dialog_run]
 
 (* ****** ****** *)
 
 fun gtk_dialog_response
   {c:cls | c <= GtkDialog} {l:agz}
-  (dialog: !gobjptr (c, l), response_id: gint): void = "#atsctrb_gtk_dialog_response"
+  (dialog: !gobjref (c, l), response_id: gint): void = "#atsctrb_gtk_dialog_response"
 // end of [gtk_dialog_response]
 
 (* ****** ****** *)

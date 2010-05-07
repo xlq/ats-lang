@@ -40,7 +40,7 @@
 
 fun gtk_range_set_update_policy
   {c:cls | c <= GtkRange} {l:agz}
-  (range: !gobjptr (c, l), policy: GtkUpdateType): void
+  (range: !gobjref (c, l), policy: GtkUpdateType): void
   = "#atsctrb_gtk_range_set_update_policy"
 // end of [gtk_range_set_update_policy]
 
@@ -50,8 +50,8 @@ fun gtk_range_set_update_policy
 //
 fun gtk_range_get_adjustment
   {c:cls | c <= GtkRange} {l:agz}
-  (range: !gobjptr (c, l)): [l1:addr] (
-    minus (gobjptr (c, l), gobjptr (GtkAdjustment, l1)) | gobjptr (GtkAdjustment, l1)
+  (range: !gobjref (c, l)): [l1:addr] (
+    minus (gobjref (c, l), gobjref (GtkAdjustment, l1)) | gobjref (GtkAdjustment, l1)
   ) = "#atsctrb_gtk_range_get_adjustment"
 // end of [gtk_range_get_adjustment]
 
@@ -61,7 +61,7 @@ fun gtk_range_get_adjustment
 //
 fun gtk_range_set_adjustment
   {c:cls | c <= GtkRange} {l1,l2:agz}
-  (range: !gobjptr (c, l1), adj: !gobjptr (GtkAdjustment, l2)): void
+  (range: !gobjref (c, l1), adj: !gobjref (GtkAdjustment, l2)): void
   = "#atsctrb_gtk_range_set_adjustment"
 // end of [gtk_range_set_adjustment]
 

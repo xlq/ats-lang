@@ -54,10 +54,10 @@ the_vscale_set (ats_ptr_type x) {
   return ;
 } // end of [the_vscale_set]
 %} // end of [%{^] 
-extern fun the_hscale_get (): GtkHScale_ptr1 = "the_hscale_get"
-extern fun the_hscale_set (x: !GtkHScale_ptr1): void = "the_hscale_set"
-extern fun the_vscale_get (): GtkVScale_ptr1 = "the_vscale_get"
-extern fun the_vscale_set (x: !GtkVScale_ptr1): void = "the_vscale_set"
+extern fun the_hscale_get (): GtkHScale_ref1 = "the_hscale_get"
+extern fun the_hscale_set (x: !GtkHScale_ref1): void = "the_hscale_set"
+extern fun the_vscale_get (): GtkVScale_ref1 = "the_vscale_get"
+extern fun the_vscale_set (x: !GtkVScale_ref1): void = "the_vscale_set"
 
 (* ****** ****** *)
 
@@ -87,7 +87,7 @@ fun cb_update_menu_select
 
 fun cb_digits_scale
   {c:cls | c <= GtkAdjustment} {l:agz}
-  (adj: !gobjptr (c, l)): void = () where {
+  (adj: !gobjref (c, l)): void = () where {
   val value = gtk_adjustment_get_value (adj)
   val n = gint(int_of((double_of(value))))
   val scale = the_hscale_get ()
@@ -114,14 +114,14 @@ cb_page_size (ats_ptr_type get0, ats_ptr_type set0) {
 %} // end of [%{^]
 extern fun cb_page_size
   {c1,c2:cls | c1 <= GtkAdjustment; c2 <= GtkAdjustment} {l1,l2:agz}
-  (get: !gobjptr (c1, l1), set: !gobjptr (c2, l2)): void = "cb_page_size"
+  (get: !gobjref (c1, l1), set: !gobjref (c2, l2)): void = "cb_page_size"
 // end of [cb_page_size]
 
 (* ****** ****** *)
 
 fun cb_draw_value
   {c:cls | c <= GtkToggleButton} {l:agz}
-  (button: !gobjptr (c, l)): void = () where {
+  (button: !gobjref (c, l)): void = () where {
   val isactive = gtk_toggle_button_get_active (button)
   val scale = the_hscale_get ()
   val () = gtk_scale_set_draw_value (scale, isactive)
@@ -135,7 +135,7 @@ fun cb_draw_value
 
 fun scale_set_default_values
   {c:cls | c <= GtkScale} {l:agz}
-  (scale: !gobjptr (c, l)): void = () where {
+  (scale: !gobjref (c, l)): void = () where {
   val () = gtk_range_set_update_policy (scale, GTK_UPDATE_CONTINUOUS)
   val () = gtk_scale_set_digits (scale, (gint)1)
   val () = gtk_scale_set_value_pos (scale, GTK_POS_TOP)

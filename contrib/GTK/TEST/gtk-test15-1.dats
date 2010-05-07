@@ -20,7 +20,7 @@ staload "contrib/GTK/SATS/gtk.sats"
 (* ****** ****** *)
 
 fun file_ok_sel (
-    fs: !GtkFileSelection_ptr1
+    fs: !GtkFileSelection_ref1
   ) : void = () where {
   val [t:int] (stamp | stamped) =
     gtk_file_selection_get_filename (fs)

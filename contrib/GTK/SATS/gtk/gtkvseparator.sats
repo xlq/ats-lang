@@ -38,7 +38,7 @@
 
 (* ****** ****** *)
 
-fun gtk_vseparator_new (): GtkVSeparator_ptr1 = "#atsctrb_gtk_vseparator_new"
+fun gtk_vseparator_new (): GtkVSeparator_ref1 = "#atsctrb_gtk_vseparator_new"
 
 (* ****** ****** *)
 

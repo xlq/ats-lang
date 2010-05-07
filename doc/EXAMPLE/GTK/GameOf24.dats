@@ -231,7 +231,7 @@ answering_gtk_dialog_new () {
 }
 %} // end of [%{^]
 extern
-fun answering_gtk_dialog_new (): GtkDialog_ptr1 = "answering_gtk_dialog_new"
+fun answering_gtk_dialog_new (): GtkDialog_ref1 = "answering_gtk_dialog_new"
 
 overload gint with gint_of_GtkResponseType
 
@@ -257,7 +257,7 @@ fun answering
         val [l_str:addr] gs  = g_string_new ()
         val () = loop (vbox2, gs, xs) where {
          fun loop (
-             vbox2: !gobjptr (GtkVBox, l_box), gs: !GString_ptr l_str, xs: List exp
+             vbox2: !gobjref (GtkVBox, l_box), gs: !GString_ptr l_str, xs: List exp
            ) : void = case+ xs of
            | list_cons (x, xs) => let
                val _ptr = g_string_truncate (gs, gsize(0))
@@ -346,7 +346,7 @@ end // end of [play24]
 (* ****** ****** *)
 
 fun suit_spinner_gen
-  (): GtkSpinButton_ptr1 = let
+  (): GtkSpinButton_ref1 = let
   val adj = gtk_adjustment_new
     (1.0, 1.0, 13.0, 1.0, 0.0(*ignored*), 0.0(*ignored*))
   val spinner = gtk_spin_button_new (adj, (gdouble)0.0, (guint)0)
@@ -361,14 +361,14 @@ end // end of [suit_spinner_gen]
 (* ****** ****** *)
 
 viewtypedef
-suitSpinnerLst = List_vt (GtkSpinButton_ptr1)
+suitSpinnerLst = List_vt (GtkSpinButton_ref1)
 
 val theSuitSpinnerLst =
   ref_make_elt<suitSpinnerLst> (list_vt_nil)
 // end of [val]
 
 fun theSuitSpinnerLst_add
-  (x: !GtkSpinButton_ptr1): void = () where {
+  (x: !GtkSpinButton_ref1): void = () where {
   val (vbox pf_xs | p_xs) = ref_get_view_ptr (theSuitSpinnerLst)
   val x1 = $effmask_ref (g_object_ref (x))
   val () = !p_xs := list_vt_cons (x1, !p_xs)
@@ -423,14 +423,14 @@ end // end of [evalapp]
 staload PRINTF = "libc/SATS/printf.sats"
 
 fun suit_spinnerlst_hbox_gen
-  {n:nat} (n: int n): GtkHBox_ptr1 = let
+  {n:nat} (n: int n): GtkHBox_ref1 = let
   val hbox = gtk_hbox_new (GTRUE(*homo*), (gint)10(*spacing*))
   val () = gtk_widget_show (hbox)
   val () = loop (hbox, n, 1) where {
     fun loop
       {c:cls | c <= GtkBox}
       {l:agz} {n:nat} .<n>. (
-        box: !gobjptr (c, l), n: int n, i: int
+        box: !gobjref (c, l), n: int n, i: int
       ) : void =
       if n > 0 then let
         #define BUFSZ 16
@@ -464,7 +464,7 @@ end // end of [suit_spinnerlst_hbox_gen]
 
 fun quitapp
   {c:cls | c <= GtkWidget} {l:agz}
-  (widget: !gobjptr (c, l), event: &GdkEvent, _: gpointer): gboolean = let
+  (widget: !gobjref (c, l), event: &GdkEvent, _: gpointer): gboolean = let
   val () = gtk_main_quit ()
 in
   GFALSE // delivered!

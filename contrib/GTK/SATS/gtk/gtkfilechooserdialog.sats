@@ -39,7 +39,7 @@
 (* ****** ****** *)
 
 fun gtk_file_chooser_dialog_new
-  (title: Stropt, action: GtkFileChooserAction): GtkFileChooserDialog_ptr1
+  (title: Stropt, action: GtkFileChooserAction): GtkFileChooserDialog_ref1
   = "atsctrb_gtk_file_chooser_dialog_new" // a function!
 // end of [gtk_file_chooser_dialog_new]
 
@@ -65,8 +65,8 @@ gtk_file_chooser_dialog_new (
 //
 fun gtk_file_chooser_dialog_get_chooser
   {c:cls | c <= GtkFileChooserDialog} {l:agz}
-  (chooserdlg: !gobjptr (c, l)): [l1:agz] (
-    minus (gobjptr (c, l), gobjptr (GtkFileChooser, l1)) | gobjptr (GtkFileChooser, l1)
+  (chooserdlg: !gobjref (c, l)): [l1:agz] (
+    minus (gobjref (c, l), gobjref (GtkFileChooser, l1)) | gobjref (GtkFileChooser, l1)
   ) = "#atsctrb_GTK_FILE_CHOOSER"
 // end of [gtk_file_chooser_dialog_get_chooser]
 

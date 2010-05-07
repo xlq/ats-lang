@@ -197,13 +197,13 @@ mainats (ats_int_type argc, ats_ptr_type argv) ;
 (* ****** ****** *)
 
 extern fun gdk_cairo_create
-  {c:cls | c <= GdkDrawable} {l:agz} (widget: !gobjptr (c, l)): cairo_ref1
+  {c:cls | c <= GdkDrawable} {l:agz} (widget: !gobjref (c, l)): cairo_ref1
   = "#gdk_cairo_create"
 // end of [gdk_cairo_create]
 
 fun on_expose_event
   {c:cls | c <= GtkDrawingArea} {l:agz}
-  (darea: !gobjptr (c, l), event: &GdkEvent): gboolean = let
+  (darea: !gobjref (c, l), event: &GdkEvent): gboolean = let
   val (fpf_win | win) = gtk_widget_get_window (darea)
   val () = assert_errmsg (g_object_isnot_null (win), #LOCATION)
   val cr = gdk_cairo_create (win)

@@ -33,8 +33,8 @@ the_drawingarea_set (ats_ptr_type x) {
   return ;
 } // end of [the_drawingarea_set]
 %} // end of [%{^] 
-extern fun the_drawingarea_get (): GtkDrawingArea_ptr1 = "the_drawingarea_get"
-extern fun the_drawingarea_set (x: !GtkDrawingArea_ptr1): void = "the_drawingarea_set"
+extern fun the_drawingarea_get (): GtkDrawingArea_ref1 = "the_drawingarea_get"
+extern fun the_drawingarea_set (x: !GtkDrawingArea_ref1): void = "the_drawingarea_set"
 
 (* ****** ****** *)
 
@@ -53,13 +53,13 @@ the_colorseldlg_set (ats_ptr_type x) {
   return ;
 } // end of [the_colorseldlg_set]
 %} // end of [%{^] 
-extern fun the_colorseldlg_get (): GtkColorSelectionDialog_ptr0 = "the_colorseldlg_get"
-extern fun the_colorseldlg_set (x: !GtkColorSelectionDialog_ptr1): void = "the_colorseldlg_set"
+extern fun the_colorseldlg_get (): GtkColorSelectionDialog_ref0 = "the_colorseldlg_get"
+extern fun the_colorseldlg_set (x: !GtkColorSelectionDialog_ref1): void = "the_colorseldlg_set"
 
 (* ****** ****** *)
 
 fun cb_color_changed
-  (colorsel: !GtkColorSelection_ptr1): void = () where {
+  (colorsel: !GtkColorSelection_ref1): void = () where {
   var ncolor: GdkColor
   val () = gtk_color_selection_get_current_color (colorsel, ncolor)
   val darea = the_drawingarea_get ()
@@ -91,11 +91,11 @@ in
   | _ when (_type = GDK_BUTTON_PRESS) => let
       var colorseldlg = the_colorseldlg_get ()
 (*
-      val p_colorseldlg = ptr_of_gobjptr (colorseldlg)
+      val p_colorseldlg = ptr_of_gobjref (colorseldlg)
       val () = (print "p_colorseldlg(0) = "; print p_colorseldlg; print_newline ())
 *)
       val () = if
-        :(colorseldlg: GtkColorSelectionDialog_ptr1) =>
+        :(colorseldlg: GtkColorSelectionDialog_ref1) =>
         g_object_is_null (colorseldlg) then let
         val () = g_object_free_null colorseldlg
         val () = colorseldlg := gtk_color_selection_dialog_new ("Select BG Color")
@@ -104,7 +104,7 @@ in
         // nothing
       end // end of [if]
 (*
-      val p_colorseldlg = ptr_of_gobjptr (colorseldlg)
+      val p_colorseldlg = ptr_of_gobjref (colorseldlg)
       val () = (print "p_colorseldlg(1) = "; print p_colorseldlg; print_newline ())
 *)
       val (fpf_colorsel | colorsel) =

@@ -41,8 +41,8 @@
 fun gtk_box_pack_start
   {c1,c2:cls | c1 <= GtkBox; c2 <= GtkWidget}
   {l1,l2:agz} (
-    box: !gobjptr (c1, l1)
-  , child: !gobjptr (c2, l2)
+    box: !gobjref (c1, l1)
+  , child: !gobjref (c2, l2)
   , expand: gboolean, fill: gboolean, padding: guint
   ) : void = "#atsctrb_gtk_box_pack_start"
 // end of [gtk_box_pack_start]
@@ -50,8 +50,8 @@ fun gtk_box_pack_start
 fun gtk_box_pack_end
   {c1,c2:cls | c1 <= GtkBox; c2 <= GtkWidget}
   {l1,l2:agz} (
-    box: !gobjptr (c1, l1)
-  , child: !gobjptr (c2, l2)
+    box: !gobjref (c1, l1)
+  , child: !gobjref (c2, l2)
   , expand: gboolean, fill: gboolean, padding: guint
   ) : void = "#atsctrb_gtk_box_pack_end"
 // end of [gtk_box_pack_end]

@@ -39,14 +39,14 @@
 (* ****** ****** *)
 
 fun gtk_window_new
-  (tp: GtkWindowType): GtkWindow_ptr1 = "#atsctrb_gtk_window_new"
+  (tp: GtkWindowType): GtkWindow_ref1 = "#atsctrb_gtk_window_new"
 // end of [gtk_window_new]
 
 (* ****** ****** *)
 
 fun gtk_window_set_title
   {c:cls | c <= GtkWindow} {l:agz}
-  (window: !gobjptr (c, l), title: string): void
+  (window: !gobjref (c, l), title: string): void
   = "#atsctrb_gtk_window_set_title"
 // end of [gtk_window_set_title]
 
@@ -54,13 +54,13 @@ fun gtk_window_set_title
 
 fun gtk_window_set_position
   {c:cls | c <= GtkWindow} {l:agz}
-  (window: !gobjptr (c, l), pos: GtkWindowPosition): void
+  (window: !gobjref (c, l), pos: GtkWindowPosition): void
   = "#atsctrb_gtk_window_set_position"
 // end of [gtk_window_set_position]
 
 fun gtk_window_set_transient_for
   {c1,c2:cls | c1 <= GtkWindow; c2 <= GtkWindow}
-  {l1,l2:agz} (window: !gobjptr (c1, l1), parent: !gobjptr (c2, l2)): void
+  {l1,l2:agz} (window: !gobjref (c1, l1), parent: !gobjref (c2, l2)): void
   = "#atsctrb_gtk_window_set_transient_for"
 // end of [gtk_window_set_transient_for]
 
@@ -72,13 +72,13 @@ fun gtk_window_set_transient_for
 //
 fun gtk_window_set_default_size
   {c:cls | c <= GtkWindow} {l:agz}
-  (window: !gobjptr (c, l), width: gint, height: gint): void
+  (window: !gobjref (c, l), width: gint, height: gint): void
   = "#atsctrb_gtk_window_set_default_size"
 // end of [gtk_window_set_default_size]
 
 fun gtk_window_get_size
   {c:cls | c <= GtkWindow} {l:agz} (
-    window: !gobjptr (c, l), width: &gint? >> gint, height: &gint? >> gint
+    window: !gobjref (c, l), width: &gint? >> gint, height: &gint? >> gint
   ) : void = "#atsctrb_gtk_window_get_size"
 // end of [gtk_window_get_size]
 
@@ -86,12 +86,12 @@ fun gtk_window_get_size
 
 fun gtk_window_get_resizable
   {c:cls | c <= GtkWindow} {l:agz}
-  (window: !gobjptr (c, l)): gboolean = "#atsctrb_gtk_window_get_resizeable"
+  (window: !gobjref (c, l)): gboolean = "#atsctrb_gtk_window_get_resizeable"
 // end of [gtk_window_get_resizeable]
 
 fun gtk_window_set_resizable
   {c:cls | c <= GtkWindow} {l:agz}
-  (window: !gobjptr (c, l), resizable: gboolean): void
+  (window: !gobjref (c, l), resizable: gboolean): void
   = "#atsctrb_gtk_window_set_resizable"
 // end of [gtk_window_set_resizable]
 
@@ -100,14 +100,14 @@ fun gtk_window_set_resizable
 fun gtk_window_add_accel_group
   {c1,c2:cls | c1 <= GtkWindow; c2 <= GtkAccelGroup}
   {l1,l2:agz}
-  (window: !gobjptr (c1, l1), aclgrp: !gobjptr (c2, l2)): void
+  (window: !gobjref (c1, l1), aclgrp: !gobjref (c2, l2)): void
   = "#atsctrb_gtk_window_add_accel_group"
 // end of [gtk_window_add_accel_group]
 
 fun gtk_window_remove_accel_group
   {c1,c2:cls | c1 <= GtkWindow; c2 <= GtkAccelGroup}
   {l1,l2:agz}
-  (window: !gobjptr (c1, l1), aclgrp: !gobjptr (c2, l2)): void
+  (window: !gobjref (c1, l1), aclgrp: !gobjref (c2, l2)): void
   = "#atsctrb_gtk_window_remove_accel_group"
 // end of [gtk_window_remove_accel_group]
 

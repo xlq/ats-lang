@@ -51,7 +51,7 @@ implement main1 () = () where {
     entry, (gsignal)"activate", G_CALLBACK (cb), gp_entry
   ) where {
     val cb = lam (
-      _: ptr, entry: !GtkEntry_ptr1
+      _: ptr, entry: !GtkEntry_ref1
     ) : void => () where {
       val (stamp | text) = gtk_entry_get_text (entry)
       prval () = stamped_decode {string} (text)
@@ -76,7 +76,7 @@ implement main1 () = () where {
   val _sid = g_signal_connect
     (check, (gsignal)"toggled", G_CALLBACK cb, gp_entry) where {
     val cb = lam (
-        x1: !GtkToggleButton_ptr1, x2: !GtkEntry_ptr1
+        x1: !GtkToggleButton_ref1, x2: !GtkEntry_ref1
       ) : void => () where {
       val () = gtk_entry_set_editable (x2, gtk_toggle_button_get_active (x1))
     } // end of [cb]
@@ -90,7 +90,7 @@ implement main1 () = () where {
   val _sid = g_signal_connect
     (check, (gsignal)"toggled", G_CALLBACK cb, gp_entry) where {
     val cb = lam (
-        x1: !GtkToggleButton_ptr1, x2: !GtkEntry_ptr1
+        x1: !GtkToggleButton_ref1, x2: !GtkEntry_ref1
       ) : void => () where {
       val () = gtk_entry_set_visibility (x2, gtk_toggle_button_get_active (x1))
     } // end of [cb]

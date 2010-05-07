@@ -29,7 +29,7 @@ staload "contrib/GTK/SATS/gtk.sats"
 
 fun arrow_button_make
   (arrow_type: GtkArrowType, shadow_type: GtkShadowType)
-  : GtkButton_ptr1 = let
+  : GtkButton_ref1 = let
   val button = gtk_button_new ()
   val arrow = gtk_arrow_new (arrow_type, shadow_type)
   val () = gtk_container_add (button, arrow)

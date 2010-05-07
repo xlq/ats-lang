@@ -260,6 +260,16 @@ viewtypedef gstring1 = [l:addr | l > null] gstring l
 castfn ptr_of_gstring {l:addr} (x: !gstring l):<> ptr l
 overload ptr_of with ptr_of_gstring
 
+fun compare_gstring_gstring
+  {l1,l2:agz} (x1: !gstring l1, x2: !gstring l2): Sgn
+  = "atsctrb_compare_gstring_gstring"
+// end of [compare_gstring_gstring]
+
+fun compare_gstring0_gstring0
+  {l1,l2:addr} (x1: !gstring l1, x2: !gstring l2): Sgn
+  = "atsctrb_compare_gstring0_gstring0"
+// end of [compare_gstring_gstring]
+
 fun g_strdup {l:agz} (x: !gstring l): gstring1
   = "#atsctrb_g_strdup"
 fun g_strdup0 {l:addr} (x: !gstring l): gstring0

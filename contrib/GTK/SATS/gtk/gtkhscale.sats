@@ -39,12 +39,12 @@
 (* ****** ****** *)
 
 fun gtk_hscale_new {c:cls | c <= GtkAdjustment} {l:agz}
-  (adj: !gobjptr (c, l)): GtkHScale_ptr1 = "#atsctrb_gtk_hscale_new"
+  (adj: !gobjref (c, l)): GtkHScale_ref1 = "#atsctrb_gtk_hscale_new"
 // end of [gtk_hscale_new]
 
 fun gtk_hscale_new_with_range
   {c:cls | c <= GtkAdjustment} {l:agz}
-  (min: gdouble, max: gdouble, step: gdouble): GtkHScale_ptr1
+  (min: gdouble, max: gdouble, step: gdouble): GtkHScale_ref1
   = "#atsctrb_gtk_hscale_new_with_range"
 // end of [gtk_hscale_new_with_rangle]
 

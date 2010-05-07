@@ -33,7 +33,7 @@ staload "contrib/GTK/SATS/gtk.sats"
 
 fun delete_event
   {c:cls | c <= GtkWidget} {l:agz}
-  (widget: !gobjptr (c, l), event: &GdkEvent, _: gpointer): gboolean = let
+  (widget: !gobjref (c, l), event: &GdkEvent, _: gpointer): gboolean = let
   val () = gtk_main_quit ()
 in
   GFALSE // delivered!
@@ -55,8 +55,8 @@ the_statusbar_set (ats_ptr_type x) {
   return ;
 } // end of [the_statusbar_set]
 %} // end of [%{^] 
-extern fun the_statusbar_get (): GtkStatusbar_ptr1 = "the_statusbar_get"
-extern fun the_statusbar_set (x: !GtkStatusbar_ptr1): void = "the_statusbar_set"
+extern fun the_statusbar_get (): GtkStatusbar_ref1 = "the_statusbar_get"
+extern fun the_statusbar_set (x: !GtkStatusbar_ref1): void = "the_statusbar_set"
 
 (* ****** ****** *)
 

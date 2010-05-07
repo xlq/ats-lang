@@ -39,7 +39,7 @@
 (* ****** ****** *)
 
 fun gtk_text_buffer_new_null ()
-  : GtkTextBuffer_ptr1 = "#atsctrb_gtk_text_buffer_new_null"
+  : GtkTextBuffer_ref1 = "#atsctrb_gtk_text_buffer_new_null"
 // end of [gtk_text_buffer_new_null]
 
 (* ****** ****** *)
@@ -49,8 +49,8 @@ fun gtk_text_buffer_new_null ()
 //
 fun gtk_text_buffer_get_tag_table
   {c:cls | c <= GtkTextBuffer} {l:agz}
-  (tb: !gobjptr (c, l)):<> [l_tbl:agz] (
-    minus (gobjptr (c, l), gobjptr (GtkTextTagTable, l_tbl)) | gobjptr (GtkTextTagTable, l_tbl)
+  (tb: !gobjref (c, l)):<> [l_tbl:agz] (
+    minus (gobjref (c, l), gobjref (GtkTextTagTable, l_tbl)) | gobjref (GtkTextTagTable, l_tbl)
   ) = "#atsctrb_gtk_text_buffer_get_tag_table"
 // end of [gtk_text_buffer_get_tag_table]
 
@@ -58,19 +58,19 @@ fun gtk_text_buffer_get_tag_table
 
 fun gtk_text_buffer_get_line_count
   {c:cls | c <= GtkTextBuffer} {l:agz}
-  (tb: !gobjptr (c, l)): gint = "#atsctrb_gtk_text_buffer_get_line_count"
+  (tb: !gobjref (c, l)): gint = "#atsctrb_gtk_text_buffer_get_line_count"
 // end of [gtk_text_buffer_get_line_count]
 
 fun gtk_text_buffer_get_char_count
   {c:cls | c <= GtkTextBuffer} {l:agz}
-  (tb: !gobjptr (c, l)): gint = "#atsctrb_gtk_text_buffer_get_char_count"
+  (tb: !gobjref (c, l)): gint = "#atsctrb_gtk_text_buffer_get_char_count"
 // end of [gtk_text_buffer_get_char_count]
 
 (* ****** ****** *)
 
 fun gtk_text_buffer_get_iter_at_offset
   {c:cls | c <= GtkTextBuffer} {l:agz}
-  (tb: !gobjptr (c, l), iter: &GtkTextIter? >> GtkTextIter, charofs: gint): void
+  (tb: !gobjref (c, l), iter: &GtkTextIter? >> GtkTextIter, charofs: gint): void
   = "#atsctrb_gtk_text_buffer_get_iter_at_offset"
 // end of [gtk_text_buffer_get_iter_at_offset]
 
@@ -78,7 +78,7 @@ fun gtk_text_buffer_get_iter_at_offset
 
 fun gtk_text_buffer_delete
   {c:cls | c <= GtkTextBuffer} {l:agz} (
-    tb: !gobjptr (c, l), _beg: &GtkTextIter, _end: &GtkTextIter
+    tb: !gobjref (c, l), _beg: &GtkTextIter, _end: &GtkTextIter
   ) : void = "#atsctrb_gtk_text_buffer_delete"
 // end of [gtk_text_buffer_get_delete]
 
@@ -86,13 +86,13 @@ fun gtk_text_buffer_delete
 
 fun gtk_text_buffer_insert
   {c:cls | c <= GtkTextBuffer} {l:agz} {n0,n1:nat | n0 >= n1}
-  (tb: !gobjptr (c, l), iter: &GtkTextIter, text: &(@[gchar][n0]), len: gint n1): void
+  (tb: !gobjref (c, l), iter: &GtkTextIter, text: &(@[gchar][n0]), len: gint n1): void
   = "#atsctrb_gtk_text_buffer_insert"
 // end of [gtk_text_buffer_insert]
 
 fun gtk_text_buffer_insert_all
   {c:cls | c <= GtkTextBuffer} {l:agz} {n:nat}
-  (tb: !gobjptr (c, l), iter: &GtkTextIter, text: string n): void
+  (tb: !gobjref (c, l), iter: &GtkTextIter, text: string n): void
   = "atsctrb_gtk_text_buffer_insert_all" // this a function!
 // end of [gtk_text_buffer_insert_all]
 
@@ -100,7 +100,7 @@ fun gtk_text_buffer_insert_all
 
 fun gtk_text_buffer_insert_at_cursor
   {c:cls | c <= GtkTextBuffer} {l:agz} {n0,n1:nat | n0 >= n1}
-  (tb: !gobjptr (c, l), text: string n0, len: gint n1): void
+  (tb: !gobjref (c, l), text: string n0, len: gint n1): void
   = "#atsctrb_gtk_text_buffer_insert_at_cursor"
 // end of [gtk_text_buffer_insert_at_cursor]
 
@@ -108,13 +108,13 @@ fun gtk_text_buffer_insert_at_cursor
 
 fun gtk_text_buffer_get_start_iter
   {c:cls | c <= GtkTextBuffer} {l:agz}
-  (tb: !gobjptr (c, l), iter: &GtkTextIter? >> GtkTextIter): void
+  (tb: !gobjref (c, l), iter: &GtkTextIter? >> GtkTextIter): void
   = "#atsctrb_gtk_text_buffer_get_start_iter"
 // end of [gtk_text_buffer_get_start_iter]
 
 fun gtk_text_buffer_get_end_iter
   {c:cls | c <= GtkTextBuffer} {l:agz}
-  (tb: !gobjptr (c, l), iter: &GtkTextIter? >> GtkTextIter): void
+  (tb: !gobjref (c, l), iter: &GtkTextIter? >> GtkTextIter): void
   = "#atsctrb_gtk_text_buffer_get_end_iter"
 // end of [gtk_text_buffer_get_end_iter]
 
@@ -122,7 +122,7 @@ fun gtk_text_buffer_get_end_iter
 
 fun gtk_text_buffer_get_bounds
   {c:cls | c <= GtkTextBuffer} {l:agz} (
-    tb: !gobjptr (c, l)
+    tb: !gobjref (c, l)
   , _beg: &GtkTextIter? >> GtkTextIter
   , _end: &GtkTextIter? >> GtkTextIter
   ) : void = "#atsctrb_gtk_text_buffer_get_bounds"
@@ -135,7 +135,7 @@ fun gtk_text_buffer_get_bounds
 //
 fun gtk_text_buffer_get_text
   {c:cls | c <= GtkTextBuffer} {l:agz} (
-    tb: !gobjptr (c, l)
+    tb: !gobjref (c, l)
   , _beg: &GtkTextIter, _end: &GtkTextIter
   , include_hidden_chars: gboolean
   ) : gstring1 = "#atsctrb_gtk_text_buffer_get_text"
@@ -144,13 +144,13 @@ fun gtk_text_buffer_get_text
 fun gtk_text_buffer_set_text
   {c:cls | c <= GtkTextBuffer} {l:agz}
   {n0,n1:nat | n0 >= n1}
-  (tb: !gobjptr (c, l), text: &(@[gchar][n0]), len: gint n1): void
+  (tb: !gobjref (c, l), text: &(@[gchar][n0]), len: gint n1): void
   = "#atsctrb_gtk_text_buffer_set_text"
 // end of [gtk_text_buffer_set_text]
 
 fun gtk_text_buffer_set_text_all
   {c:cls | c <= GtkTextBuffer} {l:agz} {n:nat}
-  (tb: !gobjptr (c, l), text: string n): void
+  (tb: !gobjref (c, l), text: string n): void
   = "atsctrb_gtk_text_buffer_set_text_all" // this a function!
 // end of [gtk_text_buffer_set_text_all]
 
@@ -158,7 +158,7 @@ fun gtk_text_buffer_set_text_all
 
 fun gtk_text_buffer_place_cursor
   {c:cls | c <= GtkTextBuffer} {l:agz}
-  (tb: !gobjptr (c, l), iter: &GtkTextIter): void
+  (tb: !gobjref (c, l), iter: &GtkTextIter): void
   = "#atsctrb_gtk_text_buffer_place_cursor"
 // end of [gtk_text_buffer_place_cursor]
 

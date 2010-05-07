@@ -28,18 +28,18 @@ staload "contrib/GTK/SATS/gtk.sats"
 (* ****** ****** *)
 
 fun hw {c:cls | c <= GtkWidget} {l:agz}
-  (widget: !gobjptr (c, l), _: gpointer): void = print ("Hello, world!\n")
+  (widget: !gobjref (c, l), _: gpointer): void = print ("Hello, world!\n")
 // end of [hw]
 
 fun delete_event {c:cls | c <= GtkWidget} {l:agz}
-  (widget: !gobjptr (c, l), event: &GdkEvent, _: gpointer): gboolean = let
+  (widget: !gobjref (c, l), event: &GdkEvent, _: gpointer): gboolean = let
   val () = print ("delete event occurred\n")
 in
   GTRUE // deletion ignored
 end // end of [delete_event]
 
 fun destroy {c:cls | c <= GtkWidget} {l:agz}
-  (widget: !gobjptr (c, l), _: gpointer): void = gtk_main_quit ()
+  (widget: !gobjref (c, l), _: gpointer): void = gtk_main_quit ()
 // end of [destroy]
 
 (* ****** ****** *)

@@ -39,26 +39,26 @@
 (* ****** ****** *)
 
 fun gtk_radio_button_new {n:nat}
-  (group: !GSList_ptr (gpointer, n)): GtkRadioButton_ptr1 = "#atsctrb_gtk_radio_button_new"
+  (group: !GSList_ptr (gpointer, n)): GtkRadioButton_ref1 = "#atsctrb_gtk_radio_button_new"
 // end of [gtk_radio_button_new]
 
 fun gtk_radio_button_new_with_label {n:nat}
-  (group: !GSList_ptr (gpointer, n), name: string): GtkRadioButton_ptr1
+  (group: !GSList_ptr (gpointer, n), name: string): GtkRadioButton_ref1
   = "#atsctrb_gtk_radio_button_new_with_label"
 // end of [gtk_radio_button_new_with_label]
 
 fun gtk_radio_button_new_with_mnemonic {n:nat}
-  (group: !GSList_ptr (gpointer, n), name: string): GtkRadioButton_ptr1
+  (group: !GSList_ptr (gpointer, n), name: string): GtkRadioButton_ref1
   = "#atsctrb_gtk_radio_button_new_with_mnemonic"
 // end of [gtk_radio_button_new_with_mnemonic]
 
 fun gtk_radio_button_new_from_widget
-  {c:cls | c <= GtkRadioButton} {l:agz} (group: !gobjptr (c, l)): GtkRadioButton_ptr1
+  {c:cls | c <= GtkRadioButton} {l:agz} (group: !gobjref (c, l)): GtkRadioButton_ref1
   = "#atsctrb_gtk_radio_button_new_from_widget"
 // end of [gtk_radio_button_new_from_widget]
 
 fun gtk_radio_button_new_with_label_from_widget
-  {c:cls | c <= GtkRadioButton} {l:agz} (group: !gobjptr (c, l), name: string): GtkRadioButton_ptr1
+  {c:cls | c <= GtkRadioButton} {l:agz} (group: !gobjref (c, l), name: string): GtkRadioButton_ref1
   = "#atsctrb_gtk_radio_button_new_with_label_from_widget"
 // end of [gtk_radio_button_new_with_label_from_widget]
 
@@ -66,7 +66,7 @@ fun gtk_radio_button_new_with_label_from_widget
 
 fun gtk_radio_button_get_group
   {c:cls | c <= GtkRadioButton} {l:agz}
-  (button: !gobjptr (c, l)): [t:int] (stamp t | stamped (GSList_ptr0 (gpointer), t))
+  (button: !gobjref (c, l)): [t:int] (stamp t | stamped (GSList_ptr0 (gpointer), t))
   = "#atsctrb_gtk_radio_button_get_group"
 // end of [gtk_radio_button_get_group]
 

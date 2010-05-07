@@ -39,13 +39,13 @@
 (* ****** ****** *)
 
 fun gtk_frame_new
-  (name: string): GtkFrame_ptr1 = "#atsctrb_gtk_frame_new"
+  (name: string): GtkFrame_ref1 = "#atsctrb_gtk_frame_new"
 // end of [gtk_frame_new]
 
 //
 // HX-2010-04-15: this is just gtk_frame_new(NULL)
 //
-fun gtk_frame_new_null (): GtkFrame_ptr1 = "#atsctrb_gtk_frame_new_null"
+fun gtk_frame_new_null (): GtkFrame_ref1 = "#atsctrb_gtk_frame_new_null"
 
 (* ****** ****** *)
 

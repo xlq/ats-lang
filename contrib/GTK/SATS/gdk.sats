@@ -65,7 +65,7 @@ stadef gpointer = $GLIB.gpointer
 
 staload GOBJ = "contrib/glib/SATS/glib-object.sats"
 stadef GObject = $GOBJ.GObject
-stadef gobjptr = $GOBJ.gobjptr
+stadef gobjref = $GOBJ.gobjref
 
 (* ****** ****** *)
 
@@ -85,13 +85,13 @@ objcls GdkObject = { super: GObject }
 
 (* ****** ****** *)
 
-viewtypedef GdkColormap_ptr (l:addr) = gobjptr (GdkColormap, l)
-viewtypedef GdkColormap_ptr0 = [l:agez] GdkColormap_ptr l
-viewtypedef GdkColormap_ptr1 = [l:addr | l > null] GdkColormap_ptr l
+viewtypedef GdkColormap_ref (l:addr) = gobjref (GdkColormap, l)
+viewtypedef GdkColormap_ref0 = [l:agez] GdkColormap_ref l
+viewtypedef GdkColormap_ref1 = [l:addr | l > null] GdkColormap_ref l
 
-viewtypedef GdkWindow_ptr (l:addr) = gobjptr (GdkWindow, l)
-viewtypedef GdkWindow_ptr0 = [l:agez] GdkWindow_ptr l
-viewtypedef GdkWindow_ptr1 = [l:addr | l > null] GdkWindow_ptr l
+viewtypedef GdkWindow_ref (l:addr) = gobjref (GdkWindow, l)
+viewtypedef GdkWindow_ref0 = [l:agez] GdkWindow_ref l
+viewtypedef GdkWindow_ref1 = [l:addr | l > null] GdkWindow_ref l
 
 (* ****** ****** *)
 

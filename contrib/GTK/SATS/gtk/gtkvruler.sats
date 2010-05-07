@@ -38,9 +38,7 @@
 
 (* ****** ****** *)
 
-fun gtk_vruler_new
-  (): GtkVRuler_ptr1 = "#atsctrb_gtk_vruler_new"
-// end of [gtk_vruler_new]
+fun gtk_vruler_new (): GtkVRuler_ref1 = "#atsctrb_gtk_vruler_new"
 
 (* ****** ****** *)
 

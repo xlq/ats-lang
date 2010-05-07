@@ -39,14 +39,14 @@
 (* ****** ****** *)
 
 fun gtk_menu_new
-  (): GtkMenu_ptr1 = "#atsctrb_gtk_menu_new"
+  (): GtkMenu_ref1 = "#atsctrb_gtk_menu_new"
 // end of [gtk_menu_new]
 
 (* ****** ****** *)
 
 fun gtk_menu_popup_null
   {c:cls | c <= GtkMenu} {l:agz}
-  (menu: !gobjptr (c, l), button: guint, activate_time: guint32): void
+  (menu: !gobjref (c, l), button: guint, activate_time: guint32): void
   = "#atsctrb_gtk_menu_popup_null"
 // end of [gtk_menu_popup_null]
 

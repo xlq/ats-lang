@@ -237,6 +237,8 @@ atsctrb_gtk_check_button_new_with_mnemonic
 //
 
 #define atsctrb_gtk_container_add gtk_container_add
+#define atsctrb_gtk_container_remove gtk_container_remove
+
 #define atsctrb_gtk_container_set_border_width gtk_container_set_border_width
 
 /* ****** ****** */
@@ -566,7 +568,7 @@ atsctrb_gtk_hseparator_new () {
 /* ****** ****** */
 
 //
-// source: gtk/gtkseparatormenuitem.h
+// source: gtk/gtkimagemenuitem.h
 //
 
 ATSinline()
@@ -693,6 +695,40 @@ atsctrb_gtk_menu_item_new_with_mnemonic (ats_ptr_type name) {
   return widget ;
 } // end of [atsctrb_gtk_menu_item_new_with_mnemonic]
 
+#if GTK_CHECK_VERSION(2, 16, 0)
+// >= GTK-2.16
+#define atsctrb_gtk_menu_item_get_label gtk_menu_item_get_label
+// >= GTK-2.16
+#define atsctrb_gtk_menu_item_set_label gtk_menu_item_set_label
+#else
+//
+// HX-2010-05-06: a kludge that can be scratched at any moment
+//
+ATSinline()
+ats_ptr_type
+atsctrb_gtk_menu_item_get_label (
+  ats_ptr_type menu_item, ats_ptr_type label
+) {
+  if (GTK_IS_LABEL (GTK_BIN (menu_item)->child))
+    return (void*)gtk_label_get_label (GTK_LABEL (GTK_BIN (menu_item)->child)) ;
+  return NULL ;
+} // end of [atsctrb_gtk_menu_item_let_label]
+//
+ATSinline()
+ats_void_type
+atsctrb_gtk_menu_item_set_label (
+  ats_ptr_type menu_item, ats_ptr_type label
+) {
+  if (GTK_IS_LABEL (GTK_BIN (menu_item)->child)) {
+    gtk_label_set_label
+      (GTK_LABEL (GTK_BIN (menu_item)->child), label ? (gchar*)label : (gchar*)"") ;
+    // g_object_notify (G_OBJECT (menu_item), "label"); // not really available
+  } ;
+  return ;
+} // end of [atsctrb_gtk_menu_item_set_label]
+//
+#endif // GTK_CHECK_VERSION(2, 16, 0)
+
 #define atsctrb_gtk_menu_item_set_submenu gtk_menu_item_set_submenu
 
 /* ****** ****** */
@@ -703,6 +739,45 @@ atsctrb_gtk_menu_item_new_with_mnemonic (ats_ptr_type name) {
 
 #define atsctrb_gtk_menu_shell_append gtk_menu_shell_append
 #define atsctrb_gtk_menu_shell_prepend gtk_menu_shell_prepend
+
+#define atsctrb_gtk_menu_shell_select_item gtk_menu_shell_select_item
+#define atsctrb_gtk_menu_shell_select_first gtk_menu_shell_select_first
+
+#define atsctrb_gtk_menu_shell_deselect gtk_menu_shell_deselect
+
+/* ****** ****** */
+
+//
+// source: gtk/gtkmessagedialog.h
+//
+
+ATSinline()
+ats_ptr_type
+atsctrb_gtk_message_dialog_new0 (
+  GtkDialogFlags flags
+, GtkMessageType type, GtkButtonsType buttons
+, ats_ptr_type message
+) {
+  GtkWidget *widget =
+    gtk_message_dialog_new (NULL, flags, type, buttons, (gchar*)message) ;
+  g_object_ref_sink(G_OBJECT(widget)) ; // removing floating reference!
+  return widget ;
+} // end of [atsctrb_gtk_message_dialog_new0]
+
+ATSinline()
+ats_ptr_type
+atsctrb_gtk_message_dialog_new0_with_markup (
+  GtkDialogFlags flags
+, GtkMessageType _type, GtkButtonsType buttons
+, ats_ptr_type message
+) {
+  GtkWidget *widget =
+    gtk_message_dialog_new_with_markup (NULL, flags, _type, buttons, (gchar*)message) ;
+  g_object_ref_sink(G_OBJECT(widget)) ; // removing floating reference!
+  return widget ;
+} // end of [atsctrb_gtk_message_dialog_new0_with_markup]
+
+#define atsctrb_gtk_message_dialog_set_markup gtk_message_dialog_set_markup
 
 /* ****** ****** */
 
@@ -1204,6 +1279,7 @@ atsctrb_gtk_widget_getref_allocation
 #define atsctrb_gtk_widget_modify_bg gtk_widget_modify_bg
 
 #define atsctrb_gtk_widget_get_colormap gtk_widget_get_colormap
+#define atsctrb_gtk_widget_modify_font gtk_widget_modify_font
 
 #define atsctrb_gtk_widget_queue_draw_area gtk_widget_queue_draw_area
 

@@ -38,41 +38,41 @@
 
 (* ****** ****** *)
 
-fun gtk_entry_new (): GtkEntry_ptr1 = "#atsctrb_gtk_entry_new"
+fun gtk_entry_new (): GtkEntry_ref1 = "#atsctrb_gtk_entry_new"
 
 (* ****** ****** *)
 
 fun gtk_entry_get_visibility
-  {c:cls | c <= GtkEntry} {l:agz} (entry: !gobjptr (c, l)): gboolean
+  {c:cls | c <= GtkEntry} {l:agz} (entry: !gobjref (c, l)): gboolean
   = "#atsctrb_gtk_entry_get_visibility"
 // end of [gtk_entry_get_visibility]
 
 fun gtk_entry_set_visibility
-  {c:cls | c <= GtkEntry} {l:agz} (entry: !gobjptr (c, l), visibility: gboolean): void
+  {c:cls | c <= GtkEntry} {l:agz} (entry: !gobjref (c, l), visibility: gboolean): void
   = "#atsctrb_gtk_entry_set_visibility"
 // end of [gtk_entry_set_visibility]
 
 (* ****** ****** *)
 
 fun gtk_entry_get_editable
-  {c:cls | c <= GtkEntry} {l:agz} (entry: !gobjptr (c, l)): gboolean
+  {c:cls | c <= GtkEntry} {l:agz} (entry: !gobjref (c, l)): gboolean
   = "#atsctrb_gtk_entry_get_editable"
 // end of [gtk_entry_get_editable]
 
 fun gtk_entry_set_editable
-  {c:cls | c <= GtkEntry} {l:agz} (entry: !gobjptr (c, l), editable: gboolean): void
+  {c:cls | c <= GtkEntry} {l:agz} (entry: !gobjref (c, l), editable: gboolean): void
   = "#atsctrb_gtk_entry_set_editable"
 // end of [gtk_entry_set_editable]
 
 (* ****** ****** *)
 
 fun gtk_entry_get_max_length
-  {c:cls | c <= GtkEntry} {l:agz} (entry: !gobjptr (c, l)): gint
+  {c:cls | c <= GtkEntry} {l:agz} (entry: !gobjref (c, l)): gint
   = "#atsctrb_gtk_entry_get_max_length"
 // end of [gtk_entry_get_max_length]
 
 fun gtk_entry_set_max_length
-  {c:cls | c <= GtkEntry} {l:agz} (entry: !gobjptr (c, l), max: gint): void
+  {c:cls | c <= GtkEntry} {l:agz} (entry: !gobjref (c, l), max: gint): void
   = "#atsctrb_gtk_entry_set_max_length"
 // end of [gtk_entry_set_max_length]
 
@@ -80,12 +80,12 @@ fun gtk_entry_set_max_length
 
 fun gtk_entry_get_text
   {c:cls | c <= GtkEntry} {l:agz}
-  (entry: !gobjptr (c, l)): [t:int] (stamp t | stamped (string, t))
+  (entry: !gobjref (c, l)): [t:int] (stamp t | stamped (string, t))
   = "#atsctrb_gtk_entry_get_text"
 // end of [gtk_entry_get_text]
 
 fun gtk_entry_set_text
-  {c:cls | c <= GtkEntry} {l:agz} (entry: !gobjptr (c, l), text: string): void
+  {c:cls | c <= GtkEntry} {l:agz} (entry: !gobjref (c, l), text: string): void
   = "#atsctrb_gtk_entry_set_text"
 // end of [gtk_entry_set_text]
 

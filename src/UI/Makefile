@@ -41,13 +41,19 @@ ATSCC="$(ATSHOME)"/bin/atscc
 ATSCCFLAGS=-g
 
 GTKLIBS=`pkg-config gtk+-2.0 --libs`
-GTKCCFLAGS=`pkg-config gtk+-2.0 --cflags`
+GTKCFLAGS=`pkg-config gtk+-2.0 --cflags`
+
+## CAIROCFLAGS= ...
+## PANGOCFLAGS= `pkg_config pango --cflags`
+
+CCFLAGS =$(GTKCFLAGS)
 
 ######
 
 SOURCES := \
   atsui_util.sats atsui_util.dats \
-  atsui_comp.sats atsui_comp.dats \
+  atsui_compile.dats \
+  atsui_menuwinlst.dats \
   atsui_srcwinlst.sats atsui_srcwinlst.dats \
   atsui_topenv.sats atsui_topenv.dats \
 
@@ -61,8 +67,7 @@ atsui: \
   atsui_main_dats.o \
   $(OBJECTS)
 	$(ATSCC) \
-  $(ATSCCFLAGS) \
-  $(GTKCCFLAGS) \
+  $(ATSCCFLAGS) $(CCFLAGS) \
   -o atsui \
   atsui_main_dats.o \
   $(OBJECTS) \
@@ -71,39 +76,39 @@ atsui: \
 ######
 
 atsui_main_dats.o: atsui_main.dats
-	$(ATSCC) $(ATSCCFLAGS) $(GTKCCFLAGS) -c atsui_main.dats
+	$(ATSCC) $(ATSCCFLAGS) $(CCFLAGS) -c atsui_main.dats
 
 ######
 
 atsui_util_sats.o: atsui_util.sats
-	$(ATSCC) $(ATSCCFLAGS) $(GTKCCFLAGS) -c atsui_util.sats
+	$(ATSCC) $(ATSCCFLAGS) $(CCFLAGS) -c atsui_util.sats
 
 atsui_util_dats.o: atsui_util.dats
-	$(ATSCC) $(ATSCCFLAGS) $(GTKCCFLAGS) -c atsui_util.dats
-
-######
-
-atsui_comp_sats.o: atsui_comp.sats
-	$(ATSCC) $(ATSCCFLAGS) $(GTKCCFLAGS) -c atsui_comp.sats
-
-atsui_comp_dats.o: atsui_comp.dats
-	$(ATSCC) $(ATSCCFLAGS) $(GTKCCFLAGS) -c atsui_comp.dats
+	$(ATSCC) $(ATSCCFLAGS) $(CCFLAGS) -c atsui_util.dats
 
 ######
 
 atsui_srcwinlst_sats.o: atsui_srcwinlst.sats
-	$(ATSCC) $(ATSCCFLAGS) $(GTKCCFLAGS) -c atsui_srcwinlst.sats
+	$(ATSCC) $(ATSCCFLAGS) $(CCFLAGS) -c atsui_srcwinlst.sats
 
 atsui_srcwinlst_dats.o: atsui_srcwinlst.dats
-	$(ATSCC) $(ATSCCFLAGS) $(GTKCCFLAGS) -c atsui_srcwinlst.dats
+	$(ATSCC) $(ATSCCFLAGS) $(CCFLAGS) -c atsui_srcwinlst.dats
+
+######
+
+atsui_compile_dats.o: atsui_compile.dats
+	$(ATSCC) $(ATSCCFLAGS) $(CCFLAGS) -c atsui_compile.dats
+
+atsui_menuwinlst_dats.o: atsui_menuwinlst.dats
+	$(ATSCC) $(ATSCCFLAGS) $(CCFLAGS) -c atsui_menuwinlst.dats
 
 ######
 
 atsui_topenv_sats.o: atsui_topenv.sats
-	$(ATSCC) $(ATSCCFLAGS) $(GTKCCFLAGS) -c atsui_topenv.sats
+	$(ATSCC) $(ATSCCFLAGS) $(CCFLAGS) -c atsui_topenv.sats
 
 atsui_topenv_dats.o: atsui_topenv.dats
-	$(ATSCC) $(ATSCCFLAGS) $(GTKCCFLAGS) -c atsui_topenv.dats
+	$(ATSCC) $(ATSCCFLAGS) $(CCFLAGS) -c atsui_topenv.dats
 
 ######
 

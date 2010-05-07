@@ -46,7 +46,7 @@ gtk_alignment_new_type (a:t@ype) = (
   , a // yalign
   , a // xscale
   , a // yscale
-  ) -<fun1> GtkAlignment_ptr1
+  ) -<fun1> GtkAlignment_ref1
 
 fun gtk_alignment_new__type
   : gtk_alignment_new_type float = "#atsctrb_gtk_alignment_new"
