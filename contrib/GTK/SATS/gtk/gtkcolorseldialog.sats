@@ -38,8 +38,8 @@
 
 (* ****** ****** *)
 
-fun gtk_color_selection_dialog_new
-  (title: string): GtkColorSelectionDialog_ref1 = "#atsctrb_gtk_color_selection_dialog_new"
+fun gtk_color_selection_dialog_new {l:agz}
+  (title: !gstring l): GtkColorSelectionDialog_ref1 = "#atsctrb_gtk_color_selection_dialog_new"
 // end of [gtk_color_selection_dialog_new]
 
 (* ****** ****** *)

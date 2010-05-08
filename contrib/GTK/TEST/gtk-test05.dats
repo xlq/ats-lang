@@ -36,6 +36,11 @@ end // end of [delete_event]
 
 (* ****** ****** *)
 
+extern
+fun gtk_button_new_with_label0
+  (label: string): GtkButton_ref1 = "#atsctrb_gtk_button_new_with_label"
+// end of [gtk_button_new_with_label0]
+
 fun make_box (
     homo: gboolean
   , spacing: gint
@@ -45,35 +50,35 @@ fun make_box (
   ) : GtkHBox_ref1 = let
   val box = gtk_hbox_new (homo, spacing)
 //
-  val button = gtk_button_new_with_label ("gtk_box_pack")
+  val button = gtk_button_new_with_label0 ("gtk_box_pack")
   val () = gtk_box_pack_start (box, button, expand, fill, padding)
   val () = gtk_widget_show (button)
   val () = g_object_unref (button)
 //
-  val button = gtk_button_new_with_label ("(box,")
+  val button = gtk_button_new_with_label0 ("(box,")
   val () = gtk_box_pack_start (box, button, expand, fill, padding)
   val () = gtk_widget_show (button)
   val () = g_object_unref (button)
 //
-  val button = gtk_button_new_with_label ("button,")
+  val button = gtk_button_new_with_label0 ("button,")
   val () = gtk_box_pack_start (box, button, expand, fill, padding)
   val () = gtk_widget_show (button)
   val () = g_object_unref (button)
 //
   val label = (if (bool_of)expand then "TRUE," else ",FALSE"): string
-  val button = gtk_button_new_with_label (label)
+  val button = gtk_button_new_with_label0 (label)
   val () = gtk_box_pack_start (box, button, expand, fill, padding)
   val () = gtk_widget_show (button)
   val () = g_object_unref (button)
 //
   val label = (if (bool_of)fill then "TRUE," else ",FALSE"): string
-  val button = gtk_button_new_with_label (label)
+  val button = gtk_button_new_with_label0 (label)
   val () = gtk_box_pack_start (box, button, expand, fill, padding)
   val () = gtk_widget_show (button)
   val () = g_object_unref (button)
 //
   val (pf_gc, pf_str | p) = tostringf__bufptr ("%u)", @((uint_of)padding))
-  val button = gtk_button_new_with_label (label1) where {
+  val button = gtk_button_new_with_label0 (label1) where {
     extern castfn __cast {l:addr} (p: ptr l):<> string; val label1 = __cast p
   }
   val () = strbufptr_free @(pf_gc, pf_str | p)
@@ -85,6 +90,12 @@ in
   box
 end // end of [make_box]
   
+(* ****** ****** *)
+
+extern
+fun gtk_label_new0
+  (name: string): GtkLabel_ref1 = "#atsctrb_gtk_label_new"
+// end of [gtk_label_new0]
 
 (* ****** ****** *)
 
@@ -103,7 +114,7 @@ implement main1 (which) = () where {
 //
   val () = case+ 0 of
     | _ when which = 1 => () where {
-        val label = gtk_label_new ("gtk_hbox_new (FALSE, 0);")
+        val label = gtk_label_new0 ("gtk_hbox_new (FALSE, 0);")
         val () = gtk_misc_set_alignment (label, (gfloat)0.0, (gfloat)0.0)
         val () = gtk_box_pack_start (box1, label, GFALSE, GFALSE, (guint)0)
         val () = gtk_widget_show (label)
@@ -129,7 +140,7 @@ implement main1 (which) = () where {
         val () = gtk_widget_show (separator)
         val () = g_object_unref (separator)
 //
-        val label = gtk_label_new ("gtk_hbox_new (TRUE, 0)")
+        val label = gtk_label_new0 ("gtk_hbox_new (TRUE, 0)")
         val () = gtk_misc_set_alignment (label, (gfloat)0.0, (gfloat)0.0)
         val () = gtk_box_pack_start (box1, label, GFALSE, GFALSE, (guint)0)
         val () = gtk_widget_show (label)
@@ -151,7 +162,7 @@ implement main1 (which) = () where {
         val () = g_object_unref (separator)
       } // end of [which = 1]
     | _ when which = 2 => () where {
-        val label = gtk_label_new ("gtk_hbox_new (FALSE, 10)")
+        val label = gtk_label_new0 ("gtk_hbox_new (FALSE, 10)")
         val () = gtk_misc_set_alignment (label, (gfloat)0.0, (gfloat)0.0)
         val () = gtk_box_pack_start (box1, label, GFALSE, GFALSE, (guint)0)
         val () = gtk_widget_show (label)
@@ -172,7 +183,7 @@ implement main1 (which) = () where {
         val () = gtk_widget_show (separator)
         val () = g_object_unref (separator)
 //
-        val label = gtk_label_new ("gtk_hbox_new (FALSE, 0)")
+        val label = gtk_label_new0 ("gtk_hbox_new (FALSE, 0)")
         val () = gtk_misc_set_alignment (label, (gfloat)0.0, (gfloat)0.0)
         val () = gtk_box_pack_start (box1, label, GFALSE, GFALSE, (guint)0)
         val () = gtk_widget_show (label) 
@@ -196,7 +207,7 @@ implement main1 (which) = () where {
       } // end of [which = 2]
     | _ when which = 3 => () where {
         val box2 = make_box (GFALSE, (gint)0, GTRUE, GFALSE, (guint)0)
-        val label = gtk_label_new ("end")
+        val label = gtk_label_new0 ("end")
         val () = gtk_box_pack_start (box2, label, GFALSE, GFALSE, (guint)0)
         val () = gtk_widget_show (label)
         val () = g_object_unref (label)
@@ -214,7 +225,7 @@ implement main1 (which) = () where {
   // end of [case]
 //
   val quitbox = gtk_hbox_new (GFALSE, (gint)0)
-  val button = gtk_button_new_with_label ("Quit")
+  val button = gtk_button_new_with_label0 ("Quit")
   val (fpf_window | window_) = g_object_vref (window)
   val _sid = g_signal_connect_swapped0
     (button, (gsignal)"clicked", G_CALLBACK(delete_event), window_)

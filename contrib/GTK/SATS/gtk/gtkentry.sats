@@ -78,15 +78,22 @@ fun gtk_entry_set_max_length
 
 (* ****** ****** *)
 
+//
+// HX-2010-05-07: assumed: the return cannot be NULL!
+//
 fun gtk_entry_get_text
-  {c:cls | c <= GtkEntry} {l:agz}
-  (entry: !gobjref (c, l)): [t:int] (stamp t | stamped (string, t))
+  {c:cls | c <= GtkEntry} {l1:agz}
+  (entry: !gobjref (c, l1))
+  : [l2:agz] (minus (gobjref (c, l1), gstring l2) | gstring l2)
   = "#atsctrb_gtk_entry_get_text"
 // end of [gtk_entry_get_text]
 
+//
+// HX-2010-05-07: checked: the input [text] cannot be NULL!
+//
 fun gtk_entry_set_text
-  {c:cls | c <= GtkEntry} {l:agz} (entry: !gobjref (c, l), text: string): void
-  = "#atsctrb_gtk_entry_set_text"
+  {c:cls | c <= GtkEntry} {l1,l2:agz}
+  (entry: !gobjref (c, l1), text: !gstring l2): void = "#atsctrb_gtk_entry_set_text"
 // end of [gtk_entry_set_text]
 
 (* ****** ****** *)

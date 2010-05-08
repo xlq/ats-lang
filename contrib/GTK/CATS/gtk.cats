@@ -1040,13 +1040,13 @@ atsctrb_gtk_table_new (
 
 ATSinline()
 ats_void_type
-atsctrb_gtk_text_buffer_insert_all (
+atsctrb_gtk_text_buffer_insertall (
   ats_ptr_type tb, ats_ref_type iter, ats_ptr_type text
 ) {
   gtk_text_buffer_insert (
     (GtkTextBuffer*)tb, (GtkTextIter*)iter, (gchar*)text, -1
   ) ; return ;
-} // end of [atsctrb_gtk_text_buffer_insert_all]
+} // end of [atsctrb_gtk_text_buffer_insertall]
 
 //
 
@@ -1055,11 +1055,11 @@ atsctrb_gtk_text_buffer_insert_all (
 
 ATSinline()
 ats_void_type
-atsctrb_gtk_text_buffer_set_text_all
+atsctrb_gtk_text_buffer_setall_text
   (ats_ptr_type tb, ats_ptr_type text) {
   gtk_text_buffer_set_text ((GtkTextBuffer*)tb, (gchar*)text, -1) ;
   return ;
-} // end of [atsctrb_gtk_text_buffer_set_text_all]
+} // end of [atsctrb_gtk_text_buffer_setall_text]
 
 //
 

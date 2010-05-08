@@ -38,22 +38,22 @@
 
 (* ****** ****** *)
 
-fun gtk_label_new
-  (name: string): GtkLabel_ref1 = "#atsctrb_gtk_label_new"
+fun gtk_label_new {l:agz}
+  (name: !gstring l): GtkLabel_ref1 = "#atsctrb_gtk_label_new"
 // end of [gtk_label_new]
 
 (* ****** ****** *)
 
-fun gtk_label_set_text
-  {c:cls | c <= GtkLabel} {l:agz}
-  (label: !gobjref (c, l), name: string): void = "#atsctrb_gtk_label_set_text"
-// end of [gtk_label_set_text]
-
 fun gtk_label_get_text
-  {c:cls | c <= GtkLabel} {l:agz}
-  (label: !gobjref (c, l)): [t:int] (stamp t | stamped (string, t))
+  {c:cls | c <= GtkLabel} {l1:agz}
+  (label: !gobjref (c, l1)): [l2:addr] (minus (gobjref (c, l1), gstring l2) | gstring l2)
   = "#atsctrb_gtk_label_get_text"
 // end of [gtk_label_get_text]
+
+fun gtk_label_set_text
+  {c:cls | c <= GtkLabel} {l1,l2:agz}
+  (label: !gobjref (c, l1), name: !gstring l2): void = "#atsctrb_gtk_label_set_text"
+// end of [gtk_label_set_text]
 
 (* ****** ****** *)
 

@@ -41,12 +41,12 @@
 fun gtk_check_button_new
   (): GtkCheckButton_ref1 = "#atsctrb_gtk_check_button_new"
 
-fun gtk_check_button_new_with_label
-  (name: string): GtkCheckButton_ref1 = "#atsctrb_gtk_check_button_new_with_label"
+fun gtk_check_button_new_with_label {l:agz}
+  (name: !gstring l): GtkCheckButton_ref1 = "#atsctrb_gtk_check_button_new_with_label"
 // end of [gtk_check_button_new_with_label]
 
-fun gtk_check_button_new_with_mnemonic
-  (name: string): GtkCheckButton_ref1 = "#atsctrb_gtk_check_button_new_with_mnemonic"
+fun gtk_check_button_new_with_mnemonic {l:agz}
+  (name: !gstring l): GtkCheckButton_ref1 = "#atsctrb_gtk_check_button_new_with_mnemonic"
 // end of [gtk_check_button_new_with_mnemonic]
 
 (* ****** ****** *)

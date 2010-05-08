@@ -27,6 +27,8 @@ mainats (ats_int_type argc, ats_ptr_type argv) ;
 
 (* ****** ****** *)
 
+macdef gs = gstring_of_string
+
 extern fun main1 (): void = "main1"
 
 implement main1 () = () where {
@@ -35,7 +37,9 @@ implement main1 () = () where {
   val (fpf_window | window_) = g_object_vref (window)
   val _sid = g_signal_connect0
     (window_, (gsignal)"destroy", G_CALLBACK(gtk_main_quit), (gpointer)null)
-  val () = gtk_window_set_title (window, "TextView")
+  val (fpf_x | x) = (gs)"TextView"
+  val () = gtk_window_set_title (window, x)
+  prval () = fpf_x (x)
   val () = gtk_window_set_position (window, GTK_WIN_POS_CENTER)
   val () = gtk_window_set_default_size (window, (gint)200, (gint)250)
   val () = gtk_window_set_resizable (window, GTRUE)
@@ -49,7 +53,9 @@ implement main1 () = () where {
 //
   var iter: GtkTextIter // uninitialized
   val () = gtk_text_buffer_get_iter_at_offset (buffer, iter, (gint)0)
-  val () = gtk_text_buffer_insert_all (buffer, iter, "Plain text\n")
+  val (fpf_x | x) = (gs)"Plain text\n"
+  val () = gtk_text_buffer_insertall (buffer, iter, x)
+  prval () = fpf_x (x)
 //
   prval () = minus_addback (fpf_buffer, buffer | textview)
   val () = g_object_unref (textview)

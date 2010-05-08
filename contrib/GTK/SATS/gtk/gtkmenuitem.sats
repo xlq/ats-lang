@@ -42,12 +42,12 @@ fun gtk_menu_item_new
   (): GtkMenuItem_ref1 = "#atsctrb_gtk_menu_item_new"
 // end of [gtk_menu_item_new]
 
-fun gtk_menu_item_new_with_label
-  (name: string): GtkMenuItem_ref1 = "#atsctrb_gtk_menu_item_new_with_label"
+fun gtk_menu_item_new_with_label {l:agz}
+  (name: !gstring l): GtkMenuItem_ref1 = "#atsctrb_gtk_menu_item_new_with_label"
 // end of [gtk_menu_item_new_with_label]
 
-fun gtk_menu_item_new_with_mnemonic
-  (name: string): GtkMenuItem_ref1 = "#atsctrb_gtk_menu_item_new_with_mnemonic"
+fun gtk_menu_item_new_with_mnemonic {l:agz}
+  (name: !gstring l): GtkMenuItem_ref1 = "#atsctrb_gtk_menu_item_new_with_mnemonic"
 // end of [gtk_menu_item_new_with_mnemonic]
 
 (* ****** ****** *)
@@ -62,7 +62,8 @@ fun gtk_menu_item_get_label
 // end of [gtk_menu_item_get_label]
 
 fun gtk_menu_item_set_label
-  {c:cls | c <= GtkMenuItem} {l:agz} (item: !gobjref (c, l), name: string): void
+  {c:cls | c <= GtkMenuItem} {l1,l2:agz}
+  (item: !gobjref (c, l1), name: !gstring l2): void
   = "#atsctrb_gtk_menu_item_set_label"
 // end of [gtk_menu_item_set_label]
 

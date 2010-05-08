@@ -38,8 +38,8 @@
 
 (* ****** ****** *)
 
-fun gtk_frame_new
-  (name: string): GtkFrame_ref1 = "#atsctrb_gtk_frame_new"
+fun gtk_frame_new {l:addr}
+  (name: !gstring l): GtkFrame_ref1 = "#atsctrb_gtk_frame_new"
 // end of [gtk_frame_new]
 
 //

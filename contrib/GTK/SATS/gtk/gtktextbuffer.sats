@@ -90,19 +90,25 @@ fun gtk_text_buffer_insert
   = "#atsctrb_gtk_text_buffer_insert"
 // end of [gtk_text_buffer_insert]
 
-fun gtk_text_buffer_insert_all
-  {c:cls | c <= GtkTextBuffer} {l:agz} {n:nat}
-  (tb: !gobjref (c, l), iter: &GtkTextIter, text: string n): void
-  = "atsctrb_gtk_text_buffer_insert_all" // this a function!
+fun gtk_text_buffer_insertall
+  {c:cls | c <= GtkTextBuffer} {l1,l2:agz}
+  (tb: !gobjref (c, l1), iter: &GtkTextIter, text: !gstring l2): void
+  = "atsctrb_gtk_text_buffer_insertall" // function!
 // end of [gtk_text_buffer_insert_all]
 
 (* ****** ****** *)
 
 fun gtk_text_buffer_insert_at_cursor
   {c:cls | c <= GtkTextBuffer} {l:agz} {n0,n1:nat | n0 >= n1}
-  (tb: !gobjref (c, l), text: string n0, len: gint n1): void
+  (tb: !gobjref (c, l), text: &(@[gchar][n0]), len: gint n1): void
   = "#atsctrb_gtk_text_buffer_insert_at_cursor"
 // end of [gtk_text_buffer_insert_at_cursor]
+
+fun gtk_text_buffer_insertall_at_cursor
+  {c:cls | c <= GtkTextBuffer} {l1,l2:agz}
+  (tb: !gobjref (c, l1), text: !gstring l2): void
+  = "atsctrb_gtk_text_buffer_insertall_at_cursor" // function!
+// end of [gtk_text_buffer_insertall_at_cursor]
 
 (* ****** ****** *)
 
@@ -141,6 +147,8 @@ fun gtk_text_buffer_get_text
   ) : gstring1 = "#atsctrb_gtk_text_buffer_get_text"
 // end of [gtk_text_buffer_get_get_text]
 
+(* ****** ****** *)
+
 fun gtk_text_buffer_set_text
   {c:cls | c <= GtkTextBuffer} {l:agz}
   {n0,n1:nat | n0 >= n1}
@@ -148,11 +156,11 @@ fun gtk_text_buffer_set_text
   = "#atsctrb_gtk_text_buffer_set_text"
 // end of [gtk_text_buffer_set_text]
 
-fun gtk_text_buffer_set_text_all
-  {c:cls | c <= GtkTextBuffer} {l:agz} {n:nat}
-  (tb: !gobjref (c, l), text: string n): void
-  = "atsctrb_gtk_text_buffer_set_text_all" // this a function!
-// end of [gtk_text_buffer_set_text_all]
+fun gtk_text_buffer_setall_text
+  {c:cls | c <= GtkTextBuffer} {l1,l2:agz}
+  (tb: !gobjref (c, l1), text: !gstring l2): void
+  = "atsctrb_gtk_text_buffer_setall_text" // function!
+// end of [gtk_text_buffer_setall_text]
 
 (* ****** ****** *)
 

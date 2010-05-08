@@ -45,8 +45,8 @@ fun gtk_window_new
 (* ****** ****** *)
 
 fun gtk_window_set_title
-  {c:cls | c <= GtkWindow} {l:agz}
-  (window: !gobjref (c, l), title: string): void
+  {c:cls | c <= GtkWindow} {l1,l2:agz}
+  (window: !gobjref (c, l1), title: !gstring l2): void
   = "#atsctrb_gtk_window_set_title"
 // end of [gtk_window_set_title]
 

@@ -65,12 +65,14 @@ macdef GTK_FILE_CHOOSER_CONFIRMATION_SELECT_AGAIN =
 // the return may be a NULL gstring
 //
 fun gtk_file_chooser_get_filename
-  {c:cls | c <= GtkFileChooser} {l:agz} (chooser: !gobjref (c, l)): gstring0
+  {c:cls | c <= GtkFileChooser} {l:agz}
+  (chooser: !gobjref (c, l)): gstring0 // it is copied out
   = "#atsctrb_gtk_file_chooser_get_filename"
 // end of [gtk_file_chooser_get_filename]
 
 fun gtk_file_chooser_set_filename
-  {c:cls | c <= GtkFileChooser} {l:agz} (filesel: !gobjref (c, l), filename: string): gboolean
+  {c:cls | c <= GtkFileChooser} {l1,l2:agz}
+  (filesel: !gobjref (c, l1), filename: !gstring l2): gboolean
   = "#atsctrb_gtk_file_chooser_set_filename"
 // end of [gtk_file_chooser_set_filename]
 

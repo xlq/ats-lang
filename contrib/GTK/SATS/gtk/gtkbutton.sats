@@ -40,36 +40,42 @@
 
 fun gtk_button_new
   (): GtkButton_ref1 = "#atsctrb_gtk_button_new"
+// end of [gtk_button_new]
 
 fun gtk_button_new_with_label
-  (label: string): GtkButton_ref1 = "#atsctrb_gtk_button_new_with_label"
+  {l:agz} (label: !gstring l): GtkButton_ref1
+  = "#atsctrb_gtk_button_new_with_label"
 // end of [gtk_button_new_with_label]
 
 fun gtk_button_new_with_mnemonic
-  (label: string): GtkButton_ref1 = "#atsctrb_gtk_button_new_with_mnemonic"
+  {l:agz} (label: !gstring l): GtkButton_ref1
+  = "#atsctrb_gtk_button_new_with_mnemonic"
 // end of [gtk_button_new_with_mnemonic]
 
-(* ****** ****** *)
-
 fun gtk_button_new_from_stock
-  (stock_id: string): GtkButton_ref1 = "#atsctrb_gtk_button_new_from_stock"
+  {l:agz} (stock_id: !gstring l): GtkButton_ref1
+  = "#atsctrb_gtk_button_new_from_stock"
 // end of [gtk_button_new_from_stock]
 
 (* ****** ****** *)
 
 //
 // HX-2010-04-26: the label string belongs to the widget!
+// HX-2010-05-07: the label string can be NULL (if it is not set)
 //
 fun gtk_button_get_label
-  {c:cls | c <= GtkButton} {l:agz}
-  (widget: !gobjref (c, l)): [t:int] (stamp t | stamped (Stropt, t))
+  {c:cls | c <= GtkButton} {l1:agz}
+  (widget: !gobjref (c, l1))
+  : [l2:addr] (minus (gobjref (c, l1), gstring l2) | gstring l2)
   = "#atsctrb_gtk_button_get_label"
 // end of [gtk_button_get_label]
 
+//
+// HX-2010-05-07: checked: label = NULL -> labe = ""
+//
 fun gtk_button_set_label
-  {c:cls | c <= GtkButton} {l:agz}
-  (widget: !gobjref (c, l), label: Stropt): void
-  = "#atsctrb_gtk_button_set_label"
+  {c:cls | c <= GtkButton} {l1,l2:agz}
+  (widget: !gobjref (c, l1), label: gstring l2): void = "#atsctrb_gtk_button_set_label"
 // end of [gtk_button_set_label]
 
 (* ****** ****** *)

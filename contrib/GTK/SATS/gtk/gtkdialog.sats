@@ -151,9 +151,9 @@ fun gtk_dialog_get_action_area
 (* ****** ****** *)
 
 fun gtk_dialog_add_button
-  {c:cls | c <= GtkDialog} {l:agz}
-  (dialog: !gobjref (c, l), name: string, response_id: GtkResponseType)
-  : [l1:agz] (minus (gobjref (c, l), gobjref (GtkButton, l1)) | gobjref (GtkButton, l1))
+  {c:cls | c <= GtkDialog} {l1,l2:agz}
+  (dialog: !gobjref (c, l1), name: !gstring l2, response_id: GtkResponseType)
+  : [l3:agz] (minus (gobjref (c, l1), gobjref (GtkButton, l3)) | gobjref (GtkButton, l3))
   = "#atsctrb_gtk_dialog_add_button"
 // end of [gtk_dialog_add_button]
 

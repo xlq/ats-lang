@@ -260,6 +260,14 @@ viewtypedef gstring1 = [l:addr | l > null] gstring l
 castfn ptr_of_gstring {l:addr} (x: !gstring l):<> ptr l
 overload ptr_of with ptr_of_gstring
 
+castfn gstring_make_null (x: ptr null): gstring (null)
+castfn gstring_of_string
+  (x: string): [l:agz] (gstring l -<lin,prf> void | gstring l)
+// end of [gstring_of_string]
+castfn gstring_of_stropt
+  (x: Stropt): [l:addr] (gstring l -<lin,prf> void | gstring l)
+// end of [gstring_of_stropt]
+
 fun compare_gstring_gstring
   {l1,l2:agz} (x1: !gstring l1, x2: !gstring l2): Sgn
   = "atsctrb_compare_gstring_gstring"

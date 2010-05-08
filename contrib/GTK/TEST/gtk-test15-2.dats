@@ -43,15 +43,17 @@ overload gint with gint_of_GtkResponseType
 
 (* ****** ****** *)
 
+macdef gs = gstring_of_string
+
 extern fun main1 (): void = "main1"
 
 implement main1 () = () where {
   val filew = gtk_file_chooser_dialog_new
     (stropt_some "File Chooser Test", GTK_FILE_CHOOSER_ACTION_OPEN)
 //
-  val (fpf_btn | btn) = gtk_dialog_add_button (
-    filew, GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL 
-  )
+  val (fpf_x | x) = (gs)GTK_STOCK_CANCEL
+  val (fpf_btn | btn) = gtk_dialog_add_button (filew, x, GTK_RESPONSE_CANCEL)
+  prval () = fpf_x (x)
 (*
   val isflt = g_object_is_floating (btn)
   val () = (print "isflt = "; print isflt; print_newline ())
@@ -60,9 +62,9 @@ implement main1 () = () where {
 *)
   prval () = minus_addback (fpf_btn, btn | filew)
 //
-  val (fpf_btn | btn) = gtk_dialog_add_button (
-    filew, GTK_STOCK_OPEN, GTK_RESPONSE_ACCEPT
-  )
+  val (fpf_x | x) = (gs)GTK_STOCK_OPEN
+  val (fpf_btn | btn) = gtk_dialog_add_button (filew, x, GTK_RESPONSE_ACCEPT)
+  prval () = fpf_x (x)
   prval () = minus_addback (fpf_btn, btn | filew)
 //
   val _sid = g_signal_connect1

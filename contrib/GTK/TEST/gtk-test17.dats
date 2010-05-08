@@ -20,6 +20,17 @@ staload "contrib/GTK/SATS/gtk.sats"
 (* ****** ****** *)
 
 extern
+fun gtk_label_new0
+  (name: string): GtkLabel_ref1 = "#atsctrb_gtk_label_new"
+// end of [gtk_label_new0]
+
+(* ****** ****** *)
+
+macdef gs = gstring_of_string
+
+(* ****** ****** *)
+
+extern
 fun main1 (): void = "main1"
 implement main1 () = () where {
   val window = gtk_window_new (GTK_WINDOW_TOPLEVEL)
@@ -27,14 +38,16 @@ implement main1 () = () where {
   val () = gtk_widget_set_size_request (window, (gint)300, (gint)250)
   val () = gtk_window_set_resizable (window, GFALSE)
   val () = gtk_container_set_border_width (window, (guint)15)
-  val () = gtk_window_set_title (window, "Window Layout")
+  val (fpf_x | x) = (gs)"Window Layout"
+  val () = gtk_window_set_title (window, x)
+  prval () = fpf_x (x)
 //
   val table = gtk_table_new ((guint)8, (guint)4, GFALSE)
   val () = gtk_container_add (window, table)
 //
   val () = gtk_table_set_col_spacings (table, (guint)3)
   val halign = gtk_alignment_new (0.0f, 0.0f, 0.0f, 0.0f)
-  val title = gtk_label_new ("Windows")
+  val title = gtk_label_new0 ("Windows")
   val () = gtk_container_add (halign, title)
   val () = gtk_table_attach
     (table, halign, 0U, 1U, 0U, 1U, GTK_FILL, GTK_FILL, 0U, 0U)
@@ -52,7 +65,9 @@ implement main1 () = () where {
   // end of [gtk_table_attach]
   val () = g_object_unref (wins)
 //
-  val activate = gtk_button_new_with_label ("Activate")
+  val (fpf_x | x) = (gstring_of_string)"Activate"
+  val activate = gtk_button_new_with_label (x)
+  prval () = fpf_x (x)
   val () = gtk_widget_set_size_request (activate, (gint)50, (gint)30)
   val () = gtk_table_attach
     (table, activate, 3U, 4U, 1U, 2U, GTK_FILL, GTK_SHRINK, 1U, 1U)
@@ -60,7 +75,9 @@ implement main1 () = () where {
   val () = g_object_unref (activate)
 //
   val valign = gtk_alignment_new (0.0f, 0.0f, 0.0f, 0.0f)
-  val close = gtk_button_new_with_label ("Close")
+  val (fpf_x | x) = (gstring_of_string)"Close"
+  val close = gtk_button_new_with_label (x)
+  prval () = fpf_x (x)
   val () = gtk_container_add (valign, close)
   val () = gtk_widget_set_size_request (close, (gint)70, (gint)30)
   val () = gtk_table_set_row_spacing (table, (guint)1, (guint)3)
@@ -72,7 +89,9 @@ implement main1 () = () where {
   val () = g_object_unref (valign)
 //
   val halign2 = gtk_alignment_new (0.0f, 1.0f, 0.0f, 0.0f)
-  val help = gtk_button_new_with_label ("Help")
+  val (fpf_x | x) = (gstring_of_string)"Help"
+  val help = gtk_button_new_with_label (x)
+  prval () = fpf_x (x)
   val () = gtk_container_add (halign2, help)
   val () = gtk_widget_set_size_request (help, (gint)70, (gint)30)
   val () = gtk_table_set_row_spacing (table, (guint)3, (guint)6)
@@ -82,7 +101,9 @@ implement main1 () = () where {
   val () = g_object_unref (help)
   val () = g_object_unref (halign2)
 //
-  val ok = gtk_button_new_with_label ("OK")
+  val (fpf_x | x) = (gstring_of_string)"OK"
+  val ok = gtk_button_new_with_label (x)
+  prval () = fpf_x (x)
   val () = gtk_widget_set_size_request (ok, (gint)70, (gint)30)
   val () = gtk_table_attach
     (table, ok, 3U, 4U, 4U, 5U, GTK_FILL, GTK_FILL, 0U, 0U)

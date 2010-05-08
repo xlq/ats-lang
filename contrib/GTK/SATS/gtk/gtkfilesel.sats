@@ -45,7 +45,8 @@
 (* ****** ****** *)
 
 fun gtk_file_selection_new
-  (title: string): GtkColorSelection_ref1 = "#atsctrb_gtk_file_selection_new"
+  {l:agz} (title: !gstring l): GtkColorSelection_ref1
+  = "#atsctrb_gtk_file_selection_new"
 // end of [gtk_file_selection_new]
 
 (* ****** ****** *)
@@ -67,15 +68,16 @@ fun gtk_file_selection_get_cancel_button
 (* ****** ****** *)
 
 fun gtk_file_selection_get_filename
-  {c:cls | c <= GtkFileSelection} {l:agz}
-  (filesel: !gobjref (c, l)): [t:int] (stamp t | stamped (string, t))
+  {c:cls | c <= GtkFileSelection} {l1:agz}
+  (filesel: !gobjref (c, l1))
+  : [l2:addr] (minus (gobjref (c, l1), gstring l2) | gstring l2)
   = "#atsctrb_gtk_file_selection_get_filename"
 // end of [gtk_file_selection_get_filename]
 
 fun gtk_file_selection_set_filename
-  {c:cls | c <= GtkFileSelection} {l:agz}
-  (filesel: !gobjref (c, l), filename: string): void
-  = "#atsctrb_gtk_file_selection_set_filename"
+  {c:cls | c <= GtkFileSelection} {l1,l2:agz} (
+    filesel: !gobjref (c, l1), filename: !gstring l2
+  ) : void = "#atsctrb_gtk_file_selection_set_filename"
 // end of [gtk_file_selection_set_filename]
 
 (* ****** ****** *)

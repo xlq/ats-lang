@@ -37,6 +37,8 @@ end // end of [close_application]
 
 (* ****** ****** *)
 
+macdef gs = gstring_of_string
+
 extern fun main1 (): void = "main1"
 
 implement main1 () = () where {
@@ -44,7 +46,9 @@ implement main1 () = () where {
   val _sid = g_signal_connect (
     window, (gsignal)"delete_event", (G_CALLBACK)close_application, (gpointer)null
   ) // end of [val]
-  val () = gtk_window_set_title (window, "radio buttons")
+  val (fpf_x | x) = (gs)"radio buttons"
+  val () = gtk_window_set_title (window, x)
+  prval () = fpf_x (x)
 //
   val () = gtk_container_set_border_width (window, (guint)0)
 //
@@ -56,22 +60,25 @@ implement main1 () = () where {
   val () = gtk_box_pack_start (box1, box2, GTRUE, GTRUE, (guint)0)
 //
   val G_SLIST_NULL = g_slist_new_nil ()
-  val button1 = gtk_radio_button_new_with_label (G_SLIST_NULL, "button1")
+  val (fpf_x | x) = (gs)"button1"
+  val button1 = gtk_radio_button_new_with_label (G_SLIST_NULL, x)
+  prval () = fpf_x (x)
   val () = g_slist_free_nil (G_SLIST_NULL)
   val () = gtk_box_pack_start (box2, button1, GTRUE, GTRUE, (guint)0)
   val () = gtk_widget_show (button1)
-  val (stamp | group) = gtk_radio_button_get_group (button1)
+  val (fpf_group | group) = gtk_radio_button_get_group (button1)
+  val (fpf_x | x) = (gs)"button2"
+  val button2 = gtk_radio_button_new_with_label (group, x)
+  prval () = fpf_x (x)
+  prval () = minus_addback (fpf_group, group | button1)
   val () = g_object_unref (button1)
-//
-  prval () = stamped_decode (group)
-  val button2 = gtk_radio_button_new_with_label (group, "button2")
-  prval () = stamped_encode (group)
-  prval () = stamp_forfeit (stamp, group)
   val () = gtk_toggle_button_set_active (button2, GTRUE)
   val () = gtk_box_pack_start (box2, button2, GTRUE, GTRUE, (guint)0)
   val () = gtk_widget_show (button2)
 //
-  val button3 = gtk_radio_button_new_with_label_from_widget (button2, "button3")
+  val (fpf_x | x) = (gs)"button3"
+  val button3 = gtk_radio_button_new_with_label_from_widget (button2, x)
+  prval () = fpf_x (x)
   val () = g_object_unref (button2)
   val () = gtk_box_pack_start (box2, button3, GTRUE, GTRUE, (guint)0)
   val () = gtk_widget_show (button3)
@@ -89,7 +96,9 @@ implement main1 () = () where {
   val () = gtk_container_set_border_width (box2, (guint)10)
   val () = gtk_box_pack_start (box1, box2, GFALSE, GTRUE, (guint)0)  
 //
-  val button = gtk_button_new_with_label ("close")
+  val (fpf_x | x) = (gs)"close"
+  val button = gtk_button_new_with_label (x)
+  prval () = fpf_x (x)
   val (fpf_window | window_) = g_object_vref (window)
   val _sid = g_signal_connect_swapped0
     (button, (gsignal)"clicked", G_CALLBACK(close_application), window_)

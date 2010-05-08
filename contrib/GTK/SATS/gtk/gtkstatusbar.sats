@@ -43,15 +43,16 @@ fun gtk_statusbar_new
 // end of [gtk_statusbar_new]
 
 fun gtk_statusbar_get_context_id
-  {c:cls | c <= GtkStatusbar} {l:agz} (bar: !gobjref (c, l), context: string): guint
+  {c:cls | c <= GtkStatusbar} {l1,l2:agz}
+  (bar: !gobjref (c, l1), context: !gstring l2): guint
   = "#atsctrb_gtk_statusbar_get_context_id"
 // end of [gtk_statusbar_get_context_id]
 
 (* ****** ****** *)
 
 fun gtk_statusbar_push
-  {c:cls | c <= GtkStatusbar} {l:agz}
-  (bar: !gobjref (c, l), context_id: guint, text: string): void
+  {c:cls | c <= GtkStatusbar} {l1,l2:agz}
+  (bar: !gobjref (c, l1), context_id: guint, text: !gstring l2): void
   = "#atsctrb_gtk_statusbar_push"
 // end of [gtk_statusbar_push]
 

@@ -22,12 +22,13 @@ staload "contrib/GTK/SATS/gtk.sats"
 fun file_ok_sel (
     fs: !GtkFileSelection_ref1
   ) : void = () where {
-  val [t:int] (stamp | stamped) =
+  val [l:addr] (fpf_name | name) =
     gtk_file_selection_get_filename (fs)
-  val () = printf ("%s\n", @(__cast stamped)) where {
-    extern castfn __cast (x: !stamped (string, t)): string
+  val () = printf
+    ("%s\n", @(__cast name)) where {
+    extern castfn __cast (x: !gstring l): string
   } // end of [val]
-  prval () = stamp_forfeit (stamp, stamped)
+  prval () = minus_addback (fpf_name, name | fs)
 } // end of [file_ok_sel]
 
 (* ****** ****** *)
@@ -40,10 +41,14 @@ mainats (ats_int_type argc, ats_ptr_type argv) ;
 
 (* ****** ****** *)
 
+macdef gs = gstring_of_string
+
 extern fun main1 (): void = "main1"
 
 implement main1 () = () where {
-  val filew = gtk_file_selection_new ("File Selection Test")
+  val (fpf_x | x) = (gs)"File Selection Test"
+  val filew = gtk_file_selection_new (x)
+  prval () = fpf_x (x)
   val (fpf_filew | filew_) = g_object_vref (filew)
   val _sid = g_signal_connect0
     (filew_, (gsignal)"destroy", G_CALLBACK(gtk_main_quit), (gpointer)null)
@@ -58,7 +63,9 @@ implement main1 () = () where {
     (btn, (gsignal)"clicked", G_CALLBACK(gtk_widget_destroy), filew)
   prval () = minus_addback (fpf_btn, btn | filew)
 //
-  val () = gtk_file_selection_set_filename (filew, "penguin.png")
+  val (fpf_x | x) = gstring_of_string "penguin.png"
+  val () = gtk_file_selection_set_filename (filew, x)
+  prval () = fpf_x (x)
 //
   val () = gtk_widget_show (filew)
   prval () = fpf_filew (filew)

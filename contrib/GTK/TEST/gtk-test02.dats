@@ -55,7 +55,9 @@ implement main1 () = () where {
     window, (gsignal)"destroy", (G_CALLBACK)destroy, (gpointer)null
   ) // end of [val]
   val () = gtk_container_set_border_width (window, (guint)10U)
-  val button = gtk_button_new_with_label ("Hello, world!")
+  val (fpf_x | x) = gstring_of_string "Hello, world!"
+  val button = gtk_button_new_with_label (x)
+  prval () = fpf_x (x)
   val () = gtk_widget_show (button)
   val _sid = g_signal_connect
     (button, (gsignal)"clicked", (G_CALLBACK)hw, (gpointer)null)

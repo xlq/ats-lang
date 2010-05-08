@@ -122,9 +122,11 @@ fun get_value
         val _ = snprintf1 (p_buf, BUFSZ, "%0.*f", np, value)
       } // end of [_]
   ) // end of [val]
-  val () = gtk_label_set_text (val_label, (__cast)p_buf) where {
-    extern castfn __cast (x: ptr):<> string
-  } // end of [val]
+  extern castfn __cast
+    (x: ptr):<> [l:agz] (gstring l -<lin,prf> void | gstring l)
+  val (fpf_text | text) = __cast (p_buf)
+  val () = gtk_label_set_text (val_label, text)
+  prval () = fpf_text (text)
   val () = g_object_unref (val_label)
   val () = g_object_unref (spinner1)
 } // end of [get_value]
@@ -138,6 +140,15 @@ mainats (ats_int_type argc, ats_ptr_type argv) ;
 %}
 
 (* ****** ****** *)
+
+extern
+fun gtk_label_new0
+  (name: string): GtkLabel_ref1 = "#atsctrb_gtk_label_new"
+// end of [gtk_label_new0]
+
+(* ****** ****** *)
+
+macdef gs = gstring_of_string
 
 extern fun main1 (): void = "main1"
 
@@ -153,7 +164,9 @@ implement main1 () = () where {
   val () = gtk_container_set_border_width (vbox0, (guint)10)
   val () = gtk_container_add (window, vbox0)
 //
-  val frame = gtk_frame_new ("Not Accelerated")
+  val (fpf_x | x) = (gs)"Not Accelerated"
+  val frame = gtk_frame_new (x)
+  prval () = fpf_x (x)
   val () = gtk_box_pack_start (vbox0, frame, GTRUE, GTRUE, (guint)0)
   val vbox = gtk_vbox_new (GFALSE, (gint)0)
   val () = gtk_container_set_border_width (vbox, (guint)5)
@@ -164,7 +177,7 @@ implement main1 () = () where {
 //
   val vbox2 = gtk_vbox_new (GFALSE, (gint)0)
   val () = gtk_box_pack_start (hbox, vbox2, GTRUE, GTRUE, (guint)5)
-  val label = gtk_label_new ("Day: ")
+  val label = gtk_label_new0 ("Day: ")
   val () = gtk_misc_set_alignment (label, (gfloat)0.0, (gfloat)0.5)
   val () = gtk_box_pack_start (vbox2, label, GTRUE, GTRUE, (guint)5)
   val () = gtk_widget_show (label)
@@ -181,7 +194,7 @@ implement main1 () = () where {
 //
   val vbox2 = gtk_vbox_new (GFALSE, (gint)0)
   val () = gtk_box_pack_start (hbox, vbox2, GTRUE, GTRUE, (guint)5)
-  val label = gtk_label_new ("Month: ")
+  val label = gtk_label_new0 ("Month: ")
   val () = gtk_misc_set_alignment (label, (gfloat)0.0, (gfloat)0.5)
   val () = gtk_box_pack_start (vbox2, label, GTRUE, GTRUE, (guint)5)
   val () = gtk_widget_show (label)
@@ -198,7 +211,7 @@ implement main1 () = () where {
 //
   val vbox2 = gtk_vbox_new (GFALSE, (gint)0)
   val () = gtk_box_pack_start (hbox, vbox2, GTRUE, GTRUE, (guint)5)
-  val label = gtk_label_new ("Year: ")
+  val label = gtk_label_new0 ("Year: ")
   val () = gtk_misc_set_alignment (label, (gfloat)0.0, (gfloat)0.5)
   val () = gtk_box_pack_start (vbox2, label, GTRUE, GTRUE, (guint)5)
   val () = gtk_widget_show (label)
@@ -216,7 +229,9 @@ implement main1 () = () where {
   val () = gtk_widget_show (vbox); val () = g_object_unref (vbox)
   val () = gtk_widget_show (frame); val () = g_object_unref (frame)
 //
-  val frame = gtk_frame_new ("Accelerated")
+  val (fpf_x | x) = (gs)"Accelerated"
+  val frame = gtk_frame_new (x)
+  prval () = fpf_x (x)
   val () = gtk_box_pack_start (vbox0, frame, GTRUE, GTRUE, (guint)0)
   val vbox = gtk_vbox_new (GFALSE, (gint)0)
   val () = gtk_container_set_border_width (vbox, (guint)5)
@@ -227,7 +242,7 @@ implement main1 () = () where {
 //
   val vbox2 = gtk_vbox_new (GFALSE, (gint)0)
   val () = gtk_box_pack_start (hbox, vbox2, GTRUE, GTRUE, (guint)5)
-  val label = gtk_label_new ("Value: ")
+  val label = gtk_label_new0 ("Value: ")
   val () = gtk_misc_set_alignment (label, (gfloat)0.0, (gfloat)0.5)
   val () = gtk_box_pack_start (vbox2, label, GFALSE, GTRUE, (guint)0)
   val () = gtk_widget_show (label); val () = g_object_unref (label)
@@ -244,7 +259,7 @@ implement main1 () = () where {
 //
   val vbox2 = gtk_vbox_new (GFALSE, (gint)0)
   val () = gtk_box_pack_start (hbox, vbox2, GTRUE, GTRUE, (guint)5)
-  val label = gtk_label_new ("Digits: ")
+  val label = gtk_label_new0 ("Digits: ")
   val () = gtk_misc_set_alignment (label, (gfloat)0.0, (gfloat)0.5)
   val () = gtk_box_pack_start (vbox2, label, GFALSE, GTRUE, (guint)0)
   val () = gtk_widget_show (label); val () = g_object_unref (label)
@@ -265,31 +280,39 @@ implement main1 () = () where {
   val () = gtk_box_pack_start (vbox, hbox, GFALSE, GTRUE, (guint)5)
   val () = g_object_unref (hbox)
 //
-  val button = gtk_check_button_new_with_label ("Snap to 0.5-ticks")
+  val (fpf_x | x) = (gstring_of_string)"Snap to 0.5-ticks"
+  val button = gtk_check_button_new_with_label (x)
+  prval () = fpf_x (x)
   val () = gtk_box_pack_start (vbox, button, GTRUE, GTRUE, (guint)0)
   val _sid = g_signal_connect
     (button, (gsignal)"clicked", (G_CALLBACK)toggle_snap, gp_spinner1)
   val () = gtk_toggle_button_set_active (button, GTRUE)
   val () = gtk_widget_show (button); val () = g_object_unref (button)
 //
-  val button = gtk_check_button_new_with_label ("Numeric only input mode")
+  val (fpf_x | x) = (gstring_of_string)"Numeric only input mode"
+  val button = gtk_check_button_new_with_label (x)
+  prval () = fpf_x (x)
   val () = gtk_box_pack_start (vbox, button, GTRUE, GTRUE, (guint)0)
   val _sid = g_signal_connect
     (button, (gsignal)"clicked", (G_CALLBACK)toggle_numeric, gp_spinner1)
   val () = gtk_toggle_button_set_active (button, GTRUE)
   val () = gtk_widget_show (button); val () = g_object_unref (button)
 //
-  val val_label = gtk_label_new ("")
+  val val_label = gtk_label_new0 ("")
   val () = the_val_label_set (val_label)
   val gp_val_label = (gpointer_vt)val_label
   val hbox = gtk_hbox_new (GFALSE, (gint)0)
   val () = gtk_box_pack_start (vbox, hbox, GFALSE, GTRUE, (guint)5)
-  val button = gtk_button_new_with_label ("Value as Int")
+  val (fpf_x | x) = (gstring_of_string)"Value as Int"
+  val button = gtk_button_new_with_label (x)
+  prval () = fpf_x (x)
   val () = gtk_box_pack_start (hbox, button, GTRUE, GTRUE, (guint)5)
   val _sid = g_signal_connect
     (button, (gsignal)"clicked", (G_CALLBACK)get_value, (gpointer)null)
   val () = gtk_widget_show (button); val () = g_object_unref (button)
-  val button = gtk_button_new_with_label ("Value as Float")
+  val (fpf_x | x) = (gstring_of_string)"Value as Float"
+  val button = gtk_button_new_with_label (x)
+  prval () = fpf_x (x)
   val () = gtk_box_pack_start (hbox, button, GTRUE, GTRUE, (guint)5)
   val _1 = intptr_of(1)
   val _sid = g_signal_connect
@@ -297,7 +320,9 @@ implement main1 () = () where {
   val () = gtk_widget_show (button); val () = g_object_unref (button)
   val () = gtk_widget_show (hbox); val () = g_object_unref (hbox)
   val () = gtk_box_pack_start (vbox, val_label, GTRUE, GTRUE, (guint)0)
-  val () = gtk_label_set_text (val_label, "0")
+  val (fpf_x | x) = gstring_of_string "0"
+  val () = gtk_label_set_text (val_label, x)
+  prval () = fpf_x (x)
   val () = gtk_widget_show (val_label); val () = g_object_unref (val_label)
 //
   val () = gtk_widget_show (vbox); val () = g_object_unref (vbox)
@@ -307,7 +332,9 @@ implement main1 () = () where {
 //
   val hbox = gtk_hbox_new (GFALSE, (gint)0)
   val () = gtk_box_pack_start (vbox0, hbox, GFALSE, GTRUE, (guint)0)
-  val button = gtk_button_new_with_label ("Close")
+  val (fpf_x | x) = (gstring_of_string)"Close"
+  val button = gtk_button_new_with_label (x)
+  prval () = fpf_x (x)
   val () = gtk_box_pack_start (hbox, button, GTRUE, GTRUE, (guint)5)
   val _sid = g_signal_connect_swapped
     (button, (gsignal)"clicked", G_CALLBACK (gtk_main_quit), window)

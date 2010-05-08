@@ -35,9 +35,10 @@ fun menu_add_item
   #define BUFSZ 1024
   var !p_str with pf_str = @[byte][BUFSZ]()
   val _int = $PRINTF.snprintf (pf_str | p_str, BUFSZ, "Test-undermenu - %i", @(i))
-  val item = gtk_menu_item_new_with_label
-    (__cast (p_str)) where { extern castfn __cast (x: ptr): string }
-  // end of [val]
+  extern castfn __cast (_: ptr): [l:agz] (gstring l -<lin,prf> void | gstring l)
+  val (fpf_x | x) = __cast (p_str)
+  val item = gtk_menu_item_new_with_label (x)
+  prval () = fpf_x (x)
   val (pf_gc, pf | p) = strdup_gc
     (__cast (p_str)) where { extern castfn __cast (x: ptr): String }
   // end of [val]
@@ -72,19 +73,27 @@ end // end of [cb_button_press]
 
 (* ****** ****** *)
 
+macdef gs = gstring_of_string
+
+(* ****** ****** *)
+
 extern
 fun main1 (): void = "main1"
 implement main1 () = () where {
   val window = gtk_window_new (GTK_WINDOW_TOPLEVEL)
   val () = gtk_widget_set_size_request (window, (gint)200, (gint)100)
-  val () = gtk_window_set_title (window, "GTK menu test(1)")
+  val (fpf_x | x) = (gs)"GTK menu test(1)"
+  val () = gtk_window_set_title (window, x)
+  prval () = fpf_x (x)
 //
   val [l_menu:addr] menu = gtk_menu_new ()
 //
   var i: int
   val () = for (i := 0; i < 3; i := i+1) menu_add_item (menu, i)
 //
-  val root_menu = gtk_menu_item_new_with_label ("Root Menu")
+  val (fpf_x | x) = (gs)"Root Menu"
+  val root_menu = gtk_menu_item_new_with_label (x)
+  prval () = fpf_x (x)
   val () = gtk_menu_item_set_submenu (root_menu, menu)
 //
 //
@@ -95,7 +104,9 @@ implement main1 () = () where {
   val () = gtk_box_pack_start (vbox, mbar, GFALSE, GFALSE, (guint)2)
   val () = gtk_menu_shell_append (mbar, root_menu)
 //
-  val button = gtk_button_new_with_label ("press me")
+  val (fpf_x | x) = (gs)"press me"
+  val button = gtk_button_new_with_label (x)
+  prval () = fpf_x (x)
   val _sid = g_signal_connect_swapped
     (button, (gsignal)"event", G_CALLBACK(cb_button_press), menu)
   val () = gtk_box_pack_start (vbox, button, GTRUE, GTRUE, (guint)2)

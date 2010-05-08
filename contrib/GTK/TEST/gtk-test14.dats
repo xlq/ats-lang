@@ -80,6 +80,10 @@ extern fun the_color_getref ()
 
 (* ****** ****** *)
 
+macdef gs = gstring_of_string
+
+(* ****** ****** *)
+
 overload gint with gint_of_GtkResponseType
 
 fun area_event (
@@ -98,7 +102,9 @@ in
         :(colorseldlg: GtkColorSelectionDialog_ref1) =>
         g_object_is_null (colorseldlg) then let
         val () = g_object_free_null colorseldlg
-        val () = colorseldlg := gtk_color_selection_dialog_new ("Select BG Color")
+        val (fpf_x | x) = (gs)"Select BG Color"
+        val () = colorseldlg := gtk_color_selection_dialog_new (x)
+        prval () = fpf_x (x)
         val () = the_colorseldlg_set (colorseldlg)
       in
         // nothing
@@ -152,7 +158,9 @@ extern fun main1 (): void = "main1"
 
 implement main1 () = () where {
   val window = gtk_window_new (GTK_WINDOW_TOPLEVEL)
-  val () = gtk_window_set_title (window, "Color Selection Test")
+  val (fpf_x | x) = (gs)"Color Selection Test"
+  val () = gtk_window_set_title (window, x)
+  prval () = fpf_x (x)
   val () = gtk_window_set_resizable (window, GTRUE)
   val (fpf_window | window_) = g_object_vref (window)
   val _sid = g_signal_connect0 (

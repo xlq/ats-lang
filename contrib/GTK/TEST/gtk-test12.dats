@@ -31,12 +31,16 @@ staload "contrib/GTK/SATS/gtk.sats"
 
 (* ****** ****** *)
 
+macdef gs = gstring_of_string
+
 extern fun main1 (): void = "main1"
 
 implement main1 () = () where {
   val window = gtk_window_new (GTK_WINDOW_TOPLEVEL)
   val () = gtk_widget_set_size_request (window, (gint)200, (gint)100)
-  val () = gtk_window_set_title (window, "GTK Entry Example")
+  val (fpf_x | x) = (gs)"GTK Entry Example"
+  val () = gtk_window_set_title (window, x)
+  prval () = fpf_x (x)
   val (fpf_window | window_) = g_object_vref (window)
   val _sid = g_signal_connect0
     (window_, (gsignal)"destroy", G_CALLBACK (gtk_main_quit), (gpointer)null)
@@ -53,26 +57,28 @@ implement main1 () = () where {
     val cb = lam (
       _: ptr, entry: !GtkEntry_ref1
     ) : void => () where {
-      val (stamp | text) = gtk_entry_get_text (entry)
-      prval () = stamped_decode {string} (text)
+      val [l:addr] (fpf_text | text) = gtk_entry_get_text (entry)
       val () = printf (
         "Entry contexts: %s\n", @(__x)
       ) where {
-        extern castfn __id (x: !string):<> string; val __x = __id text
+        extern castfn __id (x: !gstring l):<> string; val __x = __id text
       } // end of [val]
-      prval () = stamped_encode {string} (text)
-      prval () = stamp_forfeit (stamp, text)
+      prval () = minus_addback (fpf_text, text | entry)
     } // end of [val]
   }
   val () = gtk_box_pack_start (vbox, entry, GTRUE, GTRUE, (guint)0)
-  val () = gtk_entry_set_text (entry, "hello")
+  val (fpf_x | x) = gstring_of_string "hello"
+   val () = gtk_entry_set_text (entry, x)
+  prval () = fpf_x (x)
   val () = gtk_widget_show (entry)
   val () = g_object_unref (entry)
 //
   val hbox = gtk_hbox_new (GFALSE, (gint)0)
   val () = gtk_container_add (vbox, hbox)
 //
-  val check = gtk_check_button_new_with_label ("Editable")
+  val (fpf_x | x) = (gstring_of_string)"Editable"
+  val check = gtk_check_button_new_with_label (x)
+  prval () = fpf_x (x)
   val _sid = g_signal_connect
     (check, (gsignal)"toggled", G_CALLBACK cb, gp_entry) where {
     val cb = lam (
@@ -86,7 +92,9 @@ implement main1 () = () where {
   val () = gtk_widget_show (check)
   val () = g_object_unref (check)
 //
-  val check = gtk_check_button_new_with_label ("Visible")
+  val (fpf_x | x) = (gstring_of_string)"Visible"
+  val check = gtk_check_button_new_with_label (x)
+  prval () = fpf_x (x)
   val _sid = g_signal_connect
     (check, (gsignal)"toggled", G_CALLBACK cb, gp_entry) where {
     val cb = lam (
@@ -103,7 +111,9 @@ implement main1 () = () where {
   val () = gtk_widget_show (hbox)
   val () = g_object_unref (hbox)
 //
-  val button = gtk_button_new_from_stock (GTK_STOCK_CLOSE)
+  val (fpf_x | x) = (gstring_of_string)GTK_STOCK_CLOSE
+  val button = gtk_button_new_from_stock (x)
+  prval () = fpf_x (x)
   val _sid = g_signal_connect_swapped
     (button, (gsignal)"clicked", G_CALLBACK (gtk_widget_destroy), window)
   val () = gtk_box_pack_start (vbox, button, GTRUE, GTRUE, (guint)0)

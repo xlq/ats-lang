@@ -144,6 +144,20 @@ fun scale_set_default_values
 
 (* ****** ****** *)
 
+extern
+fun gtk_label_new0
+  (name: string): GtkLabel_ref1 = "#atsctrb_gtk_label_new"
+// end of [gtk_label_new]
+
+extern
+fun gtk_menu_item_new_with_label0
+  (name: string): GtkMenuItem_ref1 = "#atsctrb_gtk_menu_item_new_with_label"
+// end of [gtk_menu_item_new_with_label]
+
+(* ****** ****** *)
+
+macdef gs = gstring_of_string
+
 extern fun main1 (): void = "main1"
 
 implement main1 () = () where {
@@ -151,7 +165,9 @@ implement main1 () = () where {
   val _sid = g_signal_connect (
     window, (gsignal)"destroy", (G_CALLBACK)gtk_main_quit, (gpointer)null
   ) // end of [val]
-  val () = gtk_window_set_title (window, "Range Controls")
+  val (fpf_x | x) = (gs)"Range Controls"
+  val () = gtk_window_set_title (window, x)
+  prval () = fpf_x (x)
 //
 // two scales: vertical and horizonal
 //
@@ -199,7 +215,9 @@ implement main1 () = () where {
   val () = gtk_container_set_border_width (box2, (guint)10)
   val () = gtk_box_pack_start (box1, box2, GTRUE, GTRUE, (guint)0)
   val () = gtk_widget_show (box2)
-  val button = gtk_check_button_new_with_label ("Display value on scale widgets")
+  val (fpf_x | x) = (gstring_of_string)"Display value on scale widgets"
+  val button = gtk_check_button_new_with_label (x)
+  prval () = fpf_x (x)
   val _sid = g_signal_connect
     (button, (gsignal)"toggled", G_CALLBACK(cb_draw_value), (gpointer)null)
   val () = gtk_toggle_button_set_active (button, GTRUE)
@@ -214,7 +232,7 @@ implement main1 () = () where {
   val () = gtk_container_set_border_width (box2, (guint)10)
   val () = gtk_box_pack_start (box1, box2, GTRUE, GTRUE, (guint)0)
   val () = gtk_widget_show (box2)
-  val label = gtk_label_new ("Scale Value Position:")
+  val label = gtk_label_new0 ("Scale Value Position:")
   val () = gtk_box_pack_start (box2, label, GFALSE, GFALSE, (guint)0)
   val () = gtk_widget_show (label)
   val () = g_object_unref (label)
@@ -225,28 +243,28 @@ implement main1 () = () where {
   val () = gtk_widget_show (opt)
   extern castfn __cast (x: GtkPositionType): gpointer
   // item: Top
-  val item = gtk_menu_item_new_with_label ("Top")
+  val item = gtk_menu_item_new_with_label0 ("Top")
   val _sid = g_signal_connect
     (item, (gsignal)"activate", G_CALLBACK(cb_pos_menu_select), (__cast)GTK_POS_TOP)
   val () = gtk_menu_shell_append (menu, item)
   val () = gtk_widget_show (item)
   val () = g_object_unref (item)
   // item: Bottom
-  val item = gtk_menu_item_new_with_label ("Bottom")
+  val item = gtk_menu_item_new_with_label0 ("Bottom")
   val _sid = g_signal_connect
     (item, (gsignal)"activate", G_CALLBACK(cb_pos_menu_select), (__cast)GTK_POS_BOTTOM)
   val () = gtk_menu_shell_append (menu, item)
   val () = gtk_widget_show (item)
   val () = g_object_unref (item)
   // item: Left
-  val item = gtk_menu_item_new_with_label ("Left")
+  val item = gtk_menu_item_new_with_label0 ("Left")
   val _sid = g_signal_connect
     (item, (gsignal)"activate", G_CALLBACK(cb_pos_menu_select), (__cast)GTK_POS_LEFT)
   val () = gtk_menu_shell_append (menu, item)
   val () = gtk_widget_show (item)
   val () = g_object_unref (item)
   // item: Right
-  val item = gtk_menu_item_new_with_label ("Right")
+  val item = gtk_menu_item_new_with_label0 ("Right")
   val _sid = g_signal_connect
     (item, (gsignal)"activate", G_CALLBACK(cb_pos_menu_select), (__cast)GTK_POS_RIGHT)
   val () = gtk_menu_shell_append (menu, item)
@@ -263,7 +281,7 @@ implement main1 () = () where {
   val () = gtk_container_set_border_width (box2, (guint)10)
   val () = gtk_box_pack_start (box1, box2, GTRUE, GTRUE, (guint)0)
   val () = gtk_widget_show (box2)
-  val label = gtk_label_new ("Scale Update Policy:")
+  val label = gtk_label_new0 ("Scale Update Policy:")
   val () = gtk_box_pack_start (box2, label, GFALSE, GFALSE, (guint)0)
   val () = gtk_widget_show (label)
   val () = g_object_unref (label)
@@ -274,21 +292,21 @@ implement main1 () = () where {
   val () = gtk_widget_show (opt)
   extern castfn __cast (x: GtkUpdateType): gpointer
   // item: Top
-  val item = gtk_menu_item_new_with_label ("Continuous")
+  val item = gtk_menu_item_new_with_label0 ("Continuous")
   val _sid = g_signal_connect
     (item, (gsignal)"activate", G_CALLBACK(cb_update_menu_select), (__cast)GTK_UPDATE_CONTINUOUS)
   val () = gtk_menu_shell_append (menu, item)
   val () = gtk_widget_show (item)
   val () = g_object_unref (item)
   // item: Bottom
-  val item = gtk_menu_item_new_with_label ("Discontinuous")
+  val item = gtk_menu_item_new_with_label0 ("Discontinuous")
   val _sid = g_signal_connect
     (item, (gsignal)"activate", G_CALLBACK(cb_update_menu_select), (__cast)GTK_UPDATE_DISCONTINUOUS)
   val () = gtk_menu_shell_append (menu, item)
   val () = gtk_widget_show (item)
   val () = g_object_unref (item)
   // item: Left
-  val item = gtk_menu_item_new_with_label ("Delayed")
+  val item = gtk_menu_item_new_with_label0 ("Delayed")
   val _sid = g_signal_connect
     (item, (gsignal)"activate", G_CALLBACK(cb_update_menu_select), (__cast)GTK_UPDATE_DELAYED)
   val () = gtk_menu_shell_append (menu, item)
@@ -305,7 +323,7 @@ implement main1 () = () where {
   val () = gtk_container_set_border_width (box2, (guint)10)
   val () = gtk_box_pack_start (box1, box2, GFALSE, GTRUE, (guint)0)  
   val () = gtk_widget_show (box2)
-  val label = gtk_label_new ("Scale Digits:")
+  val label = gtk_label_new0 ("Scale Digits:")
   val () = gtk_box_pack_start (box2, label, GFALSE, GFALSE, (guint)0)
   val () = gtk_widget_show (label)
   val () = g_object_unref (label)
@@ -326,7 +344,7 @@ implement main1 () = () where {
   val () = gtk_container_set_border_width (box2, (guint)10)
   val () = gtk_box_pack_start (box1, box2, GFALSE, GTRUE, (guint)0)  
   val () = gtk_widget_show (box2)
-  val label = gtk_label_new ("Scrollbar Page Size:")
+  val label = gtk_label_new0 ("Scrollbar Page Size:")
   val () = gtk_box_pack_start (box2, label, GFALSE, GFALSE, (guint)0)
   val () = gtk_widget_show (label)
   val () = g_object_unref (label)
@@ -349,7 +367,9 @@ implement main1 () = () where {
   val () = gtk_container_set_border_width (box2, (guint)10)
   val () = gtk_box_pack_start (box1, box2, GFALSE, GTRUE, (guint)0)  
   val () = gtk_widget_show (box2)
-  val button = gtk_button_new_with_label ("Quit")
+  val (fpf_x | x) = (gs)"Quit"
+  val button = gtk_button_new_with_label (x)
+  prval () = fpf_x (x)
   val (fpf_window | window_) = g_object_vref (window)
   val _sid = g_signal_connect_swapped0
     (button, (gsignal)"clicked", G_CALLBACK(gtk_main_quit), window_)

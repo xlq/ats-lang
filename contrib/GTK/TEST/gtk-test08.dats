@@ -42,6 +42,8 @@ end // end of [array_button_make]
 
 (* ****** ****** *)
 
+macdef gs = gstring_of_string
+
 extern fun main1 (): void = "main1"
 
 implement main1 () = () where {
@@ -50,7 +52,9 @@ implement main1 () = () where {
   val _sid = g_signal_connect0 (
     window_, (gsignal)"destroy", (G_CALLBACK)gtk_main_quit, (gpointer)null
   ) // end of [val]
-  val () = gtk_window_set_title (window, "Arrow Buttons")
+  val (fpf_x | x) = (gs)"Arrow Buttons"
+  val () = gtk_window_set_title (window, x)
+  prval () = fpf_x (x)
   val () = gtk_container_set_border_width (window, (guint)10)
 //
   val box = gtk_hbox_new (GFALSE, (gint)0)

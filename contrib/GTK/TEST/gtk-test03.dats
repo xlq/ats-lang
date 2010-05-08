@@ -41,11 +41,15 @@ end // end of [delete_event]
 
 (* ****** ****** *)
 
+macdef gs = gstring_of_string
+
 extern fun main1 (): void = "main1"
 
 implement main1 () = () where {
   val window = gtk_window_new (GTK_WINDOW_TOPLEVEL)
-  val () = gtk_window_set_title (window, "Hello Buttons!")
+  val (fpf_x | x) = (gs)"Hello Buttons!"
+  val () = gtk_window_set_title (window, x)
+  prval () = fpf_x (x)
 //
   val _sid = g_signal_connect (
     window, (gsignal)"delete_event", (G_CALLBACK)delete_event, (gpointer)null
@@ -56,14 +60,18 @@ implement main1 () = () where {
   val box1 = gtk_hbox_new (GFALSE, (gint)0)
   val () = gtk_container_add (window, box1)
 //
-  val button = gtk_button_new_with_label ("Button 1")
+  val (fpf_x | x) = (gs)"Button 1"
+  val button = gtk_button_new_with_label (x)
+  prval () = fpf_x (x)
   val _sid = g_signal_connect
     (button, (gsignal)"clicked", G_CALLBACK(callback), (gpointer)"button 1")
   val () = gtk_box_pack_start (box1, button, GTRUE, GTRUE, (guint)0U)
   val () = gtk_widget_show (button)
   val () = g_object_unref (button)
 //
-  val button = gtk_button_new_with_label ("Button 2")
+  val (fpf_x | x) = (gs)"Button 2"
+  val button = gtk_button_new_with_label (x)
+  prval () = fpf_x (x)
   val _sid = g_signal_connect
     (button, (gsignal)"clicked", G_CALLBACK(callback), (gpointer)"button 2")
   val () = gtk_box_pack_start (box1, button, GTRUE, GTRUE, (guint)0U)

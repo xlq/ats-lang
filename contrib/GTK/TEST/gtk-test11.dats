@@ -71,10 +71,11 @@ fun push_item
   val () = !countref := count + 1
   val _ = $PRINTF.snprintf (pf_buf | p_buf, BUFSZ, "Item %d", @(count))
   val statusbar = the_statusbar_get ()
-  val () = gtk_statusbar_push (statusbar, (guint)data, (__cast)p_buf) where {
-    val data = uint_of_uintptr (data)
-    extern castfn __cast (x: ptr):<> string
-  }
+  extern castfn __cast (x: ptr):<> [l:agz] (gstring l -<lin,prf> void | gstring l)
+  val (fpf_x | x) = __cast(p_buf)
+  val data = uint_of_uintptr (data)
+  val () = gtk_statusbar_push (statusbar, (guint)data, x)
+  prval () = fpf_x (x)
   val () = g_object_unref (statusbar)
   prval () = pf_buf := bytes_v_of_strbuf_v (pf_buf)
 } // end of [push_item]
@@ -89,12 +90,16 @@ fun pop_item
 
 (* ****** ****** *)
 
+macdef gs = gstring_of_string
+
 extern fun main1 (): void = "main1"
 
 implement main1 () = () where {
   val window = gtk_window_new (GTK_WINDOW_TOPLEVEL)
   val () = gtk_widget_set_size_request (window, (gint)200, (gint)100)
-  val () = gtk_window_set_title (window, "GTK Statusbar Example")
+  val (fpf_x | x) = (gs)"GTK Statusbar Example"
+  val () = gtk_window_set_title (window, x)
+  prval () = fpf_x (x)
   val (fpf_window | window_) = g_object_vref (window)
   val _sid = g_signal_connect0
     (window_, (gsignal)"delete_event", G_CALLBACK (delete_event), (gpointer)null)
@@ -107,18 +112,24 @@ implement main1 () = () where {
   val () = the_statusbar_set (statusbar)
   val () = gtk_box_pack_start (vbox, statusbar, GTRUE, GTRUE, guint(0))
   val () = gtk_widget_show (statusbar)
-  val context_id = gtk_statusbar_get_context_id (statusbar, "Statusbar Example")
+  val (fpf_x | x) = (gs)"Statusbar Example"
+  val context_id = gtk_statusbar_get_context_id (statusbar, x)
+  prval () = fpf_x (x)
   val context_id = uint_of(context_id)
   val context_id = uintptr_of(context_id)
   val () = g_object_unref (statusbar)
 //
-  val button = gtk_button_new_with_label ("push item")
+  val (fpf_x | x) = (gstring_of_string)"push item"
+  val button = gtk_button_new_with_label (x)
+  prval () = fpf_x (x)
   val _sid = g_signal_connect (button, (gsignal)"clicked", G_CALLBACK (push_item), (gpointer)context_id)
   val () = gtk_box_pack_start (vbox, button, GTRUE, GTRUE, guint(2))
   val () = gtk_widget_show (button)
   val () = g_object_unref (button)
 //
-  val button = gtk_button_new_with_label ("pop last item")
+  val (fpf_x | x) = (gstring_of_string)"pop last item"
+  val button = gtk_button_new_with_label (x)
+  prval () = fpf_x (x)
   val _sid = g_signal_connect (button, (gsignal)"clicked", G_CALLBACK (pop_item), (gpointer)context_id)
   val () = gtk_box_pack_start (vbox, button, GTRUE, GTRUE, guint(2))
   val () = gtk_widget_show (button)
