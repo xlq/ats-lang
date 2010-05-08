@@ -58,6 +58,12 @@ overload lor with lor_GtkDialogFlags_GtkDialogFlags
 abst@ype
 GtkResponseType = $extype "GtkResponseType"
 
+symintr GtkResponseType
+castfn GtkResponseType_of_int (x: int):<>GtkResponseType
+overload GtkResponseType with GtkResponseType_of_int
+
+castfn gint_of_GtkResponseType (x: GtkResponseType):<> gint
+
 (*
 ** GTK returns this if a response widget has no response_id,
 ** or if the dialog gets programmatically hidden or destroyed.
@@ -97,8 +103,6 @@ macdef GTK_RESPONSE_NO = $extval (GtkResponseType, "GTK_RESPONSE_NO")
 macdef GTK_RESPONSE_APPLY = $extval (GtkResponseType, "GTK_RESPONSE_APPLY")
 // GTK_RESPONSE_HELP   = -11
 macdef GTK_RESPONSE_HELP = $extval (GtkResponseType, "GTK_RESPONSE_HELP")
-
-castfn gint_of_GtkResponseType (x: GtkResponseType):<> gint
 
 (* ****** ****** *)
 

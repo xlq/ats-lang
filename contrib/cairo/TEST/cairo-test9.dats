@@ -259,7 +259,11 @@ implement main1 () = () where {
 *)
 //
   val () = gtk_window_set_default_size (window, (gint)W, (gint)H)
-  val () = gtk_window_set_title (window, "cairo: wavy illusion")
+//
+  val (fpf_x | x) = (gstring_of_string)"cairo: wavy illusion"
+  val () = gtk_window_set_title (window, x)
+  prval () = fpf_x (x)
+//
   val darea = gtk_drawing_area_new ()
   val () = gtk_container_add (window, darea)
   val _sid = g_signal_connect

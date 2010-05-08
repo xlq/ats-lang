@@ -215,29 +215,26 @@ fun play {n:int | n >= 2} (
 
 (* ****** ****** *)
 
-%{^
-ats_ptr_type
-answering_gtk_dialog_new () {
-  GtkWidget *widget ;
-  widget = gtk_dialog_new_with_buttons (
-    "Game-of-24 Answer Dialog"
-  , NULL
-  , GTK_DIALOG_MODAL
-  , "_Close", 0
-  , NULL
-  ) ;
-  g_object_ref_sink(G_OBJECT(widget)) ; // removing floating reference!
-  return widget ;
-}
-%} // end of [%{^]
-extern
-fun answering_gtk_dialog_new (): GtkDialog_ref1 = "answering_gtk_dialog_new"
+macdef gs = gstring_of_string
+
+(* ****** ****** *)
 
 overload gint with gint_of_GtkResponseType
 
 fun answering
   (xs: List exp): void = () where {
-  val dialog = answering_gtk_dialog_new ()
+  val dialog = gtk_dialog_new ()
+//
+  val (fpf_win | win) = gtk_dialog_get_window (dialog)
+  val (fpf_x | x) = (gs)"Game-of-24 Answer Dialog"
+  val () = gtk_window_set_title (dialog, x)
+  prval () = fpf_x (x)
+  prval () = minus_addback (fpf_win, win | dialog)
+//
+  val (fpf_x | x) = (gs)"_Close"
+  val (fpf_button | button) = gtk_dialog_add_button (dialog, x, (GtkResponseType)0)
+  prval () = fpf_x (x)
+  prval () = minus_addback (fpf_button, button | dialog)
 //
   val (fpf_vbox0 | vbox0) = gtk_dialog_get_vbox (dialog)
 //
@@ -247,7 +244,9 @@ fun answering
   val () = (case+ xs of
     | list_cons _ => let
 //
-        val frame = gtk_frame_new ("Solution(s) found:")
+        val (fpf_x | x) = (gstring_of_string)"Solution(s) found:"
+        val frame = gtk_frame_new (x)
+        prval () = fpf_x (x)
         val () = gtk_box_pack_start (hbox1, frame, GTRUE, GFALSE, guint(10))
         val () = gtk_widget_show (frame)
         val [l_box:addr] vbox2 = gtk_vbox_new (GTRUE, gint(2))
@@ -264,9 +263,10 @@ fun answering
                val () = g_print_exp (gs , x)
                val () = g_string_append_printf (gs, " = 24", @())
                val ptr = g_string_get_str (gs)
-               val label_msg = gtk_label_new (msg) where {
-                 val msg = __cast (ptr) where { extern castfn __cast (x: ptr): string }
-               } // end of [val]
+               extern castfn __cast (x: ptr): [l:agz] (gstring l -<lin,prf> void | gstring l)
+               val (fpf_x | x) = __cast (ptr)
+               val label_msg = gtk_label_new (x)
+               prval () = fpf_x (x)
               val () = gtk_widget_show (label_msg)
               val () = gtk_box_pack_start (vbox2, label_msg, GFALSE, GTRUE, guint(0))
               val () = g_object_unref (label_msg)
@@ -282,7 +282,9 @@ fun answering
         // nothing
       end // end of [if]
     | list_nil _ => let
-        val label_ans = gtk_label_new ("No solution found!")
+        val (fpf_x | x) = (gstring_of_string)"No solution found!"
+        val label_ans = gtk_label_new (x)
+        prval () = fpf_x (x)
         val () = gtk_widget_show (label_ans)
         val () = gtk_box_pack_start (hbox1, label_ans, GTRUE, GFALSE, guint(10))
         val () = g_object_unref (label_ans)
@@ -433,16 +435,12 @@ fun suit_spinnerlst_hbox_gen
         box: !gobjref (c, l), n: int n, i: int
       ) : void =
       if n > 0 then let
-        #define BUFSZ 16
-        var !p_buf with pf_buf = @[byte][BUFSZ]()
         val vbox = gtk_vbox_new (GFALSE, (gint)0)
         val () = gtk_widget_show (vbox)
         val () = gtk_box_pack_start (box, vbox, GTRUE, GTRUE, (guint)20)
-        val _ = $PRINTF.snprintf (pf_buf | p_buf, BUFSZ, "Card %d:", @(i))
-        val label = gtk_label_new (txt) where {
-          val txt = __cast (p_buf) where { extern castfn __cast (x: ptr): string }           
-        } // end of [val]
-        prval () = pf_buf := bytes_v_of_strbuf_v (pf_buf)
+        val name = g_strdup_printf ("Card %d:", @(i))
+        val label = gtk_label_new (name)
+        val () = gstring_free (name)
         val () = gtk_widget_show (label)        
         val () = gtk_box_pack_start (vbox, label, GFALSE, GTRUE, (guint)2)
         val spinner = suit_spinner_gen ()
@@ -492,12 +490,16 @@ implement main1 () = () where {
     (window_, (gsignal)"destroy", G_CALLBACK(gtk_widget_destroy), (gpointer)null)
   val _sig = g_signal_connect1
     (window, (gsignal)"delete_event", G_CALLBACK(quitapp), (gpointer)null)
-  val () = gtk_window_set_title (window, "Game-of-24")
+  val (fpf_x | x) = (gstring_of_string)"Game-of-24"
+  val () = gtk_window_set_title (window, x)
+  prval () = fpf_x (x)
 //
   val vbox0 = gtk_vbox_new (GFALSE(*homo*), (gint)0)
   val () = gtk_widget_show (vbox0)
 //
-  val label_title = gtk_label_new ("Game-of-24")
+  val (fpf_x | x) = (gstring_of_string)"Game-of-24"
+  val label_title = gtk_label_new (x)
+  prval () = fpf_x (x)
   val () = gtk_widget_show (label_title)
   val () = gtk_box_pack_start (vbox0, label_title, GTRUE, GTRUE, (guint)10)
   val () = g_object_unref (label_title)
@@ -521,7 +523,9 @@ implement main1 () = () where {
   val () = gtk_box_pack_start (vbox0, hbox, GTRUE, GTRUE, (guint)10)
 
   val () = () where { // adding the [input] button
-    val button = gtk_button_new_with_label ("Random Input")
+    val (fpf_x | x) = (gstring_of_string)"Random Input"
+    val button = gtk_button_new_with_label (x)
+    prval () = fpf_x (x)
     val _sid = g_signal_connect
       (button, (gsignal)"clicked", G_CALLBACK(inputapp), (gpointer)null)
     val () = gtk_widget_show (button)
@@ -530,7 +534,9 @@ implement main1 () = () where {
   } // end of [val]
 
   val () = () where { // adding the [eval] button
-    val button = gtk_button_new_with_label ("Eval")
+    val (fpf_x | x) = (gstring_of_string)"Eval"
+    val button = gtk_button_new_with_label (x)
+    prval () = fpf_x (x)
     val _sid = g_signal_connect
       (button, (gsignal)"clicked", G_CALLBACK(evalapp), (gpointer)null)
     val () = gtk_widget_show (button)
@@ -547,7 +553,9 @@ implement main1 () = () where {
 //
   val hbox = gtk_hbox_new (GFALSE, (gint)0)
   val () = gtk_widget_show (hbox)
-  val button = gtk_button_new_with_label ("Quit")
+  val (fpf_x | x) = (gstring_of_string)"_Quit"
+  val button = gtk_button_new_with_mnemonic (x)
+  prval () = fpf_x (x)
   val _sid = g_signal_connect_swapped
     (button, (gsignal)"clicked", G_CALLBACK(quitapp), window)
   val () = gtk_widget_show (button)

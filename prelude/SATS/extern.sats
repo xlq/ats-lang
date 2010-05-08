@@ -66,15 +66,25 @@ prfun minus_addback // [minus] is defined in basics_sta.sats
 // the types [stamp] and [stamped] should only be used in a situation where
 // the value takeout out cannot be uniquely identified by its type
 //
-absprop stamp (t: int)
-absviewt@ype stamped (a:viewt@ype, t: int) = a
+absviewtype
+stamped (a:viewtype, l:addr) = a
+prfun stamped_encode
+  {a:viewtype} (x: !a >> stamped (a, l)):<> #[l:addr] void
+// end of [stamped_encode]
+prfun stamped_decode
+  {a:viewtype} {l:addr} (x: !stamped (a, l) >> a):<> void
+// end of [stamped_decode]
 
-prfun stamped_encode {a:viewt@ype} {t:int} (v: !a >> stamped (a, t)): void
-prfun stamped_decode {a:viewt@ype} {t:int} (v: !stamped (a, t) >> a): void
-
-prfun stamp_forfeit
-  {a:viewt@ype} {t:int} (s: stamp t, v: stamped (a, t)): void
-// [stamp_forfeit]
+absviewtype
+stamp (a:viewtype, l:addr) = a
+castfn stamp_get
+  {a:viewtype} {l:addr} (x: !a >> stamped (a, l))
+  : (minus (stamped (a, l), stamp (a, l)) | stamp (a, l))
+// end of [stamp_get]
+castfn stamp_get1
+  {a:viewtype} {l:addr} (x: !stamped (a, l))
+  : (minus (stamped (a, l), stamp (a, l)) | stamp (a, l))
+// end of [stamp_get1]
 
 (* ****** ****** *)
 

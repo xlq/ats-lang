@@ -34,6 +34,11 @@
 (* author: Hongwei Xi (hwxi AT cs DOT bu DOT edu) *)
 
 (* ****** ****** *)
+//
+// This is essentially the first example of the its kind:
+// building API for C functions
+//
+(* ****** ****** *)
 
 %{#
 #include "libc/CATS/stdio.cats"
@@ -420,15 +425,15 @@ number on success, or EOF on error.
 
 *)
 
+symintr fputs_err
+
 fun fputs0_err (str: string, fil: FILEref):<> int
   = "atslib_fputs_err"
+overload fputs_err with fputs0_err
 
 fun fputs1_err {m:fm}
   (pf: file_mode_lte (m, w) | str: string, f: &FILE m):<> int
   = "atslib_fputs_err"
-
-symintr fputs_err
-overload fputs_err with fputs0_err
 overload fputs_err with fputs1_err
 
 fun fputs0_exn (str: string, fil: FILEref):<!exn> void
@@ -491,32 +496,32 @@ file associated with a standard text stream (stderr, stdin, or stdout).
 
 *)
 
+symintr freopen_err
+
 fun freopen0_err {m_new:fm}
   (path: string, m_new: file_mode m_new, f: FILEref):<!ref> void
   = "atslib_freopen_err"
+overload freopen_err with freopen0_err
 
 fun freopen1_err {m_old,m_new:fm} {l_file:addr}
   (pf: FILE m_old @ l_file | s: string, m: file_mode m_new, p: ptr l_file)
   :<!ref> [l:addr | l == null || l == l_file] (FILE_opt_v (m_new, l) | ptr l)
   = "atslib_freopen_err"
-
-symintr freopen_err
-overload freopen_err with freopen0_err
 overload freopen_err with freopen1_err
 
 //
 
+symintr freopen_exn
+
 fun freopen0_exn {m_new:fm}
   (path: string, m_new: file_mode m_new, f: FILEref):<!exnref> void
   = "atslib_freopen_exn"
+overload freopen_exn with freopen0_exn
 
 fun freopen1_exn {m_old,m_new:fm} {l_file:addr}
   (pf: FILE m_old @ l_file | path: string, m: file_mode m_new, p: ptr l_file)
   :<!exnref> (FILE m_new @ l_file | void)
   = "atslib_freopen_exn"
-
-symintr freopen_exn
-overload freopen_exn with freopen0_exn
 overload freopen_exn with freopen1_exn
 
 //
@@ -548,28 +553,28 @@ it returns -1.
 
 *)
 
+symintr fseek_err
+
 fun fseek0_err
   (f: FILEref, offset: lint, whence: whence_t):<> int
   = "atslib_fseek0_err"
+overload fseek_err with fseek0_err
 
 fun fseek1_err {m:fm} (f: &FILE m, offset: lint, whence: whence_t):<> int
   = "atslib_fseek1_err"
-
-symintr fseek_err
-overload fseek_err with fseek0_err
 overload fseek_err with fseek1_err
 
 //
 
+symintr fseek_exn
+
 fun fseek0_exn
   (f: FILEref, offset: lint, whence: whence_t):<!exn> void
   = "atslib_fseek_exn"
+overload fseek_exn with fseek0_exn
 
 fun fseek1_exn {m:fm} (f: &FILE m, offset: lint, whence: whence_t):<!exn> void
   = "atslib_fseek_exn"
-
-symintr fseek_exn
-overload fseek_exn with fseek0_exn
 overload fseek_exn with fseek1_exn
 
 // ------------------------------------------------
@@ -600,20 +605,22 @@ indicate the error.
 
 *)
 
-fun ftell0_err (f: FILEref):<> lint = "atslib_ftell_err"
-fun ftell1_err {m:fm} (f: &FILE m):<> lint = "atslib_ftell_err"
-
 symintr ftell_err
+
+fun ftell0_err (f: FILEref):<> lint = "atslib_ftell_err"
 overload ftell_err with ftell0_err
+
+fun ftell1_err {m:fm} (f: &FILE m):<> lint = "atslib_ftell_err"
 overload ftell_err with ftell1_err
 
 //
 
-fun ftell0_exn (f: FILEref):<!exn> lint = "atslib_ftell_exn"
-fun ftell1_exn {m:fm} (f: &FILE m):<!exn> lint = "atslib_ftell_exn"
-
 symintr ftell_exn
+
+fun ftell0_exn (f: FILEref):<!exn> lint = "atslib_ftell_exn"
 overload ftell_exn with ftell0_exn
+
+fun ftell1_exn {m:fm} (f: &FILE m):<!exn> lint = "atslib_ftell_exn"
 overload ftell_exn with ftell1_exn
 
 // ------------------------------------------------

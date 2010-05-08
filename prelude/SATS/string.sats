@@ -211,8 +211,8 @@ overload > with gt_string_string
 fun gt_string_string__main {v:view} {l1,l2:addr} (
     pf: !v, pf1: vsubr_p (strbuf_v l1, v), pf2: vsubr_p (strbuf_v l2, v)
   | p1: ptr l1, p2: ptr l2
-  ) :<> bool
-  = "atspre_gt_string_string"
+  ) :<> bool = "atspre_gt_string_string"
+// end of [gt_string_string__main]
 
 //
 
@@ -223,8 +223,8 @@ overload >= with gte_string_string
 fun gte_string_string__main {v:view} {l1,l2:addr} (
     pf: !v, pf1: vsubr_p (strbuf_v l1, v), pf2: vsubr_p (strbuf_v l2, v)
   | p1: ptr l1, p2: ptr l2
-  ) :<> bool
-  = "atspre_gte_string_string"
+  ) :<> bool = "atspre_gte_string_string"
+// end of [gte_string_string__main]
 
 //
 
@@ -235,8 +235,8 @@ overload = with eq_string_string
 fun eq_string_string__main {v:view} {l1,l2:addr} (
     pf: !v, pf1: vsubr_p (strbuf_v l1, v), pf2: vsubr_p (strbuf_v l2, v)
   | p1: ptr l1, p2: ptr l2
-  ) :<> bool
-  = "atspre_eq_string_string"
+  ) :<> bool = "atspre_eq_string_string"
+// end of [eq_string_string__main]
 
 //
 
@@ -247,8 +247,8 @@ overload <> with neq_string_string
 fun neq_string_string__main {v:view} {l1,l2:addr} (
     pf: !v, pf1: vsubr_p (strbuf_v l1, v), pf2: vsubr_p (strbuf_v l2, v)
   | p1: ptr l1, p2: ptr l2
-  ) :<> bool
-  = "atspre_neq_string_string"
+  ) :<> bool = "atspre_neq_string_string"
+// end of [neq_string_string__main]
 
 (* ****** ****** *)
 
@@ -259,8 +259,8 @@ overload compare with compare_string_string
 fun compare_string_string__main {v:view} {l1,l2:addr} (
     pf: !v, pf1: vsubr_p (strbuf_v l1, v), pf2: vsubr_p (strbuf_v l2, v)
   | p1: ptr l1, p2: ptr l2
-  ) :<> Sgn
-  = "atspre_compare_string_string"
+  ) :<> Sgn = "atspre_compare_string_string"
+// end of [compare_string_string__main]
 
 (* ****** ****** *)
 
@@ -268,10 +268,12 @@ symintr fprint_string
 
 fun fprint0_string (out: FILEref, x: string):<!exnref> void
   = "atspre_fprint_string"
+// end of [fprint0_string]
 
 fun fprint1_string {m:file_mode}
   (pf: file_mode_lte (m, w) | out: &FILE m, x: string):<!exnref> void
   = "atspre_fprint_string"
+// end of [fprint1_string]
 
 overload fprint_string with fprint0_string
 overload fprint_string with fprint1_string
@@ -280,6 +282,7 @@ overload fprint with fprint_string
 fun fprint1_string__main {v:view} {l:addr}
   (pf: !v, fpf: vsubr_p (strbuf_v l, v) | out: FILEref, p: ptr l):<!exnref> void
   = "atspre_fprint_string"
+// end of [fprint1_string__main]
 
 (* ****** ****** *)
 
@@ -309,12 +312,11 @@ overload [] with string_get_char_at
 fun strbuf_get_char_at__intsz {m,n:nat} {i:nat | i < n}
   (sbf: &strbuf (m, n), i: int i):<> [c:char | c <> NUL] char c
   = "atspre_string_get_char_at__intsz"
+overload [] with strbuf_get_char_at__intsz
 
 fun string_get_char_at__intsz {n:nat} {i:nat | i < n}
   (str: string n, i: int i):<> [c:char | c <> NUL] char c // no effect
   = "atspre_string_get_char_at__intsz"
-
-overload [] with strbuf_get_char_at__intsz
 overload [] with string_get_char_at__intsz
 
 (* ****** ****** *)
@@ -323,13 +325,12 @@ fun strbuf_set_char_at {m,n:nat}
   {i:nat | i < n} {c: char | c <> NUL}
   (sbf: &strbuf (m, n), i: size_t i, c: char c):<> void
   = "atspre_strbuf_set_char_at"
+overload [] with strbuf_set_char_at
 
 fun string_set_char_at {n:nat}
   {i:nat | i < n} {c: char | c <> NUL}
   (str: string n, i: size_t i, c: char c):<!ref> void
   = "atspre_strbuf_set_char_at"
-
-overload [] with strbuf_set_char_at
 overload [] with string_set_char_at
 
 //
@@ -341,13 +342,12 @@ fun strbuf_set_char_at__intsz {m,n:nat}
   {i:nat | i < n} {c: char | c <> NUL}
   (sbf: &strbuf (m, n), i: int i, c: char c):<> void
   = "atspre_strbuf_set_char_at__intsz"
+overload [] with strbuf_set_char_at__intsz
 
 fun string_set_char_at__intsz {n:nat}
   {i:nat | i < n} {c: char | c <> NUL}
   (str: string n, i: int i, c: char c):<!ref> void
   = "atspre_strbuf_set_char_at__intsz"
-
-overload [] with strbuf_set_char_at__intsz
 overload [] with string_set_char_at__intsz
 
 (* ****** ****** *)
@@ -600,7 +600,9 @@ fun string_toupper {n:nat} (str: string n):<> strbufptr_gc n
 
 (* ****** ****** *)
 
-// h = (h << 5) + h + c
+//
+// HX: h = (h << 5) + h + c
+//
 fun string_hash_33 (str: string):<> ulint = "atspre_string_hash_33"
 
 (* ****** ****** *)

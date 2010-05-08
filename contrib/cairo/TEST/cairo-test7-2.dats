@@ -290,7 +290,11 @@ extern fun main1 (): void = "main1"
 implement main1 () = () where {
   val window = gtk_window_new (GTK_WINDOW_TOPLEVEL)
   val () = gtk_window_set_default_size (window, (gint)400, (gint)400)
-  val () = gtk_window_set_title (window, "gtkcairoclock")
+//
+  val (fpf_x | x) = (gstring_of_string)"gtkcairoclock"
+  val () = gtk_window_set_title (window, x)
+  prval () = fpf_x (x)
+//
   val darea = gtk_drawing_area_new ()
   val () = the_drawingarea_set (darea)
   val () = gtk_container_add (window, darea)
