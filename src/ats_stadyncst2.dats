@@ -757,52 +757,54 @@ end // end of [s2exp_uint_intinf_t0ype]
 (* ****** ****** *)
 
 implement s2exp_lint_t0ype () = let
-  val s2c = s2cstref_cst_get (Int_long_t0ype)
-in
-  s2exp_cst (s2c)
+  val s2c = s2cstref_cst_get (Int_long_t0ype) in s2exp_cst (s2c)
 end // end of [s2exp_lint_t0ype]
 
-implement s2exp_llint_t0ype () = let
-  val s2c = s2cstref_cst_get (Int_long_long_t0ype)
+implement s2exp_lint_intinf_t0ype (i) = let
+  val s2c = s2cstref_cst_get (Lint_int_t0ype)
 in
-  s2exp_cst (s2c)
-end // end of [s2exp_llint_t0ype]
+  s2exp_cstapp (s2c, '[s2exp_intinf i])
+end // end of [s2exp_lint_intinf_t0ype]
 
 implement s2exp_ulint_t0ype () = let
-  val s2c = s2cstref_cst_get (Uint_long_t0ype)
-in
-  s2exp_cst (s2c)
+  val s2c = s2cstref_cst_get (Uint_long_t0ype) in s2exp_cst (s2c)
 end // end of [s2exp_ulint_t0ype]
 
-implement s2exp_ullint_t0ype () = let
-  val s2c = s2cstref_cst_get (Uint_long_long_t0ype)
+implement s2exp_ulint_intinf_t0ype (i) = let
+  val s2c = s2cstref_cst_get (Ulint_int_t0ype)
 in
-  s2exp_cst (s2c)
+  s2exp_cstapp (s2c, '[s2exp_intinf i])
+end // end of [s2exp_ulint_intinf_t0ype]
+
+(* ****** ****** *)
+
+implement s2exp_llint_t0ype () = let
+  val s2c = s2cstref_cst_get (Int_long_long_t0ype) in s2exp_cst (s2c)
+end // end of [s2exp_llint_t0ype]
+
+implement s2exp_ullint_t0ype () = let
+  val s2c = s2cstref_cst_get (Uint_long_long_t0ype) in s2exp_cst (s2c)
 end // end of [s2exp_ullint_t0ype]
 
+(* ****** ****** *)
+
 implement s2exp_sint_t0ype () = let
-  val s2c = s2cstref_cst_get (Int_short_t0ype)
-in
-  s2exp_cst (s2c)
+  val s2c = s2cstref_cst_get (Int_short_t0ype) in s2exp_cst (s2c)
 end // end of [s2exp_sint_t0ype]
 
+implement s2exp_ussint_t0ype () = let
+  val s2c = s2cstref_cst_get (Uint_short_short_t0ype) in s2exp_cst (s2c)
+end // end of [s2exp_ussint_t0ype]
+
+(* ****** ****** *)
+
 implement s2exp_ssint_t0ype () = let
-  val s2c = s2cstref_cst_get (Int_short_short_t0ype)
-in
-  s2exp_cst (s2c)
+  val s2c = s2cstref_cst_get (Int_short_short_t0ype) in s2exp_cst (s2c)
 end // end of [s2exp_ssint_t0ype]
 
 implement s2exp_usint_t0ype () = let
-  val s2c = s2cstref_cst_get (Uint_short_t0ype)
-in
-  s2exp_cst (s2c)
+  val s2c = s2cstref_cst_get (Uint_short_t0ype) in s2exp_cst (s2c)
 end // end of [s2exp_usint_t0ype]
-
-implement s2exp_ussint_t0ype () = let
-  val s2c = s2cstref_cst_get (Uint_short_short_t0ype)
-in
-  s2exp_cst (s2c)
-end // end of [s2exp_ussint_t0ype]
 
 (* ****** ****** *)
 
