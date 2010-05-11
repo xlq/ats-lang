@@ -1,0 +1,155 @@
+(***********************************************************************)
+(*                                                                     *)
+(*                         Applied Type System                         *)
+(*                                                                     *)
+(*                              Hongwei Xi                             *)
+(*                                                                     *)
+(***********************************************************************)
+
+(*
+** ATS/Anairiats - Unleashing the Potential of Types!
+**
+** Copyright (C) 2010-201? Hongwei Xi, Boston University
+**
+** All rights reserved
+**
+** ATS is free software;  you can  redistribute it and/or modify it under
+** the terms of  the GNU GENERAL PUBLIC LICENSE (GPL) as published by the
+** Free Software Foundation; either version 3, or (at  your  option)  any
+** later version.
+** 
+** ATS is distributed in the hope that it will be useful, but WITHOUT ANY
+** WARRANTY; without  even  the  implied  warranty  of MERCHANTABILITY or
+** FITNESS FOR A PARTICULAR PURPOSE.  See the  GNU General Public License
+** for more details.
+** 
+** You  should  have  received  a  copy of the GNU General Public License
+** along  with  ATS;  see the  file COPYING.  If not, please write to the
+** Free Software Foundation,  51 Franklin Street, Fifth Floor, Boston, MA
+** 02110-1301, USA.
+*)
+
+(* ****** ****** *)
+
+// Author: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
+// Time: April 2010
+
+(* ****** ****** *)
+
+staload "contrib/GTK/SATS/gtk.sats"
+
+(* ****** ****** *)
+
+fun topenv_init (): void
+fun topenv_fini (): void
+
+(* ****** ****** *)
+
+fun topenv_initset_topwin (x: GtkWindow_ref1): void
+  = "atsui_topenv_initset_topwin"
+// end of [topenv_initset_topwin]
+
+fun topenv_get_topwin ()
+  : [l:agz] (GtkWindow_ref l -<lin,prf> void | GtkWindow_ref l)
+  = "atsui_topenv_get_topwin"
+// end of [topenv_get_topwin]
+
+(* ****** ****** *)
+
+fun topenv_get_aclgrp ()
+  : [l:agz] (GtkAccelGroup_ref l -<lin,prf> void | GtkAccelGroup_ref l)
+  = "atsui_topenv_get_aclgrp"
+// end of [topenv_get_aclgrp]
+
+(* ****** ****** *)
+
+fun topenv_get_vbox0 ()
+  : [l:agz] (GtkVBox_ref l -<lin,prf> void | GtkVBox_ref l)
+  = "atsui_topenv_get_vbox0"
+// end of [topenv_get_vbox0]
+
+(* ****** ****** *)
+
+fun topenv_get_menu_window ()
+  : [l:agz] (GtkTextView_ref l -<lin,prf> void | GtkTextView_ref l)
+  = "atsui_topenv_get_menu_window"
+// end of [topenv_get_menu_window]
+
+(* ****** ****** *)
+
+fun topenv_get_container_source ()
+  : [l:agz] (GtkFrame_ref l -<lin,prf> void | GtkFrame_ref l)
+  = "atsui_topenv_get_container_source"
+// end of [topenv_get_container_source]
+
+fun topenv_container_source_set_label {l:agz} (name: !gstring l): void
+fun topenv_container_source_update_label (): void
+
+(* ****** ****** *)
+
+fun topenv_textview_source_initset_flag_get (): int
+  = "atsui_topenv_textview_source_initset_flag_get"
+// end of [topenv_textview_source_initset_flag_get]
+
+fun topenv_textview_source_initset_if (): void
+
+fun topenv_get_textview_source ()
+  : [l:agz] (GtkTextView_ref l -<lin,prf> void | GtkTextView_ref l)
+  = "atsui_topenv_get_textview_source"
+// end of [topenv_get_textview_source]
+
+(* ****** ****** *)
+
+fun topenv_textview_source_update_statusbar (): void
+fun cb_textview_source_changed (): gboolean
+
+(* ****** ****** *)
+
+fun topenv_get_container_output ()
+  : [l:agz] (GtkTextView_ref l -<lin,prf> void | GtkTextView_ref l)
+  = "atsui_topenv_get_container_output"
+// end of [topenv_get_container_output]
+
+fun topenv_get_textview_output ()
+  : [l:agz] (GtkTextView_ref l -<lin,prf> void | GtkTextView_ref l)
+  = "atsui_topenv_get_textview_output"
+// end of [topenv_get_textview_output]
+
+(* ****** ****** *)
+
+fun topenv_get_statusbar ()
+  : [l:agz] (GtkStatusbar_ref l -<lin,prf> void | GtkStatusbar_ref l)
+  = "atsui_topenv_get_statusbar"
+// end of [topenv_get_statusbar]
+
+(* ****** ****** *)
+
+fun topenv_menu_window_append
+  {c:cls | c <= GtkTextBuffer} {l1,l2:agz}
+  (filename: !gstring l1, tb: !gobjref (c, l2))
+  : GtkMenuItem_ref1
+// end of [topenv_menu_window_append]
+
+fun topenv_menu_window_remove
+  {c:cls | c <= GtkMenuItem} {l:agz} (item: !gobjref (c, l)): void
+// end of [topenv_menu_window_remove]
+
+(* ****** ****** *)
+
+fun cb_openfile_activate (): gboolean
+
+(* ****** ****** *)
+
+fun cb_save_activate (): void
+fun cb_save_activate_if (): gboolean // callback for the [save] menuitem
+
+fun cb_saveas_activate (): void
+fun cb_saveas_activate_if (): gboolean // callback for the [saveas] menuitem
+
+(* ****** ****** *)
+
+fun cb_compile_clicked_if (): gboolean // callback for the [compile] button
+
+(* ****** ****** *)
+
+(* end of [atsui_topenv.sats] *)
