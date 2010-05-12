@@ -60,7 +60,7 @@
 
 (* ****** ****** *)
 
-#define ATS_STALOADFLAG 0 // no need for staload at run-time
+#define ATS_STALOADFLAG 0 // no need for staloading at run-time
 
 (* ****** ****** *)
 
@@ -435,6 +435,11 @@ viewtypedef GtkTextTagTable_ref1 = [l:addr | l > null] GtkTextTagTable_ref l
 
 abst@ype GtkTextIter = $extype "GtkTextIter" // opaque
 
+objcls GtkTextMark = { super: GObject }
+viewtypedef GtkTextMark_ref (l:addr) = gobjref (GtkTextMark, l)
+viewtypedef GtkTextMark_ref0 = [l:agez] GtkTextMark_ref l
+viewtypedef GtkTextMark_ref1 = [l:addr | l > null] GtkTextMark_ref l
+
 (* ****** ****** *)
 
 #include "contrib/GTK/SATS/gtk/gtkenums.sats"
@@ -449,6 +454,7 @@ abst@ype GtkTextIter = $extype "GtkTextIter" // opaque
 
 #include "contrib/GTK/SATS/gtk/gtktextbuffer.sats"
 #include "contrib/GTK/SATS/gtk/gtktextiter.sats"
+#include "contrib/GTK/SATS/gtk/gtktextmark.sats"
 #include "contrib/GTK/SATS/gtk/gtktexttag.sats"
 #include "contrib/GTK/SATS/gtk/gtktexttagtable.sats"
 

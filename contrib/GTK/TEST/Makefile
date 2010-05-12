@@ -5,6 +5,7 @@
 ######
 
 ATSCC=$(ATSHOME)/bin/atscc
+ATSGTKLIB=$(ATSHOME)/contrib/GTK/atsctrb_GTK.o
 
 ######
 
@@ -35,6 +36,7 @@ compall:: \
   test17 \
   test18 \
   test19 \
+  test20 \
 
 ######
 
@@ -106,6 +108,12 @@ test19: gtk-test19.dats
 
 ######
 
+test20: gtk-test20.dats
+	$(ATSCC) -o test20 \
+        $(ATSGTKLIB) gtk-test20.dats `pkg-config --cflags --libs gtk+-2.0`
+
+######
+
 clean::
 	rm -f *~
 	rm -f *_?ats.c
@@ -131,5 +139,6 @@ cleanall: clean
 	rm -f test17
 	rm -f test18
 	rm -f test19
+	rm -f test20
 
 ###### end of [Makefile] ######

@@ -52,7 +52,7 @@ fun gtk_statusbar_get_context_id
 
 fun gtk_statusbar_push
   {c:cls | c <= GtkStatusbar} {l1,l2:agz}
-  (bar: !gobjref (c, l1), context_id: guint, text: !gstring l2): void
+  (bar: !gobjref (c, l1), context_id: guint, text: !gstring l2): guint(*msgid*)
   = "#atsctrb_gtk_statusbar_push"
 // end of [gtk_statusbar_push]
 

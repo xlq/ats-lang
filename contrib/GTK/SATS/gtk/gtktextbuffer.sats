@@ -68,6 +68,13 @@ fun gtk_text_buffer_get_char_count
 
 (* ****** ****** *)
 
+fun gtk_text_buffer_get_iter_at_mark
+  {c1,c2:cls | c1 <= GtkTextBuffer; c2 <= GtkTextMark}
+  {l1,l2:agz} (
+    tb: !gobjref (c1, l1), iter: &GtkTextIter? >> GtkTextIter, mark: !gobjref (c2, l2)
+  ) : void = "#atsctrb_gtk_text_buffer_get_iter_at_mark"
+// end of [gtk_text_buffer_get_iter_at_mark]
+
 fun gtk_text_buffer_get_iter_at_offset
   {c:cls | c <= GtkTextBuffer} {l:agz}
   (tb: !gobjref (c, l), iter: &GtkTextIter? >> GtkTextIter, charofs: gint): void
@@ -97,6 +104,12 @@ fun gtk_text_buffer_insertall
 // end of [gtk_text_buffer_insert_all]
 
 (* ****** ****** *)
+
+fun gtk_text_buffer_place_cursor
+  {c:cls | c <= GtkTextBuffer} {l:agz}
+  (tb: !gobjref (c, l), iter: &GtkTextIter): void
+  = "#atsctrb_gtk_text_buffer_place_cursor"
+// end of [gtk_text_buffer_place_cursor]
 
 fun gtk_text_buffer_insert_at_cursor
   {c:cls | c <= GtkTextBuffer} {l:agz} {n0,n1:nat | n0 >= n1}
@@ -169,6 +182,28 @@ fun gtk_text_buffer_place_cursor
   (tb: !gobjref (c, l), iter: &GtkTextIter): void
   = "#atsctrb_gtk_text_buffer_place_cursor"
 // end of [gtk_text_buffer_place_cursor]
+
+(* ****** ****** *)
+
+fun gtk_text_buffer_get_insert
+  {c:cls | c <= GtkTextBuffer} {l:agz}
+  (tb: !gobjref (c, l)): [l1:agz] (
+    minus (gobjref (c, l), gobjref (GtkTextMark, l1)) | gobjref (GtkTextMark, l1)
+  ) = "#atsctrb_gtk_text_buffer_get_insert"
+// end of [gtk_text_buffer_get_insert]
+
+(* ****** ****** *)
+
+fun gtk_text_buffer_get_modified
+  {c:cls | c <= GtkTextBuffer} {l:agz} (tb: !gobjref (c, l)): gboolean
+  = "#atsctrb_gtk_text_buffer_get_modified"
+// end of [gtk_text_buffer_get_modified]
+
+fun gtk_text_buffer_set_modified
+  {c:cls | c <= GtkTextBuffer} {l:agz}
+  (tb: !gobjref (c, l), modified: gboolean): void
+  = "#atsctrb_gtk_text_buffer_set_modified"
+// end of [gtk_text_buffer_set_modified]
 
 (* ****** ****** *)
 

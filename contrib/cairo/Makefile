@@ -6,6 +6,7 @@
 #
 
 ATSCC="$(ATSHOME)"/bin/atscc
+XRCFLAGS = `pkg-config gtk+-2.0 --cflags`
 
 ######
 
@@ -13,22 +14,18 @@ all: atsctrb_cairo.o clean
 
 ######
 
-atsctrb_cairo.o: cairo_sats.o cairo_dats.o
-	ld -r -o $@ cairo_sats.o cairo_dats.o
+atsctrb_cairo.o: cairo_dats.o
+	ld -r -o $@ cairo_dats.o
 
 ######
 
-cairo_sats.o: SATS/cairo.sats
-	$(ATSCC) `pkg-config --cflags cairo` -o $@ -c SATS/cairo.sats
-
 cairo_dats.o: DATS/cairo.dats
-	$(ATSCC) `pkg-config --cflags cairo` -o $@ -c DATS/cairo.dats
+	$(ATSCC) $(XRCFLAGS) -o $@ -c DATS/cairo.dats
 
 ######
 
 clean::
-	rm -f cairo_sats.c cairo_sats.o
-	rm -f cairo_dats.c cairo_dats.o
+	rm -f *_?ats.c *_?ats.o
 
 cleanall: clean
 	rm -f atsctrb_cairo.o

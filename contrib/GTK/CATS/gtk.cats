@@ -482,6 +482,13 @@ atsctrb_gtk_frame_new (ats_ptr_type name) {
 
 #define atsctrb_gtk_frame_new_null() atsctrb_gtk_frame_new(NULL)
 
+
+#define atsctrb_gtk_frame_set_label gtk_frame_set_label
+#define atsctrb_gtk_frame_set_label_widget gtk_frame_set_label_widget
+#define atsctrb_gtk_frame_set_label_align gtk_frame_set_label_align
+
+#define atsctrb_gtk_frame_set_shadow_type gtk_frame_set_shadow_type
+
 /* ****** ****** */
 
 //
@@ -1050,6 +1057,20 @@ atsctrb_gtk_text_buffer_insertall (
 
 //
 
+#define atsctrb_gtk_text_buffer_place_cursor gtk_text_buffer_place_cursor
+
+#define atsctrb_gtk_text_buffer_insert_at_cursor gtk_text_buffer_insert_at_cursor
+
+ATSinline()
+ats_void_type
+atsctrb_gtk_text_buffer_insertall_at_cursor (
+  ats_ptr_type tb, ats_ptr_type text
+) {
+  gtk_text_buffer_insert_at_cursor ((GtkTextBuffer*)tb, (gchar*)text, -1) ; return ;
+} // end of [atsctrb_gtk_text_buffer_insertall_at_cursor]
+
+//
+
 #define atsctrb_gtk_text_buffer_get_text gtk_text_buffer_get_text
 #define atsctrb_gtk_text_buffer_set_text gtk_text_buffer_set_text
 
@@ -1063,6 +1084,9 @@ atsctrb_gtk_text_buffer_setall_text
 
 //
 
+#define atsctrb_gtk_text_buffer_get_iter_at_mark \
+  gtk_text_buffer_get_iter_at_mark
+
 #define atsctrb_gtk_text_buffer_get_iter_at_offset \
   gtk_text_buffer_get_iter_at_offset
 
@@ -1072,7 +1096,19 @@ atsctrb_gtk_text_buffer_setall_text
 #define atsctrb_gtk_text_buffer_get_end_iter gtk_text_buffer_get_end_iter
 #define atsctrb_gtk_text_buffer_get_bounds gtk_text_buffer_get_bounds
 
-#define atsctrb_gtk_text_buffer_place_cursor gtk_text_buffer_place_cursor
+#define atsctrb_gtk_text_buffer_get_insert gtk_text_buffer_get_insert
+
+#define atsctrb_gtk_text_buffer_get_modified gtk_text_buffer_get_modified
+#define atsctrb_gtk_text_buffer_set_modified gtk_text_buffer_set_modified
+
+/* ****** ****** */
+
+//
+// source: gtk/gtktextiter.h
+//
+
+#define atsctr_gtk_text_iter_get_line gtk_text_iter_get_line
+#define atsctr_gtk_text_iter_get_line_offset gtk_text_iter_get_line_offset
 
 /* ****** ****** */
 
@@ -1268,6 +1304,7 @@ atsctrb_gtk_widget_getref_allocation
 
 #define atsctrb_gtk_widget_set_size_request gtk_widget_set_size_request
 
+#define atsctrb_gtk_widget_grab_focus gtk_widget_grab_focus
 #define atsctrb_gtk_widget_grab_default gtk_widget_grab_default
 
 #define atsctrb_gtk_widget_set_events gtk_widget_set_events

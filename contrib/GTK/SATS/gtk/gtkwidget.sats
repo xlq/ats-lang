@@ -92,6 +92,17 @@ fun gtk_widget_show
   {c:cls | c <= GtkWidget} {l:agz} (widget: !gobjref (c, l)): void
   = "#atsctrb_gtk_widget_show"
 
+//
+// HX-2010-05-08:
+// this one is implemented in [gtk.dats]
+// it seems to be a commonly used combination
+//
+fun gtk_widget_show_unref
+  {c:cls | c <= GtkWidget} {l:agz} (widget: gobjref (c, l)): void
+// end of [gtk_widget_show_unref]
+
+(* ****** ****** *)
+
 fun gtk_widget_show_now
   {c:cls | c <= GtkWidget} {l:agz} (widget: !gobjref (c, l)): void
   = "#atsctrb_gtk_widget_show_now"
@@ -118,6 +129,11 @@ fun gtk_widget_set_size_request
 // end of [gtk_widget_set_size_request]
 
 (* ****** ****** *)
+
+fun gtk_widget_grab_focus
+  {c:cls | c <= GtkWidget} {l:agz} (widget: !gobjref (c, l)): void
+  = "#atsctrb_gtk_widget_grab_focus"
+// end of [gtk_widget_grab_focus]
 
 fun gtk_widget_grab_default
   {c:cls | c <= GtkWidget} {l:agz} (widget: !gobjref (c, l)): void

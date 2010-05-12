@@ -38,6 +38,14 @@
 
 (* ****** ****** *)
 
+fun gtk_text_iter_get_line (iter: &GtkTextIter): gint
+  = "#atsctr_gtk_text_iter_get_line"
+// end of [gtk_text_iter_get_line]
+
+fun gtk_text_iter_get_line_offset (iter: &GtkTextIter): gint
+  = "#atsctr_gtk_text_iter_get_line_offset"
+// end of [gtk_text_iter_get_line_offset]
+
 (* ****** ****** *)
 
 (* end of [gtktextiter.sats] *)
