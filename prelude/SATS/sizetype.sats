@@ -237,6 +237,8 @@ overload prerr with prerr_size
 
 (* ****** ****** *)
 
+castfn size1_of_lint1 {i:nat} (x: lint i): size_t i
+castfn size1_of_ulint1 {i:nat} (x: ulint i): size_t i
 castfn size1_of_size (sz: size_t):<> [i:nat] size_t i
 castfn size1_of_ssize1 {i:nat} (sz: ssize_t i):<> size_t i
 

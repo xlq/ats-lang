@@ -113,26 +113,22 @@ overload gcd with gcd_int_int
 
 fun lt_int_int (i1: int, i2: int):<> bool
   = "atspre_lt_int_int"
-
 and lte_int_int (i1: int, i2: int):<> bool
   = "atspre_lte_int_int"
+overload < with lt_int_int
+overload <= with lte_int_int
 
 fun gt_int_int (i1: int, i2: int):<> bool
   = "atspre_gt_int_int"
-
 and gte_int_int (i1: int, i2: int):<> bool
   = "atspre_gte_int_int"
+overload > with gt_int_int
+overload >= with gte_int_int
 
 fun eq_int_int (i1: int, i2: int):<> bool
   = "atspre_eq_int_int"
-
 and neq_int_int (i1: int, i2: int):<> bool
   = "atspre_neq_int_int"
-
-overload < with lt_int_int
-overload <= with lte_int_int
-overload > with gt_int_int
-overload >= with gte_int_int
 overload = with eq_int_int
 overload <> with neq_int_int
 
@@ -190,13 +186,10 @@ overload fprint with fprint_int
 
 //
 
-fun print_int (i: int):<!ref> void
-  = "atspre_print_int"
-
-and prerr_int (i: int):<!ref> void
-  = "atspre_prerr_int"
-
+fun print_int (i: int):<!ref> void = "atspre_print_int"
 overload print with print_int
+
+fun prerr_int (i: int):<!ref> void = "atspre_prerr_int"
 overload prerr with prerr_int
 
 (* ****** ****** *)
@@ -205,21 +198,18 @@ symintr fscan_int_exn
 
 fun fscan0_int_exn (inp: FILEref, x: &int? >> int):<!exnref> void
   = "atspre_fscan_int_exn"
+overload fscan_int_exn with fscan0_int_exn
 
 fun fscan1_int_exn {m:file_mode}
   (pf: file_mode_lte (m, r) | inp: &FILE m, x: &int? >> int):<!exnref> void
   = "atspre_fscan_int_exn"
-
-overload fscan_int_exn with fscan0_int_exn
 overload fscan_int_exn with fscan1_int_exn
 
 (* ****** ****** *)
 
 // stringization
 
-fun tostring_int (i: int):<> string
-  = "atspre_tostring_int"
-
+fun tostring_int (i: int):<> string = "atspre_tostring_int"
 overload tostring with tostring_int
 
 (* ****** ****** *)
@@ -289,26 +279,22 @@ overload square with square_uint
 
 fun lt_uint_uint (u1: uint, u2: uint):<> bool
   = "atspre_lt_uint_uint"
-
 and lte_uint_uint (u1: uint, u2: uint):<> bool
   = "atspre_lte_uint_uint"
+overload < with lt_uint_uint
+overload <= with lte_uint_uint
 
 fun gt_uint_uint (u1: uint, u2: uint):<> bool
   = "atspre_gt_uint_uint"
-
 and gte_uint_uint (u1: uint, u2: uint):<> bool
   = "atspre_gte_uint_uint"
+overload > with gt_uint_uint
+overload >= with gte_uint_uint
 
 fun eq_uint_uint (u1: uint, u2: uint):<> bool
   = "atspre_eq_uint_uint"
-
 and neq_uint_uint (u1: uint, u2: uint):<> bool
   = "atspre_neq_uint_uint"
-
-overload < with lt_uint_uint
-overload <= with lte_uint_uint
-overload > with gt_uint_uint
-overload >= with gte_uint_uint
 overload = with eq_uint_uint
 overload <> with neq_uint_uint
 
@@ -625,9 +611,9 @@ fun uhalf {i:nat} (i: uint i):<> uint (i/2)
   = "atspre_uhalf"
 
 (* ****** ****** *)
-
-// signed long integers
-
+//
+// signed long integers (unindexed)
+//
 (* ****** ****** *)
 
 stadef lint = lint_int_t0ype // indexed
@@ -635,37 +621,27 @@ typedef lint = int_long_t0ype // unindexed
 
 castfn lint1_of_lint (i: lint):<> [i:int] lint i
 
-fun lint_of_int (i: int):<> lint
-  = "atspre_lint_of_int"
+fun lint_of_int (i: int):<> lint = "atspre_lint_of_int"
 overload lint_of with lint_of_int
 
-fun int_of_lint (li: lint):<> int
-  = "atspre_int_of_lint"
+fun int_of_lint (li: lint):<> int = "atspre_int_of_lint"
 overload int_of with int_of_lint
 
 // This function is based on [atol] in [stdlib.h]
-fun lint_of_string (s: string):<> lint
-  = "atspre_lint_of_string"
+fun lint_of_string (s: string):<> lint = "atspre_lint_of_string"
 overload lint_of with lint_of_string
 
 (* ****** ****** *)
 
 // arithmetic functions and comparison functions
 
-fun abs_lint (li: lint):<> lint
-  = "atspre_abs_lint"
+fun abs_lint (li: lint):<> lint = "atspre_abs_lint"
 overload abs with abs_lint
-
-fun neg_lint (li: lint):<> lint
-  = "atspre_neg_lint"
+fun neg_lint (li: lint):<> lint = "atspre_neg_lint"
 overload ~ with neg_lint
 
-fun succ_lint (li: lint):<> lint
-  = "atspre_succ_lint"
-
-and pred_lint (li: lint):<> lint
-  = "atspre_pred_lint"
-
+fun succ_lint (li: lint):<> lint = "atspre_succ_lint"
+and pred_lint (li: lint):<> lint = "atspre_pred_lint"
 overload succ with succ_lint
 overload pred with pred_lint
 
@@ -673,44 +649,38 @@ fun add_lint_lint (i: lint, j: lint):<> lint
   = "atspre_add_lint_lint"
 and sub_lint_lint (i: lint, j: lint):<> lint
   = "atspre_sub_lint_lint"
-
-and mul_lint_lint (i: lint, j: lint):<> lint
-  = "atspre_mul_lint_lint"
-
-and div_lint_lint (i: lint, j: lint):<> lint
-  = "atspre_div_lint_lint"
-
-and mod_lint_lint (i: lint, j: lint):<> lint
-  = "atspre_mod_lint_lint"
-
 overload + with add_lint_lint
 overload - with sub_lint_lint
+
+fun mul_lint_lint (i: lint, j: lint):<> lint
+  = "atspre_mul_lint_lint"
+and div_lint_lint (i: lint, j: lint):<> lint
+  = "atspre_div_lint_lint"
 overload * with mul_lint_lint
 overload / with div_lint_lint
+
+fun mod_lint_lint (i: lint, j: lint):<> lint
+  = "atspre_mod_lint_lint"
 overload mod with mod_lint_lint
 
 fun lt_lint_lint (i: lint, j: lint):<> bool
   = "atspre_lt_lint_lint"
-
 and lte_lint_lint (i: lint, j: lint):<> bool
   = "atspre_lte_lint_lint"
+overload < with lt_lint_lint
+overload <= with lte_lint_lint
 
 fun gt_lint_lint (i: lint, j: lint):<> bool
   = "atspre_gt_lint_lint"
-
 and gte_lint_lint (i: lint, j: lint):<> bool
   = "atspre_gte_lint_lint"
+overload > with gt_lint_lint
+overload >= with gte_lint_lint
 
 fun eq_lint_lint (i: lint, j: lint):<> bool
   = "atspre_eq_lint_lint"
-
 and neq_lint_lint (i: lint, j: lint):<> bool
   = "atspre_neq_lint_lint"
-
-overload < with lt_lint_lint
-overload <= with lte_lint_lint
-overload > with gt_lint_lint
-overload >= with gte_lint_lint
 overload = with eq_lint_lint
 overload <> with neq_lint_lint
 
@@ -732,39 +702,63 @@ symintr fprint_lint
 
 fun fprint0_lint (out: FILEref, x: lint):<!exnref> void
   = "atspre_fprint_lint"
+overload fprint_lint with fprint0_lint
 
 fun fprint1_lint {m:file_mode}
   (pf: file_mode_lte (m, w) | out: &FILE m, x: lint):<!exnref> void
   = "atspre_fprint_lint"
-
-overload fprint_lint with fprint0_lint
 overload fprint_lint with fprint1_lint
+
 overload fprint with fprint_lint
 
-(* ****** ****** *)
-
-fun print_lint (li: lint):<!ref> void
-  = "atspre_print_lint"
-
-and prerr_lint (li: lint):<!ref> void
-  = "atspre_prerr_lint"
-
+fun print_lint (li: lint):<!ref> void = "atspre_print_lint"
 overload print with print_lint
+
+fun prerr_lint (li: lint):<!ref> void = "atspre_prerr_lint"
 overload prerr with prerr_lint
 
 (* ****** ****** *)
 
 // stringization
-
-fun tostring_lint (i: lint):<> string
-  = "atspre_tostring_lint"
-
+fun tostring_lint (i: lint):<> string = "atspre_tostring_lint"
 overload tostring with tostring_lint
 
 (* ****** ****** *)
+//
+// signed long integers (indexed)
+//
+(* ****** ****** *)
 
-// unsigned long integers
+fun lt_lint1_lint1 {i,j:int} (i: lint i, j: lint j):<> bool (i < j)
+  = "atspre_lt_lint_lint"
+and lte_lint1_lint1 {i,j:int} (i: lint i, j: lint j):<> bool (i <= j)
+  = "atspre_lte_lint_lint"
+overload < with lt_lint1_lint1
+overload <= with lte_lint1_lint1
 
+fun gt_lint1_lint1 {i,j:int} (i: lint i, j: lint j):<> bool (i > j)
+  = "atspre_gt_lint_lint"
+and gte_lint1_lint1 {i,j:int} (i: lint i, j: lint j):<> bool (i >= j)
+  = "atspre_gte_lint_lint"
+overload > with gt_lint1_lint1
+overload >= with gte_lint1_lint1
+
+fun eq_lint1_lint1 {i,j:int} (i: lint i, j: lint j):<> bool (i == j)
+  = "atspre_lt_lint_lint"
+and neq_lint1_lint1 {i,j:int} (i: lint i, j: lint j):<> bool (i <> j)
+  = "atspre_lte_lint_lint"
+overload = with eq_lint1_lint1
+overload <> with neq_lint1_lint1
+
+fun compare_lint1_lint1
+  {i,j:int} (i: lint i, j: lint j):<> [k:int | sgn_r (i-j, k)] int k
+  = "atspre_compare_lint_lint"
+overload compare with compare_lint1_lint1
+
+(* ****** ****** *)
+//
+// unsigned long integers (unindexed)
+//
 (* ****** ****** *)
 
 stadef ulint = ulint_int_t0ype // indexed

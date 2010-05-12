@@ -239,7 +239,6 @@ fun answering
   val (fpf_vbox0 | vbox0) = gtk_dialog_get_vbox (dialog)
 //
   val hbox1 = gtk_hbox_new (GFALSE, (gint)0)
-  val () = gtk_widget_show (hbox1)
   val () = gtk_box_pack_start (vbox0, hbox1, GTRUE, GTRUE, guint(10))
   val () = (case+ xs of
     | list_cons _ => let
@@ -248,10 +247,8 @@ fun answering
         val frame = gtk_frame_new (x)
         prval () = fpf_x (x)
         val () = gtk_box_pack_start (hbox1, frame, GTRUE, GFALSE, guint(10))
-        val () = gtk_widget_show (frame)
         val [l_box:addr] vbox2 = gtk_vbox_new (GTRUE, gint(2))
         val () = gtk_container_add (frame, vbox2)
-        val () = gtk_widget_show (vbox2)
 //
         val [l_str:addr] gs  = g_string_new ()
         val () = loop (vbox2, gs, xs) where {
@@ -267,17 +264,16 @@ fun answering
                val (fpf_x | x) = __cast (ptr)
                val label_msg = gtk_label_new (x)
                prval () = fpf_x (x)
-              val () = gtk_widget_show (label_msg)
               val () = gtk_box_pack_start (vbox2, label_msg, GFALSE, GTRUE, guint(0))
-              val () = g_object_unref (label_msg)
+              val () = gtk_widget_show_unref (label_msg)
             in
               loop (vbox2, gs, xs)
             end // end of [list_cons]
           | list_nil () => ()
         }
         val () = g_string_free_true (gs)
-        val () = g_object_unref (vbox2)
-        val () = g_object_unref (frame)
+        val () = gtk_widget_show_unref (vbox2)
+        val () = gtk_widget_show_unref (frame)
       in
         // nothing
       end // end of [if]
@@ -285,17 +281,16 @@ fun answering
         val (fpf_x | x) = (gstring_of_string)"No solution found!"
         val label_ans = gtk_label_new (x)
         prval () = fpf_x (x)
-        val () = gtk_widget_show (label_ans)
         val () = gtk_box_pack_start (hbox1, label_ans, GTRUE, GFALSE, guint(10))
-        val () = g_object_unref (label_ans)
+        val () = gtk_widget_show_unref (label_ans)
       in
         // nothing
       end // end of [if]
   ) : void // end of [val]
-  val () = g_object_unref (hbox1)
+  val () = gtk_widget_show_unref (hbox1)
 //
   prval () = minus_addback (fpf_vbox0, vbox0 | dialog)
-  val () = gtk_widget_show (dialog)
+  // val () = gtk_widget_show (dialog) // this is automatically done
 //
   val () = while (true) let
     val response = gtk_dialog_run (dialog)
@@ -352,7 +347,6 @@ fun suit_spinner_gen
   val adj = gtk_adjustment_new
     (1.0, 1.0, 13.0, 1.0, 0.0(*ignored*), 0.0(*ignored*))
   val spinner = gtk_spin_button_new (adj, (gdouble)0.0, (guint)0)
-  val () = gtk_widget_show (spinner)
   val () = gtk_spin_button_set_numeric (spinner, GTRUE)
   val () = gtk_spin_button_set_wrap (spinner, GTRUE)
   val () = g_object_unref (adj)
@@ -427,7 +421,6 @@ staload PRINTF = "libc/SATS/printf.sats"
 fun suit_spinnerlst_hbox_gen
   {n:nat} (n: int n): GtkHBox_ref1 = let
   val hbox = gtk_hbox_new (GTRUE(*homo*), (gint)10(*spacing*))
-  val () = gtk_widget_show (hbox)
   val () = loop (hbox, n, 1) where {
     fun loop
       {c:cls | c <= GtkBox}
@@ -436,19 +429,17 @@ fun suit_spinnerlst_hbox_gen
       ) : void =
       if n > 0 then let
         val vbox = gtk_vbox_new (GFALSE, (gint)0)
-        val () = gtk_widget_show (vbox)
         val () = gtk_box_pack_start (box, vbox, GTRUE, GTRUE, (guint)20)
         val name = g_strdup_printf ("Card %d:", @(i))
         val label = gtk_label_new (name)
         val () = gstring_free (name)
-        val () = gtk_widget_show (label)        
         val () = gtk_box_pack_start (vbox, label, GFALSE, GTRUE, (guint)2)
         val spinner = suit_spinner_gen ()
         val () = theSuitSpinnerLst_add (spinner)
         val () = gtk_box_pack_start (vbox, spinner, GFALSE, GTRUE, (guint)2)
-        val () = g_object_unref (label)
-        val () = g_object_unref (spinner)
-        val () = g_object_unref (vbox)
+        val () = gtk_widget_show_unref (label)
+        val () = gtk_widget_show_unref (spinner)
+        val () = gtk_widget_show_unref (vbox)
       in
         loop (box, n-1, i+1)
       end // end of [if]
@@ -495,77 +486,67 @@ implement main1 () = () where {
   prval () = fpf_x (x)
 //
   val vbox0 = gtk_vbox_new (GFALSE(*homo*), (gint)0)
-  val () = gtk_widget_show (vbox0)
 //
   val (fpf_x | x) = (gstring_of_string)"Game-of-24"
   val label_title = gtk_label_new (x)
   prval () = fpf_x (x)
-  val () = gtk_widget_show (label_title)
   val () = gtk_box_pack_start (vbox0, label_title, GTRUE, GTRUE, (guint)10)
-  val () = g_object_unref (label_title)
+  val () = gtk_widget_show_unref (label_title)
 //
   val hsep = gtk_hseparator_new ()
-  val () = gtk_widget_show (hsep)
   val () = gtk_box_pack_start (vbox0, hsep, GTRUE, GTRUE, (guint)0)
-  val () = g_object_unref (hsep)
+  val () = gtk_widget_show_unref (hsep)
 //
   val hbox_suits = suit_spinnerlst_hbox_gen (4)
   val () = gtk_box_pack_start (vbox0, hbox_suits, GTRUE, GTRUE, (guint)10)
-  val () = g_object_unref (hbox_suits)
+  val () = gtk_widget_show_unref (hbox_suits)
 //
   val hsep = gtk_hseparator_new ()
-  val () = gtk_widget_show (hsep)
   val () = gtk_box_pack_start (vbox0, hsep, GTRUE, GTRUE, (guint)0)
-  val () = g_object_unref (hsep)
+  val () = gtk_widget_show_unref (hsep)
 //
   val hbox = gtk_hbox_new (GFALSE, (gint)0)
-  val () = gtk_widget_show (hbox)
   val () = gtk_box_pack_start (vbox0, hbox, GTRUE, GTRUE, (guint)10)
-
+//
   val () = () where { // adding the [input] button
     val (fpf_x | x) = (gstring_of_string)"Random Input"
     val button = gtk_button_new_with_label (x)
     prval () = fpf_x (x)
     val _sid = g_signal_connect
       (button, (gsignal)"clicked", G_CALLBACK(inputapp), (gpointer)null)
-    val () = gtk_widget_show (button)
     val () = gtk_box_pack_start (hbox, button, GTRUE, GTRUE, (guint)10)
-    val () = g_object_unref (button)
+    val () = gtk_widget_show_unref (button)
   } // end of [val]
-
+//
   val () = () where { // adding the [eval] button
     val (fpf_x | x) = (gstring_of_string)"Eval"
     val button = gtk_button_new_with_label (x)
     prval () = fpf_x (x)
     val _sid = g_signal_connect
       (button, (gsignal)"clicked", G_CALLBACK(evalapp), (gpointer)null)
-    val () = gtk_widget_show (button)
     val () = gtk_box_pack_start (hbox, button, GTRUE, GTRUE, (guint)10)
-    val () = g_object_unref (button)
+    val () = gtk_widget_show_unref (button)
   } // end of [val]
-
-  val () = g_object_unref (hbox)
+//
+  val () = gtk_widget_show_unref (hbox)
 //
   val hsep = gtk_hseparator_new ()
-  val () = gtk_widget_show (hsep)
   val () = gtk_box_pack_start (vbox0, hsep, GTRUE, GTRUE, (guint)0)
-  val () = g_object_unref (hsep)
+  val () = gtk_widget_show_unref (hsep)
 //
   val hbox = gtk_hbox_new (GFALSE, (gint)0)
-  val () = gtk_widget_show (hbox)
   val (fpf_x | x) = (gstring_of_string)"_Quit"
   val button = gtk_button_new_with_mnemonic (x)
   prval () = fpf_x (x)
   val _sid = g_signal_connect_swapped
     (button, (gsignal)"clicked", G_CALLBACK(quitapp), window)
-  val () = gtk_widget_show (button)
   val () = gtk_box_pack_start (hbox, button, GTRUE, GTRUE, (guint)10)
-  val () = g_object_unref (button)
+  val () = gtk_widget_show_unref (button)
   val () = gtk_box_pack_start (vbox0, hbox, GTRUE, GTRUE, (guint)10)
-  val () = g_object_unref (hbox)
+  val () = gtk_widget_show_unref (hbox)
 //
   val () = gtk_container_add (window, vbox0)
-  val () = g_object_unref (vbox0)
+  val () = gtk_widget_show_unref (vbox0)
 //
   val () = gtk_widget_show (window)
   prval () = fpf_window (window)

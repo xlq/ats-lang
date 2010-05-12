@@ -159,34 +159,35 @@ fun memcmp {n:nat}
 fun memcpy {n:nat}
   {n1,n2:nat | n <= n1; n <= n2} {l:addr} (
     pf_dst: !bytes n1 @ l | p_dst: ptr l, p_src: &bytes n2, n: size_t n
-  ) :<> ptr l
-  = "atslib_memcpy"
+  ) :<> ptr l = "atslib_memcpy"
+// end of [memcpy]
 
 (* ****** ****** *)
 
 fun memset {n:nat}
-  {n1:nat | n <= n1} {l:addr} (
-    pf: !bytes n1 @ l | p: ptr l, chr: int, n: size_t n
-  ) :<> ptr l
+  {n1:nat | n <= n1} {l:addr}
+  (pf: !bytes n1 @ l | p: ptr l, chr: int, n: size_t n):<> ptr l
   = "atslib_memset"
+// end of [memset]
 
 (* ****** ****** *)
 
 dataprop memchr_p (l:addr, n:int, l_ret:addr) =
   | {i:nat | i < n} {l_ret == l+i} memchr_p_some (l, n, l_ret)
   | {l_ret == null} memchr_p_none (l, n, l_ret)
+// end of [memchr_p]
 
 fun memchr {n:nat}
   {n1:nat | n <= n1} {l:addr} (
     pf: !bytes n1 @ l | p: ptr l, chr: int, n: size_t n
   ) : [l_ret:addr] (memchr_p (l, n, l_ret) | ptr l_ret)
   = "atslib_memchr"
+// end of [memchr]
 
 (* ****** ****** *)
 
 // [strerror] is not reentrant
-fun strerror (errno: $ERRNO.errno_t): string
-  = "atslib_strerror"
+fun strerror (errno: $ERRNO.errno_t): string = "atslib_strerror"
     
 dataview strerror_v (m:int, l:addr, int(*err*)) =
   | {n:nat} strerror_succ (m, l, 0) of strbuf (m, n) @ l
@@ -198,12 +199,8 @@ fun strerror_r {m:nat} {l:addr} (
     pf: b0ytes m @ l | errno: $ERRNO.errno_t, p_buf: ptr l, m: size_t m
   ) : [i:int] @(strerror_v (m, l, i) | int i)
   = "atslib_strerror_r"
+// end of [strerror_r]
   
 (* ****** ****** *)
 
 (* end of [string.sats] *)
-
-////
-                  
-void    *memccpy(void *dst, const void *src, int/*c*/, size_t n);
-void    *memmove(void *, const void *, size_t);

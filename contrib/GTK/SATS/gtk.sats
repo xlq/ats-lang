@@ -493,6 +493,7 @@ viewtypedef GtkTextMark_ref1 = [l:addr | l > null] GtkTextMark_ref l
 #include "contrib/GTK/SATS/gtk/gtkmessagedialog.sats"
 #include "contrib/GTK/SATS/gtk/gtkmisc.sats"
 #include "contrib/GTK/SATS/gtk/gtkoptionmenu.sats"
+#include "contrib/GTK/SATS/gtk/gtkpaned.sats"
 #include "contrib/GTK/SATS/gtk/gtkradiobutton.sats"
 #include "contrib/GTK/SATS/gtk/gtkrange.sats"
 #include "contrib/GTK/SATS/gtk/gtkruler.sats"

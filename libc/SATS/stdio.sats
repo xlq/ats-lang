@@ -42,12 +42,15 @@
 
 %{#
 #include "libc/CATS/stdio.cats"
-%}
+%} // end of [%{#]
 
 (* ****** ****** *)
 
 staload TYPES = "libc/sys/SATS/types.sats"
 typedef whence_t = $TYPES.whence_t
+macdef SEEK_SET = $TYPES.SEEK_SET
+macdef SEEK_CUR = $TYPES.SEEK_CUR
+macdef SEEK_END = $TYPES.SEEK_END
 
 (* ****** ****** *)
 
@@ -264,11 +267,13 @@ abst@ype fpos_t = $extype "ats_fpos_type"
 dataview fgetpos_v (addr, int) =
   | {l:addr} fgetpos_v_succ (l, 0) of fpos_t @ l
   | {l:addr} {i:int | i < 0} fgetpos_v_fail (l, i) of fpos_t? @ l
+// end of [fgetpos_v]
 
 fun fgetpos {m:fm} {l_pos:addr}
   (pf: fpos_t? @ l_pos | f: &FILE m, p: ptr l_pos)
   : [i:int | i <= 0] (fgetpos_v (l_pos, i) | int i)
   = "atslib_fgetpos"
+// end of [fgetpos]
 
 // ------------------------------------------------
 
@@ -288,6 +293,7 @@ dataview fgets_v (sz:int, addr, addr) =
     fgets_v_fail (sz, l_buf, null) of b0ytes (sz) @ l_buf
   | {n:nat | n < sz} {l_buf:addr | l_buf <> null}
     fgets_v_succ (sz, l_buf, l_buf) of strbuf (sz, n) @ l_buf
+// end of [fgets_v]
 
 fun fgets_err
   {n,sz:int | 0 < n; n <= sz} {m:fm} {l_buf:addr} (
@@ -296,9 +302,12 @@ fun fgets_err
   | p: ptr l_buf, n: int n, f: &FILE m
   ) :<> [l:addr] (fgets_v (sz, l_buf, l) | ptr l)
   = "atslib_fgets_err"
+// end of [fgets_err]
 
+//
 // this function returns an empty strbuf in the case where
 // EOF is reached but no character is read
+//
 fun fgets_exn {n0,sz:int | 0 < n0; n0 <= sz} {m:fm} {l_buf:addr}
   (pf_mod: file_mode_lte (m, r),
    pf_buf: !b0ytes (sz) @ l_buf >>
@@ -306,6 +315,7 @@ fun fgets_exn {n0,sz:int | 0 < n0; n0 <= sz} {m:fm} {l_buf:addr}
    p: ptr l_buf, n0: int n0, f: &FILE m)
   :<!exn> void
   = "atslib_fgets_exn"
+// end of [fgets_exn]
 
 // ------------------------------------------------
 
@@ -464,9 +474,13 @@ must use [feof] and [ferror] to determine which occurred.
 *)
 
 fun fread
-  {sz:pos} {n_buf:int} {n,nsz:nat | nsz <= n_buf} {m:fm} (
-    pf_mod: file_mode_lte (m, r), pf_mul: MUL (n, sz, nsz)
-  | buf: &bytes (n_buf), sz: size_t sz, n: size_t n, f: &FILE m
+  {sz:pos} {n_buf:int}
+  {n,nsz:nat | nsz <= n_buf} {m:fm} (
+    pf_mod: file_mode_lte (m, r)
+  , pf_mul: MUL (n, sz, nsz)
+  | buf: &bytes (n_buf)
+  , sz: size_t sz, n: size_t n
+  , f: &FILE m
   ) :<> sizeLte n = "atslib_fread"
 // end of [fread]
 
@@ -526,14 +540,17 @@ overload freopen_exn with freopen1_exn
 
 //
 
-fun freopen_stdin {m:fm} (s: string):<!exnref> void
-  = "atslib_freopen_stdin"
+fun freopen_stdin {m:fm}
+  (s: string):<!exnref> void = "atslib_freopen_stdin"
+// end of [freopen_stdin]
 
-fun freopen_stdout {m:fm} (s: string):<!exnref> void
-  = "atslib_freopen_stdout"
+fun freopen_stdout {m:fm}
+  (s: string):<!exnref> void = "atslib_freopen_stdout"
+// end of [freopen_stdout]
 
-fun freopen_stderr {m:fm} (s: string):<!exnref> void
-  = "atslib_freopen_stderr"
+fun freopen_stderr {m:fm}
+  (s: string):<!exnref> void = "atslib_freopen_stderr"
+// end of [freopen_stderr]
 
 // ------------------------------------------------
 
@@ -556,12 +573,11 @@ it returns -1.
 symintr fseek_err
 
 fun fseek0_err
-  (f: FILEref, offset: lint, whence: whence_t):<> int
-  = "atslib_fseek0_err"
+  (f: FILEref, offset: lint, whence: whence_t):<> int = "atslib_fseek0_err"
 overload fseek_err with fseek0_err
 
-fun fseek1_err {m:fm} (f: &FILE m, offset: lint, whence: whence_t):<> int
-  = "atslib_fseek1_err"
+fun fseek1_err {m:fm}
+  (f: &FILE m, offset: lint, whence: whence_t):<> int = "atslib_fseek1_err"
 overload fseek_err with fseek1_err
 
 //
@@ -569,12 +585,11 @@ overload fseek_err with fseek1_err
 symintr fseek_exn
 
 fun fseek0_exn
-  (f: FILEref, offset: lint, whence: whence_t):<!exn> void
-  = "atslib_fseek_exn"
+  (f: FILEref, offset: lint, whence: whence_t):<!exn> void = "atslib_fseek_exn"
 overload fseek_exn with fseek0_exn
 
-fun fseek1_exn {m:fm} (f: &FILE m, offset: lint, whence: whence_t):<!exn> void
-  = "atslib_fseek_exn"
+fun fseek1_exn {m:fm}
+  (f: &FILE m, offset: lint, whence: whence_t):<!exn> void = "atslib_fseek_exn"
 overload fseek_exn with fseek1_exn
 
 // ------------------------------------------------
@@ -590,8 +605,7 @@ non-zero on failure.
 
 *)
 
-fun fsetpos {m:fm} (f: &FILE m, pos: &fpos_t): int
-  = "atslib_fsetpos"
+fun fsetpos {m:fm} (f: &FILE m, pos: &fpos_t): int = "atslib_fsetpos"
 
 // ------------------------------------------------
 

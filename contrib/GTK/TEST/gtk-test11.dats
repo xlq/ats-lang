@@ -74,7 +74,7 @@ fun push_item
   extern castfn __cast (x: ptr):<> [l:agz] (gstring l -<lin,prf> void | gstring l)
   val (fpf_x | x) = __cast(p_buf)
   val data = uint_of_uintptr (data)
-  val () = gtk_statusbar_push (statusbar, (guint)data, x)
+  val _mid = gtk_statusbar_push (statusbar, (guint)data, x)
   prval () = fpf_x (x)
   val () = g_object_unref (statusbar)
   prval () = pf_buf := bytes_v_of_strbuf_v (pf_buf)
