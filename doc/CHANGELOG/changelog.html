@@ -122,6 +122,19 @@ ATS statically as well as dynamically. With linear closures, it becomes
 possible to support high-order functional programming in a situation where
 the memory footprint of a program must be kept minimal.
 
+<LI>Date: 2009-05-12<P>
+
+ATS/Proto, the first implementation of ATS, supported object-oriented
+programming (OOP). So, it was naturally assumed that OOP should be
+supported in the following implementations of ATS, and there was a lot
+of work done to prepare for incorporating OOP into ATS/Anairiats.
+However, after a long struggle (for several years), I have decided to
+abandon the plan to directly support OOP in ATS as this would simply
+make ATS overly complicated. However, indirect support for OOP in ATS
+is fairly easy to achieve. For instance, the API for GTK in ATS is done
+in the OOP style. The plan to have an OOP-style module system in ATS is
+now on hold.
+
 </MENU>
 
 </TABLE>
