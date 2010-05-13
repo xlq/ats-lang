@@ -36,6 +36,12 @@
 
 (* ****** ****** *)
 
+%{#
+#include "atsui.cats"
+%} // end of [%{#] 
+
+(* ****** ****** *)
+
 staload "contrib/GTK/SATS/gtk.sats"
 
 (* ****** ****** *)
@@ -70,6 +76,30 @@ fun topenv_get_vbox0 ()
 
 (* ****** ****** *)
 
+fun topenv_make_menu_file (): GtkMenu_ref1
+fun topenv_get_menu_file ()
+  : [l:agz] (GtkMenu_ref l -<lin,prf> void | GtkMenu_ref l)
+  = "atsui_topenv_get_menu_file"
+// end of [topenv_get_menu_file]
+
+fun topenv_get_menuitem_file_close ()
+  : [l:agz] (GtkMenuItem_ref l -<lin,prf> void | GtkMenuItem_ref l)
+  = "atsui_topenv_get_menuitem_file_close"
+// end of [topenv_get_menuitem_file_close]
+
+fun topenv_get_menuitem_file_save ()
+  : [l:agz] (GtkMenuItem_ref l -<lin,prf> void | GtkMenuItem_ref l)
+  = "atsui_topenv_get_menuitem_file_save"
+// end of [topenv_get_menuitem_file_save]
+
+fun topenv_get_menuitem_file_saveas ()
+  : [l:agz] (GtkMenuItem_ref l -<lin,prf> void | GtkMenuItem_ref l)
+  = "atsui_topenv_get_menuitem_file_saveas"
+// end of [topenv_get_menuitem_file_saveas]
+
+(* ****** ****** *)
+
+fun topenv_make_menu_window (): GtkMenu_ref1
 fun topenv_get_menu_window ()
   : [l:agz] (GtkMenu_ref l -<lin,prf> void | GtkMenu_ref l)
   = "atsui_topenv_get_menu_window"
@@ -140,11 +170,12 @@ fun cb_openfile_activate (): gboolean
 
 (* ****** ****** *)
 
-fun cb_save_activate (): void
-fun cb_save_activate_if (): gboolean // callback for the [save] menuitem
+fun cb_save_activate (): gboolean // callback for the [save] menuitem
+fun cb_saveas_activate (): gboolean // callback for the [saveas] menuitem
 
-fun cb_saveas_activate (): void
-fun cb_saveas_activate_if (): gboolean // callback for the [saveas] menuitem
+(* ****** ****** *)
+
+fun cb_quit_activate (): gboolean // callback for the [quit] menuitem
 
 (* ****** ****** *)
 

@@ -78,24 +78,6 @@ overload gint with gint_of_GtkResponseType
 
 /* ****** ****** */
 
-typedef
-struct {
-  GtkWindow *topwin ; // this is the toplevel main window
-  GtkAccelGroup *aclgrp ; // this is the accelgroup associated with the topwin
-//
-  GtkVBox *vbox0 ; // this is the immediate vbox inside topwin
-//
-  GtkMenu *menu_window ; // this the window list menu
-//
-  GtkFrame *container_source ; // for containing textview_source
-  GtkTextView *textview_source ; // for source code manipulation
-//
-  GtkContainer *container_output ; // for containing textview_output
-  GtkTextView *textview_output ; // for compilation output
-//
-  GtkStatusbar *statusbar ; // for various minor information
-//
-} ATSUItopenv ;
 ATSUItopenv theATSUItopenv ;
 
 /* ****** ****** */
@@ -142,22 +124,6 @@ atsui_topenv_initset_vbox0
   } // end of [if]
   theATSUItopenv.vbox0 = (GtkVBox*)vbox0 ;
 } // end of [atsui_topenv_initset_vbox0]
-
-/* ****** ****** */
-
-ats_ptr_type
-atsui_topenv_get_menu_window () {
-  return theATSUItopenv.menu_window ;
-} // end of [atsui_topenv_get_menu_window]
-
-ats_void_type
-atsui_topenv_initset_menu_window
-  (ats_ptr_type x) {
-  if (theATSUItopenv.menu_window != (GtkMenu*)0) {
-    fprintf (stderr, "exit(ATS): [atsui_topenv_initset_menu_window] failed\n"); exit(1);
-  } // end of [if]
-  theATSUItopenv.menu_window = (GtkMenu*)x ;
-} // end of [atsui_topenv_initset_menu_window]
 
 /* ****** ****** */
 
@@ -296,15 +262,7 @@ fun topenv_initset_vbox0 (x: GtkVBox_ref1): void
   = "atsui_topenv_initset_vbox0"
 // end of [topenv_initset_vbox0]
 
-//
-
-extern
-fun topenv_initset_menu_window
-  {c:cls | c <= GtkMenu} {l:agz} (x: gobjref (c, l)): void
-  = "atsui_topenv_initset_menu_window"
-// end of [topenv_initset_menu_window]
-
-//
+/* ****** ****** */
 
 extern
 fun topenv_initset_container_source
@@ -432,6 +390,17 @@ in
     val () = gtk_container_add (win, tv)
     val () = gtk_widget_show (tv)
     val () = topenv_initset_textview_source (tv)
+//
+    val (fpf_x | x) = topenv_get_menuitem_file_close ()
+    val () = gtk_widget_set_sensitive (x, GTRUE)
+    prval () = fpf_x (x)
+    val (fpf_x | x) = topenv_get_menuitem_file_save ()
+    val () = gtk_widget_set_sensitive (x, GTRUE)
+    prval () = fpf_x (x)
+    val (fpf_x | x) = topenv_get_menuitem_file_saveas ()
+    val () = gtk_widget_set_sensitive (x, GTRUE)
+    prval () = fpf_x (x)
+//
     val () = the_drawarea_welcome_fini ()
     val (fpf_container | container) = topenv_get_container_source ()
     val () = gtk_container_add (container, win)
@@ -444,209 +413,11 @@ end // end of [topenv_textview_source_initset_if]
 
 (* ****** ****** *)
 
-%{^
-
-int theScratchCount = 1;
-ats_int_type
-atsui_theScratchCount_getinc () {
-  int n = theScratchCount ; theScratchCount += 1 ; return n ;
-} // end of [atsui_theScratchCount_getinc]
-
-%} // end of [%{]
-
-extern
-fun theScratchCount_getinc
-  (): int = "atsui_theScratchCount_getinc"
-// end of [theScratchCount_getinc]
-
-fun cb_new_activate
-  (): gboolean = GTRUE where {
-//
-  val () = (print (#LOCATION + ": cb_new_activate"); print_newline ())
-//
-  val () = topenv_textview_source_initset_if ()
-//
-  val tb = gtk_text_buffer_new_null ()
-  val _sid = g_signal_connect
-    (tb, (gsignal)"changed", G_CALLBACK(cb_textview_source_changed), GNULL)
-  val _sid = g_signal_connect
-    (tb, (gsignal)"mark_set", G_CALLBACK(cb_textview_source_changed), GNULL)
-//
-  val (fpf_tv | tv) = topenv_get_textview_source ()
-  val () = gtk_text_view_set_editable (tv, GTRUE)
-  val () = gtk_text_view_set_cursor_visible (tv, GTRUE)
-  val () = gtk_text_view_set_buffer (tv, tb)
-  val n = theScratchCount_getinc ()
-  val filename = g_strdup_printf ("scratch%3.3i.dats", @(n))
-  val item = topenv_menu_window_append (filename, tb)
-  val srcwin = $SWL.srcwin_make (filename, tb, item)
-  val () = $SWL.the_srcwinlst_append (srcwin)
-  prval () = fpf_tv (tv)
-//
-  val () = topenv_container_source_update_label () // HX: could be more efficient, but ...
-  val _true = cb_textview_source_changed ()
-//
-} // end of [cb_new_activate]
-
-(* ****** ****** *)
-
-fun cb_close_activate (): gboolean = let
-//
-  val () = (print (#LOCATION + ": cb_close_activate"); print_newline ())
-//
-  val () = topenv_textview_source_initset_if ()
-//
-  val (fpf_tv | tv) = topenv_get_textview_source ()
-  val (fpf_tb | tb) = gtk_text_view_get_buffer (tv)
-  var n: int
-  val x = $SWL.the_srcwinlst_remove (tb, n)
-  val px = $SWL.ptr_of_srcwin (x)
-  val () = if (px > null) then let
-    val (fpf_menuitm | menuitm) = $SWL.srcwin_get_menuitm (x)
-    val () = topenv_menu_window_remove (menuitm)
-    prval () = minus_addback (fpf_menuitm, menuitm | x)
-    val () = $SWL.srcwin_free (x)
-  in
-    // nothing
-  end else let
-    val _null = $SWL.srcwin_free_null x
-  in
-    // nothing
-  end // end of [val]
-  prval () = minus_addback (fpf_tb, tb | tv)
-  var px: Ptr = null
-  val n = int1_of_int (n)
-  val () = if n >= 0 then let
-    val (fpf_x | x) = $SWL.the_srcwinlst_getnext (n)
-    val () = px := $SWL.ptr_of_srcwin x
-    val () = if px > null then let
-      val (fpf_tb | tb) = $SWL.srcwin_get_textbuf (x)
-      val () = gtk_text_view_set_buffer (tv, tb)
-      prval () = minus_addback (fpf_tb, tb | x)
-    in
-      // nothing
-    end (* end of [if] *)
-    prval () = fpf_x (x)
-  in
-    // nothing
-  end // end of [val]
-  prval () = fpf_tv (tv)
-  val () = if (px > null) then topenv_container_source_update_label ()
-in
-  if px = null then cb_new_activate () else GTRUE
-end // end of [cb_close_activate]
-
-(* ****** ****** *)
-
-fun cb_quit_activate () = GTRUE where {
-//
-  val () = (print (#LOCATION + ": cb_quit_activate"); print_newline ())
-//
-  val flags = GTK_DIALOG_DESTROY_WITH_PARENT
-  val _type = GTK_MESSAGE_QUESTION
-  val buttons = GTK_BUTTONS_YES_NO
-//
-  val (fpf_x | x) = (gs)"Quit ATSUI?"
-  val dialog = gtk_message_dialog_new0 (flags, _type, buttons, x)
-  prval () = fpf_x (x)
-  val (fpf_x | x) = (gs)"Confirmation"
-  val () = gtk_window_set_title (dialog, x)
-  prval () = fpf_x (x)
-//
-  val (fpf_topwin | topwin) = topenv_get_topwin ()
-  val () = gtk_window_set_transient_for (dialog, topwin(*parent*))
-  prval () = fpf_topwin (topwin)
-//
-  val response = gtk_dialog_run (dialog)
-  val () = gtk_widget_destroy (dialog)
-//
-  val () = case+ 0 of
-    | _ when response = (gint)GTK_RESPONSE_YES => topenv_fini () // many things to do here!
-    | _ => () // quit is not confirmed
-  // end of [val]
-} // end of [cb_quit_activate]
-
-(* ****** ****** *)
-
-extern
-fun topenv_make_menu_file (): GtkMenu_ref1
-implement
-topenv_make_menu_file () = menu where {
-  val menu = gtk_menu_new ()
-//
-  val new_item = $UT.gtk_menu_item_new_with_label ("New")
-  val _sid = g_signal_connect (
-    new_item, (gsignal)"activate", G_CALLBACK(cb_new_activate), GNULL
-  ) // end of [val]
-  val () = gtk_menu_shell_append (menu, new_item)
-  val () = gtk_widget_show_unref (new_item)
-//
-  val openfile_item = $UT.gtk_menu_item_new_with_label ("Open File...")
-  val _sid = g_signal_connect (
-    openfile_item, (gsignal)"activate", G_CALLBACK(cb_openfile_activate), GNULL
-  ) // end of [val]
-  val () = gtk_menu_shell_append (menu, openfile_item)
-  val () = gtk_widget_show_unref (openfile_item)
-//
-  val sep_item = gtk_separator_menu_item_new ()
-  val () = gtk_menu_shell_append (menu, sep_item)
-  val () = gtk_widget_show_unref (sep_item)
-//
-  val (fpf_aclgrp | aclgrp) = topenv_get_aclgrp ()
-  val close_item =
-    $UT.gtk_image_menu_item_new_from_stock (GTK_STOCK_CLOSE, aclgrp)
-  prval () = fpf_aclgrp (aclgrp)
-  val _sid = g_signal_connect (
-    close_item, (gsignal)"activate", G_CALLBACK(cb_close_activate), GNULL
-  ) // end of [val]
-  val () = gtk_menu_shell_append (menu, close_item)
-  val () = gtk_widget_show_unref (close_item)
-//
-  val sep_item = gtk_separator_menu_item_new ()
-  val () = gtk_menu_shell_append (menu, sep_item)
-  val () = gtk_widget_show_unref (sep_item)
-//
-  val (fpf_aclgrp | aclgrp) = topenv_get_aclgrp ()
-  val save_item =
-    $UT.gtk_image_menu_item_new_from_stock (GTK_STOCK_SAVE, aclgrp)
-  prval () = fpf_aclgrp (aclgrp)
-  val _sid = g_signal_connect (
-    save_item, (gsignal)"activate", G_CALLBACK(cb_save_activate_if), GNULL
-  ) // end of [val]
-  val () = gtk_menu_shell_append (menu, save_item)
-  val () = gtk_widget_show_unref (save_item)
-//
-  val (fpf_aclgrp | aclgrp) = topenv_get_aclgrp ()
-  val saveas_item = 
-    $UT.gtk_image_menu_item_new_from_stock (GTK_STOCK_SAVE_AS, aclgrp)
-  prval () = fpf_aclgrp (aclgrp)
-  val _sid = g_signal_connect (
-    saveas_item, (gsignal)"activate", G_CALLBACK(cb_saveas_activate_if), GNULL
-  ) // end of [val]
-  val () = gtk_menu_shell_append (menu, saveas_item)
-  val () = gtk_widget_show_unref (saveas_item)
-//
-  val sep_item = gtk_separator_menu_item_new ()
-  val () = gtk_menu_shell_append (menu, sep_item)
-  val () = gtk_widget_show_unref (sep_item)
-//
-  val (fpf_aclgrp | aclgrp) = topenv_get_aclgrp ()
-  val quit_item = $UT.gtk_image_menu_item_new_from_stock (GTK_STOCK_QUIT, aclgrp)
-  prval () = fpf_aclgrp (aclgrp)
-  val _sid = g_signal_connect
-    (quit_item, (gsignal)"activate", G_CALLBACK(cb_quit_activate), GNULL)
-  val () = gtk_menu_shell_append (menu, quit_item)
-  val () = gtk_widget_show_unref (quit_item)
-//
-} // end of [FILEmenu_make]
-
-(* ****** ****** *)
-
 extern
 fun topenv_make_menu_edit (): GtkMenu_ref1
 implement
 topenv_make_menu_edit () = menu where {
-  val menu = gtk_menu_new ()
+  val menu = gtk_menu_new () // to be returned
 //
   val undo_item =
     $UT.gtk_image_menu_item_new_from_stock_null (GTK_STOCK_UNDO)
@@ -680,21 +451,40 @@ topenv_make_menu_edit () = menu where {
 
 (* ****** ****** *)
 
+fn toggle_statusbar
+  (tf: gboolean) = () where {
+  val tf = (bool_of)tf
+  val (fpf_bar | bar) = topenv_get_statusbar ()
+  val () = (
+    if tf then gtk_widget_show (bar) else gtk_widget_hide (bar)
+  ) : void
+  prval () = fpf_bar (bar)
+} // end of [cb_toggle_statusbar]
+
+fun cb_view_statusbar {l:agz}
+  (item: !GtkCheckMenuItem_ref l)
+  : gboolean = GTRUE where {
+  val active = gtk_check_menu_item_get_active (item)
+  val () = toggle_statusbar (active)
+} // end of [cb_view_statusbar]
+
 extern
-fun topenv_make_menu_window (): GtkMenu_ref1
+fun topenv_make_menu_view (): GtkMenu_ref1
 implement
-topenv_make_menu_window () = menu where {
-  val menu = gtk_menu_new () // it appears on the menubar
+topenv_make_menu_view () = menu where {
+  val menu = gtk_menu_new () // to be returned
 //
-  val item = $UT.gtk_menu_item_new_with_label ("Window List...")
-  val () = gtk_menu_shell_append (menu, item)
-  val () = gtk_widget_show_unref (item)
+  val (fpf_x | x) = (gs)"View Statusbar"
+  val statusbar_item = gtk_check_menu_item_new_with_label (x)
+  val () = gtk_check_menu_item_set_active (statusbar_item, GFALSE)
+  prval () = fpf_x (x)
 //
-  val sep_item = gtk_separator_menu_item_new ()
-  val () = gtk_menu_shell_append (menu, sep_item)
-  val () = gtk_widget_show_unref (sep_item)
+  val _sid = g_signal_connect
+    (statusbar_item, (gsignal)"activate", G_CALLBACK(cb_view_statusbar), GNULL)
 //
-} // end of [topenv_make_menu_window]
+  val () = gtk_menu_shell_append (menu, statusbar_item)
+  val () = gtk_widget_show_unref (statusbar_item)
+} // end of [topenv_make_menu_view]
 
 (* ****** ****** *)
 
@@ -708,7 +498,9 @@ theMenubar_make () = mbar where {
     val item = $UT.gtk_menu_item_new_with_mnemonic ("_File")
     val menu = topenv_make_menu_file ()
     val () = gtk_menu_item_set_submenu (item, menu)
-    val () = g_object_unref (menu)
+    val () = initset (menu) where {
+      extern fun initset (x: GtkMenu_ref1): void = "atsui_topenv_initset_menu_file"
+    } // end of [val]
     val () = gtk_menu_shell_append (mbar, item)
     val () = gtk_widget_show_unref (item)
   } // end of [val]
@@ -716,6 +508,15 @@ theMenubar_make () = mbar where {
   val () = () where { // adding the EDIT menu
     val item = $UT.gtk_menu_item_new_with_mnemonic ("_Edit")
     val menu = topenv_make_menu_edit ()
+    val () = gtk_menu_item_set_submenu (item, menu)
+    val () = g_object_unref (menu)
+    val () = gtk_menu_shell_append (mbar, item)
+    val () = gtk_widget_show_unref (item)
+  } // end of [val]
+//
+  val () = () where { // adding the VIEW menu
+    val item = $UT.gtk_menu_item_new_with_mnemonic ("_View")
+    val menu = topenv_make_menu_view ()
     val () = gtk_menu_item_set_submenu (item, menu)
     val () = g_object_unref (menu)
     val () = gtk_menu_shell_append (mbar, item)
@@ -741,9 +542,12 @@ theMenubar_make () = mbar where {
       prval () = fpf_x (x)
     } // end of [val]
 //
-    val _sid = g_signal_connect_swapped (item, (gsignal)"activate", G_CALLBACK(f), menu)
+    val _sid = g_signal_connect_swapped
+      (item, (gsignal)"activate", G_CALLBACK(f), menu)
     val () = gtk_menu_item_set_submenu (item, menu)
-    val () = topenv_initset_menu_window (menu)
+    val () = initset (menu) where {
+      extern fun initset (x: GtkMenu_ref1): void = "atsui_topenv_initset_menu_window"
+    } // end of [val]
     val () = gtk_menu_shell_append (mbar, item)
     val () = gtk_widget_show_unref (item)
   } // end of [val]
@@ -838,32 +642,28 @@ end // end of [theFunctionlst_make]
 (* ****** ****** *)
 
 extern 
-fun theTable1_make (): GtkTable_ref1
-implement theTable1_make () = table where {
+fun theHPaned1_make (): GtkHPaned_ref1
+implement theHPaned1_make () = hpaned0 where {
+//
+  val hpaned0 = gtk_hpaned_new ()
+//
+  // HX: leave it empty for now
+  val win1 = gtk_text_view_new ()
+  val () = gtk_paned_add1 (hpaned0, win1)
+  // val () = gtk_widget_show (win1) // HX: default: hidden
+  val () = g_object_unref (win1)
+//
+  val vpaned2 = gtk_vpaned_new ()
+  val () = gtk_paned_add2 (hpaned0, vpaned2)
+//
   #define NROW 24
   #define NCOL 48
-  val table = gtk_table_new ((guint)NROW, (guint)NCOL, GFALSE(*homo*))
-//
-  val win1 = gtk_text_view_new ()
-  val left1 = 0U
-  val right1 = uint_of(NCOL/6)
-  val top1 = 0U and bot1 = uint_of(NROW)
-  val xopt = GTK_FILL lor GTK_EXPAND
-  and yopt = GTK_FILL lor GTK_EXPAND
-  val () = gtk_table_attach (
-    table, win1, left1, right1, top1, bot1, xopt, yopt, 1U, 1U
-  ) // end of [val]
-  val () = gtk_widget_show_unref (win1)
+  val table2 = gtk_table_new
+    ((guint)NROW, (guint)NCOL, GFALSE(*homo*))
+  val () = gtk_paned_pack1 (vpaned2, table2, GTRUE(*resize*), GTRUE(*shrink*))
+  val top2 = 0U and bot2 = uint_of(NROW)
 //
   val win21 = $UT.gtk_frame_new ("Welcome")
-  val left21 = right1
-  val right21 = uint_of(23*NCOL/24)
-  val top21 = 0U and bot21 = uint_of(23*NROW/24)
-  val xopt = GTK_FILL lor GTK_EXPAND
-  and yopt = GTK_FILL lor GTK_EXPAND
-  val () = gtk_table_attach (
-    table, win21, left21, right21, top21, bot21, xopt, yopt, 1U, 1U
-  ) // end of [val]
   val darea = gtk_drawing_area_new ()
   val _sid = g_signal_connect
     (darea, (gsignal)"expose-event", G_CALLBACK (the_drawarea_welcome_expose), GNULL)
@@ -871,39 +671,42 @@ implement theTable1_make () = table where {
   val () = gtk_container_add (win21, darea)
   val () = gtk_widget_show (darea)
   val () = the_drawarea_welcome_set (darea)
+//
+  val left21 = 0U
+  val right21 = uint_of(23*NCOL/24)
+  val xopt = GTK_FILL lor GTK_EXPAND
+  and yopt = GTK_FILL lor GTK_EXPAND
+  val () = gtk_table_attach (
+    table2, win21, left21, right21, top2, bot2, xopt, yopt, 1U, 1U
+  ) // end of [val]
   val () = gtk_widget_show (win21)
   val () = topenv_initset_container_source (win21)
 //
   val win22 = theFunctionlst_make ()
   val left22 = right21
   val right22 = uint_of(NCOL)
-  val top22 = 0U and bot22 = uint_of(23*NROW/24)
-  val xopt = GTK_FILL lor GTK_EXPAND
-  and yopt = GTK_FILL lor GTK_EXPAND
   val () = gtk_table_attach (
-    table, win22, left22, right22, top22, bot22, xopt, yopt, 1U, 1U
+    table2, win22, left22, right22, top2, bot2, xopt, yopt, 1U, 1U
   ) // end of [val]
   val () = gtk_widget_show (win22)
   val () = topenv_initset_container_output (win22)
 //
-  val win3 = gtk_scrolled_window_new_null ()
+  val () = gtk_widget_show_unref (table2)
+//
+  val win22 = gtk_scrolled_window_new_null ()
   val () = gtk_scrolled_window_set_policy
-    (win3, GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC)
-  val left3 = right1
-  val right3 = uint_of(NCOL)
-  val top3 = bot21 and bot3 = uint_of(NROW)
-  val xopt = GTK_FILL lor GTK_EXPAND
-  and yopt = GTK_FILL lor GTK_EXPAND
-  val () = gtk_table_attach (
-    table, win3, left3, right3, top3, bot3, xopt, yopt, 1U, 1U
-  ) // end of [val]
+    (win22, GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC)
+  val () = gtk_widget_set_size_request (win22, (gint)0, (gint)72)
   val [l_tv:addr] tv = topenv_make_textview_output ()
-  val () = gtk_container_add (win3, tv)
+  val () = gtk_container_add (win22, tv)
   val () = gtk_widget_show (tv)
   val () = topenv_initset_textview_output (tv)
-  val () = gtk_widget_show_unref (win3)
-// *)
-} // end of [theTable1_make]
+  val () = gtk_paned_pack2 (vpaned2, win22, GFALSE(*resize*), GFALSE(*shrink*))
+  val () = gtk_widget_show_unref (win22)
+//
+  val () = gtk_widget_show_unref (vpaned2)
+//
+} // end of [theHPaned_make]
 
 (* ****** ****** *)
 
@@ -926,15 +729,15 @@ theVBox0_make () = vbox where {
   } // end of [val]
 //
   val () = () where {
-    val table = theTable1_make ()
-    val () = gtk_box_pack_start (vbox, table, GTRUE, GTRUE, (guint)1)
-    val () = gtk_widget_show_unref (table)
+    val hpaned = theHPaned1_make ()
+    val () = gtk_box_pack_start (vbox, hpaned, GTRUE, GTRUE, (guint)1)
+    val () = gtk_widget_show_unref (hpaned)
   } // end of [val]
 //
   val () = () where {
     val statusbar = theStatusbar_make ()
     val () = gtk_box_pack_start (vbox, statusbar, GFALSE, GFALSE, (guint)1)
-    val () = gtk_widget_show (statusbar)
+    // val () = gtk_widget_show (statusbar) // HX: default: hidden
     val () = topenv_initset_statusbar (statusbar)
   } // end of [val]
 //

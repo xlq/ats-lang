@@ -53,10 +53,13 @@ CCFLAGS =$(GTKCFLAGS)
 SOURCES := \
   atsui_util.sats atsui_util.dats \
   atsui_compile.dats \
-  atsui_menuwinlst.dats \
-  atsui_openfile.dats \
-  atsui_save.dats \
-  atsui_saveas.dats \
+  atsui_menu_file.dats \
+  atsui_menuitem_file_openfile.dats \
+  atsui_menuitem_file_save.dats \
+  atsui_menuitem_file_saveas.dats \
+  atsui_menuitem_file_quit.dats \
+  atsui_menu_edit.dats \
+  atsui_menu_winlst.dats \
   atsui_textview_source.dats \
   atsui_srcwinlst.sats atsui_srcwinlst.dats \
   atsui_topenv.sats atsui_topenv.dats \
@@ -105,17 +108,26 @@ atsui_srcwinlst_dats.o: atsui_srcwinlst.dats
 atsui_compile_dats.o: atsui_compile.dats
 	$(ATSCC) $(ATSCCFLAGS) $(CCFLAGS) -c atsui_compile.dats
 
-atsui_menuwinlst_dats.o: atsui_menuwinlst.dats
-	$(ATSCC) $(ATSCCFLAGS) $(CCFLAGS) -c atsui_menuwinlst.dats
+atsui_menu_file_dats.o: atsui_menu_file.dats
+	$(ATSCC) $(ATSCCFLAGS) $(CCFLAGS) -c atsui_menu_file.dats
 
-atsui_openfile_dats.o: atsui_openfile.dats
-	$(ATSCC) $(ATSCCFLAGS) $(CCFLAGS) -c atsui_openfile.dats
+atsui_menu_edit_dats.o: atsui_menu_edit.dats
+	$(ATSCC) $(ATSCCFLAGS) $(CCFLAGS) -c atsui_menu_edit.dats
 
-atsui_save_dats.o: atsui_save.dats
-	$(ATSCC) $(ATSCCFLAGS) $(CCFLAGS) -c atsui_save.dats
+atsui_menu_winlst_dats.o: atsui_menu_winlst.dats
+	$(ATSCC) $(ATSCCFLAGS) $(CCFLAGS) -c atsui_menu_winlst.dats
 
-atsui_saveas_dats.o: atsui_saveas.dats
-	$(ATSCC) $(ATSCCFLAGS) $(CCFLAGS) -c atsui_saveas.dats
+atsui_menuitem_file_openfile_dats.o: atsui_menuitem_file_openfile.dats
+	$(ATSCC) $(ATSCCFLAGS) $(CCFLAGS) -c atsui_menuitem_file_openfile.dats
+
+atsui_menuitem_file_save_dats.o: atsui_menuitem_file_save.dats
+	$(ATSCC) $(ATSCCFLAGS) $(CCFLAGS) -c atsui_menuitem_file_save.dats
+
+atsui_menuitem_file_saveas_dats.o: atsui_menuitem_file_saveas.dats
+	$(ATSCC) $(ATSCCFLAGS) $(CCFLAGS) -c atsui_menuitem_file_saveas.dats
+
+atsui_menuitem_file_quit_dats.o: atsui_menuitem_file_quit.dats
+	$(ATSCC) $(ATSCCFLAGS) $(CCFLAGS) -c atsui_menuitem_file_quit.dats
 
 atsui_textview_source_dats.o: atsui_textview_source.dats
 	$(ATSCC) $(ATSCCFLAGS) $(CCFLAGS) -c atsui_textview_source.dats

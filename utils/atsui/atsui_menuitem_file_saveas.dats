@@ -60,21 +60,46 @@ overload gint with gint_of_GtkResponseType
 
 (* ****** ****** *)
 
-fun dialog_saveas
-  {c:cls | c <= GtkFileChooserDialog} {l:agz}
-  (dialog: !gobjref (c, l)): void = () where {
+fun dialog_saveas_errmsg
+  {l1,l2:agz} (
+    parent: !GtkWindow_ref l1, msg: !gstring l2
+  ) : void = () where {
+//
+  val flags = GTK_DIALOG_DESTROY_WITH_PARENT
+  val _type = GTK_MESSAGE_ERROR
+  val buttons = GTK_BUTTONS_OK
+//
+  val dialog = gtk_message_dialog_new0 (flags, _type, buttons, msg)
+//
+  val (fpf_x | x) = (gs)"SaveAs: Error"
+  val () = gtk_window_set_title (dialog, x)
+  prval () = fpf_x (x)
+//
+  val () = gtk_window_set_transient_for (dialog, parent)
+//
+  val response = gtk_dialog_run (dialog)
+  val () = gtk_widget_destroy (dialog)
+//
+  val () = case+ 0 of
+    | _ when response = (gint)GTK_RESPONSE_OK => () | _ => () // good as well
+  // end of [val]
+} // end of [dialog_saveas_errmsg]
+
+(* ****** ****** *)
+
+fun dialog_saveas {l:agz} (
+    dialog: !GtkFileChooserDialog_ref l, err: &int
+  ) : gstring0 = filename where {
   val () = (print (#LOCATION + ": cb_saveas_activate"); print_newline ())
   val (fpf_chooser | chooser) = gtk_file_chooser_dialog_get_chooser (dialog)
   var filename: gstring0 = gtk_file_chooser_get_filename (chooser)
   prval () = minus_addback (fpf_chooser, chooser | dialog)
   val p = ptr_of_gstring (filename)
-  val () = if p > null then dialog_saveas_main (dialog, filename)
-  val () = gstring_free (filename)
+  val () = if p > null then dialog_saveas_main (dialog, filename, err)
 } // end of [dialog_saveas]
 
-and dialog_saveas_main
-  {c:cls | c <= GtkFileChooserDialog} {l:agz} (
-    dialog: !gobjref (c, l), filename: &gstring1
+and dialog_saveas_main {l:agz} (
+    dialog: !GtkFileChooserDialog_ref l, filename: &gstring1, err: &int
   ) : void = () where {
 (*
   val () = printf (
@@ -125,16 +150,14 @@ and dialog_saveas_main
   in
     // nothing
   end else let
-    prval None_v () = pfopt_fil
-  in
-    // nothing
+    prval None_v () = pfopt_fil in err := err + 1
   end (* end of [if] *)
 } // end of [dialog_saveas_main]
 
 (* ****** ****** *)
 
 implement
-cb_saveas_activate () = () where {
+cb_saveas_activate () = GTRUE where {
 (*
   val () = (print (#LOCATION + ": cb_saveas_activate"); print_newline ())
 *)
@@ -161,32 +184,41 @@ cb_saveas_activate () = () where {
   val () = gtk_file_chooser_set_do_overwrite_confirmation (chooser, GTRUE)
   prval () = minus_addback (fpf_chooser, chooser | dialog)
 //
+  var err: int = 0
   val response = gtk_dialog_run (dialog)
   val () = case+ 0 of
     | _ when (
         response = (gint)GTK_RESPONSE_ACCEPT
       ) => let
-        val () = dialog_saveas (dialog)
+        val filename = dialog_saveas (dialog, err)
+        val () = case+ 0 of
+        | _ when (err = 0) =>
+            topenv_container_source_update_label ()
+          // end of [_ when ...]
+        | _ => () where {
+            val msg = g_strdup_printf (
+              "ERROR: the file [%s] cannot be opened.", @(__cast filename)
+            ) where {
+              extern castfn __cast {l:addr} (x: !gstring l): string
+            } // end of [val]
+            val (fpf_win | win) = gtk_dialog_get_window (dialog)
+            val () = dialog_saveas_errmsg (win, msg)
+            prval () = minus_addback (fpf_win, win | dialog)
+            val () = gstring_free (msg)
+          } // end of [_]
       in
-        topenv_container_source_update_label ()
+        gstring_free (filename)
       end // end of [GTK_RESPONSE_ACCEPT]
     | _ when (
         response = (gint)GTK_RESPONSE_CLOSE
       ) => ()
+    | _ when (
+        response = (gint)GTK_RESPONSE_DELETE_EVENT
+      ) => ()
     | _ => () // HX: should the user be asked again?
   // end of [val]
-//
   val () = gtk_widget_destroy (dialog)
 } // end of [cb_saveas_activate]
-
-(* ****** ****** *)
-
-implement cb_saveas_activate_if () = let
-  val tvflag = topenv_textview_source_initset_flag_get ()
-  val () = if (tvflag > 0) then cb_saveas_activate ()
-in
-   GTRUE(*handled*)
-end // end of [cb_saveas_activate_if]
 
 (* ****** ****** *)
 

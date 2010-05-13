@@ -61,12 +61,12 @@ overload gint with gint_of_GtkResponseType
 (* ****** ****** *)
 
 implement
-cb_save_activate () = () where {
+cb_save_activate () = GTRUE where {
   val (fpf_srcwin | srcwin) = $SWL.the_srcwinlst_get_current ()
   val p_scrwin = $SWL.ptr_of_srcwin (srcwin)
   val () = assert_errmsg (p_scrwin > null, #LOCATION + ": [scrwin] is NULL")
   val nsaved = $SWL.srcwin_get_nsaved (srcwin)
-  val () = (
+  val _ = (
 if (nsaved >= 0) then let
   val (fpf_tv | tv) = topenv_get_textview_source ()
   val (fpf_tb | tb) = gtk_text_view_get_buffer (tv)
@@ -103,22 +103,13 @@ if (nsaved >= 0) then let
   prval () = minus_addback (fpf_tb, tb | tv)
   prval () = fpf_tv (tv)
 in
-  // nothing
+  GTRUE
 end else // nsaved = -1
   cb_saveas_activate ()
-) : void // end of [if]
+) : gboolean // end of [if]
 // end of [val]
   prval () = fpf_srcwin (srcwin)
 } // end of [cb_save_activate]
-
-(* ****** ****** *)
-
-implement cb_save_activate_if () = let
-  val tvflag = topenv_textview_source_initset_flag_get ()
-  val () =   if (tvflag > 0) then cb_save_activate ()
-in
-  GTRUE(*handled*)
-end // end of [cb_save_activate_if]
 
 (* ****** ****** *)
 

@@ -30,9 +30,18 @@
 *)
 
 (* ****** ****** *)
-
+//
 // Author: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
-// Time: April 2010
+// Time: May, 2010
+//
+(* ****** ****** *)
+
+staload "libc/SATS/stdio.sats"
+
+(* ****** ****** *)
+
+staload "contrib/glib/SATS/glib.sats"
+staload "contrib/glib/SATS/glib-object.sats"
 
 (* ****** ****** *)
 
@@ -40,65 +49,45 @@ staload "contrib/GTK/SATS/gtk.sats"
 
 (* ****** ****** *)
 
+staload UT = "atsui_util.sats"
+staload SWL = "atsui_srcwinlst.sats"
+
+(* ****** ****** *)
+
 staload "atsui_topenv.sats"
+macdef gs = gstring_of_string
+overload gint with gint_of_GtkResponseType
 
 (* ****** ****** *)
 
-%{^
-extern
-ats_void_type
-mainats (ats_int_type argc, ats_ptr_type argv) ;
-%} // end of [%{^]
-
-(* ****** ****** *)
-
-dynload "atsui_util.dats"
-dynload "atsui_srcwinlst.dats"
-
-dynload "atsui_compile.dats"
+implement cb_quit_activate () = GTRUE where {
 //
-dynload "atsui_menu_file.dats"
-dynload "atsui_menuitem_file_openfile.dats"
-dynload "atsui_menuitem_file_save.dats"
-dynload "atsui_menuitem_file_saveas.dats"
-dynload "atsui_menuitem_file_quit.dats"
+  val () = (print (#LOCATION + ": cb_quit_activate"); print_newline ())
 //
-dynload "atsui_menu_edit.dats"
-dynload "atsui_menu_winlst.dats"
+  val flags = GTK_DIALOG_DESTROY_WITH_PARENT
+  val _type = GTK_MESSAGE_QUESTION
+  val buttons = GTK_BUTTONS_YES_NO
 //
-dynload "atsui_textview_source.dats"
-
-dynload "atsui_topenv.dats"
-
-(* ****** ****** *)
-
-implement main_dummy () = ()
-
-(* ****** ****** *)
-
-extern fun main1 (): void = "main1"
-implement
-main1 () = () where {
-   val () = topenv_init ()
-   val (fpf_topwin | topwin) = topenv_get_topwin ()
-   val () = gtk_widget_show (topwin)
-   prval () = fpf_topwin (topwin)
-   val () = gtk_main () // looping until [gtk_main_quit] is called
-} // end of [main1]
-
-(* ****** ****** *)
-
-%{$
-ats_void_type
-mainats (
-  ats_int_type argc, ats_ptr_type argv
-) {
-  gtk_init ((int*)&argc, (char***)&argv) ;
-  main1 () ;
-  return ;
-} // end of [mainats]
-%} // end of [%{$]
+  val (fpf_x | x) = (gs)"Quit ATSUI?"
+  val dialog = gtk_message_dialog_new0 (flags, _type, buttons, x)
+  prval () = fpf_x (x)
+  val (fpf_x | x) = (gs)"Confirmation"
+  val () = gtk_window_set_title (dialog, x)
+  prval () = fpf_x (x)
+//
+  val (fpf_topwin | topwin) = topenv_get_topwin ()
+  val () = gtk_window_set_transient_for (dialog, topwin(*parent*))
+  prval () = fpf_topwin (topwin)
+//
+  val response = gtk_dialog_run (dialog)
+  val () = gtk_widget_destroy (dialog)
+//
+  val () = case+ 0 of
+    | _ when response = (gint)GTK_RESPONSE_YES => topenv_fini () // many things to do here!
+    | _ => () // quit is not confirmed
+  // end of [val]
+} // end of [cb_quit_activate]
 
 (* ****** ****** *)
 
-(* end of [atsui_main.dats] *)
+(* end of [atsui_quit.dats] *)
