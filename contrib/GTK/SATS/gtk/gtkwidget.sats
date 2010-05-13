@@ -119,6 +119,19 @@ fun gtk_widget_hide
 
 (* ****** ****** *)
 
+fun gtk_widget_get_sensitive
+  {c:cls | c <= GtkWidget} {l:agz}
+  (widget: !gobjref (c, l)): gboolean = "#atsctrb_gtk_widget_get_sensitive"
+// end of [gtk_widget_get_sensitive]
+
+fun gtk_widget_set_sensitive
+  {c:cls | c <= GtkWidget} {l:agz}
+  (widget: !gobjref (c, l), sensitive: gboolean): void
+  = "#atsctrb_gtk_widget_set_sensitive"
+// end of [gtk_widget_set_sensitive]
+
+(* ****** ****** *)
+
 //
 // HX: negative width/height can have special meaning
 //

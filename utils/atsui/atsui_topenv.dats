@@ -330,6 +330,7 @@ end (* end of [if] *)
 
 // "Comic sans MS 10"
 #define TEXTVIEW_FONT "Courier 12" // a font of fixed-size
+#define TEXTVIEW_LEFT_MARGIN 6
 
 extern
 fun topenv_make_textview_source (): GtkTextView_ref1
@@ -353,6 +354,7 @@ topenv_make_textview_source () = let
   prval () = fpf_name (name)
   val () = gtk_text_view_set_editable (tv, GFALSE)
   val () = gtk_text_view_set_cursor_visible (tv, GFALSE)
+  val () = gtk_text_view_set_left_margin (tv, (gint)TEXTVIEW_LEFT_MARGIN)
 in
   tv (* return *)
 end // end of [topenv_make_textview_source]
@@ -367,6 +369,7 @@ topenv_make_textview_output () = let
   val [l_tv:addr] tv = gtk_text_view_new_with_buffer (tb)
   val () = gtk_text_view_set_editable (tv, GFALSE)
   val () = gtk_text_view_set_cursor_visible (tv, GFALSE)
+  val () = gtk_text_view_set_left_margin (tv, (gint)TEXTVIEW_LEFT_MARGIN)
 //
   val (fpf_x | x) = (gs)"(No compilation output yet)"  
   val () = gtk_text_buffer_setall_text (tb, x)
@@ -390,6 +393,8 @@ in
     val () = gtk_container_add (win, tv)
     val () = gtk_widget_show (tv)
     val () = topenv_initset_textview_source (tv)
+//
+// HX: enabling the CLOSE, SAVE and SAVEAS menu items
 //
     val (fpf_x | x) = topenv_get_menuitem_file_close ()
     val () = gtk_widget_set_sensitive (x, GTRUE)

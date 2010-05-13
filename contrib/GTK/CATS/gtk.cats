@@ -233,6 +233,47 @@ atsctrb_gtk_check_button_new_with_mnemonic
 /* ****** ****** */
 
 //
+// source: gtk/gtkcheckmenuitem.h
+//
+
+ATSinline()
+ats_ptr_type
+atsctrb_gtk_check_menu_item_new () {
+  GtkWidget *widget = gtk_check_menu_item_new() ;
+  g_object_ref_sink(G_OBJECT(widget)) ; // removing floating reference!
+  return widget ;
+} // end of [atsctrb_gtk_check_menu_item_new]
+
+ATSinline()
+ats_ptr_type
+atsctrb_gtk_check_menu_item_new_with_label
+  (ats_ptr_type name) {
+  GtkWidget *widget = gtk_check_menu_item_new_with_label((gchar*)name) ;
+  g_object_ref_sink(G_OBJECT(widget)) ; // removing floating reference!
+  return widget ;
+} // end of [atsctrb_gtk_check_menu_item_new_with_label]
+
+ATSinline()
+ats_ptr_type
+atsctrb_gtk_check_menu_item_new_with_mnemonic
+  (ats_ptr_type name) {
+  GtkWidget *widget = gtk_check_menu_item_new_with_mnemonic((gchar*)name) ;
+  g_object_ref_sink(G_OBJECT(widget)) ; // removing floating reference!
+  return widget ;
+} // end of [atsctrb_gtk_check_menu_item_new_with_mnemonic]
+
+#define atsctrb_gtk_check_menu_item_get_active gtk_check_menu_item_get_active
+#define atsctrb_gtk_check_menu_item_set_active gtk_check_menu_item_set_active
+
+#define atsctrb_gtk_check_menu_item_get_inconsistent gtk_check_menu_item_get_inconsistent
+#define atsctrb_gtk_check_menu_item_set_inconsistent gtk_check_menu_item_set_inconsistent
+
+#define atsctrb_gtk_check_menu_item_get_draw_as_radio gtk_check_menu_item_get_draw_as_radio
+#define atsctrb_gtk_check_menu_item_set_draw_as_radio gtk_check_menu_item_set_draw_as_radio
+
+/* ****** ****** */
+
+//
 // source: gtk/gtkcontainer.h
 //
 
@@ -518,6 +559,20 @@ atsctrb_gtk_hruler_new () {
   g_object_ref_sink(G_OBJECT(widget)) ; // removing floating reference!
   return widget ;
 } // end of [atsctrb_gtk_hruler_new]
+
+/* ****** ****** */
+
+//
+// source: gtk/gtkhpaned.h
+//
+
+ATSinline()
+ats_ptr_type
+atsctrb_gtk_hpaned_new () {
+  GtkWidget *widget = gtk_hpaned_new () ;
+  g_object_ref_sink(G_OBJECT(widget)) ; // removing floating reference!
+  return widget ;
+} // end of [atsctrb_gtk_hpaned_new]
 
 /* ****** ****** */
 
@@ -810,6 +865,26 @@ atsctrb_gtk_option_menu_new () {
 } // end of [atsctrb_gtk_option_menu_new]
 
 #define atsctrb_gtk_option_menu_set_menu gtk_option_menu_set_menu
+
+/* ****** ****** */
+
+//
+// source: gtk/gtkpaned.h
+//
+
+#define atsctrb_gtk_paned_add1 gtk_paned_add1
+#define atsctrb_gtk_paned_add2 gtk_paned_add2
+
+#define atsctrb_gtk_paned_pack1 gtk_paned_pack1
+#define atsctrb_gtk_paned_pack2 gtk_paned_pack2
+
+#define atsctrb_gtk_paned_get_child1 gtk_paned_get_child1
+#define atsctrb_gtk_paned_get_child2 gtk_paned_get_child2
+
+#define atsctrb_gtk_paned_get_position gtk_paned_get_position
+#define atsctrb_gtk_paned_set_position gtk_paned_set_position
+
+#define atsctrb_gtk_paned_get_handle_window gtk_paned_get_handle_window
 
 /* ****** ****** */
 
@@ -1151,13 +1226,30 @@ atsctrb_gtk_text_view_new_with_buffer
 #define atsctrb_gtk_text_view_get_buffer gtk_text_view_get_buffer
 #define atsctrb_gtk_text_view_set_buffer gtk_text_view_set_buffer
 
+#define atsctrb_gtk_text_view_get_wrap_mode gtk_text_view_get_wrap_mode
+#define atsctrb_gtk_text_view_set_wrap_mode gtk_text_view_set_wrap_mode
+
 #define atsctrb_gtk_text_view_get_editable gtk_text_view_get_editable
 #define atsctrb_gtk_text_view_set_editable gtk_text_view_set_editable
 
 #define atsctrb_gtk_text_view_get_cursor_visible gtk_text_view_get_cursor_visible
 #define atsctrb_gtk_text_view_set_cursor_visible gtk_text_view_set_cursor_visible
 
+#define atsctrb_gtk_text_view_get_overwrite gtk_text_view_get_overwrite
+#define atsctrb_gtk_text_view_set_overwrite gtk_text_view_set_overwrite
+
+#define atsctrb_gtk_text_view_get_justification gtk_text_view_get_justification
+#define atsctrb_gtk_text_view_set_justification gtk_text_view_set_justification
+
+#define atsctrb_gtk_text_view_get_left_margin gtk_text_view_get_left_margin
+#define atsctrb_gtk_text_view_set_left_margin gtk_text_view_set_left_margin
+#define atsctrb_gtk_text_view_get_right_margin gtk_text_view_get_right_margin
+#define atsctrb_gtk_text_view_set_right_margin gtk_text_view_set_right_margin
+
 #define atsctrb_gtk_text_view_get_window gtk_text_view_get_window
+
+#define atsctrb_gtk_text_view_get_border_window_size gtk_text_view_get_border_window_size
+#define atsctrb_gtk_text_view_set_border_window_size gtk_text_view_set_border_window_size
 
 /* ****** ****** */
 
@@ -1247,6 +1339,20 @@ atsctrb_gtk_vbox_new (
 /* ****** ****** */
 
 //
+// source: gtk/gtkvpaned.h
+//
+
+ATSinline()
+ats_ptr_type
+atsctrb_gtk_vpaned_new () {
+  GtkWidget *widget = gtk_vpaned_new () ;
+  g_object_ref_sink(G_OBJECT(widget)) ; // removing floating reference!
+  return widget ;
+} // end of [atsctrb_gtk_vpaned_new]
+
+/* ****** ****** */
+
+//
 // source: gtk/gtkvruler.h
 //
 
@@ -1332,6 +1438,9 @@ atsctrb_gtk_vseparator_new () {
 #define atsctrb_gtk_widget_show_all gtk_widget_show_all
 
 #define atsctrb_gtk_widget_hide gtk_widget_hide
+
+#define atsctrb_gtk_widget_get_sensitive gtk_widget_get_sensitive
+#define atsctrb_gtk_widget_set_sensitive gtk_widget_set_sensitive
 
 //
 // HX: get out of a GDK window

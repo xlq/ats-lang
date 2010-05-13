@@ -33,18 +33,16 @@
 
 //
 // Author: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
-// Time: April, 2010
+// Time: May, 2010
 //
 
 (* ****** ****** *)
 
-
-
-
-(* ****** ****** *)
-
-fun gtk_text_tag_new (): GtkTextTag_ref1 = "#atsctrb_gtk_text_tag_new"
+fun gdk_rgb_find_color
+  {c:cls | c <= GdkColormap} {l:agz}
+  (cm: !gobjref (c, l), color: &GdkColor): void = "#atsctrb_gdk_rgb_find_color"
+// end of [gdk_rgb_find_color]
 
 (* ****** ****** *)
 
-(* end of [gtktexttag.sats] *)
+(* end of [gdkrgb.sats] *)

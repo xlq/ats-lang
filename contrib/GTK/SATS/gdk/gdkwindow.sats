@@ -38,13 +38,11 @@
 
 (* ****** ****** *)
 
-
-
-
-(* ****** ****** *)
-
-fun gtk_text_tag_new (): GtkTextTag_ref1 = "#atsctrb_gtk_text_tag_new"
+fun gdk_window_set_background
+  {c:cls | c <= GdkWindow} {l:agz}
+  (window: !gobjref (c, l), color: &GdkColor): void = "#atsctrb_gdk_window_set_background"
+// end of [gdk_window_set_background]
 
 (* ****** ****** *)
 
-(* end of [gtktexttag.sats] *)
+(* end of [gdkwindow.sats] *)

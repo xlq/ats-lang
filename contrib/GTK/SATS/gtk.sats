@@ -262,6 +262,10 @@ viewtypedef GtkCheckButton_ref (l:addr) = gobjref (GtkCheckButton, l)
 viewtypedef GtkCheckButton_ref0 = [l:agez] GtkCheckButton_ref l
 viewtypedef GtkCheckButton_ref1 = [l:addr | l > null] GtkCheckButton_ref l
 
+viewtypedef GtkCheckMenuItem_ref (l:addr) = gobjref (GtkCheckMenuItem, l)
+viewtypedef GtkCheckMenuItem_ref0 = [l:agez] GtkCheckMenuItem_ref l
+viewtypedef GtkCheckMenuItem_ref1 = [l:addr | l > null] GtkCheckMenuItem_ref l
+
 viewtypedef GtkColorSelection_ref (l:addr) = gobjref (GtkColorSelection, l)
 viewtypedef GtkColorSelection_ref0 = [l:agez] GtkColorSelection_ref l
 viewtypedef GtkColorSelection_ref1 = [l:addr | l > null] GtkColorSelection_ref l
@@ -297,6 +301,10 @@ viewtypedef GtkFrame_ref1 = [l:addr | l > null] GtkFrame_ref l
 viewtypedef GtkHBox_ref (l:addr) = gobjref (GtkHBox, l)
 viewtypedef GtkHBox_ref0 = [l:agez] GtkHBox_ref l
 viewtypedef GtkHBox_ref1 = [l:addr | l > null] GtkHBox_ref l
+
+viewtypedef GtkHPaned_ref (l:addr) = gobjref (GtkHPaned, l)
+viewtypedef GtkHPaned_ref0 = [l:agez] GtkHPaned_ref l
+viewtypedef GtkHPaned_ref1 = [l:addr | l > null] GtkHPaned_ref l
 
 viewtypedef GtkHRuler_ref (l:addr) = gobjref (GtkHRuler, l)
 viewtypedef GtkHRuler_ref0 = [l:agez] GtkHRuler_ref l
@@ -394,6 +402,10 @@ viewtypedef GtkVBox_ref (l:addr) = gobjref (GtkVBox, l)
 viewtypedef GtkVBox_ref0 = [l:agez] GtkVBox_ref l
 viewtypedef GtkVBox_ref1 = [l:addr | l > null] GtkVBox_ref l
 
+viewtypedef GtkVPaned_ref (l:addr) = gobjref (GtkVPaned, l)
+viewtypedef GtkVPaned_ref0 = [l:agez] GtkVPaned_ref l
+viewtypedef GtkVPaned_ref1 = [l:addr | l > null] GtkVPaned_ref l
+
 viewtypedef GtkVRuler_ref (l:addr) = gobjref (GtkVRuler, l)
 viewtypedef GtkVRuler_ref0 = [l:agez] GtkVRuler_ref l
 viewtypedef GtkVRuler_ref1 = [l:addr | l > null] GtkVRuler_ref l
@@ -486,6 +498,7 @@ viewtypedef GtkTextMark_ref1 = [l:addr | l > null] GtkTextMark_ref l
 #include "contrib/GTK/SATS/gtk/gtkbox.sats"
 #include "contrib/GTK/SATS/gtk/gtkbutton.sats"
 #include "contrib/GTK/SATS/gtk/gtkcheckbutton.sats"
+#include "contrib/GTK/SATS/gtk/gtkcheckmenuitem.sats"
 #include "contrib/GTK/SATS/gtk/gtkcontainer.sats"
 #include "contrib/GTK/SATS/gtk/gtkcolorsel.sats"
 #include "contrib/GTK/SATS/gtk/gtkcolorseldialog.sats"
@@ -496,6 +509,7 @@ viewtypedef GtkTextMark_ref1 = [l:addr | l > null] GtkTextMark_ref l
 #include "contrib/GTK/SATS/gtk/gtkfilechooserdialog.sats"
 #include "contrib/GTK/SATS/gtk/gtkframe.sats"
 #include "contrib/GTK/SATS/gtk/gtkhbox.sats"
+#include "contrib/GTK/SATS/gtk/gtkhpaned.sats"
 #include "contrib/GTK/SATS/gtk/gtkhruler.sats"
 #include "contrib/GTK/SATS/gtk/gtkhscale.sats"
 #include "contrib/GTK/SATS/gtk/gtkhscrollbar.sats"
@@ -527,6 +541,7 @@ viewtypedef GtkTextMark_ref1 = [l:addr | l > null] GtkTextMark_ref l
 #include "contrib/GTK/SATS/gtk/gtktoolbar.sats"
 #include "contrib/GTK/SATS/gtk/gtktoolbutton.sats"
 #include "contrib/GTK/SATS/gtk/gtkvbox.sats"
+#include "contrib/GTK/SATS/gtk/gtkvpaned.sats"
 #include "contrib/GTK/SATS/gtk/gtkvruler.sats"
 #include "contrib/GTK/SATS/gtk/gtkvscale.sats"
 #include "contrib/GTK/SATS/gtk/gtkvscrollbar.sats"

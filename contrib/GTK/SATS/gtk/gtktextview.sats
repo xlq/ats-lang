@@ -78,6 +78,18 @@ fun gtk_text_view_get_buffer
 
 (* ****** ****** *)
 
+fun gtk_text_view_get_wrap_mode
+  {c:cls | c <= GtkTextView} {l:agz}
+  (tv: !gobjref (c, l)): GtkWrapMode = "#atsctrb_gtk_text_view_get_wrap_mode"
+// end of [gtk_text_view_get_wrap_mode]
+
+fun gtk_text_view_set_wrap_mode
+  {c:cls | c <= GtkTextView} {l:agz}
+  (tv: !gobjref (c, l), mode: GtkWrapMode): void = "#atsctrb_gtk_text_view_set_wrap_mode"
+// end of [gtk_text_view_set_wrap_mode]
+
+(* ****** ****** *)
+
 fun gtk_text_view_get_editable
   {c:cls | c <= GtkTextView} {l:agz}
   (tv: !gobjref (c, l)): gboolean = "#atsctrb_gtk_text_view_get_editable"
@@ -102,6 +114,64 @@ fun gtk_text_view_set_cursor_visible
 
 (* ****** ****** *)
 
+fun gtk_text_view_get_overwrite
+  {c:cls | c <= GtkTextView} {l:agz}
+  (tv: !gobjref (c, l)): gboolean = "#atsctrb_gtk_text_view_get_overwrite"
+// end of [gtk_text_view_get_overwrite]
+
+fun gtk_text_view_set_overwrite
+  {c:cls | c <= GtkTextView} {l:agz}
+  (tv: !gobjref (c, l), overwrite: gboolean): void = "#atsctrb_gtk_text_view_set_overwrite"
+// end of [gtk_text_view_set_overwrite]
+
+(* ****** ****** *)
+
+fun gtk_text_view_get_justification
+  {c:cls | c <= GtkTextView} {l:agz}
+  (tv: !gobjref (c, l)): GtkJustification = "#atsctrb_gtk_text_view_get_justification"
+// end of [gtk_text_view_get_justification]
+
+fun gtk_text_view_set_justification
+  {c:cls | c <= GtkTextView} {l:agz}
+  (tv: !gobjref (c, l), justification: GtkJustification): void = "#atsctrb_gtk_text_view_set_justification"
+// end of [gtk_text_view_set_justification]
+
+(* ****** ****** *)
+
+fun gtk_text_view_get_left_margin
+  {c:cls | c <= GtkTextView} {l:agz}
+  (tv: !gobjref (c, l)): gint = "#atsctrb_gtk_text_view_get_left_margin"
+// end of [gtk_text_view_get_left_margin]
+
+fun gtk_text_view_set_left_margin
+  {c:cls | c <= GtkTextView} {l:agz}
+  (tv: !gobjref (c, l), margin: gint): void = "#atsctrb_gtk_text_view_set_left_margin"
+// end of [gtk_text_view_set_left_margin]
+
+fun gtk_text_view_get_right_margin
+  {c:cls | c <= GtkTextView} {l:agz}
+  (tv: !gobjref (c, l)): gint = "#atsctrb_gtk_text_view_get_right_margin"
+// end of [gtk_text_view_get_right_margin]
+
+fun gtk_text_view_set_right_margin
+  {c:cls | c <= GtkTextView} {l:agz}
+  (tv: !gobjref (c, l), margin: gint): void = "#atsctrb_gtk_text_view_set_right_margin"
+// end of [gtk_text_view_set_right_margin]
+
+(* ****** ****** *)
+
+fun gtk_text_view_get_indent
+  {c:cls | c <= GtkTextView} {l:agz}
+  (tv: !gobjref (c, l)): gint = "#atsctrb_gtk_text_view_get_indent"
+// end of [gtk_text_view_get_indent]
+
+fun gtk_text_view_set_indent
+  {c:cls | c <= GtkTextView} {l:agz}
+  (tv: !gobjref (c, l), indent: gint): void = "#atsctrb_gtk_text_view_set_indent"
+// end of [gtk_text_view_set_indent]
+
+(* ****** ****** *)
+
 fun gtk_text_view_get_window
   {c:cls | c <= GtkTextView} {l:agz} (
     tv: !gobjref (c, l), type: GtkTextWindowType
@@ -109,6 +179,20 @@ fun gtk_text_view_get_window
     minus (gobjref (c, l), GdkWindow_ref l1) | GdkWindow_ref l1
   ) = "#atsctrb_gtk_text_view_get_window"
 // end of [gtk_text_view_get_window]
+
+(* ****** ****** *)
+
+fun gtk_text_view_get_border_window_size
+  {c:cls | c <= GtkTextView} {l:agz} (
+    tv: !gobjref (c, l), type: GtkTextWindowType
+  ) : gint = "#atsctrb_gtk_text_view_get_border_window_size"
+// end of [gtk_text_view_get_border_window_size]
+
+fun gtk_text_view_set_border_window_size
+  {c:cls | c <= GtkTextView} {l:agz} (
+    tv: !gobjref (c, l), type: GtkTextWindowType, size: gint
+  ) : void = "#atsctrb_gtk_text_view_set_border_window_size"
+// end of [gtk_text_view_set_border_window_size]
 
 (* ****** ****** *)
 

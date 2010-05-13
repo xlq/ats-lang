@@ -69,7 +69,10 @@ fun gtk_paned_pack2
 // end of [gtk_paned_pack2]
 
 (* ****** ****** *)
-
+//
+// HX-2010-05-12:
+// checked: the reference count of the widget taken out is unchanged
+//
 fun gtk_paned_get_child1
   {c1:cls | c1 <= GtkPaned} {l1:agz} (
     paned: !gobjref (c1, l1)
