@@ -70,8 +70,6 @@ typedef i0delstlst = $Syn.i0delstlst
 typedef abskind = $Syn.abskind
 typedef dcstkind = $Syn.dcstkind
 typedef datakind = $Syn.datakind
-typedef clskind = $Syn.clskind
-typedef objkind = $Syn.objkind
 typedef funkind = $Syn.funkind
 typedef intkind = $Syn.intkind
 typedef valkind = $Syn.valkind
@@ -229,10 +227,8 @@ datatype d1ec_node =
       (datakind, d1atdeclst, s1expdeflst)
   | D1Cexndecs of (* exception declaration *)
       e1xndeclst
-  | D1Cclassdec of (* class declaration *)
-      (int(*clsknd*), s1qualstlst, c1lassdec, s1expdeflst)
-  | D1Coverload of (* overloading *)
-      (i0de, dqi0de)
+  | D1Cclassdec of (i0de, s1expopt)
+  | D1Coverload of (i0de, dqi0de) // overloading declaration
   | D1Cextype of (* external type *)
       (string (* extype name *), s1exp (* extype definition *))
   | D1Cextval of (* external type *)
@@ -338,9 +334,6 @@ and d1exp_node =
       (int (*lin*), s1expopt, d1explst)
   | D1Emacsyn of (* macro syntax *)
       ($Syn.macsynkind, d1exp)
-  | D1Eobj of ( // for objects
-      int(*objknd*), s1exp(*objcls*), m1thdeclst
-    ) // end of [D1Eobj]
   | D1Eptrof of (* taking the address of *)
       d1exp
   | D1Eqid of (* identifier: either a constructor or variable *)
@@ -396,17 +389,6 @@ and d1lab_node =
   | D1LABlab of lab_t | D1LABind of d1explstlst
 // end of [d1lab_node]
 
-and m1thdec =
-  | M1THDECmtd of // knd: undef/def: 0/1
-      (loc_t, sym_t, d1exp(*dummy*), d1expopt(*def*))
-    // end of [M1THDECmtd]
-  | M1THDECval of
-      (loc_t, sym_t, s1exp, d1expopt)
-  | M1THDECvar of
-      (loc_t, sym_t, s1exp, d1expopt)
-  | M1THDECimp of (loc_t, sym_t, d1exp)
-// end of [m1thdec]
-  
 (* ****** ****** *)
 
 where d1ec = '{
@@ -609,19 +591,6 @@ and e1xndeclst = List e1xndec
 
 (* ****** ****** *)
 
-and m1thdeclst = List m1thdec
-
-and c1lassdec = '{
-  c1lassdec_loc= loc_t
-, c1lassdec_fil= fil_t
-, c1lassdec_sym= sym_t
-, c1lassdec_arg= s1arglstlst
-, c1lassdec_suplst= s1explst
-, c1lassdec_mtdlst= m1thdeclst
-} // end of [c1lassdec]
-
-(* ****** ****** *)
-
 and v1aldec = '{
   v1aldec_loc= loc_t
 , v1aldec_pat= p1at
@@ -815,10 +784,6 @@ fun d1exp_lst (_: loc_t, lin: int, elt: s1expopt, elts: d1explst): d1exp
 
 fun d1exp_macsyn (_: loc_t, knd: $Syn.macsynkind, d1e: d1exp): d1exp
 
-fun d1exp_obj
-  (_: loc_t, objknd: int, cls: s1exp, mtds: m1thdeclst): d1exp
-// end of [d1exp_obj]
-
 fun d1exp_ptrof (_: loc_t, _: d1exp): d1exp
 
 fun d1exp_qid (_: loc_t, q: d0ynq, id: sym_t): d1exp
@@ -935,14 +900,7 @@ fun d1ec_datdecs
 
 fun d1ec_exndecs (_: loc_t, ds: e1xndeclst): d1ec
 
-fun d1ec_classdec (
-    _: loc_t
-  , clsknd: int // obj/mod : 0/1
-  , _: s1qualstlst
-  , _: c1lassdec
-  , _: s1expdeflst
-  ) : d1ec
-// end of [d1ec_classdec]
+fun d1ec_classdec (_: loc_t, id: i0de, sup: s1expopt): d1ec
 
 fun d1ec_overload (_: loc_t, id: i0de, qid: dqi0de): d1ec
 
@@ -1038,12 +996,6 @@ fun e1xndec_make
   (_: loc_t, fil: fil_t, id: sym_t, qua: s1qualstlst, npf: int, arg: s1explst)
   : e1xndec
 // end of [e1xndec_make]
-
-fun c1lassdec_make (
-    loc: loc_t, fil: fil_t
-  , id: sym_t, arg: s1arglstlst, supclss: s1explst, mtds: m1thdeclst
-  ) : c1lassdec
-// end of [c1lassdec_make]
 
 fun v1aldec_make
   (_: loc_t, pat: p1at, def: d1exp, typ: witht1ype): v1aldec

@@ -392,10 +392,6 @@ implement d1exp_macsyn (loc, knd, d1e) = '{
   d1exp_loc= loc, d1exp_node= D1Emacsyn (knd, d1e)
 } // end of [d1exp_macsyn]
 
-implement d1exp_obj (loc, knd, s1e_cls, mtds) = '{
-  d1exp_loc= loc, d1exp_node= D1Eobj (knd, s1e_cls, mtds)
-} // end of [d1exp_obj]
-
 implement d1exp_ptrof (loc, d1e) = '{
   d1exp_loc= loc, d1exp_node= D1Eptrof d1e
 } // end of [d1exp_ptrof]
@@ -623,28 +619,29 @@ implement d1ec_saspdec (loc, d1c) = '{
   d1ec_loc= loc, d1ec_node= D1Csaspdec d1c
 }
 
+implement
+d1ec_dcstdecs (loc, dck, s1qss, d1cs_dcst) = '{
+  d1ec_loc= loc, d1ec_node= D1Cdcstdecs (dck, s1qss, d1cs_dcst)
+} // end of [d1ec_dcstdecs]
+
 implement d1ec_datdecs
   (loc, dk, d1cs_datdec, d1cs_sexpdef) = '{
   d1ec_loc= loc, d1ec_node= D1Cdatdecs (dk, d1cs_datdec, d1cs_sexpdef)
-}
+} // end of [d1ec_datdecs]
 
-implement d1ec_exndecs (loc, d1cs_exndec) = '{
+implement
+d1ec_exndecs (loc, d1cs_exndec) = '{
   d1ec_loc= loc, d1ec_node= D1Cexndecs (d1cs_exndec)
-}
+} // end of [d1ec_exndecs]
 
-implement d1ec_classdec
-  (loc, clsknd, s1qss, d1c_cls, d1cs_sexpdef) = '{
-  d1ec_loc= loc
-, d1ec_node= D1Cclassdec (clsknd, s1qss, d1c_cls, d1cs_sexpdef)
+implement
+d1ec_classdec (loc, id, sup) = '{
+  d1ec_loc= loc, d1ec_node= D1Cclassdec (id, sup)
 } // end of [d1ec_classdec]
-
-implement d1ec_dcstdecs (loc, dck, s1qss, d1cs_dcst) = '{
-  d1ec_loc= loc, d1ec_node= D1Cdcstdecs (dck, s1qss, d1cs_dcst)
-}
 
 implement d1ec_overload (loc, id, qid) = '{
   d1ec_loc= loc, d1ec_node= D1Coverload (id, qid)
-}
+} // end of [d1ec_overload]
 
 implement d1ec_extype (loc, name, s1e_def) = '{
   d1ec_loc= loc, d1ec_node= D1Cextype (name, s1e_def)
@@ -784,16 +781,6 @@ implement e1xndec_make (loc, fil, id, qua, npf, arg) = '{
 , e1xndec_npf= npf
 , e1xndec_arg= arg
 } // end of [e1xndec_make]
-
-implement c1lassdec_make
-  (loc, fil, id, arg, supclss, mtds) = '{
-  c1lassdec_loc= loc
-, c1lassdec_fil= fil  
-, c1lassdec_sym= id
-, c1lassdec_arg= arg
-, c1lassdec_suplst= supclss
-, c1lassdec_mtdlst= mtds
-} // end of [c1lassdec_make]
 
 implement v1aldec_make (loc, p1t, d1e, ann) = '{
   v1aldec_loc= loc

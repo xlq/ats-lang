@@ -784,6 +784,9 @@ fun the_drawarea_welcome_cairodraw {l:agz}
 fun the_drawarea_welcome_draw
   {c:cls | c <= GtkDrawingArea} {l:agz}
   (darea: !gobjref (c, l)): void = let
+//
+  prval () = clstrans {c,GtkDrawingArea,GtkWidget} ()
+//
   val (fpf_win | win) = gtk_widget_get_window (darea)
 in
   if g_object_isnot_null (win) then let

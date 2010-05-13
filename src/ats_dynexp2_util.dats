@@ -65,64 +65,6 @@ fn prerr_interror () =
 
 (* ****** ****** *)
 
-implement s2exp_cls_lab_get
-  (loc0, s2e_cls, l0) = let
-  val sym = case+ $Lab.label_sym_get l0 of
-    | ~Some_vt sym => sym | ~None_vt () => begin
-        prerr_loc_error2 (loc0);
-        prerr ": the name ["; $Lab.prerr_label l0;
-        prerr "] is illegal for referring to a method.";
-        prerr_newline ();
-        $Err.abort {sym_t} ()
-      end // end 
-  // end of [val]
-  val s2e_head = s2exp_head_get (s2e_cls)
-  var ts2ess: tmps2explstlst = TMPS2EXPLSTLSTnil ()
-  val s2c_cls = (case+ s2e_head.s2exp_node of
-    | S2Ecst s2c => s2c
-    | S2Etmpid (s2c, ts2ess1) => (ts2ess := ts2ess1; s2c)
-    | _ => let
-        val () = prerr_interror ()
-        val () = (
-          prerr ": s2exp_cls_lab_get: s2e_head = "; prerr s2e_head
-        ) // end of [val]
-        val () = prerr_newline ()
-      in
-        $Err.abort {s2cst_t} ()
-      end // end of [_]
-    ) : s2cst_t
-  val d2c_cls = d2c where {
-    val- Some d2c = s2cst_clsdec_get (s2c_cls)
-  } // end of [val]
-  val d2c_cls = c2lassdec_of_c2lassdec_t (d2c_cls)
-  val r_map = d2c_cls.c2lassdec_mtdmap
-  val ans = $SymEnv.symmap_ref_search<d2item> (r_map, sym)
-in
-  case+ ans of
-  | ~Some_vt d2i => let
-      val- D2ITEMmtd d2m = d2i
-      val s2e_mtd = d2mtd_typ_get d2m
-    in
-      case+ ts2ess of
-      | TMPS2EXPLSTLSTnil () => s2e_mtd
-      | TMPS2EXPLSTLSTcons _ =>
-          s2exp_subst (sub, s2e_mtd) where {
-          val s2qss = s2cst_decarg_get s2c_cls
-          val sub = stasub_extend_decarg_tmps2explstlst (stasub_nil, s2qss, ts2ess)
-        } (* end of [TMPS2EXPLSTLSTcons] *)
-    end // end of [Some_vt]
-  | ~None_vt () => begin
-      prerr_loc_error2 (loc0);
-      prerr ": the name ["; $Lab.prerr_label l0;
-      prerr "] does not refer to any method assiciated with the class [";
-      prerr_s2cst s2c_cls; prerr "]";
-      prerr_newline ();
-      $Err.abort {s2exp} ()
-    end // end of [None_vt]
-end // end of [s2exp_cls_lab_get]
-
-(* ****** ****** *)
-
 implement d2var_readize (s2e_v, d2v) = let
   val () = d2var_lin_set (d2v, ~1) // nonlinear
   val () = d2var_mastyp_set (

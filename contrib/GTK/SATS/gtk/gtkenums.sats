@@ -166,6 +166,14 @@ macdef GTK_CENTIMETERS = $extval (GtkMetricType, "GTK_CENTIMETERS")
 
 (* ****** ****** *)
 
+abst@ype GtkToolbarStyle = $extype "GtkToolbarStyle"
+macdef GTK_TOOLBAR_ICONS = $extval (GtkToolbarStyle, "GTK_TOOLBAR_ICONS")
+macdef GTK_TOOLBAR_TEXT = $extval (GtkToolbarStyle, "GTK_TOOLBAR_TEXT")
+macdef GTK_TOOLBAR_BOTH = $extval (GtkToolbarStyle, "GTK_TOOLBAR_BOTH")
+macdef GTK_TOOLBAR_BOTH_HORIZ = $extval (GtkToolbarStyle, "GTK_TOOLBAR_BOTH_HORIZ")
+
+(* ****** ****** *)
+
 abst@ype
 GtkUpdateType = $extype "GtkUpdateType"
 macdef GTK_UPDATE_CONTINUOUS =

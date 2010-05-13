@@ -618,24 +618,6 @@ in '{
 
 (* ****** ****** *)
 
-implement d3exp_mtd
-  (loc, s2e_mtd, d2m) = '{
-  d3exp_loc= loc
-, d3exp_eff= S2EFFnil (), d3exp_typ= s2e_mtd
-, d3exp_node= D3Emtd (d2m)  
-} // end of [d3exp_mtd]
-
-(* ****** ****** *)
-
-implement d3exp_obj
-  (loc, s2e_obj, knd, d2c_cls, s2e_cls, mtds) = '{
-  d3exp_loc= loc
-, d3exp_eff= S2EFFnil (), d3exp_typ= s2e_obj
-, d3exp_node= D3Eobj (knd, d2c_cls, s2e_cls, mtds)
-} // end of [d3exp_obj]
-
-(* ****** ****** *)
-
 implement d3exp_ptrof_ptr
   (loc, s2e_ptr, d3e, d3ls) = let
   val s2fe = d3lab1lst_eff_union (d3e.d3exp_eff, d3ls)
@@ -868,15 +850,6 @@ implement sc3lau_make (loc, sp2t, d3e) = '{
 
 (* ****** ****** *)
 
-implement c3lassdec_make
-  (loc, s2c_cls, mtds) = '{
-  c3lassdec_loc= loc
-, c3lassdec_cst= s2c_cls
-, c3lassdec_mtdlst= mtds
-} // end of [c3lassdec_make]
-
-(* ****** ****** *)
-
 implement v3aldec_make (loc, p3t, d3e) = '{
   v3aldec_loc= loc, v3aldec_pat= p3t, v3aldec_def= d3e
 } // end of [v3aldec_make]
@@ -930,10 +903,6 @@ implement d3ec_datdec (loc, dck, s2cs) = '{
 
 implement d3ec_exndec (loc, d2cs) = '{
   d3ec_loc= loc, d3ec_node= D3Cexndec (d2cs)
-}
-
-implement d3ec_classdec (loc, d2c) = '{
-  d3ec_loc= loc, d3ec_node= D3Cclassdec (d2c)
 }
 
 implement d3ec_extype (loc, name, s2e_def) = '{

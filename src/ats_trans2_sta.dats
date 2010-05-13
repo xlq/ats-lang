@@ -1793,25 +1793,27 @@ end // end of [s1taconlst_tr]
 
 (* ****** ****** *)
 
-fn s1tacst_tr (d: s1tacst): void = let
+fn s1tacst_tr
+  (d: s1tacst): void = let
   val id = d.s1tacst_sym
   val loc = d.s1tacst_loc
   val s2t_res = s1rt_tr (d.s1tacst_res)
-  val s2t: s2rt = case+ d.s1tacst_arg of
+  val s2t = (case+ d.s1tacst_arg of
     | Some s1ts => s2rt_fun (s1rtlst_tr s1ts, s2t_res)
     | None () => s2t_res
+  ) : s2rt // end of [val]
   val s2c = s2cst_make (
-        id // sym
-      , loc // location
-      , s2t // srt
-      , None () // isabs
-      , false // iscon
-      , false // isrec
-      , false // isasp
-      , None () // islst
-      , None () // argvar
-      , None () // def
-      ) // end of [s2cst_make]
+      id // sym
+    , loc // location
+    , s2t // srt
+    , None () // isabs
+    , false // iscon
+    , false // isrec
+    , false // isasp
+    , None () // islst
+    , None () // argvar
+    , None () // def
+  ) // end of [s2cst_make]
 in
   the_s2expenv_add_scst s2c
 end // end of [s1tacst_tr]
@@ -2238,6 +2240,7 @@ fn d1atdec_tr
   val islin = s2rt_is_linear s2t_s2c and isprf = s2rt_is_proof s2t_s2c
   val d2cs = d1atconlst_tr
     (s2c, islin, isprf, s2vs0, d1c.d1atdec_fil, d1c.d1atdec_con)
+  // end of [val]
   val () = let // assigning tags to dynamic constructors
     fun aux (i: int, d2cs: d2conlst): void = case+ d2cs of
       | D2CONLSTcons (d2c, d2cs) => (d2con_tag_set (d2c, i); aux (i+1, d2cs))

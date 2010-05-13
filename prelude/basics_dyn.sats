@@ -271,11 +271,9 @@ fun cloptr_free {a:t@ype} (x: cloptr a):<> void
 
 (* ****** ****** *)
 
-// implemented in [basic.cats]
-
-castfn objmod_upcast
-  {c1,c2:cls | c1 <= c2} (x: objmod c1):<> objmod c2
-  = "atspre_objmod_upcast"
+praxi clstrans
+  {c1,c2,c3:cls | c1 <= c2; c2 <= c3} (): [c1 <= c3] void
+// end of [clstrans]
 
 (* ****** ****** *)
 
@@ -286,6 +284,7 @@ fun vbox_make_view_ptr
   {a:viewt@ype} {l:addr} // for statically allocated
   (_: a @ l | _: ptr l):<> (vbox (a @ l) | void)
   = "atspre_vbox_make_view_ptr"
+// end of [vbox_make_view_ptr]
 
 (* ****** ****** *)
 

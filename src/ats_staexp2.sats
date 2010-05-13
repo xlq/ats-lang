@@ -96,10 +96,6 @@ datatype d2conlst =
 
 (* ****** ****** *)
 
-abstype c2lassdec_t // = c2lassdec (defined in ats_dynexp2.sats)
-
-(* ****** ****** *)
-
 datatype s2item =
   (* static items *)
   | S2ITEMcst of s2cstlst
@@ -392,7 +388,7 @@ val s2rt_types : s2rt
 
 (* ****** ****** *)
 
-fun s2rt_is_class (s2t: s2rt): bool
+fun s2rt_is_cls (s2t: s2rt): bool
 
 fun s2rt_is_dat (s2r: s2rt): bool
 fun s2rt_is_int (s2t: s2rt): bool
@@ -544,12 +540,14 @@ fun s2cst_arilst_get (_: s2cst_t): List int // arity list
 fun s2cst_argvar_get (_: s2cst_t): Option (List @(symopt_t, s2rt, int))
 fun s2cst_conlst_get (_: s2cst_t): Option d2conlst
 fun s2cst_conlst_set (_: s2cst_t, _: Option d2conlst): void
-fun s2cst_clsdec_get (_: s2cst_t): Option c2lassdec_t
-fun s2cst_clsdec_set (_: s2cst_t, _: Option c2lassdec_t): void
 fun s2cst_def_get (_: s2cst_t): s2expopt
 fun s2cst_def_set (_: s2cst_t, _: s2expopt): void
-fun s2cst_sup_get (_: s2cst_t): s2cstopt
-fun s2cst_sup_set (_: s2cst_t, _: s2cstopt): void
+//
+fun s2cst_sup_get (self: s2cst_t): s2cstlst
+fun s2cst_sup_add (self: s2cst_t, sup: s2cst_t): void
+fun s2cst_supcls_get (_: s2cst_t): s2explst
+fun s2cst_supcls_add (_: s2cst_t, sup: s2exp): void
+//
 fun s2cst_sVarset_get (_: s2cst_t): s2Varset_t
 fun s2cst_sVarset_set (_: s2cst_t, _: s2Varset_t): void
 fun s2cst_stamp_get (_: s2cst_t): stamp_t
@@ -1277,15 +1275,6 @@ fun labs2zexplst_lab_get (_: labs2zexplst, l0: lab_t): s2zexpopt_vt
 
 //
 
-(*
-** implemented in [ats_dynexp2_util.dats]
-*)
-fun s2exp_cls_lab_get
-  (loc0: loc_t, s2e_cls: s2exp, l0: lab_t): s2exp
-// end of [s2exp_cls_lab_get]
-
-//
-
 fun s2exp_lab_get_restlin_cstr
   (loc0: loc_t, s2e0: s2exp, l0: lab_t, restlin: &int, cstr: &s2explst): s2exp
 
@@ -1347,7 +1336,7 @@ fun s2exp_slablst_lindel_cstr {n:nat}
 // negative: ~1
 // undecided: 0
 //
-fun subclass_relation_test (s2e1: s2exp, s2e2: s2exp): Sgn
+fun s2exp_subclass_test (s2e1: s2exp, s2e2: s2exp): Sgn
 
 (* ****** ****** *)
 

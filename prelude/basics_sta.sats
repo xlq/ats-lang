@@ -455,14 +455,6 @@ abst@ype ptrdiff_int_t0ype (i:int) = ptrdiff_t0ype
 
 (* ****** ****** *)
 
-absviewt@ype
-obj_cls_viewt0ype (c:cls) // for linear objects indexed by [c]
-
-abstype
-objmod_cls_type (c:cls) // for modules indexed by [c]
-
-(* ****** ****** *)
-
 abstype ptr_addr_type (addr)
 
 (* ****** ****** *)
@@ -594,11 +586,6 @@ stadef ssize_t = ssize_t0ype
 
 stadef ptrdiff_t = ptrdiff_int_t0ype
 stadef ptrdiff_t = ptrdiff_t0ype
-
-(* ****** ****** *)
-
-stadef obj = obj_cls_viewt0ype
-stadef objmod = objmod_cls_type
 
 (* ****** ****** *)
 

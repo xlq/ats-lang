@@ -94,14 +94,18 @@ extern stadefkind_t stadefkind_type (t0kn_t) ;
 extern stadefkind_t stadefkind_view (t0kn_t) ;
 extern stadefkind_t stadefkind_viewtype (t0kn_t) ;
 
-typedef ats_ptr_type clskind_t ;
-extern clskind_t clskind_mod (t0kn_t) ;
-extern clskind_t clskind_obj (t0kn_t) ;
-
-typedef ats_ptr_type objkind_t ;
-extern objkind_t objkind_obj_t (t0kn_t) ;
-extern objkind_t objkind_obj_vt (t0kn_t) ;
-extern objkind_t objkind_objmod (t0kn_t) ;
+/*
+// HX-2010-05-12: the OOP plan is permanently abandoned
+//
+// typedef ats_ptr_type clskind_t ;
+// extern clskind_t clskind_mod (t0kn_t) ;
+// extern clskind_t clskind_obj (t0kn_t) ;
+//
+// typedef ats_ptr_type objkind_t ;
+// extern objkind_t objkind_obj_t (t0kn_t) ;
+// extern objkind_t objkind_obj_vt (t0kn_t) ;
+// extern objkind_t objkind_objmod (t0kn_t) ;
+*/
 
 typedef ats_ptr_type valkind_t ;
 extern valkind_t valkind_val (void) ;
@@ -497,20 +501,28 @@ typedef ats_ptr_type e0xndeclst_t ;
 extern e0xndeclst_t e0xndeclst_nil (void) ;
 extern e0xndeclst_t e0xndeclst_cons (e0xndec_t, e0xndeclst_t) ;
 
-typedef ats_ptr_type m0thdec_t ;
+/* ****** ****** */
+
+//
+// HX-2010-05-12:
+// The plan to have direct support for OOP in ATS is _permanently_ scratched!!!
+// Relieve? Disappointment?
+//
+// typedef ats_ptr_type m0thdec_t ;
 // extern m0thdec_t m0thdec_make_mtd // see below
 // extern m0thdec_t m0thdec_make_val // see below
 // extern m0thdec_t m0thdec_make_var // see below
 // extern m0thdec_t m0thdec_make_imp // see below
 
-typedef ats_ptr_type m0thdeclst_t ;
-extern m0thdeclst_t m0thdeclst_nil(void) ;
-extern m0thdeclst_t m0thdeclst_cons(m0thdec_t, m0thdeclst_t) ;
+// typedef ats_ptr_type m0thdeclst_t ;
+// extern m0thdeclst_t m0thdeclst_nil(void) ;
+// extern m0thdeclst_t m0thdeclst_cons(m0thdec_t, m0thdeclst_t) ;
 
-typedef ats_ptr_type c0lassdec_t ;
-extern c0lassdec_t c0lassdec_make
-  (i0de_t, s0arglstlst_t, s0explst_t, m0thdeclst_t, t0kn_t) ;
+// typedef ats_ptr_type c0lassdec_t ;
+// extern c0lassdec_t c0lassdec_make
+//   (i0de_t, s0arglstlst_t, s0explst_t, m0thdeclst_t, t0kn_t) ;
 // end of [c0lassdec_t]
+//
 
 /* ****** ****** */
 
@@ -716,7 +728,10 @@ extern d0exp_t d0exp_macsyn_cross (t0kn_t, d0explst_t, t0kn_t) ;
 extern d0exp_t d0exp_macsyn_decode (t0kn_t, d0explst_t, t0kn_t) ;
 extern d0exp_t d0exp_macsyn_encode_seq (t0kn_t, d0explst_t, t0kn_t) ;
 
-extern d0exp_t d0exp_obj (objkind_t, s0exp_t, m0thdeclst_t, t0kn_t) ;
+//
+// HX-2010-05-12:
+// extern d0exp_t d0exp_obj (objkind_t, s0exp_t, m0thdeclst_t, t0kn_t) ;
+//
 
 extern d0exp_t d0exp_opide (t0kn_t, i0de_t) ;
 extern d0exp_t d0exp_ptrof (t0kn_t) ;
@@ -852,26 +867,26 @@ i0mpdec_t i0mpdec_make (
 ) ; // end of [i0mpdec_make]
 
 /* ****** ****** */
-
+//
+// HX-2010-05-12:
+//
 // [m0thdec_t] is defined above
-
-extern
-m0thdec_t m0thdec_make_mtd (
-  t0kn_t, i0de_t, f0arglst_t, e0fftaglstopt_t, s0exp_t, d0expopt_t
-) ; // end of [m0thdec_make_mtd]
-
-extern
-m0thdec_t m0thdec_make_val (t0kn_t, i0de_t, s0exp_t, d0expopt_t) ;
+//
+// extern
+// m0thdec_t m0thdec_make_mtd (
+//  t0kn_t, i0de_t, f0arglst_t, e0fftaglstopt_t, s0exp_t, d0expopt_t
+//) ; // end of [m0thdec_make_mtd]
+//extern
+//m0thdec_t m0thdec_make_val (t0kn_t, i0de_t, s0exp_t, d0expopt_t) ;
 // end of [m0thdec_make_val]
-
-extern
-m0thdec_t m0thdec_make_var (t0kn_t, i0de_t, s0exp_t, d0expopt_t) ;
+//extern
+//m0thdec_t m0thdec_make_var (t0kn_t, i0de_t, s0exp_t, d0expopt_t) ;
 // end of [m0thdec_make_var]
-
-extern
-m0thdec_t m0thdec_make_imp
-  (t0kn_t, i0de_t, f0arglst_t, s0expopt_t, d0exp_t) ;
+//extern
+//m0thdec_t m0thdec_make_imp
+//  (t0kn_t, i0de_t, f0arglst_t, s0expopt_t, d0exp_t) ;
 // end of [m0thdec_make_imp]
+//
 
 /* ****** ****** */
 
@@ -896,15 +911,23 @@ extern d0ec_t d0ec_typedefs (t0kn_t, s0expdef_t, s0expdeflst_t) ;
 extern d0ec_t d0ec_viewdefs (t0kn_t, s0expdef_t, s0expdeflst_t) ;
 extern d0ec_t d0ec_viewtypedefs (t0kn_t, s0expdef_t, s0expdeflst_t) ;
 extern d0ec_t d0ec_saspdec (s0aspdec_t) ;
+extern d0ec_t d0ec_dcstdecs
+  (dcstkind_t, s0qualstlst_t, d0cstdec_t, d0cstdeclst_t) ;
 extern d0ec_t d0ec_datdecs
   (datakind_t, d0atdec_t, d0atdeclst_t, s0explstopt_t) ;
 extern d0ec_t d0ec_exndecs (t0kn_t, e0xndec_t, e0xndeclst_t) ;
-extern d0ec_t d0ec_classdec
-  (clskind_t, s0qualstlst_t, c0lassdec_t, s0explstopt_t) ;
-extern d0ec_t d0ec_dcstdecs
-  (dcstkind_t, s0qualstlst_t, d0cstdec_t, d0cstdeclst_t) ;
-extern d0ec_t d0ec_overload (i0de_t, dqi0de_t) ;
-extern d0ec_t d0ec_overload_lrbrackets (t0kn_t, t0kn_t, dqi0de_t) ;
+//
+// HX-2010-05-12: the OOP plan is permanently abandoned
+//
+// extern d0ec_t d0ec_classdec
+//  (clskind_t, s0qualstlst_t, c0lassdec_t, s0explstopt_t) ;
+//
+extern d0ec_t d0ec_classdec_none (t0kn_t, i0de_t) ;
+extern d0ec_t d0ec_classdec_some (t0kn_t, i0de_t, s0exp_t) ;
+//
+extern d0ec_t d0ec_overload (t0kn_t, i0de_t, dqi0de_t) ;
+extern d0ec_t d0ec_overload_lrbrackets (t0kn_t, t0kn_t, t0kn_t, dqi0de_t) ;
+//
 extern d0ec_t d0ec_dynload (s0tring_t) ;
 extern d0ec_t d0ec_staload_none (s0tring_t) ;
 extern d0ec_t d0ec_staload_some (i0de_t, s0tring_t) ;
@@ -960,8 +983,17 @@ abskind_t abskind ;
 dcstkind_t dcstkind ;
 datakind_t datakind ;
 stadefkind_t stadefkind ;
-clskind_t clskind ;
-objkind_t objkind ;
+
+//
+
+//
+// HX-2010-05-12: the OOP plan is permanently abandoned
+// clskind_t clskind ;
+// objkind_t objkind ;
+//
+
+//
+
 valkind_t valkind ;
 funkind_t funkind ;
 
@@ -1095,11 +1127,15 @@ d0atdeclst_t d0atdeclst ;
 e0xndec_t e0xndec ;
 e0xndeclst_t e0xndeclst ;
 
-s0explst_t s0upclss ;
-d0expopt_t m0thdef ;
-m0thdec_t m0thdec ;
-m0thdeclst_t m0thdeclst ;
-c0lassdec_t c0lassdec ;
+//
+// HX-2010-05-12: the OOP plan is permanently abandoned
+//
+// s0explst_t s0upclss ;
+// d0expopt_t m0thdef ;
+// m0thdec_t m0thdec ;
+// m0thdeclst_t m0thdeclst ;
+// c0lassdec_t c0lassdec ;
+//
 
 /* ****** ****** */
 
@@ -1221,7 +1257,7 @@ guad0ec_t guad0ec ;
 %token <t0kn> BREAK
 %token <t0kn> CASE CASEMINUS CASEPLUS
 %token <t0kn> CASTFN
-%token <t0kn> CLASS
+%token <t0kn> CLASSDEC
 %token <t0kn> CONTINUE
 %token <t0kn> DATASORT
 %token <t0kn> DATAPARASORT
@@ -1251,8 +1287,10 @@ guad0ec_t guad0ec ;
 %token <t0kn> METHOD METHODSTAR
 %token <t0kn> MODCLS
 %token <t0kn> NONFIX
+/*
 %token <t0kn> OBJECT
 %token <t0kn> OBJCLS
+*/
 %token <t0kn> OF
 %token <t0kn> OP
 %token <t0kn> OVERLOAD
@@ -1322,9 +1360,11 @@ guad0ec_t guad0ec ;
 %token <t0kn> DLREXTYPE
 %token <t0kn> DLREXTYPE_STRUCT /* external struct */
 %token <t0kn> DLRFOLD
+/*
 %token <t0kn> DLROBJ_T
 %token <t0kn> DLROBJ_VT
 %token <t0kn> DLROBJMOD
+*/
 %token <t0kn> DLRRAISE
 %token <t0kn> DLRSPAWN
 %token <t0kn> DLRUNFOLD
@@ -1413,14 +1453,14 @@ guad0ec_t guad0ec ;
 
 %nonassoc SEXPLAM DEXPLAM DEXPFIX
 %right COLON /* <d0exp> : <s0exp> : <s0rt> */
-%nonassoc CLAS
+%nonassoc CLAUS
 %nonassoc WHERE
 %nonassoc DEXPCASE DEXPIF
 %nonassoc DEXPRAISE DEXPTRY
 %nonassoc DEXPFOR DEXPWHILE
 %nonassoc ELSE
 
-%nonassoc BARCLASSEQNONE
+%nonassoc BARCLAUSSEQNONE
 %nonassoc BAR
 
 %nonassoc GT
@@ -1438,8 +1478,13 @@ guad0ec_t guad0ec ;
 %type <dcstkind> dcstkind
 %type <datakind> datakind
 %type <stadefkind> stadefkind
+
+/*
+// HX-2010-05-12: the OOP plan is permanently abandoned
 %type <clskind> clskind
 %type <objkind> objkind
+*/
+
 %type <valkind> valkind
 %type <funkind> funkind
 
@@ -1575,11 +1620,14 @@ guad0ec_t guad0ec ;
 %type <e0xndec> e0xndec
 %type <e0xndeclst> ande0xndecseq
 
+/*
+// HX-2010-05-12: the OOP plan is permanently abandoned
 %type <s0upclss> s0upclss
 %type <m0thdef> m0thdef
 %type <m0thdec> m0thdec
 %type <m0thdeclst> m0thdecseq
 %type <c0lassdec> c0lassdec
+*/
 
 %type <p0arg> p0arg
 %type <p0arglst> p0argseq
@@ -1616,7 +1664,9 @@ guad0ec_t guad0ec ;
 %type <s0elop> s0elop
 %type <s0exparg> s0exparg
 
-%type <s0exp> objc0ls
+/*
+%type <s0exp> objc0ls // HX-2010-05-12: the OOP plan is permanently abandoned
+*/
 
 %type <d0exp> d0exp
 %type <d0exp> atmd0exp
@@ -1748,6 +1798,8 @@ stadefkind
   | VIEWTYPEDEF                         { $$ = stadefkind_viewtype ($1) ; }
 ;
 
+/*
+// HX-2010-05-12: the OOP plan is permanently abandoned
 clskind
   : MODCLS                              { $$ = clskind_mod ($1) ; }
   | OBJCLS                              { $$ = clskind_obj ($1) ; }
@@ -1758,6 +1810,7 @@ objkind
   | DLROBJ_VT                           { $$ = objkind_obj_vt ($1) ; }
   | DLROBJMOD                           { $$ = objkind_objmod ($1) ; }
 ;
+*/
 
 valkind
   : VAL                                 { $$ = valkind_val () ; }
@@ -2447,11 +2500,15 @@ ande0xndecseq
 
 /* ****** ****** */
 
+/*
+//
+// HX-2010-05-12: the OOP plan is permanently abandoned
+//
 s0upclss: SUPER COLON s0expseq          { $$ = $3 ; }
 ;
 
 m0thdef
-   : /* empty */                        { $$ = d0expopt_none() ; }
+   :                                    { $$ = d0expopt_none() ; }
    | EQ d0exp                           { $$ = d0expopt_some($2) ; }
 ;
 
@@ -2465,7 +2522,7 @@ m0thdec
 ;
 
 m0thdecseq
-  : /* empty */                         { $$ = m0thdeclst_nil() ; }
+  :                                     { $$ = m0thdeclst_nil() ; }
   | m0thdec m0thdecseq                  { $$ = m0thdeclst_cons($1, $2) ; }
 ;
 
@@ -2473,10 +2530,13 @@ c0lassdec
   : si0de s0argseqseq EQ LBRACE s0upclss m0thdecseq RBRACE
                                         { $$ = c0lassdec_make($1, $2, $5, $6, $7) ; }
 ;
+*/
 
 /* ****** ****** */
 
-/* dynamic variable with optional type annotation */
+/*
+** dynamic variable with optional type annotation
+*/
 p0arg
   : pi0de                               { $$ = p0arg_make_none($1) ; }
   | pi0de COLON s0exp                   { $$ = p0arg_make_some($1, $3) ; }
@@ -2524,7 +2584,9 @@ andd0cstdecseq
 
 /* ****** ****** */
 
-/* patterns */
+/*
+** patterns
+*/
 
 atmp0at
   : LITERAL_char                        { $$ = p0at_char($1) ; }
@@ -2627,9 +2689,12 @@ s0elop
   | MINUSGT                             { $$ = s0elop_make (1, $1) ; }
 ;
 
+/*
+// HX-2010-05-12: the OOP plan is permanently abandoned
 objc0ls
   : LPAREN s0exp RPAREN                 { $$ = $2 ; }
 ;
+*/
 
 /* dynamic expressions */
 
@@ -2707,9 +2772,14 @@ atmd0exp
   | DLRREC_T LBRACE labd0expseq RBRACE  { $$ = d0exp_rec (2, $1, $3, $4) ; }
   | DLRREC_VT LBRACE labd0expseq RBRACE { $$ = d0exp_rec (3, $1, $3, $4) ; }
 
-    /* dynamic objects */
+/*
+//
+// HX-2010-05-12: the OOP plan is permanently abandoned
+//
+    // dynamic objects
   | objkind objc0ls LBRACE m0thdecseq RBRACE
                                         { $$ = d0exp_obj ($1, $2, $4, $5) ; }
+*/
     /* external dynamic value */
   | DLREXTVAL LPAREN s0exp COMMA LITERAL_string RPAREN
                                         { $$ = d0exp_extval ($1, $3, $5, $6) ; }
@@ -2881,16 +2951,16 @@ guap0at
 ;
 
 c0lau
-  : guap0at EQGT d0exp %prec CLAS       { $$ = c0lau_make ($1, 0, 0, $3) ; }
-  | guap0at EQGTGT d0exp %prec CLAS     { $$ = c0lau_make ($1, 1, 0, $3) ; }
-  | guap0at EQSLASHEQGT d0exp %prec CLAS
+  : guap0at EQGT d0exp %prec CLAUS      { $$ = c0lau_make ($1, 0, 0, $3) ; }
+  | guap0at EQGTGT d0exp %prec CLAUS    { $$ = c0lau_make ($1, 1, 0, $3) ; }
+  | guap0at EQSLASHEQGT d0exp %prec CLAUS
                                         { $$ = c0lau_make ($1, 0, 1, $3) ; }
-  | guap0at EQSLASHEQGTGT d0exp %prec CLAS
+  | guap0at EQSLASHEQGTGT d0exp %prec CLAUS
                                         { $$ = c0lau_make ($1, 1, 1, $3) ; }
 ;
 
 barc0lauseq
-  : /* empty */ %prec BARCLASSEQNONE    { $$ = c0laulst_nil() ; } 
+  : /* empty */ %prec BARCLAUSSEQNONE   { $$ = c0laulst_nil() ; } 
   | BAR c0lau barc0lauseq               { $$ = c0laulst_cons($2, $3) ; }
 ;
 
@@ -2900,11 +2970,11 @@ c0lauseq
 ;
 
 sc0lau
-  : sp0at EQGT d0exp %prec CLAS         { $$ = sc0lau_make($1, $3) ; }
+  : sp0at EQGT d0exp %prec CLAUS        { $$ = sc0lau_make($1, $3) ; }
 ;
 
 barsc0lauseq
-  : /* empty */ %prec BARCLASSEQNONE    { $$ = sc0laulst_nil() ; } 
+  : /* empty */ %prec BARCLAUSSEQNONE   { $$ = sc0laulst_nil() ; } 
   | BAR sc0lau barsc0lauseq             { $$ = sc0laulst_cons($2, $3) ; }
 ;
 
@@ -3110,11 +3180,17 @@ d0ec
   | datakind d0atdec andd0atdecseq s0expdefseqopt
                                         { $$ = d0ec_datdecs($1, $2, $3, $4) ; }
   | EXCEPTION e0xndec ande0xndecseq     { $$ = d0ec_exndecs($1, $2, $3) ; } 
+/*
+// HX-2010-05-12: the OOP plan is permanently abandoned
   | clskind d0ecargseq c0lassdec s0expdefseqopt
                                         { $$ = d0ec_classdec($1, $2, $3, $4) ; }
-  | OVERLOAD di0de WITH dqi0de          { $$ = d0ec_overload($2, $4) ; }
+*/
+  | CLASSDEC si0de                      { $$ = d0ec_classdec_none ($1, $2) ; }
+  | CLASSDEC si0de COLON s0exp          { $$ = d0ec_classdec_some ($1, $2, $4) ; }
+
+  | OVERLOAD di0de WITH dqi0de          { $$ = d0ec_overload($1, $2, $4) ; }
   | OVERLOAD LBRACKET RBRACKET WITH dqi0de
-                                        { $$ = d0ec_overload_lrbrackets($2, $3, $5) ; }
+                                        { $$ = d0ec_overload_lrbrackets($1, $2, $3, $5) ; }
   | MACDEF m0acdef andm0acdefseq        { $$ = d0ec_macdefs(0, $2, $3) ; }
   | MACDEF REC m0acdef andm0acdefseq    { $$ = d0ec_macdefs(-1/*error*/, $3, $4) ; }
   | MACRODEF m0acdef andm0acdefseq      { $$ = d0ec_macdefs(1, $2, $3) ; }

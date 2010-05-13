@@ -88,66 +88,6 @@ end // end of [caskind_of_valkind]
 
 (* ****** ****** *)
 
-implement m2thdec_tr (mtd) = begin
-  case+ mtd of
-  | M2THDECmtd (loc, sym, d2v_self, def) => let
-      val def = (case+ def of
-        | Some d2e => Some (d2exp_tr_up d2e) | None () => None ()
-      ) : d3expopt
-    in
-      M3THDECmtd (loc, sym, d2v_self, def)
-    end (* end of [M2THDECmtd] *)
-  | M2THDECval (loc, sym, res, def) => let
-      val def = (case+ def of
-        | Some d2e => Some (d2exp_tr_dn (d2e, res)) | None () => None ()
-      ) : d3expopt
-    in
-      M3THDECval (loc, sym, res, def)
-    end (* end of [M2THDECval] *)
-  | M2THDECvar (loc, sym, res, def) => let
-      val def = (case+ def of
-        | Some d2e => Some (d2exp_tr_dn (d2e, res)) | None () => None ()
-      ) : d3expopt
-    in
-      M3THDECvar (loc, sym, res, def)
-    end (* end of [M2THDECvar] *)
-  | M2THDECimp (loc, d2m, def) => let
-      val s2e_mtd = d2mtd_typ_get d2m
-(*
-      val () = begin
-        print "m2thdec_tr: M2THDECimp: s2e_mtd = "; print s2e_mtd; print_newline ()
-      end // end of [val]
-*)
-      val def = d2exp_tr_dn (def, s2e_mtd)
-    in
-      M3THDECimp (loc, d2m, def)
-    end (* end of [M2THDECimp] *)
-(*
-  | _ => begin
-      prerr_interror ();
-      prerr "m2thdec_tr: not yet available"; prerr_newline ();
-      $Err.abort ()
-    end (* end of [_] *)
-*)
-end // end of [m2thdec_tr]
-
-implement m2thdeclst_tr (mtds) =
-  $Lst.list_map_fun (mtds, m2thdec_tr)
-// end of [m2thdeclst_tr]
-
-(* ****** ****** *)
-
-fn c2lassdec_tr
-  (d2c: c2lassdec): c3lassdec = let
-  val loc = d2c.c2lassdec_loc
-  val s2c_cls = d2c.c2lassdec_cst
-  val mtds = m2thdeclst_tr (d2c.c2lassdec_mtdlst)
-in
-  c3lassdec_make (loc, s2c_cls, mtds)
-end // end of [c2lassdec_tr]
-
-(* ****** ****** *)
-
 fn v2aldec_tr
   (valknd: $Syn.valkind, d2c: v2aldec): v3aldec = let
   val loc0 = d2c.v2aldec_loc
@@ -753,10 +693,6 @@ in
   | D2Cexndec (d2cs) => begin
       d3ec_exndec (d2c0.d2ec_loc, d2cs)
     end // end of [D2Cexndec]
-  | D2Cclassdec (d2c) => let
-      val d3c = c2lassdec_tr (d2c) in
-      d3ec_classdec (d2c0.d2ec_loc, d3c)
-    end // end of [D2Cclassdec]
   | D2Coverload (id, d2i) => d3ec_none (d2c0.d2ec_loc)
   | D2Cextype (name, s2e_def) => let
 (*

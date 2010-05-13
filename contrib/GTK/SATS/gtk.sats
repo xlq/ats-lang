@@ -112,128 +112,132 @@ staload "contrib/GTK/SATS/gdk.sats"
 //
 // class hierarchy for GTK
 //
-objcls GtkObject = { super: GObject }
-  objcls GtkWidget = { super: GtkObject }
-    objcls GtkMisc = { super: GtkWidget }
-      objcls GtkLabel = { super : GtkMisc }
-      objcls GtkArrow = { super : GtkMisc }
-      objcls GtkImage = { super : GtkMisc }
-      objcls GtkPixmap = { super : GtkMisc }
+classdec GtkObject : GObject
+  classdec GtkWidget : GtkObject
+    classdec GtkMisc : GtkWidget
+      classdec GtkLabel : GtkMisc
+      classdec GtkArrow : GtkMisc
+      classdec GtkImage : GtkMisc
+      classdec GtkPixmap : GtkMisc
     // end of [GtkMisc]
-    objcls GtkContainer = { super: GtkWidget }
-      objcls GtkBin = { super: GtkContainer }
-        objcls GtkAlignment = { super: GtkBin }
-        objcls GtkFrame = { super: GtkBin }
-          objcls GtkAspectFrame = { super: GtkFrame }
+    classdec GtkContainer : GtkWidget
+      classdec GtkBin : GtkContainer
+        classdec GtkAlignment : GtkBin
+        classdec GtkFrame : GtkBin
+          classdec GtkAspectFrame : GtkFrame
         // end of [GtkGrame]
-        objcls GtkButton = { super: GtkBin }
-          objcls GtkToggleButton = { super: GtkButton }
-            objcls GtkCheckButton = { super: GtkToggleButton }
-              objcls GtkRadioButton = { super: GtkCheckButton }
+        classdec GtkButton : GtkBin
+          classdec GtkToggleButton : GtkButton
+            classdec GtkCheckButton : GtkToggleButton
+              classdec GtkRadioButton : GtkCheckButton
             // end of [GtkCheckButton]
           // end of [GtkToggleButton]
-          objcls GtkOptionMenu = { super: GtkButton }
+          classdec GtkOptionMenu : GtkButton
         // end of [GtkButton]
-        objcls GtkItem = { super: GtkBin }
-          objcls GtkMenuItem = { super: GtkItem }
-            objcls GtkCheckMenuItem = { super: GtkMenuItem }
-              objcls GtkRadioMenuItem = { super: GtkCheckMenuItem }
+        classdec GtkItem : GtkBin
+          classdec GtkMenuItem : GtkItem
+            classdec GtkCheckMenuItem : GtkMenuItem
+              classdec GtkRadioMenuItem : GtkCheckMenuItem
             // end of [GtkCheckMenuItem]
-            objcls GtkImageMenuItem = { super: GtkMenuItem }
-            objcls GtkSeparatorMenuItem = { super: GtkMenuItem }
-            objcls GtkTearoffMenuItem = { super: GtkMenuItem }
+            classdec GtkImageMenuItem : GtkMenuItem
+            classdec GtkSeparatorMenuItem : GtkMenuItem
+            classdec GtkTearoffMenuItem : GtkMenuItem
           // end of [GtkMenuItem]
-          // objcls GtkListItem = { super: GtkItem } // deprecated since GTK+-2.0
-          // objcls GtkTreeItem = { super: GtkItem } // deprecated since GTK+-2.0
+          // classdec GtkListItem : GtkItem // deprecated since GTK+-2.0
+          // classdec GtkTreeItem : GtkItem // deprecated since GTK+-2.0
         // end of [GtkItem]
-        objcls GtkWindow = { super: GtkBin }
-          objcls GtkDialog = { super: GtkWindow }
-            objcls GtkColorSelectionDialog = { super: GtkDialog }
-            objcls GtkFileSelection = { super: GtkDialog } // DEPRECATED!
-            objcls GtkFileChooserDialog = { super: GtkDialog }
-            objcls GtkFontSelectionDialog = { super: GtkDialog }
-            objcls GtkInputDialog = { super: GtkDialog }
-            objcls GtkMessageDialog = { super: GtkDialog }
+        classdec GtkToolItem : GtkBin
+          classdec GtkToolButton : GtkToolItem
+          classdec GtkSeparatorToolItem : GtkToolItem
+        // end of [GtkToolItem]
+        classdec GtkWindow : GtkBin
+          classdec GtkDialog : GtkWindow
+            classdec GtkColorSelectionDialog : GtkDialog
+            classdec GtkFileSelection : GtkDialog // DEPRECATED!
+            classdec GtkFileChooserDialog : GtkDialog
+            classdec GtkFontSelectionDialog : GtkDialog
+            classdec GtkInputDialog : GtkDialog
+            classdec GtkMessageDialog : GtkDialog
           // end of [GtkDialog]
-          objcls GtkPlug = { super: GtkWindow }
+          classdec GtkPlug : GtkWindow
         // end of [GtkWindow]
-        objcls GtkEventBox = { super: GtkBin }
-        objcls GtkHandleBox = { super: GtkBin }
-        objcls GtkScrolledWindow = { super: GtkBin }
-        objcls GtkViewport = { super: GtkBin }
+        classdec GtkEventBox : GtkBin
+        classdec GtkHandleBox : GtkBin
+        classdec GtkScrolledWindow : GtkBin
+        classdec GtkViewport : GtkBin
       // end of [GtkBin]
-      objcls GtkBox = { super: GtkContainer }
-        objcls GtkBottonBox = { super: GtkBox }
-          objcls GtkBottonHBox = { super: GtkBottonBox }
-          objcls GtkBottonVBox = { super: GtkBottonBox }
+      classdec GtkBox : GtkContainer
+        classdec GtkBottonBox : GtkBox
+          classdec GtkBottonHBox : GtkBottonBox
+          classdec GtkBottonVBox : GtkBottonBox
         // end of [GtkBottonBox]
-        objcls GtkVBox = { super: GtkBox }
-          objcls GtkColorSelection = { super: GtkVBox }
-          objcls GtkFontSelection = { super: GtkVBox }
-          objcls GtkGammarCurve = { super: GtkVBox }
+        classdec GtkVBox : GtkBox
+          classdec GtkColorSelection : GtkVBox
+          classdec GtkFontSelection : GtkVBox
+          classdec GtkGammarCurve : GtkVBox
         // end of [GtkVBox]
-        objcls GtkHBox = { super: GtkBox }
-          objcls GtkCombo = { super: GtkHBox }
-          objcls GtkStatusbar = { super: GtkHBox }
+        classdec GtkHBox : GtkBox
+          classdec GtkCombo : GtkHBox
+          classdec GtkStatusbar : GtkHBox
         // end of [GtkHBox]
       // end of [GtkBox]
-      objcls GtkFixed = { super: GtkContainer }
-      objcls GtkPaned = { super: GtkContainer }
-        objcls GtkHPaned = { super: GtkPaned }
-        objcls GtkVPaned = { super: GtkPaned }
+      classdec GtkFixed : GtkContainer
+      classdec GtkPaned : GtkContainer
+        classdec GtkHPaned : GtkPaned
+        classdec GtkVPaned : GtkPaned
       // end of [GtkPaned]
-      objcls GtkLayout = { super: GtkContainer }
-      objcls GtkMenuShell = { super: GtkContainer }
-        objcls GtkMenuBar = { super: GtkMenuShell }
-        objcls GtkMenu = { super: GtkMenuShell }
+      classdec GtkLayout : GtkContainer
+      classdec GtkMenuShell : GtkContainer
+        classdec GtkMenuBar : GtkMenuShell
+        classdec GtkMenu : GtkMenuShell
       // end of [GtkMenuShell]
-      objcls GtkNotebook = { super: GtkContainer }
-      objcls GtkSocket = { super: GtkContainer }
-      objcls GtkTable = { super: GtkContainer }
-      objcls GtkTextView = { super: GtkContainer }
-      objcls GtkToolbar = { super: GtkContainer }
-      objcls GtkTreeView = { super: GtkContainer }
+      classdec GtkNotebook : GtkContainer
+      classdec GtkSocket : GtkContainer
+      classdec GtkTable : GtkContainer
+      classdec GtkTextView : GtkContainer
+      classdec GtkToolbar : GtkContainer
+      classdec GtkTreeView : GtkContainer
     // end of [GtkContainer]
-    objcls GtkCalendar = { super: GtkWidget }
-    objcls GtkDrawingArea = { super: GtkWidget }
-      objcls GtkCurve = { super: GtkDrawingArea }
+    classdec GtkCalendar : GtkWidget
+    classdec GtkDrawingArea : GtkWidget
+      classdec GtkCurve : GtkDrawingArea
     // end of [GtkDrawingArea]
-    objcls GtkEditable = { super: GtkWidget }
-      objcls GtkEntry = { super: GtkEditable }
-        objcls GtkSpinButton = { super: GtkEntry }
+    classdec GtkEditable : GtkWidget
+      classdec GtkEntry : GtkEditable
+        classdec GtkSpinButton : GtkEntry
       // end of [GtkEntry]
     // end of [GtkEditable]
-    objcls GtkRuler = { super: GtkWidget }
-      objcls GtkHRuler = { super: GtkRuler }
-      objcls GtkVRuler = { super: GtkRuler }
+    classdec GtkRuler : GtkWidget
+      classdec GtkHRuler : GtkRuler
+      classdec GtkVRuler : GtkRuler
     // end of [GtkScale]
-    objcls GtkRange = { super: GtkWidget }
-      objcls GtkScale = { super: GtkRange }
-        objcls GtkHScale = { super: GtkScale }
-        objcls GtkVScale = { super: GtkScale }
+    classdec GtkRange : GtkWidget
+      classdec GtkScale : GtkRange
+        classdec GtkHScale : GtkScale
+        classdec GtkVScale : GtkScale
       // end of [GtkScale]
-      objcls GtkScrollbar = { super: GtkRange }
-        objcls GtkHScrollbar = { super: GtkScrollbar }
-        objcls GtkVScrollbar = { super: GtkScrollbar }
+      classdec GtkScrollbar : GtkRange
+        classdec GtkHScrollbar : GtkScrollbar
+        classdec GtkVScrollbar : GtkScrollbar
       // end of [GtkScrollbar]
     // end of [GtkRange]
-    objcls GtkSeparator = { super: GtkWidget }
-      objcls GtkHSeparator = { super: GtkSeparator }
-      objcls GtkVSeparator = { super: GtkSeparator }
+    classdec GtkSeparator : GtkWidget
+      classdec GtkHSeparator : GtkSeparator
+      classdec GtkVSeparator : GtkSeparator
     // end of [GtkSeparator]
-    objcls GtkInvisible = { super: GtkWidget }
-    objcls GtkPreview = { super: GtkWidget }
-    objcls GtkProgressBar = { super: GtkWidget }
+    classdec GtkInvisible : GtkWidget
+    classdec GtkPreview : GtkWidget
+    classdec GtkProgressBar : GtkWidget
   // end of [GtkWidget]
-  objcls GtkAdjustment = { super: GtkObject }
-  objcls GtkCellRenderer = { super: GtkObject }
-    objcls GtkCellRendererPixbuf = { super: GtkCellRenderer }
-    objcls GtkCellRendererText = { super: GtkCellRenderer }
-    objcls GtkCellRendererToggle = { super: GtkCellRenderer }
+  classdec GtkAdjustment : GtkObject
+  classdec GtkCellRenderer : GtkObject
+    classdec GtkCellRendererPixbuf : GtkCellRenderer
+    classdec GtkCellRendererText : GtkCellRenderer
+    classdec GtkCellRendererToggle : GtkCellRenderer
   // end of [GtkCellRenderer]
-  objcls GtkItemFactory = { super: GtkObject }
-  objcls GtkTooltips = { super: GtkObject }
-  objcls GtkTreeViewColumn = { super: GtkObject }
+  classdec GtkItemFactory : GtkObject
+  classdec GtkTooltips : GtkObject
+  classdec GtkTreeViewColumn : GtkObject
 // end of [GtkObject]
 
 (* ****** ****** *)
@@ -354,6 +358,10 @@ viewtypedef GtkSeparatorMenuItem_ref (l:addr) = gobjref (GtkSeparatorMenuItem, l
 viewtypedef GtkSeparatorMenuItem_ref0 = [l:agez] GtkSeparatorMenuItem_ref l
 viewtypedef GtkSeparatorMenuItem_ref1 = [l:addr | l > null] GtkSeparatorMenuItem_ref l
 
+viewtypedef GtkSeparatorToolItem_ref (l:addr) = gobjref (GtkSeparatorToolItem, l)
+viewtypedef GtkSeparatorToolItem_ref0 = [l:agez] GtkSeparatorToolItem_ref l
+viewtypedef GtkSeparatorToolItem_ref1 = [l:addr | l > null] GtkSeparatorToolItem_ref l
+
 viewtypedef GtkSpinButton_ref (l:addr) = gobjref (GtkSpinButton, l)
 viewtypedef GtkSpinButton_ref0 = [l:agez] GtkSpinButton_ref l
 viewtypedef GtkSpinButton_ref1 = [l:addr | l > null] GtkSpinButton_ref l
@@ -373,6 +381,14 @@ viewtypedef GtkTextView_ref1 = [l:addr | l > null] GtkTextView_ref l
 viewtypedef GtkToggleButton_ref (l:addr) = gobjref (GtkToggleButton, l)
 viewtypedef GtkToggleButton_ref0 = [l:agez] GtkToggleButton_ref l
 viewtypedef GtkToggleButton_ref1 = [l:addr | l > null] GtkToggleButton_ref l
+
+viewtypedef GtkToolbar_ref (l:addr) = gobjref (GtkToolbar, l)
+viewtypedef GtkToolbar_ref0 = [l:agez] GtkToolbar_ref l
+viewtypedef GtkToolbar_ref1 = [l:addr | l > null] GtkToolbar_ref l
+
+viewtypedef GtkToolButton_ref (l:addr) = gobjref (GtkToolButton, l)
+viewtypedef GtkToolButton_ref0 = [l:agez] GtkToolButton_ref l
+viewtypedef GtkToolButton_ref1 = [l:addr | l > null] GtkToolButton_ref l
 
 viewtypedef GtkVBox_ref (l:addr) = gobjref (GtkVBox, l)
 viewtypedef GtkVBox_ref0 = [l:agez] GtkVBox_ref l
@@ -404,38 +420,38 @@ viewtypedef GtkWindow_ref1 = [l:addr | l > null] GtkWindow_ref l
 
 (* ****** ****** *)
 
-objcls GtkAccelGroup = { super: GObject}
+classdec GtkAccelGroup : GObject
 viewtypedef GtkAccelGroup_ref (l:addr) = gobjref (GtkAccelGroup, l)
 viewtypedef GtkAccelGroup_ref0 = [l:agez] GtkAccelGroup_ref l
 viewtypedef GtkAccelGroup_ref1 = [l:addr | l > null] GtkAccelGroup_ref l
 
 (* ****** ****** *)
 
-objcls GtkFileChooser = { super: GInterface}
+classdec GtkFileChooser : GInterface
 viewtypedef GtkFileChooser_ref (l:addr) = gobjref (GtkFileChooser, l)
 viewtypedef GtkFileChooser_ref0 = [l:agez] GtkFileChooser_ref l
 viewtypedef GtkFileChooser_ref1 = [l:addr | l > null] GtkFileChooser_ref l
 
 (* ****** ****** *)
 
-objcls GtkTextBuffer = { super: GObject }
+classdec GtkTextBuffer : GObject
 viewtypedef GtkTextBuffer_ref (l:addr) = gobjref (GtkTextBuffer, l)
 viewtypedef GtkTextBuffer_ref0 = [l:agez] GtkTextBuffer_ref l
 viewtypedef GtkTextBuffer_ref1 = [l:addr | l > null] GtkTextBuffer_ref l
 
-objcls GtkTextTag = { super: GObject }
+classdec GtkTextTag : GObject
 viewtypedef GtkTextTag_ref (l:addr) = gobjref (GtkTextTag, l)
 viewtypedef GtkTextTag_ref0 = [l:agez] GtkTextTag_ref l
 viewtypedef GtkTextTag_ref1 = [l:addr | l > null] GtkTextTag_ref l
 
-objcls GtkTextTagTable = { super: GObject }
+classdec GtkTextTagTable : GObject
 viewtypedef GtkTextTagTable_ref (l:addr) = gobjref (GtkTextTagTable, l)
 viewtypedef GtkTextTagTable_ref0 = [l:agez] GtkTextTagTable_ref l
 viewtypedef GtkTextTagTable_ref1 = [l:addr | l > null] GtkTextTagTable_ref l
 
 abst@ype GtkTextIter = $extype "GtkTextIter" // opaque
 
-objcls GtkTextMark = { super: GObject }
+classdec GtkTextMark : GObject
 viewtypedef GtkTextMark_ref (l:addr) = gobjref (GtkTextMark, l)
 viewtypedef GtkTextMark_ref0 = [l:agez] GtkTextMark_ref l
 viewtypedef GtkTextMark_ref1 = [l:addr | l > null] GtkTextMark_ref l
@@ -482,8 +498,8 @@ viewtypedef GtkTextMark_ref1 = [l:addr | l > null] GtkTextMark_ref l
 #include "contrib/GTK/SATS/gtk/gtkhbox.sats"
 #include "contrib/GTK/SATS/gtk/gtkhruler.sats"
 #include "contrib/GTK/SATS/gtk/gtkhscale.sats"
-#include "contrib/GTK/SATS/gtk/gtkhseparator.sats"
 #include "contrib/GTK/SATS/gtk/gtkhscrollbar.sats"
+#include "contrib/GTK/SATS/gtk/gtkhseparator.sats"
 #include "contrib/GTK/SATS/gtk/gtkimagemenuitem.sats"
 #include "contrib/GTK/SATS/gtk/gtklabel.sats"
 #include "contrib/GTK/SATS/gtk/gtkmenu.sats"
@@ -502,11 +518,14 @@ viewtypedef GtkTextMark_ref1 = [l:addr | l > null] GtkTextMark_ref l
 #include "contrib/GTK/SATS/gtk/gtkscrolledwindow.sats"
 #include "contrib/GTK/SATS/gtk/gtkseparator.sats"
 #include "contrib/GTK/SATS/gtk/gtkseparatormenuitem.sats" // <= menuitem
+#include "contrib/GTK/SATS/gtk/gtkseparatortoolitem.sats"
 #include "contrib/GTK/SATS/gtk/gtkspinbutton.sats" // <= entry
 #include "contrib/GTK/SATS/gtk/gtkstatusbar.sats"
 #include "contrib/GTK/SATS/gtk/gtktable.sats" // <= container
 #include "contrib/GTK/SATS/gtk/gtktextview.sats" // <= container
 #include "contrib/GTK/SATS/gtk/gtktogglebutton.sats"
+#include "contrib/GTK/SATS/gtk/gtktoolbar.sats"
+#include "contrib/GTK/SATS/gtk/gtktoolbutton.sats"
 #include "contrib/GTK/SATS/gtk/gtkvbox.sats"
 #include "contrib/GTK/SATS/gtk/gtkvruler.sats"
 #include "contrib/GTK/SATS/gtk/gtkvscale.sats"

@@ -445,9 +445,6 @@ in
       fprint_d1exp (pf | out, d1e);
       prstr ")"
     end // end of [D1Elet]
-  | D1Eobj _ => begin
-      prstr "D1Eobj("; fprint_string (pf | out, "..."); prstr ")"
-    end // end of [D1Eobj]
   | D1Eptrof d1e => begin
       prstr "D1Eptrof("; fprint_d1exp (pf | out, d1e); prstr ")"
     end // end of [D1Eptrof]

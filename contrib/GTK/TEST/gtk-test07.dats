@@ -136,6 +136,9 @@ fun cb_draw_value
 fun scale_set_default_values
   {c:cls | c <= GtkScale} {l:agz}
   (scale: !gobjref (c, l)): void = () where {
+//
+  prval () = clstrans {c,GtkScale,GtkRange} ()
+//
   val () = gtk_range_set_update_policy (scale, GTK_UPDATE_CONTINUOUS)
   val () = gtk_scale_set_digits (scale, (gint)1)
   val () = gtk_scale_set_value_pos (scale, GTK_POS_TOP)

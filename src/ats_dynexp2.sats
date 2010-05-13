@@ -88,7 +88,6 @@ staload "ats_staexp2.sats"
 
 abstype d2cst_t // boxed type
 abstype d2mac_abs_t (int(*curry arity*))// boxed type
-abstype d2mtd_t // boxed type
 abstype d2var_t // boxed type
 abstype d2varset_t // boxed type
 
@@ -122,7 +121,6 @@ datatype d2item =
   | D2ITEMe1xp of e1xp
   | D2ITEMmacdef of d2mac_t
   | D2ITEMmacvar of d2var_t
-  | D2ITEMmtd of d2mtd_t
   | D2ITEMsymdef of List d2item (* overloaded symbol *)
   | D2ITEMvar of d2var_t
 // end of [d2item]
@@ -236,18 +234,6 @@ fun prerr_d2mac (_: d2mac_t): void
 
 overload print with print_d2mac
 overload prerr with prerr_d2mac
-
-(* ****** ****** *)
-
-fun fprint_d2mtd {m:file_mode}
-  (pf: file_mode_lte (m, w) | out: &FILE m, d2m: d2mtd_t): void
-overload fprint with fprint_d2mtd
-
-fun print_d2mtd (_: d2mtd_t): void
-fun prerr_d2mtd (_: d2mtd_t): void
-
-overload print with print_d2mtd
-overload prerr with prerr_d2mtd
 
 (* ****** ****** *)
 
@@ -552,7 +538,6 @@ datatype d2ec_node =
   | D2Cdcstdec of ($Syn.dcstkind, d2cstlst)
   | D2Cdatdec of ($Syn.datakind, s2cstlst)
   | D2Cexndec of d2conlst
-  | D2Cclassdec of c2lassdec
   | D2Coverload of (* overloading *) // for temporary use
       ($Syn.i0de, d2item)
   | D2Cextype of // external type
@@ -662,11 +647,6 @@ and d2exp_node =
       d2mac_t
   | D2Emacsyn of (* macro encoding *)
       ($Syn.macsynkind, d2exp)
-  | D2Emtd of (* method invocation *)
-      d2mtd_t
-  | D2Eobj of ( // dynamic object
-      int(*knd*), c2lassdec, s2exp(*cls*), m2thdeclst
-    ) // end of [D2Eobj]
   | D2Eptrof of (* taking the address of *)
       d2exp
   | D2Eraise of (* raised exception *)
@@ -720,17 +700,6 @@ and d2lab_node =
   | D2LABind of d2explstlst
 // end of [d2lab_node]
 
-and m2thdec =
-  | M2THDECmtd of (
-      loc_t, sym_t, d2var_t(*self*), d2expopt(*def*)
-    ) // end of [M1THDECmtd]
-  | M2THDECval of
-      (loc_t, sym_t, s2exp, d2expopt)
-  | M2THDECvar of
-      (loc_t, sym_t, s2exp, d2expopt)
-  | M2THDECimp of (loc_t, d2mtd_t, d2exp)
-// end of [m2thdec]
-  
 where d2ec = '{
   d2ec_loc= loc_t, d2ec_node= d2ec_node
 } // end of [d2ec]
@@ -834,19 +803,6 @@ and s2aspdec = '{
 
 (* ****** ****** *)
 
-and m2thdeclst = List m2thdec
-
-and c2lassdec = '{
-  c2lassdec_loc= loc_t
-, c2lassdec_knd= int // mod/obj: 0/1
-, c2lassdec_cst= s2cst_t
-, c2lassdec_suplst= s2explst
-, c2lassdec_mtdlst= m2thdeclst
-, c2lassdec_mtdmap= symmapref (d2item)
-} // end of [c2lasdec]
-
-(* ****** ****** *)
-
 and v2aldec = '{
   v2aldec_loc= loc_t
 , v2aldec_pat= p2at
@@ -926,47 +882,19 @@ fun d2mac_stamp_get (_: d2mac_t): stamp_t
 
 (* ****** ****** *)
 
-datatype mtdkind =
-  | MTDKINDmtd | MTDKINDval | MTDKINDvar
-// end of [mtdkind]
-
-fun d2mtd_make (
-    _: loc_t
-  , name: sym_t
-  , knd: mtdkind
-  , decarg: s2qualst
-  , sublst: List @(s2qualst, tmps2explstlst)
-  , typ: s2exp
-  ) : d2mtd_t
-// end of [d2mtd_make]
-
-fun d2mtd_loc_get (_: d2mtd_t): loc_t
-fun d2mtd_sym_get (_: d2mtd_t): sym_t
-fun d2mtd_knd_get (_: d2mtd_t): mtdkind
-fun d2mtd_decarg_get (_: d2mtd_t): s2qualst
-fun d2mtd_sublst_get (_: d2mtd_t): List @(s2qualst, tmps2explstlst)
-fun d2mtd_subtyp_get (_: d2mtd_t): s2exp
-fun d2mtd_stamp_get (_: d2mtd_t): stamp_t
-
-(* ****** ****** *)
-
-fun d2mtd_typ_get (_: d2mtd_t): s2exp
-
-(* ****** ****** *)
-
 fun d2exp_is_raised (_: d2exp): bool
 fun c2lau_is_raised (_: c2lau): bool
 
+(* ****** ****** *)
+
 fun d2exp_is_varlamcst (d2e: d2exp): bool
-
-//
-
 fun d2exp_var_cst_is_ptr (d2e: d2exp): bool
 
 (* ****** ****** *)
 
-fun d2exp_typ_set (_: d2exp, _: s2expopt): void
-  = "ats_dynexp2_d2exp_typ_set"
+fun d2exp_typ_set
+  (_: d2exp, _: s2expopt): void = "ats_dynexp2_d2exp_typ_set"
+// end of [d2exp_typ_set]
 
 (* ****** ****** *)
 
@@ -1187,16 +1115,6 @@ fun d2exp_mac (_: loc_t, d2m: d2mac_t): d2exp
 
 fun d2exp_macsyn (_: loc_t, knd: $Syn.macsynkind, _: d2exp): d2exp
 
-fun d2exp_mtd (_: loc_t, d2m: d2mtd_t): d2exp
-
-fun d2exp_obj (
-    _: loc_t
-  , knd: int
-  , d2c_cls: c2lassdec, s2e_cls: s2exp
-  , mtdlst: m2thdeclst
-  ) : d2exp
-// end of [d2exp_obj]
-
 fun d2exp_ptrof (_: loc_t, _: d2exp): d2exp
 
 fun d2exp_raise (_: loc_t, _: d2exp): d2exp
@@ -1284,21 +1202,6 @@ fun s2aspdec_make (_: loc_t, s2c: s2cst_t, def: s2exp): s2aspdec
 
 (* ****** ****** *)
 
-fun c2lassdec_make (
-    _: loc_t
-  , knd: int // mod/obj: 0/1
-  , s2c: s2cst_t
-  , supclss: s2explst
-  , mtdlst: m2thdeclst
-  , mtdmap: symmapref d2item
-  ) : c2lassdec
-// end of [c2lassdec]
-
-castfn c2lassdec_of_c2lassdec_t (_: c2lassdec_t): c2lassdec
-castfn c2lassdec_t_of_c2lassdec (_: c2lassdec): c2lassdec_t
-
-(* ****** ****** *)
-
 fun v2aldec_make
   (_: loc_t, _: p2at, def: d2exp, ann: s2expopt): v2aldec
 // end of [v2aldec_make]
@@ -1339,7 +1242,6 @@ fun d2ec_stavars (_: loc_t, ds: s2tavarlst): d2ec
 fun d2ec_saspdec (_: loc_t, d: s2aspdec): d2ec
 fun d2ec_dcstdec (_: loc_t, _: $Syn.dcstkind, ds: d2cstlst): d2ec
 fun d2ec_datdec (_: loc_t, k: $Syn.datakind, ds: s2cstlst): d2ec
-fun d2ec_classdec (_: loc_t, d: c2lassdec): d2ec
 fun d2ec_overload (_: loc_t, id: $Syn.i0de, d2i: d2item): d2ec
 fun d2ec_exndec (_: loc_t, con: d2conlst): d2ec
 fun d2ec_extype (_: loc_t, name: string, def: s2exp): d2ec

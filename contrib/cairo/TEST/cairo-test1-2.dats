@@ -110,9 +110,8 @@ extern fun gdk_cairo_create
   = "#gdk_cairo_create"
 // end of [gdk_cairo_create]
 
-fun draw_drawingarea
-  {c:cls | c <= GtkDrawingArea} {l:agz}
-  (darea: !gobjref (c, l)): void = let
+fun draw_drawingarea {l:agz}
+  (darea: !gobjref (GtkDrawingArea, l)): void = let
   val (fpf_win | win) = gtk_widget_get_window (darea)
 in
   if g_object_isnot_null (win) then let
@@ -136,7 +135,7 @@ end // end of [draw_drawingarea]
 fun fexpose (): gboolean = let
   val darea = the_drawingarea_get ()
   val _ = draw_drawingarea (darea)
-  val () = g_object_unref (darea)
+  val () = g_object_unref {GtkDrawingArea} (darea)
 in
   GFALSE
 end // end of [fexpose]

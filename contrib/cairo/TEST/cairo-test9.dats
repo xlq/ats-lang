@@ -228,6 +228,9 @@ extern fun gdk_cairo_create
 fun on_expose_event
   {c:cls | c <= GtkDrawingArea} {l:agz}
   (darea: !gobjref (c, l), event: &GdkEvent): gboolean = let
+//
+  prval () = clstrans {c,GtkDrawingArea,GtkWidget} ()
+//
   val (fpf_win | win) = gtk_widget_get_window (darea)
   val () = assert_errmsg (g_object_isnot_null (win), #LOCATION)
   val cr = gdk_cairo_create (win)

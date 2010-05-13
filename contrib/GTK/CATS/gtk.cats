@@ -945,6 +945,20 @@ atsctrb_gtk_separator_menu_item_new () {
 /* ****** ****** */
 
 //
+// source: gtk/gtkseparatortoolitem.h
+//
+
+ATSinline()
+ats_ptr_type
+atsctrb_gtk_separator_tool_item_new () {
+  GtkToolItem *item = gtk_separator_tool_item_new () ;
+  g_object_ref_sink(G_OBJECT(item)) ; // removing floating reference!
+  return item ;
+} // end of [atsctrb_gtk_separator_tool_item_new]
+
+/* ****** ****** */
+
+//
 // source: gtk/gtkspinbutton.h
 //
 
@@ -1179,6 +1193,40 @@ atsctrb_gtk_toggle_button_new_with_mnemonic
 
 #define atsctrb_gtk_toggle_button_get_active gtk_toggle_button_get_active
 #define atsctrb_gtk_toggle_button_set_active gtk_toggle_button_set_active
+
+/* ****** ****** */
+
+//
+// source: gtk/gtktoolbar.h
+//
+
+ATSinline()
+ats_ptr_type
+atsctrb_gtk_toolbar_new () {
+  GtkWidget *widget = gtk_toolbar_new () ;
+  g_object_ref_sink(G_OBJECT(widget)) ; // removing floating reference!
+  return widget ;
+} // end of [atsctrb_gtk_toolbar_new]
+
+#define atsctrb_gtk_toolbar_get_style gtk_toolbar_get_style
+#define atsctrb_gtk_toolbar_set_style gtk_toolbar_set_style
+
+#define atsctrb_gtk_toolbar_insert gtk_toolbar_insert
+
+/* ****** ****** */
+
+//
+// source: gtk/gtktoolbutton.h
+//
+
+ATSinline()
+ats_ptr_type
+atsctrb_gtk_tool_button_new_from_stock
+  (ats_ptr_type stock_id) {
+  GtkToolItem *item = gtk_tool_button_new_from_stock (stock_id) ;
+  g_object_ref_sink(G_OBJECT(item)) ; // removing floating reference!
+  return item ;
+} // end of [atsctrb_gtk_tool_button_new_from_stock]
 
 /* ****** ****** */
 

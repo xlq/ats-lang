@@ -119,7 +119,6 @@ SOURCES := \
   ats_dynexp2.dats \
   ats_dynexp2_dcst.dats \
   ats_dynexp2_dmac.dats \
-  ats_dynexp2_dmtd.dats \
   ats_dynexp2_dvar.dats \
   ats_dynexp2_print.dats \
   ats_dynexp2_util.dats \
@@ -429,9 +428,6 @@ ats_dynexp2_dcst_dats.o: ats_dynexp2_dcst.dats
 
 ats_dynexp2_dmac_dats.o: ats_dynexp2_dmac.dats
 	$(ATSCC) $(ATSCCFLAGS) -c ats_dynexp2_dmac.dats
-
-ats_dynexp2_dmtd_dats.o: ats_dynexp2_dmtd.dats
-	$(ATSCC) $(ATSCCFLAGS) -c ats_dynexp2_dmtd.dats
 
 ats_dynexp2_dvar_dats.o: ats_dynexp2_dvar.dats
 	$(ATSCC) $(ATSCCFLAGS) -c ats_dynexp2_dvar.dats

@@ -138,6 +138,34 @@ end // end of [symelim_tr]
 
 (* ****** ****** *)
 
+fn c1lassdec_tr
+  (id: i0de, sup: s1expopt): void = () where {
+  val s2c = s2cst_make (
+      id.i0de_sym // sym
+    , id.i0de_loc // location
+    , s2rt_cls // srt
+    , None () // isabs
+    , false // iscon
+    , false // isrec
+    , false // isasp
+    , None () // islst
+    , None () // argvar
+    , None () // def
+  ) // end of [s2cst_make]
+  val () = the_s2expenv_add_scst s2c
+  val () = case+ sup of
+    | Some s1e => let
+        val s2e = s1exp_tr_dn_cls (s1e)
+        val () = s2cst_supcls_add (s2c, s2e)
+      in
+        // nothing
+      end // end of [Some]
+    | None () => ()
+  // end of [val]
+} // end of [c1lassdec_tr]
+
+(* ****** ****** *)
+
 implement overload_def_tr (id, def) = let
   val ans = ans where {
     val id_sym = id.i0de_sym
@@ -182,7 +210,7 @@ end (* end of [overload_def_tr] *)
 
 (* ****** ****** *)
 
-fun overload_tr
+fn overload_tr
   (id: $Syn.i0de, qid: $Syn.dqi0de): d2item = def where {
 (*
   val () = begin
@@ -222,248 +250,6 @@ fn witht1ype_tr
   | WITHT1YPEview s1e => Some (s1exp_tr_dn (s1e, s2rt_view))
   | WITHT1YPEviewtype s1e => Some (s1exp_tr_dn (s1e, s2rt_viewt0ype))
 // end of [witht1ype_tr]
-
-(* ****** ****** *)
-
-fn m1thdec_tr (
-    r_map: ref mtdmap_t, s2e_self: s2exp, mtd: m1thdec
-  ) : m2thdec =
-  case+ mtd of
-  | M1THDECmtd (loc, sym, _(*dummy*), def) => let
-      val d2v_self = d2var_make (loc, $Sym.symbol_SELF)
-//
-      val def = (case+ def of
-        | Some d1e => Some d2e where {
-            val (pf1_token | ()) = the_d2expenv_push ()
-            val () = the_d2expenv_swap (r_map)
-            val (pf2_token | ()) = the_d2expenv_push ()
-            val () = the_d2expenv_add_dvar (d2v_self)
-            val d2e = d1exp_tr (d1e)
-            val () = the_d2expenv_pop (pf2_token | (*none*))
-            val () = the_d2expenv_swap (r_map)
-            val () = the_d2expenv_pop (pf1_token | (*none*))
-          } // end of [Some]
-        | None () => None ()
-      ) : d2expopt // end of [val]
-//
-      val () = d2var_typ_set (d2v_self, Some s2e_self)
-    in
-      M2THDECmtd (loc, sym, d2v_self, def)
-    end // end of [M1THDECmtd]
-  | M1THDECval (loc, sym, res, def) => let
-      val res = s1exp_tr_dn_impredicative res; val def = d1expopt_tr def
-    in
-      M2THDECval (loc, sym, res, def)
-    end // end of [M2THDECval]
-  | M1THDECvar (loc, sym, res, def) => let
-      val res = s1exp_tr_dn_impredicative res; val def = d1expopt_tr def
-    in
-      M2THDECvar (loc, sym, res, def)
-    end // end of [M2THDECvar]
-  | M1THDECimp (loc, sym, def) => let
-      val ans = $SymEnv.symmap_ref_search<d2item> (r_map, sym)
-      val d2m = (case+ ans of
-        | ~Some_vt d2i => let
-            val- D2ITEMmtd d2m = d2i in d2m
-          end // end of [Some_vt]
-        | ~None_vt () => begin
-            prerr_loc_error2 (loc);
-            prerr ": the dynamic identifier ["; prerr sym; prerr "] is unrecognized.";
-            prerr_newline ();
-            $Err.abort {d2mtd_t} ()
-          end (* end of [None_vt] *)
-      ) : d2mtd_t // end of [val]
-      val def = d1exp_tr def in M2THDECimp (loc, d2m, def)
-    end // end of [M2THDECimp]
-// end of [m1thdec_tr]
-  
-implement m1thdeclst_tr
-  (r_map, s2e_self, mtds) = case+ mtds of
-  | list_cons (mtd, mtds) => let
-      val mtd = m1thdec_tr (r_map, s2e_self, mtd)
-    in
-      list_cons (mtd, m1thdeclst_tr (r_map, s2e_self, mtds))
-    end // end of [list_cons]
-  | list_nil () => list_nil ()
-// end of [m1thdeclst_tr]
-
-(* ****** ****** *)
-
-fn c1lassdec_tr (
-    clsknd: int // mod/obj : 0/1
-  , decarg: s2qualst
-  , d1c_cls: c1lassdec
-  , d1cs_def: s1expdeflst
-  ) : c2lassdec = d2c_cls where {
-  val loc = d1c_cls.c1lassdec_loc
-  val s2vss = s1arglstlst_var_tr (d1c_cls.c1lassdec_arg)
-  val s2c_cls =
-    s2cst_make_cls (d1c_cls.c1lassdec_sym, loc, s2vss)
-  (* end of [val] *)
-//
-  val s2v_mycls =
-    s2var_make_id_srt ($Sym.symbol_MYCLS, s2cst_srt_get s2c_cls)
-  (* end of [val] *)
-  val () = the_s2expenv_add_svar (s2v_mycls)
-//
-  val s2e_mycls = aux (s2v_mycls, s2vss) where {
-    fun aux (s2v_fun: s2var_t, s2vss_arg: s2varlstlst): s2exp =
-      case+ s2vss_arg of
-      | list_cons (s2vs_arg, s2vss_arg) => let
-          val+ s2e_fun = aux (s2v_fun, s2vss_arg)
-          val- S2RTfun (_, s2t_res) = s2e_fun.s2exp_srt
-          val+ s2es_arg = $Lst.list_map_fun (s2vs_arg, s2exp_var)
-        in
-          s2exp_app_srt (s2t_res, s2e_fun, s2es_arg)
-        end // end of [val]
-      | list_nil () => s2exp_var (s2v_fun)
-  } // end of [val]
-  val s2e_self = (
-    if clsknd > 0 then s2exp_obj_cls_t0ype s2e_mycls // object
-                  else s2exp_objmod_cls_type s2e_mycls // module
-  ) : s2exp // end of [val]
-(*
-  val () = begin
-    print "c1lassdec_tr: s2e_self = "; print s2e_self; print_newline ()
-  end // end of [val]
-*)
-//
-  val () = aux (decarg, d1cs_def) where {
-    fun aux (
-        decarg: s2qualst, d1cs: s1expdeflst
-      ) : void = begin
-      case+ d1cs of
-      | list_cons (d1c, d1cs) =>
-          aux (decarg, d1cs) where {
-          val s2c = s1expdef_tr (None (), d1c)
-          val () = s2cst_decarg_set (s2c, decarg)
-          val () = the_s2expenv_add_scst (s2c)
-        } // end of [cons]
-      | list_nil () => ()
-    end (* end of [aux] *)
-  } // end of [val]
-//
-  val supclss =
-    s1explst_tr_dn_cls (d1c_cls.c1lassdec_suplst)
-  (* end of [val] *)
-//
-  val mtdlst = d1c_cls.c1lassdec_mtdlst
-//
-  typedef itm = d2item
-  var mtdmap: mtdmap_t = $SymEnv.symmap_make {itm} ()
-  fun aux0 (
-      decarg: s2qualst
-    , s2c: s2cst_t, ts2ess: tmps2explstlst
-    , mtdmap: !mtdmap_t
-  ) : void = let
-    val d2c_cls = d2c where {
-      val- Some d2c = s2cst_clsdec_get (s2c)
-    } // end of [val]
-    val d2c_cls = c2lassdec_of_c2lassdec_t (d2c_cls)
-    val kis = $SymEnv.symmap_list_inf (!p1) where {
-      val r_mtdmap1 = d2c_cls.c2lassdec_mtdmap
-      val (vbox pf1 | p1) = ref_get_view_ptr (r_mtdmap1)
-    } // end of [val]
-    fun loop (
-        kis: List_vt @(sym_t, itm), mtdmap: !mtdmap_t
-      ) :<cloref1> void = case+ kis of
-      | ~list_vt_cons (ki, kis) => let
-          val- D2ITEMmtd d2m1 = ki.1
-          val loc1 = d2mtd_loc_get (d2m1)
-          val sym1 = d2mtd_sym_get (d2m1)
-          val knd1 = d2mtd_knd_get (d2m1)
-          val decarg1 = d2mtd_decarg_get (d2m1)
-          val sublst1 = d2mtd_sublst_get (d2m1)
-          val sub = @(decarg1, ts2ess)
-          val sublst = list_cons (sub, sublst1)
-          val typ1 = d2mtd_typ_get (d2m1)
-          val d2m = d2mtd_make (loc1, sym1, knd1, decarg, sublst, typ1)
-          val () = $SymEnv.symmap_insert (mtdmap, ki.0, D2ITEMmtd d2m)
-        in
-          loop (kis, mtdmap)
-        end // end of [list_vt_cons]
-      | ~list_vt_nil () => ()
-    // end of [loop]
-  in
-    loop (kis, mtdmap)    
-  end // end of [aux0]
-  fun aux1 (
-      decarg: s2qualst
-    , supclss: s2explst
-    , mtdmap: !mtdmap_t
-    ) : void = begin case+ supclss of
-    | list_cons (supcls, supclss) => let
-        val s2e_head = s2exp_head_get (supcls)
-        var ts2ess: tmps2explstlst = TMPS2EXPLSTLSTnil ()
-        val s2c = (case+ s2e_head.s2exp_node of
-          | S2Ecst s2c => s2c
-          | S2Etmpid (s2c, ts2ess1) => (ts2ess := ts2ess1; s2c)
-          | _ => let
-              val () = prerr_interror ()
-              val () = (
-                prerr ": c1lassdec_tr: aux1: s2e_head = "; prerr s2e_head
-              ) // end of [val]
-              val () = prerr_newline ()
-            in
-              $Err.abort {s2cst_t} ()
-            end // end of [_]
-        ) : s2cst_t
-        val () = aux0 (decarg, s2c, ts2ess, mtdmap)
-      in
-        aux1 (decarg, supclss, mtdmap)
-      end // end of [list_cons]
-    | list_nil () => ()
-  end // end of [aux1]
-  val () = aux1 (decarg, supclss, mtdmap)
-  fun aux2 (
-      decarg: s2qualst
-    , mtds: m1thdeclst
-    , mtdmap: !mtdmap_t
-    ) : void = begin case+ mtds of
-    | list_cons (mtd, mtds) => let
-        val () = (case+ mtd of
-          | M1THDECmtd (loc, sym, def_dummy, def) => let
-              val def_dummy = d1exp_tr (def_dummy)
-              val mtd_typ = d2exp_typ_syn (def_dummy)
-              val d2m = d2mtd_make
-                (loc, sym, MTDKINDmtd, decarg, list_nil, mtd_typ)
-            in
-              $SymEnv.symmap_insert<itm> (mtdmap, sym, D2ITEMmtd d2m)
-            end // end of [M1THDECmtd]
-          | M1THDECval (loc, sym, typ, def) => let
-              val mtd_typ = s1exp_tr_dn_t0ype (typ)
-              val d2m = d2mtd_make
-                (loc, sym, MTDKINDval, decarg, list_nil, mtd_typ)
-            in
-              $SymEnv.symmap_insert<itm> (mtdmap, sym, D2ITEMmtd d2m)
-            end // end of [M1THDECval]
-          | M1THDECvar (loc, sym, typ, def) => let
-              val mtd_typ = s1exp_tr_dn_viewt0ype (typ)
-              val d2m = d2mtd_make
-                (loc, sym, MTDKINDvar, decarg, list_nil, mtd_typ)
-            in
-              $SymEnv.symmap_insert<itm> (mtdmap, sym, D2ITEMmtd d2m)
-            end // end of [M1THDECvar]
-          | M1THDECimp _ => ()
-        ) : void
-      in
-        aux2 (decarg, mtds, mtdmap)
-      end // end of [list_cons]
-    | list_nil () => ()
-  end // end of [aux2]
-  val () = aux2 (decarg, mtdlst, mtdmap)
-  val r_mtdmap = ref_make_elt<mtdmap_t> (mtdmap)
-//
-  val mtdlst = m1thdeclst_tr (r_mtdmap, s2e_self, mtdlst)
-//
-  val d2c_cls = c2lassdec_make
-    (loc, clsknd, s2c_cls, supclss, mtdlst, r_mtdmap)
-  (* end of [val] *)
-//
-  val d2c1_cls = c2lassdec_t_of_c2lassdec d2c_cls
-  val () = s2cst_clsdec_set (s2c_cls, Some d2c1_cls)
-//
-} // end of [c1lassdec_tr]
 
 (* ****** ****** *)
 
@@ -1374,25 +1160,11 @@ implement d1ec_tr (d1c0) = begin
       val d2cs = e1xndeclst_tr d1cs in
       d2ec_exndec (d1c0.d1ec_loc, d2cs)
     end // end of [D1Cexndecs]
-  | D1Cclassdec
-      (clsknd, decarg, d1c_cls, d1cs_def) => let
-      val (pf_s2expenv | ()) = the_s2expenv_push ()
-      val () = begin
-        case+ decarg of cons _ => template_level_inc () | nil _ => ()
-      end // end of [val]
-      val s2vpss = s1qualstlst_tr (decarg)
-      val () = s2qualst_tmplev_set (s2vpss, template_level_get ())
-      val d2c_cls = c1lassdec_tr (clsknd, s2vpss, d1c_cls, d1cs_def)
-      val () = the_s2expenv_pop (pf_s2expenv | (*none*))
-      val () = begin
-        case+ decarg of cons _ => template_level_dec () | nil _ => ()
-      end // end of [val]
-      val () = the_s2expenv_add_scst (d2c_cls.c2lassdec_cst)
-      val s2c_cls = d2c_cls.c2lassdec_cst
-      val () = s2cst_decarg_set (s2c_cls, s2vpss)
+  | D1Cclassdec (id, sup) => let
+      val () = c1lassdec_tr (id, sup)
     in
-      d2ec_classdec (d1c0.d1ec_loc, d2c_cls)
-    end // end of [D1Cfundecs]
+      d2ec_none (d1c0.d1ec_loc)
+    end // end of [D1Cclassdec]
   | D1Coverload (id, qid) => let
       val d2i = overload_tr (id, qid) in
       d2ec_overload (d1c0.d1ec_loc, id, d2i)

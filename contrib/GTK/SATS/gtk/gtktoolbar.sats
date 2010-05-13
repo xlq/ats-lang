@@ -38,73 +38,41 @@
 
 (* ****** ****** *)
 
-%{#
-#include "contrib/GTK/CATS/gdk.cats"
-%} // end of [%{#]
+abst@ype GtkToolbarSpaceStyle = $extype "GtkToolbarSpaceStyle"
+macdef GTK_TOOLBAR_SPACE_EMPTY =
+  $extval (GtkToolbarSpaceStyle, "GTK_TOOLBAR_SPACE_EMPTY")
+macdef GTK_TOOLBAR_SPACE_LINE =
+  $extval (GtkToolbarSpaceStyle, "GTK_TOOLBAR_SPACE_LINE")
 
 (* ****** ****** *)
 
-#define ATS_STALOADFLAG 0 // no need for staload at run-time
+fun gtk_toolbar_new
+  (): GtkToolbar_ref1 = "#atsctrb_gtk_toolbar_new"
+// end of [gtk_toolbar_new]
 
 (* ****** ****** *)
 
-staload GLIB = "contrib/glib/SATS/glib.sats"
-stadef gint = $GLIB.gint
-stadef guint = $GLIB.guint
-stadef gint8 = $GLIB.gint8
-stadef guint8 = $GLIB.guint8
-stadef guint16 = $GLIB.guint16
-stadef guint32 = $GLIB.guint32
+fun gtk_toolbar_get_style
+  {c:cls | c <= GtkToolbar} {l:agz}
+  (toolbar: !gobjref (c, l))
+  : GtkToolbarStyle = "#atsctrb_gtk_toolbar_get_style"
+// end of [gtk_toolbar_get_style]
 
-stadef gfloat = $GLIB.gfloat
-stadef gdouble = $GLIB.gdouble
-
-stadef gpointer = $GLIB.gpointer
-
-(* ****** ****** *)
-
-staload GOBJ = "contrib/glib/SATS/glib-object.sats"
-stadef GObject = $GOBJ.GObject
-stadef gobjref = $GOBJ.gobjref
+fun gtk_toolbar_set_style
+  {c:cls | c <= GtkToolbar} {l:agz}
+  (toolbar: !gobjref (c, l), style: GtkToolbarStyle): void
+  = "#atsctrb_gtk_toolbar_set_style"
+// end of [gtk_toolbar_set_style]
 
 (* ****** ****** *)
 
-absview GdkFree_v (l:addr) // for free GDK resources
+fun gtk_toolbar_insert
+  {c1,c2:cls | c1 <= GtkToolbar; c2 <= GtkToolItem}
+  {l1,l2:agz}
+  (bar: !gobjref (c1, l1), itm: !gobjref (c2, l2), position: gint): void
+  = "#atsctrb_gtk_toolbar_insert"
+// end of [gtk_toolbar_insert]
 
 (* ****** ****** *)
 
-//
-// class hierarchy for GDK
-//
-classdec GdkColormap : GObject
-classdec GdkObject : GObject
-  classdec GdkDrawable : GdkObject
-    classdec GdkWindow : GdkDrawable
-  // end of [GdkDrawable]
-// end of [GdkObject]
-
-(* ****** ****** *)
-
-viewtypedef GdkColormap_ref (l:addr) = gobjref (GdkColormap, l)
-viewtypedef GdkColormap_ref0 = [l:agez] GdkColormap_ref l
-viewtypedef GdkColormap_ref1 = [l:addr | l > null] GdkColormap_ref l
-
-viewtypedef GdkWindow_ref (l:addr) = gobjref (GdkWindow, l)
-viewtypedef GdkWindow_ref0 = [l:agez] GdkWindow_ref l
-viewtypedef GdkWindow_ref1 = [l:addr | l > null] GdkWindow_ref l
-
-(* ****** ****** *)
-
-#include "contrib/GTK/SATS/gdk/gdktypes.sats"
-
-(* ****** ****** *)
-
-#include "contrib/GTK/SATS/gdk/gdkcolor.sats"
-#include "contrib/GTK/SATS/gdk/gdkevents.sats"
-#include "contrib/GTK/SATS/gdk/gdkkeys.sats"
-#include "contrib/GTK/SATS/gdk/gdkrgb.sats"
-#include "contrib/GTK/SATS/gdk/gdkwindow.sats"
-
-(* ****** ****** *)
-
-(* end of [gdk.sats] *)
+(* end of [gtktoolbar.sats] *)

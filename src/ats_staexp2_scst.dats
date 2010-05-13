@@ -68,9 +68,9 @@ typedef s2cst_struct = struct { (* builtin or abstract *)
 , s2cst_argvar= Option (List @(symopt_t, s2rt, int))
   // the associated dynamic constructors
 , s2cst_conlst= Option (d2conlst)
-, s2cst_clsdec= Option (c2lassdec_t)
 , s2cst_def= s2expopt // definition
-, s2cst_sup= s2cstopt // parent if any
+, s2cst_sup= s2cstlst // parents if any
+, s2cst_supcls= s2explst // superclasses if any
 , s2cst_sVarset= s2Varset_t // for occurrence checks
 , s2cst_stamp= stamp_t // unique stamp
 , s2cst_tag= int // tag >= 0 if associated with a datasort
@@ -93,8 +93,9 @@ assume s2cst_t = [l:addr] (vbox (s2cst_struct @ l) | ptr l)
 
 in // in of [local]
 
-implement s2cst_make
-  (id, loc, s2t, isabs, iscon, isrec, isasp, islst, argvar, def) = let
+implement s2cst_make (
+  id, loc, s2t, isabs, iscon, isrec, isasp, islst, argvar, def
+) = let
 
 val stamp = $Stamp.s2cst_stamp_make ()
 val (pf_gc, pf | p) = ptr_alloc_tsz {s2cst_struct} (sizeof<s2cst_struct>)
@@ -114,9 +115,9 @@ p->s2cst_decarg := list_nil ();
 p->s2cst_arilst := s2rt_arity_list s2t;
 p->s2cst_argvar := argvar;
 p->s2cst_conlst := None ();
-p->s2cst_clsdec := None ();
 p->s2cst_def := def;
-p->s2cst_sup := S2CSTOPTnone ();
+p->s2cst_sup := S2CSTLSTnil ();
+p->s2cst_supcls := list_nil ();
 p->s2cst_sVarset := s2Varset_nil;
 p->s2cst_stamp := stamp;
 p->s2cst_tag := (~1);
@@ -188,11 +189,7 @@ implement s2cst_conlst_get (s2c) =
 implement s2cst_conlst_set (s2c, od2cs) =
   let val (vbox pf | p) = s2c in p->s2cst_conlst := od2cs end
 
-implement s2cst_clsdec_get (s2c) =
-  let val (vbox pf | p) = s2c in p->s2cst_clsdec end
-
-implement s2cst_clsdec_set (s2c, od2c) =
-  let val (vbox pf | p) = s2c in p->s2cst_clsdec := od2c end
+(* ****** ****** *)
 
 implement s2cst_def_get (s2c) =
   let val (vbox pf | p) = s2c in p->s2cst_def end
@@ -200,11 +197,29 @@ implement s2cst_def_get (s2c) =
 implement s2cst_def_set (s2c, def) =
   let val (vbox pf | p) = s2c in p->s2cst_def := def end
 
+(* ****** ****** *)
+
 implement s2cst_sup_get (s2c) =
   let val (vbox pf | p) = s2c in p->s2cst_sup end
+// end of [s2cst_sup_get]
 
-implement s2cst_sup_set (s2c, sup) =
-  let val (vbox pf | p) = s2c in p->s2cst_sup := sup end
+implement s2cst_sup_add (s2c, sup) = let
+  val (vbox pf | p) = s2c; val sups = p->s2cst_sup
+in
+  p->s2cst_sup := S2CSTLSTcons (sup, sups)
+end // end of [s2cst_sup_add]
+
+implement s2cst_supcls_get (s2c) =
+  let val (vbox pf | p) = s2c in p->s2cst_supcls end
+
+implement
+s2cst_supcls_add (s2c, sup) = let
+  val (vbox pf | p) = s2c; val sups = p->s2cst_supcls
+in
+  p->s2cst_supcls := list_cons (sup, sups)
+end // end of [s2cst_supcls]
+
+(* ****** ****** *)
 
 implement s2cst_sVarset_get (s2c) =
   let val (vbox pf | p) = s2c in p->s2cst_sVarset end
@@ -287,8 +302,10 @@ in
   $Stamp.neq_stamp_stamp (stamp1, stamp2)
 end // end of [_neq_s2cst_s2cst]
 
-implement neq_s2cst_s2cst (s2c1, s2c2) =
+implement
+neq_s2cst_s2cst (s2c1, s2c2) =
   $effmask_all ( _neq_s2cst_s2cst (s2c1, s2c2) )
+// end of [neq_s2cst_s2cst]
 
 //
 
@@ -331,7 +348,7 @@ implement s2cst_is_eqsup (s2c1, s2c2) = let
       val sup = let val (vbox pf1 | p1) = s2c1 in p1->s2cst_sup end
     in
       case+ sup of
-      | S2CSTOPTsome s2c1 => aux (s2c1, stamp2) | S2CSTOPTnone () => false
+      | S2CSTLSTcons (s2c1, _) => aux (s2c1, stamp2) | S2CSTLSTnil () => false
     end // end of [if]
   end (* end of [aux] *)
   val stamp2 = begin

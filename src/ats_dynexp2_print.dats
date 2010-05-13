@@ -82,9 +82,6 @@ in
   | D2ITEMmacvar d2v => begin
       prstr "D2ITEMmacvar("; fprint_d2var (pf | out, d2v); prstr ")"
     end // end of [D2ITEMmacvar]
-  | D2ITEMmtd d2m => begin
-      prstr "D2ITEMmtd("; fprint_d2mtd (pf | out, d2m); prstr ")"
-    end // end of [D2ITEMmtd]
   | D2ITEMsymdef d2is => begin
       prstr "D2ITEMsymdef("; fprint_d2itemlst (pf | out, d2is); prstr ")";
     end // end of [D2ITEMsymdef]
@@ -574,12 +571,6 @@ in
     in
       fprint_d2exp (pf | out, d2e); prstr ")"
     end // end of [D2Emacsyn]
-  | D2Emtd d2m => begin
-      prstr "D2Emtd("; fprint_d2mtd (pf | out, d2m); prstr ")"
-    end // end of [D2Emtd]
-  | D2Eobj (knd, d2c_cls, s2e_cls, mtdlst) => begin
-      prstr "D2Eobj("; fprint_s2exp (pf | out, s2e_cls); prstr ")"
-    end // end of [D2Eobj]
   | D2Eptrof d2e => begin
       prstr "D2Eptrof("; fprint_d2exp (pf | out, d2e); prstr ")"
     end // end of [D2Eptrof]

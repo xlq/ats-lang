@@ -46,6 +46,9 @@ fun menu_add_item
   val _sid = g_signal_connect1 (
     item, (gsignal)"activate", G_CALLBACK(cb_menuitem), (gpointer)str
   ) // end of [val]
+//
+  prval () = clstrans {c,GtkMenu,GtkMenuShell} ()
+//
   val () = gtk_menu_shell_append (menu, item)
   val () = gtk_widget_show (item)
   val () = g_object_unref (item)

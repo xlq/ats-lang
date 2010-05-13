@@ -33,53 +33,27 @@
 
 //
 // Author: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
-// Start Time: April, 2010
+// Time: May, 2010
 //
 
 (* ****** ****** *)
 
-//
-// HX-2010-04-19: this is all deprecated!!!
-//
+fun gtk_separator_tool_item_new
+  (): GtkSeparatorToolItem_ref1 = "#atsctrb_gtk_separator_tool_item_new"
+// end of [gtk_separator_tool_item_new]
 
 (* ****** ****** *)
 
-fun gtk_file_selection_new
-  {l:agz} (title: !gstring l): GtkFileSelection_ref1
-  = "#atsctrb_gtk_file_selection_new"
-// end of [gtk_file_selection_new]
+fun gtk_separator_tool_item_get_draw
+  {c:cls | c <= GtkSeparatorToolItem} {l:agz}
+  (itm: !gobjref (c, l)): gboolean = "#atsctrb_gtk_separator_tool_item_get_draw"
+// end of [gtk_separator_tool_item_get_draw]
+
+fun gtk_separator_tool_item_set_draw
+  {c:cls | c <= GtkSeparatorToolItem} {l:agz}
+  (itm: !gobjref (c, l), draw: gboolean): void = "#atsctrb_gtk_separator_tool_item_set_draw"
+// end of [gtk_separator_tool_item_set_draw]
 
 (* ****** ****** *)
 
-fun gtk_file_selection_get_ok_button
-  {c:cls | c <= GtkFileSelection} {l:agz}
-  (filesel: !gobjref (c, l)):<> [l_btn:agz] (
-    minus (gobjref (c, l), gobjref (GtkButton, l_btn)) | gobjref (GtkButton, l_btn)
-  ) = "atsctrb_gtk_file_selection_get_ok_button"
-// end of [gtk_file_selection_get_ok_button]
-
-fun gtk_file_selection_get_cancel_button
-  {c:cls | c <= GtkFileSelection} {l:agz}
-  (filesel: !gobjref (c, l)):<> [l_btn:agz] (
-    minus (gobjref (c, l), gobjref (GtkButton, l_btn)) | gobjref (GtkButton, l_btn)
-  ) = "atsctrb_gtk_file_selection_get_cancel_button"
-// end of [gtk_file_selection_get_cancel_button]
-
-(* ****** ****** *)
-
-fun gtk_file_selection_get_filename
-  {c:cls | c <= GtkFileSelection} {l1:agz}
-  (filesel: !gobjref (c, l1))
-  : [l2:addr] (minus (gobjref (c, l1), gstring l2) | gstring l2)
-  = "#atsctrb_gtk_file_selection_get_filename"
-// end of [gtk_file_selection_get_filename]
-
-fun gtk_file_selection_set_filename
-  {c:cls | c <= GtkFileSelection} {l1,l2:agz} (
-    filesel: !gobjref (c, l1), filename: !gstring l2
-  ) : void = "#atsctrb_gtk_file_selection_set_filename"
-// end of [gtk_file_selection_set_filename]
-
-(* ****** ****** *)
-
-(* end of [gtkfilesel.sats] *)
+(* end of [gtkseparatortoolitem.sats] *)

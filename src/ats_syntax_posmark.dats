@@ -612,7 +612,7 @@ implement d0ec_posmark (d0c0) =
   | D0Cexndecs (d0c, d0cs) => begin
       e0xndec_posmark d0c; e0xndeclst_posmark d0cs
     end // end of [val]
-  | D0Cclassdec _ => ()
+  | D0Cclassdec _ => staexploc_posmark (d0c0.d0ec_loc)
   | D0Coverload _ => neuexploc_posmark (d0c0.d0ec_loc)
   | D0Cextype _ => staexploc_posmark (d0c0.d0ec_loc)
   | D0Cextval (_(*name*), d0e) => d0exp_posmark d0e

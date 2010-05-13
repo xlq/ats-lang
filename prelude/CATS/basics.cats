@@ -86,12 +86,6 @@ atspre_cloptr_free (
 /* ****** ****** */
 
 ATSinline()
-ats_ptr_type
-atspre_objmod_upcast (ats_ptr_type p) { return p ; }
-
-/* ****** ****** */
-
-ATSinline()
 ats_void_type
 atspre_vbox_make_view_ptr (ats_ptr_type p) { return ; }
 

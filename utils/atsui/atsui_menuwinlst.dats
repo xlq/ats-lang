@@ -66,7 +66,10 @@ fun cb_menu_window_item
 (* ****** ****** *)
 
 implement
-topenv_menu_window_append (filename, tb) = let
+topenv_menu_window_append {c} (filename, tb) = let
+//
+  prval () = clstrans {c,GtkTextBuffer,GObject} ()
+//
   val (fpf_menu | menu) = topenv_get_menu_window ()
   val item = gtk_menu_item_new_with_label (filename)
   val _sid = g_signal_connect_swapped (
@@ -83,8 +86,11 @@ end // end of [topenv_menu_window_append]
 
 implement
 topenv_menu_window_remove
-  (item) = () where {
+  {c} (item) = () where {
   val (fpf_menu | menu) = topenv_get_menu_window ()
+//
+  prval () = clstrans {c,GtkMenuItem,GtkWidget} ()
+//
   val () = gtk_container_remove (menu, item)
   prval () = fpf_menu (menu)
 } // end of [topenv_menu_window_remove]

@@ -80,8 +80,8 @@ overload ptr_of with ptr_of_gobjref
 
 (* ****** ****** *)
 
-objcls GObject = { super: (*none*) }
-objcls GInterface = { super: (*none*) }
+classdec GObject // super: none
+classdec GInterface // super: none
 
 (* ****** ****** *)
 

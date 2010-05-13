@@ -140,10 +140,6 @@ fun e0xndeclst_tr (ds: $Syn.e0xndeclst): $DEXP.e1xndeclst
 
 (* ****** ****** *)
 
-fun m0thdec_tr (mtd: $Syn.m0thdec): $DEXP.m1thdec
-fun m0thdeclst_tr (mtd: $Syn.m0thdeclst): $DEXP.m1thdeclst
-fun c0lassdec_tr (d: $Syn.c0lassdec): $DEXP.c1lassdec
-
 fun d0atsrtdec_tr (d: $Syn.d0atsrtdec): $DEXP.d1atsrtdec
 fun d0atsrtdeclst_tr (ds: $Syn.d0atsrtdeclst): $DEXP.d1atsrtdeclst
 

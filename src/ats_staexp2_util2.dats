@@ -1066,11 +1066,6 @@ in
     in
       cstr := cons (s2p, cstr); s2e
     end // end of [S2Eunion]
-  | _ when s2exp_is_objmod_cls_type s2e0 => let
-      val- S2Eapp (_, list_cons (s2e_cls, _)) = s2e0.s2exp_node
-    in
-      s2exp_cls_lab_get (loc0, s2e_cls, l0)
-    end // end of [_ when objmod ...]
   | _ => err2 {s2exp} (loc0, s2e0)
 end (* end of [s2exp_lab_get_restlin_cstr] *)
 
@@ -1525,7 +1520,36 @@ end (* end of [s2exp_slablst_lindel_cstr] *)
 
 (* ****** ****** *)
 
-implement subclass_relation_test (s2e1, s2e2) = 1 // TO BE FIXED!!!
+fun s2explst_subclass_test
+  (s2es1: s2explst, s2e2: s2exp): Sgn =
+  case+ s2es1 of
+  | list_cons (s2e1, s2es1) => let
+      val test = s2exp_subclass_test (s2e1, s2e2)
+    in
+      if test > 0 then 1 else s2explst_subclass_test (s2es1, s2e2)
+    end // end of [list_cons]
+  | list_nil () => 0
+// end of [s2explst_subclass_test]
+
+implement
+s2exp_subclass_test (s2e1, s2e2) = let
+  val s2e1 = s2exp_whnf s2e1 and s2e2 = s2exp_whnf s2e2
+(*
+  val () = begin
+    print "s2exp_subclass_test: s2e1 = "; print s2e1; print_newline ();
+    print "s2exp_subclass_test: s2e2 = "; print s2e2; print_newline ();
+  end // end of [val]
+*)
+  val test = s2exp_syneq (s2e1, s2e2)
+in
+  if test then 1 else begin
+    case+ s2e1.s2exp_node of
+    | S2Ecst s2c1 => let
+        val s2es1 = s2cst_supcls_get s2c1 in s2explst_subclass_test (s2es1, s2e2)
+      end // end of [S2Ecst]
+    | _ => 0
+  end (* end of [if] *)
+end // end of [subclass_relation_test]
 
 (* ****** ****** *)
 

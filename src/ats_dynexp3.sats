@@ -164,7 +164,6 @@ datatype d3ec_node =
   | D3Cdatdec of // datatype declarations
       ($Syn.datakind, s2cstlst)
   | D3Cexndec of d2conlst
-  | D3Cclassdec of c3lassdec
   | D3Cextype of // external type
       (string(*name*), s2exp(*def*))
   | D3Cextval of // external value
@@ -257,10 +256,6 @@ and d3exp_node =
       int
   | D3Elst of (* list expression *)
       (int(*lin*), s2exp (*element type*), d3explst (*elements*))
-  | D3Emtd of (* method *)
-      d2mtd_t
-  | D3Eobj of // dynamic modules or objects
-      (int(*kind*), c2lassdec, s2exp, m3thdeclst)
   | D3Eptrof_ptr of (* address of a pointer selection *)
       (d3exp, d3lab1lst)
   | D3Eptrof_var of (* address of a variable selection *)
@@ -319,17 +314,6 @@ and d3lab1_node =
   D3LAB1lab of (lab_t, s2exp) | D3LAB1ind of (d3explstlst, s2exp)
 // end of [d3lab1_node]
 
-and m3thdec =
-  | M3THDECmtd of (
-      loc_t, sym_t, d2var_t(*self*), d3expopt(*def*)
-    ) // end of [M1THDECmtd]
-  | M3THDECval of
-      (loc_t, sym_t, s2exp, d3expopt)
-  | M3THDECvar of
-      (loc_t, sym_t, s2exp, d3expopt)
-  | M3THDECimp of (loc_t, d2mtd_t, d3exp)
-// end of [m3thdec]
-  
 where d3ec = '{
   d3ec_loc= loc_t, d3ec_node= d3ec_node
 } // end of [d3ec]
@@ -392,16 +376,6 @@ and sc3lau = '{ (* type for static clauses *)
 } // end of [sc3lau]
 
 and sc3laulst = List sc3lau
-
-(* ****** ****** *)
-
-and m3thdeclst = List m3thdec
-
-and c3lassdec = '{
-  c3lassdec_loc= loc_t
-, c3lassdec_cst= s2cst_t
-, c3lassdec_mtdlst= m3thdeclst
-} // end of [c3lassdec]
 
 (* ****** ****** *)
 
@@ -616,17 +590,6 @@ fun d3exp_loopexn (_: loc_t, knd: int): d3exp
 fun d3exp_lst
   (_: loc_t, _lst: s2exp, lin: int, elt: s2exp, elts: d3explst): d3exp
 
-fun d3exp_mtd (_: loc_t, s2e: s2exp, d2m: d2mtd_t): d3exp
-
-fun d3exp_obj (
-    _: loc_t
-  , s2e_obj: s2exp
-  , knd: int
-  , d2c_cls: c2lassdec, s2e_cls: s2exp
-  , mtdlst: m3thdeclst
-  ) : d3exp
-// end of [d3exp_obj]
-
 fun d3exp_ptrof_ptr
   (_: loc_t, _ptr: s2exp, _root: d3exp, d3ls: d3lab1lst): d3exp
 
@@ -716,12 +679,6 @@ fun sc3lau_make (_: loc_t, sp2t: sp2at, exp: d3exp): sc3lau
 
 (* ****** ****** *)
 
-fun c3lassdec_make
-  (_: loc_t, s2c_cls: s2cst_t, mtds: m3thdeclst): c3lassdec
-// end of [c3lassdec_make]
-
-(* ****** ****** *)
-
 fun v3aldec_make (_: loc_t, pat: p3at, def: d3exp): v3aldec
 
 fun f3undec_make (_: loc_t, d2v: d2var_t, def: d3exp): f3undec
@@ -747,7 +704,6 @@ fun d3ec_saspdec (_: loc_t, _: s2aspdec): d3ec
 fun d3ec_dcstdec (_: loc_t, k: $Syn.dcstkind, _: d2cstlst): d3ec
 fun d3ec_datdec (_: loc_t, k: $Syn.datakind, _: s2cstlst): d3ec
 fun d3ec_exndec (_: loc_t, _: d2conlst): d3ec
-fun d3ec_classdec (_: loc_t, _: c3lassdec): d3ec
 fun d3ec_extype (_: loc_t, name: string, def: s2exp): d3ec
 fun d3ec_extval (_: loc_t, name: string, def: d3exp): d3ec
 fun d3ec_extcode (_: loc_t, position: int, code: string): d3ec

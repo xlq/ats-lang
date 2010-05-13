@@ -145,15 +145,22 @@ end // end of [lte_s2rtlst_s2rtlst]
 
 (* ****** ****** *)
 
+implement s2rt_is_cls (s2t) = begin case+ s2t of
+  | S2RTbas s2tb => begin case+ s2tb of
+    | S2RTBASpre id => id = $Sym.symbol_CLS | _ => false
+    end // end of [S2RTbas]
+  | _ => false
+end // end of [s2rt_is_int]
+
 implement s2rt_is_dat (s2t) = begin case+ s2t of
   | S2RTbas s2tb => (case+ s2tb of S2RTBASdef _ => true | _ => false)
-  | _ => false
+  | _ => false // end of [S2RTbas]
 end // end of [s2rt_is_dat]
 
 implement s2rt_is_int (s2t) = begin case+ s2t of
   | S2RTbas s2tb => begin case+ s2tb of
     | S2RTBASpre id => id = $Sym.symbol_INT | _ => false
-    end
+    end // end of [S2RTbas]
   | _ => false
 end // end of [s2rt_is_int]
 
@@ -179,7 +186,7 @@ implement s2rt_is_t0ype (s2t) = begin
   case+ s2t of
   | S2RTbas s2tb => begin case+ s2tb of
     | S2RTBASimp (id, _, _) => id = $Sym.symbol_T0YPE | _ => false
-    end
+    end // end of [S2RTbas]
   | _ => false
 end // end of [s2rt_is_t0ype]
 
@@ -187,7 +194,7 @@ implement s2rt_is_view (s2t) = begin
   case+ s2t of
   | S2RTbas s2tb => begin case+ s2tb of
     | S2RTBASimp (id, _, _) => id = $Sym.symbol_VIEW | _ => false
-    end
+    end // end of [S2RTbas]
   | _ => false
 end // end of [s2rt_is_view]
 
@@ -195,21 +202,20 @@ implement s2rt_is_viewtype (s2t) = begin
   case+ s2t of
   | S2RTbas s2tb => begin case+ s2tb of
     | S2RTBASimp (id, _, _) => id = $Sym.symbol_VIEWTYPE | _ => false
-    end
+    end // end of [S2RTbas]
   | _ => false
 end // end of [s2rt_is_viewtype]
 
 implement s2rt_is_viewtype_fun (s2t) = begin
   case+ s2t of
-  | S2RTfun (_, s2t) => s2rt_is_viewtype_fun s2t
-  | _ => s2rt_is_viewtype s2t
+  | S2RTfun (_, s2t) => s2rt_is_viewtype_fun s2t | _ => s2rt_is_viewtype s2t
 end // end of [s2rt_is_viewtype_fun]
 
 implement s2rt_is_viewt0ype (s2t) = begin
   case+ s2t of
   | S2RTbas s2tb => begin case+ s2tb of
     | S2RTBASimp (id, _, _) => id = $Sym.symbol_VIEWT0YPE | _ => false
-    end
+    end // end of [S2RTbas]
   | _ => false
 end // end of [s2rt_is_viewt0ype]
 
@@ -218,7 +224,7 @@ end // end of [s2rt_is_viewt0ype]
 implement s2rt_is_types (s2t) = case+ s2t of
   | S2RTbas s2tb => begin case+ s2tb of
     | S2RTBASimp (id, _, _) => id = $Sym.symbol_TYPES | _ => false
-    end
+    end // end of [S2RTbas]
   | _ => false
 
 (* ****** ****** *)
@@ -226,20 +232,21 @@ implement s2rt_is_types (s2t) = case+ s2t of
 implement s2rt_is_linear (s2t) = case+ s2t of
   | S2RTbas s2tb => begin case+ s2tb of
     | S2RTBASimp (id, _, lin) => (lin > 0) | _ => false
-    end
+    end // end of [S2RTbas]
   | _ => false
 
 implement s2rt_is_linear_fun (s2t) = case+ s2t of
-  | S2RTfun (_, s2t) => s2rt_is_linear_fun s2t
-  | _ => s2rt_is_linear s2t
+  | S2RTfun (_, s2t) => s2rt_is_linear_fun s2t | _ => s2rt_is_linear s2t
+// end of [s2rt_is_linear]
 
 #define PROOF_LEVEL 2
 
 implement s2rt_is_proof (s2t) = case+ s2t of
   | S2RTbas s2tb => begin case+ s2tb of
     | S2RTBASimp (id, prf, _) => prf >= PROOF_LEVEL | _ => false
-    end
+    end // end of [S2RTbas]
   | _ => false
+// end of [s2rt_is_proof]
 
 implement s2rt_is_proof_fun (s2t) = case+ s2t of
   | S2RTfun (_, s2t) => s2rt_is_proof_fun s2t | _ => s2rt_is_proof s2t
@@ -248,7 +255,7 @@ implement s2rt_is_proof_fun (s2t) = case+ s2t of
 implement s2rt_is_program (s2t) = case+ s2t of
   | S2RTbas s2tb => begin case+ s2tb of
     | S2RTBASimp (id, prf, _) => prf < PROOF_LEVEL | _ => false
-    end
+    end // end of [S2RTbas]
   | _ => false
 // end of [s2rt_is_program]
 
@@ -259,19 +266,18 @@ implement s2rt_is_program_fun (s2t) = case+ s2t of
 implement s2rt_is_impredicative (s2t) = case+ s2t of
   | S2RTbas s2tb => begin
       case+ s2tb of S2RTBASimp _ => true | _ => false
-    end
+    end // end of [S2RTbas]
   | _ => false
 // end of [s2rt_is_impredicative]
 
 implement s2rt_is_impredicative_fun (s2t) = case+ s2t of
-  | S2RTfun (_, s2t) => s2rt_is_impredicative_fun s2t
-  | _ => s2rt_is_impredicative s2t
+  | S2RTfun (_, s2t) => s2rt_is_impredicative_fun s2t | _ => s2rt_is_impredicative s2t
 // end of [s2rt_is_impredicative_fun]
 
 implement s2rt_is_boxed (s2t) = case+ s2t of
   | S2RTbas s2tb => begin case+ s2tb of
     | S2RTBASimp (id, prf, _) => (prf = 0) | _ => false
-    end
+    end // end of [S2RTbas]
   | _ => false
 // end of [s2rt_is_boxed]
 
@@ -449,7 +455,8 @@ implement s2eff_contain_effvar (s2fe, s2v) = case+ s2fe of
 
 // ------------------------------------------------
 
-fun s2eff_contain_s2exp (s2fe1: s2eff, s2e2: s2exp): bool = let
+fun s2eff_contain_s2exp
+  (s2fe1: s2eff, s2e2: s2exp): bool = let
   val s2e2 = s2exp_whnf s2e2
 in
   case+ s2e2.s2exp_node of
@@ -1012,13 +1019,15 @@ end // end of [s2kexp_match_fun_arg]
 
 fun s2cst_root_get (s2c: s2cst_t): s2cst_t = begin
   case+ s2cst_sup_get s2c of
-  | S2CSTOPTsome s2c => s2cst_root_get s2c | S2CSTOPTnone () => s2c
+  | S2CSTLSTcons (s2c, _) => s2cst_root_get s2c | S2CSTLSTnil () => s2c
 end // end of [s2cst_root_get]
 
 fn s2zexp_make_s2cst (s2c: s2cst_t): s2zexp = S2ZEcst s2c
 
 implement s2zexp_make_s2exp (s2e0) = let
-  fun aux_s2exp (s2vss: s2varlstlst, s2e0: s2exp): s2zexp = let
+  fun aux_s2exp (
+      s2vss: s2varlstlst, s2e0: s2exp
+    ) : s2zexp = let
     val s2e0 = s2exp_whnf s2e0 in case+ s2e0.s2exp_node of
       | S2Eapp (s2e_fun, s2es_arg) =>
           aux_s2exp_app (s2vss, s2e0.s2exp_srt, s2e_fun, s2es_arg)
@@ -1174,13 +1183,15 @@ in
   loop (sub, s2vs, s2es)
 end // end of [stasub_addlst]
 
-implement stasub_domain_get (sub) = case+ sub of
+implement
+stasub_domain_get (sub) = case+ sub of
   | list_cons (s2vs2e, sub) =>
       list_cons (s2vs2e.0, stasub_domain_get sub)
   | list_nil () => list_nil ()
 // end of stasub_domain_get
 
-implement stasub_codomain_get_whnf (sub) = case+ sub of
+implement
+stasub_codomain_get_whnf (sub) = case+ sub of
   | list_cons (s2vs2e, sub) => let
       val s2e = s2exp_whnf s2vs2e.1 in
       list_cons (s2e, stasub_codomain_get_whnf sub)

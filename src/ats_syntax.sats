@@ -125,24 +125,28 @@ and stadefkind_viewtype (_: t0kn):<> stadefkind = "stadefkind_viewtype"
 
 (* ****** ****** *)
 
+(*
+// HX-2010-05-12: the OOP plan is permanently abandoned
 datatype clskind =
   | CLSKINDmod of t0kn | CLSKINDobj of t0kn
 // end of [clskind]
-
 fun clskind_mod (_: t0kn):<> clskind = "clskind_mod"
 fun clskind_obj (_: t0kn):<> clskind = "clskind_obj"
+*)
 
 (* ****** ****** *)
 
+(*
+// HX-2010-05-12: the OOP plan is permanently abandoned
 datatype objkind =
   | OBJKINDobj_t of t0kn
   | OBJKINDobj_vt of t0kn
   | OBJKINDobjmod of t0kn
 // end of [objkind]
-
 fun objkind_obj_t (_: t0kn):<> objkind = "objkind_obj_t"
 fun objkind_obj_vt (_: t0kn):<> objkind = "objkind_obj_vt"
 fun objkind_objmod (_: t0kn):<> objkind = "objkind_objmod"
+*)
 
 (* ****** ****** *)
 
@@ -635,6 +639,7 @@ fun d0ynq_symcolon (id: i0de): d0ynq = "d0ynq_symcolon"
 fun d0ynq_symdot (id: i0de): d0ynq = "d0ynq_symdot"
 fun d0ynq_symdot_symcolon (id_dot: i0de, id_colon: i0de): d0ynq
   = "d0ynq_symdot_symcolon"
+// end of [d0ynq_symdot_symcolon]
 
 (* ****** ****** *)
 
@@ -642,32 +647,34 @@ fun d0ynq_symdot_symcolon (id_dot: i0de, id_colon: i0de): d0ynq
 
 typedef sqi0de = '{
   sqi0de_loc= loc_t, sqi0de_qua= s0taq, sqi0de_sym= sym_t
-}
+} // end of [sqi0de]
 
 fun sqi0de_make_none (id: i0de): sqi0de = "sqi0de_make_none"
 fun sqi0de_make_some (q: s0taq, id: i0de): sqi0de = "sqi0de_make_some"
+
+(* ****** ****** *)
 
 (* qualified dynamic identifiers *)
 
 typedef dqi0de = '{
   dqi0de_loc= loc_t, dqi0de_qua= d0ynq, dqi0de_sym= sym_t
-}
+} // end of [dqi0de]
 
 fun dqi0de_make_none (id: i0de): dqi0de = "dqi0de_make_none"
 fun dqi0de_make_some (q: d0ynq, id: i0de): dqi0de = "dqi0de_make_some"
 
-//
+(* ****** ****** *)
 
 typedef arrqi0de = '{
   arrqi0de_loc= loc_t, arrqi0de_qua= d0ynq, arrqi0de_sym= sym_t
-}
+} // end of [arrqi0de]
 
 fun arrqi0de_make_none (id: i0de): arrqi0de =
   "arrqi0de_make_none"
 fun arrqi0de_make_some (q: d0ynq, id: i0de): arrqi0de =
   "arrqi0de_make_some"
 
-//
+(* ****** ****** *)
 
 typedef tmpqi0de = '{
   tmpqi0de_loc= loc_t, tmpqi0de_qua= d0ynq, tmpqi0de_sym= sym_t
@@ -1160,10 +1167,20 @@ fun e0xndeclst_cons (x: e0xndec, xs: e0xndeclst): e0xndeclst
 
 (* ****** ****** *)
 
-abstype f0arglst_t // = f0arglst
+(*
+//
+// HX-2010-05-12: the OOP plan is permanently abandoned
+//
 
+abstype f0arglst_t // = f0arglst
+castfn f0arglst_t_of_f0arglst (x: f0arglst): f0arglst_t
+castfn f0arglst_of_f0arglst_t (x: f0arglst_t): f0arglst
 abstype d0exp_t // = d0exp
+castfn d0exp_t_of_d0exp (x: d0exp): d0exp_t
+castfn d0exp_of_d0exp_t (x: d0exp_t): d0exp
 abstype d0expopt_t // = d0expopt
+castfn d0expopt_t_of_d0expopt (x: d0expopt): d0expopt_t
+castfn d0expopt_of_d0expopt_t (x: d0expopt_t): d0expopt
 
 datatype m0thdec =
   | M0THDECmtd of (
@@ -1217,6 +1234,7 @@ fun c0lassdec_make (
   , supclss: s0explst, mtds: m0thdeclst, t_end: t0kn
   ) : c0lassdec
   = "c0lassdec_make"
+*)
 
 (* ****** ****** *)
 
@@ -1608,9 +1626,11 @@ datatype d0exp_node =
   | D0Emod of (* for modules *)
       moditemdec list
 *)
+(*
   | D0Eobj of ( // for objects
       objkind, s0exp(*objcls*), m0thdeclst
     ) // end of [D0Eobj]
+*)
   | D0Eopide of sym_t (* for dynamic identifiers *)
 (*
   | D0Eparse of ( // parse string
@@ -1689,10 +1709,12 @@ and d0ec_node =
       (dcstkind, s0qualstlst, d0cstdec, d0cstdeclst)
   | D0Cdatdecs of (datakind, d0atdec, d0atdeclst, s0expdeflst)
   | D0Cexndecs of (e0xndec, e0xndeclst)
+(*
   | D0Cclassdec of (* class declaration *)
       (clskind, s0qualstlst, c0lassdec, s0expdeflst)
-  | D0Coverload of (* overloading *)
-      (i0de, dqi0de)
+*)
+  | D0Cclassdec of (i0de, s0expopt)
+  | D0Coverload of (i0de, dqi0de) // overloading
   | D0Cextype of (string, s0exp) // type to be used in C
   | D0Cextval of (string, d0exp) // value to be used in C
   | D0Cextcode of (* external code *)
@@ -1872,17 +1894,6 @@ and guad0ec : type = '{
 
 (* ****** ****** *)
 
-castfn f0arglst_t_of_f0arglst (x: f0arglst): f0arglst_t
-castfn f0arglst_of_f0arglst_t (x: f0arglst_t): f0arglst
-
-castfn d0exp_t_of_d0exp (x: d0exp): d0exp_t
-castfn d0exp_of_d0exp_t (x: d0exp_t): d0exp
-
-castfn d0expopt_t_of_d0expopt (x: d0expopt): d0expopt_t
-castfn d0expopt_of_d0expopt_t (x: d0expopt_t): d0expopt
-
-(* ****** ****** *)
-
 fun d0exp_ann (_: d0exp, _: s0exp): d0exp = "d0exp_ann"
 
 fun d0exp_apps (_fun: d0exp, _arg: d0explst): d0exp = "d0exp_apps"
@@ -2020,9 +2031,12 @@ fun d0exp_macsyn_encode_seq (t_beg: t0kn, _: d0explst, t_end: t0kn): d0exp
 
 //
 
+(*
+// HX-2010-05-12: the OOP plan is permanently abandoned
 fun d0exp_obj (knd: objkind, cls: s0exp, _: m0thdeclst, t_end: t0kn): d0exp
   = "d0exp_obj"
 // end of [d0exp_obj]
+*)
 
 //
 
@@ -2309,6 +2323,10 @@ fun d0ec_sexpdefs (k: stadefkind, d: s0expdef, ds: s0expdeflst): d0ec
 
 fun d0ec_saspdec (d: s0aspdec): d0ec = "d0ec_saspdec"
 
+fun d0ec_dcstdecs
+  (k: dcstkind, qua: s0qualstlst, d: d0cstdec, ds: d0cstdeclst): d0ec
+  = "d0ec_dcstdecs"
+
 fun d0ec_datdecs
   (k: datakind, d: d0atdec, ds_dec: d0atdeclst, ds_def: s0expdeflst): d0ec
   = "d0ec_datdecs"
@@ -2316,18 +2334,30 @@ fun d0ec_datdecs
 fun d0ec_exndecs (t: t0kn, d: e0xndec, ds: e0xndeclst): d0ec
   = "d0ec_exndecs"
 
+(* ****** ****** *)
+
+(*
 fun d0ec_classdec (
     knd: clskind, arg: s0qualstlst, d_dec: c0lassdec, ds_def: s0expdeflst
   ) : d0ec
   = "d0ec_classdec"
+*)
 
-fun d0ec_dcstdecs
-  (k: dcstkind, qua: s0qualstlst, d: d0cstdec, ds: d0cstdeclst): d0ec
-  = "d0ec_dcstdecs"
+fun d0ec_classdec_none
+  (t: t0kn, id: i0de): d0ec = "d0ec_classdec_none"
+fun d0ec_classdec_some
+  (t: t0kn, id: i0de, sup: s0exp): d0ec = "d0ec_classdec_some"
+// end of [d0ec_classdec_some]
 
-fun d0ec_overload (id: i0de, qid: dqi0de): d0ec = "d0ec_overload"
-fun d0ec_overload_lrbrackets (t_l: t0kn, t_r: t0kn, qid: dqi0de): d0ec
-  = "d0ec_overload_lrbrackets"
+(* ****** ****** *)
+
+fun d0ec_overload
+  (t: t0kn, id: i0de, qid: dqi0de): d0ec = "d0ec_overload"
+// end of [d0ec_overload]
+
+fun d0ec_overload_lrbrackets
+  (t: t0kn, t_l: t0kn, t_r: t0kn, qid: dqi0de): d0ec = "d0ec_overload_lrbrackets"
+// end of [d0ec_overload_lrbrackets]
 
 (* ****** ****** *)
 

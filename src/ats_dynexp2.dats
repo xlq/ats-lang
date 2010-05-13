@@ -770,21 +770,6 @@ implement d2exp_macsyn (loc, knd, d2e) = '{
 
 (* ****** ****** *)
 
-implement d2exp_mtd (loc, d2m) = '{
-  d2exp_loc= loc, d2exp_node= D2Emtd (d2m), d2exp_typ= None ()
-} // end of [d2exp_mtd]
-
-(* ****** ****** *)
-
-implement d2exp_obj
-  (loc, knd, d2c_cls, s2e_cls, mtdlst) = '{
-  d2exp_loc= loc
-, d2exp_node= D2Eobj (knd, d2c_cls, s2e_cls, mtdlst)
-, d2exp_typ= None ()
-} // end of [d2exp_obj]
-
-(* ****** ****** *)
-
 implement d2exp_ptrof (loc, d2e) = '{
   d2exp_loc= loc, d2exp_node= D2Eptrof (d2e), d2exp_typ= None ()
 } // end of [d2exp_ptrof]
@@ -1027,16 +1012,6 @@ implement s2aspdec_make (loc, s2c, def) = '{
   s2aspdec_loc= loc, s2aspdec_cst= s2c, s2aspdec_def= def
 }
 
-implement c2lassdec_make
-  (loc, knd, s2c, supclss, mtdlst, mtdmap) = '{
-  c2lassdec_loc= loc
-, c2lassdec_knd= knd
-, c2lassdec_cst= s2c
-, c2lassdec_suplst= supclss
-, c2lassdec_mtdlst= mtdlst
-, c2lassdec_mtdmap= mtdmap
-} // end of [c2lassdec_make]
-
 implement v2aldec_make (loc, p2t, def, ann) = '{
   v2aldec_loc= loc, v2aldec_pat= p2t, v2aldec_def= def, v2aldec_ann= ann
 } // end of [v2aldec_make]
@@ -1105,10 +1080,6 @@ implement d2ec_datdec (loc, dtk, s2cs) = '{
 
 implement d2ec_exndec (loc, d2cs) = '{
   d2ec_loc= loc, d2ec_node= D2Cexndec (d2cs)
-}
-
-implement d2ec_classdec (loc, d2c) = '{
-  d2ec_loc= loc, d2ec_node= D2Cclassdec (d2c)
 }
 
 implement d2ec_overload (loc, id, d2i) = '{

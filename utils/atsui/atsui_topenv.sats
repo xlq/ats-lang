@@ -71,7 +71,7 @@ fun topenv_get_vbox0 ()
 (* ****** ****** *)
 
 fun topenv_get_menu_window ()
-  : [l:agz] (GtkTextView_ref l -<lin,prf> void | GtkTextView_ref l)
+  : [l:agz] (GtkMenu_ref l -<lin,prf> void | GtkMenu_ref l)
   = "atsui_topenv_get_menu_window"
 // end of [topenv_get_menu_window]
 

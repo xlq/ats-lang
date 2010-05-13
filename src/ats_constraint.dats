@@ -861,7 +861,7 @@ in
     | list_cons (
         s2e1, list_cons (s2e2, list_nil ())
       ) => let
-        val sgn = subclass_relation_test (s2e1, s2e2) in
+        val sgn = s2exp_subclass_test (s2e1, s2e2) in
         case+ 0 of
         | _ when sgn > 0 => Some_vt s3bexp_true
         | _ when sgn < 0 => Some_vt s3bexp_false

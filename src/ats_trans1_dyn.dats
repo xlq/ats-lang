@@ -1063,17 +1063,6 @@ fun aux_item (d0e0: d0exp): d1expitm = let
   | D0Emacsyn (knd, d0e) => begin
       $Fix.ITEMatm (d1exp_macsyn (loc0, knd, d0exp_tr d0e))
     end // end of [D0Emacsyn]
-  | D0Eobj (knd, cls, mtds) => let
-      val knd = (case+ knd of
-        | OBJKINDobj_t _ => 0 | OBJKINDobj_vt _ => 1
-        | OBJKINDobjmod _ => ~1
-      ) : int
-      val cls = s0exp_tr cls
-      val mtds = m0thdeclst_tr mtds
-      val d1e_obj = d1exp_obj (loc0, knd, cls, mtds)
-    in
-      $Fix.ITEMatm (d1e_obj)
-    end // end of [D0Eobj]
   | D0Eopide id => $Fix.ITEMatm (d1exp_ide (loc0, id))
   | D0Eptrof () => let
       fn f (d1e: d1exp):<cloref1> d1expitm = let
@@ -1256,85 +1245,6 @@ implement d0expopt_tr (od0e) = case+ od0e of
 (* ****** ****** *)
 
 // translation of declarations
-
-(* ****** ****** *)
-
-implement m0thdec_tr (mtd) = case+ mtd of
-  | M0THDECmtd
-      (loc, sym, arg, eff, res, def) => let
-      val def_dummy = d0exp_empty (loc)
-      val def = d0expopt_of_d0expopt_t (def)
-      val arg = f0arglst_of_f0arglst_t (arg)
-      val lamknd = LAMKINDfix ()
-//
-      val (ofc, oefc) = (case+ eff of
-        | Some tags => (Some fc, Some efc) where {
-            val fc0 = $Syn.FUNCLOfun () // default is [function]
-            val (fc, lin, prf, efc) = $Eff.e0fftaglst_tr (fc0, tags)
-          } // end of [Some]
-        | None () => let
-            val efc = $Eff.EFFCSTall () in (None(*ofc*), Some efc)
-          end // end of [None]
-      ) : @(Option funclo, efcopt)
-//
-      val def_dummy = d0exp_lams_dyn_tr (
-        lamknd, None(*oloc*), ofc, 0(*lin*), arg, Some res, oefc, def_dummy
-      ) // end of [d0exp_lams_dyn_tr]
-      val def = (case+ def of
-        | Some d0e => Some d1e where {
-            val d1e = d0exp_lams_dyn_tr
-              (lamknd, None(*oloc*), ofc, 0(*lin*), arg, Some res, oefc, d0e)
-          } // end of [Some]
-        | None () => None ()
-      ) : d1expopt
-(*
-      val () = begin
-        print "m0thdec_tr: M0THDECmtd: sym = "; print sym; print_newline ();
-        print "m0thdec_tr: M0THDECmtd: def_dummy = "; print def_dummy; print_newline ()
-      end // end of [val]
-*)
-    in
-      M1THDECmtd (loc, sym, def_dummy, def)
-    end // end of [M0THDECmtd]      
-  | M0THDECval (loc, sym, res, def) => let
-      val res = s0exp_tr res
-      val def = d0expopt_of_d0expopt_t def; val def = d0expopt_tr def
-    in
-      M1THDECval (loc, sym, res, def)
-    end // end of [M0THDECval]
-  | M0THDECvar (loc, sym, res, def) => let
-      val res = s0exp_tr res
-      val def = d0expopt_of_d0expopt_t def; val def = d0expopt_tr def
-    in
-      M1THDECvar (loc, sym, res, def)
-    end // end of [M0THDECvar]
-  | M0THDECimp (loc, sym, arg, res, def) => let
-      val def = d0exp_of_d0exp_t (def)
-      val arg = f0arglst_of_f0arglst_t (arg)
-      val lamknd = LAMKINDfix ()
-      val def = d0exp_lams_dyn_tr (
-        lamknd, None(*oloc*), None(*ofc*), 0(*lin*), arg, res, None(*oefc*), def
-      ) // end of [d0exp_lams_dyn_tr]
-    in
-      M1THDECimp (loc, sym, def)
-    end // end of [M0THDECimp]
-// end of [m0thdec_tr]
-
-implement m0thdeclst_tr (mtds) =
-  $Lst.list_map_fun (mtds, m0thdec_tr)
-// end of [m0thdeclst_tr]
-
-(* ****** ****** *)
-
-implement c0lassdec_tr (d) = let
-  val arg = s0arglstlst_tr (d.c0lassdec_arg)
-  val supclss = s0explst_tr (d.c0lassdec_suplst)
-  val mtdlst = m0thdeclst_tr (d.c0lassdec_mtdlst)
-in
-  c1lassdec_make (
-    d.c0lassdec_loc, d.c0lassdec_fil, d.c0lassdec_sym, arg, supclss, mtdlst
-  ) // end of [c1lassdec_make]
-end // end of [c0lassdec_tr]
 
 (* ****** ****** *)
 
@@ -1743,14 +1653,9 @@ implement d0ec_tr d0c0 = begin
     in
       d1ec_exndecs (d0c0.d0ec_loc, d1c :: d1cs)
     end // end of [D0Cexndecs]
-  | D0Cclassdec (knd, s0qss, d0c1, d0cs2) => let
-      val s1qss = s0qualstlst_tr (s0qss)
-      val knd =
-        (case+ knd of CLSKINDobj _ => 0 | CLSKINDmod _ => 1): int
-      // end of [val]
-      val d1c1 = c0lassdec_tr (d0c1) and d1cs2 = s0expdeflst_tr (d0cs2)
-    in
-      d1ec_classdec (d0c0.d0ec_loc, knd, s1qss, d1c1, d1cs2)
+  | D0Cclassdec (id, sup) => let
+      val sup = s0expopt_tr (sup) in
+      d1ec_classdec (d0c0.d0ec_loc, id, sup)
     end // end of [D0Cclassdec]
   | D0Coverload (id, qid) => begin
       d1ec_overload (d0c0.d0ec_loc, id, qid)
