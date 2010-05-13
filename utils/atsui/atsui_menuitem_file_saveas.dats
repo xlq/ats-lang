@@ -222,4 +222,4 @@ cb_saveas_activate () = GTRUE where {
 
 (* ****** ****** *)
 
-(* end of [atsui_saveas.dats] *)
+(* end of [atsui_menuitem_file_saveas.dats] *)

@@ -236,7 +236,9 @@ fun gtk_widget_modify_bg
 // end of [gtk_widget_modify_bg]
 
 (* ****** ****** *)
-
+//
+// HX-2010-05-13: checked: this is a 'get0' function
+//
 fun gtk_widget_get_colormap
   {c:cls | c <= GtkWidget} {l:agz}
   (widget: !gobjref (c, l)): [l1:agz] (

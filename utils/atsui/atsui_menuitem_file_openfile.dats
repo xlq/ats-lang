@@ -204,4 +204,4 @@ cb_openfile_activate () = GTRUE where {
 
 (* ****** ****** *)
 
-(* end of [atsui_openfile.dats] *)
+(* end of [atsui_menuitem_file_openfile.dats] *)

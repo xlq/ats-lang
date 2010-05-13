@@ -90,4 +90,4 @@ implement cb_quit_activate () = GTRUE where {
 
 (* ****** ****** *)
 
-(* end of [atsui_quit.dats] *)
+(* end of [atsui_menuite_file_quit.dats] *)
