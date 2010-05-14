@@ -6,7 +6,7 @@
 #
 
 ATSCC="$(ATSHOME)"/bin/atscc
-XRCFLAGS = `pkg-config gtk+-2.0 --cflags`
+XRCFLAGS=`pkg-config cairo --cflags --libs`
 
 ######
 

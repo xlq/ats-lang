@@ -12,6 +12,8 @@
 
 ATSCC=$(ATSHOME)/bin/atscc
 ATSCTRB=$(ATSHOME)/contrib/cairo/atsctrb_cairo.o
+XRCFLAGS=`pkg-config cairo --cflags --libs`
+GTKCFLAGS=`pkg-config gtk+-2.0 --cflags --libs`
 
 ######
 
@@ -41,41 +43,41 @@ compall: \
 ######
 
 test1-1: cairo-test1-1.dats
-	$(ATSCC) -o test1-1 `pkg-config --cflags --libs cairo` \
+	$(ATSCC) -o test1-1 `pkg-config cairo --cflags --libs` \
           cairo-test1-1.dats \
      && ./test1-1
 
 test1-2: cairo-test1-2.dats
-	$(ATSCC) -o test1-2 `pkg-config --cflags --libs gtk+-2.0` \
+	$(ATSCC) -o test1-2 `pkg-config gtk+-2.0 --cflags --libs` \
           cairo-test1-2.dats \
      # && ./test1-2
 
 ######
 
 test2: cairo-test2.dats
-	$(ATSCC) -o test2 `pkg-config --cflags --libs cairo` cairo-test2.dats \
+	$(ATSCC) -o test2 $(XRCFLAGS) cairo-test2.dats \
      && ./test2
 
 test3: cairo-test3.dats
-	$(ATSCC) -o test3 `pkg-config --cflags --libs cairo` cairo-test3.dats \
+	$(ATSCC) -o test3 $(XRCFLAGS) cairo-test3.dats \
      && ./test3
 
 test4: cairo-test4.dats
-	$(ATSCC) -o test4 `pkg-config --cflags --libs cairo` cairo-test4.dats \
+	$(ATSCC) -o test4 $(XRCFLAGS) cairo-test4.dats \
      && ./test4
 
 test5: cairo-test5.dats
-	$(ATSCC) -o test5 `pkg-config --cflags --libs cairo` cairo-test5.dats \
+	$(ATSCC) -o test5 $(XRCFLAGS) cairo-test5.dats \
      && ./test5
 
 test6: cairo-test6.dats
-	$(ATSCC) -o test6 `pkg-config --cflags --libs cairo` cairo-test6.dats \
+	$(ATSCC) -o test6 $(XRCFLAGS) cairo-test6.dats \
      && ./test6
 
 ######
 
 test7-1: cairo-test7-1.dats
-	$(ATSCC) -o test7-1 `pkg-config --cflags --libs cairo` cairo-test7-1.dats \
+	$(ATSCC) -o test7-1 $(XRCFLAGS) cairo-test7-1.dats \
      && ./test7-1
 
 test7-2: cairo-test7-2.dats
@@ -84,50 +86,50 @@ test7-2: cairo-test7-2.dats
 ######
 
 test8-1: cairo-test8-1.dats
-	$(ATSCC) -o test8-1 `pkg-config --cflags --libs cairo` cairo-test8-1.dats \
+	$(ATSCC) -o test8-1 $(XRCFLAGS) cairo-test8-1.dats \
      && ./test8-1
 
 test8-2: cairo-test8-2.dats
-	$(ATSCC) -o test8-2 `pkg-config --cflags --libs cairo` cairo-test8-2.dats -lX11 \
+	$(ATSCC) -o test8-2 $(XRCFLAGS) cairo-test8-2.dats -lX11 \
      # && ./test8-2
 
 test8-3: cairo-test8-3.dats
-	$(ATSCC) -o test8-3 `pkg-config --cflags --libs gtk+-2.0` cairo-test8-3.dats -lX11 \
+	$(ATSCC) -o test8-3 $(GTKCFLAGS) cairo-test8-3.dats -lX11 \
      # && ./test8-3
 
 ######
 
 test9: cairo-test9.dats
-	$(ATSCC) -o test9 `pkg-config --cflags --libs gtk+-2.0` cairo-test9.dats
+	$(ATSCC) -o test9 $(GTKCFLAGS) cairo-test9.dats
 
 ######
 
 test10: cairo-test10.dats
-	$(ATSCC) -o test10 `pkg-config --cflags --libs cairo` cairo-test10.dats \
+	$(ATSCC) -o test10 $(XRCFLAGS) cairo-test10.dats \
      && ./test10
 
 test11: cairo-test11.dats
-	$(ATSCC) -o test11 `pkg-config --cflags --libs cairo` cairo-test11.dats \
+	$(ATSCC) -o test11 $(XRCFLAGS) cairo-test11.dats \
      && ./test11
 
 test12: cairo-test12.dats
-	$(ATSCC) -o test12 `pkg-config --cflags --libs cairo` cairo-test12.dats \
+	$(ATSCC) -o test12 $(XRCFLAGS) cairo-test12.dats \
      && ./test12
 
 test13: cairo-test13.dats
-	$(ATSCC) -o test13 `pkg-config --cflags --libs cairo` cairo-test13.dats \
+	$(ATSCC) -o test13 $(XRCFLAGS) cairo-test13.dats \
      && ./test13
 
 test14: cairo-test14.dats
-	$(ATSCC) -o test14 `pkg-config --cflags --libs cairo` cairo-test14.dats \
+	$(ATSCC) -o test14 $(XRCFLAGS) cairo-test14.dats \
      && ./test14
 
 test15: cairo-test15.dats
-	$(ATSCC) -o test15 `pkg-config --cflags --libs cairo` cairo-test15.dats \
+	$(ATSCC) -o test15 $(XRCFLAGS) cairo-test15.dats \
      && ./test15
 
 test16: cairo-test16.dats
-	$(ATSCC) -o test16 `pkg-config --cflags --libs cairo` cairo-test16.dats \
+	$(ATSCC) -o test16 $(XRCFLAGS) cairo-test16.dats \
      && ./test16
 
 ######

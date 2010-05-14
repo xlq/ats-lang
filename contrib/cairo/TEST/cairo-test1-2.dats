@@ -29,8 +29,9 @@ staload "contrib/cairo/SATS/cairo.sats"
 fun draw_time {l:agz} (
     cr: !cairo_ref l, wd: int, ht: int
   ) : void = let
+  // HX: using a fixed-width font
   val () = cairo_select_font_face
-    (cr, "Sans", CAIRO_FONT_SLANT_NORMAL, CAIRO_FONT_WEIGHT_BOLD)
+    (cr, "Courier", CAIRO_FONT_SLANT_NORMAL, CAIRO_FONT_WEIGHT_BOLD)
   val () = cairo_set_font_size (cr, 32.0)
 //
   var time: time_t
