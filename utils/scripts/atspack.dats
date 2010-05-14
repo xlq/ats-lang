@@ -206,16 +206,20 @@ end // end of [DIRmode]
 
 (* ****** ****** *)
 
-fn dir_copy
-  (srcdir: string, dstdir: string, test: string -> bool) = let
+fn dir_copy (
+    srcdir: string, dstdir: string, test: string -> bool
+  ) : void = let
   val srcdir = string1_of_string srcdir
   and dstdir = string1_of_string dstdir
-
+//
   macdef cp (name) = fcopy_exn
     (srcdir ++ ,(name), dstdir ++ ,(name))
-
-  fun loop (dir: &DIR):<cloref1> void = let
-    val name = dirent_name_get (dir) in case+ 0 of
+//
+  fun loop (
+      dir: &DIR
+    ) :<cloref1> void = let
+    val name = dirent_name_get (dir) in
+    case+ 0 of
     | _ when stropt_is_some name => let
         val name = stropt_unsome (name)
         val () = case+ name of
@@ -231,7 +235,6 @@ fn dir_copy
 in
   // empty
 end // end of [dir_copy]
-
 
 (* ****** ****** *)
 
@@ -679,10 +682,21 @@ fn doc_dir_copy () = let
   val () = mkdir_exn (DSTROOTdoc_EXAMPLE_MULTICORE, DIRmode)
   macdef cp (name) = fcopy_exn (
     SRCROOTdoc_EXAMPLE_MULTICORE ++ ,(name), DSTROOTdoc_EXAMPLE_MULTICORE ++ ,(name)
-  )
+  ) // end of [macdef]
   val () = cp "Makefile"
   val () = dir_copy
     (SRCROOTdoc_EXAMPLE_MULTICORE, DSTROOTdoc_EXAMPLE_MULTICORE, name_is_xats)
+  // end of [val]
+//
+  val SRCROOTdoc_EXAMPLE_GTK = SRCROOTdoc_EXAMPLE ++ "GTK/"
+  val DSTROOTdoc_EXAMPLE_GTK = DSTROOTdoc_EXAMPLE ++ "GTK/"
+  val () = mkdir_exn (DSTROOTdoc_EXAMPLE_GTK, DIRmode)
+  macdef cp (name) = fcopy_exn (
+    SRCROOTdoc_EXAMPLE_GTK ++ ,(name), DSTROOTdoc_EXAMPLE_GTK ++ ,(name)
+  ) // end of [macdef]
+  val () = cp "Makefile"
+  val () = dir_copy
+    (SRCROOTdoc_EXAMPLE_GTK, DSTROOTdoc_EXAMPLE_GTK, name_is_xats)
   // end of [val]
 //
   val SRCROOTdoc_EXAMPLE_OpenGL = SRCROOTdoc_EXAMPLE ++ "OpenGL/"
@@ -690,7 +704,7 @@ fn doc_dir_copy () = let
   val () = mkdir_exn (DSTROOTdoc_EXAMPLE_OpenGL, DIRmode)
   macdef cp (name) = fcopy_exn (
     SRCROOTdoc_EXAMPLE_OpenGL ++ ,(name), DSTROOTdoc_EXAMPLE_OpenGL ++ ,(name)
-  )
+  ) // end of [macdef]
   val () = cp "Makefile"
   val () = dir_copy
     (SRCROOTdoc_EXAMPLE_OpenGL, DSTROOTdoc_EXAMPLE_OpenGL, name_is_xats)
@@ -722,7 +736,6 @@ fn lib_dir_copy
   (srclibname: string, dstlibname: string): void = let
   val srclibname = string1_of_string srclibname
   and dstlibname = string1_of_string dstlibname
-  val () = mkdir_exn (dstlibname, DIRmode)
 //
   val srclibname_SATS = srclibname ++ "SATS/"
   val dstlibname_SATS = dstlibname ++ "SATS/"
@@ -730,11 +743,15 @@ fn lib_dir_copy
   val () = dir_copy
     (srclibname_SATS, dstlibname_SATS, name_is_sats)
 //
+  // DATS is optional
   val srclibname_DATS = srclibname ++ "DATS/"
-  val dstlibname_DATS = dstlibname ++ "DATS/"
-  val () = mkdir_exn (dstlibname_DATS, DIRmode)
-  val () = dir_copy
-    (srclibname_DATS, dstlibname_DATS, name_is_dats)
+  val () = if
+    file_isexi (srclibname_DATS) then let
+    val dstlibname_DATS = dstlibname ++ "DATS/"
+    val () = mkdir_exn (dstlibname_DATS, DIRmode)
+  in
+    dir_copy (srclibname_DATS, dstlibname_DATS, name_is_dats)
+  end // end of [val]
 //
   // CATS is optional
   val srclibname_CATS = srclibname ++ "CATS/"
@@ -767,6 +784,7 @@ fn prelude_dir_copy () = let
   macdef cp (name) = fcopy_exn (
     SRCROOTprelude ++ ,(name), DSTROOTprelude ++ ,(name)
   )
+  val () = mkdir_exn (DSTROOTprelude, DIRmode)
   val () = lib_dir_copy (SRCROOTprelude, DSTROOTprelude)
   val () = cp "fixity.ats"
   val () = cp "basics_sta.sats"
@@ -784,30 +802,23 @@ end // end of [prelude_dir_copy]
 fn libc_dir_copy () = let
   val SRCROOTlibc = SRCROOT ++ "libc/"
   val DSTROOTlibc = DSTROOT ++ "libc/"
+  val () = mkdir_exn (DSTROOTlibc, DIRmode)
   val () = lib_dir_copy (SRCROOTlibc, DSTROOTlibc)
 //
   val SRCROOTlibc_sys = SRCROOTlibc ++ "sys/"
   val DSTROOTlibc_sys = DSTROOTlibc ++ "sys/"
+  val () = mkdir_exn (DSTROOTlibc_sys, DIRmode)
   val () = lib_dir_copy (SRCROOTlibc_sys, DSTROOTlibc_sys)
 //
   val SRCROOTlibc_arpa = SRCROOTlibc ++ "arpa/"
   val DSTROOTlibc_arpa = DSTROOTlibc ++ "arpa/"
+  val () = mkdir_exn (DSTROOTlibc_arpa, DIRmode)
   val () = lib_dir_copy (SRCROOTlibc_arpa, DSTROOTlibc_arpa)
 //
   val SRCROOTlibc_netinet = SRCROOTlibc ++ "netinet/"
   val DSTROOTlibc_netinet = DSTROOTlibc ++ "netinet/"
+  val () = mkdir_exn (DSTROOTlibc_netinet, DIRmode)
   val () = lib_dir_copy (SRCROOTlibc_netinet, DSTROOTlibc_netinet)
-//
-(*
-  // moved to $ATSHOME/contrib/GL
-  val SRCROOTlibc_GL = SRCROOTlibc ++ "GL/"
-  val () = if
-    file_isexi (SRCROOTlibc_GL) then let
-    val DSTROOTlibc_GL = DSTROOTlibc ++ "GL/"
-  in
-    lib_dir_copy (SRCROOTlibc_GL, DSTROOTlibc_GL)
-  end // end of [val]
-*)
 //
 in
   prerr "The [libc] directory is successfully copied.";
@@ -817,10 +828,12 @@ end // end of [libc_dir_copy]
 fn libats_dir_copy () = let
   val SRCROOTlibats = SRCROOT ++ "libats/"
   val DSTROOTlibats = DSTROOT ++ "libats/"
+  val () = mkdir_exn (DSTROOTlibats, DIRmode)
   val () = lib_dir_copy (SRCROOTlibats, DSTROOTlibats)
   // the code for sml basis library lexer is in [libats/smlbas]
   val SRCROOTlibats_smlbas = SRCROOTlibats ++ "smlbas/"
   val DSTROOTlibats_smlbas = DSTROOTlibats ++ "smlbas/"
+  val () = mkdir_exn (DSTROOTlibats_smlbas, DIRmode)
   val () = lib_dir_copy (SRCROOTlibats_smlbas, DSTROOTlibats_smlbas)
   val () = fcopy_exn (
     SRCROOTlibats_smlbas ++ ".libfiles", DSTROOTlibats_smlbas ++ ".libfiles"
@@ -840,37 +853,105 @@ fn contrib_dir_copy () = let
   val DSTROOTcontrib = DSTROOT ++ "contrib/"
   val () = mkdir_exn (DSTROOTcontrib, DIRmode)
 //
-  // API for X11: [contrib/X11]
-  val SRCROOTcontrib_X11 = SRCROOTcontrib ++ "X11/"
-  val DSTROOTcontrib_X11 = DSTROOTcontrib ++ "X11/"
-  val () = lib_dir_copy (SRCROOTcontrib_X11, DSTROOTcontrib_X11)
-  val () = fcopy_exn (
-    SRCROOTcontrib_X11++"Makefile", DSTROOTcontrib_X11++"Makefile"
-  ) // end of [val]
+  val () = () where { // API for glib: [contrib/glib]
+    val SRCROOTcontrib_glib = SRCROOTcontrib ++ "glib/"
+    val DSTROOTcontrib_glib = DSTROOTcontrib ++ "glib/"
+    val () = mkdir_exn (DSTROOTcontrib_glib, DIRmode)
+    val () = fcopy_exn (
+      SRCROOTcontrib_glib++"Makefile", DSTROOTcontrib_glib++"Makefile"
+    ) // end of [val]
+    val () = lib_dir_copy (SRCROOTcontrib_glib, DSTROOTcontrib_glib)
+    val DSTROOTcontrib_glib_SATS_glib = DSTROOTcontrib_glib ++ "SATS/glib/"
+    val () = mkdir_exn (DSTROOTcontrib_glib_SATS_glib, DIRmode)
+    val () = dir_copy (
+      SRCROOTcontrib ++ "glib/SATS/glib/", DSTROOTcontrib_glib_SATS_glib, name_is_sats
+    ) // end of [val]
+    val DSTROOTcontrib_glib_SATS_gobject = DSTROOTcontrib_glib ++ "SATS/gobject/"
+    val () = mkdir_exn (DSTROOTcontrib_glib_SATS_gobject, DIRmode)
+    val () = dir_copy (
+      SRCROOTcontrib ++ "glib/SATS/gobject/", DSTROOTcontrib_glib_SATS_gobject, name_is_sats
+    ) // end of [val]
+    val DSTROOTcontrib_glib_CATS_glib = DSTROOTcontrib_glib ++ "CATS/glib/"
+    val () = mkdir_exn (DSTROOTcontrib_glib_CATS_glib, DIRmode)
+    val () = dir_copy (
+      SRCROOTcontrib ++ "glib/CATS/glib/", DSTROOTcontrib_glib_CATS_glib, name_is_cats
+    ) // end of [val]
+  } // end of [where]
 //
-  // API for cairo: [contrib/cairo]
-  val SRCROOTcontrib_cairo = SRCROOTcontrib ++ "cairo/"
-  val DSTROOTcontrib_cairo = DSTROOTcontrib ++ "cairo/"
-  val () = lib_dir_copy (SRCROOTcontrib_cairo, DSTROOTcontrib_cairo)
-  val () = fcopy_exn (
-    SRCROOTcontrib_cairo++"Makefile", DSTROOTcontrib_cairo++"Makefile"
-  ) // end of [val]
+  val () = () where { // API for cairo: [contrib/cairo]
+    val SRCROOTcontrib_cairo = SRCROOTcontrib ++ "cairo/"
+    val DSTROOTcontrib_cairo = DSTROOTcontrib ++ "cairo/"
+    val () = mkdir_exn (DSTROOTcontrib_cairo, DIRmode)
+    val () = fcopy_exn (
+      SRCROOTcontrib_cairo++"Makefile", DSTROOTcontrib_cairo++"Makefile"
+    ) // end of [val]
+    val () = lib_dir_copy (SRCROOTcontrib_cairo, DSTROOTcontrib_cairo)
+  } // end of [where]
 //
-  // API for GL: [contrib/GL]
-  val SRCROOTcontrib_GL = SRCROOTcontrib ++ "GL/"
-  val DSTROOTcontrib_GL = DSTROOTcontrib ++ "GL/"
-  val () = lib_dir_copy (SRCROOTcontrib_GL, DSTROOTcontrib_GL)
-  val () = fcopy_exn (
-    SRCROOTcontrib_GL++"Makefile", DSTROOTcontrib_GL++"Makefile"
-  ) // end of [val]
+  val () = () where { // API for pango: [contrib/pango]
+    val SRCROOTcontrib_pango = SRCROOTcontrib ++ "pango/"
+    val DSTROOTcontrib_pango = DSTROOTcontrib ++ "pango/"
+    val () = mkdir_exn (DSTROOTcontrib_pango, DIRmode)
+    val () = fcopy_exn (
+      SRCROOTcontrib_pango++"Makefile", DSTROOTcontrib_pango++"Makefile"
+    ) // end of [val]
+    val () = lib_dir_copy (SRCROOTcontrib_pango, DSTROOTcontrib_pango)
+    val DSTROOTcontrib_pango_SATS_pango = DSTROOTcontrib_pango ++ "SATS/pango/"
+    val () = mkdir_exn (DSTROOTcontrib_pango_SATS_pango, DIRmode)
+    val () = dir_copy (
+      SRCROOTcontrib ++ "pango/SATS/pango/", DSTROOTcontrib_pango_SATS_pango, name_is_sats
+    ) // end of [val]
+  } // end of [where]
 //
-  // API for GL: [contrib/SDL]
-  val SRCROOTcontrib_SDL = SRCROOTcontrib ++ "SDL/"
-  val DSTROOTcontrib_SDL = DSTROOTcontrib ++ "SDL/"
-  val () = lib_dir_copy (SRCROOTcontrib_SDL, DSTROOTcontrib_SDL)
-  val () = fcopy_exn (
-    SRCROOTcontrib_SDL++"Makefile", DSTROOTcontrib_SDL++"Makefile"
-  ) // end of [val]
+  val () = () where { // API for X11: [contrib/X11]
+    val SRCROOTcontrib_X11 = SRCROOTcontrib ++ "X11/"
+    val DSTROOTcontrib_X11 = DSTROOTcontrib ++ "X11/"
+    val () = mkdir_exn (DSTROOTcontrib_X11, DIRmode)
+    val () = fcopy_exn (
+      SRCROOTcontrib_X11++"Makefile", DSTROOTcontrib_X11++"Makefile"
+    ) // end of [val]
+    val () = lib_dir_copy (SRCROOTcontrib_X11, DSTROOTcontrib_X11)
+  } // end of [where]
+//
+  val () = () where { // API for GTK: [contrib/GTK]
+    val SRCROOTcontrib_GTK = SRCROOTcontrib ++ "GTK/"
+    val DSTROOTcontrib_GTK = DSTROOTcontrib ++ "GTK/"
+    val () = mkdir_exn (DSTROOTcontrib_GTK, DIRmode)
+    val () = fcopy_exn (
+      SRCROOTcontrib_GTK++"Makefile", DSTROOTcontrib_GTK++"Makefile"
+    ) // end of [val]
+    val () = lib_dir_copy (SRCROOTcontrib_GTK, DSTROOTcontrib_GTK)
+    val DSTROOTcontrib_GTK_SATS_gtk = DSTROOTcontrib_GTK ++ "SATS/gtk/"
+    val () = mkdir_exn (DSTROOTcontrib_GTK_SATS_gtk, DIRmode)
+    val () = dir_copy (
+      SRCROOTcontrib ++ "GTK/SATS/gtk/", DSTROOTcontrib_GTK_SATS_gtk, name_is_sats
+    ) // end of [val]
+    val DSTROOTcontrib_GTK_SATS_gdk = DSTROOTcontrib ++ "GTK/SATS/gdk/"
+    val () = mkdir_exn (DSTROOTcontrib_GTK_SATS_gdk, DIRmode)
+    val () = dir_copy (
+      SRCROOTcontrib ++ "GTK/SATS/gdk/", DSTROOTcontrib_GTK_SATS_gdk, name_is_sats
+    ) // end of [val]
+  } // end of [where]
+//
+  val () = () where { // API for GL: [contrib/GL]
+    val SRCROOTcontrib_GL = SRCROOTcontrib ++ "GL/"
+    val DSTROOTcontrib_GL = DSTROOTcontrib ++ "GL/"
+    val () = mkdir_exn (DSTROOTcontrib_GL, DIRmode)
+    val () = fcopy_exn (
+      SRCROOTcontrib_GL++"Makefile", DSTROOTcontrib_GL++"Makefile"
+    ) // end of [val]
+    val () = lib_dir_copy (SRCROOTcontrib_GL, DSTROOTcontrib_GL)
+  } // end of [where]
+//
+  val () = () where { // API for SDL: [contrib/SDL]
+    val SRCROOTcontrib_SDL = SRCROOTcontrib ++ "SDL/"
+    val DSTROOTcontrib_SDL = DSTROOTcontrib ++ "SDL/"
+    val () = mkdir_exn (DSTROOTcontrib_SDL, DIRmode)
+    val () = fcopy_exn (
+      SRCROOTcontrib_SDL++"Makefile", DSTROOTcontrib_SDL++"Makefile"
+    ) // end of [val]
+    val () = lib_dir_copy (SRCROOTcontrib_SDL, DSTROOTcontrib_SDL)
+  } // end of [where]
 //
 in
   prerr "The [contrib] directory is successfully copied.";
@@ -1002,10 +1083,10 @@ implement atspack_source_code () = let
   val () = libats_dir_copy ()
   val () = contrib_dir_copy ()
 (*
-  val () = src_dir_copy () // The source code is no longer distributed
+  val () = src_dir_copy () // HX: The source code is no longer distributed
 *)
   val () = utils_dir_copy ()
-
+//
 in
   prerr "The package [";
   prerr ATSPACKAGE_NAME;
