@@ -87,7 +87,7 @@ implement main (argc, argv) = let
     print "total = "; print total; print_newline ();
   end // end of [val]
 //
-  fn find {l:anz} (
+  fn find {l:agz} (
       ptbl: !HASHTBLptr (key, itm, l), k0: key, res: &itm?
     ) : void = () where {
     val () = printf ("%i\t->\t", @(k0))
