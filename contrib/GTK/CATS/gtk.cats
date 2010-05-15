@@ -1492,8 +1492,12 @@ atsctrb_gtk_window_new
   return widget ;
 } // end of [atsctrb_gtk_window_new]
 
+#define atsctrb_gtk_window_get_title gtk_window_get_title
 #define atsctrb_gtk_window_set_title gtk_window_set_title
+
 #define atsctrb_gtk_window_set_position gtk_window_set_position
+
+#define atsctrb_gtk_window_get_transient_for gtk_window_get_transient_for
 #define atsctrb_gtk_window_set_transient_for gtk_window_set_transient_for
 
 #define atsctrb_gtk_window_get_size gtk_window_get_size
@@ -1504,6 +1508,22 @@ atsctrb_gtk_window_new
 
 #define atsctrb_gtk_window_add_accel_group gtk_window_add_accel_group
 #define atsctrb_gtk_window_remove_accel_group gtk_window_remove_accel_group
+
+#define atsctrb_gtk_window_get_window_type gtk_window_get_window_type
+
+#define atsctrb_gtk_window_get_type_hint gtk_window_get_type_hint
+
+#define atsctrb_gtk_window_move gtk_window_move
+
+#define atsctrb_gtk_window_reshow_with_initial_size \
+  gtk_window_reshow_with_initial_size
+#define atsctrb_gtk_window_resize gtk_window_resize
+
+#define atsctrb_gtk_window_get_opacity gtk_window_get_opacity
+#define atsctrb_gtk_window_set_opacity gtk_window_set_opacity
+
+#define atsctrb_gtk_window_get_mnemonics_visible gtk_window_get_mnemonics_visible
+#define atsctrb_gtk_window_set_mnemonics_visible gtk_window_set_mnemonics_visible
 
 /* ****** ****** */
 
