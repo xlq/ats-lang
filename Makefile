@@ -74,10 +74,10 @@ config.h.in: configure.ac
 .PHONY: install
 install: config.h
 	# recursively install all files in the list except .svn control files.
-	for d in ccomp/runtime doc libats libc prelude; do \
+	for d in ccomp/runtime contrib doc libats libc prelude; do \
 	  cd $(abs_top_srcdir) && \
 	  $(INSTALL) -d $(DESTDIR)$(ATSNEWHOME)/"$$d" && \
-	  find "$$d" -name .svn -prune -o \
+	  find "$$d" -name .svn -prune -o -type f \
             -exec $(INSTALL) -m 644 -D \{} $(DESTDIR)$(ATSNEWHOME)/\{} \; \
 	    -print; \
 	done
@@ -101,9 +101,10 @@ install: config.h
 
 	# install multiple copies of wrapper script, for each binary.
 	for f in bin/*; do \
+	  b=`basename "$$f"`; \
 	  cd $(abs_top_srcdir) && \
-	  $(INSTALL) -m 755 -D ats_env.sh $(DESTDIR)$(bindir)/`basename "$$f"` && \
-	  echo install ats_env.sh to $(bindir)/`basename "$$f"`; \
+	  $(INSTALL) -m 755 -D ats_env.sh $(DESTDIR)$(bindir)/"$$b" && \
+	  echo install ats_env.sh to $(bindir)/"$$b"; \
 	done
 
 .PHONY: test
