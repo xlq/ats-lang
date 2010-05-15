@@ -126,7 +126,7 @@ implement main (argc, argv) = let
 //
   var res: itm?
 //
-  fn find {l:anz} (
+  fn find {l:agz} (
       ptbl: !HASHTBLptr (key, itm, l), k0: key, res: &itm?
     ) : void = () where {
     val () = printf ("%i\t->\t", @(k0))
