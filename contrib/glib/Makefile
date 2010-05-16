@@ -19,11 +19,11 @@ INCLUDES= \
 
 ######
 
-all: glibconfig atsctrb_glib.o clean
+all:: glibconfig atsctrb_glib.o clean
 
 ######
 
-glibconfig: HATS/glibconfig
+glibconfig:: HATS/glibconfig
 	$(GCC) $(INCLUDES) -E -P -o HATS/glibconfig.hats -x c HATS/glibconfig
 
 ######

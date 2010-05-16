@@ -5,6 +5,8 @@
 # Time: May, 2010
 #
 
+######
+
 ATSCC="$(ATSHOME)"/bin/atscc
 GTKCFLAGS = `pkg-config gtk+-2.0 --cflags`
 

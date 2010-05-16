@@ -5,8 +5,10 @@
 # Time: December, 2009
 #
 
+######
+
 ATSCC="$(ATSHOME)"/bin/atscc
-XRCFLAGS=`pkg-config cairo --cflags --libs`
+XRCFLAGS=`pkg-config cairo --cflags`
 
 ######
 
