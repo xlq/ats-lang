@@ -505,7 +505,8 @@ end // end of [ccomp_runtime_dir_copy]
 
 //
 
-fn ccomp_dir_copy (knd: packnd): void = let
+fn ccomp_dir_copy
+  (knd: packnd): void = let
   val () = mkdir_exn (DSTROOTccomp, DIRmode)
   val () = let
     val wsz = wordsize_target_get () in ccomp_lib_dir_copy (wsz, knd)
@@ -886,7 +887,9 @@ in
   prerr_newline ()
 end // end of [libats_dir_copy]
 
-fn contrib_dir_copy () = let
+fn contrib_dir_copy
+  (knd: packnd) = let
+  val ispre = packnd_is_precompiled (knd)
   val SRCROOTcontrib = SRCROOT ++ "contrib/"
   val DSTROOTcontrib = DSTROOT ++ "contrib/"
   val () = mkdir_exn (DSTROOTcontrib, DIRmode)
@@ -914,6 +917,9 @@ fn contrib_dir_copy () = let
     val () = dir_copy (
       SRCROOTcontrib ++ "glib/CATS/glib/", DSTROOTcontrib_glib_CATS_glib, name_is_cats
     ) // end of [val]
+    val () = if ispre then
+      fcopy_exn (SRCROOTcontrib_glib++"atsctrb_glib.o", DSTROOTcontrib_glib++"atsctrb_glib.o")
+    // end of [if]
   } // end of [where]
 //
   val () = () where { // API for cairo: [contrib/cairo]
@@ -924,6 +930,9 @@ fn contrib_dir_copy () = let
       SRCROOTcontrib_cairo++"Makefile", DSTROOTcontrib_cairo++"Makefile"
     ) // end of [val]
     val () = lib_dir_copy (SRCROOTcontrib_cairo, DSTROOTcontrib_cairo)
+    val () = if ispre then
+      fcopy_exn (SRCROOTcontrib_cairo++"atsctrb_cairo.o", DSTROOTcontrib_cairo++"atsctrb_cairo.o")
+    // end of [if]
   } // end of [where]
 //
   val () = () where { // API for pango: [contrib/pango]
@@ -939,6 +948,9 @@ fn contrib_dir_copy () = let
     val () = dir_copy (
       SRCROOTcontrib ++ "pango/SATS/pango/", DSTROOTcontrib_pango_SATS_pango, name_is_sats
     ) // end of [val]
+    val () = if ispre then
+      fcopy_exn (SRCROOTcontrib_pango++"atsctrb_pango.o", DSTROOTcontrib_pango++"atsctrb_pango.o")
+    // end of [if]
   } // end of [where]
 //
   val () = () where { // API for X11: [contrib/X11]
@@ -949,6 +961,9 @@ fn contrib_dir_copy () = let
       SRCROOTcontrib_X11++"Makefile", DSTROOTcontrib_X11++"Makefile"
     ) // end of [val]
     val () = lib_dir_copy (SRCROOTcontrib_X11, DSTROOTcontrib_X11)
+    val () = if ispre then
+      fcopy_exn (SRCROOTcontrib_X11++"atsctrb_X11.o", DSTROOTcontrib_X11++"atsctrb_X11.o")
+    // end of [if]
   } // end of [where]
 //
   val () = () where { // API for GTK: [contrib/GTK]
@@ -969,6 +984,9 @@ fn contrib_dir_copy () = let
     val () = dir_copy (
       SRCROOTcontrib ++ "GTK/SATS/gdk/", DSTROOTcontrib_GTK_SATS_gdk, name_is_sats
     ) // end of [val]
+    val () = if ispre then
+      fcopy_exn (SRCROOTcontrib_GTK++"atsctrb_GTK.o", DSTROOTcontrib_GTK++"atsctrb_GTK.o")
+    // end of [if]
   } // end of [where]
 //
   val () = () where { // API for GL: [contrib/GL]
@@ -989,6 +1007,11 @@ fn contrib_dir_copy () = let
       SRCROOTcontrib_SDL++"Makefile", DSTROOTcontrib_SDL++"Makefile"
     ) // end of [val]
     val () = lib_dir_copy (SRCROOTcontrib_SDL, DSTROOTcontrib_SDL)
+(*
+    val () = if ispre then
+      fcopy_exn (SRCROOTcontrib_SDL++"atsctrb_SDL.o", DSTROOTcontrib_SDL++"atsctrb_SDL.o")
+    // end of [if]
+*)
   } // end of [where]
 //
 in
@@ -1120,7 +1143,7 @@ implement atspack_source_code () = let
   val () = prelude_dir_copy ()
   val () = libc_dir_copy ()
   val () = libats_dir_copy ()
-  val () = contrib_dir_copy ()
+  val () = contrib_dir_copy (PACKNDsource)
 (*
   val () = src_dir_copy () // HX: The source code is no longer distributed
 *)
@@ -1156,7 +1179,7 @@ implement atspack_precompiled () = let
   val () = prelude_dir_copy ()
   val () = libc_dir_copy ()
   val () = libats_dir_copy ()
-  val () = contrib_dir_copy ()
+  val () = contrib_dir_copy (PACKNDprecompiled)
 in
   // empty
 end // end of [atspack_precompiled]
