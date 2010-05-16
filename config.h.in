@@ -10,6 +10,12 @@
 /* Define to 1 if you have the <inttypes.h> header file. */
 #undef HAVE_INTTYPES_H
 
+/* Define to 1 if you have glib-2.0 */
+#undef HAVE_LIBGLIB20
+
+/* Define to 1 if you have gtk+2.0 */
+#undef HAVE_LIBGTK20
+
 /* Define to 1 if you have the `memalign' function. */
 #undef HAVE_MEMALIGN
 
@@ -21,6 +27,9 @@
 
 /* Define to 1 if you have the `posix_memalign' function. */
 #undef HAVE_POSIX_MEMALIGN
+
+/* Define to 1 if you have SDL-1.0 */
+#undef HAVE_SDL
 
 /* Define to 1 if you have the <stdint.h> header file. */
 #undef HAVE_STDINT_H

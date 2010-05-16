@@ -39,11 +39,11 @@
 #
 # The bootstrapping procedure:
 #
-# 1. Use [gcc] to compile the C code in [bootstrap0] to build the ATS
-#    compile [atsopt]
+# 1. Use [gcc] to compile the C code in [bootstrap0-anairiats] to build
+#    the ATS compiler [atsopt]
 #
-#    Alternatively, use [ocamlopt] to compile the Objective Caml code
-#    in [bootstrap0] to build the ATS compiler [atsopt]
+#    Alternatively, use [ocamlopt] to compile the Objective Caml code in
+#    [bootstrap0-geizella] to build the ATS compiler [atsopt]
 #
 # 2. Use [atsopt] to compile the ATS code in [src] into C code and store
 #    it in [bootstrap1]
@@ -163,6 +163,8 @@ SOURCES := \
   ats_ccomp_trans_temp.dats \
   ats_ccomp_emit.dats \
   ats_ccomp_main.dats \
+
+######
 
 TARGETS := $(SOURCES)
 TARGETS := $(patsubst %.sats, %_sats.o, $(TARGETS))

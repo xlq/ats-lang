@@ -63,10 +63,17 @@ PKG_PROG_PKG_CONFIG
 
 dnl = check for [gmp.h pcre.h]
 AC_CHECK_HEADERS(gmp.h pcre.h)
-dnl = check for [GL/gl.h GL/glut.h]
-dnl = AC_CHECK_HEADERS(GL/gl.h GL/glut.h)
+
 dnl = check for [cairo/cairo]
 dnl = AC_CHECK_HEADERS(cairo/cairo.h)
+dnl = check for [glib-2.0.0]
+AM_PATH_GLIB_2_0(2.10.0, AC_DEFINE([HAVE_LIBGLIB20], [1], [Define to 1 if you have glib-2.0]))
+dnl = check for [gtk+-2.0.0]
+AM_PATH_GTK_2_0(2.10.0, AC_DEFINE([HAVE_LIBGTK20], [1], [Define to 1 if you have gtk+2.0]))
+dnl = check for [GL/gl.h GL/glut.h]
+dnl = AC_CHECK_HEADERS(GL/gl.h GL/glut.h)
+dnl = check for [SDL]
+AM_PATH_SDL(1.0.0, AC_DEFINE([HAVE_SDL], [1], [Define to 1 if you have SDL-1.0]))
 
 dnl = check for SIZEOF_VOIDP
 AC_CHECK_SIZEOF(void*)

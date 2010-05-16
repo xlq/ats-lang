@@ -1,0 +1,34 @@
+//
+//
+// The header for Makefile_main
+//
+//
+
+/* ****** ****** */
+
+#include "config.h" // automatically genereated by [configure]
+
+/* ****** ****** */
+
+LIBGLIB20=
+#ifdef HAVE_LIBGLIB20
+LIBGLIB20=1
+#endif
+
+/* ****** ****** */
+
+LIBGTK20=
+#ifdef HAVE_LIBGTK20
+LIBGTK20=1
+#endif
+
+/* ****** ****** */
+
+LIBSDL=
+#ifdef HAVE_LIBSDL
+LIBSDL=1
+#endif
+
+/* ****** ****** */
+
+/* end of [.makefile_header] */

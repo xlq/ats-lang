@@ -41,8 +41,16 @@ DESTDIR =
 export ATSHOMERELOC
 
 .PHONY: all
-all: config.h
-	@$(MAKE) -f Makefile_main $@
+all: Makefile_main_temp
+	@$(MAKE) -f Makefile_main_temp $@
+
+######
+
+GCC=gcc
+Makefile_main_temp:: config.h
+	$(GCC) -E -P -x c .makefile_header | cat - Makefile_main > Makefile_main_temp
+
+######
 
 # NOTE(liulk): integration with autoconf.
 
@@ -66,8 +74,7 @@ configure: configure.ac config.h.in
 	automake --add-missing --foreign || true
 	autoconf
 
-config.h.in: configure.ac
-	autoheader
+config.h.in: configure.ac; autoheader
 
 # NOTE(liulk): installation to prefix
 
@@ -111,9 +118,10 @@ install: config.h
 test:
 	sh test.sh
 
+#
 # NOTE(liulk): once most major functions of Makefile_main is
 # superceded, remove the following code.
 #
 %: force
-	@exec $(MAKE) -f Makefile_main $@
+	@exec $(MAKE) -f Makefile_main_temp $@
 force: ;

@@ -9,6 +9,11 @@ ATSCTRB="$(ATSHOME)"/contrib/X11/atsctrb_X11.o
 
 ######
 
+.PHONY: all
+all: checkall
+
+######
+
 checkall: compall cleanall
 
 ######

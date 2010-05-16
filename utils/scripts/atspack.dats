@@ -354,6 +354,7 @@ fn name_is_cats (name: string): bool = name_is_suffix (name, ".cats")
 fn name_is_dats (name: string): bool = name_is_suffix (name, ".dats")
 fn name_is_hats (name: string): bool = name_is_suffix (name, ".hats")
 fn name_is_sats (name: string): bool = name_is_suffix (name, ".sats")
+fn name_is_html (name: string): bool = name_is_suffix (name, ".html")
 
 fn name_is_xats (name: string): bool = let
   val name = string1_of_string name
@@ -524,191 +525,228 @@ fn doc_dir_copy () = let
     SRCROOTdoc ++ "FAQ.txt", DSTROOTdoc ++ "FAQ.txt"
   ) // end of [fcopy_exn]
 //
-  val SRCROOTdoc_BOOK = SRCROOTdoc ++ "BOOK/"
-  val DSTROOTdoc_BOOK = DSTROOTdoc ++ "BOOK/"
-  val () = mkdir_exn (DSTROOTdoc_BOOK, DIRmode)
-  val SRCROOTdoc_BOOK_manual = SRCROOTdoc_BOOK ++ "manual/"
-  val DSTROOTdoc_BOOK_manual = DSTROOTdoc_BOOK ++ "manual/"
-  val () = mkdir_exn (DSTROOTdoc_BOOK_manual, DIRmode)
-  val () = fcopy_exn (
-    SRCROOTdoc_BOOK_manual ++ "manual_main.pdf"
-  , DSTROOTdoc_BOOK_manual ++ "manual_main.pdf"
-  ) // end of [fcopy_exn]
+  val () = () where {
+    val SRCROOTdoc_BOOK = SRCROOTdoc ++ "BOOK/"
+    val DSTROOTdoc_BOOK = DSTROOTdoc ++ "BOOK/"
+    val () = mkdir_exn (DSTROOTdoc_BOOK, DIRmode)
+    val SRCROOTdoc_BOOK_manual = SRCROOTdoc_BOOK ++ "manual/"
+    val DSTROOTdoc_BOOK_manual = DSTROOTdoc_BOOK ++ "manual/"
+    val () = mkdir_exn (DSTROOTdoc_BOOK_manual, DIRmode)
+    val () = fcopy_exn (
+      SRCROOTdoc_BOOK_manual ++ "manual_main.pdf"
+  ,   DSTROOTdoc_BOOK_manual ++ "manual_main.pdf"
+    ) // end of [fcopy_exn]
+  } // end of [val]
+//
+  val () = () where {
+    val SRCROOTdoc_TUTORIAL = SRCROOTdoc ++ "TUTORIAL/"
+    val DSTROOTdoc_TUTORIAL = DSTROOTdoc ++ "TUTORIAL/"
+    val () = mkdir_exn (DSTROOTdoc_TUTORIAL, DIRmode)
+    val () = fcopy_exn (
+      SRCROOTdoc_TUTORIAL ++ "tutorial.html", DSTROOTdoc_TUTORIAL ++ "tutorial.html"
+    ) // end of [val]
+    val SRCROOTdoc_TUTORIAL_contents = SRCROOTdoc_TUTORIAL ++ "contents/"
+    val DSTROOTdoc_TUTORIAL_contents = DSTROOTdoc_TUTORIAL ++ "contents/"
+    val () = mkdir_exn (DSTROOTdoc_TUTORIAL_contents, DIRmode)
+    val () = dir_copy (
+      SRCROOTdoc_TUTORIAL_contents, DSTROOTdoc_TUTORIAL_contents, name_is_html
+    )
+    val () = dir_copy (
+      SRCROOTdoc_TUTORIAL_contents, DSTROOTdoc_TUTORIAL_contents, name_is_xats
+    )
+  } // end of [val]
 //
   val SRCROOTdoc_EXAMPLE = SRCROOTdoc ++ "EXAMPLE/"
   val DSTROOTdoc_EXAMPLE = DSTROOTdoc ++ "EXAMPLE/"
   val () = mkdir_exn (DSTROOTdoc_EXAMPLE, DIRmode)
 //  
-  val SRCROOTdoc_EXAMPLE_INTRO = SRCROOTdoc_EXAMPLE ++ "INTRO/"
-  val DSTROOTdoc_EXAMPLE_INTRO = DSTROOTdoc_EXAMPLE ++ "INTRO/"
-  val () = mkdir_exn (DSTROOTdoc_EXAMPLE_INTRO, DIRmode)
-  macdef cp (name) = fcopy_exn (
-    SRCROOTdoc_EXAMPLE_INTRO ++ ,(name), DSTROOTdoc_EXAMPLE_INTRO ++ ,(name)
-  )
-  val () = cp "Makefile"
-  val () = cp "HelloWorld.dats"
-  val () = cp "f91.dats"
-  val () = cp "fact1.dats"
-  val () = cp "fact2.dats"
-  val () = cp "fact3.dats"
-  val () = cp "fibs.dats"
-  val () = cp "revarr.dats"
-  val () = cp "revstr.dats"
-//
-  val SRCROOTdoc_EXAMPLE_MISC = SRCROOTdoc_EXAMPLE ++ "MISC/"
-  val DSTROOTdoc_EXAMPLE_MISC = DSTROOTdoc_EXAMPLE ++ "MISC/"
-  val () = mkdir_exn (DSTROOTdoc_EXAMPLE_MISC, DIRmode)
-  macdef cp (name) = fcopy_exn (
-    SRCROOTdoc_EXAMPLE_MISC ++ ,(name), DSTROOTdoc_EXAMPLE_MISC ++ ,(name)
-  )
-  val () = cp "Makefile"
-  val () = cp "AutoDiff.dats"
-  val () = cp "coin_flip.dats"
-  val () = cp "curve.dats"
-  val () = cp "fft.dats"
-  val () = cp "GarsiaWachs.dats"
-  val () = cp "GaussElim.dats"
-  val () = cp "hamming_lazy.dats"
-  val () = cp "hanoi.dats"
-  val () = cp "isqrt.dats"
-  val () = cp "kmp.dats"
-  val () = cp "longestline.dats"
-  val () = cp "montecarlo.dats"
-  val () = cp "pi_lazy.dats"
-  val () = cp "passwdgen.dats"
-  val () = cp "quicksort_list.dats"
-  val () = cp "queens.dats"
-  val () = cp "queens_appel.dats"
-  val () = cp "queens_lazy_vt.dats"
-  val () = cp "sieve.dats"
-  val () = cp "sieve_lazy.dats"
-  val () = cp "sieve_lazy_vt.dats"
-  val () = cp "strmat.dats"
-  val () = cp "sumup.dats"
-  val () = cp "tetrix.dats"
-  val () = cp "wc.dats"
-//
-  val SRCROOTdoc_EXAMPLE_MISC = SRCROOTdoc_EXAMPLE ++ "MISC/Twentyfour/"
-  val DSTROOTdoc_EXAMPLE_MISC = DSTROOTdoc_EXAMPLE ++ "MISC/Twentyfour/"
-  val () = mkdir_exn (DSTROOTdoc_EXAMPLE_MISC, DIRmode)
-  macdef cp (name) = fcopy_exn (
-    SRCROOTdoc_EXAMPLE_MISC ++ ,(name), DSTROOTdoc_EXAMPLE_MISC ++ ,(name)
-  )
-  val () = cp "Makefile"
-  val () = cp "rational.sats"
-  val () = cp "rational.dats"
-  val () = cp "twentyfour.dats"
-//
-  val SRCROOTdoc_EXAMPLE_MISC = SRCROOTdoc_EXAMPLE ++ "MISC/HttpServer/"
-  val DSTROOTdoc_EXAMPLE_MISC = DSTROOTdoc_EXAMPLE ++ "MISC/HttpServer/"
-  val () = mkdir_exn (DSTROOTdoc_EXAMPLE_MISC, DIRmode)
-  macdef cp (name) = fcopy_exn (
-    SRCROOTdoc_EXAMPLE_MISC ++ ,(name), DSTROOTdoc_EXAMPLE_MISC ++ ,(name)
-  )
-  val () = cp "Makefile"
-  val () = cp "server.dats"
-  val () = cp "server2.dats"
-//
-  val SRCROOTdoc_EXAMPLE_TEST = SRCROOTdoc_EXAMPLE ++ "TEST/"
-  val DSTROOTdoc_EXAMPLE_TEST = DSTROOTdoc_EXAMPLE ++ "TEST/"
-  val () = mkdir_exn (DSTROOTdoc_EXAMPLE_TEST, DIRmode)
-  macdef cp (name) = fcopy_exn (
-    SRCROOTdoc_EXAMPLE_TEST ++ ,(name), DSTROOTdoc_EXAMPLE_TEST ++ ,(name)
-  )
-  val () = cp "Makefile"
-  val () = cp "prelude_array.dats"
-  val () = cp "prelude_array0.dats"
-  val () = cp "prelude_list.dats"  
-  val () = cp "prelude_list_vt.dats"
-  val () = cp "prelude_matrix.dats"
-  val () = cp "prelude_matrix0.dats"
-  val () = cp "prelude_string.dats"
-  val () = cp "libc_dlfcn.dats"
-  val () = cp "libc_dirent.dats"
-  val () = cp "libc_sched.dats"
-  val () = cp "libc_stdlib.dats"  
-//
-  val () = cp "libats_funarray_braun.dats"
-  val () = cp "libats_funheap_braun.dats"
-  val () = cp "libats_funmap_avltree.dats"
-  val () = cp "libats_funralist_nested.dats"
-  val () = cp "libats_genarrays.dats"  
-  val () = cp "libats_hashtable_chain.dats"
-  val () = cp "libats_hashtable_linprb.dats"
-  val () = cp "libats_intinf.dats"
-  val () = cp "libats_iterint.dats"
-  val () = cp "libats_linmap_avltree.dats"
-  val () = cp "libats_linqueue_arr.dats"
-  val () = cp "libats_linstack_arr.dats"
-  val () = cp "libats_regexp.dats"
-  val () = cp "libats_parworkshop.dats"  
-//
-  val () = cp "libats_smlbas_array.dats"
-  val () = cp "libats_smlbas_array2.dats"
-  val () = cp "libats_smlbas_char.dats"
-  val () = cp "libats_smlbas_list.dats"
-  val () = cp "libats_smlbas_string.dats"
-  val () = cp "libats_smlbas_time.dats"
-//
-  val SRCROOTdoc_EXAMPLE_KernighanRitchie =
-    SRCROOTdoc_EXAMPLE ++ "KernighanRitchie/"
-  val DSTROOTdoc_EXAMPLE_KernighanRitchie =
-    DSTROOTdoc_EXAMPLE ++ "KernighanRitchie/"
-  val () = mkdir_exn (DSTROOTdoc_EXAMPLE_KernighanRitchie, DIRmode)
-  #define NCHAPTER 8
-  val () = cp "Makefile"
-  var !p_arr with pf_arr = @[string](
-    "Chapter01/", "Chapter02/", "Chapter03/", "Chapter04/"
-  , "Chapter05/", "Chapter06/", "Chapter07/", "Chapter08/"
-  ) // end of [var]
-  val () = loop (!p_arr, 0) where {
-    fun loop (
-        names: &(@[string][NCHAPTER]), i: natLte NCHAPTER
-      ) :<cloref1> void =
-      if i < NCHAPTER then let
-        val name = names.[i]
-        val src = SRCROOTdoc_EXAMPLE_KernighanRitchie ++ name
-        val dst = DSTROOTdoc_EXAMPLE_KernighanRitchie ++ name
-        val () = mkdir_exn (dst, DIRmode)
-        val () = fcopy_exn (src ++ "Makefile", dst ++ "Makefile")
-        val () = dir_copy (src, dst, name_is_xats)
-      in
-        loop (names, i+1)
-      end // end of [if]
+  val () = () where {
+    val SRCROOTdoc_EXAMPLE_INTRO = SRCROOTdoc_EXAMPLE ++ "INTRO/"
+    val DSTROOTdoc_EXAMPLE_INTRO = DSTROOTdoc_EXAMPLE ++ "INTRO/"
+    val () = mkdir_exn (DSTROOTdoc_EXAMPLE_INTRO, DIRmode)
+    macdef cp (name) = fcopy_exn (
+      SRCROOTdoc_EXAMPLE_INTRO ++ ,(name), DSTROOTdoc_EXAMPLE_INTRO ++ ,(name)
+    )
+    val () = cp "Makefile"
+    val () = cp "HelloWorld.dats"
+    val () = cp "f91.dats"
+    val () = cp "fact1.dats"
+    val () = cp "fact2.dats"
+    val () = cp "fact3.dats"
+    val () = cp "fibs.dats"
+    val () = cp "revarr.dats"
+    val () = cp "revstr.dats"
   } // end of [val]
 //
-  val SRCROOTdoc_EXAMPLE_MULTICORE = SRCROOTdoc_EXAMPLE ++ "MULTICORE/"
-  val DSTROOTdoc_EXAMPLE_MULTICORE = DSTROOTdoc_EXAMPLE ++ "MULTICORE/"
-  val () = mkdir_exn (DSTROOTdoc_EXAMPLE_MULTICORE, DIRmode)
-  macdef cp (name) = fcopy_exn (
-    SRCROOTdoc_EXAMPLE_MULTICORE ++ ,(name), DSTROOTdoc_EXAMPLE_MULTICORE ++ ,(name)
-  ) // end of [macdef]
-  val () = cp "Makefile"
-  val () = dir_copy
-    (SRCROOTdoc_EXAMPLE_MULTICORE, DSTROOTdoc_EXAMPLE_MULTICORE, name_is_xats)
-  // end of [val]
+  val () = () where {
+    val SRCROOTdoc_EXAMPLE_MISC = SRCROOTdoc_EXAMPLE ++ "MISC/"
+    val DSTROOTdoc_EXAMPLE_MISC = DSTROOTdoc_EXAMPLE ++ "MISC/"
+    val () = mkdir_exn (DSTROOTdoc_EXAMPLE_MISC, DIRmode)
+    macdef cp (name) = fcopy_exn (
+      SRCROOTdoc_EXAMPLE_MISC ++ ,(name), DSTROOTdoc_EXAMPLE_MISC ++ ,(name)
+    )
+    val () = cp "Makefile"
+    val () = cp "AutoDiff.dats"
+    val () = cp "coin_flip.dats"
+    val () = cp "curve.dats"
+    val () = cp "fft.dats"
+    val () = cp "GarsiaWachs.dats"
+    val () = cp "GaussElim.dats"
+    val () = cp "hamming_lazy.dats"
+    val () = cp "hanoi.dats"
+    val () = cp "isqrt.dats"
+    val () = cp "kmp.dats"
+    val () = cp "longestline.dats"
+    val () = cp "montecarlo.dats"
+    val () = cp "pi_lazy.dats"
+    val () = cp "passwdgen.dats"
+    val () = cp "quicksort_list.dats"
+    val () = cp "queens.dats"
+    val () = cp "queens_appel.dats"
+    val () = cp "queens_lazy_vt.dats"
+    val () = cp "sieve.dats"
+    val () = cp "sieve_lazy.dats"
+    val () = cp "sieve_lazy_vt.dats"
+    val () = cp "strmat.dats"
+    val () = cp "sumup.dats"
+    val () = cp "tetrix.dats"
+    val () = cp "wc.dats"
+  } // end of [val]
 //
-  val SRCROOTdoc_EXAMPLE_GTK = SRCROOTdoc_EXAMPLE ++ "GTK/"
-  val DSTROOTdoc_EXAMPLE_GTK = DSTROOTdoc_EXAMPLE ++ "GTK/"
-  val () = mkdir_exn (DSTROOTdoc_EXAMPLE_GTK, DIRmode)
-  macdef cp (name) = fcopy_exn (
-    SRCROOTdoc_EXAMPLE_GTK ++ ,(name), DSTROOTdoc_EXAMPLE_GTK ++ ,(name)
-  ) // end of [macdef]
-  val () = cp "Makefile"
-  val () = dir_copy
-    (SRCROOTdoc_EXAMPLE_GTK, DSTROOTdoc_EXAMPLE_GTK, name_is_xats)
-  // end of [val]
+  val () = () where {
+    val SRCROOTdoc_EXAMPLE_MISC = SRCROOTdoc_EXAMPLE ++ "MISC/Twentyfour/"
+    val DSTROOTdoc_EXAMPLE_MISC = DSTROOTdoc_EXAMPLE ++ "MISC/Twentyfour/"
+    val () = mkdir_exn (DSTROOTdoc_EXAMPLE_MISC, DIRmode)
+    macdef cp (name) = fcopy_exn (
+      SRCROOTdoc_EXAMPLE_MISC ++ ,(name), DSTROOTdoc_EXAMPLE_MISC ++ ,(name)
+    )
+    val () = cp "Makefile"
+    val () = cp "rational.sats"
+    val () = cp "rational.dats"
+    val () = cp "twentyfour.dats"
+  } // end of [val]
 //
-  val SRCROOTdoc_EXAMPLE_OpenGL = SRCROOTdoc_EXAMPLE ++ "OpenGL/"
-  val DSTROOTdoc_EXAMPLE_OpenGL = DSTROOTdoc_EXAMPLE ++ "OpenGL/"
-  val () = mkdir_exn (DSTROOTdoc_EXAMPLE_OpenGL, DIRmode)
-  macdef cp (name) = fcopy_exn (
-    SRCROOTdoc_EXAMPLE_OpenGL ++ ,(name), DSTROOTdoc_EXAMPLE_OpenGL ++ ,(name)
-  ) // end of [macdef]
-  val () = cp "Makefile"
-  val () = dir_copy
-    (SRCROOTdoc_EXAMPLE_OpenGL, DSTROOTdoc_EXAMPLE_OpenGL, name_is_xats)
-  // end of [val]
+  val () = () where {
+    val SRCROOTdoc_EXAMPLE_MISC = SRCROOTdoc_EXAMPLE ++ "MISC/HttpServer/"
+    val DSTROOTdoc_EXAMPLE_MISC = DSTROOTdoc_EXAMPLE ++ "MISC/HttpServer/"
+    val () = mkdir_exn (DSTROOTdoc_EXAMPLE_MISC, DIRmode)
+    macdef cp (name) = fcopy_exn (
+      SRCROOTdoc_EXAMPLE_MISC ++ ,(name), DSTROOTdoc_EXAMPLE_MISC ++ ,(name)
+    )
+    val () = cp "Makefile"
+    val () = cp "server.dats"
+    val () = cp "server2.dats"
+  } // end of [val]
+//
+  val () = () where {
+    val SRCROOTdoc_EXAMPLE_TEST = SRCROOTdoc_EXAMPLE ++ "TEST/"
+    val DSTROOTdoc_EXAMPLE_TEST = DSTROOTdoc_EXAMPLE ++ "TEST/"
+      val () = mkdir_exn (DSTROOTdoc_EXAMPLE_TEST, DIRmode)
+    macdef cp (name) = fcopy_exn (
+      SRCROOTdoc_EXAMPLE_TEST ++ ,(name), DSTROOTdoc_EXAMPLE_TEST ++ ,(name)
+    )
+    val () = cp "Makefile"
+    val () = cp "prelude_array.dats"
+    val () = cp "prelude_array0.dats"
+    val () = cp "prelude_list.dats"  
+    val () = cp "prelude_list_vt.dats"
+    val () = cp "prelude_matrix.dats"
+    val () = cp "prelude_matrix0.dats"
+    val () = cp "prelude_string.dats"
+    val () = cp "libc_dlfcn.dats"
+    val () = cp "libc_dirent.dats"
+    val () = cp "libc_sched.dats"
+    val () = cp "libc_stdlib.dats"  
+  //
+    val () = cp "libats_funarray_braun.dats"
+    val () = cp "libats_funheap_braun.dats"
+    val () = cp "libats_funmap_avltree.dats"
+    val () = cp "libats_funralist_nested.dats"
+    val () = cp "libats_genarrays.dats"  
+    val () = cp "libats_hashtable_chain.dats"
+    val () = cp "libats_hashtable_linprb.dats"
+    val () = cp "libats_intinf.dats"
+    val () = cp "libats_iterint.dats"
+    val () = cp "libats_linmap_avltree.dats"
+    val () = cp "libats_linqueue_arr.dats"
+    val () = cp "libats_linstack_arr.dats"
+    val () = cp "libats_regexp.dats"
+    val () = cp "libats_parworkshop.dats"  
+  //
+    val () = cp "libats_smlbas_array.dats"
+    val () = cp "libats_smlbas_array2.dats"
+    val () = cp "libats_smlbas_char.dats"
+    val () = cp "libats_smlbas_list.dats"
+    val () = cp "libats_smlbas_string.dats"
+    val () = cp "libats_smlbas_time.dats"
+  } // end of [val]
+//
+  val () = () where {
+    val SRCROOTdoc_EXAMPLE_KR =
+      SRCROOTdoc_EXAMPLE ++ "KernighanRitchie/"
+    val DSTROOTdoc_EXAMPLE_KR =
+      DSTROOTdoc_EXAMPLE ++ "KernighanRitchie/"
+    val () = mkdir_exn (DSTROOTdoc_EXAMPLE_KR, DIRmode)
+    #define NCHAPTER 8
+    val () = fcopy_exn (
+      SRCROOTdoc_EXAMPLE_KR ++ "Makefile", DSTROOTdoc_EXAMPLE_KR ++ "Makefile"
+    ) // end of [val]
+    var !p_arr with pf_arr = @[string](
+      "Chapter01/", "Chapter02/", "Chapter03/", "Chapter04/"
+    , "Chapter05/", "Chapter06/", "Chapter07/", "Chapter08/"
+    ) // end of [var]
+    val () = loop (!p_arr, 0) where {
+      fun loop (
+          names: &(@[string][NCHAPTER]), i: natLte NCHAPTER
+        ) :<cloref1> void =
+        if i < NCHAPTER then let
+          val name = names.[i]
+          val src = SRCROOTdoc_EXAMPLE_KR ++ name
+          val dst = DSTROOTdoc_EXAMPLE_KR ++ name
+          val () = mkdir_exn (dst, DIRmode)
+          val () = fcopy_exn (src ++ "Makefile", dst ++ "Makefile")
+          val () = dir_copy (src, dst, name_is_xats)
+        in
+          loop (names, i+1)
+        end // end of [if]
+    } // end of [val]
+  } // end of [val]
+//
+  val () = () where {
+    val SRCROOTdoc_EXAMPLE_MULTICORE = SRCROOTdoc_EXAMPLE ++ "MULTICORE/"
+    val DSTROOTdoc_EXAMPLE_MULTICORE = DSTROOTdoc_EXAMPLE ++ "MULTICORE/"
+    val () = mkdir_exn (DSTROOTdoc_EXAMPLE_MULTICORE, DIRmode)
+    macdef cp (name) = fcopy_exn (
+      SRCROOTdoc_EXAMPLE_MULTICORE ++ ,(name), DSTROOTdoc_EXAMPLE_MULTICORE ++ ,(name)
+    ) // end of [macdef]
+    val () = cp "Makefile"
+    val () = dir_copy
+      (SRCROOTdoc_EXAMPLE_MULTICORE, DSTROOTdoc_EXAMPLE_MULTICORE, name_is_xats)
+  } // end of [val]
+//
+  val () = () where {
+    val SRCROOTdoc_EXAMPLE_GTK = SRCROOTdoc_EXAMPLE ++ "GTK/"
+    val DSTROOTdoc_EXAMPLE_GTK = DSTROOTdoc_EXAMPLE ++ "GTK/"
+    val () = mkdir_exn (DSTROOTdoc_EXAMPLE_GTK, DIRmode)
+    macdef cp (name) = fcopy_exn (
+      SRCROOTdoc_EXAMPLE_GTK ++ ,(name), DSTROOTdoc_EXAMPLE_GTK ++ ,(name)
+    ) // end of [macdef]
+    val () = cp "Makefile"
+    val () = dir_copy
+      (SRCROOTdoc_EXAMPLE_GTK, DSTROOTdoc_EXAMPLE_GTK, name_is_xats)
+  } // end of [val]
+//
+  val () = () where {
+    val SRCROOTdoc_EXAMPLE_OpenGL = SRCROOTdoc_EXAMPLE ++ "OpenGL/"
+    val DSTROOTdoc_EXAMPLE_OpenGL = DSTROOTdoc_EXAMPLE ++ "OpenGL/"
+    val () = mkdir_exn (DSTROOTdoc_EXAMPLE_OpenGL, DIRmode)
+    macdef cp (name) = fcopy_exn (
+      SRCROOTdoc_EXAMPLE_OpenGL ++ ,(name), DSTROOTdoc_EXAMPLE_OpenGL ++ ,(name)
+    ) // end of [macdef]
+    val () = cp "Makefile"
+    val () = dir_copy
+      (SRCROOTdoc_EXAMPLE_OpenGL, DSTROOTdoc_EXAMPLE_OpenGL, name_is_xats)
+  } // end of [val]
 //
 in
   prerr "The [doc] directory is successfully copied.";
@@ -1073,7 +1111,8 @@ implement atspack_source_code () = let
   val () = cp ".libfiles_mt"
   val () = cp ".bootstrap_header"
   val () = cp ".bootstrap_makefile"
-
+  val () = cp ".makefile_header"
+//
   val () = bin_dir_copy (PACKNDsource)
   val () = bootstrap_dir_copy ()
   val () = ccomp_dir_copy (PACKNDsource)

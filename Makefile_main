@@ -65,14 +65,15 @@ all: \
   bin/atslex \
   ccomp/runtime/GCATS/gc.o \
   ccomp/runtime/GCATS/gc_mt.o \
-  atsopt1_gc
+  atsopt1_gc \
+  contrib
 	echo "ATS/Anairiats has been built up successfully!"
 	echo "The value of ATSHOME for this build is \"$(ATSHOME)\"."
 	echo "The value of ATSHOMERELOC for this build is \"$(ATSHOMERELOC)\"."
 
 ###### system configuration ######
 
-atscheck:
+atscheck::
 	echo "$(ATSHOME)" > .ATSHOME
 ifeq ($(ATSHOMEDEF),1)
 	/bin/bash -r ./ATSHOME_check.sh
@@ -94,19 +95,36 @@ bootstrap1/Makefile:
 
 ###### w/o GC ######
 
-atsopt0: bootstrap0/Makefile; cd bootstrap0; $(MAKE) atsopt
+atsopt0:: bootstrap0/Makefile; cd bootstrap0; $(MAKE) atsopt
 
 ###### bootstrapping ######
 
-bootstrapping: ; cd src; $(MAKE) -f Makefile_bootstrap all
+bootstrapping:: ; cd src; $(MAKE) -f Makefile_bootstrap all
 
 ###### w/o GC ######
 
-atsopt1: bootstrap1/Makefile; cd bootstrap1; $(MAKE) atsopt; mv atsopt "$(ATSHOME)"/bin
+atsopt1:: bootstrap1/Makefile
+	cd bootstrap1; $(MAKE) atsopt; mv atsopt "$(ATSHOME)"/bin
 
 ###### with GC ######
 
-atsopt1_gc: bootstrap1/Makefile; cd bootstrap1; $(MAKE) atsopt_gc; mv atsopt "$(ATSHOME)"/bin
+atsopt1_gc:: bootstrap1/Makefile
+	cd bootstrap1; $(MAKE) atsopt_gc; mv atsopt "$(ATSHOME)"/bin
+
+###### contrib libraries ######
+
+contrib::
+ifeq ($(LIBGLIB20),1)
+	cd contrib/glib; make atsctrb_glib.o; make clean
+endif
+ifeq ($(LIBGTK20),1)
+	cd contrib/cairo; make atsctrb_cairo.o; make clean
+	cd contrib/pango; make atsctrb_pango.o; make clean
+	cd contrib/GTK; make atsctrb_GTK.o; make clean
+endif
+ifeq ($(LIBSDL),1)
+	cd contrib/SDL; make atsctrb_SDL.o; make clean
+endif
 
 ###### some toplevel commands ######
 
@@ -125,23 +143,23 @@ ATS_TERMINATION_CHECK=
 
 # [GCC -E] for preprocessing
 .libfiles_local: ; $(GCC) -E -P -x c .libfiles -o .libfiles_local
-libfiles: .libfiles_local
+libfiles:: .libfiles_local
 	"$(ATSHOME)"/bin/atslib $(ATS_TERMINATION_CHECK) -O2 --libats
 	"$(ATSHOME)"/bin/atslib $(ATS_TERMINATION_CHECK) -O2 --libats_lex
 	"$(ATSHOME)"/bin/atslib $(ATS_TERMINATION_CHECK) -O2 --libats_smlbas
 
-lib32files: .libfiles_local
+lib32files:: .libfiles_local
 	"$(ATSHOME)"/bin/atslib $(ATS_TERMINATION_CHECK) -m32 -O2 --libats
 	"$(ATSHOME)"/bin/atslib $(ATS_TERMINATION_CHECK) -m32 -O2 --libats_lex
 	"$(ATSHOME)"/bin/atslib $(ATS_TERMINATION_CHECK) -m32 -O2 --libats_smlbas
 
-lib64files: .libfiles_local
+lib64files:: .libfiles_local
 	"$(ATSHOME)"/bin/atslib $(ATS_TERMINATION_CHECK) -m64 -O2 --libats
 	"$(ATSHOME)"/bin/atslib $(ATS_TERMINATION_CHECK) -m64 -O2 --libats_lex
 	"$(ATSHOME)"/bin/atslib $(ATS_TERMINATION_CHECK) -m64 -O2 --libats_smlbas
 
 .libfiles_mt_local: ; $(GCC) -E -P -x c .libfiles_mt -o .libfiles_mt_local
-libfiles_mt: .libfiles_mt_local
+libfiles_mt:: .libfiles_mt_local
 	"$(ATSHOME)"/bin/atslib $(ATS_TERMINATION_CHECK) -D_ATS_MULTITHREAD -O2 --libats_mt
 
 ###### a lexer for ATS ######
@@ -173,10 +191,10 @@ precompiled::
 
 ######
 
-srclines:
+srclines::
 	cd src; make lines
 
-liblines:
+liblines::
 	wc -l prelude/*/*.?ats prelude/*/*/*.?ats  libc/*/*.?ats libc/*/*/*.?ats libats/*/*.?ats libats/*/*/*.?ats 
 
 ######
@@ -185,6 +203,7 @@ clean::
 	rm -f bootstrap0/*.o
 	rm -f bootstrap1/*.o
 	rm -f bootstrap1/Makefile
+	rm -f Makefile_main_temp
 	cd utils/scripts; $(MAKE) clean
 	cd utils/atslex; $(MAKE) clean
 	cd ccomp/runtime/GCATS; $(MAKE) clean
@@ -205,6 +224,13 @@ cleanall:: clean
 	rm -f ccomp/lib64/libats_smlbas.a
 	rm -f ccomp/lib64/output/*
 	cd ccomp/runtime/GCATS; $(MAKE) cleanall
+	rm -f contrib/glib/atsctrb_glib.o
+	rm -f contrib/cairo/atsctrb_cairo.o
+	rm -f contrib/pango/atsctrb_pango.o
+	rm -f contrib/X11/atsctrb_X11.o
+	rm -f contrib/GTK/atsctrb_GTK.o
+	rm -f contrib/GL/atsctrb_GL.o
+	rm -f contrib/SDL/atsctrb_SDL.o
 	find . -name .svn -prune -o -name \*~ -exec rm \{} \;
 
 ######
@@ -216,6 +242,7 @@ tar:: cleanall
 	cp COPYING ATS
 	cp INSTALL ATS
 	cp Makefile ATS
+	cp Makefile_main ATS
 	cp Makefile_chmod ATS
 	cp .libfiles ATS
 	cp .libfiles_mt ATS
@@ -241,7 +268,6 @@ tar:: cleanall
 	mkdir ATS/ccomp/lib64/output
 	cp -r prelude libc libats ATS
 	cp -r utils ATS
-	cp -r third_party ATS
 	mkdir ATS/src
 	cp src/Makefile ATS/src
 	cp src/Makefile_bootstrap ATS/src

@@ -52,13 +52,14 @@ all: \
   bin/atslex \
   ccomp/runtime/GCATS/gc.o \
   ccomp/runtime/GCATS/gc_mt.o \
-  atsopt1_gc
+  atsopt1_gc \
+  contrib
 	echo "ATS/Anairiats has been built up successfully!"
 	echo "The value of ATSHOME for this build is \"$(ATSHOME)\"."
 
 ###### system configuration ######
 
-atscheck:
+atscheck::
 	echo "$(ATSHOME)" > .ATSHOME
 ifeq ($(ATSHOMEDEF),1)
 	/bin/bash -r ./ATSHOME_check.sh
@@ -77,11 +78,21 @@ bootstrap1/Makefile:
 
 ###### w/o GC ######
 
-atsopt1: bootstrap1/Makefile; cd bootstrap1; make atsopt; mv atsopt "$(ATSHOME)"/bin
+atsopt1:: bootstrap1/Makefile; cd bootstrap1; make atsopt; mv atsopt "$(ATSHOME)"/bin
 
 ###### with GC ######
 
-atsopt1_gc: bootstrap1/Makefile; cd bootstrap1; make atsopt_gc; mv atsopt "$(ATSHOME)"/bin
+atsopt1_gc:: bootstrap1/Makefile; cd bootstrap1; make atsopt_gc; mv atsopt "$(ATSHOME)"/bin
+
+###### contrib libraries ######
+
+contrib::
+ifeq ($(LIBGLIB20),1)
+	cd contrib/glib; make atsctrb_glib.o; make clean
+endif
+ifeq ($(LIBGTK20),1)
+	cd contrib/GTK; make atsctrb_GTK.o; make clean
+endif
 
 ###### some toplevel commands ######
 
@@ -94,12 +105,12 @@ bin/atscc bin/atslib:
 
 # [gcc -E] for preprocessing
 .libfiles_local: ; $(GCC) -E -P -x c .libfiles -o .libfiles_local
-libfiles: .libfiles_local
+libfiles:: .libfiles_local
 	"$(ATSHOME)"/bin/atslib $(ATS_TERMINATION_CHECK) -O2 --libats
 	"$(ATSHOME)"/bin/atslib $(ATS_TERMINATION_CHECK) -O2 --libats_smlbas
 
 .libfiles_mt_local: ; $(GCC) -E -P -x c .libfiles_mt -o .libfiles_mt_local
-libfiles_mt: .libfiles_mt_local
+libfiles_mt:: .libfiles_mt_local
 	"$(ATSHOME)"/bin/atslib $(ATS_TERMINATION_CHECK) -D_ATS_MULTITHREAD -O2 --libats_mt
 
 ###### a lexer for ATS ######
@@ -125,7 +136,7 @@ clean::
 	cd utils/atslex; make clean
 	cd ccomp/runtime/GCATS; make clean
 
-cleanall::
+cleanall:: clean
 	rm -f config.h
 	rm -f .libfiles_local
 	rm -f .libfiles_mt_local
@@ -145,6 +156,13 @@ cleanall::
 	cd utils/scripts; make clean
 	cd utils/atslex; make clean
 	cd ccomp/runtime/GCATS; make cleanall
+	rm -f contrib/glib/atsctrb_glib.o
+	rm -f contrib/cairo/atsctrb_cairo.o
+	rm -f contrib/pango/atsctrb_pango.o
+	rm -f contrib/X11/atsctrb_X11.o
+	rm -f contrib/GTK/atsctrb_GTK.o
+	rm -f contrib/GL/atsctrb_GL.o
+	rm -f contrib/SDL/atsctrb_SDL.o
 
 ######
 #

@@ -4,6 +4,8 @@
 //
 //
 
+/* ****** ****** */
+
 #include "config.h" // automatically genereated by [configure]
 
 /* ****** ****** */
@@ -27,4 +29,4 @@ LIBGMP=-lgmp
 
 /* ****** ****** */
 
-/* end of [bootstrap_header] */
+/* end of [.bootstrap_header] */

@@ -39,6 +39,7 @@ compall: \
   test13 \
   test14 \
   test15 \
+  test16 \
 
 ######
 
@@ -107,6 +108,8 @@ test9: cairo-test9.dats
 test10: cairo-test10.dats
 	$(ATSCC) -o test10 $(XRCFLAGS) cairo-test10.dats \
      && ./test10
+
+######
 
 test11: cairo-test11.dats
 	$(ATSCC) -o test11 $(XRCFLAGS) cairo-test11.dats \
