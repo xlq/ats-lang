@@ -22,7 +22,6 @@ checkall:: compall cleanall
 compall:: \
   GameOf24 \
   gtkcairoclock \
-  testcairo \
 
 ######
 
@@ -42,17 +41,11 @@ gtkcairoclock: gtkcairoclock.dats
 
 ######
 
-testcairo: testcairo.dats
-	$(ATSCC) -o $@ testcairo.dats $(GTKFLAGS)
-
-######
-
 clean::
 	rm -f *_dats.c *_sats.c *~
 
 cleanall:: clean
 	rm -f GameOf24
 	rm -f gtkcairoclock
-	rm -f testcairo
 
 ###### end of [Makefile] ######

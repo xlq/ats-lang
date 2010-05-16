@@ -44,6 +44,20 @@
 /* ****** ****** */
 
 //
+// source: gdkcairo.h
+//
+
+#define atsctrb_gdk_cairo_create gdk_cairo_create
+#define atsctrb_gdk_cairo_set_source_color gdk_cairo_set_source_color
+#define atsctrb_gdk_cairo_set_source_pixbuf gdk_cairo_set_source_pixbuf
+#define atsctrb_gdk_cairo_set_source_pixmap gdk_cairo_set_source_pixmap
+#define atsctrb_gdk_cairo_rectangle gdk_cairo_rectangle
+#define atsctrb_gdk_cairo_region gdk_cairo_region
+#define atsctrb_gdk_cairo_reset_clip gdk_cairo_reset_clip
+
+/* ****** ****** */
+
+//
 // source: gdkcolor.h
 //
 
@@ -93,6 +107,23 @@ GdkEventMask
 atsctrb_lor_GdkEventMask_GdkEventMask
   (GdkEventMask x1, GdkEventMask x2) { return (x1 | x2) ; }
 // end of [atsctrb_lor_GdkEventMask_GdkEventMask]
+
+/* ****** ****** */
+
+//
+// source: gdkpixbuf.h
+//
+
+#define atsctrb_gdk_pixbuf_render_threshold_alpha \
+  gdk_pixbuf_render_threshold_alpha
+
+/* ****** ****** */
+
+//
+// source: gdkpixmap.h
+//
+
+#define atsctrb_gdk_pixmap_new gdk_pixmap_new
 
 /* ****** ****** */
 

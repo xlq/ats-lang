@@ -61,6 +61,29 @@ typedef GdkRectangle =
 
 (* ****** ****** *)
 
+//
+// HX-2010-05-16: it is defined in gdkregion-generic.h
+//
+typedef GdkRegion =
+  $extype_struct "GdkRegion" of {
+  size= lint // a long integer
+, numRects= lint // a long integer
+// , GdkRegionBox *rects
+// , extents= GdkRegionBox
+} // end of [GdkRegion]
+
+(* ****** ****** *)
+
+typedef GdkSegment =
+  $extype_struct "GdkSegment" of {
+  x1= gint
+, y1= gint
+, x2= gint
+, y2= gint
+} // end of [GdkSegment]
+
+(* ****** ****** *)
+
 typedef GdkSpan =
   $extype_struct "GdkSpan" of {
   x= gint, y= gint, width= gint(*number of pixels in a span*)

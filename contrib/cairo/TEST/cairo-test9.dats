@@ -177,7 +177,9 @@ staload "contrib/glib/SATS/glib-object.sats"
 
 (* ****** ****** *)
 
+staload "contrib/GTK/SATS/gdkclassdec.sats"
 staload "contrib/GTK/SATS/gdk.sats"
+staload "contrib/GTK/SATS/gtkclassdec.sats"
 staload "contrib/GTK/SATS/gtk.sats"
 
 (* ****** ****** *)
@@ -219,11 +221,6 @@ mainats (ats_int_type argc, ats_ptr_type argv) ;
 %} // end of [%{^]
 
 (* ****** ****** *)
-
-extern fun gdk_cairo_create
-  {c:cls | c <= GdkDrawable} {l:agz} (widget: !gobjref (c, l)): cairo_ref1
-  = "#gdk_cairo_create"
-// end of [gdk_cairo_create]
 
 fun on_expose_event
   {c:cls | c <= GtkDrawingArea} {l:agz}

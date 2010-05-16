@@ -33,13 +33,13 @@
 
 //
 // Author: Hongwei Xi (hwxi AT cs DOT bu DOT edu)
-// Time: April, 2010
+// Time: May, 2010
 //
 
 (* ****** ****** *)
 
 %{#
-#include "contrib/GTK/CATS/gdk.cats"
+#include "contrib/GTK/CATS/gdk-pixbuf.cats"
 %} // end of [%{#]
 
 (* ****** ****** *)
@@ -64,49 +64,31 @@ stadef gpointer = $GLIB.gpointer
 (* ****** ****** *)
 
 staload GOBJ = "contrib/glib/SATS/glib-object.sats"
+stadef gboolean = $GOBJ.gboolean
 stadef gobjref = $GOBJ.gobjref
 
 (* ****** ****** *)
 
-absview GdkFree_v (l:addr) // for free GDK resources
+staload "gdkclassdec.sats"
 
 (* ****** ****** *)
 
-staload "contrib/GTK/SATS/gdkclassdec.sats"
+#include "gdk-pixbuf/gdk-pixbuf-core.sats"
 
 (* ****** ****** *)
 
-viewtypedef GdkColormap_ref (l:addr) = gobjref (GdkColormap, l)
-viewtypedef GdkColormap_ref0 = [l:agez] GdkColormap_ref l
-viewtypedef GdkColormap_ref1 = [l:addr | l > null] GdkColormap_ref l
+(* end of [gdk-pixbuf.sats] *)
 
-viewtypedef GdkPixbuf_ref (l:addr) = gobjref (GdkPixbuf, l)
-viewtypedef GdkPixbuf_ref0 = [l:agez] GdkPixbuf_ref l
-viewtypedef GdkPixbuf_ref1 = [l:addr | l > null] GdkPixbuf_ref l
+////
 
-viewtypedef GdkPixmap_ref (l:addr) = gobjref (GdkPixmap, l)
-viewtypedef GdkPixmap_ref0 = [l:agez] GdkPixmap_ref l
-viewtypedef GdkPixmap_ref1 = [l:addr | l > null] GdkPixmap_ref l
+#include <glib.h>
+#include <gdk-pixbuf/gdk-pixbuf-features.h>
+#include <glib-object.h>
 
-viewtypedef GdkWindow_ref (l:addr) = gobjref (GdkWindow, l)
-viewtypedef GdkWindow_ref0 = [l:agez] GdkWindow_ref l
-viewtypedef GdkWindow_ref1 = [l:addr | l > null] GdkWindow_ref l
-
-(* ****** ****** *)
-
-#include "contrib/GTK/SATS/gdk/gdktypes.sats"
-
-(* ****** ****** *)
-
-#include "contrib/GTK/SATS/gdk/gdkcairo.sats"
-#include "contrib/GTK/SATS/gdk/gdkcolor.sats"
-#include "contrib/GTK/SATS/gdk/gdkevents.sats"
-#include "contrib/GTK/SATS/gdk/gdkkeys.sats"
-#include "contrib/GTK/SATS/gdk/gdkpixbuf.sats"
-#include "contrib/GTK/SATS/gdk/gdkpixmap.sats"
-#include "contrib/GTK/SATS/gdk/gdkrgb.sats"
-#include "contrib/GTK/SATS/gdk/gdkwindow.sats"
-
-(* ****** ****** *)
-
-(* end of [gdk.sats] *)
+#include <gdk-pixbuf/gdk-pixbuf-core.h>
+#include <gdk-pixbuf/gdk-pixbuf-transform.h>
+#include <gdk-pixbuf/gdk-pixbuf-animation.h>
+#include <gdk-pixbuf/gdk-pixbuf-simple-anim.h>
+#include <gdk-pixbuf/gdk-pixbuf-io.h>
+#include <gdk-pixbuf/gdk-pixbuf-loader.h>
+#include <gdk-pixbuf/gdk-pixbuf-enum-types.h>

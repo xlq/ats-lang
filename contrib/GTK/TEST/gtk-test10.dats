@@ -22,6 +22,7 @@ staload "contrib/glib/SATS/glib-object.sats"
 (* ****** ****** *)
 
 staload "contrib/GTK/SATS/gdk.sats"
+staload "contrib/GTK/SATS/gtkclassdec.sats"
 staload "contrib/GTK/SATS/gtk.sats"
 
 (* ****** ****** *)

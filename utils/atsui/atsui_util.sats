@@ -36,6 +36,7 @@
 
 (* ****** ****** *)
 
+staload "contrib/GTK/SATS/gtkclassdec.sats"
 staload "contrib/GTK/SATS/gtk.sats"
 
 (* ****** ****** *)
